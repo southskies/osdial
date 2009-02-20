@@ -1,0 +1,113 @@
+body {
+	font-family: 'dejavu sans',sans;
+}
+
+.container {
+	width: 970px;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 10px;
+	text-align: center;
+	
+}
+
+.container ab {
+	text-decoration: none;
+	font-style: oblique;
+	color: navy;
+}
+
+.across-top {
+	background-image: URL(images/top16.png);
+	background-repeat:repeat-x;
+	background-position:center;
+	width: 970px;
+	border-right: ridge;
+}
+
+.across-bottom {
+	background-image: URL(images/top16.png);
+	background-repeat:repeat-x;
+	background-position:center;
+	width: 970px;
+	
+}
+
+.across {
+	background-image: URL(images/across140.png);
+	background-repeat:repeat-x;
+	width: 970px;
+	margin-left: auto; 
+	margin-right: auto;	
+	Xborder-right: solid 1px red;
+}
+
+.acrosslogin {
+	background-image: URL(images/across150.png);
+	background-repeat:repeat-x;
+	width: 400px;
+	margin-left: auto; 
+	margin-right: auto;	
+	Xborder-right: solid 1px red;
+}
+
+.centered {
+	text-align: center;
+}
+
+.indents {
+	margin-left: 5px;
+}
+
+.realtimeindents {
+	margin-left: 50px;
+}
+
+.user-company {
+
+}
+
+#clock { 
+	Xfont-family: Arial, Helvetica, sans-serif; 
+	Xfont-size: 0.8em; 
+	color: white; 
+	padding: 4px; 
+}
+
+a {
+	color: #1C4754;
+	text-decoration: none;
+}
+a:link {
+	color: #1C4754;
+	text-decoration: none;
+}
+
+a:active {
+	color: #FFD000;
+	text-decoration: underline;
+}
+a:hover {
+	color: #002B09;
+	text-decoration: underline;
+}
+a:visited {
+	Xcolor: #1C4754;
+	text-decoration: italic;
+}
+
+.no-ul a {
+	text-decoration: none;
+}
+
+.results {
+	background-color: #E9E8D9;
+}
+
+.leftalign {
+	text-align: left;
+}
+
+.footer {
+	
+}

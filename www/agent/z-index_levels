@@ -1,0 +1,37 @@
+<!-- z-index's 
+
+<left:0px;top:0px;z-index:2;" id="Header">
+<;left:0px;top:13px;z-index:1;" id="Tabs">
+<;left:0px;top:0px;z-index:3;" id="WelcomeBoxA">
+<;left:2px;top:46px;z-index:4;" id="MainPanel">
+z-index:6 side tab
+<;left:300px;top:<?=$MBheight ?>px;z-index:12;" id="ManuaLDiaLButtons"><font class="body_text">
+<;left:300px;top:<?=$CBheight ?>px;z-index:13;" id="CallbacksButtons"><font class="body_text">
+<;left:500px;top:<?=$CBheight+17 ?>px;z-index:14;" id="PauseCodeButtons"><font class="body_text">
+<;left:2px;top: 480px;z-index:15;" id="MaiNfooterspan">
+<;left:<?=$HKwidth+40 ?>px;top:<?=$HKheight +25 ?>px;z-index:16;" id="hotkeysdisplay"><a href="#" onMouseOver="HotKeys('ON')"><IMG SRC="./images/vdc_XB_hotkeysactive_OFF.gif" border=0 alt="HOT KEYS INACTIVE"></a>
+<;left:190px;top:70px;z-index:17;" id="ScriptPanel">
+<;left:935px;top:<?=$CBheight ?>px;z-index:19;" id="VolumeControlSpan">
+<;left:35px;top:<?=$CBheight ?>px;z-index:20;" id="AgentStatusSpan"><font class="body_text">
+<;left:5px;top:<?=$HTheight ?>px;z-index:21;" id="TransferMain">
+<;left:5px;top:<?=$HTheight+20 ?>px;z-index:23;" id="HotKeyActionBox">
+<;left:10px;top:<?=$HTheight+20 ?>px;z-index:25;" id="CBcommentsBox">
+<;left:<?=$AMwidth-10 ?>px;top:<?=$AMheight-13 ?>px;z-index:22;" id="AgentMuteANDPreseTDiaL">
+<;left:90px;top:<?=$HTheight+55 ?>px;z-index:24;" id="HotKeyEntriesBox">
+<;left:0px;top:18px;z-index:26;" id="NoneInSessionBox">
+<;left:0px;top:0px;z-index:27;" id="CustomerGoneBox">
+<;left:0px;top:0px;z-index:28;" id="WrapupBox">
+<;left:0px;top:0px;z-index:29;" id="AgenTDisablEBoX">
+<;left:1px;top:1px;z-index:30;background-image: URL('images/loginagain-bg.png');background-repeat:none;" id="LogouTBox">
+<;left:0px;top:70px;z-index:31;" id="DispoButtonHideA">
+<;left:0px;top:138px;z-index:32;" id="DispoButtonHideB">
+<;left:0px;top:18px;z-index:33;" id="DispoButtonHideC">
+<;left:0px;top:18px;z-index:34;" id="DispoSelectBox">
+<;left:0px;top:18px;z-index:40;" id="PauseCodeSelectBox">
+<;left:0px;top:18px;z-index:35;" id="CallBackSelectBox">
+<;left:0px;top:0px;z-index:36;" id="CloserSelectBox">
+<;left:0px;top:0px;z-index:37;" id="NothingBox">
+<;left:0px;top:18px;z-index:38;" id="CallBacKsLisTBox">
+;left:0px;top:18px;z-index:39;" id="NeWManuaLDiaLBox">
+
+-->

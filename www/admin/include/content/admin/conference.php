@@ -1,0 +1,506 @@
+<?php
+
+
+### Conferences
+
+
+
+######################
+# ADD=1111111111111 display the ADD NEW CONFERENCE SCREEN
+######################
+
+if ($ADD==1111111111111)
+{
+	if ($LOGast_admin_access==1)
+	{
+    $servers_list = get_servers($link, $server_ip);
+	echo "<TABLE align=center><TR><TD>\n";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+
+	echo "<center><br><font color=navy size=+1>ADD A NEW CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<input type=hidden name=ADD value=2111111111111>\n";
+	echo "<TABLE width=$section_width cellspacing=3>\n";
+	echo "<tr bgcolor=#C1D6DF><td align=right>Conference Number: </td><td align=left><input type=text name=conf_exten size=8 maxlength=7> (digits only)$NWB#conferences-conf_exten$NWE</td></tr>\n";
+	echo "<tr bgcolor=#C1D6DF><td align=right>Server IP: </td><td align=left><select size=1 name=server_ip>\n";
+
+	echo "$servers_list";
+	#echo "<option SELECTED>$server_ip</option>\n";
+	echo "</select>$NWB#conferences-server_ip$NWE</td></tr>\n";
+	echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
+	echo "</TABLE></center>\n";
+	}
+	else
+	{
+	echo "<font color=red>You do not have permission to view this page</font>\n";
+	exit;
+	}
+}
+
+
+
+######################
+# ADD=2111111111111 adds new conference to the system
+######################
+
+if ($ADD==2111111111111)
+{
+echo "<TABLE><TR><TD>\n";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	$stmt="SELECT count(*) from conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
+	$rslt=mysql_query($stmt, $link);
+	$row=mysql_fetch_row($rslt);
+	if ($row[0] > 0)
+		{echo "<br><font color=red>CONFERENCE NOT ADDED - there is already a conference in the system with this ID and server</font>\n";}
+	else
+		{
+		 if ( (strlen($conf_exten) < 1) or (strlen($server_ip) < 7) )
+			{echo "<br><font color=red>CONFERENCE NOT ADDED - Please go back and look at the data you entered</font>\n";}
+		 else
+			{
+			echo "<br><font color=navy>CONFERENCE ADDED</font>\n";
+
+			$stmt="INSERT INTO conferences (conf_exten,server_ip) values('$conf_exten','$server_ip');";
+			$rslt=mysql_query($stmt, $link);
+			}
+		}
+$ADD=3111111111111;
+}
+
+
+
+
+######################
+# ADD=4111111111111 modify conference record in the system
+######################
+
+if ($ADD==4111111111111)
+{
+	if ($LOGast_admin_access==1)
+	{
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+
+	$stmt="SELECT count(*) from conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
+	$rslt=mysql_query($stmt, $link);
+	$row=mysql_fetch_row($rslt);
+	if ( ($row[0] > 0) && ( ($conf_exten != $old_conf_exten) or ($server_ip != $old_server_ip) ) )
+		{echo "<br><font color=red>CONFERENCE NOT MODIFIED - there is already a Conference in the system with this extension-server</font>\n";}
+	else
+		{
+		 if ( (strlen($conf_exten) < 1) or (strlen($server_ip) < 7) )
+			{echo "<br><font color=red>CONFERENCE NOT MODIFIED - Please go back and look at the data you entered</font>\n";}
+		 else
+			{
+			echo "<br><font color=navy>CONFERENCE MODIFIED: $conf_exten</font>\n";
+
+			$stmt="UPDATE conferences set conf_exten='$conf_exten',server_ip='$server_ip',extension='$extension' where conf_exten='$old_conf_exten';";
+			$rslt=mysql_query($stmt, $link);
+			}
+		}
+	}
+	else
+	{
+	echo "<font color=red>You do not have permission to view this page</font>\n";
+	exit;
+	}
+$ADD=3111111111111;	# go to conference modification form below
+}
+
+
+
+
+######################
+# ADD=5111111111111 confirmation before deletion of conference record
+######################
+
+if ($ADD==5111111111111)
+{
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+
+	 if ( (strlen($conf_exten) < 2) or (strlen($server_ip) < 7) or ($LOGast_delete_phones < 1) )
+		{
+		 echo "<br><font color=red>CONFERENCE NOT DELETED - Please go back and look at the data you entered\n";
+		 echo "<br>Conference must be at least 2 characters in length\n";
+		 echo "<br>Server IP be at least 7 characters in length</font><br>\n";
+		}
+	 else
+		{
+		echo "<br><B><font color=navy>CONFERENCE DELETION CONFIRMATION: $conf_exten - $server_ip</B>\n";
+		echo "<br><br><a href=\"$PHP_SELF?ADD=6111111111111&conf_exten=$conf_exten&server_ip=$server_ip&CoNfIrM=YES\">Click here to delete phone $conf_exten - $server_ip</a></font><br><br><br>\n";
+		}
+$ADD='3111111111111';		# go to conference modification below
+}
+
+
+
+######################
+# ADD=6111111111111 delete conference record
+######################
+
+if ($ADD==6111111111111)
+{
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+
+	 if ( (strlen($conf_exten) < 2) or (strlen($server_ip) < 7) or ($CoNfIrM != 'YES') or ($LOGast_delete_phones < 1) )
+		{
+		 echo "<br><font color=red>CONFERENCE NOT DELETED - Please go back and look at the data you entered\n";
+		 echo "<br>Conference be at least 2 characters in length\n";
+		 echo "<br>Server IP be at least 7 characters in length</font><br>\n";
+		}
+	 else
+		{
+		$stmt="DELETE from conferences where conf_exten='$conf_exten' and server_ip='$server_ip' limit 1;";
+		$rslt=mysql_query($stmt, $link);
+
+		### LOG CHANGES TO LOG FILE ###
+		if ($WeBRooTWritablE > 0)
+			{
+			$fp = fopen ("./admin_changes_log.txt", "a");
+			fwrite ($fp, "$date|!!!DELETING CONF!!!!|$PHP_AUTH_USER|$ip|conf_exten='$conf_exten'|server_ip='$server_ip'|\n");
+			fclose($fp);
+			}
+		echo "<br><B><font color=navy>CONFERENCE DELETION COMPLETED: $conf_exten - $server_ip</font></B>\n";
+		echo "<br><br>\n";
+		}
+$ADD='1000000000000';		# go to conference list
+}
+
+
+
+
+######################
+# ADD=3111111111111 modify conference record in the system
+######################
+
+if ($ADD==3111111111111)
+{
+	if ($LOGast_admin_access==1)
+	{
+	echo "<TABLE align=center><TR><TD>\n";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+
+	$stmt="SELECT * from conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
+	$rslt=mysql_query($stmt, $link);
+	$row=mysql_fetch_row($rslt);
+	$conf_exten = $row[0];
+	$server_ip = $row[1];
+
+    $servers_list = get_servers($link, $row[1]);
+
+	echo "<center><br><font color=navy size=+1>MODIFY A CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<input type=hidden name=ADD value=4111111111111>\n";
+	echo "<input type=hidden name=old_conf_exten value=\"$row[0]\">\n";
+	echo "<input type=hidden name=old_server_ip value=\"$row[1]\">\n";
+	echo "<TABLE width=$section_width cellspacing=3>\n";
+	echo "<tr bgcolor=#C1D6DF><td align=right>Conference: </td><td align=left><input type=text name=conf_exten size=10 maxlength=7 value=\"$row[0]\">$NWB#conferences-conf_exten$NWE</td></tr>\n";
+	echo "<tr bgcolor=#C1D6DF><td align=right><a href=\"$PHP_SELF?ADD=311111111111&server_ip=$row[1]\">Server IP</a>: </td><td align=left><select size=1 name=server_ip>\n";
+
+	echo "$servers_list";
+	#echo "<option SELECTED>$row[1]</option>\n";
+	echo "</select>$NWB#conferences-server_ip$NWE</td></tr>\n";
+	echo "<tr bgcolor=#C1D6DF><td align=right>Current Extension: </td><td align=left><input type=text name=extension size=20 maxlength=20 value=\"$row[2]\"></td></tr>\n";
+	echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
+	echo "</TABLE></center>\n";
+
+	if ($LOGast_delete_phones > 0)
+		{
+		echo "<br><br><a href=\"$PHP_SELF?ADD=5111111111111&conf_exten=$conf_exten&server_ip=$server_ip\">DELETE THIS CONFERENCE</a>\n";
+		}
+	}
+	else
+	{
+	echo "<font color=red>You do not have permission to view this page</font>\n";
+	exit;
+	}
+}
+
+
+
+######################
+# ADD=1000000000000 display all conferences
+######################
+if ($ADD==1000000000000)
+{
+echo "<TABLE align=center><TR><TD>\n";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+
+	$stmt="SELECT * from conferences order by conf_exten";
+	$rslt=mysql_query($stmt, $link);
+	$phones_to_print = mysql_num_rows($rslt);
+
+echo "<center><br><font color=navy size=+1>CONFERENCES</font><br><br>\n";
+echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "<tr bgcolor=$menubarcolor>";
+echo "<td><font size=1 color=white><B>ID</B></td>";
+echo "<td><font size=1 color=white><B>SERVER</B></td>";
+echo "<td><font size=1 color=white><B>EXTENSION</B></td>";
+echo "<td align=center colspan=3><font size=1 color=white><B>LINKS</B></td>";
+
+	$o=0;
+	while ($phones_to_print > $o) {
+		$row=mysql_fetch_row($rslt);
+		if (eregi("1$|3$|5$|7$|9$", $o))
+			{$bgcolor='bgcolor="#CBDCE0"';} 
+		else
+			{$bgcolor='bgcolor="#C1D6DB"';}
+		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=3111111111111&conf_exten=$row[0]&server_ip=$row[1]\">$row[0]</a></td>";
+		echo "<td><font size=1> $row[1]</td>";
+		echo "<td><font size=1> $row[2]</td>";
+		echo "<td><font size=1>$row[4]</td>";
+		echo "<td><font size=1> &nbsp;</td>";
+		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=3111111111111&conf_exten=$row[0]&server_ip=$row[1]\">MODIFY</a></td></tr>\n";
+		$o++;
+	}
+
+echo "</TABLE></center>\n";
+}
+
+
+
+####  OSD Conferences
+
+
+######################
+# ADD=11111111111111 display the ADD NEW OSDial CONFERENCE SCREEN
+######################
+
+if ($ADD==11111111111111)
+{
+	if ($LOGast_admin_access==1)
+	{
+    $servers_list = get_servers($link, $server_ip);
+	echo "<TABLE align=center><TR><TD>\n";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+
+	echo "<center><br><font color=navy size=+1>ADD A NEW OSDial CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<input type=hidden name=ADD value=21111111111111>\n";
+	echo "<TABLE width=$section_width cellspacing=3>\n";
+	echo "<tr bgcolor=#C1D6DF><td align=right>Conference Number: </td><td align=left><input type=text name=conf_exten size=8 maxlength=7> (digits only)$NWB#conferences-conf_exten$NWE</td></tr>\n";
+	echo "<tr bgcolor=#C1D6DF><td align=right>Server IP: </td><td align=left><select size=1 name=server_ip>\n";
+
+	echo "$servers_list";
+	#echo "<option SELECTED>$server_ip</option>\n";
+	echo "</select>$NWB#conferences-server_ip$NWE</td></tr>\n";
+	echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
+	echo "</TABLE></center>\n";
+	}
+	else
+	{
+	echo "<font color=red>You do not have permission to view this page</font>\n";
+	exit;
+	}
+}
+
+
+######################
+# ADD=21111111111111 adds new vicidial conference to the system
+######################
+
+if ($ADD==21111111111111)
+{
+echo "<TABLE><TR><TD>\n";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	$stmt="SELECT count(*) from vicidial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
+	$rslt=mysql_query($stmt, $link);
+	$row=mysql_fetch_row($rslt);
+	if ($row[0] > 0)
+		{echo "<br><font color=red>OSDial CONFERENCE NOT ADDED - there is already an OSDial conference in the system with this ID and server</font>\n";}
+	else
+		{
+		 if ( (strlen($conf_exten) < 1) or (strlen($server_ip) < 7) )
+			{echo "<br><font color=red>OSDial CONFERENCE NOT ADDED - Please go back and look at the data you entered</font>\n";}
+		 else
+			{
+			echo "<br><font color=navy>OSDial CONFERENCE ADDED</font>\n";
+
+			$stmt="INSERT INTO vicidial_conferences (conf_exten,server_ip) values('$conf_exten','$server_ip');";
+			$rslt=mysql_query($stmt, $link);
+			}
+		}
+$ADD=31111111111111;
+}
+
+
+######################
+# ADD=41111111111111 modify vicidial conference record in the system
+######################
+
+if ($ADD==41111111111111)
+{
+	if ($LOGast_admin_access==1)
+	{
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+
+	$stmt="SELECT count(*) from vicidial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
+	$rslt=mysql_query($stmt, $link);
+	$row=mysql_fetch_row($rslt);
+	if ( ($row[0] > 0) && ( ($conf_exten != $old_conf_exten) or ($server_ip != $old_server_ip) ) )
+		{echo "<br><font color=red>OSDial CONFERENCE NOT MODIFIED - there is already a Conference in the system with this extension-server</font>\n";}
+	else
+		{
+		 if ( (strlen($conf_exten) < 1) or (strlen($server_ip) < 7) )
+			{echo "<br><font color=red>OSDial CONFERENCE NOT MODIFIED - Please go back and look at the data you entered</font>\n";}
+		 else
+			{
+			echo "<br><font color=navy>OSDial CONFERENCE MODIFIED: $conf_exten</font>\n";
+
+			$stmt="UPDATE vicidial_conferences set conf_exten='$conf_exten',server_ip='$server_ip',extension='$extension' where conf_exten='$old_conf_exten';";
+			$rslt=mysql_query($stmt, $link);
+
+			}
+		}
+	}
+	else
+	{
+	echo "<font color=red>You do not have permission to view this page</font>\n";
+	exit;
+	}
+$ADD=31111111111111;	# go to vicidial conference modification form below
+}
+
+
+
+######################
+# ADD=51111111111111 confirmation before deletion of vicidial conference record
+######################
+
+if ($ADD==51111111111111)
+{
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+
+	 if ( (strlen($conf_exten) < 2) or (strlen($server_ip) < 7) or ($LOGast_delete_phones < 1) )
+		{
+		 echo "<br><font color=red>OSDial CONFERENCE NOT DELETED - Please go back and look at the data you entered\n";
+		 echo "<br>Conference must be at least 2 characters in length\n";
+		 echo "<br>Server IP be at least 7 characters in length</font><br>\n";
+		}
+	 else
+		{
+		echo "<br><B><font color=navy>OSDial CONFERENCE DELETION CONFIRMATION: $conf_exten - $server_ip</B>\n";
+		echo "<br><br><a href=\"$PHP_SELF?ADD=61111111111111&conf_exten=$conf_exten&server_ip=$server_ip&CoNfIrM=YES\">Click here to delete phone $conf_exten - $server_ip</a></font><br><br><br>\n";
+		}
+$ADD='31111111111111';		# go to vicidial conference modification below
+}
+
+
+
+######################
+# ADD=61111111111111 delete vicidial conference record
+######################
+
+if ($ADD==61111111111111)
+{
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+
+	 if ( (strlen($conf_exten) < 2) or (strlen($server_ip) < 7) or ($CoNfIrM != 'YES') or ($LOGast_delete_phones < 1) )
+		{
+		 echo "<br><font color=red>OSDial CONFERENCE NOT DELETED - Please go back and look at the data you entered\n";
+		 echo "<br>Conference be at least 2 characters in length\n";
+		 echo "<br>Server IP be at least 7 characters in length</font><br>\n";
+		}
+	 else
+		{
+		$stmt="DELETE from vicidial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip' limit 1;";
+		$rslt=mysql_query($stmt, $link);
+
+		### LOG CHANGES TO LOG FILE ###
+		if ($WeBRooTWritablE > 0)
+			{
+			$fp = fopen ("./admin_changes_log.txt", "a");
+			fwrite ($fp, "$date|!!!DELETING CONF!!!!|$PHP_AUTH_USER|$ip|conf_exten='$conf_exten'|server_ip='$server_ip'|\n");
+			fclose($fp);
+			}
+		echo "<br><B><font color=navy>OSDial CONFERENCE DELETION COMPLETED: $conf_exten - $server_ip</font></B>\n";
+		echo "<br><br>\n";
+		}
+$ADD='10000000000000';		# go to vicidial conference list
+}
+
+
+######################
+# ADD=31111111111111 modify vicidial conference record in the system
+######################
+
+if ($ADD==31111111111111)
+{
+	if ($LOGast_admin_access==1)
+	{
+	echo "<TABLE align=center><TR><TD>\n";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+
+	$stmt="SELECT * from vicidial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
+	$rslt=mysql_query($stmt, $link);
+	$row=mysql_fetch_row($rslt);
+	$conf_exten = $row[0];
+	$server_ip = $row[1];
+
+    $servers_list = get_servers($link, $row[1]);
+
+	echo "<center><br><font color=navy size=+1>MODIFY A OSDial CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<input type=hidden name=ADD value=41111111111111>\n";
+	echo "<input type=hidden name=old_conf_exten value=\"$row[0]\">\n";
+	echo "<input type=hidden name=old_server_ip value=\"$row[1]\">\n";
+	echo "<TABLE width=$section_width cellspacing=3>\n";
+	echo "<tr bgcolor=#C1D6DF><td align=right>Conference: </td><td align=left><input type=text name=conf_exten size=10 maxlength=7 value=\"$row[0]\">$NWB#conferences-conf_exten$NWE</td></tr>\n";
+	echo "<tr bgcolor=#C1D6DF><td align=right><a href=\"$PHP_SELF?ADD=311111111111&server_ip=$row[1]\">Server IP</a>: </td><td align=left><select size=1 name=server_ip>\n";
+
+	echo "$servers_list";
+	#echo "<option SELECTED>$row[1]</option>\n";
+	echo "</select>$NWB#conferences-server_ip$NWE</td></tr>\n";
+	echo "<tr bgcolor=#C1D6DF><td align=right>Current Extension: </td><td align=left><input type=text name=extension size=20 maxlength=20 value=\"$row[2]\"></td></tr>\n";
+	echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
+	echo "</TABLE></center>\n";
+
+	if ($LOGast_delete_phones > 0)
+		{
+		echo "<br><br><a href=\"$PHP_SELF?ADD=51111111111111&conf_exten=$conf_exten&server_ip=$server_ip\">DELETE THIS OSDial CONFERENCE</a>\n";
+		}
+	}
+	else
+	{
+	echo "<font color=red>You do not have permission to view this page</font>\n";
+	exit;
+	}
+}
+
+
+######################
+# ADD=10000000000000 display all vicidial conferences
+######################
+if ($ADD==10000000000000)
+{
+echo "<TABLE align=center><TR><TD>\n";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+
+	$stmt="SELECT * from vicidial_conferences order by conf_exten";
+	$rslt=mysql_query($stmt, $link);
+	$phones_to_print = mysql_num_rows($rslt);
+
+echo "<center><br><font color=navy size=+1>CONFERENCES</font><br><br>\n";
+echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "<tr bgcolor=navy>";
+echo "<td><font size=1 color=white><B>ID</B></td>";
+echo "<td><font size=1 color=white><B>SERVER</B></td>";
+echo "<td><font size=1 color=white><B>EXTENSION</B></td>";
+echo "<td align=center colspan=3><font size=1 color=white><B>LINKS</B></td>";
+
+	$o=0;
+	while ($phones_to_print > $o) {
+		$row=mysql_fetch_row($rslt);
+		if (eregi("1$|3$|5$|7$|9$", $o))
+			{$bgcolor='bgcolor="#CBDCE0"';} 
+		else
+			{$bgcolor='bgcolor="#C1D6DB"';}
+		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=31111111111111&conf_exten=$row[0]&server_ip=$row[1]\">$row[0]</a></td>";
+		echo "<td><font size=1> $row[1]</td>";
+		echo "<td><font size=1> $row[2]</td><td><font size=1>$row[4]</td><td><font size=1> &nbsp;</td>";
+		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=31111111111111&conf_exten=$row[0]&server_ip=$row[1]\">MODIFY</a></td></tr>\n";
+		$o++;
+	}
+
+echo "</TABLE></center>\n";
+}
+
+
+
+
+?>

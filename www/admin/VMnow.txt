@@ -1,0 +1,11 @@
+Context    Mbox  User                      Zone       NewMsg
+default    1000                                            0
+default    1001                                            0
+default    1002                                            0
+default    1003                                            0
+default    1004                                            0
+default    1005                                            0
+default    1006                                            0
+default    1007                                            0
+default    1008                                            0
+default    1009                                            0

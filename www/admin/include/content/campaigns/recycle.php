@@ -1,0 +1,196 @@
+<?php
+
+
+######################
+# ADD=25 adds the new campaign lead recycle entry to the system
+######################
+
+if ($ADD==25)
+{
+	$status = eregi_replace("-----.*",'',$status);
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	$stmt="SELECT count(*) from vicidial_lead_recycle where campaign_id='$campaign_id' and status='$status';";
+	$rslt=mysql_query($stmt, $link);
+	$row=mysql_fetch_row($rslt);
+	if ($row[0] > 0)
+		{echo "<br><font color=red> CAMPAIGN LEAD RECYCLE NOT ADDED - there is already a lead-recycle for this campaign with this status</font>\n";}
+	else
+		{
+		 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) or ($attempt_delay < 120) or ($attempt_maximum < 1) or ($attempt_maximum > 10) )
+			{
+			 echo "<br><font color=red>CAMPAIGN LEAD RECYCLE NOT ADDED - Please go back and look at the data you entered\n";
+			 echo "<br>status must be between 1 and 6 characters in length\n";
+			 echo "<br>attempt delay must be at least 120 seconds\n";
+			 echo "<br>maximum attempts must be from 1 to 10</font><br>\n";
+			}
+		 else
+			{
+			echo "<br><B><font color=navy>CAMPAIGN LEAD RECYCLE ADDED: $campaign_id - $status - $attempt_delay</font></B>\n";
+
+			$stmt="INSERT INTO vicidial_lead_recycle(campaign_id,status,attempt_delay,attempt_maximum,active) values('$campaign_id','$status','$attempt_delay','$attempt_maximum','$active');";
+			$rslt=mysql_query($stmt, $link);
+
+			### LOG CHANGES TO LOG FILE ###
+			if ($WeBRooTWritablE > 0)
+				{
+				$fp = fopen ("./admin_changes_log.txt", "a");
+				fwrite ($fp, "$date|ADD A NEW LEAD RECYCLE    |$PHP_AUTH_USER|$ip|$stmt|\n");
+				fclose($fp);
+				}
+			}
+		}
+$SUB=25;
+$ADD=31;
+}
+
+
+
+######################
+# ADD=45 modify campaign lead recycle in the system
+######################
+
+if ($ADD==45)
+{
+	if ($LOGmodify_campaigns==1)
+	{
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+
+	 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) or ($attempt_delay < 120)  or ($attempt_maximum < 1) or ($attempt_maximum > 10) )
+		{
+		 echo "<br><font color=red>CAMPAIGN LEAD RECYCLE NOT MODIFIED - Please go back and look at the data you entered\n";
+		 echo "<br>status must be between 1 and 6 characters in length\n";
+		 echo "<br>attempt delay must be at least 120 seconds\n";
+		 echo "<br>maximum attempts must be from 1 to 10</font><br>\n";
+		}
+	 else
+		{
+		echo "<br><B><font color=navy>CAMPAIGN LEAD MODIFIED: $campaign_id - $status - $attempt_delay</font></B>\n";
+
+		$stmt="UPDATE vicidial_lead_recycle SET attempt_delay='$attempt_delay',attempt_maximum='$attempt_maximum',active='$active' where campaign_id='$campaign_id' and status='$status';";
+		$rslt=mysql_query($stmt, $link);
+
+		### LOG CHANGES TO LOG FILE ###
+		if ($WeBRooTWritablE > 0)
+			{
+			$fp = fopen ("./admin_changes_log.txt", "a");
+			fwrite ($fp, "$date|MODIFY LEAD RECYCLE   |$PHP_AUTH_USER|$ip|$stmt|\n");
+			fclose($fp);
+			}
+		}
+	}
+	else
+	{
+	echo "<font color=red>You do not have permission to view this page</font>\n";
+	exit;
+	}
+$SUB=25;
+$ADD=31;	# go to campaign modification form below
+}
+
+
+######################
+# ADD=65 delete campaign lead recycle in the system
+######################
+
+if ($ADD==65)
+{
+	if ($LOGmodify_campaigns==1)
+	{
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+
+	 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) )
+		{
+		 echo "<br><font color=red>CAMPAIGN LEAD RECYCLE NOT DELETED - Please go back and look at the data you entered\n";
+		 echo "<br>status must be between 1 and 6 characters in length\n";
+		 echo "<br>attempt delay must be at least 120 seconds\n";
+		 echo "<br>maximum attempts must be from 1 to 10</font><br>\n";
+		}
+	 else
+		{
+		echo "<br><B><font color=navy>CAMPAIGN LEAD RECYCLE DELETED: $campaign_id - $status - $attempt_delay</font></B>\n";
+
+		$stmt="DELETE FROM vicidial_lead_recycle where campaign_id='$campaign_id' and status='$status';";
+		$rslt=mysql_query($stmt, $link);
+
+		### LOG CHANGES TO LOG FILE ###
+		if ($WeBRooTWritablE > 0)
+			{
+			$fp = fopen ("./admin_changes_log.txt", "a");
+			fwrite ($fp, "$date|DELETE LEAD RECYCLE   |$PHP_AUTH_USER|$ip|$stmt|\n");
+			fclose($fp);
+			}
+		}
+	}
+	else
+	{
+	echo "<font color=red>You do not have permission to view this page</font>\n";
+	exit;
+	}
+$SUB=25;
+$ADD=31;	# go to campaign modification form below
+}
+
+
+######################
+# ADD=35 display all campaign lead recycle entries
+######################
+if ($ADD==35)
+{
+echo "<TABLE align=center><TR><TD>\n";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+
+echo "<center><br><font color=navy size=+1>CAMPAIGN LEAD RECYCLES</font><br><br>\n";
+echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "<tr bgcolor=$menubarcolor>\n";
+echo "<td><font color=white size=1>CAMPAIGN</font></td>\n";
+echo "<td><font color=white size=1>NAME</font></td>\n";
+echo "<td><font color=white size=1>LEAD RECYCLES</font></td>\n";
+echo "<td><font color=white size=1>LINKS</font></td>\n";
+echo "</tr>\n";
+
+	$stmt="SELECT campaign_id,campaign_name from vicidial_campaigns order by campaign_id";
+	$rslt=mysql_query($stmt, $link);
+	$campaigns_to_print = mysql_num_rows($rslt);
+
+	$o=0;
+	while ($campaigns_to_print > $o) 
+		{
+		$row=mysql_fetch_row($rslt);
+		$campaigns_id_list[$o] = $row[0];
+		$campaigns_name_list[$o] = $row[1];
+		$o++;
+		}
+
+	$o=0;
+	while ($campaigns_to_print > $o) 
+		{
+		if (eregi("1$|3$|5$|7$|9$", $o))
+			{$bgcolor='bgcolor="#CBDCE0"';} 
+		else
+			{$bgcolor='bgcolor="#C1D6DB"';}
+		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=31&SUB=25&campaign_id=$campaigns_id_list[$o]\">$campaigns_id_list[$o]</a></td>";
+		echo "<td><font size=1> $campaigns_name_list[$o] </td>";
+		echo "<td><font size=1> ";
+
+		$stmt="SELECT status from vicidial_lead_recycle where campaign_id='$campaigns_id_list[$o]' order by status";
+		$rslt=mysql_query($stmt, $link);
+		$campstatus_to_print = mysql_num_rows($rslt);
+		$p=0;
+		while ( ($campstatus_to_print > $p) and ($p < 10) )
+			{
+			$row=mysql_fetch_row($rslt);
+			echo "$row[0] ";
+			$p++;
+			}
+		if ($p<1) 
+			{echo "<font color=grey><DEL>NONE</DEL></font>";}
+		echo "</td>";
+		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=31&SUB=25&campaign_id=$campaigns_id_list[$o]\">MODIFY LEAD RECYCLES</a></td></tr>\n";
+		$o++;
+		}
+
+echo "</TABLE></center>\n";
+}
+
+
+?>

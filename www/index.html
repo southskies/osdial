@@ -1,0 +1,44 @@
+<html>
+<head><title>Choose Login:</title></head>
+<body>
+<? include('/opt/html/vicidial/vicidial/admin_config.inc'); ?>
+<br><br><br>
+
+<table align=center border=0 align=center width=518 height=368 background=vicidial/osdial-bg.png>
+<tr>
+	<td valign=top>
+	
+		<table border=0 align=center>
+		<tr>
+			<td height=180 width=360 align=center valign=middle colspan=2>
+				<img src=vicidial/defaultCompany.png width=298 height=30>
+			</td>
+		</tr>
+		<tr>
+			<td align=center>
+				&nbsp;&nbsp;&nbsp;<map name="mapAL">
+					<a href=vicidial/osdial/agent/ 
+						OnMouseOver="agent.src='vicidial/AgentLoginDn.png'" 
+						OnMouseOut="agent.src='vicidial/AgentLoginUp.png'" 
+						usemap="#mapAL">
+					<img src="vicidial/AgentLoginUp.png" width=117 height=26 BORDER=0 NAME="agent"></A>
+				</map>
+			</td>
+			<td align=center>
+				<map name="mapCL">
+					<a href=vicidial/osdial/admin/admin.php?ADD=10 
+						OnMouseOver="control.src='vicidial/ControlLoginDn.png'" 
+						OnMouseOut="control.src='vicidial/ControlLoginUp.png'" 
+						usemap="#mapCL">
+					<img src="vicidial/ControlLoginUp.png" width=129 height=26 BORDER=0 NAME="control"></A>&nbsp;&nbsp;&nbsp;
+				</map>
+			</td>
+		</tr>
+		</table>
+		
+	</td>
+</tr>
+</table>
+
+</body>
+</html>

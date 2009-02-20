@@ -1,0 +1,162 @@
+body {
+	font-family: 'dejavu sans',sans;
+}
+
+.container {
+	width: 990px;
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 100px;
+	text-align: center;
+	
+}
+
+.containera {
+	margin-right: auto;
+	margin-left: auto;
+	margin-top: 100px;
+	text-align: center;
+}
+
+
+.container ab {
+	text-decoration: none;
+	font-style: oblique;
+	color: navy;
+}
+
+.across-top {
+	background-image: URL(images/top16.png);
+	background-repeat:repeat-x;
+	background-position:center;
+	width: 870px;
+	Xborder-right: ridge;
+}
+
+.across-bottom {
+	background-image: URL(images/top16.png);
+	background-repeat:repeat-x;
+	background-position:center;
+	width: 800px;
+	
+}
+
+.across {
+	background-image: URL(images/down140.png);
+	background-repeat:repeat-x;
+	width: 870px;
+	margin-left: auto; 
+	margin-right: auto;	
+	Xborder-right: solid 1px red;
+}
+
+.acrosslogin {
+	background-image: URL(images/down200.png);
+	background-repeat:repeat-x;
+	width: 450px;
+	margin-left: auto; 
+	margin-right: auto;	
+	Xborder-right: solid 1px red;
+}
+
+.acrosslogin2 {
+	background-image: URL(images/down240.png);
+	background-repeat:repeat-x;
+	width: 500px;
+	margin-left: auto; 
+	margin-right: auto;	
+	Xborder-right: solid 1px red;
+}
+
+.acrossagent {
+	background-image: URL(images/down550.png);
+	background-repeat:repeat-x;
+	width: 980px;
+	margin-left: auto; 
+	margin-right: auto;	
+	Xborder-right: solid 1px red;
+}
+
+.acrossagent a {
+	color: #1C4754;
+	text-decoration: none;
+}
+
+a {
+	color: #1C4754;
+	text-decoration: none;
+}
+a:link {
+	color: #1C4754;
+	text-decoration: none;
+}
+
+a:active {
+	color: #FFD000;
+	text-decoration: underline;
+}
+a:hover {
+	color: #FFD000;
+	text-decoration: underline;
+}
+a:visited {
+	Xcolor: #1C4754;
+	Xtext-decoration: italic;
+}
+
+.rborder {
+	border-right: solid 1px grey;
+}
+
+.rbborder {
+	border-right: solid 1px grey;
+	border-bottom: solid 2px grey;
+}
+
+.centered {
+	text-align: center;
+}
+
+.indents {
+	margin-left: 5px;
+}
+
+.user-company {
+
+}
+
+.topinfoline {
+	font-family: verdana,arial,sans-serif;
+	font-size: 8pt;
+	color: #66CCFF;
+}
+
+#clock { 
+	Xfont-family: Arial, Helvetica, sans-serif; 
+	Xfont-size: 0.8em; 
+	color: white; 
+	padding: 4px; 
+}
+
+.no-ul a {
+	text-decoration: none;
+}
+
+.AFMenu {
+	color: #1C4754;
+	font-size: 10pt;
+}
+
+.AFHead {
+	color: #1C4754;
+	font-size: 12pt;
+	font-weight: bold;
+}
+
+.results {
+	background-color: #E9E8D9;
+}
+
+.footer {
+	
+}
