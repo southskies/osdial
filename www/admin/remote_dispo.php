@@ -112,7 +112,7 @@ $PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
 
 
 
-	$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 2;";
+	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 2;";
 		if ($DB) {echo "$stmt\n";}
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -125,7 +125,7 @@ $browser = getenv("HTTP_USER_AGENT");
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICIDIAL-CLOSER\"");
+    Header("WWW-Authenticate: Basic realm=\"OSDIAL-CLOSER\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
@@ -137,7 +137,7 @@ $browser = getenv("HTTP_USER_AGENT");
 		{
 		$office_no=strtoupper($PHP_AUTH_USER);
 		$password=strtoupper($PHP_AUTH_PW);
-			$stmt="SELECT full_name from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
+			$stmt="SELECT full_name from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
 			if ($DB) {echo "$stmt\n";}
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
@@ -174,13 +174,13 @@ if ($end_call > 0)
 
 $call_length = ($STARTtime - $call_began);
 
-	### insert a NEW record to the vicidial_closer_log table 
-	$stmt="UPDATE vicidial_closer_log set end_epoch='$STARTtime', length_in_sec='" . mysql_real_escape_string($call_length) . "', status='" . mysql_real_escape_string($status) . "', user='$PHP_AUTH_USER' where lead_id='" . mysql_real_escape_string($lead_id) . "' order by start_epoch desc limit 1;";
+	### insert a NEW record to the osdial_closer_log table 
+	$stmt="UPDATE osdial_closer_log set end_epoch='$STARTtime', length_in_sec='" . mysql_real_escape_string($call_length) . "', status='" . mysql_real_escape_string($status) . "', user='$PHP_AUTH_USER' where lead_id='" . mysql_real_escape_string($lead_id) . "' order by start_epoch desc limit 1;";
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 
-	### update the lead record in the vicidial_list table 
-	$stmt="UPDATE vicidial_list set status='" . mysql_real_escape_string($status) . "',first_name='" . mysql_real_escape_string($first_name) . "',last_name='" . mysql_real_escape_string($last_name) . "',address1='" . mysql_real_escape_string($address1) . "',address2='" . mysql_real_escape_string($address2) . "',address3='" . mysql_real_escape_string($address3) . "',city='" . mysql_real_escape_string($city) . "',state='" . mysql_real_escape_string($state) . "',province='" . mysql_real_escape_string($province) . "',postal_code='" . mysql_real_escape_string($postal_code) . "',country_code='" . mysql_real_escape_string($country_code) . "',alt_phone='" . mysql_real_escape_string($alt_phone) . "',email='" . mysql_real_escape_string($email) . "',security_phrase='" . mysql_real_escape_string($security) . "',comments='" . mysql_real_escape_string($comments) . "',user='$PHP_AUTH_USER' where lead_id='" . mysql_real_escape_string($lead_id) . "'";
+	### update the lead record in the osdial_list table 
+	$stmt="UPDATE osdial_list set status='" . mysql_real_escape_string($status) . "',first_name='" . mysql_real_escape_string($first_name) . "',last_name='" . mysql_real_escape_string($last_name) . "',address1='" . mysql_real_escape_string($address1) . "',address2='" . mysql_real_escape_string($address2) . "',address3='" . mysql_real_escape_string($address3) . "',city='" . mysql_real_escape_string($city) . "',state='" . mysql_real_escape_string($state) . "',province='" . mysql_real_escape_string($province) . "',postal_code='" . mysql_real_escape_string($postal_code) . "',country_code='" . mysql_real_escape_string($country_code) . "',alt_phone='" . mysql_real_escape_string($alt_phone) . "',email='" . mysql_real_escape_string($email) . "',security_phrase='" . mysql_real_escape_string($security) . "',comments='" . mysql_real_escape_string($comments) . "',user='$PHP_AUTH_USER' where lead_id='" . mysql_real_escape_string($lead_id) . "'";
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 
@@ -191,7 +191,7 @@ $call_length = ($STARTtime - $call_began);
 }
 else
 {
-	$stmt="SELECT count(*) from vicidial_list where lead_id='" . mysql_real_escape_string($lead_id) . "'";
+	$stmt="SELECT count(*) from osdial_list where lead_id='" . mysql_real_escape_string($lead_id) . "'";
 	$rslt=mysql_query($stmt, $link);
 	if ($DB) {echo "$stmt\n";}
 	$row=mysql_fetch_row($rslt);
@@ -200,7 +200,7 @@ else
 	if ($lead_count > 0)
 	{
 
-		$stmt="SELECT * from vicidial_list where lead_id='" . mysql_real_escape_string($lead_id) . "'";
+		$stmt="SELECT * from osdial_list where lead_id='" . mysql_real_escape_string($lead_id) . "'";
 		$rslt=mysql_query($stmt, $link);
 		if ($DB) {echo "$stmt\n";}
 		$row=mysql_fetch_row($rslt);
@@ -263,7 +263,7 @@ else
 		echo "<tr><td align=right>Comments : </td><td align=left><input type=text name=comments size=30 maxlength=255 value=\"$comments\"></td></tr>\n";
 			echo "<tr bgcolor=#B6D3FC><td align=right>Disposition: </td><td align=left><select size=1 name=status>\n";
 
-				$stmt="SELECT * from vicidial_statuses where selectable='Y' order by status";
+				$stmt="SELECT * from osdial_statuses where selectable='Y' order by status";
 				$rslt=mysql_query($stmt, $link);
 				$statuses_to_print = mysql_num_rows($rslt);
 				$statuses_list='';

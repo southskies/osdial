@@ -14,7 +14,7 @@ if ($ADD==999999 && $SUB==13) {
 		return $loadavg;
 	}
 
-	#$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1';";
+	#$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1';";
 	#if ($DB) { echo "|$stmt|\n"; }
 	#
 	#$rslt=mysql_query($stmt, $link);
@@ -31,7 +31,7 @@ if ($ADD==999999 && $SUB==13) {
 	$NOW_TIME = date("Y-m-d H:i:s");
 	$STARTtime = date("U");
 	
-	$stmt="select campaign_id from vicidial_campaigns where active='Y';";
+	$stmt="select campaign_id from osdial_campaigns where active='Y';";
 	$rslt=mysql_query($stmt, $link);
 	if (!isset($DB)) { $DB=0; }
 	if ($DB) { echo "$stmt\n"; }
@@ -91,12 +91,12 @@ if ($ADD==999999 && $SUB==13) {
 		echo "<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a> </font>\n";
 		
 		
-		$stmt = "select count(*) from vicidial_campaigns where campaign_id='$group' and campaign_allow_inbound='Y';";
+		$stmt = "select count(*) from osdial_campaigns where campaign_id='$group' and campaign_allow_inbound='Y';";
 		$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			$campaign_allow_inbound = $row[0];
 		
-		$stmt="select auto_dial_level,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,lead_filter_id,hopper_level,dial_method,adaptive_maximum_level,adaptive_dropped_percentage,adaptive_dl_diff_target,adaptive_intensity,available_only_ratio_tally,adaptive_latest_server_time,local_call_time,dial_timeout,dial_statuses from vicidial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
+		$stmt="select auto_dial_level,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,lead_filter_id,hopper_level,dial_method,adaptive_maximum_level,adaptive_dropped_percentage,adaptive_dl_diff_target,adaptive_intensity,available_only_ratio_tally,adaptive_latest_server_time,local_call_time,dial_timeout,dial_statuses from osdial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$DIALlev =	$row[0];
@@ -121,12 +121,12 @@ if ($ADD==999999 && $SUB==13) {
 		$DIALstatuses = (preg_replace("/ -$|^ /","",$DIALstatuses));
 		$DIALstatuses = (ereg_replace(' ',', ',$DIALstatuses));
 		
-		$stmt="select count(*) from vicidial_hopper where campaign_id='" . mysql_real_escape_string($group) . "';";
+		$stmt="select count(*) from osdial_hopper where campaign_id='" . mysql_real_escape_string($group) . "';";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$VDhop = $row[0];
 		
-		$stmt="select dialable_leads,calls_today,drops_today,drops_answers_today_pct,differential_onemin,agents_average_onemin,balance_trunk_fill,answers_today,status_category_1,status_category_count_1,status_category_2,status_category_count_2,status_category_3,status_category_count_3,status_category_4,status_category_count_4 from vicidial_campaign_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
+		$stmt="select dialable_leads,calls_today,drops_today,drops_answers_today_pct,differential_onemin,agents_average_onemin,balance_trunk_fill,answers_today,status_category_1,status_category_count_1,status_category_2,status_category_count_2,status_category_3,status_category_count_3,status_category_4,status_category_count_4 from osdial_campaign_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$DAleads =	$row[0];
@@ -153,7 +153,7 @@ if ($ADD==999999 && $SUB==13) {
 			$diffpctONEMIN = '0.00';
 		}
 		
-		$stmt="select sum(local_trunk_shortage) from vicidial_campaign_server_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
+		$stmt="select sum(local_trunk_shortage) from osdial_campaign_server_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$balanceSHORT = $row[0];
@@ -244,14 +244,14 @@ if ($ADD==999999 && $SUB==13) {
 		###### OUTBOUND CALLS
 		################################################################################
 		if ($campaign_allow_inbound > 0) {
-			$stmt="select closer_campaigns from vicidial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
+			$stmt="select closer_campaigns from osdial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			$closer_campaigns = preg_replace("/^ | -$/","",$row[0]);
 			$closer_campaigns = preg_replace("/ /","','",$closer_campaigns);
 			$closer_campaigns = "'$closer_campaigns'";
 		
-			$stmt="select status from vicidial_auto_calls where status NOT IN('XFER') and ( (call_type='IN' and campaign_id IN($closer_campaigns)) or (campaign_id='" . mysql_real_escape_string($group) . "' and call_type='OUT') );";
+			$stmt="select status from osdial_auto_calls where status NOT IN('XFER') and ( (call_type='IN' and campaign_id IN($closer_campaigns)) or (campaign_id='" . mysql_real_escape_string($group) . "' and call_type='OUT') );";
 		} else {
 			if ($group=='XXXX-ALL-ACTIVE-XXXX') { 
 				$groupSQL = '';
@@ -259,7 +259,7 @@ if ($ADD==999999 && $SUB==13) {
 				$groupSQL = " and campaign_id='" . mysql_real_escape_string($group) . "'";
 			}
 		
-			$stmt="select status from vicidial_auto_calls where status NOT IN('XFER') $groupSQL;";
+			$stmt="select status from osdial_auto_calls where status NOT IN('XFER') $groupSQL;";
 		}
 		$rslt=mysql_query($stmt, $link);
 		
@@ -316,7 +316,7 @@ if ($ADD==999999 && $SUB==13) {
 		$agent_paused=0;
 		$agent_total=0;
 		
-		$stmt="select extension,user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id from vicidial_live_agents where campaign_id='" . mysql_real_escape_string($group) . "';";
+		$stmt="select extension,user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id from osdial_live_agents where campaign_id='" . mysql_real_escape_string($group) . "';";
 		$rslt=mysql_query($stmt, $link);
 		if ($DB) {
 			echo "$stmt\n";

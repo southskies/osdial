@@ -40,13 +40,13 @@
 
 
 .PHONY : defaultconfig menuconfig .install .install-base install-web install install-base install-web install-docs install-asterisk-sample-config clean .install-complete .install-common install-asterisk-sample-configs .install-docs
-VDconfig := bin/VDconfig
+OSDconfig := bin/OSDconfig
 version  := $(shell cat version)
 
 HTTPDUSER := $(shell if [ "`id -u apache`" ]; then echo apache; elif [ "`id -u www-data`" ]; then echo www-data; else echo nobody; fi)
 
 menuconfig:
-	@sh $(VDconfig)
+	@sh $(OSDconfig)
 
 clean:
 	rm -f .agc.config
@@ -58,24 +58,24 @@ clean:
 	@echo "### Running configuration and just using defaults."
 	@echo "###"
 	@echo "########################################################"
-	@sh $(VDconfig) --no-menu
+	@sh $(OSDconfig) --no-menu
 
 defaultconfig: .agc_config
-	@sh $(VDconfig) --no-menu
+	@sh $(OSDconfig) --no-menu
 
 # The following, install, install-base and install-web shell-out to
-# run VDconfig which set the path variables and runs make with .install*
+# run OSDconfig which set the path variables and runs make with .install*
 install: .agc.config
-	@sh $(VDconfig) --env-make .$@
+	@sh $(OSDconfig) --env-make .$@
 
 install-base: .agc.config
-	@sh $(VDconfig) --env-make .$@
+	@sh $(OSDconfig) --env-make .$@
 
 install-web: .agc.config
-	@sh $(VDconfig) --env-make .$@
+	@sh $(OSDconfig) --env-make .$@
 
 install-docs: .agc.config
-	@sh $(VDconfig) --env-make .$@
+	@sh $(OSDconfig) --env-make .$@
 
 
 # The following, .install, .install-base and .install-web are the actual
@@ -83,19 +83,19 @@ install-docs: .agc.config
 .install: .install-base .install-web install-docs .install-common .install-complete
 
 .install-common:
-	@echo "Installing VDconfig script..."
+	@echo "Installing OSDconfig script..."
 	@install -d -m 755 $(DESTDIR)$(PATHhome)
-	@install -p -m 755 $(VDconfig) $(DESTDIR)$(PATHhome)/VDconfig
+	@install -p -m 755 $(OSDconfig) $(DESTDIR)$(PATHhome)/OSDconfig
 	@install -d -m 755 $(DESTDIR)/usr/bin
-	@ln -fs $(PATHhome)/VDconfig $(DESTDIR)/usr/bin/VDconfig
-	@echo "Installing astGUIclient configuration to $(DESTDIR)/etc/astguiclient.conf..."
+	@ln -fs $(PATHhome)/OSDconfig $(DESTDIR)/usr/bin/OSDconfig
+	@echo "Installing OSDial configuration to $(DESTDIR)/etc/osdial.conf..."
 	@install -d -m 755 $(DESTDIR)/etc
-	@install -p -m 644 ./.agc.config $(DESTDIR)/etc/astguiclient.conf
+	@install -p -m 644 ./.osdial.config $(DESTDIR)/etc/osdial.conf
 	@echo "Creating log directory $(DESTDIR)$(PATHlogs)..."
 	@install -d -m 755 $(DESTDIR)$(PATHlogs)
 
 .install-base: .install-common
-	@echo "Installing VICIDIAL base components..."
+	@echo "Installing OSDial base components..."
 	@install -d -m 755 $(DESTDIR)$(PATHhome)
 	@install -d -m 755 $(DESTDIR)$(PATHhome)/libs
 	@install -d -m 755 $(DESTDIR)$(PATHhome)/libs/Asterisk
@@ -117,33 +117,41 @@ install-docs: .agc.config
 	
 .install-web: .install-common
 	@echo "Installing User-Interface (web) in $(DESTDIR)$(PATHweb)..."
-	#@if [ ! "`id -u $(HTTPDUSER)`" ]; then \
-	#	echo "Creating $(HTTPDUSER) user account..."; \
-	#	groupadd $(HTTPDUSER); \
-	#	useradd -M -d $(PATHweb) -s /bin/nologin -g $(HTTPDUSER) $(HTTPDUSER); \
-	#fi
-	#@install -o $(HTTPDUSER) -g $(HTTPDUSER) -d -m 777 $(DESTDIR)$(PATHweb)/agc
-	#@install -o $(HTTPDUSER) -g $(HTTPDUSER) -d -m 777 $(DESTDIR)$(PATHweb)/agc/images
-	#@install -o $(HTTPDUSER) -g $(HTTPDUSER) -d -m 777 $(DESTDIR)$(PATHweb)/vicidial
-	#@install -o $(HTTPDUSER) -g $(HTTPDUSER) -d -m 777 $(DESTDIR)$(PATHweb)/vicidial/ploticus
-	#@install -o $(HTTPDUSER) -g $(HTTPDUSER) -d -m 777 $(DESTDIR)$(PATHweb)/vicidial/agent_reports
-	#@install -o $(HTTPDUSER) -g $(HTTPDUSER) -d -m 777 $(DESTDIR)$(PATHweb)/vicidial/server_reports
-	#@install -o $(HTTPDUSER) -g $(HTTPDUSER) -p -m 755 ./www/agc/*.php $(DESTDIR)$(PATHweb)/agc
-	#@install -o $(HTTPDUSER) -g $(HTTPDUSER) -p -m 644 ./www/agc/images/* $(DESTDIR)$(PATHweb)/agc/images
-	#@install -o $(HTTPDUSER) -g $(HTTPDUSER) -p -m 755 ./www/vicidial/*.php $(DESTDIR)$(PATHweb)/vicidial
-	#@install -o $(HTTPDUSER) -g $(HTTPDUSER) -p -m 755 ./www/vicidial/*.pl $(DESTDIR)$(PATHweb)/vicidial
-	#@install -o $(HTTPDUSER) -g $(HTTPDUSER) -p -m 644 ./www/vicidial/*.gif $(DESTDIR)$(PATHweb)/vicidial
-	@install -d -m 777 $(DESTDIR)$(PATHweb)/agc
-	@install -d -m 777 $(DESTDIR)$(PATHweb)/agc/images
-	@install -d -m 777 $(DESTDIR)$(PATHweb)/vicidial
-	@install -d -m 777 $(DESTDIR)$(PATHweb)/vicidial/ploticus
-	@install -d -m 777 $(DESTDIR)$(PATHweb)/vicidial/agent_reports
-	@install -d -m 777 $(DESTDIR)$(PATHweb)/vicidial/server_reports
-	@install -p -m 755 ./www/agc/*.php $(DESTDIR)$(PATHweb)/agc
-	@install -p -m 644 ./www/agc/images/* $(DESTDIR)$(PATHweb)/agc/images
-	@install -p -m 755 ./www/vicidial/*.php $(DESTDIR)$(PATHweb)/vicidial
-	@install -p -m 755 ./www/vicidial/*.pl $(DESTDIR)$(PATHweb)/vicidial
-	@install -p -m 644 ./www/vicidial/*.gif $(DESTDIR)$(PATHweb)/vicidial
+	@install -d -m 777 $(DESTDIR)$(PATHweb)/agent
+	@install -d -m 777 $(DESTDIR)$(PATHweb)/agent/images
+	@install -d -m 777 $(DESTDIR)$(PATHweb)/agent/include
+	@install -d -m 777 $(DESTDIR)$(PATHweb)/admin
+	@install -d -m 777 $(DESTDIR)$(PATHweb)/admin/ploticus
+	@install -d -m 777 $(DESTDIR)$(PATHweb)/admin/agent_reports
+	@install -d -m 777 $(DESTDIR)$(PATHweb)/admin/server_reports
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/admin
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/campaigns
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/filters
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/ingroups
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/lists
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/remoteagent
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/reports
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/scripts
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/usergroups
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/users
+	@install -p -m 644 ./www/agent/*.php $(DESTDIR)$(PATHweb)/agent
+	@install -p -m 644 ./www/agent/images/* $(DESTDIR)$(PATHweb)/agent/images
+	@install -p -m 644 ./www/agent/include/* $(DESTDIR)$(PATHweb)/agent/include
+	@install -p -m 644 ./www/admin/*.php $(DESTDIR)$(PATHweb)/admin
+	@install -p -m 755 ./www/admin/*.pl $(DESTDIR)$(PATHweb)/admin
+	@install -p -m 644 ./www/admin/*.gif $(DESTDIR)$(PATHweb)/admin
+	@install -p -m 644 ./www/admin/include/* $(DESTDIR)$(PATHweb)/admin/include
+	@install -p -m 644 ./www/admin/include/content/admin/* $(DESTDIR)$(PATHweb)/admin/include/content/admin
+	@install -p -m 644 ./www/admin/include/content/campaigns/* $(DESTDIR)$(PATHweb)/admin/include/content/campaigns
+	@install -p -m 644 ./www/admin/include/content/filters/* $(DESTDIR)$(PATHweb)/admin/include/content/filters
+	@install -p -m 644 ./www/admin/include/content/ingroups/* $(DESTDIR)$(PATHweb)/admin/include/content/ingroups
+	@install -p -m 644 ./www/admin/include/content/lists/* $(DESTDIR)$(PATHweb)/admin/include/content/lists
+	@install -p -m 644 ./www/admin/include/content/reports/* $(DESTDIR)$(PATHweb)/admin/include/content/reports
+	@install -p -m 644 ./www/admin/include/content/scripts/* $(DESTDIR)$(PATHweb)/admin/include/content/scripts
+	@install -p -m 644 ./www/admin/include/content/usergroups/* $(DESTDIR)$(PATHweb)/admin/include/content/usergroups
+	@install -p -m 644 ./www/admin/include/content/users/* $(DESTDIR)$(PATHweb)/admin/include/content/users
 
 install-asterisk-sample-configs: install-asterisk-sample-config
 
@@ -173,7 +181,7 @@ install-asterisk-sample-config:
 	@echo "################################################################################"
 	@echo "##                                                                           ###"
 	@echo "##                                                                           ###"
-	@echo "##                           VICIDIAL-astGUIclient                           ###"
+	@echo "##                                  OSDial                                   ###"
 	@echo "##                           INSTALLATION COMPLETE                           ###"
 	@echo "##                                                                           ###"
 	@echo "##      Run 'make install-asterisk-sample-config' to install the sample      ###"
@@ -184,5 +192,5 @@ install-asterisk-sample-config:
 	@echo "##          Please continue with the steps in 'SCRATH_INSTALL.txt'.          ###"
 	@echo "##                                                                           ###"
 	@echo "##                                                                           ###"
-	@echo "## You can run '/usr/bin/VDconfig' to modify the configuration at any time.  ###"
+	@echo "## You can run '/usr/bin/OSDconfig' to modify the configuration at any time.  ###"
 	@echo "################################################################################"

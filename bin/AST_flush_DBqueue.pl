@@ -3,8 +3,8 @@
 # AST_flush_DBqueue.pl version 0.3   *DBI-version*
 #
 # DESCRIPTION:
-# - clears out mysql records for this server for the ACQS vicidial_manager table
-# - optimizes tables used frequently by VICIDIAL
+# - clears out mysql records for this server for the ACQS osdial_manager table
+# - optimizes tables used frequently by OSDIAL
 #
 # It is recommended that you run this program on the local Asterisk machine
 #
@@ -173,12 +173,12 @@ if ($SYSLOG)
 else
 	{$flush_time = $SQLdate_NEG_halfhour;}
 
-	$stmtA = "delete from vicidial_manager where (server_ip='$server_ip' and entry_date < '$flush_time') or entry_date < '$SQLdate_NEG_6hour';";
+	$stmtA = "delete from osdial_manager where (server_ip='$server_ip' and entry_date < '$flush_time') or entry_date < '$SQLdate_NEG_6hour';";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) {	$affected_rows = $dbhA->do($stmtA);}
-		if (!$Q) {print " - vicidial_manager flush\n";}
+		if (!$Q) {print " - osdial_manager flush\n";}
 
-        $stmtA = "optimize table vicidial_manager;";
+        $stmtA = "optimize table osdial_manager;";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) 
 				 {
@@ -189,10 +189,10 @@ else
    					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
 					$sthA->finish();
 				 }
-        if (!$Q) {print " - optimize vicidial_manager          \n";}
+        if (!$Q) {print " - optimize osdial_manager          \n";}
 
 
-        $stmtA = "optimize table vicidial_live_agents;";
+        $stmtA = "optimize table osdial_live_agents;";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) {
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -202,10 +202,10 @@ else
    					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}             
 					$sthA->finish();
 				 }
-        if (!$Q) {print " - optimize vicidial_live_agents          \n";}
+        if (!$Q) {print " - optimize osdial_live_agents          \n";}
 
 
-        $stmtA = "optimize table vicidial_auto_calls;";
+        $stmtA = "optimize table osdial_auto_calls;";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) {
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -216,10 +216,10 @@ else
    					 $rec_countY++;
 					$sthA->finish();
 				 }
-        if (!$Q) {print " - optimize vicidial_auto_calls          \n";}
+        if (!$Q) {print " - optimize osdial_auto_calls          \n";}
 
 
-        $stmtA = "optimize table vicidial_hopper;";
+        $stmtA = "optimize table osdial_hopper;";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) {
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -229,7 +229,7 @@ else
    					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
 					$sthA->finish();
 				 }
-        if (!$Q) {print " - optimize vicidial_hopper          \n";}
+        if (!$Q) {print " - optimize osdial_hopper          \n";}
 
 
 

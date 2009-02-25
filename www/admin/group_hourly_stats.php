@@ -28,7 +28,7 @@ if (isset($_GET["SUBMIT"]))				{$SUBMIT=$_GET["SUBMIT"];}
 $PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);
 $PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
 
-	$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1';";
+	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1';";
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -36,7 +36,7 @@ $PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICI-PROJECTS\"");
+    Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
@@ -53,7 +53,7 @@ if (!isset($date_with_hour)) {$date_with_hour = $date_with_hour_default;}
 if (!isset($begin_date)) {$begin_date = $TODAY;}
 if (!isset($end_date)) {$end_date = $TODAY;}
 
-	$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 7;";
+	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 7;";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$auth=$row[0];
@@ -65,7 +65,7 @@ $browser = getenv("HTTP_USER_AGENT");
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICI-PROJECTS\"");
+    Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
@@ -78,20 +78,20 @@ $browser = getenv("HTTP_USER_AGENT");
 		{
 		$office_no=strtoupper($PHP_AUTH_USER);
 		$password=strtoupper($PHP_AUTH_PW);
-			$stmt="SELECT full_name from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
+			$stmt="SELECT full_name from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			$LOGfullname=$row[0];
-		fwrite ($fp, "VICIDIAL|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|$LOGfullname|\n");
+		fwrite ($fp, "OSDIAL|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|$LOGfullname|\n");
 		fclose($fp);
 		}
 	else
 		{
-		fwrite ($fp, "VICIDIAL|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|\n");
+		fwrite ($fp, "OSDIAL|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|\n");
 		fclose($fp);
 		}
 
-#	$stmt="SELECT full_name from vicidial_users where user='$user';";
+#	$stmt="SELECT full_name from osdial_users where user='$user';";
 #	$rslt=mysql_query($stmt, $link);
 #	$row=mysql_fetch_row($rslt);
 #	$full_name = $row[0];
@@ -104,14 +104,14 @@ $browser = getenv("HTTP_USER_AGENT");
 ?>
 <html>
 <head>
-<title>VICIDIAL ADMIN: Group Hourly Stats</title>
+<title>OSDIAL ADMIN: Group Hourly Stats</title>
 <?
 echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
 ?>
 </head>
 <BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 <CENTER>
-<TABLE WIDTH=620 BGCOLOR=#D9E6FE cellpadding=2 cellspacing=0><TR BGCOLOR=#015B91><TD ALIGN=LEFT><? echo "<a href=\"./admin.php?ADD=100000\">" ?><FONT FACE="ARIAL,HELVETICA" COLOR=WHITE SIZE=2><B> &nbsp; VICIDIAL ADMIN</a>: Group Hourly Stats <? echo $group ?></TD><TD ALIGN=RIGHT><FONT FACE="ARIAL,HELVETICA" COLOR=WHITE SIZE=2><B><? echo date("l F j, Y G:i:s A") ?> &nbsp; </TD></TR>
+<TABLE WIDTH=620 BGCOLOR=#D9E6FE cellpadding=2 cellspacing=0><TR BGCOLOR=#015B91><TD ALIGN=LEFT><? echo "<a href=\"./admin.php?ADD=100000\">" ?><FONT FACE="ARIAL,HELVETICA" COLOR=WHITE SIZE=2><B> &nbsp; OSDIAL ADMIN</a>: Group Hourly Stats <? echo $group ?></TD><TD ALIGN=RIGHT><FONT FACE="ARIAL,HELVETICA" COLOR=WHITE SIZE=2><B><? echo date("l F j, Y G:i:s A") ?> &nbsp; </TD></TR>
 
 
 
@@ -120,7 +120,7 @@ echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n"
 
 if ( ($group) and ($status) and ($date_with_hour) )
 {
-$stmt="SELECT user,full_name from vicidial_users where user_group = '" . mysql_real_escape_string($group) . "' order by full_name desc;";
+$stmt="SELECT user,full_name from osdial_users where user_group = '" . mysql_real_escape_string($group) . "' order by full_name desc;";
 	if ($DB) {echo "$stmt\n";}
 $rslt=mysql_query($stmt, $link);
 $tsrs_to_print = mysql_num_rows($rslt);
@@ -136,19 +136,19 @@ $tsrs_to_print = mysql_num_rows($rslt);
 	$o=0;
 	while($o < $tsrs_to_print)
 	{
-		$stmt="select count(*) from vicidial_log where call_date >= '" . mysql_real_escape_string($date_with_hour) . ":00:00' and  call_date <= '" . mysql_real_escape_string($date_with_hour) . ":59:59' and user='$VDuser[$o]';";
+		$stmt="select count(*) from osdial_log where call_date >= '" . mysql_real_escape_string($date_with_hour) . ":00:00' and  call_date <= '" . mysql_real_escape_string($date_with_hour) . ":59:59' and user='$VDuser[$o]';";
 			if ($DB) {echo "$stmt\n";}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$VDtotal[$o] = "$row[0]";
 
-		$stmt="select count(*) from vicidial_log where call_date >= '" . mysql_real_escape_string($date_no_hour) . " 00:00:00' and  call_date <= '" . mysql_real_escape_string($date_no_hour) . " 23:59:59' and user='$VDuser[$o]' and status='" . mysql_real_escape_string($status) . "';";
+		$stmt="select count(*) from osdial_log where call_date >= '" . mysql_real_escape_string($date_no_hour) . " 00:00:00' and  call_date <= '" . mysql_real_escape_string($date_no_hour) . " 23:59:59' and user='$VDuser[$o]' and status='" . mysql_real_escape_string($status) . "';";
 			if ($DB) {echo "$stmt\n";}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$VDday[$o] = "$row[0]";
 
-		$stmt="select count(*) from vicidial_log where call_date >= '" . mysql_real_escape_string($date_with_hour) . ":00:00' and  call_date <= '" . mysql_real_escape_string($date_with_hour) . ":59:59' and user='$VDuser[$o]' and status='" . mysql_real_escape_string($status) . "';";
+		$stmt="select count(*) from osdial_log where call_date >= '" . mysql_real_escape_string($date_with_hour) . ":00:00' and  call_date <= '" . mysql_real_escape_string($date_with_hour) . ":59:59' and user='$VDuser[$o]' and status='" . mysql_real_escape_string($status) . "';";
 			if ($DB) {echo "$stmt\n";}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
@@ -201,7 +201,7 @@ echo "<br><br>\n";
 	echo "<input type=hidden name=DB value=$DB>\n";
 	echo "group: <select size=1 name=group>\n";
 
-		$stmt="SELECT * from vicidial_user_groups order by user_group";
+		$stmt="SELECT * from osdial_user_groups order by user_group";
 		$rslt=mysql_query($stmt, $link);
 		$groups_to_print = mysql_num_rows($rslt);
 		$o=0;

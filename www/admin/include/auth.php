@@ -12,7 +12,7 @@ if ($force_logout) {
 	exit;
 }
 
-$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 7;";
+$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 7;";
 if ($DB) {echo "|$stmt|\n";}
 if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
 $rslt=mysql_query($stmt, $link);
@@ -40,7 +40,7 @@ $browser = getenv("HTTP_USER_AGENT");
 		{
 		$office_no=strtoupper($PHP_AUTH_USER);
 		$password=strtoupper($PHP_AUTH_PW);
-			$stmt="SELECT * from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW';";
+			$stmt="SELECT * from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW';";
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			$LOGfullname				=$row[3];
@@ -72,7 +72,7 @@ $browser = getenv("HTTP_USER_AGENT");
 			$LOGmodify_servers			=$row[42];
 			$LOGview_reports			=$row[43];
 
-			$stmt="SELECT allowed_campaigns from vicidial_user_groups where user_group='$LOGuser_group';";
+			$stmt="SELECT allowed_campaigns from osdial_user_groups where user_group='$LOGuser_group';";
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			$LOGallowed_campaigns		=$row[0];

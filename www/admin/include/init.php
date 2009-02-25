@@ -6,7 +6,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 
 	#TODO: functionalize
 	##### BEGIN get campaigns listing for rankings #####
-	$stmt="SELECT campaign_id,campaign_name from vicidial_campaigns order by campaign_id";
+	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
 	$rslt=mysql_query($stmt, $link);
 	$campaigns_to_print = mysql_num_rows($rslt);
 	$campaigns_list='';
@@ -26,7 +26,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 	$o=0;
 	while ($campaigns_to_print > $o)
 		{
-		$stmt="SELECT campaign_rank,calls_today from vicidial_campaign_agents where user='$user' and campaign_id='$campaign_id_values[$o]'";
+		$stmt="SELECT campaign_rank,calls_today from osdial_campaign_agents where user='$user' and campaign_id='$campaign_id_values[$o]'";
 		$rslt=mysql_query($stmt, $link);
 		$ranks_to_print = mysql_num_rows($rslt);
 		if ($ranks_to_print > 0)
@@ -44,16 +44,16 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 
 			if ($ranks_to_print > 0)
 				{
-				$stmt="UPDATE vicidial_campaign_agents set campaign_rank='$campaign_rank', campaign_weight='$campaign_rank' where campaign_id='$campaign_id_values[$o]' and user='$user';";
+				$stmt="UPDATE osdial_campaign_agents set campaign_rank='$campaign_rank', campaign_weight='$campaign_rank' where campaign_id='$campaign_id_values[$o]' and user='$user';";
 				$rslt=mysql_query($stmt, $link);
 				}
 			else
 				{
-				$stmt="INSERT INTO vicidial_campaign_agents set campaign_rank='$campaign_rank', campaign_weight='$campaign_rank', campaign_id='$campaign_id_values[$o]', user='$user';";
+				$stmt="INSERT INTO osdial_campaign_agents set campaign_rank='$campaign_rank', campaign_weight='$campaign_rank', campaign_id='$campaign_id_values[$o]', user='$user';";
 				$rslt=mysql_query($stmt, $link);
 				}
 
-			$stmt="UPDATE vicidial_live_agents set campaign_weight='$campaign_rank' where campaign_id='$campaign_id_values[$o]' and user='$user';";
+			$stmt="UPDATE osdial_live_agents set campaign_weight='$campaign_rank' where campaign_id='$campaign_id_values[$o]' and user='$user';";
 			$rslt=mysql_query($stmt, $link);
 			}
 		else {$campaign_rank = $SELECT_campaign_rank;}
@@ -64,12 +64,12 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 			{$bgcolor='bgcolor="#C1D6DB"';}
 
 		# disable non user-group allowable campaign ranks
-		$stmt="SELECT user_group from vicidial_users where user='$user';";
+		$stmt="SELECT user_group from osdial_users where user='$user';";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$Ruser_group =	$row[0];
 
-		$stmt="SELECT allowed_campaigns from vicidial_user_groups where user_group='$Ruser_group';";
+		$stmt="SELECT allowed_campaigns from osdial_user_groups where user_group='$Ruser_group';";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$allowed_campaigns =	$row[0];
@@ -115,7 +115,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 	$xfer_groupsSQL='';
 	if ( (($ADD>20) and ($ADD<70)) and ($ADD!=41) )
 	{
-	$stmt="SELECT closer_campaigns,xfer_groups from vicidial_campaigns where campaign_id='$campaign_id';";
+	$stmt="SELECT closer_campaigns,xfer_groups from osdial_campaigns where campaign_id='$campaign_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$closer_campaigns =	$row[0];
@@ -144,7 +144,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 
 	if ( (($ADD==31111) or ($ADD==31111)) and (count($groups)<1) )
 	{
-	$stmt="SELECT closer_campaigns from vicidial_remote_agents where remote_agent_id='$remote_agent_id';";
+	$stmt="SELECT closer_campaigns from osdial_remote_agents where remote_agent_id='$remote_agent_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$closer_campaigns =	$row[0];
@@ -154,7 +154,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 
 	if ($ADD==3)
 	{
-	$stmt="SELECT closer_campaigns from vicidial_users where user='$user';";
+	$stmt="SELECT closer_campaigns from osdial_users where user='$user';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$closer_campaigns =	$row[0];
@@ -162,7 +162,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 	$groups = explode(" ", $closer_campaigns);
 	}
 
-	$stmt="SELECT group_id,group_name from vicidial_inbound_groups order by group_id";
+	$stmt="SELECT group_id,group_name from osdial_inbound_groups order by group_id";
 	$rslt=mysql_query($stmt, $link);
 	$groups_to_print = mysql_num_rows($rslt);
 	$groups_list='';
@@ -182,7 +182,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 	$o=0;
 	while ($groups_to_print > $o)
 		{
-		$stmt="SELECT group_rank,calls_today from vicidial_inbound_group_agents where user='$user' and group_id='$group_id_values[$o]'";
+		$stmt="SELECT group_rank,calls_today from osdial_inbound_group_agents where user='$user' and group_id='$group_id_values[$o]'";
 		$rslt=mysql_query($stmt, $link);
 		$ranks_to_print = mysql_num_rows($rslt);
 		if ($ranks_to_print > 0)
@@ -200,16 +200,16 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 
 			if ($ranks_to_print > 0)
 				{
-				$stmt="UPDATE vicidial_inbound_group_agents set group_rank='$group_rank', group_weight='$group_rank' where group_id='$group_id_values[$o]' and user='$user';";
+				$stmt="UPDATE osdial_inbound_group_agents set group_rank='$group_rank', group_weight='$group_rank' where group_id='$group_id_values[$o]' and user='$user';";
 				$rslt=mysql_query($stmt, $link);
 				}
 			else
 				{
-				$stmt="INSERT INTO vicidial_inbound_group_agents set group_rank='$group_rank', group_weight='$group_rank', group_id='$group_id_values[$o]', user='$user';";
+				$stmt="INSERT INTO osdial_inbound_group_agents set group_rank='$group_rank', group_weight='$group_rank', group_id='$group_id_values[$o]', user='$user';";
 				$rslt=mysql_query($stmt, $link);
 				}
 
-			$stmt="UPDATE vicidial_live_inbound_agents set group_weight='$group_rank' where group_id='$group_id_values[$o]' and user='$user';";
+			$stmt="UPDATE osdial_live_inbound_agents set group_weight='$group_rank' where group_id='$group_id_values[$o]' and user='$user';";
 			$rslt=mysql_query($stmt, $link);
 			}
 		else {$group_rank = $SELECT_group_rank;}
@@ -273,7 +273,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 	{
 		if ( ($ADD==211111) or ($ADD==311111) or ($ADD==511111) or ($ADD==611111) )
 		{
-		$stmt="SELECT allowed_campaigns from vicidial_user_groups where user_group='$user_group';";
+		$stmt="SELECT allowed_campaigns from osdial_user_groups where user_group='$user_group';";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$allowed_campaigns =	$row[0];
@@ -295,7 +295,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 			}
 	$campaigns_list.="> ALL-CAMPAIGNS - AGENTS CAN VIEW ANY CAMPAIGN</B><BR>\n";
 
-	$stmt="SELECT campaign_id,campaign_name from vicidial_campaigns order by campaign_id";
+	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
 	$rslt=mysql_query($stmt, $link);
 	$campaigns_to_print = mysql_num_rows($rslt);
 

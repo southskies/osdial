@@ -3,8 +3,8 @@
 # AST_cleanup_agent_log.pl version 0.3   *** DBI version ***
 #
 # DESCRIPTION:
-# to be run frequently to clean up the vicidial_agent_log to fix erroneous time 
-# calculations due to out-of-order vicidial_agent_log updates. This happens 0.5%
+# to be run frequently to clean up the osdial_agent_log to fix erroneous time 
+# calculations due to out-of-order osdial_agent_log updates. This happens 0.5%
 # of the time in our test setups, but that leads to inaccurate time logs so we
 # wrote this script to fix the miscalculations
 #
@@ -113,7 +113,7 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 
 	if ($DB) {print " - cleaning up pause time\n";}
 	### Grab any pause time record greater than 43999
-	$stmtA = "SELECT agent_log_id,pause_epoch,wait_epoch from vicidial_agent_log where pause_sec>43999;";
+	$stmtA = "SELECT agent_log_id,pause_epoch,wait_epoch from osdial_agent_log where pause_sec>43999;";
 		if ($DBX) {print "$stmtA\n";}
 	#$dbhA->query("$stmtA");
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -143,7 +143,7 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 	$h=0;
 	while ($h < $i)
 		{
-		$stmtA = "UPDATE vicidial_agent_log set pause_sec='$pause_sec[$h]' where agent_log_id='$agent_log_id[$h]';";
+		$stmtA = "UPDATE osdial_agent_log set pause_sec='$pause_sec[$h]' where agent_log_id='$agent_log_id[$h]';";
 			if($DBX){print STDERR "\n|$stmtA|\n";}
 		if (!$TEST)	{$affected_rows = $dbhA->do($stmtA); }
 		$h++;
@@ -157,7 +157,7 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 	if ($DBX) {print "\n\n";}
 	if ($DB) {print " - cleaning up wait time\n";}
 	### Grab any pause time record greater than 43999
-	$stmtA = "SELECT agent_log_id,wait_epoch,talk_epoch from vicidial_agent_log where wait_sec>43999;";
+	$stmtA = "SELECT agent_log_id,wait_epoch,talk_epoch from osdial_agent_log where wait_sec>43999;";
 		if ($DBX) {print "$stmtA\n";}
 	
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -186,7 +186,7 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 	$h=0;
 	while ($h < $i)
 		{
-		$stmtA = "UPDATE vicidial_agent_log set wait_sec='$wait_sec[$h]' where agent_log_id='$agent_log_id[$h]';";
+		$stmtA = "UPDATE osdial_agent_log set wait_sec='$wait_sec[$h]' where agent_log_id='$agent_log_id[$h]';";
 			if($DBX){print STDERR "\n|$stmtA|\n";}
 		if (!$TEST)	{$affected_rows = $dbhA->do($stmtA); }
 		$h++;
@@ -200,7 +200,7 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 	if ($DBX) {print "\n\n";}
 	if ($DB) {print " - cleaning up talk time\n";}
 	### Grab any pause time record greater than 43999
-	$stmtA = "SELECT agent_log_id,talk_epoch,dispo_epoch from vicidial_agent_log where talk_sec>43999;";
+	$stmtA = "SELECT agent_log_id,talk_epoch,dispo_epoch from osdial_agent_log where talk_sec>43999;";
 		if ($DBX) {print "$stmtA\n";}
 
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -229,7 +229,7 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 	$h=0;
 	while ($h < $i)
 		{
-		$stmtA = "UPDATE vicidial_agent_log set talk_sec='$talk_sec[$h]' where agent_log_id='$agent_log_id[$h]';";
+		$stmtA = "UPDATE osdial_agent_log set talk_sec='$talk_sec[$h]' where agent_log_id='$agent_log_id[$h]';";
 			if($DBX){print STDERR "|$stmtA|\n";}
 		if (!$TEST)	{$affected_rows = $dbhA->do($stmtA);  }
 		$h++;
@@ -243,7 +243,7 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 
 	if ($DBX) {print "\n\n";}
 	if ($DB) {print " - cleaning up dispo time\n";}
-		$stmtA = "UPDATE vicidial_agent_log set dispo_sec='0' where dispo_sec>43999;";
+		$stmtA = "UPDATE osdial_agent_log set dispo_sec='0' where dispo_sec>43999;";
 			if($DBX){print STDERR "|$stmtA|\n";}
 	if (!$TEST)
 		{

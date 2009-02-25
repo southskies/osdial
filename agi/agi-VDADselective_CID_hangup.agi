@@ -6,7 +6,7 @@
 #
 # You need to put lines similar to those below in your extensions.conf file:
 #
-# ;outbound VICIDIAL calls:
+# ;outbound osdial calls:
 #exten => 8352,1,AGI(agi-VDADselective_CID_hangup.agi,${EXTEN})
 #exten => 8352,2,Playback(85100001)
 #exten => 8352,3,Hangup
@@ -138,7 +138,7 @@ $CIDlead_id = $calleridname;
 $CIDlead_id = substr($CIDlead_id, 11, 9);
 $CIDlead_id = ($CIDlead_id + 0);
 
-$stmtA = "SELECT phone_number FROM vicidial_list where lead_id = '$CIDlead_id' limit 1;";
+$stmtA = "SELECT phone_number FROM osdial_list where lead_id = '$CIDlead_id' limit 1;";
 	if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;

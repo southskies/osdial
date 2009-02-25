@@ -235,7 +235,7 @@ else
 	$config_finished='NO';
 	while ($config_finished =~/NO/)
 		{
-		print "\nSTARTING SERVER IP ADDRESS CHANGE FOR VICIDIAL...\n";
+		print "\nSTARTING SERVER IP ADDRESS CHANGE FOR OSDIAL...\n";
 
 		##### BEGIN old_server_ip propmting and check #####
 		$continue='NO';
@@ -344,18 +344,18 @@ $stmtA = "UPDATE conferences SET server_ip='$VARserver_ip' where server_ip='$VAR
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
-print "  Updating vicidial_conferences table...\n";
-$stmtA = "UPDATE vicidial_conferences SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+print "  Updating osdial_conferences table...\n";
+$stmtA = "UPDATE osdial_conferences SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
-print "  Updating vicidial_stations table...\n";
-$stmtA = "UPDATE vicidial_stations SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+print "  Updating osdial_stations table...\n";
+$stmtA = "UPDATE osdial_stations SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
-print "  Updating vicidial_remote_agents table...\n";
-$stmtA = "UPDATE vicidial_remote_agents SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+print "  Updating osdial_remote_agents table...\n";
+$stmtA = "UPDATE osdial_remote_agents SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
@@ -364,8 +364,8 @@ $stmtA = "UPDATE phone_favorites SET server_ip='$VARserver_ip' where server_ip='
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
-print "  Updating vicidial_server_trunks table...\n";
-$stmtA = "UPDATE vicidial_server_trunks SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+print "  Updating osdial_server_trunks table...\n";
+$stmtA = "UPDATE osdial_server_trunks SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
@@ -389,7 +389,7 @@ if( $VARserver_ip =~ m/(\S+)\.(\S+)\.(\S+)\.(\S+)/ )
 	$VARremDIALstr = "$a$S$b$S$c$S$d";
 	}
 
-print "\nSERVER IP ADDRESS CHANGE FOR VICIDIAL FINISHED!\n";
+print "\nSERVER IP ADDRESS CHANGE FOR OSDIAL FINISHED!\n";
 print "\nPlease remember to change your extensions.conf entries for the new IP address:\n";
 print "exten => _$VARremDIALstr*8600XXX,1,Goto(default,${EXTEN:16},1)\n";
 print "exten => _$VARremDIALstr*8600XXX*.,1,Goto(default,${EXTEN:16},1)\n";

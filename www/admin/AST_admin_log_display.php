@@ -35,7 +35,7 @@ $build = '60620-1044';
 
 $STARTtime = date("U");
 
-	$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 8 and view_reports='1';";
+	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 8 and view_reports='1';";
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -48,7 +48,7 @@ $browser = getenv("HTTP_USER_AGENT");
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICI-PROJECTS\"");
+    Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
@@ -60,16 +60,16 @@ $browser = getenv("HTTP_USER_AGENT");
 		{
 		$office_no=strtoupper($PHP_AUTH_USER);
 		$password=strtoupper($PHP_AUTH_PW);
-			$stmt="SELECT full_name from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
+			$stmt="SELECT full_name from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			$LOGfullname=$row[0];
-		fwrite ($fp, "VICIDIAL|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|$LOGfullname|\n");
+		fwrite ($fp, "OSDIAL|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|$LOGfullname|\n");
 		fclose($fp);
 		}
 	else
 		{
-		fwrite ($fp, "VICIDIAL|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|\n");
+		fwrite ($fp, "OSDIAL|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|\n");
 		fclose($fp);
 		}
 	}
@@ -108,8 +108,7 @@ echo "<PRE><FONT SIZE=2>\n\n";
 
 echo "OSDIAL ADMIN CHANGE LOG                             $NOW_TIME\n";
 
-#passthru("grep $Gquery_date /home/www/htdocs/vicidial/admin_changes_log.txt");
-passthru("grep $Gquery_date $WeBServeRRooT/vicidial/admin_changes_log.txt");
+passthru("grep $Gquery_date $WeBServeRRooT/admin/admin_changes_log.txt");
 
 
 ?>

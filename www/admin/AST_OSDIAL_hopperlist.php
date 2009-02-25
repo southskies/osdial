@@ -1,5 +1,5 @@
 <? 
-### AST_VICIDIAL_hopperlist.php
+### AST_OSDIAL_hopperlist.php
 ### 
 ### Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 ###
@@ -7,7 +7,7 @@
 #
 # 60619-1654 - Added variable filtering to eliminate SQL injection attack threat
 #            - Added required user/pass to gain access to this page
-# 70115-1614 - Added ALT field for vicidial_hopper alt_dial column
+# 70115-1614 - Added ALT field for osdial_hopper alt_dial column
 # 71029-0852 - Added list_id to the output
 # 71030-2118 - Added priority to display
 #
@@ -27,7 +27,7 @@ if (isset($_GET["SUBMIT"]))				{$SUBMIT=$_GET["SUBMIT"];}
 $PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);
 $PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
 
-	$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1' and modify_campaigns='1';";
+	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1' and modify_campaigns='1';";
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -35,7 +35,7 @@ $PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICI-PROJECTS\"");
+    Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
@@ -48,7 +48,7 @@ if (!isset($group)) {$group = '';}
 if (!isset($query_date)) {$query_date = $NOW_DATE;}
 if (!isset($server_ip)) {$server_ip = '10.10.10.15';}
 
-$stmt="select campaign_id,campaign_name from vicidial_campaigns order by campaign_id;";
+$stmt="select campaign_id,campaign_name from osdial_campaigns order by campaign_id;";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}
 $campaigns_to_print = mysql_num_rows($rslt);
@@ -110,7 +110,7 @@ echo "OSDIAL: Live Current Hopper List                      $NOW_TIME\n";
 echo "\n";
 echo "---------- TOTALS\n";
 
-$stmt="select count(*) from vicidial_hopper where campaign_id='" . mysql_real_escape_string($group) . "';";
+$stmt="select count(*) from osdial_hopper where campaign_id='" . mysql_real_escape_string($group) . "';";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}
 $row=mysql_fetch_row($rslt);
@@ -129,7 +129,7 @@ echo "+------+--------+-----------+------------+------------+-------+--------+--
 echo "|ORDER |PRIORITY| LEAD ID   | LIST ID    | PHONE NUM  | STATE | STATUS | COUNT | GMT    | ALT   |\n";
 echo "+------+--------+-----------+------------+------------+-------+--------+-------+--------+-------+\n";
 
-$stmt="select vicidial_hopper.lead_id,phone_number,vicidial_hopper.state,vicidial_list.status,called_count,vicidial_hopper.gmt_offset_now,hopper_id,alt_dial,vicidial_hopper.list_id,vicidial_hopper.priority from vicidial_hopper,vicidial_list where vicidial_hopper.campaign_id='" . mysql_real_escape_string($group) . "' and vicidial_hopper.lead_id=vicidial_list.lead_id order by priority desc,hopper_id limit 2000;";
+$stmt="select osdial_hopper.lead_id,phone_number,osdial_hopper.state,osdial_list.status,called_count,osdial_hopper.gmt_offset_now,hopper_id,alt_dial,osdial_hopper.list_id,osdial_hopper.priority from osdial_hopper,osdial_list where osdial_hopper.campaign_id='" . mysql_real_escape_string($group) . "' and osdial_hopper.lead_id=osdial_list.lead_id order by priority desc,hopper_id limit 2000;";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}
 $users_to_print = mysql_num_rows($rslt);

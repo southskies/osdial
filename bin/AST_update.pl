@@ -224,7 +224,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 	&event_logger;
 
 ### Grab Server values from the database
-$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_vicidial_trunks,answer_transfer_agent,local_gmt,ext_context,asterisk_version,sys_perf_log,vd_server_logs FROM servers where server_ip = '$server_ip';";
+$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,asterisk_version,sys_perf_log,vd_server_logs FROM servers where server_ip = '$server_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -239,7 +239,7 @@ while ($sthArows > $rec_count)
 		$DBASTmgrUSERNAMEupdate	=	"$aryA[4]";
 		$DBASTmgrUSERNAMElisten	=	"$aryA[5]";
 		$DBASTmgrUSERNAMEsend	=	"$aryA[6]";
-		$DBmax_vicidial_trunks	=	"$aryA[7]";
+		$DBmax_osdial_trunks	=	"$aryA[7]";
 		$DBanswer_transfer_agent=	"$aryA[8]";
 		$DBSERVER_GMT		=		"$aryA[9]";
 		$DBext_context	=			"$aryA[10]";
@@ -253,7 +253,7 @@ while ($sthArows > $rec_count)
 		if ($DBASTmgrUSERNAMEupdate)	{$ASTmgrUSERNAMEupdate = $DBASTmgrUSERNAMEupdate;}
 		if ($DBASTmgrUSERNAMElisten)	{$ASTmgrUSERNAMElisten = $DBASTmgrUSERNAMElisten;}
 		if ($DBASTmgrUSERNAMEsend)		{$ASTmgrUSERNAMEsend = $DBASTmgrUSERNAMEsend;}
-		if ($DBmax_vicidial_trunks)		{$max_vicidial_trunks = $DBmax_vicidial_trunks;}
+		if ($DBmax_osdial_trunks)		{$max_osdial_trunks = $DBmax_osdial_trunks;}
 		if ($DBanswer_transfer_agent)	{$answer_transfer_agent = $DBanswer_transfer_agent;}
 		if ($DBSERVER_GMT)				{$SERVER_GMT = $DBSERVER_GMT;}
 		if ($DBext_context)				{$ext_context = $DBext_context;}

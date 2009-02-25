@@ -3,8 +3,8 @@
 # 
 # Copyright (C) 2008  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
-# This script is designed purely to insert records into the vicidial_manager table to signal Actions to an asterisk server
-# This script depends on the server_ip being sent and also needs to have a valid user/pass from the vicidial_users table
+# This script is designed purely to insert records into the osdial_manager table to signal Actions to an asterisk server
+# This script depends on the server_ip being sent and also needs to have a valid user/pass from the osdial_users table
 # 
 # required variables:
 #  - $server_ip
@@ -49,14 +49,14 @@
 # 50524-1602 - added RedirectToPark and RedirectFromPark
 # 50531-1203 - added RedirecXtra for dual channel redirection
 # 50630-1100 - script changed to not use HTTP login vars, user/pass instead
-# 50804-1148 - Added RedirectVD for VICIDIAL blind redirection with logging
+# 50804-1148 - Added RedirectVD for OSDIAL blind redirection with logging
 # 50815-1204 - Added NEXTAVAILABLE to RedirectXtra function
 # 50903-2343 - Added HangupConfDial function to hangup in-dial channels in conf
 # 50913-1057 - Added outbound_cid set if present to originate call
 # 51020-1556 - Added agent_log_id framework for detailed agent activity logging
-# 51118-1204 - Fixed Blind transfer bug from VICIDIAL when in manual dial mode
-# 51129-1014 - Added ability to accept calls from other VICIDIAL servers
-# 51129-1253 - Fixed Hangups of other agents channels in VICIDIAL AD
+# 51118-1204 - Fixed Blind transfer bug from OSDIAL when in manual dial mode
+# 51129-1014 - Added ability to accept calls from other OSDIAL servers
+# 51129-1253 - Fixed Hangups of other agents channels in OSDIAL AD
 # 60310-2022 - Fixed NEXTAVAILABLE bug in leave-3way-call redirect function
 # 60421-1413 - check GET/POST vars lines with isset to not trigger PHP NOTICES
 # 60619-1158 - Added variable filters to close security holes for login form
@@ -68,7 +68,7 @@
 # 70226-1251 - Added Mute/UnMute to conference volume control
 # 70320-1502 - Added option to allow retry of leave-3way-call and debug logging
 # 70322-1636 - Added sipsak display ability
-# 80331-1433 - Added second transfer try for VICIDIAL transfers on manual dial calls
+# 80331-1433 - Added second transfer try for OSDIAL transfers on manual dial calls
 # 80402-0121 - Fixes for manual dial transfers on some systems
 # 80424-0442 - Added non_latin lookup from system_settings
 #
@@ -183,7 +183,7 @@ $NOW_DATE = date("Y-m-d");
 $NOW_TIME = date("Y-m-d H:i:s");
 if (!isset($query_date)) {$query_date = $NOW_DATE;}
 
-$stmt="SELECT count(*) from vicidial_users where user='$user' and pass='$pass' and user_level > 0;";
+$stmt="SELECT count(*) from osdial_users where user='$user' and pass='$pass' and user_level > 0;";
 if ($DB) {echo "|$stmt|\n";}
 if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
 $rslt=mysql_query($stmt, $link);
@@ -254,7 +254,7 @@ if ($ACTION=="SysCIDOriginate")
 	}
 	else
 	{
-	$stmt="INSERT INTO vicidial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$queryCID','Channel: $channel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','Callerid: $queryCID','','','','','');";
+	$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$queryCID','Channel: $channel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','Callerid: $queryCID','','','','','');";
 		if ($format=='debug') {echo "\n<!-- $stmt -->";}
 	$rslt=mysql_query($stmt, $link);
 	echo "Originate command sent for Exten $exten Channel $channel on $server_ip\n";
@@ -350,7 +350,7 @@ if ($ACTION=="Originate")
 		{$outCID = "\"$queryCID\" <$outbound_cid>";}
 	else
 		{$outCID = "$queryCID";}
-	$stmt="INSERT INTO vicidial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$queryCID','Channel: $channel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','Callerid: $outCID','','','','','');";
+	$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$queryCID','Channel: $channel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','Callerid: $outCID','','','','','');";
 		if ($format=='debug') {echo "\n<!-- $stmt -->";}
 	$rslt=mysql_query($stmt, $link);
 	echo "Originate command sent for Exten $exten Channel $channel on $server_ip\n";
@@ -430,7 +430,7 @@ if ($ACTION=="Hangup")
 #		}
 		if ( ($auto_dial_level > 0) and (strlen($CalLCID)>2) and (strlen($exten)>2) and ($secondS > 4))
 		{
-			$stmt="SELECT count(*) FROM vicidial_auto_calls where channel='$channel' and callerid='$CalLCID';";
+			$stmt="SELECT count(*) FROM osdial_auto_calls where channel='$channel' and callerid='$CalLCID';";
 				if ($format=='debug') {echo "\n<!-- $stmt -->";}
 			$rslt=mysql_query($stmt, $link);
 			$rowx=mysql_fetch_row($rslt);
@@ -455,7 +455,7 @@ if ($ACTION=="Hangup")
 		}
 		if ($channel_live==1)
 		{
-		$stmt="INSERT INTO vicidial_manager values('','','$NOW_TIME','NEW','N','$call_server_ip','','Hangup','$queryCID','Channel: $channel','','','','','','','','','');";
+		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$call_server_ip','','Hangup','$queryCID','Channel: $channel','','','','','','','','','');";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 		echo "Hangup command sent for Channel $channel on $call_server_ip\n";
@@ -489,25 +489,25 @@ if ($ACTION=="RedirectVD")
 	else
 	{
 		if (strlen($call_server_ip)>6) {$server_ip = $call_server_ip;}
-			$stmt = "select count(*) from vicidial_campaigns where campaign_id='$campaign' and campaign_allow_inbound='Y';";
+			$stmt = "select count(*) from osdial_campaigns where campaign_id='$campaign' and campaign_allow_inbound='Y';";
 				if ($format=='debug') {echo "\n<!-- $stmt -->";}
 			$rslt=mysql_query($stmt, $link);
 				$row=mysql_fetch_row($rslt);
 			if ($row[0] > 0)
 				{
-				$stmt = "UPDATE vicidial_closer_log set end_epoch='$StarTtime', length_in_sec='$secondS',status='XFER' where lead_id='$lead_id' order by start_epoch desc limit 1;";
+				$stmt = "UPDATE osdial_closer_log set end_epoch='$StarTtime', length_in_sec='$secondS',status='XFER' where lead_id='$lead_id' order by start_epoch desc limit 1;";
 					if ($format=='debug') {echo "\n<!-- $stmt -->";}
 				$rslt=mysql_query($stmt, $link);
 				}
 			if ($auto_dial_level < 1)
 				{
-				$stmt = "UPDATE vicidial_log set end_epoch='$StarTtime', length_in_sec='$secondS',status='XFER' where uniqueid='$uniqueid';";
+				$stmt = "UPDATE osdial_log set end_epoch='$StarTtime', length_in_sec='$secondS',status='XFER' where uniqueid='$uniqueid';";
 					if ($format=='debug') {echo "\n<!-- $stmt -->";}
 				$rslt=mysql_query($stmt, $link);
 				}
 			else
 				{
-				$stmt = "DELETE from vicidial_auto_calls where uniqueid='$uniqueid';";
+				$stmt = "DELETE from osdial_auto_calls where uniqueid='$uniqueid';";
 					if ($format=='debug') {echo "\n<!-- $stmt -->";}
 				$rslt=mysql_query($stmt, $link);
 				}
@@ -643,7 +643,7 @@ if ($ACTION=="RedirectXtraCX")
 			{
 			if ($WeBRooTWritablE > 0)
 				{
-				$fp = fopen ("./vicidial_debug.txt", "a");
+				$fp = fopen ("./osdial_debug.txt", "a");
 				fwrite ($fp, "$NOW_TIME|RDCXC|$filename|$user|$campaign|$channel|$extrachannel|$queryCID|$exten|$ext_context|ext_priority|\n");
 				fclose($fp);
 				}
@@ -689,7 +689,7 @@ if ($ACTION=="RedirectXtraCX")
 		}
 		if ( ($channel_liveX==1) && ($channel_liveY==1) )
 		{
-			$stmt="SELECT count(*) FROM vicidial_live_agents where lead_id='$lead_id' and user!='$user';";
+			$stmt="SELECT count(*) FROM osdial_live_agents where lead_id='$lead_id' and user!='$user';";
 				if ($format=='debug') {echo "\n<!-- $stmt -->";}
 			$rslt=mysql_query($stmt, $link);
 			$rowx=mysql_fetch_row($rslt);
@@ -701,7 +701,7 @@ if ($ACTION=="RedirectXtraCX")
 			}	
 			else
 			{
-				$stmt="SELECT server_ip,conf_exten,user FROM vicidial_live_agents where lead_id='$lead_id' and user!='$user';";
+				$stmt="SELECT server_ip,conf_exten,user FROM osdial_live_agents where lead_id='$lead_id' and user!='$user';";
 					if ($format=='debug') {echo "\n<!-- $stmt -->";}
 				$rslt=mysql_query($stmt, $link);
 				$rowx=mysql_fetch_row($rslt);
@@ -721,11 +721,11 @@ if ($ACTION=="RedirectXtraCX")
 				if (strlen($D_s_ip[3])<3) {$D_s_ip[3] = "0$D_s_ip[3]";}
 				$dest_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]$S$dest_session_id$S$lead_id$S$dest_user$S$phone_code$S$phone_number$S$campaign$S";
 
-				$stmt="INSERT INTO vicidial_manager values('','','$NOW_TIME','NEW','N','$call_server_ip','','Redirect','$queryCID','Channel: $channel','Context: $ext_context','Exten: $dest_dialstring','Priority: $ext_priority','CallerID: $queryCID','','','','','');";
+				$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$call_server_ip','','Redirect','$queryCID','Channel: $channel','Context: $ext_context','Exten: $dest_dialstring','Priority: $ext_priority','CallerID: $queryCID','','','','','');";
 					if ($format=='debug') {echo "\n<!-- $stmt -->";}
 				$rslt=mysql_query($stmt, $link);
 
-				$stmt="INSERT INTO vicidial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Hangup','$queryCID','Channel: $extrachannel','','','','','','','','','');";
+				$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Hangup','$queryCID','Channel: $extrachannel','','','','','','','','','');";
 					if ($format=='debug') {echo "\n<!-- $stmt -->";}
 				$rslt=mysql_query($stmt, $link);
 
@@ -746,7 +746,7 @@ if ($ACTION=="RedirectXtraCX")
 		{
 		if ($WeBRooTWritablE > 0)
 			{
-			$fp = fopen ("./vicidial_debug.txt", "a");
+			$fp = fopen ("./osdial_debug.txt", "a");
 			fwrite ($fp, "$NOW_TIME|RDCXC|$filename|$user|$campaign|$DBout|\n");
 			fclose($fp);
 			}
@@ -780,7 +780,7 @@ if ($ACTION=="RedirectXtra")
 				{
 				if ($WeBRooTWritablE > 0)
 					{
-					$fp = fopen ("./vicidial_debug.txt", "a");
+					$fp = fopen ("./osdial_debug.txt", "a");
 					fwrite ($fp, "$NOW_TIME|RDX|$filename|$user|$campaign|$$channel|$extrachannel|$queryCID|$exten|$ext_context|ext_priority|\n");
 					fclose($fp);
 					}
@@ -849,7 +849,7 @@ if ($ACTION=="RedirectXtra")
 			{
 				if ( ($server_ip=="$call_server_ip") or (strlen($call_server_ip)<7) )
 				{
-					$stmt="INSERT INTO vicidial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $channel','ExtraChannel: $extrachannel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','CallerID: $queryCID','','','','');";
+					$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $channel','ExtraChannel: $extrachannel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','CallerID: $queryCID','','','','');";
 						if ($format=='debug') {echo "\n<!-- $stmt -->";}
 					$rslt=mysql_query($stmt, $link);
 
@@ -870,11 +870,11 @@ if ($ACTION=="RedirectXtra")
 					if (strlen($D_s_ip[3])<3) {$D_s_ip[3] = "0$D_s_ip[3]";}
 					$dest_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]$S$exten";
 
-					$stmt="INSERT INTO vicidial_manager values('','','$NOW_TIME','NEW','N','$call_server_ip','','Redirect','$queryCID','Channel: $channel','Context: $ext_context','Exten: $dest_dialstring','Priority: $ext_priority','CallerID: $queryCID','','','','','');";
+					$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$call_server_ip','','Redirect','$queryCID','Channel: $channel','Context: $ext_context','Exten: $dest_dialstring','Priority: $ext_priority','CallerID: $queryCID','','','','','');";
 						if ($format=='debug') {echo "\n<!-- $stmt -->";}
 					$rslt=mysql_query($stmt, $link);
 
-					$stmt="INSERT INTO vicidial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $extrachannel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','CallerID: $queryCID','','','','','');";
+					$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $extrachannel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','CallerID: $queryCID','','','','','');";
 						if ($format=='debug') {echo "\n<!-- $stmt -->";}
 					$rslt=mysql_query($stmt, $link);
 
@@ -895,7 +895,7 @@ if ($ACTION=="RedirectXtra")
 			{
 			if ($WeBRooTWritablE > 0)
 				{
-				$fp = fopen ("./vicidial_debug.txt", "a");
+				$fp = fopen ("./osdial_debug.txt", "a");
 				fwrite ($fp, "$NOW_TIME|RDX|$filename|$user|$campaign|$DBout|\n");
 				fclose($fp);
 				}
@@ -908,7 +908,7 @@ if ($ACTION=="RedirectXtra")
 
 if ($ACTION=="Redirect")
 {
-	### for manual dial VICIDIAL calls send the second attempt to transfer the call
+	### for manual dial OSDIAL calls send the second attempt to transfer the call
 	if ($stage=="2NDXfeR")
 	{
 		$local_DEF = 'Local/';
@@ -965,7 +965,7 @@ if ($ACTION=="Redirect")
 		}
 		if ($channel_live==1)
 		{
-		$stmt="INSERT INTO vicidial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $channel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','CallerID: $queryCID','','','','','');";
+		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $channel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','CallerID: $queryCID','','','','','');";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 
@@ -1013,7 +1013,7 @@ if ( ($ACTION=="Monitor") || ($ACTION=="StopMonitor") )
 		}
 		if ($channel_live==1)
 		{
-		$stmt="INSERT INTO vicidial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','$ACTION','$queryCID','Channel: $channel','$SQLfile','','','','','','','','');";
+		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','$ACTION','$queryCID','Channel: $channel','$SQLfile','','','','','','','','');";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 
@@ -1077,7 +1077,7 @@ if ( ($ACTION=="MonitorConf") || ($ACTION=="StopMonitorConf") )
 
 	if ($ACTION=="MonitorConf")
 		{
-		$stmt="INSERT INTO vicidial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$filename','Channel: $channel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','Callerid: $filename','','','','','');";
+		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$filename','Channel: $channel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','Callerid: $filename','','','','','');";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 
@@ -1127,7 +1127,7 @@ if ( ($ACTION=="MonitorConf") || ($ACTION=="StopMonitorConf") )
 		$i=0;
 			while ($h>$i)
 			{
-			$stmt="INSERT INTO vicidial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Hangup','RH12345$StarTtime$i','Channel: $HUchannel[$i]','','','','','','','','','');";
+			$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Hangup','RH12345$StarTtime$i','Channel: $HUchannel[$i]','','','','','','','','','');";
 				if ($format=='debug') {echo "\n<!-- $stmt -->";}
 			$rslt=mysql_query($stmt, $link);
 			$i++;
@@ -1162,7 +1162,7 @@ if ($ACTION=="VolumeControl")
 	$local_AMP = '@';
 	$volume_local_channel = "$local_DEF$participant_number$vol_prefix$exten$local_AMP$ext_context";
 
-	$stmt="INSERT INTO vicidial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$queryCID','Channel: $volume_local_channel','Context: $ext_context','Exten: 8300','Priority: 1','Callerid: $queryCID','','','','$channel','$exten');";
+	$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$queryCID','Channel: $volume_local_channel','Context: $ext_context','Exten: 8300','Priority: 1','Callerid: $queryCID','','','','$channel','$exten');";
 		if ($format=='debug') {echo "\n<!-- $stmt -->";}
 	$rslt=mysql_query($stmt, $link);
 	echo "Volume command sent for Conference $exten, Stage $stage Channel $channel on $server_ip\n";

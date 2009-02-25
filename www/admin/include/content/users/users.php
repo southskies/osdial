@@ -29,7 +29,7 @@ if ($ADD=="1")
 	
 	echo "<tr bgcolor=#C1D6DF><td align=right>User Group: </td><td align=left><select size=1 name=user_group>\n";
 
-		$stmt="SELECT user_group,group_name from vicidial_user_groups order by user_group";
+		$stmt="SELECT user_group,group_name from osdial_user_groups order by user_group";
 		$rslt=mysql_query($stmt, $link);
 		$Ugroups_to_print = mysql_num_rows($rslt);
 		$Ugroups_list='';
@@ -81,7 +81,7 @@ if ($ADD=="1A")
 
 	echo "<tr bgcolor=#C1D6DF><td align=right>Source Agent: </td><td align=left><select size=1 name=source_user_id>\n";
 
-		$stmt="SELECT user,full_name from vicidial_users where user_level < $levelMAX order by full_name;";
+		$stmt="SELECT user,full_name from osdial_users where user_level < $levelMAX order by full_name;";
 		$rslt=mysql_query($stmt, $link);
 		$Uusers_to_print = mysql_num_rows($rslt);
 		$Uusers_list='';
@@ -111,7 +111,7 @@ if ($ADD=="1A")
 if ($ADD=="2")
 {
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT count(*) from vicidial_users where user='$user';";
+	$stmt="SELECT count(*) from osdial_users where user='$user';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -128,7 +128,7 @@ if ($ADD=="2")
 			{
 			echo "<br><B>USER ADDED: $user</B>\n";
 
-			$stmt="INSERT INTO vicidial_users (user,pass,full_name,user_level,user_group,phone_login,phone_pass) values('$user','$pass','$full_name','$user_level','$user_group','$phone_login','$phone_pass');";
+			$stmt="INSERT INTO osdial_users (user,pass,full_name,user_level,user_group,phone_login,phone_pass) values('$user','$pass','$full_name','$user_level','$user_group','$phone_login','$phone_pass');";
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -151,7 +151,7 @@ $ADD=3;
 if ($ADD=="2A")
 {
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT count(*) from vicidial_users where user='$user';";
+	$stmt="SELECT count(*) from osdial_users where user='$user';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -166,13 +166,13 @@ if ($ADD=="2A")
 			}
 		 else
 			{
-			$stmt="INSERT INTO vicidial_users (user,pass,full_name,user_level,user_group,phone_login,phone_pass,delete_users,delete_user_groups,delete_lists,delete_campaigns,delete_ingroups,delete_remote_agents,load_leads,campaign_detail,ast_admin_access,ast_delete_phones,delete_scripts,modify_leads,hotkeys_active,change_agent_campaign,agent_choose_ingroups,closer_campaigns,scheduled_callbacks,agentonly_callbacks,agentcall_manual,vicidial_recording,vicidial_transfers,delete_filters,alter_agent_interface_options,closer_default_blended,delete_call_times,modify_call_times,modify_users,modify_campaigns,modify_lists,modify_scripts,modify_filters,modify_ingroups,modify_usergroups,modify_remoteagents,modify_servers,view_reports,vicidial_recording_override,alter_custdata_override) SELECT \"$user\",\"$pass\",\"$full_name\",user_level,user_group,phone_login,phone_pass,delete_users,delete_user_groups,delete_lists,delete_campaigns,delete_ingroups,delete_remote_agents,load_leads,campaign_detail,ast_admin_access,ast_delete_phones,delete_scripts,modify_leads,hotkeys_active,change_agent_campaign,agent_choose_ingroups,closer_campaigns,scheduled_callbacks,agentonly_callbacks,agentcall_manual,vicidial_recording,vicidial_transfers,delete_filters,alter_agent_interface_options,closer_default_blended,delete_call_times,modify_call_times,modify_users,modify_campaigns,modify_lists,modify_scripts,modify_filters,modify_ingroups,modify_usergroups,modify_remoteagents,modify_servers,view_reports,vicidial_recording_override,alter_custdata_override from vicidial_users where user=\"$source_user_id\";";
+			$stmt="INSERT INTO osdial_users (user,pass,full_name,user_level,user_group,phone_login,phone_pass,delete_users,delete_user_groups,delete_lists,delete_campaigns,delete_ingroups,delete_remote_agents,load_leads,campaign_detail,ast_admin_access,ast_delete_phones,delete_scripts,modify_leads,hotkeys_active,change_agent_campaign,agent_choose_ingroups,closer_campaigns,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,delete_filters,alter_agent_interface_options,closer_default_blended,delete_call_times,modify_call_times,modify_users,modify_campaigns,modify_lists,modify_scripts,modify_filters,modify_ingroups,modify_usergroups,modify_remoteagents,modify_servers,view_reports,osdial_recording_override,alter_custdata_override) SELECT \"$user\",\"$pass\",\"$full_name\",user_level,user_group,phone_login,phone_pass,delete_users,delete_user_groups,delete_lists,delete_campaigns,delete_ingroups,delete_remote_agents,load_leads,campaign_detail,ast_admin_access,ast_delete_phones,delete_scripts,modify_leads,hotkeys_active,change_agent_campaign,agent_choose_ingroups,closer_campaigns,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,delete_filters,alter_agent_interface_options,closer_default_blended,delete_call_times,modify_call_times,modify_users,modify_campaigns,modify_lists,modify_scripts,modify_filters,modify_ingroups,modify_usergroups,modify_remoteagents,modify_servers,view_reports,osdial_recording_override,alter_custdata_override from osdial_users where user=\"$source_user_id\";";
 			$rslt=mysql_query($stmt, $link);
 
-			$stmtA="INSERT INTO vicidial_inbound_group_agents (user,group_id,group_rank,group_weight,calls_today) SELECT \"$user\",group_id,group_rank,group_weight,\"0\" from vicidial_inbound_group_agents where user=\"$source_user_id\";";
+			$stmtA="INSERT INTO osdial_inbound_group_agents (user,group_id,group_rank,group_weight,calls_today) SELECT \"$user\",group_id,group_rank,group_weight,\"0\" from osdial_inbound_group_agents where user=\"$source_user_id\";";
 			$rslt=mysql_query($stmtA, $link);
 
-			$stmtA="INSERT INTO vicidial_campaign_agents (user,campaign_id,campaign_rank,campaign_weight,calls_today) SELECT \"$user\",campaign_id,campaign_rank,campaign_weight,\"0\" from vicidial_campaign_agents where user=\"$source_user_id\";";
+			$stmtA="INSERT INTO osdial_campaign_agents (user,campaign_id,campaign_rank,campaign_weight,calls_today) SELECT \"$user\",campaign_id,campaign_rank,campaign_weight,\"0\" from osdial_campaign_agents where user=\"$source_user_id\";";
 			$rslt=mysql_query($stmtA, $link);
 
 			echo "<br><B><font color=navy> USER COPIED: $user copied from $source_user_id</font></B>\n";
@@ -211,7 +211,7 @@ if ($ADD=="4A")
 		{
 		echo "<br><B><font color=navy>USER MODIFIED - ADMIN: $user</font></B>\n";
 
-		$stmt="UPDATE vicidial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass',delete_users='$delete_users',delete_user_groups='$delete_user_groups',delete_lists='$delete_lists',delete_campaigns='$delete_campaigns',delete_ingroups='$delete_ingroups',delete_remote_agents='$delete_remote_agents',load_leads='$load_leads',campaign_detail='$campaign_detail',ast_admin_access='$ast_admin_access',ast_delete_phones='$ast_delete_phones',delete_scripts='$delete_scripts',modify_leads='$modify_leads',hotkeys_active='$hotkeys_active',change_agent_campaign='$change_agent_campaign',agent_choose_ingroups='$agent_choose_ingroups',closer_campaigns='$groups_value',scheduled_callbacks='$scheduled_callbacks',agentonly_callbacks='$agentonly_callbacks',agentcall_manual='$agentcall_manual',vicidial_recording='$vicidial_recording',vicidial_transfers='$vicidial_transfers',delete_filters='$delete_filters',alter_agent_interface_options='$alter_agent_interface_options',closer_default_blended='$closer_default_blended',delete_call_times='$delete_call_times',modify_call_times='$modify_call_times',modify_users='$modify_users',modify_campaigns='$modify_campaigns',modify_lists='$modify_lists',modify_scripts='$modify_scripts',modify_filters='$modify_filters',modify_ingroups='$modify_ingroups',modify_usergroups='$modify_usergroups',modify_remoteagents='$modify_remoteagents',modify_servers='$modify_servers',view_reports='$view_reports',vicidial_recording_override='$vicidial_recording_override',alter_custdata_override='$alter_custdata_override' where user='$user';";
+		$stmt="UPDATE osdial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass',delete_users='$delete_users',delete_user_groups='$delete_user_groups',delete_lists='$delete_lists',delete_campaigns='$delete_campaigns',delete_ingroups='$delete_ingroups',delete_remote_agents='$delete_remote_agents',load_leads='$load_leads',campaign_detail='$campaign_detail',ast_admin_access='$ast_admin_access',ast_delete_phones='$ast_delete_phones',delete_scripts='$delete_scripts',modify_leads='$modify_leads',hotkeys_active='$hotkeys_active',change_agent_campaign='$change_agent_campaign',agent_choose_ingroups='$agent_choose_ingroups',closer_campaigns='$groups_value',scheduled_callbacks='$scheduled_callbacks',agentonly_callbacks='$agentonly_callbacks',agentcall_manual='$agentcall_manual',osdial_recording='$osdial_recording',osdial_transfers='$osdial_transfers',delete_filters='$delete_filters',alter_agent_interface_options='$alter_agent_interface_options',closer_default_blended='$closer_default_blended',delete_call_times='$delete_call_times',modify_call_times='$modify_call_times',modify_users='$modify_users',modify_campaigns='$modify_campaigns',modify_lists='$modify_lists',modify_scripts='$modify_scripts',modify_filters='$modify_filters',modify_ingroups='$modify_ingroups',modify_usergroups='$modify_usergroups',modify_remoteagents='$modify_remoteagents',modify_servers='$modify_servers',view_reports='$view_reports',osdial_recording_override='$osdial_recording_override',alter_custdata_override='$alter_custdata_override' where user='$user';";
 		$rslt=mysql_query($stmt, $link);
 
 
@@ -253,7 +253,7 @@ if ($ADD=="4B")
 		{
 		echo "<br><B><font color=navy>USER MODIFIED - ADMIN: $user</font></B>\n";
 
-		$stmt="UPDATE vicidial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass',hotkeys_active='$hotkeys_active',agent_choose_ingroups='$agent_choose_ingroups',closer_campaigns='$groups_value',scheduled_callbacks='$scheduled_callbacks',agentonly_callbacks='$agentonly_callbacks',agentcall_manual='$agentcall_manual',vicidial_recording='$vicidial_recording',vicidial_transfers='$vicidial_transfers',closer_default_blended='$closer_default_blended',vicidial_recording_override='$vicidial_recording_override',alter_custdata_override='$alter_custdata_override' where user='$user';";
+		$stmt="UPDATE osdial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass',hotkeys_active='$hotkeys_active',agent_choose_ingroups='$agent_choose_ingroups',closer_campaigns='$groups_value',scheduled_callbacks='$scheduled_callbacks',agentonly_callbacks='$agentonly_callbacks',agentcall_manual='$agentcall_manual',osdial_recording='$osdial_recording',osdial_transfers='$osdial_transfers',closer_default_blended='$closer_default_blended',osdial_recording_override='$osdial_recording_override',alter_custdata_override='$alter_custdata_override' where user='$user';";
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -294,7 +294,7 @@ if ($ADD==4)
 		{
 		echo "<br><B><font color=navy>USER MODIFIED: $user</font></B>\n";
 
-		$stmt="UPDATE vicidial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass' where user='$user';";
+		$stmt="UPDATE osdial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass' where user='$user';";
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -352,13 +352,13 @@ if ($ADD==6)
 		}
 	 else
 		{
-		$stmtA="DELETE from vicidial_users where user='$user' limit 1;";
+		$stmtA="DELETE from osdial_users where user='$user' limit 1;";
 		$rslt=mysql_query($stmtA, $link);
 
-		$stmt="DELETE from vicidial_campaign_agents where user='$user';";
+		$stmt="DELETE from osdial_campaign_agents where user='$user';";
 		$rslt=mysql_query($stmt, $link);
 
-		$stmt="DELETE from vicidial_inbound_group_agents where user='$user';";
+		$stmt="DELETE from osdial_inbound_group_agents where user='$user';";
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -386,7 +386,7 @@ if ($ADD==3)
 	echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT * from vicidial_users where user='$user';";
+	$stmt="SELECT * from osdial_users where user='$user';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$user_level =			$row[4];
@@ -411,8 +411,8 @@ if ($ADD==3)
 	$scheduled_callbacks =		$row[24];
 	$agentonly_callbacks =		$row[25];
 	$agentcall_manual =		$row[26];
-	$vicidial_recording =		$row[27];
-	$vicidial_transfers =		$row[28];
+	$osdial_recording =		$row[27];
+	$osdial_transfers =		$row[28];
 	$delete_filters =		$row[29];
 	$alter_agent_interface_options =$row[30];
 	$closer_default_blended =	$row[31];
@@ -428,7 +428,7 @@ if ($ADD==3)
 	$modify_remoteagents =		$row[41];
 	$modify_servers =		$row[42];
 	$view_reports =			$row[43];
-	$vicidial_recording_override =	$row[44];
+	$osdial_recording_override =	$row[44];
 	$alter_custdata_override = 	$row[45];
 
 	if ( ($user_level >= $LOGuser_level) and ($LOGuser_level < 9) )
@@ -462,7 +462,7 @@ if ($ADD==3)
 		echo "<option SELECTED>$row[4]</option></select>$NWB#osdial_users-user_level$NWE</td></tr>\n";
 		echo "<tr bgcolor=#C1D6DF><td align=right><A HREF=\"$PHP_SELF?ADD=311111&user_group=$user_group\">User Group</A>: </td><td align=left><select size=1 name=user_group>\n";
 
-			$stmt="SELECT user_group,group_name from vicidial_user_groups order by user_group";
+			$stmt="SELECT user_group,group_name from osdial_user_groups order by user_group";
 			$rslt=mysql_query($stmt, $link);
 			$Ugroups_to_print = mysql_num_rows($rslt);
 			$Ugroups_list='';
@@ -488,10 +488,10 @@ if ($ADD==3)
 			echo "<tr bgcolor=#C1D6DF><td align=right>Scheduled Callbacks: </td><td align=left><select size=1 name=scheduled_callbacks><option>0</option><option>1</option><option SELECTED>$scheduled_callbacks</option></select>$NWB#osdial_users-scheduled_callbacks$NWE</td></tr>\n";
 			echo "<tr bgcolor=#C1D6DF><td align=right>Agent-Only Callbacks: </td><td align=left><select size=1 name=agentonly_callbacks><option>0</option><option>1</option><option SELECTED>$agentonly_callbacks</option></select>$NWB#osdial_users-agentonly_callbacks$NWE</td></tr>\n";
 			echo "<tr bgcolor=#C1D6DF><td align=right>Agent Call Manual: </td><td align=left><select size=1 name=agentcall_manual><option>0</option><option>1</option><option SELECTED>$agentcall_manual</option></select>$NWB#osdial_users-agentcall_manual$NWE</td></tr>\n";
-			echo "<tr bgcolor=#C1D6DF><td align=right>Vicidial Recording: </td><td align=left><select size=1 name=vicidial_recording><option>0</option><option>1</option><option SELECTED>$vicidial_recording</option></select>$NWB#osdial_users-osdial_recording$NWE</td></tr>\n";
-			echo "<tr bgcolor=#C1D6DF><td align=right>Vicidial Transfers: </td><td align=left><select size=1 name=vicidial_transfers><option>0</option><option>1</option><option SELECTED>$vicidial_transfers</option></select>$NWB#osdial_users-osdial_transfers$NWE</td></tr>\n";
+			echo "<tr bgcolor=#C1D6DF><td align=right>OSDial Recording: </td><td align=left><select size=1 name=osdial_recording><option>0</option><option>1</option><option SELECTED>$osdial_recording</option></select>$NWB#osdial_users-osdial_recording$NWE</td></tr>\n";
+			echo "<tr bgcolor=#C1D6DF><td align=right>OSDial Transfers: </td><td align=left><select size=1 name=osdial_transfers><option>0</option><option>1</option><option SELECTED>$osdial_transfers</option></select>$NWB#osdial_users-osdial_transfers$NWE</td></tr>\n";
 			echo "<tr bgcolor=#C1D6DF><td align=right>Closer Default Blended: </td><td align=left><select size=1 name=closer_default_blended><option>0</option><option>1</option><option SELECTED>$closer_default_blended</option></select>$NWB#osdial_users-closer_default_blended$NWE</td></tr>\n";
-			echo "<tr bgcolor=#C1D6DF><td align=right>OSDial Recording Override: </td><td align=left><select size=1 name=vicidial_recording_override><option>DISABLED</option><option>NEVER</option><option>ONDEMAND</option><option>ALLCALLS</option><option>ALLFORCE</option><option SELECTED>$vicidial_recording_override</option></select>$NWB#osdial_users-osdial_recording_override$NWE</td></tr>\n";
+			echo "<tr bgcolor=#C1D6DF><td align=right>OSDial Recording Override: </td><td align=left><select size=1 name=osdial_recording_override><option>DISABLED</option><option>NEVER</option><option>ONDEMAND</option><option>ALLCALLS</option><option>ALLFORCE</option><option SELECTED>$osdial_recording_override</option></select>$NWB#osdial_users-osdial_recording_override$NWE</td></tr>\n";
 			echo "<tr bgcolor=#C1D6DF><td align=right>Agent Alter Customer Data Override: </td><td align=left><select size=1 name=alter_custdata_override><option>NOT_ACTIVE</option><option>ALLOW_ALTER</option><option SELECTED>$alter_custdata_override</option></select>$NWB#osdial_users-alter_custdata_override$NWE</td></tr>\n";
 			echo "<tr><td>&nbsp;</td></tr>";
 			echo "<tr bgcolor=#C1D6DF><td align=center colspan=2>Campaign Ranks: $NWB#osdial_users-campaign_ranks$NWE<BR>\n";
@@ -587,7 +587,7 @@ echo "<tr bgcolor=#C1D6DF><td align=right>Full Name: </td><td align=left><input 
 echo "<tr bgcolor=#C1D6DF><td align=right>User Level: </td><td align=left><select size=1 name=user_level><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></td></tr>\n";
 echo "<tr bgcolor=#C1D6DF><td align=right>User Group: </td><td align=left><select size=1 name=user_group>\n";
 
-	$stmt="SELECT * from vicidial_user_groups order by user_group";
+	$stmt="SELECT * from osdial_user_groups order by user_group";
 	$rslt=mysql_query($stmt, $link);
 	$groups_to_print = mysql_num_rows($rslt);
 	$o=0;
@@ -621,7 +621,7 @@ echo "<TABLE><TR><TD>\n";
 	$SQL = eregi_replace(" and$", "", $SQL);
 	if (strlen($SQL)>5) {$SQL = "where $SQL";}
 
-	$stmt="SELECT * from vicidial_users $SQL order by full_name desc;";
+	$stmt="SELECT * from osdial_users $SQL order by full_name desc;";
 #	echo "\n|$stmt|\n";
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
@@ -654,13 +654,13 @@ if ($ADD==8)
 	{
 		if ($SUB==89)
 		{
-		$stmt="UPDATE vicidial_callbacks SET status='INACTIVE' where user='$user' and status='LIVE' and callback_time < '$past_month_date';";
+		$stmt="UPDATE osdial_callbacks SET status='INACTIVE' where user='$user' and status='LIVE' and callback_time < '$past_month_date';";
 		$rslt=mysql_query($stmt, $link);
 		echo "<br>Agent ($user) callback listings LIVE for more than one month have been made INACTIVE\n";
 		}
 		if ($SUB==899)
 		{
-		$stmt="UPDATE vicidial_callbacks SET status='INACTIVE' where user='$user' and status='LIVE' and callback_time < '$past_week_date';";
+		$stmt="UPDATE osdial_callbacks SET status='INACTIVE' where user='$user' and status='LIVE' and callback_time < '$past_week_date';";
 		$rslt=mysql_query($stmt, $link);
 		echo "<br>Agent ($user) callback listings LIVE for more than one week have been made INACTIVE\n";
 		}
@@ -698,7 +698,7 @@ if (eregi("LEVELUP",$stage)) {$SQLorder='order by user_level asc';   $LEVELlink=
 if (eregi("LEVELDOWN",$stage)) {$SQLorder='order by user_level desc';   $LEVELlink='stage=LEVELUP';}
 if (eregi("GROUPUP",$stage)) {$SQLorder='order by user_group asc';   $GROUPlink='stage=GROUPDOWN';}
 if (eregi("GROUPDOWN",$stage)) {$SQLorder='order by user_group desc';   $GROUPlink='stage=GROUPUP';}
-	$stmt="SELECT * from vicidial_users $SQLorder";
+	$stmt="SELECT * from osdial_users $SQLorder";
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 

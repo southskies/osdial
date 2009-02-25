@@ -41,7 +41,7 @@ if (length($ARGV[0])>1)
 	#	print "\n----- LEAD FILE: $lead_file -----\n\n";
 		}
 		else
-			{$lead_file = './vicidial_temp_file.xls';}
+			{$lead_file = './osdial_temp_file.xls';}
 	}
 }
 ### end parsing run-time options ###
@@ -116,7 +116,7 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 @xls_row=split(/\|/, $var_str);
 
 
-$stmtA = "select vendor_lead_code, source_id, list_id, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, security_phrase, comments from vicidial_list limit 1;";
+$stmtA = "select vendor_lead_code, source_id, list_id, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, security_phrase, comments from osdial_list limit 1;";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;

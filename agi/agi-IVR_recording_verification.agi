@@ -7,7 +7,7 @@
 # for a company ID and/or a customer phone number, then it will play through the 
 # listed prompts asking for a single digit press (i.e. 1 for a yes or a 3 for a 
 # no, hash/pound/star/zero/0 are not accepted only 1-9 is valid for these steps).
-# All data for these calls will be logged to the vicidial_ivr table as well as 
+# All data for these calls will be logged to the osdial_ivr table as well as 
 # optionally to a log file  in the standard astguiclient log file directory 
 # and/or STDERR output on the asterisk process. This script uses the 
 # /etc/astguiclient.conf file for database connection settings, logging data and
@@ -34,7 +34,7 @@
 #exten => 1234,4,AGI(agi-IVR_recording_verification.agi,7274506620---Y-85100004---Y---Y-1-85100016---N---N---Y-85100007---85100009-600--85100012-30--85100013---85100004---BOTH)
 #exten => 1234,5,Hangup
 #
-# ;inbound IVR call from a VICIDIAL transfer:
+# ;inbound IVR call from a osdial transfer:
 #exten => _83002*,1,Ringing		; call ringing
 #exten => _83002*,2,Wait(1)		; Wait 1 second for CID delivery
 #exten => _83002*,3,Answer		; Answer the line
@@ -208,22 +208,22 @@ if ( (!$callerid) or ($callerid =~ /unknown/) )
 $phone_number=$callerid;
 
 
-### allow for VICIDIAL transfer data string "83002*3125551212*10000123*TESTCAMP*ABC*1234*"
+### allow for osdial transfer data string "83002*3125551212*10000123*TESTCAMP*ABC*1234*"
 if ($extension =~ /^832\d\d\*|^833\d\d\*/)
 	{
 	@EXT_vars = split(/\*/, $extension);
 	
 	$referring_extension =	$EXT_vars[0];	# initial extension sent
 	$phone_number =			$EXT_vars[1];	# phone number
-	$lead_id =				$EXT_vars[2];	# lead_id in vicidial_list
+	$lead_id =				$EXT_vars[2];	# lead_id in osdial_list
 	$campaign_id =			$EXT_vars[3];	# campaign id
 	$product_code =			$EXT_vars[4];	# product code
-	$user =					$EXT_vars[5];	# vicidial_user that sent the call here
+	$user =					$EXT_vars[5];	# osdial_user that sent the call here
 	}
 
 
 ### table structure for data ###
-# CREATE TABLE vicidial_ivr (
+# CREATE TABLE osdial_ivr (
 #	ivr_id INT(9) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
 #	entry_time DATETIME,
 #	length_in_sec SMALLINT(5) UNSIGNED default '0',
@@ -260,8 +260,8 @@ if ($extension =~ /^832\d\d\*|^833\d\d\*/)
 #	index (entry_time)
 #	);
 
-### insert record into vicidial_ivr table ###
-$stmtA = "INSERT INTO vicidial_ivr (entry_time,length_in_sec,inbound_number,phone_number,lead_id,campaign_id,product_code,user) values('$now_date','0','$inbound_number','$phone_number','$lead_id','$campaign_id','$product_code','$user');";
+### insert record into osdial_ivr table ###
+$stmtA = "INSERT INTO osdial_ivr (entry_time,length_in_sec,inbound_number,phone_number,lead_id,campaign_id,product_code,user) values('$now_date','0','$inbound_number','$phone_number','$lead_id','$campaign_id','$product_code','$user');";
 $affected_rows = $dbhA->do($stmtA);
 $cbc=0;
 $stmtA = "select LAST_INSERT_ID() LIMIT 1;";
@@ -300,7 +300,7 @@ if ($company_ID_ask =~ /Y/)
   $company_ID = $totalDTMF;
 &get_time_now;
   $length_in_sec = ($now_date_epoch - $start_epoch);
-$stmtA = "UPDATE vicidial_ivr SET company_id='$company_ID', length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
+$stmtA = "UPDATE osdial_ivr SET company_id='$company_ID', length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
 	if ($AGILOG) {$agi_string = "IVR- $ivr_id     company: $company_ID   length: $length_in_sec";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
 }
@@ -313,7 +313,7 @@ if ($user_ID_ask =~ /Y/)
   $user_ID = $totalDTMF;
 &get_time_now;
   $length_in_sec = ($now_date_epoch - $start_epoch);
-$stmtA = "UPDATE vicidial_ivr SET user='$user_ID', length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
+$stmtA = "UPDATE osdial_ivr SET user='$user_ID', length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
 	if ($AGILOG) {$agi_string = "IVR- $ivr_id     user: $user_ID   length: $length_in_sec";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
 }
@@ -326,7 +326,7 @@ if ($cust_phone_ask =~ /Y/)
   $phone_number = $totalDTMF;
 &get_time_now;
   $length_in_sec = ($now_date_epoch - $start_epoch);
-$stmtA = "UPDATE vicidial_ivr SET phone_number='$phone_number', length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
+$stmtA = "UPDATE osdial_ivr SET phone_number='$phone_number', length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
 	if ($AGILOG) {$agi_string = "IVR- $ivr_id     phone: $phone_number   length: $length_in_sec";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
 }
@@ -357,7 +357,7 @@ while ($sthArows > $cbc)
 	}
 $sthA->finish();
 
-$stmtA = "UPDATE vicidial_ivr SET recording_id='$recording_id', recording_filename='$filename' where ivr_id='$ivr_id';";
+$stmtA = "UPDATE osdial_ivr SET recording_id='$recording_id', recording_filename='$filename' where ivr_id='$ivr_id';";
 	if ($AGILOG) {$agi_string = "RECORDING- $recording_id $ivr_id START    filename: $filename";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
 
@@ -400,7 +400,7 @@ while($prompts_count >= $i)
 	&get_time_now;
 	  $length_in_sec = ($now_date_epoch - $start_epoch);
 
-	$stmtA = "UPDATE vicidial_ivr SET $prompt_name='$prompt', $response_name='$response', length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
+	$stmtA = "UPDATE osdial_ivr SET $prompt_name='$prompt', $response_name='$response', length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
 		if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 	$affected_rows = $dbhA->do($stmtA);
 	if ($AGILOG) {$agi_string = "IVR- $ivr_id $i   prompt: $prompt - $wait_sec   response: $response   length: $length_in_sec";   &agi_output;}
@@ -416,7 +416,7 @@ while($prompts_count >= $i)
 	&get_time_now;
 	  $length_in_sec = ($now_date_epoch - $start_epoch);
 
-	$stmtA = "UPDATE vicidial_ivr SET length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
+	$stmtA = "UPDATE osdial_ivr SET length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
 		if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 	$affected_rows = $dbhA->do($stmtA);
 	if ($AGILOG) {$agi_string = "IVR- $ivr_id END   prompt: $last_prompt   length: $length_in_sec";   &agi_output;}

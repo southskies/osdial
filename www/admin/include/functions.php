@@ -61,21 +61,21 @@ function format_select_options($krh, $kkey, $kval, $ksel, $knone) {
 
 ##### get scripts listing for dynamic pulldown
 function get_scripts($link, $selected) {
-    $krh = get_krh($link, 'vicidial_scripts', 'script_id,script_name');
+    $krh = get_krh($link, 'osdial_scripts', 'script_id,script_name');
     return format_select_options($krh, 'script_id', 'script_name', $selected, true);
 }
 
 
 ##### get filters listing for dynamic pulldown
 function get_filters($link, $selected) {
-    $krh = get_krh($link, 'vicidial_lead_filters', 'lead_filter_id,lead_filter_name');
+    $krh = get_krh($link, 'osdial_lead_filters', 'lead_filter_id,lead_filter_name');
     return format_select_options($krh, 'lead_filter_id', 'lead_filter_name', $selected, true);
 }
 
 
 ##### get call_times listing for dynamic pulldown
 function get_calltimes($link, $selected) {
-    $krh = get_krh($link, 'vicidial_call_times', 'call_time_id,call_time_name');
+    $krh = get_krh($link, 'osdial_call_times', 'call_time_id,call_time_name');
     return format_select_options($krh, 'call_time_id', 'call_time_name', $selected, true);
 }
 
@@ -111,7 +111,7 @@ function dialable_leads($DB, $link, $local_call_time, $dial_statuses, $camp_list
                     $p = ($p - 0.25);
                     $g++;
                 }
-                $stmt = "SELECT * FROM vicidial_call_times where call_time_id='$local_call_time';";
+                $stmt = "SELECT * FROM osdial_call_times where call_time_id='$local_call_time';";
                 if ($DB) {
                     echo "$stmt\n";
                 }
@@ -144,7 +144,7 @@ function dialable_leads($DB, $link, $local_call_time, $dial_statuses, $camp_list
                 }
                 while ($ct_srs >= $b) {
                     if (strlen($state_rules[$b]) > 1) {
-                        $stmt = "SELECT * from vicidial_state_call_times where state_call_time_id='$state_rules[$b]';";
+                        $stmt = "SELECT * from osdial_state_call_times where state_call_time_id='$state_rules[$b]';";
                         $rslt = mysql_query($stmt, $link);
                         $row = mysql_fetch_row($rslt);
                         $Gstate_call_time_id = "$row[0]";
@@ -367,7 +367,7 @@ function dialable_leads($DB, $link, $local_call_time, $dial_statuses, $camp_list
                     $Dsql.= "'$Dstatuses[$o]',";
                 }
                 $Dsql = preg_replace("/,$/", "", $Dsql);
-                $stmt = "SELECT count(*) FROM vicidial_list where called_since_last_reset='N' and status IN($Dsql) and list_id IN($camp_lists) and ($all_gmtSQL) $fSQL";
+                $stmt = "SELECT count(*) FROM osdial_list where called_since_last_reset='N' and status IN($Dsql) and list_id IN($camp_lists) and ($all_gmtSQL) $fSQL";
                 if ($DB) {
                     echo "$stmt\n";
                 }

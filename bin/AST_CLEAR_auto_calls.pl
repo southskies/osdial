@@ -46,10 +46,10 @@ use DBI;
 $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
  or die "Couldn't connect to database: " . DBI->errstr;
 
-	$stmtA = "DELETE from vicidial_auto_calls where (channel is null and last_update_time < now() - 500) or last_update_time < now() - 1000;";
+	$stmtA = "DELETE from osdial_auto_calls where (channel is null and last_update_time < now() - 500) or last_update_time < now() - 1000;";
 			if($DB){print STDERR "\n|$stmtA|\n";}
 	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
-	print " - vicidial_auto_calls delete\n";
+	print " - osdial_auto_calls delete\n";
 
 	$dbhA->disconnect();
 

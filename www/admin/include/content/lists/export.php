@@ -37,7 +37,7 @@ if ($ADD==131 && $SUB==2) {
     echo $sfield . "\r\n";
     $ffield = explode(',',$sfield);
 
-    $leads = get_krh($link,'vicidial_list',$sfield,'',$swhere);
+    $leads = get_krh($link,'osdial_list',$sfield,'',$swhere);
     if (is_array($leads)) {
         foreach ($leads as $lead) {
             $output = '';
@@ -65,7 +65,7 @@ if ($ADD==131 && $SUB==2) {
         echo "  <br />";
 
         if ($list_id == '') {
-            $lists = get_krh($link,'vicidial_lists','*','','');
+            $lists = get_krh($link,'osdial_lists','*','','');
             echo "  <b>Select List ID</b>\n";
             echo "  <br />";
             echo "  <br />";
@@ -79,7 +79,7 @@ if ($ADD==131 && $SUB==2) {
             echo "  <br />\n";
             echo "  <input type=submit value=\"Next ->\">\n";
         } elseif ($statuses[0] == '') {
-            $list = get_first_record($link,'vicidial_lists','*',"list_id='" . $list_id . "'");
+            $list = get_first_record($link,'osdial_lists','*',"list_id='" . $list_id . "'");
             echo "  <input type=hidden name='list_id' value=\"$list_id\">\n";
             echo "  <b>List ID:</b> " . $list_id . ' - ' . $list['list_name'] .  ' - ' . $list['campaign_id'] . "\n";
             echo "  <br />\n";
@@ -89,8 +89,8 @@ if ($ADD==131 && $SUB==2) {
             echo "  <br />\n";
             echo "  <br />\n";
 
-            $sstats = get_krh($link,'vicidial_statuses','*','','');
-            $cstats = get_krh($link,'vicidial_campaign_statuses','*','',"campaign_id='" . $list['campaign_id'] . "'");
+            $sstats = get_krh($link,'osdial_statuses','*','','');
+            $cstats = get_krh($link,'osdial_campaign_statuses','*','',"campaign_id='" . $list['campaign_id'] . "'");
             foreach ($sstats as $stat) {
                 $stats[$stat['status']] = $stat;
             }
@@ -128,7 +128,7 @@ if ($ADD==131 && $SUB==2) {
             echo "  <br />\n";
             echo "  <input type=submit value=\"Next ->\">\n";
         } elseif ($fields[0] == '') {
-            $list = get_first_record($link,'vicidial_lists','*',"list_id='" . $list_id . "'");
+            $list = get_first_record($link,'osdial_lists','*',"list_id='" . $list_id . "'");
             echo "  <input type=hidden name='SUB' value=\"2\">\n";
             echo "  <input type=hidden name='list_id' value=\"$list_id\">\n";
             foreach ($statuses as $stat) {

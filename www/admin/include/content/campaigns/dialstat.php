@@ -9,7 +9,7 @@ if ($ADD==28)
 {
 	$status = eregi_replace("-----.*",'',$status);
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT count(*) from vicidial_campaigns where campaign_id='$campaign_id' and dial_statuses LIKE \"% $status %\";";
+	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id' and dial_statuses LIKE \"% $status %\";";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -25,13 +25,13 @@ if ($ADD==28)
 			{
 			#echo "<br><B><font color=navy>CAMPAIGN DIAL STATUS ADDED: $campaign_id - $status</font></B>\n";
 
-			$stmt="SELECT dial_statuses from vicidial_campaigns where campaign_id='$campaign_id';";
+			$stmt="SELECT dial_statuses from osdial_campaigns where campaign_id='$campaign_id';";
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 
 			if (strlen($row[0])<2) {$row[0] = ' -';}
 			$dial_statuses = " $status$row[0]";
-			$stmt="UPDATE vicidial_campaigns set dial_statuses='$dial_statuses' where campaign_id='$campaign_id';";
+			$stmt="UPDATE osdial_campaigns set dial_statuses='$dial_statuses' where campaign_id='$campaign_id';";
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -58,7 +58,7 @@ if ($ADD==68)
 	if ($LOGmodify_campaigns==1)
 	{
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT count(*) from vicidial_campaigns where campaign_id='$campaign_id' and dial_statuses LIKE \"% $status %\";";
+	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id' and dial_statuses LIKE \"% $status %\";";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] < 1)
@@ -74,12 +74,12 @@ if ($ADD==68)
 			{
 			#echo "<br><B><font color=navy>CAMPAIGN DIAL STATUS REMOVED: $campaign_id - $status</font></B>\n";
 
-			$stmt="SELECT dial_statuses from vicidial_campaigns where campaign_id='$campaign_id';";
+			$stmt="SELECT dial_statuses from osdial_campaigns where campaign_id='$campaign_id';";
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 
 			$dial_statuses = eregi_replace(" $status "," ",$row[0]);
-			$stmt="UPDATE vicidial_campaigns set dial_statuses='$dial_statuses' where campaign_id='$campaign_id';";
+			$stmt="UPDATE osdial_campaigns set dial_statuses='$dial_statuses' where campaign_id='$campaign_id';";
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###

@@ -1,7 +1,7 @@
 <?
 # admin_modify_lead.php
 # 
-# AST GUI database administration modify lead in vicidial_list
+# AST GUI database administration modify lead in osdial_list
 # admin_modify_lead.php
 #
 # this is the administration lead information modifier screen, the administrator 
@@ -23,7 +23,7 @@
 # 70702-1259 - Added recording location link and truncation
 # 70906-2132 - Added closer_log records display
 # 80428-0144 - UTF8 cleanup
-# 80516-0936 - Cleanup of logging changes, added vicidial_agent_log display
+# 80516-0936 - Cleanup of logging changes, added osdial_agent_log display
 # 80701-0832 - Changed to allow for altering of main phone number
 #
 
@@ -150,7 +150,7 @@ if ($non_latin < 1)
 	}
 if (strlen($phone_number)<6) {$phone_number=$old_phone;}
 
-$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 7 and modify_leads='1';";
+$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 7 and modify_leads='1';";
 if ($DB) {echo "|$stmt|\n";}
 if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
 $rslt=mysql_query($stmt, $link);
@@ -166,7 +166,7 @@ $browser = getenv("HTTP_USER_AGENT");
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICI-PROJECTS\"");
+    Header("WWW-Authenticate: Basic realm=\"OSDIAL-PROJECTS\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
@@ -176,7 +176,7 @@ $browser = getenv("HTTP_USER_AGENT");
 
 	if($auth>0)
 		{
-			$stmt="SELECT full_name,modify_leads from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
+			$stmt="SELECT full_name,modify_leads from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			$LOGfullname				=$row[0];
@@ -184,7 +184,7 @@ $browser = getenv("HTTP_USER_AGENT");
 
 		if ($WeBRooTWritablE > 0)
 			{
-			fwrite ($fp, "VICIDIAL|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|$LOGfullname|\n");
+			fwrite ($fp, "OSDIAL|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|$LOGfullname|\n");
 			fclose($fp);
 			}
 		}
@@ -192,7 +192,7 @@ $browser = getenv("HTTP_USER_AGENT");
 		{
 		if ($WeBRooTWritablE > 0)
 			{
-			fwrite ($fp, "VICIDIAL|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|\n");
+			fwrite ($fp, "OSDIAL|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|\n");
 			fclose($fp);
 			}
 		}
@@ -202,18 +202,18 @@ $browser = getenv("HTTP_USER_AGENT");
 <html>
 <head>
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
-<title>VICIDIAL ADMIN: Lead record modification</title>
+<title>OSDIAL ADMIN: Lead record modification</title>
 </head>
 <BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 <CENTER><FONT FACE="Courier" COLOR=BLACK SIZE=3>
 <? 
-echo "<a href=\"./admin.php?ADD=100\">VICIDIAL ADMIN</a>: Lead record modification<BR>\n";
+echo "<a href=\"./admin.php?ADD=100\">OSDIAL ADMIN</a>: Lead record modification<BR>\n";
 
 if ($end_call > 0)
 {
 
-	### update the lead record in the vicidial_list table 
-	$stmt="UPDATE vicidial_list set status='" . mysql_real_escape_string($status) . "',first_name='" . mysql_real_escape_string($first_name) . "',last_name='" . mysql_real_escape_string($last_name) . "',address1='" . mysql_real_escape_string($address1) . "',address2='" . mysql_real_escape_string($address2) . "',address3='" . mysql_real_escape_string($address3) . "',city='" . mysql_real_escape_string($city) . "',state='" . mysql_real_escape_string($state) . "',province='" . mysql_real_escape_string($province) . "',postal_code='" . mysql_real_escape_string($postal_code) . "',country_code='" . mysql_real_escape_string($country_code) . "',alt_phone='" . mysql_real_escape_string($alt_phone) . "',phone_number='$phone_number',email='" . mysql_real_escape_string($email) . "',security_phrase='" . mysql_real_escape_string($security) . "',comments='" . mysql_real_escape_string($comments) . "' where lead_id='" . mysql_real_escape_string($lead_id) . "'";
+	### update the lead record in the osdial_list table 
+	$stmt="UPDATE osdial_list set status='" . mysql_real_escape_string($status) . "',first_name='" . mysql_real_escape_string($first_name) . "',last_name='" . mysql_real_escape_string($last_name) . "',address1='" . mysql_real_escape_string($address1) . "',address2='" . mysql_real_escape_string($address2) . "',address3='" . mysql_real_escape_string($address3) . "',city='" . mysql_real_escape_string($city) . "',state='" . mysql_real_escape_string($state) . "',province='" . mysql_real_escape_string($province) . "',postal_code='" . mysql_real_escape_string($postal_code) . "',country_code='" . mysql_real_escape_string($country_code) . "',alt_phone='" . mysql_real_escape_string($alt_phone) . "',phone_number='$phone_number',email='" . mysql_real_escape_string($email) . "',security_phrase='" . mysql_real_escape_string($security) . "',comments='" . mysql_real_escape_string($comments) . "' where lead_id='" . mysql_real_escape_string($lead_id) . "'";
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 
@@ -222,60 +222,60 @@ if ($end_call > 0)
 	
 	if ( ($dispo != $status) and ($dispo == 'CBHOLD') )
 	{
-		### inactivate vicidial_callbacks record for this lead 
-		$stmt="UPDATE vicidial_callbacks set status='INACTIVE' where lead_id='" . mysql_real_escape_string($lead_id) . "' and status='ACTIVE';";
+		### inactivate osdial_callbacks record for this lead 
+		$stmt="UPDATE osdial_callbacks set status='INACTIVE' where lead_id='" . mysql_real_escape_string($lead_id) . "' and status='ACTIVE';";
 		if ($DB) {echo "|$stmt|\n";}
 		$rslt=mysql_query($stmt, $link);
 
-		echo "<BR>vicidial_callback record inactivated: $lead_id<BR>\n";
+		echo "<BR>osdial_callback record inactivated: $lead_id<BR>\n";
 	}
 	if ( ($dispo != $status) and ($dispo == 'CALLBK') )
 	{
-		### inactivate vicidial_callbacks record for this lead 
-		$stmt="UPDATE vicidial_callbacks set status='INACTIVE' where lead_id='" . mysql_real_escape_string($lead_id) . "' and status IN('ACTIVE','LIVE');";
+		### inactivate osdial_callbacks record for this lead 
+		$stmt="UPDATE osdial_callbacks set status='INACTIVE' where lead_id='" . mysql_real_escape_string($lead_id) . "' and status IN('ACTIVE','LIVE');";
 		if ($DB) {echo "|$stmt|\n";}
 		$rslt=mysql_query($stmt, $link);
 
-		echo "<BR>vicidial_callback record inactivated: $lead_id<BR>\n";
+		echo "<BR>osdial_callback record inactivated: $lead_id<BR>\n";
 	}
 
 	if ( ($dispo != $status) and ($status == 'DNC') )
 	{
 		### add lead to the internal DNC list 
-		$stmt="INSERT INTO vicidial_dnc (phone_number) values('" . mysql_real_escape_string($phone_number) . "');";
+		$stmt="INSERT INTO osdial_dnc (phone_number) values('" . mysql_real_escape_string($phone_number) . "');";
 		if ($DB) {echo "|$stmt|\n";}
 		$rslt=mysql_query($stmt, $link);
 
 		echo "<BR>Lead added to DNC List: $lead_id - $phone_number<BR>\n";
 	}
-	### update last record in vicidial_log table
+	### update last record in osdial_log table
        if (($dispo != $status) and ($modify_logs > 0)) 
 	{
-		$stmt="UPDATE vicidial_log set status='" . mysql_real_escape_string($status) . "' where lead_id='" . mysql_real_escape_string($lead_id) . "' order by call_date desc limit 1";
+		$stmt="UPDATE osdial_log set status='" . mysql_real_escape_string($status) . "' where lead_id='" . mysql_real_escape_string($lead_id) . "' order by call_date desc limit 1";
 		if ($DB) {echo "|$stmt|\n";}
 		$rslt=mysql_query($stmt, $link);
 	}
 
-	### update last record in vicidial_closer_log table
+	### update last record in osdial_closer_log table
        if (($dispo != $status) and ($modify_closer_logs > 0)) 
 	{
-		$stmt="UPDATE vicidial_closer_log set status='" . mysql_real_escape_string($status) . "' where lead_id='" . mysql_real_escape_string($lead_id) . "' order by call_date desc limit 1";
+		$stmt="UPDATE osdial_closer_log set status='" . mysql_real_escape_string($status) . "' where lead_id='" . mysql_real_escape_string($lead_id) . "' order by call_date desc limit 1";
 		if ($DB) {echo "|$stmt|\n";}
 		$rslt=mysql_query($stmt, $link);
 	}
 
-	### update last record in vicidial_agent_log table
+	### update last record in osdial_agent_log table
        if (($dispo != $status) and ($modify_agent_logs > 0)) 
 	{
-		$stmt="UPDATE vicidial_agent_log set status='" . mysql_real_escape_string($status) . "' where lead_id='" . mysql_real_escape_string($lead_id) . "' order by agent_log_id desc limit 1";
+		$stmt="UPDATE osdial_agent_log set status='" . mysql_real_escape_string($status) . "' where lead_id='" . mysql_real_escape_string($lead_id) . "' order by agent_log_id desc limit 1";
 		if ($DB) {echo "|$stmt|\n";}
 		$rslt=mysql_query($stmt, $link);
 	}
 
 	if ($add_closer_record > 0)
 	{
-		### insert a NEW record to the vicidial_closer_log table 
-		$stmt="INSERT INTO vicidial_closer_log (lead_id,list_id,campaign_id,call_date,start_epoch,end_epoch,length_in_sec,status,phone_code,phone_number,user,comments,processed) values('" . mysql_real_escape_string($lead_id) . "','" . mysql_real_escape_string($list_id) . "','" . mysql_real_escape_string($campaign_id) . "','" . mysql_real_escape_string($parked_time) . "','$NOW_TIME','$STARTtime','1','" . mysql_real_escape_string($status) . "','" . mysql_real_escape_string($phone_code) . "','" . mysql_real_escape_string($phone_number) . "','$PHP_AUTH_USER','" . mysql_real_escape_string($comments) . "','Y')";
+		### insert a NEW record to the osdial_closer_log table 
+		$stmt="INSERT INTO osdial_closer_log (lead_id,list_id,campaign_id,call_date,start_epoch,end_epoch,length_in_sec,status,phone_code,phone_number,user,comments,processed) values('" . mysql_real_escape_string($lead_id) . "','" . mysql_real_escape_string($list_id) . "','" . mysql_real_escape_string($campaign_id) . "','" . mysql_real_escape_string($parked_time) . "','$NOW_TIME','$STARTtime','1','" . mysql_real_escape_string($status) . "','" . mysql_real_escape_string($phone_code) . "','" . mysql_real_escape_string($phone_number) . "','$PHP_AUTH_USER','" . mysql_real_escape_string($comments) . "','Y')";
 		if ($DB) {echo "|$stmt|\n";}
 		$rslt=mysql_query($stmt, $link);
 	}
@@ -287,35 +287,35 @@ else
 
 	if ($CBchangeUSERtoANY == 'YES')
 		{
-		### inactivate vicidial_callbacks record for this lead 
-		$stmt="UPDATE vicidial_callbacks set recipient='ANYONE' where callback_id='" . mysql_real_escape_string($callback_id) . "';";
+		### inactivate osdial_callbacks record for this lead 
+		$stmt="UPDATE osdial_callbacks set recipient='ANYONE' where callback_id='" . mysql_real_escape_string($callback_id) . "';";
 		if ($DB) {echo "|$stmt|\n";}
 		$rslt=mysql_query($stmt, $link);
 
-		echo "<BR>vicidial_callback record changed to ANYONE<BR>\n";
+		echo "<BR>osdial_callback record changed to ANYONE<BR>\n";
 		}
 	if ($CBchangeUSERtoUSER == 'YES')
 		{
-		### inactivate vicidial_callbacks record for this lead 
-		$stmt="UPDATE vicidial_callbacks set user='" . mysql_real_escape_string($CBuser) . "' where callback_id='" . mysql_real_escape_string($callback_id) . "';";
+		### inactivate osdial_callbacks record for this lead 
+		$stmt="UPDATE osdial_callbacks set user='" . mysql_real_escape_string($CBuser) . "' where callback_id='" . mysql_real_escape_string($callback_id) . "';";
 		if ($DB) {echo "|$stmt|\n";}
 		$rslt=mysql_query($stmt, $link);
 
-		echo "<BR>vicidial_callback record user changed to $CBuser<BR>\n";
+		echo "<BR>osdial_callback record user changed to $CBuser<BR>\n";
 		}	
 	if ($CBchangeANYtoUSER == 'YES')
 		{
-		### inactivate vicidial_callbacks record for this lead 
-		$stmt="UPDATE vicidial_callbacks set user='" . mysql_real_escape_string($CBuser) . "',recipient='USERONLY' where callback_id='" . mysql_real_escape_string($callback_id) . "';";
+		### inactivate osdial_callbacks record for this lead 
+		$stmt="UPDATE osdial_callbacks set user='" . mysql_real_escape_string($CBuser) . "',recipient='USERONLY' where callback_id='" . mysql_real_escape_string($callback_id) . "';";
 		if ($DB) {echo "|$stmt|\n";}
 		$rslt=mysql_query($stmt, $link);
 
-		echo "<BR>vicidial_callback record changed to USERONLY, user: $CBuser<BR>\n";
+		echo "<BR>osdial_callback record changed to USERONLY, user: $CBuser<BR>\n";
 		}	
 	
 	
 
-	$stmt="SELECT count(*) from vicidial_list where lead_id='" . mysql_real_escape_string($lead_id) . "'";
+	$stmt="SELECT count(*) from osdial_list where lead_id='" . mysql_real_escape_string($lead_id) . "'";
 	$rslt=mysql_query($stmt, $link);
 	if ($DB) {echo "$stmt\n";}
 	$row=mysql_fetch_row($rslt);
@@ -324,8 +324,8 @@ else
 	if ($lead_count > 0)
 	{
 
-	##### grab vicidial_log records #####
-	$stmt="select * from vicidial_log where lead_id='" . mysql_real_escape_string($lead_id) . "' order by uniqueid desc limit 500;";
+	##### grab osdial_log records #####
+	$stmt="select * from osdial_log where lead_id='" . mysql_real_escape_string($lead_id) . "' order by uniqueid desc limit 500;";
 	$rslt=mysql_query($stmt, $link);
 	$logs_to_print = mysql_num_rows($rslt);
 
@@ -356,8 +356,8 @@ else
 			$campaign_id = $row[3];
 		}
 
-	##### grab vicidial_agent_log records #####
-	$stmt="select * from vicidial_agent_log where lead_id='" . mysql_real_escape_string($lead_id) . "' order by agent_log_id desc limit 500;";
+	##### grab osdial_agent_log records #####
+	$stmt="select * from osdial_agent_log where lead_id='" . mysql_real_escape_string($lead_id) . "' order by agent_log_id desc limit 500;";
 	$rslt=mysql_query($stmt, $link);
 	$Alogs_to_print = mysql_num_rows($rslt);
 
@@ -390,8 +390,8 @@ else
 			$campaign_id = $row[5];
 		}
 
-	##### grab vicidial_closer_log records #####
-	$stmt="select * from vicidial_closer_log where lead_id='" . mysql_real_escape_string($lead_id) . "' order by closecallid desc limit 500;";
+	##### grab osdial_closer_log records #####
+	$stmt="select * from osdial_closer_log where lead_id='" . mysql_real_escape_string($lead_id) . "' order by closecallid desc limit 500;";
 	$rslt=mysql_query($stmt, $link);
 	$Clogs_to_print = mysql_num_rows($rslt);
 
@@ -423,8 +423,8 @@ else
 			$campaign_id = $row[3];
 		}
 
-	##### grab vicidial_list data for lead #####
-		$stmt="SELECT * from vicidial_list where lead_id='" . mysql_real_escape_string($lead_id) . "'";
+	##### grab osdial_list data for lead #####
+		$stmt="SELECT * from osdial_list where lead_id='" . mysql_real_escape_string($lead_id) . "'";
 		$rslt=mysql_query($stmt, $link);
 		if ($DB) {echo "$stmt\n";}
 		$row=mysql_fetch_row($rslt);
@@ -490,7 +490,7 @@ else
 		echo "<tr><td align=right>Comments : </td><td align=left><input type=text name=comments size=30 maxlength=255 value=\"$comments\"></td></tr>\n";
 			echo "<tr bgcolor=#B6D3FC><td align=right>Disposition: </td><td align=left><select size=1 name=status>\n";
 
-				$stmt="SELECT * from vicidial_statuses where selectable='Y' order by status";
+				$stmt="SELECT * from osdial_statuses where selectable='Y' order by status";
 				$rslt=mysql_query($stmt, $link);
 				$statuses_to_print = mysql_num_rows($rslt);
 				$statuses_list='';
@@ -507,7 +507,7 @@ else
 					$o++;
 				}
 
-				$stmt="SELECT * from vicidial_campaign_statuses where selectable='Y' and campaign_id='$log_campaign' order by status";
+				$stmt="SELECT * from osdial_campaign_statuses where selectable='Y' and campaign_id='$log_campaign' order by status";
 				$rslt=mysql_query($stmt, $link);
 				$CAMPstatuses_to_print = mysql_num_rows($rslt);
 
@@ -528,7 +528,7 @@ else
 			echo "</select> <i>(with $log_campaign statuses)</i></td></tr>\n";
 
 
-		echo "<tr bgcolor=#B6D3FC><td align=left>Modify vicidial log </td><td align=left><input type=checkbox name=modify_logs value=\"1\" CHECKED></td></tr>\n";
+		echo "<tr bgcolor=#B6D3FC><td align=left>Modify osdial log </td><td align=left><input type=checkbox name=modify_logs value=\"1\" CHECKED></td></tr>\n";
 		echo "<tr bgcolor=#B6D3FC><td align=left>Modify agent log </td><td align=left><input type=checkbox name=modify_agent_logs value=\"1\" CHECKED></td></tr>\n";
 		echo "<tr bgcolor=#B6D3FC><td align=left>Modify closer log </td><td align=left><input type=checkbox name=modify_closer_logs value=\"1\"></td></tr>\n";
 		echo "<tr bgcolor=#B6D3FC><td align=left>Add closer log record </td><td align=left><input type=checkbox name=add_closer_record value=\"1\"></td></tr>\n";
@@ -540,8 +540,8 @@ else
 
 		if ( ($dispo == 'CALLBK') or ($dispo == 'CBHOLD') )
 		{
-			### find any vicidial_callback records for this lead 
-			$stmt="select * from vicidial_callbacks where lead_id='" . mysql_real_escape_string($lead_id) . "' and status IN('ACTIVE','LIVE') order by callback_id desc LIMIT 1;";
+			### find any osdial_callback records for this lead 
+			$stmt="select * from osdial_callbacks where lead_id='" . mysql_real_escape_string($lead_id) . "' and status IN('ACTIVE','LIVE') order by callback_id desc LIMIT 1;";
 			if ($DB) {echo "|$stmt|\n";}
 			$rslt=mysql_query($stmt, $link);
 			$CB_to_print = mysql_num_rows($rslt);

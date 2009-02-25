@@ -3,7 +3,7 @@
 
 
 ######################
-# ADD=411111111111111 modify vicidial system settings
+# ADD=411111111111111 modify osdial system settings
 ######################
 
 if ($ADD==411111111111111)
@@ -14,7 +14,7 @@ if ($ADD==411111111111111)
 
 	echo "<br><font color=navy>OSDial SYSTEM SETTINGS MODIFIED</font>\n";
 
-	$stmt="UPDATE system_settings set use_non_latin='$use_non_latin',webroot_writable='$webroot_writable',enable_queuemetrics_logging='$enable_queuemetrics_logging',queuemetrics_server_ip='$queuemetrics_server_ip',queuemetrics_dbname='$queuemetrics_dbname',queuemetrics_login='$queuemetrics_login',queuemetrics_pass='$queuemetrics_pass',queuemetrics_url='$queuemetrics_url',queuemetrics_log_id='$queuemetrics_log_id',queuemetrics_eq_prepend='$queuemetrics_eq_prepend',vicidial_agent_disable='$vicidial_agent_disable',allow_sipsak_messages='$allow_sipsak_messages',admin_home_url='$admin_home_url',enable_agc_xfer_log='$enable_agc_xfer_log';";
+	$stmt="UPDATE system_settings set use_non_latin='$use_non_latin',webroot_writable='$webroot_writable',enable_queuemetrics_logging='$enable_queuemetrics_logging',queuemetrics_server_ip='$queuemetrics_server_ip',queuemetrics_dbname='$queuemetrics_dbname',queuemetrics_login='$queuemetrics_login',queuemetrics_pass='$queuemetrics_pass',queuemetrics_url='$queuemetrics_url',queuemetrics_log_id='$queuemetrics_log_id',queuemetrics_eq_prepend='$queuemetrics_eq_prepend',osdial_agent_disable='$osdial_agent_disable',allow_sipsak_messages='$allow_sipsak_messages',admin_home_url='$admin_home_url',enable_agc_xfer_log='$enable_agc_xfer_log';";
 	$rslt=mysql_query($stmt, $link);
 
 	### LOG CHANGES TO LOG FILE ###
@@ -30,12 +30,12 @@ if ($ADD==411111111111111)
 	echo "<font color=red>You do not have permission to view this page</font>\n";
 	exit;
 	}
-$ADD=311111111111111;	# go to vicidial system settings form below
+$ADD=311111111111111;	# go to osdial system settings form below
 }
 
 
 ######################
-# ADD=311111111111111 modify vicidial system settings
+# ADD=311111111111111 modify osdial system settings
 ######################
 
 if ($ADD==311111111111111)
@@ -45,7 +45,7 @@ if ($ADD==311111111111111)
 	echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT version,install_date,use_non_latin,webroot_writable,enable_queuemetrics_logging,queuemetrics_server_ip,queuemetrics_dbname,queuemetrics_login,queuemetrics_pass,queuemetrics_url,queuemetrics_log_id,queuemetrics_eq_prepend,vicidial_agent_disable,allow_sipsak_messages,admin_home_url,enable_agc_xfer_log from system_settings;";
+	$stmt="SELECT version,install_date,use_non_latin,webroot_writable,enable_queuemetrics_logging,queuemetrics_server_ip,queuemetrics_dbname,queuemetrics_login,queuemetrics_pass,queuemetrics_url,queuemetrics_log_id,queuemetrics_eq_prepend,osdial_agent_disable,allow_sipsak_messages,admin_home_url,enable_agc_xfer_log from system_settings;";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$version =						$row[0];
@@ -60,7 +60,7 @@ if ($ADD==311111111111111)
 	$queuemetrics_url =				$row[9];
 	$queuemetrics_log_id =			$row[10];
 	$queuemetrics_eq_prepend =		$row[11];
-	$vicidial_agent_disable =		$row[12];
+	$osdial_agent_disable =		$row[12];
 	$allow_sipsak_messages =		$row[13];
 	$admin_home_url =				$row[14];
 	$enable_agc_xfer_log =			$row[15];
@@ -90,12 +90,12 @@ if ($ADD==311111111111111)
 	echo "<option value=\"security_phrase\">security_phrase</option>\n";
 	echo "<option selected value=\"$queuemetrics_eq_prepend\">$queuemetrics_eq_prepend</option>\n";
 	echo "</select>$NWB#settings-queuemetrics_eq_prepend$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>OSDial Agent Disable Display: </td><td align=left><select size=1 name=vicidial_agent_disable>\n";
+	echo "<tr bgcolor=#C1D6DF><td align=right>OSDial Agent Disable Display: </td><td align=left><select size=1 name=osdial_agent_disable>\n";
 	echo "<option value=\"NOT_ACTIVE\">NOT_ACTIVE</option>\n";
 	echo "<option value=\"LIVE_AGENT\">LIVE_AGENT</option>\n";
 	echo "<option value=\"EXTERNAL\">EXTERNAL</option>\n";
 	echo "<option value=\"ALL\">ALL</option>\n";
-	echo "<option selected value=\"$vicidial_agent_disable\">$vicidial_agent_disable</option>\n";
+	echo "<option selected value=\"$osdial_agent_disable\">$osdial_agent_disable</option>\n";
 	echo "</select>$NWB#settings-osdial_agent_disable$NWE</td></tr>\n";
 	echo "<tr bgcolor=#C1D6DF><td align=right>Allow SIPSAK Messages: </td><td align=left><select size=1 name=allow_sipsak_messages><option>1</option><option>0</option><option selected>$allow_sipsak_messages</option></select>$NWB#settings-allow_sipsak_messages$NWE</td></tr>\n";
 	echo "<tr bgcolor=#C1D6DF><td align=right>Admin Home URL: </td><td align=left><input type=text name=admin_home_url size=50 maxlength=255 value=\"$admin_home_url\">$NWB#settings-admin_home_url$NWE</td></tr>\n";

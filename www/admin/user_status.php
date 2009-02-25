@@ -39,7 +39,7 @@ $TODAY = date("Y-m-d");
 if (!isset($begin_date)) {$begin_date = $TODAY;}
 if (!isset($end_date)) {$end_date = $TODAY;}
 
-	$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 7 and view_reports='1';";
+	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 7 and view_reports='1';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$auth=$row[0];
@@ -51,7 +51,7 @@ $browser = getenv("HTTP_USER_AGENT");
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICI-PROJECTS\"");
+    Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
@@ -61,27 +61,27 @@ $browser = getenv("HTTP_USER_AGENT");
 
 	if($auth>0)
 		{
-			$stmt="SELECT full_name,change_agent_campaign from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
+			$stmt="SELECT full_name,change_agent_campaign from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			$LOGfullname=$row[0];
 			$change_agent_campaign=$row[1];
-		fwrite ($fp, "VICIDIAL|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|$LOGfullname|\n");
+		fwrite ($fp, "OSDIAL|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|$LOGfullname|\n");
 		fclose($fp);
 		}
 	else
 		{
-		fwrite ($fp, "VICIDIAL|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|\n");
+		fwrite ($fp, "OSDIAL|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|\n");
 		fclose($fp);
 		}
 
-	$stmt="SELECT full_name,user_group from vicidial_users where user='" . mysql_real_escape_string($user) . "';";
+	$stmt="SELECT full_name,user_group from osdial_users where user='" . mysql_real_escape_string($user) . "';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$full_name = $row[0];
 	$user_group = $row[1];
 
-	$stmt="SELECT * from vicidial_live_agents where user='" . mysql_real_escape_string($user) . "';";
+	$stmt="SELECT * from osdial_live_agents where user='" . mysql_real_escape_string($user) . "';";
 	$rslt=mysql_query($stmt, $link);
 	if ($DB) {echo "$stmt\n";}
 	$agents_to_print = mysql_num_rows($rslt);
@@ -101,7 +101,7 @@ $browser = getenv("HTTP_USER_AGENT");
 
 	}
 
-$stmt="select * from vicidial_campaigns;";
+$stmt="select * from osdial_campaigns;";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}
 $groups_to_print = mysql_num_rows($rslt);
@@ -136,7 +136,7 @@ echo "<TR BGCOLOR=\"#F0F5FE\"><TD ALIGN=LEFT COLSPAN=2><FONT FACE=\"ARIAL,HELVET
 
 if ($stage == "live_campaign_change")
 {
-	$stmt="UPDATE vicidial_live_agents set campaign_id='" . mysql_real_escape_string($group) . "' where user='" . mysql_real_escape_string($user) . "';";
+	$stmt="UPDATE osdial_live_agents set campaign_id='" . mysql_real_escape_string($group) . "' where user='" . mysql_real_escape_string($user) . "';";
 	$rslt=mysql_query($stmt, $link);
 
 	echo "Agent $user - $full_name changed to $group campaign<BR>\n";
@@ -146,7 +146,7 @@ if ($stage == "live_campaign_change")
 
 if ($stage == "log_agent_out")
 {
-	$stmt="DELETE from vicidial_live_agents where user='" . mysql_real_escape_string($user) . "';";
+	$stmt="DELETE from osdial_live_agents where user='" . mysql_real_escape_string($user) . "';";
 	$rslt=mysql_query($stmt, $link);
 
 	echo "Agent $user - $full_name has been emergency logged out, make sure they close their web browser<BR>\n";

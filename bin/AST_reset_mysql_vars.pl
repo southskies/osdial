@@ -70,45 +70,45 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
 	print " - conferences reset\n";
 
-	$stmtA = "UPDATE vicidial_conferences set extension='' where server_ip='$server_ip';";
+	$stmtA = "UPDATE osdial_conferences set extension='' where server_ip='$server_ip';";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
-	print " - vicidial_conferences reset\n";
+	print " - osdial_conferences reset\n";
 
-#	$stmtA = "UPDATE vicidial_manager set status='DEAD' where server_ip='$server_ip' and status='NEW';";
+#	$stmtA = "UPDATE osdial_manager set status='DEAD' where server_ip='$server_ip' and status='NEW';";
 #		if($DB){print STDERR "\n|$stmtA|\n";}
 #	$dbhA->query($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
-#	print " - vicidial_manager queue reset\n";
+#	print " - osdial_manager queue reset\n";
 
-	$stmtA = "DELETE from vicidial_manager where server_ip='$server_ip';";
+	$stmtA = "DELETE from osdial_manager where server_ip='$server_ip';";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
-	print " - vicidial_manager delete\n";
+	print " - osdial_manager delete\n";
 
-	$stmtA = "DELETE from vicidial_auto_calls where server_ip='$server_ip';";
+	$stmtA = "DELETE from osdial_auto_calls where server_ip='$server_ip';";
 			if($DB){print STDERR "\n|$stmtA|\n";}
 	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
-	print " - vicidial_auto_calls delete\n";
+	print " - osdial_auto_calls delete\n";
 
-	$stmtA = "DELETE from vicidial_live_agents where server_ip='$server_ip';";
+	$stmtA = "DELETE from osdial_live_agents where server_ip='$server_ip';";
 			if($DB){print STDERR "\n|$stmtA|\n";}
 	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
-	print " - vicidial_live_agents delete\n";
+	print " - osdial_live_agents delete\n";
 
-	$stmtA = "DELETE from vicidial_users where full_name='5555';";
+	$stmtA = "DELETE from osdial_users where full_name='5555';";
 			if($DB){print STDERR "\n|$stmtA|\n";}
 	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
-	print " - vicidial__users delete\n";
+	print " - osdial__users delete\n";
 
-	$stmtA = "DELETE from vicidial_campaign_server_stats where server_ip='$server_ip';";
+	$stmtA = "DELETE from osdial_campaign_server_stats where server_ip='$server_ip';";
 			if($DB){print STDERR "\n|$stmtA|\n";}
 	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
-	print " - vicidial_campaign_server_stats delete\n";
+	print " - osdial_campaign_server_stats delete\n";
 
-	$stmtA = "DELETE from vicidial_hopper where user LIKE \"%_$server_ip\";";
+	$stmtA = "DELETE from osdial_hopper where user LIKE \"%_$server_ip\";";
 			if($DB){print STDERR "\n|$stmtA|\n";}
 	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
-	print " - vicidial_hopper delete\n";
+	print " - osdial_hopper delete\n";
 
 	$dbhA->disconnect();
 

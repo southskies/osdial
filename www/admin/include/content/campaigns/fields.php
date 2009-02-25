@@ -15,7 +15,7 @@ if ($ADD == "1form") {
             $ADD = "2form"; # go to campaign modification form below
         } else {
             $form_id = 0;
-            $forms = get_krh($link, 'vicidial_campaign_forms', '*', 'priority', "");
+            $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "");
             foreach ($forms as $form) {
                 if ($form['id'] > $form_id) {
                     $form_id = $form['id'];
@@ -28,7 +28,7 @@ if ($ADD == "1form") {
                 $fcamps='ALL';
             }
             $form_name = strtoupper($form_name);
-            $stmt = "INSERT INTO vicidial_campaign_forms (id,name,description,description2,priority,campaigns) VALUES ('$form_id','$form_name','$form_description','$form_description2','$form_priority','$fcamps');";
+            $stmt = "INSERT INTO osdial_campaign_forms (id,name,description,description2,priority,campaigns) VALUES ('$form_id','$form_name','$form_description','$form_description2','$form_priority','$fcamps');";
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -56,7 +56,7 @@ if ($ADD == "2form") {
     echo "<center><br><font color=navy size=+1>ADDITIONAL FORM</font><br><br>\n";
 
     $pri = 0;
-    $forms = get_krh($link, 'vicidial_campaign_forms', '*', 'priority', "deleted='0'");
+    $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
     foreach ($forms as $form) {
         if ($form['priority'] > $pri) {
             $pri = $form['priority'];
@@ -89,7 +89,7 @@ if ($ADD == "2form") {
     echo "      <td bgcolor=#C1D6DB align=right>Campaigns:</td>\n";
     echo '      <td bgcolor="#C1D6DB"><input type="checkbox" name="campaigns[]" value="-ALL-"> <b>ALL - FORM IN ALL CAMPAIGNS</b></td>';
     echo "  </tr>\n";
-    $campaigns = get_krh($link, 'vicidial_campaigns', 'campaign_id,campaign_name');
+    $campaigns = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name');
     foreach ($campaigns as $camp) {
         echo "  <tr>\n";
         echo "      <td bgcolor=#C1D6DB align=right>&nbsp;</td>\n";
@@ -121,7 +121,7 @@ if ($ADD == "2fields") {
     } else {
         $field_name = strtoupper($field_name);
         echo "<br><B><font color=navy>FIELD ADDED: $field_name</font></B>\n";
-        $stmt = "INSERT INTO vicidial_campaign_fields (form_id,name,description,options,length,priority) values('$form_id','$field_name','$field_description','$field_options','$field_length','$field_priority');";
+        $stmt = "INSERT INTO osdial_campaign_fields (form_id,name,description,options,length,priority) values('$form_id','$field_name','$field_description','$field_options','$field_length','$field_priority');";
         $rslt = mysql_query($stmt, $link);
         ### LOG CHANGES TO LOG FILE ###
         if ($WeBRooTWritablE > 0) {
@@ -154,7 +154,7 @@ if ($ADD == "4form") {
                 $fcamps='ALL';
             }
             $field_name = strtoupper($field_name);
-            $stmt = "UPDATE vicidial_campaign_forms SET name='$form_name',description='$form_description',description2='$form_description2',priority='$form_priority',campaigns='$fcamps' where id='$form_id';";
+            $stmt = "UPDATE osdial_campaign_forms SET name='$form_name',description='$form_description',description2='$form_description2',priority='$form_priority',campaigns='$fcamps' where id='$form_id';";
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -187,7 +187,7 @@ if ($ADD == "4fields") {
         } else {
             echo "<br><B><font color=navy>FIELD MODIFIED: $field_name</font></B>\n";
             $field_name = strtoupper($field_name);
-            $stmt = "UPDATE vicidial_campaign_fields SET name='$field_name',description='$field_description',options='$field_options',length='$field_length',priority='$field_priority' where id='$field_id';";
+            $stmt = "UPDATE osdial_campaign_fields SET name='$field_name',description='$field_description',options='$field_options',length='$field_length',priority='$field_priority' where id='$field_id';";
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -216,9 +216,9 @@ if ($ADD == "6form") {
             echo "<br><font color=red>FORM NOT DELETED - Could not find form id!\n";
         } else {
             echo "<br><B><font color=navy>FORM DELETED: $form_id - $form_name</font></B>\n";
-            $stmt = "UPDATE vicidial_campaign_forms SET deleted='1' WHERE id='$form_id';";
+            $stmt = "UPDATE osdial_campaign_forms SET deleted='1' WHERE id='$form_id';";
             $rslt = mysql_query($stmt, $link);
-            $stmt = "UPDATE vicidial_campaign_fields SET deleted='1' WHERE form_id='$form_id';";
+            $stmt = "UPDATE osdial_campaign_fields SET deleted='1' WHERE form_id='$form_id';";
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -246,7 +246,7 @@ if ($ADD == "6fields") {
             echo "<br><font color=red>FIELD NOT DELETED - Could not find field id!\n";
         } else {
             echo "<br><B><font color=navy>FIELD DELETED: $field_id - $field_name</font></B>\n";
-            $stmt = "UPDATE vicidial_campaign_fields SET deleted='1' WHERE id='$field_id';";
+            $stmt = "UPDATE osdial_campaign_fields SET deleted='1' WHERE id='$field_id';";
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -281,7 +281,7 @@ if ($ADD == "3fields" and $SUB != '2fields') {
     echo "<td><font color=white size=1>LINKS</font></td>\n";
     echo "</tr>\n";
 
-    $forms = get_krh($link, 'vicidial_campaign_forms', '*', 'priority', "deleted='0'");
+    $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
 
     $cnt = 0;
     foreach ($forms as $form) {
@@ -315,7 +315,7 @@ if ($ADD == "3fields" and $SUB == '2fields') {
     echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
     echo "<center><br><font color=navy size=+1>ADDITIONAL FORM</font><br><br>\n";
 
-    $form = get_first_record($link, 'vicidial_campaign_forms', '*', 'id=' . $id);
+    $form = get_first_record($link, 'osdial_campaign_forms', '*', 'id=' . $id);
 
     echo '<form action="' . $PHP_SELF . '" method="POST">';
     echo '<input type="hidden" name="ADD" value="4form">';
@@ -345,7 +345,7 @@ if ($ADD == "3fields" and $SUB == '2fields') {
     }
     echo '      <td bgcolor="#C1D6DB"><input type="checkbox" name="campaigns[]" value="-ALL-" ' . $ac . '> <b>ALL - FORM IN ALL CAMPAIGNS</b></td>';
     echo "  </tr>\n";
-    $campaigns = get_krh($link, 'vicidial_campaigns', 'campaign_id,campaign_name');
+    $campaigns = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name');
     foreach ($campaigns as $camp) {
         echo "  <tr>\n";
         echo "      <td bgcolor=#C1D6DB align=right>&nbsp;</td>\n";
@@ -378,7 +378,7 @@ if ($ADD == "3fields" and $SUB == '2fields') {
     echo "      <td align=center><font color=white size=1>PRIORITY</font></td>\n";
     echo "      <td align=center><font color=white size=1>ACTION</font></td>\n";
     echo "  </tr>\n";
-    $fields = get_krh($link, 'vicidial_campaign_fields', '*', 'priority', "form_id='" . $form['id'] . "' AND deleted='0'");
+    $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "form_id='" . $form['id'] . "' AND deleted='0'");
     $cnt = 0;
     $pri = 0;
     foreach ($fields as $field) {

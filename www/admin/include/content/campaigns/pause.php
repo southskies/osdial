@@ -9,7 +9,7 @@
 if ($ADD==27)
 {
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT count(*) from vicidial_pause_codes where campaign_id='$campaign_id' and pause_code='$pause_code';";
+	$stmt="SELECT count(*) from osdial_pause_codes where campaign_id='$campaign_id' and pause_code='$pause_code';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -26,7 +26,7 @@ if ($ADD==27)
 			{
 			echo "<br><B><font color=navy>AGENT PAUSE CODE ADDED: $campaign_id - $pause_code - $pause_code_name</font></B>\n";
 
-			$stmt="INSERT INTO vicidial_pause_codes(campaign_id,pause_code,pause_code_name,billable) values('$campaign_id','$pause_code','$pause_code_name','$billable');";
+			$stmt="INSERT INTO osdial_pause_codes(campaign_id,pause_code,pause_code_name,billable) values('$campaign_id','$pause_code','$pause_code_name','$billable');";
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -64,7 +64,7 @@ if ($ADD==47)
 		{
 		echo "<br><B><font color=navy>AGENT PAUSE CODE MODIFIED: $campaign_id - $pause_code - $pause_code_name</font></B>\n";
 
-		$stmt="UPDATE vicidial_pause_codes SET pause_code_name='$pause_code_name',billable='$billable' where campaign_id='$campaign_id' and pause_code='$pause_code';";
+		$stmt="UPDATE osdial_pause_codes SET pause_code_name='$pause_code_name',billable='$billable' where campaign_id='$campaign_id' and pause_code='$pause_code';";
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -106,7 +106,7 @@ if ($ADD==67)
 		{
 		echo "<br><B><font color=navy>CAMPAIGN PAUSE CODE DELETED: $campaign_id - $pause_code</font></B>\n";
 
-		$stmt="DELETE FROM vicidial_pause_codes where campaign_id='$campaign_id' and pause_code='$pause_code';";
+		$stmt="DELETE FROM osdial_pause_codes where campaign_id='$campaign_id' and pause_code='$pause_code';";
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -146,7 +146,7 @@ echo "<td><font color=white size=1>PAUSE CODES</font></td>\n";
 echo "<td><font color=white size=1>LINKS</font></td>\n";
 echo "</tr>\n";
 
-	$stmt="SELECT campaign_id,campaign_name from vicidial_campaigns order by campaign_id";
+	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
 	$rslt=mysql_query($stmt, $link);
 	$campaigns_to_print = mysql_num_rows($rslt);
 
@@ -170,7 +170,7 @@ echo "</tr>\n";
 		echo "<td><font size=1> $campaigns_name_list[$o] </td>";
 		echo "<td><font size=1> ";
 
-		$stmt="SELECT pause_code from vicidial_pause_codes where campaign_id='$campaigns_id_list[$o]' order by pause_code;";
+		$stmt="SELECT pause_code from osdial_pause_codes where campaign_id='$campaigns_id_list[$o]' order by pause_code;";
 		$rslt=mysql_query($stmt, $link);
 		$campstatus_to_print = mysql_num_rows($rslt);
 		$p=0;

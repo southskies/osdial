@@ -9,7 +9,7 @@ if ($ADD==25)
 {
 	$status = eregi_replace("-----.*",'',$status);
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT count(*) from vicidial_lead_recycle where campaign_id='$campaign_id' and status='$status';";
+	$stmt="SELECT count(*) from osdial_lead_recycle where campaign_id='$campaign_id' and status='$status';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -27,7 +27,7 @@ if ($ADD==25)
 			{
 			echo "<br><B><font color=navy>CAMPAIGN LEAD RECYCLE ADDED: $campaign_id - $status - $attempt_delay</font></B>\n";
 
-			$stmt="INSERT INTO vicidial_lead_recycle(campaign_id,status,attempt_delay,attempt_maximum,active) values('$campaign_id','$status','$attempt_delay','$attempt_maximum','$active');";
+			$stmt="INSERT INTO osdial_lead_recycle(campaign_id,status,attempt_delay,attempt_maximum,active) values('$campaign_id','$status','$attempt_delay','$attempt_maximum','$active');";
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -66,7 +66,7 @@ if ($ADD==45)
 		{
 		echo "<br><B><font color=navy>CAMPAIGN LEAD MODIFIED: $campaign_id - $status - $attempt_delay</font></B>\n";
 
-		$stmt="UPDATE vicidial_lead_recycle SET attempt_delay='$attempt_delay',attempt_maximum='$attempt_maximum',active='$active' where campaign_id='$campaign_id' and status='$status';";
+		$stmt="UPDATE osdial_lead_recycle SET attempt_delay='$attempt_delay',attempt_maximum='$attempt_maximum',active='$active' where campaign_id='$campaign_id' and status='$status';";
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -109,7 +109,7 @@ if ($ADD==65)
 		{
 		echo "<br><B><font color=navy>CAMPAIGN LEAD RECYCLE DELETED: $campaign_id - $status - $attempt_delay</font></B>\n";
 
-		$stmt="DELETE FROM vicidial_lead_recycle where campaign_id='$campaign_id' and status='$status';";
+		$stmt="DELETE FROM osdial_lead_recycle where campaign_id='$campaign_id' and status='$status';";
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -148,7 +148,7 @@ echo "<td><font color=white size=1>LEAD RECYCLES</font></td>\n";
 echo "<td><font color=white size=1>LINKS</font></td>\n";
 echo "</tr>\n";
 
-	$stmt="SELECT campaign_id,campaign_name from vicidial_campaigns order by campaign_id";
+	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
 	$rslt=mysql_query($stmt, $link);
 	$campaigns_to_print = mysql_num_rows($rslt);
 
@@ -172,7 +172,7 @@ echo "</tr>\n";
 		echo "<td><font size=1> $campaigns_name_list[$o] </td>";
 		echo "<td><font size=1> ";
 
-		$stmt="SELECT status from vicidial_lead_recycle where campaign_id='$campaigns_id_list[$o]' order by status";
+		$stmt="SELECT status from osdial_lead_recycle where campaign_id='$campaigns_id_list[$o]' order by status";
 		$rslt=mysql_query($stmt, $link);
 		$campstatus_to_print = mysql_num_rows($rslt);
 		$p=0;

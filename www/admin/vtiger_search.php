@@ -14,7 +14,7 @@
 # 60802-1111 - added insertion of not-found record into vtiger system
 #
 
-#Asterisk/VICIDIAL Server (ASTERISK)
+#Asterisk/OSDIAL Server (ASTERISK)
 #Internal : 10.10.10.15
 #External : 55.55.55.55
 
@@ -126,7 +126,7 @@ $parked_time = $STARTtime;
 
 # $ext_context = 'default'; defined in dbconnect file
 
-#	$stmt="SELECT count(*) from vicidial_users where user='$user' and pass='$pass' and user_level > 0;";
+#	$stmt="SELECT count(*) from osdial_users where user='$user' and pass='$pass' and user_level > 0;";
 #		if ($DB) {echo "$stmt\n";}
 #	$rslt=mysql_query($stmt, $link);
 #	$row=mysql_fetch_row($rslt);
@@ -139,7 +139,7 @@ $parked_time = $STARTtime;
 
 #  if( (strlen($user)<2) or (strlen($pass)<2) or (!$auth))
 #	{
-#    Header("WWW-Authenticate: Basic realm=\"VICIDIAL-CLOSER\"");
+#    Header("WWW-Authenticate: Basic realm=\"OSDIAL-CLOSER\"");
 #    Header("HTTP/1.0 401 Unauthorized");
 #    echo "Invalid Username/Password: |$user|$pass|\n";
 #    exit;
@@ -151,7 +151,7 @@ $parked_time = $STARTtime;
 #		{
 #		$office_no=strtoupper($user);
 #		$password=strtoupper($pass);
-#			$stmt="SELECT full_name from vicidial_users where user='$user' and pass='$pass'";
+#			$stmt="SELECT full_name from osdial_users where user='$user' and pass='$pass'";
 #			if ($DB) {echo "$stmt\n";}
 #			$rslt=mysql_query($stmt, $link);
 #			$row=mysql_fetch_row($rslt);
@@ -183,7 +183,7 @@ $parked_time = $STARTtime;
 
 echo "<html>\n";
 echo "<head>\n";
-echo "<title>VICIDIAL Vtiger Lookup</title>\n";
+echo "<title>OSDIAL Vtiger Lookup</title>\n";
 echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
 
 

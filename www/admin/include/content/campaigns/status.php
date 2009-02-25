@@ -8,14 +8,14 @@ if ($ADD==22)
 {
 
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT count(*) from vicidial_campaign_statuses where campaign_id='$campaign_id' and status='$status';";
+	$stmt="SELECT count(*) from osdial_campaign_statuses where campaign_id='$campaign_id' and status='$status';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
 		{echo "<br><font color=red> CAMPAIGN STATUS NOT ADDED - there is already a campaign-status in the system with this name</font>\n";}
 	else
 		{
-		$stmt="SELECT count(*) from vicidial_statuses where status='$status';";
+		$stmt="SELECT count(*) from osdial_statuses where status='$status';";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		if ($row[0] > 0)
@@ -32,7 +32,7 @@ if ($ADD==22)
 				{
 				echo "<br><B><font color=navy> CAMPAIGN STATUS ADDED: $campaign_id - $status</font></B>\n";
 
-				$stmt="INSERT INTO vicidial_campaign_statuses (status,status_name,selectable,campaign_id,human_answered,category) values('$status','$status_name','$selectable','$campaign_id','$human_answered','$category');";
+				$stmt="INSERT INTO osdial_campaign_statuses (status,status_name,selectable,campaign_id,human_answered,category) values('$status','$status_name','$selectable','$campaign_id','$human_answered','$category');";
 				$rslt=mysql_query($stmt, $link);
 
 				### LOG CHANGES TO LOG FILE ###
@@ -72,10 +72,10 @@ if ($ADD==42)
 			{
 			echo "<br><B><font color=navy>CUSTOM CAMPAIGN STATUS DELETED: $campaign_id - $status</font></B>\n";
 
-			$stmt="DELETE FROM vicidial_campaign_statuses where campaign_id='$campaign_id' and status='$status';";
+			$stmt="DELETE FROM osdial_campaign_statuses where campaign_id='$campaign_id' and status='$status';";
 			$rslt=mysql_query($stmt, $link);
 
-			$stmtA="DELETE FROM vicidial_campaign_hotkeys where campaign_id='$campaign_id' and status='$status';";
+			$stmtA="DELETE FROM osdial_campaign_hotkeys where campaign_id='$campaign_id' and status='$status';";
 			$rslt=mysql_query($stmtA, $link);
 
 
@@ -91,7 +91,7 @@ if ($ADD==42)
 			{
 			echo "<br><B><font color=navy>CUSTOM CAMPAIGN STATUS MODIFIED: $campaign_id - $status</font></B>\n";
 
-			$stmt="UPDATE vicidial_campaign_statuses SET status_name='$status_name',selectable='$selectable',human_answered='$human_answered',category='$category' where campaign_id='$campaign_id' and status='$status';";
+			$stmt="UPDATE osdial_campaign_statuses SET status_name='$status_name',selectable='$selectable',human_answered='$human_answered',category='$category' where campaign_id='$campaign_id' and status='$status';";
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -130,7 +130,7 @@ echo "<td><font color=white size=1>STATUSES</font></td>\n";
 echo "<td><font color=white size=1>LINKS</font></td>\n";
 echo "</tr>\n";
 
-	$stmt="SELECT campaign_id,campaign_name from vicidial_campaigns order by campaign_id";
+	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
 	$rslt=mysql_query($stmt, $link);
 	$campaigns_to_print = mysql_num_rows($rslt);
 
@@ -154,7 +154,7 @@ echo "</tr>\n";
 		echo "<td><font size=1> $campaigns_name_list[$o] </td>";
 		echo "<td><font size=1> ";
 
-		$stmt="SELECT status from vicidial_campaign_statuses where campaign_id='$campaigns_id_list[$o]' order by status";
+		$stmt="SELECT status from osdial_campaign_statuses where campaign_id='$campaigns_id_list[$o]' order by status";
 		$rslt=mysql_query($stmt, $link);
 		$campstatus_to_print = mysql_num_rows($rslt);
 		$p=0;

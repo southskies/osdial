@@ -168,8 +168,8 @@ foreach(@congest_kill)
 		### use manager middleware-app to zapbarge call being placed from meetme
 			$KCqueryCID = "KC$i_count$CIDdate";
 
-			### insert a NEW record to the vicidial_manager table to be processed
-		$stmtA = "INSERT INTO vicidial_manager values('','','$now_date','NEW','N','$server_ip','','Hangup','$KCqueryCID','Channel: $congest_kill[$i]','','','','','','','','','')";
+			### insert a NEW record to the osdial_manager table to be processed
+		$stmtA = "INSERT INTO osdial_manager values('','','$now_date','NEW','N','$server_ip','','Hangup','$KCqueryCID','Channel: $congest_kill[$i]','','','','','','','','','')";
 
 			$event_string = "SUBRT|killing_congest|KC|$KCqueryCID|$congest_kill[$i]|$stmtA|";
 		 event_logger;
@@ -217,8 +217,8 @@ foreach(@congest_kill)
 		### use manager middleware-app to zapbarge call being placed from meetme
 			$KCqueryCID = "KC$i_count$CIDdate";
 
-			### insert a NEW record to the vicidial_manager table to be processed
-		$stmtA = "INSERT INTO vicidial_manager values('','','$now_date','NEW','N','$server_ip','','Hangup','$KCqueryCID','Channel: $congest_kill[$i]','','','','','','','','','')";
+			### insert a NEW record to the osdial_manager table to be processed
+		$stmtA = "INSERT INTO osdial_manager values('','','$now_date','NEW','N','$server_ip','','Hangup','$KCqueryCID','Channel: $congest_kill[$i]','','','','','','','','','')";
 
 			$event_string = "SUBRT|killing_congest|KC|$KCqueryCID|$congest_kill[$i]|$stmtA|";
 		 event_logger;
@@ -267,8 +267,8 @@ foreach(@congest_kill)
 		### use manager middleware-app to zapbarge call being placed from meetme
 			$KCqueryCID = "KC$i_count$CIDdate";
 
-			### insert a NEW record to the vicidial_manager table to be processed
-		$stmtA = "INSERT INTO vicidial_manager values('','','$now_date','NEW','N','$server_ip','','Hangup','$KCqueryCID','Channel: $congest_kill[$i]','','','','','','','','','')";
+			### insert a NEW record to the osdial_manager table to be processed
+		$stmtA = "INSERT INTO osdial_manager values('','','$now_date','NEW','N','$server_ip','','Hangup','$KCqueryCID','Channel: $congest_kill[$i]','','','','','','','','','')";
 
 			$event_string = "SUBRT|killing_congest|KC|$KCqueryCID|$congest_kill[$i]|$stmtA|";
 		 event_logger;
@@ -319,8 +319,8 @@ foreach(@congest_kill)
 		### use manager middleware-app to zapbarge call being placed from meetme
 			$KCqueryCID = "KC$i_count$CIDdate";
 
-			### insert a NEW record to the vicidial_manager table to be processed
-		$stmtA = "INSERT INTO vicidial_manager values('','','$now_date','NEW','N','$server_ip','','Hangup','$KCqueryCID','Channel: $congest_kill[$i]','','','','','','','','','')";
+			### insert a NEW record to the osdial_manager table to be processed
+		$stmtA = "INSERT INTO osdial_manager values('','','$now_date','NEW','N','$server_ip','','Hangup','$KCqueryCID','Channel: $congest_kill[$i]','','','','','','','','','')";
 
 			$event_string = "SUBRT|killing_congest|KC|$KCqueryCID|$congest_kill[$i]|$stmtA|";
 		 event_logger;

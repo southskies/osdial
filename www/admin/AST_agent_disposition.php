@@ -29,7 +29,7 @@ if (isset($_GET["SUBMIT"]))				{$SUBMIT=$_GET["SUBMIT"];}
 $PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);
 $PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
 
-	$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6;";
+	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6;";
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -37,7 +37,7 @@ $PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICI-PROJECTS\"");
+    Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
@@ -50,7 +50,7 @@ if (!isset($group)) {$group = '';}
 if (!isset($begin_date)) {$begin_date =  $NOW_DATE;}
 if (!isset($end_date)) {$end_date =  $NOW_DATE;}
 
-$stmt="select campaign_id from vicidial_campaigns;";
+$stmt="select campaign_id from osdial_campaigns;";
 if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}
@@ -116,7 +116,7 @@ echo "+-----------------+------------+--------+--------+--------+------+------+-
 echo "| USER NAME       | ID         | CALLS  | TALK   | TALKAVG| A    | B    |CALLBK|CBHOLD| DEC  | DC   | DNC  | DROP |INCALL| LB   | N    | NA   | NI   | NP   | NQ   |QUEUE | SALE | XFER |\n";
 echo "+-----------------+------------+--------+--------+--------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+------+\n";
 
-$stmt="select count(*) as calls,sum(length_in_sec) as talk,full_name,vicidial_users.user,avg(length_in_sec) from vicidial_users,vicidial_log where call_date >= '$begin_date 00:00:01' and call_date <= '$end_date 23:59:59'  and vicidial_users.user=vicidial_log.user and campaign_id='" . mysql_real_escape_string($group) . "' group by full_name order by calls desc limit 1000;";
+$stmt="select count(*) as calls,sum(length_in_sec) as talk,full_name,osdial_users.user,avg(length_in_sec) from osdial_users,osdial_log where call_date >= '$begin_date 00:00:01' and call_date <= '$end_date 23:59:59'  and osdial_users.user=osdial_log.user and campaign_id='" . mysql_real_escape_string($group) . "' group by full_name order by calls desc limit 1000;";
 if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}
@@ -161,7 +161,7 @@ while($k < $i)
 	
 	{
 	$ctA[$k]="0   "; $ctB[$k]="0   "; $ctDC[$k]="0   "; $ctDNC[$k]="0   "; $ctN[$k]="0   "; $ctNI[$k]="0   "; $ctSALE[$k]="0   ";  $ctINCALL[$k]="0   ";  $ctDROP[$k]="0   ";  $ctQUEUE[$k]="0   ";  $ctNP[$k]="0   ";   $ctDEC[$k]="0   ";  $ctNQ[$k]="0   ";  $ctNA[$k]="0   ";   $ctXFER[$k]="0   "; $ctLB[$k]="0   ";  $ctCALLBK[$k]="0   "; $ctCBHOLD[$k]="0   ";
-	$stmt="select count(*),status from vicidial_log where call_date >= '$begin_date 00:00:01' and call_date <= '$end_date 23:59:59'  and user='$user[$k]' and campaign_id='" . mysql_real_escape_string($group) . "' group by status;";
+	$stmt="select count(*),status from osdial_log where call_date >= '$begin_date 00:00:01' and call_date <= '$end_date 23:59:59'  and user='$user[$k]' and campaign_id='" . mysql_real_escape_string($group) . "' group by status;";
 	if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
 	$rslt=mysql_query($stmt, $link);
 	if ($DB) {echo "$stmt\n";}

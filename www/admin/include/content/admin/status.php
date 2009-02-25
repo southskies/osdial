@@ -13,14 +13,14 @@ if ($ADD==221111111111111)
 {
 
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT count(*) from vicidial_campaign_statuses where status='$status';";
+	$stmt="SELECT count(*) from osdial_campaign_statuses where status='$status';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
 		{echo "<br><font color=red>SYSTEM STATUS NOT ADDED - there is already a campaign-status in the system with this name: $row[0]</font>\n";}
 	else
 		{
-		$stmt="SELECT count(*) from vicidial_statuses where status='$status';";
+		$stmt="SELECT count(*) from osdial_statuses where status='$status';";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		if ($row[0] > 0)
@@ -37,7 +37,7 @@ if ($ADD==221111111111111)
 				{
 				echo "<br><B><font color=navy>SYSTEM STATUS ADDED: $status_name - $status</font></B>\n";
 
-				$stmt="INSERT INTO vicidial_statuses (status,status_name,selectable,human_answered,category) values('$status','$status_name','$selectable','$human_answered','$category');";
+				$stmt="INSERT INTO osdial_statuses (status,status_name,selectable,human_answered,category) values('$status','$status_name','$selectable','$human_answered','$category');";
 				$rslt=mysql_query($stmt, $link);
 
 				### LOG CHANGES TO LOG FILE ###
@@ -76,10 +76,10 @@ if ($ADD==421111111111111)
 			{
 			echo "<br><B><font color=navy>SYSTEM STATUS DELETED: $status</font></B>\n";
 
-			$stmt="DELETE FROM vicidial_statuses where status='$status';";
+			$stmt="DELETE FROM osdial_statuses where status='$status';";
 			$rslt=mysql_query($stmt, $link);
 
-			$stmtA="DELETE FROM vicidial_campaign_hotkeys where status='$status';";
+			$stmtA="DELETE FROM osdial_campaign_hotkeys where status='$status';";
 			$rslt=mysql_query($stmtA, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -103,7 +103,7 @@ if ($ADD==421111111111111)
 			{
 			echo "<br><B><font color=navy>SYSTEM STATUS MODIFIED: $status</font></B>\n";
 
-			$stmt="UPDATE vicidial_statuses SET status_name='$status_name',selectable='$selectable',human_answered='$human_answered',category='$category' where status='$status';";
+			$stmt="UPDATE osdial_statuses SET status_name='$status_name',selectable='$selectable',human_answered='$human_answered',category='$category' where status='$status';";
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -126,7 +126,7 @@ $ADD=321111111111111;	# go to system settings modification form below
 
 
 ######################
-# ADD=321111111111111 modify vicidial system statuses
+# ADD=321111111111111 modify osdial system statuses
 ######################
 
 if ($ADD==321111111111111)
@@ -147,7 +147,7 @@ if ($ADD==321111111111111)
 	echo "<td align=center><font size=1 color=white>MODIFY / DELETE</font></td></tr>\n";
 
 	##### get status category listings for dynamic pulldown
-	$stmt="SELECT vsc_id,vsc_name from vicidial_status_categories order by vsc_id desc";
+	$stmt="SELECT vsc_id,vsc_name from osdial_status_categories order by vsc_id desc";
 	$rslt=mysql_query($stmt, $link);
 	$cats_to_print = mysql_num_rows($rslt);
 	$cats_list="";
@@ -162,7 +162,7 @@ if ($ADD==321111111111111)
 		}
 
 
-	$stmt="SELECT * from vicidial_statuses order by status;";
+	$stmt="SELECT * from osdial_statuses order by status;";
 	$rslt=mysql_query($stmt, $link);
 	$statuses_to_print = mysql_num_rows($rslt);
 	$o=0;
@@ -242,7 +242,7 @@ if ($ADD==231111111111111)
 {
 
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT count(*) from vicidial_status_categories where vsc_id='$vsc_id';";
+	$stmt="SELECT count(*) from osdial_status_categories where vsc_id='$vsc_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -259,7 +259,7 @@ if ($ADD==231111111111111)
 			{
 			echo "<br><B><font color=navy>STATUS CATEGORY ADDED: $vsc_id - $vsc_name</font></B>\n";
 
-			$stmt="SELECT count(*) from vicidial_status_categories where tovdad_display='Y' and vsc_id NOT IN('$vsc_id');";
+			$stmt="SELECT count(*) from osdial_status_categories where tovdad_display='Y' and vsc_id NOT IN('$vsc_id');";
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			if ( ($row[0] > 3) and (ereg('Y',$tovdad_display)) )
@@ -268,7 +268,7 @@ if ($ADD==231111111111111)
 				echo "<br><B><font color=red>ERROR: There are already 4 Status Categories set to Time On OSDial Display</font></B>\n";
 				}
 
-			$stmt="INSERT INTO vicidial_status_categories (vsc_id,vsc_name,vsc_description,tovdad_display) values('$vsc_id','$vsc_name','$vsc_description','$tovdad_display');";
+			$stmt="INSERT INTO osdial_status_categories (vsc_id,vsc_name,vsc_description,tovdad_display) values('$vsc_id','$vsc_name','$vsc_description','$tovdad_display');";
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -306,7 +306,7 @@ if ($ADD==431111111111111)
 			{
 			echo "<br><B><font color=navy>STATUS CATEGORY DELETED: $vsc_id</font></B>\n";
 
-			$stmt="DELETE FROM vicidial_status_categories where vsc_id='$vsc_id';";
+			$stmt="DELETE FROM osdial_status_categories where vsc_id='$vsc_id';";
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -321,7 +321,7 @@ if ($ADD==431111111111111)
 			{
 			echo "<br><B><font color=navy>STATUS CATEGORY MODIFIED: $vsc_id</font></B>\n";
 
-			$stmt="SELECT count(*) from vicidial_status_categories where tovdad_display='Y' and vsc_id NOT IN('$vsc_id');";
+			$stmt="SELECT count(*) from osdial_status_categories where tovdad_display='Y' and vsc_id NOT IN('$vsc_id');";
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			if ( ($row[0] > 3) and (ereg('Y',$tovdad_display)) )
@@ -330,7 +330,7 @@ if ($ADD==431111111111111)
 				echo "<br><B><font color=red>ERROR: There are already 4 Status Categories set to Time On OSDial Display</font></B>\n";
 				}
 
-			$stmt="UPDATE vicidial_status_categories SET vsc_name='$vsc_name',vsc_description='$vsc_description',tovdad_display='$tovdad_display' where vsc_id='$vsc_id';";
+			$stmt="UPDATE osdial_status_categories SET vsc_name='$vsc_name',vsc_description='$vsc_description',tovdad_display='$tovdad_display' where vsc_id='$vsc_id';";
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -353,7 +353,7 @@ $ADD=331111111111111;	# go to system settings modification form below
 
 
 ######################
-# ADD=331111111111111 modify vicidial status categories
+# ADD=331111111111111 modify osdial status categories
 ######################
 
 if ($ADD==331111111111111)
@@ -368,7 +368,7 @@ if ($ADD==331111111111111)
 	echo "<TABLE width=700 cellspacing=3>\n";
 	echo "<tr><td><font size=2 color=navy>CATEGORY</font></td><td><font size=2 color=navy>NAME</font></td><td><font size=2 color=navy>TO&nbsp;OSDail</font></td><td><font size=2 color=navy>STATUSES IN THIS CATEGORY</font></td></tr>\n";
 
-		$stmt="SELECT * from vicidial_status_categories order by vsc_id;";
+		$stmt="SELECT * from osdial_status_categories order by vsc_id;";
 		$rslt=mysql_query($stmt, $link);
 		$statuses_to_print = mysql_num_rows($rslt);
 		$o=0;
@@ -392,7 +392,7 @@ if ($ADD==331111111111111)
 				{$bgcolor='bgcolor="#C1D6DB"';}
 
 			$CATstatuses='';
-			$stmt="SELECT status from vicidial_statuses where category='$Avsc_id[$p]' order by status;";
+			$stmt="SELECT status from osdial_statuses where category='$Avsc_id[$p]' order by status;";
 			$rslt=mysql_query($stmt, $link);
 			$statuses_to_print = mysql_num_rows($rslt);
 			$q=0;
@@ -402,7 +402,7 @@ if ($ADD==331111111111111)
 				$CATstatuses.=" $rowx[0]";
 				$q++;
 				}
-			$stmt="SELECT status from vicidial_campaign_statuses where category='$Avsc_id[$p]' order by status;";
+			$stmt="SELECT status from osdial_campaign_statuses where category='$Avsc_id[$p]' order by status;";
 			$rslt=mysql_query($stmt, $link);
 			$statuses_to_print = mysql_num_rows($rslt);
 			$q=0;

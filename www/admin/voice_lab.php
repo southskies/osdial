@@ -2,7 +2,7 @@
 ### voice_lab.php
 ### 
 ### This script is designed to broadcast a recorded message or allow a person to
-### speak to all agents logged into a VICIDIAL campaign.
+### speak to all agents logged into a OSDIAL campaign.
 ### 
 ### Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 ###
@@ -50,7 +50,7 @@ $local_DEF = 'Local/';
 $local_AMP = '@';
 $ext_context = 'demo';
 
-	$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 7;";
+	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 7;";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$auth=$row[0];
@@ -62,7 +62,7 @@ $browser = getenv("HTTP_USER_AGENT");
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICI-PROJECTS\"");
+    Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
@@ -74,20 +74,20 @@ $browser = getenv("HTTP_USER_AGENT");
 		{
 		$office_no=strtoupper($PHP_AUTH_USER);
 		$password=strtoupper($PHP_AUTH_PW);
-			$stmt="SELECT full_name from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
+			$stmt="SELECT full_name from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			$LOGfullname=$row[0];
-		fwrite ($fp, "VICIDIAL|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|$LOGfullname|\n");
+		fwrite ($fp, "OSDIAL|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|$LOGfullname|\n");
 		fclose($fp);
 		}
 	else
 		{
-		fwrite ($fp, "VICIDIAL|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|\n");
+		fwrite ($fp, "OSDIAL|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|\n");
 		fclose($fp);
 		}
 
-	$stmt="SELECT full_name from vicidial_users where user='$user';";
+	$stmt="SELECT full_name from osdial_users where user='$user';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$full_name = $row[0];
@@ -110,7 +110,7 @@ while ($servers_to_print > $o)
 	}
 
 ##### get campaigns listing for dynamic pulldown
-$stmt="SELECT campaign_id,campaign_name from vicidial_campaigns order by campaign_id";
+$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
 $rslt=mysql_query($stmt, $link);
 $campaigns_to_print = mysql_num_rows($rslt);
 $campaigns_list='';
@@ -168,7 +168,7 @@ if ($NEW_VOICE_LAB > 0)
 	$thirty_minutes_old = mktime(date("H"), date("i"), date("s")-30, date("m"), date("d"),  date("Y"));
 	$past_thirty = date("Y-m-d H:i:s",$thirty_minutes_old);
 
-	$stmt="SELECT conf_exten,server_ip,user from vicidial_live_agents where last_update_time > '$past_thirty' and campaign_id='$campaign_id';";
+	$stmt="SELECT conf_exten,server_ip,user from osdial_live_agents where last_update_time > '$past_thirty' and campaign_id='$campaign_id';";
 	$rslt=mysql_query($stmt, $link);
 	$agents_to_loop = mysql_num_rows($rslt);
 	$agents_sessions[0]='';
@@ -193,7 +193,7 @@ if ($NEW_VOICE_LAB > 0)
 		else
 			{$dial_string = $remote_dialstring;}
 
-		$stmt="INSERT INTO vicidial_manager values('','','$MYSQL_datetime','NEW','N','$agents_servers[$o]','','Originate','VL$FILE_datetime$o','Channel: $local_DEF$dial_string$local_AMP$ext_context','Context: $ext_context','Exten: $agents_sessions[$o]','Priority: 1','Callerid: VL$FILE_datetime$o','','','','','')";
+		$stmt="INSERT INTO osdial_manager values('','','$MYSQL_datetime','NEW','N','$agents_servers[$o]','','Originate','VL$FILE_datetime$o','Channel: $local_DEF$dial_string$local_AMP$ext_context','Context: $ext_context','Exten: $agents_sessions[$o]','Priority: 1','Callerid: VL$FILE_datetime$o','','','','','')";
 		echo "|$stmt|\n<BR><BR>\n";
 		$rslt=mysql_query($stmt, $link);
 
@@ -239,7 +239,7 @@ else
 		$nn='99';
 		$n='9';
 
-		$stmt="INSERT INTO vicidial_manager values('','','$MYSQL_datetime','NEW','N','$server_ip','','Originate','VL$FILE_datetime$nn','Channel: $local_DEF$n$session_id$local_AMP$ext_context','Context: $ext_context','Exten: $message','Priority: 1','Callerid: VL$FILE_datetime$nn','','','','','')";
+		$stmt="INSERT INTO osdial_manager values('','','$MYSQL_datetime','NEW','N','$server_ip','','Originate','VL$FILE_datetime$nn','Channel: $local_DEF$n$session_id$local_AMP$ext_context','Context: $ext_context','Exten: $message','Priority: 1','Callerid: VL$FILE_datetime$nn','','','','','')";
 		echo "|$stmt|\n<BR><BR>\n";
 		$rslt=mysql_query($stmt, $link);
 
@@ -292,7 +292,7 @@ if ($KILL_VOICE_LAB > 1)
 	{
 	$kill_dial_string = "5555$session_id";
 	$hangup_exten='8300';
-	$stmt="INSERT INTO vicidial_manager values('','','$MYSQL_datetime','NEW','N','$server_ip','','Originate','VLK$FILE_datetime','Channel: $local_DEF$kill_dial_string$local_AMP$ext_context','Context: $ext_context','Exten: $hangup_exten','Priority: 1','Callerid: VLK$FILE_datetime','','','','','')";
+	$stmt="INSERT INTO osdial_manager values('','','$MYSQL_datetime','NEW','N','$server_ip','','Originate','VLK$FILE_datetime','Channel: $local_DEF$kill_dial_string$local_AMP$ext_context','Context: $ext_context','Exten: $hangup_exten','Priority: 1','Callerid: VLK$FILE_datetime','','','','','')";
 	echo "|$stmt|\n<BR><BR>\n";
 	$rslt=mysql_query($stmt, $link);
 

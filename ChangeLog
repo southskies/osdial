@@ -1,12 +1,4 @@
-YYYY-MM-DD  John Doe  <johndoe@example.com>
-
-    * example.txt (main): Sample changelog format.
-
-    * myfile.ext (myfunction): my changes made
-    additional changes
-
-    * myfile.ext (unrelated_change): my changes made
-    to myfile.ext but completely unrelated to the above
-
-    * anotherfile.ext (somefunction): more changes
+2009-01-24  Lott Caskey  <lottcaskey@gmail.com>
+    * Makefile: Update with new directory structure.
+    * OSDconfig: Update with new direcory structure.
 

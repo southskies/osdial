@@ -5,20 +5,20 @@
 # At the end of a call, the agent transfers customer to this script
 #
 # This script plays a beep then plays the first portion of the message
-# then logs the portion as listened to in the vicidial_list_pins table
+# then logs the portion as listened to in the osdial_list_pins table
 # then plays second portion and hangs up.
 #
 # IN THE CAMPAIGN OR IN-GROUP NUMBER PRESET FIELD:
 # AXFER83209
 #
 # ON THE SERVER ORIGINATING THE CALL:
-#;outbound IVR play VICIDIAL calls:
+#;outbound IVR play osdial calls:
 #exten => _983209.,1,AGI(call_log.agi,${EXTEN})
 #exten => _983209.,2,Dial(${TRUNKY}/${EXTEN:1},60)
 #exten => _983209.,3,Hangup
 #
 # ON THE SERVER THAT HAS THIS SCRIPT:
-#;inbound IVR play VICIDIAL calls:
+#;inbound IVR play osdial calls:
 #exten => _83209.,1,Answer
 #exten => _83209.,2,AGI(agi-VDAD_pin_IVR.agi,${EXTEN})
 #exten => _83209.,3,Hangup
@@ -186,10 +186,10 @@ while(<STDIN>) {
 		
 		$referring_extension =	$EXT_vars[0];	# initial extension sent
 		$phone_number =		$EXT_vars[1];	# phone number
-		$lead_id =		$EXT_vars[2];	# lead_id in vicidial_list
+		$lead_id =		$EXT_vars[2];	# lead_id in osdial_list
 		$campaign_id =		$EXT_vars[3];	# campaign id
 		$product_code =		$EXT_vars[4];	# product code
-		$user =			$EXT_vars[5];	# vicidial_user that sent the call here
+		$user =			$EXT_vars[5];	# osdial_user that sent the call here
 		}
 }
 
@@ -202,8 +202,8 @@ sleep(1);
 
 $AGI->stream_file("$first_audio_file");
 
-### insert a record into the vicidial_list_pins table 
-$stmtA = "INSERT INTO vicidial_list_pins (entry_time,phone_number,lead_id,campaign_id,product_code,user,digits) values('$SQLdate','$phone_number','$lead_id','$campaign_id','$product_code','$user','IVR');";
+### insert a record into the osdial_list_pins table 
+$stmtA = "INSERT INTO osdial_list_pins (entry_time,phone_number,lead_id,campaign_id,product_code,user,digits) values('$SQLdate','$phone_number','$lead_id','$campaign_id','$product_code','$user','IVR');";
 
 $affected_rows = $dbhA->do($stmtA);
 

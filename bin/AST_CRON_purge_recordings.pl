@@ -132,8 +132,8 @@ $sthA->finish();
 $i=0;
 foreach(@lead_ids)
 	{
-	### Grab status of the lead in the vicidial_list table
-	$stmtA = "SELECT status FROM vicidial_list where lead_id='$lead_ids[$i]';";
+	### Grab status of the lead in the osdial_list table
+	$stmtA = "SELECT status FROM osdial_list where lead_id='$lead_ids[$i]';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;

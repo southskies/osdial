@@ -2,7 +2,7 @@
 
 # AST_VDsales_export.pl                version: 2.0.4
 #
-# This script is designed to gather sales for a VICIDIAL Outbound-only campaign and
+# This script is designed to gather sales for a OSDIAL Outbound-only campaign and
 # post them to a directory
 #
 # Copyright (C) 2007  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
@@ -201,8 +201,8 @@ if ($output_format =~ /^tab-standard$/)
 	{$DLT = "\t";   $txt='.txt';   print "---- tab-standard ----\n";}
 if ($output_format =~ /^pipe-triplep$/) 
 	{$DLT = '';   $txt='.txt';   print "---- pipe-triplep ----\n";}
-if ($output_format =~ /^pipe-vici$/) 
-	{$DLT = '|';   $txt='.txt';   print "---- pipe-vici ----\n";}
+if ($output_format =~ /^pipe-native$/) 
+	{$DLT = '|';   $txt='.txt';   print "---- pipe-native ----\n";}
 if ($output_format =~ /^html-rec$/) 
 	{$DLT = ' ';   $txt='.html';   print "---- html-rec ----\n";}
 
@@ -217,8 +217,8 @@ if ($output_format =~ /^html-rec$/)
 		$sale_statusesSQL =~ s/-/','/gi;
 		$sale_statusesSQL = "'$sale_statusesSQL'";
 		$close_statusesSQL = $sale_statusesSQL;
-		$sale_statusesSQL = " and vicidial_log.status IN($sale_statusesSQL)";
-		$close_statusesSQL = " and vicidial_closer_log.status IN($close_statusesSQL)";
+		$sale_statusesSQL = " and osdial_log.status IN($sale_statusesSQL)";
+		$close_statusesSQL = " and osdial_closer_log.status IN($close_statusesSQL)";
 		}
 
 	$with_inboundSQL = $with_inbound;
@@ -228,7 +228,7 @@ if ($output_format =~ /^html-rec$/)
 if (!$Q)
 	{
 	print "\n\n\n\n\n\n\n\n\n\n\n\n-- AST_VDsales_export.pl --\n\n";
-	print "This program is designed to gather sales from a VICIDIAL outbound-only campaign and post them to a file. \n";
+	print "This program is designed to gather sales from a OSDIAL outbound-only campaign and post them to a file. \n";
 	print "\n";
 	print "Campaign:      $campaign\n";
 	print "Sale Statuses: $sale_statuses     $sale_statusesSQL\n";
@@ -240,7 +240,7 @@ if (!$Q)
 $outfile = "$campaign$US$filedate$US$sale_statuses$txt";
 
 ### open the X out file for writing ###
-open(out, ">$PATHweb/vicidial/server_reports/$outfile")
+open(out, ">$PATHweb/admin/server_reports/$outfile")
 		|| die "Can't open $outfile: $!\n";
 
 if (!$VARDB_port) {$VARDB_port='3306';}
@@ -258,9 +258,9 @@ $TOTAL_SALES=0;
 
 
 ###########################################################################
-########### CURRENT DAY SALES GATHERING outbound-only: vicidial_log  ######
+########### CURRENT DAY SALES GATHERING outbound-only: osdial_log  ######
 ###########################################################################
-$stmtA = "select vicidial_log.user,first_name,last_name,address1,address2,city,state,postal_code,vicidial_list.phone_number,email,security_phrase,vicidial_list.comments,call_date,vicidial_list.lead_id,vicidial_users.full_name,vicidial_log.status,vicidial_list.vendor_lead_code,vicidial_list.source_id,vicidial_log.list_id from vicidial_list,vicidial_log,vicidial_users where campaign_id='$campaign' $sale_statusesSQL and call_date > '$shipdate 00:00:01' and call_date < '$shipdate 23:59:59' and vicidial_log.lead_id=vicidial_list.lead_id and vicidial_users.user=vicidial_log.user;";
+$stmtA = "select osdial_log.user,first_name,last_name,address1,address2,city,state,postal_code,osdial_list.phone_number,email,security_phrase,osdial_list.comments,call_date,osdial_list.lead_id,osdial_users.full_name,osdial_log.status,osdial_list.vendor_lead_code,osdial_list.source_id,osdial_log.list_id from osdial_list,osdial_log,osdial_users where campaign_id='$campaign' $sale_statusesSQL and call_date > '$shipdate 00:00:01' and call_date < '$shipdate 23:59:59' and osdial_log.lead_id=osdial_list.lead_id and osdial_users.user=osdial_log.user;";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -298,9 +298,9 @@ $sthA->finish();
 if (length($with_inboundSQL)>3)
 	{
 	###########################################################################
-	########### CURRENT DAY SALES GATHERING inbound-only: vicidial_closer_log  ######
+	########### CURRENT DAY SALES GATHERING inbound-only: osdial_closer_log  ######
 	###########################################################################
-	$stmtA = "select vicidial_closer_log.user,first_name,last_name,address1,address2,city,state,postal_code,vicidial_list.phone_number,email,security_phrase,vicidial_list.comments,call_date,vicidial_list.lead_id,vicidial_users.full_name,vicidial_closer_log.status,vicidial_list.vendor_lead_code,vicidial_list.source_id,vicidial_closer_log.list_id,campaign_id from vicidial_list,vicidial_closer_log,vicidial_users where campaign_id IN($with_inboundSQL) $close_statusesSQL and call_date > '$shipdate 00:00:01' and call_date < '$shipdate 23:59:59' and vicidial_closer_log.lead_id=vicidial_list.lead_id and vicidial_users.user=vicidial_closer_log.user;";
+	$stmtA = "select osdial_closer_log.user,first_name,last_name,address1,address2,city,state,postal_code,osdial_list.phone_number,email,security_phrase,osdial_list.comments,call_date,osdial_list.lead_id,osdial_users.full_name,osdial_closer_log.status,osdial_list.vendor_lead_code,osdial_list.source_id,osdial_closer_log.list_id,campaign_id from osdial_list,osdial_closer_log,osdial_users where campaign_id IN($with_inboundSQL) $close_statusesSQL and call_date > '$shipdate 00:00:01' and call_date < '$shipdate 23:59:59' and osdial_closer_log.lead_id=osdial_list.lead_id and osdial_users.user=osdial_closer_log.user;";
 	if ($DB) {print "|$stmtA|\n";}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -333,7 +333,7 @@ if (length($with_inboundSQL)>3)
 		$user = '';
 		$agent_name='';
 
-		$stmtB = "select vicidial_xfer_log.user,full_name from vicidial_xfer_log,vicidial_users where lead_id='$lead_id' and closer='$closer' and call_date > '$shipdate 00:00:01' and call_date < '$shipdate 23:59:59' and vicidial_users.user=vicidial_xfer_log.user order by call_date desc limit 1;";
+		$stmtB = "select osdial_xfer_log.user,full_name from osdial_xfer_log,osdial_users where lead_id='$lead_id' and closer='$closer' and call_date > '$shipdate 00:00:01' and call_date < '$shipdate 23:59:59' and osdial_users.user=osdial_xfer_log.user order by call_date desc limit 1;";
 		$sthB = $dbhB->prepare($stmtB) or die "preparing: ",$dbhB->errstr;
 		$sthB->execute or die "executing: $stmtB ", $dbhB->errstr;
 		$sthBrows=$sthB->rows;
@@ -365,7 +365,7 @@ if ($ftp_transfer > 0)
 	$ftp = Net::FTP->new("$VARREPORT_host", Port => $VARREPORT_port);
 	$ftp->login("$VARREPORT_user","$VARREPORT_pass");
 	$ftp->cwd("$VARREPORT_dir");
-	$ftp->put("$PATHweb/vicidial/server_reports/$outfile", "$outfile");
+	$ftp->put("$PATHweb/admin/server_reports/$outfile", "$outfile");
 	$ftp->quit;
 }
 
@@ -474,7 +474,7 @@ if ($output_format =~ /^pipe-triplep$/)
 	$str = "$user|$agent_name|$closer|$closer_name|$call_date|$status|$first_name|$last_name|$phone_number|$address1|$address2|$city|$state|$postal_code|$comments|$security|$email|$vendor_id|$source_id|$lead_id|$list_id|$campaign|$campaign_id|$ivr_id|\n";
 	}
 
-if ($output_format =~ /^pipe-vici$/) 
+if ($output_format =~ /^pipe-native$/) 
 	{
 	$str = "VDAD|$agent_name|$first_name|$last_name|$address1|$address2|$city|$state|$postal_code|$phone_number|$ivr_id|DU|$UPSELL|N|||$security|$comments||||||$call_date|CBDISC|$email\r\n";
 	}

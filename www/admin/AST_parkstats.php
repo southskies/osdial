@@ -26,7 +26,7 @@ if (isset($_GET["SUBMIT"]))				{$SUBMIT=$_GET["SUBMIT"];}
 $PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);
 $PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
 
-	$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1';";
+	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1';";
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -34,7 +34,7 @@ $PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICI-PROJECTS\"");
+    Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
@@ -148,7 +148,7 @@ echo "+--------------------------+------------+--------+--------+\n";
 echo "| USER                     | CALLS      | TIME M | AVRG M |\n";
 echo "+--------------------------+------------+--------+--------+\n";
 
-$stmt="select park_log.user,full_name,count(*),sum(talked_sec),avg(talked_sec) from park_log,vicidial_users where parked_time >= '$query_date 00:00:01' and parked_time <= '$query_date 23:59:59' and status ='HUNGUP' and channel_group='" . mysql_real_escape_string($group) . "' and park_log.user is not null and talked_sec is not null and talked_sec > 4 and park_log.user=vicidial_users.user group by park_log.user;";
+$stmt="select park_log.user,full_name,count(*),sum(talked_sec),avg(talked_sec) from park_log,osdial_users where parked_time >= '$query_date 00:00:01' and parked_time <= '$query_date 23:59:59' and status ='HUNGUP' and channel_group='" . mysql_real_escape_string($group) . "' and park_log.user is not null and talked_sec is not null and talked_sec > 4 and park_log.user=osdial_users.user group by park_log.user;";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}
 $users_to_print = mysql_num_rows($rslt);

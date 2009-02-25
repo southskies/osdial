@@ -56,7 +56,7 @@ $TODAY = date("Y-m-d");
 $NOW_TIME = date("Y-m-d H:i:s");
 $popup_page = './closer_popup.php';
 
-	$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 2;";
+	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 2;";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$auth=$row[0];
@@ -68,7 +68,7 @@ $browser = getenv("HTTP_USER_AGENT");
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICIDIAL-CLOSER\"");
+    Header("WWW-Authenticate: Basic realm=\"OSDIAL-CLOSER\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
@@ -80,7 +80,7 @@ $browser = getenv("HTTP_USER_AGENT");
 		{
 		$office_no=strtoupper($PHP_AUTH_USER);
 		$password=strtoupper($PHP_AUTH_PW);
-			$stmt="SELECT full_name from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
+			$stmt="SELECT full_name from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
 			if ($DB) {echo "$stmt\n";}
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
@@ -123,7 +123,7 @@ $color_class[9] = 'orange';
 -->
  </STYLE>
 
-<TITLE>VICIDIAL CLOSER: Main</TITLE></HEAD>
+<TITLE>OSDIAL CLOSER: Main</TITLE></HEAD>
 </HEAD>
 <BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 <CENTER><FONT FACE="Courier" COLOR=BLACK SIZE=3>
@@ -189,7 +189,7 @@ if (!$dialplan_number)
 				$o++;
 			}
 
-			$stmt="INSERT INTO vicidial_user_log values('','" . mysql_real_escape_string($user) . "','LOGIN','CLOSER','$NOW_TIME','$STARTtime');";
+			$stmt="INSERT INTO osdial_user_log values('','" . mysql_real_escape_string($user) . "','LOGIN','CLOSER','$NOW_TIME','$STARTtime');";
 			$rslt=mysql_query($stmt, $link);
 
 			echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";

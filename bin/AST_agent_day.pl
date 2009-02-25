@@ -132,9 +132,9 @@ $outfile = "AGENT_DAY_$shipdate$txt";
 $Doutfile = "AGENT_DAY_PIPE_$shipdate$txt";
 
 ### open the X out file for writing ###
-open(out, ">$PATHweb/vicidial/agent_reports/$outfile")
+open(out, ">$PATHweb/admin/agent_reports/$outfile")
 		|| die "Can't open $outfile: $!\n";
-open(Dout, ">$PATHweb/vicidial/agent_reports/$Doutfile")
+open(Dout, ">$PATHweb/admin/agent_reports/$Doutfile")
 		|| die "Can't open $Doutfile: $!\n";
 
 if (!$VARDB_port) {$VARDB_port='3306';}
@@ -148,8 +148,8 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 $dbhB = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
  or die "Couldn't connect to database: " . DBI->errstr;
 
-#$vicidial_agent_log = 'vicidial_agent_log_archive';
-$vicidial_agent_log = 'vicidial_agent_log';
+#$osdial_agent_log = 'osdial_agent_log_archive';
+$osdial_agent_log = 'osdial_agent_log';
 
 ###########################################################################
 ########### PAST WEEK STAT GATHERING LOOP #################################
@@ -161,7 +161,7 @@ print out "AGENT                USER     CALLS  TALK     PAUSE    WAIT     DISPO
 print "TODAY:     $day     $shipdate\n\n";
 print "AGENT                USER     CALLS  TALK     PAUSE    WAIT     DISPO    ACTIVE   LOGTIME  FIRST                LAST                    \n";
 
-$stmtA = "select count(*) as calls, full_name,vicidial_users.user,sum(talk_sec),sum(pause_sec),sum(wait_sec),sum(dispo_sec) from vicidial_users,$vicidial_agent_log where event_time <= '$shipdate 23:59:59' and event_time >= '$shipdate 00:00:00' and vicidial_users.user=$vicidial_agent_log.user and pause_sec<48800 and wait_sec<48800 and talk_sec<48800 and dispo_sec<48800 group by vicidial_users.user order by full_name limit 10000;";
+$stmtA = "select count(*) as calls, full_name,osdial_users.user,sum(talk_sec),sum(pause_sec),sum(wait_sec),sum(dispo_sec) from osdial_users,$osdial_agent_log where event_time <= '$shipdate 23:59:59' and event_time >= '$shipdate 00:00:00' and osdial_users.user=$osdial_agent_log.user and pause_sec<48800 and wait_sec<48800 and talk_sec<48800 and dispo_sec<48800 group by osdial_users.user order by full_name limit 10000;";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -238,7 +238,7 @@ while ($sthArows > $rec_count)
 	$Ddispo = $TIME_HMS;
 	$dispo =	sprintf("%9s", $TIME_HMS);
 
-	$stmtB = "select event_time,UNIX_TIMESTAMP(event_time) from $vicidial_agent_log where event_time <= '$shipdate 23:59:59' and event_time >= '$shipdate 00:00:00' and user='$aryA[2]' order by event_time limit 1;";
+	$stmtB = "select event_time,UNIX_TIMESTAMP(event_time) from $osdial_agent_log where event_time <= '$shipdate 23:59:59' and event_time >= '$shipdate 00:00:00' and user='$aryA[2]' order by event_time limit 1;";
 	$sthB = $dbhB->prepare($stmtB) or die "preparing: ",$dbhB->errstr;
 	$sthB->execute or die "executing: $stmtA ", $dbhB->errstr;
 	@aryB = $sthB->fetchrow_array;
@@ -247,7 +247,7 @@ while ($sthArows > $rec_count)
 	$Dfirst_log = $aryB[1];
 	$first_log = $aryB[1];
 
-	$stmtB = "select event_time,UNIX_TIMESTAMP(event_time) from $vicidial_agent_log where event_time <= '$shipdate 23:59:59' and event_time >= '$shipdate 00:00:00' and user='$aryA[2]' order by event_time desc limit 1;";
+	$stmtB = "select event_time,UNIX_TIMESTAMP(event_time) from $osdial_agent_log where event_time <= '$shipdate 23:59:59' and event_time >= '$shipdate 00:00:00' and user='$aryA[2]' order by event_time desc limit 1;";
 	$sthB = $dbhB->prepare($stmtB) or die "preparing: ",$dbhB->errstr;
 	$sthB->execute or die "executing: $stmtA ", $dbhB->errstr;
 	@aryB = $sthB->fetchrow_array;

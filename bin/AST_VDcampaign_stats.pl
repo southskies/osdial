@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 #
-# AST_VDcampaign_stats.pl for Vicidial 2.0.4a
+# AST_VDcampaign_stats.pl
 #
 # DESCRIPTION:
-# Calculates and inserts data into vicidial_campaign_stats
+# Calculates and inserts data into osdial_campaign_stats
 #
 # Copyright (C) 2008  Lott Caskey <lottcaskey@gmail.com>    LICENSE: GPLv2
 #
@@ -102,7 +102,7 @@ while ( $master_loop < $CLOloops ) {
 	} else {
 		$swhere = "( (active='Y') or (campaign_stats_refresh='Y') )";
 	}
-	$stmtA = "SELECT campaign_id,UNIX_TIMESTAMP(campaign_changedate),campaign_stats_refresh from vicidial_campaigns where ". $swhere;
+	$stmtA = "SELECT campaign_id,UNIX_TIMESTAMP(campaign_changedate),campaign_stats_refresh from osdial_campaigns where ". $swhere;
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows  = $sthA->rows;
@@ -124,7 +124,7 @@ while ( $master_loop < $CLOloops ) {
 		
 		### Find out how many leads are in the hopper from a specific campaign
 		my $hopper_ready_count = 0;
-		$stmtA = "SELECT count(*) from vicidial_hopper where campaign_id='$campaign_id[$i]' and status='READY';";
+		$stmtA = "SELECT count(*) from osdial_hopper where campaign_id='$campaign_id[$i]' and status='READY';";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows  = $sthA->rows;
@@ -143,7 +143,7 @@ while ( $master_loop < $CLOloops ) {
 			print "     REFRESH OVERRIDE: $campaign_id[$i]\n" if ($DB);
 			updateStats($campaign_id[$i],$VDL_date,$VDL_one,$VDL_five,$VDL_hour,$VDL_halfhour);
 			$RESETdrop_count_updater++;
-			$stmtA = "UPDATE vicidial_campaigns SET campaign_stats_refresh='N' where campaign_id='$campaign_id[$i]';";
+			$stmtA = "UPDATE osdial_campaigns SET campaign_stats_refresh='N' where campaign_id='$campaign_id[$i]';";
 			if ($CLOtest) {
 				print $stmtA . "\n";
 			} else {
@@ -183,15 +183,15 @@ exit 0;
 sub updateStats {
 	my ($campaign_id,$VDL_date,$VDL_one,$VDL_five,$VDL_hour,$VDL_halfhour) = @_;
 	
-	my $vicidial_log = 'vicidial_log FORCE INDEX (call_date) ';
-	#my $vicidial_log = 'vicidial_log';
+	my $osdial_log = 'osdial_log FORCE INDEX (call_date) ';
+	#my $osdial_log = 'osdial_log';
 	my $camp_ANS_STAT_SQL;
 	
 	my($stmtA,$sthA,$sthArows,$rec_count,$affected_rows);
 	my $VCSdrops_answers_today_pct;
 
 	# GET LIST OF HUMAN-ANSWERED STATUSES
-	$stmtA = "SELECT status from vicidial_statuses where human_answered='Y';";
+	$stmtA = "SELECT status from osdial_statuses where human_answered='Y';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows  = $sthA->rows;
@@ -203,7 +203,7 @@ sub updateStats {
 	}
 	$sthA->finish();
 
-	$stmtA = "SELECT status from vicidial_campaign_statuses where campaign_id='$campaign_id' and human_answered='Y';";
+	$stmtA = "SELECT status from osdial_campaign_statuses where campaign_id='$campaign_id' and human_answered='Y';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows  = $sthA->rows;
@@ -218,11 +218,11 @@ sub updateStats {
 
 	print "     CAMPAIGN ANSWERED STATUSES: $campaign_id|$camp_ANS_STAT_SQL|\n" if ($DBX);
 
-	my ($VCScalls_today,$VCSanswers_today,$VCSdrops_today,$VCSdrops_today_pct) = calculateDrops ($dbhA, $vicidial_log, $campaign_id, $camp_ANS_STAT_SQL, $VDL_date);
-	my ($VCScalls_hour,$VCSanswers_hour,$VCSdrops_hour,$VCSdrops_hour_pct) = calculateDrops ($dbhA, $vicidial_log, $campaign_id, $camp_ANS_STAT_SQL, $VDL_hour);
-	my ($VCScalls_halfhour,$VCSanswers_halfhour,$VCSdrops_halfhour,$VCSdrops_halfhour_pct) = calculateDrops ($dbhA, $vicidial_log, $campaign_id, $camp_ANS_STAT_SQL, $VDL_halfhour);
-	my ($VCScalls_five,$VCSanswers_five,$VCSdrops_five,$VCSdrops_five_pct) = calculateDrops ($dbhA, $vicidial_log, $campaign_id, $camp_ANS_STAT_SQL, $VDL_five);
-	my ($VCScalls_one,$VCSanswers_one,$VCSdrops_one,$VCSdrops_one_pct) = calculateDrops ($dbhA, $vicidial_log, $campaign_id, $camp_ANS_STAT_SQL, $VDL_one);
+	my ($VCScalls_today,$VCSanswers_today,$VCSdrops_today,$VCSdrops_today_pct) = calculateDrops ($dbhA, $osdial_log, $campaign_id, $camp_ANS_STAT_SQL, $VDL_date);
+	my ($VCScalls_hour,$VCSanswers_hour,$VCSdrops_hour,$VCSdrops_hour_pct) = calculateDrops ($dbhA, $osdial_log, $campaign_id, $camp_ANS_STAT_SQL, $VDL_hour);
+	my ($VCScalls_halfhour,$VCSanswers_halfhour,$VCSdrops_halfhour,$VCSdrops_halfhour_pct) = calculateDrops ($dbhA, $osdial_log, $campaign_id, $camp_ANS_STAT_SQL, $VDL_halfhour);
+	my ($VCScalls_five,$VCSanswers_five,$VCSdrops_five,$VCSdrops_five_pct) = calculateDrops ($dbhA, $osdial_log, $campaign_id, $camp_ANS_STAT_SQL, $VDL_five);
+	my ($VCScalls_one,$VCSanswers_one,$VCSdrops_one,$VCSdrops_one_pct) = calculateDrops ($dbhA, $osdial_log, $campaign_id, $camp_ANS_STAT_SQL, $VDL_one);
 	
 	$VCSdrops_answers_today_pct = ( ( $VCSdrops_today / $VCSanswers_today ) * 100 ) if ($VCSanswers_today > 0);
 	$VCSdrops_answers_today_pct = sprintf( "%.2f", $VCSdrops_answers_today_pct );
@@ -232,7 +232,7 @@ sub updateStats {
 	# DETERMINE WHETHER TO GATHER STATUS CATEGORY STATISTICS
 	my @VSC_categories;
 	my $VSCupdateSQL;
-	$stmtA = "SELECT vsc_id from vicidial_status_categories where tovdad_display='Y';";
+	$stmtA = "SELECT vsc_id from osdial_status_categories where tovdad_display='Y';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows  = $sthA->rows;
@@ -251,7 +251,7 @@ sub updateStats {
 		my $CATstatusesSQL;
 
 		# FIND STATUSES IN STATUS CATEGORY
-		$stmtA = "SELECT status from vicidial_statuses where category='$VSCcategory';";
+		$stmtA = "SELECT status from osdial_statuses where category='$VSCcategory';";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows  = $sthA->rows;
@@ -263,7 +263,7 @@ sub updateStats {
 		}
 
 		# FIND CAMPAIGN_STATUSES IN STATUS CATEGORY
-		$stmtA = "SELECT status from vicidial_campaign_statuses where category='$VSCcategory' and campaign_id='$campaign_id';";
+		$stmtA = "SELECT status from osdial_campaign_statuses where category='$VSCcategory' and campaign_id='$campaign_id';";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows  = $sthA->rows;
@@ -277,7 +277,7 @@ sub updateStats {
 		if ( length($CATstatusesSQL) > 2 ) {
 
 			# FIND STATUSES IN STATUS CATEGORY
-			$stmtA = "SELECT count(*) from $vicidial_log where campaign_id='$campaign_id' and call_date > '$VDL_date' and status IN($CATstatusesSQL);";
+			$stmtA = "SELECT count(*) from $osdial_log where campaign_id='$campaign_id' and call_date > '$VDL_date' and status IN($CATstatusesSQL);";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows  = $sthA->rows;
@@ -298,7 +298,7 @@ sub updateStats {
 	}
 	chop($VSCupdateSQL);
 
-	$stmtA = "UPDATE vicidial_campaign_stats SET calls_today='$VCScalls_today',answers_today='$VCSanswers_today',drops_today='$VCSdrops_today',drops_today_pct='$VCSdrops_today_pct',drops_answers_today_pct='$VCSdrops_answers_today_pct',calls_hour='$VCScalls_hour',answers_hour='$VCSanswers_hour',drops_hour='$VCSdrops_hour',drops_hour_pct='$VCSdrops_hour_pct',calls_halfhour='$VCScalls_halfhour',answers_halfhour='$VCSanswers_halfhour',drops_halfhour='$VCSdrops_halfhour',drops_halfhour_pct='$VCSdrops_halfhour_pct',calls_fivemin='$VCScalls_five',answers_fivemin='$VCSanswers_five',drops_fivemin='$VCSdrops_five',drops_fivemin_pct='$VCSdrops_five_pct',calls_onemin='$VCScalls_one',answers_onemin='$VCSanswers_one',drops_onemin='$VCSdrops_one',drops_onemin_pct='$VCSdrops_one_pct',$VSCupdateSQL where campaign_id='$campaign_id';";
+	$stmtA = "UPDATE osdial_campaign_stats SET calls_today='$VCScalls_today',answers_today='$VCSanswers_today',drops_today='$VCSdrops_today',drops_today_pct='$VCSdrops_today_pct',drops_answers_today_pct='$VCSdrops_answers_today_pct',calls_hour='$VCScalls_hour',answers_hour='$VCSanswers_hour',drops_hour='$VCSdrops_hour',drops_hour_pct='$VCSdrops_hour_pct',calls_halfhour='$VCScalls_halfhour',answers_halfhour='$VCSanswers_halfhour',drops_halfhour='$VCSdrops_halfhour',drops_halfhour_pct='$VCSdrops_halfhour_pct',calls_fivemin='$VCScalls_five',answers_fivemin='$VCSanswers_five',drops_fivemin='$VCSdrops_five',drops_fivemin_pct='$VCSdrops_five_pct',calls_onemin='$VCScalls_one',answers_onemin='$VCSanswers_one',drops_onemin='$VCSdrops_one',drops_onemin_pct='$VCSdrops_one_pct',$VSCupdateSQL where campaign_id='$campaign_id';";
 	if ($CLOtest) {
 		print $stmtA . "\n";
 	} else {
@@ -311,13 +311,13 @@ sub updateStats {
 }
 
 sub calculateDrops {
-	my ($dbhA,$vicidial_log,$campaign_id,$camp_ANS_STAT_SQL,$VDL) = @_;
+	my ($dbhA,$osdial_log,$campaign_id,$camp_ANS_STAT_SQL,$VDL) = @_;
 
 	my($stmtA,$sthA,$sthArows,$rec_count);
 	my($VCScalls,$VCSanswers,$VCSdrops,$VCSdrops_pct) = (0,0,0,0);
 
 	# CALL AND DROP STATS
-	$stmtA = "SELECT count(*) from $vicidial_log where campaign_id=\'$campaign_id\' and call_date > \'$VDL\';";
+	$stmtA = "SELECT count(*) from $osdial_log where campaign_id=\'$campaign_id\' and call_date > \'$VDL\';";
 	print $stmtA . "\n" if ($DBX);
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -332,7 +332,7 @@ sub calculateDrops {
 	if ( $VCScalls > 0 ) {
 
 		# ANSWERS
-		$stmtA = "SELECT count(*) from $vicidial_log where campaign_id=\'$campaign_id\' and call_date > \'$VDL\' and status IN($camp_ANS_STAT_SQL);";
+		$stmtA = "SELECT count(*) from $osdial_log where campaign_id=\'$campaign_id\' and call_date > \'$VDL\' and status IN($camp_ANS_STAT_SQL);";
 		print $stmtA . "\n" if ($DBX);
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -346,7 +346,7 @@ sub calculateDrops {
 		$sthA->finish();
 
 		# DROPS
-		$stmtA = "SELECT count(*) from $vicidial_log where campaign_id=\'$campaign_id\' and call_date > \'$VDL\' and status IN(\'DROP\',\'XDROP\');";
+		$stmtA = "SELECT count(*) from $osdial_log where campaign_id=\'$campaign_id\' and call_date > \'$VDL\' and status IN(\'DROP\',\'XDROP\');";
 		print $stmtA . "\n" if ($DBX);
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;

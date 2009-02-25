@@ -223,7 +223,7 @@ if ($ADD==21111111111111)	{$hh='admin';	$sh='conference';	$title = "ADDING NEW O
 if ($ADD==41111111111111)	{$hh='admin';	$sh='conference';	$title = "MODIFY OSDial CONFERENCE";}
 if ($ADD==51111111111111)	{$hh='admin';	$sh='conference';	$title = "DELETE OSDial CONFERENCE";}
 if ($ADD==61111111111111)	{$hh='admin';	$sh='conference';	$title = "DELETE OSDial CONFERENCE";}
-if ($ADD==31111111111111)	{$hh='admin';	$sh='conference';	$title = "MODIFY VICIDIAL CONFERENCE";}
+if ($ADD==31111111111111)	{$hh='admin';	$sh='conference';	$title = "MODIFY OSDial CONFERENCE";}
 
 # Admin - settings
 if ($ADD==411111111111111)	{$hh='admin';	$sh='settings';	$title = "MODIFY OSDial SYSTEM SETTINGS";}

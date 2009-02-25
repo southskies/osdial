@@ -6,12 +6,12 @@
 #
 # DESCRIPTION:
 # spawns child processes (AST_send_action_child.pl) to execute action commands 
-# on the Asterisk manager interface from records in the vicidial_manager table
+# on the Asterisk manager interface from records in the osdial_manager table
 # of the asterisk database in MySQL that are marked as a status of NEW
 #
 # SUMMARY:
 # This program was designed as the send-only part of the ACQS. It's job is to
-# pick NEW actions from the vicidial_manager table and send them to be executed
+# pick NEW actions from the osdial_manager table and send them to be executed
 # by separate child process. This allows for a higher degree of flexibility and
 # scalability over just using a single process. Also, this means that a single
 # action execution lock cannot bring the entire system down.
@@ -103,7 +103,7 @@ while ($one_day_interval > 0) {
 	my $affected_rows;
 	my $NEW_actions;
 	while ($endless_loop > 0) {
-		my $stmtA = "SELECT count(*) from vicidial_manager where server_ip = '" . $conf{VARserver_ip} . "' and status = 'NEW'";
+		my $stmtA = "SELECT count(*) from osdial_manager where server_ip = '" . $conf{VARserver_ip} . "' and status = 'NEW'";
 	    	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	 	my $NEW_actions = ($sthA->fetchrow_array)[0];
@@ -111,7 +111,7 @@ while ($one_day_interval > 0) {
 	    	$sthA->finish();
 
 		if ($NEW_actions) {
-			my $stmtA = "UPDATE vicidial_manager set status='QUEUE' where server_ip = '" . $conf{VARserver_ip} . "' and status = 'NEW' order by entry_date limit 1";
+			my $stmtA = "UPDATE osdial_manager set status='QUEUE' where server_ip = '" . $conf{VARserver_ip} . "' and status = 'NEW' order by entry_date limit 1";
 			$affected_rows = $dbhA->do($stmtA);
 			print STDERR "rows updated to QUEUE: |$affected_rows|\n" if ($DB);
 		} else {
@@ -119,7 +119,7 @@ while ($one_day_interval > 0) {
 		}
 
 		if ($affected_rows) {
-			my $stmtA = "SELECT * FROM vicidial_manager where server_ip = '" . $conf{VARserver_ip} . "' and status = 'QUEUE' order by entry_date desc limit 1";
+			my $stmtA = "SELECT * FROM osdial_manager where server_ip = '" . $conf{VARserver_ip} . "' and status = 'QUEUE' order by entry_date desc limit 1";
 			eventLogger($conf{'PATHlogs'}, 'process', "SQL_QUERY|" . $stmtA . "|");
 
 			my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -147,7 +147,7 @@ while ($one_day_interval > 0) {
 				if ($originate_command =~ /Action: Hangup|Action: Redirect/) {
 					$SENDNOW=0;
 					print STDERR "\n|checking for dead call before executing|" . $vdm->{callid} . "|" . $vdm->{uniqueid} . "|\n" if ($DB);
-					my $stmtB = "SELECT count(*) FROM vicidial_manager where server_ip = '" . $conf{VARserver_ip} . "' and callerid='" . $vdm->{callid} . "' and status = 'DEAD'";
+					my $stmtB = "SELECT count(*) FROM osdial_manager where server_ip = '" . $conf{VARserver_ip} . "' and callerid='" . $vdm->{callid} . "' and status = 'DEAD'";
 					my $sthB = $dbhA->prepare($stmtB) or die "preparing: ",$dbhA->errstr;
 					$sthB->execute or die "executing: $stmtA ", $dbhA->errstr;
 					my $dead_count = ($sthB->fetchrow_array)[0];
@@ -206,14 +206,14 @@ while ($one_day_interval > 0) {
 			#		$launch = "SENT " . $vdm->{man_id} . "  " . $vdm->{callid} . ' ' . $vdm->{uniqueid} . ' ' . $vdm->{channel};
 			#		eventLogger($conf{'PATHlogs'}, 'launch', $launch);;
 
-					my $stmtA = "UPDATE vicidial_manager set status='SENT' where man_id='" . $vdm->{man_id} . "'";
+					my $stmtA = "UPDATE osdial_manager set status='SENT' where man_id='" . $vdm->{man_id} . "'";
 					print STDERR "\n|$stmtA|\n" if ($DB);
 					$affected_rows = $dbhA->do($stmtA);
 
 					$event_string = "SQL_QUERY|$stmtA|";
 					eventLogger($conf{'PATHlogs'}, 'process', $event_string);
 				} else {
-					$stmtA = "UPDATE vicidial_manager set status='DEAD' where man_id='" . $vdm->{man_id} . "'";
+					$stmtA = "UPDATE osdial_manager set status='DEAD' where man_id='" . $vdm->{man_id} . "'";
 					print STDERR "\n|$stmtA|\n" if ($DB);
 					$affected_rows = $dbhA->do($stmtA);
 					$event_string="COMMAND NOT SENT, SQL_QUERY|$stmtA|";

@@ -5,7 +5,7 @@
 ###
 ### This script is designed to open up when a live_inbound call comes in giving the user
 ###   options of what to do with the call or options to lookup the callerID on various web sites
-### This script depends on the server_ip being sent and also needs to have a valid user/pass from the vicidial_users table
+### This script depends on the server_ip being sent and also needs to have a valid user/pass from the osdial_users table
 ### 
 ### required variables:
 ###  - $server_ip
@@ -77,7 +77,7 @@ if (!isset($query_date)) {$query_date = $NOW_DATE;}
 $DO = '-1';
 if ( (eregi("^Zap",$channel)) and (!eregi("-",$channel)) ) {$channel = "$channel$DO";}
 
-	$stmt="SELECT count(*) from vicidial_users where user='$user' and pass='$pass' and user_level > 0;";
+	$stmt="SELECT count(*) from osdial_users where user='$user' and pass='$pass' and user_level > 0;";
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);

@@ -3,13 +3,13 @@
 # 
 # Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
-# live real-time stats for the VICIDIAL Auto-Dialer all servers
+# live real-time stats for the OSDIAL Auto-Dialer all servers
 #
 # STOP=4000, SLOW=40, GO=4 seconds refresh interval
 # 
 # CHANGELOG:
 # 50406-0920 - Added Paused agents < 1 min (Chris Doyle)
-# 51130-1218 - Modified layout and info to show all servers in a vicidial system
+# 51130-1218 - Modified layout and info to show all servers in a osdial system
 # 60421-1043 - check GET/POST vars lines with isset to not trigger PHP NOTICES
 # 60511-1343 - Added leads and drop info at the top of the screen
 # 60608-1539 - Fixed CLOSER tallies for active calls
@@ -117,7 +117,7 @@ $load_ave = get_server_load(true);
 $PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);
 $PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
 
-	$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1';";
+	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1';";
 	if ($DB) {echo "|$stmt|\n";}
 	if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
 	if ($non_latin > 0) {$rslta=mysql_query("SET NAMES 'UTF8'");}  $rslt=mysql_query($stmt, $link);
@@ -126,13 +126,13 @@ $PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICI-PROJECTS\"");
+    Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
 	}
 	
-			$stmt="SELECT vicidial_recording  from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1';";
+			$stmt="SELECT osdial_recording  from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1';";
 			if ($DB) {echo "|$stmt|\n";}
 			if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
 			if ($non_latin > 0) {$rslta=mysql_query("SET NAMES 'UTF8'");}  $rslt=mysql_query($stmt, $link);
@@ -149,7 +149,7 @@ $STARTtime = date("U");
 $epochSIXhoursAGO = ($STARTtime - 21600);
 $timeSIXhoursAGO = date("Y-m-d H:i:s",$epochSIXhoursAGO);
 
-$stmt="select campaign_id from vicidial_campaigns where active='Y';";
+$stmt="select campaign_id from osdial_campaigns where active='Y';";
 if ($non_latin > 0)
 {
 $rslt=mysql_query("SET NAMES 'UTF8'");
@@ -166,7 +166,7 @@ while ($i < $groups_to_print)
 	$i++;
 	}
 
-$stmt="select * from vicidial_user_groups;";
+$stmt="select * from osdial_user_groups;";
 if ($non_latin > 0)
 {
 $rslt=mysql_query("SET NAMES 'UTF8'");
@@ -337,11 +337,11 @@ echo "\n\n";
 if (!$group) {echo "<BR><BR>please select a campaign from the pulldown above</FORM>\n"; exit;}
 else
 {
-$stmt="select auto_dial_level,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,lead_filter_id,hopper_level,dial_method,adaptive_maximum_level,adaptive_dropped_percentage,adaptive_dl_diff_target,adaptive_intensity,available_only_ratio_tally,adaptive_latest_server_time,local_call_time,dial_timeout,dial_statuses from vicidial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
+$stmt="select auto_dial_level,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,lead_filter_id,hopper_level,dial_method,adaptive_maximum_level,adaptive_dropped_percentage,adaptive_dl_diff_target,adaptive_intensity,available_only_ratio_tally,adaptive_latest_server_time,local_call_time,dial_timeout,dial_statuses from osdial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
 
 if ($group=='XXXX-ALL-ACTIVE-XXXX') 
 	{
-	$stmt="select avg(auto_dial_level),min(dial_status_a),min(dial_status_b),min(dial_status_c),min(dial_status_d),min(dial_status_e),min(lead_order),min(lead_filter_id),sum(hopper_level),min(dial_method),avg(adaptive_maximum_level),avg(adaptive_dropped_percentage),avg(adaptive_dl_diff_target),avg(adaptive_intensity),min(available_only_ratio_tally),min(adaptive_latest_server_time),min(local_call_time),avg(dial_timeout),min(dial_statuses) from vicidial_campaigns;";
+	$stmt="select avg(auto_dial_level),min(dial_status_a),min(dial_status_b),min(dial_status_c),min(dial_status_d),min(dial_status_e),min(lead_order),min(lead_filter_id),sum(hopper_level),min(dial_method),avg(adaptive_maximum_level),avg(adaptive_dropped_percentage),avg(adaptive_dl_diff_target),avg(adaptive_intensity),min(available_only_ratio_tally),min(adaptive_latest_server_time),min(local_call_time),avg(dial_timeout),min(dial_statuses) from osdial_campaigns;";
 	}
 if ($non_latin > 0)
 {
@@ -371,10 +371,10 @@ $DIALstatuses =	$row[18];
 	$DIALstatuses = (preg_replace("/ -$|^ /","",$DIALstatuses));
 	$DIALstatuses = (ereg_replace(' ',', ',$DIALstatuses));
 
-$stmt="select count(*) from vicidial_hopper where campaign_id='" . mysql_real_escape_string($group) . "';";
+$stmt="select count(*) from osdial_hopper where campaign_id='" . mysql_real_escape_string($group) . "';";
 if ($group=='XXXX-ALL-ACTIVE-XXXX') 
 	{
-	$stmt="select count(*) from vicidial_hopper;";
+	$stmt="select count(*) from osdial_hopper;";
 	}
 if ($non_latin > 0)
 {
@@ -384,10 +384,10 @@ if ($non_latin > 0) {$rslta=mysql_query("SET NAMES 'UTF8'");}  $rslt=mysql_query
 $row=mysql_fetch_row($rslt);
 $VDhop = $row[0];
 
-$stmt="select dialable_leads,calls_today,drops_today,drops_answers_today_pct,differential_onemin,agents_average_onemin,balance_trunk_fill,answers_today from vicidial_campaign_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
+$stmt="select dialable_leads,calls_today,drops_today,drops_answers_today_pct,differential_onemin,agents_average_onemin,balance_trunk_fill,answers_today from osdial_campaign_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
 if ($group=='XXXX-ALL-ACTIVE-XXXX') 
 	{
-	$stmt="select sum(dialable_leads),sum(calls_today),sum(drops_today),avg(drops_answers_today_pct),avg(differential_onemin),avg(agents_average_onemin),sum(balance_trunk_fill),sum(answers_today) from vicidial_campaign_stats;";
+	$stmt="select sum(dialable_leads),sum(calls_today),sum(drops_today),avg(drops_answers_today_pct),avg(differential_onemin),avg(agents_average_onemin),sum(balance_trunk_fill),sum(answers_today) from osdial_campaign_stats;";
 	}
 if ($non_latin > 0)
 {
@@ -410,10 +410,10 @@ if ( ($diffONEMIN != 0) and ($agentsONEMIN > 0) )
 	}
 else {$diffpctONEMIN = '0.00';}
 
-$stmt="select sum(local_trunk_shortage) from vicidial_campaign_server_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
+$stmt="select sum(local_trunk_shortage) from osdial_campaign_server_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
 if ($group=='XXXX-ALL-ACTIVE-XXXX') 
 	{
-	$stmt="select sum(local_trunk_shortage) from vicidial_campaign_server_stats;";
+	$stmt="select sum(local_trunk_shortage) from osdial_campaign_server_stats;";
 	}
 if ($non_latin > 0)
 {
@@ -511,7 +511,7 @@ echo "</FORM>\n\n";
 ###################################################################################
 if (eregi("(CLOSER|BLEND|INBND|_C$|_B$|_I$)",$group))
 	{
-	$stmt="select closer_campaigns from vicidial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
+	$stmt="select closer_campaigns from osdial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
 if ($non_latin > 0)
 {
 $rslt=mysql_query("SET NAMES 'UTF8'");
@@ -522,14 +522,14 @@ $rslt=mysql_query("SET NAMES 'UTF8'");
 	$closer_campaigns = preg_replace("/ /","','",$closer_campaigns);
 	$closer_campaigns = "'$closer_campaigns'";
 
-	$stmt="select status from vicidial_auto_calls where status NOT IN('XFER') and ( (call_type='IN' and campaign_id IN($closer_campaigns)) or (campaign_id='" . mysql_real_escape_string($group) . "' and call_type='OUT') );";
+	$stmt="select status from osdial_auto_calls where status NOT IN('XFER') and ( (call_type='IN' and campaign_id IN($closer_campaigns)) or (campaign_id='" . mysql_real_escape_string($group) . "' and call_type='OUT') );";
 	}
 else
 	{
 	if ($group=='XXXX-ALL-ACTIVE-XXXX') {$groupSQL = '';}
 	else {$groupSQL = " and campaign_id='" . mysql_real_escape_string($group) . "'";}
 
-	$stmt="select status from vicidial_auto_calls where status NOT IN('XFER') $groupSQL;";
+	$stmt="select status from osdial_auto_calls where status NOT IN('XFER') $groupSQL;";
 	}
 if ($non_latin > 0)
 {
@@ -667,8 +667,8 @@ if ($UidORname > 0)
 	}
 else
 	{
-	if ($orderby=='userup') {$orderSQL='vicidial_live_agents.user';}
-	if ($orderby=='userdown') {$orderSQL='vicidial_live_agents.user desc';}
+	if ($orderby=='userup') {$orderSQL='osdial_live_agents.user';}
+	if ($orderby=='userdown') {$orderSQL='osdial_live_agents.user desc';}
 	}
 
 if ($group=='XXXX-ALL-ACTIVE-XXXX') {$groupSQL = '';}
@@ -676,9 +676,9 @@ else {$groupSQL = " and campaign_id='" . mysql_real_escape_string($group) . "'";
 if (strlen($usergroup)<1) {$usergroupSQL = '';}
 else {$usergroupSQL = " and user_group='" . mysql_real_escape_string($usergroup) . "'";}
 
-$stmt="select extension,vicidial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id,vicidial_users.user_group,vicidial_users.full_name,vicidial_live_agents.comments,lead_id,vicidial_users.pass from vicidial_live_agents,vicidial_users where vicidial_live_agents.user=vicidial_users.user $groupSQL $usergroupSQL order by $orderSQL;";
+$stmt="select extension,osdial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id,osdial_users.user_group,osdial_users.full_name,osdial_live_agents.comments,lead_id,osdial_users.pass from osdial_live_agents,osdial_users where osdial_live_agents.user=osdial_users.user $groupSQL $usergroupSQL order by $orderSQL;";
 
-#$stmt="select extension,vicidial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id,vicidial_users.user_group,vicidial_users.full_name from vicidial_live_agents,vicidial_users where vicidial_live_agents.user=vicidial_users.user and campaign_id='" . mysql_real_escape_string($group) . "' order by $orderSQL;";
+#$stmt="select extension,osdial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id,osdial_users.user_group,osdial_users.full_name from osdial_live_agents,osdial_users where osdial_live_agents.user=osdial_users.user and campaign_id='" . mysql_real_escape_string($group) . "' order by $orderSQL;";
 
 if ($non_latin > 0)
 {

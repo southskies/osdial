@@ -38,7 +38,7 @@ if ($ADD==111111111)
 if ($ADD==211111111)
 {
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT count(*) from vicidial_call_times where call_time_id='$call_time_id';";
+	$stmt="SELECT count(*) from osdial_call_times where call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -52,7 +52,7 @@ if ($ADD==211111111)
 			 }
 		 else
 			{
-			$stmt="INSERT INTO vicidial_call_times SET call_time_id='$call_time_id',call_time_name='$call_time_name',call_time_comments='$call_time_comments';";
+			$stmt="INSERT INTO osdial_call_times SET call_time_id='$call_time_id',call_time_name='$call_time_name',call_time_comments='$call_time_comments';";
 			$rslt=mysql_query($stmt, $link);
 
 			echo "<br><B><font color=navy>CALL TIME ADDED: $call_time_id</font></B>\n";
@@ -104,7 +104,7 @@ if ($ADD==411111111)
 		$ct_friday_stop = preg_replace('/\D/', '', $ct_friday_stop);
 		$ct_saturday_start = preg_replace('/\D/', '', $ct_saturday_start);
 		$ct_saturday_stop = preg_replace('/\D/', '', $ct_saturday_stop);
-		$stmt="UPDATE vicidial_call_times set call_time_name='$call_time_name', call_time_comments='$call_time_comments', ct_default_start='$ct_default_start', ct_default_stop='$ct_default_stop', ct_sunday_start='$ct_sunday_start', ct_sunday_stop='$ct_sunday_stop', ct_monday_start='$ct_monday_start', ct_monday_stop='$ct_monday_stop', ct_tuesday_start='$ct_tuesday_start', ct_tuesday_stop='$ct_tuesday_stop', ct_wednesday_start='$ct_wednesday_start', ct_wednesday_stop='$ct_wednesday_stop', ct_thursday_start='$ct_thursday_start', ct_thursday_stop='$ct_thursday_stop', ct_friday_start='$ct_friday_start', ct_friday_stop='$ct_friday_stop', ct_saturday_start='$ct_saturday_start', ct_saturday_stop='$ct_saturday_stop' where call_time_id='$call_time_id';";
+		$stmt="UPDATE osdial_call_times set call_time_name='$call_time_name', call_time_comments='$call_time_comments', ct_default_start='$ct_default_start', ct_default_stop='$ct_default_stop', ct_sunday_start='$ct_sunday_start', ct_sunday_stop='$ct_sunday_stop', ct_monday_start='$ct_monday_start', ct_monday_stop='$ct_monday_stop', ct_tuesday_start='$ct_tuesday_start', ct_tuesday_stop='$ct_tuesday_stop', ct_wednesday_start='$ct_wednesday_start', ct_wednesday_stop='$ct_wednesday_stop', ct_thursday_start='$ct_thursday_start', ct_thursday_stop='$ct_thursday_stop', ct_friday_start='$ct_friday_start', ct_friday_stop='$ct_friday_stop', ct_saturday_start='$ct_saturday_start', ct_saturday_stop='$ct_saturday_stop' where call_time_id='$call_time_id';";
 		$rslt=mysql_query($stmt, $link);
 
 		echo "<br><B><font color=navy>CALL TIME MODIFIED</font></B>\n";
@@ -165,7 +165,7 @@ if ($ADD==611111111)
 		}
 	 else
 		{
-		$stmt="DELETE from vicidial_call_times where call_time_id='$call_time_id' limit 1;";
+		$stmt="DELETE from osdial_call_times where call_time_id='$call_time_id' limit 1;";
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -195,7 +195,7 @@ if ($LOGmodify_call_times==1)
 
 if ( ($stage=="ADD") and (strlen($state_rule)>0) )
 	{
-	$stmt="SELECT ct_state_call_times from vicidial_call_times where call_time_id='$call_time_id';";
+	$stmt="SELECT ct_state_call_times from osdial_call_times where call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$ct_state_call_times = $row[0];
@@ -204,19 +204,19 @@ if ( ($stage=="ADD") and (strlen($state_rule)>0) )
 		{$ct_state_call_times = "$ct_state_call_times$state_rule\|";}
 	else
 		{$ct_state_call_times = "$ct_state_call_times\|$state_rule\|";}
-	$stmt="UPDATE vicidial_call_times set ct_state_call_times='$ct_state_call_times' where call_time_id='$call_time_id';";
+	$stmt="UPDATE osdial_call_times set ct_state_call_times='$ct_state_call_times' where call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
 	echo "State Rule Added: $state_rule<BR>\n";
 	}
 if ( ($stage=="REMOVE") and (strlen($state_rule)>0) )
 	{
-	$stmt="SELECT ct_state_call_times from vicidial_call_times where call_time_id='$call_time_id';";
+	$stmt="SELECT ct_state_call_times from osdial_call_times where call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$ct_state_call_times = $row[0];
 
 	$ct_state_call_times = eregi_replace("\|$state_rule\|",'|',$ct_state_call_times);
-	$stmt="UPDATE vicidial_call_times set ct_state_call_times='$ct_state_call_times' where call_time_id='$call_time_id';";
+	$stmt="UPDATE osdial_call_times set ct_state_call_times='$ct_state_call_times' where call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
 	echo "State Rule Removed: $state_rule<BR>\n";
 	}
@@ -243,7 +243,7 @@ if ($LOGmodify_call_times==1)
 echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT * from vicidial_call_times where call_time_id='$call_time_id';";
+	$stmt="SELECT * from osdial_call_times where call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$call_time_name =		$row[1];
@@ -299,7 +299,7 @@ while($ct_srs >= $b)
 	{
 	if (strlen($state_rules[$b])>0)
 		{
-		$stmt="SELECT state_call_time_state,state_call_time_name from vicidial_state_call_times where state_call_time_id='$state_rules[$b]';";
+		$stmt="SELECT state_call_time_state,state_call_time_name from osdial_state_call_times where state_call_time_id='$state_rules[$b]';";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		echo "<tr bgcolor=#C1D6DF><td align=right><a href=\"$PHP_SELF?ADD=3111111111&call_time_id=$state_rules[$b]\">$state_rules[$b] </a> - <a href=\"$PHP_SELF?ADD=321111111&call_time_id=$call_time_id&state_rule=$state_rules[$b]&stage=REMOVE\">REMOVE </a></td><td align=left colspan=2>$row[0] - $row[1]</td></tr>\n";
@@ -316,7 +316,7 @@ if (strlen($srs_SQL)>2)
 	}
 else
 	{$srs_SQL='';}
-$stmt="SELECT state_call_time_id,state_call_time_name from vicidial_state_call_times $srs_SQL order by state_call_time_id;";
+$stmt="SELECT state_call_time_id,state_call_time_name from osdial_state_call_times $srs_SQL order by state_call_time_id;";
 $rslt=mysql_query($stmt, $link);
 $sct_to_print = mysql_num_rows($rslt);
 $sct_list='';
@@ -340,7 +340,7 @@ echo "</TABLE><BR><BR>\n";
 echo "<font color=navy size=+1>CAMPAIGNS USING THIS CALL TIME</font><br><BR>\n";
 echo "<TABLE>\n";
 
-	$stmt="SELECT campaign_id,campaign_name from vicidial_campaigns where local_call_time='$call_time_id';";
+	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns where local_call_time='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
 	$camps_to_print = mysql_num_rows($rslt);
 	$o=0;
@@ -354,7 +354,7 @@ echo "</TABLE>\n";
 echo "<br><font color=navy size=+1>INBOUND GROUPS USING THIS CALL TIME</font><BR><br>\n";
 echo "<TABLE>\n";
 
-	$stmt="SELECT group_id,group_name from vicidial_inbound_groups where call_time_id='$call_time_id';";
+	$stmt="SELECT group_id,group_name from osdial_inbound_groups where call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
 	$camps_to_print = mysql_num_rows($rslt);
 	$o=0;
@@ -389,7 +389,7 @@ echo "<TABLE align=center><TR><TD>\n";
 
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT * from vicidial_call_times order by call_time_id";
+	$stmt="SELECT * from osdial_call_times order by call_time_id";
 	$rslt=mysql_query($stmt, $link);
 	$filters_to_print = mysql_num_rows($rslt);
 
@@ -464,7 +464,7 @@ if ($ADD==1111111111)
 if ($ADD==2111111111)
 {
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT count(*) from vicidial_state_call_times where state_call_time_id='$call_time_id';";
+	$stmt="SELECT count(*) from osdial_state_call_times where state_call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -478,7 +478,7 @@ if ($ADD==2111111111)
 			 }
 		 else
 			{
-			$stmt="INSERT INTO vicidial_state_call_times SET state_call_time_id='$call_time_id',state_call_time_name='$call_time_name',state_call_time_comments='$call_time_comments',state_call_time_state='$state_call_time_state';";
+			$stmt="INSERT INTO osdial_state_call_times SET state_call_time_id='$call_time_id',state_call_time_name='$call_time_name',state_call_time_comments='$call_time_comments',state_call_time_state='$state_call_time_state';";
 			$rslt=mysql_query($stmt, $link);
 
 			echo "<br><B><font color=navy>STATE CALL TIME ADDED: $call_time_id</font></B>\n";
@@ -530,7 +530,7 @@ if ($ADD==4111111111)
 		$ct_friday_stop = preg_replace('/\D/', '', $ct_friday_stop);
 		$ct_saturday_start = preg_replace('/\D/', '', $ct_saturday_start);
 		$ct_saturday_stop = preg_replace('/\D/', '', $ct_saturday_stop);
-		$stmt="UPDATE vicidial_state_call_times set state_call_time_name='$call_time_name', state_call_time_comments='$call_time_comments', sct_default_start='$ct_default_start', sct_default_stop='$ct_default_stop', sct_sunday_start='$ct_sunday_start', sct_sunday_stop='$ct_sunday_stop', sct_monday_start='$ct_monday_start', sct_monday_stop='$ct_monday_stop', sct_tuesday_start='$ct_tuesday_start', sct_tuesday_stop='$ct_tuesday_stop', sct_wednesday_start='$ct_wednesday_start', sct_wednesday_stop='$ct_wednesday_stop', sct_thursday_start='$ct_thursday_start', sct_thursday_stop='$ct_thursday_stop', sct_friday_start='$ct_friday_start', sct_friday_stop='$ct_friday_stop', sct_saturday_start='$ct_saturday_start', sct_saturday_stop='$ct_saturday_stop', state_call_time_state='$state_call_time_state'  where state_call_time_id='$call_time_id';";
+		$stmt="UPDATE osdial_state_call_times set state_call_time_name='$call_time_name', state_call_time_comments='$call_time_comments', sct_default_start='$ct_default_start', sct_default_stop='$ct_default_stop', sct_sunday_start='$ct_sunday_start', sct_sunday_stop='$ct_sunday_stop', sct_monday_start='$ct_monday_start', sct_monday_stop='$ct_monday_stop', sct_tuesday_start='$ct_tuesday_start', sct_tuesday_stop='$ct_tuesday_stop', sct_wednesday_start='$ct_wednesday_start', sct_wednesday_stop='$ct_wednesday_stop', sct_thursday_start='$ct_thursday_start', sct_thursday_stop='$ct_thursday_stop', sct_friday_start='$ct_friday_start', sct_friday_stop='$ct_friday_stop', sct_saturday_start='$ct_saturday_start', sct_saturday_stop='$ct_saturday_stop', state_call_time_state='$state_call_time_state'  where state_call_time_id='$call_time_id';";
 		$rslt=mysql_query($stmt, $link);
 
 		echo "<br><B><font color=navy>STATE CALL TIME MODIFIED</font></B>\n";
@@ -592,10 +592,10 @@ if ($ADD==6111111111)
 		}
 	 else
 		{
-		$stmt="DELETE from vicidial_state_call_times where state_call_time_id='$call_time_id' limit 1;";
+		$stmt="DELETE from osdial_state_call_times where state_call_time_id='$call_time_id' limit 1;";
 		$rslt=mysql_query($stmt, $link);
 
-		$stmt="SELECT call_time_id,ct_state_call_times from vicidial_call_times where ct_state_call_times LIKE \"%|$call_time_id|%\" order by call_time_id;";
+		$stmt="SELECT call_time_id,ct_state_call_times from osdial_call_times where ct_state_call_times LIKE \"%|$call_time_id|%\" order by call_time_id;";
 		$rslt=mysql_query($stmt, $link);
 		$sct_to_print = mysql_num_rows($rslt);
 		$sct_list='';
@@ -611,7 +611,7 @@ if ($ADD==6111111111)
 
 		while ($sct_to_print > $o) {
 			$sct_states[$o] = eregi_replace("\|$call_time_id\|",'|',$sct_states[$o]);
-			$stmt="UPDATE vicidial_call_times set ct_state_call_times='$sct_states[$o]' where call_time_id='$sct_ids[$o]';";
+			$stmt="UPDATE osdial_call_times set ct_state_call_times='$sct_states[$o]' where call_time_id='$sct_ids[$o]';";
 			$rslt=mysql_query($stmt, $link);
 			echo "$stmt\n";
 			echo "State Rule Removed: $sct_ids[$o]<BR>\n";
@@ -646,7 +646,7 @@ if ($LOGmodify_call_times==1)
 echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT * from vicidial_state_call_times where state_call_time_id='$call_time_id';";
+	$stmt="SELECT * from osdial_state_call_times where state_call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$state_call_time_state =$row[1];
@@ -693,7 +693,7 @@ echo "</TABLE><BR><BR>\n";
 echo "<BR><font color=navy size=+1>CALL TIMES USING THIS STATE CALL TIME</font><BR>\n";
 echo "<TABLE>\n";
 
-	$stmt="SELECT call_time_id,call_time_name from vicidial_call_times where ct_state_call_times LIKE \"%|$call_time_id|%\";";
+	$stmt="SELECT call_time_id,call_time_name from osdial_call_times where ct_state_call_times LIKE \"%|$call_time_id|%\";";
 	$rslt=mysql_query($stmt, $link);
 	$camps_to_print = mysql_num_rows($rslt);
 	$o=0;
@@ -730,7 +730,7 @@ echo "<TABLE align=center><TR><TD>\n";
 
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT * from vicidial_state_call_times order by state_call_time_id";
+	$stmt="SELECT * from osdial_state_call_times order by state_call_time_id";
 	$rslt=mysql_query($stmt, $link);
 	$filters_to_print = mysql_num_rows($rslt);
 

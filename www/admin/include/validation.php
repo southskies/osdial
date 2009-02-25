@@ -78,7 +78,7 @@ if ($non_latin < 1)	{
 	$hotkeys_active = ereg_replace("[^0-9]","",$hotkeys_active);
 	$list_id = ereg_replace("[^0-9]","",$list_id);
 	$load_leads = ereg_replace("[^0-9]","",$load_leads);
-	$max_vicidial_trunks = ereg_replace("[^0-9]","",$max_vicidial_trunks);
+	$max_osdial_trunks = ereg_replace("[^0-9]","",$max_osdial_trunks);
 	$modify_call_times = ereg_replace("[^0-9]","",$modify_call_times);
 	$modify_users = ereg_replace("[^0-9]","",$modify_users);
 	$modify_campaigns = ereg_replace("[^0-9]","",$modify_campaigns);
@@ -108,9 +108,9 @@ if ($non_latin < 1)	{
 	$user_start = ereg_replace("[^0-9]","",$user_start);
 	$user_switching_enabled = ereg_replace("[^0-9]","",$user_switching_enabled);
 	$VDstop_rec_after_each_call = ereg_replace("[^0-9]","",$VDstop_rec_after_each_call);
-	$VICIDIAL_park_on_extension = ereg_replace("[^0-9]","",$VICIDIAL_park_on_extension);
-	$vicidial_recording = ereg_replace("[^0-9]","",$vicidial_recording);
-	$vicidial_transfers = ereg_replace("[^0-9]","",$vicidial_transfers);
+	$OSDIAL_park_on_extension = ereg_replace("[^0-9]","",$OSDIAL_park_on_extension);
+	$osdial_recording = ereg_replace("[^0-9]","",$osdial_recording);
+	$osdial_transfers = ereg_replace("[^0-9]","",$osdial_transfers);
 	$voicemail_button_enabled = ereg_replace("[^0-9]","",$voicemail_button_enabled);
 	$voicemail_dump_exten = ereg_replace("[^0-9]","",$voicemail_dump_exten);
 	$voicemail_ext = ereg_replace("[^0-9]","",$voicemail_ext);
@@ -146,7 +146,7 @@ if ($non_latin < 1)	{
 	$omit_phone_code = ereg_replace("[^NY]","",$omit_phone_code);
 	$available_only_ratio_tally = ereg_replace("[^NY]","",$available_only_ratio_tally);
 	$sys_perf_log = ereg_replace("[^NY]","",$sys_perf_log);
-	$vicidial_balance_active = ereg_replace("[^NY]","",$vicidial_balance_active);
+	$osdial_balance_active = ereg_replace("[^NY]","",$osdial_balance_active);
 	$vd_server_logs = ereg_replace("[^NY]","",$vd_server_logs);
 	$agent_pause_codes_active = ereg_replace("[^NY]","",$agent_pause_codes_active);
 	$campaign_stats_refresh = ereg_replace("[^NY]","",$campaign_stats_refresh);
@@ -171,7 +171,7 @@ if ($non_latin < 1)	{
 	$concurrent_transfers = ereg_replace("[^0-9a-zA-Z]","",$concurrent_transfers);
 	$billable = ereg_replace("[^0-9a-zA-Z]","",$billable);
 	$pause_code = ereg_replace("[^0-9a-zA-Z]","",$pause_code);
-	$vicidial_recording_override = ereg_replace("[^0-9a-zA-Z]","",$vicidial_recording_override);
+	$osdial_recording_override = ereg_replace("[^0-9a-zA-Z]","",$osdial_recording_override);
 	$queuemetrics_log_id = ereg_replace("[^0-9a-zA-Z]","",$queuemetrics_log_id);
 	$after_hours_action = ereg_replace("[^0-9a-zA-Z]","",$after_hours_action);
 	$after_hours_exten = ereg_replace("[^0-9a-zA-Z]","",$after_hours_exten);
@@ -242,11 +242,11 @@ if ($non_latin < 1)	{
 	$trunk_restriction = ereg_replace("[^-\_0-9a-zA-Z]","",$trunk_restriction);
 	$user = ereg_replace("[^-\_0-9a-zA-Z]","",$user);
 	$user_group = ereg_replace("[^-\_0-9a-zA-Z]","",$user_group);
-	$VICIDIAL_park_on_filename = ereg_replace("[^-\_0-9a-zA-Z]","",$VICIDIAL_park_on_filename);
+	$OSDIAL_park_on_filename = ereg_replace("[^-\_0-9a-zA-Z]","",$OSDIAL_park_on_filename);
 	$auto_alt_dial = ereg_replace("[^-\_0-9a-zA-Z]","",$auto_alt_dial);
 	$dial_status = ereg_replace("[^-\_0-9a-zA-Z]","",$dial_status);
 	$queuemetrics_eq_prepend = ereg_replace("[^-\_0-9a-zA-Z]","",$queuemetrics_eq_prepend);
-	$vicidial_agent_disable = ereg_replace("[^-\_0-9a-zA-Z]","",$vicidial_agent_disable);
+	$osdial_agent_disable = ereg_replace("[^-\_0-9a-zA-Z]","",$osdial_agent_disable);
 	$alter_custdata_override = ereg_replace("[^-\_0-9a-zA-Z]","",$alter_custdata_override);
 	$list_order_mix = ereg_replace("[^-\_0-9a-zA-Z]","",$list_order_mix);
 	$vcl_id = ereg_replace("[^-\_0-9a-zA-Z]","",$vcl_id);

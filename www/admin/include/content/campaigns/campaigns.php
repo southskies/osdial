@@ -14,7 +14,7 @@ if ($ADD==73)
 	echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT dial_statuses,local_call_time,lead_filter_id from vicidial_campaigns where campaign_id='$campaign_id';";
+	$stmt="SELECT dial_statuses,local_call_time,lead_filter_id from osdial_campaigns where campaign_id='$campaign_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$dial_statuses =		$row[0];
@@ -28,7 +28,7 @@ if ($ADD==73)
 			}
 		}
 
-	$stmt="SELECT list_id,active,list_name from vicidial_lists where campaign_id='$campaign_id'";
+	$stmt="SELECT list_id,active,list_name from osdial_lists where campaign_id='$campaign_id'";
 	$rslt=mysql_query($stmt, $link);
 	$lists_to_print = mysql_num_rows($rslt);
 	$camp_lists='';
@@ -139,7 +139,7 @@ if ($ADD==12)
 
 	echo "<tr bgcolor=#C1D6DF><td align=right>Source Campaign: </td><td align=left><select size=1 name=source_campaign_id>\n";
 
-		$stmt="SELECT campaign_id,campaign_name from vicidial_campaigns order by campaign_id";
+		$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
 		$rslt=mysql_query($stmt, $link);
 		$campaigns_to_print = mysql_num_rows($rslt);
 		$campaigns_list='';
@@ -173,14 +173,14 @@ if ($ADD==21)
 {
 
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT count(*) from vicidial_campaigns where campaign_id='$campaign_id';";
+	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
 		{echo "<br><font color=red> CAMPAIGN NOT ADDED - there is already a campaign in the system with this ID</font>\n";}
 	else
 		{
-		$stmt="SELECT count(*) from vicidial_inbound_groups where group_id='$campaign_id';";
+		$stmt="SELECT count(*) from osdial_inbound_groups where group_id='$campaign_id';";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		if ($row[0] > 0)
@@ -197,11 +197,11 @@ if ($ADD==21)
 				{
 				echo "<br><B><font color=navy> CAMPAIGN ADDED: $campaign_id</font></B>\n";
 
-				#$stmt="INSERT INTO vicidial_campaigns (campaign_id,campaign_name,campaign_description,active,dial_status_a,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,campaign_script,get_call_launch,campaign_changedate,campaign_stats_refresh,list_order_mix,web_form_address2) values('$campaign_id','$campaign_name','$campaign_description','$active','NEW','DOWN','$park_ext','$park_file_name','" . mysql_real_escape_string($web_form_address) . "','$allow_closers','$hopper_level','$auto_dial_level','$next_agent_call','$local_call_time','$voicemail_ext','$script_id','$get_call_launch','$SQLdate','Y','DISABLED','" . mysql_real_escape_string($web_form_address2) . "');";
-				$stmt="INSERT INTO vicidial_campaigns (campaign_id,campaign_name,campaign_description,active,dial_status_a,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,campaign_script,get_call_launch,campaign_changedate,campaign_stats_refresh,list_order_mix) values('$campaign_id','$campaign_name','$campaign_description','$active','NEW','DOWN','$park_ext','$park_file_name','" . mysql_real_escape_string($web_form_address) . "','$allow_closers','$hopper_level','$auto_dial_level','$next_agent_call','$local_call_time','$voicemail_ext','$script_id','$get_call_launch','$SQLdate','Y','DISABLED');";
+				#$stmt="INSERT INTO osdial_campaigns (campaign_id,campaign_name,campaign_description,active,dial_status_a,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,campaign_script,get_call_launch,campaign_changedate,campaign_stats_refresh,list_order_mix,web_form_address2) values('$campaign_id','$campaign_name','$campaign_description','$active','NEW','DOWN','$park_ext','$park_file_name','" . mysql_real_escape_string($web_form_address) . "','$allow_closers','$hopper_level','$auto_dial_level','$next_agent_call','$local_call_time','$voicemail_ext','$script_id','$get_call_launch','$SQLdate','Y','DISABLED','" . mysql_real_escape_string($web_form_address2) . "');";
+				$stmt="INSERT INTO osdial_campaigns (campaign_id,campaign_name,campaign_description,active,dial_status_a,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,campaign_script,get_call_launch,campaign_changedate,campaign_stats_refresh,list_order_mix) values('$campaign_id','$campaign_name','$campaign_description','$active','NEW','DOWN','$park_ext','$park_file_name','" . mysql_real_escape_string($web_form_address) . "','$allow_closers','$hopper_level','$auto_dial_level','$next_agent_call','$local_call_time','$voicemail_ext','$script_id','$get_call_launch','$SQLdate','Y','DISABLED');";
 				$rslt=mysql_query($stmt, $link);
 
-				$stmt="INSERT INTO vicidial_campaign_stats (campaign_id) values('$campaign_id');";
+				$stmt="INSERT INTO osdial_campaign_stats (campaign_id) values('$campaign_id');";
 				$rslt=mysql_query($stmt, $link);
 
 				echo "<!-- $stmt -->";
@@ -227,7 +227,7 @@ if ($ADD==20)
 {
 
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT count(*) from vicidial_campaigns where campaign_id='$campaign_id';";
+	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -244,23 +244,23 @@ if ($ADD==20)
 			{
 			echo "<br><B><font color=navy> CAMPAIGN COPIED: $campaign_id copied from $source_campaign_id</font></B>\n";
 
-			#$stmt="INSERT INTO vicidial_campaigns (campaign_name,campaign_id,active,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,amd_send_to_vmx,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,lead_filter_id,drop_call_seconds,safe_harbor_message,safe_harbor_exten,display_dialable_count,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,concurrent_transfers,auto_alt_dial,auto_alt_dial_statuses,agent_pause_codes_active,campaign_description,campaign_changedate,campaign_stats_refresh,campaign_logindate,dial_statuses,disable_alter_custdata,no_hopper_leads_logins,list_order_mix,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,web_form_address2) SELECT \"$campaign_name\",\"$campaign_id\",\"N\",dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,amd_send_to_vmx,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,lead_filter_id,drop_call_seconds,safe_harbor_message,safe_harbor_exten,display_dialable_count,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,concurrent_transfers,auto_alt_dial,auto_alt_dial_statuses,agent_pause_codes_active,campaign_description,campaign_changedate,campaign_stats_refresh,campaign_logindate,dial_statuses,disable_alter_custdata,no_hopper_leads_logins,\"DISABLED\",campaign_allow_inbound,manual_dial_list_id,default_xfer_group,web_form_address2 from vicidial_campaigns where campaign_id='$source_campaign_id';";
-			$stmt="INSERT INTO vicidial_campaigns (campaign_name,campaign_id,active,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,amd_send_to_vmx,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,lead_filter_id,drop_call_seconds,safe_harbor_message,safe_harbor_exten,display_dialable_count,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,concurrent_transfers,auto_alt_dial,auto_alt_dial_statuses,agent_pause_codes_active,campaign_description,campaign_changedate,campaign_stats_refresh,campaign_logindate,dial_statuses,disable_alter_custdata,no_hopper_leads_logins,list_order_mix,campaign_allow_inbound,manual_dial_list_id,default_xfer_group) SELECT \"$campaign_name\",\"$campaign_id\",\"N\",dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,amd_send_to_vmx,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,lead_filter_id,drop_call_seconds,safe_harbor_message,safe_harbor_exten,display_dialable_count,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,concurrent_transfers,auto_alt_dial,auto_alt_dial_statuses,agent_pause_codes_active,campaign_description,campaign_changedate,campaign_stats_refresh,campaign_logindate,dial_statuses,disable_alter_custdata,no_hopper_leads_logins,\"DISABLED\",campaign_allow_inbound,manual_dial_list_id,default_xfer_group from vicidial_campaigns where campaign_id='$source_campaign_id';";
+			#$stmt="INSERT INTO osdial_campaigns (campaign_name,campaign_id,active,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,amd_send_to_vmx,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,lead_filter_id,drop_call_seconds,safe_harbor_message,safe_harbor_exten,display_dialable_count,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,concurrent_transfers,auto_alt_dial,auto_alt_dial_statuses,agent_pause_codes_active,campaign_description,campaign_changedate,campaign_stats_refresh,campaign_logindate,dial_statuses,disable_alter_custdata,no_hopper_leads_logins,list_order_mix,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,web_form_address2) SELECT \"$campaign_name\",\"$campaign_id\",\"N\",dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,amd_send_to_vmx,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,lead_filter_id,drop_call_seconds,safe_harbor_message,safe_harbor_exten,display_dialable_count,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,concurrent_transfers,auto_alt_dial,auto_alt_dial_statuses,agent_pause_codes_active,campaign_description,campaign_changedate,campaign_stats_refresh,campaign_logindate,dial_statuses,disable_alter_custdata,no_hopper_leads_logins,\"DISABLED\",campaign_allow_inbound,manual_dial_list_id,default_xfer_group,web_form_address2 from osdial_campaigns where campaign_id='$source_campaign_id';";
+			$stmt="INSERT INTO osdial_campaigns (campaign_name,campaign_id,active,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,amd_send_to_vmx,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,lead_filter_id,drop_call_seconds,safe_harbor_message,safe_harbor_exten,display_dialable_count,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,concurrent_transfers,auto_alt_dial,auto_alt_dial_statuses,agent_pause_codes_active,campaign_description,campaign_changedate,campaign_stats_refresh,campaign_logindate,dial_statuses,disable_alter_custdata,no_hopper_leads_logins,list_order_mix,campaign_allow_inbound,manual_dial_list_id,default_xfer_group) SELECT \"$campaign_name\",\"$campaign_id\",\"N\",dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,amd_send_to_vmx,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,lead_filter_id,drop_call_seconds,safe_harbor_message,safe_harbor_exten,display_dialable_count,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,concurrent_transfers,auto_alt_dial,auto_alt_dial_statuses,agent_pause_codes_active,campaign_description,campaign_changedate,campaign_stats_refresh,campaign_logindate,dial_statuses,disable_alter_custdata,no_hopper_leads_logins,\"DISABLED\",campaign_allow_inbound,manual_dial_list_id,default_xfer_group from osdial_campaigns where campaign_id='$source_campaign_id';";
 			$rslt=mysql_query($stmt, $link);
 
-			$stmtA="INSERT INTO vicidial_campaign_stats (campaign_id) values('$campaign_id');";
+			$stmtA="INSERT INTO osdial_campaign_stats (campaign_id) values('$campaign_id');";
 			$rslt=mysql_query($stmtA, $link);
 
-			$stmtA="INSERT INTO vicidial_campaign_statuses (status,status_name,selectable,campaign_id,human_answered,category) SELECT status,status_name,selectable,\"$campaign_id\",human_answered,category from vicidial_campaign_statuses where campaign_id='$source_campaign_id';";
+			$stmtA="INSERT INTO osdial_campaign_statuses (status,status_name,selectable,campaign_id,human_answered,category) SELECT status,status_name,selectable,\"$campaign_id\",human_answered,category from osdial_campaign_statuses where campaign_id='$source_campaign_id';";
 			$rslt=mysql_query($stmtA, $link);
 
-			$stmtA="INSERT INTO vicidial_campaign_hotkeys (status,hotkey,status_name,selectable,campaign_id) SELECT status,hotkey,status_name,selectable,\"$campaign_id\" from vicidial_campaign_hotkeys where campaign_id='$source_campaign_id';";
+			$stmtA="INSERT INTO osdial_campaign_hotkeys (status,hotkey,status_name,selectable,campaign_id) SELECT status,hotkey,status_name,selectable,\"$campaign_id\" from osdial_campaign_hotkeys where campaign_id='$source_campaign_id';";
 			$rslt=mysql_query($stmtA, $link);
 
-			$stmtA="INSERT INTO vicidial_lead_recycle (status,attempt_delay,attempt_maximum,active,campaign_id) SELECT status,attempt_delay,attempt_maximum,active,\"$campaign_id\" from vicidial_lead_recycle where campaign_id='$source_campaign_id';";
+			$stmtA="INSERT INTO osdial_lead_recycle (status,attempt_delay,attempt_maximum,active,campaign_id) SELECT status,attempt_delay,attempt_maximum,active,\"$campaign_id\" from osdial_lead_recycle where campaign_id='$source_campaign_id';";
 			$rslt=mysql_query($stmtA, $link);
 
-			$stmtA="INSERT INTO vicidial_pause_codes (pause_code,pause_code_name,billable,campaign_id) SELECT pause_code,pause_code_name,billable,\"$campaign_id\" from vicidial_pause_codes where campaign_id='$source_campaign_id';";
+			$stmtA="INSERT INTO osdial_pause_codes (pause_code,pause_code_name,billable,campaign_id) SELECT pause_code,pause_code_name,billable,\"$campaign_id\" from osdial_pause_codes where campaign_id='$source_campaign_id';";
 			$rslt=mysql_query($stmtA, $link);
 
 			echo "<!-- $stmt -->";
@@ -330,15 +330,15 @@ if ($ADD==41)
 		if ( (!ereg("DISABLED",$list_order_mix)) and ($hopper_level < 100) )
 			{$hopper_level='100';}
 
-		#$stmtA="UPDATE vicidial_campaigns set campaign_name='$campaign_name',active='$active',dial_status_a='$dial_status_a',dial_status_b='$dial_status_b',dial_status_c='$dial_status_c',dial_status_d='$dial_status_d',dial_status_e='$dial_status_e',lead_order='$lead_order',allow_closers='$allow_closers',hopper_level='$hopper_level', $adlSQL next_agent_call='$next_agent_call', local_call_time='$local_call_time', voicemail_ext='$voicemail_ext', dial_timeout='$dial_timeout', dial_prefix='$dial_prefix', campaign_cid='$campaign_cid', campaign_vdad_exten='$campaign_vdad_exten', web_form_address='" . mysql_real_escape_string($web_form_address) . "', park_ext='$park_ext', park_file_name='$park_file_name', campaign_rec_exten='$campaign_rec_exten', campaign_recording='$campaign_recording', campaign_rec_filename='$campaign_rec_filename', campaign_script='$script_id', get_call_launch='$get_call_launch', am_message_exten='$am_message_exten', amd_send_to_vmx='$amd_send_to_vmx', xferconf_a_dtmf='$xferconf_a_dtmf',xferconf_a_number='$xferconf_a_number', xferconf_b_dtmf='$xferconf_b_dtmf',xferconf_b_number='$xferconf_b_number',lead_filter_id='$lead_filter_id',alt_number_dialing='$alt_number_dialing',scheduled_callbacks='$scheduled_callbacks',safe_harbor_message='$safe_harbor_message',drop_call_seconds='$drop_call_seconds',safe_harbor_exten='$safe_harbor_exten',wrapup_seconds='$wrapup_seconds',wrapup_message='$wrapup_message',closer_campaigns='$groups_value',use_internal_dnc='$use_internal_dnc',allcalls_delay='$allcalls_delay',omit_phone_code='$omit_phone_code',dial_method='$dial_method',available_only_ratio_tally='$available_only_ratio_tally',adaptive_dropped_percentage='$adaptive_dropped_percentage',adaptive_maximum_level='$adaptive_maximum_level',adaptive_latest_server_time='$adaptive_latest_server_time',adaptive_intensity='$adaptive_intensity',adaptive_dl_diff_target='$adaptive_dl_diff_target',concurrent_transfers='$concurrent_transfers',auto_alt_dial='$auto_alt_dial',agent_pause_codes_active='$agent_pause_codes_active',campaign_description='$campaign_description',campaign_changedate='$SQLdate',campaign_stats_refresh='$campaign_stats_refresh',disable_alter_custdata='$disable_alter_custdata',no_hopper_leads_logins='$no_hopper_leads_logins',list_order_mix='$list_order_mix',campaign_allow_inbound='$campaign_allow_inbound',manual_dial_list_id='$manual_dial_list_id',default_xfer_group='$default_xfer_group',xfer_groups='$XFERgroups_value', web_form_address2='" . mysql_real_escape_string($web_form_address2) . "' where campaign_id='$campaign_id';";
-		$stmtA="UPDATE vicidial_campaigns set campaign_name='$campaign_name',active='$active',dial_status_a='$dial_status_a',dial_status_b='$dial_status_b',dial_status_c='$dial_status_c',dial_status_d='$dial_status_d',dial_status_e='$dial_status_e',lead_order='$lead_order',allow_closers='$allow_closers',hopper_level='$hopper_level', $adlSQL next_agent_call='$next_agent_call', local_call_time='$local_call_time', voicemail_ext='$voicemail_ext', dial_timeout='$dial_timeout', dial_prefix='$dial_prefix', campaign_cid='$campaign_cid', campaign_vdad_exten='$campaign_vdad_exten', web_form_address='" . mysql_real_escape_string($web_form_address) . "', park_ext='$park_ext', park_file_name='$park_file_name', campaign_rec_exten='$campaign_rec_exten', campaign_recording='$campaign_recording', campaign_rec_filename='$campaign_rec_filename', campaign_script='$script_id', get_call_launch='$get_call_launch', am_message_exten='$am_message_exten', amd_send_to_vmx='$amd_send_to_vmx', xferconf_a_dtmf='$xferconf_a_dtmf',xferconf_a_number='$xferconf_a_number', xferconf_b_dtmf='$xferconf_b_dtmf',xferconf_b_number='$xferconf_b_number',lead_filter_id='$lead_filter_id',alt_number_dialing='$alt_number_dialing',scheduled_callbacks='$scheduled_callbacks',safe_harbor_message='$safe_harbor_message',drop_call_seconds='$drop_call_seconds',safe_harbor_exten='$safe_harbor_exten',wrapup_seconds='$wrapup_seconds',wrapup_message='$wrapup_message',closer_campaigns='$groups_value',use_internal_dnc='$use_internal_dnc',allcalls_delay='$allcalls_delay',omit_phone_code='$omit_phone_code',dial_method='$dial_method',available_only_ratio_tally='$available_only_ratio_tally',adaptive_dropped_percentage='$adaptive_dropped_percentage',adaptive_maximum_level='$adaptive_maximum_level',adaptive_latest_server_time='$adaptive_latest_server_time',adaptive_intensity='$adaptive_intensity',adaptive_dl_diff_target='$adaptive_dl_diff_target',concurrent_transfers='$concurrent_transfers',auto_alt_dial='$auto_alt_dial',agent_pause_codes_active='$agent_pause_codes_active',campaign_description='$campaign_description',campaign_changedate='$SQLdate',campaign_stats_refresh='$campaign_stats_refresh',disable_alter_custdata='$disable_alter_custdata',no_hopper_leads_logins='$no_hopper_leads_logins',list_order_mix='$list_order_mix',campaign_allow_inbound='$campaign_allow_inbound',manual_dial_list_id='$manual_dial_list_id',default_xfer_group='$default_xfer_group',xfer_groups='$XFERgroups_value' where campaign_id='$campaign_id';";
+		#$stmtA="UPDATE osdial_campaigns set campaign_name='$campaign_name',active='$active',dial_status_a='$dial_status_a',dial_status_b='$dial_status_b',dial_status_c='$dial_status_c',dial_status_d='$dial_status_d',dial_status_e='$dial_status_e',lead_order='$lead_order',allow_closers='$allow_closers',hopper_level='$hopper_level', $adlSQL next_agent_call='$next_agent_call', local_call_time='$local_call_time', voicemail_ext='$voicemail_ext', dial_timeout='$dial_timeout', dial_prefix='$dial_prefix', campaign_cid='$campaign_cid', campaign_vdad_exten='$campaign_vdad_exten', web_form_address='" . mysql_real_escape_string($web_form_address) . "', park_ext='$park_ext', park_file_name='$park_file_name', campaign_rec_exten='$campaign_rec_exten', campaign_recording='$campaign_recording', campaign_rec_filename='$campaign_rec_filename', campaign_script='$script_id', get_call_launch='$get_call_launch', am_message_exten='$am_message_exten', amd_send_to_vmx='$amd_send_to_vmx', xferconf_a_dtmf='$xferconf_a_dtmf',xferconf_a_number='$xferconf_a_number', xferconf_b_dtmf='$xferconf_b_dtmf',xferconf_b_number='$xferconf_b_number',lead_filter_id='$lead_filter_id',alt_number_dialing='$alt_number_dialing',scheduled_callbacks='$scheduled_callbacks',safe_harbor_message='$safe_harbor_message',drop_call_seconds='$drop_call_seconds',safe_harbor_exten='$safe_harbor_exten',wrapup_seconds='$wrapup_seconds',wrapup_message='$wrapup_message',closer_campaigns='$groups_value',use_internal_dnc='$use_internal_dnc',allcalls_delay='$allcalls_delay',omit_phone_code='$omit_phone_code',dial_method='$dial_method',available_only_ratio_tally='$available_only_ratio_tally',adaptive_dropped_percentage='$adaptive_dropped_percentage',adaptive_maximum_level='$adaptive_maximum_level',adaptive_latest_server_time='$adaptive_latest_server_time',adaptive_intensity='$adaptive_intensity',adaptive_dl_diff_target='$adaptive_dl_diff_target',concurrent_transfers='$concurrent_transfers',auto_alt_dial='$auto_alt_dial',agent_pause_codes_active='$agent_pause_codes_active',campaign_description='$campaign_description',campaign_changedate='$SQLdate',campaign_stats_refresh='$campaign_stats_refresh',disable_alter_custdata='$disable_alter_custdata',no_hopper_leads_logins='$no_hopper_leads_logins',list_order_mix='$list_order_mix',campaign_allow_inbound='$campaign_allow_inbound',manual_dial_list_id='$manual_dial_list_id',default_xfer_group='$default_xfer_group',xfer_groups='$XFERgroups_value', web_form_address2='" . mysql_real_escape_string($web_form_address2) . "' where campaign_id='$campaign_id';";
+		$stmtA="UPDATE osdial_campaigns set campaign_name='$campaign_name',active='$active',dial_status_a='$dial_status_a',dial_status_b='$dial_status_b',dial_status_c='$dial_status_c',dial_status_d='$dial_status_d',dial_status_e='$dial_status_e',lead_order='$lead_order',allow_closers='$allow_closers',hopper_level='$hopper_level', $adlSQL next_agent_call='$next_agent_call', local_call_time='$local_call_time', voicemail_ext='$voicemail_ext', dial_timeout='$dial_timeout', dial_prefix='$dial_prefix', campaign_cid='$campaign_cid', campaign_vdad_exten='$campaign_vdad_exten', web_form_address='" . mysql_real_escape_string($web_form_address) . "', park_ext='$park_ext', park_file_name='$park_file_name', campaign_rec_exten='$campaign_rec_exten', campaign_recording='$campaign_recording', campaign_rec_filename='$campaign_rec_filename', campaign_script='$script_id', get_call_launch='$get_call_launch', am_message_exten='$am_message_exten', amd_send_to_vmx='$amd_send_to_vmx', xferconf_a_dtmf='$xferconf_a_dtmf',xferconf_a_number='$xferconf_a_number', xferconf_b_dtmf='$xferconf_b_dtmf',xferconf_b_number='$xferconf_b_number',lead_filter_id='$lead_filter_id',alt_number_dialing='$alt_number_dialing',scheduled_callbacks='$scheduled_callbacks',safe_harbor_message='$safe_harbor_message',drop_call_seconds='$drop_call_seconds',safe_harbor_exten='$safe_harbor_exten',wrapup_seconds='$wrapup_seconds',wrapup_message='$wrapup_message',closer_campaigns='$groups_value',use_internal_dnc='$use_internal_dnc',allcalls_delay='$allcalls_delay',omit_phone_code='$omit_phone_code',dial_method='$dial_method',available_only_ratio_tally='$available_only_ratio_tally',adaptive_dropped_percentage='$adaptive_dropped_percentage',adaptive_maximum_level='$adaptive_maximum_level',adaptive_latest_server_time='$adaptive_latest_server_time',adaptive_intensity='$adaptive_intensity',adaptive_dl_diff_target='$adaptive_dl_diff_target',concurrent_transfers='$concurrent_transfers',auto_alt_dial='$auto_alt_dial',agent_pause_codes_active='$agent_pause_codes_active',campaign_description='$campaign_description',campaign_changedate='$SQLdate',campaign_stats_refresh='$campaign_stats_refresh',disable_alter_custdata='$disable_alter_custdata',no_hopper_leads_logins='$no_hopper_leads_logins',list_order_mix='$list_order_mix',campaign_allow_inbound='$campaign_allow_inbound',manual_dial_list_id='$manual_dial_list_id',default_xfer_group='$default_xfer_group',xfer_groups='$XFERgroups_value' where campaign_id='$campaign_id';";
 		$rslt=mysql_query($stmtA, $link);
 
 		if ($reset_hopper == 'Y')
 			{
 			echo "<br><font color=navy>RESETTING CAMPAIGN LEAD HOPPER\n";
 			echo "<br> - Wait 1 minute before dialing next number</font>\n";
-			$stmt="DELETE from vicidial_hopper where campaign_id='$campaign_id' and status IN('READY','QUEUE','DONE');";
+			$stmt="DELETE from osdial_hopper where campaign_id='$campaign_id' and status IN('READY','QUEUE','DONE');";
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG RESET TO LOG FILE ###
@@ -412,14 +412,14 @@ if ($ADD==44)
 		if ( (!ereg("DISABLED",$list_order_mix)) and ($hopper_level < 100) )
 			{$hopper_level='100';}
 
-		$stmtA="UPDATE vicidial_campaigns set campaign_name='$campaign_name',active='$active',dial_status_a='$dial_status_a',dial_status_b='$dial_status_b',dial_status_c='$dial_status_c',dial_status_d='$dial_status_d',dial_status_e='$dial_status_e',lead_order='$lead_order',hopper_level='$hopper_level', $adlSQL lead_filter_id='$lead_filter_id',dial_method='$dial_method',adaptive_intensity='$adaptive_intensity',campaign_changedate='$SQLdate',list_order_mix='$list_order_mix' where campaign_id='$campaign_id';";
+		$stmtA="UPDATE osdial_campaigns set campaign_name='$campaign_name',active='$active',dial_status_a='$dial_status_a',dial_status_b='$dial_status_b',dial_status_c='$dial_status_c',dial_status_d='$dial_status_d',dial_status_e='$dial_status_e',lead_order='$lead_order',hopper_level='$hopper_level', $adlSQL lead_filter_id='$lead_filter_id',dial_method='$dial_method',adaptive_intensity='$adaptive_intensity',campaign_changedate='$SQLdate',list_order_mix='$list_order_mix' where campaign_id='$campaign_id';";
 		$rslt=mysql_query($stmtA, $link);
 
 		if ($reset_hopper == 'Y')
 			{
 			echo "<br>RESETTING CAMPAIGN LEAD HOPPER\n";
 			echo "<br> - Wait 1 minute before dialing next number\n";
-			$stmt="DELETE from vicidial_hopper where campaign_id='$campaign_id' and status IN('READY','QUEUE','DONE');;";
+			$stmt="DELETE from osdial_hopper where campaign_id='$campaign_id' and status IN('READY','QUEUE','DONE');;";
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG HOPPER RESET TO LOG FILE ###
@@ -495,7 +495,7 @@ $ADD='31';		# go to campaign modification below
 }
 
 ######################
-# ADD=53 confirmation before Emergency VDAC Jam Clear - deletes oldest LIVE vicidial_auto_call record
+# ADD=53 confirmation before Emergency VDAC Jam Clear - deletes oldest LIVE osdial_auto_call record
 ######################
 
 if ($ADD==53)
@@ -538,44 +538,44 @@ if ($ADD==61)
 		}
 	 else
 		{
-		$stmt="DELETE from vicidial_campaigns where campaign_id='$campaign_id' limit 1;";
+		$stmt="DELETE from osdial_campaigns where campaign_id='$campaign_id' limit 1;";
 		$rslt=mysql_query($stmt, $link);
 
-		$stmt="DELETE from vicidial_campaign_agents where campaign_id='$campaign_id';";
+		$stmt="DELETE from osdial_campaign_agents where campaign_id='$campaign_id';";
 		$rslt=mysql_query($stmt, $link);
 
-		$stmt="DELETE from vicidial_live_agents where campaign_id='$campaign_id';";
+		$stmt="DELETE from osdial_live_agents where campaign_id='$campaign_id';";
 		$rslt=mysql_query($stmt, $link);
 
-		$stmt="DELETE from vicidial_campaign_statuses where campaign_id='$campaign_id';";
+		$stmt="DELETE from osdial_campaign_statuses where campaign_id='$campaign_id';";
 		$rslt=mysql_query($stmt, $link);
 
-		$stmt="DELETE from vicidial_campaign_hotkeys where campaign_id='$campaign_id';";
+		$stmt="DELETE from osdial_campaign_hotkeys where campaign_id='$campaign_id';";
 		$rslt=mysql_query($stmt, $link);
 
-		$stmt="DELETE from vicidial_callbacks where campaign_id='$campaign_id';";
+		$stmt="DELETE from osdial_callbacks where campaign_id='$campaign_id';";
 		$rslt=mysql_query($stmt, $link);
 
-		$stmt="DELETE from vicidial_campaign_stats where campaign_id='$campaign_id';";
+		$stmt="DELETE from osdial_campaign_stats where campaign_id='$campaign_id';";
 		$rslt=mysql_query($stmt, $link);
 
-		$stmt="DELETE from vicidial_lead_recycle where campaign_id='$campaign_id';";
+		$stmt="DELETE from osdial_lead_recycle where campaign_id='$campaign_id';";
 		$rslt=mysql_query($stmt, $link);
 
-		$stmt="DELETE from vicidial_campaign_server_stats where campaign_id='$campaign_id';";
+		$stmt="DELETE from osdial_campaign_server_stats where campaign_id='$campaign_id';";
 		$rslt=mysql_query($stmt, $link);
 
-		$stmt="DELETE from vicidial_server_trunks where campaign_id='$campaign_id';";
+		$stmt="DELETE from osdial_server_trunks where campaign_id='$campaign_id';";
 		$rslt=mysql_query($stmt, $link);
 
-		$stmt="DELETE from vicidial_pause_codes where campaign_id='$campaign_id';";
+		$stmt="DELETE from osdial_pause_codes where campaign_id='$campaign_id';";
 		$rslt=mysql_query($stmt, $link);
 
-		$stmt="DELETE from vicidial_campaigns_list_mix where campaign_id='$campaign_id';";
+		$stmt="DELETE from osdial_campaigns_list_mix where campaign_id='$campaign_id';";
 		$rslt=mysql_query($stmt, $link);
 
 		echo "<br><font color=navy>REMOVING LIST HOPPER LEADS FROM OLD CAMPAIGN HOPPER ($campaign_id)</font>\n";
-		$stmt="DELETE from vicidial_hopper where campaign_id='$campaign_id';";
+		$stmt="DELETE from osdial_hopper where campaign_id='$campaign_id';";
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -609,7 +609,7 @@ if ($ADD==62)
 		}
 	 else
 		{
-		$stmt="DELETE from vicidial_live_agents where campaign_id='$campaign_id';";
+		$stmt="DELETE from osdial_live_agents where campaign_id='$campaign_id';";
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -651,7 +651,7 @@ if ($ADD==63)
 		}
 	 else
 		{
-		$stmt="DELETE from vicidial_auto_calls where status='LIVE' and campaign_id='$campaign_id' order by call_time limit 1;";
+		$stmt="DELETE from osdial_auto_calls where status='LIVE' and campaign_id='$campaign_id' order by call_time limit 1;";
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -698,7 +698,7 @@ echo "<font color=red>You do not have permission to view campaign $campaign_id</
 if ( ($LOGcampaign_detail < 1) and ($ADD==31) ) {$ADD=34;}	# send to Basic if not allowed
 
 if ( ($ADD==31) and ( (!eregi("$campaign_id",$LOGallowed_campaigns)) and (!eregi("ALL-CAMPAIGNS",$LOGallowed_campaigns)) ) ) 
-	{$ADD=30;}	# send to not allowed screen if not in vicidial_user_groups allowed_campaigns list
+	{$ADD=30;}	# send to not allowed screen if not in osdial_user_groups allowed_campaigns list
 
 if ($ADD==31)
 {
@@ -706,16 +706,16 @@ if ($ADD==31)
 	{
 		if ($stage=='show_dialable')
 		{
-			$stmt="UPDATE vicidial_campaigns set display_dialable_count='Y' where campaign_id='$campaign_id';";
+			$stmt="UPDATE osdial_campaigns set display_dialable_count='Y' where campaign_id='$campaign_id';";
 			$rslt=mysql_query($stmt, $link);
 		}
 		if ($stage=='hide_dialable')
 		{
-			$stmt="UPDATE vicidial_campaigns set display_dialable_count='N' where campaign_id='$campaign_id';";
+			$stmt="UPDATE osdial_campaigns set display_dialable_count='N' where campaign_id='$campaign_id';";
 			$rslt=mysql_query($stmt, $link);
 		}
 
-		$stmt="SELECT * from vicidial_campaigns where campaign_id='$campaign_id';";
+		$stmt="SELECT * from osdial_campaigns where campaign_id='$campaign_id';";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		//$park_ext = $row[0];
@@ -795,7 +795,7 @@ if ($ADD==31)
 	else
 		{$DEFlistDISABLE = 'disabled';	$DEFstatusDISABLED=1;}
 
-	$stmt="SELECT count(*) from vicidial_campaigns_list_mix where campaign_id='$campaign_id' and status='ACTIVE'";
+	$stmt="SELECT count(*) from osdial_campaigns_list_mix where campaign_id='$campaign_id' and status='ACTIVE'";
 	$rslt=mysql_query($stmt, $link);
 	$rowx=mysql_fetch_row($rslt);
 	if ($rowx[0] < 1)
@@ -806,7 +806,7 @@ if ($ADD==31)
 	else
 		{
 		##### get list_mix listings for dynamic pulldown
-		$stmt="SELECT vcl_id,vcl_name from vicidial_campaigns_list_mix where campaign_id='$campaign_id' and status='ACTIVE' limit 1";
+		$stmt="SELECT vcl_id,vcl_name from osdial_campaigns_list_mix where campaign_id='$campaign_id' and status='ACTIVE' limit 1";
 		$rslt=mysql_query($stmt, $link);
 		$mixes_to_print = mysql_num_rows($rslt);
 		$mixes_list="<option value=\"DISABLED\">DISABLED</option>\n";
@@ -822,7 +822,7 @@ if ($ADD==31)
 		}
 
 	##### get status listings for dynamic pulldown
-	$stmt="SELECT * from vicidial_statuses order by status";
+	$stmt="SELECT * from osdial_statuses order by status";
 	$rslt=mysql_query($stmt, $link);
 	$statuses_to_print = mysql_num_rows($rslt);
 	$statuses_list='';
@@ -841,7 +841,7 @@ if ($ADD==31)
 		$o++;
 		}
 
-	$stmt="SELECT * from vicidial_campaign_statuses where campaign_id='$campaign_id' order by status";
+	$stmt="SELECT * from osdial_campaign_statuses where campaign_id='$campaign_id' order by status";
 	$rslt=mysql_query($stmt, $link);
 	$Cstatuses_to_print = mysql_num_rows($rslt);
 
@@ -863,7 +863,7 @@ if ($ADD==31)
 	$Ds_to_print = (count($Dstatuses) -1);
 
 	##### get in-groups listings for dynamic pulldown list menu
-	$stmt="SELECT group_id,group_name from vicidial_inbound_groups $xfer_groupsSQL order by group_id";
+	$stmt="SELECT group_id,group_name from osdial_inbound_groups $xfer_groupsSQL order by group_id";
 	$rslt=mysql_query($stmt, $link);
 	$Xgroups_to_print = mysql_num_rows($rslt);
 	$Xgroups_menu='';
@@ -1151,7 +1151,7 @@ if ($ADD==31)
 
 		$active_lists = 0;
 		$inactive_lists = 0;
-		$stmt="SELECT list_id,active,list_name from vicidial_lists where campaign_id='$campaign_id'";
+		$stmt="SELECT list_id,active,list_name from osdial_lists where campaign_id='$campaign_id'";
 		$rslt=mysql_query($stmt, $link);
 		$lists_to_print = mysql_num_rows($rslt);
 		$camp_lists='';
@@ -1201,14 +1201,14 @@ if ($ADD==31)
 
 
 
-			$stmt="SELECT count(*) FROM vicidial_hopper where campaign_id='$campaign_id' and status IN('READY')";
+			$stmt="SELECT count(*) FROM osdial_hopper where campaign_id='$campaign_id' and status IN('READY')";
 			if ($DB) {echo "$stmt\n";}
 			$rslt=mysql_query($stmt, $link);
 			$rowx=mysql_fetch_row($rslt);
 			$hopper_leads = "$rowx[0]";
 
 		echo "<font color=navy>This campaign has $hopper_leads leads in the dial hopper<br><br>\n";
-		echo "<a href=\"./AST_VICIDIAL_hopperlist.php?group=$campaign_id\">Click here to see what leads are in the hopper right now</a><br><br>\n";
+		echo "<a href=\"./AST_OSDIAL_hopperlist.php?group=$campaign_id\">Click here to see what leads are in the hopper right now</a><br><br>\n";
 		echo "<a href=\"$PHP_SELF?ADD=81&campaign_id=$campaign_id\">Click here to see all CallBack Holds in this campaign</a><BR><BR>\n";
 		echo "<a href=\"./AST_VDADstats.php?group=$campaign_id\">Click here to see a Time On Dialer report for this campaign</a></font><BR><BR>\n";
 		echo "</b></center>\n";
@@ -1220,7 +1220,7 @@ if ($ADD==31)
 		{
 
 	##### get status category listings for dynamic pulldown
-	$stmt="SELECT vsc_id,vsc_name from vicidial_status_categories order by vsc_id desc";
+	$stmt="SELECT vsc_id,vsc_name from osdial_status_categories order by vsc_id desc";
 	$rslt=mysql_query($stmt, $link);
 	$cats_to_print = mysql_num_rows($rslt);
 	$cats_list="";
@@ -1244,7 +1244,7 @@ if ($ADD==31)
 		echo "<td><font color=navy>HUMAN ANSWER</font></td>";
 		echo "<td><font color=navy>DELETE</font></td></tr>\n";
 
-		$stmt="SELECT * from vicidial_campaign_statuses where campaign_id='$campaign_id'";
+		$stmt="SELECT * from osdial_campaign_statuses where campaign_id='$campaign_id'";
 		$rslt=mysql_query($stmt, $link);
 		$statuses_to_print = mysql_num_rows($rslt);
 		$o=0;
@@ -1306,7 +1306,7 @@ if ($ADD==31)
 		echo "<TABLE width=400 cellspacing=3 align=center>\n";
 		echo "<tr><td>HOT KEY</td><td>STATUS</td><td>DESCRIPTION</td><td>DELETE</td></tr>\n";
 
-			$stmt="SELECT * from vicidial_campaign_hotkeys where campaign_id='$campaign_id' order by hotkey";
+			$stmt="SELECT * from osdial_campaign_hotkeys where campaign_id='$campaign_id' order by hotkey";
 			$rslt=mysql_query($stmt, $link);
 			$statuses_to_print = mysql_num_rows($rslt);
 			$o=0;
@@ -1356,7 +1356,7 @@ if ($ADD==31)
 		echo "<TABLE width=500 cellspacing=3>\n";
 		echo "<tr><td><font color=navy>STATUS</font></td><td><font color=navy>ATTEMPT DELAY</font></td><td><font color=navy>ATTEMPT MAXIMUM</font></td><td><font color=navy>ACTIVE</font></td><td> </td><td><font color=navy>DELETE</font></td></tr>\n";
 
-			$stmt="SELECT * from vicidial_lead_recycle where campaign_id='$campaign_id' order by status";
+			$stmt="SELECT * from osdial_lead_recycle where campaign_id='$campaign_id' order by status";
 			$rslt=mysql_query($stmt, $link);
 			$recycle_to_print = mysql_num_rows($rslt);
 			$o=0;
@@ -1440,7 +1440,7 @@ if ($ADD==31)
 		echo "<TABLE width=500 cellspacing=3>\n";
 		echo "<tr><td><font color=navy>PAUSE CODES</font></td><td><font color=navy>BILLABLE</font></td><td><font color=navy>MODIFY</font></td><td><font color=navy>DELETE</font></td></tr>\n";
 
-			$stmt="SELECT * from vicidial_pause_codes where campaign_id='$campaign_id' order by pause_code";
+			$stmt="SELECT * from osdial_pause_codes where campaign_id='$campaign_id' order by pause_code";
 			$rslt=mysql_query($stmt, $link);
 			$pause_codes_to_print = mysql_num_rows($rslt);
 			$o=0;
@@ -1503,7 +1503,7 @@ if ($ADD==31)
 ######################
 
 if ( ($ADD==34) and ( (!eregi("$campaign_id",$LOGallowed_campaigns)) and (!eregi("ALL-CAMPAIGNS",$LOGallowed_campaigns)) ) ) 
-	{$ADD=30;}	# send to not allowed screen if not in vicidial_user_groups allowed_campaigns list
+	{$ADD=30;}	# send to not allowed screen if not in osdial_user_groups allowed_campaigns list
 
 if ($ADD==34)
 {
@@ -1511,16 +1511,16 @@ if ($ADD==34)
 	{
 		if ($stage=='show_dialable')
 		{
-			$stmt="UPDATE vicidial_campaigns set display_dialable_count='Y' where campaign_id='$campaign_id';";
+			$stmt="UPDATE osdial_campaigns set display_dialable_count='Y' where campaign_id='$campaign_id';";
 			$rslt=mysql_query($stmt, $link);
 		}
 		if ($stage=='hide_dialable')
 		{
-			$stmt="UPDATE vicidial_campaigns set display_dialable_count='N' where campaign_id='$campaign_id';";
+			$stmt="UPDATE osdial_campaigns set display_dialable_count='N' where campaign_id='$campaign_id';";
 			$rslt=mysql_query($stmt, $link);
 		}
 
-		$stmt="SELECT * from vicidial_campaigns where campaign_id='$campaign_id';";
+		$stmt="SELECT * from osdial_campaigns where campaign_id='$campaign_id';";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$dial_status_a = $row[3];
@@ -1560,7 +1560,7 @@ if ($ADD==34)
 	else
 		{$DEFlistDISABLE = 'disabled';	$DEFstatusDISABLED=1;}
 
-		$stmt="SELECT * from vicidial_statuses order by status";
+		$stmt="SELECT * from osdial_statuses order by status";
 		$rslt=mysql_query($stmt, $link);
 		$statuses_to_print = mysql_num_rows($rslt);
 		$statuses_list='';
@@ -1578,7 +1578,7 @@ if ($ADD==34)
 			$o++;
 			}
 
-		$stmt="SELECT * from vicidial_campaign_statuses where campaign_id='$campaign_id' order by status";
+		$stmt="SELECT * from osdial_campaign_statuses where campaign_id='$campaign_id' order by status";
 		$rslt=mysql_query($stmt, $link);
 		$Cstatuses_to_print = mysql_num_rows($rslt);
 
@@ -1599,7 +1599,7 @@ if ($ADD==34)
 		$Dstatuses = explode(" ", $dial_statuses);
 		$Ds_to_print = (count($Dstatuses) -1);
 
-	$stmt="SELECT count(*) from vicidial_campaigns_list_mix where campaign_id='$campaign_id' and status='ACTIVE'";
+	$stmt="SELECT count(*) from osdial_campaigns_list_mix where campaign_id='$campaign_id' and status='ACTIVE'";
 	$rslt=mysql_query($stmt, $link);
 	$rowx=mysql_fetch_row($rslt);
 	if ($rowx[0] < 1)
@@ -1610,7 +1610,7 @@ if ($ADD==34)
 	else
 		{
 		##### get list_mix listings for dynamic pulldown
-		$stmt="SELECT vcl_id,vcl_name from vicidial_campaigns_list_mix where campaign_id='$campaign_id' and status='ACTIVE' limit 1";
+		$stmt="SELECT vcl_id,vcl_name from osdial_campaigns_list_mix where campaign_id='$campaign_id' and status='ACTIVE' limit 1";
 		$rslt=mysql_query($stmt, $link);
 		$mixes_to_print = mysql_num_rows($rslt);
 		$mixes_list="<option value=\"DISABLED\">DISABLED</option>\n";
@@ -1751,7 +1751,7 @@ if ($ADD==34)
 
 			$active_lists = 0;
 			$inactive_lists = 0;
-			$stmt="SELECT list_id,active,list_name from vicidial_lists where campaign_id='$campaign_id'";
+			$stmt="SELECT list_id,active,list_name from osdial_lists where campaign_id='$campaign_id'";
 			$rslt=mysql_query($stmt, $link);
 			$lists_to_print = mysql_num_rows($rslt);
 			$camp_lists='';
@@ -1801,14 +1801,14 @@ if ($ADD==34)
 
 
 
-			$stmt="SELECT count(*) FROM vicidial_hopper where campaign_id='$campaign_id' and status IN('READY')";
+			$stmt="SELECT count(*) FROM osdial_hopper where campaign_id='$campaign_id' and status IN('READY')";
 			if ($DB) {echo "$stmt\n";}
 			$rslt=mysql_query($stmt, $link);
 			$rowx=mysql_fetch_row($rslt);
 			$hopper_leads = "$rowx[0]";
 
 		echo "<font color=navy>This campaign has $hopper_leads leads in the dial hopper<br><br>\n";
-		echo "<a href=\"./AST_VICIDIAL_hopperlist.php?group=$campaign_id\">Click here to see what leads are in the hopper right now</a><br><br>\n";
+		echo "<a href=\"./AST_OSDIAL_hopperlist.php?group=$campaign_id\">Click here to see what leads are in the hopper right now</a><br><br>\n";
 		echo "<a href=\"$PHP_SELF?ADD=81&campaign_id=$campaign_id\">Click here to see all CallBack Holds in this campaign</a><BR><BR>\n";
 		echo "<a href=\"./AST_VDADstats.php?group=$campaign_id\">Click here to see a Call report for this campaign</a></font><BR><BR>\n";
 		echo "</b></center>\n";
@@ -1821,7 +1821,7 @@ if ($ADD==34)
 		echo "<TABLE width=400 cellspacing=3>\n";
 		echo "<tr><td><font color=navy>USER</font></td><td> &nbsp; &nbsp; <font color=navy>RANK</font></td><td> &nbsp; &nbsp; <font color=navy>CALLS TODAY</font></td></tr>\n";
 
-			$stmt="SELECT user,campaign_rank,calls_today from vicidial_campaign_agents where campaign_id='$campaign_id'";
+			$stmt="SELECT user,campaign_rank,calls_today from osdial_campaign_agents where campaign_id='$campaign_id'";
 			$rsltx=mysql_query($stmt, $link);
 			$users_to_print = mysql_num_rows($rsltx);
 
@@ -1862,7 +1862,7 @@ if ($ADD==34)
 # ADD=31 or 34 and SUB=29 for list mixes
 ######################
 if ( ( ($ADD==34) or ($ADD==31) ) and ( (!eregi("$campaign_id",$LOGallowed_campaigns)) and (!eregi("ALL-CAMPAIGNS",$LOGallowed_campaigns)) ) ) 
-	{$ADD=30;}	# send to not allowed screen if not in vicidial_user_groups allowed_campaigns list
+	{$ADD=30;}	# send to not allowed screen if not in osdial_user_groups allowed_campaigns list
 
 if ( ($ADD==34) or ($ADD==31) )
 {
@@ -1872,7 +1872,7 @@ if ( ($ADD==34) or ($ADD==31) )
 	if ($SUB==29)
 		{
 		##### get list_id listings for dynamic pulldown
-		$stmt="SELECT list_id,list_name from vicidial_lists where campaign_id='$campaign_id' order by list_id";
+		$stmt="SELECT list_id,list_name from osdial_lists where campaign_id='$campaign_id' order by list_id";
 		$rslt=mysql_query($stmt, $link);
 		$mixlists_to_print = mysql_num_rows($rslt);
 		$mixlists_list="";
@@ -1892,7 +1892,7 @@ if ( ($ADD==34) or ($ADD==31) )
 		echo "<br><br><b><font color=red size=+1>Feature in development - NON-FUNCTIONAL!!!</font></b><br>\n";
 
 
-		$stmt="SELECT * from vicidial_campaigns_list_mix where campaign_id='$campaign_id' order by status, vcl_id";
+		$stmt="SELECT * from osdial_campaigns_list_mix where campaign_id='$campaign_id' order by status, vcl_id";
 		$rslt=mysql_query($stmt, $link);
 		$listmixes = mysql_num_rows($rslt);
 		$o=0;
@@ -1939,9 +1939,9 @@ if ( ($ADD==34) or ($ADD==31) )
 
 # list_id|order|percent|statuses|:list_id|order|percent|statuses|:...
 # 101|1|40| A B NA -|:102|2|25| NEW -|:103|3|30| DROP CALLBK -|:101|4|5| DROP -|
-# INSERT INTO vicidial_campaigns_list_mix values('TESTMIX','TESTCAMP List Mix','TESTCAMP','101|1|40| A B NA -|:102|2|25| NEW -|:103|3|30| DROP CALLBK -|:101|4|5| DROP -|','IN_ORDER','ACTIVE');
-# INSERT INTO vicidial_campaigns_list_mix values('TESTMIX2','TESTCAMP List Mix2','TESTCAMP','101|1|20| A B -|:102|2|45| NEW -|:103|3|30| DROP CALLBK -|:101|4|5| DROP -|','IN_ORDER','ACTIVE');
-# INSERT INTO vicidial_campaigns_list_mix values('TESTMIX3','TESTCAMP List Mix3','TESTCAMP','101|1|30| A NA -|:102|2|35| NEW -|:103|3|30| DROP CALLBK -|:101|4|5| DROP -|','IN_ORDER','ACTIVE');
+# INSERT INTO osdial_campaigns_list_mix values('TESTMIX','TESTCAMP List Mix','TESTCAMP','101|1|40| A B NA -|:102|2|25| NEW -|:103|3|30| DROP CALLBK -|:101|4|5| DROP -|','IN_ORDER','ACTIVE');
+# INSERT INTO osdial_campaigns_list_mix values('TESTMIX2','TESTCAMP List Mix2','TESTCAMP','101|1|20| A B -|:102|2|45| NEW -|:103|3|30| DROP CALLBK -|:101|4|5| DROP -|','IN_ORDER','ACTIVE');
+# INSERT INTO osdial_campaigns_list_mix values('TESTMIX3','TESTCAMP List Mix3','TESTCAMP','101|1|30| A NA -|:102|2|35| NEW -|:103|3|30| DROP CALLBK -|:101|4|5| DROP -|','IN_ORDER','ACTIVE');
 
 			$MIXentries = $MT;
 			$MIXentries = explode(":", $rowx[3]);
@@ -2079,13 +2079,13 @@ if ($ADD==81)
 	{
 		if ($SUB==89)
 		{
-		$stmt="UPDATE vicidial_callbacks SET status='INACTIVE' where campaign_id='$campaign_id' and status='LIVE' and callback_time < '$past_month_date';";
+		$stmt="UPDATE osdial_callbacks SET status='INACTIVE' where campaign_id='$campaign_id' and status='LIVE' and callback_time < '$past_month_date';";
 		$rslt=mysql_query($stmt, $link);
 		echo "<br>campaign($campaign_id) callback listings LIVE for more than one month have been made INACTIVE\n";
 		}
 		if ($SUB==899)
 		{
-		$stmt="UPDATE vicidial_callbacks SET status='INACTIVE' where campaign_id='$campaign_id' and status='LIVE' and callback_time < '$past_week_date';";
+		$stmt="UPDATE osdial_callbacks SET status='INACTIVE' where campaign_id='$campaign_id' and status='LIVE' and callback_time < '$past_week_date';";
 		$rslt=mysql_query($stmt, $link);
 		echo "<br>campaign($campaign_id) callback listings LIVE for more than one week have been made INACTIVE\n";
 		}
@@ -2109,7 +2109,7 @@ if ($ADD==10)
 echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT * from vicidial_campaigns order by campaign_id";
+	$stmt="SELECT * from osdial_campaigns order by campaign_id";
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 

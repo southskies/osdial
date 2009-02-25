@@ -108,7 +108,7 @@ $dir1 = "$PATHmonitor";
 
 
 ##### Get the lead_ids of all recordings that are not DELETED or NULL #####
-$stmtA = "SELECT recording_log.lead_id,recording_id,start_time,filename,location,status FROM recording_log,vicidial_log where start_time > '$BEGINdate' and start_time < '$ENDdate' and location IS NOT NULL and location NOT IN('','NOT_FOUND','NOT_FOUND_2','DELETED') and vicidial_log.status IN($save_statusesSQL) and call_date  > '$BEGINdate' and call_date < '$ENDdate' and recording_log.lead_id=vicidial_log.lead_id and recording_log.user=vicidial_log.user order by recording_id LIMIT 500000;";
+$stmtA = "SELECT recording_log.lead_id,recording_id,start_time,filename,location,status FROM recording_log,osdial_log where start_time > '$BEGINdate' and start_time < '$ENDdate' and location IS NOT NULL and location NOT IN('','NOT_FOUND','NOT_FOUND_2','DELETED') and osdial_log.status IN($save_statusesSQL) and call_date  > '$BEGINdate' and call_date < '$ENDdate' and recording_log.lead_id=osdial_log.lead_id and recording_log.user=osdial_log.user order by recording_id LIMIT 500000;";
 	print "$stmtA\n";
 
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;

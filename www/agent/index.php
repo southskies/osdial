@@ -1,5 +1,5 @@
 <?php
 
-require('vicidial.php');
+require('osdial.php');
 
 ?>

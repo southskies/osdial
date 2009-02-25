@@ -51,7 +51,7 @@ echo "</head>\n";
 echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";
 echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-$stmt="SELECT * from vicidial_scripts where script_id='$script_id';";
+$stmt="SELECT * from osdial_scripts where script_id='$script_id';";
 $rslt=mysql_query($stmt, $link);
 $row=mysql_fetch_row($rslt);
 $script_name =		$row[1];
@@ -216,11 +216,11 @@ if ($ADD==1111111)
 	echo "<input type=\"button\" name=\"insertField\" value=\"Insert\" onClick=\"scriptInsertField();\"><BR>";
 
 	echo "<select id=\"selectedAddtlField\" name=\"selectedAddtlField\">";
-    $forms = get_krh($link, 'vicidial_campaign_forms', '*', 'priority', "deleted='0'");
+    $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
     foreach ($forms as $form) {
 	    $fcamps = split(',',$form['campaigns']);
 	    foreach ($fcamps as $fcamp) {
-            $fields = get_krh($link, 'vicidial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
+            $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
             foreach ($fields as $field) {
 				echo "<option>" . $form['name'] . '_' . $field['name'] . "</option>\n";
 			}
@@ -249,7 +249,7 @@ if ($ADD==1111111)
 if ($ADD==2111111)
 {
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT count(*) from vicidial_scripts where script_id='$script_id';";
+	$stmt="SELECT count(*) from osdial_scripts where script_id='$script_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -263,7 +263,7 @@ if ($ADD==2111111)
 			 }
 		 else
 			{
-			$stmt="INSERT INTO vicidial_scripts values('$script_id','$script_name','$script_comments','$script_text','$active');";
+			$stmt="INSERT INTO osdial_scripts values('$script_id','$script_name','$script_comments','$script_text','$active');";
 			$rslt=mysql_query($stmt, $link);
 
 			echo "<br><B><font color=navy>SCRIPT ADDED: $script_id</font></B>\n";
@@ -300,7 +300,7 @@ if ($ADD==4111111)
 		}
 	 else
 		{
-		$stmt="UPDATE vicidial_scripts set script_name='$script_name', script_comments='$script_comments', script_text='$script_text', active='$active' where script_id='$script_id';";
+		$stmt="UPDATE osdial_scripts set script_name='$script_name', script_comments='$script_comments', script_text='$script_text', active='$active' where script_id='$script_id';";
 		$rslt=mysql_query($stmt, $link);
 
 		echo "<br><B><font color=navy>SCRIPT MODIFIED</font></B>\n";
@@ -363,7 +363,7 @@ if ($ADD==6111111)
 		}
 	 else
 		{
-		$stmt="DELETE from vicidial_scripts where script_id='$script_id' limit 1;";
+		$stmt="DELETE from osdial_scripts where script_id='$script_id' limit 1;";
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -393,7 +393,7 @@ if ($ADD==3111111)
 	echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT * from vicidial_scripts where script_id='$script_id';";
+	$stmt="SELECT * from osdial_scripts where script_id='$script_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$script_name =		$row[1];
@@ -454,11 +454,11 @@ if ($ADD==3111111)
 	echo "<input type=\"button\" name=\"insertField\" value=\"Insert\" onClick=\"scriptInsertField();\"><BR>";
 
 	echo "<select id=\"selectedAddtlField\" name=\"selectedAddtlField\">";
-    $forms = get_krh($link, 'vicidial_campaign_forms', '*', 'priority', "deleted='0'");
+    $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
     foreach ($forms as $form) {
 	    $fcamps = split(',',$form['campaigns']);
 	    foreach ($fcamps as $fcamp) {
-            $fields = get_krh($link, 'vicidial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
+            $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
             foreach ($fields as $field) {
 				echo "<option>" . $form['name'] . '_' . $field['name'] . "</option>\n";
 			}
@@ -493,7 +493,7 @@ if ($ADD==1000000)
 echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT * from vicidial_scripts order by script_id";
+	$stmt="SELECT * from osdial_scripts order by script_id";
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 

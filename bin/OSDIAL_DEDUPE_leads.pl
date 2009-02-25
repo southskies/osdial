@@ -1,13 +1,13 @@
 #!/usr/bin/perl
 #
-# VICIDIAL_DEDUPE_leads.pl version 2.0.4   *DBI-version*
+# OSDIAL_DEDUPE_leads.pl version 2.0.4   *DBI-version*
 #
 # DESCRIPTION:
 # moves duplicate leads to another list_id
 #
 # Copyright (C) 2007  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
-# /usr/share/astguiclient/VICIDIAL_DEDUPE_leads.pl --debugX --campaign-duplicate=CTF --ignore-list=999
+# /usr/share/astguiclient/OSDIAL_DEDUPE_leads.pl --debugX --campaign-duplicate=CTF --ignore-list=999
 #
 # CHANGES
 # 70521-1643 - first build
@@ -74,7 +74,7 @@ $liveupdate=0;
 
 if (!$VDHLOGfile) {$VDHLOGfile = "$PATHlogs/dupleads.$year-$mon-$mday";}
 
-print "\n\n\n\n\n\n\n\n\n\n\n\n-- VICIDIAL_DEDUPE_leads.pl --\n\n";
+print "\n\n\n\n\n\n\n\n\n\n\n\n-- OSDIAL_DEDUPE_leads.pl --\n\n";
 print "This program is designed to scan all leads for a campaign or entire system that are duplicates and move the newer lead into a different list_id. \n\n";
 
 ### begin parsing run-time options ###
@@ -198,7 +198,7 @@ $where='WHERE';
 $and='and';
 if (length($campdup)>0)
 	{
-	$stmtA = "select list_id from vicidial_lists where campaign_id='$campdup';";
+	$stmtA = "select list_id from osdial_lists where campaign_id='$campdup';";
 	if($DBX){print STDERR "\n|$stmtA|\n";}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -232,7 +232,7 @@ else
 		}
 	}
 
-$stmtA = "select count(*) as tally, phone_number from vicidial_list $where $campSQL $listSQL group by phone_number order by tally desc;";
+$stmtA = "select count(*) as tally, phone_number from osdial_list $where $campSQL $listSQL group by phone_number order by tally desc;";
 if($DBX){print STDERR "\n|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -259,7 +259,7 @@ $b=0;
 foreach(@dup_list)
 	{
 	$dup_limit = ($dup_count[$b] - 1);
-	$stmtA = "select lead_id,list_id,entry_date from vicidial_list where phone_number='$dup_list[$b]' $and $campSQL $listSQL order by entry_date;";
+	$stmtA = "select lead_id,list_id,entry_date from osdial_list where phone_number='$dup_list[$b]' $and $campSQL $listSQL order by entry_date;";
 		if($DBX){print STDERR "\n|$stmtA|\n";}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -299,7 +299,7 @@ chop($DUP_updates);
 
 if ($liveupdate>0)
 	{
-	$stmtA = "UPDATE vicidial_list set list_id='$duplicatelist' where lead_id IN($DUP_updates);";
+	$stmtA = "UPDATE osdial_list set list_id='$duplicatelist' where lead_id IN($DUP_updates);";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
 

@@ -1,9 +1,9 @@
 #!/usr/bin/perl
 #
-# VICIDIAL_IN_new_leads_file.pl version 2.0.4.1   *DBI-version*
+# OSDIAL_IN_new_leads_file.pl version 2.0.4.1   *DBI-version*
 #
 # DESCRIPTION:
-# script lets you insert leads into the vicidial_list table from a TAB-delimited
+# script lets you insert leads into the osdial_list table from a TAB-delimited
 # lead file that is in the proper format. (for format see --help)
 #
 # It is recommended that you run this program on the local Asterisk machine
@@ -89,8 +89,8 @@ $server_ip = $VARserver_ip;		# Asterisk server IP
 
 if (!$VDHLOGfile) {$VDHLOGfile = "$PATHlogs/newleads.$year-$mon-$mday";}
 
-print "\n\n\n\n\n\n\n\n\n\n\n\n-- VICIDIAL_IN_new_leads_file.pl --\n\n";
-print "This program is designed to take a tab delimited file and import it into the VICIDIAL system. \n\n";
+print "\n\n\n\n\n\n\n\n\n\n\n\n-- OSDIAL_IN_new_leads_file.pl --\n\n";
+print "This program is designed to take a tab delimited file and import it into the OSDIAL system. \n\n";
 
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1)
@@ -117,7 +117,7 @@ if (length($ARGV[0])>1)
 	print "  [--postal-code-gmt] = checks for the time zone based on the postal code given where available\n";
 	print "  [-h] = this help screen\n\n";
 	print "\n";
-	print "This script takes in lead files in the following order when they are placed in the $PATHhome/LEADS_IN directory to be imported into the vicidial_list table:\n\n";
+	print "This script takes in lead files in the following order when they are placed in the $PATHhome/LEADS_IN directory to be imported into the osdial_list table:\n\n";
 	print "vendor_lead_code|source_code|list_id|phone_code|phone_number|title|first_name|middle|last_name|address1|address2|address3|city|state|province|postal_code|country|gender|date_of_birth|alt_phone|email|security_phrase|COMMENTS|called_count|status|entry_date\n\n";
 	print "3857822|31022|105|01144|1625551212|MRS|B||BURTON|249 MUNDON ROAD|MALDON|ESSEX||||CM9 6PW|UK||||||COMMENTS|2|B|2007-08-09 00:00:00\n\n";
 
@@ -366,11 +366,11 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 			$phone_code =	$forcephonecode;	# set phone_code to override value
 			}
 
-		##### Check for duplicate phone numbers in vicidial_list table entire database #####
+		##### Check for duplicate phone numbers in osdial_list table entire database #####
 		if ($dupchecksys > 0)
 			{
 			$dup_lead=0;
-			$stmtA = "select count(*) from vicidial_list where phone_number='$phone_number';";
+			$stmtA = "select count(*) from osdial_list where phone_number='$phone_number';";
 				if($DBX){print STDERR "\n|$stmtA|\n";}
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -388,11 +388,11 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 					{$dup_lead++;}
 				}
 			}
-		##### Check for duplicate phone numbers in vicidial_list table for one list_id #####
+		##### Check for duplicate phone numbers in osdial_list table for one list_id #####
 		if ($dupcheck > 0)
 			{
 			$dup_lead=0;
-			$stmtA = "select list_id from vicidial_list where phone_number='$phone_number' and list_id='$list_id' limit 1;";
+			$stmtA = "select list_id from osdial_list where phone_number='$phone_number' and list_id='$list_id' limit 1;";
 				if($DBX){print STDERR "\n|$stmtA|\n";}
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -410,13 +410,13 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 					{$dup_lead++;}
 				}
 			}
-		##### Check for duplicate phone numbers in vicidial_list table for all lists in a campaign #####
+		##### Check for duplicate phone numbers in osdial_list table for all lists in a campaign #####
 		if ($dupcheckcamp > 0)
 			{
 			$dup_lead=0;
 			$dup_lists='';
 
-			$stmtA = "select count(*) from vicidial_lists where list_id='$list_id';";
+			$stmtA = "select count(*) from osdial_lists where list_id='$list_id';";
 				if($DBX){print STDERR "\n|$stmtA|\n";}
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -425,7 +425,7 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 			$sthA->finish();
 			if ($ci_recs > 0)
 				{
-				$stmtA = "select campaign_id from vicidial_lists where list_id='$list_id';";
+				$stmtA = "select campaign_id from osdial_lists where list_id='$list_id';";
 					if($DBX){print STDERR "\n|$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -433,7 +433,7 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 					$dup_camp = $aryA[0];
 				$sthA->finish();
 
-				$stmtA = "select list_id from vicidial_lists where campaign_id='$dup_camp';";
+				$stmtA = "select list_id from osdial_lists where campaign_id='$dup_camp';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -447,7 +447,7 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 				$sthA->finish();
 
 				chop($dup_lists);
-				$stmtA = "select list_id from vicidial_list where phone_number='$phone_number' and list_id IN($dup_lists) limit 1;";
+				$stmtA = "select list_id from osdial_list where phone_number='$phone_number' and list_id IN($dup_lists) limit 1;";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -488,7 +488,7 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 					{
 					if ($phone_code =~ /^1$/)
 						{
-						$stmtA = "select * from vicidial_postal_codes where country_code='$phone_code' and postal_code LIKE \"$postal_code%\";";
+						$stmtA = "select * from osdial_postal_codes where country_code='$phone_code' and postal_code LIKE \"$postal_code%\";";
 							if($DBX){print STDERR "\n|$stmtA|\n";}
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -514,7 +514,7 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 					### UNITED STATES ###
 					if ($phone_code =~ /^1$/)
 						{
-						$stmtA = "select * from vicidial_phone_codes where country_code='$phone_code' and areacode='$USarea';";
+						$stmtA = "select * from osdial_phone_codes where country_code='$phone_code' and areacode='$USarea';";
 							if($DBX){print STDERR "\n|$stmtA|\n";}
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -534,7 +534,7 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 					### MEXICO ###
 					if ($phone_code =~ /^52$/)
 						{
-						$stmtA = "select * from vicidial_phone_codes where country_code='$phone_code' and areacode='$USarea';";
+						$stmtA = "select * from osdial_phone_codes where country_code='$phone_code' and areacode='$USarea';";
 							if($DBX){print STDERR "\n|$stmtA|\n";}
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -554,7 +554,7 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 					### AUSTRALIA ###
 					if ($phone_code =~ /^61$/)
 						{
-						$stmtA = "select * from vicidial_phone_codes where country_code='$phone_code' and state='$state';";
+						$stmtA = "select * from osdial_phone_codes where country_code='$phone_code' and state='$state';";
 							if($DBX){print STDERR "\n|$stmtA|\n";}
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -574,7 +574,7 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 					### ALL OTHER COUNTRY CODES ###
 					if (!$PC_processed)
 						{
-						$stmtA = "select * from vicidial_phone_codes where country_code='$phone_code';";
+						$stmtA = "select * from osdial_phone_codes where country_code='$phone_code';";
 							if($DBX){print STDERR "\n|$stmtA|\n";}
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -675,7 +675,7 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 			if ($multi_insert_counter > 8)
 				{
 				### insert good deal into pending_transactions table ###
-				$stmtZ = "INSERT INTO vicidial_list values$multistmt('','$insert_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country','$gender','$date_of_birth','$alt_phone','$email','$security_phrase','$comments','$called_count');";
+				$stmtZ = "INSERT INTO osdial_list values$multistmt('','$insert_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country','$gender','$date_of_birth','$alt_phone','$email','$security_phrase','$comments','$called_count');";
 						if (!$T) {$affected_rows = $dbhA->do($stmtZ); } #  or die  "Couldn't execute query: |$stmtZ|\n";
 						if($DB){print STDERR "\n|$affected_rows|$stmtZ|\n";}
 
@@ -718,7 +718,7 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 				{
 				chop($multistmt);
 				### insert good deal into pending_transactions table ###
-				$stmtZ = "INSERT INTO vicidial_list values$multistmt;";
+				$stmtZ = "INSERT INTO osdial_list values$multistmt;";
 						if (!$T) {$affected_rows = $dbhA->do($stmtZ); } #  or die  "Couldn't execute query: |$stmtZ|\n";
 						if($DB){print STDERR "\n|$affected_rows|$stmtZ|\n";}
 

@@ -203,7 +203,7 @@ $server_ip = $VARserver_ip;		# Asterisk server IP
 if (!$Q)
 	{
 	print "\n\n\n\n\n\n\n\n\n\n\n\n-- AST_sourceID_summary_export.pl --\n\n";
-	print "This program is designed to generate a summary report of sourceIDs for VICIDIAL outbound-only campaign and post them to a file. \n";
+	print "This program is designed to generate a summary report of sourceIDs for OSDIAL outbound-only campaign and post them to a file. \n";
 	print "\n";
 	print "Sale Statuses: $sale_statuses     $sale_statusesSQL\n";
 	print "NI Statuses:   $ni_statuses     $ni_statusesSQL\n";
@@ -215,7 +215,7 @@ if (!$Q)
 $outfile = "SOURCEID_SUMMARY$filedate$txt";
 
 ### open the X out file for writing ###
-open(out, ">$PATHweb/vicidial/server_reports/$outfile")
+open(out, ">$PATHweb/admin/server_reports/$outfile")
 		|| die "Can't open $outfile: $!\n";
 
 if (!$VARDB_port) {$VARDB_port='3306';}
@@ -233,9 +233,9 @@ $w=0;
 
 
 ###########################################################################
-########### SALES TOTAL IN SYSTEM BY SOURCE_ID vicidial_list         ######
+########### SALES TOTAL IN SYSTEM BY SOURCE_ID osdial_list         ######
 ###########################################################################
-$stmtA = "select source_id,count(*) from vicidial_list where status IN($sale_statusesSQL) and list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
+$stmtA = "select source_id,count(*) from osdial_list where status IN($sale_statusesSQL) and list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -255,9 +255,9 @@ $sthA->finish();
 
 
 ###########################################################################
-########### NI TOTAL IN SYSTEM BY SOURCE_ID vicidial_list            ######
+########### NI TOTAL IN SYSTEM BY SOURCE_ID osdial_list            ######
 ###########################################################################
-$stmtA = "select source_id,count(*) from vicidial_list where status IN($ni_statusesSQL) and list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
+$stmtA = "select source_id,count(*) from osdial_list where status IN($ni_statusesSQL) and list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -277,9 +277,9 @@ $sthA->finish();
 
 
 ###########################################################################
-########### NP TOTAL IN SYSTEM BY SOURCE_ID vicidial_list            ######
+########### NP TOTAL IN SYSTEM BY SOURCE_ID osdial_list            ######
 ###########################################################################
-$stmtA = "select source_id,count(*) from vicidial_list where status IN($np_statusesSQL) and list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
+$stmtA = "select source_id,count(*) from osdial_list where status IN($np_statusesSQL) and list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -299,9 +299,9 @@ $sthA->finish();
 
 
 ###########################################################################
-########### ALL TOTAL IN SYSTEM BY SOURCE_ID vicidial_list           ######
+########### ALL TOTAL IN SYSTEM BY SOURCE_ID osdial_list           ######
 ###########################################################################
-$stmtA = "select source_id,count(*) from vicidial_list where list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
+$stmtA = "select source_id,count(*) from osdial_list where list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -330,7 +330,7 @@ if ($ftp_transfer > 0)
 	$ftp = Net::FTP->new("$VARREPORT_host", Port => $VARREPORT_port);
 	$ftp->login("$VARREPORT_user","$VARREPORT_pass");
 	$ftp->cwd("$VARREPORT_dir");
-	$ftp->put("$PATHweb/vicidial/server_reports/$outfile", "$outfile");
+	$ftp->put("$PATHweb/admin/server_reports/$outfile", "$outfile");
 	$ftp->quit;
 }
 

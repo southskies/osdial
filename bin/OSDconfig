@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# VDconfig
+# OSDconfig
 #
 # Copyright (C) 2007  VICIDIAL-astGUIclient <vicidial@gmail.com>  LICENSE: GPLv2
 #
@@ -17,50 +17,45 @@
 
 SetDefaults ()
 {
-	# default path to astguicient configuration file:
-	PATHconf="/etc/astguiclient.conf"
-	# default path to home direct:
-	PATHhome="/usr/share/astguiclient"
-	# default path to astguiclient logs directory:
-	PATHlogs="/var/log/astguiclient"
+	# default path to osdisl configuration file:
+	PATHconf="/etc/osdial.conf"
+	# default path to home directory:
+	PATHhome="/opt/osdial/bin"
+	# default path to osdial logs directory:
+	PATHlogs="/var/log/osdial"
 	# default path to asterisk agi-bin directory:
 	PATHagi="/var/lib/asterisk/agi-bin"
 	# default path to web root directory (Best guess):
-	PATHweb="/var/www/html"
-	if [ -e "/usr/apache2/htdocs" ]; then
-		PATHweb="/usr/apache2/htdocs"
-	elif [ -e "/usr/local/apache2/htdocs" ]; then
-		PATHweb="/usr/local/apache2/htdocs"
-	fi
+	PATHweb="/opt/osdial/html"
 	# default path to asterisk sounds directory:
 	PATHsounds="/var/lib/asterisk/sounds"
 	# default path to asterisk recording directory:
 	PATHmonitor="/var/spool/asterisk/monitor"
 	# default path to asterisk recording DONE directory:
-	PATHDONEmonitor="/var/spool/asterisk/monitorDONE"
+	PATHDONEmonitor="/opt/osdial/recordings/processing/wav"
 	# the IP address of this machine.  default to best guess:
 	VARserver_ip=`/sbin/ifconfig eth0 | grep 'inet addr' | awk -F: '{ print $2 }' | awk '{ print $1 }'`
 	# default database server variables:
 	VARDB_server="localhost"
-	VARDB_database="asterisk"
-	VARDB_user="cron"
-	VARDB_pass="1234"
+	VARDB_database="osdial"
+	VARDB_user="osdial"
+	VARDB_pass="osdial1234"
 	VARDB_port="3306"
 	# default keepalive processes:
-	VARactive_keepalives="123456"
+	VARactive_keepalives="1234569"
 	# default recording FTP archive variables:
 	VARFTP_host=$VARserver_ip
-	VARFTP_user="cron"
-	VARFTP_pass="test"
+	VARFTP_user="osdial"
+	VARFTP_pass="osdialftp"
 	VARFTP_port="21"
-	VARFTP_dir="RECORDINGS"
+	VARFTP_dir="recordings/processing/wav"
 	VARHTTP_path="http://$VARserver_ip"
 	# default report FTP variables:
 	VARREPORT_host=$VARserver_ip
-	VARREPORT_user="cron"
-	VARREPORT_pass="test"
+	VARREPORT_user="osdial"
+	VARREPORT_pass="osdialftp"
 	VARREPORT_port="21"
-	VARREPORT_dir="REPORTS"
+	VARREPORT_dir="reports"
 	# defaults for FastAGI Server PreFork
 	VARfastagi_log_min_servers="3"
 	VARfastagi_log_max_servers="16"
@@ -646,16 +641,17 @@ FastAGIConfig ()
 
 RunPerlKeepAliveSep ()
 {
-	KATMP="/tmp/.agc.conf.katmp.$$"
-	KAPTMP="/tmp/.agc.conf.kaptmp.$$"
-	echo '$k1 = "off"; $k2 = "off"; $k3 = "off"; $k4 = "off"; $k5 = "off"; $k6 = "off"; $k7 = "off";' > $KAPTMP
+	KATMP="/tmp/.osdial.conf.katmp.$$"
+	KAPTMP="/tmp/.osdial.conf.kaptmp.$$"
+	echo '$k1 = "off"; $k2 = "off"; $k3 = "off"; $k4 = "off"; $k5 = "off"; $k6 = "off"; $k7 = "off"; $k8 = "off"; $k9 = "off";' > $KAPTMP
 	echo 'foreach $i (split //, $ARGV[0]) {' >> $KAPTMP
 	echo '	if ($i eq "1") { $k1 = "on"; } elsif ($i eq "2") { $k2 = "on";' >> $KAPTMP
 	echo '	} elsif ($i eq "3") { $k3 = "on"; } elsif ($i eq "4") { $k4 = "on";' >> $KAPTMP
 	echo '	} elsif ($i eq "5") { $k5 = "on"; } elsif ($i eq "6") { $k6 = "on";' >> $KAPTMP
-	echo '	} elsif ($i eq "7") { $k7 = "on"; }' >> $KAPTMP
+	echo '	} elsif ($i eq "7") { $k7 = "on"; } elsif ($i eq "8") { $k8 = "on";' >> $KAPTMP
+	echo '	} elsif ($i eq "9") { $k9 = "on"; }' >> $KAPTMP
 	echo '}' >> $KAPTMP
-	echo 'print "K1=$k1\nK2=$k2\nK3=$k3\nK4=$k4\nK5=$k5\nK6=$k6\nK7=$k7\n";' >> $KAPTMP
+	echo 'print "K1=$k1\nK2=$k2\nK3=$k3\nK4=$k4\nK5=$k5\nK6=$k6\nK7=$k7\nK8=$k8\nK9=$k9";' >> $KAPTMP
 	perl $KAPTMP $VARactive_keepalives >> $KATMP
 	. $KATMP
 	rm -f $KAPTMP
@@ -674,7 +670,7 @@ KeepaliveConfig ()
 		   	--item-help \
 		   	--title "Keepalive Configuration Menu" \
 		   	--checklist "Settings for keepalive processes.\nDeselect all items if you do not want any keepalive processes running.\n\nUse (Space) to select/deselect items." \
-			 	17 74 7 \
+			 	17 74 8 \
 			 	1 "AST_update" "$K1" "" \
 			 	2 "AST_send_listen" "$K2" "" \
 			 	3 "AST_VDauto_dial" "$K3" "" \
@@ -682,6 +678,7 @@ KeepaliveConfig ()
 			 	5 "AST_VDadapt" "$K5" "If multi-server system, this must only be on one server." \
 			 	6 "FastAGI Logger" "$K6" "" \
 			 	7 "AST_VDauto_dial_FILL" "$K7" "Only for multi-server, this must only be on one server." \
+			 	9 "AST_campaign_stats.pl" "$K9" "" \
 			   	2> $TEMP
 
 		if [ "$?" = "0" ]; then
@@ -706,7 +703,7 @@ SaveConfig ()
 	echo "# astguiclient.conf - configuration elements for the astguiclient package" > $PATHconf
 	echo "# this is the astguiclient configuration file" >> $PATHconf
 	echo "# all comments will be lost if you run install.pl again" >> $PATHconf
-	echo "AGCversion => $AGCversion" >> $PATHconf
+	echo "OSDversion => $OSDversion" >> $PATHconf
 	echo "" >> $PATHconf
 	echo "# Location of Documentation and Samples" >> $PATHconf
 	echo "PATHdocs => $PATHdocs" >> $PATHconf
@@ -740,6 +737,7 @@ SaveConfig ()
 	echo "#  5 - AST_VDadapt (If multi-server system, this must only be on one server)" >> $PATHconf
 	echo "#  6 - FastAGI_log" >> $PATHconf
 	echo "#  7 - AST_VDauto_dial_FILL (only for multi-server, this must only be on one server)" >> $PATHconf
+	echo "#  9 - AST_campaign_stats" >> $PATHconf
 	echo "VARactive_keepalives => $VARactive_keepalives" >> $PATHconf
 	echo "" >> $PATHconf
 	echo "# Settings for FastAGI logging server" >> $PATHconf
@@ -782,7 +780,7 @@ if ! which dialog > /dev/null; then
 fi
 
 DIALOG="dialog"
-TEMP="/tmp/.agc.tmp.$$"
+TEMP="/tmp/.osdial.tmp.$$"
 EXIT="no"
 MESSAGE="Abnormal Termination"
 
@@ -802,12 +800,12 @@ fi
 SetDefaults
 if [ -f "version" -a -f "INSTALL" ]; then
 {
-	AGCversion=`cat version`
+	OSDversion=`cat version`
 	INSTALL="yes"
 	# If a config for install is in current directory, use that.
-	if [ -f ".agc.config" ]; then
+	if [ -f ".osdial.config" ]; then
 	{
-		PATHconf=".agc.config"
+		PATHconf=".osdial.config"
 	}
 	fi
 }
@@ -816,7 +814,7 @@ fi
 # Load configuration in.
 if [ -f "$PATHconf" ]; then
 {
-	CONFIG="/tmp/.agc.conf.$$"
+	CONFIG="/tmp/.osdial.conf.$$"
 	if [ "$OUTPUT" != "no" ]; then
 		echo "Loading saved configuration from $PATHconf"
 		sleep 1
@@ -827,26 +825,26 @@ if [ -f "$PATHconf" ]; then
 }
 fi
 
-# If version is blank, assume 2.0.3"
-if [ "$AGCversion" = "" ]; then
+# If version is blank, assume 2.1.0"
+if [ "$OSDversion" = "" ]; then
 {
-	AGCversion="2.0.3"
+	OSDversion="2.1.0"
 }
 fi
 
-# We are in trunk directory, so set PATHconf to .agc.config
-if [ -f "version" -a -f "INSTALL" ]; then
+# We are in trunk directory, so set PATHconf to .osdial.config
+if [ -f "version" -a -f "Makefile" ]; then
 {
-	PATHconf=".agc.config"
+	PATHconf=".osdial.config"
 	# Force default path to astguicient samples and documentation:
-	PATHdocs="/usr/share/doc/astGUIclient-$AGCversion"
+	PATHdocs="/usr/share/doc/osdial-$OSDversion"
 }
 fi
 
 while [ "$EXIT" != "yes" ]; do
 	{
-	BACKTITLE="VICIDIAL-astGUIclient $AGCversion Configuration & Installation"
-	MM_TEXT="Welcome to the VICIDIAL-astGUIclient Configuration & Installation Menu."
+	BACKTITLE="OSDial $OSDversion Configuration & Installation"
+	MM_TEXT="Welcome to the OSDial Configuration & Installation Menu."
 	if [ "$INSTALL" = "yes" ]; then
 	{
 		$DIALOG --clear --backtitle "$BACKTITLE" \

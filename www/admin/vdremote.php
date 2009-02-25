@@ -9,7 +9,7 @@
 # 60421-1229 - check GET/POST vars lines with isset to not trigger PHP NOTICES
 # 60619-1603 - Added variable filtering to eliminate SQL injection attack threat
 #
-# make sure you have added a user to the vicidial_users MySQL table with at least user_level 4 to access this page the first time
+# make sure you have added a user to the osdial_users MySQL table with at least user_level 4 to access this page the first time
 
 $version = '1.1.12';
 $build = '60619-1603';
@@ -56,7 +56,7 @@ if ($force_logout)
 {
   if( (strlen($PHP_AUTH_USER)>0) or (strlen($PHP_AUTH_PW)>0) )
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICI-PROJECTS\"");
+    Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
     Header("HTTP/1.0 401 Unauthorized");
 	}
     echo "You have now logged out. Thank you\n";
@@ -73,7 +73,7 @@ $NOW_DATE = date("Y-m-d");
 $NOW_TIME = date("Y-m-d H:i:s");
 if (!isset($query_date)) {$query_date = $NOW_DATE;}
 
-	$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 3;";
+	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 3;";
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -86,7 +86,7 @@ $browser = getenv("HTTP_USER_AGENT");
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICI-PROJECTS\"");
+    Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
@@ -99,12 +99,12 @@ $browser = getenv("HTTP_USER_AGENT");
 		{
 		$office_no=strtoupper($PHP_AUTH_USER);
 		$password=strtoupper($PHP_AUTH_PW);
-		$stmt="SELECT full_name from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
+		$stmt="SELECT full_name from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$LOGfullname=$row[0];
 
-		$stmt="SELECT count(*) from vicidial_remote_agents where user_start='$PHP_AUTH_USER';";
+		$stmt="SELECT count(*) from osdial_remote_agents where user_start='$PHP_AUTH_USER';";
 		if ($DB) {echo "|$stmt|\n";}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
@@ -112,7 +112,7 @@ $browser = getenv("HTTP_USER_AGENT");
 
 		if($authx>0)
 			{
-			$stmt="SELECT remote_agent_id,server_ip,number_of_lines from vicidial_remote_agents where user_start='$PHP_AUTH_USER';";
+			$stmt="SELECT remote_agent_id,server_ip,number_of_lines from osdial_remote_agents where user_start='$PHP_AUTH_USER';";
 			if ($DB) {echo "|$stmt|\n";}
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
@@ -184,7 +184,7 @@ if (strlen($ADD)>4)
 		}
 
 	##### get campaigns listing for dynamic pulldown
-	$stmt="SELECT campaign_id,campaign_name from vicidial_campaigns order by campaign_id";
+	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
 	$rslt=mysql_query($stmt, $link);
 	$campaigns_to_print = mysql_num_rows($rslt);
 	$campaigns_list='';
@@ -200,7 +200,7 @@ if (strlen($ADD)>4)
 	##### get inbound groups listing for checkboxes
 	if ( (($ADD==31111) or ($ADD==31111)) and (count($groups)<1) )
 	{
-	$stmt="SELECT closer_campaigns from vicidial_remote_agents where remote_agent_id='" . mysql_real_escape_string($remote_agent_id) . "';";
+	$stmt="SELECT closer_campaigns from osdial_remote_agents where remote_agent_id='" . mysql_real_escape_string($remote_agent_id) . "';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$closer_campaigns =	$row[0];
@@ -208,7 +208,7 @@ if (strlen($ADD)>4)
 	$groups = explode(" ", $closer_campaigns);
 	}
 
-	$stmt="SELECT group_id,group_name from vicidial_inbound_groups order by group_id";
+	$stmt="SELECT group_id,group_name from osdial_inbound_groups order by group_id";
 	$rslt=mysql_query($stmt, $link);
 	$groups_to_print = mysql_num_rows($rslt);
 	$groups_list='';
@@ -259,7 +259,7 @@ if ($ADD==31111)
 {
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT * from vicidial_remote_agents where remote_agent_id='" . mysql_real_escape_string($remote_agent_id) . "';";
+	$stmt="SELECT * from osdial_remote_agents where remote_agent_id='" . mysql_real_escape_string($remote_agent_id) . "';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$remote_agent_id =	$row[0];
@@ -304,7 +304,7 @@ if ($ADD==41111)
 		{echo "<br>REMOTE AGENTS NOT MODIFIED - Please go back and look at the data you entered\n";}
 	 else
 		{
-		$stmt="UPDATE vicidial_remote_agents set number_of_lines='" . mysql_real_escape_string($number_of_lines) . "', conf_exten='" . mysql_real_escape_string($conf_exten) . "', status='" . mysql_real_escape_string($status) . "', closer_campaigns='" . mysql_real_escape_string($groups_value) . "' where remote_agent_id='" . mysql_real_escape_string($remote_agent_id) . "';";
+		$stmt="UPDATE osdial_remote_agents set number_of_lines='" . mysql_real_escape_string($number_of_lines) . "', conf_exten='" . mysql_real_escape_string($conf_exten) . "', status='" . mysql_real_escape_string($status) . "', closer_campaigns='" . mysql_real_escape_string($groups_value) . "' where remote_agent_id='" . mysql_real_escape_string($remote_agent_id) . "';";
 		$rslt=mysql_query($stmt, $link);
 
 #		echo "$stmt\n";
@@ -317,7 +317,7 @@ if ($ADD==41111)
 
 		}
 
-	$stmt="SELECT * from vicidial_remote_agents where remote_agent_id='" . mysql_real_escape_string($remote_agent_id) . "';";
+	$stmt="SELECT * from osdial_remote_agents where remote_agent_id='" . mysql_real_escape_string($remote_agent_id) . "';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$remote_agent_id =	$row[0];
@@ -379,7 +379,7 @@ if ($ADD==61111)
 		echo "+------------|--------+--------------+------------+--------+---------------------+---------+\n";
 
 
-		$stmt="select extension,user,lead_id,channel,status,last_call_time,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish) from vicidial_live_agents where status NOT IN('PAUSED') and server_ip='" . mysql_real_escape_string($server_ip) . "' and user IN($users_list) order by extension;";
+		$stmt="select extension,user,lead_id,channel,status,last_call_time,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish) from osdial_live_agents where status NOT IN('PAUSED') and server_ip='" . mysql_real_escape_string($server_ip) . "' and user IN($users_list) order by extension;";
 		$rslt=mysql_query($stmt, $link);
 		if ($DB) {echo "$stmt\n";}
 		$talking_to_print = mysql_num_rows($rslt);
@@ -457,7 +457,7 @@ echo "</PRE>\n\n";
 
 
 ######################
-# ADD=71111 stats for remote agents from closer logs(vicidial_closer_log)
+# ADD=71111 stats for remote agents from closer logs(osdial_closer_log)
 ######################
 
 if ($ADD==71111)
@@ -485,7 +485,7 @@ if ($ADD==71111)
 			}
 		$users_list = preg_replace("/.$/","",$users_list);
 
-		$stmt="select count(*),sum(length_in_sec) from vicidial_closer_log where call_date >= '$query_date 00:00:01' and call_date <= '$query_date 23:59:59' and user IN($users_list);";
+		$stmt="select count(*),sum(length_in_sec) from osdial_closer_log where call_date >= '$query_date 00:00:01' and call_date <= '$query_date 23:59:59' and user IN($users_list);";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$in_calls =		$row[0];
@@ -512,7 +512,7 @@ if ($ADD==71111)
 		echo "+----------+------------+----------------+------------+--------+---------------------+---------+\n";
 
 
-		$stmt="select user,lead_id,campaign_id,phone_number,status,call_date,length_in_sec from vicidial_closer_log where call_date >= '$query_date 00:00:01' and call_date <= '$query_date 23:59:59' and user IN($users_list) order by call_date;";
+		$stmt="select user,lead_id,campaign_id,phone_number,status,call_date,length_in_sec from osdial_closer_log where call_date >= '$query_date 00:00:01' and call_date <= '$query_date 23:59:59' and user IN($users_list) order by call_date;";
 		$rslt=mysql_query($stmt, $link);
 		if ($DB) {echo "$stmt\n";}
 		$talking_to_print = mysql_num_rows($rslt);

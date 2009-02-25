@@ -4,7 +4,7 @@
 #
 # This is a STEP-1 program in the audio archival process
 #
-# IMPORTANT!!! ONLY TO BE USED WHEN ONLY VICIDIAL RECORDINGS ARE ON THE SYSTEM!
+# IMPORTANT!!! ONLY TO BE USED WHEN ONLY OSDIAL RECORDINGS ARE ON THE SYSTEM!
 #
 # runs every 3 minutes and copies the -in recordings in the monitor to the DONE
 # directory for further processing. Very important for RAM-drive usage

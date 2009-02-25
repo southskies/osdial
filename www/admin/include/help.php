@@ -1176,7 +1176,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="phones-call_out_number_group">
 <BR>
-<B>Outbound Call Group -</B> This is the channel group that outbound calls from this phone are placed out of. There are a couple routines in the client apps that use this. For Zap channels you want to use something like Zap/g2 , for IAX2 trunks you would want to use the full IAX prefix like IAX2/VICItest1:secret@10.10.10.15:4569. Verify the trunks with the extensions.conf file, it is usually what you have defined as the TRUNK global variable at the top of the file.
+<B>Outbound Call Group -</B> This is the channel group that outbound calls from this phone are placed out of. There are a couple routines in the client apps that use this. For Zap channels you want to use something like Zap/g2 , for IAX2 trunks you would want to use the full IAX prefix like IAX2/OSDtest1:secret@10.10.10.15:4569. Verify the trunks with the extensions.conf file, it is usually what you have defined as the TRUNK global variable at the top of the file.
 
 <BR>
 <A NAME="phones-client_browser">
@@ -1186,7 +1186,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="phones-install_directory">
 <BR>
-<B>Install Directory -</B> This is the place where the astGUIclient and OSDial scripts are located on your machine. For Win32 it should be something like C:\AST_VICI and for UNIX it should be something like /usr/local/perl_TK. verify this manually.
+<B>Install Directory -</B> This is the place where the astGUIclient and OSDial scripts are located on your machine. For Win32 it should be something like C:\AST_OSD and for UNIX it should be something like /usr/local/perl_TK. verify this manually.
 
 <BR>
 <A NAME="phones-local_web_callerID_URL">

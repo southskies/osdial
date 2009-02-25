@@ -1,6 +1,6 @@
 <? header("Pragma: no-cache"); 
 
-# vicidial_sales_viewer.php - VICIDIAL administration page
+# osdial_sales_viewer.php - OSDIAL administration page
 # 
 # 
 # Copyright (C) 2007  Joe Johnson,Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
@@ -68,7 +68,7 @@ function GatherListIDs() {
 			<td align=left><select name="dcampaign" onChange="this.form.submit();">
 			<? 
 			if ($dcampaign) {
-				$stmt="select campaign_id, campaign_name from vicidial_campaigns where campaign_id='$dcampaign'";
+				$stmt="select campaign_id, campaign_name from osdial_campaigns where campaign_id='$dcampaign'";
 				$rslt=mysql_query($stmt, $link);
 				while ($row=mysql_fetch_array($rslt)) {
 					print "\t\t<option value='$row[campaign_id]' selected>$row[campaign_id] - $row[campaign_name]</option>\n";
@@ -77,7 +77,7 @@ function GatherListIDs() {
 			?>
 			<option value=''>----------- Select -----------</option>
 			<?
-				$stmt="select distinct vc.campaign_id, vc.campaign_name from vicidial_campaigns vc, vicidial_lists vl where vc.campaign_id=vl.campaign_id order by vc.campaign_name asc";
+				$stmt="select distinct vc.campaign_id, vc.campaign_name from osdial_campaigns vc, osdial_lists vl where vc.campaign_id=vl.campaign_id order by vc.campaign_name asc";
 				$rslt=mysql_query($stmt, $link);
 				while ($row=mysql_fetch_array($rslt)) {
 					print "\t\t<option value='$row[campaign_id]'>$row[campaign_id] - $row[campaign_name]</option>\n";
@@ -92,7 +92,7 @@ function GatherListIDs() {
 				<td align=right width=200 nowrap><font class='standard_bold'>Select list ID(s) # (optional):</td>
 				<td align=left><select name="list_id" multiple size="4">
 				<?
-					$stmt="select list_id, list_name from vicidial_lists where campaign_id='$dcampaign' order by list_id asc";
+					$stmt="select list_id, list_name from osdial_lists where campaign_id='$dcampaign' order by list_id asc";
 					$rslt=mysql_query($stmt, $link);
 					while ($row=mysql_fetch_array($rslt)) {
 						print "\t\t<option value='$row[list_id]'>$row[list_id] - $row[list_name]</option>\n";
@@ -164,9 +164,9 @@ if ($submit_report && $list_ids) {
 
 	$dfile=fopen("discover_stmts.txt", "w");
 	if ($forc=="C") {
-		$stmt="select v.first_name, v.last_name, v.phone_number, vl.call_date, v.lead_id, u.full_name from vicidial_users u, vicidial_list v, vicidial_log vl where vl.call_date>='$timestamp' and vl.lead_id=v.lead_id and v.status='SALE' $list_id_clause and vl.user=u.user order by call_date desc $limit_clause";
+		$stmt="select v.first_name, v.last_name, v.phone_number, vl.call_date, v.lead_id, u.full_name from osdial_users u, osdial_list v, osdial_log vl where vl.call_date>='$timestamp' and vl.lead_id=v.lead_id and v.status='SALE' $list_id_clause and vl.user=u.user order by call_date desc $limit_clause";
 	} else {
-		$stmt="select v.first_name, v.last_name, v.phone_number, vl.call_date, v.lead_id, vl.user, vl.closer from vicidial_list v, vicidial_xfer_log vl where vl.call_date>='$timestamp' and vl.lead_id=v.lead_id and v.status='SALE' $list_id_clause order by call_date desc $limit_clause";
+		$stmt="select v.first_name, v.last_name, v.phone_number, vl.call_date, v.lead_id, vl.user, vl.closer from osdial_list v, osdial_xfer_log vl where vl.call_date>='$timestamp' and vl.lead_id=v.lead_id and v.status='SALE' $list_id_clause order by call_date desc $limit_clause";
 	}
 	fwrite($dfile, "$stmt\n");
 	$rslt=mysql_query($stmt, $link);
@@ -185,11 +185,11 @@ if ($submit_report && $list_ids) {
 		$rec_row=mysql_fetch_row($rec_rslt);
 
 		if ($forc=="F") {
-			$rep_stmt="select full_name from vicidial_users where user='$row[5]'";
+			$rep_stmt="select full_name from osdial_users where user='$row[5]'";
 			$rep_rslt=mysql_query($rep_stmt, $link);
 			$fr_row=mysql_fetch_array($rep_rslt);
 
-			$rep_stmt="select full_name from vicidial_users where user='$row[6]'";
+			$rep_stmt="select full_name from osdial_users where user='$row[6]'";
 			$rep_rslt=mysql_query($rep_stmt, $link);
 			$cl_row=mysql_fetch_array($rep_rslt);
 
@@ -210,7 +210,7 @@ if ($submit_report && $list_ids) {
 	}
 	print "</table>";
 	passthru("$WeBServeRRooT/osdial/spreadsheet_sales_viewer.pl $list_ids $sales_number $timestamp $forc $now $dcampaign");
-#	print "\n\n<BR>$WeBServeRRooT/vicidial/spreadsheet_sales_viewer.pl $list_ids $sales_number $timestamp $forc $now $dcampaign<BR>\n";
+#	print "\n\n<BR>$WeBServeRRooT/admin/spreadsheet_sales_viewer.pl $list_ids $sales_number $timestamp $forc $now $dcampaign<BR>\n";
 	flush();
 	print "<table align=center border=0 cellpadding=3 cellspacing=5 width=700><tr bgcolor='#CCCCCC'>";
 	if ($forc=="F") {

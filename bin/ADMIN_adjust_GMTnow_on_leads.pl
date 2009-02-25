@@ -2,10 +2,10 @@
 
 # ADMIN_adjust_GMTnow_on_leads.pl   *DBI-version*
 #
-# program goes throught the vicidial_list table and adjusts the gmt_offset_now
+# program goes throught the osdial_list table and adjusts the gmt_offset_now
 # field to change it to today's offset if needed because of Daylight Saving Time
 #
-# run every time you load leads into the vicidial_list table
+# run every time you load leads into the osdial_list table
 # 
 # Copyright (C) 2007  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
@@ -158,7 +158,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 
 
 	### Grab Server values from the database
-	$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_vicidial_trunks,answer_transfer_agent,local_gmt,ext_context FROM servers where server_ip = '$server_ip';";
+	$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context FROM servers where server_ip = '$server_ip';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
     $sthArows=$sthA->rows;
@@ -173,7 +173,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 			$DBASTmgrUSERNAMEupdate	=	"$aryA[4]";
 			$DBASTmgrUSERNAMElisten	=	"$aryA[5]";
 			$DBASTmgrUSERNAMEsend	=	"$aryA[6]";
-			$DBmax_vicidial_trunks	=	"$aryA[7]";
+			$DBmax_osdial_trunks	=	"$aryA[7]";
 			$DBanswer_transfer_agent=	"$aryA[8]";
 			$DBSERVER_GMT		=		"$aryA[9]";
 			$DBext_context	=			"$aryA[10]";
@@ -184,7 +184,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 			if ($DBASTmgrUSERNAMEupdate)	{$ASTmgrUSERNAMEupdate = $DBASTmgrUSERNAMEupdate;}
 			if ($DBASTmgrUSERNAMElisten)	{$ASTmgrUSERNAMElisten = $DBASTmgrUSERNAMElisten;}
 			if ($DBASTmgrUSERNAMEsend)		{$ASTmgrUSERNAMEsend = $DBASTmgrUSERNAMEsend;}
-			if ($DBmax_vicidial_trunks)		{$max_vicidial_trunks = $DBmax_vicidial_trunks;}
+			if ($DBmax_osdial_trunks)		{$max_osdial_trunks = $DBmax_osdial_trunks;}
 			if ($DBanswer_transfer_agent)	{$answer_transfer_agent = $DBanswer_transfer_agent;}
 			if ($DBSERVER_GMT)				{$SERVER_GMT = $DBSERVER_GMT;}
 			if ($DBext_context)				{$ext_context = $DBext_context;}
@@ -200,7 +200,7 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 
 if (length($singlelistid)> 0) {$listSQL = "where list_id='$singlelistid'";  $XlistSQL=" and list_id='$singlelistid' ";}
 else {$listSQL = '';  $XlistSQL='';}
-	$stmtA = "select distinct phone_code from vicidial_list $listSQL;";
+	$stmtA = "select distinct phone_code from osdial_list $listSQL;";
 	if($DBX){print STDERR "\n|$stmtA|\n";}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -231,7 +231,7 @@ else {$listSQL = '';  $XlistSQL='';}
 
 
 	##### Put all country/are code records into an array for speed
-	$stmtA = "select * from vicidial_phone_codes;";
+	$stmtA = "select * from osdial_phone_codes;";
 	if($DBX){print STDERR "\n|$stmtA|\n";}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -248,7 +248,7 @@ else {$listSQL = '';  $XlistSQL='';}
 	}
 
 	##### Put all postal code records into an array for speed
-	$stmtA = "select * from vicidial_postal_codes;";
+	$stmtA = "select * from osdial_postal_codes;";
 	if($DBX){print STDERR "\n|$stmtA|\n";}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -302,7 +302,7 @@ foreach (@phone_codes)
 					}
 				if ($DBX) {print "PROCESSING THIS LINE: $codefile[$e]\n";}
 				
-				$stmtA = "select count(*) from vicidial_list where phone_code='$match_code_ORIG' $AC_match $XlistSQL;";
+				$stmtA = "select count(*) from osdial_list where phone_code='$match_code_ORIG' $AC_match $XlistSQL;";
 				if($DBX){print STDERR "\n|$stmtA|\n";}
 				
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -400,7 +400,7 @@ foreach (@phone_codes)
 
 				if ($AC_processed)
 					{
-					$stmtA = "select count(*) from vicidial_list where phone_code='$match_code_ORIG' $AC_match and (gmt_offset_now != '$area_GMT' or gmt_offset_now IS NULL) $XlistSQL;";
+					$stmtA = "select count(*) from osdial_list where phone_code='$match_code_ORIG' $AC_match and (gmt_offset_now != '$area_GMT' or gmt_offset_now IS NULL) $XlistSQL;";
 						if($DBX){print STDERR "\n|$stmtA|\n";}
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -417,7 +417,7 @@ foreach (@phone_codes)
 						}
 					else
 						{
-						$stmtA = "update vicidial_list set gmt_offset_now='$area_GMT' where phone_code='$match_code_ORIG' $AC_match and (gmt_offset_now != '$area_GMT' or gmt_offset_now IS NULL) $XlistSQL;";
+						$stmtA = "update osdial_list set gmt_offset_now='$area_GMT' where phone_code='$match_code_ORIG' $AC_match and (gmt_offset_now != '$area_GMT' or gmt_offset_now IS NULL) $XlistSQL;";
 						if($DBX){print STDERR "\n|$stmtA|\n";}
 						if (!$T) 
 							{
@@ -463,7 +463,7 @@ foreach (@phone_codes)
 					$AC_match = " and postal_code LIKE \"$postal_code%\"";
 					if ($DBX) {print "PROCESSING THIS LINE: $postalfile[$e]\n";}
 					
-					$stmtA = "select count(*) from vicidial_list where phone_code='$match_code_ORIG' $AC_match $XlistSQL;";
+					$stmtA = "select count(*) from osdial_list where phone_code='$match_code_ORIG' $AC_match $XlistSQL;";
 					if($DBX){print STDERR "\n|$stmtA|\n";}
 					
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -561,7 +561,7 @@ foreach (@phone_codes)
 
 					if ($AC_processed)
 						{
-						$stmtA = "select count(*) from vicidial_list where phone_code='$match_code_ORIG' $AC_match and (gmt_offset_now != '$area_GMT' or gmt_offset_now IS NULL) $XlistSQL;";
+						$stmtA = "select count(*) from osdial_list where phone_code='$match_code_ORIG' $AC_match and (gmt_offset_now != '$area_GMT' or gmt_offset_now IS NULL) $XlistSQL;";
 							if($DBX){print STDERR "\n|$stmtA|\n";}
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -578,7 +578,7 @@ foreach (@phone_codes)
 							}
 						else
 							{
-							$stmtA = "update vicidial_list set gmt_offset_now='$area_GMT' where phone_code='$match_code_ORIG' $AC_match and (gmt_offset_now != '$area_GMT' or gmt_offset_now IS NULL) $XlistSQL;";
+							$stmtA = "update osdial_list set gmt_offset_now='$area_GMT' where phone_code='$match_code_ORIG' $AC_match and (gmt_offset_now != '$area_GMT' or gmt_offset_now IS NULL) $XlistSQL;";
 							if($DBX){print STDERR "\n|$stmtA|\n";}
 							if (!$T) 
 								{

@@ -2,13 +2,13 @@
 #
 # agi-VDADfixCXFER.agi version 0.4   *DBI-version*
 # 
-# runs when a Consultative transfer is released by the vicidial fronter as the
-# call arrives on another channel so that the vicidial_live_agents record is
+# runs when a Consultative transfer is released by the osdial fronter as the
+# call arrives on another channel so that the osdial_live_agents record is
 # updated to be accurate.
 #
 # You need to put lines similar to those below in your extensions.conf file:
 # 
-# ;VICIDIAL Consultative Xfer fix script:
+# ;osdial Consultative Xfer fix script:
 # exten => _8600XXX*.,1,AGI(agi-VDADfixCXFER.agi)
 # exten => _010*010*010*015*8600XXX*.,1,AGI(agi-VDADfixCXFER.agi)
 # 
@@ -192,17 +192,17 @@ if ($AGILOG) {$agi_string = "CXFERfix : $lead_id $user $channel $uniqueid";   &a
 	checkresult($result);
 	if ($AGILOG) {$agi_string = "callerID changed: $CIDlead";   &agi_output;}
 
-########## FIND AND UPDATE vicidial_live_agents ##########
-$stmtA = "UPDATE vicidial_live_agents SET channel='$channel',call_server_ip='$VARserver_ip',uniqueid='$uniqueid' where user='$user' and lead_id='$lead_id';";
+########## FIND AND UPDATE osdial_live_agents ##########
+$stmtA = "UPDATE osdial_live_agents SET channel='$channel',call_server_ip='$VARserver_ip',uniqueid='$uniqueid' where user='$user' and lead_id='$lead_id';";
 	if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
-if ($AGILOG) {$agi_string = "--    VDAD vicidial_live_agents update: |$affected_rows|$lead_id|";   &agi_output;}
+if ($AGILOG) {$agi_string = "--    VDAD osdial_live_agents update: |$affected_rows|$lead_id|";   &agi_output;}
 
-########## INSERT NEW vicidial_auto_calls record ##########
-$stmtA = "INSERT INTO vicidial_auto_calls SET channel='$channel',server_ip='$VARserver_ip',uniqueid='$uniqueid',campaign_id='$campaign_id',status='CLOSER',lead_id='$lead_id',phone_code='$phone_code',phone_number='$phone_number',call_time='$SQLdate',call_type='IN',callerid='$CIDlead';";
+########## INSERT NEW osdial_auto_calls record ##########
+$stmtA = "INSERT INTO osdial_auto_calls SET channel='$channel',server_ip='$VARserver_ip',uniqueid='$uniqueid',campaign_id='$campaign_id',status='CLOSER',lead_id='$lead_id',phone_code='$phone_code',phone_number='$phone_number',call_time='$SQLdate',call_type='IN',callerid='$CIDlead';";
 	if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
-if ($AGILOG) {$agi_string = "--    VDAD vicidial_auto_calls insert: |$affected_rows|$lead_id|";   &agi_output;}
+if ($AGILOG) {$agi_string = "--    VDAD osdial_auto_calls insert: |$affected_rows|$lead_id|";   &agi_output;}
 
 $dbhA->disconnect();
 

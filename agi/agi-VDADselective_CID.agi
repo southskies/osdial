@@ -6,7 +6,7 @@
 #
 # You need to put lines similar to those below in your extensions.conf file:
 #
-# ;outbound VICIDIAL calls:
+# ;outbound osdial calls:
 #exten => _91NXXNXXXXXX,1,AGI(call_log.agi,${EXTEN})
 #exten => _91NXXNXXXXXX,2,AGI(agi-VDADselective_CID.agi,${EXTEN})
 #exten => _91NXXNXXXXXX,3,Dial(${TRUNKX}/${EXTEN:1},55,tTo)

@@ -6,7 +6,7 @@
 # play a message and take input to automatically change customer lead to NI or DNC.
 #  *** This version detects inbound callerID over PRI ***
 #
-# ;inbound call from outbound CID callbacks from VICIDIAL calls:
+# ;inbound call from outbound CID callbacks from osdial calls:
 #exten => 1234,1,Ringing                 ; call ringing
 #exten => 1234,2,Wait(1)                 ; Wait 1 second for CID delivery from PRI
 #exten => 1234,3,Answer                  ; Answer the line
@@ -251,7 +251,7 @@ if ( (length($pin)<1) || ($pin =~ /9/) )
 if ($pin =~ /2/)	# set the phone_number to NI
 	{
 	### Check to see if the number is in the system ###
-	$stmtA= "SELECT count(*) from vicidial_list where phone_number='$phone_number';";
+	$stmtA= "SELECT count(*) from osdial_list where phone_number='$phone_number';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -261,8 +261,8 @@ if ($pin =~ /2/)	# set the phone_number to NI
 		$lead_in_system = "$aryA[0]";
 		$sthA->finish();
 	
-		### update all records for the phone_number in vicidial_list to NI (Not Interested)
-		$stmtA = "UPDATE vicidial_list SET status='NI' where phone_number='$phone_number';";
+		### update all records for the phone_number in osdial_list to NI (Not Interested)
+		$stmtA = "UPDATE osdial_list SET status='NI' where phone_number='$phone_number';";
 		$affected_rows = $dbhA->do($stmtA);
 			if ($AGILOG) {$agi_string = "$affected_rows|$stmtA|";   &agi_output;}
 		}
@@ -272,7 +272,7 @@ if ($pin =~ /2/)	# set the phone_number to NI
 if ($pin =~ /3/)	# set the phone_number to DNC
 	{
 	### Check to see if the number is in the system ###
-	$stmtA= "SELECT count(*) from vicidial_list where phone_number='$phone_number';";
+	$stmtA= "SELECT count(*) from osdial_list where phone_number='$phone_number';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -282,14 +282,14 @@ if ($pin =~ /3/)	# set the phone_number to DNC
 		$lead_in_system = "$aryA[0]";
 		$sthA->finish();
 	
-		### update all records for the phone_number in vicidial_list to NI (Not Interested)
-		$stmtA = "UPDATE vicidial_list SET status='DNC' where phone_number='$phone_number';";
+		### update all records for the phone_number in osdial_list to NI (Not Interested)
+		$stmtA = "UPDATE osdial_list SET status='DNC' where phone_number='$phone_number';";
 		$affected_rows = $dbhA->do($stmtA);
 			if ($AGILOG) {$agi_string = "$affected_rows|$stmtA|";   &agi_output;}
 		}
 
-	### add the number to the vicidial_dnc table
-	$stmtA = "INSERT INTO vicidial_dnc SET phone_number='$phone_number';";
+	### add the number to the osdial_dnc table
+	$stmtA = "INSERT INTO osdial_dnc SET phone_number='$phone_number';";
 	$affected_rows = $dbhA->do($stmtA);
 		if ($AGILOG) {$agi_string = "$affected_rows|$stmtA|";   &agi_output;}
 

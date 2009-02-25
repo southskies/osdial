@@ -3,9 +3,9 @@ CALLBACK proces flow                2006-01-05
 ***** FULL CALLBACKS FUNCTIONALITY WAS ADDED IN THE 1.1.11 RELEASE *****
 
 This will outline the process I have thought through in my head for a call-back 
-process in VICIDIAL. I have received suggestions for methodologies of how many 
+process in OSDIAL. I have received suggestions for methodologies of how many 
 people think that call-backs should work and I think I've finally come to a 
-conclusion of how I may build it into VICIDIAL that incorporates most of these 
+conclusion of how I may build it into OSDIAL that incorporates most of these 
 suggestions.
 
 
@@ -17,12 +17,12 @@ up to 1 year) and a pull-down list that will show hours(in 30 minute increments
 defaulting to current half hour). After the agent selects a day and time, they 
 must check a box to denote that only they should be able to get this Callback. 
 If the box is unchecked, anyone will be able to call this lead after it's 
-callback_time elapses. The lead will be entered as vicidial_list.status CBHOLD 
+callback_time elapses. The lead will be entered as osdial_list.status CBHOLD 
 in the system and will not be able to be dialed or selected as a dial status in 
 the admin screen.
 
 If the agent checks the box that they will be the only one that can callback the 
-lead and it is time to call that lead again(vicidial.php will check at login and 
+lead and it is time to call that lead again(osdial.php will check at login and 
 every 30 minutes to see if there are any agent-specific leads that need to be 
 called back by that agent) then when the agent is paused they will be able to 
 click on the "CALLBACK" button on the bottom of the screen and select which lead 
@@ -39,7 +39,7 @@ statuses for the campaign and if the list is active.
 
 If the managr has given the agent permission to set USERONLY callbacks, then
 the agent will be able to call those customers back by clicking on the CALLBACK
-count link below the comments field of vicidial.php once they are logged in.
+count link below the comments field of osdial.php once they are logged in.
 From here they can see the listing of their callbacks and their settings, and
 can call the customer back by clicking on the callback record.
 
@@ -48,14 +48,14 @@ can call the customer back by clicking on the callback record.
 The Admin Side:
 In the admin.php web page will be a callback viewer. Admin users will be able to 
 search and sort by campaign, list, user, status and time-range to see summary 
-lists of the Callbacks in the vicidial_callbacks table. Callbacks will be 
+lists of the Callbacks in the osdial_callbacks table. Callbacks will be 
 alterable through the modify lead screen.
 
 
 
 The Server Side:
-The vicidial_callbacks table will look like this:
- CREATE TABLE vicidial_callbacks (
+The osdial_callbacks table will look like this:
+ CREATE TABLE osdial_callbacks (
 callback_id INT(9) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
 lead_id INT(9) UNSIGNED,
 list_id INT(8) UNSIGNED,		
@@ -79,18 +79,18 @@ anthough not viewable by the agent.
 The AST_VDhopper.pl script will do a select every minute(before it does it's 
 hopper filling run) for callbacks that need to be placed back in CALLBK status. 
 Something like this query:
-  SELECT lead_id from vicidial_callbacks where callback_time < '2006-01-06 
+  SELECT lead_id from osdial_callbacks where callback_time < '2006-01-06 
 10:02:03' and status='ACTIVE';
 
 AST_VDhopper.pl will then:
-- set these leads to vicidial_list.status of CALLBK
+- set these leads to osdial_list.status of CALLBK
 - set the called_since_last_reset to N
-- insert the lead into the vicidial_hopper under the campaign it was originally
+- insert the lead into the osdial_hopper under the campaign it was originally
    set if it is an ANYONE callback
-- change the vicidial_callbacks.status to LIVE. 
+- change the osdial_callbacks.status to LIVE. 
 
-At the time of a hangup of a callback call, the vicidial.php script will set the 
-vicidial_callbacks.status to ARCHIVE. The leads that designate the recipient as 
+At the time of a hangup of a callback call, the osdial.php script will set the 
+osdial_callbacks.status to ARCHIVE. The leads that designate the recipient as 
 USERONLY will not be altered in any way by AST_VDhopper.pl.
 
 

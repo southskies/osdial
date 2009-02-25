@@ -40,7 +40,7 @@ $TODAY = date("Y-m-d");
 if (!isset($begin_date)) {$begin_date = $TODAY;}
 if (!isset($end_date)) {$end_date = $TODAY;}
 
-	$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 7 and view_reports='1';";
+	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 7 and view_reports='1';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$auth=$row[0];
@@ -52,7 +52,7 @@ $browser = getenv("HTTP_USER_AGENT");
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICI-PROJECTS\"");
+    Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
@@ -62,20 +62,20 @@ $browser = getenv("HTTP_USER_AGENT");
 
 	if($auth>0)
 		{
-			$stmt="SELECT full_name from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
+			$stmt="SELECT full_name from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			$LOGfullname=$row[0];
-		fwrite ($fp, "VICIDIAL|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|$LOGfullname|\n");
+		fwrite ($fp, "OSDIAL|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|$LOGfullname|\n");
 		fclose($fp);
 		}
 	else
 		{
-		fwrite ($fp, "VICIDIAL|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|\n");
+		fwrite ($fp, "OSDIAL|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|\n");
 		fclose($fp);
 		}
 
-	$stmt="SELECT full_name from vicidial_users where user='$user';";
+	$stmt="SELECT full_name from osdial_users where user='$user';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$full_name = $row[0];
@@ -122,7 +122,7 @@ echo "</B></TD></TR>\n";
 echo "<TR><TD ALIGN=LEFT COLSPAN=2>\n";
 
 
-	$stmt="SELECT count(*),status,sum(talk_sec) from vicidial_agent_log where user='" . mysql_real_escape_string($user) . "' and event_time >= '" . mysql_real_escape_string($begin_date) . " 0:00:01'  and event_time <= '" . mysql_real_escape_string($end_date) . " 23:59:59' and status!='' group by status order by status";
+	$stmt="SELECT count(*),status,sum(talk_sec) from osdial_agent_log where user='" . mysql_real_escape_string($user) . "' and event_time >= '" . mysql_real_escape_string($begin_date) . " 0:00:01'  and event_time <= '" . mysql_real_escape_string($end_date) . " 23:59:59' and status!='' group by status order by status";
 	$rslt=mysql_query($stmt, $link);
 	$statuses_to_print = mysql_num_rows($rslt);
 
@@ -160,7 +160,7 @@ echo "<tr><td><font size=2>STATUS</td><td align=right><font size=2>COUNT</td><td
 		$o++;
 	}
 
-	$stmt="SELECT sum(talk_sec) from vicidial_agent_log where user='" . mysql_real_escape_string($user) . "' and event_time >= '" . mysql_real_escape_string($begin_date) . " 0:00:01'  and event_time <= '" . mysql_real_escape_string($end_date) . " 23:59:59' and status!=''";
+	$stmt="SELECT sum(talk_sec) from osdial_agent_log where user='" . mysql_real_escape_string($user) . "' and event_time >= '" . mysql_real_escape_string($begin_date) . " 0:00:01'  and event_time <= '" . mysql_real_escape_string($end_date) . " 23:59:59' and status!=''";
 	$rslt=mysql_query($stmt, $link);
 	$counts_to_print = mysql_num_rows($rslt);
 		$row=mysql_fetch_row($rslt);
@@ -183,7 +183,7 @@ echo "<B>LOGIN/LOGOUT TIME:</B>\n";
 echo "<TABLE width=500 cellspacing=2 cellpadding=1>\n";
 echo "<tr><td><font size=2>EVENT </td><td align=right><font size=2> DATE</td><td align=right><font size=2> CAMPAIGN</td><td align=right><font size=2> GROUP</td><td align=right><font size=2>HOURS:MINUTES</td></tr>\n";
 
-	$stmt="SELECT event,event_epoch,event_date,campaign_id,user_group from vicidial_user_log where user='" . mysql_real_escape_string($user) . "' and event_date >= '" . mysql_real_escape_string($begin_date) . " 0:00:01'  and event_date <= '" . mysql_real_escape_string($end_date) . " 23:59:59'";
+	$stmt="SELECT event,event_epoch,event_date,campaign_id,user_group from osdial_user_log where user='" . mysql_real_escape_string($user) . "' and event_date >= '" . mysql_real_escape_string($begin_date) . " 0:00:01'  and event_date <= '" . mysql_real_escape_string($end_date) . " 23:59:59'";
 	$rslt=mysql_query($stmt, $link);
 	$events_to_print = mysql_num_rows($rslt);
 
@@ -283,28 +283,28 @@ echo "<tr>
 <td align=right><font size=2>LEAD</td>
 </tr>\n";
 
-	#$stmt="select * from vicidial_log where user='" . mysql_real_escape_string($user) . "' and call_date >= '" . mysql_real_escape_string($begin_date) . " 0:00:01'  and call_date <= '" . mysql_real_escape_string($end_date) . " 23:59:59' order by call_date desc limit 10000;";
+	#$stmt="select * from osdial_log where user='" . mysql_real_escape_string($user) . "' and call_date >= '" . mysql_real_escape_string($begin_date) . " 0:00:01'  and call_date <= '" . mysql_real_escape_string($end_date) . " 23:59:59' order by call_date desc limit 10000;";
 	$stmt="	SELECT
 			event_time,
 			wait_sec,
 			talk_sec,
 			dispo_sec,
 			pause_sec,
-			vicidial_agent_log.status,
+			osdial_agent_log.status,
 			phone_number,
 			user_group,
 			campaign_id,
 			list_id,
-			vicidial_agent_log.lead_id
+			osdial_agent_log.lead_id
 		FROM
-			vicidial_agent_log,
-			vicidial_list
+			osdial_agent_log,
+			osdial_list
 		WHERE
-			vicidial_agent_log.lead_id=vicidial_list.lead_id
-			AND vicidial_agent_log.user='" . mysql_real_escape_string($user) . "'
+			osdial_agent_log.lead_id=osdial_list.lead_id
+			AND osdial_agent_log.user='" . mysql_real_escape_string($user) . "'
 			AND event_time >= '" . mysql_real_escape_string($begin_date) . " 0:00:01'
 			AND event_time <= '" . mysql_real_escape_string($end_date) . " 23:59:59'
-		ORDER BY vicidial_agent_log.event_time DESC
+		ORDER BY osdial_agent_log.event_time DESC
 		LIMIT 10000;";
 	$rslt=mysql_query($stmt, $link);
 	$logs_to_print = mysql_num_rows($rslt);
@@ -344,7 +344,7 @@ echo "<B>CLOSER CALLS FOR THIS TIME PERIOD: (10000 record limit)</B>\n";
 echo "<TABLE width=650 cellspacing=2 cellpadding=1>\n";
 echo "<tr><td><font size=1># </td><td><font size=2>DATE/TIME </td><td align=left><font size=2>LENGTH</td><td align=left><font size=2> STATUS</td><td align=left><font size=2> PHONE</td><td align=right><font size=2> CAMPAIGN</td><td align=right><font size=2> WAIT (S)</td><td align=right><font size=2> LIST</td><td align=right><font size=2> LEAD</td></tr>\n";
 
-	$stmt="select * from vicidial_closer_log where user='" . mysql_real_escape_string($user) . "' and call_date >= '" . mysql_real_escape_string($begin_date) . " 0:00:01'  and call_date <= '" . mysql_real_escape_string($end_date) . " 23:59:59' order by call_date desc limit 10000;";
+	$stmt="select * from osdial_closer_log where user='" . mysql_real_escape_string($user) . "' and call_date >= '" . mysql_real_escape_string($begin_date) . " 0:00:01'  and call_date <= '" . mysql_real_escape_string($end_date) . " 23:59:59' order by call_date desc limit 10000;";
 	$rslt=mysql_query($stmt, $link);
 	$logs_to_print = mysql_num_rows($rslt);
 

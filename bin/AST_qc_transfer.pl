@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# AST_qc_transfer.pl for Vicidial 2.0.4a
+# AST_qc_transfer.pl
 #
 # DESCRIPTION:
 # Transfers recordings to QC location based on use defined SQL.  Tracks
@@ -148,13 +148,13 @@ sub gatherEntries {
 
 	# Setup the common SQL, ie where.
 	$where =   "(qc_recordings.recording_id=recording_log.recording_id ";
-	$where .=   "AND qc_recordings.lead_id=vicidial_list.lead_id ";
-	$where .=   "AND vicidial_list.list_id=vicidial_lists.list_id)";
+	$where .=   "AND qc_recordings.lead_id=osdial_list.lead_id ";
+	$where .=   "AND osdial_list.list_id=osdial_lists.list_id)";
 
-	# Find recordings which match criteria and insert into the vicidial_transfers table.
+	# Find recordings which match criteria and insert into the osdial_transfers table.
 	$insert = "INSERT IGNORE INTO qc_transfers (qc_server_id,qc_recording_id) ";
 	$insert .= "SELECT " . $qcs->{id} . " AS qc_server_id,qc_recordings.id AS qc_recording_id ";
-	$insert .= "FROM qc_recordings,recording_log,vicidial_list,vicidial_lists ";
+	$insert .= "FROM qc_recordings,recording_log,osdial_list,osdial_lists ";
 	$insert .=  "WHERE " . $where . $swhere . ";";
 
 	print "$insert|\n" if($verbose > 2);
@@ -163,8 +163,8 @@ sub gatherEntries {
 	$rlfld = "recording_log.recording_id,recording_log.channel,recording_log.server_ip,recording_log.extension,recording_log.start_time,recording_log.start_epoch,";
 	$rlfld .= "recording_log.end_time,recording_log.end_epoch,recording_log.length_in_sec,recording_log.length_in_min,recording_log.lead_id,recording_log.user";
 
-	$query = "SELECT DISTINCT qc_transfers.*,qc_transfers.id AS qctid,qc_recordings.*,DATE(recording_log.start_time) AS date," . $rlfld . ",vicidial_list.*,vicidial_lists.* ";
-	$query .= "FROM qc_transfers,qc_recordings,recording_log,vicidial_list,vicidial_lists ";
+	$query = "SELECT DISTINCT qc_transfers.*,qc_transfers.id AS qctid,qc_recordings.*,DATE(recording_log.start_time) AS date," . $rlfld . ",osdial_list.*,osdial_lists.* ";
+	$query .= "FROM qc_transfers,qc_recordings,recording_log,osdial_list,osdial_lists ";
 	$query .=  "WHERE (qc_transfers.qc_recording_id=qc_recordings.id) AND " . $where . $swhere . " AND (qc_transfers.status!='NOTFOUND' AND qc_transfers.status!='SUCCESS') ";
 	$query .=  "AND qc_transfers.qc_server_id='" . $qcs->{id} . "';";
 

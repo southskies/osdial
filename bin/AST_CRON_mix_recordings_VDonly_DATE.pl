@@ -2,7 +2,7 @@
 #
 # AST_CRON_mix_recordings_VDonly_DATE.pl
 #
-# IMPORTANT!!! ONLY TO BE USED WHEN ONLY VICIDIAL RECORDINGS ARE ON THE SYSTEM!
+# IMPORTANT!!! ONLY TO BE USED WHEN ONLY OSDIAL RECORDINGS ARE ON THE SYSTEM!
 #
 # runs every 5 minutes and copies the -in recordings in the monitor to a dated
 # directory on an FTP server. Creates the FTP directory if it does not exist.

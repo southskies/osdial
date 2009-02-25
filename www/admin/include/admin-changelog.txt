@@ -9,9 +9,9 @@
 # 50315-1110 - Added Custom Campaign Statuses
 # 50317-1438 - Added Fronter Display var to inbound groups
 # 50322-1355 - Added custom callerID per campaign
-# 50517-1356 - Added user_groups sections and user_group to vicidial_users
+# 50517-1356 - Added user_groups sections and user_group to osdial_users
 # 50517-1440 - Added ability to logout (must click OK with empty user/pass)
-# 50602-1622 - Added lead loader pages to load new files into vicidial_list
+# 50602-1622 - Added lead loader pages to load new files into osdial_list
 # 50620-1351 - Added custom vdad transfer AGI extension per campaign
 # 50810-1414 - modified in groups to kick out spaces and dashes
 # 50908-2136 - Added Custom Campaign HotKeys
@@ -23,27 +23,27 @@
 # 51123-1335 - Altered code to function in php globals=off
 # 51208-1038 - Added user_level changes, function controls and default user phones
 # 51208-1556 - Added deletion of users/lists/campaigns/in groups/remote agents
-# 51213-1706 - Added add/delete/modify vicidial scripts
-# 51214-1737 - Added preview of vicidial script in popup window
+# 51213-1706 - Added add/delete/modify osdial scripts
+# 51214-1737 - Added preview of osdial script in popup window
 # 51219-1225 - Added campaign and ingroups script selector and get_call_launch field
 # 51222-1055 - Added am_message_exten to campaigns to allow for AM Message button
-# 51222-1125 - Fixed new vicidial_campaigns default values not being assigned bug
+# 51222-1125 - Fixed new osdial_campaigns default values not being assigned bug
 # 51222-1156 - Added LOG OUT ALL AGENTS ON THIS CAMPAIGN button to campaign screen
 # 60204-0659 - Fixed hopper reset bug
 # 60207-1413 - Added AMD send to voicemail extension and xfer-conf dtmf presets
-# 60213-1100 - Added several vicidial_users permissions fields
+# 60213-1100 - Added several osdial_users permissions fields
 # 60215-1319 - Added On-hold CallBacks display and links
-# 60227-1226 - Fixed vicidial_inbound_groups insert bug
+# 60227-1226 - Fixed osdial_inbound_groups insert bug
 # 60413-1308 - Fixed list display to have 1 row/status: count and time zone tables
 #            - Added status name in selected dial statuses in campaign screen
-# 60417-1416 - Added vicidial_lead_filters sections
+# 60417-1416 - Added osdial_lead_filters sections
 #            - Changed the header links to color-coded sectional with sublinks below
 #            - Added filter name and script name to campaign and in-group modify sections
 #            - Added callback and alt dial options to campaigns section
 #            - Added callback, alt dial and other options to users section
 # 60419-1628 - Alter Callbacks display to include status and LIVE listings, reordered
 # 60421-1441 - check GET/POST vars lines with isset to not trigger PHP NOTICES
-# 60425-2355 - Added agent options to vicidial_users, reformatted user page
+# 60425-2355 - Added agent options to osdial_users, reformatted user page
 # 60502-1627 - Added drop_call_seconds and safe_harbor_ fields to campaign screen
 # 60503-1228 - Added drop_call_seconds and drop_ fields to inbound groups screen
 # 60505-1117 - Added initial framework for new local_call_times tables and definitions
@@ -62,9 +62,9 @@
 # 60622-1216 - Fixed HotKey addition form issues and variable filtering
 # 60623-1159 - Fixed Scheduled Callbacks over-filtering bug and filter_sql bug
 # 60808-1147 - Changed filtering for and added instructions for consutative transfers
-# 60816-1552 - Added allcalls_delay start delay for recordings in vicidial.php
+# 60816-1552 - Added allcalls_delay start delay for recordings in osdial.php
 # 60817-2226 - Fixed bug that would not allow lead recycling of non-selectable statuses
-# 60821-1543 - Added option to Omit Phone Code while dialing in vicidial
+# 60821-1543 - Added option to Omit Phone Code while dialing in osdial
 # 60821-1625 - Added ALLFORCE recording option for campaign_recording
 # 60823-1154 - Added fields for adaptive dialing
 # 60824-1326 - Added adaptive_latest_target_gmt for ADAPT_TAPERED dial method
@@ -72,8 +72,8 @@
 # 60828-1019 - Changed adaptive_latest_target_gmt to adaptive_latest_server_time
 # 60828-1115 - Added adaptive_dl_diff_target and changed intensity dropdown
 # 60927-1246 - Added astguiclient/admin.php functions under SERVERS tab
-# 61002-1402 - Added fields for vicidial balance trunk controls
-# 61003-1123 - Added functions for vicidial_server_trunks records
+# 61002-1402 - Added fields for osdial balance trunk controls
+# 61003-1123 - Added functions for osdial_server_trunks records
 # 61109-1022 - Added Emergency VDAC Jam Clear function to Campaign Detail screen
 # 61110-1502 - Add ability to select NONE in dial statuses, new list_id must not be < 100
 # 61122-1228 - Added user group campaign restrictions
@@ -82,7 +82,7 @@
 # 70108-1405 - Added ADAPT OVERRIDE to allow for forced dial_level changes in ADAPT dial methods
 #            - Screen width definable at top of script, merged server_stats into this script
 # 70109-1638 - Added ALTPH2 and ADDR3 hotkey options for alt number dialing with HotKeys
-# 70109-1716 - Added concurrent_transfers option to vicidial_campaigns
+# 70109-1716 - Added concurrent_transfers option to osdial_campaigns
 # 70115-1152 - Aded (CLOSER|BLEND|INBND|_C$|_B$|_I$) options for CLOSER-type campaigns
 # 70115-1532 - Added auto_alt_dial field to campaign screen for auto-dialing of alt numbers
 # 70116-1200 - Added auto_alt_dial_status functionality to campaign screen
@@ -92,8 +92,8 @@
 # 70123-1519 - Added user permission settings for all sections
 # 70124-1346 - Fixed spelling errors and formatting consistency
 # 70202-1120 - Added agent_pause_codes section to campaigns
-# 70205-1204 - Added memo, last dialed, timestamp and stats-refresh fields to vicidial_campaigns/lists
-# 70206-1323 - Added user setting for vicidial_recording_override
+# 70205-1204 - Added memo, last dialed, timestamp and stats-refresh fields to osdial_campaigns/lists
+# 70206-1323 - Added user setting for osdial_recording_override
 # 70212-1412 - Added system settings section
 # 70214-1226 - Added QueueMetrics Log ID field to system settings section
 # 70219-1102 - Changed campaign dial statuses to be one string allowing for high limit
@@ -138,7 +138,7 @@
 # 90202-1108 - Moved AST_timeonVDADallSUMMARY, AST_timeonVDADall, admin_search_lead &
 #			new_listloader_superL into admin.php
 #			into admin.php. 
-#			Complete upgrade of interface, matched with vicidial.php
+#			Complete upgrade of interface, matched with osdial.php
 #			Added admin_config.inc & styles.css.
 #			Added realtime clock
 #			Cleaned up indentations, font size and appearance in several sections
@@ -146,4 +146,4 @@
 #			Resized to a 1024 wide screen
 #			Changed to new version (from 2.0.4-121)
 #
-# make sure you have added a user to the vicidial_users MySQL table with at least user_level 8 to access this page the first time
+# make sure you have added a user to the osdial_users MySQL table with at least user_level 8 to access this page the first time

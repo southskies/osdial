@@ -63,29 +63,29 @@ $ADD=311111111111;
 
 
 ######################
-# ADD=221111111111 adds the new vicidial server trunk record to the system
+# ADD=221111111111 adds the new osdial server trunk record to the system
 ######################
 
 if ($ADD==221111111111)
 {
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT max_vicidial_trunks from servers where server_ip='$server_ip';";
+	$stmt="SELECT max_osdial_trunks from servers where server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$rowx=mysql_fetch_row($rslt);
-	$MAXvicidial_trunks = $rowx[0];
+	$MAXosdial_trunks = $rowx[0];
 	
-	$stmt="SELECT sum(dedicated_trunks) from vicidial_server_trunks where server_ip='$server_ip' and campaign_id !='$campaign_id';";
+	$stmt="SELECT sum(dedicated_trunks) from osdial_server_trunks where server_ip='$server_ip' and campaign_id !='$campaign_id';";
 	$rslt=mysql_query($stmt, $link);
 	$rowx=mysql_fetch_row($rslt);
-	$SUMvicidial_trunks = ($rowx[0] + $dedicated_trunks);
+	$SUMosdial_trunks = ($rowx[0] + $dedicated_trunks);
 	
-	if ($SUMvicidial_trunks > $MAXvicidial_trunks)
+	if ($SUMosdial_trunks > $MAXosdial_trunks)
 		{
-		echo "<br><font color=red>OSDial SERVER TRUNK RECORD NOT ADDED - the number of vicidial trunks is too high: $SUMvicidial_trunks / $MAXvicidial_trunks</font>\n";
+		echo "<br><font color=red>OSDial SERVER TRUNK RECORD NOT ADDED - the number of osdial trunks is too high: $SUMosdial_trunks / $MAXosdial_trunks</font>\n";
 		}
 	else
 		{
-		$stmt="SELECT count(*) from vicidial_server_trunks where campaign_id='$campaign_id' and server_ip='$server_ip';";
+		$stmt="SELECT count(*) from osdial_server_trunks where campaign_id='$campaign_id' and server_ip='$server_ip';";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		if ($row[0] > 0)
@@ -103,7 +103,7 @@ if ($ADD==221111111111)
 				{
 				echo "<br><B><font color=navy>OSDial SERVER TRUNK RECORD ADDED: $campaign_id - $server_ip - $dedicated_trunks - $trunk_restriction</font></B>\n";
 
-				$stmt="INSERT INTO vicidial_server_trunks(server_ip,campaign_id,dedicated_trunks,trunk_restriction) values('$server_ip','$campaign_id','$dedicated_trunks','$trunk_restriction');";
+				$stmt="INSERT INTO osdial_server_trunks(server_ip,campaign_id,dedicated_trunks,trunk_restriction) values('$server_ip','$campaign_id','$dedicated_trunks','$trunk_restriction');";
 				$rslt=mysql_query($stmt, $link);
 
 				### LOG CHANGES TO LOG FILE ###
@@ -151,7 +151,7 @@ if ($ADD==411111111111)
 				{
 				echo "<br><font color=navy>SERVER MODIFIED: $server_ip</font>\n";
 
-				$stmt="UPDATE servers set server_id='$server_id',server_description='$server_description',server_ip='$server_ip',active='$active',asterisk_version='$asterisk_version', max_vicidial_trunks='$max_vicidial_trunks', telnet_host='$telnet_host', telnet_port='$telnet_port', ASTmgrUSERNAME='$ASTmgrUSERNAME', ASTmgrSECRET='$ASTmgrSECRET', ASTmgrUSERNAMEupdate='$ASTmgrUSERNAMEupdate', ASTmgrUSERNAMElisten='$ASTmgrUSERNAMElisten', ASTmgrUSERNAMEsend='$ASTmgrUSERNAMEsend', local_gmt='$local_gmt', voicemail_dump_exten='$voicemail_dump_exten', answer_transfer_agent='$answer_transfer_agent', ext_context='$ext_context', sys_perf_log='$sys_perf_log', vd_server_logs='$vd_server_logs', agi_output='$agi_output', vicidial_balance_active='$vicidial_balance_active', balance_trunks_offlimits='$balance_trunks_offlimits' where server_id='$old_server_id';";
+				$stmt="UPDATE servers set server_id='$server_id',server_description='$server_description',server_ip='$server_ip',active='$active',asterisk_version='$asterisk_version', max_osdial_trunks='$max_osdial_trunks', telnet_host='$telnet_host', telnet_port='$telnet_port', ASTmgrUSERNAME='$ASTmgrUSERNAME', ASTmgrSECRET='$ASTmgrSECRET', ASTmgrUSERNAMEupdate='$ASTmgrUSERNAMEupdate', ASTmgrUSERNAMElisten='$ASTmgrUSERNAMElisten', ASTmgrUSERNAMEsend='$ASTmgrUSERNAMEsend', local_gmt='$local_gmt', voicemail_dump_exten='$voicemail_dump_exten', answer_transfer_agent='$answer_transfer_agent', ext_context='$ext_context', sys_perf_log='$sys_perf_log', vd_server_logs='$vd_server_logs', agi_output='$agi_output', osdial_balance_active='$osdial_balance_active', balance_trunks_offlimits='$balance_trunks_offlimits' where server_id='$old_server_id';";
 				$rslt=mysql_query($stmt, $link);
 				}
 			}
@@ -167,7 +167,7 @@ $ADD=311111111111;	# go to server modification form below
 
 
 ######################
-# ADD=421111111111 modify vicidial server trunks record in the system
+# ADD=421111111111 modify osdial server trunks record in the system
 ######################
 
 if ($ADD==421111111111)
@@ -175,19 +175,19 @@ if ($ADD==421111111111)
 	if ($LOGmodify_servers==1)
 	{
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT max_vicidial_trunks from servers where server_ip='$server_ip';";
+	$stmt="SELECT max_osdial_trunks from servers where server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$rowx=mysql_fetch_row($rslt);
-	$MAXvicidial_trunks = $rowx[0];
+	$MAXosdial_trunks = $rowx[0];
 	
-	$stmt="SELECT sum(dedicated_trunks) from vicidial_server_trunks where server_ip='$server_ip' and campaign_id !='$campaign_id';";
+	$stmt="SELECT sum(dedicated_trunks) from osdial_server_trunks where server_ip='$server_ip' and campaign_id !='$campaign_id';";
 	$rslt=mysql_query($stmt, $link);
 	$rowx=mysql_fetch_row($rslt);
-	$SUMvicidial_trunks = ($rowx[0] + $dedicated_trunks);
+	$SUMosdial_trunks = ($rowx[0] + $dedicated_trunks);
 	
-	if ($SUMvicidial_trunks > $MAXvicidial_trunks)
+	if ($SUMosdial_trunks > $MAXosdial_trunks)
 		{
-		echo "<br><font color=red>OSDial SERVER TRUNK RECORD NOT ADDED - the number of OSDial trunks is too high: $SUMvicidial_trunks / $MAXvicidial_trunks</font>\n";
+		echo "<br><font color=red>OSDial SERVER TRUNK RECORD NOT ADDED - the number of OSDial trunks is too high: $SUMosdial_trunks / $MAXosdial_trunks</font>\n";
 		}
 	else
 		{
@@ -202,7 +202,7 @@ if ($ADD==421111111111)
 			{
 			echo "<br><B><font color=navy>OSDial SERVER TRUNK RECORD MODIFIED: $campaign_id - $server_ip - $dedicated_trunks - $trunk_restriction</font></B>\n";
 
-			$stmt="UPDATE vicidial_server_trunks SET dedicated_trunks='$dedicated_trunks',trunk_restriction='$trunk_restriction' where campaign_id='$campaign_id' and server_ip='$server_ip';";
+			$stmt="UPDATE osdial_server_trunks SET dedicated_trunks='$dedicated_trunks',trunk_restriction='$trunk_restriction' where campaign_id='$campaign_id' and server_ip='$server_ip';";
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -285,7 +285,7 @@ $ADD='100000000000';		# go to server list
 
 
 ######################
-# ADD=621111111111 delete vicidial server trunk record in the system
+# ADD=621111111111 delete osdial server trunk record in the system
 ######################
 
 if ($ADD==621111111111)
@@ -304,7 +304,7 @@ if ($ADD==621111111111)
 		{
 		echo "<br><B><font color=navy>OSDial SERVER TRUNK RECORD DELETED: $campaign_id - $server_ip</font></B>\n";
 
-		$stmt="DELETE FROM vicidial_server_trunks where campaign_id='$campaign_id' and server_ip='$server_ip';";
+		$stmt="DELETE FROM osdial_server_trunks where campaign_id='$campaign_id' and server_ip='$server_ip';";
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -353,8 +353,8 @@ if ($ADD==311111111111)
 	echo "<tr bgcolor=#C1D6DF><td align=right>Server IP Address: </td><td align=left><input type=text name=server_ip size=20 maxlength=15 value=\"$row[2]\">$NWB#servers-server_ip$NWE</td></tr>\n";
 	echo "<tr bgcolor=#C1D6DF><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option selected>$row[3]</option></select>$NWB#servers-active$NWE</td></tr>\n";
 	echo "<tr bgcolor=#C1D6DF><td align=right>Asterisk Version: </td><td align=left><input type=text name=asterisk_version size=20 maxlength=20 value=\"$row[4]\">$NWB#servers-asterisk_version$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Max OSDial Trunks: </td><td align=left><input type=text name=max_vicidial_trunks size=5 maxlength=4 value=\"$row[5]\">$NWB#servers-max_osdial_trunks$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>OSDial Balance Dialing: </td><td align=left><select size=1 name=vicidial_balance_active><option>Y</option><option>N</option><option selected>$row[20]</option></select>$NWB#servers-osdial_balance_active$NWE</td></tr>\n";
+	echo "<tr bgcolor=#C1D6DF><td align=right>Max OSDial Trunks: </td><td align=left><input type=text name=max_osdial_trunks size=5 maxlength=4 value=\"$row[5]\">$NWB#servers-max_osdial_trunks$NWE</td></tr>\n";
+	echo "<tr bgcolor=#C1D6DF><td align=right>OSDial Balance Dialing: </td><td align=left><select size=1 name=osdial_balance_active><option>Y</option><option>N</option><option selected>$row[20]</option></select>$NWB#servers-osdial_balance_active$NWE</td></tr>\n";
 	echo "<tr bgcolor=#C1D6DF><td align=right>OSDial Balance Offlimits: </td><td align=left><input type=text name=balance_trunks_offlimits size=5 maxlength=4 value=\"$row[21]\">$NWB#servers-balance_trunks_offlimits$NWE</td></tr>\n";
 	echo "<tr bgcolor=#C1D6DF><td align=right>Telnet Host: </td><td align=left><input type=text name=telnet_host size=20 maxlength=20 value=\"$row[6]\">$NWB#servers-telnet_host$NWE</td></tr>\n";
 	echo "<tr bgcolor=#C1D6DF><td align=right>Telnet Port: </td><td align=left><input type=text name=telnet_port size=6 maxlength=5 value=\"$row[7]\">$NWB#servers-telnet_port$NWE</td></tr>\n";
@@ -374,12 +374,12 @@ if ($ADD==311111111111)
 	echo "</TABLE></center></form>\n";
 
 
-	### vicidial server trunk records for this server
+	### osdial server trunk records for this server
 	echo "<br><br><center><font color=navy size=+1>OSDial TRUNKS FOR THIS SERVER &nbsp;</font> $NWB#osdial_server_trunks$NWE<br>\n";
 	echo "<TABLE width=500 cellspacing=3>\n";
 	echo "<tr><td><font color=navy>CAMPAIGN</font></td><td><font color=navy>TRUNKS</font> </td><td><font color=navy>RESTRICTION</font> </td><td> </td><td><font color=navy>DELETE</font> </td></tr>\n";
 
-		$stmt="SELECT * from vicidial_server_trunks where server_ip='$server_ip' order by campaign_id";
+		$stmt="SELECT * from osdial_server_trunks where server_ip='$server_ip' order by campaign_id";
 		$rslt=mysql_query($stmt, $link);
 		$recycle_to_print = mysql_num_rows($rslt);
 		$o=0;
@@ -477,14 +477,14 @@ if ($ADD==311111111111)
 	echo "</table></font></center><br>\n";
 
 
-	### list of vicidial conferences on this server
+	### list of osdial conferences on this server
 	echo "<center>\n";
 	echo "<br><br><font color=navy>OSDial CONFERENCES WITHIN THIS SERVER<br><br>\n";
 	echo "<TABLE width=400 cellspacing=3>\n";
 	echo "<tr><td><font color=navy>VD CONFERENCE</font></td><td><font color=navy>EXTENSION</font></td></tr>\n";
 
 		$active_vdconfs = 0;
-		$stmt="SELECT conf_exten,extension from vicidial_conferences where server_ip='$row[2]'";
+		$stmt="SELECT conf_exten,extension from osdial_conferences where server_ip='$row[2]'";
 		$rsltx=mysql_query($stmt, $link);
 		$lists_to_print = mysql_num_rows($rsltx);
 		$camp_lists='';
@@ -626,7 +626,7 @@ if ($ADD==499111111111111) {
 		echo "<font color=red>You do not have permission to view this page</font>\n";
 		exit;
 	}
-	$ADD=399111111111111;	# go to vicidial system settings form below
+	$ADD=399111111111111;	# go to osdial system settings form below
 }
 
 ######################
@@ -759,7 +759,7 @@ if ($ADD==499211111111111) {
 		echo "<font color=red>You do not have permission to view this page</font>\n";
 		exit;
 	}
-	$ADD=399211111111111;	# go to vicidial system settings form below
+	$ADD=399211111111111;	# go to osdial system settings form below
 }
 
 
@@ -799,7 +799,7 @@ if ($ADD==699211111111111){
 	$SUB=$nSUB;
 	$qc_server_id=$nQSI;
 	$qc_server_rule_id='';
-	$ADD='399211111111111';		# go to vicidial conference list
+	$ADD='399211111111111';		# go to osdial conference list
 }
 
 

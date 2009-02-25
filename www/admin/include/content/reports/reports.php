@@ -12,7 +12,7 @@ if ($ADD==999999)
 	echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT * from vicidial_conferences order by conf_exten";
+	$stmt="SELECT * from osdial_conferences order by conf_exten";
 	$rslt=mysql_query($stmt, $link);
 	$phones_to_print = mysql_num_rows($rslt);
 
@@ -50,7 +50,7 @@ if ($ADD==999999)
 	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=AST_VDADstats.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Call Report</a></FONT>
 	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=AST_CLOSERstats.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Closer Report</a></FONT>
 	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=AST_agent_performance_detail.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Agent Performance Detail</a></FONT>
-	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=vicidial_sales_viewer.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Agent Spreadsheet Performance</a></FONT>
+	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=osdial_sales_viewer.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Agent Spreadsheet Performance</a></FONT>
 	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=AST_server_performance.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Server Performance</a></FONT>
 <?
 	if ($enable_queuemetrics_logging_LU > 0)

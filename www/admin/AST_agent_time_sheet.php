@@ -28,7 +28,7 @@ if (isset($_GET["SUBMIT"]))				{$SUBMIT=$_GET["SUBMIT"];}
 $PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);
 $PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
 
-	$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1';";
+	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1';";
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -36,7 +36,7 @@ $PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICI-PROJECTS\"");
+    Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
@@ -91,7 +91,7 @@ $query_date_END = "$query_date 23:59:59";
 $time_BEGIN = "00:00:00";   
 $time_END = "23:59:59";
 
-$stmt="select full_name from vicidial_users where user='$agent';";
+$stmt="select full_name from osdial_users where user='$agent';";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}
 $row=mysql_fetch_row($rslt);
@@ -104,7 +104,7 @@ echo "---------- AGENT TIME SHEET: $agent - $full_name -------------\n\n";
 
 if ($calls_summary)
 	{
-	$stmt="select count(*) as calls,sum(talk_sec) as talk,avg(talk_sec),sum(pause_sec),avg(pause_sec),sum(wait_sec),avg(wait_sec),sum(dispo_sec),avg(dispo_sec) from vicidial_agent_log where event_time <= '" . mysql_real_escape_string($query_date_END) . "' and event_time >= '" . mysql_real_escape_string($query_date_BEGIN) . "' and user='" . mysql_real_escape_string($agent) . "' and pause_sec<48800 and wait_sec<48800 and talk_sec<48800 and dispo_sec<48800 limit 1;";
+	$stmt="select count(*) as calls,sum(talk_sec) as talk,avg(talk_sec),sum(pause_sec),avg(pause_sec),sum(wait_sec),avg(wait_sec),sum(dispo_sec),avg(dispo_sec) from osdial_agent_log where event_time <= '" . mysql_real_escape_string($query_date_END) . "' and event_time >= '" . mysql_real_escape_string($query_date_BEGIN) . "' and user='" . mysql_real_escape_string($agent) . "' and pause_sec<48800 and wait_sec<48800 and talk_sec<48800 and dispo_sec<48800 limit 1;";
 	$rslt=mysql_query($stmt, $link);
 	if ($DB) {echo "$stmt\n";}
 	$row=mysql_fetch_row($rslt);
@@ -242,7 +242,7 @@ else
 
 	}
 
-$stmt="select event_time,UNIX_TIMESTAMP(event_time) from vicidial_agent_log where event_time <= '" . mysql_real_escape_string($query_date_END) . "' and event_time >= '" . mysql_real_escape_string($query_date_BEGIN) . "' and user='" . mysql_real_escape_string($agent) . "' order by event_time limit 1;";
+$stmt="select event_time,UNIX_TIMESTAMP(event_time) from osdial_agent_log where event_time <= '" . mysql_real_escape_string($query_date_END) . "' and event_time >= '" . mysql_real_escape_string($query_date_BEGIN) . "' and user='" . mysql_real_escape_string($agent) . "' order by event_time limit 1;";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}
 $row=mysql_fetch_row($rslt);
@@ -250,7 +250,7 @@ $row=mysql_fetch_row($rslt);
 echo "FIRST LOGIN:          $row[0]\n";
 $start = $row[1];
 
-$stmt="select event_time,UNIX_TIMESTAMP(event_time) from vicidial_agent_log where event_time <= '" . mysql_real_escape_string($query_date_END) . "' and event_time >= '" . mysql_real_escape_string($query_date_BEGIN) . "' and user='" . mysql_real_escape_string($agent) . "' order by event_time desc limit 1;";
+$stmt="select event_time,UNIX_TIMESTAMP(event_time) from osdial_agent_log where event_time <= '" . mysql_real_escape_string($query_date_END) . "' and event_time >= '" . mysql_real_escape_string($query_date_BEGIN) . "' and user='" . mysql_real_escape_string($agent) . "' order by event_time desc limit 1;";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}
 $row=mysql_fetch_row($rslt);

@@ -46,6 +46,6 @@ $recording_exten = '8309';
 $WeBRooTWritablE = '1';
 $non_latin = '0';	# set to 1 for UTF rules, overridden by system_settings
 $flag_channels=0;
-$flag_string = 'VICIast20';
+$flag_string = 'OSDIALast20';
 
 ?>

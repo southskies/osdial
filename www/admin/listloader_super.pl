@@ -74,7 +74,7 @@ if (length($ARGV[0])>1)
 	#	print "\n----- LEAD FILE: $lead_file -----\n\n";
 		}
 		else
-			{$lead_file = './vicidial_temp_file.xls';}
+			{$lead_file = './osdial_temp_file.xls';}
 	}
 }
 ### end parsing run-time options ###
@@ -270,11 +270,11 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 			$phone_code =	$forcephonecode;	# set phone_code to override value
 			}
 
-		##### Check for duplicate phone numbers in vicidial_list table entire database #####
+		##### Check for duplicate phone numbers in osdial_list table entire database #####
 		if ($dupchecksys > 0)
 			{
 			$dup_lead=0;
-			$stmtA = "select count(*) from vicidial_list where phone_number='$phone_number';";
+			$stmtA = "select count(*) from osdial_list where phone_number='$phone_number';";
 				if($DBX){print STDERR "\n|$stmtA|\n";}
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -292,11 +292,11 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 					{$dup_lead++;}
 				}
 			}
-		##### Check for duplicate phone numbers in vicidial_list table for one list_id #####
+		##### Check for duplicate phone numbers in osdial_list table for one list_id #####
 		if ($dupcheck > 0)
 			{
 			$dup_lead=0;
-			$stmtA = "select list_id from vicidial_list where phone_number='$phone_number' and list_id='$list_id' limit 1;";
+			$stmtA = "select list_id from osdial_list where phone_number='$phone_number' and list_id='$list_id' limit 1;";
 				if($DBX){print STDERR "\n|$stmtA|\n";}
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -314,13 +314,13 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 					{$dup_lead++;}
 				}
 			}
-		##### Check for duplicate phone numbers in vicidial_list table for all lists in a campaign #####
+		##### Check for duplicate phone numbers in osdial_list table for all lists in a campaign #####
 		if ($dupcheckcamp > 0)
 			{
 			$dup_lead=0;
 			$dup_lists='';
 
-			$stmtA = "select count(*) from vicidial_lists where list_id='$list_id';";
+			$stmtA = "select count(*) from osdial_lists where list_id='$list_id';";
 				if($DBX){print STDERR "\n|$stmtA|\n";}
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -329,7 +329,7 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 			$sthA->finish();
 			if ($ci_recs > 0)
 				{
-				$stmtA = "select campaign_id from vicidial_lists where list_id='$list_id';";
+				$stmtA = "select campaign_id from osdial_lists where list_id='$list_id';";
 					if($DBX){print STDERR "\n|$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -337,7 +337,7 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 					$dup_camp = $aryA[0];
 				$sthA->finish();
 
-				$stmtA = "select list_id from vicidial_lists where campaign_id='$dup_camp';";
+				$stmtA = "select list_id from osdial_lists where campaign_id='$dup_camp';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -351,7 +351,7 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 				$sthA->finish();
 
 				chop($dup_lists);
-				$stmtA = "select list_id from vicidial_list where phone_number='$phone_number' and list_id IN($dup_lists) limit 1;";
+				$stmtA = "select list_id from osdial_list where phone_number='$phone_number' and list_id IN($dup_lists) limit 1;";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -382,7 +382,7 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 				{
 				if ($phone_code =~ /^1$/)
 					{
-					$stmtA = "select * from vicidial_postal_codes where country_code='$phone_code' and postal_code LIKE \"$postal_code%\";";
+					$stmtA = "select * from osdial_postal_codes where country_code='$phone_code' and postal_code LIKE \"$postal_code%\";";
 						if($DBX){print STDERR "\n|$stmtA|\n";}
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -408,7 +408,7 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 				### UNITED STATES ###
 				if ($phone_code =~ /^1$/)
 					{
-					$stmtA = "select * from vicidial_phone_codes where country_code='$phone_code' and areacode='$USarea';";
+					$stmtA = "select * from osdial_phone_codes where country_code='$phone_code' and areacode='$USarea';";
 						if($DBX){print STDERR "\n|$stmtA|\n";}
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -428,7 +428,7 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 				### MEXICO ###
 				if ($phone_code =~ /^52$/)
 					{
-					$stmtA = "select * from vicidial_phone_codes where country_code='$phone_code' and areacode='$USarea';";
+					$stmtA = "select * from osdial_phone_codes where country_code='$phone_code' and areacode='$USarea';";
 						if($DBX){print STDERR "\n|$stmtA|\n";}
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -448,7 +448,7 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 				### AUSTRALIA ###
 				if ($phone_code =~ /^61$/)
 					{
-					$stmtA = "select * from vicidial_phone_codes where country_code='$phone_code' and state='$state';";
+					$stmtA = "select * from osdial_phone_codes where country_code='$phone_code' and state='$state';";
 						if($DBX){print STDERR "\n|$stmtA|\n";}
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -468,7 +468,7 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 				### ALL OTHER COUNTRY CODES ###
 				if (!$PC_processed)
 					{
-					$stmtA = "select * from vicidial_phone_codes where country_code='$phone_code';";
+					$stmtA = "select * from osdial_phone_codes where country_code='$phone_code';";
 						if($DBX){print STDERR "\n|$stmtA|\n";}
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -567,7 +567,7 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 
 			if ($multi_insert_counter > 8) {
 				### insert good deal into pending_transactions table ###
-				$stmtZ = "INSERT INTO vicidial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$security_phrase','$comments',0);";
+				$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$security_phrase','$comments',0);";
 				$affected_rows = $dbhA->do($stmtZ);
 				print STMT_FILE $stmtZ."\r\n";
 				$multistmt='';
@@ -593,7 +593,7 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 }
 
 if ($multi_insert_counter > 0) {
-	$stmtZ = "INSERT INTO vicidial_list values ".substr($multistmt, 0, -1).";";
+	$stmtZ = "INSERT INTO osdial_list values ".substr($multistmt, 0, -1).";";
 	$affected_rows = $dbhA->do($stmtZ);
 	print STMT_FILE $stmtZ."\r\n";
 }

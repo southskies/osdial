@@ -3,7 +3,7 @@
 # 
 # Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
-# make sure you have added a user to the vicidial_users MySQL table with at least
+# make sure you have added a user to the osdial_users MySQL table with at least
 # user_level 1 or greater to access this page. Also you need to have the login
 # and pass of a phone listed in the asterisk.phones table. The page grabs the 
 # server info and other details from this login and pass
@@ -102,7 +102,7 @@ if ($force_logout)
 {
   if( (strlen($_SERVER['user'])>0) or (strlen($_SERVER['pass'])>0) )
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICI-PROJECTS\"");
+    Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
     Header("HTTP/1.0 401 Unauthorized");
 	}
     echo "You have now logged out. Thank you\n";
@@ -115,7 +115,7 @@ $FILE_TIME = date("Ymd-His");
 	$month_old = mktime(0, 0, 0, date("m"), date("d")-7,  date("Y"));
 	$past_month_date = date("Y-m-d H:i:s",$month_old);
 
-	$stmt="SELECT count(*) from vicidial_users where user='$user' and pass='$pass' and user_level > 0;";
+	$stmt="SELECT count(*) from osdial_users where user='$user' and pass='$pass' and user_level > 0;";
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -179,13 +179,13 @@ $agcDIR = eregi_replace('astguiclient.php','',$agcDIR);
 		{
 		$office_no=strtoupper($user);
 		$password=strtoupper($pass);
-			$stmt="SELECT full_name,user_level from vicidial_users where user='$user' and pass='$pass'";
+			$stmt="SELECT full_name,user_level from osdial_users where user='$user' and pass='$pass'";
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			$LOGfullname=$row[0];
 		if ($WeBRooTWritablE > 0)
 			{
-			fwrite ($fp, "VICIDIAL|GOOD|$date|$user|$pass|$ip|$browser|$LOGfullname|\n");
+			fwrite ($fp, "OSDIAL|GOOD|$date|$user|$pass|$ip|$browser|$LOGfullname|\n");
 			fclose($fp);
 			}
 		}
@@ -193,7 +193,7 @@ $agcDIR = eregi_replace('astguiclient.php','',$agcDIR);
 		{
 		if ($WeBRooTWritablE > 0)
 			{
-			fwrite ($fp, "VICIDIAL|FAIL|$date|$user|$pass|$ip|$browser|$LOGfullname|\n");
+			fwrite ($fp, "OSDIAL|FAIL|$date|$user|$pass|$ip|$browser|$LOGfullname|\n");
 			fclose($fp);
 			}
 		}
@@ -304,8 +304,8 @@ else
 	$login_campaign=$row[22];
 	$park_on_extension=$row[23];
 	$conf_on_extension=$row[24];
-	$VICIDiaL_park_on_extension=$row[25];
-	$VICIDiaL_park_on_filename=$row[26];
+	$OSDiaL_park_on_extension=$row[25];
+	$OSDiaL_park_on_filename=$row[26];
 	$monitor_prefix=$row[27];
 	$recording_exten=$row[28];
 	$voicemail_exten=$row[29];
@@ -316,7 +316,7 @@ else
 	$client_browser=$row[34];
 	$install_directory=$row[35];
 	$local_web_callerID_URL=$row[36];
-	$VICIDiaL_web_URL=$row[37];
+	$OSDiaL_web_URL=$row[37];
 	$AGI_call_logging_enabled=$row[38];
 	$user_switching_enabled=$row[39];
 	$conferencing_enabled=$row[40];

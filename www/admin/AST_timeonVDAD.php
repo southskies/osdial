@@ -3,7 +3,7 @@
 ### 
 ### Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 ###
-# live real-time stats for the VICIDIAL Auto-Dialer
+# live real-time stats for the OSDIAL Auto-Dialer
 #
 # CHANGES
 #
@@ -33,7 +33,7 @@ if (isset($_GET["closer_display"]))				{$closer_display=$_GET["closer_display"];
 $PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);
 $PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
 
-	$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1';";
+	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1';";
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -41,7 +41,7 @@ $PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICI-PROJECTS\"");
+    Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
@@ -80,7 +80,7 @@ echo "<!--\n";
 
 if ($closer_display>0)
 {
-	$stmt="select group_id,group_color from vicidial_inbound_groups;";
+	$stmt="select group_id,group_color from osdial_inbound_groups;";
 	$rslt=mysql_query($stmt, $link);
 	if ($DB) {echo "$stmt\n";}
 	$groups_to_print = mysql_num_rows($rslt);
@@ -117,7 +117,7 @@ echo "<PRE><FONT SIZE=3>";
 ###### SERVER INFORMATION
 ###################################################################################
 
-$stmt="select sum(local_trunk_shortage) from vicidial_campaign_server_stats where server_ip='" . mysql_real_escape_string($server_ip) . "';";
+$stmt="select sum(local_trunk_shortage) from osdial_campaign_server_stats where server_ip='" . mysql_real_escape_string($server_ip) . "';";
 $rslt=mysql_query($stmt, $link);
 $row=mysql_fetch_row($rslt);
 $balanceSHORT = $row[0];
@@ -148,7 +148,7 @@ echo "| STATION    | USER   | SESSIONID | CHANNEL             | STATUS | CALLTIM
 echo "+------------|--------+-----------+---------------------+--------+----------+---------+\n";
 }
 
-$stmt="select extension,user,conf_exten,channel,status,last_call_time,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),uniqueid,lead_id from vicidial_live_agents where status NOT IN('PAUSED') and server_ip='" . mysql_real_escape_string($server_ip) . "' order by extension;";
+$stmt="select extension,user,conf_exten,channel,status,last_call_time,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),uniqueid,lead_id from osdial_live_agents where status NOT IN('PAUSED') and server_ip='" . mysql_real_escape_string($server_ip) . "' order by extension;";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}
 $talking_to_print = mysql_num_rows($rslt);
@@ -227,7 +227,7 @@ $talking_to_print = mysql_num_rows($rslt);
 		while ($i < $ext_count)
 			{
 
-			$stmt="select campaign_id from vicidial_auto_calls where lead_id='$lead_id[$i]' and server_ip='" . mysql_real_escape_string($server_ip) . "';";
+			$stmt="select campaign_id from osdial_auto_calls where lead_id='$lead_id[$i]' and server_ip='" . mysql_real_escape_string($server_ip) . "';";
 			$rslt=mysql_query($stmt, $link);
 			if ($DB) {echo "$stmt\n";}
 			$camp_to_print = mysql_num_rows($rslt);
@@ -242,7 +242,7 @@ $talking_to_print = mysql_num_rows($rslt);
 			if (eregi("READY|PAUSED|CLOSER",$status[$i]))
 				{$campaign = '            ';   	$camp_color = '';}
 
-			$stmt="select user from vicidial_xfer_log where lead_id='$lead_id[$i]' and closer='$closer[$i]' order by call_date desc limit 1;";
+			$stmt="select user from osdial_xfer_log where lead_id='$lead_id[$i]' and closer='$closer[$i]' order by call_date desc limit 1;";
 			$rslt=mysql_query($stmt, $link);
 			if ($DB) {echo "$stmt\n";}
 			$xfer_to_print = mysql_num_rows($rslt);
@@ -300,7 +300,7 @@ echo "+---------------------+--------+--------------+--------------------+------
 echo "| CHANNEL             | STATUS | CAMPAIGN     | PHONE NUMBER       | CALLTIME | MINUTES |\n";
 echo "+---------------------+--------+--------------+--------------------+----------+---------+\n";
 
-$stmt="select channel,status,campaign_id,phone_code,phone_number,call_time,UNIX_TIMESTAMP(call_time) from vicidial_auto_calls where status NOT IN('XFER') and server_ip='" . mysql_real_escape_string($server_ip) . "' order by auto_call_id desc;";
+$stmt="select channel,status,campaign_id,phone_code,phone_number,call_time,UNIX_TIMESTAMP(call_time) from osdial_auto_calls where status NOT IN('XFER') and server_ip='" . mysql_real_escape_string($server_ip) . "' order by auto_call_id desc;";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}
 $parked_to_print = mysql_num_rows($rslt);

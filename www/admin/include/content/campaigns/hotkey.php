@@ -12,7 +12,7 @@ if ($ADD==23)
 	$status_name = $HKstatus_data[1];
 
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT count(*) from vicidial_campaign_hotkeys where campaign_id='$campaign_id' and hotkey='$hotkey' and hotkey='$hotkey';";
+	$stmt="SELECT count(*) from osdial_campaign_hotkeys where campaign_id='$campaign_id' and hotkey='$hotkey' and hotkey='$hotkey';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -29,7 +29,7 @@ if ($ADD==23)
 			{
 			echo "<br><B><font color=navy> CAMPAIGN HOT KEY ADDED: $campaign_id - $status - $hotkey</font></B>\n";
 
-			$stmt="INSERT INTO vicidial_campaign_hotkeys values('$status','$hotkey','$status_name','$selectable','$campaign_id');";
+			$stmt="INSERT INTO osdial_campaign_hotkeys values('$status','$hotkey','$status_name','$selectable','$campaign_id');";
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -66,14 +66,14 @@ if ($ADD==43)
 		{
 		echo "<br><B><font color=navy>CUSTOM CAMPAIGN HOT KEY DELETED: $campaign_id - $status - $hotkey</font></B>\n";
 
-		$stmt="DELETE FROM vicidial_campaign_hotkeys where campaign_id='$campaign_id' and status='$status' and hotkey='$hotkey';";
+		$stmt="DELETE FROM osdial_campaign_hotkeys where campaign_id='$campaign_id' and status='$status' and hotkey='$hotkey';";
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
 		if ($WeBRooTWritablE > 0)
 			{
 			$fp = fopen ("./admin_changes_log.txt", "a");
-			fwrite ($fp, "$date|DELETE CAMPAIGN STATUS|$PHP_AUTH_USER|$ip|DELETE FROM vicidial_campaign_hotkeys where campaign_id='$campaign_id' and status='$status' and hotkey='$hotkey'|\n");
+			fwrite ($fp, "$date|DELETE CAMPAIGN STATUS|$PHP_AUTH_USER|$ip|DELETE FROM osdial_campaign_hotkeys where campaign_id='$campaign_id' and status='$status' and hotkey='$hotkey'|\n");
 			fclose($fp);
 			}
 		}
@@ -105,7 +105,7 @@ echo "<td><font color=white size=1>HOTKEYS</font></td>\n";
 echo "<td><font color=white size=1>LINKS</font></td>\n";
 echo "</tr>\n";
 
-	$stmt="SELECT campaign_id,campaign_name from vicidial_campaigns order by campaign_id";
+	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
 	$rslt=mysql_query($stmt, $link);
 	$campaigns_to_print = mysql_num_rows($rslt);
 
@@ -129,7 +129,7 @@ echo "</tr>\n";
 		echo "<td><font size=1> $campaigns_name_list[$o] </td>";
 		echo "<td><font size=1> ";
 
-		$stmt="SELECT status from vicidial_campaign_hotkeys where campaign_id='$campaigns_id_list[$o]' order by status";
+		$stmt="SELECT status from osdial_campaign_hotkeys where campaign_id='$campaigns_id_list[$o]' order by status";
 		$rslt=mysql_query($stmt, $link);
 		$campstatus_to_print = mysql_num_rows($rslt);
 		$p=0;

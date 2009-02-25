@@ -117,21 +117,21 @@ else
 
 	##### change Pacific Mountain	
 
-	$stmtA = "UPDATE vicidial_list set list_id='222' where list_id='111' and gmt_offset_now IN($TZmove);";
+	$stmtA = "UPDATE osdial_list set list_id='222' where list_id='111' and gmt_offset_now IN($TZmove);";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) {
 				$affected_rows = $dbhA->do($stmtA);
 				if($DB){print STDERR "\n|$affected_rows records changed|\n";}
 				 }
 
-	$stmtA = "UPDATE vicidial_list set list_id='12021' where list_id='11315' and gmt_offset_now IN($TZmove);";
+	$stmtA = "UPDATE osdial_list set list_id='12021' where list_id='11315' and gmt_offset_now IN($TZmove);";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) {
 				$affected_rows = $dbhA->do($stmtA);
 				if($DB){print STDERR "\n|$affected_rows records changed|\n";}
 				 }
 
-        $stmtA = "UPDATE vicidial_list set list_id='4444' where list_id='3333' and gmt_offset_now IN($TZmove);";
+        $stmtA = "UPDATE osdial_list set list_id='4444' where list_id='3333' and gmt_offset_now IN($TZmove);";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) {
                                 $affected_rows = $dbhA->do($stmtA);
@@ -140,21 +140,21 @@ else
 
 	##### change back Eastern Central
 
-        $stmtA = "UPDATE vicidial_list set list_id='111' where list_id='222' and gmt_offset_now IN($TZback);";
+        $stmtA = "UPDATE osdial_list set list_id='111' where list_id='222' and gmt_offset_now IN($TZback);";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) {
                                 $affected_rows = $dbhA->do($stmtA);
                                 if($DB){print STDERR "\n|$affected_rows records changed|\n";}
                                  }
 
-        $stmtA = "UPDATE vicidial_list set list_id='11315' where list_id='12021' and gmt_offset_now IN($TZback);";
+        $stmtA = "UPDATE osdial_list set list_id='11315' where list_id='12021' and gmt_offset_now IN($TZback);";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) {
                                 $affected_rows = $dbhA->do($stmtA);
                                 if($DB){print STDERR "\n|$affected_rows records changed|\n";}
                                  }
 
-        $stmtA = "UPDATE vicidial_list set list_id='3333' where list_id='4444' and gmt_offset_now IN($TZback);";
+        $stmtA = "UPDATE osdial_list set list_id='3333' where list_id='4444' and gmt_offset_now IN($TZback);";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) {
                                 $affected_rows = $dbhA->do($stmtA);
@@ -188,14 +188,14 @@ if ($Tmin < 10) {$Tmin = "0$Tmin";}
 if ($Tsec < 10) {$Tsec = "0$Tsec";}
 	$TDSQLdate = "$Tyear-$Tmon-$Tmday $Thour:$Tmin:$Tsec";
 
-	$stmtA = "UPDATE vicidial_list set list_id='999999' where list_id IN('11315','12021','111','222','3333','4444') and entry_date < \"$XDSQLdate\";";
+	$stmtA = "UPDATE osdial_list set list_id='999999' where list_id IN('11315','12021','111','222','3333','4444') and entry_date < \"$XDSQLdate\";";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) {
 				$affected_rows = $dbhA->do($stmtA);
 				if($DB){print STDERR "\n|$affected_rows records changed|\n";}
 				 }
 
-	$stmtA = "DELETE from vicidial_list WHERE list_id='999999' and entry_date < \"$TDSQLdate\" and status NOT IN('SALE','UPSELL','UPSALE','A1','A2','A3','A4');";
+	$stmtA = "DELETE from osdial_list WHERE list_id='999999' and entry_date < \"$TDSQLdate\" and status NOT IN('SALE','UPSELL','UPSALE','A1','A2','A3','A4');";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) {
 				$affected_rows = $dbhA->do($stmtA);
