@@ -1,0 +1,62 @@
+### (dialer) Send Recordings to archive server
+#*/3 * * * * /opt/vicidial/astguiclient/AST_audio_archive.pl
+
+### (archive) Compress wav files to mp3
+#*/2 * * * * /opt/vicidial/astguiclient/AST_audio_compress.pl --MP3
+
+### (archive) Sort MP3s into campaign_id/date directory structure
+#*/5 * * * * /opt/vicidial/bin/AST_sort_recordings.pl
+
+### (archive) Send select MP3s to a third-party quality-control or offste archive server.
+#*/15 * * * * /opt/vicidial/bin/AST_qc_transfer.pl
+
+### (dialer) Write a file listing current voicemail
+* * * * * /usr/sbin/asterisk -rx "show voicemail users" > /opt/vicidial/html/vicidial/VMnow.txt
+
+### (sql) Clean out auto-calls regularly
+* * * * * /opt/vicidial/astguiclient/AST_CLEAR_auto_calls.pl
+
+### (ALL) keepalive script for astguiclient processes
+* * * * * /opt/vicidial/astguiclient/ADMIN_keepalive_ALL.pl
+
+### (dialer) kill Hangup script for Asterisk updaters
+* * * * * /opt/vicidial/astguiclient/AST_manager_kill_hung_congested.pl
+
+### (dialer) updater for voicemail
+* * * * * /opt/vicidial/astguiclient/AST_vm_update.pl
+
+### (dialer) updater for conference validator
+* * * * * /opt/vicidial/astguiclient/AST_conf_update.pl
+
+### (sql || dialer) flush queue DB table every hour for entries older than 1 hour
+11 * * * * /opt/vicidial/astguiclient/AST_flush_DBqueue.pl -q
+
+### (sql) fix the vicidial_agent_log once every hour
+33 * * * * /opt/vicidial/astguiclient/AST_cleanup_agent_log.pl
+
+### (sql || dialer) updater for VICIDIAL hopper
+* * * * * /opt/vicidial/astguiclient/AST_VDhopper.pl -q
+
+### (sql) adjust the GMT offset for the leads in the vicidial_list table
+1 1,7 * * * /opt/vicidial/astguiclient/ADMIN_adjust_GMTnow_on_leads.pl --debug --postal-code-gmt
+
+### (dialer) reset several temporary-info tables in the database
+2 1 * * * /opt/vicidial/astguiclient/AST_reset_mysql_vars.pl
+
+### (sql) optimize the database tables within the asterisk database
+3 1 * * * /opt/vicidial/astguiclient/AST_DB_optimize.pl
+
+### (sql) VICIDIAL agent time log weekly and daily summary report generation
+#2 0 * * 0 /opt/vicidial/astguiclient/AST_agent_week.pl
+#22 0 * * * /opt/vicidial/astguiclient/AST_agent_day.pl
+
+### (sql) VICIDIAL campaign export scripts (OPTIONAL)
+#32 0 * * * /opt/vicidial/astguiclient/AST_VDsales_export.pl
+#42 0 * * * /opt/vicidial/astguiclient/AST_sourceID_summary_export.pl
+
+### (dialer) remove old recordings more than 7 days old
+24 0 * * * /usr/bin/find /var/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs rm -f
+
+### (ALL) remove old vicidial logs and asterisk logs more than 2 days old
+28 0 * * * /usr/bin/find /var/log/astguiclient -maxdepth 1 -type f -mtime +2 -print | xargs rm -f
+29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f

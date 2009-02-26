@@ -1,7 +1,9 @@
 #
 # Makefile
 #
+# Copyright (C) 2007  Lott Caskey <lottcaskey@gmail.com>  LICENSE: GPLv2
 # Copyright (C) 2007  VICIDIAL-astGUIclient <vicidial@gmail.com>  LICENSE: GPLv2
+#
 #
 # CHANGES
 # 71121-1430 - Initial release.
@@ -49,32 +51,32 @@ menuconfig:
 	@sh $(OSDconfig)
 
 clean:
-	rm -f .agc.config
+	rm -f .osdial.config
 
-.agc.config:
+.osdial.config:
 	@echo "########################################################"
 	@echo "###"
-	@echo "### \".agc.config\" file not found."
+	@echo "### \".osdial.config\" file not found."
 	@echo "### Running configuration and just using defaults."
 	@echo "###"
 	@echo "########################################################"
 	@sh $(OSDconfig) --no-menu
 
-defaultconfig: .agc_config
+defaultconfig: .osdial.config
 	@sh $(OSDconfig) --no-menu
 
 # The following, install, install-base and install-web shell-out to
 # run OSDconfig which set the path variables and runs make with .install*
-install: .agc.config
+install: .osdial.config
 	@sh $(OSDconfig) --env-make .$@
 
-install-base: .agc.config
+install-base: .osdial.config
 	@sh $(OSDconfig) --env-make .$@
 
-install-web: .agc.config
+install-web: .osdial.config
 	@sh $(OSDconfig) --env-make .$@
 
-install-docs: .agc.config
+install-docs: .osdial.config
 	@sh $(OSDconfig) --env-make .$@
 
 
