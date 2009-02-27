@@ -209,8 +209,8 @@ if ($submit_report && $list_ids) {
 		flush();
 	}
 	print "</table>";
-	passthru("$WeBServeRRooT/osdial/spreadsheet_sales_viewer.pl $list_ids $sales_number $timestamp $forc $now $dcampaign");
-#	print "\n\n<BR>$WeBServeRRooT/admin/spreadsheet_sales_viewer.pl $list_ids $sales_number $timestamp $forc $now $dcampaign<BR>\n";
+	passthru("$WeBServeRRooT/admin/spreadsheet_sales_viewer.pl $list_ids $sales_number $timestamp $forc $now $dcampaign");
+#	print "\n\n<BR>$WeBServeRRooT/osdial/spreadsheet_sales_viewer.pl $list_ids $sales_number $timestamp $forc $now $dcampaign<BR>\n";
 	flush();
 	print "<table align=center border=0 cellpadding=3 cellspacing=5 width=700><tr bgcolor='#CCCCCC'>";
 	if ($forc=="F") {

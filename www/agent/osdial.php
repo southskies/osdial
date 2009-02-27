@@ -875,7 +875,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 				$manual_dial_list_id =		$row[30];
 				$default_xfer_group =		$row[31];
 				$xfer_groups =				$row[32];
-				//$web_form_address2 = 		$row[69]; // debug needs table update
+				$web_form_address2 = 		$row[69]; // debug needs table update
 
 			if ( (!ereg('DISABLED',$VU_osdial_recording_override)) and ($VU_osdial_recording > 0) )
 				{
@@ -1796,7 +1796,7 @@ foreach ($forms as $form) {
 	</span>
 		
 	<!-- Call Back Link -->
-	<span style="position:absolute;left:500px;top:<?=$CBheight-3 ?>px;z-index:13;" id="CallbacksButtons"><font class="body_text">
+	<span style="position:absolute;left:490px;top:<?=$CBheight-3 ?>px;z-index:13;" id="CallbacksButtons"><font class="body_text">
 		<span id="CBstatusSpan">X ACTIVE CALLBACKS</span> <BR>	</font>
 	</span>
 		

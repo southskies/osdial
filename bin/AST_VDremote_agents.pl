@@ -25,7 +25,7 @@
 # 50215-0954 - First version of script
 # 50810-1615 - Added database server variable definitions lookup
 # 60807-1003 - Changed to DBI
-#            - Changed to use /etc/astguiclient.conf for configs
+#            - Changed to use /etc/osdial.conf for configs
 # 60814-1726 - Added option for no logging to file
 # 60814-1726 - Added option for no logging to file
 # 61012-1025 - Added performance testing options
@@ -97,8 +97,8 @@ $conf_silent_prefix = '7';
 $local_AMP = '@';
 $agents = '@agents';
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

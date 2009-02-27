@@ -94,7 +94,7 @@
 # 51129-1012 - Added ability to accept calls from other OSDIAL servers
 # 51129-1729 - Changed manual dial to use the '/n' flag for calls
 # 51221-1154 - Added SCRIPT id lookup and sending to osdial.php for display
-# 60105-1059 - Added Updating of astguiclient favorites in the DB
+# 60105-1059 - Added Updating of osdial favorites in the DB
 # 60208-1617 - Added dtmf buttons output per call
 # 60213-1521 - Added closer_campaigns update to osdial_users
 # 60215-1036 - Added Callback date-time entry into osdial_callbacks table
@@ -2466,7 +2466,7 @@ if ( ($ACTION == 'VDADpause') || ($ACTION == 'VDADready') )
 
 
 ################################################################################
-### UpdatEFavoritEs - update the astguiclient favorites list for this extension
+### UpdatEFavoritEs - update the osdial favorites list for this extension
 ################################################################################
 if ($ACTION == 'UpdatEFavoritEs')
 {

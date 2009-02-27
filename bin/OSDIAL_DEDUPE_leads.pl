@@ -7,7 +7,7 @@
 #
 # Copyright (C) 2007  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
-# /usr/share/astguiclient/OSDIAL_DEDUPE_leads.pl --debugX --campaign-duplicate=CTF --ignore-list=999
+# /opt/osdial/bin/OSDIAL_DEDUPE_leads.pl --debugX --campaign-duplicate=CTF --ignore-list=999
 #
 # CHANGES
 # 70521-1643 - first build
@@ -29,8 +29,8 @@ $dsec = ( ( ($hour * 3600) + ($min * 60) ) + $sec );
 
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

@@ -29,7 +29,7 @@
 # 50810-1532 - Added database server variable definitions lookup
 # 50823-1456 - Added commandline arguments for debug at runtime
 # 60717-1135 - changed to DBI by Marin Blu
-# 60717-1536 - changed to use /etc/astguiclient.conf for configs
+# 60717-1536 - changed to use /etc/osdial.conf for configs
 #
 
 # constants
@@ -71,8 +71,8 @@ else
 }
 ### end parsing run-time options ###
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

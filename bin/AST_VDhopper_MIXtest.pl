@@ -37,7 +37,7 @@
 # 60511-1150 - Added inserts into osdial_campaign_stats table
 # 60609-1451 - Added ability to filter by DNC list osdial_dnc
 # 60614-1159 - Added campaign lead recycling ability
-# 60715-2251 - Changed to use /etc/astguiclient.conf for configs
+# 60715-2251 - Changed to use /etc/osdial.conf for configs
 # 60801-1634 - Fixed Callback activation bug 000008
 # 60814-1720 - Added option for no logging to file
 # 60822-1527 - Added campaign_stats and logging options for adaptive dialing
@@ -178,8 +178,8 @@ else
 print "no command line options set\n";
 }
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

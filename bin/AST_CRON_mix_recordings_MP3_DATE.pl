@@ -43,9 +43,9 @@
 # 51122-1455 - Added soxmix and sox binary path check
 # 60616-1027 - Modified to convert to MP3 format
 #            - Creates Directory on target FTP server based on <Todays Date>.
-# 60807-1308 - Modified to use /etc/astguiclient.conf for settings 
+# 60807-1308 - Modified to use /etc/osdial.conf for settings 
 # 71004-1124 - Changed to not move ORIG recordings if FTP server does not Ping
-# 71005-0049 - Altered script to use astguiclient.conf for settings
+# 71005-0049 - Altered script to use osdial.conf for settings
 #
 
 #verbose
@@ -61,8 +61,8 @@ $VARFTP_dir  = '/var/www/html/RECORDINGS';
 $VARFTP_port = '21';
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

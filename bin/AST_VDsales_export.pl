@@ -12,7 +12,7 @@
 # 70503-2137 - Added upsell
 # 70611-1154 - Added CLI options
 # 70709-1411 - Added FTP transfer option
-# 71005-0054 - Altered script to use astguiclient.conf for settings
+# 71005-0054 - Altered script to use osdial.conf for settings
 # 
 
 $txt = '.txt';
@@ -142,8 +142,8 @@ $secX = time();
 	$shipdate = "$year-$mon-$mday";
 	$datestamp = "$year/$mon/$mday $hour:$min";
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

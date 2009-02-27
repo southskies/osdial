@@ -16,7 +16,7 @@
 #            - Added option to force a gmt value(field after COMMENTS field)
 # 60616-0958 - Added listID override feature to force all leads into same list
 # 60807-1003 - Changed to DBI
-#            - changed to use /etc/astguiclient.conf for configs
+#            - changed to use /etc/osdial.conf for configs
 # 60906-1055 - added filter of non-digits in alt_phone field
 # 60913-1236 - fixed MySQL bugs and non-debug bug
 #            - added duplicate check flag option within same list
@@ -45,8 +45,8 @@ $dsec = ( ( ($hour * 3600) + ($min * 60) ) + $sec );
 
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

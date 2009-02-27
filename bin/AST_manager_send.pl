@@ -22,7 +22,7 @@
 # 50823-1514 - Added commandline debug options with debug printouts
 # 50902-1051 - Added extra debug output launch sub(commented out)
 # 60718-0909 - changed to DBI by Marin Blu
-# 60718-1005 - changed to use /etc/astguiclient.conf for configs
+# 60718-1005 - changed to use /etc/osdial.conf for configs
 # 60718-1211 - removed need for ADMIN_keepalive_send_listen.at launching
 # 60814-1712 - added option for no logging to file
 # 60817-1211 - added more ARGS to go to child process to remove DBI from child
@@ -38,7 +38,7 @@ use Time::HiRes ('gettimeofday','usleep','sleep');  # necessary to have perl sle
 # constants and globals
 my $servConf;
 my %conf;
-$conf{PATHconf} = '/etc/astguiclient.conf'; # default path to astguiclient configuration file:
+$conf{PATHconf} = '/etc/osdial.conf'; # default path to osdial configuration file:
 my $COUNTER_OUTPUT=1;	# set to 1 to display the counter as the script runs
 my ($CLOhelp, $sendonlyone, $TEST, $DB, $DBX, $SYSLOG);
 
@@ -72,7 +72,7 @@ if (scalar @ARGV) {
 }
 ### end parsing run-time options ###
 
-# Begin Parsing astguiclient config file.
+# Begin Parsing osdial.config file.
 open(CONF, $conf{PATHconf}) || die "can't open " . $conf{PATHconf} . ": " . $! . "\n";
 while (my $line = <CONF>) {
 	$line =~ s/ |>|\n|\r|\t|\#.*|;.*//gi;

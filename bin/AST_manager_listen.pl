@@ -35,7 +35,7 @@
 # 51222-1553 - fixed parentheses bug in manager output
 # 60403-1230 - Added SVN/1.4 support for different output
 # 60718-0909 - changed to DBI by Marin Blu
-# 60718-0955 - changed to use /etc/astguiclient.conf for configs
+# 60718-0955 - changed to use /etc/osdial.conf for configs
 # 60720-1142 - added keepalive to MySQL connection every 50 seconds
 # 60814-1733 - added option for no logging to file
 # 60906-1714 - added updating for special osdial conference calls
@@ -85,8 +85,8 @@ else
 }
 ### end parsing run-time options ###
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

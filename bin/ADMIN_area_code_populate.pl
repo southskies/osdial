@@ -9,13 +9,13 @@
 # CHANGES
 # 60615-1514 - Changed to ignore the header row
 # 60807-1003 - Changed to DBI
-#            - changed to use /etc/astguiclient.conf for configs
+#            - changed to use /etc/osdial.conf for configs
 # 61122-1902 - Added GMT_USA_zip.txt data import for USA postal GMT data
 #
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

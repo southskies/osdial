@@ -14,7 +14,7 @@
 #
 # CHANGES
 # 60711-0945 - changed to DBI by Marin Blu
-# 60715-2301 - changed to use /etc/astguiclient.conf for configs
+# 60715-2301 - changed to use /etc/osdial.conf for configs
 
 # constants
 $COUNTER_OUTPUT=1;	# set to 1 to display the counter as the script runs
@@ -61,8 +61,8 @@ else
 }
 ### end parsing run-time options ###
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

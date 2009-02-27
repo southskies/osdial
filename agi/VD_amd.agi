@@ -25,7 +25,7 @@
 # 60207-1205 added database records entries/modifications
 # 60207-1507 added ability to send AMs to campaign-defined message to leave
 # 60731-1407 - changed to use DBI-DBD::mysql
-#            - changed to use /etc/astguiclient.conf for configs
+#            - changed to use /etc/osdial.conf for configs
 # 60815-1310 - added output options check from database
 # 71118-0252 - compatibility with Asterisk 1.4, added AA and AM statuses
 # 
@@ -47,8 +47,8 @@ if ($sec < 10) {$sec = "0$sec";}
 $now_date_epoch = time();
 $now_date = "$year-$mon-$mday $hour:$min:$sec";
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

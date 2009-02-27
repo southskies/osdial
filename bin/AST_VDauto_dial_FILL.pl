@@ -78,8 +78,8 @@ $RECcount=''; ### leave blank for no REC count
 $RECprefix='7'; ### leave blank for no REC prefix
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

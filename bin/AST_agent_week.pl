@@ -8,7 +8,7 @@
 #
 # CHANGES
 # 60517-1100 - First version
-# 60715-2325 - changed to use /etc/astguiclient.conf for configs
+# 60715-2325 - changed to use /etc/osdial.conf for configs
 #
 
 $txt = '.txt';
@@ -153,8 +153,8 @@ $TLoutfile .= "THIS WEEK:  week $START_week    $STARTtarget_date - $ENDtarget_da
 $TLoutfile .= "LAST WEEK:  week $PAST_START_week    $PAST_STARTtarget_date - $PAST_ENDtarget_date\n\n";
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

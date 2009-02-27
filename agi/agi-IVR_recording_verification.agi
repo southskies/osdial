@@ -8,9 +8,9 @@
 # listed prompts asking for a single digit press (i.e. 1 for a yes or a 3 for a 
 # no, hash/pound/star/zero/0 are not accepted only 1-9 is valid for these steps).
 # All data for these calls will be logged to the osdial_ivr table as well as 
-# optionally to a log file  in the standard astguiclient log file directory 
+# optionally to a log file  in the standard osdial log file directory 
 # and/or STDERR output on the asterisk process. This script uses the 
-# /etc/astguiclient.conf file for database connection settings, logging data and
+# /etc/osdial.conf file for database connection settings, logging data and
 # for logfile path information only.
 #
 # With a modified VDAD agi transfer script, this script could also be used to do 
@@ -73,8 +73,8 @@ if ($sec < 10) {$sec = "0$sec";}
 $US='_';
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

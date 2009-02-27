@@ -19,12 +19,12 @@ $|++;
 my $prog = "AST_sort_recordings.pl";
 
 # Get AGC configuration directives.
-my $config = getAGCconfig('/etc/astguiclient.conf');
+my $config = getAGCconfig('/etc/osdial.conf');
 
 unless ($config->{PATHarchive_home} and $config->{PATHarchive_mixed} and $config->{PATHarchive_sorted}) {
 	print "ERROR!\n";
 	print "PATHarchive_home, PATHarchive_mixed and PATHarchive_sorted\n";
-	print "  must be defined in /etc/astguiclient.conf!!!\n\n";
+	print "  must be defined in /etc/osdial.conf!!!\n\n";
 	exit 1;
 }
 
@@ -133,7 +133,7 @@ exit 0;
 # getAGCconfig usage:
 #    $config = getAGCconfig($agcConfigPath);
 # Requires:
-#    $agcConfigPath : Usually '/etc/astguiclient.conf'
+#    $agcConfigPath : Usually '/etc/osdial.conf'
 # Returns:
 #    hashref with configuration directives in listed file.
 sub getAGCconfig {
@@ -141,7 +141,7 @@ sub getAGCconfig {
 	my %config;
 	$config{PATHconf} = $AGCpath;
 
-	# Begin Parsing astguiclient config file.
+	# Begin Parsing osdial.config file.
 	open(CONF, $config{PATHconf}) || die "can't open " . $config{PATHconf} . ": " . $! . "\n";
 	while (my $line = <CONF>) {
 		$line =~ s/ |>|"|\n|\r|\t|\#.*|;.*//gi;

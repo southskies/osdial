@@ -8,7 +8,7 @@
 # CHANGES
 # 
 # 60811-1232 - Changed to DBI
-# 60811-1329 - changed to use /etc/astguiclient.conf for configs
+# 60811-1329 - changed to use /etc/osdial.conf for configs
 #
 
 ### begin parsing run-time options ###
@@ -51,8 +51,8 @@ use Time::Local;
 use DBI;	  
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

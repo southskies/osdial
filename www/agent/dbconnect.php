@@ -2,9 +2,9 @@
 # 
 # Copyright (C) 2007  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
-if ( file_exists("/etc/astguiclient.conf") )
+if ( file_exists("/etc/osdial.conf") )
 {
-$DBCagc = file("/etc/astguiclient.conf");
+$DBCagc = file("/etc/osdial.conf");
 foreach ($DBCagc as $DBCline) 
 	{
 	$DBCline = preg_replace("/ |>|\n|\r|\t|\#.*|;.*/","",$DBCline);
@@ -29,10 +29,10 @@ else
 {
 #defaults for DB connection
 $VARDB_server = 'localhost';
-$VARDB_user = 'cron';
-$VARDB_pass = '1234';
-$VARDB_database = '1234';
-$WeBServeRRooT = '/usr/local/apache2/htdocs';
+$VARDB_user = 'osdial';
+$VARDB_pass = 'osdial1234';
+$VARDB_database = 'osdial';
+$WeBServeRRooT = '/opt/osdial/html';
 }
 
 $link=mysql_connect("$VARDB_server", "$VARDB_user", "$VARDB_pass");
@@ -41,7 +41,7 @@ mysql_select_db("$VARDB_database",$link);
 $local_DEF = 'Local/';
 $conf_silent_prefix = '7';
 $local_AMP = '@';
-$ext_context = 'demo';
+$ext_context = 'osdial';
 $recording_exten = '8309';
 $WeBRooTWritablE = '1';
 $non_latin = '0';	# set to 1 for UTF rules, overridden by system_settings

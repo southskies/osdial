@@ -7,7 +7,7 @@
 
 # CHANGES
 # 71120-0000 - Iniitial release
-# 71121-1220 - Added --no-menu to merge in astguiclient.conf and save config.
+# 71121-1220 - Added --no-menu to merge in osdial.conf and save config.
 # 71121-1334 - Added --env-make [make_option]  to set environment before make.
 # 71129-1947 - Fixed .agc-config load problem, fixed duplicate save issue.
 # 71208-0105 - Additional check for being in truck direcotry.
@@ -118,7 +118,7 @@ FileLocationConfig ()
 			{
 				$DIALOG --clear --backtitle "$BACKTITLE" \
 			   	--title "Home Directory" \
-			   	--inputbox "Enter the astguiclient home directory" 9 74 "$PATHhome" \
+			   	--inputbox "Enter the OSDial home directory" 9 74 "$PATHhome" \
 			   	2> $TEMP
 				if [ "$?" = "0" ]; then
 				{
@@ -708,15 +708,15 @@ KeepaliveConfig ()
 
 SaveConfig ()
 	{
-	echo "# astguiclient.conf - configuration elements for the astguiclient package" > $PATHconf
-	echo "# this is the astguiclient configuration file" >> $PATHconf
+	echo "# osdial.conf - configuration elements for the OSDial package" > $PATHconf
+	echo "# this is the osdial.configuration file" >> $PATHconf
 	echo "# all comments will be lost if you run install.pl again" >> $PATHconf
 	echo "OSDversion => $OSDversion" >> $PATHconf
 	echo "" >> $PATHconf
 	echo "# Location of Documentation and Samples" >> $PATHconf
 	echo "PATHdocs => $PATHdocs" >> $PATHconf
 	echo "" >> $PATHconf
-	echo "# Paths used by astGUIclient" >> $PATHconf
+	echo "# Paths used by OSDial" >> $PATHconf
 	echo "PATHhome => $PATHhome" >> $PATHconf
 	echo "PATHlogs => $PATHlogs" >> $PATHconf
 	echo "PATHagi => $PATHagi" >> $PATHconf
@@ -740,7 +740,7 @@ SaveConfig ()
 	echo "VARDB_pass => $VARDB_pass" >> $PATHconf
 	echo "VARDB_port => $VARDB_port" >> $PATHconf
 	echo "" >> $PATHconf
-	echo "# Alpha-Numeric list of the astGUIclient processes to be kept running" >> $PATHconf
+	echo "# Alpha-Numeric list of the OSDial processes to be kept running" >> $PATHconf
 	echo "# (value should be listing of characters with no spaces: 123456)" >> $PATHconf
 	echo "#  X - NO KEEPALIVE PROCESSES (use only if you want none to be keepalive)" >> $PATHconf
 	echo "#  1 - AST_update" >> $PATHconf
@@ -856,7 +856,7 @@ fi
 if [ -f "version" -a -f "Makefile" ]; then
 {
 	PATHconf=".osdial.config"
-	# Force default path to astguicient samples and documentation:
+	# Force default path to OSDial samples and documentation:
 	PATHdocs="/usr/share/doc/osdial-$OSDversion"
 }
 fi

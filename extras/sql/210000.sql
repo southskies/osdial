@@ -31,6 +31,9 @@ CREATE TABLE osdial_list_fields (
 	unique (lead_id, field_id)
 ) ENGINE=INNODB;
 
+ALTER TABLE osdial_campaigns ADD web_form_address2 VARCHAR(255);
+ALTER TABLE osdial_inbound_groups ADD web_form_address2 VARCHAR(255);
+
 INSERT INTO osdial_campaign_forms values('1','ALL','CREDITCARD','Details as They Appear on CC','(if different)','1','0');
 INSERT INTO osdial_campaign_fields values('1','1','NAME','Name on Card','','22','1','0');
 INSERT INTO osdial_campaign_fields values('2','1','ADDRESS','Billing Address','','22','2','0');

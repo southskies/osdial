@@ -24,7 +24,7 @@
 # CHANGES
 # 50823-1525 - Added commandline debug options with debug printouts
 # 60717-1247 - changed to DBI by Marin Blu
-# 60717-1536 - changed to use /etc/astguiclient.conf for configs
+# 60717-1536 - changed to use /etc/osdial.conf for configs
 # 60814-1706 - added option for no logging to file
 #
 
@@ -72,8 +72,8 @@ else
 }
 ### end parsing run-time options ###
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

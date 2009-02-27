@@ -49,7 +49,7 @@
 # 60117-1202 - Changed IAX2 client phone channel to reflect change to '-' iteration
 # 60411-1032 - Fixed bug in test section that caused crash with ** in extension
 # 60807-1605 - Changed to DBI
-# 60808-1005 - changed to use /etc/astguiclient.conf for configs
+# 60808-1005 - changed to use /etc/osdial.conf for configs
 # 60808-1500 - Fixed another bug in that caused crash with ** in extension
 # 60814-1523 - SYSLOG and SYSPERF looked up from database, dynamic settings
 # 60926-1601 - validate proper binutil locations for performance gathering
@@ -164,8 +164,8 @@ else
 
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

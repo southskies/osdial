@@ -21,7 +21,7 @@
 # 50823-1527 - Altered commandline debug options with debug printouts
 # 50902-1032 - Changed default logging to fulllog
 # 60718-0909 - changed to DBI by Marin Blu
-# 60718-1024 - changed to use /etc/astguiclient.conf for configs
+# 60718-1024 - changed to use /etc/osdial.conf for configs
 # 60814-1720 - added option for no logging to file
 # 60817-1244 - removed all DB calls and config file open to reduce footprint
 # 61004-1728 - added ability to parse volume control and lookup meetme IDs

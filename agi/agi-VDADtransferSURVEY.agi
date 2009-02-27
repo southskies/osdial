@@ -20,7 +20,7 @@
 # 60119-1408 - Fixed calleridname issue with 1.2 tree for custom CID
 # 60503-1100 - Added safe harbor and drop second options from campaign
 # 60731-1441 - Changed to use DBI-DBD::mysql
-#            - Changed to use /etc/astguiclient.conf for configs
+#            - Changed to use /etc/osdial.conf for configs
 # 60816-1034 - Added output options check from database
 #            - Changed look for agent every 0.5 second for first 4 sec on hold
 # 60905-1047 - Changed look for agent every 0.25 second for first 4 sec on hold
@@ -46,8 +46,8 @@ if ($sec < 10) {$sec = "0$sec";}
 $now_date_epoch = time();
 $now_date = "$year-$mon-$mday $hour:$min:$sec";
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

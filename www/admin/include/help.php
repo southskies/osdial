@@ -167,12 +167,12 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <A NAME="osdial_users-ast_admin_access">
 <BR>
-<B>AGC Admin Access -</B> This option if set to 1 allows the user to login to the astGUIclient admin pages.
+<B>AGC Admin Access -</B> This option if set to 1 allows the user to login to the OSDial admin pages.
 
 <BR>
 <A NAME="osdial_users-ast_delete_phones">
 <BR>
-<B>AGC Delete Phones -</B> This option if set to 1 allows the user to delete phone entries in the astGUIclient admin pages.
+<B>AGC Delete Phones -</B> This option if set to 1 allows the user to delete phone entries in the OSDial admin pages.
 
 <BR>
 <A NAME="osdial_users-delete_scripts">
@@ -991,7 +991,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 	<LI>Comments
 	</OL>
 
-<BR>NOTES: The Excel Lead loader functionality is enabled by a series of perl scripts and needs to have a properly configured /etc/astguiclient.conf file in place on the web server. Also, a couple perl modules must be loaded for it to work as well - OLE-Storage_Lite and Spreadsheet-ParseExcel. You can check for runtime errors in these by looking at your apache error_log file. Also, for duplication checks against gampaign lists, the list that has new leads going into it does need to be created in the system before you start to load the leads.
+<BR>NOTES: The Excel Lead loader functionality is enabled by a series of perl scripts and needs to have a properly configured /etc/osdial.conf file in place on the web server. Also, a couple perl modules must be loaded for it to work as well - OLE-Storage_Lite and Spreadsheet-ParseExcel. You can check for runtime errors in these by looking at your apache error_log file. Also, for duplication checks against gampaign lists, the list that has new leads going into it does need to be created in the system before you start to load the leads.
 
 
 
@@ -1016,12 +1016,12 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="phones-voicemail_id">
 <BR>
-<B>Voicemail Box -</B> This field is for the voicemail box that the messages go to for the user of this phone. We use this to check for voicemail messages and for the user to be able to use the VOICEMAIL button on astGUIclient app.
+<B>Voicemail Box -</B> This field is for the voicemail box that the messages go to for the user of this phone. We use this to check for voicemail messages and for the user to be able to use the VOICEMAIL button on OSDial app.
 
 <BR>
 <A NAME="phones-outbound_cid">
 <BR>
-<B>Outbound CallerID -</B> This field is where you would enter the callerID number that you would like to appear on outbound calls placed form the astguiclient web-client. This does not work on RBS, non-PRI, T1/E1s.
+<B>Outbound CallerID -</B> This field is where you would enter the callerID number that you would like to appear on outbound calls placed form the OSDial web-client. This does not work on RBS, non-PRI, T1/E1s.
 
 <BR>
 <A NAME="phones-phone_ip">
@@ -1146,7 +1146,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="phones-monitor_prefix">
 <BR>
-<B>Monitor Prefix -</B> This is the dial plan prefix for monitoring of Zap channels automatically within the astGUIclient app. Only change according to the extensions.conf ZapBarge extensions records.
+<B>Monitor Prefix -</B> This is the dial plan prefix for monitoring of Zap channels automatically within the OSDial app. Only change according to the extensions.conf ZapBarge extensions records.
 
 <BR>
 <A NAME="phones-recording_exten">
@@ -1161,7 +1161,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="phones-voicemail_dump_exten">
 <BR>
-<B>VMAIL Dump Exten -</B> This is the dial plan prefix used to send calls directly to a user's voicemail from a live call in the astGUIclient app. verify with extensions.conf file before changing.
+<B>VMAIL Dump Exten -</B> This is the dial plan prefix used to send calls directly to a user's voicemail from a live call in the OSDial app. verify with extensions.conf file before changing.
 
 <BR>
 <A NAME="phones-ext_context">
@@ -1186,12 +1186,12 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="phones-install_directory">
 <BR>
-<B>Install Directory -</B> This is the place where the astGUIclient and OSDial scripts are located on your machine. For Win32 it should be something like C:\AST_OSD and for UNIX it should be something like /usr/local/perl_TK. verify this manually.
+<B>Install Directory -</B> This is the place where the OSDial scripts are located on your machine. For Win32 it should be something like C:\AST_OSD and for UNIX it should be something like /usr/local/perl_TK. verify this manually.
 
 <BR>
 <A NAME="phones-local_web_callerID_URL">
 <BR>
-<B>CallerID URL -</B> This is the web address of the page used to do custom callerID lookups. default testing address is: http://astguiclient.sf.net/test_callerid_output.php
+<B>CallerID URL -</B> This is the web address of the page used to do custom callerID lookups. default testing address is: http://localhost/test_callerid_output.php
 
 <BR>
 <A NAME="phones-OSDial_web_URL">
@@ -1201,7 +1201,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="phones-AGI_call_logging_enabled">
 <BR>
-<B>Call Logging -</B> This is set to true if the call_log.agi file is in place in the extensions.conf file for all outbound and hang up 'h' extensions to log all calls. This should always be 1 because it is manditory for many astGUIclient and OSDial features to work properly.
+<B>Call Logging -</B> This is set to true if the call_log.agi file is in place in the extensions.conf file for all outbound and hang up 'h' extensions to log all calls. This should always be 1 because it is manditory for many OSDial features to work properly.
 
 <BR>
 <A NAME="phones-user_switching_enabled">
@@ -1216,22 +1216,22 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="phones-admin_hangup_enabled">
 <BR>
-<B>Admin Hang Up -</B> Set to true to allow user to be able to hang up any line at will through astGUIclient. Good idea only to enable this for Admin users.
+<B>Admin Hang Up -</B> Set to true to allow user to be able to hang up any line at will through OSDial. Good idea only to enable this for Admin users.
 
 <BR>
 <A NAME="phones-admin_hijack_enabled">
 <BR>
-<B>Admin Hijack -</B> Set to true to allow user to be able to grab and redirect to their extension any line at will through astGUIclient. Good idea only to enable this for Admin users. But is very useful for Managers.
+<B>Admin Hijack -</B> Set to true to allow user to be able to grab and redirect to their extension any line at will through OSDial. Good idea only to enable this for Admin users. But is very useful for Managers.
 
 <BR>
 <A NAME="phones-admin_monitor_enabled">
 <BR>
-<B>Admin Monitor -</B> Set to true to allow user to be able to grab and redirect to their extension any line at will through astGUIclient. Good idea only to enable this for Admin users. But is very useful for Managers and as a training tool.
+<B>Admin Monitor -</B> Set to true to allow user to be able to grab and redirect to their extension any line at will through OSDial. Good idea only to enable this for Admin users. But is very useful for Managers and as a training tool.
 
 <BR>
 <A NAME="phones-call_parking_enabled">
 <BR>
-<B>Call Park -</B> Set to true to allow user to be able to park calls on astGUIclient hold to be picked up by any other astGUIclient user on the system. Calls stay on hold for upto a half hour then hang up. Usually enabled for all.
+<B>Call Park -</B> Set to true to allow user to be able to park calls on OSDial hold to be picked up by any other OSDial user on the system. Calls stay on hold for upto a half hour then hang up. Usually enabled for all.
 
 <BR>
 <A NAME="phones-updater_check_enabled">
@@ -1241,7 +1241,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="phones-AFLogging_enabled">
 <BR>
-<B>AF Logging -</B> Set to true to log many actions of astGUIclient usage to a text file on the user's computer.
+<B>AF Logging -</B> Set to true to log many actions of OSDial usage to a text file on the user's computer.
 
 <BR>
 <A NAME="phones-QUEUE_ACTION_enabled">
@@ -1251,17 +1251,17 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="phones-CallerID_popup_enabled">
 <BR>
-<B>CallerID Popup -</B> Set to true to allow for numbers defined in the extensions.conf file to send CallerID popup screens to astGUIclient users.
+<B>CallerID Popup -</B> Set to true to allow for numbers defined in the extensions.conf file to send CallerID popup screens to OSDial users.
 
 <BR>
 <A NAME="phones-voicemail_button_enabled">
 <BR>
-<B>VMail Button -</B> Set to true to display the VOICEMAIL button and the messages count display on astGUIclient.
+<B>VMail Button -</B> Set to true to display the VOICEMAIL button and the messages count display on OSDial.
 
 <BR>
 <A NAME="phones-enable_fast_refresh">
 <BR>
-<B>Fast Refresh -</B> Set to true to enable a new rate of refresh of call information for the astGUIclient. Default disabled rate is 1000 ms ,1 second. Can increase system load if you lower this number.
+<B>Fast Refresh -</B> Set to true to enable a new rate of refresh of call information for the OSDial. Default disabled rate is 1000 ms ,1 second. Can increase system load if you lower this number.
 
 <BR>
 <A NAME="phones-fast_refresh_rate">
@@ -1271,7 +1271,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="phones-enable_persistant_mysql">
 <BR>
-<B>Persistant MySQL -</B> If enabled the astGUIclient connection will remain connected instead of connecting every second. Useful if you have a fast refresh rate set. It will increase the number of connections on your MySQL machine.
+<B>Persistant MySQL -</B> If enabled the OSDial connection will remain connected instead of connecting every second. Useful if you have a fast refresh rate set. It will increase the number of connections on your MySQL machine.
 
 <BR>
 <A NAME="phones-auto_dial_next_number">
@@ -1457,7 +1457,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <B><FONT SIZE=3>CONFERENCES TABLE</FONT></B><BR><BR>
 <A NAME="conferences-conf_exten">
 <BR>
-<B>Conference Number -</B> This field is where you put the meetme conference dialpna number. It is also recommended that the meetme number in meetme.conf matches this number for each entry. This is for the conferences in astGUIclient and is used for leave-3way-call functionality in OSDial.
+<B>Conference Number -</B> This field is where you put the meetme conference dialpna number. It is also recommended that the meetme number in meetme.conf matches this number for each entry. This is for the conferences in OSDial and is used for leave-3way-call functionality in OSDial.
 
 <BR>
 <A NAME="conferences-server_ip">

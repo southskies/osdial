@@ -3,7 +3,7 @@
 # ADMIN_update_server_ip.pl - updates IP address in DB and conf file
 #
 # This script is designed to update all database tables and the local 
-# astguiclient.conf file to reflect a change in IP address. The script will 
+# osdial.conf file to reflect a change in IP address. The script will 
 # automatically default to the first eth address in the ifconfig output.
 #
 # Copyright (C) 2008  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
@@ -13,8 +13,8 @@
 # 80321-0220 - updated for new settings
 #
 #
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -64,7 +64,7 @@ if (length($ARGV[0])>1)
 	if ($args =~ /--help/i)
 	{
 	print "ADMIN_update_server_ip.pl - updates server_ip in the $VARDB_database\n";
-	print "database and in the local /etc/astguiclient.conf file.\n";
+	print "database and in the local /etc/osdial.conf file.\n";
 	print "\n";
 	print "command-line options:\n";
 	print "  [--help] = this help screen\n";
@@ -126,7 +126,7 @@ else
 
 if (-e "$PATHconf") 
 	{
-	print "Previous astGUIclient configuration file found at: $PATHconf\n";
+	print "Previous OSDial configuration file found at: $PATHconf\n";
 	open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 	@conf = <conf>;
 	close(conf);
@@ -308,7 +308,7 @@ else
 		}
 	}
 
-print "Writing change to astguiclient.conf file: $PATHconf\n";
+print "Writing change to osdial.conf file: $PATHconf\n";
 $junk = `/usr/bin/perl -pi -e 's|^VARserver_ip => $VARold_server_ip|VARserver_ip => $VARserver_ip|' $PATHconf`;
 
 print "\nSTARTING DATABASE TABLES UPDATES PHASE...\n";

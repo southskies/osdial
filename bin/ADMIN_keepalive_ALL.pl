@@ -2,9 +2,9 @@
 #
 # ADMIN_keepalive_ALL.pl   version  2.0.4.1
 #
-# Designed to keep the astGUIclient processes alive and check every minute
+# Designed to keep the OSDIAL processes alive and check every minute
 # Replaces all other ADMIN_keepalive scripts
-# Uses /etc/astguiclient.conf file to know which processes to keepalive
+# Uses /etc/osdial.conf file to know which processes to keepalive
 #
 # Copyright (C) 2008  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
@@ -58,8 +58,8 @@ else
 ### end parsing run-time options ###
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

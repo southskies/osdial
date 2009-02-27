@@ -14,7 +14,7 @@
 # 50810-1540 - Added database server variable definitions lookup
 # 60615-1717 - Added definition GMT lookup from database not flat text file
 # 60717-1045 - changed to DBI by Marin Blu
-# 60717-1531 - changed to use /etc/astguiclient.conf for configuration
+# 60717-1531 - changed to use /etc/osdial.conf for configuration
 # 61108-1320 - added new DST schemes for USA/Canada change and changes in other countries
 # 61110-1204 - added new DST scheme for Brazil
 # 61128-1034 - added postal code GMT lookup option
@@ -94,8 +94,8 @@ if ($DB) {print "STARTING TIME ZONE DAYLIGHT SAVING TIME CALCULATION SCRIPT\n\n\
 
 ### end parsing run-time options ###
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

@@ -1,5 +1,5 @@
 #!/usr/bin/perl -X
-$PATHconf =		'/etc/astguiclient.conf';
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

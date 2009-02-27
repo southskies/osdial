@@ -30,7 +30,7 @@
 # changes:
 # 60217-1119 first build
 # 60731-1403 - changed to use DBI-DBD::mysql
-#            - changed to use /etc/astguiclient.conf for configs
+#            - changed to use /etc/osdial.conf for configs
 # 60817-1025 - added output options check from database
 # 71118-0257 - updated comments
 #
@@ -57,8 +57,8 @@ $start_time=$now_date;
 	$SQLdate = "$year-$mon-$mday $hour:$min:$sec";
 	$SQLdateBEGIN = $SQLdate;
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

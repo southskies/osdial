@@ -12,7 +12,7 @@
 #
 # CHANGES
 # 60717-1214 - changed to DBI by Marin Blu
-# 60717-1536 - changed to use /etc/astguiclient.conf for configs
+# 60717-1536 - changed to use /etc/osdial.conf for configs
 # 60910-0238 - removed park_log query
 #
 
@@ -104,8 +104,8 @@ if (!$Q) {print "TEST\n\n";}
 if (!$Q) {print "NOW DATETIME:         $SQLdate_NOW\n";}
 if (!$Q) {print "1 HOUR AGO DATETIME:  $SQLdate_NEG_1hour\n\n";}
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

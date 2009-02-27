@@ -113,8 +113,8 @@ else
 print "no command line options set\n";
 }
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -237,7 +237,7 @@ if ( ($without_db < 1) && ($conf_only < 1) )
 if ( ($without_conf < 1) && ($db_only < 1) )
 	{
 	### BACKUP THE ASTERISK CONF FILES ON THE SERVER ###
-	`$tarbin cf $ARCHIVEpath/temp/$VARserver_ip$conf$wday$tar /etc/astguiclient.conf /etc/zaptel.conf /etc/asterisk`;
+	`$tarbin cf $ARCHIVEpath/temp/$VARserver_ip$conf$wday$tar /etc/osdial.conf /etc/zaptel.conf /etc/asterisk`;
 
 	### BACKUP THE WANPIPE CONF FILES(if there are any) ###
 	if ( -e ('/etc/wanpipe/wanpipe1.conf')) 
@@ -275,7 +275,7 @@ if ( ($conf_only < 1) && ($db_only < 1) && ($without_web < 1) )
 
 if ( ($conf_only < 1) && ($db_only < 1) )
 	{
-	### BACKUP THE ASTGUICLIENT AND AGI FILES ON THE SERVER ###
+	### BACKUP THE OSDIAL AND AGI FILES ON THE SERVER ###
 	`$tarbin cf $ARCHIVEpath/temp/$VARserver_ip$bin$wday$tar $PATHagi $PATHhome`;
 	}
 

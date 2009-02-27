@@ -6,7 +6,7 @@ There are quite a few issues with using Microsoft Internet Explorer(IE) with OSD
 
 The decision was made to stop testing on IE because of time constraints as well as the lack of cross-compatibility of IE and lack of compatibility with standards, even between IE versions. Firefox meets all compatibility requirements which is why that is the recommended platform for OSDIAL agents.
 
-As of release 2.0.4 of astguiclient, IE 5.0 and 5.5 compatibility was broken to make OSDIAL fully compatible with IE 6.0. Along with this change, all of the memory issues were fixed, along with several features that were not working before in IE like HotKeys.
+As of release 2.0.4 of OSDial, IE 5.0 and 5.5 compatibility was broken to make OSDIAL fully compatible with IE 6.0. Along with this change, all of the memory issues were fixed, along with several features that were not working before in IE like HotKeys.
 
 
 Some of the issues include the following:

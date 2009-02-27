@@ -1,9 +1,9 @@
 #!/bin/bash
 #
-# astguiclient  Startup script for VICIdial services.
+# osdial  Startup script for OSDial services.
 #
 # chkconfig: - 64 36
-# description:  astGUIclient/VICIdial services.
-# processname:  astguiclient
-# pidfile: /var/run/astguiclient/astguiclient.pid
+# description:  OSDial services.
+# processname:  osdial
+# pidfile: /var/run/osdial/osdial.pid
 

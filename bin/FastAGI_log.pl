@@ -46,8 +46,8 @@ $VARfastagi_log_max_requests =	'1000';
 $VARfastagi_log_checkfordead =	'30';
 $VARfastagi_log_checkforwait =	'60';
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -156,8 +156,8 @@ sub process_request {
 	$now_date = "$year-$mon-$mday $hour:$min:$sec";
 
 
-	# default path to astguiclient configuration file:
-	$PATHconf =		'/etc/astguiclient.conf';
+	# default path to osdial.configuration file:
+	$PATHconf =		'/etc/osdial.conf';
 
 	open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 	@conf = <conf>;

@@ -13,11 +13,11 @@
 #
 # CHANGES
 # 60717-1237 - changed to DBI by Marin Blu
-# 60717-1536 - changed to use /etc/astguiclient.conf for configs
+# 60717-1536 - changed to use /etc/osdial.conf for configs
 #
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

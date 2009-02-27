@@ -30,12 +30,12 @@
 # 51021-1058 - Added quotes around CLI executed commands
 # 51122-1456 - Added soxmix binary path check
 # 60318-0921 - Added ability to mix gsm audio files
-# 60807-1308 - Modified to use /etc/astguiclient.conf for settings 
+# 60807-1308 - Modified to use /etc/osdial.conf for settings 
 # 
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

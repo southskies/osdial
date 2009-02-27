@@ -48,7 +48,7 @@ my $osdial_log = 'osdial_log FORCE INDEX (call_date) ';
 my $secT = time();
 
 # Get AGC configuration directives.
-my $config = getAGCconfig('/etc/astguiclient.conf');
+my $config = getAGCconfig('/etc/osdial.conf');
 
 my ($dbhA,$stmtA,$sthA,$sthArows,$rec_count,$affected_rows);
 my ($DB,$DBX,$CLOhelp,$CLOcampaign,$CLOforce,$CLOloops,$CLOdelay,$CLOtest,$CLOminlevel,$CLOoverlimitmod,$limitmod_inc,$event_ext);
@@ -528,7 +528,7 @@ exit;
 # getAGCconfig usage:
 #    $config = getAGCconfig($agcConfigPath);
 # Requires:
-#    $agcConfigPath : Usually '/etc/astguiclient.conf'
+#    $agcConfigPath : Usually '/etc/osdial.conf'
 # Returns:
 #    hashref with configuration directives in listed file.
 sub getAGCconfig {
@@ -536,7 +536,7 @@ sub getAGCconfig {
 	my %config;
 	$config{PATHconf} = $AGCpath;
 
-	# Begin Parsing astguiclient config file.
+	# Begin Parsing osdial.config file.
 	open(CONF, $config{PATHconf}) || die "can't open " . $config{PATHconf} . ": " . $! . "\n";
 	while (my $line = <CONF>) {
 		$line =~ s/ |>|"|\n|\r|\t|\#.*|;.*//gi;

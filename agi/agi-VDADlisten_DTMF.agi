@@ -31,7 +31,7 @@
 # 60207-1205 - added database records entries/modifications
 # 60207-1507 - added ability to send AMs to campaign-defined message to leave
 # 60731-1536 - changed to use DBI-DBD::mysql
-#            - changed to use /etc/astguiclient.conf for configs
+#            - changed to use /etc/osdial.conf for configs
 # 60817-1113 - added output options check from database
 # 70806-1619 - added HeavyDTMF check and filter
 #
@@ -59,8 +59,8 @@ if ($min < 10) {$min = "0$min";}
 if ($sec < 10) {$sec = "0$sec";}
 	$SQLdate = "$year-$mon-$mday $hour:$min:$sec";
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

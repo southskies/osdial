@@ -11,7 +11,7 @@
 # 
 # CHANGES
 # 60517-1100 - First version
-# 60715-2325 - changed to use /etc/astguiclient.conf for configs
+# 60715-2325 - changed to use /etc/osdial.conf for configs
 # 71115-0231 - added Pipe-delimited file output
 # 71205-1232 - Changed to week total version
 #
@@ -98,8 +98,8 @@ print "\n\n\n\n\n\n\n\n\n\n\n\n-- AST_agent_week_tally.pl --\n\n";
 print "This program is designed to print stats to a file for agents' activity for the previous week. \n\n";
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

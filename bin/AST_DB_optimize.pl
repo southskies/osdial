@@ -11,14 +11,14 @@
 #
 # CHANGES
 # 60717-1242 - changed to DBI by Marin Blu
-# 60718-1645 - changed to use /etc/astguiclient.conf for configs
+# 60718-1645 - changed to use /etc/osdial.conf for configs
 # 71030-2020 - Added deletions of stats and inbound live agents
 # 71109-1725 - fixed osdial_campaign_stats bug
 # 71215-0410 - fixed UPDATE/DELETE results
 #
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

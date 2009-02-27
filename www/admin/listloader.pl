@@ -10,7 +10,7 @@
 # 60616-1548 - Added listID override feature to force all leads into same list
 #            - Added gmt_offset_now lookup for each lead
 # 60811-1232 - Changed to DBI
-# 60811-1329 - changed to use /etc/astguiclient.conf for configs
+# 60811-1329 - changed to use /etc/osdial.conf for configs
 # 60822-1121 - fixed for nonwritable directories
 # 60906-1058 - added filter of non-digits in alt_phone field
 # 61110-1229 - added new USA-Canada DST scheme and Brazil DST scheme
@@ -86,8 +86,8 @@ use Time::Local;
 use DBI;	  
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

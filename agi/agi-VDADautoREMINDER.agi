@@ -27,7 +27,7 @@
 # CHANGES
 # 60313-1626 - First build
 # 60810-1729 - Changed to DBI
-#            - changed to use /etc/astguiclient.conf for configs
+#            - changed to use /etc/osdial.conf for configs
 # 60818-1144 - added output options check from database
 #
 
@@ -69,8 +69,8 @@ if ($Bmin < 10) {$Bmin = "0$Bmin";}
 if ($Bsec < 10) {$Bsec = "0$Bsec";}
 	$BDtsSQLdate = "$Byear$Bmon$Bmday$Bhour$Bmin$Bsec";
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

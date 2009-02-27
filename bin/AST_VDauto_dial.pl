@@ -46,7 +46,7 @@
 # 60614-1142 - Added code to work with recycled leads, multi called_since_last_reset values
 #            - Removed gmt lead validation because it is already done by VDhopper
 # 60807-1438 - Changed to DBI
-#            - Changed to use /etc/astguiclient.conf for configs
+#            - Changed to use /etc/osdial.conf for configs
 # 60814-1749 - Added option for no logging to file
 # 60821-1546 - Added option to not dial phone_code per campaign
 # 60824-1437 - Added available_only_ratio_tally option
@@ -123,8 +123,8 @@ $RECprefix='7'; ### leave blank for no REC prefix
 $useJAMdebugFILE='1'; ### leave blank for no Jam call debug file writing
 $max_osdial_trunks=0; ### setting a default value for max_osdial_trunks
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

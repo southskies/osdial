@@ -23,7 +23,7 @@ $|++;
 my $prog = "AST_qc_transfer.pl";
 
 # Get AGC configuration directives.
-my $config = getAGCconfig('/etc/astguiclient.conf');
+my $config = getAGCconfig('/etc/osdial.conf');
 
 my($dbhA,$sthA,$sthArows,$stmtA);
 my($CLOhelp,$verbose,$CLOtest);
@@ -361,7 +361,7 @@ sub transferArchive {
 # getAGCconfig usage:
 #    $config = getAGCconfig($agcConfigPath);
 # Requires:
-#    $agcConfigPath : Usually '/etc/astguiclient.conf'
+#    $agcConfigPath : Usually '/etc/osdial.conf'
 # Returns:
 #    hashref with configuration directives in listed file.
 sub getAGCconfig {
@@ -369,7 +369,7 @@ sub getAGCconfig {
 	my %config;
 	$config{PATHconf} = $AGCpath;
 
-	# Begin Parsing astguiclient config file.
+	# Begin Parsing osdial.config file.
 	open(CONF, $config{PATHconf}) || die "can't open " . $config{PATHconf} . ": " . $! . "\n";
 	while (my $line = <CONF>) {
 		$line =~ s/ |>|"|\n|\r|\t|\#.*|;.*//gi;
