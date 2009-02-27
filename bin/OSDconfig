@@ -33,6 +33,10 @@ SetDefaults ()
 	PATHmonitor="/var/spool/asterisk/monitor"
 	# default path to asterisk recording DONE directory:
 	PATHDONEmonitor="/opt/osdial/recordings/processing/wav"
+	PATHarchive_home="/opt/osdial/recordings"
+	PATHarchive_unmixed="processing/wav"
+	PATHarchive_mixed="processing/mp3"
+	PATHarchive_sorted="completed"
 	# the IP address of this machine.  default to best guess:
 	VARserver_ip=`/sbin/ifconfig eth0 | grep 'inet addr' | awk -F: '{ print $2 }' | awk '{ print $1 }'`
 	# default database server variables:
@@ -46,14 +50,14 @@ SetDefaults ()
 	# default recording FTP archive variables:
 	VARFTP_host=$VARserver_ip
 	VARFTP_user="osdial"
-	VARFTP_pass="osdialftp"
+	VARFTP_pass="osdialftp1234"
 	VARFTP_port="21"
 	VARFTP_dir="recordings/processing/wav"
 	VARHTTP_path="http://$VARserver_ip"
 	# default report FTP variables:
 	VARREPORT_host=$VARserver_ip
 	VARREPORT_user="osdial"
-	VARREPORT_pass="osdialftp"
+	VARREPORT_pass="osdialftp1234"
 	VARREPORT_port="21"
 	VARREPORT_dir="reports"
 	# defaults for FastAGI Server PreFork
@@ -64,6 +68,10 @@ SetDefaults ()
 	VARfastagi_log_max_requests="1000"
 	VARfastagi_log_checkfordead="30"
 	VARfastagi_log_checkforwait="60"
+	# Other settings
+	VARcps="9"
+	VARadapt_min_level="3"
+	VARadapt_overlimit_mod="20"
 }
 
 FileLocationConfig ()
@@ -717,6 +725,11 @@ SaveConfig ()
 	echo "PATHmonitor => $PATHmonitor" >> $PATHconf
 	echo "PATHDONEmonitor => $PATHDONEmonitor" >> $PATHconf
 	echo "" >> $PATHconf
+	echo "PATHarchive_home => $PATHarchive_home" >> $PATHconf
+	echo "PATHarchive_unmixed => $PATHarchive_unmixed" >> $PATHconf
+	echo "PATHarchive_mixed => $PATHarchive_mixed" >> $PATHconf
+	echo "PATHarchive_sorted => $PATHarchive_sorted" >> $PATHconf
+	echo "" >> $PATHconf
 	echo "# The IP address of this machine" >> $PATHconf
 	echo "VARserver_ip => $VARserver_ip" >> $PATHconf
 	echo "" >> $PATHconf
@@ -763,6 +776,13 @@ SaveConfig ()
 	echo "VARREPORT_pass => $VARREPORT_pass" >> $PATHconf
 	echo "VARREPORT_port => $VARREPORT_port" >> $PATHconf
 	echo "VARREPORT_dir => $VARREPORT_dir" >> $PATHconf
+	echo "" >> $PATHconf
+	echo "# Calls per second for this server" >> $PATHconf
+	echo "VARcps => $VARcps" >> $PATHconf
+	echo "" >> $PATHconf
+	echo "# Adaptive routine tweaks" >> $PATHconf
+	echo "VARadapt_min_level => $VARadapt_min_level" >> $PATHconf
+	echo "VARadapt_overlimit_mod  => $VARadapt_overlimit_mod " >> $PATHconf
 
 	chmod 644 $PATHconf
 
