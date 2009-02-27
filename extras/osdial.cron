@@ -10,8 +10,8 @@
 ### (archive) Send select MP3s to a third-party quality-control or offste archive server.
 #*/15 * * * * /opt/osdisl/bin/AST_qc_transfer.pl
 
-### (ALL) Force update of time servers.
-0 * * * * /opt/osdial/bin/AST_ntp_update.sh > /dev/null 2>&1
+#### (ALL) Force update of time servers. Now run from /etc/cron.hourly
+#0 * * * * /opt/osdial/bin/AST_ntp_update.sh > /dev/null 2>&1
 
 ### (dialer) Write a file listing current voicemail
 * * * * * /usr/sbin/asterisk -rx "show voicemail users" > /opt/osdisl/html/admin/VMnow.txt

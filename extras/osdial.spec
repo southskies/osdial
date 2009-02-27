@@ -4,7 +4,7 @@ Version:	2.1.0.000
 Release:	1
 License:	GPL
 Group:		Applications/Telephony
-Source0:	osdial-2.1.0.tgz
+Source0:	osdial-2.1.0.000.tgz
 URL:		http://www.osdial.com
 BuildRequires:  dialog
 Requires:	php-pear
