@@ -1,16 +1,10 @@
 Summary:	The OSDial predictive dialing suite.
 Name:		osdial
-Version:	2.0.1
+Version:	2.1.0.000
 Release:	1
 License:	GPL
 Group:		Applications/Telephony
-Source0:	osdial-2.0.1.tgz
-Source1:	osdial.config
-Source2:	index.html
-Source3:	osdialbg.jpg
-Source4:	httpd-osdial.conf
-Source5:	conf.gsm
-Source6:	ntpdate
+Source0:	osdial-2.1.0.tgz
 URL:		http://www.osdial.com
 BuildRequires:  dialog
 Requires:	php-pear
@@ -51,33 +45,33 @@ BuildArch:	noarch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}
 
 %description
-OSDial is a predictive dialing system, an off-shoot of VICIdial,
-originally developed by Matt Florrel, to be used with the Asterisk
-PBX, an open source PBX developed by Mark Spencer.
+OSDial is a predictive dialing system, an off-shoot of VICIDial/astGUIclient,
+originally developed by Matt Florrel, to be used with the Asterisk PBX,
+an open source PBX developed by Mark Spencer.
 
 %prep
 %setup -n osdial-%{version}
 
 %build
 install -dp %{buildroot}
-cp %{SOURCE1} %{buildroot}/../osdial-%{version}/.osdial.config
+#cp %{SOURCE1} %{buildroot}/../osdial-%{version}/.osdial.config
 
 %install
-#cp %{SOURCE1} %{buildroot}/../astguiclient-%{version}/.agc.config
 %{__make} DESTDIR=%{buildroot} HTTPDUSER=asterisk install
-cp %{SOURCE2} %{buildroot}/opt/osdial/html
-cp %{SOURCE3} %{buildroot}/opt/osdial/html
+#cp %{SOURCE2} %{buildroot}/opt/osdial/html
+#cp %{SOURCE3} %{buildroot}/opt/osdial/html
 mkdir -p %{buildroot}/etc/httpd/conf.d
 mkdir -p %{buildroot}/opt/osdial/recordings/processing/wav
 mkdir -p %{buildroot}/opt/osdial/recordings/processing/mp3
 mkdir -p %{buildroot}/opt/osdial/recordings/completed
 mkdir -p %{buildroot}/opt/osdial/reports
 mkdir -p %{buildroot}/var/log/osdial
-cp %{SOURCE4} %{buildroot}/etc/httpd/conf.d/osdial.conf
-cp %{SOURCE5} %{buildroot}/var/lib/asterisk/sounds/conf.gsm
-cp %{SOURCE5} %{buildroot}/var/lib/asterisk/sounds/park.gsm
+#cp %{SOURCE4} %{buildroot}/etc/httpd/conf.d/osdial.conf
+#cp %{SOURCE5} %{buildroot}/var/lib/asterisk/sounds/conf.gsm
+#cp %{SOURCE5} %{buildroot}/var/lib/asterisk/sounds/park.gsm
 mkdir -p %{buildroot}/etc/cron.hourly
-cp %{SOURCE6} %{buildroot}/etc/cron.hourly
+#TODO: Link AST_ntp_update...
+#cp %{SOURCE6} %{buildroot}/etc/cron.hourly
 cp ccsg/bin/AST_CLEAR_auto_calls.pl %{buildroot}/opt/osdial/bin
 cp ccsg/bin/AST_qc_transfer.pl %{buildroot}/opt/osdial/bin
 cp ccsg/bin/AST_sort_recordings.pl %{buildroot}/opt/osdial/bin
@@ -88,24 +82,23 @@ touch %{buildroot}/opt/osdial/html/admin/VMnow.txt
 #rm %{buildroot}/opt/osdial/asterisk.cron
 
 %{__mkdir_p} %{buildroot}/etc/asterisk/startup.d
-echo "#!/bin/bash
-export TTY=screen" > %{buildroot}/etc/asterisk/startup.d/tty_screen.sh
+echo "#!/bin/bash\nexport TTY=screen" > %{buildroot}/etc/asterisk/startup.d/tty_screen.sh
 
 
 %clean
 %{__rm} -rf %{buildroot}
 
 %post
-if [ ! "`grep CCSG /etc/rc.local`" ]; then
+if [ ! "`grep OSDial /etc/rc.local`" ]; then
 	echo >> /etc/rc.local
-	echo "#===== BEGIN Vicidial/CCSG RAMdisk Additions ====" >> /etc/rc.local
+	echo "#===== BEGIN OSDial RAMdisk Additions ====" >> /etc/rc.local
 	echo "/sbin/mkfs.ext3 /dev/ramdisk > /dev/null 2>&1" >> /etc/rc.local
 	echo "/bin/mkdir /mnt/ramdisk > /dev/null 2>&1" >> /etc/rc.local
 	echo "/bin/mount /dev/ramdisk /mnt/ramdisk > /dev/null 2>&1" >> /etc/rc.local
 	echo "/bin/mkdir /mnt/ramdisk/VDmonitor > /dev/null 2>&1" >> /etc/rc.local
 	echo "/bin/chown asterisk:asterisk /mnt/ramdisk/VDmonitor > /dev/null 2>&1" >> /etc/rc.local
 	echo "/bin/ln -sf /mnt/ramdisk/VDmonitor /var/spool/asterisk/VDmonitor > /dev/null 2>&1" >> /etc/rc.local
-	echo "#===== END Vicidial/CCSG RAMdisk Additions ====" >> /etc/rc.local
+	echo "#===== END OSDial RAMdisk Additions ====" >> /etc/rc.local
 fi
 if [ ! -f /var/www/html/index.html ]; then
 	ln -s /opt/osdial/html/index.html /var/www/html/index.html
@@ -185,8 +178,8 @@ fi
 %attr(0644,asterisk,asterisk) %{_opt}/osdial/bin/GMT_USA_zip.txt
 %attr(0644,asterisk,asterisk) %{_opt}/osdial/bin/MySQL_AST_CREATE_tables.sql
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/VDconfig
-%attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/VICIDIAL_DEDUPE_leads.pl
-%attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/VICIDIAL_IN_new_leads_file.pl
+%attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/OSDIAL_DEDUPE_leads.pl
+%attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/OSDIAL_IN_new_leads_file.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/build_translation_www_files.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/libs/Asterisk.pm
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/libs/Asterisk/AGI.pm
@@ -290,8 +283,6 @@ fi
 %attr(0644,apache,asterisk) %{_opt}/osdial/html/agent/vdc_db_query.php
 %attr(0644,apache,asterisk) %{_opt}/osdial/html/agent/osdial.php
 %attr(0644,apache,asterisk) %{_opt}/osdial/html/agent/voicemail_check.php
-%attr(0644,apache,asterisk) %{_opt}/osdial/html/index.html
-%attr(0644,apache,asterisk) %{_opt}/osdial/html/vicibg.jpg
 %attr(0644,apache,asterisk) %{_opt}/osdial/html/agent/images/Thumbs.db
 %attr(0644,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_check_voicemail_BLINK.gif
 %attr(0644,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_check_voicemail_BLINK_e.gif
@@ -511,7 +502,7 @@ fi
 %attr(0644,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_volume_up_off.gif
 %attr(0644,apache,asterisk) %{_opt}/osdial/html/admin/AST_CLOSERstats.php
 %attr(0644,apache,asterisk) %{_opt}/osdial/html/admin/AST_VDADstats.php
-%attr(0644,apache,asterisk) %{_opt}/osdial/html/admin/AST_VICIDIAL_hopperlist.php
+%attr(0644,apache,asterisk) %{_opt}/osdial/html/admin/AST_OSDIAL_hopperlist.php
 %attr(0644,apache,asterisk) %{_opt}/osdial/html/admin/AST_admin_log_display.php
 %attr(0644,apache,asterisk) %{_opt}/osdial/html/admin/AST_agent_disposition.php
 %attr(0644,apache,asterisk) %{_opt}/osdial/html/admin/AST_agent_performance.php
@@ -556,42 +547,7 @@ fi
 %attr(0644,apache,asterisk) %{_opt}/osdial/html/admin/vtiger_search.php
 %attr(0644,apache,asterisk) %{_opt}/osdial/html/admin/welcome.php
 %attr(0644,apache,asterisk) %{_opt}/osdial/html/admin/VMnow.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/ACQS.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/ALTERNATE_NUMBER_DIALING.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/APP_CONFERENCE.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/BALANCE_FILL_PROCESS.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/BASE_INSTALL.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/CALLBACKS_PROCESS.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/IE_INCOMPATIBILITIES.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/INBOUND-CLOSER_PROCESS.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/LICENSE.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/LOAD_BALANCING.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/OUTBOUND_LIST_ORDERING.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/PERFORMANCE_TESTING.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/PREDICTIVE.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/QUEUEMETRICS.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/README.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/REQUIRED_APPS_INSTALL.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/REQUIREMENTS.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/SCRATCH_INSTALL.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/Slackware-Linux_USA_DST_changes.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/VICIDIAL.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/bind_named_install.txt
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/conf_examples/dnsmgr.conf.sample
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/conf_examples/extensions.conf.sample
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/conf_examples/extensions.conf.sample-1.4
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/conf_examples/iax.conf.sample
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/conf_examples/logger.conf.sample
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/conf_examples/manager.conf.sample
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/conf_examples/meetme.conf.sample
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/conf_examples/musiconhold.conf.sample
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/conf_examples/sip.conf.sample
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/conf_examples/voicemail.conf.sample
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/conf_examples/zapata.conf.t100p.sample
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/conf_examples/zapata.conf.x100p.sample
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/conf_examples/zaptel.conf.t100p.sample
-%attr(0755,root,root) %{_usr}/share/doc/astGUIclient-2.0.4a-ccsg/conf_examples/zaptel.conf.x100p.sample
 
 %changelog
-* Mon Feb 16 2009 Lott Caskey <lottc@fugitol.com> 2.0.1-1
+* Mon Feb 16 2009 Lott Caskey <lottc@fugitol.com> 2.1.0.000-1
 - Initial package.
