@@ -1,7 +1,6 @@
-- Fix search function.
-- Fix load function.
 - Lead Loads -> Custom Feilds.
 - Lead Export -> Custom Fields.
 - Move configuration in osdial.conf to configuration table.
 - GPL/AGPL compliance
 - Develop a functional lead recycling system.
+- Integrate external application calls into admin structure
