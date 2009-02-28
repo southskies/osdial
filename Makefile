@@ -127,6 +127,7 @@ install-docs: .osdial.config
 	@install -d -m 777 $(DESTDIR)$(PATHweb)/admin/ploticus
 	@install -d -m 777 $(DESTDIR)$(PATHweb)/admin/agent_reports
 	@install -d -m 777 $(DESTDIR)$(PATHweb)/admin/server_reports
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/images
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/admin
@@ -147,6 +148,7 @@ install-docs: .osdial.config
 	@install -p -m 644 ./www/admin/*.php $(DESTDIR)$(PATHweb)/admin
 	@install -p -m 755 ./www/admin/*.pl $(DESTDIR)$(PATHweb)/admin
 	@install -p -m 644 ./www/admin/*.gif $(DESTDIR)$(PATHweb)/admin
+	@install -p -m 644 ./www/admin/images/* $(DESTDIR)$(PATHweb)/admin/images
 	@install -p -m 644 ./www/admin/include/*.js $(DESTDIR)$(PATHweb)/admin/include
 	@install -p -m 644 ./www/admin/include/*.php $(DESTDIR)$(PATHweb)/admin/include
 	@install -p -m 644 ./www/admin/include/content/admin/* $(DESTDIR)$(PATHweb)/admin/include/content/admin
