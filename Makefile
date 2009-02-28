@@ -139,6 +139,8 @@ install-docs: .osdial.config
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/scripts
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/usergroups
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/users
+	@install -p -m 644 ./www/*.png $(DESTDIR)$(PATHweb)
+	@install -p -m 644 ./www/*.html $(DESTDIR)$(PATHweb)
 	@install -p -m 644 ./www/agent/*.php $(DESTDIR)$(PATHweb)/agent
 	@install -p -m 644 ./www/agent/images/* $(DESTDIR)$(PATHweb)/agent/images
 	@install -p -m 644 ./www/agent/include/* $(DESTDIR)$(PATHweb)/agent/include
