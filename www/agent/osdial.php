@@ -1708,17 +1708,20 @@ foreach ($forms as $form) {
 ?>
 	<style type="text/css">
 	<!--
-		div.scroll_callback {height: 300px; width: 620px; overflow: scroll;}
-		div.scroll_list {height: 400px; width: 140px; overflow: scroll;}
-		div.scroll_script {height: <?=$SSheight ?>px; width: <?=$SDwidth ?>px; background: #FFF5EC; overflow: scroll; font-size: 12px;  font-family: sans-serif;}
-		div.text_input {overflow: auto; font-size: 10px;  font-family: sans-serif;}
-	.body_text {font-size: 11px;  font-family: "dejavu sans",sans-serif;}
+	#inputArea{font-family: "dejavu sans",Sans-Serif;background-color: #d6e5f4;padding: 0px;}
+	input, textarea{color: black;font-family: "dejavu sans",Sans-serif;font-size: 0.9em;padding: 0px;}
+	div.scroll_callback {height: 300px; width: 620px; overflow: scroll;}
+	div.scroll_list {height: 400px; width: 140px; overflow: scroll;}
+	div.scroll_script {height: <?=$SSheight ?>px; width: <?=$SDwidth ?>px; background: #FFF5EC; overflow: scroll; font-size: 12px;  font-family: sans-serif;}
+	div.text_input {overflow: auto; font-size: 10px;  font-family: sans-serif;}
+	.body_text {font-size: 10px;  font-family: "dejavu sans",sans-serif;border:none;}
+ 	.body_input {font-size: 10px;  font-family: "dejavu sans",sans-serif;border:none;overflow:auto}
 	.queue_text_red {font-size: 12px;  font-family: sans-serif; font-weight: bold; color: red}
 	.queue_text {font-size: 12px;  font-family: sans-serif; color: black}
 	.preview_text {font-size: 13px;  font-family: sans-serif; background: #D0E0E7}
 	.preview_text_red {font-size: 13px;  font-family: sans-serif; background: #FFCCCC}
 	.body_small {font-size: 11px;  font-family: sans-serif;}
-	.body_tiny {font-size: 10px;  font-family: sans-serif;}
+	.body_tiny {font-size: 9px;  font-family: "dejavu sans",sans-serif;padding: 0px;}
 	.log_text {font-size: 11px;  font-family: monospace;}
 	.log_text_red {font-size: 11px;  font-family: monospace; font-weight: bold; background: #FF3333}
 	.log_title {font-size: 12px;  font-family: monospace; font-weight: bold;}
@@ -1770,7 +1773,7 @@ foreach ($forms as $form) {
 					<font  class="body_text" color=#FFFFFF>Session ID: <span id=sessionIDspan></span>
 				</td>
 				<td valign='middle' width=400> 
-					&nbsp;<font class="body_text" color=#1C4754><span id=AgentStatusCalls></span>
+					&nbsp;<font class="body_tiny" color=#1C4754><span id=AgentStatusCalls></span>
 				</td>
 				<td valign='middle'>
 					<? echo "&nbsp;<a href=\"#\" onclick=\"LogouT();return false;\"><font size=1 color='red'>LOGOUT</font></a>&nbsp;"; ?>
@@ -2297,7 +2300,7 @@ foreach ($forms as $form) {
 	
 	<span style="position:absolute;left:2px;top:46px;z-index:4;" id="MainPanel">
 		<!-- Column widths 205 + 505 + 270 = 980 -->
-		<TABLE id="MainTable" class=acrossagent cellpadding=0 cellspacing=0 border=0>
+		<TABLE id="MainTable" class=acrossagent cellpadding=0 cellspacing=0>
 			<TR>
 				<td width=22 colspan=2><img src=images/AgentTopLeft.png width=22 height=22 align=left>
 					<font class="body_text" color=#1C4754>&nbsp;&nbsp;STATUS:&nbsp;&nbsp;
@@ -2390,73 +2393,102 @@ foreach ($forms as $form) {
 				
 					<!-- Customer Information -->
 					<div class="text_input" id="MainPanelCustInfo">
-						<table cellpadding='' cellspacing='2' border=0>
-						<tr>
-							<!-- Replaced by the next block 
-							<td align=right colspan=3><font class="body_text"><font color=#1C4754>Seconds:</font> <div id="callchannel">
-							<font class="body_text"><input type=text size=3 name=SecondS class="cust_form" value="">&nbsp;&nbsp;&nbsp;<font color=#1C4754>Channel: <input type=text size=9 name=callchannel class="cust_form" value="" >&nbsp;&nbsp;&nbsp;<font color=#1C4754>Cust Time:</font> <input type=text size=20 name=custdatetime class="cust_form" value="">
-							</td> 
-							-->
-						
-							<td align=center colspan=3>
-								<table width=100% align=center>
-								<tr>
-									<!-- td width=1>&nbsp;</td -->
-									<td width=30% align=left valign=top><font class="body_text" color=#1C4754>CallDuration:&nbsp;<input type=text size=4 name=SecondS class="cust_form" value="">s</td>
-									<!--td width=20%><font class="body_text" color=#AACBD4>Channel:&nbsp;<a id=callchannel class="body_text"></a></td -->
-									<td width=25% align=right valign=top><font class="body_text" color=#1C4754>Channel:&nbsp;<a id=callchannel class="body_text"></a></td>
-									<td width=45% align=right valign=top><font class="body_text" color=#1C4754>Cust Time:&nbsp;</a><input type=text size=18 name=custdatetime class="cust_form" value=""></td>
-								</tr>
-								</table>
-							</td>
-						
-						</tr>
-						<tr>
-							<td>&nbsp;</td>
-							<td colspan=2 align=center valign=top><font color=#1C4754><b>Customer Information</b></font><span id="CusTInfOSpaN"></span></td>
-						</tr>
-						<tr>
-							<td align=right><font class="body_text"> <font color=#1C4754>Title:&nbsp;</font></td>
-							<td align=left colspan=2><font class="body_text"><input type=text size=4 name=title maxlength=4 class="cust_form" value="">&nbsp; <font color=#1C4754>First:</font> <input type=text size=17 name=first_name maxlength=30 class="cust_form" value="">&nbsp; <font color=#1C4754>MI:</font> <input type=text size=1 name=middle_initial maxlength=1 class="cust_form" value="">&nbsp; <font color=#1C4754>Last:</font> <input type=text size=18 name=last_name maxlength=30 class="cust_form" value=""></td>
-						</tr>
-						<tr>
-							<td align=right><font class="body_text"> <font color=#1C4754>Address1:&nbsp;</font></td>
-							<td align=left colspan=2><font class="body_text"><input type=text size=67 name=address1 maxlength=100 class="cust_form" value=""></td>
-						</tr>
-						<tr>
-							<td align=right><font class="body_text"> <font color=#1C4754>Address2:&nbsp;</font></td>
-							<td align=left><font class="body_text"><input type=text size=26 name=address2 maxlength=100 class="cust_form" value=""></td><td align=right><font class="body_text"><font color=#1C4754>Address3:&nbsp;</font><input type=text size=26 name=address3 maxlength=100 class="cust_form" value=""></td>
-						</tr>
-						<tr>
-							<td align=right><font class="body_text"> <font color=#1C4754>City:&nbsp;</font></td>
-							<td align=left><font class="body_text"><input type=text size=26 name=city maxlength=50 class="cust_form" value="">&nbsp;</td><td align=right> <font class="body_text"><font color=#1C4754>State:&nbsp;</font><input type=text size=2 name=state maxlength=2 class="cust_form" value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color=#1C4754>Zip:&nbsp;</font><input type=text size=9 name=postal_code maxlength=10 class="cust_form" value=""></td>
-						</tr>
-						<tr>
-							<td align=right><font class="body_text"> <font color=#1C4754>Province:&nbsp;</font></td>
-							<td align=left><font class="body_text"><input type=text size=26 name=province maxlength=50 class="cust_form" value="">&nbsp;</td><td align=right> <font class="body_text"><font color=#1C4754>Email:&nbsp;</font><input type=text size=26 name=email maxlength=70 class="cust_form" value=""></td>
-						</tr>
-						<tr>
-							<td align=right><font class="body_text"> <font color=#1C4754>Phone:&nbsp;</font></td>
-							<td colspan=2><table width=100%><tr><td align=left colspan=2><font class="body_text"><input type=text size=11 name=phone_number maxlength=12 class="cust_form" value=""></td><td align=right><font class="body_text"><font color=#1C4754>CountryCode:&nbsp;</font><input type=text size=4 name=phone_code maxlength=10 class="cust_form" value=""></td><td align=right><font class="body_text"><font color=#1C4754>Alt. Phone:&nbsp;</font><input type=text size=12 name=alt_phone maxlength=12 class="cust_form" value=""></td></td></tr></table>
-						</tr>
+						<table cellpadding='0' cellspacing='2'>
+							<tr>
+								<!-- Replaced by the next block 
+								<td align=right colspan=3><font class="body_text"><font color=#1C4754>Seconds:</font> <div id="callchannel">
+								<font class="body_text"><input type=text size=3 name=SecondS class="cust_form" value="">&nbsp;&nbsp;&nbsp;<font color=#1C4754>Channel: <input type=text size=9 name=callchannel class="cust_form" value="" >&nbsp;&nbsp;&nbsp;<font color=#1C4754>Cust Time:</font> <input type=text size=20 name=custdatetime class="cust_form" value="">
+								</td> 
+								-->
+							
+								<td align=center colspan=3>
+									<table width=100% align=center border=0>
+										<tr>
+											<!-- td width=1>&nbsp;</td -->
+											<td width=30% align=left valign=top>
+												<font class="body_text" color=#1C4754>CallDuration:&nbsp;</font>
+												<font class="body_input"><input type=text size=4 name=SecondS class="cust_form" value="">s</font>
+											</td>
+											<!--td width=20%><font class="body_text" color=#AACBD4>Channel:&nbsp;<a id=callchannel class="body_text"></a></td -->
+											<td width=25% align=right valign=middle><font class="body_text" color=#1C4754>Channel:&nbsp;<a id=callchannel class="body_text"></a></td>
+											<td width=45% align=right valign=top>
+												<font class="body_text" color=#1C4754>Cust Time:&nbsp;</a></font>
+												<font class="body_input"><input type=text size=19 maxlength=22 name=custdatetime class="cust_form" value=""></font>
+											</td>
+										</tr>
+									</table>
+								</td>
+							
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td colspan=2 align=center valign=top><font color=#1C4754><b>Customer Information</b></font><span id="CusTInfOSpaN"></span></td>
+							</tr>
+							<tr>
+								<td align=right>
+									<font class="body_text"> <font color=#1C4754>Title:&nbsp;</font>
+								</td>
+								<td align=left colspan=2>
+									<font class="body_input"><input type=text size=4 name=title maxlength=4 class="cust_form" value=""></font>&nbsp; 
+									<font class="body_text" color=#1C4754>First:</font>
+									<font class="body_input"> <input type=text size=14 name=first_name maxlength=30 class="cust_form" value=""></font>&nbsp; 
+									<font class="body_text" color=#1C4754>MI:</font> 
+									<font class="body_input"><input type=text size=1 name=middle_initial maxlength=1 class="cust_form" value=""></font>&nbsp; 
+									<font class="body_text" color=#1C4754>Last:</font> <font class="body_input"><input type=text size=15 name=last_name maxlength=30 class="cust_form" value=""></font>
+								</td>
+							</tr>
+							<tr>
+								<td align=right><font class="body_text" color=#1C4754>Address1:&nbsp;</font></td>
+								<td align=left colspan=2><font class="body_input"><input type=text size=58 name=address1 maxlength=100 class="cust_form" value=""></font></td>
+							</tr>
+							<tr>
+								<td align=right><font class="body_text" color=#1C4754>Address2:&nbsp;</font></td>
+								<td align=left><font class="body_input"><input type=text size=22 name=address2 maxlength=100 class="cust_form" value=""></font></td>
+								<td align=right><font class="body_text" color=#1C4754>Address3:&nbsp;</font><font class="body_input"><input type=text size=22 name=address3 maxlength=100 class="cust_form" value=""></font></td>
+							</tr>
+							<tr>
+								<td align=right><font class="body_text" color=#1C4754>City:&nbsp;</font></td>
+								<td align=left><font class="body_input"><input type=text size=22 name=city maxlength=50 class="cust_form" value=""></font>&nbsp;</td>
+								<td align=right> 
+									<font class="body_text" color=#1C4754>State:&nbsp;</font> <font class="body_input"><input type=text size=2 name=state maxlength=2 class="cust_form" value=""></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<font class="body_text" color=#1C4754>Zip:&nbsp;</font><font class="body_input"><input type=text size=9 name=postal_code maxlength=10 class="cust_form" value=""></font>
+								</td>
+							</tr>
+							<tr>
+								<td align=right><font class="body_text" color=#1C4754>Province:&nbsp;</font></td>
+								<td align=left><font class="body_input"><input type=text size=22 name=province maxlength=50 class="cust_form" value=""></font>&nbsp;</td>
+								<td align=right> <font class="body_text" color=#1C4754>Email:&nbsp;</font><font class="body_input"><input type=text size=22 name=email maxlength=70 class="cust_form" value=""></font></td>
+							</tr>
+							<tr>
+								<td align=right><font class="body_text" color=#1C4754>Phone:&nbsp;</font></td>
+								<td colspan=2>
+									<table width=100%>
+										<tr>
+											<td align=left colspan=2><font class="body_input"><input type=text size=11 name=phone_number maxlength=12 class="cust_form" value=""></font></td>
+											<td align=right><font class="body_text" color=#1C4754>CountryCode:&nbsp;</font><font class="body_input"><input type=text size=4 name=phone_code maxlength=10 class="cust_form" value=""></font></td>
+											<td align=right><font class="body_text" color=#1C4754>Alt. Phone:&nbsp;</font><font class="body_input"><input type=text size=12 name=alt_phone maxlength=12 class="cust_form" value=""></font></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
 						<tr>
 							<td align=right valign=top><font class="body_text" color=#1C4754>Comments:&nbsp;</font></td>
 							<td align=left colspan=2>
-								<font class="body_text">
+								<font class="body_tiny">
 	<?
 								if ( ($multi_line_comments) )
-									{echo "<TEXTAREA NAME=comments ROWS=2 COLS=65 class=\"cust_form\" value=\"\"></TEXTAREA>\n";}
+									{echo "<TEXTAREA NAME=comments ROWS=2 COLS=56 class=\"cust_form\" value=\"\"></TEXTAREA>\n";}
 								else
-									{echo "<input type=text size=67 name=comments maxlength=255 class=\"cust_form\" value=\"\">\n";}
+									{echo "<input type=text size=56 name=comments maxlength=255 class=\"cust_form\" value=\"\">\n";}
 	?>
 								</font>
 							</td>
 							
 						</tr>
 						<tr>
-							<td align=right><font class="body_text"> <font color=#1C4754>Custom1:&nbsp;</font></td>
-							<td align=left><font class="body_text"><input type=text size=26 name=security_phrase maxlength=100 class="cust_form" value="">&nbsp;</td>
-							<td align=right> <font class="body_text"><font color=#1C4754>Custom2:&nbsp;</font><input type=text size=26 name=vendor_lead_code maxlength=20 class="cust_form" value=""></td>
+							<td align=right><font class="body_text" color=#1C4754>Custom1:&nbsp;</font></td>
+							<td align=left><font class="body_input"><input type=text size=22 name=security_phrase maxlength=100 class="cust_form" value=""></font>&nbsp;</td>
+							<td align=right> <font class="body_text" color=#1C4754>Custom2:&nbsp;</font><font class="body_input"><input type=text size=22 name=vendor_lead_code maxlength=20 class="cust_form" value=""></font></td>
 						</tr>
 						<!-- tr>
 							<td align=right><font class="body_text"> <font color=#1C4754>Custom3:&nbsp;</font></td>
@@ -2498,7 +2530,7 @@ foreach ($forms as $form) {
 									echo "          <td align=right><font color=#1C4754 class=body_text>" . $field['description'] . ":&nbsp;</font></td>\n";
 									echo "          <td>\n";
 									if ($field['options'] == '') {
-									echo "          <input type=text size=" . $field['length'] . " maxlength=255 name=AF" . $field['id'] . " id=AF" . $field['id'] . " class=cust_form value=\"\">\n";
+									echo "          <input type=text size=" . $field['length'] . " maxlength=255 name=AF" . $field['id'] . " id=AF" . $field['id'] . " class=body_input value=\"\">\n";
 									} else {
 									echo "          <select name=AF" . $field['id'] . " id=AF" . $field['id'] . ">\n";
 									$options = split(',',$field['options']);
