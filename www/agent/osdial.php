@@ -1709,13 +1709,13 @@ foreach ($forms as $form) {
 	<style type="text/css">
 	<!--
 	#inputArea{font-family: "dejavu sans",Sans-Serif;background-color: #d6e5f4;padding: 0px;}
-	input, textarea{color: black;font-family: "dejavu sans",Sans-serif;font-size: 0.9em;padding: 0px;}
+	input, textarea{color: black;font-family: "dejavu sans",Sans-serif;font-size: 1.0em;padding: 0px;}
 	div.scroll_callback {height: 300px; width: 620px; overflow: scroll;}
 	div.scroll_list {height: 400px; width: 140px; overflow: scroll;}
 	div.scroll_script {height: <?=$SSheight ?>px; width: <?=$SDwidth ?>px; background: #FFF5EC; overflow: scroll; font-size: 12px;  font-family: sans-serif;}
 	div.text_input {overflow: auto; font-size: 10px;  font-family: sans-serif;}
 	.body_text {font-size: 10px;  font-family: "dejavu sans",sans-serif;border:none;}
- 	.body_input {font-size: 10px;  font-family: "dejavu sans",sans-serif;border:none;overflow:auto}
+ 	.body_input {font-size: 10px;  font-family: "dejavu sans",sans-serif;overflow:auto}
 	.queue_text_red {font-size: 12px;  font-family: sans-serif; font-weight: bold; color: red}
 	.queue_text {font-size: 12px;  font-family: sans-serif; color: black}
 	.preview_text {font-size: 13px;  font-family: sans-serif; background: #D0E0E7}
