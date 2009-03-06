@@ -930,7 +930,7 @@ if ($ADD==999999 && $SUB==14) {
 	
 		echo "&nbsp;&nbsp;<font color=red>&bull;&nbsp;&nbsp;NO AGENTS ON CALLS</font> \n";
 		$Aecho ="<br><br>";
-		$Aecho .= "<PRE><FONT face=Fixed,monospace SIZE=1>";
+		$Aecho .= "<PRE><FONT face=Fixed,monospace SIZE=-1>";
 		if (file_exists($pref . 'S1_load.txt')) {
 			$Aecho .= "  <font color=navy>Apache   Load Average:</font> $load_ave<br>";
 			$Aecho .= "  <font color=navy>MySQL    Load Average:</font> $load_ave_s1<br>";

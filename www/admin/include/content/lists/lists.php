@@ -107,8 +107,13 @@ if ($ADD==112) {
 		}
 	}
 	
+	if (isset($_GET["last_name"]))				{$last_name=$_GET["last_name"];}
+		elseif (isset($_POST["last_name"]))		{$last_name=$_POST["last_name"];}
+	if (isset($_GET["first_name"]))				{$first_name=$_GET["first_name"];}
+		elseif (isset($_POST["first_name"]))		{$first_name=$_POST["first_name"];}
 	
-	if ( (!$vendor_id) and (!$phone)  and (!$lead_id) ) {
+	
+	if ( (!$vendor_id) and (!$phone)  and (!$lead_id) and (!$last_name) and (!$first_name) ) {
 		echo "<style type=text/css> content {vertical-align:center}</style>";
 		echo "\n<br><br><center>\n";
 		echo "<TABLE width=$section_width cellspacing=0 bgcolor=#C1D6DF>\n";
@@ -118,14 +123,18 @@ if ($ADD==112) {
 		echo "<input type=hidden name=DB value=\"$DB\">\n";
 		echo "<br><center><font color=navy>Enter one of the following</font></center></td>";
 		echo "</tr>";
-		echo "<tr colspan=1>\n";
-		echo "	<td align=right width=50%>Vendor ID (vendor lead code):&nbsp;</td>";
-		echo "	<td width=50%><input type=text name=vendor_id size=10 maxlength=10></td>";
+		echo "<tr>\n";
+		echo "	<td align=right width=50%>Custom 2:&nbsp;</td>";
+		echo "	<td width=50%><input type=text name=vendor_id size=10 maxlength=10> (Aka Vendor Lead Code)</td>";
 		echo "</tr>";
 		echo "<tr> \n";
 		echo "	<td align=right>Home Phone:&nbsp;</td>";
 		echo "	<td align=left><input type=text name=phone size=10 maxlength=10></td>";
 		echo "</tr>";
+		echo "<tr> \n";
+		echo "	<td align=right>Last, First Name:&nbsp;</td>";
+		echo "	<td align=left><input type=text name=last_name size=10 maxlength=20><input type=text name=first_name size=10 maxlength=20></td>";
+		echo "</tr>\n";
 		echo "<tr> \n";
 		echo "	<td align=right>Lead ID:&nbsp;</td>";
 		echo "	<td align=left><input type=text name=lead_id size=10 maxlength=10></td>";
@@ -135,28 +144,40 @@ if ($ADD==112) {
 		echo "</form>\n";
 		echo "</tr>";
 		echo "</table>\n";
-	
+
 	/*
 	echo "<tr bgcolor=#C1D6DF><td align=right>List ID: </td><td align=left><input type=text name=list_id size=8 maxlength=8> (digits only)$NWB#osdial_lists-list_id$NWE</td></tr>\n";
 	echo "<tr bgcolor=#C1D6DF><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20>$NWB#osdial_lists-list_name$NWE</td></tr>\n";
 	*/
+
 	
 	} else {
-	
-		if ($vendor_id) {
-			$stmt="SELECT * from osdial_list where vendor_lead_code='" . mysql_real_escape_string($vendor_id) . "' order by modify_date desc limit 1000";
+		
+		if ($last_name and $first_name) {
+			$stmt="SELECT * from vicidial_list where last_name LIKE '" . mysql_real_escape_string($last_name) . "%' AND first_name LIKE '" . mysql_real_escape_string($first_name) . "%' order by modify_date desc limit 1000";
+			//$stmt="SELECT * from osdial_list where last_name='" . mysql_real_escape_string($last_name) . "' and first_name='" . mysql_real_escape_string($first_name) . "' order by modify_date desc limit 1000";
 		} else {
-			if ($phone) {
-				$stmt="SELECT * from osdial_list where phone_number='" . mysql_real_escape_string($phone) . "' order by modify_date desc limit 1000";
+			if ($last_name) {
+				$stmt="SELECT * from osdial_list where last_name='" . mysql_real_escape_string($last_name) . "' order by modify_date desc limit 1000";
 			} else {
-				if ($lead_id) {
-					$stmt="SELECT * from osdial_list where lead_id='" . mysql_real_escape_string($lead_id) . "' order by modify_date desc limit 1000";
+				if ($vendor_id) {
+					$stmt="SELECT * from osdial_list where vendor_lead_code='" . mysql_real_escape_string($vendor_id) . "' order by modify_date desc limit 1000";
 				} else {
-					print "ERROR: you must search for something! Go back and search for something";
-					exit;
+					if ($phone) {
+						$stmt="SELECT * from osdial_list where phone_number='" . mysql_real_escape_string($phone) . "' order by modify_date desc limit 1000";
+					} else {
+						if ($lead_id) {
+							$stmt="SELECT * from osdial_list where lead_id='" . mysql_real_escape_string($lead_id) . "' order by modify_date desc limit 1000";
+						} else {
+							print "ERROR: You must search for something!";
+							exit;
+						}
+					}
 				}
 			}
-		}
+		} 
+		
+		
 		if ($DB) {
 			echo "\n\n$stmt\n\n";
 		}

@@ -16,6 +16,9 @@
 ### (dialer) Write a file listing current voicemail
 * * * * * /usr/sbin/asterisk -rx "show voicemail users" > /opt/osdisl/html/admin/VMnow.txt
 
+### (ALL) Get load average.
+* * * * * cat /proc/loadavg | cut -d" " -f1 > /opt/osdial/html/admin/S1_load.txt
+
 ### (sql) Clean out auto-calls regularly
 * * * * * /opt/osdial/bin/AST_CLEAR_auto_calls.pl
 

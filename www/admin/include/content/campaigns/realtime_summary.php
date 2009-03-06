@@ -405,7 +405,7 @@ if ($ADD==999999 && $SUB==13) {
 	//$load_ave = get_server_load($load_ave);
 		
 	
-	$Aecho="<pre><font face=Fixed,monospace SIZE=1>";
+	$Aecho="<pre><font face=Fixed,monospace SIZE=-1>";
 	if (file_exists($pref . 'S1_load.txt')) {
 		$s1_load = file($pref . 'S1_load.txt');
 		list( $line_num, $line ) = each( $s1_load );
