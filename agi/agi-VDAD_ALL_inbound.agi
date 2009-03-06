@@ -1,6 +1,26 @@
 #!/usr/bin/perl
 #
 # agi-VDAD_ALL_inbound.agi version 2.0.4   *DBI-version*
+#
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+## Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
 # 
 # runs when a call comes in from an inbound call. This script will 
 # send the calls out to the closers that are logged in.
@@ -39,8 +59,6 @@
 #exten => 1234,1,Answer                  ; Answer the line
 #exten => 1234,2,AGI(agi-VDAD_ALL_inbound.agi,CID-----LB-----INB-----7274515134-----Closer-----park----------999-----1-----OUTB)
 #exten => 1234,3,Hangup
-#
-# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
 # changes:
 # 70828-0924 - First Build

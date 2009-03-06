@@ -2,6 +2,26 @@
 #
 # AST_cleanup_agent_log.pl version 0.3   *** DBI version ***
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
 # DESCRIPTION:
 # to be run frequently to clean up the osdial_agent_log to fix erroneous time 
 # calculations due to out-of-order osdial_agent_log updates. This happens 0.5%
@@ -9,8 +29,6 @@
 # wrote this script to fix the miscalculations
 #
 # This program only needs to be run by one server
-#
-# Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
 # CHANGES
 # 60711-0945 - changed to DBI by Marin Blu

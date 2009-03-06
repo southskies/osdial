@@ -2,6 +2,26 @@
 #
 # AST_VDauto_dial_FILL.pl version 2.0.3   *DBI-version*
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
 # DESCRIPTION:
 # Places auto_dial calls on the OSDIAL dialer system across all servers only 
 # for campaigns that have a shortfall in number of lines dialed.
@@ -11,8 +31,6 @@
 # Not for use in systems with only one Asterisk/OSDIAL server
 #
 # Should only be run on one server in a multi-server Asterisk/OSDIAL cluster
-#
-# Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
 # CHANGELOG:
 # 61115-1246 - First build, framework setup, non-functional

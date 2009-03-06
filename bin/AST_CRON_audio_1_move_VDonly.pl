@@ -2,6 +2,26 @@
 #
 # AST_CRON_audio_1_move_VDonly.pl
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
 # This is a STEP-1 program in the audio archival process
 #
 # IMPORTANT!!! ONLY TO BE USED WHEN ONLY OSDIAL RECORDINGS ARE ON THE SYSTEM!
@@ -25,8 +45,6 @@
 # This program assumes that recordings are saved by Asterisk as .wav
 # should be easy to change this code if you use .gsm instead
 # 
-# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
-#
 # 
 # 80302-1958 - First Build
 #

@@ -1,5 +1,25 @@
 #!/usr/bin/perl
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
 # AST_CRON_audio_2_compress.pl
 #
 # This is a STEP-2 program in the audio archival process
@@ -24,9 +44,6 @@
 # /var/spool/asterisk/monitorDONE	# where the mixed -all files are put
 # 
 # This program assumes that recordings are saved by Asterisk as .wav
-# 
-# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>    LICENSE: AGPLv2
-#
 # 
 # 80302-1958 - First Build
 #

@@ -2,6 +2,26 @@
 #
 # AST_vm_update.pl version 0.4   *DBI-version*
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
 # DESCRIPTION:
 # uses the Asterisk Manager interface and Net::MySQL to update the count of 
 # voicemail messages for each mailbox (in the phone table) in the voicemail
@@ -24,8 +44,6 @@
 # 600 mailboxes that it can check due to the wait interval. If you have 
 # more than this either change the cron when this script is run or change the 
 # wait interval below
-#
-# Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
 # 50823-1422 - Added database server variable definitions lookup
 # 50823-1452 - Added commandline arguments for debug at runtime

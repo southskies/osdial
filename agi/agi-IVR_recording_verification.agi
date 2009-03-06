@@ -2,6 +2,26 @@
 #
 # agi-IVR_recording_verification.agi version 0.1
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+## Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
 # This script is designed to function as a complete automated 3rd party 
 # verification IVR recording system. This script will work by optionally asking 
 # for a company ID and/or a customer phone number, then it will play through the 
@@ -41,8 +61,6 @@
 #exten => _83002*,4,AGI(agi-IVR_recording_verification.agi,7275551234---N---Y---N---N---Y-10-85100001---N---85100002-85100003---85100004---BOTH)
 #exten => _83002*,5,Hangup
 #
-#
-# Copyright (C) 2007  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
 # CHANGELOG
 # 70912-1105 - First build, non-functional

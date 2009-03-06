@@ -1,8 +1,5 @@
 #!/usr/bin/perl
-
 #
-#
-## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
 ## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
 ##
 ##     This file is part of OSDial.
@@ -20,15 +17,9 @@
 ##     You should have received a copy of the GNU Affero General Public
 ##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 ##
-#
-#
-# CHANGES
-#
-# 60814-1658 - added option to start without logging through servers table setting
-#
 
-# default path to osdial.configuration file:
-$PATHconf =		'/etc/osdial.conf';
+# default path to astguiclient configuration file:
+$PATHconf =		'/etc/astguiclient.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -40,6 +31,16 @@ foreach(@conf)
 	$line =~ s/ |>|\n|\r|\t|\#.*|;.*//gi;
 	if ( ($line =~ /^PATHhome/) && ($CLIhome < 1) )
 		{$PATHhome = $line;   $PATHhome =~ s/.*=//gi;}
+	if ( ($line =~ /^PATHlogs/) && ($CLIlogs < 1) )
+		{$PATHlogs = $line;   $PATHlogs =~ s/.*=//gi;}
+	if ( ($line =~ /^PATHagi/) && ($CLIagi < 1) )
+		{$PATHagi = $line;   $PATHagi =~ s/.*=//gi;}
+	if ( ($line =~ /^PATHweb/) && ($CLIweb < 1) )
+		{$PATHweb = $line;   $PATHweb =~ s/.*=//gi;}
+	if ( ($line =~ /^PATHsounds/) && ($CLIsounds < 1) )
+		{$PATHsounds = $line;   $PATHsounds =~ s/.*=//gi;}
+	if ( ($line =~ /^PATHmonitor/) && ($CLImonitor < 1) )
+		{$PATHmonitor = $line;   $PATHmonitor =~ s/.*=//gi;}
 	if ( ($line =~ /^VARserver_ip/) && ($CLIserver_ip < 1) )
 		{$VARserver_ip = $line;   $VARserver_ip =~ s/.*=//gi;}
 	if ( ($line =~ /^VARDB_server/) && ($CLIDB_server < 1) )
@@ -55,41 +56,57 @@ foreach(@conf)
 	$i++;
 	}
 
-`PERL5LIB="$PATHhome/libs"; export PERL5LIB`;
+if (!$VARDB_port) {$VARDB_port='3306';}
 
-use DBI;	  
-
+use Asterisk::AGI;
+$AGI = new Asterisk::AGI;
+use DBI;
+  
 $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
- or die "Couldn't connect to database: " . DBI->errstr;
+    or die "Couldn't connect to database: " . DBI->errstr;
+
+
+
+$|=1;
+while(<STDIN>) 
+{
+	chomp;
+	last unless length($_);
+	if ($AGILOG)
+	{
+		if (/^agi_(\w+)\:\s+(.*)$/)
+		{
+			$AGI{$1} = $2;
+		}
+	}
+
+	if (/^agi_uniqueid\:\s+(.*)$/)		{$unique_id = $1; $uniqueid = $unique_id;}
+	if (/^agi_priority\:\s+(.*)$/)		{$priority = $1;}
+	if (/^agi_channel\:\s+(.*)$/)		{$channel = $1;}
+	if (/^agi_extension\:\s+(.*)$/)		{$extension = $1;}
+	if (/^agi_type\:\s+(.*)$/)		{$type = $1;}
+	if (/^agi_callerid\:\s+(.*)$/)		{$callerid = $1;}
+	if (/^agi_calleridname\:\s+(.*)$/)	{$calleridname = $1;}
+}
+
+$lu = substr($extension, 1, 4);
 
 ### Grab Server values from the database
-	$stmtA = "SELECT vd_server_logs FROM servers where server_ip = '$VARserver_ip';";
-	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-	$sthArows=$sthA->rows;
-	$rec_count=0;
-	while ($sthArows > $rec_count)
-		{
-		 @aryA = $sthA->fetchrow_array;
-			$DBvd_server_logs =			"$aryA[0]";
-			if ($DBvd_server_logs =~ /Y/)	{$SYSLOG = '1';}
-				else {$SYSLOG = '0';}
-		 $rec_count++;
-		}
-	$sthA->finish();
+$stmtA = "SELECT conf_exten FROM vicidial_live_agents where extension LIKE '%" . $lu . "%';";
+$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+@aryA = $sthA->fetchrow_array;
+$sthA->finish();
 
-if ($SYSLOG) 
-	{
-	print "\nStarting Asterisk... screen logging on\n";
-	`/usr/bin/screen -L -d -m -S asterisk /usr/sbin/asterisk -vvvvvvvvvvvvvvvvvvvvvgc`;
-	}
-else
-	{
-	print "\nStarting Asterisk... screen logging off\n";
-	`/usr/bin/screen -d -m -S asterisk /usr/sbin/asterisk -vvvvgc`;
-	}
-
-print "Asterisk started\n";
-
-sleep(10);
-
+$AGI->answer;
+if ($aryA[0] eq "") {
+	$AGI->stream_file('extension');
+	$AGI->say_digits($lu);
+	$AGI->stream_file('not-yet-connected');
+	$AGI->stream_file('check-number-dial-again');
+} else {
+	sleep 1;
+	$AGI->stream_file('connected');
+	$AGI->exec("Dial",'Local/' . $aryA[0] . '@default');
+}
+$AGI->hangup;

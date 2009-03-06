@@ -1,6 +1,26 @@
 #!/usr/bin/perl
 #
 # call_inbound.agi version 0.3   *DBI-version*
+#
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+## Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
 # 
 # runs at the beginning and ending of every inbound call received
 # 
@@ -16,8 +36,6 @@
 #exten => _*NXXNXXXXXX*3429,3,AGI(call_inbound.agi,spa2000-----8005553429-----Inbound 800-----x-----y-----z-----w)
 # 
 # 
-#
-# Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
 # changes:
 # 60731-1435 - changed to use DBI-DBD::mysql
