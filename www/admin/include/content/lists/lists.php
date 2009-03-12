@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
 # Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
-# Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+# Copyright (C) 2009  Steve Szmidt <info@callcentersg.com>  LICENSE: AGPLv3
 #
 #     This file is part of OSDial.
 #
@@ -35,7 +35,7 @@ if ($ADD==111)
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
 	echo "<center><br><font color=navy size=+1>ADD A NEW LIST</font><form action=$PHP_SELF method=POST><br><br>\n";
-	echo "<input type=hidden name=ADD value=122>\n";
+	echo "<input type=hidden name=ADD value=211>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=#C1D6DF><td align=right>List ID: </td><td align=left><input type=text name=list_id size=8 maxlength=8> (digits only)$NWB#osdial_lists-list_id$NWE</td></tr>\n";
 	echo "<tr bgcolor=#C1D6DF><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20>$NWB#osdial_lists-list_name$NWE</td></tr>\n";

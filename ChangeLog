@@ -2,3 +2,13 @@
     * Makefile: Update with new directory structure.
     * OSDconfig: Update with new direcory structure.
 
+2009-03-01  Lott Caskey  <lottcaskey@gmail.com>
+    * ALL: Modified copyright information in all files.
+    * ALL: Added AGPLv3 preamble to all files.
+    * ALL: Rename all files from *vicidial* to *osdial*
+    * ALL: Rename all database tables in all source files from vicidial_* to
+    osdial_*.
+
+2009-03-11  Lott Caskey  <lottcaskey@gmail.com>
+    * www/admin/include/content/lists/lists.php: Patch to fix lead loading.
+    * extras/osdial.cron: Fix Loadavg generation file.

@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
 # Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
-# Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+# Copyright (C) 2009  Steve Szmidt <info@callcentersg.com>  LICENSE: AGPLv3
 #
 #     This file is part of OSDial.
 #
@@ -914,7 +914,11 @@ if ($ADD==999999 && $SUB==14) {
 		echo "  <SPAN class=\"violet\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - On call > 1 minute</B><br>";
 		echo "  <SPAN class=\"purple\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - On call > 5 minutes</B>";
 		echo "</td></tr></table>";
+		
+		/*
 		$Aecho .= "<PRE><FONT face=Fixed,monospace SIZE=1>";
+		
+		$load_ave = getloadavg();
 		
 		$Aecho ='<br><br>';
 		if (file_exists($pref . 'S1_load.txt')) {
@@ -946,19 +950,79 @@ if ($ADD==999999 && $SUB==14) {
 		$Aecho .= "<br></font>";
 			
 		echo "$Aecho";
+		*/
+		
+		
+		// Get server loads, txt file from other servers
+		//$load_ave = get_server_load($load_ave);
+		
+		$load_ave = getloadavg();
+		
+		$Aecho="<br><pre><font face=Fixed,monospace SIZE=1>";
+		if (file_exists($pref . 'S1_load.txt')) {
+			$s1_load = file($pref . 'S1_load.txt');
+			list( $line_num, $line ) = each( $s1_load );
+			$load_ave_s1=$line;
+			$Aecho .= "  <font color=navy>Apache   Load Average:</font> $load_ave<br>";
+			$Aecho .= "  <font color=navy>MySQL    Load Average:</font> $load_ave_s1";
+		} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
+			$Aecho .= "  <font color=navy>Dialer Load Average:</font> $load_ave<br>";
+		} else {
+			$Aecho .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave";
+		}
+		if (file_exists($pref . 'D1_load.txt')) {
+			$d1_load = file($pref . 'D1_load.txt');
+			list( $line_num, $line ) = each( $d1_load ) ;
+			$load_ave_d1=$line;
+			$Aecho .= "  <font color=navy>Dialer 1 Load Average:</font> $load_ave_d1";
+		}
+		if (file_exists($pref . 'D2_load.txt')) {
+			$d2_load = file($pref . 'D2_load.txt');
+			list( $line_num, $line ) = each( $d2_load );
+			$load_ave_d2=$line;
+			$Aecho .= "  <font color=navy>Dialer 2 Load Average:</font> $load_ave_d2";
+		}
+		if (file_exists($pref . 'D3_load.txt')) {
+			$d3_load = file($pref . 'D3_load.txt');
+			list( $line_num, $line ) = each( $d3_load );
+			$load_ave_d3=$line;
+			$Aecho .= "  <font color=navy>Dialer 3 Load Average:</font> $load_ave_d3";
+		}
+		if (file_exists($pref . 'D4_load.txt')) {
+			$d4_load = file($pref . 'D4_load.txt');
+			list( $line_num, $line ) = each( $d4_load );
+			$load_ave_d4=$line;
+			$Aecho .= "  <font color=navy>Dialer 4 Load Average:</font> $load_ave_d4";
+		}
+		if (file_exists($pref . 'D5_load.txt')) {
+			$d5_load = file($pref . 'D5_load.txt');
+			list( $line_num, $line ) = each( $d5_load );
+			$load_ave_d5=$line;
+			$Aecho .= "  <font color=navy>Dialer 5 Load Average:</font> $load_ave_d5";
+		}
+		if (file_exists($pref . 'D6_load.txt')) {
+			$d6_load = file($pref . 'D6_load.txt');
+			list( $line_num, $line ) = each( $d6_load );
+			$load_ave_d6=$line;
+			$Aecho .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6";
+		}
+		//echo "<tr><td colspan=10>";
+		echo "$Aecho";
+		echo "</pre>";
 		
 	} else {
 	
 		echo "&nbsp;&nbsp;<font color=red>&bull;&nbsp;&nbsp;NO AGENTS ON CALLS</font> \n";
 		$Aecho ="<br><br>";
-		$Aecho .= "<PRE><FONT face=Fixed,monospace SIZE=-1>";
+		/*
+		$Aecho .= "<PRE><FONT face=Fixed,monospace SIZE=1>";
 		if (file_exists($pref . 'S1_load.txt')) {
 			$Aecho .= "  <font color=navy>Apache   Load Average:</font> $load_ave<br>";
-			$Aecho .= "  <font color=navy>MySQL    Load Average:</font> $load_ave_s1<br>";
+			$Aecho .= "  <font color=navy>MySQL    Load Average:</font> $load_ave_s1";
 		} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
 			$Aecho .= "  <font color=navy>Dialer Load Average:</font> $load_ave<br>";
 		} else {
-			$Aecho .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave<br>";
+			$Aecho .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave";
 		}
 		if (file_exists($pref . 'D1_load.txt')) {
 			$Aecho .= "  <font color=navy>Dialer 1 Load Average:</font> $load_ave_d1";
@@ -979,6 +1043,64 @@ if ($ADD==999999 && $SUB==14) {
 			$Aecho .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6";
 		}
 		echo "$Aecho";
+		*/
+		
+		// Get server loads, txt file from other servers
+		//$load_ave = get_server_load($load_ave);
+		
+		$load_ave = getloadavg();
+		
+		$Aecho="<br><pre><font face=Fixed,monospace SIZE=1>";
+		if (file_exists($pref . 'S1_load.txt')) {
+			$s1_load = file($pref . 'S1_load.txt');
+			list( $line_num, $line ) = each( $s1_load );
+			$load_ave_s1=$line;
+			$Aecho .= "  <font color=navy>Apache   Load Average:</font> $load_ave<br>";
+			$Aecho .= "  <font color=navy>MySQL    Load Average:</font> $load_ave_s1";
+		} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
+			$Aecho .= "  <font color=navy>Dialer Load Average:</font> $load_ave<br>";
+		} else {
+			$Aecho .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave";
+		}
+		if (file_exists($pref . 'D1_load.txt')) {
+			$d1_load = file($pref . 'D1_load.txt');
+			list( $line_num, $line ) = each( $d1_load ) ;
+			$load_ave_d1=$line;
+			$Aecho .= "  <font color=navy>Dialer 1 Load Average:</font> $load_ave_d1";
+		}
+		if (file_exists($pref . 'D2_load.txt')) {
+			$d2_load = file($pref . 'D2_load.txt');
+			list( $line_num, $line ) = each( $d2_load );
+			$load_ave_d2=$line;
+			$Aecho .= "  <font color=navy>Dialer 2 Load Average:</font> $load_ave_d2";
+		}
+		if (file_exists($pref . 'D3_load.txt')) {
+			$d3_load = file($pref . 'D3_load.txt');
+			list( $line_num, $line ) = each( $d3_load );
+			$load_ave_d3=$line;
+			$Aecho .= "  <font color=navy>Dialer 3 Load Average:</font> $load_ave_d3";
+		}
+		if (file_exists($pref . 'D4_load.txt')) {
+			$d4_load = file($pref . 'D4_load.txt');
+			list( $line_num, $line ) = each( $d4_load );
+			$load_ave_d4=$line;
+			$Aecho .= "  <font color=navy>Dialer 4 Load Average:</font> $load_ave_d4";
+		}
+		if (file_exists($pref . 'D5_load.txt')) {
+			$d5_load = file($pref . 'D5_load.txt');
+			list( $line_num, $line ) = each( $d5_load );
+			$load_ave_d5=$line;
+			$Aecho .= "  <font color=navy>Dialer 5 Load Average:</font> $load_ave_d5";
+		}
+		if (file_exists($pref . 'D6_load.txt')) {
+			$d6_load = file($pref . 'D6_load.txt');
+			list( $line_num, $line ) = each( $d6_load );
+			$load_ave_d6=$line;
+			$Aecho .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6";
+		}
+		//echo "<tr><td colspan=10>";
+		echo "$Aecho";
+		
 	}
 	echo "</pre>";
 	//echo "<tr><td colspan=10>";

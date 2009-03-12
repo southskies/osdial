@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
 # Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
-# Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+# Copyright (C) 2009  Steve Szmidt <info@callcentersg.com>  LICENSE: AGPLv3
 #
 #     This file is part of OSDial.
 #
@@ -432,11 +432,11 @@ if ($ADD==999999 && $SUB==13) {
 		list( $line_num, $line ) = each( $s1_load );
 		$load_ave_s1=$line;
 		$Aecho .= "  <font color=navy>Apache   Load Average:</font> $load_ave<br>";
-		$Aecho .= "  <font color=navy>MySQL    Load Average:</font> $load_ave_s1<br>";
+		$Aecho .= "  <font color=navy>MySQL    Load Average:</font> $load_ave_s1";
 	} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
 		$Aecho .= "  <font color=navy>Dialer Load Average:</font> $load_ave<br>";
 	} else {
-		$Aecho .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave<br>";
+		$Aecho .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave";
 	}
 	if (file_exists($pref . 'D1_load.txt')) {
 		$d1_load = file($pref . 'D1_load.txt');

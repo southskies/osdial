@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
 # Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
-# Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+# Copyright (C) 2009  Steve Szmidt <info@callcentersg.com>  LICENSE: AGPLv3
 #
 #     This file is part of OSDial.
 #
