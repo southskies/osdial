@@ -17,4 +17,4 @@ INSERT INTO configuration (name,data) values('ArchivePath','');
 INSERT INTO configuration (name,data) values('ArchiveWebPath','');
 INSERT INTO configuration (name,data) values('ArchiveMixFormat','');
 
-UPDATE system_settings SET version='2.0.4-004';
+UPDATE system_settings SET version='2.0.4.004';

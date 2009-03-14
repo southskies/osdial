@@ -2,7 +2,7 @@
 #
 # Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
 # Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
-# Copyright (C) 2009  Steve Szmidt <info@callcentersg.com>  LICENSE: AGPLv3
+# Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
 #
 #     This file is part of OSDial.
 #
@@ -426,7 +426,7 @@ if ($ADD==999999 && $SUB==13) {
 	//$load_ave = get_server_load($load_ave);
 		
 	
-	$Aecho="<pre><font face=Fixed,monospace SIZE=-1>";
+	$Aecho="<pre><font face=Fixed,monospace SIZE=-2>";
 	if (file_exists($pref . 'S1_load.txt')) {
 		$s1_load = file($pref . 'S1_load.txt');
 		list( $line_num, $line ) = each( $s1_load );

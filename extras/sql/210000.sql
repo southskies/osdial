@@ -44,4 +44,4 @@ INSERT INTO osdial_campaign_fields values('6','1','TYPE','CC Type','VISA,Master 
 INSERT INTO osdial_campaign_fields values('7','1','NUMBER','CC Number','','22','7','0');
 INSERT INTO osdial_campaign_fields values('8','1','CVV','CVV Code','','5','8','0');
 
-UPDATE system_settings SET version='2.1.0-000';
+UPDATE system_settings SET version='2.1.0.000';

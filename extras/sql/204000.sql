@@ -137,4 +137,4 @@ UPDATE osdial_campaigns SET list_order_mix='DISABLED';
 UPDATE osdial_campaigns SET campaign_allow_inbound='Y' where campaign_id REGEXP '(CLOSER|BLEND|INBND|_C\$|_B\$|_I\$)';
 
 # Jump over 204001 (defaults for new config, this is an update).
-UPDATE system_settings SET version='2.0.4-001';
+UPDATE system_settings SET version='2.0.4.001';

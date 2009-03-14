@@ -54,4 +54,4 @@ CREATE TABLE qc_transfers (
         index (qc_server_id,qc_recording_id,status)
 ) ENGINE=INNODB;
 
-UPDATE system_settings SET version='2.0.4-005';
+UPDATE system_settings SET version='2.0.4.005';

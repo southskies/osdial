@@ -12,3 +12,13 @@
 2009-03-11  Lott Caskey  <lottcaskey@gmail.com>
     * www/admin/include/content/lists/lists.php: Patch to fix lead loading.
     * extras/osdial.cron: Fix Loadavg generation file.
+
+2009-03-13  Steve Szmidt  <info@callcentersg.com>
+    * realtime reports: Minor cosmetic changes to RT Detail and Summary.
+    * lists.php: Minor cosmetic changes to Lists, resolved the design error
+    that let you reimport the last leads over and over.  Added list ID check
+    when override is used. Both give appropriate error msg.
+    Plans on checking lead ID in file before importing.
+    * footer.php: Footer changed to include graphics that proclaims Download
+    OSDial here!
+

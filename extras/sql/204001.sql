@@ -163,4 +163,4 @@ INSERT INTO `servers` VALUES ('osdial-d1','OSDial Dialer 1','127.0.0.1','Y','1.2
 
 INSERT INTO osdial_lists SET list_id='999',list_name='Default inbound list',campaign_id='TESTCAMP',active='N';
 
-UPDATE system_settings SET version='2.0.4-001';
+UPDATE system_settings SET version='2.0.4.001';

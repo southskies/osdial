@@ -60,4 +60,4 @@ ALTER TABLE osdial_users ENGINE=InnoDB;
 ALTER TABLE osdial_xfer_log ENGINE=InnoDB;
 ALTER TABLE web_client_sessions ENGINE=InnoDB;
 
-UPDATE system_settings SET version='2.0.4-002';
+UPDATE system_settings SET version='2.0.4.002';
