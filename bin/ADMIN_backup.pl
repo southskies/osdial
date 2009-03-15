@@ -2,10 +2,28 @@
 #
 # ADMIN_backup.pl    version 2.0.4
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
 # DESCRIPTION:
 # Backs-up the asterisk database, conf/agi/sounds/bin files 
-#
-# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
 # CHANGELOG
 #
@@ -113,8 +131,8 @@ else
 print "no command line options set\n";
 }
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -237,7 +255,7 @@ if ( ($without_db < 1) && ($conf_only < 1) )
 if ( ($without_conf < 1) && ($db_only < 1) )
 	{
 	### BACKUP THE ASTERISK CONF FILES ON THE SERVER ###
-	`$tarbin cf $ARCHIVEpath/temp/$VARserver_ip$conf$wday$tar /etc/astguiclient.conf /etc/zaptel.conf /etc/asterisk`;
+	`$tarbin cf $ARCHIVEpath/temp/$VARserver_ip$conf$wday$tar /etc/osdial.conf /etc/zaptel.conf /etc/asterisk`;
 
 	### BACKUP THE WANPIPE CONF FILES(if there are any) ###
 	if ( -e ('/etc/wanpipe/wanpipe1.conf')) 
@@ -275,7 +293,7 @@ if ( ($conf_only < 1) && ($db_only < 1) && ($without_web < 1) )
 
 if ( ($conf_only < 1) && ($db_only < 1) )
 	{
-	### BACKUP THE ASTGUICLIENT AND AGI FILES ON THE SERVER ###
+	### BACKUP THE OSDIAL AND AGI FILES ON THE SERVER ###
 	`$tarbin cf $ARCHIVEpath/temp/$VARserver_ip$bin$wday$tar $PATHagi $PATHhome`;
 	}
 

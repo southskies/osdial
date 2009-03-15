@@ -2,19 +2,37 @@
 #
 # VD_auto_post_VERIFY.agi version 0.1   *DBI-version*
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+## Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
 # NOTE: This script is only used with auto-message campaigns with dynamic data
 # 
 # runs after a call is answered
 #
 # You need to put lines similar to those below in your extensions.conf file:
 # 
-# ; VICIDIAL_auto_dialer transfer script AMD with Load Balanced:
+# ; osdial_auto_dialer transfer script AMD with Load Balanced:
 #exten => 8320,1,WaitForSilence(2000,2) ; wait for 2 seconds of silence
 #exten => 8320,2,AGI(VD_auto_post_VERIFY.agi,${EXTEN})
 #exten => 8320,3,Hangup
 # 
-#
-# Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
 # changes:
 # 60915-1616 - first build
@@ -50,8 +68,8 @@ $start_time=$now_date;
 	$SQLdate = "$year-$mon-$mday $hour:$min:$sec";
 	$SQLdateBEGIN = $SQLdate;
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -255,18 +273,18 @@ exit;
 
 $AGI->stream_file('beep');
 
-$stmtA = "UPDATE vicidial_log set status='PU' where lead_id='$VD_lead_id' order by call_date desc limit 1;";
+$stmtA = "UPDATE osdial_log set status='PU' where lead_id='$VD_lead_id' order by call_date desc limit 1;";
 	if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
-if ($AGILOG) {$agi_string = "--    VDAD vicidial_log PU update: |$affected_rows|$uniqueid|";   &agi_output;}
+if ($AGILOG) {$agi_string = "--    VDAD osdial_log PU update: |$affected_rows|$uniqueid|";   &agi_output;}
 
-$stmtA = "UPDATE vicidial_list set status='PU' where lead_id='$VD_lead_id';";
+$stmtA = "UPDATE osdial_list set status='PU' where lead_id='$VD_lead_id';";
 	if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
-if ($AGILOG) {$agi_string = "--    VDAD vicidial_list PU update: |$affected_rows|$uniqueid|";   &agi_output;}
+if ($AGILOG) {$agi_string = "--    VDAD osdial_list PU update: |$affected_rows|$uniqueid|";   &agi_output;}
 
 ### Check to see if the number is in the system ###
-$stmtA= "SELECT security_phrase,comments from vicidial_list where lead_id='$VD_lead_id';";
+$stmtA= "SELECT security_phrase,comments from osdial_list where lead_id='$VD_lead_id';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -312,15 +330,15 @@ $AGI->stream_file("$message_two");
 
 
 
-$stmtA = "UPDATE vicidial_log set status='AL' where lead_id='$VD_lead_id' order by call_date desc limit 1;";
+$stmtA = "UPDATE osdial_log set status='AL' where lead_id='$VD_lead_id' order by call_date desc limit 1;";
 	if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
-if ($AGILOG) {$agi_string = "--    VDAD vicidial_log AM update: |$affected_rows|$uniqueid|";   &agi_output;}
+if ($AGILOG) {$agi_string = "--    VDAD osdial_log AM update: |$affected_rows|$uniqueid|";   &agi_output;}
 
-$stmtA = "UPDATE vicidial_list set status='AL' where lead_id='$VD_lead_id';";
+$stmtA = "UPDATE osdial_list set status='AL' where lead_id='$VD_lead_id';";
 	if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
-if ($AGILOG) {$agi_string = "--    VDAD vicidial_list AM update: |$affected_rows|$uniqueid|";   &agi_output;}
+if ($AGILOG) {$agi_string = "--    VDAD osdial_list AM update: |$affected_rows|$uniqueid|";   &agi_output;}
 
 $dbhA->disconnect();
 

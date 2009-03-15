@@ -1,19 +1,37 @@
 #!/usr/bin/perl
 #
 # agi-VDADinbound_NI_DNC_CIDlookup.agi version 0.1   *DBI-version*
+#
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+## Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
 # 
 # runs when a call comes in from an inbound call. This script will 
 # play a message and take input to automatically change customer lead to NI or DNC.
 #  *** This version detects inbound callerID over PRI ***
 #
-# ;inbound call from outbound CID callbacks from VICIDIAL calls:
+# ;inbound call from outbound CID callbacks from osdial calls:
 #exten => 1234,1,Ringing                 ; call ringing
 #exten => 1234,2,Wait(1)                 ; Wait 1 second for CID delivery from PRI
 #exten => 1234,3,Answer                  ; Answer the line
 #exten => 1234,4,AGI(agi-VDADinbound_NI_DNC_CIDlookup.agi)
 #exten => 1234,5,Hangup
-#
-# Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
 # changes:
 # 60914-1051 - First draft
@@ -47,8 +65,8 @@ $start_time=$now_date;
 	$SQLdate = "$year-$mon-$mday $hour:$min:$sec";
 	$SQLdateBEGIN = $SQLdate;
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -251,7 +269,7 @@ if ( (length($pin)<1) || ($pin =~ /9/) )
 if ($pin =~ /2/)	# set the phone_number to NI
 	{
 	### Check to see if the number is in the system ###
-	$stmtA= "SELECT count(*) from vicidial_list where phone_number='$phone_number';";
+	$stmtA= "SELECT count(*) from osdial_list where phone_number='$phone_number';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -261,8 +279,8 @@ if ($pin =~ /2/)	# set the phone_number to NI
 		$lead_in_system = "$aryA[0]";
 		$sthA->finish();
 	
-		### update all records for the phone_number in vicidial_list to NI (Not Interested)
-		$stmtA = "UPDATE vicidial_list SET status='NI' where phone_number='$phone_number';";
+		### update all records for the phone_number in osdial_list to NI (Not Interested)
+		$stmtA = "UPDATE osdial_list SET status='NI' where phone_number='$phone_number';";
 		$affected_rows = $dbhA->do($stmtA);
 			if ($AGILOG) {$agi_string = "$affected_rows|$stmtA|";   &agi_output;}
 		}
@@ -272,7 +290,7 @@ if ($pin =~ /2/)	# set the phone_number to NI
 if ($pin =~ /3/)	# set the phone_number to DNC
 	{
 	### Check to see if the number is in the system ###
-	$stmtA= "SELECT count(*) from vicidial_list where phone_number='$phone_number';";
+	$stmtA= "SELECT count(*) from osdial_list where phone_number='$phone_number';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -282,14 +300,14 @@ if ($pin =~ /3/)	# set the phone_number to DNC
 		$lead_in_system = "$aryA[0]";
 		$sthA->finish();
 	
-		### update all records for the phone_number in vicidial_list to NI (Not Interested)
-		$stmtA = "UPDATE vicidial_list SET status='DNC' where phone_number='$phone_number';";
+		### update all records for the phone_number in osdial_list to NI (Not Interested)
+		$stmtA = "UPDATE osdial_list SET status='DNC' where phone_number='$phone_number';";
 		$affected_rows = $dbhA->do($stmtA);
 			if ($AGILOG) {$agi_string = "$affected_rows|$stmtA|";   &agi_output;}
 		}
 
-	### add the number to the vicidial_dnc table
-	$stmtA = "INSERT INTO vicidial_dnc SET phone_number='$phone_number';";
+	### add the number to the osdial_dnc table
+	$stmtA = "INSERT INTO osdial_dnc SET phone_number='$phone_number';";
 	$affected_rows = $dbhA->do($stmtA);
 		if ($AGILOG) {$agi_string = "$affected_rows|$stmtA|";   &agi_output;}
 

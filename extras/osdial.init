@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# osdial  Startup script for OSDial services.
+#
+# chkconfig: - 64 36
+# description:  OSDial services.
+# processname:  osdial
+# pidfile: /var/run/osdial/osdial.pid
+

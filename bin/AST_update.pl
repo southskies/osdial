@@ -2,6 +2,26 @@
 #
 # AST_update.pl version 14   *DBI-version*
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
 # DESCRIPTION:
 # uses the Asterisk Manager interface and Net::MySQL to update the live_channels
 # tables and verify the parked_channels table in the asterisk MySQL database 
@@ -30,8 +50,6 @@
 #
 # It is recommended that you run this program on the local Asterisk machine
 #
-# Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
-#
 # version changes:
 # 41228-1659 - modified to compensate for manager output response hiccups
 # 50107-1611 - modified to add Zap and IAX2 clients (differentiate from trunks)
@@ -49,7 +67,7 @@
 # 60117-1202 - Changed IAX2 client phone channel to reflect change to '-' iteration
 # 60411-1032 - Fixed bug in test section that caused crash with ** in extension
 # 60807-1605 - Changed to DBI
-# 60808-1005 - changed to use /etc/astguiclient.conf for configs
+# 60808-1005 - changed to use /etc/osdial.conf for configs
 # 60808-1500 - Fixed another bug in that caused crash with ** in extension
 # 60814-1523 - SYSLOG and SYSPERF looked up from database, dynamic settings
 # 60926-1601 - validate proper binutil locations for performance gathering
@@ -164,8 +182,8 @@ else
 
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -224,7 +242,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 	&event_logger;
 
 ### Grab Server values from the database
-$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_vicidial_trunks,answer_transfer_agent,local_gmt,ext_context,asterisk_version,sys_perf_log,vd_server_logs FROM servers where server_ip = '$server_ip';";
+$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,asterisk_version,sys_perf_log,vd_server_logs FROM servers where server_ip = '$server_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -239,7 +257,7 @@ while ($sthArows > $rec_count)
 		$DBASTmgrUSERNAMEupdate	=	"$aryA[4]";
 		$DBASTmgrUSERNAMElisten	=	"$aryA[5]";
 		$DBASTmgrUSERNAMEsend	=	"$aryA[6]";
-		$DBmax_vicidial_trunks	=	"$aryA[7]";
+		$DBmax_osdial_trunks	=	"$aryA[7]";
 		$DBanswer_transfer_agent=	"$aryA[8]";
 		$DBSERVER_GMT		=		"$aryA[9]";
 		$DBext_context	=			"$aryA[10]";
@@ -253,7 +271,7 @@ while ($sthArows > $rec_count)
 		if ($DBASTmgrUSERNAMEupdate)	{$ASTmgrUSERNAMEupdate = $DBASTmgrUSERNAMEupdate;}
 		if ($DBASTmgrUSERNAMElisten)	{$ASTmgrUSERNAMElisten = $DBASTmgrUSERNAMElisten;}
 		if ($DBASTmgrUSERNAMEsend)		{$ASTmgrUSERNAMEsend = $DBASTmgrUSERNAMEsend;}
-		if ($DBmax_vicidial_trunks)		{$max_vicidial_trunks = $DBmax_vicidial_trunks;}
+		if ($DBmax_osdial_trunks)		{$max_osdial_trunks = $DBmax_osdial_trunks;}
 		if ($DBanswer_transfer_agent)	{$answer_transfer_agent = $DBanswer_transfer_agent;}
 		if ($DBSERVER_GMT)				{$SERVER_GMT = $DBSERVER_GMT;}
 		if ($DBext_context)				{$ext_context = $DBext_context;}

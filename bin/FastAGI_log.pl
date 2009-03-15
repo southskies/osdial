@@ -1,6 +1,26 @@
 #!/usr/bin/perl
 #
 # FastAGI_log.pl version 2.0.4   *DBI-version*
+#
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
 # 
 # Experimental Deamon using perl Net::Server that runs as FastAGI to reduce load
 # replaces the following AGI scripts:
@@ -25,8 +45,6 @@
 # exten => h,1,DeadAGI(agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----${HANGUPCAUSE}-----${DIALSTATUS}-----${DIALEDTIME}-----${ANSWEREDTIME})
 # 
 #
-# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
-#
 # CHANGELOG:
 # 61010-1007 - First test build
 # 70116-1619 - Added Auto Alt Dial code
@@ -46,8 +64,8 @@ $VARfastagi_log_max_requests =	'1000';
 $VARfastagi_log_checkfordead =	'30';
 $VARfastagi_log_checkforwait =	'60';
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -156,8 +174,8 @@ sub process_request {
 	$now_date = "$year-$mon-$mday $hour:$min:$sec";
 
 
-	# default path to astguiclient configuration file:
-	$PATHconf =		'/etc/astguiclient.conf';
+	# default path to osdial.configuration file:
+	$PATHconf =		'/etc/osdial.conf';
 
 	open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 	@conf = <conf>;
@@ -415,7 +433,7 @@ sub process_request {
 
 			if ( ($callerid =~ /^V|^M/) && ($callerid =~ /\d\d\d\d\d\d\d\d\d/) && (length($number_dialed)<1) )
 				{
-				$stmtA = "SELECT cmd_line_b,cmd_line_d FROM vicidial_manager where callerid='$callerid' limit 1;";
+				$stmtA = "SELECT cmd_line_b,cmd_line_d FROM osdial_manager where callerid='$callerid' limit 1;";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -572,20 +590,20 @@ sub process_request {
 					if ($dialstatus =~ /BUSY/) {$VDL_status = 'B'; $VDAC_status = 'BUSY';}
 					if ($dialstatus =~ /CHANUNAVAIL/) {$VDL_status = 'DC'; $VDAC_status = 'DISCONNECT';}
 
-					$stmtA = "UPDATE vicidial_auto_calls set status='$VDAC_status' where callerid = '$callerid';";
+					$stmtA = "UPDATE osdial_auto_calls set status='$VDAC_status' where callerid = '$callerid';";
 						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 					$affected_rows = $dbhA->do($stmtA);
 					if ($AGILOG) {$agi_string = "--    VDAC update: |$affected_rows|$CIDlead_id";   &agi_output;}
 
-					$stmtA = "UPDATE vicidial_list set status='$VDL_status' where lead_id = '$CIDlead_id';";
+					$stmtA = "UPDATE osdial_list set status='$VDL_status' where lead_id = '$CIDlead_id';";
 						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 					$affected_rows = $dbhA->do($stmtA);
-					if ($AGILOG) {$agi_string = "--    VDAD vicidial_list update: |$affected_rows|$CIDlead_id";   &agi_output;}
+					if ($AGILOG) {$agi_string = "--    VDAD osdial_list update: |$affected_rows|$CIDlead_id";   &agi_output;}
 
-					$stmtA = "UPDATE vicidial_log set status='$VDL_status' where uniqueid = '$uniqueid';";
+					$stmtA = "UPDATE osdial_log set status='$VDL_status' where uniqueid = '$uniqueid';";
 						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 					$affected_rows = $dbhA->do($stmtA);
-					if ($AGILOG) {$agi_string = "--    VDAD vicidial_log update: |$affected_rows|$uniqueid|";   &agi_output;}
+					if ($AGILOG) {$agi_string = "--    VDAD osdial_log update: |$affected_rows|$uniqueid|";   &agi_output;}
 
 					$dbhA->disconnect();
 				}
@@ -600,9 +618,9 @@ sub process_request {
 			else
 			{
 
-				########## FIND AND DELETE vicidial_auto_calls ##########
+				########## FIND AND DELETE osdial_auto_calls ##########
 				$VD_alt_dial = 'NONE';
-				$stmtA = "SELECT lead_id,callerid,campaign_id,alt_dial,stage,UNIX_TIMESTAMP(call_time) FROM vicidial_auto_calls where uniqueid = '$uniqueid' limit 1;";
+				$stmtA = "SELECT lead_id,callerid,campaign_id,alt_dial,stage,UNIX_TIMESTAMP(call_time) FROM osdial_auto_calls where uniqueid = '$uniqueid' limit 1;";
 					if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -627,7 +645,7 @@ sub process_request {
 					}
 				else
 					{
-					$stmtA = "DELETE FROM vicidial_auto_calls where uniqueid='$uniqueid' order by call_time desc limit 1;";
+					$stmtA = "DELETE FROM osdial_auto_calls where uniqueid='$uniqueid' order by call_time desc limit 1;";
 					$affected_rows = $dbhA->do($stmtA);
 					if ($AGILOG) {$agi_string = "--    VDAC record deleted: |$affected_rows|   |$VD_lead_id|$uniqueid|$VD_callerid|$VARserver_ip";   &agi_output;}
 
@@ -693,8 +711,8 @@ sub process_request {
 						}
 
 
-					########## FIND AND UPDATE vicidial_log ##########
-					$stmtA = "SELECT start_epoch,status FROM vicidial_log where uniqueid='$uniqueid' and lead_id='$VD_lead_id' limit 1;";
+					########## FIND AND UPDATE osdial_log ##########
+					$stmtA = "SELECT start_epoch,status FROM osdial_log where uniqueid='$uniqueid' and lead_id='$VD_lead_id' limit 1;";
 						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -726,7 +744,7 @@ sub process_request {
 						if ($Rsec < 10) {$Rsec = "0$Rsec";}
 							$RSQLdate = "$Ryear-$Rmon-$Rmday $Rhour:$Rmin:$Rsec";
 
-						$stmtA = "SELECT start_epoch,status,closecallid FROM vicidial_closer_log where lead_id = '$VD_lead_id' and call_date > \"$RSQLdate\" order by call_date desc limit 1;";
+						$stmtA = "SELECT start_epoch,status,closecallid FROM osdial_closer_log where lead_id = '$VD_lead_id' and call_date > \"$RSQLdate\" order by call_date desc limit 1;";
 							if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -756,22 +774,22 @@ sub process_request {
 							{
 							$SQL_status = "status='DROP',";
 
-							########## FIND AND UPDATE vicidial_list ##########
-							$stmtA = "UPDATE vicidial_list set status='DROP' where lead_id = '$VD_lead_id';";
+							########## FIND AND UPDATE osdial_list ##########
+							$stmtA = "UPDATE osdial_list set status='DROP' where lead_id = '$VD_lead_id';";
 								if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 							$affected_rows = $dbhA->do($stmtA);
-							if ($AGILOG) {$agi_string = "--    VDAD vicidial_list update: |$affected_rows|$VD_lead_id";   &agi_output;}
+							if ($AGILOG) {$agi_string = "--    VDAD osdial_list update: |$affected_rows|$VD_lead_id";   &agi_output;}
 							}
 
-						$stmtA = "UPDATE vicidial_log set $SQL_status end_epoch='$now_date_epoch',length_in_sec='$VD_seconds' where uniqueid = '$uniqueid';";
+						$stmtA = "UPDATE osdial_log set $SQL_status end_epoch='$now_date_epoch',length_in_sec='$VD_seconds' where uniqueid = '$uniqueid';";
 							if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 						$affected_rows = $dbhA->do($stmtA);
-						if ($AGILOG) {$agi_string = "--    VDAD vicidial_log update: |$affected_rows|$uniqueid|$VD_status|";   &agi_output;}
+						if ($AGILOG) {$agi_string = "--    VDAD osdial_log update: |$affected_rows|$uniqueid|$VD_status|";   &agi_output;}
 
 
 
 
-						########## UPDATE vicidial_closer_log ##########
+						########## UPDATE osdial_closer_log ##########
 						if (length($VD_closecallid) < 1)
 							{
 							if ($AGILOG) {$agi_string = "no VDCL record found: $uniqueid $calleridname $VD_lead_id $uniqueid";   &agi_output;}
@@ -784,7 +802,7 @@ sub process_request {
 								{$VDCLSQL_status = "status='DROP',queue_seconds='$VD_seconds',";}
 
 							$VD_seconds = ($now_date_epoch - $VD_start_epoch);
-							$stmtA = "UPDATE vicidial_closer_log set $VDCLSQL_status end_epoch='$now_date_epoch',length_in_sec='$VD_seconds' where closecallid = '$VD_closecallid';";
+							$stmtA = "UPDATE osdial_closer_log set $VDCLSQL_status end_epoch='$now_date_epoch',length_in_sec='$VD_seconds' where closecallid = '$VD_closecallid';";
 								if ($AGILOG) {$agi_string = "|$VDCLSQL_status|$VD_status|\n|$stmtA|";   &agi_output;}
 							$affected_rows = $dbhA->do($stmtA);
 							if ($AGILOG) {$agi_string = "--    VDCL update: |$affected_rows|$uniqueid|$VD_closecallid|";   &agi_output;}
@@ -796,7 +814,7 @@ sub process_request {
 					### check to see if campaign has alt_dial enabled
 					$VD_auto_alt_dial = 'NONE';
 					$VD_auto_alt_dial_statuses='';
-					$stmtA="SELECT auto_alt_dial,auto_alt_dial_statuses FROM vicidial_campaigns where campaign_id='$VD_campaign_id';";
+					$stmtA="SELECT auto_alt_dial,auto_alt_dial_statuses FROM osdial_campaigns where campaign_id='$VD_campaign_id';";
 						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -815,7 +833,7 @@ sub process_request {
 						if ( ($VD_auto_alt_dial =~ /(ALT_ONLY|ALT_AND_ADDR3)/) && ($VD_alt_dial =~ /NONE|MAIN/) )
 							{
 							$VD_alt_phone='';
-							$stmtA="SELECT alt_phone,gmt_offset_now,state,list_id FROM vicidial_list where lead_id='$VD_lead_id';";
+							$stmtA="SELECT alt_phone,gmt_offset_now,state,list_id FROM osdial_list where lead_id='$VD_lead_id';";
 								if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -834,7 +852,7 @@ sub process_request {
 							$sthA->finish();
 							if (length($VD_alt_phone)>5)
 								{
-								$stmtA = "INSERT INTO vicidial_hopper SET lead_id='$VD_lead_id',campaign_id='$VD_campaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ALT',user='',priority='25';";
+								$stmtA = "INSERT INTO osdial_hopper SET lead_id='$VD_lead_id',campaign_id='$VD_campaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ALT',user='',priority='25';";
 								$affected_rows = $dbhA->do($stmtA);
 								if ($AGILOG) {$agi_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &agi_output;}
 								}
@@ -842,7 +860,7 @@ sub process_request {
 						if ( ( ($VD_auto_alt_dial =~ /(ADDR3_ONLY)/) && ($VD_alt_dial =~ /NONE|MAIN/) ) || ( ($VD_auto_alt_dial =~ /(ALT_AND_ADDR3)/) && ($VD_alt_dial =~ /ALT/) ) )
 							{
 							$VD_address3='';
-							$stmtA="SELECT address3,gmt_offset_now,state,list_id FROM vicidial_list where lead_id='$VD_lead_id';";
+							$stmtA="SELECT address3,gmt_offset_now,state,list_id FROM osdial_list where lead_id='$VD_lead_id';";
 								if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -861,7 +879,7 @@ sub process_request {
 							$sthA->finish();
 							if (length($VD_address3)>5)
 								{
-								$stmtA = "INSERT INTO vicidial_hopper SET lead_id='$VD_lead_id',campaign_id='$VD_campaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ADDR3',user='',priority='20';";
+								$stmtA = "INSERT INTO osdial_hopper SET lead_id='$VD_lead_id',campaign_id='$VD_campaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ADDR3',user='',priority='20';";
 								$affected_rows = $dbhA->do($stmtA);
 								if ($AGILOG) {$agi_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &agi_output;}
 								}

@@ -2,10 +2,29 @@
 #
 # AST_VDadapt.pl version 2.0.4   *DBI-version*
 #
-# DESCRIPTION:
-# adjusts the auto_dial_level for vicidial adaptive-predictive campaigns.
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+## Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
 #
-# Copyright (C) 2007  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
+#
+# DESCRIPTION:
+# adjusts the auto_dial_level for osdial adaptive-predictive campaigns.
 #
 # CHANGELOG
 # 60823-1302 - First build from AST_VDhopper.pl
@@ -21,7 +40,7 @@
 # 70213-1221 - Added code for QueueMetrics queue_log QUEUESTART record
 # 70219-1249 - Removed unused references to dial_status_x fields
 # 70409-1219 - Removed CLOSER-type campaign restriction
-# 70521-1038 - Fixed bug when no live campaigns are running, define $vicidial_log
+# 70521-1038 - Fixed bug when no live campaigns are running, define $osdial_log
 # 70619-1339 - Added Status Category tally calculations
 # 71029-1906 - Changed CLOSER-type campaign_id restriction
 # 80901-2234 - Cleaned code to conform with Perl formatting. lc
@@ -42,13 +61,13 @@ $|++;
 
 my $prog = "AST_VDadapt.pl";
 
-my $vicidial_log = 'vicidial_log FORCE INDEX (call_date) ';
-#$vicidial_log = 'vicidial_log';
+my $osdial_log = 'osdial_log FORCE INDEX (call_date) ';
+#$osdial_log = 'osdial_log';
 
 my $secT = time();
 
 # Get AGC configuration directives.
-my $config = getAGCconfig('/etc/astguiclient.conf');
+my $config = getAGCconfig('/etc/osdial.conf');
 
 my ($dbhA,$stmtA,$sthA,$sthArows,$rec_count,$affected_rows);
 my ($DB,$DBX,$CLOhelp,$CLOcampaign,$CLOforce,$CLOloops,$CLOdelay,$CLOtest,$CLOminlevel,$CLOoverlimitmod,$limitmod_inc,$event_ext);
@@ -181,7 +200,7 @@ while ( $master_loop < $CLOloops ) {
 	} else {
 		$swhere = "( (active='Y') or (campaign_stats_refresh='Y') )";
 	}
-	$stmtA = "SELECT campaign_id,auto_dial_level,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,campaign_allow_inbound from vicidial_campaigns where " . $swhere;
+	$stmtA = "SELECT campaign_id,auto_dial_level,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,campaign_allow_inbound from osdial_campaigns where " . $swhere;
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows  = $sthA->rows;
@@ -221,7 +240,7 @@ while ( $master_loop < $CLOloops ) {
 			
 		### Find out how many leads are in the hopper from a specific campaign
 		my $hopper_ready_count = 0;
-		$stmtA = "SELECT count(*) from vicidial_hopper where campaign_id='$campaign_id[$i]' and status='READY';";
+		$stmtA = "SELECT count(*) from osdial_hopper where campaign_id='$campaign_id[$i]' and status='READY';";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows  = $sthA->rows;
@@ -239,8 +258,8 @@ while ( $master_loop < $CLOloops ) {
 
 		##### IF THERE ARE NO LEADS IN THE HOPPER FOR THE CAMPAIGN WE DO NOT WANT TO ADJUST THE DIAL_LEVEL
 		if ( $hopper_ready_count > 0 ) {
-			### BEGIN - GATHER STATS FOR THE vicidial_campaign_stats TABLE ###
-			$stmtA = "SELECT count(*),status from vicidial_live_agents where campaign_id='$campaign_id[$i]' and last_update_time > '$VDL_one' group by status;";
+			### BEGIN - GATHER STATS FOR THE osdial_campaign_stats TABLE ###
+			$stmtA = "SELECT count(*),status from osdial_live_agents where campaign_id='$campaign_id[$i]' and last_update_time > '$VDL_one' group by status;";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows  = $sthA->rows;
@@ -266,7 +285,7 @@ while ( $master_loop < $CLOloops ) {
 			$VCSagents_active = $VCSINCALL + $VCSREADY + $VCSCLOSER;
 
 		
-			$stmtA = "SELECT count(*) FROM vicidial_auto_calls where campaign_id='$campaign_id[$i]' and status IN('LIVE','CLOSER');";
+			$stmtA = "SELECT count(*) FROM osdial_auto_calls where campaign_id='$campaign_id[$i]' and status IN('LIVE','CLOSER');";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows  = $sthA->rows;
@@ -316,7 +335,7 @@ while ( $master_loop < $CLOloops ) {
 					$RESETdiff_ratio_updater++;
 
 					# GET AVERAGES FROM THIS CAMPAIGN
-					$stmtA = "SELECT calls_today,answers_today,drops_today,drops_today_pct,drops_answers_today_pct,calls_hour,answers_hour,drops_hour,drops_hour_pct,calls_halfhour,answers_halfhour,drops_halfhour,drops_halfhour_pct,calls_fivemin,answers_fivemin,drops_fivemin,drops_fivemin_pct,calls_onemin,answers_onemin,drops_onemin,drops_onemin_pct from vicidial_campaign_stats where campaign_id='$campaign_id[$i]';";
+					$stmtA = "SELECT calls_today,answers_today,drops_today,drops_today_pct,drops_answers_today_pct,calls_hour,answers_hour,drops_hour,drops_hour_pct,calls_halfhour,answers_halfhour,drops_halfhour,drops_halfhour_pct,calls_fivemin,answers_fivemin,drops_fivemin,drops_fivemin_pct,calls_onemin,answers_onemin,drops_onemin,drops_onemin_pct from osdial_campaign_stats where campaign_id='$campaign_id[$i]';";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows  = $sthA->rows;
@@ -479,7 +498,7 @@ while ( $master_loop < $CLOloops ) {
 							$adaptive_string .= "      DIAL LEVEL TOO LOW! SETTING TO $CLOminlevel\n";
 							$intensity_dial_level = $CLOminlevel;
 						}
-						$stmtA = "UPDATE vicidial_campaigns SET auto_dial_level='$intensity_dial_level' where campaign_id='$campaign_id[$i]';";
+						$stmtA = "UPDATE osdial_campaigns SET auto_dial_level='$intensity_dial_level' where campaign_id='$campaign_id[$i]';";
 						# Do not execute if -t is set, only print.
 						if ($CLOtest) {
 							print $stmtA . "\n";
@@ -528,7 +547,7 @@ exit;
 # getAGCconfig usage:
 #    $config = getAGCconfig($agcConfigPath);
 # Requires:
-#    $agcConfigPath : Usually '/etc/astguiclient.conf'
+#    $agcConfigPath : Usually '/etc/osdial.conf'
 # Returns:
 #    hashref with configuration directives in listed file.
 sub getAGCconfig {
@@ -536,7 +555,7 @@ sub getAGCconfig {
 	my %config;
 	$config{PATHconf} = $AGCpath;
 
-	# Begin Parsing astguiclient config file.
+	# Begin Parsing osdial.config file.
 	open(CONF, $config{PATHconf}) || die "can't open " . $config{PATHconf} . ": " . $! . "\n";
 	while (my $line = <CONF>) {
 		$line =~ s/ |>|"|\n|\r|\t|\#.*|;.*//gi;

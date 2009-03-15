@@ -1,15 +1,34 @@
 <? 
 # AST_timeonVDADall.php
-# 
-# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
-# live real-time stats for the VICIDIAL Auto-Dialer all servers
+# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+# Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+# Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+#
+#     This file is part of OSDial.
+#
+#     OSDial is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as
+#     published by the Free Software Foundation, either version 3 of
+#     the License, or (at your option) any later version.
+#
+#     OSDial is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public
+#     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+#
+# 
+#
+# live real-time stats for the OSDIAL Auto-Dialer all servers
 #
 # STOP=4000, SLOW=40, GO=4 seconds refresh interval
 # 
 # CHANGELOG:
 # 50406-0920 - Added Paused agents < 1 min (Chris Doyle)
-# 51130-1218 - Modified layout and info to show all servers in a vicidial system
+# 51130-1218 - Modified layout and info to show all servers in a osdial system
 # 60421-1043 - check GET/POST vars lines with isset to not trigger PHP NOTICES
 # 60511-1343 - Added leads and drop info at the top of the screen
 # 60608-1539 - Fixed CLOSER tallies for active calls
@@ -187,7 +206,7 @@ while ( list( $line_num, $line ) = each( $fcontents ) ) {
 $PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);
 $PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
 
-$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1';";
+$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1';";
 if ($DB) {echo "|$stmt|\n";}
 if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
 $rslt=mysql_query($stmt, $link);
@@ -196,7 +215,7 @@ $auth=$row[0];
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICI-PROJECTS\"");
+    Header("WWW-Authenticate: Basic realm=\"OSIDAL-PROJECTS\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
@@ -209,7 +228,7 @@ $STARTtime = date("U");
 $epochSIXhoursAGO = ($STARTtime - 21600);
 $timeSIXhoursAGO = date("Y-m-d H:i:s",$epochSIXhoursAGO);
 
-$stmt="select campaign_id from vicidial_campaigns where active='Y';";
+$stmt="select campaign_id from osdial_campaigns where active='Y';";
 $rslt=mysql_query($stmt, $link);
 if (!isset($DB))   {$DB=0;}
 if ($DB) {echo "$stmt\n";}
@@ -222,7 +241,7 @@ while ($i < $groups_to_print)
 	$i++;
 	}
 
-$stmt="select * from vicidial_user_groups;";
+$stmt="select * from osdial_user_groups;";
 $rslt=mysql_query($stmt, $link);
 if (!isset($DB))   {$DB=0;}
 if ($DB) {echo "$stmt\n";}
@@ -269,7 +288,7 @@ $F=''; $FG=''; $B=''; $BG='';
 	.b3 {color: black; background-color: #6666FF}
 	.b4 {color: white; background-color: #0000FF}
 <?
-	$stmt="select group_id,group_color from vicidial_inbound_groups;";
+	$stmt="select group_id,group_color from osdial_inbound_groups;";
 	$rslt=mysql_query($stmt, $link);
 	if ($DB) {echo "$stmt\n";}
 	$INgroups_to_print = mysql_num_rows($rslt);
@@ -289,7 +308,7 @@ $F=''; $FG=''; $B=''; $BG='';
 echo "\n-->\n
 </STYLE>\n";
 
-$stmt = "select count(*) from vicidial_campaigns where campaign_id='$group' and campaign_allow_inbound='Y';";
+$stmt = "select count(*) from osdial_campaigns where campaign_id='$group' and campaign_allow_inbound='Y';";
 $rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$campaign_allow_inbound = $row[0];
@@ -347,10 +366,10 @@ echo "\n\n";
 if (!$group) {echo "<BR><BR>please select a campaign from the pulldown above</FORM>\n"; exit;}
 else
 {
-$stmt="select auto_dial_level,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,lead_filter_id,hopper_level,dial_method,adaptive_maximum_level,adaptive_dropped_percentage,adaptive_dl_diff_target,adaptive_intensity,available_only_ratio_tally,adaptive_latest_server_time,local_call_time,dial_timeout,dial_statuses from vicidial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
+$stmt="select auto_dial_level,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,lead_filter_id,hopper_level,dial_method,adaptive_maximum_level,adaptive_dropped_percentage,adaptive_dl_diff_target,adaptive_intensity,available_only_ratio_tally,adaptive_latest_server_time,local_call_time,dial_timeout,dial_statuses from osdial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
 if ($group=='XXXX-ALL-ACTIVE-XXXX') 
 	{
-	$stmt="select avg(auto_dial_level),min(dial_status_a),min(dial_status_b),min(dial_status_c),min(dial_status_d),min(dial_status_e),min(lead_order),min(lead_filter_id),sum(hopper_level),min(dial_method),avg(adaptive_maximum_level),avg(adaptive_dropped_percentage),avg(adaptive_dl_diff_target),avg(adaptive_intensity),min(available_only_ratio_tally),min(adaptive_latest_server_time),min(local_call_time),avg(dial_timeout),min(dial_statuses) from vicidial_campaigns;";
+	$stmt="select avg(auto_dial_level),min(dial_status_a),min(dial_status_b),min(dial_status_c),min(dial_status_d),min(dial_status_e),min(lead_order),min(lead_filter_id),sum(hopper_level),min(dial_method),avg(adaptive_maximum_level),avg(adaptive_dropped_percentage),avg(adaptive_dl_diff_target),avg(adaptive_intensity),min(available_only_ratio_tally),min(adaptive_latest_server_time),min(local_call_time),avg(dial_timeout),min(dial_statuses) from osdial_campaigns;";
 	}
 $rslt=mysql_query($stmt, $link);
 $row=mysql_fetch_row($rslt);
@@ -376,19 +395,19 @@ $DIALstatuses =	$row[18];
 $DIALstatuses = (preg_replace("/ -$|^ /","",$DIALstatuses));
 $DIALstatuses = (ereg_replace(' ',', ',$DIALstatuses));
 
-$stmt="select count(*) from vicidial_hopper where campaign_id='" . mysql_real_escape_string($group) . "';";
+$stmt="select count(*) from osdial_hopper where campaign_id='" . mysql_real_escape_string($group) . "';";
 if ($group=='XXXX-ALL-ACTIVE-XXXX') 
 	{
-	$stmt="select count(*) from vicidial_hopper;";
+	$stmt="select count(*) from osdial_hopper;";
 	}
 $rslt=mysql_query($stmt, $link);
 $row=mysql_fetch_row($rslt);
 $VDhop = $row[0];
 
-$stmt="select dialable_leads,calls_today,drops_today,drops_answers_today_pct,differential_onemin,agents_average_onemin,balance_trunk_fill,answers_today,status_category_1,status_category_count_1,status_category_2,status_category_count_2,status_category_3,status_category_count_3,status_category_4,status_category_count_4 from vicidial_campaign_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
+$stmt="select dialable_leads,calls_today,drops_today,drops_answers_today_pct,differential_onemin,agents_average_onemin,balance_trunk_fill,answers_today,status_category_1,status_category_count_1,status_category_2,status_category_count_2,status_category_3,status_category_count_3,status_category_4,status_category_count_4 from osdial_campaign_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
 if ($group=='XXXX-ALL-ACTIVE-XXXX') 
 	{
-	$stmt="select sum(dialable_leads),sum(calls_today),sum(drops_today),avg(drops_answers_today_pct),avg(differential_onemin),avg(agents_average_onemin),sum(balance_trunk_fill),sum(answers_today),min(status_category_1),sum(status_category_count_1),min(status_category_2),sum(status_category_count_2),min(status_category_3),sum(status_category_count_3),min(status_category_4),sum(status_category_count_4) from vicidial_campaign_stats;";
+	$stmt="select sum(dialable_leads),sum(calls_today),sum(drops_today),avg(drops_answers_today_pct),avg(differential_onemin),avg(agents_average_onemin),sum(balance_trunk_fill),sum(answers_today),min(status_category_1),sum(status_category_count_1),min(status_category_2),sum(status_category_count_2),min(status_category_3),sum(status_category_count_3),min(status_category_4),sum(status_category_count_4) from osdial_campaign_stats;";
 	}
 $rslt=mysql_query($stmt, $link);
 $row=mysql_fetch_row($rslt);
@@ -416,10 +435,10 @@ if ( ($diffONEMIN != 0) and ($agentsONEMIN > 0) )
 	}
 else {$diffpctONEMIN = '0.00';}
 
-$stmt="select sum(local_trunk_shortage) from vicidial_campaign_server_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
+$stmt="select sum(local_trunk_shortage) from osdial_campaign_server_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
 if ($group=='XXXX-ALL-ACTIVE-XXXX') 
 	{
-	$stmt="select sum(local_trunk_shortage) from vicidial_campaign_server_stats;";
+	$stmt="select sum(local_trunk_shortage) from osdial_campaign_server_stats;";
 	}
 $rslt=mysql_query($stmt, $link);
 $row=mysql_fetch_row($rslt);
@@ -542,21 +561,21 @@ echo "</FORM>\n\n";
 ###################################################################################
 if ($campaign_allow_inbound > 0)
 	{
-	$stmt="select closer_campaigns from vicidial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
+	$stmt="select closer_campaigns from osdial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$closer_campaigns = preg_replace("/^ | -$/","",$row[0]);
 	$closer_campaigns = preg_replace("/ /","','",$closer_campaigns);
 	$closer_campaigns = "'$closer_campaigns'";
 
-	$stmtB="from vicidial_auto_calls where status NOT IN('XFER') and ( (call_type='IN' and campaign_id IN($closer_campaigns)) or (campaign_id='" . mysql_real_escape_string($group) . "' and call_type IN('OUT','OUTBALANCE')) ) order by campaign_id,call_time;";
+	$stmtB="from osdial_auto_calls where status NOT IN('XFER') and ( (call_type='IN' and campaign_id IN($closer_campaigns)) or (campaign_id='" . mysql_real_escape_string($group) . "' and call_type IN('OUT','OUTBALANCE')) ) order by campaign_id,call_time;";
 	}
 else
 	{
 	if ($group=='XXXX-ALL-ACTIVE-XXXX') {$groupSQL = '';}
 	else {$groupSQL = " and campaign_id='" . mysql_real_escape_string($group) . "'";}
 
-	$stmtB="from vicidial_auto_calls where status NOT IN('XFER') $groupSQL order by campaign_id,call_time;";
+	$stmtB="from osdial_auto_calls where status NOT IN('XFER') $groupSQL order by campaign_id,call_time;";
 	}
 if ($CALLSdisplay > 0)
 	{
@@ -648,7 +667,7 @@ $LNcentright="&#x2562;";
 $LNbottomup="&#x2567;";
 // column length 8|14|14|17|9|12
 $Cecho = '';
-$Cecho .= "<font color=navy>&nbsp;&nbsp;VICIDIAL: Calls Waiting                      $NOW_TIME\n";
+$Cecho .= "<font color=navy>&nbsp;&nbsp;OSDIAL: Calls Waiting                      $NOW_TIME\n";
 //$Cecho .= "+--------+--------------+--------------+-----------------+---------+------------+\n";
 $Cecho .=$LNtopleft.HorizLine(8).$LNtopdown.HorizLine(14).$LNtopdown.HorizLine(14).$LNtopdown.HorizLine(17).$LNtopdown.HorizLine(9).$LNtopdown.HorizLine(12).$LNtopright."<br>";
 $Cecho .="$LNleft STATUS $LNcenterbar CAMPAIGN     $LNcenterbar PHONE NUMBER $LNcenterbar SERVER_IP       $LNcenterbar DIALTIME$LNcenterbar CALL TYPE  $LNright\n";
@@ -804,8 +823,8 @@ if ($UidORname > 0)
 	}
 else
 	{
-	if ($orderby=='userup') {$orderSQL='vicidial_live_agents.user';}
-	if ($orderby=='userdown') {$orderSQL='vicidial_live_agents.user desc';}
+	if ($orderby=='userup') {$orderSQL='osdial_live_agents.user';}
+	if ($orderby=='userdown') {$orderSQL='osdial_live_agents.user desc';}
 	}
 
 if ($group=='XXXX-ALL-ACTIVE-XXXX') {$groupSQL = '';}
@@ -813,9 +832,9 @@ else {$groupSQL = " and campaign_id='" . mysql_real_escape_string($group) . "'";
 if (strlen($usergroup)<1) {$usergroupSQL = '';}
 else {$usergroupSQL = " and user_group='" . mysql_real_escape_string($usergroup) . "'";}
 
-$stmt="select extension,vicidial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id,vicidial_users.user_group,vicidial_users.full_name,vicidial_live_agents.comments from vicidial_live_agents,vicidial_users where vicidial_live_agents.user=vicidial_users.user $groupSQL $usergroupSQL order by $orderSQL;";
+$stmt="select extension,osdial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id,osdial_users.user_group,osdial_users.full_name,osdial_live_agents.comments from osdial_live_agents,osdial_users where osdial_live_agents.user=osdial_users.user $groupSQL $usergroupSQL order by $orderSQL;";
 
-#$stmt="select extension,vicidial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id,vicidial_users.user_group,vicidial_users.full_name from vicidial_live_agents,vicidial_users where vicidial_live_agents.user=vicidial_users.user and campaign_id='" . mysql_real_escape_string($group) . "' order by $orderSQL;";
+#$stmt="select extension,osdial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id,osdial_users.user_group,osdial_users.full_name from osdial_live_agents,osdial_users where osdial_live_agents.user=osdial_users.user and campaign_id='" . mysql_real_escape_string($group) . "' order by $orderSQL;";
 
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}

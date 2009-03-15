@@ -2,6 +2,26 @@
 #
 # AST_CRON_purge_recordings.pl
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
 # IMPORTANT!!! used to delete recordings!!!
 #
 # runs every day, goes through recordings older than a certain number of days
@@ -13,8 +33,6 @@
 # 
 # This program assumes that recordings are saved as .wav
 # should be easy to change this code if you use .gsm instead
-#
-# Copyright (C) 2007  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
 # 
 # 70917-1339 - first build 
@@ -58,8 +76,8 @@ if ($Fsec < 10) {$Fsec = "0$Fsec";}
 	$FDSQLdate = "$Fyear-$Fmon-$Fmday $Fhour:$Fmin:$Fsec";
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -132,8 +150,8 @@ $sthA->finish();
 $i=0;
 foreach(@lead_ids)
 	{
-	### Grab status of the lead in the vicidial_list table
-	$stmtA = "SELECT status FROM vicidial_list where lead_id='$lead_ids[$i]';";
+	### Grab status of the lead in the osdial_list table
+	$stmtA = "SELECT status FROM osdial_list where lead_id='$lead_ids[$i]';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;

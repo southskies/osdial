@@ -1,6 +1,6 @@
-- Fix search function.
-- Fix load function.
+- Add getting-started page.
+- AGPLv3 complience, download link
 - Lead Loads -> Custom Feilds.
 - Lead Export -> Custom Fields.
-- GPL/AGPL compliance
 - Develop a functional lead recycling system.
+- Integrate external application calls into admin structure

@@ -1,11 +1,29 @@
 <?
 ### inbound_popup.php
 ### 
-### Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
+#
+# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+# Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+#
+#     This file is part of OSDial.
+#
+#     OSDial is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as
+#     published by the Free Software Foundation, either version 3 of
+#     the License, or (at your option) any later version.
+#
+#     OSDial is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public
+#     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+#
 ###
 ### This script is designed to open up when a live_inbound call comes in giving the user
 ###   options of what to do with the call or options to lookup the callerID on various web sites
-### This script depends on the server_ip being sent and also needs to have a valid user/pass from the vicidial_users table
+### This script depends on the server_ip being sent and also needs to have a valid user/pass from the osdial_users table
 ### 
 ### required variables:
 ###  - $server_ip
@@ -77,7 +95,7 @@ if (!isset($query_date)) {$query_date = $NOW_DATE;}
 $DO = '-1';
 if ( (eregi("^Zap",$channel)) and (!eregi("-",$channel)) ) {$channel = "$channel$DO";}
 
-	$stmt="SELECT count(*) from vicidial_users where user='$user' and pass='$pass' and user_level > 0;";
+	$stmt="SELECT count(*) from osdial_users where user='$user' and pass='$pass' and user_level > 0;";
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);

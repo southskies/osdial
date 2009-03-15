@@ -1,10 +1,27 @@
 <?
 # conf_exten_check.php
-# 
-# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
+#
+# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+# Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+#
+#     This file is part of OSDial.
+#
+#     OSDial is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as
+#     published by the Free Software Foundation, either version 3 of
+#     the License, or (at your option) any later version.
+#
+#     OSDial is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public
+#     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+#
 #
 # This script is designed purely to send whether the meetme conference has live channels connected and which they are
-# This script depends on the server_ip being sent and also needs to have a valid user/pass from the vicidial_users table
+# This script depends on the server_ip being sent and also needs to have a valid user/pass from the osdial_users table
 # 
 # required variables:
 #  - $server_ip
@@ -26,15 +43,15 @@
 # 50511-1112 - Added ability to register a conference room
 # 50610-1159 - Added NULL check on MySQL results to reduced errors
 # 50706-1429 - script changed to not use HTTP login vars, user/pass instead
-# 50706-1525 - Added date-time display for vicidial client display
-# 50816-1500 - Added random update to vicidial_live_agents table for vdc users
+# 50706-1525 - Added date-time display for osdial client display
+# 50816-1500 - Added random update to osdial_live_agents table for vdc users
 # 51121-1353 - Altered echo statements for several small PHP speed optimizations
 # 60410-1424 - Added ability to grab calls-being-placed and agent status
 # 60421-1405 - check GET/POST vars lines with isset to not trigger PHP NOTICES
 # 60619-1201 - Added variable filters to close security holes for login form
-# 61128-2255 - Added update for manual dial vicidial_live_agents
+# 61128-2255 - Added update for manual dial osdial_live_agents
 # 70319-1542 - Added agent disabled display function
-# 71122-0205 - Added vicidial_live_agent status output
+# 71122-0205 - Added osdial_live_agent status output
 # 80424-0442 - Added non_latin lookup from system_settings
 # 80519-1425 - Added calls-in-queue tally
 #
@@ -111,7 +128,7 @@ if (!isset($query_date)) {$query_date = $NOW_DATE;}
 $random = (rand(1000000, 9999999) + 10000000);
 
 
-$stmt="SELECT count(*) from vicidial_users where user='$user' and pass='$pass' and user_level > 0;";
+$stmt="SELECT count(*) from osdial_users where user='$user' and pass='$pass' and user_level > 0;";
 if ($DB) {echo "|$stmt|\n";}
 if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
 $rslt=mysql_query($stmt, $link);
@@ -180,8 +197,8 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 			$Acount=0;
 			$AexternalDEAD=0;
 
-			### see if the agent has a record in the vicidial_live_agents table
-			$stmt="SELECT count(*) from vicidial_live_agents where user='$user' and server_ip='$server_ip';";
+			### see if the agent has a record in the osdial_live_agents table
+			$stmt="SELECT count(*) from osdial_live_agents where user='$user' and server_ip='$server_ip';";
 			if ($DB) {echo "|$stmt|\n";}
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
@@ -189,7 +206,7 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 
 			if ($Acount > 0)
 				{
-				$stmt="SELECT status from vicidial_live_agents where user='$user' and server_ip='$server_ip';";
+				$stmt="SELECT status from osdial_live_agents where user='$user' and server_ip='$server_ip';";
 				if ($DB) {echo "|$stmt|\n";}
 				$rslt=mysql_query($stmt, $link);
 				$row=mysql_fetch_row($rslt);
@@ -204,15 +221,15 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 
 			if ($auto_dial_level > 0)
 				{
-				### update the vicidial_live_agents every second with a new random number so it is shown to be alive
-				$stmt="UPDATE vicidial_live_agents set random_id='$random' where user='$user' and server_ip='$server_ip';";
+				### update the osdial_live_agents every second with a new random number so it is shown to be alive
+				$stmt="UPDATE osdial_live_agents set random_id='$random' where user='$user' and server_ip='$server_ip';";
 					if ($format=='debug') {echo "\n<!-- $stmt -->";}
 				$rslt=mysql_query($stmt, $link);
 
 				if ($campagentstdisp == 'YES')
 					{
 					### grab the status of this agent to display
-					$stmt="SELECT status,campaign_id,closer_campaigns from vicidial_live_agents where user='$user' and server_ip='$server_ip';";
+					$stmt="SELECT status,campaign_id,closer_campaigns from osdial_live_agents where user='$user' and server_ip='$server_ip';";
 					if ($DB) {echo "|$stmt|\n";}
 					$rslt=mysql_query($stmt, $link);
 					$row=mysql_fetch_row($rslt);
@@ -223,7 +240,7 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 					$AccampSQL = ereg_replace(' ',"','", $AccampSQL);
 
 					### grab the number of calls being placed from this server and campaign
-					$stmt="SELECT count(*) from vicidial_auto_calls where status IN('LIVE') and ( (campaign_id='$Acampaign') or (campaign_id IN('$AccampSQL')) );";
+					$stmt="SELECT count(*) from osdial_auto_calls where status IN('LIVE') and ( (campaign_id='$Acampaign') or (campaign_id IN('$AccampSQL')) );";
 					if ($DB) {echo "|$stmt|\n";}
 					$rslt=mysql_query($stmt, $link);
 					$row=mysql_fetch_row($rslt);
@@ -232,7 +249,7 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 					else {$RingCalls = "<font class=\"queue_text\">Calls in Queue: $RingCalls</font>";}
 
 					### grab the number of calls being placed from this server and campaign
-					$stmt="SELECT count(*) from vicidial_auto_calls where status NOT IN('XFER') and ( (campaign_id='$Acampaign') or (campaign_id IN('$AccampSQL')) );";
+					$stmt="SELECT count(*) from osdial_auto_calls where status NOT IN('XFER') and ( (campaign_id='$Acampaign') or (campaign_id IN('$AccampSQL')) );";
 					if ($DB) {echo "|$stmt|\n";}
 					$rslt=mysql_query($stmt, $link);
 					$row=mysql_fetch_row($rslt);
@@ -252,8 +269,8 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 				$RingCalls='N';
 				$DiaLCalls='N';
 
-				### update the vicidial_live_agents every second with a new random number so it is shown to be alive
-				$stmt="UPDATE vicidial_live_agents set random_id='$random' where user='$user' and server_ip='$server_ip';";
+				### update the osdial_live_agents every second with a new random number so it is shown to be alive
+				$stmt="UPDATE osdial_live_agents set random_id='$random' where user='$user' and server_ip='$server_ip';";
 					if ($format=='debug') {echo "\n<!-- $stmt -->";}
 				$rslt=mysql_query($stmt, $link);
 

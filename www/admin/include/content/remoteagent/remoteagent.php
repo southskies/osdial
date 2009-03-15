@@ -1,4 +1,25 @@
 <?php
+#
+# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+# Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+# Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+#
+#     This file is part of OSDial.
+#
+#     OSDial is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as
+#     published by the Free Software Foundation, either version 3 of
+#     the License, or (at your option) any later version.
+#
+#     OSDial is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public
+#     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+#
+
 
 
 ######################
@@ -48,7 +69,7 @@ if ($ADD==11111)
 if ($ADD==21111)
 {
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT count(*) from vicidial_remote_agents where server_ip='$server_ip' and user_start='$user_start';";
+	$stmt="SELECT count(*) from osdial_remote_agents where server_ip='$server_ip' and user_start='$user_start';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -62,7 +83,7 @@ if ($ADD==21111)
 			 }
 		 else
 			{
-			$stmt="INSERT INTO vicidial_remote_agents values('','$user_start','$number_of_lines','$server_ip','$conf_exten','$status','$campaign_id','$groups_value');";
+			$stmt="INSERT INTO osdial_remote_agents values('','$user_start','$number_of_lines','$server_ip','$conf_exten','$status','$campaign_id','$groups_value');";
 			$rslt=mysql_query($stmt, $link);
 
 			echo "<br><B><font color=navy>REMOTE AGENTS ADDED: $user_start</font></B>\n";
@@ -97,7 +118,7 @@ if ($ADD==41111)
 		}
 	 else
 		{
-		$stmt="UPDATE vicidial_remote_agents set user_start='$user_start', number_of_lines='$number_of_lines', server_ip='$server_ip', conf_exten='$conf_exten', status='$status', campaign_id='$campaign_id', closer_campaigns='$groups_value' where remote_agent_id='$remote_agent_id';";
+		$stmt="UPDATE osdial_remote_agents set user_start='$user_start', number_of_lines='$number_of_lines', server_ip='$server_ip', conf_exten='$conf_exten', status='$status', campaign_id='$campaign_id', closer_campaigns='$groups_value' where remote_agent_id='$remote_agent_id';";
 		$rslt=mysql_query($stmt, $link);
 
 		echo "<br><B><font color=navy>REMOTE AGENTS MODIFIED</font></B>\n";
@@ -158,7 +179,7 @@ if ($ADD==61111)
 		}
 	 else
 		{
-		$stmt="DELETE from vicidial_remote_agents where remote_agent_id='$remote_agent_id' limit 1;";
+		$stmt="DELETE from osdial_remote_agents where remote_agent_id='$remote_agent_id' limit 1;";
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -187,7 +208,7 @@ if ($ADD==31111)
 	echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT * from vicidial_remote_agents where remote_agent_id='$remote_agent_id';";
+	$stmt="SELECT * from osdial_remote_agents where remote_agent_id='$remote_agent_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$remote_agent_id =	$row[0];
@@ -247,7 +268,7 @@ if ($ADD==10000)
 echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT * from vicidial_remote_agents order by server_ip,campaign_id,user_start";
+	$stmt="SELECT * from osdial_remote_agents order by server_ip,campaign_id,user_start";
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 

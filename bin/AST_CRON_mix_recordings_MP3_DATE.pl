@@ -1,6 +1,29 @@
 #!/usr/bin/perl
 #
 # AST_CRON_mix_recordings_MP3_DATE.pl
+#
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+# Contributions by Mike Lord <mike@channelblend.com>
+# Contributions by Magma Networks LLC <atarsha@magmanetworks.com>
+#
 # runs every 5 minutes and mixes the call recordings in the monitor together
 # and puts the resulting ALL file into the DONE directory in the "monitor" dir
 # and converts the ALL file to GSM format to save space.
@@ -35,17 +58,14 @@
 # and save files to dated-directories or this script will not work properly
 #
 #
-# Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
-# Contributions by Mike Lord <mike@channelblend.com>
-# Contributions by Magma Networks LLC <atarsha@magmanetworks.com>
 #
 # 51021-1058 - Added quotes around CLI executed commands
 # 51122-1455 - Added soxmix and sox binary path check
 # 60616-1027 - Modified to convert to MP3 format
 #            - Creates Directory on target FTP server based on <Todays Date>.
-# 60807-1308 - Modified to use /etc/astguiclient.conf for settings 
+# 60807-1308 - Modified to use /etc/osdial.conf for settings 
 # 71004-1124 - Changed to not move ORIG recordings if FTP server does not Ping
-# 71005-0049 - Altered script to use astguiclient.conf for settings
+# 71005-0049 - Altered script to use osdial.conf for settings
 #
 
 #verbose
@@ -61,8 +81,8 @@ $VARFTP_dir  = '/var/www/html/RECORDINGS';
 $VARFTP_port = '21';
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

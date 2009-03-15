@@ -2,8 +2,24 @@
 
 ### spreadsheet_sales_viewer.pl   version 2.0.4   *DBI-version*
 ### 
-### Copyright (C) 2007  Joe Johnson,Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
-###
+## Copyright (C) 2008  Matt Florell,Joe Johnson <vicidial@gmail.com>  LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>            LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
 #
 #
 # CHANGES
@@ -15,8 +31,8 @@ use Spreadsheet::WriteExcel;
 use Time::Local;
 use DBI;
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -80,7 +96,7 @@ $list_id_clause.=")";
 if ($sales_number==0) {undef $sales_number;}
 
 
-$xl = Spreadsheet::WriteExcel->new("$PATHweb/vicidial/vicidial_closer_report_$now.xls");
+$xl = Spreadsheet::WriteExcel->new("$PATHweb/admin/osdial_closer_report_$now.xls");
 $xlsheet = $xl->add_worksheet();
 $xlsheet->set_landscape();
 $rptheader = $xl->add_format(); # Add a format
@@ -157,7 +173,7 @@ $xlsheet->write("G2", "Total time in system", $rptheader);
 
 # Non-transfer
 $sales=0;
-$stmtA = "select v.status, u.full_name, u.user from vicidial_users u, vicidial_list v, vicidial_log vl where vl.call_date>='$timestamp' and vl.call_date<='$now' and vl.lead_id=v.lead_id $list_id_clause and vl.user=u.user;";
+$stmtA = "select v.status, u.full_name, u.user from osdial_users u, osdial_list v, osdial_log vl where vl.call_date>='$timestamp' and vl.call_date<='$now' and vl.lead_id=v.lead_id $list_id_clause and vl.user=u.user;";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -187,7 +203,7 @@ if ($forc eq "F") {
 	%closers=();
 
 	$sales=0;
-	$stmtA = "select v.status, u.full_name, u.user from vicidial_list v, vicidial_users u, vicidial_xfer_log vl where vl.call_date>='$timestamp' and vl.call_date<='$now' and vl.lead_id=v.lead_id $list_id_clause and vl.closer=u.user;";
+	$stmtA = "select v.status, u.full_name, u.user from osdial_list v, osdial_users u, osdial_xfer_log vl where vl.call_date>='$timestamp' and vl.call_date<='$now' and vl.lead_id=v.lead_id $list_id_clause and vl.closer=u.user;";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -218,7 +234,7 @@ foreach $closername (sort(keys(%closers)))
 	$closers{$closername}[0]+=0;
 	$closers{$closername}[1]+=0;
 
-	$stmtA = "select sum(pause_sec+wait_sec+talk_sec), sec_to_time(sum(pause_sec+wait_sec+talk_sec)) from vicidial_agent_log where user=".$closers{$closername}[2]." and event_time>='$timestamp' and event_time<='$now' and pause_sec<28800 and wait_sec<28800 and talk_sec<28800;";
+	$stmtA = "select sum(pause_sec+wait_sec+talk_sec), sec_to_time(sum(pause_sec+wait_sec+talk_sec)) from osdial_agent_log where user=".$closers{$closername}[2]." and event_time>='$timestamp' and event_time<='$now' and pause_sec<28800 and wait_sec<28800 and talk_sec<28800;";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -269,7 +285,7 @@ $xl->close();
 
 
 if ($forc eq "F") {
-	$xl = Spreadsheet::WriteExcel->new("$PATHweb/vicidial/vicidial_fronter_report_$now.xls");
+	$xl = Spreadsheet::WriteExcel->new("$PATHweb/admin/osdial_fronter_report_$now.xls");
 	$xlsheet = $xl->add_worksheet();
 	$xlsheet->set_landscape();
 	$rptheader = $xl->add_format(); # Add a format
@@ -332,7 +348,7 @@ if ($forc eq "F") {
 	foreach $tsrname (sort(keys(%fronters))) {
 		$fronters{$tsrname}[0]+=0;
 		$fronters{$tsrname}[1]+=0;
-		$stmtA = "select sum(pause_sec+wait_sec+talk_sec), sec_to_time(sum(pause_sec+wait_sec+talk_sec)) from vicidial_agent_log where user=".$fronters{$tsrname}[2]." and event_time>='$timestamp' and event_time<='$now' and pause_sec<28800 and wait_sec<28800 and talk_sec<28800;";
+		$stmtA = "select sum(pause_sec+wait_sec+talk_sec), sec_to_time(sum(pause_sec+wait_sec+talk_sec)) from osdial_agent_log where user=".$fronters{$tsrname}[2]." and event_time>='$timestamp' and event_time<='$now' and pause_sec<28800 and wait_sec<28800 and talk_sec<28800;";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;

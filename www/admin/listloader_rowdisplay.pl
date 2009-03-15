@@ -1,14 +1,30 @@
 #!/usr/bin/perl
 
-### listloader_rowdisplay.pl   version 0.2   *DBI-version*
-### 
-### Copyright (C) 2006  Matt Florell,Joe Johnson <vicidial@gmail.com>    LICENSE: GPLv2
-###
+## listloader_rowdisplay.pl   version 0.2   *DBI-version*
+## 
+## Copyright (C) 2008  Matt Florell,Joe Johnson <vicidial@gmail.com> LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>           LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
 #
 # CHANGES
 # 
 # 60811-1232 - Changed to DBI
-# 60811-1329 - changed to use /etc/astguiclient.conf for configs
+# 60811-1329 - changed to use /etc/osdial.conf for configs
 #
 
 ### begin parsing run-time options ###
@@ -41,7 +57,7 @@ if (length($ARGV[0])>1)
 	#	print "\n----- LEAD FILE: $lead_file -----\n\n";
 		}
 		else
-			{$lead_file = './vicidial_temp_file.xls';}
+			{$lead_file = './osdial_temp_file.xls';}
 	}
 }
 ### end parsing run-time options ###
@@ -51,8 +67,8 @@ use Time::Local;
 use DBI;	  
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -116,7 +132,7 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 @xls_row=split(/\|/, $var_str);
 
 
-$stmtA = "select vendor_lead_code, source_id, list_id, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, security_phrase, comments from vicidial_list limit 1;";
+$stmtA = "select vendor_lead_code, source_id, list_id, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, security_phrase, comments from osdial_list limit 1;";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;

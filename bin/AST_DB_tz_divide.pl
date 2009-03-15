@@ -2,6 +2,26 @@
 #
 # AST_DB_tz_divide.pl version 2.0.4   *DBI-version*
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
 # DESCRIPTION:
 # OPTIONAL!!! CUSTOMIZE THIS SCRIPT FIRST!!!
 # - separates leads into two different lists
@@ -9,8 +29,6 @@
 # - deletes non-sale leads older than 45 days
 #
 # It is recommended that you run this program on the local Asterisk machine
-#
-# Copyright (C) 2007  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
 # CHANGES
 # 71106-0250 - first build
@@ -53,8 +71,8 @@ print "no command line options set\n";
 ### end parsing run-time options ###
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -117,21 +135,21 @@ else
 
 	##### change Pacific Mountain	
 
-	$stmtA = "UPDATE vicidial_list set list_id='222' where list_id='111' and gmt_offset_now IN($TZmove);";
+	$stmtA = "UPDATE osdial_list set list_id='222' where list_id='111' and gmt_offset_now IN($TZmove);";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) {
 				$affected_rows = $dbhA->do($stmtA);
 				if($DB){print STDERR "\n|$affected_rows records changed|\n";}
 				 }
 
-	$stmtA = "UPDATE vicidial_list set list_id='12021' where list_id='11315' and gmt_offset_now IN($TZmove);";
+	$stmtA = "UPDATE osdial_list set list_id='12021' where list_id='11315' and gmt_offset_now IN($TZmove);";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) {
 				$affected_rows = $dbhA->do($stmtA);
 				if($DB){print STDERR "\n|$affected_rows records changed|\n";}
 				 }
 
-        $stmtA = "UPDATE vicidial_list set list_id='4444' where list_id='3333' and gmt_offset_now IN($TZmove);";
+        $stmtA = "UPDATE osdial_list set list_id='4444' where list_id='3333' and gmt_offset_now IN($TZmove);";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) {
                                 $affected_rows = $dbhA->do($stmtA);
@@ -140,21 +158,21 @@ else
 
 	##### change back Eastern Central
 
-        $stmtA = "UPDATE vicidial_list set list_id='111' where list_id='222' and gmt_offset_now IN($TZback);";
+        $stmtA = "UPDATE osdial_list set list_id='111' where list_id='222' and gmt_offset_now IN($TZback);";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) {
                                 $affected_rows = $dbhA->do($stmtA);
                                 if($DB){print STDERR "\n|$affected_rows records changed|\n";}
                                  }
 
-        $stmtA = "UPDATE vicidial_list set list_id='11315' where list_id='12021' and gmt_offset_now IN($TZback);";
+        $stmtA = "UPDATE osdial_list set list_id='11315' where list_id='12021' and gmt_offset_now IN($TZback);";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) {
                                 $affected_rows = $dbhA->do($stmtA);
                                 if($DB){print STDERR "\n|$affected_rows records changed|\n";}
                                  }
 
-        $stmtA = "UPDATE vicidial_list set list_id='3333' where list_id='4444' and gmt_offset_now IN($TZback);";
+        $stmtA = "UPDATE osdial_list set list_id='3333' where list_id='4444' and gmt_offset_now IN($TZback);";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) {
                                 $affected_rows = $dbhA->do($stmtA);
@@ -188,14 +206,14 @@ if ($Tmin < 10) {$Tmin = "0$Tmin";}
 if ($Tsec < 10) {$Tsec = "0$Tsec";}
 	$TDSQLdate = "$Tyear-$Tmon-$Tmday $Thour:$Tmin:$Tsec";
 
-	$stmtA = "UPDATE vicidial_list set list_id='999999' where list_id IN('11315','12021','111','222','3333','4444') and entry_date < \"$XDSQLdate\";";
+	$stmtA = "UPDATE osdial_list set list_id='999999' where list_id IN('11315','12021','111','222','3333','4444') and entry_date < \"$XDSQLdate\";";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) {
 				$affected_rows = $dbhA->do($stmtA);
 				if($DB){print STDERR "\n|$affected_rows records changed|\n";}
 				 }
 
-	$stmtA = "DELETE from vicidial_list WHERE list_id='999999' and entry_date < \"$TDSQLdate\" and status NOT IN('SALE','UPSELL','UPSALE','A1','A2','A3','A4');";
+	$stmtA = "DELETE from osdial_list WHERE list_id='999999' and entry_date < \"$TDSQLdate\" and status NOT IN('SALE','UPSELL','UPSALE','A1','A2','A3','A4');";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) {
 				$affected_rows = $dbhA->do($stmtA);

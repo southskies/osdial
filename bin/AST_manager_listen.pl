@@ -2,18 +2,38 @@
 #
 # AST_manager_listen.pl version 2.0.4   *DBI-version*
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
 # Part of the Asterisk Central Queue System (ACQS)
 #
 # DESCRIPTION:
 # connects to the Asterisk Manager interface and updates records in the 
-# vicidial_manager table of the asterisk database in MySQL based upon the 
+# osdial_manager table of the asterisk database in MySQL based upon the 
 # events that it receives
 # 
 # SUMMARY:
 # This program was designed as the listen-only part of the ACQS. It's job is to
 # look for certain events and based upon either the uniqueid or the callerid of 
 # the call update the status and information of an action record in the 
-# vicidial_manager table of the asterisk MySQL database.
+# osdial_manager table of the asterisk MySQL database.
 # 
 # For this program to work you need to have the "asterisk" MySQL database 
 # created and create the tables listed in the CONF_MySQL.txt file, also make sure
@@ -22,8 +42,6 @@
 # 
 # In your Asterisk server setup you also need to have several things activated
 # and defined. See the CONF_Asterisk.txt file for details
-#
-# Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
 # CHANGES
 # 50322-1300 - changed callerid parsing to remove quotes and number
@@ -35,10 +53,10 @@
 # 51222-1553 - fixed parentheses bug in manager output
 # 60403-1230 - Added SVN/1.4 support for different output
 # 60718-0909 - changed to DBI by Marin Blu
-# 60718-0955 - changed to use /etc/astguiclient.conf for configs
+# 60718-0955 - changed to use /etc/osdial.conf for configs
 # 60720-1142 - added keepalive to MySQL connection every 50 seconds
 # 60814-1733 - added option for no logging to file
-# 60906-1714 - added updating for special vicidial conference calls
+# 60906-1714 - added updating for special osdial conference calls
 # 71129-2004 - Fixed SQL error
 #
 
@@ -85,8 +103,8 @@ else
 }
 ### end parsing run-time options ###
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -139,7 +157,7 @@ use Net::Telnet ();
     or die "Couldn't connect to database: " . DBI->errstr;
 
 ### Grab Server values from the database
-$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_vicidial_trunks,answer_transfer_agent,local_gmt,ext_context,vd_server_logs FROM servers where server_ip = '$server_ip';";
+$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,vd_server_logs FROM servers where server_ip = '$server_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -154,7 +172,7 @@ while ($sthArows > $rec_count)
 		$DBASTmgrUSERNAMEupdate	=	"$aryA[4]";
 		$DBASTmgrUSERNAMElisten	=	"$aryA[5]";
 		$DBASTmgrUSERNAMEsend	=	"$aryA[6]";
-		$DBmax_vicidial_trunks	=	"$aryA[7]";
+		$DBmax_osdial_trunks	=	"$aryA[7]";
 		$DBanswer_transfer_agent=	"$aryA[8]";
 		$DBSERVER_GMT		=		"$aryA[9]";
 		$DBext_context	=			"$aryA[10]";
@@ -166,7 +184,7 @@ while ($sthArows > $rec_count)
 		if ($DBASTmgrUSERNAMEupdate)	{$ASTmgrUSERNAMEupdate = $DBASTmgrUSERNAMEupdate;}
 		if ($DBASTmgrUSERNAMElisten)	{$ASTmgrUSERNAMElisten = $DBASTmgrUSERNAMElisten;}
 		if ($DBASTmgrUSERNAMEsend)		{$ASTmgrUSERNAMEsend = $DBASTmgrUSERNAMEsend;}
-		if ($DBmax_vicidial_trunks)		{$max_vicidial_trunks = $DBmax_vicidial_trunks;}
+		if ($DBmax_osdial_trunks)		{$max_osdial_trunks = $DBmax_osdial_trunks;}
 		if ($DBanswer_transfer_agent)	{$answer_transfer_agent = $DBanswer_transfer_agent;}
 		if ($DBSERVER_GMT)				{$SERVER_GMT = $DBSERVER_GMT;}
 		if ($DBext_context)				{$ext_context = $DBext_context;}
@@ -267,7 +285,7 @@ while($one_day_interval > 0)
 			$ILcount=0;
 			foreach(@input_lines)
 				{
-				##### look for special vicidial conference call event #####
+				##### look for special osdial conference call event #####
 				if ( ($input_lines[$ILcount] =~ /CallerIDName: DCagcW/) && ($input_lines[$ILcount] =~ /Event: Dial|State: Up/) )
 					{
 					### BEGIN 1.2.X tree versions
@@ -285,7 +303,7 @@ while($one_day_interval > 0)
 							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
 							$uniqueid = $command_line[6];
 							$uniqueid =~ s/SrcUniqueID: |\s*$//gi;
-							$stmtA = "UPDATE vicidial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
 							if ($channel !~ /local/i)
 								{
 								print STDERR "|$stmtA|\n";
@@ -305,7 +323,7 @@ while($one_day_interval > 0)
 							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
 							$uniqueid = $command_line[6];
 							$uniqueid =~ s/SrcUniqueID: |\s*$//gi;
-							$stmtA = "UPDATE vicidial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid' and status='SENT';";
+							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid' and status='SENT';";
 							print STDERR "|$stmtA|\n";
 							my $affected_rows = $dbhA->do($stmtA);
 							if($DB){print "|$affected_rows Conference DIALs updated|\n";}
@@ -337,7 +355,7 @@ while($one_day_interval > 0)
 							$channel =~ s/Channel: |\s*$//gi;
 							$uniqueid = $command_line[3];
 							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE vicidial_manager set status='DEAD', channel='$channel' where server_ip = '$server_ip' and uniqueid = '$uniqueid' and callerid NOT LIKE \"DCagcW%\";";
+							$stmtA = "UPDATE osdial_manager set status='DEAD', channel='$channel' where server_ip = '$server_ip' and uniqueid = '$uniqueid' and callerid NOT LIKE \"DCagcW%\";";
 
 							print STDERR "|$stmtA|\n";
 							my $affected_rows = $dbhA->do($stmtA);
@@ -352,7 +370,7 @@ while($one_day_interval > 0)
 								$channel =~ s/Channel: |\s*$//gi;
 								$uniqueid = $command_line[4];
 								$uniqueid =~ s/Uniqueid: |\s*$//gi;
-								$stmtA = "UPDATE vicidial_manager set status='DEAD', channel='$channel' where server_ip = '$server_ip' and uniqueid = '$uniqueid' and callerid NOT LIKE \"DCagcW%\";";
+								$stmtA = "UPDATE osdial_manager set status='DEAD', channel='$channel' where server_ip = '$server_ip' and uniqueid = '$uniqueid' and callerid NOT LIKE \"DCagcW%\";";
 
 								print STDERR "|$stmtA|\n";
 							    my $affected_rows = $dbhA->do($stmtA);
@@ -364,7 +382,7 @@ while($one_day_interval > 0)
 								$channel =~ s/Channel: |\s*$//gi;
 								$uniqueid = $command_line[2];
 								$uniqueid =~ s/Uniqueid: |\s*$//gi;
-								$stmtA = "UPDATE vicidial_manager set status='DEAD', channel='$channel' where server_ip = '$server_ip' and uniqueid = '$uniqueid' and callerid NOT LIKE \"DCagcW%\";";
+								$stmtA = "UPDATE osdial_manager set status='DEAD', channel='$channel' where server_ip = '$server_ip' and uniqueid = '$uniqueid' and callerid NOT LIKE \"DCagcW%\";";
 
 								print STDERR "|$stmtA|\n";
 							    my $affected_rows = $dbhA->do($stmtA);
@@ -384,7 +402,7 @@ while($one_day_interval > 0)
 							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
 							$uniqueid = $command_line[4];
 							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE vicidial_manager set status='SENT', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+							$stmtA = "UPDATE osdial_manager set status='SENT', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
 							print STDERR "|$stmtA|\n";
 						    my $affected_rows = $dbhA->do($stmtA);
 							
@@ -399,7 +417,7 @@ while($one_day_interval > 0)
 							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
 							$uniqueid = $command_line[5];
 							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE vicidial_manager set status='SENT', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+							$stmtA = "UPDATE osdial_manager set status='SENT', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
 							print STDERR "|$stmtA|\n";
 						    my $affected_rows = $dbhA->do($stmtA);
 							if($DB){print "|$affected_rows DIALINGs updated|\n";}
@@ -413,7 +431,7 @@ while($one_day_interval > 0)
 							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
 							$uniqueid = $command_line[6];
 							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE vicidial_manager set status='SENT', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+							$stmtA = "UPDATE osdial_manager set status='SENT', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
 							print STDERR "|$stmtA|\n";
 						    my $affected_rows = $dbhA->do($stmtA);
 							if($DB){print "|$affected_rows DIALINGs updated|\n";}
@@ -427,7 +445,7 @@ while($one_day_interval > 0)
 							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
 							$uniqueid = $command_line[7];
 							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE vicidial_manager set status='SENT', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+							$stmtA = "UPDATE osdial_manager set status='SENT', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
 							print STDERR "|$stmtA|\n";
 						    my $affected_rows = $dbhA->do($stmtA);
 							if($DB){print "|$affected_rows DIALINGs updated|\n";}
@@ -444,7 +462,7 @@ while($one_day_interval > 0)
 							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
 							$uniqueid = $command_line[4];
 							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE vicidial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
 							if ($channel !~ /local/i)
 								{
 								print STDERR "|$stmtA|\n";
@@ -461,7 +479,7 @@ while($one_day_interval > 0)
 							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
 							$uniqueid = $command_line[5];
 							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE vicidial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
 							if ($channel !~ /local/i)
 								{
 								print STDERR "|$stmtA|\n";
@@ -478,7 +496,7 @@ while($one_day_interval > 0)
 							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
 							$uniqueid = $command_line[6];
 							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE vicidial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
 							if ($channel !~ /local/i)
 								{
 								print STDERR "|$stmtA|\n";
@@ -495,7 +513,7 @@ while($one_day_interval > 0)
 							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
 							$uniqueid = $command_line[7];
 							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE vicidial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
 							if ($channel !~ /local/i)
 								{
 								print STDERR "|$stmtA|\n";
@@ -516,7 +534,7 @@ while($one_day_interval > 0)
 							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
 							$uniqueid = $command_line[3];
 							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE vicidial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
 							if ($channel =~ /local/i)
 								{
 								print STDERR "|$stmtA|\n";
@@ -534,7 +552,7 @@ while($one_day_interval > 0)
 							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
 							$uniqueid = $command_line[6];
 							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE vicidial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
 							if ($channel =~ /local/i)
 								{
 								print STDERR "|$stmtA|\n";
@@ -551,7 +569,7 @@ while($one_day_interval > 0)
 					#		   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
 					#		$uniqueid = $command_line[5];
 					#		$uniqueid =~ s/Uniqueid: |\s*$//gi;
-					#		$stmtA = "UPDATE vicidial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+					#		$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
 					#		if ($channel =~ /local/i)
 					#			{
 					#			print STDERR "|$stmtA|\n";
