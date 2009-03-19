@@ -2,13 +2,33 @@
 #
 # AST_VDauto_dial.pl version 2.0.3   *DBI-version*
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
 # DESCRIPTION:
-# Places auto_dial calls on the VICIDIAL dialer system 
+# Places auto_dial calls on the OSDIAL dialer system 
 #
 # SUMMARY:
-# This program was designed for people using the Asterisk PBX with VICIDIAL
+# This program was designed for people using the Asterisk PBX with OSDIAL
 #
-# For the client to use VICIDIAL, this program must be in the cron constantly 
+# For the client to use OSDIAL, this program must be in the cron constantly 
 # 
 # For this program to work you need to have the "asterisk" MySQL database 
 # created and create the tables listed in the CONF_MySQL.txt file, also make sure
@@ -18,14 +38,12 @@
 # It is recommended that you run this program on the local Asterisk machine
 #
 # This script is to run perpetually querying every second to place new phone
-# calls from the vicidial_hopper based upon how many available agents there are
+# calls from the osdial_hopper based upon how many available agents there are
 # and the value of the auto_dial_level setting in the campaign screen of the 
 # admin web page
 #
 # It is good practice to keep this program running by placing the associated 
 # KEEPALIVE script running every minute to ensure this program is always running
-#
-# Copyright (C) 2007  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
 # CHANGELOG:
 # 50125-1201 - Changed dial timeout to 120 seconds from 180 seconds
@@ -36,7 +54,7 @@
 # 50617-1248 - Added code to place LOGOUT entry in auto-paused user logs
 # 50620-1349 - Added custom vdad transfer AGI extension per campaign
 # 50810-1610 - Added database server variable definitions lookup
-# 50810-1630 - Added max_vicidial_trunks server limiter on active lines
+# 50810-1630 - Added max_osdial_trunks server limiter on active lines
 # 50812-0957 - Corrected max_trunks logic, added update of server every 25 sec
 # 60120-1522 - Corrected time error for hour variable, caused agi problems
 # 60427-1223 - Fixed Blended in/out CLOSER campaign issue
@@ -46,7 +64,7 @@
 # 60614-1142 - Added code to work with recycled leads, multi called_since_last_reset values
 #            - Removed gmt lead validation because it is already done by VDhopper
 # 60807-1438 - Changed to DBI
-#            - Changed to use /etc/astguiclient.conf for configs
+#            - Changed to use /etc/osdial.conf for configs
 # 60814-1749 - Added option for no logging to file
 # 60821-1546 - Added option to not dial phone_code per campaign
 # 60824-1437 - Added available_only_ratio_tally option
@@ -56,12 +74,12 @@
 # 70111-1600 - Added ability to use BLEND/INBND/*_C/*_B/*_I as closer campaigns
 # 70115-1635 - Added initial auto-alt-dial functionality
 # 70116-1619 - Added VDAD Ring-No-Answer Auto Alt Dial code
-# 70118-1539 - Added user_group logging to vicidial_user_log
+# 70118-1539 - Added user_group logging to osdial_user_log
 # 70131-1550 - Fixed Manual dialing trunk shortage bug
 # 70205-1414 - Added code for last called date update
 # 70207-1031 - Fixed Tally-only-available bug with customer hangups
 # 70215-1123 - Added queue_log ABANDON logging
-# 70302-1412 - Fixed max_vicidial_trunks update if set to 0
+# 70302-1412 - Fixed max_osdial_trunks update if set to 0
 # 70320-1458 - Fixed several errors in calculating trunk shortage for campaigns
 # 71029-1909 - Changed CLOSER-type campaign_id restriction
 # 71030-2054 - Added hopper priority sorting
@@ -121,10 +139,10 @@ $MT[0]='';
 $RECcount=''; ### leave blank for no REC count
 $RECprefix='7'; ### leave blank for no REC prefix
 $useJAMdebugFILE='1'; ### leave blank for no Jam call debug file writing
-$max_vicidial_trunks=0; ### setting a default value for max_vicidial_trunks
+$max_osdial_trunks=0; ### setting a default value for max_osdial_trunks
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -183,7 +201,7 @@ use DBI;
     or die "Couldn't connect to database: " . DBI->errstr;
 
 ### Grab Server values from the database
-$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_vicidial_trunks,answer_transfer_agent,local_gmt,ext_context,vd_server_logs FROM servers where server_ip = '$server_ip';";
+$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,vd_server_logs FROM servers where server_ip = '$server_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -198,7 +216,7 @@ while ($sthArows > $rec_count)
 		$DBASTmgrUSERNAMEupdate	=	"$aryA[4]";
 		$DBASTmgrUSERNAMElisten	=	"$aryA[5]";
 		$DBASTmgrUSERNAMEsend	=	"$aryA[6]";
-		$DBmax_vicidial_trunks	=	"$aryA[7]";
+		$DBmax_osdial_trunks	=	"$aryA[7]";
 		$DBanswer_transfer_agent=	"$aryA[8]";
 		$DBSERVER_GMT		=		"$aryA[9]";
 		$DBext_context	=			"$aryA[10]";
@@ -210,7 +228,7 @@ while ($sthArows > $rec_count)
 		if ($DBASTmgrUSERNAMEupdate)	{$ASTmgrUSERNAMEupdate = $DBASTmgrUSERNAMEupdate;}
 		if ($DBASTmgrUSERNAMElisten)	{$ASTmgrUSERNAMElisten = $DBASTmgrUSERNAMElisten;}
 		if ($DBASTmgrUSERNAMEsend)		{$ASTmgrUSERNAMEsend = $DBASTmgrUSERNAMEsend;}
-			$max_vicidial_trunks = $DBmax_vicidial_trunks;
+			$max_osdial_trunks = $DBmax_osdial_trunks;
 		if ($DBanswer_transfer_agent)	{$answer_transfer_agent = $DBanswer_transfer_agent;}
 		if ($DBSERVER_GMT)				{$SERVER_GMT = $DBSERVER_GMT;}
 		if ($DBext_context)				{$ext_context = $DBext_context;}
@@ -307,7 +325,7 @@ while($one_day_interval > 0)
 
 		##### Get a listing of the users that are active and ready to take calls
 		##### Also get a listing of the campaigns and campaigns/serverIP that will be used
-		$stmtA = "SELECT user,server_ip,campaign_id,conf_exten,status FROM vicidial_live_agents where status IN($active_agents) and server_ip='$server_ip' and last_update_time > '$BDtsSQLdate' order by last_call_time";
+		$stmtA = "SELECT user,server_ip,campaign_id,conf_exten,status FROM osdial_live_agents where status IN($active_agents) and server_ip='$server_ip' and last_update_time > '$BDtsSQLdate' order by last_call_time";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -342,7 +360,7 @@ while($one_day_interval > 0)
 		$sthA->finish();
 
 		### see how many total VDAD calls are going on right now for max limiter
-		$stmtA = "SELECT count(*) FROM vicidial_auto_calls where server_ip='$server_ip' and status IN('SENT','RINGING','LIVE','XFER','CLOSER');";
+		$stmtA = "SELECT count(*) FROM osdial_auto_calls where server_ip='$server_ip' and status IN('SENT','RINGING','LIVE','XFER','CLOSER');";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -358,7 +376,7 @@ while($one_day_interval > 0)
 		$event_string="LIVE AGENTS LOGGED IN: $user_counter   ACTIVE CALLS: $active_line_counter";
 		&event_logger;
 
-		$stmtA = "UPDATE vicidial_campaign_server_stats set local_trunk_shortage='0' where server_ip='$server_ip' and campaign_id NOT IN($user_campaignsSQL);";
+		$stmtA = "UPDATE osdial_campaign_server_stats set local_trunk_shortage='0' where server_ip='$server_ip' and campaign_id NOT IN($user_campaignsSQL);";
 		$UVCSSaffected_rows = $dbhA->do($stmtA);
 		if ($UVCSSaffected_rows > 0) 
 			{
@@ -388,8 +406,8 @@ while($one_day_interval > 0)
 				$user_counter++;
 				}
 
-			### check for vicidial_campaign_server_stats record, if non present then create it
-			$stmtA = "SELECT local_trunk_shortage FROM vicidial_campaign_server_stats where campaign_id='$DBIPcampaign[$user_CIPct]' and server_ip='$server_ip';";
+			### check for osdial_campaign_server_stats record, if non present then create it
+			$stmtA = "SELECT local_trunk_shortage FROM osdial_campaign_server_stats where campaign_id='$DBIPcampaign[$user_CIPct]' and server_ip='$server_ip';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -402,7 +420,7 @@ while($one_day_interval > 0)
 				}
 			if ($rec_count < 1)
 				{
-				$stmtA = "INSERT INTO vicidial_campaign_server_stats SET local_trunk_shortage='0', server_ip='$server_ip',campaign_id='$DBIPcampaign[$user_CIPct]';";
+				$stmtA = "INSERT INTO osdial_campaign_server_stats SET local_trunk_shortage='0', server_ip='$server_ip',campaign_id='$DBIPcampaign[$user_CIPct]';";
 				$affected_rows = $dbhA->do($stmtA);
 
 				$DBIPold_trunk_shortage[$user_CIPct]=0;
@@ -413,9 +431,9 @@ while($one_day_interval > 0)
 
 			$DBIPserver_trunks_limit[$user_CIPct] = '';
 			$DBIPserver_trunks_other[$user_CIPct] = 0;
-			$DBIPserver_trunks_allowed[$user_CIPct] = $max_vicidial_trunks;
-			### check for vicidial_server_trunks record
-			$stmtA = "SELECT dedicated_trunks FROM vicidial_server_trunks where campaign_id='$DBIPcampaign[$user_CIPct]' and server_ip='$server_ip' and trunk_restriction='MAXIMUM_LIMIT';";
+			$DBIPserver_trunks_allowed[$user_CIPct] = $max_osdial_trunks;
+			### check for osdial_server_trunks record
+			$stmtA = "SELECT dedicated_trunks FROM osdial_server_trunks where campaign_id='$DBIPcampaign[$user_CIPct]' and server_ip='$server_ip' and trunk_restriction='MAXIMUM_LIMIT';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -426,7 +444,7 @@ while($one_day_interval > 0)
 					$DBIPserver_trunks_limit[$user_CIPct] =		"$aryA[0]";
 				$rec_count++;
 				}
-			$stmtA = "SELECT sum(dedicated_trunks) FROM vicidial_server_trunks where campaign_id NOT IN('$DBIPcampaign[$user_CIPct]') and server_ip='$server_ip';";
+			$stmtA = "SELECT sum(dedicated_trunks) FROM osdial_server_trunks where campaign_id NOT IN('$DBIPcampaign[$user_CIPct]') and server_ip='$server_ip';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -438,12 +456,12 @@ while($one_day_interval > 0)
 				$rec_count++;
 				}
 
-			$DBIPserver_trunks_allowed[$user_CIPct] = ($max_vicidial_trunks - $DBIPserver_trunks_other[$user_CIPct]);
+			$DBIPserver_trunks_allowed[$user_CIPct] = ($max_osdial_trunks - $DBIPserver_trunks_other[$user_CIPct]);
 
 
 			### grab the dial_level and multiply by active agents to get your goalcalls
 			$DBIPadlevel[$user_CIPct]=0;
-			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound FROM vicidial_campaigns where campaign_id='$DBIPcampaign[$user_CIPct]'";
+			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound FROM osdial_campaigns where campaign_id='$DBIPcampaign[$user_CIPct]'";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -480,7 +498,7 @@ while($one_day_interval > 0)
 				{
 				$tally_xfer_line_counter=0;
 				### see how many VDAD calls are live as XFERs to agents
-				$stmtA = "SELECT count(*) FROM vicidial_auto_calls where server_ip='$DBIPaddress[$user_CIPct]' and campaign_id='$DBIPcampaign[$user_CIPct]' and status IN('XFER','CLOSER');";
+				$stmtA = "SELECT count(*) FROM osdial_auto_calls where server_ip='$DBIPaddress[$user_CIPct]' and campaign_id='$DBIPcampaign[$user_CIPct]' and status IN('XFER','CLOSER');";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -518,7 +536,7 @@ while($one_day_interval > 0)
 				$campaign_query = "( (call_type='IN' and campaign_id IN($DBIPclosercamp[$user_CIPct])) or (campaign_id='$DBIPcampaign[$user_CIPct]' and call_type IN('OUT','OUTBALANCE')) )";
 				}
 			else {$campaign_query = "(campaign_id='$DBIPcampaign[$user_CIPct]' and call_type IN('OUT','OUTBALANCE'))";}
-			$stmtA = "SELECT count(*) FROM vicidial_auto_calls where $campaign_query and server_ip='$DBIPaddress[$user_CIPct]' and status IN('SENT','RINGING','LIVE','XFER','CLOSER');";
+			$stmtA = "SELECT count(*) FROM osdial_auto_calls where $campaign_query and server_ip='$DBIPaddress[$user_CIPct]' and status IN('SENT','RINGING','LIVE','XFER','CLOSER');";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -537,15 +555,15 @@ while($one_day_interval > 0)
 			$MVT_msg = '';
 			$DBIPtrunk_shortage[$user_CIPct] = 0;
 			$active_line_goal = ($active_line_counter + $DBIPmakecalls[$user_CIPct]);
-			if ($active_line_goal > $max_vicidial_trunks) 
+			if ($active_line_goal > $max_osdial_trunks) 
 				{
-				$NEWmakecallsgoal = ($max_vicidial_trunks - $active_line_counter);
+				$NEWmakecallsgoal = ($max_osdial_trunks - $active_line_counter);
 				if ($DBIPmakecalls[$user_CIPct] > $NEWmakecallsgoal)
 					{$DBIPmakecalls[$user_CIPct] = $NEWmakecallsgoal;}
-				$DBIPtrunk_shortage[$user_CIPct] = ($active_line_goal - $max_vicidial_trunks);
+				$DBIPtrunk_shortage[$user_CIPct] = ($active_line_goal - $max_osdial_trunks);
 				if ($DBIPtrunk_shortage[$user_CIPct] > $DBIPmakecallsGOAL) 
 					{$DBIPtrunk_shortage[$user_CIPct] = $DBIPmakecallsGOAL}
-				$MVT_msg = "MVT override: $max_vicidial_trunks |$DBIPmakecalls[$user_CIPct] $DBIPtrunk_shortage[$user_CIPct]|";
+				$MVT_msg = "MVT override: $max_osdial_trunks |$DBIPmakecalls[$user_CIPct] $DBIPtrunk_shortage[$user_CIPct]|";
 				}
 			if (length($DBIPserver_trunks_limit[$user_CIPct])>0) 
 				{
@@ -588,7 +606,7 @@ while($one_day_interval > 0)
 			$ready_agents=0;
 			$waiting_calls=0;
 
-			$stmtA = "SELECT count(*),status from vicidial_live_agents where campaign_id='$DBIPcampaign[$user_CIPct]' and last_update_time > '$halfminSQLdate' group by status;";
+			$stmtA = "SELECT count(*),status from osdial_live_agents where campaign_id='$DBIPcampaign[$user_CIPct]' and last_update_time > '$halfminSQLdate' group by status;";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -604,7 +622,7 @@ while($one_day_interval > 0)
 				}
 			$sthA->finish();
 
-			$stmtA = "SELECT count(*) FROM vicidial_auto_calls where $campaign_query and status IN('LIVE');";
+			$stmtA = "SELECT count(*) FROM osdial_auto_calls where $campaign_query and status IN('LIVE');";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -662,7 +680,7 @@ while($one_day_interval > 0)
 			$event_string="CAMPAIGN DIFFERENTIAL: $total_agents_avg   $stat_differential   ($ready_diff_avg - $waiting_diff_avg)";
 			&event_logger;
 
-			$stmtA = "UPDATE vicidial_campaign_stats SET differential_onemin='$stat_differential', agents_average_onemin='$total_agents_avg' where campaign_id='$DBIPcampaign[$user_CIPct]';";
+			$stmtA = "UPDATE osdial_campaign_stats SET differential_onemin='$stat_differential', agents_average_onemin='$total_agents_avg' where campaign_id='$DBIPcampaign[$user_CIPct]';";
 			$affected_rows = $dbhA->do($stmtA);
 
 			if ( ($DBIPold_trunk_shortage[$user_CIPct] > $DBIPtrunk_shortage[$user_CIPct]) || ($DBIPold_trunk_shortage[$user_CIPct] < $DBIPtrunk_shortage[$user_CIPct]) )
@@ -673,11 +691,11 @@ while($one_day_interval > 0)
 					&event_logger;
 					$DBIPtrunk_shortage[$user_CIPct] = 0;
 					}
-				$stmtA = "UPDATE vicidial_campaign_server_stats SET local_trunk_shortage='$DBIPtrunk_shortage[$user_CIPct]' where server_ip='$server_ip' and campaign_id='$DBIPcampaign[$user_CIPct]';";
+				$stmtA = "UPDATE osdial_campaign_server_stats SET local_trunk_shortage='$DBIPtrunk_shortage[$user_CIPct]' where server_ip='$server_ip' and campaign_id='$DBIPcampaign[$user_CIPct]';";
 				$affected_rows = $dbhA->do($stmtA);
 				}
 
-			$event_string="LOCAL TRUNK SHORTAGE: $DBIPtrunk_shortage[$user_CIPct]|$DBIPold_trunk_shortage[$user_CIPct]  ($active_line_goal - $max_vicidial_trunks)";
+			$event_string="LOCAL TRUNK SHORTAGE: $DBIPtrunk_shortage[$user_CIPct]|$DBIPold_trunk_shortage[$user_CIPct]  ($active_line_goal - $max_osdial_trunks)";
 			&event_logger;
 
 			$user_CIPct++;
@@ -685,7 +703,7 @@ while($one_day_interval > 0)
 
 	###############################################################################
 	###### second lookup leads and place calls for each campaign/server_ip
-	######     go one lead at a time and place the call by inserting a record into vicidial_manager
+	######     go one lead at a time and place the call by inserting a record into osdial_manager
 	###############################################################################
 
 		$user_CIPct = 0;
@@ -698,7 +716,7 @@ while($one_day_interval > 0)
 			my $UDaffected_rows=0;
 			if ($call_CMPIPct < $DBIPmakecalls[$user_CIPct])
 				{
-				$stmtA = "UPDATE vicidial_hopper set status='QUEUE', user='VDAD_$server_ip' where campaign_id='$DBIPcampaign[$user_CIPct]' and status='READY' order by priority desc,hopper_id LIMIT $DBIPmakecalls[$user_CIPct]";
+				$stmtA = "UPDATE osdial_hopper set status='QUEUE', user='VDAD_$server_ip' where campaign_id='$DBIPcampaign[$user_CIPct]' and status='READY' order by priority desc,hopper_id LIMIT $DBIPmakecalls[$user_CIPct]";
 				print "|$stmtA|\n";
 			   $UDaffected_rows = $dbhA->do($stmtA);
 				print "hopper rows updated to QUEUE: |$UDaffected_rows|\n";
@@ -708,7 +726,7 @@ while($one_day_interval > 0)
 					$lead_id=''; $phone_code=''; $phone_number=''; $called_count='';
 						while ($call_CMPIPct < $UDaffected_rows)
 						{
-						$stmtA = "SELECT lead_id,alt_dial FROM vicidial_hopper where campaign_id='$DBIPcampaign[$user_CIPct]' and status='QUEUE' and user='VDAD_$server_ip' order by priority desc,hopper_id LIMIT 1";
+						$stmtA = "SELECT lead_id,alt_dial FROM osdial_hopper where campaign_id='$DBIPcampaign[$user_CIPct]' and status='QUEUE' and user='VDAD_$server_ip' order by priority desc,hopper_id LIMIT 1";
 						print "|$stmtA|\n";
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -737,12 +755,12 @@ while($one_day_interval > 0)
 							}
 						else
 							{
-							$stmtA = "UPDATE vicidial_hopper set status='INCALL' where lead_id='$lead_id'";
+							$stmtA = "UPDATE osdial_hopper set status='INCALL' where lead_id='$lead_id'";
 							print "|$stmtA|\n";
 						   $UQaffected_rows = $dbhA->do($stmtA);
 							print "hopper row updated to INCALL: |$UQaffected_rows|$lead_id|\n";
 
-							$stmtA = "SELECT * FROM vicidial_list where lead_id='$lead_id';";
+							$stmtA = "SELECT * FROM osdial_list where lead_id='$lead_id';";
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 							$sthArows=$sthA->rows;
@@ -793,15 +811,15 @@ while($one_day_interval > 0)
 										$address3 =~ s/\D//gi;
 										$phone_number = $address3;
 										}
-									$stmtA = "UPDATE vicidial_list set called_since_last_reset='$CSLR',user='VDAD' where lead_id='$lead_id'";
+									$stmtA = "UPDATE osdial_list set called_since_last_reset='$CSLR',user='VDAD' where lead_id='$lead_id'";
 									}
 								else
 									{
-									$stmtA = "UPDATE vicidial_list set called_since_last_reset='$CSLR', called_count='$called_count',user='VDAD' where lead_id='$lead_id'";
+									$stmtA = "UPDATE osdial_list set called_since_last_reset='$CSLR', called_count='$called_count',user='VDAD' where lead_id='$lead_id'";
 									}
 								$affected_rows = $dbhA->do($stmtA);
 
-								$stmtA = "DELETE FROM vicidial_hopper where lead_id='$lead_id'";
+								$stmtA = "DELETE FROM osdial_hopper where lead_id='$lead_id'";
 								$affected_rows = $dbhA->do($stmtA);
 
 								$CCID_on=0;   $CCID='';
@@ -840,15 +858,15 @@ while($one_day_interval > 0)
 									$VqueryCID = "V$CIDdate$PADlead_id";
 								if ($CCID_on) {$CIDstring = "\"$VqueryCID\" <$CCID>";}
 								else {$CIDstring = "$VqueryCID";}
-								### insert a NEW record to the vicidial_manager table to be processed
-									$stmtA = "INSERT INTO vicidial_manager values('','','$SQLdate','NEW','N','$DBIPaddress[$user_CIPct]','','Originate','$VqueryCID','Exten: $VDAD_dial_exten','Context: $ext_context','Channel: $local_DEF$Ndialstring$local_AMP$ext_context','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','','','','')";
+								### insert a NEW record to the osdial_manager table to be processed
+									$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$DBIPaddress[$user_CIPct]','','Originate','$VqueryCID','Exten: $VDAD_dial_exten','Context: $ext_context','Channel: $local_DEF$Ndialstring$local_AMP$ext_context','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','','','','')";
 									$affected_rows = $dbhA->do($stmtA);
 
 									$event_string = "|     number call dialed|$DBIPcampaign[$user_CIPct]|$VqueryCID|$stmtA|$gmt_offset_now|$alt_dial|";
 									 &event_logger;
 
-								### insert a SENT record to the vicidial_auto_calls table 
-									$stmtA = "INSERT INTO vicidial_auto_calls (server_ip,campaign_id,status,lead_id,callerid,phone_code,phone_number,call_time,call_type,alt_dial) values('$DBIPaddress[$user_CIPct]','$DBIPcampaign[$user_CIPct]','SENT','$lead_id','$VqueryCID','$phone_code','$phone_number','$SQLdate','OUT','$alt_dial')";
+								### insert a SENT record to the osdial_auto_calls table 
+									$stmtA = "INSERT INTO osdial_auto_calls (server_ip,campaign_id,status,lead_id,callerid,phone_code,phone_number,call_time,call_type,alt_dial) values('$DBIPaddress[$user_CIPct]','$DBIPcampaign[$user_CIPct]','SENT','$lead_id','$VqueryCID','$phone_code','$phone_number','$SQLdate','OUT','$alt_dial')";
 									$affected_rows = $dbhA->do($stmtA);
 
 								### sleep for a tenth of a second to not flood the server with new calls
@@ -874,9 +892,9 @@ while($one_day_interval > 0)
 	&get_time_now;
 
 	###############################################################################
-	###### third we will grab the callerids of the vicidial_auto_calls records and check for dead calls
+	###### third we will grab the callerids of the osdial_auto_calls records and check for dead calls
 	######    we also check to make sure that it isn't a call that has been transferred, 
-	######    if it has been we need to leave the vicidial_list status alone
+	######    if it has been we need to leave the osdial_list status alone
 	###############################################################################
 
 		@KLcallerid = @MT;
@@ -884,7 +902,7 @@ while($one_day_interval > 0)
 		@KLchannel = @MT;
 		$kill_vac=0;
 
-		$stmtA = "SELECT callerid,server_ip,channel,uniqueid,status FROM vicidial_auto_calls where server_ip='$server_ip' order by call_time;";
+		$stmtA = "SELECT callerid,server_ip,channel,uniqueid,status FROM osdial_auto_calls where server_ip='$server_ip' order by call_time;";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -953,7 +971,7 @@ while($one_day_interval > 0)
 
 				$CLlead_id=''; $auto_call_id=''; $CLstatus=''; $CLcampaign_id=''; $CLphone_number=''; $CLphone_code='';
 
-				$stmtA = "SELECT auto_call_id,lead_id,phone_number,status,campaign_id,phone_code,alt_dial,stage,call_type FROM vicidial_auto_calls where callerid='$KLcallerid[$kill_vac]'";
+				$stmtA = "SELECT auto_call_id,lead_id,phone_number,status,campaign_id,phone_code,alt_dial,stage,call_type FROM osdial_auto_calls where callerid='$KLcallerid[$kill_vac]'";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -977,12 +995,12 @@ while($one_day_interval > 0)
 
 				if ($CLcall_type =~ /IN/)
 					{
-					$stmtA = "SELECT drop_call_seconds FROM vicidial_inbound_groups where group_id='$CLcampaign_id';";
+					$stmtA = "SELECT drop_call_seconds FROM osdial_inbound_groups where group_id='$CLcampaign_id';";
 					$timeout_leeway = 30;
 					}
 				else
 					{
-					$stmtA = "SELECT dial_timeout FROM vicidial_campaigns where campaign_id='$CLcampaign_id';";
+					$stmtA = "SELECT dial_timeout FROM osdial_campaigns where campaign_id='$CLcampaign_id';";
 					$timeout_leeway = 7;
 					}
 
@@ -1004,7 +1022,7 @@ while($one_day_interval > 0)
 					{
 					if ($CLstatus !~ /XFER|CLOSER/) 
 						{
-						$stmtA = "DELETE from vicidial_auto_calls where auto_call_id='$auto_call_id'";
+						$stmtA = "DELETE from osdial_auto_calls where auto_call_id='$auto_call_id'";
 						$affected_rows = $dbhA->do($stmtA);
 
 						$event_string = "|     dead call vac deleted|$auto_call_id|$CLlead_id|$KLcallerid[$kill_vac]|$end_epoch|$affected_rows|$KLchannel[$kill_vac]|$CLdial_timeout|$dialtimelog|$dialtimecatch|";
@@ -1023,7 +1041,7 @@ while($one_day_interval > 0)
 						else 
 							{
 							$end_epoch = ($now_date_epoch + 1);
-							$stmtA = "INSERT INTO vicidial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch) values('$CLuniqueid','$CLlead_id','$CLcampaign_id','$SQLdate','$now_date_epoch','$CLnew_status','$CLphone_code','$CLphone_number','VDAD','N','$CLstage','$end_epoch')";
+							$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch) values('$CLuniqueid','$CLlead_id','$CLcampaign_id','$SQLdate','$now_date_epoch','$CLnew_status','$CLphone_code','$CLphone_number','VDAD','N','$CLstage','$end_epoch')";
 								if($M){print STDERR "\n|$stmtA|\n";}
 							$affected_rows = $dbhA->do($stmtA);
 
@@ -1034,14 +1052,14 @@ while($one_day_interval > 0)
 
 						if ($CLlead_id > 0)
 							{
-							$stmtA = "UPDATE vicidial_list set status='$CLnew_status' where lead_id='$CLlead_id'";
+							$stmtA = "UPDATE osdial_list set status='$CLnew_status' where lead_id='$CLlead_id'";
 							$affected_rows = $dbhA->do($stmtA);
 
 							$event_string = "|     dead call vac lead marked $CLnew_status|$CLlead_id|$CLphone_number|$CLstatus|";
 							 &event_logger;
 							}
 
-						$stmtA = "UPDATE vicidial_live_agents set status='PAUSED',random_id='10' where  callerid='$KLcallerid[$kill_vac]';";
+						$stmtA = "UPDATE osdial_live_agents set status='PAUSED',random_id='10' where  callerid='$KLcallerid[$kill_vac]';";
 						$affected_rows = $dbhA->do($stmtA);
 
 						$event_string = "|     dead call vla agent PAUSED $affected_rows|$CLlead_id|$CLphone_number|$CLstatus|";
@@ -1064,7 +1082,7 @@ while($one_day_interval > 0)
 						### check to see if campaign has alt_dial enabled
 						$VD_auto_alt_dial = 'NONE';
 						$VD_auto_alt_dial_statuses='';
-						$stmtA="SELECT auto_alt_dial,auto_alt_dial_statuses FROM vicidial_campaigns where campaign_id='$CLcampaign_id';";
+						$stmtA="SELECT auto_alt_dial,auto_alt_dial_statuses FROM osdial_campaigns where campaign_id='$CLcampaign_id';";
 							if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1083,7 +1101,7 @@ while($one_day_interval > 0)
 							if ( ($VD_auto_alt_dial =~ /(ALT_ONLY|ALT_AND_ADDR3)/) && ($CLalt_dial =~ /NONE|MAIN/) )
 								{
 								$VD_alt_phone='';
-								$stmtA="SELECT alt_phone,gmt_offset_now,state,list_id FROM vicidial_list where lead_id='$CLlead_id';";
+								$stmtA="SELECT alt_phone,gmt_offset_now,state,list_id FROM osdial_list where lead_id='$CLlead_id';";
 									if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1102,7 +1120,7 @@ while($one_day_interval > 0)
 								$sthA->finish();
 								if (length($VD_alt_phone)>5)
 									{
-									$stmtA = "INSERT INTO vicidial_hopper SET lead_id='$CLlead_id',campaign_id='$CLcampaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ALT',user='',priority='25';";
+									$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='$CLcampaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ALT',user='',priority='25';";
 									$affected_rows = $dbhA->do($stmtA);
 									if ($AGILOG) {$agi_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &agi_output;}
 									}
@@ -1110,7 +1128,7 @@ while($one_day_interval > 0)
 							if ( ( ($VD_auto_alt_dial =~ /(ADDR3_ONLY)/) && ($CLalt_dial =~ /NONE|MAIN/) ) || ( ($VD_auto_alt_dial =~ /(ALT_AND_ADDR3)/) && ($CLalt_dial =~ /ALT/) ) )
 								{
 								$VD_address3='';
-								$stmtA="SELECT address3,gmt_offset_now,state,list_id FROM vicidial_list where lead_id='$CLlead_id';";
+								$stmtA="SELECT address3,gmt_offset_now,state,list_id FROM osdial_list where lead_id='$CLlead_id';";
 									if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1129,7 +1147,7 @@ while($one_day_interval > 0)
 								$sthA->finish();
 								if (length($VD_address3)>5)
 									{
-									$stmtA = "INSERT INTO vicidial_hopper SET lead_id='$CLlead_id',campaign_id='$CLcampaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ADDR3',user='',priority='20';";
+									$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='$CLcampaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ADDR3',user='',priority='20';";
 									$affected_rows = $dbhA->do($stmtA);
 									if ($AGILOG) {$agi_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &agi_output;}
 									}
@@ -1154,7 +1172,7 @@ while($one_day_interval > 0)
 
 
 		### pause agents that have disconnected or closed their apps over 30 seconds ago
-		$stmtA = "UPDATE vicidial_live_agents set status='PAUSED',random_id='10' where server_ip='$server_ip' and last_update_time < '$PDtsSQLdate' and status NOT IN('PAUSED')";
+		$stmtA = "UPDATE osdial_live_agents set status='PAUSED',random_id='10' where server_ip='$server_ip' and last_update_time < '$PDtsSQLdate' and status NOT IN('PAUSED')";
 		$affected_rows = $dbhA->do($stmtA);
 
 		$event_string = "|     lagged call vla agent PAUSED $affected_rows|$PDtsSQLdate|$BDtsSQLdate|$tsSQLdate|";
@@ -1164,7 +1182,7 @@ while($one_day_interval > 0)
 			{
 			@VALOuser=@MT; @VALOcampaign=@MT; @VALOtimelog=@MT; @VALOextension=@MT;
 			$logcount=0;
-			$stmtA = "SELECT user,campaign_id,last_update_time,extension FROM vicidial_live_agents where server_ip='$server_ip' and status = 'PAUSED' and random_id='10' order by last_update_time desc limit $affected_rows";
+			$stmtA = "SELECT user,campaign_id,last_update_time,extension FROM osdial_live_agents where server_ip='$server_ip' and status = 'PAUSED' and random_id='10' order by last_update_time desc limit $affected_rows";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -1185,7 +1203,7 @@ while($one_day_interval > 0)
 			foreach(@VALOuser)
 				{
 					$VALOuser_group='';
-					$stmtA = "SELECT user_group FROM vicidial_users where user='$VALOuser[$logrun]';";
+					$stmtA = "SELECT user_group FROM osdial_users where user='$VALOuser[$logrun]';";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
@@ -1197,7 +1215,7 @@ while($one_day_interval > 0)
 						$UGrec_count++;
 						}
 					$sthA->finish();
-				$stmtA = "INSERT INTO vicidial_user_log (user,event,campaign_id,event_date,event_epoch,user_group) values('$VALOuser[$logrun]','LOGOUT','$VALOcampaign[$logrun]','$SQLdate','$now_date_epoch','$VALOuser_group');";
+				$stmtA = "INSERT INTO osdial_user_log (user,event,campaign_id,event_date,event_epoch,user_group) values('$VALOuser[$logrun]','LOGOUT','$VALOcampaign[$logrun]','$SQLdate','$now_date_epoch','$VALOuser_group');";
 				$affected_rows = $dbhA->do($stmtA);
 
 				$event_string = "|          lagged agent LOGOUT entry inserted $VALOuser[$logrun]|$VALOcampaign[$logrun]|$VALOextension[$logcount]|";
@@ -1210,7 +1228,7 @@ while($one_day_interval > 0)
 
 
 		### delete call records that are SENT for over 2 minutes
-		$stmtA = "DELETE FROM vicidial_auto_calls where server_ip='$server_ip' and call_time < '$XDSQLdate' and status NOT IN('XFER','CLOSER','LIVE')";
+		$stmtA = "DELETE FROM osdial_auto_calls where server_ip='$server_ip' and call_time < '$XDSQLdate' and status NOT IN('XFER','CLOSER','LIVE')";
 		$affected_rows = $dbhA->do($stmtA);
 
 		$event_string = "|     lagged call vac agent DELETED $affected_rows|$XDSQLdate|";
@@ -1220,7 +1238,7 @@ while($one_day_interval > 0)
 		### For debugging purposes, try to grab Jammed calls and log them to jam logfile
 		if ($useJAMdebugFILE)
 			{
-			$stmtA = "SELECT * FROM vicidial_auto_calls where server_ip='$server_ip' and last_update_time < '$BDtsSQLdate' and status IN('LIVE')";
+			$stmtA = "SELECT * FROM osdial_auto_calls where server_ip='$server_ip' and last_update_time < '$BDtsSQLdate' and status IN('LIVE')";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -1236,7 +1254,7 @@ while($one_day_interval > 0)
 			}
 
 		### find call records that are LIVE and not updated for over 10 seconds
-		$stmtA = "SELECT auto_call_id,lead_id,phone_number,status,campaign_id,phone_code,alt_dial,stage,callerid,uniqueid from vicidial_auto_calls where server_ip='$server_ip' and last_update_time < '$BDtsSQLdate' and status IN('LIVE');";
+		$stmtA = "SELECT auto_call_id,lead_id,phone_number,status,campaign_id,phone_code,alt_dial,stage,callerid,uniqueid from osdial_auto_calls where server_ip='$server_ip' and last_update_time < '$BDtsSQLdate' and status IN('LIVE');";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -1262,7 +1280,7 @@ while($one_day_interval > 0)
 		$rec_count=0;
 		while ($sthArows > $rec_count)
 			{
-			$stmtA = "DELETE from vicidial_auto_calls where auto_call_id='$auto_call_id'";
+			$stmtA = "DELETE from osdial_auto_calls where auto_call_id='$auto_call_id'";
 			$affected_rows = $dbhA->do($stmtA);
 
 			$event_string = "|     lagged call vdac call DELETED $affected_rows|$BDtsSQLdate|";
@@ -1277,7 +1295,7 @@ while($one_day_interval > 0)
 				if ($CLstage < 0.25) {$CLstage=1;}
 
 				$end_epoch = ($now_date_epoch + 1);
-				$stmtA = "INSERT INTO vicidial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch) values('$CLuniqueid','$CLlead_id','$CLcampaign_id','$SQLdate','$now_date_epoch','DROP','$CLphone_code','$CLphone_number','VDAD','N','$CLstage','$end_epoch')";
+				$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch) values('$CLuniqueid','$CLlead_id','$CLcampaign_id','$SQLdate','$now_date_epoch','DROP','$CLphone_code','$CLphone_number','VDAD','N','$CLstage','$end_epoch')";
 					if($M){print STDERR "\n|$stmtA|\n";}
 				$affected_rows = $dbhA->do($stmtA);
 
@@ -1307,7 +1325,7 @@ while($one_day_interval > 0)
 		if ($LUcount > 0)
 			{
 			chop($lists_update);
-			$stmtA = "UPDATE vicidial_lists SET list_lastcalldate='$SQLdate' where list_id IN($lists_update);";
+			$stmtA = "UPDATE osdial_lists SET list_lastcalldate='$SQLdate' where list_id IN($lists_update);";
 			$affected_rows = $dbhA->do($stmtA);
 			$event_string = "|     lastcalldate UPDATED $affected_rows|$lists_update|";
 			 &event_logger;
@@ -1316,7 +1334,7 @@ while($one_day_interval > 0)
 		if ($CPcount > 0)
 			{
 			chop($campaigns_update);
-			$stmtA = "UPDATE vicidial_campaigns SET campaign_logindate='$SQLdate' where campaign_id IN($campaigns_update);";
+			$stmtA = "UPDATE osdial_campaigns SET campaign_logindate='$SQLdate' where campaign_id IN($campaigns_update);";
 			$affected_rows = $dbhA->do($stmtA);
 			$event_string = "|     logindate UPDATED $affected_rows|$campaigns_update|";
 			 &event_logger;
@@ -1382,14 +1400,14 @@ while($one_day_interval > 0)
 			###########################################
 
 			### delete call records that are LIVE/XFER for over 100 minutes
-			$stmtA = "DELETE FROM vicidial_auto_calls where server_ip='$server_ip' and call_time < '$TDSQLdate' and status NOT IN('CLOSER')";
+			$stmtA = "DELETE FROM osdial_auto_calls where server_ip='$server_ip' and call_time < '$TDSQLdate' and status NOT IN('CLOSER')";
 			$affected_rows = $dbhA->do($stmtA);
 
 			$event_string = "|     lagged call vac agent DELETED $affected_rows|$TDSQLdate|LIVE|";
 			 &event_logger;
 
 			### Grab Server values from the database in case they've changed
-			$stmtA = "SELECT max_vicidial_trunks,answer_transfer_agent,local_gmt,ext_context FROM servers where server_ip = '$server_ip';";
+			$stmtA = "SELECT max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context FROM servers where server_ip = '$server_ip';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -1397,11 +1415,11 @@ while($one_day_interval > 0)
 			while ($sthArows > $rec_count)
 				{
 				@aryA = $sthA->fetchrow_array;
-					$DBmax_vicidial_trunks	=	"$aryA[0]";
+					$DBmax_osdial_trunks	=	"$aryA[0]";
 					$DBanswer_transfer_agent=	"$aryA[1]";
 					$DBSERVER_GMT		=		"$aryA[2]";
 					$DBext_context	=			"$aryA[3]";
-						$max_vicidial_trunks = $DBmax_vicidial_trunks;
+						$max_osdial_trunks = $DBmax_osdial_trunks;
 					if ($DBanswer_transfer_agent)	{$answer_transfer_agent = $DBanswer_transfer_agent;}
 					if ($DBSERVER_GMT)				{$SERVER_GMT = $DBSERVER_GMT;}
 					if ($DBext_context)				{$ext_context = $DBext_context;}
@@ -1409,7 +1427,7 @@ while($one_day_interval > 0)
 				}
 			$sthA->finish();
 
-			$event_string = "|     updating server parameters $max_vicidial_trunks|$answer_transfer_agent|$SERVER_GMT|$ext_context|";
+			$event_string = "|     updating server parameters $max_osdial_trunks|$answer_transfer_agent|$SERVER_GMT|$ext_context|";
 			 &event_logger;
 
 				&get_time_now;

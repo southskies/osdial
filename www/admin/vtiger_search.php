@@ -1,7 +1,26 @@
 <?
 ### vtiger_search.php
 ### 
-### Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
+#
+# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+# Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+# Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+#
+#     This file is part of OSDial.
+#
+#     OSDial is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as
+#     published by the Free Software Foundation, either version 3 of
+#     the License, or (at your option) any later version.
+#
+#     OSDial is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public
+#     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+#
 ###
 # This page does a search against a standard vtiger CRM system. If the record 
 # is not present, it will create a new one and send the agent's screen to that new page.
@@ -14,7 +33,7 @@
 # 60802-1111 - added insertion of not-found record into vtiger system
 #
 
-#Asterisk/VICIDIAL Server (ASTERISK)
+#Asterisk/OSDIAL Server (ASTERISK)
 #Internal : 10.10.10.15
 #External : 55.55.55.55
 
@@ -126,7 +145,7 @@ $parked_time = $STARTtime;
 
 # $ext_context = 'default'; defined in dbconnect file
 
-#	$stmt="SELECT count(*) from vicidial_users where user='$user' and pass='$pass' and user_level > 0;";
+#	$stmt="SELECT count(*) from osdial_users where user='$user' and pass='$pass' and user_level > 0;";
 #		if ($DB) {echo "$stmt\n";}
 #	$rslt=mysql_query($stmt, $link);
 #	$row=mysql_fetch_row($rslt);
@@ -139,7 +158,7 @@ $parked_time = $STARTtime;
 
 #  if( (strlen($user)<2) or (strlen($pass)<2) or (!$auth))
 #	{
-#    Header("WWW-Authenticate: Basic realm=\"VICIDIAL-CLOSER\"");
+#    Header("WWW-Authenticate: Basic realm=\"OSDIAL-CLOSER\"");
 #    Header("HTTP/1.0 401 Unauthorized");
 #    echo "Invalid Username/Password: |$user|$pass|\n";
 #    exit;
@@ -151,7 +170,7 @@ $parked_time = $STARTtime;
 #		{
 #		$office_no=strtoupper($user);
 #		$password=strtoupper($pass);
-#			$stmt="SELECT full_name from vicidial_users where user='$user' and pass='$pass'";
+#			$stmt="SELECT full_name from osdial_users where user='$user' and pass='$pass'";
 #			if ($DB) {echo "$stmt\n";}
 #			$rslt=mysql_query($stmt, $link);
 #			$row=mysql_fetch_row($rslt);
@@ -183,7 +202,7 @@ $parked_time = $STARTtime;
 
 echo "<html>\n";
 echo "<head>\n";
-echo "<title>VICIDIAL Vtiger Lookup</title>\n";
+echo "<title>OSDIAL Vtiger Lookup</title>\n";
 echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
 
 

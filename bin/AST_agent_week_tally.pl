@@ -2,6 +2,26 @@
 
 # AST_agent_week_tally.pl
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
 # This script is designed to gather stats for all agent activity over the course
 # of a week and print it in an ASCI text file to be placed 
 # on a web server for viewing.
@@ -11,7 +31,7 @@
 # 
 # CHANGES
 # 60517-1100 - First version
-# 60715-2325 - changed to use /etc/astguiclient.conf for configs
+# 60715-2325 - changed to use /etc/osdial.conf for configs
 # 71115-0231 - added Pipe-delimited file output
 # 71205-1232 - Changed to week total version
 #
@@ -98,8 +118,8 @@ print "\n\n\n\n\n\n\n\n\n\n\n\n-- AST_agent_week_tally.pl --\n\n";
 print "This program is designed to print stats to a file for agents' activity for the previous week. \n\n";
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -143,9 +163,9 @@ $outfile = "AGENT_TALLY_$shipdate$txt";
 $Doutfile = "AGENT_TALLY_PIPE_$shipdate$txt";
 
 ### open the X out file for writing ###
-open(out, ">$PATHweb/vicidial/agent_reports/$outfile")
+open(out, ">$PATHweb/admin/agent_reports/$outfile")
 		|| die "Can't open $outfile: $!\n";
-open(Dout, ">$PATHweb/vicidial/agent_reports/$Doutfile")
+open(Dout, ">$PATHweb/admin/agent_reports/$Doutfile")
 		|| die "Can't open $Doutfile: $!\n";
 
 if (!$VARDB_port) {$VARDB_port='3306';}
@@ -159,8 +179,8 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 $dbhB = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
  or die "Couldn't connect to database: " . DBI->errstr;
 
-#$vicidial_agent_log = 'vicidial_agent_log_archive';
-$vicidial_agent_log = 'vicidial_agent_log';
+#$osdial_agent_log = 'osdial_agent_log_archive';
+$osdial_agent_log = 'osdial_agent_log';
 
 ###########################################################################
 ########### PAST WEEK STAT GATHERING LOOP #################################
@@ -171,7 +191,7 @@ print out "AGENT                USER     CALLS  TALK     PAUSE    WAIT     DISPO
 print "WEEK: $begindate through $shipdate\n\n";
 print "AGENT                USER     CALLS  TALK     PAUSE    WAIT     DISPO    ACTIVE   LOGTIME  FIRST                LAST                    \n";
 
-$stmtA = "select count(*) as calls, full_name,vicidial_users.user,sum(talk_sec),sum(pause_sec),sum(wait_sec),sum(dispo_sec) from vicidial_users,$vicidial_agent_log where event_time <= '$shipdate 23:59:59' and event_time >= '$begindate 00:00:00' and vicidial_users.user=$vicidial_agent_log.user and pause_sec<48800 and wait_sec<48800 and talk_sec<48800 and dispo_sec<48800 group by vicidial_users.user order by full_name limit 10000;";
+$stmtA = "select count(*) as calls, full_name,osdial_users.user,sum(talk_sec),sum(pause_sec),sum(wait_sec),sum(dispo_sec) from osdial_users,$osdial_agent_log where event_time <= '$shipdate 23:59:59' and event_time >= '$begindate 00:00:00' and osdial_users.user=$osdial_agent_log.user and pause_sec<48800 and wait_sec<48800 and talk_sec<48800 and dispo_sec<48800 group by osdial_users.user order by full_name limit 10000;";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -248,7 +268,7 @@ while ($sthArows > $rec_count)
 	$Ddispo = $TIME_HMS;
 	$dispo =	sprintf("%9s", $TIME_HMS);
 
-	$stmtB = "select event_time,UNIX_TIMESTAMP(event_time) from $vicidial_agent_log where event_time <= '$shipdate 23:59:59' and event_time >= '$begindate 00:00:00' and user='$aryA[2]' order by event_time limit 1;";
+	$stmtB = "select event_time,UNIX_TIMESTAMP(event_time) from $osdial_agent_log where event_time <= '$shipdate 23:59:59' and event_time >= '$begindate 00:00:00' and user='$aryA[2]' order by event_time limit 1;";
 	$sthB = $dbhB->prepare($stmtB) or die "preparing: ",$dbhB->errstr;
 	$sthB->execute or die "executing: $stmtA ", $dbhB->errstr;
 	@aryB = $sthB->fetchrow_array;
@@ -257,7 +277,7 @@ while ($sthArows > $rec_count)
 	$Dfirst_log = $aryB[1];
 	$first_log = $aryB[1];
 
-	$stmtB = "select event_time,UNIX_TIMESTAMP(event_time) from $vicidial_agent_log where event_time <= '$shipdate 23:59:59' and event_time >= '$begindate 00:00:00' and user='$aryA[2]' order by event_time desc limit 1;";
+	$stmtB = "select event_time,UNIX_TIMESTAMP(event_time) from $osdial_agent_log where event_time <= '$shipdate 23:59:59' and event_time >= '$begindate 00:00:00' and user='$aryA[2]' order by event_time desc limit 1;";
 	$sthB = $dbhB->prepare($stmtB) or die "preparing: ",$dbhB->errstr;
 	$sthB->execute or die "executing: $stmtA ", $dbhB->errstr;
 	@aryB = $sthB->fetchrow_array;

@@ -2,6 +2,26 @@
 #
 # AST_manager_kill_hung_congested.pl version 0.3   *DBI-version*
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
 # Part of the Asterisk Central Queue System (ACQS)
 #
 # DESCRIPTION:
@@ -19,12 +39,10 @@
 #
 # put this in the cron to run every minute
 #
-# Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
-#
 # CHANGES
 # 50823-1525 - Added commandline debug options with debug printouts
 # 60717-1247 - changed to DBI by Marin Blu
-# 60717-1536 - changed to use /etc/astguiclient.conf for configs
+# 60717-1536 - changed to use /etc/osdial.conf for configs
 # 60814-1706 - added option for no logging to file
 #
 
@@ -72,8 +90,8 @@ else
 }
 ### end parsing run-time options ###
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -168,8 +186,8 @@ foreach(@congest_kill)
 		### use manager middleware-app to zapbarge call being placed from meetme
 			$KCqueryCID = "KC$i_count$CIDdate";
 
-			### insert a NEW record to the vicidial_manager table to be processed
-		$stmtA = "INSERT INTO vicidial_manager values('','','$now_date','NEW','N','$server_ip','','Hangup','$KCqueryCID','Channel: $congest_kill[$i]','','','','','','','','','')";
+			### insert a NEW record to the osdial_manager table to be processed
+		$stmtA = "INSERT INTO osdial_manager values('','','$now_date','NEW','N','$server_ip','','Hangup','$KCqueryCID','Channel: $congest_kill[$i]','','','','','','','','','')";
 
 			$event_string = "SUBRT|killing_congest|KC|$KCqueryCID|$congest_kill[$i]|$stmtA|";
 		 event_logger;
@@ -217,8 +235,8 @@ foreach(@congest_kill)
 		### use manager middleware-app to zapbarge call being placed from meetme
 			$KCqueryCID = "KC$i_count$CIDdate";
 
-			### insert a NEW record to the vicidial_manager table to be processed
-		$stmtA = "INSERT INTO vicidial_manager values('','','$now_date','NEW','N','$server_ip','','Hangup','$KCqueryCID','Channel: $congest_kill[$i]','','','','','','','','','')";
+			### insert a NEW record to the osdial_manager table to be processed
+		$stmtA = "INSERT INTO osdial_manager values('','','$now_date','NEW','N','$server_ip','','Hangup','$KCqueryCID','Channel: $congest_kill[$i]','','','','','','','','','')";
 
 			$event_string = "SUBRT|killing_congest|KC|$KCqueryCID|$congest_kill[$i]|$stmtA|";
 		 event_logger;
@@ -267,8 +285,8 @@ foreach(@congest_kill)
 		### use manager middleware-app to zapbarge call being placed from meetme
 			$KCqueryCID = "KC$i_count$CIDdate";
 
-			### insert a NEW record to the vicidial_manager table to be processed
-		$stmtA = "INSERT INTO vicidial_manager values('','','$now_date','NEW','N','$server_ip','','Hangup','$KCqueryCID','Channel: $congest_kill[$i]','','','','','','','','','')";
+			### insert a NEW record to the osdial_manager table to be processed
+		$stmtA = "INSERT INTO osdial_manager values('','','$now_date','NEW','N','$server_ip','','Hangup','$KCqueryCID','Channel: $congest_kill[$i]','','','','','','','','','')";
 
 			$event_string = "SUBRT|killing_congest|KC|$KCqueryCID|$congest_kill[$i]|$stmtA|";
 		 event_logger;
@@ -319,8 +337,8 @@ foreach(@congest_kill)
 		### use manager middleware-app to zapbarge call being placed from meetme
 			$KCqueryCID = "KC$i_count$CIDdate";
 
-			### insert a NEW record to the vicidial_manager table to be processed
-		$stmtA = "INSERT INTO vicidial_manager values('','','$now_date','NEW','N','$server_ip','','Hangup','$KCqueryCID','Channel: $congest_kill[$i]','','','','','','','','','')";
+			### insert a NEW record to the osdial_manager table to be processed
+		$stmtA = "INSERT INTO osdial_manager values('','','$now_date','NEW','N','$server_ip','','Hangup','$KCqueryCID','Channel: $congest_kill[$i]','','','','','','','','','')";
 
 			$event_string = "SUBRT|killing_congest|KC|$KCqueryCID|$congest_kill[$i]|$stmtA|";
 		 event_logger;

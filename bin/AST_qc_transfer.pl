@@ -1,13 +1,30 @@
 #!/usr/bin/perl
 #
-# AST_qc_transfer.pl for Vicidial 2.0.4a
+# AST_qc_transfer.pl
+#
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
 #
 # DESCRIPTION:
 # Transfers recordings to QC location based on use defined SQL.  Tracks
 # recordings and the state of the transferred recording.  Has ability to
 # transmit archive batches.
-#
-# Copyright (C) 2008  Lott Caskey <lottcaskey@gmail.com>    LICENSE: GPLv2
 #
 # 80906-2016 - Initial build.
 
@@ -23,7 +40,7 @@ $|++;
 my $prog = "AST_qc_transfer.pl";
 
 # Get AGC configuration directives.
-my $config = getAGCconfig('/etc/astguiclient.conf');
+my $config = getAGCconfig('/etc/osdial.conf');
 
 my($dbhA,$sthA,$sthArows,$stmtA);
 my($CLOhelp,$verbose,$CLOtest);
@@ -148,13 +165,13 @@ sub gatherEntries {
 
 	# Setup the common SQL, ie where.
 	$where =   "(qc_recordings.recording_id=recording_log.recording_id ";
-	$where .=   "AND qc_recordings.lead_id=vicidial_list.lead_id ";
-	$where .=   "AND vicidial_list.list_id=vicidial_lists.list_id)";
+	$where .=   "AND qc_recordings.lead_id=osdial_list.lead_id ";
+	$where .=   "AND osdial_list.list_id=osdial_lists.list_id)";
 
-	# Find recordings which match criteria and insert into the vicidial_transfers table.
+	# Find recordings which match criteria and insert into the osdial_transfers table.
 	$insert = "INSERT IGNORE INTO qc_transfers (qc_server_id,qc_recording_id) ";
 	$insert .= "SELECT " . $qcs->{id} . " AS qc_server_id,qc_recordings.id AS qc_recording_id ";
-	$insert .= "FROM qc_recordings,recording_log,vicidial_list,vicidial_lists ";
+	$insert .= "FROM qc_recordings,recording_log,osdial_list,osdial_lists ";
 	$insert .=  "WHERE " . $where . $swhere . ";";
 
 	print "$insert|\n" if($verbose > 2);
@@ -163,8 +180,8 @@ sub gatherEntries {
 	$rlfld = "recording_log.recording_id,recording_log.channel,recording_log.server_ip,recording_log.extension,recording_log.start_time,recording_log.start_epoch,";
 	$rlfld .= "recording_log.end_time,recording_log.end_epoch,recording_log.length_in_sec,recording_log.length_in_min,recording_log.lead_id,recording_log.user";
 
-	$query = "SELECT DISTINCT qc_transfers.*,qc_transfers.id AS qctid,qc_recordings.*,DATE(recording_log.start_time) AS date," . $rlfld . ",vicidial_list.*,vicidial_lists.* ";
-	$query .= "FROM qc_transfers,qc_recordings,recording_log,vicidial_list,vicidial_lists ";
+	$query = "SELECT DISTINCT qc_transfers.*,qc_transfers.id AS qctid,qc_recordings.*,DATE(recording_log.start_time) AS date," . $rlfld . ",osdial_list.*,osdial_lists.* ";
+	$query .= "FROM qc_transfers,qc_recordings,recording_log,osdial_list,osdial_lists ";
 	$query .=  "WHERE (qc_transfers.qc_recording_id=qc_recordings.id) AND " . $where . $swhere . " AND (qc_transfers.status!='NOTFOUND' AND qc_transfers.status!='SUCCESS') ";
 	$query .=  "AND qc_transfers.qc_server_id='" . $qcs->{id} . "';";
 
@@ -361,7 +378,7 @@ sub transferArchive {
 # getAGCconfig usage:
 #    $config = getAGCconfig($agcConfigPath);
 # Requires:
-#    $agcConfigPath : Usually '/etc/astguiclient.conf'
+#    $agcConfigPath : Usually '/etc/osdial.conf'
 # Returns:
 #    hashref with configuration directives in listed file.
 sub getAGCconfig {
@@ -369,7 +386,7 @@ sub getAGCconfig {
 	my %config;
 	$config{PATHconf} = $AGCpath;
 
-	# Begin Parsing astguiclient config file.
+	# Begin Parsing osdial.config file.
 	open(CONF, $config{PATHconf}) || die "can't open " . $config{PATHconf} . ": " . $! . "\n";
 	while (my $line = <CONF>) {
 		$line =~ s/ |>|"|\n|\r|\t|\#.*|;.*//gi;

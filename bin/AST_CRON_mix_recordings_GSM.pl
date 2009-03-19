@@ -1,6 +1,26 @@
 #!/usr/bin/perl
 #
 # AST_CRON_mix_recordings_GSM.pl
+#
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
 # runs every 5 minutes and mixes the call recordings in the monitor together
 # and puts the resulting ALL file into the DONE directory in the "monitor" dir
 # and converts the ALL file to GSM format to save space.
@@ -25,14 +45,12 @@
 # file transfer section of the code to deactivate remote copying of the
 # recording files
 #
-# Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
-#
 # 
 # 51021-1058 - Added quotes around CLI executed commands
 # 51122-1455 - Added soxmix and sox binary path check
-# 60807-1308 - Modified to use /etc/astguiclient.conf for settings 
+# 60807-1308 - Modified to use /etc/osdial.conf for settings 
 # 71004-1124 - Changed to not move ORIG recordings if FTP server does not Ping
-# 71005-0049 - Altered script to use astguiclient.conf for settings
+# 71005-0049 - Altered script to use osdial.conf for settings
 # 
 
 
@@ -44,8 +62,8 @@ $VARFTP_dir  = 'RECORDINGS';
 $VARFTP_port = '21';
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

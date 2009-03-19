@@ -1,7 +1,26 @@
 #!/usr/bin/perl
 # ADMIN_area_code_populate.pl version 0.3   *DBI-version*
 #
-# Copyright (C) 2006  Joe Johnson,Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
+## Copyright (C) 2008  Matt Florell,Joe Johnson <vicidial@gmail.com>  LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>            LICENSE: AGPLv3
+## Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>          LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
 #
 # Description:
 # server application that allows load areacodes into to asterisk list database
@@ -9,13 +28,13 @@
 # CHANGES
 # 60615-1514 - Changed to ignore the header row
 # 60807-1003 - Changed to DBI
-#            - changed to use /etc/astguiclient.conf for configs
+#            - changed to use /etc/osdial.conf for configs
 # 61122-1902 - Added GMT_USA_zip.txt data import for USA postal GMT data
 #
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -67,12 +86,12 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 $slash_star = '\*';
 
 
-#### BEGIN vicidial_phone_codes population from phone_codes_GMT.txt file ####
+#### BEGIN osdial_phone_codes population from phone_codes_GMT.txt file ####
 open(codefile, "$PATHhome/phone_codes_GMT.txt") || die "can't open $PATHhome/phone_codes_GMT.txt: $!\n";
 @codefile = <codefile>;
 close(codefile);
 $pc=0;
-$ins_stmt="insert into vicidial_phone_codes VALUES ";
+$ins_stmt="insert into osdial_phone_codes VALUES ";
 foreach (@codefile) 
 {
 	@row=split(/\t/, $codefile[$pc]);
@@ -93,7 +112,7 @@ foreach (@codefile)
 			chop($ins_stmt);
 			chop($ins_stmt);
 			$affected_rows = $dbhA->do($ins_stmt) || die "can't execute query: |$ins_stmt| $!\n";
-			$ins_stmt="insert into vicidial_phone_codes VALUES ";
+			$ins_stmt="insert into osdial_phone_codes VALUES ";
 			print STDERR "$pc\n";
 		}
 	}
@@ -103,17 +122,17 @@ foreach (@codefile)
 chop($ins_stmt);
 chop($ins_stmt);
 $affected_rows = $dbhA->do($ins_stmt);
-$ins_stmt="insert into vicidial_phone_codes VALUES ";
+$ins_stmt="insert into osdial_phone_codes VALUES ";
 print STDERR "$pc\n";
-#### END vicidial_phone_codes population from phone_codes_GMT.txt file ####
+#### END osdial_phone_codes population from phone_codes_GMT.txt file ####
 
 
-#### BEGIN vicidial_postal_codes population from GMT_USA_zip.txt file ####
+#### BEGIN osdial_postal_codes population from GMT_USA_zip.txt file ####
 open(zipfile, "$PATHhome/GMT_USA_zip.txt") || die "can't open $PATHhome/GMT_USA_zip.txt: $!\n";
 @zipfile = <zipfile>;
 close(zipfile);
 $pc=0;
-$ins_stmt="insert into vicidial_postal_codes VALUES ";
+$ins_stmt="insert into osdial_postal_codes VALUES ";
 foreach (@zipfile) 
 {
 	@row=split(/\t/, $zipfile[$pc]);
@@ -130,7 +149,7 @@ foreach (@zipfile)
 		chop($ins_stmt);
 		chop($ins_stmt);
 		$affected_rows = $dbhA->do($ins_stmt) || die "can't execute query: |$ins_stmt| $!\n";
-		$ins_stmt="insert into vicidial_postal_codes VALUES ";
+		$ins_stmt="insert into osdial_postal_codes VALUES ";
 		print STDERR "$pc\n";
 	}
 }
@@ -138,9 +157,9 @@ foreach (@zipfile)
 chop($ins_stmt);
 chop($ins_stmt);
 $affected_rows = $dbhA->do($ins_stmt);
-$ins_stmt="insert into vicidial_postal_codes VALUES ";
+$ins_stmt="insert into osdial_postal_codes VALUES ";
 print STDERR "$pc\n";
-#### END vicidial_postal_codes population from GMT_USA_zip.txt file ####
+#### END osdial_postal_codes population from GMT_USA_zip.txt file ####
 
 $dbhA->disconnect();
 

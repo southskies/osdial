@@ -2,14 +2,32 @@
 
 # AST_sourceID_summary_export.pl               version: 2.0.4
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
 # This script is designed to gather stats for all leads by source_id and
 # post them to a directory
 #
-# Copyright (C) 2007  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
-#
 # CHANGES
 # 70905-1409 - First version
-# 71005-0054 - Altered script to use astguiclient.conf for settings
+# 71005-0054 - Altered script to use osdial.conf for settings
 # 
 
 $txt = '.txt';
@@ -135,8 +153,8 @@ $secX = time();
 	$shipdate = "$year-$mon-$mday";
 	$datestamp = "$year/$mon/$mday $hour:$min";
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -203,7 +221,7 @@ $server_ip = $VARserver_ip;		# Asterisk server IP
 if (!$Q)
 	{
 	print "\n\n\n\n\n\n\n\n\n\n\n\n-- AST_sourceID_summary_export.pl --\n\n";
-	print "This program is designed to generate a summary report of sourceIDs for VICIDIAL outbound-only campaign and post them to a file. \n";
+	print "This program is designed to generate a summary report of sourceIDs for OSDIAL outbound-only campaign and post them to a file. \n";
 	print "\n";
 	print "Sale Statuses: $sale_statuses     $sale_statusesSQL\n";
 	print "NI Statuses:   $ni_statuses     $ni_statusesSQL\n";
@@ -215,7 +233,7 @@ if (!$Q)
 $outfile = "SOURCEID_SUMMARY$filedate$txt";
 
 ### open the X out file for writing ###
-open(out, ">$PATHweb/vicidial/server_reports/$outfile")
+open(out, ">$PATHweb/admin/server_reports/$outfile")
 		|| die "Can't open $outfile: $!\n";
 
 if (!$VARDB_port) {$VARDB_port='3306';}
@@ -233,9 +251,9 @@ $w=0;
 
 
 ###########################################################################
-########### SALES TOTAL IN SYSTEM BY SOURCE_ID vicidial_list         ######
+########### SALES TOTAL IN SYSTEM BY SOURCE_ID osdial_list         ######
 ###########################################################################
-$stmtA = "select source_id,count(*) from vicidial_list where status IN($sale_statusesSQL) and list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
+$stmtA = "select source_id,count(*) from osdial_list where status IN($sale_statusesSQL) and list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -255,9 +273,9 @@ $sthA->finish();
 
 
 ###########################################################################
-########### NI TOTAL IN SYSTEM BY SOURCE_ID vicidial_list            ######
+########### NI TOTAL IN SYSTEM BY SOURCE_ID osdial_list            ######
 ###########################################################################
-$stmtA = "select source_id,count(*) from vicidial_list where status IN($ni_statusesSQL) and list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
+$stmtA = "select source_id,count(*) from osdial_list where status IN($ni_statusesSQL) and list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -277,9 +295,9 @@ $sthA->finish();
 
 
 ###########################################################################
-########### NP TOTAL IN SYSTEM BY SOURCE_ID vicidial_list            ######
+########### NP TOTAL IN SYSTEM BY SOURCE_ID osdial_list            ######
 ###########################################################################
-$stmtA = "select source_id,count(*) from vicidial_list where status IN($np_statusesSQL) and list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
+$stmtA = "select source_id,count(*) from osdial_list where status IN($np_statusesSQL) and list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -299,9 +317,9 @@ $sthA->finish();
 
 
 ###########################################################################
-########### ALL TOTAL IN SYSTEM BY SOURCE_ID vicidial_list           ######
+########### ALL TOTAL IN SYSTEM BY SOURCE_ID osdial_list           ######
 ###########################################################################
-$stmtA = "select source_id,count(*) from vicidial_list where list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
+$stmtA = "select source_id,count(*) from osdial_list where list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -330,7 +348,7 @@ if ($ftp_transfer > 0)
 	$ftp = Net::FTP->new("$VARREPORT_host", Port => $VARREPORT_port);
 	$ftp->login("$VARREPORT_user","$VARREPORT_pass");
 	$ftp->cwd("$VARREPORT_dir");
-	$ftp->put("$PATHweb/vicidial/server_reports/$outfile", "$outfile");
+	$ftp->put("$PATHweb/admin/server_reports/$outfile", "$outfile");
 	$ftp->quit;
 }
 

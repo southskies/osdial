@@ -1,4 +1,25 @@
 <?php
+#
+# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+# Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+# Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+#
+#     This file is part of OSDial.
+#
+#     OSDial is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as
+#     published by the Free Software Foundation, either version 3 of
+#     the License, or (at your option) any later version.
+#
+#     OSDial is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public
+#     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+#
+
 
 $admin_version = '2.1.0';
 $build = '80424-0442/90102';
@@ -420,8 +441,8 @@ if (isset($_GET["login_user"])) {$login_user=$_GET["login_user"];}
  elseif (isset($_POST["login_user"])) {$login_user=$_POST["login_user"];}
 if (isset($_GET["manual_dial_list_id"]))    {$manual_dial_list_id=$_GET["manual_dial_list_id"];}
  elseif (isset($_POST["manual_dial_list_id"]))  {$manual_dial_list_id=$_POST["manual_dial_list_id"];}
-if (isset($_GET["max_vicidial_trunks"])) {$max_vicidial_trunks=$_GET["max_vicidial_trunks"];}
- elseif (isset($_POST["max_vicidial_trunks"])) {$max_vicidial_trunks=$_POST["max_vicidial_trunks"];}
+if (isset($_GET["max_osdial_trunks"])) {$max_osdial_trunks=$_GET["max_osdial_trunks"];}
+ elseif (isset($_POST["max_osdial_trunks"])) {$max_osdial_trunks=$_POST["max_osdial_trunks"];}
 if (isset($_GET["mix_container_item"]))    {$mix_container_item=$_GET["mix_container_item"];}
  elseif (isset($_POST["mix_container_item"])) {$mix_container_item=$_POST["mix_container_item"];}
 if (isset($_GET["mix_method"]))     {$mix_method=$_GET["mix_method"];}
@@ -638,22 +659,22 @@ if (isset($_GET["VDstop_rec_after_each_call"])) {$VDstop_rec_after_each_call=$_G
  elseif (isset($_POST["VDstop_rec_after_each_call"])) {$VDstop_rec_after_each_call=$_POST["VDstop_rec_after_each_call"];}
 if (isset($_GET["vendor_id"]))			{$vendor_id=$_GET["vendor_id"];}
 	elseif (isset($_POST["vendor_id"]))	{$vendor_id=$_POST["vendor_id"];}
-if (isset($_GET["vicidial_agent_disable"]))    {$vicidial_agent_disable=$_GET["vicidial_agent_disable"];}
- elseif (isset($_POST["vicidial_agent_disable"])) {$vicidial_agent_disable=$_POST["vicidial_agent_disable"];}
-if (isset($_GET["vicidial_balance_active"])) {$vicidial_balance_active=$_GET["vicidial_balance_active"];}
- elseif (isset($_POST["vicidial_balance_active"])) {$vicidial_balance_active=$_POST["vicidial_balance_active"];}
-if (isset($_GET["VICIDIAL_park_on_extension"])) {$VICIDIAL_park_on_extension=$_GET["VICIDIAL_park_on_extension"];}
- elseif (isset($_POST["VICIDIAL_park_on_extension"])) {$VICIDIAL_park_on_extension=$_POST["VICIDIAL_park_on_extension"];}
-if (isset($_GET["VICIDIAL_park_on_filename"])) {$VICIDIAL_park_on_filename=$_GET["VICIDIAL_park_on_filename"];}
- elseif (isset($_POST["VICIDIAL_park_on_filename"])) {$VICIDIAL_park_on_filename=$_POST["VICIDIAL_park_on_filename"];}
-if (isset($_GET["vicidial_recording"])) {$vicidial_recording=$_GET["vicidial_recording"];}
- elseif (isset($_POST["vicidial_recording"])) {$vicidial_recording=$_POST["vicidial_recording"];}
-if (isset($_GET["vicidial_recording_override"]))  {$vicidial_recording_override=$_GET["vicidial_recording_override"];}  
-  elseif (isset($_POST["vicidial_recording_override"])) {$vicidial_recording_override=$_POST["vicidial_recording_override"];}
-if (isset($_GET["vicidial_transfers"])) {$vicidial_transfers=$_GET["vicidial_transfers"];}
- elseif (isset($_POST["vicidial_transfers"])) {$vicidial_transfers=$_POST["vicidial_transfers"];}
-if (isset($_GET["VICIDIAL_web_URL"])) {$VICIDIAL_web_URL=$_GET["VICIDIAL_web_URL"];}
- elseif (isset($_POST["VICIDIAL_web_URL"])) {$VICIDIAL_web_URL=$_POST["VICIDIAL_web_URL"];}
+if (isset($_GET["osdial_agent_disable"]))    {$osdial_agent_disable=$_GET["osdial_agent_disable"];}
+ elseif (isset($_POST["osdial_agent_disable"])) {$osdial_agent_disable=$_POST["osdial_agent_disable"];}
+if (isset($_GET["osdial_balance_active"])) {$osdial_balance_active=$_GET["osdial_balance_active"];}
+ elseif (isset($_POST["osdial_balance_active"])) {$osdial_balance_active=$_POST["osdial_balance_active"];}
+if (isset($_GET["OSDIAL_park_on_extension"])) {$OSDIAL_park_on_extension=$_GET["OSDIAL_park_on_extension"];}
+ elseif (isset($_POST["OSDIAL_park_on_extension"])) {$OSDIAL_park_on_extension=$_POST["OSDIAL_park_on_extension"];}
+if (isset($_GET["OSDIAL_park_on_filename"])) {$OSDIAL_park_on_filename=$_GET["OSDIAL_park_on_filename"];}
+ elseif (isset($_POST["OSDIAL_park_on_filename"])) {$OSDIAL_park_on_filename=$_POST["OSDIAL_park_on_filename"];}
+if (isset($_GET["osdial_recording"])) {$osdial_recording=$_GET["osdial_recording"];}
+ elseif (isset($_POST["osdial_recording"])) {$osdial_recording=$_POST["osdial_recording"];}
+if (isset($_GET["osdial_recording_override"]))  {$osdial_recording_override=$_GET["osdial_recording_override"];}  
+  elseif (isset($_POST["osdial_recording_override"])) {$osdial_recording_override=$_POST["osdial_recording_override"];}
+if (isset($_GET["osdial_transfers"])) {$osdial_transfers=$_GET["osdial_transfers"];}
+ elseif (isset($_POST["osdial_transfers"])) {$osdial_transfers=$_POST["osdial_transfers"];}
+if (isset($_GET["OSDIAL_web_URL"])) {$OSDIAL_web_URL=$_GET["OSDIAL_web_URL"];}
+ elseif (isset($_POST["OSDIAL_web_URL"])) {$OSDIAL_web_URL=$_POST["OSDIAL_web_URL"];}
 if (isset($_GET["view_reports"]))    {$view_reports=$_GET["view_reports"];}
  elseif (isset($_POST["view_reports"]))  {$view_reports=$_POST["view_reports"];}
 if (isset($_GET["voicemail_button_enabled"])) {$voicemail_button_enabled=$_GET["voicemail_button_enabled"];}

@@ -1,10 +1,28 @@
 <?
 # 
-# Copyright (C) 2007  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
-if ( file_exists("/etc/astguiclient.conf") )
+# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+# Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+#
+#     This file is part of OSDial.
+#
+#     OSDial is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as
+#     published by the Free Software Foundation, either version 3 of
+#     the License, or (at your option) any later version.
+#
+#     OSDial is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public
+#     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+#
+#
+if ( file_exists("/etc/osdial.conf") )
 {
-$DBCagc = file("/etc/astguiclient.conf");
+$DBCagc = file("/etc/osdial.conf");
 foreach ($DBCagc as $DBCline) 
 	{
 	$DBCline = preg_replace("/ |>|\n|\r|\t|\#.*|;.*/","",$DBCline);
@@ -29,10 +47,10 @@ else
 {
 #defaults for DB connection
 $VARDB_server = 'localhost';
-$VARDB_user = 'cron';
-$VARDB_pass = '1234';
-$VARDB_database = '1234';
-$WeBServeRRooT = '/usr/local/apache2/htdocs';
+$VARDB_user = 'osdial';
+$VARDB_pass = 'osdial1234';
+$VARDB_database = 'osdial';
+$WeBServeRRooT = '/opt/osdial/html';
 }
 
 $link=mysql_connect("$VARDB_server", "$VARDB_user", "$VARDB_pass");
@@ -41,11 +59,11 @@ mysql_select_db("$VARDB_database",$link);
 $local_DEF = 'Local/';
 $conf_silent_prefix = '7';
 $local_AMP = '@';
-$ext_context = 'demo';
+$ext_context = 'osdial';
 $recording_exten = '8309';
 $WeBRooTWritablE = '1';
 $non_latin = '0';	# set to 1 for UTF rules, overridden by system_settings
 $flag_channels=0;
-$flag_string = 'VICIast20';
+$flag_string = 'OSDIALast20';
 
 ?>

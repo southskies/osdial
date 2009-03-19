@@ -2,19 +2,37 @@
 
 # ADMIN_update_server_ip.pl - updates IP address in DB and conf file
 #
-# This script is designed to update all database tables and the local 
-# astguiclient.conf file to reflect a change in IP address. The script will 
-# automatically default to the first eth address in the ifconfig output.
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
 #
-# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
+#
+# This script is designed to update all database tables and the local 
+# osdial.conf file to reflect a change in IP address. The script will 
+# automatically default to the first eth address in the ifconfig output.
 #
 # CHANGELOG
 # 71205-2144 - added display of extensions.conf example for call routing
 # 80321-0220 - updated for new settings
 #
 #
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -64,7 +82,7 @@ if (length($ARGV[0])>1)
 	if ($args =~ /--help/i)
 	{
 	print "ADMIN_update_server_ip.pl - updates server_ip in the $VARDB_database\n";
-	print "database and in the local /etc/astguiclient.conf file.\n";
+	print "database and in the local /etc/osdial.conf file.\n";
 	print "\n";
 	print "command-line options:\n";
 	print "  [--help] = this help screen\n";
@@ -126,7 +144,7 @@ else
 
 if (-e "$PATHconf") 
 	{
-	print "Previous astGUIclient configuration file found at: $PATHconf\n";
+	print "Previous OSDial configuration file found at: $PATHconf\n";
 	open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 	@conf = <conf>;
 	close(conf);
@@ -235,7 +253,7 @@ else
 	$config_finished='NO';
 	while ($config_finished =~/NO/)
 		{
-		print "\nSTARTING SERVER IP ADDRESS CHANGE FOR VICIDIAL...\n";
+		print "\nSTARTING SERVER IP ADDRESS CHANGE FOR OSDIAL...\n";
 
 		##### BEGIN old_server_ip propmting and check #####
 		$continue='NO';
@@ -308,7 +326,7 @@ else
 		}
 	}
 
-print "Writing change to astguiclient.conf file: $PATHconf\n";
+print "Writing change to osdial.conf file: $PATHconf\n";
 $junk = `/usr/bin/perl -pi -e 's|^VARserver_ip => $VARold_server_ip|VARserver_ip => $VARserver_ip|' $PATHconf`;
 
 print "\nSTARTING DATABASE TABLES UPDATES PHASE...\n";
@@ -344,18 +362,18 @@ $stmtA = "UPDATE conferences SET server_ip='$VARserver_ip' where server_ip='$VAR
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
-print "  Updating vicidial_conferences table...\n";
-$stmtA = "UPDATE vicidial_conferences SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+print "  Updating osdial_conferences table...\n";
+$stmtA = "UPDATE osdial_conferences SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
-print "  Updating vicidial_stations table...\n";
-$stmtA = "UPDATE vicidial_stations SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+print "  Updating osdial_stations table...\n";
+$stmtA = "UPDATE osdial_stations SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
-print "  Updating vicidial_remote_agents table...\n";
-$stmtA = "UPDATE vicidial_remote_agents SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+print "  Updating osdial_remote_agents table...\n";
+$stmtA = "UPDATE osdial_remote_agents SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
@@ -364,8 +382,8 @@ $stmtA = "UPDATE phone_favorites SET server_ip='$VARserver_ip' where server_ip='
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
-print "  Updating vicidial_server_trunks table...\n";
-$stmtA = "UPDATE vicidial_server_trunks SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+print "  Updating osdial_server_trunks table...\n";
+$stmtA = "UPDATE osdial_server_trunks SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
@@ -389,7 +407,7 @@ if( $VARserver_ip =~ m/(\S+)\.(\S+)\.(\S+)\.(\S+)/ )
 	$VARremDIALstr = "$a$S$b$S$c$S$d";
 	}
 
-print "\nSERVER IP ADDRESS CHANGE FOR VICIDIAL FINISHED!\n";
+print "\nSERVER IP ADDRESS CHANGE FOR OSDIAL FINISHED!\n";
 print "\nPlease remember to change your extensions.conf entries for the new IP address:\n";
 print "exten => _$VARremDIALstr*8600XXX,1,Goto(default,${EXTEN:16},1)\n";
 print "exten => _$VARremDIALstr*8600XXX*.,1,Goto(default,${EXTEN:16},1)\n";

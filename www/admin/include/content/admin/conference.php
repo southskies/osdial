@@ -1,4 +1,25 @@
 <?php
+#
+# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+# Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+# Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+#
+#     This file is part of OSDial.
+#
+#     OSDial is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as
+#     published by the Free Software Foundation, either version 3 of
+#     the License, or (at your option) any later version.
+#
+#     OSDial is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public
+#     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+#
+
 
 
 ### Conferences
@@ -292,14 +313,14 @@ if ($ADD==11111111111111)
 
 
 ######################
-# ADD=21111111111111 adds new vicidial conference to the system
+# ADD=21111111111111 adds new osdial conference to the system
 ######################
 
 if ($ADD==21111111111111)
 {
 echo "<TABLE><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT count(*) from vicidial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
+	$stmt="SELECT count(*) from osdial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -312,7 +333,7 @@ echo "<TABLE><TR><TD>\n";
 			{
 			echo "<br><font color=navy>OSDial CONFERENCE ADDED</font>\n";
 
-			$stmt="INSERT INTO vicidial_conferences (conf_exten,server_ip) values('$conf_exten','$server_ip');";
+			$stmt="INSERT INTO osdial_conferences (conf_exten,server_ip) values('$conf_exten','$server_ip');";
 			$rslt=mysql_query($stmt, $link);
 			}
 		}
@@ -321,7 +342,7 @@ $ADD=31111111111111;
 
 
 ######################
-# ADD=41111111111111 modify vicidial conference record in the system
+# ADD=41111111111111 modify osdial conference record in the system
 ######################
 
 if ($ADD==41111111111111)
@@ -330,7 +351,7 @@ if ($ADD==41111111111111)
 	{
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT count(*) from vicidial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
+	$stmt="SELECT count(*) from osdial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ( ($row[0] > 0) && ( ($conf_exten != $old_conf_exten) or ($server_ip != $old_server_ip) ) )
@@ -343,7 +364,7 @@ if ($ADD==41111111111111)
 			{
 			echo "<br><font color=navy>OSDial CONFERENCE MODIFIED: $conf_exten</font>\n";
 
-			$stmt="UPDATE vicidial_conferences set conf_exten='$conf_exten',server_ip='$server_ip',extension='$extension' where conf_exten='$old_conf_exten';";
+			$stmt="UPDATE osdial_conferences set conf_exten='$conf_exten',server_ip='$server_ip',extension='$extension' where conf_exten='$old_conf_exten';";
 			$rslt=mysql_query($stmt, $link);
 
 			}
@@ -354,13 +375,13 @@ if ($ADD==41111111111111)
 	echo "<font color=red>You do not have permission to view this page</font>\n";
 	exit;
 	}
-$ADD=31111111111111;	# go to vicidial conference modification form below
+$ADD=31111111111111;	# go to osdial conference modification form below
 }
 
 
 
 ######################
-# ADD=51111111111111 confirmation before deletion of vicidial conference record
+# ADD=51111111111111 confirmation before deletion of osdial conference record
 ######################
 
 if ($ADD==51111111111111)
@@ -378,13 +399,13 @@ if ($ADD==51111111111111)
 		echo "<br><B><font color=navy>OSDial CONFERENCE DELETION CONFIRMATION: $conf_exten - $server_ip</B>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=61111111111111&conf_exten=$conf_exten&server_ip=$server_ip&CoNfIrM=YES\">Click here to delete phone $conf_exten - $server_ip</a></font><br><br><br>\n";
 		}
-$ADD='31111111111111';		# go to vicidial conference modification below
+$ADD='31111111111111';		# go to osdial conference modification below
 }
 
 
 
 ######################
-# ADD=61111111111111 delete vicidial conference record
+# ADD=61111111111111 delete osdial conference record
 ######################
 
 if ($ADD==61111111111111)
@@ -399,7 +420,7 @@ if ($ADD==61111111111111)
 		}
 	 else
 		{
-		$stmt="DELETE from vicidial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip' limit 1;";
+		$stmt="DELETE from osdial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip' limit 1;";
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -412,12 +433,12 @@ if ($ADD==61111111111111)
 		echo "<br><B><font color=navy>OSDial CONFERENCE DELETION COMPLETED: $conf_exten - $server_ip</font></B>\n";
 		echo "<br><br>\n";
 		}
-$ADD='10000000000000';		# go to vicidial conference list
+$ADD='10000000000000';		# go to osdial conference list
 }
 
 
 ######################
-# ADD=31111111111111 modify vicidial conference record in the system
+# ADD=31111111111111 modify osdial conference record in the system
 ######################
 
 if ($ADD==31111111111111)
@@ -427,7 +448,7 @@ if ($ADD==31111111111111)
 	echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT * from vicidial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
+	$stmt="SELECT * from osdial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$conf_exten = $row[0];
@@ -464,14 +485,14 @@ if ($ADD==31111111111111)
 
 
 ######################
-# ADD=10000000000000 display all vicidial conferences
+# ADD=10000000000000 display all osdial conferences
 ######################
 if ($ADD==10000000000000)
 {
 echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT * from vicidial_conferences order by conf_exten";
+	$stmt="SELECT * from osdial_conferences order by conf_exten";
 	$rslt=mysql_query($stmt, $link);
 	$phones_to_print = mysql_num_rows($rslt);
 

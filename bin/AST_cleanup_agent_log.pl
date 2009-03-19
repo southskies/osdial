@@ -2,19 +2,37 @@
 #
 # AST_cleanup_agent_log.pl version 0.3   *** DBI version ***
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
 # DESCRIPTION:
-# to be run frequently to clean up the vicidial_agent_log to fix erroneous time 
-# calculations due to out-of-order vicidial_agent_log updates. This happens 0.5%
+# to be run frequently to clean up the osdial_agent_log to fix erroneous time 
+# calculations due to out-of-order osdial_agent_log updates. This happens 0.5%
 # of the time in our test setups, but that leads to inaccurate time logs so we
 # wrote this script to fix the miscalculations
 #
 # This program only needs to be run by one server
 #
-# Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
-#
 # CHANGES
 # 60711-0945 - changed to DBI by Marin Blu
-# 60715-2301 - changed to use /etc/astguiclient.conf for configs
+# 60715-2301 - changed to use /etc/osdial.conf for configs
 
 # constants
 $COUNTER_OUTPUT=1;	# set to 1 to display the counter as the script runs
@@ -61,8 +79,8 @@ else
 }
 ### end parsing run-time options ###
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -113,7 +131,7 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 
 	if ($DB) {print " - cleaning up pause time\n";}
 	### Grab any pause time record greater than 43999
-	$stmtA = "SELECT agent_log_id,pause_epoch,wait_epoch from vicidial_agent_log where pause_sec>43999;";
+	$stmtA = "SELECT agent_log_id,pause_epoch,wait_epoch from osdial_agent_log where pause_sec>43999;";
 		if ($DBX) {print "$stmtA\n";}
 	#$dbhA->query("$stmtA");
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -143,7 +161,7 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 	$h=0;
 	while ($h < $i)
 		{
-		$stmtA = "UPDATE vicidial_agent_log set pause_sec='$pause_sec[$h]' where agent_log_id='$agent_log_id[$h]';";
+		$stmtA = "UPDATE osdial_agent_log set pause_sec='$pause_sec[$h]' where agent_log_id='$agent_log_id[$h]';";
 			if($DBX){print STDERR "\n|$stmtA|\n";}
 		if (!$TEST)	{$affected_rows = $dbhA->do($stmtA); }
 		$h++;
@@ -157,7 +175,7 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 	if ($DBX) {print "\n\n";}
 	if ($DB) {print " - cleaning up wait time\n";}
 	### Grab any pause time record greater than 43999
-	$stmtA = "SELECT agent_log_id,wait_epoch,talk_epoch from vicidial_agent_log where wait_sec>43999;";
+	$stmtA = "SELECT agent_log_id,wait_epoch,talk_epoch from osdial_agent_log where wait_sec>43999;";
 		if ($DBX) {print "$stmtA\n";}
 	
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -186,7 +204,7 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 	$h=0;
 	while ($h < $i)
 		{
-		$stmtA = "UPDATE vicidial_agent_log set wait_sec='$wait_sec[$h]' where agent_log_id='$agent_log_id[$h]';";
+		$stmtA = "UPDATE osdial_agent_log set wait_sec='$wait_sec[$h]' where agent_log_id='$agent_log_id[$h]';";
 			if($DBX){print STDERR "\n|$stmtA|\n";}
 		if (!$TEST)	{$affected_rows = $dbhA->do($stmtA); }
 		$h++;
@@ -200,7 +218,7 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 	if ($DBX) {print "\n\n";}
 	if ($DB) {print " - cleaning up talk time\n";}
 	### Grab any pause time record greater than 43999
-	$stmtA = "SELECT agent_log_id,talk_epoch,dispo_epoch from vicidial_agent_log where talk_sec>43999;";
+	$stmtA = "SELECT agent_log_id,talk_epoch,dispo_epoch from osdial_agent_log where talk_sec>43999;";
 		if ($DBX) {print "$stmtA\n";}
 
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -229,7 +247,7 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 	$h=0;
 	while ($h < $i)
 		{
-		$stmtA = "UPDATE vicidial_agent_log set talk_sec='$talk_sec[$h]' where agent_log_id='$agent_log_id[$h]';";
+		$stmtA = "UPDATE osdial_agent_log set talk_sec='$talk_sec[$h]' where agent_log_id='$agent_log_id[$h]';";
 			if($DBX){print STDERR "|$stmtA|\n";}
 		if (!$TEST)	{$affected_rows = $dbhA->do($stmtA);  }
 		$h++;
@@ -243,7 +261,7 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 
 	if ($DBX) {print "\n\n";}
 	if ($DB) {print " - cleaning up dispo time\n";}
-		$stmtA = "UPDATE vicidial_agent_log set dispo_sec='0' where dispo_sec>43999;";
+		$stmtA = "UPDATE osdial_agent_log set dispo_sec='0' where dispo_sec>43999;";
 			if($DBX){print STDERR "|$stmtA|\n";}
 	if (!$TEST)
 		{

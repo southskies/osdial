@@ -1,11 +1,28 @@
 #!/usr/bin/perl
 #
-# AST_sort_recordings.pl for Vicidial 2.0.4a
+# AST_sort_recordings.pl
+#
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
 #
 # DESCRIPTION:
 # Sorts recordings and adds initial qc_transfer_log record.
-#
-# Copyright (C) 2008  Lott Caskey <lottcaskey@gmail.com>    LICENSE: GPLv2
 #
 # 80906-1905 - Initial build.
 
@@ -19,12 +36,12 @@ $|++;
 my $prog = "AST_sort_recordings.pl";
 
 # Get AGC configuration directives.
-my $config = getAGCconfig('/etc/astguiclient.conf');
+my $config = getAGCconfig('/etc/osdial.conf');
 
 unless ($config->{PATHarchive_home} and $config->{PATHarchive_mixed} and $config->{PATHarchive_sorted}) {
 	print "ERROR!\n";
 	print "PATHarchive_home, PATHarchive_mixed and PATHarchive_sorted\n";
-	print "  must be defined in /etc/astguiclient.conf!!!\n\n";
+	print "  must be defined in /etc/osdial.conf!!!\n\n";
 	exit 1;
 }
 
@@ -70,7 +87,7 @@ foreach my $file (@files) {
 		# Pull SQL info from recording_log, list and campaign tables.
 		my $SQLfile = $file;
 		$SQLfile =~ s/-all\.wav|-all\.gsm|-all\.ogg|-all\.mp3//gi;
-		$stmtA = "SELECT recording_log.recording_id,vicidial_lists.campaign_id,DATE(recording_log.start_time),recording_log.lead_id FROM recording_log,vicidial_list,vicidial_lists WHERE recording_log.lead_id=vicidial_list.lead_id AND vicidial_list.list_id=vicidial_lists.list_id AND filename='$SQLfile' ORDER BY recording_id DESC LIMIT 1;";
+		$stmtA = "SELECT recording_log.recording_id,osdial_lists.campaign_id,DATE(recording_log.start_time),recording_log.lead_id FROM recording_log,osdial_list,osdial_lists WHERE recording_log.lead_id=osdial_list.lead_id AND osdial_list.list_id=osdial_lists.list_id AND filename='$SQLfile' ORDER BY recording_id DESC LIMIT 1;";
 		print "$stmtA|\n" if($verbose > 2);
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -133,7 +150,7 @@ exit 0;
 # getAGCconfig usage:
 #    $config = getAGCconfig($agcConfigPath);
 # Requires:
-#    $agcConfigPath : Usually '/etc/astguiclient.conf'
+#    $agcConfigPath : Usually '/etc/osdial.conf'
 # Returns:
 #    hashref with configuration directives in listed file.
 sub getAGCconfig {
@@ -141,7 +158,7 @@ sub getAGCconfig {
 	my %config;
 	$config{PATHconf} = $AGCpath;
 
-	# Begin Parsing astguiclient config file.
+	# Begin Parsing osdial.config file.
 	open(CONF, $config{PATHconf}) || die "can't open " . $config{PATHconf} . ": " . $! . "\n";
 	while (my $line = <CONF>) {
 		$line =~ s/ |>|"|\n|\r|\t|\#.*|;.*//gi;

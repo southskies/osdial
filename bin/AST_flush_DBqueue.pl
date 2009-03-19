@@ -2,17 +2,35 @@
 #
 # AST_flush_DBqueue.pl version 0.3   *DBI-version*
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
 # DESCRIPTION:
-# - clears out mysql records for this server for the ACQS vicidial_manager table
-# - optimizes tables used frequently by VICIDIAL
+# - clears out mysql records for this server for the ACQS osdial_manager table
+# - optimizes tables used frequently by OSDIAL
 #
 # It is recommended that you run this program on the local Asterisk machine
 #
-# Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
-#
 # CHANGES
 # 60717-1214 - changed to DBI by Marin Blu
-# 60717-1536 - changed to use /etc/astguiclient.conf for configs
+# 60717-1536 - changed to use /etc/osdial.conf for configs
 # 60910-0238 - removed park_log query
 #
 
@@ -104,8 +122,8 @@ if (!$Q) {print "TEST\n\n";}
 if (!$Q) {print "NOW DATETIME:         $SQLdate_NOW\n";}
 if (!$Q) {print "1 HOUR AGO DATETIME:  $SQLdate_NEG_1hour\n\n";}
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -173,12 +191,12 @@ if ($SYSLOG)
 else
 	{$flush_time = $SQLdate_NEG_halfhour;}
 
-	$stmtA = "delete from vicidial_manager where (server_ip='$server_ip' and entry_date < '$flush_time') or entry_date < '$SQLdate_NEG_6hour';";
+	$stmtA = "delete from osdial_manager where (server_ip='$server_ip' and entry_date < '$flush_time') or entry_date < '$SQLdate_NEG_6hour';";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) {	$affected_rows = $dbhA->do($stmtA);}
-		if (!$Q) {print " - vicidial_manager flush\n";}
+		if (!$Q) {print " - osdial_manager flush\n";}
 
-        $stmtA = "optimize table vicidial_manager;";
+        $stmtA = "optimize table osdial_manager;";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) 
 				 {
@@ -189,10 +207,10 @@ else
    					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
 					$sthA->finish();
 				 }
-        if (!$Q) {print " - optimize vicidial_manager          \n";}
+        if (!$Q) {print " - optimize osdial_manager          \n";}
 
 
-        $stmtA = "optimize table vicidial_live_agents;";
+        $stmtA = "optimize table osdial_live_agents;";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) {
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -202,10 +220,10 @@ else
    					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}             
 					$sthA->finish();
 				 }
-        if (!$Q) {print " - optimize vicidial_live_agents          \n";}
+        if (!$Q) {print " - optimize osdial_live_agents          \n";}
 
 
-        $stmtA = "optimize table vicidial_auto_calls;";
+        $stmtA = "optimize table osdial_auto_calls;";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) {
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -216,10 +234,10 @@ else
    					 $rec_countY++;
 					$sthA->finish();
 				 }
-        if (!$Q) {print " - optimize vicidial_auto_calls          \n";}
+        if (!$Q) {print " - optimize osdial_auto_calls          \n";}
 
 
-        $stmtA = "optimize table vicidial_hopper;";
+        $stmtA = "optimize table osdial_hopper;";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) {
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -229,7 +247,7 @@ else
    					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
 					$sthA->finish();
 				 }
-        if (!$Q) {print " - optimize vicidial_hopper          \n";}
+        if (!$Q) {print " - optimize osdial_hopper          \n";}
 
 
 

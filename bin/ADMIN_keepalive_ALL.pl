@@ -2,11 +2,28 @@
 #
 # ADMIN_keepalive_ALL.pl   version  2.0.4.1
 #
-# Designed to keep the astGUIclient processes alive and check every minute
-# Replaces all other ADMIN_keepalive scripts
-# Uses /etc/astguiclient.conf file to know which processes to keepalive
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
 #
-# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
+# Designed to keep the OSDIAL processes alive and check every minute
+# Replaces all other ADMIN_keepalive scripts
+# Uses /etc/osdial.conf file to know which processes to keepalive
 #
 #
 # 61011-1348 - first build
@@ -58,8 +75,8 @@ else
 ### end parsing run-time options ###
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

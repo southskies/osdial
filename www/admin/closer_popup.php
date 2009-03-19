@@ -1,7 +1,26 @@
 <?
 ### closer_popup.php
 ### 
-### Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
+#
+# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+# Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+# Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+#
+#     This file is part of OSDial.
+#
+#     OSDial is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as
+#     published by the Free Software Foundation, either version 3 of
+#     the License, or (at your option) any later version.
+#
+#     OSDial is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public
+#     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+#
 ###
 # this is the closer popup of a specific call that grabs the call and allows you to go and fetch info on that caller in the local CRM system.
 # CHANGES
@@ -61,7 +80,7 @@ $FILE_datetime = $STARTtime;
 
 $ext_context = 'demo';
 
-	$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 2;";
+	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 2;";
 		if ($DB) {echo "$stmt\n";}
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -74,7 +93,7 @@ $browser = getenv("HTTP_USER_AGENT");
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICIDIAL-CLOSER\"");
+    Header("WWW-Authenticate: Basic realm=\"OSDIAL-CLOSER\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
@@ -86,7 +105,7 @@ $browser = getenv("HTTP_USER_AGENT");
 		{
 		$office_no=strtoupper($PHP_AUTH_USER);
 		$password=strtoupper($PHP_AUTH_PW);
-			$stmt="SELECT full_name from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
+			$stmt="SELECT full_name from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
 			if ($DB) {echo "$stmt\n";}
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
@@ -105,7 +124,7 @@ $browser = getenv("HTTP_USER_AGENT");
 
 echo "<html>\n";
 echo "<head>\n";
-echo "<title>VICIDIAL CLOSER: Popup</title>\n";
+echo "<title>OSDIAL CLOSER: Popup</title>\n";
 echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
 
 if (eregi('CL_UNIV',$channel_group))
@@ -171,7 +190,7 @@ if ($parked_count > 0)
 	$filename = "$REC_TIME$US$SIPexten";
 	$DTqueryCID = "RR$FILE_datetime$PHP_AUTH_USER";
 
-#	$stmt="INSERT INTO vicidial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Monitor','$DTqueryCID','Channel: $monitor_channel','File: $filename','Callerid: $DTqueryCID','','','','','','','')";
+#	$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Monitor','$DTqueryCID','Channel: $monitor_channel','File: $filename','Callerid: $DTqueryCID','','','','','','','')";
 #	if ($DB) {echo "|$stmt|\n";}
 #	$rslt=mysql_query($stmt, $link);
 
@@ -187,14 +206,14 @@ if ($parked_count > 0)
 
 #	echo "Recording command sent for channel $channel - $filename - $recording_id<BR>\n";
 
-	### insert a NEW record to the vicidial_manager table to be processed
-	$stmt="INSERT INTO vicidial_manager values('','','$NOW_TIME','NEW','N','" . mysql_real_escape_string($server_ip) . "','','Redirect','$DTqueryCID','Exten: $dialplan_number','Channel: " . mysql_real_escape_string($channel) . "','Context: $ext_context','Priority: 1','Callerid: $DTqueryCID','','','','','')";
+	### insert a NEW record to the osdial_manager table to be processed
+	$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','" . mysql_real_escape_string($server_ip) . "','','Redirect','$DTqueryCID','Exten: $dialplan_number','Channel: " . mysql_real_escape_string($channel) . "','Context: $ext_context','Priority: 1','Callerid: $DTqueryCID','','','','','')";
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 
 	echo "Redirect command sent for channel $channel &nbsp; &nbsp; &nbsp; $NOW_TIME\n<BR><BR>\n";
 
-	$stmt="SELECT full_name from vicidial_users where user='" . mysql_real_escape_string($parked_by) . "'";
+	$stmt="SELECT full_name from osdial_users where user='" . mysql_real_escape_string($parked_by) . "'";
 	$rslt=mysql_query($stmt, $link);
 	if ($DB) {echo "$stmt\n";}
 	$row=mysql_fetch_row($rslt);
@@ -202,7 +221,7 @@ if ($parked_count > 0)
 
 	echo "Call Referred by: $parked_by - $full_name\n<BR><BR>\n";
 
-   $url = "http://10.10.10.196/vicidial/closer_dispo.php?lead_id=$parked_by&channel=$channel&server_ip=$server_ip&extension=$extension&call_began=$STARTtime&parked_time=$parked_time&DB=$DB";
+   $url = "http://10.10.10.196/agent/closer_dispo.php?lead_id=$parked_by&channel=$channel&server_ip=$server_ip&extension=$extension&call_began=$STARTtime&parked_time=$parked_time&DB=$DB";
 
 	echo "<a href=\"$url\">View Customer Info and Disposition Call</a>\n<BR><BR>\n";
 
@@ -224,7 +243,7 @@ if (eregi('CL_TEST',$channel_group))
 	{
 	echo "GALLERIA TEST CLOSER GROUP: $channel_group\n";
 
-	$stmt="SELECT user,phone_number from vicidial_list where lead_id='" . mysql_real_escape_string($parked_by) . "';";
+	$stmt="SELECT user,phone_number from osdial_list where lead_id='" . mysql_real_escape_string($parked_by) . "';";
 		if ($DB) {echo "$stmt\n";}
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -233,7 +252,7 @@ if (eregi('CL_TEST',$channel_group))
 
 
 	?>
-	<form action="http://10.10.10.196/vicidial/closer_lookup3.php" method="post">
+	<form action="http://10.10.10.196/agent/closer_lookup3.php" method="post">
 		<input type=hidden name="fronter" value="<?=$fronter ?>">
 		<input type=hidden name="closer" value="<?=$PHP_AUTH_USER ?>">
 		<input type=hidden name="group" value="<?=$channel_group ?>">
@@ -259,7 +278,7 @@ if (eregi('CL_MWCOF',$channel_group))
 	{
 	echo "GALLERIA INTERNAL CLOSER GROUP: $channel_group\n";
 
-	$stmt="SELECT user,phone_number from vicidial_list where lead_id='" . mysql_real_escape_string($parked_by) . "';";
+	$stmt="SELECT user,phone_number from osdial_list where lead_id='" . mysql_real_escape_string($parked_by) . "';";
 		if ($DB) {echo "$stmt\n";}
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -268,7 +287,7 @@ if (eregi('CL_MWCOF',$channel_group))
 
 
 	?>
-	<form action="http://10.10.10.196/vicidial/closer_lookup3.php" method="post">
+	<form action="http://10.10.10.196/agent/closer_lookup3.php" method="post">
 		<input type=hidden name="fronter" value="<?=$fronter ?>">
 		<input type=hidden name="closer" value="<?=$PHP_AUTH_USER ?>">
 		<input type=hidden name="group" value="<?=$channel_group ?>">
@@ -320,7 +339,7 @@ if (eregi('CL_GAL',$channel_group))
 
 
 	?>
-	<form action="http://10.10.10.196/vicidial/closer_lookup3.php" method="post">
+	<form action="http://10.10.10.196/agent/closer_lookup3.php" method="post">
 		<input type=hidden name="fronter" value="<?=$parked_by ?>">
 		<input type=hidden name="closer" value="<?=$PHP_AUTH_USER ?>">
 		<input type=hidden name="group" value="<?=$channel_group ?>">
@@ -341,7 +360,7 @@ if (eregi('CL_GAL',$channel_group))
 	<BR><BR>
 	
 <!----
-	<form action="http://10.10.10.196/vicidial/closer_lookup3.php" method="post">
+	<form action="http://10.10.10.196/agent/closer_lookup3.php" method="post">
 		<input type=hidden name="fronter" value="<?=$parked_by ?>">
 		<input type=hidden name="closer" value="<?=$PHP_AUTH_USER ?>">
 	<table border=0 cellspacing=5 cellpadding=3 align=center width=90%>

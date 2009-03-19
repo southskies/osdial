@@ -2,14 +2,35 @@
 #
 # AST_VDhopper.pl version 2.0.4   *DBI-version*
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+## Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
 # DESCRIPTION:
-# uses DBD::MySQL to update the VICIDIAL leads hopper for the streamlined 
+# uses DBD::MySQL to update the OSDIAL leads hopper for the streamlined 
 # approach of allocating leads to client machines. 
 #
 # SUMMARY:
-# This program was designed for people using the Asterisk PBX with VICIDIAL
+# This program was designed for people using the Asterisk PBX with OSDIAL
 #
-# For the client to use VICIDIAL, this program must be in the cron running 
+# For the client to use OSDIAL, this program must be in the cron running 
 # every minute
 # 
 # For this program to work you need to have the "asterisk" MySQL database 
@@ -23,8 +44,6 @@
 # a minute, you may want to play with the variables below to streamline for 
 # your usage
 #
-# Copyright (C) 2007  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
-#
 # CHANGELOG
 # 50810-1613 - Added database server variable definitions lookup
 # 60215-1106 - Added Scheduled Callback release functionality
@@ -34,10 +53,10 @@
 # 60322-1030 - Added super debug output
 # 60418-0947 - Added lead filter per campaign
 # 60509-1416 - Rewrite of local_call_time functions
-# 60511-1150 - Added inserts into vicidial_campaign_stats table
-# 60609-1451 - Added ability to filter by DNC list vicidial_dnc
+# 60511-1150 - Added inserts into osdial_campaign_stats table
+# 60609-1451 - Added ability to filter by DNC list osdial_dnc
 # 60614-1159 - Added campaign lead recycling ability
-# 60715-2251 - Changed to use /etc/astguiclient.conf for configs
+# 60715-2251 - Changed to use /etc/osdial.conf for configs
 # 60801-1634 - Fixed Callback activation bug 000008
 # 60814-1720 - Added option for no logging to file
 # 60822-1527 - Added campaign_stats and logging options for adaptive dialing
@@ -52,8 +71,8 @@
 $DB=0;  # Debug flag, set to 0 for no debug messages, On an active system this will generate lots of lines of output per minute
 $US='__';
 $MT[0]='';
-#$vicidial_hopper='TEST_vicidial_hopper';	# for testing
-$vicidial_hopper='vicidial_hopper';
+#$osdial_hopper='TEST_osdial_hopper';	# for testing
+$osdial_hopper='osdial_hopper';
 
 # options
 $insert_auto_CB_to_hopper	= 1; # set to 1 to automatically insert ANYONE callbacks into the hopper
@@ -176,8 +195,8 @@ else
 print "no command line options set\n";
 }
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -263,7 +282,7 @@ $GMT_now = ($secX - ($LOCAL_GMT_OFF * 3600));
 
 if ($wipe_hopper_clean)
 	{
-	$stmtA = "DELETE from $vicidial_hopper;";
+	$stmtA = "DELETE from $osdial_hopper;";
 	$affected_rows = $dbhA->do($stmtA);
 	if ($DB) {print "Hopper Wiped Clean:  $affected_rows\n";}
 		$event_string = "|HOPPER WIPE CLEAN|";
@@ -272,7 +291,7 @@ if ($wipe_hopper_clean)
 	exit;
 	}
 ### Delete leads from inactive lists if there are any
-$stmtA = "SELECT * FROM vicidial_lists where active='N';";
+$stmtA = "SELECT * FROM osdial_lists where active='N';";
 if ($DB) {print $stmtA;}
 $inactive_lists='';
 $inactive_lists_count=0;
@@ -292,15 +311,15 @@ if ($DB) {print "Inactive Lists:  $inactive_lists_count\n";}
 if ($inactive_lists_count > 0)
 	{
 	chop($inactive_lists);
-	$stmtA = "DELETE from $vicidial_hopper where list_id IN($inactive_lists);";
+	$stmtA = "DELETE from $osdial_hopper where list_id IN($inactive_lists);";
 	$affected_rows = $dbhA->do($stmtA);
 	if ($DB) {print "Inactive List Leads Deleted:  $affected_rows |$stmtA|\n";}
 		$event_string = "|INACTIVE LIST DEL|$affected_rows|";
 		&event_logger;
 	}
 
-### BEGIN Change CBHOLD status leads to CALLBK if their vicidial_callbacks time has passed
-$stmtA = "SELECT count(*) FROM vicidial_callbacks where callback_time <= '$now_date' and status='ACTIVE';";
+### BEGIN Change CBHOLD status leads to CALLBK if their osdial_callbacks time has passed
+$stmtA = "SELECT count(*) FROM osdial_callbacks where callback_time <= '$now_date' and status='ACTIVE';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 @aryA = $sthA->fetchrow_array;
@@ -313,7 +332,7 @@ if ($CBHOLD_count > 0)
 	$update_leads='';
 	$cbc=0;
 	$cba=0;
-	$stmtA = "SELECT vicidial_callbacks.lead_id,recipient,campaign_id,vicidial_callbacks.list_id,gmt_offset_now,state FROM vicidial_callbacks,vicidial_list where callback_time <= '$now_date' and vicidial_callbacks.status='ACTIVE' and vicidial_callbacks.lead_id=vicidial_list.lead_id;";
+	$stmtA = "SELECT osdial_callbacks.lead_id,recipient,campaign_id,osdial_callbacks.list_id,gmt_offset_now,state FROM osdial_callbacks,osdial_list where callback_time <= '$now_date' and osdial_callbacks.status='ACTIVE' and osdial_callbacks.lead_id=osdial_list.lead_id;";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -339,7 +358,7 @@ if ($CBHOLD_count > 0)
 		{
 		chop($update_leads);
 
-		$stmtA = "UPDATE vicidial_callbacks set status='LIVE' where lead_id IN($update_leads) and status NOT IN('INACTIVE','DEAD','ARCHIVE');";
+		$stmtA = "UPDATE osdial_callbacks set status='LIVE' where lead_id IN($update_leads) and status NOT IN('INACTIVE','DEAD','ARCHIVE');";
 		$affected_rows = $dbhA->do($stmtA);
 		if ($DB) {print "Scheduled Callbacks Activated:  $affected_rows\n";}
 			$event_string = "|CALLBACKS CB ACT |$affected_rows|";
@@ -355,31 +374,31 @@ if ($CBHOLD_count > 0)
 		$CAu=0;
 		foreach(@CA_lead_id)
 			{
-			$stmtA = "UPDATE vicidial_list set status='CALLBK', called_since_last_reset='N' where lead_id='$CA_lead_id[$CAu]';";
+			$stmtA = "UPDATE osdial_list set status='CALLBK', called_since_last_reset='N' where lead_id='$CA_lead_id[$CAu]';";
 			$affected_rows = $dbhA->do($stmtA);
 			if ($DB) {print "Scheduled Callbacks Activated:  $affected_rows\n";}
 				$event_string = "|CALLBACKS LISTACT|$affected_rows|";
 				&event_logger;
 
-			$stmtA = "INSERT INTO $vicidial_hopper SET lead_id='$CA_lead_id[$CAu]',campaign_id='$CA_campaign_id[$CAu]',list_id='$CA_list_id[$CAu]',gmt_offset_now='$CA_gmt_offset_now[$CAu]',user='',state='$CA_state[$CAu]',priority='50';";
+			$stmtA = "INSERT INTO $osdial_hopper SET lead_id='$CA_lead_id[$CAu]',campaign_id='$CA_campaign_id[$CAu]',list_id='$CA_list_id[$CAu]',gmt_offset_now='$CA_gmt_offset_now[$CAu]',user='',state='$CA_state[$CAu]',priority='50';";
 			$affected_rows = $dbhA->do($stmtA);
 			if ($DB) {print "ANYONE Scheduled Callback Inserted into hopper:  $affected_rows|$CA_lead_id[$CAu]\n";}
 			$CAu++;
 			}
 		}
 	}
-### END Change CBHOLD status leads to CALLBK if their vicidial_callbacks time has passed
+### END Change CBHOLD status leads to CALLBK if their osdial_callbacks time has passed
 
 
 @campaign_id=@MT; 
 
 if ($CLIcampaign)
 	{
-	$stmtA = "SELECT * from vicidial_campaigns where campaign_id='$CLIcampaign'";
+	$stmtA = "SELECT * from osdial_campaigns where campaign_id='$CLIcampaign'";
 	}
 else
 	{
-	$stmtA = "SELECT * from vicidial_campaigns where active='Y'";
+	$stmtA = "SELECT * from osdial_campaigns where active='Y'";
 	}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -414,8 +433,8 @@ if ($DB) {print "CAMPAIGNS TO PROCESSES HOPPER FOR:  $rec_count|$#campaign_id\n"
 $i=0;
 foreach(@campaign_id)
 	{
-	### BEGIN - GATHER STATS FOR THE vicidial_campaign_stats TABLE ###
-	$vicidial_log = 'vicidial_log';
+	### BEGIN - GATHER STATS FOR THE osdial_campaign_stats TABLE ###
+	$osdial_log = 'osdial_log';
 	$VCSdialable_leads[$i]=0;
 
 	$dial_statuses[$i] =~ s/ -$//gi;
@@ -431,7 +450,7 @@ foreach(@campaign_id)
 	if (length($STATUSsql[$i])<3) {$STATUSsql[$i]="''";}
 	else {chop($STATUSsql[$i]);}
 
-	$stmtA = "SELECT dialable_leads from vicidial_campaign_stats where campaign_id='$campaign_id[$i]';";
+	$stmtA = "SELECT dialable_leads from osdial_campaign_stats where campaign_id='$campaign_id[$i]';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -443,7 +462,7 @@ foreach(@campaign_id)
 		$rec_count++;
 		}
 	$sthA->finish();
-	### END - GATHER STATS FOR THE vicidial_campaign_stats TABLE ###
+	### END - GATHER STATS FOR THE osdial_campaign_stats TABLE ###
 
 	##### BEGIN calculate what gmt_offset_now values are within the allowed local_call_time setting ###
 	$g=0;
@@ -467,7 +486,7 @@ foreach(@campaign_id)
 		}
 		if ($DBX) {print "\n";}
 
-	$stmtA = "SELECT * FROM vicidial_call_times where call_time_id='$local_call_time[$i]';";
+	$stmtA = "SELECT * FROM osdial_call_times where call_time_id='$local_call_time[$i]';";
 		if ($DBX) {print "   |$stmtA|\n";}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -511,7 +530,7 @@ foreach(@campaign_id)
 		{
 		if (length($state_rules[$b])>1)
 			{
-			$stmtA = "SELECT * from vicidial_state_call_times where state_call_time_id='$state_rules[$b]';";
+			$stmtA = "SELECT * from osdial_state_call_times where state_call_time_id='$state_rules[$b]';";
 				if ($DBX) {print "   |$stmtA|\n";}
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -823,7 +842,7 @@ foreach(@campaign_id)
 
 	##### BEGIN lead recycling parsing and prep ###
 
-	$stmtA = "SELECT * from vicidial_lead_recycle where campaign_id='$campaign_id[$i]' and active='Y';";
+	$stmtA = "SELECT * from osdial_lead_recycle where campaign_id='$campaign_id[$i]' and active='Y';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -886,20 +905,20 @@ foreach(@campaign_id)
 	if ($DB) {print "Starting hopper run for $campaign_id[$i] campaign- GMT: $local_call_time[$i]   HOPPER: $hopper_level[$i] \n";}
 
 	### Delete the DONE leads if there are any
-	$stmtA = "DELETE from $vicidial_hopper where campaign_id='$campaign_id[$i]' and status IN('DONE');";
+	$stmtA = "DELETE from $osdial_hopper where campaign_id='$campaign_id[$i]' and status IN('DONE');";
 	$affected_rows = $dbhA->do($stmtA);
 	if ($DB) {print "     hopper DONE cleared:  $affected_rows\n";}
 	if ($DBX) {print "     |$stmtA|\n";}
 
 	### Delete the leads that are out of GMT time range if there are any
-	$stmtA = "DELETE from $vicidial_hopper where campaign_id='$campaign_id[$i]' and ($del_gmtSQL[$i]);";
+	$stmtA = "DELETE from $osdial_hopper where campaign_id='$campaign_id[$i]' and ($del_gmtSQL[$i]);";
 	$affected_rows = $dbhA->do($stmtA);
 	if ($DB) {print "     hopper GMT BAD cleared:  $affected_rows\n";}
 	if ($DBX) {print "     |$stmtA|\n";}
 
  	### Find out how many leads are in the hopper from a specific campaign
 	$hopper_ready_count=0;
-	$stmtA = "SELECT count(*) from $vicidial_hopper where campaign_id='$campaign_id[$i]' and status='READY';";
+	$stmtA = "SELECT count(*) from $osdial_hopper where campaign_id='$campaign_id[$i]' and status='READY';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -922,7 +941,7 @@ foreach(@campaign_id)
 		if ($DB) {print "     hopper too low ($hopper_ready_count|$hopper_level[$i]) starting hopper dump\n";}
 
 		### Get list of the lists in the campaign ###
-		$stmtA = "SELECT list_id FROM vicidial_lists where campaign_id='$campaign_id[$i]' and active='Y';";
+		$stmtA = "SELECT list_id FROM osdial_lists where campaign_id='$campaign_id[$i]' and active='Y';";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -944,7 +963,7 @@ foreach(@campaign_id)
 		if ( ($lead_filter_id[$i] !~ /NONE/) && (length($lead_filter_id[$i])>0) )
 			{
 			### Get SQL of lead filter for the campaign ###
-			$stmtA = "SELECT lead_filter_sql FROM vicidial_lead_filters where lead_filter_id='$lead_filter_id[$i]';";
+			$stmtA = "SELECT lead_filter_sql FROM osdial_lead_filters where lead_filter_id='$lead_filter_id[$i]';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -969,7 +988,7 @@ foreach(@campaign_id)
 			if ($DBX) {print "     |$lead_filter_id[$i]|\n";}
 			}
 
-		$stmtA = "SELECT count(*) FROM vicidial_list where called_since_last_reset='N' and status IN($STATUSsql[$i]) and list_id IN($camp_lists[$i]) and ($all_gmtSQL[$i]) $lead_filter_sql[$i];";
+		$stmtA = "SELECT count(*) FROM osdial_list where called_since_last_reset='N' and status IN($STATUSsql[$i]) and list_id IN($camp_lists[$i]) and ($all_gmtSQL[$i]) $lead_filter_sql[$i];";
 			if ($DBX) {print "     |$stmtA|\n";}
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -987,7 +1006,7 @@ foreach(@campaign_id)
 
 		if ($lead_order[$i] =~ /DOWN COUNT 2nd NEW|DOWN COUNT 3rd NEW|DOWN COUNT 4th NEW|DOWN COUNT 5th NEW|DOWN COUNT 6th NEW/)
 			{
-			$stmtA = "SELECT count(*) FROM vicidial_list where called_since_last_reset='N' and status IN('NEW') and list_id IN($camp_lists[$i]) and ($all_gmtSQL[$i]) $lead_filter_sql[$i];";
+			$stmtA = "SELECT count(*) FROM osdial_list where called_since_last_reset='N' and status IN('NEW') and list_id IN($camp_lists[$i]) and ($all_gmtSQL[$i]) $lead_filter_sql[$i];";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -1023,7 +1042,7 @@ foreach(@campaign_id)
 			if ($DB) {print "     ERROR CANNOT ADD ANY LEADS TO HOPPER\n";}
 			if ($VCSdialable_leads[$i] > 0)
 				{
-				$stmtA = "UPDATE vicidial_campaign_stats SET dialable_leads='0' where campaign_id='$campaign_id[$i]';";
+				$stmtA = "UPDATE osdial_campaign_stats SET dialable_leads='0' where campaign_id='$campaign_id[$i]';";
 				$affected_rows = $dbhA->do($stmtA);
 				if ($DBX) {print "CAMPAIGN STATS: $affected_rows|$stmtA|\n";}
 				}
@@ -1032,13 +1051,13 @@ foreach(@campaign_id)
 			{
 			if ($VCSdialable_leads[$i] != $campaign_leads_to_call[$i])
 				{
-				$stmtA = "UPDATE vicidial_campaign_stats SET dialable_leads='$campaign_leads_to_call[$i]' where campaign_id='$campaign_id[$i]';";
+				$stmtA = "UPDATE osdial_campaign_stats SET dialable_leads='$campaign_leads_to_call[$i]' where campaign_id='$campaign_id[$i]';";
 				$affected_rows = $dbhA->do($stmtA);
 				if ($DBX) {print "CAMPAIGN STATS: $affected_rows|$stmtA|\n";}
 				}
 			if ($DB) {print "     Getting Leads to add to hopper\n";}
 			### grab leads already in hopper so we don't duplicate
-			$stmtA = "SELECT lead_id FROM $vicidial_hopper where campaign_id='$campaign_id[$i]';";
+			$stmtA = "SELECT lead_id FROM $osdial_hopper where campaign_id='$campaign_id[$i]';";
 			if ($DBX) {print "     |$stmtA|\n";}
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1080,7 +1099,7 @@ foreach(@campaign_id)
 				{
 				if ($DB) {print "     looking for RECYCLE leads, maximum of 100\n";}
 
-				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state FROM vicidial_list where $recycle_SQL[$i] and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] limit 100;";
+				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state FROM osdial_list where $recycle_SQL[$i] and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] limit 100;";
 				if ($DBX) {print "     |$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1119,7 +1138,7 @@ foreach(@campaign_id)
 				$order_stmt = 'order by called_count, lead_id asc';
 				if ($DB) {print "     looking for $NEW_level NEW leads mixed in with $OTHER_level other leads\n";}
 
-				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state FROM vicidial_list where called_since_last_reset='N' and status IN('NEW') and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $NEW_level;";
+				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state FROM osdial_list where called_since_last_reset='N' and status IN('NEW') and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $NEW_level;";
 				if ($DBX) {print "     |$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1153,7 +1172,7 @@ foreach(@campaign_id)
 			if ($campaign_leads_to_call[$i] > 0)
 				{
 				if ($DB) {print "     lead call order:      $order_stmt\n";}
-				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state FROM vicidial_list where called_since_last_reset='N' and status IN($STATUSsql[$i]) and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $OTHER_level;";
+				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state FROM osdial_list where called_since_last_reset='N' and status IN($STATUSsql[$i]) and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $OTHER_level;";
 				if ($DBX) {print "     |$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1227,7 +1246,7 @@ foreach(@campaign_id)
 					if ($use_internal_dnc[$i] =~ /Y/)
 						{
 						if ($DB) {print "     Doing DNC Check: $phone_to_hopper[$h] - $use_internal_dnc[$i]\n";}
-						$stmtA = "SELECT count(*) from vicidial_dnc where phone_number='$phone_to_hopper[$h]';";
+						$stmtA = "SELECT count(*) from osdial_dnc where phone_number='$phone_to_hopper[$h]';";
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 						$sthArows=$sthA->rows;
@@ -1241,14 +1260,14 @@ foreach(@campaign_id)
 						$sthA->finish();
 						if ($DNClead != '0')
 							{
-							$stmtA = "UPDATE vicidial_list SET status='DNCL' where lead_id='$leads_to_hopper[$h]';";
+							$stmtA = "UPDATE osdial_list SET status='DNCL' where lead_id='$leads_to_hopper[$h]';";
 							$affected_rows = $dbhA->do($stmtA);
 							if ($DBX) {print "Flagging DNC lead:     $affected_rows  $phone_to_hopper[$h]\n";}
 							}
 						}
 					if ($DNClead == '0')
 						{
-						$stmtA = "INSERT INTO $vicidial_hopper (lead_id,campaign_id,status,user,list_id,gmt_offset_now,state,priority) values('$leads_to_hopper[$h]','$campaign_id[$i]','READY','','$lists_to_hopper[$h]','$gmt_to_hopper[$h]','$state_to_hopper[$h]','0');";
+						$stmtA = "INSERT INTO $osdial_hopper (lead_id,campaign_id,status,user,list_id,gmt_offset_now,state,priority) values('$leads_to_hopper[$h]','$campaign_id[$i]','READY','','$lists_to_hopper[$h]','$gmt_to_hopper[$h]','$state_to_hopper[$h]','0');";
 						$affected_rows = $dbhA->do($stmtA);
 						if ($DBX) {print "LEAD INSERTED: $affected_rows|$leads_to_hopper[$h]|\n";}
 						}

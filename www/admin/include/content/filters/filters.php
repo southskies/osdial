@@ -1,5 +1,27 @@
 <?php
 
+#
+# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+# Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+# Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+#
+#     This file is part of OSDial.
+#
+#     OSDial is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as
+#     published by the Free Software Foundation, either version 3 of
+#     the License, or (at your option) any later version.
+#
+#     OSDial is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public
+#     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+
 ######################
 # ADD=11111111 display the ADD NEW FILTER SCREEN
 ######################
@@ -36,7 +58,7 @@ if ($ADD==11111111)
 if ($ADD==21111111)
 {
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	$stmt="SELECT count(*) from vicidial_lead_filters where lead_filter_id='$lead_filter_id';";
+	$stmt="SELECT count(*) from osdial_lead_filters where lead_filter_id='$lead_filter_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -50,7 +72,7 @@ if ($ADD==21111111)
 			 }
 		 else
 			{
-			$stmt="INSERT INTO vicidial_lead_filters SET lead_filter_id='$lead_filter_id',lead_filter_name='$lead_filter_name',lead_filter_comments='$lead_filter_comments',lead_filter_sql='$lead_filter_sql';";
+			$stmt="INSERT INTO osdial_lead_filters SET lead_filter_id='$lead_filter_id',lead_filter_name='$lead_filter_name',lead_filter_comments='$lead_filter_comments',lead_filter_sql='$lead_filter_sql';";
 			$rslt=mysql_query($stmt, $link);
 
 			echo "<br><B><font color=navy>FILTER ADDED: $lead_filter_id</font></B>\n";
@@ -85,7 +107,7 @@ if ($ADD==41111111)
 		}
 	 else
 		{
-		$stmt="UPDATE vicidial_lead_filters set lead_filter_name='$lead_filter_name', lead_filter_comments='$lead_filter_comments', lead_filter_sql='$lead_filter_sql' where lead_filter_id='$lead_filter_id';";
+		$stmt="UPDATE osdial_lead_filters set lead_filter_name='$lead_filter_name', lead_filter_comments='$lead_filter_comments', lead_filter_sql='$lead_filter_sql' where lead_filter_id='$lead_filter_id';";
 		$rslt=mysql_query($stmt, $link);
 
 		echo "<br><B><font color=navy>FILTER MODIFIED</font></B>\n";
@@ -145,7 +167,7 @@ if ($ADD==61111111)
 		}
 	 else
 		{
-		$stmt="DELETE from vicidial_lead_filters where lead_filter_id='$lead_filter_id' limit 1;";
+		$stmt="DELETE from osdial_lead_filters where lead_filter_id='$lead_filter_id' limit 1;";
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -175,7 +197,7 @@ if ($ADD==31111111)
 	echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT * from vicidial_lead_filters where lead_filter_id='$lead_filter_id';";
+	$stmt="SELECT * from osdial_lead_filters where lead_filter_id='$lead_filter_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$lead_filter_name =		$row[1];
@@ -195,7 +217,7 @@ if ($ADD==31111111)
 	echo "</table></form>\n";
 
 		##### get campaigns listing for dynamic pulldown
-		$stmt="SELECT campaign_id,campaign_name from vicidial_campaigns order by campaign_id";
+		$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
 		$rslt=mysql_query($stmt, $link);
 		$campaigns_to_print = mysql_num_rows($rslt);
 		$campaigns_list='';
@@ -244,7 +266,7 @@ echo "<TABLE align=center><TR><TD>\n";
 
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT * from vicidial_lead_filters order by lead_filter_id";
+	$stmt="SELECT * from osdial_lead_filters order by lead_filter_id";
 	$rslt=mysql_query($stmt, $link);
 	$filters_to_print = mysql_num_rows($rslt);
 

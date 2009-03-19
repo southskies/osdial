@@ -2,6 +2,26 @@
 #
 # AST_CRON_GSM_SALE_recordings.pl
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
 # IMPORTANT!!! used to delete recordings!!!
 #
 # runs every day, goes through all recordings to compress only the SALE recordings
@@ -13,9 +33,6 @@
 # This program assumes that recordings are saved as .wav
 # should be easy to change this code if you use .gsm instead
 #
-# Copyright (C) 2007  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
-#
-# 
 # 1112-1245 - first build 
 #
 
@@ -56,8 +73,8 @@ else
 		}
 	}
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -108,7 +125,7 @@ $dir1 = "$PATHmonitor";
 
 
 ##### Get the lead_ids of all recordings that are not DELETED or NULL #####
-$stmtA = "SELECT recording_log.lead_id,recording_id,start_time,filename,location,status FROM recording_log,vicidial_log where start_time > '$BEGINdate' and start_time < '$ENDdate' and location IS NOT NULL and location NOT IN('','NOT_FOUND','NOT_FOUND_2','DELETED') and vicidial_log.status IN($save_statusesSQL) and call_date  > '$BEGINdate' and call_date < '$ENDdate' and recording_log.lead_id=vicidial_log.lead_id and recording_log.user=vicidial_log.user order by recording_id LIMIT 500000;";
+$stmtA = "SELECT recording_log.lead_id,recording_id,start_time,filename,location,status FROM recording_log,osdial_log where start_time > '$BEGINdate' and start_time < '$ENDdate' and location IS NOT NULL and location NOT IN('','NOT_FOUND','NOT_FOUND_2','DELETED') and osdial_log.status IN($save_statusesSQL) and call_date  > '$BEGINdate' and call_date < '$ENDdate' and recording_log.lead_id=osdial_log.lead_id and recording_log.user=osdial_log.user order by recording_id LIMIT 500000;";
 	print "$stmtA\n";
 
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;

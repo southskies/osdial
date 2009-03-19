@@ -2,23 +2,41 @@
 #
 # AST_DB_optimize.pl version 0.2   *DBI-version*
 #
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
 # DESCRIPTION:
 # optimizes the tables used in the asterisk MySQL database
 #
 # It is recommended that you run this program on the local Asterisk machine
 #
-# Copyright (C) 2006  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
-#
 # CHANGES
 # 60717-1242 - changed to DBI by Marin Blu
-# 60718-1645 - changed to use /etc/astguiclient.conf for configs
+# 60718-1645 - changed to use /etc/osdial.conf for configs
 # 71030-2020 - Added deletions of stats and inbound live agents
-# 71109-1725 - fixed vicidial_campaign_stats bug
+# 71109-1725 - fixed osdial_campaign_stats bug
 # 71215-0410 - fixed UPDATE/DELETE results
 #
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -90,7 +108,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 				 }
 
 
-	$stmtA = "optimize table vicidial_log;";
+	$stmtA = "optimize table osdial_log;";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) {
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -102,7 +120,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 				 }
 
 
-	$stmtA = "optimize table vicidial_closer_log;";
+	$stmtA = "optimize table osdial_closer_log;";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) {
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -114,7 +132,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 				 }
 
 
-	$stmtA = "optimize table vicidial_xfer_log;";
+	$stmtA = "optimize table osdial_xfer_log;";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) {
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -125,19 +143,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 					$sthA->finish();
 				 }
 
-	$stmtA = "optimize table vicidial_list;";
-		if($DB){print STDERR "\n|$stmtA|\n";}
-		if (!$T) {
-					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-   					$sthArows=$sthA->rows;
-					 @aryA = $sthA->fetchrow_array;
-   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
-					$sthA->finish();
-				 }
-
-
-	$stmtA = "optimize table vicidial_manager;";
+	$stmtA = "optimize table osdial_list;";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) {
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -149,7 +155,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 				 }
 
 
-	$stmtA = "optimize table vicidial_auto_calls;";
+	$stmtA = "optimize table osdial_manager;";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) {
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -161,84 +167,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 				 }
 
 
-	$stmtA = "optimize table vicidial_live_agents;";
-		if($DB){print STDERR "\n|$stmtA|\n";}
-		if (!$T) {
-					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-   					$sthArows=$sthA->rows;
-					 @aryA = $sthA->fetchrow_array;
-   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
-					$sthA->finish();
-				 }
-
-	$stmtA = "optimize table vicidial_campaign_stats;";
-		if($DB){print STDERR "\n|$stmtA|\n";}
-		if (!$T) {
-					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-   					$sthArows=$sthA->rows;
-					 @aryA = $sthA->fetchrow_array;
-   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
-					$sthA->finish();
-				 }
-
-	$stmtA = "optimize table vicidial_campaign_server_stats;";
-		if($DB){print STDERR "\n|$stmtA|\n";}
-		if (!$T) {
-					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-   					$sthArows=$sthA->rows;
-					 @aryA = $sthA->fetchrow_array;
-   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
-					$sthA->finish();
-				 }
-
-	$stmtA = "optimize table vicidial_dnc;";
-		if($DB){print STDERR "\n|$stmtA|\n";}
-		if (!$T) {
-					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-   					$sthArows=$sthA->rows;
-					 @aryA = $sthA->fetchrow_array;
-   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
-					$sthA->finish();
-				 }
-
-	$stmtA = "optimize table vicidial_callbacks;";
-		if($DB){print STDERR "\n|$stmtA|\n";}
-		if (!$T) {
-					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-   					$sthArows=$sthA->rows;
-					 @aryA = $sthA->fetchrow_array;
-   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
-					$sthA->finish();
-				 }
-
-	$stmtA = "optimize table vicidial_agent_log;";
-		if($DB){print STDERR "\n|$stmtA|\n";}
-		if (!$T) {
-					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-   					$sthArows=$sthA->rows;
-					 @aryA = $sthA->fetchrow_array;
-   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
-					$sthA->finish();
-				 }
-
-	$stmtA = "optimize table vicidial_conferences;";
-		if($DB){print STDERR "\n|$stmtA|\n";}
-		if (!$T) {
-					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-   					$sthArows=$sthA->rows;
-					 @aryA = $sthA->fetchrow_array;
-   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
-					$sthA->finish();
-				 }
-
-	$stmtA = "optimize table vicidial_hopper;";
+	$stmtA = "optimize table osdial_auto_calls;";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) {
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -250,44 +179,133 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 				 }
 
 
-	$stmtA = "UPDATE vicidial_campaign_stats SET dialable_leads='0', calls_today='0', answers_today='0', drops_today='0', drops_today_pct='0', drops_answers_today_pct='0', calls_hour='0', answers_hour='0', drops_hour='0', drops_hour_pct='0', calls_halfhour='0', answers_halfhour='0', drops_halfhour='0', drops_halfhour_pct='0', calls_fivemin='0', answers_fivemin='0', drops_fivemin='0', drops_fivemin_pct='0', calls_onemin='0', answers_onemin='0', drops_onemin='0', drops_onemin_pct='0', differential_onemin='0', agents_average_onemin='0', balance_trunk_fill='0', status_category_count_1='0', status_category_count_2='0', status_category_count_3='0', status_category_count_4='0';";
+	$stmtA = "optimize table osdial_live_agents;";
+		if($DB){print STDERR "\n|$stmtA|\n";}
+		if (!$T) {
+					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+   					$sthArows=$sthA->rows;
+					 @aryA = $sthA->fetchrow_array;
+   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
+					$sthA->finish();
+				 }
+
+	$stmtA = "optimize table osdial_campaign_stats;";
+		if($DB){print STDERR "\n|$stmtA|\n";}
+		if (!$T) {
+					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+   					$sthArows=$sthA->rows;
+					 @aryA = $sthA->fetchrow_array;
+   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
+					$sthA->finish();
+				 }
+
+	$stmtA = "optimize table osdial_campaign_server_stats;";
+		if($DB){print STDERR "\n|$stmtA|\n";}
+		if (!$T) {
+					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+   					$sthArows=$sthA->rows;
+					 @aryA = $sthA->fetchrow_array;
+   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
+					$sthA->finish();
+				 }
+
+	$stmtA = "optimize table osdial_dnc;";
+		if($DB){print STDERR "\n|$stmtA|\n";}
+		if (!$T) {
+					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+   					$sthArows=$sthA->rows;
+					 @aryA = $sthA->fetchrow_array;
+   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
+					$sthA->finish();
+				 }
+
+	$stmtA = "optimize table osdial_callbacks;";
+		if($DB){print STDERR "\n|$stmtA|\n";}
+		if (!$T) {
+					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+   					$sthArows=$sthA->rows;
+					 @aryA = $sthA->fetchrow_array;
+   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
+					$sthA->finish();
+				 }
+
+	$stmtA = "optimize table osdial_agent_log;";
+		if($DB){print STDERR "\n|$stmtA|\n";}
+		if (!$T) {
+					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+   					$sthArows=$sthA->rows;
+					 @aryA = $sthA->fetchrow_array;
+   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
+					$sthA->finish();
+				 }
+
+	$stmtA = "optimize table osdial_conferences;";
+		if($DB){print STDERR "\n|$stmtA|\n";}
+		if (!$T) {
+					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+   					$sthArows=$sthA->rows;
+					 @aryA = $sthA->fetchrow_array;
+   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
+					$sthA->finish();
+				 }
+
+	$stmtA = "optimize table osdial_hopper;";
+		if($DB){print STDERR "\n|$stmtA|\n";}
+		if (!$T) {
+					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+   					$sthArows=$sthA->rows;
+					 @aryA = $sthA->fetchrow_array;
+   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
+					$sthA->finish();
+				 }
+
+
+	$stmtA = "UPDATE osdial_campaign_stats SET dialable_leads='0', calls_today='0', answers_today='0', drops_today='0', drops_today_pct='0', drops_answers_today_pct='0', calls_hour='0', answers_hour='0', drops_hour='0', drops_hour_pct='0', calls_halfhour='0', answers_halfhour='0', drops_halfhour='0', drops_halfhour_pct='0', calls_fivemin='0', answers_fivemin='0', drops_fivemin='0', drops_fivemin_pct='0', calls_onemin='0', answers_onemin='0', drops_onemin='0', drops_onemin_pct='0', differential_onemin='0', agents_average_onemin='0', balance_trunk_fill='0', status_category_count_1='0', status_category_count_2='0', status_category_count_3='0', status_category_count_4='0';";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) 
 			{
 			$affected_rows = $dbhA->do($stmtA);
-			if(!$Q){print STDERR "\n|$affected_rows vicidial_campaign_stats records reset|\n";}
+			if(!$Q){print STDERR "\n|$affected_rows osdial_campaign_stats records reset|\n";}
 			}
 
-	$stmtA = "delete from vicidial_campaign_server_stats;";
+	$stmtA = "delete from osdial_campaign_server_stats;";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) 
 			{
 			$affected_rows = $dbhA->do($stmtA);
-			if(!$Q){print STDERR "\n|$affected_rows vicidial_campaign_server_stats records deleted|\n";}
+			if(!$Q){print STDERR "\n|$affected_rows osdial_campaign_server_stats records deleted|\n";}
 			}
 
-	$stmtA = "delete from vicidial_live_inbound_agents;";
+	$stmtA = "delete from osdial_live_inbound_agents;";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) 
 			{
 			$affected_rows = $dbhA->do($stmtA);
-			if(!$Q){print STDERR "\n|$affected_rows vicidial_live_inbound_agents records deleted|\n";}
+			if(!$Q){print STDERR "\n|$affected_rows osdial_live_inbound_agents records deleted|\n";}
 			}
 
-	$stmtA = "update vicidial_inbound_group_agents SET calls_today=0;;";
+	$stmtA = "update osdial_inbound_group_agents SET calls_today=0;;";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) 
 			{
 			$affected_rows = $dbhA->do($stmtA);
-			if(!$Q){print STDERR "\n|$affected_rows vicidial_inbound_group_agents call counts reset|\n";}
+			if(!$Q){print STDERR "\n|$affected_rows osdial_inbound_group_agents call counts reset|\n";}
 			}
 
-	$stmtA = "update vicidial_campaign_agents SET calls_today=0;;";
+	$stmtA = "update osdial_campaign_agents SET calls_today=0;;";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) 
 			{
 			$affected_rows = $dbhA->do($stmtA);
-			if(!$Q){print STDERR "\n|$affected_rows vicidial_campaign_agents call counts reset|\n";}
+			if(!$Q){print STDERR "\n|$affected_rows osdial_campaign_agents call counts reset|\n";}
 			}
 
 		$dbhA->disconnect();

@@ -2,7 +2,27 @@
 #
 # AST_CRON_mix_recordings_VDonly_DATE.pl
 #
-# IMPORTANT!!! ONLY TO BE USED WHEN ONLY VICIDIAL RECORDINGS ARE ON THE SYSTEM!
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+#
+# IMPORTANT!!! ONLY TO BE USED WHEN ONLY OSDIAL RECORDINGS ARE ON THE SYSTEM!
 #
 # runs every 5 minutes and copies the -in recordings in the monitor to a dated
 # directory on an FTP server. Creates the FTP directory if it does not exist.
@@ -22,16 +42,14 @@
 # file transfer section of the code to deactivate remote copying of the
 # recording files
 #
-# Copyright (C) 2007  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
-#
 # 
 # 51021-1058 - Added quotes around CLI executed commands
 # 51122-1458 - Added soxmix binary path check
 # 60318-0921 - Added ability to mix gsm audio files
-# 60807-1308 - Modified to use /etc/astguiclient.conf for settings 
+# 60807-1308 - Modified to use /etc/osdial.conf for settings 
 # 70702-1139 - Removed mixing, and added dated folder storage on FTP server 
 # 71004-1124 - Changed to not move ORIG recordings if FTP server does not Ping
-# 71005-0049 - Altered script to use astguiclient.conf for settings
+# 71005-0049 - Altered script to use osdial.conf for settings
 #
 
 # Default variables for FTP
@@ -43,8 +61,8 @@ $VARFTP_dir  = 'RECORDINGS';
 $VARHTTP_path = 'http://10.0.0.4';
 
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;

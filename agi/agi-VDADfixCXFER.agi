@@ -1,19 +1,37 @@
 #!/usr/bin/perl
 #
 # agi-VDADfixCXFER.agi version 0.4   *DBI-version*
+#
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+## Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
 # 
-# runs when a Consultative transfer is released by the vicidial fronter as the
-# call arrives on another channel so that the vicidial_live_agents record is
+# runs when a Consultative transfer is released by the osdial fronter as the
+# call arrives on another channel so that the osdial_live_agents record is
 # updated to be accurate.
 #
 # You need to put lines similar to those below in your extensions.conf file:
 # 
-# ;VICIDIAL Consultative Xfer fix script:
+# ;osdial Consultative Xfer fix script:
 # exten => _8600XXX*.,1,AGI(agi-VDADfixCXFER.agi)
 # exten => _010*010*010*015*8600XXX*.,1,AGI(agi-VDADfixCXFER.agi)
 # 
-# Copyright (C) 2007  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
-#
 # CHANGELOG:
 # 60809-1749 - First build
 # 60817-1122 - Added output options check from database
@@ -32,8 +50,8 @@ if ($min < 10) {$min = "0$min";}
 if ($sec < 10) {$sec = "0$sec";}
 	$SQLdate = "$year-$mon-$mday $hour:$min:$sec";
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -192,17 +210,17 @@ if ($AGILOG) {$agi_string = "CXFERfix : $lead_id $user $channel $uniqueid";   &a
 	checkresult($result);
 	if ($AGILOG) {$agi_string = "callerID changed: $CIDlead";   &agi_output;}
 
-########## FIND AND UPDATE vicidial_live_agents ##########
-$stmtA = "UPDATE vicidial_live_agents SET channel='$channel',call_server_ip='$VARserver_ip',uniqueid='$uniqueid' where user='$user' and lead_id='$lead_id';";
+########## FIND AND UPDATE osdial_live_agents ##########
+$stmtA = "UPDATE osdial_live_agents SET channel='$channel',call_server_ip='$VARserver_ip',uniqueid='$uniqueid' where user='$user' and lead_id='$lead_id';";
 	if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
-if ($AGILOG) {$agi_string = "--    VDAD vicidial_live_agents update: |$affected_rows|$lead_id|";   &agi_output;}
+if ($AGILOG) {$agi_string = "--    VDAD osdial_live_agents update: |$affected_rows|$lead_id|";   &agi_output;}
 
-########## INSERT NEW vicidial_auto_calls record ##########
-$stmtA = "INSERT INTO vicidial_auto_calls SET channel='$channel',server_ip='$VARserver_ip',uniqueid='$uniqueid',campaign_id='$campaign_id',status='CLOSER',lead_id='$lead_id',phone_code='$phone_code',phone_number='$phone_number',call_time='$SQLdate',call_type='IN',callerid='$CIDlead';";
+########## INSERT NEW osdial_auto_calls record ##########
+$stmtA = "INSERT INTO osdial_auto_calls SET channel='$channel',server_ip='$VARserver_ip',uniqueid='$uniqueid',campaign_id='$campaign_id',status='CLOSER',lead_id='$lead_id',phone_code='$phone_code',phone_number='$phone_number',call_time='$SQLdate',call_type='IN',callerid='$CIDlead';";
 	if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
-if ($AGILOG) {$agi_string = "--    VDAD vicidial_auto_calls insert: |$affected_rows|$lead_id|";   &agi_output;}
+if ($AGILOG) {$agi_string = "--    VDAD osdial_auto_calls insert: |$affected_rows|$lead_id|";   &agi_output;}
 
 $dbhA->disconnect();
 

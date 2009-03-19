@@ -1,35 +1,35 @@
-VICIDIAL - LOAD BALANCING setup.
+OSDIAL - LOAD BALANCING setup.
 
-This document is meant to summarize the capabilities and setup of VICIDIAL in a multi-server environment.
+This document is meant to summarize the capabilities and setup of OSDIAL in a multi-server environment.
 
 Why Load Balance?
 
-The primary reason to do load balancing, or clustering of multiple VICIDIAL servers, is to spread the calls taken in or the answered calls on an outbound campaign across all of the agents that are logged into a campaign no matter what server they are on. For instance, on an outbound campaign, you have 2 servers, server one has 20 agents logged in on a campaign and the other server(two) has 5 agents logged in on the same campaign. Lets say that the campaign is set to a dial_level of 3.0 so there are 60 active calls being placed on server one and 15 active calls being placed on server two. Then 23 of the calls on server one answer, meaning that there are three calls too many for the agents available on that server. Under a load-balancing-overflow setup, those three calls can travel over an IAX2 trunk directly to the agents on that server that are still available. This increased efficiency in both inbound and outbound environments as well as reducing on-hold times for customers and equalizing wait times for agents across all servers for a campaign.
+The primary reason to do load balancing, or clustering of multiple OSDIAL servers, is to spread the calls taken in or the answered calls on an outbound campaign across all of the agents that are logged into a campaign no matter what server they are on. For instance, on an outbound campaign, you have 2 servers, server one has 20 agents logged in on a campaign and the other server(two) has 5 agents logged in on the same campaign. Lets say that the campaign is set to a dial_level of 3.0 so there are 60 active calls being placed on server one and 15 active calls being placed on server two. Then 23 of the calls on server one answer, meaning that there are three calls too many for the agents available on that server. Under a load-balancing-overflow setup, those three calls can travel over an IAX2 trunk directly to the agents on that server that are still available. This increased efficiency in both inbound and outbound environments as well as reducing on-hold times for customers and equalizing wait times for agents across all servers for a campaign.
 
 Another reason for load balancing is the ability to use cheaper hardware on the server side. It is much cheaper and more fault-tolerant to buy four P4 2.0GHz 1U servers for $800 a piece than it is to buy a single 4U quad Xeon 3.2GHz server. The four 1U servers will have more total capacity, can be easily scaled and if one fails you've only lost 25% of capacity instead of everything. This philosophy has serverd our call center very well over the last two years.
 
-As of release 2.0.2, a new script(AST_VDauto_dial_FILL.pl) allows for dial-out-only(no agents on the server) VICIDIAL servers as well as balance dialing where a server with available trunk lines can dial lines for another server that does not have enough lines to dial for it's dial_level. AST_VDauto_dial_FILL.pl script is only for multi-server systems and is started from new ADMIN_keepalive_ALL.pl script with option 7 in astguiclient.conf.
+As of release 2.0.2, a new script(AST_VDauto_dial_FILL.pl) allows for dial-out-only(no agents on the server) OSDIAL servers as well as balance dialing where a server with available trunk lines can dial lines for another server that does not have enough lines to dial for it's dial_level. AST_VDauto_dial_FILL.pl script is only for multi-server systems and is started from new ADMIN_keepalive_ALL.pl script with option 7 in osdial.conf.
 
 
 
-How do I set up load balancing on my two server VICIDIAL setup?
+How do I set up load balancing on my two server OSDIAL setup?
 
-These steps are mostly taken directly from the SCRATCH_INSTALL document, but they are all put together here to give a better idea of what is needed all in one place. It is assumed that you already have VICIDIAL up and running on both servers.
+These steps are mostly taken directly from the SCRATCH_INSTALL document, but they are all put together here to give a better idea of what is needed all in one place. It is assumed that you already have OSDIAL up and running on both servers.
 
-NOTE: In a multi-server setup you may want to have your database and web server on a separate machine from your Asterisk/VICIDIAL servers. Simply copy the web page directories to your new database/web server and set the /etc/astguiclient.conf files on your VICIDIAL servers to point to that new database server. You can also have several web servers(or even load-balancing web servers) if you have more than 70 seats in one installation you may want to do that if you are not using eaccelerator. For the web pages you just need to make sure the dbconnect.php files are configured for your database server. We have had 12 VICIDIAL servers and 2 web servers using a single database server with no problems.
+NOTE: In a multi-server setup you may want to have your database and web server on a separate machine from your Asterisk/OSDIAL servers. Simply copy the web page directories to your new database/web server and set the /etc/osdial.conf files on your OSDIAL servers to point to that new database server. You can also have several web servers(or even load-balancing web servers) if you have more than 70 seats in one installation you may want to do that if you are not using eaccelerator. For the web pages you just need to make sure the dbconnect.php files are configured for your database server. We have had 12 OSDIAL servers and 2 web servers using a single database server with no problems.
 
 NOTE: at the bottom of this document are conf examples for a 3 server load balancing setup.
 
 
-1. The VICIDIAL/Asterisk servers need to have all of the perl scripts and cron jobs installed on them, except these which only need to be on one of the servers: 
+1. The OSDIAL/Asterisk servers need to have all of the perl scripts and cron jobs installed on them, except these which only need to be on one of the servers: 
 	- AST_VDhopper.pl  (crontab)
 	- AST_cleanup_agent_log.pl  (crontab)
 	- ADMIN_adjust_GMTnow_on_leads.pl  (crontab)
 	- AST_DB_optimize.pl  (crontab)
-	- AST_VDadapt.pl  (defined in /etc/astguiclient.conf)
-	- AST_VDauto_dial_FILL.pl  (defined in /etc/astguiclient.conf)
+	- AST_VDadapt.pl  (defined in /etc/osdial.conf)
+	- AST_VDauto_dial_FILL.pl  (defined in /etc/osdial.conf)
 
-2. The VARactive_keepalives variable in /etc/astguiclient.conf should have "5" and "7" on only ONE SERVER in your entire dialer setup, the other servers should not have 5 or 7 in that field.
+2. The VARactive_keepalives variable in /etc/osdial.conf should have "5" and "7" on only ONE SERVER in your entire dialer setup, the other servers should not have 5 or 7 in that field.
 	#  1 - AST_update
 	#  2 - AST_send_listen
 	#  3 - AST_VDauto_dial
@@ -71,7 +71,7 @@ NOTE: at the bottom of this document are conf examples for a 3 server load balan
 
 4. The two servers need to have wildcard extensions assigned to the other server in the dialplan:
   ## NOTE: the "010*010*010*015" is the IP address of the server as defined in 
-           the /etc/astguiclient.conf file
+           the /etc/osdial.conf file
   SERVER ONE(ASTtest1-10.10.10.15) 
     extensions.conf:
 	[globals]
@@ -98,14 +98,14 @@ NOTE: at the bottom of this document are conf examples for a 3 server load balan
 
 5. For BOTH servers the VDAD extens need to be setup there as well for the Load-Balance and Load-Balance-Overflow AGI scripts, as well as setting up the closer and inbound extens if needed:
 
-	; VICIDIAL_auto_dialer transfer script Load Balance Overflow:
+	; OSDIAL_auto_dialer transfer script Load Balance Overflow:
 	exten => 8367,1,AGI(call_log.agi,${EXTEN})
 	exten => 8367,2,AGI(agi-VDAD_LO_transfer.agi,${EXTEN})
 	exten => 8367,3,AGI(agi-VDAD_LO_transfer.agi,${EXTEN})
 	exten => 8367,4,AGI(agi-VDAD_LO_transfer.agi,${EXTEN})
 	exten => 8367,5,Hangup
 
-	; VICIDIAL_auto_dialer transfer script Load Balanced:
+	; OSDIAL_auto_dialer transfer script Load Balanced:
 	exten => 8368,1,AGI(call_log.agi,${EXTEN})
 	exten => 8368,2,AGI(agi-VDAD_LB_transfer.agi,${EXTEN})
 	exten => 8368,3,AGI(agi-VDAD_LB_transfer.agi,${EXTEN})
@@ -119,7 +119,7 @@ NOTE: at the bottom of this document are conf examples for a 3 server load balan
 	; 	- CIDLOOKUP - 	Lookup CID to find record in whole system
 	; 	- CIDLOOKUPRL -	Restrict lookup to one list
 	; 	- CIDLOOKUPRC -	Restrict lookup to one campaign's lists
-	;	- CLOSER -      Closer calls from VICIDIAL fronters
+	;	- CLOSER -      Closer calls from OSDIAL fronters
 	; 	- ANI - 	ANI received, add record with phone number
 	; 	- ANILOOKUP - 	Lookup ANI to find record in whole system
 	; 	- ANILOOKUPRL -	Restrict lookup to one list
@@ -131,7 +131,7 @@ NOTE: at the bottom of this document are conf examples for a 3 server load balan
 	; 	- LO - Load Balance Overflow only (priority to home server)
 	; 	- LB - <default> Load Balance total system
 	; 	- SO - Home server only
-	; 3. the full name of the IN GROUP to be used in vicidial for the inbound call
+	; 3. the full name of the IN GROUP to be used in osdial for the inbound call
 	; 4. the phone number that was called, for the log entry
 	; 5. the callerID or lead_id of the person that called(usually overridden)
 	; 6. the park extension audio file name if used
@@ -139,12 +139,12 @@ NOTE: at the bottom of this document are conf examples for a 3 server load balan
 	; 8. the list_id to insert the new lead under if it is new (and CID/ANI available)
 	; 9. the phone dialing code to insert with the new lead if new (and CID/ANI available)
 	; 10. the campaign_id to search within lists if CIDLOOKUPRC
-	;inbound VICIDIAL calls:
+	;inbound OSDIAL calls:
 	exten => 1234,1,Answer                  ; Answer the line
 	exten => 1234,2,AGI(agi-VDAD_ALL_inbound.agi,CID-----LB-----INB-----7274515134-----Closer-----park----------999-----1-----OUTB)
 	exten => 1234,3,Hangup
 
-	; inbound VICIDIAL transfer calls [can arrive through PRI T1 crossover, IAX or SIP channel]
+	; inbound OSDIAL transfer calls [can arrive through PRI T1 crossover, IAX or SIP channel]
 	exten => _90009.,1,Answer                  ; Answer the line
 	exten => _90009.,2,AGI(agi-VDAD_ALL_inbound.agi,CLOSER-----LB-----CL_TESTCAMP-----7275551212-----Closer-----park----------999-----1)
 	exten => _90009.,3,Hangup
@@ -153,17 +153,17 @@ NOTE: at the bottom of this document are conf examples for a 3 server load balan
 	exten => _990009.,3,Hangup
 
 
-6. Reload both Asterisk servers and for outbound change the VDAD exten in the campaign detail screens to 8367 or 8368 and kill the AST_VDauto_dial.pl scripts on both servers so they can restart and you can now look at the AST_timeonVDADall.php page(per campaign time-on-VDAD available from the STATS and REPORTS link on the vicidial admin screen) that will allo you to see the server_ip of the agent and the server_ip of the call per campaign across all campaigns.
+6. Reload both Asterisk servers and for outbound change the VDAD exten in the campaign detail screens to 8367 or 8368 and kill the AST_VDauto_dial.pl scripts on both servers so they can restart and you can now look at the AST_timeonVDADall.php page(per campaign time-on-VDAD available from the STATS and REPORTS link on the osdial admin screen) that will allo you to see the server_ip of the agent and the server_ip of the call per campaign across all campaigns.
 
-If you have any questions or problems please post to the astguiclient-users list(link available on the project website)
+If you have any questions or problems please post to the osdial-users list(link available on the project website)
 
-7. For multi-server VICIDIAL/astGUIclient installations these cron scripts only need to be set up and run on one of the servers:
+7. For multi-server OSDIAL installations these cron scripts only need to be set up and run on one of the servers:
 	- AST_VDhopper.pl  (crontab)
 	- AST_cleanup_agent_log.pl  (crontab)
 	- ADMIN_adjust_GMTnow_on_leads.pl  (crontab)
 	- AST_DB_optimize.pl  (crontab)
-	- AST_VDadapt.pl  (defined in /etc/astguiclient.conf)
-	- AST_VDauto_dial_FILL.pl  (defined in /etc/astguiclient.conf)
+	- AST_VDadapt.pl  (defined in /etc/osdial.conf)
+	- AST_VDauto_dial_FILL.pl  (defined in /etc/osdial.conf)
 
 8. On all servers but one you should DELETE the following line from your extensions.conf:
 	; prompt recording AGI script, ID is 4321
@@ -176,7 +176,7 @@ This should help to prevent overwriting of prompts that are copied over from the
 
 
 
-THREE VICIDIAL SERVER LOAD BALANCING SETUP:
+THREE OSDIAL SERVER LOAD BALANCING SETUP:
 
 The only steps that are different as you add more load-balanced servers are steps 2 and 3:
 

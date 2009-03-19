@@ -1,29 +1,47 @@
 #!/usr/bin/perl
 #
 # agi-VDAD_pin_IVR.agi version 0.2   *DBI-version*
+#
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+## Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
 # 
 # At the end of a call, the agent transfers customer to this script
 #
 # This script plays a beep then plays the first portion of the message
-# then logs the portion as listened to in the vicidial_list_pins table
+# then logs the portion as listened to in the osdial_list_pins table
 # then plays second portion and hangs up.
 #
 # IN THE CAMPAIGN OR IN-GROUP NUMBER PRESET FIELD:
 # AXFER83209
 #
 # ON THE SERVER ORIGINATING THE CALL:
-#;outbound IVR play VICIDIAL calls:
+#;outbound IVR play osdial calls:
 #exten => _983209.,1,AGI(call_log.agi,${EXTEN})
 #exten => _983209.,2,Dial(${TRUNKY}/${EXTEN:1},60)
 #exten => _983209.,3,Hangup
 #
 # ON THE SERVER THAT HAS THIS SCRIPT:
-#;inbound IVR play VICIDIAL calls:
+#;inbound IVR play osdial calls:
 #exten => _83209.,1,Answer
 #exten => _83209.,2,AGI(agi-VDAD_pin_IVR.agi,${EXTEN})
 #exten => _83209.,3,Hangup
-#
-# Copyright (C) 2007  Matt Florell <vicidial@gmail.com>    LICENSE: GPLv2
 #
 # changes:
 # 60802-1304 - first build
@@ -60,8 +78,8 @@ if ($min < 10) {$min = "0$min";}
 if ($sec < 10) {$sec = "0$sec";}
 	$SQLdate = "$year-$mon-$mday $hour:$min:$sec";
 
-# default path to astguiclient configuration file:
-$PATHconf =		'/etc/astguiclient.conf';
+# default path to osdial.configuration file:
+$PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -186,10 +204,10 @@ while(<STDIN>) {
 		
 		$referring_extension =	$EXT_vars[0];	# initial extension sent
 		$phone_number =		$EXT_vars[1];	# phone number
-		$lead_id =		$EXT_vars[2];	# lead_id in vicidial_list
+		$lead_id =		$EXT_vars[2];	# lead_id in osdial_list
 		$campaign_id =		$EXT_vars[3];	# campaign id
 		$product_code =		$EXT_vars[4];	# product code
-		$user =			$EXT_vars[5];	# vicidial_user that sent the call here
+		$user =			$EXT_vars[5];	# osdial_user that sent the call here
 		}
 }
 
@@ -202,8 +220,8 @@ sleep(1);
 
 $AGI->stream_file("$first_audio_file");
 
-### insert a record into the vicidial_list_pins table 
-$stmtA = "INSERT INTO vicidial_list_pins (entry_time,phone_number,lead_id,campaign_id,product_code,user,digits) values('$SQLdate','$phone_number','$lead_id','$campaign_id','$product_code','$user','IVR');";
+### insert a record into the osdial_list_pins table 
+$stmtA = "INSERT INTO osdial_list_pins (entry_time,phone_number,lead_id,campaign_id,product_code,user,digits) values('$SQLdate','$phone_number','$lead_id','$campaign_id','$product_code','$user','IVR');";
 
 $affected_rows = $dbhA->do($stmtA);
 

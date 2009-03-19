@@ -1,7 +1,24 @@
 <?
 # new_listloader_superL.php
 # 
-# Copyright (C) 2008  Matt Florell,Joe Johnson <vicidial@gmail.com>    LICENSE: GPLv2
+# Copyright (C) 2008  Matt Florell,Joe Johnson <vicidial@gmail.com>  LICENSE: AGPLv2
+# Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>            LICENSE: AGPLv3
+#
+#     This file is part of OSDial.
+#
+#     OSDial is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as
+#     published by the Free Software Foundation, either version 3 of
+#     the License, or (at your option) any later version.
+#
+#     OSDial is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public
+#     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+#
 #
 # AST GUI lead loader from formatted file
 # 
@@ -22,7 +39,7 @@
 # 80428-0417 - UTF8 changes
 # 80514-1030 - removed filesize limit and raised number of errors to be displayed
 #
-# make sure vicidial_list exists and that your file follows the formatting correctly. This page does not dedupe or do any other lead filtering actions yet at this time.
+# make sure osdial_list exists and that your file follows the formatting correctly. This page does not dedupe or do any other lead filtering actions yet at this time.
 
 $version = '2.0.4-25';
 $build = '80514-1030';
@@ -144,7 +161,7 @@ $TODAY = date("Y-m-d");
 $NOW_TIME = date("Y-m-d H:i:s");
 $FILE_datetime = $STARTtime;
 
-$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 7;";
+$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 7;";
 if ($DB) {echo "|$stmt|\n";}
 if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
 $rslt=mysql_query($stmt, $link);
@@ -158,7 +175,7 @@ $browser = getenv("HTTP_USER_AGENT");
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
 	{
-    Header("WWW-Authenticate: Basic realm=\"VICIDIAL-LEAD-LOADER\"");
+    Header("WWW-Authenticate: Basic realm=\"OSDIAL-LEAD-LOADER\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;
@@ -173,7 +190,7 @@ $browser = getenv("HTTP_USER_AGENT");
 		{
 		$office_no=strtoupper($PHP_AUTH_USER);
 		$password=strtoupper($PHP_AUTH_PW);
-			$stmt="SELECT load_leads from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
+			$stmt="SELECT load_leads from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			$LOGload_leads				=$row[0];
@@ -313,7 +330,7 @@ function ParseFileName() {
 	}
 }
 </script>
-<title>VICIDIAL ADMIN: Lead Loader</title>
+<title>OSDIAL ADMIN: Lead Loader</title>
 </head>
 <body>
 <form action=<?=$PHP_SELF ?> method=post onSubmit="ParseFileName()" enctype="multipart/form-data">
@@ -322,7 +339,7 @@ function ParseFileName() {
 <table align=center width="700" border=0 cellpadding=5 cellspacing=0 bgcolor=#D9E6FE>
   <tr>
 	<td align=right width="35%"><B><font face="arial, helvetica" size=2>Load leads from this file:</font></B></td>
-	<td align=left width="65%"><input type=file name="leadfile" value="<?=$leadfile ?>"> <? echo "$NWB#vicidial_list_loader$NWE"; ?></td>
+	<td align=left width="65%"><input type=file name="leadfile" value="<?=$leadfile ?>"> <? echo "$NWB#osdial_list_loader$NWE"; ?></td>
   </tr>
   <tr>
 	<td align=right width="25%"><font face="arial, helvetica" size=2>List ID Override: </font></td>
@@ -334,7 +351,7 @@ function ParseFileName() {
   </tr>
   <tr>
 	<td align=right><B><font face="arial, helvetica" size=2>File layout to use:</font></B></td>
-	<td align=left><font face="arial, helvetica" size=2><input type=radio name="file_layout" value="standard" checked>Standard VICIDIAL&nbsp;&nbsp;&nbsp;&nbsp;<input type=radio name="file_layout" value="custom">Custom layout</td>
+	<td align=left><font face="arial, helvetica" size=2><input type=radio name="file_layout" value="standard" checked>Standard OSDIAL&nbsp;&nbsp;&nbsp;&nbsp;<input type=radio name="file_layout" value="custom">Custom layout</td>
   </tr>
     <tr>
 	<td align=right width="25%"><font face="arial, helvetica" size=2>Lead Duplicate Check: </font></td>
@@ -364,7 +381,7 @@ function ParseFileName() {
 		$total=0; $good=0; $bad=0; $dup=0; $post=0; $phone_list='';
 
 		if (!eregi(".csv", $leadfile_name) && !eregi(".xls", $leadfile_name)) {
-			# copy($leadfile, "./vicidial_temp_file.txt");
+			# copy($leadfile, "./osdial_temp_file.txt");
 			$file=fopen("$lead_file", "r");
 			if ($WeBRooTWritablE > 0)
 				{
@@ -443,12 +460,12 @@ function ParseFileName() {
 							$phone_code = $phone_code_override;
 							}
 
-						##### Check for duplicate phone numbers in vicidial_list table for all lists in a campaign #####
+						##### Check for duplicate phone numbers in osdial_list table for all lists in a campaign #####
 						if (eregi("DUPCAMP",$dupcheck))
 							{
 								$dup_lead=0;
 								$dup_lists='';
-							$stmt="select campaign_id from vicidial_lists where list_id='$list_id';";
+							$stmt="select campaign_id from osdial_lists where list_id='$list_id';";
 							$rslt=mysql_query($stmt, $link);
 							$ci_recs = mysql_num_rows($rslt);
 							if ($ci_recs > 0)
@@ -456,7 +473,7 @@ function ParseFileName() {
 								$row=mysql_fetch_row($rslt);
 								$dup_camp =			$row[0];
 
-								$stmt="select list_id from vicidial_lists where campaign_id='$dup_camp';";
+								$stmt="select list_id from osdial_lists where campaign_id='$dup_camp';";
 								$rslt=mysql_query($stmt, $link);
 								$li_recs = mysql_num_rows($rslt);
 								if ($li_recs > 0)
@@ -470,7 +487,7 @@ function ParseFileName() {
 										}
 									$dup_lists = eregi_replace(",$",'',$dup_lists);
 
-									$stmt="select list_id from vicidial_list where phone_number='$phone_number' and list_id IN($dup_lists) limit 1;";
+									$stmt="select list_id from osdial_list where phone_number='$phone_number' and list_id IN($dup_lists) limit 1;";
 									$rslt=mysql_query($stmt, $link);
 									$pc_recs = mysql_num_rows($rslt);
 									if ($pc_recs > 0)
@@ -488,11 +505,11 @@ function ParseFileName() {
 								}
 							}
 
-						##### Check for duplicate phone numbers in vicidial_list table entire database #####
+						##### Check for duplicate phone numbers in osdial_list table entire database #####
 						if (eregi("DUPSYS",$dupcheck))
 							{
 							$dup_lead=0;
-							$stmt="select list_id from vicidial_list where phone_number='$phone_number';";
+							$stmt="select list_id from osdial_list where phone_number='$phone_number';";
 							$rslt=mysql_query($stmt, $link);
 							$pc_recs = mysql_num_rows($rslt);
 							if ($pc_recs > 0)
@@ -508,11 +525,11 @@ function ParseFileName() {
 								}
 							}
 
-						##### Check for duplicate phone numbers in vicidial_list table for one list_id #####
+						##### Check for duplicate phone numbers in osdial_list table for one list_id #####
 						if (eregi("DUPLIST",$dupcheck))
 							{
 							$dup_lead=0;
-							$stmt="select count(*) from vicidial_list where phone_number='$phone_number' and list_id='$list_id';";
+							$stmt="select count(*) from osdial_list where phone_number='$phone_number' and list_id='$list_id';";
 							$rslt=mysql_query($stmt, $link);
 							$pc_recs = mysql_num_rows($rslt);
 							if ($pc_recs > 0)
@@ -539,7 +556,7 @@ function ParseFileName() {
 
 							if ($multi_insert_counter > 8) {
 								### insert good deal into pending_transactions table ###
-								$stmtZ = "INSERT INTO vicidial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$security_phrase','$comments',0);";
+								$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$security_phrase','$comments',0);";
 								$rslt=mysql_query($stmtZ, $link);
 								if ($WeBRooTWritablE > 0) 
 									{fwrite($stmt_file, $stmtZ."\r\n");}
@@ -565,7 +582,7 @@ function ParseFileName() {
 					}
 				}
 				if ($multi_insert_counter!=0) {
-					$stmtZ = "INSERT INTO vicidial_list values".substr($multistmt, 0, -1).";";
+					$stmtZ = "INSERT INTO osdial_list values".substr($multistmt, 0, -1).";";
 					mysql_query($stmtZ, $link);
 					if ($WeBRooTWritablE > 0) 
 						{fwrite($stmt_file, $stmtZ."\r\n");}
@@ -577,7 +594,7 @@ function ParseFileName() {
 				print "<center><font face='arial, helvetica' size=3 color='#990000'><B>ERROR: The file does not have the required number of fields to process it.</B></font></center>";
 			}
 		} else if (!eregi(".csv", $leadfile_name)) {
-			# copy($leadfile, "./vicidial_temp_file.xls");
+			# copy($leadfile, "./osdial_temp_file.xls");
 			$file=fopen("$lead_file", "r");
 
 			print "<center><font face='arial, helvetica' size=3 color='#009900'><B>Processing Excel file... \n";
@@ -589,19 +606,19 @@ function ParseFileName() {
 			{
 			print "<BR><BR>PHONE CODE OVERRIDE FOR THIS FILE: $phone_code_override<BR><BR>\n";
 			}
-		# print "|$WeBServeRRooT/vicidial/listloader_super.pl $vendor_lead_code_field,$source_id_field,$list_id_field,$phone_code_field,$phone_number_field,$title_field,$first_name_field,$middle_initial_field,$last_name_field,$address1_field,$address2_field,$address3_field,$city_field,$state_field,$province_field,$postal_code_field,$country_code_field,$gender_field,$date_of_birth_field,$alt_phone_field,$email_field,$security_phrase_field,$comments_field, --forcelistid=$list_id_override --lead_file=$lead_file|";
+		# print "|$WeBServeRRooT/admin/listloader_super.pl $vendor_lead_code_field,$source_id_field,$list_id_field,$phone_code_field,$phone_number_field,$title_field,$first_name_field,$middle_initial_field,$last_name_field,$address1_field,$address2_field,$address3_field,$city_field,$state_field,$province_field,$postal_code_field,$country_code_field,$gender_field,$date_of_birth_field,$alt_phone_field,$email_field,$security_phrase_field,$comments_field, --forcelistid=$list_id_override --lead_file=$lead_file|";
 			$dupcheckCLI=''; $postalgmtCLI='';
 			if (eregi("DUPLIST",$dupcheck)) {$dupcheckCLI='--duplicate-check';}
 			if (eregi("DUPCAMP",$dupcheck)) {$dupcheckCLI='--duplicate-campaign-check';}
 			if (eregi("DUPSYS",$dupcheck)) {$dupcheckCLI='--duplicate-system-check';}
 			if (eregi("POSTAL",$postalgmt)) {$postalgmtCLI='--postal-code-gmt';}
-			passthru("$WeBServeRRooT/vicidial/listloader_super.pl $vendor_lead_code_field,$source_id_field,$list_id_field,$phone_code_field,$phone_number_field,$title_field,$first_name_field,$middle_initial_field,$last_name_field,$address1_field,$address2_field,$address3_field,$city_field,$state_field,$province_field,$postal_code_field,$country_code_field,$gender_field,$date_of_birth_field,$alt_phone_field,$email_field,$security_phrase_field,$comments_field, --forcelistid=$list_id_override --forcephonecode=$phone_code_override --lead-file=$lead_file $postalgmtCLI $dupcheckCLI");
+			passthru("$WeBServeRRooT/admin/listloader_super.pl $vendor_lead_code_field,$source_id_field,$list_id_field,$phone_code_field,$phone_number_field,$title_field,$first_name_field,$middle_initial_field,$last_name_field,$address1_field,$address2_field,$address3_field,$city_field,$state_field,$province_field,$postal_code_field,$country_code_field,$gender_field,$date_of_birth_field,$alt_phone_field,$email_field,$security_phrase_field,$comments_field, --forcelistid=$list_id_override --forcephonecode=$phone_code_override --lead-file=$lead_file $postalgmtCLI $dupcheckCLI");
 		} else {
-			# copy($leadfile, "./vicidial_temp_file.csv");
+			# copy($leadfile, "./osdial_temp_file.csv");
 			$file=fopen("$lead_file", "r");
 
 			if ($WeBRooTWritablE > 0)
-				{$stmt_file=fopen("$WeBServeRRooT/vicidial/listloader_stmts.txt", "w");}
+				{$stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");}
 			
 			print "<center><font face='arial, helvetica' size=3 color='#009900'><B>Processing CSV file... \n";
 			if (strlen($list_id_override)>0) 
@@ -658,12 +675,12 @@ function ParseFileName() {
 						$phone_code = $phone_code_override;
 						}
 
-					##### Check for duplicate phone numbers in vicidial_list table for all lists in a campaign #####
+					##### Check for duplicate phone numbers in osdial_list table for all lists in a campaign #####
 					if (eregi("DUPCAMP",$dupcheck))
 						{
 							$dup_lead=0;
 							$dup_lists='';
-						$stmt="select campaign_id from vicidial_lists where list_id='$list_id';";
+						$stmt="select campaign_id from osdial_lists where list_id='$list_id';";
 						$rslt=mysql_query($stmt, $link);
 						$ci_recs = mysql_num_rows($rslt);
 						if ($ci_recs > 0)
@@ -671,7 +688,7 @@ function ParseFileName() {
 							$row=mysql_fetch_row($rslt);
 							$dup_camp =			$row[0];
 
-							$stmt="select list_id from vicidial_lists where campaign_id='$dup_camp';";
+							$stmt="select list_id from osdial_lists where campaign_id='$dup_camp';";
 							$rslt=mysql_query($stmt, $link);
 							$li_recs = mysql_num_rows($rslt);
 							if ($li_recs > 0)
@@ -685,7 +702,7 @@ function ParseFileName() {
 									}
 								$dup_lists = eregi_replace(",$",'',$dup_lists);
 
-								$stmt="select list_id from vicidial_list where phone_number='$phone_number' and list_id IN($dup_lists) limit 1;";
+								$stmt="select list_id from osdial_list where phone_number='$phone_number' and list_id IN($dup_lists) limit 1;";
 								$rslt=mysql_query($stmt, $link);
 								$pc_recs = mysql_num_rows($rslt);
 								if ($pc_recs > 0)
@@ -703,11 +720,11 @@ function ParseFileName() {
 							}
 						}
 
-					##### Check for duplicate phone numbers in vicidial_list table entire database #####
+					##### Check for duplicate phone numbers in osdial_list table entire database #####
 					if (eregi("DUPSYS",$dupcheck))
 						{
 						$dup_lead=0;
-						$stmt="select list_id from vicidial_list where phone_number='$phone_number';";
+						$stmt="select list_id from osdial_list where phone_number='$phone_number';";
 						$rslt=mysql_query($stmt, $link);
 						$pc_recs = mysql_num_rows($rslt);
 						if ($pc_recs > 0)
@@ -723,11 +740,11 @@ function ParseFileName() {
 							}
 						}
 
-					##### Check for duplicate phone numbers in vicidial_list table for one list_id #####
+					##### Check for duplicate phone numbers in osdial_list table for one list_id #####
 					if (eregi("DUPLIST",$dupcheck))
 						{
 						$dup_lead=0;
-						$stmt="select count(*) from vicidial_list where phone_number='$phone_number' and list_id='$list_id';";
+						$stmt="select count(*) from osdial_list where phone_number='$phone_number' and list_id='$list_id';";
 						$rslt=mysql_query($stmt, $link);
 						$pc_recs = mysql_num_rows($rslt);
 						if ($pc_recs > 0)
@@ -754,7 +771,7 @@ function ParseFileName() {
 
 					if ($multi_insert_counter > 8) {
 						### insert good deal into pending_transactions table ###
-						$stmtZ = "INSERT INTO vicidial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$security_phrase','$comments',0);";
+						$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$security_phrase','$comments',0);";
 						$rslt=mysql_query($stmtZ, $link);
 						if ($WeBRooTWritablE > 0) 
 							{fwrite($stmt_file, $stmtZ."\r\n");}
@@ -779,7 +796,7 @@ function ParseFileName() {
 				}
 			}
 			if ($multi_insert_counter!=0) {
-				$stmtZ = "INSERT INTO vicidial_list values".substr($multistmt, 0, -1).";";
+				$stmtZ = "INSERT INTO osdial_list values".substr($multistmt, 0, -1).";";
 				mysql_query($stmtZ, $link);
 				if ($WeBRooTWritablE > 0) 
 					{fwrite($stmt_file, $stmtZ."\r\n");}
@@ -800,17 +817,17 @@ if ($leadfile) {
 
 		if ($WeBRooTWritablE > 0)
 			{
-			copy($LF_path, "$WeBServeRRooT/vicidial/vicidial_temp_file.txt");
-			$lead_file = "./vicidial_temp_file.txt";
+			copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.txt");
+			$lead_file = "./osdial_temp_file.txt";
 			}
 		else
 			{
-			copy($LF_path, "/tmp/vicidial_temp_file.txt");
-			$lead_file = "/tmp/vicidial_temp_file.txt";
+			copy($LF_path, "/tmp/osdial_temp_file.txt");
+			$lead_file = "/tmp/osdial_temp_file.txt";
 			}
 		$file=fopen("$lead_file", "r");
 		if ($WeBRooTWritablE > 0)
-			{$stmt_file=fopen("$WeBServeRRooT/vicidial/listloader_stmts.txt", "w");}
+			{$stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");}
 
 		$buffer=fgets($file, 4096);
 		$tab_count=substr_count($buffer, "\t");
@@ -882,12 +899,12 @@ if ($leadfile) {
 						$phone_code = $phone_code_override;
 						}
 
-					##### Check for duplicate phone numbers in vicidial_list table for all lists in a campaign #####
+					##### Check for duplicate phone numbers in osdial_list table for all lists in a campaign #####
 					if (eregi("DUPCAMP",$dupcheck))
 						{
 							$dup_lead=0;
 							$dup_lists='';
-						$stmt="select campaign_id from vicidial_lists where list_id='$list_id';";
+						$stmt="select campaign_id from osdial_lists where list_id='$list_id';";
 						$rslt=mysql_query($stmt, $link);
 						$ci_recs = mysql_num_rows($rslt);
 						if ($ci_recs > 0)
@@ -895,7 +912,7 @@ if ($leadfile) {
 							$row=mysql_fetch_row($rslt);
 							$dup_camp =			$row[0];
 
-							$stmt="select list_id from vicidial_lists where campaign_id='$dup_camp';";
+							$stmt="select list_id from osdial_lists where campaign_id='$dup_camp';";
 							$rslt=mysql_query($stmt, $link);
 							$li_recs = mysql_num_rows($rslt);
 							if ($li_recs > 0)
@@ -909,7 +926,7 @@ if ($leadfile) {
 									}
 								$dup_lists = eregi_replace(",$",'',$dup_lists);
 
-								$stmt="select list_id from vicidial_list where phone_number='$phone_number' and list_id IN($dup_lists) limit 1;";
+								$stmt="select list_id from osdial_list where phone_number='$phone_number' and list_id IN($dup_lists) limit 1;";
 								$rslt=mysql_query($stmt, $link);
 								$pc_recs = mysql_num_rows($rslt);
 								if ($pc_recs > 0)
@@ -927,11 +944,11 @@ if ($leadfile) {
 							}
 						}
 
-					##### Check for duplicate phone numbers in vicidial_list table entire database #####
+					##### Check for duplicate phone numbers in osdial_list table entire database #####
 					if (eregi("DUPSYS",$dupcheck))
 						{
 						$dup_lead=0;
-						$stmt="select list_id from vicidial_list where phone_number='$phone_number';";
+						$stmt="select list_id from osdial_list where phone_number='$phone_number';";
 						$rslt=mysql_query($stmt, $link);
 						$pc_recs = mysql_num_rows($rslt);
 						if ($pc_recs > 0)
@@ -947,11 +964,11 @@ if ($leadfile) {
 							}
 						}
 
-					##### Check for duplicate phone numbers in vicidial_list table for one list_id #####
+					##### Check for duplicate phone numbers in osdial_list table for one list_id #####
 					if (eregi("DUPLIST",$dupcheck))
 						{
 						$dup_lead=0;
-						$stmt="select count(*) from vicidial_list where phone_number='$phone_number' and list_id='$list_id';";
+						$stmt="select count(*) from osdial_list where phone_number='$phone_number' and list_id='$list_id';";
 						$rslt=mysql_query($stmt, $link);
 						$pc_recs = mysql_num_rows($rslt);
 						if ($pc_recs > 0)
@@ -978,7 +995,7 @@ if ($leadfile) {
 
 						if ($multi_insert_counter > 8) {
 							### insert good deal into pending_transactions table ###
-							$stmtZ = "INSERT INTO vicidial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$security_phrase','$comments',0);";
+							$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$security_phrase','$comments',0);";
 							$rslt=mysql_query($stmtZ, $link);
 							if ($WeBRooTWritablE > 0) 
 								{fwrite($stmt_file, $stmtZ."\r\n");}
@@ -1004,7 +1021,7 @@ if ($leadfile) {
 				}
 			}
 			if ($multi_insert_counter!=0) {
-				$stmtZ = "INSERT INTO vicidial_list values".substr($multistmt, 0, -1).";";
+				$stmtZ = "INSERT INTO osdial_list values".substr($multistmt, 0, -1).";";
 				mysql_query($stmtZ, $link);
 				if ($WeBRooTWritablE > 0) 
 					{fwrite($stmt_file, $stmtZ."\r\n");}
@@ -1019,40 +1036,40 @@ if ($leadfile) {
 		{
 		if ($WeBRooTWritablE > 0)
 			{
-			copy($LF_path, "$WeBServeRRooT/vicidial/vicidial_temp_file.xls");
-			$lead_file = "$WeBServeRRooT/vicidial/vicidial_temp_file.xls";
+			copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.xls");
+			$lead_file = "$WeBServeRRooT/admin/osdial_temp_file.xls";
 			}
 		else
 			{
-			copy($LF_path, "/tmp/vicidial_temp_file.xls");
-			$lead_file = "/tmp/vicidial_temp_file.xls";
+			copy($LF_path, "/tmp/osdial_temp_file.xls");
+			$lead_file = "/tmp/osdial_temp_file.xls";
 			}
 		$file=fopen("$lead_file", "r");
 
-	#	echo "|$WeBServeRRooT/vicidial/listloader.pl --forcelistid=$list_id_override --lead-file=$lead_file|";
+	#	echo "|$WeBServeRRooT/admin/listloader.pl --forcelistid=$list_id_override --lead-file=$lead_file|";
 		$dupcheckCLI=''; $postalgmtCLI='';
 		if (eregi("DUPLIST",$dupcheck)) {$dupcheckCLI='--duplicate-check';}
 		if (eregi("DUPCAMP",$dupcheck)) {$dupcheckCLI='--duplicate-campaign-check';}
 		if (eregi("DUPSYS",$dupcheck)) {$dupcheckCLI='--duplicate-system-check';}
 		if (eregi("POSTAL",$postalgmt)) {$postalgmtCLI='--postal-code-gmt';}
-		passthru("$WeBServeRRooT/vicidial/listloader.pl --forcelistid=$list_id_override --forcephonecode=$phone_code_override --lead-file=$lead_file  $postalgmtCLI $dupcheckCLI");
+		passthru("$WeBServeRRooT/admin/listloader.pl --forcelistid=$list_id_override --forcephonecode=$phone_code_override --lead-file=$lead_file  $postalgmtCLI $dupcheckCLI");
 	
 		}
 		else 
 		{
 		if ($WeBRooTWritablE > 0)
 			{
-			copy($LF_path, "$WeBServeRRooT/vicidial/vicidial_temp_file.csv");
-			$lead_file = "$WeBServeRRooT/vicidial/vicidial_temp_file.csv";
+			copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.csv");
+			$lead_file = "$WeBServeRRooT/admin/osdial_temp_file.csv";
 			}
 		else
 			{
-			copy($LF_path, "/tmp/vicidial_temp_file.csv");
-			$lead_file = "/tmp/vicidial_temp_file.csv";
+			copy($LF_path, "/tmp/osdial_temp_file.csv");
+			$lead_file = "/tmp/osdial_temp_file.csv";
 			}
 		$file=fopen("$lead_file", "r");
 		if ($WeBRooTWritablE > 0)
-			{$stmt_file=fopen("$WeBServeRRooT/vicidial/listloader_stmts.txt", "w");}
+			{$stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");}
 		
 		print "<center><font face='arial, helvetica' size=3 color='#009900'><B>Processing CSV file... \n";
 
@@ -1108,12 +1125,12 @@ if ($leadfile) {
 						$phone_code = $phone_code_override;
 						}
 
-					##### Check for duplicate phone numbers in vicidial_list table for all lists in a campaign #####
+					##### Check for duplicate phone numbers in osdial_list table for all lists in a campaign #####
 					if (eregi("DUPCAMP",$dupcheck))
 						{
 							$dup_lead=0;
 							$dup_lists='';
-						$stmt="select campaign_id from vicidial_lists where list_id='$list_id';";
+						$stmt="select campaign_id from osdial_lists where list_id='$list_id';";
 						$rslt=mysql_query($stmt, $link);
 						$ci_recs = mysql_num_rows($rslt);
 						if ($ci_recs > 0)
@@ -1121,7 +1138,7 @@ if ($leadfile) {
 							$row=mysql_fetch_row($rslt);
 							$dup_camp =			$row[0];
 
-							$stmt="select list_id from vicidial_lists where campaign_id='$dup_camp';";
+							$stmt="select list_id from osdial_lists where campaign_id='$dup_camp';";
 							$rslt=mysql_query($stmt, $link);
 							$li_recs = mysql_num_rows($rslt);
 							if ($li_recs > 0)
@@ -1135,7 +1152,7 @@ if ($leadfile) {
 									}
 								$dup_lists = eregi_replace(",$",'',$dup_lists);
 
-								$stmt="select list_id from vicidial_list where phone_number='$phone_number' and list_id IN($dup_lists) limit 1;";
+								$stmt="select list_id from osdial_list where phone_number='$phone_number' and list_id IN($dup_lists) limit 1;";
 								$rslt=mysql_query($stmt, $link);
 								$pc_recs = mysql_num_rows($rslt);
 								if ($pc_recs > 0)
@@ -1153,11 +1170,11 @@ if ($leadfile) {
 							}
 						}
 
-					##### Check for duplicate phone numbers in vicidial_list table entire database #####
+					##### Check for duplicate phone numbers in osdial_list table entire database #####
 					if (eregi("DUPSYS",$dupcheck))
 						{
 						$dup_lead=0;
-						$stmt="select list_id from vicidial_list where phone_number='$phone_number';";
+						$stmt="select list_id from osdial_list where phone_number='$phone_number';";
 						$rslt=mysql_query($stmt, $link);
 						$pc_recs = mysql_num_rows($rslt);
 						if ($pc_recs > 0)
@@ -1173,11 +1190,11 @@ if ($leadfile) {
 							}
 						}
 
-					##### Check for duplicate phone numbers in vicidial_list table for one list_id #####
+					##### Check for duplicate phone numbers in osdial_list table for one list_id #####
 					if (eregi("DUPLIST",$dupcheck))
 						{
 						$dup_lead=0;
-						$stmt="select count(*) from vicidial_list where phone_number='$phone_number' and list_id='$list_id';";
+						$stmt="select count(*) from osdial_list where phone_number='$phone_number' and list_id='$list_id';";
 						$rslt=mysql_query($stmt, $link);
 						$pc_recs = mysql_num_rows($rslt);
 						if ($pc_recs > 0)
@@ -1204,7 +1221,7 @@ if ($leadfile) {
 
 					if ($multi_insert_counter > 8) {
 						### insert good deal into pending_transactions table ###
-						$stmtZ = "INSERT INTO vicidial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$security_phrase','$comments',0);";
+						$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$security_phrase','$comments',0);";
 						$rslt=mysql_query($stmtZ, $link);
 						if ($WeBRooTWritablE > 0) 
 							{fwrite($stmt_file, $stmtZ."\r\n");}
@@ -1229,7 +1246,7 @@ if ($leadfile) {
 				}
 			}
 			if ($multi_insert_counter!=0) {
-				$stmtZ = "INSERT INTO vicidial_list values".substr($multistmt, 0, -1).";";
+				$stmtZ = "INSERT INTO osdial_list values".substr($multistmt, 0, -1).";";
 				mysql_query($stmtZ, $link);
 				if ($WeBRooTWritablE > 0) 
 					{fwrite($stmt_file, $stmtZ."\r\n");}
@@ -1245,28 +1262,28 @@ if ($leadfile) {
 			flush();
 			print "<table border=0 cellpadding=3 cellspacing=0 width=700 align=center>\r\n";
 			print "  <tr bgcolor='#330099'>\r\n";
-			print "    <th align=right><font class='standard' color='white'>VICIDIAL Column</font></th>\r\n";
+			print "    <th align=right><font class='standard' color='white'>OSDIAL Column</font></th>\r\n";
 			print "    <th><font class='standard' color='white'>File data</font></th>\r\n";
 			print "  </tr>\r\n";
 
-			$rslt=mysql_query("select vendor_lead_code, source_id, list_id, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, security_phrase, comments from vicidial_list limit 1", $link);
+			$rslt=mysql_query("select vendor_lead_code, source_id, list_id, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, security_phrase, comments from osdial_list limit 1", $link);
 			
 
 			if (!eregi(".csv", $leadfile_name) && !eregi(".xls", $leadfile_name)) 
 				{
 				if ($WeBRooTWritablE > 0)
 					{
-					copy($LF_path, "$WeBServeRRooT/vicidial/vicidial_temp_file.txt");
-					$lead_file = "$WeBServeRRooT/vicidial/vicidial_temp_file.txt";
+					copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.txt");
+					$lead_file = "$WeBServeRRooT/admin/osdial_temp_file.txt";
 					}
 				else
 					{
-					copy($LF_path, "/tmp/vicidial_temp_file.txt");
-					$lead_file = "/tmp/vicidial_temp_file.txt";
+					copy($LF_path, "/tmp/osdial_temp_file.txt");
+					$lead_file = "/tmp/osdial_temp_file.txt";
 					}
 				$file=fopen("$lead_file", "r");
 				if ($WeBRooTWritablE > 0)
-					{$stmt_file=fopen("$WeBServeRRooT/vicidial/listloader_stmts.txt", "w");}
+					{$stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");}
 
 				$buffer=fgets($file, 4096);
 				$tab_count=substr_count($buffer, "\t");
@@ -1315,39 +1332,39 @@ if ($leadfile) {
 			{
 				if ($WeBRooTWritablE > 0)
 					{
-					copy($LF_path, "$WeBServeRRooT/vicidial/vicidial_temp_file.xls");
-					$lead_file = "$WeBServeRRooT/vicidial/vicidial_temp_file.xls";
+					copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.xls");
+					$lead_file = "$WeBServeRRooT/admin/osdial_temp_file.xls";
 					}
 				else
 					{
-					copy($LF_path, "/tmp/vicidial_temp_file.xls");
-					$lead_file = "/tmp/vicidial_temp_file.xls";
+					copy($LF_path, "/tmp/osdial_temp_file.xls");
+					$lead_file = "/tmp/osdial_temp_file.xls";
 					}
 
-			#	echo "|$WeBServeRRooT/vicidial/listloader_rowdisplay.pl --lead-file=$lead_file|";
+			#	echo "|$WeBServeRRooT/admin/listloader_rowdisplay.pl --lead-file=$lead_file|";
 				$dupcheckCLI=''; $postalgmtCLI='';
 				if (eregi("DUPLIST",$dupcheck)) {$dupcheckCLI='--duplicate-check';}
 				if (eregi("DUPCAMP",$dupcheck)) {$dupcheckCLI='--duplicate-campaign-check';}
 				if (eregi("DUPSYS",$dupcheck)) {$dupcheckCLI='--duplicate-system-check';}
 				if (eregi("POSTAL",$postalgmt)) {$postalgmtCLI='--postal-code-gmt';}
-				passthru("$WeBServeRRooT/vicidial/listloader_rowdisplay.pl --lead-file=$lead_file $postalgmtCLI $dupcheckCLI");
+				passthru("$WeBServeRRooT/admin/listloader_rowdisplay.pl --lead-file=$lead_file $postalgmtCLI $dupcheckCLI");
 			} 
 			else 
 			{
 				if ($WeBRooTWritablE > 0)
 					{
-					copy($LF_path, "$WeBServeRRooT/vicidial/vicidial_temp_file.csv");
-					$lead_file = "$WeBServeRRooT/vicidial/vicidial_temp_file.csv";
+					copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.csv");
+					$lead_file = "$WeBServeRRooT/admin/osdial_temp_file.csv";
 					}
 				else
 					{
-					copy($LF_path, "/tmp/vicidial_temp_file.csv");
-					$lead_file = "/tmp/vicidial_temp_file.csv";
+					copy($LF_path, "/tmp/osdial_temp_file.csv");
+					$lead_file = "/tmp/osdial_temp_file.csv";
 					}
 				$file=fopen("$lead_file", "r");
 
 				if ($WeBRooTWritablE > 0)
-					{$stmt_file=fopen("$WeBServeRRooT/vicidial/listloader_stmts.txt", "w");}
+					{$stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");}
 				
 				print "<center><font face='arial, helvetica' size=3 color='#009900'><B>Processing CSV file... \n";
 				
@@ -1420,7 +1437,7 @@ if ( (eregi("POSTAL",$postalgmt)) && (strlen($postal_code)>4) )
 	{
 	if (preg_match('/^1$/', $phone_code))
 		{
-		$stmt="select * from vicidial_postal_codes where country_code='$phone_code' and postal_code LIKE \"$postal_code%\";";
+		$stmt="select * from osdial_postal_codes where country_code='$phone_code' and postal_code LIKE \"$postal_code%\";";
 		$rslt=mysql_query($stmt, $link);
 		$pc_recs = mysql_num_rows($rslt);
 		if ($pc_recs > 0)
@@ -1441,7 +1458,7 @@ if ($postalgmt_found < 1)
 	### UNITED STATES ###
 	if ($phone_code =='1')
 		{
-		$stmt="select * from vicidial_phone_codes where country_code='$phone_code' and areacode='$USarea';";
+		$stmt="select * from osdial_phone_codes where country_code='$phone_code' and areacode='$USarea';";
 		$rslt=mysql_query($stmt, $link);
 		$pc_recs = mysql_num_rows($rslt);
 		if ($pc_recs > 0)
@@ -1456,7 +1473,7 @@ if ($postalgmt_found < 1)
 	### MEXICO ###
 	if ($phone_code =='52')
 		{
-		$stmt="select * from vicidial_phone_codes where country_code='$phone_code' and areacode='$USarea';";
+		$stmt="select * from osdial_phone_codes where country_code='$phone_code' and areacode='$USarea';";
 		$rslt=mysql_query($stmt, $link);
 		$pc_recs = mysql_num_rows($rslt);
 		if ($pc_recs > 0)
@@ -1471,7 +1488,7 @@ if ($postalgmt_found < 1)
 	### AUSTRALIA ###
 	if ($phone_code =='61')
 		{
-		$stmt="select * from vicidial_phone_codes where country_code='$phone_code' and state='$state';";
+		$stmt="select * from osdial_phone_codes where country_code='$phone_code' and state='$state';";
 		$rslt=mysql_query($stmt, $link);
 		$pc_recs = mysql_num_rows($rslt);
 		if ($pc_recs > 0)
@@ -1487,7 +1504,7 @@ if ($postalgmt_found < 1)
 	if (!$PC_processed)
 		{
 		$PC_processed++;
-		$stmt="select * from vicidial_phone_codes where country_code='$phone_code';";
+		$stmt="select * from osdial_phone_codes where country_code='$phone_code';";
 		$rslt=mysql_query($stmt, $link);
 		$pc_recs = mysql_num_rows($rslt);
 		if ($pc_recs > 0)

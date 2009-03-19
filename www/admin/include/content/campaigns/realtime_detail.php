@@ -38,7 +38,7 @@ if ($ADD==999999 && $SUB==14) {
 	#$PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);
 	#$PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
 	#
-	#$stmt="SELECT count(*) from vicidial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1';";
+	#$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1';";
 	#if ($DB) {echo "|$stmt|\n";}
 	#if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
 	#
@@ -75,7 +75,7 @@ if ($ADD==999999 && $SUB==14) {
 	}
 
 	
-	$stmt="select campaign_id from vicidial_campaigns where active='Y';";
+	$stmt="select campaign_id from osdial_campaigns where active='Y';";
 	$rslt=mysql_query($stmt, $link);
 	if (!isset($DB))   {$DB=0;}
 	if ($DB) {echo "$stmt\n";}
@@ -88,7 +88,7 @@ if ($ADD==999999 && $SUB==14) {
 		$i++;
 	}
 	
-	$stmt="select * from vicidial_user_groups;";
+	$stmt="select * from osdial_user_groups;";
 	$rslt=mysql_query($stmt, $link);
 	if (!isset($DB))   {$DB=0;}
 	if ($DB) {echo "$stmt\n";}
@@ -132,7 +132,7 @@ if ($ADD==999999 && $SUB==14) {
 		.b4 {color: white; background-color: #0000FF}
 	<?
 	
-	$stmt="select group_id,group_color from vicidial_inbound_groups;";
+	$stmt="select group_id,group_color from osdial_inbound_groups;";
 	$rslt=mysql_query($stmt, $link);
 	if ($DB) {echo "$stmt\n";}
 	$INgroups_to_print = mysql_num_rows($rslt);
@@ -150,7 +150,7 @@ if ($ADD==999999 && $SUB==14) {
 	echo "\n-->\n
 	</STYLE>\n";
 
-	$stmt = "select count(*) from vicidial_campaigns where campaign_id='$group' and campaign_allow_inbound='Y';";
+	$stmt = "select count(*) from osdial_campaigns where campaign_id='$group' and campaign_allow_inbound='Y';";
 	$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$campaign_allow_inbound = $row[0];
@@ -242,9 +242,9 @@ if ($ADD==999999 && $SUB==14) {
 	if (!$group) {
 		echo "<p class=indents>Please select a campaign!</p></FORM>\n"; 
 	} else {
-		$stmt="select auto_dial_level,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,lead_filter_id,hopper_level,dial_method,adaptive_maximum_level,adaptive_dropped_percentage,adaptive_dl_diff_target,adaptive_intensity,available_only_ratio_tally,adaptive_latest_server_time,local_call_time,dial_timeout,dial_statuses from vicidial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
+		$stmt="select auto_dial_level,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,lead_filter_id,hopper_level,dial_method,adaptive_maximum_level,adaptive_dropped_percentage,adaptive_dl_diff_target,adaptive_intensity,available_only_ratio_tally,adaptive_latest_server_time,local_call_time,dial_timeout,dial_statuses from osdial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
 		if ($group=='XXXX-ALL-ACTIVE-XXXX') {
-			$stmt="select avg(auto_dial_level),min(dial_status_a),min(dial_status_b),min(dial_status_c),min(dial_status_d),min(dial_status_e),min(lead_order),min(lead_filter_id),sum(hopper_level),min(dial_method),avg(adaptive_maximum_level),avg(adaptive_dropped_percentage),avg(adaptive_dl_diff_target),avg(adaptive_intensity),min(available_only_ratio_tally),min(adaptive_latest_server_time),min(local_call_time),avg(dial_timeout),min(dial_statuses) from vicidial_campaigns;";
+			$stmt="select avg(auto_dial_level),min(dial_status_a),min(dial_status_b),min(dial_status_c),min(dial_status_d),min(dial_status_e),min(lead_order),min(lead_filter_id),sum(hopper_level),min(dial_method),avg(adaptive_maximum_level),avg(adaptive_dropped_percentage),avg(adaptive_dl_diff_target),avg(adaptive_intensity),min(available_only_ratio_tally),min(adaptive_latest_server_time),min(local_call_time),avg(dial_timeout),min(dial_statuses) from osdial_campaigns;";
 		}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
@@ -270,17 +270,17 @@ if ($ADD==999999 && $SUB==14) {
 		$DIALstatuses = (preg_replace("/ -$|^ /","",$DIALstatuses));
 		$DIALstatuses = (ereg_replace(' ',', ',$DIALstatuses));
 		
-		$stmt="select count(*) from vicidial_hopper where campaign_id='" . mysql_real_escape_string($group) . "';";
+		$stmt="select count(*) from osdial_hopper where campaign_id='" . mysql_real_escape_string($group) . "';";
 		if ($group=='XXXX-ALL-ACTIVE-XXXX') {
-			$stmt="select count(*) from vicidial_hopper;";
+			$stmt="select count(*) from osdial_hopper;";
 		}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$VDhop = $row[0];
 		
-		$stmt="select dialable_leads,calls_today,drops_today,drops_answers_today_pct,differential_onemin,agents_average_onemin,balance_trunk_fill,answers_today,status_category_1,status_category_count_1,status_category_2,status_category_count_2,status_category_3,status_category_count_3,status_category_4,status_category_count_4 from vicidial_campaign_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
+		$stmt="select dialable_leads,calls_today,drops_today,drops_answers_today_pct,differential_onemin,agents_average_onemin,balance_trunk_fill,answers_today,status_category_1,status_category_count_1,status_category_2,status_category_count_2,status_category_3,status_category_count_3,status_category_4,status_category_count_4 from osdial_campaign_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
 		if ($group=='XXXX-ALL-ACTIVE-XXXX') {
-			$stmt="select sum(dialable_leads),sum(calls_today),sum(drops_today),avg(drops_answers_today_pct),avg(differential_onemin),avg(agents_average_onemin),sum(balance_trunk_fill),sum(answers_today),min(status_category_1),sum(status_category_count_1),min(status_category_2),sum(status_category_count_2),min(status_category_3),sum(status_category_count_3),min(status_category_4),sum(status_category_count_4) from vicidial_campaign_stats;";
+			$stmt="select sum(dialable_leads),sum(calls_today),sum(drops_today),avg(drops_answers_today_pct),avg(differential_onemin),avg(agents_average_onemin),sum(balance_trunk_fill),sum(answers_today),min(status_category_1),sum(status_category_count_1),min(status_category_2),sum(status_category_count_2),min(status_category_3),sum(status_category_count_3),min(status_category_4),sum(status_category_count_4) from osdial_campaign_stats;";
 		}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
@@ -308,9 +308,9 @@ if ($ADD==999999 && $SUB==14) {
 			$diffpctONEMIN = '0.00';
 		}
 		
-		$stmt="select sum(local_trunk_shortage) from vicidial_campaign_server_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
+		$stmt="select sum(local_trunk_shortage) from osdial_campaign_server_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
 		if ($group=='XXXX-ALL-ACTIVE-XXXX') {
-			$stmt="select sum(local_trunk_shortage) from vicidial_campaign_server_stats;";
+			$stmt="select sum(local_trunk_shortage) from osdial_campaign_server_stats;";
 		}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
@@ -426,14 +426,14 @@ if ($ADD==999999 && $SUB==14) {
 	###### INBOUND/OUTBOUND CALLS
 	###################################################################################
 	if ($campaign_allow_inbound > 0) {
-		$stmt="select closer_campaigns from vicidial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
+		$stmt="select closer_campaigns from osdial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$closer_campaigns = preg_replace("/^ | -$/","",$row[0]);
 		$closer_campaigns = preg_replace("/ /","','",$closer_campaigns);
 		$closer_campaigns = "'$closer_campaigns'";
 	
-		$stmtB="from vicidial_auto_calls where status NOT IN('XFER') and ( (call_type='IN' and campaign_id IN($closer_campaigns)) or (campaign_id='" . mysql_real_escape_string($group) . "' and call_type IN('OUT','OUTBALANCE')) ) order by campaign_id,call_time;";
+		$stmtB="from osdial_auto_calls where status NOT IN('XFER') and ( (call_type='IN' and campaign_id IN($closer_campaigns)) or (campaign_id='" . mysql_real_escape_string($group) . "' and call_type IN('OUT','OUTBALANCE')) ) order by campaign_id,call_time;";
 	} else {
 		if ($group=='XXXX-ALL-ACTIVE-XXXX') {
 			$groupSQL = '';
@@ -441,7 +441,7 @@ if ($ADD==999999 && $SUB==14) {
 			$groupSQL = " and campaign_id='" . mysql_real_escape_string($group) . "'";
 		}
 	
-		$stmtB="from vicidial_auto_calls where status NOT IN('XFER') $groupSQL order by campaign_id,call_time;";
+		$stmtB="from osdial_auto_calls where status NOT IN('XFER') $groupSQL order by campaign_id,call_time;";
 	}
 	if ($CALLSdisplay > 0) {
 		$stmtA = "SELECT status,campaign_id,phone_number,server_ip,UNIX_TIMESTAMP(call_time),call_type";
@@ -673,8 +673,8 @@ if ($ADD==999999 && $SUB==14) {
 		if ($orderby=='userup') {$orderSQL='full_name,status,last_call_time';}
 		if ($orderby=='userdown') {$orderSQL='full_name desc,status desc,last_call_time desc';}
 	} else {
-		if ($orderby=='userup') {$orderSQL='vicidial_live_agents.user';}
-		if ($orderby=='userdown') {$orderSQL='vicidial_live_agents.user desc';}
+		if ($orderby=='userup') {$orderSQL='osdial_live_agents.user';}
+		if ($orderby=='userdown') {$orderSQL='osdial_live_agents.user desc';}
 	}
 	
 	if ($group=='XXXX-ALL-ACTIVE-XXXX') {
@@ -688,9 +688,9 @@ if ($ADD==999999 && $SUB==14) {
 		$usergroupSQL = " and user_group='" . mysql_real_escape_string($usergroup) . "'";
 	}
 	
-	$stmt="select extension,vicidial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id,vicidial_users.user_group,vicidial_users.full_name,vicidial_live_agents.comments from vicidial_live_agents,vicidial_users where vicidial_live_agents.user=vicidial_users.user $groupSQL $usergroupSQL order by $orderSQL;";
+	$stmt="select extension,osdial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id,osdial_users.user_group,osdial_users.full_name,osdial_live_agents.comments from osdial_live_agents,osdial_users where osdial_live_agents.user=osdial_users.user $groupSQL $usergroupSQL order by $orderSQL;";
 	
-	#$stmt="select extension,vicidial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id,vicidial_users.user_group,vicidial_users.full_name from vicidial_live_agents,vicidial_users where vicidial_live_agents.user=vicidial_users.user and campaign_id='" . mysql_real_escape_string($group) . "' order by $orderSQL;";
+	#$stmt="select extension,osdial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id,osdial_users.user_group,osdial_users.full_name from osdial_live_agents,osdial_users where osdial_live_agents.user=osdial_users.user and campaign_id='" . mysql_real_escape_string($group) . "' order by $orderSQL;";
 	
 	$rslt=mysql_query($stmt, $link);
 	if ($DB) {echo "$stmt\n";}
@@ -893,7 +893,11 @@ if ($ADD==999999 && $SUB==14) {
 		echo "  <SPAN class=\"violet\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - On call > 1 minute</B><br>";
 		echo "  <SPAN class=\"purple\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - On call > 5 minutes</B>";
 		echo "</td></tr></table>";
+		
+		/*
 		$Aecho .= "<PRE><FONT face=Fixed,monospace SIZE=1>";
+		
+		$load_ave = getloadavg();
 		
 		$Aecho ='<br><br>';
 		if (file_exists($pref . 'S1_load.txt')) {
@@ -925,19 +929,79 @@ if ($ADD==999999 && $SUB==14) {
 		$Aecho .= "<br></font>";
 			
 		echo "$Aecho";
+		*/
+		
+		
+		// Get server loads, txt file from other servers
+		//$load_ave = get_server_load($load_ave);
+		
+		$load_ave = getloadavg();
+		
+		$Aecho="<br><pre><font face=Fixed,monospace SIZE=1>";
+		if (file_exists($pref . 'S1_load.txt')) {
+			$s1_load = file($pref . 'S1_load.txt');
+			list( $line_num, $line ) = each( $s1_load );
+			$load_ave_s1=$line;
+			$Aecho .= "  <font color=navy>Apache   Load Average:</font> $load_ave<br>";
+			$Aecho .= "  <font color=navy>MySQL    Load Average:</font> $load_ave_s1";
+		} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
+			$Aecho .= "  <font color=navy>Dialer Load Average:</font> $load_ave<br>";
+		} else {
+			$Aecho .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave";
+		}
+		if (file_exists($pref . 'D1_load.txt')) {
+			$d1_load = file($pref . 'D1_load.txt');
+			list( $line_num, $line ) = each( $d1_load ) ;
+			$load_ave_d1=$line;
+			$Aecho .= "  <font color=navy>Dialer 1 Load Average:</font> $load_ave_d1";
+		}
+		if (file_exists($pref . 'D2_load.txt')) {
+			$d2_load = file($pref . 'D2_load.txt');
+			list( $line_num, $line ) = each( $d2_load );
+			$load_ave_d2=$line;
+			$Aecho .= "  <font color=navy>Dialer 2 Load Average:</font> $load_ave_d2";
+		}
+		if (file_exists($pref . 'D3_load.txt')) {
+			$d3_load = file($pref . 'D3_load.txt');
+			list( $line_num, $line ) = each( $d3_load );
+			$load_ave_d3=$line;
+			$Aecho .= "  <font color=navy>Dialer 3 Load Average:</font> $load_ave_d3";
+		}
+		if (file_exists($pref . 'D4_load.txt')) {
+			$d4_load = file($pref . 'D4_load.txt');
+			list( $line_num, $line ) = each( $d4_load );
+			$load_ave_d4=$line;
+			$Aecho .= "  <font color=navy>Dialer 4 Load Average:</font> $load_ave_d4";
+		}
+		if (file_exists($pref . 'D5_load.txt')) {
+			$d5_load = file($pref . 'D5_load.txt');
+			list( $line_num, $line ) = each( $d5_load );
+			$load_ave_d5=$line;
+			$Aecho .= "  <font color=navy>Dialer 5 Load Average:</font> $load_ave_d5";
+		}
+		if (file_exists($pref . 'D6_load.txt')) {
+			$d6_load = file($pref . 'D6_load.txt');
+			list( $line_num, $line ) = each( $d6_load );
+			$load_ave_d6=$line;
+			$Aecho .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6";
+		}
+		//echo "<tr><td colspan=10>";
+		echo "$Aecho";
+		echo "</pre>";
 		
 	} else {
 	
 		echo "&nbsp;&nbsp;<font color=red>&bull;&nbsp;&nbsp;NO AGENTS ON CALLS</font> \n";
 		$Aecho ="<br><br>";
+		/*
 		$Aecho .= "<PRE><FONT face=Fixed,monospace SIZE=1>";
 		if (file_exists($pref . 'S1_load.txt')) {
 			$Aecho .= "  <font color=navy>Apache   Load Average:</font> $load_ave<br>";
-			$Aecho .= "  <font color=navy>MySQL    Load Average:</font> $load_ave_s1<br>";
+			$Aecho .= "  <font color=navy>MySQL    Load Average:</font> $load_ave_s1";
 		} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
 			$Aecho .= "  <font color=navy>Dialer Load Average:</font> $load_ave<br>";
 		} else {
-			$Aecho .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave<br>";
+			$Aecho .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave";
 		}
 		if (file_exists($pref . 'D1_load.txt')) {
 			$Aecho .= "  <font color=navy>Dialer 1 Load Average:</font> $load_ave_d1";
@@ -958,6 +1022,64 @@ if ($ADD==999999 && $SUB==14) {
 			$Aecho .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6";
 		}
 		echo "$Aecho";
+		*/
+		
+		// Get server loads, txt file from other servers
+		//$load_ave = get_server_load($load_ave);
+		
+		$load_ave = getloadavg();
+		
+		$Aecho="<br><pre><font face=Fixed,monospace SIZE=1>";
+		if (file_exists($pref . 'S1_load.txt')) {
+			$s1_load = file($pref . 'S1_load.txt');
+			list( $line_num, $line ) = each( $s1_load );
+			$load_ave_s1=$line;
+			$Aecho .= "  <font color=navy>Apache   Load Average:</font> $load_ave<br>";
+			$Aecho .= "  <font color=navy>MySQL    Load Average:</font> $load_ave_s1";
+		} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
+			$Aecho .= "  <font color=navy>Dialer Load Average:</font> $load_ave<br>";
+		} else {
+			$Aecho .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave";
+		}
+		if (file_exists($pref . 'D1_load.txt')) {
+			$d1_load = file($pref . 'D1_load.txt');
+			list( $line_num, $line ) = each( $d1_load ) ;
+			$load_ave_d1=$line;
+			$Aecho .= "  <font color=navy>Dialer 1 Load Average:</font> $load_ave_d1";
+		}
+		if (file_exists($pref . 'D2_load.txt')) {
+			$d2_load = file($pref . 'D2_load.txt');
+			list( $line_num, $line ) = each( $d2_load );
+			$load_ave_d2=$line;
+			$Aecho .= "  <font color=navy>Dialer 2 Load Average:</font> $load_ave_d2";
+		}
+		if (file_exists($pref . 'D3_load.txt')) {
+			$d3_load = file($pref . 'D3_load.txt');
+			list( $line_num, $line ) = each( $d3_load );
+			$load_ave_d3=$line;
+			$Aecho .= "  <font color=navy>Dialer 3 Load Average:</font> $load_ave_d3";
+		}
+		if (file_exists($pref . 'D4_load.txt')) {
+			$d4_load = file($pref . 'D4_load.txt');
+			list( $line_num, $line ) = each( $d4_load );
+			$load_ave_d4=$line;
+			$Aecho .= "  <font color=navy>Dialer 4 Load Average:</font> $load_ave_d4";
+		}
+		if (file_exists($pref . 'D5_load.txt')) {
+			$d5_load = file($pref . 'D5_load.txt');
+			list( $line_num, $line ) = each( $d5_load );
+			$load_ave_d5=$line;
+			$Aecho .= "  <font color=navy>Dialer 5 Load Average:</font> $load_ave_d5";
+		}
+		if (file_exists($pref . 'D6_load.txt')) {
+			$d6_load = file($pref . 'D6_load.txt');
+			list( $line_num, $line ) = each( $d6_load );
+			$load_ave_d6=$line;
+			$Aecho .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6";
+		}
+		//echo "<tr><td colspan=10>";
+		echo "$Aecho";
+		
 	}
 	echo "</pre>";
 	//echo "<tr><td colspan=10>";
