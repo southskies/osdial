@@ -25,7 +25,7 @@
 # runs when a call comes in from the osdial auto_dialer. This script will 
 # send the calls out to specified voicemail boxes or specified extensions if 
 # called person presses specified key(1,2,3).
-# The voicemail box is defined per-lead in the osdial_list.security_phrase field
+# The voicemail box is defined per-lead in the osdial_list.custom1 field
 # The exten xfer number is defined per-lead in the osdial_list.comments field
 #
 #   Call statuses from this script:
@@ -417,7 +417,7 @@ if ($pin == "1")	### send call to voicemail
 
 	$VMAIL_box=0;
 	### Grab Server values from the database
-	$stmtA = "SELECT security_phrase FROM osdial_list where lead_id = '$CIDlead_id';";
+	$stmtA = "SELECT custom1 FROM osdial_list where lead_id = '$CIDlead_id';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;

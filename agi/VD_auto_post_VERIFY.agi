@@ -284,14 +284,14 @@ $affected_rows = $dbhA->do($stmtA);
 if ($AGILOG) {$agi_string = "--    VDAD osdial_list PU update: |$affected_rows|$uniqueid|";   &agi_output;}
 
 ### Check to see if the number is in the system ###
-$stmtA= "SELECT security_phrase,comments from osdial_list where lead_id='$VD_lead_id';";
+$stmtA= "SELECT custom1,comments from osdial_list where lead_id='$VD_lead_id';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
 if ($sthArows > 0)
 	{
 	@aryA = $sthA->fetchrow_array;
-	$security_phrase = "$aryA[0]";
+	$custom1 = "$aryA[0]";
 	$comments = "$aryA[1]";
 	$sthA->finish();
 	}
@@ -312,14 +312,14 @@ else
 	$message_two = $visa_two_file;
 	}
 
-if ($AGILOG) {$agi_string = "Verify message playing: |$VD_lead_id|$security_phrase|$comments|$message_one|$message_two|";   &agi_output;}
+if ($AGILOG) {$agi_string = "Verify message playing: |$VD_lead_id|$custom1|$comments|$message_one|$message_two|";   &agi_output;}
 
 $AGI->stream_file("$message_one");
 
 	sleep(1);
 
 $AGI->stream_file("letters/v");
-$AGI->say_digits("$security_phrase");
+$AGI->say_digits("$custom1");
 
 	sleep(1);
 
@@ -352,7 +352,7 @@ $AGI->stream_file("$message_one");
 	sleep(1);
 
 $AGI->stream_file("letters/v");
-$AGI->say_digits("$security_phrase");
+$AGI->say_digits("$custom1");
 
 	sleep(1);
 

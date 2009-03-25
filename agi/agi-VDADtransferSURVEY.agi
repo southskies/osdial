@@ -346,7 +346,7 @@ if ($pin == "2") {$voter = 'REPUBLICAN';}
 if ($pin == "3") {$voter = 'INDEPENDANT';}
 if ($pin == "0") {$voter = 'OPERATOR';}
 
-$stmtA = "UPDATE osdial_list set security_phrase='$voter' where lead_id = '$CIDlead_id';";
+$stmtA = "UPDATE osdial_list set custom1='$voter' where lead_id = '$CIDlead_id';";
 	if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
 if ($AGILOG) {$agi_string = "--    VDAD osdial_list VOTER update: |$affected_rows|$CIDlead_id|$voter";   &agi_output;}

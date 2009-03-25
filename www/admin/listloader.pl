@@ -271,7 +271,7 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 		$oWkC = $oWkS->{Cells}[$iR][20];
 		if ($oWkC) {$email=$oWkC->Value; }
 		$oWkC = $oWkS->{Cells}[$iR][21];
-		if ($oWkC) {$security_phrase=$oWkC->Value; }
+		if ($oWkC) {$custom1=$oWkC->Value; }
 		$oWkC = $oWkS->{Cells}[$iR][22];
 		if ($oWkC) {$comments=$oWkC->Value; }
 		$comments=~s/^\s*(.*?)\s*$/$1/;
@@ -582,14 +582,14 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 
 			if ($multi_insert_counter > 8) {
 				### insert good deal into pending_transactions table ###
-				$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country','$gender','$date_of_birth','$alt_phone','$email','$security_phrase','$comments',0);";
+				$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0);";
 				$affected_rows = $dbhA->do($stmtZ);
 				print STMT_FILE $stmtZ."\r\n";
 				$multistmt='';
 				$multi_insert_counter=0;
 
 			} else {
-				$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country','$gender','$date_of_birth','$alt_phone','$email','$security_phrase','$comments',0),";
+				$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0),";
 				$multi_insert_counter++;
 			}
 

@@ -67,7 +67,7 @@
 #  - $date_of_birth - ('1970-01-01',...)
 #  - $alt_phone - ('3125551213',...)
 #  - $email - ('bob@bob.com',...)
-#  - $security_phrase - ('Hello',...)
+#  - $custom1 - ('Hello',...)
 #  - $comments - ('Good Customer',...)
 #  - $auto_dial_level - ('0','1','1.2',...)
 #  - $VDstop_rec_after_each_call - ('0','1')
@@ -263,8 +263,8 @@ if (isset($_GET["alt_phone"]))					{$alt_phone=$_GET["alt_phone"];}
 	elseif (isset($_POST["alt_phone"]))			{$alt_phone=$_POST["alt_phone"];}
 if (isset($_GET["email"]))						{$email=$_GET["email"];}
 	elseif (isset($_POST["email"]))				{$email=$_POST["email"];}
-if (isset($_GET["security_phrase"]))			{$security_phrase=$_GET["security_phrase"];}
-	elseif (isset($_POST["security_phrase"]))	{$security_phrase=$_POST["security_phrase"];}
+if (isset($_GET["custom1"]))			{$custom1=$_GET["custom1"];}
+	elseif (isset($_POST["custom1"]))	{$custom1=$_POST["custom1"];}
 if (isset($_GET["comments"]))					{$comments=$_GET["comments"];}
 	elseif (isset($_POST["comments"]))			{$comments=$_POST["comments"];}
 if (isset($_GET["auto_dial_level"]))			{$auto_dial_level=$_GET["auto_dial_level"];}
@@ -699,7 +699,7 @@ if ($ACTION == 'manDiaLnextCaLL')
 				$date_of_birth	= trim("$row[25]");
 				$alt_phone		= trim("$row[26]");
 				$email			= trim("$row[27]");
-				$security		= trim("$row[28]");
+				$custom1		= trim("$row[28]");
 				$comments		= trim("$row[29]");
 				$called_count	= trim("$row[30]");
 				}
@@ -843,7 +843,7 @@ if ($ACTION == 'manDiaLnextCaLL')
 			$LeaD_InfO .=	$date_of_birth . "\n";
 			$LeaD_InfO .=	$alt_phone . "\n";
 			$LeaD_InfO .=	$email . "\n";
-			$LeaD_InfO .=	$security . "\n";
+			$LeaD_InfO .=	$custom1 . "\n";
 			$LeaD_InfO .=	$comments . "\n";
 			$LeaD_InfO .=	$called_count . "\n";
 			$LeaD_InfO .=	$CBentry_time . "\n";
@@ -1678,7 +1678,7 @@ if ($ACTION == 'VDADcheckINCOMING')
 			$date_of_birth	= trim("$row[25]");
 			$alt_phone		= trim("$row[26]");
 			$email			= trim("$row[27]");
-			$security		= trim("$row[28]");
+			$custom1		= trim("$row[28]");
 			$comments		= trim("$row[29]");
 			$called_count	= trim("$row[30]");
 			}
@@ -1883,7 +1883,7 @@ if ($ACTION == 'VDADcheckINCOMING')
 		$LeaD_InfO .=	$date_of_birth . "\n";
 		$LeaD_InfO .=	$alt_phone . "\n";
 		$LeaD_InfO .=	$email . "\n";
-		$LeaD_InfO .=	$security . "\n";
+		$LeaD_InfO .=	$custom1 . "\n";
 		$LeaD_InfO .=	$comments . "\n";
 		$LeaD_InfO .=	$called_count . "\n";
 		$LeaD_InfO .=	$CBentry_time . "\n";
@@ -2345,7 +2345,7 @@ if ($ACTION == 'updateLEAD')
 		$comments = eregi_replace("--QUES--",'?',$comments);
 		$comments = eregi_replace("--POUND--",'#',$comments);
 
-		$stmt="UPDATE osdial_list set vendor_lead_code='" . mysql_real_escape_string($vendor_lead_code) . "', title='" . mysql_real_escape_string($title) . "', first_name='" . mysql_real_escape_string($first_name) . "', middle_initial='" . mysql_real_escape_string($middle_initial) . "', last_name='" . mysql_real_escape_string($last_name) . "', address1='" . mysql_real_escape_string($address1) . "', address2='" . mysql_real_escape_string($address2) . "', address3='" . mysql_real_escape_string($address3) . "', city='" . mysql_real_escape_string($city) . "', state='" . mysql_real_escape_string($state) . "', province='" . mysql_real_escape_string($province) . "', postal_code='" . mysql_real_escape_string($postal_code) . "', country_code='" . mysql_real_escape_string($country_code) . "', gender='" . mysql_real_escape_string($gender) . "', date_of_birth='" . mysql_real_escape_string($date_of_birth) . "', alt_phone='" . mysql_real_escape_string($alt_phone) . "', email='" . mysql_real_escape_string($email) . "', security_phrase='" . mysql_real_escape_string($security_phrase) . "', comments='" . mysql_real_escape_string($comments) . "' where lead_id='$lead_id';";
+		$stmt="UPDATE osdial_list set vendor_lead_code='" . mysql_real_escape_string($vendor_lead_code) . "', title='" . mysql_real_escape_string($title) . "', first_name='" . mysql_real_escape_string($first_name) . "', middle_initial='" . mysql_real_escape_string($middle_initial) . "', last_name='" . mysql_real_escape_string($last_name) . "', address1='" . mysql_real_escape_string($address1) . "', address2='" . mysql_real_escape_string($address2) . "', address3='" . mysql_real_escape_string($address3) . "', city='" . mysql_real_escape_string($city) . "', state='" . mysql_real_escape_string($state) . "', province='" . mysql_real_escape_string($province) . "', postal_code='" . mysql_real_escape_string($postal_code) . "', country_code='" . mysql_real_escape_string($country_code) . "', gender='" . mysql_real_escape_string($gender) . "', date_of_birth='" . mysql_real_escape_string($date_of_birth) . "', alt_phone='" . mysql_real_escape_string($alt_phone) . "', email='" . mysql_real_escape_string($email) . "', custom1='" . mysql_real_escape_string($custom1) . "', comments='" . mysql_real_escape_string($comments) . "' where lead_id='$lead_id';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 
@@ -2690,7 +2690,7 @@ if ($ACTION == 'RepullLeadData')
 		$date_of_birth	= trim("$row[25]");
 		$alt_phone	= trim("$row[26]");
 		$email		= trim("$row[27]");
-		$security	= trim("$row[28]");
+		$custom1	= trim("$row[28]");
 		$comments	= trim("$row[29]");
 		$called_count	= trim("$row[30]");
 		if ($alt_phone == "") {
@@ -2755,7 +2755,7 @@ if ($ACTION == 'RepullLeadData')
 	$LeaD_InfO .=	$date_of_birth . "\n";
 	$LeaD_InfO .=	$alt_phone . "\n";
 	$LeaD_InfO .=	$email . "\n";
-	$LeaD_InfO .=	$security . "\n";
+	$LeaD_InfO .=	$custom1 . "\n";
 	$LeaD_InfO .=	$comments . "\n";
 	$LeaD_InfO .=	$called_count . "\n";
 

@@ -108,7 +108,7 @@ if ($ADD==311111111111111)
 	echo "<option value=\"source_id\">source_id</option>\n";
 	echo "<option value=\"vendor_lead_code\">vendor_lead_code</option>\n";
 	echo "<option value=\"address3\">address3</option>\n";
-	echo "<option value=\"security_phrase\">security_phrase</option>\n";
+	echo "<option value=\"custom1\">custom1</option>\n";
 	echo "<option selected value=\"$queuemetrics_eq_prepend\">$queuemetrics_eq_prepend</option>\n";
 	echo "</select>$NWB#settings-queuemetrics_eq_prepend$NWE</td></tr>\n";
 	echo "<tr bgcolor=#C1D6DF><td align=right>OSDial Agent Disable Display: </td><td align=left><select size=1 name=osdial_agent_disable>\n";

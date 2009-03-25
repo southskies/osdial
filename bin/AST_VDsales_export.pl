@@ -278,7 +278,7 @@ $TOTAL_SALES=0;
 ###########################################################################
 ########### CURRENT DAY SALES GATHERING outbound-only: osdial_log  ######
 ###########################################################################
-$stmtA = "select osdial_log.user,first_name,last_name,address1,address2,city,state,postal_code,osdial_list.phone_number,email,security_phrase,osdial_list.comments,call_date,osdial_list.lead_id,osdial_users.full_name,osdial_log.status,osdial_list.vendor_lead_code,osdial_list.source_id,osdial_log.list_id from osdial_list,osdial_log,osdial_users where campaign_id='$campaign' $sale_statusesSQL and call_date > '$shipdate 00:00:01' and call_date < '$shipdate 23:59:59' and osdial_log.lead_id=osdial_list.lead_id and osdial_users.user=osdial_log.user;";
+$stmtA = "select osdial_log.user,first_name,last_name,address1,address2,city,state,postal_code,osdial_list.phone_number,email,custom1,osdial_list.comments,call_date,osdial_list.lead_id,osdial_users.full_name,osdial_log.status,osdial_list.vendor_lead_code,osdial_list.source_id,osdial_log.list_id from osdial_list,osdial_log,osdial_users where campaign_id='$campaign' $sale_statusesSQL and call_date > '$shipdate 00:00:01' and call_date < '$shipdate 23:59:59' and osdial_log.lead_id=osdial_list.lead_id and osdial_users.user=osdial_log.user;";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -297,7 +297,7 @@ while ($sthArows > $rec_count)
 	$postal_code =	$aryA[7];
 	$phone_number =	$aryA[8];
 	$email =		$aryA[9];
-	$security =		$aryA[10];
+	$custom1 =		$aryA[10];
 	$comments =		$aryA[11];
 	$call_date =	$aryA[12];
 	$lead_id =		$aryA[13];
@@ -318,7 +318,7 @@ if (length($with_inboundSQL)>3)
 	###########################################################################
 	########### CURRENT DAY SALES GATHERING inbound-only: osdial_closer_log  ######
 	###########################################################################
-	$stmtA = "select osdial_closer_log.user,first_name,last_name,address1,address2,city,state,postal_code,osdial_list.phone_number,email,security_phrase,osdial_list.comments,call_date,osdial_list.lead_id,osdial_users.full_name,osdial_closer_log.status,osdial_list.vendor_lead_code,osdial_list.source_id,osdial_closer_log.list_id,campaign_id from osdial_list,osdial_closer_log,osdial_users where campaign_id IN($with_inboundSQL) $close_statusesSQL and call_date > '$shipdate 00:00:01' and call_date < '$shipdate 23:59:59' and osdial_closer_log.lead_id=osdial_list.lead_id and osdial_users.user=osdial_closer_log.user;";
+	$stmtA = "select osdial_closer_log.user,first_name,last_name,address1,address2,city,state,postal_code,osdial_list.phone_number,email,custom1,osdial_list.comments,call_date,osdial_list.lead_id,osdial_users.full_name,osdial_closer_log.status,osdial_list.vendor_lead_code,osdial_list.source_id,osdial_closer_log.list_id,campaign_id from osdial_list,osdial_closer_log,osdial_users where campaign_id IN($with_inboundSQL) $close_statusesSQL and call_date > '$shipdate 00:00:01' and call_date < '$shipdate 23:59:59' and osdial_closer_log.lead_id=osdial_list.lead_id and osdial_users.user=osdial_closer_log.user;";
 	if ($DB) {print "|$stmtA|\n";}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -337,7 +337,7 @@ if (length($with_inboundSQL)>3)
 		$postal_code =	$aryA[7];
 		$phone_number =	$aryA[8];
 		$email =		$aryA[9];
-		$security =		$aryA[10];
+		$custom1 =		$aryA[10];
 		$comments =		$aryA[11];
 		$call_date =	$aryA[12];
 		$lead_id =		$aryA[13];
@@ -412,7 +412,7 @@ if ($T)
 	$agent_name =	'Joe Agent';
 #	$closer =		'4321';
 	$closer_name =	'Jane Closer';
-	$security =		'4111111111111111';
+	$custom1 =		'4111111111111111';
 	$comments =		'VISA';
 	$phone_number =~ s/^\d\d\d\d\d/23456/gi;
 	$address1 =~ s/^..../1234 /gi
@@ -474,31 +474,31 @@ else {$UPSELL='N';}
 
 if ($output_format =~ /^pipe-standard$/) 
 	{
-	$str = "$first_name|$last_name|$address1|$address2|$city|$state|$postal_code|$phone_number|$email|$security|$comments|$call_date|$lead_id|$list_id|$user|$agent_name|$status|$vendor_id|$source_id|$campaign|$campaign_id|$ivr_id|$closer|$closer_name|\n";
+	$str = "$first_name|$last_name|$address1|$address2|$city|$state|$postal_code|$phone_number|$email|$custom1|$comments|$call_date|$lead_id|$list_id|$user|$agent_name|$status|$vendor_id|$source_id|$campaign|$campaign_id|$ivr_id|$closer|$closer_name|\n";
 	}
 
 if ($output_format =~ /^csv-standard$/) 
 	{
-	$str = "\"$first_name\",\"$last_name\",\"$address1\",\"$address2\",\"$city\",\"$state\",\"$postal_code\",\"$phone_number\",\"$email\",\"$security\",\"$comments\",\"$call_date\",\"$lead_id\",\"$list_id\",\"$user\",\"$agent_name\",\"$status\",\"$vendor_id\",\"$source_id\",\"$campaign\",\"$campaign_id\",\"$ivr_id\",\"$closer\",\"$closer_name\"\r\n";
+	$str = "\"$first_name\",\"$last_name\",\"$address1\",\"$address2\",\"$city\",\"$state\",\"$postal_code\",\"$phone_number\",\"$email\",\"$custom1\",\"$comments\",\"$call_date\",\"$lead_id\",\"$list_id\",\"$user\",\"$agent_name\",\"$status\",\"$vendor_id\",\"$source_id\",\"$campaign\",\"$campaign_id\",\"$ivr_id\",\"$closer\",\"$closer_name\"\r\n";
 	}
 
 if ($output_format =~ /^tab-standard$/) 
 	{
-	$str = "$first_name\t$last_name\t$address1\t$address2\t$city\t$state\t$postal_code\t$phone_number\t$email\t$security\t$comments\t$call_date\t$lead_id\t$list_id\t$user\t$agent_name\t$status\t$vendor_id\t$source_id\t$campaign\t$campaign_id\t$ivr_id\t$closer\t$closer_name\t\n";
+	$str = "$first_name\t$last_name\t$address1\t$address2\t$city\t$state\t$postal_code\t$phone_number\t$email\t$custom1\t$comments\t$call_date\t$lead_id\t$list_id\t$user\t$agent_name\t$status\t$vendor_id\t$source_id\t$campaign\t$campaign_id\t$ivr_id\t$closer\t$closer_name\t\n";
 	}
 
 if ($output_format =~ /^pipe-triplep$/) 
 	{
-	$str = "$user|$agent_name|$closer|$closer_name|$call_date|$status|$first_name|$last_name|$phone_number|$address1|$address2|$city|$state|$postal_code|$comments|$security|$email|$vendor_id|$source_id|$lead_id|$list_id|$campaign|$campaign_id|$ivr_id|\n";
+	$str = "$user|$agent_name|$closer|$closer_name|$call_date|$status|$first_name|$last_name|$phone_number|$address1|$address2|$city|$state|$postal_code|$comments|$custom1|$email|$vendor_id|$source_id|$lead_id|$list_id|$campaign|$campaign_id|$ivr_id|\n";
 	}
 
 if ($output_format =~ /^pipe-native$/) 
 	{
-	$str = "VDAD|$agent_name|$first_name|$last_name|$address1|$address2|$city|$state|$postal_code|$phone_number|$ivr_id|DU|$UPSELL|N|||$security|$comments||||||$call_date|CBDISC|$email\r\n";
+	$str = "VDAD|$agent_name|$first_name|$last_name|$address1|$address2|$city|$state|$postal_code|$phone_number|$ivr_id|DU|$UPSELL|N|||$custom1|$comments||||||$call_date|CBDISC|$email\r\n";
 	}
 if ($output_format =~ /^html-rec$/) 
 	{
-	$str = "$user|$agent_name|$closer|$closer_name|$call_date|$status|$first_name|$last_name|$phone_number|$address1|$address2|$city|$state|$postal_code|$comments|$security|$email|$vendor_id|$source_id|$lead_id|$list_id|$campaign|$campaign_id|<a href=\"$ivr_location\">$ivr_id</a>|\n";
+	$str = "$user|$agent_name|$closer|$closer_name|$call_date|$status|$first_name|$last_name|$phone_number|$address1|$address2|$city|$state|$postal_code|$comments|$custom1|$email|$vendor_id|$source_id|$lead_id|$list_id|$campaign|$campaign_id|<a href=\"$ivr_location\">$ivr_id</a>|\n";
 	}
 
 

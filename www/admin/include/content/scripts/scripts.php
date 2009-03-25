@@ -51,7 +51,7 @@ if ($ADD==7111111)
 	$date_of_birth = '1970-01-01';
 	$alt_phone = '3125551212';
 	$email = 'test@test.com';
-	$security_phrase = 'SECUTIRY';
+	$custom1 = 'custom1';
 	$comments = 'COMMENTS FIELD';
 	$RGfullname = 'JOE AGENT';
 	$RGuser = '6666';
@@ -102,7 +102,7 @@ if (eregi("iframe src",$script_text))
 	$date_of_birth = eregi_replace(' ','+',$date_of_birth);
 	$alt_phone = eregi_replace(' ','+',$alt_phone);
 	$email = eregi_replace(' ','+',$email);
-	$security_phrase = eregi_replace(' ','+',$security_phrase);
+	$custom1 = eregi_replace(' ','+',$custom1);
 	$comments = eregi_replace(' ','+',$comments);
 	$RGfullname = eregi_replace(' ','+',$RGfullname);
 	$RGuser = eregi_replace(' ','+',$RGuser);
@@ -141,7 +141,7 @@ $script_text = eregi_replace('--A--gender--B--',"$gender",$script_text);
 $script_text = eregi_replace('--A--date_of_birth--B--',"$date_of_birth",$script_text);
 $script_text = eregi_replace('--A--alt_phone--B--',"$alt_phone",$script_text);
 $script_text = eregi_replace('--A--email--B--',"$email",$script_text);
-$script_text = eregi_replace('--A--security_phrase--B--',"$security_phrase",$script_text);
+$script_text = eregi_replace('--A--custom1--B--',"$custom1",$script_text);
 $script_text = eregi_replace('--A--comments--B--',"$comments",$script_text);
 $script_text = eregi_replace('--A--fullname--B--',"$RGfullname",$script_text);
 $script_text = eregi_replace('--A--fronter--B--',"$RGuser",$script_text);
@@ -220,7 +220,7 @@ if ($ADD==1111111)
 	echo "<option>date_of_birth</option>";
 	echo "<option>alt_phone</option>";
 	echo "<option>email</option>";
-	echo "<option>security_phrase</option>";
+	echo "<option>custom1</option>";
 	echo "<option>comments</option>";
 	echo "<option>lead_id</option>";
 	echo "<option>campaign</option>";
@@ -458,7 +458,7 @@ if ($ADD==3111111)
 	echo "<option>date_of_birth</option>";
 	echo "<option>alt_phone</option>";
 	echo "<option>email</option>";
-	echo "<option>security_phrase</option>";
+	echo "<option>custom1</option>";
 	echo "<option>comments</option>";
 	echo "<option>lead_id</option>";
 	echo "<option>campaign</option>";

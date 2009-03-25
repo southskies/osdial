@@ -88,8 +88,8 @@ if (isset($_GET["alt_phone"]))				{$alt_phone=$_GET["alt_phone"];}
 	elseif (isset($_POST["alt_phone"]))		{$alt_phone=$_POST["alt_phone"];}
 if (isset($_GET["email"]))				{$email=$_GET["email"];}
 	elseif (isset($_POST["email"]))		{$email=$_POST["email"];}
-if (isset($_GET["security"]))				{$security=$_GET["security"];}
-	elseif (isset($_POST["security"]))		{$security=$_POST["security"];}
+if (isset($_GET["custom1"]))				{$custom1=$_GET["custom1"];}
+	elseif (isset($_POST["custom1"]))		{$custom1=$_POST["custom1"];}
 if (isset($_GET["comments"]))				{$comments=$_GET["comments"];}
 	elseif (isset($_POST["comments"]))		{$comments=$_POST["comments"];}
 if (isset($_GET["status"]))				{$status=$_GET["status"];}
@@ -179,7 +179,7 @@ $call_length = ($STARTtime - $call_began);
 	$rslt=mysql_query($stmt, $link);
 
 	### update the lead record in the osdial_list table 
-	$stmt="UPDATE osdial_list set status='" . mysql_real_escape_string($status) . "',first_name='" . mysql_real_escape_string($first_name) . "',last_name='" . mysql_real_escape_string($last_name) . "',address1='" . mysql_real_escape_string($address1) . "',address2='" . mysql_real_escape_string($address2) . "',address3='" . mysql_real_escape_string($address3) . "',city='" . mysql_real_escape_string($city) . "',state='" . mysql_real_escape_string($state) . "',province='" . mysql_real_escape_string($province) . "',postal_code='" . mysql_real_escape_string($postal_code) . "',country_code='" . mysql_real_escape_string($country_code) . "',alt_phone='" . mysql_real_escape_string($alt_phone) . "',email='" . mysql_real_escape_string($email) . "',security_phrase='" . mysql_real_escape_string($security) . "',comments='" . mysql_real_escape_string($comments) . "' where lead_id='" . mysql_real_escape_string($lead_id) . "'";
+	$stmt="UPDATE osdial_list set status='" . mysql_real_escape_string($status) . "',first_name='" . mysql_real_escape_string($first_name) . "',last_name='" . mysql_real_escape_string($last_name) . "',address1='" . mysql_real_escape_string($address1) . "',address2='" . mysql_real_escape_string($address2) . "',address3='" . mysql_real_escape_string($address3) . "',city='" . mysql_real_escape_string($city) . "',state='" . mysql_real_escape_string($state) . "',province='" . mysql_real_escape_string($province) . "',postal_code='" . mysql_real_escape_string($postal_code) . "',country_code='" . mysql_real_escape_string($country_code) . "',alt_phone='" . mysql_real_escape_string($alt_phone) . "',email='" . mysql_real_escape_string($email) . "',custom1='" . mysql_real_escape_string($custom1) . "',comments='" . mysql_real_escape_string($comments) . "' where lead_id='" . mysql_real_escape_string($lead_id) . "'";
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 
@@ -247,7 +247,7 @@ else
 		   $date_of_birth	= "$row[25]";
 		   $alt_phone		= "$row[26]";	#
 		   $email			= "$row[27]";	#
-		   $security		= "$row[28]";	#
+		   $custom1		= "$row[28]";	#
 		   $comments		= "$row[29]";	#
 
 		echo "<br>Call information: $first_name $last_name - $phone_number<br><br><form action=$PHP_SELF method=POST>\n";
@@ -279,7 +279,7 @@ else
 		echo "<tr><td align=right>Country : </td><td align=left><input type=text name=country_code size=3 maxlength=3 value=\"$country_code\"></td></tr>\n";
 		echo "<tr><td align=right>Alt Phone : </td><td align=left><input type=text name=alt_phone size=10 maxlength=10 value=\"$alt_phone\"></td></tr>\n";
 		echo "<tr><td align=right>Email : </td><td align=left><input type=text name=email size=30 maxlength=50 value=\"$email\"></td></tr>\n";
-		echo "<tr><td align=right>Security : </td><td align=left><input type=text name=security size=30 maxlength=100 value=\"$security\"></td></tr>\n";
+		echo "<tr><td align=right>Custom1 : </td><td align=left><input type=text name=custom1 size=30 maxlength=100 value=\"$custom1\"></td></tr>\n";
 		echo "<tr><td align=right>Comments : </td><td align=left><input type=text name=comments size=30 maxlength=255 value=\"$comments\"></td></tr>\n";
 			echo "<tr bgcolor=#B6D3FC><td align=right>Disposition: </td><td align=left><select size=1 name=status>\n";
 

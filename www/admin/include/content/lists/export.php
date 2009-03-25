@@ -52,7 +52,7 @@ if ($ADD==131 && $SUB==2) {
     if ($fall) {
         $sfield = 'lead_id,entry_date,modify_date,status,user,vendor_lead_code,source_id,list_id,gmt_offset_now,called_since_last_reset,';
         $sfield .= 'phone_code,phone_number,title,first_name,middle_initial,last_name,address1,address2,address3,city,state,province,';
-        $sfield .= 'postal_code,country_code,gender,date_of_birth,alt_phone,email,security_phrase,comments,called_count';
+        $sfield .= 'postal_code,country_code,gender,date_of_birth,alt_phone,email,custom1,comments,called_count';
     }
 
     echo $sfield . "\r\n";
@@ -349,9 +349,9 @@ if ($ADD==131 && $SUB==2) {
             echo "   </tr>\n";
 
             echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="security_phrase"></td>' . "\n";
-            echo "      <td>security_phrase</td>\n";
-            echo "      <td> - Security phrase</td>\n";
+            echo '      <td align=right><input type=checkbox name=fields[] value="custom1"></td>' . "\n";
+            echo "      <td>custom1</td>\n";
+            echo "      <td> - Custom1</td>\n";
             echo "   </tr>\n";
 
             echo "   <tr>\n";
