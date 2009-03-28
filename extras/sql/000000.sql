@@ -1,3 +1,9 @@
+#create database osdial;
+#use osdial;
+
+GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES on osdial.* TO 'osdial'@'127.0.0.1' IDENTIFIED BY 'osdial1234';
+GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES on osdial.* TO 'osdial'@'localhost' IDENTIFIED BY 'osdial1234';
+GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES on osdial.* TO 'osdial'@'%' IDENTIFIED BY 'osdial1234';
 
  CREATE TABLE phones (
 extension VARCHAR(100),
@@ -36,8 +42,8 @@ dtmf_send_extension VARCHAR(100) default 'local/8500998@default',
 call_out_number_group VARCHAR(100) default 'Zap/g2/',
 client_browser VARCHAR(100) default '/usr/bin/mozilla',
 install_directory VARCHAR(100) default '/usr/local/perl_TK',
-local_web_callerID_URL VARCHAR(255) default 'http://localhost/test_callerid_output.php',
-OSDIAL_web_URL VARCHAR(255) default 'http://localhost/test_OSDIAL_output.php',
+local_web_callerID_URL VARCHAR(255) default 'http://localhost/agent/test_callerid_output.php',
+OSDIAL_web_URL VARCHAR(255) default 'http://localhost/agent/test_OSDIAL_output.php',
 AGI_call_logging_enabled ENUM('0','1') default '1',
 user_switching_enabled ENUM('0','1') default '1',
 conferencing_enabled ENUM('0','1') default '1',
@@ -75,7 +81,7 @@ server_id VARCHAR(10) NOT NULL,
 server_description VARCHAR(255),
 server_ip VARCHAR(15) NOT NULL,
 active ENUM('Y','N'),
-asterisk_version VARCHAR(20) default '1.2.9',
+asterisk_version VARCHAR(20) default '1.2.24',
 max_osdial_trunks SMALLINT(4) default '96',
 telnet_host VARCHAR(20) NOT NULL default 'localhost',
 telnet_port INT(5) NOT NULL default '5038',
@@ -288,7 +294,6 @@ list_id BIGINT(14) UNSIGNED NOT NULL,
 gmt_offset_now DECIMAL(4,2) DEFAULT '0.00',
 state VARCHAR(2) default '',
 alt_dial ENUM('NONE','ALT','ADDR3') default 'NONE',
-priority TINYINT(2) default '0',
 index (lead_id)
 );
 
@@ -312,8 +317,6 @@ closer_campaigns TEXT,
 call_server_ip VARCHAR(15),
 user_level INT(2) default '0',
 comments VARCHAR(20),
-campaign_weight TINYINT(1) default '0',
-calls_today SMALLINT(5) UNSIGNED default '0',
 index (random_id),
 index (last_call_time),
 index (last_update_time),
@@ -528,12 +531,7 @@ campaign_stats_refresh ENUM('Y','N') default 'N',
 campaign_logindate DATETIME,
 dial_statuses VARCHAR(255) default ' NEW -',
 disable_alter_custdata ENUM('Y','N') default 'N',
-no_hopper_leads_logins ENUM('Y','N') default 'N',
-list_order_mix VARCHAR(20) default 'DISABLED',
-campaign_allow_inbound ENUM('Y','N') default 'N',
-manual_dial_list_id BIGINT(14) UNSIGNED,
-default_xfer_group VARCHAR(20) default '---NONE---',
-xfer_groups  TEXT default ''
+no_hopper_leads_logins ENUM('Y','N') default 'N'
 );
 
  CREATE TABLE osdial_lists (
@@ -549,9 +547,7 @@ list_lastcalldate DATETIME
  CREATE TABLE osdial_statuses (
 status VARCHAR(6) PRIMARY KEY NOT NULL,
 status_name VARCHAR(30),
-selectable ENUM('Y','N'),
-human_answered ENUM('Y','N') default 'N',
-category VARCHAR(20) default 'UNDEFINED'
+selectable ENUM('Y','N')
 );
 
  CREATE TABLE osdial_campaign_statuses (
@@ -559,8 +555,6 @@ status VARCHAR(6) NOT NULL,
 status_name VARCHAR(30),
 selectable ENUM('Y','N'),
 campaign_id VARCHAR(8),
-human_answered ENUM('Y','N') default 'N',
-category VARCHAR(20) default 'UNDEFINED',
 index (campaign_id)
 );
 
@@ -607,19 +601,7 @@ xferconf_b_dtmf VARCHAR(50),
 xferconf_b_number VARCHAR(50),
 drop_call_seconds SMALLINT(4) unsigned default '360',
 drop_message ENUM('Y','N') default 'N',
-drop_exten VARCHAR(20)  default '8307',
-call_time_id VARCHAR(20) default '24hours',
-after_hours_action ENUM('HANGUP','MESSAGE','EXTENSION','VOICEMAIL') default 'MESSAGE',
-after_hours_message_filename VARCHAR(50) default 'vm-goodbye',
-after_hours_exten VARCHAR(20) default '8300',
-after_hours_voicemail VARCHAR(20),
-welcome_message_filename VARCHAR(50) default '---NONE---',
-moh_context VARCHAR(50) default 'default',
-onhold_prompt_filename VARCHAR(50) default 'generic_hold',
-prompt_interval SMALLINT(5) UNSIGNED default '60',
-agent_alert_exten VARCHAR(20) default '8304',
-agent_alert_delay INT(6) default '1000',
-default_xfer_group VARCHAR(20) default '---NONE---'
+drop_exten VARCHAR(20)  default '8307'
 );
 
 CREATE TABLE osdial_stations (
@@ -839,15 +821,7 @@ drops_onemin INT(9) UNSIGNED default '0',
 drops_onemin_pct VARCHAR(6) default '0',
 differential_onemin VARCHAR(20) default '0',
 agents_average_onemin VARCHAR(20) default '0',
-balance_trunk_fill SMALLINT(5) UNSIGNED default '0',
-status_category_1 VARCHAR(20),
-status_category_count_1 INT(9) UNSIGNED default '0',
-status_category_2 VARCHAR(20),
-status_category_count_2 INT(9) UNSIGNED default '0',
-status_category_3 VARCHAR(20),
-status_category_count_3 INT(9) UNSIGNED default '0',
-status_category_4 VARCHAR(20),
-status_category_count_4 INT(9) UNSIGNED default '0'
+balance_trunk_fill SMALLINT(5) UNSIGNED default '0'
 );
 
  CREATE TABLE osdial_dnc (
@@ -915,137 +889,132 @@ queuemetrics_log_id VARCHAR(10) default 'VIC',
 queuemetrics_eq_prepend VARCHAR(255) default 'NONE',
 osdial_agent_disable ENUM('NOT_ACTIVE','LIVE_AGENT','EXTERNAL','ALL') default 'NOT_ACTIVE',
 allow_sipsak_messages ENUM('0','1') default '0',
-admin_home_url VARCHAR(255) default '../osdial/welcome.php',
-enable_agc_xfer_log ENUM('0','1') default '0'
+admin_home_url VARCHAR(255) default '/index.html'
 );
 
- CREATE TABLE osdial_campaigns_list_mix (
-vcl_id VARCHAR(20) PRIMARY KEY NOT NULL,
-vcl_name VARCHAR(50),
-campaign_id VARCHAR(8),
-list_mix_container TEXT,
-mix_method ENUM('EVEN_MIX','IN_ORDER','RANDOM') default 'IN_ORDER',
-status ENUM('ACTIVE','INACTIVE') default 'INACTIVE',
-index (campaign_id)
-);
+#CREATE TABLE osdial_campaigns_list_mix (
+#vcl_id VARCHAR(20) PRIMARY KEY NOT NULL,
+#vcl_name VARCHAR(50),
+#campaign_id VARCHAR(8),
+#list_mix_container TEXT,
+#mix_method ENUM('EVEN_MIX','IN_ORDER','RANDOM') default 'IN_ORDER',
+#status ENUM('ACTIVE','INACTIVE') default 'INACTIVE',
+#index (campaign_id)
+#);
 
- CREATE TABLE osdial_status_categories (
-vsc_id VARCHAR(20) PRIMARY KEY NOT NULL,
-vsc_name VARCHAR(50),
-vsc_description VARCHAR(255),
-tovdad_display ENUM('Y','N') default 'N'
-);
+# CREATE TABLE osdial_status_categories (
+#vsc_id VARCHAR(20) PRIMARY KEY NOT NULL,
+#vsc_name VARCHAR(50),
+#vsc_description VARCHAR(255),
+#tovdad_display ENUM('Y','N') default 'N'
+#);
 
-CREATE TABLE osdial_ivr (
-ivr_id INT(9) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
-entry_time DATETIME,
-length_in_sec SMALLINT(5) UNSIGNED default '0',
-inbound_number VARCHAR(12),
-recording_id INT(9) UNSIGNED,
-recording_filename VARCHAR(50),
-company_id VARCHAR(12),
-phone_number VARCHAR(12),
-lead_id INT(9) UNSIGNED,
-campaign_id VARCHAR(20),			
-product_code VARCHAR(20),
-user VARCHAR(20),
-prompt_audio_1 VARCHAR(20),
-prompt_response_1 TINYINT(1) UNSIGNED default '0',
-prompt_audio_2 VARCHAR(20),
-prompt_response_2 TINYINT(1) UNSIGNED default '0',
-prompt_audio_3 VARCHAR(20),
-prompt_response_3 TINYINT(1) UNSIGNED default '0',
-prompt_audio_4 VARCHAR(20),
-prompt_response_4 TINYINT(1) UNSIGNED default '0',
-prompt_audio_5 VARCHAR(20),
-prompt_response_5 TINYINT(1) UNSIGNED default '0',
-prompt_audio_6 VARCHAR(20),
-prompt_response_6 TINYINT(1) UNSIGNED default '0',
-prompt_audio_7 VARCHAR(20),
-prompt_response_7 TINYINT(1) UNSIGNED default '0',
-prompt_audio_8 VARCHAR(20),
-prompt_response_8 TINYINT(1) UNSIGNED default '0',
-prompt_audio_9 VARCHAR(20),
-prompt_response_9 TINYINT(1) UNSIGNED default '0',
-prompt_audio_10 VARCHAR(20),
-prompt_response_10 TINYINT(1) UNSIGNED default '0',
-index (phone_number),
-index (entry_time)
-);
+#CREATE TABLE osdial_ivr (
+#ivr_id INT(9) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
+#entry_time DATETIME,
+#length_in_sec SMALLINT(5) UNSIGNED default '0',
+#inbound_number VARCHAR(12),
+#recording_id INT(9) UNSIGNED,
+#recording_filename VARCHAR(50),
+#company_id VARCHAR(12),
+#phone_number VARCHAR(12),
+#lead_id INT(9) UNSIGNED,
+#campaign_id VARCHAR(20),			
+#product_code VARCHAR(20),
+#user VARCHAR(20),
+#prompt_audio_1 VARCHAR(20),
+#prompt_response_1 TINYINT(1) UNSIGNED default '0',
+#prompt_audio_2 VARCHAR(20),
+#prompt_response_2 TINYINT(1) UNSIGNED default '0',
+#prompt_audio_3 VARCHAR(20),
+#prompt_response_3 TINYINT(1) UNSIGNED default '0',
+#prompt_audio_4 VARCHAR(20),
+#prompt_response_4 TINYINT(1) UNSIGNED default '0',
+#prompt_audio_5 VARCHAR(20),
+#prompt_response_5 TINYINT(1) UNSIGNED default '0',
+#prompt_audio_6 VARCHAR(20),
+#prompt_response_6 TINYINT(1) UNSIGNED default '0',
+#prompt_audio_7 VARCHAR(20),
+#prompt_response_7 TINYINT(1) UNSIGNED default '0',
+#prompt_audio_8 VARCHAR(20),
+#prompt_response_8 TINYINT(1) UNSIGNED default '0',
+#prompt_audio_9 VARCHAR(20),
+#prompt_response_9 TINYINT(1) UNSIGNED default '0',
+#prompt_audio_10 VARCHAR(20),
+#prompt_response_10 TINYINT(1) UNSIGNED default '0',
+#index (phone_number),
+#index (entry_time)
+#);
+#
+#ALTER TABLE osdial_ivr AUTO_INCREMENT = 1000000;
 
-ALTER TABLE osdial_ivr AUTO_INCREMENT = 1000000;
+#CREATE TABLE osdial_inbound_group_agents (
+#user VARCHAR(20),
+#group_id VARCHAR(20),			
+#group_rank TINYINT(1) default '0',
+#group_weight TINYINT(1) default '0',
+#calls_today SMALLINT(5) UNSIGNED default '0',
+#index (group_id),
+#index (user)
+#);
 
-CREATE TABLE osdial_inbound_group_agents (
-user VARCHAR(20),
-group_id VARCHAR(20),			
-group_rank TINYINT(1) default '0',
-group_weight TINYINT(1) default '0',
-calls_today SMALLINT(5) UNSIGNED default '0',
-index (group_id),
-index (user)
-);
+#CREATE TABLE osdial_live_inbound_agents (
+#user VARCHAR(20),
+#group_id VARCHAR(20),			
+#group_weight TINYINT(1) default '0',
+#calls_today SMALLINT(5) UNSIGNED default '0',
+#last_call_time DATETIME,
+#last_call_finish DATETIME,
+#index (group_id),
+#index (group_weight)
+#);
 
-CREATE TABLE osdial_live_inbound_agents (
-user VARCHAR(20),
-group_id VARCHAR(20),			
-group_weight TINYINT(1) default '0',
-calls_today SMALLINT(5) UNSIGNED default '0',
-last_call_time DATETIME,
-last_call_finish DATETIME,
-index (group_id),
-index (group_weight)
-);
-
-CREATE TABLE osdial_campaign_agents (
-user VARCHAR(20),
-campaign_id VARCHAR(20),			
-campaign_rank TINYINT(1) default '0',
-campaign_weight TINYINT(1) default '0',
-calls_today SMALLINT(5) UNSIGNED default '0',
-index (campaign_id),
-index (user)
-);
+#CREATE TABLE osdial_campaign_agents (
+#user VARCHAR(20),
+#campaign_id VARCHAR(20),			
+#campaign_rank TINYINT(1) default '0',
+#campaign_weight TINYINT(1) default '0',
+#calls_today SMALLINT(5) UNSIGNED default '0',
+#index (campaign_id),
+#index (user)
+#);
 
 
-INSERT INTO osdial_lists SET list_id='998',list_name='Default inbound list',campaign_id='TEST',active='N';
-INSERT INTO osdial_lists SET list_id='999',list_name='Default manual list',campaign_id='TEST',active='N';
+#INSERT INTO osdial_lists SET list_id='998',list_name='Default inbound list',campaign_id='TEST',active='N';
+#INSERT INTO osdial_lists SET list_id='999',list_name='Default manual list',campaign_id='TEST',active='N';
 
-INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('UNDEFINED','Default Category','N');
-INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('SYSTEM','System Generated Statuses','N');
-INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('NOCONTACT','No Contacts','Y');
-INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('CONTACT','Contacts','Y');
-INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('SALE','Sales','Y');
+#INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('UNDEFINED','Default Category','N');
+#INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('SYSTEM','System Generated Statuses','N');
+#INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('NOCONTACT','No Contacts','Y');
+#INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('CONTACT','Contacts','Y');
+#INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('SALE','Sales','Y');
 
-INSERT INTO osdial_user_groups SET user_group='ADMIN',group_name='OSDIAL ADMINISTRATORS',allowed_campaigns=' -ALL-CAMPAIGNS- - -';
-INSERT INTO osdial_user_groups SET user_group='AGENTS',group_name='Agent User Group',allowed_campaigns=' -ALL-CAMPAIGNS- - -';
+#INSERT INTO osdial_user_groups SET user_group='ADMIN',group_name='OSDIAL ADMINISTRATORS',allowed_campaigns=' -ALL-CAMPAIGNS- - -';
+#INSERT INTO osdial_user_groups SET user_group='AGENTS',group_name='Agent User Group',allowed_campaigns=' -ALL-CAMPAIGNS- - -';
 
-INSERT INTO osdial_call_times SET call_time_id='24hours',call_time_name='default 24 hours calling',ct_default_start='0',ct_default_stop='2400';
-INSERT INTO osdial_call_times SET call_time_id='9am-9pm',call_time_name='default 9am to 9pm calling',ct_default_start='900',ct_default_stop='2100';
-INSERT INTO osdial_call_times SET call_time_id='9am-5pm',call_time_name='default 9am to 5pm calling',ct_default_start='900',ct_default_stop='1700';
-INSERT INTO osdial_call_times SET call_time_id='12pm-5pm',call_time_name='default 12pm to 5pm calling',ct_default_start='1200',ct_default_stop='1700';
-INSERT INTO osdial_call_times SET call_time_id='12pm-9pm',call_time_name='default 12pm to 9pm calling',ct_default_start='1200',ct_default_stop='1200';
-INSERT INTO osdial_call_times SET call_time_id='5pm-9pm',call_time_name='default 5pm to 9pm calling',ct_default_start='1700',ct_default_stop='2100';
+#INSERT INTO osdial_call_times SET call_time_id='24hours',call_time_name='default 24 hours calling',ct_default_start='0',ct_default_stop='2400';
+#INSERT INTO osdial_call_times SET call_time_id='9am-9pm',call_time_name='default 9am to 9pm calling',ct_default_start='900',ct_default_stop='2100';
+#INSERT INTO osdial_call_times SET call_time_id='9am-5pm',call_time_name='default 9am to 5pm calling',ct_default_start='900',ct_default_stop='1700';
+#INSERT INTO osdial_call_times SET call_time_id='12pm-5pm',call_time_name='default 12pm to 5pm calling',ct_default_start='1200',ct_default_stop='1700';
+#INSERT INTO osdial_call_times SET call_time_id='12pm-9pm',call_time_name='default 12pm to 9pm calling',ct_default_start='1200',ct_default_stop='1200';
+#INSERT INTO osdial_call_times SET call_time_id='5pm-9pm',call_time_name='default 5pm to 9pm calling',ct_default_start='1700',ct_default_stop='2100';
 
-INSERT INTO osdial_state_call_times SET state_call_time_id='alabama',state_call_time_state='AL',state_call_time_name='Alabama 8am-8pm and Sunday',sct_default_start='800',sct_default_stop='2000',sct_sunday_start='2400',sct_sunday_stop='2400';
-INSERT INTO osdial_state_call_times SET state_call_time_id='illinois',state_call_time_state='IL',state_call_time_name='Illinois 8am',sct_default_start='800',sct_default_stop='2100';
-INSERT INTO osdial_state_call_times SET state_call_time_id='indiana',state_call_time_state='IN',state_call_time_name='Indiana 8pm restriction',sct_default_start='900',sct_default_stop='2000';
-INSERT INTO osdial_state_call_times SET state_call_time_id='kentucky',state_call_time_state='KY',state_call_time_name='Kentucky 10am restriction',sct_default_start='1000',sct_default_stop='2100';
-INSERT INTO osdial_state_call_times SET state_call_time_id='louisiana',state_call_time_state='LA',state_call_time_name='Louisiana 8am-8pm and Sunday',sct_default_start='800',sct_default_stop='2000',sct_sunday_start='2400',sct_sunday_stop='2400';
-INSERT INTO osdial_state_call_times SET state_call_time_id='massachuse',state_call_time_state='MA',state_call_time_name='Massachusetts 8am-8pm',sct_default_start='800',sct_default_stop='2000';
-INSERT INTO osdial_state_call_times SET state_call_time_id='mississipp',state_call_time_state='MS',state_call_time_name='Mississippi 8am-8pm and Sunday',sct_default_start='800',sct_default_stop='2000',sct_sunday_start='2400',sct_sunday_stop='2400';
-INSERT INTO osdial_state_call_times SET state_call_time_id='nebraska',state_call_time_state='NE',state_call_time_name='Nebraska 8am',sct_default_start='800',sct_default_stop='2100';
-INSERT INTO osdial_state_call_times SET state_call_time_id='nevada',state_call_time_state='NV',state_call_time_name='Nevada 8pm restriction',sct_default_start='900',sct_default_stop='2000';
-INSERT INTO osdial_state_call_times SET state_call_time_id='pennsylvan',state_call_time_state='PA',state_call_time_name='Pennsylvania sunday restriction',sct_sunday_start='1330',sct_sunday_stop='2100';
-INSERT INTO osdial_state_call_times SET state_call_time_id='rhodeislan',state_call_time_state='RI',state_call_time_name='Rhode Island restrictions',sct_default_start='900',sct_default_stop='1800',sct_sunday_start='2400',sct_sunday_stop='2400',sct_saturday_start='1000',sct_saturday_stop='1700';
-INSERT INTO osdial_state_call_times SET state_call_time_id='sdakota',state_call_time_state='SD',state_call_time_name='South Dakota sunday restrict',sct_sunday_start='2400',sct_sunday_stop='2400';
-INSERT INTO osdial_state_call_times SET state_call_time_id='tennessee',state_call_time_state='TN',state_call_time_name='Tennessee 8am',sct_default_start='800',sct_default_stop='2100';
-INSERT INTO osdial_state_call_times SET state_call_time_id='texas',state_call_time_state='TX',state_call_time_name='Texas sunday restriction',sct_sunday_start='1200',sct_sunday_stop='2100';
-INSERT INTO osdial_state_call_times SET state_call_time_id='utah',state_call_time_state='UT',state_call_time_name='Utah 8pm restriction',sct_default_start='900',sct_default_stop='2000';
-INSERT INTO osdial_state_call_times SET state_call_time_id='washington',state_call_time_state='WA',state_call_time_name='Washington 8am',sct_default_start='800',sct_default_stop='2100';
-INSERT INTO osdial_state_call_times SET state_call_time_id='wyoming',state_call_time_state='WY',state_call_time_name='Wyoming 8am-8pm',sct_default_start='800',sct_default_stop='2000';
+#INSERT INTO osdial_state_call_times SET state_call_time_id='alabama',state_call_time_state='AL',state_call_time_name='Alabama 8am-8pm and Sunday',sct_default_start='800',sct_default_stop='2000',sct_sunday_start='2400',sct_sunday_stop='2400';
+#INSERT INTO osdial_state_call_times SET state_call_time_id='illinois',state_call_time_state='IL',state_call_time_name='Illinois 8am',sct_default_start='800',sct_default_stop='2100';
+#INSERT INTO osdial_state_call_times SET state_call_time_id='indiana',state_call_time_state='IN',state_call_time_name='Indiana 8pm restriction',sct_default_start='900',sct_default_stop='2000';
+#INSERT INTO osdial_state_call_times SET state_call_time_id='kentucky',state_call_time_state='KY',state_call_time_name='Kentucky 10am restriction',sct_default_start='1000',sct_default_stop='2100';
+#INSERT INTO osdial_state_call_times SET state_call_time_id='louisiana',state_call_time_state='LA',state_call_time_name='Louisiana 8am-8pm and Sunday',sct_default_start='800',sct_default_stop='2000',sct_sunday_start='2400',sct_sunday_stop='2400';
+#INSERT INTO osdial_state_call_times SET state_call_time_id='massachuse',state_call_time_state='MA',state_call_time_name='Massachusetts 8am-8pm',sct_default_start='800',sct_default_stop='2000';
+#INSERT INTO osdial_state_call_times SET state_call_time_id='mississipp',state_call_time_state='MS',state_call_time_name='Mississippi 8am-8pm and Sunday',sct_default_start='800',sct_default_stop='2000',sct_sunday_start='2400',sct_sunday_stop='2400';
+#INSERT INTO osdial_state_call_times SET state_call_time_id='nebraska',state_call_time_state='NE',state_call_time_name='Nebraska 8am',sct_default_start='800',sct_default_stop='2100';
+#INSERT INTO osdial_state_call_times SET state_call_time_id='nevada',state_call_time_state='NV',state_call_time_name='Nevada 8pm restriction',sct_default_start='900',sct_default_stop='2000';
+#INSERT INTO osdial_state_call_times SET state_call_time_id='pennsylvan',state_call_time_state='PA',state_call_time_name='Pennsylvania sunday restriction',sct_sunday_start='1330',sct_sunday_stop='2100';
+#INSERT INTO osdial_state_call_times SET state_call_time_id='rhodeislan',state_call_time_state='RI',state_call_time_name='Rhode Island restrictions',sct_default_start='900',sct_default_stop='1800',sct_sunday_start='2400',sct_sunday_stop='2400',sct_saturday_start='1000',sct_saturday_stop='1700';
+#INSERT INTO osdial_state_call_times SET state_call_time_id='sdakota',state_call_time_state='SD',state_call_time_name='South Dakota sunday restrict',sct_sunday_start='2400',sct_sunday_stop='2400';
+#INSERT INTO osdial_state_call_times SET state_call_time_id='tennessee',state_call_time_state='TN',state_call_time_name='Tennessee 8am',sct_default_start='800',sct_default_stop='2100';
+#INSERT INTO osdial_state_call_times SET state_call_time_id='texas',state_call_time_state='TX',state_call_time_name='Texas sunday restriction',sct_sunday_start='1200',sct_sunday_stop='2100';
+#INSERT INTO osdial_state_call_times SET state_call_time_id='utah',state_call_time_state='UT',state_call_time_name='Utah 8pm restriction',sct_default_start='900',sct_default_stop='2000';
+#INSERT INTO osdial_state_call_times SET state_call_time_id='washington',state_call_time_state='WA',state_call_time_name='Washington 8am',sct_default_start='800',sct_default_stop='2100';
+#INSERT INTO osdial_state_call_times SET state_call_time_id='wyoming',state_call_time_state='WY',state_call_time_name='Wyoming 8am-8pm',sct_default_start='800',sct_default_stop='2000';
 
-GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES on osdial.* TO 'osdial'@'127.0.0.1' IDENTIFIED BY 'osdial1234';
-GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES on osdial.* TO 'osdial'@'localhost' IDENTIFIED BY 'osdial1234';
-GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES on osdial.* TO 'osdial'@'%' IDENTIFIED BY 'osdial1234';
-
-INSERT INTO `system_settings` VALUES ('2.0.4-000','2008-11-26','0','1','0','','','','','','VIC','NONE','NOT_ACTIVE','0','/index.html','0');
+INSERT INTO `system_settings` VALUES ('000000',NOW(),'0','1','0','','','','','','VIC','NONE','NOT_ACTIVE','0','/index.html');

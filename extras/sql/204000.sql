@@ -12,7 +12,6 @@ ALTER TABLE osdial_campaign_stats ADD status_category_count_3 INT(9) UNSIGNED de
 ALTER TABLE osdial_campaign_stats ADD status_category_4 VARCHAR(20);
 ALTER TABLE osdial_campaign_stats ADD status_category_count_4 INT(9) UNSIGNED default '0';
 ALTER TABLE system_settings ADD enable_agc_xfer_log ENUM('0','1') default '0';
-ALTER TABLE osdial_ivr AUTO_INCREMENT = 1357091;
 ALTER TABLE osdial_inbound_groups ADD call_time_id VARCHAR(20) default '24hours';
 ALTER TABLE osdial_inbound_groups ADD after_hours_action ENUM('HANGUP','MESSAGE','EXTENSION','VOICEMAIL') default 'MESSAGE';
 ALTER TABLE osdial_inbound_groups ADD after_hours_message_filename VARCHAR(50) default 'vm-goodbye';
@@ -91,6 +90,7 @@ prompt_response_10 TINYINT(1) UNSIGNED default '0',
 index (phone_number),
 index (entry_time)
 );
+ALTER TABLE osdial_ivr AUTO_INCREMENT = 1357091;
 
 CREATE TABLE osdial_inbound_group_agents (
 user VARCHAR(20),
@@ -125,16 +125,6 @@ index (campaign_id),
 index (user)
 );
 
-
-INSERT INTO osdial_status_categories (vsc_id,vsc_name) values('UNDEFINED','Default Category');
-INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('SYSTEM','System Generated Statuses','N');
-INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('NOCONTACT','No Contacts','Y');
-INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('CONTACT','Contacts','Y');
-INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('SALE','Sales','Y');
-
-UPDATE osdial_statuses SET human_answered='Y' where status IN('DROP','DNC','DEC','SALE','XFER','CALLBK','NP','NI','N');
-UPDATE osdial_campaigns SET list_order_mix='DISABLED';
 UPDATE osdial_campaigns SET campaign_allow_inbound='Y' where campaign_id REGEXP '(CLOSER|BLEND|INBND|_C\$|_B\$|_I\$)';
 
-# Jump over 204001 (defaults for new config, this is an update).
-UPDATE system_settings SET version='2.0.4.001';
+UPDATE system_settings SET version='2.0.4.000';
