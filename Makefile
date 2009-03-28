@@ -161,7 +161,7 @@ install-docs: .osdial.config
 	@install -p -m 644 ./www/*.png $(DESTDIR)$(PATHweb)
 	@install -p -m 644 ./www/*.html $(DESTDIR)$(PATHweb)
 	@install -p -m 644 ./www/agent/*.php $(DESTDIR)$(PATHweb)/agent
-	@#install -p -m 666 ./www/agent/*.txt $(DESTDIR)$(PATHweb)/agent
+	@install -p -m 666 ./www/agent/*.txt $(DESTDIR)$(PATHweb)/agent
 	@install -p -m 644 ./www/agent/*.css $(DESTDIR)$(PATHweb)/agent
 	@install -p -m 644 ./www/agent/images/* $(DESTDIR)$(PATHweb)/agent/images
 	@install -p -m 644 ./www/agent/include/* $(DESTDIR)$(PATHweb)/agent/include
