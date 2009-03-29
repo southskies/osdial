@@ -124,6 +124,11 @@ stop() {
 	return 0
 }
 
+reconfig() {
+	OSDIAL_FIRSTRUN=YES
+	start
+}
+
 restart() {
 	stop
 	start
@@ -137,11 +142,14 @@ case "$1" in
   stop)
 	stop
 	;;
+  reconfig)
+	reconfig
+	;;
   restart)
 	restart
 	;;
   *)
-	echo "Usage: osdial {start|stop|restart}"
+	echo "Usage: osdial {start|stop|restart|reconfig}"
 	exit 1
 esac
 
