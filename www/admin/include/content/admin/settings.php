@@ -20,6 +20,7 @@
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
 # 090410-1136 - Added custom2 field
+# 090410-1541 - Added external_key field
 
 
 
@@ -111,6 +112,7 @@ if ($ADD==311111111111111)
 	echo "<option value=\"address3\">address3</option>\n";
 	echo "<option value=\"custom1\">custom1</option>\n";
 	echo "<option value=\"custom2\">custom2</option>\n";
+	echo "<option value=\"external_key\">external_key</option>\n";
 	echo "<option selected value=\"$queuemetrics_eq_prepend\">$queuemetrics_eq_prepend</option>\n";
 	echo "</select>$NWB#settings-queuemetrics_eq_prepend$NWE</td></tr>\n";
 	echo "<tr bgcolor=#C1D6DF><td align=right>OSDial Agent Disable Display: </td><td align=left><select size=1 name=osdial_agent_disable>\n";

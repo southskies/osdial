@@ -46,6 +46,7 @@
 # 80701-0832 - Changed to allow for altering of main phone number
 #
 # 090410-1131 - Added field custom2
+# 090410-1541 - Added field external_key
 
 require("dbconnect.php");
 
@@ -114,6 +115,8 @@ if (isset($_GET["custom1"]))				{$custom1=$_GET["custom1"];}
 	elseif (isset($_POST["custom1"]))		{$custom1=$_POST["custom1"];}
 if (isset($_GET["custom2"]))				{$custom2=$_GET["custom2"];}
 	elseif (isset($_POST["custom2"]))		{$custom2=$_POST["custom2"];}
+if (isset($_GET["external_key"]))				{$external_key=$_GET["external_key"];}
+	elseif (isset($_POST["external_key"]))		{$external_key=$_POST["external_key"];}
 if (isset($_GET["comments"]))				{$comments=$_GET["comments"];}
 	elseif (isset($_POST["comments"]))		{$comments=$_POST["comments"];}
 if (isset($_GET["status"]))				{$status=$_GET["status"];}
@@ -242,7 +245,7 @@ $browser = getenv("HTTP_USER_AGENT");
 			{
 			
 				### update the lead record in the osdial_list table 
-				$stmt="UPDATE osdial_list set status='" . mysql_real_escape_string($status) . "',first_name='" . mysql_real_escape_string($first_name) . "',last_name='" . mysql_real_escape_string($last_name) . "',address1='" . mysql_real_escape_string($address1) . "',address2='" . mysql_real_escape_string($address2) . "',address3='" . mysql_real_escape_string($address3) . "',city='" . mysql_real_escape_string($city) . "',state='" . mysql_real_escape_string($state) . "',province='" . mysql_real_escape_string($province) . "',postal_code='" . mysql_real_escape_string($postal_code) . "',country_code='" . mysql_real_escape_string($country_code) . "',alt_phone='" . mysql_real_escape_string($alt_phone) . "',phone_number='$phone_number',email='" . mysql_real_escape_string($email) . "',custom1='" . mysql_real_escape_string($custom1) . "'custom2='" . mysql_real_escape_string($custom2) . "',comments='" . mysql_real_escape_string($comments) . "' where lead_id='" . mysql_real_escape_string($lead_id) . "'";
+				$stmt="UPDATE osdial_list set status='" . mysql_real_escape_string($status) . "',first_name='" . mysql_real_escape_string($first_name) . "',last_name='" . mysql_real_escape_string($last_name) . "',address1='" . mysql_real_escape_string($address1) . "',address2='" . mysql_real_escape_string($address2) . "',address3='" . mysql_real_escape_string($address3) . "',city='" . mysql_real_escape_string($city) . "',state='" . mysql_real_escape_string($state) . "',province='" . mysql_real_escape_string($province) . "',postal_code='" . mysql_real_escape_string($postal_code) . "',country_code='" . mysql_real_escape_string($country_code) . "',alt_phone='" . mysql_real_escape_string($alt_phone) . "',phone_number='$phone_number',email='" . mysql_real_escape_string($email) . "',custom1='" . mysql_real_escape_string($custom1) . "'custom2='" . mysql_real_escape_string($custom2) . "'external_key='" . mysql_real_escape_string($external_key) ."',comments='" . mysql_real_escape_string($comments) . "' where lead_id='" . mysql_real_escape_string($lead_id) . "'";
 				if ($DB) {echo "|$stmt|\n";}
 				$rslt=mysql_query($stmt, $link);
 			
@@ -485,6 +488,7 @@ $browser = getenv("HTTP_USER_AGENT");
 					$comments		= "$row[29]";	#
 					$called_count	= "$row[30]";	#
 					$custom2    	= "$row[31]";	#
+					$external_key  	= "$row[32]";	#
 			
 					echo "<br><font color='#1C4754' size=2>Call information: $first_name $last_name - $phone_number<br><br><form action=$PHP_SELF method=POST>\n";
 					echo "<input type=hidden name=end_call value=1>\n";
@@ -531,6 +535,7 @@ $browser = getenv("HTTP_USER_AGENT");
 					echo "<tr><td align=right>Email:&nbsp;</td><td align=left><input type=text name=email size=30 maxlength=50 value=\"$email\"></td></tr>\n";
 					echo "<tr><td align=right>Custom1:&nbsp;</td><td align=left><input type=text name=custom1 size=30 maxlength=100 value=\"$custom1\"></td></tr>\n";
 					echo "<tr><td align=right>Custom2:&nbsp;</td><td align=left><input type=text name=custom2 size=30 maxlength=100 value=\"$custom2\"></td></tr>\n";
+					echo "<tr><td align=right>External Key:&nbsp;</td><td align=left><input type=text name=external_key size=30 maxlength=100 value=\"$external_key\"></td></tr>\n";
 					echo "<tr><td align=right>Comments:&nbsp;</td><td align=left><input type=text name=comments size=30 maxlength=255 value=\"$comments\"></td></tr>\n";
 					echo "<tr><td align=right>Disposition:&nbsp;</td><td align=left><select size=1 name=status>\n";
 			

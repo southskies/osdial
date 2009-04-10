@@ -20,6 +20,7 @@
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
 # 090410-1137 - Added custom2 field
+# 090410-1137 - Added external_key field
 
 
 ######################
@@ -53,7 +54,7 @@ if ($ADD==131 && $SUB==2) {
     if ($fall) {
         $sfield = 'lead_id,entry_date,modify_date,status,user,vendor_lead_code,source_id,list_id,gmt_offset_now,called_since_last_reset,';
         $sfield .= 'phone_code,phone_number,title,first_name,middle_initial,last_name,address1,address2,address3,city,state,province,';
-        $sfield .= 'postal_code,country_code,gender,date_of_birth,alt_phone,email,custom1,comments,called_count,custom2';
+        $sfield .= 'postal_code,country_code,gender,date_of_birth,alt_phone,email,custom1,comments,called_count,custom2,external_key';
     }
 
     echo $sfield . "\r\n";
@@ -359,6 +360,12 @@ if ($ADD==131 && $SUB==2) {
             echo '      <td align=right><input type=checkbox name=fields[] value="custom2"></td>' . "\n";
             echo "      <td>custom2</td>\n";
             echo "      <td> - Custom2</td>\n";
+            echo "   </tr>\n";
+
+            echo "   <tr>\n";
+            echo '      <td align=right><input type=checkbox name=fields[] value="external_key"></td>' . "\n";
+            echo "      <td>external_key</td>\n";
+            echo "      <td> - External Key</td>\n";
             echo "   </tr>\n";
 
             echo "   <tr>\n";
