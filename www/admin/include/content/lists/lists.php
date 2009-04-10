@@ -126,11 +126,6 @@ if ($ADD==112) {
 		}
 	}
 	
-	if (isset($_GET["last_name"]))				{$last_name=$_GET["last_name"];}
-		elseif (isset($_POST["last_name"]))		{$last_name=$_POST["last_name"];}
-	if (isset($_GET["first_name"]))				{$first_name=$_GET["first_name"];}
-		elseif (isset($_POST["first_name"]))		{$first_name=$_POST["first_name"];}
-	
 	
 	if ( (!$vendor_id) and (!$phone)  and (!$lead_id) and (!$last_name) and (!$first_name) ) {
 		echo "<style type=text/css> content {vertical-align:center}</style>";
@@ -317,82 +312,11 @@ if ($ADD==122) {
 	$leadfile=$_FILES["leadfile"];
 	$LF_orig = $_FILES['leadfile']['name'];
 	$LF_path = $_FILES['leadfile']['tmp_name'];
-	if (isset($_GET["ADD"]))   {$ADD=$_GET["ADD"];}
-		elseif (isset($_POST["ADD"])) {$ADD=$_POST["ADD"];}
-	if (isset($_GET["submit_file"]))				{$submit_file=$_GET["submit_file"];}
-		elseif (isset($_POST["submit_file"]))		{$submit_file=$_POST["submit_file"];}
-	if (isset($_GET["leadfile_name"]))				{$leadfile_name=$_GET["leadfile_name"];}
-		elseif (isset($_POST["leadfile_name"]))		{$leadfile_name=$_POST["leadfile_name"];}
 	if (isset($_FILES["leadfile"]))				{$leadfile_name=$_FILES["leadfile"]['name'];}
-	if (isset($_GET["file_layout"]))				{$file_layout=$_GET["file_layout"];}
-		elseif (isset($_POST["file_layout"]))		{$file_layout=$_POST["file_layout"];}
-	if (isset($_GET["OK_to_process"]))				{$OK_to_process=$_GET["OK_to_process"];}
-		elseif (isset($_POST["OK_to_process"]))		{$OK_to_process=$_POST["OK_to_process"];}
-	if (isset($_GET["vendor_lead_code_field"]))				{$vendor_lead_code_field=$_GET["vendor_lead_code_field"];}
-		elseif (isset($_POST["vendor_lead_code_field"]))		{$vendor_lead_code_field=$_POST["vendor_lead_code_field"];}
-	if (isset($_GET["source_id_field"]))				{$source_id_field=$_GET["source_id_field"];}
-		elseif (isset($_POST["source_id_field"]))		{$source_id_field=$_POST["source_id_field"];}
-	if (isset($_GET["list_id_field"]))				{$list_id_field=$_GET["list_id_field"];}
-		elseif (isset($_POST["list_id_field"]))		{$list_id_field=$_POST["list_id_field"];}
-	if (isset($_GET["phone_code_field"]))				{$phone_code_field=$_GET["phone_code_field"];}
-		elseif (isset($_POST["phone_code_field"]))		{$phone_code_field=$_POST["phone_code_field"];}
-	if (isset($_GET["phone_number_field"]))				{$phone_number_field=$_GET["phone_number_field"];}
-		elseif (isset($_POST["phone_number_field"]))		{$phone_number_field=$_POST["phone_number_field"];}
-	if (isset($_GET["title_field"]))				{$title_field=$_GET["title_field"];}
-		elseif (isset($_POST["title_field"]))		{$title_field=$_POST["title_field"];}
-	if (isset($_GET["first_name_field"]))				{$first_name_field=$_GET["first_name_field"];}
-		elseif (isset($_POST["first_name_field"]))		{$first_name_field=$_POST["first_name_field"];}
-	if (isset($_GET["middle_initial_field"]))				{$middle_initial_field=$_GET["middle_initial_field"];}
-		elseif (isset($_POST["middle_initial_field"]))		{$middle_initial_field=$_POST["middle_initial_field"];}
-	if (isset($_GET["last_name_field"]))				{$last_name_field=$_GET["last_name_field"];}
-		elseif (isset($_POST["last_name_field"]))		{$last_name_field=$_POST["last_name_field"];}
-	if (isset($_GET["address1_field"]))				{$address1_field=$_GET["address1_field"];}
-		elseif (isset($_POST["address1_field"]))		{$address1_field=$_POST["address1_field"];}
-	if (isset($_GET["address2_field"]))				{$address2_field=$_GET["address2_field"];}
-		elseif (isset($_POST["address2_field"]))		{$address2_field=$_POST["address2_field"];}
-	if (isset($_GET["address3_field"]))				{$address3_field=$_GET["address3_field"];}
-		elseif (isset($_POST["address3_field"]))		{$address3_field=$_POST["address3_field"];}
-	if (isset($_GET["city_field"]))				{$city_field=$_GET["city_field"];}
-		elseif (isset($_POST["city_field"]))		{$city_field=$_POST["city_field"];}
-	if (isset($_GET["state_field"]))				{$state_field=$_GET["state_field"];}
-		elseif (isset($_POST["state_field"]))		{$state_field=$_POST["state_field"];}
-	if (isset($_GET["province_field"]))				{$province_field=$_GET["province_field"];}
-		elseif (isset($_POST["province_field"]))		{$province_field=$_POST["province_field"];}
-	if (isset($_GET["postal_code_field"]))				{$postal_code_field=$_GET["postal_code_field"];}
-		elseif (isset($_POST["postal_code_field"]))		{$postal_code_field=$_POST["postal_code_field"];}
-	if (isset($_GET["country_code_field"]))				{$country_code_field=$_GET["country_code_field"];}
-		elseif (isset($_POST["country_code_field"]))		{$country_code_field=$_POST["country_code_field"];}
-	if (isset($_GET["gender_field"]))				{$gender_field=$_GET["gender_field"];}
-		elseif (isset($_POST["gender_field"]))		{$gender_field=$_POST["gender_field"];}
-	if (isset($_GET["date_of_birth_field"]))				{$date_of_birth_field=$_GET["date_of_birth_field"];}
-		elseif (isset($_POST["date_of_birth_field"]))		{$date_of_birth_field=$_POST["date_of_birth_field"];}
-	if (isset($_GET["alt_phone_field"]))				{$alt_phone_field=$_GET["alt_phone_field"];}
-		elseif (isset($_POST["alt_phone_field"]))		{$alt_phone_field=$_POST["alt_phone_field"];}
-	if (isset($_GET["email_field"]))				{$email_field=$_GET["email_field"];}
-		elseif (isset($_POST["email_field"]))		{$email_field=$_POST["email_field"];}
-	if (isset($_GET["custom1_field"]))				{$custom1_field=$_GET["custom1_field"];}
-		elseif (isset($_POST["custom1_field"]))		{$custom1_field=$_POST["custom1_field"];}
-	if (isset($_GET["custom2_field"]))				{$custom2_field=$_GET["custom2_field"];}
-		elseif (isset($_POST["custom2_field"]))		{$custom2_field=$_POST["custom2_field"];}
-	if (isset($_GET["comments_field"]))				{$comments_field=$_GET["comments_field"];}
-		elseif (isset($_POST["comments_field"]))		{$comments_field=$_POST["comments_field"];}
-	if (isset($_GET["list_id_override"]))				{$list_id_override=$_GET["list_id_override"];}
-		elseif (isset($_POST["list_id_override"]))		{$list_id_override=$_POST["list_id_override"];}
-		$list_id_override = (preg_replace("/\D/","",$list_id_override));
-	if (isset($_GET["lead_file"]))					{$lead_file=$_GET["lead_file"];}
-		elseif (isset($_POST["lead_file"]))			{$lead_file=$_POST["lead_file"];}
-	if (isset($_GET["dupcheck"]))				{$dupcheck=$_GET["dupcheck"];}
-		elseif (isset($_POST["dupcheck"]))		{$dupcheck=$_POST["dupcheck"];}
-	if (isset($_GET["postalgmt"]))				{$postalgmt=$_GET["postalgmt"];}
-		elseif (isset($_POST["postalgmt"]))		{$postalgmt=$_POST["postalgmt"];}
-	if (isset($_GET["phone_code_override"]))			{$phone_code_override=$_GET["phone_code_override"];}
-		elseif (isset($_POST["phone_code_override"]))	{$phone_code_override=$_POST["phone_code_override"];}
-	
+
+	$list_id_override = (preg_replace("/\D/","",$list_id_override));
 	$phone_code_override = (preg_replace("/\D/","",$phone_code_override));
 	$Imported=get_variable('Imported');
-	
-	# $country_field=$_GET["country_field"];					if (!$country_field) {$country_field=$_POST["country_field"];}
-	
 	
 	#############################################
 	##### START SYSTEM_SETTINGS LOOKUP #####
