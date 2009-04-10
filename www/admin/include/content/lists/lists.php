@@ -669,7 +669,7 @@ if ($ADD==122) {
 				}
 				$field_check=explode($delimiter, $buffer);
 	
-				if (count($field_check)>=5) {
+				if (count($field_check)>=3) {
 					flush();
 					$file=fopen("$lead_file", "r");
 					print "<center><font size=3 color='navy'><B>Processing $delim_name-delimited file...\n";
@@ -1134,7 +1134,7 @@ if ($ADD==122) {
 				if ($tab_count>$pipe_count) {$delimiter="\t";  $delim_name="tab";} else {$delimiter="|";  $delim_name="pipe";}
 				$field_check=explode($delimiter, $buffer);
 		
-				if (count($field_check)>=5) {
+				if (count($field_check)>=3) {
 					flush();
 					$file=fopen("$lead_file", "r");
 					$total=0; $good=0; $bad=0; $dup=0; $post=0; $phone_list='';
