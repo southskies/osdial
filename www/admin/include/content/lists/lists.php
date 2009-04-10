@@ -1102,7 +1102,7 @@ if ($ADD==122) {
 				$row=mysql_fetch_row($rslt);
 				$ListID=$row[0];
 				echo "- ListID=$ListID -";
-				if ($ListID != "") {
+				if ($ListID == "") {
 					echo "<br><br>You are trying to load leads into a non existent list $list_id_override<br>";
 				}
 			}
