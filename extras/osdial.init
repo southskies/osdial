@@ -63,6 +63,10 @@ start() {
 		fi
 		/usr/sbin/asterisk -rx "iax2 reload" > /dev/null 2>&1
 
+		/etc/init.d/mysqld start
+		sleep 1
+		[ "$OSDIAL_MYSQL_INSTALL" = "YES" ] && /opt/osdial/bin/sql/upgrade_sql.pl
+
 		# Get server timezone and update in osdial database
 		OSDTZ=`date +%:::z`
 		[ -z "$OSDTZ" ] && OSDTZ="0"
@@ -72,6 +76,7 @@ start() {
 			echo "UPDATE servers SET local_gmt='$OSDTZ';" | mysql osdial > /dev/null 2>&1
 			echo "UPDATE phones SET local_gmt='$OSDTZ';" | mysql osdial > /dev/null 2>&1
 		fi
+		/etc/init.d/mysqld stop
 		
 
 		# Get INET address from eth0 or eth1
@@ -106,20 +111,6 @@ start() {
 		echo "             Temporary root password is osdial1234, change ASAP!" >> /etc/issue
 		echo >> /etc/issue
 		echo " --- " >> /etc/issue
-	
-		# Proccess to be run at startup.
-		Gtrm=`grep setterm /etc/rc.local`
-		[ -z "$Gtrm" ] && echo "/use/bin/setterm -blank" >> /etc/rc.local
-		[ -z "$Gtrm" ] && echo "/use/bin/setterm -powersave off" >> /etc/rc.local
-		[ -z "$Gtrm" ] && echo "/use/bin/setterm -powerdown" >> /etc/rc.local
-		Gntp=`grep AST_ntp_update /etc/rc.local`
-		[ -z "$Gntp" ] && echo "/etc/cron.hourly/AST_ntp_update.sh &" >> /etc/rc.local
-		Gacp=`grep area_code_populate /etc/rc.local`
-		[ -z "$Gacp" -a -d "/var/lib/mysql/osdial" ] && echo "/opt/osdial/bin/ADMIN_area_code_populate.pl > /dev/null 2>&1 &" >> /etc/rc.local
-		Goag=`grep osdial_astgen /etc/rc.local`
-		[ -z "$Goag" ] && echo "/opt/osdial/bin/osdial_astgen.pl -q &" >> /etc/rc.local
-		Grst=`grep reset_mysql_vars /etc/rc.local`
-		[ -z "$Grst" -a -d "/var/lib/mysql/osdial" ] && echo "/opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1 &" >> /etc/rc.local
 
 		# Saving options to /etc/sysconfig/osdial
 		echo "OSDIAL_FIRSTRUN=NO" > /etc/sysconfig/osdial
@@ -130,6 +121,20 @@ start() {
 
 	# Processes to run before services start
 	/opt/osdial/bin/ADMIN_restart_roll_logs.pl > /dev/null 2>&1
+
+	# Proccess to be run at startup from rc.local
+	Gtrm=`grep setterm /etc/rc.local`
+	[ -z "$Gtrm" ] && echo "/usr/bin/setterm -blank" >> /etc/rc.local
+	[ -z "$Gtrm" ] && echo "/usr/bin/setterm -powersave off" >> /etc/rc.local
+	[ -z "$Gtrm" ] && echo "/usr/bin/setterm -powerdown" >> /etc/rc.local
+	Gntp=`grep AST_ntp_update /etc/rc.local`
+	[ -z "$Gntp" ] && echo "/etc/cron.hourly/AST_ntp_update.sh &" >> /etc/rc.local
+	Gacp=`grep area_code_populate /etc/rc.local`
+	[ -z "$Gacp" -a -d "/var/lib/mysql/osdial" ] && echo "/opt/osdial/bin/ADMIN_area_code_populate.pl > /dev/null 2>&1 &" >> /etc/rc.local
+	Goag=`grep osdial_astgen /etc/rc.local`
+	[ -z "$Goag" ] && echo "/opt/osdial/bin/osdial_astgen.pl -q &" >> /etc/rc.local
+	Grst=`grep reset_mysql_vars /etc/rc.local`
+	[ -z "$Grst" -a -d "/var/lib/mysql/osdial" ] && echo "/opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1 &" >> /etc/rc.local
 
 	return 0
 }
