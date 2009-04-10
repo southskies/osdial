@@ -1089,7 +1089,7 @@ if ($ADD==122) {
 					}
 					print "<BR><BR>Done</B><br><br> GOOD: <font color='black'>$good</font> &nbsp; &nbsp; &nbsp; BAD: $FC $bad</font> &nbsp; &nbsp; &nbsp; TOTAL: $FC $total</font></center>";
 					$Imported++;
-					
+                    $leadfile_name = '';
 				}
 				print "<script language='JavaScript1.2'>document.forms[0].leadfile.disabled=false; document.forms[0].submit_file.disabled=false; document.forms[0].reload_page.disabled=false;</script>";
 			} 
