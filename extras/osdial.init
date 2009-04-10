@@ -117,21 +117,14 @@ start() {
 	fi
 
 	# Processes to run before services start
-	/opt/osdial/bin/ADMIN_restart_roll_logs.pl > /dev/null 2>&1
-
-	# Proccess to be run at startup from rc.local
-	Gtrm=`grep setterm /etc/rc.local`
-	[ -z "$Gtrm" ] && echo "/usr/bin/setterm -blank" >> /etc/rc.local
-	[ -z "$Gtrm" ] && echo "/usr/bin/setterm -powersave off" >> /etc/rc.local
-	[ -z "$Gtrm" ] && echo "/usr/bin/setterm -powerdown" >> /etc/rc.local
-	Gntp=`grep AST_ntp_update /etc/rc.local`
-	[ -z "$Gntp" ] && echo "/etc/cron.hourly/AST_ntp_update.sh &" >> /etc/rc.local
-	Gacp=`grep area_code_populate /etc/rc.local`
-	[ -z "$Gacp" -a -d "/var/lib/mysql/osdial" ] && echo "/opt/osdial/bin/ADMIN_area_code_populate.pl > /dev/null 2>&1 &" >> /etc/rc.local
-	Goag=`grep osdial_astgen /etc/rc.local`
-	[ -z "$Goag" ] && echo "/opt/osdial/bin/osdial_astgen.pl -q &" >> /etc/rc.local
-	Grst=`grep reset_mysql_vars /etc/rc.local`
-	[ -z "$Grst" -a -d "/var/lib/mysql/osdial" ] && echo "/opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1 &" >> /etc/rc.local
+	/usr/bin/setterm -blank
+	/usr/bin/setterm -powersave off
+	/usr/bin/setterm -powerdown
+	#/opt/osdial/bin/ADMIN_restart_roll_logs.pl > /dev/null 2>&1
+	/etc/cron.hourly/AST_ntp_update.sh > /dev/null 2>&1 &
+	/opt/osdial/bin/ADMIN_area_code_populate.pl > /dev/null 2>&1 &
+	/opt/osdial/bin/osdial_astgen.pl -q &
+	/opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1 &
 
 	return 0
 }
