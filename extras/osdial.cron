@@ -13,6 +13,9 @@
 #### (ALL) Force update of time servers. Now run from /etc/cron.hourly
 #0 * * * * /opt/osdial/bin/AST_ntp_update.sh > /dev/null 2>&1
 
+#### (ALL) Generate asterisk config files and reload modules
+* * * * * /opt/osdial/bin/osdial_astgen.pl -q
+
 ### (dialer) Write a file listing current voicemail
 * * * * * /usr/sbin/asterisk -rx "show voicemail users" > /opt/osdisl/html/admin/VMnow.txt
 
