@@ -19,6 +19,8 @@
 #     You should have received a copy of the GNU Affero General Public
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
+# 090410-1140 - Added custom2 field
+# 090410-1145 - Escaped lead loading variables.
 
 
 //if ($ADD=='') { $ADD=122 }
@@ -370,6 +372,8 @@ if ($ADD==122) {
 		elseif (isset($_POST["email_field"]))		{$email_field=$_POST["email_field"];}
 	if (isset($_GET["custom1_field"]))				{$custom1_field=$_GET["custom1_field"];}
 		elseif (isset($_POST["custom1_field"]))		{$custom1_field=$_POST["custom1_field"];}
+	if (isset($_GET["custom2_field"]))				{$custom2_field=$_GET["custom2_field"];}
+		elseif (isset($_POST["custom2_field"]))		{$custom2_field=$_POST["custom2_field"];}
 	if (isset($_GET["comments_field"]))				{$comments_field=$_GET["comments_field"];}
 		elseif (isset($_POST["comments_field"]))		{$comments_field=$_POST["comments_field"];}
 	if (isset($_GET["list_id_override"]))				{$list_id_override=$_GET["list_id_override"];}
@@ -691,34 +695,35 @@ if ($ADD==122) {
 								$entry_date =			"$pulldate";
 								$modify_date =			"";
 								$status =				"NEW";
-								$user ="";
-								$vendor_lead_code =		$row[$vendor_lead_code_field];
-								$source_code =			$row[$source_id_field];
-								$source_id=$source_code;
-								$list_id =				$row[$list_id_field];
+								$user =                 "";
+								$vendor_lead_code =		mysql_real_escape_string($row[$vendor_lead_code_field]);
+								$source_code =			mysql_real_escape_string($row[$source_id_field]);
+								$source_id=             $source_code;
+								$list_id =				mysql_real_escape_string($row[$list_id_field]);
 								$gmt_offset =			'0';
 								$called_since_last_reset='N';
 								$phone_code =			eregi_replace("[^0-9]", "", $row[$phone_code_field]);
 								$phone_number =			eregi_replace("[^0-9]", "", $row[$phone_number_field]);
-								$USarea = 			substr($phone_number, 0, 3);
-								$title =				$row[$title_field];
-								$first_name =			$row[$first_name_field];
-								$middle_initial =		$row[$middle_initial_field];
-								$last_name =			$row[$last_name_field];
-								$address1 =				$row[$address1_field];
-								$address2 =				$row[$address2_field];
-								$address3 =				$row[$address3_field];
-								$city =$row[$city_field];
-								$state =				$row[$state_field];
-								$province =				$row[$province_field];
-								$postal_code =			$row[$postal_code_field];
-								$country_code =			$row[$country_code_field];
-								$gender =				$row[$gender_field];
-								$date_of_birth =		$row[$date_of_birth_field];
+								$USarea = 			    substr($phone_number, 0, 3);
+								$title =				mysql_real_escape_string($row[$title_field]);
+								$first_name =			mysql_real_escape_string($row[$first_name_field]);
+								$middle_initial =		mysql_real_escape_string($row[$middle_initial_field]);
+								$last_name =			mysql_real_escape_string($row[$last_name_field]);
+								$address1 =				mysql_real_escape_string($row[$address1_field]);
+								$address2 =				mysql_real_escape_string($row[$address2_field]);
+								$address3 =				mysql_real_escape_string($row[$address3_field]);
+								$city =                 mysql_real_escape_string($row[$city_field]);
+								$state =				mysql_real_escape_string($row[$state_field]);
+								$province =				mysql_real_escape_string($row[$province_field]);
+								$postal_code =			mysql_real_escape_string($row[$postal_code_field]);
+								$country_code =			mysql_real_escape_string($row[$country_code_field]);
+								$gender =				mysql_real_escape_string($row[$gender_field]);
+								$date_of_birth =		mysql_real_escape_string($row[$date_of_birth_field]);
 								$alt_phone =			eregi_replace("[^0-9]", "", $row[$alt_phone_field]);
-								$email =				$row[$email_field];
-								$custom1 =		$row[$custom1_field];
-								$comments =				trim($row[$comments_field]);
+								$email =				mysql_real_escape_string($row[$email_field]);
+								$custom1 =		        mysql_real_escape_string($row[$custom1_field]);
+								$comments =				mysql_real_escape_string(trim($row[$comments_field]));
+								$custom2 =		        mysql_real_escape_string($row[$custom2_field]);
 		
 								if (strlen($list_id_override)>0) 
 									{
@@ -826,7 +831,7 @@ if ($ADD==122) {
 		
 									if ($multi_insert_counter > 8) {
 										### insert good deal into pending_transactions table ###
-										$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0);";
+										$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2');";
 										$rslt=mysql_query($stmtZ, $link);
 										if ($WeBRooTWritablE > 0) 
 											{fwrite($stmt_file, $stmtZ."\r\n");}
@@ -834,7 +839,7 @@ if ($ADD==122) {
 										$multi_insert_counter=0;
 		
 									} else {
-										$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0),";
+										$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2'),";
 										$multi_insert_counter++;
 									}
 		
@@ -912,34 +917,35 @@ if ($ADD==122) {
 						$entry_date =			"$pulldate";
 						$modify_date =			"";
 						$status =				"NEW";
-						$user ="";
-						$vendor_lead_code =		$row[$vendor_lead_code_field];
-						$source_code =			$row[$source_id_field];
-						$source_id=$source_code;
-						$list_id =				$row[$list_id_field];
+						$user =                 "";
+						$vendor_lead_code =		mysql_real_escape_string($row[$vendor_lead_code_field]);
+						$source_code =			mysql_real_escape_string($row[$source_id_field]);
+						$source_id=             $source_code;
+						$list_id =				mysql_real_escape_string($row[$list_id_field]);
 						$gmt_offset =			'0';
 						$called_since_last_reset='N';
 						$phone_code =			eregi_replace("[^0-9]", "", $row[$phone_code_field]);
 						$phone_number =			eregi_replace("[^0-9]", "", $row[$phone_number_field]);
-						$USarea = 			substr($phone_number, 0, 3);
-						$title =				$row[$title_field];
-						$first_name =			$row[$first_name_field];
-						$middle_initial =		$row[$middle_initial_field];
-						$last_name =			$row[$last_name_field];
-						$address1 =				$row[$address1_field];
-						$address2 =				$row[$address2_field];
-						$address3 =				$row[$address3_field];
-						$city =$row[$city_field];
-						$state =				$row[$state_field];
-						$province =				$row[$province_field];
-						$postal_code =			$row[$postal_code_field];
-						$country_code =			$row[$country_code_field];
-						$gender =				$row[$gender_field];
-						$date_of_birth =		$row[$date_of_birth_field];
+						$USarea = 			    substr($phone_number, 0, 3);
+						$title =				mysql_real_escape_string($row[$title_field]);
+						$first_name =			mysql_real_escape_string($row[$first_name_field]);
+						$middle_initial =		mysql_real_escape_string($row[$middle_initial_field]);
+						$last_name =			mysql_real_escape_string($row[$last_name_field]);
+						$address1 =				mysql_real_escape_string($row[$address1_field]);
+						$address2 =				mysql_real_escape_string($row[$address2_field]);
+						$address3 =				mysql_real_escape_string($row[$address3_field]);
+						$city =                 mysql_real_escape_string($row[$city_field]);
+						$state =				mysql_real_escape_string($row[$state_field]);
+						$province =				mysql_real_escape_string($row[$province_field]);
+						$postal_code =			mysql_real_escape_string($row[$postal_code_field]);
+						$country_code =			mysql_real_escape_string($row[$country_code_field]);
+						$gender =				mysql_real_escape_string($row[$gender_field]);
+						$date_of_birth =		mysql_real_escape_string($row[$date_of_birth_field]);
 						$alt_phone =			eregi_replace("[^0-9]", "", $row[$alt_phone_field]);
-						$email =				$row[$email_field];
-						$custom1 =		$row[$custom1_field];
-						$comments =				trim($row[$comments_field]);
+						$email =				mysql_real_escape_string($row[$email_field]);
+						$custom1 =		        mysql_real_escape_string($row[$custom1_field]);
+						$comments =				mysql_real_escape_string(trim($row[$comments_field]));
+						$custom2 =		        mysql_real_escape_string($row[$custom2_field]);
 		
 							if (strlen($list_id_override)>0) 
 								{
@@ -1046,7 +1052,7 @@ if ($ADD==122) {
 		
 							if ($multi_insert_counter > 8) {
 								### insert good deal into pending_transactions table ###
-								$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0);";
+								$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2');";
 								$rslt=mysql_query($stmtZ, $link);
 								if ($WeBRooTWritablE > 0) 
 									{fwrite($stmt_file, $stmtZ."\r\n");}
@@ -1054,7 +1060,7 @@ if ($ADD==122) {
 								$multi_insert_counter=0;
 		
 							} else {
-								$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0),";
+								$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2'),";
 								$multi_insert_counter++;
 							}
 		
@@ -1275,7 +1281,7 @@ if ($ADD==122) {
 		
 								if ($multi_insert_counter > 8) {
 									### insert good deal into pending_transactions table ###
-									$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0);";
+									$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2');";
 									$rslt=mysql_query($stmtZ, $link);
 									if ($WeBRooTWritablE > 0) 
 										{fwrite($stmt_file, $stmtZ."\r\n");}
@@ -1283,7 +1289,7 @@ if ($ADD==122) {
 									$multi_insert_counter=0;
 		
 								} else {
-									$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0),";
+									$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2'),";
 									$multi_insert_counter++;
 								}
 		
@@ -1490,7 +1496,7 @@ if ($ADD==122) {
 	
 						if ($multi_insert_counter > 8) {
 							### insert good deal into pending_transactions table ###
-							$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0);";
+							$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2');";
 							$rslt=mysql_query($stmtZ, $link);
 							if ($WeBRooTWritablE > 0) 
 								{fwrite($stmt_file, $stmtZ."\r\n");}
@@ -1498,7 +1504,7 @@ if ($ADD==122) {
 							$multi_insert_counter=0;
 		
 						} else {
-							$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0),";
+							$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2'),";
 							$multi_insert_counter++;
 						}
 		
@@ -1544,7 +1550,7 @@ if ($ADD==122) {
 			print "    <th><font class='standard' color='white'>File data</font></th>\r\n";
 			print "  </tr>\r\n";
 				
-			$rslt=mysql_query("select vendor_lead_code, source_id, list_id, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, comments from osdial_list limit 1", $link);
+			$rslt=mysql_query("select vendor_lead_code, source_id, list_id, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, comments, custom2 from osdial_list limit 1", $link);
 			
 	
 			if (!eregi(".csv", $leadfile_name) && !eregi(".xls", $leadfile_name)) 

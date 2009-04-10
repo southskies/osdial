@@ -20,6 +20,8 @@
  * #     You should have received a copy of the GNU Affero General Public
  * #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
  * #
+ * #
+ * # 090410-1155 - Added custom2 field.
  */
 
 
@@ -1885,10 +1887,11 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						dialed_number									= MDnextResponse_array[32];
 						dialed_label									= MDnextResponse_array[33];
 						source_id										= MDnextResponse_array[34];
+						document.osdial_form.custom2.value	= MDnextResponse_array[35];
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
-        $rcnt = $cnt + 35;
+        $rcnt = $cnt + 36;
         echo '          document.osdial_form.' . $ffields[$cnt] . ".value = MDnextResponse_array[" . $rcnt . "];\n";
         $cnt++;
     }
@@ -1925,6 +1928,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						"&alt_phone=" + document.osdial_form.alt_phone.value + 
 						"&email=" + document.osdial_form.email.value + 
 						"&custom1=" + document.osdial_form.custom1.value + 
+						"&custom2=" + document.osdial_form.custom2.value + 
 						"&comments=" + document.osdial_form.comments.value + 
 						"&user=" + user + 
 						"&pass=" + pass + 
@@ -2114,6 +2118,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							document.osdial_form.alt_phone.value		='';
 							document.osdial_form.email.value			='';
 							document.osdial_form.custom1.value='';
+							document.osdial_form.custom2.value='';
 							document.osdial_form.comments.value		='';
 							document.osdial_form.called_count.value	='';
 							VDCL_group_id = '';
@@ -2519,10 +2524,11 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							dialed_number									= check_VDIC_array[36];
 							dialed_label									= check_VDIC_array[37];
 							source_id										= check_VDIC_array[38];
+							document.osdial_form.custom2.value	= check_VDIC_array[39];
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
-        $rcnt = $cnt + 39;
+        $rcnt = $cnt + 40;
         echo '          document.osdial_form.' . $ffields[$cnt] . ".value = check_VDIC_array[" . $rcnt . "];\n";
         $cnt++;
     }
@@ -2609,6 +2615,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							"&alt_phone=" + document.osdial_form.alt_phone.value + 
 							"&email=" + document.osdial_form.email.value + 
 							"&custom1=" + document.osdial_form.custom1.value + 
+							"&custom2=" + document.osdial_form.custom2.value + 
 							"&comments=" + document.osdial_form.comments.value + 
 							"&user=" + user + 
 							"&pass=" + pass + 
@@ -2787,6 +2794,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							document.osdial_form.comments.value		= check_RPLD_array[23];
 
 							document.osdial_form.called_count.value	= check_RPLD_array[24];
+							document.osdial_form.custom2.value	= check_RPLD_array[25];
 
 							if ( (dialed_label.length < 3) || (dialed_label=='NONE') )
 								dialed_label='MAIN';
@@ -2796,7 +2804,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
-        $rcnt = $cnt + 25;
+        $rcnt = $cnt + 26;
         echo '          document.osdial_form.' . $ffields[$cnt] . ".value = check_RPLD_array[" . $rcnt . "];\n";
         $cnt++;
     }
@@ -2826,6 +2834,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							"&alt_phone=" + document.osdial_form.alt_phone.value + 
 							"&email=" + document.osdial_form.email.value + 
 							"&custom1=" + document.osdial_form.custom1.value + 
+							"&custom2=" + document.osdial_form.custom2.value + 
 							"&comments=" + document.osdial_form.comments.value + 
 							"&user=" + user + 
 							"&pass=" + pass + 
@@ -2917,6 +2926,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		"&alt_phone=" + document.osdial_form.alt_phone.value + 
 		"&email=" + document.osdial_form.email.value + 
 		"&custom1=" + document.osdial_form.custom1.value + 
+		"&custom2=" + document.osdial_form.custom2.value + 
 		"&comments=" + document.osdial_form.comments.value + 
 		"&user=" + user + 
 		"&pass=" + pass + 
@@ -3427,6 +3437,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			"&alt_phone=" + document.osdial_form.alt_phone.value + 
 			"&email=" + document.osdial_form.email.value + 
 			"&custom1=" + document.osdial_form.custom1.value + 
+			"&custom2=" + document.osdial_form.custom2.value + 
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
@@ -3613,6 +3624,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				document.osdial_form.alt_phone.value		='';
 				document.osdial_form.email.value			='';
 				document.osdial_form.custom1.value='';
+				document.osdial_form.custom2.value='';
 				document.osdial_form.comments.value		='';
 				document.osdial_form.called_count.value	='';
 <?
@@ -4223,6 +4235,7 @@ else
 		var SCalt_phone = document.osdial_form.alt_phone.value;
 		var SCemail = document.osdial_form.email.value;
 		var SCcustom1 = document.osdial_form.custom1.value;
+		var SCcustom2 = document.osdial_form.custom2.value;
 		var SCcomments = document.osdial_form.comments.value;
 		var SCfullname = LOGfullname;
 		var SCfronter = fronter;
@@ -4300,6 +4313,7 @@ foreach ($forms as $form) {
 			SCalt_phone = SCalt_phone.replace(RGplus,'+');
 			SCemail = SCemail.replace(RGplus,'+');
 			SCcustom1 = SCcustom1.replace(RGplus,'+');
+			SCcustom2 = SCcustom2.replace(RGplus,'+');
 			SCcomments = SCcomments.replace(RGplus,'+');
 			SCfullname = SCfullname.replace(RGplus,'+');
 			SCfronter = SCfronter.replace(RGplus,'+');
@@ -4356,6 +4370,7 @@ foreach ($forms as $form) {
 		var RGalt_phone = new RegExp("--A--alt_phone--B--","g");
 		var RGemail = new RegExp("--A--email--B--","g");
 		var RGcustom1 = new RegExp("--A--custom1--B--","g");
+		var RGcustom2 = new RegExp("--A--custom2--B--","g");
 		var RGcomments = new RegExp("--A--comments--B--","g");
 		var RGfullname = new RegExp("--A--fullname--B--","g");
 		var RGfronter = new RegExp("--A--fronter--B--","g");
@@ -4414,6 +4429,7 @@ foreach ($forms as $form) {
 		encoded = encoded.replace(RGalt_phone, SCalt_phone);
 		encoded = encoded.replace(RGemail, SCemail);
 		encoded = encoded.replace(RGcustom1, SCcustom1);
+		encoded = encoded.replace(RGcustom2, SCcustom2);
 		encoded = encoded.replace(RGcomments, SCcomments);
 		encoded = encoded.replace(RGfullname, SCfullname);
 		encoded = encoded.replace(RGfronter, SCfronter);

@@ -20,6 +20,7 @@
 #     You should have received a copy of the GNU Affero General Public
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
+# 090410-1146 - Added custom2 field
 
 
 
@@ -52,6 +53,7 @@ if ($ADD==7111111)
 	$alt_phone = '3125551212';
 	$email = 'test@test.com';
 	$custom1 = 'custom1';
+	$custom2 = 'custom2';
 	$comments = 'COMMENTS FIELD';
 	$RGfullname = 'JOE AGENT';
 	$RGuser = '6666';
@@ -103,6 +105,7 @@ if (eregi("iframe src",$script_text))
 	$alt_phone = eregi_replace(' ','+',$alt_phone);
 	$email = eregi_replace(' ','+',$email);
 	$custom1 = eregi_replace(' ','+',$custom1);
+	$custom2 = eregi_replace(' ','+',$custom2);
 	$comments = eregi_replace(' ','+',$comments);
 	$RGfullname = eregi_replace(' ','+',$RGfullname);
 	$RGuser = eregi_replace(' ','+',$RGuser);
@@ -142,6 +145,7 @@ $script_text = eregi_replace('--A--date_of_birth--B--',"$date_of_birth",$script_
 $script_text = eregi_replace('--A--alt_phone--B--',"$alt_phone",$script_text);
 $script_text = eregi_replace('--A--email--B--',"$email",$script_text);
 $script_text = eregi_replace('--A--custom1--B--',"$custom1",$script_text);
+$script_text = eregi_replace('--A--custom2--B--',"$custom2",$script_text);
 $script_text = eregi_replace('--A--comments--B--',"$comments",$script_text);
 $script_text = eregi_replace('--A--fullname--B--',"$RGfullname",$script_text);
 $script_text = eregi_replace('--A--fronter--B--',"$RGuser",$script_text);
@@ -221,6 +225,7 @@ if ($ADD==1111111)
 	echo "<option>alt_phone</option>";
 	echo "<option>email</option>";
 	echo "<option>custom1</option>";
+	echo "<option>custom2</option>";
 	echo "<option>comments</option>";
 	echo "<option>lead_id</option>";
 	echo "<option>campaign</option>";
@@ -459,6 +464,7 @@ if ($ADD==3111111)
 	echo "<option>alt_phone</option>";
 	echo "<option>email</option>";
 	echo "<option>custom1</option>";
+	echo "<option>custom2</option>";
 	echo "<option>comments</option>";
 	echo "<option>lead_id</option>";
 	echo "<option>campaign</option>";

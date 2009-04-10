@@ -161,6 +161,7 @@
 # 80402-0121 - Fixes for manual dial transfers on some systems, removed /n persist flag
 # 80424-0442 - Added non_latin lookup from system_settings
 #
+# 090410-1159 - Added custom2 field
 
 $version = '2.0.4-69';
 $build = '80424-0442';
@@ -265,6 +266,8 @@ if (isset($_GET["email"]))						{$email=$_GET["email"];}
 	elseif (isset($_POST["email"]))				{$email=$_POST["email"];}
 if (isset($_GET["custom1"]))			{$custom1=$_GET["custom1"];}
 	elseif (isset($_POST["custom1"]))	{$custom1=$_POST["custom1"];}
+if (isset($_GET["custom2"]))			{$custom2=$_GET["custom2"];}
+	elseif (isset($_POST["custom2"]))	{$custom2=$_POST["custom2"];}
 if (isset($_GET["comments"]))					{$comments=$_GET["comments"];}
 	elseif (isset($_POST["comments"]))			{$comments=$_POST["comments"];}
 if (isset($_GET["auto_dial_level"]))			{$auto_dial_level=$_GET["auto_dial_level"];}
@@ -702,6 +705,7 @@ if ($ACTION == 'manDiaLnextCaLL')
 				$custom1		= trim("$row[28]");
 				$comments		= trim("$row[29]");
 				$called_count	= trim("$row[30]");
+				$custom2		= trim("$row[31]");
 				}
 
 			$called_count++;
@@ -853,6 +857,7 @@ if ($ACTION == 'manDiaLnextCaLL')
 			$LeaD_InfO .=	$phone_number . "\n";
 			$LeaD_InfO .=	"MAIN\n";
 			$LeaD_InfO .=	$source_id . "\n";
+			$LeaD_InfO .=	$custom2 . "\n";
 
 			$forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
 			$cnt = 0;
@@ -1681,6 +1686,7 @@ if ($ACTION == 'VDADcheckINCOMING')
 			$custom1		= trim("$row[28]");
 			$comments		= trim("$row[29]");
 			$called_count	= trim("$row[30]");
+			$custom2		= trim("$row[31]");
 			}
 
 		##### if lead is a callback, grab the callback comments
@@ -1893,6 +1899,7 @@ if ($ACTION == 'VDADcheckINCOMING')
 		$LeaD_InfO .=	$dialed_number . "\n";
 		$LeaD_InfO .=	$dialed_label . "\n";
 		$LeaD_InfO .=	$source_id . "\n";
+		$LeaD_InfO .=	$custom2 . "\n";
 
 		$forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
 		$cnt = 0;
@@ -2345,7 +2352,7 @@ if ($ACTION == 'updateLEAD')
 		$comments = eregi_replace("--QUES--",'?',$comments);
 		$comments = eregi_replace("--POUND--",'#',$comments);
 
-		$stmt="UPDATE osdial_list set vendor_lead_code='" . mysql_real_escape_string($vendor_lead_code) . "', title='" . mysql_real_escape_string($title) . "', first_name='" . mysql_real_escape_string($first_name) . "', middle_initial='" . mysql_real_escape_string($middle_initial) . "', last_name='" . mysql_real_escape_string($last_name) . "', address1='" . mysql_real_escape_string($address1) . "', address2='" . mysql_real_escape_string($address2) . "', address3='" . mysql_real_escape_string($address3) . "', city='" . mysql_real_escape_string($city) . "', state='" . mysql_real_escape_string($state) . "', province='" . mysql_real_escape_string($province) . "', postal_code='" . mysql_real_escape_string($postal_code) . "', country_code='" . mysql_real_escape_string($country_code) . "', gender='" . mysql_real_escape_string($gender) . "', date_of_birth='" . mysql_real_escape_string($date_of_birth) . "', alt_phone='" . mysql_real_escape_string($alt_phone) . "', email='" . mysql_real_escape_string($email) . "', custom1='" . mysql_real_escape_string($custom1) . "', comments='" . mysql_real_escape_string($comments) . "' where lead_id='$lead_id';";
+		$stmt="UPDATE osdial_list set vendor_lead_code='" . mysql_real_escape_string($vendor_lead_code) . "', title='" . mysql_real_escape_string($title) . "', first_name='" . mysql_real_escape_string($first_name) . "', middle_initial='" . mysql_real_escape_string($middle_initial) . "', last_name='" . mysql_real_escape_string($last_name) . "', address1='" . mysql_real_escape_string($address1) . "', address2='" . mysql_real_escape_string($address2) . "', address3='" . mysql_real_escape_string($address3) . "', city='" . mysql_real_escape_string($city) . "', state='" . mysql_real_escape_string($state) . "', province='" . mysql_real_escape_string($province) . "', postal_code='" . mysql_real_escape_string($postal_code) . "', country_code='" . mysql_real_escape_string($country_code) . "', gender='" . mysql_real_escape_string($gender) . "', date_of_birth='" . mysql_real_escape_string($date_of_birth) . "', alt_phone='" . mysql_real_escape_string($alt_phone) . "', email='" . mysql_real_escape_string($email) . "', custom1='" . mysql_real_escape_string($custom1) . "', custom2='" . mysql_real_escape_string($custom2) ."', comments='" . mysql_real_escape_string($comments) . "' where lead_id='$lead_id';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 
@@ -2698,6 +2705,7 @@ if ($ACTION == 'RepullLeadData')
 		} elseif ($address3 == "") {
 			$address3 = $oldphone;
 		}
+		$custom2	= trim("$row[31]");
 	}
 
 	### update the old lead status to REPULL
@@ -2758,6 +2766,7 @@ if ($ACTION == 'RepullLeadData')
 	$LeaD_InfO .=	$custom1 . "\n";
 	$LeaD_InfO .=	$comments . "\n";
 	$LeaD_InfO .=	$called_count . "\n";
+	$LeaD_InfO .=	$custom2 . "\n";
 
 	$forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
 	$cnt = 0;
