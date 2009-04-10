@@ -19,6 +19,7 @@
 #     You should have received a copy of the GNU Affero General Public
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
+# 090410-1118 - Rename of Remote/Off-Hook Agent to External Agent.
 
 
 
@@ -34,7 +35,7 @@ if ($ADD==11111)
 	echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>ADD NEW OFF-HOOK AGENTS</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=navy size=+1>ADD NEW EXTERNAL AGENTS</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=#C1D6DF><td align=right>Agent ID Start: </td><td align=left><input type=text name=user_start size=6 maxlength=6> (numbers only, incremented)$NWB#osdial_remote_agents-user_start$NWE</td></tr>\n";
@@ -152,11 +153,11 @@ if ($ADD==51111)
 	 if ( (strlen($remote_agent_id) < 1) or ($LOGdelete_remote_agents < 1) )
 		{
 		 echo "<br><font color=red>REMOTE AGENT NOT DELETED - Please go back and look at the data you entered\n";
-		 echo "<br>Remote_agent_id be at least 2 characters in length</font>\n";
+		 echo "<br>agent_id be at least 2 characters in length</font>\n";
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>REMOTE AGENT DELETION CONFIRMATION: $remote_agent_id</B>\n";
+		echo "<br><B><font color=navy>REMOTE AGENT DELETION CONFIRMATION: $emote_agent_id</B>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=61111&remote_agent_id=$remote_agent_id&CoNfIrM=YES\">Click here to delete remote agent $remote_agent_id</a></font><br><br><br>\n";
 		}
 
@@ -175,7 +176,7 @@ if ($ADD==61111)
 	 if ( (strlen($remote_agent_id) < 1) or ($CoNfIrM != 'YES') or ($LOGdelete_remote_agents < 1) )
 		{
 		 echo "<br><font color=red>REMOTE AGENT NOT DELETED - Please go back and look at the data you entered\n";
-		 echo "<br>Remote_agent_id be at least 2 characters in length</font><br>\n";
+		 echo "<br>agent_id be at least 2 characters in length</font><br>\n";
 		}
 	 else
 		{
@@ -272,7 +273,7 @@ echo "<TABLE align=center><TR><TD>\n";
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=navy size=+1>OFF-HOOK AGENTS</font><br><br>\n";
+echo "<center><br><font color=navy size=+1>EXTERNAL AGENTS</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=$menubarcolor>";
 echo "<td><font size=1 color=white><B>ID</B></td>";

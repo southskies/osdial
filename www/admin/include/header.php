@@ -19,6 +19,7 @@
 #     You should have received a copy of the GNU Affero General Public
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
+# 090410-1118 - Rename of Remote/Off-Hook Agent to External Agent.
 
 
 if ($ADD==131 && $SUB==2) {
@@ -129,7 +130,7 @@ if ($hh=='reports')
 	<TD height=25 ALIGN=CENTER <?=$filters_hh ?>><a href="<? echo $PHP_SELF ?>?ADD=10000000"><FONT FACE="ARIAL,HELVETICA" COLOR=navy SIZE=<?=$header_font_size ?>> Filters </a></TD>
 	<TD height=25 ALIGN=CENTER <?=$ingroups_hh ?>><a href="<? echo $PHP_SELF ?>?ADD=1000"><FONT FACE="ARIAL,HELVETICA" COLOR=navy SIZE=<?=$header_font_size ?>> In-Groups </a></TD>
 	<TD height=25 ALIGN=CENTER <?=$usergroups_hh ?>><a href="<? echo $PHP_SELF ?>?ADD=100000"><FONT FACE="ARIAL,HELVETICA" COLOR=navy SIZE=<?=$header_font_size ?>> User Groups </a></TD>
-	<TD height=25 ALIGN=CENTER <?=$remoteagent_hh ?>><a href="<? echo $PHP_SELF ?>?ADD=10000"><FONT FACE="ARIAL,HELVETICA" COLOR=navy SIZE=<?=$header_font_size ?>> Off-Hook Agents </a></TD>
+	<TD height=25 ALIGN=CENTER <?=$remoteagent_hh ?>><a href="<? echo $PHP_SELF ?>?ADD=10000"><FONT FACE="ARIAL,HELVETICA" COLOR=navy SIZE=<?=$header_font_size ?>> External Agents </a></TD>
 	<TD height=25 ALIGN=CENTER <?=$reports_hh ?>><a href="<? echo $PHP_SELF ?>?ADD=999999"><FONT FACE="ARIAL,HELVETICA" COLOR=navy SIZE=<?=$header_font_size ?>> Reports </a></TD>
 	<TD height=25 ALIGN=CENTER <?=$admin_hh ?>><a href="<? echo $PHP_SELF ?>?ADD=10000000000"><FONT FACE="ARIAL,HELVETICA" COLOR=navy SIZE=<?=$header_font_size ?>> Setup </a></TD>
 </TR>
@@ -206,7 +207,7 @@ if (strlen($usergroups_hh) > 1) {
 <? } 
 if (strlen($remoteagent_hh) > 1) { 
 	?>
-<TR class='no-ul' BGCOLOR=<?=$remoteagent_color ?>><TD height=20 ALIGN=LEFT COLSPAN=10><FONT FACE="ARIAL,HELVETICA" COLOR=BLACK SIZE=<?=$subheader_font_size ?>> &nbsp; <a href="<? echo $PHP_SELF ?>?ADD=10000"><FONT FACE="ARIAL,HELVETICA" COLOR=BLACK SIZE=<?=$subheader_font_size ?>> Show Off-Hook Agents </a> &nbsp; &nbsp; | &nbsp; &nbsp; <a href="<? echo $PHP_SELF ?>?ADD=11111"><FONT FACE="ARIAL,HELVETICA" COLOR=BLACK SIZE=<?=$subheader_font_size ?>> Add New Off-Hook Agents </a></TD></TR>
+<TR class='no-ul' BGCOLOR=<?=$remoteagent_color ?>><TD height=20 ALIGN=LEFT COLSPAN=10><FONT FACE="ARIAL,HELVETICA" COLOR=BLACK SIZE=<?=$subheader_font_size ?>> &nbsp; <a href="<? echo $PHP_SELF ?>?ADD=10000"><FONT FACE="ARIAL,HELVETICA" COLOR=BLACK SIZE=<?=$subheader_font_size ?>> Show External Agents </a> &nbsp; &nbsp; | &nbsp; &nbsp; <a href="<? echo $PHP_SELF ?>?ADD=11111"><FONT FACE="ARIAL,HELVETICA" COLOR=BLACK SIZE=<?=$subheader_font_size ?>> Add New External Agents </a></TD></TR>
 <? } 
 
 if (strlen($admin_hh) > 1) { 

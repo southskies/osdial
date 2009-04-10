@@ -19,6 +19,7 @@
 #     You should have received a copy of the GNU Affero General Public
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
+# 090410-1118 - Rename of Remote/Off-Hook Agent to External Agent.
 
 
 # Default menu
@@ -149,14 +150,14 @@ if ($ADD==5111)			{$hh='ingroups';	$title = "Delete In-Group";}
 if ($ADD==6111)			{$hh='ingroups';	$title = "Delete In-Group";}
 if ($ADD==3111)			{$hh='ingroups';	$title = "Modify In-Group";}
 
-# Remote/Off-Hook/Auto Agents
-if ($ADD==10000)		{$hh='remoteagent';	$title = "Remote Agents";}
-if ($ADD==11111)		{$hh='remoteagent';	$title = "Add New Remote Agents";}
-if ($ADD==21111)		{$hh='remoteagent';	$title = "New Remote Agents Addition";}
-if ($ADD==41111)		{$hh='remoteagent';	$title = "Modify Remote Agents";}
-if ($ADD==51111)		{$hh='remoteagent';	$title = "Delete Remote Agents";}
-if ($ADD==61111)		{$hh='remoteagent';	$title = "Delete Remote Agents";}
-if ($ADD==31111)		{$hh='remoteagent';	$title = "Modify Remote Agents";}
+# Remote/External/Auto Agents
+if ($ADD==10000)		{$hh='remoteagent';	$title = "External Agents";}
+if ($ADD==11111)		{$hh='remoteagent';	$title = "Add New External Agents";}
+if ($ADD==21111)		{$hh='remoteagent';	$title = "New External Agents Addition";}
+if ($ADD==41111)		{$hh='remoteagent';	$title = "Modify External Agents";}
+if ($ADD==51111)		{$hh='remoteagent';	$title = "Delete External Agents";}
+if ($ADD==61111)		{$hh='remoteagent';	$title = "Delete External Agents";}
+if ($ADD==31111)		{$hh='remoteagent';	$title = "Modify External Agents";}
 
 # User Groups
 if ($ADD==8111)			{$hh='usergroups';	$title = "CallBacks Within User Group";}
