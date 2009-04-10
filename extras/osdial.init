@@ -63,8 +63,6 @@ start() {
 		fi
 		/usr/sbin/asterisk -rx "iax2 reload" > /dev/null 2>&1
 
-		/etc/init.d/mysqld start
-		sleep 1
 		[ "$OSDIAL_MYSQL_INSTALL" = "YES" ] && /opt/osdial/bin/sql/upgrade_sql.pl
 
 		# Get server timezone and update in osdial database
@@ -76,8 +74,6 @@ start() {
 			echo "UPDATE servers SET local_gmt='$OSDTZ';" | mysql osdial > /dev/null 2>&1
 			echo "UPDATE phones SET local_gmt='$OSDTZ';" | mysql osdial > /dev/null 2>&1
 		fi
-		/etc/init.d/mysqld stop
-		
 
 		# Get INET address from eth0 or eth1
 		INET=`/sbin/ip ad li dev eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d '/' -f 1`
