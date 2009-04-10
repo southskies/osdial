@@ -30,6 +30,9 @@
 # 71208-0016 - Update to check for httpd user for settings perms of web stuff.
 #            - This will default to "nobody" the apache default if not found.
 # 71216-0026 - Create HTTPDUSER account if it doesn't exist. (always nobody?)
+# 90310-0000 - Update for osdial files.
+# 90406-2138 - Update for auto-asterisk-configs.
+# 90406-2211 - Added ip-relay.
 #
 #
 # methods:
@@ -127,6 +130,7 @@ install-docs: .osdial.config
 	@install -d -m 755 $(DESTDIR)$(PATHagi)
 	@install -d -m 755 $(DESTDIR)$(PATHsounds)
 	@install -p -m 755 ./bin/* $(DESTDIR)$(PATHhome)
+	@install -p -m 755 ./extras/ip_relay/ip_relay $(DESTDIR)$(PATHhome)
 	@install -p -m 755 ./extras/perl/Asterisk.pm $(DESTDIR)$(PATHhome)/libs
 	@install -p -m 755 ./extras/perl/Asterisk/* $(DESTDIR)$(PATHhome)/libs/Asterisk
 	@install -p -m 644 ./extras/gmt/GMT_USA_zip.txt $(DESTDIR)$(PATHhome)

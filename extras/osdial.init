@@ -6,6 +6,9 @@
 # processname:  osdial
 # pidfile: /var/run/osdial/osdial.pid
 
+# 90409-2204 - Added several startup functions.
+# 90409-2220 - Added ip_relay.
+
 # Source function library.
 . /etc/rc.d/init.d/functions
 
@@ -105,10 +108,18 @@ start() {
 		echo " --- " >> /etc/issue
 	
 		# Proccess to be run at startup.
+		Gtrm=`grep setterm /etc/rc.local`
+		[ -z "$Gtrm" ] && echo "/use/bin/setterm -blank" >> /etc/rc.local
+		[ -z "$Gtrm" ] && echo "/use/bin/setterm -powersave off" >> /etc/rc.local
+		[ -z "$Gtrm" ] && echo "/use/bin/setterm -powerdown" >> /etc/rc.local
 		Gntp=`grep AST_ntp_update /etc/rc.local`
 		[ -z "$Gntp" ] && echo "/etc/cron.hourly/AST_ntp_update.sh &" >> /etc/rc.local
 		Gacp=`grep area_code_populate /etc/rc.local`
-		[ -z "$Gacp" ] && echo "/opt/osdial/bin/ADMIN_area_code_populate.pl > /dev/null 2>&1 &" >> /etc/rc.local
+		[ -z "$Gacp" -a -d "/var/lib/mysql/osdial" ] && echo "/opt/osdial/bin/ADMIN_area_code_populate.pl > /dev/null 2>&1 &" >> /etc/rc.local
+		Goag=`grep osdial_astgen /etc/rc.local`
+		[ -z "$Goag" ] && echo "/opt/osdial/bin/osdial_astgen.pl -q &" >> /etc/rc.local
+		Grst=`grep reset_mysql_vars /etc/rc.local`
+		[ -z "$Grst" -a -d "/var/lib/mysql/osdial" ] && echo "/opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1 &" >> /etc/rc.local
 
 		# Saving options to /etc/sysconfig/osdial
 		echo "OSDIAL_FIRSTRUN=NO" > /etc/sysconfig/osdial
@@ -116,6 +127,10 @@ start() {
 		echo "OSDIAL_BINUSER=$BINUSER" >> /etc/sysconfig/osdial
 		echo "OSDIAL_BINPASS=$BINPASS" >> /etc/sysconfig/osdial
 	fi
+
+	# Processes to run before services start
+	/opt/osdial/bin/ADMIN_restart_roll_logs.pl > /dev/null 2>&1
+
 	return 0
 }
 
@@ -129,27 +144,44 @@ reconfig() {
 	start
 }
 
-restart() {
-	stop
-	start
+start_relay() {
+	if [ -f "/opt/osdial/bin/ip_relay" -a -f "/etc/asterisk/osdial_iax.conf" ]; then
+		/opt/osdial/bin/ip_relay 40569 127.0.0.1    4569 9999999 > /dev/null 2>&1 &
+		/opt/osdial/bin/ip_relay 41569 127.0.0.1    4569 9999999 > /dev/null 2>&1 &
+	fi
+}
+
+stop_relay() {
+	if [ -f "/opt/osdial/bin/ip_relay" -a -f "/etc/asterisk/osdial_iax.conf" ]; then
+		kill `ps -C ip_relay -o pid --no-heading` > /dev/null 2>&1
+	fi
 }
 
 # See how we were called.
 case "$1" in
   start)
 	start
+	start_relay
 	;;
   stop)
+	stop_relay
 	stop
 	;;
   reconfig)
 	reconfig
 	;;
   restart)
-	restart
+	stop
+	start
+	;;
+  start_relay)
+	start_relay
+	;;
+  stop_relay)
+	stop_relay
 	;;
   *)
-	echo "Usage: osdial {start|stop|restart|reconfig}"
+	echo "Usage: osdial {start|stop|restart|reconfig| start_relay|stop_relay|restart_relay}"
 	exit 1
 esac
 

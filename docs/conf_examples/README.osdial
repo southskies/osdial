@@ -1,0 +1,79 @@
+
+Here is a breif description of each of the osdial configuration files:
+
+*   Denotes a file that should not be edited (look for an osdial_XXXX_custom.conf file to edit).
+**  Denotes an auto-generated file
+*** Denotes a planned auto-generated file, use caution as config may get overwritten in a future version.
+
+
+---- Extensions ----
+
+*osdial_extensions.conf
+    Contains the extensions or "applications" used by the OSDial internal processes.
+
+**osdial_extensions_conferences.conf
+    Contains the extension mappings for the "conferences" used by agents.
+    
+osdial_extensions_custom.conf
+    This file may contain any additional applications or extensions created by you!
+    examples might be custom inbound, outbound, or phones entries.
+
+***osdial_extensions_inbound.conf
+    Contains the extensions needed to pass an inbound call to an ingroup.
+    
+***osdial_extensions_outbound.conf
+    Contains the outbound dialing rules.
+
+**osdial_extensions_phones.conf
+    Contains the agent-phone extensions as defined under Admin->Phones.
+
+**osdial_extensions_servers.conf
+    Contains the server-to-server extensions.
+
+
+---- Misc ----
+
+osdial_manager.conf
+    Contains the credentials for connecting to the Asterisk socket.
+
+**osdial_meetme.conf
+    Contains the "conferences" used by agents.
+
+
+---- IAX2 ----
+
+*osdial_iax.conf
+    The master IAX2 configuration file, nothing should be in hear but includes.
+
+**osdial_iax_registrations.conf
+    Contains IAX2 registrations
+
+osdial_iax_custom.conf
+    This file may contain any additional IAX2 configuration created by you!
+
+**osdial_iax_phones.conf
+    Contains the agent-phone IAX2 configuration as defined under Admin->Phones.
+
+**osdial_iax_servers.conf
+    Contains the server-to-server IAX2 configuration.
+
+***osdial_iax_trunks.conf
+    Contains the server-to-server IAX2 configuration.
+
+
+---- SIP ----
+
+*osdial_sip.conf
+    The master SIP configuration file, nothing should be in hear but includes.
+
+**osdial_sip_registrations.conf
+    Contains SIP registrations
+
+osdial_sip_custom.conf
+    This file may contain any additional SIP configuration created by you!
+
+**osdial_sip_phones.conf
+    Contains the agent-phone SIP configuration as defined under Admin->Phones.
+
+***osdial_sip_trunks.conf
+    Contains the server-to-server SIP configuration.
