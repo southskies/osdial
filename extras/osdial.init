@@ -36,6 +36,19 @@ start() {
 		[ -n "$BINUSER" ] && BINTIMEOUT=3
 		TEMP=/tmp/osdial_init.$$
 
+		# Install DB
+		[ "$OSDIAL_MYSQL_INSTALL" = "YES" ] && /opt/osdial/bin/sql/upgrade_sql.pl
+
+		# Get server timezone and update in osdial database
+		OSDTZ=`date +%:::z`
+		[ -z "$OSDTZ" ] && OSDTZ="0"
+		OSDTZ=`expr $OSDTZ + 0`
+		[ "`date +%Z | grep DT`" != "" ] && OSDTZ=`expr $OSDTZ - 1`
+		if [ -n "$OSDTZ" ]; then
+			echo "UPDATE servers SET local_gmt='$OSDTZ';" | mysql osdial > /dev/null 2>&1
+			echo "UPDATE phones SET local_gmt='$OSDTZ';" | mysql osdial > /dev/null 2>&1
+		fi
+
 		# Prompt for Company, Binfone Username and Password
 		dialog --clear --timeout $TIMEOUT \
 			--backtitle "OSDial - The OpenSource Dialer" \
@@ -62,18 +75,6 @@ start() {
 			/usr/bin/perl -pi -e "s|^;||" /etc/asterisk/osdial_iax_trunks.conf
 		fi
 		/usr/sbin/asterisk -rx "iax2 reload" > /dev/null 2>&1
-
-		[ "$OSDIAL_MYSQL_INSTALL" = "YES" ] && /opt/osdial/bin/sql/upgrade_sql.pl
-
-		# Get server timezone and update in osdial database
-		OSDTZ=`date +%:::z`
-		[ -z "$OSDTZ" ] && OSDTZ="0"
-		OSDTZ=`expr $OSDTZ + 0`
-		[ "`date +%Z | grep DT`" != "" ] && OSDTZ=`expr $OSDTZ - 1`
-		if [ -n "$OSDTZ" ]; then
-			echo "UPDATE servers SET local_gmt='$OSDTZ';" | mysql osdial > /dev/null 2>&1
-			echo "UPDATE phones SET local_gmt='$OSDTZ';" | mysql osdial > /dev/null 2>&1
-		fi
 
 		# Get INET address from eth0 or eth1
 		INET=`/sbin/ip ad li dev eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d '/' -f 1`
