@@ -19,6 +19,7 @@
 #     You should have received a copy of the GNU Affero General Public
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
+# 090410-1731 - Added allow_tab_switch
 
 
 ######################################################################################################
@@ -176,6 +177,7 @@ if ($non_latin < 1)	{
 	$human_answered = ereg_replace("[^NY]","",$human_answered);
 	$tovdad_display = ereg_replace("[^NY]","",$tovdad_display);
 	$campaign_allow_inbound = ereg_replace("[^NY]","",$campaign_allow_inbound);
+	$allow_tab_switch = ereg_replace("[^NY]","",$allow_tab_switch);
 	
 	### ALPHA-NUMERIC ONLY ###
 	$PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);

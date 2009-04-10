@@ -22,6 +22,7 @@
  * #
  * #
  * # 090410-1155 - Added custom2 field.
+ * # 090410-1750 - Added allow_tab_switch.
  */
 
 
@@ -158,6 +159,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	var VDIC_web_form_address = '<? echo $OSDiaL_web_form_address ?>';
 	var CalL_ScripT_id = '';
 	var CalL_AutO_LauncH = '';
+	var CalL_allow_tab = '';
 	var panel_bgcolor = '7297A1'; //#E0C2D6
 	var CusTCB_bgcolor = '#D0E0E7';
 	var auto_dial_level = '<? echo $auto_dial_level ?>';
@@ -174,6 +176,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	var campaign_rec_filename = '<? echo $campaign_rec_filename ?>';
 	var campaign_script = '<? echo $campaign_script ?>';
 	var get_call_launch = '<? echo $get_call_launch ?>';
+	var allow_tab_switch = '<? echo $allow_tab_switch ?>';
 	var campaign_am_message_exten = '<? echo $campaign_am_message_exten ?>';
 	var park_on_extension = '<? echo $OSDiaL_park_on_extension ?>';
 	var park_count=0;
@@ -2459,6 +2462,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							 CalL_XC_a_NuMber			= VDIC_data_VDIG[8];
 							 CalL_XC_b_Dtmf				= VDIC_data_VDIG[9];
 							 CalL_XC_b_NuMber			= VDIC_data_VDIG[10];
+							 CalL_allow_tab			    = VDIC_data_VDIG[11];
 							if (VDIC_data_VDIG[11].length > 0)
 								{LIVE_default_xfer_group = VDIC_data_VDIG[11];}
 							else
@@ -5231,10 +5235,12 @@ else
 		var img = document.getElementById("FormButtons");
 		var cur_src = img.src.substring(img.src.lastIndexOf("/")+1);
 
-		if (cur_src == scrpt_img) {
-			MainPanelToFront('NO');
-		} else {
-			ScriptPanelToFront();
+        if (allow_tab_switch == 'Y' || CalL_allow_tab == 'Y') {
+		    if (cur_src == scrpt_img) {
+			    MainPanelToFront('NO');
+		    } else {
+			    ScriptPanelToFront();
+            }
 		}
 	}
 	

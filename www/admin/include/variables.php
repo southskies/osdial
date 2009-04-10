@@ -19,6 +19,8 @@
 #     You should have received a copy of the GNU Affero General Public
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
+# 090410-1415 - Reformatted to use get_variable.
+# 090410-1731 - Added allow_tab_switch
 
 
 $admin_version = '2.1.0';
@@ -79,6 +81,7 @@ $agi_output = get_variable("agi_output");
 $allcalls_delay = get_variable("allcalls_delay");
 $allow_closers = get_variable("allow_closers");
 $allow_sipsak_messages = get_variable("allow_sipsak_messages");
+$allow_tab_switch = get_variable("allow_tab_switch");
 $alt_phone_field = get_variable("alt_phone_field");
 $alter_custdata_override = get_variable("alter_custdata_override");
 $alt_number_dialing = get_variable("alt_number_dialing");

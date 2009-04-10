@@ -20,6 +20,7 @@
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
 # 090410-1147 - Added custom2 field
+# 090410-1731 - Added allow_tab_swtich
 
 
 $NWB = " &nbsp; <a href=\"javascript:openNewWindow('$PHP_SELF?ADD=99999";
@@ -469,6 +470,11 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <B>Get Call Launch -</B> This menu allows you to choose whether you want to auto-launch the web-form page in a separate window, auto-switch to the SCRIPT tab or do nothing when a call is sent to the agent for this campaign. 
 
 <BR>
+<A NAME="osdial_campaigns-allow_tab_switch">
+<BR>
+<B>Allow Tab Switch -</B> This menu allows you to choose whether you want to allow users to be able to switch between FORM and SCRIPT tabs.
+
+<BR>
 <A NAME="osdial_campaigns-am_message_exten">
 <BR>
 <B>Answering Machine Message -</B> This field is for entering in an extension to blind transfer calls to when the agent gets an answering machine and clicks on the Answering Machine Message button in the transfer conference frame. You must set this exten up in the dial plan - extensions.conf - and make sure it plays an audio file then hangs up. 
@@ -683,6 +689,11 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <A NAME="osdial_inbound_groups-get_call_launch">
 <BR>
 <B>Get Call Launch -</B> This menu allows you to choose whether you want to auto-launch the web-form page in a separate window, auto-switch to the SCRIPT tab or do nothing when a call is sent to the agent for this campaign. 
+
+<BR>
+<A NAME="osdial_inbound_groups-allow_tab_switch">
+<BR>
+<B>Allow Tab Switch -</B> This menu allows you to choose whether you want to allow users to be able to switch between FORM and SCRIPT tabs.
 
 <BR>
 <A NAME="osdial_inbound_groups-xferconf_a_dtmf">
