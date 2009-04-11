@@ -1,6 +1,8 @@
 <html>
-<head><title>Choose Login:</title></head>
-<body>
+<head>
+<title>Font Test</title>
+</head>
+<body bgcolor="#86b1b4">
 <script language="javascript">
 	// OSDial font function.
 	//   id = html id
@@ -12,7 +14,6 @@
 	function osdfont(id,phrase,krnon) {
 		var let = new Array();
 		var krn = new Array();
-		var images = '/osdial/images/';
 		if (krnon == undefined)
 			krnon = 1;
 
@@ -40,7 +41,7 @@
 		var lstkrn = 0;
 		for (var l in phrase.split("")) {
 			if (let[phrase[l]]) {
-				osdhtml += '<img style="margin-left: ' + lstkrn + 'px;" border="0" src="' + images + let[phrase[l]] + '">';
+				osdhtml += '<img style="margin-left: ' + lstkrn + 'px;" border="0" src="' + let[phrase[l]] + '">';
 				if (krnon)
 					lstkrn = krn[phrase[l]] - krnon;
 			}
@@ -48,47 +49,24 @@
 		document.getElementById(id).innerHTML = osdhtml;
 	}
 </script>
-<br><br><br>
-
-<table align=center border=0 align=center width=518 height=368 background=/osdial/images/osdial-bg.png>
-<tr>
-	<td valign=top>
-	
-		<table border=0 align=center>
-		<tr>
-			<td height=180 width=360 align=center valign=middle colspan=2>
-				<div id="company"></div>
-				<script>
-					osdfont('company','Company Name Here');
-				</script>
-				<!-- <img src=/osdial/images/defaultCompany.png alt="Testing" width=298 height=30> -->
-			</td>
-		</tr>
-		<tr>
-			<td align=center>
-				&nbsp;&nbsp;&nbsp;<map name="mapAL">
-					<a href=/osdial/agent
-						OnMouseOver="agent.src='/osdial/images/AgentLoginDn.png'" 
-						OnMouseOut="agent.src='/osdial/images/AgentLoginUp.png'" 
-						usemap="#mapAL">
-					<img src="/osdial/images/AgentLoginUp.png" width=117 height=26 BORDER=0 NAME="agent"></A>
-				</map>
-			</td>
-			<td align=center>
-				<map name="mapCL">
-					<a href=/osdial/admin/admin.php?ADD=10 
-						OnMouseOver="control.src='/osdial/images/ControlLoginDn.png'" 
-						OnMouseOut="control.src='/osdial/images/ControlLoginUp.png'" 
-						usemap="#mapCL">
-					<img src="/osdial/images/ControlLoginUp.png" width=129 height=26 BORDER=0 NAME="control"></A>&nbsp;&nbsp;&nbsp;
-				</map>
-			</td>
-		</tr>
-		</table>
-		
-	</td>
-</tr>
-</table>
-
+<div id="lower"></div>
+<div id="upper"></div>
+<div id="mixed"></div>
+<div id="num"></div>
+<div id="char"></div>
+<div id="phrase1"></div>
+<div id="phrase2"></div>
+<div id="phrase3"></div>
+<div id="phrase4"></div>
+<script language="javascript">
+	osdfont('lower','abcdefghijklmnopqrstuvwxyz');
+	osdfont('upper','ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+	osdfont('mixed','AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz');
+	osdfont('num','0123456789');
+	osdfont('char','&.@!-');
+	osdfont('phrase1','This is a Test with The Kerning Working!');
+	osdfont('phrase2','This is a Test with The Kerning Tighter!',2);
+	osdfont('phrase3','This is a Test with The Kerning Looser!',-1);
+	osdfont('phrase4','This is a Test with The Kerning Turned Off!',false);
+</script>
 </body>
-</html>

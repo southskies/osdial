@@ -16,6 +16,8 @@
 [ -f "/etc/sysconfig/osdial" ] && . /etc/sysconfig/osdial
 
 [ -n "$OSDIAL_COMPANY" ] && COMPANY=$OSDIAL_COMPANY
+[ -n "$OSDIAL_COMPANY" ] && ORIG_COMPANY=$OSDIAL_COMPANY
+[ -z "$ORIG_COMPANY" ] && ORIG_COMPANY="Company Name Here"
 
 [ -n "$OSDIAL_BINUSER" ] && BINUSER=$OSDIAL_BINUSER
 [ -n "$OSDIAL_BINUSER" ] && ORIG_BINUSER=$OSDIAL_BINUSER
@@ -56,8 +58,8 @@ start() {
 			--inputbox "Enter Company Name:" 9 65 "$COMPANY" 2> $TEMP
 		[ "$?" = "0" ] && COMPANY=`cat $TEMP`
 		[ -z "$COMPANY" ] && COMPANY="Company Name Here"
-		/usr/bin/perl -pi -e "s|Company Name Here|$COMPANY|" /opt/osdial/html/index.html
-		/usr/bin/perl -pi -e "s|Company Name Here|$COMPANY|" /opt/osdial/html/admin/include/display.php
+		/usr/bin/perl -pi -e "s|$ORIG_COMPANY|$COMPANY|" /opt/osdial/html/index.html
+		/usr/bin/perl -pi -e "s|$ORIG_COMPANY|$COMPANY|" /opt/osdial/html/admin/include/display.php
 	
 		dialog --clear --timeout $BINTIMEOUT --backtitle "OSDial - The OpenSource Dialer" --title "Free VoIP Trial" \
 			--form "\n                You may optionally contact\n      Call Center Service Group at 800-221-0251 (opt 2)\n   for a free trial with Binfone, a premier VoIP provider.\n\n        If you have an existing Binfone IAX extension,\n          you may also enter those credentials here.\n \n \n " 20 65 2 \
