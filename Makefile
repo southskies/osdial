@@ -141,6 +141,7 @@ install-docs: .osdial.config
 	
 .install-web: .install-common
 	@echo "Installing User-Interface (web) in $(DESTDIR)$(PATHweb)..."
+	@install -d -m 777 $(DESTDIR)$(PATHweb)/images
 	@install -d -m 777 $(DESTDIR)$(PATHweb)/agent
 	@install -d -m 777 $(DESTDIR)$(PATHweb)/agent/images
 	@install -d -m 777 $(DESTDIR)$(PATHweb)/agent/include
@@ -162,8 +163,9 @@ install-docs: .osdial.config
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/scripts
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/usergroups
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/users
-	@install -p -m 644 ./www/*.png $(DESTDIR)$(PATHweb)
 	@install -p -m 644 ./www/*.html $(DESTDIR)$(PATHweb)
+	@install -p -m 644 ./www/images/*.png $(DESTDIR)$(PATHweb)/images
+	@install -p -m 644 ./www/images/*.html $(DESTDIR)$(PATHweb)/images
 	@install -p -m 644 ./www/agent/*.php $(DESTDIR)$(PATHweb)/agent
 	@install -p -m 666 ./www/agent/*.txt $(DESTDIR)$(PATHweb)/agent
 	@install -p -m 644 ./www/agent/*.css $(DESTDIR)$(PATHweb)/agent
