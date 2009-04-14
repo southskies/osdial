@@ -269,6 +269,7 @@ sub gen_conferences {
 	$mtm .= "conf => 8600\nconf => 8601,1234\n";
 	$cnf .= ";\n; ZapBarge direct channel extensions\n";
 	$cnf .= "exten => _8612XXX,1,ZapBarge(\${EXTEN:4})\n";
+	$cnf .= "exten => _8612XXX,2,Hangup\n";
 	$cnf .= ";\n;Volume adjustments\n";
 	$cnf .= "exten => _X4860XXXX,1,MeetMeAdmin(\${EXTEN:2},T,\${EXTEN:0:1})\n";
 	$cnf .= "exten => _X4860XXXX,2,Hangup\n;\n";
@@ -316,8 +317,11 @@ sub gen_conferences {
                 $cf = $aryA[0] unless ($cf);
                 $cl = $aryA[0];
 		$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme,\${EXTEN}|F\n";
+		$cnf2 .= "exten => _" . $aryA[0] . ",2,Hangup\n";
 		$cnf2 .= "exten => _7" . $aryA[0] . ",1,Meetme,\${EXTEN:1}|Fq\n";
+		$cnf2 .= "exten => _7" . $aryA[0] . ",2,Hangup\n";
 		$cnf2 .= "exten => _6" . $aryA[0] . ",1,Meetme,\${EXTEN:1}|Fmq\n";
+		$cnf2 .= "exten => _6" . $aryA[0] . ",2,Hangup\n";
 		$mtm2 .= "conf => " . $aryA[0] . "\n";
         }
 	$cnf .= ";\n; OSDIAL Agent Conferences $cf - $cl\n";
