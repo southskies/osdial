@@ -1,7 +1,7 @@
 Summary:	The OSDial predictive dialing suite.
 Name:		osdial
 Version:	2.1.0.002
-Release:	6
+Release:	7
 License:	GPL
 Group:		Applications/Telephony
 Source0:	osdial-%{version}.tgz
@@ -216,11 +216,20 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 	# Apply OSDial SQL changes to /etc/my.cnf
 	if [ ! "`grep OSDIAL /etc/my.cnf`" ]; then
 		MCNF="old_passwords=1\n\n"
-		MCNF="${MCNF}#===== BEGIN OSDIAL my.cnf Additions =====\nskip-name-resolve\ninnodb_file_per_table\ninnodb_data_home_dir = /var/lib/mysql/\n"
-		MCNF="${MCNF}innodb_data_file_path = ibdata1:10M:autoextend\ninnodb_log_group_home_dir = /var/lib/mysql/\n"
-		MCNF="${MCNF}innodb_log_arch_dir = /var/lib/mysql/\ninnodb_buffer_pool_size = 16M\ninnodb_additional_mem_pool_size = 2M\n"
-		MCNF="${MCNF}innodb_log_file_size = 5M\ninnodb_log_buffer_size = 8M\ninnodb_flush_log_at_trx_commit = 1\n"
-		MCNF="${MCNF}innodb_lock_wait_timeout = 50\n#===== END OSDIAL my.cnf Additions =====\n\n"
+		MCNF="${MCNF}#===== BEGIN OSDIAL my.cnf Additions =====\n"
+		MCNF="${MCNF}skip-name-resolve\n"
+		MCNF="${MCNF}innodb_file_per_table\n"
+		MCNF="${MCNF}innodb_data_home_dir = /var/lib/mysql/\n"
+		MCNF="${MCNF}innodb_data_file_path = ibdata1:10M:autoextend\n"
+		MCNF="${MCNF}innodb_log_group_home_dir = /var/lib/mysql/\n"
+		MCNF="${MCNF}innodb_log_arch_dir = /var/lib/mysql/\n"
+		MCNF="${MCNF}innodb_buffer_pool_size = 16M\n"
+		MCNF="${MCNF}innodb_additional_mem_pool_size = 2M\n"
+		MCNF="${MCNF}innodb_log_file_size = 5M\n"
+		MCNF="${MCNF}innodb_log_buffer_size = 8M\n"
+		MCNF="${MCNF}innodb_flush_log_at_trx_commit = 1\n"
+		MCNF="${MCNF}innodb_lock_wait_timeout = 50\n"
+		MCNF="${MCNF}#===== END OSDIAL my.cnf Additions =====\n\n"
 		/usr/bin/perl -pi -e "s|old_passwords=1|$MCNF|" /etc/my.cnf
 		# Restart mysql
 		/sbin/service mysqld restart
@@ -246,8 +255,11 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 
 %post web
 	/sbin/chkconfig httpd on > /dev/null 2>&1
-	if [ ! -f /var/www/html/index.html ]; then
-		ln -s /opt/osdial/html/index.html /var/www/html/index.html
+	if [ -f "/var/www/html/index.html" -a -n "`grep osdial /var/www/html/index.html`" ]; then
+		mv /var/www/html/index.html /var/www/html/index.html.bak
+	fi
+	if [ ! -f /var/www/html/index.php ]; then
+		ln -s /opt/osdial/html/index.php /var/www/html/index.php
 	fi
 	# modify php.ini for our defaults.
 	if [ ! "`grep OSDIAL /etc/php.ini`" ]; then
@@ -535,6 +547,7 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/start_asterisk_boot.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_ntp_update.sh
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/osdial_astgen.pl
+%attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/osdial.cron
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/ip_relay
 %attr(0755,asterisk,asterisk) %{_sysconfdir}/cron.hourly/AST_ntp_update.sh
 
@@ -598,20 +611,93 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 %defattr(644,asterisk,asterisk,755)
 %attr(0644,asterisk,asterisk) %{_sysconfdir}/httpd/conf.d/osdial.conf
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/images
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/agent
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/agent/images
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/admin
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/admin/ploticus
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/admin/agent_reports
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/admin/server_reports
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/AgentLoginDn.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/AgentLoginUp.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/ControlLoginDn.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/ControlLoginUp.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/clientCompany.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/defaultCompany.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/index.html
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/osdial-bg.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/index.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/osdial-bg.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/AgentLoginDn.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/AgentLoginUp.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/ControlLoginDn.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/ControlLoginUp.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/clientCompany.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/defaultCompany.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/a.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/b.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/c.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/d.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/e.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/f.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/g.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/h.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/i.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/j.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/k.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/l.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/m.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/n.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/o.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/p.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/q.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/r.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/s.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/t.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/u.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/v.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/w.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/x.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/y.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/z.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/A.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/B.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/C.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/D.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/E.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/F.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/G.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/H.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/I.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/J.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/K.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/L.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/M.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/N.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/O.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/P.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/Q.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/R.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/S.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/T.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/U.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/V.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/W.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/X.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/Y.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/Z.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/0.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/1.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/2.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/3.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/4.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/5.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/6.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/7.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/8.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/9.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/space.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/exclamation.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/at.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/ampersand.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/hyphen.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/period.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/comma.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/colon.png
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/test.html
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/rawtest.html
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/active_list_refresh.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/astguiclient.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/call_log_display.php
@@ -869,12 +955,12 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_timeonpark.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/admin.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/admin_modify_lead.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/admin_search_lead.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/closer-fronter_popup.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/closer-fronter_popup2.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/closer.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/closer_dispo.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/closer_popup.php
+#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/admin_search_lead.php
+#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/closer-fronter_popup.php
+#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/closer-fronter_popup2.php
+#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/closer.php
+#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/closer_dispo.php
+#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/closer_popup.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/dbconnect.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/group_hourly_stats.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/help.gif
@@ -883,9 +969,9 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 %attr(0775,apache,asterisk) %{_opt}/osdial/html/admin/listloader_rowdisplay.pl
 %attr(0775,apache,asterisk) %{_opt}/osdial/html/admin/listloader_super.pl
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/log_test.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/new_listloader_superL.php
+#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/new_listloader_superL.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/phone_stats.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/record_conf_1_hour.php
+#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/record_conf_1_hour.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/remote_dispo.php
 %attr(0775,apache,asterisk) %{_opt}/osdial/html/admin/spreadsheet_sales_viewer.pl
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/user_stats.php
@@ -894,7 +980,7 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/osdial_sales_viewer.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/voice_lab.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/vtiger_search.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/welcome.php
+#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/welcome.php
 %attr(0664,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/admin/VMnow.txt
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/admin.js
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/auth.php
@@ -948,7 +1034,7 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/variables.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/index.php
 %attr(0664,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/admin/admin_changes_log.txt
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/admin_config.inc
+#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/admin_config.inc
 %attr(0664,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/admin/discover_stmts.txt
 %attr(0664,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/admin/listloader_stmts.txt
 %attr(0664,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/admin/project_auth_entries.txt
