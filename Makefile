@@ -163,7 +163,7 @@ install-docs: .osdial.config
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/usergroups
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/users
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/images
-	@install -p -m 644 ./www/*.html $(DESTDIR)$(PATHweb)
+	@install -p -m 644 ./www/*.php $(DESTDIR)$(PATHweb)
 	@install -p -m 644 ./www/images/*.png $(DESTDIR)$(PATHweb)/images
 	@install -p -m 644 ./www/images/*.html $(DESTDIR)$(PATHweb)/images
 	@install -p -m 644 ./www/agent/*.php $(DESTDIR)$(PATHweb)/agent

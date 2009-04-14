@@ -58,7 +58,7 @@ start() {
 			--inputbox "Enter Company Name:" 9 65 "$COMPANY" 2> $TEMP
 		[ "$?" = "0" ] && COMPANY=`cat $TEMP`
 		[ -z "$COMPANY" ] && COMPANY="Company Name Here"
-		/usr/bin/perl -pi -e "s|$ORIG_COMPANY|$COMPANY|" /opt/osdial/html/index.html
+		#/usr/bin/perl -pi -e "s|$ORIG_COMPANY|$COMPANY|" /opt/osdial/html/index.html
 		/usr/bin/perl -pi -e "s|$ORIG_COMPANY|$COMPANY|" /opt/osdial/html/admin/include/display.php
 	
 		dialog --clear --timeout $BINTIMEOUT --backtitle "OSDial - The OpenSource Dialer" --title "Free VoIP Trial" \

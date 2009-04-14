@@ -7,3 +7,5 @@ ALTER TABLE osdial_list ADD COLUMN external_key VARCHAR(100);
 
 ALTER TABLE osdial_inbound_groups ADD COLUMN allow_tab_switch ENUM('Y','N') default 'Y';
 ALTER TABLE osdial_campaigns ADD COLUMN allow_tab_switch ENUM('Y','N') default 'Y';
+
+UPDATE TABLE system_settings SET admin_home_url='/';
