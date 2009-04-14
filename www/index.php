@@ -1,3 +1,6 @@
+<?php
+require('admin/include/display.php');
+?>
 <html>
 <head><title>Choose Login:</title></head>
 <body>
@@ -33,8 +36,8 @@
 		let['0'] = '0.png'; let['1'] = '1.png'; let['2'] = '2.png'; let['3'] = '3.png'; let['4'] = '4.png'; let['5'] = '5.png'; let['6'] = '6.png'; let['7'] = '7.png'; let['8'] = '8.png'; let['9'] = '9.png';
 		krn['0'] =      -9; krn['1'] =      -9; krn['2'] =      -9; krn['3'] =      -9; krn['4'] =      -9; krn['5'] =      -9; krn['6'] =      -9; krn['7'] =      -9; krn['8'] =      -9; krn['9'] =      -9;
 
-		let['&'] = 'ampersand.png'; let['.'] = 'period.png'; let['@'] = 'at.png'; let['!'] = 'exclamation.png'; let['-'] = 'hyphen.png'; let[' '] = 'space.png';
-		krn['&'] =              -9; krn['.'] =           -9; krn['@'] =       -9; krn['!'] =                -7; krn['-'] =           -9; krn[' '] =          -7;
+		let['&'] = 'ampersand.png'; let['.'] = 'period.png'; let['@'] = 'at.png'; let['!'] = 'exclamation.png'; let['-'] = 'hyphen.png'; let[' '] = 'space.png'; let[','] = 'comma.png'; let[':'] = 'colon.png';
+		krn['&'] =              -9; krn['.'] =           -9; krn['@'] =       -9; krn['!'] =                -7; krn['-'] =           -9; krn[' '] =          -7; krn[','] =          -7; krn[':'] =          -7;
 
 		var osdhtml = '';
 		var lstkrn = 0;
@@ -59,7 +62,7 @@
 			<td height=180 width=360 align=center valign=middle colspan=2>
 				<div id="company"></div>
 				<script>
-					osdfont('company','Company Name Here');
+					osdfont('company','<?= $user_company ?>',2);
 				</script>
 				<!-- <img src=/osdial/images/defaultCompany.png alt="Testing" width=298 height=30> -->
 			</td>
