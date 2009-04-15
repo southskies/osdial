@@ -1,5 +1,5 @@
---- app_meetme_orig.c	2007-03-09 16:19:50.000000000 -0500
-+++ app_meetme.c	2007-03-09 16:01:54.000000000 -0500
+--- asterisk-1.2.17-orig/apps/app_meetme.c	2007-03-09 16:19:50.000000000 -0500
++++ asterisk-1.2.17/apps/app_meetme.c	2007-03-09 16:01:54.000000000 -0500
 @@ -122,6 +122,16 @@
  "      'M' -- Mute conference\n"
  "      'n' -- Unmute entire conference (except admin)\n"

@@ -1,0 +1,328 @@
+diff -Naur asterisk-1.2.32-old/apps/app_waitforsilence.c asterisk-1.2.32/apps/app_waitforsilence.c
+--- asterisk-1.2.32-old/apps/app_waitforsilence.c	2009-04-13 19:24:17.373568039 -0400
++++ asterisk-1.2.32/apps/app_waitforsilence.c	2009-04-13 19:24:41.593443579 -0400
+@@ -4,7 +4,13 @@
+  * Copyright (C) 1999 - 2005, Digium, Inc.
+  *
+  * WaitForSilence Application by David C. Troy <dave@popvox.com>
+- * Version 1.00 2004-01-29
++ * Version 1.11 2006-06-29
++ *
++ * Modified by Frank Gorgas-Waller <frank@explido.us>
++ * Version 1.12 2007-04-16
++ *
++ * Modified by Michael Cargile <mikec@vicidial.com>
++ * Version 1.13 2008-10-09
+  *
+  * Mark Spencer <markster@digium.com>
+  *
+@@ -23,21 +29,26 @@
+  *
+  * \brief Wait for Silence
+  *   - Waits for up to 'x' milliseconds of silence, 'y' times \n
+- *   - WaitForSilence(500,2) will wait for 1/2 second of silence, twice \n
+- *   - WaitForSilence(1000,1) will wait for 1 second of silence, once \n
++ *   - WaitForSilence(500,2) will wait for 1/2 second of silence, twice, and timing out after 60sec \n
++ *   - WaitForSilence(1000,1) will wait for 1 second of silence, once, and timing out after 60sec \n
++ *   - WaitForSilence(300,3,10) will wait for 300ms of silence, 3 times, and timing out after 10sec \n
++ *   - WaitForSilence(300,3,0) will wait for 300ms of silence, 3 times, and never timing out \n
++ *   - WaitForSilence(300|3|10|256) will wait for 300ms silence, 3 times, and timing out after 10sec but with 256 threshold \n
++ *
++ * \author David C. Troy <dave@popvox.com>
+  *
+  * \ingroup applications
+  */
+ 
++#include "asterisk.h"
++
++ASTERISK_FILE_VERSION(__FILE__, "$Revision: 32846 $")
++
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <string.h>
+ #include <unistd.h>
+ 
+-#include "asterisk.h"
+-
+-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 29555 $")
+-
+ #include "asterisk/file.h"
+ #include "asterisk/logger.h"
+ #include "asterisk/channel.h"
+@@ -50,40 +61,64 @@
+ static char *app = "WaitForSilence";
+ static char *synopsis = "Waits for a specified amount of silence";
+ static char *descrip = 
+-"  WaitForSilence(x[|y]) Wait for Silence: Waits for up to 'x' \n"
+-"milliseconds of silence, 'y' times or 1 if omitted\n"
+-"Set the channel variable WAITSTATUS with to one of these values:"
+-"SILENCE - if silence of x ms was detected"
+-"TIMEOUT - if silence of x ms was not detected."
++"  WaitForSilence(silencerequired[|iterations][|timeout][|threshold]) \n"
++"Wait for Silence: Waits for up to 'silencerequired' milliseconds of \n"
++"silence, 'iterations' times or once if omitted. An optional timeout \n"
++"specifies the number of seconds to return after, even if we do not receive\n"
++"the specified amount of silence. If no time out is specified, one minute\n"
++"will be assumed. To have it wait indefinitely specify 0 as the timeout. \n"
++"This can cause an infinite loop on noisy lines. This is particularly useful\n"
++"for reverse-911-type call broadcast applications where you need to wait for\n"
++"an answering machine to complete its spiel before playing a message. The\n"
++"timeout parameter is specified only to avoid an infinite loop in cases\n"
++"where silence is never achieved. Typically you will want to include two\n"
++"or more calls to WaitForSilence when dealing with an answering machine;\n"
++"first waiting for the spiel to finish, then waiting for the beep, etc. The\n"
++"threshold allows you to specify the maximum volume for silence. Raise the\n"
++"threshold if you have noisy lines.\n\n"
+ "Examples:\n"
+-"  - WaitForSilence(500|2) will wait for 1/2 second of silence, twice\n"
+-"  - WaitForSilence(1000) will wait for 1 second of silence, once\n";
++"  - WaitForSilence(1000) will wait for 1 second of silence, once, \n"
++"     and return after 60 seconds, even if silence is not detected\n"
++"  - WaitForSilence(500|2) will wait for 500ms of silence, twice,\n"
++"     and return after 60 seconds, even if silence is not detected\n"
++"  - WaitForSilence(300|3|10) will wait for 300ms silence, 3 times,\n"
++"     and returns after 10 sec, even if silence is not detected\n"
++"  - WaitForSilence(600|3|0) will wait for 600ms silence, 3 times,\n"
++"     and will do so indefinitely.\n"
++"  - WaitForSilence(1200|3|10|256) will wait for 1200ms silence, 3 times,\n"
++"     on a more noisy line this will detect silence but might detect\n"
++"     people talking very softly as silence as well and returns after\n"
++"     10 sec, even if silence is not detected\n\n"
++"Sets the channel variable WAITSTATUS with to one of these values:\n"
++"SILENCE - if exited with silence detected\n"
++"TIMEOUT - if exited without silence detected after timeout\n"
++"ERROR   - if exited for some other reason usually a hangup\n";
+ 
+ STANDARD_LOCAL_USER;
+ 
+ LOCAL_USER_DECL;
+ 
+-static int do_waiting(struct ast_channel *chan, int maxsilence) {
+-
++static int do_waiting(struct ast_channel *chan, int silencereqd, time_t waitstart, int timeout, int silencethreshold) {
+ 	struct ast_frame *f;
+-	int totalsilence = 0;
+ 	int dspsilence = 0;
+-	int gotsilence = 0; 
+-	static int silencethreshold = 128;
+ 	int rfmt = 0;
+ 	int res = 0;
++	int loop_count = 1;
+ 	struct ast_dsp *sildet;	 /* silence detector dsp */
+-	time_t start, now;
+-	time(&start);
++ 	time_t now;
++
++	/* Back up the current readformat */
++	rfmt = chan->readformat;
+ 
+-	rfmt = chan->readformat; /* Set to linear mode */
++	/* Set to linear mode */
+ 	res = ast_set_read_format(chan, AST_FORMAT_SLINEAR);
+ 	if (res < 0) {
+-		ast_log(LOG_WARNING, "Unable to set to linear mode, giving up\n");
++		ast_log(LOG_WARNING, "Unable to set channel to linear mode, giving up\n");
+ 		return -1;
+ 	}
+ 
+-	sildet = ast_dsp_new(); /* Create the silence detector */
++	/* Create the silence detector */
++	sildet = ast_dsp_new();
+ 	if (!sildet) {
+ 		ast_log(LOG_WARNING, "Unable to create silence detector :(\n");
+ 		return -1;
+@@ -93,81 +128,134 @@
+ 	/* Await silence... */
+ 	f = NULL;
+ 	for(;;) {
+-		res = ast_waitfor(chan, 2000);
+-		if (!res) {
+-			ast_log(LOG_WARNING, "One waitfor failed, trying another\n");
+-			/* Try one more time in case of masq */
+-			res = ast_waitfor(chan, 2000);
+-			if (!res) {
+-				ast_log(LOG_WARNING, "No audio available on %s??\n", chan->name);
+-				res = -1;
+-			}
+-		}
+-
+-		if (res < 0) {
++		/* Check if the channel wants to be hung up */
++		if (ast_check_hangup(chan)) {
++			if (option_verbose > 2)
++				ast_verbose(VERBOSE_PREFIX_3 "Channel is hanging up. No point waiting.\n");
++			pbx_builtin_setvar_helper(chan, "WAITSTATUS", "ERROR");
++			ast_log(LOG_DEBUG, "WAITSTATUS was set to ERROR\n");
+ 			f = NULL;
+ 			break;
+ 		}
+-		f = ast_read(chan);
+-		if (!f)
+-			break;
+-		if (f->frametype == AST_FRAME_VOICE) {
+-			dspsilence = 0;
+-			ast_dsp_silence(sildet, f, &dspsilence);
+-			if (dspsilence) {
+-				totalsilence = dspsilence;
+-				time(&start);
+-			} else {
+-				totalsilence = 0;
+-			}
+ 
+-			if (totalsilence >= maxsilence) {
++		/* Start with no silence received */
++		dspsilence = 0;
++
++		/* Wait for a something to come */
++		res = ast_waitfor(chan, silencereqd);
++
++		if (res > 0) {
++			/* Looks like we got a frame, so let's check it out */
++			f = ast_read(chan);
++			if (!f) {
++				/* Got an error from ast_read(); let's exit */
+ 				if (option_verbose > 2)
+-					ast_verbose(VERBOSE_PREFIX_3 "Exiting with %dms silence > %dms required\n", totalsilence, maxsilence);
+-				/* Ended happily with silence */
+-				gotsilence = 1;
+-				pbx_builtin_setvar_helper(chan, "WAITSTATUS", "SILENCE");
+-				ast_log(LOG_DEBUG, "WAITSTATUS was set to SILENCE\n");
+-				ast_frfree(f);
++					ast_verbose(VERBOSE_PREFIX_3 "Got an error while reading from the channel. Probably disconnected. No point waiting.\n");
++				pbx_builtin_setvar_helper(chan, "WAITSTATUS", "ERROR");
++				ast_log(LOG_DEBUG, "WAITSTATUS was set to ERROR\n");
+ 				break;
+-			} else if ( difftime(time(&now),start) >= maxsilence/1000 ) {
+-				pbx_builtin_setvar_helper(chan, "WAITSTATUS", "TIMEOUT");
+-				ast_log(LOG_DEBUG, "WAITSTATUS was set to TIMEOUT\n");
++			}
++			if (f && f->frametype == AST_FRAME_VOICE) { 
++				/* got a voice frame */
++				ast_dsp_silence(sildet, f, &dspsilence);
++			}
++			if (f) {
++				/* clean up the frame no matter what type */
+ 				ast_frfree(f);
++			}
++		} else {
++			if (res == 0) {
++				/* We waited and did not get a frame; sounds like digital silence or a muted digital channel */
++				dspsilence = silencereqd;
++			} else {
++				/* Got an error from ast_waitfor(); let's exit */
++				if (option_verbose > 2)
++					ast_verbose(VERBOSE_PREFIX_3 "Got an error while waiting on the channel. No point waiting.\n");
++				pbx_builtin_setvar_helper(chan, "WAITSTATUS", "ERROR");
++				ast_log(LOG_DEBUG, "WAITSTATUS was set to ERROR\n");
++				f = NULL;
+ 				break;
+ 			}
+ 		}
+-		ast_frfree(f);
++
++		/* check to see if silencereqd has been reached */
++		if (dspsilence >= silencereqd) {
++			if (option_verbose > 2)
++				ast_verbose(VERBOSE_PREFIX_3 "Exiting with %dms silence >= %dms required\n", dspsilence, silencereqd);
++			/* Ended happily with silence */
++			res = 1;
++			pbx_builtin_setvar_helper(chan, "WAITSTATUS", "SILENCE");
++			ast_log(LOG_DEBUG, "WAITSTATUS was set to SILENCE\n");
++			break;
++		}
++
++		/* check if the timeout has been reached */
++		if ( timeout && (difftime(time(&now),waitstart) >= timeout) ) {
++			if (option_verbose > 2)
++				ast_verbose(VERBOSE_PREFIX_3 "Timeout of %d seconds reached. Exiting\n", timeout);
++			/* Ended unhappily with timeout */
++			res = 0;
++			pbx_builtin_setvar_helper(chan, "WAITSTATUS", "TIMEOUT");
++			ast_log(LOG_DEBUG, "WAITSTATUS was set to TIMEOUT\n");
++			break;
++		}
++
++		loop_count++;
++
++		/* Lets not spam the logs */
++		if (loop_count >= 11) {
++			if ((option_verbose > 6) && (option_verbose <= 21))
++				ast_verbose(VERBOSE_PREFIX_3 "Got %dms silence < %dms required\n", dspsilence, silencereqd);
++			loop_count = 1;
++		}
++
++		/* They must really want us to spam the logs */
++		if (option_verbose > 21)
++			ast_verbose(VERBOSE_PREFIX_3 "Got %dms silence < %dms required\n", dspsilence, silencereqd);
++
+ 	}
++
++	/* restore the readformat */
+ 	if (rfmt && ast_set_read_format(chan, rfmt)) {
+ 		ast_log(LOG_WARNING, "Unable to restore format %s to channel '%s'\n", ast_getformatname(rfmt), chan->name);
+ 	}
++
++	/* Destroy the silence detector */
+ 	ast_dsp_free(sildet);
+-	return gotsilence;
++
++	return res;
+ }
+ 
+ static int waitforsilence_exec(struct ast_channel *chan, void *data)
+ {
+ 	int res = 1;
+ 	struct localuser *u;
+-	int maxsilence = 1000;
++	int silencereqd = 1000;
++	int timeout = 60;
+ 	int iterations = 1, i;
++	int silencethreshold = 128;
++	time_t waitstart;
+ 
+ 	LOCAL_USER_ADD(u);
+ 	
+ 	res = ast_answer(chan); /* Answer the channel */
+ 
+-	if (!data || ((sscanf(data, "%d|%d", &maxsilence, &iterations) != 2) &&
+-		(sscanf(data, "%d", &maxsilence) != 1))) {
+-		ast_log(LOG_WARNING, "Using default value of 1000ms, 1 iteration\n");
++	if (!data || ( 
++		(sscanf(data, "%d|%d|%d|%d", &silencereqd, &iterations, &timeout, &silencethreshold) != 4) &&
++		(sscanf(data, "%d|%d|%d", &silencereqd, &iterations, &timeout) != 3) &&
++		(sscanf(data, "%d|%d", &silencereqd, &iterations) != 2) &&
++		(sscanf(data, "%d", &silencereqd) != 1) 
++		) ) {
++		ast_log(LOG_WARNING, "Using default values of 1000ms, 1 iteration, 60 second timeout, and 128 threshold\n");
+ 	}
+ 
+ 	if (option_verbose > 2)
+-		ast_verbose(VERBOSE_PREFIX_3 "Waiting %d time(s) for %d ms silence\n", iterations, maxsilence);
+-	
++		ast_verbose(VERBOSE_PREFIX_3 "Waiting %d time(s) for %d ms silence with %d timeout %d threshold\n ", iterations, silencereqd, timeout, silencethreshold);
++
++	time(&waitstart);
+ 	res = 1;
+ 	for (i=0; (i<iterations) && (res == 1); i++) {
+-		res = do_waiting(chan, maxsilence);
++		res = do_waiting(chan, silencereqd, waitstart, timeout, silencethreshold);
+ 	}
+ 	LOCAL_USER_REMOVE(u);
+ 	if (res > 0)
+@@ -198,12 +286,12 @@
+ 
+ int usecount(void)
+ {
+-	int res;
+-	STANDARD_USECOUNT(res);
+-	return res;
++    int res;
++    STANDARD_USECOUNT(res);
++    return res;
+ }
+ 
+-char *key()
++char *key(void)
+ {
+ 	return ASTERISK_GPL_KEY;
+ }
