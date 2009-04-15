@@ -1,6 +1,6 @@
 diff -Naur asterisk-1.2.32-old/apps/app_dial.c asterisk-1.2.32/apps/app_dial.c
---- asterisk-1.2.32-old/apps/app_dial.c	2009-04-14 12:34:28.166817789 -0400
-+++ asterisk-1.2.32/apps/app_dial.c	2009-04-14 22:25:38.412446457 -0400
+--- asterisk-1.2.32-old/apps/app_dial.c	2009-04-15 01:08:27.277442120 -0400
++++ asterisk-1.2.32/apps/app_dial.c	2009-04-15 03:25:20.511693388 -0400
 @@ -14,6 +14,12 @@
   * This program is free software, distributed under the terms of
   * the GNU General Public License Version 2. See the LICENSE file
@@ -65,13 +65,21 @@ diff -Naur asterisk-1.2.32-old/apps/app_dial.c asterisk-1.2.32/apps/app_dial.c
  								ast_verbose ( VERBOSE_PREFIX_3 "%s is making progress passing it to %s\n", o->chan->name,in->name);
 +							if (ast_test_flag(outgoing, OPT_ORIGINATE_RING)) {
 +								if (option_verbose > 2)
-+									ast_verbose ( VERBOSE_PREFIX_3 "Making progress, stopping originate-ring simulation in %s\n", in->name);
++									ast_verbose ( VERBOSE_PREFIX_3 "%s is making progress, stopping originate-ring simulation on %s.\n", outgoing->chan->name, in->name);
 +								ast_playtones_stop(in);
 +							}
  							if (!ast_test_flag(outgoing, OPT_RINGBACK))
  								ast_indicate(in, AST_CONTROL_PROGRESS);
  							break;
-@@ -773,7 +792,7 @@
+@@ -749,6 +768,7 @@
+ 	char privintro[1024];
+ 	struct localuser *outgoing=NULL, *tmp;
+ 	struct ast_channel *peer;
++	char tmpname[AST_CHANNEL_NAME];
+ 	int to;
+ 	int numbusy = 0;
+ 	int numcongestion = 0;
+@@ -773,7 +793,7 @@
  	char *var;
  	char status[256] = "INVALIDARGS";
  	int play_to_caller=0,play_to_callee=0;
@@ -80,7 +88,7 @@ diff -Naur asterisk-1.2.32-old/apps/app_dial.c asterisk-1.2.32/apps/app_dial.c
  	char *outbound_group = NULL;
  	char *macro_result = NULL, *macro_transfer_dest = NULL;
  	int digit = 0, result = 0;
-@@ -1057,7 +1076,8 @@
+@@ -1057,7 +1077,8 @@
  				       OPT_CALLEE_TRANSFER | OPT_CALLER_TRANSFER |
  				       OPT_CALLEE_HANGUP | OPT_CALLER_HANGUP |
  				       OPT_CALLEE_MONITOR | OPT_CALLER_MONITOR |
@@ -90,40 +98,60 @@ diff -Naur asterisk-1.2.32-old/apps/app_dial.c asterisk-1.2.32/apps/app_dial.c
  			ast_set2_flag(tmp, args.url, DIAL_NOFORWARDHTML);	
  		}
  		ast_copy_string(numsubst, number, sizeof(numsubst));
-@@ -1222,6 +1242,14 @@
+@@ -1222,6 +1243,33 @@
  			moh=1;
  			ast_indicate(chan, AST_CONTROL_PROGRESS);
  			ast_moh_start(chan, opt_args[OPT_ARG_MUSICBACK]);
 +		} else if (ast_test_flag(outgoing, OPT_ORIGINATE_RING)) {
-+			if (option_verbose > 2)
-+				ast_verbose ( VERBOSE_PREFIX_3 "Starting originate-ring simulation in %s\n", chan->name);
 +			originate_ring=1;
-+			ast_indicate(chan, AST_CONTROL_RINGING);
++			strcpy(tmpname, outgoing->chan->name);
++			if (option_verbose > 2)
++				ast_verbose ( VERBOSE_PREFIX_3 "%s starting originate-ring simulation on %s.\n", outgoing->chan->name, chan->name);
++
++			// Transcode to SLIN to ensure compatibility with ast_playtones
++			if (chan->nativeformats != AST_FORMAT_SLINEAR) {
++				if (option_verbose > 2)
++					ast_log(LOG_DEBUG, "Originate-ring: Transcoding incoming from %d to SLIN on %s\n", chan->nativeformats, chan->name);
++				ast_set_read_format(chan, AST_FORMAT_SLINEAR);
++				ast_set_write_format(chan, AST_FORMAT_SLINEAR);
++			}
++			if (outgoing->chan->nativeformats != AST_FORMAT_SLINEAR) {
++				if (option_verbose > 2)
++					ast_log(LOG_DEBUG, "Originate-ring: Transcoding outgoing from %d to SLIN on %s\n", outgoing->chan->nativeformats, outgoing->chan->name);
++				ast_set_read_format(outgoing->chan, AST_FORMAT_SLINEAR);
++				ast_set_write_format(outgoing->chan, AST_FORMAT_SLINEAR);
++			}
++
++			// Get ringing tones.
 +			struct tone_zone_sound *ts;
 +			ts = ast_get_indication_tone(chan->zone, "ring");
++
++			// Set indication and play tones.
++			ast_indicate(chan, AST_CONTROL_RINGING);
 +			ast_playtones_start(chan,0,ts->data, 1);
  		} else if (ast_test_flag(outgoing, OPT_RINGBACK)) {
  			ast_indicate(chan, AST_CONTROL_RINGING);
  			sentringing++;
-@@ -1616,6 +1644,11 @@
+@@ -1616,6 +1664,11 @@
  			if (moh) {
  				moh = 0;
  				ast_moh_stop(chan);
 +			} else if (originate_ring) {
 +				if (option_verbose > 2)
-+					ast_verbose ( VERBOSE_PREFIX_3 "Stopping originate-ring simulation in %s\n", chan->name);
++					ast_verbose ( VERBOSE_PREFIX_3 "%s answered, stopping originate-ring simulation on %s.\n", peer->name, chan->name);
 +				originate_ring = 0;
 +				ast_playtones_stop(chan);
  			} else if (sentringing) {
  				sentringing = 0;
  				ast_indicate(chan, -1);
-@@ -1652,6 +1685,11 @@
+@@ -1652,6 +1705,12 @@
  	if (moh) {
  		moh = 0;
  		ast_moh_stop(chan);
 +	} else if (originate_ring) {
-+		if (option_verbose > 2)
-+			ast_verbose ( VERBOSE_PREFIX_3 "Stopping originate-ring simulation in %s\n", chan->name);
++		if (option_verbose > 2) {
++			ast_verbose ( VERBOSE_PREFIX_3 "%s had status %s, stopping originate-ring simulation on %s.\n", tmpname, status, chan->name);
++		}
 +		originate_ring = 0;
 +		ast_playtones_stop(chan);
  	} else if (sentringing) {
