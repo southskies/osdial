@@ -1,0 +1,12 @@
+diff -Naur asterisk-1.2.32-old/apps/app_meetme.c asterisk-1.2.32/apps/app_meetme.c
+--- asterisk-1.2.32-old/apps/app_meetme.c	2009-04-14 12:34:28.163817879 -0400
++++ asterisk-1.2.32/apps/app_meetme.c	2009-04-14 22:30:16.325818293 -0400
+@@ -2118,7 +2118,7 @@
+ 			dispose_conf(cnf);
+ 			cnf = NULL;
+ 		} else {
+-			ast_log(LOG_NOTICE, "Conference Number not found\n");
++			ast_log(LOG_DEBUG, "Conference Number not found\n");
+ 		}
+ 	}
+ 
