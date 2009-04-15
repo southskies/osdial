@@ -1,0 +1,131 @@
+diff -Naur asterisk-1.2.32-old/apps/app_dial.c asterisk-1.2.32/apps/app_dial.c
+--- asterisk-1.2.32-old/apps/app_dial.c	2009-04-14 12:34:28.166817789 -0400
++++ asterisk-1.2.32/apps/app_dial.c	2009-04-14 22:25:38.412446457 -0400
+@@ -14,6 +14,12 @@
+  * This program is free software, distributed under the terms of
+  * the GNU General Public License Version 2. See the LICENSE file
+  * at the top of the source tree.
++ *
++ *
++ * Orginate-ring Simulation, dial option O.
++ * Copyright (C) 2009, Lott Caskey <lottcaskey@gmail.com>
++ * License: GPLv2
++ *
+  */
+ 
+ /*! \file
+@@ -56,6 +62,7 @@
+ #include "asterisk/causes.h"
+ #include "asterisk/manager.h"
+ #include "asterisk/privacy.h"
++#include "asterisk/indications.h"
+ 
+ static char *tdesc = "Dialing Application";
+ 
+@@ -159,6 +166,10 @@
+ "    o    - Specify that the CallerID that was present on the *calling* channel\n"
+ "           be set as the CallerID on the *called* channel. This was the\n"
+ "           behavior of Asterisk 1.0 and earlier.\n"
++"    O    - Originate-ring Simulation.  This option will simulate a ring indication\n"
++"           to the calling party until called party switches to a progress state.\n"
++"           This is most useful when bridging an outbound call into a meetme room\n"
++"           and allows conference members to hear the ring indication.\n"
+ "    p    - This option enables screening mode. This is basically Privacy mode\n"
+ "           without memory.\n"
+ "    P([x]) - Enable privacy mode. Use 'x' as the family/key in the database if\n"
+@@ -218,6 +229,7 @@
+ 	OPT_CALLEE_MONITOR = (1 << 21),
+ 	OPT_CALLER_MONITOR = (1 << 22),
+ 	OPT_GOTO = (1 << 23),
++	OPT_ORIGINATE_RING = (1 << 24),
+ } dial_exec_option_flags;
+ 
+ #define DIAL_STILLGOING			(1 << 30)
+@@ -253,6 +265,7 @@
+ 	AST_APP_OPTION('n', OPT_SCREEN_NOINTRO),
+ 	AST_APP_OPTION('N', OPT_SCREEN_NOCLID),
+ 	AST_APP_OPTION('o', OPT_ORIGINAL_CLID),
++	AST_APP_OPTION('O', OPT_ORIGINATE_RING),
+ 	AST_APP_OPTION('p', OPT_SCREENING),
+ 	AST_APP_OPTION_ARG('P', OPT_PRIVACY, OPT_ARG_PRIVACY),
+ 	AST_APP_OPTION('r', OPT_RINGBACK),
+@@ -397,7 +410,8 @@
+ 	
+ 	if (single) {
+ 		/* Turn off hold music, etc */
+-		ast_deactivate_generator(in);
++		if (!ast_test_flag(outgoing, OPT_ORIGINATE_RING))
++			ast_deactivate_generator(in);
+ 		/* If we are calling a single channel, make them compatible for in-band tone purpose */
+ 		ast_channel_make_compatible(outgoing->chan, in);
+ 	}
+@@ -602,6 +616,11 @@
+ 						case AST_CONTROL_PROGRESS:
+ 							if (option_verbose > 2)
+ 								ast_verbose ( VERBOSE_PREFIX_3 "%s is making progress passing it to %s\n", o->chan->name,in->name);
++							if (ast_test_flag(outgoing, OPT_ORIGINATE_RING)) {
++								if (option_verbose > 2)
++									ast_verbose ( VERBOSE_PREFIX_3 "Making progress, stopping originate-ring simulation in %s\n", in->name);
++								ast_playtones_stop(in);
++							}
+ 							if (!ast_test_flag(outgoing, OPT_RINGBACK))
+ 								ast_indicate(in, AST_CONTROL_PROGRESS);
+ 							break;
+@@ -773,7 +792,7 @@
+ 	char *var;
+ 	char status[256] = "INVALIDARGS";
+ 	int play_to_caller=0,play_to_callee=0;
+-	int sentringing=0, moh=0;
++	int sentringing=0, moh=0, originate_ring=0;
+ 	char *outbound_group = NULL;
+ 	char *macro_result = NULL, *macro_transfer_dest = NULL;
+ 	int digit = 0, result = 0;
+@@ -1057,7 +1076,8 @@
+ 				       OPT_CALLEE_TRANSFER | OPT_CALLER_TRANSFER |
+ 				       OPT_CALLEE_HANGUP | OPT_CALLER_HANGUP |
+ 				       OPT_CALLEE_MONITOR | OPT_CALLER_MONITOR |
+-				       OPT_RINGBACK | OPT_MUSICBACK | OPT_FORCECLID);
++				       OPT_RINGBACK | OPT_MUSICBACK | OPT_FORCECLID |
++			               OPT_ORIGINATE_RING );
+ 			ast_set2_flag(tmp, args.url, DIAL_NOFORWARDHTML);	
+ 		}
+ 		ast_copy_string(numsubst, number, sizeof(numsubst));
+@@ -1222,6 +1242,14 @@
+ 			moh=1;
+ 			ast_indicate(chan, AST_CONTROL_PROGRESS);
+ 			ast_moh_start(chan, opt_args[OPT_ARG_MUSICBACK]);
++		} else if (ast_test_flag(outgoing, OPT_ORIGINATE_RING)) {
++			if (option_verbose > 2)
++				ast_verbose ( VERBOSE_PREFIX_3 "Starting originate-ring simulation in %s\n", chan->name);
++			originate_ring=1;
++			ast_indicate(chan, AST_CONTROL_RINGING);
++			struct tone_zone_sound *ts;
++			ts = ast_get_indication_tone(chan->zone, "ring");
++			ast_playtones_start(chan,0,ts->data, 1);
+ 		} else if (ast_test_flag(outgoing, OPT_RINGBACK)) {
+ 			ast_indicate(chan, AST_CONTROL_RINGING);
+ 			sentringing++;
+@@ -1616,6 +1644,11 @@
+ 			if (moh) {
+ 				moh = 0;
+ 				ast_moh_stop(chan);
++			} else if (originate_ring) {
++				if (option_verbose > 2)
++					ast_verbose ( VERBOSE_PREFIX_3 "Stopping originate-ring simulation in %s\n", chan->name);
++				originate_ring = 0;
++				ast_playtones_stop(chan);
+ 			} else if (sentringing) {
+ 				sentringing = 0;
+ 				ast_indicate(chan, -1);
+@@ -1652,6 +1685,11 @@
+ 	if (moh) {
+ 		moh = 0;
+ 		ast_moh_stop(chan);
++	} else if (originate_ring) {
++		if (option_verbose > 2)
++			ast_verbose ( VERBOSE_PREFIX_3 "Stopping originate-ring simulation in %s\n", chan->name);
++		originate_ring = 0;
++		ast_playtones_stop(chan);
+ 	} else if (sentringing) {
+ 		sentringing = 0;
+ 		ast_indicate(chan, -1);
