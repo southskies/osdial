@@ -1,0 +1,176 @@
+diff -Naur asterisk-1.4.24.1-old/apps/app_dial.c asterisk-1.4.24.1/apps/app_dial.c
+--- asterisk-1.4.24.1-old/apps/app_dial.c	2009-01-30 12:47:41.000000000 -0500
++++ asterisk-1.4.24.1/apps/app_dial.c	2009-04-15 04:37:19.637442877 -0400
+@@ -67,6 +67,7 @@
+ #include "asterisk/privacy.h"
+ #include "asterisk/stringfields.h"
+ #include "asterisk/global_datastores.h"
++#include "asterisk/indications.h"
+ 
+ static char *app = "Dial";
+ 
+@@ -196,6 +197,11 @@
+ "           family/key is not specified.\n"
+ "    r    - Indicate ringing to the calling party. Pass no audio to the calling\n"
+ "           party until the called channel has answered.\n"
++"    s    - Simulate ring on originating channel. This option will simulate a\n"
++"           ring indication to the calling party until called party switches\n"
++"           to a progress state. This is most useful when bridging an outbound\n"
++"           call into a meetme room and allows conference members to hear the\n"
++"           ring indication. This will cause channels to be transcoded, if needed.\n"
+ "    S(x) - Hang up the call after 'x' seconds *after* the called party has\n"
+ "           answered the call.\n"  	
+ "    t    - Allow the called party to transfer the calling party by sending the\n"
+@@ -256,6 +262,7 @@
+ 	OPT_CALLEE_PARK =	(1 << 25),
+ 	OPT_CALLER_PARK =	(1 << 26),
+ 	OPT_IGNORE_FORWARDING = (1 << 27),
++	OPT_ORIGINATE_RING =	(1 << 28),
+ } dial_exec_option_flags;
+ 
+ #define DIAL_STILLGOING			(1 << 30)
+@@ -299,6 +306,7 @@
+ 	AST_APP_OPTION('p', OPT_SCREENING),
+ 	AST_APP_OPTION_ARG('P', OPT_PRIVACY, OPT_ARG_PRIVACY),
+ 	AST_APP_OPTION('r', OPT_RINGBACK),
++	AST_APP_OPTION('s', OPT_ORIGINATE_RING),
+ 	AST_APP_OPTION_ARG('S', OPT_DURATION_STOP, OPT_ARG_DURATION_STOP),
+ 	AST_APP_OPTION('t', OPT_CALLEE_TRANSFER),
+ 	AST_APP_OPTION('T', OPT_CALLER_TRANSFER),
+@@ -420,7 +428,8 @@
+ 	
+ 	if (single) {
+ 		/* Turn off hold music, etc */
+-		ast_deactivate_generator(in);
++		if (!ast_test_flag(outgoing, OPT_ORIGINATE_RING))
++			ast_deactivate_generator(in);
+ 		/* If we are calling a single channel, make them compatible for in-band tone purpose */
+ 		ast_channel_make_compatible(outgoing->chan, in);
+ 	}
+@@ -631,8 +640,10 @@
+ 					if (option_verbose > 2)
+ 						ast_verbose(VERBOSE_PREFIX_3 "%s is ringing\n", c->name);
+ 					/* Setup early media if appropriate */
+-					if (single && CAN_EARLY_BRIDGE(peerflags, in, c))
++					if (single && CAN_EARLY_BRIDGE(peerflags, in, c)) {
++						ast_playtones_stop(in);
+ 						ast_rtp_early_bridge(in, c);
++					}
+ 					if (!(*sentringing) && !ast_test_flag(outgoing, OPT_MUSICBACK)) {
+ 						ast_indicate(in, AST_CONTROL_RINGING);
+ 						(*sentringing)++;
+@@ -642,8 +653,15 @@
+ 					if (option_verbose > 2)
+ 						ast_verbose (VERBOSE_PREFIX_3 "%s is making progress passing it to %s\n", c->name, in->name);
+ 					/* Setup early media if appropriate */
+-					if (single && CAN_EARLY_BRIDGE(peerflags, in, c))
+-						ast_rtp_early_bridge(in, c);
++					if (single) {
++						if (CAN_EARLY_BRIDGE(peerflags, in, c)) {
++							ast_rtp_early_bridge(in, c);
++						} else if (ast_test_flag(outgoing, OPT_ORIGINATE_RING)) {
++							if (option_verbose > 2)
++								ast_verbose ( VERBOSE_PREFIX_3 "%s is making progress, stopping originate-ring simulation on %s.\n", outgoing->chan->name, in->name);
++							ast_playtones_stop(in);
++						}
++					}
+ 					if (!ast_test_flag(outgoing, OPT_RINGBACK))
+ 						ast_indicate(in, AST_CONTROL_PROGRESS);
+ 					break;
+@@ -660,8 +678,10 @@
+ 				case AST_CONTROL_PROCEEDING:
+ 					if (option_verbose > 2)
+ 						ast_verbose (VERBOSE_PREFIX_3 "%s is proceeding passing it to %s\n", c->name, in->name);
+-					if (single && CAN_EARLY_BRIDGE(peerflags, in, c))
++					if (single && CAN_EARLY_BRIDGE(peerflags, in, c)) {
++						ast_playtones_stop(in);
+ 						ast_rtp_early_bridge(in, c);
++					}
+ 					if (!ast_test_flag(outgoing, OPT_RINGBACK))
+ 						ast_indicate(in, AST_CONTROL_PROCEEDING);
+ 					break;
+@@ -842,6 +862,7 @@
+ 	char *rest, *cur;
+ 	struct dial_localuser *outgoing = NULL;
+ 	struct ast_channel *peer;
++	char tmpname[AST_CHANNEL_NAME];
+ 	int to;
+ 	int numbusy = 0;
+ 	int numcongestion = 0;
+@@ -860,7 +881,7 @@
+ 	char *dtmfcalled = NULL, *dtmfcalling = NULL;
+ 	char status[256] = "INVALIDARGS";
+ 	int play_to_caller = 0, play_to_callee = 0;
+-	int sentringing = 0, moh = 0;
++	int sentringing = 0, moh = 0, originate_ring = 0;
+ 	const char *outbound_group = NULL;
+ 	int result = 0;
+ 	time_t start_time;
+@@ -1164,7 +1185,8 @@
+ 				       OPT_CALLEE_HANGUP | OPT_CALLER_HANGUP |
+ 				       OPT_CALLEE_MONITOR | OPT_CALLER_MONITOR |
+ 				       OPT_CALLEE_PARK | OPT_CALLER_PARK |
+-				       OPT_RINGBACK | OPT_MUSICBACK | OPT_FORCECLID);
++				       OPT_RINGBACK | OPT_MUSICBACK | OPT_FORCECLID |
++			               OPT_ORIGINATE_RING );
+ 			ast_set2_flag(tmp, args.url, DIAL_NOFORWARDHTML);	
+ 		}
+ 		ast_copy_string(numsubst, number, sizeof(numsubst));
+@@ -1368,6 +1390,33 @@
+ 				ast_moh_start(chan, NULL, NULL);
+ 			}
+ 			ast_indicate(chan, AST_CONTROL_PROGRESS);
++		} else if (ast_test_flag(outgoing, OPT_ORIGINATE_RING) && !CAN_EARLY_BRIDGE(peerflags, chan, outgoing->chan)) {
++			originate_ring=1;
++			strcpy(tmpname, outgoing->chan->name);
++			if (option_verbose > 2)
++				ast_verbose ( VERBOSE_PREFIX_3 "%s starting originate-ring simulation on %s.\n", outgoing->chan->name, chan->name);
++
++			// Transcode to SLIN to ensure compatibility with ast_playtones
++			if (chan->nativeformats != AST_FORMAT_SLINEAR) {
++				if (option_verbose > 2)
++					ast_log(LOG_DEBUG, "Originate-ring: Transcoding incoming from %d to SLIN on %s\n", chan->nativeformats, chan->name);
++				ast_set_read_format(chan, AST_FORMAT_SLINEAR);
++				ast_set_write_format(chan, AST_FORMAT_SLINEAR);
++			}
++			if (outgoing->chan->nativeformats != AST_FORMAT_SLINEAR) {
++				if (option_verbose > 2)
++					ast_log(LOG_DEBUG, "Originate-ring: Transcoding outgoing from %d to SLIN on %s\n", outgoing->chan->nativeformats, outgoing->chan->name);
++				ast_set_read_format(outgoing->chan, AST_FORMAT_SLINEAR);
++				ast_set_write_format(outgoing->chan, AST_FORMAT_SLINEAR);
++			}
++
++			// Get ringing tones.
++			struct tone_zone_sound *ts;
++			ts = ast_get_indication_tone(chan->zone, "ring");
++
++			// Set indication and play tones.
++			ast_indicate(chan, AST_CONTROL_RINGING);
++			ast_playtones_start(chan,0,ts->data, 1);
+ 		} else if (ast_test_flag(outgoing, OPT_RINGBACK)) {
+ 			ast_indicate(chan, AST_CONTROL_RINGING);
+ 			sentringing++;
+@@ -1736,6 +1785,11 @@
+ 			if (moh) {
+ 				moh = 0;
+ 				ast_moh_stop(chan);
++			} else if (originate_ring) {
++				if (option_verbose > 2)
++					ast_verbose ( VERBOSE_PREFIX_3 "%s answered, stopping originate-ring simulation on %s.\n", peer->name, chan->name);
++				originate_ring = 0;
++				ast_playtones_stop(chan);
+ 			} else if (sentringing) {
+ 				sentringing = 0;
+ 				ast_indicate(chan, -1);
+@@ -1775,6 +1829,11 @@
+ 	if (moh) {
+ 		moh = 0;
+ 		ast_moh_stop(chan);
++	} else if (originate_ring) {
++		if (option_verbose > 2)
++			ast_verbose ( VERBOSE_PREFIX_3 "%s had status %s, stopping originate-ring simulation on %s.\n", tmpname, status, chan->name);
++		originate_ring = 0;
++		ast_playtones_stop(chan);
+ 	} else if (sentringing) {
+ 		sentringing = 0;
+ 		ast_indicate(chan, -1);
