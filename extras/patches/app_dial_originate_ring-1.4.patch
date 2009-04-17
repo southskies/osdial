@@ -1,7 +1,20 @@
 diff -Naur asterisk-1.4.24.1-old/apps/app_dial.c asterisk-1.4.24.1/apps/app_dial.c
 --- asterisk-1.4.24.1-old/apps/app_dial.c	2009-01-30 12:47:41.000000000 -0500
-+++ asterisk-1.4.24.1/apps/app_dial.c	2009-04-15 04:37:19.637442877 -0400
-@@ -67,6 +67,7 @@
++++ asterisk-1.4.24.1/apps/app_dial.c	2009-04-15 04:53:05.013444837 -0400
+@@ -14,6 +14,12 @@
+  * This program is free software, distributed under the terms of
+  * the GNU General Public License Version 2. See the LICENSE file
+  * at the top of the source tree.
++ *
++ *
++ * Simulate ring on originating channel, dial option s.
++ * Copyright (C) 2009, Lott Caskey <lottcaskey@gmail.com>
++ * License: GPLv2
++ *
+  */
+ 
+ /*! \file
+@@ -67,6 +73,7 @@
  #include "asterisk/privacy.h"
  #include "asterisk/stringfields.h"
  #include "asterisk/global_datastores.h"
@@ -9,7 +22,7 @@ diff -Naur asterisk-1.4.24.1-old/apps/app_dial.c asterisk-1.4.24.1/apps/app_dial
  
  static char *app = "Dial";
  
-@@ -196,6 +197,11 @@
+@@ -196,6 +203,11 @@
  "           family/key is not specified.\n"
  "    r    - Indicate ringing to the calling party. Pass no audio to the calling\n"
  "           party until the called channel has answered.\n"
@@ -21,7 +34,7 @@ diff -Naur asterisk-1.4.24.1-old/apps/app_dial.c asterisk-1.4.24.1/apps/app_dial
  "    S(x) - Hang up the call after 'x' seconds *after* the called party has\n"
  "           answered the call.\n"  	
  "    t    - Allow the called party to transfer the calling party by sending the\n"
-@@ -256,6 +262,7 @@
+@@ -256,6 +268,7 @@
  	OPT_CALLEE_PARK =	(1 << 25),
  	OPT_CALLER_PARK =	(1 << 26),
  	OPT_IGNORE_FORWARDING = (1 << 27),
@@ -29,7 +42,7 @@ diff -Naur asterisk-1.4.24.1-old/apps/app_dial.c asterisk-1.4.24.1/apps/app_dial
  } dial_exec_option_flags;
  
  #define DIAL_STILLGOING			(1 << 30)
-@@ -299,6 +306,7 @@
+@@ -299,6 +312,7 @@
  	AST_APP_OPTION('p', OPT_SCREENING),
  	AST_APP_OPTION_ARG('P', OPT_PRIVACY, OPT_ARG_PRIVACY),
  	AST_APP_OPTION('r', OPT_RINGBACK),
@@ -37,7 +50,7 @@ diff -Naur asterisk-1.4.24.1-old/apps/app_dial.c asterisk-1.4.24.1/apps/app_dial
  	AST_APP_OPTION_ARG('S', OPT_DURATION_STOP, OPT_ARG_DURATION_STOP),
  	AST_APP_OPTION('t', OPT_CALLEE_TRANSFER),
  	AST_APP_OPTION('T', OPT_CALLER_TRANSFER),
-@@ -420,7 +428,8 @@
+@@ -420,7 +434,8 @@
  	
  	if (single) {
  		/* Turn off hold music, etc */
@@ -47,7 +60,7 @@ diff -Naur asterisk-1.4.24.1-old/apps/app_dial.c asterisk-1.4.24.1/apps/app_dial
  		/* If we are calling a single channel, make them compatible for in-band tone purpose */
  		ast_channel_make_compatible(outgoing->chan, in);
  	}
-@@ -631,8 +640,10 @@
+@@ -631,8 +646,10 @@
  					if (option_verbose > 2)
  						ast_verbose(VERBOSE_PREFIX_3 "%s is ringing\n", c->name);
  					/* Setup early media if appropriate */
@@ -59,7 +72,7 @@ diff -Naur asterisk-1.4.24.1-old/apps/app_dial.c asterisk-1.4.24.1/apps/app_dial
  					if (!(*sentringing) && !ast_test_flag(outgoing, OPT_MUSICBACK)) {
  						ast_indicate(in, AST_CONTROL_RINGING);
  						(*sentringing)++;
-@@ -642,8 +653,15 @@
+@@ -642,8 +659,15 @@
  					if (option_verbose > 2)
  						ast_verbose (VERBOSE_PREFIX_3 "%s is making progress passing it to %s\n", c->name, in->name);
  					/* Setup early media if appropriate */
@@ -77,7 +90,7 @@ diff -Naur asterisk-1.4.24.1-old/apps/app_dial.c asterisk-1.4.24.1/apps/app_dial
  					if (!ast_test_flag(outgoing, OPT_RINGBACK))
  						ast_indicate(in, AST_CONTROL_PROGRESS);
  					break;
-@@ -660,8 +678,10 @@
+@@ -660,8 +684,10 @@
  				case AST_CONTROL_PROCEEDING:
  					if (option_verbose > 2)
  						ast_verbose (VERBOSE_PREFIX_3 "%s is proceeding passing it to %s\n", c->name, in->name);
@@ -89,7 +102,7 @@ diff -Naur asterisk-1.4.24.1-old/apps/app_dial.c asterisk-1.4.24.1/apps/app_dial
  					if (!ast_test_flag(outgoing, OPT_RINGBACK))
  						ast_indicate(in, AST_CONTROL_PROCEEDING);
  					break;
-@@ -842,6 +862,7 @@
+@@ -842,6 +868,7 @@
  	char *rest, *cur;
  	struct dial_localuser *outgoing = NULL;
  	struct ast_channel *peer;
@@ -97,7 +110,7 @@ diff -Naur asterisk-1.4.24.1-old/apps/app_dial.c asterisk-1.4.24.1/apps/app_dial
  	int to;
  	int numbusy = 0;
  	int numcongestion = 0;
-@@ -860,7 +881,7 @@
+@@ -860,7 +887,7 @@
  	char *dtmfcalled = NULL, *dtmfcalling = NULL;
  	char status[256] = "INVALIDARGS";
  	int play_to_caller = 0, play_to_callee = 0;
@@ -106,7 +119,7 @@ diff -Naur asterisk-1.4.24.1-old/apps/app_dial.c asterisk-1.4.24.1/apps/app_dial
  	const char *outbound_group = NULL;
  	int result = 0;
  	time_t start_time;
-@@ -1164,7 +1185,8 @@
+@@ -1164,7 +1191,8 @@
  				       OPT_CALLEE_HANGUP | OPT_CALLER_HANGUP |
  				       OPT_CALLEE_MONITOR | OPT_CALLER_MONITOR |
  				       OPT_CALLEE_PARK | OPT_CALLER_PARK |
@@ -116,7 +129,7 @@ diff -Naur asterisk-1.4.24.1-old/apps/app_dial.c asterisk-1.4.24.1/apps/app_dial
  			ast_set2_flag(tmp, args.url, DIAL_NOFORWARDHTML);	
  		}
  		ast_copy_string(numsubst, number, sizeof(numsubst));
-@@ -1368,6 +1390,33 @@
+@@ -1368,6 +1396,33 @@
  				ast_moh_start(chan, NULL, NULL);
  			}
  			ast_indicate(chan, AST_CONTROL_PROGRESS);
@@ -150,7 +163,7 @@ diff -Naur asterisk-1.4.24.1-old/apps/app_dial.c asterisk-1.4.24.1/apps/app_dial
  		} else if (ast_test_flag(outgoing, OPT_RINGBACK)) {
  			ast_indicate(chan, AST_CONTROL_RINGING);
  			sentringing++;
-@@ -1736,6 +1785,11 @@
+@@ -1736,6 +1791,11 @@
  			if (moh) {
  				moh = 0;
  				ast_moh_stop(chan);
@@ -162,7 +175,7 @@ diff -Naur asterisk-1.4.24.1-old/apps/app_dial.c asterisk-1.4.24.1/apps/app_dial
  			} else if (sentringing) {
  				sentringing = 0;
  				ast_indicate(chan, -1);
-@@ -1775,6 +1829,11 @@
+@@ -1775,6 +1835,11 @@
  	if (moh) {
  		moh = 0;
  		ast_moh_stop(chan);

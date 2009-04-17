@@ -7,7 +7,7 @@ diff -Naur asterisk-1.2.32-old/apps/app_dial.c asterisk-1.2.32/apps/app_dial.c
   * at the top of the source tree.
 + *
 + *
-+ * Orginate-ring Simulation, dial option O.
++ * Simulate ring on originating channel, dial option s.
 + * Copyright (C) 2009, Lott Caskey <lottcaskey@gmail.com>
 + * License: GPLv2
 + *
