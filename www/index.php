@@ -62,7 +62,11 @@ require('admin/include/display.php');
 			<td height=180 width=360 align=center valign=middle colspan=2>
 				<div id="company"></div>
 				<script>
-					osdfont('company','<?= $user_company ?>',2);
+                    comp = '<?= $user_company ?>';
+                    klen = 1;
+                    if (comp.length >= 20)
+                    klen = 2;
+                    osdfont('company',comp,klen);
 				</script>
 				<!-- <img src=/osdial/images/defaultCompany.png alt="Testing" width=298 height=30> -->
 			</td>
