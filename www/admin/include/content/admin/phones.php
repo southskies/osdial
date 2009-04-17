@@ -296,7 +296,7 @@ if ($ADD==31111111111)
 	echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 
-	echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=10&iframe='phone_stats.php?extension=$row[0]%26server_ip=$row[5]'\">Click here for phone stats</a><br><br>\n";
+	echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=10&iframe=phone_stats.php?extension=$row[0]%26server_ip=$row[5]'\">Click here for phone stats</a><br><br>\n";
 
 	if ($LOGast_delete_phones > 0)
 		{
