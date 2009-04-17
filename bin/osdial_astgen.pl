@@ -354,7 +354,7 @@ sub gen_phones {
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	while (my @aryA = $sthA->fetchrow_array) {
 		if ($aryA[4] eq "SIP") {
-			$sphn .= ";\n[". $aryA[1] ."]\n";
+			$sphn .= ";\n[". $aryA[0] ."]\n";
 			$sphn .= "type=friend\n";
 			$sphn .= "disallow=all\n";
 			$sphn .= "allow=ulaw\n";
@@ -369,7 +369,7 @@ sub gen_phones {
 			$sphn .= "qualify=yes\n";
 			$sphn .= "nat=yes\n";
 		} elsif ($aryA[4] eq "IAX2") {
-			$iphn .= ";\n[". $aryA[1] ."]\n";
+			$iphn .= ";\n[". $aryA[0] ."]\n";
 			$iphn .= "type=friend\n";
 			$iphn .= "disallow=all\n";
 			$iphn .= "allow=ulaw\n";
