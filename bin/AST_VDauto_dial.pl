@@ -1000,7 +1000,7 @@ while($one_day_interval > 0)
 					}
 				else
 					{
-					$stmtA = "SELECT dial_timeout FROM osdial_campaigns where campaign_id='$CLcampaign_id';";
+					$stmtA = "SELECT dial_timeout,drop_call_seconds FROM osdial_campaigns where campaign_id='$CLcampaign_id';";
 					$timeout_leeway = 7;
 					}
 
@@ -1011,158 +1011,169 @@ while($one_day_interval > 0)
 					{
 					@aryA = $sthA->fetchrow_array;
 					$CLdial_timeout	= "$aryA[0]";
+					$CLdrop_call_seconds	= "$aryA[1]";
 					}
 				$sthA->finish();
 
 				$dialtime_log = ($end_epoch - $start_epoch);
 				$dialtime_catch = ($now_date_epoch - ($start_epoch + $timeout_leeway));
 				if ($dialtime_catch > 100000) {$dialtime_catch=0;}
+				$call_timeout = ($CLdial_timeout + $CLdrop_call_seconds);
+				if ($CLstage =~ /SURVEY|REMIND/) {$call_timeout = ($call_timeout + 120);}
 
-				if ( ($dialtime_log >= $CLdial_timeout) || ($dialtime_catch >= $CLdial_timeout) || ($CLstatus =~ /BUSY|DISCONNECT|XFER|CLOSER/) )
+				if ( ($dialtime_log >= $call_timeout) || ($dialtime_catch >= $call_timeout) || ($CLstatus =~ /BUSY|DISCONNECT|XFER|CLOSER/) )
 					{
-					if ($CLstatus !~ /XFER|CLOSER/) 
+					if ($CLcall_type !~ /IN/) 
 						{
-						$stmtA = "DELETE from osdial_auto_calls where auto_call_id='$auto_call_id'";
-						$affected_rows = $dbhA->do($stmtA);
-
-						$event_string = "|     dead call vac deleted|$auto_call_id|$CLlead_id|$KLcallerid[$kill_vac]|$end_epoch|$affected_rows|$KLchannel[$kill_vac]|$CLdial_timeout|$dialtimelog|$dialtimecatch|";
-						 &event_logger;
-
-						$CLstage =~ s/LIVE|-//gi;
-						if ($CLstage < 0.25) {$CLstage=1;}
-
-						if ($CLstatus =~ /BUSY/) {$CLnew_status = 'B';}
+						if ($CLstatus !~ /XFER|CLOSER/) 
+							{
+							$stmtA = "DELETE from osdial_auto_calls where auto_call_id='$auto_call_id'";
+							$affected_rows = $dbhA->do($stmtA);
+	
+							$event_string = "|     dead call vac deleted|$auto_call_id|$CLlead_id|$KLcallerid[$kill_vac]|$end_epoch|$affected_rows|$KLchannel[$kill_vac]|$CLcall_type|$CLdial_timeout|$CLdrop_call_seconds|$call_timeout|$dialtime_log|$dialtime_catch|";
+						 	&event_logger;
+	
+							$CLstage =~ s/LIVE|-//gi;
+							if ($CLstage < 0.25) {$CLstage=1;}
+	
+							if ($CLstatus =~ /BUSY/) {$CLnew_status = 'B';}
+							else
+								{
+								if ($CLstatus =~ /DISCONNECT/) {$CLnew_status = 'DC';}
+								else {$CLnew_status = 'NA';}
+								}
+							if ($CLstatus =~ /LIVE/) {$CLnew_status = 'DROP';}
+							else 
+								{
+								$end_epoch = ($now_date_epoch + 1);
+								$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch) values('$CLuniqueid','$CLlead_id','$CLcampaign_id','$SQLdate','$now_date_epoch','$CLnew_status','$CLphone_code','$CLphone_number','VDAD','N','$CLstage','$end_epoch')";
+									if($M){print STDERR "\n|$stmtA|\n";}
+								$affected_rows = $dbhA->do($stmtA);
+	
+								$event_string = "|     dead NA call added to log $CLuniqueid|$CLlead_id|$CLphone_number|$CLstatus|$CLnew_status|$affected_rows|";
+							 	&event_logger;
+	
+								}
+	
+							if ($CLlead_id > 0)
+								{
+								$stmtA = "UPDATE osdial_list set status='$CLnew_status' where lead_id='$CLlead_id'";
+								$affected_rows = $dbhA->do($stmtA);
+	
+								$event_string = "|     dead call vac lead marked $CLnew_status|$CLlead_id|$CLphone_number|$CLstatus|";
+							 	&event_logger;
+								}
+	
+							$stmtA = "UPDATE osdial_live_agents set status='PAUSED',random_id='10' where  callerid='$KLcallerid[$kill_vac]';";
+							$affected_rows = $dbhA->do($stmtA);
+	
+							$event_string = "|     dead call vla agent PAUSED $affected_rows|$CLlead_id|$CLphone_number|$CLstatus|";
+						 	&event_logger;
+	
+							if ( ($enable_queuemetrics_logging > 0) && ($CLstatus =~ /LIVE/) )
+								{
+								$dbhB = DBI->connect("DBI:mysql:$queuemetrics_dbname:$queuemetrics_server_ip:3306", "$queuemetrics_login", "$queuemetrics_pass")
+							 	or die "Couldn't connect to database: " . DBI->errstr;
+	
+								if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
+	
+								$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secX',call_id='$KLcallerid[$kill_vac]',queue='$CLcampaign_id',agent='NONE',verb='ABANDON',data1='1',data2='1',data3='$CLstage',serverid='$queuemetrics_log_id';";
+								$Baffected_rows = $dbhB->do($stmtB);
+	
+								$dbhB->disconnect();
+								}
+	
+							##### BEGIN AUTO ALT PHONE DIAL SECTION #####
+							### check to see if campaign has alt_dial enabled
+							$VD_auto_alt_dial = 'NONE';
+							$VD_auto_alt_dial_statuses='';
+							$stmtA="SELECT auto_alt_dial,auto_alt_dial_statuses FROM osdial_campaigns where campaign_id='$CLcampaign_id';";
+								if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+							$sthArows=$sthA->rows;
+						 	$epc_countCAMPDATA=0;
+							while ($sthArows > $epc_countCAMPDATA)
+								{
+								@aryA = $sthA->fetchrow_array;
+								$VD_auto_alt_dial	=			"$aryA[0]";
+								$VD_auto_alt_dial_statuses	=	"$aryA[1]";
+							 	$epc_countCAMPDATA++;
+								}
+							$sthA->finish();
+							if ( ($VD_auto_alt_dial_statuses =~ / $CLnew_status /) && ($CLlead_id > 0) )
+								{
+								if ( ($VD_auto_alt_dial =~ /(ALT_ONLY|ALT_AND_ADDR3)/) && ($CLalt_dial =~ /NONE|MAIN/) )
+									{
+									$VD_alt_phone='';
+									$stmtA="SELECT alt_phone,gmt_offset_now,state,list_id FROM osdial_list where lead_id='$CLlead_id';";
+										if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+									$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+									$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+									$sthArows=$sthA->rows;
+								 	$epc_countCAMPDATA=0;
+									while ($sthArows > $epc_countCAMPDATA)
+										{
+										@aryA = $sthA->fetchrow_array;
+										$VD_alt_phone =			"$aryA[0]";
+										$VD_alt_phone =~ s/\D//gi;
+										$VD_gmt_offset_now =	"$aryA[1]";
+										$VD_state =				"$aryA[2]";
+										$VD_list_id =			"$aryA[3]";
+									 	$epc_countCAMPDATA++;
+										}
+									$sthA->finish();
+									if (length($VD_alt_phone)>5)
+										{
+										$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='$CLcampaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ALT',user='',priority='25';";
+										$affected_rows = $dbhA->do($stmtA);
+										if ($AGILOG) {$agi_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &agi_output;}
+										}
+									}
+								if ( ( ($VD_auto_alt_dial =~ /(ADDR3_ONLY)/) && ($CLalt_dial =~ /NONE|MAIN/) ) || ( ($VD_auto_alt_dial =~ /(ALT_AND_ADDR3)/) && ($CLalt_dial =~ /ALT/) ) )
+									{
+									$VD_address3='';
+									$stmtA="SELECT address3,gmt_offset_now,state,list_id FROM osdial_list where lead_id='$CLlead_id';";
+										if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+									$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+									$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+									$sthArows=$sthA->rows;
+								 	$epc_countCAMPDATA=0;
+									while ($sthArows > $epc_countCAMPDATA)
+										{
+										@aryA = $sthA->fetchrow_array;
+										$VD_address3 =			"$aryA[0]";
+										$VD_address3 =~ s/\D//gi;
+										$VD_gmt_offset_now =	"$aryA[1]";
+										$VD_state =				"$aryA[2]";
+										$VD_list_id =			"$aryA[3]";
+									 	$epc_countCAMPDATA++;
+										}
+									$sthA->finish();
+									if (length($VD_address3)>5)
+										{
+										$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='$CLcampaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ADDR3',user='',priority='20';";
+										$affected_rows = $dbhA->do($stmtA);
+										if ($AGILOG) {$agi_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &agi_output;}
+										}
+									}
+								}
+							##### END AUTO ALT PHONE DIAL SECTION #####
+	
+	
+	
+	
+							}
 						else
 							{
-							if ($CLstatus =~ /DISCONNECT/) {$CLnew_status = 'DC';}
-							else {$CLnew_status = 'NA';}
+							$event_string = "|     dead call vac XFERd do nothing|$CLlead_id|$CLphone_number|$CLstatus|";
+						 	&event_logger;
 							}
-						if ($CLstatus =~ /LIVE/) {$CLnew_status = 'DROP';}
-						else 
-							{
-							$end_epoch = ($now_date_epoch + 1);
-							$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch) values('$CLuniqueid','$CLlead_id','$CLcampaign_id','$SQLdate','$now_date_epoch','$CLnew_status','$CLphone_code','$CLphone_number','VDAD','N','$CLstage','$end_epoch')";
-								if($M){print STDERR "\n|$stmtA|\n";}
-							$affected_rows = $dbhA->do($stmtA);
-
-							$event_string = "|     dead NA call added to log $CLuniqueid|$CLlead_id|$CLphone_number|$CLstatus|$CLnew_status|$affected_rows|";
-							 &event_logger;
-
-							}
-
-						if ($CLlead_id > 0)
-							{
-							$stmtA = "UPDATE osdial_list set status='$CLnew_status' where lead_id='$CLlead_id'";
-							$affected_rows = $dbhA->do($stmtA);
-
-							$event_string = "|     dead call vac lead marked $CLnew_status|$CLlead_id|$CLphone_number|$CLstatus|";
-							 &event_logger;
-							}
-
-						$stmtA = "UPDATE osdial_live_agents set status='PAUSED',random_id='10' where  callerid='$KLcallerid[$kill_vac]';";
-						$affected_rows = $dbhA->do($stmtA);
-
-						$event_string = "|     dead call vla agent PAUSED $affected_rows|$CLlead_id|$CLphone_number|$CLstatus|";
-						 &event_logger;
-
-						if ( ($enable_queuemetrics_logging > 0) && ($CLstatus =~ /LIVE/) )
-							{
-							$dbhB = DBI->connect("DBI:mysql:$queuemetrics_dbname:$queuemetrics_server_ip:3306", "$queuemetrics_login", "$queuemetrics_pass")
-							 or die "Couldn't connect to database: " . DBI->errstr;
-
-							if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
-
-							$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secX',call_id='$KLcallerid[$kill_vac]',queue='$CLcampaign_id',agent='NONE',verb='ABANDON',data1='1',data2='1',data3='$CLstage',serverid='$queuemetrics_log_id';";
-							$Baffected_rows = $dbhB->do($stmtB);
-
-							$dbhB->disconnect();
-							}
-
-						##### BEGIN AUTO ALT PHONE DIAL SECTION #####
-						### check to see if campaign has alt_dial enabled
-						$VD_auto_alt_dial = 'NONE';
-						$VD_auto_alt_dial_statuses='';
-						$stmtA="SELECT auto_alt_dial,auto_alt_dial_statuses FROM osdial_campaigns where campaign_id='$CLcampaign_id';";
-							if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
-						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-						$sthArows=$sthA->rows;
-						 $epc_countCAMPDATA=0;
-						while ($sthArows > $epc_countCAMPDATA)
-							{
-							@aryA = $sthA->fetchrow_array;
-							$VD_auto_alt_dial	=			"$aryA[0]";
-							$VD_auto_alt_dial_statuses	=	"$aryA[1]";
-							 $epc_countCAMPDATA++;
-							}
-						$sthA->finish();
-						if ( ($VD_auto_alt_dial_statuses =~ / $CLnew_status /) && ($CLlead_id > 0) )
-							{
-							if ( ($VD_auto_alt_dial =~ /(ALT_ONLY|ALT_AND_ADDR3)/) && ($CLalt_dial =~ /NONE|MAIN/) )
-								{
-								$VD_alt_phone='';
-								$stmtA="SELECT alt_phone,gmt_offset_now,state,list_id FROM osdial_list where lead_id='$CLlead_id';";
-									if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
-								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-								$sthArows=$sthA->rows;
-								 $epc_countCAMPDATA=0;
-								while ($sthArows > $epc_countCAMPDATA)
-									{
-									@aryA = $sthA->fetchrow_array;
-									$VD_alt_phone =			"$aryA[0]";
-									$VD_alt_phone =~ s/\D//gi;
-									$VD_gmt_offset_now =	"$aryA[1]";
-									$VD_state =				"$aryA[2]";
-									$VD_list_id =			"$aryA[3]";
-									 $epc_countCAMPDATA++;
-									}
-								$sthA->finish();
-								if (length($VD_alt_phone)>5)
-									{
-									$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='$CLcampaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ALT',user='',priority='25';";
-									$affected_rows = $dbhA->do($stmtA);
-									if ($AGILOG) {$agi_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &agi_output;}
-									}
-								}
-							if ( ( ($VD_auto_alt_dial =~ /(ADDR3_ONLY)/) && ($CLalt_dial =~ /NONE|MAIN/) ) || ( ($VD_auto_alt_dial =~ /(ALT_AND_ADDR3)/) && ($CLalt_dial =~ /ALT/) ) )
-								{
-								$VD_address3='';
-								$stmtA="SELECT address3,gmt_offset_now,state,list_id FROM osdial_list where lead_id='$CLlead_id';";
-									if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
-								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-								$sthArows=$sthA->rows;
-								 $epc_countCAMPDATA=0;
-								while ($sthArows > $epc_countCAMPDATA)
-									{
-									@aryA = $sthA->fetchrow_array;
-									$VD_address3 =			"$aryA[0]";
-									$VD_address3 =~ s/\D//gi;
-									$VD_gmt_offset_now =	"$aryA[1]";
-									$VD_state =				"$aryA[2]";
-									$VD_list_id =			"$aryA[3]";
-									 $epc_countCAMPDATA++;
-									}
-								$sthA->finish();
-								if (length($VD_address3)>5)
-									{
-									$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='$CLcampaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ADDR3',user='',priority='20';";
-									$affected_rows = $dbhA->do($stmtA);
-									if ($AGILOG) {$agi_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &agi_output;}
-									}
-								}
-							}
-						##### END AUTO ALT PHONE DIAL SECTION #####
-
-
-
-
 						}
 					else
 						{
-						$event_string = "|     dead call vac XFERd do nothing|$CLlead_id|$CLphone_number|$CLstatus|";
-						 &event_logger;
+						$event_string = "|     dead call vac INBOUND do nothing|$CLlead_id|$CLphone_number|$CLstatus|";
+						&event_logger;
 						}
 					}
 				}
