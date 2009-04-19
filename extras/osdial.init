@@ -118,6 +118,38 @@ start() {
 		echo "OSDIAL_BINPASS=$BINPASS" >> /etc/sysconfig/osdial
 	fi
 
+	# Make tmpfs filesystem for recordings
+	# Make sure it is not a live image.
+	if [ ! -f "/etc/osdial.livecd" ]; then
+		# Make sure this system runs asterisk
+		/sbin/chkconfig --list asterisk | grep on > /dev/null 2>&1
+		if [ "$?" -gt 0 ]; then
+			# Set size if needed
+			if [ -z "$OSDIAL_TMPFS_SIZE" ]; then
+				OSDIAL_TMPFS_SIZE="0%"
+				MEM=`head -1 /proc/meminfo | sed 's/MemTotal:\s*\(.*\) kB.*/\1/'`
+				if [ "$MEM" -gt 512000 -a "$MEM" -lt 1024001 ]; then
+					OSDIAL_TMPFS_SIZE="20%"
+				elif [ "$MEM" -gt 1024000 -a "$MEM" -lt 2048001 ]; then
+					OSDIAL_TMPFS_SIZE="30%"
+				elif [ "$MEM" -gt 2048000 ]; then
+					OSDIAL_TMPFS_SIZE="40%"
+				fi
+				echo "OSDIAL_TMPFS_SIZE=$OSDIAL_TMPFS_SIZE" >> /etc/sysconfig/osdial
+			fi
+			if [ -z "$OSDIAL_TMPFS_PATH" ]; then
+				OSDIAL_TMPFS_PATH="/var/spool/asterisk/VDmonitor"
+				echo "OSDIAL_TMPFS_PATH=$OSDIAL_TMPFS_PATH" >> /etc/sysconfig/osdial
+			fi
+
+			# Mount tmpfs...
+			mkdir /var/spool/asterisk/VDmonitor
+			mount -t tmpfs -o size=${OSDIAL_TMPFS_SIZE},mode=777 tmpfs ${OSDIAL_TMPFS_PATH}
+			chown asterisk:asterisk ${OSDIAL_TMPFS_PATH}
+		fi
+	fi
+	
+
 	# Processes to run before services start
 	/usr/bin/setterm -blank
 	/usr/bin/setterm -powersave off
