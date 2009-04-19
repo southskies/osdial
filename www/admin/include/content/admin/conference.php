@@ -498,7 +498,7 @@ echo "<TABLE align=center><TR><TD>\n";
 
 echo "<center><br><font color=navy size=+1>CONFERENCES</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr bgcolor=navy>";
+echo "<tr bgcolor=$menubarcolor>";
 echo "<td><font size=1 color=white><B>ID</B></td>";
 echo "<td><font size=1 color=white><B>SERVER</B></td>";
 echo "<td><font size=1 color=white><B>EXTENSION</B></td>";
