@@ -103,23 +103,23 @@ insert into osdial_conferences values('8601048','127.0.0.1','');
 insert into osdial_conferences values('8601049','127.0.0.1','');
 
 INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('UNDEFINED','Default Category','N');
-INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('SYSTEM','System Generated Statuses','N');
+INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('SYSTEM','System Generated Statuses','Y');
 INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('NOCONTACT','No Contacts','Y');
 INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('CONTACT','Contacts','Y');
 INSERT INTO osdial_status_categories (vsc_id,vsc_name,tovdad_display) values('SALE','Sales','Y');
 
-insert into osdial_statuses values('NEW','New Lead','N','Y','UNDEFINED');
-insert into osdial_statuses values('DROP','Agent Not Available','N','Y','UNDEFINED');
-insert into osdial_statuses values('XDROP','Inbound Agent Not Available','N','Y','UNDEFINED');
+insert into osdial_statuses values('NEW','New Lead','N','N','UNDEFINED');
+insert into osdial_statuses values('DROP','Agent Not Available','N','Y','SYSTEM');
+insert into osdial_statuses values('XDROP','Inbound Agent Not Available','N','Y','SYSTEM');
 
 insert into osdial_statuses values('QUEUE','Lead To Be Called','N','N','SYSTEM');
 insert into osdial_statuses values('INCALL','Lead Being Called','N','Y','SYSTEM');
-insert into osdial_statuses values('XFER','Call Transferred','Y','Y','SYSTEM');
-insert into osdial_statuses values('CBHOLD','Call Back Inprogress','N','Y','SYSTEM');
 
 insert into osdial_statuses values('SALE','Sale Made','Y','Y','SALE');
 
+insert into osdial_statuses values('XFER','Call Transferred','Y','Y','CONTACT');
 insert into osdial_statuses values('CALLBK','Call Back','Y','Y','CONTACT');
+insert into osdial_statuses values('CBHOLD','Call Back Inprogress','Y','Y','CONTACT');
 insert into osdial_statuses values('DEC','Declined Sale','Y','Y','CONTACT');
 insert into osdial_statuses values('DNC','DO NOT CALL','Y','Y','CONTACT');
 insert into osdial_statuses values('NI','Not Interested','Y','Y','CONTACT');
@@ -128,10 +128,10 @@ insert into osdial_statuses values('A','Answering Machine','Y','N','NOCONTACT');
 insert into osdial_statuses values('AA','Answering Machine Auto','N','N','NOCONTACT');
 insert into osdial_statuses values('AM','Answering Machine Sent to Mesg','N','N','NOCONTACT');
 insert into osdial_statuses values('AL','Answering Machine Msg Played','N','N','NOCONTACT');
-insert into osdial_statuses values('B','Busy','Y','N','NOCONTACT');
 insert into osdial_statuses values('DC','Disconnected Number','Y','N','NOCONTACT');
 insert into osdial_statuses values('N','No Answer','Y','N','NOCONTACT');
 insert into osdial_statuses values('NA','No Answer AutoDial','N','N','NOCONTACT');
+insert into osdial_statuses values('B','Busy','Y','N','NOCONTACT');
 
 INSERT INTO `osdial_campaigns` VALUES ('TEST','Test Campaign','Y','','','','','','DOWN','8301','park','','Y',20,'0','random','24hours','',60,'9','0000000000','8365','8309','ONDEMAND','FULLDATE_CUSTPHONE','','NONE','8320','N','','','','','N','Y','NONE',5,'Y','8307','Y',0,'Wrapup Call','','Y',0,'N','MANUAL','N',3,'3.0','2100','0',0,'AUTO','NONE',' B N NA DC -','N','Test Campaign',NOW(),'N',NULL,' NEW -','N','Y','DISABLED','Y',999,'---NONE---','','');
 INSERT INTO `osdial_campaign_stats` VALUES ('TEST',NOW(),0,0,0,0,'0','0',0,0,0,'0',0,0,0,'0',0,0,0,'0',0,0,0,'0','0','0',0,NULL,0,NULL,0,NULL,0,NULL,0);
