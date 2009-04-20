@@ -184,7 +184,7 @@ $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $outbound_ivr = $sthA->fetchrow_hashref;
 $sthA->finish();
 unless ($outbound_ivr->) {
-	agi_output("+++++ ODOI : NO AUTOAGENT IVR FOUND FOR THIS CAMPAIGN: EXITING");
+	agi_output("+++++ ODOI : NO OUTBOUND IVR FOUND FOR THIS CAMPAIGN: EXITING");
 	exit;
 }
 
