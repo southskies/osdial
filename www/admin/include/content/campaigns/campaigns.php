@@ -908,37 +908,6 @@ if ($ADD==31)
 		{$Xgroups_menu .= "<option value=\"---NONE---\">---NONE---</option>\n";}
 
 
-	if ($SUB<1)		{$camp_detail_color=$subcamp_color;}
-		else		{$camp_detail_color=$campaigns_color;}
-	if ($SUB==22)	{$camp_statuses_color=$subcamp_color;}
-		else		{$camp_statuses_color=$campaigns_color;}
-	if ($SUB==23)	{$camp_hotkeys_color=$subcamp_color;}
-		else		{$camp_hotkeys_color=$campaigns_color;}
-	if ($SUB==25)	{$camp_recycle_color=$subcamp_color;}
-		else		{$camp_recycle_color=$campaigns_color;}
-	if ($SUB==26)	{$camp_autoalt_color=$subcamp_color;}
-		else		{$camp_autoalt_color=$campaigns_color;}
-	if ($SUB==27)	{$camp_pause_color=$subcamp_color;}
-		else		{$camp_pause_color=$campaigns_color;}
-	if ($SUB==29)	{$camp_listmix_color=$subcamp_color;}
-		else		{$camp_listmix_color=$campaigns_color;}
-	
-	//echo "&nbsp;<font size=2 color=$subcamp_font face=\"ARIAL,HELVETICA\"> <B>$row[0]</B>: </font>";
-	//echo "&nbsp;<font size=2 color=navy face=\"ARIAL,HELVETICA\"> <B>$row[0]</B>: </font>";
-	
-	echo "<TABLE WIDTH=$page_width CELLPADDING=2 CELLSPACING=0><TR class='no-ul' BGCOLOR=\"$campaigns_color\">\n";
-	echo "<TD></TD>";
-	echo "<TD align=center><a href=\"$PHP_SELF?ADD=34&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"ARIAL,HELVETICA\">Basic </font></a></TD>";
-	echo "<TD align=center BGCOLOR=\"$camp_detail_color\"> <a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"ARIAL,HELVETICA\">Detail </font></a> </TD>";
-	echo "<TD align=center BGCOLOR=\"$camp_statuses_color\"><a href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"ARIAL,HELVETICA\">Statuses</font></a></TD>";
-	echo "<TD align=center BGCOLOR=\"$camp_hotkeys_color\"><a href=\"$PHP_SELF?ADD=31&SUB=23&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"ARIAL,HELVETICA\">HotKeys</font></a></TD>";
-	echo "<TD align=center BGCOLOR=\"$camp_recycle_color\"><a href=\"$PHP_SELF?ADD=31&SUB=25&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"ARIAL,HELVETICA\">Lead Recycling</font></a></TD>";
-	echo "<TD align=center BGCOLOR=\"$camp_autoalt_color\"><a href=\"$PHP_SELF?ADD=31&SUB=26&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"ARIAL,HELVETICA\">Auto Alt Dial</font></a></TD>";
-	echo "<TD align=center BGCOLOR=\"$camp_pause_color\"><a href=\"$PHP_SELF?ADD=31&SUB=27&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"ARIAL,HELVETICA\">Pause Codes</font></a></TD>";
-	echo "<TD align=center BGCOLOR=\"$camp_listmix_color\"><a href=\"$PHP_SELF?ADD=31&SUB=29&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"ARIAL,HELVETICA\">List Mix</font></a></TD>";
-	echo "<TD align=center> <a href=\"$PHP_SELF?ADD=999999&SUB=14&group=$row[0]\"><font size=2 color=$subcamp_font face=\"ARIAL,HELVETICA\">Real-Time</font></a></TD>\n";
-	echo "</TR></TABLE>\n";
-
 	echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
@@ -1647,29 +1616,6 @@ if ($ADD==34)
 			$o++;
 			}
 		}
-
-	if ($SUB<1)		{$camp_detail_color=$subcamp_color;}
-		else		{$camp_detail_color=$campaigns_color;}
-	if ($SUB==22)	{$camp_statuses_color=$subcamp_color;}
-		else		{$camp_statuses_color=$campaigns_color;}
-	if ($SUB==23)	{$camp_hotkeys_color=$subcamp_color;}
-		else		{$camp_hotkeys_color=$campaigns_color;}
-	if ($SUB==25)	{$camp_recycle_color=$subcamp_color;}
-		else		{$camp_recycle_color=$campaigns_color;}
-	if ($SUB==26)	{$camp_autoalt_color=$subcamp_color;}
-		else		{$camp_autoalt_color=$campaigns_color;}
-	if ($SUB==27)	{$camp_pause_color=$subcamp_color;}
-		else		{$camp_pause_color=$campaigns_color;}
-	if ($SUB==29)	{$camp_listmix_color=$subcamp_color;}
-		else		{$camp_listmix_color=$campaigns_color;}
-	echo "<TABLE WIDTH=$page_width CELLPADDING=2 CELLSPACING=0><TR class='no-ul' BGCOLOR=\"$campaigns_color\">\n";
-	echo "<TD><!-- font size=2 color=$subcamp_font face=\"ARIAL,HELVETICA\"> <B>$row[0]</B>: </font --></TD>";
-	echo "<TD align=center BGCOLOR=\"$camp_detail_color\"><a href=\"$PHP_SELF?ADD=34&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"ARIAL,HELVETICA\">Basic View </font></a></TD>";
-	echo "<TD align=center> <a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"ARIAL,HELVETICA\">Detail View</font></a> </TD>";
-	echo "<TD align=center BGCOLOR=\"$camp_listmix_color\"> <a href=\"$PHP_SELF?ADD=34&SUB=29&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"ARIAL,HELVETICA\">List Mix</font></a> </TD>";
-	echo "<TD align=center> <a href=\"$PHP_SELF?ADD=999999&SUB=14&group=$row[0]\"><font size=2 color=$subcamp_font face=\"ARIAL,HELVETICA\">Real-Time Screen</font></a></TD>\n";
-	echo "<TD WIDTH=300><font size=2 color=$subcamp_font face=\"ARIAL,HELVETICA\"> &nbsp; </font></TD>\n";
-	echo "</TR></TABLE>\n";
 
 	if ($SUB < 1)
 		{

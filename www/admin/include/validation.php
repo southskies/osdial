@@ -127,7 +127,6 @@ if ($non_latin < 1)	{
 	$telnet_port = ereg_replace("[^0-9]","",$telnet_port);
 	$updater_check_enabled = ereg_replace("[^0-9]","",$updater_check_enabled);
 	$user_level = ereg_replace("[^0-9]","",$user_level);
-	$user_start = ereg_replace("[^0-9]","",$user_start);
 	$user_switching_enabled = ereg_replace("[^0-9]","",$user_switching_enabled);
 	$VDstop_rec_after_each_call = ereg_replace("[^0-9]","",$VDstop_rec_after_each_call);
 	$OSDIAL_park_on_extension = ereg_replace("[^0-9]","",$OSDIAL_park_on_extension);
@@ -180,6 +179,7 @@ if ($non_latin < 1)	{
 	$allow_tab_switch = ereg_replace("[^NY]","",$allow_tab_switch);
 	
 	### ALPHA-NUMERIC ONLY ###
+	$user_start = ereg_replace("[^0-9a-zA-Z]","",$user_start);
 	$PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);
 	$PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
 	$script_id = ereg_replace("[^0-9a-zA-Z]","",$script_id);

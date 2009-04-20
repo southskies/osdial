@@ -88,6 +88,16 @@ if ($ADD=="6form")	    {$hh='campaigns';	$sh='fields';	$title = "Delete Form";}
 if ($ADD=="6fields")	{$hh='campaigns';	$sh='fields';	$title = "Delete Field";}
 if ($ADD=="3fields")	{$hh='campaigns';	$sh='fields';	$title = "Campaign Addtional Field Entries";}
 
+# Campaigns - fields
+if ($ADD=="1menu")		{$hh='campaigns';	$sh='outbound_ivr';	$title = "Add New Outbound IVR Menu";}
+if ($ADD=="1keys")		{$hh='campaigns';	$sh='outbound_ivr';	$title = "Add New Outbound IVR Key";}
+if ($ADD=="2keys")		{$hh='campaigns';	$sh='outbound_ivr';	$title = "New Key Entry Form";}
+if ($ADD=="4menu")		{$hh='campaigns';	$sh='outbound_ivr';	$title = "Modify IVR";}
+if ($ADD=="4keys")		{$hh='campaigns';	$sh='outbound_ivr';	$title = "Modify Key";}
+if ($ADD=="6keys")		{$hh='campaigns';	$sh='outbound_ivr';	$title = "Delete Key";}
+if ($ADD=="3menu")		{$hh='campaigns';	$sh='outbound_ivr';	$title = "Outbound IVR Modification Form";}
+if ($ADD=="3keys")		{$hh='campaigns';	$sh='outbound_ivr';	$title = "Key Modification Form";}
+
 # Campaigns - dialstat
 if ($ADD==28)			{$hh='campaigns';	$sh='dialstat';	$title = "Campaign Dial Status Added";}
 if ($ADD==68)			{$hh='campaigns';	$sh='dialstat';	$title = "Campaign Dial Status Removed";}

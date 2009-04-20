@@ -1,0 +1,73 @@
+
+Outbound IVR
+------------
+    
+  - The Outbound IVR Process
+
+The Outbound IVR will function by placing outbound calls and upon answer will
+connect them to a "Virtual Agent" to be processed by the IVR. Answering machine
+detection may also be enabled to determine if the called party is an answering
+machine and optionally leave a message. If calls are not answered, an answering
+machine, or of some other result, the dialer will disposition them accordingly.
+
+Upon being passed to the IVR process, the call will be dispositioned with a
+customizable answered status.  The IVR will play a pre-recorded message and
+wait for the called party to send a DTMF response.  After recieving the DTMF
+response, the dialer will act upon the selected corresponding function
+
+
+
+  - Administration and Configuration
+
+The configuration will be definable on a per-campaign bases, allowing each
+campaign to have its own IVR system.  The manager will be able to select the
+pre-recorded file to play, the disposition to assign to the lead when the call
+is answered, and the maximum number of times to repeat the pre-recorded message
+in case of an invalid DTMF response or timeout.
+
+The manager will also be able to assign any of the "IVR Functions" to any DTMF
+response that may be sent. All of the functions will disposition the lead before
+executing. The standard reporting can then be used to determine the outcome of
+each answered call.
+
+
+  - IVR Functions
+
+The options will be able to be assigned to any given key-press.
+
+  Agent Transfer
+    This function will disposition a call with the given status, optionally
+    play a pre-recorded file to alert the called party that they are being
+    transferred, and then connect the called party to an agent.
+
+  External Transfer
+    This function will disposition a call with the given status, optionally
+    play a pre-recorded file to alert the called party that they are being
+    transferred, and then connect the called party to the given number.
+
+  External Transfer - Multiple
+    Will function the same as the External Transfer, except the manager will
+    be able to enter multiple numbers that the call may be transferred to.
+    The manager can have them attempted in a random order or select
+    round-robin, attempting each number in order with a memory of which number
+    the last call was transferred to.
+
+  Play File
+    This function will disposition a call with the given status, play a
+    pre-recorded file, and then return to the previous menu.
+
+  Goodbye Function
+   This function will disposition a call with the given status, play a
+   pre-recorded file, and then hangup.  If the status is DNC, the function
+   with add the number to the global DNC list.
+
+  Top
+   Will go back to the top-most menu and repeat the announcement.
+
+
+
+  - Reporting
+
+Since each answered IVR session is a "Virtual Agent", all of the standard
+reporting is available.  Current call volumes, agent status, campaign/list
+summaries, list details, etc.

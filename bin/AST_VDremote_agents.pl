@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# AST_VDremote_agents.pl version 2.0.3   *DBI-version*
+# AST_VDremote_agents.pl version 2.0.5   *DBI-version*
 #
 ## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
 ## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
@@ -20,7 +20,6 @@
 ##     You should have received a copy of the GNU Affero General Public
 ##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 ##
-#
 #
 # DESCRIPTION:
 # uses Net::MySQL to keep remote agents logged in to the OSDIAL system 
@@ -53,7 +52,10 @@
 # 70222-1606 - Changed queue_log PAUSE/UNPAUSE to PAUSEALL/UNPAUSEALL
 # 70417-1346 - Fixed bug that would add unneeded simulated agent lines
 # 80128-0105 - Fixed calls_today bug
+# 81007-1746 - Added debugX output for count statements and changed to if from while
+# 81026-1246 - Added better logging of calls and fixed the DROP bug
 #
+# 090418-2145 - Allow non-numeric remote agents from the Outbound IVR
 
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1)
@@ -115,7 +117,7 @@ $conf_silent_prefix = '7';
 $local_AMP = '@';
 $agents = '@agents';
 
-# default path to osdial.configuration file:
+# default path to osdial configuration file:
 $PATHconf =		'/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
@@ -274,11 +276,54 @@ while($one_day_interval > 0)
 		$calls_today++;
 		$sthA->finish();
 
-		$stmtA = "UPDATE osdial_live_agents set status='INCALL', last_call_time='$SQLdate',comments='REMOTE',calls_today='$calls_today' where server_ip='$server_ip' and status IN('QUEUE') and extension LIKE \"R/%\";";
-		$affected_rows = $dbhA->do($stmtA);
+		@QHlive_agent_id=@MT;
+		@QHlead_id=@MT;
+		@QHuniqueid=@MT;
+		@QHuser=@MT;
+		@QHcall_type=@MT;
+		##### grab number of calls today in this campaign and increment
+		$stmtA = "SELECT vla.live_agent_id,vla.lead_id,vla.uniqueid,vla.user,vac.call_type FROM osdial_live_agents vla,osdial_auto_calls vac where vla.server_ip='$server_ip' and vla.status IN('QUEUE') and vla.extension LIKE \"R/%\" and vla.uniqueid=vac.uniqueid and vla.channel=vac.channel;";
+		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		$vla_qh_ct=$sthA->rows;
+		$w=0;
+		while ($vla_qh_ct > $w)
+			{
+			@aryA = $sthA->fetchrow_array;
+			$QHlive_agent_id[$w] =	"$aryA[0]";
+			$QHlead_id[$w] =		"$aryA[1]";
+			$QHuniqueid[$w] =		"$aryA[2]";
+			$QHuser[$w] =			"$aryA[3]";
+			$QHcall_type[$w] =		"$aryA[4]";
+			$w++;
+			}
+		$sthA->finish();
 
-		$event_string = "|     QUEUEd call listing vla UPDATEd $affected_rows";
-		 &event_logger;
+		$w=0;
+		while ($vla_qh_ct > $w)
+			{
+			$stmtA = "UPDATE osdial_live_agents set status='INCALL', last_call_time='$SQLdate',comments='REMOTE',calls_today='$calls_today' where live_agent_id='$QHlive_agent_id[$w]';";
+			$Aaffected_rows = $dbhA->do($stmtA);
+
+			$stmtB = "UPDATE osdial_list set status='XFER',user='$QHuser[$w]' where lead_id='$QHlead_id[$w]';";
+			$Baffected_rows = $dbhA->do($stmtB);
+
+			if ($QHcall_type[$w] =~ /IN/)
+				{
+				$stmtC = "UPDATE osdial_closer_log set status='XFER',user='$QHuser[$w]',comments='REMOTE' where lead_id='$QHlead_id[$w]' order by call_date desc limit 1;";
+				$Caffected_rows = $dbhA->do($stmtC);
+				}
+			else
+				{
+				$stmtC = "UPDATE osdial_log set status='XFER',user='$QHuser[$w]',comments='REMOTE' where uniqueid='$QHuniqueid[$w]';";
+				$Caffected_rows = $dbhA->do($stmtC);
+				}
+
+			$event_string = "|     QUEUEd listing UPDATEd |$Aaffected_rows|$Baffected_rows|$Caffected_rows|     |$QHlive_agent_id[$w]|$QHlead_id[$w]|$QHuniqueid[$w]|$QHuser[$w]|$QHcall_type[$w]|";
+			 &event_logger;
+
+			$w++;
+			}
 
 		#@psoutput = `/bin/ps -f --no-headers -A`;
 		@psoutput = `/bin/ps -o "%p %a" --no-headers -A`;
@@ -346,14 +391,20 @@ while($one_day_interval > 0)
 				$conf_exten =				"$aryA[4]";
 				$campaign_id =				"$aryA[6]";
 				$closer_campaigns =			"$aryA[7]";
+				if ($user_start =~ s/^va$campaign_id//) {
+					$upad = (length($user_start) + length($campaign_id)) - (length(($user_start * 1)) + length($campaign_id));
+					$va = 'va' . $campaign_id . sprintf('%0' . $upad . 'd',0);
+				} else {
+					$va = '';
+				}
 
 				$y=0;
 				while ($y < $number_of_lines)
 					{
 					$random = int( rand(9999999)) + 10000000;
 					$user_id = ($user_start + $y);
-					$DBuser_start[$user_counter] =			"$user_start";
-					$DBremote_user[$user_counter] =			"$user_id";
+					$DBuser_start[$user_counter] =			"$va$user_start";
+					$DBremote_user[$user_counter] =			"$va$user_id";
 					$DBremote_server_ip[$user_counter] =	"$server_ip";
 					$DBremote_campaign[$user_counter] =		"$campaign_id";
 					$DBremote_conf_exten[$user_counter] =	"$conf_exten";
@@ -389,17 +440,24 @@ while($one_day_interval > 0)
 			@aryA = $sthA->fetchrow_array;
 				$Duser_start =				"$aryA[1]";
 				$Dnumber_of_lines =			"$aryA[2]";
+				$Dcampaign_id =				"$aryA[6]";
+				if ($Duser_start =~ s/^va$Dcampaign_id//) {
+					$Dupad = (length($Duser_start) + length($Dcampaign_id)) - (length(($Duser_start * 1)) + length($Dcampaign_id));
+					$Dva = 'va' . $Dcampaign_id . sprintf('%0' . $Dupad . 'd',0);
+				} else {
+					$Dva = '';
+				}
 				$w=0;
 				while ($w < $Dnumber_of_lines)
 					{
 					$Duser_id = ($Duser_start + $w);
-					$DELusers .= "R/$Duser_id|";
+					$DELusers .= "R/$Dva$Duser_id|";
 					$w++;
 					}
 			$rec_count++;
 			}
 		$sthA->finish();
-#		if ($DBX) {print STDERR "INACTIVE remote agents: |$DELusers|\n";}
+		if ($DBX) {print STDERR "INACTIVE remote agents: |$DELusers|\n";}
 
 
 
@@ -412,18 +470,16 @@ while($one_day_interval > 0)
 			{
 			if (length($DBremote_user[$h])>1) 
 				{
-				
 				### check to see if the record exists and only needs random number update
 				$stmtA = "SELECT count(*) FROM osdial_live_agents where user='$DBremote_user[$h]' and server_ip='$server_ip' and campaign_id='$DBremote_campaign[$h]' and conf_exten='$DBremote_conf_exten[$h]' and closer_campaigns='$DBremote_closer[$h]';";
+					if ($DBX) {print STDERR "|$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
-				$rec_count=0;
-				while ($sthArows > $rec_count)
+				if ($sthArows > 0)
 					{
 					@aryA = $sthA->fetchrow_array;
 					$loginexistsRANDOM[$h] =	"$aryA[0]";
-					$rec_count++;
 					}
 				$sthA->finish();
 				
@@ -437,15 +493,14 @@ while($one_day_interval > 0)
 				else
 					{
 					$stmtA = "SELECT count(*) FROM osdial_live_agents where user='$DBremote_user[$h]' and server_ip='$server_ip'";
+						if ($DBX) {print STDERR "|$stmtA|\n";}
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
-					$rec_count=0;
-					while ($sthArows > $rec_count)
+					if ($sthArows > 0)
 						{
 						@aryA = $sthA->fetchrow_array;
 						$loginexistsALL[$h] =	"$aryA[0]";
-						$rec_count++;
 						}
 					$sthA->finish();
 
@@ -489,7 +544,7 @@ while($one_day_interval > 0)
 							}
 						$sthA->finish();
 
-						$stmtA = "INSERT INTO osdial_live_agents (user,server_ip,conf_exten,extension,status,campaign_id,random_id,last_call_time,last_update_time,last_call_finish,closer_campaigns,channel,uniqueid,callerid,user_level,comments) values('$DBremote_user[$h]','$server_ip','$DBremote_conf_exten[$h]','R/$DBremote_user[$h]','READY','$DBremote_campaign[$h]','$DBremote_random[$h]','$SQLdate','$tsSQLdate','$SQLdate','$DBremote_closer[$h]','','','','$DBuser_level[$h]','REMOTE');";
+						$stmtA = "INSERT INTO osdial_live_agents (user,server_ip,conf_exten,extension,status,campaign_id,random_id,last_call_time,last_update_time,last_call_finish,closer_campaigns,channel,uniqueid,callerid,user_level,comments) values('$DBremote_user[$h]','$server_ip','$DBremote_conf_exten[$h]','R/$DBremote_user[$h]','READY','$DBremote_campaign[$h]','$DBremote_random[$h]','$SQLdate','$FDtsSQLdate','$SQLdate','$DBremote_closer[$h]','','','','$DBuser_level[$h]','REMOTE');";
 						$affected_rows = $dbhA->do($stmtA);
 						if ($DBX) {print STDERR "$DBremote_user[$h] NEW INSERT\n";}
 						if ($TESTrun > 0)
@@ -498,12 +553,10 @@ while($one_day_interval > 0)
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 							$sthArows=$sthA->rows;
-							$rec_countLSC=0;
-							while ($sthArows > $rec_countLSC)
+							if ($sthArows > 0)
 								{
 								@aryA = $sthA->fetchrow_array;
 								$LSC_count =	"$aryA[0]";
-								$rec_countLSC++;
 								}
 							$sthA->finish();
 
@@ -585,12 +638,10 @@ while($one_day_interval > 0)
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
-			$rec_count=0;
-			while ($sthArows > $rec_count)
+			if ($sthArows > 0)
 				{
 				@aryA = $sthA->fetchrow_array;
 				$autocallexists[$z] =	"$aryA[0]";
-				$rec_count++;
 				}
 			$sthA->finish();
 			
@@ -792,6 +843,17 @@ $now_date = "$year-$mon-$mday $hour:$min:$sec";
 	$tsSQLdate = "$year$mon$mday$hour$min$sec";
 	$SQLdate = "$year-$mon-$mday $hour:$min:$sec";
 	$filedate = "$year-$mon-$mday";
+
+$FDtarget = ($secX + 10);
+($Fsec,$Fmin,$Fhour,$Fmday,$Fmon,$Fyear,$Fwday,$Fyday,$Fisdst) = localtime($FDtarget);
+$Fyear = ($Fyear + 1900);
+$Fmon++;
+if ($Fmon < 10) {$Fmon = "0$Fmon";}
+if ($Fmday < 10) {$Fmday = "0$Fmday";}
+if ($Fhour < 10) {$Fhour = "0$Fhour";}
+if ($Fmin < 10) {$Fmin = "0$Fmin";}
+if ($Fsec < 10) {$Fsec = "0$Fsec";}
+	$FDtsSQLdate = "$Fyear$Fmon$Fmday$Fhour$Fmin$Fsec";
 
 $BDtarget = ($secX - 10);
 ($Bsec,$Bmin,$Bhour,$Bmday,$Bmon,$Byear,$Bwday,$Byday,$Bisdst) = localtime($BDtarget);

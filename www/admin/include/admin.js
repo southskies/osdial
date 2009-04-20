@@ -234,8 +234,9 @@ function ParseFileName() {
 // Display time
 function clockinit ( )
 {
-  timeDisplay = document.createTextNode ( "" );
-  document.getElementById("clock").appendChild ( timeDisplay );
+  //timeDisplay = document.createTextNode ( "" );
+  //document.getElementById("clock").appendChild ( timeDisplay );
+  document.getElementById("clock").innerHTML = "";
 }
 
 function updateClock () {
@@ -249,6 +250,6 @@ function updateClock () {
   currentHours = ( currentHours > 12 ) ? currentHours - 12 : currentHours;
   currentHours = ( currentHours == 0 ) ? 12 : currentHours;
   var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
-  document.getElementById("clock").firstChild.nodeValue = currentTimeString;
+  document.getElementById("clock").innerHTML = currentTimeString;
 }
 

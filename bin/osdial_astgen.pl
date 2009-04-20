@@ -99,7 +99,7 @@ if ($CLOshowip) {
 }
 
 
-if (-d "/etc/asterisk") {
+if (-f "/etc/asterisk/osdial_extensions.conf") {
 	# Generate intra-server extensions and iax communication.
 	# (osdial_extensions_servers.conf osdial_iax_servers.conf)
 	gen_servers($dbhA);
@@ -298,6 +298,7 @@ sub gen_conferences {
 		$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme,\${EXTEN}|q\n";
 		$mtm2 .= "conf => " . $aryA[0] . "\n";
 	}
+
 	$cnf .= ";\n; OSDial Conferences $cf - $cl\n";
 	$cnf .= $cnf2;
 	$mtm .= ";\n; OSDial Conferences $cf - $cl\n";
@@ -329,6 +330,17 @@ sub gen_conferences {
 	$cnf .= "; quiet monitor extensions for meetme rooms (for room managers)  $cf - $cl\n";
 	$cnf .= $cnf2;
 	$mtm .= ";\n; OSDIAL Agent Conferences $cf - $cl\n";
+	$mtm .= $mtm2;
+
+	my $stmtA = "SELECT conf_exten FROM osdial_remote_agents WHERE user_start LIKE 'va%'";
+	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+	while (my @aryA = $sthA->fetchrow_array) {
+		$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme,\${EXTEN}|q\n";
+		$mtm2 .= "conf => " . $aryA[0] . "\n";
+	}
+	$cnf .= ";\n; OSDIAL Virtual Agent Conferences\n";
+	$cnf .= $cnf2;
+	$cnf .= ";\n; OSDIAL Virtual Agent Conferences\n";
 	$mtm .= $mtm2;
 
 	write_reload($cnf,'osdial_extensions_conferences','extensions reload');
