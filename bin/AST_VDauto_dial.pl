@@ -461,7 +461,7 @@ while($one_day_interval > 0)
 
 			### grab the dial_level and multiply by active agents to get your goalcalls
 			$DBIPadlevel[$user_CIPct]=0;
-			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound FROM osdial_campaigns where campaign_id='$DBIPcampaign[$user_CIPct]'";
+			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound,calls_per_hour_limit FROM osdial_campaigns where campaign_id='$DBIPcampaign[$user_CIPct]'";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -489,11 +489,26 @@ while($one_day_interval > 0)
 							}
 					$DBIPautoaltdial[$user_CIPct] =	"$aryA[10]";
 					$DBIPcampaign_allow_inbound[$user_CIPct] =	"$aryA[11]";
+					$DBIPcalls_per_hour_limit[$user_CIPct] =	($aryA[12] * 1);
 				$rec_count++;
 				}
 			$sthA->finish();
 
-			$DBIPgoalcalls[$user_CIPct] = ($DBIPadlevel[$user_CIPct] * $DBIPcount[$user_CIPct]);
+			$calls_hour = 0;
+			$stmtA = "SELECT calls_hour FROM osdial_campaign_stats where campaign_id='$DBIPcampaign[$user_CIPct]';";
+			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+			$sthArows=$sthA->rows;
+			if ($sthArows > 0) {
+				@aryA = $sthA->fetchrow_array;
+				$calls_hour = ($aryA[0] * 1);
+			}
+			if ($DBIPcalls_per_hour_limit[$user_CIPct] > 0 and $calls_hour > $DBIPcalls_per_hour_limit[$user_CIPct]) {
+				$DBIPgoalcalls[$user_CIPct] = 0;
+			} else {
+				$DBIPgoalcalls[$user_CIPct] = ($DBIPadlevel[$user_CIPct] * $DBIPcount[$user_CIPct]);
+			}
+
 			if ($active_only > 0) 
 				{
 				$tally_xfer_line_counter=0;

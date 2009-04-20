@@ -20,6 +20,7 @@
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
 # 090410-1731 - Added allow_tab_switch
+# 090420-1846 - Added calls_per_hour_limit
 
 
 ######################################################################################################
@@ -51,6 +52,7 @@ if ($non_latin < 1)	{
 	$auto_dial_next_number = ereg_replace("[^0-9]","",$auto_dial_next_number);
 	$balance_trunks_offlimits = ereg_replace("[^0-9]","",$balance_trunks_offlimits);
 	$call_parking_enabled = ereg_replace("[^0-9]","",$call_parking_enabled);
+	$calls_per_hour_limit = ereg_replace("[^0-9]","",$calls_per_hour_limit);
 	$CallerID_popup_enabled = ereg_replace("[^0-9]","",$CallerID_popup_enabled);
 	$campaign_detail = ereg_replace("[^0-9]","",$campaign_detail);
 	$campaign_rec_exten = ereg_replace("[^0-9]","",$campaign_rec_exten);
