@@ -220,7 +220,7 @@ sub ivr_menu {
 	while ($ivrloop) {
 		# Get valid-digits from options table.
 		my $valid_digits;
-		my $stmtA = "SELECT * FROM osdial_outbound_ivr_options WHERE osdial_outbound_ivr_id='" . $menu{ivrid} . "' AND parent_id='" . $menu{parid} . "';";
+		my $stmtA = "SELECT * FROM osdial_outbound_ivr_options WHERE outbound_ivr_id='" . $menu{ivrid} . "' AND parent_id='" . $menu{parid} . "';";
 		agi_output("|$stmtA|") if ($vars->{DB} > 1);
 		my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
