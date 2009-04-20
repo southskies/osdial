@@ -257,8 +257,10 @@ while($one_day_interval > 0)
 		$stmtA = "DELETE FROM osdial_live_agents where server_ip='$server_ip' and status IN('PAUSED') and extension LIKE \"R/%\";";
 		$affected_rows = $dbhA->do($stmtA);
 
-		$event_string = "|     lagged call vla agent DELETED $affected_rows";
-		 &event_logger;
+		if ($affected_rows > 0) {
+			$event_string = "|     lagged call vla agent DELETED $affected_rows";
+			&event_logger;
+		}
 
 		##### grab number of calls today in this campaign and increment
 		$stmtA="SELECT calls_today FROM osdial_live_agents WHERE extension LIKE \"R/%\";";
@@ -391,7 +393,8 @@ while($one_day_interval > 0)
 				$conf_exten =				"$aryA[4]";
 				$campaign_id =				"$aryA[6]";
 				$closer_campaigns =			"$aryA[7]";
-				if ($user_start =~ s/^va$campaign_id//) {
+				if ($user_start =~ /^va$campaign_id/) {
+					$user_start =~ s/^va$campaign_id//;
 					$upad = (length($user_start) + length($campaign_id)) - (length(($user_start * 1)) + length($campaign_id));
 					$va = 'va' . $campaign_id . sprintf('%0' . $upad . 'd',0);
 				} else {
@@ -441,7 +444,8 @@ while($one_day_interval > 0)
 				$Duser_start =				"$aryA[1]";
 				$Dnumber_of_lines =			"$aryA[2]";
 				$Dcampaign_id =				"$aryA[6]";
-				if ($Duser_start =~ s/^va$Dcampaign_id//) {
+				if ($Duser_start =~ /^va$Dcampaign_id/) {
+					$Duser_start =~ s/^va$Dcampaign_id//;
 					$Dupad = (length($Duser_start) + length($Dcampaign_id)) - (length(($Duser_start * 1)) + length($Dcampaign_id));
 					$Dva = 'va' . $Dcampaign_id . sprintf('%0' . $Dupad . 'd',0);
 				} else {

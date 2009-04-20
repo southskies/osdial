@@ -321,7 +321,7 @@ if ($ADD == "4menu") {
                     }
                     if ($ufnd == 0) {
                         $stmt = "INSERT INTO osdial_remote_agents (user_start,conf_exten,server_ip,campaign_id) VALUES ";
-                        $conf = '828282' . sprintf('%03d',$oivr_id) . sprintf('03d',$unum);
+                        $conf = '828282' . sprintf('%03d',$oivr_id) . sprintf('%03d',$unum);
                         $stmt .= "('$usr','$conf','$server_ip','$campaign_id');";
                         $rslt = mysql_query($stmt, $link);
                         $icnt++;
@@ -470,7 +470,7 @@ if ($ADD == "3menu") {
     echo '      <td bgcolor="#CBDCE0"><input type="text" size="50" maxlength="255" name="oivr_announcement" value="' . $oivr['announcement'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Annountment Repeat Attempt</td>\n";
+    echo "      <td bgcolor=#CBDCE0 align=right>Announcement Repeat Attempt</td>\n";
     echo '      <td bgcolor="#CBDCE0"><input type="text" size="4" maxlength="2" name="oivr_repeat_loops" value="' . $oivr['repeat_loops'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";

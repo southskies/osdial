@@ -39,7 +39,7 @@ $PHP_AUTH_USER=$_SERVER['PHP_AUTH_USER'];
 $PHP_AUTH_PW=$_SERVER['PHP_AUTH_PW'];
 $PHP_SELF=$_SERVER['PHP_SELF'];
 
-$system_settings = get_first_record($link, 'system_settings', 'use_non_latin,admin_home_url','');
+$system_settings = get_first_record($link, 'system_settings', '*','');
 $non_latin = $system_settings['use_non_latin'];
 $admin_home_url_LU = $system_settings['admin_home_url'];
 $user_company = $system_settings['company_name'];
@@ -350,7 +350,7 @@ $oivr_wait_loops = get_variable("oivr_wait_loops");
 $oivr_wait_timeout = get_variable("oivr_wait_timeout");
 $oivr_answered_status = get_variable("oivr_answered_status");
 $oivr_virtual_agents = get_variable("oivr_virtual_agents");
-$oivr_virtual_agents = get_variable("oivr_status");
+$oivr_status = get_variable("oivr_status");
 $oivr_opt_id = get_variable("oivr_opt_id");
 $oivr_opt_parent_id = get_variable("oivr_opt_parent_id");
 $oivr_opt_keypress = get_variable("oivr_opt_keypress");

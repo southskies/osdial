@@ -37,7 +37,7 @@ my $outbound_ivr = {};
 # Get OSD configuration directives.
 $vars = getOSDconfig('/etc/osdial.conf');
 
-$vars->{DB} = 0 unless ($vars->{DB});
+$vars->{DB} = 1 unless ($vars->{DB});
 $vars->{script} = 'agi-OSDoutboundIVR.agi';
 $vars->{drop_time} = 10;
 
@@ -138,7 +138,7 @@ $sthA->finish();
 my ($affected_rows, $safe_harbor_message, $safe_harbor_exten);
 
 ### Grab call parameters from osdial_auto_calls table
-my $stmtA = "UPDATE osdial_auto_calls set uniqueid='" . $AGI->{uniqueid} . "', channel='" . $AGI->{channel} . "',status='LIVE',stage='LIVE-0' where callerid='" . $AGI->{callerid} . "' order by call_time desc limit 1;";
+my $stmtA = "UPDATE osdial_auto_calls set uniqueid='" . $AGI->{uniqueid} . "', channel='" . $AGI->{channel} . "',status='XFER',stage='IVR-0' where callerid='" . $AGI->{callerid} . "' order by call_time desc limit 1;";
 agi_output("|$stmtA|") if ($vars->{DB} > 1);
 $affected_rows = $dbhA->do($stmtA);
 agi_output("--    ODOI : |$affected_rows|update of vac table");
@@ -168,7 +168,7 @@ if ($affected_rows > 0) {
 
 	$stmtA = "UPDATE osdial_list set status='VPU' where lead_id = '" . $vars->{CIDlead_id} . "';";
 	my $affected_rows = $dbhA->do($stmtA);
-	agi_output("--    ODOI osdial_list update: |$affected_rows|ODOIPU");
+	agi_output("--    ODOI osdial_list update: |$affected_rows|VPU");
 } else {
 	agi_output("+++++ ODOI : COULD NOT UPDATE AUTO-CALL RECORD: EXITING");
 	exit;
@@ -183,13 +183,14 @@ my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $outbound_ivr = $sthA->fetchrow_hashref;
 $sthA->finish();
-unless ($outbound_ivr->) {
+unless ($outbound_ivr) {
 	agi_output("+++++ ODOI : NO OUTBOUND IVR FOUND FOR THIS CAMPAIGN: EXITING");
 	exit;
 }
 
-my $stmtA =  "UPDATE osdial_live_agents set status='XFER',lead_id='" . $vars->{CIDlead_id} . "',uniqueid='" . $AGI->{uniqueid} . "', channel='" . $AGI->{channel} . "', callerid='" . $AGI->{callerid} . "' where status = 'READY' and ";
-#$stmtA .= "server_ip='" . $vars->{VARserver_ip} . "' and campaign_id='" . $auto_calls->{campaign_id} . "' limit 1;";
+my $stmtA =  "UPDATE osdial_live_agents set status='INCALL',lead_id='" . $vars->{CIDlead_id} . "',uniqueid='" . $AGI->{uniqueid};
+$stmtA .= "', channel='" . $AGI->{channel} . "', callerid='" . $AGI->{callerid} . "' where status = 'READY' and ";
+$stmtA .= "server_ip='" . $vars->{VARserver_ip} . "' and campaign_id='" . $auto_calls->{campaign_id} . "' limit 1;";
 ##"' and last_update_time > '" . sql_date($vars->{start_epoch} + 5) . "' limit 1;";
 agi_output("|$stmtA|") if ($vars->{DB} > 1);
 my $affected_rows = $dbhA->do($stmtA);
@@ -197,10 +198,9 @@ agi_output("+++++ ODOI : SETTING CALL TO INCALL :");
 
 $outbound_ivr->{ivrid} = $outbound_ivr->{id};
 $outbound_ivr->{parid} = 0;
-ivr_menu($outbound_ivr->);
+ivr_menu($outbound_ivr);
 
 $dbhA->disconnect();
-$AGI->hangup();
 exit;
 
 
@@ -230,11 +230,11 @@ sub ivr_menu {
 			$valid_digits .= $ivrref->{keypress};
 		}
 		$sthA->finish();
-		agi_output("+++++ ODOI DIGITS : $valid_digits") if ($vars->{DB});
+		agi_output("+++++ ODOI VALID DIGITS : $valid_digits");
 	
 		sleep(1);
 		my $dtmf = stream_and_get_dtmf($menu{announcement},1,$menu{repeat_loops},$menu{wait_loops},$menu{wait_timeout},$valid_digits);
-		agi_output("+++++ ODOI STATUS : pressed $dtmf") if ($vars->{DB});
+		agi_output("+++++ ODOI STATUS : pressed $dtmf");
 	
 		my $dkey = "key" . $dtmf;
 		my @aparams = split(/#:#/,$menu{$dkey}{action_data});
@@ -261,6 +261,8 @@ sub ivr_menu {
 		} elsif ($menu{$dkey}{action} eq "MENU_REPEAT") {
 			$ivrloop = 1;
 		} elsif ($menu{$dkey}{action} eq "MENU_EXIT") {
+			$ivrloop = 0;
+		} else {
 			$ivrloop = 0;
 		}
 	}
@@ -308,7 +310,7 @@ sub xfer_to_external {
 	my $affected_rows = $dbhA->do($stmtA);
 	agi_output("--    ODOI osdial_log update: |$affected_rows");
 
-	$stmtA = "DELETE FROM osdial_auto_calls where callerid='" . $AGI->{callerid} . "' order by call_time desc limit 1;";
+	$stmtA = "UPDATE osdial_auto_calls set status='XFER', stage='EXTERNAL' where callerid='" . $AGI->{callerid} . "';";
 	$affected_rows = $dbhA->do($stmtA);
 	agi_output("--    ODOI vac record deleted: |$affected_rows|" . $auto_calls->{campaign_id});
 
@@ -360,6 +362,10 @@ sub xfer_to_agent {
 	my ($conf_exten, $user, $extension);
 
 	while ($drop_timer <= $vars->{drop_time}) {
+		$stmtA = "UPDATE osdial_auto_calls set status='LIVE',stage='LIVE-$drop_timer',last_update_time=NOW() where callerid='" . $AGI->{callerid} . "';";
+		$affected_rows = $dbhA->do($stmtA);
+		agi_output("--    ODOI : |$affected_rows|update of vac table: ", 1);
+
 		my $channel_status = $AGI->channel_status($AGI->{channel});
 		if ($channel_status < 1) {
 			agi_output("CHANNEL " . $AGI->{channel} . " DOWN $channel_status " . $vars->{drop_time} . "|$drop_timer CHECKING AGAIN");
@@ -391,7 +397,7 @@ sub xfer_to_agent {
 
 		if ($campaign->{concurrent_transfers} =~ /AUTO/) {
 			my $active_agents=1;
-			$stmtA = "SELECT count(*) FROM osdial_live_agents where server_ip='" . $vars->{VARserver_ip} . "' and campaign_id = '" . $auto_calls->{campaign_id} . "' and last_update_time > '" . sql_date($vars->{start_epoch} - 5) . "';";
+			$stmtA = "SELECT count(*) FROM osdial_live_agents where server_ip='" . $vars->{VARserver_ip} . "' and campaign_id = '" . $auto_calls->{campaign_id} . "' and last_update_time > '" . sql_date($vars->{start_epoch} - 5) . "' and extension NOT LIKE 'R/\%';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			($active_agents) = $sthA->fetchrow_array;
@@ -407,7 +413,7 @@ sub xfer_to_agent {
 			agi_output("WWWWWWWW ODOI XFER WAIT: |$rec_countWAIT|" . $auto_calls->{campaign_id} . "|");
 		} else {
 			$stmtA =  "UPDATE osdial_live_agents set status='QUEUE',lead_id='" . $vars->{CIDlead_id} . "',uniqueid='" . $AGI->{uniqueid} . "', channel='" . $AGI->{channel} . "', callerid='" . $AGI->{callerid} . "' where status = 'READY' and ";
-			$stmtA .= "server_ip='" . $vars->{VARserver_ip} . "' and campaign_id='" . $auto_calls->{campaign_id} . "' and last_update_time > '" . sql_date($vars->{start_epoch} + 5) . "' $agent_call_order limit 1;";
+			$stmtA .= "server_ip='" . $vars->{VARserver_ip} . "' and campaign_id='" . $auto_calls->{campaign_id} . "' and last_update_time > '" . sql_date($vars->{start_epoch} + 5) . "' $agent_call_order and extension NOT LIKE 'R/\%' limit 1;";
 			$affected_rows = $dbhA->do($stmtA);
 			agi_output("--    ODOI get agent: |$affected_rows|update of vla table: " . $auto_calls->{campaign_id} . "|" . $vars->{VARserver_ip});
 			unless ($affected_rows > 0) {
@@ -484,10 +490,6 @@ sub xfer_to_agent {
 				usleep(1*990*1000);
 				$drop_timer++;
 			}
-
-			$stmtA = "UPDATE osdial_auto_calls set stage='LIVE-$drop_timer' where callerid='" . $AGI->{callerid} . "';";
-			$affected_rows = $dbhA->do($stmtA);
-			agi_output("--    ODOI : |$affected_rows|update of vac table: ", 1);
 		}
 	}
 
@@ -610,8 +612,9 @@ sub stream_and_get_dtmf {
 			$total_digits=chr($interrupt_digit);
 			my $loop = 0;
 			while (length($total_digits) < $dcount and $loop < $waitloops) {
-				my $digit = chr($AGI->wait_for_digit($waittimeout));
+				my $digit = $AGI->wait_for_digit($waittimeout);
 				if ($digit) {
+					$digit = chr($digit);
 					$digit =~ s/$valid_pat//g;
 					if ($digit) {
 						agi_output("    digit |$digit|   total_digits |$total_digits|") if ($vars->{DB});
@@ -625,8 +628,9 @@ sub stream_and_get_dtmf {
 		} elsif ($interrupt_digit == 0) {
 			my $loop = 0;
 			while (length($total_digits) < $dcount and $loop < $waitloops) {
-				my $digit = chr($AGI->wait_for_digit($waittimeout));
+				my $digit = $AGI->wait_for_digit($waittimeout);
 				if ($digit) {
+					$digit = chr($digit);
 					$digit =~ s/$valid_pat//g;
 					if ($digit) {
 						agi_output("    digit |$digit|   total_digits |$total_digits|") if ($vars->{DB});

@@ -332,7 +332,8 @@ sub gen_conferences {
 	$mtm .= ";\n; OSDIAL Agent Conferences $cf - $cl\n";
 	$mtm .= $mtm2;
 
-	my $stmtA = "SELECT conf_exten FROM osdial_remote_agents WHERE user_start LIKE 'va%'";
+	my $stmtA = "SELECT conf_exten FROM osdial_remote_agents WHERE user_start LIKE 'va\%'";
+        my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	while (my @aryA = $sthA->fetchrow_array) {
 		$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme,\${EXTEN}|q\n";
@@ -340,7 +341,7 @@ sub gen_conferences {
 	}
 	$cnf .= ";\n; OSDIAL Virtual Agent Conferences\n";
 	$cnf .= $cnf2;
-	$cnf .= ";\n; OSDIAL Virtual Agent Conferences\n";
+	$mtm .= ";\n; OSDIAL Virtual Agent Conferences\n";
 	$mtm .= $mtm2;
 
 	write_reload($cnf,'osdial_extensions_conferences','extensions reload');

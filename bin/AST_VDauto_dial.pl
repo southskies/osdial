@@ -691,7 +691,7 @@ while($one_day_interval > 0)
 					&event_logger;
 					$DBIPtrunk_shortage[$user_CIPct] = 0;
 					}
-				$stmtA = "UPDATE osdial_campaign_server_stats SET local_trunk_shortage='$DBIPtrunk_shortage[$user_CIPct]' where server_ip='$server_ip' and campaign_id='$DBIPcampaign[$user_CIPct]';";
+				$stmtA = "UPDATE osdial_campaign_server_stats SET local_trunk_shortage='$DBIPtrunk_shortage[$user_CIPct]',update_time='$now_date' where server_ip='$server_ip' and campaign_id='$DBIPcampaign[$user_CIPct]';";
 				$affected_rows = $dbhA->do($stmtA);
 				}
 
@@ -927,7 +927,7 @@ while($one_day_interval > 0)
 			{
 			if (length($KLserver_ip[$kill_vac]) > 7)
 				{
-				$end_epoch=0;   $CLuniqueid='';
+				$start_epoch=0;   $end_epoch=0;   $CLuniqueid='';   $CLlast_update_time=0;
 				$KLcalleridCHECK[$kill_vac]=$KLcallerid[$kill_vac];
 				$KLcalleridCHECK[$kill_vac] =~ s/\W//gi;
 
@@ -971,7 +971,7 @@ while($one_day_interval > 0)
 
 				$CLlead_id=''; $auto_call_id=''; $CLstatus=''; $CLcampaign_id=''; $CLphone_number=''; $CLphone_code='';
 
-				$stmtA = "SELECT auto_call_id,lead_id,phone_number,status,campaign_id,phone_code,alt_dial,stage,call_type FROM osdial_auto_calls where callerid='$KLcallerid[$kill_vac]'";
+				$stmtA = "SELECT auto_call_id,lead_id,phone_number,status,campaign_id,phone_code,alt_dial,stage,call_type,UNIX_TIMESTAMP(last_update_time) FROM osdial_auto_calls where callerid='$KLcallerid[$kill_vac]'";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -989,6 +989,7 @@ while($one_day_interval > 0)
 						$CLalt_dial		= "$aryA[6]";
 						$CLstage		= "$aryA[7]";
 						$CLcall_type	= "$aryA[8]";
+						$CLlast_update_time	= "$aryA[9]";
 					$rec_count++;
 					}
 				$sthA->finish();
@@ -1015,11 +1016,12 @@ while($one_day_interval > 0)
 					}
 				$sthA->finish();
 
-				$dialtime_log = ($end_epoch - $start_epoch);
+				$dialtime_log = 0;
+				$dialtime_log = ($end_epoch - $start_epoch) if ($end_epoch > 0);
 				$dialtime_catch = ($now_date_epoch - ($start_epoch + $timeout_leeway));
 				if ($dialtime_catch > 100000) {$dialtime_catch=0;}
 				$call_timeout = ($CLdial_timeout + $CLdrop_call_seconds);
-				if ($CLstage =~ /SURVEY|REMIND/) {$call_timeout = ($call_timeout + 120);}
+				if ($CLstage =~ /SURVEY|REMIND|IVR/) {$call_timeout = ($call_timeout + 120);}
 
 				if ( ($dialtime_log >= $call_timeout) || ($dialtime_catch >= $call_timeout) || ($CLstatus =~ /BUSY|DISCONNECT|XFER|CLOSER/) )
 					{
@@ -1030,7 +1032,7 @@ while($one_day_interval > 0)
 							$stmtA = "DELETE from osdial_auto_calls where auto_call_id='$auto_call_id'";
 							$affected_rows = $dbhA->do($stmtA);
 	
-							$event_string = "|     dead call vac deleted|$auto_call_id|$CLlead_id|$KLcallerid[$kill_vac]|$end_epoch|$affected_rows|$KLchannel[$kill_vac]|$CLcall_type|$CLdial_timeout|$CLdrop_call_seconds|$call_timeout|$dialtime_log|$dialtime_catch|";
+							$event_string = "|     dead call vac deleted|$auto_call_id|$CLlead_id|$CLuniqueid|$KLuniqueid[$kill_vac]|$KLcallerid[$kill_vac]|$end_epoch|$affected_rows|$KLchannel[$kill_vac]|$CLcall_type|$CLdial_timeout|$CLdrop_call_seconds|$call_timeout|$dialtime_log|$dialtime_catch|";
 						 	&event_logger;
 	
 							$CLstage =~ s/LIVE|-//gi;
@@ -1166,8 +1168,18 @@ while($one_day_interval > 0)
 							}
 						else
 							{
-							$event_string = "|     dead call vac XFERd do nothing|$CLlead_id|$CLphone_number|$CLstatus|";
-						 	&event_logger;
+							if ( ($KLcallerid[$kill_vac] =~ /^M\d\d\d\d\d\d\d\d\d\d/) && ($CLlast_update_time < $TDtarget) )
+								{
+								$stmtA = "DELETE from vicidial_auto_calls where auto_call_id='$auto_call_id'";
+								$affected_rows = $dbhA->do($stmtA);
+								$event_string = "|   M dead call vac deleted|$auto_call_id|$CLlead_id|$KLcallerid[$kill_vac]|$end_epoch|$affected_rows|$KLchannel[$kill_vac]|$CLcall_type|$CLlast_update_time < $XDtarget|";
+								&event_logger;
+								}
+							else
+								{
+								$event_string = "|     dead call vac XFERd do nothing|$CLlead_id|$CLphone_number|$CLstatus|";
+								&event_logger;
+								}
 							}
 						}
 					else
@@ -1242,7 +1254,7 @@ while($one_day_interval > 0)
 		$stmtA = "DELETE FROM osdial_auto_calls where server_ip='$server_ip' and call_time < '$XDSQLdate' and status NOT IN('XFER','CLOSER','LIVE')";
 		$affected_rows = $dbhA->do($stmtA);
 
-		$event_string = "|     lagged call vac agent DELETED $affected_rows|$XDSQLdate|";
+		$event_string = "|     lagged call vac agent DELETED $affected_rows|$XDSQLdate|\n$stmtA";
 		 &event_logger;
 
 
@@ -1294,12 +1306,12 @@ while($one_day_interval > 0)
 			$stmtA = "DELETE from osdial_auto_calls where auto_call_id='$auto_call_id'";
 			$affected_rows = $dbhA->do($stmtA);
 
-			$event_string = "|     lagged call vdac call DELETED $affected_rows|$BDtsSQLdate|";
+			$event_string = "|     lagged call vdac call DELETED $affected_rows|$BDtsSQLdate|$auto_call_id|$CLcallerid|$CLuniqueid|$CLphone_number|$CLstatus|";
 			 &event_logger;
 
 			if ( ($affected_rows > 0) && ($CLlead_id > 0) ) 
 				{
-				$jam_string = "|     lagged call vdac call DELETED $affected_rows|$BDtsSQLdate|";
+				$jam_string = "|     lagged call vdac call DELETED $affected_rows|$BDtsSQLdate|$auto_call_id|$CLcallerid|$CLuniqueid|$CLphone_number|$CLstatus|";
 				 &jam_event_logger;
 
 				$CLstage =~ s/LIVE|-//gi;
@@ -1411,10 +1423,10 @@ while($one_day_interval > 0)
 			###########################################
 
 			### delete call records that are LIVE/XFER for over 100 minutes
-			$stmtA = "DELETE FROM osdial_auto_calls where server_ip='$server_ip' and call_time < '$TDSQLdate' and status NOT IN('CLOSER')";
+			$stmtA = "DELETE FROM osdial_auto_calls where server_ip='$server_ip' and call_time < '$TDSQLdate' and status NOT IN('XFER','CLOSER')";
 			$affected_rows = $dbhA->do($stmtA);
 
-			$event_string = "|     lagged call vac agent DELETED $affected_rows|$TDSQLdate|LIVE|";
+			$event_string = "|     lagged call vac agent DELETED $affected_rows|$TDSQLdate|LIVE|\n$stmtA";
 			 &event_logger;
 
 			### Grab Server values from the database in case they've changed

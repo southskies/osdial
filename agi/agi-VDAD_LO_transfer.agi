@@ -58,6 +58,7 @@
 # 70305-1251 - Fixed problems where the same call will run this script twice
 # 71116-1045 - added fewest_calls and campaign_weight agent call routing options
 #
+# 090420-1343 - Added term_reason
 
 $script = 'agi-VDAD_LO_transfer.agi';
 
@@ -907,7 +908,7 @@ if ($drop_seconds < 1)
 	$affected_rows = $dbhA->do($stmtA);
 	if ($AGILOG) {$agi_string = "--    VDAD vac record deleted: |$affected_rows|$VDADcampaign|";   &agi_output;}
 
-	$stmtA = "UPDATE osdial_log set status='DROP',end_epoch='$now_date_epoch',length_in_sec='$drop_seconds' where uniqueid = '$uniqueid';";
+	$stmtA = "UPDATE osdial_log set status='DROP',end_epoch='$now_date_epoch',length_in_sec='$drop_seconds',term_reason='ABANDON' where uniqueid = '$uniqueid';";
 		if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 	$affected_rows = $dbhA->do($stmtA);
 	if ($AGILOG) {$agi_string = "--    VDAD osdial_log update: |$affected_rows|$uniqueid";   &agi_output;}

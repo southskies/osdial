@@ -10,7 +10,10 @@ ALTER TABLE osdial_auto_calls MODIFY uniqueid VARCHAR(20);
 ALTER TABLE osdial_log MODIFY uniqueid VARCHAR(20) NOT NULL;
 ALTER TABLE live_inbound_log MODIFY uniqueid VARCHAR(20) NOT NULL;
 
-ALTER TABLE system_settings ADD user_company VARCHAR(100) default 'Company Name Here';
+ALTER TABLE system_settings ADD company_name VARCHAR(100) default 'Company Name Here';
+ALTER TABLE osdial_log ADD term_reason ENUM('CALLER','AGENT','QUEUETIMEOUT','ABANDON','AFTERHOURS','NONE') default 'NONE';
+ALTER TABLE osdial_closer_log ADD term_reason ENUM('CALLER','AGENT','QUEUETIMEOUT','ABANDON','AFTERHOURS','NONE') default 'NONE';
+ALTER TABLE osdial_closer_log ADD uniqueid VARCHAR(20) NOT NULL default '';
 
 CREATE TABLE osdial_outbound_ivr (
 	id INT(11) NOT NULL auto_increment,
@@ -21,7 +24,7 @@ CREATE TABLE osdial_outbound_ivr (
 	wait_loops INT(4) default '5',
 	wait_timeout INT(4) default '500',
 	answered_status VARCHAR(6) default 'VPU',
-	vitual_agents INT(3),
+	virtual_agents INT(3),
 	status enum('ACTIVE','INACTIVE') default 'INACTIVE',
 	primary key (id),
 	unique (campaign_id)

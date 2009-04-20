@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# FastAGI_log.pl version 2.0.4   *DBI-version*
+# FastAGI_log.pl version 2.0.5   *DBI-version*
 #
 ## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
 ## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
@@ -52,6 +52,13 @@
 # 70808-1425 - Moved VD_hangup section to the call_log end stage to improve efficiency
 # 71030-2039 - Added priority to hopper insertions
 # 80303-1438 - Fixed problem with false hangupcause data
+# 80224-0040 - Fixed bugs in osdial_log updates
+# 80430-0907 - Added term_reason to osdial_log and osdial_closer_log
+# 80507-1138 - Fixed osdial_closer_log CALLER hangups
+# 80510-0414 - Fixed crossover logging bugs
+# 80510-2058 - Fixed status override bug
+# 81021-0306 - Added Local channel logging support and while-to-if changes
+# 81026-1247 - Changed to allow for better remote agent calling
 #
 
 
@@ -146,7 +153,7 @@ if ($SERVERLOG =~ /Y/)
 	print "SERVER LOGGING ON: LEVEL-$log_level FILE-$childLOGfile\n";
 	}
 
-package TEST_VDfastAGI;
+package VDfastAGI;
 
 use Net::Server;
 use Asterisk::AGI;
@@ -159,7 +166,7 @@ use Net::Server::PreFork; # any personality will do
 
 sub process_request {
 	$process = 'begin';
-	$script = 'TEST_VDfastAGI';
+	$script = 'VDfastAGI';
 	########## Get current time, parse configs, get logging preferences ##########
 	($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
 	$year = ($year + 1900);
@@ -379,11 +386,13 @@ sub process_request {
 		### call start stage
 		if ($stage =~ /START/)
 			{
+			$channel_group='';
+
 			if ($AGILOG) {$agi_string = "+++++ CALL LOG START : $now_date";   &agi_output;}
 
 			if ($channel =~ /^SIP/) {$channel =~ s/-.*//gi;}
 			if ($channel =~ /^IAX2/) {$channel =~ s/\/\d+$//gi;}
-			if ($channel =~ /^Zap\/|^Local\//)
+			if ($channel =~ /^Zap\//)
 				{
 				$channel_line = $channel;
 				$channel_line =~ s/^Zap\///gi;
@@ -399,16 +408,40 @@ sub process_request {
 				if ($is_client_phone < 1)
 					{
 					$channel_group = 'Zap Trunk Line';
-					$number_dialed = $callerid;
+					$number_dialed = $extension;
 					}
 				else
 					{
 					$channel_group = 'Zap Client Phone';
 					}
-				if ($AGILOG) {$agi_string = "Local Zap phone: $aryA[0]|$channel_line|";   &agi_output;}
+				if ($AGILOG) {$agi_string = $channel_group . ": $aryA[0]|$channel_line|";   &agi_output;}
 				}
+			if ($channel =~ /^Local\//)
+				{
+				$channel_line = $channel;
+				$channel_line =~ s/^Local\/|\@.*//gi;
+			
+				$stmtA = "SELECT count(*) FROM phones where server_ip='$VARserver_ip' and dialplan_number='$channel_line' and protocol='EXTERNAL';";
+				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+				$sthArows=$sthA->rows;
+				@aryA = $sthA->fetchrow_array;
+				$is_client_phone         = "$aryA[0]";
+				$sthA->finish();
+			
+				if ($is_client_phone < 1)
+					{
+					$channel_group = 'Local Channel Line';
+					$number_dialed = $extension;
+					}
+				else
+					{
+					$channel_group = 'EXTERNAL Client Phone';
+					}
+				if ($AGILOG) {$agi_string = $channel_group . ": $aryA[0]|$channel_line|";   &agi_output;}
+                                }
 			### This section breaks the outbound dialed number down(or builds it up) to a 10 digit number and gives it a description
-			if ( ($channel =~ /^SIP|^IAX2/) or ($is_client_phone > 0) )
+			if ( ($channel =~ /^SIP|^IAX2/) || ( ($is_client_phone > 0) && (length($channel_group) < 1) ) )
 				{
 				if ( ($extension =~ /^901144/) && (length($extension)==16) )  #test 207 608 6400 
 					{$extension =~ s/^9//gi;	$channel_group = 'Outbound Intl UK';}
@@ -423,9 +456,9 @@ sub process_request {
 				if ( ($extension =~ /^91/) && (length($extension)==12) )
 					{$extension =~ s/^91//gi;	$channel_group = 'Outbound Long Distance';}
 				if ($is_client_phone > 0)
-					{$channel_group = 'Zap Client Phone';}
+					{$channel_group = 'Client Phone';}
 				
-				$SIP_ext = $channel;	$SIP_ext =~ s/SIP\/|IAX2\/|Zap\///gi;
+				$SIP_ext = $channel;	$SIP_ext =~ s/SIP\/|IAX2\/|Zap\/|Local\///gi;
 
 				$number_dialed = $extension;
 				$extension = $SIP_ext;
@@ -438,7 +471,7 @@ sub process_request {
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
 				$rec_count=0;
-				while ($sthArows > $rec_count)
+				if ($sthArows > 0)
 					{
 					@aryA = $sthA->fetchrow_array;
 					$cmd_line_b	=	"$aryA[0]";
@@ -520,7 +553,7 @@ sub process_request {
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
 			$rec_count=0;
-			while ($sthArows > $rec_count)
+			if ($sthArows > 0)
 				{
 				@aryA = $sthA->fetchrow_array;
 				$parked_time	=			"$aryA[0]";
@@ -590,20 +623,25 @@ sub process_request {
 					if ($dialstatus =~ /BUSY/) {$VDL_status = 'B'; $VDAC_status = 'BUSY';}
 					if ($dialstatus =~ /CHANUNAVAIL/) {$VDL_status = 'DC'; $VDAC_status = 'DISCONNECT';}
 
-					$stmtA = "UPDATE osdial_auto_calls set status='$VDAC_status' where callerid = '$callerid';";
-						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
-					$affected_rows = $dbhA->do($stmtA);
-					if ($AGILOG) {$agi_string = "--    VDAC update: |$affected_rows|$CIDlead_id";   &agi_output;}
-
 					$stmtA = "UPDATE osdial_list set status='$VDL_status' where lead_id = '$CIDlead_id';";
 						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
-					$affected_rows = $dbhA->do($stmtA);
-					if ($AGILOG) {$agi_string = "--    VDAD osdial_list update: |$affected_rows|$CIDlead_id";   &agi_output;}
+					$VDADaffected_rows = $dbhA->do($stmtA);
+					if ($AGILOG) {$agi_string = "--    VDAD osdial_list update: |$VDADaffected_rows|$CIDlead_id";   &agi_output;}
 
-					$stmtA = "UPDATE osdial_log set status='$VDL_status' where uniqueid = '$uniqueid';";
+					$stmtA = "UPDATE osdial_auto_calls set status='$VDAC_status' where callerid = '$callerid';";
 						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
-					$affected_rows = $dbhA->do($stmtA);
-					if ($AGILOG) {$agi_string = "--    VDAD osdial_log update: |$affected_rows|$uniqueid|";   &agi_output;}
+					$VDACaffected_rows = $dbhA->do($stmtA);
+					if ($AGILOG) {$agi_string = "--    VDAC update: |$VDACaffected_rows|$CIDlead_id";   &agi_output;}
+
+					#$stmtA = "UPDATE osdial_log set status='$VDL_status' where uniqueid = '$uniqueid';";
+						$Euniqueid=$uniqueid;
+						$Euniqueid =~ s/\.\d+$//gi;
+					$stmtA = "UPDATE osdial_log FORCE INDEX(lead_id) set status='$VDL_status' where lead_id = '$CIDlead_id' and uniqueid LIKE \"$Euniqueid%\";";
+						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+					$VDLaffected_rows = $dbhA->do($stmtA);
+					if ($AGILOG) {$agi_string = "--    VDAD osdial_log update: |$VDLaffected_rows|$uniqueid|$VDACuniqueid|";   &agi_output;}
+
+					sleep(1);
 
 					$dbhA->disconnect();
 				}
@@ -620,13 +658,13 @@ sub process_request {
 
 				########## FIND AND DELETE osdial_auto_calls ##########
 				$VD_alt_dial = 'NONE';
-				$stmtA = "SELECT lead_id,callerid,campaign_id,alt_dial,stage,UNIX_TIMESTAMP(call_time) FROM osdial_auto_calls where uniqueid = '$uniqueid' limit 1;";
+				$stmtA = "SELECT lead_id,callerid,campaign_id,alt_dial,stage,UNIX_TIMESTAMP(call_time),uniqueid,status FROM osdial_auto_calls where uniqueid = '$uniqueid' or callerid = '$callerid' limit 1;";
 					if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
 				 $rec_countCUSTDATA=0;
-				while ($sthArows > $rec_countCUSTDATA)
+				if ($sthArows > 0)
 					{
 					@aryA = $sthA->fetchrow_array;
 					$VD_lead_id	=		"$aryA[0]";
@@ -635,6 +673,8 @@ sub process_request {
 					$VD_alt_dial	=	"$aryA[3]";
 					$VD_stage =			"$aryA[4]";
 					$VD_start_epoch =	"$aryA[5]";
+					$VD_uniqueid 	=	"$aryA[6]";
+					$VD_status 	=	"$aryA[7]";
 					 $rec_countCUSTDATA++;
 					}
 				$sthA->finish();
@@ -647,7 +687,7 @@ sub process_request {
 					{
 					$stmtA = "DELETE FROM osdial_auto_calls where uniqueid='$uniqueid' order by call_time desc limit 1;";
 					$affected_rows = $dbhA->do($stmtA);
-					if ($AGILOG) {$agi_string = "--    VDAC record deleted: |$affected_rows|   |$VD_lead_id|$uniqueid|$VD_callerid|$VARserver_ip";   &agi_output;}
+					if ($AGILOG) {$agi_string = "--    VDAC record deleted: |$affected_rows|   |$VD_lead_id|$uniqueid|$VD_uniqueid|$VD_callerid|$VARserver_ip|$VD_status|";   &agi_output;}
 
 					#############################################
 					##### START QUEUEMETRICS LOGGING LOOKUP #####
@@ -711,26 +751,37 @@ sub process_request {
 						}
 
 
-					########## FIND AND UPDATE osdial_log ##########
-					$stmtA = "SELECT start_epoch,status FROM osdial_log where uniqueid='$uniqueid' and lead_id='$VD_lead_id' limit 1;";
-						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
-					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-					$sthArows=$sthA->rows;
-					 $epc_countCUSTDATA=0;
-					 $VD_closecallid='';
-					while ($sthArows > $epc_countCUSTDATA)
-						{
-						@aryA = $sthA->fetchrow_array;
-						$VD_start_epoch	= "$aryA[0]";
-						$VD_status	= "$aryA[1]";
-						 $epc_countCUSTDATA++;
-						}
-					$sthA->finish();
+					$epc_countCUSTDATA=0;
+					$VD_closecallid='';
+					$VDL_update=0;
+					$Euniqueid=$uniqueid;
+					$Euniqueid =~ s/\.\d+$//gi;
 
-					if (!$epc_countCUSTDATA)
+					if ($calleridname !~ /^Y\d\d\d\d/)
+						{	
+						########## FIND AND UPDATE osdial_log ##########
+						$stmtA = "SELECT start_epoch,status,user,term_reason,comments FROM osdial_log FORCE INDEX(lead_id) where lead_id = '$VD_lead_id' and uniqueid LIKE \"$Euniqueid%\" limit 1;";
+							if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+						$sthArows=$sthA->rows;
+						if ($sthArows > 0)
+							{
+							@aryA = $sthA->fetchrow_array;
+							$VD_start_epoch =       "$aryA[0]";
+							$VD_status =            "$aryA[1]";
+							$VD_user =                      "$aryA[2]";
+							$VD_term_reason =       "$aryA[3]";
+							$VD_comments =          "$aryA[4]";
+							$epc_countCUSTDATA++;
+
+							}
+						$sthA->finish();
+						}
+
+					if ( (!$epc_countCUSTDATA) || ($calleridname =~ /^Y\d\d\d\d/) )
 						{
-						if ($AGILOG) {$agi_string = "no VDL record found: $uniqueid $calleridname $VD_lead_id $uniqueid";   &agi_output;}
+						if ($AGILOG) {$agi_string = "no VDL record found: $uniqueid $calleridname $VD_lead_id $uniqueid $VD_uniqueid";   &agi_output;}
 
 						$secX = time();
 						$Rtarget = ($secX - 21600);	# look for VDCL entry within last 6 hours
@@ -744,35 +795,50 @@ sub process_request {
 						if ($Rsec < 10) {$Rsec = "0$Rsec";}
 							$RSQLdate = "$Ryear-$Rmon-$Rmday $Rhour:$Rmin:$Rsec";
 
-						$stmtA = "SELECT start_epoch,status,closecallid FROM osdial_closer_log where lead_id = '$VD_lead_id' and call_date > \"$RSQLdate\" order by call_date desc limit 1;";
+						$stmtA = "SELECT start_epoch,status,closecallid,user,term_reason,length_in_sec,queue_seconds,comments FROM osdial_closer_log where lead_id = '$VD_lead_id' and call_date > \"$RSQLdate\" order by call_date desc limit 1;";
 							if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 						$sthArows=$sthA->rows;
 						 $epc_countCUSTDATA=0;
 						 $VD_closecallid='';
-						while ($sthArows > $epc_countCUSTDATA)
+						if ($sthArows > 0)
 							{
 							@aryA = $sthA->fetchrow_array;
 							$VD_start_epoch	= "$aryA[0]";
 							$VD_status	= "$aryA[1]";
 							$VD_closecallid	= "$aryA[2]";
+							$VD_user =                      "$aryA[3]";
+							$VD_term_reason =       "$aryA[4]";
+							$VD_length_in_sec =     "$aryA[5]";
+							$VD_queue_seconds =     "$aryA[6]";
+							$VD_comments =          "$aryA[7]";
 							 $epc_countCUSTDATA++;
 							}
 						$sthA->finish();
 						}
 					if (!$epc_countCUSTDATA)
 						{
-						if ($AGILOG) {$agi_string = "no VDL or VDCL record found: $uniqueid $calleridname $VD_lead_id $uniqueid";   &agi_output;}
+						if ($AGILOG) {$agi_string = "no VDL or VDCL record found: $uniqueid $calleridname $VD_lead_id $uniqueid $VD_uniqueid";   &agi_output;}
 						}
 					else
 						{
 						$VD_seconds = ($now_date_epoch - $VD_start_epoch);
 
 						$SQL_status='';
-						if ($VD_status =~ /^NA$|^NEW$|^QUEUE$|^XFER$/) 
+						if ( ($VD_status =~ /^NA$|^NEW$|^QUEUE$|^XFER$/) && ($VD_comments !~ /REMOTE/) )
 							{
-							$SQL_status = "status='DROP',";
+							if ( ($VD_term_reason !~ /AGENT|CALLER|QUEUETIMEOUT/) && ( ($VD_user =~ /VDAD|VDCL/) || (length($VD_user) < 1) ) )
+								{$VDLSQL_term_reason = "term_reason='ABANDON',";}
+							else
+								{
+								if ($VD_term_reason !~ /AGENT|CALLER|QUEUETIMEOUT/)
+									{$VDLSQL_term_reason = "term_reason='CALLER',";}
+								else
+									{$VDLSQL_term_reason = '';}
+								}
+							$SQL_status = "status='DROP',$VDLSQL_term_reason";
+
 
 							########## FIND AND UPDATE osdial_list ##########
 							$stmtA = "UPDATE osdial_list set status='DROP' where lead_id = '$VD_lead_id';";
@@ -780,30 +846,60 @@ sub process_request {
 							$affected_rows = $dbhA->do($stmtA);
 							if ($AGILOG) {$agi_string = "--    VDAD osdial_list update: |$affected_rows|$VD_lead_id";   &agi_output;}
 							}
+						else
+							{
+							$SQL_status = "term_reason='CALLER',";
+							}
 
-						$stmtA = "UPDATE osdial_log set $SQL_status end_epoch='$now_date_epoch',length_in_sec='$VD_seconds' where uniqueid = '$uniqueid';";
-							if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
-						$affected_rows = $dbhA->do($stmtA);
-						if ($AGILOG) {$agi_string = "--    VDAD osdial_log update: |$affected_rows|$uniqueid|$VD_status|";   &agi_output;}
-
+						if ($calleridname !~ /^Y\d\d\d\d/)
+							{
+							$VDL_update=1;
+							$stmtA = "UPDATE osdial_log FORCE INDEX(lead_id) set $SQL_status end_epoch='$now_date_epoch',length_in_sec='$VD_seconds' where lead_id = '$VD_lead_id' and uniqueid LIKE \"$Euniqueid%\";";
+								if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+							$VLaffected_rows = $dbhA->do($stmtA);
+							if ($AGILOG) {$agi_string = "--    VDAD osdial_log update: |$VLaffected_rows|$uniqueid|$VD_status|";   &agi_output;}
+							}						
 
 
 
 						########## UPDATE osdial_closer_log ##########
-						if (length($VD_closecallid) < 1)
+						if ( (length($VD_closecallid) < 1) || ($VDL_update > 0) )
 							{
-							if ($AGILOG) {$agi_string = "no VDCL record found: $uniqueid $calleridname $VD_lead_id $uniqueid";   &agi_output;}
+							if ($AGILOG) {$agi_string = "no VDCL record found: $uniqueid|$calleridname|$VD_lead_id|$uniqueid|$VD_uniqueid|$VDL_update";   &agi_output;}
 							}
 						else
 							{
-							if ($VD_status =~ /^DONE$|^INCALL$|^XFER$/) 
-								{$VDCLSQL_status = "";}
+							if ($VD_status =~ /^DONE$|^INCALL$|^XFER$/)
+								{$VDCLSQL_status = "term_reason='CALLER',";}
 							else
-								{$VDCLSQL_status = "status='DROP',queue_seconds='$VD_seconds',";}
+								{
+								if ( ($VD_term_reason !~ /AGENT|CALLER|QUEUETIMEOUT|AFTERHOURS|HOLDRECALLXFER|HOLDTIME/) && ( ($VD_user =~ /VDAD|VDCL/) || (length($VD_user) < 1) ) )
+									{$VDCLSQL_term_reason = "term_reason='ABANDON',";}
+								else
+									{
+									if ($VD_term_reason !~ /AGENT|CALLER|QUEUETIMEOUT|AFTERHOURS|HOLDRECALLXFER|HOLDTIME/)
+										{$VDCLSQL_term_reason = "term_reason='CALLER',";}
+									else
+										{$VDCLSQL_term_reason = '';}
+									}
+								if ($VD_status =~ /QUEUE/)
+									{
+									$VDCLSQL_status = "status='DROP',";
+									$VDCLSQL_queue_seconds = "queue_seconds='$VD_seconds',";
+									}
+								else
+									{
+									$VDCLSQL_status = '';
+									$VDCLSQL_queue_seconds = '';
+									}
+
+								$VDCLSQL_update = "$VDCLSQL_status$VDCLSQL_term_reason$VDCLSQL_queue_seconds";
+								}
+
 
 							$VD_seconds = ($now_date_epoch - $VD_start_epoch);
-							$stmtA = "UPDATE osdial_closer_log set $VDCLSQL_status end_epoch='$now_date_epoch',length_in_sec='$VD_seconds' where closecallid = '$VD_closecallid';";
-								if ($AGILOG) {$agi_string = "|$VDCLSQL_status|$VD_status|\n|$stmtA|";   &agi_output;}
+							$stmtA = "UPDATE osdial_closer_log set $VDCLSQL_update end_epoch='$now_date_epoch',length_in_sec='$VD_seconds' where closecallid = '$VD_closecallid';";
+								if ($AGILOG) {$agi_string = "|$VDCLSQL_update|$VD_status|$VD_length_in_sec|$VD_term_reason|$VD_queue_seconds|\n|$stmtA|";   &agi_output;}
 							$affected_rows = $dbhA->do($stmtA);
 							if ($AGILOG) {$agi_string = "--    VDCL update: |$affected_rows|$uniqueid|$VD_closecallid|";   &agi_output;}
 
@@ -917,7 +1013,7 @@ sub process_request {
 }
 
 
-TEST_VDfastAGI->run(
+VDfastAGI->run(
 					port=>4577,
 					user=>'root',
 					group=>'root',

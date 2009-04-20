@@ -28,6 +28,8 @@
 #
 # Loosely based on AST_VDadapt.pl
 # 80903-0013 - Initial build.
+#
+# 090420-0140 - Look for stats record, create it.
 
 use strict;
 use DBI;
@@ -141,6 +143,15 @@ while ( $master_loop < $CLOloops ) {
 	foreach (@campaign_id) {
 		my($total_agents,$total_agents_total,$total_agents_avg,@stat_total_agents);
 		
+		$stmtA = "SELECT * from osdial_campaign_stats where campaign_id='$campaign_id[$i]';";
+		$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		if ($sthA->rows) {
+			$stmtA = "INSERT INTO osdial_campaign_stats (campaign_id) VALUES ('$campaign_id[$i]');";
+			print "     $campaign_id[$i] MISSING!  Adding it now.\n" if ($DB);
+			$affected_rows = $dbhA->do($stmtA);
+		}
+
 		### Find out how many leads are in the hopper from a specific campaign
 		my $hopper_ready_count = 0;
 		$stmtA = "SELECT count(*) from osdial_hopper where campaign_id='$campaign_id[$i]' and status='READY';";

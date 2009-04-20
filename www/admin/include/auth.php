@@ -41,7 +41,7 @@ $row=mysql_fetch_row($rslt);
 $auth=$row[0];
 
 if ($WeBRooTWritablE > 0)
-	{$fp = fopen ("./project_auth_entries.txt", "a");}
+	{$fp = fopen ($WeBServeRRooT . "/admin/project_auth_entries.txt", "a");}
 
 $date = date("r");
 $ip = getenv("REMOTE_ADDR");
