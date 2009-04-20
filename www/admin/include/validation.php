@@ -336,6 +336,9 @@ if ($non_latin < 1)	{
 	$after_hours_message_filename = ereg_replace("[^-\.\:\/\@\_0-9a-zA-Z]","",$after_hours_message_filename);
 	$welcome_message_filename = ereg_replace("[^-\.\:\/\@\_0-9a-zA-Z]","",$welcome_message_filename);
 	$onhold_prompt_filename = ereg_replace("[^-\.\:\/\@\_0-9a-zA-Z]","",$onhold_prompt_filename);
+
+    # Others
+	$company_name = ereg_replace("[^ \.\!\,\&\@-0-9a-zA-Z]","",$company_name);
 	
 	### remove semi-colons ###
 	$lead_filter_sql = ereg_replace(";","",$lead_filter_sql);

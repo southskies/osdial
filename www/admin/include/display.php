@@ -74,5 +74,4 @@ $reports_font =	'navy';
 $subcamp_color =	'#A1B9A4';
 $subcamp_font =		'navy';
 $menubarcolor='#716A5B';
-$user_company='Company Name Here';
 ?>

@@ -10,6 +10,8 @@ ALTER TABLE osdial_auto_calls MODIFY uniqueid VARCHAR(20);
 ALTER TABLE osdial_log MODIFY uniqueid VARCHAR(20) NOT NULL;
 ALTER TABLE live_inbound_log MODIFY uniqueid VARCHAR(20) NOT NULL;
 
+ALTER TABLE system_settings ADD user_company VARCHAR(100) default 'Company Name Here';
+
 CREATE TABLE osdial_outbound_ivr (
 	id INT(11) NOT NULL auto_increment,
 	campaign_id VARCHAR(8),

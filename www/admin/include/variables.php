@@ -23,8 +23,7 @@
 # 090410-1731 - Added allow_tab_switch
 
 
-$admin_version = '2.1.0';
-$build = '.002-090410';
+$build = '090419';
 
 $STARTtime = date("U");
 $SQLdate = date("Y-m-d H:i:s");
@@ -43,6 +42,8 @@ $PHP_SELF=$_SERVER['PHP_SELF'];
 $system_settings = get_first_record($link, 'system_settings', 'use_non_latin,admin_home_url','');
 $non_latin = $system_settings['use_non_latin'];
 $admin_home_url_LU = $system_settings['admin_home_url'];
+$user_company = $system_settings['company_name'];
+$admin_version = $system_settings['version'];
 
 ######################################################################################################
 ######################################################################################################
@@ -142,6 +143,7 @@ $client_browser = get_variable("client_browser");
 $closer_default_blended = get_variable("closer_default_blended");
 $comments_field = get_variable("comments_field");
 $company = get_variable("company");
+$company_name = get_variable("company_name");
 $computer_ip = get_variable("computer_ip");
 $concurrent_transfers = get_variable("concurrent_transfers");
 $conf_exten = get_variable("conf_exten");
