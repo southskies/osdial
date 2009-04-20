@@ -16,7 +16,7 @@ CREATE TABLE osdial_outbound_ivr (
 	id INT(11) NOT NULL auto_increment,
 	campaign_id VARCHAR(8),
 	name VARCHAR(50),
-	announcement VARCHAR(255) 'hello-world',
+	announcement VARCHAR(255) default 'hello-world',
 	repeat_loops INT(4) default '3',
 	wait_loops INT(4) default '5',
 	wait_timeout INT(4) default '500',
