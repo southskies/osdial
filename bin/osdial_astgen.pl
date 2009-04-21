@@ -335,6 +335,7 @@ sub gen_conferences {
 	my $stmtA = "SELECT conf_exten FROM osdial_remote_agents WHERE user_start LIKE 'va\%'";
         my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+        my ($cnf2,$mtm2,$cf,$cl);
 	while (my @aryA = $sthA->fetchrow_array) {
 		$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme,\${EXTEN}|q\n";
 		$mtm2 .= "conf => " . $aryA[0] . "\n";

@@ -293,7 +293,7 @@ sub playfile {
 	my ($stream, $status, $rtnmain) = @_;
 
 	update_status($status);
-	$AGI->stream_file($stream);
+	$AGI->stream_file('ivr/' . $stream);
 
 	return $rtnmain;
 }
@@ -301,7 +301,7 @@ sub playfile {
 sub xfer_to_external {
 	my ($stream, $status, $number) = @_;
 
-	$AGI->stream_file($stream) if ($stream);
+	$AGI->stream_file('ivr/' . $stream) if ($stream);
 
 	update_status($status);
 
@@ -353,7 +353,7 @@ sub xfer_to_external_multi {
 sub xfer_to_agent {
 	my ($stream,$status) = @_;
 
-	$AGI->stream_file($stream) if ($stream);
+	$AGI->stream_file('ivr/' . $stream) if ($stream);
 	$status = 'XFER' unless ($status);
 
 	my $drop_timer=0;
@@ -550,7 +550,7 @@ sub xfer_to_agent {
 sub hangup_and_dispo {
 	my ($stream, $status) = @_;;
 
-	$AGI->stream_file($stream) if ($stream);
+	$AGI->stream_file('ivr/' . $stream) if ($stream);
 
 	my $tepoch = time();
 	my $tdate = sql_date($tepoch);
@@ -608,7 +608,7 @@ sub stream_and_get_dtmf {
 
 	while (length($total_digits) < $dcount and $rpt < $rptloops) {
 		$total_digits = '';
-		my $interrupt_digit = $AGI->stream_file($stream,$valid_digits);
+		my $interrupt_digit = $AGI->stream_file('ivr/' . $stream,$valid_digits);
 
 		if ($interrupt_digit) {
 			agi_output("int_digit |" . chr($interrupt_digit) . "|   total_digits |$total_digits|") if ($vars->{DB});

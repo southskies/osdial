@@ -67,6 +67,20 @@ if ($ADD == "1menu") {
 
 # Format key updates, ie action_data.
 if ($ADD == "1keys" or $ADD == '4keys') {
+	if ($oivr_opt_action == 'XFER_AGENT' or $oivr_opt_action == 'HANGUP' or $oivr_opt_action == 'PLAYFILE' or $oivr_opt_action == 'XFER_EXTERNAL' or $oivr_opt_action == 'XFER_EXTERNAL_MULTI' or $oivr_opt_action == 'MENU') {
+            # Upload recording
+            $recfile = $_FILES['recfile'];
+            $recfiletmp = $_FILES['recfile']['tmp_name'];
+            $recfilename = $_FILES['recfile']['name'];
+            if ($recfilename != '') {
+                copy($recfiletmp, "/opt/osdial/html/ivr/" . $recfilename);
+		if ($oivr_opt_action == 'MENU') {
+                	$oi3 = $recfilename;
+		} else {
+                	$oi1 = $recfilename;
+		}
+            }
+	}
 	if ($oivr_opt_action == 'MENU_REPEAT' or $oivr_opt_action == 'MENU_EXIT' or $oivr_opt_action == 'XFER_AGENT') {
 		$d_ary = array($oi1);
 	} elseif ($oivr_opt_action == 'HANGUP') {
@@ -129,7 +143,7 @@ if ($ADD == "2keys") {
     echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
     echo "<center><br><font color=navy size=+1>NEW KEYPRESS ACTION</font><br><br>\n";
 
-    echo '<form action="' . $PHP_SELF . '" method="POST">';
+    echo '<form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
     echo '<input type="hidden" name="ADD" value="1keys">';
     echo '<input type="hidden" name="oivr_id" value="' . $oivr_id . '">';
     echo '<input type="hidden" name="oivr_opt_parent_id" value="' . $oivr_opt_parent_id . '">';
@@ -137,7 +151,7 @@ if ($ADD == "2keys") {
     echo '<input type="hidden" name="oivr_opt_action" value="' . $oivr_opt_action . '">';
     echo '<input type="hidden" name="oivr_opt_keypress" value="' . $oivr_opt_keypress . '">';
 
-    echo "<table cellspacing=1 cellpadding=1>\n";
+    echo "<table cellspacing=1 cellpadding=5>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=#CBDCE0 align=right>Campaign/IVR:</td>\n";
     echo '      <td bgcolor="#CBDCE0">' . $campaign_id . '/' . $oivr_id . '</td>';
@@ -157,7 +171,20 @@ if ($ADD == "2keys") {
     if ($o == 'PLAYFILE') {
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>File to Play</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="30" maxlength="255" name="oi1" value=""></td>';
+    	echo '      <td bgcolor="#CBDCE0">';
+    	echo '          <select name="oi1">';
+    	echo "              <option value=\"\"> - NONE - </option>";
+    	$path = "/opt/osdial/html/ivr";
+    	$dir = @opendir($path);
+    	while ($file = readdir($dir)) {
+        	$sel = '';
+		if ($file != '.' and $file != '..') {
+        		echo "              <option $sel>$file</option>";
+		}
+    	}
+    	echo "          </select><br>";
+    	echo '          <input type="file" name="recfile">';
+    	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
@@ -176,7 +203,20 @@ if ($ADD == "2keys") {
     } elseif ($o == 'HANGUP') {
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>File to Play Before Hangup (Optional)</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="30" maxlength="255" name="oi1" value=""></td>';
+    	echo '      <td bgcolor="#CBDCE0">';
+    	echo '          <select name="oi1">';
+    	echo "              <option value=\"\"> - NONE - </option>";
+    	$path = "/opt/osdial/html/ivr";
+    	$dir = @opendir($path);
+    	while ($file = readdir($dir)) {
+        	$sel = '';
+		if ($file != '.' and $file != '..') {
+        		echo "              <option $sel>$file</option>";
+		}
+    	}
+    	echo "          </select><br>";
+    	echo '          <input type="file" name="recfile">';
+    	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
@@ -196,7 +236,23 @@ if ($ADD == "2keys") {
         echo '<input type="hidden" name="oi2" value="' . $oivr_opt_parent_id . '">';
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>Announcement Recording</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="30" maxlength="255" name="oi3" value=""></td>';
+    	echo '      <td bgcolor="#CBDCE0">';
+    	echo '          <select name="oi3">';
+    	echo "              <option value=\"\"> - NONE - </option>";
+    	$path = "/opt/osdial/html/ivr";
+    	$dir = @opendir($path);
+    	while ($file = readdir($dir)) {
+        	$sel = '';
+        	if ($file == $ad[2]) {
+            	$sel = ' selected';
+        	}
+		if ($file != '.' and $file != '..') {
+        		echo "              <option $sel>$file</option>";
+		}
+    	}
+    	echo "          </select><br>";
+    	echo '          <input type="file" name="recfile">';
+    	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>Announcement Repeat Attempts</td>\n";
@@ -217,12 +273,38 @@ if ($ADD == "2keys") {
     } elseif ($o == 'XFER_AGENT') { 
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>File to Play Before Transfer (Optional)</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="30" maxlength="255" name="oi1" value=""></td>';
+    	echo '      <td bgcolor="#CBDCE0">';
+    	echo '          <select name="oi1">';
+    	echo "              <option value=\"\"> - NONE - </option>";
+    	$path = "/opt/osdial/html/ivr";
+    	$dir = @opendir($path);
+    	while ($file = readdir($dir)) {
+        	$sel = '';
+		if ($file != '.' and $file != '..') {
+        		echo "              <option $sel>$file</option>";
+		}
+    	}
+    	echo "          </select><br>";
+    	echo '          <input type="file" name="recfile">';
+    	echo '      </td>';
         echo "  </tr>\n";
     } elseif ($o == 'XFER_EXTERNAL') { 
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>File to Play Before Transfer (Optional)</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="30" maxlength="255" name="oi1" value=""></td>';
+    	echo '      <td bgcolor="#CBDCE0">';
+    	echo '          <select name="oi1">';
+    	echo "              <option value=\"\"> - NONE - </option>";
+    	$path = "/opt/osdial/html/ivr";
+    	$dir = @opendir($path);
+    	while ($file = readdir($dir)) {
+        	$sel = '';
+		if ($file != '.' and $file != '..') {
+        		echo "              <option $sel>$file</option>";
+		}
+    	}
+    	echo "          </select><br>";
+    	echo '          <input type="file" name="recfile">';
+    	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
@@ -246,7 +328,20 @@ if ($ADD == "2keys") {
     } elseif ($o == 'XFER_EXTERNAL_MULTI') { 
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>File to Play Before Transfer (Optional)</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="30" maxlength="255" name="oi1" value=""></td>';
+    	echo '      <td bgcolor="#CBDCE0">';
+    	echo '          <select name="oi1">';
+    	echo "              <option value=\"\"> - NONE - </option>";
+    	$path = "/opt/osdial/html/ivr";
+    	$dir = @opendir($path);
+    	while ($file = readdir($dir)) {
+        	$sel = '';
+		if ($file != '.' and $file != '..') {
+        		echo "              <option $sel>$file</option>";
+		}
+    	}
+    	echo "          </select><br>";
+    	echo '          <input type="file" name="recfile">';
+    	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
@@ -298,6 +393,15 @@ if ($ADD == "4menu") {
         if (($oivr_id < 1) or ($oivr_repeat_loops < 1) or ($oivr_wait_loops < 1) or ($oivr_wait_timeout < 1)) {
             echo "<br><font color=red>IVR NOT MODIFIED - Please go back and look at the data you entered\n";
         } else {
+            # Upload recording
+            $recfile = $_FILES['recfile'];
+            $recfiletmp = $_FILES['recfile']['tmp_name'];
+            $recfilename = $_FILES['recfile']['name'];
+            if ($recfilename != '') {
+                copy($recfiletmp, "/opt/osdial/html/ivr/" . $recfilename);
+                $oivr_announcement = $recfilename;
+            }
+
             echo "<br><B><font color=navy>IVR MODIFIED: $oivr_id - $campaign_id - $oivr_name</font></B>\n";
             $stmt = "UPDATE osdial_outbound_ivr SET name='$oivr_name',announcement='$oivr_announcement',repeat_loops='$oivr_repeat_loops',wait_loops='$oivr_wait_loops',wait_timeout='$oivr_wait_timeout',answered_status='$oivr_answered_status',virtual_agents='$oivr_virtual_agents',status='$oivr_status' where id='$oivr_id';";
             $rslt = mysql_query($stmt, $link);
@@ -321,7 +425,7 @@ if ($ADD == "4menu") {
                     }
                     if ($ufnd == 0) {
                         $stmt = "INSERT INTO osdial_remote_agents (user_start,conf_exten,server_ip,campaign_id) VALUES ";
-                        $conf = '828282' . sprintf('%03d',$oivr_id) . sprintf('%03d',$unum);
+                        $conf = '82' . sprintf('%03d',$oivr_id) . sprintf('%03d',$unum);
                         $stmt .= "('$usr','$conf','$server_ip','$campaign_id');";
                         $rslt = mysql_query($stmt, $link);
                         $icnt++;
@@ -455,19 +559,35 @@ if ($ADD == "3menu") {
 
     $oivr = get_first_record($link, 'osdial_outbound_ivr', '*', "campaign_id='" . $campaign_id . "'");
 
-    echo '<form action="' . $PHP_SELF . '" method="POST">';
+    echo '<form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
     echo '<input type="hidden" name="ADD" value="4menu">';
     echo '<input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
     echo '<input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
 
-    echo "<table cellspacing=1 cellpadding=1>\n";
+    echo "<table cellspacing=1 cellpadding=5>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=#CBDCE0 align=right>Name</td>\n";
     echo '      <td bgcolor="#CBDCE0"><input type="text" size="30" maxlength="50" name="oivr_name" value="' . $oivr['name'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=#CBDCE0 align=right>Announcement File</td>\n";
-    echo '      <td bgcolor="#CBDCE0"><input type="text" size="50" maxlength="255" name="oivr_announcement" value="' . $oivr['announcement'] . '"></td>';
+    echo '      <td bgcolor="#CBDCE0">';
+    echo '          <select name="oivr_announcement">';
+    echo "              <option value=\"\"> - NONE - </option>";
+    $path = "/opt/osdial/html/ivr";
+    $dir = @opendir($path);
+    while ($file = readdir($dir)) {
+        $sel = '';
+        if ($file == $oivr['announcement']) {
+            $sel = ' selected';
+        }
+	if ($file != '.' and $file != '..') {
+        	echo "              <option $sel>$file</option>";
+	}
+    }
+    echo "          </select><br>";
+    echo '          <input type="file" name="recfile">';
+    echo '      </td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=#CBDCE0 align=right>Announcement Repeat Attempt</td>\n";
@@ -482,8 +602,8 @@ if ($ADD == "3menu") {
     echo '      <td bgcolor="#CBDCE0"><input type="text" size="4" maxlength="4" name="oivr_wait_timeout" value="' . $oivr['wait_timeout'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#C1D6DB align=right>Answered Status:</td>\n";
-    echo '      <td bgcolor="#C1D6DB"><select name="oivr_answered_status"><option value="">-NONE-</option>';
+    echo "      <td bgcolor=#CBDCE0 align=right>Answered Status:</td>\n";
+    echo '      <td bgcolor="#CBDCE0"><select name="oivr_answered_status"><option value="">-NONE-</option>';
     $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"category='IVR'");
     foreach ($status as $stat) {
         $sel = '';
@@ -525,17 +645,19 @@ if ($ADD == "3menu") {
     echo "  <tr bgcolor=$menubarcolor>\n";
     echo "      <td align=center><font color=white size=1>KEYPRESS</font></td>\n";
     echo "      <td align=center><font color=white size=1>ACTION</font></td>\n";
-    echo "      <td align=center><font color=white size=1>ACTION</font></td>\n";
+    echo "      <td align=center><font color=white size=1>DISPOSITION</font></td>\n";
+    echo "      <td align=center><font color=white size=1>&nbsp;</font></td>\n";
     echo "  </tr>\n";
     $oivr_opts = get_krh($link, 'osdial_outbound_ivr_options', '*', 'keypress', "outbound_ivr_id='" . $oivr['id'] . "' AND parent_id='0'");
     $cnt = 0;
     foreach ($oivr_opts as $opt) {
+        $ad  = explode('#:#',$opt['action_data']);
         if (eregi("1$|3$|5$|7$|9$",$cnt)) {
             $bgcolor = 'bgcolor="#CBDCE0"';
         } else {
             $bgcolor = 'bgcolor="#C1D6DB"';
         }
-        echo '  <form action="' . $PHP_SELF . '" method="POST">';
+        echo '  <form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
         echo '  <input type="hidden" name="ADD" value="3keys">';
         echo '  <input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
         echo '  <input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
@@ -543,13 +665,14 @@ if ($ADD == "3menu") {
         echo "  <tr>";
         echo "      <td $bgcolor align=center>" . $opt['keypress'] . "</td>";
         echo "      <td $bgcolor align=center>" . $opt['action'] . "</td>";
+        echo "      <td $bgcolor align=center>" . $ad[1] . "</td>";
         echo "      <td $bgcolor align=center><input type=submit value=\"Edit\">  <a href=$PHP_SELF?ADD=6keys&campaign_id=" . $campaign_id . "&oivr_id=" . $oivr['id'] . "&oivr_opt_id=" . $opt['id'] . ">DELETE</a></td>\n";
         echo "  </tr>";
         echo "  </form>";
         $cnt++;
     }
     echo "  <tr><td colspan=6 bgcolor=#CBDCE0 align=center></td></tr>\n";
-    echo '  <form action="' . $PHP_SELF . '" method="POST">';
+    echo '  <form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
     echo '  <input type="hidden" name="ADD" value="2keys">';
     echo '  <input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
     echo '  <input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
@@ -587,6 +710,7 @@ if ($ADD == "3menu") {
     echo "      <option value=\"MENU_REPEAT\">Repeat the Menu (no-diposition)</option>";
     echo "      <option value=\"MENU_EXIT\">Exit from Menu (no-diposition)</option>";
     echo "      </td>\n";
+    echo "      <td bgcolor=#B1C6CB align=center></td>\n";
     echo "      <td bgcolor=#B1C6CB align=center><input type=submit value=\"New\"></td>\n";
     echo "  </tr>\n";
     echo "  </form>\n";
@@ -603,7 +727,7 @@ if ($ADD == "3keys") {
     echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
     echo "<center><br><font color=navy size=+1>NEW KEYPRESS ACTION</font><br><br>\n";
 
-    echo '<form action="' . $PHP_SELF . '" method="POST">';
+    echo '<form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
     echo '<input type="hidden" name="ADD" value="4keys">';
     echo '<input type="hidden" name="oivr_id" value="' . $oivr_id . '">';
     echo '<input type="hidden" name="oivr_opt_id" value="' . $opt['id'] . '">';
@@ -611,14 +735,14 @@ if ($ADD == "3keys") {
     echo '<input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
     echo '<input type="hidden" name="oivr_opt_action" value="' . $opt['action'] . '">';
 
-    echo "<table cellspacing=1 cellpadding=1>\n";
+    echo "<table cellspacing=1 cellpadding=5>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=#CBDCE0 align=right>Campaign/IVR:</td>\n";
     echo '      <td bgcolor="#CBDCE0">' . $campaign_id . '/' . $oivr_id .'</td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=#CBDCE0 align=right>Key:</td>\n";
-    echo "      <td bgcolor=#B1C6CB align=center>";
+    echo "      <td bgcolor=#CBDCE0 align=left>";
     echo '<select name="oivr_opt_keypress">';
     echo ' <option value="' . $opt['keypress'] . '" selected> - ' . $opt['keypress'] . ' -</option>';
     $keys = get_krh($link, 'osdial_outbound_ivr_options', 'keypress','',"outbound_ivr_id='" . $oivr_id . "' AND parent_id='" . $opt['parent_id'] . "'");
@@ -653,7 +777,23 @@ if ($ADD == "3keys") {
     if ($o == 'PLAYFILE') {
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>File to Play</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="30" maxlength="255" name="oi1" value="' . $ad[0] . '"></td>';
+    	echo '      <td bgcolor="#CBDCE0">';
+    	echo '          <select name="oi1">';
+    	echo "              <option value=\"\"> - NONE - </option>";
+    	$path = "/opt/osdial/html/ivr";
+    	$dir = @opendir($path);
+    	while ($file = readdir($dir)) {
+        	$sel = '';
+        	if ($file == $ad[0]) {
+            	$sel = ' selected';
+        	}
+		if ($file != '.' and $file != '..') {
+        		echo "              <option $sel>$file</option>";
+		}
+    	}
+    	echo "          </select><br>";
+    	echo '          <input type="file" name="recfile">';
+    	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
@@ -661,6 +801,7 @@ if ($ADD == "3keys") {
         echo '      <select name="oi2"><option value="">-NONE-</option>';
         $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"category='IVR'");
         foreach ($status as $stat) {
+            $sel = '';
             if ($stat['status'] == $ad[1]) {
                 $sel = ' selected';
             }
@@ -672,7 +813,23 @@ if ($ADD == "3keys") {
     } elseif ($o == 'HANGUP') {
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>File to Play Before Hangup (Optional)</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="30" maxlength="255" name="oi1" value="' . $ad[0] . '"></td>';
+    	echo '      <td bgcolor="#CBDCE0">';
+    	echo '          <select name="oi1">';
+    	echo "              <option value=\"\"> - NONE - </option>";
+    	$path = "/opt/osdial/html/ivr";
+    	$dir = @opendir($path);
+    	while ($file = readdir($dir)) {
+        	$sel = '';
+        	if ($file == $ad[0]) {
+            	$sel = ' selected';
+        	}
+		if ($file != '.' and $file != '..') {
+        		echo "              <option $sel>$file</option>";
+		}
+    	}
+    	echo "          </select><br>";
+    	echo '          <input type="file" name="recfile">';
+    	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
@@ -680,6 +837,7 @@ if ($ADD == "3keys") {
         echo '      <select name="oi2"><option value="">-NONE-</option>';
         $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"category='IVR'");
         foreach ($status as $stat) {
+            $sel = '';
             if ($stat['status'] == $ad[1]) {
                 $sel = ' selected';
             }
@@ -693,6 +851,23 @@ if ($ADD == "3keys") {
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>Announcement Recording</td>\n";
         echo '      <td bgcolor="#CBDCE0"><input type="text" size="30" maxlength="255" name="oi3" value="' . $ad[2] . '"></td>';
+    	echo '      <td bgcolor="#CBDCE0">';
+    	echo '          <select name="oi3">';
+    	echo "              <option value=\"\"> - NONE - </option>";
+    	$path = "/opt/osdial/html/ivr";
+    	$dir = @opendir($path);
+    	while ($file = readdir($dir)) {
+        	$sel = '';
+        	if ($file == $ad[2]) {
+            	$sel = ' selected';
+        	}
+		if ($file != '.' and $file != '..') {
+        		echo "              <option $sel>$file</option>";
+		}
+    	}
+    	echo "          </select><br>";
+    	echo '          <input type="file" name="recfile">';
+    	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>Announcement Repeat Attempts</td>\n";
@@ -713,12 +888,44 @@ if ($ADD == "3keys") {
     } elseif ($o == 'XFER_AGENT') { 
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>File to Play Before Transfer (Optional)</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="30" maxlength="255" name="oi1" value="' . $ad[0] . '"></td>';
+    	echo '      <td bgcolor="#CBDCE0">';
+    	echo '          <select name="oi1">';
+    	echo "              <option value=\"\"> - NONE - </option>";
+    	$path = "/opt/osdial/html/ivr";
+    	$dir = @opendir($path);
+    	while ($file = readdir($dir)) {
+        	$sel = '';
+        	if ($file == $ad[0]) {
+            	$sel = ' selected';
+        	}
+		if ($file != '.' and $file != '..') {
+        		echo "              <option $sel>$file</option>";
+		}
+    	}
+    	echo "          </select><br>";
+    	echo '          <input type="file" name="recfile">';
+    	echo '      </td>';
         echo "  </tr>\n";
     } elseif ($o == 'XFER_EXTERNAL') { 
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>File to Play Before Transfer (Optional)</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="30" maxlength="255" name="oi1" value="' . $ad[0] . '"></td>';
+    	echo '      <td bgcolor="#CBDCE0">';
+    	echo '          <select name="oi1">';
+    	echo "              <option value=\"\"> - NONE - </option>";
+    	$path = "/opt/osdial/html/ivr";
+    	$dir = @opendir($path);
+    	while ($file = readdir($dir)) {
+        	$sel = '';
+        	if ($file == $ad[0]) {
+            	$sel = ' selected';
+        	}
+		if ($file != '.' and $file != '..') {
+        		echo "              <option $sel>$file</option>";
+		}
+    	}
+    	echo "          </select><br>";
+    	echo '          <input type="file" name="recfile">';
+    	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
@@ -742,7 +949,23 @@ if ($ADD == "3keys") {
     } elseif ($o == 'XFER_EXTERNAL_MULTI') { 
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>File to Play Before Transfer (Optional)</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="30" maxlength="255" name="oi1" value="' . $ad[0] . '"></td>';
+    	echo '      <td bgcolor="#CBDCE0">';
+    	echo '          <select name="oi1">';
+    	echo "              <option value=\"\"> - NONE - </option>";
+    	$path = "/opt/osdial/html/ivr";
+    	$dir = @opendir($path);
+    	while ($file = readdir($dir)) {
+        	$sel = '';
+        	if ($file == $ad[0]) {
+            	$sel = ' selected';
+        	}
+		if ($file != '.' and $file != '..') {
+        		echo "              <option $sel>$file</option>";
+		}
+    	}
+    	echo "          </select><br>";
+    	echo '          <input type="file" name="recfile">';
+    	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
