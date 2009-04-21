@@ -72,13 +72,14 @@ if ($ADD == "1keys" or $ADD == '4keys') {
             $recfile = $_FILES['recfile'];
             $recfiletmp = $_FILES['recfile']['tmp_name'];
             $recfilename = $_FILES['recfile']['name'];
+            $recfilename = ereg_replace("[^-\_\.0-9a-zA-Z]","",$recfilename);
             if ($recfilename != '') {
                 copy($recfiletmp, "/opt/osdial/html/ivr/" . $recfilename);
-		if ($oivr_opt_action == 'MENU') {
-                	$oi3 = $recfilename;
-		} else {
-                	$oi1 = $recfilename;
-		}
+                if ($oivr_opt_action == 'MENU') {
+                    $oi3 = $recfilename;
+                } else {
+                    $oi1 = $recfilename;
+                }
             }
 	}
 	if ($oivr_opt_action == 'MENU_REPEAT' or $oivr_opt_action == 'MENU_EXIT' or $oivr_opt_action == 'XFER_AGENT') {
@@ -397,6 +398,7 @@ if ($ADD == "4menu") {
             $recfile = $_FILES['recfile'];
             $recfiletmp = $_FILES['recfile']['tmp_name'];
             $recfilename = $_FILES['recfile']['name'];
+            $recfilename = ereg_replace("[^-\_\.0-9a-zA-Z]","",$recfilename);
             if ($recfilename != '') {
                 copy($recfiletmp, "/opt/osdial/html/ivr/" . $recfilename);
                 $oivr_announcement = $recfilename;

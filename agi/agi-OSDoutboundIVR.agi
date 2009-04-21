@@ -174,6 +174,7 @@ if ($affected_rows > 0) {
 	exit;
 }
 
+
 # Pull the auto-agent ivr config.
 my $stmtA = "SELECT * FROM osdial_outbound_ivr WHERE campaign_id='" . $auto_calls->{campaign_id} . "';";
 agi_output("|$stmtA|") if ($vars->{DB} > 1);
@@ -232,41 +233,36 @@ sub ivr_menu {
 	
 		sleep(1);
 		my $dtmf = stream_and_get_dtmf($menu{announcement},1,$menu{repeat_loops},$menu{wait_loops},$menu{wait_timeout},$valid_digits);
-		if ($dtmf) {
-			update_status('VTO');
+		agi_output("+++++ ODOI STATUS : pressed $dtmf");
+	
+		my $dkey = "key" . $dtmf;
+		my @aparams = split(/#:#/,$menu{$dkey}{action_data});
+	
+		if ($menu{$dkey}{action} eq "PLAYFILE") {
+			$ivrloop = playfile(@aparams);
+		} elsif ($menu{$dkey}{action} eq "XFER_EXTERNAL") {
+			$ivrloop = xfer_to_external(@aparams);
+		} elsif ($menu{$dkey}{action} eq "XFER_EXTERNAL_MULTI") {
+			$ivrloop = xfer_to_external_multi($outbound_ivr->{$dkey}{last_state}, @aparams);
+		} elsif ($menu{$dkey}{action} eq "XFER_AGENT") {
+			$ivrloop = xfer_to_agent(@aparams);
+		} elsif ($menu{$dkey}{action} eq "HANGUP") {
+			$ivrloop = hangup_and_dispo(@aparams);
+		} elsif ($menu{$dkey}{action} eq "MENU") {
+			my $submenuref = {};
+			$submenuref->{ivrid} = $menu{ivrid};
+			$submenuref->{parid} = $menu{$dkey}{id};
+			$submenuref->{announcement} = shift @aparams;
+			$submenuref->{repeat_loops} = shift @aparams;
+			$submenuref->{wait_loops} = shift @aparams;
+			$submenuref->{wait_timeout} = shift @aparams;
+			$ivrloop = ivr_menu($submenuref);
+		} elsif ($menu{$dkey}{action} eq "MENU_REPEAT") {
+			$ivrloop = 1;
+		} elsif ($menu{$dkey}{action} eq "MENU_EXIT") {
 			$ivrloop = 0;
 		} else {
-			agi_output("+++++ ODOI STATUS : pressed $dtmf");
-	
-			my $dkey = "key" . $dtmf;
-			my @aparams = split(/#:#/,$menu{$dkey}{action_data});
-	
-			if ($menu{$dkey}{action} eq "PLAYFILE") {
-				$ivrloop = playfile(@aparams);
-			} elsif ($menu{$dkey}{action} eq "XFER_EXTERNAL") {
-				$ivrloop = xfer_to_external(@aparams);
-			} elsif ($menu{$dkey}{action} eq "XFER_EXTERNAL_MULTI") {
-				$ivrloop = xfer_to_external_multi($outbound_ivr->{$dkey}{last_state}, @aparams);
-			} elsif ($menu{$dkey}{action} eq "XFER_AGENT") {
-				$ivrloop = xfer_to_agent(@aparams);
-			} elsif ($menu{$dkey}{action} eq "HANGUP") {
-				$ivrloop = hangup_and_dispo(@aparams);
-			} elsif ($menu{$dkey}{action} eq "MENU") {
-				my $submenuref = {};
-				$submenuref->{ivrid} = $menu{ivrid};
-				$submenuref->{parid} = $menu{$dkey}{id};
-				$submenuref->{announcement} = shift @aparams;
-				$submenuref->{repeat_loops} = shift @aparams;
-				$submenuref->{wait_loops} = shift @aparams;
-				$submenuref->{wait_timeout} = shift @aparams;
-				$ivrloop = ivr_menu($submenuref);
-			} elsif ($menu{$dkey}{action} eq "MENU_REPEAT") {
-				$ivrloop = 1;
-			} elsif ($menu{$dkey}{action} eq "MENU_EXIT") {
-				$ivrloop = 0;
-			} else {
-				$ivrloop = 0;
-			}
+			$ivrloop = 0;
 		}
 	}
 	return $ivrloop;
@@ -293,6 +289,7 @@ sub playfile {
 	my ($stream, $status, $rtnmain) = @_;
 
 	update_status($status);
+	$stream =~ s/\....$//;
 	$AGI->stream_file('ivr/' . $stream);
 
 	return $rtnmain;
@@ -301,6 +298,7 @@ sub playfile {
 sub xfer_to_external {
 	my ($stream, $status, $number) = @_;
 
+	$stream =~ s/\....$//;
 	$AGI->stream_file('ivr/' . $stream) if ($stream);
 
 	update_status($status);
@@ -353,6 +351,7 @@ sub xfer_to_external_multi {
 sub xfer_to_agent {
 	my ($stream,$status) = @_;
 
+	$stream =~ s/\....$//;
 	$AGI->stream_file('ivr/' . $stream) if ($stream);
 	$status = 'XFER' unless ($status);
 
@@ -550,6 +549,7 @@ sub xfer_to_agent {
 sub hangup_and_dispo {
 	my ($stream, $status) = @_;;
 
+	$stream =~ s/\....$//;
 	$AGI->stream_file('ivr/' . $stream) if ($stream);
 
 	my $tepoch = time();
@@ -608,6 +608,7 @@ sub stream_and_get_dtmf {
 
 	while (length($total_digits) < $dcount and $rpt < $rptloops) {
 		$total_digits = '';
+		$stream =~ s/\....$//;
 		my $interrupt_digit = $AGI->stream_file('ivr/' . $stream,$valid_digits);
 
 		if ($interrupt_digit) {
