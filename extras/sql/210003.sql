@@ -51,3 +51,4 @@ INSERT INTO osdial_statuses values('VPU','IVR: PickUp','N','Y','IVR');
 INSERT INTO osdial_statuses values('VNI','IVR: Not-Interested','N','Y','IVR');
 INSERT INTO osdial_statuses values('VDNC','IVR: Do-Not-Call','N','Y','IVR');
 INSERT INTO osdial_statuses values('VPLAY','IVR: Played Audio','N','Y','IVR');
+INSERT INTO osdial_statuses values('VTO','IVR: Menu Time-out','N','Y','IVR');

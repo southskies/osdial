@@ -1073,7 +1073,7 @@ if ($ADD==31)
 
 		echo "<tr bgcolor=#C1D6DF><td align=right>Get Call Launch: </td><td align=left><select size=1 name=get_call_launch><option selected>NONE</option><option>SCRIPT</option><option>WEBFORM</option><option selected>$get_call_launch</option></select>$NWB#osdial_campaigns-get_call_launch$NWE</td></tr>\n";
 
-	    echo "<tr bgcolor=#C1D6DF><td align=right>Call Per Hour Limit: </td><td align=left><input type=text name=calls_per_hour_limit size=10 maxlength=10>$NWB#osdial_campaigns-calls_per_hour_limit$NWE</td></tr>\n";
+	    echo "<tr bgcolor=#C1D6DF><td align=right>Calls Per Hour Limit: </td><td align=left><input type=text name=calls_per_hour_limit size=10 maxlength=10 value=\"$calls_per_hour_limit\">$NWB#osdial_campaigns-calls_per_hour_limit$NWE</td></tr>\n";
 
 		echo "<tr bgcolor=#C1D6DF><td align=right>Allow Tab Switch: </td><td align=left><select size=1 name=allow_tab_switch><option>Y</option><option>N</option><option selected>$allow_tab_switch</option></select>$NWB#osdial_campaigns-allow_tab_switch$NWE</td></tr>\n";
 
@@ -1714,7 +1714,7 @@ if ($ADD==34)
 
 		echo "<tr bgcolor=#C1D6DF><td align=right>Get Call Launch: </td><td align=left>$get_call_launch</td></tr>\n";
 
-	    echo "<tr bgcolor=#C1D6DF><td align=right>Call Per Hour Limit: </td><td align=left><input type=text name=calls_per_hour_limit size=10 maxlength=10>$NWB#osdial_campaigns-calls_per_hour_limit$NWE</td></tr>\n";
+	    echo "<tr bgcolor=#C1D6DF><td align=right>Calls Per Hour Limit: </td><td align=left><input type=text name=calls_per_hour_limit size=10 maxlength=10 value=\"$calls_per_hour_limit\">$NWB#osdial_campaigns-calls_per_hour_limit$NWE</td></tr>\n";
 
 		echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 		echo "</TABLE></center></FORM>\n";
