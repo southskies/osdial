@@ -11,6 +11,11 @@ ALTER TABLE osdial_log MODIFY uniqueid VARCHAR(20) NOT NULL;
 ALTER TABLE live_inbound_log MODIFY uniqueid VARCHAR(20) NOT NULL;
 
 ALTER TABLE osdial_agent_log MODIFY comments VARCHAR(100);
+ALTER TABLE osdial_list ADD last_local_call_time DATETIME default '2008-01-01 00:00:00';
+CREATE INDEX last_local_call_time ON osdial_list (last_local_call_time);
+UPDATE osdial_list SET last_local_call_time=(SELECT call_date FROM osdial_log WHERE osdial_log.lead_id=osdial_list.lead_id ORDER BY call_date DESC LIMIT 1);
+
+
 
 ALTER TABLE system_settings ADD company_name VARCHAR(100) default 'Company Name Here';
 ALTER TABLE osdial_log ADD term_reason ENUM('CALLER','AGENT','QUEUETIMEOUT','ABANDON','AFTERHOURS','NONE') default 'NONE';

@@ -587,14 +587,14 @@ foreach $oWkS (@{$oBook->{Worksheet}}) {
 
 			if ($multi_insert_counter > 8) {
 				### insert good deal into pending_transactions table ###
-				$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key');";
+				$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00');";
 				$affected_rows = $dbhA->do($stmtZ);
 				print STMT_FILE $stmtZ."\r\n";
 				$multistmt='';
 				$multi_insert_counter=0;
 
 			} else {
-				$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key'),";
+				$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00'),";
 				$multi_insert_counter++;
 			}
 

@@ -625,7 +625,7 @@ if ($ACTION == 'manDiaLnextCaLL')
 				else
 					{
 					### insert a new lead in the system with this phone number
-					$stmt = "INSERT INTO osdial_list SET phone_code='$phone_code',phone_number='$phone_number',list_id='$list_id',status='QUEUE',user='$user',called_since_last_reset='Y',entry_date='$ENTRYdate';";
+					$stmt = "INSERT INTO osdial_list SET phone_code='$phone_code',phone_number='$phone_number',list_id='$list_id',status='QUEUE',user='$user',called_since_last_reset='Y',entry_date='$ENTRYdate',last_local_call_time='$NOW_TIME';";
 					if ($DB) {echo "$stmt\n";}
 					$rslt=mysql_query($stmt, $link);
 					$affected_rows = mysql_affected_rows($link);
@@ -636,7 +636,7 @@ if ($ACTION == 'manDiaLnextCaLL')
 			else
 				{
 				### insert a new lead in the system with this phone number
-				$stmt = "INSERT INTO osdial_list SET phone_code='$phone_code',phone_number='$phone_number',list_id='$list_id',status='QUEUE',user='$user',called_since_last_reset='Y',entry_date='$ENTRYdate';";
+				$stmt = "INSERT INTO osdial_list SET phone_code='$phone_code',phone_number='$phone_number',list_id='$list_id',status='QUEUE',user='$user',called_since_last_reset='Y',entry_date='$ENTRYdate',last_local_call_time='$NOW_TIME';";
 				if ($DB) {echo "$stmt\n";}
 				$rslt=mysql_query($stmt, $link);
 				$affected_rows = mysql_affected_rows($link);
@@ -752,8 +752,29 @@ if ($ACTION == 'manDiaLnextCaLL')
 					}
 				}
 
+            $stmt = "SELECT local_gmt FROM servers where active='Y' limit 1;";
+            $rslt=mysql_query($stmt, $link);
+            if ($mel > 0) {mysql_error_logging($NOW_TIME,$link,$mel,$stmt,'00029',$user,$server_ip,$session_name,$one_mysql_log);}
+            if ($DB) {echo "$stmt\n";}
+            $server_ct = mysql_num_rows($rslt);
+            if ($server_ct > 0)
+                {
+                $row=mysql_fetch_row($rslt);
+                $local_gmt =    $row[0];
+                }
+            $LLCT_DATE_offset = ($local_gmt - $gmt_offset_now);
+            $LLCT_DATE = date("Y-m-d H:i:s", mktime(date("H")-$LLCT_DATE_offset,date("i"),date("s"),date("m"),date("d"),date("Y")));
+
+            if (ereg('Y',$called_since_last_reset))
+                {
+                $called_since_last_reset = ereg_replace('Y','',$called_since_last_reset);
+                if (strlen($called_since_last_reset) < 1) {$called_since_last_reset = 0;}
+                $called_since_last_reset++;
+                $called_since_last_reset = "Y$called_since_last_reset";
+                }
+            else {$called_since_last_reset = 'Y';}
 			### flag the lead as called and change it's status to INCALL
-			$stmt = "UPDATE osdial_list set status='INCALL', called_since_last_reset='Y', called_count='$called_count',user='$user' where lead_id='$lead_id';";
+			$stmt = "UPDATE osdial_list set status='INCALL', called_since_last_reset='$called_since_last_reset', called_count='$called_count',user='$user',last_local_call_time='$LLCT_DATE' where lead_id='$lead_id';";
 			if ($DB) {echo "$stmt\n";}
 			$rslt=mysql_query($stmt, $link);
 

@@ -474,7 +474,7 @@ if ($call_handle_method =~ /LOOKUP/)
 		}
 
 	$cbc=0;
-	$stmtA= "SELECT lead_id from osdial_list where phone_number='$phone_number' $listSQL order by modify_date limit 1;";
+	$stmtA= "SELECT lead_id from osdial_list where phone_number='$phone_number' $listSQL order by last_local_call_time limit 1;";
 		if ($AGILOG) {$agi_string = "VDAD osdial_list search |$phone_number|$stmtA|";   &agi_output;}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
