@@ -978,7 +978,7 @@ foreach(@campaign_id)
 
 	##### BEGIN lead recycling parsing and prep ###
 
-	$stmtA = "SELECT * from vicidial_lead_recycle where campaign_id='$campaign_id[$i]' and active='Y';";
+	$stmtA = "SELECT * from osdial_lead_recycle where campaign_id='$campaign_id[$i]' and active='Y';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -1271,7 +1271,7 @@ foreach(@campaign_id)
 				{
 				if ($DB) {print "     looking for RECYCLE leads, maximum of $hopper_level[$i]\n";}
 
-				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user FROM vicidial_list where $recycle_SQL[$i] and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] limit $hopper_level[$i];";
+				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user FROM osdial_list where $recycle_SQL[$i] and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] limit $hopper_level[$i];";
 				if ($DBX) {print "     |$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1318,7 +1318,7 @@ foreach(@campaign_id)
 			#	$order_stmt = 'order by called_count, lead_id asc';
 				if ($DB) {print "     looking for $NEW_level NEW leads mixed in with $OTHER_level other leads\n";}
 
-				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user FROM vicidial_list where called_since_last_reset='N' and status IN('NEW') and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $NEW_level;";
+				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user FROM osdial_list where called_since_last_reset='N' and status IN('NEW') and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $NEW_level;";
 				if ($DBX) {print "     |$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1358,7 +1358,7 @@ foreach(@campaign_id)
 			if ($campaign_leads_to_call[$i] > 0)
 				{
 				if ($DB) {print "     lead call order:      $order_stmt\n";}
-				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user FROM vicidial_list where called_since_last_reset='N' and status IN($STATUSsql[$i]) and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $OTHER_level;";
+				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user FROM osdial_list where called_since_last_reset='N' and status IN($STATUSsql[$i]) and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $OTHER_level;";
 				if ($DBX) {print "     |$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
