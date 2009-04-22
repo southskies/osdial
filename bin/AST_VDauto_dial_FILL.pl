@@ -39,6 +39,7 @@
 # 71030-2054 - Added hopper priority sorting
 # 71111-2349 - fixed overdialing bug
 # 80713-0624 - Added vicidial_list_last_local_call_time field
+# 81210-1938 - Fixed callerIDnumber bug
 # 
 
 
@@ -671,7 +672,7 @@ while($one_day_interval > 0)
 											   if (length($DBIPvdadexten[$camp_CIPct]) > 0) {$VDAD_dial_exten = "$DBIPvdadexten[$camp_CIPct]";}
 											   else {$VDAD_dial_exten = "$answer_transfer_agent";}
 											   
-											   if (length($DBfill_campaigncid[$camp_CIPct]) > 6) {$CCID = "$DBfill_campaigncid[$camp_CIPct]";   $CCID_on++;}
+											   if (length($DBIPcampaigncid[$camp_CIPct]) > 6) {$CCID = "$DBIPcampaigncid[$camp_CIPct]";   $CCID_on++;}
 											   if ($DBIPdialprefix[$camp_CIPct] =~ /x/i) {$Local_out_prefix = '';}
 
 												if ($RECcount)
