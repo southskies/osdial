@@ -259,6 +259,7 @@ while($one_day_interval > 0)
 
 		if ($affected_rows > 0) {
 			$event_string = "|     lagged call vla agent DELETED $affected_rows";
+			$event_string .= "\n$stmtA" if ($DBX);
 			&event_logger;
 		}
 
@@ -306,6 +307,11 @@ while($one_day_interval > 0)
 			{
 			$stmtA = "UPDATE osdial_live_agents set status='INCALL', last_call_time='$SQLdate',comments='REMOTE',calls_today='$calls_today' where live_agent_id='$QHlive_agent_id[$w]';";
 			$Aaffected_rows = $dbhA->do($stmtA);
+			if ($Aaffected_rows > 0) {
+				$event_string = "|     set agent to INCALL $Aaffected_rows";
+				$event_string .= "\n$stmtA" if ($DBX);
+				&event_logger;
+			}
 
 			$stmtB = "UPDATE osdial_list set status='XFER',user='$QHuser[$w]' where lead_id='$QHlead_id[$w]';";
 			$Baffected_rows = $dbhA->do($stmtB);
@@ -393,8 +399,7 @@ while($one_day_interval > 0)
 				$conf_exten =				"$aryA[4]";
 				$campaign_id =				"$aryA[6]";
 				$closer_campaigns =			"$aryA[7]";
-				if ($user_start =~ /^va$campaign_id/) {
-					$user_start =~ s/^va$campaign_id//;
+				if ($user_start =~ s/^va$campaign_id//) {
 					$upad = (length($user_start) + length($campaign_id)) - (length(($user_start * 1)) + length($campaign_id));
 					$va = 'va' . $campaign_id . sprintf('%0' . $upad . 'd',0);
 				} else {
@@ -444,8 +449,7 @@ while($one_day_interval > 0)
 				$Duser_start =				"$aryA[1]";
 				$Dnumber_of_lines =			"$aryA[2]";
 				$Dcampaign_id =				"$aryA[6]";
-				if ($Duser_start =~ /^va$Dcampaign_id/) {
-					$Duser_start =~ s/^va$Dcampaign_id//;
+				if ($Duser_start =~ s/^va$Dcampaign_id//) {
 					$Dupad = (length($Duser_start) + length($Dcampaign_id)) - (length(($Duser_start * 1)) + length($Dcampaign_id));
 					$Dva = 'va' . $Dcampaign_id . sprintf('%0' . $Dupad . 'd',0);
 				} else {
@@ -491,7 +495,7 @@ while($one_day_interval > 0)
 					{
 					$stmtA = "UPDATE osdial_live_agents set random_id='$DBremote_random[$h]' where user='$DBremote_user[$h]' and server_ip='$server_ip' and campaign_id='$DBremote_campaign[$h]' and conf_exten='$DBremote_conf_exten[$h]' and closer_campaigns='$DBremote_closer[$h]';";
 					$affected_rows = $dbhA->do($stmtA);
-					if ($DBX) {print STDERR "$DBremote_user[$h] $DBremote_campaign[$h] ONLY RANDOM ID UPDATE: $affected_rows\n";}
+					if ($DBX and $affected_rows > 0) {print STDERR "$DBremote_user[$h] $DBremote_campaign[$h] ONLY RANDOM ID UPDATE: $affected_rows\n$stmtA\n";}
 					}
 				### check if record for user on server exists at all in osdial_live_agents
 				else
@@ -512,7 +516,7 @@ while($one_day_interval > 0)
 						{
 						$stmtA = "UPDATE osdial_live_agents set random_id='$DBremote_random[$h]',campaign_id='$DBremote_campaign[$h]',conf_exten='$DBremote_conf_exten[$h]',closer_campaigns='$DBremote_closer[$h]', status='READY' where user='$DBremote_user[$h]' and server_ip='$server_ip';";
 						$affected_rows = $dbhA->do($stmtA);
-						if ($DBX) {print STDERR "$DBremote_user[$h] ALL UPDATE: $affected_rows\n";}
+						if ($DBX and $affected_rows > 0) {print STDERR "$DBremote_user[$h] ALL UPDATE: $affected_rows\n$stmtA\n";}
 			#			if ($affected_rows>0) 
 			#				{
 			#				if ($enable_queuemetrics_logging > 0)
@@ -655,7 +659,7 @@ while($one_day_interval > 0)
 					{
 					$stmtA = "UPDATE osdial_live_agents set random_id='$VD_random[$z]',status='PAUSED', last_call_finish='$SQLdate',lead_id='',uniqueid='',callerid='',channel=''  where user='$VD_user[$z]' and server_ip='$server_ip';";
 					$affected_rows = $dbhA->do($stmtA);
-					if ($DB) {print STDERR "$VD_user[$z] CALL WIPE UPDATE: $affected_rows|PAUSED|$VD_uniqueid[$z]|$VD_user[$z]|\n";}
+					if ($DB and $affected_rows > 0) {print STDERR "$VD_user[$z] CALL WIPE UPDATE: $affected_rows|PAUSED|$VD_uniqueid[$z]|$VD_user[$z]|\n$stmtA\n";}
 					if ($affected_rows>0) 
 						{
 						if ($enable_queuemetrics_logging > 0)
@@ -695,33 +699,47 @@ while($one_day_interval > 0)
 					}
 				else
 					{
-					$stmtA = "UPDATE osdial_live_agents set random_id='$VD_random[$z]', last_call_finish='$SQLdate',lead_id='',uniqueid='',callerid='',channel='' where user='$VD_user[$z]' and server_ip='$server_ip';";
-					$affected_rows = $dbhA->do($stmtA);
-					if ($DB) {print STDERR "$VD_user[$z] CALL WIPE UPDATE: $affected_rows|READY|$VD_uniqueid[$z]|$VD_user[$z]|\n";}
-
-					$stmtA = "UPDATE osdial_live_agents set status='READY' where user='$VD_user[$z]' and server_ip='$server_ip';";
-					$affected_rows = $dbhA->do($stmtA);
-					if ($DB) {print STDERR "$VD_user[$z] CALL WIPE UPDATE: $affected_rows|READY|$VD_uniqueid[$z]|$VD_user[$z]|\n";}
-					if ($affected_rows>0) 
+					$stmtA = "SELECT count(*) FROM call_log where caller_code='$VD_callerid[$z]' and server_ip='$server_ip' and end_epoch > 10;";
+					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+					$sthArows=$sthA->rows;
+					$rec_count=0;
+					while ($sthArows > $rec_count)
 						{
-						if ($enable_queuemetrics_logging > 0)
-							{
-							$dbhB = DBI->connect("DBI:mysql:$queuemetrics_dbname:$queuemetrics_server_ip:3306", "$queuemetrics_login", "$queuemetrics_pass")
-							 or die "Couldn't connect to database: " . DBI->errstr;
-
-							if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
-
-							$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secX',call_id='NONE',queue='NONE',agent='Agent/$VD_user[$z]',verb='PAUSEALL',serverid='$queuemetrics_log_id';";
-							$Baffected_rows = $dbhB->do($stmtB);
-
-							$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secX',call_id='NONE',queue='NONE',agent='Agent/$VD_user[$z]',verb='UNPAUSEALL',serverid='$queuemetrics_log_id';";
-							$Baffected_rows = $dbhB->do($stmtB);
-
-							$dbhB->disconnect();
-							}
-
+						@aryA = $sthA->fetchrow_array;
+						$calllogfinished[$z] =	"$aryA[0]";
+						$rec_count++;
 						}
+					$sthA->finish();
+					if ($calllogfinished[$z] > 1)
+						{
+						$stmtA = "UPDATE osdial_live_agents set random_id='$VD_random[$z]', last_call_finish='$SQLdate',lead_id='',uniqueid='',callerid='',channel='' where user='$VD_user[$z]' and server_ip='$server_ip';";
+						$affected_rows = $dbhA->do($stmtA);
+						if ($DB and $affected_rows > 0) {print STDERR "$VD_user[$z] CALL WIPE UPDATE: $affected_rows|READY|$VD_uniqueid[$z]|$VD_user[$z]|\n$stmtA\n";}
+	
+						$stmtA = "UPDATE osdial_live_agents set status='READY' where user='$VD_user[$z]' and server_ip='$server_ip';";
+						$affected_rows = $dbhA->do($stmtA);
+						if ($DB and $affected_rows > 0) {print STDERR "$VD_user[$z] CALL WIPE UPDATE: $affected_rows|READY|$VD_uniqueid[$z]|$VD_user[$z]|\n$stmtA\n";}
+						if ($affected_rows>0) 
+							{
+							if ($enable_queuemetrics_logging > 0)
+								{
+								$dbhB = DBI->connect("DBI:mysql:$queuemetrics_dbname:$queuemetrics_server_ip:3306", "$queuemetrics_login", "$queuemetrics_pass")
+							 	or die "Couldn't connect to database: " . DBI->errstr;
+	
+								if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
+	
+								$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secX',call_id='NONE',queue='NONE',agent='Agent/$VD_user[$z]',verb='PAUSEALL',serverid='$queuemetrics_log_id';";
+								$Baffected_rows = $dbhB->do($stmtB);
+	
+								$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secX',call_id='NONE',queue='NONE',agent='Agent/$VD_user[$z]',verb='UNPAUSEALL',serverid='$queuemetrics_log_id';";
+								$Baffected_rows = $dbhB->do($stmtB);
+	
+								$dbhB->disconnect();
+								}
 
+							}
+						}
 					}
 				}
 	### possible future active call checker

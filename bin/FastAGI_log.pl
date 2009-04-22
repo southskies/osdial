@@ -685,6 +685,29 @@ sub process_request {
 					}
 				else
 					{
+
+					$stmtA = "SELECT user FROM osdial_live_agents WHERE uniqueid = '$uniqueid' AND user LIKE 'R/va\%' limit 1;";
+					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+					$sthArows=$sthA->rows;
+					if ($sthArows > 0) {
+						@aryA = $sthA->fetchrow_array;
+						$OLAuser = $aryA[0];
+						$talksec = ($now_date_epoch - $VD_start_epoch);
+						$stmtA = "SELECT status,comments FROM osdial_list WHERE lead_id = '$VD_lead_id';";
+						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+						$sthArows=$sthA->rows;
+						if ($sthArows > 0) {
+							@aryA = $sthA->fetchrow_array;
+							$lstat = $aryA[0];
+							$lcomm = $aryA[0];
+							@aryA = $sthA->fetchrow_array;
+							$stmtA = "INSERT INTO osdial_agent_log SET user='$OLAuser',server_ip='$VARserver_ip',event_time=NOW(),lead_id='$VD_lead_id',campaign_id='$VD_campaign_id',talk_epoch='$VD_start_epoch',talk_sec='$talksec',status='$lstat',user_group='VIRTUAL',comments='$lcomm';";
+							my $affected_rows = $dbhA->do($stmtA);
+						}
+					}
+
 					$stmtA = "DELETE FROM osdial_auto_calls where uniqueid='$uniqueid' order by call_time desc limit 1;";
 					$affected_rows = $dbhA->do($stmtA);
 					if ($AGILOG) {$agi_string = "--    VDAC record deleted: |$affected_rows|   |$VD_lead_id|$uniqueid|$VD_uniqueid|$VD_callerid|$VARserver_ip|$VD_status|";   &agi_output;}

@@ -16,6 +16,9 @@
 #### (ALL) Generate asterisk config files and reload modules
 * * * * * /opt/osdial/bin/osdial_astgen.pl -q
 
+#### (ALL) Syncronize IVR recordings, arg is web server
+* * * * * /opt/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1
+
 ### (dialer) Write a file listing current voicemail
 * * * * * /usr/sbin/asterisk -rx "show voicemail users" > /opt/osdisl/html/admin/VMnow.txt
 
