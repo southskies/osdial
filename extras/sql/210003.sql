@@ -21,7 +21,7 @@ ALTER TABLE system_settings ADD company_name VARCHAR(100) default 'Company Name 
 ALTER TABLE osdial_log ADD term_reason ENUM('CALLER','AGENT','QUEUETIMEOUT','ABANDON','AFTERHOURS','NONE') default 'NONE';
 ALTER TABLE osdial_closer_log ADD term_reason ENUM('CALLER','AGENT','QUEUETIMEOUT','ABANDON','AFTERHOURS','NONE') default 'NONE';
 ALTER TABLE osdial_closer_log ADD uniqueid VARCHAR(20) NOT NULL default '';
-ALTER TABLE osdial_campaigns ADD calls_per_hour_limit INT(8) default '0';
+ALTER TABLE osdial_campaigns ADD answers_per_hour_limit INT(8) default '0';
 
 CREATE TABLE osdial_outbound_ivr (
 	id INT(11) NOT NULL auto_increment,

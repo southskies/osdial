@@ -38,7 +38,7 @@ if ($ADD==999999 && ($SUB==13 || $SUB==14)) {
 	if ($RR <1) { $RR=4; }
 	$metadetail = '';
 	if ($SUB==14) {
-		$metadetail .= "&group=$group&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname";
+		$metadetail .= "&group=$group&campaign_id=$campaign_id&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname";
 		$metadetail .= "&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay";
 	}
 	echo "<META HTTP-EQUIV=Refresh CONTENT=\"$RR; URL=$PHP_SELF?ADD=$ADD&SUB=$SUB&RR=$RR&DB=$DB&adastats=$adastats$metadetail\">\n";

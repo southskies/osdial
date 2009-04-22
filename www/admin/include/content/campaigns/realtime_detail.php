@@ -166,6 +166,7 @@ if ($ADD==999999 && $SUB==14) {
 	echo "<FORM ACTION=\"$PHP_SELF\" METHOD=GET>\n";
 	echo "<input type=hidden name=ADD value=999999>\n";
 	echo "<input type=hidden name=SUB value=14>\n";
+	echo "<input type=hidden name=campaign_id value=$campaign_id>\n";
 	echo "<input type=hidden name=group value=$group>\n";
 	echo "<input type=hidden name=RR value=$RR>\n";
 	
@@ -175,24 +176,24 @@ if ($ADD==999999 && $SUB==14) {
 	echo "<FONT COLOR=navy SIZE=2>";
 	echo "Update:&nbsp;";
 	if ($RR==38400) { echo "</font><font size=+1>"; } else { echo "</font><font size=-1>"; }
-	echo "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&RR=38400&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">Daily</a>&nbsp;&nbsp;"; 
+	echo "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">Daily</a>&nbsp;&nbsp;"; 
 	
 	if ($RR==3600) { echo "</font></font><font size=+1>"; } else { echo "</font><font size=-1>"; }
-	echo "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&RR=3600&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">Hourly</a>&nbsp;&nbsp;";
+	echo "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=3600&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">Hourly</a>&nbsp;&nbsp;";
 	
 	if ($RR==600) { echo "</font><font size=+1>"; } else { echo "</font><font size=-1>"; }
-	echo "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&RR=600&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">10min</a>&nbsp;&nbsp;";
+	echo "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=600&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">10min</a>&nbsp;&nbsp;";
 	
 	if ($RR==30) { echo "</font><font size=+1>"; } else { echo "</font><font size=-1>"; }
-	echo "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&RR=30&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">30sec</a>&nbsp;&nbsp;";
+	echo "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=30&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">30sec</a>&nbsp;&nbsp;";
 	
 	if ($RR==4) { echo "</font><font size=+1>"; } else { echo "</font><font size=-1>"; }
-	echo "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&RR=4&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">4sec</a>&nbsp;&nbsp;";
+	echo "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=4&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">4sec</a>&nbsp;&nbsp;";
 	
 	echo "<font size=2>";
 	
 	echo "-&nbsp;&nbsp;<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a>&nbsp;- ";
-	echo "<a href=\"$PHP_SELF?ADD=999999&SUB=13&group=$group&RR=$RR&DB=$DB&adastats=$adastats\">Summary</a>&nbsp;\n";
+	echo "<a href=\"$PHP_SELF?ADD=999999&SUB=13&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats\">Summary</a>&nbsp;\n";
 	echo "<br></font>\n";
 	echo "</font>";
 	

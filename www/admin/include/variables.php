@@ -21,7 +21,7 @@
 #
 # 090410-1415 - Reformatted to use get_variable.
 # 090410-1731 - Added allow_tab_switch
-# 090420-1846 - Added calls_per_hour_limit
+# 090420-1846 - Added answers_per_hour_limit
 
 
 $build = '090419';
@@ -123,7 +123,7 @@ $call_parking_enabled = get_variable("call_parking_enabled");
 $call_time_comments = get_variable("call_time_comments");
 $call_time_id = get_variable("call_time_id");
 $call_time_name = get_variable("call_time_name");
-$calls_per_hour_limit = get_variable("calls_per_hour_limit");
+$answers_per_hour_limit = get_variable("answers_per_hour_limit");
 $CallerID_popup_enabled = get_variable("CallerID_popup_enabled");
 $campaign_allow_inbound = get_variable("campaign_allow_inbound");
 $campaign_cid = get_variable("campaign_cid");

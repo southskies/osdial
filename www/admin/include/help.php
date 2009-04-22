@@ -21,7 +21,7 @@
 #
 # 090410-1147 - Added custom2 field
 # 090410-1731 - Added allow_tab_swtich
-# 090420-1846 - Added calls_per_hour_limit
+# 090420-1846 - Added answers_per_hour_limit
 
 
 $NWB = " &nbsp; <a href=\"javascript:openNewWindow('$PHP_SELF?ADD=99999";
@@ -586,9 +586,9 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <B>Manual Dial List ID -</B> The default list_id to be used when an agent placces a manual call and a new lead record is created in osdial_list. Default is 999. This field can contain digits only.
 
 <BR>
-<A NAME="osdial_campaigns-calls_per_hour_limit">
+<A NAME="osdial_campaigns-answers_per_hour_limit">
 <BR>
-<B>Calls per hour limit -</B> This option sets an upper limit on the number calls the dialer places in an hour.  0 to disable.
+<B>Answers per hour limit -</B> This option sets an upper limit on the number of answers the dialer has in an hour.  0 to disable.
 
 
 

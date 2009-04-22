@@ -76,26 +76,27 @@ if ($ADD==999999 && $SUB==13) {
 	echo "<input type=hidden name=ADD value=13>\n";
 	echo "<input type=hidden name=adastats value=$adastats\n";
 	echo "<input type=hidden name=group value=$group>\n";
+	echo "<input type=hidden name=campaign_id value=$campaign_id>\n";
 	echo "<input type=hidden name=RR value=$RR>\n";
 	
 	echo "<p class=centered><font color=navy size=+1>ALL CAMPAIGNS SUMMARY</font<br><br>";
 	echo "<font color=navy size=-1>Update:&nbsp;";
 	if ($RR==38400) { echo "<font size=+1>"; }
-	echo "<a href=\"$PHP_SELF?ADD=999999&SUB=13&group=$group&RR=38400&DB=$DB&adastats=$adastats\">Daily</a>&nbsp;&nbsp;";
+	echo "<a href=\"$PHP_SELF?ADD=999999&SUB=13&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats\">Daily</a>&nbsp;&nbsp;";
 	if ($RR==3600) { echo "<font size=+1>"; } else { echo "<font size=-1>"; }
-	echo "<a href=\"$PHP_SELF?ADD=999999&SUB=13&group=$group&RR=3600&DB=$DB&adastats=$adastats\">Hourly</a>&nbsp;&nbsp;";
+	echo "<a href=\"$PHP_SELF?ADD=999999&SUB=13&campaign_id=$campaign_id&group=$group&RR=3600&DB=$DB&adastats=$adastats\">Hourly</a>&nbsp;&nbsp;";
 	if ($RR==600) { echo "<font size=+1>"; } else { echo "<font size=-1>"; }
-	echo "<a href=\"$PHP_SELF?ADD=999999&SUB=13&group=$group&RR=600&DB=$DB&adastats=$adastats\">10min</a>&nbsp;&nbsp;";
+	echo "<a href=\"$PHP_SELF?ADD=999999&SUB=13&campaign_id=$campaign_id&group=$group&RR=600&DB=$DB&adastats=$adastats\">10min</a>&nbsp;&nbsp;";
 	if ($RR==30) { echo "<font size=+1>"; } else { echo "<font size=-1>"; }
-	echo "<a href=\"$PHP_SELF?ADD=999999&SUB=13&group=$group&RR=30&DB=$DB&adastats=$adastats\">30sec</a>&nbsp;&nbsp;";
+	echo "<a href=\"$PHP_SELF?ADD=999999&SUB=13&campaign_id=$campaign_id&group=$group&RR=30&DB=$DB&adastats=$adastats\">30sec</a>&nbsp;&nbsp;";
 	if ($RR==4) { echo "<font size=+1>"; } else { echo "<font size=-1>"; }
-	echo "<a href=\"$PHP_SELF?ADD=999999&SUB=13&group=$group&RR=4&DB=$DB&adastats=$adastats\">4sec</a>&nbsp;&nbsp;";
+	echo "<a href=\"$PHP_SELF?ADD=999999&SUB=13&campaign_id=$campaign_id&group=$group&RR=4&DB=$DB&adastats=$adastats\">4sec</a>&nbsp;&nbsp;";
 	echo "</font>";
 	echo "&nbsp;-&nbsp;&nbsp;";
 	if ($adastats<2) {
-		echo "<a href=\"$PHP_SELF?ADD=999999&SUB=13&group=$group&RR=$RR&DB=$DB&adastats=2\"><font size=1>VIEW MORE SETTINGS</font></a>";
+		echo "<a href=\"$PHP_SELF?ADD=999999&SUB=13&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=2\"><font size=1>VIEW MORE SETTINGS</font></a>";
 	} else {
-		echo "<a href=\"$PHP_SELF?ADD=999999&SUB=13&group=$group&RR=$RR&DB=$DB&adastats=1\"><font size=1>VIEW LESS SETTINGS</font></a>";
+		echo "<a href=\"$PHP_SELF?ADD=999999&SUB=13&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=1\"><font size=1>VIEW LESS SETTINGS</font></a>";
 	}
 	//echo "&nbsp;&nbsp;&nbsp;<a href=\"./admin.php?ADD=10\">Campaigns</a>&nbsp;&nbsp;<a href=\"./admin.php?ADD=999999\">Reports</a>";
 	echo "</p>\n\n";
@@ -108,7 +109,7 @@ if ($ADD==999999 && $SUB==13) {
 		
 		
 		$group = $groups[$k];
-		echo "<font class=realtimeindents size=-1><b><a href=\"./admin.php?ADD=999999&SUB=14&group=$group&RR=$RR&DB=$DB&adastats=$adastats\">$group</a></b> &nbsp; - &nbsp; ";
+		echo "<font class=realtimeindents size=-1><b><a href=\"./admin.php?ADD=999999&SUB=14&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats\">$group</a></b> &nbsp; - &nbsp; ";
 		echo "<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a> </font>\n";
 		
 		
