@@ -188,7 +188,7 @@ unless ($outbound_ivr) {
 	exit;
 }
 
-my $stmtA =  "UPDATE osdial_live_agents set status='INCALL',lead_id='" . $vars->{CIDlead_id} . "',uniqueid='" . $AGI->{uniqueid};
+my $stmtA =  "UPDATE osdial_live_agents set status='INCALL',lead_id='" . $vars->{CIDlead_id} . "',last_call_time=NOW()-1,uniqueid='" . $AGI->{uniqueid};
 $stmtA .= "', channel='" . $AGI->{channel} . "', callerid='" . $AGI->{callerid} . "' where status = 'READY' and ";
 $stmtA .= "server_ip='" . $vars->{VARserver_ip} . "' and campaign_id='" . $auto_calls->{campaign_id} . "' limit 1;";
 ##"' and last_update_time > '" . sql_date($vars->{start_epoch} + 5) . "' limit 1;";
