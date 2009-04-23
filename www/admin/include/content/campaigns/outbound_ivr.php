@@ -191,7 +191,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="#CBDCE0">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"category='IVR'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
         foreach ($status as $stat) {
             if ($stat['status'] == 'VPLAY') {
                 $sel = ' selected';
@@ -223,7 +223,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="#CBDCE0">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"category='IVR'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
         foreach ($status as $stat) {
             if ($stat['status'] == 'VNI') {
                 $sel = ' selected';
@@ -311,7 +311,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="#CBDCE0">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"category='IVR'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
         foreach ($status as $stat) {
             $sel = '';
             if ($stat['status'] == 'VEXFER') {
@@ -348,7 +348,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="#CBDCE0">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"category='IVR'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
         foreach ($status as $stat) {
             $sel = '';
             if ($stat['status'] == 'VEXFER') {
@@ -606,7 +606,7 @@ if ($ADD == "3menu") {
     echo "  <tr>\n";
     echo "      <td bgcolor=#CBDCE0 align=right>Answered Status:</td>\n";
     echo '      <td bgcolor="#CBDCE0"><select name="oivr_answered_status"><option value="">-NONE-</option>';
-    $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"category='IVR'");
+    $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
     foreach ($status as $stat) {
         $sel = '';
         if ($stat['status'] == $oivr['answered_status']) {
@@ -801,7 +801,7 @@ if ($ADD == "3keys") {
         echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="#CBDCE0">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"category='IVR'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
         foreach ($status as $stat) {
             $sel = '';
             if ($stat['status'] == $ad[1]) {
@@ -837,7 +837,7 @@ if ($ADD == "3keys") {
         echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="#CBDCE0">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"category='IVR'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
         foreach ($status as $stat) {
             $sel = '';
             if ($stat['status'] == $ad[1]) {
@@ -933,7 +933,7 @@ if ($ADD == "3keys") {
         echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="#CBDCE0">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"category='IVR'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
         foreach ($status as $stat) {
             $sel = '';
             if ($stat['status'] == $ad[1]) {
@@ -973,7 +973,7 @@ if ($ADD == "3keys") {
         echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="#CBDCE0">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"category='IVR'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
         foreach ($status as $stat) {
             $sel = '';
             if ($stat['status'] == $ad[1]) {

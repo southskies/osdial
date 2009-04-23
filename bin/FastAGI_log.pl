@@ -686,7 +686,7 @@ sub process_request {
 				else
 					{
 
-					$stmtA = "SELECT user FROM osdial_live_agents WHERE uniqueid = '$uniqueid' AND user LIKE 'R/va\%' limit 1;";
+					$stmtA = "SELECT user FROM osdial_live_agents WHERE uniqueid = '$uniqueid' AND extension LIKE 'R/va\%' limit 1;";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
@@ -701,7 +701,7 @@ sub process_request {
 						if ($sthArows > 0) {
 							@aryA = $sthA->fetchrow_array;
 							$lstat = $aryA[0];
-							$lcomm = $aryA[0];
+							$lcomm = $aryA[1];
 							@aryA = $sthA->fetchrow_array;
 							$stmtA = "INSERT INTO osdial_agent_log SET user='$OLAuser',server_ip='$VARserver_ip',event_time=NOW(),lead_id='$VD_lead_id',campaign_id='$VD_campaign_id',talk_epoch='$VD_start_epoch',talk_sec='$talksec',status='$lstat',user_group='VIRTUAL',comments='$lcomm';";
 							my $affected_rows = $dbhA->do($stmtA);
