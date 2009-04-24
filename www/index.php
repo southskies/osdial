@@ -1,5 +1,5 @@
 <?php
-require('admin/include/display.php');
+require('admin/include/includes.php');
 ?>
 <html>
 <head><title>Choose Login:</title></head>
@@ -62,7 +62,7 @@ require('admin/include/display.php');
 			<td height=180 width=360 align=center valign=middle colspan=2>
 				<div id="company"></div>
 				<script>
-                    comp = '<?= $user_company ?>';
+                    comp = '<?= $system_settings['company_name'] ?>';
                     klen = 1;
                     if (comp.length >= 20)
                     klen = 2;
