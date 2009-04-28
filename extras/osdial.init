@@ -172,13 +172,14 @@ reconfig() {
 
 start_relay() {
 	if [ -f "/opt/osdial/bin/ip_relay" -a -f "/etc/asterisk/osdial_iax.conf" ]; then
-		/opt/osdial/bin/ip_relay 40569 127.0.0.1    4569 9999999 > /dev/null 2>&1 &
-		/opt/osdial/bin/ip_relay 41569 127.0.0.1    4569 9999999 > /dev/null 2>&1 &
+		/opt/osdial/bin/safe_ip_relay 40569 127.0.0.1    4569 9999999 > /dev/null 2>&1 &
+		/opt/osdial/bin/safe_ip_relay 41569 127.0.0.1    4569 9999999 > /dev/null 2>&1 &
 	fi
 }
 
 stop_relay() {
 	if [ -f "/opt/osdial/bin/ip_relay" -a -f "/etc/asterisk/osdial_iax.conf" ]; then
+		kill `ps -C safe_ip_relay -o pid --no-heading` > /dev/null 2>&1
 		kill `ps -C ip_relay -o pid --no-heading` > /dev/null 2>&1
 	fi
 }

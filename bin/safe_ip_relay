@@ -1,0 +1,35 @@
+#!/bin/bash
+#
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+
+PORT=$1
+HOST=$2
+HPORT=$3
+TIMEOUT=$4
+
+if [ -n "$PORT" -a -n "$HOST" -a -n "$HPORT" ]; then
+	if [ -n "$TIMEOUT" ]; then
+		TIMEOUT=86400
+	fi
+	while true; do
+		/opt/osdial/bin/ip_relay $PORT $HOST $HPORT $TIMEOUT
+	done
+else
+	/opt/osdial/bin/ip_relay -h
+fi
