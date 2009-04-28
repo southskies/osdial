@@ -52,6 +52,8 @@
 # CHANGELOG
 # 71226-1303 - Added option to change format GSM/WAV and timeout through flags
 #
+# 090428-1848 - Fix prompt_count.txt location
+#
 
 $US='_';
 
@@ -108,22 +110,23 @@ $loop_counter=0;
 $REC_id = 85100000;
 $REC_next = 0;
 
-if (-e "/prompt_count.txt")
+$pc = "/var/lib/asterisk/prompt_count.txt";
+if (-e $pc)
 {
-	open(test, "/prompt_count.txt") || die "can't open /prompt_count.txt: $!\n";
+	open(test, $pc) || die "can't open $pc: $!\n";
 	@test = <test>;
 	close(test);
 
 	$REC_next = ($test[0] + 1);
 	$REC_id = ($REC_id + $REC_next);
 
-	open(test, ">/prompt_count.txt") || die "can't open /prompt_count.txt: $!\n";
+	open(test, ">" . $pc) || die "can't open $pc: $!\n";
 	print test "$REC_next";
 	close(test);
 }
 else
 {
-	open(test, ">/prompt_count.txt") || die "can't open /prompt_count.txt: $!\n";
+	open(test, ">" . $pc) || die "can't open $pc: $!\n";
 	print test "1";
 	close(test);
 	$REC_id = ($REC_id + 1);
