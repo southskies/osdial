@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TMPIVR=/tmp/osdial_ivr_sync
-IVRDIR=/var/lib/asterisk/sounds
+IVRDIR=/var/lib/asterisk/sounds/ivr
 
 WEB=$1
 
