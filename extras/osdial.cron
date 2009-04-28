@@ -1,59 +1,36 @@
-### (dialer) Send Recordings to archive server
-#*/3 * * * * /opt/osdisl/bin/AST_audio_archive.pl
-
-### (archive) Compress wav files to mp3
-#*/2 * * * * /opt/osdisl/bin/AST_audio_compress.pl --MP3
-
-### (archive) Sort MP3s into campaign_id/date directory structure
-#*/5 * * * * /opt/osdisl/bin/AST_sort_recordings.pl
-
-### (archive) Send select MP3s to a third-party quality-control or offste archive server.
-#*/15 * * * * /opt/osdisl/bin/AST_qc_transfer.pl
-
-#### (ALL) Force update of time servers. Now run from /etc/cron.hourly
+### (ALL) Force update of time servers. Now run from /etc/cron.hourly
 #0 * * * * /opt/osdial/bin/AST_ntp_update.sh > /dev/null 2>&1
 
-#### (ALL) Generate asterisk config files and reload modules
+### (ALL) Generate asterisk config files and reload modules
 * * * * * /opt/osdial/bin/osdial_astgen.pl -q
 
-#### (ALL) Syncronize IVR recordings, arg is web server
+### (ALL) Syncronize IVR recordings, arg is web server
 * * * * * /opt/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1
-
-### (dialer) Write a file listing current voicemail
-* * * * * /usr/sbin/asterisk -rx "show voicemail users" > /opt/osdisl/html/admin/VMnow.txt
 
 ### (ALL) Get load average.
 * * * * * cat /proc/loadavg | cut -d" " -f1 > /opt/osdial/html/admin/Loadavg.txt
 
-### (sql) Clean out auto-calls regularly
-* * * * * /opt/osdial/bin/AST_CLEAR_auto_calls.pl
-
 ### (ALL) keepalive script for osdial processes
 * * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl
 
-### (dialer) kill Hangup script for Asterisk updaters
-* * * * * /opt/osdial/bin/AST_manager_kill_hung_congested.pl
+### (ALL) remove old osdial logs and asterisk logs more than 2 days old
+28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f
+29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f
 
-### (dialer) updater for voicemail
-* * * * * /opt/osdial/bin/AST_vm_update.pl
+### (sql) Clean out auto-calls regularly
+* * * * * /opt/osdial/bin/AST_CLEAR_auto_calls.pl
 
-### (dialer) updater for conference validator
-* * * * * /opt/osdial/bin/AST_conf_update.pl
-
-### (sql || dialer) flush queue DB table every hour for entries older than 1 hour
+### (sql) flush queue DB table every hour for entries older than 1 hour
 11 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q
 
 ### (sql) fix the osdial_agent_log once every hour
 33 * * * * /opt/osdial/bin/AST_cleanup_agent_log.pl
 
-### (sql || dialer) updater for OSDial hopper
+### (sql) updater for OSDial hopper
 * * * * * /opt/osdial/bin/AST_VDhopper.pl -q
 
 ### (sql) adjust the GMT offset for the leads in the osdial_list table
 1 1,7 * * * /opt/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl --debug --postal-code-gmt
-
-### (dialer) reset several temporary-info tables in the database
-2 1 * * * /opt/osdial/bin/AST_reset_mysql_vars.pl
 
 ### (sql) optimize the database tables within the asterisk database
 3 1 * * * /opt/osdial/bin/AST_DB_optimize.pl
@@ -66,9 +43,33 @@
 #32 0 * * * /opt/osdial/bin/AST_VDsales_export.pl
 #42 0 * * * /opt/osdial/bin/AST_sourceID_summary_export.pl
 
+### (dialer) Write a file listing current voicemail
+* * * * * /usr/sbin/asterisk -rx "show voicemail users" > /opt/osdisl/html/admin/VMnow.txt
+
+### (dialer) kill Hangup script for Asterisk updaters
+* * * * * /opt/osdial/bin/AST_manager_kill_hung_congested.pl
+
+### (dialer) updater for voicemail
+* * * * * /opt/osdial/bin/AST_vm_update.pl
+
+### (dialer) updater for conference validator
+* * * * * /opt/osdial/bin/AST_conf_update.pl
+
+### (dialer) reset several temporary-info tables in the database
+2 1 * * * /opt/osdial/bin/AST_reset_mysql_vars.pl
+
 ### (dialer) remove old recordings more than 7 days old
 24 0 * * * /usr/bin/find /var/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs rm -f
 
-### (ALL) remove old osdial logs and asterisk logs more than 2 days old
-28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f
-29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f
+### (dialer) Send Recordings to archive server
+#*/3 * * * * /opt/osdisl/bin/AST_audio_archive.pl
+
+### (archive) Compress wav files to mp3
+#*/2 * * * * /opt/osdisl/bin/AST_audio_compress.pl --MP3
+
+### (archive) Sort MP3s into campaign_id/date directory structure
+#*/5 * * * * /opt/osdisl/bin/AST_sort_recordings.pl
+
+### (archive) Send select MP3s to a third-party quality-control or offste archive server.
+#*/15 * * * * /opt/osdisl/bin/AST_qc_transfer.pl
+
