@@ -30,7 +30,8 @@ include("../admin/include/functions.php");
 get_vars();
 
 # Modify this variable to redirect elsewhere.
-$url = "http://www.callcentersg.com/?id=$external_key";
+$url = "http://www.osdial.com/webform_test.php?id=$external_key";
+#$url = "http://www.osdial.com/webform_test.php?id=$external_key&lead=$lead_id&list=$list_id&number=$phone_number";
 
 
 
