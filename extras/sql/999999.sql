@@ -133,7 +133,7 @@ insert into osdial_statuses values('N','No Answer','Y','N','NOCONTACT');
 insert into osdial_statuses values('NA','No Answer AutoDial','N','N','NOCONTACT');
 insert into osdial_statuses values('B','Busy','Y','N','NOCONTACT');
 
-INSERT INTO `osdial_campaigns` VALUES ('TEST','Test Campaign','Y','','','','','','DOWN','8301','park','','Y',20,'0','random','24hours','',60,'9','0000000000','8365','8309','ONDEMAND','FULLDATE_CUSTPHONE','','NONE','8320','N','','','','','N','Y','NONE',5,'Y','8307','Y',0,'Wrapup Call','','Y',0,'N','MANUAL','N',3,'3.0','2100','0',0,'AUTO','NONE',' B N NA DC -','N','Test Campaign',NOW(),'N',NULL,' NEW -','N','Y','DISABLED','Y',999,'---NONE---','','');
+INSERT INTO `osdial_campaigns` VALUES ('TEST','Test Campaign','Y','','','','','','DOWN','8301','park','','Y',20,'0','random','24hours','',60,'9','0000000000','8365','8309','ONDEMAND','FULLDATE_CUSTPHONE','','NONE','8320','N','','','','','N','Y','NONE',5,'Y','8307','Y',0,'Wrapup Call','','Y',0,'N','MANUAL','N',3,'3.0','2100','0',0,'AUTO','NONE',' B N NA DC -','N','Test Campaign',NOW(),'N',NULL,' NEW -','N','Y','DISABLED','Y',999,'---NONE---','','','Y','0');
 INSERT INTO `osdial_campaign_stats` VALUES ('TEST',NOW(),0,0,0,0,'0','0',0,0,0,'0',0,0,0,'0',0,0,0,'0',0,0,0,'0','0','0',0,NULL,0,NULL,0,NULL,0,NULL,0);
 
 INSERT INTO `osdial_campaign_hotkeys` VALUES ('N','1','No Answer','Y','TEST');

@@ -182,5 +182,5 @@ echo "</TABLE></center>\n";
 }
 
 
-
+require("campaigns.php");
 ?>

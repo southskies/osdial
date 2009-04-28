@@ -299,7 +299,7 @@ echo "<TABLE align=center><TR><TD>\n";
 
 echo "<center><br><font color=navy size=+1>CAMPAIGN LIST MIXES</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr bgcolor=navy>\n";
+echo "<tr bgcolor=$menubarcolor>\n";
 echo "<td><font color=white size=1>CAMPAIGN</font></td>\n";
 echo "<td><font color=white size=1>NAME</font></td>\n";
 echo "<td><font color=white size=1>LIST MIX</font></td>\n";

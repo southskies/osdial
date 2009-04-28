@@ -125,6 +125,4 @@ $ADD=31;	# go to campaign modification form below
 
 
 require('campaigns.php');
-
-
 ?>

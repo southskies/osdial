@@ -196,7 +196,5 @@ echo "</TABLE></center>\n";
 }
 
 
-# TODO: Goto 31 (campaign detail)
-
-
+require("campaigns.php");
 ?>

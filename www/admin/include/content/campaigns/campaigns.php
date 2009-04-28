@@ -1868,9 +1868,6 @@ if ( ($ADD==34) or ($ADD==31) )
 
 		echo "<br><br><b><font color=navy size=+1>LIST MIXES FOR THIS CAMPAIGN &nbsp; $NWB#osdial_campaigns-list_order_mix$NWE</font></b><br>\n";
 
-		echo "<br><br><b><font color=red size=+1>Feature in development - NON-FUNCTIONAL!!!</font></b><br>\n";
-
-
 		$stmt="SELECT * from osdial_campaigns_list_mix where campaign_id='$campaign_id' order by status, vcl_id";
 		$rslt=mysql_query($stmt, $link);
 		$listmixes = mysql_num_rows($rslt);
@@ -1882,7 +1879,7 @@ if ( ($ADD==34) or ($ADD==31) )
 			$o++;
 
 			if ($o < 2)
-				{$tablecolor='bgcolor="#99FF99"';   $bgcolor='bgcolor="#CCFFCC"';}
+				{$tablecolor='bgcolor="#C1D6DB"';   $bgcolor='bgcolor="#CBDCE0"';}
 			else
 				{
 				if (eregi("1$|3$|5$|7$|9$", $o))
@@ -1891,7 +1888,7 @@ if ( ($ADD==34) or ($ADD==31) )
 					{$tablecolor='bgcolor="#C1D6DB"';   $bgcolor='bgcolor="#CBDCE0"';}
 				}
 			echo "<a name=\"$vcl_id\"><BR>\n";
-			echo "<span id=\"LISTMIX$US$vcl_id$US$o\">";
+			#echo "<span id=\"LISTMIX$US$vcl_id$US$o\">";
 			echo "<TABLE width=740 cellspacing=3 $tablecolor>\n";
 			echo "<tr><td colspan=6>\n";
 			echo "<form action=\"$PHP_SELF#$vcl_id\" method=POST name=$vcl_id id=$vcl_id>\n";
@@ -2016,7 +2013,8 @@ if ( ($ADD==34) or ($ADD==31) )
 			else {$AE_disabled = '';}
 			echo "<td><input type=submit name=submit value=\"ADD ENTRY\" $AE_disabled>\n";
 			echo "</form></td></tr>\n";
-			echo "</table></span>\n";
+			echo "</table>";
+            #echo "</span>\n";
 			}
 
 

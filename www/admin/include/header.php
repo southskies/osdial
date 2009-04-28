@@ -159,6 +159,12 @@ if (strlen($campaigns_hh) > 1) {
     if ($sh=='dialstat') {$sh='list';}
     if ($sh=='realtime') {$sh='list';}
     if ($sh=='outbound_ivr') {$sh='list';}
+    if ($sh=='status'  and $ADD != 32) {$sh='list';}
+    if ($sh=='hotkey'  and $ADD != 33) {$sh='list';}
+    if ($sh=='recycle' and $ADD != 35) {$sh='list';}
+    if ($sh=='autoalt' and $ADD != 36) {$sh='list';}
+    if ($sh=='pause'   and $ADD != 37) {$sh='list';}
+    if ($sh=='listmix' and $ADD != 39) {$sh='list';}
 
     if ($sh=='list') {$list_sh="bgcolor=\"$subcamp_color\""; $list_fc="$subcamp_font";}
         else {$list_sh=''; $list_fc='black';}
@@ -182,11 +188,11 @@ if (strlen($campaigns_hh) > 1) {
         <td height=20 align=center <?= $list_sh ?> colspan=2><a href="<?= $PHP_SELF ?>?ADD=10"><font face="arial,helvetica" color=<?= $list_fc ?> size=<?= $subcamp_font_size ?>> Campaigns Main </font></a></td>
         <td align=center <?= $status_sh ?> colspan=1><a href="<?= $PHP_SELF ?>?ADD=32"><font face="arial,helvetica" color=<?= $status_fc ?> size=<?= $subcamp_font_size ?>> Statuses </font></a></td>
         <td align=center <?= $hotkey_sh ?> colspan=1><a href="<?= $PHP_SELF ?>?ADD=33"><font face="arial,helvetica" color=<?= $hotkey_fc ?> size=<?= $subcamp_font_size ?>> HotKeys </font></a></td>
-        <td align=center <?= $recycle_sh ?> colspan=2><a href="<?= $PHP_SELF ?>?ADD=35"><font face="arial,helvetica" color=<?= $recycle_fc ?> size=<?= $subcamp_font_size ?>> Lead Recycle </font></a></td>
+        <td align=center <?= $recycle_sh ?> colspan=1><a href="<?= $PHP_SELF ?>?ADD=35"><font face="arial,helvetica" color=<?= $recycle_fc ?> size=<?= $subcamp_font_size ?>> Lead Recycle </font></a></td>
+        <td align=center <?= $listmix_sh ?> colspan=1><a href="<?= $PHP_SELF ?>?ADD=39"><font face="arial,helvetica" color=<?= $listmix_fc ?> size=<?= $subcamp_font_size ?>> List Mix </font></a></td>
         <td align=center <?= $autoalt_sh ?> colspan=1><a href="<?= $PHP_SELF ?>?ADD=36"><font face="arial,helvetica" color=<?= $autoalt_fc ?> size=<?= $subcamp_font_size ?>> Auto-Alt Dial </font></a></td>
         <td align=center <?= $pause_sh ?> colspan=1><a href="<?= $PHP_SELF ?>?ADD=37"><font face="arial,helvetica" color=<?= $pause_fc ?> size=<?= $subcamp_font_size ?>> Pause Codes </font></a></td>
-        <td align=center <?= $fields_sh ?> colspan=1><a href="<?= $PHP_SELF ?>?ADD=3fields"><font face="arial,helvetica" color=<?= $fields_fc ?> size=<?= $subcamp_font_size ?>> Additional Fields </font></a></td>
-        <td align=center <?= $listmix_sh ?> colspan=1><!--a href="<?= $PHP_SELF ?>?ADD=39"><font face="arial,helvetica" color=<?= $listmix_fc ?> size=<?= $subcamp_font_size ?>> List Mix </font></a --></td>
+        <td align=center <?= $fields_sh ?> colspan=2><a href="<?= $PHP_SELF ?>?ADD=3fields"><font face="arial,helvetica" color=<?= $fields_fc ?> size=<?= $subcamp_font_size ?>> Additional Fields </font></a></td>
     </tr>
     <?
   if (strlen($list_sh) > 1) { 
@@ -235,10 +241,10 @@ if (strlen($campaigns_hh) > 1) {
                 <td align=center bgcolor="<?= $camp_statuses_color ?>"><a href="<?= $PHP_SELF ?>?ADD=31&SUB=22&campaign_id=<?= $campaign_id ?>"><font size=2 color=<?= $subcamp_font ?> face="arial,helvetica">Statuses</font></a></td>
                 <td align=center bgcolor="<?= $camp_hotkeys_color ?>"><a href="<?= $PHP_SELF ?>?ADD=31&SUB=23&campaign_id=<?= $campaign_id ?>"><font size=2 color=<?= $subcamp_font ?> face="arial,helvetica">HotKeys</font></a></td>
                 <td align=center bgcolor="<?= $camp_recycle_color ?>"><a href="<?= $PHP_SELF ?>?ADD=31&SUB=25&campaign_id=<?= $campaign_id ?>"><font size=2 color=<?= $subcamp_font ?> face="arial,helvetica">Lead Recycling</font></a></td>
+                <td align=center bgcolor="<?= $camp_listmix_color ?>"><a href="<?= $PHP_SELF ?>?ADD=31&SUB=29&campaign_id=<?= $campaign_id ?>"><font size=2 color=<?= $subcamp_font ?> face="arial,helvetica">List Mix</font></a></td>
                 <td align=center bgcolor="<?= $camp_autoalt_color ?>"><a href="<?= $PHP_SELF ?>?ADD=31&SUB=26&campaign_id=<?= $campaign_id ?>"><font size=2 color=<?= $subcamp_font ?> face="arial,helvetica">Auto Alt Dial</font></a></td>
                 <td align=center bgcolor="<?= $camp_pause_color ?>"><a href="<?= $PHP_SELF ?>?ADD=31&SUB=27&campaign_id=<?= $campaign_id ?>"><font size=2 color=<?= $subcamp_font ?> face="arial,helvetica">Pause Codes</font></a></td>
                 <td align=center bgcolor="<?= $camp_oivr_color ?>"> <a href="<?= $PHP_SELF ?>?ADD=3menu&SUB=2keys&campaign_id=<?= $campaign_id ?>"><font size=2 color=<?= $subcamp_font ?> face="arial,helvetica">Outbound IVR</font></a></td>
-                <!-- <td align=center bgcolor="<?= $camp_listmix_color ?>"><a href="<?= $PHP_SELF ?>?ADD=31&SUB=29&campaign_id=<?= $campaign_id ?>"><font size=2 color=<?= $subcamp_font ?> face="arial,helvetica">List Mix</font></a></td>-->
                 <td align=center bgcolor="<?= $camp_real_color ?>"> <a href="<?= $PHP_SELF ?>?ADD=999999&SUB=14&group=<?= $campaign_id ?>&campaign_id=<?= $campaign_id ?>"><font size=2 color=<?= $subcamp_font ?> face="arial,helvetica">Real-Time</font></a></td>
             </tr>
         </table>

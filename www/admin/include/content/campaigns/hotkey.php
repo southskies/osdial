@@ -171,6 +171,5 @@ echo "</TABLE></center>\n";
 }
 
 
-# TODO Goto campaign detail
-
+require("campaigns.php");
 ?>

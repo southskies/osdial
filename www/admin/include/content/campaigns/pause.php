@@ -211,5 +211,5 @@ echo "</tr>\n";
 echo "</TABLE></center>\n";
 }
 
-
+require("campaigns.php");
 ?>
