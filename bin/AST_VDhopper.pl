@@ -1504,7 +1504,7 @@ foreach(@campaign_id)
 						if ($DBX) {print "  LM $x |$list_mix_stepARY[0]|$list_mix_stepARY[2]|$LM_step_goal[$x]|$list_mix_stepARY[3]|\n";}
 						$list_mix_dialableSQL = "(list_id='$list_mix_stepARY[0]' and status IN($list_mix_stepARY[3]))";
 
-						$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status FROM vicidial_list where called_since_last_reset='N' and $list_mix_dialableSQL and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $LM_step_goal[$x];";
+						$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status FROM osdial_list where called_since_last_reset='N' and $list_mix_dialableSQL and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $LM_step_goal[$x];";
 						if ($DBX) {print "     |$stmtA|\n";}
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
