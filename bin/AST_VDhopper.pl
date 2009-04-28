@@ -74,6 +74,7 @@
 # 090427-1314 - Set list_id=1 if list_id is 0, blank or NULL.
 # 090427-1502 - Fix to allow dialable_leads to include recycles.
 # 090428-0303 - Fix list-mix to include recycles into mix instead of at end.
+# 090428-0322 - Add check to catch DRCTN nTH NEW options in list mix and drop the "nTH NEW" 
 
 # constants
 $DB=0;  # Debug flag, set to 0 for no debug messages, On an active system this will generate lots of lines of output per minute
@@ -465,6 +466,10 @@ foreach(@campaign_id)
 			}
 		if (length($STATUSsql[$i])<3) {$STATUSsql[$i]="''";}
 		else {chop($STATUSsql[$i]);}
+		}
+	else
+		{
+		$list_order[$i] =~ s/ ... NEW$//;
 		}
 
 	$stmtA = "SELECT dialable_leads from osdial_campaign_stats where campaign_id='$campaign_id[$i]';";
@@ -1235,7 +1240,7 @@ foreach(@campaign_id)
 			}
 		$sthA->finish();
 
-		if ( ($lead_order[$i] =~ / 2nd NEW$| 3rd NEW$| 4th NEW$| 5th NEW$| 6th NEW$/) && ($list_order_mix[$i] =~ /DISABLED/) )
+		if ( ($lead_order[$i] =~ / ... NEW$/) && ($list_order_mix[$i] =~ /DISABLED/) )
 			{
 			$stmtA = "SELECT count(*) FROM osdial_list where called_since_last_reset='N' and status IN('NEW') and list_id IN($camp_lists[$i]) and ($all_gmtSQL[$i]) $lead_filter_sql[$i];";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -1254,10 +1259,10 @@ foreach(@campaign_id)
 			}
 
 		##### IF no NEW leads to be called, error out of this campaign #####
-		if ( ($lead_order[$i] =~ / 2nd NEW$| 3rd NEW$| 4th NEW$| 5th NEW$| 6th NEW$/) && ($NEW_campaign_leads_to_call[$i] > 0) && ($list_order_mix[$i] =~ /DISABLED/) ) {$GOOD=1;}
+		if ( ($lead_order[$i] =~ / ... NEW$/) && ($NEW_campaign_leads_to_call[$i] > 0) && ($list_order_mix[$i] =~ /DISABLED/) ) {$GOOD=1;}
 		else
 			{
-			if ($lead_order[$i] !~ / 2nd NEW$| 3rd NEW$| 4th NEW$| 5th NEW$| 6th NEW$/)
+			if ($lead_order[$i] !~ / ... NEW$/)
 				{
 				if ($DB) {print "     NO SHUFFLE-NEW-LEADS INTO HOPPER DEFINED FOR LEAD ORDER\n";}
 				}
@@ -1316,11 +1321,11 @@ foreach(@campaign_id)
 			if ($lead_order[$i] =~ /^UP COUNT/) {$order_stmt = 'order by called_count desc, lead_id asc';}
 			if ($lead_order[$i] =~ /^DOWN COUNT/) {$order_stmt = 'order by called_count, lead_id asc';}
 			if ($lead_order[$i] =~ /^RANDOM/) {$order_stmt = 'order by RAND()';}
-			if ($lead_order[$i] =~ /^ 2nd NEW/) {$NEW_count = 2;}
-			if ($lead_order[$i] =~ /^ 3rd NEW/) {$NEW_count = 3;}
-			if ($lead_order[$i] =~ /^ 4th NEW/) {$NEW_count = 4;}
-			if ($lead_order[$i] =~ /^ 5th NEW/) {$NEW_count = 5;}
-			if ($lead_order[$i] =~ /^ 6th NEW/) {$NEW_count = 6;}
+			if ($lead_order[$i] =~ / 2nd NEW$/) {$NEW_count = 2;}
+			if ($lead_order[$i] =~ / 3rd NEW$/) {$NEW_count = 3;}
+			if ($lead_order[$i] =~ / 4th NEW$/) {$NEW_count = 4;}
+			if ($lead_order[$i] =~ / 5th NEW$/) {$NEW_count = 5;}
+			if ($lead_order[$i] =~ / 6th NEW$/) {$NEW_count = 6;}
 
 		### BEGIN recycle grab leads ###
 			$REC_rec_countLEADS=0;
@@ -1426,7 +1431,7 @@ foreach(@campaign_id)
 
 				if ($list_order_mix[$i] =~ /DISABLED/)
 					{
-					$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user FROM osdial_list where called_since_last_reset='N' and status IN($STATUSsql[$i]) and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $OTHER_level;";
+					$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user FROM osdial_list where $cclr and status IN($STATUSsql[$i]) and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $OTHER_level;";
 					if ($DBX) {print "     |$stmtA|\n";}
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1457,19 +1462,20 @@ foreach(@campaign_id)
 								$NEW_dec=2;
 								}
 							}
-						if ($REC_rec_countLEADS > $REC_insert_count)
-							{
-							$leads_to_hopper[$rec_countLEADS] = "$REC_leads_to_hopper[$REC_insert_count]";
-							$lists_to_hopper[$rec_countLEADS] = "$REC_lists_to_hopper[$REC_insert_count]";
-							$gmt_to_hopper[$rec_countLEADS] = "$REC_gmt_to_hopper[$REC_insert_count]";
-							$state_to_hopper[$rec_countLEADS] = "$REC_state_to_hopper[$REC_insert_count]";
-							$phone_to_hopper[$rec_countLEADS] = "$REC_phone_to_hopper[$REC_insert_count]";
-							$status_to_hopper[$rec_countLEADS] = "$REC_status_to_hopper[$REC_insert_count]";
-							$modify_to_hopper[$rec_countLEADS] = "$REC_modify_to_hopper[$REC_insert_count]";
-							$user_to_hopper[$rec_countLEADS] = "$REC_user_to_hopper[$REC_insert_count]";
-							$rec_countLEADS++;
-							$REC_insert_count++;
-							}
+						# Moved Recycle inclusion into SQL statement.
+						#if ($REC_rec_countLEADS > $REC_insert_count)
+						#	{
+						#	$leads_to_hopper[$rec_countLEADS] = "$REC_leads_to_hopper[$REC_insert_count]";
+						#	$lists_to_hopper[$rec_countLEADS] = "$REC_lists_to_hopper[$REC_insert_count]";
+						#	$gmt_to_hopper[$rec_countLEADS] = "$REC_gmt_to_hopper[$REC_insert_count]";
+						#	$state_to_hopper[$rec_countLEADS] = "$REC_state_to_hopper[$REC_insert_count]";
+						#	$phone_to_hopper[$rec_countLEADS] = "$REC_phone_to_hopper[$REC_insert_count]";
+						#	$status_to_hopper[$rec_countLEADS] = "$REC_status_to_hopper[$REC_insert_count]";
+						#	$modify_to_hopper[$rec_countLEADS] = "$REC_modify_to_hopper[$REC_insert_count]";
+						#	$user_to_hopper[$rec_countLEADS] = "$REC_user_to_hopper[$REC_insert_count]";
+						#	$rec_countLEADS++;
+						#	$REC_insert_count++;
+						#	}
 						$leads_to_hopper[$rec_countLEADS] = "$aryA[0]";
 						$lists_to_hopper[$rec_countLEADS] = "$aryA[1]";
 						$gmt_to_hopper[$rec_countLEADS] = "$aryA[2]";
