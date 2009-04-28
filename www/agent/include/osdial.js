@@ -23,6 +23,7 @@
  * #
  * # 090410-1155 - Added custom2 field.
  * # 090410-1750 - Added allow_tab_switch.
+ * # 090428-0938 - Added external_key to web_form_vars.
  */
 
 
@@ -274,6 +275,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	var dialed_number = '';
 	var dialed_label = '';
 	var source_id = '';
+	var external_key = '';
 	var DispO3waychannel = '';
 	var DispO3wayXtrAchannel = '';
 	var DispO3wayCalLserverip = '';
@@ -1891,6 +1893,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						dialed_label									= MDnextResponse_array[33];
 						source_id										= MDnextResponse_array[34];
 						document.osdial_form.custom2.value	= MDnextResponse_array[35];
+						external_key										= MDnextResponse_array[36];
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
@@ -1955,6 +1958,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						"&dialed_number=" + dialed_number + '' +
 						"&dialed_label=" + dialed_label + '' +
 						"&source_id=" + source_id + '' +
+						"&external_key=" + external_key + '' +
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
@@ -2529,6 +2533,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							dialed_label									= check_VDIC_array[37];
 							source_id										= check_VDIC_array[38];
 							document.osdial_form.custom2.value	= check_VDIC_array[39];
+							external_key										= check_VDIC_array[40];
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
@@ -2644,6 +2649,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							"&dialed_number=" + dialed_number + '' +
 							"&dialed_label=" + dialed_label + '' +
 							"&source_id=" + source_id + '' +
+							"&external_key=" + external_key + '' +
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
@@ -2799,6 +2805,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 							document.osdial_form.called_count.value	= check_RPLD_array[24];
 							document.osdial_form.custom2.value	= check_RPLD_array[25];
+							external_key	= check_RPLD_array[26];
 
 							if ( (dialed_label.length < 3) || (dialed_label=='NONE') )
 								dialed_label='MAIN';
@@ -2863,6 +2870,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							"&dialed_number=" + dialed_number + '' +
 							"&dialed_label=" + dialed_label + '' +
 							"&source_id=" + source_id + '' +
+							"&external_key=" + external_key + '' +
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
@@ -2955,6 +2963,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		"&dialed_number=" + dialed_number + '' +
 		"&dialed_label=" + dialed_label + '' +
 		"&source_id=" + source_id + '' +
+		"&external_key=" + external_key + '' +
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {

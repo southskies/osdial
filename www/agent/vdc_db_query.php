@@ -163,6 +163,7 @@
 #
 # 090410-1159 - Added custom2 field
 # 090410-1744 - Added allow_tab_switch
+# 090428-0936 - Added external_key
 
 $version = '2.0.4-69';
 $build = '80424-0442';
@@ -707,6 +708,7 @@ if ($ACTION == 'manDiaLnextCaLL')
 				$comments		= trim("$row[29]");
 				$called_count	= trim("$row[30]");
 				$custom2		= trim("$row[31]");
+				$external_key	= trim("$row[32]");
 				}
 
 			$called_count++;
@@ -880,6 +882,7 @@ if ($ACTION == 'manDiaLnextCaLL')
 			$LeaD_InfO .=	"MAIN\n";
 			$LeaD_InfO .=	$source_id . "\n";
 			$LeaD_InfO .=	$custom2 . "\n";
+			$LeaD_InfO .=	$external_key . "\n";
 
 			$forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
 			$cnt = 0;
@@ -1709,6 +1712,7 @@ if ($ACTION == 'VDADcheckINCOMING')
 			$comments		= trim("$row[29]");
 			$called_count	= trim("$row[30]");
 			$custom2		= trim("$row[31]");
+			$external_key	= trim("$row[32]");
 			}
 
 		##### if lead is a callback, grab the callback comments
@@ -1925,6 +1929,7 @@ if ($ACTION == 'VDADcheckINCOMING')
 		$LeaD_InfO .=	$dialed_label . "\n";
 		$LeaD_InfO .=	$source_id . "\n";
 		$LeaD_InfO .=	$custom2 . "\n";
+		$LeaD_InfO .=	$external_key . "\n";
 
 		$forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
 		$cnt = 0;
@@ -2731,6 +2736,7 @@ if ($ACTION == 'RepullLeadData')
 			$address3 = $oldphone;
 		}
 		$custom2	= trim("$row[31]");
+		$external_key	= trim("$row[32]");
 	}
 
 	### update the old lead status to REPULL
@@ -2792,6 +2798,7 @@ if ($ACTION == 'RepullLeadData')
 	$LeaD_InfO .=	$comments . "\n";
 	$LeaD_InfO .=	$called_count . "\n";
 	$LeaD_InfO .=	$custom2 . "\n";
+	$LeaD_InfO .=	$external_key . "\n";
 
 	$forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
 	$cnt = 0;
