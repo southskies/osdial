@@ -69,6 +69,8 @@
 # 80713-0028 - Changed Recycling methodology
 #
 # 090421-2041 - Added RANDOM list list order
+# 090427-1314 - Set list_id=1 if list_id is 0, blank or NULL.
+# 090427-1502 - Fix to allow dialable_leads to include recycles.
 
 # constants
 $DB=0;  # Debug flag, set to 0 for no debug messages, On an active system this will generate lots of lines of output per minute
@@ -293,6 +295,11 @@ if ($wipe_hopper_clean)
 
 	exit;
 	}
+
+# Fix 0 and no-id lists.
+$stmtA = "UPDATE osdial_list SET list_id='1' WHERE list_id='0' OR list_id='' OR list_id IS NULL;";
+$affected_rows = $dbhA->do($stmtA);
+
 ### Delete leads from inactive lists if there are any
 $stmtA = "SELECT * FROM osdial_lists where active='N';";
 if ($DB) {print $stmtA;}
@@ -1065,6 +1072,10 @@ foreach(@campaign_id)
 
 		if ($DBX) {print "RECYCLE SQL: |$recycle_SQL[$i]|\n";}
 		}
+	else
+		{
+		$recycle_SQL[$i] = "";
+		}
 	##### END lead recycling parsing and prep ###
 
 
@@ -1154,7 +1165,12 @@ foreach(@campaign_id)
 			if ($DBX) {print "     |$lead_filter_id[$i]|\n";}
 			}
 
-		$stmtA = "SELECT count(*) FROM osdial_list where called_since_last_reset='N' and status IN($STATUSsql[$i]) and list_id IN($camp_lists[$i]) and ($all_gmtSQL[$i]) $lead_filter_sql[$i];";
+		if ($recycle_SQL[$i] eq '') {
+			$cclr = "called_since_last_reset='N'";
+		} else {
+			$cclr = "(called_since_last_reset='N' OR $recycle_SQL[$i])";
+		}
+		$stmtA = "SELECT count(*) FROM osdial_list where $cclr and status IN($STATUSsql[$i]) and list_id IN($camp_lists[$i]) and ($all_gmtSQL[$i]) $lead_filter_sql[$i];";
 			if ($DBX) {print "     |$stmtA|\n";}
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;

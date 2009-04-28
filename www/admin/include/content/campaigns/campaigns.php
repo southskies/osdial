@@ -1368,6 +1368,7 @@ if ($ADD==31)
 			echo "<tr $bgcolor><td><font size=1>$rowx[2]<form action=$PHP_SELF method=POST>\n";
 			echo "<input type=hidden name=status value=\"$rowx[2]\">\n";
 			echo "<input type=hidden name=campaign_id value=\"$campaign_id\">\n";
+			echo "<input type=hidden name=SUB value=25>\n";
 			echo "<input type=hidden name=ADD value=45></td>\n";
 			echo "<td><font size=1><input type=text size=7 maxlength=5 name=attempt_delay value=\"$rowx[3]\"></td>\n";
 			echo "<td><font size=1><input type=text size=5 maxlength=3 name=attempt_maximum value=\"$rowx[4]\"></td>\n";
@@ -1379,6 +1380,7 @@ if ($ADD==31)
 		echo "</table>\n";
 
 		echo "<br><br><font color=navy>ADD NEW CAMPAIGN LEAD RECYCLE</font><BR><form action=$PHP_SELF method=POST><br>\n";
+		echo "<input type=hidden name=SUB value=25>\n";
 		echo "<input type=hidden name=ADD value=25>\n";
 		echo "<input type=hidden name=active value=\"N\">\n";
 		echo "<input type=hidden name=campaign_id value=\"$campaign_id\">\n";

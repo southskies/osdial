@@ -38,6 +38,9 @@ if ($ADD==999999 && ($SUB==13 || $SUB==14)) {
 	if ($RR <1) { $RR=4; }
 	$metadetail = '';
 	if ($SUB==14) {
+        if ($campaign_id == '') {
+            $campaign_id = $group;
+        }
 		$metadetail .= "&group=$group&campaign_id=$campaign_id&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname";
 		$metadetail .= "&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay";
 	}

@@ -686,7 +686,7 @@ sub process_request {
 				else
 					{
 
-					$stmtA = "SELECT user FROM osdial_live_agents WHERE uniqueid = '$uniqueid' AND extension LIKE 'R/va\%' limit 1;";
+					$stmtA = "SELECT user FROM osdial_live_agents WHERE uniqueid = '$uniqueid' AND (extension LIKE 'R/va\%' OR extension LIKE 'R/tmp\%') limit 1;";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
@@ -694,6 +694,8 @@ sub process_request {
 						@aryA = $sthA->fetchrow_array;
 						$OLAuser = $aryA[0];
 						$talksec = ($now_date_epoch - $VD_start_epoch);
+						$stmtA = "DELETE FROM osdial_live_agents WHERE uniqueid='$uniqueid' AND extension LIKE 'R/tmp\%' limit 1;";
+						my $affected_rows = $dbhA->do($stmtA);
 						$stmtA = "SELECT status,comments FROM osdial_list WHERE lead_id = '$VD_lead_id';";
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;

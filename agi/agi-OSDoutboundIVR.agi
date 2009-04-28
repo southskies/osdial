@@ -189,12 +189,22 @@ unless ($outbound_ivr) {
 }
 
 my $stmtA =  "UPDATE osdial_live_agents set status='INCALL',lead_id='" . $vars->{CIDlead_id} . "',last_call_time=NOW()-1,uniqueid='" . $AGI->{uniqueid};
-$stmtA .= "', channel='" . $AGI->{channel} . "', callerid='" . $AGI->{callerid} . "' where status = 'READY' and ";
+$stmtA .= "', channel='" . $AGI->{channel} . "', callerid='" . $AGI->{callerid} . "',last_update_time=NOW()-1 where status = 'READY' and ";
 $stmtA .= "server_ip='" . $vars->{VARserver_ip} . "' and campaign_id='" . $auto_calls->{campaign_id} . "' limit 1;";
 ##"' and last_update_time > '" . sql_date($vars->{start_epoch} + 5) . "' limit 1;";
 agi_output("|$stmtA|") if ($vars->{DB} > 1);
 my $affected_rows = $dbhA->do($stmtA);
-agi_output("+++++ ODOI : SETTING CALL TO INCALL :");
+if ($affected_rows == 0) {
+	my $stmtA = "INSERT INTO osdial_live_agents SET status='INCALL',lead_id='" . $vars->{CIDlead_id} . "',last_call_time=NOW()-1,";
+	$stmtA .= "uniqueid='" . $AGI->{uniqueid} . "', channel='" . $AGI->{channel} . "', callerid='" . $AGI->{callerid} . "',";
+	$stmtA .= "user='tmp" . $auto_calls->{campaign_id} . $vars->{CIDlead_id} . "',";
+	$stmtA .= "extension='R/tmp" . $auto_calls->{campaign_id} . $vars->{CIDlead_id} . "',server_ip='" . $vars->{VARserver_ip} . "',";
+	$stmtA .= "last_update_time=NOW()-1,comments='REMOTE',campaign_id='" . $auto_calls->{campaign_id} . "',user_level='4';";
+	agi_output("|$stmtA|") if ($vars->{DB} > 1);
+	my $affected_rows = $dbhA->do($stmtA);
+	agi_output("+++++ ODOI : CREATED TEMP LIVE AGENT");
+}
+agi_output("+++++ ODOI : SETTING LIVE AGENT TO INCALL");
 
 $outbound_ivr->{ivrid} = $outbound_ivr->{id};
 $outbound_ivr->{parid} = 0;
