@@ -73,6 +73,7 @@
 # 090421-2041 - Added RANDOM list list order
 # 090427-1314 - Set list_id=1 if list_id is 0, blank or NULL.
 # 090427-1502 - Fix to allow dialable_leads to include recycles.
+# 090428-0303 - Fix list-mix to include recycles into mix instead of at end.
 
 # constants
 $DB=0;  # Debug flag, set to 0 for no debug messages, On an active system this will generate lots of lines of output per minute
@@ -1504,7 +1505,7 @@ foreach(@campaign_id)
 						if ($DBX) {print "  LM $x |$list_mix_stepARY[0]|$list_mix_stepARY[2]|$LM_step_goal[$x]|$list_mix_stepARY[3]|\n";}
 						$list_mix_dialableSQL = "(list_id='$list_mix_stepARY[0]' and status IN($list_mix_stepARY[3]))";
 
-						$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status FROM osdial_list where called_since_last_reset='N' and $list_mix_dialableSQL and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $LM_step_goal[$x];";
+						$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user FROM osdial_list where $cclr and $list_mix_dialableSQL and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $LM_step_goal[$x];";
 						if ($DBX) {print "     |$stmtA|\n";}
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1527,7 +1528,8 @@ foreach(@campaign_id)
 									$order = ( ($x * 1000000) + $rec_count);
 									}
 								}
-							$LM_results[$z] = "$order$USX$aryA[0]$USX$aryA[1]$USX$aryA[2]$USX$aryA[3]$USX$aryA[4]$USX$aryA[5]";
+							$order = sprintf('%.09f',$order);
+							$LM_results[$z] = "$order$USX$aryA[0]$USX$aryA[1]$USX$aryA[2]$USX$aryA[3]$USX$aryA[4]$USX$aryA[5]$USX$aryA[6]$USX$aryA[7]";
 						#	if ($DBX) {print "     $z|$LM_results[$z]\n";}
 
 							$rec_count++;
@@ -1544,23 +1546,30 @@ foreach(@campaign_id)
 					while ($z > $w)
 						{
 						@aryA = split(/_____/,$LM_results_SORT[$w]);
-						if ($REC_rec_countLEADS > $REC_insert_count)
-							{
-							$leads_to_hopper[$rec_countLEADS] = "$REC_leads_to_hopper[$REC_insert_count]";
-							$lists_to_hopper[$rec_countLEADS] = "$REC_lists_to_hopper[$REC_insert_count]";
-							$gmt_to_hopper[$rec_countLEADS] = "$REC_gmt_to_hopper[$REC_insert_count]";
-							$state_to_hopper[$rec_countLEADS] = "$REC_state_to_hopper[$REC_insert_count]";
-							$phone_to_hopper[$rec_countLEADS] = "$REC_phone_to_hopper[$REC_insert_count]";
-							$status_to_hopper[$rec_countLEADS] = "$REC_status_to_hopper[$REC_insert_count]";
-							$rec_countLEADS++;
-							$REC_insert_count++;
-							}
+						# Mix Recycles in with the SQL.
+						#if ($REC_rec_countLEADS > $REC_insert_count)
+						#	{
+						#	$leads_to_hopper[$rec_countLEADS] = "$REC_leads_to_hopper[$REC_insert_count]";
+						#	$lists_to_hopper[$rec_countLEADS] = "$REC_lists_to_hopper[$REC_insert_count]";
+						#	$gmt_to_hopper[$rec_countLEADS] = "$REC_gmt_to_hopper[$REC_insert_count]";
+						#	$state_to_hopper[$rec_countLEADS] = "$REC_state_to_hopper[$REC_insert_count]";
+						#	$phone_to_hopper[$rec_countLEADS] = "$REC_phone_to_hopper[$REC_insert_count]";
+						#	$status_to_hopper[$rec_countLEADS] = "$REC_status_to_hopper[$REC_insert_count]";
+						#	$modify_to_hopper[$rec_countLEADS] = "$REC_modify_to_hopper[$REC_insert_count]";
+						#	$user_to_hopper[$rec_countLEADS] = "$REC_user_to_hopper[$REC_insert_count]";
+						#	$event_string = "|$campaign_id[$i]|Recycle in List Mix $rec_countLEADS|";
+						#	&event_logger;
+						#	$rec_countLEADS++;
+						#	$REC_insert_count++;
+						#	}
 						$leads_to_hopper[$rec_countLEADS] = "$aryA[1]";
 						$lists_to_hopper[$rec_countLEADS] = "$aryA[2]";
 						$gmt_to_hopper[$rec_countLEADS] = "$aryA[3]";
-						$state_to_hopper[$rec_countLEADS] = "$aryA[4]";
-						$phone_to_hopper[$rec_countLEADS] = "$aryA[5]";
+						$state_to_hopper[$rec_countLEADS] = "$aryA[5]";
+						$phone_to_hopper[$rec_countLEADS] = "$aryA[4]";
 						$status_to_hopper[$rec_countLEADS] = "$aryA[6]";
+						$modify_to_hopper[$rec_countLEADS] = "$aryA[7]";
+						$user_to_hopper[$rec_countLEADS] = "$aryA[8]";
 						if ($DB_show_offset) {print "LEAD_ADD: $aryA[3] $aryA[4] $aryA[5]\n";}
 						if ($DBX) {print "     $w|$LM_results[$w]\n";}
 						$rec_countLEADS++;
@@ -1568,24 +1577,27 @@ foreach(@campaign_id)
 						}
 					}
 				}
-			### finish inserting any recycled leads if any
-			while ($REC_rec_countLEADS > $REC_insert_count)
+			else
 				{
-				$leads_to_hopper[$rec_countLEADS] = "$REC_leads_to_hopper[$REC_insert_count]";
-				$lists_to_hopper[$rec_countLEADS] = "$REC_lists_to_hopper[$REC_insert_count]";
-				$gmt_to_hopper[$rec_countLEADS] = "$REC_gmt_to_hopper[$REC_insert_count]";
-				$state_to_hopper[$rec_countLEADS] = "$REC_state_to_hopper[$REC_insert_count]";
-				$phone_to_hopper[$rec_countLEADS] = "$REC_phone_to_hopper[$REC_insert_count]";
-				$status_to_hopper[$rec_countLEADS] = "$REC_status_to_hopper[$REC_insert_count]";
-				$modify_to_hopper[$rec_countLEADS] = "$REC_modify_to_hopper[$REC_insert_count]";
-				$user_to_hopper[$rec_countLEADS] = "$REC_user_to_hopper[$REC_insert_count]";
-				$rec_countLEADS++;
-				$REC_insert_count++;
-				}
+				### finish inserting any recycled leads if any
+				while ($REC_rec_countLEADS > $REC_insert_count)
+					{
+					$leads_to_hopper[$rec_countLEADS] = "$REC_leads_to_hopper[$REC_insert_count]";
+					$lists_to_hopper[$rec_countLEADS] = "$REC_lists_to_hopper[$REC_insert_count]";
+					$gmt_to_hopper[$rec_countLEADS] = "$REC_gmt_to_hopper[$REC_insert_count]";
+					$state_to_hopper[$rec_countLEADS] = "$REC_state_to_hopper[$REC_insert_count]";
+					$phone_to_hopper[$rec_countLEADS] = "$REC_phone_to_hopper[$REC_insert_count]";
+					$status_to_hopper[$rec_countLEADS] = "$REC_status_to_hopper[$REC_insert_count]";
+					$modify_to_hopper[$rec_countLEADS] = "$REC_modify_to_hopper[$REC_insert_count]";
+					$user_to_hopper[$rec_countLEADS] = "$REC_user_to_hopper[$REC_insert_count]";
+					$rec_countLEADS++;
+					$REC_insert_count++;
+					}
 
-			if ($DB) {print "     Adding to hopper:     $rec_countLEADS\n";}
-			$event_string = "|$campaign_id[$i]|Added to hopper $rec_countLEADS|";
-			&event_logger;
+				if ($DB) {print "     Adding to hopper:     $rec_countLEADS\n";}
+				$event_string = "|$campaign_id[$i]|Added to hopper $rec_countLEADS|";
+				&event_logger;
+				}
 
 			$h=0;
 			foreach(@leads_to_hopper)
