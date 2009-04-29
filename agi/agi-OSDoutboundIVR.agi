@@ -335,6 +335,10 @@ sub xfer_to_external {
 	$affected_rows = $dbhA->do($stmtA);
 	agi_output("--    ODOI vac record deleted: |$affected_rows|" . $auto_calls->{campaign_id});
 
+	my $stmtA =  "UPDATE osdial_live_agents set status='CLOSER',last_update_time=NOW()-1 WHERE uniqueid='" . $AGI->{uniqueid} . "';";
+	agi_output("|$stmtA|") if ($vars->{DB} > 1);
+	my $affected_rows = $dbhA->do($stmtA);
+
 	agi_output("exiting the ODOI app, transferring call to $number");
 	agi_execute("SET CONTEXT " . $server->{ext_context});
 	agi_execute("SET EXTENSION " . $number);
