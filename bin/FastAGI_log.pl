@@ -618,15 +618,31 @@ sub process_request {
 
 			if ($channel =~ /^Local/)
 			{
-				if ( ($PRI =~ /^PRI$/) && ($callerid =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) && ( ($dialstatus =~ /BUSY/) || ( ($dialstatus =~ /CHANUNAVAIL/) && ($hangup_cause =~ /^1$|^28$/) ) ) )
+				if ( ($PRI =~ /^PRI$/) && ($callerid =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) && ( ($dialstatus =~ /BUSY/) || ($hanup_cause =~ /^27$|^29$|^34$|^38$/) || ( ($dialstatus =~ /CHANUNAVAIL/) && ($hangup_cause =~ /^1$|^28$/) ) ) )
 				{
 					if ($dialstatus =~ /BUSY/) {$VDL_status = 'B'; $VDAC_status = 'BUSY';}
 					if ($dialstatus =~ /CHANUNAVAIL/) {$VDL_status = 'DC'; $VDAC_status = 'DISCONNECT';}
 
-					$stmtA = "UPDATE osdial_list set status='$VDL_status' where lead_id = '$CIDlead_id';";
-						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
-					$VDADaffected_rows = $dbhA->do($stmtA);
-					if ($AGILOG) {$agi_string = "--    VDAD osdial_list update: |$VDADaffected_rows|$CIDlead_id";   &agi_output;}
+					if ($hangup_cause =~ /^38$/) {
+						# Carrier Failure
+						$VDL_status = 'CRF'; $VDAC_status = 'BUSY';
+					} elsif ($hangup_cause =~ /^29$/) {
+						# Carrier Rejected
+						$VDL_status = 'CRR'; $VDAC_status = 'BUSY';
+					} elsif ($hangup_cause =~ /^27$/) {
+						# Destination Out of Order
+						$VDL_status = 'CRO'; $VDAC_status = 'BUSY';
+					} elsif ($hangup_cause =~ /^34$/) {
+						# General Congestion
+						$VDL_status = 'CRC'; $VDAC_status = 'BUSY';
+					}
+
+					if ($hangup_cause !~ /^27$|^29$|^34$|^38$/) {
+						$stmtA = "UPDATE osdial_list set status='$VDL_status' where lead_id = '$CIDlead_id';";
+							if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+						$VDADaffected_rows = $dbhA->do($stmtA);
+						if ($AGILOG) {$agi_string = "--    VDAD osdial_list update: |$VDADaffected_rows|$CIDlead_id";   &agi_output;}
+					}
 
 					$stmtA = "UPDATE osdial_auto_calls set status='$VDAC_status' where callerid = '$callerid';";
 						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
