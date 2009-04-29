@@ -1,36 +1,296 @@
+%define version %(cat version)
+%define release %(cat release)
+
 Summary:	The OSDial predictive dialing suite.
 Name:		osdial
-Version:	2.1.0.002
-Release:	7
+Version:	%{version}
+Release:	%{release}
 License:	GPL
 Group:		Applications/Telephony
 Source0:	osdial-%{version}.tgz
-URL:		http://www.osdial.com
+URL:		http://www.callcentersg.com
+Packager:	lottc@fugitol.com
+Vendor:         Call Center Service Group
+Requires:	osdial-profile = %{version}-%{release}
 Conflicts:	astguiclient
 Conflicts:	vicidial
 BuildRequires:  dialog
-Requires:	osdial-asterisk
-Requires:	osdial-bin
-Requires:	osdial-sql
-Requires:	osdial-web
-Obsoletes:	osdial-installcd
-Obsoletes:	osdial-livecd
 BuildArch:	noarch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}
 
 %description
 OSDial is a predictive dialing system, an off-shoot of VICIdial,
-originally developed by Matt Florrel, to be used with the Asterisk
-PBX, an open source PBX developed by Mark Spencer.
-This packages provides:
-              osdial-asterisk
-              osdial-bin
-              osdial-web
-              osdial-sql 
+currently being developed by Lott Caskey and Steve Szmidt.
 
-%package bin
+
+%package profile
+Summary:	The OSDial predictive dialing suite.
+Group:		Applications/Telephony
+Provides:	osdial-profile-all
+Provides:	osdial-profile-single
+Conflicts:	astguiclient
+Conflicts:	vicidial
+BuildRequires:  dialog
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-common = %{version}-%{release}
+Requires:	osdial-asterisk = %{version}-%{release}
+Requires:	osdial-sql = %{version}-%{release}
+Requires:	osdial-web = %{version}-%{release}
+Obsoletes:	osdial-profile-install-all
+Obsoletes:	osdial-profile-live
+Obsoletes:	osdial-installcd
+BuildArch:	noarch
+
+%description profile
+OSDial - Single / All-in-One Server Profile.
+          osdial-common
+          osdial-asterisk
+          osdial-sql
+          osdial-web
+
+
+
+
+
+%package profile-live
+Summary:	The OSDial predictive dialing suite.
+Group:		Applications/Telephony
+Provides:	osdial-profile = %{version}-%{release}
+Conflicts:	astguiclient
+Conflicts:	vicidial
+BuildRequires:  dialog
+Obsoletes:	osdial-livecd
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-common = %{version}-%{release}
+Requires:	osdial-asterisk = %{version}-%{release}
+Requires:	osdial-sql = %{version}-%{release}
+Requires:	osdial-web = %{version}-%{release}
+BuildArch:	noarch
+
+%description profile-live
+Package for creating a live disk.
+
+
+
+
+
+
+%package profile-install-all
+Summary:	The OSDial predictive dialing suite.
+Group:		Applications/Telephony
+Provides:	osdial-profile = %{version}-%{release}
+Conflicts:	astguiclient
+Conflicts:	vicidial
+BuildRequires:  dialog
+Obsoletes:	osdial-livecd
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-common = %{version}-%{release}
+Requires:	osdial-asterisk = %{version}-%{release}
+Requires:	osdial-sql = %{version}-%{release}
+Requires:	osdial-web = %{version}-%{release}
+BuildArch:	noarch
+
+%description profile-install-all
+Package for creating an install disk.
+
+%package profile-install-control
+Summary:	The OSDial predictive dialing suite.
+Group:		Applications/Telephony
+Provides:	osdial-profile = %{version}-%{release}
+Conflicts:	astguiclient
+Conflicts:	vicidial
+BuildRequires:  dialog
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-common = %{version}-%{release}
+Requires:	osdial-sql = %{version}-%{release}
+Requires:	osdial-web = %{version}-%{release}
+BuildArch:	noarch
+
+%description profile-install-control
+Package for creating an install disk.
+
+%package profile-install-dialer
+Summary:	The OSDial predictive dialing suite.
+Group:		Applications/Telephony
+Provides:	osdial-profile = %{version}-%{release}
+Conflicts:	astguiclient
+Conflicts:	vicidial
+BuildRequires:  dialog
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-common = %{version}-%{release}
+Requires:	osdial-asterisk = %{version}-%{release}
+BuildArch:	noarch
+
+%description profile-install-dialer
+Package for creating an install disk.
+
+%package profile-install-sql
+Summary:	The OSDial predictive dialing suite.
+Group:		Applications/Telephony
+Provides:	osdial-profile = %{version}-%{release}
+Conflicts:	astguiclient
+Conflicts:	vicidial
+BuildRequires:  dialog
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-common = %{version}-%{release}
+Requires:	osdial-sql = %{version}-%{release}
+BuildArch:	noarch
+
+%description profile-install-sql
+Package for creating an install disk.
+
+%package profile-install-web
+Summary:	The OSDial predictive dialing suite.
+Group:		Applications/Telephony
+Provides:	osdial-profile = %{version}-%{release}
+Conflicts:	astguiclient
+Conflicts:	vicidial
+BuildRequires:  dialog
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-common = %{version}-%{release}
+Requires:	osdial-web = %{version}-%{release}
+BuildArch:	noarch
+
+%description profile-install-web
+Package for creating an install disk.
+
+%package profile-install-archive
+Summary:	The OSDial predictive dialing suite.
+Group:		Applications/Telephony
+Provides:	osdial-profile = %{version}-%{release}
+Conflicts:	astguiclient
+Conflicts:	vicidial
+BuildRequires:  dialog
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-common = %{version}-%{release}
+BuildArch:	noarch
+
+%description profile-install-archive
+Package for creating an install disk.
+
+
+
+
+
+
+%package profile-control
+Summary:	The OSDial predictive dialing suite.
+Group:		Applications/Telephony
+Provides:	osdial-profile = %{version}-%{release}
+Conflicts:	astguiclient
+Conflicts:	vicidial
+BuildRequires:  dialog
+Conflicts:	osdial-asterisk
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-common = %{version}-%{release}
+Requires:	osdial-web = %{version}-%{release}
+Requires:	osdial-sql = %{version}-%{release}
+Obsoletes:	osdial-profile-install-control
+BuildArch:	noarch
+
+%description profile-control
+OSDial - Provides packages needed for multi-server
+         configuration.  Only installs web and SQL
+         components.
+          osdial-common
+          osdial-sql
+          osdial-web
+
+%package profile-dialer
+Summary:	The OSDial predictive dialing suite.
+Group:		Applications/Telephony
+Provides:	osdial-profile = %{version}-%{release}
+Conflicts:	astguiclient
+Conflicts:	vicidial
+BuildRequires:  dialog
+Conflicts:	osdial-web
+Conflicts:	osdial-sql
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-common = %{version}-%{release}
+Requires:	osdial-asterisk = %{version}-%{release}
+Obsoletes:	osdial-profile-install-dialer
+BuildArch:	noarch
+
+%description profile-dialer
+OSDial - Provides packages needed for multi-server
+         configuration.  Only installs dialer
+         components.
+               osdial-common
+               osdial-asterisk
+
+%package profile-sql
+Summary:	The OSDial predictive dialing suite.
+Group:		Applications/Telephony
+Provides:	osdial-profile = %{version}-%{release}
+Conflicts:	astguiclient
+Conflicts:	vicidial
+BuildRequires:  dialog
+Conflicts:	osdial-web
+Conflicts:	osdial-asterisk
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-common = %{version}-%{release}
+Requires:	osdial-sql = %{version}-%{release}
+Obsoletes:	osdial-profile-install-sql
+BuildArch:	noarch
+
+%description profile-sql
+OSDial - Provides packages needed for multi-server
+         configuration.  Only installs SQL
+         components.
+               osdial-common
+               osdial-sql
+
+%package profile-web
+Summary:	The OSDial predictive dialing suite.
+Group:		Applications/Telephony
+Provides:	osdial-profile = %{version}-%{release}
+Conflicts:	astguiclient
+Conflicts:	vicidial
+BuildRequires:  dialog
+Conflicts:	osdial-asterisk
+Conflicts:	osdial-sql
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-common = %{version}-%{release}
+Requires:	osdial-web = %{version}-%{release}
+Obsoletes:	osdial-profile-install-web
+BuildArch:	noarch
+
+%description profile-web
+OSDial - Provides packages needed for multi-server
+         configuration.  Only installs Web
+         components.
+               osdial-common
+               osdial-web
+
+%package profile-archive
+Summary:	The OSDial predictive dialing suite.
+Group:		Applications/Telephony
+Provides:	osdial-profile = %{version}-%{release}
+Conflicts:	astguiclient
+Conflicts:	vicidial
+BuildRequires:  dialog
+Conflicts:	osdial-asterisk
+Conflicts:	osdial-sql
+Conflicts:	osdial-web
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-common = %{version}-%{release}
+Obsoletes:	osdial-profile-install-archive
+BuildArch:	noarch
+
+%description profile-archive
+OSDial - Provides packages needed for multi-server
+         configuration.  Only installs archive
+         components.
+               osdial-common
+
+
+
+
+%package common
 Summary:	OSDial backend scripts
 Group:		Applications/Telephony
+Obsoletes:	osdial-bin
+Requires:	osdial = %{version}-%{release}
 Requires:	perl-MD5
 Requires:	perl-Digest-SHA1
 Requires:	perl-DBI
@@ -64,13 +324,14 @@ Requires:	sqlite2
 Requires:	dialog
 BuildArch:	noarch
 
-%description bin
+%description common
 OSDial backend scripts, needed by web, sql, etc.
 
 %package sql
 Summary: 	OSDial SQL files and update scripts.
 Group:		Applications/Telephony
-Requires:	osdial-bin
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-common
 Requires:	perl-DBI
 Requires:	perl-DBD-MySQL
 Requires:	mysql-server
@@ -84,7 +345,8 @@ install package and RPM.
 %package web
 Summary:	OSDial user interface files
 Group:		Applications/Telephony
-Requires:	osdial-bin
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-common
 Requires:	php-pear
 Requires:	php-mysql
 Requires:	ploticus
@@ -98,12 +360,13 @@ structure and other supporting files.
 %package asterisk
 Summary:        OSDial generic asterisk configuration.
 Group:          Applications/Telephony
+Requires:	osdial = %{version}-%{release}
+Requires:       osdial-common
 Requires:       asterisk12
 Requires:       zaptel12
 Requires:       wanpipe-util
 Requires:       kernel-PAE-module-wanpipe
 Requires:       kernel-PAE-module-zaptel
-Requires:       osdial-bin
 Requires:       gawk
 Obsoletes:	osdial-config
 BuildArch:      noarch
@@ -132,11 +395,14 @@ install -dp %{buildroot}
 %{__make} DESTDIR=%{buildroot} HTTPDUSER=asterisk install
 mkdir -p %{buildroot}/etc/httpd/conf.d
 mkdir -p %{buildroot}/etc/init.d
+mkdir -p %{buildroot}/opt/osdial/html/ivr
 mkdir -p %{buildroot}/opt/osdial/recordings/processing/wav
 mkdir -p %{buildroot}/opt/osdial/recordings/processing/mp3
 mkdir -p %{buildroot}/opt/osdial/recordings/completed
 mkdir -p %{buildroot}/opt/osdial/reports
+mkdir -p %{buildroot}/opt/osdial/backups
 mkdir -p %{buildroot}/var/log/osdial
+mkdir -p %{buildroot}/var/lib/asterisk/sounds/ivr
 cp extras/httpd-osdial.conf %{buildroot}/etc/httpd/conf.d/osdial.conf
 cp extras/osdial.init %{buildroot}/etc/init.d/osdial
 mkdir -p %{buildroot}/etc/cron.hourly
@@ -146,43 +412,128 @@ touch %{buildroot}/opt/osdial/html/admin/VMnow.txt
 
 # copy in asterisk configs
 %{__mkdir_p} %{buildroot}/etc/asterisk/startup.d
-echo "#!/bin/bash\nexport TTY=screen" > %{buildroot}/etc/asterisk/startup.d/tty_screen.sh
+echo -e "#!/bin/bash\nexport TTY=screen" > %{buildroot}/etc/asterisk/startup.d/tty_screen.sh
 cp docs/conf_examples/*.conf %{buildroot}/etc/asterisk
 cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
+
+mv %{buildroot}/etc/asterisk/zaptel.conf %{buildroot}/etc
+
+echo > %{buildroot}/opt/osdial/.osdial-all
+echo > %{buildroot}/opt/osdial/.osdial-install-all
+echo > %{buildroot}/opt/osdial/.osdial-install-control
+echo > %{buildroot}/opt/osdial/.osdial-install-dialer
+echo > %{buildroot}/opt/osdial/.osdial-install-sql
+echo > %{buildroot}/opt/osdial/.osdial-install-web
+echo > %{buildroot}/opt/osdial/.osdial-install-archive
+echo > %{buildroot}/opt/osdial/.osdial-live
+echo > %{buildroot}/opt/osdial/.osdial-control
+echo > %{buildroot}/opt/osdial/.osdial-dialer
+echo > %{buildroot}/opt/osdial/.osdial-sql
+echo > %{buildroot}/opt/osdial/.osdial-web
+echo > %{buildroot}/opt/osdial/.osdial-archive
 
 %clean
 %{__rm} -rf %{buildroot}
 
-%post
-	# Network check, needed for LiveCD/MySQL
-	if [ ! -f /etc/sysconfig/network ]; then
-        	echo "    osdial-config: Must be a LiveCD, making /etc/sysconfig/network"
-        	echo "NETWORKING=yes" > /etc/sysconfig/network
-        	echo "NETWORKING_IPV6=no" >> /etc/sysconfig/network
-        	echo "HOSTNAME=osdial-livecd.callcentersg.com" >> /etc/sysconfig/network
-        	echo 1 > /etc/osdial.livecd
+%post profile-live
+INTY=$1
+if [ "$INTY" -eq 1 ]; then
+	echo > /opt/osdial/.osdial-live
+        echo "NETWORKING=yes" > /etc/sysconfig/network
+        echo "NETWORKING_IPV6=no" >> /etc/sysconfig/network
+        echo "HOSTNAME=osdial-livecd.callcentersg.com" >> /etc/sysconfig/network
+        echo "127.0.0.1 osdial-livecd.callcentersg.com osdial-livecd osdial" > /etc/hosts
+        echo "127.0.0.1 localhost.localdomain localhost" >> /etc/hosts
+        echo "::1       localhost6.localdomain6 localhost6" >> /etc/hosts
+	if [ ! -d "/usr/lib/syslinux" ]; then
+		if [ -d "/usr/share/syslinux" ]; then
+			echo "    osdial-live: Fixing broken syslinux"
+			/bin/ln -s /usr/share/syslinux /usr/lib/syslinux
+		fi
 	fi
-	# /etc/hosts check, needed for LiveCD/MySQL/Apache
-	if [ ! -f /etc/hosts ]; then
-        	echo "    osdial-config: Must be a LiveCD, making /etc/hosts"
-        	echo "127.0.0.1 osdial-livecd.callcentersg.com osdial-livecd osdial" > /etc/hosts
-        	echo "127.0.0.1 localhost.localdomain localhost" >> /etc/hosts
-        	echo "::1       localhost6.localdomain6 localhost6" >> /etc/hosts
-        	echo 1 > /etc/osdial.livecd
-	fi
-	# Its not a LiveCD, so lets put a different hostname on it.
-	if [ ! -f /etc/osdial.livecd ]; then
-        	if [ -f /etc/sysconfig/network ]; then
-        	        %{__perl} -pi -e 's|^HOSTNAME=localhost.*|HOSTNAME=osdial.callcentersg.com|' /etc/sysconfig/network
-        	fi
-        	if [ -f /etc/hosts ]; then
-                	HOSTS="`cat /etc/hosts`"
-                	echo "127.0.0.1         osdial.callcentersg.com osdial" > /etc/hosts
-                	echo "$HOSTS" >> /etc/hosts
-        	fi
-	fi
+fi
+echo -n
 
-%post bin
+%post profile-install-all
+INTY=$1
+if [ "$INTY" -eq 1 ]; then
+        echo "NETWORKING=yes" > /etc/sysconfig/network
+        echo "NETWORKING_IPV6=no" >> /etc/sysconfig/network
+        echo "HOSTNAME=osdial.callcentersg.com" >> /etc/sysconfig/network
+        echo "127.0.0.1 osdial.callcentersg.com osdial" > /etc/hosts
+        echo "127.0.0.1 localhost.localdomain localhost" >> /etc/hosts
+        echo "::1       localhost6.localdomain6 localhost6" >> /etc/hosts
+fi
+echo -n
+
+%post profile-install-control
+INTY=$1
+if [ "$INTY" -eq 1 ]; then
+        echo "NETWORKING=yes" > /etc/sysconfig/network
+        echo "NETWORKING_IPV6=no" >> /etc/sysconfig/network
+        echo "HOSTNAME=osdial-c1.callcentersg.com" >> /etc/sysconfig/network
+        echo "127.0.0.1 osdial-c1.callcentersg.com osdial-c1 c1" > /etc/hosts
+        echo "127.0.0.1 localhost.localdomain localhost" >> /etc/hosts
+        echo "::1       localhost6.localdomain6 localhost6" >> /etc/hosts
+fi
+echo -n
+
+%post profile-install-dialer
+INTY=$1
+if [ "$INTY" -eq 1 ]; then
+        echo "NETWORKING=yes" > /etc/sysconfig/network
+        echo "NETWORKING_IPV6=no" >> /etc/sysconfig/network
+        echo "HOSTNAME=osdial-dN.callcentersg.com" >> /etc/sysconfig/network
+        echo "127.0.0.1 osdial-dN.callcentersg.com osdial-dN dN" > /etc/hosts
+        echo "127.0.0.1 localhost.localdomain localhost" >> /etc/hosts
+        echo "::1       localhost6.localdomain6 localhost6" >> /etc/hosts
+fi
+echo -n
+
+%post profile-install-sql
+INTY=$1
+if [ "$INTY" -eq 1 ]; then
+        echo "NETWORKING=yes" > /etc/sysconfig/network
+        echo "NETWORKING_IPV6=no" >> /etc/sysconfig/network
+        echo "HOSTNAME=osdial-s1.callcentersg.com" >> /etc/sysconfig/network
+        echo "127.0.0.1 osdial-s1.callcentersg.com osdial-s1 s1" > /etc/hosts
+        echo "127.0.0.1 localhost.localdomain localhost" >> /etc/hosts
+        echo "::1       localhost6.localdomain6 localhost6" >> /etc/hosts
+fi
+echo -n
+
+%post profile-install-web
+INTY=$1
+if [ "$INTY" -eq 1 ]; then
+        echo "NETWORKING=yes" > /etc/sysconfig/network
+        echo "NETWORKING_IPV6=no" >> /etc/sysconfig/network
+        echo "HOSTNAME=osdial-w1.callcentersg.com" >> /etc/sysconfig/network
+        echo "127.0.0.1 osdial-w1.callcentersg.com osdial-w1 w1" > /etc/hosts
+        echo "127.0.0.1 localhost.localdomain localhost" >> /etc/hosts
+        echo "::1       localhost6.localdomain6 localhost6" >> /etc/hosts
+fi
+echo -n
+
+%post profile-install-archive
+INTY=$1
+if [ "$INTY" -eq 1 ]; then
+        echo "NETWORKING=yes" > /etc/sysconfig/network
+        echo "NETWORKING_IPV6=no" >> /etc/sysconfig/network
+        echo "HOSTNAME=osdial-a1.callcentersg.com" >> /etc/sysconfig/network
+        echo "127.0.0.1 osdial-a1.callcentersg.com osdial-a1 a1" > /etc/hosts
+        echo "127.0.0.1 localhost.localdomain localhost" >> /etc/hosts
+        echo "::1       localhost6.localdomain6 localhost6" >> /etc/hosts
+fi
+echo -n
+
+
+
+
+
+
+%post common
+INTY=$1
+if [ "$INTY" -eq 1 ]; then
         /sbin/chkconfig osdial on > /dev/null 2>&1
 	# Make sure SELINUX didn't get turned on...
 	if [ -f /etc/selinux/config ]; then
@@ -209,12 +560,36 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
                 	%{__perl} -pi -e 's|^SELINUX=.*|SELINUX=disabled|' /etc/selinux/config
         	fi
 	fi
+fi
+if [ "$INTY" -eq 2 ]; then
+	mkdir -p /opt/osdial/backups/%{version}-%{release}
+	cp -r /opt/osdial/bin /opt/osdial/backups/%{version}-%{release}
+
+	mkdir /opt/osdial/backups/%{version}-%{release}/etc
+	cp /etc/osdial.conf /opt/osdial/backups/%{version}-%{release}/etc
+	if [ -d /etc/asterisk ]; then
+		[ -f /etc/zaptel.conf ] && cp /etc/zaptel.conf /opt/osdial/backups/%{version}-%{release}/etc
+		[ -d /etc/asterisk ] && cp -r /etc/asterisk /opt/osdial/backups/%{version}-%{release}/etc
+	fi
+	if [ -d /var/lib/asterisk/agi-bin ]; then
+		mkdir /opt/osdial/backups/%{version}-%{release}/agi
+		cp -r /var/lib/asterisk/agi-bin /opt/osdial/backups/%{version}-%{release}/agi
+	fi
+	if [ -d /opt/osdial/html ]; then
+		mkdir /opt/osdial/backups/%{version}-%{release}/html
+		cp -r /opt/osdial/html/* /opt/osdial/backups/%{version}-%{release}/html
+	fi
+fi
+echo -n
+
 
 
 %post sql
+INTY=$1
+if [ "$INTY" -eq 1 ]; then
 	/sbin/chkconfig mysqld on > /dev/null 2>&1
 	# Apply OSDial SQL changes to /etc/my.cnf
-	if [ ! "`grep OSDIAL /etc/my.cnf`" ]; then
+	if [ ! "`grep innodb_log_arch_dir /etc/my.cnf`" ]; then
 		MCNF="old_passwords=1\n\n"
 		MCNF="${MCNF}#===== BEGIN OSDIAL my.cnf Additions =====\n"
 		MCNF="${MCNF}skip-name-resolve\n"
@@ -232,10 +607,14 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 		MCNF="${MCNF}#===== END OSDIAL my.cnf Additions =====\n\n"
 		/usr/bin/perl -pi -e "s|old_passwords=1|$MCNF|" /etc/my.cnf
 		# Restart mysql
-		/sbin/service mysqld restart
+		if [ ! -f "/opt/osdial/.osdial-live" ]; then
+			/sbin/service mysqld restart
+		fi
 	fi
-	# Run update script.
-	/opt/osdial/bin/sql/upgrade_sql.pl
+	if [ ! -f "/opt/osdial/.osdial-live" ]; then
+		# Run update script.
+		/opt/osdial/bin/sql/upgrade_sql.pl
+	fi
 	# If it didn't get created, assume it is an installcd
 	if [ ! -d "/var/lib/mysql/osdial" ]; then
 		echo "OSDIAL_MYSQL_INSTALL=YES" >> /etc/sysconfig/osdial
@@ -252,11 +631,28 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
                 	/etc/init.d/cups stop > /dev/null 2>&1
                 	/sbin/chkconfig cups off > /dev/null 2>&1
 	fi
+fi
+if [ "$INTY" -eq 2 ]; then
+	# Run update script.
+	/opt/osdial/bin/sql/upgrade_sql.pl
+	# Reset running procs.
+	if [ -n "`ps -ef | grep FastAGI`" ]; then
+		kill -9 `ps -ef | grep FastAGI | awk '{ print $2 }'` > /dev/null 2>&1
+	fi
+	if [ -n "`ps -ef | grep AST`" ]; then
+		kill -9 `ps -ef | grep AST | awk '{ print $2 }'` > /dev/null 2>&1
+	fi
+fi
+echo -n
 
 %post web
+INTY=$1
+if [ "$INTY" -eq 1 ]; then
 	/sbin/chkconfig httpd on > /dev/null 2>&1
-	if [ -f "/var/www/html/index.html" -a -n "`grep osdial /var/www/html/index.html`" ]; then
-		mv /var/www/html/index.html /var/www/html/index.html.bak
+	if [ -f "/var/www/html/index.html" ]; then
+		if [ -n "`grep osdial /var/www/html/index.html`" ]; then
+			mv /var/www/html/index.html /var/www/html/index.html.bak
+		fi
 	fi
 	if [ ! -f /var/www/html/index.php ]; then
 		ln -s /opt/osdial/html/index.php /var/www/html/index.php
@@ -271,7 +667,9 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 		perl -pi -e "s|^post_max_size = 8M|post_max_size = 100M|" /etc/php.ini
 		perl -pi -e "s|^upload_max_filesize = 2M|upload_max_filesize = 100M|" /etc/php.ini
 		echo "; OSDIAL: modified" >> /etc/php.ini
-		/sbin/service httpd restart
+		if [ ! -f "/opt/osdial/.osdial-live" ]; then
+			/sbin/service httpd restart
+		fi
 	fi
 	# cpuspeed can do bad things to ISDN/T1 cards
 	if [ -f /etc/rc3.d/S06cpuspeed ]; then
@@ -285,20 +683,35 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
                 	/etc/init.d/cups stop > /dev/null 2>&1
                 	/sbin/chkconfig cups off > /dev/null 2>&1
 	fi
+fi
+if [ "$INTY" -eq 2 ]; then
+	if [ -f "/var/www/html/index.html" ]; then
+		if [ -n "`grep osdial /var/www/html/index.html`" ]; then
+			mv /var/www/html/index.html /var/www/html/index.html.bak
+		fi
+	fi
+	if [ ! -f /var/www/html/index.php ]; then
+		ln -s /opt/osdial/html/index.php /var/www/html/index.php
+	fi
+	# Reset running procs.
+	if [ -n "`ps -ef | grep FastAGI`" ]; then
+		kill -9 `ps -ef | grep FastAGI | awk '{ print $2 }'` > /dev/null 2>&1
+	fi
+	if [ -n "`ps -ef | grep AST`" ]; then
+		kill -9 `ps -ef | grep AST | awk '{ print $2 }'` > /dev/null 2>&1
+	fi
+fi
+echo -n
 
 %post asterisk
+INTY=$1
+if [ "$INTY" -eq 1 ]; then
 	/sbin/chkconfig asterisk on > /dev/null 2>&1
 	# Put in some ramdisk on the dialer.
-	if [ ! "`grep OSDIAL /etc/rc.local`" ]; then
-		echo >> /etc/rc.local
-		echo "#===== BEGIN OSDIAL RAMdisk Additions ====" >> /etc/rc.local
-		echo "/sbin/mkfs.ext3 /dev/ramdisk > /dev/null 2>&1" >> /etc/rc.local
-		echo "/bin/mkdir /mnt/ramdisk > /dev/null 2>&1" >> /etc/rc.local
-		echo "/bin/mount /dev/ramdisk /mnt/ramdisk > /dev/null 2>&1" >> /etc/rc.local
-		echo "/bin/mkdir /mnt/ramdisk/VDmonitor > /dev/null 2>&1" >> /etc/rc.local
-		echo "/bin/chown asterisk:asterisk /mnt/ramdisk/VDmonitor > /dev/null 2>&1" >> /etc/rc.local
-		echo "/bin/ln -sf /mnt/ramdisk/VDmonitor /var/spool/asterisk/VDmonitor > /dev/null 2>&1" >> /etc/rc.local
-		echo "#===== END OSDIAL RAMdisk Additions ====" >> /etc/rc.local
+	if [ "`grep OSDIAL /etc/rc.local`" ]; then
+		OSDTMP=/tmp/osdtmp.$$
+		sed -e '/BEGIN OSDIAL/,/END OSDIAL/d' /etc/rc.local > $OSDTMP
+		sed -e '/ramdisk/d' $OSDTMP > /etc/rc.local
 	fi
 	# Lets turn on the cron!
 	if [ -f /var/spool/cron/asterisk ]; then
@@ -319,7 +732,7 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 	# Verify config was copied, if not, we are new.
 	if [ ! -f /etc/osdial.conf ]; then
         	echo "    osdial-config: Setting up keepalive services."
-        	%{__perl} -pi -e 's|^VARactive_keepalives => X$|VARactive_keepalives => 1234569|' /etc/osdial.conf
+        	%{__perl} -pi -e 's|^VARactive_keepalives => XX$|VARactive_keepalives => 1234569|' /etc/osdial.conf
 	fi
 	# cpuspeed can do bad things to ISDN/T1 cards
 	if [ -f /etc/rc3.d/S06cpuspeed ]; then
@@ -333,10 +746,221 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
                 	/etc/init.d/cups stop > /dev/null 2>&1
                 	/sbin/chkconfig cups off > /dev/null 2>&1
 	fi
+fi
+if [ "$INTY" -eq 2 ]; then
+	# Reset running procs.
+	if [ -n "`ps -ef | grep FastAGI`" ]; then
+		kill -9 `ps -ef | grep FastAGI | awk '{ print $2 }'` > /dev/null 2>&1
+	fi
+	if [ -n "`ps -ef | grep AST`" ]; then
+		kill -9 `ps -ef | grep AST | awk '{ print $2 }'` > /dev/null 2>&1
+	fi
+fi
+echo -n
 
 
+%post profile
+INTY=$1
+if [ "$INTY" -eq 2 ]; then
+	CTB="/var/spool/cron/asterisk"
+	if [ -f "$CTB" ]; then
+		if [ -z "`grep AST_ntp_update $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (ALL) Force update of time servers. Now run from /etc/cron.hourly" >> $CTB
+			echo -e "#0 * * * * /opt/osdial/bin/AST_ntp_update.sh > /dev/null 2>&1" >> $CTB
+		fi
+
+		if [ -z "`grep osdial_astgen $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (ALL) Generate asterisk config files and reload modules" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/osdial_astgen.pl -q" >> $CTB
+		fi
+
+		if [ -z "`grep osdial_ivr_sync $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (ALL) Syncronize IVR recordings, arg is web server" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1" >> $CTB
+		fi
+
+		if [ -z "`grep Loadavg $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (ALL) Get load average." >> $CTB
+			echo -e "* * * * * cat /proc/loadavg | cut -d" " -f1 > /opt/osdial/html/admin/Loadavg.txt" >> $CTB
+		fi
+
+		if [ -z "`grep ADMIN_keepalive_ALL $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl" >> $CTB
+		fi
+
+		if [ -z "`grep 'remove old osdial logs' $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+			echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f" >> $CTB
+			echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f" >> $CTB
+		fi
+
+		if [ -z "`grep AST_CLEAR_auto_calls $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (sql) Clean out auto-calls regularly" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/AST_CLEAR_auto_calls.pl" >> $CTB
+		fi
+
+		if [ -z "`grep AST_flush_DBqueue $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (sql) flush queue DB table every hour for entries older than 1 hour" >> $CTB
+			echo -e "11 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q" >> $CTB
+		fi
+
+		if [ -z "`grep AST_cleanup_agent_log $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (sql) fix the osdial_agent_log once every hour" >> $CTB
+			echo -e "33 * * * * /opt/osdial/bin/AST_cleanup_agent_log.pl" >> $CTB
+		fi
+
+		if [ -z "`grep AST_VDhopper $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (sql) updater for OSDial hopper" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/AST_VDhopper.pl -q" >> $CTB
+		fi
+
+		if [ -z "`grep ADMIN_adjust_GMTnow_on_leads $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (sql) adjust the GMT offset for the leads in the osdial_list table" >> $CTB
+			echo -e "1 1,7 * * * /opt/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl --debug --postal-code-gmt" >> $CTB
+		fi
+
+		if [ -z "`grep AST_DB_optimize $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (sql) optimize the database tables within the asterisk database" >> $CTB
+			echo -e "3 1 * * * /opt/osdial/bin/AST_DB_optimize.pl" >> $CTB
+		fi
+
+		if [ -z "`grep AST_agent_week $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (sql) OSDial agent time log weekly and daily summary report generation" >> $CTB
+			echo -e "#2 0 * * 0 /opt/osdial/bin/AST_agent_week.pl" >> $CTB
+			echo -e "#22 0 * * * /opt/osdial/bin/AST_agent_day.pl" >> $CTB
+		fi
+
+		if [ -z "`grep AST_VDsales_export $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (sql) OSDial campaign export scripts (OPTIONAL)" >> $CTB
+			echo -e "#32 0 * * * /opt/osdial/bin/AST_VDsales_export.pl" >> $CTB
+			echo -e "#42 0 * * * /opt/osdial/bin/AST_sourceID_summary_export.pl" >> $CTB
+		fi
+
+		if [ -z "`grep VMnow $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (dialer) Write a file listing current voicemail" >> $CTB
+			echo -e "* * * * * /usr/sbin/asterisk -rx \"show voicemail users\" > /opt/osdisl/html/admin/VMnow.txt" >> $CTB
+		fi
+
+		if [ -z "`grep AST_manager_kill_hung_congested $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (dialer) kill Hangup script for Asterisk updaters" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/AST_manager_kill_hung_congested.pl" >> $CTB
+		fi
+
+		if [ -z "`grep AST_vm_update $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (dialer) updater for voicemail" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/AST_vm_update.pl" >> $CTB
+		fi
+
+		if [ -z "`grep AST_conf_update $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (dialer) updater for conference validator" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/AST_conf_update.pl" >> $CTB
+		fi
+
+		if [ -z "`grep AST_reset_mysql_vars $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (dialer) reset several temporary-info tables in the database" >> $CTB
+			echo -e "2 1 * * * /opt/osdial/bin/AST_reset_mysql_vars.pl" >> $CTB
+		fi
+
+		if [ -z "`grep monitor $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (dialer) remove old recordings more than 7 days old" >> $CTB
+			echo -e "24 0 * * * /usr/bin/find /var/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs rm -f" >> $CTB
+		fi
+
+		if [ -z "`grep AST_audio_archive $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (dialer) Send Recordings to archive server" >> $CTB
+			echo -e "#*/3 * * * * /opt/osdisl/bin/AST_audio_archive.pl" >> $CTB
+		fi
+
+		if [ -z "`grep AST_audio_compress $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (archive) Compress wav files to mp3" >> $CTB
+			echo -e "#*/2 * * * * /opt/osdisl/bin/AST_audio_compress.pl --MP3" >> $CTB
+		fi
+
+		if [ -z "`grep AST_sort_recordings $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (archive) Sort MP3s into campaign_id/date directory structure" >> $CTB
+			echo -e "#*/5 * * * * /opt/osdisl/bin/AST_sort_recordings.pl" >> $CTB
+		fi
+
+		if [ -z "`grep AST_qc_transfer $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (archive) Send select MP3s to a third-party quality-control or offste archive server." >> $CTB
+			echo -e "#*/15 * * * * /opt/osdisl/bin/AST_qc_transfer.pl" >> $CTB
+		fi
+
+		kill -1 `ps -ef | grep crond | head -1 | awk '{ print $2 }'` > /dev/null 2>&1
+	fi
+fi
+echo -n
 
 %define _opt /opt
+
+%files profile
+%attr(0644,root,root) %{_opt}/osdial/.osdial-all
+
+%files profile-install-all
+%attr(0644,root,root) %{_opt}/osdial/.osdial-install-all
+
+%files profile-install-control
+%attr(0644,root,root) %{_opt}/osdial/.osdial-install-control
+
+%files profile-install-dialer
+%attr(0644,root,root) %{_opt}/osdial/.osdial-install-dialer
+
+%files profile-install-sql
+%attr(0644,root,root) %{_opt}/osdial/.osdial-install-sql
+
+%files profile-install-web
+%attr(0644,root,root) %{_opt}/osdial/.osdial-install-web
+
+%files profile-install-archive
+%attr(0644,root,root) %{_opt}/osdial/.osdial-install-archive
+
+%files profile-live
+%attr(0644,root,root) %{_opt}/osdial/.osdial-live
+
+%files profile-control
+%attr(0644,root,root) %{_opt}/osdial/.osdial-control
+
+%files profile-dialer
+%attr(0644,root,root) %{_opt}/osdial/.osdial-dialer
+
+%files profile-sql
+%attr(0644,root,root) %{_opt}/osdial/.osdial-sql
+
+%files profile-web
+%attr(0644,root,root) %{_opt}/osdial/.osdial-web
+
+%files profile-archive
+%attr(0644,root,root) %{_opt}/osdial/.osdial-archive
+
+
+
+%files
+%dir %attr(0755,asterisk,asterisk) %{_opt}/osdial/backups
 
 %files sql
 %defattr(644,asterisk,asterisk,755)
@@ -352,6 +976,8 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 %attr(0644,root,root) %{_opt}/osdial/bin/sql/210000.sql
 %attr(0644,root,root) %{_opt}/osdial/bin/sql/210001.sql
 %attr(0644,root,root) %{_opt}/osdial/bin/sql/210002.sql
+%attr(0644,root,root) %{_opt}/osdial/bin/sql/210003.sql
+%attr(0644,root,root) %{_opt}/osdial/bin/sql/210004.sql
 %attr(0644,root,root) %{_opt}/osdial/bin/sql/999999.sql
 %attr(0644,root,root) %{_opt}/osdial/bin/sql/upgrade_sql.map
 %attr(0755,root,root) %{_opt}/osdial/bin/sql/upgrade_sql.pl
@@ -362,43 +988,46 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 %defattr(644,asterisk,asterisk,755)
 %attr(0755,asterisk,asterisk) %{_sysconfdir}/asterisk/startup.d/tty_screen.sh
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/amd.conf
+%attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/cdr.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/dnsmgr.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/extensions.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/iax.conf
+%attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/iaxprov.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/indications.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/logger.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/manager.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/meetme.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/modules.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/musiconhold.conf
-%attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/osdial_extensions.conf
-%attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/osdial_extensions_conferences.conf
+%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_extensions.conf
+%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_extensions_conferences.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/osdial_extensions_custom.conf
-%attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/osdial_extensions_inbound.conf
-%attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/osdial_extensions_outbound.conf
-%attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/osdial_extensions_phones.conf
-%attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/osdial_extensions_servers.conf
-%attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/osdial_extensions_testing.conf
-%attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/osdial_iax.conf
+%attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/osdial_extensions_inbound.conf
+%attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/osdial_extensions_outbound.conf
+%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_extensions_phones.conf
+%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_extensions_servers.conf
+%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_extensions_testing.conf
+%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_iax.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/osdial_iax_custom.conf
-%attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/osdial_iax_phones.conf
-%attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/osdial_iax_registrations.conf
-%attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/osdial_iax_servers.conf
-%attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/osdial_iax_trunks.conf
-%attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/osdial_manager.conf
-%attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/osdial_meetme.conf
-%attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/osdial_sip.conf
+%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_iax_phones.conf
+%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_iax_registrations.conf
+%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_iax_servers.conf
+%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_iax_trunks.conf
+%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_manager.conf
+%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_meetme.conf
+%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_sip.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/osdial_sip_custom.conf
-%attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/osdial_sip_phones.conf
-%attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/osdial_sip_registrations.conf
-%attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/osdial_sip_trunks.conf
+%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_sip_phones.conf
+%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_sip_registrations.conf
+%attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/osdial_sip_trunks.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/oss.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/phone.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/sip.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/voicemail.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/zapata.conf
-%attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/zaptel.conf
+%attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/zaptel.conf
 %attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/README.osdial
+%dir %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/sounds/ivr
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/conf.gsm
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/park.gsm
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/,.wav
@@ -468,6 +1097,7 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADtransferBROADCAST.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADtransferSURVEY.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADtransferTEST.agi
+%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDoutboundIVR.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-dtmf.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-record_prompts.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-station_monitor.agi
@@ -477,7 +1107,7 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/invalid_speak.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/park_CID.agi
 
-%files bin
+%files common
 %defattr(644,asterisk,asterisk,755)
 %dir %attr(0755,asterisk,asterisk) %{_var}/log/osdial
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/osdial.conf
@@ -513,7 +1143,7 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_VDauto_dial.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_VDauto_dial_FILL.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_VDhopper.pl
-%attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_VDhopper_MIXtest.pl
+#%attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_VDhopper_MIXtest.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_VDremote_agents.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_VDsales_export.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_agent_day.pl
@@ -533,6 +1163,8 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_vm_update.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/FastAGI_log.pl
 %attr(0644,asterisk,asterisk) %{_opt}/osdial/bin/GMT_USA_zip.txt
+%attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/osdial_ivr_sync.sh
+%attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/osdial_killall.sh
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/OSDconfig
 %attr(0755,asterisk,asterisk) /usr/bin/OSDconfig
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/OSDIAL_DEDUPE_leads.pl
@@ -549,10 +1181,8 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/osdial_astgen.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/osdial.cron
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/ip_relay
+%attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/safe_ip_relay
 %attr(0755,asterisk,asterisk) %{_sysconfdir}/cron.hourly/AST_ntp_update.sh
-
-%files
-%defattr(644,asterisk,asterisk,755)
 %dir %{_opt}/osdial/reports
 %dir %{_opt}/osdial/recordings
 %dir %{_opt}/osdial/recordings/processing
@@ -564,53 +1194,56 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 %attr(0644,root,root) /usr/share/doc/osdial-2.1.0/CALLBACKS_PROCESS.txt
 %attr(0644,root,root) /usr/share/doc/osdial-2.1.0/IE_INCOMPATIBILITIES.txt
 %attr(0644,root,root) /usr/share/doc/osdial-2.1.0/INBOUND-CLOSER_PROCESS.txt
-%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/LICENSE.txt
 %attr(0644,root,root) /usr/share/doc/osdial-2.1.0/LOAD_BALANCING.txt
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/amd.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/dnsmgr.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/extensions.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/iax.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/indications.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/logger.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/manager.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/meetme.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/modules.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/musiconhold.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_extensions.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_extensions_conferences.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_extensions_custom.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_extensions_inbound.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_extensions_outbound.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_extensions_phones.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_extensions_servers.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_extensions_testing.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_iax.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_iax_custom.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_iax_phones.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_iax_registrations.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_iax_servers.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_iax_trunks.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_manager.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_meetme.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_sip.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_sip_custom.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_sip_phones.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_sip_registrations.conf
-#%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_sip_servers.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_sip_trunks.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/oss.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/phone.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/sip.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/voicemail.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/zapata.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/zaptel.conf
-%attr(0644,asterisk,asterisk) /usr/share/doc/osdial-2.1.0/conf_examples/README.osdial
-
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/OUTBOUND_IVR.txt
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/amd.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/cdr.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/dnsmgr.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/extensions.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/iax.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/iaxprov.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/indications.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/logger.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/manager.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/meetme.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/modules.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/musiconhold.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_extensions.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_extensions_conferences.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_extensions_custom.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_extensions_inbound.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_extensions_outbound.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_extensions_phones.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_extensions_servers.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_extensions_testing.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_iax.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_iax_custom.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_iax_phones.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_iax_registrations.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_iax_servers.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_iax_trunks.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_manager.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_meetme.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_sip.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_sip_custom.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_sip_phones.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_sip_registrations.conf
+#%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_sip_servers.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/osdial_sip_trunks.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/oss.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/phone.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/sip.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/voicemail.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/zapata.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/zaptel.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/README.osdial
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/LICENSE.txt
 
 %files web
 %defattr(644,asterisk,asterisk,755)
 %attr(0644,asterisk,asterisk) %{_sysconfdir}/httpd/conf.d/osdial.conf
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/ivr
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/images
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/agent
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/agent/images
@@ -710,6 +1343,7 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/vdc_db_query.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/osdial.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/voicemail_check.php
+%attr(0644,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/agent/webform_redirect.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/images/across140.png
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/images/across146.png
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/images/across160.png
@@ -999,6 +1633,7 @@ cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/iframe.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/listmix.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/pause.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/outbound_ivr.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/realtime.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/realtime_detail.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/realtime_summary.php
