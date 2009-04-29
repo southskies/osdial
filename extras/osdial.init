@@ -36,7 +36,7 @@ start() {
 		[ -n "$BINUSER" ] && BINTIMEOUT=3
 		TEMP=/tmp/osdial_init.$$
 
-		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-control" -o -f "/opt/osdial/.osdial-install-control" -o -f "/opt/osdial/.osdial-sql" -o -f "/opt/osdial/.osdial-install-sql" ]; then
+		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-control" -o -f "/opt/osdial/.osdial-install-control" -o -f "/opt/osdial/.osdial-sql" -o -f "/opt/osdial/.osdial-install-sql" -o -f "/opt/osdial/.osdial-live" ]; then
 			# Install DB
 			[ "$OSDIAL_MYSQL_INSTALL" = "YES" ] && /opt/osdial/bin/sql/upgrade_sql.pl
 
@@ -66,7 +66,7 @@ start() {
 			fi
 		fi
 	
-		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-dialer" -o -f "/opt/osdial/.osdial-install-dialer" ]; then
+		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-dialer" -o -f "/opt/osdial/.osdial-install-dialer" -o -f "/opt/osdial/.osdial-live" ]; then
 			dialog --clear --timeout $BINTIMEOUT --backtitle "OSDial - The OpenSource Dialer" --title "Free VoIP Trial" \
 				--form "\n                You may optionally contact\n      Call Center Service Group at 800-221-0251 (opt 2)\n   for a free trial with Binfone, a premier VoIP provider.\n\n        If you have an existing Binfone IAX extension,\n          you may also enter those credentials here.\n \n \n " 20 65 2 \
 				"Binfone User/Ext#:" 1 15 "$BINUSER" 1 35 7 6 \
@@ -94,7 +94,7 @@ start() {
 		echo >> /etc/issue
 		echo "                    OSDial - The OpenSource Dialer" >> /etc/issue
 		echo >> /etc/issue
-		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-control" -o -f "/opt/osdial/.osdial-install-control" -o -f "/opt/osdial/.osdial-sql" -o -f "/opt/osdial/.osdial-install-sql" ]; then
+		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-control" -o -f "/opt/osdial/.osdial-install-control" -o -f "/opt/osdial/.osdial-sql" -o -f "/opt/osdial/.osdial-install-sql" -o -f "/opt/osdial/.osdial-live" ]; then
 			echo "                             $COMPANY" >> /etc/issue
 			echo >> /etc/issue
 		fi
@@ -103,7 +103,7 @@ start() {
 		echo >> /etc/issue
 		echo "           OSDial is available for download at http://www.osdial.com/" >> /etc/issue
 		echo >> /etc/issue
-		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-control" -o -f "/opt/osdial/.osdial-install-control" -o -f "/opt/osdial/.osdial-sql" -o -f "/opt/osdial/.osdial-install-sql" ]; then
+		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-control" -o -f "/opt/osdial/.osdial-install-control" -o -f "/opt/osdial/.osdial-sql" -o -f "/opt/osdial/.osdial-install-sql" -o -f "/opt/osdial/.osdial-live" ]; then
 			echo "           You may now boot the Agent-DemoCD in another computer" >> /etc/issue
 			echo "            or point your Firefox browser to http://$INET/" >> /etc/issue
 			echo >> /etc/issue
@@ -119,10 +119,10 @@ start() {
 
 		# Saving options to /etc/sysconfig/osdial
 		echo "OSDIAL_FIRSTRUN=\"NO\"" > /etc/sysconfig/osdial
-		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-control" -o -f "/opt/osdial/.osdial-install-control" -o -f "/opt/osdial/.osdial-sql" -o -f "/opt/osdial/.osdial-install-sql" ]; then
+		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-control" -o -f "/opt/osdial/.osdial-install-control" -o -f "/opt/osdial/.osdial-sql" -o -f "/opt/osdial/.osdial-install-sql" -o -f "/opt/osdial/.osdial-live" ]; then
 			echo "OSDIAL_COMPANY=\"$COMPANY\"" >> /etc/sysconfig/osdial
 		fi
-		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-dialer" -o -f "/opt/osdial/.osdial-install-dialer" ]; then
+		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-dialer" -o -f "/opt/osdial/.osdial-install-dialer" -o -f "/opt/osdial/.osdial-live" ]; then
 			echo "OSDIAL_BINUSER=\"$BINUSER\"" >> /etc/sysconfig/osdial
 			echo "OSDIAL_BINPASS=\"$BINPASS\"" >> /etc/sysconfig/osdial
 		fi
