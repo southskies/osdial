@@ -2539,15 +2539,16 @@ foreach ($forms as $form) {
 							
 						</tr>
 						<tr>
+							<td align=right><font class="body_text"> <font color=#1C4754>Vendor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>Lead Code:&nbsp;</font></td>
+							<td align=left colspan='3'><font class="body_text"><input type=text size=22 name=vendor_lead_code maxlength=20 class="cust_form" value="">&nbsp;</td>
+						</tr>
+						<tr>
 							<td align=right><font class="body_text" color=#1C4754>Custom1:&nbsp;</font></td>
 							<td align=left><font class="body_input"><input type=text size=22 name=custom1 maxlength=100 class="cust_form" value=""></font>&nbsp;</td>
 							<td align=right><font class="body_text" color=#1C4754>Custom2:&nbsp;</font><font class="body_input"><input type=text size=22 name=custom2 maxlength=100 class="cust_form" value=""></font></td>
 						</tr>
 						
-						<tr>
-							<td align=right><font class="body_text"> <font color=#1C4754>Vendor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>Lead Code:&nbsp;</font></td>
-							<td align=left colspan='3'><font class="body_text"><input type=text size=22 name=vendor_lead_code maxlength=20 class="cust_form" value="">&nbsp;</td>
-						</tr>
+						
 						<!--	
 							<td align=right> <font class="body_text"><font color=#1C4754>Custom4:&nbsp;</font><input type=text size=26 name=vendor_lead_code maxlength=20 class="cust_form" value=""></td>
 						</tr>
