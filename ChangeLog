@@ -1,5 +1,12 @@
 2009-04-29  Lott Caskey <lottcaskey@gmail.com>
 
+	* [r148] extras/sql/210005.sql, extras/sql/upgrade_sql.map: Added
+	  status CRF, CRR, CRO, CRC to report on SIP 50X errors
+	* [r147] bin/FastAGI_log.pl: Added support for logging of SIP
+	  responses 500-504 and PRI indications 27,29,34,38.
+	* [r146] bin/AST_VDadapt.pl: Added divide-by-zero error checking to
+	  adaptive routine.
+	* [r145] ChangeLog, docs/ChangeLog.presvn: Commit of ChangeLog
 	* [r144] ChangeLog, docs/ChangeLog.presvn, docs/authors.xml: Update
 	  ChangeLog to pull from SVN
 	* [r143] extras/osdial.init: Add live image awareness to
