@@ -437,10 +437,17 @@ while ( $master_loop < $CLOloops ) {
 							$intensity_dial_level = $CLOminlevel;
 						}
 
-						my $VCSdrops_answers_hour_pct = ($VCSdrops_hour / $VCSanswers_hour) * 100;
-						my $VCSdrops_answers_halfhour_pct = ($VCSdrops_halfhour / $VCSanswers_halfhour) * 100;
-						my $VCSdrops_answers_five_pct = ($VCSdrops_five / $VCSanswers_five) * 100;
-						my $VCSdrops_answers_one_pct = ($VCSdrops_one / $VCSanswers_one) * 100;
+						my $VCSdrops_answers_hour_pct = 0;
+						$VCSdrops_answers_hour_pct = ($VCSdrops_hour / $VCSanswers_hour) * 100 if ($VCSanswers_hour > 0);
+						
+						my $VCSdrops_answers_halfhour_pct = 0;
+						$VCSdrops_answers_halfhour_pct = ($VCSdrops_halfhour / $VCSanswers_halfhour) * 100 if ($VCSanswers_halfhour > 0);
+
+						my $VCSdrops_answers_five_pct = 0;
+						$VCSdrops_answers_five_pct = ($VCSdrops_five / $VCSanswers_five) * 100 if ($VCSanswers_five > 0);
+
+						my $VCSdrops_answers_one_pct = 0;
+						$VCSdrops_answers_one_pct = ($VCSdrops_one / $VCSanswers_one) * 100 if ($VCSanswers_one > 0);
 
 						$adaptive_string .= "DROP STATS-\n";
 						$adaptive_string .= "   TODAY:     $VCScalls_today   $VCSdrops_today   $VCSdrops_today_pct%\n";
