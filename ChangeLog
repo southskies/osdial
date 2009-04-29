@@ -1,23 +1,434 @@
+2009-04-29  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r144] ChangeLog, docs/ChangeLog.presvn, docs/authors.xml: Update
+	  ChangeLog to pull from SVN
+	* [r143] extras/osdial.init: Add live image awareness to
+	  osdial.init
+	* [r142] extras/osdial.spec: Update of osdial.spec file
+
+2009-04-29  Steve Szmidt <techs@callcentersg.com>
+
+	* [r141] www/agent/osdial.php: Swapped positions of Vendor Lead
+	  Code and the Custom fields.
+	* [r140] www/agent/osdial.php: Changed Channel to bg color to hide
+	  it during normal use.
+	* [r139] www/agent/osdial.php: Putting in vendor_lead_code in place
+	  of Custom3.
+	* [r138] www/agent/osdial.php: Commented out Custom3, added foot
+	  holders for company and fixed formatting for a missed login
+	  screen.
+
+2009-04-29  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r137] extras/osdial.init: Make osdial.init install aware
+	* [r136] extras/osdial.init: Fix osdial.init company variable
+	  notice
+
+2009-04-28  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r135] bin/safe_ip_relay, extras/osdial.init: Added safe_ip_relay
+	  script and modify osdial.init to use it as well.
+	* [r134] agi/agi-record_prompts.agi: Fix prompt_count.txt location
+	* [r133] extras/sql/210004.sql, extras/sql/upgrade_sql.map: Update
+	  SQL defaults for webform.
+	* [r132] extras/sql/210000.sql, version,
+	  www/agent/webform_redirect.php: Update webform_redirect.php and
+	  default to osdial.com/webform_test.php in webforms
+	* [r131] www/agent/include/osdial.js, www/agent/vdc_db_query.php,
+	  www/agent/webform_redirect.php: Added external_key to
+	  web_form_vars and webform_redirect.php
+	* [r130] bin/osdial_ivr_sync.sh: Fix ivr_sync to make sounds
+	  directory if not found.
+	* [r129] bin/osdial_ivr_sync.sh: Fix ivr_sync to make sounds
+	  directory if not found.
+	* [r128] extras/osdial.cron: ordered cron file
+	* [r127] bin/AST_VDhopper.pl: Fixes for listmix on hopper.
+	* [r126] bin/AST_VDhopper.pl: Fix listmix to mixin recycles.
+	* [r125] extras/sql/999999.sql,
+	  www/admin/include/content/campaigns/autoalt.php,
+	  www/admin/include/content/campaigns/campaigns.php,
+	  www/admin/include/content/campaigns/dialstat.php,
+	  www/admin/include/content/campaigns/hotkey.php,
+	  www/admin/include/content/campaigns/listmix.php,
+	  www/admin/include/content/campaigns/pause.php,
+	  www/admin/include/content/campaigns/status.php,
+	  www/admin/include/header.php: hopper fixes
+	* [r124] www/index.php: fix index.php
+	* [r123] bin/AST_VDhopper.pl: listmix table fix
+	* [r122] bin/AST_VDhopper.pl, bin/AST_VDhopper_MIXtest.pl: Merge
+	  listmix options into AST_VDhopper.pl
+	* [r121] agi/agi-OSDoutboundIVR.agi, bin/AST_VDhopper.pl,
+	  bin/FastAGI_log.pl,
+	  www/admin/include/content/campaigns/campaigns.php,
+	  www/admin/include/content/campaigns/listmix.php,
+	  www/admin/include/content/campaigns/realtime_detail.php,
+	  www/admin/include/content/campaigns/recycle.php,
+	  www/admin/include/header.php: Bugs, bugs, bugs
+
+2009-04-24  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r120] extras/httpd-osdial.conf, www/index.php: Fix company_name
+	  on index.php
+
+2009-04-23  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r119] bin/FastAGI_log.pl,
+	  www/admin/include/content/campaigns/outbound_ivr.php,
+	  www/agent/webform_redirect.php: Added webform_redirect
+
+2009-04-22  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r118] agi/agi-OSDoutboundIVR.agi: Fix last_call_time on
+	  OutboundIVR
+	* [r117] bin/AST_VDauto_dial.pl,
+	  docs/conf_examples/osdial_extensions.conf, extras/sql/210003.sql,
+	  www/admin/include/content/campaigns/campaigns.php,
+	  www/admin/include/content/campaigns/realtime_detail.php,
+	  www/admin/include/content/campaigns/realtime_summary.php,
+	  www/admin/include/header.php, www/admin/include/help.php,
+	  www/admin/include/validation.php,
+	  www/admin/include/variables.php: change calls_per_hour_limit to
+	  answers_per_hour_limit
+	* [r116] bin/osdial_killall.sh: added osdial_killall script.
+	* [r115] agi/agi-VDAD_ALL_inbound.agi, bin/AST_VDauto_dial.pl,
+	  extras/sql/210003.sql, www/admin/include/content/lists/lists.php,
+	  www/admin/listloader.pl, www/admin/listloader_super.pl,
+	  www/agent/vdc_db_query.php: Added last_local_call_time to list
+	  table and files...
+	* [r114] bin/AST_VDauto_dial_FILL.pl,
+	  bin/OSDIAL_IN_new_leads_file.pl: Add last_local_call_time to
+	  OSDIAL_IN_new_leads, fix CID in auto_dial_FILL.
+	* [r113] bin/AST_VDauto_dial_FILL.pl: Add last_local_call_time to
+	  auto_dial_FILL.
+	* [r112] bin/osdial_ivr_sync.sh: Added osdial_ivr_sync script
+	* [r111] bin/AST_VDhopper.pl: Fix bad table names in hopper script.
+	* [r110] agi/agi-OSDoutboundIVR.agi, bin/AST_VDhopper.pl,
+	  bin/AST_VDremote_agents.pl, bin/FastAGI_log.pl,
+	  extras/osdial.cron, extras/sql/210003.sql,
+	  www/admin/include/content/campaigns/campaigns.php: Add random
+	  list order and several 2.0.5 hopper fixes.
+
+2009-04-21  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r109] agi/agi-OSDoutboundIVR.agi,
+	  docs/conf_examples/osdial_extensions.conf,
+	  www/admin/include/content/campaigns/outbound_ivr.php: IVR fixes
+	* [r108] agi/agi-OSDoutboundIVR.agi, bin/osdial_astgen.pl,
+	  www/admin/include/content/campaigns/outbound_ivr.php: Outbound
+	  IVR updates
+	* [r107] agi/agi-OSDoutboundIVR.agi, bin/AST_VDcampaign_stats.pl,
+	  extras/sql/210003.sql,
+	  www/admin/include/content/campaigns/campaigns.php: Fix for
+	  campaign stats
+
+2009-04-20  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r106] bin/AST_VDauto_dial.pl, extras/sql/210003.sql,
+	  www/admin/include/content/campaigns/campaigns.php,
+	  www/admin/include/help.php, www/admin/include/validation.php,
+	  www/admin/include/variables.php: Added new calls_per_hour limit
+	* [r105] agi/agi-OSDoutboundIVR.agi, agi/agi-VDAD_ALL_inbound.agi,
+	  agi/agi-VDAD_LB_transfer.agi, agi/agi-VDAD_LO_transfer.agi,
+	  agi/agi-VDADtransfer.agi, agi/agi-VDADtransferBROADCAST.agi,
+	  agi/agi-VDADtransferSURVEY.agi, agi/agi-VDADtransferTEST.agi,
+	  bin/AST_VDauto_dial.pl, bin/AST_VDcampaign_stats.pl,
+	  bin/AST_VDremote_agents.pl, bin/FastAGI_log.pl,
+	  bin/osdial_astgen.pl, docs/conf_examples/oss.conf,
+	  docs/conf_examples/phone.conf, extras/sql/210003.sql,
+	  www/admin/include/auth.php,
+	  www/admin/include/content/campaigns/outbound_ivr.php,
+	  www/admin/include/validation.php,
+	  www/admin/include/variables.php: Fixes: Remote Agents / Outbound
+	  IVR / Auto-Dialing
+	* [r104] extras/sql/210003.sql: update 210003.sql
+	* [r103] agi/agi-OSDoutboundIVR.agi, extras/osdial.conf: Fix
+	  osdial.conf for RPM upgrades.
+	* [r102] extras/osdial.init, extras/sql/210003.sql,
+	  www/admin/include/content/admin/settings.php,
+	  www/admin/include/display.php, www/admin/include/validation.php,
+	  www/admin/include/variables.php: Added company_name to
+	  system_setting.
+	* [r101] agi/agi-OSDoutboundIVR.agi: Fixes to OutboundIVR agi
+	* [r100] agi/agi-OSDoutboundIVR.agi: Fixes to OutboundIVR agi
+	* [r99] agi/agi-OSDoutboundIVR.agi, bin/AST_VDremote_agents.pl,
+	  bin/osdial_astgen.pl, docs/OUTBOUND_IVR.txt,
+	  extras/sql/210003.sql, extras/sql/upgrade_sql.map, version,
+	  www/admin/include/admin.js,
+	  www/admin/include/content/campaigns/campaigns.php,
+	  www/admin/include/content/campaigns/outbound_ivr.php,
+	  www/admin/include/content/remoteagent/remoteagent.php,
+	  www/admin/include/header.php, www/admin/include/menu.php,
+	  www/admin/include/validation.php,
+	  www/admin/include/variables.php: Added Outbound IVR subsystems.
+
+2009-04-19  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r98] extras/osdial.init: Switch to tmpfs for recordings
+	* [r97] extras/sql/999999.sql: Fix/Add statuses.
+	* [r96] docs/conf_examples/osdial_extensions.conf: Added Outbound
+	  IVR XFER extension.
+	* [r95] bin/AST_VDauto_dial.pl: Add check for IN call_type.
+	* [r93] www/admin/include/content/admin/conference.php: Fix
+	  menubarcolor on Conference list
+
+2009-04-17  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r92] www/index.php: Adjust index.php kern on company length
+	* [r90] bin/osdial_astgen.pl: make exten the context on SIP/IAX
+	  phones
+	* [r88] extras/sql/210002.sql: Fix 21002.sql
+	* [r85] extras/patches/app_dial_originate_ring-1.2.patch,
+	  extras/patches/app_dial_originate_ring-1.4.patch: Updates to
+	  orignate_ring
+	* [r84] www/admin/include/content/admin/phones.php: Fix iframe
+
+2009-04-15  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r82] extras/patches/app_dial_originate_ring-1.4.patch: Added
+	  app_dial_originate_ring for Asterisk 1.4.
+	* [r81] docs/conf_examples/osdial_extensions_outbound.conf,
+	  extras/patches/app_dial_originate_ring-1.2.patch: More
+	  app_dial_originate_ring fixes
+	* [r80] extras/patches/app_dial_originate_ring-1.2.patch: Fixed
+	  app_dial_originate_ring-1.2.patch
+	* [r79] extras/patches/app_dial_originate_ring-1.2.patch: Add a
+	  patch to simulate ring of outbound call in meetme room.
+	* [r78] extras/patches/app_meetme_log_fix-1.2.patch: Add patch to
+	  fix warning about the conference channel not being found on agent
+	  logout.
+	* [r77] extras/patches/Changed_meetme_sounds.txt,
+	  extras/patches/app_amd.patch,
+	  extras/patches/channel.c-42600.patch,
+	  extras/patches/cli_chan_concise_delimiter.patch,
+	  extras/patches/enter.h, extras/patches/enter.raw,
+	  extras/patches/leave.h, extras/patches/leave.raw,
+	  extras/patches/meetme_DTMF_passthru-1.2.23.patch,
+	  extras/patches/meetme_volume_control_1.2.16.patch,
+	  extras/patches/meetmeadmin_volume_control.1.2.7.1.patch,
+	  extras/patches/meetmeadmin_volume_control.patch,
+	  extras/patches/short_conference_sounds.patch,
+	  extras/patches/waitforsilence_1.2.32.patch: Update patch files
+	* [r76] docs/conf_examples/cdr.conf,
+	  docs/conf_examples/iaxprov.conf, docs/conf_examples/logger.conf,
+	  docs/conf_examples/modules.conf,
+	  docs/conf_examples/osdial_extensions_outbound.conf: Fixed some
+	  asterisk config options
+
+2009-04-14  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r75] bin/osdial_astgen.pl: Add hangup after conf in
+	  osdial_astgen.pl
+	* [r74] extras/osdial.spec: update rpmspec
+	* [r73] www/images/colon.png, www/images/comma.png, www/index.html,
+	  www/index.php: Fix company heading
+	* [r72] Makefile: cron bugfix
+	* [r71] Makefile, extras/osdial.init, extras/sql/000000.sql,
+	  extras/sql/210002.sql: bugfixes
+	* [r70] www/agent/osdial.php: bugfixes
+
+2009-04-11  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r69] Makefile: Update Makefile
+	* [r68] Makefile: Update Makefile
+	* [r67] Makefile, extras/osdial.spec: Update Makefile and
+	  osdial.spec
+	* [r66] extras/osdial.init, www/AgentLoginDn.png,
+	  www/AgentLoginUp.png, www/ControlLoginDn.png,
+	  www/ControlLoginUp.png, www/clientCompany.png,
+	  www/defaultCompany.png, www/images, www/images/0.png,
+	  www/images/1.png, www/images/2.png, www/images/3.png,
+	  www/images/4.png, www/images/5.png, www/images/6.png,
+	  www/images/7.png, www/images/8.png, www/images/9.png,
+	  www/images/A.png, www/images/AgentLoginDn.png,
+	  www/images/AgentLoginUp.png, www/images/B.png, www/images/C.png,
+	  www/images/ControlLoginDn.png, www/images/ControlLoginUp.png,
+	  www/images/D.png, www/images/E.png, www/images/F.png,
+	  www/images/G.png, www/images/H.png, www/images/I.png,
+	  www/images/J.png, www/images/K.png, www/images/L.png,
+	  www/images/M.png, www/images/N.png, www/images/O.png,
+	  www/images/P.png, www/images/Q.png, www/images/R.png,
+	  www/images/S.png, www/images/T.png, www/images/U.png,
+	  www/images/V.png, www/images/W.png, www/images/X.png,
+	  www/images/Y.png, www/images/Z.png, www/images/a.png,
+	  www/images/ampersand.png, www/images/at.png, www/images/b.png,
+	  www/images/c.png, www/images/clientCompany.png, www/images/d.png,
+	  www/images/defaultCompany.png, www/images/e.png,
+	  www/images/exclamation.png, www/images/f.png, www/images/g.png,
+	  www/images/h.png, www/images/hyphen.png, www/images/i.png,
+	  www/images/j.png, www/images/k.png, www/images/l.png,
+	  www/images/m.png, www/images/n.png, www/images/o.png,
+	  www/images/osdial-bg.png, www/images/p.png,
+	  www/images/period.png, www/images/q.png, www/images/r.png,
+	  www/images/rawtest.html, www/images/s.png, www/images/space.png,
+	  www/images/t.png, www/images/test.html, www/images/u.png,
+	  www/images/v.png, www/images/w.png, www/images/x.png,
+	  www/images/y.png, www/images/z.png, www/index.html,
+	  www/osdial-bg.png: Added auto-company logo generation.
+
+2009-04-10  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r65] extras/sql/210002.sql,
+	  www/admin/include/content/campaigns/campaigns.php,
+	  www/admin/include/content/ingroups/ingroups.php,
+	  www/admin/include/help.php, www/admin/include/validation.php,
+	  www/admin/include/variables.php, www/agent/include/osdial.js,
+	  www/agent/osdial.php, www/agent/vdc_db_query.php: Added
+	  allow_tab_switch fields to ingroups/campaigns.
+	* [r64] extras/sql/210002.sql, www/admin/admin_modify_lead.php,
+	  www/admin/include/content/admin/settings.php,
+	  www/admin/include/content/lists/export.php,
+	  www/admin/include/content/lists/lists.php,
+	  www/admin/include/variables.php, www/admin/listloader.pl,
+	  www/admin/listloader_super.pl: Added external_key to osdial_list
+	  table.
+	* [r63] www/admin/include/content/lists/lists.php,
+	  www/admin/include/variables.php: Cleanup: Move to get_variable.
+	* [r62] www/admin/admin_config.inc,
+	  www/admin/admin_search_lead.php,
+	  www/admin/closer-fronter_popup.php,
+	  www/admin/closer-fronter_popup2.php, www/admin/closer.php,
+	  www/admin/closer_dispo.php, www/admin/closer_popup.php,
+	  www/admin/new_listloader_superL.php,
+	  www/admin/record_conf_1_hour.php, www/admin/welcome.php: Removed
+	  unused php files.
+	* [r61] www/admin/include/content/lists/lists.php: Fix lead load
+	  problem.
+	* [r60] www/admin/include/content/lists/lists.php: Fix lead load
+	  problem.
+	* [r59] www/admin/include/content/lists/lists.php:
+	* [r58] www/admin/include/content/lists/lists.php: Fix lead load
+	  problem.
+	* [r57] extras/sql/210002.sql, www/admin/admin_modify_lead.php,
+	  www/admin/closer_dispo.php,
+	  www/admin/include/content/admin/settings.php,
+	  www/admin/include/content/lists/export.php,
+	  www/admin/include/content/lists/lists.php,
+	  www/admin/include/content/scripts/scripts.php,
+	  www/admin/include/help.php, www/admin/listloader.pl,
+	  www/admin/listloader_super.pl, www/admin/remote_dispo.php,
+	  www/agent/include/osdial.js, www/agent/osdial.php,
+	  www/agent/vdc_db_query.php: Added custom2 field.
+	* [r56] www/admin/include/content/remoteagent/remoteagent.php,
+	  www/admin/include/header.php, www/admin/include/menu.php: Rename
+	  Off-Hook/Remote Agent to External Agent. Tracker #2742223
+	* [r55] extras/osdial.init: Init script fixes.
+	* [r54] extras/osdial.init: Init script fixes.
+	* [r53] extras/osdial.init: Init script fixes.
+	* [r52] extras/osdial.init: Init script fixes.
+	* [r51] extras/ip_relay/ip_relay_linux_i386,
+	  extras/ip_relay/relay_control: removed unneeded ip-relay files
+	* [r50] Makefile, docs/conf_examples/README.osdial,
+	  extras/ip_relay, extras/ip_relay/ip_relay,
+	  extras/ip_relay/ip_relay_1.0.021902.tar,
+	  extras/ip_relay/ip_relay_1.1.112705.zip,
+	  extras/ip_relay/ip_relay_linux_i386,
+	  extras/ip_relay/relay_control, extras/osdial.init: Add ip-relay
+	* [r49] bin/osdial_astgen.pl, extras/osdial.cron: Add automatic
+	  Asterisk config generation.
+	* [r48] docs/conf_examples/osdial_extensions.conf,
+	  docs/conf_examples/osdial_extensions_conferences.conf,
+	  docs/conf_examples/osdial_extensions_custom.conf,
+	  docs/conf_examples/osdial_extensions_inbound.conf,
+	  docs/conf_examples/osdial_extensions_outbound.conf,
+	  docs/conf_examples/osdial_extensions_phones.conf,
+	  docs/conf_examples/osdial_extensions_servers.conf,
+	  docs/conf_examples/osdial_extensions_testing.conf,
+	  docs/conf_examples/osdial_iax.conf,
+	  docs/conf_examples/osdial_iax_custom.conf,
+	  docs/conf_examples/osdial_iax_phones.conf,
+	  docs/conf_examples/osdial_iax_registrations.conf,
+	  docs/conf_examples/osdial_iax_servers.conf,
+	  docs/conf_examples/osdial_meetme.conf,
+	  docs/conf_examples/osdial_sip.conf,
+	  docs/conf_examples/osdial_sip_custom.conf,
+	  docs/conf_examples/osdial_sip_phones.conf,
+	  docs/conf_examples/osdial_sip_registrations.conf,
+	  docs/conf_examples/osdial_sip_servers.conf: Modifications to
+	  dial-plans
+
+2009-04-03  Steve Szmidt <techs@callcentersg.com>
+
+	* [r47] www/agent/osdial.php: Removed Custom2 (vender_lead_code)
+	  from being displayed.
+
+2009-03-30  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r46] extras/sql/upgrade_sql.pl: Add copyright header.
+
+2009-03-29  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r45] docs/conf_examples/osdial_iax_phones.conf,
+	  docs/conf_examples/osdial_iax_trunks.conf,
+	  docs/conf_examples/osdial_sip_trunks.conf, extras/osdial.init:
+	  Added 'reconfig' to osdial.init.
+
+2009-03-28  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r44] Makefile, docs/conf_examples/osdial_iax_phones.conf,
+	  docs/conf_examples/osdial_sip_trunks.conf,
+	  www/agent/osdial_auth_entries.txt, www/agent/osdial_debug.txt:
+	  Files missing from install.
+	* [r43] Makefile: Makefile fix
+	* [r42] extras/osdial.conf, extras/osdial.init: Modifications to
+	  startup files
+	* [r41] extras/sql/000000.sql, extras/sql/204000.sql,
+	  extras/sql/204001.sql, extras/sql/204002.sql,
+	  extras/sql/204003.sql, extras/sql/204004.sql,
+	  extras/sql/204005.sql, extras/sql/204006.sql,
+	  extras/sql/204007.sql, extras/sql/204008.sql,
+	  extras/sql/210000.sql, extras/sql/999999.sql, extras/sql/map,
+	  extras/sql/upgrade_sql.map, extras/sql/upgrade_sql.pl: Created
+	  method of automated SQL upgrades/updates.
+
+2009-03-25  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r40] agi/VD_auto_post_VERIFY.agi, agi/agi-VDAD_ALL_inbound.agi,
+	  agi/agi-VDADautoREMINDER.agi, agi/agi-VDADautoREMINDERxfer.agi,
+	  agi/agi-VDADtransferSURVEY.agi, bin/AST_VDsales_export.pl,
+	  bin/OSDIAL_IN_new_leads_file.pl, extras/sql/210002.sql, version,
+	  www/admin/admin_modify_lead.php, www/admin/admin_search_lead.php,
+	  www/admin/closer-fronter_popup.php,
+	  www/admin/closer-fronter_popup2.php, www/admin/closer_dispo.php,
+	  www/admin/include/content/admin/settings.php,
+	  www/admin/include/content/lists/export.php,
+	  www/admin/include/content/lists/lists.php,
+	  www/admin/include/content/scripts/scripts.php,
+	  www/admin/include/help.php, www/admin/listloader.pl,
+	  www/admin/listloader_rowdisplay.pl,
+	  www/admin/listloader_super.pl,
+	  www/admin/new_listloader_superL.php, www/admin/remote_dispo.php,
+	  www/admin/vtiger_search.php, www/agent/include/osdial.js,
+	  www/agent/osdial.php, www/agent/vdc_db_query.php: Rename
+	  security_phrase to custom1.
+
+2009-03-19  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r39] www/admin/include/content/lists/lists.php: List Loading
+	  fix, reverse Steves validation attempt
+	* [r38] www/agent/osdial.php: Fixed osdial.php webform
+
 2009-03-13  Steve Szmidt  <info@callcentersg.com>
-    * realtime reports: Minor cosmetic changes to RT Detail and Summary.
-    * lists.php: Minor cosmetic changes to Lists, resolved the design error
-    that let you reimport the last leads over and over.  Added list ID check
-    when override is used. Both give appropriate error msg.
-    Plans on checking lead ID in file before importing.
-    * footer.php: Footer changed to include graphics that proclaims Download
-    OSDial here!
+
+	* realtime reports: Minor cosmetic changes to RT Detail and Summary.
+	* lists.php: Minor cosmetic changes to Lists, resolved the design error
+	that let you reimport the last leads over and over.  Added list ID check
+	when override is used. Both give appropriate error msg.
+	Plans on checking lead ID in file before importing.
+	* footer.php: Footer changed to include graphics that proclaims Download
+	OSDial here!
 
 2009-03-01  Lott Caskey  <lottcaskey@gmail.com>
-    * ALL: Modified copyright information in all files.
-    * ALL: Added AGPLv3 preamble to all files.
-    * ALL: Rename all files from *vicidial* to *osdial*
-    * ALL: Rename all database tables in all source files from vicidial_* to
-    osdial_*.
+
+	* ALL: Modified copyright information in all files.
+	* ALL: Added AGPLv3 preamble to all files.
+	* ALL: Rename all files from *vicidial* to *osdial*
+	* ALL: Rename all database tables in all source files from vicidial_* to
+	osdial_*.
 
 2009-03-11  Lott Caskey  <lottcaskey@gmail.com>
-    * www/admin/include/content/lists/lists.php: Patch to fix lead loading.
-    * extras/osdial.cron: Fix Loadavg generation file.
+	* www/admin/include/content/lists/lists.php: Patch to fix lead loading.
+	* extras/osdial.cron: Fix Loadavg generation file.
 
 2009-01-24  Lott Caskey  <lottcaskey@gmail.com>
-    * Makefile: Update with new directory structure.
-    * OSDconfig: Update with new direcory structure.
+	* Makefile: Update with new directory structure.
+	* OSDconfig: Update with new direcory structure.
