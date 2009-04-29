@@ -36,50 +36,55 @@ start() {
 		[ -n "$BINUSER" ] && BINTIMEOUT=3
 		TEMP=/tmp/osdial_init.$$
 
-		# Install DB
-		[ "$OSDIAL_MYSQL_INSTALL" = "YES" ] && /opt/osdial/bin/sql/upgrade_sql.pl
+		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-control" -o -f "/opt/osdial/.osdial-install-control" -o -f "/opt/osdial/.osdial-sql" -o -f "/opt/osdial/.osdial-install-sql" ]; then
+			# Install DB
+			[ "$OSDIAL_MYSQL_INSTALL" = "YES" ] && /opt/osdial/bin/sql/upgrade_sql.pl
 
-		# Get server timezone and update in osdial database
-		OSDTZ=`date +%:::z`
-		[ -z "$OSDTZ" ] && OSDTZ="0"
-		OSDTZ=`expr $OSDTZ + 0`
-		[ "`date +%Z | grep DT`" != "" ] && OSDTZ=`expr $OSDTZ - 1`
-		if [ -n "$OSDTZ" ]; then
-			echo "UPDATE servers SET local_gmt='$OSDTZ';" | mysql osdial > /dev/null 2>&1
-			echo "UPDATE phones SET local_gmt='$OSDTZ';" | mysql osdial > /dev/null 2>&1
+			# Get server timezone and update in osdial database
+			OSDTZ=`date +%:::z`
+			[ -z "$OSDTZ" ] && OSDTZ="0"
+			OSDTZ=`expr $OSDTZ + 0`
+			[ "`date +%Z | grep DT`" != "" ] && OSDTZ=`expr $OSDTZ - 1`
+			if [ -n "$OSDTZ" ]; then
+				echo "UPDATE servers SET local_gmt='$OSDTZ';" | mysql osdial > /dev/null 2>&1
+				echo "UPDATE phones SET local_gmt='$OSDTZ';" | mysql osdial > /dev/null 2>&1
+			fi
+
+			# Prompt for Company, Binfone Username and Password
+			dialog --clear --timeout $TIMEOUT \
+				--backtitle "OSDial - The OpenSource Dialer" \
+				--title "OSDial FirstRun - Customize Login - Timeout: $TIMEOUT seconds" \
+				--inputbox "Enter Company Name:" 9 65 "$COMPANY" 2> $TEMP
+			[ "$?" = "0" ] && COMPANY=`cat $TEMP`
+			[ -z "$COMPANY" ] && COMPANY="Company Name Here"
+			echo "UPDATE system_settings SET company_name='$COMPANY';" | mysql osdial > /dev/null 2>&1
+
+			# Get INET address from eth0 or eth1
+			INET=`/sbin/ip ad li dev eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d '/' -f 1`
+			if [ -z "$INET" ]; then
+				INET=`/sbin/ip ad li dev eth1 | grep 'inet ' | cut -d ' ' -f 6 | cut -d '/' -f 1`
+			fi
 		fi
-
-		# Prompt for Company, Binfone Username and Password
-		dialog --clear --timeout $TIMEOUT \
-			--backtitle "OSDial - The OpenSource Dialer" \
-			--title "OSDial FirstRun - Customize Login - Timeout: $TIMEOUT seconds" \
-			--inputbox "Enter Company Name:" 9 65 "$COMPANY" 2> $TEMP
-		[ "$?" = "0" ] && COMPANY=`cat $TEMP`
-		[ -z "$COMPANY" ] && COMPANY="Company Name Here"
-		echo "UPDATE system_settings SET company_name='$COMPANY';" | mysql osdial > /dev/null 2>&1
 	
-		dialog --clear --timeout $BINTIMEOUT --backtitle "OSDial - The OpenSource Dialer" --title "Free VoIP Trial" \
-			--form "\n                You may optionally contact\n      Call Center Service Group at 800-221-0251 (opt 2)\n   for a free trial with Binfone, a premier VoIP provider.\n\n        If you have an existing Binfone IAX extension,\n          you may also enter those credentials here.\n \n \n " 20 65 2 \
-			"Binfone User/Ext#:" 1 15 "$BINUSER" 1 35 7 6 \
-			"Binfone Password:" 2 15 "$BINPASS" 2 35 9 8 2> $TEMP
-		{
-			set `cat $TEMP`
-			BINUSER=$1
-			BINPASS=$2
-			clear
-		}
-		if [ "$BINUSER" != "$ORIG_BINUSER" -a "$BINUSER" != "" ]; then
-			/usr/bin/perl -pi -e "s|$ORIG_BINUSER|$BINUSER|" /etc/asterisk/osdial_iax_trunks.conf
-			/usr/bin/perl -pi -e "s|$ORIG_BINPASS|$BINPASS|" /etc/asterisk/osdial_iax_trunks.conf
-			/usr/bin/perl -pi -e "s|^;||" /etc/asterisk/osdial_iax_trunks.conf
+		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-dialer" -o -f "/opt/osdial/.osdial-install-dialer" ]; then
+			dialog --clear --timeout $BINTIMEOUT --backtitle "OSDial - The OpenSource Dialer" --title "Free VoIP Trial" \
+				--form "\n                You may optionally contact\n      Call Center Service Group at 800-221-0251 (opt 2)\n   for a free trial with Binfone, a premier VoIP provider.\n\n        If you have an existing Binfone IAX extension,\n          you may also enter those credentials here.\n \n \n " 20 65 2 \
+				"Binfone User/Ext#:" 1 15 "$BINUSER" 1 35 7 6 \
+				"Binfone Password:" 2 15 "$BINPASS" 2 35 9 8 2> $TEMP
+			{
+				set `cat $TEMP`
+				BINUSER=$1
+				BINPASS=$2
+				clear
+			}
+			if [ "$BINUSER" != "$ORIG_BINUSER" -a "$BINUSER" != "" ]; then
+				/usr/bin/perl -pi -e "s|$ORIG_BINUSER|$BINUSER|" /etc/asterisk/osdial_iax_trunks.conf
+				/usr/bin/perl -pi -e "s|$ORIG_BINPASS|$BINPASS|" /etc/asterisk/osdial_iax_trunks.conf
+				/usr/bin/perl -pi -e "s|^;||" /etc/asterisk/osdial_iax_trunks.conf
+			fi
+			/usr/sbin/asterisk -rx "iax2 reload" > /dev/null 2>&1
 		fi
-		/usr/sbin/asterisk -rx "iax2 reload" > /dev/null 2>&1
 
-		# Get INET address from eth0 or eth1
-		INET=`/sbin/ip ad li dev eth0 | grep 'inet ' | cut -d ' ' -f 6 | cut -d '/' -f 1`
-		if [ -z "$INET" ]; then
-			INET=`/sbin/ip ad li dev eth1 | grep 'inet ' | cut -d ' ' -f 6 | cut -d '/' -f 1`
-		fi
 
 		# Overwrite /etc/issue
 		echo > /etc/issue
@@ -89,35 +94,43 @@ start() {
 		echo >> /etc/issue
 		echo "                    OSDial - The OpenSource Dialer" >> /etc/issue
 		echo >> /etc/issue
-		echo "                             $COMPANY" >> /etc/issue
-		echo >> /etc/issue
+		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-control" -o -f "/opt/osdial/.osdial-install-control" -o -f "/opt/osdial/.osdial-sql" -o -f "/opt/osdial/.osdial-install-sql" ]; then
+			echo "                             $COMPANY" >> /etc/issue
+			echo >> /etc/issue
+		fi
 		echo "            Paid support available through Call Center Service Group">> /etc/issue
 		echo "                          800-221-0251 (opt 2)">> /etc/issue
 		echo >> /etc/issue
 		echo "           OSDial is available for download at http://www.osdial.com/" >> /etc/issue
 		echo >> /etc/issue
-		echo "           You may now boot the Agent-DemoCD in another computer" >> /etc/issue
-		echo "            or point your Firefox browser to http://$INET/" >> /etc/issue
-		echo >> /etc/issue
-		echo "                  Admin Login and Password: admin / admin" >> /etc/issue
-		echo >> /etc/issue
-		echo "                  Phone Login and Password:  1000 / 1000" >> /etc/issue
-		echo "                  Agent Login and Password:  1000 / 1000" >> /etc/issue
-		echo >> /etc/issue
+		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-control" -o -f "/opt/osdial/.osdial-install-control" -o -f "/opt/osdial/.osdial-sql" -o -f "/opt/osdial/.osdial-install-sql" ]; then
+			echo "           You may now boot the Agent-DemoCD in another computer" >> /etc/issue
+			echo "            or point your Firefox browser to http://$INET/" >> /etc/issue
+			echo >> /etc/issue
+			echo "                  Admin Login and Password: admin / admin" >> /etc/issue
+			echo >> /etc/issue
+			echo "                  Phone Login and Password:  1000 / 1000" >> /etc/issue
+			echo "                  Agent Login and Password:  1000 / 1000" >> /etc/issue
+			echo >> /etc/issue
+		fi
 		echo "             Temporary root password is osdial1234, change ASAP!" >> /etc/issue
 		echo >> /etc/issue
 		echo " --- " >> /etc/issue
 
 		# Saving options to /etc/sysconfig/osdial
 		echo "OSDIAL_FIRSTRUN=\"NO\"" > /etc/sysconfig/osdial
-		echo "OSDIAL_COMPANY=\"$COMPANY\"" >> /etc/sysconfig/osdial
-		echo "OSDIAL_BINUSER=\"$BINUSER\"" >> /etc/sysconfig/osdial
-		echo "OSDIAL_BINPASS=\"$BINPASS\"" >> /etc/sysconfig/osdial
+		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-control" -o -f "/opt/osdial/.osdial-install-control" -o -f "/opt/osdial/.osdial-sql" -o -f "/opt/osdial/.osdial-install-sql" ]; then
+			echo "OSDIAL_COMPANY=\"$COMPANY\"" >> /etc/sysconfig/osdial
+		fi
+		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-dialer" -o -f "/opt/osdial/.osdial-install-dialer" ]; then
+			echo "OSDIAL_BINUSER=\"$BINUSER\"" >> /etc/sysconfig/osdial
+			echo "OSDIAL_BINPASS=\"$BINPASS\"" >> /etc/sysconfig/osdial
+		fi
 	fi
 
 	# Make tmpfs filesystem for recordings
 	# Make sure it is not a live image.
-	if [ ! -f "/etc/osdial.livecd" ]; then
+	if [ ! -f "/opt/osdial/.osdial-profile-live" ]; then
 		# Make sure this system runs asterisk
 		/sbin/chkconfig --list asterisk | grep on > /dev/null 2>&1
 		if [ "$?" -gt 0 ]; then
