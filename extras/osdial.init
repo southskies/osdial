@@ -109,10 +109,10 @@ start() {
 		echo " --- " >> /etc/issue
 
 		# Saving options to /etc/sysconfig/osdial
-		echo "OSDIAL_FIRSTRUN=NO" > /etc/sysconfig/osdial
-		echo "OSDIAL_COMPANY=$COMPANY" >> /etc/sysconfig/osdial
-		echo "OSDIAL_BINUSER=$BINUSER" >> /etc/sysconfig/osdial
-		echo "OSDIAL_BINPASS=$BINPASS" >> /etc/sysconfig/osdial
+		echo "OSDIAL_FIRSTRUN=\"NO\"" > /etc/sysconfig/osdial
+		echo "OSDIAL_COMPANY=\"$COMPANY\"" >> /etc/sysconfig/osdial
+		echo "OSDIAL_BINUSER=\"$BINUSER\"" >> /etc/sysconfig/osdial
+		echo "OSDIAL_BINPASS=\"$BINPASS\"" >> /etc/sysconfig/osdial
 	fi
 
 	# Make tmpfs filesystem for recordings
