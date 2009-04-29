@@ -2458,7 +2458,7 @@ foreach ($forms as $form) {
 												<font class="body_input"><input type=text size=4 name=SecondS class="cust_form" value="">s</font>
 											</td>
 											<!--td width=20%><font class="body_text" color=#AACBD4>Channel:&nbsp;<a id=callchannel class="body_text"></a></td -->
-											<td width=25% align=right valign=middle><font class="body_text" color=#1C4754>Channel:&nbsp;<a id=callchannel class="body_text"></a></td>
+											<td width=25% align=right valign=middle><font class="body_text" color=#ABCBD4>Channel:&nbsp;<a id=callchannel class="body_text"></a></td>
 											<td width=45% align=right valign=top>
 												<font class="body_text" color=#1C4754>Cust Time:&nbsp;</a></font>
 												<font class="body_input"><input type=text size=19 maxlength=22 name=custdatetime class="cust_form" value=""></font>
