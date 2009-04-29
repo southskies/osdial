@@ -563,7 +563,7 @@ if ($relogin == 'YES') {
 
 if ($user_login_first == 1) {
 	if ( (strlen($VD_login)<1) or (strlen($VD_pass)<1) or (strlen($VD_campaign)<1) ) {
-		echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" media=\"screen\">\n";
+		//echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" media=\"screen\">\n";
 		echo "<title>OSDial web client: Campaign Login</title>\n";
 		//echo "<style>a:link {color: blue} a:visited {color: navy} a:active {color: navy}</style>";
 		echo "</head>\n";
@@ -573,26 +573,51 @@ if ($user_login_first == 1) {
 		echo "<!-- INTERNATIONALIZATION-LINKS-PLACEHOLDER-OSDIAL -->\n";
 		echo "</TR></TABLE>\n";
 		
-		echo "<FORM  NAME=osdial_form ID=osdial_form ACTION=\"$agcPAGE\" METHOD=POST>\n";
+		echo "<FORM NAME=osdial_form ID=osdial_form ACTION=\"$agcPAGE\" METHOD=POST>\n";
 		echo "<INPUT TYPE=HIDDEN NAME=DB VALUE=\"$DB\">\n";
 		#echo "<INPUT TYPE=HIDDEN NAME=phone_login VALUE=\"$phone_login\">\n";
 		#echo "<INPUT TYPE=HIDDEN NAME=phone_pass VALUE=\"$phone_pass\">\n";
-		echo "<CENTER><BR><B>User Login</B><BR><BR>";
-		echo "<TABLE WIDTH=460 CELLPADDING=0 CELLSPACING=0><TR>";
-		echo "<TD ALIGN=LEFT VALIGN=BOTTOM><b>&nbsp;&nbsp;<font color=white>OSDial</b><!--IMG SRC=\"./images/vdc_tab_osdial.gif\" BORDER=0 --></TD>";
-		echo "<TD ALIGN=CENTER VALIGN=MIDDLE> <font color=white>Campaign Login </TD>";
-		echo "</TR>\n";
-		echo "<TR><TD ALIGN=LEFT COLSPAN=2><font size=1> &nbsp; </TD></TR>\n";
-		echo "<TR><TD ALIGN=RIGHT><font color=white>User Login:  </TD>";
-		echo "<TD ALIGN=LEFT><INPUT TYPE=TEXT NAME=VD_login SIZE=10 MAXLENGTH=20 VALUE=\"$VD_login\"></TD></TR>\n";
-		echo "<TR><TD ALIGN=RIGHT><font color=white>User Password:  </TD>";
-		echo "<TD ALIGN=LEFT><INPUT TYPE=PASSWORD NAME=VD_pass SIZE=10 MAXLENGTH=20 VALUE=\"$VD_pass\"></TD></TR>\n";
-		echo "<TR><TD ALIGN=RIGHT><font color=white>Campaign:  </TD>";
-		echo "<TD ALIGN=LEFT><span id=\"LogiNCamPaigns\">$camp_form_code</span></TD></TR>\n";
-		echo "<tr><td colspan=2>&nbsp;</td></tr>";
-		echo "<TR><TD ALIGN=CENTER COLSPAN=2><INPUT TYPE=SUBMIT NAME=SUBMIT VALUE=SUBMIT> &nbsp; \n";
-		echo "<span id=\"LogiNReseT\"></span></TD></TR>\n";
-		echo "<TR><TD ALIGN=LEFT COLSPAN=2><font size=1><BR>VERSION: $version &nbsp; &nbsp; &nbsp; BUILD: $build</TD></TR>\n";
+		
+		echo "<div class=containera>";
+		echo "<TABLE class=acrosslogin2 WIDTH=500 CELLPADDING=0 CELLSPACING=0 border=0>";
+		echo "<tr>";
+		echo "	<td width=22><img src=images/AgentTopLeft.png width=22 height=22 align=left></td>";
+		echo "	<td class=across-top align=center colspan=2>&nbsp;</td>";
+		echo "	<td width=22><img src=images/AgentTopRightS.png width=22 height=22 align=right></td>";
+		echo "</tr>";
+		echo "<tr>";
+		echo "	<TD align=left>&nbsp;</TD>";
+		echo "	<TD ALIGN=center colspan=2><font color=#1C4754><b>Agent Login</b></TD>";
+		echo "	<TD align=left class=rborder>&nbsp;</TD>";
+		echo "</tr>";
+		echo "<tr>";
+		echo "	<TD ALIGN=right COLSPAN=4 class=rborder>&nbsp;</TD>";
+		echo "</tr>";
+		echo "<tr>";
+		echo "	<TD align=left></TD>";
+		echo "	<TD ALIGN=RIGHT><font color=#1C4754>User Login:&nbsp;</TD>";
+		echo "	<TD ALIGN=LEFT><INPUT TYPE=TEXT NAME=VD_login SIZE=10 MAXLENGTH=20 VALUE=\"$VD_login\"></TD>";
+		echo "	<TD align=left class=rborder>&nbsp;</TD>";
+		echo "</tr>";
+		echo "<tr>";
+		echo "	<TD align=left></TD>";
+		echo "	<TD ALIGN=RIGHT><font color=#1C4754>User Password:&nbsp;</TD>";
+		echo "	<TD ALIGN=LEFT><INPUT TYPE=PASSWORD NAME=VD_pass SIZE=10 MAXLENGTH=20 VALUE=\"$VD_pass\"></TD>";
+		echo "	<TD align=left class=rborder>&nbsp;</TD>";
+		echo "</tr>";
+		echo "<tr>";
+		echo "	<TD align=left></TD>";
+		echo "	<TD ALIGN=RIGHT><font color=#1C4754>Campaign:&nbsp;</TD>";
+		echo "	<TD ALIGN=LEFT>$camp_form_code</TD>";
+		echo "	<TD align=left class=rborder>&nbsp;</TD>";
+		echo "</tr>";
+		echo "<tr><td colspan=4 class=rborder>&nbsp;</td></tr>";
+		echo "<tr>";
+		echo "	<TD ALIGN=CENTER COLSPAN=4 class=rborder><INPUT TYPE=SUBMIT NAME=SUBMIT VALUE=SUBMIT></TD>";
+		echo "</tr>";
+		echo "<tr>";
+		echo "	<TD ALIGN=LEFT COLSPAN=4 class=rbborder><font size=1>&nbsp;Version: $version&nbsp;&nbsp;&nbsp;Build: $build</TD>";
+		echo "</tr>";
 		echo "</TABLE>\n";
 		echo "</FORM>\n\n";
 		echo "</body>\n\n";
@@ -1833,7 +1858,7 @@ foreach ($forms as $form) {
 	
 	<!-- Choose From Available Call Backs -->
 	<span style="position:absolute;left:0px;top:18px;z-index:38;" id="CallBacKsLisTBox">
-		<table border=1 bgcolor="#7DB2F2" width=<?=$CAwidth ?> height=460>
+		<table border=1 bgcolor="#AECED7" width=<?=$CAwidth ?> height=460>
 			<TR>
 				<TD align=center VALIGN=top> CALLBACKS FOR AGENT <? echo $VD_login ?>:<BR>Click on a callback below to call the customer back now. If you click on a record below to call it, it will be removed from the list.
 					<BR>
@@ -2460,6 +2485,11 @@ foreach ($forms as $form) {
 									<font class="body_text" color=#1C4754>Last:</font> <font class="body_input"><input type=text size=15 name=last_name maxlength=30 class="cust_form" value=""></font>
 								</td>
 							</tr>
+							<!-- Hooks for company field
+							<tr>
+								<td align=right><font class="body_text" color=#1C4754>Company:&nbsp;</font></td>
+								<td align=left colspan=2><font class="body_input"><input type=text size=58 name=company maxlength=100 class="cust_form" value=""></font></td>
+							-->
 							<tr>
 								<td align=right><font class="body_text" color=#1C4754>Address1:&nbsp;</font></td>
 								<td align=left colspan=2><font class="body_input"><input type=text size=58 name=address1 maxlength=100 class="cust_form" value=""></font></td>
@@ -2513,16 +2543,18 @@ foreach ($forms as $form) {
 							<td align=left><font class="body_input"><input type=text size=22 name=custom1 maxlength=100 class="cust_form" value=""></font>&nbsp;</td>
 							<td align=right><font class="body_text" color=#1C4754>Custom2:&nbsp;</font><font class="body_input"><input type=text size=22 name=custom2 maxlength=100 class="cust_form" value=""></font></td>
 						</tr>
+						<!--
 						<tr>
 							<td align=right><font class="body_text"> <font color=#1C4754>Custom3:&nbsp;</font></td>
 							<td align=left><font class="body_text"><input type=text size=22 name=vendor_lead_code maxlength=20 class="cust_form" value="">&nbsp;</td>
-							<!-- td align=right> <font class="body_text"><font color=#1C4754>Custom4:&nbsp;</font><input type=text size=26 name=vendor_lead_code maxlength=20 class="cust_form" value=""></td -->
+							<td align=right> <font class="body_text"><font color=#1C4754>Custom4:&nbsp;</font><input type=text size=26 name=vendor_lead_code maxlength=20 class="cust_form" value=""></td>
 						</tr>
-						<!-- tr>
+						<tr>
 							<td align=right><font class="body_text"> <font color=#1C4754>Custom5:&nbsp;</font></td>
 							<td align=left><font class="body_text"><input type=text size=26 name=custom1 maxlength=100 class="cust_form" value="">&nbsp;</td>
 							<td align=right> <font class="body_text"><font color=#1C4754>Custom6:&nbsp;</font><input type=text size=26 name=vendor_lead_code maxlength=20 class="cust_form" value=""></td>
-						</tr -->
+						</tr>
+						-->
 						</table>
 			
 					</div>
