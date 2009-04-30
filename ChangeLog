@@ -1,5 +1,19 @@
+2009-04-30  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r151] bin/AST_VDauto_dial.pl, extras/sql/210006.sql,
+	  extras/sql/upgrade_sql.map, version,
+	  www/admin/include/content/campaigns/campaigns.php,
+	  www/admin/include/help.php: Created field and code for
+	  campaign_call_time. This allows for a time-based on/off switch in
+	  the campaign that will adjust the goalcalls based on the servers
+	  timezone.
+
 2009-04-29  Lott Caskey <lottcaskey@gmail.com>
 
+	* [r150] ChangeLog, version: Update to 2.1.0.005 for new DB
+	  statuses
+	* [r149] agi/agi-OSDoutboundIVR.agi: Added SQL to update agent type
+	  on external XFERs to CLOSER
 	* [r148] extras/sql/210005.sql, extras/sql/upgrade_sql.map: Added
 	  status CRF, CRR, CRO, CRC to report on SIP 50X errors
 	* [r147] bin/FastAGI_log.pl: Added support for logging of SIP
