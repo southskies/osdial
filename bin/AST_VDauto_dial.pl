@@ -462,7 +462,7 @@ while($one_day_interval > 0)
 
 			### grab the dial_level and multiply by active agents to get your goalcalls
 			$DBIPadlevel[$user_CIPct]=0;
-			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound,answers_per_hour_limit FROM osdial_campaigns where campaign_id='$DBIPcampaign[$user_CIPct]'";
+			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound,answers_per_hour_limit,campaign_call_time FROM osdial_campaigns where campaign_id='$DBIPcampaign[$user_CIPct]'";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -491,10 +491,14 @@ while($one_day_interval > 0)
 					$DBIPautoaltdial[$user_CIPct] =	"$aryA[10]";
 					$DBIPcampaign_allow_inbound[$user_CIPct] =	"$aryA[11]";
 					$DBIPanswers_per_hour_limit[$user_CIPct] =	($aryA[12] * 1);
+					$DBIPcampaign_call_time[$user_CIPct] =	$aryA[13];
 				$rec_count++;
 				}
 			$sthA->finish();
 
+			$DBIPgoalcalls[$user_CIPct] = ($DBIPadlevel[$user_CIPct] * $DBIPcount[$user_CIPct]);
+
+			# Adjust the goalcalls to 0 if answers per hour is met.
 			$answers_hour = 0;
 			$stmtA = "SELECT answers_hour FROM osdial_campaign_stats where campaign_id='$DBIPcampaign[$user_CIPct]';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -504,10 +508,47 @@ while($one_day_interval > 0)
 				@aryA = $sthA->fetchrow_array;
 				$answers_hour = ($aryA[0] * 1);
 			}
-			if ($DBIPanswers_per_hour_limit[$user_CIPct] > 0 and $answers_hour > $DBIPanswers_per_hour_limit[$user_CIPct]) {
+			if ($DBIPanswers_per_hour_limit[$user_CIPct] > 0 and $answers_hour >= $DBIPanswers_per_hour_limit[$user_CIPct]) {
 				$DBIPgoalcalls[$user_CIPct] = 0;
-			} else {
-				$DBIPgoalcalls[$user_CIPct] = ($DBIPadlevel[$user_CIPct] * $DBIPcount[$user_CIPct]);
+				$event_string="$DBIPcampaign[$user_CIPct] $DBIPaddress[$user_CIPct]: APH limit reached.  answer_per_hour_limit: $DBIPansers_per_hout_limit[$user_CIPct], answers_hour: $answers_hour";
+				&event_logger;
+			}
+
+			# Adjust goalcalls to 0 if campaign_call_time is out of current time-range.
+			$cct = {};
+			$stmtA = "SELECT * FROM osdial_call_times where call_time_id='$DBIPcampaign_call_time[$user_CIPct]';";
+			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+			$sthArows=$sthA->rows;
+			if ($sthArows > 0) {
+				$cct = $sthA->fetchrow_hashref;
+				my $cct_start = $cct->{ct_default_start};
+				my $cct_stop  = $cct->{ct_default_stop};
+				$cct_start = $cct->{ct_sunday_start}    if ($mday == 0 and $cct->{ct_sunday_start});
+				$cct_stop  = $cct->{ct_sunday_stop}     if ($mday == 0 and $cct->{ct_sunday_stop});
+				$cct_start = $cct->{ct_monday_start}    if ($mday == 1 and $cct->{ct_monday_start});
+				$cct_stop  = $cct->{ct_monday_stop}     if ($mday == 1 and $cct->{ct_monday_stop});
+				$cct_start = $cct->{ct_tuesday_start}   if ($mday == 2 and $cct->{ct_tuesday_start});
+				$cct_stop  = $cct->{ct_tuesday_stop}    if ($mday == 2 and $cct->{ct_tuesday_stop});
+				$cct_start = $cct->{ct_wednesday_start} if ($mday == 3 and $cct->{ct_wednesday_start});
+				$cct_stop  = $cct->{ct_wednesday_stop}  if ($mday == 3 and $cct->{ct_wednesday_stop});
+				$cct_start = $cct->{ct_thursday_start}  if ($mday == 4 and $cct->{ct_thursday_start});
+				$cct_stop  = $cct->{ct_thursday_stop}   if ($mday == 4 and $cct->{ct_thursday_stop});
+				$cct_start = $cct->{ct_friday_start}    if ($mday == 5 and $cct->{ct_friday_start});
+				$cct_stop  = $cct->{ct_friday_stop}     if ($mday == 5 and $cct->{ct_friday_stop});
+				$cct_start = $cct->{ct_saturday_start}  if ($mday == 6 and $cct->{ct_saturday_start});
+				$cct_stop  = $cct->{ct_saturday_stop}   if ($mday == 6 and $cct->{ct_saturday_stop});
+				$miltime = (($hour . $min) * 1);
+				# We are not dialing at all today...
+				if ($cct_start == 2400 and $cct_stop == 2400) {
+					$DBIPgoalcalls[$user_CIPct] = 0;
+					$event_string="$DBIPcampaign[$user_CIPct] $DBIPaddress[$user_CIPct]: CCT no-call day. cct_start: $cct_start, cct_stop: $cct_stop, cur_mil_time: $miltime on $mday";
+					&event_logger;
+				} elsif ($miltime < $cct_start or $miltime > $cct_stop) {
+					$DBIPgoalcalls[$user_CIPct] = 0;
+					$event_string="$DBIPcampaign[$user_CIPct] $DBIPaddress[$user_CIPct]: CCT limit reached. cct_start: $cct_start, cct_stop: $cct_stop, cur_mil_time: $miltime on $mday";
+					&event_logger;
+				}
 			}
 
 			if ($active_only > 0) 

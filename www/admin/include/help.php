@@ -411,9 +411,14 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
  <BR> &nbsp; - fewest_calls: orders by the number of calls received by an agent for that specific inbound group. Least calls first.
 
 <BR>
+<A NAME="osdial_campaigns-campaign_call_time">
+<BR>
+<B>Campaign Call Time -</B> This is where you set during which hours you would like to dial, as determined by the local time in the area <b>where you are calling from</b>. This is controlled by area code and is adjusted for Daylight Savings time if applicable.  This is essentially an automated on/off switch based on time for the campaign and has no effect on the times you are calling into in various time-zones.
+
+<BR>
 <A NAME="osdial_campaigns-local_call_time">
 <BR>
-<B>Local Call Time -</B> This is where you set during which hours you would like to dial, as determined by the local time in the are in which you are calling. This is controlled by area code and is adjusted for Daylight Savings time if applicable. General Guidelines in the USA for Business to Business is 9am to 5pm and Business to Consumer calls is 9am to 9pm.
+<B>Local Call Time -</B> This is where you set during which hours you would like to dial, as determined by the local time in the area <b>in which you are calling</b>. This is controlled by area code and is adjusted for Daylight Savings time if applicable. General Guidelines in the USA for Business to Business is 9am to 5pm and Business to Consumer calls is 9am to 9pm.
 
 <BR>
 <A NAME="osdial_campaigns-dial_timeout">
