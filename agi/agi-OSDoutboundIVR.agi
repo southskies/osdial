@@ -206,15 +206,17 @@ if ($affected_rows == 0) {
 }
 agi_output("+++++ ODOI : SETTING LIVE AGENT TO INCALL");
 
-$outbound_ivr->{ivrid} = $outbound_ivr->{id};
-$outbound_ivr->{parid} = 0;
-ivr_menu($outbound_ivr);
 
 my $stmtA = "UPDATE osdial_list SET comments='" . $outbound_ivr->{announcement} . "';";
 my $affected_rows = $dbhA->do($stmtA);
 
 my $stmtA = "UPDATE osdial_log SET comments='" . $outbound_ivr->{announcement} . "' WHERE uniqueid = '" . $AGI->{uniqueid} . "';";
 my $affected_rows = $dbhA->do($stmtA);
+
+
+$outbound_ivr->{ivrid} = $outbound_ivr->{id};
+$outbound_ivr->{parid} = 0;
+ivr_menu($outbound_ivr);
 
 $dbhA->disconnect();
 exit;
