@@ -128,6 +128,7 @@ install-docs: .osdial.config
 	@install -d -m 755 $(DESTDIR)$(PATHDONEmonitor)
 	@install -d -m 755 $(DESTDIR)$(PATHDONEmonitor)/ORIG
 	@install -d -m 755 $(DESTDIR)$(PATHagi)
+	@install -d -m 755 $(DESTDIR)/etc/openvpn
 	@install -d -m 755 $(DESTDIR)$(PATHsounds)
 	@install -p -m 755 ./bin/* $(DESTDIR)$(PATHhome)
 	@install -p -m 644 ./extras/osdial.cron $(DESTDIR)$(PATHhome)
@@ -139,6 +140,7 @@ install-docs: .osdial.config
 	@install -p -m 644 ./extras/sql/* $(DESTDIR)$(PATHhome)/sql
 	@install -p -m 755 ./agi/* $(DESTDIR)$(PATHagi)
 	@install -p -m 644 ./sounds/* $(DESTDIR)$(PATHsounds)
+	@install -p -m 644 ./extras/openvpn/* $(DESTDIR)/etc/openvpn
 	
 .install-web: .install-common
 	@echo "Installing User-Interface (web) in $(DESTDIR)$(PATHweb)..."
