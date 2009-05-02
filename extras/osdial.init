@@ -147,14 +147,15 @@ start() {
 				fi
 				echo "OSDIAL_TMPFS_SIZE=$OSDIAL_TMPFS_SIZE" >> /etc/sysconfig/osdial
 			fi
-			if [ -z "$OSDIAL_TMPFS_PATH" ]; then
-				OSDIAL_TMPFS_PATH="/var/spool/asterisk/VDmonitor"
+			if [ -z "$OSDIAL_TMPFS_PATH" -o "$OSDIAL_TMPFS_PATH" = "/var/spool/asterisk/VDmonitor" ]; then
+				OSDIAL_TMPFS_PATH="/mnt/ramdisk"
 				echo "OSDIAL_TMPFS_PATH=$OSDIAL_TMPFS_PATH" >> /etc/sysconfig/osdial
 			fi
 
 			# Mount tmpfs...
-			mkdir /var/spool/asterisk/VDmonitor
+			mkdir -p /mnt/ramdisk > /dev/null 2>&1
 			mount -t tmpfs -o size=${OSDIAL_TMPFS_SIZE},mode=777 tmpfs ${OSDIAL_TMPFS_PATH}
+			mkdir -p /mnt/ramdisk/VDmonitor > /dev/null 2>&1
 			chown asterisk:asterisk ${OSDIAL_TMPFS_PATH}
 		fi
 	fi
