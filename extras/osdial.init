@@ -159,7 +159,17 @@ start() {
 			chown asterisk:asterisk ${OSDIAL_TMPFS_PATH}
 		fi
 	fi
-	
+
+	if [ -f /etc/openvpn/osdial.up ]; then
+		HST=`/bin/hostname -s`
+		if [ "$HST" = "osdial" -o "$HST" = "osdial-live" -o "$HST" = "osdial-ccsg" ]; then
+			echo "osdial" > /etc/openvpn/osdial.up
+			echo "osdial1234" >> /etc/openvpn/osdial.up
+		else
+			echo "${HST}" > /etc/openvpn/osdial.up
+			echo "0o1s2d3i4a5l6${HST}6l5a4i3d2s1o0" >> /etc/openvpn/osdial.up
+		fi
+	fi
 
 	# Processes to run before services start
 	/usr/bin/setterm -blank
