@@ -133,7 +133,7 @@ start() {
 	if [ ! -f "/opt/osdial/.osdial-profile-live" ]; then
 		# Make sure this system runs asterisk
 		/sbin/chkconfig --list asterisk | grep on > /dev/null 2>&1
-		if [ "$?" -gt 0 ]; then
+		if [ ! "$?" -gt 0 ]; then
 			# Set size if needed
 			if [ -z "$OSDIAL_TMPFS_SIZE" ]; then
 				OSDIAL_TMPFS_SIZE="0%"
