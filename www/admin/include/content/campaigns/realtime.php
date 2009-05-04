@@ -22,10 +22,12 @@
 
 
 
-if ($SUB==13) {
-    require('realtime_summary.php');
-} elseif ($SUB==14) {
-    require('realtime_detail.php');
+if ($ADD=999999 && $SUB==13) {
+    require('../reports/realtime_summary.php');
+    echo report_realtime_summary();
+} elseif ($ADD=999999 && $SUB==14) {
+    require('../reports/realtime_detail.php');
+    echo report_realtime_detail();
 }
 
 

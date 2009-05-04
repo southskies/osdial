@@ -1,16 +1,30 @@
 <?php
+#
+# Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+# Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+# Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+#
+#     This file is part of OSDial.
+#
+#     OSDial is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as
+#     published by the Free Software Foundation, either version 3 of
+#     the License, or (at your option) any later version.
+#
+#     OSDial is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public
+#     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+#
 
-######################
-# ADD=999999&SUB=14 Show RealTime Detail screen
-######################
-if ($ADD==999999 && $SUB==14) {
+function report_realtime_detail() {
 
+    $html = '';
 	$pref = '';
-	function getloadavg() {
-		$loadavg = file_get_contents($pref . "Loadavg.txt");
-		return $loadavg;
-	}
-	//echo ":$orderby:$ADD"; //debug
+
 	if (!isset($RR))			{$RR=4;}
 	if (!isset($group))			{$group='';}
 	if (!isset($usergroup))		{$usergroup='';}
@@ -31,28 +45,10 @@ if ($ADD==999999 && $SUB==14) {
 				//}
 				// Ensuring only vm entries show up
 				if ( substr($line,0,7) == "default" ) {
-				echo "<tr><td><pre>" . $line . "</td></tr>";
+				$html .= "<tr><td><pre>" . $line . "</td></tr>";
 				}
 		}
 	
-	#$PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);
-	#$PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
-	#
-	#$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1';";
-	#if ($DB) {echo "|$stmt|\n";}
-	#if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
-	#
-	#$rslt=mysql_query($stmt, $link);
-	#$row=mysql_fetch_row($rslt);
-	#$auth=$row[0];
-	#
-	#if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth)) {
-	#	Header("WWW-Authenticate: Basic realm=\"OSDial-Administrator\"");
-	#	Header("HTTP/1.0 401 Unauthorized");
-	#	echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
-	#	exit;
-	#}
-
 	$NOW_TIME = date("Y-m-d H:i:s");
 	$NOW_DAY = date("Y-m-d");
 	$NOW_HOUR = date("H:i:s");
@@ -78,7 +74,7 @@ if ($ADD==999999 && $SUB==14) {
 	$stmt="select campaign_id from osdial_campaigns where active='Y';";
 	$rslt=mysql_query($stmt, $link);
 	if (!isset($DB))   {$DB=0;}
-	if ($DB) {echo "$stmt\n";}
+	if ($DB) {$html .= "$stmt\n";}
 	
 	$groups_to_print = mysql_num_rows($rslt);
 	$i=0;
@@ -91,7 +87,7 @@ if ($ADD==999999 && $SUB==14) {
 	$stmt="select * from osdial_user_groups;";
 	$rslt=mysql_query($stmt, $link);
 	if (!isset($DB))   {$DB=0;}
-	if ($DB) {echo "$stmt\n";}
+	if ($DB) {$html .= "$stmt\n";}
 	$usergroups_to_print = mysql_num_rows($rslt);
 	$i=0;
 	while ($i < $usergroups_to_print) {
@@ -134,7 +130,7 @@ if ($ADD==999999 && $SUB==14) {
 	
 	$stmt="select group_id,group_color from osdial_inbound_groups;";
 	$rslt=mysql_query($stmt, $link);
-	if ($DB) {echo "$stmt\n";}
+	if ($DB) {$html .= "$stmt\n";}
 	$INgroups_to_print = mysql_num_rows($rslt);
 	if ($INgroups_to_print > 0) {
 		$g=0;
@@ -142,12 +138,12 @@ if ($ADD==999999 && $SUB==14) {
 			$row=mysql_fetch_row($rslt);
 			$group_id[$g] = $row[0];
 			$group_color[$g] = $row[1];
-			echo "   .$group_id[$g] {color: black; background-color: $group_color[$g]}\n";
+			$html .= "   .$group_id[$g] {color: black; background-color: $group_color[$g]}\n";
 			$g++;
 		}
 	}
 	
-	echo "\n-->\n
+	$html .= "\n-->\n
 	</STYLE>\n";
 
 	$stmt = "select count(*) from osdial_campaigns where campaign_id='$group' and campaign_allow_inbound='Y';";
@@ -156,94 +152,94 @@ if ($ADD==999999 && $SUB==14) {
 		$campaign_allow_inbound = $row[0];
 	
 	
-	//echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
-	//echo "<META HTTP-EQUIV=Refresh CONTENT=\"$RR; URL=$PHP_SELF?RR=$RR&DB=$DB&group=$group&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">\n";
+	//$html .= "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
+	//$html .= "<META HTTP-EQUIV=Refresh CONTENT=\"$RR; URL=$PHP_SELF?RR=$RR&DB=$DB&group=$group&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">\n";
 	
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT SIZE=1>";
+	$html .= "<TABLE align=center><TR><TD>\n";
+	$html .= "<FONT SIZE=1>";
 	
-	echo "<div class=no-ul>";
-	echo "<FORM ACTION=\"$PHP_SELF\" METHOD=GET>\n";
-	echo "<input type=hidden name=ADD value=999999>\n";
-	echo "<input type=hidden name=SUB value=14>\n";
-	echo "<input type=hidden name=campaign_id value=$campaign_id>\n";
-	echo "<input type=hidden name=group value=$group>\n";
-	echo "<input type=hidden name=RR value=$RR>\n";
+	$html .= "<div class=no-ul>";
+	$html .= "<FORM ACTION=\"$PHP_SELF\" METHOD=GET>\n";
+	$html .= "<input type=hidden name=ADD value=999999>\n";
+	$html .= "<input type=hidden name=SUB value=14>\n";
+	$html .= "<input type=hidden name=campaign_id value=$campaign_id>\n";
+	$html .= "<input type=hidden name=group value=$group>\n";
+	$html .= "<input type=hidden name=RR value=$RR>\n";
 	
-	echo "<p class=centered>";
-	echo "<font color=navy size=+1>CAMPAIGN DETAILS</font><br><br>";
+	$html .= "<p class=centered>";
+	$html .= "<font color=navy size=+1>CAMPAIGN DETAILS</font><br><br>";
 	
-	echo "<FONT COLOR=navy SIZE=2>";
-	echo "Update:&nbsp;";
-	if ($RR==38400) { echo "</font><font size=+1>"; } else { echo "</font><font size=-1>"; }
-	echo "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">Daily</a>&nbsp;&nbsp;"; 
+	$html .= "<FONT COLOR=navy SIZE=2>";
+	$html .= "Update:&nbsp;";
+	if ($RR==38400) { $html .= "</font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">Daily</a>&nbsp;&nbsp;"; 
 	
-	if ($RR==3600) { echo "</font></font><font size=+1>"; } else { echo "</font><font size=-1>"; }
-	echo "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=3600&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">Hourly</a>&nbsp;&nbsp;";
+	if ($RR==3600) { $html .= "</font></font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=3600&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">Hourly</a>&nbsp;&nbsp;";
 	
-	if ($RR==600) { echo "</font><font size=+1>"; } else { echo "</font><font size=-1>"; }
-	echo "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=600&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">10min</a>&nbsp;&nbsp;";
+	if ($RR==600) { $html .= "</font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=600&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">10min</a>&nbsp;&nbsp;";
 	
-	if ($RR==30) { echo "</font><font size=+1>"; } else { echo "</font><font size=-1>"; }
-	echo "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=30&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">30sec</a>&nbsp;&nbsp;";
+	if ($RR==30) { $html .= "</font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=30&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">30sec</a>&nbsp;&nbsp;";
 	
-	if ($RR==4) { echo "</font><font size=+1>"; } else { echo "</font><font size=-1>"; }
-	echo "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=4&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">4sec</a>&nbsp;&nbsp;";
+	if ($RR==4) { $html .= "</font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=4&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">4sec</a>&nbsp;&nbsp;";
 	
-	echo "<font size=2>";
+	$html .= "<font size=2>";
 	
-	echo "-&nbsp;&nbsp;<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a>&nbsp;- ";
-	echo "<a href=\"$PHP_SELF?ADD=999999&SUB=13&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats\">Summary</a>&nbsp;\n";
-	echo "<br></font>\n";
-	echo "</font>";
+	$html .= "-&nbsp;&nbsp;<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a>&nbsp;- ";
+	$html .= "<a href=\"$PHP_SELF?ADD=999999&SUB=13&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats\">Summary</a>&nbsp;\n";
+	$html .= "<br></font>\n";
+	$html .= "</font>";
 	
-	echo "<font color=navy size=-1>Campaign:</font>\n";
-	echo "<INPUT TYPE=HIDDEN NAME=ADD VALUE=\"$ADD\">\n";
-	echo "<INPUT TYPE=HIDDEN NAME=SUB VALUE=\"$SUB\">\n";
-	echo "<INPUT TYPE=HIDDEN NAME=RR VALUE=\"$RR\">\n";
-	echo "<INPUT TYPE=HIDDEN NAME=DB VALUE=\"$DB\">\n";
-	echo "<INPUT TYPE=HIDDEN NAME=adastats VALUE=\"$adastats\">\n";
-	echo "<INPUT TYPE=HIDDEN NAME=SIPmonitorLINK VALUE=\"$SIPmonitorLINK\">\n";
-	echo "<INPUT TYPE=HIDDEN NAME=IAXmonitorLINK VALUE=\"$IAXmonitorLINK\">\n";
-	echo "<INPUT TYPE=HIDDEN NAME=usergroup VALUE=\"$usergroup\">\n";
-	echo "<INPUT TYPE=HIDDEN NAME=UGdisplay VALUE=\"$UGdisplay\">\n";
-	echo "<INPUT TYPE=HIDDEN NAME=UidORname VALUE=\"$UidORname\">\n";
-	echo "<INPUT TYPE=HIDDEN NAME=orderby VALUE=\"$orderby\">\n";
-	echo "<INPUT TYPE=HIDDEN NAME=SERVdisplay VALUE=\"$SERVdisplay\">\n";
-	echo "<INPUT TYPE=HIDDEN NAME=CALLSdisplay VALUE=\"$CALLSdisplay\">\n";
-	echo "<SELECT SIZE=1 NAME=group>\n";
-	echo "<option value=\"XXXX-ALL-ACTIVE-XXXX\">ALL ACTIVE</option>\n";
+	$html .= "<font color=navy size=-1>Campaign:</font>\n";
+	$html .= "<INPUT TYPE=HIDDEN NAME=ADD VALUE=\"$ADD\">\n";
+	$html .= "<INPUT TYPE=HIDDEN NAME=SUB VALUE=\"$SUB\">\n";
+	$html .= "<INPUT TYPE=HIDDEN NAME=RR VALUE=\"$RR\">\n";
+	$html .= "<INPUT TYPE=HIDDEN NAME=DB VALUE=\"$DB\">\n";
+	$html .= "<INPUT TYPE=HIDDEN NAME=adastats VALUE=\"$adastats\">\n";
+	$html .= "<INPUT TYPE=HIDDEN NAME=SIPmonitorLINK VALUE=\"$SIPmonitorLINK\">\n";
+	$html .= "<INPUT TYPE=HIDDEN NAME=IAXmonitorLINK VALUE=\"$IAXmonitorLINK\">\n";
+	$html .= "<INPUT TYPE=HIDDEN NAME=usergroup VALUE=\"$usergroup\">\n";
+	$html .= "<INPUT TYPE=HIDDEN NAME=UGdisplay VALUE=\"$UGdisplay\">\n";
+	$html .= "<INPUT TYPE=HIDDEN NAME=UidORname VALUE=\"$UidORname\">\n";
+	$html .= "<INPUT TYPE=HIDDEN NAME=orderby VALUE=\"$orderby\">\n";
+	$html .= "<INPUT TYPE=HIDDEN NAME=SERVdisplay VALUE=\"$SERVdisplay\">\n";
+	$html .= "<INPUT TYPE=HIDDEN NAME=CALLSdisplay VALUE=\"$CALLSdisplay\">\n";
+	$html .= "<SELECT SIZE=1 NAME=group>\n";
+	$html .= "<option value=\"XXXX-ALL-ACTIVE-XXXX\">ALL ACTIVE</option>\n";
 	$o=0;
 
 	while ($groups_to_print > $o)	{
 		if ($groups[$o] == $group) {
-			echo "<option selected value=\"$groups[$o]\">$groups[$o]</option>\n";
+			$html .= "<option selected value=\"$groups[$o]\">$groups[$o]</option>\n";
 		} else {
-			echo "<option value=\"$groups[$o]\">$groups[$o]</option>\n";
+			$html .= "<option value=\"$groups[$o]\">$groups[$o]</option>\n";
 		}
 		$o++;
 	}
-	echo "</SELECT>\n";
+	$html .= "</SELECT>\n";
 	if ($UGdisplay > 0)	{
-		echo "<SELECT SIZE=1 NAME=usergroup>\n";
-		echo "<option value=\"\">ALL USER GROUPS</option>\n";
+		$html .= "<SELECT SIZE=1 NAME=usergroup>\n";
+		$html .= "<option value=\"\">ALL USER GROUPS</option>\n";
 		$o=0;
 		while ($usergroups_to_print > $o) {
 			if ($usergroups[$o] == $usergroup) {
-				echo "<option selected value=\"$usergroups[$o]\">$usergroups[$o]</option>\n";
+				$html .= "<option selected value=\"$usergroups[$o]\">$usergroups[$o]</option>\n";
 			} else {
-				echo "<option value=\"$usergroups[$o]\">$usergroups[$o]</option>\n";
+				$html .= "<option value=\"$usergroups[$o]\">$usergroups[$o]</option>\n";
 			}
 			$o++;
 		}
-		echo "</SELECT>\n";
+		$html .= "</SELECT>\n";
 	}
-	echo "<INPUT type=submit NAME=SUBMIT VALUE=SUBMIT>";
-	echo "<br>";
+	$html .= "<INPUT type=submit NAME=SUBMIT VALUE=SUBMIT>";
+	$html .= "<br>";
 
 	
 	if (!$group) {
-		echo "<p class=indents>Please select a campaign!</p></FORM>\n"; 
+		$html .= "<p class=indents>Please select a campaign!</p></FORM>\n"; 
 	} else {
 		$stmt="select auto_dial_level,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,lead_filter_id,hopper_level,dial_method,adaptive_maximum_level,adaptive_dropped_percentage,adaptive_dl_diff_target,adaptive_intensity,available_only_ratio_tally,adaptive_latest_server_time,local_call_time,dial_timeout,dial_statuses from osdial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
 		if ($group=='XXXX-ALL-ACTIVE-XXXX') {
@@ -319,110 +315,110 @@ if ($ADD==999999 && $SUB==14) {
 		$row=mysql_fetch_row($rslt);
 		$balanceSHORT = $row[0];
 
-		echo "</td></tr><tr><td align=left>";
-		echo "<font class=indented color=#1C4754 size=2><b>$group</b></font>";
-		echo "</td></tr><tr><td align=center>";
-		echo "<table class=indents cellpadding=0 cellspacing=0><TR>";
-		echo "<TD ALIGN=RIGHT><font size=2 color=navy><B>Dial Level:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALlev&nbsp;&nbsp; </TD>";
-		echo "<TD ALIGN=RIGHT><font size=2 color=navy><B>Trunk Short/Fill:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $balanceSHORT / $balanceFILL &nbsp;&nbsp; </TD>";
-		echo "<TD ALIGN=RIGHT><font size=2 color=navy><B>Filter:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALfilter &nbsp;&nbsp;</TD>";
-		echo "<TD ALIGN=RIGHT><font size=2 color=navy><B>Time:</B></TD><TD ALIGN=LEFT><font size=2 color=navy>&nbsp; $NOW_TIME </TD>";
-		echo "";
-		echo "</TR>";
+		$html .= "</td></tr><tr><td align=left>";
+		$html .= "<font class=indented color=#1C4754 size=2><b>$group</b></font>";
+		$html .= "</td></tr><tr><td align=center>";
+		$html .= "<table class=indents cellpadding=0 cellspacing=0><TR>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Dial Level:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALlev&nbsp;&nbsp; </TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Trunk Short/Fill:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $balanceSHORT / $balanceFILL &nbsp;&nbsp; </TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Filter:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALfilter &nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Time:</B></TD><TD ALIGN=LEFT><font size=2 color=navy>&nbsp; $NOW_TIME </TD>";
+		$html .= "";
+		$html .= "</TR>";
 	
-		if ($adastats>1) {
-			echo "<TR BGCOLOR=\"#CCCCCC\">";
-			echo "<TD ALIGN=RIGHT><font size=2><B>Max Level:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $maxDIALlev &nbsp; </TD>";
-			echo "<TD ALIGN=RIGHT><font size=2><B>Dropped Max:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DROPmax% &nbsp; &nbsp;</TD>";
-			echo "<TD ALIGN=RIGHT><font size=2><B>Target Diff:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $targetDIFF &nbsp; &nbsp; </TD>";
-			echo "<TD ALIGN=RIGHT><font size=2><B>Intensity:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $ADAintense &nbsp; &nbsp; </TD>";
-			echo "</TR>";
+		if ($adastats > 1) {
+			$html .= "<TR BGCOLOR=\"#CCCCCC\">";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>Max Level:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $maxDIALlev &nbsp; </TD>";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>Dropped Max:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DROPmax% &nbsp; &nbsp;</TD>";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>Target Diff:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $targetDIFF &nbsp; &nbsp; </TD>";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>Intensity:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $ADAintense &nbsp; &nbsp; </TD>";
+			$html .= "</TR>";
 		
-			echo "<TR BGCOLOR=\"#CCCCCC\">";
-			echo "<TD ALIGN=RIGHT><font size=2><B>Dial Timeout:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALtimeout &nbsp;</TD>";
-			echo "<TD ALIGN=RIGHT><font size=2><B>Taper Time:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $TAPERtime &nbsp;</TD>";
-			echo "<TD ALIGN=RIGHT><font size=2><B>Local Time:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $CALLtime &nbsp;</TD>";
-			echo "<TD ALIGN=RIGHT><font size=2><B>Avail Only:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $ADAavailonly &nbsp;</TD>";
-			echo "</TR>";
+			$html .= "<TR BGCOLOR=\"#CCCCCC\">";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>Dial Timeout:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALtimeout &nbsp;</TD>";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>Taper Time:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $TAPERtime &nbsp;</TD>";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>Local Time:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $CALLtime &nbsp;</TD>";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>Avail Only:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $ADAavailonly &nbsp;</TD>";
+			$html .= "</TR>";
 			
-			echo "<TR BGCOLOR=\"#CCCCCC\">";
-			echo "<TD ALIGN=RIGHT><font size=2><B>DL Diff:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $diffONEMIN &nbsp; &nbsp; </TD>";
-			echo "<TD ALIGN=RIGHT><font size=2><B>Diff:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $diffpctONEMIN% &nbsp; &nbsp; </TD>";
-			echo "</TR>";
+			$html .= "<TR BGCOLOR=\"#CCCCCC\">";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>DL Diff:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $diffONEMIN &nbsp; &nbsp; </TD>";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>Diff:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $diffpctONEMIN% &nbsp; &nbsp; </TD>";
+			$html .= "</TR>";
 		}
 
-		echo "<TR>";
-		echo "<TD ALIGN=RIGHT><font size=2 color=navy><B>Dialable Leads:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DAleads &nbsp; &nbsp; </TD>";
-		echo "<TD ALIGN=RIGHT><font size=2 color=navy><B>Calls Today:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $callsTODAY &nbsp; &nbsp; </TD>";
-		echo "<TD ALIGN=RIGHT><font size=2 color=navy><B>Avg Agents:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $agentsONEMIN &nbsp; &nbsp; </TD>";
-		echo "<TD ALIGN=RIGHT><font size=2 color=navy><B>Dial Method:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALmethod &nbsp; &nbsp; </TD>";
-		echo "</TR>";
+		$html .= "<TR>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Dialable Leads:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DAleads &nbsp; &nbsp; </TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Calls Today:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $callsTODAY &nbsp; &nbsp; </TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Avg Agents:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $agentsONEMIN &nbsp; &nbsp; </TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Dial Method:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALmethod &nbsp; &nbsp; </TD>";
+		$html .= "</TR>";
 		
-		echo "<TR>";
-		echo "<TD ALIGN=RIGHT><font size=2 color=navy><B>Hopper Level:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $HOPlev &nbsp; &nbsp; </TD>";
-		echo "<TD ALIGN=RIGHT><font size=2 color=navy><B>Drop/Answer:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $dropsTODAY / $answersTODAY &nbsp; </TD>";
-		echo "<TD ALIGN=RIGHT><font size=2 color=navy><B>Statuses:</B></TD><TD ALIGN=LEFT colspan=3><font size=2>&nbsp; $DIALstatuses</TD>";
-		echo "</TR>";
+		$html .= "<TR>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Hopper Level:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $HOPlev &nbsp; &nbsp; </TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Drop/Answer:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $dropsTODAY / $answersTODAY &nbsp; </TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Statuses:</B></TD><TD ALIGN=LEFT colspan=3><font size=2>&nbsp; $DIALstatuses</TD>";
+		$html .= "</TR>";
 		
-		echo "<TR>";
-		echo "<TD ALIGN=RIGHT><font size=2 color=navy><B>Leads In Hopper:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $VDhop &nbsp; &nbsp; </TD>";
-		echo "<TD ALIGN=RIGHT><font size=2 color=navy><B>Drop %:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; ";
+		$html .= "<TR>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Leads In Hopper:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $VDhop &nbsp; &nbsp; </TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Drop %:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; ";
 		if ($drpctTODAY >= $DROPmax) {
-			echo "<font color=red><B>$drpctTODAY%</B></font>";
+			$html .= "<font color=red><B>$drpctTODAY%</B></font>";
 		} else {
-			echo "$drpctTODAY%";
+			$html .= "$drpctTODAY%";
 		}
-		echo " &nbsp; &nbsp;</TD>";
-		echo "<TD ALIGN=RIGHT><font size=2 color=navy><B>Order:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALorder &nbsp; &nbsp; </TD>";
-		echo "</tr><tr>";
+		$html .= " &nbsp; &nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Order:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALorder &nbsp; &nbsp; </TD>";
+		$html .= "</tr><tr>";
 		if ( (!eregi('NULL',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
-			echo "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat1:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1tally&nbsp;&nbsp;</td>\n";
+			$html .= "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat1:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1tally&nbsp;&nbsp;</td>\n";
 		}
 		if ( (!eregi('NULL',$VSCcat2)) and (strlen($VSCcat2)>0) ) {
-			echo "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat2:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2tally&nbsp;&nbsp;</td>\n";
+			$html .= "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat2:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2tally&nbsp;&nbsp;</td>\n";
 		}
 		if ( (!eregi('NULL',$VSCcat3)) and (strlen($VSCcat3)>0) ) {
-			echo "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat3:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3tally&nbsp;&nbsp;</td>\n";
+			$html .= "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat3:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3tally&nbsp;&nbsp;</td>\n";
 		}
 		if ( (!eregi('NULL',$VSCcat4)) and (strlen($VSCcat4)>0) ) {
-			echo "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat4:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4tally&nbsp;&nbsp;</td>\n";
+			$html .= "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat4:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4tally&nbsp;&nbsp;</td>\n";
 		}
-		echo "</TR>";
+		$html .= "</TR>";
 		
-		echo "<TR>";
-		echo "<TD ALIGN=LEFT COLSPAN=8>";
+		$html .= "<TR>";
+		$html .= "<TD ALIGN=LEFT COLSPAN=8>";
 		
 		if ($adastats<2) {
-			echo "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=2&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\"><font size=1>VIEW MORE SETTINGS</font></a>";
+			$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=2&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\"><font size=1>VIEW MORE SETTINGS</font></a>";
 		} else {
-			echo "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=1&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\"><font size=1>VIEW LESS SETTINGS</font></a>";
+			$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=1&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\"><font size=1>VIEW LESS SETTINGS</font></a>";
 		}
 		if ($UGdisplay>0) {
-			echo " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=0&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\"><font size=1>HIDE USER GROUP</font></a>";
+			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=0&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\"><font size=1>HIDE USER GROUP</font></a>";
 		} else {
-			echo " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=1&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\"><font size=1>VIEW USER GROUP</font></a>";
+			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=1&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\"><font size=1>VIEW USER GROUP</font></a>";
 		}
 		if ($UidORname>0) {
-			echo " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=0&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\"><font size=1>SHOW AGENT ID</font></a>";
+			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=0&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\"><font size=1>SHOW AGENT ID</font></a>";
 		} else {
-			echo " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=1&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\"><font size=1>SHOW AGENT NAME</font></a>";
+			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=1&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\"><font size=1>SHOW AGENT NAME</font></a>";
 		}
 		if ($SERVdisplay>0) {
-			echo " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=0&CALLSdisplay=$CALLSdisplay\"><font size=1>HIDE SERVER INFO</font></a>";
+			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=0&CALLSdisplay=$CALLSdisplay\"><font size=1>HIDE SERVER INFO</font></a>";
 		} else {
-			echo " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=1&CALLSdisplay=$CALLSdisplay\"><font size=1>SHOW SERVER INFO</font></a>";
+			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=1&CALLSdisplay=$CALLSdisplay\"><font size=1>SHOW SERVER INFO</font></a>";
 		}
 		if ($CALLSdisplay>0) {
-			echo " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=0\"><font size=1>HIDE WAITING CALLS DETAIL</font></a>";
+			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=0\"><font size=1>HIDE WAITING CALLS DETAIL</font></a>";
 		} else {
-			echo " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=1\"><font size=1>SHOW WAITING CALLS DETAIL</font></a>";
+			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=1\"><font size=1>SHOW WAITING CALLS DETAIL</font></a>";
 		}
-		echo "</TD>";
-		echo "</TR>";
-		echo "</TABLE>";
+		$html .= "</TD>";
+		$html .= "</TR>";
+		$html .= "</TABLE>";
 		
-		echo "</FORM>\n\n";
-		echo "<br>";
+		$html .= "</FORM>\n\n";
+		$html .= "<br>";
 	}
 
 	###################################################################################
@@ -456,7 +452,7 @@ if ($ADD==999999 && $SUB==14) {
 	$k=0;
 	$stmt = "$stmtA $stmtB";
 	$rslt=mysql_query($stmt, $link);
-	if ($DB) {echo "$stmt\n";}
+	if ($DB) {$html .= "$stmt\n";}
 	
 	$parked_to_print = mysql_num_rows($rslt);
 	if ($parked_to_print > 0) {
@@ -497,15 +493,15 @@ if ($ADD==999999 && $SUB==14) {
 		if ($out_live > 14) {$F='<FONT class="r4">'; $FG='</FONT>';}
 
 		if ($campaign_allow_inbound > 0) {
-			echo "$NFB$out_total$NFE <font color=blue>current active calls</font> &nbsp; &nbsp; &nbsp; \n";
+			$html .= "$NFB$out_total$NFE <font color=blue>current active calls</font> &nbsp; &nbsp; &nbsp; \n";
 		} else {
-			echo "$NFB$out_total$NFE <font color=blue>calls being placed</font> &nbsp; &nbsp; &nbsp; \n";
+			$html .= "$NFB$out_total$NFE <font color=blue>calls being placed</font> &nbsp; &nbsp; &nbsp; \n";
 		}
 		
-		echo "$NFB$out_ring$NFE <font color=blue>calls ringing</font> &nbsp; &nbsp; &nbsp; &nbsp; \n";
-		echo "$NFB$F &nbsp;$out_live $FG$NFE <font color=blue>calls waiting for agents</font> &nbsp; &nbsp; &nbsp; \n";
+		$html .= "$NFB$out_ring$NFE <font color=blue>calls ringing</font> &nbsp; &nbsp; &nbsp; &nbsp; \n";
+		$html .= "$NFB$F &nbsp;$out_live $FG$NFE <font color=blue>calls waiting for agents</font> &nbsp; &nbsp; &nbsp; \n";
 	} else {
-		echo "&nbsp;<font color=red>NO LIVE CALLS WAITING</font>&nbsp;";
+		$html .= "&nbsp;<font color=red>NO LIVE CALLS WAITING</font>&nbsp;";
 	}
 	
 	
@@ -527,19 +523,19 @@ if ($ADD==999999 && $SUB==14) {
 	$LNcentright="&#x2562;";
 	$LNbottomup="&#x2567;";
 	// column length 8|14|14|17|9|12
-	$Cecho = '';
-	$Cecho .= "<font color=navy>&nbsp;&nbsp;Calls Waiting                      $NOW_TIME\n";
-	//$Cecho .= "+--------+--------------+--------------+-----------------+---------+------------+\n";
-	$Cecho .=$LNtopleft.HorizLine(8).$LNtopdown.HorizLine(14).$LNtopdown.HorizLine(14).$LNtopdown.HorizLine(17).$LNtopdown.HorizLine(9).$LNtopdown.HorizLine(12).$LNtopright."<br>";
-	$Cecho .="$LNleft STATUS $LNcenterbar CAMPAIGN     $LNcenterbar PHONE NUMBER $LNcenterbar SERVER_IP       $LNcenterbar DIALTIME$LNcenterbar CALL TYPE  $LNright\n";
-	$Cecho .=$LNcenterleft.CenterLine(8).$LNcentcross.CenterLine(14).$LNcentcross.CenterLine(14).$LNcentcross.CenterLine(17).$LNcentcross.CenterLine(9).$LNcentcross.CenterLine(12).$LNcentright."<br>";
-	//$Cecho .= "| STATUS | CAMPAIGN     | PHONE NUMBER | SERVER_IP       | DIALTIME| CALL TYPE  |\n";
-	//$Cecho .= "+--------+--------------+--------------+-----------------+---------+------------+\n";
+	$C$html .= = '';
+	$C$html .= .= "<font color=navy>&nbsp;&nbsp;Calls Waiting                      $NOW_TIME\n";
+	//$C$html .= .= "+--------+--------------+--------------+-----------------+---------+------------+\n";
+	$C$html .= .=$LNtopleft.HorizLine(8).$LNtopdown.HorizLine(14).$LNtopdown.HorizLine(14).$LNtopdown.HorizLine(17).$LNtopdown.HorizLine(9).$LNtopdown.HorizLine(12).$LNtopright."<br>";
+	$C$html .= .="$LNleft STATUS $LNcenterbar CAMPAIGN     $LNcenterbar PHONE NUMBER $LNcenterbar SERVER_IP       $LNcenterbar DIALTIME$LNcenterbar CALL TYPE  $LNright\n";
+	$C$html .= .=$LNcenterleft.CenterLine(8).$LNcentcross.CenterLine(14).$LNcentcross.CenterLine(14).$LNcentcross.CenterLine(17).$LNcentcross.CenterLine(9).$LNcentcross.CenterLine(12).$LNcentright."<br>";
+	//$C$html .= .= "| STATUS | CAMPAIGN     | PHONE NUMBER | SERVER_IP       | DIALTIME| CALL TYPE  |\n";
+	//$C$html .= .= "+--------+--------------+--------------+-----------------+---------+------------+\n";
 	
 	/*
-	$Cecho .=$LNtopleft.HorizLine(8).$LNtopdown.HorizLine(14).HorizLine(14).$LNtopdown.HorizLine(17).$LNtopdown.HorizLine(9).$LNtopdown.HorizLine(12).$LNtopright."<br>";
-	$Cecho .="$LNleft STATUS $LNcenterbar CAMPAIGN     $LNcenterbar PHONE NUMBER $LNcenterbar SERVER_IP       $LNcenterbar DIALTIME$LNcenterbar CALL TYPE  $LNright\n";
-	$Cecho .=$LNbottomleft.HorizLine(8).$LNtopup.HorizLine(14).$LNtopup.HorizLine(14).$LNtopup.HorizLine(17).$LNtopup.HorizLine(9).$LNtopup.HorizLine(12).$LNbottomright;
+	$C$html .= .=$LNtopleft.HorizLine(8).$LNtopdown.HorizLine(14).HorizLine(14).$LNtopdown.HorizLine(17).$LNtopdown.HorizLine(9).$LNtopdown.HorizLine(12).$LNtopright."<br>";
+	$C$html .= .="$LNleft STATUS $LNcenterbar CAMPAIGN     $LNcenterbar PHONE NUMBER $LNcenterbar SERVER_IP       $LNcenterbar DIALTIME$LNcenterbar CALL TYPE  $LNright\n";
+	$C$html .= .=$LNbottomleft.HorizLine(8).$LNtopup.HorizLine(14).$LNtopup.HorizLine(14).$LNtopup.HorizLine(17).$LNtopup.HorizLine(9).$LNtopup.HorizLine(12).$LNbottomright;
 	*/
 	
 	$p=0;
@@ -565,13 +561,13 @@ if ($ADD==999999 && $SUB==14) {
 		if ($CDcall_type[$p] == 'IN')	{
 			$G="<SPAN class=\"$CDcampaign_id[$p]\"><B>"; $EG='</B></SPAN>';
 		}
-		$Cecho .= "$LNleft $G$Cstatus$EG $LNcenterbar $G$Ccampaign_id$EG $LNcenterbar $G$Cphone_number$EG $LNcenterbar $G$Cserver_ip$EG $LNcenterbar $G$Ccall_time_MS$EG $LNcenterbar $G$Ccall_type$EG $LNright\n";
+		$C$html .= .= "$LNleft $G$Cstatus$EG $LNcenterbar $G$Ccampaign_id$EG $LNcenterbar $G$Cphone_number$EG $LNcenterbar $G$Cserver_ip$EG $LNcenterbar $G$Ccall_time_MS$EG $LNcenterbar $G$Ccall_type$EG $LNright\n";
 	
 		$p++;
 	}
 	
-	//$Cecho .= "+--------+--------------+--------------+-----------------+---------+------------+\n\n";
-	$Cecho .=$LNbottomleft.HorizLine(8).$LNbottomup.HorizLine(14).$LNbottomup.HorizLine(14).$LNbottomup.HorizLine(17).$LNbottomup.HorizLine(9).$LNbottomup.HorizLine(12).$LNbottomright."<br></font>";
+	//$C$html .= .= "+--------+--------------+--------------+-----------------+---------+------------+\n\n";
+	$C$html .= .=$LNbottomleft.HorizLine(8).$LNbottomup.HorizLine(14).$LNbottomup.HorizLine(14).$LNbottomup.HorizLine(17).$LNbottomup.HorizLine(9).$LNbottomup.HorizLine(12).$LNbottomright."<br></font>";
 	
 	if ($p<1) {$Cecho='';}
 	
@@ -584,8 +580,8 @@ if ($ADD==999999 && $SUB==14) {
 	$agent_ready=0;
 	$agent_paused=0;
 	$agent_total=0;
-	$Aecho = '';
-	$Aecho .= "<font color=navy size=1 face=fixed,monospace>&nbsp;&nbsp;Agents Time On Calls Campaign: $group                    $NOW_TIME\n";
+	$Ahtml = '';
+	$Ahtml .= "<font color=navy size=1 face=fixed,monospace>&nbsp;&nbsp;Agents Time On Calls Campaign: $group                    $NOW_TIME\n";
 	
 	// Changed to draw solid lines
 	$LNtopleft="&#x2554;";
@@ -662,9 +658,9 @@ if ($ADD==999999 && $SUB==14) {
 	}
 	
 	
-	$Aecho .= "$Aline";
-	$Aecho .= "$Bline";
-	$Aecho .= "$Cline";
+	$Ahtml .= "$Aline";
+	$Ahtml .= "$Bline";
+	$Ahtml .= "$Cline";
 	
 	if ($orderby=='timeup') {$orderSQL='status,last_call_time';}
 	if ($orderby=='timedown') {$orderSQL='status desc,last_call_time desc';}
@@ -696,7 +692,7 @@ if ($ADD==999999 && $SUB==14) {
 	#$stmt="select extension,osdial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id,osdial_users.user_group,osdial_users.full_name from osdial_live_agents,osdial_users where osdial_live_agents.user=osdial_users.user and campaign_id='" . mysql_real_escape_string($group) . "' order by $orderSQL;";
 	
 	$rslt=mysql_query($stmt, $link);
-	if ($DB) {echo "$stmt\n";}
+	if ($DB) {$html .= "$stmt\n";}
 	
 	$talking_to_print = mysql_num_rows($rslt);
 	if ($talking_to_print > 0) {
@@ -841,102 +837,48 @@ if ($ADD==999999 && $SUB==14) {
 	
 			$agentcount++;
 	
-			//$Aecho .= "$LNleft $G$extension$EG $LNcenterbar <a href=\"./user_status.php?user=$Luser\" target=\"_blank\">$G$user$EG</a> $LNcenterbar$UGD $G$sessionid$EG$L$R $LNcenterbar $G$status$EG $CM $LNcenterbar $SVD$G$call_time_MS$EG $LNcenterbar $G$campaign_id$EG $LNright\n";
-			
-			$Aecho .= "$LNleft $G$extension $LNcenterbar <a href=\"./user_status.php?user=$Luser\" target=\"_blank\">$G$user$EG</a> $LNcenterbar$UGD $sessionid$L$R $LNcenterbar $status $CM $LNcenterbar $SVD$call_time_MS $LNcenterbar $campaign_id$EG $LNright\n";
+			$Ahtml .= "$LNleft $G$extension $LNcenterbar <a href=\"./user_status.php?user=$Luser\" target=\"_blank\">$G$user$EG</a> $LNcenterbar$UGD $sessionid$L$R $LNcenterbar $status $CM $LNcenterbar $SVD$call_time_MS $LNcenterbar $campaign_id$EG $LNright\n";
 	
 			$i++;
 		}
 
-		$Aecho .= "$Dline";
+		$Ahtml .= "$Dline";
 		
-		$Aecho .= "  $agentcount <font color=navy>agents logged in on all servers</font>\n";
+		$Ahtml .= "  $agentcount <font color=navy>agents logged in on all servers</font>\n";
 		
 		
-	#	$Aecho .= "  <SPAN class=\"orange\"><B>          </SPAN> - Balanced call</B>\n";
-	/*	$Aecho .= "  <font color=navy><SPAN class=\"lightblue\"><B>          </SPAN> - Agent waiting for call</B>\n";
-		$Aecho .= "  <SPAN class=\"blue\"><B>          </SPAN> - Agent waiting for call > 1 minute</B>\n";
-		$Aecho .= "  <SPAN class=\"midnightblue\"><B>          </SPAN> - Agent waiting for call > 5 minutes</B>\n";
-		$Aecho .= "  <SPAN class=\"thistle\"><B>          </SPAN> - Agent on call > 10 seconds</B>\n";
-		$Aecho .= "  <SPAN class=\"violet\"><B>          </SPAN> - Agent on call > 1 minute</B>\n";
-		$Aecho .= "  <SPAN class=\"purple\"><B>          </SPAN> - Agent on call > 5 minutes</B>\n";
-		$Aecho .= "  <SPAN class=\"khaki\"><B>          </SPAN> - Agent Paused > 10 seconds</B>\n";
-		$Aecho .= "  <SPAN class=\"yellow\"><B>          </SPAN> - Agent Paused > 1 minute</B>\n";
-		$Aecho .= "  <SPAN class=\"olive\"><B>          </SPAN> - Agent Paused > 5 minutes</B></font>\n";
-*/
 		if ($agent_ready > 0) {$B='<FONT class="b1">'; $BG='</FONT>';}
 		if ($agent_ready > 4) {$B='<FONT class="b2">'; $BG='</FONT>';}
 		if ($agent_ready > 9) {$B='<FONT class="b3">'; $BG='</FONT>';}
 		if ($agent_ready > 14) {$B='<FONT class="b4">'; $BG='</FONT>';}
 	
 	
-		echo "\n<BR>\n";
+		$html .= "\n<BR>\n";
 
-		echo "$NFB$agent_total$NFE <font color=blue>agents logged in</font> &nbsp; &nbsp; &nbsp; &nbsp; \n";
-		echo "$NFB$agent_incall$NFE <font color=blue>agents in calls</font> &nbsp; &nbsp; &nbsp; \n";
-		echo "&nbsp;$NFB$B$agent_ready$BG$NFE <font color=blue>agents waiting</font> &nbsp; &nbsp; &nbsp; \n";
-		echo "$NFB$agent_paused$NFE <font color=blue>paused agents</font> &nbsp; &nbsp; &nbsp; \n";
+		$html .= "$NFB$agent_total$NFE <font color=blue>agents logged in</font> &nbsp; &nbsp; &nbsp; &nbsp; \n";
+		$html .= "$NFB$agent_incall$NFE <font color=blue>agents in calls</font> &nbsp; &nbsp; &nbsp; \n";
+		$html .= "&nbsp;$NFB$B$agent_ready$BG$NFE <font color=blue>agents waiting</font> &nbsp; &nbsp; &nbsp; \n";
+		$html .= "$NFB$agent_paused$NFE <font color=blue>paused agents</font> &nbsp; &nbsp; &nbsp; \n";
 		
-		echo "<PRE><FONT SIZE=2>";
-		echo "";
-		echo "$Cecho";
-		echo "$Aecho";
+		$html .= "<PRE><FONT SIZE=2>";
+		$html .= "";
+		$html .= "$Cecho";
+		$html .= "$Aecho";
 		
-		echo "<br><br>";
-		echo "<table width=730><tr><td>";
-		echo "  <font color=navy><SPAN class=\"khaki\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Paused > 10 seconds</B><br>";
-		echo "  <SPAN class=\"yellow\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Paused > 1 minute</B><br>";
-		echo "  <SPAN class=\"olive\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Paused > 5 minutes</B></font>";
-		echo "</td><td>";
-		echo "  <font color=navy><SPAN class=\"lightblue\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Waiting for call</B><br>";
-		echo "  <SPAN class=\"blue\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Waiting for call > 1 minute</B><br>";
-		echo "  <SPAN class=\"midnightblue\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Waiting for call > 5 minutes</B>";
-		echo "</td><td>";
-		echo "  <font color=navy><SPAN class=\"thistle\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - On call > 10 seconds</B><br>";
-		echo "  <SPAN class=\"violet\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - On call > 1 minute</B><br>";
-		echo "  <SPAN class=\"purple\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - On call > 5 minutes</B>";
-		echo "</td></tr></table>";
-		
-		/*
-		$Aecho .= "<PRE><FONT face=Fixed,monospace SIZE=1>";
-		
-		$load_ave = getloadavg();
-		
-		$Aecho ='<br><br>';
-		if (file_exists($pref . 'S1_load.txt')) {
-			$Aecho .= "  <font color=navy>Apache   Load Average:</font> $load_ave<br>";
-			$Aecho .= "  <font color=navy>MySQL    Load Average:</font> $load_ave_s1<br>";
-		} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
-			$Aecho .= "  <font color=navy>Dialer Load Average:</font> $load_ave<br>";
-		} else {
-			$Aecho .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave<br>";
-		}
-		if (file_exists($pref . 'D1_load.txt')) {
-			$Aecho .= "  <font color=navy>Dialer 1 Load Average:</font> $load_ave_d1";
-		}
-		if (file_exists($pref . 'D2_load.txt')) {
-			$Aecho .= "  <font color=navy>Dialer 2 Load Average:</font> $load_ave_d2";
-		}
-		if (file_exists($pref . 'D3_load.txt')) {
-			$Aecho .= "  <font color=navy>Dialer 3 Load Average:</font> $load_ave_d3";
-		}
-		if (file_exists($pref . 'D4_load.txt')) {
-			$Aecho .= "  <font color=navy>Dialer 4 Load Average:</font> $load_ave_d4";
-		}
-		if (file_exists($pref . 'D5_load.txt')) {
-			$Aecho .= "  <font color=navy>Dialer 5 Load Average:</font> $load_ave_d5";
-		}
-		if (file_exists($pref . 'D6_load.txt')) {
-			$Aecho .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6";
-		}
-		$Aecho .= "<br></font>";
-			
-		echo "$Aecho";
-		*/
-		
-		
-		// Get server loads, txt file from other servers
-		//$load_ave = get_server_load($load_ave);
+		$html .= "<br><br>";
+		$html .= "<table width=730><tr><td>";
+		$html .= "  <font color=navy><SPAN class=\"khaki\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Paused > 10 seconds</B><br>";
+		$html .= "  <SPAN class=\"yellow\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Paused > 1 minute</B><br>";
+		$html .= "  <SPAN class=\"olive\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Paused > 5 minutes</B></font>";
+		$html .= "</td><td>";
+		$html .= "  <font color=navy><SPAN class=\"lightblue\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Waiting for call</B><br>";
+		$html .= "  <SPAN class=\"blue\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Waiting for call > 1 minute</B><br>";
+		$html .= "  <SPAN class=\"midnightblue\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Waiting for call > 5 minutes</B>";
+		$html .= "</td><td>";
+		$html .= "  <font color=navy><SPAN class=\"thistle\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - On call > 10 seconds</B><br>";
+		$html .= "  <SPAN class=\"violet\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - On call > 1 minute</B><br>";
+		$html .= "  <SPAN class=\"purple\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - On call > 5 minutes</B>";
+		$html .= "</td></tr></table>";
 		
 		$load_ave = getloadavg();
 		
@@ -945,90 +887,57 @@ if ($ADD==999999 && $SUB==14) {
 			$s1_load = file($pref . 'S1_load.txt');
 			list( $line_num, $line ) = each( $s1_load );
 			$load_ave_s1=$line;
-			$Aecho .= "  <font color=navy>Apache   Load Average:</font> $load_ave<br>";
-			$Aecho .= "  <font color=navy>MySQL    Load Average:</font> $load_ave_s1";
+			$Ahtml .= "  <font color=navy>Apache   Load Average:</font> $load_ave<br>";
+			$Ahtml .= "  <font color=navy>MySQL    Load Average:</font> $load_ave_s1";
 		} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
-			$Aecho .= "  <font color=navy>Dialer Load Average:</font> $load_ave<br>";
+			$Ahtml .= "  <font color=navy>Dialer Load Average:</font> $load_ave<br>";
 		} else {
-			$Aecho .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave";
+			$Ahtml .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave";
 		}
 		if (file_exists($pref . 'D1_load.txt')) {
 			$d1_load = file($pref . 'D1_load.txt');
 			list( $line_num, $line ) = each( $d1_load ) ;
 			$load_ave_d1=$line;
-			$Aecho .= "  <font color=navy>Dialer 1 Load Average:</font> $load_ave_d1";
+			$Ahtml .= "  <font color=navy>Dialer 1 Load Average:</font> $load_ave_d1";
 		}
 		if (file_exists($pref . 'D2_load.txt')) {
 			$d2_load = file($pref . 'D2_load.txt');
 			list( $line_num, $line ) = each( $d2_load );
 			$load_ave_d2=$line;
-			$Aecho .= "  <font color=navy>Dialer 2 Load Average:</font> $load_ave_d2";
+			$Ahtml .= "  <font color=navy>Dialer 2 Load Average:</font> $load_ave_d2";
 		}
 		if (file_exists($pref . 'D3_load.txt')) {
 			$d3_load = file($pref . 'D3_load.txt');
 			list( $line_num, $line ) = each( $d3_load );
 			$load_ave_d3=$line;
-			$Aecho .= "  <font color=navy>Dialer 3 Load Average:</font> $load_ave_d3";
+			$Ahtml .= "  <font color=navy>Dialer 3 Load Average:</font> $load_ave_d3";
 		}
 		if (file_exists($pref . 'D4_load.txt')) {
 			$d4_load = file($pref . 'D4_load.txt');
 			list( $line_num, $line ) = each( $d4_load );
 			$load_ave_d4=$line;
-			$Aecho .= "  <font color=navy>Dialer 4 Load Average:</font> $load_ave_d4";
+			$Ahtml .= "  <font color=navy>Dialer 4 Load Average:</font> $load_ave_d4";
 		}
 		if (file_exists($pref . 'D5_load.txt')) {
 			$d5_load = file($pref . 'D5_load.txt');
 			list( $line_num, $line ) = each( $d5_load );
 			$load_ave_d5=$line;
-			$Aecho .= "  <font color=navy>Dialer 5 Load Average:</font> $load_ave_d5";
+			$Ahtml .= "  <font color=navy>Dialer 5 Load Average:</font> $load_ave_d5";
 		}
 		if (file_exists($pref . 'D6_load.txt')) {
 			$d6_load = file($pref . 'D6_load.txt');
 			list( $line_num, $line ) = each( $d6_load );
 			$load_ave_d6=$line;
-			$Aecho .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6";
+			$Ahtml .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6";
 		}
-		//echo "<tr><td colspan=10>";
-		echo "$Aecho";
-		echo "</pre>";
+		//$html .= "<tr><td colspan=10>";
+		$html .= "$Aecho";
+		$html .= "</pre>";
 		
 	} else {
 	
-		echo "&nbsp;&nbsp;<font color=red>&bull;&nbsp;&nbsp;NO AGENTS ON CALLS</font> \n";
-		$Aecho ="<br><br>";
-		/*
-		$Aecho .= "<PRE><FONT face=Fixed,monospace SIZE=1>";
-		if (file_exists($pref . 'S1_load.txt')) {
-			$Aecho .= "  <font color=navy>Apache   Load Average:</font> $load_ave<br>";
-			$Aecho .= "  <font color=navy>MySQL    Load Average:</font> $load_ave_s1";
-		} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
-			$Aecho .= "  <font color=navy>Dialer Load Average:</font> $load_ave<br>";
-		} else {
-			$Aecho .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave";
-		}
-		if (file_exists($pref . 'D1_load.txt')) {
-			$Aecho .= "  <font color=navy>Dialer 1 Load Average:</font> $load_ave_d1";
-		}
-		if (file_exists($pref . 'D2_load.txt')) {
-			$Aecho .= "  <font color=navy>Dialer 2 Load Average:</font> $load_ave_d2";
-		}
-		if (file_exists($pref . 'D3_load.txt')) {
-			$Aecho .= "  <font color=navy>Dialer 3 Load Average:</font> $load_ave_d3";
-		}
-		if (file_exists($pref . 'D4_load.txt')) {
-			$Aecho .= "  <font color=navy>Dialer 4 Load Average:</font> $load_ave_d4";
-		}
-		if (file_exists($pref . 'D5_load.txt')) {
-			$Aecho .= "  <font color=navy>Dialer 5 Load Average:</font> $load_ave_d5";
-		}
-		if (file_exists($pref . 'D6_load.txt')) {
-			$Aecho .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6";
-		}
-		echo "$Aecho";
-		*/
-		
-		// Get server loads, txt file from other servers
-		//$load_ave = get_server_load($load_ave);
+		$html .= "&nbsp;&nbsp;<font color=red>&bull;&nbsp;&nbsp;NO AGENTS ON CALLS</font> \n";
+		$Ahtml = "<br><br>";
 		
 		$load_ave = getloadavg();
 		
@@ -1037,58 +946,58 @@ if ($ADD==999999 && $SUB==14) {
 			$s1_load = file($pref . 'S1_load.txt');
 			list( $line_num, $line ) = each( $s1_load );
 			$load_ave_s1=$line;
-			$Aecho .= "  <font color=navy>Apache   Load Average:</font> $load_ave<br>";
-			$Aecho .= "  <font color=navy>MySQL    Load Average:</font> $load_ave_s1";
+			$Ahtml .= "  <font color=navy>Apache   Load Average:</font> $load_ave<br>";
+			$Ahtml .= "  <font color=navy>MySQL    Load Average:</font> $load_ave_s1";
 		} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
-			$Aecho .= "  <font color=navy>Dialer Load Average:</font> $load_ave<br>";
+			$Ahtml .= "  <font color=navy>Dialer Load Average:</font> $load_ave<br>";
 		} else {
-			$Aecho .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave";
+			$Ahtml .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave";
 		}
 		if (file_exists($pref . 'D1_load.txt')) {
 			$d1_load = file($pref . 'D1_load.txt');
 			list( $line_num, $line ) = each( $d1_load ) ;
 			$load_ave_d1=$line;
-			$Aecho .= "  <font color=navy>Dialer 1 Load Average:</font> $load_ave_d1";
+			$Ahtml .= "  <font color=navy>Dialer 1 Load Average:</font> $load_ave_d1";
 		}
 		if (file_exists($pref . 'D2_load.txt')) {
 			$d2_load = file($pref . 'D2_load.txt');
 			list( $line_num, $line ) = each( $d2_load );
 			$load_ave_d2=$line;
-			$Aecho .= "  <font color=navy>Dialer 2 Load Average:</font> $load_ave_d2";
+			$Ahtml .= "  <font color=navy>Dialer 2 Load Average:</font> $load_ave_d2";
 		}
 		if (file_exists($pref . 'D3_load.txt')) {
 			$d3_load = file($pref . 'D3_load.txt');
 			list( $line_num, $line ) = each( $d3_load );
 			$load_ave_d3=$line;
-			$Aecho .= "  <font color=navy>Dialer 3 Load Average:</font> $load_ave_d3";
+			$Ahtml .= "  <font color=navy>Dialer 3 Load Average:</font> $load_ave_d3";
 		}
 		if (file_exists($pref . 'D4_load.txt')) {
 			$d4_load = file($pref . 'D4_load.txt');
 			list( $line_num, $line ) = each( $d4_load );
 			$load_ave_d4=$line;
-			$Aecho .= "  <font color=navy>Dialer 4 Load Average:</font> $load_ave_d4";
+			$Ahtml .= "  <font color=navy>Dialer 4 Load Average:</font> $load_ave_d4";
 		}
 		if (file_exists($pref . 'D5_load.txt')) {
 			$d5_load = file($pref . 'D5_load.txt');
 			list( $line_num, $line ) = each( $d5_load );
 			$load_ave_d5=$line;
-			$Aecho .= "  <font color=navy>Dialer 5 Load Average:</font> $load_ave_d5";
+			$Ahtml .= "  <font color=navy>Dialer 5 Load Average:</font> $load_ave_d5";
 		}
 		if (file_exists($pref . 'D6_load.txt')) {
 			$d6_load = file($pref . 'D6_load.txt');
 			list( $line_num, $line ) = each( $d6_load );
 			$load_ave_d6=$line;
-			$Aecho .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6";
+			$Ahtml .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6";
 		}
-		//echo "<tr><td colspan=10>";
-		echo "$Aecho";
+		$html .= "$Aecho";
 		
 	}
-	echo "</pre>";
-	//echo "<tr><td colspan=10>";
+	$html .= "</pre>";
 	
-	echo "</td>";
-	echo "<TABLE WIDTH='<?=$page_width ?>' BGCOLOR=#E9E8D9 cellpadding=0 cellspacing=0 align=center class=across>";
+	$html .= "</td>";
+	$html .= "<TABLE WIDTH='<?=$page_width ?>' BGCOLOR=#E9E8D9 cellpadding=0 cellspacing=0 align=center class=across>";
+
+    return $html;
 }
 
 

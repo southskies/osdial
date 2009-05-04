@@ -18,6 +18,7 @@
 #     You should have received a copy of the GNU Affero General Public
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
+# 090504-0237 - Moved in getloadavg.
 
 
 
@@ -1029,6 +1030,13 @@ if (!$AC_processed)
 	}
 
 return $gmt_offset;
+}
+
+function getloadavg() {
+	if (file_exists($pref . 'Loadavg.txt')) {
+		$loadavg = file_get_contents($pref . "Loadavg.txt");
+	}
+	return $loadavg;
 }
 
 ?>
