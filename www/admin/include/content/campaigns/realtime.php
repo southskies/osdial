@@ -22,11 +22,11 @@
 
 
 
-if ($ADD=999999 && $SUB==13) {
-    require('../reports/realtime_summary.php');
+if ($ADD==999999 && $SUB==13) {
+    require($WeBServeRRooT . '/admin/include/content/reports/realtime_summary.php');
     echo report_realtime_summary();
-} elseif ($ADD=999999 && $SUB==14) {
-    require('../reports/realtime_detail.php');
+} elseif ($ADD==999999 && $SUB==14) {
+    require($WeBServeRRooT . '/admin/include/content/reports/realtime_detail.php');
     echo report_realtime_detail();
 }
 
