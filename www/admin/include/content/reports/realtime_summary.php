@@ -55,7 +55,8 @@ function report_realtime_summary() {
 	$html .= "<div class=no-ul>";
 	
 	$html .= "<form action=$PHP_SELF method=POST>\n";
-	$html .= "<input type=hidden name=ADD value=13>\n";
+	$html .= "<input type=hidden name=ADD value=$ADD>\n";
+	$html .= "<input type=hidden name=SUB value=$SUB>\n";
 	$html .= "<input type=hidden name=adastats value=$adastats\n";
 	$html .= "<input type=hidden name=group value=$group>\n";
 	$html .= "<input type=hidden name=campaign_id value=$campaign_id>\n";
@@ -64,23 +65,22 @@ function report_realtime_summary() {
 	$html .= "<p class=centered><font color=navy size=+1>ALL CAMPAIGNS SUMMARY</font<br><br>";
 	$html .= "<font color=navy size=-1>Update:&nbsp;";
 	if ($RR==38400) { $html .= "<font size=+1>"; }
-	$html .= "<a href=\"$PHP_SELF?ADD=999999&SUB=13&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats\">Daily</a>&nbsp;&nbsp;";
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats\">Daily</a>&nbsp;&nbsp;";
 	if ($RR==3600) { $html .= "<font size=+1>"; } else { $html .= "<font size=-1>"; }
-	$html .= "<a href=\"$PHP_SELF?ADD=999999&SUB=13&campaign_id=$campaign_id&group=$group&RR=3600&DB=$DB&adastats=$adastats\">Hourly</a>&nbsp;&nbsp;";
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=3600&DB=$DB&adastats=$adastats\">Hourly</a>&nbsp;&nbsp;";
 	if ($RR==600) { $html .= "<font size=+1>"; } else { $html .= "<font size=-1>"; }
-	$html .= "<a href=\"$PHP_SELF?ADD=999999&SUB=13&campaign_id=$campaign_id&group=$group&RR=600&DB=$DB&adastats=$adastats\">10min</a>&nbsp;&nbsp;";
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=600&DB=$DB&adastats=$adastats\">10min</a>&nbsp;&nbsp;";
 	if ($RR==30) { $html .= "<font size=+1>"; } else { $html .= "<font size=-1>"; }
-	$html .= "<a href=\"$PHP_SELF?ADD=999999&SUB=13&campaign_id=$campaign_id&group=$group&RR=30&DB=$DB&adastats=$adastats\">30sec</a>&nbsp;&nbsp;";
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=30&DB=$DB&adastats=$adastats\">30sec</a>&nbsp;&nbsp;";
 	if ($RR==4) { $html .= "<font size=+1>"; } else { $html .= "<font size=-1>"; }
-	$html .= "<a href=\"$PHP_SELF?ADD=999999&SUB=13&campaign_id=$campaign_id&group=$group&RR=4&DB=$DB&adastats=$adastats\">4sec</a>&nbsp;&nbsp;";
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=4&DB=$DB&adastats=$adastats\">4sec</a>&nbsp;&nbsp;";
 	$html .= "</font>";
 	$html .= "&nbsp;-&nbsp;&nbsp;";
 	if ($adastats<2) {
-		$html .= "<a href=\"$PHP_SELF?ADD=999999&SUB=13&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=2\"><font size=1>VIEW MORE SETTINGS</font></a>";
+		$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=2\"><font size=1>VIEW MORE SETTINGS</font></a>";
 	} else {
-		$html .= "<a href=\"$PHP_SELF?ADD=999999&SUB=13&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=1\"><font size=1>VIEW LESS SETTINGS</font></a>";
+		$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=1\"><font size=1>VIEW LESS SETTINGS</font></a>";
 	}
-	//$html .= "&nbsp;&nbsp;&nbsp;<a href=\"./admin.php?ADD=10\">Campaigns</a>&nbsp;&nbsp;<a href=\"./admin.php?ADD=999999\">Reports</a>";
 	$html .= "</p>\n\n";
 	
 	$k=0;
@@ -91,7 +91,7 @@ function report_realtime_summary() {
 		
 		
 		$group = $groups[$k];
-		$html .= "<font class=realtimeindents size=-1><b><a href=\"./admin.php?ADD=999999&SUB=14&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats\">$group</a></b> &nbsp; - &nbsp; ";
+		$html .= "<font class=realtimeindents size=-1><b><a href=\"./admin.php?ADD=$ADD&SUB=" . ($SUB + 1) . "&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats\">$group</a></b> &nbsp; - &nbsp; ";
 		$html .= "<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a> </font>\n";
 		
 		

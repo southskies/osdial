@@ -26,8 +26,7 @@
 ######################
 # ADD=999999 display reports section
 ######################
-if ($ADD==999999)
-{
+if ($ADD==999999 and $SUB=='') {
 	if ($LOGview_reports==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
@@ -67,7 +66,7 @@ if ($ADD==999999)
 	<TITLE>OSDial: Server Stats and Reports</TITLE></HEAD><BODY BGCOLOR=WHITE>
 	<FONT SIZE=4 color=navy><br><center>SERVER STATS AND REPORTS</center></font><BR><BR>
 	<UL class=>
-	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=AST_timeonVDADall.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Time On Dialer (per campaign)</a> &nbsp;  <a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=AST_timeonVDADallSUMMARY.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>(all campaigns SUMMARY)</a> &nbsp; &nbsp; SIP <a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=AST_timeonVDADall.php?SIPmonitorLINK=1"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Listen</a> - <a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=AST_timeonVDADall.php?SIPmonitorLINK=2"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Barge</a> &nbsp; &nbsp; IAX <a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=AST_timeonVDADall.php?IAXmonitorLINK=1"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Listen</a> - <a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=AST_timeonVDADall.php?IAXmonitorLINK=2"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Barge</a></FONT>
+	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=12"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Time On Dialer (per campaign)</a> &nbsp;  <a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=11"><FONT FACE="ARIAL,HELVETICA" SIZE=2>(all campaigns SUMMARY)</a> &nbsp; &nbsp; SIP <a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=12&SIPmonitorLINK=1"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Listen</a> - <a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=12&SIPmonitorLINK=2"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Barge</a> &nbsp; &nbsp; IAX <a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=12&IAXmonitorLINK=1"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Listen</a> - <a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=12&IAXmonitorLINK=2"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Barge</a></FONT>
 	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=AST_VDADstats.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Call Report</a></FONT>
 	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=AST_CLOSERstats.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Closer Report</a></FONT>
 	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=AST_agent_performance_detail.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Agent Performance Detail</a></FONT>
@@ -114,6 +113,14 @@ if ($ADD==999999)
 	echo "<font color=red>You do not have permission to view this page</font>\n";
 	exit;
 	}
+} elseif ($ADD==999999) {
+    if ($SUB==11) {
+        require($WeBServeRRooT . '/admin/include/content/reports/realtime_summary.php');
+        echo report_realtime_summary();
+    } elseif ($SUB==12) {
+        require($WeBServeRRooT . '/admin/include/content/reports/realtime_detail.php');
+        echo report_realtime_detail();
+    }
 }
 
 

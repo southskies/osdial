@@ -162,8 +162,8 @@ function report_realtime_detail() {
 	
 	$html .= "<div class=no-ul>";
 	$html .= "<FORM ACTION=\"$PHP_SELF\" METHOD=GET>\n";
-	$html .= "<input type=hidden name=ADD value=999999>\n";
-	$html .= "<input type=hidden name=SUB value=14>\n";
+	$html .= "<input type=hidden name=ADD value=$ADD>\n";
+	$html .= "<input type=hidden name=SUB value=$SUB>\n";
 	$html .= "<input type=hidden name=campaign_id value=$campaign_id>\n";
 	$html .= "<input type=hidden name=group value=$group>\n";
 	$html .= "<input type=hidden name=RR value=$RR>\n";
@@ -191,7 +191,7 @@ function report_realtime_detail() {
 	$html .= "<font size=2>";
 	
 	$html .= "-&nbsp;&nbsp;<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a>&nbsp;- ";
-	$html .= "<a href=\"$PHP_SELF?ADD=999999&SUB=13&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats\">Summary</a>&nbsp;\n";
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=" . ($SUB - 1) . "&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats\">Summary</a>&nbsp;\n";
 	$html .= "<br></font>\n";
 	$html .= "</font>";
 	
