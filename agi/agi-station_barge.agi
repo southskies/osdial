@@ -92,7 +92,7 @@ while(<STDIN>)
 $lu = substr($extension, 1, 4);
 
 ### Grab Server values from the database
-$stmtA = "SELECT conf_exten FROM vicidial_live_agents where extension LIKE '%" . $lu . "%';";
+$stmtA = "SELECT conf_exten FROM osdial_live_agents where extension LIKE '%" . $lu . "%';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 @aryA = $sthA->fetchrow_array;
