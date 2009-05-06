@@ -23,6 +23,8 @@
 
 
 function report_realtime_summary() {
+    # Bring all globals into this scope.
+    foreach ($GLOBALS as $key => $val) { global $$key; }
  
     $html = '';
     $Ahtml = '';
