@@ -154,9 +154,9 @@ start() {
 
 			# Mount tmpfs...
 			mkdir -p /mnt/ramdisk > /dev/null 2>&1
-			mount -t tmpfs -o size=${OSDIAL_TMPFS_SIZE},mode=777 tmpfs ${OSDIAL_TMPFS_PATH}
+			mount -t tmpfs -o size=${OSDIAL_TMPFS_SIZE}k,mode=777 tmpfs ${OSDIAL_TMPFS_PATH}
 			mkdir -p /mnt/ramdisk/VDmonitor > /dev/null 2>&1
-			chown asterisk:asterisk ${OSDIAL_TMPFS_PATH}
+			chown -R asterisk:asterisk ${OSDIAL_TMPFS_PATH}
 		fi
 	fi
 
