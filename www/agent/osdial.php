@@ -2600,7 +2600,7 @@ foreach ($forms as $form) {
 					foreach ($forms as $form) {
 						$fcamps = split(',',$form['campaigns']);
 						foreach ($fcamps as $fcamp) {
-							if ($fcamp == 'ALL' or $fcamp == $VD_campagin) {
+							if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
 								if ($cnt > 0) {
 									$cssvis = 'visibility:hidden;';
 								}
@@ -2668,7 +2668,7 @@ foreach ($forms as $form) {
 					foreach ($forms as $form) {
 						$fcamps = split(',',$form['campaigns']);
 						foreach ($fcamps as $fcamp) {
-							if ($fcamp == 'ALL' or $fcamp == $VD_campagin) {
+							if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
 								echo "  <tr id=AddtlFormBut" . $form['name'] . " style=\"background-image:url(images/agentsidetab_extra.png);\" height=29 ";
 								echo "    onmouseover=\"AddtlFormButOver('" . $form['name'] . "');\" onmouseout=\"AddtlFormButOut('" . $form['name'] . "');\">\n";
 								echo "      <td align=center onclick=\"AddtlFormSelect('" . $form['name'] . "');\">\n";
