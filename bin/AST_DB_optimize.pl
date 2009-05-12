@@ -34,6 +34,8 @@
 # 71109-1725 - fixed osdial_campaign_stats bug
 # 71215-0410 - fixed UPDATE/DELETE results
 #
+# 090511-2005 - Remove optimizations for log tables.
+# 090511-2007 - Set status_category_hour_counts to 0.
 
 # default path to osdial.configuration file:
 $PATHconf =		'/etc/osdial.conf';
@@ -234,16 +236,16 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 					$sthA->finish();
 				 }
 
-	$stmtA = "optimize table osdial_agent_log;";
-		if($DB){print STDERR "\n|$stmtA|\n";}
-		if (!$T) {
-					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-   					$sthArows=$sthA->rows;
-					 @aryA = $sthA->fetchrow_array;
-   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
-					$sthA->finish();
-				 }
+	#$stmtA = "optimize table osdial_agent_log;";
+	#	if($DB){print STDERR "\n|$stmtA|\n";}
+	#	if (!$T) {
+	#				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+   	#				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+   	#				$sthArows=$sthA->rows;
+	#				 @aryA = $sthA->fetchrow_array;
+   	#				 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
+	#				$sthA->finish();
+	#			 }
 
 	$stmtA = "optimize table osdial_conferences;";
 		if($DB){print STDERR "\n|$stmtA|\n";}
@@ -268,7 +270,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 				 }
 
 
-	$stmtA = "UPDATE osdial_campaign_stats SET dialable_leads='0', calls_today='0', answers_today='0', drops_today='0', drops_today_pct='0', drops_answers_today_pct='0', calls_hour='0', answers_hour='0', drops_hour='0', drops_hour_pct='0', calls_halfhour='0', answers_halfhour='0', drops_halfhour='0', drops_halfhour_pct='0', calls_fivemin='0', answers_fivemin='0', drops_fivemin='0', drops_fivemin_pct='0', calls_onemin='0', answers_onemin='0', drops_onemin='0', drops_onemin_pct='0', differential_onemin='0', agents_average_onemin='0', balance_trunk_fill='0', status_category_count_1='0', status_category_count_2='0', status_category_count_3='0', status_category_count_4='0';";
+	$stmtA = "UPDATE osdial_campaign_stats SET dialable_leads='0', calls_today='0', answers_today='0', drops_today='0', drops_today_pct='0', drops_answers_today_pct='0', calls_hour='0', answers_hour='0', drops_hour='0', drops_hour_pct='0', calls_halfhour='0', answers_halfhour='0', drops_halfhour='0', drops_halfhour_pct='0', calls_fivemin='0', answers_fivemin='0', drops_fivemin='0', drops_fivemin_pct='0', calls_onemin='0', answers_onemin='0', drops_onemin='0', drops_onemin_pct='0', differential_onemin='0', agents_average_onemin='0', balance_trunk_fill='0', status_category_count_1='0', status_category_count_2='0', status_category_count_3='0', status_category_count_4='0', status_category_hour_count_1='0', status_category_hour_count_2='0', status_category_hour_count_3='0', status_category_hour_count_4='0';";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) 
 			{
