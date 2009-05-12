@@ -303,9 +303,9 @@ function report_realtime_detail() {
 		$VSCcat4 =		$row[14];
 		$VSCcat4tally = $row[15];
 		$VSCcat1hourtally = $row[16];
-		$VSCcat1hourtally = $row[17];
-		$VSCcat1hourtally = $row[18];
-		$VSCcat1hourtally = $row[19];
+		$VSCcat2hourtally = $row[17];
+		$VSCcat3hourtally = $row[18];
+		$VSCcat4hourtally = $row[19];
 		
 		if ( ($diffONEMIN != 0) and ($agentsONEMIN > 0) ) {
 			$diffpctONEMIN = ( ($diffONEMIN / $agentsONEMIN) * 100);
