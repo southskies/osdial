@@ -19,6 +19,7 @@
 #     You should have received a copy of the GNU Affero General Public
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
+# 090511-2123 - Added status_category_hour_counts
 
 function report_realtime_detail() {
     # Bring all globals into this scope.
@@ -279,9 +280,9 @@ function report_realtime_detail() {
 		$row=mysql_fetch_row($rslt);
 		$VDhop = $row[0];
 		
-		$stmt="select dialable_leads,calls_today,drops_today,drops_answers_today_pct,differential_onemin,agents_average_onemin,balance_trunk_fill,answers_today,status_category_1,status_category_count_1,status_category_2,status_category_count_2,status_category_3,status_category_count_3,status_category_4,status_category_count_4 from osdial_campaign_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
+		$stmt="select dialable_leads,calls_today,drops_today,drops_answers_today_pct,differential_onemin,agents_average_onemin,balance_trunk_fill,answers_today,status_category_1,status_category_count_1,status_category_2,status_category_count_2,status_category_3,status_category_count_3,status_category_4,status_category_count_4,status_category_hour_count_1,status_category_hour_count_2,status_category_hour_count_3,status_category_hour_count_4 from osdial_campaign_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
 		if ($group=='XXXX-ALL-ACTIVE-XXXX') {
-			$stmt="select sum(dialable_leads),sum(calls_today),sum(drops_today),avg(drops_answers_today_pct),avg(differential_onemin),avg(agents_average_onemin),sum(balance_trunk_fill),sum(answers_today),min(status_category_1),sum(status_category_count_1),min(status_category_2),sum(status_category_count_2),min(status_category_3),sum(status_category_count_3),min(status_category_4),sum(status_category_count_4) from osdial_campaign_stats;";
+			$stmt="select sum(dialable_leads),sum(calls_today),sum(drops_today),avg(drops_answers_today_pct),avg(differential_onemin),avg(agents_average_onemin),sum(balance_trunk_fill),sum(answers_today),min(status_category_1),sum(status_category_count_1),min(status_category_2),sum(status_category_count_2),min(status_category_3),sum(status_category_count_3),min(status_category_4),sum(status_category_count_4),sum(status_category_hour_count_1),sum(status_category_hour_count_2),sum(status_category_hour_count_3),sum(status_category_hour_count_4) from osdial_campaign_stats;";
 		}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
@@ -301,6 +302,10 @@ function report_realtime_detail() {
 		$VSCcat3tally = $row[13];
 		$VSCcat4 =		$row[14];
 		$VSCcat4tally = $row[15];
+		$VSCcat1hourtally = $row[16];
+		$VSCcat1hourtally = $row[17];
+		$VSCcat1hourtally = $row[18];
+		$VSCcat1hourtally = $row[19];
 		
 		if ( ($diffONEMIN != 0) and ($agentsONEMIN > 0) ) {
 			$diffpctONEMIN = ( ($diffONEMIN / $agentsONEMIN) * 100);
@@ -384,6 +389,19 @@ function report_realtime_detail() {
 		}
 		if ( (!eregi('NULL',$VSCcat4)) and (strlen($VSCcat4)>0) ) {
 			$html .= "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat4:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4tally&nbsp;&nbsp;</td>\n";
+		}
+		$html .= "</tr><tr>";
+		if ( (!eregi('NULL',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
+			$html .= "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat1/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1hourtally&nbsp;&nbsp;</td>\n";
+		}
+		if ( (!eregi('NULL',$VSCcat2)) and (strlen($VSCcat2)>0) ) {
+			$html .= "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat2/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2hourtally&nbsp;&nbsp;</td>\n";
+		}
+		if ( (!eregi('NULL',$VSCcat3)) and (strlen($VSCcat3)>0) ) {
+			$html .= "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat3/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3hourtally&nbsp;&nbsp;</td>\n";
+		}
+		if ( (!eregi('NULL',$VSCcat4)) and (strlen($VSCcat4)>0) ) {
+			$html .= "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat4/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4hourtally&nbsp;&nbsp;</td>\n";
 		}
 		$html .= "</TR>";
 		
