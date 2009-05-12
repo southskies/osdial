@@ -67,7 +67,7 @@ if ($ADD==999999 and $SUB=='') {
 	<FONT SIZE=4 color=navy><br><center>SERVER STATS AND REPORTS</center></font><BR><BR>
 	<UL class=>
 	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=12"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Time On Dialer (per campaign)</a> &nbsp;  <a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=11"><FONT FACE="ARIAL,HELVETICA" SIZE=2>(all campaigns SUMMARY)</a> &nbsp; &nbsp; SIP <a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=12&SIPmonitorLINK=1"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Listen</a> - <a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=12&SIPmonitorLINK=2"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Barge</a> &nbsp; &nbsp; IAX <a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=12&IAXmonitorLINK=1"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Listen</a> - <a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=12&IAXmonitorLINK=2"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Barge</a></FONT>
-	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=AST_VDADstats.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Call Report</a></FONT>
+	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=15"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Call Report</a></FONT>
 	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=AST_CLOSERstats.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Closer Report</a></FONT>
 	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=AST_agent_performance_detail.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Agent Performance Detail</a></FONT>
 	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=osdial_sales_viewer.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Agent Spreadsheet Performance</a></FONT>
@@ -120,6 +120,9 @@ if ($ADD==999999 and $SUB=='') {
     } elseif ($SUB==12) {
         require($WeBServeRRooT . '/admin/include/content/reports/realtime_detail.php');
         echo report_realtime_detail();
+    } elseif ($SUB==15) {
+        require($WeBServeRRooT . '/admin/include/content/reports/call_stats.php');
+        echo report_call_stats();
     }
 }
 

@@ -286,6 +286,7 @@ if ($ADD==999999)		{$hh='reports';                     $title = "REPORTS";
     if ($SUB==12)		{$hh='reports';     $sh='reports';  $title = "REPORTS - Real Time Detail";}
     if ($SUB==13)       {$hh='campaigns';   $sh='realtime'; $title = "REPORTS - Real Time Summary";}
     if ($SUB==14)       {$hh='campaigns';   $sh='realtime'; $title = "REPORTS - Real Time Detail";}
+    if ($SUB==15)		{$hh='reports';     $sh='reports';  $title = "REPORTS - Call Stats";}
 }
 
 
