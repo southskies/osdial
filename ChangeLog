@@ -1,3 +1,98 @@
+2009-05-12  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r186] www/admin/include/content/reports/realtime_detail.php: Fix
+	  hour counts on detail
+	* [r185] extras/sql/upgrade_sql.map: Fix upgrade_map
+	* [r184] www/admin/AST_VDADstats.php, www/admin/AST_timeonVDAD.php,
+	  www/admin/AST_timeonVDADall.php,
+	  www/admin/AST_timeonVDADallSUMMARY.php: Remove functionalized
+	  reports
+	* [r183] www/admin/include/content/reports/realtime_detail.php,
+	  www/admin/include/content/reports/realtime_summary.php: Add
+	  status_category_hour_counts
+	* [r182] bin/AST_VDcampaign_stats.pl: Add
+	  status_category_hour_counts
+	* [r181] www/admin/include/content/reports/call_stats.php,
+	  www/admin/include/content/reports/reports.php,
+	  www/admin/include/menu.php: Functionalize call stats report.
+	* [r180] docs/conf_examples/amd.conf,
+	  docs/conf_examples/osdial_extensions.conf: Update to AMD settings
+	* [r179] extras/httpd-osdial-archive.conf, extras/osdial.cron: Add
+	  httpd config for archive profile.
+	* [r178] extras/sql/211008.sql, extras/sql/upgrade_sql.map: Add
+	  status_category_hour_counts to DB
+	* [r177] bin/AST_DB_optimize.pl: Set status_category_hour_counts to
+	  0
+	* [r176] bin/AST_DB_optimize.pl: No need to optimize log tables on
+	  indexed InnoDB...
+
+2009-05-10  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r175] www/admin/tocsv.php: Added tocsv.php
+
+2009-05-08  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r174] www/agent/osdial.php: Addtional Forms fix, campaign
+	  variable speel incorrectly.
+
+2009-05-07  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r173] docs/conf_examples/amd.conf,
+	  docs/conf_examples/osdial_extensions.conf: Decreased word count
+	  on AMD
+	* [r172] extras/osdial.init: Fixed ramdisk settings
+	* [r171] docs/conf_examples/osdial_extensions.conf: Update dialplan
+	  to allow 6 + 3digits and 7 + 3digits for monitor/barge.
+
+2009-05-06  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r170] agi/agi-station_barge.agi, agi/agi-station_monitor.agi:
+	  Fixed config file call in monitor/barge AGIs.
+	* [r169] sounds/check-number-dial-again.gsm, sounds/connected.gsm,
+	  sounds/extension.gsm, sounds/not-yet-connected.gsm: Added some
+	  audio files required for monitor/barge.
+	* [r168] agi/agi-station_barge.agi, agi/agi-station_monitor.agi:
+	  Fixed table names.
+	* [r167] www/admin/include/content/reports/realtime_detail.php,
+	  www/admin/include/content/reports/realtime_summary.php,
+	  www/admin/include/content/reports/reports.php,
+	  www/admin/include/menu.php: Correct the functionalized realtime
+	  reports.
+	* [r166] extras/openvpn/osdial.conf, extras/openvpn/osdial2.conf:
+	  Update openvpn settings
+	* [r165] www/admin/include/content/reports/realtime_detail.php,
+	  www/admin/include/content/reports/realtime_summary.php:
+	  Functionalize realtime reports and correct variables names.
+	* [r164] www/admin/include/content/campaigns/realtime.php: Fix
+	  assignment vs expression bug.
+
+2009-05-05  Steve Szmidt <techs@callcentersg.com>
+
+	* [r163] www/agent/osdial.php: Updated wrong phone login screen to
+	  the standard OSDial colors.
+
+2009-05-04  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r162] www/admin/include/content/campaigns/realtime.php,
+	  www/admin/include/content/campaigns/realtime_detail.php,
+	  www/admin/include/content/campaigns/realtime_summary.php,
+	  www/admin/include/content/reports/realtime_detail.php,
+	  www/admin/include/content/reports/realtime_summary.php,
+	  www/admin/include/functions.php: Functionalization of realtime
+	  reports.
+
+2009-05-02  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r161] extras/openvpn/osdial.conf: fix resolv parameter in
+	  openvpn.
+	* [r160] extras/openvpn/osdial-client.crt,
+	  extras/openvpn/osdial-client.key, extras/openvpn/osdial.conf,
+	  extras/openvpn/osdial.up, extras/osdial.init: Added CN tagging
+	  based on hostname to openvpn.
+	* [r159] extras/osdial.init: Fix ramdisk creation problem.
+	* [r158] extras/osdial.init: Corrected error preventing load of
+	  tmpfs in osdial.init
+
 2009-05-01  Lott Caskey <lottcaskey@gmail.com>
 
 	* [r156] Makefile, extras/openvpn, extras/openvpn/osdial-ca.crt,
@@ -13,6 +108,9 @@
 2009-04-30  Lott Caskey <lottcaskey@gmail.com>
 
 	* [r153] extras/sql/210006.sql: Fix missing ; in 210006.sql
+
+2009-04-30  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r151] bin/AST_VDauto_dial.pl, extras/sql/210006.sql,
 	  extras/sql/upgrade_sql.map, version,
 	  www/admin/include/content/campaigns/campaigns.php,
@@ -30,6 +128,9 @@
 
 	* [r149] agi/agi-OSDoutboundIVR.agi: Added SQL to update agent type
 	  on external XFERs to CLOSER
+
+2009-04-29  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r148] extras/sql/210005.sql, extras/sql/upgrade_sql.map: Added
 	  status CRF, CRR, CRO, CRC to report on SIP 50X errors
 	* [r147] bin/FastAGI_log.pl: Added support for logging of SIP
@@ -52,6 +153,9 @@
 
 	* [r140] www/agent/osdial.php: Changed Channel to bg color to hide
 	  it during normal use.
+
+2009-04-29  Steve Szmidt <techs@callcentersg.com>
+
 	* [r139] www/agent/osdial.php: Putting in vendor_lead_code in place
 	  of Custom3.
 	* [r138] www/agent/osdial.php: Commented out Custom3, added foot
@@ -75,6 +179,9 @@
 2009-04-28  Lott Caskey <lottcaskey@gmail.com>
 
 	* [r134] agi/agi-record_prompts.agi: Fix prompt_count.txt location
+
+2009-04-28  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r133] extras/sql/210004.sql, extras/sql/upgrade_sql.map: Update
 	  SQL defaults for webform.
 	* [r132] extras/sql/210000.sql, version,
@@ -138,6 +245,9 @@
 	  www/admin/include/validation.php,
 	  www/admin/include/variables.php: change calls_per_hour_limit to
 	  answers_per_hour_limit
+
+2009-04-22  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r116] bin/osdial_killall.sh: added osdial_killall script.
 	* [r115] agi/agi-VDAD_ALL_inbound.agi, bin/AST_VDauto_dial.pl,
 	  extras/sql/210003.sql, www/admin/include/content/lists/lists.php,
@@ -168,6 +278,9 @@
 	* [r108] agi/agi-OSDoutboundIVR.agi, bin/osdial_astgen.pl,
 	  www/admin/include/content/campaigns/outbound_ivr.php: Outbound
 	  IVR updates
+
+2009-04-21  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r107] agi/agi-OSDoutboundIVR.agi, bin/AST_VDcampaign_stats.pl,
 	  extras/sql/210003.sql,
 	  www/admin/include/content/campaigns/campaigns.php: Fix for
@@ -195,6 +308,9 @@
 	  www/admin/include/validation.php,
 	  www/admin/include/variables.php: Fixes: Remote Agents / Outbound
 	  IVR / Auto-Dialing
+
+2009-04-20  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r104] extras/sql/210003.sql: update 210003.sql
 	* [r103] agi/agi-OSDoutboundIVR.agi, extras/osdial.conf: Fix
 	  osdial.conf for RPM upgrades.
@@ -223,6 +339,9 @@
 2009-04-19  Lott Caskey <lottcaskey@gmail.com>
 
 	* [r97] extras/sql/999999.sql: Fix/Add statuses.
+
+2009-04-19  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r96] docs/conf_examples/osdial_extensions.conf: Added Outbound
 	  IVR XFER extension.
 	* [r95] bin/AST_VDauto_dial.pl: Add check for IN call_type.
@@ -237,6 +356,9 @@
 
 	* [r90] bin/osdial_astgen.pl: make exten the context on SIP/IAX
 	  phones
+
+2009-04-17  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r88] extras/sql/210002.sql: Fix 21002.sql
 	* [r85] extras/patches/app_dial_originate_ring-1.2.patch,
 	  extras/patches/app_dial_originate_ring-1.4.patch: Updates to
@@ -253,6 +375,9 @@
 	* [r81] docs/conf_examples/osdial_extensions_outbound.conf,
 	  extras/patches/app_dial_originate_ring-1.2.patch: More
 	  app_dial_originate_ring fixes
+
+2009-04-15  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r80] extras/patches/app_dial_originate_ring-1.2.patch: Fixed
 	  app_dial_originate_ring-1.2.patch
 	* [r79] extras/patches/app_dial_originate_ring-1.2.patch: Add a
@@ -286,6 +411,9 @@
 2009-04-14  Lott Caskey <lottcaskey@gmail.com>
 
 	* [r74] extras/osdial.spec: update rpmspec
+
+2009-04-14  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r73] www/images/colon.png, www/images/comma.png, www/index.html,
 	  www/index.php: Fix company heading
 	* [r72] Makefile: cron bugfix
@@ -300,6 +428,9 @@
 2009-04-11  Lott Caskey <lottcaskey@gmail.com>
 
 	* [r68] Makefile: Update Makefile
+
+2009-04-11  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r67] Makefile, extras/osdial.spec: Update Makefile and
 	  osdial.spec
 	* [r66] extras/osdial.init, www/AgentLoginDn.png,
@@ -354,6 +485,9 @@
 	  www/admin/include/variables.php, www/admin/listloader.pl,
 	  www/admin/listloader_super.pl: Added external_key to osdial_list
 	  table.
+
+2009-04-10  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r63] www/admin/include/content/lists/lists.php,
 	  www/admin/include/variables.php: Cleanup: Move to get_variable.
 	* [r62] www/admin/admin_config.inc,
@@ -445,6 +579,9 @@
 2009-03-28  Lott Caskey <lottcaskey@gmail.com>
 
 	* [r43] Makefile: Makefile fix
+
+2009-03-28  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r42] extras/osdial.conf, extras/osdial.init: Modifications to
 	  startup files
 	* [r41] extras/sql/000000.sql, extras/sql/204000.sql,
