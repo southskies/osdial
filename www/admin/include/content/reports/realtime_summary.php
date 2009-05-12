@@ -399,11 +399,11 @@ function report_realtime_summary() {
 			$html .= "$NFB$agent_paused$NFE <font color=navy>paused agents</font> &nbsp; &nbsp; &nbsp; \n";
 			
 			$Ahtml .= "<pre><FONT face=Fixed,monospace SIZE=1>";
-			$html .= "$Aecho";
+			$html .= "$Ahtml";
 		} else {
 			$html .= "<font color=red>&bull;&nbsp;&nbsp;NO AGENTS ON CALLS</font><BR>\n";
 			$Ahtml .= "<PRE><FONT face=Fixed,monospace SIZE=1>";
-			$html .= "$Aecho"; 
+			$html .= "$Ahtml"; 
 		}
 		
 		################################################################################
@@ -427,7 +427,7 @@ function report_realtime_summary() {
 	//$load_ave = get_server_load($load_ave);
 		
 	
-	$Aecho="<pre><font face=Fixed,monospace SIZE=-2>";
+	$Ahtml="<pre><font face=Fixed,monospace SIZE=-2>";
 	if (file_exists($pref . 'S1_load.txt')) {
 		$s1_load = file($pref . 'S1_load.txt');
 		list( $line_num, $line ) = each( $s1_load );
@@ -475,7 +475,7 @@ function report_realtime_summary() {
 		$load_ave_d6=$line;
 		$Ahtml .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6";
 	}
-	$html .= "$Aecho";
+	$html .= "$Ahtml";
 	$html .= "</pre>";
 	$html .= "<TABLE WIDTH='<?=$page_width ?>' BGCOLOR=#E9E8D9 cellpadding=0 cellspacing=0 align=center class=across>";
 

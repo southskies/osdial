@@ -589,7 +589,7 @@ function report_realtime_detail() {
 	//$Chtml .= "+--------+--------------+--------------+-----------------+---------+------------+\n\n";
 	$Chtml .=$LNbottomleft.HorizLine(8).$LNbottomup.HorizLine(14).$LNbottomup.HorizLine(14).$LNbottomup.HorizLine(17).$LNbottomup.HorizLine(9).$LNbottomup.HorizLine(12).$LNbottomright."<br></font>";
 	
-	if ($p<1) {$Cecho='';}
+	if ($p<1) {$Chtml='';}
 	
 	###################################################################################
 	###### TIME ON SYSTEM
@@ -882,8 +882,8 @@ function report_realtime_detail() {
 		
 		$html .= "<PRE><FONT SIZE=2>";
 		$html .= "";
-		$html .= "$Cecho";
-		$html .= "$Aecho";
+		$html .= "$Chtmnl";
+		$html .= "$Ahtml";
 		
 		$html .= "<br><br>";
 		$html .= "<table width=730><tr><td>";
@@ -902,7 +902,7 @@ function report_realtime_detail() {
 		
 		$load_ave = getloadavg();
 		
-		$Aecho="<br><pre><font face=Fixed,monospace SIZE=1>";
+		$Ahtml="<br><pre><font face=Fixed,monospace SIZE=1>";
 		if (file_exists($pref . 'S1_load.txt')) {
 			$s1_load = file($pref . 'S1_load.txt');
 			list( $line_num, $line ) = each( $s1_load );
@@ -951,7 +951,7 @@ function report_realtime_detail() {
 			$Ahtml .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6";
 		}
 		//$html .= "<tr><td colspan=10>";
-		$html .= "$Aecho";
+		$html .= "$Ahtml";
 		$html .= "</pre>";
 		
 	} else {
@@ -961,7 +961,7 @@ function report_realtime_detail() {
 		
 		$load_ave = getloadavg();
 		
-		$Aecho="<br><pre><font face=Fixed,monospace SIZE=1>";
+		$Ahtml="<br><pre><font face=Fixed,monospace SIZE=1>";
 		if (file_exists($pref . 'S1_load.txt')) {
 			$s1_load = file($pref . 'S1_load.txt');
 			list( $line_num, $line ) = each( $s1_load );
@@ -1009,7 +1009,7 @@ function report_realtime_detail() {
 			$load_ave_d6=$line;
 			$Ahtml .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6";
 		}
-		$html .= "$Aecho";
+		$html .= "$Ahtml";
 		
 	}
 	$html .= "</pre>";
