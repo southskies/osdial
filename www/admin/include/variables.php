@@ -138,6 +138,7 @@ $campaign_rec_exten = get_variable("campaign_rec_exten");
 $campaign_rec_filename = get_variable("campaign_rec_filename");
 $campaign_recording = get_variable("campaign_recording");
 $campaigns = get_variable("campaigns");
+$campaign_call_time = get_variable("campaign_call_time");
 $campaign_stats_refresh = get_variable("campaign_stats_refresh");
 $campaign_vdad_exten = get_variable("campaign_vdad_exten");
 $category = get_variable("category");
