@@ -84,75 +84,75 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
  or die "Couldn't connect to database: " . DBI->errstr;
 
 
-	$stmtA = "optimize table call_log;";
-		if($DB){print STDERR "\n|$stmtA|\n";}
-		if (!$T) {
-					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-   					$sthArows=$sthA->rows;
-					 @aryA = $sthA->fetchrow_array;
-   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
-					$sthA->finish();
-				 }
+	#$stmtA = "optimize table call_log;";
+	#	if($DB){print STDERR "\n|$stmtA|\n";}
+	#	if (!$T) {
+	#				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+   	#				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+   	#				$sthArows=$sthA->rows;
+	#				 @aryA = $sthA->fetchrow_array;
+   	#				 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
+	#				$sthA->finish();
+	#			 }
 
 
-	$stmtA = "optimize table park_log;";
-		if($DB){print STDERR "\n|$stmtA|\n";}
-		if (!$T) {
-					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-   					$sthArows=$sthA->rows;
-					 @aryA = $sthA->fetchrow_array;
-   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
-					$sthA->finish();
-				 }
+	#$stmtA = "optimize table park_log;";
+	#	if($DB){print STDERR "\n|$stmtA|\n";}
+	#	if (!$T) {
+	#				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+   	#				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+   	#				$sthArows=$sthA->rows;
+	#				 @aryA = $sthA->fetchrow_array;
+   	#				 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
+	#				$sthA->finish();
+	#			 }
 
 
-	$stmtA = "optimize table osdial_log;";
-		if($DB){print STDERR "\n|$stmtA|\n";}
-		if (!$T) {
-					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-   					$sthArows=$sthA->rows;
-					 @aryA = $sthA->fetchrow_array;
-   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
-					$sthA->finish();
-				 }
+	#$stmtA = "optimize table osdial_log;";
+	#	if($DB){print STDERR "\n|$stmtA|\n";}
+	#	if (!$T) {
+	#				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+   	#				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+   	#				$sthArows=$sthA->rows;
+	#				 @aryA = $sthA->fetchrow_array;
+   	#				 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
+	#				$sthA->finish();
+	#			 }
 
 
-	$stmtA = "optimize table osdial_closer_log;";
-		if($DB){print STDERR "\n|$stmtA|\n";}
-		if (!$T) {
-					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-   					$sthArows=$sthA->rows;
-					 @aryA = $sthA->fetchrow_array;
-   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
-					$sthA->finish();
-				 }
+	#$stmtA = "optimize table osdial_closer_log;";
+	#	if($DB){print STDERR "\n|$stmtA|\n";}
+	#	if (!$T) {
+	#				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+   	#				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+   	#				$sthArows=$sthA->rows;
+	#				 @aryA = $sthA->fetchrow_array;
+   	#				 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
+	#				$sthA->finish();
+	#			 }
 
 
-	$stmtA = "optimize table osdial_xfer_log;";
-		if($DB){print STDERR "\n|$stmtA|\n";}
-		if (!$T) {
-					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-   					$sthArows=$sthA->rows;
-					 @aryA = $sthA->fetchrow_array;
-   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
-					$sthA->finish();
-				 }
+	#$stmtA = "optimize table osdial_xfer_log;";
+	#	if($DB){print STDERR "\n|$stmtA|\n";}
+	#	if (!$T) {
+	#				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+   	#				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+   	#				$sthArows=$sthA->rows;
+	#				 @aryA = $sthA->fetchrow_array;
+   	#				 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
+	#				$sthA->finish();
+	#			 }
 
-	$stmtA = "optimize table osdial_list;";
-		if($DB){print STDERR "\n|$stmtA|\n";}
-		if (!$T) {
-					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-   					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-   					$sthArows=$sthA->rows;
-					 @aryA = $sthA->fetchrow_array;
-   					 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
-					$sthA->finish();
-				 }
+	#$stmtA = "optimize table osdial_list;";
+	#	if($DB){print STDERR "\n|$stmtA|\n";}
+	#	if (!$T) {
+	#				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+   	#				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+   	#				$sthArows=$sthA->rows;
+	#				 @aryA = $sthA->fetchrow_array;
+   	#				 if (!$Q) {print "|",$aryA[0],"|",$aryA[1],"|",$aryA[2],"|",$aryA[3],"|","\n";}
+	#				$sthA->finish();
+	#			 }
 
 
 	$stmtA = "optimize table osdial_manager;";
