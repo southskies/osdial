@@ -1,10 +1,7 @@
-### (ALL) Force update of time servers. Now run from /etc/cron.hourly
-#0 * * * * /opt/osdial/bin/AST_ntp_update.sh > /dev/null 2>&1
-
-### (ALL) Generate asterisk config files and reload modules
+### (dialer) Generate asterisk config files and reload modules
 * * * * * /opt/osdial/bin/osdial_astgen.pl -q
 
-### (ALL) Syncronize IVR recordings, arg is web server
+### (dialer) Syncronize IVR recordings, arg is web server
 * * * * * /opt/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1
 
 ### (ALL) Get load average.
@@ -35,7 +32,7 @@
 ### (sql) optimize the database tables within the asterisk database
 3 1 * * * /opt/osdial/bin/AST_DB_optimize.pl
 
-### (sql) OSDial agent time log weekly and daily summary report generation
+### (archive) OSDial agent time log weekly and daily summary report generation
 #2 0 * * 0 /opt/osdial/bin/AST_agent_week.pl
 #22 0 * * * /opt/osdial/bin/AST_agent_day.pl
 
