@@ -30,6 +30,7 @@
 # 80903-0013 - Initial build.
 #
 # 090420-0140 - Look for stats record, create it.
+# 090511-2116 - Add status_category_hour_counts.
 
 use strict;
 use DBI;
@@ -313,13 +314,15 @@ sub updateStats {
 				$rec_count++;
 			}
 		}
+		# Get category count for last hour, as CATanswers_hour
+		my ($CATcalls_hour,$CATanswers_hour,$CATdrops_hour,$CATdrops_hour_pct) = calculateDrops ($dbhA, $osdial_log, $campaign_id, $CATstatusesSQL, $VDL_hour);
 		$g++;
-		print "     $campaign_id|$VSCcategory|$VSCtally|$CATstatusesSQL|\n" if ($DBX);
-		$VSCupdateSQL .= "status_category_$g='$VSCcategory',status_category_count_$g='$VSCtally',";
+		$VSCupdateSQL .= "status_category_$g='$VSCcategory',status_category_count_$g='$VSCtally',status_category_hour_count_$g='$CATanswers_hour',";
+		print "     $campaign_id|$g|$VSCcategory|$VSCtally|$CATanswers_hour|$CATstatusesSQL|\n" if ($DBX);
 	}
 	while ( $g < 4 ) {
 		$g++;
-		$VSCupdateSQL .= "status_category_$g='',status_category_count_$g='0',";
+		$VSCupdateSQL .= "status_category_$g='',status_category_count_$g='0',status_category_hour_count_$g='0',";
 	}
 	chop($VSCupdateSQL);
 
