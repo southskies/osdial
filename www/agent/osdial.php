@@ -204,6 +204,8 @@
 # 090410-1156 - Added custom2 field
 # 090410-1731 - Added allow_tab_switch
 
+# The version/build variables get set to the SVN revision automatically in release package.
+# Do not change.
 $version = 'SVN_Version';
 $build = 'SVN_Build';
 
