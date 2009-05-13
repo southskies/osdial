@@ -204,8 +204,8 @@
 # 090410-1156 - Added custom2 field
 # 090410-1731 - Added allow_tab_switch
 
-$version = '2.1.0';
-$build = '002-090410';
+$version = 'SVN_Version';
+$build = 'SVN_Build';
 
 require("dbconnect.php");
 
