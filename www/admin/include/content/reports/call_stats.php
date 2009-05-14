@@ -110,14 +110,10 @@ function report_call_stats() {
 
     #$html .= "<HTML>\n";
     #$html .= "<HEAD>\n";
-    $html .= "<STYLE type=\"text/css\">\n";
-    $html .= "<!--\n";
-    $html .= ".green {color: white; background-color: green}\n";
-    $html .= ".red {color: white; background-color: red}\n";
-    $html .= ".blue {color: white; background-color: blue}\n";
-    $html .= ".purple {color: white; background-color: purple}\n";
-    $html .= "-->\n";
-    $html .= "</STYLE>\n";
+    #$html .= "<STYLE type=\"text/css\">\n";
+    #$html .= "<!--\n";
+    #$html .= "-->\n";
+    #$html .= "</STYLE>\n";
 
     #$html .= "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
     #$html .= "<TITLE>OSDIAL: VDAD Stats</TITLE></HEAD><BODY BGCOLOR=WHITE marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";
@@ -125,8 +121,8 @@ function report_call_stats() {
     $short_header=1;
 
 
-	$html .= "<TABLE><TR><TD>\n";
-	$html .= "<p class=centered><font color=navy size=+1>CALL STATS REPORT</font><br><br></p>";
+    $html .= "<TABLE><TR><TD>\n";
+    $html .= "<p class=centered><font color=navy size=+1>CALL STATS REPORT</font><br><br></p>";
     #$html .= "<TABLE CELLPADDING=4 CELLSPACING=0><TR><TD>";
 
     if ($time_begin == '') {
@@ -135,6 +131,7 @@ function report_call_stats() {
     if ($time_end == '') {
         $time_end = '23:59';
     }
+    $html .= "<div class=\"noprint\">\n";
     $html .= "<FORM ACTION=\"$PHP_SELF\" METHOD=GET>\n";
     $html .= "<TABLE CELLSPACING=3><TR><TD VALIGN=TOP> Dates:<BR>";
     $html .= "<INPUT TYPE=HIDDEN NAME=agent_hours VALUE=\"$agent_hours\">\n";
@@ -188,6 +185,7 @@ function report_call_stats() {
     $html .= "</td></tr>";
     $html .= "</TABLE>";
     $html .= "</FORM>\n\n";
+    $html .= "</div>\n";
     
     $html .= "<PRE><FONT SIZE=2>\n\n";
 
@@ -641,7 +639,7 @@ function report_call_stats() {
         $html .= "+------------------------------------------------------+------------+------------+---------------------+----------+\n";
     }
     $html .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">";
-    $html .= "<input type=submit name=\"export\" value=\"Export to CSV\">\n";
+    $html .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
     $html .= "</form>";
     
     
@@ -706,7 +704,7 @@ function report_call_stats() {
     $html .= "| CONVERSION RATE  (CONTACTS / SALE+XFER)               |    $TOTCATconversion |\n";
     $html .= "+-------------------------------------------------------+------------+\n";
     $html .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">";
-    $html .= "<input type=submit name=\"export\" value=\"Export to CSV\">\n";
+    $html .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
     $html .= "</form>";
     
     ##############################
@@ -832,7 +830,7 @@ function report_call_stats() {
     $html .= "| Average Wait time between calls                                       $AVGwait |\n";
     $html .= "+------------------------------------------------------------------------------+\n";
     $html .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">";
-    $html .= "<input type=submit name=\"export\" value=\"Export to CSV\">\n";
+    $html .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
     $html .= "</form>";
     
     ##############################

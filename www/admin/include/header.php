@@ -47,6 +47,7 @@ if ($ADD==999999 && ($SUB==13 || $SUB==14)) {
 	echo "<META HTTP-EQUIV=Refresh CONTENT=\"$RR; URL=$PHP_SELF?ADD=$ADD&SUB=$SUB&RR=$RR&DB=$DB&adastats=$adastats$metadetail\">\n";
 }
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" media=\"screen\">\n";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles-print.css\" media=\"print\">\n";
 
 echo "<title>OSDial Administrator: $title</title>\n";
 
@@ -56,7 +57,6 @@ echo "</script>\n";
 echo "</head>\n";
 
 echo "<body bgcolor=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 onload=\"updateClock(); setInterval('updateClock()', 1000 )\" onunload=\"stop()\">\n";
-
 
 
 
@@ -96,6 +96,7 @@ if ($hh=='reports')
 ?>
 
 <div class=container>
+<div class=header>
 <table width=900 Oldwidth<?= $page_width ?> bgcolor=#E9E8D9 cellpadding=0 cellspacing=0 align=center class=across>
     <tr>
         <td colspan=10>
@@ -450,6 +451,10 @@ if (strlen($reports_hh) > 1) {
 }
     ?>
     <tr><td align=left colspan=10 HEIGHT=1 bgcolor=#666666></td></tr>
+</table>
+</div>
+<div class=content>
+<table width=100% bgcolor=#E9E8D9 cellpadding=0 cellspacing=0 align=center>
     <tr><td align=left colspan=10>
     <?
 

@@ -1,0 +1,9 @@
+	.header { display: none; }
+	.footer { display: none; }
+	.printable { display: inline; }
+	.noprint { display: none; }
+
+	.green {color: white; background-color: green}
+	.red {color: white; background-color: red}
+	.blue {color: white; background-color: blue}
+	.purple {color: white; background-color: purple}
