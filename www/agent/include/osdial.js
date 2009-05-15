@@ -24,8 +24,9 @@
  * # 090410-1155 - Added custom2 field.
  * # 090410-1750 - Added allow_tab_switch.
  * # 090428-0938 - Added external_key to web_form_vars.
- * # 090515-0135 - Added manual_force_dial_time
+ * # 090515-0135 - Added preview_force_dial_time
  * # 090515-0140 - Added manual_preview_default
+ * # 090515-0538 - Added web_form_extwindow and web_form2_extwindow
  */
 
 
@@ -159,7 +160,12 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	var group = '<? echo $VD_campaign ?>';
 	var OSDiaL_web_form_address_enc = '<? echo $OSDiaL_web_form_address_enc ?>';
 	var OSDiaL_web_form_address = '<? echo $OSDiaL_web_form_address ?>';
+	var OSDiaL_web_form_address2 = '<? echo $OSDiaL_web_form_address2 ?>';
+	var OSDiaL_web_form_address2_enc = '<? echo $OSDiaL_web_form_address2_enc ?>';
 	var VDIC_web_form_address = '<? echo $OSDiaL_web_form_address ?>';
+	var VDIC_web_form_address2 = '<? echo $OSDiaL_web_form_address2 ?>';
+	var web_form_extwindow = <?= $web_form_extwindow ?>;
+	var web_form2_extwindow = <?= $web_form2_extwindow ?>;
 	var CalL_ScripT_id = '';
 	var CalL_AutO_LauncH = '';
 	var CalL_allow_tab = '';
@@ -205,6 +211,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	var conf_channels_xtra_display = 0;
 	var display_message = '';
 	var web_form_vars = '';
+	var web_form_vars2 = '';
 	var Nactiveext;
 	var Nbusytrunk;
 	var Nbusyext;
@@ -354,12 +361,15 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	//	image_ShowCallbackInfo_OFF.src = "images/ShowCallbackInfo.png";
 
 	// Manual Dial: Force Manual Dial after given time.
-	var manualFD_timeout_id;
-	var manualFD_display_id = 0;
-	var manualFD_time = <?= $manualFD_time ?>;
-	var manualFD_time_remaining = manualFD_time;
+	var previewFD_timeout_id;
+	var previewFD_display_id = 0;
+	var previewFD_time = <?= $previewFD_time ?>;
+	var previewFD_time_remaining = previewFD_time;
 
 	var dial_timedout = 0;
+
+	var web_form_frame_open1 = 0;
+	var web_form_frame_open2 = 0;
 
 
 
@@ -1816,11 +1826,11 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	function ManualDialNext(mdnCBid,mdnBDleadid,mdnDiaLCodE,mdnPhonENumbeR,mdnStagE)
 		{
 		dial_timedout=0;
-		if (manualFD_time > 0)
+		if (previewFD_time > 0)
 			{
-			clearTimeout(manualFD_timeout_id);
-			clearInterval(manualFD_display_id);
-			document.getElementById("ManualFDTimeSpan").innerHTML = "";
+			clearTimeout(previewFD_timeout_id);
+			clearInterval(previewFD_display_id);
+			document.getElementById("PreviewFDTimeSpan").innerHTML = "";
 			}
 		all_record = 'NO';
 		all_record_count=0;
@@ -2007,6 +2017,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						web_form_vars = web_form_vars.replace(regWF, '');
 
 						VDIC_web_form_address = OSDiaL_web_form_address;
+						VDIC_web_form_address2 = OSDiaL_web_form_address2;
 
 						if (LeaDPreVDispO == 'CALLBK')
 							{
@@ -2019,25 +2030,41 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							showDiv('CBcommentsBox');
 							}
 
+						web_form_vars2 = web_form_vars;
+
 						var regWFAvars = new RegExp("\\?","ig");
 						if (VDIC_web_form_address.match(regWFAvars))
 							{web_form_vars = '&' + web_form_vars}
 						else
 							{web_form_vars = '?' + web_form_vars}
 
-						document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"./images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
-						document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"./images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form\"></a>\n";
+						if (VDIC_web_form_address2.match(regWFAvars))
+							{web_form_vars2 = '&' + web_form_vars2}
+						else
+							{web_form_vars2 = '?' + web_form_vars2}
 
-						if (manualFD_time > 0) {
-							manualFD_time_remaining =  manualFD_time;
-							manualFD_timeout_id = setTimeout("ManualDialOnly()", manualFD_time * 1000);
-							manualFD_display_id = setInterval("manualFDDisplayTime()", 1000);
+						if (web_form_extwindow == 1) {
+							document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"./images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+						} else {
+							document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + VDIC_web_form_address + web_form_vars + "');\"><IMG SRC=\"./images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+						}
+							
+						if (web_form2_extwindow == 1) {
+							document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"./images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+						} else {
+							document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + VDIC_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"./images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+						}
+
+						if (previewFD_time > 0 && document.osdial_form.LeadPreview.checked==true) {
+							previewFD_time_remaining =  previewFD_time;
+							previewFD_timeout_id = setTimeout("ManualDialOnly()", previewFD_time * 1000);
+							previewFD_display_id = setInterval("previewFDDisplayTime()", 1000);
 						}
 
 						reselect_preview_dial = 1;
-						if (document.osdial_form.LeadPreview.checked==false || manualFD_time > 0)
+						if (document.osdial_form.LeadPreview.checked==false || previewFD_time > 0)
 							{
-							if (document.osdial_form.LeadPreview.checked==false && manualFD_time==0)
+							if (document.osdial_form.LeadPreview.checked==false)
 								{
 								reselect_preview_dial = 0;
 								MD_channel_look=1;
@@ -2071,7 +2098,27 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 							if (get_call_launch == 'WEBFORM')
 								{
-								window.open(VDIC_web_form_address + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+								if (web_form_extwindow == 1)
+									{
+									window.open(VDIC_web_form_address + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+									}
+								else
+									{
+									CloseWebFormPanels();
+									WebFormPanelDisplay(VDIC_web_form_address + web_form_vars);
+									}
+								}
+							if (get_call_launch == 'WEBFORM2')
+								{
+								if (web_form2_extwindow == 1)
+									{
+									window.open(VDIC_web_form_address2 + "" + web_form_vars, 'webform2', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+									}
+								else
+									{
+									CloseWebFormPanels();
+									WebFormPanelDisplay2(VDIC_web_form_address2 + web_form_vars2);
+									}
 								}
 
 							}
@@ -2094,11 +2141,11 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			}
 		else
 			{
-			if (manualFD_time > 0)
+			if (previewFD_time > 0)
 				{
-				clearTimeout(manualFD_timeout_id);
-				clearInterval(manualFD_display_id);
-				document.getElementById("ManualFDTimeSpan").innerHTML = "";
+				clearTimeout(previewFD_timeout_id);
+				clearInterval(previewFD_display_id);
+				document.getElementById("PreviewFDTimeSpan").innerHTML = "";
 				}
 			document.getElementById("DiaLControl").innerHTML = "<IMG SRC=\"./images/vdc_LB_dialnextnumber_OFF.gif\" border=0 alt=\"Dial Next Number\">";
 
@@ -2200,11 +2247,11 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	function ManualDialOnly(taskaltnum)
 		{
 		dial_timedout=0;
-		if (manualFD_time > 0)
+		if (previewFD_time > 0)
 			{
-			clearTimeout(manualFD_timeout_id);
-			clearInterval(manualFD_display_id);
-			document.getElementById("ManualFDTimeSpan").innerHTML = "";
+			clearTimeout(previewFD_timeout_id);
+			clearInterval(previewFD_display_id);
+			document.getElementById("PreviewFDTimeSpan").innerHTML = "";
 			}
 		all_record = 'NO';
 		all_record_count=0;
@@ -2311,7 +2358,27 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 						if (get_call_launch == 'WEBFORM')
 							{
-							window.open(VDIC_web_form_address + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+							if (web_form_extwindow == 1)
+								{
+								window.open(VDIC_web_form_address + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+								}
+							else
+								{
+								CloseWebFormPanels();
+								WebFormPanelDisplay(VDIC_web_form_address + web_form_vars);
+								}
+							}
+						if (get_call_launch == 'WEBFORM2')
+							{
+							if (web_form2_extwindow == 1)
+								{
+								window.open(VDIC_web_form_address2 + "" + web_form_vars2, 'webform2', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+								}
+							else
+								{
+								CloseWebFormPanels();
+								WebFormPanelDisplay2(VDIC_web_form_address2 + web_form_vars2);
+								}
 							}
 
 						}
@@ -2500,6 +2567,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 							var VDIC_data_VDAC=check_VDIC_array[1].split("|");
 							VDIC_web_form_address = OSDiaL_web_form_address
+							VDIC_web_form_address2 = OSDiaL_web_form_address2
 							var VDIC_fronter='';
 
 							var VDIC_data_VDIG=check_VDIC_array[2].split("|");
@@ -2515,11 +2583,21 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							 CalL_XC_a_NuMber			= VDIC_data_VDIG[8];
 							 CalL_XC_b_Dtmf				= VDIC_data_VDIG[9];
 							 CalL_XC_b_NuMber			= VDIC_data_VDIG[10];
-							 CalL_allow_tab			    = VDIC_data_VDIG[11];
 							if (VDIC_data_VDIG[11].length > 0)
 								{LIVE_default_xfer_group = VDIC_data_VDIG[11];}
 							else
 								{LIVE_default_xfer_group = default_xfer_group;}
+							 CalL_allow_tab			    = VDIC_data_VDIG[12];
+							if (VDIC_data_VDIG[13].length > 5)
+								{VDIC_web_form_address2 = VDIC_data_VDIG[13];}
+							if (VDIC_data_VDIG[14] == "Y")
+								{web_form_extwindow = 1;}
+							else
+								{web_form_extwindow = 0;}
+							if (VDIC_data_VDIG[15] == "Y")
+								{web_form2_extwindow = 1;}
+							else
+								{web_form2_extwindow = 0;}
 
 							var VDIC_data_VDFR=check_VDIC_array[3].split("|");
 							if ( (VDIC_data_VDFR[1].length > 1) && (VDCL_fronter_display == 'Y') )
@@ -2714,14 +2792,35 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							web_form_vars = web_form_vars.replace(regWFspace, '+');
 							web_form_vars = web_form_vars.replace(regWF, '');
 
+							web_form_vars2 = web_form_vars;
+
 							var regWFAvars = new RegExp("\\?","ig");
 							if (VDIC_web_form_address.match(regWFAvars))
 								{web_form_vars = '&' + web_form_vars}
 							else
 								{web_form_vars = '?' + web_form_vars}
+							if (VDIC_web_form_address2.match(regWFAvars))
+								{web_form_vars2 = '&' + web_form_vars2}
+							else
+								{web_form_vars2 = '?' + web_form_vars2}
 
-							document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"./images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
-							document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"./images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form\"></a>\n";
+							if (web_form_extwindow == 1)
+								{
+								document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"./images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+								}
+							else
+								{
+								document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + VDIC_web_form_address + web_form_vars + "');\"><IMG SRC=\"./images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+								}
+
+							if (web_form2_extwindow == 1)
+								{
+								document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"./images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+								}
+							else
+								{
+								document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + VDIC_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"./images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+								}
 
 							if ( (campaign_recording == 'ALLCALLS') || (campaign_recording == 'ALLFORCE') )
 								{all_record = 'YES';}
@@ -2748,7 +2847,27 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 							if (CalL_AutO_LauncH == 'WEBFORM')
 								{
-								window.open(VDIC_web_form_address + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+								if (web_form_extwindow == 1)
+									{
+									window.open(VDIC_web_form_address + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+									}
+								else
+									{
+									CloseWebFormPanels();
+									WebFormPanelDisplay(VDIC_web_form_address + web_form_vars);
+									}
+								}
+							if (CalL_AutO_LauncH == 'WEBFORM2')
+								{
+								if (web_form2_extwindow == 1)
+									{
+									window.open(VDIC_web_form_address2 + "" + web_form_vars2, 'webform2', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+									}
+								else
+									{
+									CloseWebFormPanels();
+									WebFormPanelDisplay2(VDIC_web_form_address2 + web_form_vars2);
+									}
 								}
 
 							}
@@ -2823,6 +2942,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 					//		alert(xmlhttprequestrepull.responseText);
 
 							RPLD_web_form_address = OSDiaL_web_form_address;
+							RPLD_web_form_address2 = OSDiaL_web_form_address2;
 
 							document.osdial_form.lead_id.value		= check_RPLD_array[0];
 							document.osdial_form.vendor_lead_code.value	= check_RPLD_array[1];
@@ -2935,14 +3055,35 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							web_form_vars = web_form_vars.replace(regWFspace, '+');
 							web_form_vars = web_form_vars.replace(regWF, '');
 
+							web_form_vars2 = web_form_vars;
+
 							var regWFAvars = new RegExp("\\?","ig");
 							if (RPLD_web_form_address.match(regWFAvars))
 								web_form_vars = '&' + web_form_vars;
 							else
 								web_form_vars = '?' + web_form_vars;
+							if (RPLD_web_form_address2.match(regWFAvars))
+								web_form_vars2 = '&' + web_form_vars2;
+							else
+								web_form_vars2 = '?' + web_form_vars2;
 
-							document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + RPLD_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"./images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
-							document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + RPLD_web_form_address + web_form_vars + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"./images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form\"></a>\n";
+							if (web_form_extwindow == 1)
+								{
+								document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + RPLD_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"./images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+								}
+							else
+								{
+								document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + RPLD_web_form_address + web_form_vars + "');\"><IMG SRC=\"./images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+								}
+
+							if (web_form2_extwindow == 1)
+								{
+								document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + RPLD_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"./images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+								}
+							else
+								{
+								document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + RPLD_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"./images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+								}
 
 						}
 						xmlhttprequestrepull = undefined;
@@ -3028,22 +3169,58 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		web_form_vars = web_form_vars.replace(regWFspace, '+');
 		web_form_vars = web_form_vars.replace(regWF, '');
 
+		web_form_vars2 = web_form_vars;
+
 		var regWFAvars = new RegExp("\\?","ig");
 		if (VDIC_web_form_address.match(regWFAvars))
 			{web_form_vars = '&' + web_form_vars}
 		else
 			{web_form_vars = '?' + web_form_vars}
+		if (VDIC_web_form_address2.match(regWFAvars))
+			{web_form_vars2 = '&' + web_form_vars2}
+		else
+			{web_form_vars2 = '?' + web_form_vars2}
 
 
 		if (taskrefresh == 'OUT')
 			{
-			document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH('IN');\"><IMG SRC=\"./images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
-			document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH('IN');\"><IMG SRC=\"./images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form\"></a>\n";
+			if (web_form_extwindow == 1)
+				{
+				document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH('IN');\"><IMG SRC=\"./images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+				}
+			else
+				{
+				document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + VDIC_web_form_address + web_form_vars + "');\"><IMG SRC=\"./images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+				}
+
+			if (web_form2_extwindow == 1)
+				{
+				document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH('IN');\"><IMG SRC=\"./images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+				}
+			else
+				{
+				document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + VDIC_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"./images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+				}
 			}
 		else 
 			{
-			document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOut=\"WebFormRefresH('OUT');\"><IMG SRC=\"./images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
-			document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform2\" onMouseOut=\"WebFormRefresH('OUT');\"><IMG SRC=\"./images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form\"></a>\n";
+			if (web_form_extwindow == 1)
+				{
+				document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOut=\"WebFormRefresH('OUT');\"><IMG SRC=\"./images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+				}
+			else
+				{
+				document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + VDIC_web_form_address + web_form_vars + "');\"><IMG SRC=\"./images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+				}
+
+			if (web_form2_extwindow == 1)
+				{
+				document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOut=\"WebFormRefresH('OUT');\"><IMG SRC=\"./images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+				}
+			else
+				{
+				document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + VDIC_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"./images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+				}
 			}
 		}
 
@@ -3598,7 +3775,15 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	
 			WebFormRefresH();
 
-			window.open(VDIC_web_form_address + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+			if (web_form_extwindow == 1)
+				{
+				window.open(VDIC_web_form_address + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+				}
+			else
+				{
+				CloseWebFormPanels();
+				WebFormPanelDisplay(VDIC_web_form_address + web_form_vars);
+				}
 
 			DispoSelect_submit();
 			}
@@ -3715,6 +3900,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				document.getElementById("RecorDID").innerHTML = "&nbsp;";
 
 				document.getElementById("MainStatuSSpan").innerHTML = "&nbsp;";
+
+				CloseWebFormPanels();
 
 				CBcommentsBoxhide();
 
@@ -4091,11 +4278,11 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				}
 			else
 				{
-				if (manualFD_time > 0)
+				if (previewFD_time > 0)
 					{
-					clearTimeout(manualFD_timeout_id);
-					clearInterval(manualFD_display_id);
-					document.getElementById("ManualFDTimeSpan").innerHTML = "";
+					clearTimeout(previewFD_timeout_id);
+					clearInterval(previewFD_display_id);
+					document.getElementById("PreviewFDTimeSpan").innerHTML = "";
 					}
 				var xmlhttp=false;
 				/*@cc_on @*/
@@ -5393,14 +5580,69 @@ foreach ($forms as $form) {
 ?>
 }
 
-function manualFDDisplayTime() {
-	if (manualFD_time > 0 ) {
-		if ( manualFD_time_remaining > 0 ) {
-			manualFD_time_remaining--;
-			document.getElementById("ManualFDTimeSpan").innerHTML = "Dialing in " + manualFD_time_remaining + "...";
+function previewFDDisplayTime() {
+	if (previewFD_time > 0 ) {
+		if ( previewFD_time_remaining > 0 ) {
+			previewFD_time_remaining--;
+			document.getElementById("PreviewFDTimeSpan").innerHTML = "Dialing in " + previewFD_time_remaining + "...";
 		} else {
-			document.getElementById("ManualFDTimeSpan").innerHTML = "";
-			clearInterval(manualFD_display_id);
+			document.getElementById("PreviewFDTimeSpan").innerHTML = "";
+			clearInterval(previewFD_display_id);
 		}
+	}
+}
+
+function WebFormPanelDisplay(webform) {
+	WebFormRefresH();
+	if (web_form2_extwindow == 0 && web_form_frame_open2 > 0) {
+		document.getElementById('WebFormPanel2').style.visibility='hidden'; 
+		web_form_frame_open2 = 1;
+	}
+	if (web_form_frame_open1 == 0) {
+		document.getElementById('WebFormPF1').src=webform;
+		document.getElementById('WebFormPanel1').style.visibility='visible'; 
+		web_form_frame_open1 = 2;
+	} else if (web_form_frame_open1 == 1) {
+		document.getElementById('WebFormPanel1').style.visibility='visible'; 
+		web_form_frame_open1 = 2;
+	} else if (web_form_frame_open1 == 2) {
+		document.getElementById('WebFormPanel1').style.visibility='hidden'; 
+		web_form_frame_open1 = 1;
+	}
+}
+
+function WebFormPanelDisplay2(webform) {
+	WebFormRefresH();
+	if (web_form_extwindow == 0 && web_form_frame_open1 > 0) {
+		document.getElementById('WebFormPanel1').style.visibility='hidden'; 
+		web_form_frame_open1 = 1;
+	}
+	if (web_form_frame_open2 == 0) {
+		document.getElementById('WebFormPF2').src=webform;
+		document.getElementById('WebFormPanel2').style.visibility='visible'; 
+		web_form_frame_open2 = 2;
+	} else if (web_form_frame_open2 == 1) {
+		document.getElementById('WebFormPanel2').style.visibility='visible'; 
+		web_form_frame_open2 = 2;
+	} else if (web_form_frame_open2 == 2) {
+		document.getElementById('WebFormPanel2').style.visibility='hidden'; 
+		web_form_frame_open2 = 1;
+	}
+}
+
+function CloseWebFormPanels() {
+	if (web_form_extwindow == 0) {
+		if (web_form_frame_open1 > 0) {
+			document.getElementById('WebFormPanel1').style.visibility = 'hidden';
+		}
+		web_form_frame_open1 = 0;
+		document.getElementById('WebFormPF1').src = '/osdial/agent/blank.php';
+	}
+	if (web_form2_extwindow == 0) {
+		if (web_form_frame_open2 > 0) {
+			document.getElementById('WebFormPanel2').style.visibility = 'hidden';
+		}
+		web_form_frame_open2 = 0;
+		document.getElementById('WebFormPF2').src = '/osdial/agent/blank.php';
 	}
 }

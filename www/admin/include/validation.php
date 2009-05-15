@@ -21,8 +21,9 @@
 #
 # 090410-1731 - Added allow_tab_switch
 # 090420-1846 - Added answers_per_hour_limit
-# 090515-0135 - Added manual_force_dial_time
+# 090515-0135 - Added preview_force_dial_time
 # 090515-0140 - Added manual_preview_default
+# 090515-0538 - Added web_form_extwindow and web_form2_extwindow
 
 
 ######################################################################################################
@@ -124,7 +125,7 @@ if ($non_latin < 1)	{
 	$park_ext = ereg_replace("[^0-9]","",$park_ext);
 	$park_on_extension = ereg_replace("[^0-9]","",$park_on_extension);
 	$phone_number = ereg_replace("[^0-9]","",$phone_number);
-	$manual_force_dial_time = ereg_replace("[^0-9]","",$manual_force_dial_time);
+	$preview_force_dial_time = ereg_replace("[^0-9]","",$preview_force_dial_time);
 	$QUEUE_ACTION_enabled = ereg_replace("[^0-9]","",$QUEUE_ACTION_enabled);
 	$recording_exten = ereg_replace("[^0-9]","",$recording_exten);
 	$remote_agent_id = ereg_replace("[^0-9]","",$remote_agent_id);
@@ -183,6 +184,8 @@ if ($non_latin < 1)	{
 	$tovdad_display = ereg_replace("[^NY]","",$tovdad_display);
 	$campaign_allow_inbound = ereg_replace("[^NY]","",$campaign_allow_inbound);
 	$allow_tab_switch = ereg_replace("[^NY]","",$allow_tab_switch);
+	$web_form_extwindow = ereg_replace("[^NY]","",$web_form_extwindow);
+	$web_form2_extwindow = ereg_replace("[^NY]","",$web_form2_extwindow);
 	
 	### ALPHA-NUMERIC ONLY ###
 	$user_start = ereg_replace("[^0-9a-zA-Z]","",$user_start);

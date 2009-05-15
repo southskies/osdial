@@ -203,7 +203,7 @@
 #			Changed to new version (from 2.0.4-121)
 # 090410-1156 - Added custom2 field
 # 090410-1731 - Added allow_tab_switch
-# 090515-0135 - Added manual_force_dial_time
+# 090515-0135 - Added preview_force_dial_time
 # 090515-0140 - Added manual_preview_default
 
 # The version/build variables get set to the SVN revision automatically in release package.
@@ -888,7 +888,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 			$HKstatusnames = substr("$HKstatusnames", 0, -1); 
 
 			##### grab the statuses to be dialed for your campaign as well as other campaign settings
-			$stmt="SELECT park_ext,park_file_name,web_form_address,allow_closers,auto_dial_level,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,agent_pause_codes_active,no_hopper_leads_logins,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,xfer_groups,web_form_address2,allow_tab_switch,manual_force_dial_time,manual_preview_default FROM osdial_campaigns where campaign_id = '$VD_campaign';";
+			$stmt="SELECT park_ext,park_file_name,web_form_address,allow_closers,auto_dial_level,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,agent_pause_codes_active,no_hopper_leads_logins,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,xfer_groups,web_form_address2,allow_tab_switch,preview_force_dial_time,manual_preview_default,web_form_extwindow,web_form2_extwindow FROM osdial_campaigns where campaign_id = '$VD_campaign';";
 			$rslt=mysql_query($stmt, $link);
 			if ($DB) {echo "$stmt\n";}
 			$row=mysql_fetch_row($rslt);
@@ -927,8 +927,10 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 				$xfer_groups =				$row[32];
 				$web_form_address2 = 		$row[33];
 				$allow_tab_switch = 		$row[34];
-				$manualFD_time = 		    $row[35];
+				$previewFD_time = 		    $row[35];
 				$manual_preview_default = 	$row[36];
+				$web_form_extwindow = 	    $row[37];
+				$web_form2_extwindow = 	    $row[38];
 
 			if ( (!ereg('DISABLED',$VU_osdial_recording_override)) and ($VU_osdial_recording > 0) )
 				{
@@ -947,6 +949,8 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 			$closer_campaigns = preg_replace("/ /","','",$closer_campaigns);
 			$closer_campaigns = "'$closer_campaigns'";
 			if ($manual_preview_default=='Y') {$manual_preview_default='1';} else {$manual_preview_default='0';}
+			if ($web_form_extwindow=='Y') {$web_form_extwindow='1';} else {$web_form_extwindow='0';}
+			if ($web_form2_extwindow=='Y') {$web_form2_extwindow='1';} else {$web_form2_extwindow='0';}
 
 			if ($agent_pause_codes_active=='Y')
 				{
@@ -1892,7 +1896,7 @@ foreach ($forms as $form) {
 		<span id="PauseCodeLinkSpan"></span> <BR></font>
 	</span>
 
-    <span id="ManualFDTimeSpan" style="font-size:35pt; font-weight: bold; color: #1C4754; text-decoration: blink; position:absolute;left:325px;top:400px;z-index:22;"></span>
+    <span id="PreviewFDTimeSpan" style="font-size:35pt; font-weight: bold; color: #1C4754; text-decoration: blink; position:absolute;left:325px;top:400px;z-index:22;"></span>
 	
 	<!-- Choose From Available Call Backs -->
 	<span style="position:absolute;left:0px;top:18px;z-index:38;" id="CallBacKsLisTBox">
@@ -2721,6 +2725,14 @@ foreach ($forms as $form) {
 </TABLE>
 
 -->
+
+<!-- Inline webform here -->
+<span style="visibility:hidden; position:absolute;left:190px;top:92px;z-index:17;" name="WebFormPanel1" id="WebFormPanel1">
+<iframe src="/osdial/agent/blank.php" width="780" height="375" name="WebFormPF1" id="WebFormPF1" style="background-color: white;"></iframe>
+</span>
+<span style="visibility:hidden; position:absolute;left:190px;top:92px;z-index:18;" name="WebFormPanel2" id="WebFormPanel2">
+<iframe src="/osdial/agent/blank.php" width="780" height="375" name="WebFormPF2" id="WebFormPF2" style="background-color: white;"></iframe>
+</span>
 
 </body>
 </html>

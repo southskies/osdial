@@ -22,7 +22,7 @@
 # 090410-1147 - Added custom2 field
 # 090410-1731 - Added allow_tab_swtich
 # 090420-1846 - Added answers_per_hour_limit
-# 090515-0135 - Added manual_force_dial_time
+# 090515-0135 - Added preview_force_dial_time
 # 090515-0140 - Added manual_preview_default
 
 
@@ -296,6 +296,16 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <B>Web Form -</B> This is where you can set the custom web page that will be opened when the user clicks on one of the WEB FORM buttons.
 
 <BR>
+<A NAME="osdial_campaigns-web_form_extwindow">
+<BR>
+<B>Web Form in External Window -</B> "Y" will display the WebForm in an external window, "N" will display in a frame in the agent screen.
+
+<BR>
+<A NAME="osdial_campaigns-web_form2_extwindow">
+<BR>
+<B>Web Form 2 in External Window -</B> "Y" will display the WebForm2 in an external window, "N" will display in a frame in the agent screen.
+
+<BR>
 <A NAME="osdial_campaigns-allow_closers">
 <BR>
 <B>Allow Closers -</B> This is where you can set whether the users of this campaign will have the option to send the call to a closer.
@@ -428,9 +438,9 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <B>Dial Timeout -</B> If defined, calls that would normally hang up after the timeout defined in extensions.conf would instead timeout at this amount of seconds if it is less than the extensions.conf timeout. This allows for quickly changing dial timeouts from server to server and limiting the effects to a single campaign. If you are having a lot of Answering Machine or Voicemail calls you may want to try changing this value to between 21-26 and see if results improve.
 
 <BR>
-<A NAME="osdial_campaigns-manual_force_dial_time">
+<A NAME="osdial_campaigns-preview_force_dial_time">
 <BR>
-<B>Manual Force Dial Time -</B> If this is set to a number greater than 0, then when in manual dial mode, the call will be placed after the number of seconds set in this field as elapsed with the user needing to click DIAL LEAD.
+<B>Preview Force Dial Time -</B> If this is set to a number greater than 0, then when in manual-preview dial mode, the call will be placed after the number of seconds set in this field as elapsed with the user needing to click DIAL LEAD.
 
 <BR>
 <A NAME="osdial_campaigns-manualpreview_default">
@@ -684,6 +694,11 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <A NAME="osdial_inbound_groups-web_form_address">
 <BR>
 <B>Web Form -</B> This is the custom address that clicking on one of the WEB FORM buttons in OSDial will take you to for calls that come in on this group.
+
+<BR>
+<A NAME="osdial_inbound_groups-web_form_extwindow">
+<BR>
+<B>Web Form External -</B> "Y" will display the WebForm in an external window, "N" will display in an OSDial frame on the agent screen.
 
 <BR>
 <A NAME="osdial_inbound_groups-next_agent_call">
