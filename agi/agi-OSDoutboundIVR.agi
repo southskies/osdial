@@ -371,7 +371,8 @@ sub xfer_to_external_multi {
 			$robin{$num} = $rrcnt++;
 		}
 		$pos = $robin{$last_state} if ($last_state);
-		$pos = 0 if ($pos == --$rrcnt);
+		$pos++;
+		$pos = 0 if ($pos == $rrcnt);
 		$number = $numbers[$pos];
 	}
 	return xfer_to_external($stream, $status, $number);
