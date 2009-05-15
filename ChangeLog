@@ -1,5 +1,57 @@
+2009-05-15  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r202] extras/sql/211009.sql,
+	  www/admin/include/content/campaigns/campaigns.php,
+	  www/admin/include/content/ingroups/ingroups.php,
+	  www/admin/include/help.php, www/admin/include/validation.php,
+	  www/admin/include/variables.php, www/agent/blank.php,
+	  www/agent/include/osdial.js, www/agent/osdial.php,
+	  www/agent/vdc_db_query.php: Renamed manual_force_dial_time to
+	  preview_force_dial_time. Corrected broken WebForm2 functionality
+	  (would always pull the form for WebForm1). Added option to run
+	  WebForms in an external window,or in an OSDial frame!
+	* [r201] extras/sql/211009.sql, extras/sql/upgrade_sql.map,
+	  version, www/admin/include/content/campaigns/campaigns.php,
+	  www/admin/include/help.php, www/admin/include/validation.php,
+	  www/admin/include/variables.php, www/agent/include/osdial.js,
+	  www/agent/osdial.php: Added manual_preview_default and
+	  manual_force_dial_time options to campaigns.
+	* [r200] docs/conf_examples/osdial_iax_trunks.conf: Update Binfone
+	  to use iax-2.binfone.com
+	* [r199] agi/agi-OSDoutboundIVR.agi: Fixes for OutboundIVR DROP
+	  status bug.
+	* [r198] bin/FastAGI_log.pl: Fixes for OutboundIVR DROP status bug.
+
+2009-05-14  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r197] www/admin/include/content/reports/call_stats.php,
+	  www/admin/include/footer.php, www/admin/include/header.php,
+	  www/admin/styles-print.css, www/admin/styles.css: Correct table
+	  formatting for better CSS media handling. Allows us to print only
+	  the content area and not the headers or footers.
+
+2009-05-13  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r196] www/agent/osdial.php: Update for auto SVN version/build
+	  tagging.
+	* [r195] www/agent/osdial.php: Update for auto SVN version/build
+	  tagging.
+	* [r194] extras/osdial.init: Adjust tmpfs sizes
+	* [r193] extras/sql/upstream_conversion.sh: Add some missing
+	  conversions to upstream_conversion.sh
+	* [r192] extras/sql/upstream_converison.sh,
+	  extras/sql/upstream_conversion.sh: Corrected filename.
+	* [r191] extras/sql/upstream_converison.sh: Fixes for upstream
+	  conversion.
+	* [r190] extras/sql/999999.sql: Fix SQL defaults
+
 2009-05-12  Lott Caskey <lottcaskey@gmail.com>
 
+	* [r189] www/admin/include/content/reports/realtime_detail.php,
+	  www/admin/include/content/reports/realtime_summary.php: Fix for
+	  realtime reports.
+	* [r188] www/admin/include/variables.php: Fix campaign call-time
+	  not saving
 	* [r186] www/admin/include/content/reports/realtime_detail.php: Fix
 	  hour counts on detail
 	* [r185] extras/sql/upgrade_sql.map: Fix upgrade_map
@@ -40,6 +92,9 @@
 	* [r173] docs/conf_examples/amd.conf,
 	  docs/conf_examples/osdial_extensions.conf: Decreased word count
 	  on AMD
+
+2009-05-07  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r172] extras/osdial.init: Fixed ramdisk settings
 	* [r171] docs/conf_examples/osdial_extensions.conf: Update dialplan
 	  to allow 6 + 3digits and 7 + 3digits for monitor/barge.
@@ -48,6 +103,9 @@
 
 	* [r170] agi/agi-station_barge.agi, agi/agi-station_monitor.agi:
 	  Fixed config file call in monitor/barge AGIs.
+
+2009-05-06  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r169] sounds/check-number-dial-again.gsm, sounds/connected.gsm,
 	  sounds/extension.gsm, sounds/not-yet-connected.gsm: Added some
 	  audio files required for monitor/barge.
@@ -85,6 +143,9 @@
 
 	* [r161] extras/openvpn/osdial.conf: fix resolv parameter in
 	  openvpn.
+
+2009-05-02  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r160] extras/openvpn/osdial-client.crt,
 	  extras/openvpn/osdial-client.key, extras/openvpn/osdial.conf,
 	  extras/openvpn/osdial.up, extras/osdial.init: Added CN tagging
@@ -100,6 +161,9 @@
 	  extras/openvpn/osdial-client.key, extras/openvpn/osdial-ta.key,
 	  extras/openvpn/osdial.conf, www/admin/include/variables.php:
 	  Added openvpn configuration files for easier support.
+
+2009-05-01  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r155] agi/agi-OSDoutboundIVR.agi: Move comment update on
 	  osdial_log in Outbound IVR to before menu.
 	* [r154] www/agent/webform_redirect.php: Removed get_vars and
@@ -133,6 +197,9 @@
 
 	* [r148] extras/sql/210005.sql, extras/sql/upgrade_sql.map: Added
 	  status CRF, CRR, CRO, CRC to report on SIP 50X errors
+
+2009-04-29  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r147] bin/FastAGI_log.pl: Added support for logging of SIP
 	  responses 500-504 and PRI indications 27,29,34,38.
 	* [r146] bin/AST_VDadapt.pl: Added divide-by-zero error checking to
@@ -158,6 +225,9 @@
 
 	* [r139] www/agent/osdial.php: Putting in vendor_lead_code in place
 	  of Custom3.
+
+2009-04-29  Steve Szmidt <techs@callcentersg.com>
+
 	* [r138] www/agent/osdial.php: Commented out Custom3, added foot
 	  holders for company and fixed formatting for a missed login
 	  screen.
@@ -184,6 +254,9 @@
 
 	* [r133] extras/sql/210004.sql, extras/sql/upgrade_sql.map: Update
 	  SQL defaults for webform.
+
+2009-04-28  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r132] extras/sql/210000.sql, version,
 	  www/agent/webform_redirect.php: Update webform_redirect.php and
 	  default to osdial.com/webform_test.php in webforms
@@ -249,6 +322,9 @@
 2009-04-22  Lott Caskey <lottcaskey@gmail.com>
 
 	* [r116] bin/osdial_killall.sh: added osdial_killall script.
+
+2009-04-22  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r115] agi/agi-VDAD_ALL_inbound.agi, bin/AST_VDauto_dial.pl,
 	  extras/sql/210003.sql, www/admin/include/content/lists/lists.php,
 	  www/admin/listloader.pl, www/admin/listloader_super.pl,
@@ -312,6 +388,9 @@
 2009-04-20  Lott Caskey <lottcaskey@gmail.com>
 
 	* [r104] extras/sql/210003.sql: update 210003.sql
+
+2009-04-20  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r103] agi/agi-OSDoutboundIVR.agi, extras/osdial.conf: Fix
 	  osdial.conf for RPM upgrades.
 	* [r102] extras/osdial.init, extras/sql/210003.sql,
@@ -344,6 +423,9 @@
 
 	* [r96] docs/conf_examples/osdial_extensions.conf: Added Outbound
 	  IVR XFER extension.
+
+2009-04-19  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r95] bin/AST_VDauto_dial.pl: Add check for IN call_type.
 	* [r93] www/admin/include/content/admin/conference.php: Fix
 	  menubarcolor on Conference list
@@ -360,6 +442,9 @@
 2009-04-17  Lott Caskey <lottcaskey@gmail.com>
 
 	* [r88] extras/sql/210002.sql: Fix 21002.sql
+
+2009-04-17  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r85] extras/patches/app_dial_originate_ring-1.2.patch,
 	  extras/patches/app_dial_originate_ring-1.4.patch: Updates to
 	  orignate_ring
@@ -380,6 +465,9 @@
 
 	* [r80] extras/patches/app_dial_originate_ring-1.2.patch: Fixed
 	  app_dial_originate_ring-1.2.patch
+
+2009-04-15  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r79] extras/patches/app_dial_originate_ring-1.2.patch: Add a
 	  patch to simulate ring of outbound call in meetme room.
 	* [r78] extras/patches/app_meetme_log_fix-1.2.patch: Add patch to
@@ -416,6 +504,9 @@
 
 	* [r73] www/images/colon.png, www/images/comma.png, www/index.html,
 	  www/index.php: Fix company heading
+
+2009-04-14  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r72] Makefile: cron bugfix
 	* [r71] Makefile, extras/osdial.init, extras/sql/000000.sql,
 	  extras/sql/210002.sql: bugfixes
@@ -433,6 +524,9 @@
 
 	* [r67] Makefile, extras/osdial.spec: Update Makefile and
 	  osdial.spec
+
+2009-04-11  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r66] extras/osdial.init, www/AgentLoginDn.png,
 	  www/AgentLoginUp.png, www/ControlLoginDn.png,
 	  www/ControlLoginUp.png, www/clientCompany.png,
@@ -490,6 +584,9 @@
 
 	* [r63] www/admin/include/content/lists/lists.php,
 	  www/admin/include/variables.php: Cleanup: Move to get_variable.
+
+2009-04-10  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r62] www/admin/admin_config.inc,
 	  www/admin/admin_search_lead.php,
 	  www/admin/closer-fronter_popup.php,
@@ -584,6 +681,9 @@
 
 	* [r42] extras/osdial.conf, extras/osdial.init: Modifications to
 	  startup files
+
+2009-03-28  Lott Caskey <lottcaskey@gmail.com>
+
 	* [r41] extras/sql/000000.sql, extras/sql/204000.sql,
 	  extras/sql/204001.sql, extras/sql/204002.sql,
 	  extras/sql/204003.sql, extras/sql/204004.sql,
