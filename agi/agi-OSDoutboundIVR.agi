@@ -210,7 +210,7 @@ if ($affected_rows == 0) {
 agi_output("+++++ ODOI : SETTING LIVE AGENT TO INCALL");
 
 
-my $stmtA = "UPDATE osdial_list SET comments='" . $outbound_ivr->{announcement} . "';";
+my $stmtA = "UPDATE osdial_list SET comments='" . $outbound_ivr->{announcement} . "' WHERE lead_id='" . $vars->{CIDlead_id} . "';";
 my $affected_rows = $dbhA->do($stmtA);
 
 my $stmtA = "UPDATE osdial_log SET comments='" . $outbound_ivr->{announcement} . "' WHERE uniqueid = '" . $AGI->{uniqueid} . "';";
@@ -253,7 +253,6 @@ sub ivr_menu {
 		$sthA->finish();
 		agi_output("+++++ ODOI VALID DIGITS : $valid_digits");
 	
-		sleep(1);
 		my $dtmf = stream_and_get_dtmf($menu{announcement},1,$menu{repeat_loops},$menu{wait_loops},$menu{wait_timeout},$valid_digits);
 		agi_output("+++++ ODOI STATUS : pressed $dtmf");
 	
