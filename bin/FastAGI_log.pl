@@ -60,6 +60,8 @@
 # 81021-0306 - Added Local channel logging support and while-to-if changes
 # 81026-1247 - Changed to allow for better remote agent calling
 #
+# 090514-1630 - Delete temporary agent on OutboundIVR.
+# 090514-1902 - Fix early hangups in OutboundIVR to not be tagged as DROP.
 
 
 # defaults for PreFork
@@ -702,16 +704,21 @@ sub process_request {
 				else
 					{
 
-					$stmtA = "SELECT user FROM osdial_live_agents WHERE uniqueid = '$uniqueid' AND (extension LIKE 'R/va\%' OR extension LIKE 'R/tmp\%') limit 1;";
+					$stmtA = "SELECT user,extension FROM osdial_live_agents WHERE uniqueid = '$uniqueid' AND (extension LIKE 'R/va\%' OR extension LIKE 'R/tmp\%') limit 1;";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
 					if ($sthArows > 0) {
 						@aryA = $sthA->fetchrow_array;
 						$OLAuser = $aryA[0];
+						$OLAext = $aryA[1];
 						$talksec = ($now_date_epoch - $VD_start_epoch);
-						$stmtA = "DELETE FROM osdial_live_agents WHERE uniqueid='$uniqueid' AND extension LIKE 'R/tmp\%' limit 1;";
-						my $affected_rows = $dbhA->do($stmtA);
+						if ( ($OLAext =~ /^R\/tmp/ && ($OLAuser =~ /^tmp/) ) {
+							$stmtA = "DELETE FROM osdial_users WHERE user='$OLAuser' limit 1;";
+                                                	my $affected_rows = $dbhA->do($stmtA);
+							$stmtA = "DELETE FROM osdial_live_agents WHERE uniqueid='$uniqueid' limit 1;";
+							my $affected_rows = $dbhA->do($stmtA);
+						}
 						$stmtA = "SELECT status,comments FROM osdial_list WHERE lead_id = '$VD_lead_id';";
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -867,7 +874,7 @@ sub process_request {
 						$VD_seconds = ($now_date_epoch - $VD_start_epoch);
 
 						$SQL_status='';
-						if ( ($VD_status =~ /^NA$|^NEW$|^QUEUE$|^XFER$/) && ($VD_comments !~ /REMOTE/) )
+						if ( ($VD_status =~ /^NA$|^NEW$|^QUEUE$|^XFER$/) && ($VD_comments !~ /REMOTE/) && ($VD_user ne "IVR") )
 							{
 							if ( ($VD_term_reason !~ /AGENT|CALLER|QUEUETIMEOUT/) && ( ($VD_user =~ /VDAD|VDCL/) || (length($VD_user) < 1) ) )
 								{$VDLSQL_term_reason = "term_reason='ABANDON',";}
