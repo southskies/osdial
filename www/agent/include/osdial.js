@@ -24,6 +24,8 @@
  * # 090410-1155 - Added custom2 field.
  * # 090410-1750 - Added allow_tab_switch.
  * # 090428-0938 - Added external_key to web_form_vars.
+ * # 090515-0135 - Added manual_force_dial_time
+ * # 090515-0140 - Added manual_preview_default
  */
 
 
@@ -244,7 +246,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	var campagentstatct = '0';
 	var manual_dial_in_progress = 0;
 	var auto_dial_alt_dial = 0;
-	var reselect_preview_dial = 0;
+	var reselect_preview_dial = <?= $manual_preview_default ?>;
 	var reselect_alt_dial = 0;
 	var alt_dial_active = 0;
 	var mdnLisT_id = '<? echo $manual_dial_list_id ?>';
@@ -350,6 +352,14 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		image_LB_senddtmf_OFF.src="./images/vdc_LB_senddtmf_OFF.gif";
 	//var image_ShowCallbackInfo_OFF = new Image();
 	//	image_ShowCallbackInfo_OFF.src = "images/ShowCallbackInfo.png";
+
+	// Manual Dial: Force Manual Dial after given time.
+	var manualFD_timeout_id;
+	var manualFD_display_id = 0;
+	var manualFD_time = <?= $manualFD_time ?>;
+	var manualFD_time_remaining = manualFD_time;
+
+	var dial_timedout = 0;
 
 
 
@@ -1542,6 +1552,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		MainPanelToFront();
 		CalLBacKsCounTCheck();
 		manual_dial_in_progress=0;
+		dial_timedout=0;
 		}
 
 
@@ -1549,6 +1560,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // Open page to enter details for a new manual dial lead
 	function NeWManuaLDiaLCalL(TVfast)
 		{
+		dial_timedout=0;
 		if ( (AutoDialWaiting == 1) || (VD_live_customer_call==1) || (alt_dial_active==1) )
 			{
 			alert("YOU MUST BE PAUSED TO MANUAL DIAL A NEW LEAD IN AUTO-DIAL MODE");
@@ -1571,6 +1583,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // Insert the new manual dial as a lead and go to manual dial screen
 	function NeWManuaLDiaLCalLSubmiT()
 		{
+		dial_timedout=0;
 		hideDiv('NeWManuaLDiaLBox');
 		var MDDiaLCodEform = document.osdial_form.MDDiaLCodE.value;
 		var MDPhonENumbeRform = document.osdial_form.MDPhonENumbeR.value;
@@ -1604,6 +1617,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // Fast version of manual dial
 		function NeWManuaLDiaLCalLSubmiTfast()
 		{
+		dial_timedout=0;
 		var MDDiaLCodEform = document.osdial_form.phone_code.value;
 		var MDPhonENumbeRform = document.osdial_form.phone_number.value;
 
@@ -1677,12 +1691,15 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 					var MDlookCID = MDlookResponse_array[0];
 					if (MDlookCID == "NO")
 						{
-						MD_ring_secondS++;
-						var dispnum = lead_dial_number;
-						var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
+						if (dial_timedout == 0)
+							{
+							MD_ring_secondS++;
+							var dispnum = lead_dial_number;
+							var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
 
-						document.getElementById("MainStatuSSpan").innerHTML = " Calling: " + status_display_number + "&nbsp;&nbsp;<font color=#AECFD7>UID: " + CIDcheck + "</font><font color=yellow style='text-decoration:blink;'><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
-				//		alert("channel not found yet:\n" + campaign);
+							document.getElementById("MainStatuSSpan").innerHTML = " Calling: " + status_display_number + "&nbsp;&nbsp;<font color=#AECFD7>UID: " + CIDcheck + "</font><font color=yellow style='text-decoration:blink;'><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
+							//alert("channel not found yet:\n" + campaign);
+							}
 						}
 					else
 						{
@@ -1784,7 +1801,12 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			{
 			MD_channel_look=0;
 			MD_ring_secondS=0;
-			alert("Dial timed out, contact your system administrator\n");
+			dial_timedout = 1;
+			//alert("Dial timed out, contact your system administrator\n");
+			//alert("Dial timed out, click Hangup and try again or dial next number.\n");
+			var dispnum = lead_dial_number;
+			var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
+			document.getElementById("MainStatuSSpan").innerHTML = " Attempted: " + status_display_number + "&nbsp;&nbsp;<font color=red style='text-decoration:blink;'><b>Dial timed out, click Hangup and try again or dial next number.<b></font>";
 			}
 
 		}
@@ -1793,6 +1815,13 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // Send the Manual Dial Next Number request
 	function ManualDialNext(mdnCBid,mdnBDleadid,mdnDiaLCodE,mdnPhonENumbeR,mdnStagE)
 		{
+		dial_timedout=0;
+		if (manualFD_time > 0)
+			{
+			clearTimeout(manualFD_timeout_id);
+			clearInterval(manualFD_display_id);
+			document.getElementById("ManualFDTimeSpan").innerHTML = "";
+			}
 		all_record = 'NO';
 		all_record_count=0;
 		document.getElementById("DiaLControl").innerHTML = "<IMG SRC=\"./images/vdc_LB_dialnextnumber_OFF.gif\" border=0 alt=\"Dial Next Number\">";
@@ -1999,16 +2028,26 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"./images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
 						document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"./images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form\"></a>\n";
 
-						if (document.osdial_form.LeadPreview.checked==false)
+						if (manualFD_time > 0) {
+							manualFD_time_remaining =  manualFD_time;
+							manualFD_timeout_id = setTimeout("ManualDialOnly()", manualFD_time * 1000);
+							manualFD_display_id = setInterval("manualFDDisplayTime()", 1000);
+						}
+
+						reselect_preview_dial = 1;
+						if (document.osdial_form.LeadPreview.checked==false || manualFD_time > 0)
 							{
-							reselect_preview_dial = 0;
-							MD_channel_look=1;
-							custchannellive=1;
+							if (document.osdial_form.LeadPreview.checked==false && manualFD_time==0)
+								{
+								reselect_preview_dial = 0;
+								MD_channel_look=1;
+								custchannellive=1;
 
-							document.getElementById("HangupControl").innerHTML = "<a href=\"#\" onclick=\"dialedcall_send_hangup();\"><IMG SRC=\"./images/vdc_LB_hangupcustomer.gif\" border=0 alt=\"Hangup Customer\"></a>";
+								document.getElementById("HangupControl").innerHTML = "<a href=\"#\" onclick=\"dialedcall_send_hangup();\"><IMG SRC=\"./images/vdc_LB_hangupcustomer.gif\" border=0 alt=\"Hangup Customer\"></a>";
 
-							if ( (campaign_recording == 'ALLCALLS') || (campaign_recording == 'ALLFORCE') )
-								{all_record = 'YES';}
+								if ( (campaign_recording == 'ALLCALLS') || (campaign_recording == 'ALLFORCE') )
+									{all_record = 'YES';}
+								}
 
 							if ( (view_scripts == 1) && (campaign_script.length > 0) )
 								{
@@ -2036,10 +2075,6 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 								}
 
 							}
-						else
-							{
-							reselect_preview_dial = 1;
-							}
 						}
 					}
 				}
@@ -2052,12 +2087,19 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // Send the Manual Dial Skip
 	function ManualDialSkip()
 		{
+		dial_timedout=0;
 		if (manual_dial_in_progress==1)
 			{
 			alert('YOU CANNOT SKIP A CALLBACK OR MANUAL DIAL, YOU MUST DIAL THE LEAD');
 			}
 		else
 			{
+			if (manualFD_time > 0)
+				{
+				clearTimeout(manualFD_timeout_id);
+				clearInterval(manualFD_display_id);
+				document.getElementById("ManualFDTimeSpan").innerHTML = "";
+				}
 			document.getElementById("DiaLControl").innerHTML = "<IMG SRC=\"./images/vdc_LB_dialnextnumber_OFF.gif\" border=0 alt=\"Dial Next Number\">";
 
 			var xmlhttp=false;
@@ -2157,6 +2199,13 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // Send the Manual Dial Only - dial the previewed lead
 	function ManualDialOnly(taskaltnum)
 		{
+		dial_timedout=0;
+		if (manualFD_time > 0)
+			{
+			clearTimeout(manualFD_timeout_id);
+			clearInterval(manualFD_display_id);
+			document.getElementById("ManualFDTimeSpan").innerHTML = "";
+			}
 		all_record = 'NO';
 		all_record_count=0;
 		if (taskaltnum == 'ALTPhoneE')
@@ -3665,6 +3714,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				document.getElementById("RecorDingFilename").innerHTML = "&nbsp;";
 				document.getElementById("RecorDID").innerHTML = "&nbsp;";
 
+				document.getElementById("MainStatuSSpan").innerHTML = "&nbsp;";
+
 				CBcommentsBoxhide();
 
 				AgentDispoing = 0;
@@ -4040,6 +4091,12 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				}
 			else
 				{
+				if (manualFD_time > 0)
+					{
+					clearTimeout(manualFD_timeout_id);
+					clearInterval(manualFD_display_id);
+					document.getElementById("ManualFDTimeSpan").innerHTML = "";
+					}
 				var xmlhttp=false;
 				/*@cc_on @*/
 				/*@if (@_jscript_version >= 5)
@@ -5334,4 +5391,16 @@ foreach ($forms as $form) {
     }
 }
 ?>
+}
+
+function manualFDDisplayTime() {
+	if (manualFD_time > 0 ) {
+		if ( manualFD_time_remaining > 0 ) {
+			manualFD_time_remaining--;
+			document.getElementById("ManualFDTimeSpan").innerHTML = "Dialing in " + manualFD_time_remaining + "...";
+		} else {
+			document.getElementById("ManualFDTimeSpan").innerHTML = "";
+			clearInterval(manualFD_display_id);
+		}
+	}
 }

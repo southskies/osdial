@@ -203,6 +203,8 @@
 #			Changed to new version (from 2.0.4-121)
 # 090410-1156 - Added custom2 field
 # 090410-1731 - Added allow_tab_switch
+# 090515-0135 - Added manual_force_dial_time
+# 090515-0140 - Added manual_preview_default
 
 # The version/build variables get set to the SVN revision automatically in release package.
 # Do not change.
@@ -886,7 +888,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 			$HKstatusnames = substr("$HKstatusnames", 0, -1); 
 
 			##### grab the statuses to be dialed for your campaign as well as other campaign settings
-			$stmt="SELECT park_ext,park_file_name,web_form_address,allow_closers,auto_dial_level,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,agent_pause_codes_active,no_hopper_leads_logins,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,xfer_groups,web_form_address2,allow_tab_switch FROM osdial_campaigns where campaign_id = '$VD_campaign';";
+			$stmt="SELECT park_ext,park_file_name,web_form_address,allow_closers,auto_dial_level,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,agent_pause_codes_active,no_hopper_leads_logins,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,xfer_groups,web_form_address2,allow_tab_switch,manual_force_dial_time,manual_preview_default FROM osdial_campaigns where campaign_id = '$VD_campaign';";
 			$rslt=mysql_query($stmt, $link);
 			if ($DB) {echo "$stmt\n";}
 			$row=mysql_fetch_row($rslt);
@@ -925,6 +927,8 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 				$xfer_groups =				$row[32];
 				$web_form_address2 = 		$row[33];
 				$allow_tab_switch = 		$row[34];
+				$manualFD_time = 		    $row[35];
+				$manual_preview_default = 	$row[36];
 
 			if ( (!ereg('DISABLED',$VU_osdial_recording_override)) and ($VU_osdial_recording > 0) )
 				{
@@ -942,6 +946,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 			$closer_campaigns = preg_replace("/^ | -$/","",$closer_campaigns);
 			$closer_campaigns = preg_replace("/ /","','",$closer_campaigns);
 			$closer_campaigns = "'$closer_campaigns'";
+			if ($manual_preview_default=='Y') {$manual_preview_default='1';} else {$manual_preview_default='0';}
 
 			if ($agent_pause_codes_active=='Y')
 				{
@@ -1886,6 +1891,8 @@ foreach ($forms as $form) {
 	<span style="position:absolute;left:650px;top:<?=$CBheight-3 ?>px;z-index:14;" id="PauseCodeButtons"><font class="body_text">
 		<span id="PauseCodeLinkSpan"></span> <BR></font>
 	</span>
+
+    <span id="ManualFDTimeSpan" style="font-size:35pt; font-weight: bold; color: #1C4754; text-decoration: blink; position:absolute;left:325px;top:400px;z-index:22;"></span>
 	
 	<!-- Choose From Available Call Backs -->
 	<span style="position:absolute;left:0px;top:18px;z-index:38;" id="CallBacKsLisTBox">
@@ -2485,14 +2492,11 @@ foreach ($forms as $form) {
 										<tr>
 											<!-- td width=1>&nbsp;</td -->
 											<td width=30% align=left valign=top>
-												<font class="body_text" color=#1C4754>CallDuration:&nbsp;</font>
-												<font class="body_input"><input type=text size=4 name=SecondS class="cust_form" value="">s</font>
+												<font class="body_text" color=#1C4754>CallDuration:</font>&nbsp;<font class="body_input"><input type=text size=4 name=SecondS class="cust_form" value=""></font>
 											</td>
-											<!--td width=20%><font class="body_text" color=#AACBD4>Channel:&nbsp;<a id=callchannel class="body_text"></a></td -->
-											<td width=25% align=right valign=middle><font class="body_text" color=#ABCBD4>Channel:&nbsp;<a id=callchannel class="body_text"></a></td>
+											<td width=25% align=center valign=middle><font class="body_text" color=#ABCBD4><div id=callchannel style="font-size:5pt;"></div></font></td>
 											<td width=45% align=right valign=top>
-												<font class="body_text" color=#1C4754>Cust Time:&nbsp;</a></font>
-												<font class="body_input"><input type=text size=19 maxlength=22 name=custdatetime class="cust_form" value=""></font>
+												<font class="body_text" color=#1C4754>Cust Time:</a></font>&nbsp;<font class="body_input"><input type=text size=19 maxlength=22 name=custdatetime class="cust_form" value=""></font>
 											</td>
 										</tr>
 									</table>

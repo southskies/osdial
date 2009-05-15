@@ -22,6 +22,8 @@
 # 090410-1147 - Added custom2 field
 # 090410-1731 - Added allow_tab_swtich
 # 090420-1846 - Added answers_per_hour_limit
+# 090515-0135 - Added manual_force_dial_time
+# 090515-0140 - Added manual_preview_default
 
 
 $NWB = " &nbsp; <a href=\"javascript:openNewWindow('$PHP_SELF?ADD=99999";
@@ -424,6 +426,16 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <A NAME="osdial_campaigns-dial_timeout">
 <BR>
 <B>Dial Timeout -</B> If defined, calls that would normally hang up after the timeout defined in extensions.conf would instead timeout at this amount of seconds if it is less than the extensions.conf timeout. This allows for quickly changing dial timeouts from server to server and limiting the effects to a single campaign. If you are having a lot of Answering Machine or Voicemail calls you may want to try changing this value to between 21-26 and see if results improve.
+
+<BR>
+<A NAME="osdial_campaigns-manual_force_dial_time">
+<BR>
+<B>Manual Force Dial Time -</B> If this is set to a number greater than 0, then when in manual dial mode, the call will be placed after the number of seconds set in this field as elapsed with the user needing to click DIAL LEAD.
+
+<BR>
+<A NAME="osdial_campaigns-manualpreview_default">
+<BR>
+<B>Manual Preview Default -</B> When set to "Y", and dial method is "MANUAL", preview dialing will be selected by default.
 
 <BR>
 <A NAME="osdial_campaigns-dial_prefix">

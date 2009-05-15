@@ -21,6 +21,8 @@
 #
 # 090410-1731 - Added allow_tab_switch
 # 090420-1846 - Added answers_per_hour_limit
+# 090515-0135 - Added manual_force_dial_time
+# 090515-0140 - Added manual_preview_default
 
 
 ######################################################################################################
@@ -122,6 +124,7 @@ if ($non_latin < 1)	{
 	$park_ext = ereg_replace("[^0-9]","",$park_ext);
 	$park_on_extension = ereg_replace("[^0-9]","",$park_on_extension);
 	$phone_number = ereg_replace("[^0-9]","",$phone_number);
+	$manual_force_dial_time = ereg_replace("[^0-9]","",$manual_force_dial_time);
 	$QUEUE_ACTION_enabled = ereg_replace("[^0-9]","",$QUEUE_ACTION_enabled);
 	$recording_exten = ereg_replace("[^0-9]","",$recording_exten);
 	$remote_agent_id = ereg_replace("[^0-9]","",$remote_agent_id);
@@ -170,6 +173,7 @@ if ($non_latin < 1)	{
 	$available_only_ratio_tally = ereg_replace("[^NY]","",$available_only_ratio_tally);
 	$sys_perf_log = ereg_replace("[^NY]","",$sys_perf_log);
 	$osdial_balance_active = ereg_replace("[^NY]","",$osdial_balance_active);
+	$manual_preview_default = ereg_replace("[^NY]","",$manual_preview_default);
 	$vd_server_logs = ereg_replace("[^NY]","",$vd_server_logs);
 	$agent_pause_codes_active = ereg_replace("[^NY]","",$agent_pause_codes_active);
 	$campaign_stats_refresh = ereg_replace("[^NY]","",$campaign_stats_refresh);

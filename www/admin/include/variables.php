@@ -22,6 +22,8 @@
 # 090410-1415 - Reformatted to use get_variable.
 # 090410-1731 - Added allow_tab_switch
 # 090420-1846 - Added answers_per_hour_limit
+# 090515-0135 - Added manual_force_dial_time
+# 090515-0140 - Added manual_preview_default
 
 
 # The build variable gets set to the SVN revision automatically in release package.
@@ -295,6 +297,8 @@ $login_pass = get_variable("login_pass");
 $login_user = get_variable("login_user");
 
 $manual_dial_list_id = get_variable("manual_dial_list_id");
+$manual_force_dial_time = get_variable("manual_force_dial_time");
+$manual_preview_default = get_variable("manual_preview_default");
 $max_osdial_trunks = get_variable("max_osdial_trunks");
 $middle_initial_field = get_variable("middle_initial_field");
 $mix_container_item = get_variable("mix_container_item");
