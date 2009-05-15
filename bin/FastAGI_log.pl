@@ -713,7 +713,7 @@ sub process_request {
 						$OLAuser = $aryA[0];
 						$OLAext = $aryA[1];
 						$talksec = ($now_date_epoch - $VD_start_epoch);
-						if ( ($OLAext =~ /^R\/tmp/ && ($OLAuser =~ /^tmp/) ) {
+						if ( ($OLAext =~ /^R\/tmp/) && ($OLAuser =~ /^tmp/) ) {
 							$stmtA = "DELETE FROM osdial_users WHERE user='$OLAuser' limit 1;";
                                                 	my $affected_rows = $dbhA->do($stmtA);
 							$stmtA = "DELETE FROM osdial_live_agents WHERE uniqueid='$uniqueid' limit 1;";
