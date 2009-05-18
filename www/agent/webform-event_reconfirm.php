@@ -40,6 +40,7 @@ $lead_ref = 'external_key';
 $ref_stat = 'ECM';
 # Search method, 0 = current list, 1 = all lists in campaign, 2 = entire system
 $search_method = 0;
+# Update method
 
 
 # Setup SQL for desired search method.
@@ -91,6 +92,7 @@ if (!$submit) {
     $pleads = get_krh($link, 'osdial_list', '*', 'last_name, first_name', $smsql . "phone_number='$phone_number'");
     echo "      <td width=50%>\n";
     echo "       <div style=\"background-color:#b0cfd7;height:150px;overflow:scroll;\">\n";
+    
     foreach ($pleads as $lead) {
         if ($lead_id != $lead['lead_id'] and ($lead_id == $lead[$lead_ref] or $lead[$lead_ref] == '')) {
             $chk = '';
@@ -98,6 +100,7 @@ if (!$submit) {
                 $chk = 'checked readonly';
             } 
             echo "        <font size=-1>";
+            echo "        <input type=hidden name=confnumsvlc" . $lead['lead_id'] . "[] value=" . $lead['vendor_lead_code'] . ">\n";
             echo "        <input type=checkbox name=confnums[] $chk value=" . $lead['lead_id'] . "> " . $lead['phone_number'] . ' - ' . $lead['last_name'] . ', ' . $lead['first_name'] . ' - ' . $lead['vendor_lead_code'] . "<br />\n";
             echo "        </font>";
         }
@@ -106,7 +109,7 @@ if (!$submit) {
     echo "      </td>\n";
 
     # Get list of leads matched by names.
-    $nleads = get_krh($link, 'osdial_list', '*', 'last_name, first_name', $smsql . "last_name='$last_name'");
+    $nleads = get_krh($link, 'osdial_list', '*', 'last_name, first_name', $smsql . "last_name='$last_name' AND last_name IS NOT NULL");
     echo "      <td width=50%>\n";
     echo "       <div style=\"background-color:#b0cfd7;height:150px;overflow:scroll;\">\n";
     foreach ($nleads as $lead) {
@@ -116,6 +119,7 @@ if (!$submit) {
                 $chk = 'checked readonly';
             } 
             echo "        <font size=-1>";
+            echo "        <input type=hidden name=confnamesvlc" . $lead['lead_id'] . "[] value=" . $lead['vendor_lead_code'] . ">\n";
             echo "        <input type=checkbox name=confnames[] $chk value=" . $lead['lead_id'] . "> " . $lead['phone_number'] . ' - ' . $lead['last_name'] . ', ' . $lead['first_name'] . ' - ' . $lead['vendor_lead_code'] . "<br />\n";
             echo "        </font>";
         }
@@ -139,7 +143,8 @@ if (!$submit) {
     foreach ($cnums as $lead) {
         echo "Updated lead #$lead<br />";
         $stmt="UPDATE osdial_list SET modify_date=NOW(),user='$user',status='$ref_stat',$lead_ref='$lead_id' WHERE lead_id='$lead';";
-        #echo "$stmt<br />";
+        $rslt=mysql_query($stmt, $link);
+        $stmt="DELETE FROM osdial_hopper WHERE lead_id='$lead';";
         $rslt=mysql_query($stmt, $link);
     }
 
@@ -147,7 +152,8 @@ if (!$submit) {
     foreach ($cnames as $lead) {
         echo "Updated lead #$lead<br />";
         $stmt="UPDATE osdial_list SET modify_date=NOW(),user='$user',status='$ref_stat',$lead_ref='$lead_id' WHERE lead_id='$lead';";
-        #echo "$stmt<br />";
+        $rslt=mysql_query($stmt, $link);
+        $stmt="DELETE FROM osdial_hopper WHERE lead_id='$lead';";
         $rslt=mysql_query($stmt, $link);
     }
 

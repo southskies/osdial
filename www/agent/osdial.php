@@ -383,7 +383,7 @@ echo "<head>\n";
 echo "<!-- VERSION: $version     BUILD: $build -->\n";
 
 if ($campaign_login_list > 0) {
-	$camp_form_code  = "<select size=1 name=VD_campaign id=VD_campaign onFocus=\"login_allowable_campaigns()\">\n";
+	$camp_form_code  = "<select style=\"font-size:8pt;\" size=1 name=VD_campaign id=VD_campaign onFocus=\"login_allowable_campaigns()\">\n";
 	$camp_form_code .= "<option value=\"\"></option>\n";
 	
 	$LOGallowed_campaignsSQL='';

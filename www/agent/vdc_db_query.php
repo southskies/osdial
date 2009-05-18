@@ -436,7 +436,7 @@ if ($ACTION == 'LogiNCamPaigns')
 	}
 	else
 	{
-	echo "<select size=1 name=VD_campaign id=VD_campaign>\n";
+	echo "<select style=\"font-size:8pt;\" size=1 name=VD_campaign id=VD_campaign>\n";
 	echo "<option value=\"\">-- PLEASE SELECT A CAMPAIGN --</option>\n";
 
 	$stmt="SELECT user_group from osdial_users where user='$user' and pass='$pass'";
