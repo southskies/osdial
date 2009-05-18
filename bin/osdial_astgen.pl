@@ -367,7 +367,7 @@ sub gen_phones {
 	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	while (my @aryA = $sthA->fetchrow_array) {
-		if ($aryA[4] eq "SIP") {
+		if ($aryA[4] eq "SIP" and $aryA[0] !~ /\@/) {
 			$sphn .= ";\n[". $aryA[0] ."]\n";
 			$sphn .= "type=friend\n";
 			$sphn .= "disallow=all\n";
@@ -398,7 +398,12 @@ sub gen_phones {
 			$iphn .= "qualify=yes\n";
 			$iphn .= "nat=yes\n";
 		}
-		$ephn .= "exten => _" . $aryA[1] . ",1,Dial(" . $aryA[4] . "/" . $aryA[0] . ",55,to)\n";
+		my $dext = $aryA[4] . "/" . $aryA[0];
+		if ($aryA[4] eq "SIP" and $aryA[0] =~ /\@/) {
+			my($sext,$ssrv) = split /\@/,$aryA[0];
+			$dext = $aryA[4] . "/" . $ssrv . "/" . $sext;
+		}
+		$ephn .= "exten => _" . $aryA[1] . ",1,Dial(" . $dext . ",55,to)\n";
 	}
 
 	write_reload($sphn,'osdial_sip_phones','sip reload');
