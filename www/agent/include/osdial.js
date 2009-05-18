@@ -3702,33 +3702,31 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 // ################################################################################
 // Generate the Call Disposition Chooser panel
-	function DispoSelectContent_create(taskDSgrp,taskDSstage)
-		{
-		AgentDispoing = 1;
-		var VD_statuses_ct_half = parseInt(VD_statuses_ct / 2);
-		var dispo_HTML = "<br><table frame=border cellpadding=5 cellspacing=5 width=500><tr><td colspan=2 align=center><font color=1C4754><b>Call Dispositions</b></td></tr><tr><td bgcolor=\"#AFCFD7\" height=300 width=240 valign=top><font class=\"log_text\"><span id=DispoSelectA>";
-		var loop_ct = 0;
-		while (loop_ct < VD_statuses_ct)
-			{
-			if (taskDSgrp == VARstatuses[loop_ct]) 
-				{
-				dispo_HTML = dispo_HTML + "<font size=3 style=\"BACKGROUND-COLOR: #FFFFCC\"><b><a href=\"#\" onclick=\"DispoSelect_submit();return false;\">" + VARstatuses[loop_ct] + " - " + VARstatusnames[loop_ct] + "</a></b></font><BR><BR>";
-				}
-			else
-				{
-				dispo_HTML = dispo_HTML + "<a href=\"#\" onclick=\"DispoSelectContent_create('" + VARstatuses[loop_ct] + "','ADD');return false;\">" + VARstatuses[loop_ct] + " - " + VARstatusnames[loop_ct] + "</a><BR><BR>";
-				}
-			if (loop_ct == VD_statuses_ct_half) 
-				{dispo_HTML = dispo_HTML + "</span></font></td><td bgcolor=\"#AFCFD7\" height=300 width=240 valign=top><font class=\"log_text\"><span id=DispoSelectB>";}
-			loop_ct++;
-			}
-		dispo_HTML = dispo_HTML + "</span></font></td></tr></table>";
-
-		if (taskDSstage == 'ReSET') {document.osdial_form.DispoSelection.value = '';}
-		else {document.osdial_form.DispoSelection.value = taskDSgrp;}
-		
-		document.getElementById("DispoSelectContent").innerHTML = dispo_HTML;
+function DispoSelectContent_create(taskDSgrp,taskDSstage) {
+	AgentDispoing = 1;
+	var VD_statuses_ct_half = parseInt(VD_statuses_ct / 2);
+	var dispo_HTML = "<br><table frame=border cellpadding=5 cellspacing=5 width=620><tr><td colspan=2 align=center><font color=1C4754><b>Call Dispositions</b></td></tr><tr><td colspan=2 align=center><div style=\"height:320;overflow-y:scroll;\"><table cellpadding=5 cellspacing=5><tr><td bgcolor=\"#AFCFD7\" height=320 width=300 valign=top><font class=\"log_text\"><div id=DispoSelectA>";
+	var loop_ct = 0;
+	while (loop_ct < VD_statuses_ct) {
+		if (taskDSgrp == VARstatuses[loop_ct]) {
+			dispo_HTML = dispo_HTML + "<font size=3 style=\"BACKGROUND-COLOR: #FFFFCC\"><b><a href=\"#\" onclick=\"DispoSelect_submit();return false;\">" + VARstatuses[loop_ct] + " - " + VARstatusnames[loop_ct] + "</a></b></font><BR><BR>";
+		} else {
+			dispo_HTML = dispo_HTML + "<a href=\"#\" onclick=\"DispoSelectContent_create('" + VARstatuses[loop_ct] + "','ADD');return false;\">" + VARstatuses[loop_ct] + " - " + VARstatusnames[loop_ct] + "</a><font size=-2><BR><BR></font>";
 		}
+		if (loop_ct == VD_statuses_ct_half) {
+			dispo_HTML = dispo_HTML + "</div></font></td><td bgcolor=\"#AFCFD7\" height=320 width=300 valign=top><font class=\"log_text\"><div id=DispoSelectB>";
+		}
+		loop_ct++;
+	}
+	dispo_HTML = dispo_HTML + "</div></font></td></tr></table></div></td></tr></table>";
+	if (taskDSstage == 'ReSET') {
+		document.osdial_form.DispoSelection.value = '';
+	} else {
+		document.osdial_form.DispoSelection.value = taskDSgrp;
+	}
+	document.getElementById("DispoSelectContent").innerHTML = dispo_HTML;
+}
+
 
 // ################################################################################
 // Generate the Pause Code Chooser panel

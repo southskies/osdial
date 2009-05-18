@@ -821,38 +821,41 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 			else {$selectableSQL = "selectable='Y' and";}
 			$VARstatuses='';
 			$VARstatusnames='';
-			##### grab the statuses that can be used for dispositioning by an agent
-			$stmt="SELECT status,status_name FROM osdial_statuses WHERE $selectableSQL status != 'NEW' order by status limit 50;";
-			$rslt=mysql_query($stmt, $link);
-			if ($DB) {echo "$stmt\n";}
-			$VD_statuses_ct = mysql_num_rows($rslt);
-			$i=0;
-			while ($i < $VD_statuses_ct)
-				{
-				$row=mysql_fetch_row($rslt);
-				$statuses[$i] =$row[0];
-				$status_names[$i] =$row[1];
-				$VARstatuses = "$VARstatuses'$statuses[$i]',";
-				$VARstatusnames = "$VARstatusnames'$status_names[$i]',";
-				$i++;
-				}
+            $statremove = "'NEW'";
+            ##### grab the campaign-specific statuses that can be used for dispositioning by an agent
+            $stmt="SELECT status,status_name FROM osdial_campaign_statuses WHERE $selectableSQL status NOT IN ($statremove) and campaign_id='$VD_campaign' order by status limit 50;";
+            $rslt=mysql_query($stmt, $link);
+            if ($DB) {echo "$stmt\n";}
+            $VD_statuses_camp = mysql_num_rows($rslt);
+            $i=0;
+            while ($i < $VD_statuses_camp)
+                {
+                $row=mysql_fetch_row($rslt);
+                $statuses[$i] =$row[0];
+                $status_names[$i] =$row[1];
+                $VARstatuses = "$VARstatuses'$statuses[$i]',";
+                $VARstatusnames = "$VARstatusnames'$status_names[$i]',";
+                $statremove .= ",'$statuses[$i]'";
+                $i++;
+                }
 
-			##### grab the campaign-specific statuses that can be used for dispositioning by an agent
-			$stmt="SELECT status,status_name FROM osdial_campaign_statuses WHERE $selectableSQL status != 'NEW' and campaign_id='$VD_campaign' order by status limit 50;";
-			$rslt=mysql_query($stmt, $link);
-			if ($DB) {echo "$stmt\n";}
-			$VD_statuses_camp = mysql_num_rows($rslt);
-			$j=0;
-			while ($j < $VD_statuses_camp)
-				{
-				$row=mysql_fetch_row($rslt);
-				$statuses[$i] =$row[0];
-				$status_names[$i] =$row[1];
-				$VARstatuses = "$VARstatuses'$statuses[$i]',";
-				$VARstatusnames = "$VARstatusnames'$status_names[$i]',";
-				$i++;
-				$j++;
-				}
+            ##### grab the statuses that can be used for dispositioning by an agent
+            $stmt="SELECT status,status_name FROM osdial_statuses WHERE $selectableSQL status NOT IN ($statremove) order by status limit 50;";
+            $rslt=mysql_query($stmt, $link);
+            if ($DB) {echo "$stmt\n";}
+            $VD_statuses_ct = mysql_num_rows($rslt);
+            $j=0;
+            while ($j < $VD_statuses_ct)
+                {
+                $row=mysql_fetch_row($rslt);
+                $statuses[$i] =$row[0];
+                $status_names[$i] =$row[1];
+                $VARstatuses = "$VARstatuses'$statuses[$i]',";
+                $VARstatusnames = "$VARstatusnames'$status_names[$i]',";
+                $i++;
+                $j++;
+                }
+
 			$VD_statuses_ct = ($VD_statuses_ct+$VD_statuses_camp);
 			$VARstatuses = substr("$VARstatuses", 0, -1); 
 			$VARstatusnames = substr("$VARstatusnames", 0, -1); 
