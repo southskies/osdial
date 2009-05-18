@@ -3773,15 +3773,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	
 			WebFormRefresH();
 
-			if (web_form_extwindow == 1)
-				{
-				window.open(VDIC_web_form_address + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
-				}
-			else
-				{
-				CloseWebFormPanels();
-				WebFormPanelDisplay(VDIC_web_form_address + web_form_vars);
-				}
+			window.open(VDIC_web_form_address + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
 
 			DispoSelect_submit();
 			}
