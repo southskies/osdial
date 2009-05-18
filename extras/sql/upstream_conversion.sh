@@ -184,19 +184,19 @@ echo "ALTER TABLE osdial.phones CHANGE COLUMN VICIDIAL_park_on_filename OSDIAL_p
 if [ "$?" -gt 0 ]; then echo -n "x"; else echo -n "."; fi
 echo "ALTER TABLE osdial.phones CHANGE COLUMN VICIDIAL_web_URL OSDIAL_web_URL VARCHAR(255) default 'http://localhost/test_VICIDIAL_output.php';" | mysql -u root > /dev/null 2>&1
 if [ "$?" -gt 0 ]; then echo -n "x"; else echo -n "."; fi
-echo "ALTER TABLE osdial_users CHANGE COLUMN vicidial_recording osdial_recording enum('0','1') default '1';" | mysql -u root > /dev/null 2>&1
+echo "ALTER TABLE osdial.osdial_users CHANGE COLUMN vicidial_recording osdial_recording enum('0','1') default '1';" | mysql -u root > /dev/null 2>&1
 if [ "$?" -gt 0 ]; then echo -n "x"; else echo -n "."; fi
-echo "ALTER TABLE osdial_users CHANGE COLUMN vicidial_transfers osdial_transfers enum('0','1') default '1';" | mysql -u root > /dev/null 2>&1
+echo "ALTER TABLE osdial.osdial_users CHANGE COLUMN vicidial_transfers osdial_transfers enum('0','1') default '1';" | mysql -u root > /dev/null 2>&1
 if [ "$?" -gt 0 ]; then echo -n "x"; else echo -n "."; fi
-echo "ALTER TABLE osdial_users CHANGE COLUMN vicidial_recording_override osdial_recording_override enum('DISABLED','NEVER','ONDEMAND','ALLCALLS','ALLFORCE') default 'DISABLED';" | mysql -u root > /dev/null 2>&1
+echo "ALTER TABLE osdial.osdial_users CHANGE COLUMN vicidial_recording_override osdial_recording_override enum('DISABLED','NEVER','ONDEMAND','ALLCALLS','ALLFORCE') default 'DISABLED';" | mysql -u root > /dev/null 2>&1
 if [ "$?" -gt 0 ]; then echo -n "x"; else echo -n "."; fi
-echo "ALTER TABLE servers CHANGE COLUMN max_vicidial_trunks max_osdial_trunks smallint(4) default '96';" | mysql -u root > /dev/null 2>&1
+echo "ALTER TABLE osdial.servers CHANGE COLUMN max_vicidial_trunks max_osdial_trunks smallint(4) default '96';" | mysql -u root > /dev/null 2>&1
 if [ "$?" -gt 0 ]; then echo -n "x"; else echo -n "."; fi
-echo "ALTER TABLE servers CHANGE COLUMN vicidial_balance_active osdial_balance_active enum('Y','N') default 'N';" | mysql -u root > /dev/null 2>&1
+echo "ALTER TABLE osdial.servers CHANGE COLUMN vicidial_balance_active osdial_balance_active enum('Y','N') default 'N';" | mysql -u root > /dev/null 2>&1
 if [ "$?" -gt 0 ]; then echo -n "x"; else echo -n "."; fi
-echo "ALTER TABLE system_settings CHANGE COLUMN vicidial_agent_disable osdial_agent_disable enum('NOT_ACTIVE','LIVE_AGENT','EXTERNAL','ALL') default 'NOT_ACTIVE';" | mysql -u root > /dev/null 2>&1
+echo "ALTER TABLE osdial.system_settings CHANGE COLUMN vicidial_agent_disable osdial_agent_disable enum('NOT_ACTIVE','LIVE_AGENT','EXTERNAL','ALL') default 'NOT_ACTIVE';" | mysql -u root > /dev/null 2>&1
 if [ "$?" -gt 0 ]; then echo -n "x"; else echo -n "."; fi
-echo "ALTER TABLE web_client_sessions CHANGE COLUMN program program enum('agc','osdial','monitor','other') default 'agc';" | mysql -u root > /dev/null 2>&1
+echo "ALTER TABLE osdial.web_client_sessions CHANGE COLUMN program program enum('agc','osdial','monitor','other') default 'agc';" | mysql -u root > /dev/null 2>&1
 if [ "$?" -gt 0 ]; then echo -n "x"; else echo -n "."; fi
 echo "DONE"
 echo
