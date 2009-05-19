@@ -107,6 +107,17 @@ function get_servers($link, $selected) {
 }
 
 
+# Function to truncate a line and add ...
+function ellipse($string,$len,$ellipse=true) {
+    if(!$len || $len>strlen($string))
+        return $string;
+    if (!$ellipse) {
+        return substr($string,0,$len);
+    }
+    return substr($string,0, ($len-3)) . '...';
+}
+
+
 
 
 ##### CALCULATE DIALABLE LEADS #####

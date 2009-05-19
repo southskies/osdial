@@ -33,11 +33,11 @@ header ("Content-type: text/html; charset=utf-8");
 echo "<html>\n";
 echo "<head>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n";
-if ($ADD==999999 && ($SUB==13 || $SUB==14)) {
+if ($ADD==999999 && ($SUB==11 || $SUB==12 || $SUB==13 || $SUB==14)) {
 	if (!isset($RR)) { $RR=4; }
 	if ($RR <1) { $RR=4; }
 	$metadetail = '';
-	if ($SUB==14) {
+	if ($SUB==12 || $SUB==14) {
         if ($campaign_id == '') {
             $campaign_id = $group;
         }
