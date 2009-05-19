@@ -900,55 +900,63 @@ function report_realtime_detail() {
 		$html .= "  <SPAN class=\"purple\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - On call > 5 minutes</B>";
 		$html .= "</td></tr></table>";
 		
-		$load_ave = getloadavg();
+		$load_ave = rtrim(getloadavg());
+        if (!$load_ave>0) $load_ave='-.--';
 		
 		$Ahtml="<br><pre><font face=Fixed,monospace SIZE=1>";
 		if (file_exists($pref . 'S1_load.txt')) {
 			$s1_load = file($pref . 'S1_load.txt');
 			list( $line_num, $line ) = each( $s1_load );
-			$load_ave_s1=$line;
-			$Ahtml .= "  <font color=navy>Apache   Load Average:</font> $load_ave<br>";
-			$Ahtml .= "  <font color=navy>MySQL    Load Average:</font> $load_ave_s1";
+			$load_ave_s1=rtrim($line);
+            if (!$load_ave_s1>0) $load_ave_s1='-.--';
+			$Ahtml .= "  <font color=navy>Web Srvr Load Average:</font> $load_ave\n";
+			$Ahtml .= "  <font color=navy>SQL Srvr Load Average:</font> $load_ave_s1\n";
 		} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
-			$Ahtml .= "  <font color=navy>Dialer Load Average:</font> $load_ave<br>";
+			$Ahtml .= "  <font color=navy>Dialer   Load Average:</font> $load_ave\n";
 		} else {
-			$Ahtml .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave";
+			$Ahtml .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave\n";
 		}
 		if (file_exists($pref . 'D1_load.txt')) {
 			$d1_load = file($pref . 'D1_load.txt');
 			list( $line_num, $line ) = each( $d1_load ) ;
-			$load_ave_d1=$line;
-			$Ahtml .= "  <font color=navy>Dialer 1 Load Average:</font> $load_ave_d1";
+			$load_ave_d1=rtrim($line);
+            if (!$load_ave_d1>0) $load_ave_d1='-.--';
+			$Ahtml .= "  <font color=navy>Dialer 1 Load Average:</font> $load_ave_d1\n";
 		}
 		if (file_exists($pref . 'D2_load.txt')) {
 			$d2_load = file($pref . 'D2_load.txt');
 			list( $line_num, $line ) = each( $d2_load );
-			$load_ave_d2=$line;
-			$Ahtml .= "  <font color=navy>Dialer 2 Load Average:</font> $load_ave_d2";
+			$load_ave_d2=rtrim($line);
+            if (!$load_ave_d2>0) $load_ave_d2='-.--';
+			$Ahtml .= "  <font color=navy>Dialer 2 Load Average:</font> $load_ave_d2\n";
 		}
 		if (file_exists($pref . 'D3_load.txt')) {
 			$d3_load = file($pref . 'D3_load.txt');
 			list( $line_num, $line ) = each( $d3_load );
-			$load_ave_d3=$line;
-			$Ahtml .= "  <font color=navy>Dialer 3 Load Average:</font> $load_ave_d3";
+			$load_ave_d3=rtrim($line);
+            if (!$load_ave_d3>0) $load_ave_d3='-.--';
+			$Ahtml .= "  <font color=navy>Dialer 3 Load Average:</font> $load_ave_d3\n";
 		}
 		if (file_exists($pref . 'D4_load.txt')) {
 			$d4_load = file($pref . 'D4_load.txt');
 			list( $line_num, $line ) = each( $d4_load );
-			$load_ave_d4=$line;
-			$Ahtml .= "  <font color=navy>Dialer 4 Load Average:</font> $load_ave_d4";
+			$load_ave_d4=rtrim($line);
+            if (!$load_ave_d4>0) $load_ave_d4='-.--';
+			$Ahtml .= "  <font color=navy>Dialer 4 Load Average:</font> $load_ave_d4\n";
 		}
 		if (file_exists($pref . 'D5_load.txt')) {
 			$d5_load = file($pref . 'D5_load.txt');
 			list( $line_num, $line ) = each( $d5_load );
-			$load_ave_d5=$line;
-			$Ahtml .= "  <font color=navy>Dialer 5 Load Average:</font> $load_ave_d5";
+			$load_ave_d5=rtrim($line);
+            if (!$load_ave_d5>0) $load_ave_d5='-.--';
+			$Ahtml .= "  <font color=navy>Dialer 5 Load Average:</font> $load_ave_d5\n";
 		}
 		if (file_exists($pref . 'D6_load.txt')) {
 			$d6_load = file($pref . 'D6_load.txt');
 			list( $line_num, $line ) = each( $d6_load );
-			$load_ave_d6=$line;
-			$Ahtml .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6";
+			$load_ave_d6=rtrim($line);
+            if (!$load_ave_d6>0) $load_ave_d6='-.--';
+			$Ahtml .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6\n";
 		}
 		//$html .= "<tr><td colspan=10>";
 		$html .= "$Ahtml";
@@ -959,55 +967,63 @@ function report_realtime_detail() {
 		$html .= "&nbsp;&nbsp;<font color=red>&bull;&nbsp;&nbsp;NO AGENTS ON CALLS</font> \n";
 		$Ahtml = "<br><br>";
 		
-		$load_ave = getloadavg();
+		$load_ave = rtrim(getloadavg());
+        if (!$load_ave>0) $load_ave='-.--';
 		
 		$Ahtml="<br><pre><font face=Fixed,monospace SIZE=1>";
 		if (file_exists($pref . 'S1_load.txt')) {
 			$s1_load = file($pref . 'S1_load.txt');
 			list( $line_num, $line ) = each( $s1_load );
-			$load_ave_s1=$line;
-			$Ahtml .= "  <font color=navy>Apache   Load Average:</font> $load_ave<br>";
-			$Ahtml .= "  <font color=navy>MySQL    Load Average:</font> $load_ave_s1";
+			$load_ave_s1=rtrim($line);
+            if (!$load_ave_s1>0) $load_ave_s1='-.--';
+			$Ahtml .= "  <font color=navy>Web Srvr Load Average:</font> $load_ave\n";
+			$Ahtml .= "  <font color=navy>SQL Srvr Load Average:</font> $load_ave_s1\n";
 		} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
-			$Ahtml .= "  <font color=navy>Dialer Load Average:</font> $load_ave<br>";
+			$Ahtml .= "  <font color=navy>Dialer   Load Average:</font> $load_ave\n";
 		} else {
-			$Ahtml .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave";
+			$Ahtml .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave\n";
 		}
 		if (file_exists($pref . 'D1_load.txt')) {
 			$d1_load = file($pref . 'D1_load.txt');
 			list( $line_num, $line ) = each( $d1_load ) ;
-			$load_ave_d1=$line;
-			$Ahtml .= "  <font color=navy>Dialer 1 Load Average:</font> $load_ave_d1";
+			$load_ave_d1=rtrim($line);
+            if (!$load_ave_d1>0) $load_ave_d1='-.--';
+			$Ahtml .= "  <font color=navy>Dialer 1 Load Average:</font> $load_ave_d1\n";
 		}
 		if (file_exists($pref . 'D2_load.txt')) {
 			$d2_load = file($pref . 'D2_load.txt');
 			list( $line_num, $line ) = each( $d2_load );
-			$load_ave_d2=$line;
-			$Ahtml .= "  <font color=navy>Dialer 2 Load Average:</font> $load_ave_d2";
+			$load_ave_d2=rtrim($line);
+            if (!$load_ave_d2>0) $load_ave_d2='-.--';
+			$Ahtml .= "  <font color=navy>Dialer 2 Load Average:</font> $load_ave_d2\n";
 		}
 		if (file_exists($pref . 'D3_load.txt')) {
 			$d3_load = file($pref . 'D3_load.txt');
 			list( $line_num, $line ) = each( $d3_load );
-			$load_ave_d3=$line;
-			$Ahtml .= "  <font color=navy>Dialer 3 Load Average:</font> $load_ave_d3";
+			$load_ave_d3=rtrim($line);
+            if (!$load_ave_d3>0) $load_ave_d3='-.--';
+			$Ahtml .= "  <font color=navy>Dialer 3 Load Average:</font> $load_ave_d3\n";
 		}
 		if (file_exists($pref . 'D4_load.txt')) {
 			$d4_load = file($pref . 'D4_load.txt');
 			list( $line_num, $line ) = each( $d4_load );
-			$load_ave_d4=$line;
-			$Ahtml .= "  <font color=navy>Dialer 4 Load Average:</font> $load_ave_d4";
+			$load_ave_d4=rtrim($line);
+            if (!$load_ave_d4>0) $load_ave_d4='-.--';
+			$Ahtml .= "  <font color=navy>Dialer 4 Load Average:</font> $load_ave_d4\n";
 		}
 		if (file_exists($pref . 'D5_load.txt')) {
 			$d5_load = file($pref . 'D5_load.txt');
 			list( $line_num, $line ) = each( $d5_load );
-			$load_ave_d5=$line;
-			$Ahtml .= "  <font color=navy>Dialer 5 Load Average:</font> $load_ave_d5";
+			$load_ave_d5=rtrim($line);
+            if (!$load_ave_d5>0) $load_ave_d5='-.--';
+			$Ahtml .= "  <font color=navy>Dialer 5 Load Average:</font> $load_ave_d5\n";
 		}
 		if (file_exists($pref . 'D6_load.txt')) {
 			$d6_load = file($pref . 'D6_load.txt');
 			list( $line_num, $line ) = each( $d6_load );
-			$load_ave_d6=$line;
-			$Ahtml .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6";
+			$load_ave_d6=rtrim($line);
+            if (!$load_ave_d6>0) $load_ave_d6='-.--';
+			$Ahtml .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6\n";
 		}
 		$html .= "$Ahtml";
 		
