@@ -2105,11 +2105,60 @@ if ($ADD==10)
 echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT * from osdial_campaigns order by campaign_id";
+	$stmt="SELECT campaign_id from osdial_campaigns;";
+	$rslt=mysql_query($stmt, $link);
+	$total_campaigns = mysql_num_rows($rslt);
+
+$let = get_variable('let');
+$letSQL = '';
+if ($let != '') $letSQL = "AND campaign_id LIKE '$let%'";
+
+$dispact = get_variable('dispact');
+$dispactSQL = '';
+if ($dispact == 1) $dispactSQL = "AND active='Y'";
+
+	$stmt="SELECT * from osdial_campaigns WHERE 1=1 $letSQL $dispactSQL order by campaign_id";
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=navy size=+1>CAMPAIGNS</font><br><br>\n";
+echo "<center><br><font color=navy size=+1>CAMPAIGNS</font><br>\n";
+if ($total_campaigns > 20) {
+    echo "<center><font color=navy size=-1>";
+    if ($dispact == '1') {
+        echo "<a href=\"$PHP_SELF?ADD=10&let=$let&dispact=\">(Show Inactive)</a>";
+    } else {
+        echo "<a href=\"$PHP_SELF?ADD=10&let=$let&dispact=1\">(Hide Inactive)</a>";
+    }
+    echo "</font><br>\n";
+}
+echo "<center><br><font size=-1 color=navy>&nbsp;|&nbsp;";
+echo (($let == "A") ? "A" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=A\">A</a>") . "&nbsp;|&nbsp;";
+echo (($let == "B") ? "B" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=B\">B</a>") . "&nbsp;|&nbsp;";
+echo (($let == "C") ? "C" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=C\">C</a>") . "&nbsp;|&nbsp;";
+echo (($let == "D") ? "D" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=D\">D</a>") . "&nbsp;|&nbsp;";
+echo (($let == "E") ? "E" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=E\">E</a>") . "&nbsp;|&nbsp;";
+echo (($let == "F") ? "F" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=F\">F</a>") . "&nbsp;|&nbsp;";
+echo (($let == "G") ? "G" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=G\">G</a>") . "&nbsp;|&nbsp;";
+echo (($let == "H") ? "H" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=H\">H</a>") . "&nbsp;|&nbsp;";
+echo (($let == "I") ? "I" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=I\">I</a>") . "&nbsp;|&nbsp;";
+echo (($let == "J") ? "J" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=J\">J</a>") . "&nbsp;|&nbsp;";
+echo (($let == "K") ? "K" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=K\">K</a>") . "&nbsp;|&nbsp;";
+echo (($let == "L") ? "L" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=L\">L</a>") . "&nbsp;|&nbsp;";
+echo (($let == "M") ? "M" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=M\">M</a>") . "&nbsp;|&nbsp;";
+echo (($let == "N") ? "N" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=N\">N</a>") . "&nbsp;|&nbsp;";
+echo (($let == "O") ? "O" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=O\">O</a>") . "&nbsp;|&nbsp;";
+echo (($let == "P") ? "P" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=P\">P</a>") . "&nbsp;|&nbsp;";
+echo (($let == "Q") ? "Q" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=Q\">Q</a>") . "&nbsp;|&nbsp;";
+echo (($let == "R") ? "R" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=R\">R</a>") . "&nbsp;|&nbsp;";
+echo (($let == "S") ? "S" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=S\">S</a>") . "&nbsp;|&nbsp;";
+echo (($let == "T") ? "T" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=T\">T</a>") . "&nbsp;|&nbsp;";
+echo (($let == "U") ? "U" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=U\">U</a>") . "&nbsp;|&nbsp;";
+echo (($let == "V") ? "V" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=V\">V</a>") . "&nbsp;|&nbsp;";
+echo (($let == "W") ? "W" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=W\">W</a>") . "&nbsp;|&nbsp;";
+echo (($let == "X") ? "X" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=X\">X</a>") . "&nbsp;|&nbsp;";
+echo (($let == "Y") ? "Y" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=Y\">Y</a>") . "&nbsp;|&nbsp;";
+echo (($let == "Z") ? "Z" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=Z\">Z</a>") . "&nbsp;|&nbsp;";
+echo "</font><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=#716A5B>";
 echo "<td><font size=1 color=white><B>ID</B></td>";
