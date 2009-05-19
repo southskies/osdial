@@ -1156,14 +1156,26 @@ if ($ADD==31)
 		echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 		echo "</TABLE></center></FORM>\n";
 
+        $dispinact = get_variable('dispinact');
+        $dispinactSQL = "AND active='Y'";
+        if ($dispinact == 1) $dispinactSQL = "";
+
 	echo "<center>\n";
 	echo "<br><br><b><font color=navy size=+1>LISTS WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_campaign_lists$NWE</font></b><br>\n";
+    echo "<center><font color=navy size=-1>";
+    if ($dispinact == '1') {
+        echo "<a href=\"$PHP_SELF?ADD=$ADD&campaign_id=$campaign_id&dispinact=\">(Hide Inactive)</a>";
+    } else {
+        echo "<a href=\"$PHP_SELF?ADD=$ADD&campaign_id=$campaign_id&dispinact=1\">(Show Inactive)</a>";
+    }
+    echo "</font><br>\n";
 	echo "<TABLE width=400 cellspacing=3>\n";
 	echo "<tr><td><font color=navy>LIST ID</font></td><td><font color=navy>LIST NAME</font></td><td><font color=navy>ACTIVE</font></td></tr>\n";
 
+
 		$active_lists = 0;
 		$inactive_lists = 0;
-		$stmt="SELECT list_id,active,list_name from osdial_lists where campaign_id='$campaign_id'";
+		$stmt="SELECT list_id,active,list_name from osdial_lists where 1=1 $dispinactSQL and campaign_id='$campaign_id'";
 		$rslt=mysql_query($stmt, $link);
 		$lists_to_print = mysql_num_rows($rslt);
 		$camp_lists='';
@@ -1742,14 +1754,25 @@ if ($ADD==34)
 		echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 		echo "</TABLE></center></FORM>\n";
 
+            $dispinact = get_variable('dispinact');
+            $dispinactSQL = "AND active='Y'";
+            if ($dispinact == 1) $dispinactSQL = "";
+
 		echo "<center>\n";
 		echo "<br><br><b><font color=navy>LISTS WITHIN THIS CAMPAIGN: &nbsp; $NWB#osdial_campaign_lists$NWE</font></b><br>\n";
+        echo "<center><font color=navy size=-1>";
+        if ($dispinact == '1') {
+            echo "<a href=\"$PHP_SELF?ADD=$ADD&campaign_id=$campaign_id&dispinact=\">(Hide Inactive)</a>";
+        } else {
+            echo "<a href=\"$PHP_SELF?ADD=$ADD&campaign_id=$campaign_id&dispinact=1\">(Show Inactive)</a>";
+        }
+        echo "</font><br>\n";
 		echo "<TABLE width=400 cellspacing=3>\n";
 		echo "<tr><td><font color=navy>LIST ID</font></td><td><font color=navy>LIST NAME</font></td><td><font color=navy>ACTIVE</font></td></tr>\n";
 
 			$active_lists = 0;
 			$inactive_lists = 0;
-			$stmt="SELECT list_id,active,list_name from osdial_lists where campaign_id='$campaign_id'";
+			$stmt="SELECT list_id,active,list_name from osdial_lists where 1=1 $dispinactSQL and campaign_id='$campaign_id'";
 			$rslt=mysql_query($stmt, $link);
 			$lists_to_print = mysql_num_rows($rslt);
 			$camp_lists='';
