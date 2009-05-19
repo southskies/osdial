@@ -2331,11 +2331,29 @@ if ($ADD==100)
 echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT * from osdial_lists order by list_id";
+$camp = get_variable('camp');
+$campSQL = '';
+if ($camp != '') $campSQL = "AND campaign_id='$camp'";
+
+$dispact = get_variable('dispact');
+$dispactSQL = '';
+if ($dispact == 1) $dispactSQL = "AND active='Y'";
+
+	$stmt="SELECT * from osdial_lists WHERE 1=1 $campSQL $dispactSQL order by list_id";
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=navy size=+1>LISTS</font><br><br>\n";
+echo "<center><br><font color=navy size=+1>LISTS</font><br>";
+if ($people_to_print > 20) {
+    echo "<center><font color=navy size=-1>";
+    if ($dispact == '1') {
+        echo "<a href=\"$PHP_SELF?ADD=100&camp=$camp&dispact=\">(Show Inactive)</a>";
+    } else {
+        echo "<a href=\"$PHP_SELF?ADD=100&camp=$camp&dispact=1\">(Hide Inactive)</a>";
+    }
+    echo "</font><br>\n";
+}
+echo "<br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=$menubarcolor>";
 echo "<td><font size=1 color=white><B>ID</B></td>";
@@ -2353,8 +2371,8 @@ echo "<td align=center colspan=3><font size=1 color=white><B>LINKS</B></td>";
 		else
 			{$bgcolor='bgcolor="#C1D6DB"';}
 		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">$row[0]</a></td>";
-		echo "<td><font size=1> $row[1]</td>";
-		echo "<td><font size=1> $row[2]</td>";
+		echo "<td><font size=1>$row[1]</td>";
+		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=100&camp=$row[2]&dispact=$dispact\">$row[2]</a></td>";
 		echo "<td><font size=1>$row[4]</td>";
 		echo "<td align=center><font size=1>$row[5]</td>";
 		echo "<td align=center><font size=1> $row[3]</td>";
