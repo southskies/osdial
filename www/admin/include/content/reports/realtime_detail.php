@@ -289,9 +289,9 @@ function report_realtime_detail() {
 		$DAleads =		$row[0];
 		$callsTODAY =	$row[1];
 		$dropsTODAY =	$row[2];
-		$drpctTODAY =	$row[3];
+		$drpctTODAY =	sprintf('%3.2f',$row[3]);
 		$diffONEMIN =	$row[4];
-		$agentsONEMIN = $row[5];
+		$agentsONEMIN = sprintf('%3.2f',$row[5]);
 		$balanceFILL =	$row[6];
 		$answersTODAY = $row[7];
 		$VSCcat1 =		$row[8];
