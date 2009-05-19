@@ -782,7 +782,7 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td></tr>\n";
 		echo "<tr $bgcolor><td><a href=\"$PHP_SELF?ADD=3&user=$row[1]\"><font size=1 color=black>$row[1]</a></td><td><font size=1>$row[3]</td>";
         echo "<td><font size=1><a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$row[4]&group=$group&let=$let\">$row[4]</a></td>";
         echo "<td><font size=1><a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$row[5]&let=$let\">$row[5]</a></td>";
-		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">MODIFY</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=1&iframe=user_stats.php?user=$row[1]\">STATS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=1&iframe=user_status.php?user=$row[1]\">STATUS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=1&iframe=AST_agent_time_sheet.php?agent=$row[1]\">TIME</a></td></tr>\n";
+		echo "<td align=center><font size=1><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">MODIFY</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=1&iframe=user_stats.php?user=$row[1]\">STATS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=1&iframe=user_status.php?user=$row[1]\">STATUS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=1&iframe=AST_agent_time_sheet.php?agent=$row[1]\">TIME</a></td></tr>\n";
 		$o++;
 	}
 
