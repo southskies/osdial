@@ -177,7 +177,7 @@ function report_realtime_detail() {
 	if ($RR==38400) { $html .= "</font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
 	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">Daily</a>&nbsp;&nbsp;"; 
 	
-	if ($RR==3600) { $html .= "</font></font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
+	if ($RR==3600) { $html .= "</font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
 	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=3600&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">Hourly</a>&nbsp;&nbsp;";
 	
 	if ($RR==600) { $html .= "</font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
@@ -250,7 +250,7 @@ function report_realtime_detail() {
 		}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
-		$DIALlev =		$row[0];
+		$DIALlev =		sprintf('%3.2f',$row[0]);
 		$DIALstatusA =	$row[1];
 		$DIALstatusB =	$row[2];
 		$DIALstatusC =	$row[3];
@@ -364,7 +364,7 @@ function report_realtime_detail() {
 		$html .= "<TR>";
 		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Hopper Level:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $HOPlev &nbsp; &nbsp; </TD>";
 		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Drop/Answer:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $dropsTODAY / $answersTODAY &nbsp; </TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Statuses:</B></TD><TD ALIGN=LEFT colspan=3><font size=2>&nbsp; $DIALstatuses</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Statuses:</B></TD><TD ALIGN=LEFT colspan=3><font size=2>&nbsp; <span title=\"$DIALstatuses\">" . ellipse($DIALstatuses,40) . "</span></TD>";
 		$html .= "</TR>";
 		
 		$html .= "<TR>";
