@@ -28,6 +28,7 @@
 # 090409-1925 - Remove lo interface if more than 1 active server
 # 090409-2035 - Added ASTloop/ASTblind IAX loopback servers
 # 090409-2104 - Added gen_registrations
+# 090519-1932 - Fixed server2server configuration
 
 
 use strict;
@@ -100,13 +101,14 @@ if ($CLOshowip) {
 
 
 if (-f "/etc/asterisk/osdial_extensions.conf") {
+	my $pass = calc_password();
 	# Generate intra-server extensions and iax communication.
 	# (osdial_extensions_servers.conf osdial_iax_servers.conf)
-	gen_servers($dbhA);
+	gen_servers($dbhA,$pass);
 
 	# Generate SIP/IAX registrations
 	# (osdial_iax_registrations.conf osdial_sip_registrations.conf)
-	gen_registrations($dbhA);
+	gen_registrations($dbhA,$pass);
 
 	# Generate meetme conferences and extensions.
 	# (osdial_extensions_conferences.conf osdial_meetme.conf)
@@ -145,13 +147,13 @@ sub calc_password {
 # Generate SIP/IAX registrations
 # (osdial_iax_registrations.conf osdial_sip_registrations.conf)
 sub gen_registrations {
-	my ($dbhA) = @_;
+	my ($dbhA,$pass) = @_;
 
 	my $ireg = $achead;
 	my $sreg = $achead;
 
-	$ireg .= "register => ASTloop:test\@127.0.0.1:40569\n";
-	$ireg .= "register => ASTblind:test\@127.0.0.1:41569\n";
+	$ireg .= "register => ASTloop:$pass\@127.0.0.1:40569\n";
+	$ireg .= "register => ASTblind:$pass\@127.0.0.1:41569\n";
 
 	write_reload($ireg,'osdial_iax_registrations','iax2 reload');
 	write_reload($sreg,'osdial_sip_registrations','sip reload');
@@ -161,9 +163,7 @@ sub gen_registrations {
 # Generate intra-server extensions and iax communication.
 # (osdial_extensions_servers.conf osdial_iax_servers.conf)
 sub gen_servers {
-	my ($dbhA) = @_;
-
-	my $pass = calc_password();
+	my ($dbhA,$pass) = @_;
 
 	my $esvr = $achead;
 	my $isvr = $achead;
@@ -172,11 +172,11 @@ sub gen_servers {
 	$isvr .= "[ASTloop]\n";
 	$isvr .= "type=friend\n";
 	$isvr .= "accountcode=ASTloop\n";
-	$isvr .= "context=default\n";
-	$isvr .= "auth=plaintext\n";
+	$isvr .= "context=osdial\n";
+	$isvr .= "auth=md5\n";
 	$isvr .= "host=dynamic\n";
 	$isvr .= "permit=0.0.0.0/0.0.0.0\n";
-	$isvr .= "secret=test\n";
+	$isvr .= "secret=$pass\n";
 	$isvr .= "disallow=all\n";
 	$isvr .= "allow=ulaw\n";
 	$isvr .= "qualify=no\n";
@@ -185,11 +185,11 @@ sub gen_servers {
 	$isvr .= "[ASTblind]\n";
 	$isvr .= "type=friend\n";
 	$isvr .= "accountcode=ASTblind\n";
-	$isvr .= "context=default\n";
-	$isvr .= "auth=plaintext\n";
+	$isvr .= "context=osdial\n";
+	$isvr .= "auth=md5\n";
 	$isvr .= "host=dynamic\n";
 	$isvr .= "permit=0.0.0.0/0.0.0.0\n";
-	$isvr .= "secret=test\n";
+	$isvr .= "secret=$pass\n";
 	$isvr .= "disallow=all\n";
 	$isvr .= "allow=ulaw\n";
 	$isvr .= "qualify=no\n";
@@ -204,9 +204,11 @@ sub gen_servers {
 	print $stmtA . "\n" if ($DB);
 	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+	my $iname;
 	while (my @aryA = $sthA->fetchrow_array) {
 		my @sip = split /\./, $aryA[1];
 		my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
+		$iname = $aryA[0];
 		$esvr .= ";\n;" . $aryA[0] . ' - ' . $aryA[1] . "\n";
 		$esvr .= "exten => _" . $fsip . "*.,1,Goto(osdial,\${EXTEN:16},1)\n";
 		$isvr .= ";\n;" . $aryA[0] . ' - ' . $aryA[1] . "\n";
@@ -237,7 +239,7 @@ sub gen_servers {
 		my @sip = split /\./, $aryA[1];
 		my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
 		$esvr .= ";\n;" . $aryA[0] . ' - ' . $aryA[1] . "\n";
-		$esvr .= "exten => _" . $fsip . "*.,1,Dial(IAX2/" . $aryA[1] . "/\${EXTEN},,o)\n";
+		$esvr .= "exten => _" . $fsip . "*.,1,Dial(IAX2/" . $aryA[0] . "/\${EXTEN},,o)\n";
 		$isvr .= ";\n;" . $aryA[0] . ' - ' . $aryA[1] . "\n";
 		$isvr .= "[" . $aryA[0] . "]\n";
 		$isvr .= "type=peer\n";
@@ -250,7 +252,7 @@ sub gen_servers {
 		$isvr .= "secret=$pass\n";
 		$isvr .= "disallow=all\n";
 		$isvr .= "allow=ulaw\n";
-		$isvr .= "context=osdial\n";
+		$isvr .= "peercontext=osdial\n";
 		$isvr .= "nat=no\n";
 	}
 
