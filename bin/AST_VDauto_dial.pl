@@ -85,6 +85,7 @@
 # 71030-2054 - Added hopper priority sorting
 # 80713-0624 - Added vicidial_list_last_local_call_time field
 #
+# 090519-2224 - Added in INBOUND_MAN
 
 
 ### begin parsing run-time options ###
@@ -310,6 +311,7 @@ while($one_day_interval > 0)
 		@DBIPserver_trunks_limit=@MT;
 		@DBIPserver_trunks_other=@MT;
 		@DBIPserver_trunks_allowed=@MT;
+		@DBIPdial_method=@MT;
 
 		$active_line_counter=0;
 		$user_counter=0;
@@ -462,7 +464,7 @@ while($one_day_interval > 0)
 
 			### grab the dial_level and multiply by active agents to get your goalcalls
 			$DBIPadlevel[$user_CIPct]=0;
-			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound,answers_per_hour_limit,campaign_call_time FROM osdial_campaigns where campaign_id='$DBIPcampaign[$user_CIPct]'";
+			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound,answers_per_hour_limit,campaign_call_time,dial_method FROM osdial_campaigns where campaign_id='$DBIPcampaign[$user_CIPct]'";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -492,6 +494,7 @@ while($one_day_interval > 0)
 					$DBIPcampaign_allow_inbound[$user_CIPct] =	"$aryA[11]";
 					$DBIPanswers_per_hour_limit[$user_CIPct] =	($aryA[12] * 1);
 					$DBIPcampaign_call_time[$user_CIPct] =	$aryA[13];
+					$DBIPdial_method[$user_CIPct] =	$aryA[14];
 				$rec_count++;
 				}
 			$sthA->finish();
@@ -742,7 +745,7 @@ while($one_day_interval > 0)
 
 			if ( ($DBIPold_trunk_shortage[$user_CIPct] > $DBIPtrunk_shortage[$user_CIPct]) || ($DBIPold_trunk_shortage[$user_CIPct] < $DBIPtrunk_shortage[$user_CIPct]) )
 				{
-				if ($DBIPadlevel[$user_CIPct] < 1) 
+				if ( ($DBIPadlevel[$user_CIPct] < 1) || ($DBIPdial_method[$user_CIPct] =~ /MANUAL|INBOUND_MAN/) )
 					{
 					$event_string="Manual Dial Override for Shortage |$DBIPadlevel[$user_CIPct]|$DBIPtrunk_shortage[$user_CIPct]|";
 					&event_logger;
@@ -766,25 +769,32 @@ while($one_day_interval > 0)
 		$user_CIPct = 0;
 		foreach(@DBIPcampaign)
 			{
-			$event_string="$DBIPcampaign[$user_CIPct] $DBIPaddress[$user_CIPct]: CALLING";
-			&event_logger;
-			$call_CMPIPct=0;
-			$lead_id_call_list='|';
-			my $UDaffected_rows=0;
-			if ($call_CMPIPct < $DBIPmakecalls[$user_CIPct])
+			if ( ($DBIPdial_method[$user_CIPct] =~ /MANUAL|INBOUND_MAN/) || ($outbound_autodial_active < 1) )
 				{
-				$stmtA = "UPDATE osdial_hopper set status='QUEUE', user='VDAD_$server_ip' where campaign_id='$DBIPcampaign[$user_CIPct]' and status='READY' order by priority desc,hopper_id LIMIT $DBIPmakecalls[$user_CIPct]";
-				print "|$stmtA|\n";
-			   $UDaffected_rows = $dbhA->do($stmtA);
-				print "hopper rows updated to QUEUE: |$UDaffected_rows|\n";
+				$event_string="$DBIPcampaign[$user_CIPct] $DBIPaddress[$user_CIPct]: MANUAL DIAL CAMPAIGN, NO DIALING";
+				&event_logger;
+				}
+			else
+				{
+				$event_string="$DBIPcampaign[$user_CIPct] $DBIPaddress[$user_CIPct]: CALLING";
+				&event_logger;
+				$call_CMPIPct=0;
+				$lead_id_call_list='|';
+				my $UDaffected_rows=0;
+				if ($call_CMPIPct < $DBIPmakecalls[$user_CIPct])
+					{
+					$stmtA = "UPDATE osdial_hopper set status='QUEUE', user='VDAD_$server_ip' where campaign_id='$DBIPcampaign[$user_CIPct]' and status='READY' order by priority desc,hopper_id LIMIT $DBIPmakecalls[$user_CIPct]";
+					print "|$stmtA|\n";
+					$UDaffected_rows = $dbhA->do($stmtA);
+					print "hopper rows updated to QUEUE: |$UDaffected_rows|\n";
 
 					if ($UDaffected_rows)
-					{
-					$lead_id=''; $phone_code=''; $phone_number=''; $called_count='';
-						while ($call_CMPIPct < $UDaffected_rows)
 						{
-						$stmtA = "SELECT lead_id,alt_dial FROM osdial_hopper where campaign_id='$DBIPcampaign[$user_CIPct]' and status='QUEUE' and user='VDAD_$server_ip' order by priority desc,hopper_id LIMIT 1";
-						print "|$stmtA|\n";
+						$lead_id=''; $phone_code=''; $phone_number=''; $called_count='';
+						while ($call_CMPIPct < $UDaffected_rows)
+							{
+							$stmtA = "SELECT lead_id,alt_dial FROM osdial_hopper where campaign_id='$DBIPcampaign[$user_CIPct]' and status='QUEUE' and user='VDAD_$server_ip' order by priority desc,hopper_id LIMIT 1";
+							print "|$stmtA|\n";
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 							$sthArows=$sthA->rows;
@@ -946,9 +956,8 @@ while($one_day_interval > 0)
 						$call_CMPIPct++;
 						}
 					}
-
+				}
 			}
-
 		$user_CIPct++;
 		}
 
