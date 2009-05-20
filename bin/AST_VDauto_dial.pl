@@ -769,7 +769,7 @@ while($one_day_interval > 0)
 		$user_CIPct = 0;
 		foreach(@DBIPcampaign)
 			{
-			if ( ($DBIPdial_method[$user_CIPct] =~ /MANUAL|INBOUND_MAN/) || ($outbound_autodial_active < 1) )
+			if ($DBIPdial_method[$user_CIPct] =~ /MANUAL|INBOUND_MAN/)
 				{
 				$event_string="$DBIPcampaign[$user_CIPct] $DBIPaddress[$user_CIPct]: MANUAL DIAL CAMPAIGN, NO DIALING";
 				&event_logger;

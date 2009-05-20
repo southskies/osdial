@@ -1708,7 +1708,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							var dispnum = lead_dial_number;
 							var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
 
-							document.getElementById("MainStatuSSpan").style.background = panel_bgcolor;
+							document.getElementById("MainStatuSSpan").style.backgroundColor = '';
 							document.getElementById("MainStatuSSpan").innerHTML = " Calling: " + status_display_number + "&nbsp;&nbsp;<font color=#AECFD7>UID: " + CIDcheck + "</font><font color=yellow style='text-decoration:blink;'><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
 							//alert("channel not found yet:\n" + campaign);
 							}
@@ -1778,6 +1778,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 								MD_channel_look=0;
 								var dispnum = lead_dial_number;
 								var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
+								document.getElementById("MainStatuSSpan").style.backgroundColor = '';
 
 								document.getElementById("MainStatuSSpan").innerHTML = " Called " + status_display_number + "&nbsp;&nbsp;<font color=#A0BDC4>&nbsp;&nbsp;<font color=#AECFD7>UID: " + CIDcheck + " &nbsp;</font>"; 
 
@@ -1932,7 +1933,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 								{
 								document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML;
 								}
-							document.getElementById("MainStatuSSpan").style.background = panel_bgcolor;
+							document.getElementById("MainStatuSSpan").style.backgroundColor = '';
 							reselect_alt_dial = 0;
 							}
 						}
@@ -1992,7 +1993,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						var dispnum = document.osdial_form.phone_number.value;
 						var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
 
-						document.getElementById("MainStatuSSpan").style.background = panel_bgcolor;
+						document.getElementById("MainStatuSSpan").style.backgroundColor = '';
 						document.getElementById("MainStatuSSpan").innerHTML = " Calling: " + status_display_number + "&nbsp;&nbsp;<font color=#AECFD7>UID: " + MDnextCID + "</font> &nbsp; " + man_status;
 						if ( (dialed_label.length < 3) || (dialed_label=='NONE') ) {dialed_label='MAIN';}
 
@@ -2392,7 +2393,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						var dispnum = manDiaLonly_num;
 						var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
 
-						document.getElementById("MainStatuSSpan").style.background = panel_bgcolor;
+						document.getElementById("MainStatuSSpan").style.backgroundColor = '';
 						document.getElementById("MainStatuSSpan").innerHTML = " Calling: " + status_display_number + "&nbsp;&nbsp;<font color=#AECFD7>UID: " + MDnextCID + "</font> Waiting for Ring...";
 
 						document.getElementById("HangupControl").innerHTML = "<a href=\"#\" onclick=\"dialedcall_send_hangup();\"><IMG SRC=\"./images/vdc_LB_hangupcustomer.gif\" border=0 alt=\"Hangup Customer\"></a>";
@@ -2761,7 +2762,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							if (LeaDPreVDispO == 'CALLBK')
 								{
 								document.getElementById("CusTInfOSpaN").innerHTML = "&nbsp;<B>PREVIOUS CALLBACK</B>";
-								document.getElementById("CusTInfOSpaN").style.background = CusTCB_bgcolor;
+								document.getElementById("CusTInfOSpaN").style.backgroundColor = CusTCB_bgcolor;
 								document.getElementById("CBcommentsBoxA").innerHTML = "<b>Last Call: </b>" + CBentry_time;
 								document.getElementById("CBcommentsBoxB").innerHTML = "<b>CallBack: </b>" + CBcallback_time;
 								document.getElementById("CBcommentsBoxC").innerHTML = "<b>Agent: </b>" + CBuser;
@@ -2773,7 +2774,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 								{
 								if (VDIC_data_VDIG[2].length > 2)
 									{
-									document.getElementById("MainStatuSSpan").style.background = VDIC_data_VDIG[2];
+									document.getElementById("MainStatuSSpan").style.backgroundColor = VDIC_data_VDIG[2];
 									}
 								var dispnum = document.osdial_form.phone_number.value;
 								var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
@@ -3557,7 +3558,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							{
 							if (hotkeysused == 'YES')
 								{
-								document.getElementById("MainStatuSSpan").style.background = panel_bgcolor;
+								document.getElementById("MainStatuSSpan").style.backgroundColor = '';
 								document.getElementById("MainStatuSSpan").innerHTML = '';
 								if (dial_method == "INBOUND_MAN")
 									{
@@ -3574,7 +3575,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 					}
 				else
 					{
-					document.getElementById("MainStatuSSpan").style.background = panel_bgcolor;
+					document.getElementById("MainStatuSSpan").style.backgroundColor = '';
 					document.getElementById("MainStatuSSpan").innerHTML = '';
 					if (dial_method == "INBOUND_MAN")
 						{
@@ -3807,7 +3808,9 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	AgentDispoing = 1;
 	var VD_statuses_ct_half = parseInt(VD_statuses_ct / 2);
-	var dispo_HTML = "<br><table frame=border cellpadding=5 cellspacing=5 width=620><tr><td colspan=2 align=center><font color=1C4754><b>Call Dispositions</b></td></tr><tr><td colspan=2 align=center><div style=\"height:320;overflow-y:scroll;\"><table cellpadding=5 cellspacing=5><tr><td bgcolor=\"#AFCFD7\" height=320 width=300 valign=top><font class=\"log_text\"><div id=DispoSelectA>";
+	var scroll = '';
+	if (VD_statuses_ct_half > 12) scroll="overflow-y:scroll;";
+	var dispo_HTML = "<br><table frame=border cellpadding=5 cellspacing=5 width=620><tr><td colspan=2 align=center><font color=1C4754><b>Call Dispositions</b></td></tr><tr><td colspan=2 align=center><div style=\"height:320;" + scroll + "\"><table cellpadding=5 cellspacing=5><tr><td bgcolor=\"#AFCFD7\" height=320 width=300 valign=top><font class=\"log_text\"><div id=DispoSelectA>";
 	var loop_ct = 0;
 	while (loop_ct < VD_statuses_ct) {
 		if (taskDSgrp == VARstatuses[loop_ct]) {
@@ -3868,8 +3871,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		if (DispoChoice.length < 1) {alert("You Must Select a Disposition");}
 		else
 			{
+			document.getElementById("CusTInfOSpaN").style.backgroundColor = panel_bgcolor;
 			document.getElementById("CusTInfOSpaN").innerHTML = "";
-			document.getElementById("CusTInfOSpaN").style.background = panel_bgcolor;
 
 			LeaDDispO = DispoChoice;
 	
@@ -3893,7 +3896,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		else
 			{
 			document.getElementById("CusTInfOSpaN").innerHTML = "";
-			document.getElementById("CusTInfOSpaN").style.background = panel_bgcolor;
+			document.getElementById("CusTInfOSpaN").style.backgroundColor = panel_bgcolor;
 
 			if ( (DispoChoice == 'CALLBK') && (scheduled_callbacks > 0) ) {showDiv('CallBackSelectBox');}
 			else
@@ -3991,7 +3994,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				document.getElementById("RecorDingFilename").innerHTML = "&nbsp;";
 				document.getElementById("RecorDID").innerHTML = "&nbsp;";
 
-				document.getElementById("MainStatuSSpan").style.background = panel_bgcolor;
+				document.getElementById("MainStatuSSpan").style.backgroundColor = '';
 				document.getElementById("MainStatuSSpan").innerHTML = "";
 
 				CloseWebFormPanels();
@@ -5568,7 +5571,7 @@ else
 				}
 			}
 		panel_bgcolor='7297A1'; //#E0C2D6
-		document.getElementById("MainStatuSSpan").style.background = panel_bgcolor;
+		document.getElementById("MainStatuSSpan").style.backgroundColor = panel_bgcolor;
 		document.getElementById("FormButtons").src = "images/vdc_tab_buttons1.gif";
 		}
 
@@ -5578,7 +5581,7 @@ else
 		document.getElementById("MainTable").style.backgroundColor="7297A1";
 		document.getElementById("MaiNfooter").style.backgroundColor="7297A1";
 		panel_bgcolor='7297A1';
-		document.getElementById("MainStatuSSpan").style.background = panel_bgcolor;
+		document.getElementById("MainStatuSSpan").style.backgroundColor= panel_bgcolor;
 		document.getElementById("FormButtons").src = "images/vdc_tab_buttons2.gif";
 		}
 	
