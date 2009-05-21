@@ -1005,6 +1005,8 @@ foreach(@campaign_id)
 	@recycle_delay=@MT;
 	@recycle_maximum=@MT;
 	@RSQLdate=@MT;
+	@recycle_SQL=@MT;
+	@recycle_notimeSQL=@MT;
 	$r_ct=0;
 	$rec_ct[$i]=0;
 	while ($sthArows > $r_ct)
@@ -1022,6 +1024,7 @@ foreach(@campaign_id)
 		{
 		$rc=0;
 		$recycle_SQL[$i] = "( ";
+		$recycle_notimeSQL[$i] = "( ";
 		while($rc < $rec_ct[$i])
 			{
 			$Y=1;
@@ -1032,9 +1035,10 @@ foreach(@campaign_id)
 				$Y++;
 				}
 
-			if ($rc > 0) {$recycle_SQL[$i] .= " or ";}
+			if ($rc > 0) {$recycle_SQL[$i] .= " or "; $recycle_notimeSQL[$i] .= " or ";}
 
-			$recycle_SQL[$i] .= "( (called_since_last_reset IN($recycle_Y)) and (status='$recycle_status[$rc]') and (";
+			$recycle_notimeSQL[$i] .= "((called_since_last_reset IN($recycle_Y)) and (status='$recycle_status[$rc]'))";
+			$recycle_SQL[$i] .= "( " . $recycle_notimeSQL[$i] . " and (";
 
 			$dgA=0;
 			foreach(@default_gmt_ARY)
@@ -1081,12 +1085,14 @@ foreach(@campaign_id)
 			}
 
 		$recycle_SQL[$i] .= " )";
+		$recycle_notimeSQL[$i] .= " )";
 
-		if ($DBX) {print "RECYCLE SQL: |$recycle_SQL[$i]|\n";}
+		if ($DBX) {print "RECYCLE SQL: |$recycle_notimeSQL[$1]|$recycle_SQL[$i]|\n";}
 		}
 	else
 		{
 		$recycle_SQL[$i] = "";
+		$recycle_notimeSQL[$i] = "";
 		}
 	##### END lead recycling parsing and prep ###
 
@@ -1213,6 +1219,37 @@ foreach(@campaign_id)
 			if ($DB) {print "     no lead filter defined for campaign: $campaign_id[$i]\n";}
 			if ($DBX) {print "     |$lead_filter_id[$i]|\n";}
 			}
+
+		# Get total recycles.
+		$stmtA = "SELECT count(*) FROM osdial_list where $recycle_notimeSQL[$i] AND list_id IN ($camp_lists[$i]);";
+			if ($DBX) {print "     |$stmtA|\n";}
+		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		$sthArows=$sthA->rows;
+		$rec_count=0;
+		while ($sthArows > $rec_count)
+			{
+			@aryA = $sthA->fetchrow_array;
+			$recycle_total[$i] = "$aryA[0]";
+			$rec_count++;
+			}
+		$sthA->finish();
+		# Get scheduled recycles.
+		$stmtA = "SELECT count(*) FROM osdial_list where $recycle_SQL[$i] AND list_id IN ($camp_lists[$i];)i";
+			if ($DBX) {print "     |$stmtA|\n";}
+		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		$sthArows=$sthA->rows;
+		$rec_count=0;
+		while ($sthArows > $rec_count)
+			{
+			@aryA = $sthA->fetchrow_array;
+			$recycle_sched[$i] = "$aryA[0]";
+			$rec_count++;
+			}
+		$sthA->finish();
+		$stmtA = "UPDATE osdial_campaign_stats SET recycle_total='$recycle_total[$i]',recycle_sched='$resched_sched[$i]' where campaign_id='$campaign_id[$i]';";
+		$affected_rows = $dbhA->do($stmtA);
 
 		if ($recycle_SQL[$i] eq '') {
 			$cclr = "called_since_last_reset='N'";
