@@ -205,6 +205,7 @@
 # 090410-1731 - Added allow_tab_switch
 # 090515-0135 - Added preview_force_dial_time
 # 090515-0140 - Added manual_preview_default
+# 090520-1915 - Changed inbound in manual mode to work without the INBOUND_MAN dial status.
 
 # The version/build variables get set to the SVN revision automatically in release package.
 # Do not change.
@@ -955,7 +956,8 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 			if ($manual_preview_default=='Y') {$manual_preview_default='1';} else {$manual_preview_default='0';}
 			if ($web_form_extwindow=='Y') {$web_form_extwindow='1';} else {$web_form_extwindow='0';}
 			if ($web_form2_extwindow=='Y') {$web_form2_extwindow='1';} else {$web_form2_extwindow='0';}
-			if ($dial_method=='INBOUND_MAN') {$VU_closer_default_blended='0';}
+			if ($campaign_allow_inbound=='Y') {$campaign_allow_inbound='1';} else {$campaign_allow_inbound='0';}
+			if ($dial_method=='MANUAL' and $campaign_allow_inbound > 0) {$VU_closer_default_blended='0'; $inbound_man=1;} else {$inbound_man=0;}
 
 			if ($agent_pause_codes_active=='Y')
 				{
@@ -982,7 +984,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 
 			##### grab the inbound groups to choose from if campaign contains CLOSER
 			$VARingroups="''";
-			if ($campaign_allow_inbound == 'Y')
+			if ($campaign_allow_inbound > 0)
 				{
 				$VARingroups='';
 				$stmt="select group_id from osdial_inbound_groups where active = 'Y' and group_id IN($closer_campaigns) order by group_id limit 60;";
@@ -1336,7 +1338,7 @@ else
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 
-	if ( ($campaign_allow_inbound == 'Y') || ($campaign_leads_to_call > 0) || (ereg('Y',$no_hopper_leads_logins)) )
+	if ( ($campaign_allow_inbound > 0) || ($campaign_leads_to_call > 0) || (ereg('Y',$no_hopper_leads_logins)) )
 		{
 		### insert an entry into the user log for the login event
 		$stmt = "INSERT INTO osdial_user_log (user,event,campaign_id,event_date,event_epoch,user_group) values('$VD_login','LOGIN','$VD_campaign','$NOW_TIME','$StarTtimE','$VU_user_group')";
@@ -1500,7 +1502,7 @@ else
 				}
 
 
-			if ($campaign_allow_inbound == 'Y')
+			if ($campaign_allow_inbound > 0)
 				{
 				print "<!-- CLOSER-type campaign -->\n";
 				}
@@ -2247,7 +2249,7 @@ foreach ($forms as $form) {
 				<TD align=center VALIGN=top><font color=#1C4754><br> DISPOSITION CALL: <span id="DispoSelectPhonE"></span> &nbsp; &nbsp; &nbsp; <span id="DispoSelectHAspan"><a href="#" onclick="DispoHanguPAgaiN()">Hangup Again</a></span> &nbsp; &nbsp; &nbsp; <span id="DispoSelectMaxMin"><a href="#" onclick="DispoMinimize()">minimize</a></span><BR>
 					<span id="DispoSelectContent"> End-of-call Disposition Selection </span>
 					<input type=hidden name=DispoSelection><BR>
-					<input type=checkbox name=DispoSelectStop size=1 value="0"> <font color=#1C4754>PAUSE AGENT DIALING <BR>
+					<input type=checkbox name=DispoSelectStop size=1 value="0"> <font color=#1C4754>PAUSE <? echo (($inbound_man>0)?"INBOUND CALLS":"AGENT DIALING") ?> <BR>
 					<a href="#" onclick="DispoSelectContent_create('','ReSET');return false;">CLEAR FORM</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 
 					<a href="#" onclick="DispoSelect_submit();return false;"><b>SUBMIT</b></a>
 					<BR><BR>

@@ -86,6 +86,7 @@
 # 80713-0624 - Added vicidial_list_last_local_call_time field
 #
 # 090519-2224 - Added in INBOUND_MAN
+# 090520-1619 - Rewrote INBOUND_MAN so it doesn't need a different dial method.
 
 
 ### begin parsing run-time options ###
@@ -745,7 +746,7 @@ while($one_day_interval > 0)
 
 			if ( ($DBIPold_trunk_shortage[$user_CIPct] > $DBIPtrunk_shortage[$user_CIPct]) || ($DBIPold_trunk_shortage[$user_CIPct] < $DBIPtrunk_shortage[$user_CIPct]) )
 				{
-				if ( ($DBIPadlevel[$user_CIPct] < 1) || ($DBIPdial_method[$user_CIPct] =~ /MANUAL|INBOUND_MAN/) )
+				if ( ($DBIPadlevel[$user_CIPct] < 1) || ($DBIPdial_method[$user_CIPct] =~ /MANUAL/) )
 					{
 					$event_string="Manual Dial Override for Shortage |$DBIPadlevel[$user_CIPct]|$DBIPtrunk_shortage[$user_CIPct]|";
 					&event_logger;
@@ -769,7 +770,7 @@ while($one_day_interval > 0)
 		$user_CIPct = 0;
 		foreach(@DBIPcampaign)
 			{
-			if ($DBIPdial_method[$user_CIPct] =~ /MANUAL|INBOUND_MAN/)
+			if ($DBIPdial_method[$user_CIPct] =~ /MANUAL/)
 				{
 				$event_string="$DBIPcampaign[$user_CIPct] $DBIPaddress[$user_CIPct]: MANUAL DIAL CAMPAIGN, NO DIALING";
 				&event_logger;
