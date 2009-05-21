@@ -1135,25 +1135,29 @@ if ($ADD==31)
 
 		echo "<tr bgcolor=#C1D6DF><td align=right>Manual Dial List ID: </td><td align=left><input type=text name=manual_dial_list_id size=15 maxlength=12 value=\"$manual_dial_list_id\">$NWB#osdial_campaigns-manual_dial_list_id$NWE</td></tr>\n";
 
-		if ($campaign_allow_inbound == 'Y')
-			{
-			echo "<tr bgcolor=#C1D6DF><td align=right>Allowed Inbound Groups: <BR>";
-			echo " $NWB#osdial_campaigns-closer_campaigns$NWE</td><td align=left>\n";
-			echo "$groups_list";
-			echo "</td></tr>\n";
-			}
+		if ($campaign_allow_inbound == 'Y') {
+            $disp_allow_inbound = "visibility:visible;";
+        } else {
+            $disp_allow_inbound = "visibility:collapse;";
+        }
+		echo "<tr style=\"$disp_allow_inbound\" bgcolor=#C1D6DF><td align=right>Allowed Inbound Groups: <BR>";
+		echo " $NWB#osdial_campaigns-closer_campaigns$NWE</td><td align=left>\n";
+		echo "$groups_list";
+		echo "</td></tr>\n";
 
 		echo "<tr bgcolor=#C1D6DF><td align=right>Default Transfer Group: </td><td align=left><select size=1 name=default_xfer_group>";
 		echo "$Xgroups_menu";
 		echo "</select>$NWB#osdial_campaigns-default_xfer_group$NWE</td></tr>\n";
 
-		if ($allow_closers == 'Y')
-			{
-			echo "<tr bgcolor=#C1D6DF><td align=right>Allowed Transfer Groups: <BR>";
-			echo " $NWB#osdial_campaigns-xfer_groups$NWE</td><td align=left>\n";
-			echo "$XFERgroups_list";
-			echo "</td></tr>\n";
-			}
+		if ($allow_closers == 'Y') {
+            $disp_allow_closers = "visibility:visible;";
+        } else {
+            $disp_allow_closers = "visibility:collapse;";
+        }
+		echo "<tr style=\"$disp_allow_closers\"bgcolor=#C1D6DF><td align=right>Allowed Transfer Groups: <BR>";
+		echo " $NWB#osdial_campaigns-xfer_groups$NWE</td><td align=left>\n";
+		echo "$XFERgroups_list";
+		echo "</td></tr>\n";
 
 		echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 		echo "</TABLE></center></FORM>\n";
