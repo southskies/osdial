@@ -69,8 +69,9 @@ start() {
 		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-dialer" -o -f "/opt/osdial/.osdial-install-dialer" -o -f "/opt/osdial/.osdial-live" ]; then
 			dialog --clear --timeout $BINTIMEOUT --backtitle "OSDial - The OpenSource Dialer" --title "Free VoIP Trial" \
 				--form "\n                You may optionally contact\n      Call Center Service Group at 800-221-0251 (opt 2)\n   for a free trial with Binfone, a premier VoIP provider.\n\n        If you have an existing Binfone IAX extension,\n          you may also enter those credentials here.\n \n \n " 20 65 2 \
-				"Binfone User/Ext#:" 1 15 "$BINUSER" 1 35 7 6 \
-				"Binfone Password:" 2 15 "$BINPASS" 2 35 9 8 2> $TEMP
+			"Binfone User/Ext#:" 1 15 "$BINUSER" 1 35 7 6 \
+			"Binfone Password:" 2 15 "$BINPASS" 2 35 9 8 2> $TEMP
+			if [ "$?" = "0" ]; then
 			{
 				set `cat $TEMP`
 				BINUSER=$1
@@ -162,12 +163,14 @@ start() {
 
 	if [ -f /etc/openvpn/osdial.up ]; then
 		HST=`/bin/hostname -s`
-		if [ "$HST" = "osdial" -o "$HST" = "osdial-live" -o "$HST" = "osdial-ccsg" ]; then
-			echo "osdial" > /etc/openvpn/osdial.up
-			echo "osdial1234" >> /etc/openvpn/osdial.up
-		else
-			echo "${HST}" > /etc/openvpn/osdial.up
-			echo "0o1s2d3i4a5l6${HST}6l5a4i3d2s1o0" >> /etc/openvpn/osdial.up
+		if [ "$HST" = "osdial" -o "$HST" = "osdial-live" -o "$HST" = "osdial-ccsg" -o "$HST" = "osd" -o -z "$HST" ]; then
+			UUID=`/usr/bin/uuidgen | awk -F- '{ print $1 }'`
+			HST="osdial-${UUID}"
+		fi
+		echo "${HST}" > /etc/openvpn/osdial.up
+		echo "0o1s2d3i4a5l6${HST}6l5a4i3d2s1o0" >> /etc/openvpn/osdial.up
+		if [ -f /var/run/openvpn/osdial.pid ]; then
+			/sbin/service openvpn restart > /dev/null 2>&1
 		fi
 	fi
 
