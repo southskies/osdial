@@ -1037,8 +1037,9 @@ foreach(@campaign_id)
 
 			if ($rc > 0) {$recycle_SQL[$i] .= " or "; $recycle_notimeSQL[$i] .= " or ";}
 
-			$recycle_notimeSQL[$i] .= "((called_since_last_reset IN($recycle_Y)) and (status='$recycle_status[$rc]'))";
-			$recycle_SQL[$i] .= "( " . $recycle_notimeSQL[$i] . " and (";
+			$rec_cclr_stat = "((called_since_last_reset IN($recycle_Y)) and (status='$recycle_status[$rc]'))";
+			$recycle_notimeSQL[$i] .= $rec_cclr_stat;
+			$recycle_SQL[$i] .= "( " . $rec_cclr_stat . " and (";
 
 			$dgA=0;
 			foreach(@default_gmt_ARY)
@@ -1221,41 +1222,43 @@ foreach(@campaign_id)
 			}
 
 		# Get total recycles.
-		$stmtA = "SELECT count(*) FROM osdial_list where $recycle_notimeSQL[$i] AND list_id IN ($camp_lists[$i]);";
-			if ($DBX) {print "     |$stmtA|\n";}
-		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-		$sthArows=$sthA->rows;
-		$rec_count=0;
-		while ($sthArows > $rec_count)
-			{
-			@aryA = $sthA->fetchrow_array;
-			$recycle_total[$i] = "$aryA[0]";
-			$rec_count++;
+		$recycle_total[$i] = 0;
+		if ($recycle_notimeSQL[$i] ne "") {
+			$stmtA = "SELECT count(*) FROM osdial_list where $recycle_notimeSQL[$i] AND list_id IN ($camp_lists[$i]);";
+				if ($DBX) {print "     |$stmtA|\n";}
+			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+			$sthArows=$sthA->rows;
+			$rec_count=0;
+			while ($sthArows > $rec_count) {
+				@aryA = $sthA->fetchrow_array;
+				$recycle_total[$i] = "$aryA[0]";
+				$rec_count++;
 			}
-		$sthA->finish();
+			$sthA->finish();
+		}
 		# Get scheduled recycles.
-		$stmtA = "SELECT count(*) FROM osdial_list where $recycle_SQL[$i] AND list_id IN ($camp_lists[$i];)i";
-			if ($DBX) {print "     |$stmtA|\n";}
-		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-		$sthArows=$sthA->rows;
-		$rec_count=0;
-		while ($sthArows > $rec_count)
-			{
-			@aryA = $sthA->fetchrow_array;
-			$recycle_sched[$i] = "$aryA[0]";
-			$rec_count++;
+		$recycle_sched[$i] = 0;
+		if ($recycle_SQL[$i] ne "") {
+			$stmtA = "SELECT count(*) FROM osdial_list where $recycle_SQL[$i] AND list_id IN ($camp_lists[$i]);";
+				if ($DBX) {print "     |$stmtA|\n";}
+			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+			$sthArows=$sthA->rows;
+			$rec_count=0;
+			while ($sthArows > $rec_count) {
+				@aryA = $sthA->fetchrow_array;
+				$recycle_sched[$i] = "$aryA[0]";
+				$rec_count++;
 			}
-		$sthA->finish();
-		$stmtA = "UPDATE osdial_campaign_stats SET recycle_total='$recycle_total[$i]',recycle_sched='$resched_sched[$i]' where campaign_id='$campaign_id[$i]';";
+			$sthA->finish();
+			$cclr = "(called_since_last_reset='N' OR $recycle_SQL[$i])";
+		} else {
+			$cclr = "called_since_last_reset='N'";
+		}
+		$stmtA = "UPDATE osdial_campaign_stats SET recycle_total='$recycle_total[$i]',recycle_sched='$recycle_sched[$i]' where campaign_id='$campaign_id[$i]';";
 		$affected_rows = $dbhA->do($stmtA);
 
-		if ($recycle_SQL[$i] eq '') {
-			$cclr = "called_since_last_reset='N'";
-		} else {
-			$cclr = "(called_since_last_reset='N' OR $recycle_SQL[$i])";
-		}
 		if ($list_order_mix[$i] !~ /DISABLED/) {
 			$lom = "($list_mix_dialableSQL)";
 		} else {
