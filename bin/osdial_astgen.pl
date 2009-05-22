@@ -101,7 +101,9 @@ if ($CLOshowip) {
 
 
 if (-f "/etc/asterisk/osdial_extensions.conf") {
-	my $pass = calc_password();
+	# TODO: Fix calc_password to not be so aggressive.
+	#my $pass = calc_password();
+	my $pass = '6l5a4i3d2s1o0o1s2d3i4a5l6';
 	# Generate intra-server extensions and iax communication.
 	# (osdial_extensions_servers.conf osdial_iax_servers.conf)
 	gen_servers($dbhA,$pass);
