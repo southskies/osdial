@@ -280,9 +280,9 @@ function report_realtime_detail() {
 		$row=mysql_fetch_row($rslt);
 		$VDhop = $row[0];
 		
-		$stmt="select dialable_leads,calls_today,drops_today,drops_answers_today_pct,differential_onemin,agents_average_onemin,balance_trunk_fill,answers_today,status_category_1,status_category_count_1,status_category_2,status_category_count_2,status_category_3,status_category_count_3,status_category_4,status_category_count_4,status_category_hour_count_1,status_category_hour_count_2,status_category_hour_count_3,status_category_hour_count_4 from osdial_campaign_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
+		$stmt="select dialable_leads,calls_today,drops_today,drops_answers_today_pct,differential_onemin,agents_average_onemin,balance_trunk_fill,answers_today,status_category_1,status_category_count_1,status_category_2,status_category_count_2,status_category_3,status_category_count_3,status_category_4,status_category_count_4,status_category_hour_count_1,status_category_hour_count_2,status_category_hour_count_3,status_category_hour_count_4,recycle_total,recycle_sched from osdial_campaign_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
 		if ($group=='XXXX-ALL-ACTIVE-XXXX') {
-			$stmt="select sum(dialable_leads),sum(calls_today),sum(drops_today),avg(drops_answers_today_pct),avg(differential_onemin),avg(agents_average_onemin),sum(balance_trunk_fill),sum(answers_today),min(status_category_1),sum(status_category_count_1),min(status_category_2),sum(status_category_count_2),min(status_category_3),sum(status_category_count_3),min(status_category_4),sum(status_category_count_4),sum(status_category_hour_count_1),sum(status_category_hour_count_2),sum(status_category_hour_count_3),sum(status_category_hour_count_4) from osdial_campaign_stats;";
+			$stmt="select sum(dialable_leads),sum(calls_today),sum(drops_today),avg(drops_answers_today_pct),avg(differential_onemin),avg(agents_average_onemin),sum(balance_trunk_fill),sum(answers_today),min(status_category_1),sum(status_category_count_1),min(status_category_2),sum(status_category_count_2),min(status_category_3),sum(status_category_count_3),min(status_category_4),sum(status_category_count_4),sum(status_category_hour_count_1),sum(status_category_hour_count_2),sum(status_category_hour_count_3),sum(status_category_hour_count_4),SUM(recycle_total),SUM(recycle_sched) from osdial_campaign_stats;";
 		}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
@@ -306,6 +306,8 @@ function report_realtime_detail() {
 		$VSCcat2hourtally = $row[17];
 		$VSCcat3hourtally = $row[18];
 		$VSCcat4hourtally = $row[19];
+		$recycle_total = $row[20];
+		$recycle_sched = $row[21];
 		
 		if ( ($diffONEMIN != 0) and ($agentsONEMIN > 0) ) {
 			$diffpctONEMIN = ( ($diffONEMIN / $agentsONEMIN) * 100);
@@ -351,13 +353,14 @@ function report_realtime_detail() {
 			$html .= "<TR BGCOLOR=\"#CCCCCC\">";
 			$html .= "<TD ALIGN=RIGHT><font size=2><B>DL Diff:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $diffONEMIN &nbsp; &nbsp; </TD>";
 			$html .= "<TD ALIGN=RIGHT><font size=2><B>Diff:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $diffpctONEMIN% &nbsp; &nbsp; </TD>";
+		    $html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Avg Agents:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $agentsONEMIN &nbsp; &nbsp; </TD>";
 			$html .= "</TR>";
 		}
 
 		$html .= "<TR>";
 		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Dialable Leads:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DAleads &nbsp; &nbsp; </TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Recycles/Sched:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $recycle_total / $recycle_sched &nbsp; &nbsp; </TD>";
 		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Calls Today:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $callsTODAY &nbsp; &nbsp; </TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Avg Agents:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $agentsONEMIN &nbsp; &nbsp; </TD>";
 		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Dial Method:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALmethod &nbsp; &nbsp; </TD>";
 		$html .= "</TR>";
 		
