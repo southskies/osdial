@@ -72,12 +72,11 @@ start() {
 			"Binfone User/Ext#:" 1 15 "$BINUSER" 1 35 7 6 \
 			"Binfone Password:" 2 15 "$BINPASS" 2 35 9 8 2> $TEMP
 			if [ "$?" = "0" ]; then
-			{
 				set `cat $TEMP`
 				BINUSER=$1
 				BINPASS=$2
 				clear
-			}
+			fi
 			if [ "$BINUSER" != "$ORIG_BINUSER" -a "$BINUSER" != "" ]; then
 				/usr/bin/perl -pi -e "s|$ORIG_BINUSER|$BINUSER|" /etc/asterisk/osdial_iax_trunks.conf
 				/usr/bin/perl -pi -e "s|$ORIG_BINPASS|$BINPASS|" /etc/asterisk/osdial_iax_trunks.conf
