@@ -189,8 +189,6 @@ if ($non_latin < 1)	{
 	
 	### ALPHA-NUMERIC ONLY ###
 	$user_start = ereg_replace("[^0-9a-zA-Z]","",$user_start);
-	$PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);
-	$PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
 	$script_id = ereg_replace("[^0-9a-zA-Z]","",$script_id);
 	$submit = ereg_replace("[^0-9a-zA-Z]","",$submit);
 	$campaign_cid = ereg_replace("[^0-9a-zA-Z]","",$campaign_cid);
@@ -264,8 +262,8 @@ if ($non_latin < 1)	{
 	$pass = ereg_replace("[^-\_0-9a-zA-Z]","",$pass);
 	$phone_login = ereg_replace("[^-\_0-9a-zA-Z]","",$phone_login);
 	$phone_pass = ereg_replace("[^-\_0-9a-zA-Z]","",$phone_pass);
-	$PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
-	$PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);
+	$PHP_AUTH_PW = ereg_replace("[^-\_0-9a-zA-Z]","",$PHP_AUTH_PW);
+	$PHP_AUTH_USER = ereg_replace("[^-\_0-9a-zA-Z]","",$PHP_AUTH_USER);
 	$protocol = ereg_replace("[^-\_0-9a-zA-Z]","",$protocol);
 	$server_id = ereg_replace("[^-\_0-9a-zA-Z]","",$server_id);
 	$stage = ereg_replace("[^-\_0-9a-zA-Z]","",$stage);
