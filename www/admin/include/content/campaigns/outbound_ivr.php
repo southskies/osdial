@@ -21,7 +21,7 @@
 #
 
 if ($campaign_id != '') {
-    $oivr = get_first_record($link, 'osdial_outbound_ivr', '*', "campaign_id='" . $campaign_id . "'");
+    $oivr = get_first_record($link, 'osdial_ivr', '*', "campaign_id='" . $campaign_id . "'");
     if ($oivr['id'] != '') {
         $oivr_id = $oivr['id'];
     } else {
@@ -39,13 +39,13 @@ if ($ADD == "1menu") {
     if ($LOGmodify_campaigns == 1) {
         echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
         $oivr_id = 0;
-        $oivr = get_first_record($link, 'osdial_outbound_ivr', '*', "campaign_id='" . $campaign_id . "'");
+        $oivr = get_first_record($link, 'osdial_ivr', '*', "campaign_id='" . $campaign_id . "'");
         if ($oivr['campaign_id'] != "") {
             $SUB = "2keys";
             $ADD = "3menu"; # go to campaign modification form below
         } else {
             echo "<br><B><font color=navy>IVR CREATED</font></B>\n";
-            $stmt = "INSERT INTO osdial_outbound_ivr (campaign_id) VALUES ('$campaign_id');";
+            $stmt = "INSERT INTO osdial_ivr (campaign_id) VALUES ('$campaign_id');";
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -53,7 +53,7 @@ if ($ADD == "1menu") {
                 fwrite($fp, "$date|CREATE OIVR |$PHP_AUTH_USER|$ip|$stmt|\n");
                 fclose($fp);
             }
-            $oivr = get_first_record($link, 'osdial_outbound_ivr', '*', "campaign_id='" . $campaign_id . "'");
+            $oivr = get_first_record($link, 'osdial_ivr', '*', "campaign_id='" . $campaign_id . "'");
             $id = $oivr['id'];
             $oivr_id = $oivr['id'];
             $SUB = "2keys";
@@ -111,7 +111,7 @@ if ($ADD == "1keys") {
             $ADD = "2keys";
         } else {
             echo "<br><B><font color=navy>KEY CREATED: $oivr_id - $oivr_opt_action - $oivr_opt_keypress</font></B>\n";
-            $stmt = "INSERT INTO osdial_outbound_ivr_options (outbound_ivr_id,parent_id,keypress,action,action_data) VALUES ('$oivr_id','$oivr_opt_parent_id','$oivr_opt_keypress','$oivr_opt_action','$oivr_opt_action_data');";
+            $stmt = "INSERT INTO osdial_ivr_options (ivr_id,parent_id,keypress,action,action_data) VALUES ('$oivr_id','$oivr_opt_parent_id','$oivr_opt_keypress','$oivr_opt_action','$oivr_opt_action_data');";
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -405,7 +405,7 @@ if ($ADD == "4menu") {
             }
 
             echo "<br><B><font color=navy>IVR MODIFIED: $oivr_id - $campaign_id - $oivr_name</font></B>\n";
-            $stmt = "UPDATE osdial_outbound_ivr SET name='$oivr_name',announcement='$oivr_announcement',repeat_loops='$oivr_repeat_loops',wait_loops='$oivr_wait_loops',wait_timeout='$oivr_wait_timeout',answered_status='$oivr_answered_status',virtual_agents='$oivr_virtual_agents',status='$oivr_status' where id='$oivr_id';";
+            $stmt = "UPDATE osdial_ivr SET name='$oivr_name',announcement='$oivr_announcement',repeat_loops='$oivr_repeat_loops',wait_loops='$oivr_wait_loops',wait_timeout='$oivr_wait_timeout',answered_status='$oivr_answered_status',virtual_agents='$oivr_virtual_agents',status='$oivr_status' where id='$oivr_id';";
             $rslt = mysql_query($stmt, $link);
 
             $svr = get_first_record($link, 'servers', 'server_ip',"");
@@ -427,7 +427,7 @@ if ($ADD == "4menu") {
                     }
                     if ($ufnd == 0) {
                         $stmt = "INSERT INTO osdial_remote_agents (user_start,conf_exten,server_ip,campaign_id) VALUES ";
-                        $conf = '82' . sprintf('%03d',$oivr_id) . sprintf('%03d',$unum);
+                        $conf = '487' . sprintf('%03d',$oivr_id) . sprintf('%03d',$unum);
                         $stmt .= "('$usr','$conf','$server_ip','$campaign_id');";
                         $rslt = mysql_query($stmt, $link);
                         $icnt++;
@@ -503,7 +503,7 @@ if ($ADD == "4keys") {
         } else {
             echo "<br><B><font color=navy>KEY MODIFIED: $oivr_opt_id - $oivr_opt_action</font></B>\n";
             $field_name = strtoupper($field_name);
-            $stmt = "UPDATE osdial_outbound_ivr_options SET keypress='$oivr_opt_keypress',action='$oivr_opt_action',action_data='$oivr_opt_action_data',outbound_ivr_id='$oivr_id',parent_id='$oivr_opt_parent_id' where id='$oivr_opt_id';";
+            $stmt = "UPDATE osdial_ivr_options SET keypress='$oivr_opt_keypress',action='$oivr_opt_action',action_data='$oivr_opt_action_data',ivr_id='$oivr_id',parent_id='$oivr_opt_parent_id' where id='$oivr_opt_id';";
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -532,7 +532,7 @@ if ($ADD == "6keys") {
             echo "<br><font color=red>KEYPRESS NOT DELETED - Could not find field id!\n";
         } else {
             echo "<br><B><font color=navy>KEYPRESS DELETED: $oivr_opt_id - $oivr_opt_action</font></B>\n";
-            $stmt = "DELETE FROM osdial_outbound_ivr_options WHERE id='$oivr_opt_id';";
+            $stmt = "DELETE FROM osdial_ivr_options WHERE id='$oivr_opt_id';";
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -559,7 +559,7 @@ if ($ADD == "3menu") {
     echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
     echo "<center><br><font color=navy size=+1>OUTBOUND IVR</font><br><br>\n";
 
-    $oivr = get_first_record($link, 'osdial_outbound_ivr', '*', "campaign_id='" . $campaign_id . "'");
+    $oivr = get_first_record($link, 'osdial_ivr', '*', "campaign_id='" . $campaign_id . "'");
 
     echo '<form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
     echo '<input type="hidden" name="ADD" value="4menu">';
@@ -650,7 +650,7 @@ if ($ADD == "3menu") {
     echo "      <td align=center><font color=white size=1>DISPOSITION</font></td>\n";
     echo "      <td align=center><font color=white size=1>&nbsp;</font></td>\n";
     echo "  </tr>\n";
-    $oivr_opts = get_krh($link, 'osdial_outbound_ivr_options', '*', 'keypress', "outbound_ivr_id='" . $oivr['id'] . "' AND parent_id='0'");
+    $oivr_opts = get_krh($link, 'osdial_ivr_options', '*', 'keypress', "ivr_id='" . $oivr['id'] . "' AND parent_id='0'");
     $cnt = 0;
     foreach ($oivr_opts as $opt) {
         $ad  = explode('#:#',$opt['action_data']);
@@ -682,7 +682,7 @@ if ($ADD == "3menu") {
     echo "      <td bgcolor=#B1C6CB align=center>";
     echo '<select name="oivr_opt_keypress">';
     echo ' <option value="" selected> - SELECT DIGIT -</option>';
-    $keys = get_krh($link, 'osdial_outbound_ivr_options', 'keypress','',"outbound_ivr_id='" . $oivr_id . "' AND parent_id='" . $oivr_opt_parent_id . "'");
+    $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $oivr_opt_parent_id . "'");
     $tkey = '';
     foreach ($keys as $key) {
         $tkey .= $key['keypress'];
@@ -724,7 +724,7 @@ if ($ADD == "3menu") {
 # ADD=3keys modify a key
 ######################
 if ($ADD == "3keys") {
-    $opt = get_first_record($link, 'osdial_outbound_ivr_options', '*', "id='" . $oivr_opt_id . "'");
+    $opt = get_first_record($link, 'osdial_ivr_options', '*', "id='" . $oivr_opt_id . "'");
     echo "<TABLE align=center><TR><TD>\n";
     echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
     echo "<center><br><font color=navy size=+1>NEW KEYPRESS ACTION</font><br><br>\n";
@@ -747,7 +747,7 @@ if ($ADD == "3keys") {
     echo "      <td bgcolor=#CBDCE0 align=left>";
     echo '<select name="oivr_opt_keypress">';
     echo ' <option value="' . $opt['keypress'] . '" selected> - ' . $opt['keypress'] . ' -</option>';
-    $keys = get_krh($link, 'osdial_outbound_ivr_options', 'keypress','',"outbound_ivr_id='" . $oivr_id . "' AND parent_id='" . $opt['parent_id'] . "'");
+    $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $opt['parent_id'] . "'");
     $tkey = '';
     foreach ($keys as $key) {
         $tkey .= $key['keypress'];
