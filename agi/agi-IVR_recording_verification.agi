@@ -27,7 +27,7 @@
 # for a company ID and/or a customer phone number, then it will play through the 
 # listed prompts asking for a single digit press (i.e. 1 for a yes or a 3 for a 
 # no, hash/pound/star/zero/0 are not accepted only 1-9 is valid for these steps).
-# All data for these calls will be logged to the osdial_ivr table as well as 
+# All data for these calls will be logged to the osdial_verification_ivr table as well as 
 # optionally to a log file  in the standard osdial log file directory 
 # and/or STDERR output on the asterisk process. This script uses the 
 # /etc/osdial.conf file for database connection settings, logging data and
@@ -241,7 +241,7 @@ if ($extension =~ /^832\d\d\*|^833\d\d\*/)
 
 
 ### table structure for data ###
-# CREATE TABLE osdial_ivr (
+# CREATE TABLE osdial_verification_ivr (
 #	ivr_id INT(9) UNSIGNED AUTO_INCREMENT PRIMARY KEY NOT NULL,
 #	entry_time DATETIME,
 #	length_in_sec SMALLINT(5) UNSIGNED default '0',
@@ -278,8 +278,8 @@ if ($extension =~ /^832\d\d\*|^833\d\d\*/)
 #	index (entry_time)
 #	);
 
-### insert record into osdial_ivr table ###
-$stmtA = "INSERT INTO osdial_ivr (entry_time,length_in_sec,inbound_number,phone_number,lead_id,campaign_id,product_code,user) values('$now_date','0','$inbound_number','$phone_number','$lead_id','$campaign_id','$product_code','$user');";
+### insert record into osdial_verification_ivr table ###
+$stmtA = "INSERT INTO osdial_verification_ivr (entry_time,length_in_sec,inbound_number,phone_number,lead_id,campaign_id,product_code,user) values('$now_date','0','$inbound_number','$phone_number','$lead_id','$campaign_id','$product_code','$user');";
 $affected_rows = $dbhA->do($stmtA);
 $cbc=0;
 $stmtA = "select LAST_INSERT_ID() LIMIT 1;";
@@ -318,7 +318,7 @@ if ($company_ID_ask =~ /Y/)
   $company_ID = $totalDTMF;
 &get_time_now;
   $length_in_sec = ($now_date_epoch - $start_epoch);
-$stmtA = "UPDATE osdial_ivr SET company_id='$company_ID', length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
+$stmtA = "UPDATE osdial_verification_ivr SET company_id='$company_ID', length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
 	if ($AGILOG) {$agi_string = "IVR- $ivr_id     company: $company_ID   length: $length_in_sec";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
 }
@@ -331,7 +331,7 @@ if ($user_ID_ask =~ /Y/)
   $user_ID = $totalDTMF;
 &get_time_now;
   $length_in_sec = ($now_date_epoch - $start_epoch);
-$stmtA = "UPDATE osdial_ivr SET user='$user_ID', length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
+$stmtA = "UPDATE osdial_verification_ivr SET user='$user_ID', length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
 	if ($AGILOG) {$agi_string = "IVR- $ivr_id     user: $user_ID   length: $length_in_sec";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
 }
@@ -344,7 +344,7 @@ if ($cust_phone_ask =~ /Y/)
   $phone_number = $totalDTMF;
 &get_time_now;
   $length_in_sec = ($now_date_epoch - $start_epoch);
-$stmtA = "UPDATE osdial_ivr SET phone_number='$phone_number', length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
+$stmtA = "UPDATE osdial_verification_ivr SET phone_number='$phone_number', length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
 	if ($AGILOG) {$agi_string = "IVR- $ivr_id     phone: $phone_number   length: $length_in_sec";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
 }
@@ -375,7 +375,7 @@ while ($sthArows > $cbc)
 	}
 $sthA->finish();
 
-$stmtA = "UPDATE osdial_ivr SET recording_id='$recording_id', recording_filename='$filename' where ivr_id='$ivr_id';";
+$stmtA = "UPDATE osdial_verification_ivr SET recording_id='$recording_id', recording_filename='$filename' where ivr_id='$ivr_id';";
 	if ($AGILOG) {$agi_string = "RECORDING- $recording_id $ivr_id START    filename: $filename";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
 
@@ -418,7 +418,7 @@ while($prompts_count >= $i)
 	&get_time_now;
 	  $length_in_sec = ($now_date_epoch - $start_epoch);
 
-	$stmtA = "UPDATE osdial_ivr SET $prompt_name='$prompt', $response_name='$response', length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
+	$stmtA = "UPDATE osdial_verification_ivr SET $prompt_name='$prompt', $response_name='$response', length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
 		if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 	$affected_rows = $dbhA->do($stmtA);
 	if ($AGILOG) {$agi_string = "IVR- $ivr_id $i   prompt: $prompt - $wait_sec   response: $response   length: $length_in_sec";   &agi_output;}
@@ -434,7 +434,7 @@ while($prompts_count >= $i)
 	&get_time_now;
 	  $length_in_sec = ($now_date_epoch - $start_epoch);
 
-	$stmtA = "UPDATE osdial_ivr SET length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
+	$stmtA = "UPDATE osdial_verification_ivr SET length_in_sec='$length_in_sec' where ivr_id='$ivr_id';";
 		if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 	$affected_rows = $dbhA->do($stmtA);
 	if ($AGILOG) {$agi_string = "IVR- $ivr_id END   prompt: $last_prompt   length: $length_in_sec";   &agi_output;}
