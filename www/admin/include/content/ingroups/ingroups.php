@@ -470,7 +470,32 @@ if ($ADD==3111)
 
 	echo "</table><br><br>\n";
 
-	echo "<a href=\"./AST_CLOSERstats.php?group=$group_id\">Click here to see a report for this inbound group</a><BR><BR>\n";
+	echo "<br><font color=navy size=+1>CAMPAIGNS ASSIGNED TO THIS INBOUND GROUP</font<br><br>\n";
+	echo "<TABLE width=400 cellspacing=3>\n";
+	echo "<tr><td align=center><font color=navy>CAMPAIGN_ID</font></td><td align=center><font color=navy>NAME</font></td><td align=center><font color=navy>ACTIVE</font></td></tr>\n";
+
+		$stmt="SELECT campaign_id,campaign_name,active from osdial_campaigns where closer_campaigns LIKE '% $group_id %'";
+		$rsltx=mysql_query($stmt, $link);
+		$camps_to_print = mysql_num_rows($rsltx);
+
+		$o=0;
+		while ($camps_to_print > $o) {
+			$rowx=mysql_fetch_row($rsltx);
+			$o++;
+
+		if (eregi("1$|3$|5$|7$|9$", $o))
+			{$bgcolor='bgcolor="#CBDCE0"';} 
+		else
+			{$bgcolor='bgcolor="#C1D6DB"';}
+
+		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=34&campaign_id=$rowx[0]\">$rowx[0]</a></td><td><font size=1>$rowx[1]</td><td align=center><font size=1>$rowx[2]</td></tr>\n";
+		}
+
+	//echo "</table><br>\n";
+
+	echo "</table><br><br>\n";
+
+	#echo "<a href=\"./AST_CLOSERstats.php?group=$group_id\">Click here to see a report for this inbound group</a><BR><BR>\n";
 
 	echo "</center><br><br>\n";
 

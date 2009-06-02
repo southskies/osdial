@@ -196,10 +196,13 @@ sub ivr_menu {
 			my $submenuref = {};
 			$submenuref->{ivrid} = $menu{ivrid};
 			$submenuref->{parid} = $menu{$dkey}{id};
+			shift @aparams;
+			shift @aparams;
 			$submenuref->{announcement} = shift @aparams;
 			$submenuref->{repeat_loops} = shift @aparams;
 			$submenuref->{wait_loops} = shift @aparams;
 			$submenuref->{wait_timeout} = shift @aparams;
+			$submenuref->{answered_status} = shift @aparams;
 			$ivrloop = ivr_menu($submenuref);
 		} elsif ($menu{$dkey}{action} eq "MENU_REPEAT") {
 			$ivrloop = 1;

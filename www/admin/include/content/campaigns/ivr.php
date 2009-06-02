@@ -93,7 +93,7 @@ if ($ADD == "1keys" or $ADD == '4keys') {
 		$oi4 = ereg_replace("\n","#:#",$oi4);
 		$d_ary = array($oi1,$oi2,$oi3,$oi4);
 	} elseif ($oivr_opt_action == 'MENU') {
-		$d_ary = array($oi1,$oi2,$oi3,$oi4,$oi5,$oi6);
+		$d_ary = array($oi1,$oi2,$oi3,$oi4,$oi5,$oi6,$oi7);
 	} else {
 		$d_ary = array($oi1,$oi2,$oi3,$oi4,$oi5,$oi6,$oi7,$oi8,$oi9);
 	}
@@ -265,7 +265,7 @@ if ($ADD == "2keys") {
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>Wait for Key Timeout (ms)</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="5" maxlength="4" name="oi6" value="500"></td>';
+        echo '      <td bgcolor="#CBDCE0"><input type="text" size="5" maxlength="4" name="oi6" value="500"><input type="hidden" name="oi7" value=""></td>';
         echo "  </tr>\n";
     } elseif ($o == 'MENU_REPEAT') { 
         echo '<input type="hidden" name="oi1" value="1">';
@@ -517,8 +517,9 @@ if ($ADD == "4keys") {
         exit;
     }
     $id = $form_id;
-    $SUB = "2fields";
-    $ADD = "3menu"; # go to campaign modification form below
+    #$SUB = "2fields";
+    #$ADD = "3menu";
+    $ADD = "3keys";
 }
 
 
@@ -667,7 +668,11 @@ if ($ADD == "3menu") {
         echo "  <tr>";
         echo "      <td $bgcolor align=center>" . $opt['keypress'] . "</td>";
         echo "      <td $bgcolor align=center>" . $opt['action'] . "</td>";
-        echo "      <td $bgcolor align=center>" . $ad[1] . "</td>";
+        if ($opt['action'] == 'MENU') {
+            echo "      <td $bgcolor align=center>" . $ad[6] . "</td>";
+        } else {
+            echo "      <td $bgcolor align=center>" . $ad[1] . "</td>";
+        }
         echo "      <td $bgcolor align=center><input type=submit value=\"Edit\">  <a href=$PHP_SELF?ADD=6keys&campaign_id=" . $campaign_id . "&oivr_id=" . $oivr['id'] . "&oivr_opt_id=" . $opt['id'] . ">DELETE</a></td>\n";
         echo "  </tr>";
         echo "  </form>";
@@ -708,7 +713,7 @@ if ($ADD == "3menu") {
     echo "      <option value=\"XFER_EXTERNAL_MULTI\">Transfer to One of Multiple External Numbers</option>";
     echo "      <option value=\"XFER_AGENT\">Transfer to Agent</option>";
     echo "      <option value=\"HANGUP\">Disposition and Hangup</option>";
-    #echo "      <option value=\"MENU\"></option>";
+    echo "      <option value=\"MENU\">Sub-menu</option>";
     echo "      <option value=\"MENU_REPEAT\">Repeat the Menu (no-diposition)</option>";
     echo "      <option value=\"MENU_EXIT\">Exit from Menu (no-diposition)</option>";
     echo "      </td>\n";
@@ -727,7 +732,7 @@ if ($ADD == "3keys") {
     $opt = get_first_record($link, 'osdial_ivr_options', '*', "id='" . $oivr_opt_id . "'");
     echo "<TABLE align=center><TR><TD>\n";
     echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-    echo "<center><br><font color=navy size=+1>NEW KEYPRESS ACTION</font><br><br>\n";
+    echo "<center><br><font color=navy size=+1>MODIFY KEYPRESS ACTION</font><br><br>\n";
 
     echo '<form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
     echo '<input type="hidden" name="ADD" value="4keys">';
@@ -852,8 +857,8 @@ if ($ADD == "3keys") {
         echo '<input type="hidden" name="oi2" value="' . $ad[1] . '">';
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>Announcement Recording</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="30" maxlength="255" name="oi3" value="' . $ad[2] . '"></td>';
-    	echo '      <td bgcolor="#CBDCE0">';
+        echo '      <td bgcolor="#CBDCE0">';
+	#echo '<input type="text" size="30" maxlength="255" name="oi3" value="' . $ad[2] . '"><br />';
     	echo '          <select name="oi3">';
     	echo "              <option value=\"\"> - NONE - </option>";
     	$path = "/opt/osdial/html/ivr";
@@ -882,6 +887,19 @@ if ($ADD == "3keys") {
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>Wait for Key Timeout (ms)</td>\n";
         echo '      <td bgcolor="#CBDCE0"><input type="text" size="5" maxlength="4" name="oi6" value="' . $ad[5] . '"></td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=#CBDCE0 align=right>Answered Status:</td>\n";
+        echo '      <td bgcolor="#CBDCE0"><select name="oi7"><option value="">-NONE-</option>';
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
+        foreach ($status as $stat) {
+            $sel = '';
+            if ($stat['status'] == $ad[6]) {
+                $sel = ' selected';
+            }
+            echo "<option value=\"" . $stat['status'] . "\"" . $sel . ">" . $stat['status'] . " : " . $stat['status_name'] . "</option>";
+        }
+        echo "  </select></td>\n";
         echo "  </tr>\n";
     } elseif ($o == 'MENU_REPEAT') { 
         echo '<input type="hidden" name="oi1" value="1">';
@@ -1015,5 +1033,85 @@ if ($ADD == "3keys") {
     echo "</table>\n";
 
     echo "</form>";
+
+    if ($o == 'MENU') {
+        echo "<br /><br /><hr width=50%>\n";
+        echo "<center><font color=navy size=+1>KEYPRESS AND ACTIONS</font><br><br>\n";
+        echo "<table width=$section_width cellspacing=1 cellpadding=1>\n";
+        echo "  <tr bgcolor=$menubarcolor>\n";
+        echo "      <td align=center><font color=white size=1>KEYPRESS</font></td>\n";
+        echo "      <td align=center><font color=white size=1>ACTION</font></td>\n";
+        echo "      <td align=center><font color=white size=1>DISPOSITION</font></td>\n";
+        echo "      <td align=center><font color=white size=1>&nbsp;</font></td>\n";
+        echo "  </tr>\n";
+        $oivr_opts = get_krh($link, 'osdial_ivr_options', '*', 'keypress', "ivr_id='" . $oivr['id'] . "' AND parent_id='$oivr_opt_id'");
+        $cnt = 0;
+        foreach ($oivr_opts as $opt) {
+            $ad  = explode('#:#',$opt['action_data']);
+            if (eregi("1$|3$|5$|7$|9$",$cnt)) {
+                $bgcolor = 'bgcolor="#CBDCE0"';
+            } else {
+                $bgcolor = 'bgcolor="#C1D6DB"';
+            }
+            echo '  <form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
+            echo '  <input type="hidden" name="ADD" value="3keys">';
+            echo '  <input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
+            echo '  <input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
+            echo '  <input type="hidden" name="oivr_opt_id" value="' . $opt['id'] . '">';
+            echo "  <tr>";
+            echo "      <td $bgcolor align=center>" . $opt['keypress'] . "</td>";
+            echo "      <td $bgcolor align=center>" . $opt['action'] . "</td>";
+            echo "      <td $bgcolor align=center>" . $ad[1] . "</td>";
+            echo "      <td $bgcolor align=center><input type=submit value=\"Edit\">  <a href=$PHP_SELF?ADD=6keys&campaign_id=" . $campaign_id . "&oivr_id=" . $oivr['id'] . "&oivr_opt_id=" . $opt['id'] . ">DELETE</a></td>\n";
+            echo "  </tr>";
+            echo "  </form>";
+            $cnt++;
+        }
+        echo "  <tr><td colspan=6 bgcolor=#CBDCE0 align=center></td></tr>\n";
+        echo '  <form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
+        echo '  <input type="hidden" name="ADD" value="2keys">';
+        echo '  <input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
+        echo '  <input type="hidden" name="oivr_opt_parent_id" value="' . $oivr_opt_id . '">';
+        echo '  <input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
+        echo "  <tr>\n";
+        echo "      <td bgcolor=#B1C6CB align=center>";
+        echo '<select name="oivr_opt_keypress">';
+        echo ' <option value="" selected> - SELECT DIGIT -</option>';
+        $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr['id'] . "' AND parent_id='" . $oivr_opt_id . "'");
+        $tkey = '';
+        foreach ($keys as $key) {
+            $tkey .= $key['keypress'];
+        }
+        if ( ! preg_match('/0/', $tkey) ) { echo ' <option value="0"> - 0 -</option>'; }
+        if ( ! preg_match('/1/', $tkey) ) { echo ' <option value="1"> - 1 -</option>'; }
+        if ( ! preg_match('/2/', $tkey) ) { echo ' <option value="2"> - 2 -</option>'; }
+        if ( ! preg_match('/3/', $tkey) ) { echo ' <option value="3"> - 3 -</option>'; }
+        if ( ! preg_match('/4/', $tkey) ) { echo ' <option value="4"> - 4 -</option>'; }
+        if ( ! preg_match('/5/', $tkey) ) { echo ' <option value="5"> - 5 -</option>'; }
+        if ( ! preg_match('/6/', $tkey) ) { echo ' <option value="6"> - 6 -</option>'; }
+        if ( ! preg_match('/7/', $tkey) ) { echo ' <option value="7"> - 7 -</option>'; }
+        if ( ! preg_match('/8/', $tkey) ) { echo ' <option value="8"> - 8 -</option>'; }
+        if ( ! preg_match('/9/', $tkey) ) { echo ' <option value="9"> - 9 -</option>'; }
+        if ( ! preg_match('/\#/', $tkey) ) { echo ' <option value="#"> - # -</option>'; }
+        if ( ! preg_match('/\*/', $tkey) ) { echo ' <option value="*"> - * -</option>'; }
+        echo "</select>\n";
+        echo "</td>\n";
+        echo "      <td bgcolor=#B1C6CB align=center><select name=\"oivr_opt_action\">";
+        echo "      <option value=\"\"> - Select and Action - </option>";
+        echo "      <option value=\"PLAYFILE\">Play an Audio File</option>";
+        echo "      <option value=\"XFER_EXTERNAL\">Transfer to an External Number</option>";
+        echo "      <option value=\"XFER_EXTERNAL_MULTI\">Transfer to One of Multiple External Numbers</option>";
+        echo "      <option value=\"XFER_AGENT\">Transfer to Agent</option>";
+        echo "      <option value=\"HANGUP\">Disposition and Hangup</option>";
+        echo "      <option value=\"MENU\">Sub-menu</option>";
+        echo "      <option value=\"MENU_REPEAT\">Repeat the Menu (no-diposition)</option>";
+        echo "      <option value=\"MENU_EXIT\">Exit from Menu (no-diposition)</option>";
+        echo "      </td>\n";
+        echo "      <td bgcolor=#B1C6CB align=center></td>\n";
+        echo "      <td bgcolor=#B1C6CB align=center><input type=submit value=\"New\"></td>\n";
+        echo "  </tr>\n";
+        echo "  </form>\n";
+        echo "</table>\n";
+    }
 }
 ?>
