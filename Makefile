@@ -141,7 +141,8 @@ install-docs: .osdial.config
 	@install -p -m 755 ./agi/* $(DESTDIR)$(PATHagi)
 	@install -p -m 644 ./sounds/* $(DESTDIR)$(PATHsounds)
 	@install -p -m 644 ./extras/openvpn/* $(DESTDIR)/etc/openvpn
-	
+	@[ -d $(DESTDIR)/var/lib/mysql/osdial ] && /usr/bin/perl $(DESTDIR)$(PATHhome)/sql/upgrade_sql.pl
+
 .install-web: .install-common
 	@echo "Installing User-Interface (web) in $(DESTDIR)$(PATHweb)..."
 	@install -d -m 777 $(DESTDIR)$(PATHweb)/agent

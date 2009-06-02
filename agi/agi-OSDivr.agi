@@ -6,11 +6,6 @@
 # 
 # This is a rework of the OutboundIVR to make IVR menus both Inbound/Outbound compaitible.
 # 
-# You need to put lines similar to those below in your extensions.conf file:
-# 
-# ;OSDial Outbound IVR
-# exten => 487XXX,2,AGI(agi-OSDivr.agi,${EXTEN})
-#
 # CHANGELOG
 # 090601-1120 - Initial build
 #
@@ -176,7 +171,7 @@ sub ivr_menu {
 		$sthA->finish();
 		agi_output("+++++ ODOI VALID DIGITS : $valid_digits");
 	
-		my $dtmf = stream_and_get_dtmf($menu{announcement},1,$menu{repeat_loops},$menu{wait_loops},$menu{wait_timeout},$valid_digits);
+		my $dtmf = stream_and_get_dtmf($menu{announcement},1,$menu{repeat_loops},$menu{wait_loops},$menu{wait_timeout},$menu{timeout_action},$valid_digits);
 		agi_output("+++++ ODOI STATUS : pressed $dtmf");
 	
 		my $dkey = "key" . $dtmf;
@@ -203,6 +198,7 @@ sub ivr_menu {
 			$submenuref->{wait_loops} = shift @aparams;
 			$submenuref->{wait_timeout} = shift @aparams;
 			$submenuref->{answered_status} = shift @aparams;
+			$submenuref->{timeout_action} = shift @aparams;
 			$ivrloop = ivr_menu($submenuref);
 		} elsif ($menu{$dkey}{action} eq "MENU_REPEAT") {
 			$ivrloop = 1;
@@ -374,7 +370,7 @@ sub hangup_and_dispo {
 
 
 sub stream_and_get_dtmf {
-	my ($stream, $dcount, $rptloops, $waitloops, $waittimeout, $valid_digits) = @_;
+	my ($stream, $dcount, $rptloops, $waitloops, $waittimeout, $timeout_action, $valid_digits) = @_;
 	return -1 unless ($stream);
 	$dcount = 1 unless ($dcount);
 	$rptloops = 3 unless ($rptloops);
@@ -442,7 +438,7 @@ sub stream_and_get_dtmf {
 	if (length($total_digits) == $orig_dcount) {
 		return $total_digits;
 	} else {
-		return '';
+		return $timeout_action;
 	}
 }
 

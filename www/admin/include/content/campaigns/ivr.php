@@ -93,7 +93,7 @@ if ($ADD == "1keys" or $ADD == '4keys') {
 		$oi4 = ereg_replace("\n","#:#",$oi4);
 		$d_ary = array($oi1,$oi2,$oi3,$oi4);
 	} elseif ($oivr_opt_action == 'MENU') {
-		$d_ary = array($oi1,$oi2,$oi3,$oi4,$oi5,$oi6,$oi7);
+		$d_ary = array($oi1,$oi2,$oi3,$oi4,$oi5,$oi6,$oi7,$oi8);
 	} else {
 		$d_ary = array($oi1,$oi2,$oi3,$oi4,$oi5,$oi6,$oi7,$oi8,$oi9);
 	}
@@ -265,7 +265,7 @@ if ($ADD == "2keys") {
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>Wait for Key Timeout (ms)</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="5" maxlength="4" name="oi6" value="500"><input type="hidden" name="oi7" value=""></td>';
+        echo '      <td bgcolor="#CBDCE0"><input type="text" size="5" maxlength="4" name="oi6" value="500"><input type="hidden" name="oi7" value=""><input type="hidden" name="oi8" value=""></td>';
         echo "  </tr>\n";
     } elseif ($o == 'MENU_REPEAT') { 
         echo '<input type="hidden" name="oi1" value="1">';
@@ -404,8 +404,12 @@ if ($ADD == "4menu") {
                 $oivr_announcement = $recfilename;
             }
 
+            if ($status == 'ACTIVE' and $oivr_virtual_agents == '') {
+                $oivr_virtual_agents='1';
+            }
+
             echo "<br><B><font color=navy>IVR MODIFIED: $oivr_id - $campaign_id - $oivr_name</font></B>\n";
-            $stmt = "UPDATE osdial_ivr SET name='$oivr_name',announcement='$oivr_announcement',repeat_loops='$oivr_repeat_loops',wait_loops='$oivr_wait_loops',wait_timeout='$oivr_wait_timeout',answered_status='$oivr_answered_status',virtual_agents='$oivr_virtual_agents',status='$oivr_status' where id='$oivr_id';";
+            $stmt = "UPDATE osdial_ivr SET name='$oivr_name',announcement='$oivr_announcement',repeat_loops='$oivr_repeat_loops',wait_loops='$oivr_wait_loops',wait_timeout='$oivr_wait_timeout',answered_status='$oivr_answered_status',virtual_agents='$oivr_virtual_agents',status='$oivr_status',timeout_action='$oivr_timeout_action' where id='$oivr_id';";
             $rslt = mysql_query($stmt, $link);
 
             $svr = get_first_record($link, 'servers', 'server_ip',"");
@@ -558,7 +562,7 @@ if ($ADD == "6keys") {
 if ($ADD == "3menu") {
     echo "<TABLE align=center><TR><TD>\n";
     echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-    echo "<center><br><font color=navy size=+1>OUTBOUND IVR</font><br><br>\n";
+    echo "<center><br><font color=navy size=+1>INBOUND/OUTBOUND IVR</font><br><br>\n";
 
     $oivr = get_first_record($link, 'osdial_ivr', '*', "campaign_id='" . $campaign_id . "'");
 
@@ -619,7 +623,7 @@ if ($ADD == "3menu") {
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=#CBDCE0 align=right>Virtual Agents</td>\n";
-    echo '      <td bgcolor="#CBDCE0"><input type="text" size="4" maxlength="3" name="oivr_virtual_agents" value="' . $oivr['virtual_agents'] . '"></td>';
+    echo '      <td bgcolor="#CBDCE0"><input type="text" size="4" maxlength="3" name="oivr_virtual_agents" value="' . $oivr['virtual_agents'] . '"> <font size=-1>Set to 10+ if Inbound.</font></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=#CBDCE0 align=right>Status</td>\n";
@@ -634,6 +638,31 @@ if ($ADD == "3menu") {
     echo "              <option value=\"INACTIVE\"$isel>INACTIVE</option>";
     echo '          </select>';
     echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "      <td bgcolor=#CBDCE0 align=right>Timeout Action</td>\n";
+    echo '      <td bgcolor="#CBDCE0">';
+    echo '         <select name="oivr_timeout_action">';
+    echo "              <option value=\"\"> - NONE - </option>";
+    $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $oivr_opt_parent_id . "'");
+    $tkey = '';
+    foreach ($keys as $key) {
+        $tkey .= $key['keypress'];
+    }
+    if ( preg_match('/0/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '0') $sel=' selected'; echo ' <option value="0"' . $sel . '> - 0 -</option>'; }
+    if ( preg_match('/1/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '1') $sel=' selected'; echo ' <option value="1"' . $sel . '> - 1 -</option>'; }
+    if ( preg_match('/2/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '2') $sel=' selected'; echo ' <option value="2"' . $sel . '> - 2 -</option>'; }
+    if ( preg_match('/3/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '3') $sel=' selected'; echo ' <option value="3"' . $sel . '> - 3 -</option>'; }
+    if ( preg_match('/4/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '4') $sel=' selected'; echo ' <option value="4"' . $sel . '> - 4 -</option>'; }
+    if ( preg_match('/5/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '5') $sel=' selected'; echo ' <option value="5"' . $sel . '> - 5 -</option>'; }
+    if ( preg_match('/6/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '6') $sel=' selected'; echo ' <option value="6"' . $sel . '> - 6 -</option>'; }
+    if ( preg_match('/7/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '7') $sel=' selected'; echo ' <option value="7"' . $sel . '> - 7 -</option>'; }
+    if ( preg_match('/8/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '8') $sel=' selected'; echo ' <option value="8"' . $sel . '> - 8 -</option>'; }
+    if ( preg_match('/9/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '9') $sel=' selected'; echo ' <option value="9"' . $sel . '> - 9 -</option>'; }
+    if ( preg_match('/\#/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '#') $sel=' selected'; echo ' <option value="#"' . $sel . '> - # -</option>'; }
+    if ( preg_match('/\*/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '*') $sel=' selected'; echo ' <option value="*"' . $sel . '> - * -</option>'; }
+    echo '         </select>';
+    echo '      </td>';
+    echo "  <tr>\n";
     echo "  <tr><td colspan=2 bgcolor=#CBDCE0>&nbsp;</td></tr>\n";
     echo "  <tr>\n";
     echo "      <td colspan=2 bgcolor=#B1C6CB align=center><input type=submit value=\"Save Form\"></td>\n";
@@ -901,6 +930,31 @@ if ($ADD == "3keys") {
         }
         echo "  </select></td>\n";
         echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=#CBDCE0 align=right>Timeout Action</td>\n";
+        echo '      <td bgcolor="#CBDCE0">';
+        echo '         <select name="oi8">';
+    	echo "              <option value=\"\"> - NONE - </option>";
+        $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr['id'] . "' AND parent_id='" . $oivr_opt_id . "'");
+        $tkey = '';
+        foreach ($keys as $key) {
+            $tkey .= $key['keypress'];
+        }
+        if ( preg_match('/0/', $tkey) ) { $sel=''; if ($ad[7] == '0') $sel=' selected'; echo ' <option value="0"' . $sel . '> - 0 -</option>'; }
+        if ( preg_match('/1/', $tkey) ) { $sel=''; if ($ad[7] == '1') $sel=' selected'; echo ' <option value="1"' . $sel . '> - 1 -</option>'; }
+        if ( preg_match('/2/', $tkey) ) { $sel=''; if ($ad[7] == '2') $sel=' selected'; echo ' <option value="2"' . $sel . '> - 2 -</option>'; }
+        if ( preg_match('/3/', $tkey) ) { $sel=''; if ($ad[7] == '3') $sel=' selected'; echo ' <option value="3"' . $sel . '> - 3 -</option>'; }
+        if ( preg_match('/4/', $tkey) ) { $sel=''; if ($ad[7] == '4') $sel=' selected'; echo ' <option value="4"' . $sel . '> - 4 -</option>'; }
+        if ( preg_match('/5/', $tkey) ) { $sel=''; if ($ad[7] == '5') $sel=' selected'; echo ' <option value="5"' . $sel . '> - 5 -</option>'; }
+        if ( preg_match('/6/', $tkey) ) { $sel=''; if ($ad[7] == '6') $sel=' selected'; echo ' <option value="6"' . $sel . '> - 6 -</option>'; }
+        if ( preg_match('/7/', $tkey) ) { $sel=''; if ($ad[7] == '7') $sel=' selected'; echo ' <option value="7"' . $sel . '> - 7 -</option>'; }
+        if ( preg_match('/8/', $tkey) ) { $sel=''; if ($ad[7] == '8') $sel=' selected'; echo ' <option value="8"' . $sel . '> - 8 -</option>'; }
+        if ( preg_match('/9/', $tkey) ) { $sel=''; if ($ad[7] == '9') $sel=' selected'; echo ' <option value="9"' . $sel . '> - 9 -</option>'; }
+        if ( preg_match('/\#/', $tkey) ) { $sel=''; if ($ad[7] == '#') $sel=' selected'; echo ' <option value="#"' . $sel . '> - # -</option>'; }
+        if ( preg_match('/\*/', $tkey) ) { $sel=''; if ($ad[7] == '*') $sel=' selected'; echo ' <option value="*"' . $sel . '> - * -</option>'; }
+        echo '         </select>';
+        echo '      </td>';
+        echo "  <tr>\n";
     } elseif ($o == 'MENU_REPEAT') { 
         echo '<input type="hidden" name="oi1" value="1">';
     } elseif ($o == 'MENU_EXIT') { 
