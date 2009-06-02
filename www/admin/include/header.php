@@ -159,7 +159,7 @@ if (strlen($campaigns_hh) > 1) {
     if ($sh=='detail') {$sh='list';}
     if ($sh=='dialstat') {$sh='list';}
     if ($sh=='realtime') {$sh='list';}
-    if ($sh=='outbound_ivr') {$sh='list';}
+    if ($sh=='ivr') {$sh='list';}
     if ($sh=='status'  and $ADD != 32) {$sh='list';}
     if ($sh=='hotkey'  and $ADD != 33) {$sh='list';}
     if ($sh=='recycle' and $ADD != 35) {$sh='list';}
@@ -245,7 +245,7 @@ if (strlen($campaigns_hh) > 1) {
                 <td align=center bgcolor="<?= $camp_listmix_color ?>"><a href="<?= $PHP_SELF ?>?ADD=31&SUB=29&campaign_id=<?= $campaign_id ?>"><font size=2 color=<?= $subcamp_font ?> face="arial,helvetica">List Mix</font></a></td>
                 <td align=center bgcolor="<?= $camp_autoalt_color ?>"><a href="<?= $PHP_SELF ?>?ADD=31&SUB=26&campaign_id=<?= $campaign_id ?>"><font size=2 color=<?= $subcamp_font ?> face="arial,helvetica">Auto Alt Dial</font></a></td>
                 <td align=center bgcolor="<?= $camp_pause_color ?>"><a href="<?= $PHP_SELF ?>?ADD=31&SUB=27&campaign_id=<?= $campaign_id ?>"><font size=2 color=<?= $subcamp_font ?> face="arial,helvetica">Pause Codes</font></a></td>
-                <td align=center bgcolor="<?= $camp_oivr_color ?>"> <a href="<?= $PHP_SELF ?>?ADD=3menu&SUB=2keys&campaign_id=<?= $campaign_id ?>"><font size=2 color=<?= $subcamp_font ?> face="arial,helvetica">Outbound IVR</font></a></td>
+                <td align=center bgcolor="<?= $camp_oivr_color ?>"> <a href="<?= $PHP_SELF ?>?ADD=3menu&SUB=2keys&campaign_id=<?= $campaign_id ?>"><font size=2 color=<?= $subcamp_font ?> face="arial,helvetica">In/Out IVR</font></a></td>
                 <td align=center bgcolor="<?= $camp_real_color ?>"> <a href="<?= $PHP_SELF ?>?ADD=999999&SUB=14&group=<?= $campaign_id ?>&campaign_id=<?= $campaign_id ?>"><font size=2 color=<?= $subcamp_font ?> face="arial,helvetica">Real-Time</font></a></td>
             </tr>
         </table>

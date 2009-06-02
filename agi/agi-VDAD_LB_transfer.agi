@@ -590,8 +590,6 @@ if ($rec_countWAIT < $DBconcurrent_transfers)
 		$affected_rows = $dbhA->do($stmtA);
 		if ($AGILOG) {$agi_string = "--    VDAD XFER : |$affected_rows|update of vac table: $callerid\n|$stmtA|";   &agi_output;}
 
-		$dbhA->disconnect();
-
 		if ($enable_queuemetrics_logging > 0)
 			{
 			$dbhB = DBI->connect("DBI:mysql:$queuemetrics_dbname:$queuemetrics_server_ip:3306", "$queuemetrics_login", "$queuemetrics_pass")
@@ -617,6 +615,14 @@ if ($rec_countWAIT < $DBconcurrent_transfers)
 			$VDADremDIALstr = "$a$S$b$S$c$S$d$S";
 			}
 		$VDADremDIALstr .= "$VDADconf_exten";
+
+		if ($VDADconf_exten =~ /^87......$/) {
+			$stmtA="INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$callerid','Channel: Local/$VDADremDIALstr\@$ext_context','Context: $ext_context','Exten: 487487','Priority: 1','Callerid: \"$callerid\" <0000000000>','','','','','');";
+			$affected_rows = $dbhA->do($stmtA);
+			if ($AGILOG) {$agi_string = "$affected_rows|$stmtA";   &agi_output;}
+		}
+
+		$dbhA->disconnect();
 
 		if ($AGILOG) {$agi_string = "exiting the VDAD app, transferring call to $VDADremDIALstr";   &agi_output;}
 		print "SET CONTEXT $ext_context\n";

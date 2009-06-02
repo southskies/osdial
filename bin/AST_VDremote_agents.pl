@@ -313,19 +313,21 @@ while($one_day_interval > 0)
 				&event_logger;
 			}
 
-			$stmtB = "UPDATE osdial_list set status='XFER',user='$QHuser[$w]' where lead_id='$QHlead_id[$w]';";
-			$Baffected_rows = $dbhA->do($stmtB);
-
 			if ($QHcall_type[$w] =~ /IN/)
 				{
-				$stmtC = "UPDATE osdial_closer_log set status='XFER',user='$QHuser[$w]',comments='REMOTE' where lead_id='$QHlead_id[$w]' order by call_date desc limit 1;";
+				$stmtC = "UPDATE osdial_closer_log set status='XFER',user='$QHuser[$w]',comments='REMOTE' where uniqueid='$QHuniqueid[$w]' AND status NOT LIKE 'V%';";
 				$Caffected_rows = $dbhA->do($stmtC);
 				}
 			else
 				{
-				$stmtC = "UPDATE osdial_log set status='XFER',user='$QHuser[$w]',comments='REMOTE' where uniqueid='$QHuniqueid[$w]';";
+				$stmtC = "UPDATE osdial_log set status='XFER',user='$QHuser[$w]',comments='REMOTE' where uniqueid='$QHuniqueid[$w]' AND status NOT LIKE 'V%';";
 				$Caffected_rows = $dbhA->do($stmtC);
 				}
+
+			if ($Caffected_rows > 0) {
+				$stmtB = "UPDATE osdial_list set status='XFER',user='$QHuser[$w]' where lead_id='$QHlead_id[$w]';";
+				$Baffected_rows = $dbhA->do($stmtB);
+			}
 
 			$event_string = "|     QUEUEd listing UPDATEd |$Aaffected_rows|$Baffected_rows|$Caffected_rows|     |$QHlive_agent_id[$w]|$QHlead_id[$w]|$QHuniqueid[$w]|$QHuser[$w]|$QHcall_type[$w]|";
 			 &event_logger;
@@ -382,6 +384,7 @@ while($one_day_interval > 0)
 		@VD_random=@MT;
 		@autocallexists=@MT;
 		@calllogfinished=@MT;
+		@closerlogfinished=@MT;
 	###############################################################################
 	###### first grab all of the ACTIVE remote agents information from the database
 	###############################################################################
@@ -402,6 +405,8 @@ while($one_day_interval > 0)
 				if ($user_start =~ s/^va$campaign_id//) {
 					$upad = (length($user_start) + length($campaign_id)) - (length(($user_start * 1)) + length($campaign_id));
 					$va = 'va' . $campaign_id . sprintf('%0' . $upad . 'd',0);
+					$stmtA = "UPDATE osdial_remote_agents as ra,osdial_campaigns as c SET ra.closer_campaigns=c.closer_campaigns WHERE ra.campaign_id=c.campaign_id;";
+					$affected_rows = $dbhA->do($stmtA);
 				} else {
 					$va = '';
 				}
@@ -711,8 +716,34 @@ while($one_day_interval > 0)
 						$rec_count++;
 						}
 					$sthA->finish();
-					if ($calllogfinished[$z] > 1)
+					if ($calllogfinished[$z] == 0)
 						{
+						$stmtA = "SELECT count(*) FROM osdial_closer_log AS cl,osdial_live_agents AS la where cl.callerid='$VD_callerid[$z]' AND cl.callerid=la.callerid and server_ip='$server_ip' and end_epoch > 10;";
+						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+						$sthArows=$sthA->rows;
+						$rec_count=0;
+						while ($sthArows > $rec_count)
+							{
+							@aryA = $sthA->fetchrow_array;
+							$closerlogfinished[$z] =	"$aryA[0]";
+							$rec_count++;
+							}
+						$sthA->finish();
+						}
+					if ($calllogfinished[$z] > 1 or $closerlogfinished[$z] > 0)
+						{
+						$stmtA = "SELECT channel FROM osdial_live_agents where callerid='$VD_callerid[$z]';";
+						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+						$sthArows=$sthA->rows;
+						@aryA = $sthA->fetchrow_array;
+						if ($aryA[0]) {
+							$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Hangup','$VD_callerid[$z]','Channel: $aryA[0]','','','','','','','','','')";
+							$affected_rows = $dbhA->do($stmtA);
+							if ($DB and $affected_rows > 0) {print STDERR "$VD_user[$z] CALL HANGUP SENT: $affected_rows|READY|$VD_uniqueid[$z]|$VD_user[$z]|\n$stmtA\n";}
+						}
+
 						$stmtA = "UPDATE osdial_live_agents set random_id='$VD_random[$z]', last_call_finish='$SQLdate',lead_id='',uniqueid='',callerid='',channel='' where user='$VD_user[$z]' and server_ip='$server_ip';";
 						$affected_rows = $dbhA->do($stmtA);
 						if ($DB and $affected_rows > 0) {print STDERR "$VD_user[$z] CALL WIPE UPDATE: $affected_rows|READY|$VD_uniqueid[$z]|$VD_user[$z]|\n$stmtA\n";}
@@ -762,7 +793,7 @@ while($one_day_interval > 0)
 	#				$stmtA = "UPDATE osdial_live_agents set random_id='$VD_random[$z]',status='READY', last_call_finish='$SQLdate',lead_id='',uniqueid='',callerid='',channel=''  where user='$VD_user[$z]' and server_ip='$server_ip';";
 	#				$affected_rows = $dbhA->do($stmtA);
 	#				if ($DB) {print STDERR "$VD_user[$z] AGENT READY UPDATE: $affected_rows|READY|$VD_uniqueid[$z]|$VD_callerid[$z]|$VD_user[$z]|\n";}
-
+	#
 	#				$stmtA = "DELETE from osdial_auto_calls where callerid='$VD_callerid[$z]' and server_ip='$server_ip';";
 	#				$affected_rows = $dbhA->do($stmtA);
 	#				if ($DB) {print STDERR "$VD_user[$z] VAC DELETE: $affected_rows|$VD_callerid[$z]|\n";}

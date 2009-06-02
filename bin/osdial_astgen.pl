@@ -341,9 +341,13 @@ sub gen_conferences {
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
         my ($cnf2,$mtm2,$cf,$cl);
 	while (my @aryA = $sthA->fetchrow_array) {
-		$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme,\${EXTEN}|q\n";
+		$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme,\${EXTEN}|Fq\n";
+		$cnf2 .= "exten => _6" . $aryA[0] . ",1,Meetme,\${EXTEN}|Fmq\n";
+		$cnf2 .= "exten => _7" . $aryA[0] . ",1,Meetme,\${EXTEN}|Fq\n";
 		$mtm2 .= "conf => " . $aryA[0] . "\n";
 	}
+	$cnf2 .= "exten => 487487,1,AGI(agi-OSDivr.agi,\${EXTEN})\n";
+	$cnf2 .= "exten => 487487,n,Hangup\n";
 	$cnf .= ";\n; OSDIAL Virtual Agent Conferences\n";
 	$cnf .= $cnf2;
 	$mtm .= ";\n; OSDIAL Virtual Agent Conferences\n";

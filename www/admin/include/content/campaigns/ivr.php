@@ -427,7 +427,7 @@ if ($ADD == "4menu") {
                     }
                     if ($ufnd == 0) {
                         $stmt = "INSERT INTO osdial_remote_agents (user_start,conf_exten,server_ip,campaign_id) VALUES ";
-                        $conf = '487' . sprintf('%03d',$oivr_id) . sprintf('%03d',$unum);
+                        $conf = '87' . sprintf('%03d',$oivr_id) . sprintf('%03d',$unum);
                         $stmt .= "('$usr','$conf','$server_ip','$campaign_id');";
                         $rslt = mysql_query($stmt, $link);
                         $icnt++;
