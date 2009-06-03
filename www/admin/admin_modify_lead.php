@@ -245,7 +245,7 @@ $browser = getenv("HTTP_USER_AGENT");
 			{
 			
 				### update the lead record in the osdial_list table 
-				$stmt="UPDATE osdial_list set status='" . mysql_real_escape_string($status) . "',first_name='" . mysql_real_escape_string($first_name) . "',last_name='" . mysql_real_escape_string($last_name) . "',address1='" . mysql_real_escape_string($address1) . "',address2='" . mysql_real_escape_string($address2) . "',address3='" . mysql_real_escape_string($address3) . "',city='" . mysql_real_escape_string($city) . "',state='" . mysql_real_escape_string($state) . "',province='" . mysql_real_escape_string($province) . "',postal_code='" . mysql_real_escape_string($postal_code) . "',country_code='" . mysql_real_escape_string($country_code) . "',alt_phone='" . mysql_real_escape_string($alt_phone) . "',phone_number='$phone_number',email='" . mysql_real_escape_string($email) . "',custom1='" . mysql_real_escape_string($custom1) . "'custom2='" . mysql_real_escape_string($custom2) . "'external_key='" . mysql_real_escape_string($external_key) ."',comments='" . mysql_real_escape_string($comments) . "' where lead_id='" . mysql_real_escape_string($lead_id) . "'";
+				$stmt="UPDATE osdial_list set status='" . mysql_real_escape_string($status) . "',first_name='" . mysql_real_escape_string($first_name) . "',last_name='" . mysql_real_escape_string($last_name) . "',address1='" . mysql_real_escape_string($address1) . "',address2='" . mysql_real_escape_string($address2) . "',address3='" . mysql_real_escape_string($address3) . "',city='" . mysql_real_escape_string($city) . "',state='" . mysql_real_escape_string($state) . "',province='" . mysql_real_escape_string($province) . "',postal_code='" . mysql_real_escape_string($postal_code) . "',country_code='" . mysql_real_escape_string($country_code) . "',alt_phone='" . mysql_real_escape_string($alt_phone) . "',phone_number='$phone_number',email='" . mysql_real_escape_string($email) . "',custom1='" . mysql_real_escape_string($custom1) . "',custom2='" . mysql_real_escape_string($custom2) . "',external_key='" . mysql_real_escape_string($external_key) ."',comments='" . mysql_real_escape_string($comments) . "' where lead_id='" . mysql_real_escape_string($lead_id) . "'";
 				if ($DB) {echo "|$stmt|\n";}
 				$rslt=mysql_query($stmt, $link);
 			
@@ -653,7 +653,7 @@ $browser = getenv("HTTP_USER_AGENT");
 			echo "<font size='+1'>CALLS TO THIS LEAD</font><br><br>\n";
 			echo "<TABLE width=550 cellspacing=0 cellpadding=1>\n";
 			echo "<tr bgcolor='#716A5B'>
-					<td><font size=1># </td>
+					<td><font size=1 color='white'># </td>
 					<td><font color='white' size=2>DATE/TIME </td>
 					<td align=left><font color='white' size=2>LENGTH</td>
 					<td align=left><font color='white' size=2> STATUS</td>
@@ -661,6 +661,7 @@ $browser = getenv("HTTP_USER_AGENT");
 					<td align=right><font color='white' size=2> CAMPAIGN</td>
 					<td align=right><font color='white' size=2> LIST</td>
 					<td align=right><font color='white' size=2> LEAD</td>
+					<td align=right><font color='white' size=2> TERM REASON</td>
 				</tr>\n";
 			
 				echo "$call_log\n";
