@@ -74,7 +74,7 @@ function report_realtime_detail() {
 	}
 
 	
-	$stmt="select campaign_id from osdial_campaigns where active='Y';";
+	$stmt="select campaign_id,campaign_name from osdial_campaigns where active='Y';";
 	$rslt=mysql_query($stmt, $link);
 	if (!isset($DB))   {$DB=0;}
 	if ($DB) {$html .= "$stmt\n";}
@@ -84,6 +84,7 @@ function report_realtime_detail() {
 	while ($i < $groups_to_print)	{
 		$row=mysql_fetch_row($rslt);
 		$groups[$i] =$row[0];
+		$group_names[$i] =$row[1];
 		$i++;
 	}
 	
@@ -214,11 +215,13 @@ function report_realtime_detail() {
 	$html .= "<option value=\"XXXX-ALL-ACTIVE-XXXX\">ALL ACTIVE</option>\n";
 	$o=0;
 
+    $group_name = '';
 	while ($groups_to_print > $o)	{
 		if ($groups[$o] == $group) {
-			$html .= "<option selected value=\"$groups[$o]\">$groups[$o]</option>\n";
+			$html .= "<option selected value=\"$groups[$o]\">$groups[$o] - $group_names[$o]</option>\n";
+            $group_name = $group_names[$o];
 		} else {
-			$html .= "<option value=\"$groups[$o]\">$groups[$o]</option>\n";
+			$html .= "<option value=\"$groups[$o]\">$groups[$o] - $group_names[$o]</option>\n";
 		}
 		$o++;
 	}
@@ -325,7 +328,7 @@ function report_realtime_detail() {
 		$balanceSHORT = $row[0];
 
 		$html .= "</td></tr><tr><td align=left>";
-		$html .= "<font class=indented color=#1C4754 size=2><b>$group</b></font>";
+		$html .= "<font class=indented color=#1C4754 size=2><b>$group - $group_name</b></font>";
 		$html .= "</td></tr><tr><td align=center>";
 		$html .= "<table class=indents cellpadding=0 cellspacing=0><TR>";
 		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Dial Level:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALlev&nbsp;&nbsp; </TD>";

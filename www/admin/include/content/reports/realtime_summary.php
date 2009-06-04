@@ -35,7 +35,7 @@ function report_realtime_summary() {
 	$NOW_TIME = date("Y-m-d H:i:s");
 	$STARTtime = date("U");
 	
-	$stmt="select campaign_id from osdial_campaigns where active='Y';";
+	$stmt="select campaign_id,campaign_name from osdial_campaigns where active='Y';";
 	$rslt=mysql_query($stmt, $link);
 	if (!isset($DB)) { $DB=0; }
 	if ($DB) { $html .= "$stmt\n"; }
@@ -45,6 +45,7 @@ function report_realtime_summary() {
 	while ($i < $groups_to_print)	{
 		$row=mysql_fetch_row($rslt);
 		$groups[$i] =$row[0];
+		$group_names[$i] =$row[1];
 		$i++;
 	}
 	
@@ -92,7 +93,8 @@ function report_realtime_summary() {
 		
 		
 		$group = $groups[$k];
-		$html .= "<font class=realtimeindents size=-1><b><a href=\"./admin.php?ADD=$ADD&SUB=" . ($SUB + 1) . "&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats\">$group</a></b> &nbsp; - &nbsp; ";
+		$group_name = $group_names[$k];
+		$html .= "<hr><font class=realtimeindents size=-1><b><a href=\"./admin.php?ADD=$ADD&SUB=" . ($SUB + 1) . "&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats\">$group - $group_name</a></b> &nbsp; - &nbsp; ";
 		$html .= "<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a> </font>\n";
 		
 		
