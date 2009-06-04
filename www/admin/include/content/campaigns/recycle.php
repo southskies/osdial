@@ -37,12 +37,12 @@ if ($ADD==25)
 		{echo "<br><font color=red> CAMPAIGN LEAD RECYCLE NOT ADDED - there is already a lead-recycle for this campaign with this status</font>\n";}
 	else
 		{
-		 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) or ($attempt_delay < 120) or ($attempt_maximum < 1) or ($attempt_maximum > 10) )
+		 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) or ($attempt_delay < 120) or ($attempt_maximum < 1) or ($attempt_maximum > 999) )
 			{
 			 echo "<br><font color=red>CAMPAIGN LEAD RECYCLE NOT ADDED - Please go back and look at the data you entered\n";
 			 echo "<br>status must be between 1 and 6 characters in length\n";
 			 echo "<br>attempt delay must be at least 120 seconds\n";
-			 echo "<br>maximum attempts must be from 1 to 10</font><br>\n";
+			 echo "<br>maximum attempts must be from 1 to 50</font><br>\n";
 			}
 		 else
 			{
@@ -76,7 +76,7 @@ if ($ADD==45)
 	{
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) or ($attempt_delay < 120)  or ($attempt_maximum < 1) or ($attempt_maximum > 10) )
+	 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) or ($attempt_delay < 120)  or ($attempt_maximum < 1) or ($attempt_maximum > 999) )
 		{
 		 echo "<br><font color=red>CAMPAIGN LEAD RECYCLE NOT MODIFIED - Please go back and look at the data you entered\n";
 		 echo "<br>status must be between 1 and 6 characters in length\n";
