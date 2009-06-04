@@ -48,6 +48,7 @@ my $achead = ";\n; WARNING: AUTO-CREATED FILE.\n; Any changes you make will be o
 
 # Declare command-line options.
 my($DB, $CLOhelp, $CLOtest, $CLOshowip, $CLOquiet);
+my(%reloads);
 
 # Read in command-line options.
 if (scalar @ARGV) {
@@ -119,6 +120,12 @@ if (-f "/etc/asterisk/osdial_extensions.conf") {
 	# Generate agent extensions, and sip/iax agent phones.
 	# (osdial_extensions_phones.conf osdial_sip_phones.conf osdial_iax_phones.conf)
 	gen_phones($dbhA);
+
+	foreach my $reload (keys %reloads) {
+		print "    Executing " . $reload . "...\n" unless ($CLOquiet);
+		`/usr/sbin/asterisk -rx "$reload" > /dev/null 2>&1`;
+		sleep 5;
+	}
 }
 
 
@@ -433,10 +440,10 @@ sub write_reload {
 	close FIL;
 	my $ephnret = system("cmp","-s","/etc/asterisk/$file.conf","/tmp/$file.$$");
 	if ($ephnret) {
-		print "    " . $file . ".conf has changed, updating and applying...\n" unless ($CLOquiet);
+		print "    " . $file . ".conf has changed, updating...\n" unless ($CLOquiet);
 		if (!$CLOtest) {
 			`cp /tmp/$file.$$ /etc/asterisk/$file.conf > /dev/null 2>&1`;
-			`/usr/sbin/asterisk -rx "$reload" > /dev/null 2>&1`;
+			$reloads{$reload} = 1;
 		}
 		sleep 1;
 	} else {
