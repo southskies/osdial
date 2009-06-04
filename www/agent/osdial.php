@@ -1903,7 +1903,7 @@ foreach ($forms as $form) {
 		<span id="PauseCodeLinkSpan"></span> <BR></font>
 	</span>
 
-    <span id="PreviewFDTimeSpan" style="font-size:35pt; font-weight: bold; color: #1C4754; text-decoration: blink; position:absolute;left:325px;top:400px;z-index:22;"></span>
+    <span id="PreviewFDTimeSpan" style="font-size:35pt; font-weight: bold; color: #1C4754; position:absolute;left:325px;top:400px;z-index:22;"></span>
 	
 	<!-- Choose From Available Call Backs -->
 	<span style="position:absolute;left:0px;top:18px;z-index:38;" id="CallBacKsLisTBox">

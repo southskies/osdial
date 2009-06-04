@@ -28,6 +28,8 @@
  * # 090515-0140 - Added manual_preview_default
  * # 090515-0538 - Added web_form_extwindow and web_form2_extwindow
  * # 090520-1915 - Changed inbound in manual mode to work without the INBOUND_MAN dial status.
+ * # 090603-1735 - Added to manual-dial bug that prevented manual dial from being used after a hotkey diposition.
+ * # 090603-2306 - Added fix to allow diposition on manual call using hotkeys if call is active > 5 seconds.
  */
 
 
@@ -3566,6 +3568,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							{
 							if (hotkeysused == 'YES')
 								{
+								manual_auto_hotkey=1;
+								alt_dial_active=0;
 								document.getElementById("MainStatuSSpan").style.backgroundColor = '#AECFD7';
 								document.getElementById("MainStatuSSpan").innerHTML = '';
 								if (inbound_man > 0)
@@ -4452,7 +4456,7 @@ if ($useIE > 0)
 	function hotkeypress(evt)
 		{
 		enter_disable();
-		if ( (hot_keys_active==1) && (VD_live_customer_call==1) )
+		if ( (hot_keys_active==1) && ((VD_live_customer_call==1) || (MD_ring_secondS>5) ) )
 			{
 			var e = evt? evt : window.event;
 			if(!e) return;
@@ -4499,7 +4503,7 @@ else
 	function hotkeypress(evt)
 		{
 		enter_disable();
-		if ( (hot_keys_active==1) && (VD_live_customer_call==1) )
+		if ( (hot_keys_active==1) && ( (VD_live_customer_call==1) || (MD_ring_secondS>5) ) )
 			{
 			var e = evt? evt : window.event;
 			if(!e) return;
