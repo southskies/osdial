@@ -713,7 +713,7 @@ function report_realtime_detail() {
 		$usergroupSQL = " and user_group='" . mysql_real_escape_string($usergroup) . "'";
 	}
 	
-	$stmt="select extension,osdial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id,osdial_users.user_group,osdial_users.full_name,osdial_live_agents.comments from osdial_live_agents,osdial_users where osdial_live_agents.user=osdial_users.user $groupSQL $usergroupSQL order by $orderSQL;";
+	$stmt="select extension,osdial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id,osdial_users.user_group,osdial_users.full_name,osdial_live_agents.comments,lead_id from osdial_live_agents,osdial_users where osdial_live_agents.user=osdial_users.user $groupSQL $usergroupSQL order by $orderSQL;";
 	
 	#$stmt="select extension,osdial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id,osdial_users.user_group,osdial_users.full_name from osdial_live_agents,osdial_users where osdial_live_agents.user=osdial_users.user and campaign_id='" . mysql_real_escape_string($group) . "' order by $orderSQL;";
 	
@@ -752,9 +752,18 @@ function report_realtime_detail() {
 			$call_server_ip =	sprintf("%-15s", $row[7]);
 			$campaign_id =	sprintf("%-10s", $row[8]);
 			$comments=		$row[11];
+			$lead_id=		$row[12];
+
+            if ($lead_id > 0) {
+                $stmtB = "SELECT status FROM osdial_list WHERE lead_id='$lead_id' AND status LIKE 'V%';";
+	            $rsltB=mysql_query($stmtB, $link);
+			    $rowB=mysql_fetch_row($rsltB);
+                $lead_status = sprintf("%-6s",$rowB[0]);
+            }
+                    
 	
 			if (eregi("INCALL",$Lstatus)) {
-				if ( (eregi("AUTO",$comments)) or (strlen($comments)<1) ) {
+				if ( (eregi("AUTO",$comments)) or (eregi("REMOTE",$comments)) or (strlen($comments)<1) ) {
 					$CM='A';
 				} else {
 					if (eregi("INBOUND",$comments)) {
@@ -862,6 +871,10 @@ function report_realtime_detail() {
 			}
 	
 			$agentcount++;
+
+            if ($lead_status != "" and $lead_status != "      ") {
+                $status = $lead_status;
+            }
 	
 			$Ahtml .= "$LNleft $G$extension $LNcenterbar <a href=\"./user_status.php?user=$Luser\" target=\"_blank\">$G$user$EG</a> $LNcenterbar$UGD $sessionid$L$R $LNcenterbar $status $CM $LNcenterbar $SVD$call_time_MS $LNcenterbar $campaign_id$EG $LNright\n";
 	

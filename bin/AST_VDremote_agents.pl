@@ -731,7 +731,7 @@ while($one_day_interval > 0)
 							}
 						$sthA->finish();
 						}
-					if ($calllogfinished[$z] > 1 or $closerlogfinished[$z] > 0)
+					if ($calllogfinished[$z] > 0 or $closerlogfinished[$z] > 0)
 						{
 						$stmtA = "SELECT channel FROM osdial_live_agents where callerid='$VD_callerid[$z]';";
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;

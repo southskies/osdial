@@ -295,8 +295,8 @@ sub xfer_to_external {
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		my @aryA = $sthA->fetchrow_array;
 		$sthA->finish();
-		$xfer=0 if ($aryA[0] == 1);
 		agi_output("ODOI: $xfer|$stmtA") if ($vars->{DB} > 2);
+		$xfer=0 if ($aryA[0] == 1);
 		my $stmtA = "SELECT count(*) FROM live_sip_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND extension LIKE '%" . $vars->{conf_exten} . "%' order by channel desc;";
 		my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -407,6 +407,10 @@ sub hangup_and_dispo {
 	agi_output("|$stmtA|") if ($vars->{DB} > 1);
 	my $affected_rows = $dbhA->do($stmtA);
 	agi_output("--    ODOI osdial_log update: $affected_rows");
+	my $random = int( rand(9999999)) + 10000000;
+	my $stmtA = "UPDATE osdial_live_agents set status='READY',random_id='$random', last_call_finish='$tdate',lead_id='',uniqueid='',callerid='',channel='' where conf_exten='" . $vars->{conf_exten} . "' and server_ip='" . $vars->{VARserver_ip} . "';";
+	my $affected_rows = $dbhA->do($stmtA);
+	agi_output("--    ODOI osdial_live_agents update: $affected_rows");
 
 	return 0;
 }
