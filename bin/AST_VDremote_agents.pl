@@ -169,6 +169,8 @@ use DBI;
 
 $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
  or die "Couldn't connect to database: " . DBI->errstr;
+$dbhB = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
+ or die "Couldn't connect to database: " . DBI->errstr;
 
 ### Grab Server values from the database
 	$stmtA = "SELECT vd_server_logs,local_gmt,ext_context FROM servers where server_ip = '$VARserver_ip';";
@@ -405,8 +407,8 @@ while($one_day_interval > 0)
 				if ($user_start =~ s/^va$campaign_id//) {
 					$upad = (length($user_start) + length($campaign_id)) - (length(($user_start * 1)) + length($campaign_id));
 					$va = 'va' . $campaign_id . sprintf('%0' . $upad . 'd',0);
-					$stmtA = "UPDATE osdial_remote_agents as ra,osdial_campaigns as c SET ra.closer_campaigns=c.closer_campaigns WHERE ra.campaign_id=c.campaign_id;";
-					$affected_rows = $dbhA->do($stmtA);
+					$stmtB = "UPDATE osdial_remote_agents as ra,osdial_campaigns as c SET ra.closer_campaigns=c.closer_campaigns WHERE ra.campaign_id=c.campaign_id;";
+					$affected_rows = $dbhB->do($stmtB);
 				} else {
 					$va = '';
 				}
