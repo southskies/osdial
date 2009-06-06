@@ -301,7 +301,7 @@ sub gen_conferences {
 	print $stmtB . "\n" if ($DB);
 	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-	@aryA = $sthA->fetchrow_array;
+	my @aryA = $sthA->fetchrow_array;
 	my $asterisk_version = $aryA[0];
 
 	if ($asterisk_version =~ /^1\.6/) {
