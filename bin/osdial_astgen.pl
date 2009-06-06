@@ -278,9 +278,6 @@ sub gen_conferences {
 	my $cnf = $achead;
 	my $mtm = $achead;
 	$mtm .= "conf => 8600\nconf => 8601,1234\n";
-	$cnf .= ";\n; ZapBarge direct channel extensions\n";
-	$cnf .= "exten => _8612XXX,1,ZapBarge(\${EXTEN:4})\n";
-	$cnf .= "exten => _8612XXX,2,Hangup\n";
 	$cnf .= ";\n;Volume adjustments\n";
 	$cnf .= "exten => _X4860XXXX,1,MeetMeAdmin(\${EXTEN:2},T,\${EXTEN:0:1})\n";
 	$cnf .= "exten => _X4860XXXX,2,Hangup\n;\n";
@@ -294,19 +291,43 @@ sub gen_conferences {
 	$cnf .= "exten => _5555860XXXX,2,Hangup\n";
 
 	my $stmtA = "SELECT conf_exten,server_ip FROM conferences where";
+	my $stmtB = "SELECT asterisk_version FROM servers where";
 	foreach my $ip (@myips) {
 		$stmtA .= " server_ip=\'" . $ip . "\' OR";
+		$stmtB .= " server_ip=\'" . $ip . "\' OR";
 	}
+	chop $stmtB; chop $stmtB; chop $stmtB;
+	$stmtB .= ' limit 1;';
+	print $stmtB . "\n" if ($DB);
+	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
+	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+	@aryA = $sthA->fetchrow_array;
+	my $asterisk_version = $aryA[0];
+
+	if ($asterisk_version =~ /^1\.6/) {
+		$cnf .= ";\n; DAHDIBarge direct channel extensions\n";
+		$cnf .= "exten => _8612XXX,1,DAHDIBarge(\${EXTEN:4})\n";
+		$cnf .= "exten => _8612XXX,2,Hangup\n";
+	} else {
+		$cnf .= ";\n; ZapBarge direct channel extensions\n";
+		$cnf .= "exten => _8612XXX,1,ZapBarge(\${EXTEN:4})\n";
+		$cnf .= "exten => _8612XXX,2,Hangup\n";
+	}
+
 	chop $stmtA; chop $stmtA; chop $stmtA;
-	$stmtA .= ';';
 	print $stmtA . "\n" if ($DB);
+	$stmtA .= ';';
 	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	my ($cnf2,$mtm2,$cf,$cl);
 	while (my @aryA = $sthA->fetchrow_array) {
 		$cf = $aryA[0] unless ($cf);
 		$cl = $aryA[0];
-		$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme,\${EXTEN}|q\n";
+		if ($asterisk_version =~ /^1\.6/) {
+			$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme(\${EXTEN},q)\n";
+		} else {
+			$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme,\${EXTEN}|q\n";
+		}
 		$mtm2 .= "conf => " . $aryA[0] . "\n";
 	}
 
@@ -328,12 +349,21 @@ sub gen_conferences {
         while (my @aryA = $sthA->fetchrow_array) {
                 $cf = $aryA[0] unless ($cf);
                 $cl = $aryA[0];
-		$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme,\${EXTEN}|F\n";
-		$cnf2 .= "exten => _" . $aryA[0] . ",2,Hangup\n";
-		$cnf2 .= "exten => _7" . $aryA[0] . ",1,Meetme,\${EXTEN:1}|Fq\n";
-		$cnf2 .= "exten => _7" . $aryA[0] . ",2,Hangup\n";
-		$cnf2 .= "exten => _6" . $aryA[0] . ",1,Meetme,\${EXTEN:1}|Fmq\n";
-		$cnf2 .= "exten => _6" . $aryA[0] . ",2,Hangup\n";
+		if ($asterisk_version =~ /^1\.6/) {
+			$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme(\${EXTEN},F)\n";
+			$cnf2 .= "exten => _" . $aryA[0] . ",2,Hangup\n";
+			$cnf2 .= "exten => _7" . $aryA[0] . ",1,Meetme(\${EXTEN:1},Fq)\n";
+			$cnf2 .= "exten => _7" . $aryA[0] . ",2,Hangup\n";
+			$cnf2 .= "exten => _6" . $aryA[0] . ",1,Meetme(\${EXTEN:1},Flq)\n";
+			$cnf2 .= "exten => _6" . $aryA[0] . ",2,Hangup\n";
+		} else {
+			$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme,\${EXTEN}|F\n";
+			$cnf2 .= "exten => _" . $aryA[0] . ",2,Hangup\n";
+			$cnf2 .= "exten => _7" . $aryA[0] . ",1,Meetme,\${EXTEN:1}|Fq\n";
+			$cnf2 .= "exten => _7" . $aryA[0] . ",2,Hangup\n";
+			$cnf2 .= "exten => _6" . $aryA[0] . ",1,Meetme,\${EXTEN:1}|Fmq\n";
+			$cnf2 .= "exten => _6" . $aryA[0] . ",2,Hangup\n";
+		}
 		$mtm2 .= "conf => " . $aryA[0] . "\n";
         }
 	$cnf .= ";\n; OSDIAL Agent Conferences $cf - $cl\n";
@@ -348,9 +378,15 @@ sub gen_conferences {
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
         my ($cnf2,$mtm2,$cf,$cl);
 	while (my @aryA = $sthA->fetchrow_array) {
-		$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme,\${EXTEN}|Fq\n";
-		$cnf2 .= "exten => _6" . $aryA[0] . ",1,Meetme,\${EXTEN}|Fmq\n";
-		$cnf2 .= "exten => _7" . $aryA[0] . ",1,Meetme,\${EXTEN}|Fq\n";
+		if ($asterisk_version =~ /^1\.6/) {
+			$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme(\${EXTEN}|Fq)\n";
+			$cnf2 .= "exten => _6" . $aryA[0] . ",1,Meetme(\${EXTEN}|Flq)\n";
+			$cnf2 .= "exten => _7" . $aryA[0] . ",1,Meetme(\${EXTEN}|Fq)\n";
+		} else {
+			$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme,\${EXTEN}|Fq\n";
+			$cnf2 .= "exten => _6" . $aryA[0] . ",1,Meetme,\${EXTEN}|Fmq\n";
+			$cnf2 .= "exten => _7" . $aryA[0] . ",1,Meetme,\${EXTEN}|Fq\n";
+		}
 		$mtm2 .= "conf => " . $aryA[0] . "\n";
 	}
 	$cnf2 .= "exten => 487487,1,AGI(agi-OSDivr.agi,\${EXTEN})\n";
@@ -372,7 +408,7 @@ sub gen_phones {
 	my $iphn = $achead;
 	my $ephn = $achead;
 
-	my $stmtA = "SELECT extension,dialplan_number,phone_ip,pass,protocol FROM phones WHERE (protocol='SIP' or protocol='IAX2' or protocol='Zap') AND active='Y' AND (";
+	my $stmtA = "SELECT extension,dialplan_number,phone_ip,pass,protocol FROM phones WHERE (protocol IN ('SIP','IAX2','Zap','DAHDI') AND active='Y' AND (";
 	foreach my $ip (@myips) {
 		$stmtA .= " server_ip=\'" . $ip . "\' OR";
 	}

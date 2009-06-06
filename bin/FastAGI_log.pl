@@ -228,7 +228,7 @@ sub process_request {
 		or die "Couldn't connect to database: " . DBI->errstr;
 
 	### Grab Server values from the database
-	$stmtA = "SELECT agi_output FROM servers where server_ip = '$VARserver_ip';";
+	$stmtA = "SELECT agi_output,asterisk_version FROM servers where server_ip = '$VARserver_ip';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -238,9 +238,13 @@ sub process_request {
 		$AGILOG = '0';
 		 @aryA = $sthA->fetchrow_array;
 			$DBagi_output =			"$aryA[0]";
+			$DBasterisk_version =		"$aryA[1]";
 			if ($DBagi_output =~ /STDERR/)	{$AGILOG = '1';}
 			if ($DBagi_output =~ /FILE/)	{$AGILOG = '2';}
 			if ($DBagi_output =~ /BOTH/)	{$AGILOG = '3';}
+			$ZorD = 'Zap';
+			$ZorD = 'DAHDI' if ($DBasterisk_version =~ /^1\.6/);
+			}
 		 $rec_count++;
 		}
 	$sthA->finish();
@@ -394,12 +398,12 @@ sub process_request {
 
 			if ($channel =~ /^SIP/) {$channel =~ s/-.*//gi;}
 			if ($channel =~ /^IAX2/) {$channel =~ s/\/\d+$//gi;}
-			if ($channel =~ /^Zap\//)
+			if ($channel =~ /^$ZorD\//)
 				{
 				$channel_line = $channel;
-				$channel_line =~ s/^Zap\///gi;
+				$channel_line =~ s/^$ZorD\///gi;
 
-				$stmtA = "SELECT count(*) FROM phones where server_ip='$VARserver_ip' and extension='$channel_line' and protocol='Zap';";
+				$stmtA = "SELECT count(*) FROM phones where server_ip='$VARserver_ip' and extension='$channel_line' and protocol='$ZorD';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -409,12 +413,12 @@ sub process_request {
 
 				if ($is_client_phone < 1)
 					{
-					$channel_group = 'Zap Trunk Line';
+					$channel_group = $ZorD . ' Trunk Line';
 					$number_dialed = $extension;
 					}
 				else
 					{
-					$channel_group = 'Zap Client Phone';
+					$channel_group = $ZorD . ' Client Phone';
 					}
 				if ($AGILOG) {$agi_string = $channel_group . ": $aryA[0]|$channel_line|";   &agi_output;}
 				}
@@ -460,7 +464,7 @@ sub process_request {
 				if ($is_client_phone > 0)
 					{$channel_group = 'Client Phone';}
 				
-				$SIP_ext = $channel;	$SIP_ext =~ s/SIP\/|IAX2\/|Zap\/|Local\///gi;
+				$SIP_ext = $channel;	$SIP_ext =~ s/SIP\/|IAX2\/|$ZorD\/|Local\///gi;
 
 				$number_dialed = $extension;
 				$extension = $SIP_ext;

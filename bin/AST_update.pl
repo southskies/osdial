@@ -264,6 +264,8 @@ while ($sthArows > $rec_count)
 		$DBasterisk_version	=		"$aryA[11]";
 		$DBsys_perf_log	=			"$aryA[12]";
 		$DBvd_server_logs =			"$aryA[13]";
+		$ZorD = "Zap";
+		if ($DBasterisk_version =~ /^1\.6/) {$ZorD = "DAHDI";}
 		if ($DBtelnet_host)				{$telnet_host = $DBtelnet_host;}
 		if ($DBtelnet_port)				{$telnet_port = $DBtelnet_port;}
 		if ($DBASTmgrUSERNAME)			{$ASTmgrUSERNAME = $DBASTmgrUSERNAME;}
@@ -288,10 +290,10 @@ $sthA->finish();
 	print STDERR "SHOW CHANNELS format: $show_channels_format\n";
 
 ##### LOOK FOR ZAP CLIENTS AS DEFINED IN THE phones TABLE SO THEY ARE NOT MISLABELED AS TRUNKS
-	print STDERR "LOOKING FOR Zap clients assigned to this server:\n";
-	$Zap_client_count=0;
-	$Zap_client_list='|';
-	$stmtA = "SELECT extension FROM phones where protocol = 'Zap' and server_ip='$server_ip'";
+	print STDERR "LOOKING FOR $ZorD clients assigned to this server:\n";
+	$ZorD_client_count=0;
+	$ZorD_client_list='|';
+	$stmtA = "SELECT extension FROM phones where protocol = '$ZorD' and server_ip='$server_ip'";
 	if($DB){print STDERR "|$stmtA|\n";}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -301,8 +303,8 @@ $sthA->finish();
 		{
 		@aryA = $sthA->fetchrow_array;
 			print STDERR $aryA[0],"\n";
-			$Zap_client_list .= "$aryA[0]|";
-			$Zap_client_count++;
+			$ZorD_client_list .= "$aryA[0]|";
+			$ZorD_client_count++;
 		$rec_count++;
 		}
 	$sthA->finish();
@@ -364,7 +366,7 @@ $sthA->finish();
 		}
 	$sthA->finish();
 
-	print STDERR "Zap Clients:  $Zap_client_list\n";
+	print STDERR "$ZorD Clients:  $ZorD_client_list\n";
 	print STDERR "IAX2 Clients: $IAX2_client_list\n";
 	print STDERR "SIP Clients:  $SIP_client_list\n";
 
@@ -429,7 +431,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 
 	##### TEST CHANNELS ZAP/IAX2/Local TO SEE IF THERE WAS A LARGE HICCUP IN OUTPUT FROM PREVIOUS OUTPUT
 	@test_channels=@list_channels;
-	$test_zap_count=0;
+	$test_ZorD_count=0;
 	$test_iax_count=0;
 	$test_local_count=0;
 	$test_sip_count=0;
@@ -462,16 +464,25 @@ if (!$telnet_port) {$telnet_port = '5038';}
 			if (length($test_chan_12[6])<2) {$test_chan_12[6] = 'SIP/ring';}
 			$test_channels[$s] = "$test_chan_12[0]     $test_chan_12[6]";
 			}
-		if ($test_channels[$s] =~ /^Zap|^IAX2|^SIP|^Local/)
+		if ($test_channels[$s] =~ /^$ZorD|^IAX2|^SIP|^Local/)
 			{
 			if ($test_channels[$s] =~ /^(\S+)\s+.+\s+(\S+)$/)
 				{
 				$channel = $1;
 				$extension = $2;
-				if ($show_channels_format)
-					{$extension =~ s/^.*\(|\).*$//gi;}
+				if ($show_channels_format) {
+					if ($DBasterisk_version =~ /^1\.6/) {
+						$extension =~ s/^.*\(,\).*$//gi;
+					} else {
+						$extension =~ s/^.*\(|\).*$//gi;
+					}
+				}
 				$extension =~ s/^SIP\/|-\S+$//gi;
-				$extension =~ s/\|.*//gi;
+				if ($DBasterisk_version =~ /^1\.6/) {
+					$extension =~ s/\,.*//gi;
+				} else {
+					$extension =~ s/\|.*//gi;
+				}
 				if ($channel =~ /^SIP/) {$test_sip_count++;}
 				if ($channel =~ /^Local/) {$test_local_count++;}
 				if ($IAX2_client_count) 
@@ -482,12 +493,12 @@ if (!$telnet_port) {$telnet_port = '5038';}
 					$channel_match =~ s/\*/\\\*/gi;
 					if ($IAX2_client_list =~ /\|$channel_match\|/i) {$test_iax_count++;}
 					}
-				if ($Zap_client_count) 
+				if ($ZorD_client_count) 
 					{
 					$channel_match=$channel;
-					$channel_match =~ s/^Zap\///gi;
+					$channel_match =~ s/^$ZorD\///gi;
 					$channel_match =~ s/\*/\\\*/gi;
-					if ($Zap_client_list =~ /\|$channel_match\|/i) {$test_zap_count++;}
+					if ($ZorD_client_list =~ /\|$channel_match\|/i) {$test_ZorD_count++;}
 					}
 				}
 			}
@@ -506,11 +517,11 @@ if (!$telnet_port) {$telnet_port = '5038';}
 			$PERCENT_static = sprintf("%6.2f", $PERCENT_static);
 			}
 
-		if ( (!$test_zap_count) or ($zap_client_counter < 2) )
+		if ( (!$test_ZorD_count) or ($ZorD_client_counter < 2) )
 			{$PERCENT_ZC_static = 0;}
 		else
 			{
-			$PERCENT_ZC_static = ( ($test_zap_count / $zap_client_counter) * 100);
+			$PERCENT_ZC_static = ( ($test_ZorD_count / $ZorD_client_counter) * 100);
 			$PERCENT_ZC_static = sprintf("%6.2f", $PERCENT_ZC_static);
 			}
 
@@ -539,22 +550,22 @@ if (!$telnet_port) {$telnet_port = '5038';}
 			}
 
 		if ($endless_loop =~ /0$/)
-			{print "-$now_date   $PERCENT_static    $#list_channels    $#DBchannels:$channel_counter      $#DBsips:$sip_counter    $PERCENT_ZC_static|$test_zap_count:$zap_client_counter    $PERCENT_IC_static|$test_iax_count:$iax_client_counter    $PERCENT_LC_static|$test_local_count:$local_client_counter    $PERCENT_SC_static|$test_sip_count:$sip_client_counter\n";}
+			{print "-$now_date   $PERCENT_static    $#list_channels    $#DBchannels:$channel_counter      $#DBsips:$sip_counter    $PERCENT_ZC_static|$test_ZorD_count:$ZorD_client_counter    $PERCENT_IC_static|$test_iax_count:$iax_client_counter    $PERCENT_LC_static|$test_local_count:$local_client_counter    $PERCENT_SC_static|$test_sip_count:$sip_client_counter\n";}
 
 		if ( ( ($PERCENT_static < 10) && ( ($channel_counter > 3) or ($sip_counter > 4) ) ) or
 			( ($PERCENT_static < 20) && ( ($channel_counter > 10) or ($sip_counter > 10) ) ) or
 			( ($PERCENT_static < 30) && ( ($channel_counter > 20) or ($sip_counter > 20) ) ) or
 			( ($PERCENT_static < 40) && ( ($channel_counter > 30) or ($sip_counter > 30) ) ) or
 			( ($PERCENT_static < 50) && ( ($channel_counter > 40) or ($sip_counter > 40) ) ) or
-			( ($PERCENT_ZC_static < 20) && ( $zap_client_counter > 3 ) )  or
-			( ($PERCENT_ZC_static < 40) && ( $zap_client_counter > 9 ) )  or
+			( ($PERCENT_ZC_static < 20) && ( $ZorD_client_counter > 3 ) )  or
+			( ($PERCENT_ZC_static < 40) && ( $ZorD_client_counter > 9 ) )  or
 			( ($PERCENT_IC_static < 20) && ( $iax_client_counter > 3 ) )  or
 			( ($PERCENT_IC_static < 40) && ( $iax_client_counter > 9 ) )  or
 			( ($PERCENT_SC_static < 20) && ( $sip_client_counter > 3 ) )  or
 			( ($PERCENT_SC_static < 40) && ( $sip_client_counter > 9 ) )    )
 			{
 			$UD_bad_grab++;
-			$event_string="------ UPDATER BAD GRAB!!!    UBGcount: $UD_bad_grab\n          $PERCENT_static    $#list_channels    $#DBchannels:$channel_counter      $#DBsips:$sip_counter    $PERCENT_ZC_static|$test_zap_count:$zap_client_counter    $PERCENT_IC_static|$test_iax_count:$iax_client_counter    $PERCENT_LC_static|$test_local_count:$local_client_counter    $PERCENT_SC_static|$test_sip_count:$sip_client_counter\n";
+			$event_string="------ UPDATER BAD GRAB!!!    UBGcount: $UD_bad_grab\n          $PERCENT_static    $#list_channels    $#DBchannels:$channel_counter      $#DBsips:$sip_counter    $PERCENT_ZC_static|$test_ZorD_count:$ZorD_client_counter    $PERCENT_IC_static|$test_iax_count:$iax_client_counter    $PERCENT_LC_static|$test_local_count:$local_client_counter    $PERCENT_SC_static|$test_sip_count:$sip_client_counter\n";
 			print "$event_string\n";
 				&event_logger;
 			if ($UD_bad_grab > 20) {$UD_bad_grab=0;}
@@ -610,7 +621,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 				if ($SYSPERFDB)
 					{print "$serverLOAD  $MEMfree  $MEMused  $serverPROCESSES  $#list_channels  $cpuUSERcent  $cpuSYSTcent  $cpuIDLEcent\n";}
 
-				$stmtA = "INSERT INTO server_performance (start_time,server_ip,sysload,freeram,usedram,processes,channels_total,trunks_total,clients_total,clients_zap,clients_iax,clients_local,clients_sip,live_recordings,cpu_user_percent,cpu_system_percent,cpu_idle_percent) values('$now_date','$server_ip','$serverLOAD','$MEMfree','$MEMused','$serverPROCESSES','$#list_channels','$channel_counter','$sip_counter','$test_zap_count','$test_iax_count','$test_local_count','$test_sip_count','$recording_count','$cpuUSERcent','$cpuSYSTcent','$cpuIDLEcent')";
+				$stmtA = "INSERT INTO server_performance (start_time,server_ip,sysload,freeram,usedram,processes,channels_total,trunks_total,clients_total,clients_zap,clients_iax,clients_local,clients_sip,live_recordings,cpu_user_percent,cpu_system_percent,cpu_idle_percent) values('$now_date','$server_ip','$serverLOAD','$MEMfree','$MEMused','$serverPROCESSES','$#list_channels','$channel_counter','$sip_counter','$test_ZorD_count','$test_iax_count','$test_local_count','$test_sip_count','$recording_count','$cpuUSERcent','$cpuSYSTcent','$cpuIDLEcent')";
 					if( ($DB) or ($UD_bad_grab) ){print STDERR "\n|$stmtA|\n";}
 				$affected_rows = $dbhA->do($stmtA) or die  "Couldn't execute query: |$stmtA|\n";
 				}
@@ -619,10 +630,10 @@ if (!$telnet_port) {$telnet_port = '5038';}
 		if ($endless_loop =~ /00$/)
 			{
 			##### LOOK FOR ZAP CLIENTS AS DEFINED IN THE phones TABLE SO THEY ARE NOT MISLABELED AS TRUNKS
-				print STDERR "LOOKING FOR Zap clients assigned to this server:\n";
-				$Zap_client_count=0;
-				$Zap_client_list='|';
-				$stmtA = "SELECT extension FROM phones where protocol = 'Zap' and server_ip='$server_ip'";
+				print STDERR "LOOKING FOR $ZorD clients assigned to this server:\n";
+				$ZorD_client_count=0;
+				$ZorD_client_list='|';
+				$stmtA = "SELECT extension FROM phones where protocol = '$ZorD' and server_ip='$server_ip'";
 				if($DB){print STDERR "|$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -632,8 +643,8 @@ if (!$telnet_port) {$telnet_port = '5038';}
 					{
 					@aryA = $sthA->fetchrow_array;
 						print STDERR $aryA[0],"\n";
-						$Zap_client_list .= "$aryA[0]|";
-						$Zap_client_count++;
+						$ZorD_client_list .= "$aryA[0]|";
+						$ZorD_client_count++;
 					$rec_count++;
 					}
 				$sthA->finish();
@@ -694,7 +705,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 					}
 				$sthA->finish();
 
-				print STDERR "Zap Clients:  $Zap_client_list\n";
+				print STDERR "$ZorD Clients:  $ZorD_client_list\n";
 				print STDERR "IAX2 Clients: $IAX2_client_list\n";
 				print STDERR "SIP Clients:  $SIP_client_list\n";
 			### Grab Server values from the database
@@ -771,7 +782,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 					if( ($DB) or ($UD_bad_grab) ){print "+|$c|$list_channels[$c]|\n\n";}
 
 		########## PARSE EACH LINE TO DETERMINE WHETHER IT IS TRUNK OR CLIENT AND PUT IN APPROPRIATE TABLE
-			if ($list_channels[$c] =~ /^Zap|^IAX2|^SIP|^Local/)
+			if ($list_channels[$c] =~ /^$ZorD|^IAX2|^SIP|^Local/)
 				{
 				if ($list_channels[$c] =~ /^(\S+)\s+.+\s+(\S+)$/)
 					{
@@ -781,7 +792,11 @@ if (!$telnet_port) {$telnet_port = '5038';}
 					$channel_data = $extension;
 					if ($show_channels_format)
 						{
-						$extension =~ s/^.*\(|\).*$//gi;
+						if ($DBasterisk_version =~ /^1\.6/) {
+							$extension =~ s/^.*\(,\).*$//gi;
+						} else {
+							$extension =~ s/^.*\(|\).*$//gi;
+						}
 						#### new data in 1.2 for future use
 						# SIP/cc160-7b91:default:917274514920:3:Up:Dial:Zap/g2/17274514920|30|o:cc160::3:9:Zap/25-1
 	# Zap/30-1:demo:010*010*010*012*8600091:1:Up:Dial:IAX2/TESTast2:test@10.10.10.12:4569/8600051|25|o:::3:123:IAX2/TESTast2-29
@@ -799,14 +814,18 @@ if (!$telnet_port) {$telnet_port = '5038';}
 						}
 					$extension =~ s/^SIP\/|-\S+$//gi;
 					$extension =~ s/^Local\/|\@.*$//gi;
-					$extension =~ s/\|.*//gi;
+					if ($DBasterisk_version =~ /^1\.6/) {
+						$extension =~ s/\,.*//gi;
+					} else {
+						$extension =~ s/\|.*//gi;
+					}
 					$QRYchannel = "$channel$US$extension";
 
 					if( ($DB) or ($UD_bad_grab) ){print "channel:   |$channel|\n";}
 					if( ($DB) or ($UD_bad_grab) ){print "extension: |$extension|\n";}
 					if( ($DB) or ($UD_bad_grab) ){print "QRYchannel:|$QRYchannel|\n";}
 
-					if ($channel =~ /^SIP|^Zap|^IAX2/) {$line_type = 'TRUNK';}
+					if ($channel =~ /^SIP|^$ZorD|^IAX2/) {$line_type = 'TRUNK';}
 					if ($channel =~ /^Local/) {$line_type = 'CLIENT';}
 					if ($IAX2_client_count) 
 						{
@@ -817,13 +836,13 @@ if (!$telnet_port) {$telnet_port = '5038';}
 	#					print "checking for IAX2 client:   |$channel_match|\n";
 						if ($IAX2_client_list =~ /\|$channel_match\|/i) {$line_type = 'CLIENT';}
 						}
-					if ($Zap_client_count) 
+					if ($ZorD_client_count) 
 						{
 						$channel_match=$channel;
-						$channel_match =~ s/^Zap\///gi;
+						$channel_match =~ s/^$ZorD\///gi;
 						$channel_match =~ s/\*/\\\*/gi;
-	#					print "checking for Zap client:   |$channel_match|\n";
-						if ($Zap_client_list =~ /\|$channel_match\|/i) {$line_type = 'CLIENT';}
+	#					print "checking for $ZorD client:   |$channel_match|\n";
+						if ($ZorD_client_list =~ /\|$channel_match\|/i) {$line_type = 'CLIENT';}
 						}
 					if ($SIP_client_count) 
 						{
@@ -1032,7 +1051,7 @@ sub get_current_channels
 {
 $channel_counter=0;
 $sip_counter=0;
-$zap_client_counter=0;
+$ZorD_client_counter=0;
 $iax_client_counter=0;
 $local_client_counter=0;
 $sip_client_counter=0;
@@ -1065,7 +1084,7 @@ while ($sthArows > $rec_count_sip)
 	if($DB){print STDERR $aryA[0],"|", $aryA[1],"\n";}
 		$DBsips[$sip_counter] = "$aryA[0]$US$aryA[1]";
 
-	if ($aryA[0] =~ /^Zap/) {$zap_client_counter++;}
+	if ($aryA[0] =~ /^$ZorD/) {$ZorD_client_counter++;}
 	if ($aryA[0] =~ /^IAX/) {$iax_client_counter++;}
 	if ($aryA[0] =~ /^Local/) {$local_client_counter++;}
 	if ($aryA[0] =~ /^SIP/) {$sip_client_counter++;}

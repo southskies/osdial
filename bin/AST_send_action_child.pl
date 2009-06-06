@@ -59,7 +59,7 @@ my $secX = time(); #Start time
 my ($CLOhelp, $SYSLOG, $PATHlogs, $telnet_host, $telnet_port, $ASTmgrUSERNAME);
 my ($ASTmgrSECRET, $ASTmgrUSERNAMEsend, $action, $cmd_line_b, $cmd_line_c);
 my ($cmd_line_d, $cmd_line_e, $cmd_line_f, $cmd_line_g, $cmd_line_h);
-my ($cmd_line_i, $cmd_line_j, $cmd_line_k, $DB, $DBX);
+my ($cmd_line_i, $cmd_line_j, $cmd_line_k, $DB, $DBX, $asterisk_version);
 my $FULL_LOG = 1;
 
 ### begin parsing run-time options ###
