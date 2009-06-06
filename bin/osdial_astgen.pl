@@ -299,7 +299,7 @@ sub gen_conferences {
 	chop $stmtB; chop $stmtB; chop $stmtB;
 	$stmtB .= ' limit 1;';
 	print $stmtB . "\n" if ($DB);
-	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
+	my $sthA = $dbhA->prepare($stmtB) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	my @aryA = $sthA->fetchrow_array;
 	my $asterisk_version = $aryA[0];
@@ -408,7 +408,7 @@ sub gen_phones {
 	my $iphn = $achead;
 	my $ephn = $achead;
 
-	my $stmtA = "SELECT extension,dialplan_number,phone_ip,pass,protocol FROM phones WHERE (protocol IN ('SIP','IAX2','Zap','DAHDI') AND active='Y' AND (";
+	my $stmtA = "SELECT extension,dialplan_number,phone_ip,pass,protocol FROM phones WHERE protocol IN ('SIP','IAX2','Zap','DAHDI') AND active='Y' AND (";
 	foreach my $ip (@myips) {
 		$stmtA .= " server_ip=\'" . $ip . "\' OR";
 	}
