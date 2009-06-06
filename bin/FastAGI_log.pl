@@ -244,7 +244,6 @@ sub process_request {
 			if ($DBagi_output =~ /BOTH/)	{$AGILOG = '3';}
 			$ZorD = 'Zap';
 			$ZorD = 'DAHDI' if ($DBasterisk_version =~ /^1\.6/);
-			}
 		 $rec_count++;
 		}
 	$sthA->finish();
