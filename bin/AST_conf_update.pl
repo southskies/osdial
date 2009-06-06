@@ -140,7 +140,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
  or die "Couldn't connect to database: " . DBI->errstr;
 
 ### Grab Server values from the database
-$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context FROM servers where server_ip = '$server_ip';";
+$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,asterisk_version FROM servers where server_ip = '$server_ip';";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -160,6 +160,7 @@ if ($sthArows > 0)
 		$DBanswer_transfer_agent=	"$aryA[8]";
 		$DBSERVER_GMT		=		"$aryA[9]";
 		$DBext_context	=			"$aryA[10]";
+		$DBasterisk_version	=			"$aryA[11]";
 		if ($DBtelnet_host)				{$telnet_host = $DBtelnet_host;}
 		if ($DBtelnet_port)				{$telnet_port = $DBtelnet_port;}
 		if ($DBASTmgrUSERNAME)			{$ASTmgrUSERNAME = $DBASTmgrUSERNAME;}
@@ -204,8 +205,13 @@ $t = new Net::Telnet (Port => $telnet_port,
 	else {$telnet_login = $ASTmgrUSERNAME;}
 
 $t->open("$telnet_host"); 
-$t->waitfor('/0\n$/');			# print login
-$t->print("Action: Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
+if ($DBasterisk_version =~ /^1\.6/) {
+	$t->waitfor('/1\n$/');			# print login
+	$t->print("Action: Login\nActionID: 1\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
+} else {
+	$t->waitfor('/0\n$/');			# print login
+	$t->print("Action: Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
+}
 $t->waitfor('/Authentication accepted/');		# waitfor auth accepted
 
 

@@ -72,6 +72,7 @@ if (scalar @ARGV) {
 		'ASTmgrUSERNAME=s' => \$ASTmgrUSERNAME,
 		'ASTmgrSECRET=s' => \$ASTmgrSECRET,
 		'ASTmgrUSERNAMEsend=s' => \$ASTmgrUSERNAMEsend,
+		'asterisk_version=s' => \$asterisk_version,
 		'action=s' => \$action,
 		'cmd_line_b=s' => \$cmd_line_b,
 		'cmd_line_c=s' => \$cmd_line_c,
@@ -97,6 +98,9 @@ if (scalar @ARGV) {
 		print "  ASTmgrUSERNAME:        $ASTmgrUSERNAME\n" if ($ASTmgrUSERNAME);
 		print "  ASTmgrSECRET:          $ASTmgrSECRET\n" if ($ASTmgrSECRET);
 		print "  ASTmgrUSERNAMEsend:    $ASTmgrUSERNAMEsend\n" if ($ASTmgrUSERNAMEsend);
+		print "  asterisk_version:      $asterisk_version\n" if ($asterisk_version);
+		print "  action:                $action\n" if ($action);
+		print "  cmd_line_b:            $cmd_line_b\n" if ($cmd_line_b);
 		print "  cmd_line_b:            $cmd_line_b\n" if ($cmd_line_b);
 		print "  cmd_line_c:            $cmd_line_c\n" if ($cmd_line_c);
 		print "  cmd_line_d:            $cmd_line_d\n" if ($cmd_line_d);
@@ -177,8 +181,13 @@ if ($action) {
 		$telnet_login = $ASTmgrUSERNAME;
 	}
 	$tn->open($telnet_host); 
-	$tn->waitfor('/0\n$/'); # print login
-	$tn->print("Action: Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
+	if ($asterisk_version =~ /^1\.6/) {
+		$tn->waitfor('/1\n$/');			# print login
+		$tn->print("Action: Login\nActionID: 1\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
+	} else {
+		$tn->waitfor('/0\n$/');			# print login
+		$tn->print("Action: Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
+	}
 	$tn->waitfor('/Authentication accepted/'); # waitfor auth accepted
 
 	$tn->buffer_empty;

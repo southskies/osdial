@@ -157,7 +157,7 @@ use Net::Telnet ();
     or die "Couldn't connect to database: " . DBI->errstr;
 
 ### Grab Server values from the database
-$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,vd_server_logs FROM servers where server_ip = '$server_ip';";
+$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,vd_server_logs,asterisk_version FROM servers where server_ip = '$server_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -177,6 +177,7 @@ while ($sthArows > $rec_count)
 		$DBSERVER_GMT		=		"$aryA[9]";
 		$DBext_context	=			"$aryA[10]";
 		$DBvd_server_logs =			"$aryA[11]";
+		$DBasterisk_version =			"$aryA[12]";
 		if ($DBtelnet_host)				{$telnet_host = $DBtelnet_host;}
 		if ($DBtelnet_port)				{$telnet_port = $DBtelnet_port;}
 		if ($DBASTmgrUSERNAME)			{$ASTmgrUSERNAME = $DBASTmgrUSERNAME;}
@@ -216,8 +217,13 @@ while($one_day_interval > 0)
 	if (length($ASTmgrUSERNAMElisten) > 3) {$telnet_login = $ASTmgrUSERNAMElisten;}
 	else {$telnet_login = $ASTmgrUSERNAME;}
 	$tn->open("$telnet_host"); 
-	$tn->waitfor('/0\n$/');			# print login
-	$tn->print("Action: Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
+	if ($DBasterisk_version =~ /^1\.6/) {
+		$tn->waitfor('/1\n$/');			# print login
+		$tn->print("Action: Login\nActionID: 1\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
+	} else {
+		$tn->waitfor('/0\n$/');			# print login
+		$tn->print("Action: Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
+	}
 	$tn->waitfor('/Authentication accepted/');		# waitfor auth accepted
 
 			$tn->buffer_empty;
@@ -629,7 +635,11 @@ while($one_day_interval > 0)
 				$last_update	=		"$aryA[0]";
 			$sthA->finish();
 
-			@list_lines = $tn->cmd(String => "Action: Command\nCommand: show uptime\n\n", Prompt => '/--END COMMAND--.*/', Errmode    => Return, Timeout    => 1); 
+			if ($DBasterisk_version =~ /^1\.4|^1\.6/) {
+				@list_lines = $tn->cmd(String => "Action: Command\nCommand: core show uptime\n\n", Prompt => '/--END COMMAND--.*/', Errmode    => Return, Timeout    => 1); 
+			} else {
+				@list_lines = $tn->cmd(String => "Action: Command\nCommand: show uptime\n\n", Prompt => '/--END COMMAND--.*/', Errmode    => Return, Timeout    => 1); 
+			}
 			if($DB){print "input lines: $#list_lines\n";}
 
 			if($DB){print "+++++++++++++++++++++++++++++++sending keepalive transmit line $endless_loop|$now_date|$last_update|\n";}

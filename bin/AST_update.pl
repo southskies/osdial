@@ -284,7 +284,7 @@ $sthA->finish();
 
 	$show_channels_format = 1;
 	if ($AST_ver =~ /^1\.0/i) {$show_channels_format = 0;}
-	if ($AST_ver =~ /^1\.4/i) {$show_channels_format = 2;}
+	if ($AST_ver =~ /^1\.4|^1\.6/i) {$show_channels_format = 2;}
 	print STDERR "SHOW CHANNELS format: $show_channels_format\n";
 
 ##### LOOK FOR ZAP CLIENTS AS DEFINED IN THE phones TABLE SO THEY ARE NOT MISLABELED AS TRUNKS
@@ -385,8 +385,13 @@ if (!$telnet_port) {$telnet_port = '5038';}
 	if (length($ASTmgrUSERNAMEupdate) > 3) {$telnet_login = $ASTmgrUSERNAMEupdate;}
 	else {$telnet_login = $ASTmgrUSERNAME;}
 	$t->open("$telnet_host"); 
-	$t->waitfor('/0\n$/');			# print login
-	$t->print("Action: Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
+	if ($DBasterisk_version =~ /^1\.6/) {
+		$t->waitfor('/1\n$/');			# print login
+		$t->print("Action: Login\nActionID: 1\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
+	} else {
+		$t->waitfor('/0\n$/');			# print login
+		$t->print("Action: Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
+	}
 	$t->waitfor('/Authentication accepted/');		# waitfor auth accepted
 
 		$event_string="STARTING NEW MANAGER TELNET CONNECTION|$telnet_login|CONFIRMED CONNECTION|ONE DAY INTERVAL:$one_day_interval|";

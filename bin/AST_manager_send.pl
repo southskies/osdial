@@ -114,6 +114,11 @@ $SYSLOG = 1 if ($servConf->{vd_server_logs} =~ /Y/);
 my $event_string='LOGGED INTO MYSQL SERVER ON 1 CONNECTION|';
 eventLogger($conf{PATHlogs}, 'process', $event_string);
 
+my $stmtA = "SELECT asterisk_version from servers where server_ip='" . $conf{VARserver_ip} . "';";
+my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+my $DBasterisk_version = ($sthA->fetchrow_array)[0];
+$sthA->finish();
 
 my $one_day_interval = 90;		# 1 day loops for 3 months
 while ($one_day_interval > 0) {
@@ -203,6 +208,7 @@ while ($one_day_interval > 0) {
 					$launch .= " --ASTmgrUSERNAME=" . $servConf->{ASTmgrUSERNAME};
 					$launch .= " --ASTmgrSECRET=" . $servConf->{ASTmgrSECRET};
 					$launch .= " --ASTmgrUSERNAMEsend=" . $servConf->{ASTmgrUSERNAMEsend};
+					$launch .= " --asterisk_version=" . $DBasterisk_version;
 					$launch .= " --action=" . $vdm->{action};
 					$launch .= " --cmd_line_b=" . $vdm->{cmd_line_b} if ($vdm->{cmd_line_b});
 					$launch .= " --cmd_line_c=" . $vdm->{cmd_line_c} if ($vdm->{cmd_line_c});
