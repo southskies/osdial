@@ -1040,7 +1040,7 @@ if ($ADD == "3keys") {
         $ingroups = get_krh($link, 'osdial_inbound_groups', 'group_id,group_name','',"active='Y'");
         foreach ($ingroups as $ing) {
             $sel='';
-            if ($ing['status'] == $ad[2]) {
+            if ($ing['group_id'] == $ad[2]) {
                 $sel = ' selected';
             }
             echo "<option value=\"" . $ing['group_id'] . "\"". $sel . ">" . $ing['group_id'] . " : " . $ing['group_name'] . "</option>";
