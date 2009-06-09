@@ -26,6 +26,7 @@ my $ivr = {};
 
 $SIG{HUP} = 'exit_now';
 $SIG{INT} = 'exit_now';
+$SIG{PIPE} = 'exit_now';
 
 # Get OSD configuration directives.
 $vars = getOSDconfig('/etc/osdial.conf');
@@ -295,7 +296,6 @@ sub xfer_to_external {
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		my @aryA = $sthA->fetchrow_array;
 		$sthA->finish();
-		agi_output("ODOI: $xfer|$stmtA") if ($vars->{DB} > 2);
 		$xfer=0 if ($aryA[0] == 1);
 		my $stmtA = "SELECT count(*) FROM live_sip_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND extension LIKE '%" . $vars->{conf_exten} . "%' order by channel desc;";
 		my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -303,7 +303,7 @@ sub xfer_to_external {
 		my @aryA = $sthA->fetchrow_array;
 		$xfer = 0 if ($aryA[0] == 0);
 		$sthA->finish();
-		agi_output("ODOI: $xfer|$stmtA") if ($vars->{DB} > 2);
+		agi_output("ODOI: $xfer|$stmtA") if ($vars->{DB} > 1);
 	}
 	agi_output("exiting the ODOI app");
 
@@ -374,30 +374,32 @@ sub hangup_and_dispo {
 	#my $stmtA = "INSERT INTO osdial_manager values('','','$tdate','NEW','N','" . $vars->{VARserver_ip} . "','','Hangup','$VHqueryCID','Channel: " . $AGI->{orig_channel} . "','','','','','','','','','')";
 	#my $affected_rows = $dbhA->do($stmtA);
 	#agi_output("$affected_rows|$stmtA|") if ($vars->{DB} > 1);
-	my @huchan;
-	my $lccnt = 0;
-	my $stmtA = "SELECT channel FROM live_sip_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND extension LIKE '%" . $vars->{conf_exten} . "%' order by channel desc;";
-	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-	while (my @aryA = $sthA->fetchrow_array) {
-		push @huchan, $aryA[0];
-		$lccnt++;
-	}
-	$sthA->finish();
-	foreach my $huc (@huchan) {
-		my $stmtA = "INSERT INTO osdial_manager values('','','$tdate','NEW','N','" . $vars->{VARserver_ip} . "','','Hangup','$VHqueryCID','Channel: " . $huc . "','','','','','','','','','')";
-		my $affected_rows = $dbhA->do($stmtA);
-		agi_output("$affected_rows|$stmtA|") if ($vars->{DB} > 1);
-	}
+	my $lccnt = 2;
+	my $try = 2;
 	# Loop through open channels sleep untill all are closed.
-	while ($lccnt > 0) {
+	while ($lccnt > 1 or $try > 1) {
+		my @huchan;
+		my $stmtA = "SELECT channel FROM live_sip_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND extension LIKE '%" . $vars->{conf_exten} . "%' order by channel desc;";
+		my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		while (my @aryA = $sthA->fetchrow_array) {
+			push @huchan, $aryA[0];
+		}
+		$sthA->finish();
+		foreach my $huc (@huchan) {
+			my $stmtA = "INSERT INTO osdial_manager values('','','$tdate','NEW','N','" . $vars->{VARserver_ip} . "','','Hangup','$VHqueryCID','Channel: " . $huc . "','','','','','','','','','')";
+			my $affected_rows = $dbhA->do($stmtA);
+			agi_output("$affected_rows|$stmtA|") if ($vars->{DB} > 1);
+		}
 		sleep 1;
 		my $stmtA = "SELECT count(*) FROM live_sip_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND extension LIKE '%" . $vars->{conf_exten} . "%' order by channel desc;";
+		agi_output("$affected_rows|$stmtA|") if ($vars->{DB} > 1);
 		my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		my @aryA = $sthA->fetchrow_array;
 		$lccnt = $aryA[0];
 		$sthA->finish();
+		$try--;
 	}
 
 	my $stmtA = "UPDATE osdial_log set end_epoch='$tepoch' where uniqueid = '" . $AGI->{uniqueid} . "';";
@@ -516,11 +518,11 @@ sub agi_output {
 		if ($server->{agi_output} =~ /FILE|BOTH/) {
 			### open the log file for writing ###
 			open(Lout, ">>" . $vars->{AGILOGFILE}) || die "Can't open " . $vars->{AGILOGFILE} . ": $!\n";
-			print Lout "$date|" . $vars->{script} . "|$agi_string\n";
+			print Lout "$date|" . $vars->{script} . "|$$|$agi_string\n";
 			close(Lout);
 		}
 		### send to STDERR writing ###
-		print STDERR "$date|" . $vars->{script} . "|$agi_string\n" if ($server->{agi_output} =~ /STDERR|FILE/ or $vars->{DB} > 1);
+		print STDERR "$date|" . $vars->{script} . "|$$|$agi_string\n" if ($server->{agi_output} =~ /STDERR|FILE/ or $vars->{DB} > 1);
 	}
 }
 
