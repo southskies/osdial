@@ -20,6 +20,7 @@
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
 # 090511-2123 - Added status_category_hour_counts
+# 090609-0230 - Added INBOUND and OUTBOUND campaign selections
 
 
 
@@ -282,6 +283,10 @@ function report_realtime_summary() {
 		} else {
 			if ($group=='XXXX-ALL-ACTIVE-XXXX') { 
 				$groupSQL = '';
+			} elseif ($group=='XXXX-OUTBOUND-XXXX') { 
+				$groupSQL = ' and length(closer_campaigns)<6';
+			} elseif ($group=='XXXX-INBOUND-XXXX') { 
+				$groupSQL = ' and length(closer_campaigns)>5';
 			} else {
 				$groupSQL = " and campaign_id='" . mysql_real_escape_string($group) . "'";
 			}

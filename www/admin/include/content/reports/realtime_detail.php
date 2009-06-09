@@ -20,6 +20,7 @@
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
 # 090511-2123 - Added status_category_hour_counts
+# 090609-0230 - Added INBOUND and OUTBOUND campaign selections
 
 function report_realtime_detail() {
     # Bring all globals into this scope.
@@ -213,6 +214,8 @@ function report_realtime_detail() {
 	$html .= "<INPUT TYPE=HIDDEN NAME=CALLSdisplay VALUE=\"$CALLSdisplay\">\n";
 	$html .= "<SELECT SIZE=1 NAME=group>\n";
 	$html .= "<option value=\"XXXX-ALL-ACTIVE-XXXX\">ALL ACTIVE</option>\n";
+	$html .= "<option value=\"XXXX-OUTBOUND-XXXX\">ONLY OUTBOUND</option>\n";
+	$html .= "<option value=\"XXXX-INBOUND-XXXX\">ONLY INBOUND</option>\n";
 	$o=0;
 
     $group_name = '';
@@ -251,6 +254,12 @@ function report_realtime_detail() {
 		if ($group=='XXXX-ALL-ACTIVE-XXXX') {
 			$stmt="select avg(auto_dial_level),min(dial_status_a),min(dial_status_b),min(dial_status_c),min(dial_status_d),min(dial_status_e),min(lead_order),min(lead_filter_id),sum(hopper_level),min(dial_method),avg(adaptive_maximum_level),avg(adaptive_dropped_percentage),avg(adaptive_dl_diff_target),avg(adaptive_intensity),min(available_only_ratio_tally),min(adaptive_latest_server_time),min(local_call_time),avg(dial_timeout),min(dial_statuses) from osdial_campaigns;";
 		}
+		if ($group=='XXXX-OUTBOUND-XXXX') {
+			$stmt="select avg(auto_dial_level),min(dial_status_a),min(dial_status_b),min(dial_status_c),min(dial_status_d),min(dial_status_e),min(lead_order),min(lead_filter_id),sum(hopper_level),min(dial_method),avg(adaptive_maximum_level),avg(adaptive_dropped_percentage),avg(adaptive_dl_diff_target),avg(adaptive_intensity),min(available_only_ratio_tally),min(adaptive_latest_server_time),min(local_call_time),avg(dial_timeout),min(dial_statuses) from osdial_campaigns where length(closer_campaigns)<6;";
+		}
+		if ($group=='XXXX-INBOUND-XXXX') {
+			$stmt="select avg(auto_dial_level),min(dial_status_a),min(dial_status_b),min(dial_status_c),min(dial_status_d),min(dial_status_e),min(lead_order),min(lead_filter_id),sum(hopper_level),min(dial_method),avg(adaptive_maximum_level),avg(adaptive_dropped_percentage),avg(adaptive_dl_diff_target),avg(adaptive_intensity),min(available_only_ratio_tally),min(adaptive_latest_server_time),min(local_call_time),avg(dial_timeout),min(dial_statuses) from osdial_campaigns where length(closer_campaigns)>5;";
+		}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$DIALlev =		sprintf('%3.2f',$row[0]);
@@ -279,6 +288,12 @@ function report_realtime_detail() {
 		if ($group=='XXXX-ALL-ACTIVE-XXXX') {
 			$stmt="select count(*) from osdial_hopper;";
 		}
+		if ($group=='XXXX-OUTBOUND-XXXX') {
+			$stmt="select count(*) from osdial_hopper,osdial_campaigns WHERE osdial_hopper.campaign_id=osdial_campaigns.campaign_id AND length(closer_campaigns)<6;";
+		}
+		if ($group=='XXXX-INBOUND-XXXX') {
+			$stmt="select count(*) from osdial_hopper,osdial_campaigns WHERE osdial_hopper.campaign_id=osdial_campaigns.campaign_id AND length(closer_campaigns)>5;";
+		}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$VDhop = $row[0];
@@ -286,6 +301,12 @@ function report_realtime_detail() {
 		$stmt="select dialable_leads,calls_today,drops_today,drops_answers_today_pct,differential_onemin,agents_average_onemin,balance_trunk_fill,answers_today,status_category_1,status_category_count_1,status_category_2,status_category_count_2,status_category_3,status_category_count_3,status_category_4,status_category_count_4,status_category_hour_count_1,status_category_hour_count_2,status_category_hour_count_3,status_category_hour_count_4,recycle_total,recycle_sched from osdial_campaign_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
 		if ($group=='XXXX-ALL-ACTIVE-XXXX') {
 			$stmt="select sum(dialable_leads),sum(calls_today),sum(drops_today),avg(drops_answers_today_pct),avg(differential_onemin),avg(agents_average_onemin),sum(balance_trunk_fill),sum(answers_today),min(status_category_1),sum(status_category_count_1),min(status_category_2),sum(status_category_count_2),min(status_category_3),sum(status_category_count_3),min(status_category_4),sum(status_category_count_4),sum(status_category_hour_count_1),sum(status_category_hour_count_2),sum(status_category_hour_count_3),sum(status_category_hour_count_4),SUM(recycle_total),SUM(recycle_sched) from osdial_campaign_stats;";
+		}
+		if ($group=='XXXX-OUTBOUND-XXXX') {
+			$stmt="select sum(dialable_leads),sum(calls_today),sum(drops_today),avg(drops_answers_today_pct),avg(differential_onemin),avg(agents_average_onemin),sum(balance_trunk_fill),sum(answers_today),min(status_category_1),sum(status_category_count_1),min(status_category_2),sum(status_category_count_2),min(status_category_3),sum(status_category_count_3),min(status_category_4),sum(status_category_count_4),sum(status_category_hour_count_1),sum(status_category_hour_count_2),sum(status_category_hour_count_3),sum(status_category_hour_count_4),SUM(recycle_total),SUM(recycle_sched) from osdial_campaign_stats,osdial_campaigns WHERE osdial_campaign_stats.campaign_id=osdial_campaigns.campaign_id AND length(closer_campaigns)<6;";
+		}
+		if ($group=='XXXX-INBOUND-XXXX') {
+			$stmt="select sum(dialable_leads),sum(calls_today),sum(drops_today),avg(drops_answers_today_pct),avg(differential_onemin),avg(agents_average_onemin),sum(balance_trunk_fill),sum(answers_today),min(status_category_1),sum(status_category_count_1),min(status_category_2),sum(status_category_count_2),min(status_category_3),sum(status_category_count_3),min(status_category_4),sum(status_category_count_4),sum(status_category_hour_count_1),sum(status_category_hour_count_2),sum(status_category_hour_count_3),sum(status_category_hour_count_4),SUM(recycle_total),SUM(recycle_sched) from osdial_campaign_stats,osdial_campaigns WHERE osdial_campaign_stats.campaign_id=osdial_campaigns.campaign_id AND length(closer_campaigns)>5;";
 		}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
@@ -322,6 +343,12 @@ function report_realtime_detail() {
 		$stmt="select sum(local_trunk_shortage) from osdial_campaign_server_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
 		if ($group=='XXXX-ALL-ACTIVE-XXXX') {
 			$stmt="select sum(local_trunk_shortage) from osdial_campaign_server_stats;";
+		}
+		if ($group=='XXXX-OUTBOUND-XXXX') {
+			$stmt="select sum(local_trunk_shortage) from osdial_campaign_server_stats,osdial_campaigns WHERE osdial_campaign_server_stats.campaign_id=osdial_campaigns.campaign_id AND legnth(closer_campaigns)<6;";
+		}
+		if ($group=='XXXX-INBOUND-XXXX') {
+			$stmt="select sum(local_trunk_shortage) from osdial_campaign_server_stats,osdial_campaigns WHERE osdial_campaign_server_stats.campaign_id=osdial_campaigns.campaign_id AND legnth(closer_campaigns)>5;";
 		}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
@@ -462,6 +489,10 @@ function report_realtime_detail() {
 	} else {
 		if ($group=='XXXX-ALL-ACTIVE-XXXX') {
 			$groupSQL = '';
+		} elseif ($group=='XXXX-OUTBOUND-XXXX') {
+            $groupSQL = " and length(closer_campaigns)<6";
+		} elseif ($group=='XXXX-INBOUND-XXXX') {
+            $groupSQL = " and length(closer_campaigns)>5";
 		} else {
 			$groupSQL = " and campaign_id='" . mysql_real_escape_string($group) . "'";
 		}
@@ -704,6 +735,10 @@ function report_realtime_detail() {
 	
 	if ($group=='XXXX-ALL-ACTIVE-XXXX') {
 		$groupSQL = '';
+	} elseif ($group=='XXXX-OUTBOUND-XXXX') {
+		$groupSQL = ' and length(closer_campaigns)<6';
+	} elseif ($group=='XXXX-INBOUND-XXXX') {
+		$groupSQL = ' and length(closer_campaigns)>5';
 	} else {
 		$groupSQL = " and campaign_id='" . mysql_real_escape_string($group) . "'";
 	}
