@@ -19,6 +19,7 @@
 #     You should have received a copy of the GNU Affero General Public
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
+# 0906090157 - Added XFER_INGROUP forms.
 
 if ($campaign_id != '') {
     $oivr = get_first_record($link, 'osdial_ivr', '*', "campaign_id='" . $campaign_id . "'");
@@ -67,7 +68,7 @@ if ($ADD == "1menu") {
 
 # Format key updates, ie action_data.
 if ($ADD == "1keys" or $ADD == '4keys') {
-	if ($oivr_opt_action == 'XFER_AGENT' or $oivr_opt_action == 'HANGUP' or $oivr_opt_action == 'PLAYFILE' or $oivr_opt_action == 'XFER_EXTERNAL' or $oivr_opt_action == 'XFER_EXTERNAL_MULTI' or $oivr_opt_action == 'MENU') {
+	if ($oivr_opt_action == 'XFER_INGROUP' or $oivr_opt_action == 'HANGUP' or $oivr_opt_action == 'PLAYFILE' or $oivr_opt_action == 'XFER_EXTERNAL' or $oivr_opt_action == 'XFER_EXTERNAL_MULTI' or $oivr_opt_action == 'MENU') {
             # Upload recording
             $recfile = $_FILES['recfile'];
             $recfiletmp = $_FILES['recfile']['tmp_name'];
@@ -82,7 +83,7 @@ if ($ADD == "1keys" or $ADD == '4keys') {
                 }
             }
 	}
-	if ($oivr_opt_action == 'MENU_REPEAT' or $oivr_opt_action == 'MENU_EXIT' or $oivr_opt_action == 'XFER_AGENT') {
+	if ($oivr_opt_action == 'MENU_REPEAT' or $oivr_opt_action == 'MENU_EXIT') {
 		$d_ary = array($oi1);
 	} elseif ($oivr_opt_action == 'HANGUP') {
 		$d_ary = array($oi1,$oi2);
@@ -92,6 +93,8 @@ if ($ADD == "1keys" or $ADD == '4keys') {
 		$oi4 = ereg_replace("\r","",$oi4);
 		$oi4 = ereg_replace("\n","#:#",$oi4);
 		$d_ary = array($oi1,$oi2,$oi3,$oi4);
+	} elseif ($oivr_opt_action == 'XFER_INGROUP') {
+		$d_ary = array($oi1,$oi2,$oi3,$oi4,$oi5);
 	} elseif ($oivr_opt_action == 'MENU') {
 		$d_ary = array($oi1,$oi2,$oi3,$oi4,$oi5,$oi6,$oi7,$oi8);
 	} else {
@@ -271,7 +274,7 @@ if ($ADD == "2keys") {
         echo '<input type="hidden" name="oi1" value="1">';
     } elseif ($o == 'MENU_EXIT') { 
         echo '<input type="hidden" name="oi1" value="1">';
-    } elseif ($o == 'XFER_AGENT') { 
+    } elseif ($o == 'XFER_INGROUP') { 
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>File to Play Before Transfer (Optional)</td>\n";
     	echo '      <td bgcolor="#CBDCE0">';
@@ -288,6 +291,43 @@ if ($ADD == "2keys") {
     	echo "          </select><br>";
     	echo '          <input type="file" name="recfile">';
     	echo '      </td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
+        echo '      <td bgcolor="#CBDCE0">';
+        echo '      <select name="oi2"><option value="">-NONE-</option>';
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
+        foreach ($status as $stat) {
+            if ($stat['status'] == 'VIXFER') {
+                $sel = ' selected';
+            }
+            echo "<option value=\"" . $stat['status'] . "\"" . $sel . ">" . $stat['status'] . " : " . $stat['status_name'] . "</option>";
+        }
+        echo "  </select></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=#CBDCE0 align=right>In-Group to transfer to</td>\n";
+        echo '      <td bgcolor="#CBDCE0">';
+        echo '      <select name="oi3"><option value="">-NONE-</option>';
+        $ingroups = get_krh($link, 'osdial_inbound_groups', 'group_id,group_name','',"active='Y'");
+        foreach ($ingroups as $ing) {
+            echo "<option value=\"" . $ing['group_id'] . "\">" . $ing['group_id'] . " : " . $ing['group_name'] . "</option>";
+        }
+        echo "  </select></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=#CBDCE0 align=right>Failover Method</td>";
+        echo '      <td bgcolor="#CBDCE0">';
+        echo '          <select name="oi4">';
+        echo '              <option value="">-NONE-</option>';
+        echo '              <option value="EXT_NA">XFer to ext if no agents logged in.</option>';
+        echo '              <option value="EXT_UA">XFer to ext if agents are unavailable.</option>';
+        echo '          </select>';
+        echo '      </td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=#CBDCE0 align=right>Ext/Number to Transfer Call to:</td>";
+        echo '      <td bgcolor="#CBDCE0"><input type="text" size="12" maxlength="10" name="oi5" value=""></td>';
         echo "  </tr>\n";
     } elseif ($o == 'XFER_EXTERNAL') { 
         echo "  <tr>\n";
@@ -740,7 +780,7 @@ if ($ADD == "3menu") {
     echo "      <option value=\"PLAYFILE\">Play an Audio File</option>";
     echo "      <option value=\"XFER_EXTERNAL\">Transfer to an External Number</option>";
     echo "      <option value=\"XFER_EXTERNAL_MULTI\">Transfer to One of Multiple External Numbers</option>";
-    echo "      <option value=\"XFER_AGENT\">Transfer to Agent</option>";
+    echo "      <option value=\"XFER_INGROUP\">Transfer to an In-Group</option>";
     echo "      <option value=\"HANGUP\">Disposition and Hangup</option>";
     echo "      <option value=\"MENU\">Sub-menu</option>";
     echo "      <option value=\"MENU_REPEAT\">Repeat the Menu (no-diposition)</option>";
@@ -959,7 +999,7 @@ if ($ADD == "3keys") {
         echo '<input type="hidden" name="oi1" value="1">';
     } elseif ($o == 'MENU_EXIT') { 
         echo '<input type="hidden" name="oi1" value="1">';
-    } elseif ($o == 'XFER_AGENT') { 
+    } elseif ($o == 'XFER_INGROUP') { 
         echo "  <tr>\n";
         echo "      <td bgcolor=#CBDCE0 align=right>File to Play Before Transfer (Optional)</td>\n";
     	echo '      <td bgcolor="#CBDCE0">';
@@ -979,6 +1019,57 @@ if ($ADD == "3keys") {
     	echo "          </select><br>";
     	echo '          <input type="file" name="recfile">';
     	echo '      </td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
+        echo '      <td bgcolor="#CBDCE0">';
+        echo '      <select name="oi2"><option value="">-NONE-</option>';
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
+        foreach ($status as $stat) {
+            $sel='';
+            if ($stat['status'] == $ad[1]) {
+                $sel = ' selected';
+            }
+            echo "<option value=\"" . $stat['status'] . "\"" . $sel . ">" . $stat['status'] . " : " . $stat['status_name'] . "</option>";
+        }
+        echo "  </select></td>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=#CBDCE0 align=right>In-Group to transfer to</td>\n";
+        echo '      <td bgcolor="#CBDCE0">';
+        echo '      <select name="oi3"><option value="">-NONE-</option>';
+        $ingroups = get_krh($link, 'osdial_inbound_groups', 'group_id,group_name','',"active='Y'");
+        foreach ($ingroups as $ing) {
+            $sel='';
+            if ($ing['status'] == $ad[2]) {
+                $sel = ' selected';
+            }
+            echo "<option value=\"" . $ing['group_id'] . "\"". $sel . ">" . $ing['group_id'] . " : " . $ing['group_name'] . "</option>";
+        }
+        echo "  </select></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=#CBDCE0 align=right>Failover Method</td>";
+        echo '      <td bgcolor="#CBDCE0">';
+        echo '          <select name="oi4">';
+        $sel1='';
+        $sel2='';
+        $sel3='';
+        if ($ad[3] == "EXT_NA") {
+            $sel2 = ' selected';
+        } elseif ($ad[3] == "EXT_UA") {
+            $sel3 = ' selected';
+        } else {
+            $sel1 = ' selected';
+        }
+        echo '              <option value=""' . $sel1 . '>-NONE-</option>';
+        echo '              <option value="EXT_NA"' . $sel2 . '>XFer to ext if no agents logged in.</option>';
+        echo '              <option value="EXT_UA"' . $sel3 . '>XFer to ext if agents are unavailable.</option>';
+        echo '          </select>';
+        echo '      </td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=#CBDCE0 align=right>Ext/Number to Transfer Call to:</td>";
+        echo '      <td bgcolor="#CBDCE0"><input type="text" size="12" maxlength="10" name="oi5" value="' . $ad[4] . '"></td>';
         echo "  </tr>\n";
     } elseif ($o == 'XFER_EXTERNAL') { 
         echo "  <tr>\n";
@@ -1155,7 +1246,7 @@ if ($ADD == "3keys") {
         echo "      <option value=\"PLAYFILE\">Play an Audio File</option>";
         echo "      <option value=\"XFER_EXTERNAL\">Transfer to an External Number</option>";
         echo "      <option value=\"XFER_EXTERNAL_MULTI\">Transfer to One of Multiple External Numbers</option>";
-        echo "      <option value=\"XFER_AGENT\">Transfer to Agent</option>";
+        echo "      <option value=\"XFER_INGROUP\">Transfer to an In-Group</option>";
         echo "      <option value=\"HANGUP\">Disposition and Hangup</option>";
         echo "      <option value=\"MENU\">Sub-menu</option>";
         echo "      <option value=\"MENU_REPEAT\">Repeat the Menu (no-diposition)</option>";

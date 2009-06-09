@@ -195,6 +195,8 @@ sub ivr_menu {
 			$ivrloop = xfer_to_external_multi($menu{$dkey}{id}, $menu{$dkey}{last_state}, @aparams);
 		} elsif ($menu{$dkey}{action} eq "XFER_AGENT") {
 			$ivrloop = xfer_to_agent(@aparams);
+		} elsif ($menu{$dkey}{action} eq "XFER_INGROUP") {
+			$ivrloop = xfer_to_ingroup(@aparams);
 		} elsif ($menu{$dkey}{action} eq "HANGUP") {
 			$ivrloop = hangup_and_dispo(@aparams);
 		} elsif ($menu{$dkey}{action} eq "MENU") {
@@ -271,18 +273,6 @@ sub xfer_to_external {
 	my $xdate = sql_date($xepoch);
 	my $call_length = $xepoch - $vars->{start_time};
 
-	#my $stmtA = "UPDATE osdial_log set end_epoch='$xepoch' where uniqueid='" . $AGI->{uniqueid} . "';";
-	#agi_output("|$stmtA|") if ($vars->{DB} > 1);
-	#my $affected_rows = $dbhA->do($stmtA);
-	#my $stmtA = "UPDATE osdial_log set length_in_sec=end_epoch-start_epoch where uniqueid='" . $AGI->{uniqueid} . "';";
-	#agi_output("|$stmtA|") if ($vars->{DB} > 1);
-	#my $affected_rows = $dbhA->do($stmtA);
-	#agi_output("--    ODOI osdial_log update: |$affected_rows");
-
-	#my $stmtA =  "UPDATE osdial_live_agents set status='CLOSER',last_update_time=NOW()-1 WHERE uniqueid='" . $AGI->{uniqueid} . "';";
-	#agi_output("|$stmtA|") if ($vars->{DB} > 1);
-	#my $affected_rows = $dbhA->do($stmtA);
-
 	agi_output("ODOI: transferring call to $number|" . $vars->{conf_exten});
 	my $VqueryCID = $AGI->{callerid};
 	my $XqueryCID = $VqueryCID;
@@ -343,6 +333,64 @@ sub xfer_to_external_multi {
 # Depricated, to be replaced by xfer_to_ingroup
 sub xfer_to_agent {
 	return 1;
+}
+# The new xfer_to_ingroup
+# For transfering to an ingroup.
+#   If failover_method = NONE or ''
+#     The call routed directly to the ingroup.
+#   If failover_method = EXT_NA
+#     The call routed directly to the failover_number if no agents in ingroup are present.
+#   If failover_method = EXT_UA
+#     The call routed directly to the failover_number if no agents in ingroup are present or available.
+sub xfer_to_ingroup {
+	my ($stream, $status, $ingroup, $failover_method, $failover_number) = @_;
+
+	$stream =~ s/\....$//;
+	$AGI->stream_file('ivr/' . $stream) if ($stream);
+
+	update_status($status);
+
+
+	my $xepoch = time();
+	my $xdate = sql_date($xepoch);
+	my $call_length = $xepoch - $vars->{start_time};
+
+    my $number = '';;
+    if ($failover_method eq 'EXT_NA') {
+        my $stmtA = "SELECT count(*) FROM osdial_live_agents WHERE closer_campaigns LIKE '% $ingroup %';";
+		my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		my @aryA = $sthA->fetchrow_array;
+		$sthA->finish();
+        if ($aryA[0] < 1) {
+            # no agents logged in, send to failover_number
+            $number = $failover_number;
+        }
+    } elsif ($failover_method eq 'EXT_UA') {
+        my $stmtA = "SELECT count(*) FROM osdial_live_agents WHERE closer_campaigns LIKE '% $ingroup %' AND uniqueid<'1';";
+		my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		my @aryA = $sthA->fetchrow_array;
+		$sthA->finish();
+        if ($aryA[0] < 1) {
+            # no agents logged in or they are unavailable, send to failover_number
+            $number = $failover_number;
+        }
+    }
+    if ($number eq '') {
+        $number = "90009*" . $ingroup . "*8301*" . $vars->{CIDlead_id} . "*park***";
+    }
+
+	agi_output("ODOI: transferring call to $number|" . $vars->{conf_exten});
+	my $VqueryCID = $AGI->{callerid};
+	my $XqueryCID = $VqueryCID;
+	$XqueryCID =~ s/^V/I/;
+	my $stmtA="INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $vars->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $vars->{conf_exten} . "\@" . $server->{ext_context} . "','Context: " . $server->{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"$XqueryCID\" <" . $campaign->{campaign_cid} . ">','','','','','');";
+	my $xfer = $dbhA->do($stmtA);
+	agi_output("exiting the ODOI xfer_to_ingroup");
+
+	# The call should be well on its way to being transferred
+	return 0;
 }
 
 
