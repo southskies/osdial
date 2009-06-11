@@ -907,7 +907,7 @@ function report_realtime_detail() {
 	
 			$agentcount++;
 
-            if ($lead_status != "" and $lead_status != "      ") {
+            if (eregi("INCALL",$status) and $lead_status != "" and $lead_status != "      ") {
                 $status = $lead_status;
             }
 	
