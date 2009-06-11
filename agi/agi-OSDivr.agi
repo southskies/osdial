@@ -80,12 +80,24 @@ if ( ((length($AGI->{calleridname})>5) && ( (!$AGI->{callerid}) or ($AGI->{calle
 $AGI->{callerid} =~ s/\"//gi;
 
 
-$stmtA = "SELECT * FROM osdial_live_agents WHERE callerid='" . $AGI->{callerid} . "' LIMIT 1;";
-agi_output("|$stmtA|") if ($vars->{DB} > 1);
-$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-my $live_agents = $sthA->fetchrow_hashref;
-$sthA->finish();
+my $live_agents = {};
+my $latry = 5;
+while ($latry > 0) {
+	$stmtA = "SELECT * FROM osdial_live_agents WHERE callerid='" . $AGI->{callerid} . "' LIMIT 1;";
+	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+	my $larows = $sthA->rows();
+	agi_output("$larows|$stmtA|") if ($vars->{DB} > 1);
+	if ($larows > 0) {
+		$live_agents = $sthA->fetchrow_hashref;
+		$latry=0;
+	} else {
+		sleep 1;
+		$latry--;
+	}
+	$sthA->finish();
+}
+
 $AGI->{orig_callerid} = $AGI->{callerid};
 $AGI->{orig_channel} = $AGI->{channel};
 $AGI->{orig_uniqueid} = $AGI->{uniqueid};
@@ -277,7 +289,7 @@ sub xfer_to_external {
 	my $VqueryCID = $AGI->{callerid};
 	my $XqueryCID = $VqueryCID;
 	$XqueryCID =~ s/^V/X/;
-	$stmtA="INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $vars->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $vars->{conf_exten} . "\@" . $server->{ext_context} . "','Context: " . $server->{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"$XqueryCID\" <" . $campaign->{campaign_cid} . ">','','','','','');";
+	$stmtA="INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $vars->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/8" . $vars->{conf_exten} . "\@" . $server->{ext_context} . "','Context: " . $server->{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"$XqueryCID\" <" . $campaign->{campaign_cid} . ">','','','','','');";
 	my $xfer = $dbhA->do($stmtA);
 	while ($xfer) {
 		sleep(1);
@@ -385,7 +397,7 @@ sub xfer_to_ingroup {
 	my $VqueryCID = $AGI->{callerid};
 	my $XqueryCID = $VqueryCID;
 	$XqueryCID =~ s/^V/I/;
-	my $stmtA="INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $vars->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $vars->{conf_exten} . "\@" . $server->{ext_context} . "','Context: " . $server->{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"$XqueryCID\" <" . $campaign->{campaign_cid} . ">','','','','','');";
+	my $stmtA="INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $vars->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/8" . $vars->{conf_exten} . "\@" . $server->{ext_context} . "','Context: " . $server->{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"$XqueryCID\" <" . $campaign->{campaign_cid} . ">','','','','','');";
 	my $xfer = $dbhA->do($stmtA);
 	agi_output("exiting the ODOI xfer_to_ingroup");
 

@@ -379,13 +379,25 @@ sub gen_conferences {
         my ($cnf2,$mtm2,$cf,$cl);
 	while (my @aryA = $sthA->fetchrow_array) {
 		if ($asterisk_version =~ /^1\.6/) {
-			$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme(\${EXTEN}|Fq)\n";
-			$cnf2 .= "exten => _6" . $aryA[0] . ",1,Meetme(\${EXTEN}|Flq)\n";
-			$cnf2 .= "exten => _7" . $aryA[0] . ",1,Meetme(\${EXTEN}|Fq)\n";
+			$cnf2 .= "exten => _" . $aryA[0] .  ",1,Meetme(\${EXTEN},Fq)\n";
+			$cnf2 .= "exten => _" . $aryA[0] .  ",2,Hangup\n";
+			$cnf2 .= "exten => _6" . $aryA[0] . ",1,Meetme(\${EXTEN:1},Flq)\n";
+			$cnf2 .= "exten => _6" . $aryA[0] . ",2,Hangup\n";
+			$cnf2 .= "exten => _7" . $aryA[0] . ",1,Meetme(\${EXTEN:1},Fq)\n";
+			$cnf2 .= "exten => _7" . $aryA[0] . ",2,Hangup\n";
+			$cnf2 .= "exten => _8" . $aryA[0] . ",1,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _8" . $aryA[0] . ",2,Meetme(\${EXTEN:1},Fq)\n";
+			$cnf2 .= "exten => _8" . $aryA[0] . ",3,Hangup\n";
 		} else {
-			$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme,\${EXTEN}|Fq\n";
-			$cnf2 .= "exten => _6" . $aryA[0] . ",1,Meetme,\${EXTEN}|Fmq\n";
-			$cnf2 .= "exten => _7" . $aryA[0] . ",1,Meetme,\${EXTEN}|Fq\n";
+			$cnf2 .= "exten => _" . $aryA[0] .  ",1,Meetme,\${EXTEN}|Fq\n";
+			$cnf2 .= "exten => _" . $aryA[0] .  ",2,Hangup\n";
+			$cnf2 .= "exten => _6" . $aryA[0] . ",1,Meetme,\${EXTEN:1}|Fmq\n";
+			$cnf2 .= "exten => _6" . $aryA[0] . ",2,Hangup\n";
+			$cnf2 .= "exten => _7" . $aryA[0] . ",1,Meetme,\${EXTEN:1}|Fq\n";
+			$cnf2 .= "exten => _7" . $aryA[0] . ",2,Hangup\n";
+			$cnf2 .= "exten => _8" . $aryA[0] . ",1,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _8" . $aryA[0] . ",2,Meetme,\${EXTEN:1}|Fq\n";
+			$cnf2 .= "exten => _8" . $aryA[0] . ",3,Hangup\n";
 		}
 		$mtm2 .= "conf => " . $aryA[0] . "\n";
 	}
