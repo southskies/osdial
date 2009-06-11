@@ -399,6 +399,22 @@ sub xfer_to_ingroup {
 	$XqueryCID =~ s/^V/I/;
 	my $stmtA="INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $vars->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/8" . $vars->{conf_exten} . "\@" . $server->{ext_context} . "','Context: " . $server->{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"$XqueryCID\" <" . $campaign->{campaign_cid} . ">','','','','','');";
 	my $xfer = $dbhA->do($stmtA);
+	while ($xfer) {
+		sleep(1);
+		my $stmtA = "SELECT count(*) FROM osdial_manager where callerid='$XqueryCID' AND status='DEAD';";
+		my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		my @aryA = $sthA->fetchrow_array;
+		$sthA->finish();
+		$xfer=0 if ($aryA[0] == 1);
+		my $stmtA = "SELECT count(*) FROM live_sip_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND extension LIKE '%" . $vars->{conf_exten} . "%' order by channel desc;";
+		my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		my @aryA = $sthA->fetchrow_array;
+		$xfer = 0 if ($aryA[0] == 0);
+		$sthA->finish();
+		agi_output("ODOI: $xfer|$stmtA") if ($vars->{DB} > 1);
+	}
 	agi_output("exiting the ODOI xfer_to_ingroup");
 
 	# The call should be well on its way to being transferred
