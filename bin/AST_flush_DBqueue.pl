@@ -191,7 +191,7 @@ if ($SYSLOG)
 else
 	{$flush_time = $SQLdate_NEG_halfhour;}
 
-	$stmtA = "delete from osdial_manager where (server_ip='$server_ip' and entry_date < '$flush_time') or entry_date < '$SQLdate_NEG_6hour';";
+	$stmtA = "delete from osdial_manager where (server_ip='$server_ip' and entry_date < '$flush_time') or entry_date < '$SQLdate_NEG_halfhour';";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) {	$affected_rows = $dbhA->do($stmtA);}
 		if (!$Q) {print " - osdial_manager flush\n";}

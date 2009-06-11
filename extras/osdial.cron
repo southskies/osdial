@@ -18,7 +18,7 @@
 * * * * * /opt/osdial/bin/AST_CLEAR_auto_calls.pl
 
 ### (sql) flush queue DB table every hour for entries older than 1 hour
-11 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q
+11,41 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q
 
 ### (sql) fix the osdial_agent_log once every hour
 33 * * * * /opt/osdial/bin/AST_cleanup_agent_log.pl
