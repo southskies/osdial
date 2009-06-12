@@ -1168,7 +1168,7 @@ while($one_day_interval > 0)
 							### check to see if campaign has alt_dial enabled
 							$VD_auto_alt_dial = 'NONE';
 							$VD_auto_alt_dial_statuses='';
-							$stmtA="SELECT auto_alt_dial,auto_alt_dial_statuses FROM osdial_campaigns where campaign_id='$CLcampaign_id';";
+							$stmtA="SELECT auto_alt_dial,auto_alt_dial_statuses,use_internal_dnc FROM osdial_campaigns where campaign_id='$CLcampaign_id';";
 								if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1179,13 +1179,12 @@ while($one_day_interval > 0)
 								@aryA = $sthA->fetchrow_array;
 								$VD_auto_alt_dial	=			"$aryA[0]";
 								$VD_auto_alt_dial_statuses	=	"$aryA[1]";
+								$VD_use_internal_dnc	=	"$aryA[2]";
 							 	$epc_countCAMPDATA++;
 								}
 							$sthA->finish();
-							if ( ($VD_auto_alt_dial_statuses =~ / $CLnew_status /) && ($CLlead_id > 0) )
-								{
-								if ( ($VD_auto_alt_dial =~ /(ALT_ONLY|ALT_AND_ADDR3)/) && ($CLalt_dial =~ /NONE|MAIN/) )
-									{
+							if ( ($VD_auto_alt_dial_statuses =~ / $CLnew_status /) && ($CLlead_id > 0) ) {
+								if ( ($VD_auto_alt_dial =~ /(ALT_ONLY|ALT_AND_ADDR3)/) && ($CLalt_dial =~ /NONE|MAIN/) ) {
 									$VD_alt_phone='';
 									$stmtA="SELECT alt_phone,gmt_offset_now,state,list_id FROM osdial_list where lead_id='$CLlead_id';";
 										if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
@@ -1193,8 +1192,7 @@ while($one_day_interval > 0)
 									$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 									$sthArows=$sthA->rows;
 								 	$epc_countCAMPDATA=0;
-									while ($sthArows > $epc_countCAMPDATA)
-										{
+									while ($sthArows > $epc_countCAMPDATA) {
 										@aryA = $sthA->fetchrow_array;
 										$VD_alt_phone =			"$aryA[0]";
 										$VD_alt_phone =~ s/\D//gi;
@@ -1202,17 +1200,28 @@ while($one_day_interval > 0)
 										$VD_state =				"$aryA[2]";
 										$VD_list_id =			"$aryA[3]";
 									 	$epc_countCAMPDATA++;
-										}
+									}
 									$sthA->finish();
-									if (length($VD_alt_phone)>5)
-										{
-										$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='$CLcampaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ALT',user='',priority='25';";
-										$affected_rows = $dbhA->do($stmtA);
-										if ($AGILOG) {$agi_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &agi_output;}
+									if (length($VD_alt_phone)>5) {
+										$VD_alt_dnc_count=0;
+										if ($VD_use_internal_dnc =~ /Y/) {
+											$stmtA="SELECT count(*) FROM vicidial_dnc where phone_number='$VD_alt_phone';";
+											if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+											if (@aryA = $sthA->fetchrow_array) {
+												$VD_alt_dnc_count =	"$aryA[0]";
+											}
+											$sthA->finish();
+										}
+										if ($VD_alt_dnc_count < 1) {
+											$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='$CLcampaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ALT',user='',priority='25';";
+											$affected_rows = $dbhA->do($stmtA);
+											if ($AGILOG) {$agi_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &agi_output;}
 										}
 									}
-								if ( ( ($VD_auto_alt_dial =~ /(ADDR3_ONLY)/) && ($CLalt_dial =~ /NONE|MAIN/) ) || ( ($VD_auto_alt_dial =~ /(ALT_AND_ADDR3)/) && ($CLalt_dial =~ /ALT/) ) )
-									{
+								}
+								if ( ( ($VD_auto_alt_dial =~ /(ADDR3_ONLY)/) && ($CLalt_dial =~ /NONE|MAIN/) ) || ( ($VD_auto_alt_dial =~ /(ALT_AND_ADDR3)/) && ($CLalt_dial =~ /ALT/) ) ) {
 									$VD_address3='';
 									$stmtA="SELECT address3,gmt_offset_now,state,list_id FROM osdial_list where lead_id='$CLlead_id';";
 										if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
@@ -1220,8 +1229,7 @@ while($one_day_interval > 0)
 									$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 									$sthArows=$sthA->rows;
 								 	$epc_countCAMPDATA=0;
-									while ($sthArows > $epc_countCAMPDATA)
-										{
+									while ($sthArows > $epc_countCAMPDATA) {
 										@aryA = $sthA->fetchrow_array;
 										$VD_address3 =			"$aryA[0]";
 										$VD_address3 =~ s/\D//gi;
@@ -1229,16 +1237,28 @@ while($one_day_interval > 0)
 										$VD_state =				"$aryA[2]";
 										$VD_list_id =			"$aryA[3]";
 									 	$epc_countCAMPDATA++;
-										}
+									}
 									$sthA->finish();
-									if (length($VD_address3)>5)
-										{
-										$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='$CLcampaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ADDR3',user='',priority='20';";
-										$affected_rows = $dbhA->do($stmtA);
-										if ($AGILOG) {$agi_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &agi_output;}
+									if (length($VD_address3)>5) {
+										$VD_addr3_dnc_count=0;
+										if ($VD_use_internal_dnc =~ /Y/) {
+											$stmtA="SELECT count(*) FROM vicidial_dnc where phone_number='$VD_address3';";
+											if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+											if (@aryA = $sthA->fetchrow_array) {
+												$VD_addr3_dnc_count =	"$aryA[0]";
+											}
+											$sthA->finish();
+										}
+										if ($VD_addr3_dnc_count < 1) {
+											$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='$CLcampaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ADDR3',user='',priority='20';";
+											$affected_rows = $dbhA->do($stmtA);
+											if ($AGILOG) {$agi_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &agi_output;}
 										}
 									}
 								}
+							}
 							##### END AUTO ALT PHONE DIAL SECTION #####
 	
 	
