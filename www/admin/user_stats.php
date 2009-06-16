@@ -413,7 +413,7 @@ echo "<tr><td><font size=1># </td><td align=left><font size=2> LEAD</td><td><fon
 		else
 			{$bgcolor='bgcolor="#9BB9FB"';}
 
-		$location = $row[11];
+        $location = eregi_replace("^//", "/", $row[11]);
 		if (strlen($location)>30)
 			{$locat = substr($location,0,27);  $locat = "$locat...";}
 		else
