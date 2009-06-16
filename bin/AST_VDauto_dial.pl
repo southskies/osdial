@@ -1294,7 +1294,7 @@ while($one_day_interval > 0)
 
 
 		### pause agents that have disconnected or closed their apps over 30 seconds ago
-		$stmtA = "UPDATE osdial_live_agents set status='PAUSED',random_id='10' where server_ip='$server_ip' and last_update_time < '$PDtsSQLdate' and status NOT IN('PAUSED')";
+		$stmtA = "UPDATE osdial_live_agents set status='PAUSED',random_id='10' where server_ip='$server_ip' and last_update_time < '$PDtsSQLdate' and status NOT IN('PAUSED') and extension NOT LIKE 'R/%'";
 		$affected_rows = $dbhA->do($stmtA);
 
 		$event_string = "|     lagged call vla agent PAUSED $affected_rows|$PDtsSQLdate|$BDtsSQLdate|$tsSQLdate|";

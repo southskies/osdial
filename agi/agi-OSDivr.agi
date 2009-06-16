@@ -106,7 +106,7 @@ $AGI->{channel} = $live_agents->{channel};
 $AGI->{uniqueid} = $live_agents->{uniqueid};
 $vars->{conf_exten} = $live_agents->{conf_exten};
 
-my $stmtA = "UPDATE osdial_live_agents SET channel='" . $AGI->{orig_channel} . "' WHERE callerid='" . $AGI->{callerid} . "' LIMIT 1;";
+my $stmtA = "UPDATE osdial_live_agents SET channel='" . $AGI->{orig_channel} . "',status='INCALL',last_call_time='" . $vars->{start_date} . "' WHERE callerid='" . $AGI->{callerid} . "' LIMIT 1;";
 my $affected_rows = $dbhA->do($stmtA);
 my $stmtA = "UPDATE osdial_auto_calls SET channel='" . $AGI->{orig_channel} . "' WHERE callerid='" . $AGI->{callerid} . "' LIMIT 1;";
 my $affected_rows = $dbhA->do($stmtA);
@@ -486,7 +486,7 @@ sub hangup_and_dispo {
 	my $affected_rows = $dbhA->do($stmtA);
 	agi_output("--    ODOI osdial_log update: $affected_rows");
 	my $random = int( rand(9999999)) + 10000000;
-	my $stmtA = "UPDATE osdial_live_agents set status='READY',random_id='$random', last_call_finish='$tdate',lead_id='',uniqueid='',callerid='',channel='' where conf_exten='" . $vars->{conf_exten} . "' and server_ip='" . $vars->{VARserver_ip} . "';";
+	my $stmtA = "UPDATE osdial_live_agents set status='READY',random_id='$random', last_call_finish='$tdate',last_update_time='$tdate',lead_id='',uniqueid='',callerid='',channel='' where conf_exten='" . $vars->{conf_exten} . "' and server_ip='" . $vars->{VARserver_ip} . "';";
 	my $affected_rows = $dbhA->do($stmtA);
 	agi_output("--    ODOI osdial_live_agents update: $affected_rows");
 

@@ -57,6 +57,8 @@
 #
 # 090418-2145 - Allow non-numeric remote agents from the Outbound IVR
 
+$|++;
+
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1)
 {
@@ -407,8 +409,6 @@ while($one_day_interval > 0)
 				if ($user_start =~ s/^va$campaign_id//) {
 					$upad = (length($user_start) + length($campaign_id)) - (length(($user_start * 1)) + length($campaign_id));
 					$va = 'va' . $campaign_id . sprintf('%0' . $upad . 'd',0);
-					$stmtB = "UPDATE osdial_remote_agents as ra,osdial_campaigns as c SET ra.closer_campaigns=c.closer_campaigns WHERE ra.campaign_id=c.campaign_id;";
-					$affected_rows = $dbhB->do($stmtB);
 				} else {
 					$va = '';
 				}
@@ -439,6 +439,8 @@ while($one_day_interval > 0)
 			}
 		$sthA->finish();
 		if ($DB) {print STDERR "$user_counter live remote agents ACTIVE\n";}
+		$stmtA = "UPDATE osdial_remote_agents as ra,osdial_campaigns as c SET ra.closer_campaigns=c.closer_campaigns WHERE ra.campaign_id=c.campaign_id AND ra.user_start LIKE 'va%';";
+		$affected_rows = $dbhA->do($stmtA);
    
 
 
@@ -486,7 +488,7 @@ while($one_day_interval > 0)
 			if (length($DBremote_user[$h])>1) 
 				{
 				### check to see if the record exists and only needs random number update
-				$stmtA = "SELECT count(*) FROM osdial_live_agents where user='$DBremote_user[$h]' and server_ip='$server_ip' and campaign_id='$DBremote_campaign[$h]' and conf_exten='$DBremote_conf_exten[$h]' and closer_campaigns='$DBremote_closer[$h]';";
+				$stmtA = "SELECT count(*) FROM osdial_live_agents where user='$DBremote_user[$h]' and server_ip='$server_ip' and campaign_id='$DBremote_campaign[$h]' and conf_exten='$DBremote_conf_exten[$h]';";
 					if ($DBX) {print STDERR "|$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -498,9 +500,10 @@ while($one_day_interval > 0)
 					}
 				$sthA->finish();
 				
+				&get_time_now;
 				if ($loginexistsRANDOM[$h] > 0)
 					{
-					$stmtA = "UPDATE osdial_live_agents set random_id='$DBremote_random[$h]' where user='$DBremote_user[$h]' and server_ip='$server_ip' and campaign_id='$DBremote_campaign[$h]' and conf_exten='$DBremote_conf_exten[$h]' and closer_campaigns='$DBremote_closer[$h]';";
+					$stmtA = "UPDATE osdial_live_agents set random_id='$DBremote_random[$h]',last_update_time='$FDtsSQLdate' where user='$DBremote_user[$h]' and server_ip='$server_ip' and campaign_id='$DBremote_campaign[$h]' and conf_exten='$DBremote_conf_exten[$h]';";
 					$affected_rows = $dbhA->do($stmtA);
 					if ($DBX and $affected_rows > 0) {print STDERR "$DBremote_user[$h] $DBremote_campaign[$h] ONLY RANDOM ID UPDATE: $affected_rows\n$stmtA\n";}
 					}
@@ -521,7 +524,7 @@ while($one_day_interval > 0)
 
 					if ($loginexistsALL[$h] > 0)
 						{
-						$stmtA = "UPDATE osdial_live_agents set random_id='$DBremote_random[$h]',campaign_id='$DBremote_campaign[$h]',conf_exten='$DBremote_conf_exten[$h]',closer_campaigns='$DBremote_closer[$h]', status='READY' where user='$DBremote_user[$h]' and server_ip='$server_ip';";
+						$stmtA = "UPDATE osdial_live_agents set random_id='$DBremote_random[$h]',last_update_time='$FDtsSQLdate',campaign_id='$DBremote_campaign[$h]',conf_exten='$DBremote_conf_exten[$h]',closer_campaigns='$DBremote_closer[$h]', status='READY' where user='$DBremote_user[$h]' and server_ip='$server_ip';";
 						$affected_rows = $dbhA->do($stmtA);
 						if ($DBX and $affected_rows > 0) {print STDERR "$DBremote_user[$h] ALL UPDATE: $affected_rows\n$stmtA\n";}
 			#			if ($affected_rows>0) 
@@ -881,7 +884,7 @@ $GMT_now = ($secX - ($LOCAL_GMT_OFF * 3600));
 	if ($hour < 10) {$hour = "0$hour";}
 	if ($min < 10) {$min = "0$min";}
 
-	if ($DB) {print "TIME DEBUG: $LOCAL_GMT_OFF_STD|$LOCAL_GMT_OFF|$isdst|   GMT: $hour:$min\n";}
+	if ($DBX) {print "TIME DEBUG: $LOCAL_GMT_OFF_STD|$LOCAL_GMT_OFF|$isdst|   GMT: $hour:$min\n";}
 
 ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
 $year = ($year + 1900);
@@ -899,7 +902,7 @@ $now_date = "$year-$mon-$mday $hour:$min:$sec";
 	$SQLdate = "$year-$mon-$mday $hour:$min:$sec";
 	$filedate = "$year-$mon-$mday";
 
-$FDtarget = ($secX + 10);
+$FDtarget = ($secX + 60);
 ($Fsec,$Fmin,$Fhour,$Fmday,$Fmon,$Fyear,$Fwday,$Fyday,$Fisdst) = localtime($FDtarget);
 $Fyear = ($Fyear + 1900);
 $Fmon++;
