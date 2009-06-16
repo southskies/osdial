@@ -59,14 +59,14 @@
 24 0 * * * /usr/bin/find /var/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs rm -f
 
 ### (dialer) Send Recordings to archive server
-#*/3 * * * * /opt/osdisl/bin/AST_audio_archive.pl
+#* * * * * /opt/osdial/bin/AST_audio_archive.pl
 
 ### (archive) Compress wav files to mp3
-#*/2 * * * * /opt/osdisl/bin/AST_audio_compress.pl --MP3
+#*/2 * * * * /opt/osdial/bin/AST_audio_compress.pl --MP3
 
 ### (archive) Sort MP3s into campaign_id/date directory structure
-#*/5 * * * * /opt/osdisl/bin/AST_sort_recordings.pl
+#*/5 * * * * /opt/osdial/bin/AST_sort_recordings.pl
 
 ### (archive) Send select MP3s to a third-party quality-control or offste archive server.
-#*/15 * * * * /opt/osdisl/bin/AST_qc_transfer.pl
+#*/15 * * * * /opt/osdial/bin/AST_qc_transfer.pl
 
