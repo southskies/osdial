@@ -420,7 +420,7 @@ sub gen_phones {
 	my $iphn = $achead;
 	my $ephn = $achead;
 
-	my $stmtA = "SELECT extension,dialplan_number,phone_ip,pass,protocol FROM phones WHERE protocol IN ('SIP','IAX2','Zap','DAHDI') AND active='Y' AND (";
+	my $stmtA = "SELECT extension,dialplan_number,phone_ip,pass,protocol,phone_type FROM phones WHERE protocol IN ('SIP','IAX2','Zap','DAHDI') AND active='Y' AND (";
 	foreach my $ip (@myips) {
 		$stmtA .= " server_ip=\'" . $ip . "\' OR";
 	}
@@ -442,7 +442,12 @@ sub gen_phones {
 			} else {
 				$sphn .= "host=dynamic\n";
 			}
-			$sphn .= "dtmfmode=inband\n";
+			if ($aryA[5] =~ /Grandstream/i) {
+				$sphn .= "dtmfmode=info\n";
+				$sphn .= "relaxdtmf=yes\n";
+			} else {
+				$sphn .= "dtmfmode=inband\n";
+			}
 			$sphn .= "qualify=yes\n";
 			$sphn .= "nat=yes\n";
 		} elsif ($aryA[4] eq "IAX2") {
