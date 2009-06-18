@@ -358,7 +358,7 @@ function report_realtime_detail() {
 
 		$html .= "</td></tr><tr><td align=left>";
 		$html .= "<font class=indented color=#1C4754 size=2><b>$group - $group_name</b></font>";
-		if ($active=='Y') {;
+		if ($active=='Y' and !(ereg("^XXXX-",$group))) {;
                         $html .="<font color='green' size='-1'>&nbsp;&nbsp;(Active)</font>";
                 } else {
                         $html .="<font color='red'>&nbsp;&nbsp;(In-Active)</font>";

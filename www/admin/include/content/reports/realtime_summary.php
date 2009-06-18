@@ -228,29 +228,29 @@ function report_realtime_summary() {
 		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>ORDER:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALorder &nbsp; &nbsp; </TD>";
 		$html .= "</tr><tr>";
 		if ( (!eregi('NULL',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
-			$html .= "<td align=right><font size=2 color=navy><B>$VSCcat1:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1tally&nbsp;&nbsp;&nbsp; \n";
+			$html .= "<td align=right><font size=2 color=navy><B>$VSCcat1:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1tally&nbsp;&nbsp;&nbsp;</td>\n";
 		}
 		if ( (!eregi('NULL',$VSCcat2)) and (strlen($VSCcat2)>0) ) {
-			$html .= "<td align=right><font size=2 color=navy><B>$VSCcat2:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2tally&nbsp;&nbsp;&nbsp; \n";
+			$html .= "<td align=right><font size=2 color=navy><B>$VSCcat2:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2tally&nbsp;&nbsp;&nbsp;</td>\n";
 		}
 		if ( (!eregi('NULL',$VSCcat3)) and (strlen($VSCcat3)>0) ) { 
-			$html .= "<td align=right><font size=2 color=navy><B>$VSCcat3:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3tally&nbsp;&nbsp;&nbsp; \n";
+			$html .= "<td align=right><font size=2 color=navy><B>$VSCcat3:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3tally&nbsp;&nbsp;&nbsp;</td>\n";
 		}
 		if ( (!eregi('NULL',$VSCcat4)) and (strlen($VSCcat4)>0) ) {
-			$html .= "<td align=right><font size=2 color=navy><B>$VSCcat4:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4tally&nbsp;&nbsp;&nbsp; \n";
+			$html .= "<td align=right><font size=2 color=navy><B>$VSCcat4:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4tally&nbsp;&nbsp;&nbsp;</td>\n";
 		}
 		$html .= "</tr><tr>";
 		if ( (!eregi('NULL',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
-			$html .= "<td align=right><font size=2 color=navy><B>$VSCcat1/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1hourtally&nbsp;&nbsp;&nbsp; \n";
+			$html .= "<td align=right><font size=2 color=navy><B>$VSCcat1/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1hourtally&nbsp;&nbsp;&nbsp;</td>\n";
 		}
 		if ( (!eregi('NULL',$VSCcat2)) and (strlen($VSCcat2)>0) ) {
-			$html .= "<td align=right><font size=2 color=navy><B>$VSCcat2/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2hourtally&nbsp;&nbsp;&nbsp; \n";
+			$html .= "<td align=right><font size=2 color=navy><B>$VSCcat2/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2hourtally&nbsp;&nbsp;&nbsp;</td>\n";
 		}
 		if ( (!eregi('NULL',$VSCcat3)) and (strlen($VSCcat3)>0) ) { 
-			$html .= "<td align=right><font size=2 color=navy><B>$VSCcat3/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3hourtally&nbsp;&nbsp;&nbsp; \n";
+			$html .= "<td align=right><font size=2 color=navy><B>$VSCcat3/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3hourtally&nbsp;&nbsp;&nbsp;</td>\n";
 		}
 		if ( (!eregi('NULL',$VSCcat4)) and (strlen($VSCcat4)>0) ) {
-			$html .= "<td align=right><font size=2 color=navy><B>$VSCcat4/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4hourtally&nbsp;&nbsp;&nbsp; \n";
+			$html .= "<td align=right><font size=2 color=navy><B>$VSCcat4/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4hourtally&nbsp;&nbsp;&nbsp;</td>\n";
 		}
 		
 		$html .= "</TR>";
