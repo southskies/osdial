@@ -45,6 +45,7 @@ function report_call_stats() {
     foreach ($GLOBALS as $key => $val) { global $$key; }
 
     $use_agent_log = get_variable("use_agent_log");
+    $use_closer_log = get_variable("use_closer_log");
     $comment_grouping = get_variable("comment_grouping");
     $agent_hours = get_variable("agent_hours");
     $group = get_variable("group");
@@ -172,6 +173,11 @@ function report_call_stats() {
     }
     $html .= "</TD></TR>";
     $html .= "<tr><td colspan=3>";
+    $uclc = '';
+    if ($use_closer_log) {
+        $uclc = 'checked';
+        $use_agent_log=0;
+    }
     $ualc = '';
     if ($use_agent_log or $group=='') {
         $ualc = 'checked';
@@ -180,6 +186,7 @@ function report_call_stats() {
     if ($comment_grouping) {
         $cgc = 'checked';
     }
+    $html .= "<input type=\"checkbox\" name=\"use_closer_log\" value=\"1\" $uclc> Include Closer/Inbound Stats<br />";
     $html .= "<input type=\"checkbox\" name=\"use_agent_log\" value=\"1\" $ualc> Use Agent Log for Agent Stats<br />";
     $html .= "<input type=\"checkbox\" name=\"comment_grouping\" value=\"1\" $cgc> Group Call Status by Extended Log Data<br />";
     $html .= "</td></tr>";
@@ -204,9 +211,36 @@ function report_call_stats() {
 
     $html .= "\n";
     $html .= "Time range: $query_date_BEGIN to $query_date_END\n\n";
+
+    $stmt = "select closer_campaigns from osdial_campaigns $group_SQL;";
+    $rslt=mysql_query($stmt, $link);
+    $ccamps_to_print = mysql_num_rows($rslt);
+    $c=0;
+    if ($ccamps_to_print > 0) {
+        $html .= "In-Groups included in this report:\n";
+    }
+    while ($ccamps_to_print > $c) {
+        $row=mysql_fetch_row($rslt);
+        $closer_campaigns = $row[0];
+        $closer_campaigns = preg_replace("/^ | -$/","",$closer_campaigns);
+        $closer_campaigns = preg_replace("/ /","','",$closer_campaigns);
+        $closer_campaignsSQL .= "'$closer_campaigns',";
+        $c++;
+    }
+    $closer_campaignsSQL = eregi_replace(",$",'',$closer_campaignsSQL);
+    $ccprint = preg_replace("/'',/","",$closer_campaignsSQL);
+    $ccprint = preg_replace("/,/","\n",$ccprint);
+    $ccprint = preg_replace("/'/","    ",$ccprint);
+    $html .= $ccprint . "\n\n";
+    $closer_SQLand = "and campaign_id IN($closer_campaignsSQL)";
+
     $html .= "---------- TOTALS\n";
 
-    $stmt="select count(*),sum(length_in_sec) from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand;";
+    if ($use_closer_log) {
+        $stmt="SELECT count(*),sum(length_in_sec) FROM ((select uniqueid,length_in_sec from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand) UNION (select uniqueid,length_in_sec from osdial_closer_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $closer_SQLand)) AS t;";
+    } else {
+        $stmt="select count(*),sum(length_in_sec) from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand;";
+    }
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $row=mysql_fetch_row($rslt);
@@ -227,10 +261,15 @@ function report_call_stats() {
     $html .= "\n\n";
     $html .= "---------- DROPS\n";
 
-    $stmt="select count(*),sum(length_in_sec) from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand and status='DROP' and (length_in_sec <= 6000 or length_in_sec is null);";
+    if ($use_closer_log) {
+        $stmt="SELECT count(*),sum(length_in_sec) FROM ((select uniqueid,length_in_sec from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand and status='DROP' and (length_in_sec <= 6000 or length_in_sec is null)) UNION (select uniqueid,length_in_sec from osdial_closer_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $closer_SQLand and status='DROP' and (length_in_sec <= 6000 or length_in_sec is null))) AS t;";
+    } else {
+        $stmt="select count(*),sum(length_in_sec) from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand and status='DROP' and (length_in_sec <= 6000 or length_in_sec is null);";
+    }
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $row=mysql_fetch_row($rslt);
+
     $DROPcalls =    sprintf("%10s", $row[0]);
     $DROPcallsRAW =    $row[0];
     $DROPseconds =    $row[1];
@@ -276,10 +315,15 @@ function report_call_stats() {
     $camp_ANS_STAT_SQL = eregi_replace(",$",'',$camp_ANS_STAT_SQL);
 
     
-    $stmt="select count(*) from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand and status IN($camp_ANS_STAT_SQL);";
+    if ($use_closer_log) {
+        $stmt="SELECT count(*) FROM ((select uniqueid from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand and status IN($camp_ANS_STAT_SQL)) UNION (select uniqueid from osdial_closer_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $closer_SQLand and status IN($camp_ANS_STAT_SQL))) AS t;";
+    } else {
+        $stmt="select count(*) from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand and status IN($camp_ANS_STAT_SQL);";
+    }
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $row=mysql_fetch_row($rslt);
+
     $ANSWERcalls =    $row[0];
     
     if ( ($DROPcalls < 1) or ($TOTALcalls < 1) ) {
@@ -309,26 +353,12 @@ function report_call_stats() {
     $html .= "Average Length for DROP Calls in seconds:     $average_hold_seconds\n";
     
     
-    $stmt = "select closer_campaigns from osdial_campaigns $group_SQL;";
-    $rslt=mysql_query($stmt, $link);
-    $ccamps_to_print = mysql_num_rows($rslt);
-    $c=0;
-    while ($ccamps_to_print > $c) {
-        $row=mysql_fetch_row($rslt);
-        $closer_campaigns = $row[0];
-        $closer_campaigns = preg_replace("/^ | -$/","",$closer_campaigns);
-        $closer_campaigns = preg_replace("/ /","','",$closer_campaigns);
-        $closer_campaignsSQL .= "'$closer_campaigns',";
-        $c++;
-    }
-    $closer_campaignsSQL = eregi_replace(",$",'',$closer_campaignsSQL);
     
-    $stmt="select count(*) from osdial_closer_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' and  campaign_id IN($closer_campaignsSQL) and status NOT IN('DROP','XDROP','HXFER','QVMAIL','HOLDTO','LIVE','QUEUE');";
+    $stmt="select count(*) from osdial_closer_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $closer_SQLand and status NOT IN('DROP','XDROP','HXFER','QVMAIL','HOLDTO','LIVE','QUEUE');";
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $row=mysql_fetch_row($rslt);
     $TOTALanswers = ($row[0] + $ANSWERcalls);
-    
     
     $stmt = "SELECT sum(wait_sec + talk_sec + dispo_sec) from osdial_agent_log where event_time >= '$query_date_BEGIN' and event_time <= '$query_date_END' $group_SQLand;";
     $rslt=mysql_query($stmt, $link);
@@ -352,11 +382,15 @@ function report_call_stats() {
     $html .= "\n\n";
     $html .= "---------- AUTO-DIAL NO ANSWERS\n";
     
-    $stmt="select count(*),sum(length_in_sec) from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand and status IN('NA','B') and (length_in_sec <= 60 or length_in_sec is null);";
+    if ($use_closer_log) {
+        $stmt="SELECT count(*),sum(length_in_sec) FROM ((select uniqueid,length_in_sec from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand and status IN('NA','B') and (length_in_sec <= 60 or length_in_sec is null)) UNION (select uniqueid,length_in_sec from osdial_closer_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $closer_SQLand and status IN('NA','B') and (length_in_sec <= 60 or length_in_sec is null))) AS t;";
+    } else {
+        $stmt="select count(*),sum(length_in_sec) from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand and status IN('NA','B') and (length_in_sec <= 60 or length_in_sec is null);";
+    }
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $row=mysql_fetch_row($rslt);
-    
+
     $NAcalls =    sprintf("%10s", $row[0]);
     if ( ($NAcalls < 1) or ($TOTALcalls < 1) ) {
         $NApercent = '0';
@@ -388,7 +422,11 @@ function report_call_stats() {
     $html .= "| HANGUP REASON        | CALLS      |\n";
     $html .= "+----------------------+------------+\n";
     
-    $stmt="select count(*),term_reason from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand group by term_reason;";
+    if ($use_closer_log) {
+        $stmt="SELECT count(*),term_reason FROM ((select uniqueid,term_reason from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand) UNION (select uniqueid,term_reason from osdial_closer_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $closer_SQLand)) AS t group by term_reason;";
+    } else {
+        $stmt="select count(*),term_reason from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand group by term_reason;";
+    }
     if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
@@ -461,10 +499,18 @@ function report_call_stats() {
     
     
     ## get counts and time totals for all statuses in this campaign
-    if ($comment_grouping) {
-        $stmt="select count(*),status,sum(length_in_sec),comments from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END'  $group_SQLand group by status,comments;";
+    if ($use_closer_log) {
+        if ($comment_grouping) {
+            $stmt="SELECT count(*),status,sum(length_in_sec),comments FROM ((select uniqueid,status,length_in_sec,comments from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END'  $group_SQLand) UNION (select uniqueid,status,length_in_sec,comments from osdial_closer_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END'  $closer_SQLand)) AS t group by status,comments;";
+        } else {
+            $stmt="SELECT count(*),status,sum(length_in_sec) FROM ((select uniqueid,status,length_in_sec from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END'  $group_SQLand) UNION (select uniqueid,status,length_in_sec from osdial_closer_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END'  $closer_SQLand)) AS t group by status;";
+        }
     } else {
-        $stmt="select count(*),status,sum(length_in_sec) from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END'  $group_SQLand group by status;";
+        if ($comment_grouping) {
+            $stmt="select count(*),status,sum(length_in_sec),comments from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END'  $group_SQLand group by status,comments;";
+        } else {
+            $stmt="select count(*),status,sum(length_in_sec) from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END'  $group_SQLand group by status;";
+        }
     }
     if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
     $rslt=mysql_query($stmt, $link);
@@ -726,7 +772,9 @@ function report_call_stats() {
     $html .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"Agent|Calls|Time|Average\">";
     $CSVrows++;
     
-    if ($use_agent_log) {
+    if ($use_closer_log) {
+        $stmt="select Tuser,full_name,count(*),sum(Slength_in_sec),avg(Alength_in_sec) from ((select osdial_log.user AS Tuser,full_name,uniqueid,length_in_sec AS Slength_in_sec,length_in_sec AS Alength_in_sec from osdial_log,osdial_users where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand and osdial_log.user is not null and length_in_sec is not null and length_in_sec > 0 and osdial_log.user=osdial_users.user) UNION (select osdial_closer_log.user AS Tuser,full_name,uniqueid,length_in_sec AS Slength_in_sec,length_in_sec AS Alength_in_sec from osdial_closer_log,osdial_users where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $closer_SQLand and osdial_closer_log.user is not null and length_in_sec is not null and length_in_sec > 0 and osdial_closer_log.user=osdial_users.user)) AS t group by Tuser;";
+    } else if ($use_agent_log) {
         $stmt="select osdial_agent_log.user,full_name,count(*),sum(talk_sec),avg(talk_sec) from osdial_agent_log left join osdial_users ON (osdial_agent_log.user=osdial_users.user) where event_time >= '$query_date_BEGIN' and event_time <= '$query_date_END' $group_SQLand and osdial_agent_log.user is not null and talk_sec is not null and talk_sec > 0 group by osdial_agent_log.user;";
     } else {
         $stmt="select osdial_log.user,full_name,count(*),sum(length_in_sec),avg(length_in_sec) from osdial_log,osdial_users where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand and osdial_log.user is not null and length_in_sec is not null and length_in_sec > 0 and osdial_log.user=osdial_users.user group by osdial_log.user;";
@@ -846,14 +894,22 @@ function report_call_stats() {
     $i=0;
     $h=0;
     while ($i <= 96) {
-        $stmt="select count(*) from osdial_log where call_date >= '$query_date $h:00:00' and call_date <= '$query_date $h:14:59' $group_SQLand;";
+        if ($use_closer_log) {
+            $stmt="SELECT count(*) FROM ((select uniqueid from osdial_log where call_date >= '$query_date $h:00:00' and call_date <= '$query_date $h:14:59' $group_SQLand) UNION (select uniqueid from osdial_closer_log where call_date >= '$query_date $h:00:00' and call_date <= '$query_date $h:14:59' $closer_SQLand)) AS t;";
+        } else {
+            $stmt="select count(*) from osdial_log where call_date >= '$query_date $h:00:00' and call_date <= '$query_date $h:14:59' $group_SQLand;";
+        }
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
         $hour_count[$i] = $row[0];
         if ($hour_count[$i] > $hi_hour_count) {$hi_hour_count = $hour_count[$i];}
         if ($hour_count[$i] > 0) {$last_full_record = $i;}
-        $stmt="select count(*) from osdial_log where call_date >= '$query_date $h:00:00' and call_date <= '$query_date $h:14:59' $group_SQLand and status='DROP';";
+        if ($use_closer_log) {
+            $stmt="SELECT count(*) FROM ((select uniqueid from osdial_log where call_date >= '$query_date $h:00:00' and call_date <= '$query_date $h:14:59' $group_SQLand and status LIKE '%DROP') UNION (select uniqueid from osdial_closer_log where call_date >= '$query_date $h:00:00' and call_date <= '$query_date $h:14:59' $closer_SQLand and status LIKE '%DROP')) AS t;";
+        } else {
+            $stmt="select count(*) from osdial_log where call_date >= '$query_date $h:00:00' and call_date <= '$query_date $h:14:59' $group_SQLand and status='DROP';";
+        }
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
@@ -861,42 +917,66 @@ function report_call_stats() {
         $i++;
     
     
-        $stmt="select count(*) from osdial_log where call_date >= '$query_date $h:15:00' and call_date <= '$query_date $h:29:59' $group_SQLand;";
+        if ($use_closer_log) {
+            $stmt="SELECT count(*) FROM ((select uniqueid from osdial_log where call_date >= '$query_date $h:15:00' and call_date <= '$query_date $h:29:59' $group_SQLand) UNION (select uniqueid from osdial_closer_log where call_date >= '$query_date $h:15:00' and call_date <= '$query_date $h:29:59' $closer_SQLand)) AS t;";
+        } else {
+            $stmt="select count(*) from osdial_log where call_date >= '$query_date $h:15:00' and call_date <= '$query_date $h:29:59' $group_SQLand;";
+        }
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
         $hour_count[$i] = $row[0];
         if ($hour_count[$i] > $hi_hour_count) {$hi_hour_count = $hour_count[$i];}
         if ($hour_count[$i] > 0) {$last_full_record = $i;}
-        $stmt="select count(*) from osdial_log where call_date >= '$query_date $h:15:00' and call_date <= '$query_date $h:29:59' $group_SQLand and status='DROP';";
+        if ($use_closer_log) {
+            $stmt="SELECT count(*) FROM ((select uniqueid from osdial_log where call_date >= '$query_date $h:15:00' and call_date <= '$query_date $h:29:59' $group_SQLand and status LIKE '%DROP') UNION (select uniqueid from osdial_closer_log where call_date >= '$query_date $h:15:00' and call_date <= '$query_date $h:29:59' $closer_SQLand and status LIKE '%DROP')) AS t;";
+        } else {
+            $stmt="select count(*) from osdial_log where call_date >= '$query_date $h:15:00' and call_date <= '$query_date $h:29:59' $group_SQLand and status='DROP';";
+        }
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
         $drop_count[$i] = $row[0];
         $i++;
     
-        $stmt="select count(*) from osdial_log where call_date >= '$query_date $h:30:00' and call_date <= '$query_date $h:44:59' $group_SQLand;";
+        if ($use_closer_log) {
+            $stmt="SELECT count(*) FROM ((select uniqueid from osdial_log where call_date >= '$query_date $h:30:00' and call_date <= '$query_date $h:44:59' $group_SQLand) UNION (select uniqueid from osdial_closer_log where call_date >= '$query_date $h:30:00' and call_date <= '$query_date $h:44:59' $closer_SQLand)) AS t;";
+        } else {
+            $stmt="select count(*) from osdial_log where call_date >= '$query_date $h:30:00' and call_date <= '$query_date $h:44:59' $group_SQLand;";
+        }
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
         $hour_count[$i] = $row[0];
         if ($hour_count[$i] > $hi_hour_count) {$hi_hour_count = $hour_count[$i];}
         if ($hour_count[$i] > 0) {$last_full_record = $i;}
-        $stmt="select count(*) from osdial_log where call_date >= '$query_date $h:30:00' and call_date <= '$query_date $h:44:59' $group_SQLand and status='DROP';";
+        if ($use_closer_log) {
+            $stmt="SELECT count(*) FROM ((select uniqueid from osdial_log where call_date >= '$query_date $h:30:00' and call_date <= '$query_date $h:44:59' $group_SQLand and status LIKE '%DROP') UNION (select uniqueid from osdial_closer_log where call_date >= '$query_date $h:30:00' and call_date <= '$query_date $h:44:59' $closer_SQLand and status LIKE '%DROP')) AS t;";
+        } else {
+            $stmt="select count(*) from osdial_log where call_date >= '$query_date $h:30:00' and call_date <= '$query_date $h:44:59' $group_SQLand and status='DROP';";
+        }
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
         $drop_count[$i] = $row[0];
         $i++;
     
-        $stmt="select count(*) from osdial_log where call_date >= '$query_date $h:45:00' and call_date <= '$query_date $h:59:59' $group_SQLand;";
+        if ($use_closer_log) {
+            $stmt="SELECT count(*) FROM ((select uniqueid from osdial_log where call_date >= '$query_date $h:45:00' and call_date <= '$query_date $h:59:59' $group_SQLand) UNION (select uniqueid from osdial_closer_log where call_date >= '$query_date $h:45:00' and call_date <= '$query_date $h:59:59' $closer_SQLand)) AS t;";
+        } else {
+            $stmt="select count(*) from osdial_log where call_date >= '$query_date $h:45:00' and call_date <= '$query_date $h:59:59' $group_SQLand;";
+        }
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
         $hour_count[$i] = $row[0];
         if ($hour_count[$i] > $hi_hour_count) {$hi_hour_count = $hour_count[$i];}
         if ($hour_count[$i] > 0) {$last_full_record = $i;}
-        $stmt="select count(*) from osdial_log where call_date >= '$query_date $h:45:00' and call_date <= '$query_date $h:59:59' $group_SQLand and status='DROP';";
+        if ($use_closer_log) {
+            $stmt="SELECT count(*) FROM ((select uniqueid from osdial_log where call_date >= '$query_date $h:45:00' and call_date <= '$query_date $h:59:59' $group_SQLand and status LIKE '%DROP') UNION (select uniqueid from osdial_closer_log where call_date >= '$query_date $h:45:00' and call_date <= '$query_date $h:59:59' $closer_SQLand and status LIKE '%DROP')) AS t;";
+        } else {
+            $stmt="select count(*) from osdial_log where call_date >= '$query_date $h:45:00' and call_date <= '$query_date $h:59:59' $group_SQLand and status='DROP';";
+        }
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
