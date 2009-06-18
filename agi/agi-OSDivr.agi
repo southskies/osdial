@@ -459,10 +459,11 @@ sub hangup_and_dispo {
 	#my $stmtA = "INSERT INTO osdial_manager values('','','$tdate','NEW','N','" . $vars->{VARserver_ip} . "','','Hangup','$VHqueryCID','Channel: " . $AGI->{orig_channel} . "','','','','','','','','','')";
 	#my $affected_rows = $dbhB->do($stmtA);
 	#agi_output("$affected_rows|$stmtA|") if ($vars->{DB} > 1);
-	my $lccnt = 2;
-	my $try = 2;
-	# Loop through open channels sleep untill all are closed.
-	while ($lccnt > 1 or $try > 1) {
+
+	#my $lccnt = 2;
+	#my $try = 2;
+	## Loop through open channels sleep untill all are closed.
+	#while ($lccnt > 1 or $try > 1) {
 		my @huchan;
 		# Get local channels (conferences)
 		my $stmtA = "SELECT channel FROM live_sip_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND channel LIKE 'Local/" . $vars->{conf_exten} . "%' order by channel desc;";
@@ -487,27 +488,27 @@ sub hangup_and_dispo {
 			my $affected_rows = $dbhB->do($stmtA);
 			agi_output("$affected_rows|$stmtA|") if ($vars->{DB} > 1);
 		}
-		sleep 1;
+	#	sleep 1;
 
-		# Get count of local channels still open.
-		my $stmtA = "SELECT count(*) FROM live_sip_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND channel LIKE 'Local/" . $vars->{conf_exten} . "%' order by channel desc;";
-		agi_output("$affected_rows|$stmtA|") if ($vars->{DB} > 1);
-		my $sthA = $dbhB->prepare($stmtA) or die "preparing: ",$dbhB->errstr;
-		$sthA->execute or die "executing: $stmtA ", $dbhB->errstr;
-		my @aryA = $sthA->fetchrow_array;
-		$lccnt = $aryA[0];
-		$sthA->finish();
+	#	# Get count of local channels still open.
+	#	my $stmtA = "SELECT count(*) FROM live_sip_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND channel LIKE 'Local/" . $vars->{conf_exten} . "%' order by channel desc;";
+	#	agi_output("$affected_rows|$stmtA|") if ($vars->{DB} > 1);
+	#	my $sthA = $dbhB->prepare($stmtA) or die "preparing: ",$dbhB->errstr;
+	#	$sthA->execute or die "executing: $stmtA ", $dbhB->errstr;
+	#	my @aryA = $sthA->fetchrow_array;
+	#	$lccnt = $aryA[0];
+	#	$sthA->finish();
 
-		# Get count of outbound channels still open
-		my $stmtA = "SELECT count(*) FROM live_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND extension = '" . $vars->{conf_exten} . "' order by channel desc;";
-		agi_output("$affected_rows|$stmtA|") if ($vars->{DB} > 1);
-		my $sthA = $dbhB->prepare($stmtA) or die "preparing: ",$dbhB->errstr;
-		$sthA->execute or die "executing: $stmtA ", $dbhB->errstr;
-		my @aryA = $sthA->fetchrow_array;
-		$lccnt += $aryA[0];
-		$sthA->finish();
-		$try--;
-	}
+	#	# Get count of outbound channels still open
+	#	my $stmtA = "SELECT count(*) FROM live_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND extension = '" . $vars->{conf_exten} . "' order by channel desc;";
+	#	agi_output("$affected_rows|$stmtA|") if ($vars->{DB} > 1);
+	#	my $sthA = $dbhB->prepare($stmtA) or die "preparing: ",$dbhB->errstr;
+	#	$sthA->execute or die "executing: $stmtA ", $dbhB->errstr;
+	#	my @aryA = $sthA->fetchrow_array;
+	#	$lccnt += $aryA[0];
+	#	$sthA->finish();
+	#	$try--;
+	#}
 
 
 	my $stmtA = "UPDATE osdial_log set end_epoch='$tepoch' where uniqueid = '" . $AGI->{uniqueid} . "';";
