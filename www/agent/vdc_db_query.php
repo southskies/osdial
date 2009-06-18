@@ -1782,22 +1782,27 @@ if ($ACTION == 'VDADcheckINCOMING')
 			if ($DB) {echo "$stmt\n";}
 			$rslt=mysql_query($stmt, $link);
 
-			$stmt = "select campaign_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,allow_tab_switch from osdial_campaigns where campaign_id='$campaign';";
+			$stmt = "select web_form_address,campaign_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,default_xfer_group,allow_tab_switch,web_form_address2,web_form_extwindow,web_form2_extwindow from osdial_campaigns where campaign_id='$campaign';";
 			if ($DB) {echo "$stmt\n";}
 			$rslt=mysql_query($stmt, $link);
 			$VDIG_cid_ct = mysql_num_rows($rslt);
 			if ($VDIG_cid_ct > 0)
 				{
 				$row=mysql_fetch_row($rslt);
-				$VDCL_campaign_script	= $row[0];
-				$VDCL_get_call_launch	= $row[1];
-				$VDCL_xferconf_a_dtmf	= $row[2];
-				$VDCL_xferconf_a_number	= $row[3];
-				$VDCL_xferconf_b_dtmf	= $row[4];
-				$VDCL_xferconf_b_number	= $row[5];
-				$VDCL_allow_tab_switch	= $row[6];
+				$VDCL_web_form_address	= $row[0];
+				$VDCL_campaign_script	= $row[1];
+				$VDCL_get_call_launch	= $row[2];
+				$VDCL_xferconf_a_dtmf	= $row[3];
+				$VDCL_xferconf_a_number	= $row[4];
+				$VDCL_xferconf_b_dtmf	= $row[5];
+				$VDCL_xferconf_b_number	= $row[6];
+				$VDCL_default_xfer_group	= $row[7];
+				$VDCL_allow_tab_switch	= $row[8];
+				$VDCL_web_form_address2	= $row[9];
+				$VDCL_web_form_extwin   = $row[10];
+				$VDCL_web_form_extwin2  = $row[11];
 				}
-			echo "|||||$VDCL_campaign_script|$VDCL_get_call_launch|$VDCL_xferconf_a_dtmf|$VDCL_xferconf_a_number|$VDCL_xferconf_b_dtmf|$VDCL_xferconf_b_number|$VDCL_allow_tab_switch||||\n|\n";
+			echo "$VDCL_web_form_address|||||$VDCL_campaign_script|$VDCL_get_call_launch|$VDCL_xferconf_a_dtmf|$VDCL_xferconf_a_number|$VDCL_xferconf_b_dtmf|$VDCL_xferconf_b_number|$VDCL_default_xfer_group|$VDCL_allow_tab_switch|$VDCL_web_form_address2|$VDCL_web_form_extwin|$VDCL_web_form_extwin2|\n|\n";
 			
 			$stmt = "select phone_number,alt_dial from osdial_auto_calls where callerid = '$callerid' order by call_time desc limit 1;";
 			if ($DB) {echo "$stmt\n";}
@@ -1876,9 +1881,10 @@ if ($ACTION == 'VDADcheckINCOMING')
 					}
 				}
 
-			### if web form is set then send on to osdial.php for override of WEB_FORM address
-			if ( (strlen($VDCL_group_web)>5) or (strlen($VDCL_group_name)>0) ) {echo "$VDCL_group_web|$VDCL_group_name|$VDCL_group_color|$VDCL_fronter_display|$VDADchannel_group|$VDCL_ingroup_script|$VDCL_get_call_launch|$VDCL_xferconf_a_dtmf|$VDCL_xferconf_a_number|$VDCL_xferconf_b_dtmf|$VDCL_xferconf_b_number|$VDCL_default_xfer_group|$VDCL_allow_tab_switch|$VDCL_group_web|$VDCL_web_form_extwin|$VDCL_web_form_extwin2|\n";}
-			else {echo "|$VDCL_group_name|$VDCL_group_color|$VDCL_fronter_display|$VDADchannel_group|$VDCL_ingroup_script|$VDCL_get_call_launch|$VDCL_xferconf_a_dtmf|$VDCL_xferconf_a_number|$VDCL_xferconf_b_dtmf|$VDCL_xferconf_b_number|$VDCL_default_xfer_group|$VDCL_allow_tab_switch||||\n";}
+			#### if web form is set then send on to osdial.php for override of WEB_FORM address
+			#if ( (strlen($VDCL_group_web)>5) or (strlen($VDCL_group_name)>0) ) {echo "$VDCL_group_web|$VDCL_group_name|$VDCL_group_color|$VDCL_fronter_display|$VDADchannel_group|$VDCL_ingroup_script|$VDCL_get_call_launch|$VDCL_xferconf_a_dtmf|$VDCL_xferconf_a_number|$VDCL_xferconf_b_dtmf|$VDCL_xferconf_b_number|$VDCL_default_xfer_group|$VDCL_allow_tab_switch|$VDCL_group_web2|$VDCL_web_form_extwin|$VDCL_web_form_extwin2|\n";}
+			#else {echo "|$VDCL_group_name|$VDCL_group_color|$VDCL_fronter_display|$VDADchannel_group|$VDCL_ingroup_script|$VDCL_get_call_launch|$VDCL_xferconf_a_dtmf|$VDCL_xferconf_a_number|$VDCL_xferconf_b_dtmf|$VDCL_xferconf_b_number|$VDCL_default_xfer_group|$VDCL_allow_tab_switch||||\n";}
+			echo "$VDCL_group_web|$VDCL_group_name|$VDCL_group_color|$VDCL_fronter_display|$VDADchannel_group|$VDCL_ingroup_script|$VDCL_get_call_launch|$VDCL_xferconf_a_dtmf|$VDCL_xferconf_a_number|$VDCL_xferconf_b_dtmf|$VDCL_xferconf_b_number|$VDCL_default_xfer_group|$VDCL_allow_tab_switch|$VDCL_group_web2|$VDCL_web_form_extwin|$VDCL_web_form_extwin2|\n";
 
 			$stmt = "SELECT full_name from osdial_users where user='$tsr';";
 			if ($DB) {echo "$stmt\n";}

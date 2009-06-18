@@ -2765,7 +2765,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							var dispnum = document.osdial_form.phone_number.value;
 							var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
 
-							document.getElementById("MainStatuSSpan").innerHTML = " Incoming: " + status_display_number + "&nbsp;&nbsp;<font color=#AECFD7>UID: " + CIDcheck + "</font> &nbsp; " + VDIC_fronter; 
+							document.getElementById("MainStatuSSpan").style.backgroundColor = '';
+							document.getElementById("MainStatuSSpan").innerHTML = " Outgoing: " + status_display_number + "&nbsp;&nbsp;<font color=#AECFD7>UID: " + CIDcheck + "</font> &nbsp; " + VDIC_fronter; 
 
 							document.getElementById("RepullControl").innerHTML = "<a href=\"#\" onclick=\"RepullLeadData('all');\"><IMG SRC=\"./images/vdc_RPLD_on.gif\" border=0 alt=\"Repull Lead Data\"></a>";
 
