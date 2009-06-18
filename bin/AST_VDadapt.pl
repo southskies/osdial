@@ -277,11 +277,11 @@ while ( $master_loop < $CLOloops ) {
 			}
 			$sthA->finish();
 
-			$ivr_reserve_agents = 0;
+			my $ivr_reserve_agents = 0;
 			$stmtA = "SELECT status,reserve_agents FROM osdial_ivr where campaign_id='$campaign_id[$i]'";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-			while (@aryA = $sthA->fetchrow_array) {
+			while (my @aryA = $sthA->fetchrow_array) {
 				$ivr_reserve_agents = $aryA[1] if ($aryA[0] eq "ACTIVE");
 			}
 			$sthA->finish();
