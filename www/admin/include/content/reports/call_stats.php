@@ -512,6 +512,7 @@ function report_call_stats() {
             $stmt="select count(*),status,sum(length_in_sec) from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END'  $group_SQLand group by status;";
         }
     }
+    $cnvrate = Array();
     if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
@@ -520,6 +521,10 @@ function report_call_stats() {
     while ($i < $statuses_to_print) {
         $row=mysql_fetch_row($rslt);
     
+        if ($comment_grouping and $row[3] != '' and $row[3] != 'REMOTE' and $row[3] != 'AFTER HOURS DROP') {
+            $cnvrate[$row[3]][$statcat_list[$row[1]]] += $row[0];
+        }
+
         $STATUScount =    $row[0];
         $RAWstatus =    $row[1];
         $RAWcomment =    eregi_replace("\.wav$|\.mp3$|\.gsm$","",$row[3]);
@@ -716,7 +721,7 @@ function report_call_stats() {
         $CATcount =    sprintf("%10s", $vsc_count[$r]); while(strlen($CATcount)>10) {$CATcount = substr("$CATcount", 0, -1);}
         $CATname =    sprintf("%-30s", $vsc_name[$r]); while(strlen($CATname)>30) {$CATname = substr("$CATname", 0, -1);}
     
-        if ($vsc_id[$r] == 'CONTACT') {
+        if ($vsc_id[$r] == 'CONTACT' or $vsc_id[$r] == 'DNC') {
             $TOTCATcontact += $CATcount;
         } elseif ($vsc_id[$r] == 'SALE' or $vsc_id[$r] == 'XFER') {
             $TOTCATcontact += $CATcount;
@@ -752,6 +757,67 @@ function report_call_stats() {
     $html .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">";
     $html .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
     $html .= "</form>";
+
+
+
+    if ($comment_grouping) {
+        $html .= "\n\n";
+        $html .= "---------- CONVERSION RATE BASED ON EXTENDED DATA\n";
+        $html .= "+----------------------------------------------------+----------+----------+----------+----------+\n";
+        $html .= "| EXTENDED DATA                                      | CONTACTS |    DNC   |   SALES  |   RATE   |\n";
+        $html .= "+----------------------------------------------------+----------+----------+----------+----------+\n";
+        $TOTCATcontact = 0;
+        $TOTCATdnc = 0;
+        $TOTCATsale = 0;
+        $TOTCATconversion = 0;
+        foreach ($cnvrate as $edkey => $edval) {
+            $CATcontact = 0;
+            $CATdnc = 0;
+            $CATsale = 0;
+            $CATconversion = 0;
+            foreach ($edval as $sgkey => $sgval) {
+                if ($sgkey == 'CONTACT') {
+                    $CATcontact += $sgval;
+                    $TOTCATcontact += $sgval;
+                } elseif ($sgkey == 'DNC') {
+                    $CATdnc += $sgval;
+                    $TOTCATdnc += $sgval;
+                } elseif ($sgkey == 'SALE' or $sgkey == 'XFER') {
+                    $CATsale += $sgval;
+                    $TOTCATsale += $sgval;
+                }
+            }
+            if ($CATcontact > 0) {
+                $CATconversion = ($CATsale / ($CATcontact + $CATdnc + $CATsale)) * 100;
+                $CATconversion =    sprintf("%3.2f%%   ", $CATconversion);
+                while(strlen($CATconversion)>7) {$CATconversion = substr("$CATconversion", 0, -1);}
+                $CATcontact =    sprintf("%5s", $CATcontact);
+                while(strlen($CATcontact)>5) {$CATcontact = substr("$CATcontact", 0, -1);}
+                $CATdnc =    sprintf("%5s", $CATdnc);
+                while(strlen($CATdnc)>5) {$CATdnc = substr("$CATdnc", 0, -1);}
+                $CATsale =    sprintf("%5s", $CATsale);
+                while(strlen($CATsale)>5) {$CATsale = substr("$CATsale", 0, -1);}
+                $ed =    sprintf("%-50s", $edkey); 
+                while(strlen($ed)>50) {$ed = substr("$ed", 0, -1);}    
+                $html .= '| ' . $ed . ' |    ' . $CATcontact . ' |   ' . $CATdnc . '  |   ' . $CATsale . '  |   ' . $CATconversion . "|\n";
+            }
+        }
+        if ($TOTCATcontact > 0) {
+            $TOTCATconversion = ($TOTCATsale / ($TOTCATcontact + $TOTCATdnc + $TOTCATsale)) * 100;
+            $TOTCATconversion =    sprintf("%3.2f%%   ", $TOTCATconversion);
+            while(strlen($TOTCATconversion)>7) {$TOTCATconversion = substr("$TOTCATconversion", 0, -1);}
+            $TOTCATcontact =    sprintf("%5s", $TOTCATcontact);
+            while(strlen($TOTCATcontact)>5) {$TOTCATcontact = substr("$TOTCATcontact", 0, -1);}
+            $TOTCATdnc =    sprintf("%5s", $TOTCATdnc);
+            while(strlen($TOTCATdnc)>5) {$TOTCATdnc = substr("$TOTCATdnc", 0, -1);}
+            $TOTCATsale =    sprintf("%5s", $TOTCATsale);
+            while(strlen($TOTCATsale)>5) {$TOTCATsale = substr("$TOTCATsale", 0, -1);}
+            $html .= "+----------------------------------------------------+----------+----------+----------+----------+\n";
+            $html .= "+ TOTALS                                             ";
+            $html .= '|    ' . $TOTCATcontact . ' |   ' . $TOTCATdnc . '  |   ' . $TOTCATsale . '  |   ' . $TOTCATconversion . "|\n";
+        }
+        $html .= "+----------------------------------------------------+----------+----------+----------+----------+\n\n";
+    }
     
     ##############################
     #########  USER STATS
