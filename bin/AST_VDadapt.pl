@@ -276,13 +276,23 @@ while ( $master_loop < $CLOloops ) {
 				$rec_count++;
 			}
 			$sthA->finish();
+
+			$ivr_reserve_agents = 0;
+			$stmtA = "SELECT status,reserve_agents FROM osdial_ivr where campaign_id='$campaign_id[$i]'";
+			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+			while (@aryA = $sthA->fetchrow_array) {
+				$ivr_reserve_agents = $aryA[1] if ($aryA[0] eq "ACTIVE");
+			}
+			$sthA->finish();
+
 									
 			if ( $available_only_ratio_tally[$i] eq 'Y' ) {
-				$VCSagents_calc = $VCSREADY + $VCSCLOSER;
+				$VCSagents_calc = $VCSREADY + $VCSCLOSER - $ivr_reserve_agents;
 			} else {
-				$VCSagents_calc = $VCSINCALL + $VCSREADY + $VCSCLOSER;
+				$VCSagents_calc = $VCSINCALL + $VCSREADY + $VCSCLOSER - $ivr_reserve_agents;
 			}
-			$VCSagents_active = $VCSINCALL + $VCSREADY + $VCSCLOSER;
+			$VCSagents_active = $VCSINCALL + $VCSREADY + $VCSCLOSER - $ivr_reserve_agents;
 
 		
 			$stmtA = "SELECT count(*) FROM osdial_auto_calls where campaign_id='$campaign_id[$i]' and status IN('LIVE','CLOSER');";

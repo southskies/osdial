@@ -359,6 +359,7 @@ $oivr_wait_loops = get_variable("oivr_wait_loops");
 $oivr_wait_timeout = get_variable("oivr_wait_timeout");
 $oivr_answered_status = get_variable("oivr_answered_status");
 $oivr_virtual_agents = get_variable("oivr_virtual_agents");
+$oivr_reserve_agents = get_variable("oivr_reserve_agents");
 $oivr_timeout_action = get_variable("oivr_timeout_action");
 $oivr_status = get_variable("oivr_status");
 $oivr_opt_id = get_variable("oivr_opt_id");

@@ -1,5 +1,124 @@
+2009-06-18  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r283] agi/agi-OSDivr.agi: Added hangup for live_channels.
+
+2009-06-17  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r282] bin/osdial_astgen.pl: Fix for Grandstreams
+
+2009-06-16  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r281] agi/agi-OSDivr.agi, bin/AST_VDauto_dial.pl,
+	  bin/AST_VDremote_agents.pl, extras/sql/212018.sql,
+	  extras/sql/upgrade_sql.map, version: Fixes for IVR.
+	* [r280] extras/sql/212017.sql: ivr not InnoDB, fixed.
+	* [r279] extras/osdial.cron: Update for archive settings
+	* [r278] extras/my.cnf: Increase of buffer space for InnoDB
+	* [r277] extras/httpd-osdial-archive.conf: Update for archive
+	  settings
+	* [r276] www/admin/user_stats.php: Strip starting // to /
+	* [r275] www/admin/user_stats.php: Modify to pull recording with /
+	  starting path and open in new window.
+
+2009-06-15  Steve Szmidt <techs@callcentersg.com>
+
+	* [r274] www/admin/copyright.php: Copyright page to display first
+	  time and when clicking on copyright notice.
+	* [r273] www/admin/include/content/reports/realtime_detail.php:
+	  Added ACtive/inactive status to RealTime Detail screen.
+
+2009-06-12  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r272] www/agent/conf_exten_check.php: Hide monitoring/barge
+	  channels.
+	* [r271] bin/AST_VDauto_dial.pl: Add DNC check to ALT/ADDR3 dial.
+
+2009-06-11  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r270] agi/agi-OSDivr.agi: Update XFER_INGROUP to wait until call
+	  is complete.
+	* [r269] extras/sql/212016.sql, extras/sql/upgrade_sql.map,
+	  version: Add Ingroup XFER to IVR
+	* [r268] bin/AST_flush_DBqueue.pl, extras/osdial.cron: Flush
+	  osdial_manager every 30min
+	* [r267] www/admin/include/content/reports/realtime_detail.php: Add
+	  selection to filter campaign with and without ingroups.
+	* [r266] agi/agi-OSDivr.agi, bin/osdial_astgen.pl: Add 8+conf_exten
+	  to IVR to play sip-silence on external transfer.
+
+2009-06-09  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r265] www/admin/include/content/campaigns/ivr.php: Quick
+	  XFER_INGROUP fix
+	* [r264] docs/conf_examples/osdial_extensions.conf: Have 8320 play
+	  vm-goodbye and wait 4 seconds.
+	* [r263] www/admin/include/content/reports/reports.php: Renamed
+	  Closer Report to Inbound Closer Report
+	* [r262] agi/agi-OSDivr.agi,
+	  www/admin/include/content/campaigns/ivr.php: Added XFER_INGROUP
+	  to IVR
+	* [r261] www/admin/include/content/reports/realtime_detail.php,
+	  www/admin/include/content/reports/realtime_summary.php: Added
+	  ALL_OUTBOUND and ALL_INBOUND to campaign selection.
+	* [r260] agi/agi-OSDivr.agi: Update to only attempt hangup 3 times.
+
+2009-06-06  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r259] bin/FastAGI_log.pl: More updates for Asterisk 1.6 compat.
+	* [r258] bin/osdial_astgen.pl: More updates for Asterisk 1.6
+	  compat.
+	* [r257] bin/osdial_astgen.pl: More updates for Asterisk 1.6
+	  compat.
+	* [r256] bin/AST_send_action_child.pl, bin/AST_update.pl,
+	  bin/FastAGI_log.pl, bin/osdial_astgen.pl, extras/sql/212015.sql,
+	  extras/sql/upgrade_sql.map, version,
+	  www/admin/include/content/admin/phones.php: More updates for
+	  Asterisk 1.6 compat.
+	* [r255] bin/AST_conf_update.pl, bin/AST_manager_listen.pl,
+	  bin/AST_manager_send.pl, bin/AST_phone_update.pl,
+	  bin/AST_send_action_child.pl, bin/AST_update.pl,
+	  bin/AST_vm_update.pl: Check for and format commands for Asterisk
+	  1.6
+
+2009-06-05  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r254] bin/AST_VDremote_agents.pl: Fix for remote_agents table
+	  lock
+
+2009-06-04  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r253] agi/agi-OSDivr.agi, bin/AST_VDremote_agents.pl,
+	  www/admin/include/content/reports/realtime_detail.php: Fix IVR
+	  reporting and no-hangup channels.
+	* [r252] www/admin/include/content/reports/realtime_detail.php,
+	  www/admin/include/content/reports/realtime_summary.php: Show
+	  campaign description in selection/header.
+	* [r251] extras/sql/212014.sql, extras/sql/upgrade_sql.map,
+	  version: Increase database to allow large recycle params
+	* [r250] www/admin/include/content/campaigns/recycle.php: Increase
+	  attempt_maximum to 999
+	* [r249] bin/osdial_astgen.pl: Modified update routine to execute
+	  asterisk commands once at at of process.
+	* [r248] agi/agi-OSDivr.agi: Fixes to round-robin. Fixes to
+	  irregular hangups. Add SIG HUP/INT catches to force the corrent
+	  hangup routine.
+	* [r247] www/agent/include/osdial.js, www/agent/osdial.php:
+	  Manual-dial fixes: 1. when call was dispo with hotkey, new manual
+	  call could not be made. 2. Change hotkeypress to activate after
+	  MD secs > 5
+
+2009-06-03  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r246] www/admin/admin_modify_lead.php: Fix update, and
+	  osdial_log table view
+
 2009-06-02  Lott Caskey <lottcaskey@gmail.com>
 
+	* [r245] Makefile: Fix Makefile
+	* [r244] ChangeLog, Makefile, agi/agi-OSDivr.agi,
+	  extras/sql/212013.sql, extras/sql/upgrade_sql.map, version,
+	  www/admin/include/content/campaigns/ivr.php,
+	  www/admin/include/variables.php: Added Timeout Action to IVR
 	* [r243] agi/agi-OSDivr.agi,
 	  www/admin/include/content/campaigns/ivr.php,
 	  www/admin/include/content/ingroups/ingroups.php,

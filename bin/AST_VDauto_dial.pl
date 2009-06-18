@@ -500,7 +500,17 @@ while($one_day_interval > 0)
 				}
 			$sthA->finish();
 
-			$DBIPgoalcalls[$user_CIPct] = ($DBIPadlevel[$user_CIPct] * $DBIPcount[$user_CIPct]);
+			$ivr_reserve_agents = 0;
+			$stmtA = "SELECT status,reserve_agents FROM osdial_ivr where campaign_id='$DBIPcampaign[$user_CIPct]';";
+			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+			while (@aryA = $sthA->fetchrow_array) {
+				$ivr_reserve_agents = $aryA[1] if ($aryA[0] eq "ACTIVE");
+			}
+			$sthA->finish();
+
+			$DBIPgoalcalls[$user_CIPct] = ($DBIPadlevel[$user_CIPct] * ($DBIPcount[$user_CIPct] - $ivr_reserve_agents));
+			$DBIPgoalcalls[$user_CIPct] = 0 if ($DBIPgoalcalls[$user_CIPct] < 0);
 
 			# Adjust the goalcalls to 0 if answers per hour is met.
 			$answers_hour = 0;

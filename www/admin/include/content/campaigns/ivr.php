@@ -447,9 +447,12 @@ if ($ADD == "4menu") {
             if ($status == 'ACTIVE' and $oivr_virtual_agents == '') {
                 $oivr_virtual_agents='1';
             }
+            if ($status == 'ACTIVE' and $oivr_reserve_agents == '') {
+                $oivr_reserve_agents='2';
+            }
 
             echo "<br><B><font color=navy>IVR MODIFIED: $oivr_id - $campaign_id - $oivr_name</font></B>\n";
-            $stmt = "UPDATE osdial_ivr SET name='$oivr_name',announcement='$oivr_announcement',repeat_loops='$oivr_repeat_loops',wait_loops='$oivr_wait_loops',wait_timeout='$oivr_wait_timeout',answered_status='$oivr_answered_status',virtual_agents='$oivr_virtual_agents',status='$oivr_status',timeout_action='$oivr_timeout_action' where id='$oivr_id';";
+            $stmt = "UPDATE osdial_ivr SET name='$oivr_name',announcement='$oivr_announcement',repeat_loops='$oivr_repeat_loops',wait_loops='$oivr_wait_loops',wait_timeout='$oivr_wait_timeout',answered_status='$oivr_answered_status',virtual_agents='$oivr_virtual_agents',status='$oivr_status',timeout_action='$oivr_timeout_action',reserve_agents='$oivr_reserve_agents' where id='$oivr_id';";
             $rslt = mysql_query($stmt, $link);
 
             $svr = get_first_record($link, 'servers', 'server_ip',"");
@@ -457,10 +460,10 @@ if ($ADD == "4menu") {
             # Insert Virtual Agents.
             $rma = get_krh($link, 'osdial_remote_agents', 'remote_agent_id,user_start','',"user_start LIKE 'va" . $campaign_id . "%'");
             $rcnt = count($rma);
-            if ($rcnt < $oivr_virtual_agents) {
+            if ($rcnt < ($oivr_virtual_agents + $oivr_reserve_agents)) {
                 $icnt = 0;
                 $unum = 0;
-                while ($icnt < $oivr_virtual_agents - $rcnt) {
+                while ($icnt < (($oivr_virtual_agents + $oivr_reserve_agents) - $rcnt)) {
                     $unum++;
                     $usr = 'va' . $campaign_id . sprintf('%03d', $unum);
                     $ufnd = 0;
@@ -477,8 +480,8 @@ if ($ADD == "4menu") {
                         $icnt++;
                     }
                 }
-            } elseif ($rcnt > $oivr_virtual_agents) {
-                $dcnt = $rcnt - $oivr_virtual_agents;
+            } elseif ($rcnt > ($oivr_virtual_agents + $oivr_reserve_agents)) {
+                $dcnt = $rcnt - ($oivr_virtual_agents + $oivr_reserve_agents);
                 $stmt = "DELETE FROM osdial_remote_agents WHERE user_start LIKE 'va$campaign_id%' ORDER BY user_start DESC LIMIT $dcnt;";
                 $rslt = mysql_query($stmt, $link);
             }
@@ -486,10 +489,10 @@ if ($ADD == "4menu") {
             # Insert any needed user records.
             $urecs = get_krh($link, 'osdial_users', 'user_id,user','',"user LIKE 'va$campaign_id%'");
             $ucnt = count($urecs);
-            if ($ucnt < $oivr_virtual_agents) {
+            if ($ucnt < ($oivr_virtual_agents + $oivr_reserve_agents)) {
                 $icnt = 0;
                 $unum = 0;
-                while ($icnt < $oivr_virtual_agents - $ucnt) {
+                while ($icnt < (($oivr_virtual_agents + $oivr_reserve_agents) - $ucnt)) {
                     $unum++;
                     $usr = 'va' . $campaign_id . sprintf('%03d', $unum);
                     $ufnd = 0;
@@ -505,8 +508,8 @@ if ($ADD == "4menu") {
                         $icnt++;
                     }
                 }
-            } elseif ($ucnt > $oivr_virtual_agents) {
-                $dcnt = $ucnt - $oivr_virtual_agents;
+            } elseif ($ucnt > ($oivr_virtual_agents + $oivr_reserve_agents)) {
+                $dcnt = $ucnt - ($oivr_virtual_agents + $oivr_reserve_agents);
                 $stmt = "DELETE FROM osdial_users WHERE user LIKE 'va$campaign_id%' ORDER BY user DESC LIMIT $dcnt;";
                 $rslt = mysql_query($stmt, $link);
             }
@@ -663,7 +666,11 @@ if ($ADD == "3menu") {
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=#CBDCE0 align=right>Virtual Agents</td>\n";
-    echo '      <td bgcolor="#CBDCE0"><input type="text" size="4" maxlength="3" name="oivr_virtual_agents" value="' . $oivr['virtual_agents'] . '"> <font size=-1>Set to 10+ if Inbound.</font></td>';
+    echo '      <td bgcolor="#CBDCE0"><input type="text" size="4" maxlength="3" name="oivr_virtual_agents" value="' . $oivr['virtual_agents'] . '"> <font size=-1></font></td>';
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "      <td bgcolor=#CBDCE0 align=right>Reserve Agents</td>\n";
+    echo '      <td bgcolor="#CBDCE0"><input type="text" size="4" maxlength="3" name="oivr_reserve_agents" value="' . $oivr['reserve_agents'] . '"> <font size=-1> Set to 10+ if Inbound.</font></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=#CBDCE0 align=right>Status</td>\n";
