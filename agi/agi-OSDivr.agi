@@ -27,6 +27,7 @@ my $ivr = {};
 $SIG{HUP} = 'exit_now';
 $SIG{INT} = 'exit_now';
 $SIG{PIPE} = 'exit_now';
+$SIG{QUIT} = 'exit_now';
 
 # Get OSD configuration directives.
 $vars = getOSDconfig('/etc/osdial.conf');
@@ -134,7 +135,7 @@ my ($affected_rows, $safe_harbor_message, $safe_harbor_exten);
 	$campaign = $sthA->fetchrow_hashref;
 	$sthA->finish();
 
-update_status('VPU',$ivr->{announcement});
+update_status($dbhA,'VPU',$ivr->{announcement});
 
 
 # Pull the auto-agent ivr config.
@@ -164,8 +165,13 @@ exit_now();
 ################################################################
 
 sub exit_now {
+	my($sig) = @_;
+	$SIG{HUP} = 'IGNORE';
+	$SIG{INT} = 'IGNORE';
+	$SIG{PIPE} = 'IGNORE';
+	$SIG{QUIT} = 'IGNORE';
 	hangup_and_dispo();
-	agi_output("--    ODOI END");
+	agi_output("--    ODOI END - $sig");
 	$dbhA->disconnect();
 	$AGI->hangup();
 	exit;
@@ -177,7 +183,7 @@ sub ivr_menu {
 	my $ivrloop = 1;
 	my %menu = %{$menuref};
 	agi_output("+++++ ODOI MENU : " . $menu{ivrid} . "/" . $menu{parid});
-	update_status($menu{answered_status},$menu{announcement});
+	update_status($dbhA,$menu{answered_status},$menu{announcement});
 	while ($ivrloop) {
 		# Get valid-digits from options table.
 		my $valid_digits;
@@ -238,7 +244,7 @@ sub ivr_menu {
 
 
 sub update_status {
-	my ($status, $comment) = @_;
+	my ($dbh, $status, $comment) = @_;
 
 	my $upsql;
 	$upsql = "status='$status'" if ($status ne '');
@@ -247,14 +253,14 @@ sub update_status {
 
 	if ($status or $comment) {
 		my $stmtA = "UPDATE osdial_list set $upsql where lead_id='" . $vars->{CIDlead_id} . "';";
-		my $affected_rows = $dbhA->do($stmtA);
+		my $affected_rows = $dbh->do($stmtA);
 		agi_output("--    ODOI osdial_list update: |$affected_rows|" . $upsql);
 
 		$stmtA = "UPDATE osdial_log set $upsql where uniqueid='" . $AGI->{uniqueid} . "';";
-		$affected_rows = $dbhA->do($stmtA);
+		$affected_rows = $dbh->do($stmtA);
 		if ($affected_rows < 1) {
 			$stmtA = "UPDATE osdial_closer_log set $upsql where uniqueid='" . $AGI->{uniqueid} . "';";
-			$affected_rows = $dbhA->do($stmtA);
+			$affected_rows = $dbh->do($stmtA);
 			agi_output("--    ODOI osdial_closer_log update: |$affected_rows");
 		} else {
 			agi_output("--    ODOI osdial_log update: |$affected_rows");
@@ -266,7 +272,7 @@ sub update_status {
 sub playfile {
 	my ($stream, $status, $rtnmain) = @_;
 
-	update_status($status);
+	update_status($dbhA,$status);
 	$stream =~ s/\....$//;
 	$AGI->stream_file('ivr/' . $stream);
 
@@ -279,7 +285,7 @@ sub xfer_to_external {
 	$stream =~ s/\....$//;
 	$AGI->stream_file('ivr/' . $stream) if ($stream);
 
-	update_status($status);
+	update_status($dbhA,$status);
 
 	my $xepoch = time();
 	my $xdate = sql_date($xepoch);
@@ -360,7 +366,7 @@ sub xfer_to_ingroup {
 	$stream =~ s/\....$//;
 	$AGI->stream_file('ivr/' . $stream) if ($stream);
 
-	update_status($status);
+	update_status($dbhA,$status);
 
 
 	my $xepoch = time();
@@ -433,63 +439,90 @@ sub hangup_and_dispo {
 	my $tdate = sql_date($tepoch);
 	my $call_length = $tepoch - $vars->{start_time};
 
+	my $dbhB = DBI->connect("DBI:mysql:" . $vars->{VARDB_database} . ":" . $vars->{VARDB_server} . ":" . $vars->{VARDB_port}, $vars->{VARDB_user}, $vars->{VARDB_pass} )
+	  or warn "Couldn't connect to database: " . DBI->errstr;
+
 	if ($status eq 'DNC' or $status eq 'VDNC') {
 		my $stmtA = "INSERT INTO osdial_dnc VALUES ((SELECT phone_number FROM osdial_list WHERE lead_id='" . $vars->{CIDlead_id} ."'));";
 		agi_output("|$stmtA|") if ($vars->{DB} > 1);
-		my $affected_rows = $dbhA->do($stmtA);
+		my $affected_rows = $dbhB->do($stmtA);
 		agi_output("--    ODOI osdial_dnc insert: |$affected_rows");
 	}
 
-	update_status($status);
+	update_status($dbhB,$status);
 
 	### insert a NEW Hangup record to the osdial_manager table to be processed
 	my $VHqueryCID = $AGI->{orig_callerid};
 	#my $stmtA = "INSERT INTO osdial_manager values('','','$tdate','NEW','N','" . $vars->{VARserver_ip} . "','','Hangup','$VHqueryCID','Channel: " . $AGI->{channel} . "','','','','','','','','','')";
-	#my $affected_rows = $dbhA->do($stmtA);
+	#my $affected_rows = $dbhB->do($stmtA);
 	#agi_output("$affected_rows|$stmtA|") if ($vars->{DB} > 1);
 	#my $stmtA = "INSERT INTO osdial_manager values('','','$tdate','NEW','N','" . $vars->{VARserver_ip} . "','','Hangup','$VHqueryCID','Channel: " . $AGI->{orig_channel} . "','','','','','','','','','')";
-	#my $affected_rows = $dbhA->do($stmtA);
+	#my $affected_rows = $dbhB->do($stmtA);
 	#agi_output("$affected_rows|$stmtA|") if ($vars->{DB} > 1);
 	my $lccnt = 2;
 	my $try = 2;
 	# Loop through open channels sleep untill all are closed.
 	while ($lccnt > 1 or $try > 1) {
 		my @huchan;
-		my $stmtA = "SELECT channel FROM live_sip_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND extension LIKE '%" . $vars->{conf_exten} . "%' order by channel desc;";
-		my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		# Get local channels (conferences)
+		my $stmtA = "SELECT channel FROM live_sip_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND channel LIKE 'Local/" . $vars->{conf_exten} . "%' order by channel desc;";
+		my $sthA = $dbhB->prepare($stmtA) or die "preparing: ",$dbhB->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhB->errstr;
 		while (my @aryA = $sthA->fetchrow_array) {
 			push @huchan, $aryA[0];
 		}
 		$sthA->finish();
+
+		# Get outbound channels attached to those conferences.
+		my $stmtA = "SELECT channel FROM live_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND extension = '" . $vars->{conf_exten} . "' order by channel desc;";
+		my $sthA = $dbhB->prepare($stmtA) or die "preparing: ",$dbhB->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhB->errstr;
+		while (my @aryA = $sthA->fetchrow_array) {
+			push @huchan, $aryA[0];
+		}
+		$sthA->finish();
+		# Send hangups to all conferences and outbound channels.
 		foreach my $huc (@huchan) {
 			my $stmtA = "INSERT INTO osdial_manager values('','','$tdate','NEW','N','" . $vars->{VARserver_ip} . "','','Hangup','$VHqueryCID','Channel: " . $huc . "','','','','','','','','','')";
-			my $affected_rows = $dbhA->do($stmtA);
+			my $affected_rows = $dbhB->do($stmtA);
 			agi_output("$affected_rows|$stmtA|") if ($vars->{DB} > 1);
 		}
 		sleep 1;
-		my $stmtA = "SELECT count(*) FROM live_sip_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND extension LIKE '%" . $vars->{conf_exten} . "%' order by channel desc;";
+
+		# Get count of local channels still open.
+		my $stmtA = "SELECT count(*) FROM live_sip_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND channel LIKE 'Local/" . $vars->{conf_exten} . "%' order by channel desc;";
 		agi_output("$affected_rows|$stmtA|") if ($vars->{DB} > 1);
-		my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		my $sthA = $dbhB->prepare($stmtA) or die "preparing: ",$dbhB->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhB->errstr;
 		my @aryA = $sthA->fetchrow_array;
 		$lccnt = $aryA[0];
+		$sthA->finish();
+
+		# Get count of outbound channels still open
+		my $stmtA = "SELECT count(*) FROM live_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND extension = '" . $vars->{conf_exten} . "' order by channel desc;";
+		agi_output("$affected_rows|$stmtA|") if ($vars->{DB} > 1);
+		my $sthA = $dbhB->prepare($stmtA) or die "preparing: ",$dbhB->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhB->errstr;
+		my @aryA = $sthA->fetchrow_array;
+		$lccnt += $aryA[0];
 		$sthA->finish();
 		$try--;
 	}
 
+
 	my $stmtA = "UPDATE osdial_log set end_epoch='$tepoch' where uniqueid = '" . $AGI->{uniqueid} . "';";
 	agi_output("|$stmtA|") if ($vars->{DB} > 1);
-	my $affected_rows = $dbhA->do($stmtA);
+	my $affected_rows = $dbhB->do($stmtA);
 	my $stmtA = "UPDATE osdial_log set length_in_sec=end_epoch-start_epoch where uniqueid = '" . $AGI->{uniqueid} . "';";
 	agi_output("|$stmtA|") if ($vars->{DB} > 1);
-	my $affected_rows = $dbhA->do($stmtA);
+	my $affected_rows = $dbhB->do($stmtA);
 	agi_output("--    ODOI osdial_log update: $affected_rows");
 	my $random = int( rand(9999999)) + 10000000;
 	my $stmtA = "UPDATE osdial_live_agents set status='READY',random_id='$random', last_call_finish='$tdate',last_update_time='$tdate',lead_id='',uniqueid='',callerid='',channel='' where conf_exten='" . $vars->{conf_exten} . "' and server_ip='" . $vars->{VARserver_ip} . "';";
-	my $affected_rows = $dbhA->do($stmtA);
+	my $affected_rows = $dbhB->do($stmtA);
 	agi_output("--    ODOI osdial_live_agents update: $affected_rows");
 
+	$dbhB->disconnect();
 	return 0;
 }
 
