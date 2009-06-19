@@ -32,7 +32,7 @@ $SIG{QUIT} = 'exit_now';
 # Get OSD configuration directives.
 $vars = getOSDconfig('/etc/osdial.conf');
 
-$vars->{DB} = 2 unless ($vars->{DB});
+$vars->{DB} = 0 unless ($vars->{DB});
 $vars->{script} = 'agi-OSDivr.agi';
 
 
@@ -305,7 +305,7 @@ sub xfer_to_external {
 		my @aryA = $sthA->fetchrow_array;
 		$sthA->finish();
 		$xfer=0 if ($aryA[0] == 1);
-		my $stmtA = "SELECT count(*) FROM live_sip_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND extension LIKE '%" . $vars->{conf_exten} . "%' order by channel desc;";
+		my $stmtA = "SELECT count(*) FROM live_sip_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND extension='" . $vars->{conf_exten} . "' order by channel desc;";
 		my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		my @aryA = $sthA->fetchrow_array;
@@ -466,7 +466,7 @@ sub hangup_and_dispo {
 	#while ($lccnt > 1 or $try > 1) {
 		my @huchan;
 		# Get local channels (conferences)
-		my $stmtA = "SELECT channel FROM live_sip_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND channel LIKE 'Local/" . $vars->{conf_exten} . "%' order by channel desc;";
+		my $stmtA = "SELECT channel FROM live_sip_channels WHERE server_ip='" . $vars->{VARserver_ip} . "' AND channel LIKE '%" . $vars->{conf_exten} . "%' order by channel desc;";
 		my $sthA = $dbhB->prepare($stmtA) or die "preparing: ",$dbhB->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhB->errstr;
 		while (my @aryA = $sthA->fetchrow_array) {
