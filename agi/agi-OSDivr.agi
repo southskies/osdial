@@ -266,6 +266,11 @@ sub update_status {
 			agi_output("--    ODOI osdial_log update: |$affected_rows");
 		}
 	}
+
+	my $xepoch = time();
+	my $xdate = sql_date($xepoch);
+	my $stmtA = "UPDATE osdial_auto_calls set last_update_time='$xdate' where channel LIKE '%" . $vars->{conf_exten} . "%';";
+	my $affected_rows = $dbh->do($stmtA);
 	return 1;
 }
 
@@ -312,6 +317,11 @@ sub xfer_to_external {
 		$xfer = 0 if ($aryA[0] == 0);
 		$sthA->finish();
 		agi_output("ODOI: $xfer|$stmtA") if ($vars->{DB} > 1);
+
+		my $xepoch = time();
+		my $xdate = sql_date($xepoch);
+		my $stmtA = "UPDATE osdial_auto_calls set last_update_time='$xdate' where channel LIKE '%" . $vars->{conf_exten} . "%';";
+		my $affected_rows = $dbhA->do($stmtA);
 	}
 	agi_output("exiting the ODOI app");
 
@@ -420,6 +430,11 @@ sub xfer_to_ingroup {
 		$xfer = 0 if ($aryA[0] == 0);
 		$sthA->finish();
 		agi_output("ODOI: $xfer|$stmtA") if ($vars->{DB} > 1);
+
+		my $xepoch = time();
+		my $xdate = sql_date($xepoch);
+		my $stmtA = "UPDATE osdial_auto_calls set last_update_time='$xdate' where channel LIKE '%" . $vars->{conf_exten} . "%';";
+		my $affected_rows = $dbhA->do($stmtA);
 	}
 	agi_output("exiting the ODOI xfer_to_ingroup");
 
