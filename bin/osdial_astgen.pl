@@ -248,7 +248,7 @@ sub gen_servers {
 		my @sip = split /\./, $aryA[1];
 		my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
 		$esvr .= ";\n;" . $aryA[0] . ' - ' . $aryA[1] . "\n";
-		$esvr .= "exten => _" . $fsip . "*.,1,Dial(IAX2/" . $aryA[0] . "/\${EXTEN},,o)\n";
+		$esvr .= "exten => _" . $fsip . "*.,1,Dial(IAX2/" . $aryA[0] . ':' . $pass . "/\${EXTEN},,o)\n";
 		$isvr .= ";\n;" . $aryA[0] . ' - ' . $aryA[1] . "\n";
 		$isvr .= "[" . $aryA[0] . "]\n";
 		$isvr .= "type=peer\n";
