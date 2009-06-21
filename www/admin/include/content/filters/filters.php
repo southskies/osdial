@@ -36,11 +36,11 @@ if ($ADD==11111111)
 	echo "<center><br><font color=navy size=+1>ADD NEW FILTER</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Filter ID: </td><td align=left><input type=text name=lead_filter_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_lead_filters-lead_filter_id$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Filter Name: </td><td align=left><input type=text name=lead_filter_name size=30 maxlength=30> (short description of the filter)$NWB#osdial_lead_filters-lead_filter_name$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Filter Comments: </td><td align=left><input type=text name=lead_filter_comments size=50 maxlength=255> $NWB#osdial_lead_filters-lead_filter_comments$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Filter SQL: </td><td align=left><TEXTAREA NAME=lead_filter_sql ROWS=20 COLS=50 value=\"\"></TEXTAREA> $NWB#osdial_lead_filters-lead_filter_sql$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Filter ID: </td><td align=left><input type=text name=lead_filter_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_lead_filters-lead_filter_id$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Filter Name: </td><td align=left><input type=text name=lead_filter_name size=30 maxlength=30> (short description of the filter)$NWB#osdial_lead_filters-lead_filter_name$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Filter Comments: </td><td align=left><input type=text name=lead_filter_comments size=50 maxlength=255> $NWB#osdial_lead_filters-lead_filter_comments$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Filter SQL: </td><td align=left><TEXTAREA NAME=lead_filter_sql ROWS=20 COLS=50 value=\"\"></TEXTAREA> $NWB#osdial_lead_filters-lead_filter_sql$NWE</td></tr>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -209,11 +209,11 @@ if ($ADD==31111111)
 	echo "<input type=hidden name=ADD value=41111111>\n";
 	echo "<input type=hidden name=lead_filter_id value=\"$lead_filter_id\">\n";
 	echo "<TABLE>";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Filter ID: </td><td align=left><B>$lead_filter_id</B>$NWB#osdial_lead_filters-lead_filter_id$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Filter Name: </td><td align=left><input type=text name=lead_filter_name size=40 maxlength=50 value=\"$lead_filter_name\"> (short description of the filter)$NWB#osdial_lead_filters-lead_filter_name$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Filter Comments: </td><td align=left><input type=text name=lead_filter_comments size=50 maxlength=255 value=\"$lead_filter_comments\"> $NWB#osdial_lead_filters-lead_filter_comments$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Filter SQL:</td><td align=left><TEXTAREA NAME=lead_filter_sql ROWS=20 COLS=50>$lead_filter_sql</TEXTAREA> $NWB#osdial_lead_filters-lead_filter_sql$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Filter ID: </td><td align=left><B>$lead_filter_id</B>$NWB#osdial_lead_filters-lead_filter_id$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Filter Name: </td><td align=left><input type=text name=lead_filter_name size=40 maxlength=50 value=\"$lead_filter_name\"> (short description of the filter)$NWB#osdial_lead_filters-lead_filter_name$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Filter Comments: </td><td align=left><input type=text name=lead_filter_comments size=50 maxlength=255 value=\"$lead_filter_comments\"> $NWB#osdial_lead_filters-lead_filter_comments$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Filter SQL:</td><td align=left><TEXTAREA NAME=lead_filter_sql ROWS=20 COLS=50>$lead_filter_sql</TEXTAREA> $NWB#osdial_lead_filters-lead_filter_sql$NWE</td></tr>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</table></form>\n";
 
 		##### get campaigns listing for dynamic pulldown
@@ -281,9 +281,9 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
 	while ($filters_to_print > $o) {
 		$row=mysql_fetch_row($rslt);
 		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor="#CBDCE0"';} 
+			{$bgcolor='bgcolor='.$oddrows;} 
 		else
-			{$bgcolor='bgcolor="#C1D6DB"';}
+			{$bgcolor='bgcolor='.$evenrows;}
 		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=31111111&lead_filter_id=$row[0]\">$row[0]</a></td>";
 		echo "<td><font size=1> $row[1]</td>";
 		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=31111111&lead_filter_id=$row[0]\">MODIFY</a></td></tr>\n";

@@ -74,4 +74,16 @@ $reports_font =	'navy';
 $subcamp_color =	'#A1B9A4';
 $subcamp_font =		'navy';
 $menubarcolor='#716A5B';
+$oddrows='#CBDCE0';
+$evenrows='#C1D6DB';
+$unusualrows='#9FD79F';
+$footer_color='#A3C1C9';
+$header_color='#1C4754';
+$company_color='#1C4754';
+$clock_color='white';
+$home_color='white';
+$logout_color='yellow';
+$menu_h1_color='navy';
+$menu_h2_color='black';
+$maintable_color='#E9E8D9';
 ?>

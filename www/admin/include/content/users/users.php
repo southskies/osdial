@@ -36,10 +36,10 @@ if ($ADD=="1")
 	echo "<center><br><font color=navy size=+1>ADD A NEW AGENT<form action=$PHP_SELF method=POST></font><br><br>\n";
 	echo "<input type=hidden name=ADD value=2>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Agent Number: </td><td align=left><input type=text name=user size=20 maxlength=10>$NWB#osdial_users-user$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Password: </td><td align=left><input type=text name=pass size=20 maxlength=10>$NWB#osdial_users-pass$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=20 maxlength=100>$NWB#osdial_users-full_name$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>User Level: </td><td align=left><select size=1 name=user_level>";
+	echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left><input type=text name=user size=20 maxlength=10>$NWB#osdial_users-user$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=pass size=20 maxlength=10>$NWB#osdial_users-pass$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=20 maxlength=100>$NWB#osdial_users-full_name$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level>";
 	$h=1;
 	while ($h<=$LOGuser_level)
 		{
@@ -48,7 +48,7 @@ if ($ADD=="1")
 		}
 	echo "</select>$NWB#osdial_users-user_level$NWE</td></tr>\n";
 	
-	echo "<tr bgcolor=#C1D6DF><td align=right>User Group: </td><td align=left><select size=1 name=user_group>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>User Group: </td><td align=left><select size=1 name=user_group>\n";
 
 		$stmt="SELECT user_group,group_name from osdial_user_groups order by user_group";
 		$rslt=mysql_query($stmt, $link);
@@ -65,10 +65,10 @@ if ($ADD=="1")
 	echo "<option SELECTED>$user_group</option>\n";
 	echo "</select>$NWB#osdial_users-user_group$NWE</td></tr>\n";
 	
-	echo "<tr bgcolor=#C1D6DF><td align=right>Phone Login: </td><td align=left><input type=text name=phone_login size=20 maxlength=20>$NWB#osdial_users-phone_login$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Phone Pass: </td><td align=left><input type=text name=phone_pass size=20 maxlength=20>$NWB#osdial_users-phone_pass$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Phone Login: </td><td align=left><input type=text name=phone_login size=20 maxlength=20>$NWB#osdial_users-phone_login$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Phone Pass: </td><td align=left><input type=text name=phone_pass size=20 maxlength=20>$NWB#osdial_users-phone_pass$NWE</td></tr>\n";
 	
-	echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -90,17 +90,17 @@ if ($ADD=="1A")
 	echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>COPY USER</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=navy size=+1>COPY AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2A>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Agent Number: </td><td align=left><input type=text name=user size=20 maxlength=10>$NWB#osdial_users-user$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Password: </td><td align=left><input type=text name=pass size=20 maxlength=10>$NWB#osdial_users-pass$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=20 maxlength=100>$NWB#osdial_users-full_name$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left><input type=text name=user size=20 maxlength=10>$NWB#osdial_users-user$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=pass size=20 maxlength=10>$NWB#osdial_users-pass$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=20 maxlength=100>$NWB#osdial_users-full_name$NWE</td></tr>\n";
 
 	if ($LOGuser_level==9) {$levelMAX=10;}
 	else {$levelMAX=$LOGuser_level;}
 
-	echo "<tr bgcolor=#C1D6DF><td align=right>Source Agent: </td><td align=left><select size=1 name=source_user_id>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Source Agent: </td><td align=left><select size=1 name=source_user_id>\n";
 
 		$stmt="SELECT user,full_name from osdial_users where user_level < $levelMAX order by full_name;";
 		$rslt=mysql_query($stmt, $link);
@@ -115,7 +115,7 @@ if ($ADD=="1A")
 		}
 	echo "$Uusers_list";
 	echo "</select>$NWB#osdial_users-user$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -136,18 +136,18 @@ if ($ADD=="2")
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
-		{echo "<br><font color=red> USER NOT ADDED - there is already a user in the system with this user number</font>\n";}
+		{echo "<br><font color=red> AGENT NOT ADDED - there is already a user in the system with this user number</font>\n";}
 	else
 		{
 		 if ( (strlen($user) < 2) or (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user) > 8) )
 			{
-			 echo "<br><font color=red> USER NOT ADDED - Please go back and look at the data you entered\n";
+			 echo "<br><font color=red> AGENT NOT ADDED - Please go back and look at the data you entered\n";
 			 echo "<br>user id must be between 2 and 8 characters long\n";
 			 echo "<br>full name and password must be at least 2 characters long</font><br>\n";
 			}
 		 else
 			{
-			echo "<br><B>USER ADDED: $user</B>\n";
+			echo "<br><B>AGENT ADDED: $user</B>\n";
 
 			$stmt="INSERT INTO osdial_users (user,pass,full_name,user_level,user_group,phone_login,phone_pass) values('$user','$pass','$full_name','$user_level','$user_group','$phone_login','$phone_pass');";
 			$rslt=mysql_query($stmt, $link);
@@ -156,7 +156,7 @@ if ($ADD=="2")
 			if ($WeBRooTWritablE > 0)
 				{
 				$fp = fopen ("./admin_changes_log.txt", "a");
-				fwrite ($fp, "$date|ADD A USER          |$PHP_AUTH_USER|$ip|'$user','$pass','$full_name','$user_level','$user_group','$phone_login','$phone_pass'|\n");
+				fwrite ($fp, "$date|ADD AN AGENT          |$PHP_AUTH_USER|$ip|'$user','$pass','$full_name','$user_level','$user_group','$phone_login','$phone_pass'|\n");
 				fclose($fp);
 				}
 			}
@@ -176,12 +176,12 @@ if ($ADD=="2A")
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
-		{echo "<br><font color=red> USER NOT ADDED - there is already a user in the system with this user number</font>\n";}
+		{echo "<br><font color=red> AGENT NOT ADDED - there is already a user in the system with this user number</font>\n";}
 	else
 		{
 		 if ( (strlen($user) < 2) or (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user) > 8) )
 			{
-			 echo "<br><font color=red> USER NOT ADDED - Please go back and look at the data you entered\n";
+			 echo "<br><font color=red> AGENT NOT ADDED - Please go back and look at the data you entered\n";
 			 echo "<br>user id must be between 2 and 8 characters long\n";
 			 echo "<br>full name and password must be at least 2 characters long</font><br>\n";
 			}
@@ -196,7 +196,7 @@ if ($ADD=="2A")
 			$stmtA="INSERT INTO osdial_campaign_agents (user,campaign_id,campaign_rank,campaign_weight,calls_today) SELECT \"$user\",campaign_id,campaign_rank,campaign_weight,\"0\" from osdial_campaign_agents where user=\"$source_user_id\";";
 			$rslt=mysql_query($stmtA, $link);
 
-			echo "<br><B><font color=navy> USER COPIED: $user copied from $source_user_id</font></B>\n";
+			echo "<br><B><font color=navy> AGENT COPIED: $user copied from $source_user_id</font></B>\n";
 			echo "<br><br>\n";
 			echo "<a href=\"$PHP_SELF?ADD=3&user=$user\">Click here to go to the user record</a>\n";
 			echo "<br><br>\n";
@@ -205,7 +205,7 @@ if ($ADD=="2A")
 			if ($WeBRooTWritablE > 0)
 				{
 				$fp = fopen ("./admin_changes_log.txt", "a");
-				fwrite ($fp, "$date|ADD A COPIED USER   |$PHP_AUTH_USER|$ip|$user|$source_user_id|$stmt|\n");
+				fwrite ($fp, "$date|ADD A COPIED AGENT   |$PHP_AUTH_USER|$ip|$user|$source_user_id|$stmt|\n");
 				fclose($fp);
 				}
 			}
@@ -225,12 +225,12 @@ if ($ADD=="4A")
 
 	 if ( (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user_level) < 1) )
 		{
-		 echo "<br><font color=red>USER NOT MODIFIED - Please go back and look at the data you entered\n";
+		 echo "<br><font color=red>AGENT NOT MODIFIED - Please go back and look at the data you entered\n";
 		 echo "<br>Password and Full Name each need ot be at least 2 characters in length</font><br>\n";
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>USER MODIFIED - ADMIN: $user</font></B>\n";
+		echo "<br><B><font color=navy>AGENT MODIFIED - ADMIN: $user</font></B>\n";
 
 		$stmt="UPDATE osdial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass',delete_users='$delete_users',delete_user_groups='$delete_user_groups',delete_lists='$delete_lists',delete_campaigns='$delete_campaigns',delete_ingroups='$delete_ingroups',delete_remote_agents='$delete_remote_agents',load_leads='$load_leads',campaign_detail='$campaign_detail',ast_admin_access='$ast_admin_access',ast_delete_phones='$ast_delete_phones',delete_scripts='$delete_scripts',modify_leads='$modify_leads',hotkeys_active='$hotkeys_active',change_agent_campaign='$change_agent_campaign',agent_choose_ingroups='$agent_choose_ingroups',closer_campaigns='$groups_value',scheduled_callbacks='$scheduled_callbacks',agentonly_callbacks='$agentonly_callbacks',agentcall_manual='$agentcall_manual',osdial_recording='$osdial_recording',osdial_transfers='$osdial_transfers',delete_filters='$delete_filters',alter_agent_interface_options='$alter_agent_interface_options',closer_default_blended='$closer_default_blended',delete_call_times='$delete_call_times',modify_call_times='$modify_call_times',modify_users='$modify_users',modify_campaigns='$modify_campaigns',modify_lists='$modify_lists',modify_scripts='$modify_scripts',modify_filters='$modify_filters',modify_ingroups='$modify_ingroups',modify_usergroups='$modify_usergroups',modify_remoteagents='$modify_remoteagents',modify_servers='$modify_servers',view_reports='$view_reports',osdial_recording_override='$osdial_recording_override',alter_custdata_override='$alter_custdata_override' where user='$user';";
 		$rslt=mysql_query($stmt, $link);
@@ -241,7 +241,7 @@ if ($ADD=="4A")
 		if ($WeBRooTWritablE > 0)
 			{
 			$fp = fopen ("./admin_changes_log.txt", "a");
-			fwrite ($fp, "$date|MODIFY USER INFO    |$PHP_AUTH_USER|$ip|$stmt|\n");
+			fwrite ($fp, "$date|MODIFY AGENT INFO    |$PHP_AUTH_USER|$ip|$stmt|\n");
 			fclose($fp);
 			}
 		}
@@ -267,12 +267,12 @@ if ($ADD=="4B")
 
 	 if ( (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user_level) < 1) )
 		{
-		 echo "<br><font color=red>USER NOT MODIFIED - Please go back and look at the data you entered\n";
+		 echo "<br><font color=red>AGENT NOT MODIFIED - Please go back and look at the data you entered\n";
 		 echo "<br>Password and Full Name each need ot be at least 2 characters in length</font><br>\n";
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>USER MODIFIED - ADMIN: $user</font></B>\n";
+		echo "<br><B><font color=navy>AGENT MODIFIED - ADMIN: $user</font></B>\n";
 
 		$stmt="UPDATE osdial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass',hotkeys_active='$hotkeys_active',agent_choose_ingroups='$agent_choose_ingroups',closer_campaigns='$groups_value',scheduled_callbacks='$scheduled_callbacks',agentonly_callbacks='$agentonly_callbacks',agentcall_manual='$agentcall_manual',osdial_recording='$osdial_recording',osdial_transfers='$osdial_transfers',closer_default_blended='$closer_default_blended',osdial_recording_override='$osdial_recording_override',alter_custdata_override='$alter_custdata_override' where user='$user';";
 		$rslt=mysql_query($stmt, $link);
@@ -281,7 +281,7 @@ if ($ADD=="4B")
 		if ($WeBRooTWritablE > 0)
 			{
 			$fp = fopen ("./admin_changes_log.txt", "a");
-			fwrite ($fp, "$date|MODIFY USER INFO    |$PHP_AUTH_USER|$ip|$stmt|\n");
+			fwrite ($fp, "$date|MODIFY AGENT INFO    |$PHP_AUTH_USER|$ip|$stmt|\n");
 			fclose($fp);
 			}
 		}
@@ -308,12 +308,12 @@ if ($ADD==4)
 
 	 if ( (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user_level) < 1) )
 		{
-		 echo "<br><font color=red>USER NOT MODIFIED - Please go back and look at the data you entered\n";
+		 echo "<br><font color=red>AGENT NOT MODIFIED - Please go back and look at the data you entered\n";
 		 echo "<br>Password and Full Name each need ot be at least 2 characters in length</font><br>\n";
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>USER MODIFIED: $user</font></B>\n";
+		echo "<br><B><font color=navy>AGENT MODIFIED: $user</font></B>\n";
 
 		$stmt="UPDATE osdial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass' where user='$user';";
 		$rslt=mysql_query($stmt, $link);
@@ -322,7 +322,7 @@ if ($ADD==4)
 		if ($WeBRooTWritablE > 0)
 			{
 			$fp = fopen ("./admin_changes_log.txt", "a");
-			fwrite ($fp, "$date|MODIFY USER INFO    |$PHP_AUTH_USER|$ip|$stmt|\n");
+			fwrite ($fp, "$date|MODIFY AGENT INFO    |$PHP_AUTH_USER|$ip|$stmt|\n");
 			fclose($fp);
 			}
 		}
@@ -346,12 +346,12 @@ if ($ADD==5)
 
 	 if ( (strlen($user) < 2) or ($LOGdelete_users < 1) )
 		{
-		 echo "<br><font color=red>USER NOT DELETED - Please go back and look at the data you entered\n";
+		 echo "<br><font color=red>AGENT NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Agent be at least 2 characters in length</font>\n";
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>USER DELETION CONFIRMATION: $user</B>\n";
+		echo "<br><B><font color=navy>AGENT DELETION CONFIRMATION: $user</B>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=6&user=$user&CoNfIrM=YES\">Click here to delete user $user</a></font><br><br><br>\n";
 		}
 
@@ -470,10 +470,10 @@ if ($ADD==3)
 			}
 		echo "<input type=hidden name=user value=\"$row[1]\">\n";
 		echo "<TABLE width=$section_width cellspacing=3>\n";
-		echo "<tr bgcolor=#C1D6DF><td align=right>Agent Number: </td><td align=left><b>$row[1]</b>$NWB#osdial_users-user$NWE</td></tr>\n";
-		echo "<tr bgcolor=#C1D6DF><td align=right>Password: </td><td align=left><input type=text name=pass size=20 maxlength=10 value=\"$row[2]\">$NWB#osdial_users-pass$NWE</td></tr>\n";
-		echo "<tr bgcolor=#C1D6DF><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=30 maxlength=30 value=\"$row[3]\">$NWB#osdial_users-full_name$NWE</td></tr>\n";
-		echo "<tr bgcolor=#C1D6DF><td align=right>User Level: </td><td align=left><select size=1 name=user_level>";
+		echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left><b>$row[1]</b>$NWB#osdial_users-user$NWE</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=pass size=20 maxlength=10 value=\"$row[2]\">$NWB#osdial_users-pass$NWE</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=30 maxlength=30 value=\"$row[3]\">$NWB#osdial_users-full_name$NWE</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level>";
 		$h=1;
 		while ($h<=$LOGuser_level)
 			{
@@ -481,7 +481,7 @@ if ($ADD==3)
 			$h++;
 			}
 		echo "<option SELECTED>$row[4]</option></select>$NWB#osdial_users-user_level$NWE</td></tr>\n";
-		echo "<tr bgcolor=#C1D6DF><td align=right><A HREF=\"$PHP_SELF?ADD=311111&user_group=$user_group\">User Group</A>: </td><td align=left><select size=1 name=user_group>\n";
+		echo "<tr bgcolor=$oddrows><td align=right><A HREF=\"$PHP_SELF?ADD=311111&user_group=$user_group\">User Group</A>: </td><td align=left><select size=1 name=user_group>\n";
 
 			$stmt="SELECT user_group,group_name from osdial_user_groups order by user_group";
 			$rslt=mysql_query($stmt, $link);
@@ -497,31 +497,31 @@ if ($ADD==3)
 		echo "$Ugroups_list";
 		echo "<option SELECTED>$user_group</option>\n";
 		echo "</select>$NWB#osdial_users-user_group$NWE</td></tr>\n";
-		echo "<tr bgcolor=#C1D6DF><td align=right>Phone Login: </td><td align=left><input type=text name=phone_login size=20 maxlength=20 value=\"$phone_login\">$NWB#osdial_users-phone_login$NWE</td></tr>\n";
-		echo "<tr bgcolor=#C1D6DF><td align=right>Phone Pass: </td><td align=left><input type=text name=phone_pass size=20 maxlength=20 value=\"$phone_pass\">$NWB#osdial_users-phone_pass$NWE</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>Phone Login: </td><td align=left><input type=text name=phone_login size=20 maxlength=20 value=\"$phone_login\">$NWB#osdial_users-phone_login$NWE</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>Phone Pass: </td><td align=left><input type=text name=phone_pass size=20 maxlength=20 value=\"$phone_pass\">$NWB#osdial_users-phone_pass$NWE</td></tr>\n";
 
 		if ( ($LOGuser_level > 8) or ($LOGalter_agent_interface == "1") )
 			{
 			echo "<tr><td>&nbsp;</td></tr>";
 			echo "<tr bgcolor=#015B91><td colspan=2 align=center><font color=white><B>AGENT INTERFACE OPTIONS:</td></tr>\n";
-			echo "<tr bgcolor=#C1D6DF><td align=right>Agent Choose Ingroups: </td><td align=left><select size=1 name=agent_choose_ingroups><option>0</option><option>1</option><option SELECTED>$agent_choose_ingroups</option></select>$NWB#osdial_users-agent_choose_ingroups$NWE</td></tr>\n";
-			echo "<tr bgcolor=#C1D6DF><td align=right>Hot Keys Active: </td><td align=left><select size=1 name=hotkeys_active><option>0</option><option>1</option><option SELECTED>$hotkeys_active</option></select>$NWB#osdial_users-hotkeys_active$NWE</td></tr>\n";
-			echo "<tr bgcolor=#C1D6DF><td align=right>Scheduled Callbacks: </td><td align=left><select size=1 name=scheduled_callbacks><option>0</option><option>1</option><option SELECTED>$scheduled_callbacks</option></select>$NWB#osdial_users-scheduled_callbacks$NWE</td></tr>\n";
-			echo "<tr bgcolor=#C1D6DF><td align=right>Agent-Only Callbacks: </td><td align=left><select size=1 name=agentonly_callbacks><option>0</option><option>1</option><option SELECTED>$agentonly_callbacks</option></select>$NWB#osdial_users-agentonly_callbacks$NWE</td></tr>\n";
-			echo "<tr bgcolor=#C1D6DF><td align=right>Agent Call Manual: </td><td align=left><select size=1 name=agentcall_manual><option>0</option><option>1</option><option SELECTED>$agentcall_manual</option></select>$NWB#osdial_users-agentcall_manual$NWE</td></tr>\n";
-			echo "<tr bgcolor=#C1D6DF><td align=right>OSDial Recording: </td><td align=left><select size=1 name=osdial_recording><option>0</option><option>1</option><option SELECTED>$osdial_recording</option></select>$NWB#osdial_users-osdial_recording$NWE</td></tr>\n";
-			echo "<tr bgcolor=#C1D6DF><td align=right>OSDial Transfers: </td><td align=left><select size=1 name=osdial_transfers><option>0</option><option>1</option><option SELECTED>$osdial_transfers</option></select>$NWB#osdial_users-osdial_transfers$NWE</td></tr>\n";
-			echo "<tr bgcolor=#C1D6DF><td align=right>Closer Default Blended: </td><td align=left><select size=1 name=closer_default_blended><option>0</option><option>1</option><option SELECTED>$closer_default_blended</option></select>$NWB#osdial_users-closer_default_blended$NWE</td></tr>\n";
-			echo "<tr bgcolor=#C1D6DF><td align=right>OSDial Recording Override: </td><td align=left><select size=1 name=osdial_recording_override><option>DISABLED</option><option>NEVER</option><option>ONDEMAND</option><option>ALLCALLS</option><option>ALLFORCE</option><option SELECTED>$osdial_recording_override</option></select>$NWB#osdial_users-osdial_recording_override$NWE</td></tr>\n";
-			echo "<tr bgcolor=#C1D6DF><td align=right>Agent Alter Customer Data Override: </td><td align=left><select size=1 name=alter_custdata_override><option>NOT_ACTIVE</option><option>ALLOW_ALTER</option><option SELECTED>$alter_custdata_override</option></select>$NWB#osdial_users-alter_custdata_override$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Agent Choose Ingroups: </td><td align=left><select size=1 name=agent_choose_ingroups><option>0</option><option>1</option><option SELECTED>$agent_choose_ingroups</option></select>$NWB#osdial_users-agent_choose_ingroups$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Hot Keys Active: </td><td align=left><select size=1 name=hotkeys_active><option>0</option><option>1</option><option SELECTED>$hotkeys_active</option></select>$NWB#osdial_users-hotkeys_active$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Scheduled Callbacks: </td><td align=left><select size=1 name=scheduled_callbacks><option>0</option><option>1</option><option SELECTED>$scheduled_callbacks</option></select>$NWB#osdial_users-scheduled_callbacks$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Agent-Only Callbacks: </td><td align=left><select size=1 name=agentonly_callbacks><option>0</option><option>1</option><option SELECTED>$agentonly_callbacks</option></select>$NWB#osdial_users-agentonly_callbacks$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Agent Call Manual: </td><td align=left><select size=1 name=agentcall_manual><option>0</option><option>1</option><option SELECTED>$agentcall_manual</option></select>$NWB#osdial_users-agentcall_manual$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>OSDial Recording: </td><td align=left><select size=1 name=osdial_recording><option>0</option><option>1</option><option SELECTED>$osdial_recording</option></select>$NWB#osdial_users-osdial_recording$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>OSDial Transfers: </td><td align=left><select size=1 name=osdial_transfers><option>0</option><option>1</option><option SELECTED>$osdial_transfers</option></select>$NWB#osdial_users-osdial_transfers$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Closer Default Blended: </td><td align=left><select size=1 name=closer_default_blended><option>0</option><option>1</option><option SELECTED>$closer_default_blended</option></select>$NWB#osdial_users-closer_default_blended$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>OSDial Recording Override: </td><td align=left><select size=1 name=osdial_recording_override><option>DISABLED</option><option>NEVER</option><option>ONDEMAND</option><option>ALLCALLS</option><option>ALLFORCE</option><option SELECTED>$osdial_recording_override</option></select>$NWB#osdial_users-osdial_recording_override$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Agent Alter Customer Data Override: </td><td align=left><select size=1 name=alter_custdata_override><option>NOT_ACTIVE</option><option>ALLOW_ALTER</option><option SELECTED>$alter_custdata_override</option></select>$NWB#osdial_users-alter_custdata_override$NWE</td></tr>\n";
 			echo "<tr><td>&nbsp;</td></tr>";
-			echo "<tr bgcolor=#C1D6DF><td align=center colspan=2>Campaign Ranks: $NWB#osdial_users-campaign_ranks$NWE<BR>\n";
+			echo "<tr bgcolor=$oddrows><td align=center colspan=2>Campaign Ranks: $NWB#osdial_users-campaign_ranks$NWE<BR>\n";
 			echo "<table border=0>\n";
 			echo "$RANKcampaigns_list";
 			echo "</table>\n";
 			echo "</td></tr>\n";
 			echo "<tr><td>&nbsp;</td></tr>";
-			echo "<tr bgcolor=#C1D6DF><td align=center colspan=2>Inbound Groups: $NWB#osdial_users-closer_campaigns$NWE<BR>\n";
+			echo "<tr bgcolor=$oddrows><td align=center colspan=2>Inbound Groups: $NWB#osdial_users-closer_campaigns$NWE<BR>\n";
 			echo "<table border=0>\n";
 			echo "$RANKgroups_list";
 			echo "</table>\n";
@@ -530,48 +530,47 @@ if ($ADD==3)
 		if ($LOGuser_level > 8)
 			{
 			echo "<tr><td>&nbsp;</td></tr>";
-			echo "<tr bgcolor=#015B91><td colspan=2 align=center><font color=white><B>ADMIN INTERFACE OPTIONS:</td></tr>\n";
+			echo "<tr bgcolor=$menubarcolor><td colspan=2 align=center><font color=white><B>ADMIN INTERFACE OPTIONS:</td></tr>\n";
 
-#C1D6DB
-#CBDCE0
-			echo "<tr bgcolor=#CBDCE0><td align=right>View Reports: </td><td align=left><select size=1 name=view_reports><option>0</option><option>1</option><option SELECTED>$view_reports</option></select>$NWB#osdial_users-view_reports$NWE</td></tr>\n";
 
-			echo "<tr bgcolor=#CBDCE0><td align=right>Alter Agent Interface Options: </td><td align=left><select size=1 name=alter_agent_interface_options><option>0</option><option>1</option><option SELECTED>$alter_agent_interface_options</option></select>$NWB#osdial_users-alter_agent_interface_options$NWE</td></tr>\n";
-			echo "<tr bgcolor=#CBDCE0><td align=right>Modify Agents: </td><td align=left><select size=1 name=modify_users><option>0</option><option>1</option><option SELECTED>$modify_users</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
-			echo "<tr bgcolor=#CBDCE0><td align=right>Change Agent Campaign: </td><td align=left><select size=1 name=change_agent_campaign><option>0</option><option>1</option><option SELECTED>$change_agent_campaign</option></select>$NWB#osdial_users-change_agent_campaign$NWE</td></tr>\n";
-			echo "<tr bgcolor=#CBDCE0><td align=right>Delete Agents: </td><td align=left><select size=1 name=delete_users><option>0</option><option>1</option><option SELECTED>$delete_users</option></select>$NWB#osdial_users-delete_users$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>View Reports: </td><td align=left><select size=1 name=view_reports><option>0</option><option>1</option><option SELECTED>$view_reports</option></select>$NWB#osdial_users-view_reports$NWE</td></tr>\n";
 
-			echo "<tr bgcolor=#CBDCE0><td align=right>Modify User Groups: </td><td align=left><select size=1 name=modify_usergroups><option>0</option><option>1</option><option SELECTED>$modify_usergroups</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
-			echo "<tr bgcolor=#CBDCE0><td align=right>Delete User Groups: </td><td align=left><select size=1 name=delete_user_groups><option>0</option><option>1</option><option SELECTED>$delete_user_groups</option></select>$NWB#osdial_users-delete_user_groups$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Alter Agent Interface Options: </td><td align=left><select size=1 name=alter_agent_interface_options><option>0</option><option>1</option><option SELECTED>$alter_agent_interface_options</option></select>$NWB#osdial_users-alter_agent_interface_options$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Modify Agents: </td><td align=left><select size=1 name=modify_users><option>0</option><option>1</option><option SELECTED>$modify_users</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Change Agent Campaign: </td><td align=left><select size=1 name=change_agent_campaign><option>0</option><option>1</option><option SELECTED>$change_agent_campaign</option></select>$NWB#osdial_users-change_agent_campaign$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Delete Agents: </td><td align=left><select size=1 name=delete_users><option>0</option><option>1</option><option SELECTED>$delete_users</option></select>$NWB#osdial_users-delete_users$NWE</td></tr>\n";
 
-			echo "<tr bgcolor=#CBDCE0><td align=right>Modify Lists: </td><td align=left><select size=1 name=modify_lists><option>0</option><option>1</option><option SELECTED>$modify_lists</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
-			echo "<tr bgcolor=#CBDCE0><td align=right>Delete Lists: </td><td align=left><select size=1 name=delete_lists><option>0</option><option>1</option><option SELECTED>$delete_lists</option></select>$NWB#osdial_users-delete_lists$NWE</td></tr>\n";
-			echo "<tr bgcolor=#CBDCE0><td align=right>Load Leads: </td><td align=left><select size=1 name=load_leads><option>0</option><option>1</option><option SELECTED>$load_leads</option></select>$NWB#osdial_users-load_leads$NWE</td></tr>\n";
-			echo "<tr bgcolor=#CBDCE0><td align=right>Modify Leads: </td><td align=left><select size=1 name=modify_leads><option>0</option><option>1</option><option SELECTED>$modify_leads</option></select>$NWB#osdial_users-modify_leads$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Modify User Groups: </td><td align=left><select size=1 name=modify_usergroups><option>0</option><option>1</option><option SELECTED>$modify_usergroups</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Delete User Groups: </td><td align=left><select size=1 name=delete_user_groups><option>0</option><option>1</option><option SELECTED>$delete_user_groups</option></select>$NWB#osdial_users-delete_user_groups$NWE</td></tr>\n";
 
-			echo "<tr bgcolor=#CBDCE0><td align=right>Modify Campaigns: </td><td align=left><select size=1 name=modify_campaigns><option>0</option><option>1</option><option SELECTED>$modify_campaigns</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
-			echo "<tr bgcolor=#CBDCE0><td align=right>Campaign Detail: </td><td align=left><select size=1 name=campaign_detail><option>0</option><option>1</option><option SELECTED>$campaign_detail</option></select>$NWB#osdial_users-campaign_detail$NWE</td></tr>\n";
-			echo "<tr bgcolor=#CBDCE0><td align=right>Delete Campaigns: </td><td align=left><select size=1 name=delete_campaigns><option>0</option><option>1</option><option SELECTED>$delete_campaigns</option></select>$NWB#osdial_users-delete_campaigns$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows>0</option><option>1</option><option SELECTED>$modify_lists</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Delete Lists: </td><td align=left><select size=1 name=delete_lists><option>0</option><option>1</option><option SELECTED>$delete_lists</option></select>$NWB#osdial_users-delete_lists$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Load Leads: </td><td align=left><select size=1 name=load_leads><option>0</option><option>1</option><option SELECTED>$load_leads</option></select>$NWB#osdial_users-load_leads$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Modify Leads: </td><td align=left><select size=1 name=modify_leads><option>0</option><option>1</option><option SELECTED>$modify_leads</option></select>$NWB#osdial_users-modify_leads$NWE</td></tr>\n";
 
-			echo "<tr bgcolor=#CBDCE0><td align=right>Modify In-Groups: </td><td align=left><select size=1 name=modify_ingroups><option>0</option><option>1</option><option SELECTED>$modify_ingroups</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
-			echo "<tr bgcolor=#CBDCE0><td align=right>Delete In-Groups: </td><td align=left><select size=1 name=delete_ingroups><option>0</option><option>1</option><option SELECTED>$delete_ingroups</option></select>$NWB#osdial_users-delete_ingroups$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Modify Campaigns: </td><td align=left><select size=1 name=modify_campaigns><option>0</option><option>1</option><option SELECTED>$modify_campaigns</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Campaign Detail: </td><td align=left><select size=1 name=campaign_detail><option>0</option><option>1</option><option SELECTED>$campaign_detail</option></select>$NWB#osdial_users-campaign_detail$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Delete Campaigns: </td><td align=left><select size=1 name=delete_campaigns><option>0</option><option>1</option><option SELECTED>$delete_campaigns</option></select>$NWB#osdial_users-delete_campaigns$NWE</td></tr>\n";
 
-			echo "<tr bgcolor=#CBDCE0><td align=right>Modify Remote Agents: </td><td align=left><select size=1 name=modify_remoteagents><option>0</option><option>1</option><option SELECTED>$modify_remoteagents</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
-			echo "<tr bgcolor=#CBDCE0><td align=right>Delete Remote Agents: </td><td align=left><select size=1 name=delete_remote_agents><option>0</option><option>1</option><option SELECTED>$delete_remote_agents</option></select>$NWB#osdial_users-delete_remote_agents$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Modify In-Groups: </td><td align=left><select size=1 name=modify_ingroups><option>0</option><option>1</option><option SELECTED>$modify_ingroups</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Delete In-Groups: </td><td align=left><select size=1 name=delete_ingroups><option>0</option><option>1</option><option SELECTED>$delete_ingroups</option></select>$NWB#osdial_users-delete_ingroups$NWE</td></tr>\n";
 
-			echo "<tr bgcolor=#CBDCE0><td align=right>Modify Scripts: </td><td align=left><select size=1 name=modify_scripts><option>0</option><option>1</option><option SELECTED>$modify_scripts</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
-			echo "<tr bgcolor=#CBDCE0><td align=right>Delete Scripts: </td><td align=left><select size=1 name=delete_scripts><option>0</option><option>1</option><option SELECTED>$delete_scripts</option></select>$NWB#osdial_users-delete_scripts$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Modify Remote Agents: </td><td align=left><select size=1 name=modify_remoteagents><option>0</option><option>1</option><option SELECTED>$modify_remoteagents</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Delete Remote Agents: </td><td align=left><select size=1 name=delete_remote_agents><option>0</option><option>1</option><option SELECTED>$delete_remote_agents</option></select>$NWB#osdial_users-delete_remote_agents$NWE</td></tr>\n";
 
-			echo "<tr bgcolor=#CBDCE0><td align=right>Modify Filters: </td><td align=left><select size=1 name=modify_filters><option>0</option><option>1</option><option SELECTED>$modify_filters</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
-			echo "<tr bgcolor=#CBDCE0><td align=right>Delete Filters: </td><td align=left><select size=1 name=delete_filters><option>0</option><option>1</option><option SELECTED>$delete_filters</option></select>$NWB#osdial_users-delete_filters$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Modify Scripts: </td><td align=left><select size=1 name=modify_scripts><option>0</option><option>1</option><option SELECTED>$modify_scripts</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Delete Scripts: </td><td align=left><select size=1 name=delete_scripts><option>0</option><option>1</option><option SELECTED>$delete_scripts</option></select>$NWB#osdial_users-delete_scripts$NWE</td></tr>\n";
 
-			echo "<tr bgcolor=#CBDCE0><td align=right>AGC Admin Access: </td><td align=left><select size=1 name=ast_admin_access><option>0</option><option>1</option><option SELECTED>$ast_admin_access</option></select>$NWB#osdial_users-ast_admin_access$NWE</td></tr>\n";
-			echo "<tr bgcolor=#CBDCE0><td align=right>AGC Delete Phones: </td><td align=left><select size=1 name=ast_delete_phones><option>0</option><option>1</option><option SELECTED>$ast_delete_phones</option></select>$NWB#osdial_users-ast_delete_phones$NWE</td></tr>\n";
-			echo "<tr bgcolor=#B9CBFB><td align=right>Modify Call Times: </td><td align=left><select size=1 name=modify_call_times><option>0</option><option>1</option><option SELECTED>$modify_call_times</option></select>$NWB#osdial_users-modify_call_times$NWE</td></tr>\n";
-			echo "<tr bgcolor=#CBDCE0><td align=right>Delete Call Times: </td><td align=left><select size=1 name=delete_call_times><option>0</option><option>1</option><option SELECTED>$delete_call_times</option></select>$NWB#osdial_users-delete_call_times$NWE</td></tr>\n";
-			echo "<tr bgcolor=#B9CBFB><td align=right>Modify Servers: </td><td align=left><select size=1 name=modify_servers><option>0</option><option>1</option><option SELECTED>$modify_servers</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Modify Filters: </td><td align=left><select size=1 name=modify_filters><option>0</option><option>1</option><option SELECTED>$modify_filters</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Delete Filters: </td><td align=left><select size=1 name=delete_filters><option>0</option><option>1</option><option SELECTED>$delete_filters</option></select>$NWB#osdial_users-delete_filters$NWE</td></tr>\n";
+
+			echo "<tr bgcolor=$oddrows><td align=right>AGC Admin Access: </td><td align=left><select size=1 name=ast_admin_access><option>0</option><option>1</option><option SELECTED>$ast_admin_access</option></select>$NWB#osdial_users-ast_admin_access$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>AGC Delete Phones: </td><td align=left><select size=1 name=ast_delete_phones><option>0</option><option>1</option><option SELECTED>$ast_delete_phones</option></select>$NWB#osdial_users-ast_delete_phones$NWE</td></tr>\n";
+			echo "<tr bgcolor=$unusualrows><td align=right>Modify Call Times: </td><td align=left><select size=1 name=modify_call_times><option>0</option><option>1</option><option SELECTED>$modify_call_times</option></select>$NWB#osdial_users-modify_call_times$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Delete Call Times: </td><td align=left><select size=1 name=delete_call_times><option>0</option><option>1</option><option SELECTED>$delete_call_times</option></select>$NWB#osdial_users-delete_call_times$NWE</td></tr>\n";
+			echo "<tr bgcolor=$unusualrows><td align=right>Modify Servers: </td><td align=left><select size=1 name=modify_servers><option>0</option><option>1</option><option SELECTED>$modify_servers</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
 			}
-		echo "<tr bgcolor=#CBDCE0><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+		echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 		echo "</TABLE></center>\n";
 
 		echo "<center><br><br><a href=\"$PHP_SELF?ADD=999999&SUB=1&iframe=AST_agent_time_sheet.php?agent=$row[1]\">Click here for user time sheet</a>\n";
@@ -580,7 +579,7 @@ if ($ADD==3)
 		echo "<br><br><a href=\"$PHP_SELF?ADD=8&user=$row[1]\">Click here for user CallBack Holds</a></center>\n";
 		if ($LOGdelete_users > 0)
 			{
-			echo "<br><br><a href=\"$PHP_SELF?ADD=5&user=$row[1]\">DELETE THIS USER</a>\n";
+			echo "<br><br><a href=\"$PHP_SELF?ADD=5&user=$row[1]\">DELETE THIS AGENT</a>\n";
 			}
 		}
 	}
@@ -600,13 +599,13 @@ if ($ADD==550)
 echo "<TABLE align=center><TR><TD>\n";
 echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-echo "<center><br><font color=navy size=+1>SEARCH FOR A USER</font><form action=$PHP_SELF method=POST><br><br>\n";
+echo "<center><br><font color=navy size=+1>SEARCH FOR AN AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
 echo "<input type=hidden name=ADD value=660>\n";
 echo "<TABLE width=$section_width cellspacing=3>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Agent Number: </td><td align=left><input type=text name=user size=20 maxlength=20></td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=30 maxlength=30></td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>User Level: </td><td align=left><select size=1 name=user_level><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>User Group: </td><td align=left><select size=1 name=user_group>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left><input type=text name=user size=20 maxlength=20></td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=30 maxlength=30></td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>User Group: </td><td align=left><select size=1 name=user_group>\n";
 
 	$stmt="SELECT * from osdial_user_groups order by user_group";
 	$rslt=mysql_query($stmt, $link);
@@ -620,7 +619,7 @@ echo "<tr bgcolor=#C1D6DF><td align=right>User Group: </td><td align=left><selec
 	}
 echo "$groups_list</select></td></tr>\n";
 
-echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=search value=search></td></tr>\n";
+echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=search value=search></td></tr>\n";
 echo "</TABLE></center>\n";
 
 }
@@ -654,9 +653,9 @@ echo "<center><TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 	while ($people_to_print > $o) {
 		$row=mysql_fetch_row($rslt);
 		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor="#CBDCE0"';} 
+			{$bgcolor='bgcolor='.$oddrows;} 
 		else
-			{$bgcolor='bgcolor="#C1D6DB"';}
+			{$bgcolor='bgcolor='.$evenrows;}
 		echo "<tr $bgcolor><td><font size=1>$row[1]</td><td><font size=1>$row[3]</td><td><font size=1>$row[4]</td><td><font size=1>$row[5]</td>";
 		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">MODIFY</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=1&iframe=user_stats.php?user=$row[1]\">STATS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=1&iframe=user_status.php?user=$row[1]\">STATUS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=1&iframe=AST_agent_time_sheet.php?agent=$row[1]\">TIME</a></td></tr>\n";
 		$o++;
@@ -692,7 +691,7 @@ echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
 	$CBquerySQLwhere = "and user='$user'";
 
-echo "<br><font color=navy> USER CALLBACK HOLD LISTINGS: $user</font>\n";
+echo "<br><font color=navy> AGENT CALLBACK HOLD LISTINGS: $user</font>\n";
 $oldADD = "ADD=8&user=$user";
 $ADD='82';
 }
@@ -765,7 +764,7 @@ echo (($let == "Y") ? "Y" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level
 echo (($let == "Z") ? "Z" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=Z\">Z</a>") . "&nbsp;|&nbsp;";
 echo "</font><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1 align=center>\n";
-echo "<tr bgcolor=#716A5B>";
+echo "<tr bgcolor=$menubarcolor>";
 echo "<td><a href=\"$PHP_SELF?ADD=0&let=$let&level=$level&group=$group&$USERlink\"><font size=1 color=white><B>USER ID</B></a></td>";
 echo "<td><a href=\"$PHP_SELF?ADD=0&let=$let&level=$level&group=$group&$NAMElink\"><font size=1 color=white><B>FULL NAME</B></a></td>";
 echo "<td><a href=\"$PHP_SELF?ADD=0&let=$let&level=$level&group=$group&$LEVELlink\"><font size=1 color=white><B>LEVEL</B></a></td>";
@@ -776,9 +775,9 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td></tr>\n";
 	while ($people_to_print > $o) {
 		$row=mysql_fetch_row($rslt);
 		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor="#CBDCE0"';} 
+			{$bgcolor='bgcolor='.$oddrows;} 
 		else
-			{$bgcolor='bgcolor="#C1D6DB"';}
+			{$bgcolor='bgcolor='.$evenrows;}
 		echo "<tr $bgcolor><td><a href=\"$PHP_SELF?ADD=3&user=$row[1]\"><font size=1 color=black>$row[1]</a></td><td><font size=1>$row[3]</td>";
         echo "<td><font size=1><a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$row[4]&group=$group&let=$let\">$row[4]</a></td>";
         echo "<td><font size=1><a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$row[5]&let=$let\">$row[5]</a></td>";

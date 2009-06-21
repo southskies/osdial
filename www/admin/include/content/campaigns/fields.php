@@ -91,35 +91,35 @@ if ($ADD == "2form") {
 
     echo "<table cellspacing=1 cellpadding=1>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Name</td>\n";
-    echo '      <td bgcolor="#CBDCE0"><input type="text" size="15" maxlength="15" name="form_name" value=""></td>';
+    echo "      <td bgcolor=$evenrows align=right>Name</td>\n";
+    echo "      <td bgcolor=$evenrows><input type=\"text\" size=\"15\" maxlength=\"15\" name=\"form_name\" value=\"\"></td>";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Description</td>\n";
-    echo '      <td bgcolor="#CBDCE0"><input type="text" size="50" maxlength="50" name="form_description" value=""></td>';
+    echo "      <td bgcolor=$evenrows align=right>Description</td>\n";
+    echo "      <td bgcolor=$evenrows><input type=\"text\" size=\"50\" maxlength=\"50\" name=\"form_description\" value=\"\"></td>";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Description (Line 2)</td>\n";
-    echo '      <td bgcolor="#CBDCE0"><input type="text" size="50" maxlength="50" name="form_description2" value=""></td>';
+    echo "      <td bgcolor=$evenrows align=right>Description (Line 2)</td>\n";
+    echo "      <td bgcolor=$evenrows><input type=\"text\" size=\"50\" maxlength=\"50\" name=\"form_description2\" value=\"\"></td>";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Priority:</td>\n";
-    echo '      <td bgcolor="#CBDCE0"><input type="text" size="2" maxlength="2" name="form_priority" value="' . $pri . '"></td>';
+    echo "      <td bgcolor=$evenrows align=right>Priority:</td>\n";
+    echo "      <td bgcolor=$evenrows><input type=\"text\" size=\"2\" maxlength=\"2\" name=\"form_priority\" value=\"" . $pri . "\"></td>";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#C1D6DB align=right>Campaigns:</td>\n";
-    echo '      <td bgcolor="#C1D6DB"><input type="checkbox" name="campaigns[]" value="-ALL-"> <b>ALL - FORM IN ALL CAMPAIGNS</b></td>';
+    echo "      <td bgcolor=$oddrows align=right>Campaigns:</td>\n";
+    echo "      <td bgcolor=$oddrows><input type=\"checkbox\" name=\"campaigns[]\" value=\"-ALL-\"> <b>ALL - FORM IN ALL CAMPAIGNS</b></td>";
     echo "  </tr>\n";
     $campaigns = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name');
     foreach ($campaigns as $camp) {
         echo "  <tr>\n";
-        echo "      <td bgcolor=#C1D6DB align=right>&nbsp;</td>\n";
-        echo '      <td bgcolor="#C1D6DB"><input type="checkbox" name="campaigns[]" value="' . $camp['campaign_id'] . '"> ' . $camp['campaign_id'] . ' - ' . $camp['campaign_name'] . '</td>';
+        echo "      <td bgcolor=$oddrows align=right>&nbsp;</td>\n";
+        echo "      <td bgcolor=$oddrows><input type=\"checkbox\" name=\"campaigns[]\" value=\"" . $camp['campaign_id'] . "\"> " . $camp['campaign_id'] . ' - ' . $camp['campaign_name'] . '</td>';
         echo "  </tr>\n";
     }
-    echo "  <tr><td colspan=2 bgcolor=#CBDCE0>&nbsp;</td></tr>\n";
+    echo "  <tr><td colspan=2 bgcolor=$evenrows> &nbsp;</td></tr>\n";
     echo "  <tr>\n";
-    echo "      <td colspan=2 bgcolor=#B1C6CB align=center><input type=submit value=\"Create Form\"></td>\n";
+    echo "      <td colspan=2 bgcolor=$menubarcolor align=center><input type=submit value=\"Create Form\"></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
 
@@ -306,11 +306,11 @@ if ($ADD == "3fields" and $SUB != '2fields') {
 
     $cnt = 0;
     foreach ($forms as $form) {
-        if (eregi("1$|3$|5$|7$|9$",$cnt)) {
-            $bgcolor = 'bgcolor="#CBDCE0"';
-        } else {
-            $bgcolor = 'bgcolor="#C1D6DB"';
-        }
+        if (eregi("1$|3$|5$|7$|9$",$cnt)) 
+         		{$bgcolor='bgcolor='.$oddrows;} 
+		else
+			{$bgcolor='bgcolor='.$evenrows;}
+        
         echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=3fields&SUB=2fields&id=" . $form['id'] . "\">" . $form['name'] . "</a></td>";
         echo "<td><font size=1> " . $form['description'] . " </td>";
         echo "<td><font size=1> ";
@@ -344,32 +344,32 @@ if ($ADD == "3fields" and $SUB == '2fields') {
 
     echo "<table cellspacing=1 cellpadding=1>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Name</td>\n";
-    echo '      <td bgcolor="#CBDCE0"><input type="text" size="15" maxlength="15" name="form_name" value="' . $form['name'] . '"></td>';
+    echo "      <td bgcolor=$evenrows align=right>Name</td>\n";
+    echo '      <td bgcolor=$evenrows><input type="text" size="15" maxlength="15" name="form_name" value="' . $form['name'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Description</td>\n";
-    echo '      <td bgcolor="#CBDCE0"><input type="text" size="50" maxlength="50" name="form_description" value="' . $form['description'] . '"></td>';
+    echo "      <td bgcolor=$evenrows align=right>Description</td>\n";
+    echo '      <td bgcolor=$evenrows><input type="text" size="50" maxlength="50" name="form_description" value="' . $form['description'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Description (Line 2)</td>\n";
-    echo '      <td bgcolor="#CBDCE0"><input type="text" size="50" maxlength="50" name="form_description2" value="' . $form['description2'] . '"></td>';
+    echo "      <td bgcolor=$evenrows align=right>Description (Line 2)</td>\n";
+    echo '      <td bgcolor=$evenrows><input type="text" size="50" maxlength="50" name="form_description2" value="' . $form['description2'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Priority:</td>\n";
-    echo '      <td bgcolor="#CBDCE0"><input type="text" size="2" maxlength="2" name="form_priority" value="' . $form['priority'] . '"></td>';
+    echo "      <td bgcolor=$evenrows align=right>Priority:</td>\n";
+    echo '      <td bgcolor=$evenrows><input type="text" size="2" maxlength="2" name="form_priority" value="' . $form['priority'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#C1D6DB align=right>Campaigns:</td>\n";
+    echo "      <td bgcolor=$oddrows align=right>Campaigns:</td>\n";
     if ($form['campaigns'] == 'ALL') {
         $ac = 'checked';
     }
-    echo '      <td bgcolor="#C1D6DB"><input type="checkbox" name="campaigns[]" value="-ALL-" ' . $ac . '> <b>ALL - FORM IN ALL CAMPAIGNS</b></td>';
+    echo '      <td bgcolor=$oddrows><input type="checkbox" name="campaigns[]" value="-ALL-" ' . $ac . '> <b>ALL - FORM IN ALL CAMPAIGNS</b></td>';
     echo "  </tr>\n";
     $campaigns = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name');
     foreach ($campaigns as $camp) {
         echo "  <tr>\n";
-        echo "      <td bgcolor=#C1D6DB align=right>&nbsp;</td>\n";
+        echo "      <td bgcolor=$oddrows align=right>&nbsp;</td>\n";
         $cc = '';
         $fcamps = split(',',$form['campaigns']);
         foreach ($fcamps as $fcamp) {
@@ -377,12 +377,12 @@ if ($ADD == "3fields" and $SUB == '2fields') {
                 $cc = 'checked';
             }
         }
-        echo '      <td bgcolor="#C1D6DB"><input type="checkbox" name="campaigns[]" value="' . $camp['campaign_id'] . '" ' . $cc . '> ' . $camp['campaign_id'] . ' - ' . $camp['campaign_name'] . '</td>';
+        echo '      <td bgcolor=$oddrows><input type="checkbox" name="campaigns[]" value="' . $camp['campaign_id'] . '" ' . $cc . '> ' . $camp['campaign_id'] . ' - ' . $camp['campaign_name'] . '</td>';
         echo "  </tr>\n";
     }
-    echo "  <tr><td colspan=2 bgcolor=#CBDCE0>&nbsp;</td></tr>\n";
+    echo "  <tr><td colspan=2 bgcolor=$evenrows>&nbsp;</td></tr>\n";
     echo "  <tr>\n";
-    echo "      <td colspan=2 bgcolor=#B1C6CB align=center><input type=submit value=\"Save Form\"> <a href=$PHP_SELF?ADD=6form&form_id=$id>DELETE</a></td>\n";
+    echo "      <td colspan=2 bgcolor=$menubarcolor align=center><input type=submit value=\"Save Form\"> <a href=$PHP_SELF?ADD=6form&form_id=$id>DELETE</a></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
 
@@ -403,11 +403,11 @@ if ($ADD == "3fields" and $SUB == '2fields') {
     $cnt = 0;
     $pri = 0;
     foreach ($fields as $field) {
-        if (eregi("1$|3$|5$|7$|9$",$cnt)) {
-            $bgcolor = 'bgcolor="#CBDCE0"';
-        } else {
-            $bgcolor = 'bgcolor="#C1D6DB"';
-        }
+        if (eregi("1$|3$|5$|7$|9$",$cnt))
+			{$bgcolor='bgcolor='.$oddrows;} 
+		else
+			{$bgcolor='bgcolor='.$evenrows;}
+			
         echo '  <form action="' . $PHP_SELF . '" method="POST">';
         echo '  <input type="hidden" name="ADD" value="4fields">';
         echo '  <input type="hidden" name="form_id" value="' . $form['id'] . '">';
@@ -427,17 +427,17 @@ if ($ADD == "3fields" and $SUB == '2fields') {
         $cnt++;
     }
     $pri++;
-    echo "  <tr><td colspan=6 bgcolor=#CBDCE0 align=center>(options are a comma separated list that will appear as a drop-down)</td></tr>\n";
+    echo "  <tr><td colspan=6 bgcolor=$evenrows align=center>(options are a comma separated list that will appear as a drop-down)</td></tr>\n";
     echo '  <form action="' . $PHP_SELF . '" method="POST">';
     echo '  <input type="hidden" name="ADD" value="2fields">';
     echo '  <input type="hidden" name="form_id" value="' . $form['id'] . '">';
     echo "  <tr>\n";
-    echo "      <td bgcolor=#B1C6CB align=center><input type=text name=field_name size=15 maxlength=15 value=\"\"></td>\n";
-    echo "      <td bgcolor=#B1C6CB align=center><input type=text name=field_description size=20 maxlength=50 value=\"\"></td>\n";
-    echo "      <td bgcolor=#B1C6CB align=center><input type=text name=field_options size=20 maxlength=255 value=\"\"></td>\n";
-    echo "      <td bgcolor=#B1C6CB align=center><input type=text name=field_length size=2 maxlength=2 value=\"22\"></td>\n";
-    echo "      <td bgcolor=#B1C6CB align=center><input type=text name=field_priority size=2 maxlength=2 value=\"$pri\"></td>\n";
-    echo "      <td bgcolor=#B1C6CB align=center><input type=submit value=\"New\"></td>\n";
+    echo "      <td bgcolor=$oddrows align=center><input type=text name=field_name size=15 maxlength=15 value=\"\"></td>\n";
+    echo "      <td bgcolor=$evenrows align=center><input type=text name=field_description size=20 maxlength=50 value=\"\"></td>\n";
+    echo "      <td bgcolor=$oddrows align=center><input type=text name=field_options size=20 maxlength=255 value=\"\"></td>\n";
+    echo "      <td bgcolor=$evenrows align=center><input type=text name=field_length size=2 maxlength=2 value=\"22\"></td>\n";
+    echo "      <td bgcolor=$oddrows align=center><input type=text name=field_priority size=2 maxlength=2 value=\"$pri\"></td>\n";
+    echo "      <td bgcolor=$menubarcolor align=center><input type=submit value=\"New\"></td>\n";
     echo "  </tr>\n";
     echo "  </form>\n";
     echo "</table>\n";

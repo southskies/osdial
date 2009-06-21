@@ -36,12 +36,12 @@ if ($ADD==111111111)
 	echo "<center><br><font color=navy size=+1>ADD NEW CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=211111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Call Time ID: </td><td align=left><input type=text name=call_time_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_call_times-call_time_id$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Call Time Name: </td><td align=left><input type=text name=call_time_name size=30 maxlength=30> (short description of the call time)$NWB#osdial_call_times-call_time_name$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Call Time Comments: </td><td align=left><input type=text name=call_time_comments size=50 maxlength=255> $NWB#osdial_call_times-call_time_comments$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Call Time ID: </td><td align=left><input type=text name=call_time_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_call_times-call_time_id$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Call Time Name: </td><td align=left><input type=text name=call_time_name size=30 maxlength=30> (short description of the call time)$NWB#osdial_call_times-call_time_name$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Call Time Comments: </td><td align=left><input type=text name=call_time_comments size=50 maxlength=255> $NWB#osdial_call_times-call_time_comments$NWE</td></tr>\n";
 
-	echo "<tr bgcolor=#C1D6DF><td align=center colspan=2>Day and time options will appear once you have created the Call Time Definition</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=center colspan=2>Day and time options will appear once you have created the Call Time Definition</td></tr>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -427,9 +427,9 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
 	while ($filters_to_print > $o) {
 		$row=mysql_fetch_row($rslt);
 		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor="#CBDCE0"';} 
+			{$bgcolor='bgcolor='.$oddrows;} 
 		else
-			{$bgcolor='bgcolor="#C1D6DB"';}
+			{$bgcolor='bgcolor='.$evenrows;}
 		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=311111111&call_time_id=$row[0]\">$row[0]</a></td>";
 		echo "<td><font size=1> $row[1]</td>";
 		echo "<td align=center><font size=1> $row[3] </td>";
@@ -460,13 +460,13 @@ if ($ADD==1111111111)
 	echo "<center><br><font color=navy size=+1>ADD NEW STATE CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>State Call Time ID: </td><td align=left><input type=text name=call_time_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_call_times-call_time_id$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>State Call Time State: </td><td align=left><input type=text name=state_call_time_state size=4 maxlength=2> (no spaces or punctuation)$NWB#osdial_call_times-state_call_time_state$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>State Call Time Name: </td><td align=left><input type=text name=call_time_name size=30 maxlength=30> (short description of the call time)$NWB#osdial_call_times-call_time_name$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>State Call Time Comments: </td><td align=left><input type=text name=call_time_comments size=50 maxlength=255> $NWB#osdial_call_times-call_time_comments$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>State Call Time ID: </td><td align=left><input type=text name=call_time_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_call_times-call_time_id$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>State Call Time State: </td><td align=left><input type=text name=state_call_time_state size=4 maxlength=2> (no spaces or punctuation)$NWB#osdial_call_times-state_call_time_state$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>State Call Time Name: </td><td align=left><input type=text name=call_time_name size=30 maxlength=30> (short description of the call time)$NWB#osdial_call_times-call_time_name$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>State Call Time Comments: </td><td align=left><input type=text name=call_time_comments size=50 maxlength=255> $NWB#osdial_call_times-call_time_comments$NWE</td></tr>\n";
 
-	echo "<tr bgcolor=#C1D6DF><td align=center colspan=2>Day and time options will appear once you have created the Call Time Definition</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=center colspan=2>Day and time options will appear once you have created the Call Time Definition</td></tr>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -757,7 +757,7 @@ echo "<TABLE align=center><TR><TD>\n";
 
 echo "<center><br><font color=navy size=+1>STATE CALL TIMES</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr bgcolor=navy>";
+echo "<tr bgcolor=$menubarcolor>";
 echo "<td><font size=1 color=white><B>ID</B></td>";
 echo "<td align=center><font size=1 color=white><B>STATE</B></td>";
 echo "<td><font size=1 color=white><B>NAME</B></td>";
@@ -769,9 +769,9 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
 	while ($filters_to_print > $o) {
 		$row=mysql_fetch_row($rslt);
 		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor="#CBDCE0"';} 
+			{$bgcolor='bgcolor='.$oddrows;} 
 		else
-			{$bgcolor='bgcolor="#C1D6DB"';}
+			{$bgcolor='bgcolor='.$evenrows;}
 		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=3111111111&call_time_id=$row[0]\">$row[0]</a></td>";
 		echo "<td align=center><font size=1> $row[1]</td>";
 		echo "<td><font size=1> $row[2]</td>";

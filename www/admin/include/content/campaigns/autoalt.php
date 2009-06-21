@@ -154,9 +154,9 @@ echo "</tr>\n";
 	while ($campaigns_to_print > $o) 
 		{
 		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor="#CBDCE0"';} 
+			{$bgcolor='bgcolor='.$oddrows;} 
 		else
-			{$bgcolor='bgcolor="#C1D6DB"';}
+			{$bgcolor='bgcolor='.$evenrows;}
 		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=31&SUB=26&campaign_id=$campaigns_id_list[$o]\">$campaigns_id_list[$o]</a></td>";
 		echo "<td><font size=1> $campaigns_name_list[$o] </td>";
 		echo "<td><font size=1> ";

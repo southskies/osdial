@@ -82,7 +82,7 @@ if ($ADD==131 && $SUB==2) {
         if ($statuses[0] != '') $target=' target="_blank"';
         echo "<form action=$PHP_SELF method=post$target>\n";
         echo "<input type=hidden name='ADD' value=\"$ADD\">\n";
-        echo "<table align=center width=700 border=0 cellpadding=5 cellspacing=0 bgcolor=#C1D6DF>\n";
+        echo "<table align=center width=700 border=0 cellpadding=5 cellspacing=0 bgcolor=$oddrows>\n";
         echo " <tr><td>\n";
         echo "  <center>\n";
         echo "  <br />";
@@ -122,7 +122,7 @@ if ($ADD==131 && $SUB==2) {
             }
             sort($stats);
 
-            echo "  <table align=center border=0 cellpadding=2 cellspacing=0 bgcolor=#C1D6DF>\n";
+            echo "  <table align=center border=0 cellpadding=2 cellspacing=0 bgcolor=$oddrows>\n";
             echo "  <tr bgcolor=$menubarcolor>\n";
             echo "      <td><font size=1 color=white>&nbsp;</font></td>\n";
             echo "      <td><font size=1 color=white><b>STATUS</b></font></td>\n";
@@ -169,7 +169,7 @@ if ($ADD==131 && $SUB==2) {
             echo "  <br />\n";
             echo "  <br />\n";
 
-            echo "  <table align=center border=0 cellpadding=2 cellspacing=0 bgcolor=#C1D6DF>\n";
+            echo "  <table align=center border=0 cellpadding=2 cellspacing=0 bgcolor=$oddrows>\n";
             echo "  <tr bgcolor=$menubarcolor>\n";
             echo "      <td><font size=1 color=white>&nbsp;</font></td>\n";
             echo "      <td><font size=1 color=white><b>FIELD</b></font></td>\n";

@@ -102,9 +102,9 @@ if ($hh=='reports')
         <td colspan=10>
             <table align='center' border='0' cellspacing='0' cellpadding='0'>
                 <tr>    <!-- First draw the top row  -->
-                    <td width='15'><img src='images/topleft.png' width='15' height='16' align='left'></td>
+                    <td class='across-top' width='15'><img src='images/topleft.png' width='15' height='16' align='left'></td>
                     <td class='across-top' align='center'></td>
-                    <td width='15'><img src='images/topright.png' width='15' height='16' align='right'></td>
+                    <td class='across-top' width='15'><img src='images/topright.png' width='15' height='16' align='right'></td>
                 </tr>
                 <tr valign='top'>
                     <td align=left width=33%>
@@ -112,12 +112,12 @@ if ($hh=='reports')
                         | <a href="<?= $PHP_SELF ?>?force_logout=1"><font face="arial,helvetica" color=yellow size=1>Logout</a>
                     </td>
                     <td class='user-company' align=center width=33%>
-                        <font color=#1C4754><?= $user_company ?></font><br />
-                        <font color=#1C4754 size=2><b><br>OSDial Administrator<b><br><br><br></font>
+                        <font color=<?= $company_color ?>><?= $user_company ?></font><br />
+                        <font color=<?= $header_color ?> size=2><b><br>OSDial Administrator<b><br><br><br></font>
                     </td>
                     <td align=right width=33%>
-                        <font face="arial,helvetica" color=white size=2><?= date("l F j, Y") ?>&nbsp;&nbsp;<br>
-                        <div style="width: 10em; text-align: right; margin: 5px;"><div id="clock"></div></div>
+                        <font face="arial,helvetica" color=<?= $clock_color ?> size=2><?= date("l F j, Y") ?>&nbsp;&nbsp;<br>
+                        <div style="width: 10em; text-align: right; margin: 5px;"><div id="clock" style="color: <?=$clock_color?>"></div></div>
                         <? //echo date("G:i:s A") ?>
                     </td>
                 </tr>
@@ -125,23 +125,23 @@ if ($hh=='reports')
         </td>
     </tr>
     <tr class='no-ul'>
-        <td height=25 align=center <?= $users_hh ?>><a href="<?= $PHP_SELF ?>?ADD=0"><font face="arial,helvetica" color=navy size=<?= $header_font_size ?>> Agents </font></a></td>
-        <td height=25 align=center <?= $campaigns_hh ?>><a href="<?= $PHP_SELF ?>?ADD=10"><font face="arial,helvetica" color=navy size=<?= $header_font_size ?>> Campaigns </font></a></td>
-        <td height=25 align=center <?= $lists_hh ?>><a href="<?= $PHP_SELF ?>?ADD=100"><font face="arial,helvetica" color=navy size=<?= $header_font_size ?>> Lists </font></a></td>
-        <td height=25 align=center <?= $scripts_hh ?>><a href="<?= $PHP_SELF ?>?ADD=1000000"><font face="arial,helvetica" color=navy size=<?= $header_font_size ?>> Scripts </font></a></td>
-        <td height=25 align=center <?= $filters_hh ?>><a href="<?= $PHP_SELF ?>?ADD=10000000"><font face="arial,helvetica" color=navy size=<?= $header_font_size ?>> Filters </font></a></td>
-        <td height=25 align=center <?= $ingroups_hh ?>><a href="<?= $PHP_SELF ?>?ADD=1000"><font face="arial,helvetica" color=navy size=<?= $header_font_size ?>> In-Groups </font></a></td>
-        <td height=25 align=center <?= $usergroups_hh ?>><a href="<?= $PHP_SELF ?>?ADD=100000"><font face="arial,helvetica" color=navy size=<?= $header_font_size ?>> User Groups </font></a></td>
-        <td height=25 align=center <?= $remoteagent_hh ?>><a href="<?= $PHP_SELF ?>?ADD=10000"><font face="arial,helvetica" color=navy size=<?= $header_font_size ?>> External Agents </font></a></td>
-        <td height=25 align=center <?= $reports_hh ?>><a href="<?= $PHP_SELF ?>?ADD=999999"><font face="arial,helvetica" color=navy size=<?= $header_font_size ?>> Reports </font></a></td>
-        <td height=25 align=center <?= $admin_hh ?>><a href="<?= $PHP_SELF ?>?ADD=10000000000"><font face="arial,helvetica" color=navy size=<?= $header_font_size ?>> Setup </font></a></td>
+        <td height=25 align=center <?= $users_hh ?>><a href="<?= $PHP_SELF ?>?ADD=0"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> Agents </font></a></td>
+        <td height=25 align=center <?= $campaigns_hh ?>><a href="<?= $PHP_SELF ?>?ADD=10"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> Campaigns </font></a></td>
+        <td height=25 align=center <?= $lists_hh ?>><a href="<?= $PHP_SELF ?>?ADD=100"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> Lists </font></a></td>
+        <td height=25 align=center <?= $scripts_hh ?>><a href="<?= $PHP_SELF ?>?ADD=1000000"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> Scripts </font></a></td>
+        <td height=25 align=center <?= $filters_hh ?>><a href="<?= $PHP_SELF ?>?ADD=10000000"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> Filters </font></a></td>
+        <td height=25 align=center <?= $ingroups_hh ?>><a href="<?= $PHP_SELF ?>?ADD=1000"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> In-Groups </font></a></td>
+        <td height=25 align=center <?= $usergroups_hh ?>><a href="<?= $PHP_SELF ?>?ADD=100000"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> User Groups </font></a></td>
+        <td height=25 align=center <?= $remoteagent_hh ?>><a href="<?= $PHP_SELF ?>?ADD=10000"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> External Agents </font></a></td>
+        <td height=25 align=center <?= $reports_hh ?>><a href="<?= $PHP_SELF ?>?ADD=999999"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> Reports </font></a></td>
+        <td height=25 align=center <?= $admin_hh ?>><a href="<?= $PHP_SELF ?>?ADD=10000000000"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> Setup </font></a></td>
     </tr>
     <?
 if (strlen($users_hh) > 1) { 
     ?>
     <tr class='no-ul' bgcolor=<?= $users_color ?>>
         <td align=left colspan=10 height=20>
-            <font face="arial,helvetica" color=black size=<?= $subheader_font_size ?>> &nbsp;
+            <font face="arial,helvetica" color=<?= $menu_h2_color ?> size=<?= $subheader_font_size ?>> &nbsp;
                 <a href="<?= $PHP_SELF ?>"> Show Agents </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 <a href="<?= $PHP_SELF ?>?ADD=1"> Add A New Agent </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 <a href="<?= $PHP_SELF ?>?ADD=1A"> Copy Agent </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
@@ -168,21 +168,21 @@ if (strlen($campaigns_hh) > 1) {
     if ($sh=='listmix' and $ADD != 39) {$sh='list';}
 
     if ($sh=='list') {$list_sh="bgcolor=\"$subcamp_color\""; $list_fc="$subcamp_font";}
-        else {$list_sh=''; $list_fc='black';}
+        else {$list_sh=''; $list_fc=$menu_h2_color;}
     if ($sh=='status') {$status_sh="bgcolor=\"$subcamp_color\""; $status_fc="$subcamp_font";}
-        else {$status_sh=''; $status_fc='black';}
+        else {$status_sh=''; $status_fc=$menu_h2_color;}
     if ($sh=='hotkey') {$hotkey_sh="bgcolor=\"$subcamp_color\""; $hotkey_fc="$subcamp_font";}
-        else {$hotkey_sh=''; $hotkey_fc='black';}
+        else {$hotkey_sh=''; $hotkey_fc=$menu_h2_color;}
     if ($sh=='recycle') {$recycle_sh="bgcolor=\"$subcamp_color\""; $recycle_fc="$subcamp_font";}
-        else {$recycle_sh=''; $recycle_fc='black';}
+        else {$recycle_sh=''; $recycle_fc=$menu_h2_color;}
     if ($sh=='autoalt') {$autoalt_sh="bgcolor=\"$subcamp_color\""; $autoalt_fc="$subcamp_font";}
-        else {$autoalt_sh=''; $autoalt_fc='black';}
+        else {$autoalt_sh=''; $autoalt_fc=$menu_h2_color;}
     if ($sh=='pause') {$pause_sh="bgcolor=\"$subcamp_color\""; $pause_fc="$subcamp_font";}
-        else {$pause_sh=''; $pause_fc='black';}
+        else {$pause_sh=''; $pause_fc=$menu_h2_color;}
     if ($sh=='fields') {$fields_sh="bgcolor=\"$subcamp_color\""; $fields_fc="$subcamp_font";}
-        else {$fields_sh=''; $fields_fc='black';}
+        else {$fields_sh=''; $fields_fc=$menu_h2_color;}
     if ($sh=='listmix') {$listmix_sh="bgcolor=\"$subcamp_color\""; $listmix_fc="$subcamp_font";}
-        else {$listmix_sh=''; $listmix_fc='black';}
+        else {$listmix_sh=''; $listmix_fc=$menu_h2_color;}
     ?>
 
     <tr class='no-ul' bgcolor=<?= $campaigns_color ?>>
@@ -337,17 +337,17 @@ if (strlen($remoteagent_hh) > 1) {
 
 if (strlen($admin_hh) > 1) { 
     if ($sh=='times') {$times_sh="bgcolor=\"$times_color\""; $times_fc="$times_font";} # hard teal
-        else {$times_sh=''; $times_fc='black';}
+        else {$times_sh=''; $times_fc=$menu_h2_color;}
     if ($sh=='phones') {$phones_sh="bgcolor=\"$server_color\""; $phones_fc="$phones_font";} # pink
-        else {$phones_sh=''; $phones_fc='black';}
+        else {$phones_sh=''; $phones_fc=$menu_h2_color;}
     if ($sh=='server') {$server_sh="bgcolor=\"$server_color\""; $server_fc="$server_font";} # pink
-        else {$server_sh=''; $server_fc='black';}
+        else {$server_sh=''; $server_fc=$menu_h2_color;}
     if ($sh=='conference') {$conference_sh="bgcolor=\"$server_color\""; $conference_fc="$server_font";} # pink
-        else {$conference_sh=''; $conference_fc='black';}
+        else {$conference_sh=''; $conference_fc=$menu_h2_color;}
     if ($sh=='settings') {$settings_sh="bgcolor=\"$settings_color\""; $settings_fc="$settings_font";} # pink
-        else {$settings_sh=''; $settings_fc='black';}
+        else {$settings_sh=''; $settings_fc=$menu_h2_color;}
     if ($sh=='status') {$status_sh="bgcolor=\"$status_color\""; $status_fc="$status_font";} # pink
-        else {$status_sh=''; $status_fc='black';}
+        else {$status_sh=''; $status_fc=$menu_h2_color;}
 
         ?>
         <tr class='no-ul' bgcolor=<?= $admin_color ?>>
@@ -454,7 +454,7 @@ if (strlen($reports_hh) > 1) {
 </table>
 </div>
 <div class=content>
-<table width=100% bgcolor=#E9E8D9 cellpadding=0 cellspacing=0 align=center>
+<table width=100% bgcolor=<?= $maintable_color ?> cellpadding=0 cellspacing=0 align=center>
     <tr><td align=left colspan=10>
     <?
 

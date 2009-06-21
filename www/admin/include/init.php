@@ -80,9 +80,9 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 		else {$campaign_rank = $SELECT_campaign_rank;}
 
 		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor="#CBDCE0"';} 
+			{$bgcolor='bgcolor="' . $oddrows . '"';} 
 		else
-			{$bgcolor='bgcolor="#C1D6DB"';}
+			{$bgcolor='bgcolor="' . $evenrows . '"';}
 
 		# disable non user-group allowable campaign ranks
 		$stmt="SELECT user_group from osdial_users where user='$user';";

@@ -144,7 +144,7 @@ echo "<TABLE align=center><TR><TD>\n";
 
 echo "<center><br><font color=navy size=+1>CUSTOM CAMPAIGN STATUSES</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr bgcolor=#716A5B>\n";
+echo "<tr bgcolor=$menubarcolor>\n";
 echo "<td><font color=white size=1>CAMPAIGN</font></td>\n";
 echo "<td><font color=white size=1>NAME</font></td>\n";
 echo "<td><font color=white size=1>STATUSES</font></td>\n";
@@ -168,9 +168,9 @@ echo "</tr>\n";
 	while ($campaigns_to_print > $o) 
 		{
 		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor="#CBDCE0"';} 
+			{$bgcolor='bgcolor='.$oddrows;} 
 		else
-			{$bgcolor='bgcolor="#C1D6DB"';}
+			{$bgcolor='bgcolor='.$evenrows;}
 		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaigns_id_list[$o]\">$campaigns_id_list[$o]</a></td>";
 		echo "<td><font size=1> $campaigns_name_list[$o] </td>";
 		echo "<td><font size=1> ";

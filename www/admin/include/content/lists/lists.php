@@ -38,10 +38,10 @@ if ($ADD==111) {
 		echo "<center><br><font color=navy size=+1>ADD A NEW LIST</font><form action=$PHP_SELF method=POST><br><br>\n";
 		echo "<input type=hidden name=ADD value=211>\n";
 		echo "<TABLE width=$section_width cellspacing=3>\n";
-		echo "<tr bgcolor=#C1D6DF><td align=right>List ID: </td><td align=left><input type=text name=list_id size=8 maxlength=8> (digits only)$NWB#osdial_lists-list_id$NWE</td></tr>\n";
-		echo "<tr bgcolor=#C1D6DF><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20>$NWB#osdial_lists-list_name$NWE</td></tr>\n";
-		echo "<tr bgcolor=#C1D6DF><td align=right>List Description: </td><td align=left><input type=text name=list_description size=30 maxlength=255>$NWB#osdial_lists-list_description$NWE</td></tr>\n";
-		echo "<tr bgcolor=#C1D6DF><td align=right>Campaign: </td><td align=left><select size=1 name=campaign_id>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>List ID: </td><td align=left><input type=text name=list_id size=8 maxlength=8> (digits only)$NWB#osdial_lists-list_id$NWE</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20>$NWB#osdial_lists-list_name$NWE</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>List Description: </td><td align=left><input type=text name=list_description size=30 maxlength=255>$NWB#osdial_lists-list_description$NWE</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>Campaign: </td><td align=left><select size=1 name=campaign_id>\n";
 		
 			$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
 			$rslt=mysql_query($stmt, $link);
@@ -57,8 +57,8 @@ if ($ADD==111) {
 		echo "$campaigns_list";
 		echo "<option SELECTED>$campaign_id</option>\n";
 		echo "</select>$NWB#osdial_lists-campaign_id$NWE</td></tr>\n";
-		echo "<tr bgcolor=#C1D6DF><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option SELECTED>N</option></select>$NWB#osdial_lists-active$NWE</td></tr>\n";
-		echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option SELECTED>N</option></select>$NWB#osdial_lists-active$NWE</td></tr>\n";
+		echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 		echo "</TABLE></center>\n";
 	} else {
 		echo "<font color=red>You do not have permission to view this page</font>\n";
@@ -131,7 +131,7 @@ if ($ADD==112) {
 	if ( (!$vendor_id) and (!$phone)  and (!$lead_id) and (!$last_name) and (!$first_name) ) {
 		echo "<style type=text/css> content {vertical-align:center}</style>";
 		echo "\n<br><br><center>\n";
-		echo "<TABLE width=$section_width cellspacing=0 bgcolor=#C1D6DF>\n";
+		echo "<TABLE width=$section_width cellspacing=0 bgcolor=$oddrows>\n";
 		echo "<tr><td colspan=2>\n";
 		echo "<form method=post name=search action=\"$PHP_SELF\">\n";
 		echo "<input type=hidden name=ADD value=112>\n";
@@ -161,8 +161,8 @@ if ($ADD==112) {
 		echo "</table>\n";
 
 	/*
-	echo "<tr bgcolor=#C1D6DF><td align=right>List ID: </td><td align=left><input type=text name=list_id size=8 maxlength=8> (digits only)$NWB#osdial_lists-list_id$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20>$NWB#osdial_lists-list_name$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>List ID: </td><td align=left><input type=text name=list_id size=8 maxlength=8> (digits only)$NWB#osdial_lists-list_id$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20>$NWB#osdial_lists-list_name$NWE</td></tr>\n";
 	*/
 
 	
@@ -227,11 +227,10 @@ if ($ADD==112) {
 			while ($results_to_print > $o) {
 				$row=mysql_fetch_row($rslt);
 				$o++;
-				if (eregi("1$|3$|5$|7$|9$", $o)) {
-					$bgcolor='bgcolor="#CBDCE0"';
-				} else {
-					$bgcolor='bgcolor="#C1D6DB"';
-				}
+				if (eregi("1$|3$|5$|7$|9$", $o)) 
+					{$bgcolor='bgcolor='.$oddrows;} 
+				else
+					{$bgcolor='bgcolor='.$evenrows;}
 				echo "<TR $bgcolor>\n";
 				echo "<TD ALIGN=LEFT><FONT FACE=\"ARIAL,HELVETICA\" SIZE=1>$o</FONT></TD>\n";
                 echo "<TD ALIGN=CENTER><FONT FACE=\"ARIAL,HELVETICA\" SIZE=1><a href=\"admin.php?ADD=999999&SUB=3&iframe=admin_modify_lead.php?lead_id=$row[0]\">$row[0]</a></FONT></TD>\n";
@@ -287,8 +286,8 @@ echo "<br><font color=navy size=+1>ADD A NUMBER TO THE DNC LIST</font><form acti
 echo "<input type=hidden name=ADD value=121>\n";
 //echo "<center>";
 echo "<TABLE width=$section_width cellspacing=3>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Phone Number: </td><td align=left><input type=text name=phone_number size=14 maxlength=12> (digits only)$NWB#osdial_list-dnc$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Phone Number: </td><td align=left><input type=text name=phone_number size=14 maxlength=12> (digits only)$NWB#osdial_list-dnc$NWE</td></tr>\n";
+echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 echo "</TABLE></center>\n";
 
 }
@@ -509,7 +508,8 @@ if ($ADD==122) {
             if ($phone_code_override == "") { $phone_code_override = "1";}
 			$Imported++;
 ?>
-			<table align=center width="700" border=0 cellpadding=5 cellspacing=0 bgcolor=#C1D6DF>
+<?		echo "	<table align=center width=\"700\" border=0 cellpadding=5 cellspacing=0 bgcolor=$oddrows>";
+?>				
 				<tr>
 					<td align=right width="35%"><B><font face="arial, helvetica" size=2>Load leads from this file:</font></B></td>
 					<td align=left width="65%"><input type=file name="leadfile" value="<?=$leadfile ?>"> <? echo "$NWB#osdial_list_loader$NWE"; ?></td>
@@ -1674,9 +1674,9 @@ if ($ADD==125) {
 		echo "<center><br><font color=navy size='2'>GENERATE TEST LEADS</font><br>(ONLY works with TEST list 998.)<form action=$PHP_SELF method=POST><br><br>\n";
 		echo "<input type=hidden name=ADD value=126>\n";
 		echo "<TABLE width=$section_width cellspacing=3>\n";
-		echo "<tr bgcolor=#C1D6DF><td align=right>Phone Number: </td><td align=left><input type=text name=testphone size=8 maxlength=8> (digits only)$NWB#$NWE</td></tr>\n";
-		echo "<tr bgcolor=#C1D6DF><td align=right>Number of leads: </td><td align=left><input type=text name=testnbr size=20 maxlength=20>$NWB#osdial_lists-list_name$NWE</td></tr>\n";
-		echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>Phone Number: </td><td align=left><input type=text name=testphone size=8 maxlength=8> (digits only)$NWB#$NWE</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>Number of leads: </td><td align=left><input type=text name=testnbr size=20 maxlength=20>$NWB#osdial_lists-list_name$NWE</td></tr>\n";
+		echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 			echo "</TABLE></center>\n";
 	} else {
 		echo "<font color=red>You do not have permission to view this page.</font>\n";
@@ -1926,10 +1926,10 @@ if ($ADD==311)
 	echo "<input type=hidden name=list_id value=\"$row[0]\">\n";
 	echo "<input type=hidden name=old_campaign_id value=\"$row[2]\">\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>List ID: </td><td align=left><b>$row[0]</b>$NWB#osdial_lists-list_id$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20 value=\"$row[1]\">$NWB#osdial_lists-list_name$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>List Description: </td><td align=left><input type=text name=list_description size=30 maxlength=255 value=\"$list_description\">$NWB#osdial_lists-list_description$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right><a href=\"$PHP_SELF?ADD=34&campaign_id=$campaign_id\">Campaign</a>: </td><td align=left><select size=1 name=campaign_id>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>List ID: </td><td align=left><b>$row[0]</b>$NWB#osdial_lists-list_id$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20 value=\"$row[1]\">$NWB#osdial_lists-list_name$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>List Description: </td><td align=left><input type=text name=list_description size=30 maxlength=255 value=\"$list_description\">$NWB#osdial_lists-list_description$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=34&campaign_id=$campaign_id\">Campaign</a>: </td><td align=left><select size=1 name=campaign_id>\n";
 
 	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
 	$rslt=mysql_query($stmt, $link);
@@ -1945,11 +1945,11 @@ if ($ADD==311)
 	echo "$campaigns_list";
 	echo "<option SELECTED>$campaign_id</option>\n";
 	echo "</select>$NWB#osdial_lists-campaign_id$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$active</option></select>$NWB#osdial_lists-active$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Reset Lead-Called-Status for this list: </td><td align=left><select size=1 name=reset_list><option>Y</option><option SELECTED>N</option></select>$NWB#osdial_lists-reset_list$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>List Change Date: </td><td align=left>$list_changedate &nbsp; $NWB#osdial_lists-list_changedate$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>List Last Call Date: </td><td align=left>$list_lastcalldate &nbsp; $NWB#osdial_lists-list_lastcalldate$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=center colspan=2>";
+	echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$active</option></select>$NWB#osdial_lists-active$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Reset Lead-Called-Status for this list: </td><td align=left><select size=1 name=reset_list><option>Y</option><option SELECTED>N</option></select>$NWB#osdial_lists-reset_list$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>List Change Date: </td><td align=left>$list_changedate &nbsp; $NWB#osdial_lists-list_changedate$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>List Last Call Date: </td><td align=left>$list_lastcalldate &nbsp; $NWB#osdial_lists-list_lastcalldate$NWE</td></tr>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2>";
 	echo "<input type=button name=addleads value=\"ADD LEADS\" onclick=\"window.location='admin.php?ADD=122&list_id_override=$row[0]'\">&nbsp;&nbsp;|&nbsp;&nbsp;";
 	echo "<input type=submit name=SUBMIT value=SUBMIT>";
 	echo "</td></tr>\n";
@@ -2004,9 +2004,9 @@ if ($ADD==311)
 		{
 
 		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor="#CBDCE0"';} 
+			{$bgcolor='bgcolor='.$oddrows;} 
 		else
-			{$bgcolor='bgcolor="#C1D6DB"';}
+			{$bgcolor='bgcolor='.$evenrows;}
 
 		if ($dispo == 'CBHOLD')
 			{
@@ -2025,7 +2025,7 @@ if ($ADD==311)
 	}
 
 	echo "<tr><td colspan=2><font size=1><font color=navy>SUBTOTALS</font></td><td><font size=1>$lead_list[Y_count]</td><td><font size=1>$lead_list[N_count]</td></tr>\n";
-	echo "<tr bgcolor=\"#C1D6DB\"><td><font size=1>TOTAL</td><td colspan=3 align=center><font size=1>$lead_list[count]</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td><font size=1>TOTAL</td><td colspan=3 align=center><font size=1>$lead_list[count]</td></tr>\n";
 
 	echo "</table></center><br>\n";
 	unset($lead_list);
@@ -2080,16 +2080,16 @@ if ($ADD==311)
 		if ($tzone >= 0) {$DISPtzone = "$plus$tzone";}
 		else {$DISPtzone = "$tzone";}
 		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor="#CBDCE0"';} 
+			{$bgcolor='bgcolor='.$oddrows;} 
 		else
-			{$bgcolor='bgcolor="#C1D6DB"';}
+			{$bgcolor='bgcolor='.$evenrows;}
 
 			echo "<tr $bgcolor><td><font size=1>".$DISPtzone." &nbsp; &nbsp; ($LOCALdate)</td><td><font size=1>".$lead_list['Y'][$tzone]."</td><td><font size=1>".$lead_list['N'][$tzone]."</td></tr>\n";
 		}
 	}
 
 	echo "<tr><td><font size=1><font color=navy>SUBTOTALS</font></td><td><font size=1>$lead_list[Y_count]</td><td><font size=1>$lead_list[N_count]</td></tr>\n";
-	echo "<tr bgcolor=\"#C1D6DB\"><td><font size=1>TOTAL</td><td colspan=2 align=center><font size=1>$lead_list[count]</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td><font size=1>TOTAL</td><td colspan=2 align=center><font size=1>$lead_list[count]</td></tr>\n";
 
 	echo "</table></center><br>\n";
 	unset($lead_list);
@@ -2155,9 +2155,9 @@ if ($ADD==311)
 		{
 		$Pstatus = $status[$sts];
 		if (eregi("1$|3$|5$|7$|9$", $sts))
-			{$bgcolor='bgcolor="#CBDCE0"';   $AB='bgcolor="#C1D6DB"';} 
+			{$bgcolor="bgcolor=$evenrows";   $AB="bgcolor=$oddrows";} 
 		else
-			{$bgcolor='bgcolor="#C1D6DB"';   $AB='bgcolor="#CBDCE0"';}
+			{$bgcolor="bgcolor=$oddrows";   $AB="bgcolor=$evenrows";}
 	#	echo "$status[$sts]|$status_called_first[$sts]|$status_called_last[$sts]|$leads_in_sts[$sts]|\n";
 	#	echo "$status[$sts]|";
 		echo "<tr $bgcolor><td><font size=1>$Pstatus</td><td><font size=1>$statuses_list[$Pstatus]</td>";
@@ -2167,13 +2167,13 @@ if ($ADD==311)
 			{
 			if (eregi("1$|3$|5$|7$|9$", $sts))
 				{
-				if (eregi("1$|3$|5$|7$|9$", $first)) {$AB='bgcolor="#C1D6DB"';} 
-				else{$AB='bgcolor="#CBDCE0"';}
+				if (eregi("1$|3$|5$|7$|9$", $first)) {$AB="bgcolor=$oddrows";} 
+				else{$AB="bgcolor=$evenrows";}
 				}
 			else
 				{
-				if (eregi("0$|2$|4$|6$|8$", $first)) {$AB='bgcolor="#C1D6DB"';} 
-				else{$AB='bgcolor="#CBDCE0"';}
+				if (eregi("0$|2$|4$|6$|8$", $first)) {$AB="bgcolor=$oddrows";} 
+				else{$AB="bgcolor=$evenrows";}
 				}
 
 			$called_printed=0;
@@ -2299,9 +2299,9 @@ echo "<td><a href=\"$PHP_SELF?$oldADD&$GROUPlink\"><font size=1 color=white><B>G
 	while ($cb_to_print > $o) {
 		$row=mysql_fetch_row($rslt);
 		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor="#CBDCE0"';} 
+			{$bgcolor='bgcolor='.$oddrows;} 
 		else
-			{$bgcolor='bgcolor="#C1D6DB"';}
+			{$bgcolor='bgcolor='.$evenrows;}
 		echo "<tr $bgcolor>";
 		echo "<td><font size=1><A HREF=\"admin_modify_lead.php?lead_id=$row[1]\" target=\"_blank\">$row[1]</A></td>";
 		echo "<td><font size=1><A HREF=\"$PHP_SELF?ADD=311&list_id=$row[2]\">$row[2]</A></td>";
@@ -2367,9 +2367,9 @@ echo "<td align=center colspan=3><font size=1 color=white><B>LINKS</B></td>";
 	while ($people_to_print > $o) {
 		$row=mysql_fetch_row($rslt);
 		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor="#CBDCE0"';} 
+			{$bgcolor='bgcolor='.$oddrows;} 
 		else
-			{$bgcolor='bgcolor="#C1D6DB"';}
+			{$bgcolor='bgcolor='.$evenrows;}
 		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">$row[0]</a></td>";
 		echo "<td><font size=1>$row[1]</td>";
 		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=100&camp=$row[2]&dispact=$dispact\">$row[2]</a></td>";

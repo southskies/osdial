@@ -194,9 +194,9 @@ if ($ADD==321111111111111)
 		$o++;
 
 		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor="#CBDCE0"';} 
+			{$bgcolor='bgcolor='.$oddrows;} 
 		else
-			{$bgcolor='bgcolor="#C1D6DB"';}
+			{$bgcolor='bgcolor='.$evenrows;}
 
 		echo "<tr $bgcolor><td><form action=$PHP_SELF method=POST>\n";
 		echo "<input type=hidden name=ADD value=421111111111111>\n";
@@ -408,9 +408,9 @@ if ($ADD==331111111111111)
 		while ($o > $p)
 			{
 			if (eregi("1$|3$|5$|7$|9$", $p))
-				{$bgcolor='bgcolor="#CBDCE0"';} 
+				{$bgcolor='bgcolor='.$oddrows;} 
 			else
-				{$bgcolor='bgcolor="#C1D6DB"';}
+				{$bgcolor='bgcolor='.$evenrows;}
 
 			$CATstatuses='';
 			$stmt="SELECT status from osdial_statuses where category='$Avsc_id[$p]' order by status;";

@@ -157,16 +157,16 @@ if ($ADD == "2keys") {
 
     echo "<table cellspacing=1 cellpadding=5>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Campaign/IVR:</td>\n";
-    echo '      <td bgcolor="#CBDCE0">' . $campaign_id . '/' . $oivr_id . '</td>';
+    echo "      <td bgcolor=$oddrows align=right>Campaign/IVR:</td>\n";
+    echo '      <td bgcolor="' . $oddrows . '">' . $campaign_id . '/' . $oivr_id . '</td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Key:</td>\n";
-    echo '      <td bgcolor="#CBDCE0">' . $oivr_opt_keypress . '</td>';
+    echo "      <td bgcolor=$oddrows align=right>Key:</td>\n";
+    echo '      <td bgcolor="' . $oddrows . '">' . $oivr_opt_keypress . '</td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Action:</td>\n";
-    echo '      <td bgcolor="#CBDCE0">' . $oivr_opt_action . '</td>';
+    echo "      <td bgcolor=$oddrows align=right>Action:</td>\n";
+    echo '      <td bgcolor="' . $oddrows . '">' . $oivr_opt_action . '</td>';
     echo "  </tr>\n";
 
 
@@ -174,8 +174,8 @@ if ($ADD == "2keys") {
     $o = $oivr_opt_action;
     if ($o == 'PLAYFILE') {
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>File to Play</td>\n";
-    	echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>File to Play</td>\n";
+    	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
     	$path = "/opt/osdial/html/ivr";
@@ -191,8 +191,8 @@ if ($ADD == "2keys") {
     	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
-        echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
         $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
         foreach ($status as $stat) {
@@ -206,8 +206,8 @@ if ($ADD == "2keys") {
         echo '<input type="hidden" name="oi3" value="1">';
     } elseif ($o == 'HANGUP') {
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>File to Play Before Hangup (Optional)</td>\n";
-    	echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>File to Play Before Hangup (Optional)</td>\n";
+    	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
     	$path = "/opt/osdial/html/ivr";
@@ -223,8 +223,8 @@ if ($ADD == "2keys") {
     	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
-        echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
         $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
         foreach ($status as $stat) {
@@ -239,8 +239,8 @@ if ($ADD == "2keys") {
         echo '<input type="hidden" name="oi1" value="' . $oivr_id . '">';
         echo '<input type="hidden" name="oi2" value="' . $oivr_opt_parent_id . '">';
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Announcement Recording</td>\n";
-    	echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>Announcement Recording</td>\n";
+    	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi3">';
     	echo "              <option value=\"\"> - NONE - </option>";
     	$path = "/opt/osdial/html/ivr";
@@ -259,16 +259,16 @@ if ($ADD == "2keys") {
     	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Announcement Repeat Attempts</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="3" maxlength="2" name="oi4" value="3"></td>';
+        echo "      <td bgcolor=$oddrows align=right>Announcement Repeat Attempts</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="3" maxlength="2" name="oi4" value="3"></td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Wait for Key Attempts</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="3" maxlength="2" name="oi5" value="5"></td>';
+        echo "      <td bgcolor=$oddrows align=right>Wait for Key Attempts</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="3" maxlength="2" name="oi5" value="5"></td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Wait for Key Timeout (ms)</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="5" maxlength="4" name="oi6" value="500"><input type="hidden" name="oi7" value=""><input type="hidden" name="oi8" value=""></td>';
+        echo "      <td bgcolor=$oddrows align=right>Wait for Key Timeout (ms)</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="5" maxlength="4" name="oi6" value="500"><input type="hidden" name="oi7" value=""><input type="hidden" name="oi8" value=""></td>';
         echo "  </tr>\n";
     } elseif ($o == 'MENU_REPEAT') { 
         echo '<input type="hidden" name="oi1" value="1">';
@@ -276,8 +276,8 @@ if ($ADD == "2keys") {
         echo '<input type="hidden" name="oi1" value="1">';
     } elseif ($o == 'XFER_INGROUP') { 
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>File to Play Before Transfer (Optional)</td>\n";
-    	echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
+    	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
     	$path = "/opt/osdial/html/ivr";
@@ -293,8 +293,8 @@ if ($ADD == "2keys") {
     	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
-        echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
         $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
         foreach ($status as $stat) {
@@ -306,8 +306,8 @@ if ($ADD == "2keys") {
         echo "  </select></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>In-Group to transfer to</td>\n";
-        echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>In-Group to transfer to</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi3"><option value="">-NONE-</option>';
         $ingroups = get_krh($link, 'osdial_inbound_groups', 'group_id,group_name','',"active='Y'");
         foreach ($ingroups as $ing) {
@@ -316,8 +316,8 @@ if ($ADD == "2keys") {
         echo "  </select></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Failover Method</td>";
-        echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>Failover Method</td>";
+        echo '      <td bgcolor="' . $oddrows . '">';
         echo '          <select name="oi4">';
         echo '              <option value="">-NONE-</option>';
         echo '              <option value="EXT_NA">XFer to ext if no agents logged in.</option>';
@@ -326,13 +326,13 @@ if ($ADD == "2keys") {
         echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Ext/Number to Transfer Call to:</td>";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="12" maxlength="10" name="oi5" value=""></td>';
+        echo "      <td bgcolor=$oddrows align=right>Ext/Number to Transfer Call to:</td>";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="12" maxlength="10" name="oi5" value=""></td>';
         echo "  </tr>\n";
     } elseif ($o == 'XFER_EXTERNAL') { 
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>File to Play Before Transfer (Optional)</td>\n";
-    	echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
+    	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
     	$path = "/opt/osdial/html/ivr";
@@ -348,8 +348,8 @@ if ($ADD == "2keys") {
     	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
-        echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
         $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
         foreach ($status as $stat) {
@@ -362,14 +362,14 @@ if ($ADD == "2keys") {
         echo "  </select></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Phone Number to Transfer Call to:<br>";
+        echo "      <td bgcolor=$oddrows align=right>Phone Number to Transfer Call to:<br>";
         echo "      Format: 9995551212</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="12" maxlength="10" name="oi3" value=""></td>';
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="12" maxlength="10" name="oi3" value=""></td>';
         echo "  </tr>\n";
     } elseif ($o == 'XFER_EXTERNAL_MULTI') { 
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>File to Play Before Transfer (Optional)</td>\n";
-    	echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
+    	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
     	$path = "/opt/osdial/html/ivr";
@@ -385,8 +385,8 @@ if ($ADD == "2keys") {
     	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
-        echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
         $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
         foreach ($status as $stat) {
@@ -399,23 +399,23 @@ if ($ADD == "2keys") {
         echo "  </select></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Phone Number Order</td>\n";
-        echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>Phone Number Order</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi3"><option value="ROUNDROBIN" selected>Round-Robin</option>';
         echo '      <option value="RANDOM">Random</option></select>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Phone Number to Transfer Call to:\n";
+        echo "      <td bgcolor=$oddrows align=right>Phone Number to Transfer Call to:\n";
         echo "      Format: 9995551212</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><textarea name="oi4" cols=10 rows=20></textarea></td>';
+        echo '      <td bgcolor="' . $oddrows . '"><textarea name="oi4" cols=10 rows=20></textarea></td>';
         echo "  </tr>\n";
     }
 
 
 
-    echo "  <tr><td colspan=2 bgcolor=#CBDCE0>&nbsp;</td></tr>\n";
+    echo "  <tr><td colspan=2 bgcolor=$oddrows>&nbsp;</td></tr>\n";
     echo "  <tr>\n";
-    echo "      <td colspan=2 bgcolor=#B1C6CB align=center><input type=submit value=\"Create Key Entry\"></td>\n";
+    echo "      <td colspan=2 bgcolor=$menubarcolor align=center><input type=submit value=\"Create Key Entry\"></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
 
@@ -616,12 +616,12 @@ if ($ADD == "3menu") {
 
     echo "<table cellspacing=1 cellpadding=5>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Name</td>\n";
-    echo '      <td bgcolor="#CBDCE0"><input type="text" size="30" maxlength="50" name="oivr_name" value="' . $oivr['name'] . '"></td>';
+    echo "      <td bgcolor=$oddrows align=right>Name</td>\n";
+    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="30" maxlength="50" name="oivr_name" value="' . $oivr['name'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Announcement File</td>\n";
-    echo '      <td bgcolor="#CBDCE0">';
+    echo "      <td bgcolor=$oddrows align=right>Announcement File</td>\n";
+    echo '      <td bgcolor="' . $oddrows . '">';
     echo '          <select name="oivr_announcement">';
     echo "              <option value=\"\"> - NONE - </option>";
     $path = "/opt/osdial/html/ivr";
@@ -640,20 +640,20 @@ if ($ADD == "3menu") {
     echo '      </td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Announcement Repeat Attempt</td>\n";
-    echo '      <td bgcolor="#CBDCE0"><input type="text" size="4" maxlength="2" name="oivr_repeat_loops" value="' . $oivr['repeat_loops'] . '"></td>';
+    echo "      <td bgcolor=$oddrows align=right>Announcement Repeat Attempt</td>\n";
+    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="2" name="oivr_repeat_loops" value="' . $oivr['repeat_loops'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Wait for Key Attempts</td>\n";
-    echo '      <td bgcolor="#CBDCE0"><input type="text" size="4" maxlength="2" name="oivr_wait_loops" value="' . $oivr['wait_loops'] . '"></td>';
+    echo "      <td bgcolor=$oddrows align=right>Wait for Key Attempts</td>\n";
+    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="2" name="oivr_wait_loops" value="' . $oivr['wait_loops'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Wait Period per Attempt (ms)</td>\n";
-    echo '      <td bgcolor="#CBDCE0"><input type="text" size="4" maxlength="4" name="oivr_wait_timeout" value="' . $oivr['wait_timeout'] . '"></td>';
+    echo "      <td bgcolor=$oddrows align=right>Wait Period per Attempt (ms)</td>\n";
+    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="4" name="oivr_wait_timeout" value="' . $oivr['wait_timeout'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Answered Status:</td>\n";
-    echo '      <td bgcolor="#CBDCE0"><select name="oivr_answered_status"><option value="">-NONE-</option>';
+    echo "      <td bgcolor=$oddrows align=right>Answered Status:</td>\n";
+    echo '      <td bgcolor="' . $oddrows . '"><select name="oivr_answered_status"><option value="">-NONE-</option>';
     $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
     foreach ($status as $stat) {
         $sel = '';
@@ -665,16 +665,16 @@ if ($ADD == "3menu") {
     echo "  </select></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Virtual Agents</td>\n";
-    echo '      <td bgcolor="#CBDCE0"><input type="text" size="4" maxlength="3" name="oivr_virtual_agents" value="' . $oivr['virtual_agents'] . '"> <font size=-1></font></td>';
+    echo "      <td bgcolor=$oddrows align=right>Virtual Agents</td>\n";
+    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="3" name="oivr_virtual_agents" value="' . $oivr['virtual_agents'] . '"> <font size=-1></font></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Reserve Agents</td>\n";
-    echo '      <td bgcolor="#CBDCE0"><input type="text" size="4" maxlength="3" name="oivr_reserve_agents" value="' . $oivr['reserve_agents'] . '"> <font size=-1> Set to 10+ if Inbound.</font></td>';
+    echo "      <td bgcolor=$oddrows align=right>Reserve Agents</td>\n";
+    echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="3" name="oivr_reserve_agents" value="' . $oivr['reserve_agents'] . '"> <font size=-1> Set to 10+ if Inbound.</font></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Status</td>\n";
-    echo '      <td bgcolor="#CBDCE0">';
+    echo "      <td bgcolor=$oddrows align=right>Status</td>\n";
+    echo '      <td bgcolor="' . $oddrows . '">';
     echo '          <select name="oivr_status">';
     if ($oivr['status'] == 'ACTIVE') {
         $asel = ' selected';
@@ -686,8 +686,8 @@ if ($ADD == "3menu") {
     echo '          </select>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Timeout Action</td>\n";
-    echo '      <td bgcolor="#CBDCE0">';
+    echo "      <td bgcolor=$oddrows align=right>Timeout Action</td>\n";
+    echo '      <td bgcolor="' . $oddrows . '">';
     echo '         <select name="oivr_timeout_action">';
     echo "              <option value=\"\"> - NONE - </option>";
     $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $oivr_opt_parent_id . "'");
@@ -710,9 +710,9 @@ if ($ADD == "3menu") {
     echo '         </select>';
     echo '      </td>';
     echo "  <tr>\n";
-    echo "  <tr><td colspan=2 bgcolor=#CBDCE0>&nbsp;</td></tr>\n";
+    echo "  <tr><td colspan=2 bgcolor=$oddrows>&nbsp;</td></tr>\n";
     echo "  <tr>\n";
-    echo "      <td colspan=2 bgcolor=#B1C6CB align=center><input type=submit value=\"Save Form\"></td>\n";
+    echo "      <td colspan=2 bgcolor=$menubarcolor align=center><input type=submit value=\"Save Form\"></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
 
@@ -732,9 +732,9 @@ if ($ADD == "3menu") {
     foreach ($oivr_opts as $opt) {
         $ad  = explode('#:#',$opt['action_data']);
         if (eregi("1$|3$|5$|7$|9$",$cnt)) {
-            $bgcolor = 'bgcolor="#CBDCE0"';
+            $bgcolor = 'bgcolor="' . $oddrows . '"';
         } else {
-            $bgcolor = 'bgcolor="#C1D6DB"';
+            $bgcolor = 'bgcolor="' . $evenrows . '"';
         }
         echo '  <form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
         echo '  <input type="hidden" name="ADD" value="3keys">';
@@ -754,13 +754,13 @@ if ($ADD == "3menu") {
         echo "  </form>";
         $cnt++;
     }
-    echo "  <tr><td colspan=6 bgcolor=#CBDCE0 align=center></td></tr>\n";
+    echo "  <tr><td colspan=6 bgcolor=$oddrows align=center></td></tr>\n";
     echo '  <form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
     echo '  <input type="hidden" name="ADD" value="2keys">';
     echo '  <input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
     echo '  <input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
     echo "  <tr>\n";
-    echo "      <td bgcolor=#B1C6CB align=center>";
+    echo "      <td bgcolor=$oddrows align=center>";
     echo '<select name="oivr_opt_keypress">';
     echo ' <option value="" selected> - SELECT DIGIT -</option>';
     $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $oivr_opt_parent_id . "'");
@@ -782,8 +782,8 @@ if ($ADD == "3menu") {
     if ( ! preg_match('/\*/', $tkey) ) { echo ' <option value="*"> - * -</option>'; }
     echo "</select>\n";
     echo "</td>\n";
-    echo "      <td bgcolor=#B1C6CB align=center><select name=\"oivr_opt_action\">";
-    echo "      <option value=\"\"> - Select and Action - </option>";
+    echo "      <td bgcolor=$oddrows align=center><select name=\"oivr_opt_action\">";
+    echo "      <option value=\"\"> - Select an Action - </option>";
     echo "      <option value=\"PLAYFILE\">Play an Audio File</option>";
     echo "      <option value=\"XFER_EXTERNAL\">Transfer to an External Number</option>";
     echo "      <option value=\"XFER_EXTERNAL_MULTI\">Transfer to One of Multiple External Numbers</option>";
@@ -793,8 +793,8 @@ if ($ADD == "3menu") {
     echo "      <option value=\"MENU_REPEAT\">Repeat the Menu (no-diposition)</option>";
     echo "      <option value=\"MENU_EXIT\">Exit from Menu (no-diposition)</option>";
     echo "      </td>\n";
-    echo "      <td bgcolor=#B1C6CB align=center></td>\n";
-    echo "      <td bgcolor=#B1C6CB align=center><input type=submit value=\"New\"></td>\n";
+    echo "      <td bgcolor=$oddrows align=center></td>\n";
+    echo "      <td bgcolor=$menubarcolor align=center><input type=submit value=\"New\"></td>\n";
     echo "  </tr>\n";
     echo "  </form>\n";
     echo "</table>\n";
@@ -820,12 +820,12 @@ if ($ADD == "3keys") {
 
     echo "<table cellspacing=1 cellpadding=5>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Campaign/IVR:</td>\n";
-    echo '      <td bgcolor="#CBDCE0">' . $campaign_id . '/' . $oivr_id .'</td>';
+    echo "      <td bgcolor=$oddrows align=right>Campaign/IVR:</td>\n";
+    echo '      <td bgcolor="' . $oddrows . '">' . $campaign_id . '/' . $oivr_id .'</td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Key:</td>\n";
-    echo "      <td bgcolor=#CBDCE0 align=left>";
+    echo "      <td bgcolor=$oddrows align=right>Key:</td>\n";
+    echo "      <td bgcolor=$oddrows align=left>";
     echo '<select name="oivr_opt_keypress">';
     echo ' <option value="' . $opt['keypress'] . '" selected> - ' . $opt['keypress'] . ' -</option>';
     $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $opt['parent_id'] . "'");
@@ -849,8 +849,8 @@ if ($ADD == "3keys") {
     echo "</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=#CBDCE0 align=right>Action:</td>\n";
-    echo '      <td bgcolor="#CBDCE0">' . $opt['action'] . '</td>';
+    echo "      <td bgcolor=$oddrows align=right>Action:</td>\n";
+    echo '      <td bgcolor="' . $oddrows . '">' . $opt['action'] . '</td>';
     echo "  </tr>\n";
 
 
@@ -859,8 +859,8 @@ if ($ADD == "3keys") {
     $ad  = explode('#:#',$opt['action_data']);
     if ($o == 'PLAYFILE') {
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>File to Play</td>\n";
-    	echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>File to Play</td>\n";
+    	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
     	$path = "/opt/osdial/html/ivr";
@@ -879,8 +879,8 @@ if ($ADD == "3keys") {
     	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
-        echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
         $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
         foreach ($status as $stat) {
@@ -895,8 +895,8 @@ if ($ADD == "3keys") {
         echo '<input type="hidden" name="oi3" value="' . $ad[2] . '">';
     } elseif ($o == 'HANGUP') {
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>File to Play Before Hangup (Optional)</td>\n";
-    	echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>File to Play Before Hangup (Optional)</td>\n";
+    	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
     	$path = "/opt/osdial/html/ivr";
@@ -915,8 +915,8 @@ if ($ADD == "3keys") {
     	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
-        echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
         $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
         foreach ($status as $stat) {
@@ -932,8 +932,8 @@ if ($ADD == "3keys") {
         echo '<input type="hidden" name="oi1" value="' . $ad[0] . '">';
         echo '<input type="hidden" name="oi2" value="' . $ad[1] . '">';
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Announcement Recording</td>\n";
-        echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>Announcement Recording</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
 	#echo '<input type="text" size="30" maxlength="255" name="oi3" value="' . $ad[2] . '"><br />';
     	echo '          <select name="oi3">';
     	echo "              <option value=\"\"> - NONE - </option>";
@@ -953,20 +953,20 @@ if ($ADD == "3keys") {
     	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Announcement Repeat Attempts</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="3" maxlength="2" name="oi4" value="' . $ad[3] . '"></td>';
+        echo "      <td bgcolor=$oddrows align=right>Announcement Repeat Attempts</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="3" maxlength="2" name="oi4" value="' . $ad[3] . '"></td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Wait for Key Attempts</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="3" maxlength="2" name="oi5" value="' . $ad[4] . '"></td>';
+        echo "      <td bgcolor=$oddrows align=right>Wait for Key Attempts</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="3" maxlength="2" name="oi5" value="' . $ad[4] . '"></td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Wait for Key Timeout (ms)</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="5" maxlength="4" name="oi6" value="' . $ad[5] . '"></td>';
+        echo "      <td bgcolor=$oddrows align=right>Wait for Key Timeout (ms)</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="5" maxlength="4" name="oi6" value="' . $ad[5] . '"></td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Answered Status:</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><select name="oi7"><option value="">-NONE-</option>';
+        echo "      <td bgcolor=$oddrows align=right>Answered Status:</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '"><select name="oi7"><option value="">-NONE-</option>';
         $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
         foreach ($status as $stat) {
             $sel = '';
@@ -978,8 +978,8 @@ if ($ADD == "3keys") {
         echo "  </select></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Timeout Action</td>\n";
-        echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>Timeout Action</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
         echo '         <select name="oi8">';
     	echo "              <option value=\"\"> - NONE - </option>";
         $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr['id'] . "' AND parent_id='" . $oivr_opt_id . "'");
@@ -1008,8 +1008,8 @@ if ($ADD == "3keys") {
         echo '<input type="hidden" name="oi1" value="1">';
     } elseif ($o == 'XFER_INGROUP') { 
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>File to Play Before Transfer (Optional)</td>\n";
-    	echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
+    	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
     	$path = "/opt/osdial/html/ivr";
@@ -1028,8 +1028,8 @@ if ($ADD == "3keys") {
     	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
-        echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
         $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
         foreach ($status as $stat) {
@@ -1041,8 +1041,8 @@ if ($ADD == "3keys") {
         }
         echo "  </select></td>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>In-Group to transfer to</td>\n";
-        echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>In-Group to transfer to</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi3"><option value="">-NONE-</option>';
         $ingroups = get_krh($link, 'osdial_inbound_groups', 'group_id,group_name','',"active='Y'");
         foreach ($ingroups as $ing) {
@@ -1055,8 +1055,8 @@ if ($ADD == "3keys") {
         echo "  </select></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Failover Method</td>";
-        echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>Failover Method</td>";
+        echo '      <td bgcolor="' . $oddrows . '">';
         echo '          <select name="oi4">';
         $sel1='';
         $sel2='';
@@ -1075,13 +1075,13 @@ if ($ADD == "3keys") {
         echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Ext/Number to Transfer Call to:</td>";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="12" maxlength="10" name="oi5" value="' . $ad[4] . '"></td>';
+        echo "      <td bgcolor=$oddrows align=right>Ext/Number to Transfer Call to:</td>";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="12" maxlength="10" name="oi5" value="' . $ad[4] . '"></td>';
         echo "  </tr>\n";
     } elseif ($o == 'XFER_EXTERNAL') { 
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>File to Play Before Transfer (Optional)</td>\n";
-    	echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
+    	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
     	$path = "/opt/osdial/html/ivr";
@@ -1100,8 +1100,8 @@ if ($ADD == "3keys") {
     	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
-        echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
         $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
         foreach ($status as $stat) {
@@ -1114,14 +1114,14 @@ if ($ADD == "3keys") {
         echo "  </select></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Phone Number to Transfer Call to:<br>";
+        echo "      <td bgcolor=$oddrows align=right>Phone Number to Transfer Call to:<br>";
         echo "      Format: 9995551212</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><input type="text" size="12" maxlength="10" name="oi3" value="' . $ad[2] . '"></td>';
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="12" maxlength="10" name="oi3" value="' . $ad[2] . '"></td>';
         echo "  </tr>\n";
     } elseif ($o == 'XFER_EXTERNAL_MULTI') { 
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>File to Play Before Transfer (Optional)</td>\n";
-    	echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
+    	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
     	$path = "/opt/osdial/html/ivr";
@@ -1140,8 +1140,8 @@ if ($ADD == "3keys") {
     	echo '      </td>';
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Status to Disposition as</td>\n";
-        echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
         $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
         foreach ($status as $stat) {
@@ -1154,8 +1154,8 @@ if ($ADD == "3keys") {
         echo "  </select></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "      <td bgcolor=#CBDCE0 align=right>Phone Number Order</td>\n";
-        echo '      <td bgcolor="#CBDCE0">';
+        echo "      <td bgcolor=$oddrows align=right>Phone Number Order</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
 	if ($ad[2] == 'ROUNDROBIN') {
 		$rrsel = ' selected';
 	} else {
@@ -1170,17 +1170,17 @@ if ($ADD == "3keys") {
 	array_shift($tad);
 	array_shift($tad);
 	$txt = implode("\n",$tad);
-        echo "      <td bgcolor=#CBDCE0 align=right>Phone Number to Transfer Call to:\n";
+        echo "      <td bgcolor=$oddrows align=right>Phone Number to Transfer Call to:\n";
         echo "      Format: 9995551212</td>\n";
-        echo '      <td bgcolor="#CBDCE0"><textarea name="oi4" cols=10 rows=20>' . $txt . '</textarea></td>';
+        echo '      <td bgcolor="' . $oddrows . '"><textarea name="oi4" cols=10 rows=20>' . $txt . '</textarea></td>';
         echo "  </tr>\n";
     }
 
 
 
-    echo "  <tr><td colspan=2 bgcolor=#CBDCE0>&nbsp;</td></tr>\n";
+    echo "  <tr><td colspan=2 bgcolor=$oddrows>&nbsp;</td></tr>\n";
     echo "  <tr>\n";
-    echo "      <td colspan=2 bgcolor=#B1C6CB align=center><input type=submit value=\"Update Key Entry\"></td>\n";
+    echo "      <td colspan=2 bgcolor=$menubarcolor align=center><input type=submit value=\"Update Key Entry\"></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
 
@@ -1201,9 +1201,9 @@ if ($ADD == "3keys") {
         foreach ($oivr_opts as $opt) {
             $ad  = explode('#:#',$opt['action_data']);
             if (eregi("1$|3$|5$|7$|9$",$cnt)) {
-                $bgcolor = 'bgcolor="#CBDCE0"';
+                $bgcolor = 'bgcolor="' . $oddrows . '"';
             } else {
-                $bgcolor = 'bgcolor="#C1D6DB"';
+                $bgcolor = 'bgcolor="' . $evenrows . '"';
             }
             echo '  <form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
             echo '  <input type="hidden" name="ADD" value="3keys">';
@@ -1219,14 +1219,14 @@ if ($ADD == "3keys") {
             echo "  </form>";
             $cnt++;
         }
-        echo "  <tr><td colspan=6 bgcolor=#CBDCE0 align=center></td></tr>\n";
+        echo "  <tr><td colspan=6 bgcolor=$oddrows align=center></td></tr>\n";
         echo '  <form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
         echo '  <input type="hidden" name="ADD" value="2keys">';
         echo '  <input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
         echo '  <input type="hidden" name="oivr_opt_parent_id" value="' . $oivr_opt_id . '">';
         echo '  <input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
         echo "  <tr>\n";
-        echo "      <td bgcolor=#B1C6CB align=center>";
+        echo "      <td bgcolor=$oddrows align=center>";
         echo '<select name="oivr_opt_keypress">';
         echo ' <option value="" selected> - SELECT DIGIT -</option>';
         $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr['id'] . "' AND parent_id='" . $oivr_opt_id . "'");
@@ -1248,8 +1248,8 @@ if ($ADD == "3keys") {
         if ( ! preg_match('/\*/', $tkey) ) { echo ' <option value="*"> - * -</option>'; }
         echo "</select>\n";
         echo "</td>\n";
-        echo "      <td bgcolor=#B1C6CB align=center><select name=\"oivr_opt_action\">";
-        echo "      <option value=\"\"> - Select and Action - </option>";
+        echo "      <td bgcolor=$oddrows align=center><select name=\"oivr_opt_action\">";
+        echo "      <option value=\"\"> - Select an Action - </option>";
         echo "      <option value=\"PLAYFILE\">Play an Audio File</option>";
         echo "      <option value=\"XFER_EXTERNAL\">Transfer to an External Number</option>";
         echo "      <option value=\"XFER_EXTERNAL_MULTI\">Transfer to One of Multiple External Numbers</option>";
@@ -1259,8 +1259,8 @@ if ($ADD == "3keys") {
         echo "      <option value=\"MENU_REPEAT\">Repeat the Menu (no-diposition)</option>";
         echo "      <option value=\"MENU_EXIT\">Exit from Menu (no-diposition)</option>";
         echo "      </td>\n";
-        echo "      <td bgcolor=#B1C6CB align=center></td>\n";
-        echo "      <td bgcolor=#B1C6CB align=center><input type=submit value=\"New\"></td>\n";
+        echo "      <td bgcolor=$oddrows align=center></td>\n";
+        echo "      <td bgcolor=$menubarcolor align=center><input type=submit value=\"New\"></td>\n";
         echo "  </tr>\n";
         echo "  </form>\n";
         echo "</table>\n";

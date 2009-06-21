@@ -39,12 +39,12 @@ $RUNtime = ($ENDtime - $STARTtime);
 echo "<div class=\"footer\">\n";
 echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "	<tr><td align=\"left\" colspan=\"4\" height=\"1\" bgcolor=\"#999999\"></td></tr>\n";
-echo "	<tr bgcolor=\"#A3C1C9\">\n";
+echo "	<tr bgcolor=\"$footer_color\">\n";
 echo "		<td height=\"15\" align=\"left\" width=\"33%\"><font size=\"0\" color=\"#1A4349\">&nbsp;&nbsp;Copyright &#169; 2009 Call Center Service Group, LC<!-- Script Runtime: $RUNtime sec --></td>\n";
 #
 # NOTICE:
 # Removal or modification of the following line constitutes a breach of License and doing so may result in legal action.
-echo "    	<td align=\"center\" width=\"33%\"><a style=\"color:#A3C1C9;\" href=\"http://callcentersg.com\" target=\"_blank\"><img src=\"images/dlfoot.png\" height=\"9\" width=\"120\"></a></td>";
+echo "    	<td align=\"center\" width=\"33%\"><a style=\"color:$footer_color;\" href=\"http://callcentersg.com\" target=\"_blank\"><img src=\"images/dlfoot.png\" height=\"9\" width=\"120\"></a></td>";
 #
 #
 echo "    	<td align=\"right\" width=\"16%\"><font size=\"0\" color=\"#1A4349\">Version: $admin_version&nbsp;</td>";

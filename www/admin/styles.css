@@ -23,9 +23,7 @@
 	.across-top {
 		background-image: URL(images/top16.png);
 		background-repeat:repeat-x;
-		background-position:center;
 		width: 970px;
-		border-right: ridge;
 	}
 
 	.across-bottom {
@@ -73,7 +71,6 @@
 	#clock { 
 		Xfont-family: Arial, Helvetica, sans-serif; 
 		Xfont-size: 0.8em; 
-		color: white; 
 		padding: 4px; 
 	}
 
@@ -118,3 +115,8 @@
 	.red {color: white; background-color: red}
 	.blue {color: white; background-color: blue}
 	.purple {color: white; background-color: purple}
+
+	.maintable {
+		background-image: URL(images/across140.png);
+		background-repeat:repeat-y;
+	}

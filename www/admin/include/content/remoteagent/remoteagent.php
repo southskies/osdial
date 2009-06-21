@@ -38,20 +38,20 @@ if ($ADD==11111)
 	echo "<center><br><font color=navy size=+1>ADD NEW EXTERNAL AGENTS</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Agent ID Start: </td><td align=left><input type=text name=user_start size=6 maxlength=20> (numbers only, incremented)$NWB#osdial_remote_agents-user_start$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Number of Lines: </td><td align=left><input type=text name=number_of_lines size=3 maxlength=3> (numbers only)$NWB#osdial_remote_agents-number_of_lines$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Server IP: </td><td align=left><select size=1 name=server_ip>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Agent ID Start: </td><td align=left><input type=text name=user_start size=6 maxlength=20> (numbers only, incremented)$NWB#osdial_remote_agents-user_start$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Number of Lines: </td><td align=left><input type=text name=number_of_lines size=3 maxlength=3> (numbers only)$NWB#osdial_remote_agents-number_of_lines$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Server IP: </td><td align=left><select size=1 name=server_ip>\n";
 	echo "$servers_list";
 	echo "</select>$NWB#osdial_remote_agents-server_ip$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>External Extension: </td><td align=left><input type=text name=conf_exten size=20 maxlength=20> (dial plan number dialed to reach agents)$NWB#osdial_remote_agents-conf_exten$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Status: </td><td align=left><select size=1 name=status><option>ACTIVE</option><option SELECTED>INACTIVE</option></select>$NWB#osdial_remote_agents-status$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Campaign: </td><td align=left><select size=1 name=campaign_id>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>External Extension: </td><td align=left><input type=text name=conf_exten size=20 maxlength=20> (dial plan number dialed to reach agents)$NWB#osdial_remote_agents-conf_exten$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select size=1 name=status><option>ACTIVE</option><option SELECTED>INACTIVE</option></select>$NWB#osdial_remote_agents-status$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Campaign: </td><td align=left><select size=1 name=campaign_id>\n";
 	echo "$campaigns_list";
 	echo "</select>$NWB#osdial_remote_agents-campaign_id$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Inbound Groups: </td><td align=left>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Inbound Groups: </td><td align=left>\n";
 	echo "$groups_list";
 	echo "$NWB#osdial_remote_agents-closer_campaigns$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	echo "NOTE: It can take up to 30 seconds for changes submitted on this screen to go live\n";
 	}
@@ -227,22 +227,22 @@ if ($ADD==31111)
 	echo "<input type=hidden name=remote_agent_id value=\"$row[0]\">\n";
 	
 	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Agent ID Start: </td><td align=left><input type=text name=user_start size=6 maxlength=6 value=\"$user_start\"> (numbers only, incremented)$NWB#osdial_remote_agents-user_start$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Number of Lines: </td><td align=left><input type=text name=number_of_lines size=3 maxlength=3 value=\"$number_of_lines\"> (numbers only)$NWB#osdial_remote_agents-number_of_lines$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Server IP: </td><td align=left><select size=1 name=server_ip>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Agent ID Start: </td><td align=left><input type=text name=user_start size=6 maxlength=6 value=\"$user_start\"> (numbers only, incremented)$NWB#osdial_remote_agents-user_start$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Number of Lines: </td><td align=left><input type=text name=number_of_lines size=3 maxlength=3 value=\"$number_of_lines\"> (numbers only)$NWB#osdial_remote_agents-number_of_lines$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Server IP: </td><td align=left><select size=1 name=server_ip>\n";
 	echo "$servers_list";
 	#echo "<option SELECTED>$row[3]</option>\n";
 	echo "</select>$NWB#osdial_remote_agents-server_ip$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>External Extension: </td><td align=left><input type=text name=conf_exten size=20 maxlength=20 value=\"$conf_exten\"> (dial plan number dialed to reach agents)$NWB#osdial_remote_agents-conf_exten$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Status: </td><td align=left><select size=1 name=status><option SELECTED>ACTIVE</option><option>INACTIVE</option><option SELECTED>$status</option></select>$NWB#osdial_remote_agents-status$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Campaign: </td><td align=left><select size=1 name=campaign_id>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>External Extension: </td><td align=left><input type=text name=conf_exten size=20 maxlength=20 value=\"$conf_exten\"> (dial plan number dialed to reach agents)$NWB#osdial_remote_agents-conf_exten$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select size=1 name=status><option SELECTED>ACTIVE</option><option>INACTIVE</option><option SELECTED>$status</option></select>$NWB#osdial_remote_agents-status$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Campaign: </td><td align=left><select size=1 name=campaign_id>\n";
 	echo "$campaigns_list";
 	echo "<option SELECTED>$campaign_id</option>\n";
 	echo "</select>$NWB#osdial_remote_agents-campaign_id$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=right>Inbound Groups: </td><td align=left>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Inbound Groups: </td><td align=left>\n";
 	echo "$groups_list";
 	echo "$NWB#osdial_remote_agents-closer_campaigns$NWE</td></tr>\n";
-	echo "<tr bgcolor=#C1D6DF><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	
 	echo "NOTE: It can take up to 30 seconds for changes submitted on this screen to go live\n";
@@ -288,9 +288,9 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
 	while ($people_to_print > $o) {
 		$row=mysql_fetch_row($rslt);
 		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor="#CBDCE0"';} 
+			{$bgcolor='bgcolor='.$oddrows;} 
 		else
-			{$bgcolor='bgcolor="#C1D6DB"';}
+			{$bgcolor='bgcolor='.$evenrows;}
 		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=31111&remote_agent_id=$row[0]\">$row[1]</a></td>";
 		echo "<td align=center><font size=1> $row[2]</td>";
 		echo "<td align=center><font size=1> $row[3]</td>";
