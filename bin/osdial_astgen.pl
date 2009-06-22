@@ -443,14 +443,14 @@ sub gen_phones {
 				$sphn .= "host=dynamic\n";
 			}
 			if ($aryA[5] =~ /Grandstream/i) {
-				$sphn .= "dtmfmode=info\n";
+				$sphn .= "dtmfmode=rfc2833\n";
 				$sphn .= "relaxdtmf=yes\n";
 			} else {
 				$sphn .= "dtmfmode=inband\n";
 			}
 			$sphn .= "qualify=yes\n";
 			$sphn .= "nat=yes\n";
-		} elsif ($aryA[4] eq "IAX2") {
+		} elsif ($aryA[4] eq "IAX2" and $aryA[0] !~ /\@/) {
 			$iphn .= ";\n[". $aryA[0] ."]\n";
 			$iphn .= "type=friend\n";
 			$iphn .= "disallow=all\n";
@@ -467,7 +467,7 @@ sub gen_phones {
 			$iphn .= "nat=yes\n";
 		}
 		my $dext = $aryA[4] . "/" . $aryA[0];
-		if ($aryA[4] eq "SIP" and $aryA[0] =~ /\@/) {
+		if ($aryA[4] =~ /SIP|IAX2/ and $aryA[0] =~ /\@/) {
 			my($sext,$ssrv) = split /\@/,$aryA[0];
 			$dext = $aryA[4] . "/" . $ssrv . "/" . $sext;
 		}
