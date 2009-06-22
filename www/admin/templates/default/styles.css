@@ -117,6 +117,6 @@
 	.purple {color: white; background-color: purple}
 
 	.maintable {
-		background-image: URL(images/across140.png);
-		background-repeat:repeat-y;
+		Xbackground-image: URL(images/across140.png);
+		Xbackground-repeat:repeat-y;
 	}

@@ -454,7 +454,7 @@ if (strlen($reports_hh) > 1) {
 </table>
 </div>
 <div class=content>
-<table width=100% bgcolor=<?= $maintable_color ?> cellpadding=0 cellspacing=0 align=center>
+<table width=100% class=maintable bgcolor=<?= $maintable_color ?> cellpadding=0 cellspacing=0 align=center>
     <tr><td align=left colspan=10>
     <?
 
