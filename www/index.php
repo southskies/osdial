@@ -1,8 +1,8 @@
 <?php
 require('admin/include/dbconnect.php');
-require('admin/include/display.php');
 require('admin/include/functions.php');
 require('admin/include/variables.php');
+require('admin/templates/images/' . $system_settings['admin_template'] . '/display.php');
 ?>
 <html>
 <head><title>Choose Login:</title></head>

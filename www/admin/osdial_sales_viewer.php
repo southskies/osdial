@@ -24,6 +24,21 @@
 #
 
 
+#############################################
+##### START SYSTEM_SETTINGS LOOKUP #####
+$stmt = "SELECT use_non_latin,admin_template FROM system_settings;";
+$rslt=mysql_query($stmt, $link);
+if ($DB) {echo "$stmt\n";}
+$qm_conf_ct = mysql_num_rows($rslt);
+$i=0;
+while ($i < $qm_conf_ct)
+	{
+	$row=mysql_fetch_row($rslt);
+	$non_latin =					$row[0];
+	$admin_template =				$row[1];
+	$i++;
+	}
+
 if (isset($_GET["dcampaign"]))					{$dcampaign=$_GET["dcampaign"];}
 	elseif (isset($_POST["dcampaign"]))			{$dcampaign=$_POST["dcampaign"];}
 if (isset($_GET["submit_report"]))				{$submit_report=$_GET["submit_report"];}
@@ -46,7 +61,7 @@ if (isset($_GET["forc"]))						{$forc=$_GET["forc"];}
 include("dbconnect.php");
 #include("/home/www/phpsubs/stylesheet.inc");
 ?>
-<link rel="stylesheet" type="text/css" href="styles.css" media="screen">
+<link rel="stylesheet" type="text/css" href="templates/<?= $admin_template ?>/styles.css" media="screen">
 <script language="JavaScript1.2">
 function GatherListIDs() {
 		var ListIDstr="";

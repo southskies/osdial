@@ -44,7 +44,7 @@ echo "		<td height=\"15\" align=\"left\" width=\"33%\"><font size=\"0\" color=\"
 #
 # NOTICE:
 # Removal or modification of the following line constitutes a breach of License and doing so may result in legal action.
-echo "    	<td align=\"center\" width=\"33%\"><a style=\"color:$footer_color;\" href=\"http://callcentersg.com\" target=\"_blank\"><img src=\"images/dlfoot.png\" height=\"9\" width=\"120\"></a></td>";
+echo "    	<td align=\"center\" width=\"33%\"><a style=\"color:$footer_color;\" href=\"http://callcentersg.com\" target=\"_blank\"><img src=\"templates/" . $system_settings['admin_template'] . "/images/dlfoot.png\" height=\"9\" width=\"120\"></a></td>";
 #
 #
 echo "    	<td align=\"right\" width=\"16%\"><font size=\"0\" color=\"#1A4349\">Version: $admin_version&nbsp;</td>";

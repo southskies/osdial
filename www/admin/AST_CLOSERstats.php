@@ -60,7 +60,7 @@ if (strlen($shift)<2) {$shift='ALL';}
 
 #############################################
 ##### START SYSTEM_SETTINGS LOOKUP #####
-$stmt = "SELECT use_non_latin FROM system_settings;";
+$stmt = "SELECT use_non_latin,admin_template FROM system_settings;";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}
 $qm_conf_ct = mysql_num_rows($rslt);
@@ -69,6 +69,7 @@ while ($i < $qm_conf_ct)
 	{
 	$row=mysql_fetch_row($rslt);
 	$non_latin =					$row[0];
+	$admin_template =				$row[1];
 	$i++;
 	}
 ##### END SETTINGS LOOKUP #####
@@ -126,7 +127,7 @@ while ($i < $statcats_to_print)
 
 <!-- HTML>
 <HEAD -->
-<link rel="stylesheet" type="text/css" href="styles.css" media="screen">
+<link rel="stylesheet" type="text/css" href="templates/<?= $admin_template ?>/styles.css" media="screen">
 <STYLE type="text/css">
 <!--
    .green {color: white; background-color: green}

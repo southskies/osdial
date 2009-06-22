@@ -41,7 +41,7 @@ header ("Content-type: text/html; charset=utf-8");
 echo "<html>\n";
 echo "<head>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n";
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" media=\"screen\">\n";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $systems_settings['admin_template'] . "/styles.css\" media=\"screen\">\n";
 echo "<title>OSDial Administrator: REPORTS</title>\n";
 echo "</head>\n";
 echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";

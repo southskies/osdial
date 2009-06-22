@@ -37,7 +37,7 @@ if ($ADD==411111111111111)
 
 	echo "<br><font color=navy>OSDial SYSTEM SETTINGS MODIFIED</font>\n";
 
-	$stmt="UPDATE system_settings set use_non_latin='$use_non_latin',webroot_writable='$webroot_writable',enable_queuemetrics_logging='$enable_queuemetrics_logging',queuemetrics_server_ip='$queuemetrics_server_ip',queuemetrics_dbname='$queuemetrics_dbname',queuemetrics_login='$queuemetrics_login',queuemetrics_pass='$queuemetrics_pass',queuemetrics_url='$queuemetrics_url',queuemetrics_log_id='$queuemetrics_log_id',queuemetrics_eq_prepend='$queuemetrics_eq_prepend',osdial_agent_disable='$osdial_agent_disable',allow_sipsak_messages='$allow_sipsak_messages',admin_home_url='$admin_home_url',enable_agc_xfer_log='$enable_agc_xfer_log',company_name='$company_name';";
+	$stmt="UPDATE system_settings set use_non_latin='$use_non_latin',webroot_writable='$webroot_writable',enable_queuemetrics_logging='$enable_queuemetrics_logging',queuemetrics_server_ip='$queuemetrics_server_ip',queuemetrics_dbname='$queuemetrics_dbname',queuemetrics_login='$queuemetrics_login',queuemetrics_pass='$queuemetrics_pass',queuemetrics_url='$queuemetrics_url',queuemetrics_log_id='$queuemetrics_log_id',queuemetrics_eq_prepend='$queuemetrics_eq_prepend',osdial_agent_disable='$osdial_agent_disable',allow_sipsak_messages='$allow_sipsak_messages',admin_home_url='$admin_home_url',enable_agc_xfer_log='$enable_agc_xfer_log',company_name='$company_name',admin_template='$admin_template',agent_template='$agent_template';";
 	$rslt=mysql_query($stmt, $link);
 
 	### LOG CHANGES TO LOG FILE ###
@@ -68,7 +68,7 @@ if ($ADD==311111111111111)
 	echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
-	$stmt="SELECT version,install_date,use_non_latin,webroot_writable,enable_queuemetrics_logging,queuemetrics_server_ip,queuemetrics_dbname,queuemetrics_login,queuemetrics_pass,queuemetrics_url,queuemetrics_log_id,queuemetrics_eq_prepend,osdial_agent_disable,allow_sipsak_messages,admin_home_url,enable_agc_xfer_log,company_name from system_settings;";
+	$stmt="SELECT version,install_date,use_non_latin,webroot_writable,enable_queuemetrics_logging,queuemetrics_server_ip,queuemetrics_dbname,queuemetrics_login,queuemetrics_pass,queuemetrics_url,queuemetrics_log_id,queuemetrics_eq_prepend,osdial_agent_disable,allow_sipsak_messages,admin_home_url,enable_agc_xfer_log,company_name,admin_template,agent_template from system_settings;";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$version =						$row[0];
@@ -88,6 +88,8 @@ if ($ADD==311111111111111)
 	$admin_home_url =				$row[14];
 	$enable_agc_xfer_log =			$row[15];
 	$company_name =			        $row[16];
+	$admin_template =			        $row[17];
+	$agent_template =			        $row[18];
 
 	echo "<center><br><font color=navy size=+1>MODIFY OSDial SYSTEM SETTINGS</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=411111111111111>\n";
@@ -127,6 +129,26 @@ if ($ADD==311111111111111)
 	echo "<tr bgcolor=$oddrows><td align=right>Allow SIPSAK Messages: </td><td align=left><select size=1 name=allow_sipsak_messages><option>1</option><option>0</option><option selected>$allow_sipsak_messages</option></select>$NWB#settings-allow_sipsak_messages$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Admin Home URL: </td><td align=left><input type=text name=admin_home_url size=50 maxlength=255 value=\"$admin_home_url\">$NWB#settings-admin_home_url$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Enable Agent Transfer Logfile: </td><td align=left><select size=1 name=enable_agc_xfer_log><option>1</option><option>0</option><option selected>$enable_agc_xfer_log</option></select>$NWB#settings-enable_agc_xfer_log$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Admin Template: </td><td align=left>";
+	echo "  <select size=1 name=admin_template>";
+	$dir_handle = opendir($WeBServeRRooT . "/admin/templates");
+	while ($file = readdir($dir_handle)) {
+		if($file!="." && $file!="..")
+			echo "<option>$file</option>";
+	}
+	echo "    <option selected>$admin_template</option>";
+	echo "  </select>";
+	echo "$NWB#settings-admin_template$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Agent Template: </td><td align=left>";
+	echo "  <select size=1 name=agent_template>";
+	$dir_handle = opendir($WeBServeRRooT . "/agent/templates");
+	while ($file = readdir($dir_handle)) {
+		if($file!="." && $file!="..")
+			echo "<option>$file</option>";
+	}
+	echo "    <option selected>$agent_template</option>";
+	echo "  </select>";
+	echo "$NWB#settings-agent_template$NWE</td></tr>\n";
 
 
 	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";

@@ -46,7 +46,7 @@ if ($ADD==999999 && ($SUB==11 || $SUB==12 || $SUB==13 || $SUB==14)) {
 	}
 	echo "<META HTTP-EQUIV=Refresh CONTENT=\"$RR; URL=$PHP_SELF?ADD=$ADD&SUB=$SUB&RR=$RR&DB=$DB&adastats=$adastats$metadetail\">\n";
 }
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" media=\"screen\">\n";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $system_settings['admin_template'] . "/styles.css\" media=\"screen\">\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles-print.css\" media=\"print\">\n";
 
 echo "<title>OSDial Administrator: $title</title>\n";
@@ -102,9 +102,9 @@ if ($hh=='reports')
         <td colspan=10>
             <table align='center' border='0' cellspacing='0' cellpadding='0'>
                 <tr>    <!-- First draw the top row  -->
-                    <td class='across-top' width='15'><img src='images/topleft.png' width='15' height='16' align='left'></td>
+                    <td class='across-top' width='15'><img src='templates/<?= $system_settings['admin_template'] ?>/images/topleft.png' width='15' height='16' align='left'></td>
                     <td class='across-top' align='center'></td>
-                    <td class='across-top' width='15'><img src='images/topright.png' width='15' height='16' align='right'></td>
+                    <td class='across-top' width='15'><img src='templates/<?= $system_settings['admin_template'] ?>/images/topright.png' width='15' height='16' align='right'></td>
                 </tr>
                 <tr valign='top'>
                     <td align=left width=33%>

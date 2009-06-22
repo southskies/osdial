@@ -22,15 +22,15 @@
 # Database connectivity
 require("dbconnect.php");
 
-# Display and formating variables.
-require("display.php");
-
 # Various functions.
 require("functions.php");
 
 # Admin and Form variables.
 # TODO: Write function for GET/POST retreival
 require("variables.php");
+
+# Display and formating variables.
+require($WeBServeRRooT . "/admin/templates/" . $system_settings['admin_template'] . "/display.php");
 
 # Validation for form variables.
 require("validation.php");

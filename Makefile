@@ -152,7 +152,6 @@ install-docs: .osdial.config
 	@install -d -m 777 $(DESTDIR)$(PATHweb)/admin/ploticus
 	@install -d -m 777 $(DESTDIR)$(PATHweb)/admin/agent_reports
 	@install -d -m 777 $(DESTDIR)$(PATHweb)/admin/server_reports
-	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/images
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/admin
@@ -166,6 +165,9 @@ install-docs: .osdial.config
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/scripts
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/usergroups
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/include/content/users
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/templates
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/templates/default
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/templates/default/images
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/images
 	@install -p -m 644 ./www/*.php $(DESTDIR)$(PATHweb)
 	@install -p -m 644 ./www/images/*.png $(DESTDIR)$(PATHweb)/images
@@ -180,7 +182,8 @@ install-docs: .osdial.config
 	@install -p -m 755 ./www/admin/*.pl $(DESTDIR)$(PATHweb)/admin
 	@install -p -m 644 ./www/admin/*.gif $(DESTDIR)$(PATHweb)/admin
 	@install -p -m 644 ./www/admin/*.css $(DESTDIR)$(PATHweb)/admin
-	@install -p -m 644 ./www/admin/images/* $(DESTDIR)$(PATHweb)/admin/images
+	@install -p -m 644 ./www/admin/templates/default/* $(DESTDIR)$(PATHweb)/admin/templates/default
+	@install -p -m 644 ./www/admin/templates/default/images/* $(DESTDIR)$(PATHweb)/admin/templates/default/images
 	@install -p -m 644 ./www/admin/include/*.js $(DESTDIR)$(PATHweb)/admin/include
 	@install -p -m 644 ./www/admin/include/*.php $(DESTDIR)$(PATHweb)/admin/include
 	@install -p -m 644 ./www/admin/include/content/admin/* $(DESTDIR)$(PATHweb)/admin/include/content/admin
