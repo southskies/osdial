@@ -2,7 +2,7 @@
 require('admin/include/dbconnect.php');
 require('admin/include/functions.php');
 require('admin/include/variables.php');
-require('admin/templates/images/' . $system_settings['admin_template'] . '/display.php');
+require('admin/templates/' . $system_settings['admin_template'] . '/display.php');
 ?>
 <html>
 <head><title>Choose Login:</title></head>
@@ -18,7 +18,7 @@ require('admin/templates/images/' . $system_settings['admin_template'] . '/displ
 	function osdfont(id,phrase,krnon) {
 		var let = new Array();
 		var krn = new Array();
-		var images = '/osdial/images/';
+		var images = '/osdial/admin/templates/<?=$system_settings['admin_template']?>/images/';
 		if (krnon == undefined)
 			krnon = 1;
 
@@ -56,7 +56,7 @@ require('admin/templates/images/' . $system_settings['admin_template'] . '/displ
 </script>
 <br><br><br>
 
-<table align=center border=0 align=center width=518 height=368 background=/osdial/images/osdial-bg.png>
+<table align=center border=0 align=center width=518 height=368 background="/osdial/admin/templates/<?=$system_settings['admin_template']?>/images/osdial-bg.png">
 <tr>
 	<td valign=top>
 	
@@ -71,26 +71,26 @@ require('admin/templates/images/' . $system_settings['admin_template'] . '/displ
                     klen = 2;
                     osdfont('company',comp,klen);
 				</script>
-				<!-- <img src=/osdial/images/defaultCompany.png alt="Testing" width=298 height=30> -->
+				<!-- <img src=/osdial/admin/templates/<?=$system_settings['admin_template']?>/images/defaultCompany.png alt="Testing" width=298 height=30> -->
 			</td>
 		</tr>
 		<tr>
 			<td align=center>
 				&nbsp;&nbsp;&nbsp;<map name="mapAL">
 					<a href=/osdial/agent
-						OnMouseOver="agent.src='/osdial/images/AgentLoginDn.png'" 
-						OnMouseOut="agent.src='/osdial/images/AgentLoginUp.png'" 
+						OnMouseOver="agent.src='/osdial/admin/templates/<?=$system_settings['admin_template']?>/images/AgentLoginDn.png'" 
+						OnMouseOut="agent.src='/osdial/admin/templates/<?=$system_settings['admin_template']?>/images/AgentLoginUp.png'" 
 						usemap="#mapAL">
-					<img src="/osdial/images/AgentLoginUp.png" width=117 height=26 BORDER=0 NAME="agent"></A>
+					<img src="/osdial/admin/templates/<?=$system_settings['admin_template']?>/images/AgentLoginUp.png" width=117 height=26 BORDER=0 NAME="agent"></A>
 				</map>
 			</td>
 			<td align=center>
 				<map name="mapCL">
 					<a href=/osdial/admin/admin.php?ADD=10 
-						OnMouseOver="control.src='/osdial/images/ControlLoginDn.png'" 
-						OnMouseOut="control.src='/osdial/images/ControlLoginUp.png'" 
+						OnMouseOver="control.src='/osdial/admin/templates/<?=$system_settings['admin_template']?>/images/ControlLoginDn.png'" 
+						OnMouseOut="control.src='/osdial/admin/templates/<?=$system_settings['admin_template']?>/images/ControlLoginUp.png'" 
 						usemap="#mapCL">
-					<img src="/osdial/images/ControlLoginUp.png" width=129 height=26 BORDER=0 NAME="control"></A>&nbsp;&nbsp;&nbsp;
+					<img src="/osdial/admin/templates/<?=$system_settings['admin_template']?>/images/ControlLoginUp.png" width=129 height=26 BORDER=0 NAME="control"></A>&nbsp;&nbsp;&nbsp;
 				</map>
 			</td>
 		</tr>

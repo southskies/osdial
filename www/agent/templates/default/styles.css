@@ -25,6 +25,34 @@ body {
 	color: navy;
 }
 
+.curve2 {
+	Xbackground-image: URL(images/curve2.png);
+	background-repeat:no-repeat;
+	background-position:left;
+}
+
+.curve3 {
+	Xbackground-image: URL(images/curve3.png);
+	background-repeat:no-repeat;
+	background-position:left;
+}
+
+.borderright {
+	Xbackground-image: URL(images/border.png);
+	background-repeat:repeat-y;
+	background-position:right;
+}
+
+.border {
+	Xbackground-image: URL(images/borderacross.png);
+	background-repeat:repeat-y;
+}
+
+.bottom {
+	Xbackground-image: URL(images/bottom.png);
+	background-repeat:no-repeat;
+}
+
 .across-top {
 	background-image: URL(images/top16.png);
 	background-repeat:repeat-x;

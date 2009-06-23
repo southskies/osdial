@@ -30,6 +30,7 @@ require("functions.php");
 require("variables.php");
 
 # Display and formating variables.
+require($WeBServeRRooT . "/admin/templates/default/display.php");
 require($WeBServeRRooT . "/admin/templates/" . $system_settings['admin_template'] . "/display.php");
 
 # Validation for form variables.

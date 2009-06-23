@@ -280,7 +280,7 @@ $random = (rand(1000000, 9999999) + 10000000);
 
 #############################################
 ##### START SYSTEM_SETTINGS LOOKUP #####
-$stmt = "SELECT use_non_latin FROM system_settings;";
+$stmt = "SELECT use_non_latin,agent_template FROM system_settings;";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}
 $qm_conf_ct = mysql_num_rows($rslt);
@@ -289,10 +289,14 @@ while ($i < $qm_conf_ct)
 	{
 	$row=mysql_fetch_row($rslt);
 	$non_latin =					$row[0];
+	$agent_template =				$row[1];
 	$i++;
 	}
 ##### END SETTINGS LOOKUP #####
 ###########################################
+
+require("templates/default/display.php");
+require("templates/" . $agent_template . "/display.php");
 
 # options now set in DB:
 #$alt_phone_dialing		= '1';	# allow agents to call alt phone numbers
@@ -373,6 +377,7 @@ if (($server_port == '80') or ($server_port == '443') ) {
 } else {
 	$server_port = "$CL$server_port";
 }
+$t1="OSDial"; if (ereg("^Sli",$agent_template)){ $t1=$agent_template; };
 $agcPAGE = "$HTTPprotocol$server_name$server_port$script_name";
 $agcDIR = eregi_replace('osdial.php','',$agcPAGE);
 
@@ -489,11 +494,11 @@ if ($LogiNAJAX > 0) {
 <?
 }
 
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" media=\"screen\">\n";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
 
 //  Relogin
 if ($relogin == 'YES') {
-	echo "<title>OSDial web client: Re-Login</title>\n";
+	echo "<title>$t1 web client: Re-Login</title>\n";
 	// echo "<style>a:link {color: blue} a:visited {color: navy} a:active {color: navy}</style>";
 	echo "</head>\n";
 	
@@ -510,13 +515,13 @@ if ($relogin == 'YES') {
 	
 	echo "<TABLE class=acrosslogin2 WIDTH=500 CELLPADDING=0 CELLSPACING=0 border=0>";
 	echo "<tr>";
-	echo "	<td width=22><img src=images/AgentTopLeft.png width=22 height=22 align=left></td>";
+	echo "	<td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopLeft.png\" width=22 height=22 align=left></td>";
 	echo "	<td class=across-top align=center colspan=2>&nbsp;</td>";
-	echo "	<td width=22><img src=images/AgentTopRightS.png width=22 height=22 align=right></td>";
+	echo "	<td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopRightS.png\" width=22 height=22 align=right></td>";
 	echo "</tr>";
 	echo "<tr>";
 	echo "	<TD align=left>&nbsp;</TD>";
-	echo "	<TD ALIGN=center colspan=2><font color=#1C4754><b>Agent Login</b></TD>";
+	echo "	<TD ALIGN=center colspan=2><font color=" . $login_fc . "><b>Agent Login</b></TD>";
 	echo "	<TD align=left class=rborder>&nbsp;</TD>";
 	echo "</tr>";
 	echo "<tr>";
@@ -524,31 +529,31 @@ if ($relogin == 'YES') {
 	echo "</tr>";
 	echo "<tr>";
 	echo "	<TD align=left></TD>";
-	echo "	<TD ALIGN=right><font color=#1C4754>Phone&nbsp;Login:&nbsp;</TD>";
+	echo "	<TD ALIGN=right><font color=" . $login_fc . ">Phone&nbsp;Login:&nbsp;</TD>";
 	echo "	<TD ALIGN=LEFT><INPUT TYPE=TEXT NAME=phone_login SIZE=10 MAXLENGTH=20 VALUE=\"$phone_login\"></TD>";
 	echo "	<TD align=left class=rborder>&nbsp;</TD>";
 	echo "</tr>";
 	echo "<tr>";
 	echo "	<TD align=left></TD>";
-	echo "	<TD ALIGN=RIGHT><font color=#1C4754>Phone&nbsp;Password:&nbsp;</TD>";
+	echo "	<TD ALIGN=RIGHT><font color=" . $login_fc . ">Phone&nbsp;Password:&nbsp;</TD>";
 	echo "	<TD ALIGN=LEFT><INPUT TYPE=PASSWORD NAME=phone_pass SIZE=10 MAXLENGTH=20 VALUE=\"$phone_pass\"></TD>";
 	echo "	<TD align=right class=rborder>&nbsp;</TD>";
 	echo "</tr>";
 	echo "<tr>";
 	echo "	<TD align=left></TD>";
-	echo "	<TD ALIGN=RIGHT><font color=#1C4754>User&nbsp;Login:&nbsp;</TD>";
+	echo "	<TD ALIGN=RIGHT><font color=" . $login_fc . ">User&nbsp;Login:&nbsp;</TD>";
 	echo "	<TD ALIGN=LEFT><INPUT TYPE=TEXT NAME=VD_login SIZE=10 MAXLENGTH=20 VALUE=\"$VD_login\"></TD>";
 	echo "	<TD align=left class=rborder>&nbsp;</TD>";
 	echo "</tr>";
 	echo "<tr>";
 	echo "	<TD align=left></TD>";
-	echo "	<TD ALIGN=RIGHT><font color=#1C4754>User&nbsp;Password:&nbsp;</TD>";
+	echo "	<TD ALIGN=RIGHT><font color=" . $login_fc . ">User&nbsp;Password:&nbsp;</TD>";
 	echo "	<TD ALIGN=LEFT><INPUT TYPE=PASSWORD NAME=VD_pass SIZE=10 MAXLENGTH=20 VALUE=\"$VD_pass\"></TD>";
 	echo "	<TD align=left class=rborder>&nbsp;</TD>";
 	echo "</tr>";
 	echo "<tr>";
 	echo "	<TD align=left></TD>";
-	echo "	<TD ALIGN=RIGHT><font color=#1C4754>Campaign:&nbsp;</TD>";
+	echo "	<TD ALIGN=RIGHT><font color=" . $login_fc . ">Campaign:&nbsp;</TD>";
 	echo "	<TD ALIGN=LEFT>$camp_form_code</TD>";
 	echo "	<TD align=left class=rborder>&nbsp;</TD>";
 	echo "</tr>";
@@ -568,8 +573,8 @@ if ($relogin == 'YES') {
 
 if ($user_login_first == 1) {
 	if ( (strlen($VD_login)<1) or (strlen($VD_pass)<1) or (strlen($VD_campaign)<1) ) {
-		//echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" media=\"screen\">\n";
-		echo "<title>OSDial web client: Campaign Login</title>\n";
+		//echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+		echo "<title>$t1 web client: Campaign Login</title>\n";
 		//echo "<style>a:link {color: blue} a:visited {color: navy} a:active {color: navy}</style>";
 		echo "</head>\n";
 		echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 NAME=osdial>\n";
@@ -586,13 +591,13 @@ if ($user_login_first == 1) {
 		echo "<div class=containera>";
 		echo "<TABLE class=acrosslogin2 WIDTH=500 CELLPADDING=0 CELLSPACING=0 border=0>";
 		echo "<tr>";
-		echo "	<td width=22><img src=images/AgentTopLeft.png width=22 height=22 align=left></td>";
+		echo "	<td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopLeft.png\" width=22 height=22 align=left></td>";
 		echo "	<td class=across-top align=center colspan=2>&nbsp;</td>";
-		echo "	<td width=22><img src=images/AgentTopRightS.png width=22 height=22 align=right></td>";
+		echo "	<td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopRightS.png\" width=22 height=22 align=right></td>";
 		echo "</tr>";
 		echo "<tr>";
 		echo "	<TD align=left>&nbsp;</TD>";
-		echo "	<TD ALIGN=center colspan=2><font color=#1C4754><b>Agent Login</b></TD>";
+		echo "	<TD ALIGN=center colspan=2><font color=" . $login_fc . "><b>Agent Login</b></TD>";
 		echo "	<TD align=left class=rborder>&nbsp;</TD>";
 		echo "</tr>";
 		echo "<tr>";
@@ -600,19 +605,19 @@ if ($user_login_first == 1) {
 		echo "</tr>";
 		echo "<tr>";
 		echo "	<TD align=left></TD>";
-		echo "	<TD ALIGN=RIGHT><font color=#1C4754>User&nbsp;Login:&nbsp;</TD>";
+		echo "	<TD ALIGN=RIGHT><font color=" . $login_fc . ">User&nbsp;Login:&nbsp;</TD>";
 		echo "	<TD ALIGN=LEFT><INPUT TYPE=TEXT NAME=VD_login SIZE=10 MAXLENGTH=20 VALUE=\"$VD_login\"></TD>";
 		echo "	<TD align=left class=rborder>&nbsp;</TD>";
 		echo "</tr>";
 		echo "<tr>";
 		echo "	<TD align=left></TD>";
-		echo "	<TD ALIGN=RIGHT><font color=#1C4754>User&nbsp;Password:&nbsp;</TD>";
+		echo "	<TD ALIGN=RIGHT><font color=" . $login_fc . ">User&nbsp;Password:&nbsp;</TD>";
 		echo "	<TD ALIGN=LEFT><INPUT TYPE=PASSWORD NAME=VD_pass SIZE=10 MAXLENGTH=20 VALUE=\"$VD_pass\"></TD>";
 		echo "	<TD align=left class=rborder>&nbsp;</TD>";
 		echo "</tr>";
 		echo "<tr>";
 		echo "	<TD align=left></TD>";
-		echo "	<TD ALIGN=RIGHT><font color=#1C4754>Campaign:&nbsp;</TD>";
+		echo "	<TD ALIGN=RIGHT><font color=" . $login_fc . ">Campaign:&nbsp;</TD>";
 		echo "	<TD ALIGN=LEFT>$camp_form_code</TD>";
 		echo "	<TD align=left class=rborder>&nbsp;</TD>";
 		echo "</tr>";
@@ -638,8 +643,8 @@ if ($user_login_first == 1) {
 			$phone_login=$row[0];
 			$phone_pass=$row[1];
 	
-			echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" media=\"screen\">\n";
-			echo "<title>OSDial web client: Login</title>\n";
+			echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+			echo "<title>$t1 web client: Login</title>\n";
 			//echo "<style>a:link {color: blue} a:visited {color: navy} a:active {color: navy}</style>";
 			echo "</head>\n";
 			echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
@@ -649,7 +654,7 @@ if ($user_login_first == 1) {
 			echo "<FORM  NAME=osdial_form ID=osdial_form ACTION=\"$agcPAGE\" METHOD=POST>\n";
 			echo "<INPUT TYPE=HIDDEN NAME=DB VALUE=\"$DB\">\n";
 			echo "<BR><BR><BR><CENTER><TABLE class=accrosslogin WIDTH=460 CELLPADDING=0 CELLSPACING=0><TR>";
-			echo "<TD ALIGN=LEFT VALIGN=BOTTOM>&nbsp;&nbsp;<font color=blue>OSDial</TD>";
+			echo "<TD ALIGN=LEFT VALIGN=BOTTOM>&nbsp;&nbsp;<font color=blue>$t1</TD>";
 			echo "<TD ALIGN=CENTER VALIGN=MIDDLE> <font color=white>Login </TD>";
 			echo "</TR>\n";
 			echo "<TR><TD ALIGN=LEFT COLSPAN=2><font size=1> &nbsp; </TD></TR>\n";
@@ -678,8 +683,8 @@ if ($user_login_first == 1) {
 
 // Phone Login from welcome scren
 if ( (strlen($phone_login)<2) or (strlen($phone_pass)<2) ) {
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" media=\"screen\">\n";
-	echo "<title>OSDial web client:  Phone Login</title>\n";
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+	echo "<title>$t1 web client:  Phone Login</title>\n";
 	//echo "<style>a:link {color: blue} a:visited {color: navy} a:active {color: navy}</style>";
 	echo "</head>\n";
 	echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
@@ -694,14 +699,14 @@ if ( (strlen($phone_login)<2) or (strlen($phone_pass)<2) ) {
 	echo "<div class=containera>";
 	echo "<TABLE align=center class=acrosslogin2 WIDTH=460 CELLPADDING=0 CELLSPACING=0 border=0>";
 	echo "<tr>";
-	echo "	<td width='22'><img src='images/AgentTopLeft.png' width='22' height='22' align='left'></td>";
+	echo "	<td width='22'><img src='templates/" . $agent_template . "/images/AgentTopLeft.png' width='22' height='22' align='left'></td>";
 	echo "	<td class='across-top' align='center' colspan=2></td>";
-	echo "	<td width='22'><img src='images/AgentTopRightS.png' width='22' height='22' align='right'></td>";
+	echo "	<td width='22'><img src='templates/" . $agent_template . "/images/AgentTopRightS.png' width='22' height='22' align='right'></td>";
 	echo "</tr>";
 	echo "<tr>";
 	echo "	<TD ALIGN=LEFT><font size=1>&nbsp;</TD>\n";
 	//echo "	<TD ALIGN=LEFT VALIGN=BOTTOM><font color=navy></TD>";
-	echo "	<TD ALIGN=center colspan=2><font color=#1C4754><b>Login To Your Phone</TD>";
+	echo "	<TD ALIGN=center colspan=2><font color=" . $login_fc . "><b>Login To Your Phone</TD>";
 	echo "	<TD ALIGN=LEFT class=rborder><font size=1>&nbsp;</TD>\n";
 	echo "</TR>\n";
 	echo "<TR>";
@@ -709,13 +714,13 @@ if ( (strlen($phone_login)<2) or (strlen($phone_pass)<2) ) {
 	echo "</tr>";
 	echo "<TR>";
 	echo "	<TD ALIGN=LEFT><font size=1>&nbsp;</TD>\n";
-	echo "	<TD ALIGN=RIGHT><font color=#1C4754>Phone Login:&nbsp;</TD>";
+	echo "	<TD ALIGN=RIGHT><font color=" . $login_fc . ">Phone Login:&nbsp;</TD>";
 	echo "	<TD ALIGN=LEFT><INPUT TYPE=TEXT NAME=phone_login SIZE=10 MAXLENGTH=20 VALUE=\"\"></TD>\n";
 	echo "	<TD ALIGN=LEFT class=rborder><font size=1>&nbsp;</TD>\n";
 	echo "</tr>";
 	echo "<TR>";
 	echo "	<TD ALIGN=LEFT><font size=1>&nbsp;</TD>\n";
-	echo "	<TD ALIGN=RIGHT><font color=#1C4754>Phone Password:&nbsp;</TD>";
+	echo "	<TD ALIGN=RIGHT><font color=" . $login_fc . ">Phone Password:&nbsp;</TD>";
 	echo "	<TD ALIGN=LEFT><INPUT TYPE=PASSWORD NAME=phone_pass SIZE=10 MAXLENGTH=20 VALUE=\"\"></TD>\n";
 	echo "	<TD ALIGN=LEFT class=rborder><font size=1>&nbsp;</TD>\n";
 	echo "</tr>";
@@ -787,7 +792,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 
 		if ( (!eregi(" $VD_campaign ",$LOGallowed_campaigns)) and (!eregi("ALL-CAMPAIGNS",$LOGallowed_campaigns)) )
 			{
-			echo "<title>OSDial web client: OSDial Campaign Login</title>\n";
+			echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
 			//echo "<style>a:link {color: blue} a:visited {color: navy} a:active {color: navy}</style>";
 			echo "</head>\n";
 			echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
@@ -1055,8 +1060,8 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 	}
 	if ($VDloginDISPLAY)
 	{
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"styles.css\" media=\"screen\">\n";
-	echo "<title>OSDial web client: Campaign Login</title>\n";
+	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+	echo "<title>$t1 web client: Campaign Login</title>\n";
 	//echo "<style>a:link {color: blue} a:visited {color: navy} a:active {color: navy}</style>";
 	echo "</head>\n";
 	echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
@@ -1074,13 +1079,13 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 	
 	echo "<TABLE align=center class=acrosslogin2 WIDTH=460 CELLPADDING=0 CELLSPACING=0 border=0>";
 	echo "<tr>";
-	echo "	<td width=22><img src=images/AgentTopLeft.png width=22 height=22 align=left></td>";
+	echo "	<td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopLeft.png\" width=22 height=22 align=left></td>";
 	echo "	<td class=across-top align=center colspan=2></td>";
-	echo "	<td width=22><img src=images/AgentTopRightS.png width=22 height=22 align=right></td>";
+	echo "	<td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopRightS.png\" width=22 height=22 align=right></td>";
 	echo "</tr>";
 	echo "<tr>";
 	echo "	<TD ALIGN=LEFT>&nbsp;&nbsp;</TD>";
-	echo "	<TD ALIGN=center colspan=2><font color=#1C4754><b>Login To A Campaign</b></TD>";
+	echo "	<TD ALIGN=center colspan=2><font color=" . $login_fc . "><b>Login To A Campaign</b></TD>";
 	echo "	<TD ALIGN=LEFT class=rborder><font size=1>&nbsp;</TD>\n";
 	echo "</tr>\n";
 	echo "<tr>";
@@ -1088,19 +1093,19 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 	echo "</tr>";
 	echo "<tr>";
 	echo "	<TD ALIGN=LEFT><font size=1>&nbsp;</TD>\n";
-	echo "	<td ALIGN=RIGHT><font color=#1C4754>User Login:&nbsp;</TD>";
+	echo "	<td ALIGN=RIGHT><font color=" . $login_fc . ">User Login:&nbsp;</TD>";
 	echo "	<td ALIGN=LEFT><INPUT TYPE=TEXT NAME=VD_login SIZE=10 MAXLENGTH=20 VALUE=\"$VD_login\"></TD>\n";
 	echo "	<TD ALIGN=LEFT class=rborder><font size=1>&nbsp;</TD>\n";
 	echo "</tr>";
 	echo "<rt>";
 	echo "	<TD ALIGN=LEFT><font size=1>&nbsp;</TD>\n";
-	echo "	<td ALIGN=RIGHT><font color=#1C4754>User Password:&nbsp;</TD>";
+	echo "	<td ALIGN=RIGHT><font color=" . $login_fc . ">User Password:&nbsp;</TD>";
 	echo "	<td ALIGN=LEFT><INPUT TYPE=PASSWORD NAME=VD_pass SIZE=10 MAXLENGTH=20 VALUE=\"$VD_pass\"></TD>\n";
 	echo "	<TD ALIGN=LEFT class=rborder><font size=1>&nbsp;</TD>\n";
 	echo "</tr>";
 	echo "<tr>";
 	echo "	<TD ALIGN=LEFT><font size=1>&nbsp;</TD>\n";
-	echo "	<td ALIGN=RIGHT><font color=#1C4754>Campaign:&nbsp;</TD>";
+	echo "	<td ALIGN=RIGHT><font color=" . $login_fc . ">Campaign:&nbsp;</TD>";
 	echo "	<td ALIGN=LEFT><span id=\"LogiNCamPaigns\">$camp_form_code</span></TD>\n";
 	echo "	<TD ALIGN=LEFT class=rborder><font size=1>&nbsp;</TD>\n";
 	echo "</tr>";
@@ -1128,7 +1133,7 @@ $row=mysql_fetch_row($rslt);
 $authphone=$row[0];
 if (!$authphone)
 	{
-	echo "<title>OSDial web client: Phone Login Error</title>\n";
+	echo "<title>$t1 web client: Phone Login Error</title>\n";
 	//echo "<style>a:link {color: blue} a:visited {color: navy} a:active {color: navy}</style>";
 	echo "</head>\n";
 	echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
@@ -1146,14 +1151,14 @@ if (!$authphone)
 	echo "<div class=containera>";
 	echo "<TABLE align=center class=acrosslogin2 WIDTH=460 CELLPADDING=0 CELLSPACING=0 border=0>";
 	echo "<tr>";
-	echo "	<td width='22'><img src='images/AgentTopLeft.png' width='22' height='22' align='left'></td>";
+	echo "	<td width='22'><img src='templates/" . $agent_template . "/images/AgentTopLeft.png' width='22' height='22' align='left'></td>";
 	echo "	<td class='across-top' align='center' colspan=2></td>";
-	echo "	<td width='22'><img src='images/AgentTopRightS.png' width='22' height='22' align='right'></td>";
+	echo "	<td width='22'><img src='templates/" . $agent_template . "/images/AgentTopRightS.png' width='22' height='22' align='right'></td>";
 	echo "</tr>";
 	echo "<tr>";
 	echo "	<TD ALIGN=LEFT><font size=1>&nbsp;</TD>\n";
 	//echo "	<TD ALIGN=LEFT VALIGN=BOTTOM><font color=navy></TD>";
-	echo "	<TD ALIGN=center colspan=2><font color=#1C4754><b><font color='red'>Invalid Login, please try again!</font></TD>";
+	echo "	<TD ALIGN=center colspan=2><font color=" . $login_fc . "><b><font color='red'>Invalid Login, please try again!</font></TD>";
 	echo "	<TD ALIGN=LEFT class=rborder><font size=1>&nbsp;</TD>\n";
 	echo "</TR>\n";
 	echo "<TR>";
@@ -1161,13 +1166,13 @@ if (!$authphone)
 	echo "</tr>";
 	echo "<TR>";
 	echo "	<TD ALIGN=LEFT><font size=1>&nbsp;</TD>\n";
-	echo "	<TD ALIGN=RIGHT><font color=#1C4754>Phone Login:&nbsp;</TD>";
+	echo "	<TD ALIGN=RIGHT><font color=" . $login_fc . ">Phone Login:&nbsp;</TD>";
 	echo "	<TD ALIGN=LEFT><INPUT TYPE=TEXT NAME=phone_login SIZE=10 MAXLENGTH=20 VALUE=\"\"></TD>\n";
 	echo "	<TD ALIGN=LEFT class=rborder><font size=1>&nbsp;</TD>\n";
 	echo "</tr>";
 	echo "<TR>";
 	echo "	<TD ALIGN=LEFT><font size=1>&nbsp;</TD>\n";
-	echo "	<TD ALIGN=RIGHT><font color=#1C4754>Phone Password:&nbsp;</TD>";
+	echo "	<TD ALIGN=RIGHT><font color=" . $login_fc . ">Phone Password:&nbsp;</TD>";
 	echo "	<TD ALIGN=LEFT><INPUT TYPE=PASSWORD NAME=phone_pass SIZE=10 MAXLENGTH=20 VALUE=\"\"></TD>\n";
 	echo "	<TD ALIGN=LEFT class=rborder><font size=1>&nbsp;</TD>\n";
 	echo "</tr>";
@@ -1189,7 +1194,7 @@ if (!$authphone)
 	}
 else
 	{
-	echo "<title>OSDial web client</title>\n";
+	echo "<title>$t1 web client</title>\n";
 	$stmt="SELECT * from phones where login='$phone_login' and pass='$phone_pass' and active = 'Y';";
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
@@ -1541,7 +1546,7 @@ else
 		}
 	else
 		{
-		echo "<title>OSDial web client: OSDial Campaign Login</title>\n";
+		echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
 		//echo "<style>a:link {color: blue} a:visited {color: navy} a:active {color: navy}</style>";
 		echo "</head>\n";
 		echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
@@ -1566,7 +1571,7 @@ else
 		}
 	if (strlen($session_id) < 1)
 		{
-		echo "<title>OSDial web client: OSDial Campaign Login</title>\n";
+		echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
 		//echo "<style>a:link {color: blue} a:visited {color: navy} a:active {color: navy}</style>";
 		echo "</head>\n";
 		echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
@@ -1685,10 +1690,10 @@ $CfirstdayARY = getdate($Cstart);
 #echo "|$Cmon|$Cmonth|$CINC|\n";
 $CPRNTDAY = date("Y-m", $Cstart);
 
-$CCAL_OUT .= "<table border=1 cellpadding=1 bordercolor=\"000000\" cellspacing=\"0\" bgcolor=\"white\">";
+$CCAL_OUT .= "<table border=1 cellpadding=1 bordercolor=\"" . $cal_border1 . "\" cellspacing=\"0\" bgcolor=\"" . $cal_bg1 . "\">";
 $CCAL_OUT .= "<tr>";
-$CCAL_OUT .= "<td colspan=7 bordercolor=\"#ffffff\" bgcolor=\"#FFFFCC\">";
-$CCAL_OUT .= "<div align=center><font color=\"#000066\"><b><font face=\"Arial, Helvetica, sans-serif\" size=2>";
+$CCAL_OUT .= "<td colspan=7 bordercolor=\"" . $cal_border2 . "\" bgcolor=\"" . $cal_bg2 . "\">";
+$CCAL_OUT .= "<div align=center><font color=\"" . $cal_fc . "\"><b><font face=\"Arial, Helvetica, sans-serif\" size=2>";
 $CCAL_OUT .= "$CfirstdayARY[month] $CfirstdayARY[year]";
 $CCAL_OUT .= "</font></b></font></div>";
 $CCAL_OUT .= "</td>";
@@ -1696,9 +1701,9 @@ $CCAL_OUT .= "</tr>";
 
 foreach($Cdays as $Cday)
 {
-	$CDCLR="#ffffff";
-$CCAL_OUT .= "<td bordercolor=\"$CDCLR\">";
-$CCAL_OUT .= "<div align=center><font color=\"#000066\"><b><font face=\"Arial, Helvetica, sans-serif\" size=1>";
+	$CDCLR=$cal_border2;
+$CCAL_OUT .= "<td bordercolor=\"" . $CDCLR . "\">";
+$CCAL_OUT .= "<div align=center><font color=\"" . $cal_fc . "\"><b><font face=\"Arial, Helvetica, sans-serif\" size=1>";
 $CCAL_OUT .= "$Cday";
 $CCAL_OUT .= "</font></b></font></div>";
 $CCAL_OUT .= "</td>";
@@ -1715,7 +1720,7 @@ for( $Ccount=0;$Ccount<(6*7);$Ccount++)
 	}
 	if($Ccount < $CfirstdayARY['wday'] || $Cdayarray['mon'] != $Cmonth)
 	{
-		$CCAL_OUT .= "<td bordercolor=\"#ffffff\"><font color=\"#000066\"><b><font face=\"Arial, Helvetica, sans-serif\" size=\"1\">&nbsp;</font></b></font></td>";
+		$CCAL_OUT .= "<td bordercolor=\"" . $cal_border2 . "\"><font color=\"" . $cal_fc . "\"><b><font face=\"Arial, Helvetica, sans-serif\" size=\"1\">&nbsp;</font></b></font></td>";
 	}
 	else
 	{
@@ -1726,7 +1731,7 @@ for( $Ccount=0;$Ccount<(6*7);$Ccount++)
 		$CBL = "<a href=\"#\" onclick=\"CB_date_pick('$CPRNTDAY-$CPRNTmday');return false;\">";
 		$CEL = "</a>";
 
-		$CCAL_OUT .= "<td bgcolor=\"#FFCCCC\" bordercolor=\"#FFCCCC\">";
+		$CCAL_OUT .= "<td bgcolor=\"" . $cal_bg3 . "\" bordercolor=\"" . $cal_border3 . "\">";
 		$CCAL_OUT .= "<div align=center><font face=\"Arial, Helvetica, sans-serif\" size=1>";
 		$CCAL_OUT .= "$CBL$Cdayarray[mday]$CEL";
 		$CCAL_OUT .= "</font></div>";
@@ -1735,10 +1740,10 @@ for( $Ccount=0;$Ccount<(6*7);$Ccount++)
 		}
 		else
 		{
-	$CDCLR="#ffffff";
+	$CDCLR=$cal_bg1;
 	if ( ($Cdayarray['mday'] < $CTODAYmday) and ($CPRNTDAY == $CTODAY) )
 		{
-		$CDCLR="#CCCCCC";
+		$CDCLR=$cal_bg4;
 		$CBL = '';
 		$CEL = '';
 		}
@@ -1750,7 +1755,7 @@ for( $Ccount=0;$Ccount<(6*7);$Ccount++)
 		$CEL = "</a>";
 		}
 
-	$CCAL_OUT .= "<td bgcolor=\"$CDCLR\" bordercolor=\"#ffffff\">";
+	$CCAL_OUT .= "<td bgcolor=\"$CDCLR\" bordercolor=\"" . $cal_border2 . "\">";
 	$CCAL_OUT .= "<div align=center><font face=\"Arial, Helvetica, sans-serif\" size=1>";
 	$CCAL_OUT .= "$CBL$Cdayarray[mday]$CEL";
 	$CCAL_OUT .= "</font></div>";
@@ -1813,8 +1818,8 @@ foreach ($forms as $form) {
  	.body_input {font-size: 10px;  font-family: "dejavu sans",sans-serif;overflow:auto}
 	.queue_text_red {font-size: 12px;  font-family: sans-serif; font-weight: bold; color: red}
 	.queue_text {font-size: 12px;  font-family: sans-serif; color: black}
-	.preview_text {font-size: 13px;  font-family: sans-serif; background: #D0E0E7}
-	.preview_text_red {font-size: 13px;  font-family: sans-serif; background: #FFCCCC}
+	.preview_text {font-size: 13px;  font-family: sans-serif; background: <?= $preview_fc ?>}
+	.preview_text_red {font-size: 13px;  font-family: sans-serif; background: <?= $preview_bg ?>}
 	.body_small {font-size: 11px;  font-family: sans-serif;}
 	.body_tiny {font-size: 9px;  font-family: "dejavu sans",sans-serif;padding: 0px;}
 	.log_text {font-size: 11px;  font-family: monospace;}
@@ -1847,7 +1852,7 @@ foreach ($forms as $form) {
 					<INPUT TYPE=HIDDEN NAME=extension>
 					<font class="body_text">
 	<? 
-					echo "<font color=#1C4754>&nbsp;&nbsp;Logged in as user <b>$VD_login</b> on phone <b>$phone_login</b> to campaign <b>$VD_campaign</b>&nbsp;</font>\n"; ?>
+					echo "<font color=" . $login_fc . ">&nbsp;&nbsp;Logged in as user <b>$VD_login</b> on phone <b>$phone_login</b> to campaign <b>$VD_campaign</b>&nbsp;</font>\n"; ?>
 				</TD>
 				<TD COLSPAN=3 VALIGN=TOP ALIGN=RIGHT>
 				</TD>
@@ -1860,20 +1865,20 @@ foreach ($forms as $form) {
 		<table width=<?=$MNwidth-10 ?> height=30 border=0> 
 			<TR VALIGN=TOP ALIGN=LEFT>
 				<td colspan=2>
-					<img id="FormButtons" onclick="ChooseForm();" src="images/vdc_tab_buttons1.gif" border="0" width="223" height="30"></td>
+					<img id="FormButtons" onclick="ChooseForm();" src="templates/<?= $agent_template ?>/images/vdc_tab_buttons1.gif" border="0" width="223" height="30"></td>
 				<TD WIDTH=<?=$HSwidth ?> VALIGN=MIDDLE ALIGN=center>
-					<font class="body_text" color=#1C4754><b><span id=status>LIVE</span></b>
+					<font class="body_text" color=<?=$default_fc?>><b><span id=status>LIVE</span></b>
 				</td>
 				<td valign='middle' width=300>
 					<font  class="body_text" color=#FFFFFF>Session ID: <span id=sessionIDspan></span>
 				</td>
 				<td valign='middle' width=400> 
-					&nbsp;<font class="body_tiny" color=#1C4754><span id=AgentStatusCalls></span>
+					&nbsp;<font class="body_tiny" color=<?=$default_fc?>><span id=AgentStatusCalls></span>
 				</td>
 				<td valign='middle'>
 					<? echo "&nbsp;<a href=\"#\" onclick=\"LogouT();return false;\"><font size=1 color='red'>LOGOUT</font></a>&nbsp;"; ?>
 				</TD>
-				<TD WIDTH=110><font class="body_text"><IMG SRC="./images/agc_live_call_OFF.gif" NAME=livecall ALT="Live Call" WIDTH=109 HEIGHT=30 BORDER=0></TD>
+				<TD WIDTH=110><font class="body_text"><IMG SRC="templates/<?= $agent_template ?>/images/agc_live_call_OFF.gif" NAME=livecall ALT="Live Call" WIDTH=109 HEIGHT=30 BORDER=0></TD>
 			</TR>
 		</TABLE>
 	</span>
@@ -1882,7 +1887,7 @@ foreach ($forms as $form) {
 	<span style="position:absolute;left:0px;top:0px;z-index:3;" id="WelcomeBoxA">
 		<table border=0 bgcolor="#FFFFFF" width=<?=$CAwidth ?> height=<?=$HKwidth ?>>
 			<TR>
-				<TD align=center><BR><span id="WelcomeBoxAt"><font color=1C4754>OSDial</font></span></TD>
+				<TD align=center><BR><span id="WelcomeBoxAt"><font color=<?=$default_fc?>><?=$t1?></font></span></TD>
 			</TR>
 		</table>
 	</span>
@@ -1903,11 +1908,11 @@ foreach ($forms as $form) {
 		<span id="PauseCodeLinkSpan"></span> <BR></font>
 	</span>
 
-    <span id="PreviewFDTimeSpan" style="font-size:35pt; font-weight: bold; color: #1C4754; position:absolute;left:325px;top:400px;z-index:22;"></span>
+    <span id="PreviewFDTimeSpan" style="font-size:35pt; font-weight: bold; color: <?=$forcedial_fc?>; position:absolute;left:325px;top:400px;z-index:22;"></span>
 	
 	<!-- Choose From Available Call Backs -->
 	<span style="position:absolute;left:0px;top:18px;z-index:38;" id="CallBacKsLisTBox">
-		<table border=1 bgcolor="#AECED7" width=<?=$CAwidth ?> height=460>
+		<table border=1 bgcolor="<?=$callback_bg?>" width=<?=$CAwidth ?> height=460>
 			<TR>
 				<TD align=center VALIGN=top> CALLBACKS FOR AGENT <? echo $VD_login ?>:<BR>Click on a callback below to call the customer back now. If you click on a record below to call it, it will be removed from the list.
 					<BR>
@@ -1923,9 +1928,9 @@ foreach ($forms as $form) {
 	
 	<!-- Manual Dial -->
 	<span style="position:absolute;left:0px;top:18px;z-index:39;" id="NeWManuaLDiaLBox">
-		<table border=1 bgcolor="#84ABB6" width=<?=$CAwidth-10 ?> height=545>
+		<table border=1 bgcolor="<?=$mandial_bg?>" width=<?=$CAwidth-10 ?> height=545>
 			<TR>
-				<TD align=center VALIGN=top><br><font color=#1C4754><b>New Manual Dial Lead For <font color=#FFD000><? echo "$VD_login"?><font color=#1C4754> In Campaign <font color=#FFD000><? echo "$VD_campaign" ?></b><font color=#1C4754><BR><BR>Enter information below for the new lead you wish to call.
+				<TD align=center VALIGN=top><br><font color=<?=$mandial_fc?>><b>New Manual Dial Lead For <font color=<?=$mandial_bfc?>><? echo "$VD_login"?><font color=<?=$mandial_fc?>> In Campaign <font color=<?=$mandial_bfc?>><? echo "$VD_campaign" ?></b><font color=<?=$mandial_fc?>><BR><BR>Enter information below for the new lead you wish to call.
 				<BR>
 				<? 
 				if (eregi("X",dial_prefix))
@@ -1936,28 +1941,28 @@ foreach ($forms as $form) {
 				Note: all new manual dial leads will go into list <? echo $manual_dial_list_id ?><BR><BR>
 				<table>
 					<tr>
-						<td align=right><font class="body_text"> <font color=#1C4754>Country Code: </td>
-						<td align=left><font class="body_text"><input type=text size=7 maxlength=10 name=MDDiaLCodE class="cust_form" value="1">&nbsp; <font color=#1C4754>(This is usually a 1 in the USA-Canada)</td>
+						<td align=right><font class="body_text"> <font color=<?=$mandial_fc?>>Country Code: </td>
+						<td align=left><font class="body_text"><input type=text size=7 maxlength=10 name=MDDiaLCodE class="cust_form" value="1">&nbsp; <font color=<?=$mandial_fc?>>(This is usually a 1 in the USA-Canada)</td>
 					</tr>
 					<tr>
-						<td align=right><font class="body_text"> <font color=#1C4754>Phone Number: </td>
+						<td align=right><font class="body_text"> <font color=<?=$mandial_fc?>>Phone Number: </td>
 						<td align=left><font class="body_text">
-							<input type=text size=14 maxlength=12 name=MDPhonENumbeR class="cust_form" value="">&nbsp; <font color=#1C4754>(12 digits max - digits only)
+							<input type=text size=14 maxlength=12 name=MDPhonENumbeR class="cust_form" value="">&nbsp; <font color=<?=$mandial_fc?>>(12 digits max - digits only)
 						</td>
 					</tr>
 					<tr>
-						<td align=right><font class="body_text"> <font color=#1C4754>Search Existing Leads: </td>
-						<td align=left><font class="body_text"><input type=checkbox name=LeadLookuP size=1 value="0">&nbsp; <font color=#1C4754>(If checked will attempt to Find the phone number in the system before inserting it as a New Lead)</td>
+						<td align=right><font class="body_text"> <font color=<?=$mandial_fc?>>Search Existing Leads: </td>
+						<td align=left><font class="body_text"><input type=checkbox name=LeadLookuP size=1 value="0">&nbsp; <font color=<?=$mandial_fc?>>(If checked will attempt to Find the phone number in the system before inserting it as a New Lead)</td>
 					</tr>
 					<tr>
 						<td colspan=2><br><!--hr width=50%></td>
 					</tr>
 					<tr>
-						<td align=left colspan=2><BR><font color=#1C4754>If you want to dial a number and have it NOT be added as a new lead, enter in the exact dialstring that you want to call in the Dial Override field below. To hangup this call you will have to open the CALLS IN THIS SESSION link at the bottom of the screen and hang it up by clicking on its channel link there.<BR> &nbsp; </td>
+						<td align=left colspan=2><BR><font color=<?=$mandial_fc?>>If you want to dial a number and have it NOT be added as a new lead, enter in the exact dialstring that you want to call in the Dial Override field below. To hangup this call you will have to open the CALLS IN THIS SESSION link at the bottom of the screen and hang it up by clicking on its channel link there.<BR> &nbsp; </td>
 					</tr>
 					<tr>
-						<td align=right><font class="body_text"> <font color=#1C4754>Dial Override: </td -->
-							<!--td align=left><font class="body_text" --><center><font color=1C4754 size=-6>(Future use)</font><input disabled type=text size=1 maxlength=1 name=MDDiaLOverridE class="cust_form" value="">&nbsp; <font color=#84ABB6>(digits only please)</font></center>
+						<td align=right><font class="body_text"> <font color=<?=$mandial_fc?>>Dial Override: </td -->
+							<!--td align=left><font class="body_text" --><center><font color=<?=$mandial_fc?> size=-6>(Future use)</font><input disabled type=text size=1 maxlength=1 name=MDDiaLOverridE class="cust_form" value="">&nbsp; <font color=<?=$mandial_bg?>>(digits only please)</font></center>
 						</td>
 					</tr>
 				</table>
@@ -1974,8 +1979,8 @@ foreach ($forms as $form) {
 	
 	<!-- Disposition Hot Keys Window -->
 	<span style="position:absolute;left:92px;top:<?=$HTheight+45 ?>px;z-index:24;" id="HotKeyEntriesBox">
-		<table frame=box bgcolor="#B0DFA4" width=610 Oldwidth<?=$HCwidth ?> height=70>
-			<TR bgcolor="#9AC38F">
+		<table frame=box bgcolor="<?=$hotkey_bg1?>" width=610 Oldwidth<?=$HCwidth ?> height=70>
+			<TR bgcolor="<?=$hotkey_bg2?>">
 				<TD width=200><font class="sh_text"> Disposition Hot Keys: </font></td>
 				<td colspan=2 width=410>
 					<font class="body_small">When active, simply press the keyboard key for the desired disposition for this call. The call will then be hungup and dispositioned automatically:</font>
@@ -2001,7 +2006,7 @@ foreach ($forms as $form) {
 
 <? 	//-- Hot Key Button --
 	if ( ($HK_statuses_camp > 0) && ( ($user_level>=$HKuser_level) or ($VU_hotkeys_active > 0) ) ) { ?>
-		<span style="position:absolute;left:<?=$HKwidth+40 ?>px;top:<?=$HKheight +50 ?>px;z-index:16;" id="hotkeysdisplay"><a href="#" onMouseOver="HotKeys('ON')"><IMG SRC="./images/vdc_XB_hotkeysactive_OFF.gif" border=0 alt="HOT KEYS INACTIVE"></a>
+		<span style="position:absolute;left:<?=$HKwidth+40 ?>px;top:<?=$HKheight +50 ?>px;z-index:16;" id="hotkeysdisplay"><a href="#" onMouseOver="HotKeys('ON')"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_hotkeysactive_OFF.gif" border=0 alt="HOT KEYS INACTIVE"></a>
 		</span>
 <? 	
 	} 
@@ -2026,9 +2031,9 @@ foreach ($forms as $form) {
 	
 	<!-- Volume Control Links -->
 	<span style="position:absolute;left:935px;top:<?=$CBheight+26 ?>px;z-index:19;" id="VolumeControlSpan">
-		<span id="VolumeUpSpan"><IMG SRC="./images/vdc_volume_up_off.gif" BORDER=0></span>
+		<span id="VolumeUpSpan"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_volume_up_off.gif" BORDER=0></span>
 		<br>
-		<span id="VolumeDownSpan"><IMG SRC="./images/vdc_volume_down_off.gif" BORDER=0></span>
+		<span id="VolumeDownSpan"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_volume_down_off.gif" BORDER=0></span>
 	</span>
 	
 	<!-- Agent Status In Progress -->
@@ -2041,7 +2046,7 @@ foreach ($forms as $form) {
 	
 	<!-- Transfer Link -->
 	<span style="position:absolute;left:5px;top:<?=$HTheight ?>px;z-index:21;" id="TransferMain">
-		<table bgcolor="AFCFD7" frame=box width=<?=$XFwidth-255 ?>>
+		<table bgcolor="<?=$xfer_bg1?>" frame=box width=<?=$XFwidth-255 ?>>
 			<tr>
 				<td align=left>
 					<div class="text_input" id="TransferMaindiv">
@@ -2049,7 +2054,7 @@ foreach ($forms as $form) {
 							<table width=100%>
 								<tr>
 									<td align=center colspan=5>
-										<font color=1C4754><b>Transfer & Conference Functions</b><BR>
+										<font color=<?=$xfer_fc?>><b>Transfer & Conference Functions</b><BR>
 									</td>
 								</tr>
 								<tr>
@@ -2058,15 +2063,15 @@ foreach ($forms as $form) {
 										</span>
 									</td>
 									<td align=center>
-										<span STYLE="background-color: #CCCCCC" id="LocalCloser"><IMG SRC="./images/vdc_XB_localcloser_OFF.gif" border=0 alt="LOCAL CLOSER">
+										<span STYLE="background-color: <?=$xfer_bg2?>" id="LocalCloser"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_localcloser_OFF.gif" border=0 alt="LOCAL CLOSER">
 										</span> 
 									</td>
 									<td align=center>
-										<span STYLE="background-color: #CCCCCC" id="HangupXferLine"><IMG SRC="./images/vdc_XB_hangupxferline_OFF.gif" border=0 alt="Hangup Xfer Line">
+										<span STYLE="background-color: <?=$xfer_bg2?>" id="HangupXferLine"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_hangupxferline_OFF.gif" border=0 alt="Hangup Xfer Line">
 										</span>
 									</td>
 									<td align=center>
-										<span STYLE="background-color: #CCCCCC" id="HangupBothLines"><a href="#" onclick="bothcall_send_hangup();return false;"><IMG SRC="./images/vdc_XB_hangupbothlines.gif" border=0 alt="Hangup Both Lines"></a>
+										<span STYLE="background-color: <?=$xfer_bg2?>" id="HangupBothLines"><a href="#" onclick="bothcall_send_hangup();return false;"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_hangupbothlines.gif" border=0 alt="Hangup Both Lines"></a>
 										</span>
 									</td>
 									<td align=center>
@@ -2075,18 +2080,18 @@ foreach ($forms as $form) {
 								</tr>
 								<tr>
 									<td>
-										<font size=1 color=1C4754>Number to call:&nbsp;<input type=text size=15 name=xfernumber maxlength=25 class="cust_form">
+										<font size=1 color=<?=$xfer_fc?>>Number to call:&nbsp;<input type=text size=15 name=xfernumber maxlength=25 class="cust_form">
 										<input type=hidden name=xferuniqueid>
 									</td>
 									<td align=center>
-										<input type=checkbox name=xferoverride size=1 value="0"><font size=1 color=1C4754>Dial Override</font>
+										<input type=checkbox name=xferoverride size=1 value="0"><font size=1 color=<?=$xfer_fc?>>Dial Override</font>
 									</td>
 									<td align=center>
-										<span STYLE="background-color: #CCCCCC" id="Leave3WayCall"><IMG SRC="./images/vdc_XB_leave3waycall_OFF.gif" border=0 alt="LEAVE 3-WAY CALL">
+										<span STYLE="background-color: <?=$xfer_bg2?>" id="Leave3WayCall"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_leave3waycall_OFF.gif" border=0 alt="LEAVE 3-WAY CALL">
 										</span> 
 									</td>
 									<td align=center>
-										<span STYLE="background-color: #CCCCCC" id="DialBlindTransfer"><IMG SRC="./images/vdc_XB_blindtransfer_OFF.gif" border=0 alt="Dial Blind Transfer">
+										<span STYLE="background-color: <?=$xfer_bg2?>" id="DialBlindTransfer"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_blindtransfer_OFF.gif" border=0 alt="Dial Blind Transfer">
 										</span>
 									</td>
 									<td align=center>
@@ -2095,21 +2100,21 @@ foreach ($forms as $form) {
 								</tr>
 								<tr>
 									<td>
-										<font size=1 color=1C4754>Seconds:<!-- IMG SRC="./images/vdc_XB_seconds.gif" border=0 alt="seconds" --> <input type=text size=2 name=xferlength maxlength=4 class="cust_form">
+										<font size=1 color=<?=$xfer_fc?>>Seconds:<!-- IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_seconds.gif" border=0 alt="seconds" --> <input type=text size=2 name=xferlength maxlength=4 class="cust_form">
 									</td>
 									<td>
-										<font size=1 color=1C4754>Channel:&nbsp;<input type=text size=12 name=xferchannel maxlength=100 class="cust_form"> 
+										<font size=1 color=<?=$xfer_fc?>>Channel:&nbsp;<input type=text size=12 name=xferchannel maxlength=100 class="cust_form"> 
 									</td>
 									<td align=center>
-										<span STYLE="background-color: #CCCCCC" id="DialWithCustomer"><a href="#" onclick="SendManualDial('YES');return false;"><IMG SRC="./images/vdc_XB_dialwithcustomer.gif" border=0 alt="Dial With Customer"></a>
+										<span STYLE="background-color: <?=$xfer_bg2?>" id="DialWithCustomer"><a href="#" onclick="SendManualDial('YES');return false;"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_dialwithcustomer.gif" border=0 alt="Dial With Customer"></a>
 										</span> 
 									</td>
 									<td align=center>
-										<span STYLE="background-color: #CCCCCC" id="ParkCustomerDial"><a href="#" onclick="xfer_park_dial();return false;"><IMG SRC="./images/vdc_XB_parkcustomerdial.gif" border=0 alt="Park Customer Dial"></a>
+										<span STYLE="background-color: <?=$xfer_bg2?>" id="ParkCustomerDial"><a href="#" onclick="xfer_park_dial();return false;"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_parkcustomerdial.gif" border=0 alt="Park Customer Dial"></a>
 										</span> 
 									</td>
 									<td align=center>
-										<span STYLE="background-color: #CCCCCC" id="DialBlindVMail"><IMG SRC="./images/vdc_XB_ammessage_OFF.gif" border=0 alt="Blind Transfer VMail Message">
+										<span STYLE="background-color: <?=$xfer_bg2?>" id="DialBlindVMail"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_ammessage_OFF.gif" border=0 alt="Blind Transfer VMail Message">
 										</span>
 									</td>
 								</tr>
@@ -2123,8 +2128,8 @@ foreach ($forms as $form) {
 	
 	<!-- Dispositioned -->
 	<span style="position:absolute;left:5px;top:<?=$HTheight+20 ?>px;z-index:23;" id="HotKeyActionBox">
-		<table border=0 bgcolor="#FFDD99" width=<?=$HCwidth ?> height=70>
-			<TR bgcolor="#FFEEBB">
+		<table border=0 bgcolor="<?=$hotkey_done_bg1?>" width=<?=$HCwidth ?> height=70>
+			<TR bgcolor="<?=$hotkey_done_bg1?>">
 				<TD height=70><font class="sh_text"> Lead Dispositioned As: </font><BR><BR>
 					<CENTER><font class="sd_text"><span id="HotKeyDispo"> - </span></font></CENTER>
 				</TD>
@@ -2134,9 +2139,9 @@ foreach ($forms as $form) {
 	
 	<!-- Previous Callback Info -->
 	<span style="position:absolute;left:10px;top:<?=$HTheight+20 ?>px;z-index:25;" id="CBcommentsBox">
-		<table frame=box bgcolor="#7297A1" width=<?=$HCwidth ?> height=70>
-			<TR bgcolor="#9ABCC5">
-				<TD align=center><font class="sh_text" color=yellow>&nbsp;Previous Callback Information</font></td>
+		<table frame=box bgcolor="<?=$cbinfo_bg1?>" width=<?=$HCwidth ?> height=70>
+			<TR bgcolor="<?=$cbinfo_bg2?>">
+				<TD align=center><font class="sh_text" color=<?=$cbinfo_bfc?>>&nbsp;Previous Callback Information</font></td>
 				<TD align=right><font class="sk_text"> <a href="#" onclick="CBcommentsBoxhide();return false;"><b>CLOSE</b></a>&nbsp;&nbsp;</font></td>
 			</tr>
 			<tr>
@@ -2156,12 +2161,12 @@ foreach ($forms as $form) {
 	
 	<!-- Phone Is Hungup -->
 	<span style="position:absolute;left:0px;top:18px;z-index:26;" id="NoneInSessionBox">
-		<table border=1 bgcolor="#AFCFD7" width=<?=$CAwidth ?> height=545>
+		<table border=1 bgcolor="<?=$noone_bg?>" width=<?=$CAwidth ?> height=545>
 			<TR>
-				<TD align=center><b><font color=#1C4754>Your phone has either not been answered, or was hung up! <br><br><font color=#AFCFD7>(Session ID: <span id="NoneInSessionID"></span>)</font></b><BR><br>
-					<a href="#" onclick="NoneInSessionCalL();return false;" style='text-decoration: blink;color:#1C4754;'><u><b>Try Calling Your Phone Here</b></u></a>
+				<TD align=center><b><font color=<?=$noone_fc?>>Your phone has either not been answered, or was hung up! <br><br><font color=<?=$noone_bg?>>(Session ID: <span id="NoneInSessionID"></span>)</font></b><BR><br>
+					<a href="#" onclick="NoneInSessionCalL();return false;" style='text-decoration: blink;color:<?=$noone_fc?>;'><u><b>Try Calling Your Phone Here</b></u></a>
 					<BR><BR><br>
-					<a href="#" onclick="NoneInSessionOK();return false;" style='color:#C0D0E8;'>Go Back</a>
+					<a href="#" onclick="NoneInSessionOK();return false;" style='color:<?=$noone_fc2?>;'>Go Back</a>
 				</TD>
 			</TR>
 		</TABLE>
@@ -2169,7 +2174,7 @@ foreach ($forms as $form) {
 	
 	<!-- Customer Hungup -->
 	<span style="position:absolute;left:0px;top:0px;z-index:27;" id="CustomerGoneBox">
-		<table border=1 bgcolor="#CCFFFF" width=<?=$CAwidth ?> height=500>
+		<table border=1 bgcolor="<?=$custgone_bg?>" width=<?=$CAwidth ?> height=500>
 			<TR>
 				<TD align=center> Customer has hung up: <span id="CustomerGoneChanneL"></span><BR>
 					<a href="#" onclick="CustomerGoneOK();return false;">Go Back</a>
@@ -2182,7 +2187,7 @@ foreach ($forms as $form) {
 	
 	<!-- Call Wrapup -->
 	<span style="position:absolute;left:0px;top:0px;z-index:28;" id="WrapupBox">
-		<table border=1 bgcolor="7297A1" width=<?=$CAwidth ?> height=550>
+		<table border=1 bgcolor="<?=$wrapup_bg?>" width=<?=$CAwidth ?> height=550>
 			<TR>
 				<TD align=center> Call Wrapup: <span id="WrapupTimer"></span> seconds remaining in wrapup<BR><BR>
 					<span id="WrapupMessage"><?=$wrapup_message ?></span>
@@ -2197,14 +2202,14 @@ foreach ($forms as $form) {
 	<span style="position:absolute;left:0px;top:0px;z-index:29;" id="AgenTDisablEBoX">
 		<table class=acrossagent border=0 width=<?=$CAwidth ?> height=564>
 			<TR>
-				<TD align=center><font color=#1C4754>Your login session has been disabled, you need to logout.<br><BR><a href="#" onclick="LogouT();return false;"><font text-decoration=blink>LOGOUT</font></a><BR><BR><a href="#" onclick="hideDiv('AgenTDisablEBoX');return false;"><font color=grey>Go Back</font></a>
+				<TD align=center><font color=<?=$login_fc?>>Your login session has been disabled, you need to logout.<br><BR><a href="#" onclick="LogouT();return false;"><font text-decoration=blink>LOGOUT</font></a><BR><BR><a href="#" onclick="hideDiv('AgenTDisablEBoX');return false;"><font color=grey>Go Back</font></a>
 				</TD>
 			</TR>
 		</TABLE>
 	</span>
 	
 	<!-- Logout Link -->
-	<span style="position:absolute;left:1px;top:1px;z-index:30;background-image: URL('images/loginagain-bg.png');background-repeat:none;" id="LogouTBox">
+	<span style="position:absolute;left:1px;top:1px;z-index:30;background-image: URL('templates/<?= $agent_template ?>/images/loginagain-bg.png');background-repeat:none;" id="LogouTBox">
 		<table width=1001 Oldwidth<?=$CAwidth+20 ?> height=608 cellpadding=0 cellspacing=0>
 			<TR>
 				<TD align=center>
@@ -2216,7 +2221,7 @@ foreach ($forms as $form) {
 	
 	<!-- Hide Disposition Button A -->
 	<span style="position:absolute;left:0px;top:70px;z-index:31;" id="DispoButtonHideA">
-		<table border=0 bgcolor="7297A1" width=165 height=22>
+		<table border=0 bgcolor="<?=$dispo_hide?>" width=165 height=22>
 			<TR>
 				<TD align=center VALIGN=top>
 				</TD>
@@ -2226,7 +2231,7 @@ foreach ($forms as $form) {
 	
 	<!-- Hide Disposition Button B -->
 	<span style="position:absolute;left:0px;top:138px;z-index:32;" id="DispoButtonHideB">
-		<table border=0 bgcolor="7297A1" width=165 height=250>
+		<table border=0 bgcolor="<?=$dispo_hide?>" width=165 height=250>
 			<TR>
 				<TD align=center VALIGN=top>&nbsp;</TD>
 			</TR>
@@ -2235,7 +2240,7 @@ foreach ($forms as $form) {
 	
 	<!-- Hide Disposition Button C -->
 	<span style="position:absolute;left:0px;top:18px;z-index:33;" id="DispoButtonHideC">
-		<table border=0 bgcolor="7297A1" width=<?=$CAwidth ?> height=47>
+		<table border=0 bgcolor="<?=$dispo_hide?>" width=<?=$CAwidth ?> height=47>
 			<TR>
 				<TD align=center VALIGN=top>Any changes made to the customer information below at this time will not be comitted, You must change customer information before you Hangup the call.</TD>
 			</TR>
@@ -2246,10 +2251,10 @@ foreach ($forms as $form) {
 	<span style="position:absolute;left:0px;top:18px;z-index:34;" id="DispoSelectBox">
 		<table class=acrossagent width=<?=$CAwidth+5 ?> height=460>
 			<TR>
-				<TD align=center VALIGN=top><font color=#1C4754><br> DISPOSITION CALL: <span id="DispoSelectPhonE"></span> &nbsp; &nbsp; &nbsp; <span id="DispoSelectHAspan"><a href="#" onclick="DispoHanguPAgaiN()">Hangup Again</a></span> &nbsp; &nbsp; &nbsp; <span id="DispoSelectMaxMin"><a href="#" onclick="DispoMinimize()">minimize</a></span><BR>
+				<TD align=center VALIGN=top><font color=<?=$dispo_fc?>><br> DISPOSITION CALL: <span id="DispoSelectPhonE"></span> &nbsp; &nbsp; &nbsp; <span id="DispoSelectHAspan"><a href="#" onclick="DispoHanguPAgaiN()">Hangup Again</a></span> &nbsp; &nbsp; &nbsp; <span id="DispoSelectMaxMin"><a href="#" onclick="DispoMinimize()">minimize</a></span><BR>
 					<span id="DispoSelectContent"> End-of-call Disposition Selection </span>
 					<input type=hidden name=DispoSelection><BR>
-					<input type=checkbox name=DispoSelectStop size=1 value="0"> <font color=#1C4754>PAUSE <? echo (($inbound_man>0)?"INBOUND CALLS":"AGENT DIALING") ?> <BR>
+					<input type=checkbox name=DispoSelectStop size=1 value="0"> <font color=<?=$dispo_fc?>>PAUSE <? echo (($inbound_man>0)?"INBOUND CALLS":"AGENT DIALING") ?> <BR>
 					<a href="#" onclick="DispoSelectContent_create('','ReSET');return false;">CLEAR FORM</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 
 					<a href="#" onclick="DispoSelect_submit();return false;"><b>SUBMIT</b></a>
 					<BR><BR>
@@ -2264,7 +2269,7 @@ foreach ($forms as $form) {
 	<span style="position:absolute;left:0px;top:18px;z-index:40;" id="PauseCodeSelectBox">
 		<table class=acrossagent frame=box width=<?=$CAwidth -10 ?> height=500>
 			<TR>
-				<TD align=center VALIGN=top><br><font color=#1C4754><b>Select A Pause Code</b><br><br>
+				<TD align=center VALIGN=top><br><font color=<?=$pause_fc?>><b>Select A Pause Code</b><br><br>
 					<span id="PauseCodeSelectContent"> Pause Code Selection </span>
 					<input type=hidden name=PauseCodeSelection>
 					<BR><BR> &nbsp; 
@@ -2275,9 +2280,9 @@ foreach ($forms as $form) {
 	
 	<!-- Callback Window -->
 	<span style="position:absolute;left:0px;top:18px;z-index:35;" id="CallBackSelectBox">
-		<table border=1 bgcolor="7297A1" width=<?=$CAwidth ?> height=480>
+		<table border=1 bgcolor="<?=$callback_bg3?>" width=<?=$CAwidth ?> height=480>
 			<TR>
-				<TD align=center VALIGN=top><font color=#1C4754>Select a CallBack Date :<span id="CallBackDatE"></span><BR>
+				<TD align=center VALIGN=top><font color=<?=$callback_fc?>>Select a CallBack Date :<span id="CallBackDatE"></span><BR>
 					<input type=hidden name=CallBackDatESelectioN ID="CallBackDatESelectioN">
 					<input type=hidden name=CallBackTimESelectioN ID="CallBackTimESelectioN">
 					<span id="CallBackDatEPrinT">Select a Date Below</span> &nbsp;
@@ -2335,10 +2340,10 @@ foreach ($forms as $form) {
 	<span style="position:absolute;left:0px;top:0px;z-index:36;" id="CloserSelectBox">
 			<table class=acrossagent border=0 width=<?=$CAwidth ?> height=565>
 			<TR>
-				<TD align=center VALIGN=top><br><font size=+1 color=#1C4754><b>Closer Inbound Group Selection</b></font><BR><br>
+				<TD align=center VALIGN=top><br><font size=+1 color=<?=$closer_fc2?>><b>Closer Inbound Group Selection</b></font><BR><br>
 					<span id="CloserSelectContent"> Closer Inbound Group Selection </span>
 					<input type=hidden name=CloserSelectList><BR>
-					<input type=checkbox name=CloserSelectBlended size=1 value="0">&nbsp;<font color=#1C4754>BLENDED CALLING (outbound activated)</font><BR><br>
+					<input type=checkbox name=CloserSelectBlended size=1 value="0">&nbsp;<font color=<?=$closer_fc2?>>BLENDED CALLING (outbound activated)</font><BR><br>
 					<a href="#" onclick="CloserSelectContent_create();return false;">RESET</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<a href="#" onclick="CloserSelect_submit();return false;"><b>SUBMIT</b></a>
 					<BR><BR><BR><BR> &nbsp; 
@@ -2349,7 +2354,7 @@ foreach ($forms as $form) {
 	
 	<!-- Preview hide -->
 	<span style="position:absolute;left:0px;top:0px;z-index:37;" id="NothingBox">
-		<BUTTON Type=button name="inert_button"><img src="./images/blank.gif"></BUTTON>
+		<BUTTON Type=button name="inert_button"><img src="templates/<?= $agent_template ?>/images/blank.gif"></BUTTON>
 		<span id="DiaLLeaDPrevieWHide">Channel</span>
 		<span id="DiaLDiaLAltPhonEHide">Channel</span>
 <?
@@ -2361,9 +2366,9 @@ foreach ($forms as $form) {
 	
 	<!-- Script window -->
 	<span style="position:absolute;left:190px;top:92px;z-index:17;" id="ScriptPanel">
-		<table border=0 bgcolor="7297A1" width=<?=$SSwidth -40 ?> height=<?=$SSheight -30 ?>>
+		<table border=0 bgcolor="<?= $script_bg ?>" width=<?=$SSwidth -40 ?> height=<?=$SSheight -30 ?>>
 			<TR>
-				<TD align=left valign=top><font class="sb_text"><div class="scroll_script" id="ScriptContents">OSDial Script Will Show Here</div></font>
+				<TD align=left valign=top><font class="sb_text"><div class="scroll_script" id="ScriptContents"><?=$t1?> Script Will Show Here</div></font>
 				</TD>
 			</TR>
 		</TABLE>
@@ -2372,9 +2377,9 @@ foreach ($forms as $form) {
 	<!-- Footer Links -->
 	<!--span style="position:absolute;left:0px;top:<?=$HKheight ?>px;z-index:15;" id="MaiNfooterspan" -->
 	<span style="position:absolute;left:2px;top: 480px;z-index:15;" id="MaiNfooterspan">
-		<table id="MaiNfooter" width=<?=$MNwidth+10 ?>>
+		<table id="MaiNfooter" width=<?=$MNwidth+10 ?> class=bottom>
 			<tr height=15>
-				<td height=15><font face="Arial,Helvetica" size=1>OSDial Agent version: <? echo $version ?>&nbsp;&nbsp;Build: <? echo $build ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;Server: <? echo $server_ip ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><BR>
+				<td height=15><font face="Arial,Helvetica" size=1><?=$t1?> Agent version: <? echo $version ?>&nbsp;&nbsp;Build: <? echo $build ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;Server: <? echo $server_ip ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><BR>
 					<font class="body_small"><span id="busycallsdisplay"><a href="#"  onclick="conf_channels_detail('SHOW');">Show conference call channel information</a><BR><BR>&nbsp;</span></font>
 				</td>
 				<td align=right height=0>
@@ -2399,21 +2404,21 @@ foreach ($forms as $form) {
 		<!-- Column widths 205 + 505 + 270 = 980 -->
 		<TABLE id="MainTable" class=acrossagent cellpadding=0 cellspacing=0>
 			<TR>
-				<td width=22 colspan=2><img src=images/AgentTopLeft.png width=22 height=22 align=left>
-					<font class="body_text" color=#1C4754>&nbsp;&nbsp;STATUS:&nbsp;&nbsp;
-					<span id="MainStatuSSpan"></span></font>
+				<td width=22 colspan=2 class=curve2 style="vertical-align:bottom;"><img src="templates/<?= $agent_template ?>/images/AgentTopLeft.png" width=22 height=22 align=left>
+					<font class="body_text" color=<?= $status_fct ?>>&nbsp;&nbsp;STATUS:&nbsp;&nbsp;</font>
+					<font class="body_text" color=<?= $status_fc ?>><span id="MainStatuSSpan"></span></font>
 				</td>
-				<td width=22><img src=images/AgentTopRight.png width=22 height=22 align=right></td>
+				<td width=22><img src="templates/<?= $agent_template ?>/images/AgentTopRight.png" width=22 height=22 align=right></td>
 				
 			</TR>
 			<tr>
 				<td colspan=3><span id="busycallsdebug"></span></td>
 			</tr>
 			<tr>		<!--  Column one, controls -->
-				<td width=205 height=330 align=left valign=top>
+				<td width=205 height=330 align=left valign=top class=curve3>
 					<font class="body_text">
 						<center>
-							<span STYLE="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><IMG SRC="./images/vdc_LB_dialnextnumber_OFF.gif" border=0 alt="Dial Next Number"></a>
+							<span STYLE="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_LB_dialnextnumber_OFF.gif" border=0 alt="Dial Next Number"></a>
 							</span><BR>
 							<span id="DiaLLeaDPrevieW"><font class="preview_text"> <input type=checkbox name=LeadPreview size=1 value="0"> LEAD PREVIEW<BR></font>
 							</span>
@@ -2431,48 +2436,48 @@ foreach ($forms as $form) {
 	?>
 							-->
 							
-							<font color=#1C4754>Recording File</font><BR>
+							<font color=<?=$form_fc?>>Recording File</font><BR>
 							<font class="body_tiny"><span id="RecorDingFilename"></span>&nbsp;</font>
 						</center>
 						<BR>
-						<center><font color=#1C4754>Recording ID:&nbsp;</font><font class="body_small"><span id="RecorDID"></span></font></center>
+						<center><font color=<?=$form_fc?>>Recording ID:&nbsp;</font><font class="body_small"><span id="RecorDID"></span></font></center>
 						<center>
 							<!-- <a href=\"#\" onclick=\"conf_send_recording('MonitorConf','" + head_conf + "','');return false;\">Record</a> -->
-							<span STYLE="Xbackground-color: #CCCCCC" id="RecorDControl"><a href="#" onclick="conf_send_recording('MonitorConf','<?=$session_id ?>','');return false;"><IMG SRC="./images/vdc_LB_startrecording.gif" border=0 alt="Start Recording"></a></span><BR>
+							<span id="RecorDControl"><a href="#" onclick="conf_send_recording('MonitorConf','<?=$session_id ?>','');return false;"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_LB_startrecording.gif" border=0 alt="Start Recording"></a></span><BR>
 							
-							<span id="SpacerSpanA"><IMG SRC="./images/blank.gif" width=145 height=16 border=0></span><BR>
+							<span id="SpacerSpanA"><IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=16 border=0></span><BR>
 							
-							<span STYLE="Xbackground-color: #FFFFFF" id="WebFormSpan"><IMG SRC="./images/vdc_LB_webform_OFF.gif" border=0 alt="Web Form"></span>
-							<span id="SpacerSpanB"><IMG SRC="./images/blank.gif" width=145 height=2 border=0></span>
-							<span STYLE="Xbackground-color: #FFFFFF" id="WebFormSpan2"><IMG SRC="./images/vdc_LB_webform2_OFF.gif" border=0 alt="Web Form"></span><BR>
+							<span id="WebFormSpan"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_LB_webform_OFF.gif" border=0 alt="Web Form"></span>
+							<span id="SpacerSpanB"><IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=2 border=0></span>
+							<span id="WebFormSpan2"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_LB_webform2_OFF.gif" border=0 alt="Web Form"></span><BR>
 							
-							<span id="SpacerSpanB1"><IMG SRC="./images/blank.gif" width=145 height=16 border=0></span>
+							<span id="SpacerSpanB1"><IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=16 border=0></span>
 							
-							<span STYLE="Xbackground-color: #CCCCCC" id="ParkControl"><IMG SRC="./images/vdc_LB_parkcall_OFF.gif" border=0 alt="Park Call"></span>
-							<span id="SpacerSpanB"><IMG SRC="./images/blank.gif" width=145 height=2 border=0></span>
-							<span STYLE="Xbackground-color: #CCCCCC" id="XferControl"><IMG SRC="./images/vdc_LB_transferconf_OFF.gif" border=0 alt="Transfer - Conference"></span>
+							<span id="ParkControl"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_LB_parkcall_OFF.gif" border=0 alt="Park Call"></span>
+							<span id="SpacerSpanB"><IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=2 border=0></span>
+							<span id="XferControl"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_LB_transferconf_OFF.gif" border=0 alt="Transfer - Conference"></span>
 							
-							<span id="SpacerSpanC"><IMG SRC="./images/blank.gif" width=145 height=16 border=0></span>
+							<span id="SpacerSpanC"><IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=16 border=0></span>
 							
-							<span STYLE="Xbackground-color: #FFCCFF" id="HangupControl"><IMG SRC="./images/vdc_LB_hangupcustomer_OFF.gif" border=0 alt="Hangup Customer"></span>
+							<span id="HangupControl"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_LB_hangupcustomer_OFF.gif" border=0 alt="Hangup Customer"></span>
 							
-							<span id="SpacerSpanD"><IMG SRC="./images/blank.gif" width=145 height=16 border=0></span>
+							<span id="SpacerSpanD"><IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=16 border=0></span>
 							
 							<div class="text_input" id="SendDTMFdiv">
-								<span STYLE="Xbackground-color: #CCCCCC" id="SendDTMF"><a href="#" onclick="SendConfDTMF('<?=$session_id ?>');return false;"><IMG SRC="./images/vdc_LB_senddtmf.gif" border=0 alt="Send DTMF" align=top></a> <input type=text size=6 name=conf_dtmf class="cust_form" value="" maxlength=50>
+								<span id="SendDTMF"><a href="#" onclick="SendConfDTMF('<?=$session_id ?>');return false;"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_LB_senddtmf.gif" border=0 alt="Send DTMF" align=top></a> <input type=text size=6 name=conf_dtmf class="cust_form" value="" maxlength=50>
 								</span> <!-- Span and Div were reversed  -->
 							</div>
 							
 							<!-- div id=ShowCallbackInfo>
-								<IMG SRC="./images/blank.gif" width=145 height=16 border=0>
-								<img src=images/ShowCallbackInfo_OFF.gif alt='Show Callback Info'>
-								<IMG SRC="./images/blank.gif" width=145 height=16 border=0>
+								<IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=16 border=0>
+								<img src="templates/<?= $agent_template ?>/images/ShowCallbackInfo_OFF.gif" alt='Show Callback Info'>
+								<IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=16 border=0>
 							</div -->
 							
 							<BR>
-							<span STYLE="Xbackground-color: #FFCCFF" id="RepullControl"></span><BR>
+							<span id="RepullControl"></span><BR>
 							
-							<span id="SpacerSpanE"><IMG SRC="./images/blank.gif" width=145 height=16 border=0></span><BR>
+							<span id="SpacerSpanE"><IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=16 border=0></span><BR>
 						</center>
 					</font>
 					
@@ -2493,8 +2498,8 @@ foreach ($forms as $form) {
 						<table cellpadding='0' cellspacing='2'>
 							<tr>
 								<!-- Replaced by the next block 
-								<td align=right colspan=3><font class="body_text"><font color=#1C4754>Seconds:</font> <div id="callchannel">
-								<font class="body_text"><input type=text size=3 name=SecondS class="cust_form" value="">&nbsp;&nbsp;&nbsp;<font color=#1C4754>Channel: <input type=text size=9 name=callchannel class="cust_form" value="" >&nbsp;&nbsp;&nbsp;<font color=#1C4754>Cust Time:</font> <input type=text size=20 name=custdatetime class="cust_form" value="">
+								<td align=right colspan=3><font class="body_text"><font color=<?=$form_fc?>>Seconds:</font> <div id="callchannel">
+								<font class="body_text"><input type=text size=3 name=SecondS class="cust_form" value="">&nbsp;&nbsp;&nbsp;<font color=<?=$form_fc?>>Channel: <input type=text size=9 name=callchannel class="cust_form" value="" >&nbsp;&nbsp;&nbsp;<font color=<?=$form_fc?>>Cust Time:</font> <input type=text size=20 name=custdatetime class="cust_form" value="">
 								</td> 
 								-->
 							
@@ -2503,11 +2508,11 @@ foreach ($forms as $form) {
 										<tr>
 											<!-- td width=1>&nbsp;</td -->
 											<td width=30% align=left valign=top>
-												<font class="body_text" color=#1C4754>CallDuration:</font>&nbsp;<font class="body_input"><input type=text size=4 name=SecondS class="cust_form" value=""></font>
+												<font class="body_text" color=<?=$form_fc?>>CallDuration:</font>&nbsp;<font class="body_input"><input type=text size=4 name=SecondS class="cust_form" value=""></font>
 											</td>
 											<td width=25% align=center valign=middle><font class="body_text" color=#ABCBD4><div id=callchannel style="font-size:5pt;"></div></font></td>
 											<td width=45% align=right valign=top>
-												<font class="body_text" color=#1C4754>Cust Time:</a></font>&nbsp;<font class="body_input"><input type=text size=19 maxlength=22 name=custdatetime class="cust_form" value=""></font>
+												<font class="body_text" color=<?=$form_fc?>>Cust Time:</a></font>&nbsp;<font class="body_input"><input type=text size=19 maxlength=22 name=custdatetime class="cust_form" value=""></font>
 											</td>
 										</tr>
 									</table>
@@ -2516,62 +2521,62 @@ foreach ($forms as $form) {
 							</tr>
 							<tr>
 								<td>&nbsp;</td>
-								<td colspan=2 align=center valign=top><font color=#1C4754><b>Customer Information</b></font><span id="CusTInfOSpaN"></span></td>
+								<td colspan=2 align=center valign=top><font color=<?=$form_fc?>><b>Customer Information</b></font><span id="CusTInfOSpaN"></span></td>
 							</tr>
 							<tr>
 								<td align=right>
-									<font class="body_text"> <font color=#1C4754>Title:&nbsp;</font>
+									<font class="body_text"> <font color=<?=$form_fc?>>Title:&nbsp;</font>
 								</td>
 								<td align=left colspan=2>
 									<font class="body_input"><input type=text size=4 name=title maxlength=4 class="cust_form" value=""></font>&nbsp; 
-									<font class="body_text" color=#1C4754>First:</font>
+									<font class="body_text" color=<?=$form_fc?>>First:</font>
 									<font class="body_input"> <input type=text size=14 name=first_name maxlength=30 class="cust_form" value=""></font>&nbsp; 
-									<font class="body_text" color=#1C4754>MI:</font> 
+									<font class="body_text" color=<?=$form_fc?>>MI:</font> 
 									<font class="body_input"><input type=text size=1 name=middle_initial maxlength=1 class="cust_form" value=""></font>&nbsp; 
-									<font class="body_text" color=#1C4754>Last:</font> <font class="body_input"><input type=text size=15 name=last_name maxlength=30 class="cust_form" value=""></font>
+									<font class="body_text" color=<?=$form_fc?>>Last:</font> <font class="body_input"><input type=text size=15 name=last_name maxlength=30 class="cust_form" value=""></font>
 								</td>
 							</tr>
 							<!-- Hooks for company field
 							<tr>
-								<td align=right><font class="body_text" color=#1C4754>Company:&nbsp;</font></td>
+								<td align=right><font class="body_text" color=<?=$form_fc?>>Company:&nbsp;</font></td>
 								<td align=left colspan=2><font class="body_input"><input type=text size=58 name=company maxlength=100 class="cust_form" value=""></font></td>
 							-->
 							<tr>
-								<td align=right><font class="body_text" color=#1C4754>Address1:&nbsp;</font></td>
+								<td align=right><font class="body_text" color=<?=$form_fc?>>Address1:&nbsp;</font></td>
 								<td align=left colspan=2><font class="body_input"><input type=text size=58 name=address1 maxlength=100 class="cust_form" value=""></font></td>
 							</tr>
 							<tr>
-								<td align=right><font class="body_text" color=#1C4754>Address2:&nbsp;</font></td>
+								<td align=right><font class="body_text" color=<?=$form_fc?>>Address2:&nbsp;</font></td>
 								<td align=left><font class="body_input"><input type=text size=22 name=address2 maxlength=100 class="cust_form" value=""></font></td>
-								<td align=right><font class="body_text" color=#1C4754>Address3:&nbsp;</font><font class="body_input"><input type=text size=22 name=address3 maxlength=100 class="cust_form" value=""></font></td>
+								<td align=right><font class="body_text" color=<?=$form_fc?>>Address3:&nbsp;</font><font class="body_input"><input type=text size=22 name=address3 maxlength=100 class="cust_form" value=""></font></td>
 							</tr>
 							<tr>
-								<td align=right><font class="body_text" color=#1C4754>City:&nbsp;</font></td>
+								<td align=right><font class="body_text" color=<?=$form_fc?>>City:&nbsp;</font></td>
 								<td align=left><font class="body_input"><input type=text size=22 name=city maxlength=50 class="cust_form" value=""></font>&nbsp;</td>
 								<td align=right> 
-									<font class="body_text" color=#1C4754>State:&nbsp;</font> <font class="body_input"><input type=text size=2 name=state maxlength=2 class="cust_form" value=""></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									<font class="body_text" color=#1C4754>Zip:&nbsp;</font><font class="body_input"><input type=text size=9 name=postal_code maxlength=10 class="cust_form" value=""></font>
+									<font class="body_text" color=<?=$form_fc?>>State:&nbsp;</font> <font class="body_input"><input type=text size=2 name=state maxlength=2 class="cust_form" value=""></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<font class="body_text" color=<?=$form_fc?>>Zip:&nbsp;</font><font class="body_input"><input type=text size=9 name=postal_code maxlength=10 class="cust_form" value=""></font>
 								</td>
 							</tr>
 							<tr>
-								<td align=right><font class="body_text" color=#1C4754>Province:&nbsp;</font></td>
+								<td align=right><font class="body_text" color=<?=$form_fc?>>Province:&nbsp;</font></td>
 								<td align=left><font class="body_input"><input type=text size=22 name=province maxlength=50 class="cust_form" value=""></font>&nbsp;</td>
-								<td align=right> <font class="body_text" color=#1C4754>Email:&nbsp;</font><font class="body_input"><input type=text size=22 name=email maxlength=70 class="cust_form" value=""></font></td>
+								<td align=right> <font class="body_text" color=<?=$form_fc?>>Email:&nbsp;</font><font class="body_input"><input type=text size=22 name=email maxlength=70 class="cust_form" value=""></font></td>
 							</tr>
 							<tr>
-								<td align=right><font class="body_text" color=#1C4754>Phone:&nbsp;</font></td>
+								<td align=right><font class="body_text" color=<?=$form_fc?>>Phone:&nbsp;</font></td>
 								<td colspan=2>
 									<table width=100%>
 										<tr>
 											<td align=left colspan=2><font class="body_input"><input type=text size=11 name=phone_number maxlength=12 class="cust_form" value=""></font></td>
-											<td align=right><font class="body_text" color=#1C4754>CountryCode:&nbsp;</font><font class="body_input"><input type=text size=4 name=phone_code maxlength=10 class="cust_form" value=""></font></td>
-											<td align=right><font class="body_text" color=#1C4754>Alt. Phone:&nbsp;</font><font class="body_input"><input type=text size=12 name=alt_phone maxlength=12 class="cust_form" value=""></font></td>
+											<td align=right><font class="body_text" color=<?=$form_fc?>>CountryCode:&nbsp;</font><font class="body_input"><input type=text size=4 name=phone_code maxlength=10 class="cust_form" value=""></font></td>
+											<td align=right><font class="body_text" color=<?=$form_fc?>>Alt. Phone:&nbsp;</font><font class="body_input"><input type=text size=12 name=alt_phone maxlength=12 class="cust_form" value=""></font></td>
 										</tr>
 									</table>
 								</td>
 							</tr>
 						<tr>
-							<td align=right valign=top><font class="body_text" color=#1C4754>Comments:&nbsp;</font></td>
+							<td align=right valign=top><font class="body_text" color=<?=$form_fc?>>Comments:&nbsp;</font></td>
 							<td align=left colspan=2>
 								<font class="body_tiny">
 	<?
@@ -2585,23 +2590,23 @@ foreach ($forms as $form) {
 							
 						</tr>
 						<tr>
-							<td align=right><font class="body_text"> <font color=#1C4754>Vendor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>Lead Code:&nbsp;</font></td>
+							<td align=right><font class="body_text"> <font color=<?=$form_fc?>>Vendor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>Lead Code:&nbsp;</font></td>
 							<td align=left colspan='3'><font class="body_text"><input type=text size=22 name=vendor_lead_code maxlength=20 class="cust_form" value="">&nbsp;</td>
 						</tr>
 						<tr>
-							<td align=right><font class="body_text" color=#1C4754>Custom1:&nbsp;</font></td>
+							<td align=right><font class="body_text" color=<?=$form_fc?>>Custom1:&nbsp;</font></td>
 							<td align=left><font class="body_input"><input type=text size=22 name=custom1 maxlength=100 class="cust_form" value=""></font>&nbsp;</td>
-							<td align=right><font class="body_text" color=#1C4754>Custom2:&nbsp;</font><font class="body_input"><input type=text size=22 name=custom2 maxlength=100 class="cust_form" value=""></font></td>
+							<td align=right><font class="body_text" color=<?=$form_fc?>>Custom2:&nbsp;</font><font class="body_input"><input type=text size=22 name=custom2 maxlength=100 class="cust_form" value=""></font></td>
 						</tr>
 						
 						
 						<!--	
-							<td align=right> <font class="body_text"><font color=#1C4754>Custom4:&nbsp;</font><input type=text size=26 name=vendor_lead_code maxlength=20 class="cust_form" value=""></td>
+							<td align=right> <font class="body_text"><font color=<?=$form_fc?>>Custom4:&nbsp;</font><input type=text size=26 name=vendor_lead_code maxlength=20 class="cust_form" value=""></td>
 						</tr>
 						<tr>
-							<td align=right><font class="body_text"> <font color=#1C4754>Custom5:&nbsp;</font></td>
+							<td align=right><font class="body_text"> <font color=<?=$form_fc?>>Custom5:&nbsp;</font></td>
 							<td align=left><font class="body_text"><input type=text size=26 name=custom1 maxlength=100 class="cust_form" value="">&nbsp;</td>
-							<td align=right> <font class="body_text"><font color=#1C4754>Custom6:&nbsp;</font><input type=text size=26 name=vendor_lead_code maxlength=20 class="cust_form" value=""></td>
+							<td align=right> <font class="body_text"><font color=<?=$form_fc?>>Custom6:&nbsp;</font><input type=text size=26 name=vendor_lead_code maxlength=20 class="cust_form" value=""></td>
 						</tr>
 						-->
 						</table>
@@ -2610,7 +2615,7 @@ foreach ($forms as $form) {
 					</font> <!-- ? -->
 					
 				</td> <!-- ==== Column three, additional data ==== -->
-				<td width=270 align=center valign=top><div class="AFHead">Additional Information</div>
+				<td width=270 align=center valign=top class=borderright><div class="AFHead">Additional Information</div>
 	
 					<?
 					$cnt = 0;
@@ -2625,13 +2630,13 @@ foreach ($forms as $form) {
 								echo "  <table width=265><tr><td><table align=center>\n";
 								echo "      <tr>\n";
 								echo "          <td colspan=2 align=center>\n";
-								echo "              <font color=#1C4754 class=body_text>" . $form['description'] . "<br />" . $form['description2'] . "</font>\n";
+								echo "              <font color=$form_fc class=body_text>" . $form['description'] . "<br />" . $form['description2'] . "</font>\n";
 								echo "          </td>\n";
 								echo "      </tr>\n";
 								$fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
 								foreach ($fields as $field) {
 									echo "      <tr>\n";
-									echo "          <td align=right><font color=#1C4754 class=body_text>" . $field['description'] . ":&nbsp;</font></td>\n";
+									echo "          <td align=right><font color=$form_fc class=body_text>" . $field['description'] . ":&nbsp;</font></td>\n";
 									echo "          <td>\n";
 									if ($field['options'] == '') {
 									echo "          <input type=text size=" . $field['length'] . " maxlength=255 name=AF" . $field['id'] . " id=AF" . $field['id'] . " class=body_input value=\"\">\n";
@@ -2656,10 +2661,10 @@ foreach ($forms as $form) {
 	
 				</td>
 			</tr>
-			<tr>
+			<tr class=border>
 				<td align=left colspan=3 height=<?=$BPheight ?>>&nbsp;</td>
 			</tr>
-			<tr>
+			<tr class=border>
 				<td align=left colspan=3>&nbsp;</td>
 			</tr>
 			<tr>
@@ -2673,11 +2678,11 @@ foreach ($forms as $form) {
 	<td align=left valign=top>	<!-- The side form selection tab -->
 		<br>
 		<div id="AddtlFormTab" style="position:absolute;left:980px;top:22px;z-index:9;" onclick="AddtlFormOver();">
-			<img src="images/agentsidetab_tab.png" width="10" height="46" border="0">
+			<img src="templates/<?= $agent_template ?>/images/agentsidetab_tab.png" width="10" height="46" border="0">
 		</div>
 		<div id="AddtlFormTabExpanded" style="visibility:hidden;position:absolute;left:840px;top:22px;z-index:9;" >
 			<table width=140 cellspacing=0 cellpadding=0 >
-      			<tr background=images/agentsidetab_top.png height=15 onclick="AddtlFormSelect('Cancel');">
+      			<tr background="templates/<?= $agent_template ?>/images/agentsidetab_top.png" height=15 onclick="AddtlFormSelect('Cancel');">
       				<td></td>
       			</tr>
 
@@ -2686,7 +2691,7 @@ foreach ($forms as $form) {
 						$fcamps = split(',',$form['campaigns']);
 						foreach ($fcamps as $fcamp) {
 							if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
-								echo "  <tr id=AddtlFormBut" . $form['name'] . " style=\"background-image:url(images/agentsidetab_extra.png);\" height=29 ";
+								echo "  <tr id=AddtlFormBut" . $form['name'] . " style=\"background-image:url(templates/" . $agent_template . "/images/agentsidetab_extra.png);\" height=29 ";
 								echo "    onmouseover=\"AddtlFormButOver('" . $form['name'] . "');\" onmouseout=\"AddtlFormButOut('" . $form['name'] . "');\">\n";
 								echo "      <td align=center onclick=\"AddtlFormSelect('" . $form['name'] . "');\">\n";
 								echo "          <div class=AFMenu>" . $form['name'] . "</div>\n";
@@ -2697,10 +2702,10 @@ foreach ($forms as $form) {
 					}
 ?>
 
-				<tr id="AddtlFormButSelect4" background=images/agentsidetab_line.png height=1><td></td></tr>
+				<tr id="AddtlFormButSelect4" background="templates/<?= $agent_template ?>/images/agentsidetab_line.png" height=1><td></td></tr>
 					</table>
 					<div style="position:absolute;left:140px;top:0px;z-index:9;">
-						<img src="images/agentsidetab_cancel.png" width="10" height="46" border="0" onclick="AddtlFormSelect('Cancel');">
+						<img src="templates/<?= $agent_template ?>/images/agentsidetab_cancel.png" width="10" height="46" border="0" onclick="AddtlFormSelect('Cancel');">
 					</div>
 				</div>
 						
