@@ -54,7 +54,9 @@
 # 80317-2349 - Added FTP debug if debugX
 #
 
-$GSM=0;   $MP3=0;   $OGG=0;   $WAV=1;   $NODATEDIR=1;
+use Time::HiRes ('gettimeofday','usleep','sleep');
+
+$GSM=0;   $MP3=0;   $OGG=0;   $WAV=0;   $NODATEDIR=1;
 
 # Default variables for FTP
 $VARFTP_host = '10.0.0.4';
@@ -216,6 +218,7 @@ if ($OGG > 0) {$dir2 = "$PATHDONEmonitor/OGG";}
  opendir(FILE, "$dir2/");
  @FILES = readdir(FILE);
 
+$cps=10;
 $i=0;
 foreach(@FILES)
    {
@@ -227,7 +230,7 @@ foreach(@FILES)
 
 		$size1 = (-s "$dir2/$FILES[$i]");
 		if ($DBX) {print "$FILES[$i] $size1\n";}
-		sleep(1) if ($WAV);
+		usleep(1000000/$cps);
 		$size2 = (-s "$dir2/$FILES[$i]");
 		if ($DBX) {print "$FILES[$i] $size2\n\n";}
 

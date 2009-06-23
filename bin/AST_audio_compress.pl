@@ -48,6 +48,8 @@
 # 80302-1958 - First Build
 #
 
+use Time::HiRes ('gettimeofday','usleep','sleep');
+
 $GSM=0;   $MP3=0;   $OGG=0;   $WAV=0;
 
 ### begin parsing run-time options ###
@@ -205,6 +207,7 @@ $dir2 = $PATHarchive_home . '/' . $PATHarchive_mixed . '/..';
  opendir(FILE, "$dir1/");
  @FILES = readdir(FILE);
 
+$cps=10;
 $i=0;
 foreach(@FILES) {
 	$size1 = 0;
@@ -214,7 +217,7 @@ foreach(@FILES) {
 
 		$size1 = (-s "$dir1/$FILES[$i]");
 		if ($DBX) {print "$FILES[$i] $size1\n";}
-		#sleep(1);
+		usleep(1000000/$cps);
 		$size2 = (-s "$dir1/$FILES[$i]");
 		if ($DBX) {print "$FILES[$i] $size2\n\n";}
 
@@ -243,6 +246,9 @@ foreach(@FILES) {
 				if ($DB) {print "|$recording_id|$ALLfile|$GSMfile|     |$SQLfile|\n";}
 
 				`$soxbin "$dir1/$ALLfile" "$dir2/mixed/$GSMfile"`;
+				if (-e "$dir2/mixed/$GSMfile") {
+					`rm -f $dir1/$ALLfile`;
+				}
 
 				$stmtA = "UPDATE recording_log set location='http://$server_ip/$PATHarchive_mixed/../mixed/$GSMfile' where recording_id='$recording_id';";
 					if($DBX){print STDERR "\n|$stmtA|\n";}
@@ -254,6 +260,9 @@ foreach(@FILES) {
 				if ($DB) {print "|$recording_id|$ALLfile|$OGGfile|     |$SQLfile|\n";}
 
 				`$soxbin "$dir1/$ALLfile" "$dir2/mixed/$OGGfile"`;
+				if (-e "$dir2/mixed/$OGGfile") {
+					`rm -f $dir1/$ALLfile`;
+				}
 
 				$stmtA = "UPDATE recording_log set location='http://$server_ip/$PATHarchive_mixed/../mixed/$OGGfile' where recording_id='$recording_id';";
 					if($DBX){print STDERR "\n|$stmtA|\n";}
@@ -265,13 +274,13 @@ foreach(@FILES) {
 				if ($DB) {print "|$recording_id|$ALLfile|$MP3file|     |$SQLfile|\n";}
 
 				`$lamebin -b 16 -m m --silent "$dir1/$ALLfile" "$dir2/mixed/$MP3file"`;
+				if (-e "$dir2/mixed/$MP3file") {
+					`rm -f $dir1/$ALLfile`;
+				}
 
 				$stmtA = "UPDATE recording_log set location='http://$server_ip/$PATHarchive_mixed/../mixed/$MP3file' where recording_id='$recording_id';";
 					if($DBX){print STDERR "\n|$stmtA|\n";}
 				$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
-				if ($affected_rows >= 1) {
-					`rm -f "$dir1/$ALLfile"`;
-				}
 			} elsif ($WAV > 0) {
 				$WAVfile = $FILES[$i];
 				$WAVfile =~ s/-all\.wav/-all.wav/gi;
@@ -279,6 +288,9 @@ foreach(@FILES) {
 				if ($DB) {print "|$recording_id|$ALLfile|$WAVfile|     |$SQLfile|\n";}
 
 				`$soxbin "$dir1/$ALLfile" "$dir2/mixed/$WAVfile"`;
+				if (-e "$dir2/mixed/$WAVfile") {
+					`rm -f $dir1/$ALLfile`;
+				}
 
 				$stmtA = "UPDATE recording_log set location='http://$server_ip/$PATHarchive_mixed/../mixed/$WAVfile' where recording_id='$recording_id';";
 					if($DBX){print STDERR "\n|$stmtA|\n";}

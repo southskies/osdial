@@ -31,6 +31,7 @@ use DBI;
 use Getopt::Long;
 use Net::Ping;
 use Net::FTP;
+use Time::HiRes ('gettimeofday','usleep','sleep');
 $|++;
 
 my $prog = "AST_sort_recordings.pl";
@@ -80,10 +81,17 @@ my $odir = $config->{PATHarchive_home} . '/' . $config->{PATHarchive_sorted};
 opendir(FILE, $rdir."/");
 my @files = readdir(FILE);
 
+my $cps = 10;
 # Cycle through each file in the mixed directory
 foreach my $file (@files) {
+	# Check to see if filesize has changed.
+	my $size1 = (-s "$rdir/$file");
+	usleep(1000000/$cps);
+	my $size2 = (-s "$rdir/$file");
+	print "$file:  $size1 - $size2\n" if ($verbose);
+
 	# Grab a completed file of some format.
-	if ($file =~ /\.wav|\.gsm|\.ogg|\.mp3/i) {
+	if ($file =~ /\.wav|\.gsm|\.ogg|\.mp3/i and $size1==$size2) {
 		# Pull SQL info from recording_log, list and campaign tables.
 		my $SQLfile = $file;
 		$SQLfile =~ s/-all\.wav|-all\.gsm|-all\.ogg|-all\.mp3//gi;
@@ -92,7 +100,7 @@ foreach my $file (@files) {
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
-		if ($sthArows > 0) {
+		#if ($sthArows > 0) {
 			my(@aryA,$camp,$date,$extdir,$destdir);
 			my($rcid,$lead) = (0,0);
 			
@@ -115,25 +123,30 @@ foreach my $file (@files) {
 			system("chmod", "777", $destdir.'/'.$file) unless ($CLOtest);
 			print "Would mv $rdir/$file $destdir/$file\n" if ($CLOtest);
 
-			# Update the recording_log with the http link.
-			$stmtA = "UPDATE recording_log SET location='" . $config->{VARHTTP_path} . '/' . $config->{PATHarchive_sorted} . "/$camp/$date$extdir/$file' WHERE recording_id='$rcid';";
-			print "$stmtA|\n" if($verbose > 2);
-			my $rlsts = $dbhA->do($stmtA) unless ($CLOtest);
-			print "." if ($verbose > 1);
-            
-			# If lead was found mark it as PENDING transfer, otherwise NOTFOUND...insert into qc_transfer_log.
-			$stmtA = "INSERT IGNORE INTO qc_recordings (recording_id,lead_id,filename,location) VALUES('$rcid','$lead','$file','$destdir');";
-			print "$stmtA|\n" if($verbose > 2);
-			my $qtlsts = $dbhA->do($stmtA) unless ($CLOtest or $file =~ /AIG/);
-			print "-" if ($verbose > 1);
-			
 			my $event = $file . ' sorted';
-			$event .= ', added to recording_log (' . $rlsts . ')' if ($rlsts > 0);
-			$event .= ', added to qc_recordings (' . $qtlsts . ')' if ($qtlsts > 0);
+
+			if ($rcid > 0) {
+				# Update the recording_log with the http link.
+				$stmtA = "UPDATE recording_log SET location='" . $config->{VARHTTP_path} . '/' . $config->{PATHarchive_sorted} . "/$camp/$date$extdir/$file' WHERE recording_id='$rcid';";
+				print "$stmtA|\n" if($verbose > 2);
+				my $rlsts = $dbhA->do($stmtA) unless ($CLOtest);
+				print "." if ($verbose > 1);
+				$event .= ', added to recording_log (' . $rlsts . ')' if ($rlsts > 0);
+            
+				# If lead was found mark it as PENDING transfer, otherwise NOTFOUND...insert into qc_transfer_log.
+				$stmtA = "INSERT IGNORE INTO qc_recordings (recording_id,lead_id,filename,location) VALUES('$rcid','$lead','$file','$destdir');";
+				print "$stmtA|\n" if($verbose > 2);
+				my $qtlsts = $dbhA->do($stmtA) unless ($CLOtest or $file =~ /AIG/);
+				print "-" if ($verbose > 1);
+				$event .= ', added to qc_recordings (' . $qtlsts . ')' if ($qtlsts > 0);
+			} else {
+				$event .= ', was not found in recording_log';
+			}
+
 			print $event . "\n" if ($verbose);
 			eventLogger($config->{PATHlogs},'sort_recordings',$event);
 			
-		}
+		#}
 		$sthA->finish();
 	}
 }
