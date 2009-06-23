@@ -48,60 +48,44 @@
 # 80302-1958 - First Build
 #
 
-$GSM=0;   $MP3=1;   $OGG=0;
+$GSM=0;   $MP3=0;   $OGG=0;   $WAV=0;
 
 ### begin parsing run-time options ###
-if (length($ARGV[0])>1)
-{
+if (length($ARGV[0])>1) {
 	$i=0;
-	while ($#ARGV >= $i)
-	{
-	$args = "$args $ARGV[$i]";
-	$i++;
+	while ($#ARGV >= $i) {
+		$args = "$args $ARGV[$i]";
+		$i++;
 	}
 
-	if ($args =~ /--help/i)
-	{
-	print "allowed run time options:\n  [--debug] = debug\n  [--debugX] = super debug\n  [-t] = test\n  [--GSM] = compress into GSM codec\n  [--MP3] = compress into MPEG-Layer-3 codec\n  [--OGG] = compress into OGG Vorbis codec\n\n";
-	exit;
-	}
-	else
-	{
-		if ($args =~ /--debug/i)
-		{
-		$DB=1;
-		print "\n----- DEBUG -----\n\n";
+	if ($args =~ /--help/i) {
+		print "allowed run time options:\n  [--debug] = debug\n  [--debugX] = super debug\n  [-t] = test\n  [--GSM] = compress into GSM codec\n  [--MP3] = compress into MPEG-Layer-3 codec\n  [--OGG] = compress into OGG Vorbis codec\n\n";
+		exit;
+	} else {
+		if ($args =~ /--debug/i) {
+			$DB=1;
+			print "\n----- DEBUG -----\n\n";
 		}
-		if ($args =~ /--debugX/i)
-		{
-		$DBX=1;
-		print "\n----- SUPER DEBUG -----\n\n";
+		if ($args =~ /--debugX/i) {
+			$DBX=1;
+			print "\n----- SUPER DEBUG -----\n\n";
 		}
-		if ($args =~ /-t/i)
-		{
-		$T=1;   $TEST=1;
-		print "\n-----TESTING -----\n\n";
+		if ($args =~ /-t/i) {
+			$T=1;   $TEST=1;
+			print "\n-----TESTING -----\n\n";
 		}
-		if ($args =~ /--GSM/i)
-		{
-		$GSM=1;
-		if ($DB) {print "GSM compression\n";}
-		}
-		else
-		{
-			if ($args =~ /--MP3/i)
-			{
+		if ($args =~ /--GSM/i) {
+			$GSM=1;
+			if ($DB) {print "GSM compression\n";}
+		} elsif ($args =~ /--MP3/i) {
 			$MP3=1;
 			if ($DB) {print "MP3 compression\n";}
-			}
-			else
-			{
-				if ($args =~ /--OGG/i)
-				{
-				$OGG=1;
-				if ($DB) {print "OGG compression\n";}
-				}
-			}
+		} elsif ($args =~ /--OGG/i) {
+			$OGG=1;
+			if ($DB) {print "OGG compression\n";}
+		} elsif ($args =~ /--WAV/i) {
+			$WAV=1;
+			if ($DB) {print "WAV compression\n";}
 		}
 	}
 }
@@ -180,7 +164,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
  or die "Couldn't connect to database: " . DBI->errstr;
 
 
-if ( ($GSM > 0) || ($OGG > 0) )
+if ( ($GSM > 0) || ($OGG > 0) || ($WAV >0))
 	{
 	### find sox binary to do the compression
 	$soxbin = '';
@@ -222,13 +206,11 @@ $dir2 = $PATHarchive_home . '/' . $PATHarchive_mixed . '/..';
  @FILES = readdir(FILE);
 
 $i=0;
-foreach(@FILES)
-   {
+foreach(@FILES) {
 	$size1 = 0;
 	$size2 = 0;
 
-	if ( (length($FILES[$i]) > 4) && (!-d $FILES[$i]) )
-		{
+	if ( (length($FILES[$i]) > 4) && (!-d $FILES[$i]) ) {
 
 		$size1 = (-s "$dir1/$FILES[$i]");
 		if ($DBX) {print "$FILES[$i] $size1\n";}
@@ -236,8 +218,7 @@ foreach(@FILES)
 		$size2 = (-s "$dir1/$FILES[$i]");
 		if ($DBX) {print "$FILES[$i] $size2\n\n";}
 
-		if ( ($FILES[$i] !~ /out\.|in\.|lost\+found/i) && ($size1 eq $size2) && (length($FILES[$i]) > 4))
-			{
+		if ( ($FILES[$i] !~ /out\.|in\.|lost\+found/i) && ($size1 eq $size2) && (length($FILES[$i]) > 4)) {
 			$recording_id='';
 			$ALLfile = $FILES[$i];
 			$SQLFILE = $FILES[$i];
@@ -248,64 +229,65 @@ foreach(@FILES)
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
-			if ($sthArows > 0)
-				{
+			if ($sthArows > 0) {
 				@aryA = $sthA->fetchrow_array;
 				$recording_id =	"$aryA[0]";
-				}
+			}
 			$sthA->finish();
 
 
-			if ($GSM > 0)
-				{
+			if ($GSM > 0) {
 				$GSMfile = $FILES[$i];
 				$GSMfile =~ s/-all\.wav/-all.gsm/gi;
 
 				if ($DB) {print "|$recording_id|$ALLfile|$GSMfile|     |$SQLfile|\n";}
 
-				`$soxbin "$dir1/$ALLfile" "$dir2/gsm/$GSMfile"`;
+				`$soxbin "$dir1/$ALLfile" "$dir2/mixed/$GSMfile"`;
 
-				$stmtA = "UPDATE recording_log set location='http://$server_ip/$PATHarchive_mixed/../gsm/$GSMfile' where recording_id='$recording_id';";
+				$stmtA = "UPDATE recording_log set location='http://$server_ip/$PATHarchive_mixed/../mixed/$GSMfile' where recording_id='$recording_id';";
 					if($DBX){print STDERR "\n|$stmtA|\n";}
 				$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
-				}
-
-			if ($OGG > 0)
-				{
+			} elsif ($OGG > 0) {
 				$OGGfile = $FILES[$i];
 				$OGGfile =~ s/-all\.wav/-all.ogg/gi;
 
 				if ($DB) {print "|$recording_id|$ALLfile|$OGGfile|     |$SQLfile|\n";}
 
-				`$soxbin "$dir1/$ALLfile" "$dir2/ogg/$OGGfile"`;
+				`$soxbin "$dir1/$ALLfile" "$dir2/mixed/$OGGfile"`;
 
-				$stmtA = "UPDATE recording_log set location='http://$server_ip/$PATHarchive_mixed/../ogg/$OGGfile' where recording_id='$recording_id';";
+				$stmtA = "UPDATE recording_log set location='http://$server_ip/$PATHarchive_mixed/../mixed/$OGGfile' where recording_id='$recording_id';";
 					if($DBX){print STDERR "\n|$stmtA|\n";}
 				$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
-				}
-
-			if ($MP3 > 0)
-				{
+			} elsif ($MP3 > 0) {
 				$MP3file = $FILES[$i];
 				$MP3file =~ s/-all\.wav/-all.mp3/gi;
 
 				if ($DB) {print "|$recording_id|$ALLfile|$MP3file|     |$SQLfile|\n";}
 
-				`$lamebin -b 16 -m m --silent "$dir1/$ALLfile" "$dir2/mp3/$MP3file"`;
+				`$lamebin -b 16 -m m --silent "$dir1/$ALLfile" "$dir2/mixed/$MP3file"`;
 
-				$stmtA = "UPDATE recording_log set location='http://$server_ip/$PATHarchive_mixed/../mp3/$MP3file' where recording_id='$recording_id';";
+				$stmtA = "UPDATE recording_log set location='http://$server_ip/$PATHarchive_mixed/../mixed/$MP3file' where recording_id='$recording_id';";
 					if($DBX){print STDERR "\n|$stmtA|\n";}
 				$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
 				if ($affected_rows >= 1) {
 					`rm -f "$dir1/$ALLfile"`;
 				}
-				}
+			} elsif ($WAV > 0) {
+				$WAVfile = $FILES[$i];
+				$WAVfile =~ s/-all\.wav/-all.wav/gi;
 
+				if ($DB) {print "|$recording_id|$ALLfile|$WAVfile|     |$SQLfile|\n";}
 
+				`$soxbin "$dir1/$ALLfile" "$dir2/mixed/$WAVfile"`;
+
+				$stmtA = "UPDATE recording_log set location='http://$server_ip/$PATHarchive_mixed/../mixed/$WAVfile' where recording_id='$recording_id';";
+					if($DBX){print STDERR "\n|$stmtA|\n";}
+				$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
 			}
 		}
-	$i++;
 	}
+	$i++;
+}
 
 if ($DB) {print "DONE... EXITING\n\n";}
 

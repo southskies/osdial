@@ -49,10 +49,10 @@ SetDefaults ()
 	# default path to asterisk recording directory:
 	PATHmonitor="/var/spool/asterisk/monitor"
 	# default path to asterisk recording DONE directory:
-	PATHDONEmonitor="/opt/osdial/recordings/processing/wav"
+	PATHDONEmonitor="/opt/osdial/recordings/processing/unmixed"
 	PATHarchive_home="/opt/osdial/recordings"
-	PATHarchive_unmixed="processing/wav"
-	PATHarchive_mixed="processing/mp3"
+	PATHarchive_unmixed="processing/unmixed"
+	PATHarchive_mixed="processing/mixed"
 	PATHarchive_sorted="completed"
 	# the IP address of this machine.  default to best guess:
 	VARserver_ip=`/sbin/ifconfig eth0 | grep 'inet addr' | awk -F: '{ print $2 }' | awk '{ print $1 }'`
@@ -69,7 +69,7 @@ SetDefaults ()
 	VARFTP_user="osdial"
 	VARFTP_pass="osdialftp1234"
 	VARFTP_port="21"
-	VARFTP_dir="recordings/processing/wav"
+	VARFTP_dir="recordings/processing/unmixed"
 	VARHTTP_path="http://$VARserver_ip"
 	# default report FTP variables:
 	VARREPORT_host=$VARserver_ip
