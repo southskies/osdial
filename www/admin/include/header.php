@@ -109,8 +109,8 @@ if ($hh=='reports')
                 </tr>
                 <tr valign='top'>
                     <td align=left width=33%>
-                        <font face="arial,helvetica" color=white size=2>&nbsp;&nbsp;<B><a href="<?= $admin_home_url_LU ?>"><font face="arial,helvetica" color=white size=1>HOME</a>
-                        | <a href="<?= $PHP_SELF ?>?force_logout=1"><font face="arial,helvetica" color=yellow size=1>Logout</a>
+                        <font face="arial,helvetica" color=white size=2>&nbsp;&nbsp;<B><a href="<?= $admin_home_url_LU ?>"><font face="arial,helvetica" color=<?=$home_color?> size=1>HOME</a>
+                        | <a href="<?= $PHP_SELF ?>?force_logout=1"><font face="arial,helvetica" color=<?=$logout_color?> size=1>Logout</a>
                     </td>
                     <td class='user-company' align=center width=33%>
                         <font color=<?= $company_color ?>><?= $user_company ?></font><br />

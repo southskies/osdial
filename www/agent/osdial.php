@@ -515,7 +515,7 @@ if ($relogin == 'YES') {
 	
 	echo "<TABLE class=acrosslogin2 WIDTH=500 CELLPADDING=0 CELLSPACING=0 border=0>";
 	echo "<tr>";
-	echo "	<td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopLeft.png\" width=22 height=22 align=left></td>";
+	echo "	<td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopLeft2.png\" width=22 height=22 align=left></td>";
 	echo "	<td class=across-top align=center colspan=2>&nbsp;</td>";
 	echo "	<td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopRightS.png\" width=22 height=22 align=right></td>";
 	echo "</tr>";
@@ -591,7 +591,7 @@ if ($user_login_first == 1) {
 		echo "<div class=containera>";
 		echo "<TABLE class=acrosslogin2 WIDTH=500 CELLPADDING=0 CELLSPACING=0 border=0>";
 		echo "<tr>";
-		echo "	<td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopLeft.png\" width=22 height=22 align=left></td>";
+		echo "	<td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopLeft2.png\" width=22 height=22 align=left></td>";
 		echo "	<td class=across-top align=center colspan=2>&nbsp;</td>";
 		echo "	<td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopRightS.png\" width=22 height=22 align=right></td>";
 		echo "</tr>";
@@ -699,7 +699,7 @@ if ( (strlen($phone_login)<2) or (strlen($phone_pass)<2) ) {
 	echo "<div class=containera>";
 	echo "<TABLE align=center class=acrosslogin2 WIDTH=460 CELLPADDING=0 CELLSPACING=0 border=0>";
 	echo "<tr>";
-	echo "	<td width='22'><img src='templates/" . $agent_template . "/images/AgentTopLeft.png' width='22' height='22' align='left'></td>";
+	echo "	<td width='22'><img src='templates/" . $agent_template . "/images/AgentTopLeft2.png' width='22' height='22' align='left'></td>";
 	echo "	<td class='across-top' align='center' colspan=2></td>";
 	echo "	<td width='22'><img src='templates/" . $agent_template . "/images/AgentTopRightS.png' width='22' height='22' align='right'></td>";
 	echo "</tr>";
@@ -1079,7 +1079,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 	
 	echo "<TABLE align=center class=acrosslogin2 WIDTH=460 CELLPADDING=0 CELLSPACING=0 border=0>";
 	echo "<tr>";
-	echo "	<td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopLeft.png\" width=22 height=22 align=left></td>";
+	echo "	<td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopLeft2.png\" width=22 height=22 align=left></td>";
 	echo "	<td class=across-top align=center colspan=2></td>";
 	echo "	<td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopRightS.png\" width=22 height=22 align=right></td>";
 	echo "</tr>";
@@ -1151,7 +1151,7 @@ if (!$authphone)
 	echo "<div class=containera>";
 	echo "<TABLE align=center class=acrosslogin2 WIDTH=460 CELLPADDING=0 CELLSPACING=0 border=0>";
 	echo "<tr>";
-	echo "	<td width='22'><img src='templates/" . $agent_template . "/images/AgentTopLeft.png' width='22' height='22' align='left'></td>";
+	echo "	<td width='22'><img src='templates/" . $agent_template . "/images/AgentTopLeft2.png' width='22' height='22' align='left'></td>";
 	echo "	<td class='across-top' align='center' colspan=2></td>";
 	echo "	<td width='22'><img src='templates/" . $agent_template . "/images/AgentTopRightS.png' width='22' height='22' align='right'></td>";
 	echo "</tr>";
