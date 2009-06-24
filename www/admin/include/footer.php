@@ -44,11 +44,38 @@ echo "		<td height=\"15\" align=\"left\" width=\"33%\"><font size=\"0\" color=\"
 #
 # NOTICE:
 # Removal or modification of the following line constitutes a breach of License and doing so may result in legal action.
-echo "    	<td align=\"center\" width=\"33%\"><a style=\"color:$footer_color;\" href=\"http://callcentersg.com\" target=\"_blank\"><img src=\"templates/" . $system_settings['admin_template'] . "/images/dlfoot.png\" height=\"9\" width=\"120\"></a></td>";
+echo "    	<td align=\"center\" width=\"33%\"><a style=\"color:$footer_color;\" href=\"http://www.osdial.com\" target=\"_blank\"><img src=\"templates/" . $system_settings['admin_template'] . "/images/dlfoot.png\" height=\"9\" width=\"120\"></a></td>";
 #
 #
-echo "    	<td align=\"right\" width=\"16%\"><font size=\"0\" color=\"#1A4349\">Version: $admin_version&nbsp;</td>";
-echo "    	<td align=\"right\" width=\"16%\"><font size=\"0\" color=\"#1A4349\">Build: $build&nbsp;&nbsp;</td>";
+
+# Update Check
+$stmt="select count(*) FROM system_settings where DATE(last_update_check)=DATE(NOW());";
+$rslt=mysql_query($stmt, $link);
+$row=mysql_fetch_row($rslt);
+$last_check=$row[0];
+
+if ($last_check==0) {
+	exec("links --source http://www.osdial.com/osdial-version", $execoutput, $execretval);
+	$update_version = $execoutput[0];
+	$stmt="UPDATE system_settings SET last_update_check=NOW();";
+	$rslt=mysql_query($stmt, $link);
+	if ($execretval==0) {
+		$stmt="UPDATE system_settings SET last_update_version='$update_version';";
+		$rslt=mysql_query($stmt, $link);
+	} else {
+		$update_version = $admin_version;
+	}
+} else {
+	$update_version = $system_settings['last_update_version'];
+}
+
+
+echo "    	<td align=\"right\" width=\"16%\">";
+if ($update_version != $admin_version) {
+	echo "              <font size=\"0\" color=\"#1A4349\" style=\"text-decoration: blink;\" title=\"Version #$update_version is now available!  You should run 'yum update' on all servers when all agents are logged out and their is sufficient time to complete the update.\">NEW UPDATE #$update_version</font>";
+}
+echo "          </td>";
+echo "    	<td align=\"right\" width=\"16%\"><font size=\"0\" color=\"#1A4349\">Version: $admin_version/$build&nbsp;&nbsp;</td>";
 echo "	</tr>";
 echo "	<tr><td align=\"left\" colspan=\"4\" height=\"1\" bgcolor=\"#666666\"></td></tr>";
 echo "</table>";

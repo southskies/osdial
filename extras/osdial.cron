@@ -1,9 +1,3 @@
-### (dialer) Generate asterisk config files and reload modules
-* * * * * /opt/osdial/bin/osdial_astgen.pl -q
-
-### (dialer) Syncronize IVR recordings, arg is web server
-* * * * * /opt/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1
-
 ### (ALL) Get load average.
 * * * * * cat /proc/loadavg | cut -d" " -f1 > /opt/osdial/html/admin/Loadavg.txt
 
@@ -32,13 +26,19 @@
 ### (sql) optimize the database tables within the asterisk database
 3 1 * * * /opt/osdial/bin/AST_DB_optimize.pl
 
-### (archive) OSDial agent time log weekly and daily summary report generation
-#2 0 * * 0 /opt/osdial/bin/AST_agent_week.pl
-#22 0 * * * /opt/osdial/bin/AST_agent_day.pl
-
 ### (sql) OSDial campaign export scripts (OPTIONAL)
 #32 0 * * * /opt/osdial/bin/AST_VDsales_export.pl
 #42 0 * * * /opt/osdial/bin/AST_sourceID_summary_export.pl
+
+### (sql) OSDial agent time log weekly and daily summary report generation
+#2 0 * * 0 /opt/osdial/bin/AST_agent_week.pl
+#22 0 * * * /opt/osdial/bin/AST_agent_day.pl
+
+### (dialer) Generate asterisk config files and reload modules
+* * * * * /opt/osdial/bin/osdial_astgen.pl -q
+
+### (dialer) Syncronize IVR recordings, arg is web server
+* * * * * /opt/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1
 
 ### (dialer) Write a file listing current voicemail
 * * * * * /usr/sbin/asterisk -rx "show voicemail users" > /opt/osdisl/html/admin/VMnow.txt
@@ -62,11 +62,10 @@
 #* * * * * /opt/osdial/bin/AST_audio_archive.pl
 
 ### (archive) Compress wav files to mp3
-#*/2 * * * * /opt/osdial/bin/AST_audio_compress.pl --MP3
+* * * * * /opt/osdial/bin/AST_audio_compress.pl --MP3
 
 ### (archive) Sort MP3s into campaign_id/date directory structure
-#*/5 * * * * /opt/osdial/bin/AST_sort_recordings.pl
+* * * * * /opt/osdial/bin/AST_sort_recordings.pl
 
 ### (archive) Send select MP3s to a third-party quality-control or offste archive server.
-#*/15 * * * * /opt/osdial/bin/AST_qc_transfer.pl
-
+*/15 * * * * /opt/osdial/bin/AST_qc_transfer.pl
