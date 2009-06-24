@@ -543,7 +543,7 @@ if ($ADD==3)
 			echo "<tr bgcolor=$oddrows><td align=right>Modify User Groups: </td><td align=left><select size=1 name=modify_usergroups><option>0</option><option>1</option><option SELECTED>$modify_usergroups</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
 			echo "<tr bgcolor=$oddrows><td align=right>Delete User Groups: </td><td align=left><select size=1 name=delete_user_groups><option>0</option><option>1</option><option SELECTED>$delete_user_groups</option></select>$NWB#osdial_users-delete_user_groups$NWE</td></tr>\n";
 
-			echo "<tr bgcolor=$oddrows>0</option><option>1</option><option SELECTED>$modify_lists</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows><td align=right>Modify Lists: </td><td align=left><select size=1 name=modify_lists><option>0</option><option>1</option><option SELECTED>$modify_lists</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
 			echo "<tr bgcolor=$oddrows><td align=right>Delete Lists: </td><td align=left><select size=1 name=delete_lists><option>0</option><option>1</option><option SELECTED>$delete_lists</option></select>$NWB#osdial_users-delete_lists$NWE</td></tr>\n";
 			echo "<tr bgcolor=$oddrows><td align=right>Load Leads: </td><td align=left><select size=1 name=load_leads><option>0</option><option>1</option><option SELECTED>$load_leads</option></select>$NWB#osdial_users-load_leads$NWE</td></tr>\n";
 			echo "<tr bgcolor=$oddrows><td align=right>Modify Leads: </td><td align=left><select size=1 name=modify_leads><option>0</option><option>1</option><option SELECTED>$modify_leads</option></select>$NWB#osdial_users-modify_leads$NWE</td></tr>\n";
