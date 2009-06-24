@@ -296,7 +296,7 @@ while ($i < $qm_conf_ct)
 ###########################################
 
 require("templates/default/display.php");
-require("templates/" . $agent_template . "/display.php");
+include("templates/" . $agent_template . "/display.php");
 
 # options now set in DB:
 #$alt_phone_dialing		= '1';	# allow agents to call alt phone numbers
