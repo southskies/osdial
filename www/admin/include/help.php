@@ -1028,6 +1028,10 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 <A NAME="osdial_call_times-state_call_time_state">
 <B>State Call Time State -</B> This is the two letter code for the state that this calling time definition is for. For this to be in effect the local call time that is set in the campaign must have this state call time record in it as well as all of the leads having two letter state codes in them.
 
+<BR>
+<A NAME="osdial_call_times-use_recylce_gap">
+<B>Add No-Call Period to Recylce Delay -</B> This option when enabled will add a "gap" to the recylce delay.  This "gap" is the length of time between when the call-time started today and when it last ended.
+
 
 
 

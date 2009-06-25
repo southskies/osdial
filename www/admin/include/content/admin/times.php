@@ -125,7 +125,7 @@ if ($ADD==411111111)
 		$ct_friday_stop = preg_replace('/\D/', '', $ct_friday_stop);
 		$ct_saturday_start = preg_replace('/\D/', '', $ct_saturday_start);
 		$ct_saturday_stop = preg_replace('/\D/', '', $ct_saturday_stop);
-		$stmt="UPDATE osdial_call_times set call_time_name='$call_time_name', call_time_comments='$call_time_comments', ct_default_start='$ct_default_start', ct_default_stop='$ct_default_stop', ct_sunday_start='$ct_sunday_start', ct_sunday_stop='$ct_sunday_stop', ct_monday_start='$ct_monday_start', ct_monday_stop='$ct_monday_stop', ct_tuesday_start='$ct_tuesday_start', ct_tuesday_stop='$ct_tuesday_stop', ct_wednesday_start='$ct_wednesday_start', ct_wednesday_stop='$ct_wednesday_stop', ct_thursday_start='$ct_thursday_start', ct_thursday_stop='$ct_thursday_stop', ct_friday_start='$ct_friday_start', ct_friday_stop='$ct_friday_stop', ct_saturday_start='$ct_saturday_start', ct_saturday_stop='$ct_saturday_stop' where call_time_id='$call_time_id';";
+		$stmt="UPDATE osdial_call_times set call_time_name='$call_time_name', call_time_comments='$call_time_comments', ct_default_start='$ct_default_start', ct_default_stop='$ct_default_stop', ct_sunday_start='$ct_sunday_start', ct_sunday_stop='$ct_sunday_stop', ct_monday_start='$ct_monday_start', ct_monday_stop='$ct_monday_stop', ct_tuesday_start='$ct_tuesday_start', ct_tuesday_stop='$ct_tuesday_stop', ct_wednesday_start='$ct_wednesday_start', ct_wednesday_stop='$ct_wednesday_stop', ct_thursday_start='$ct_thursday_start', ct_thursday_stop='$ct_thursday_stop', ct_friday_start='$ct_friday_start', ct_friday_stop='$ct_friday_stop', ct_saturday_start='$ct_saturday_start', ct_saturday_stop='$ct_saturday_stop',use_recycle_gap='$use_recycle_gap' where call_time_id='$call_time_id';";
 		$rslt=mysql_query($stmt, $link);
 
 		echo "<br><B><font color=navy>CALL TIME MODIFIED</font></B>\n";
@@ -286,6 +286,7 @@ echo "<TABLE align=center><TR><TD>\n";
 	$ct_saturday_start =	$row[17];
 	$ct_saturday_stop =		$row[18];
 	$ct_state_call_times =	$row[19];
+	$use_recycle_gap =	    $row[20];
 
 echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 
@@ -304,6 +305,7 @@ echo "<tr bgcolor=#C1D6DF><td align=right>Wednesday Start:</td><td align=left><i
 echo "<tr bgcolor=#C1D6DF><td align=right>Thursday Start:</td><td align=left><input type=text name=ct_thursday_start size=5 maxlength=4 value=\"$ct_thursday_start\"> </td><td align=right>Thursday Stop:</td><td align=left><input type=text name=ct_thursday_stop size=5 maxlength=4 value=\"$ct_thursday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
 echo "<tr bgcolor=#C1D6DF><td align=right>Friday Start:</td><td align=left><input type=text name=ct_friday_start size=5 maxlength=4 value=\"$ct_friday_start\"> </td><td align=right>Friday Stop:</td><td align=left><input type=text name=ct_friday_stop size=5 maxlength=4 value=\"$ct_friday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
 echo "<tr bgcolor=#C1D6DF><td align=right>Saturday Start:</td><td align=left><input type=text name=ct_saturday_start size=5 maxlength=4 value=\"$ct_saturday_start\"> </td><td align=right>Saturday Stop:</td><td align=left><input type=text name=ct_saturday_stop size=5 maxlength=4 value=\"$ct_saturday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
+echo "<tr bgcolor=#C1D6DF><td align=right>Add No-Call Periods to Recylce Delay: </td><td align=left colspan=3><select name=use_recycle_gap><option>N</option><option>Y</option><option>$use_recycle_gap</option></select>$NWB#osdial_call_times-use_recycle_gap$NWE</td></tr>\n";
 echo "<tr bgcolor=#C1D6DF><td align=center colspan=4><input type=submit name=SUBMIT value=SUBMIT></FORM></td></tr>\n";
 
 $ct_srs=1;

@@ -1,5 +1,12 @@
 2009-06-24  Lott Caskey <lottcaskey@gmail.com>
 
+	* [r313] www/admin/include/content/users/users.php: Fix bug which
+	  prevented admin from modifyings lists.
+	* [r312] bin/osdial_astgen.pl, extras/sql/upgrade_sql.map: Fixed
+	  iax dial string and upgrade map.
+	* [r311] extras/sql/upgrade_sql.map: fix upgrade_map
+	* [r310] ChangeLog, extras/osdial.cron, extras/sql/213022.sql,
+	  version, www/admin/include/footer.php: Added update checking.
 	* [r309] Makefile: Template fix makefile
 	* [r308] extras/osdial-template-example.tgz: Added tgz template
 	  example.
