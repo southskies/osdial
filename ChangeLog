@@ -1,3 +1,17 @@
+2009-06-26  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r316] bin/AST_VDauto_dial.pl: Update to not output debug if no
+	  records were changed. Added uniqueid to output.
+	* [r315] bin/FastAGI_log.pl: Fix FastAGI typo.
+
+2009-06-25  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r314] ChangeLog, bin/AST_VDhopper.pl, extras/sql/213023.sql,
+	  extras/sql/upgrade_sql.map, version,
+	  www/admin/include/content/admin/times.php,
+	  www/admin/include/help.php: Added use_recylce_gap (Adds no-call
+	  period to recylce delay). Fixed no-call gap.
+
 2009-06-24  Lott Caskey <lottcaskey@gmail.com>
 
 	* [r313] www/admin/include/content/users/users.php: Fix bug which

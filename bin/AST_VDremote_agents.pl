@@ -439,7 +439,9 @@ while($one_day_interval > 0)
 			}
 		$sthA->finish();
 		if ($DB) {print STDERR "$user_counter live remote agents ACTIVE\n";}
-		$stmtA = "UPDATE osdial_remote_agents as ra,osdial_campaigns as c SET ra.closer_campaigns=c.closer_campaigns WHERE ra.campaign_id=c.campaign_id AND ra.user_start LIKE 'va%';";
+
+		# Update closer campaigns if ivr is set to allow inbound.
+		$stmtA = "UPDATE osdial_remote_agents as ra,osdial_campaigns as c,osdial_ivr as i SET ra.closer_campaigns=c.closer_campaigns WHERE ra.campaign_id=c.campaign_id AND c.campaign_id=i.campaign_id AND i.allow_inbound='Y' AND ra.user_start LIKE 'va%';";
 		$affected_rows = $dbhA->do($stmtA);
    
 

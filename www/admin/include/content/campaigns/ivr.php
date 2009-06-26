@@ -451,8 +451,12 @@ if ($ADD == "4menu") {
                 $oivr_reserve_agents='2';
             }
 
+            if ($oivr_allow_inbound == '') {
+                $oivr_allow_inbound = 'Y';
+            }
+
             echo "<br><B><font color=navy>IVR MODIFIED: $oivr_id - $campaign_id - $oivr_name</font></B>\n";
-            $stmt = "UPDATE osdial_ivr SET name='$oivr_name',announcement='$oivr_announcement',repeat_loops='$oivr_repeat_loops',wait_loops='$oivr_wait_loops',wait_timeout='$oivr_wait_timeout',answered_status='$oivr_answered_status',virtual_agents='$oivr_virtual_agents',status='$oivr_status',timeout_action='$oivr_timeout_action',reserve_agents='$oivr_reserve_agents' where id='$oivr_id';";
+            $stmt = "UPDATE osdial_ivr SET name='$oivr_name',announcement='$oivr_announcement',repeat_loops='$oivr_repeat_loops',wait_loops='$oivr_wait_loops',wait_timeout='$oivr_wait_timeout',answered_status='$oivr_answered_status',virtual_agents='$oivr_virtual_agents',status='$oivr_status',timeout_action='$oivr_timeout_action',reserve_agents='$oivr_reserve_agents',allow_inbound='$oivr_allow_inbound' where id='$oivr_id';";
             $rslt = mysql_query($stmt, $link);
 
             $svr = get_first_record($link, 'servers', 'server_ip',"");
@@ -671,6 +675,10 @@ if ($ADD == "3menu") {
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Reserve Agents</td>\n";
     echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="4" maxlength="3" name="oivr_reserve_agents" value="' . $oivr['reserve_agents'] . '"> <font size=-1> Set to 10+ if Inbound.</font></td>';
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "      <td bgcolor=$oddrows align=right>Allow Inbound</td>\n";
+    echo '      <td bgcolor="' . $oddrows . '"><select name="oivr_allow_inbound"><option>Y</option><option>N</option><option>' . $oivr['allow_inbound'] . '</option></select></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Status</td>\n";
