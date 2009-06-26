@@ -1121,8 +1121,10 @@ while($one_day_interval > 0)
 							$stmtA = "DELETE from osdial_auto_calls where auto_call_id='$auto_call_id'";
 							$affected_rows = $dbhA->do($stmtA);
 	
-							$event_string = "|     dead call vac deleted|$auto_call_id|$CLlead_id|$CLuniqueid|$KLuniqueid[$kill_vac]|$KLcallerid[$kill_vac]|$end_epoch|$affected_rows|$KLchannel[$kill_vac]|$CLcall_type|$CLdial_timeout|$CLdrop_call_seconds|$call_timeout|$dialtime_log|$dialtime_catch|";
-						 	&event_logger;
+							if ($affected_rows > 0) {
+								$event_string = "|     dead call vac DELETED|$auto_call_id|$CLlead_id|$CLuniqueid|$KLuniqueid[$kill_vac]|$KLcallerid[$kill_vac]|$end_epoch|$affected_rows|$KLchannel[$kill_vac]|$CLcall_type|$CLdial_timeout|$CLdrop_call_seconds|$call_timeout|$dialtime_log|$dialtime_catch|";
+						 		&event_logger;
+							}
 	
 							$CLstage =~ s/LIVE|-//gi;
 							if ($CLstage < 0.25) {$CLstage=1;}
@@ -1151,15 +1153,19 @@ while($one_day_interval > 0)
 								$stmtA = "UPDATE osdial_list set status='$CLnew_status' where lead_id='$CLlead_id'";
 								$affected_rows = $dbhA->do($stmtA);
 	
-								$event_string = "|     dead call vac lead marked $CLnew_status|$CLlead_id|$CLphone_number|$CLstatus|";
-							 	&event_logger;
+								if ($affected_rows > 0) {
+									$event_string = "|     dead call vac lead marked $CLnew_status|$CLlead_id|$CLphone_number|$CLstatus|";
+							 		&event_logger;
+									}
 								}
 	
 							$stmtA = "UPDATE osdial_live_agents set status='PAUSED',random_id='10' where  callerid='$KLcallerid[$kill_vac]';";
 							$affected_rows = $dbhA->do($stmtA);
 	
-							$event_string = "|     dead call vla agent PAUSED $affected_rows|$CLlead_id|$CLphone_number|$CLstatus|";
-						 	&event_logger;
+							if ($affected_rows > 0) {
+								$event_string = "|     dead call vla agent PAUSED $affected_rows|$CLlead_id|$CLphone_number|$CLstatus|";
+						 		&event_logger;
+							}
 	
 							if ( ($enable_queuemetrics_logging > 0) && ($CLstatus =~ /LIVE/) )
 								{
@@ -1281,8 +1287,10 @@ while($one_day_interval > 0)
 								{
 								$stmtA = "DELETE from vicidial_auto_calls where auto_call_id='$auto_call_id'";
 								$affected_rows = $dbhA->do($stmtA);
-								$event_string = "|   M dead call vac deleted|$auto_call_id|$CLlead_id|$KLcallerid[$kill_vac]|$end_epoch|$affected_rows|$KLchannel[$kill_vac]|$CLcall_type|$CLlast_update_time < $XDtarget|";
-								&event_logger;
+								if ($affected_rows > 0) {
+									$event_string = "|   M dead call vac DELETED|$auto_call_id|$CLlead_id|$KLcallerid[$kill_vac]|$end_epoch|$affected_rows|$KLchannel[$kill_vac]|$CLcall_type|$CLlast_update_time < $XDtarget|";
+									&event_logger;
+									}
 								}
 							else
 								{
@@ -1300,6 +1308,7 @@ while($one_day_interval > 0)
 				}
 			$kill_vac++;
 			}
+		$CLuniqueid='';
 
 
 
@@ -1307,8 +1316,10 @@ while($one_day_interval > 0)
 		$stmtA = "UPDATE osdial_live_agents set status='PAUSED',random_id='10' where server_ip='$server_ip' and last_update_time < '$PDtsSQLdate' and status NOT IN('PAUSED') and extension NOT LIKE 'R/%'";
 		$affected_rows = $dbhA->do($stmtA);
 
-		$event_string = "|     lagged call vla agent PAUSED $affected_rows|$PDtsSQLdate|$BDtsSQLdate|$tsSQLdate|";
-		 &event_logger;
+		if ($affected_rows > 0) {
+			$event_string = "|     lagged call vla agent PAUSED $affected_rows|$PDtsSQLdate|$BDtsSQLdate|$tsSQLdate|";
+			 &event_logger;
+		}
 
 		if ($affected_rows > 0)
 			{
@@ -1363,8 +1374,10 @@ while($one_day_interval > 0)
 		$stmtA = "DELETE FROM osdial_auto_calls where server_ip='$server_ip' and call_time < '$XDSQLdate' and status NOT IN('XFER','CLOSER','LIVE')";
 		$affected_rows = $dbhA->do($stmtA);
 
-		$event_string = "|     lagged call vac agent DELETED $affected_rows|$XDSQLdate|\n$stmtA";
-		 &event_logger;
+		if ($affected_rows > 0) {
+			$event_string = "|     lagged call vac agent DELETED $affected_rows|$XDSQLdate|\n$stmtA";
+			 &event_logger;
+		}
 
 
 		### For debugging purposes, try to grab Jammed calls and log them to jam logfile
@@ -1415,8 +1428,10 @@ while($one_day_interval > 0)
 			$stmtA = "DELETE from osdial_auto_calls where auto_call_id='$auto_call_id'";
 			$affected_rows = $dbhA->do($stmtA);
 
-			$event_string = "|     lagged call vdac call DELETED $affected_rows|$BDtsSQLdate|$auto_call_id|$CLcallerid|$CLuniqueid|$CLphone_number|$CLstatus|";
-			 &event_logger;
+			if ($affected_rows > 0) {
+				$event_string = "|     lagged call vdac call DELETED $affected_rows|$BDtsSQLdate|$auto_call_id|$CLcallerid|$CLuniqueid|$CLphone_number|$CLstatus|";
+				 &event_logger;
+			}
 
 			if ( ($affected_rows > 0) && ($CLlead_id > 0) ) 
 				{
@@ -1452,6 +1467,7 @@ while($one_day_interval > 0)
 			$rec_count++;
 			}
 		$sthA->finish();
+		$CLuniqueid='';
 
 
 		if ($LUcount > 0)
@@ -1535,8 +1551,10 @@ while($one_day_interval > 0)
 			$stmtA = "DELETE FROM osdial_auto_calls where server_ip='$server_ip' and call_time < '$TDSQLdate' and status NOT IN('XFER','CLOSER')";
 			$affected_rows = $dbhA->do($stmtA);
 
-			$event_string = "|     lagged call vac agent DELETED $affected_rows|$TDSQLdate|LIVE|\n$stmtA";
-			 &event_logger;
+			if ($affected_rows > 0) {
+				$event_string = "|     lagged call vac agent DELETED $affected_rows|$TDSQLdate|LIVE|\n$stmtA";
+				 &event_logger;
+			}
 
 			### Grab Server values from the database in case they've changed
 			$stmtA = "SELECT max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context FROM servers where server_ip = '$server_ip';";
@@ -1720,7 +1738,7 @@ if ($SYSLOG)
 	### open the log file for writing ###
 	open(Lout, ">>$VDADLOGfile")
 			|| die "Can't open $VDADLOGfile: $!\n";
-	print Lout "$now_date|$event_string|\n";
+	print Lout "$now_date|$CLuniqueid|$event_string|\n";
 	close(Lout);
 	}
 $event_string='';
@@ -1734,7 +1752,7 @@ if ($useJAMdebugFILE)
 	### open the log file for writing ###
 	open(Jout, ">>$JAMdebugFILE")
 			|| die "Can't open $JAMdebugFILE: $!\n";
-	print Jout "$now_date|$jam_string|\n";
+	print Jout "$now_date|$CLuniqueid|$jam_string|\n";
 	close(Jout);
 	}
 $jam_string='';
