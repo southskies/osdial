@@ -1993,7 +1993,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
-        $rcnt = $cnt + 36;
+        $rcnt = $cnt + 37;
         echo '          document.osdial_form.' . $ffields[$cnt] . ".value = MDnextResponse_array[" . $rcnt . "];\n";
         $cnt++;
     }
@@ -2755,7 +2755,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
-        $rcnt = $cnt + 40;
+        $rcnt = $cnt + 41;
         echo '          document.osdial_form.' . $ffields[$cnt] . ".value = check_VDIC_array[" . $rcnt . "];\n";
         $cnt++;
     }
@@ -3083,7 +3083,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
-        $rcnt = $cnt + 26;
+        $rcnt = $cnt + 27;
         echo '          document.osdial_form.' . $ffields[$cnt] . ".value = check_RPLD_array[" . $rcnt . "];\n";
         $cnt++;
     }
