@@ -345,26 +345,26 @@ if ($ADD == "3fields" and $SUB == '2fields') {
     echo "<table cellspacing=1 cellpadding=1>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$evenrows align=right>Name</td>\n";
-    echo '      <td bgcolor=$evenrows><input type="text" size="15" maxlength="15" name="form_name" value="' . $form['name'] . '"></td>';
+    echo '      <td bgcolor=' . $evenrows . '><input type="text" size="15" maxlength="15" name="form_name" value="' . $form['name'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$evenrows align=right>Description</td>\n";
-    echo '      <td bgcolor=$evenrows><input type="text" size="50" maxlength="50" name="form_description" value="' . $form['description'] . '"></td>';
+    echo '      <td bgcolor=' . $evenrows . '><input type="text" size="50" maxlength="50" name="form_description" value="' . $form['description'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$evenrows align=right>Description (Line 2)</td>\n";
-    echo '      <td bgcolor=$evenrows><input type="text" size="50" maxlength="50" name="form_description2" value="' . $form['description2'] . '"></td>';
+    echo '      <td bgcolor=' . $evenrows . '><input type="text" size="50" maxlength="50" name="form_description2" value="' . $form['description2'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$evenrows align=right>Priority:</td>\n";
-    echo '      <td bgcolor=$evenrows><input type="text" size="2" maxlength="2" name="form_priority" value="' . $form['priority'] . '"></td>';
+    echo '      <td bgcolor=' . $evenrows . '><input type="text" size="2" maxlength="2" name="form_priority" value="' . $form['priority'] . '"></td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Campaigns:</td>\n";
     if ($form['campaigns'] == 'ALL') {
         $ac = 'checked';
     }
-    echo '      <td bgcolor=$oddrows><input type="checkbox" name="campaigns[]" value="-ALL-" ' . $ac . '> <b>ALL - FORM IN ALL CAMPAIGNS</b></td>';
+    echo '      <td bgcolor=' . $oddrows . '><input type="checkbox" name="campaigns[]" value="-ALL-" ' . $ac . '> <b>ALL - FORM IN ALL CAMPAIGNS</b></td>';
     echo "  </tr>\n";
     $campaigns = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name');
     foreach ($campaigns as $camp) {
@@ -377,7 +377,7 @@ if ($ADD == "3fields" and $SUB == '2fields') {
                 $cc = 'checked';
             }
         }
-        echo '      <td bgcolor=$oddrows><input type="checkbox" name="campaigns[]" value="' . $camp['campaign_id'] . '" ' . $cc . '> ' . $camp['campaign_id'] . ' - ' . $camp['campaign_name'] . '</td>';
+        echo '      <td bgcolor=' . $oddrows . '><input type="checkbox" name="campaigns[]" value="' . $camp['campaign_id'] . '" ' . $cc . '> ' . $camp['campaign_id'] . ' - ' . $camp['campaign_name'] . '</td>';
         echo "  </tr>\n";
     }
     echo "  <tr><td colspan=2 bgcolor=$evenrows>&nbsp;</td></tr>\n";
