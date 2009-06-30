@@ -1221,7 +1221,7 @@ while($one_day_interval > 0)
 									if (length($VD_alt_phone)>5) {
 										$VD_alt_dnc_count=0;
 										if ($VD_use_internal_dnc =~ /Y/) {
-											$stmtA="SELECT count(*) FROM vicidial_dnc where phone_number='$VD_alt_phone';";
+											$stmtA="SELECT count(*) FROM osdial_dnc where phone_number='$VD_alt_phone';";
 											if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1258,7 +1258,7 @@ while($one_day_interval > 0)
 									if (length($VD_address3)>5) {
 										$VD_addr3_dnc_count=0;
 										if ($VD_use_internal_dnc =~ /Y/) {
-											$stmtA="SELECT count(*) FROM vicidial_dnc where phone_number='$VD_address3';";
+											$stmtA="SELECT count(*) FROM osdial_dnc where phone_number='$VD_address3';";
 											if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1285,7 +1285,7 @@ while($one_day_interval > 0)
 							{
 							if ( ($KLcallerid[$kill_vac] =~ /^M\d\d\d\d\d\d\d\d\d\d/) && ($CLlast_update_time < $TDtarget) )
 								{
-								$stmtA = "DELETE from vicidial_auto_calls where auto_call_id='$auto_call_id'";
+								$stmtA = "DELETE from osdial_auto_calls where auto_call_id='$auto_call_id'";
 								$affected_rows = $dbhA->do($stmtA);
 								if ($affected_rows > 0) {
 									$event_string = "|   M dead call vac DELETED|$auto_call_id|$CLlead_id|$KLcallerid[$kill_vac]|$end_epoch|$affected_rows|$KLchannel[$kill_vac]|$CLcall_type|$CLlast_update_time < $XDtarget|";
