@@ -1,0 +1,15 @@
+
+
+Installation
+-----------------
+
+This tar-ball is specifically created for the generation of RPM packages.
+Currently, only RedHat Enterprise Linux 5 and CentOS 5 are supported.
+
+
+Dialer systems can be very complex, and it is our view that in order to
+provide a quality system the installed dialer system must be consistent
+and purpose built.  This means that only ISOs are currently available for
+fresh installations.
+
+
