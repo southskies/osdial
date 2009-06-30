@@ -1,9 +1,9 @@
 #create database osdial;
 #use osdial;
 
-GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES on osdial.* TO 'osdial'@'127.0.0.1' IDENTIFIED BY 'osdial1234';
-GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES on osdial.* TO 'osdial'@'localhost' IDENTIFIED BY 'osdial1234';
-GRANT SELECT,INSERT,UPDATE,DELETE,LOCK TABLES on osdial.* TO 'osdial'@'%' IDENTIFIED BY 'osdial1234';
+GRANT ALL on osdial.* TO 'osdial'@'127.0.0.1' IDENTIFIED BY 'osdial1234';
+GRANT ALL on osdial.* TO 'osdial'@'localhost' IDENTIFIED BY 'osdial1234';
+GRANT ALL on osdial.* TO 'osdial'@'%' IDENTIFIED BY 'osdial1234';
 
  CREATE TABLE phones (
 extension VARCHAR(100),

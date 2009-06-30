@@ -231,6 +231,12 @@ $ext_context = get_variable("ext_context");
 $extension = get_variable("extension");
 $external_key = get_variable("external_key");
 $external_key_field = get_variable("external_key_field");
+$external_dnc_active = get_variable("external_dnc_active");
+$external_dnc_address = get_variable("external_dnc_address");
+$external_dnc_database = get_variable("external_dnc_database");
+$external_dnc_username = get_variable("external_dnc_username");
+$external_dnc_password = get_variable("external_dnc_password");
+$external_dnc_sql = get_variable("external_dnc_sql");
 
 $fast_refresh_rate = get_variable("fast_refresh_rate");
 $fields = get_variable('fields');

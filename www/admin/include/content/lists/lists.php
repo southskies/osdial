@@ -1765,7 +1765,7 @@ if ($ADD==411)
 		{
 		echo "<br><B><font color=navy>LIST MODIFIED: $list_id</font></B>\n";
 
-		$stmt="UPDATE osdial_lists set list_name='$list_name',campaign_id='$campaign_id',active='$active',list_description='$list_description',list_changedate='$SQLdate' where list_id='$list_id';";
+		$stmt="UPDATE osdial_lists set list_name='$list_name',campaign_id='$campaign_id',active='$active',list_description='$list_description',list_changedate='$SQLdate',scrub_dnc='$scrub_dnc' where list_id='$list_id';";
 		$rslt=mysql_query($stmt, $link);
 
 		if ($reset_list == 'Y')
@@ -1895,6 +1895,9 @@ if ($ADD==311)
 	$list_description = $row[4];
 	$list_changedate = $row[5];
 	$list_lastcalldate = $row[6];
+	$list_scrub_dnc = $row[7];
+	$list_scrub_last = $row[8];
+	$list_scrub_info = $row[9];
 
 	# grab names of global statuses and statuses in the selected campaign
 	$stmt="SELECT * from osdial_statuses order by status";
@@ -1919,6 +1922,11 @@ if ($ADD==311)
 		$o++;
 	}
 	# end grab status names
+
+	$stmt="SELECT data FROM configuration WHERE name='External_DNC_Active';";
+	$rslt=mysql_query($stmt, $link);
+	$row=mysql_fetch_row($rslt);
+    $can_scrub_dnc = $row[0];
 
 
 	echo "<center><br><font color=navy size=+1>MODIFY A LIST</font><form action=$PHP_SELF method=POST><br><br>\n";
@@ -1949,6 +1957,10 @@ if ($ADD==311)
 	echo "<tr bgcolor=$oddrows><td align=right>Reset Lead-Called-Status for this list: </td><td align=left><select size=1 name=reset_list><option>Y</option><option SELECTED>N</option></select>$NWB#osdial_lists-reset_list$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>List Change Date: </td><td align=left>$list_changedate &nbsp; $NWB#osdial_lists-list_changedate$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>List Last Call Date: </td><td align=left>$list_lastcalldate &nbsp; $NWB#osdial_lists-list_lastcalldate$NWE</td></tr>\n";
+    if ($can_scrub_dnc == 'Y') {
+	    echo "<tr bgcolor=$oddrows><td align=right>Scrub External DNC Now: </td><td align=left><select size=1 name=scrub_dnc><option>Y</option><option selected>N</option></select>$NWB#osdial_lists-srub_dnc$NWE</td></tr>\n";
+	    echo "<tr bgcolor=$oddrows><td align=right>Last External Scrub: </td><td align=left>$list_scrub_last : $list_scrub_info</td></tr>\n";
+    }
 	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2>";
 	echo "<input type=button name=addleads value=\"ADD LEADS\" onclick=\"window.location='admin.php?ADD=122&list_id_override=$row[0]'\">&nbsp;&nbsp;|&nbsp;&nbsp;";
 	echo "<input type=submit name=SUBMIT value=SUBMIT>";

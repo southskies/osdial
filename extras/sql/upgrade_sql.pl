@@ -33,7 +33,7 @@ my $prog = 'upgrade_sql.pl';
 
 my $secStart = time();
 my($DB, $CLOhelp, $CLOtest);
-my($dbhA);
+my($dbhT,$dbhA);
 
 # Get OSD configuration directives.
 my $config = getOSDconfig('/etc/osdial.conf');
@@ -95,8 +95,23 @@ if ( ! -d "/var/lib/mysql/" . $config->{VARDB_database} ) {
 	$vmap{'examples'} = '999999';
 }
 
-$config->{VARDB_user} = 'root';
-$config->{VARDB_pass} = '';
+my $connerr = 0;
+
+$dbhT = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':' . $config->{VARDB_server} . ':' . $config->{VARDB_port}, $config->{VARDB_user}, $config->{VARDB_pass} )
+   or ($connerr=1);
+$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+$dbhT->disconnect();
+
+if ($connerr) {
+	$connerr = 0;
+	$dbhT = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':' . $config->{VARDB_server} . ':' . $config->{VARDB_port}, "root", "" )
+	  or die "Couldn't connect to database: " . DBI->errstr;
+	$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+	$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+	$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'localhost' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+	$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'\%' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+	$dbhT->disconnect();
+}
 
 $dbhA = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':' . $config->{VARDB_server} . ':' . $config->{VARDB_port}, $config->{VARDB_user}, $config->{VARDB_pass} )
   or die "Couldn't connect to database: " . DBI->errstr;

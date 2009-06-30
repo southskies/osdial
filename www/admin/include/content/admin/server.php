@@ -711,6 +711,101 @@ if ($ADD=="399111111111111") {
 
 
 
+######################
+# ADD=499911111111111 modify external dnc database settings
+######################
+
+if ($ADD==499911111111111) {
+	if ($LOGmodify_servers==1) {
+
+		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=navy SIZE=2>";
+		echo "<br>OSDial EXTERNAL DNC DATABASE MODIFIED\n";
+
+		$stmt1 = "UPDATE configuration SET data='$external_dnc_active' WHERE name='External_DNC_Active';";
+		$stmt2 = "UPDATE configuration SET data='$external_dnc_address' WHERE name='External_DNC_Address';";
+		$stmt3 = "UPDATE configuration SET data='$external_dnc_database' WHERE name='External_DNC_Database';";
+		$stmt4 = "UPDATE configuration SET data='$external_dnc_username' WHERE name='External_DNC_Username';";
+		$stmt5 = "UPDATE configuration SET data='$external_dnc_password' WHERE name='External_DNC_Password';";
+		$stmt6 = "UPDATE configuration SET data='$external_dnc_sql' WHERE name='External_DNC_SQL';";
+
+		$rslt = mysql_query($stmt1, $link);
+		$rslt = mysql_query($stmt2, $link);
+		$rslt = mysql_query($stmt3, $link);
+		$rslt = mysql_query($stmt4, $link);
+		$rslt = mysql_query($stmt5, $link);
+		$rslt = mysql_query($stmt6, $link);
+
+	### LOG CHANGES TO LOG FILE ###
+		if ($WeBRooTWritablE > 0) {
+			$fp = fopen ("./admin_changes_log.txt", "a");
+			fwrite ($fp, "$date|MODIFY EXTERNAL DNC|$PHP_AUTH_USER|$ip|$stmt1|\n");
+			fwrite ($fp, "$date|MODIFY EXTERNAL DNC|$PHP_AUTH_USER|$ip|$stmt2|\n");
+			fwrite ($fp, "$date|MODIFY EXTERNAL DNC|$PHP_AUTH_USER|$ip|$stmt3|\n");
+			fwrite ($fp, "$date|MODIFY EXTERNAL DNC|$PHP_AUTH_USER|$ip|$stmt4|\n");
+			fwrite ($fp, "$date|MODIFY EXTERNAL DNC|$PHP_AUTH_USER|$ip|$stmt5|\n");
+			fwrite ($fp, "$date|MODIFY EXTERNAL DNC|$PHP_AUTH_USER|$ip|$stmt6|\n");
+			fclose($fp);
+		}
+	} else {
+		echo "<font color=red>You do not have permission to view this page</font>\n";
+		exit;
+	}
+	$ADD=399911111111111;	# go to osdial dnc database settings form below
+}
+
+######################
+# ADD=399911111111111 modify external dnc database settings
+######################
+
+if ($ADD=="399911111111111") {
+	if ($LOGmodify_servers==1) {
+		echo "<TABLE align=center><TR><TD>\n";
+		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+
+		$stmt="SELECT name,data FROM configuration WHERE name LIKE 'External_DNC%';";
+		$rslt = mysql_query($stmt, $link);
+		$rows = mysql_num_rows($rslt);
+
+                $c = 0;
+		while ($rows > $c) {
+			$row = mysql_fetch_row($rslt);
+			if ($row[0] == "External_DNC_Active") {
+				$external_dnc_active = $row[1];
+			} elseif ($row[0] == "External_DNC_Address") {
+				$external_dnc_address = $row[1];
+			} elseif ($row[0] == "External_DNC_Database") {
+				$external_dnc_username = $row[1];
+			} elseif ($row[0] == "External_DNC_Username") {
+				$external_dnc_username = $row[1];
+			} elseif ($row[0] == "External_DNC_Password") {
+				$external_dnc_password = $row[1];
+			} elseif ($row[0] == "External_DNC_SQL") {
+				$external_dnc_sql = $row[1];
+			}
+			$c++;
+		}
+
+		echo "<center><br><font color=navy size=+1>MODIFY DNC DATABASE SETTINGS</font><br><form action=$PHP_SELF method=POST>\n";
+		echo "<input type=hidden name=ADD value=499911111111111>\n";
+		echo "<center><TABLE width=$section_width cellspacing=3>\n";
+
+		echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select name=external_dnc_active><option>Y</option><option>N</option><option selected>$external_dnc_active</option></select>$NWB#settings-external_dnc_active$NWE</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>DNC MySQL Address: </td><td align=left><input type=text name=external_dnc_address size=30 maxlength=30 value=\"$external_dnc_address\">$NWB#settings-external_dnc_address$NWE</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>Database Name: </td><td align=left><input type=text name=external_dnc_database size=20 maxlength=20 value=\"$external_dnc_database\">$NWB#settings-external_dnc_database$NWE</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>Username: </td><td align=left><input type=text name=external_dnc_username size=20 maxlength=20 value=\"$external_dnc_username\">$NWB#settings-external_dnc_username$NWE</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=external_dnc_password size=20 maxlength=20 value=\"$external_dnc_password\">$NWB#settings-external_dnc_password$NWE</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>SQL: </td><td align=left><input type=text name=external_dnc_sql size=40 maxlength=255 value=\"$external_dnc_sql\">$NWB#settings-external_dnc_sql$NWE</td></tr>\n";
+
+
+		echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
+		echo "</TABLE></center>\n";
+		echo "</form>\n";
+	} else {
+		echo "You do not have permission to view this page\n";
+		exit;
+	}
+}
+
 
 
 #### QC Servers
