@@ -471,6 +471,7 @@ $user_group = get_variable("user_group");
 $user_level = get_variable("user_level");
 $user_start = get_variable("user_start");
 $user_switching_enabled = get_variable("user_switching_enabled");
+$use_recycle_gap = get_variable("use_recycle_gap");
 
 $vcl_id = get_variable("vcl_id");
 $vcl_name = get_variable("vcl_name");
