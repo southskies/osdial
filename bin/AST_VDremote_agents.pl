@@ -389,6 +389,13 @@ while($one_day_interval > 0)
 		@autocallexists=@MT;
 		@calllogfinished=@MT;
 		@closerlogfinished=@MT;
+
+		# Update closer campaigns if ivr is set to allow inbound.
+		$stmtA = "UPDATE osdial_remote_agents as ra,osdial_campaigns as c,osdial_ivr as i SET ra.closer_campaigns=c.closer_campaigns WHERE ra.campaign_id=c.campaign_id AND c.campaign_id=i.campaign_id AND i.allow_inbound='Y' AND ra.user_start LIKE 'va%';";
+		$affected_rows = $dbhA->do($stmtA);
+		$stmtA = "UPDATE osdial_remote_agents as ra,osdial_campaigns as c,osdial_ivr as i SET ra.closer_campaigns='' WHERE ra.campaign_id=c.campaign_id AND c.campaign_id=i.campaign_id AND i.allow_inbound='N' AND ra.user_start LIKE 'va%';";
+		$affected_rows = $dbhA->do($stmtA);
+
 	###############################################################################
 	###### first grab all of the ACTIVE remote agents information from the database
 	###############################################################################
@@ -439,10 +446,6 @@ while($one_day_interval > 0)
 			}
 		$sthA->finish();
 		if ($DB) {print STDERR "$user_counter live remote agents ACTIVE\n";}
-
-		# Update closer campaigns if ivr is set to allow inbound.
-		$stmtA = "UPDATE osdial_remote_agents as ra,osdial_campaigns as c,osdial_ivr as i SET ra.closer_campaigns=c.closer_campaigns WHERE ra.campaign_id=c.campaign_id AND c.campaign_id=i.campaign_id AND i.allow_inbound='Y' AND ra.user_start LIKE 'va%';";
-		$affected_rows = $dbhA->do($stmtA);
    
 
 
