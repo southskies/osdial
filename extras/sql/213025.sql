@@ -11,5 +11,8 @@ INSERT INTO configuration (name,data) values('External_DNC_Username','');
 INSERT INTO configuration (name,data) values('External_DNC_Password','');
 INSERT INTO configuration (name,data) values('External_DNC_SQL','');
 
+INSERT INTO osdial_statuses VALUES ('DNCL','DNC From Another Lead/List','N','N','SYSTEM');
+INSERT INTO osdial_statuses VALUES ('DNCE','DNC From External DNC','N','N','SYSTEM');
+
 UPDATE system_settings SET version='2.1.3.025';
 UPDATE system_settings SET last_update_check=DATE_SUB(NOW(), INTERVAL 1 DAY);
