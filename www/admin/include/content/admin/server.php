@@ -721,12 +721,12 @@ if ($ADD==499911111111111) {
 		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=navy SIZE=2>";
 		echo "<br>OSDial EXTERNAL DNC DATABASE MODIFIED\n";
 
-		$stmt1 = "UPDATE configuration SET data='$external_dnc_active' WHERE name='External_DNC_Active';";
-		$stmt2 = "UPDATE configuration SET data='$external_dnc_address' WHERE name='External_DNC_Address';";
-		$stmt3 = "UPDATE configuration SET data='$external_dnc_database' WHERE name='External_DNC_Database';";
-		$stmt4 = "UPDATE configuration SET data='$external_dnc_username' WHERE name='External_DNC_Username';";
-		$stmt5 = "UPDATE configuration SET data='$external_dnc_password' WHERE name='External_DNC_Password';";
-		$stmt6 = "UPDATE configuration SET data='$external_dnc_sql' WHERE name='External_DNC_SQL';";
+		$stmt1 = "UPDATE configuration SET data='" . mysql_real_escape_string($external_dnc_active) . "' WHERE name='External_DNC_Active';";
+		$stmt2 = "UPDATE configuration SET data='" . mysql_real_escape_string($external_dnc_address) . "' WHERE name='External_DNC_Address';";
+		$stmt3 = "UPDATE configuration SET data='" . mysql_real_escape_string($external_dnc_database) . "' WHERE name='External_DNC_Database';";
+		$stmt4 = "UPDATE configuration SET data='" . mysql_real_escape_string($external_dnc_username) . "' WHERE name='External_DNC_Username';";
+		$stmt5 = "UPDATE configuration SET data='" . mysql_real_escape_string($external_dnc_password) . "' WHERE name='External_DNC_Password';";
+		$stmt6 = "UPDATE configuration SET data='" . mysql_real_escape_string($external_dnc_sql) . "' WHERE name='External_DNC_SQL';";
 
 		$rslt = mysql_query($stmt1, $link);
 		$rslt = mysql_query($stmt2, $link);
@@ -774,7 +774,7 @@ if ($ADD=="399911111111111") {
 			} elseif ($row[0] == "External_DNC_Address") {
 				$external_dnc_address = $row[1];
 			} elseif ($row[0] == "External_DNC_Database") {
-				$external_dnc_username = $row[1];
+				$external_dnc_database = $row[1];
 			} elseif ($row[0] == "External_DNC_Username") {
 				$external_dnc_username = $row[1];
 			} elseif ($row[0] == "External_DNC_Password") {

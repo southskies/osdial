@@ -407,8 +407,9 @@ if (strlen($admin_hh) > 1) {
                 <font face="arial,helvetica" color=black size=<?= $subheader_font_size ?>> &nbsp; 
                     <a href="<?= $PHP_SELF ?>?ADD=100000000000"> Show Servers </a> &nbsp; &nbsp; &nbsp; 
                     <a href="<?= $PHP_SELF ?>?ADD=111111111111"> Add A New Server </a> &nbsp; &nbsp; 
-                    <a href="<?= $PHP_SELF ?>?ADD=399111111111111"> Archive Server</a> &nbsp; &nbsp; 
-                    <a href="<?= $PHP_SELF ?>?ADD=399211111111111"> QC Servers</a>
+                    <a href="<?= $PHP_SELF ?>?ADD=399111111111111"> Archive Server </a> &nbsp; &nbsp; 
+                    <a href="<?= $PHP_SELF ?>?ADD=399211111111111"> QC Servers </a> &nbsp; &nbsp;
+                    <a href="<?= $PHP_SELF ?>?ADD=399911111111111"> External DNC Database </a>
                 </font>
             </td>
         </tr>

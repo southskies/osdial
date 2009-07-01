@@ -237,9 +237,11 @@ if ($ADD==621111111111)		{$hh='admin';	$sh='server';	$title = "DELETE SERVER OSD
 if ($ADD==311111111111)		{$hh='admin';	$sh='server';	$title = "MODIFY SERVER";}
 if ($ADD==499111111111111)	{$hh='admin';	$sh='server';	$title = "MODIFY ARCHIVE SERVER SETTINGS";}
 if ($ADD==499211111111111)	{$hh='admin';	$sh='server';	$title = "MODIFY QC SERVER SETTINGS";}
+if ($ADD==499911111111111)	{$hh='admin';	$sh='server';	$title = "MODIFY DNC DATABASE SETTINGS";}
 if ($ADD==699211111111111)	{$hh='admin';	$sh='server';	$title = "DELETE QC SERVER SETTINGS";}
 if ($ADD==399111111111111)	{$hh='admin';	$sh='server';	$title = "MODIFY ARCHIVE SERVER SETTINGS";}
 if ($ADD==399211111111111)	{$hh='admin';	$sh='server';	$title = "MODIFY QC SERVER SETTINGS";}
+if ($ADD==399911111111111)	{$hh='admin';	$sh='server';	$title = "MODIFY DNC DATABASE SETTINGS";}
 
 # Admin - conferences
 if ($ADD==1000000000000)	{$hh='admin';	$sh='conference';	$title = "CONFERENCE LIST";}

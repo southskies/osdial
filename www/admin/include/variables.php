@@ -438,6 +438,7 @@ $script_comments = get_variable("script_comments");
 $script_id = get_variable("script_id");
 $script_name = get_variable("script_name");
 $script_text = get_variable("script_text");
+$scrub_dnc = get_variable("scrub_dnc");
 $selectable = get_variable("selectable");
 $SERVdisplay = get_variable("SERVdisplay");
 $server_description = get_variable("server_description");

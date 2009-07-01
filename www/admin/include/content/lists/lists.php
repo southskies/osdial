@@ -1925,8 +1925,8 @@ if ($ADD==311)
 
 	$stmt="SELECT data FROM configuration WHERE name='External_DNC_Active';";
 	$rslt=mysql_query($stmt, $link);
-	$row=mysql_fetch_row($rslt);
-    $can_scrub_dnc = $row[0];
+	$rowd=mysql_fetch_row($rslt);
+    $can_scrub_dnc = $rowd[0];
 
 
 	echo "<center><br><font color=navy size=+1>MODIFY A LIST</font><form action=$PHP_SELF method=POST><br><br>\n";
@@ -1958,7 +1958,7 @@ if ($ADD==311)
 	echo "<tr bgcolor=$oddrows><td align=right>List Change Date: </td><td align=left>$list_changedate &nbsp; $NWB#osdial_lists-list_changedate$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>List Last Call Date: </td><td align=left>$list_lastcalldate &nbsp; $NWB#osdial_lists-list_lastcalldate$NWE</td></tr>\n";
     if ($can_scrub_dnc == 'Y') {
-	    echo "<tr bgcolor=$oddrows><td align=right>Scrub External DNC Now: </td><td align=left><select size=1 name=scrub_dnc><option>Y</option><option selected>N</option></select>$NWB#osdial_lists-srub_dnc$NWE</td></tr>\n";
+	    echo "<tr bgcolor=$oddrows><td align=right>External DNC Scrub Now: </td><td align=left><select size=1 name=scrub_dnc><option>Y</option><option selected>N</option></select>$NWB#osdial_lists-srub_dnc$NWE</td></tr>\n";
 	    echo "<tr bgcolor=$oddrows><td align=right>Last External Scrub: </td><td align=left>$list_scrub_last : $list_scrub_info</td></tr>\n";
     }
 	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2>";
