@@ -83,24 +83,24 @@ while (my $line = <FILE>) {
 }
 close FILE;
 
+my $connerr = 0;
 my $install = 0;
 my $examples = 0;
 if ( ! -d "/var/lib/mysql/" . $config->{VARDB_database} ) {
 	print "    OSDial database (" . $config->{VARDB_database} . ") is not detected, creating.\n";
 	my $cdb = "CREATE DATABASE " . $config->{VARDB_database} . ";";
 	`echo "$cdb" | mysql -u root`;
+	$connerr = 1;
 	$install = 1;
 	$examples = 1;
 	$vmap{'install'} = '000000';
 	$vmap{'examples'} = '999999';
+} else {
+	$dbhT = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':' . $config->{VARDB_server} . ':' . $config->{VARDB_port}, $config->{VARDB_user}, $config->{VARDB_pass} )
+	   or ($connerr=1);
+	$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+	$dbhT->disconnect();
 }
-
-my $connerr = 0;
-
-$dbhT = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':' . $config->{VARDB_server} . ':' . $config->{VARDB_port}, $config->{VARDB_user}, $config->{VARDB_pass} )
-   or ($connerr=1);
-$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
-$dbhT->disconnect();
 
 if ($connerr) {
 	$connerr = 0;
