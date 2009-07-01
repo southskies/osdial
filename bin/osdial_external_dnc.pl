@@ -144,11 +144,11 @@ $sthA->finish();
 
 
 # Get lead_id,phone_number of leads to mark as DNCE
-my @leads;
 foreach my $list_id (keys %lists) {
 	my $stmtA = "UPDATE osdial_lists SET scrub_last=NOW(),scrub_dnc='N' WHERE list_id='$list_id';";
 	$dbhA->do($stmtA);
 
+	# Get statuses to scan through.
 	my $stmtA = "SELECT dial_statuses FROM osdial_campaigns WHERE campaign_id='$lists{$list_id}';";
 	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -158,11 +158,13 @@ foreach my $list_id (keys %lists) {
 	$stats =~ s/^',//;
 	$stats =~ s/,'-$//;
 
+	# Scan main phone number
 	my $stmtA = "SELECT lead_id,phone_number FROM osdial_list WHERE list_id='$list_id' and status IN ($stats);";
 	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	my $tot_row = $sthA->rows();
 	my $cur_row = 0;
+	print " Main Rows: $tot_row \n" if ($DB);
 	while (my @aryA = $sthA->fetchrow_array) {
 		$cur_row++;
 		my $lead_id = $aryA[0];
@@ -188,11 +190,79 @@ foreach my $list_id (keys %lists) {
 			unless ($CLOtest) {
 				my $stmtC = "UPDATE osdial_list SET status='DNCE' WHERE lead_id='$lead_id';";
 				$dbhC->do($stmtC);
+				my $stmtC = "INSERT IGNORE INTO osdial_dnc SET phone_number='$fullphone';";
+				$dbhC->do($stmtC);
 			}
 		}
 	}
 	my $stmtC = "UPDATE osdial_lists SET scrub_info='$tot_row/$tot_row' WHERE list_id='$list_id';";
 	$dbhC->do($stmtC);
+	$sthA->finish();
+
+	# Scan alt phone number
+	my $stmtA = "SELECT lead_id,alt_phone FROM osdial_list WHERE list_id='$list_id' and alt_phone!='';";
+	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
+	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+	my $tot_row = $sthA->rows();
+	print " ALT Rows: $tot_row \n" if ($DB);
+	while (my @aryA = $sthA->fetchrow_array) {
+		my $lead_id = $aryA[0];
+		my $fullphone = $aryA[1];
+		my $areacode = substr($fullphone, 0, 3);
+		my $phone = substr($fullphone, 3, 7);
+		my $esql = $ext_dnc{'External_DNC_SQL'};
+		$esql =~ s/%AREACODE%/$areacode/g;
+		$esql =~ s/%FULLPHONE%/$fullphone/g;
+		$esql =~ s/%NUMBER%/$phone/g;
+
+		my $fcnt = 0;
+		my $sthB = $dbhB->prepare($esql) or die "preparing: ", $dbhB->errstr;
+		$sthB->execute or die "executing: $esql ", $dbhB->errstr;
+		while (my @aryB = $sthB->fetchrow_array) {
+			$fcnt = 1 if ($aryB[0] > 0);
+		}
+		$sthB->finish();
+		if ($fcnt) {
+			print "  Found ALT $lead_id : $fullphone \n" if ($DB);
+			unless ($CLOtest) {
+				my $stmtC = "INSERT IGNORE INTO osdial_dnc SET phone_number='$fullphone';";
+				$dbhC->do($stmtC);
+			}
+		}
+	}
+	$sthA->finish();
+
+	# Scan addr3 phone number
+	my $stmtA = "SELECT lead_id,address3 FROM osdial_list WHERE list_id='$list_id' and address3!='';";
+	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
+	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+	my $tot_row = $sthA->rows();
+	print " ADDR3 Rows: $tot_row \n" if ($DB);
+	while (my @aryA = $sthA->fetchrow_array) {
+		my $lead_id = $aryA[0];
+		my $fullphone = $aryA[1];
+		my $areacode = substr($fullphone, 0, 3);
+		my $phone = substr($fullphone, 3, 7);
+		my $esql = $ext_dnc{'External_DNC_SQL'};
+		$esql =~ s/%AREACODE%/$areacode/g;
+		$esql =~ s/%FULLPHONE%/$fullphone/g;
+		$esql =~ s/%NUMBER%/$phone/g;
+
+		my $fcnt = 0;
+		my $sthB = $dbhB->prepare($esql) or die "preparing: ", $dbhB->errstr;
+		$sthB->execute or die "executing: $esql ", $dbhB->errstr;
+		while (my @aryB = $sthB->fetchrow_array) {
+			$fcnt = 1 if ($aryB[0] > 0);
+		}
+		$sthB->finish();
+		if ($fcnt) {
+			print "  Found ADDR3 $lead_id : $fullphone \n" if ($DB);
+			unless ($CLOtest) {
+				my $stmtC = "INSERT IGNORE INTO osdial_dnc SET phone_number='$fullphone';";
+				$dbhC->do($stmtC);
+			}
+		}
+	}
 	$sthA->finish();
 }
 
