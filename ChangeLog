@@ -1,5 +1,52 @@
+2009-07-03  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r331] extras/osdial.cron: Set to archive on default install
+	* [r330] bin/osdial_astgen.pl: Add g729 support to intra-server and
+	  client sip
+
+2009-07-02  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r329] bin/FastAGI_log.pl: Fix for DNC on alt/addr3.
+
+2009-07-01  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r328] extras/sql/upgrade_sql.pl: Fix upgrade_sql on new install
+	* [r327] extras/sql/213025.sql: DNC adjustments
+	* [r326] bin/osdial_external_dnc.pl: External DNC scan ALT and
+	  ADDR3 and add to osdial_dnc if found.
+	* [r325] bin/osdial_external_dnc.pl, extras/osdial.cron,
+	  extras/sql/213025.sql,
+	  www/admin/include/content/admin/server.php,
+	  www/admin/include/content/lists/lists.php,
+	  www/admin/include/header.php, www/admin/include/menu.php,
+	  www/admin/include/variables.php: External DNC scrubbing
+
+2009-06-30  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r324] README: Add some installation notes to README.
+	* [r323] extras/sql/000000.sql, extras/sql/213024.sql,
+	  extras/sql/213025.sql, extras/sql/upgrade_sql.map,
+	  extras/sql/upgrade_sql.pl, version,
+	  www/admin/include/content/admin/server.php,
+	  www/admin/include/content/campaigns/ivr.php,
+	  www/admin/include/content/lists/lists.php,
+	  www/admin/include/variables.php: Add fields / screens for
+	  External DNC list checking.
+	* [r322] bin/AST_VDremote_agents.pl: Move closer_campaign insertion
+	  on virtual agent
+	* [r321] bin/AST_VDauto_dial.pl: Fix DNC on alt-number
+	* [r320] www/agent/include/osdial.js, www/agent/vdc_db_query.php:
+	  Fix additional fields, off by one.
+	* [r319] www/admin/include/content/campaigns/fields.php: Fix
+	  colors.
+	* [r318] www/admin/include/variables.php: Fix use_recycle_gap
+
 2009-06-26  Lott Caskey <lottcaskey@gmail.com>
 
+	* [r317] ChangeLog, bin/AST_VDremote_agents.pl,
+	  extras/sql/213024.sql, extras/sql/upgrade_sql.map, version,
+	  www/admin/include/content/campaigns/ivr.php,
+	  www/admin/include/variables.php: Added allow_inbound to ivr.
 	* [r316] bin/AST_VDauto_dial.pl: Update to not output debug if no
 	  records were changed. Added uniqueid to output.
 	* [r315] bin/FastAGI_log.pl: Fix FastAGI typo.
