@@ -187,6 +187,7 @@ sub gen_servers {
 	$isvr .= "permit=0.0.0.0/0.0.0.0\n";
 	$isvr .= "secret=$pass\n";
 	$isvr .= "disallow=all\n";
+	$isvr .= "allow=g729\n";
 	$isvr .= "allow=ulaw\n";
 	$isvr .= "qualify=no\n";
 
@@ -200,6 +201,7 @@ sub gen_servers {
 	$isvr .= "permit=0.0.0.0/0.0.0.0\n";
 	$isvr .= "secret=$pass\n";
 	$isvr .= "disallow=all\n";
+	$isvr .= "allow=g729\n";
 	$isvr .= "allow=ulaw\n";
 	$isvr .= "qualify=no\n";
 
@@ -228,6 +230,7 @@ sub gen_servers {
 		$isvr .= "auth=md5\n";
 		$isvr .= "secret=$pass\n";
 		$isvr .= "disallow=all\n";
+		$isvr .= "allow=g729\n";
 		$isvr .= "allow=ulaw\n";
 		$isvr .= "context=osdial\n";
 		$isvr .= "nat=no\n";
@@ -260,6 +263,7 @@ sub gen_servers {
 		$isvr .= "auth=md5\n";
 		$isvr .= "secret=$pass\n";
 		$isvr .= "disallow=all\n";
+		$isvr .= "allow=g729\n";
 		$isvr .= "allow=ulaw\n";
 		$isvr .= "peercontext=osdial\n";
 		$isvr .= "nat=no\n";
@@ -433,8 +437,6 @@ sub gen_phones {
 		if ($aryA[4] eq "SIP" and $aryA[0] !~ /\@/) {
 			$sphn .= ";\n[". $aryA[0] ."]\n";
 			$sphn .= "type=friend\n";
-			$sphn .= "disallow=all\n";
-			$sphn .= "allow=ulaw\n";
 			$sphn .= "username=" . $aryA[0] . "\n";
 			$sphn .= "secret=" . $aryA[3] . "\n";
 			if ($aryA[2]) {
@@ -442,11 +444,20 @@ sub gen_phones {
 			} else {
 				$sphn .= "host=dynamic\n";
 			}
-			if ($aryA[5] =~ /Grandstream/i) {
+			if ($aryA[5] =~ /g729/i) {
 				$sphn .= "dtmfmode=rfc2833\n";
 				$sphn .= "relaxdtmf=yes\n";
+				$sphn .= "disallow=all\n";
+				$sphn .= "allow=g729\n";
+			} elsif ($aryA[5] =~ /Grandstream/i) {
+				$sphn .= "dtmfmode=rfc2833\n";
+				$sphn .= "relaxdtmf=yes\n";
+				$sphn .= "disallow=all\n";
+				$sphn .= "allow=ulaw\n";
 			} else {
 				$sphn .= "dtmfmode=inband\n";
+				$sphn .= "disallow=all\n";
+				$sphn .= "allow=ulaw\n";
 			}
 			$sphn .= "qualify=yes\n";
 			$sphn .= "nat=yes\n";
@@ -455,6 +466,7 @@ sub gen_phones {
 			$iphn .= "type=friend\n";
 			$iphn .= "disallow=all\n";
 			$iphn .= "allow=ulaw\n";
+			$iphn .= "allow=g729\n";
 			$iphn .= "username=" . $aryA[0] . "\n";
 			$iphn .= "secret=" . $aryA[3] . "\n";
 			if ($aryA[2]) {
@@ -462,7 +474,15 @@ sub gen_phones {
 			} else {
 				$iphn .= "host=dynamic\n";
 			}
-			$iphn .= "dtmfmode=inband\n";
+			if ($aryA[5] =~ /g729/i) {
+				$iphn .= "dtmfmode=rfc2833\n";
+				$iphn .= "disallow=all\n";
+				$iphn .= "allow=g729\n";
+			} else {
+				$iphn .= "dtmfmode=inband\n";
+				$iphn .= "disallow=all\n";
+				$iphn .= "allow=ulaw\n";
+			}
 			$iphn .= "qualify=yes\n";
 			$iphn .= "nat=yes\n";
 		}
