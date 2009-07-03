@@ -65,7 +65,7 @@
 24 0 * * * /usr/bin/find /var/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs rm -f
 
 ### (dialer) Send Recordings to archive server
-#* * * * * /opt/osdial/bin/AST_audio_archive.pl
+* * * * * /opt/osdial/bin/AST_audio_archive.pl
 
 ### (archive) Compress wav files to mp3
 * * * * * /opt/osdial/bin/AST_audio_compress.pl --MP3
