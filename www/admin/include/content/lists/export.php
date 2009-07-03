@@ -27,7 +27,7 @@
 # ADD=131 Lead Export
 ######################
 
-if ($ADD==131 && $SUB==2) {
+if ($ADD==131 && $SUB==2 && $LOGuser_level > 8) {
 
     $swhere = '(';
     foreach ($statuses as $stat) {
@@ -72,7 +72,7 @@ if ($ADD==131 && $SUB==2) {
     }
         
 
-} elseif ($ADD==131) {
+} elseif ($ADD==131 && $LOGuser_level > 8) {
 
 	echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";

@@ -2391,7 +2391,9 @@ echo "<td align=center colspan=3><font size=1 color=white><B>LINKS</B></td>";
 		echo "<td><font size=1>$row[7]</td>";
 		#echo "<td><font size=1> &nbsp;</td>";
 		echo "<td colspan=2 align=center><font size=1><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">MODIFY</a>\n";
-		echo " | <font size=1><a href=\"$PHP_SELF?ADD=131&list_id=$row[0]\">EXPORT</a>\n";
+        if ($LOGuser_leve > 8) {
+		    echo " | <font size=1><a href=\"$PHP_SELF?ADD=131&list_id=$row[0]\">EXPORT</a>\n";
+        }
 		echo " | <font size=1><a href=\"$PHP_SELF?ADD=122&list_id_override=$row[0]\">ADD LEADS</a></td></tr>\n";
 		$o++;
 	}
