@@ -461,7 +461,7 @@ sub gen_phones {
 			}
 			$sphn .= "qualify=yes\n";
 			$sphn .= "nat=yes\n";
-		} elsif ($aryA[4] eq "IAX2" and $aryA[0] !~ /\@/) {
+		} elsif ($aryA[4] eq "IAX2" and $aryA[0] !~ /\@|\\/) {
 			$iphn .= ";\n[". $aryA[0] ."]\n";
 			$iphn .= "type=friend\n";
 			$iphn .= "disallow=all\n";
