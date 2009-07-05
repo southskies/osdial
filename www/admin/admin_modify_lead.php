@@ -451,7 +451,7 @@ $browser = getenv("HTTP_USER_AGENT");
 						$closer_log .= "<td align=right><font size=2> $row[2] </td>\n";
 						$closer_log .= "<td align=right><font size=2> $row[1] </td>\n";
 						$closer_log .= "<td align=right><font size=2> &nbsp; $row[14] </td>\n";
-						$closer_log .= "<td align=right><font size=2> &nbsp; $row[17] </td></tr>\n";
+						#$closer_log .= "<td align=right><font size=2> &nbsp; $row[17] </td></tr>\n";
 			
 						$campaign_id = $row[3];
 					}
@@ -743,10 +743,12 @@ $browser = getenv("HTTP_USER_AGENT");
 						{$locat = substr($location,0,27);  $locat = "$locat...";}
 					else
 						{$locat = $location;}
-					if (eregi("http",$location))
-						{$location = "<a href=\"$location\">$locat</a>";}
-					else
-						{$location = $locat;}
+					if (eregi("http",$location) or eregi("^//", $location)) {
+						$location = eregi_replace("^//","/",$location);
+						$location = "<a href=\"$location\">$locat</a>";
+					} else {
+						$location = $locat;
+					}
 					$u++;
 					echo "<tr $bgcolor>";
 					echo "	<td><font size=1>$u</td>";
