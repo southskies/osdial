@@ -269,6 +269,7 @@ if (strlen($lists_hh) > 1) {
                 <a href="<?= $PHP_SELF ?>?ADD=122"> Load New Leads </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                 <? if ($LOGuser_level > 8) {
                     echo "          <a href=\"$PHP_SELF?ADD=131\"> Lead Export </a>\n";
+                }
                 ?>
             </font>
         </td>
