@@ -378,6 +378,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	var campaign_allow_inbound = <? echo $campaign_allow_inbound ?>;
 	var inbound_man = '<? echo $inbound_man ?>';
 
+	var submit_method = '<? echo $submit_method ?>';
+
 
 
 // ################################################################################
@@ -3891,7 +3893,11 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	
 			WebFormRefresH();
 
-			window.open(VDIC_web_form_address + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+			if (submit_method == 2) {
+				window.open(VDIC_web_form_address2 + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+			} else {
+				window.open(VDIC_web_form_address + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+			}
 
 			DispoSelect_submit();
 			}
@@ -3910,6 +3916,16 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			{
 			document.getElementById("CusTInfOSpaN").innerHTML = "";
 			document.getElementById("CusTInfOSpaN").style.backgroundColor = panel_bgcolor;
+
+			if (submit_method > 0) {
+				LeaDDispO = DispoChoice;
+				WebFormRefresH();
+				if (submit_method == 2) {
+					window.open(VDIC_web_form_address2 + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+				} else {
+					window.open(VDIC_web_form_address + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+				}
+			}
 
 			if ( (DispoChoice == 'CALLBK') && (scheduled_callbacks > 0) ) {showDiv('CallBackSelectBox');}
 			else
