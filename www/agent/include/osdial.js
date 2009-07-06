@@ -5684,7 +5684,7 @@ else
     foreach ($forms as $form) {
         $fcamps = split(',',$form['campaigns']);
         foreach ($fcamps as $fcamp) {
-            if ($fcamp == 'ALL' or $fcamp == $VD_campagin) {
+            if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
                 echo "      document.getElementById('AddtlForms" . $form['name'] . "').style.visibility='hidden';\n";
             }
         }
