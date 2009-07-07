@@ -1567,7 +1567,7 @@ if ($stage == "end")
 		$row=mysql_fetch_row($rslt);
 		$talk_sec = (($StarTtime - $row[0]) + $row[1]);
 		}
-	$stmt="UPDATE osdial_agent_log set talk_sec='$talk_sec',talk_epoch='$StarTtime',dispo_epoch='$StarTtime' where agent_log_id='$agent_log_id';";
+	$stmt="UPDATE osdial_agent_log set talk_sec='$talk_sec',talk_epoch='$StarTtime',dispo_epoch='$StarTtime',uniqueid='$uniqueid' where agent_log_id='$agent_log_id';";
 		if ($format=='debug') {echo "\n<!-- $stmt -->";}
 	$rslt=mysql_query($stmt, $link);
 
@@ -1971,7 +1971,7 @@ if ($ACTION == 'VDADcheckINCOMING')
 			$row=mysql_fetch_row($rslt);
 			$wait_sec = (($StarTtime - $row[0]) + $row[1]);
 			}
-		$stmt="UPDATE osdial_agent_log set wait_sec='$wait_sec',talk_epoch='$StarTtime',lead_id='$lead_id' where agent_log_id='$agent_log_id';";
+		$stmt="UPDATE osdial_agent_log set wait_sec='$wait_sec',talk_epoch='$StarTtime',lead_id='$lead_id',uniqueid='$uniqueid' where agent_log_id='$agent_log_id';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 
