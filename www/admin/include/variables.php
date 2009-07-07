@@ -460,6 +460,7 @@ $SUB = get_variable("SUB");
 $submit = get_variable("submit");
 $SUBMIT = get_variable("SUBMIT");
 $submit_file = get_variable("submit_file");
+$submit_method = get_variable("submit_method");
 $sys_perf_log = get_variable("sys_perf_log");
 
 $telnet_host = get_variable("telnet_host");
