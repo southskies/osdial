@@ -5600,7 +5600,7 @@ else
 				}
 			}
 		panel_bgcolor='<?=$panel_bg?>';
-		document.getElementById("MainStatuSSpan").style.backgroundColor = panel_bgcolor;
+		//document.getElementById("MainStatuSSpan").style.backgroundColor = panel_bgcolor;
 		document.getElementById("FormButtons").src = "templates/<?= $agent_template ?>/images/vdc_tab_buttons1.gif";
 		}
 
@@ -5610,7 +5610,7 @@ else
 		document.getElementById("MainTable").style.backgroundColor="<?=$script_bg?>";
 		document.getElementById("MaiNfooter").style.backgroundColor="<?=$script_bg?>";
 		panel_bgcolor='<?=$panel_bg?>';
-		document.getElementById("MainStatuSSpan").style.backgroundColor= panel_bgcolor;
+		//document.getElementById("MainStatuSSpan").style.backgroundColor= panel_bgcolor;
 		document.getElementById("FormButtons").src = "templates/<?= $agent_template ?>/images/vdc_tab_buttons2.gif";
 		}
 	
