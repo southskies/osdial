@@ -47,7 +47,7 @@ my $config = getOSDconfig('/etc/osdial.conf');
 my $achead = ";\n; WARNING: AUTO-CREATED FILE.\n; Any changes you make will be overwritten!\n;\n";
 
 # Declare command-line options.
-my($DB, $CLOhelp, $CLOtest, $CLOshowip, $CLOquiet);
+my($DB, $CLOhelp, $CLOtest, $CLOshowip, $CLOquiet, $CLOg729);
 my(%reloads);
 
 # Read in command-line options.
@@ -57,7 +57,8 @@ if (scalar @ARGV) {
                 'debug!' => \$DB,
                 'test!' => \$CLOtest,
                 'quiet!' => \$CLOquiet,
-                'showip!' => \$CLOshowip
+                'showip!' => \$CLOshowip,
+                'g729!' => \$CLOg729
         );
         if ($DB) {
                 print "----- DEBUGGING -----\n";
@@ -67,6 +68,7 @@ if (scalar @ARGV) {
                 print "CLOshowip-   $CLOshowip\n";
                 print "CLOquiet-    $CLOquiet\n";
                 print "CLOtest-     $CLOtest\n";
+                print "CLOg729-     $CLOg729\n";
                 print "\n";
         }
         if ($CLOhelp) {
@@ -76,10 +78,15 @@ if (scalar @ARGV) {
                 print "  [--debug]        = debug\n";
                 print "  [-t|--test]      = test only\n";
                 print "  [-q|--quiet]     = Quiet output\n";
+                print "  [--g729]         = Use g729 codecs\n";
                 print "  [-s|--showip]    = Show Interface IPs\n\n";
                 exit 0;
         }
 }
+
+
+my $codec = "ulaw";
+$codec = "g729" if ($CLOg729);
 
 
 # Connect to database.
@@ -187,8 +194,7 @@ sub gen_servers {
 	$isvr .= "permit=0.0.0.0/0.0.0.0\n";
 	$isvr .= "secret=$pass\n";
 	$isvr .= "disallow=all\n";
-	$isvr .= "allow=g729\n";
-	$isvr .= "allow=ulaw\n";
+	$isvr .= "allow=$codec\n";
 	$isvr .= "qualify=no\n";
 
 	$isvr .= ";\n; IAX loopback for blind monitoring\n";
@@ -201,8 +207,7 @@ sub gen_servers {
 	$isvr .= "permit=0.0.0.0/0.0.0.0\n";
 	$isvr .= "secret=$pass\n";
 	$isvr .= "disallow=all\n";
-	$isvr .= "allow=g729\n";
-	$isvr .= "allow=ulaw\n";
+	$isvr .= "allow=$codec\n";
 	$isvr .= "qualify=no\n";
 
 	# Get my server
@@ -230,8 +235,7 @@ sub gen_servers {
 		$isvr .= "auth=md5\n";
 		$isvr .= "secret=$pass\n";
 		$isvr .= "disallow=all\n";
-		$isvr .= "allow=g729\n";
-		$isvr .= "allow=ulaw\n";
+		$isvr .= "allow=$codec\n";
 		$isvr .= "context=osdial\n";
 		$isvr .= "nat=no\n";
 
@@ -263,8 +267,7 @@ sub gen_servers {
 		$isvr .= "auth=md5\n";
 		$isvr .= "secret=$pass\n";
 		$isvr .= "disallow=all\n";
-		$isvr .= "allow=g729\n";
-		$isvr .= "allow=ulaw\n";
+		$isvr .= "allow=$codec\n";
 		$isvr .= "peercontext=osdial\n";
 		$isvr .= "nat=no\n";
 	}
@@ -383,29 +386,36 @@ sub gen_conferences {
         my ($cnf2,$mtm2,$cf,$cl);
 	while (my @aryA = $sthA->fetchrow_array) {
 		if ($asterisk_version =~ /^1\.6/) {
-			$cnf2 .= "exten => _" . $aryA[0] .  ",1,Meetme(\${EXTEN},Fq)\n";
-			$cnf2 .= "exten => _" . $aryA[0] .  ",2,Hangup\n";
-			$cnf2 .= "exten => _6" . $aryA[0] . ",1,Meetme(\${EXTEN:1},Flq)\n";
-			$cnf2 .= "exten => _6" . $aryA[0] . ",2,Hangup\n";
-			$cnf2 .= "exten => _7" . $aryA[0] . ",1,Meetme(\${EXTEN:1},Fq)\n";
-			$cnf2 .= "exten => _7" . $aryA[0] . ",2,Hangup\n";
+			$cnf2 .= "exten => _" . $aryA[0] .  ",1,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _" . $aryA[0] .  ",2,Meetme(\${EXTEN},Fq)\n";
+			$cnf2 .= "exten => _" . $aryA[0] .  ",3,Hangup\n";
+			$cnf2 .= "exten => _6" . $aryA[0] . ",1,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _6" . $aryA[0] . ",2,Meetme(\${EXTEN:1},Flq)\n";
+			$cnf2 .= "exten => _6" . $aryA[0] . ",3,Hangup\n";
+			$cnf2 .= "exten => _7" . $aryA[0] . ",1,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _7" . $aryA[0] . ",2,Meetme(\${EXTEN:1},Fq)\n";
+			$cnf2 .= "exten => _7" . $aryA[0] . ",3,Hangup\n";
 			$cnf2 .= "exten => _8" . $aryA[0] . ",1,Playback(sip-silence)\n";
 			$cnf2 .= "exten => _8" . $aryA[0] . ",2,Meetme(\${EXTEN:1},Fq)\n";
 			$cnf2 .= "exten => _8" . $aryA[0] . ",3,Hangup\n";
 		} else {
-			$cnf2 .= "exten => _" . $aryA[0] .  ",1,Meetme,\${EXTEN}|Fq\n";
-			$cnf2 .= "exten => _" . $aryA[0] .  ",2,Hangup\n";
-			$cnf2 .= "exten => _6" . $aryA[0] . ",1,Meetme,\${EXTEN:1}|Fmq\n";
-			$cnf2 .= "exten => _6" . $aryA[0] . ",2,Hangup\n";
-			$cnf2 .= "exten => _7" . $aryA[0] . ",1,Meetme,\${EXTEN:1}|Fq\n";
-			$cnf2 .= "exten => _7" . $aryA[0] . ",2,Hangup\n";
+			$cnf2 .= "exten => _" . $aryA[0] .  ",1,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _" . $aryA[0] .  ",2,Meetme,\${EXTEN}|Fq\n";
+			$cnf2 .= "exten => _" . $aryA[0] .  ",3,Hangup\n";
+			$cnf2 .= "exten => _6" . $aryA[0] . ",1,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _6" . $aryA[0] . ",2,Meetme,\${EXTEN:1}|Fmq\n";
+			$cnf2 .= "exten => _6" . $aryA[0] . ",3,Hangup\n";
+			$cnf2 .= "exten => _7" . $aryA[0] . ",1,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _7" . $aryA[0] . ",2,Meetme,\${EXTEN:1}|Fq\n";
+			$cnf2 .= "exten => _7" . $aryA[0] . ",3,Hangup\n";
 			$cnf2 .= "exten => _8" . $aryA[0] . ",1,Playback(sip-silence)\n";
 			$cnf2 .= "exten => _8" . $aryA[0] . ",2,Meetme,\${EXTEN:1}|Fq\n";
 			$cnf2 .= "exten => _8" . $aryA[0] . ",3,Hangup\n";
 		}
 		$mtm2 .= "conf => " . $aryA[0] . "\n";
 	}
-	$cnf2 .= "exten => 487487,1,AGI(agi-OSDivr.agi,\${EXTEN})\n";
+	$cnf2 .= "exten => 487487,1,Playback(sip-silence)\n";
+	$cnf2 .= "exten => 487487,n,AGI(agi-OSDivr.agi,\${EXTEN})\n";
 	$cnf2 .= "exten => 487487,n,Hangup\n";
 	$cnf .= ";\n; OSDIAL Virtual Agent Conferences\n";
 	$cnf .= $cnf2;
@@ -444,29 +454,21 @@ sub gen_phones {
 			} else {
 				$sphn .= "host=dynamic\n";
 			}
-			if ($aryA[5] =~ /g729/i) {
+			if ($aryA[5] =~ /Grandstream/i) {
 				$sphn .= "dtmfmode=rfc2833\n";
 				$sphn .= "relaxdtmf=yes\n";
 				$sphn .= "disallow=all\n";
-				$sphn .= "allow=g729\n";
-			} elsif ($aryA[5] =~ /Grandstream/i) {
-				$sphn .= "dtmfmode=rfc2833\n";
-				$sphn .= "relaxdtmf=yes\n";
-				$sphn .= "disallow=all\n";
-				$sphn .= "allow=ulaw\n";
+				$sphn .= "allow=$codec\n";
 			} else {
 				$sphn .= "dtmfmode=inband\n";
 				$sphn .= "disallow=all\n";
-				$sphn .= "allow=ulaw\n";
+				$sphn .= "allow=$codec\n";
 			}
 			$sphn .= "qualify=yes\n";
 			$sphn .= "nat=yes\n";
 		} elsif ($aryA[4] eq "IAX2" and $aryA[0] !~ /\@|\\/) {
 			$iphn .= ";\n[". $aryA[0] ."]\n";
 			$iphn .= "type=friend\n";
-			$iphn .= "disallow=all\n";
-			$iphn .= "allow=ulaw\n";
-			$iphn .= "allow=g729\n";
 			$iphn .= "username=" . $aryA[0] . "\n";
 			$iphn .= "secret=" . $aryA[3] . "\n";
 			if ($aryA[2]) {
@@ -474,15 +476,9 @@ sub gen_phones {
 			} else {
 				$iphn .= "host=dynamic\n";
 			}
-			if ($aryA[5] =~ /g729/i) {
-				$iphn .= "dtmfmode=rfc2833\n";
-				$iphn .= "disallow=all\n";
-				$iphn .= "allow=g729\n";
-			} else {
-				$iphn .= "dtmfmode=inband\n";
-				$iphn .= "disallow=all\n";
-				$iphn .= "allow=ulaw\n";
-			}
+			$iphn .= "dtmfmode=inband\n";
+			$iphn .= "disallow=all\n";
+			$iphn .= "allow=$codec\n";
 			$iphn .= "qualify=yes\n";
 			$iphn .= "nat=yes\n";
 		}
