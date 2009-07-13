@@ -675,6 +675,7 @@ while($one_day_interval > 0)
 			### should be changed at all
 			$total_agents=0;
 			$ready_agents=0;
+			$paused_agents=0;
 			$waiting_calls=0;
 
 			$stmtA = "SELECT count(*),status from osdial_live_agents where campaign_id='$DBIPcampaign[$user_CIPct]' and last_update_time > '$halfminSQLdate' group by status;";
@@ -689,6 +690,7 @@ while($one_day_interval > 0)
 				$VCSagent_status =		 "$aryA[1]";
 				$rec_count++;
 				if ($VCSagent_status =~ /READY|DONE/) {$ready_agents = ($ready_agents + $VCSagent_count);}
+				if ($VCSagent_status =~ /PAUSED/) {$paused_agents = ($paused_agents + $VCSagent_count);}
 				$total_agents = ($total_agents + $VCSagent_count);
 				}
 			$sthA->finish();
@@ -751,7 +753,11 @@ while($one_day_interval > 0)
 			$event_string="CAMPAIGN DIFFERENTIAL: $total_agents_avg   $stat_differential   ($ready_diff_avg - $waiting_diff_avg)";
 			&event_logger;
 
-			$stmtA = "UPDATE osdial_campaign_stats SET differential_onemin='$stat_differential', agents_average_onemin='$total_agents_avg' where campaign_id='$DBIPcampaign[$user_CIPct]';";
+			$agents_incall = $total_agents - $ready_agents - $paused_agents;
+			$agents_waiting = $ready_agents;
+			$agents_paused = $paused_agents;
+
+			$stmtA = "UPDATE osdial_campaign_stats SET differential_onemin='$stat_differential', agents_average_onemin='$total_agents_avg',agents_incall='$agents_incall',agents_waiting='$agents_waiting',agents_paused='$agents_paused',waiting_calls='$waiting_calls' where campaign_id='$DBIPcampaign[$user_CIPct]';";
 			$affected_rows = $dbhA->do($stmtA);
 
 			if ( ($DBIPold_trunk_shortage[$user_CIPct] > $DBIPtrunk_shortage[$user_CIPct]) || ($DBIPold_trunk_shortage[$user_CIPct] < $DBIPtrunk_shortage[$user_CIPct]) )
@@ -1139,7 +1145,7 @@ while($one_day_interval > 0)
 							else 
 								{
 								$end_epoch = ($now_date_epoch + 1);
-								$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch) values('$CLuniqueid','$CLlead_id','$CLcampaign_id','$SQLdate','$now_date_epoch','$CLnew_status','$CLphone_code','$CLphone_number','VDAD','N','$CLstage','$end_epoch')";
+								$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch,server_ip) values('$CLuniqueid','$CLlead_id','$CLcampaign_id','$SQLdate','$now_date_epoch','$CLnew_status','$CLphone_code','$CLphone_number','VDAD','N','$CLstage','$end_epoch','$VARserver_ip')";
 									if($M){print STDERR "\n|$stmtA|\n";}
 								$affected_rows = $dbhA->do($stmtA);
 	
@@ -1442,7 +1448,7 @@ while($one_day_interval > 0)
 				if ($CLstage < 0.25) {$CLstage=1;}
 
 				$end_epoch = ($now_date_epoch + 1);
-				$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch) values('$CLuniqueid','$CLlead_id','$CLcampaign_id','$SQLdate','$now_date_epoch','DROP','$CLphone_code','$CLphone_number','VDAD','N','$CLstage','$end_epoch')";
+				$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch,server_ip) values('$CLuniqueid','$CLlead_id','$CLcampaign_id','$SQLdate','$now_date_epoch','DROP','$CLphone_code','$CLphone_number','VDAD','N','$CLstage','$end_epoch','$VARserver_ip')";
 					if($M){print STDERR "\n|$stmtA|\n";}
 				$affected_rows = $dbhA->do($stmtA);
 

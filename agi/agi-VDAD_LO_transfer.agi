@@ -372,7 +372,7 @@ if ($affected_rows > 0)
 		}
 	$sthA->finish();
 
-	$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed) values('$uniqueid','$CIDlead_id','$VDADcampaign','$SQLdate','$now_date_epoch','QUEUE','$VDADphone_code','$VDADphone','VDAD','N')";
+	$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,server_ip) values('$uniqueid','$CIDlead_id','$VDADcampaign','$SQLdate','$now_date_epoch','QUEUE','$VDADphone_code','$VDADphone','VDAD','N','$VARserver_ip')";
 		if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 	$affected_rows = $dbhA->do($stmtA);
 

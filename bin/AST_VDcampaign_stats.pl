@@ -244,16 +244,21 @@ sub updateStats {
 
 	print "     CAMPAIGN ANSWERED STATUSES: $campaign_id|$camp_ANS_STAT_SQL|\n" if ($DBX);
 
+	# Gather call count data
 	my ($VCScalls_today,$VCSanswers_today,$VCSdrops_today,$VCSdrops_today_pct) = calculateDrops ($dbhA, $osdial_log, $campaign_id, $camp_ANS_STAT_SQL, $VDL_date);
 	my ($VCScalls_hour,$VCSanswers_hour,$VCSdrops_hour,$VCSdrops_hour_pct) = calculateDrops ($dbhA, $osdial_log, $campaign_id, $camp_ANS_STAT_SQL, $VDL_hour);
 	my ($VCScalls_halfhour,$VCSanswers_halfhour,$VCSdrops_halfhour,$VCSdrops_halfhour_pct) = calculateDrops ($dbhA, $osdial_log, $campaign_id, $camp_ANS_STAT_SQL, $VDL_halfhour);
 	my ($VCScalls_five,$VCSanswers_five,$VCSdrops_five,$VCSdrops_five_pct) = calculateDrops ($dbhA, $osdial_log, $campaign_id, $camp_ANS_STAT_SQL, $VDL_five);
 	my ($VCScalls_one,$VCSanswers_one,$VCSdrops_one,$VCSdrops_one_pct) = calculateDrops ($dbhA, $osdial_log, $campaign_id, $camp_ANS_STAT_SQL, $VDL_one);
-	
 	$VCSdrops_answers_today_pct = ( ( $VCSdrops_today / $VCSanswers_today ) * 100 ) if ($VCSanswers_today > 0);
 	$VCSdrops_answers_today_pct = sprintf( "%.2f", $VCSdrops_answers_today_pct );
-
 	print "$campaign_id|$VCSdrops_five_pct|$VCSdrops_today_pct\n" if ($DBX);
+
+	# Get misc data, AMD/Fails
+	my $camp_AMD_SQL = "'AA','AL','AM'";
+	my ($AMDcalls_one,$AMDanswers_one,$AMDdrops_one,$AMDdrops_one_pct) = calculateDrops ($dbhA, $osdial_log, $campaign_id, $camp_AMD_SQL, $VDL_one);
+	my $camp_FAIL_SQL = "'CRC','CRO','CRF','CRR'";
+	my ($FAILcalls_one,$FAILanswers_one,$FAILdrops_one,$FAILdrops_one_pct) = calculateDrops ($dbhA, $osdial_log, $campaign_id, $camp_FAIL_SQL, $VDL_one);
 
 	# DETERMINE WHETHER TO GATHER STATUS CATEGORY STATISTICS
 	my @VSC_categories;
@@ -270,6 +275,7 @@ sub updateStats {
 	}
 	$sthA->finish();
 
+	# Get status category counts
 	my $g;
 	foreach (@VSC_categories) {
 		my $VSCcategory = $VSC_categories[$g];
@@ -326,7 +332,9 @@ sub updateStats {
 	}
 	chop($VSCupdateSQL);
 
-	$stmtA = "UPDATE osdial_campaign_stats SET calls_today='$VCScalls_today',answers_today='$VCSanswers_today',drops_today='$VCSdrops_today',drops_today_pct='$VCSdrops_today_pct',drops_answers_today_pct='$VCSdrops_answers_today_pct',calls_hour='$VCScalls_hour',answers_hour='$VCSanswers_hour',drops_hour='$VCSdrops_hour',drops_hour_pct='$VCSdrops_hour_pct',calls_halfhour='$VCScalls_halfhour',answers_halfhour='$VCSanswers_halfhour',drops_halfhour='$VCSdrops_halfhour',drops_halfhour_pct='$VCSdrops_halfhour_pct',calls_fivemin='$VCScalls_five',answers_fivemin='$VCSanswers_five',drops_fivemin='$VCSdrops_five',drops_fivemin_pct='$VCSdrops_five_pct',calls_onemin='$VCScalls_one',answers_onemin='$VCSanswers_one',drops_onemin='$VCSdrops_one',drops_onemin_pct='$VCSdrops_one_pct',$VSCupdateSQL where campaign_id='$campaign_id';";
+
+	# Ok, write all the data we have collected to the campaigns stats table.
+	$stmtA = "UPDATE osdial_campaign_stats SET calls_today='$VCScalls_today',answers_today='$VCSanswers_today',drops_today='$VCSdrops_today',drops_today_pct='$VCSdrops_today_pct',drops_answers_today_pct='$VCSdrops_answers_today_pct',calls_hour='$VCScalls_hour',answers_hour='$VCSanswers_hour',drops_hour='$VCSdrops_hour',drops_hour_pct='$VCSdrops_hour_pct',calls_halfhour='$VCScalls_halfhour',answers_halfhour='$VCSanswers_halfhour',drops_halfhour='$VCSdrops_halfhour',drops_halfhour_pct='$VCSdrops_halfhour_pct',calls_fivemin='$VCScalls_five',answers_fivemin='$VCSanswers_five',drops_fivemin='$VCSdrops_five',drops_fivemin_pct='$VCSdrops_five_pct',calls_onemin='$VCScalls_one',answers_onemin='$VCSanswers_one',drops_onemin='$VCSdrops_one',drops_onemin_pct='$VCSdrops_one_pct',amd_onemin='$AMDanswers_one',failed_onemin='$FAILanswers_one',$VSCupdateSQL where campaign_id='$campaign_id';";
 	if ($CLOtest) {
 		print $stmtA . "\n";
 	} else {
@@ -336,6 +344,33 @@ sub updateStats {
 	my $event_string = "|$campaign_id|";
 	$event_string .= join('|',$VCScalls_today,$VCSanswers_today,$VCSdrops_today,$VCSdrops_today_pct,$VCSdrops_answers_today_pct,$VCScalls_hour,$VCSanswers_hour,$VCSdrops_hour,$VCSdrops_hour_pct,$VCScalls_halfhour,$VCSanswers_halfhour,$VCSdrops_halfhour,$VCSdrops_halfhour_pct,$VCScalls_five,$VCSanswers_five,$VCSdrops_five,$VCSdrops_five_pct,$VCScalls_one,$VCSanswers_one,$VCSdrops_one,$VCSdrops_one_pct);
 	eventLogger($config->{PATHlogs},"campaign_stats".$event_ext,$event_string);
+
+
+	# Get server IPs and update campaign stats for each server.
+	my @servers;
+	$stmtA = "SELECT server_ip FROM servers WHERE active='Y';";
+	$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
+	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+	while ( my @aryA = $sthA->fetchrow_array ) {
+		push @servers, $aryA[0];
+	}
+	$sthA->finish();
+
+	foreach my $server (@servers) {
+		# Create campaign/server entry if it doesn't exist.
+		my $stmtA = "INSERT INTO osdial_campaign_server_stats (campaign_id,server_ip) VALUES ('$campaign_id','$server') on duplicate key update campaign_id='$campaign_id';";
+		my $affected_rows = $dbhA->do($stmtA);
+
+		my ($VCScalls_one,$VCSanswers_one,$VCSdrops_one,$VCSdrops_one_pct) = calculateDropsServer ($dbhA, $osdial_log, $campaign_id, $server, $camp_ANS_STAT_SQL, $VDL_one);
+		my ($AMDcalls_one,$AMDanswers_one,$AMDdrops_one,$AMDdrops_one_pct) = calculateDropsServer ($dbhA, $osdial_log, $campaign_id, $server, $camp_AMD_SQL, $VDL_one);
+		my ($FAILcalls_one,$FAILanswers_one,$FAILdrops_one,$FAILdrops_one_pct) = calculateDropsServer ($dbhA, $osdial_log, $campaign_id, $server, $camp_FAIL_SQL, $VDL_one);
+		$stmtA = "UPDATE osdial_campaign_server_stats SET calls_onemin='$VCScalls_one',answers_onemin='$VCSanswers_one',drops_onemin='$VCSdrops_one',amd_onemin='$AMDanswers_one',failed_onemin='$FAILanswers_one' WHERE campaign_id='$campaign_id' AND server_ip='$server';";
+		if ($CLOtest) {
+			print $stmtA . "\n";
+		} else {
+			$affected_rows = $dbhA->do($stmtA);
+		}
+	}
 }
 
 sub calculateDrops {
@@ -375,6 +410,62 @@ sub calculateDrops {
 
 		# DROPS
 		$stmtA = "SELECT count(*) from $osdial_log where campaign_id=\'$campaign_id\' and call_date > \'$VDL\' and status IN(\'DROP\',\'XDROP\');";
+		print $stmtA . "\n" if ($DBX);
+		$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		$sthArows  = $sthA->rows;
+		$rec_count = 0;
+		while ( $sthArows > $rec_count ) {
+			my @aryA = $sthA->fetchrow_array;
+			$VCSdrops = $aryA[0];
+			if ( $VCSdrops > 0 ) {
+				$VCSdrops_pct = ( ( $VCSdrops / $VCScalls ) * 100 );
+				$VCSdrops_pct = sprintf( "%.2f", $VCSdrops_pct );
+			}
+			$rec_count++;
+		}
+		$sthA->finish();
+	}
+	return ($VCScalls,$VCSanswers,$VCSdrops,$VCSdrops_pct);
+}
+
+sub calculateDropsServer {
+	my ($dbhA,$osdial_log,$campaign_id,$server,$camp_ANS_STAT_SQL,$VDL) = @_;
+
+	my($stmtA,$sthA,$sthArows,$rec_count);
+	my($VCScalls,$VCSanswers,$VCSdrops,$VCSdrops_pct) = (0,0,0,0);
+
+	# CALL AND DROP STATS
+	$stmtA = "SELECT count(*) from $osdial_log where campaign_id=\'$campaign_id\' and call_date > \'$VDL\' and server_ip=\'$server\';";
+	print $stmtA . "\n" if ($DBX);
+	$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
+	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+	$sthArows  = $sthA->rows;
+	$rec_count = 0;
+	while ( $sthArows > $rec_count ) {
+		my @aryA = $sthA->fetchrow_array;
+		$VCScalls = $aryA[0];
+		$rec_count++;
+	}
+	$sthA->finish();
+	if ( $VCScalls > 0 ) {
+
+		# ANSWERS
+		$stmtA = "SELECT count(*) from $osdial_log where campaign_id=\'$campaign_id\' and call_date > \'$VDL\' and status IN($camp_ANS_STAT_SQL) and server_ip=\'$server\';";
+		print $stmtA . "\n" if ($DBX);
+		$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		$sthArows  = $sthA->rows;
+		$rec_count = 0;
+		while ( $sthArows > $rec_count ) {
+			my @aryA = $sthA->fetchrow_array;
+			$VCSanswers = $aryA[0];
+			$rec_count++;
+		}
+		$sthA->finish();
+
+		# DROPS
+		$stmtA = "SELECT count(*) from $osdial_log where campaign_id=\'$campaign_id\' and call_date > \'$VDL\' and status IN(\'DROP\',\'XDROP\') and server_ip=\'$server\';";
 		print $stmtA . "\n" if ($DBX);
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;

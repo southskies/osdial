@@ -667,7 +667,7 @@ if ($AGILOG) {$agi_string = "callerID changed: $YqueryCID";   &agi_output;}
 
 if ($call_handle_method =~ /DIGITID$/)
 	{
-		$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed) values('$uniqueid','$insert_lead_id','$channel_group','$SQLdate','$now_date_epoch','XFER','$phone_code','$phone_number','$fronter','N')";
+		$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,server_ip) values('$uniqueid','$insert_lead_id','$channel_group','$SQLdate','$now_date_epoch','XFER','$phone_code','$phone_number','$fronter','N','$VARserver_ip')";
 			if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 		$affected_rows = $dbhA->do($stmtA);
 		if ($AGILOG) {$agi_string = "--    VDAD : |$insert_lead_id|$fronter|insert to osdial_log: $uniqueid";   &agi_output;}

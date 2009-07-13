@@ -360,7 +360,7 @@ if (!$epc_countCUSTDATA)
 	{
 	if ($AGILOG) {$agi_string = "no VDL record found: $uniqueid $calleridname $VD_lead_id $uniqueid";   &agi_output;}
 	$end_epoch = ($now_date_epoch + 3);
-	$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch) values('$uniqueid','$VD_lead_id','$VD_campaign_id','$now_date','$now_date_epoch','AA','$VD_phone_code','$VD_phone_number','VDAD','N','3','$end_epoch')";
+	$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch,server_ip) values('$uniqueid','$VD_lead_id','$VD_campaign_id','$now_date','$now_date_epoch','AA','$VD_phone_code','$VD_phone_number','VDAD','N','3','$end_epoch','$VARserver_ip')";
 		if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 	$affected_rows = $dbhA->do($stmtA);
 	}

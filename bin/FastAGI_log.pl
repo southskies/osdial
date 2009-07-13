@@ -542,7 +542,7 @@ sub process_request {
 
 				if ($AGILOG) {$agi_string = "QUERY done: start time = $start_time | sec: $length_in_sec | min: $length_in_min |";   &agi_output;}
 
-				$stmtA = "UPDATE call_log set end_time='$now_date',end_epoch='$now_date_epoch',length_in_sec=$length_in_sec,length_in_min='$length_in_min',channel='$channel' where uniqueid='$unique_id'";
+				$stmtA = "UPDATE call_log set end_time='$now_date',end_epoch='$now_date_epoch',length_in_sec=$length_in_sec,length_in_min='$length_in_min',channel='$channel',isup_result='$hangup_cause' where uniqueid='$unique_id'";
 
 				if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 				$affected_rows = $dbhA->do($stmtA);
