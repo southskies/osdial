@@ -32,7 +32,7 @@ $|++;
 my $prog = 'upgrade_sql.pl';
 
 my $secStart = time();
-my($DB, $CLOhelp, $CLOtest);
+my($DB, $CLOhelp, $CLOtest, $CLOsaf);
 my($dbhT,$dbhA);
 
 # Get OSD configuration directives.
@@ -42,7 +42,8 @@ if (scalar @ARGV) {
 	GetOptions(
 		'help!' => \$CLOhelp,
 		'debug!' => \$DB,
-		'test!' => \$CLOtest
+		'test!' => \$CLOtest,
+		'skip-auth-fix!' => \$CLOskf
 	);
 	if ($DB) {
 		print "----- DEBUGGING -----\n";
@@ -50,6 +51,7 @@ if (scalar @ARGV) {
 		print "VARS-\n";
 		print "CLOhelp-     $CLOhelp\n";
 		print "CLOtest-     $CLOtest\n";
+		print "CLOsaf-      $CLOsaf\n";
 		print "\n";
 	}
 	if ($CLOhelp) {
@@ -57,6 +59,7 @@ if (scalar @ARGV) {
 		print "allowed run-time options:\n";
 		print "  [--help]         = This screen\n";
 		print "  [--debug]        = debug\n";
+		print "  [--skip-auth-fix]= Skip the DB user authentication fixes\n";
 		print "  [-t|--test]      = test only\n\n";
 		exit 0;
 	}
@@ -86,32 +89,34 @@ close FILE;
 my $connerr = 0;
 my $install = 0;
 my $examples = 0;
-if ( ! -d "/var/lib/mysql/" . $config->{VARDB_database} ) {
-	print "    OSDial database (" . $config->{VARDB_database} . ") is not detected, creating.\n";
-	my $cdb = "CREATE DATABASE " . $config->{VARDB_database} . ";";
-	`echo "$cdb" | mysql -u root`;
-	$connerr = 1;
-	$install = 1;
-	$examples = 1;
-	$vmap{'install'} = '000000';
-	$vmap{'examples'} = '999999';
-} else {
-	$dbhT = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':' . $config->{VARDB_server} . ':' . $config->{VARDB_port}, $config->{VARDB_user}, $config->{VARDB_pass} )
-	   or ($connerr=1);
-	$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
-	$dbhT->disconnect();
-}
-
-if ($connerr) {
-	$connerr = 0;
-	$dbhT = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . '::' . $config->{VARDB_port}, "root", "" )
-	  or die "Couldn't connect to database: " . DBI->errstr;
-	$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
-	$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
-	$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'localhost' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
-	$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
-	$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'\%' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
-	$dbhT->disconnect();
+if ($CLOsaf) {
+	if ( ! -d "/var/lib/mysql/" . $config->{VARDB_database} ) {
+		print "    OSDial database (" . $config->{VARDB_database} . ") is not detected, creating.\n";
+		my $cdb = "CREATE DATABASE " . $config->{VARDB_database} . ";";
+		`echo "$cdb" | mysql -u root`;
+		$connerr = 1;
+		$install = 1;
+		$examples = 1;
+		$vmap{'install'} = '000000';
+		$vmap{'examples'} = '999999';
+	} else {
+		$dbhT = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':' . $config->{VARDB_server} . ':' . $config->{VARDB_port}, $config->{VARDB_user}, $config->{VARDB_pass} )
+	   	or ($connerr=1);
+		$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		$dbhT->disconnect();
+	}
+	
+	if ($connerr) {
+		$connerr = 0;
+		$dbhT = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . '::' . $config->{VARDB_port}, "root", "" )
+	  	or die "Couldn't connect to database: " . DBI->errstr;
+		$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'localhost' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'\%' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		$dbhT->disconnect();
+	}
 }
 
 $dbhA = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':' . $config->{VARDB_server} . ':' . $config->{VARDB_port}, $config->{VARDB_user}, $config->{VARDB_pass} )
