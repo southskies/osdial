@@ -31,6 +31,7 @@
 use strict;
 use DBI;
 use Getopt::Long;
+use IO::File;
 use Net::FTP;
 use Net::SCP;
 use Net::SFTP;
@@ -207,8 +208,12 @@ sub transferFiles {
 	print "transferFiles|\n" if ($verbose);
 
 	my($ftp,$fsts,$errors);
-	$ftp = Net::FTP->new($qcs->{host}, type=>$qcs->{transfer_method}, debug=>0); 
-	$fsts = $ftp->login($qcs->{username},$qcs->{password});
+	if ($qcs->{transfer_method} eq "SFTP") {
+		$ftp = Net::SFTP->new($qcs->{host}, user=>$qcs->{username}, password=>$qcs->{password}, debug=>0);
+	} else {
+		$ftp = Net::uFTP->new($qcs->{host}, type=>$qcs->{transfer_method}, debug=>0); 
+		$fsts = $ftp->login($qcs->{username},$qcs->{password});
+	}
 
 	foreach my $rec (keys %{$recs}) {
 		my($status,$update,$template,$file,$remoteloc);
@@ -220,17 +225,23 @@ sub transferFiles {
 		}
 		$template = $recs->{$rec}->{date} if ($template eq '');
 		$file = $recs->{$rec}->{location} . '/' . $recs->{$rec}->{filename};
+		print "Attempting: $qcs->{transfer_method}://$qcs->{host}:$qcs->{home_path}/$template/$recs->{$rec}->{filename}\n" if($verbose > 0);
 		if (-e $file) {
 			$status = "SUCCESS";
-			$status = "FAILURE" if ($fsts == 0);
-			$ftp->cwd($qcs->{home_path}) or $status="FAILURE" unless ($status eq "FAILURE");
-			if ($template ne "") {
+			$status = "FAILURE" if ($fsts == 0 and $qcs->{transfer_method} ne "SFTP");
+			print "Failed to login: $fsts\n" if ($status eq "FAILURE" and $verbose > 2);
+			$ftp->cwd($qcs->{home_path}) or $status="FAILURE" unless ($status eq "FAILURE" or $qcs->{transfer_method} eq "SFTP");
+			print "Failed to cwd: $qcs->{home_path}\n" if ($status eq "FAILURE" and $verbose > 2);
+			if ($template ne "" and $qcs->{transfer_method} ne "SFTP") {
 				$ftp->mkdir($template, 1) or $status="FAILURE" unless ($status eq "FAILURE");
+				print "Failed to mkdir: $template\n" if ($status eq "FAILURE" and $verbose > 2);
 				$ftp->cwd($template) or $status="FAILURE" unless ($status eq "FAILURE");
+				print "Failed to cwd: $template\n" if ($status eq "FAILURE" and $verbose > 2);
 			}
-			$ftp->binary or $status="FAILURE" unless ($status eq "FAILURE");
-			$ftp->put($file,$recs->{$rec}->{filename}) or $status="FAILURE" unless ($status eq "FAILURE");
-			$ftp->ascii or $status="FAILURE" unless ($status eq "FAILURE");
+			$ftp->binary if ($qcs->{transfer_method} eq "FTP");
+			$ftp->put($file,$qcs->{home_path} . '/' . $template . '/' . $recs->{$rec}->{filename}) or $status="FAILURE" unless ($status eq "FAILURE");
+			print "Failed to put: $file\n" if ($status eq "FAILURE" and $verbose > 2);
+			$ftp->ascii if ($qcs->{transfer_method} eq "FTP");
 			$remoteloc = $qcs->{home_path};
 			if (substr($remoteloc,(length($remoteloc)-1),1) eq "/") {
 				$remoteloc .= $template;
@@ -332,7 +343,7 @@ sub transferArchive {
 	$starttime = time();
 	# Finally, send the file...
 	if (-e $tmpdir . '/' . $archive) {
-		$ftp = Net::FTP->new($qcs->{host}, type=>$qcs->{transfer_method}, debug=>0); 
+		$ftp = Net::uFTP->new($qcs->{host}, type=>$qcs->{transfer_method}, debug=>0); 
 		$fsts = $ftp->login($qcs->{username},$qcs->{password});
 		$status = "SUCCESS";
 		$status = "FAILURE" if ($fsts == 0);
