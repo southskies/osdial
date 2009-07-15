@@ -108,10 +108,10 @@ function get_servers($link, $selected) {
 
 
 # Function to truncate a line and add ...
-function ellipse($string,$len,$ellipse=true) {
+function ellipse($string,$len,$dots=true) {
     if(!$len || $len>strlen($string))
         return $string;
-    if (!$ellipse) {
+    if (!$dots) {
         return substr($string,0,$len);
     }
     return substr($string,0, ($len-3)) . '...';

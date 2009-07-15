@@ -213,9 +213,12 @@ function report_realtime_detail() {
 	$html .= "<INPUT TYPE=HIDDEN NAME=SERVdisplay VALUE=\"$SERVdisplay\">\n";
 	$html .= "<INPUT TYPE=HIDDEN NAME=CALLSdisplay VALUE=\"$CALLSdisplay\">\n";
 	$html .= "<SELECT SIZE=1 NAME=group>\n";
-	$html .= "<option value=\"XXXX-ALL-ACTIVE-XXXX\">ALL ACTIVE</option>\n";
-	$html .= "<option value=\"XXXX-OUTBOUND-XXXX\">ONLY OUTBOUND</option>\n";
-	$html .= "<option value=\"XXXX-INBOUND-XXXX\">ONLY INBOUND</option>\n";
+	if ($group == "XXXX-ALL-ACTIVE-XXXX") $aasel = "selected";
+	$html .= "<option value=\"XXXX-ALL-ACTIVE-XXXX\" $aasel>XXXX-ALL-ACTIVE-XXXX</option>\n";
+	if ($group == "XXXX-OUTBOUND-XXXX") $outsel = "selected";
+	$html .= "<option value=\"XXXX-OUTBOUND-XXXX\" $outsel>XXXX-OUTBOUND-XXXX</option>\n";
+	if ($group == "XXXX-INBOUND-XXXX") $insel = "selected";
+	$html .= "<option value=\"XXXX-INBOUND-XXXX\" $insel>XXXX-INBOUND-XXXX</option>\n";
 	$o=0;
 
     $group_name = '';
@@ -291,10 +294,10 @@ function report_realtime_detail() {
 			$stmt="select count(*) from osdial_hopper;";
 		}
 		if ($group=='XXXX-OUTBOUND-XXXX') {
-			$stmt="select count(*) from osdial_hopper,osdial_campaigns WHERE osdial_hopper.campaign_id=osdial_campaigns.campaign_id AND length(closer_campaigns)<6;";
+			$stmt="select count(*) from osdial_hopper LEFT JOIN osdial_campaigns ON (osdial_hopper.campaign_id=osdial_campaigns.campaign_id) WHERE length(closer_campaigns)<6;";
 		}
 		if ($group=='XXXX-INBOUND-XXXX') {
-			$stmt="select count(*) from osdial_hopper,osdial_campaigns WHERE osdial_hopper.campaign_id=osdial_campaigns.campaign_id AND length(closer_campaigns)>5;";
+			$stmt="select count(*) from osdial_hopper LEFT JOIN osdial_campaigns ON (osdial_hopper.campaign_id=osdial_campaigns.campaign_id) WHERE length(closer_campaigns)>5;";
 		}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
@@ -347,10 +350,10 @@ function report_realtime_detail() {
 			$stmt="select sum(local_trunk_shortage) from osdial_campaign_server_stats;";
 		}
 		if ($group=='XXXX-OUTBOUND-XXXX') {
-			$stmt="select sum(local_trunk_shortage) from osdial_campaign_server_stats,osdial_campaigns WHERE osdial_campaign_server_stats.campaign_id=osdial_campaigns.campaign_id AND legnth(closer_campaigns)<6;";
+			$stmt="select sum(local_trunk_shortage) from osdial_campaign_server_stats,osdial_campaigns WHERE osdial_campaign_server_stats.campaign_id=osdial_campaigns.campaign_id AND length(closer_campaigns)<6;";
 		}
 		if ($group=='XXXX-INBOUND-XXXX') {
-			$stmt="select sum(local_trunk_shortage) from osdial_campaign_server_stats,osdial_campaigns WHERE osdial_campaign_server_stats.campaign_id=osdial_campaigns.campaign_id AND legnth(closer_campaigns)>5;";
+			$stmt="select sum(local_trunk_shortage) from osdial_campaign_server_stats,osdial_campaigns WHERE osdial_campaign_server_stats.campaign_id=osdial_campaigns.campaign_id AND length(closer_campaigns)>5;";
 		}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
@@ -358,65 +361,67 @@ function report_realtime_detail() {
 
 		$html .= "</td></tr><tr><td align=left>";
 		$html .= "<font class=indented color=#1C4754 size=2><b>$group - $group_name</b></font>";
-		if ($active=='Y' and !(ereg("^XXXX-",$group))) {;
+		if (ereg("^XXXX",$group)) {
+			$html .= '';
+		} elseif ($active=='Y') {
                         $html .="<font color='green' size='-1'>&nbsp;&nbsp;(Active)</font>";
                 } else {
                         $html .="<font color='red'>&nbsp;&nbsp;(In-Active)</font>";
                 }
 		$html .= "</td></tr><tr><td align=center>";
 		$html .= "<table class=indents cellpadding=0 cellspacing=0><TR>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Dial Level:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALlev&nbsp;&nbsp; </TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Trunk Short/Fill:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $balanceSHORT / $balanceFILL &nbsp;&nbsp; </TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Filter:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALfilter &nbsp;&nbsp;</TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Time:</B></TD><TD ALIGN=LEFT><font size=2 color=navy>&nbsp; $NOW_TIME </TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Dial Level:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALlev&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Trunk Short/Fill:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $balanceSHORT / $balanceFILL&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Filter:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALfilter&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Time:</B></TD><TD ALIGN=LEFT><font size=2 color=navy>&nbsp; $NOW_TIME&nbsp;&nbsp;</TD>";
 		$html .= "";
 		$html .= "</TR>";
 	
 		if ($adastats > 1) {
 			$html .= "<TR BGCOLOR=\"#CCCCCC\">";
-			$html .= "<TD ALIGN=RIGHT><font size=2><B>Max Level:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $maxDIALlev &nbsp; </TD>";
-			$html .= "<TD ALIGN=RIGHT><font size=2><B>Dropped Max:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DROPmax% &nbsp; &nbsp;</TD>";
-			$html .= "<TD ALIGN=RIGHT><font size=2><B>Target Diff:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $targetDIFF &nbsp; &nbsp; </TD>";
-			$html .= "<TD ALIGN=RIGHT><font size=2><B>Intensity:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $ADAintense &nbsp; &nbsp; </TD>";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>Max Level:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $maxDIALlev&nbsp;&nbsp;</TD>";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>Dropped Max:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DROPmax%&nbsp;&nbsp;</TD>";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>Target Diff:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $targetDIFF&nbsp;&nbsp;</TD>";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>Intensity:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $ADAintense&nbsp;&nbsp;</TD>";
 			$html .= "</TR>";
 		
 			$html .= "<TR BGCOLOR=\"#CCCCCC\">";
-			$html .= "<TD ALIGN=RIGHT><font size=2><B>Dial Timeout:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALtimeout &nbsp;</TD>";
-			$html .= "<TD ALIGN=RIGHT><font size=2><B>Taper Time:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $TAPERtime &nbsp;</TD>";
-			$html .= "<TD ALIGN=RIGHT><font size=2><B>Local Time:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $CALLtime &nbsp;</TD>";
-			$html .= "<TD ALIGN=RIGHT><font size=2><B>Avail Only:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $ADAavailonly &nbsp;</TD>";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>Dial Timeout:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALtimeout&nbsp;&nbsp;</TD>";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>Taper Time:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $TAPERtime&nbsp;&nbsp;</TD>";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>Local Time:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $CALLtime&nbsp;&nbsp;</TD>";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>Avail Only:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $ADAavailonly&nbsp;&nbsp;</TD>";
 			$html .= "</TR>";
 			
 			$html .= "<TR BGCOLOR=\"#CCCCCC\">";
-			$html .= "<TD ALIGN=RIGHT><font size=2><B>DL Diff:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $diffONEMIN &nbsp; &nbsp; </TD>";
-			$html .= "<TD ALIGN=RIGHT><font size=2><B>Diff:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $diffpctONEMIN% &nbsp; &nbsp; </TD>";
-		    $html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Avg Agents:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $agentsONEMIN &nbsp; &nbsp; </TD>";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>DL Diff:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $diffONEMIN&nbsp;&nbsp;</TD>";
+			$html .= "<TD ALIGN=RIGHT><font size=2><B>Diff:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $diffpctONEMIN%&nbsp;&nbsp;</TD>";
+		    $html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Avg Agents:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $agentsONEMIN&nbsp;&nbsp;</TD>";
 			$html .= "</TR>";
 		}
 
 		$html .= "<TR>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Dialable Leads:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DAleads &nbsp; &nbsp; </TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Recycles/Sched:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $recycle_total / $recycle_sched &nbsp; &nbsp; </TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Calls Today:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $callsTODAY &nbsp; &nbsp; </TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Dial Method:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALmethod &nbsp; &nbsp; </TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Dialable Leads:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DAleads&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Recycles/Sched:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $recycle_total / $recycle_sched&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Calls Today:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $callsTODAY&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Dial Method:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALmethod&nbsp;&nbsp;</TD>";
 		$html .= "</TR>";
 		
 		$html .= "<TR>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Hopper Level:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $HOPlev &nbsp; &nbsp; </TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Drop/Answer:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $dropsTODAY / $answersTODAY &nbsp; </TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Statuses:</B></TD><TD ALIGN=LEFT colspan=3><font size=2>&nbsp; <span title=\"$DIALstatuses\">" . ellipse($DIALstatuses,40) . "</span></TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Hopper Level:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $HOPlev&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Drop/Answer:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $dropsTODAY / $answersTODAY&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Statuses:</B></TD><TD ALIGN=LEFT colspan=3><font size=2>&nbsp; <span title=\"$DIALstatuses\">" . ellipse($DIALstatuses,25,true) . "</span>&nbsp;&nbsp;</TD>";
 		$html .= "</TR>";
 		
 		$html .= "<TR>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Leads In Hopper:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $VDhop &nbsp; &nbsp; </TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Leads In Hopper:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $VDhop&nbsp;&nbsp;</TD>";
 		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Drop %:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; ";
 		if ($drpctTODAY >= $DROPmax) {
 			$html .= "<font color=red><B>$drpctTODAY%</B></font>";
 		} else {
 			$html .= "$drpctTODAY%";
 		}
-		$html .= " &nbsp; &nbsp;</TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Order:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALorder &nbsp; &nbsp; </TD>";
+		$html .= "&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Order:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALorder&nbsp;&nbsp;</TD>";
 		$html .= "</tr><tr>";
 		if ( (!eregi('NULL',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
 			$html .= "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat1:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1tally&nbsp;&nbsp;</td>\n";
@@ -497,9 +502,9 @@ function report_realtime_detail() {
 		if ($group=='XXXX-ALL-ACTIVE-XXXX') {
 			$groupSQL = '';
 		} elseif ($group=='XXXX-OUTBOUND-XXXX') {
-            $groupSQL = " and length(closer_campaigns)<6";
+			$groupSQL = '';
 		} elseif ($group=='XXXX-INBOUND-XXXX') {
-            $groupSQL = " and length(closer_campaigns)>5";
+			$groupSQL = '';
 		} else {
 			$groupSQL = " and campaign_id='" . mysql_real_escape_string($group) . "'";
 		}
@@ -743,9 +748,9 @@ function report_realtime_detail() {
 	if ($group=='XXXX-ALL-ACTIVE-XXXX') {
 		$groupSQL = '';
 	} elseif ($group=='XXXX-OUTBOUND-XXXX') {
-		$groupSQL = ' and length(closer_campaigns)<6';
+		$groupSQL = ' and length(osdial_live_agents.closer_campaigns)<6';
 	} elseif ($group=='XXXX-INBOUND-XXXX') {
-		$groupSQL = ' and length(closer_campaigns)>5';
+		$groupSQL = ' and length(osdial_live_agents.closer_campaigns)>5';
 	} else {
 		$groupSQL = " and campaign_id='" . mysql_real_escape_string($group) . "'";
 	}
@@ -755,7 +760,7 @@ function report_realtime_detail() {
 		$usergroupSQL = " and user_group='" . mysql_real_escape_string($usergroup) . "'";
 	}
 	
-	$stmt="select extension,osdial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id,osdial_users.user_group,osdial_users.full_name,osdial_live_agents.comments,lead_id from osdial_live_agents,osdial_users where osdial_live_agents.user=osdial_users.user $groupSQL $usergroupSQL order by $orderSQL;";
+	$stmt="select extension,osdial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,osdial_live_agents.campaign_id,osdial_users.user_group,osdial_users.full_name,osdial_live_agents.comments,lead_id from osdial_live_agents,osdial_users where osdial_live_agents.user=osdial_users.user $groupSQL $usergroupSQL order by $orderSQL;";
 	
 	#$stmt="select extension,osdial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id,osdial_users.user_group,osdial_users.full_name from osdial_live_agents,osdial_users where osdial_live_agents.user=osdial_users.user and campaign_id='" . mysql_real_escape_string($group) . "' order by $orderSQL;";
 	
@@ -795,6 +800,11 @@ function report_realtime_detail() {
 			$campaign_id =	sprintf("%-10s", $row[8]);
 			$comments=		$row[11];
 			$lead_id=		$row[12];
+
+                	$stmtB = "SELECT active FROM osdial_campaigns WHERE campaign_id='$row[8]';";
+	            	$rsltB=mysql_query($stmtB, $link);
+			$rowB=mysql_fetch_row($rsltB);
+			$campaign_active=$rowB[0];
 
             if ($lead_id > 0) {
                 $stmtB = "SELECT status FROM osdial_list WHERE lead_id='$lead_id' AND status LIKE 'V%';";
@@ -918,7 +928,14 @@ function report_realtime_detail() {
                 $status = $lead_status;
             }
 	
-			$Ahtml .= "$LNleft $G$extension $LNcenterbar <a href=\"./user_status.php?user=$Luser\" target=\"_blank\">$G$user$EG</a> $LNcenterbar$UGD $sessionid$L$R $LNcenterbar $status $CM $LNcenterbar $SVD$call_time_MS $LNcenterbar $campaign_id$EG $LNright\n";
+			$disp_agent = 1;
+			if ($group == "XXXX-ALL-ACTIVE-XXXX" and $campaign_active == 'N') {
+				$disp_agent = 0;
+			}
+
+			if ($disp_agent) {
+				$Ahtml .= "$LNleft $G$extension $LNcenterbar <a href=\"./user_status.php?user=$Luser\" target=\"_blank\">$G$user$EG</a> $LNcenterbar$UGD $sessionid$L$R $LNcenterbar $status $CM $LNcenterbar $SVD$call_time_MS $LNcenterbar $campaign_id$EG $LNright\n";
+			}
 	
 			$i++;
 		}
