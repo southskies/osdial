@@ -72,6 +72,7 @@ if ($ADD==21111111)
 			 }
 		 else
 			{
+			$lead_filter_sql = mysql_real_escape_string($lead_filter_sql);
 			$stmt="INSERT INTO osdial_lead_filters SET lead_filter_id='$lead_filter_id',lead_filter_name='$lead_filter_name',lead_filter_comments='$lead_filter_comments',lead_filter_sql='$lead_filter_sql';";
 			$rslt=mysql_query($stmt, $link);
 
@@ -107,6 +108,7 @@ if ($ADD==41111111)
 		}
 	 else
 		{
+		$lead_filter_sql = mysql_real_escape_string($lead_filter_sql);
 		$stmt="UPDATE osdial_lead_filters set lead_filter_name='$lead_filter_name', lead_filter_comments='$lead_filter_comments', lead_filter_sql='$lead_filter_sql' where lead_filter_id='$lead_filter_id';";
 		$rslt=mysql_query($stmt, $link);
 
