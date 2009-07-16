@@ -237,6 +237,7 @@ sub ivr_menu {
 		} else {
 			$ivrloop = 0;
 		}
+		update_status($dbhA);
 	}
 	return $ivrloop;
 }
@@ -560,6 +561,12 @@ sub stream_and_get_dtmf {
 	my $valid_pat = '[^' . $valid_digits . ']';
 
 	while (length($total_digits) < $dcount and $rpt < $rptloops) {
+
+		my $dbhB = DBI->connect("DBI:mysql:" . $vars->{VARDB_database} . ":" . $vars->{VARDB_server} . ":" . $vars->{VARDB_port}, $vars->{VARDB_user}, $vars->{VARDB_pass} )
+		  or warn "Couldn't connect to database: " . DBI->errstr;
+		update_status($dbhB);
+		$dbhB->disconnect();
+
 		$total_digits = '';
 		$stream =~ s/\....$//;
 		my $interrupt_digit = $AGI->stream_file('ivr/' . $stream,$valid_digits);
