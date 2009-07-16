@@ -464,7 +464,7 @@ sub gen_phones {
 				$sphn .= "disallow=all\n";
 				$sphn .= "allow=$codec\n";
 			}
-			$sphn .= "qualify=yes\n";
+			$sphn .= "qualify=5000\n";
 			$sphn .= "nat=yes\n";
 		} elsif ($aryA[4] eq "IAX2" and $aryA[0] !~ /\@|\//) {
 			$iphn .= ";\n[". $aryA[0] ."]\n";
@@ -479,7 +479,7 @@ sub gen_phones {
 			$iphn .= "dtmfmode=inband\n";
 			$iphn .= "disallow=all\n";
 			$iphn .= "allow=$codec\n";
-			$iphn .= "qualify=yes\n";
+			$iphn .= "qualify=5000\n";
 			$iphn .= "nat=yes\n";
 		}
 		my $dext = $aryA[4] . "/" . $aryA[0];
