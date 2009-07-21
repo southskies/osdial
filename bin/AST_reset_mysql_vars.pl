@@ -119,7 +119,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
 	print " - osdial__users delete\n";
 
-	$stmtA = "DELETE from osdial_campaign_server_stats where server_ip='$server_ip';";
+	$stmtA = "UPDATE osdial_campaign_server_stats SET local_trunk_shortage='0', calls_onemin='0', answers_onemin='0', drops_onemin='0', amd_onemin='0', failed_onemin='0';";
 			if($DB){print STDERR "\n|$stmtA|\n";}
 	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
 	print " - osdial_campaign_server_stats delete\n";
