@@ -714,7 +714,7 @@ while($one_day_interval > 0)
 					}
 				else
 					{
-					$stmtA = "SELECT count(*) FROM call_log where caller_code='$VD_callerid[$z]' and server_ip='$server_ip' and end_epoch > 10;";
+					$stmtA = "SELECT count(*) FROM call_log where caller_code='$VD_callerid[$z]' and channel_group NOT LIKE 'Local%' and end_epoch > 10;";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;

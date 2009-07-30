@@ -32,7 +32,7 @@ $SIG{QUIT} = 'exit_now';
 # Get OSD configuration directives.
 $vars = getOSDconfig('/etc/osdial.conf');
 
-$vars->{DB} = 0 unless ($vars->{DB});
+$vars->{DB} = 3 unless ($vars->{DB});
 $vars->{script} = 'agi-OSDivr.agi';
 
 
@@ -106,6 +106,10 @@ $AGI->{callerid} = $live_agents->{callerid};
 $AGI->{channel} = $live_agents->{channel};
 $AGI->{uniqueid} = $live_agents->{uniqueid};
 $vars->{conf_exten} = $live_agents->{conf_exten};
+my @scsip = split(/\./,$live_agents->{server_ip});
+my $csip = sprintf('%3.3d*%3.3d*%3.3d*%3.3d', @scsip);
+$vars->{conf_server} = $csip;
+
 
 my $stmtA = "UPDATE osdial_live_agents SET channel='" . $AGI->{orig_channel} . "',status='INCALL',last_call_time='" . $vars->{start_date} . "' WHERE callerid='" . $AGI->{callerid} . "' LIMIT 1;";
 my $affected_rows = $dbhA->do($stmtA);
@@ -301,11 +305,14 @@ sub xfer_to_external {
 	my $VqueryCID = $AGI->{callerid};
 	my $XqueryCID = $VqueryCID;
 	$XqueryCID =~ s/^V/X/;
-	$stmtA="INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $vars->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/8" . $vars->{conf_exten} . "\@" . $server->{ext_context} . "','Context: " . $server->{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"$XqueryCID\" <" . $campaign->{campaign_cid} . ">','','','','','');";
+	my $IqueryCID = $VqueryCID;
+	$IqueryCID =~ s/^V/I/;
+	#$stmtA="INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $vars->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/8" . $vars->{conf_exten} . "\@" . $server->{ext_context} . "','Context: " . $server->{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"$XqueryCID\" <" . $campaign->{campaign_cid} . ">','','','','','');";
+	$stmtA="INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $vars->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $vars->{conf_server} . "*8" . $vars->{conf_exten} . "\@" . $server->{ext_context} . "','Context: " . $server->{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"$XqueryCID\" <" . $campaign->{campaign_cid} . ">','','','','','');";
 	my $xfer = $dbhA->do($stmtA);
 	while ($xfer) {
 		sleep(1);
-		my $stmtA = "SELECT count(*) FROM osdial_manager where callerid='$XqueryCID' AND status='DEAD';";
+		my $stmtA = "SELECT count(*) FROM osdial_manager where (callerid='$XqueryCID' OR callerid='$IqueryCID') AND status='DEAD';";
 		my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		my @aryA = $sthA->fetchrow_array;
@@ -414,7 +421,8 @@ sub xfer_to_ingroup {
 	my $VqueryCID = $AGI->{callerid};
 	my $XqueryCID = $VqueryCID;
 	$XqueryCID =~ s/^V/I/;
-	my $stmtA="INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $vars->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/8" . $vars->{conf_exten} . "\@" . $server->{ext_context} . "','Context: " . $server->{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"$XqueryCID\" <" . $campaign->{campaign_cid} . ">','','','','','');";
+	#my $stmtA="INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $vars->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/8" . $vars->{conf_exten} . "\@" . $server->{ext_context} . "','Context: " . $server->{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"$XqueryCID\" <" . $campaign->{campaign_cid} . ">','','','','','');";
+	my $stmtA="INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $vars->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $vars->{conf_server} . "*8" . $vars->{conf_exten} . "\@" . $server->{ext_context} . "','Context: " . $server->{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"$XqueryCID\" <" . $campaign->{campaign_cid} . ">','','','','','');";
 	my $xfer = $dbhA->do($stmtA);
 	while ($xfer) {
 		sleep(1);
