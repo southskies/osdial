@@ -27,6 +27,9 @@
 use strict;
 use DBI;
 use Getopt::Long;
+use threads;
+use threads::shared;
+use Time::HiRes qw( usleep );
 $|++;
 
 my $prog = 'upgrade_sql.pl';
@@ -43,7 +46,7 @@ if (scalar @ARGV) {
 		'help!' => \$CLOhelp,
 		'debug!' => \$DB,
 		'test!' => \$CLOtest,
-		'skip-auth-fix!' => \$CLOskf
+		'skip-auth-fix!' => \$CLOsaf
 	);
 	if ($DB) {
 		print "----- DEBUGGING -----\n";
@@ -77,6 +80,11 @@ if ( -f "./upgrade_sql.map" ) {
 }
 
 my %vmap;
+print "    SQL update process started!\n\n";
+print "       WARNING: Do not stop this process, doing so will leave your update\n";
+print "                in an incomplete state.  If for any reason this process has\n";
+print "                been interrupted, you can restart it by running the following:\n";
+print "                       /opt/osdial/bin/sql/upgrade_sql.pl\n\n";
 print "    Reading version mappings, using " . $path . "upgrade_sql.map\n";
 open (FILE, $path . "upgrade_sql.map");
 while (my $line = <FILE>) {
@@ -89,7 +97,7 @@ close FILE;
 my $connerr = 0;
 my $install = 0;
 my $examples = 0;
-if ($CLOsaf) {
+if ($CLOsaf != 1) {
 	if ( ! -d "/var/lib/mysql/" . $config->{VARDB_database} ) {
 		print "    OSDial database (" . $config->{VARDB_database} . ") is not detected, creating.\n";
 		my $cdb = "CREATE DATABASE " . $config->{VARDB_database} . ";";
@@ -100,17 +108,25 @@ if ($CLOsaf) {
 		$vmap{'install'} = '000000';
 		$vmap{'examples'} = '999999';
 	} else {
+		print "Testing database connection...\n" if ($DB);
 		$dbhT = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':' . $config->{VARDB_server} . ':' . $config->{VARDB_port}, $config->{VARDB_user}, $config->{VARDB_pass} )
 	   	or ($connerr=1);
-		$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		my $dores = $dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';");
+		print "dores:" . $dores . "\n" if($DB);
+		$connerr = 1;
+		$connerr = 0 if ($dores eq "0E0" or $dores > 0);
 		$dbhT->disconnect();
 	}
 	
-	if ($connerr) {
+	if ($connerr == 1) {
+		print "Correcting Database Permissions...\n" if ($DB);
 		$connerr = 0;
 		$dbhT = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . '::' . $config->{VARDB_port}, "root", "" )
 	  	or die "Couldn't connect to database: " . DBI->errstr;
 		$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'localhost' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		$dbhT->do("GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		$dbhT->do("GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'localhost' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
 		$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
 		$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'localhost' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
 		$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
@@ -119,7 +135,8 @@ if ($CLOsaf) {
 	}
 }
 
-$dbhA = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':' . $config->{VARDB_server} . ':' . $config->{VARDB_port}, $config->{VARDB_user}, $config->{VARDB_pass} )
+my @dbiconn = ('DBI:mysql:' . $config->{VARDB_database} . ':' . $config->{VARDB_server} . ':' . $config->{VARDB_port}, $config->{VARDB_user}, $config->{VARDB_pass});
+$dbhA = DBI->connect(@dbiconn)
   or die "Couldn't connect to database: " . DBI->errstr;
 print '    Connected to Database:  ' . $config->{VARDB_server} . '|' . $config->{VARDB_database} . "\n" if ($DB);
 
@@ -151,10 +168,12 @@ while ($uploop < 1) {
 		$uploop = 2;
 	} else {
 		print "      Got version $ver from database.\n";
-		print "      Attempting upgrade using " . $vmap{$ver} . ".sql ";
+		print "      Applying SQL update using " . $vmap{$ver} . ".sql ";
 		open (SQL, $path . $vmap{$ver} . '.sql');
 		my $sql;
 		my $gosql = 0;
+		my @chars = qw(- \ | /);
+		my $cur = 0;
 		while (my $line = <SQL>) {
 			chomp $line;
 			if ($line !~ /^#/ and $line ne '') {
@@ -162,9 +181,51 @@ while ($uploop < 1) {
 				$gosql = 1 if ($line =~ /;$/);
 			}
 			if ($gosql) {
-				print '.';
-				print "        Trying ($sql)\n" if ($DB);
-				$dbhA->do($sql) unless ($CLOtest);
+				my $nsql : shared;
+				my $comm : shared;
+				my $tdone : shared; 
+				($nsql,$comm) = split(/##\|##/,$sql);
+				$tdone = 0;
+				if ($comm eq "") {
+					print "\n  Trying ($nsql) " if ($DB);
+					my $thr1 = threads->create(
+						sub {
+							my($dbh) = DBI->connect(@dbiconn);
+							$dbh->do($nsql) unless ($CLOtest);
+							$dbh->disconnect();
+							$tdone = 1;
+						});
+					while (!$tdone) {
+						$cur = 0 if ($cur == @chars);
+						print $chars[$cur++];
+						usleep(100000);
+						print "\b";
+					}
+					$thr1->join();
+					print ".";
+				} else {
+					$comm =~ s/#SQL#/$nsql/g;
+					$comm =~ s/ ##/\n/g;
+					$comm =~ s/;$//g;
+					print "\n--------------------------------------------------------------------------------";
+					print $comm;
+					print "\nApplying...";
+					my $thr1 = threads->create(
+						sub {
+							my($dbh) = DBI->connect(@dbiconn);
+							$dbh->do($nsql) unless ($CLOtest);
+							$dbh->disconnect();
+							$tdone = 1;
+						});
+					while (!$tdone) {
+						$cur = 0 if ($cur == @chars);
+						print $chars[$cur++];
+						usleep(100000);
+						print "\b";
+					}
+					$thr1->join();
+					print "*DONE*\n";
+				}
 				$gosql = 0;
 				$sql = '';
 			}
@@ -175,6 +236,7 @@ while ($uploop < 1) {
 $uploop--;
 print "    Finished upgrade loop...\n";
 exit $uploop;
+
 
 
 

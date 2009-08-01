@@ -133,8 +133,8 @@ insert into osdial_statuses values('N','No Answer','Y','N','NOCONTACT');
 insert into osdial_statuses values('NA','No Answer AutoDial','N','N','NOCONTACT');
 insert into osdial_statuses values('B','Busy','Y','N','NOCONTACT');
 
-INSERT INTO `osdial_campaigns` VALUES ('TEST','Test Campaign','Y','','','','','','DOWN','8301','park','','Y',20,'0','random','24hours','',60,'9','0000000000','8365','8309','ONDEMAND','FULLDATE_CUSTPHONE','','NONE','8320','N','','','','','N','Y','NONE',5,'Y','8307','Y',0,'Wrapup Call','','Y',0,'N','MANUAL','N',3,'3.0','2100','0',0,'AUTO','NONE',' B N NA DC -','N','Test Campaign',NOW(),'N',NULL,' NEW -','N','Y','DISABLED','Y',999,'---NONE---','','','Y','0','');
-INSERT INTO `osdial_campaign_stats` VALUES ('TEST',NOW(),0,0,0,0,'0','0',0,0,0,'0',0,0,0,'0',0,0,0,'0',0,0,0,'0','0','0',0,NULL,0,NULL,0,NULL,0,NULL,0);
+INSERT INTO `osdial_campaigns` VALUES ('TEST','Test Campaign','Y','','','','','','DOWN','8301','park','','Y',20,'0','random','24hours','',60,'9','0000000000','8365','8309','ONDEMAND','FULLDATE_CUSTPHONE','','NONE','8320','N','','','','','N','Y','NONE',5,'Y','8307','Y',0,'Wrapup Call','','Y',0,'N','MANUAL','N',3,'3.0','2100','0',0,'AUTO','NONE',' B N NA DC -','N','Test Campaign',NOW(),'N',NULL,' NEW -','N','Y','DISABLED','Y',999,'---NONE---','','','Y','0','','10','Y','Y','Y','NORMAL');
+INSERT INTO `osdial_campaign_stats` VALUES ('TEST',NOW(),0,0,0,0,'0','0',0,0,0,'0',0,0,0,'0',0,0,0,'0',0,0,0,'0','0','0',0,NULL,0,NULL,0,NULL,0,NULL,0,0,0,0,0,0,0,0,0,0,0,0,0);
 
 INSERT INTO `osdial_campaign_hotkeys` VALUES ('N','1','No Answer','Y','TEST');
 INSERT INTO `osdial_campaign_hotkeys` VALUES ('A','2','Answering Machine','Y','TEST');
@@ -168,7 +168,7 @@ INSERT INTO `phones` VALUES ('9999','9999','9999','','','127.0.0.1','9999','9999
 
 INSERT INTO `osdial_scripts` VALUES ('TEST','Test Script','Just a quick test','Hello Mr/Mrs --A--last_name--B--,\r\n\r\nWe are calling you at --A--phone_number--B--.\r\n\r\nYour address is:\r\n--A--address1--B--\r\n--A--city--B--, --A--state--B-- --A--postal_code--B--\r\n\r\nThank-you','Y');
 
-INSERT INTO `servers` VALUES ('osdial-d1','OSDial Dialer 1','127.0.0.1','Y','1.2.24',96,'localhost',5038,'cron','1234','updatecron','listencron','sendcron','-5','85026666666666','8365','osdial','N','Y','FILE','N',0);
+INSERT INTO `servers` VALUES ('osdial-d1','OSDial Dialer 1','127.0.0.1','Y','1.2.32',96,'localhost',5038,'cron','1234','updatecron','listencron','sendcron','-5','85026666666666','8365','osdial','N','Y','FILE','N',0);
 
 INSERT INTO osdial_lists SET list_id='998',list_name='Default inbound list',campaign_id='TEST',active='N';
 INSERT INTO osdial_lists SET list_id='999',list_name='Default manual list',campaign_id='TEST',active='N';
