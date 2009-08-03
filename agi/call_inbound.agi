@@ -214,7 +214,7 @@ while(<STDIN>) {
 
 		### set the callerid if sent with DNIS
 		print "SET CALLERID $callerid\n";
-		checkresult($result);
+		checkresult();
 		}
 }
 
@@ -273,7 +273,7 @@ exit;
 
 
 sub checkresult {
-	my ($res) = @_;
+	my $res = <STDIN>;
 	my $retval;
 	$tests++;
 	chomp $res;

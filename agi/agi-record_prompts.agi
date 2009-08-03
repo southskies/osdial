@@ -185,11 +185,11 @@ if ($quit_program)
 	{
 	print STDERR "\nexiting the ping app\n";
 	print "SET CONTEXT demo\n";
-		checkresult($result);
+		checkresult();
 	print "SET EXTENSION 8158\n";
-		checkresult($result);
+		checkresult();
 	print "SET PRIORITY 3\n";
-		checkresult($result);
+		checkresult();
 	exit;
 	}
 
@@ -440,7 +440,7 @@ if ($totalDTMF) {print STDERR "digit |$digit|     TotalDTMF |$totalDTMF|\n";}
 
 
 sub checkresult {
-	my ($res) = @_;
+	my $res = <STDIN>;
 	my $retval;
 	$tests++;
 	chomp $res;

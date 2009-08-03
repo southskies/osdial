@@ -137,7 +137,7 @@ if ($areacode !~ /$clear_area_codes/)
 #	print "SET CALLERIDNAME \"$calleridname\"\n";
 
 	print STDERR "Setting CID \"$newcallerid\"\n";
-	checkresult($result);
+	checkresult();
 	if ($AGILOG) {$agi_string = "callerID changed: \"$calleridname\" \<0000000000\>";   &agi_output;}
 
 	if ($FD > 0) {print STDERR "callerID changed:     \"$calleridname\" \<0000000000\> |$areacode|\n";}
@@ -155,7 +155,7 @@ exit;
 
 
 sub checkresult {
-	my ($res) = @_;
+	my $res = <STDIN>;
 	my $retval;
 	$tests++;
 	chomp $res;

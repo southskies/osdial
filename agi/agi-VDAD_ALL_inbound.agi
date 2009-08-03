@@ -268,7 +268,7 @@ if ($call_handle_method =~ /^CLOSER/)
 			$callerid = $JqueryCID;
 		### set the callerid to the filename of the audio for on-hold
 		print "SET CALLERID $JqueryCID\n";
-		checkresult($result);
+		checkresult();
 		if ($AGILOG) {$agi_string = "callerID changed: $JqueryCID";   &agi_output;}
 		}
 }
@@ -584,11 +584,11 @@ if ( ($hm < $ct_default_start) || ($hm > $ct_default_stop) )
 
 			if ($AGILOG) {$agi_string = "exiting the VDAD app after hours, transferring call to $DROPexten";   &agi_output;}
 			print "SET CONTEXT $ext_context\n";
-				checkresult($result);
+				checkresult();
 			print "SET EXTENSION $DROPexten\n";
-				checkresult($result);
+				checkresult();
 			print "SET PRIORITY 1\n";
-				checkresult($result);
+				checkresult();
 			}
 		}
 		$stmtA = "DELETE FROM osdial_auto_calls where callerid='$callerid' and server_ip='$VARserver_ip' order by call_time desc limit 1;";
@@ -662,7 +662,7 @@ $PADlead_id = sprintf("%09s", $insert_lead_id);	while (length($PADlead_id) > 9) 
 	$callerid = $YqueryCID;
 ### set the callerid 
 print "SET CALLERID $YqueryCID\n";
-checkresult($result);
+checkresult();
 if ($AGILOG) {$agi_string = "callerID changed: $YqueryCID";   &agi_output;}
 
 if ($call_handle_method =~ /DIGITID$/)
@@ -899,11 +899,11 @@ if ($agent_search_method =~ /^SO|^LO/)
 			usleep(1*500*1000);
 
 			print "SET CONTEXT $ext_context\n";
-				checkresult($result);
+				checkresult();
 			print "SET EXTENSION $VDADconf_exten\n";
-				checkresult($result);
+				checkresult();
 			print "SET PRIORITY 1\n";
-				checkresult($result);
+				checkresult();
 
 				($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
 				$year = ($year + 1900);
@@ -1124,11 +1124,11 @@ if ($agent_search_method =~ /^LO|^LB/)
 			usleep(1*500*1000);
 
 			print "SET CONTEXT $ext_context\n";
-				checkresult($result);
+				checkresult();
 			print "SET EXTENSION $VDADremDIALstr\n";
-				checkresult($result);
+				checkresult();
 			print "SET PRIORITY 1\n";
-				checkresult($result);
+				checkresult();
 
 				($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
 				$year = ($year + 1900);
@@ -1208,7 +1208,7 @@ else
 		{
 		$start_moh=0;
 		print "SET MUSIC ON $moh_context\n";
-			checkresult($result);
+			checkresult();
 		}
 	### sleep for 99 hundredths of a second
 	usleep(1*990*1000);
@@ -1287,11 +1287,11 @@ if ($drop_seconds < 1)
 
 		if ($AGILOG) {$agi_string = "exiting the VDAD app, transferring call to $DROPexten";   &agi_output;}
 		print "SET CONTEXT $ext_context\n";
-			checkresult($result);
+			checkresult();
 		print "SET EXTENSION $DROPexten\n";
-			checkresult($result);
+			checkresult();
 		print "SET PRIORITY 1\n";
-			checkresult($result);
+			checkresult();
 		}
 	else
 		{
@@ -1382,7 +1382,7 @@ if ($totalDTMF) {if ($AGILOG) {$agi_string = "digit |$digit|     TotalDTMF |$tot
 
 
 sub checkresult {
-	my ($res) = @_;
+	my $res = <STDIN>;
 	my $retval;
 	$tests++;
 	chomp $res;

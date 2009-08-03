@@ -205,7 +205,7 @@ if ( (length($callerid)>20) && ($callerid =~ /\"\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S
    $callerid =~ s/\".*$//gi;
 #	### set the callerid to the ACQS value(calleridname)
 #	print "SET CALLERID $callerid\n";
-#	checkresult($result);
+#	checkresult();
 #	print STDERR "callerID changed: $callerid\n";
 
   }
@@ -216,7 +216,7 @@ if ( (
    $callerid = $calleridname;
 #	### set the callerid to the ACQS value(calleridname)
 #	print "SET CALLERID $callerid\n";
-#	checkresult($result);
+#	checkresult();
 #	print STDERR "callerID changed: $callerid\n";
   }
 
@@ -406,11 +406,11 @@ if ( ($DB_amd_send_to_vmx =~ /Y/) && (length($DB_am_message_exten) > 0) )
 
 	if ($AGILOG) {$agi_string = "exiting the AMD app, transferring call to $DB_am_message_exten";   &agi_output;}
 	print "SET CONTEXT $ext_context\n";
-		checkresult($result);
+		checkresult();
 	print "SET EXTENSION $DB_am_message_exten\n";
-		checkresult($result);
+		checkresult();
 	print "SET PRIORITY 1\n";
-		checkresult($result);
+		checkresult();
 
 	exit;
 	}
@@ -429,7 +429,7 @@ exit;
 exit;
 
 sub checkresult {
-	my ($res) = @_;
+	my $res = <STDIN>;
 	my $retval;
 	$tests++;
 	chomp $res;

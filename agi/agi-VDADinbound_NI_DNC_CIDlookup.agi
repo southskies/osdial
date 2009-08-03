@@ -240,7 +240,7 @@ while(<STDIN>) {
 #			$callerid = $JqueryCID;
 #		### set the callerid to the filename of the audio for on-hold
 #		print "SET CALLERID $JqueryCID\n";
-#		checkresult($result);
+#		checkresult();
 #		print STDERR "callerID changed: $JqueryCID\n";
 #		}
 }
@@ -411,7 +411,7 @@ if ($totalDTMF) {if ($AGILOG) {$agi_string = "digit |$digit|     TotalDTMF |$tot
 
 
 sub checkresult {
-	my ($res) = @_;
+	my $res = <STDIN>;
 	my $retval;
 	$tests++;
 	chomp $res;

@@ -234,7 +234,7 @@ if ( (length($callerid)>20) && ($callerid =~ /\"\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S
    $callerid =~ s/\".*$//gi;
 	### set the callerid to the ACQS value(calleridname)
 	print "SET CALLERID $callerid\n";
-	checkresult($result);
+	checkresult();
 	if ($AGILOG) {$agi_string = "callerID changed: $callerid";   &agi_output;}
   }
 if ( (
@@ -244,7 +244,7 @@ if ( (
    $callerid = $calleridname;
 	### set the callerid to the ACQS value(calleridname)
 	print "SET CALLERID $callerid\n";
-	checkresult($result);
+	checkresult();
 	if ($AGILOG) {$agi_string = "callerID changed: $callerid";   &agi_output;}
   }
 
@@ -636,11 +636,11 @@ if ($rec_countWAIT < $DBconcurrent_transfers)
 
 		if ($AGILOG) {$agi_string = "exiting the VDAD app, transferring call to $VDADconf_exten";   &agi_output;}
 		print "SET CONTEXT $ext_context\n";
-			checkresult($result);
+			checkresult();
 		print "SET EXTENSION $VDADconf_exten\n";
-			checkresult($result);
+			checkresult();
 		print "SET PRIORITY 1\n";
-			checkresult($result);
+			checkresult();
 
 			($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
 			$year = ($year + 1900);
@@ -771,11 +771,11 @@ if ($drop_seconds < 1)
 		{	### if DROP extension is defined then send the dropped call there instead of hangup
 		if ($AGILOG) {$agi_string = "exiting the VDAD app, transferring call to $DROPexten";   &agi_output;}
 		print "SET CONTEXT $ext_context\n";
-			checkresult($result);
+			checkresult();
 		print "SET EXTENSION $DROPexten\n";
-			checkresult($result);
+			checkresult();
 		print "SET PRIORITY 1\n";
-			checkresult($result);
+			checkresult();
 		}
 	else
 		{
@@ -899,7 +899,7 @@ if ($totalDTMF)
 
 
 sub checkresult {
-	my ($res) = @_;
+	my $res = <STDIN>;
 	my $retval;
 	$tests++;
 	chomp $res;

@@ -207,7 +207,7 @@ if ($AGILOG) {$agi_string = "CXFERfix : $lead_id $user $channel $uniqueid";   &a
 	$CIDlead = sprintf("%010s", $lead_id);
 	$CIDlead = "C123412345$CIDlead";
 	print "SET CALLERID $CIDlead\n";
-	checkresult($result);
+	checkresult();
 	if ($AGILOG) {$agi_string = "callerID changed: $CIDlead";   &agi_output;}
 
 ########## FIND AND UPDATE osdial_live_agents ##########
@@ -227,11 +227,11 @@ $dbhA->disconnect();
 
 if ($AGILOG) {$agi_string = "exiting the CXFERfix app, transferring call to $conf_exten";   &agi_output;}
 #print "SET CONTEXT $ext_context\n";
-#	checkresult($result);
+#	checkresult();
 print "SET EXTENSION $conf_exten\n";
-	checkresult($result);
+	checkresult();
 print "SET PRIORITY 1\n";
-	checkresult($result);
+	checkresult();
 
 
 
@@ -241,7 +241,7 @@ exit;
 
 
 sub checkresult {
-	my ($res) = @_;
+	my $res = <STDIN>;
 	my $retval;
 	$tests++;
 	chomp $res;

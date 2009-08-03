@@ -188,12 +188,12 @@ foreach $i (sort keys %AGI)
 if ($areacode !~ /$clear_area_codes/)
 {
 	print "SET HANGUP $channel\n";
-	checkresult($result);
+	checkresult();
 	if ($AGILOG) {$agi_string = "channel Hungup: $channel";   &agi_output;}
 	print "SET EXTENSION $extension\n";
-	checkresult($result);
+	checkresult();
 	print "SET PRIORITY 3\n";
-	checkresult($result);
+	checkresult();
 
 }
 
@@ -206,7 +206,7 @@ exit;
 
 
 sub checkresult {
-	my ($res) = @_;
+	my $res = <STDIN>;
 	my $retval;
 	$tests++;
 	chomp $res;

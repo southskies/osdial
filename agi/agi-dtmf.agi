@@ -57,7 +57,7 @@ print STDERR "X.  |$clid|$caller_id|$clidname|\n";
 
 
 sub checkresult {
-	my ($res) = @_;
+	my $res = <STDIN>;
 	my $retval;
 	$tests++;
 	chomp $res;
@@ -112,6 +112,5 @@ usleep(1*100*1000);
 }
 
 print "STREAM FILE silence \"\"\n";
-$result = <STDIN>;
-checkresult($result);
+checkresult();
 
