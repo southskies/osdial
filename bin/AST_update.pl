@@ -443,6 +443,10 @@ if (!$telnet_port) {$telnet_port = '5038';}
 		}
    } else {
          #SQL to grab channel data here.
+	$stmtB = "DELETE FROM channels WHERE state='Down'";
+	if($DB){print STDERR "\n|$stmtB|\n";}
+	$affected_rows = $dbhB->do($stmtB) or die  "Couldn't execute query: |$stmtB|\n";
+
 	#push @list_channels, "Response: Follows\r\n";
 	push @list_channels, "Privilege: Command\r\n";
 	$stmtB = "SELECT c.channel,c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.flags,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto)";
