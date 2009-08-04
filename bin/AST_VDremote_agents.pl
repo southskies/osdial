@@ -388,6 +388,7 @@ while($one_day_interval > 0)
 		@VD_random=@MT;
 		@autocallexists=@MT;
 		@calllogfinished=@MT;
+		@calllogfinished2=@MT;
 		@closerlogfinished=@MT;
 
 		# Update closer campaigns if ivr is set to allow inbound.
@@ -621,6 +622,10 @@ while($one_day_interval > 0)
 	###### fourth validate that the calls that the osdial_live_agents are on are not dead
 	###### and if they are wipe out the values and set the agent record back to READY
 	###############################################################################
+		$stmtA = "UPDATE osdial_live_agents set status='PAUSED' where extension LIKE 'R/\%' and server_ip='$server_ip' and lead_id='0' and uniqueid='' and callerid='' and status='INCALL';";
+		$affected_rows = $dbhA->do($stmtA);
+		if ($DB and $affected_rows > 0) {print STDERR "$VD_user[$z] CALL WIPE UPDATE: $affected_rows|PAUSED|$VD_uniqueid[$z]|$VD_user[$z]|\n$stmtA\n";}
+
 		$stmtA = "SELECT user,extension,status,uniqueid,callerid,lead_id,campaign_id FROM osdial_live_agents where extension LIKE \"R/%\" and server_ip='$server_ip' and uniqueid > 10;";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -726,6 +731,18 @@ while($one_day_interval > 0)
 						$rec_count++;
 						}
 					$sthA->finish();
+					$stmtA = "SELECT count(*) FROM call_log where caller_code='$VD_callerid[$z]' and channel_group LIKE 'Local%' and end_epoch > 10;";
+					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+					$sthArows=$sthA->rows;
+					$rec_count=0;
+					while ($sthArows > $rec_count)
+						{
+						@aryA = $sthA->fetchrow_array;
+						$calllogfinished2[$z] =	"$aryA[0]";
+						$rec_count++;
+						}
+					$sthA->finish();
 					if ($calllogfinished[$z] == 0)
 						{
 						$stmtA = "SELECT count(*) FROM osdial_closer_log AS cl,osdial_live_agents AS la where cl.callerid='$VD_callerid[$z]' AND cl.callerid=la.callerid and server_ip='$server_ip' and end_epoch > 10;";
@@ -741,7 +758,7 @@ while($one_day_interval > 0)
 							}
 						$sthA->finish();
 						}
-					if ($calllogfinished[$z] > 0 or $closerlogfinished[$z] > 0)
+					if ($calllogfinished[$z] > 0 or $calllogfinished2[$z] > 1 or $closerlogfinished[$z] > 0)
 						{
 						$stmtA = "SELECT channel FROM osdial_live_agents where callerid='$VD_callerid[$z]';";
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;

@@ -238,6 +238,9 @@ use DBI;
 $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
  or die "Couldn't connect to database: " . DBI->errstr;
 
+$dbhB = DBI->connect("DBI:mysql:dialer:127.0.0.1:3306", "osdial", "osdial1234")
+ or die "Couldn't connect to database: " . DBI->errstr;
+
 	$event_string='LOGGED INTO MYSQL SERVER ON 1 CONNECTION|';
 	&event_logger;
 
@@ -379,6 +382,7 @@ while($one_day_interval > 0)
 
 if (!$telnet_port) {$telnet_port = '5038';}
 
+   if ($DBasterisk_version !~ /^1\.6/) {
 	### connect to asterisk manager through telnet
 	$t = new Net::Telnet (Port => $telnet_port,
 						  Prompt => '/.*[\$%#>] $/',
@@ -387,14 +391,19 @@ if (!$telnet_port) {$telnet_port = '5038';}
 	if (length($ASTmgrUSERNAMEupdate) > 3) {$telnet_login = $ASTmgrUSERNAMEupdate;}
 	else {$telnet_login = $ASTmgrUSERNAME;}
 	$t->open("$telnet_host"); 
-	if ($DBasterisk_version =~ /^1\.6/) {
-		$t->waitfor('/1\n$/');			# print login
-		$t->print("Action: Login\nActionID: 1\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
-	} else {
-		$t->waitfor('/0\n$/');			# print login
-		$t->print("Action: Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
-	}
+
+	# Not needed ast asterisk 1.6 stores channel data in mysql.
+	#if ($DBasterisk_version =~ /^1\.6/) {
+	#	$t->waitfor('/1\n$/');			# print login
+	#	$t->print("Action: Login\nActionID: 1\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
+	#} else {
+
+	$t->waitfor('/0\n$/');			# print login
+	$t->print("Action: Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
+
+	#}
 	$t->waitfor('/Authentication accepted/');		# waitfor auth accepted
+   }
 
 		$event_string="STARTING NEW MANAGER TELNET CONNECTION|$telnet_login|CONFIRMED CONNECTION|ONE DAY INTERVAL:$one_day_interval|";
 	&event_logger;
@@ -415,6 +424,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 			&validate_parked_channels;
 
 	   
+   if ($DBasterisk_version !~ /^1\.6/) {
 	$t->buffer_empty;
 	if ($show_channels_format < 1)
 		{
@@ -427,7 +437,25 @@ if (!$telnet_port) {$telnet_port = '5038';}
 	if ($show_channels_format > 1)
 		{
 		@list_channels = $t->cmd(String => "Action: Command\nCommand: core show channels concise\n\n", Prompt => '/--END COMMAND-.*/'); 
+		#print "------------------------\n";
+		#print @list_channels;
+		#print "------------------------\n";
 		}
+   } else {
+         #SQL to grab channel data here.
+	#push @list_channels, "Response: Follows\r\n";
+	push @list_channels, "Privilege: Command\r\n";
+	$stmtB = "SELECT c.channel,c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.flags,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto)";
+	if($DB){print STDERR "|$stmtB|\n";}
+	$sthB = $dbhB->prepare($stmtB) or die "preparing: ",$dbhB->errstr;
+	$sthB->execute or die "executing: $stmtB ", $dbhB->errstr;
+	while (my @aryB = $sthB->fetchrow_array) {
+		push @list_channels, join('!',@aryB) . "\r\n";
+	}
+	#print "------------------------\n";
+	#print @list_channels;
+	#print "------------------------\n";
+   }
 
 	##### TEST CHANNELS ZAP/IAX2/Local TO SEE IF THERE WAS A LARGE HICCUP IN OUTPUT FROM PREVIOUS OUTPUT
 	@test_channels=@list_channels;
@@ -967,7 +995,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 		if ( ($list_channels[1] !~ /Privilege: Command/) && ($show_channels_format) )
 			{
 			$bad_grabber_counter++;
-			if($DB){print STDERR "\nbad grab, trying again\n";}
+			if($DB){print STDERR "\nbad grab, trying again\n$list_channels[1]";}
 			### sleep for 20 hundredths of a second
 			usleep(1*200*1000);
 
@@ -1017,9 +1045,11 @@ if (!$telnet_port) {$telnet_port = '5038';}
 		$event_string='HANGING UP|';
 		&event_logger;
 
+          if ($DBasterisk_version !~ /^1\.6/) {
 		@hangup = $t->cmd(String => "Action: Logoff\n\n", Prompt => "/.*/"); 
 
 		$ok = $t->close;
+          }
 
 	$one_day_interval--;
 
@@ -1029,6 +1059,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 		&event_logger;
 
 
+$dbhB->disconnect();
 $dbhA->disconnect();
 
 
