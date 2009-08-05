@@ -443,7 +443,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 		}
    } else {
          #SQL to grab channel data here.
-	$stmtB = "DELETE FROM channels WHERE state='Down'";
+	$stmtB = "DELETE FROM channels WHERE state='Down' and channel=''";
 	if($DB){print STDERR "\n|$stmtB|\n";}
 	$affected_rows = $dbhB->do($stmtB) or die  "Couldn't execute query: |$stmtB|\n";
 
