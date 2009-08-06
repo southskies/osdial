@@ -409,7 +409,7 @@ function report_realtime_detail() {
 		$html .= "<TR>";
 		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Hopper Level:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $HOPlev&nbsp;&nbsp;</TD>";
 		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Drop/Answer:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $dropsTODAY / $answersTODAY&nbsp;&nbsp;</TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Statuses:</B></TD><TD ALIGN=LEFT colspan=3><font size=2>&nbsp; <span title=\"$DIALstatuses\">" . ellipse($DIALstatuses,25,true) . "</span>&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Statuses:</B></TD><TD ALIGN=LEFT colspan=3><font size=2>&nbsp; <span title=\"$DIALstatuses\">" . ellipse($DIALstatuses,40,true) . "</span>&nbsp;&nbsp;</TD>";
 		$html .= "</TR>";
 		
 		$html .= "<TR>";
