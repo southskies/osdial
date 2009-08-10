@@ -538,29 +538,29 @@ while($one_day_interval > 0)
 				$cct = $sthA->fetchrow_hashref;
 				my $cct_start = $cct->{ct_default_start};
 				my $cct_stop  = $cct->{ct_default_stop};
-				$cct_start = $cct->{ct_sunday_start}    if ($mday == 0 and $cct->{ct_sunday_start});
-				$cct_stop  = $cct->{ct_sunday_stop}     if ($mday == 0 and $cct->{ct_sunday_stop});
-				$cct_start = $cct->{ct_monday_start}    if ($mday == 1 and $cct->{ct_monday_start});
-				$cct_stop  = $cct->{ct_monday_stop}     if ($mday == 1 and $cct->{ct_monday_stop});
-				$cct_start = $cct->{ct_tuesday_start}   if ($mday == 2 and $cct->{ct_tuesday_start});
-				$cct_stop  = $cct->{ct_tuesday_stop}    if ($mday == 2 and $cct->{ct_tuesday_stop});
-				$cct_start = $cct->{ct_wednesday_start} if ($mday == 3 and $cct->{ct_wednesday_start});
-				$cct_stop  = $cct->{ct_wednesday_stop}  if ($mday == 3 and $cct->{ct_wednesday_stop});
-				$cct_start = $cct->{ct_thursday_start}  if ($mday == 4 and $cct->{ct_thursday_start});
-				$cct_stop  = $cct->{ct_thursday_stop}   if ($mday == 4 and $cct->{ct_thursday_stop});
-				$cct_start = $cct->{ct_friday_start}    if ($mday == 5 and $cct->{ct_friday_start});
-				$cct_stop  = $cct->{ct_friday_stop}     if ($mday == 5 and $cct->{ct_friday_stop});
-				$cct_start = $cct->{ct_saturday_start}  if ($mday == 6 and $cct->{ct_saturday_start});
-				$cct_stop  = $cct->{ct_saturday_stop}   if ($mday == 6 and $cct->{ct_saturday_stop});
+				$cct_start = $cct->{ct_sunday_start}    if ($wday == 0 and $cct->{ct_sunday_start});
+				$cct_stop  = $cct->{ct_sunday_stop}     if ($wday == 0 and $cct->{ct_sunday_stop});
+				$cct_start = $cct->{ct_monday_start}    if ($wday == 1 and $cct->{ct_monday_start});
+				$cct_stop  = $cct->{ct_monday_stop}     if ($wday == 1 and $cct->{ct_monday_stop});
+				$cct_start = $cct->{ct_tuesday_start}   if ($wday == 2 and $cct->{ct_tuesday_start});
+				$cct_stop  = $cct->{ct_tuesday_stop}    if ($wday == 2 and $cct->{ct_tuesday_stop});
+				$cct_start = $cct->{ct_wednesday_start} if ($wday == 3 and $cct->{ct_wednesday_start});
+				$cct_stop  = $cct->{ct_wednesday_stop}  if ($wday == 3 and $cct->{ct_wednesday_stop});
+				$cct_start = $cct->{ct_thursday_start}  if ($wday == 4 and $cct->{ct_thursday_start});
+				$cct_stop  = $cct->{ct_thursday_stop}   if ($wday == 4 and $cct->{ct_thursday_stop});
+				$cct_start = $cct->{ct_friday_start}    if ($wday == 5 and $cct->{ct_friday_start});
+				$cct_stop  = $cct->{ct_friday_stop}     if ($wday == 5 and $cct->{ct_friday_stop});
+				$cct_start = $cct->{ct_saturday_start}  if ($wday == 6 and $cct->{ct_saturday_start});
+				$cct_stop  = $cct->{ct_saturday_stop}   if ($wday == 6 and $cct->{ct_saturday_stop});
 				$miltime = (($hour . $min) * 1);
 				# We are not dialing at all today...
 				if ($cct_start == 2400 and $cct_stop == 2400) {
 					$DBIPgoalcalls[$user_CIPct] = 0;
-					$event_string="$DBIPcampaign[$user_CIPct] $DBIPaddress[$user_CIPct]: CCT no-call day. cct_start: $cct_start, cct_stop: $cct_stop, cur_mil_time: $miltime on $mday";
+					$event_string="$DBIPcampaign[$user_CIPct] $DBIPaddress[$user_CIPct]: CCT no-call day. cct_start: $cct_start, cct_stop: $cct_stop, cur_mil_time: $miltime on $wday";
 					&event_logger;
 				} elsif ($miltime < $cct_start or $miltime > $cct_stop) {
 					$DBIPgoalcalls[$user_CIPct] = 0;
-					$event_string="$DBIPcampaign[$user_CIPct] $DBIPaddress[$user_CIPct]: CCT limit reached. cct_start: $cct_start, cct_stop: $cct_stop, cur_mil_time: $miltime on $mday";
+					$event_string="$DBIPcampaign[$user_CIPct] $DBIPaddress[$user_CIPct]: CCT limit reached. cct_start: $cct_start, cct_stop: $cct_stop, cur_mil_time: $miltime on $wday";
 					&event_logger;
 				}
 			}

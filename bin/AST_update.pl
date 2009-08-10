@@ -238,7 +238,7 @@ use DBI;
 $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
  or die "Couldn't connect to database: " . DBI->errstr;
 
-$dbhB = DBI->connect("DBI:mysql:dialer:127.0.0.1:3306", "osdial", "osdial1234")
+$dbhD = DBI->connect("DBI:mysql:dialer:127.0.0.1:3306", "osdial", "osdial1234")
  or die "Couldn't connect to database: " . DBI->errstr;
 
 	$event_string='LOGGED INTO MYSQL SERVER ON 1 CONNECTION|';
@@ -443,18 +443,18 @@ if (!$telnet_port) {$telnet_port = '5038';}
 		}
    } else {
          #SQL to grab channel data here.
-	$stmtB = "DELETE FROM channels WHERE state='Down' and channel=''";
-	if($DB){print STDERR "\n|$stmtB|\n";}
-	$affected_rows = $dbhB->do($stmtB) or die  "Couldn't execute query: |$stmtB|\n";
+	$stmtD = "DELETE FROM channels WHERE state='Down' and channel=''";
+	if($DB){print STDERR "\n|$stmtD|\n";}
+	$affected_rows = $dbhD->do($stmtD);
 
 	#push @list_channels, "Response: Follows\r\n";
 	push @list_channels, "Privilege: Command\r\n";
-	$stmtB = "SELECT c.channel,c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.flags,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto)";
-	if($DB){print STDERR "|$stmtB|\n";}
-	$sthB = $dbhB->prepare($stmtB) or die "preparing: ",$dbhB->errstr;
-	$sthB->execute or die "executing: $stmtB ", $dbhB->errstr;
-	while (my @aryB = $sthB->fetchrow_array) {
-		push @list_channels, join('!',@aryB) . "\r\n";
+	$stmtD = "SELECT c.channel,c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.flags,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto)";
+	if($DB){print STDERR "|$stmtD|\n";}
+	$sthD = $dbhD->prepare($stmtD) or die "preparing: ",$dbhD->errstr;
+	$sthD->execute or die "executing: $stmtD ", $dbhD->errstr;
+	while (my @aryD = $sthD->fetchrow_array) {
+		push @list_channels, join('!',@aryD) . "\r\n";
 	}
 	#print "------------------------\n";
 	#print @list_channels;
@@ -1063,7 +1063,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 		&event_logger;
 
 
-$dbhB->disconnect();
+$dbhC->disconnect();
 $dbhA->disconnect();
 
 
