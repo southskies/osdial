@@ -647,13 +647,38 @@ if ($ACTION == 'manDiaLnextCaLL')
 			}
 		else
 			{
-			### grab the next lead in the hopper for this campaign and reserve it for the user
-			$stmt = "UPDATE osdial_hopper set status='QUEUE', user='$user' where campaign_id='$campaign' and status='READY' order by hopper_id LIMIT 1";
-			if ($DB) {echo "$stmt\n";}
+			$stmt="SELECT manual_dial_new_today,manual_dial_new_limit FROM osdial_users WHERE user='$user';";
 			$rslt=mysql_query($stmt, $link);
-			$affected_rows = mysql_affected_rows($link);
+			if ($DB) {echo "$stmt\n";}
+			$mdn_user_ct = mysql_num_rows($rslt);
+			if ($mdn_user_ct > 0) {
+				$row=mysql_fetch_row($rslt);
+				$mdn_today =$row[0];
+				$mdn_limit =$row[1];
 			}
+			### grab the next lead in the hopper for this campaign and reserve it for the user
+            if ($mdn_limit == 0 or $mdn_today <= $mdn_limit) {
+			    $stmt = "UPDATE osdial_hopper SET status='QUEUE', user='$user' WHERE campaign_id='$campaign' AND status='READY' ORDER BY hopper_id LIMIT 1";
+			    if ($DB) {echo "$stmt\n";}
+			    $rslt=mysql_query($stmt, $link);
+			    $affected_rows = mysql_affected_rows($link);
+            } else {
+			    $stmt = "SELECT hopper_id FROM osdial_hopper AS oh,osdial_list AS ol WHERE oh.lead_id=ol.lead_id AND oh.campaign_id='$campaign' AND oh.status='READY' AND ol.status!='NEW' ORDER BY hopper_id LIMIT 1";
+			    $rslt=mysql_query($stmt, $link);
+			    if ($DB) {echo "$stmt\n";}
+			    $mdn_hopper_ct = mysql_num_rows($rslt);
+			    if ($mdn_hopper_ct > 0) {
+				    $row=mysql_fetch_row($rslt);
+				    $hopper_id =$row[0];
+
+			        $stmt = "UPDATE osdial_hopper SET status='QUEUE', user='$user' WHERE hopper_id='$hopper_id'";
+			        if ($DB) {echo "$stmt\n";}
+			        $rslt=mysql_query($stmt, $link);
+			        $affected_rows = mysql_affected_rows($link);
+			    }
+            }
 		}
+	}
 
 	if ($affected_rows > 0)
 		{
@@ -753,6 +778,14 @@ if ($ACTION == 'manDiaLnextCaLL')
 					$CBcomments =		trim("$row[3]");
 					}
 				}
+
+			if ($hopper_leadID_ct > 0) {
+			    if (ereg("NEW",$dispo)) {
+			        $stmt = "UPDATE osdial_users SET manual_dial_new_today=manual_dial_new_today+1 WHERE user='$user';";
+			        if ($DB) {echo "$stmt\n";}
+			        $rslt=mysql_query($stmt, $link);
+                }
+            }
 
             $stmt = "SELECT local_gmt FROM servers where active='Y' limit 1;";
             $rslt=mysql_query($stmt, $link);
