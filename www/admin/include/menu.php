@@ -38,6 +38,7 @@ if ($ADD==4)			{$hh='users';		$title = "Modify User";}
 if ($ADD==5)			{$hh='users';		$title = "Delete User";}
 if ($ADD==6)			{$hh='users';		$title = "Delete User";}
 if ($ADD==8)			{$hh='users';		$title = "CallBacks Within Agent";}
+if ($ADD==9)			{$hh='users';		$title = "Lead Allocation";}
 if ($ADD==550)			{$hh='users';		$title = "Search Form";}
 if ($ADD==551)			{$hh='users';		$title = "SEARCH PHONES";}
 if ($ADD==660)			{$hh='users';		$title = "Search Results";}
