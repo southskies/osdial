@@ -50,6 +50,8 @@ if (isset($_GET["submit"]))				{$submit=$_GET["submit"];}
 	elseif (isset($_POST["submit"]))	{$submit=$_POST["submit"];}
 if (isset($_GET["SUBMIT"]))				{$SUBMIT=$_GET["SUBMIT"];}
 	elseif (isset($_POST["SUBMIT"]))	{$SUBMIT=$_POST["SUBMIT"];}
+if (isset($_GET["DB"]))				{$DB=$_GET["DB"];}
+	elseif (isset($_POST["DB"]))	{$DB=$_POST["DB"];}
 
 if (strlen($shift)<2) {$shift='ALL';}
 
@@ -225,7 +227,7 @@ $usersARY[0]='';
 $user_namesARY[0]='';
 $k=0;
 
-$stmt="select count(*) as calls,sum(talk_sec) as talk,full_name,osdial_users.user,sum(pause_sec),sum(wait_sec),sum(dispo_sec),status from osdial_users,osdial_agent_log where event_time <= '$query_date_END' and event_time >= '$query_date_BEGIN' and osdial_users.user=osdial_agent_log.user and campaign_id='" . mysql_real_escape_string($group) . "' and pause_sec<36000 and wait_sec<36000 and talk_sec<36000 and dispo_sec<36000 $ugSQL group by full_name,status order by status desc,full_name limit 100000;";
+$stmt="select count(*) as calls,sum(talk_sec) as talk,full_name,osdial_users.user,sum(pause_sec),sum(wait_sec),sum(dispo_sec),status,sum(if(lead_called_count='1',1,0)) from osdial_users,osdial_agent_log where event_time <= '$query_date_END' and event_time >= '$query_date_BEGIN' and osdial_users.user=osdial_agent_log.user and campaign_id='" . mysql_real_escape_string($group) . "' and pause_sec<36000 and wait_sec<36000 and talk_sec<36000 and dispo_sec<36000 $ugSQL group by full_name,status order by status desc,full_name limit 100000;";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}
 $rows_to_print = mysql_num_rows($rslt);
@@ -243,6 +245,7 @@ while ($i < $rows_to_print)
 	$wait_sec[$i] =		$row[5];
 	$dispo_sec[$i] =	$row[6];
 	$status[$i] =		$row[7];
+	$new_calls[$i] =	$row[8];
 	if ( (!eregi("-$status[$i]-", $statuses)) and (strlen($status[$i])>0) )
 		{
 		$statusesTXT = sprintf("%8s", $status[$i]);
@@ -264,9 +267,9 @@ while ($i < $rows_to_print)
 	}
 
 
-echo "+-----------------+----------+--------+---------+--------+--------+--------+--------+--------+--------+--------+--------+$statusesHEAD\n";
-echo "|    USER NAME    |    ID    | CALLS  |  TIME   | PAUSE  |PAUSEAVG|  WAIT  | WAITAVG|  TALK  | TALKAVG| DISPO  | DISPAVG|$statusesHTML\n";
-echo "+-----------------+----------+--------+---------+--------+--------+--------+--------+--------+--------+--------+--------+$statusesHEAD\n";
+echo "+-----------------+----------+--------+--------+---------+--------+--------+--------+--------+--------+--------+--------+--------+$statusesHEAD\n";
+echo "|    USER NAME    |    ID    | CALLS  |NEWCALLS|  TIME   | PAUSE  |PAUSEAVG|  WAIT  | WAITAVG|  TALK  | TALKAVG| DISPO  | DISPAVG|$statusesHTML\n";
+echo "+-----------------+----------+--------+--------+---------+--------+--------+--------+--------+--------+--------+--------+--------+$statusesHEAD\n";
 
 
 ### BEGIN loop through each user ###
@@ -277,6 +280,7 @@ while ($m < $k)
 	$Sfull_name=$user_namesARY[$m];
 	$Stime=0;
 	$Scalls=0;
+	$Snew_calls=0;
 	$Stalk_sec=0;
 	$Spause_sec=0;
 	$Swait_sec=0;
@@ -296,6 +300,7 @@ while ($m < $k)
 			if ( ($Suser=="$user[$i]") and ($Sstatus=="$status[$i]") )
 				{
 				$Scalls =		($Scalls + $calls[$i]);
+				$Snew_calls =	($Snew_calls + $new_calls[$i]);
 				$Stalk_sec =	($Stalk_sec + $talk_sec[$i]);
 				$Spause_sec =	($Spause_sec + $pause_sec[$i]);
 				$Swait_sec =	($Swait_sec + $wait_sec[$i]);
@@ -316,6 +321,7 @@ while ($m < $k)
 	### END loop through each status ###
 	$Stime = ($Stalk_sec + $Spause_sec + $Swait_sec + $Sdispo_sec);
 	$TOTcalls=($TOTcalls + $Scalls);
+	$TOTnew_calls=($TOTnew_calls + $Snew_calls);
 	$TOTtime=($TOTtime + $Stime);
 	$TOTtotTALK=($TOTtotTALK + $Stalk_sec);
 	$TOTtotWAIT=($TOTtotWAIT + $Swait_sec);
@@ -332,6 +338,7 @@ while ($m < $k)
 		else {$Sdispo_avg=0;}
 
 	$Scalls =	sprintf("%6s", $Scalls);
+	$Snew_calls =	sprintf("%6s", $Snew_calls);
 
 	if ($non_latin < 1)
 	{
@@ -439,7 +446,7 @@ while ($m < $k)
 	$USERavgDISPO_MS = "$USERavgDISPO_M_int:$USERavgDISPO_S";
 	$pfUSERavgDISPO_MS =		sprintf("%6s", $USERavgDISPO_MS);
 
-	echo "| $Sfull_name | $Suser | $Scalls | $pfUSERtime_MS | $pfUSERtotPAUSE_MS | $pfUSERavgPAUSE_MS | $pfUSERtotWAIT_MS | $pfUSERavgWAIT_MS | $pfUSERtotTALK_MS | $pfUSERavgTALK_MS | $pfUSERtotDISPO_MS | $pfUSERavgDISPO_MS |$SstatusesHTML\n";
+	echo "| $Sfull_name | $Suser | $Scalls | $Snew_calls | $pfUSERtime_MS | $pfUSERtotPAUSE_MS | $pfUSERavgPAUSE_MS | $pfUSERtotWAIT_MS | $pfUSERavgWAIT_MS | $pfUSERtotTALK_MS | $pfUSERavgTALK_MS | $pfUSERtotDISPO_MS | $pfUSERavgDISPO_MS |$SstatusesHTML\n";
 	$m++;
 	}
 ### END loop through each user ###
@@ -481,6 +488,7 @@ while ($n < $j)
 
 
 	$TOTcalls =	sprintf("%7s", $TOTcalls);
+	$TOTnew_calls =	sprintf("%6s", $TOTnew_calls);
 	$TOT_AGENTS = sprintf("%-4s", $m);
 
 	$TOTtime_M = ($TOTtime / 60);
@@ -584,9 +592,9 @@ while ($n < $j)
 		while(strlen($TOTavgWAIT_MS)>6) {$TOTavgWAIT_MS = substr("$TOTavgWAIT_MS", 0, -1);}
 
 
-echo "+-----------------+----------+--------+---------+--------+--------+--------+--------+--------+--------+--------+--------+$statusesHEAD\n";
-echo "|  TOTALS        AGENTS:$TOT_AGENTS | $TOTcalls| $TOTtime_MS|$TOTtotPAUSE_MS| $TOTavgPAUSE_MS |$TOTtotWAIT_MS| $TOTavgWAIT_MS |$TOTtotTALK_MS| $TOTavgTALK_MS |$TOTtotDISPO_MS| $TOTavgDISPO_MS |$SUMstatusesHTML\n";
-echo "+----------------------------+--------+---------+--------+--------+--------+--------+--------+--------+--------+--------+$statusesHEAD\n";
+echo "+-----------------+----------+--------+--------+---------+--------+--------+--------+--------+--------+--------+--------+--------+$statusesHEAD\n";
+echo "|  TOTALS        AGENTS:$TOT_AGENTS | $TOTcalls| $TOTnew_calls | $TOTtime_MS|$TOTtotPAUSE_MS| $TOTavgPAUSE_MS |$TOTtotWAIT_MS| $TOTavgWAIT_MS |$TOTtotTALK_MS| $TOTavgTALK_MS |$TOTtotDISPO_MS| $TOTavgDISPO_MS |$SUMstatusesHTML\n";
+echo "+----------------------------+--------+--------+---------+--------+--------+--------+--------+--------+--------+--------+--------+$statusesHEAD\n";
 
 echo "\n";
 
