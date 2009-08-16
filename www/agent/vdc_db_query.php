@@ -647,14 +647,21 @@ if ($ACTION == 'manDiaLnextCaLL')
 			}
 		else
 			{
-			$stmt="SELECT manual_dial_new_today,manual_dial_new_limit FROM osdial_users WHERE user='$user';";
+			$stmt="SELECT manual_dial_new_limit FROM osdial_users WHERE user='$user';";
+			$rslt=mysql_query($stmt, $link);
+			if ($DB) {echo "$stmt\n";}
+			$mdn_user_ct = mysql_num_rows($rslt);
+			if ($mdn_user_ct > 0) {
+				$row=mysql_fetch_row($rslt);
+				$mdn_limit =$row[0];
+			}
+			$stmt="SELECT manual_dial_new_today FROM osdial_campaign_agent_stats WHERE user='$user' AND campaign_id='$campaign';";
 			$rslt=mysql_query($stmt, $link);
 			if ($DB) {echo "$stmt\n";}
 			$mdn_user_ct = mysql_num_rows($rslt);
 			if ($mdn_user_ct > 0) {
 				$row=mysql_fetch_row($rslt);
 				$mdn_today =$row[0];
-				$mdn_limit =$row[1];
 			}
 			### grab the next lead in the hopper for this campaign and reserve it for the user
             if ($mdn_limit == 0 or $mdn_today <= $mdn_limit) {
@@ -781,7 +788,7 @@ if ($ACTION == 'manDiaLnextCaLL')
 
 			if ($hopper_leadID_ct > 0) {
 			    if (ereg("NEW",$dispo)) {
-			        $stmt = "UPDATE osdial_users SET manual_dial_new_today=manual_dial_new_today+1 WHERE user='$user';";
+			        $stmt = "UPDATE osdial_campaign_agent_stats SET manual_dial_new_today=manual_dial_new_today+1 WHERE user='$user' AND campaign_id='$campaign';";
 			        if ($DB) {echo "$stmt\n";}
 			        $rslt=mysql_query($stmt, $link);
                 }
@@ -821,7 +828,7 @@ if ($ACTION == 'manDiaLnextCaLL')
 				$rslt=mysql_query($stmt, $link);
 				}
 
-			$stmt="UPDATE osdial_agent_log set lead_id='$lead_id',comments='MANUAL' where agent_log_id='$agent_log_id';";
+			$stmt="UPDATE osdial_agent_log set lead_id='$lead_id',comments='MANUAL',prev_status='$dispo',lead_called_count='$called_count' where agent_log_id='$agent_log_id';";
 				if ($format=='debug') {echo "\n<!-- $stmt -->";}
 			$rslt=mysql_query($stmt, $link);
 		
@@ -2004,7 +2011,7 @@ if ($ACTION == 'VDADcheckINCOMING')
 			$row=mysql_fetch_row($rslt);
 			$wait_sec = (($StarTtime - $row[0]) + $row[1]);
 			}
-		$stmt="UPDATE osdial_agent_log set wait_sec='$wait_sec',talk_epoch='$StarTtime',lead_id='$lead_id',uniqueid='$uniqueid' where agent_log_id='$agent_log_id';";
+		$stmt="UPDATE osdial_agent_log set wait_sec='$wait_sec',talk_epoch='$StarTtime',lead_id='$lead_id',uniqueid='$uniqueid',prev_status='$dispo',lead_called_count='$called_count' where agent_log_id='$agent_log_id';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 
