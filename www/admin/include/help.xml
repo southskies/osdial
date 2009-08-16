@@ -1,0 +1,2194 @@
+<?xml version="1.0" standalone="yes"?>
+<glossary id="admin_overview" title="Admin Interface">
+
+
+  <section id="osdial_users" title="osdial_users">
+    <item id="user">
+      <title>User/Agent ID</title>
+      <summary>
+        This field is where you put the OSDial agents ID number, can be up to 8 digits in length, Must be at least 2 characters in length.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="pass">
+      <title>Password</title>
+      <summary>
+        This field is where you put the OSDial agents password. Must be at least 2 characters in length.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="full_name">
+      <title>Full Name</title>
+      <summary>
+        This field is where you put the OSDial agents full name. Must be at least 2 characters in length.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="user_level">
+      <title>User Level</title>
+      <summary>
+        This menu is where you select the OSDial agents user level. Must be a level of 1 to log into OSDial, Must be level greater than 2 to log in as a closer, Must be user level 8 or greater to get into admin web section.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="user_group">
+      <title>User Group</title>
+      <summary>
+        This menu is where you select the OSDial agents group that this user will belong to. This does not have any restrictions at this time, this is just to subdivide users and allow for future features based upon it.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="phone_login">
+      <title>Phone Login</title>
+      <summary>
+        Here is where you can set a default phone login value for when the user logs into agent.php. This value will populate the phone_login automatically when the user logs in with their user-pass-campaign in the agent.php login screen.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="phone_pass">
+      <title>Phone Pass</title>
+      <summary>
+        Here is where you can set a default phone pass value for when the user logs into agent.php. This value will populate the phone_pass automatically when the user logs in with their user-pass-campaign in the agent.php login screen.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="hotkeys_active">
+      <title>Hot Keys Active</title>
+      <summary>
+        This option if set to 1 allows the user to use the Hot Keys quick-dispositioning function in agent.php.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="agent_choose_ingroups">
+      <title>Agent Choose Ingroups</title>
+      <summary>
+        This option if set to 1 allows the user to choose the ingroups that they will receive calls from when they login to a CLOSER or INBOUND campaign. Otherwise the Manager will need to set this in their user detail screen of the admin page.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="scheduled_callbacks">
+      <title>Scheduled Callbacks</title>
+      <summary>
+        This option allows an agent to disposition a call as CALLBK and choose the data and time at which the lead will be re-activated.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="agentonly_callbacks">
+      <title>Agent-Only Callbacks</title>
+      <summary>
+        This option allows an agent to set a callback so that they are the only Agent that can call the customer back. This also allows the agent to see their callback listings and call them back any time they want to.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="agentcall_manual">
+      <title>Agent Call Manual</title>
+      <summary>
+        This option allows an agent to manually enter a new lead into the system and call them. This also allows the calling of any phone number from their agent screen and puts that call into their session. Use this option with caution.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="osdial_recording">
+      <title>OSDial Recording</title>
+      <summary>
+        This option can prevent an agent from doing any recordings after they log in to OSDial. This option must be on for OSDial to follow the campaign recording session.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="osdial_transfers">
+      <title>OSDial Transfers</title>
+      <summary>
+        This option can prevent an agent from opening the transfer - conference session of OSDial. If this is disabled, the agent cannot third party call or blind transfer any calls.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="closer_default_blended">
+      <title>Closer Default Blended</title>
+      <summary>
+        This option simply defaults the Blended checkbox on a CLOSER login screen.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="osdial_recording_override">
+      <title>OSDial Recording Override</title>
+      <summary>
+        This option will override whatever the option is in the campaign for recording. DISABLED will not override the campaign recording setting. NEVER will disable recording on the client. ONDEMAND is the default and allows the agent to start and stop recording as needed. ALLCALLS will start recording on the client whenever a call is sent to an agent. ALLFORCE will start recording on the client whenever a call is sent to an agent giving the agent no option to stop recording. For ALLCALLS and ALLFORCE there is an option to use the Recording Delay to cut down on very short recordings and recude system load.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="osdial_users-campaign_ranks">
+      <title>Campaign Ranks</title>
+      <summary>
+        In this section you can define the rank an agent will have for each campaign. These ranks can be used to allow for preferred call routing when Next Agent Call is set to campaign_rank.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="closer_campaigns">
+      <title>Inbound Groups</title>
+      <summary>
+        Here is where you select the inbound groups you want to receive calls from if you have selected the CLOSER campaign. You will also be able to set the rank, or skill level, in this section for each of the inbound groups as well as being able to see the number of calls received from each inbound group for this specific agent. Also in this section is the ability to give the agent a rank for each inbound group. These ranks can be used for preferred call routing when that option is selected in the in-group screen.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="alter_custdata_override">
+      <title>Agent Alter Customer Data Override</title>
+      <summary>
+        This option will override whatever the option is in the campaign for altering of customer data. NOT_ACTIVE will use whatever setting is present for the campaign. ALLOW_ALTER will always allow for the agent to alter the customer data, no matter what the campaign setting is. Default is NOT_ACTIVE.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="alter_agent_interface_options">
+      <title>Alter Agent Interface Options</title>
+      <summary>
+        This option if set to 1 allows the administrative user to modify the Agents interface options in admin.php.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="delete_users">
+      <title>Delete Agents</title>
+      <summary>
+        This option if set to 1 allows the user to delete other users of equal or lesser user level from the system.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="delete_user_groups">
+      <title>Delete User Groups</title>
+      <summary>
+        This option if set to 1 allows the user to delete user groups from the system.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="delete_lists">
+      <title>Delete Lists</title>
+      <summary>
+        This option if set to 1 allows the user to delete OSDial lists from the system.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="delete_campaigns">
+      <title>Delete Campaigns</title>
+      <summary>
+        This option if set to 1 allows the user to delete OSDial campaigns from the system.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="delete_ingroups">
+      <title>Delete In-Groups</title>
+      <summary>
+        This option if set to 1 allows the user to delete OSDial In-Groups from the system.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="delete_remote_agents">
+      <title>Delete Remote Agents</title>
+      <summary>
+        This option if set to 1 allows the user to delete OSDial remote agents from the system.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="load_leads">
+      <title>Load Leads</title>
+      <summary>
+        This option if set to 1 allows the user to load OSDial leads into the osdial_list table by way of the web based lead loader.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="campaign_detail">
+      <title>Campaign Detail</title>
+      <summary>
+        This option if set to 1 allows the user to view and modify the campaign detail screen elements.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="ast_admin_access">
+      <title>AGC Admin Access</title>
+      <summary>
+        This option if set to 1 allows the user to login to the OSDial admin pages.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="ast_delete_phones">
+      <title>AGC Delete Phones</title>
+      <summary>
+        This option if set to 1 allows the user to delete phone entries in the OSDial admin pages.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="delete_scripts">
+      <title>Delete Scripts</title>
+      <summary>
+        This option if set to 1 allows the user to delete Campaign scripts in the script modification screen.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="modify_leads">
+      <title>Modify Leads</title>
+      <summary>
+        This option if set to 1 allows the user to modify leads in the admin section lead search results page.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="change_agent_campaign">
+      <title>Change Agent Campaign</title>
+      <summary>
+        This option if set to 1 allows the user to alter the campaign that an agent is logged into while they are logged into it.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="delete_filters">
+      <title>Delete Filters</title>
+      <summary>
+        This option allows the user to be able to delete OSDial lead filters from the system.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="delete_call_times">
+      <title>Delete Call Times</title>
+      <summary>
+        This option allows the user to be able to delete OSDial call times records and OSDial state call times records from the system.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="modify_call_times">
+      <title>Modify Call Times</title>
+      <summary>
+        This option allows the user to view and modify the call times and state call times records. A user doesn't need this option enabled if they only need to change the call times option on the campaigns screen.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="modify_sections">
+      <title>Modify Sections</title>
+      <summary>
+        These options allow the user to view and modify each sections records. If set to 0, the user will be able to see the section list, but not the detail or modification screen of a record in that section.
+      </summary>
+      <detailed/>
+    </item>
+
+    <item id="view_reports">
+      <title>View Reports</title>
+      <summary>
+        This option allows the user to view the OSDial reports.
+      </summary>
+      <detailed/>
+    </item>
+  </section>
+
+
+
+  <section id="osdial_campaigns" title="OSDial_CAMPAIGNS TABLE">
+    <item id="campaign_id">
+      <title>Campaign ID</title>
+      <summary>
+  This is the short name of the campaign, it is not editable after initial submission, cannot contain spaces and must be between 2 and 8 characters in length.
+      </summary>
+    </item>
+
+    <item id="campaign_name">
+      <title>Campaign Name</title>
+      <summary>
+  This is the description of the campaign, it must be between 6 and 40 characters in length.
+      </summary>
+    </item>
+
+    <item id="campaign_description">
+      <title>Campaign Description</title>
+      <summary>
+  This is a memo field for the campaign, it is optional and can be a maximum of 255 characters in length.
+      </summary>
+    </item>
+
+    <item id="campaign_changedate">
+      <title>Campaign Change Date</title>
+      <summary>
+  This is the last time that the settings for this campaign were modified in any way.
+      </summary>
+    </item>
+
+    <item id="campaign_logindate">
+      <title>Last Campaign Login Date</title>
+      <summary>
+  This is the last time that an agent was logged into this campaign.
+      </summary>
+    </item>
+
+    <item id="campaign_stats_refresh">
+      <title>Campaign Stats Refresh</title>
+      <summary>
+  This checkbox will allow you to force a OSDial stats refresh, even if the campaign is not active.
+      </summary>
+    </item>
+
+    <item id="active">
+      <title>Active</title>
+      <summary>
+  This is where you set the campaign to Active or Inactive. If Inactive, noone can log into it.
+      </summary>
+    </item>
+
+    <item id="park_ext">
+      <title>Park Extension</title>
+      <summary>
+  This is where you can customize the on-hold music for OSDial. Make sure the extension is in place in the extensions.conf and that it points to the filename below.
+      </summary>
+    </item>
+
+    <item id="park_file_name">
+      <title>Park File Name</title>
+      <summary>
+  This is where you can customize the on-hold music for OSDial. Make sure the filename is 10 characters in length or less and that the file is in place in the /var/lib/asterisk/sounds directory.
+      </summary>
+    </item>
+
+    <item id="web_form_address">
+      <title>Web Form</title>
+      <summary>
+  This is where you can set the custom web page that will be opened when the user clicks on one of the WEB FORM buttons.
+      </summary>
+    </item>
+
+    <item id="web_form_extwindow">
+      <title>Web Form in External Window</title>
+      <summary>
+  "Y" will display the WebForm in an external window, "N" will display in a frame in the agent screen.
+      </summary>
+    </item>
+
+    <item id="web_form2_extwindow">
+      <title>Web Form 2 in External Window</title>
+      <summary>
+  "Y" will display the WebForm2 in an external window, "N" will display in a frame in the agent screen.
+      </summary>
+    </item>
+
+    <item id="allow_closers">
+      <title>Allow Closers</title>
+      <summary>
+  This is where you can set whether the users of this campaign will have the option to send the call to a closer.
+      </summary>
+    </item>
+
+    <item id="default_xfer_group">
+      <title>Default Transfer Group</title>
+      <summary>
+  This field is the default In-Group that will be automatically selected when the agent goes to the transfer-conference frame in their agent interface.
+      </summary>
+    </item>
+
+    <item id="xfer_groups">
+      <title>Allowed Transfer Groups</title>
+      <summary>
+  With these checkbox listings you can select the groups that agents in this campaign can transfer calls to. Allow Closers must be enabled for this option to show up.
+      </summary>
+    </item>
+
+    <item id="campaign_allow_inbound">
+      <title>Allow Inbound and Blended</title>
+      <summary>
+  This is where you can set whether the users of this campaign will have the option to take inbound calls with this campaign. If you want to do blended inbound and outbound then this must be set to Y. If you only want to do outbound dialing on this campaign set this to N. Default is N.
+      </summary>
+    </item>
+
+    <item id="dial_status">
+      <title>Dial Status</title>
+      <summary>
+  This is where you set the statuses that you are wanting to dial on within the lists that are active for the campaign below. To add another status to dial, select it from the drop-down list and click ADD. To remove one of the dial statuses, click on the REMOVE link next to the status you want to remove.
+      </summary>
+    </item>
+
+    <item id="lead_order">
+      <title>List Order</title>
+      <summary>
+  This menu is where you select how the leads that match the statuses selected above will be put in the lead hopper:
+ <br/> - DOWN: select the first leads loaded into the osdial_list table
+ <br/> - UP: select the last leads loaded into the osdial_list table
+ <br/> - UP PHONE: select the highest phone number and works its way down
+ <br/> - DOWN PHONE: select the lowest phone number and works its way up
+ <br/> - UP LAST NAME: starts with last names starting with Z and works its way down
+ <br/> - DOWN LAST NAME: starts with last names starting with A and works its way up
+ <br/> - UP COUNT: starts with most called leads and works its way down
+ <br/> - DOWN COUNT: starts with least called leads and works its way up
+ <br/> - DOWN COUNT 2nd NEW: starts with least called leads and works its way up inserting a NEW lead in every other lead - Must NOT have NEW selected in the dial statuses
+ <br/> - DOWN COUNT 3nd NEW: starts with least called leads and works its way up inserting a NEW lead in every third lead - Must NOT have NEW selected in the dial statuses
+ <br/> - DOWN COUNT 4th NEW: starts with least called leads and works its way up inserting a NEW lead in every forth lead - Must NOT have NEW selected in the dial statuses
+      </summary>
+    </item>
+
+    <item id="hopper_level">
+      <title>Hopper Level</title>
+      <summary>
+  This is how many leads the VDhopper script tries to keep in the osdial_hopper table for this campaign. If running VDhopper script every minute, make this slightly greater than the number of leads you go through in a minute.
+      </summary>
+    </item>
+
+    <item id="lead_filter_id">
+      <title>Lead Filter</title>
+      <summary>
+  This is a method of filtering your leads using a fragment of a SQL query. Use this feature with caution, it is easy to stop dialing accidentally with the slightest alteration to the SQL statement. Default is NONE.
+      </summary>
+    </item>
+
+    <item id="force_reset_hopper">
+      <title>Force Reset of Hopper</title>
+      <summary>
+  This allows you to wipe out the hopper contents upon form submission. It should be filled again when the VDhopper script runs.
+      </summary>
+    </item>
+
+    <item id="dial_method">
+      <title>Dial Method</title>
+      <summary>
+  This field is the way to define how dialing is to take place. If MANUAL then the auto_dial_level will be locked at 0 unless Dial Method is changed. If RATIO then the normal dialing a number of lines for Active agents. ADAPT_HARD_LIMIT will dial predictively up to the dropped percentage and then not allow aggressive dialing once the drop limit is reached until the percentage goes down again. ADAPT_TAPERED allows for running over the dropped percentage in the first half of the shift -as defined by call_time selected for campaign- and gets more strict as the shift goes on. ADAPT_AVERAGE tries to maintain an average or the dropped percentage not imposing hard limits as aggressively as the other two methods. You cannot change the Auto Dial Level if you are in any of the ADAPT dial methods. Only the Dialer can change the dial level when in predictive dialing mode.
+      </summary>
+    </item>
+
+    <item id="auto_dial_level">
+      <title>Auto Dial Level</title>
+      <summary>
+  This is where you set how many lines OSDial should use per active agent. zero 0 means auto dialing is off and the agents will click to dial each number. Otherwise OSDial will keep dialing lines equal to active agents multiplied by the dial level to arrive at how many lines this campaign on each server should allow. The ADAPT OVERRIDE checkbox allows you to force a new dial level even though the dial method is in an ADAPT mode. This is useful if there is a dramatic shift in the quality of leads and you want to drastically change the dial_level manually.
+      </summary>
+    </item>
+
+    <item id="available_only_ratio_tally">
+      <title>Available Only Tally</title>
+      <summary>
+  This field if set to Y will leave out INCALL and QUEUE status agents when calculating the number of calls to dial when not in MANUAL dial mode. Default is N.
+      </summary>
+    </item>
+
+    <item id="adaptive_dropped_percentage">
+      <title>Drop Percentage Limit</title>
+      <summary>
+  This field is where you set the limit of the percentage of dropped calls you would like while using an adaptive-predictive dial method, not MANUAL or RATIO.
+      </summary>
+    </item>
+
+    <item id="adaptive_maximum_level">
+      <title>Maximum Adapt Dial Level</title>
+      <summary>
+  This field is where you set the limit of the limit to the numbr of lines you would like dialed per agent while using an adaptive-predictive dial method, not MANUAL or RATIO. This number can be higher than the Auto Dial Level if your hardware will support it. Value must be a positive number greater than one and can have decimal places Default 3.0.
+      </summary>
+    </item>
+
+    <item id="adaptive_latest_server_time">
+      <title>Latest Server Time</title>
+      <summary>
+  This field is only used by the ADAPT_TAPERED dial method. You should enter in the hour and minute that you will stop calling on this campaign, 2100 would mean that you will stop dialing this campaign at 9PM server time. This allows the Tapered algorithm to decide how aggressively to dial by how long you have until you will be finished calling.
+      </summary>
+    </item>
+
+    <item id="adaptive_intensity">
+      <title>Adapt Intensity Modifier</title>
+      <summary>
+  This field is used to adjust the predictive intensity either higher or lower. The higher a positive number you select, the greater the dialer will increase the call pacing when it goes up and the slower the dialer will decrease the call pacing when it goes down. The lower the negative number you select here, the slower the dialer will increase the call pacing and the faster the dialer will lower the call pacing when it goes down. Default is 0. This field is not used by the MANUAL or RATIO dial methods.
+      </summary>
+    </item>
+
+    <item id="adaptive_dl_diff_target">
+      <title>Dial Level Difference Target</title>
+      <summary>
+  This field is used to define whether you want to target having a specific number of agents waiting for calls or calls waiting for agents. For example if you would always like to have on average one agent free to take calls immediately you would set this to -1, if you would like to target always having one call on hold waiting for an agent you would set this to 1. Default is 0. This field is not used by the MANUAL or RATIO dial methods.
+      </summary>
+    </item>
+
+    <item id="concurrent_transfers">
+      <title>Concurrent Transfers</title>
+      <summary>
+  This setting is used to define the number of calls that can be sent to agents at the same time. It is recommended that this setting is left at AUTO. This field is not used by the MANUAL dial method.
+      </summary>
+    </item>
+
+    <item id="auto_alt_dial">
+      <title>Auto Alt-Number Dialing</title>
+      <summary>
+  This setting is used to automatically dial alternate number fields while dialing in the RATIO and ADAPT dial methods when there is no contact at the main phone number for a lead, the NA, B, DC and N statuses. This setting is not used by the MANUAL dial method.
+      </summary>
+    </item>
+
+    <item id="next_agent_call">
+      <title>Next Agent Call</title>
+      <summary>
+  This determines which agent receives the next call that is available:
+ <br/> - random: orders by the random update value in the osdial_live_agents table
+ <br/> - oldest_call_start: orders by the last time an agent was sent a call. Results in agents receiving about the same number of calls overall.
+ <br/> - oldest_call_finish: orders by the last time an agent finished a call. AKA agent waiting longest receives first call.
+ <br/> - overall_user_level: orders by the user_level of the agent as defined in the osdial_users table a higher user_level will receive more calls.
+ <br/> - campaign_rank: orders by the rank given to the agent for the campaign. Highest to Lowest.
+ <br/> - fewest_calls: orders by the number of calls received by an agent for that specific inbound group. Least calls first.
+      </summary>
+    </item>
+
+    <item id="campaign_call_time">
+      <title>Campaign Call Time</title>
+      <summary>
+  This is where you set during which hours you would like to dial, as determined by the local time in the area <b>where you are calling from</b>. This is controlled by area code and is adjusted for Daylight Savings time if applicable.  This is essentially an automated on/off switch based on time for the campaign and has no effect on the times you are calling into in various time-zones.
+      </summary>
+    </item>
+
+    <item id="local_call_time">
+      <title>Local Call Time</title>
+      <summary>
+  This is where you set during which hours you would like to dial, as determined by the local time in the area <b>in which you are calling</b>. This is controlled by area code and is adjusted for Daylight Savings time if applicable. General Guidelines in the USA for Business to Business is 9am to 5pm and Business to Consumer calls is 9am to 9pm.
+      </summary>
+    </item>
+
+    <item id="dial_timeout">
+      <title>Dial Timeout</title>
+      <summary>
+  If defined, calls that would normally hang up after the timeout defined in extensions.conf would instead timeout at this amount of seconds if it is less than the extensions.conf timeout. This allows for quickly changing dial timeouts from server to server and limiting the effects to a single campaign. If you are having a lot of Answering Machine or Voicemail calls you may want to try changing this value to between 21-26 and see if results improve.
+      </summary>
+    </item>
+
+    <item id="preview_force_dial_time">
+      <title>Preview Force Dial Time</title>
+      <summary>
+  If this is set to a number greater than 0, then when in manual-preview dial mode, the call will be placed after the number of seconds set in this field as elapsed with the user needing to click DIAL LEAD.
+      </summary>
+    </item>
+
+    <item id="manualpreview_default">
+      <title>Manual Preview Default</title>
+      <summary>
+  When set to "Y", and dial method is "MANUAL", preview dialing will be selected by default.
+      </summary>
+    </item>
+
+    <item id="dial_prefix">
+      <title>Dial Prefix</title>
+      <summary>
+  This field allows for more easily changing a path of dialing to go out through a different method without doing a reload in Asterisk. Default is 9 based upon a 91NXXNXXXXXX in the dial plan - extensions.conf.
+      </summary>
+    </item>
+
+    <item id="omit_phone_code">
+      <title>Omit Phone Code</title>
+      <summary>
+  This field allows you to leave out the phone_code field while dialing within OSDial. For instance if you are dialing in the UK from the UK you would have 44 in as your phone_code field for all leads, but you just want to dial 10 digits in your dial plan extensions.conf to place calls instead of 44 then 10 digits. Default is N.
+      </summary>
+    </item>
+
+    <item id="campaign_cid">
+      <title>Campaign CallerID</title>
+      <summary>
+  This field allows for the sending of a custom callerid number on the outbound calls. This is the number that would show up on the callerid of the person you are calling. The default is UNKNOWN. If you are using T1 or E1s to dial out this option is only available if you are using PRIs - ISDN T1s or E1s - that have the custom callerid feature turned on, this will not work with Robbed-bit service -RBS- circuits. This will also work through most VOIP -SIP or IAX trunks- providers that allow dynamic outbound callerID. The custom callerID only applies to calls placed for the OSDial campaign directly, any 3rd party calls or transfers will not send the custom callerID. NOTE: Sometimes putting UNKNOWN or PRIVATE in the field will yield the sending of your default callerID number by your carrier with the calls. You may want to test this and put 0000000000 in the callerid field instead if you do not want to send you CallerID.
+      </summary>
+    </item>
+
+    <item id="campaign_vdad_exten">
+      <title>Campaign OSDial extension</title>
+      <summary>
+  This field allows for a custom OSDial transfer extension. This allows you to use different VDADtransfer...agi scripts depending upon your campaign. The default transfer AGI - exten 8365 agi-VDADtransfer.agi - just immediately sends the calls on to agents as soon as they are picked up. An additional sample political survey AGI is also now included - 8366 agi-VDADtransferSURVEY.agi - that plays a message to the called person and allows them to make a choice by pressing buttons - effectively pre-screening the lead - . Please note that except for surveys, political calls and charities this form of calling is illegal in the United States.
+      </summary>
+    </item>
+
+    <item id="campaign_rec_exten">
+      <title>Campaign Rec extension</title>
+      <summary>
+  This field allows for a custom recording extension to be used with OSDial. This allows you to use different extensions depending upon how long you want to allow a maximum recording and what type of codec you want to record in. The default exten is 8309 which if you follow the SCRATCH_INSTALL examples will record in the WAV format for upto one hour. Another option included in the examples is 8310 which will record in GSM format for upto one hour.
+      </summary>
+    </item>
+
+    <item id="campaign_recording">
+      <title>Campaign Recording</title>
+      <summary>
+  This menu allows you to choose what level of recording is allowed on this campaign. NEVER will disable recording on the client. ONDEMAND is the default and allows the agent to start and stop recording as needed. ALLCALLS will start recording on the client whenever a call is sent to an agent. ALLFORCE will start recording on the client whenever a call is sent to an agent giving the agent no option to stop recording. For ALLCALLS and ALLFORCE there is an option to use the Recording Delay to cut down on very short recordings and recude system load.
+      </summary>
+    </item>
+
+    <item id="campaign_rec_filename">
+      <title>Campaign Rec Filename</title>
+      <summary>
+  This field allows you to customize the name of the recording when Campaign recording is ONDEMAND or ALLCALLS. The allowed variables are CAMPAIGN CUSTPHONE FULLDATE TINYDATE EPOCH AGENT. The default is FULLDATE_AGENT and would look like this 20051020-103108_6666. Another example is CAMPAIGN_TINYDATE_CUSTPHONE which would look like this TESTCAMP_51020103108_3125551212. 50 char max.
+      </summary>
+    </item>
+
+    <item id="allcalls_delay">
+      <title>Recording Delay</title>
+      <summary>
+  For ALLCALLS and ALLFORCE recording only. This setting will delay the starting of the recording on all calls for the number of seconds specified in this field. Default is 0.
+      </summary>
+    </item>
+
+    <item id="campaign_script">
+      <title>Campaign Script</title>
+      <summary>
+  This menu allows you to choose the script that will appear on the agents screen for this campaign. Select NONE to show no script for this campaign.
+      </summary>
+    </item>
+
+    <item id="get_call_launch">
+      <title>Get Call Launch</title>
+      <summary>
+  This menu allows you to choose whether you want to auto-launch the web-form page in a separate window, auto-switch to the SCRIPT tab or do nothing when a call is sent to the agent for this campaign. 
+      </summary>
+    </item>
+
+    <item id="allow_tab_switch">
+      <title>Allow Tab Switch</title>
+      <summary>
+  This menu allows you to choose whether you want to allow users to be able to switch between FORM and SCRIPT tabs.
+      </summary>
+    </item>
+
+    <item id="am_message_exten">
+      <title>Answering Machine Message</title>
+      <summary>
+  This field is for entering in an extension to blind transfer calls to when the agent gets an answering machine and clicks on the Answering Machine Message button in the transfer conference frame. You must set this exten up in the dial plan - extensions.conf - and make sure it plays an audio file then hangs up. 
+      </summary>
+    </item>
+
+    <item id="amd_send_to_vmx">
+      <title>AMD send to vm exten</title>
+      <summary>
+  This menu allows you to define whether a message is left on an answering machine when it is detected. the call will be immediately forwarded to the Answering-Machine-Message extension if AMD is active and it is determined that the call is an answering machine.
+      </summary>
+    </item>
+
+    <item id="xferconf_a_dtmf">
+      <title>Xfer-Conf DTMF</title>
+      <summary>
+  These four fields allow for you to have two sets of Transfer Conference and DTMF presets. When the call or campaign is loaded, the agent.php script will show two buttons on the transfer-conference frame and auto-populate the number-to-dial and the send-dtmf fields when pressed. If you want to allow Consultative Transfers, a fronter to a closer, you can place CXFER as one of the number-to-dial presets and the proper dial string will be sent to do a Local Consultative Transfer, then the agent can just LEAVE-3WAY-CALL and move on to their next call. If you want to allow Blind transfers of customers to a OSDial AGI script for logging or an IVR, then place AXFER in the number-to-dial field. You can also specify an custom extension after the AXFER or CXFER, for instance if you want to do Internal Consultative transfers instead of Local you would put CXFER90009 in the number-to-dial field.
+      </summary>
+    </item>
+
+    <item id="alt_number_dialing">
+      <title>Agent Alt Num Dialing</title>
+      <summary>
+  This option allows an agent to manually dial the alternate phone number or address3 field after the main number has been called.
+      </summary>
+    </item>
+
+    <item id="scheduled_callbacks">
+      <title>Scheduled Callbacks</title>
+      <summary>
+  This option allows an agent to disposition a call as CALLBK and choose the data and time at which the lead will be re-activated.
+      </summary>
+    </item>
+
+    <item id="drop_call_seconds">
+      <title>Drop Call Seconds</title>
+      <summary>
+  The number of seconds from the time the customer line is picked up until the call is considered a DROP, only applies to outbound calls.
+      </summary>
+    </item>
+
+    <item id="voicemail_ext">
+      <title>Voicemail</title>
+      <summary>
+  If defined, calls that would normally DROP would instead be directed to this voicemail box to hear and leave a message.
+      </summary>
+    </item>
+
+    <item id="safe_harbor_message">
+      <title>Safe Harbor Message</title>
+      <summary>
+  If set to Y will play a message to customer after the Drop Call Seconds timeout is reached without being transferred to an agent. This setting will override sending to a voicemail box if this is set to Y.
+      </summary>
+    </item>
+
+    <item id="safe_harbor_exten">
+      <title>Safe Harbor Exten</title>
+      <summary>
+  This is the dial plan extension that the desired Safe Harbor audio file is located at on your server.
+      </summary>
+    </item>
+
+    <item id="wrapup_seconds">
+      <title>Wrap Up Seconds</title>
+      <summary>
+  The number of seconds to force an agent to wait before allowing them to receive or dial another call. The timer begins as soon as an agent hangs up on their customer - or in the case of alternate number dialing when the agent finishes the lead - Default is 0 seconds. If the timer runs out before the agent has dispositioned the call, the agent still will NOT move on to the next call until they select a disposition.
+      </summary>
+    </item>
+
+    <item id="wrapup_message">
+      <title>Wrap Up Message</title>
+      <summary>
+  This is a campaign-specific message to be displayed on the wrap up screen if wrap up seconds is set.
+      </summary>
+    </item>
+
+    <item id="use_internal_dnc">
+      <title>Use Internal DNC List</title>
+      <summary>
+  This defines whether this campaign is to filter leads against the Internal DNC list. If it is set to Y, the hopper will look for each phone number in the DNC list before placing it in the hopper. If it is in the DNC list then it will change that lead status to DNCL so it cannot be dialed. Default is N.
+      </summary>
+    </item>
+
+    <item id="closer_campaigns">
+      <title>Allowed Inbound Groups</title>
+      <summary>
+  For CLOSER campaigns only. Here is where you select the inbound groups you want agents in this CLOSER campaign to be able to take calls from. It is important for BLENDED inbound-outbound campaigns only to select the inbound groups that are used for agents in this campaign. The calls coming into the inbound groups selected here will be counted as active calls for a blended campaign even if all agents in the campaign are not logged in to receive calls from all of those selected inbound groups.
+      </summary>
+    </item>
+
+    <item id="agent_pause_codes_active">
+      <title>Agent Pause Codes Active</title>
+      <summary>
+  Allows agents to select a pause code when they click on the PAUSE button in agent.php. Pause codes are definable per campaign at the bottom of the campaign view detail screen and they are stored in the osdial_agent_log table. Default is N.
+      </summary>
+    </item>
+
+    <item id="disable_alter_custdata">
+      <title>Disable Alter Customer Data</title>
+      <summary>
+  If set to Y, does not change any of the customer data record when an agent dispositions the call. Default is N.
+      </summary>
+    </item>
+
+    <item id="no_hopper_leads_logins">
+      <title>Allow No-Hopper-Leads Logins</title>
+      <summary>
+  If set to Y, allows agents to login to the campaign even if there are no leads loaded into the hopper for that campaign. This function is not needed in CLOSER-type campaigns. Default is N.
+      </summary>
+    </item>
+
+    <item id="list_order_mix">
+      <title>List Order Mix</title>
+      <summary>
+  Overrides the Lead Order and Dial Status fields. Will use the List and status parameters for the selected List Mix entry in the List Mix sub section instead. Default is DISABLED.
+      </summary>
+    </item>
+
+    <item id="vcl_id">
+      <title>List Mix ID</title>
+      <summary>
+  ID of the list mix. Must be from 2-20 characters in length with no spaces or other special punctuation.
+      </summary>
+    </item>
+
+    <item id="vcl_name">
+      <title>List Mix Name</title>
+      <summary>
+  Descriptive name of the list mix. Must be from 2-50 characters in length.
+      </summary>
+    </item>
+
+    <item id="list_mix_container">
+      <title>List Mix Detail</title>
+      <summary>
+  The composition of the List Mix entry. Contains the List ID, mix order, percentages and statuses that make up this List Mix. The percentages always have to add up to 100, and the lists all have to be active and set to the campaign for the order mix entry to be Activated.
+      </summary>
+    </item>
+
+    <item id="mix_method">
+      <title>List Mix Method</title>
+      <summary>
+  The method of mixing all of the parts of the List Mix Detail together. EVEN_MIX will mix leads from each part interleaved with the other parts, like this 1,2,3,1,2,3,1,2,3. IN_ORDER will put the leads in the order in which they are listed in the List Mix Detail screen 1,1,1,2,2,2,3,3,3. RANDOM will put them in RANDOM order 1,3,2,1,1,3,2,1,3. Default is IN_ORDER.
+      </summary>
+    </item>
+
+    <item id="manual_dial_list_id">
+      <title>Manual Dial List ID</title>
+      <summary>
+  The default list_id to be used when an agent placces a manual call and a new lead record is created in osdial_list. Default is 999. This field can contain digits only.
+      </summary>
+    </item>
+
+    <item id="answers_per_hour_limit">
+      <title>Answers per hour limit</title>
+      <summary>
+  This option sets an upper limit on the number of answers the dialer has in an hour.  0 to disable.
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="osdial_lists" title="OSDial_LISTS TABLE">
+
+    <item id="osdial_lists-list_id">
+      <title>List ID</title>
+      <summary>
+  This is the numerical name of the list, it is not editable after initial submission, must contain only numbers and must be between 2 and 8 characters in length. Must be a number greater than 100.
+      </summary>
+    </item>
+
+    <item id="osdial_lists-list_name">
+      <title>List Name</title>
+      <summary>
+  This is the description of the list, it must be between 2 and 20 characters in length.
+      </summary>
+    </item>
+
+    <item id="osdial_lists-list_description">
+      <title>List Description</title>
+      <summary>
+  This is the memo field for the list, it is optional.
+      </summary>
+    </item>
+
+    <item id="osdial_lists-list_changedate">
+      <title>List Change Date</title>
+      <summary>
+  This is the last time that the settings for this list were modified in any way.
+      </summary>
+    </item>
+
+    <item id="osdial_lists-list_lastcalldate">
+      <title>List Last Call Date</title>
+      <summary>
+  This is the last time that lead was dialed from this list.
+      </summary>
+    </item>
+
+    <item id="osdial_lists-campaign_id">
+      <title>Campaign</title>
+      <summary>
+  This is the campaign that this list belongs to. A list can only be dialed on a single campaign at one time.
+      </summary>
+    </item>
+
+    <item id="osdial_lists-active">
+      <title>Active</title>
+      <summary>
+  This defines whether the list is to be dialed on or not.
+      </summary>
+    </item>
+
+    <item id="osdial_lists-reset_list">
+      <title>Reset Lead-Called-Status for this list</title>
+      <summary>
+  This resets all leads in this list to N for "not called since last reset" and means that any lead can now be called if it is the right status as defined in the campaign screen.
+      </summary>
+    </item>
+
+    <item id="osdial_lists-cost">
+      <title>OSDial List Cost</title>
+      <summary>
+  When a value is placed into the "cost" field of a list, each newly created lead will have that "cost" added to its record.  The OSDial List Cost report can then be run to give a basic cost analysis of the leads being dialed from the system.
+      </summary>
+    </item>
+  </section>
+
+
+  <section id="osdial_list" title="OSDial_LIST TABLE">
+    <item id="osdial_list-dnc">
+      <title>OSDial DNC List</title>
+      <summary>
+  This Do Not Call list contains every lead that has been set to a status of DNC in the system. Through the LISTS - ADD NUMBER TO DNC page you are able to manually add a number to this list so that it will not be called by campaigns that use the internal DNC list.
+      </summary>
+    </item>
+
+    <item id="osdial_list-cost">
+      <title>OSDial Lead Cost</title>
+      <summary>
+  When a value is placed into the "cost" field of a list, each newly created lead will have that "cost" added to its record.  The OSDial List Cost report can then be run to give a basic cost analysis of the leads being dialed from the system.
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="osdial_inbound_groups" title="OSDial INBOUND GROUPS TABLE">
+
+    <item id="osdial_inbound_groups-group_id">
+      <title>Group ID</title>
+      <summary>
+  This is the short name of the inbound group, it is not editable after initial submission, must not contain any spaces and must be between 2 and 20 characters in length.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-group_name">
+      <title>Group Name</title>
+      <summary>
+  This is the description of the group, it must be between 2 and 30 characters in length. Cannot include dashes, plusses or spaces .
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-group_color">
+      <title>Group Color</title>
+      <summary>
+  This is the color that displays in the OSDial client app when a call comes in on this group. It must be between 2 and 7 characters long. If this is a hex color definition you must remember to put a # at the beginning of the string or OSDial will not work properly.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-active">
+      <title>Active</title>
+      <summary>
+  This determines whether this group show up in the selection box when a OSDial agent logs in.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-web_form_address">
+      <title>Web Form</title>
+      <summary>
+  This is the custom address that clicking on one of the WEB FORM buttons in OSDial will take you to for calls that come in on this group.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-web_form_extwindow">
+      <title>Web Form External</title>
+      <summary>
+  "Y" will display the WebForm in an external window, "N" will display in an OSDial frame on the agent screen.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-next_agent_call">
+      <title>Next Agent Call</title>
+      <summary>
+  This determines which agent receives the next call that is available:
+ <br/> - random: orders by the random update value in the osdial_live_agents table
+ <br/> - oldest_call_start: orders by the last time an agent was sent a call. Results in agents receiving about the same number of calls overall.
+ <br/> - oldest_call_finish: orders by the last time an agent finished a call. AKA agent waiting longest receives first call.
+ <br/> - overall_user_level: orders by the user_level of the agent as defined in the osdial_users table a higher user_level will receive more calls.
+ <br/> - inbound_group_rank: orders by the rank given to the agent for the specific inbound group. Highest to Lowest.
+ <br/> - fewest_calls: orders by the number of calls received by an agent for that specific inbound group. Least calls first.
+ <br/> - campaign_rank: orders by the rank given to the agent for the campaign. Highest to Lowest.
+ <br/> - fewest_calls_campaign: orders by the number of calls received by an agent for the campaign. Least calls first.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-fronter_display">
+      <title>Fronter Display</title>
+      <summary>
+  This field determines whether the inbound OSDial agent would have the fronter name - if there is one - displayed in the Status field when the call comes to the agent.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-ingroup_script">
+      <title>Campaign Script</title>
+      <summary>
+  This menu allows you to choose the script that will appear on the agents screen for this campaign. Select NONE to show no script for this campaign.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-get_call_launch">
+      <title>Get Call Launch</title>
+      <summary>
+  This menu allows you to choose whether you want to auto-launch the web-form page in a separate window, auto-switch to the SCRIPT tab or do nothing when a call is sent to the agent for this campaign. 
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-allow_tab_switch">
+      <title>Allow Tab Switch</title>
+      <summary>
+  This menu allows you to choose whether you want to allow users to be able to switch between FORM and SCRIPT tabs.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-xferconf_a_dtmf">
+      <title>Xfer-Conf DTMF</title>
+      <summary>
+  These four fields allow for you to have two sets of Transfer Conference and DTMF presets. When the call or campaign is loaded, the agent.php script will show two buttons on the transfer-conference frame and auto-populate the number-to-dial and the send-dtmf fields when pressed. If you want to allow Consultative Transfers, a fronter to a closer, you can place CXFER as one of the number-to-dial presets and the proper dial string will be sent to do a Local Consultative Transfer, then the agent can just LEAVE-3WAY-CALL and move on to their next call. If you want to allow Blind transfers of customers to a OSDial AGI script for logging or an IVR, then place AXFER in the number-to-dial field. You can also specify an custom extension after the AXFER or CXFER, for instance if you want to do Internal Consultative transfers instead of Local you would put CXFER90009 in the number-to-dial field.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-drop_call_seconds">
+      <title>Drop Call Seconds</title>
+      <summary>
+  The number of seconds from the time the customer line is picked up until the call is considered a DROP, only applies to outbound calls.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-voicemail_ext">
+      <title>Voicemail</title>
+      <summary>
+  If defined, calls that would normally DROP would instead be directed to this voicemail box to hear and leave a message.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-drop_message">
+      <title>Drop Message</title>
+      <summary>
+  If set to Y will play a message to customer after the Drop Call Seconds timeout is reached without being transferred to an agent. This setting will override sending to a voicemail box if this is set to Y.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-drop_exten">
+      <title>Drop Exten</title>
+      <summary>
+  This is the dial plan extension that the desired Dropped call audio file is located at on your server.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-call_time_id">
+      <title>Call Time</title>
+      <summary>
+  This is the call time scheme to use for this inbound group. Keep in mind that the time is based on the server time. Default is 24hours.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-after_hours_action">
+      <title>After Hours Action</title>
+      <summary>
+  The action to perform if it is after hours as defined in the call time for this inbound group. HANGUP will immediately hangup the call, MESSASGE will play the file in the After Hours Message Filenam field, EXTENSION will send the call to the After Hours Extension in the dialplan and VOICEMAIL will send the call to the voicemail box listed in the After Hours Voicemail field. Default is MESSAGE.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-after_hours_message_filename">
+      <title>After Hours Message Filename</title>
+      <summary>
+  The audio file located on the server to be played if the Action is set to MESSAGE. Default is vm-goodbye
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-after_hours_exten">
+      <title>After Hours Extension</title>
+      <summary>
+  The dialplan extension to send the call to if the Action is set to EXTENSION. Default is 8300.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-after_hours_voicemail">
+      <title>After Hours Voicemail</title>
+      <summary>
+  The voicemail box to send the call to if the Action is set to VOICEMAIL.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-welcome_message_filename">
+      <title>Welcome Message Filename</title>
+      <summary>
+  The audio file located on the server to be played when the call comes in. If set to ---NONE--- then no message will be played. Default is ---NONE---
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-moh_context">
+      <title>Music On Hold Context</title>
+      <summary>
+  The music on hold context to use when the customer is placed on hold. Default is default.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-onhold_prompt_filename">
+      <title>On Hold Prompt Filename</title>
+      <summary>
+  The audio file located on the server to be played at a regular interval when the customer is on hold. Default is generic_hold. This audio file MUST be 9 seconds or less in length.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-prompt_interval">
+      <title>On Hold Prompt Interval</title>
+      <summary>
+  The length of time in seconds to wait before playing the on hold prompt. Default is 60.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-agent_alert_exten">
+      <title>Agent Alert Extension</title>
+      <summary>
+  The extension to send into the agent session to announce that a call is coming to the agent. This extension should have a Playback of an audio file. To not use this function set this to X. Default is X.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-agent_alert_delay">
+      <title>Agent Alert Delay</title>
+      <summary>
+  The length of time in milliseconds to wait before sending the call to the agent after playing the on Agent Alert Extension. Default is 1000.
+      </summary>
+    </item>
+
+    <item id="osdial_inbound_groups-default_xfer_group">
+      <title>Default Transfer Group</title>
+      <summary>
+  This field is the default In-Group that will be automatically selected when the agent goes to the transfer-conference frame in their agent interface.
+      </summary>
+    </item>
+  </section>
+
+
+  <section id="osdial_remote_agents" title="OSDial_REMOTE_AGENTS TABLE">
+
+    <item id="user_start">
+      <title>Agent ID Start</title>
+      <summary>
+  This is the starting Agent ID that is used when the remote agent entries are inserted into the system. If the Number of Lines is set higher than 1, this number is incremented by one until each line has an entry. Make sure you create a new OSDial agent account with a user level of 4 or great if you want them to be able to use the vdremote.php page for remote web access of this account.
+      </summary>
+    </item>
+
+    <item id="number_of_lines">
+      <title>Number of Lines</title>
+      <summary>
+  This defines how many remote agent entries the system creates, and determines how many lines it thinks it can safely send to the number below.
+      </summary>
+    </item>
+
+    <item id="server_ip">
+      <title>Server IP</title>
+      <summary>
+  A remote agent entry is only good for one specific server, here is where you select which server you want.
+      </summary>
+    </item>
+
+    <item id="conf_exten">
+      <title>External Extension</title>
+      <summary>
+  This is the number that you want the calls forwarded to. Make sure that it is a full dial plan number and that if you need a 9 at the beginning you put it in here. Test by dialing this number from a phone on the system.
+      </summary>
+    </item>
+
+    <item id="status">
+      <title>Status</title>
+      <summary>
+  Here is where you turn the remote agent on and off. As soon as the agent is Active the system assumes that it can send calls to it. It may take up to 30 seconds once you change the status to Inactive to stop receiving calls.
+      </summary>
+    </item>
+
+    <item id="campaign_id">
+      <title>Campaign</title>
+      <summary>
+  Here is where you select the campaign that these remote agents will be logged into. Inbound needs to use the CLOSER campaign and select the inbound campaigns below that you want to receive calls from.
+      </summary>
+    </item>
+
+    <item id="closer_campaigns">
+      <title>Inbound Groups</title>
+      <summary>
+  Here is where you select the inbound groups you want to receive calls from if you have selected the CLOSER campaign.
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="osdial_campaign_lists" title="OSDial_CAMPAIGN_LISTS">
+    <item id="osdial_campaign_lists">
+      <summary><title>OSDial_CAMPAIGN_LISTS</title>
+The lists within this campaign are listed here, whether they are active is denoted by the Y or N and you can go to the list screen by clicking on the list ID in the first column.
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="osdial_campaign_statuses" title="OSDial_CAMPAIGN_STATUSES TABLE">
+    <item id="osdial_campaign_statuses">
+      <title>OSDial_CAMPAIGN_STATUSES</title>
+      <summary>
+Through the use of custom campaign statuses, you can have statuses that only exist for a specific campaign. The Status must be 1-8 characters in length, the description must be 2-30 characters in length and Selectable defines whether it shows up in OSDial as a disposition. The human_answered field is used when calculating the drop percentage, or abandon rate. Setting human_answered to Y will use this status when counting the human-answered calls. The Category option allows you to group several statuses into a catogy that can be used for statistical analysis.
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="osdial_campaign_hotkeys" title="OSDial_CAMPAIGN_HOTKEYS TABLE">
+    <item id="osdial_campaign_hotkeys">
+      <title>OSDial_CAMPAIGN_HOTKEYS TABLE</title>
+      <summary>
+Through the use of custom campaign hot keys, agents that use the OSDial web-client can hang up and disposition calls just by pressing a single key on their keyboard. There are two special HotKey options that you can use in conjunction with Alternate Phone number dialing, ALTPH2 - Alternate Phone Hot Dial and ADDR3-----Address3 Hot Dial allow an agent to use a hotkey to hang up their call, stay on the same lead, and dial another contact number from that lead. 
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="osdial_lead_recylce" title="OSDial_LEAD_RECYCLE TABLE">
+    <item id="osdial_lead_recycle">
+      <title>OSDial_LEAD_RECYCLE</title>
+      <summary>
+Through the use of lead recycling, you can call specific statuses of leads again at a specified interval without resetting the entire list. Lead recycling is campaign-specific and does not have to be a selected dialable status in your campaign. The attempt delay field is the number of seconds until the lead can be placed back in the hopper, this number must be at least 120 seconds. The attempt maximum field is the maximum number of times that a lead of this status can be attempted before the list needs to be reset, this number can be from 1 to 10. You can activate and deactivate a lead recycle entry with the provided links.
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="osdial_auto_alt_dial_statuses" title="OSDial AUTO ALT DIAL STATUSES">
+    <item id="osdial_auto_alt_dial_statuses">
+      <title>OSDial AUTO ALT DIAL STATUSES</title>
+      <summary>
+If the Auto Alt-Number Dialing field is set, then the leads that are dispositioned under these auto alt dial statuses will have their alt_phone and-or address3 fields dialed after any of these no-answer statuses are set.
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="osdial_agent_pause_codes" title="OSDial AGENT PAUSE CODES">
+    <item id="osdial_pause_codes">
+      <title>OSDial AGENT PAUSE CODES</title>
+      <summary>
+If the Agent Pause Codes Active field is set to active then the agents will be able to select from these pause codes when they click on the PAUSE button on their screens. This data is then stored in the OSDial agent log. The Pause code must contain only letters and numbers and be less than 7 characters long. The pause code name can be no longer than 30 characters.
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="osdial_user_groups" title="OSDial_USER_GROUPS TABLE">
+    <item id="user_group">
+      <title>User Group</title>
+      <summary>
+  This is the short name of a OSDial User group, try not to use any spaces or punctuation for this field. max 20 characters, minimum of 2 characters.
+      </summary>
+    </item>
+
+    <item id="group_name">
+      <title>Group Name</title>
+      <summary>
+  This is the description of the OSDial user group max of 40 characters.
+      </summary>
+    </item>
+
+    <item id="allowed_campaigns">
+      <title>Allowed Campaigns</title>
+      <summary>
+  This is a selectable list of Campaigns to which members of this user group can log in to. The ALL-CAMPAIGNS option allows the users in this group to see and log in to any campaign on the system.
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="osdial_scripts" title="OSDial_SCRIPTS TABLE">
+    <item id="script_id">
+      <title>Script ID</title>
+      <summary>
+  This is the short name of a OSDial Script. This needs to be a unique identifier. Try not to use any spaces or punctuation for this field. max 10 characters, minimum of 2 characters.
+      </summary>
+    </item>
+
+    <item id="script_name">
+      <title>Script Name</title>
+      <summary>
+  This is the title of a OSDial Script. This is a short summary of the script. max 50 characters, minimum of 2 characters. There should be no spaces or punctuation of any kind in theis field.
+      </summary>
+    </item>
+
+    <item id="script_comments">
+      <title>Script Comments</title>
+      <summary>
+  This is where you can place comments for a OSDial Script such as -changed to free upgrade on Sept 23-.  max 255 characters, minimum of 2 characters.
+      </summary>
+    </item>
+
+    <item id="script_text">
+      <title>Script Text</title>
+      <summary>
+  This is where you place the content of a OSDial Script. Minimum of 2 characters. You can have customer information be auto-populated in this script using "--A--field--B--" where field is one of the following fieldnames: vendor_lead_code, source_id, list_id, gmt_offset_now, called_since_last_reset, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, custom2, comments, lead_id, campaign, phone_login, group, channel_group, SQLdate, epoch, uniqueid, customer_zap_channel, server_ip, SIPexten, session_id. For example, this sentence would print the persons name in it----<br/><br/>  Hello, can I speak with --A--first_name--B-- --A--last_name--B-- please? Well hello --A--title--B-- --A--last_name--B-- how are you today?<br/><br/> This would read----<br/><br/>Hello, can I speak with John Doe please? Well hello Mr. Doe how are you today?<br/><br/> You can also use an iframe to load a separate window within the SCRIPT tab, here is an example with prepopulated variables:
+      </summary>
+    </item>
+
+    <item id="active">
+      <title>Active</title>
+      <summary>
+  This determines whether this script can be selected to be used by a campaign.
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="osdial_lead_filters" title="OSDial_LEAD_FILTERS TABLE">
+    <item id="lead_filter_id">
+      <title>Filter ID</title>
+      <summary>
+  This is the short name of a OSDial Lead Filter. This needs to be a unique identifier. Do not use any spaces or punctuation for this field. max 10 characters, minimum of 2 characters.
+      </summary>
+    </item>
+
+    <item id="lead_filter_name">
+      <title>Filter Name</title>
+      <summary>
+  This is a more descriptive name of the Filter. This is a short summary of the filter. max 30 characters, minimum of 2 characters.
+      </summary>
+    </item>
+
+    <item id="lead_filter_comments">
+      <title>Filter Comments</title>
+      <summary>
+  This is where you can place comments for a OSDial Filter such as -calls all California leads-.  max 255 characters, minimum of 2 characters.
+      </summary>
+    </item>
+
+    <item id="lead_filter_sql">
+      <title>Filter SQL</title>
+      <summary>
+  This is where you place the SQL query fragment that you want to filter by. do not begin or end with an AND, that will be added by the hopper cron script automatically. an example SQL query that would work here is- called_count &gt; 4 and called_count &lt; 8 -.
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="osdial_call_times" title="OSDial_CALL TIMES TABLE">
+    <item id="call_time_id">
+      <title>Call Time ID</title>
+      <summary>
+  This is the short name of a OSDial Call Time Definition. This needs to be a unique identifier. Do not use any spaces or punctuation for this field. max 10 characters, minimum of 2 characters.
+      </summary>
+    </item>
+
+    <item id="call_time_name">
+      <title>Call Time Name</title>
+      <summary>
+  This is a more descriptive name of the Call Time Definition. This is a short summary of the Call Time definition. max 30 characters, minimum of 2 characters.
+      </summary>
+    </item>
+
+    <item id="call_time_comments">
+      <title>Call Time Comments</title>
+      <summary>
+  This is where you can place comments for a OSDial Call Time Definition such as -10am to 4pm with extra call state restrictions-.  max 255 characters.
+      </summary>
+    </item>
+
+    <item id="ct_default_start">
+      <title>Default Start and Stop Times</title>
+      <summary>
+  This is the default time that calling will be allowed to be started or stopped within this call time definition if the day-of-the-week start time is not defined. 0 is midnight. To prevent calling completely set this field to 2400 and set the Default Stop time to 2400. To allow calling 24 hours a day set the start time to 0 and the stop time to 2400.
+      </summary>
+    </item>
+
+    <item id="ct_sunday_start">
+      <title>Weekday Start and Stop Times</title>
+      <summary>
+  These are the custom times per day that can be set for the call time definition. same rules apply as with the Default start and stop times.
+      </summary>
+    </item>
+
+    <item id="ct_state_call_times">
+      <title>State Call Time Definitions</title>
+      <summary>
+  This is the list of State specific call time definitions that are followed in this Call Time Definition.
+      </summary>
+    </item>
+
+    <item id="state_call_time_state">
+      <title>State Call Time State</title>
+      <summary>
+  This is the two letter code for the state that this calling time definition is for. For this to be in effect the local call time that is set in the campaign must have this state call time record in it as well as all of the leads having two letter state codes in them.
+      </summary>
+    </item>
+
+    <item id="use_recylce_gap">
+      <title>Add No-Call Period to Recylce Delay</title>
+      <summary>
+  This option when enabled will add a "gap" to the recylce delay.  This "gap" is the length of time between when the call-time started today and when it last ended.
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="osdial_list_loader" title="OSDial LIST LOADER FUNCTIONALITY">
+    <item id="osdial_list_loader">
+      <title>OSDial LIST LOADER</title>
+      <summary>
+The OSDial basic web-based lead loader is designed simply to take a lead file - up to 8MB in size - that is either tab or pipe delimited and load it into the osdial_list table. The lead loader allows for field choosing and TXT- Plain Text, CSV- Comma Separated Values and XLS- Excel file formats. The lead loader does not do data validation, but it does allow you to check for duplicates in itself, within the campaign or within the entire system. Also, make sure that you have created the list that these leads are to be under so that you can use them. Here is a list of the fields in their proper order for the lead files:
+	<ol><li>Vendor Lead Code - shows up in the Vendor ID field of the GUI</li><li>Source Code - internal use only for admins and DBAs</li><li>List ID - the list number that these leads will show up under</li><li>Phone Code - the prefix for the phone number - 1 for US, 01144 for UK, 01161 for AUS, etc</li><li>Phone Number - must be at least 8 digits long</li><li>Title - title of the customer - Mr. Ms. Mrs, etc...</li><li>First Name</li><li>Middle Initial</li><li>Last Name</li><li>Address Line 1</li><li>Address Line 2</li><li>Address Line 3</li><li>City</li><li>State - limited to 2 characters</li><li>Province</li><li>Postal Code</li><li>Country</li><li>Gender</li><li>Date of Birth</li><li>Alternate Phone Number</li><li>Email Address</li><li>Custom1</li><li>Comments</li></ol>
+
+<br/>NOTES: The Excel Lead loader functionality is enabled by a series of perl scripts and needs to have a properly configured /etc/osdial.conf file in place on the web server. Also, a couple perl modules must be loaded for it to work as well - OLE-Storage_Lite and Spreadsheet-ParseExcel. You can check for runtime errors in these by looking at your apache error_log file. Also, for duplication checks against gampaign lists, the list that has new leads going into it does need to be created in the system before you start to load the leads.
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="phones" title="PHONES TABLE">
+    <item id="extension">
+      <title>Phone extension</title>
+      <summary>
+  This field is where you put the phones name as it appears to Asterisk not including the protocol or slash at the beginning. For Example: for the SIP phone SIP/test101 the Phone extension would be test101. Also, for IAX2 phones make sure you use the full phones name: IAX2/IAXphone1@IAXphone1 would be IAXphone1@IAXphone1. For Zap phones make sure you put the full channel: Zap/25-1 would be 25-1.  Another note, make sure you set the Protocol below correctly for your type of phone.
+      </summary>
+    </item>
+
+    <item id="dialplan_number">
+      <title>Dial Plan Number</title>
+      <summary>
+  This field is for the number you dial to have the phone ring. This number is defined in the extensions.conf file of your Asterisk server
+      </summary>
+    </item>
+
+    <item id="voicemail_id">
+      <title>Voicemail Box</title>
+      <summary>
+  This field is for the voicemail box that the messages go to for the user of this phone. We use this to check for voicemail messages and for the user to be able to use the VOICEMAIL button on OSDial app.
+      </summary>
+    </item>
+
+    <item id="outbound_cid">
+      <title>Outbound CallerID</title>
+      <summary>
+  This field is where you would enter the callerID number that you would like to appear on outbound calls placed form the OSDial web-client. This does not work on RBS, non-PRI, T1/E1s.
+      </summary>
+    </item>
+
+    <item id="phone_ip">
+      <title>Phone IP address</title>
+      <summary>
+  This field is for the phone's IP address if it is a VOIP phone. This is an optional field
+      </summary>
+    </item>
+
+    <item id="computer_ip">
+      <title>Computer IP address</title>
+      <summary>
+  This field is for the user's computer IP address. This is an optional field
+      </summary>
+    </item>
+
+    <item id="server_ip">
+      <title>Server IP</title>
+      <summary>
+  This menu is where you select which server the phone is active on.
+      </summary>
+    </item>
+
+    <item id="login">
+      <title>Login</title>
+      <summary>
+  The login used for the phone user to login to the client applications.
+      </summary>
+    </item>
+
+    <item id="pass">
+      <title>Password</title>
+      <summary>
+   The password used for the phone user to login to the client applications.
+      </summary>
+    </item>
+
+    <item id="status">
+      <title>Status</title>
+      <summary>
+  The status of the phone in the system, ACTIVE and ADMIN allow for GUI clients to work. ADMIN allows access to this administrative web site. All other statuses do not allow GUI or Admin web access.
+      </summary>
+    </item>
+
+    <item id="active">
+      <title>Active Account</title>
+      <summary>
+  Whether the phone is active to put it in the list in the GUI client.
+      </summary>
+    </item>
+
+    <item id="phone_type">
+      <title>Phone Type</title>
+      <summary>
+  Purely for administrative notes.
+      </summary>
+    </item>
+
+    <item id="fullname">
+      <title>Full Name</title>
+      <summary>
+  Used by the GUIclient in the list of active phones.
+      </summary>
+    </item>
+
+    <item id="company">
+      <title>Company</title>
+      <summary>
+  Purely for administrative notes.
+      </summary>
+    </item>
+
+    <item id="picture">
+      <title>Picture</title>
+      <summary>
+  Not yet Implemented.
+      </summary>
+    </item>
+
+    <item id="messages">
+      <title>New Messages</title>
+      <summary>
+  Number of new voicemail messages for this phone on the Asterisk server.
+      </summary>
+    </item>
+
+    <item id="old_messages">
+      <title>Old Messages</title>
+      <summary>
+  Number of old voicemail messages for this phone on the Asterisk server.
+      </summary>
+    </item>
+
+    <item id="protocol">
+      <title>Client Protocol</title>
+      <summary>
+  The protocol that the phone uses to connect to the Asterisk server: SIP, IAX2, Zap . Also, there is EXTERNAL for remote dial numbers or speed dial numbers that you want to list as phones.
+      </summary>
+    </item>
+
+    <item id="local_gmt">
+      <title>Local GMT</title>
+      <summary>
+  The difference from Greenwich Mean time, or ZULU time where the phone is located. DO NOT ADJUST FOR DAYLIGHT SAVINGS TIME. This is used by the OSDial campaign to accurately display the time and customer time.
+      </summary>
+    </item>
+
+    <item id="ASTmgrUSERNAME">
+      <title>Manager Login</title>
+      <summary>
+  This is the login that the GUI clients for this phone will use to access the Database where the server data resides.
+      </summary>
+    </item>
+
+    <item id="ASTmgrSECRET">
+      <title>Manager Secret</title>
+      <summary>
+  This is the password that the GUI clients for this phone will use to access the Database where the server data resides.
+      </summary>
+    </item>
+
+    <item id="login_user">
+      <title>OSDial Default Agent</title>
+      <summary>
+  This is to place a default value in the OSDial agent field whenever this phone user opens the OSDial client app. Leave blank for no agent.
+      </summary>
+    </item>
+
+    <item id="login_pass">
+      <title>OSDial Default Pass</title>
+      <summary>
+  This is to place a default value in the OSDial password field whenever this phone user opens the OSDial client app. Leave blank for no pass.
+      </summary>
+    </item>
+
+    <item id="login_campaign">
+      <title>OSDial Default Campaign</title>
+      <summary>
+  This is to place a default value in the OSDial campaign field whenever this phone user opens the OSDial client app. Leave blank for no campaign.
+      </summary>
+    </item>
+
+    <item id="park_on_extension">
+      <title>Park Exten</title>
+      <summary>
+  This is the default Parking extension for the client apps. Verify that a different one works before you change this.
+      </summary>
+    </item>
+
+    <item id="conf_on_extension">
+      <title>Conf Exten</title>
+      <summary>
+  This is the default Conference park extension for the client apps. Verify that a different one works before you change this.
+      </summary>
+    </item>
+
+    <item id="OSDial_park_on_extension">
+      <title>OSDial Park Exten</title>
+      <summary>
+  This is the default Parking extension for OSDial client app. Verify that a different one works before you change this.
+      </summary>
+    </item>
+
+    <item id="OSDial_park_on_filename">
+      <title>OSDial Park File</title>
+      <summary>
+  This is the default OSDial park extension file name for the client apps. Verify that a different one works before you change this. limited to 10 characters.
+      </summary>
+    </item>
+
+    <item id="monitor_prefix">
+      <title>Monitor Prefix</title>
+      <summary>
+  This is the dial plan prefix for monitoring of Zap channels automatically within the OSDial app. Only change according to the extensions.conf ZapBarge extensions records.
+      </summary>
+    </item>
+
+    <item id="recording_exten">
+      <title>Recording Exten</title>
+      <summary>
+  This is the dial plan extension for the recording extension that is used to drop into meetme conferences to record them. It usually lasts upto one hour if not stopped. verify with extensions.conf file before changing.
+      </summary>
+    </item>
+
+    <item id="voicemail_exten">
+      <title>VMAIL Main Exten</title>
+      <summary>
+  This is the dial plan extension going to check your voicemail. verify with extensions.conf file before changing.
+      </summary>
+    </item>
+
+    <item id="voicemail_dump_exten">
+      <title>VMAIL Dump Exten</title>
+      <summary>
+  This is the dial plan prefix used to send calls directly to a user's voicemail from a live call in the OSDial app. verify with extensions.conf file before changing.
+      </summary>
+    </item>
+
+    <item id="ext_context">
+      <title>Exten Context</title>
+      <summary>
+  This is the dial plan context that this phone primarily uses. It is assumed that all numbers dialed by the client apps are using this context so it is a good idea to make sure this is the most wide context possible. verify with extensions.conf file before changing.
+      </summary>
+    </item>
+
+    <item id="dtmf_send_extension">
+      <title>DTMF send Channel</title>
+      <summary>
+  This is the channel string used to send DTMF sounds into meetme conferences from the client apps. Verify the exten and context with the extensions.conf file.
+      </summary>
+    </item>
+
+    <item id="call_out_number_group">
+      <title>Outbound Call Group</title>
+      <summary>
+  This is the channel group that outbound calls from this phone are placed out of. There are a couple routines in the client apps that use this. For Zap channels you want to use something like Zap/g2 , for IAX2 trunks you would want to use the full IAX prefix like IAX2/OSDtest1:secret@10.10.10.15:4569. Verify the trunks with the extensions.conf file, it is usually what you have defined as the TRUNK global variable at the top of the file.
+      </summary>
+    </item>
+
+    <item id="client_browser">
+      <title>Browser Location</title>
+      <summary>
+  This is applicable to only UNIX/LINUX clients, the absolute path to Mozilla or Firefox browser on the machine. verify this by launching it manually.
+      </summary>
+    </item>
+
+    <item id="install_directory">
+      <title>Install Directory</title>
+      <summary>
+  This is the place where the OSDial scripts are located on your machine. For Win32 it should be something like C:\AST_OSD and for UNIX it should be something like /usr/local/perl_TK. verify this manually.
+      </summary>
+    </item>
+
+    <item id="local_web_callerID_URL">
+      <title>CallerID URL</title>
+      <summary>
+  This is the web address of the page used to do custom callerID lookups. default testing address is: http://localhost/test_callerid_output.php
+      </summary>
+    </item>
+
+    <item id="OSDial_web_URL">
+      <title>OSDial Default URL</title>
+      <summary>
+  This is the web address of the page used to do custom OSDial Web Form queries. default testing address is: http://localhost/test_OSDial_output.php
+      </summary>
+    </item>
+
+    <item id="AGI_call_logging_enabled">
+      <title>Call Logging</title>
+      <summary>
+  This is set to true if the call_log.agi file is in place in the extensions.conf file for all outbound and hang up 'h' extensions to log all calls. This should always be 1 because it is manditory for many OSDial features to work properly.
+      </summary>
+    </item>
+
+    <item id="user_switching_enabled">
+      <title>Agent Switching</title>
+      <summary>
+  Set to true to allow agent to switch to another agent account. NOTE: If agent switches they can initiate recording on the new agent's phone conversation
+      </summary>
+    </item>
+
+    <item id="conferencing_enabled">
+      <title>Conferencing</title>
+      <summary>
+  Set to true to allow user to start conference calls with upto six external lines.
+      </summary>
+    </item>
+
+    <item id="admin_hangup_enabled">
+      <title>Admin Hang Up</title>
+      <summary>
+  Set to true to allow user to be able to hang up any line at will through OSDial. Good idea only to enable this for Admin users.
+      </summary>
+    </item>
+
+    <item id="admin_hijack_enabled">
+      <title>Admin Hijack</title>
+      <summary>
+  Set to true to allow user to be able to grab and redirect to their extension any line at will through OSDial. Good idea only to enable this for Admin users. But is very useful for Managers.
+      </summary>
+    </item>
+
+    <item id="admin_monitor_enabled">
+      <title>Admin Monitor</title>
+      <summary>
+  Set to true to allow user to be able to grab and redirect to their extension any line at will through OSDial. Good idea only to enable this for Admin users. But is very useful for Managers and as a training tool.
+      </summary>
+    </item>
+
+    <item id="call_parking_enabled">
+      <title>Call Park</title>
+      <summary>
+  Set to true to allow user to be able to park calls on OSDial hold to be picked up by any other OSDial user on the system. Calls stay on hold for upto a half hour then hang up. Usually enabled for all.
+      </summary>
+    </item>
+
+    <item id="updater_check_enabled">
+      <title>Updater Check</title>
+      <summary>
+  Set to true to display a popup warning that the updater time has not changed in 20 seconds. Useful for Admin users.
+      </summary>
+    </item>
+
+    <item id="AFLogging_enabled">
+      <title>AF Logging</title>
+      <summary>
+  Set to true to log many actions of OSDial usage to a text file on the user's computer.
+      </summary>
+    </item>
+
+    <item id="QUEUE_ACTION_enabled">
+      <title>Queue Enabled</title>
+      <summary>
+  Set to true to have client apps use the Asterisk Central Queue system. Required for OSDial and recommended for all users.
+      </summary>
+    </item>
+
+    <item id="CallerID_popup_enabled">
+      <title>CallerID Popup</title>
+      <summary>
+  Set to true to allow for numbers defined in the extensions.conf file to send CallerID popup screens to OSDial users.
+      </summary>
+    </item>
+
+    <item id="voicemail_button_enabled">
+      <title>VMail Button</title>
+      <summary>
+  Set to true to display the VOICEMAIL button and the messages count display on OSDial.
+      </summary>
+    </item>
+
+    <item id="enable_fast_refresh">
+      <title>Fast Refresh</title>
+      <summary>
+  Set to true to enable a new rate of refresh of call information for the OSDial. Default disabled rate is 1000 ms ,1 second. Can increase system load if you lower this number.
+      </summary>
+    </item>
+
+    <item id="fast_refresh_rate">
+      <title>Fast Refresh Rate</title>
+      <summary>
+  in milliseconds. Only used if Fast Refresh is enabled. Default disabled rate is 1000 ms ,1 second. Can increase system load if you lower this number.
+      </summary>
+    </item>
+
+    <item id="enable_persistant_mysql">
+      <title>Persistant MySQL</title>
+      <summary>
+  If enabled the OSDial connection will remain connected instead of connecting every second. Useful if you have a fast refresh rate set. It will increase the number of connections on your MySQL machine.
+      </summary>
+    </item>
+
+    <item id="auto_dial_next_number">
+      <title>Auto Dial Next Number</title>
+      <summary>
+  If enabled the OSDial client will dial the next number on the list automatically upon disposition of a call unless they selected to "Stop Dialing" on the disposition screen.
+      </summary>
+    </item>
+
+    <item id="VDstop_rec_after_each_call">
+      <title>Stop Rec after each call</title>
+      <summary>
+  If enabled the OSDial client will stop whatever recording is going on after each call has been dispositioned. Useful if you are doing a lot of recording or you are using a web form to trigger recording.
+      </summary>
+    </item>
+
+    <item id="enable_sipsak_messages">
+      <title>Enable SIPSAK Messages</title>
+      <summary>
+  If enabled the server will send messages to the SIP phone to display on the phone LCD display when logged into OSDial. Feature only works with SIP phones and requires sipsak application to be installed on the web server. Default is 0.
+      </summary>
+    </item>
+
+    <item id="DBX_server">
+      <title>DBX Server</title>
+      <summary>
+  The MySQL database server that this user should be connecting to.
+      </summary>
+    </item>
+
+    <item id="DBX_database">
+      <title>DBX Database</title>
+      <summary>
+  The MySQL database that this user should be connecting to. Default is asterisk.
+      </summary>
+    </item>
+
+    <item id="DBX_user">
+      <title>DBX User</title>
+      <summary>
+  The MySQL user login that this user should be using when connecting. Default is cron.
+      </summary>
+    </item>
+
+    <item id="DBX_pass">
+      <title>DBX Pass</title>
+      <summary>
+  The MySQL user password that this user should be using when connecting. Default is 1234.
+      </summary>
+    </item>
+
+    <item id="DBX_port">
+      <title>DBX Port</title>
+      <summary>
+  The MySQL TCP port that this user should be using when connecting. Default is 3306.
+      </summary>
+    </item>
+
+    <item id="DBY_server">
+      <title>DBY Server</title>
+      <summary>
+  The MySQL database server that this user should be connecting to. Secondary server, not used currently.
+      </summary>
+    </item>
+
+    <item id="DBY_database">
+      <title>DBY Database</title>
+      <summary>
+  The MySQL database that this user should be connecting to. Default is asterisk. Secondary server, not used currently.
+      </summary>
+    </item>
+
+    <item id="DBY_user">
+      <title>DBY User</title>
+      <summary>
+  The MySQL user login that this user should be using when connecting. Default is cron. Secondary server, not used currently.
+      </summary>
+    </item>
+
+    <item id="DBY_pass">
+      <title>DBY Pass</title>
+      <summary>
+  The MySQL user password that this user should be using when connecting. Default is 1234. Secondary server, not used currently.
+      </summary>
+    </item>
+
+    <item id="DBY_port">
+      <title>DBY Port</title>
+      <summary>
+  The MySQL TCP port that this user should be using when connecting. Default is 3306. Secondary server, not used currently.
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="servers" title="SERVERS TABLE">
+    <item id="server_id">
+      <title>Server ID</title>
+      <summary>
+  This field is where you put the Asterisk servers name, doesnt have to be an official domain sub, just a nickname to identify the server to Admin users.
+      </summary>
+    </item>
+
+    <item id="server_description">
+      <title>Server Description</title>
+      <summary>
+  The field where you use a small phrase to describe the Asterisk server.
+      </summary>
+    </item>
+
+    <item id="server_ip">
+      <title>Server IP Address</title>
+      <summary>
+  The field where you put the Network IP address of the Asterisk server.
+      </summary>
+    </item>
+
+    <item id="active">
+      <title>Active</title>
+      <summary>
+  Set whether the Asterisk server is active or inactive.
+      </summary>
+    </item>
+
+    <item id="asterisk_version">
+      <title>Asterisk Version</title>
+      <summary>
+  Set the version of Asterisk that you have installed on this server. Examples: '1.2', '1.0.8', '1.0.7', 'CVS_HEAD', 'REALLY OLD', etc... This is used because versions 1.0.8 and 1.0.9 have a different method of dealing with Local/ channels, a bug that has been fixed in CVS v1.0, and need to be treated differently when handling their Local/ channels. Also, current CVS_HEAD and the 1.2 release tree uses different manager and command output so it must be treated differently as well.
+      </summary>
+    </item>
+
+    <item id="max_osdial_trunks">
+      <title>Max OSDial Trunks</title>
+      <summary>
+  This field will determine the maximum number of lines that the OSDial auto-dialer will attempt to call on this server. If you want to dedicate two full PRI T1s to dialing on a server then you would set this to 46. Default is 96.
+      </summary>
+    </item>
+
+    <item id="telnet_host">
+      <title>Telnet Host</title>
+      <summary>
+  This is the address or name of the Asterisk server and is how the manager applications connect to it from where they are running. If they are running on the Asterisk server, then the default of 'localhost' is fine.
+      </summary>
+    </item>
+
+    <item id="telnet_port">
+      <title>Telnet Port</title>
+      <summary>
+  This is the port of the Asterisk server Manager connection and is how the manager applications connect to it from where they are running. The default of '5038' is fine for a standard install.
+      </summary>
+    </item>
+
+    <item id="ASTmgrUSERNAME">
+      <title>Manager User</title>
+      <summary>
+  The username or login used to connect genericly to the Asterisk server manager. Default is 'cron'
+      </summary>
+    </item>
+
+    <item id="ASTmgrSECRET">
+      <title>Manager Secret</title>
+      <summary>
+  The secret or password used to connect genericly to the Asterisk server manager. Default is '1234'
+      </summary>
+    </item>
+
+    <item id="ASTmgrUSERNAMEupdate">
+      <title>Manager Update User</title>
+      <summary>
+  The username or login used to connect to the Asterisk server manager optimized for the Update scripts. Default is 'updatecron' and assumes the same secret as the generic user.
+      </summary>
+    </item>
+
+    <item id="ASTmgrUSERNAMElisten">
+      <title>Manager Listen User</title>
+      <summary>
+  The username or login used to connect to the Asterisk server manager optimized for scripts that only listen for output. Default is 'listencron' and assumes the same secret as the generic user.
+      </summary>
+    </item>
+
+    <item id="ASTmgrUSERNAMEsend">
+      <title>Manager Send User</title>
+      <summary>
+  The username or login used to connect to the Asterisk server manager optimized for scripts that only send Actions to the manager. Default is 'sendcron' and assumes the same secret as the generic user.
+      </summary>
+    </item>
+
+    <item id="local_gmt">
+      <title>Server GMT offset</title>
+      <summary>
+  The difference in hours from GMT time not adjusted for Daylight-Savings-Time of the server. Default is '-5'
+      </summary>
+    </item>
+
+    <item id="voicemail_dump_exten">
+      <title>VMail Dump Exten</title>
+      <summary>
+  The extension prefix used on this server to send calls directly through agc to a specific voicemail box. Default is '85026666666666'
+      </summary>
+    </item>
+
+    <item id="answer_transfer_agent">
+      <title>OSDial AD extension</title>
+      <summary>
+  The default extension if none is present in the campaign to send calls to for OSDial auto dialing. Default is '8365'
+      </summary>
+    </item>
+
+    <item id="ext_context">
+      <title>Default Context</title>
+      <summary>
+  The default dial plan context used for scripts that operate for this server. Default is 'default'
+      </summary>
+    </item>
+
+    <item id="sys_perf_log">
+      <title>System Performance</title>
+      <summary>
+  Setting this option to Y will enable logging of system performance stats for the server machine including system load, system processes and Asterisk channels in use. Default is N.
+      </summary>
+    </item>
+
+    <item id="vd_server_logs">
+      <title>Server Logs</title>
+      <summary>
+  Setting this option to Y will enable logging of all OSDial related scripts to their text log files. Setting this to N will stop writing logs to files for these processes, also the screen logging of asterisk will be disabled if this is set to N when Asterisk is started. Default is Y.
+      </summary>
+    </item>
+
+    <item id="agi_output">
+      <title>AGI Output</title>
+      <summary>
+  Setting this option to NONE will disable output from all OSDial related AGI scripts. Setting this to STDERR will send the AGI output to the Asterisk CLI. Setting this to FILE will send the output to a file in the logs directory. Setting this to BOTH will send output to both the Asterisk CLI and a log file. Default is FILE.
+      </summary>
+    </item>
+
+    <item id="osdial_balance_active">
+      <title>OSDial Balance Dialing</title>
+      <summary>
+  Setting this field to Y will allow the server to place balance calls for campaigns in OSDial so that the defined dial level can be met even if there are no agents logged into that campaign on this server. Default is N.
+      </summary>
+    </item>
+
+    <item id="balance_trunks_offlimits">
+      <title>OSDial Balance Offlimits</title>
+      <summary>
+  This setting defines the number of trunks to not allow OSDial balance dialing to use. For example if you have 40 max OSDial trunks and balance offlimits is set to 10 you will only be able to use 30 trunk lines for OSDial balance dialing. Default is 0.
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="conferences" title="CONFERENCES TABLE">
+    <item id="conf_exten">
+      <title>Conference Number</title>
+      <summary>
+  This field is where you put the meetme conference dialpna number. It is also recommended that the meetme number in meetme.conf matches this number for each entry. This is for the conferences in OSDial and is used for leave-3way-call functionality in OSDial.
+      </summary>
+    </item>
+
+    <item id="server_ip">
+      <title>Server IP</title>
+      <summary>
+  The menu where you select the Asterisk server that this conference will be on.
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="osdial_server_trunks" title="OSDial_SERVER_TRUNKS TABLE">
+    <item id="osdial_server_trunks">
+      <title>OSDial Server Trunks</title>
+      <summary>
+OSDial Server Trunks allows you to restrict the outgoing lines that are used on this server for campaign dialing on a per-campaign basis. You have the option to reserve a specific number of lines to be used by only one campaign as well as allowing that campaign to run over its reserved lines into whatever lines remain open, as long at the total lines used by OSDial on this server is less than the Max OSDial Trunks setting. Not having any of these records will allow the campaign that dials the line first to have as many lines as it can get under the Max OSDial Trunks setting.
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="system_settings" title="SYSTEM_SETTINGS TABLE">
+    <item id="use_non_latin">
+      <title>Use Non-Latin</title>
+      <summary>
+  This option allows you to default the web display script to use UTF8 characters and not do any latin-character-family regular expression filtering or display formatting. Default is 0.
+      </summary>
+    </item>
+
+    <item id="webroot_writable">
+      <title>Webroot Writable</title>
+      <summary>
+  This setting allows you to define whether temp files and authentication files should be placed in the webroot on your web server. Default is 1.
+      </summary>
+    </item>
+
+    <item id="enable_queuemetrics_logging">
+      <title>Enable QueueMetrics Logging</title>
+      <summary>
+  This setting allows you to define whether OSDial will insert log entries into the queue_log database table as Asterisk Queues activity does. QueueMetrics is a standalone, closed-source statistical analysis program. You must have QueueMetrics already installed and configured before enabling this feature. Default is 0.
+      </summary>
+    </item>
+
+    <item id="queuemetrics_server_ip">
+      <title>QueueMetrics Server IP</title>
+      <summary>
+  This is the IP address of the database for your QueueMetrics installation.
+      </summary>
+    </item>
+
+    <item id="queuemetrics_dbname">
+      <title>QueueMetrics Database Name</title>
+      <summary>
+  This is the database name for your QueueMetrics database.
+      </summary>
+    </item>
+
+    <item id="queuemetrics_login">
+      <title>QueueMetrics Database Login</title>
+      <summary>
+  This is the user name used to log in to your QueueMetrics database.
+      </summary>
+    </item>
+
+    <item id="queuemetrics_pass">
+      <title>QueueMetrics Database Password</title>
+      <summary>
+  This is the password used to log in to your QueueMetrics database.
+      </summary>
+    </item>
+
+    <item id="queuemetrics_url">
+      <title>QueueMetrics URL</title>
+      <summary>
+  This is the URL or web site address used to get to your QueueMetrics installation.
+      </summary>
+    </item>
+
+    <item id="queuemetrics_log_id">
+      <title>QueueMetrics Log ID</title>
+      <summary>
+  This is the server ID that all OSDial logs going into the QueueMetrics database will use as an identifier for each record.
+      </summary>
+    </item>
+
+    <item id="queuemetrics_eq_prepend">
+      <title>QueueMetrics EnterQueue Prepend</title>
+      <summary>
+  This field is used to allow for prepending of one of the osdial_list data fields in front of the phone number of the customer for customized QueueMetrics reports. Default is NONE to not populate anything.
+      </summary>
+    </item>
+
+    <item id="osdial_agent_disable">
+      <title>OSDial Agent Disable Display</title>
+      <summary>
+  This field is used to select when to show an agent when their session has been disabled by the system, a manager action or by an external measure. The NOT_ACTIVE setting will disable the message on the agents screen. The LIVE_AGENT setting will only display the disabled message when the agents osdial_auto_calls record has been removed, such as during a force logout or emergency logout. 
+      </summary>
+    </item>
+
+    <item id="allow_sipsak_messages">
+      <title>Allow SIPSAK Messages</title>
+      <summary>
+  If set to 1, this will allow the phones table setting to work properly, the server will send messages to the SIP phone to display on the phone LCD display when logged into OSDial. This feature only works with SIP phones and requires sipsak application to be installed on the web server. Default is 0. 
+      </summary>
+    </item>
+
+    <item id="admin_home_url">
+      <title>Admin Home URL</title>
+      <summary>
+  This is the URL or web site address that you will go to if you click on the HOME link at the top of the admin.php page.
+      </summary>
+    </item>
+
+    <item id="enable_agc_xfer_log">
+      <title>Enable Agent Transfer Logfile</title>
+      <summary>
+  This option will log to a text logfile on the webserver every time a call is transferred to an agent. Default is 0, disabled.
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="osdial_statuses" title="OSDial_Statuses Table">
+    <item id="osdial_statuses">
+      <summary>
+  Through the use of system statuses, you can have statuses that exist for campaign and in-group. The Status must be 1-6 characters in length, the description must be 2-30 characters in length and Selectable defines whether it shows up in OSDial as an agent disposition. The human_answered field is used when calculating the drop percentage, or abandon rate. Setting human_answered to Y will use this status when counting the human-answered calls. The Category option allows you to group several statuses into a catogy that can be used for statistical analysis.
+      </summary>
+    </item>
+  </section>
+
+
+
+  <section id="osdial_status_categories" title="OSDial_Status_Categories Table">
+    <item id="osdial_status_categories">
+      <title>OSDial Status Categories</title>
+      <summary>
+  Through the use of system status categories, you can group together statuses to allow for statistical analysis on a group of statuses. The Category ID must be 2-20 characters in length with no spaces, the name must be 2-50 characters in length, the description is optional and Time On OSDial Display defines whether that status will be one of the upto 4 statuses that can be calculated and displayed on the Time On OSDial Real-Time report.
+      </summary>
+    </item>
+  </section>
+
+</glossary>
