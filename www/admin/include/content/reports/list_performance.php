@@ -27,6 +27,7 @@
 function report_list_performance() {
     #############################################
     ##### START REPORT #####
+    $report_start = date("U");
 
     # Bring all globals into this scope.
     foreach ($GLOBALS as $key => $val) { global $$key; }
@@ -157,6 +158,7 @@ function report_list_performance() {
     $html .= "<table align=center cellpadding=0 cellspacing=0>";
     $html .= "<tr><td align=center>";
     $html .= "<br><font color=navy size=+1>LIST PERFORMANCE REPORT</font><br><br>";
+    $html .= "<div class=\"noprint\">\n";
     $html .= "<form action=\"$PHP_SELF\" method=get>\n";
     $html .= "<input type=hidden name=type value=$type>\n";
     $html .= "<input type=hidden name=ADD value=$ADD>\n";
@@ -196,7 +198,8 @@ function report_list_performance() {
     $html .= "    </td>\n";
     $html .= "  </tr>\n";
     $html .= "</table>\n";
-    $html .= "</form>\n\n";
+    $html .= "</form>\n";
+    $html .= "</div>\n";
 
     $html .= "<font size=2><pre>";
 
@@ -212,37 +215,37 @@ function report_list_performance() {
         $html .= "Time range: $query_date_BEGIN to $query_date_END\n\n";
 
         $html .= "</pre>\n";
-        $html .= "<table border=1>\n";
-        $html .= "  <tr>\n";
-        $html .= "    <th><font size=2>&nbsp;</font></th>\n";
+        $html .= "<table cellspacing=1 cellpadding=1>\n";
+        $html .= "  <tr bgcolor=$menubarcolor>\n";
+        $html .= "    <td><font color=white size=2>&nbsp;</font></td>\n";
         if ($type == "hour") {
-            $html .= "    <th colspan=7><font size=2>Lead Analysis by Hour Called</font></th>\n";
-            $html .= "    <th colspan=7><font size=2>Lead Analysis by Entry Hour</font></th>\n";
+            $html .= "    <td align=center colspan=7><font color=white size=2><b>Lead Analysis by Hour Called</b></font></td>\n";
+            $html .= "    <td align=center colspan=7><font color=white size=2><b>Lead Analysis by Entry Hour</b></font></td>\n";
         } else {
-            $html .= "    <th colspan=7><font size=2>Lead Analysis by Date Called</font></th>\n";
-            $html .= "    <th colspan=7><font size=2>Lead Analysis by Entry Date</font></th>\n";
+            $html .= "    <td align=center colspan=7><font color=white size=2><b>Lead Analysis by Date Called</b></font></td>\n";
+            $html .= "    <td align=center colspan=7><font color=white size=2><b>Lead Analysis by Entry Date</b></font></td>\n";
         }
         $html .= "  </tr>\n";
-        $html .= "  <tr>\n";
+        $html .= "  <tr bgcolor=$menubarcolor>\n";
         if ($type == "hour") {
-            $html .= "    <th><font size=2>Hour</font></th>\n";
+            $html .= "    <td align=center><font color=white size=1><b>Hour</b></font></td>\n";
         } else {
-            $html .= "    <th><font size=2>Date</font></th>\n";
+            $html .= "    <td align=center><font color=white size=1><b>Date</b></font></td>\n";
         }
-        $html .= "    <th><font size=2>Calls</font></th>\n";
-        $html .= "    <th><font size=2>Contacts</font></th>\n";
-        $html .= "    <th><font size=2>Sales</font></th>\n";
-        $html .= "    <th><font size=2>Closing%</font></th>\n";
-        $html .= "    <th><font size=2>Total Cost</font></th>\n";
-        $html .= "    <th><font size=2>Average Cost</font></th>\n";
-        $html .= "    <th><font size=2>Cost Per Sale</font></th>\n";
-        $html .= "    <th><font size=2>Leads Entered</font></th>\n";
-        $html .= "    <th><font size=2>Contacts</font></th>\n";
-        $html .= "    <th><font size=2>Sales</font></th>\n";
-        $html .= "    <th><font size=2>Closing%</font></th>\n";
-        $html .= "    <th><font size=2>Total Cost</font></th>\n";
-        $html .= "    <th><font size=2>Average Cost</font></th>\n";
-        $html .= "    <th><font size=2>Cost Per Sale</font></th>\n";
+        $html .= "    <td align=center><font color=white size=1><b>Calls</b></font></td>\n";
+        $html .= "    <td align=center><font color=white size=1><b>Contacts</b></font></td>\n";
+        $html .= "    <td align=center><font color=white size=1><b>Sales</b></font></td>\n";
+        $html .= "    <td align=center><font color=white size=1><b>Closing%</b></font></td>\n";
+        $html .= "    <td align=center><font color=white size=1><b>Total Cost</b></font></td>\n";
+        $html .= "    <td align=center><font color=white size=1><b>Average Cost</b></font></td>\n";
+        $html .= "    <td align=center><font color=white size=1><b>Cost Per Sale</b></font></td>\n";
+        $html .= "    <td align=center><font color=white size=1><b>Leads Entered</b></font></td>\n";
+        $html .= "    <td align=center><font color=white size=1><b>Contacts</b></font></td>\n";
+        $html .= "    <td align=center><font color=white size=1><b>Sales</b></font></td>\n";
+        $html .= "    <td align=center><font color=white size=1><b>Closing%</b></font></td>\n";
+        $html .= "    <td align=center><font color=white size=1><b>Total Cost</b></font></td>\n";
+        $html .= "    <td align=center><font color=white size=1><b>Average Cost</b></font></td>\n";
+        $html .= "    <td align=center><font color=white size=1><b>Cost Per Sale</b></font></td>\n";
         $html .= "  </tr>\n";
 
         $stmt="SELECT $type(osdial_list.entry_date),sum(osdial_list.cost),count(*),sum(if(osdial_list.status IN ($SCcontacts,$SCsales),1,0)),sum(if(osdial_list.status IN ($SCsales),1,0)) FROM osdial_list,osdial_lists WHERE osdial_list.list_id=osdial_lists.list_id AND osdial_list.entry_date <= '$query_date_END' AND osdial_list.entry_date >= '$query_date_BEGIN' $group_olSQLand GROUP BY $type(osdial_list.entry_date);";
@@ -257,6 +260,12 @@ function report_list_performance() {
         $i=0;
         while ($i < $rows_to_print) {
             $row=mysql_fetch_row($rslt);
+            if (eregi("1$|3$|5$|7$|9$", $i)) {
+                $bgcolor='bgcolor='.$oddrows;
+            } else {
+                $bgcolor='bgcolor='.$evenrows;
+            }
+
 
             $period         = $row[0];
             $newcost        = $row[1];
@@ -299,13 +308,13 @@ function report_list_performance() {
             $newcost_sale = '0.00';
             if ($newsales > 0) $newcost_sale = sprintf('%3.2f',$newcost / $newsales);
 
-            $html .= "  <tr>\n";
+            $html .= "  <tr $bgcolor>\n";
             if ($type == "hour") {
-                $html .= "    <td align=right><font size=2><a href=\"?type=date&start_date=$start_date$groupQS&submit=submit&DB=$DB\">$period</a></font></td>\n";
-                $html .= "    <td align=right><font size=2><a href=\"admin.php?ADD=999999&SUB=15&query_date=$start_date&time_begin=$period:00$&end_date=$start_date&time_end=$period:59&use_agent_log=1$groupQS&SUBMIT=SUBMIT&DB=$DB\">$calls</a></font></td>\n";
+                $html .= "    <td align=right><font size=2><a href=\"?ADD=$ADD&SUB=$SUB&type=date&start_date=$start_date$groupQS&submit=submit&DB=$DB\">$period</a></font></td>\n";
+                $html .= "    <td align=right><font size=2><a href=\"?ADD=999999&SUB=15&query_date=$start_date&time_begin=$period:00$&end_date=$start_date&time_end=$period:59&use_agent_log=1$groupQS&SUBMIT=SUBMIT&DB=$DB\">$calls</a></font></td>\n";
             } else {
-                $html .= "    <td align=right><font size=2><a href=\"?type=hour&start_date=$period$groupQS&submit=submit&DB=$DB\">$period</a></font></td>\n";
-                $html .= "    <td align=right><font size=2><a href=\"admin.php?ADD=999999&SUB=15&query_date=$period&time_begin=00:00$&end_date=$period&time_end=23:59&use_agent_log=1$groupQS&SUBMIT=SUBMIT&DB=$DB\">$calls</a></font></td>\n";
+                $html .= "    <td align=right><font size=2><a href=\"?ADD=$ADD&SUB=$SUB&type=hour&start_date=$period$groupQS&submit=submit&DB=$DB\">$period</a></font></td>\n";
+                $html .= "    <td align=right><font size=2><a href=\"?ADD=999999&SUB=15&query_date=$period&time_begin=00:00$&end_date=$period&time_end=23:59&use_agent_log=1$groupQS&SUBMIT=SUBMIT&DB=$DB\">$calls</a></font></td>\n";
             }
             $html .= "    <td align=right><font size=2>$contacts</font></td>\n";
             $html .= "    <td align=right><font size=2>$sales</font></td>\n";
@@ -324,7 +333,7 @@ function report_list_performance() {
 
 
             $TOTcost    += $cost;
-            $TOTleads   += $leads;
+            $TOTcalls   += $calls;
             $TOTcontacts+= $contacts;
             $TOTsales   += $sales;
             $TOTnewcost    += $newcost;
@@ -350,30 +359,37 @@ function report_list_performance() {
         $TOTnewcost_sale = '0.00';
         if ($TOTnewsales > 0) $TOTnewcost_sale = sprintf('%3.2f',$TOTnewcost / $TOTnewsales);
 
-        $html .= "  <tr>\n";
-        $html .= "    <td><font size=2>&nbsp;</font></td>\n";
-        $html .= "    <td align=right><b><font size=2>$TOTcalls</font></b></td>\n";
-        $html .= "    <td align=right><b><font size=2>$TOTcontacts</font></b></td>\n";
-        $html .= "    <td align=right><b><font size=2>$TOTsales</font></b></td>\n";
-        $html .= "    <td align=right><b><font size=2>$TOTclosing_pct</font></b></td>\n";
-        $html .= "    <td align=right><b><font size=2>$TOTcost</font></b></td>\n";
-        $html .= "    <td align=right><b><font size=2>$TOTavg_cost</font></b></td>\n";
-        $html .= "    <td align=right><b><font size=2>$TOTcost_sale</font></b></td>\n";
-        $html .= "    <td align=right><b><font size=2>$TOTnewleads</font></b></td>\n";
-        $html .= "    <td align=right><b><font size=2>$TOTnewcontacts</font></b></td>\n";
-        $html .= "    <td align=right><b><font size=2>$TOTnewsales</font></b></td>\n";
-        $html .= "    <td align=right><b><font size=2>$TOTnewclosing_pct</font></b></td>\n";
-        $html .= "    <td align=right><b><font size=2>$TOTnewcost</font></b></td>\n";
-        $html .= "    <td align=right><b><font size=2>$TOTnewavg_cost</font></b></td>\n";
-        $html .= "    <td align=right><b><font size=2>$TOTnewcost_sale</font></b></td>\n";
+        $html .= "  <tr bgcolor=$menubarcolor>\n";
+        $html .= "    <td><font color=white size=2>&nbsp;</font></td>\n";
+        $html .= "    <td align=right><b><font color=white size=2>$TOTcalls</font></b></td>\n";
+        $html .= "    <td align=right><b><font color=white size=2>$TOTcontacts</font></b></td>\n";
+        $html .= "    <td align=right><b><font color=white size=2>$TOTsales</font></b></td>\n";
+        $html .= "    <td align=right><b><font color=white size=2>$TOTclosing_pct</font></b></td>\n";
+        $html .= "    <td align=right><b><font color=white size=2>$TOTcost</font></b></td>\n";
+        $html .= "    <td align=right><b><font color=white size=2>$TOTavg_cost</font></b></td>\n";
+        $html .= "    <td align=right><b><font color=white size=2>$TOTcost_sale</font></b></td>\n";
+        $html .= "    <td align=right><b><font color=white size=2>$TOTnewleads</font></b></td>\n";
+        $html .= "    <td align=right><b><font color=white size=2>$TOTnewcontacts</font></b></td>\n";
+        $html .= "    <td align=right><b><font color=white size=2>$TOTnewsales</font></b></td>\n";
+        $html .= "    <td align=right><b><font color=white size=2>$TOTnewclosing_pct</font></b></td>\n";
+        $html .= "    <td align=right><b><font color=white size=2>$TOTnewcost</font></b></td>\n";
+        $html .= "    <td align=right><b><font color=white size=2>$TOTnewavg_cost</font></b></td>\n";
+        $html .= "    <td align=right><b><font color=white size=2>$TOTnewcost_sale</font></b></td>\n";
         $html .= "  </tr>\n";
         $html .= "</table>\n";
 
     }
 
-    $html .= "</font>\n";
-    $html .= "</body></html>\n";
+    $report_end = date("U");
+    $report_time = ($report_end - $report_start);
+    $html .= "<pre>\n";
+    $html .= "\nRun Time: $report_time seconds\n";
 
+    $html .= "</pre>\n";
+    $html .= "</font>\n";
+
+    $html .= "</td>";
+    $html .= "<table width=$page_width bgcolor=#e9e8d9 cellpadding=0 cellspacing=0 align=center class=across>";
     return $html;
 }
 
