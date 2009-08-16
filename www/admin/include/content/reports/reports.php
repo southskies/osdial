@@ -130,7 +130,7 @@ if ($ADD==999999 and $SUB=='') {
         echo report_list_cost();
     } elseif ($SUB==17) {
         require($WeBServeRRooT . '/admin/include/content/reports/list_performance.php');
-        echo report_list_cost();
+        echo report_list_performance();
     }
 }
 
