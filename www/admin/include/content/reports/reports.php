@@ -71,6 +71,7 @@ if ($ADD==999999 and $SUB=='') {
 	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=AST_CLOSERstats.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Inbound / Closer Report</a></FONT>
 	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=AST_agent_performance_detail.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Agent Performance Detail</a></FONT>
 	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=osdial_sales_viewer.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Agent Spreadsheet Performance</a></FONT>
+	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=report_list_cost.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>List Cost by Entry Date</a></FONT>
 	<LI><a href="<? echo $PHP_SELF ?>?ADD=999999&SUB=9&iframe=AST_server_performance.php"><FONT FACE="ARIAL,HELVETICA" SIZE=2>Server Performance</a></FONT>
 <?
 	if ($enable_queuemetrics_logging_LU > 0)
