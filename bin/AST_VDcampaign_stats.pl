@@ -346,7 +346,9 @@ sub updateStats {
 	eventLogger($config->{PATHlogs},"campaign_stats".$event_ext,$event_string);
 
 
-	# Get server IPs and update campaign stats for each server.
+	#############################################################
+	# Get server IPs and update campaign stats for each server. #
+	#############################################################
 	my @servers;
 	$stmtA = "SELECT server_ip FROM servers WHERE active='Y';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
@@ -365,6 +367,94 @@ sub updateStats {
 		my ($AMDcalls_one,$AMDanswers_one,$AMDdrops_one,$AMDdrops_one_pct) = calculateDropsServer ($dbhA, $osdial_log, $campaign_id, $server, $camp_AMD_SQL, $VDL_one);
 		my ($FAILcalls_one,$FAILanswers_one,$FAILdrops_one,$FAILdrops_one_pct) = calculateDropsServer ($dbhA, $osdial_log, $campaign_id, $server, $camp_FAIL_SQL, $VDL_one);
 		$stmtA = "UPDATE osdial_campaign_server_stats SET calls_onemin='$VCScalls_one',answers_onemin='$VCSanswers_one',drops_onemin='$VCSdrops_one',amd_onemin='$AMDanswers_one',failed_onemin='$FAILanswers_one' WHERE campaign_id='$campaign_id' AND server_ip='$server';";
+		if ($CLOtest) {
+			print $stmtA . "\n";
+		} else {
+			$affected_rows = $dbhA->do($stmtA);
+		}
+	}
+
+	########################################################
+	# Get Agents and update campaign stats for each agent. #
+	########################################################
+	my @agents;
+	$stmtA = "SELECT user FROM osdial_users;";
+	$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
+	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+	while ( my @aryA = $sthA->fetchrow_array ) {
+		push @agents, $aryA[0];
+	}
+	$sthA->finish();
+
+	foreach my $agent (@agents) {
+		# Create campaign/server entry if it doesn't exist.
+		my $stmtA = "INSERT INTO osdial_campaign_agent_stats (campaign_id,user) VALUES ('$campaign_id','$agent') on duplicate key update campaign_id='$campaign_id';";
+		my $affected_rows = $dbhA->do($stmtA);
+
+		my ($VCScalls_today,$VCSanswers_today) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $camp_ANS_STAT_SQL, $VDL_date);
+		my ($VCScalls_hour,$VCSanswers_hour) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $camp_ANS_STAT_SQL, $VDL_hour);
+		my ($VCScalls_halfhour,$VCSanswers_halfhour) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $camp_ANS_STAT_SQL, $VDL_halfhour);
+		my ($VCScalls_five,$VCSanswers_five) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $camp_ANS_STAT_SQL, $VDL_five);
+		my ($VCScalls_one,$VCSanswers_one) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $camp_ANS_STAT_SQL, $VDL_one);
+
+		my $VSCupdateSQL='';
+		my $g=0;
+		foreach (@VSC_categories) {
+			my $VSCcategory = $VSC_categories[$g];
+			my $VSCtally;
+			my $CATstatusesSQL;
+
+			# FIND STATUSES IN STATUS CATEGORY
+			$stmtA = "SELECT status from osdial_statuses where category='$VSCcategory';";
+			$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
+			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+			$sthArows  = $sthA->rows;
+			$rec_count = 0;
+			while ( $sthArows > $rec_count ) {
+				my @aryA = $sthA->fetchrow_array;
+				$CATstatusesSQL .= "'$aryA[0]',";
+				$rec_count++;
+			}
+
+			# FIND CAMPAIGN_STATUSES IN STATUS CATEGORY
+			$stmtA = "SELECT status from osdial_campaign_statuses where category='$VSCcategory' and campaign_id='$campaign_id';";
+			$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
+			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+			$sthArows  = $sthA->rows;
+			$rec_count = 0;
+			while ( $sthArows > $rec_count ) {
+				my @aryA = $sthA->fetchrow_array;
+				$CATstatusesSQL .= "'$aryA[0]',";
+				$rec_count++;
+			}
+			chop($CATstatusesSQL);
+			if ( length($CATstatusesSQL) > 2 ) {
+
+				# FIND STATUSES IN STATUS CATEGORY
+				$stmtA = "SELECT count(*) from $osdial_log where campaign_id='$campaign_id' and call_date > '$VDL_date' and status IN($CATstatusesSQL);";
+				$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
+				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+				$sthArows  = $sthA->rows;
+				$rec_count = 0;
+				while ( $sthArows > $rec_count ) {
+					my @aryA     = $sthA->fetchrow_array;
+					$VSCtally = $aryA[0];
+					$rec_count++;
+				}
+			}
+			# Get category count for last hour, as CATanswers_hour
+			my ($CATcalls_hour,$CATanswers_hour) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $CATstatusesSQL, $VDL_hour);
+			$g++;
+			$VSCupdateSQL .= "status_category_$g='$VSCcategory',status_category_count_$g='$VSCtally',status_category_hour_count_$g='$CATanswers_hour',";
+			print "     $campaign_id|$g|$VSCcategory|$VSCtally|$CATanswers_hour|$CATstatusesSQL|\n" if ($DBX);
+		}
+		while ( $g < 4 ) {
+			$g++;
+			$VSCupdateSQL .= "status_category_$g='',status_category_count_$g='0',status_category_hour_count_$g='0',";
+		}
+		chop($VSCupdateSQL);
+
+		$stmtA = "UPDATE osdial_campaign_agent_stats SET calls_today='$VCScalls_today',answers_today='$VCSanswers_today',calls_hour='$VCScalls_hour',answers_hour='$VCSanswers_hour',calls_halfhour='$VCScalls_halfhour',answers_halfhour='$VCSanswers_halfhour',calls_fivemin='$VCScalls_five',answers_fivemin='$VCSanswers_five',calls_onemin='$VCScalls_one',answers_onemin='$VCSanswers_one',$VSCupdateSQL WHERE campaign_id='$campaign_id' AND user='$agent';";
 		if ($CLOtest) {
 			print $stmtA . "\n";
 		} else {
@@ -484,6 +574,47 @@ sub calculateDropsServer {
 	}
 	return ($VCScalls,$VCSanswers,$VCSdrops,$VCSdrops_pct);
 }
+
+sub calculateCallsAgent {
+	my ($dbhA,$osdial_log,$campaign_id,$agent,$camp_ANS_STAT_SQL,$VDL) = @_;
+
+	my($stmtA,$sthA,$sthArows,$rec_count);
+	my($VCScalls,$VCSanswers) = (0,0);
+
+	# CALL STATS
+	$stmtA = "SELECT count(*) from $osdial_log where campaign_id=\'$campaign_id\' and call_date > \'$VDL\' and user=\'$agent\';";
+	print $stmtA . "\n" if ($DBX);
+	$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
+	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+	$sthArows  = $sthA->rows;
+	$rec_count = 0;
+	while ( $sthArows > $rec_count ) {
+		my @aryA = $sthA->fetchrow_array;
+		$VCScalls = $aryA[0];
+		$rec_count++;
+	}
+	$sthA->finish();
+	if ( $VCScalls > 0 ) {
+
+		# ANSWERS
+		$stmtA = "SELECT count(*) from $osdial_log where campaign_id=\'$campaign_id\' and call_date > \'$VDL\' and status IN($camp_ANS_STAT_SQL) and user=\'$agent\';";
+		print $stmtA . "\n" if ($DBX);
+		$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		$sthArows  = $sthA->rows;
+		$rec_count = 0;
+		while ( $sthArows > $rec_count ) {
+			my @aryA = $sthA->fetchrow_array;
+			$VCSanswers = $aryA[0];
+			$rec_count++;
+		}
+		$sthA->finish();
+	}
+	return ($VCScalls,$VCSanswers);
+}
+
+
+
 
 
 ### Lott's Global Subs, Mmmmmmm, tasty ###
