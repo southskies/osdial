@@ -700,7 +700,7 @@ $ADD='82';
 ######################
 # ADD=0 display all active users
 ######################
-if ($ADD==0)
+if ($ADD==0 or $ADD==9)
 {
 echo "<TABLE align=center><TR><TD>\n";
 echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
@@ -716,6 +716,13 @@ if ($level != '') $levelSQL = "AND user_level='$level'";
 $group = get_variable('group');
 $groupSQL = '';
 if ($group != '') $groupSQL = "AND user_group='$group'";
+
+$mdn_user = get_variable('mdn_user');
+if ($SUB==1 and $mdn_user != "") {
+    $mdn_limit = get_variable('mdn_limit');
+	$stmt="UPDATE osdial_users SET manual_dial_new_limit='$mdn_limit' WHERE user='$mdn_user';";
+	$rslt=mysql_query($stmt, $link);
+}
 
 $USERlink='stage=USERIDDOWN';
 $NAMElink='stage=NAMEDOWN';
@@ -736,40 +743,57 @@ if (eregi("GROUPDOWN",$stage)) {$SQLorder='order by user_group desc';   $GROUPli
 
 echo "<center><br><font size=+1 color=navy>AGENTS</font><br><br>\n";
 echo "<center><font size=-1 color=navy>&nbsp;|&nbsp;";
-echo (($let == "A") ? "A" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=A\">A</a>") . "&nbsp;|&nbsp;";
-echo (($let == "B") ? "B" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=B\">B</a>") . "&nbsp;|&nbsp;";
-echo (($let == "C") ? "C" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=C\">C</a>") . "&nbsp;|&nbsp;";
-echo (($let == "D") ? "D" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=D\">D</a>") . "&nbsp;|&nbsp;";
-echo (($let == "E") ? "E" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=E\">E</a>") . "&nbsp;|&nbsp;";
-echo (($let == "F") ? "F" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=F\">F</a>") . "&nbsp;|&nbsp;";
-echo (($let == "G") ? "G" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=G\">G</a>") . "&nbsp;|&nbsp;";
-echo (($let == "H") ? "H" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=H\">H</a>") . "&nbsp;|&nbsp;";
-echo (($let == "I") ? "I" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=I\">I</a>") . "&nbsp;|&nbsp;";
-echo (($let == "J") ? "J" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=J\">J</a>") . "&nbsp;|&nbsp;";
-echo (($let == "K") ? "K" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=K\">K</a>") . "&nbsp;|&nbsp;";
-echo (($let == "L") ? "L" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=L\">L</a>") . "&nbsp;|&nbsp;";
-echo (($let == "M") ? "M" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=M\">M</a>") . "&nbsp;|&nbsp;";
-echo (($let == "N") ? "N" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=N\">N</a>") . "&nbsp;|&nbsp;";
-echo (($let == "O") ? "O" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=O\">O</a>") . "&nbsp;|&nbsp;";
-echo (($let == "P") ? "P" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=P\">P</a>") . "&nbsp;|&nbsp;";
-echo (($let == "Q") ? "Q" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=Q\">Q</a>") . "&nbsp;|&nbsp;";
-echo (($let == "R") ? "R" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=R\">R</a>") . "&nbsp;|&nbsp;";
-echo (($let == "S") ? "S" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=S\">S</a>") . "&nbsp;|&nbsp;";
-echo (($let == "T") ? "T" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=T\">T</a>") . "&nbsp;|&nbsp;";
-echo (($let == "U") ? "U" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=U\">U</a>") . "&nbsp;|&nbsp;";
-echo (($let == "V") ? "V" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=V\">V</a>") . "&nbsp;|&nbsp;";
-echo (($let == "W") ? "W" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=W\">W</a>") . "&nbsp;|&nbsp;";
-echo (($let == "X") ? "X" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=X\">X</a>") . "&nbsp;|&nbsp;";
-echo (($let == "Y") ? "Y" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=Y\">Y</a>") . "&nbsp;|&nbsp;";
-echo (($let == "Z") ? "Z" : "<a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$group&let=Z\">Z</a>") . "&nbsp;|&nbsp;";
+echo (($let == "A") ? "A" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=A\">A</a>") . "&nbsp;|&nbsp;";
+echo (($let == "B") ? "B" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=B\">B</a>") . "&nbsp;|&nbsp;";
+echo (($let == "C") ? "C" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=C\">C</a>") . "&nbsp;|&nbsp;";
+echo (($let == "D") ? "D" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=D\">D</a>") . "&nbsp;|&nbsp;";
+echo (($let == "E") ? "E" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=E\">E</a>") . "&nbsp;|&nbsp;";
+echo (($let == "F") ? "F" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=F\">F</a>") . "&nbsp;|&nbsp;";
+echo (($let == "G") ? "G" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=G\">G</a>") . "&nbsp;|&nbsp;";
+echo (($let == "H") ? "H" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=H\">H</a>") . "&nbsp;|&nbsp;";
+echo (($let == "I") ? "I" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=I\">I</a>") . "&nbsp;|&nbsp;";
+echo (($let == "J") ? "J" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=J\">J</a>") . "&nbsp;|&nbsp;";
+echo (($let == "K") ? "K" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=K\">K</a>") . "&nbsp;|&nbsp;";
+echo (($let == "L") ? "L" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=L\">L</a>") . "&nbsp;|&nbsp;";
+echo (($let == "M") ? "M" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=M\">M</a>") . "&nbsp;|&nbsp;";
+echo (($let == "N") ? "N" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=N\">N</a>") . "&nbsp;|&nbsp;";
+echo (($let == "O") ? "O" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=O\">O</a>") . "&nbsp;|&nbsp;";
+echo (($let == "P") ? "P" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=P\">P</a>") . "&nbsp;|&nbsp;";
+echo (($let == "Q") ? "Q" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=Q\">Q</a>") . "&nbsp;|&nbsp;";
+echo (($let == "R") ? "R" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=R\">R</a>") . "&nbsp;|&nbsp;";
+echo (($let == "S") ? "S" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=S\">S</a>") . "&nbsp;|&nbsp;";
+echo (($let == "T") ? "T" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=T\">T</a>") . "&nbsp;|&nbsp;";
+echo (($let == "U") ? "U" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=U\">U</a>") . "&nbsp;|&nbsp;";
+echo (($let == "V") ? "V" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=V\">V</a>") . "&nbsp;|&nbsp;";
+echo (($let == "W") ? "W" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=W\">W</a>") . "&nbsp;|&nbsp;";
+echo (($let == "X") ? "X" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=X\">X</a>") . "&nbsp;|&nbsp;";
+echo (($let == "Y") ? "Y" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=Y\">Y</a>") . "&nbsp;|&nbsp;";
+echo (($let == "Z") ? "Z" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=Z\">Z</a>") . "&nbsp;|&nbsp;";
 echo "</font><br>\n";
+
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1 align=center>\n";
 echo "<tr bgcolor=$menubarcolor>";
-echo "<td><a href=\"$PHP_SELF?ADD=0&let=$let&level=$level&group=$group&$USERlink\"><font size=1 color=white><B>USER ID</B></a></td>";
-echo "<td><a href=\"$PHP_SELF?ADD=0&let=$let&level=$level&group=$group&$NAMElink\"><font size=1 color=white><B>FULL NAME</B></a></td>";
-echo "<td><a href=\"$PHP_SELF?ADD=0&let=$let&level=$level&group=$group&$LEVELlink\"><font size=1 color=white><B>LEVEL</B></a></td>";
-echo "<td><a href=\"$PHP_SELF?ADD=0&let=$let&level=$level&group=$group&$GROUPlink\"><font size=1 color=white><B>GROUP</B></a></td>";
-echo "<td align=center><font size=1 color=white><B>LINKS</B></td></tr>\n";
+if ($ADD==9) {
+    echo "  <td><a href=\"$PHP_SELF?ADD=$ADD&let=$let&level=$level&group=$group&$USERlink\"><font size=1 color=white><B>USER ID</B></a></td>";
+    echo "  <td><a href=\"$PHP_SELF?ADD=$ADD&let=$let&level=$level&group=$group&$NAMElink\"><font size=1 color=white><B>FULL NAME</B></a></td>";
+    echo "  <td><font size=1 color=white><B>NEW ATTEMPTS</B></td>";
+    echo "  <td><font size=1 color=white><B>NEW ATTEMPT LIMIT</B></td>";
+    echo "  <td><font size=1 color=white><B>CONTACTS</B></td>";
+    echo "  <td><font size=1 color=white><B>SALES</B></td>";
+    echo "  <td><font size=1 color=white><B>CLOSING%</B></td>";
+    echo "  <td align=center><font size=1 color=white><B>LINKS</B></td>";
+} else {
+    echo "  <td><a href=\"$PHP_SELF?ADD=$ADD&let=$let&level=$level&group=$group&$USERlink\"><font size=1 color=white><B>USER ID</B></a></td>";
+    echo "  <td><a href=\"$PHP_SELF?ADD=$ADD&let=$let&level=$level&group=$group&$NAMElink\"><font size=1 color=white><B>FULL NAME</B></a></td>";
+    echo "  <td><a href=\"$PHP_SELF?ADD=$ADD&let=$let&level=$level&group=$group&$LEVELlink\"><font size=1 color=white><B>LEVEL</B></a></td>";
+    echo "  <td><a href=\"$PHP_SELF?ADD=$ADD&let=$let&level=$level&group=$group&$GROUPlink\"><font size=1 color=white><B>GROUP</B></a></td>";
+    echo "  <td align=center><font size=1 color=white><B>LINKS</B></td>";
+}
+echo "</tr>";
+
+    $new_count = 0;
+    $sales_count = 0;
+    $contact_count = 0;
 
 	$o=0;
 	while ($people_to_print > $o) {
@@ -778,15 +802,68 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td></tr>\n";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor><td><a href=\"$PHP_SELF?ADD=3&user=$row[1]\"><font size=1 color=black>$row[1]</a></td><td><font size=1>$row[3]</td>";
-        echo "<td><font size=1><a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$row[4]&group=$group&let=$let\">$row[4]</a></td>";
-        echo "<td><font size=1><a href=\"$PHP_SELF?ADD=0&stage=$stage&level=$level&group=$row[5]&let=$let\">$row[5]</a></td>";
-		echo "<td align=center><font size=1><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">MODIFY</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=1&iframe=user_stats.php?user=$row[1]\">STATS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=1&iframe=user_status.php?user=$row[1]\">STATUS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=1&iframe=AST_agent_time_sheet.php?agent=$row[1]\">TIME</a></td></tr>\n";
+        echo "<form action=$PHP_SELF method=POST>";
+        echo "<input type=hidden name=ADD value=$ADD>";
+        echo "<input type=hidden name=SUB value=1>";
+		echo "<tr $bgcolor>";
+        echo "  <td><a href=\"$PHP_SELF?ADD=3&user=$row[1]\"><font size=1 color=black>$row[1]</a></td>";
+        echo "  <td><font size=1>$row[3]</td>";
+        if ($ADD==9) {
+	        $stmt2="SELECT SUM(manual_dial_new_today),status_category_1,SUM(status_category_count_1),status_category_2,SUM(status_category_count_2),status_category_3,SUM(status_category_count_3),status_category_4,SUM(status_category_count_4) FROM osdial_campaign_agent_stats WHERE user='$row[1]' GROUP BY user";
+	        $rslt2=mysql_query($stmt2, $link);
+		    $row2=mysql_fetch_row($rslt2);
+            $stat['SALE'] = 0;
+            $stat['CONTACT'] = 0;
+            $stat[$row2[1]] = $row2[2];
+            $stat[$row2[3]] = $row2[4];
+            $stat[$row2[5]] = $row2[6];
+            $stat[$row2[7]] = $row2[8];
+            $new_count += $row2[0];
+            $sales_count += $stat['SALE'];
+            $contact_count += $stat['CONTACT'];
+            $close_pct = 0;
+            if ($stat['CONTACT'] > 0) $close_pct = (($stat['SALE'] / ($stat['CONTACT'] + $stat['SALE'])) * 100);
+            echo "  <td align=center><font size=1>$row2[0]</td>";
+            echo "  <td><font size=1><input type=hidden name=mdn_user value=$row[1]><input type=text name=mdn_limit size=5 value=$row[46]></td>";
+            echo "  <td align=center><font size=1>" . ($stat['CONTACT'] + $stat['SALE']) . "</td>";
+            echo "  <td align=center><font size=1>" . $stat['SALE'] . "</td>";
+            echo "  <td align=center><font size=1>$close_pct %</td>";
+        } else {
+            echo "  <td><font size=1><a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$row[4]&group=$group&let=$let\">$row[4]</a></td>";
+            echo "  <td><font size=1><a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$row[5]&let=$let\">$row[5]</a></td>";
+        }
+		echo "  <td align=center><font size=1><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">MODIFY</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=1&iframe=user_stats.php?user=$row[1]\">STATS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=1&iframe=user_status.php?user=$row[1]\">STATUS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=1&iframe=AST_agent_time_sheet.php?agent=$row[1]\">TIME</a></td>";
+        echo "</tr>";
+        echo "</form>";
 		$o++;
 	}
+    if ($ADD==9) {
+        $close_pct = 0;
+        if ($contact_count > 0) $close_pct = (($sales_count / ($contact_count + $sales_count)) * 100);
+        echo "<tr bgcolor=$menubarcolor>";
+        echo "  <td><font size=1 color=white>&nbsp;</font></td>";
+        echo "  <td><font size=1 color=white>&nbsp;</font></td>";
+        echo "  <td align=center><font size=1 color=white>" . $new_count . "</font></td>";
+        echo "  <td><font size=1 color=white>&nbsp;</td>";
+        echo "  <td align=center><font size=1 color=white>" . ($contact_count + $sales_count) . "</font></td>";
+        echo "  <td align=center><font size=1 color=white>" . $sales_count . "</font></td>";
+        #echo "Total Contact: " . $contact_count . "<br />";
+        echo "  <td align=center><font size=1 color=white>" . $close_pct . " %</font></td>";
+        echo "  <td><font size=1 color=white>&nbsp;</font></td>";
+        echo "</tr>";
+    } else {
+        echo "<tr bgcolor=$menubarcolor>";
+        echo "  <td><font size=1 color=white>&nbsp;</font></td>";
+        echo "  <td><font size=1 color=white>&nbsp;</font></td>";
+        echo "  <td><font size=1 color=white>&nbsp;</font></td>";
+        echo "  <td><font size=1 color=white>&nbsp;</font></td>";
+        echo "  <td><font size=1 color=white>&nbsp;</font></td>";
+        echo "</tr>";
+    }
 
 echo "</TABLE></center>\n";
-}
 
+
+}
 
 ?>
