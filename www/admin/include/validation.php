@@ -214,6 +214,7 @@ if ($non_latin < 1)	{
 	$phone_ip = ereg_replace("[^\.0-9]","",$phone_ip);
 	$old_server_ip = ereg_replace("[^\.0-9]","",$old_server_ip);
 	$computer_ip = ereg_replace("[^\.0-9]","",$computer_ip);
+	$cost = ereg_replace("[^\.0-9]","",$cost);
 	$queuemetrics_server_ip = ereg_replace("[^\.0-9]","",$queuemetrics_server_ip);
 	
 	### ALPHA-NUMERIC and spaces and hash and star and comma

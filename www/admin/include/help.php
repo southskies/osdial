@@ -664,9 +664,19 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <B>Reset Lead-Called-Status for this list -</B> This resets all leads in this list to N for "not called since last reset" and means that any lead can now be called if it is the right status as defined in the campaign screen.
 
 <BR>
+<A NAME="osdial_lists-cost">
+<BR>
+<B>OSDial List Cost-</B> When a value is placed into the "cost" field of a list, each newly created lead will have that "cost" added to its record.  The OSDial List Cost report can then be run to give a basic cost analysis of the leads being dialed from the system.
+
+<BR>
 <A NAME="osdial_list-dnc">
 <BR>
 <B>OSDial DNC List -</B> This Do Not Call list contains every lead that has been set to a status of DNC in the system. Through the LISTS - ADD NUMBER TO DNC page you are able to manually add a number to this list so that it will not be called by campaigns that use the internal DNC list.
+
+<BR>
+<A NAME="osdial_list-cost">
+<BR>
+<B>OSDial Lead Cost-</B> When a value is placed into the "cost" field of a list, each newly created lead will have that "cost" added to its record.  The OSDial List Cost report can then be run to give a basic cost analysis of the leads being dialed from the system.
 
 
 

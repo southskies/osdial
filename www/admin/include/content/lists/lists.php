@@ -576,7 +576,7 @@ if ($ADD==122) {
 			print "<script language='JavaScript1.2'>document.forms[0].leadfile.disabled=true;document.forms[0].list_id_override.disabled=true;document.forms[0].phone_code_override.disabled=true; document.forms[0].submit_file.disabled=true; document.forms[0].reload_page.disabled=true;</script>";
 			flush();
 			$total=0; $good=0; $bad=0; $dup=0; $post=0; $phone_list='';
-	
+
 			if (!eregi(".csv", $leadfile_name) && !eregi(".xls", $leadfile_name)) {
 				# copy($leadfile, "./osdial_temp_file.txt");
 				$file=fopen("$lead_file", "r");
@@ -650,6 +650,7 @@ if ($ADD==122) {
 								$comments =				mysql_real_escape_string(trim($row[$comments_field]));
 								$custom2 =		        mysql_real_escape_string($row[$custom2_field]);
 								$external_key =		    mysql_real_escape_string($row[$external_key_field]);
+								$cost =		            mysql_real_escape_string($row[$cost_field]);
 		
 								if (strlen($list_id_override)>0) 
 									{
@@ -660,6 +661,12 @@ if ($ADD==122) {
 									{
 									$phone_code = $phone_code_override;
 									}
+
+                                # Try to grab cost if zero.
+                                if ($cost == 0) {
+                                    $lcost = get_first_record($link, 'osdial_lists', '*', "list_id='" . mysql_real_escape_string($list_id) . "'");
+                                    $cost = $lcost['cost'];
+                                }
 		
 								##### Check for duplicate phone numbers in osdial_list table for all lists in a campaign #####
 								if (eregi("DUPCAMP",$dupcheck))
@@ -757,7 +764,7 @@ if ($ADD==122) {
 		
 									if ($multi_insert_counter > 8) {
 										### insert good deal into pending_transactions table ###
-										$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00');";
+										$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00','$cost');";
 										$rslt=mysql_query($stmtZ, $link);
 										if ($WeBRooTWritablE > 0) 
 											{fwrite($stmt_file, $stmtZ."\r\n");}
@@ -765,7 +772,7 @@ if ($ADD==122) {
 										$multi_insert_counter=0;
 		
 									} else {
-										$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00'),";
+										$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00','$cost'),";
 										$multi_insert_counter++;
 									}
 		
@@ -873,6 +880,7 @@ if ($ADD==122) {
 						$comments =				mysql_real_escape_string(trim($row[$comments_field]));
 						$custom2 =		        mysql_real_escape_string($row[$custom2_field]);
 						$external_key =		    mysql_real_escape_string($row[$external_key_field]);
+						$cost =		            mysql_real_escape_string($row[$cost_field]);
 		
 							if (strlen($list_id_override)>0) 
 								{
@@ -882,6 +890,12 @@ if ($ADD==122) {
 								{
 								$phone_code = $phone_code_override;
 								}
+
+                            # Try to grab cost if its zero 
+                            if ($cost == 0) {
+                                $lcost = get_first_record($link, 'osdial_lists', '*', "list_id='" . mysql_real_escape_string($list_id) . "'");
+                                $cost = $lcost['cost'];
+                            }
 		
 							##### Check for duplicate phone numbers in osdial_list table for all lists in a campaign #####
 							if (eregi("DUPCAMP",$dupcheck))
@@ -979,7 +993,7 @@ if ($ADD==122) {
 		
 							if ($multi_insert_counter > 8) {
 								### insert good deal into pending_transactions table ###
-								$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00');";
+								$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00','$cost');";
 								$rslt=mysql_query($stmtZ, $link);
 								if ($WeBRooTWritablE > 0) 
 									{fwrite($stmt_file, $stmtZ."\r\n");}
@@ -987,7 +1001,7 @@ if ($ADD==122) {
 								$multi_insert_counter=0;
 		
 							} else {
-								$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00'),";
+								$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00','$cost'),";
 								$multi_insert_counter++;
 							}
 		
@@ -1118,6 +1132,10 @@ if ($ADD==122) {
 							if (strlen($phone_code_override)>0) {
 								$phone_code = $phone_code_override;
 							}
+
+                            # Grab cost as its zero.
+                            $lcost = get_first_record($link, 'osdial_lists', '*', "list_id='" . mysql_real_escape_string($list_id) . "'");
+                            $cost = $lcost['cost'];
 		
 							##### Check for duplicate phone numbers in osdial_list table for all lists in a campaign #####
 							if (eregi("DUPCAMP",$dupcheck)) {
@@ -1207,7 +1225,7 @@ if ($ADD==122) {
 		
 								if ($multi_insert_counter > 8) {
 									### insert good deal into pending_transactions table ###
-									$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00');";
+									$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00','$cost');";
 									$rslt=mysql_query($stmtZ, $link);
 									if ($WeBRooTWritablE > 0) 
 										{fwrite($stmt_file, $stmtZ."\r\n");}
@@ -1215,7 +1233,7 @@ if ($ADD==122) {
 									$multi_insert_counter=0;
 		
 								} else {
-									$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00'),";
+									$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00','$cost'),";
 									$multi_insert_counter++;
 								}
 		
@@ -1332,6 +1350,10 @@ if ($ADD==122) {
 					if (strlen($phone_code_override)>0) {
 						$phone_code = $phone_code_override;
 					}
+
+                    # Grab cost as its zero.
+                    $lcost = get_first_record($link, 'osdial_lists', '*', "list_id='" . mysql_real_escape_string($list_id) . "'");
+                    $cost = $lcost['cost'];
 	
 					##### Check for duplicate phone numbers in osdial_list table for all lists in a campaign #####
 					if (eregi("DUPCAMP",$dupcheck)) {
@@ -1422,7 +1444,7 @@ if ($ADD==122) {
 	
 						if ($multi_insert_counter > 8) {
 							### insert good deal into pending_transactions table ###
-							$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00');";
+							$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00','$cost');";
 							$rslt=mysql_query($stmtZ, $link);
 							if ($WeBRooTWritablE > 0) 
 								{fwrite($stmt_file, $stmtZ."\r\n");}
@@ -1430,7 +1452,7 @@ if ($ADD==122) {
 							$multi_insert_counter=0;
 		
 						} else {
-							$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00'),";
+							$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00','$cost'),";
 							$multi_insert_counter++;
 						}
 		
@@ -1476,7 +1498,7 @@ if ($ADD==122) {
 			print "    <th><font class='standard' color='white'>File data</font></th>\r\n";
 			print "  </tr>\r\n";
 				
-			$rslt=mysql_query("select vendor_lead_code, source_id, list_id, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, comments, custom2, external_key from osdial_list limit 1", $link);
+			$rslt=mysql_query("select vendor_lead_code, source_id, list_id, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, comments, custom2, external_key, cost from osdial_list limit 1", $link);
 			
 	
 			if (!eregi(".csv", $leadfile_name) && !eregi(".xls", $leadfile_name)) 
@@ -1765,7 +1787,7 @@ if ($ADD==411)
 		{
 		echo "<br><B><font color=navy>LIST MODIFIED: $list_id</font></B>\n";
 
-		$stmt="UPDATE osdial_lists set list_name='$list_name',campaign_id='$campaign_id',active='$active',list_description='$list_description',list_changedate='$SQLdate',scrub_dnc='$scrub_dnc' where list_id='$list_id';";
+		$stmt="UPDATE osdial_lists set list_name='$list_name',campaign_id='$campaign_id',active='$active',list_description='$list_description',list_changedate='$SQLdate',scrub_dnc='$scrub_dnc',cost='$cost' where list_id='$list_id';";
 		$rslt=mysql_query($stmt, $link);
 
 		if ($reset_list == 'Y')
@@ -1898,6 +1920,7 @@ if ($ADD==311)
 	$list_scrub_dnc = $row[7];
 	$list_scrub_last = $row[8];
 	$list_scrub_info = $row[9];
+	$cost = $row[10];
 
 	# grab names of global statuses and statuses in the selected campaign
 	$stmt="SELECT * from osdial_statuses order by status";
@@ -1937,6 +1960,7 @@ if ($ADD==311)
 	echo "<tr bgcolor=$oddrows><td align=right>List ID: </td><td align=left><b>$row[0]</b>$NWB#osdial_lists-list_id$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20 value=\"$row[1]\">$NWB#osdial_lists-list_name$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>List Description: </td><td align=left><input type=text name=list_description size=30 maxlength=255 value=\"$list_description\">$NWB#osdial_lists-list_description$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Per-Lead Cost: </td><td align=left><input type=text name=cost size=10 maxlength=10 value=\"" . sprintf('%3.4f',$cost) . "\">$NWB#osdial_lists-cost$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=34&campaign_id=$campaign_id\">Campaign</a>: </td><td align=left><select size=1 name=campaign_id>\n";
 
 	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
