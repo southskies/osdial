@@ -218,11 +218,14 @@ function report_list_performance() {
         $html .= "<table cellspacing=1 cellpadding=1>\n";
         $html .= "  <tr bgcolor=$menubarcolor>\n";
         $html .= "    <td><font color=white size=2>&nbsp;</font></td>\n";
+        $html .= "    <td align=center><font color=white style=\"font-size:1px;\"><b>&nbsp;</b></font></td>\n";
         if ($type == "hour") {
             $html .= "    <td align=center colspan=7><font color=white size=2><b>Lead Analysis by Hour Called</b></font></td>\n";
+            $html .= "    <td align=center><font color=white style=\"font-size:1px;\"><b>&nbsp;</b></font></td>\n";
             $html .= "    <td align=center colspan=7><font color=white size=2><b>Lead Analysis by Entry Hour</b></font></td>\n";
         } else {
             $html .= "    <td align=center colspan=7><font color=white size=2><b>Lead Analysis by Date Called</b></font></td>\n";
+            $html .= "    <td align=center><font color=white style=\"font-size:1px;\"><b>&nbsp;</b></font></td>\n";
             $html .= "    <td align=center colspan=7><font color=white size=2><b>Lead Analysis by Entry Date</b></font></td>\n";
         }
         $html .= "  </tr>\n";
@@ -232,6 +235,7 @@ function report_list_performance() {
         } else {
             $html .= "    <td align=center><font color=white size=1><b>Date</b></font></td>\n";
         }
+        $html .= "    <td align=center><font color=white style=\"font-size:1px;\"><b>&nbsp;</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>Calls</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>Contacts</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>Sales</b></font></td>\n";
@@ -239,6 +243,7 @@ function report_list_performance() {
         $html .= "    <td align=center><font color=white size=1><b>Total Cost</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>Average Cost</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>Cost Per Sale</b></font></td>\n";
+        $html .= "    <td align=center><font color=white style=\"font-size:1px;\"><b>&nbsp;</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>Leads Entered</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>Contacts</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>Sales</b></font></td>\n";
@@ -311,9 +316,11 @@ function report_list_performance() {
             $html .= "  <tr $bgcolor>\n";
             if ($type == "hour") {
                 $html .= "    <td align=right><font size=2><a href=\"?ADD=$ADD&SUB=$SUB&type=date&start_date=$start_date$groupQS&submit=submit&DB=$DB\">$period</a></font></td>\n";
+                $html .= "    <td align=center bgcolor=$menubarcolor><font color=white style=\"font-size:1px;\"><b>&nbsp;</b></font></td>\n";
                 $html .= "    <td align=right><font size=2><a href=\"?ADD=999999&SUB=15&query_date=$start_date&time_begin=$period:00$&end_date=$start_date&time_end=$period:59&use_agent_log=1$groupQS&SUBMIT=SUBMIT&DB=$DB\">$calls</a></font></td>\n";
             } else {
                 $html .= "    <td align=right><font size=2><a href=\"?ADD=$ADD&SUB=$SUB&type=hour&start_date=$period$groupQS&submit=submit&DB=$DB\">$period</a></font></td>\n";
+                $html .= "    <td align=center bgcolor=$menubarcolor><font color=white style=\"font-size:1px;\"><b>&nbsp;</b></font></td>\n";
                 $html .= "    <td align=right><font size=2><a href=\"?ADD=999999&SUB=15&query_date=$period&time_begin=00:00$&end_date=$period&time_end=23:59&use_agent_log=1$groupQS&SUBMIT=SUBMIT&DB=$DB\">$calls</a></font></td>\n";
             }
             $html .= "    <td align=right><font size=2>$contacts</font></td>\n";
@@ -322,6 +329,7 @@ function report_list_performance() {
             $html .= "    <td align=right><font size=2>$cost</font></td>\n";
             $html .= "    <td align=right><font size=2>$avg_cost</font></td>\n";
             $html .= "    <td align=right><font size=2>$cost_sale</font></td>\n";
+            $html .= "    <td align=center bgcolor=$menubarcolor><font color=white style=\"font-size:1px;\"><b>&nbsp;</b></font></td>\n";
             $html .= "    <td align=right><font size=2>$newleads</font></td>\n";
             $html .= "    <td align=right><font size=2>$newcontacts</font></td>\n";
             $html .= "    <td align=right><font size=2>$newsales</font></td>\n";
@@ -361,6 +369,7 @@ function report_list_performance() {
 
         $html .= "  <tr bgcolor=$menubarcolor>\n";
         $html .= "    <td><font color=white size=2>&nbsp;</font></td>\n";
+        $html .= "    <td><font color=white style=\"font-size:1px;\">&nbsp;</font></td>\n";
         $html .= "    <td align=right><b><font color=white size=2>$TOTcalls</font></b></td>\n";
         $html .= "    <td align=right><b><font color=white size=2>$TOTcontacts</font></b></td>\n";
         $html .= "    <td align=right><b><font color=white size=2>$TOTsales</font></b></td>\n";
@@ -368,6 +377,7 @@ function report_list_performance() {
         $html .= "    <td align=right><b><font color=white size=2>$TOTcost</font></b></td>\n";
         $html .= "    <td align=right><b><font color=white size=2>$TOTavg_cost</font></b></td>\n";
         $html .= "    <td align=right><b><font color=white size=2>$TOTcost_sale</font></b></td>\n";
+        $html .= "    <td align=center><font color=white style=\"font-size:1px;\"><b>&nbsp;</b></font></td>\n";
         $html .= "    <td align=right><b><font color=white size=2>$TOTnewleads</font></b></td>\n";
         $html .= "    <td align=right><b><font color=white size=2>$TOTnewcontacts</font></b></td>\n";
         $html .= "    <td align=right><b><font color=white size=2>$TOTnewsales</font></b></td>\n";
