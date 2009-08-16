@@ -27,6 +27,7 @@
 function report_list_cost() {
     #############################################
     ##### START REPORT #####
+    $report_start = date("U");
 
     # Bring all globals into this scope.
     foreach ($GLOBALS as $key => $val) { global $$key; }
@@ -87,6 +88,7 @@ function report_list_cost() {
     $html .= "<table align=center cellpadding=0 cellspacing=0>";
     $html .= "<tr><td align=center>";
     $html .= "<br><font color=navy size=+1>LIST COST BY ENTRY DATE</font><br><br>";
+    $html .= "<div class=\"noprint\">\n";
     $html .= "<form action=\"$PHP_SELF\" method=get>\n";
     $html .= "<input type=hidden name=ADD value=$ADD>\n";
     $html .= "<input type=hidden name=SUB value=$SUB>\n";
@@ -120,6 +122,7 @@ function report_list_cost() {
     $html .= "  </tr>\n";
     $html .= "</table>\n";
     $html .= "</form>\n\n";
+    $html .= "</div>\n\n";
 
     $html .= "<pre><font size=2>";
 
@@ -136,10 +139,15 @@ function report_list_cost() {
 
         $html .= "Time range: $query_date_BEGIN to $query_date_END\n\n";
 
-
-        $html .= "+------------+----------------------------+---------+----------+------------+\n";
-        $html .= "| DATE       | LIST                       |  LEADS  | AVG COST | TOTAL COST |\n";
-        $html .= "+------------+----------------------------+---------+----------+------------+\n";
+        $html .= "</font></pre>\n";
+        $html .= "<table width=100% cellspacing=1 cellpadding=1>\n";
+        $html .= "  <tr bgcolor=$menubarcolor>\n";
+        $html .= "    <td><font color=white size=1><b>DATE</b></font></td>\n";
+        $html .= "    <td><font color=white size=1><b>LIST</b></font></td>\n";
+        $html .= "    <td align=center><font color=white size=1><b>LEADS</b></font></td>\n";
+        $html .= "    <td align=center><font color=white size=1><b>AVERAGE COST</b></font></td>\n";
+        $html .= "    <td align=center><font color=white size=1><b>TOTAL COST</b></font></td>\n";
+        $html .= "  </tr>\n";
 
         $stmt="SELECT date(osdial_list.entry_date),osdial_lists.list_id,osdial_lists.list_name,count(*),avg(osdial_list.cost),sum(osdial_list.cost) FROM osdial_list,osdial_lists WHERE entry_date <= '$query_date_END' AND entry_date >= '$query_date_BEGIN' AND osdial_lists.list_id=osdial_list.list_id $group_SQLand GROUP BY list_id;";
         $rslt=mysql_query($stmt, $link);
@@ -153,9 +161,17 @@ function report_list_cost() {
         $i=0;
         while ($i < $rows_to_print) {
             $row=mysql_fetch_row($rslt);
+            if (eregi("1$|3$|5$|7$|9$", $i)) {
+                $bgcolor='bgcolor='.$oddrows;
+            } else {
+                $bgcolor='bgcolor='.$evenrows;
+            }
     
-            if ($i > 0 and $last_date != $row[0])
-                $html .= "+------------+----------------------------+---------+----------+------------+\n";
+            if ($i > 0 and $last_date != $row[0]) {
+                $html .= "  <tr bgcolor=$menubarcolor>\n";
+                $html .= "    <td colspan=5><font color=white style=\"font-size:1px;\">&nbsp;</font></td>\n";
+                $html .= "  </tr>\n";
+            }
 
             $date           = $row[0];
             $list_id        = $row[1];
@@ -178,7 +194,13 @@ function report_list_cost() {
             $avg_cost   = sprintf("%8.2f",  $avg_cost); 
             $total_cost = sprintf("%10.2f", $total_cost); 
 
-            $html .= "| $date | $name | $leads | $avg_cost | $total_cost |\n";
+            $html .= "  <tr $bgcolor>\n";
+            $html .= "    <td align=left><font size=1>$date</font></td>\n";
+            $html .= "    <td align=left><font size=1>$name</font></td>\n";
+            $html .= "    <td align=right><font size=1>$leads</font></td>\n";
+            $html .= "    <td align=right><font size=1>$avg_cost</font></td>\n";
+            $html .= "    <td align=right><font size=1>$total_cost</font></td>\n";
+            $html .= "  </tr>\n";
 
             $i++;
         }
@@ -187,16 +209,25 @@ function report_list_cost() {
         $TOTavg_cost   = sprintf("%8.2f",  $TOTavg_cost); 
         $TOTtotal_cost = sprintf("%10.2f", $TOTtotal_cost); 
     
-        $html .= "+------------+----------------------------+---------+----------+------------+\n";
-        $html .= "| TOTAL:                                  | $TOTleads | $TOTavg_cost | $TOTtotal_cost |\n";
-        $html .= "+-----------------------------------------+---------+----------+------------+\n";
-        $html .= "\n";
+        $html .= "  <tr bgcolor=$menubarcolor>\n";
+        $html .= "    <td align=left colspan=2><font color=white size=1>&nbsp;</font></td>\n";
+        $html .= "    <td align=right><font color=white size=1><b>$TOTleads</b></font></td>\n";
+        $html .= "    <td align=right><font color=white size=1><b>$TOTavg_cost</b></font></td>\n";
+        $html .= "    <td align=right><font color=white size=1><b>$TOTtotal_cost</b></font></td>\n";
+        $html .= "  </tr>\n";
+        $html .= "</table>\n";
 
     }
 
-    $html .= "</font></pre>\n";
-    $html .= "</body></html>\n";
+    $report_end = date("U");
+    $report_time = ($report_end - $report_start);
 
+    $html .= "<pre><font size=2>\n";
+    $html .= "\nRun Time: $report_time seconds\n";
+    $html .= "</font></pre>\n";
+
+    $html .= "</td>";
+    $html .= "<table width=$page_width bgcolor=#e9e8d9 cellpadding=0 cellspacing=0 align=center class=across>";
     return $html;
 }
 
