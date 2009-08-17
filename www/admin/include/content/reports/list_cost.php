@@ -140,7 +140,12 @@ function report_list_cost() {
         $html .= "Time range: $query_date_BEGIN to $query_date_END\n\n";
 
         $html .= "</font></pre>\n";
-        $html .= "<table width=100% cellspacing=1 cellpadding=1>\n";
+
+        $CSVrow=0;
+        $html .= "<form target=\"_new\" action=\"/osdial/admin/tocsv.php\">\n";
+        $html .= "<input type=hidden name=\"name\" value=\"lcr\">\n";
+
+        $html .= "<table width=100% cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $html .= "  <tr bgcolor=$menubarcolor>\n";
         $html .= "    <td><font color=white size=1><b>DATE</b></font></td>\n";
         $html .= "    <td><font color=white size=1><b>LIST</b></font></td>\n";
@@ -148,6 +153,8 @@ function report_list_cost() {
         $html .= "    <td align=center><font color=white size=1><b>AVERAGE COST</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>TOTAL COST</b></font></td>\n";
         $html .= "  </tr>\n";
+        $head = "DATE|LIST|LEADS|AVERAGE COST|TOTAL COST";
+        $html .= "<input type=hidden name=\"row" . $CSVrow++ . "\" value=\"" . $head . "\">\n";
 
         $stmt="SELECT date(osdial_list.entry_date),osdial_lists.list_id,osdial_lists.list_name,count(*),avg(osdial_list.cost),sum(osdial_list.cost) FROM osdial_list,osdial_lists WHERE entry_date <= '$query_date_END' AND entry_date >= '$query_date_BEGIN' AND osdial_lists.list_id=osdial_list.list_id $group_SQLand GROUP BY list_id;";
         $rslt=mysql_query($stmt, $link);
@@ -201,6 +208,8 @@ function report_list_cost() {
             $html .= "    <td align=right><font size=1>$avg_cost</font></td>\n";
             $html .= "    <td align=right><font size=1>$total_cost</font></td>\n";
             $html .= "  </tr>\n";
+            $line = "$date|$name|$leads|$avg_cost|$total_cost";
+            $html .= "<input type=hidden name=\"row" . $CSVrow++ . "\" value=\"" . $line . "\">\n";
 
             $i++;
         }
@@ -210,12 +219,19 @@ function report_list_cost() {
         $TOTtotal_cost = sprintf("%10.2f", $TOTtotal_cost); 
     
         $html .= "  <tr bgcolor=$menubarcolor>\n";
-        $html .= "    <td align=left colspan=2><font color=white size=1>&nbsp;</font></td>\n";
+        $html .= "    <td align=left colspan=2><font color=white size=1>TOTAL</font></td>\n";
         $html .= "    <td align=right><font color=white size=1><b>$TOTleads</b></font></td>\n";
         $html .= "    <td align=right><font color=white size=1><b>$TOTavg_cost</b></font></td>\n";
         $html .= "    <td align=right><font color=white size=1><b>$TOTtotal_cost</b></font></td>\n";
         $html .= "  </tr>\n";
         $html .= "</table>\n";
+        $line = "||||";
+        $html .= "<input type=hidden name=\"row" . $CSVrow++ . "\" value=\"" . $line . "\">\n";
+        $line = "TOTAL||$leads|$avg_cost|$total_cost";
+        $html .= "<input type=hidden name=\"row" . $CSVrow++ . "\" value=\"" . $line . "\">\n";
+        $html .= "<input type=hidden name=\"rows\" value=\"" . $CSVrow . "\">\n";
+        $html .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
+        $html .= "</form>";
 
     }
 
