@@ -33,11 +33,9 @@ function get_variable($varid) {
 }
 
 ##### get key row hashes
-function get_krh($link, $tbl, $flds, $srt, $whr) {
+function get_krh($link, $tbl, $flds="*", $srt="", $whr="") {
     if ($srt != '') {
         $srt = " ORDER BY " . $srt;
-    } elseif ($flds == '*') {
-        $srt = '';
     } else {
         $sary = split(',', $flds);
         $srt = " ORDER BY " . $sary[0];
@@ -53,7 +51,7 @@ function get_krh($link, $tbl, $flds, $srt, $whr) {
     return $krhrows;
 }
 
-function get_first_record($link, $tbl, $flds, $whr) {
+function get_first_record($link, $tbl, $flds="*", $whr="") {
     if ($whr != '') {
         $whr = ' WHERE ' . $whr;
     }
@@ -68,10 +66,10 @@ function get_first_record($link, $tbl, $flds, $whr) {
 #####   kkey = The value for the option
 #####   kval = The description for the option
 #####   ksel = The selected option (optional)
-#####   knone= Prefix a "NONE" option. (optional, boolean)
-function format_select_options($krh, $kkey, $kval, $ksel, $knone) {
+#####   kdef= Prefix a default label ie, "NONE" or "ALL" option. (optional, boolean)
+function format_select_options($krh, $kkey, $kval, $ksel="", $kdef="") {
     $option = '';
-    if ($knone == true) $option = "  <option value=\"\">NONE</option>\n";
+    if ($kdef != "") $option = "  <option value=\"\">" . $kdef . "</option>\n";
     foreach ($krh as $ele) {
         $selopt = '';
         if ($ele[$kkey] == $ksel) $selopt = " selected";
@@ -81,29 +79,29 @@ function format_select_options($krh, $kkey, $kval, $ksel, $knone) {
 }
 
 ##### get scripts listing for dynamic pulldown
-function get_scripts($link, $selected) {
+function get_scripts($link, $selected="") {
     $krh = get_krh($link, 'osdial_scripts', 'script_id,script_name');
-    return format_select_options($krh, 'script_id', 'script_name', $selected, true);
+    return format_select_options($krh, 'script_id', 'script_name', $selected, "NONE");
 }
 
 
 ##### get filters listing for dynamic pulldown
-function get_filters($link, $selected) {
+function get_filters($link, $selected="") {
     $krh = get_krh($link, 'osdial_lead_filters', 'lead_filter_id,lead_filter_name');
-    return format_select_options($krh, 'lead_filter_id', 'lead_filter_name', $selected, true);
+    return format_select_options($krh, 'lead_filter_id', 'lead_filter_name', $selected, "NONE");
 }
 
 
 ##### get call_times listing for dynamic pulldown
-function get_calltimes($link, $selected) {
+function get_calltimes($link, $selected="") {
     $krh = get_krh($link, 'osdial_call_times', 'call_time_id,call_time_name');
-    return format_select_options($krh, 'call_time_id', 'call_time_name', $selected, true);
+    return format_select_options($krh, 'call_time_id', 'call_time_name', $selected, "NONE");
 }
 
 ##### get server listing for dynamic pulldown
-function get_servers($link, $selected) {
+function get_servers($link, $selected="") {
     $krh = get_krh($link, 'servers', 'server_ip,server_description');
-    return format_select_options($krh, 'server_ip', 'server_description', $selected, false);
+    return format_select_options($krh, 'server_ip', 'server_description', $selected, "NONE");
 }
 
 

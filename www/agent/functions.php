@@ -32,11 +32,9 @@ function get_variable($varid) {
 }
 
 ##### get key row hashes
-function get_krh($link, $tbl, $flds, $srt, $whr) {
+function get_krh($link, $tbl, $flds="*", $srt="", $whr="") {
     if ($srt != '') {
         $srt = " ORDER BY " . $srt;
-    } elseif ($flds == '*') {
-        $srt = '';
     } else {
         $sary = split(',', $flds);
         $srt = " ORDER BY " . $sary[0];
@@ -52,7 +50,7 @@ function get_krh($link, $tbl, $flds, $srt, $whr) {
     return $krhrows;
 }
 
-function get_first_record($link, $tbl, $flds, $whr) {
+function get_first_record($link, $tbl, $flds="*", $whr="") {
     if ($whr != '') {
         $whr = ' WHERE ' . $whr;
     }
