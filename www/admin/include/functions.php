@@ -67,9 +67,11 @@ function get_first_record($link, $tbl, $flds="*", $whr="") {
 #####   kval = The description for the option
 #####   ksel = The selected option (optional)
 #####   kdef= Prefix a default label ie, "NONE" or "ALL" option. (optional, boolean)
-function format_select_options($krh, $kkey, $kval, $ksel="", $kdef="") {
+function format_select_options($krh, $kkey, $kval, $ksel="!", $kdef="") {
     $option = '';
-    if ($kdef != "") $option = "  <option value=\"\">" . $kdef . "</option>\n";
+    $selopt = '';
+    if ($ksel == "") $selopt = " selected";
+    if ($kdef != "") $option = "  <option value=\"\"" . $selopt . ">" . $kdef . "</option>\n";
     foreach ($krh as $ele) {
         $selopt = '';
         if ($ele[$kkey] == $ksel) $selopt = " selected";
