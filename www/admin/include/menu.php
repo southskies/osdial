@@ -140,6 +140,7 @@ if ($ADD==31)			{$hh='campaigns';	$sh='detail';	$title = "Modify Campaign - Deta
 if ($ADD==100)			{$hh='lists';	$title = "Lists";}
 if ($ADD==111)			{$hh='lists';	$title = "Add New List";}
 if ($ADD==112)			{$hh='lists';	$title = "Search For A Lead";}
+if ($ADD==1122)			{$hh='lists';	$title = "Advanced Lead Search";}
 if ($ADD==121)			{$hh='lists';	$title = "Add New DNC";}
 if ($ADD==131)			{$hh='lists';	$sh="export"; $title = "Export Leads";}
 if ($ADD==122)			{$hh='lists';	$title = "Load New Leads";}

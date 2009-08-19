@@ -265,11 +265,12 @@ if (strlen($lists_hh) > 1) {
     <tr class='no-ul' bgcolor=<?= $lists_color ?>>
         <td height=20 align=left colspan=10>
             <font face="arial,helvetica" color=black size=<?= $subheader_font_size ?>> &nbsp; 
-                <a href="<?= $PHP_SELF ?>?ADD=100"> Show Lists </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-                <a href="<?= $PHP_SELF ?>?ADD=111"> Add A New List </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-                <a href="<?= $PHP_SELF ?>?ADD=112"> Search For A Lead </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-                <a href="<?= $PHP_SELF ?>?ADD=121"> Add Number To DNC </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-                <a href="<?= $PHP_SELF ?>?ADD=122"> Load New Leads </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
+                <a href="<?= $PHP_SELF ?>?ADD=100"> Show Lists </a> &nbsp; &nbsp; &nbsp;
+                <a href="<?= $PHP_SELF ?>?ADD=111"> Add A New List </a> &nbsp; &nbsp; &nbsp;
+                <a href="<?= $PHP_SELF ?>?ADD=112"> Search For A Lead </a> &nbsp; &nbsp; &nbsp;
+                <a href="<?= $PHP_SELF ?>?ADD=1122"> Advanced Lead Search </a> &nbsp; &nbsp; &nbsp;
+                <a href="<?= $PHP_SELF ?>?ADD=121"> Add Number To DNC </a> &nbsp; &nbsp; &nbsp;
+                <a href="<?= $PHP_SELF ?>?ADD=122"> Load New Leads </a> &nbsp; &nbsp; &nbsp;
                 <? if ($LOGuser_level > 8) {
                     echo "          <a href=\"$PHP_SELF?ADD=131\"> Lead Export </a>\n";
                 }

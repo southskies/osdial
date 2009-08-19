@@ -140,19 +140,19 @@ if ($ADD==112) {
 		echo "</tr>";
 		echo "<tr>\n";
 		echo "	<td align=right width=50%>Custom 2:&nbsp;</td>";
-		echo "	<td width=50%><input type=text name=vendor_id size=10 maxlength=10> (Aka Vendor Lead Code)</td>";
+		echo "	<td width=50%><input type=text name=vendor_id value=\"$vendor_id\" size=10 maxlength=10> (Aka Vendor Lead Code)</td>";
 		echo "</tr>";
 		echo "<tr> \n";
 		echo "	<td align=right>Home Phone:&nbsp;</td>";
-		echo "	<td align=left><input type=text name=phone size=10 maxlength=10></td>";
+		echo "	<td align=left><input type=text name=phone value=\"$phone\"size=10 maxlength=10></td>";
 		echo "</tr>";
 		echo "<tr> \n";
 		echo "	<td align=right>Last, First Name:&nbsp;</td>";
-		echo "	<td align=left><input type=text name=last_name size=10 maxlength=20><input type=text name=first_name size=10 maxlength=20></td>";
+		echo "	<td align=left><input type=text name=last_name value=\"$last_name\" size=10 maxlength=20><input type=text name=first_name size=10 maxlength=20></td>";
 		echo "</tr>\n";
 		echo "<tr> \n";
 		echo "	<td align=right>Lead ID:&nbsp;</td>";
-		echo "	<td align=left><input type=text name=lead_id size=10 maxlength=10></td>";
+		echo "	<td align=left><input type=text name=lead_id value=\"$lead_id\" size=10 maxlength=10></td>";
 		echo "</tr>\n";
 		echo "<tr>";
 		echo "<th colspan=2><center><br><input type=submit name=submit value=SUBMIT></b></center><br></th>\n";
@@ -248,6 +248,726 @@ if ($ADD==112) {
 			echo "</TABLE>\n";
 		}
 	}
+}
+
+
+
+######################
+# ADD=1122 advanced lead search
+######################
+
+if ($ADD==1122) {
+
+    if ($LOGmodify_lists==1) {
+        echo "<table align=center><tr><td>\n";
+        echo "<font face=\"arial,helvetica\" color=black size=2>";
+        echo "<center><br><font color=navy size=+1>ADVANCED LEAD SEARCH</font>\n";
+
+        $last_name = get_variable("last_name");
+        $first_name = get_variable("first_name");
+        $phone_number = get_variable("phone_number");
+        $phone_search_alt = get_variable("phone_search_alt");
+        $lead_id = get_variable("lead_id");
+        $city = get_variable("city");
+        $postal_code = get_variable("postal_code");
+        $email = get_variable("email");
+        $custom1 = get_variable("custom1");
+        $custom2 = get_variable("custom2");
+        $external_key = get_variable("external_key");
+        $entry_date_start = get_variable("entry_date_start");
+        $entry_date_end = get_variable("entry_date_end");
+        $modify_date_start = get_variable("modify_date_start");
+        $modify_date_end = get_variable("modify_date_end");
+
+        $orig_entry_date_start = "";
+        $orig_entry_date_end = "";
+        if ($entry_date_start != "" and $entry_date_end == "") $entry_date_end = $entry_date_start;
+        if ($entry_date_start != "") {
+            $entry_date_start .= " 00:00:00";
+            $entry_date_end .= " 23:59:59";
+            $tmp1 = explode(" ",$entry_date_start);
+            $orig_entry_date_start = $tmp1[0];
+            $tmp2 = explode(" ",$entry_date_end);
+            $orig_entry_date_end = $tmp2[0];
+        }
+
+        $orig_modify_date_start = "";
+        $orig_modify_date_end = "";
+        if ($modify_date_start != "" and $modify_date_end == "") $modify_date_end = $modify_date_start;
+        if ($modify_date_start != "") {
+            $modify_date_start .= " 00:00:00";
+            $modify_date_end .= " 23:59:59";
+            $tmp1 = explode(" ",$modify_date_start);
+            $orig_modify_date_start = $tmp1[0];
+            $tmp2 = explode(" ",$modify_date_end);
+            $orig_modify_date_end = $tmp2[0];
+        }
+
+        $phone_number = ereg_replace("[^0-9]","",$phone_number);
+
+        # groups
+        $campaigns = get_variable("campaigns");
+        $lists = get_variable("lists");
+        $statuses = get_variable("statuses");
+        $agents = get_variable("agents");
+        $states = get_variable("states");
+        $timezones = get_variable("timezones");
+        $sources = get_variable("sources");
+        $vendor_codes = get_variable("vendor_codes");
+
+        $numresults = get_variable("numresults");
+        if ($numresults == "" or $numresults == 0)
+            $numresults = 100;
+        $page = get_variable("page");
+        if ($page < 1)
+            $page = 1;
+        $count = get_variable("count");
+        if ($page == 1)
+            $count = 0;
+        $sort = get_variable("sort");
+        if ($sort == "")
+            $sort = "lead_id";
+        $direction = get_variable("direction");
+        if ($direction == "")
+            $direction = "ASC";
+
+        $searchWHR = " WHERE 1=1";
+
+        $pageURL ="?ADD=$ADD&last_name=$last_name&first_name=$first_name&phone_number=$phone_number&phone_search_alt=$phone_search_alt&lead_id=$lead_id&city=$city&postal_code=$postal_code&email=$email";
+        $pageURL.="&entry_date_start=$orig_entry_date_start&entry_date_end=$orig_entry_date_end&modify_date_start=$orig_modify_date_start&modify_date_end=$orig_modify_date_end";
+        $pageURL.="&custom1=$custom1&custom2=$custom2&external_key=$external_key&numresults=$numresults&sort=$sort&direction=$direction";
+
+
+        if ($last_name)  $searchWHR .= " AND osdial_list.last_name LIKE '%" . mysql_real_escape_string($last_name) . "%'";
+        if ($first_name) $searchWHR .= " AND osdial_list.first_name LIKE '%" . mysql_real_escape_string($first_name) . "%'";
+        if ($phone_number) {
+            $notac = "%";
+            if (strlen($phone_number) == 3) $notac="";
+            if ($phone_search_alt) {
+                $searchWHR .= " AND (osdial_list.phone_number LIKE '" . $notac . mysql_real_escape_string($phone_number) . "%'";
+                $searchWHR .= " OR osdial_list.alt_phone LIKE '" . $notac . mysql_real_escape_string($phone_number) . "%'";
+                $searchWHR .= " OR osdial_list.address3 LIKE '" . $notac . mysql_real_escape_string($phone_number) . "%')";
+            } else {
+                $searchWHR .= " AND osdial_list.phone_number LIKE '" . $notac . mysql_real_escape_string($phone_number) . "%'";
+            }
+        }
+        if ($lead_id)      $searchWHR .= " AND osdial_list.lead_id='" . mysql_real_escape_string($lead_id) . "'";
+        if ($city)         $searchWHR .= " AND osdial_list.city LIKE '%" . mysql_real_escape_string($city) . "%'";
+        if ($postal_code)  $searchWHR .= " AND osdial_list.postal_code LIKE '" . mysql_real_escape_string($postal_code) . "%'";
+        if ($email)        $searchWHR .= " AND osdial_list.email LIKE '%" . mysql_real_escape_string($email) . "%'";
+        if ($external_key) $searchWHR .= " AND osdial_list.external_key LIKE '%" . mysql_real_escape_string($external_key) . "%'";
+        if ($custom1)      $searchWHR .= " AND osdial_list.custom1 LIKE '%" . mysql_real_escape_string($custom1) . "%'";
+        if ($custom2)      $searchWHR .= " AND osdial_list.custom2 LIKE '%" . mysql_real_escape_string($custom2) . "%'";
+
+        if ($entry_date_start)  $searchWHR .= " AND osdial_list.entry_date>='" . mysql_real_escape_string($entry_date_start) . "' AND osdial_list.entry_date<='" . mysql_real_escape_string($entry_date_end) . "'";
+        if ($modify_date_start) $searchWHR .= " AND osdial_list.modify_date>='" . mysql_real_escape_string($modify_date_start) . "' AND osdial_list.modify_date<='" . mysql_real_escape_string($modify_date_end) . "'";
+
+
+        ### process campaigns group
+        $campaignIN = "";
+        foreach ($campaigns as $campaign) {
+            if ($campaign != "") {
+                $pageURL .= "&campaigns[]=$campaign";
+                $campaignIN .= "'" . mysql_real_escape_string($campaign) . "',";
+            }
+        }
+        if ($campaignIN != "") {
+            $campaignIN = rtrim($campaignIN,",");
+            $searchWHR .= " AND osdial_lists.campaign_id IN ($campaignIN)";
+        }
+
+
+        ### process lists group
+        $listIN = "";
+        foreach ($lists as $list) {
+            if ($list != "") {
+                $pageURL .= "&lists[]=$list";
+                $listIN .= "'" . mysql_real_escape_string($list) . "',";
+            }
+        }
+        if ($listIN != "") {
+            $listIN = rtrim($listIN,",");
+            $searchWHR .= " AND osdial_list.list_id IN ($listIN)";
+        }
+
+
+        ### process statuses group
+        $statusIN = "";
+        foreach ($statuses as $status) {
+            if ($status != "") {
+                $pageURL .= "&statuses[]=$status";
+                $statusIN .= "'" . mysql_real_escape_string($status) . "',";
+            }
+        }
+        if ($statusIN != "") {
+            $statusIN = rtrim($statusIN,",");
+            $searchWHR .= " AND osdial_list.status IN ($statusIN)";
+        }
+
+
+        ### process agents group
+        $agentIN = "";
+        foreach ($agents as $agent) {
+            if ($agent != "") {
+                $pageURL .= "&agents[]=$agent";
+                $agentIN .= "'" . mysql_real_escape_string($agent) . "',";
+            }
+        }
+        if ($agentIN != "") {
+            $agentIN = rtrim($agentIN,",");
+            $searchWHR .= " AND osdial_list.user IN ($agentIN)";
+        }
+
+
+        ### process states group
+        $stateIN = "";
+        foreach ($states as $state) {
+            if ($state != "") {
+                $pageURL .= "&states[]=$state";
+                $stateIN .= "'" . mysql_real_escape_string($state) . "',";
+            }
+        }
+        if ($stateIN != "") {
+            $stateIN = rtrim($stateIN,",");
+            $searchWHR .= " AND osdial_list.state IN ($stateIN)";
+        }
+
+
+        ### process sources group
+        $sourceIN = "";
+        foreach ($sources as $source) {
+            if ($source != "") {
+                $pageURL .= "&sources[]=$source";
+                $sourceIN .= "'" . mysql_real_escape_string($source) . "',";
+            }
+        }
+        if ($sourceIN != "") {
+            $sourceIN = rtrim($sourceIN,",");
+            $searchWHR .= " AND osdial_list.source_id IN ($sourceIN)";
+        }
+
+        
+        ### process vendor_codes group
+        $vendor_codeIN = "";
+        foreach ($vendor_codes as $vendor_code) {
+            if ($vendor_code != "") {
+                $pageURL .= "&vendor_codes[]=$vendor_code";
+                $vendor_codeIN .= "'" . mysql_real_escape_string($vendor_code) . "',";
+            }
+        }
+        if ($vendor_codeIN != "") {
+            $vendor_codeIN = rtrim($vendor_codeIN,",");
+            $searchWHR .= " AND osdial_list.vendor_lead_code IN ($vendor_codeIN)";
+        }
+
+
+        ### process timezones group
+        $timezoneIN = "";
+        $timezoneCNTIN = "";
+        foreach ($timezones as $timezone) {
+            if ($timezone != "") {
+                $pageURL .= "&timezones[]=$timezone";
+                $timezoneIN .= mysql_real_escape_string($timezone) . ",";
+	            $isdst = date("I");
+                $timezoneDST = $timezone;
+                if ($isdst) $timezoneDST += 1;
+                $timezoneCNTIN .= mysql_real_escape_string($timezoneDST) . ",";
+            }
+        }
+        if ($timezoneIN != "") {
+            $timezoneIN = rtrim($timezoneIN,",");
+            $timezoneCNTIN = rtrim($timezoneCNTIN,",");
+            $searchTZWHR .= " AND coalesce(osdial_postal_codes.GMT_offset,osdial_phone_codes.GMT_offset) IN ($timezoneIN)";
+            $countWHR .= " AND osdial_list.gmt_offset_now IN ($timezoneCNTIN)";
+        }
+
+        $numresults_label['25']   = "25/page";
+        $numresults_label['50']   = "50/page";
+        $numresults_label['100']  = "100/page";
+        $numresults_label['200']  = "200/page";
+        $numresults_label['500']  = "500/page";
+        $numresults_label['1000'] = "1000/page";
+
+        $sort_label['lead_id']     = "Lead ID";
+        $sort_label['phone_number']= "Phone Number";
+        $sort_label['last_name']   = "Last Name";
+        $sort_label['postal_code'] = "Postal Code";
+        $sort_label['status']      = "Status";
+        $sort_label['entry_date']  = "Entry Date";
+        $sort_label['modify_date'] = "Modify Date";
+        $sort_label['last_local_call_time']      = "Last Local Call Time";
+
+        $direction_label['ASC']= "Ascending";
+        $direction_label['DESC']= "Descending";
+
+        $timezone_label['AKST'] = "-9";
+        $timezone_label['AST'] = "-4";
+        $timezone_label['CST'] = "-6";
+        $timezone_label['EST'] = "-5";
+        $timezone_label['HAST'] = "-10";
+        $timezone_label['MST'] = "-7";
+        $timezone_label['NST'] = "-3.5";
+        $timezone_label['PST'] = "-8";
+
+
+        echo "<style type=text/css> content {vertical-align:center}</style>\n";
+        echo "<br><br><center>\n";
+        echo "<form method=post name=search action=\"$PHP_SELF\">\n";
+        echo "<input type=hidden name=ADD value=1122>\n";
+        echo "<input type=hidden name=DB value=\"$DB\">\n";
+
+        echo "<table width=$section_width cellspacing=0 bgcolor=$oddrows>\n";
+        echo "  <tr>\n";
+        echo "    <td colspan=4>\n";
+        echo "      <br><center><font color=navy>Enter any combination of the following</font></center><br>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td width=25% align=right><font color=navy size=2>Last Name</font></td>\n";
+        echo "    <td width=25% align=left><input type=text name=last_name value=\"$last_name\" size=20 maxlength=30></td>\n";
+        echo "    <td width=25% align=right><font color=navy size=2>Lead ID</font></td>\n";
+        echo "    <td width=25% align=left><input type=text name=lead_id value=\"$lead_id\" size=10 maxlength=10></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=right><font color=navy size=2>First Name</font></td>\n";
+        echo "    <td align=left><input type=text name=first_name value=\"$first_name\" size=20 maxlength=30></td>\n";
+        echo "    <td align=right><font color=navy size=2>AreaCode or PhoneNumber</font></td>\n";
+        echo "    <td align=left>\n";
+        echo "      <input type=text name=phone_number value=\"$phone_number\" size=10 maxlength=20>\n";
+        if ($phone_search_alt == 1) $check = " checked";
+        echo "      <input type=checkbox name=phone_search_alt value=1$check> <font color=navy size=1>Alternates</font>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=right><font color=navy size=2>City</font></td>\n";
+        echo "    <td align=left><input type=text name=city value=\"$city\" size=20 maxlength=50></td>\n";
+        echo "    <td align=right><font color=navy size=2>ZIP / Postal Code</font></td>\n";
+        echo "    <td align=left><input type=text name=postal_code value=\"$postal_code\" size=10 maxlength=10></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=right><font color=navy size=2>Email</font></td>\n";
+        echo "    <td align=left><input type=text name=email value=\"$email\" size=20 maxlength=70></td>\n";
+        echo "    <td align=right><font color=navy size=2>External Key</font></td>\n";
+        echo "    <td align=left><input type=text name=external_key value=\"$external_key\" size=10 maxlength=100></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=right><font color=navy size=2>Custom1</font></td>\n";
+        echo "    <td align=left><input type=text name=custom1 value=\"$custom1\" size=10 maxlength=255></td>\n";
+        echo "    <td align=right><font color=navy size=2>Custom2</font></td>\n";
+        echo "    <td align=left><input type=text name=custom2 value=\"$custom2\" size=10 maxlength=255></td>\n";
+        echo "  </tr>\n";
+
+        echo "  <tr>\n";
+        echo "    <td colspan=4><br></td>\n";
+        echo "  </tr>\n";
+
+        echo "  <tr>\n";
+        echo "    <td align=right><font color=navy size=2>Entered Between</font></td>\n";
+        echo "    <td align=left colspan=3><font color=navy size=2><input type=text name=entry_date_start value=\"$orig_entry_date_start\" size=10 maxlength=10> and <input type=text name=entry_date_end value=\"$orig_entry_date_end\" size=10 maxlength=10></font></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=right><font color=navy size=2>Last Modified Between</font></td>\n";
+        echo "    <td align=left colspan=3><font color=navy size=2><input type=text name=modify_date_start value=\"$orig_modify_date_start\" size=10 maxlength=10> and <input type=text name=modify_date_end value=\"$orig_modify_date_end\" size=10 maxlength=10></font></td>\n";
+        echo "  </tr>\n";
+
+        echo "  <tr>\n";
+        echo "    <td colspan=4><br></td>\n";
+        echo "  </tr>\n";
+
+        echo "  <tr>\n";
+        $campaignOPTS="";
+        $stmt = "SELECT campaign_id,campaign_name FROM osdial_campaigns;";
+        $rslt=mysql_query($stmt, $link);
+        $results_to_print = mysql_num_rows($rslt);
+        $i=0;
+        $s=0;
+        while ($results_to_print > $i) {
+            $row=mysql_fetch_row($rslt);
+            $sel="";
+            foreach ($campaigns as $campaign) {
+                if ($row[0] == $campaign) {
+                    $sel=" selected";
+                    $s++;
+                }
+            }
+            if ($row[0] != "") $campaignOPTS .= "        <option value=\"" . $row[0] . "\"$sel>" . $row[0] . "</option>\n";
+            $i++;
+        }
+        $sel="";
+        if ($s==0) $sel=" selected";
+        echo "    <td align=center>\n";
+        echo "      <font color=navy size=2>Campaigns</font><br>\n";
+        echo "      <select name=campaigns[] size=5 multiple>\n";
+        echo "        <option value=\"\"$sel>-- ALL --</option>\n";
+        echo $campaignOPTS;
+        echo "      </select>\n";
+        echo "    </td>\n";
+
+        $listOPTS="";
+        $stmt = "SELECT list_id,list_name FROM osdial_lists;";
+        $rslt=mysql_query($stmt, $link);
+        $results_to_print = mysql_num_rows($rslt);
+        $i=0;
+        $s=0;
+        while ($results_to_print > $i) {
+            $row=mysql_fetch_row($rslt);
+            $sel="";
+            foreach ($lists as $list) {
+                if ($row[0] != "" and $row[0] == $list) {
+                    $sel=" selected";
+                    $s++;
+                }
+            }
+            if ($row[0] != "") $listOPTS .= "        <option value=\"" . $row[0] . "\"$sel>" . $row[0] . ": " . $row[1] . "</option>\n";
+            $i++;
+        }
+        $sel="";
+        if ($s==0) $sel=" selected";
+        echo "    <td align=center>\n";
+        echo "      <font color=navy size=2>Lists</font><br>\n";
+        echo "      <select name=lists[] size=5 multiple>\n";
+        echo "        <option value=\"\"$sel>-- ALL --</option>\n";
+        echo $listOPTS;
+        echo "      </select>\n";
+        echo "    </td>\n";
+
+        $statusOPTS="";
+        $stmt = "SELECT status,status_name FROM osdial_statuses;";
+        $rslt=mysql_query($stmt, $link);
+        $results_to_print = mysql_num_rows($rslt);
+        $i=0;
+        $s=0;
+        while ($results_to_print > $i) {
+            $row=mysql_fetch_row($rslt);
+            $sel="";
+            foreach ($statuses as $status) {
+                if ($row[0] != "" and $row[0] == $status) {
+                    $sel=" selected";
+                    $s++;
+                }
+            }
+            if ($row[0] != "") $statusOPTS .= "        <option value=\"" . $row[0] . "\"$sel>" . $row[0] . ": " . $row[1] . "</option>\n";
+            $i++;
+        }
+        $sel="";
+        if ($s==0) $sel=" selected";
+        echo "    <td align=center>\n";
+        echo "      <font color=navy size=2>Statuses</font><br>\n";
+        echo "      <select name=statuses[] size=5 multiple>\n";
+        echo "        <option value=\"\"$sel>-- ALL --</option>\n";
+        echo $statusOPTS;
+        echo "      </select>\n";
+        echo "    </td>\n";
+
+        $agentOPTS="";
+        $stmt = "SELECT user,full_name FROM osdial_users;";
+        $rslt=mysql_query($stmt, $link);
+        $results_to_print = mysql_num_rows($rslt);
+        $i=0;
+        $s=0;
+        while ($results_to_print > $i) {
+            $row=mysql_fetch_row($rslt);
+            $sel="";
+            foreach ($agents as $agent) {
+                if ($row[0] != "" and $row[0] == $agent) {
+                    $sel=" selected";
+                    $s++;
+                }
+            }
+            if ($row[0] != "") $agentOPTS .= "        <option value=\"" . $row[0] . "\"$sel>" . $row[0] . ": " . $row[1] . "</option>\n";
+            $i++;
+        }
+        $sel="";
+        if ($s==0) $sel=" selected";
+        echo "    <td align=center>\n";
+        echo "      <font color=navy size=2>Agents</font><br>\n";
+        echo "      <select name=agents[] size=5 multiple>\n";
+        echo "        <option value=\"\"$sel>-- ALL --</option>\n";
+        echo $agentOPTS;
+        echo "      </select>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+
+        echo "  <tr>\n";
+        echo "    <td colspan=4><br></td>\n";
+        echo "  </tr>\n";
+
+        echo "  <tr>\n";
+
+        $stateOPTS="";
+        $stmt = "SELECT state,count(*) FROM osdial_postal_codes WHERE country='USA' GROUP BY state;";
+        $rslt=mysql_query($stmt, $link);
+        $results_to_print = mysql_num_rows($rslt);
+        $i=0;
+        $s=0;
+        while ($results_to_print > $i) {
+            $row=mysql_fetch_row($rslt);
+            $sel="";
+            foreach ($states as $state) {
+                if ($row[0] != "" and $row[0] == $state) {
+                    $sel=" selected";
+                    $s++;
+                }
+            }
+            if ($row[0] != "") $stateOPTS .= "        <option value=\"" . $row[0] . "\"$sel>" . $row[0] . "</option>\n";
+            $i++;
+        }
+        $sel="";
+        if ($s==0) $sel=" selected";
+        echo "    <td align=center>\n";
+        echo "      <font color=navy size=2>States</font><br>\n";
+        echo "      <select name=states[] size=5 multiple>\n";
+        echo "        <option value=\"\"$sel>-- ALL --</option>\n";
+        echo $stateOPTS;
+        echo "      </select>\n";
+        echo "    </td>\n";
+
+        $timezoneOPTS="";
+        $s=0;
+        foreach ($timezone_label as $k => $v) {
+            $sel="";
+            foreach ($timezones as $timezone) {
+                if ($k != "" and $v == $timezone) {
+                    $sel=" selected";
+                    $s++;
+                }
+            }
+            if ($k != "") $timezoneOPTS .= "        <option value=\"" . $v . "\"$sel>" . $k . " (" . $v . ")</option>\n";
+        }
+        $sel="";
+        if ($s==0) $sel=" selected";
+        echo "    <td align=center>\n";
+        echo "      <font color=navy size=2>TimeZones</font><br>\n";
+        echo "      <select name=timezones[] size=5 multiple>\n";
+        echo "        <option value=\"\"$sel>-- ALL --</option>\n";
+        echo $timezoneOPTS;
+        echo "      </select>\n";
+        echo "    </td>\n";
+
+        $sourceOPTS="";
+        $stmt = "SELECT source_id,count(*) FROM osdial_list GROUP BY source_id;";
+        $rslt=mysql_query($stmt, $link);
+        $results_to_print = mysql_num_rows($rslt);
+        $i=0;
+        $s=0;
+        while ($results_to_print > $i) {
+            $row=mysql_fetch_row($rslt);
+            $sel="";
+            foreach ($sources as $source) {
+                if ($row[0] != "" and $row[0] == $source) {
+                    $sel=" selected";
+                    $s++;
+                }
+            }
+            if ($row[0] != "") $sourceOPTS .= "        <option value=\"" . $row[0] . "\"$sel>" . $row[0] . "</option>\n";
+            $i++;
+        }
+        $sel="";
+        if ($s==0) $sel=" selected";
+        echo "    <td align=center>\n";
+        echo "      <font color=navy size=2>Sources</font><br>\n";
+        echo "      <select name=sources[] size=5 multiple>\n";
+        echo "        <option value=\"\"$sel>-- ALL --</option>\n";
+        echo $sourceOPTS;
+        echo "      </select>\n";
+        echo "    </td>\n";
+
+        $vendor_codeOPTS="";
+        $stmt = "SELECT vendor_lead_code,count(*) FROM osdial_list GROUP BY vendor_lead_code;";
+        $rslt=mysql_query($stmt, $link);
+        $results_to_print = mysql_num_rows($rslt);
+        $i=0;
+        $s=0;
+        while ($results_to_print > $i) {
+            $row=mysql_fetch_row($rslt);
+            $sel="";
+            foreach ($vendor_codes as $vendor_code) {
+                if ($row[0] != "" and $row[0] == $vendor_code) {
+                    $sel=" selected";
+                    $s++;
+                }
+            }
+            if ($row[0] != "") $vendor_codeOPTS .= "        <option value=\"" . $row[0] . "\"$sel>" . $row[0] . "</option>\n";
+            $i++;
+        }
+        $sel="";
+        if ($s==0) $sel=" selected";
+        echo "    <td align=center>\n";
+        echo "      <font color=navy size=2>Vendor Codes</font><br>\n";
+        echo "      <select name=vendor_codes[] size=5 multiple>\n";
+        echo "        <option value=\"\"$sel>-- ALL --</option>\n";
+        echo $vendor_codeOPTS;
+        echo "      </select>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+
+        echo "  <tr>\n";
+        echo "    <td align=center colspan=4><br><font color=navy size=2>Results</font>";
+        echo "      <select name=numresults size=1>\n";
+        foreach ($numresults_label as $k => $v) {
+            $sel="";
+            if ($numresults==$k) $sel=" selected";
+            echo "        <option value=\"$k\"$sel>$v</option>\n";
+        }
+        echo "      </select>\n";
+        echo "      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color=navy size=2>Sort By</font>";
+        echo "      <select name=sort size=1>\n";
+        foreach ($sort_label as $k => $v) {
+            $sel="";
+            if ($sort==$k) $sel=" selected";
+            echo "        <option value=\"$k\"$sel>$v</option>\n";
+        }
+        echo "      </select>\n";
+        echo "      <select name=direction size=1>\n";
+        foreach ($direction_label as $k => $v) {
+            $sel="";
+            if ($direction==$k) $sel=" selected";
+            echo "        <option value=\"$k\"$sel>$v</option>\n";
+        }
+        echo "      </select>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+
+        echo "  <tr>\n";
+        echo "    <th colspan=4><center><input type=submit name=submit value=SUBMIT></b></center><br></th>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
+        echo "</form>\n";
+
+
+
+        $countTBL = " FROM osdial_lists JOIN osdial_list ON (osdial_lists.list_id=osdial_list.list_id)";
+        $searchTBL = " FROM osdial_lists JOIN osdial_list ON (osdial_lists.list_id=osdial_list.list_id) LEFT JOIN osdial_postal_codes ON (osdial_postal_codes.country_code=osdial_list.phone_code AND osdial_postal_codes.postal_code=osdial_list.postal_code) LEFT JOIN osdial_phone_codes ON (osdial_phone_codes.country_code=osdial_list.country_code AND osdial_phone_codes.areacode=left(osdial_list.phone_number,3))";
+
+        #$countSQL  = "SELECT count(*) " . $searchSQL . ";";
+        $countSQL = "SELECT count(*)" . $countTBL . $searchWHR . $countWHR . ";";
+
+        if ($count==0) {
+            #echo "<br>$countSQL";
+            if ($DB) echo "\n\n$countSQL\n\n";
+            $rslt=mysql_query($countSQL, $link);
+            $row=mysql_fetch_row($rslt);
+            $searchCount = $row[0];
+        } else {
+            $searchCount = $count;
+        }
+
+        # Get the number of pages needed to paginate the results.
+        $pages = $searchCount / $numresults;
+        if (($pages - round($pages)) != 0) $pages = (round($pages) + 1);
+        if ($page > $pages) $page = $pages;
+
+
+        $searchDone=1;
+        while ($searchDone) {
+            $searchSQL = "SELECT osdial_list.*,osdial_lists.campaign_id" . $searchTBL . $searchWHR . $searchTZWHR . " GROUP BY osdial_list.lead_id ORDER BY " . $sort  . " " . $direction . " LIMIT " . (($page - 1) * $numresults) . ", " . $numresults . ";";
+
+            #echo "<br>$searchSQL<br>";
+            if ($DB) echo "\n\n$searchtSQL\n\n";
+            $rslt=mysql_query($searchSQL, $link);
+            $results_to_print = mysql_num_rows($rslt);
+            if ($page > 1 and $results_to_print == 0) {
+                $page -= 1;
+                $pages -= 1;
+            } else {
+                $searchDone=0;
+                if ($results_to_print < $numresults) {
+                    $pages = $page;
+                    $searchCount = ((($page - 1) * $numresults) + $results_to_print);
+                    if ($searchCount < 1) $searchCount=0;
+                }
+                echo "<br><br><br><div id=\"advsearch\"><font color=navy size=3><b>Records Found:&nbsp;" . $searchCount . "</b></font></div>";
+            }
+        }
+
+        $paginate = "";
+        if ($results_to_print > 0) {
+            echo "<div id=\"advsearch\"><font color=navy size=3><b>Displaying:&nbsp;" . ((($page - 1) * $numresults) + 1) . " through " . ((($page - 1) * $numresults) + $results_to_print) . "</b></font></div>";
+            $paginate .= "<font color=navy size=2>\n";
+            if ($page == 1) {
+                $paginate .= "<font color=darkgrey>";
+                $paginate .= "&lt;&lt;&lt; First";
+                $paginate .= "&nbsp;&nbsp;&nbsp;";
+                $paginate .= "&lt;&lt; Previous";
+                $paginate .= "</font>";
+            } else {
+                $paginate .= "<a href=\"" . $pageURL . "&page=1&count=" . $searchCount . "#advsearch\">&lt;&lt;&lt; First</a>";
+                $paginate .= "&nbsp;&nbsp;&nbsp;";
+                $paginate .= "<a href=\"" . $pageURL . "&page=" . ($page - 1) . "&count=" . $searchCount . "#advsearch\">&lt;&lt; Previous</a>";
+            }
+            $paginate .= "&nbsp;&nbsp;&nbsp;";
+            $paginate .= "[<b>$page</b> of $pages]";
+            #$paginate .= "[<b>$page</b>]";
+            $paginate .= "&nbsp;&nbsp;&nbsp;";
+            if ($page == $pages ) {
+                $paginate .= "<font color=darkgrey>";
+                $paginate .= "Next &gt;&gt;";
+                $paginate .= "&nbsp;&nbsp;&nbsp;";
+                $paginate .= "Last &gt;&gt;&gt;";
+                $paginate .= "</font>";
+            } else {
+                $paginate .= "<a href=\"" . $pageURL . "&page=" . ($page + 1) . "&count=" . $searchCount . "#advsearch\">Next &gt;&gt;</a>";
+                $paginate .= "&nbsp;&nbsp;&nbsp;";
+                $paginate .= "<a href=\"" . $pageURL . "&page=" . ($pages) . "&count=" . $searchCount . "#advsearch\">Last &gt;&gt;&gt;</a>";
+            }
+            $paginate .= "</font>\n";
+        }
+
+        echo $paginate;
+
+        echo "<table bgcolor=white cellpadding=1 cellspacing=0>\n";
+        echo "  <tr bgcolor=$menubarcolor>\n";
+        echo "    <td align=left><font color=white size=2><b>#</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
+        echo "    <td align=center><font color=white size=2><b>Lead ID</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
+        echo "    <td align=center><font color=white size=2><b>Status</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
+        echo "    <td align=center><font color=white size=2><b>Vendor ID</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
+        echo "    <td align=center><font color=white size=2><b>Agent</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
+        echo "    <td align=center><font color=white size=2><b>List ID</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
+        echo "    <td align=center><font color=white size=2><b>Phone</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
+        echo "    <td align=center><font color=white size=2><b>Name</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
+        echo "    <td align=center><font color=white size=2><b>City</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
+        echo "    <td align=center><font color=white size=2><b>State</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
+        echo "    <td align=center><font color=white size=2><b>Custom 1</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
+        echo "    <td align=center><font color=white size=2><b>Last Call</b></font></td>\n";
+        echo "  </tr>\n";
+        if ($results_to_print < 1) {
+            echo "  <tr bgcolor=$oddrows>\n";
+            echo "    <td colspan=12 align=center><font size=3 color=navy>The item(s) you searched for were not found.</font></td>\n";
+            echo "  </tr>\n";
+        } else {
+            $o=0;
+            while ($results_to_print > $o) {
+                $row=mysql_fetch_row($rslt);
+                $o++;
+                if (eregi("1$|3$|5$|7$|9$", $o)) 
+                    {$bgcolor='bgcolor='.$oddrows;} 
+                else
+                    {$bgcolor='bgcolor='.$evenrows;}
+                echo "  <tr $bgcolor>\n";
+                echo "    <td align=left><font face=\"arial,helvetica\" size=1>" . ($o + (($page - 1) * $numresults)) . "</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1><a href=\"admin.php?ADD=999999&SUB=3&iframe=admin_modify_lead.php?lead_id=$row[0]\">$row[0]</a></font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[3]</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[5]</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[4]</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[7]</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[11]</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[13] $row[15]</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[19]</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1>" . strtoupper($row[20]) . "</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[28]</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[2]</font></td>\n";
+                echo "  </tr>\n";
+            }
+        }
+        echo "  <tr bgcolor=$menubarcolor>\n";
+        echo "    <td colspan=12><font size=1>&nbsp;</font></td>\n";
+        echo "  </tr>\n";
+        echo "</table>\n";
+
+        echo $paginate;
+    } else {
+        echo "<font color=red>You do not have permission to view this page</font>\n";
+    }
 }
 
 

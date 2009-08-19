@@ -47,6 +47,18 @@ CREATE TABLE osdial_campaign_agent_stats (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;##|##
   ##Adds a table for tracking agent stats per campaign.
 
+CREATE INDEX entry_date ON osdial_list (entry_date);##|##
+  ## Adds entry_date to osdial_list as an index to sort on
+
+CREATE INDEX modify_date ON osdial_list (modify_date);##|##
+  ## Adds modify_date to osdial_list as an index to sort on
+
+CREATE INDEX area_code ON osdial_list (phone_number(3));##|##
+  ## Adds area_code to osdial_list as an index to sort on
+
+CREATE INDEX last_name ON osdial_list (last_name(3));##|##
+  ## Adds last_name to osdial_list as an index to sort on
+
 
 UPDATE system_settings SET version='2.1.5.031';##|##
  ##Updating database to version 2.1.5.031;
