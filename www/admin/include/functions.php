@@ -75,7 +75,9 @@ function format_select_options($krh, $kkey, $kval, $ksel="!", $kdef="") {
     foreach ($krh as $ele) {
         $selopt = '';
         if ($ele[$kkey] == $ksel) $selopt = " selected";
-        $option .= '<option value="' . $ele[$kkey] . '"' . $selopt . '>' . $ele[$kkey] . ' - ' . $ele[$kval] . '</option>';
+        $option .= '<option value="' . $ele[$kkey] . '"' . $selopt . '>' . $ele[$kkey];
+        if ($ele[$kkey] != $ele[$kval]) $option .= ' - ' . $ele[$kval];
+        $option .= '</option>';
     }
     return $option;
 }
