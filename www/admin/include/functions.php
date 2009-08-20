@@ -33,7 +33,7 @@ function get_variable($varid) {
 }
 
 ##### get key row hashes
-function get_krh($link, $tbl, $flds="*", $srt="", $whr="") {
+function get_krh($link, $tbl, $flds="*", $srt="", $whr="", $lmt="") {
     if ($srt != '') {
         $srt = " ORDER BY " . $srt;
     } elseif ($flds == '*') {
@@ -45,7 +45,10 @@ function get_krh($link, $tbl, $flds="*", $srt="", $whr="") {
     if ($whr != '') {
         $whr = ' WHERE ' . $whr;
     }
-    $krhstmt="SELECT " . $flds . " FROM " . $tbl . $whr . $srt;
+    if ($lmt != '') {
+        $lmt = ' LIMIT ' . $lmt;
+    }
+    $krhstmt="SELECT " . $flds . " FROM " . $tbl . $whr . $srt . $lmt;
     $krhrslt=mysql_query($krhstmt, $link);
     while ($krhrow = mysql_fetch_array($krhrslt, MYSQL_BOTH)) {
         $krhrows[$krhrow[0]] = $krhrow;

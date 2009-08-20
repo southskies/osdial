@@ -1,5 +1,309 @@
+2009-08-20  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r398] bin/AST_flush_DBqueue.pl, extras/sql/215031.sql,
+	  www/admin/include/content/lists/lists.php: Added
+	  osdial_phone_code_groups and osdial_postal_code_groups for fast
+	  1to1 lookups on joined tables that don't require MySQL to
+	  generate temp tables. Added osdial_report_groups for fast lookups
+	  of common group items. Ie source_id, vendor_lead_code, states,
+	  etc. Implemented in Advanced Lead Search. Added code to
+	  AST_flush_DBqueue to update these groups on a regular basis.
+	* [r397] www/admin/include/functions.php, www/agent/functions.php:
+	  Cleanup of functions
+	* [r396] www/admin/include/functions.php: Cleanup of functions
+
+2009-08-19  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r395] www/admin/include/functions.php: Cleanup of functions
+	* [r394] www/admin/include/functions.php: Cleanup of functions
+	* [r393] www/admin/include/functions.php, www/agent/functions.php:
+	  Cleanup of functions
+	* [r392] extras/sql/215031.sql: Missing closing tags on SQL
+	  description.
+	* [r391] extras/sql/215031.sql,
+	  www/admin/include/content/lists/lists.php,
+	  www/admin/include/header.php, www/admin/include/menu.php:
+	  Addition of Advanced Lead Search and better indexes on
+	  osdial_list.
+
+2009-08-17  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r390] www/admin/include/content/reports/list_cost.php,
+	  www/admin/include/content/reports/list_performance.php: Added CSV
+	  export option
+
+2009-08-16  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r389] www/admin/include/content/reports/list_performance.php:
+	  Added borders around data sets.
+	* [r388] www/admin/include/menu.php: Added include-structure
+	  reports to reports menu.
+	* [r387] bin/AST_VDcampaign_stats.pl: Added table
+	  osdial_campaign_agent_stats which is populated through the
+	  AST_VDcampaign_stats.pl process and is identical in functionality
+	  to osdial_campaign_stats or osdial_campaign_server_stats, only
+	  recording stats on a campaign/agent basis.
+	* [r386] www/admin/report_list_cost.php: Moved report_list_cost.php
+	  into include structure.
+	* [r385] www/agent/vdc_db_query.php: Moved manual_dial_new_today to
+	  new osdial_campaign_agent_stats table.
+	* [r384] extras/sql/215031.sql, extras/sql/999999.sql,
+	  extras/sql/upgrade_sql.map, version: Added osdial_lists.cost for
+	  default lead cost. Added osdial_list.cost for actual lead cost.
+	  osdial_users.manual_dial_new_limit for setting a limit on the
+	  number of NEW leads an agent can be given. Added
+	  osdial_agent_log.lead_called_count to retain the count of the
+	  lead at the time the agent touched it. Added
+	  osdial_agent_log.prev_status to record the status of the lead
+	  prior to the agent dispositioning it. Added table
+	  osdial_campaign_agent_stats which is populated through the
+	  AST_VDcampaign_stats.pl process and is identical in functionality
+	  to osdial_campaign_stats or osdial_campaign_server_stats, only
+	  recording stats on a campaign/agent basis. Update 999999.sql for
+	  added cost field on default records.
+	* [r383] extras/misc, extras/misc/import-insureme-health.php,
+	  extras/misc/insureme-health-test.xml: Added XML Import routine
+	  for InsureMe.
+	* [r382] www/admin/include/content/reports/list_performance.php:
+	  Added default/template style formatting to list-performance.
+	* [r381] www/admin/include/content/reports/reports.php: Fix call to
+	  bad function.
+	* [r380] www/admin/include/content/reports/list_cost.php: Switch
+	  from formatted text to tables.
+	* [r379] www/admin/include/content/reports/list_performance.php:
+	  Add List-Performance report.
+	* [r378] www/admin/include/content/reports/list_cost.php,
+	  www/admin/include/content/reports/reports.php: Moved List-Cost
+	  report to include structure.
+	* [r377] www/admin/include/help.xml: Preliminary XML file for help.
+	* [r376] www/admin/include/content/lists/lists.php,
+	  www/admin/include/help.php, www/admin/include/validation.php,
+	  www/admin/include/variables.php: Added list/lead cost list modify
+	  screen. Added cost field to lead-loader options. Added logic to
+	  lead-loader to grab cost from lists table if cost is not set in
+	  loaded file. Added validation and verification variable for cost.
+	  Added help for cost.
+	* [r375] www/admin/AST_agent_performance_detail.php: Added
+	  new_calls column to report. This column lists the count of
+	  fresh/new leads that any agent has attempted.
+	* [r374] www/admin/include/header.php: Added Lead-Allocation to
+	  menu bar for Agent menu.
+	* [r373] www/admin/include/menu.php: Added Lead-Allocation to menu
+	  bar for Agent menu.
+	* [r372] www/admin/include/content/reports/reports.php: Added
+	  list-cost report menu option.
+	* [r371] www/admin/include/content/users/users.php: Added
+	  Lead-Allocation view to Agents section.
+	* [r370] www/admin/report_list_cost.php: Added the list-cost
+	  report.
+
+2009-08-12  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r369] www/agent/vdc_db_query.php: Added New lead limits for
+	  agents in Manual-dial
+
+2009-08-10  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r368] bin/AST_VDauto_dial.pl, bin/AST_update.pl: dbhB already
+	  existed.
+
+2009-08-06  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r367] www/admin/include/content/reports/realtime_detail.php:
+	  increase statuses length to 40
+
+2009-08-05  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r366] docs/conf_examples/res_config.conf,
+	  docs/conf_examples/res_mysql.conf: oops
+	* [r365] bin/AST_update.pl, docs/conf_examples/extconfig.conf,
+	  docs/conf_examples/modules.conf,
+	  docs/conf_examples/res_config.conf: Some final Asterisk1.6
+	  touches...
+
+2009-08-04  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r364] bin/AST_update.pl: Added statement to remove Down channels
+	* [r363] bin/AST_VDremote_agents.pl, bin/AST_update.pl: Using Show
+	  Channel Concise breaks Asterisk 1.6. Embeded a realtime-sql
+	  implementation.
+
+2009-08-03  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r362] docs/conf_examples/musiconhold.conf: Fix MOH directory for
+	  Asterisk 1.6
+	* [r361] agi/VD_amd.agi, agi/VD_amd_post.agi,
+	  agi/VD_auto_post_VERIFY.agi, agi/agi-VDAD_ALL_inbound.agi,
+	  agi/agi-VDAD_LB_transfer.agi, agi/agi-VDAD_LO_transfer.agi,
+	  agi/agi-VDADautoREMINDER.agi, agi/agi-VDADautoREMINDERxfer.agi,
+	  agi/agi-VDADfixCXFER.agi,
+	  agi/agi-VDADinbound_NI_DNC_CIDlookup.agi,
+	  agi/agi-VDADselective_CID.agi,
+	  agi/agi-VDADselective_CID_hangup.agi, agi/agi-VDADtransfer.agi,
+	  agi/agi-VDADtransferBROADCAST.agi,
+	  agi/agi-VDADtransferSURVEY.agi, agi/agi-VDADtransferTEST.agi,
+	  agi/agi-dtmf.agi, agi/agi-record_prompts.agi,
+	  agi/call_inbound.agi: Fix Asterisk 1.6 error whereas
+	  checkresult() did not pull stdin.
+	* [r360] docs/conf_examples/chan-dahdi.conf,
+	  docs/conf_examples/dahdi_system.conf,
+	  docs/conf_examples/modules.conf,
+	  docs/conf_examples/osdial_extensions.conf,
+	  docs/conf_examples/osdial_extensions_testing.conf,
+	  docs/conf_examples/osdial_manager.conf,
+	  docs/conf_examples/voicemail.conf,
+	  docs/conf_examples/zapata.conf, docs/conf_examples/zaptel.conf:
+	  Modifications for Asterisk 1.6
+
+2009-08-02  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r359] docs/conf_examples/asterisk12,
+	  docs/conf_examples/asterisk12/README.osdial,
+	  docs/conf_examples/asterisk12/amd.conf,
+	  docs/conf_examples/asterisk12/cdr.conf,
+	  docs/conf_examples/asterisk12/dnsmgr.conf,
+	  docs/conf_examples/asterisk12/extensions.conf,
+	  docs/conf_examples/asterisk12/iax.conf,
+	  docs/conf_examples/asterisk12/iaxprov.conf,
+	  docs/conf_examples/asterisk12/indications.conf,
+	  docs/conf_examples/asterisk12/logger.conf,
+	  docs/conf_examples/asterisk12/manager.conf,
+	  docs/conf_examples/asterisk12/meetme.conf,
+	  docs/conf_examples/asterisk12/modules.conf,
+	  docs/conf_examples/asterisk12/musiconhold.conf,
+	  docs/conf_examples/asterisk12/osdial_extensions.conf,
+	  docs/conf_examples/asterisk12/osdial_extensions_conferences.conf,
+	  docs/conf_examples/asterisk12/osdial_extensions_custom.conf,
+	  docs/conf_examples/asterisk12/osdial_extensions_inbound.conf,
+	  docs/conf_examples/asterisk12/osdial_extensions_outbound.conf,
+	  docs/conf_examples/asterisk12/osdial_extensions_phones.conf,
+	  docs/conf_examples/asterisk12/osdial_extensions_servers.conf,
+	  docs/conf_examples/asterisk12/osdial_extensions_testing.conf,
+	  docs/conf_examples/asterisk12/osdial_iax.conf,
+	  docs/conf_examples/asterisk12/osdial_iax_custom.conf,
+	  docs/conf_examples/asterisk12/osdial_iax_phones.conf,
+	  docs/conf_examples/asterisk12/osdial_iax_registrations.conf,
+	  docs/conf_examples/asterisk12/osdial_iax_servers.conf,
+	  docs/conf_examples/asterisk12/osdial_iax_trunks.conf,
+	  docs/conf_examples/asterisk12/osdial_manager.conf,
+	  docs/conf_examples/asterisk12/osdial_meetme.conf,
+	  docs/conf_examples/asterisk12/osdial_sip.conf,
+	  docs/conf_examples/asterisk12/osdial_sip_custom.conf,
+	  docs/conf_examples/asterisk12/osdial_sip_phones.conf,
+	  docs/conf_examples/asterisk12/osdial_sip_registrations.conf,
+	  docs/conf_examples/asterisk12/osdial_sip_trunks.conf,
+	  docs/conf_examples/asterisk12/oss.conf,
+	  docs/conf_examples/asterisk12/phone.conf,
+	  docs/conf_examples/asterisk12/sip.conf,
+	  docs/conf_examples/asterisk12/voicemail.conf,
+	  docs/conf_examples/asterisk12/zapata.conf,
+	  docs/conf_examples/asterisk12/zaptel.conf: Migrate old-configs to
+	  docs/conf_examples/asterisk12
+
+2009-08-01  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r358] extras/sql/214030.sql, extras/sql/999999.sql,
+	  extras/sql/upgrade_sql.map, extras/sql/upgrade_sql.pl, version:
+	  Update includes osdial_carrier tables, cleanups to
+	  upgrade_sql.pl, and new function to display spinner and comments
+	  about the current SQL update being applied.
+	* [r357] bin/AST_flush_DBqueue.pl: Added routing to automatically
+	  update asterisk version in database.
+
+2009-07-30  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r356] agi/agi-station_barge.agi, agi/agi-station_monitor.agi:
+	  Fixes for Zap-based monitoring
+	* [r355] agi/agi-OSDivr.agi, bin/AST_VDremote_agents.pl: Fixes for
+	  multi-server IVR
+
+2009-07-21  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r354] bin/AST_DB_optimize.pl, bin/AST_VDhopper.pl,
+	  bin/AST_reset_mysql_vars.pl: Update reset/optimize to not clear
+	  server stats table.
+
+2009-07-16  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r353] agi/agi-OSDivr.agi: Added update to last_update_time in
+	  auto_calls on each iteration through the menu and announcements.
+	* [r352] bin/osdial_astgen.pl: Increase the qualify on the phones
+	  to 5000.
+
+2009-07-15  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r351] www/admin/include/content/filters/filters.php: Escape the
+	  SQL
+	* [r350] bin/osdial_astgen.pl: Backward slash
+	* [r349] www/admin/include/content/reports/realtime_detail.php,
+	  www/admin/include/functions.php: Fix some display issues with
+	  Real-time reports
+
+2009-07-14  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r348] bin/AST_qc_transfer.pl: Modifications for using SFTP and
+	  uFTP.
+	* [r347] docs/conf_examples/osdial_extensions.conf: Set 90009
+	  extension to use LO.
+
+2009-07-13  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r346] extras/sql/upgrade_sql.pl: Added option to bypass the
+	  authenication fixing section.
+	* [r345] agi/VD_amd.agi, agi/agi-VDAD_ALL_inbound.agi,
+	  agi/agi-VDAD_LB_transfer.agi, agi/agi-VDAD_LO_transfer.agi,
+	  agi/agi-VDADtransfer.agi, bin/AST_VDauto_dial.pl,
+	  bin/AST_VDcampaign_stats.pl, bin/FastAGI_log.pl,
+	  extras/sql/214029.sql, extras/sql/upgrade_sql.map, version,
+	  www/agent/vdc_db_query.php: Add campaign server stats checks, amd
+	  counts, failed counts, agent counts, added isup_result to
+	  call_log, and server_ip to osdial_log.
+
+2009-07-09  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r344] www/agent/include/osdial.js: Fix to not change to default
+	  Main Status color on panel switch.
+	* [r343] extras/sql/214028.sql: Fix for live_agents with not enough
+	  closer_campaign space.
+	* [r342] bin/osdial_astgen.pl: Add g729 option, add sip-silence to
+	  remote-agent conferences
+
+2009-07-07  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r341] agi/agi-VDAD_ALL_inbound.agi, extras/sql/214028.sql,
+	  extras/sql/upgrade_sql.map, version, www/agent/manager_send.php,
+	  www/agent/vdc_db_query.php: Added uniqueid to osdial_xfer_log,
+	  osdial_agent_log, and recording_log.
+	* [r340] www/admin/include/variables.php: Add variable
+	  submit_method.
+
+2009-07-06  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r339] www/agent/include/osdial.js: campagin typo.
+	* [r338] extras/sql/213027.sql, extras/sql/upgrade_sql.map,
+	  version, www/admin/include/content/campaigns/campaigns.php,
+	  www/agent/include/osdial.js, www/agent/osdial.php: Added ability
+	  to select the submit method.
+	* [r337] www/admin/include/header.php: Missed closing curley brace.
+
+2009-07-05  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r336] extras/sql/upgrade_sql.pl: Fix on server for
+	  upgrade_sql.pl
+	* [r335] www/admin/admin_modify_lead.php: Fix location for
+	  playback.
+
 2009-07-03  Lott Caskey <lottcaskey@gmail.com>
 
+	* [r334] bin/osdial_astgen.pl: Fix to allow remote IAX2 phones off
+	  pbx.
+	* [r333] www/admin/include/content/lists/export.php,
+	  www/admin/include/content/lists/lists.php,
+	  www/admin/include/header.php: Prevent user_level < 9 from
+	  exporting leads
+	* [r332] ChangeLog, extras/sql/213026.sql,
+	  extras/sql/upgrade_sql.map, version: Increase phone password
+	  length.
 	* [r331] extras/osdial.cron: Set to archive on default install
 	* [r330] bin/osdial_astgen.pl: Add g729 support to intra-server and
 	  client sip
