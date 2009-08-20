@@ -35,6 +35,8 @@ function get_variable($varid) {
 function get_krh($link, $tbl, $flds="*", $srt="", $whr="") {
     if ($srt != '') {
         $srt = " ORDER BY " . $srt;
+    } elseif ($flds == '*') {
+        $srt = "";
     } else {
         $sary = split(',', $flds);
         $srt = " ORDER BY " . $sary[0];
