@@ -70,13 +70,25 @@ function get_first_record($link, $tbl, $flds="*", $whr="") {
 function format_select_options($krh, $kkey, $kval, $ksel="!", $kdef="") {
     $option = '';
     $selopt = '';
-    if ($ksel == "") $selopt = " selected";
+    if (is_array($ksel)) {
+        foreach ($ksel as $aksel) {
+            if ($aksel == "") $selopt = " selected";
+        }
+    } else {
+        if ($ksel == "") $selopt = " selected";
+    }
     if ($kdef != "") $option = "  <option value=\"\"" . $selopt . ">" . $kdef . "</option>\n";
     foreach ($krh as $ele) {
         $selopt = '';
-        if ($ele[$kkey] == $ksel) $selopt = " selected";
+        if (is_array($ksel)) {
+            foreach ($ksel as $aksel) {
+                if ($aksel == $ele[$kkey]) $selopt = " selected";
+            }
+        } else {
+            if ($ksel == $ele[$kkey]) $selopt = " selected";
+        }
         $option .= '<option value="' . $ele[$kkey] . '"' . $selopt . '>' . $ele[$kkey];
-        if ($ele[$kkey] != $ele[$kval]) $option .= ' - ' . $ele[$kval];
+        if ($kkey != $kval) $option .= ' - ' . $ele[$kval];
         $option .= '</option>';
     }
     return $option;
