@@ -359,8 +359,8 @@ if ($ADD==1122) {
         if ($custom1)      $searchWHR .= " AND osdial_list.custom1 LIKE '%" . mysql_real_escape_string($custom1) . "%'";
         if ($custom2)      $searchWHR .= " AND osdial_list.custom2 LIKE '%" . mysql_real_escape_string($custom2) . "%'";
 
-        if ($entry_date_start)  $searchWHR .= " AND osdial_list.entry_date>='" . mysql_real_escape_string($entry_date_start) . "' AND osdial_list.entry_date<='" . mysql_real_escape_string($entry_date_end) . "'";
-        if ($modify_date_start) $searchWHR .= " AND osdial_list.modify_date>='" . mysql_real_escape_string($modify_date_start) . "' AND osdial_list.modify_date<='" . mysql_real_escape_string($modify_date_end) . "'";
+        if ($entry_date_start)  $searchWHR .= " AND osdial_list.entry_date BETWEEN '" . mysql_real_escape_string($entry_date_start) . "' AND '" . mysql_real_escape_string($entry_date_end) . "'";
+        if ($modify_date_start) $searchWHR .= " AND osdial_list.modify_date BETWEEN '" . mysql_real_escape_string($modify_date_start) . "' AND '" . mysql_real_escape_string($modify_date_end) . "'";
 
 
         ### process campaigns group
@@ -477,7 +477,7 @@ if ($ADD==1122) {
         if ($timezoneIN != "") {
             $timezoneIN = rtrim($timezoneIN,",");
             $timezoneCNTIN = rtrim($timezoneCNTIN,",");
-            $searchTZWHR .= " AND coalesce(osdial_postal_codes.GMT_offset,osdial_phone_codes.GMT_offset) IN ($timezoneIN)";
+            $searchTZWHR .= " AND coalesce(osdial_postal_code_groups.GMT_offset,osdial_phone_code_groups.GMT_offset) IN ($timezoneIN)";
             $countWHR .= " AND osdial_list.gmt_offset_now IN ($timezoneCNTIN)";
         }
 
@@ -575,115 +575,35 @@ if ($ADD==1122) {
         echo "  </tr>\n";
 
         echo "  <tr>\n";
-        $campaignOPTS="";
-        $stmt = "SELECT campaign_id,campaign_name FROM osdial_campaigns;";
-        $rslt=mysql_query($stmt, $link);
-        $results_to_print = mysql_num_rows($rslt);
-        $i=0;
-        $s=0;
-        while ($results_to_print > $i) {
-            $row=mysql_fetch_row($rslt);
-            $sel="";
-            foreach ($campaigns as $campaign) {
-                if ($row[0] == $campaign) {
-                    $sel=" selected";
-                    $s++;
-                }
-            }
-            if ($row[0] != "") $campaignOPTS .= "        <option value=\"" . $row[0] . "\"$sel>" . $row[0] . "</option>\n";
-            $i++;
-        }
-        $sel="";
-        if ($s==0) $sel=" selected";
         echo "    <td align=center>\n";
         echo "      <font color=navy size=2>Campaigns</font><br>\n";
         echo "      <select name=campaigns[] size=5 multiple>\n";
-        echo "        <option value=\"\"$sel>-- ALL --</option>\n";
-        echo $campaignOPTS;
+        $krh = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name');
+        echo format_select_options($krh, 'campaign_id', 'campaign_id', $campaigns, "-- ALL --");
         echo "      </select>\n";
         echo "    </td>\n";
 
-        $listOPTS="";
-        $stmt = "SELECT list_id,list_name FROM osdial_lists;";
-        $rslt=mysql_query($stmt, $link);
-        $results_to_print = mysql_num_rows($rslt);
-        $i=0;
-        $s=0;
-        while ($results_to_print > $i) {
-            $row=mysql_fetch_row($rslt);
-            $sel="";
-            foreach ($lists as $list) {
-                if ($row[0] != "" and $row[0] == $list) {
-                    $sel=" selected";
-                    $s++;
-                }
-            }
-            if ($row[0] != "") $listOPTS .= "        <option value=\"" . $row[0] . "\"$sel>" . $row[0] . ": " . $row[1] . "</option>\n";
-            $i++;
-        }
-        $sel="";
-        if ($s==0) $sel=" selected";
         echo "    <td align=center>\n";
         echo "      <font color=navy size=2>Lists</font><br>\n";
         echo "      <select name=lists[] size=5 multiple>\n";
-        echo "        <option value=\"\"$sel>-- ALL --</option>\n";
-        echo $listOPTS;
+        $krh = get_krh($link, 'osdial_lists', 'list_id,list_name,campaign_id');
+        echo format_select_options($krh, 'list_id', 'list_name', $lists, "-- ALL --");
         echo "      </select>\n";
         echo "    </td>\n";
 
-        $statusOPTS="";
-        $stmt = "SELECT status,status_name FROM osdial_statuses;";
-        $rslt=mysql_query($stmt, $link);
-        $results_to_print = mysql_num_rows($rslt);
-        $i=0;
-        $s=0;
-        while ($results_to_print > $i) {
-            $row=mysql_fetch_row($rslt);
-            $sel="";
-            foreach ($statuses as $status) {
-                if ($row[0] != "" and $row[0] == $status) {
-                    $sel=" selected";
-                    $s++;
-                }
-            }
-            if ($row[0] != "") $statusOPTS .= "        <option value=\"" . $row[0] . "\"$sel>" . $row[0] . ": " . $row[1] . "</option>\n";
-            $i++;
-        }
-        $sel="";
-        if ($s==0) $sel=" selected";
         echo "    <td align=center>\n";
         echo "      <font color=navy size=2>Statuses</font><br>\n";
         echo "      <select name=statuses[] size=5 multiple>\n";
-        echo "        <option value=\"\"$sel>-- ALL --</option>\n";
-        echo $statusOPTS;
+        $krh = get_krh($link, 'osdial_statuses', 'status,status_name');
+        echo format_select_options($krh, 'status', 'status_name', $statuses, "-- ALL --");
         echo "      </select>\n";
         echo "    </td>\n";
 
-        $agentOPTS="";
-        $stmt = "SELECT user,full_name FROM osdial_users;";
-        $rslt=mysql_query($stmt, $link);
-        $results_to_print = mysql_num_rows($rslt);
-        $i=0;
-        $s=0;
-        while ($results_to_print > $i) {
-            $row=mysql_fetch_row($rslt);
-            $sel="";
-            foreach ($agents as $agent) {
-                if ($row[0] != "" and $row[0] == $agent) {
-                    $sel=" selected";
-                    $s++;
-                }
-            }
-            if ($row[0] != "") $agentOPTS .= "        <option value=\"" . $row[0] . "\"$sel>" . $row[0] . ": " . $row[1] . "</option>\n";
-            $i++;
-        }
-        $sel="";
-        if ($s==0) $sel=" selected";
         echo "    <td align=center>\n";
         echo "      <font color=navy size=2>Agents</font><br>\n";
         echo "      <select name=agents[] size=5 multiple>\n";
-        echo "        <option value=\"\"$sel>-- ALL --</option>\n";
-        echo $agentOPTS;
+        $krh = get_krh($link, 'osdial_users', 'user,full_name');
+        echo format_select_options($krh, 'user', 'full_name', $agents, "-- ALL --");
         echo "      </select>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
@@ -694,31 +614,11 @@ if ($ADD==1122) {
 
         echo "  <tr>\n";
 
-        $stateOPTS="";
-        $stmt = "SELECT state,count(*) FROM osdial_postal_codes WHERE country='USA' GROUP BY state;";
-        $rslt=mysql_query($stmt, $link);
-        $results_to_print = mysql_num_rows($rslt);
-        $i=0;
-        $s=0;
-        while ($results_to_print > $i) {
-            $row=mysql_fetch_row($rslt);
-            $sel="";
-            foreach ($states as $state) {
-                if ($row[0] != "" and $row[0] == $state) {
-                    $sel=" selected";
-                    $s++;
-                }
-            }
-            if ($row[0] != "") $stateOPTS .= "        <option value=\"" . $row[0] . "\"$sel>" . $row[0] . "</option>\n";
-            $i++;
-        }
-        $sel="";
-        if ($s==0) $sel=" selected";
         echo "    <td align=center>\n";
         echo "      <font color=navy size=2>States</font><br>\n";
         echo "      <select name=states[] size=5 multiple>\n";
-        echo "        <option value=\"\"$sel>-- ALL --</option>\n";
-        echo $stateOPTS;
+        $krh = get_krh($link, 'osdial_report_groups', 'group_value,group_label', "", "group_type='states'");
+        echo format_select_options($krh, 'group_value', 'group_value', $states, "-- ALL --");
         echo "      </select>\n";
         echo "    </td>\n";
 
@@ -744,59 +644,19 @@ if ($ADD==1122) {
         echo "      </select>\n";
         echo "    </td>\n";
 
-        $sourceOPTS="";
-        $stmt = "SELECT source_id,count(*) FROM osdial_list GROUP BY source_id;";
-        $rslt=mysql_query($stmt, $link);
-        $results_to_print = mysql_num_rows($rslt);
-        $i=0;
-        $s=0;
-        while ($results_to_print > $i) {
-            $row=mysql_fetch_row($rslt);
-            $sel="";
-            foreach ($sources as $source) {
-                if ($row[0] != "" and $row[0] == $source) {
-                    $sel=" selected";
-                    $s++;
-                }
-            }
-            if ($row[0] != "") $sourceOPTS .= "        <option value=\"" . $row[0] . "\"$sel>" . $row[0] . "</option>\n";
-            $i++;
-        }
-        $sel="";
-        if ($s==0) $sel=" selected";
         echo "    <td align=center>\n";
         echo "      <font color=navy size=2>Sources</font><br>\n";
         echo "      <select name=sources[] size=5 multiple>\n";
-        echo "        <option value=\"\"$sel>-- ALL --</option>\n";
-        echo $sourceOPTS;
+        $krh = get_krh($link, 'osdial_report_groups', 'group_value,group_label', "", "group_type='lead_source_id'", "1000");
+        echo format_select_options($krh, 'group_value', 'group_value', $sources, "-- ALL --");
         echo "      </select>\n";
         echo "    </td>\n";
 
-        $vendor_codeOPTS="";
-        $stmt = "SELECT vendor_lead_code,count(*) FROM osdial_list GROUP BY vendor_lead_code;";
-        $rslt=mysql_query($stmt, $link);
-        $results_to_print = mysql_num_rows($rslt);
-        $i=0;
-        $s=0;
-        while ($results_to_print > $i) {
-            $row=mysql_fetch_row($rslt);
-            $sel="";
-            foreach ($vendor_codes as $vendor_code) {
-                if ($row[0] != "" and $row[0] == $vendor_code) {
-                    $sel=" selected";
-                    $s++;
-                }
-            }
-            if ($row[0] != "") $vendor_codeOPTS .= "        <option value=\"" . $row[0] . "\"$sel>" . $row[0] . "</option>\n";
-            $i++;
-        }
-        $sel="";
-        if ($s==0) $sel=" selected";
         echo "    <td align=center>\n";
         echo "      <font color=navy size=2>Vendor Codes</font><br>\n";
         echo "      <select name=vendor_codes[] size=5 multiple>\n";
-        echo "        <option value=\"\"$sel>-- ALL --</option>\n";
-        echo $vendor_codeOPTS;
+        $krh = get_krh($link, 'osdial_report_groups', 'group_value,group_label', "", "group_type='lead_vendor_lead_code'", "1000");
+        echo format_select_options($krh, 'group_value', 'group_value', $vendor_codes, "-- ALL --");
         echo "      </select>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
@@ -836,15 +696,15 @@ if ($ADD==1122) {
 
 
 
-        $countTBL = " FROM osdial_lists JOIN osdial_list ON (osdial_lists.list_id=osdial_list.list_id)";
-        $searchTBL = " FROM osdial_lists JOIN osdial_list ON (osdial_lists.list_id=osdial_list.list_id) LEFT JOIN osdial_postal_codes ON (osdial_postal_codes.country_code=osdial_list.phone_code AND osdial_postal_codes.postal_code=osdial_list.postal_code) LEFT JOIN osdial_phone_codes ON (osdial_phone_codes.country_code=osdial_list.country_code AND osdial_phone_codes.areacode=left(osdial_list.phone_number,3))";
+        $countTBL = " FROM osdial_list JOIN osdial_lists ON (osdial_lists.list_id=osdial_list.list_id)";
+        $searchTBL = " FROM osdial_list JOIN osdial_lists ON (osdial_lists.list_id=osdial_list.list_id) LEFT JOIN osdial_postal_code_groups ON (osdial_postal_code_groups.country_code=osdial_list.phone_code AND osdial_postal_code_groups.postal_code=osdial_list.postal_code) LEFT JOIN osdial_phone_code_groups ON (osdial_phone_code_groups.country_code=osdial_list.country_code AND osdial_phone_code_groups.areacode=left(osdial_list.phone_number,3))";
 
         #$countSQL  = "SELECT count(*) " . $searchSQL . ";";
         $countSQL = "SELECT count(*)" . $countTBL . $searchWHR . $countWHR . ";";
 
         if ($count==0) {
             #echo "<br>$countSQL";
-            if ($DB) echo "\n\n$countSQL\n\n";
+            if ($DB) echo "\n\n$countSQL\n\n<br>";
             $rslt=mysql_query($countSQL, $link);
             $row=mysql_fetch_row($rslt);
             $searchCount = $row[0];
@@ -860,10 +720,10 @@ if ($ADD==1122) {
 
         $searchDone=1;
         while ($searchDone) {
-            $searchSQL = "SELECT osdial_list.*,osdial_lists.campaign_id" . $searchTBL . $searchWHR . $searchTZWHR . " GROUP BY osdial_list.lead_id ORDER BY " . $sort  . " " . $direction . " LIMIT " . (($page - 1) * $numresults) . ", " . $numresults . ";";
+            $searchSQL = "SELECT STRAIGHT_JOIN osdial_list.*,osdial_lists.campaign_id" . $searchTBL . $searchWHR . $searchTZWHR . " ORDER BY " . $sort  . " " . $direction . " LIMIT " . (($page - 1) * $numresults) . ", " . $numresults . ";";
 
             #echo "<br>$searchSQL<br>";
-            if ($DB) echo "\n\n$searchtSQL\n\n";
+            if ($DB) echo "\n\n$searchSQL\n\n";
             $rslt=mysql_query($searchSQL, $link);
             $results_to_print = mysql_num_rows($rslt);
             if ($page > 1 and $results_to_print == 0) {
