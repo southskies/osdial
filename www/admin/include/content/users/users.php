@@ -694,6 +694,7 @@ echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
 echo "<br><font color=navy> AGENT CALLBACK HOLD LISTINGS: $user</font>\n";
 $oldADD = "ADD=8&user=$user";
 $ADD='82';
+include('/opt/osdial/html/admin/include/content/lists/lists.php');
 }
 
 

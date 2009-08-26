@@ -2901,7 +2901,7 @@ if (eregi("ENDATEDOWN",$stage)) {$SQLorder='order by entry_time desc,';   $LEVEL
 
 echo "<TABLE><TR><TD>\n";
 echo "<center><TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr bgcolor=navy>\n";
+echo "<tr bgcolor=$menubarcolor>\n";
 echo "<td><font size=1 color=white>LEAD</td><td><font size=1 color=white>LIST</td>\n";
 echo "<td><font size=1 color=white> CAMPAIGN</td>\n";
 echo "<td><a href=\"$PHP_SELF?$oldADD&$ENDATElink\"><font size=1 color=white><B>ENTRY DATE</B></a></td>\n";
