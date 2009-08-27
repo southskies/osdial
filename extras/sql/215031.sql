@@ -6,7 +6,7 @@ ALTER TABLE osdial_lists ADD cost FLOAT default '0.00';##|##
 ALTER TABLE osdial_list ADD cost FLOAT default '0.00';##|##
  ##Allow for a cost to be assigned to each lead.;
 
-ALTER TABLE osdial_users ADD manual_dial_new_limit INT(9) default '0';##|##
+ALTER TABLE osdial_users ADD manual_dial_new_limit INT(9) default '-1';##|##
  ##Adds a limit on the number of new leads an agent can take in a day.
  ##    Only applies to MANUAL dials.;
 

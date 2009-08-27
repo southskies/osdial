@@ -721,8 +721,10 @@ if ($group != '') $groupSQL = "AND user_group='$group'";
 $mdn_user = get_variable('mdn_user');
 if ($SUB==1 and $mdn_user != "") {
     $mdn_limit = get_variable('mdn_limit');
-	$stmt="UPDATE osdial_users SET manual_dial_new_limit='$mdn_limit' WHERE user='$mdn_user';";
-	$rslt=mysql_query($stmt, $link);
+    if ($mdn_limit == "" or $mdn_limit < 0)
+        $mdn_limit = -1;
+    $stmt="UPDATE osdial_users SET manual_dial_new_limit='$mdn_limit' WHERE user='$mdn_user';";
+    $rslt=mysql_query($stmt, $link);
 }
 
 $USERlink='stage=USERIDDOWN';
@@ -823,6 +825,8 @@ echo "</tr>";
             $sales_count += $stat['SALE'];
             $contact_count += $stat['CONTACT'];
             $close_pct = 0;
+            if ($row[46] < 0)
+                $row[46] = "";
             if ($stat['CONTACT'] > 0) $close_pct = (($stat['SALE'] / ($stat['CONTACT'] + $stat['SALE'])) * 100);
             echo "  <td align=center><font size=1>$row2[0]</td>";
             echo "  <td><font size=1><input type=hidden name=mdn_user value=$row[1]><input type=text name=mdn_limit size=5 value=$row[46]></td>";
