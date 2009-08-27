@@ -98,6 +98,10 @@ CREATE TABLE osdial_report_groups (
 	(SELECT 'lead_vendor_lead_code' AS group_type,vendor_lead_code AS group_value,vendor_lead_code AS group_label FROM osdial_list WHERE vendor_lead_code!='' GROUP BY vendor_lead_code);##|##
   ## Adding table osdial_report_groups for faster group selection
 
+ALTER TABLE osdial_users ADD manual_dial_allow_skip ENUM('0','1') default '1';##|##
+ ##Add option to turn of skip lead in manual-dial mode.;
+
+
 
 UPDATE system_settings SET version='2.1.5.031';##|##
  ##Updating database to version 2.1.5.031;

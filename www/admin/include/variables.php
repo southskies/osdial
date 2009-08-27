@@ -307,6 +307,7 @@ $login_campaign = get_variable("login_campaign");
 $login_pass = get_variable("login_pass");
 $login_user = get_variable("login_user");
 
+$manual_dial_allow_skip = get_variable("manual_dial_allow_skip");
 $manual_dial_list_id = get_variable("manual_dial_list_id");
 $manual_preview_default = get_variable("manual_preview_default");
 $max_osdial_trunks = get_variable("max_osdial_trunks");

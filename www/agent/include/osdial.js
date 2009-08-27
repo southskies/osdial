@@ -380,6 +380,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 	var submit_method = '<? echo $submit_method ?>';
 
+	var manual_dial_allow_skip = '<? echo $VU_manual_dial_allow_skip ?>';
 
 
 // ################################################################################
@@ -1865,7 +1866,12 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			{
 			reselect_preview_dial = 1;
 			var man_preview = 'YES';
-			var man_status = "&nbsp;&nbsp;&nbsp;&nbsp;<font style='text-decoration: blink;color:<?=$status_intense_color?>;'>Preview the Lead then <a href=\"#\" onclick=\"ManualDialOnly()\"><font class=\"preview_text\" color=<?=$status_preview_color?>>DIAL LEAD</font></a><font style='{text-decoration: blink;color:<?=$status_intense_color?>;'> or </font><a href=\"#\" onclick=\"ManualDialSkip()\"><font class=\"preview_text\" color=<?=$status_preview_color?>>SKIP LEAD</font></a>"; 
+			var man_status = "&nbsp;&nbsp;&nbsp;&nbsp;<font style='text-decoration: blink;color:<?=$status_intense_color?>;'>Preview the Lead then <a href=\"#\" onclick=\"ManualDialOnly()\"><font class=\"preview_text\" color=<?=$status_preview_color?>>DIAL LEAD</font></a><font style='{text-decoration: blink;color:<?=$status_intense_color?>;'>";
+				if (manual_dial_allow_skip == 1) {
+					man_status = man_status + " or </font><a href=\"#\" onclick=\"ManualDialSkip()\"><font class=\"preview_text\" color=<?=$status_preview_color?>>SKIP LEAD</font></a>"; 
+				} else {
+					man_status = man_status + "</font>";
+				}
 			}
 		else
 			{
