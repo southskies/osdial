@@ -623,8 +623,9 @@ sub process_request {
 
 			if ($channel =~ /^Local/)
 			{
-				if ( ($PRI =~ /^PRI$/) && ($callerid =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) && ( ($dialstatus =~ /BUSY/) || ($hangup_cause =~ /^27$|^29$|^34$|^38$/) || ( ($dialstatus =~ /CHANUNAVAIL/) && ($hangup_cause =~ /^1$|^28$/) ) ) )
+				if ( ($PRI =~ /^PRI$/) && ($callerid =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) && ( ($dialstatus =~ /BUSY|CONGESTION/) || ($hangup_cause =~ /^27$|^29$|^34$|^38$/) || ( ($dialstatus =~ /CHANUNAVAIL/) && ($hangup_cause =~ /^1$|^28$/) ) ) )
 				{
+					if ($dialstatus =~ /CONGESTION/) {$VDL_status='CRC'; $VDAC_status = 'BUSY';}
 					if ($dialstatus =~ /BUSY/) {$VDL_status = 'B'; $VDAC_status = 'BUSY';}
 					if ($dialstatus =~ /CHANUNAVAIL/) {$VDL_status = 'DC'; $VDAC_status = 'DISCONNECT';}
 
@@ -642,12 +643,10 @@ sub process_request {
 						$VDL_status = 'CRC'; $VDAC_status = 'BUSY';
 					}
 
-					if ($hangup_cause !~ /^27$|^29$|^34$|^38$/) {
-						$stmtA = "UPDATE osdial_list set status='$VDL_status' where lead_id = '$CIDlead_id';";
-							if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
-						$VDADaffected_rows = $dbhA->do($stmtA);
-						if ($AGILOG) {$agi_string = "--    VDAD osdial_list update: |$VDADaffected_rows|$CIDlead_id";   &agi_output;}
-					}
+					$stmtA = "UPDATE osdial_list set status='$VDL_status' where lead_id = '$CIDlead_id';";
+						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+					$VDADaffected_rows = $dbhA->do($stmtA);
+					if ($AGILOG) {$agi_string = "--    VDAD osdial_list update: |$VDADaffected_rows|$CIDlead_id";   &agi_output;}
 
 					$stmtA = "UPDATE osdial_auto_calls set status='$VDAC_status' where callerid = '$callerid';";
 						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
@@ -657,7 +656,7 @@ sub process_request {
 					#$stmtA = "UPDATE osdial_log set status='$VDL_status' where uniqueid = '$uniqueid';";
 						$Euniqueid=$uniqueid;
 						$Euniqueid =~ s/\.\d+$//gi;
-					$stmtA = "UPDATE osdial_log FORCE INDEX(lead_id) set status='$VDL_status' where lead_id = '$CIDlead_id' and uniqueid LIKE \"$Euniqueid%\";";
+					$stmtA = "UPDATE osdial_log FORCE INDEX(lead_id) set status='$VDL_status' where lead_id = '$CIDlead_id' and uniqueid LIKE '$Euniqueid%';";
 						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 					$VDLaffected_rows = $dbhA->do($stmtA);
 					if ($AGILOG) {$agi_string = "--    VDAD osdial_log update: |$VDLaffected_rows|$uniqueid|$VDACuniqueid|";   &agi_output;}
