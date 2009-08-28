@@ -310,6 +310,15 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 			if(!$Q){print STDERR "\n|$affected_rows osdial_campaign_agents call counts reset|\n";}
 			}
 
+        $stmtA = "delete from osdial_campaign_agent_stats;";
+                if($DB){print STDERR "\n|$stmtA|\n";}
+                if (!$T)
+                        {
+                        $affected_rows = $dbhA->do($stmtA);
+                        if(!$Q){print STDERR "\n|$affected_rows osdial_campaign_agent_stats reset|\n";}
+                        }
+
+
 		$dbhA->disconnect();
 
 
