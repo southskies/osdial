@@ -664,7 +664,7 @@ if ($ACTION == 'manDiaLnextCaLL')
 				$mdn_today =$row[0];
 			}
 			### grab the next lead in the hopper for this campaign and reserve it for the user
-            if ($mdn_limit == 0 or $mdn_today <= $mdn_limit) {
+            if ($mdn_limit < 0 or $mdn_today <= $mdn_limit) {
 			    $stmt = "UPDATE osdial_hopper SET status='QUEUE', user='$user' WHERE campaign_id='$campaign' AND status='READY' ORDER BY hopper_id LIMIT 1";
 			    if ($DB) {echo "$stmt\n";}
 			    $rslt=mysql_query($stmt, $link);
