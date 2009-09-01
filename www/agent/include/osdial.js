@@ -642,7 +642,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				{ 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) 
 					{
-					alert(xmlhttp.responseText);
+					//alert(xmlhttp.responseText);
 
 					if ((taskdialvalue.length > 0) && (tasknowait != 'YES'))
 						{
@@ -4138,15 +4138,19 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 	function DtMf_PreSet_a_DiaL()
 		{
+		ShoWTransferMain("ON");
 		document.osdial_form.conf_dtmf.value = CalL_XC_a_Dtmf;
 		document.osdial_form.xfernumber.value = CalL_XC_a_NuMber;
-		basic_originate_call(CalL_XC_a_NuMber,'NO','YES',session_id,'YES');
+		//basic_originate_call(CalL_XC_a_NuMber,'NO','YES',session_id,'YES');
+		SendManualDial('YES');
 		}
 	function DtMf_PreSet_b_DiaL()
 		{
+		ShoWTransferMain("ON");
 		document.osdial_form.conf_dtmf.value = CalL_XC_b_Dtmf;
 		document.osdial_form.xfernumber.value = CalL_XC_b_NuMber;
-		basic_originate_call(CalL_XC_b_NuMber,'NO','YES',session_id,'YES');
+		//basic_originate_call(CalL_XC_b_NuMber,'NO','YES',session_id,'YES');
+		SendManualDial('YES');
 		}
 
 // ################################################################################
