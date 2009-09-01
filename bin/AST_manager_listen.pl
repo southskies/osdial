@@ -60,6 +60,8 @@
 # 71129-2004 - Fixed SQL error
 #
 
+$|++;
+
 # constants
 $DB=1;  # Debug flag, set to 0 for no debug messages, lots of output
 $US='__';
@@ -279,7 +281,7 @@ while($one_day_interval > 0)
 
 			if($DB){print "input buffer: $input_buf_length     lines: $#input_lines     partial: $partial\n";}
 			if ( ($DB) && ($partial) ) {print "-----[$partial_input_buf]-----\n\n";}
-			if($DB){print "|$input_buf|\n";}
+			#if($DB){print "|$input_buf|\n";}
 			
 			$manager_string = "$input_buf";
 				&manager_output_logger;
@@ -289,307 +291,128 @@ while($one_day_interval > 0)
 
 			@command_line=@MT;
 			$ILcount=0;
-			foreach(@input_lines)
-				{
-				##### look for special osdial conference call event #####
-				if ( ($input_lines[$ILcount] =~ /CallerIDName: DCagcW/) && ($input_lines[$ILcount] =~ /Event: Dial|State: Up/) )
-					{
-					### BEGIN 1.2.X tree versions
-					$input_lines[$ILcount] =~ s/^\n|^\n\n//gi;
-					@command_line=split(/\n/, $input_lines[$ILcount]);
+			foreach(@input_lines) {
+				$input_lines[$ILcount] =~ s/^\n|^\n\n//gi;
+				@command_line=split(/\n/, $input_lines[$ILcount]);
+				my %ame;
+				foreach my $line (@command_line) {
+					if ($line =~ /: /) {
+						my ($clkey, $clval) = split(/: /,$line);
+						$clkey = lc($clkey);
 
-					if ($input_lines[$ILcount] =~ /Event: Dial/)
-						{
-						if ($command_line[3] =~ /Destination: /i)
-							{
-							$channel = $command_line[3];
-							$channel =~ s/Destination: |\s*$//gi;
-							$callid = $command_line[5];
-							$callid =~ s/CallerIDName: |\s*$//gi;
-							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
-							$uniqueid = $command_line[6];
-							$uniqueid =~ s/SrcUniqueID: |\s*$//gi;
-							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
-							if ($channel !~ /local/i)
-								{
-								print STDERR "|$stmtA|\n";
-								my $affected_rows = $dbhA->do($stmtA);
-								if($DB){print "|$affected_rows Conference DIALs updated|\n";}
-								}
-							}
+						if ($clkey eq "desination") {
+							$clval =~ s/\s*$//g;
+						} elsif ($clkey =~ /^callerid/) {
+							$clval =~ s/\s*$//g;
+							$clval =~ s/^\"//g;
+							$clval =~ s/\".*$//g;
 						}
-					if ($input_lines[$ILcount] =~ /State: Up/)
-						{
-						if ($command_line[2] =~ /Channel: /i)
-							{
-							$channel = $command_line[2];
-							$channel =~ s/Channel: |\s*$//gi;
-							$callid = $command_line[5];
-							$callid =~ s/CallerIDName: |\s*$//gi;
-							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
-							$uniqueid = $command_line[6];
-							$uniqueid =~ s/SrcUniqueID: |\s*$//gi;
-							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid' and status='SENT';";
-							print STDERR "|$stmtA|\n";
-							my $affected_rows = $dbhA->do($stmtA);
-							if($DB){print "|$affected_rows Conference DIALs updated|\n";}
-							}
-						}
-					### END 1.2.X tree versions
-
+						$ame{$clkey} = $clval;
 					}
+				}
+				#Asterisk 1.4 / 1.6 event key conversion
+				$ame{'callerid'} = $ame{'calleridnum'} if ($ame{'calleridnum'});
+				$ame{'state'} = $ame{'channelstatedesc'} if ($ame{'channelstatedesc'});
+				$ame{'srcuniqueid'} = $ame{'uniqueid'} if ($ame{'uniqueid'});
+
+				if ($DB) {
+					foreach my $clkey (keys %ame) {
+						print $clkey .":" . $ame{$clkey} . "\n";
+					}
+					print "\n";
+				}
+
+
+				##### look for special osdial conference call event #####
+				if ( ($ame{'event'} =~ /Dial/i || $ame{'state'} =~ /Up/i) && ($ame{'calleridname'} =~ /DCagcW/) ) {
+					if ($ame{'event'} =~ /Dial/i) {
+						if ($ame{'destination'} ne "") {
+							$channel = $ame{'destination'};
+							$callid = $ame{'calleridname'};
+							$uniqueid = $ame{'srcuniqueid'};
+							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+							if ($channel !~ /local/i) {
+								my $affected_rows = $dbhA->do($stmtA);
+								if($DB){print "|$affected_rows Conference DIALs updated|$stmtA\n|";}
+							}
+						}
+					}
+					if ($ame{'state'} =~ /^Up/i) {
+						if ($ame{'channel'} ne "") {
+							$channel = $ame{'channel'};
+							$callid = $ame{'calleridname'};
+							$uniqueid = $ame{'srcuniqueid'};
+							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid' and status='SENT';";
+							my $affected_rows = $dbhA->do($stmtA);
+							if($DB){print "|$affected_rows Conference DIALs updated|$stmtA|\n";}
+						}
+					}
+				}
 
 				##### parse through all other important events #####
-				if ( ($input_lines[$ILcount] =~ /State: Ringing|State: Up|State: Dialing|Event: Newstate|Event: Hangup|Event: Newcallerid|Event: Shutdown/) && ($input_lines[$ILcount] !~ /ZOMBIE/) )
-					{
-					$input_lines[$ILcount] =~ s/^\n|^\n\n//gi;
-					@command_line=split(/\n/, $input_lines[$ILcount]);
-					if ($input_lines[$ILcount] =~ /Event: Shutdown/)
-						{
+				if ( ($ame{'state'} =~ /Ringing|Up|Dialing/i || $ame{'event'} =~ /Newstate|Hangup|NewCallerid|Shutdown/i) && ($input_lines[$ILcount] !~ /ZOMBIE/) ) {
+					if ($ame{'event'} =~ /Shutdown/i) {
 						$endless_loop=0;
 						$one_day_interval=0;
 						print "\nAsterisk server shutting down, PROCESS KILLED... EXITING\n\n";
 							$event_string="Asterisk server shutting down, PROCESS KILLED... EXITING|ONE DAY INTERVAL:$one_day_interval|";
 						&event_logger;
-						}
+					}
 
-					if ($input_lines[$ILcount] =~ /Event: Hangup/)
-						{
-						if ( ($command_line[2] =~ /^Channel: /i) && ($command_line[3] =~ /^Uniqueid: /i) ) ### post 2005-08-07 CVS -- added Privilege line
-							{
-							$channel = $command_line[2];
-							$channel =~ s/Channel: |\s*$//gi;
-							$uniqueid = $command_line[3];
-							$uniqueid =~ s/Uniqueid: |\s*$//gi;
+					if ($ame{'event'} =~ /Hangup/i) {
+						if ( ($ame{'channel'} ne "") && ($ame{'uniqueid'} ne "") ) {
+							$channel = $ame{'channel'};
+							$uniqueid = $ame{'uniqueid'};
 							$stmtA = "UPDATE osdial_manager set status='DEAD', channel='$channel' where server_ip = '$server_ip' and uniqueid = '$uniqueid' and callerid NOT LIKE \"DCagcW%\";";
 
-							print STDERR "|$stmtA|\n";
 							my $affected_rows = $dbhA->do($stmtA);
 						   
-							if($DB){print "|$affected_rows HANGUPS updated|\n";}
-							}
-						else
-							{
-							if ( ($command_line[3] =~ /^Channel: /i) && ($command_line[4] =~ /^Uniqueid: /i) ) ### post 2006-03-20 SVN -- Added Timestamp line
-								{
-								$channel = $command_line[3];
-								$channel =~ s/Channel: |\s*$//gi;
-								$uniqueid = $command_line[4];
-								$uniqueid =~ s/Uniqueid: |\s*$//gi;
-								$stmtA = "UPDATE osdial_manager set status='DEAD', channel='$channel' where server_ip = '$server_ip' and uniqueid = '$uniqueid' and callerid NOT LIKE \"DCagcW%\";";
-
-								print STDERR "|$stmtA|\n";
-							    my $affected_rows = $dbhA->do($stmtA);
-								if($DB){print "|$affected_rows HANGUPS updated|\n";}
-								}
-							else
-								{
-								$channel = $command_line[1];
-								$channel =~ s/Channel: |\s*$//gi;
-								$uniqueid = $command_line[2];
-								$uniqueid =~ s/Uniqueid: |\s*$//gi;
-								$stmtA = "UPDATE osdial_manager set status='DEAD', channel='$channel' where server_ip = '$server_ip' and uniqueid = '$uniqueid' and callerid NOT LIKE \"DCagcW%\";";
-
-								print STDERR "|$stmtA|\n";
-							    my $affected_rows = $dbhA->do($stmtA);
-								if($DB){print "|$affected_rows HANGUPS updated|\n";}
-								}
-							}
+							if($DB){print "|$affected_rows HANGUPS updated|$stmtA|\n";}
 						}
-		
-					if ($input_lines[$ILcount] =~ /State: Dialing/)
-						{
-						if ( ($command_line[1] =~ /^Channel: /i) && ($command_line[4] =~ /^Uniqueid: /i) ) ### pre 2004-10-07 CVS
-							{
-							$channel = $command_line[1];
-							$channel =~ s/Channel: |\s*$//gi;
-							$callid = $command_line[3];
-							$callid =~ s/Callerid: |\s*$//gi;
-							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
-							$uniqueid = $command_line[4];
-							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE osdial_manager set status='SENT', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
-							print STDERR "|$stmtA|\n";
-						    my $affected_rows = $dbhA->do($stmtA);
-							
-						    if($DB){print "|$affected_rows DIALINGs updated|\n";}
-							}
-						if ( ($command_line[1] =~ /^Channel: /i) && ($command_line[4] =~ /^CalleridName: /i) ) ### post 2004-10-07 CVS
-							{
-							$channel = $command_line[1];
-							$channel =~ s/Channel: |\s*$//gi;
-							$callid = $command_line[4];
-							$callid =~ s/CalleridName: |\s*$//gi;
-							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
-							$uniqueid = $command_line[5];
-							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE osdial_manager set status='SENT', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
-							print STDERR "|$stmtA|\n";
-						    my $affected_rows = $dbhA->do($stmtA);
-							if($DB){print "|$affected_rows DIALINGs updated|\n";}
-							}
-						if ( ($command_line[2] =~ /^Channel: /i) && ($command_line[5] =~ /^CalleridName: /i) ) ### post 2005-08-07 CVS
-							{
-							$channel = $command_line[2];
-							$channel =~ s/Channel: |\s*$//gi;
-							$callid = $command_line[5];
-							$callid =~ s/CalleridName: |\s*$//gi;
-							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
-							$uniqueid = $command_line[6];
-							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE osdial_manager set status='SENT', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
-							print STDERR "|$stmtA|\n";
-						    my $affected_rows = $dbhA->do($stmtA);
-							if($DB){print "|$affected_rows DIALINGs updated|\n";}
-							}
-						if ( ($command_line[3] =~ /^Channel: /i) && ($command_line[6] =~ /^CalleridName: /i) ) ### post 2006-03-20 -- Added Timestamp line
-							{
-							$channel = $command_line[3];
-							$channel =~ s/Channel: |\s*$//gi;
-							$callid = $command_line[6];
-							$callid =~ s/CalleridName: |\s*$//gi;
-							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
-							$uniqueid = $command_line[7];
-							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE osdial_manager set status='SENT', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
-							print STDERR "|$stmtA|\n";
-						    my $affected_rows = $dbhA->do($stmtA);
-							if($DB){print "|$affected_rows DIALINGs updated|\n";}
-							}
-						}
-					if ($input_lines[$ILcount] =~ /State: Ringing|State: Up/)
-						{
-						if ( ($command_line[1] =~ /^Channel: /i) && ($command_line[4] =~ /^Uniqueid: /i) ) ### pre 2004-10-07 CVS
-							{
-							$channel = $command_line[1];
-							$channel =~ s/Channel: |\s*$//gi;
-							$callid = $command_line[3];
-							$callid =~ s/Callerid: |\s*$//gi;
-							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
-							$uniqueid = $command_line[4];
-							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
-							if ($channel !~ /local/i)
-								{
-								print STDERR "|$stmtA|\n";
-								my $affected_rows = $dbhA->do($stmtA);
-								if($DB){print "|$affected_rows RINGINGs updated|\n";}
-								}
-							}
-						if ( ($command_line[1] =~ /^Channel: /i) && ($command_line[4] =~ /^CalleridName: /i) ) ### post 2004-10-07 CVS
-							{
-							$channel = $command_line[1];
-							$channel =~ s/Channel: |\s*$//gi;
-							$callid = $command_line[4];
-							$callid =~ s/CalleridName: |\s*$//gi;
-							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
-							$uniqueid = $command_line[5];
-							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
-							if ($channel !~ /local/i)
-								{
-								print STDERR "|$stmtA|\n";
-								my $affected_rows = $dbhA->do($stmtA);
-								if($DB){print "|$affected_rows RINGINGs updated|\n";}
-								}
-							}
-						if ( ($command_line[2] =~ /^Channel: /i) && ($command_line[5] =~ /^CalleridName: /i) ) ### post 2005-08-07 CVS
-							{
-							$channel = $command_line[2];
-							$channel =~ s/Channel: |\s*$//gi;
-							$callid = $command_line[5];
-							$callid =~ s/CalleridName: |\s*$//gi;
-							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
-							$uniqueid = $command_line[6];
-							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
-							if ($channel !~ /local/i)
-								{
-								print STDERR "|$stmtA|\n";
-								my $affected_rows = $dbhA->do($stmtA);
-								if($DB){print "|$affected_rows RINGINGs updated|\n";}
-								}
-							}
-						if ( ($command_line[3] =~ /^Channel: /i) && ($command_line[6] =~ /^CalleridName: /i) ) ### post 2006-03-20 SVN -- Added Timestamp line
-							{
-							$channel = $command_line[3];
-							$channel =~ s/Channel: |\s*$//gi;
-							$callid = $command_line[6];
-							$callid =~ s/CalleridName: |\s*$//gi;
-							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
-							$uniqueid = $command_line[7];
-							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
-							if ($channel !~ /local/i)
-								{
-								print STDERR "|$stmtA|\n";
-								my $affected_rows = $dbhA->do($stmtA);
-								if($DB){print "|$affected_rows RINGINGs updated|\n";}
-								}
-							}
-						}
-		
-					if ($input_lines[$ILcount] =~ /Event: Newcallerid/)
-						{
-						if ( ($command_line[1] =~ /^Channel: /i) && ($command_line[3] =~ /^Uniqueid: /i) ) 
-							{
-							$channel = $command_line[1];
-							$channel =~ s/Channel: |\s*$//gi;
-							$callid = $command_line[2];
-							$callid =~ s/Callerid: |\s*$//gi;
-							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
-							$uniqueid = $command_line[3];
-							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
-							if ($channel =~ /local/i)
-								{
-								print STDERR "|$stmtA|\n";
-								my $affected_rows = $dbhA->do($stmtA);
-								if($DB){print "|$affected_rows RINGINGs updated|\n";}
-								}
-							}
-						if ( ($command_line[3] =~ /^Channel: /i) && ($command_line[6] =~ /^Uniqueid: /i) ) ### post 2006-03-20 SVN -- Added Timestamp line
-							{
-							$channel = $command_line[3];
-							$channel =~ s/Channel: |\s*$//gi;
-							$callid = $command_line[5];
-							$callid =~ s/Callerid: |\s*$//gi;
-					#		$callid =~ s/CallerIDName: |\s*$//gi;
-							   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
-							$uniqueid = $command_line[6];
-							$uniqueid =~ s/Uniqueid: |\s*$//gi;
-							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
-							if ($channel =~ /local/i)
-								{
-								print STDERR "|$stmtA|\n";
-								my $affected_rows = $dbhA->do($stmtA);
-								if($DB){print "|$affected_rows RINGINGs updated|\n";}
-								}
-							}
-					#	if ( ($command_line[2] =~ /^Channel: /i) && ($command_line[5] =~ /^Uniqueid: /i) ) ### post 2006-06-21 SVN -- Changed from CallerID to CallerIDName
-					#		{
-					#		$channel = $command_line[2];
-					#		$channel =~ s/Channel: |\s*$//gi;
-					#		$callid = $command_line[4];
-					#		$callid =~ s/CallerIDName: |\s*$//gi;
-					#		   $callid =~ s/^\"//gi;   $callid =~ s/\".*$//gi;
-					#		$uniqueid = $command_line[5];
-					#		$uniqueid =~ s/Uniqueid: |\s*$//gi;
-					#		$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
-					#		if ($channel =~ /local/i)
-					#			{
-					#			print STDERR "|$stmtA|\n";
-					#			my $affected_rows = $dbhA->do($stmtA);
-					#			if($DB){print "|$affected_rows RINGINGs updated|\n";}
-					#			}
-					#		}
-						}
-		
 					}
-				$ILcount++;
-				}
 
+					if ($ame{'state'} =~ /Dialing/i) {
+						if ( ($ame{'channel'} ne "") && ($ame{'uniqueid'} ne "") ) {
+							$channel = $ame{'channel'};
+							$callid = $ame{'callerid'};
+							$callid = $ame{'calleridname'} if ($ame{'calleridname'} ne "");
+							$uniqueid = $ame{'uniqueid'};
+							$stmtA = "UPDATE osdial_manager set status='SENT', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+							my $affected_rows = $dbhA->do($stmtA);
+							
+							if($DB){print "|$affected_rows DIALINGs updated|$stmtA|\n";}
+						}
+					}
+					if ($ame{'state'} =~ /Ringing|Up/i) {
+						if ( ($ame{'channel'} ne "") && ($ame{'uniqueid'} ne "") ) {
+							$channel = $ame{'channel'};
+							$callid = $ame{'callerid'};
+							$callid = $ame{'calleridname'} if ($ame{'calleridname'} ne "");
+							$uniqueid = $ame{'uniqueid'};
+							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+							if ($channel !~ /local/i) {
+								my $affected_rows = $dbhA->do($stmtA);
+								if($DB){print "|$affected_rows RINGINGs updated|$stmtA|\n";}
+							}
+						}
+					}
+		
+					if ($ame{'event'} =~ /NewCallerid/i) {
+						if ( ($ame{'channel'} ne "") && ($ame{'uniqueid'} ne "") ) {
+							$channel = $ame{'channel'};
+							$callid = $ame{'callerid'};
+							$callid = $ame{'calleridname'} if ($ame{'calleridname'} ne "");
+							$uniqueid = $ame{'uniqueid'};
+							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+							my $affected_rows = $dbhA->do($stmtA);
+							if($DB){print "|$affected_rows RINGINGs updated|$stmtA|\n";}
+						}
+					}
+				}
+				$ILcount++;
 			}
+
+		}
 
 
 	$endless_loop--;
