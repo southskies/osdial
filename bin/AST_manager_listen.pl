@@ -237,6 +237,9 @@ while($one_day_interval > 0)
 
 	while($endless_loop > 0)
 	{
+                $tn->print("Action:\n");
+                $tn->print("Action: Ping\n\n") if ($endless_loop % 10 == 0);
+
 		### sleep for 10 hundredths of a second
 		usleep(1*100*1000);
 
@@ -279,7 +282,7 @@ while($one_day_interval > 0)
 			$input_buf = "$input_buf$read_input_buf";
 			@input_lines = split(/\n\n/, $input_buf);
 
-			if($DB){print "input buffer: $input_buf_length     lines: $#input_lines     partial: $partial\n";}
+			#if($DB){print "input buffer: $input_buf_length     lines: $#input_lines     partial: $partial\n";}
 			if ( ($DB) && ($partial) ) {print "-----[$partial_input_buf]-----\n\n";}
 			#if($DB){print "|$input_buf|\n";}
 			
