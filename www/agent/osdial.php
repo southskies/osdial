@@ -2029,6 +2029,8 @@ foreach ($forms as $form) {
 			echo "<a href=\"#\" onclick=\"DtMf_PreSet_a_DiaL();return false;\"><font class=\"body_tiny\">D1 - DIAL</font></a>\n";
 			echo "<BR>\n";
 			echo "<a href=\"#\" onclick=\"DtMf_PreSet_b_DiaL();return false;\"><font class=\"body_tiny\">D2 - DIAL</font></a>\n";
+			echo "<BR>\n";
+            echo "<span id=\"DialBlindVMail2\"><IMG SRC=\"templates/$agent_template/images/vdc_XB_ammessage_OFF.gif\" border=0 alt=\"Blind Transfer VMail Message\">\n";
 		} else {
 			echo "<BR>\n";
 		}

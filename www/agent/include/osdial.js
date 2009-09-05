@@ -1305,7 +1305,14 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			document.osdial_form.callserverip.value = '';
 			if( document.images ) { document.images['livecall'].src = image_livecall_OFF.src;}
 		//	alert(RedirecTxFEr + "|" + auto_dial_level);
-			dialedcall_send_hangup();
+                        if (taskvar == 'XfeRVMAIL') {
+                                document.osdial_form.DispoSelection.value = 'AL';
+                                dialedcall_send_hangup('NO');
+                                DispoSelect_submit();
+                        } else {
+                                dialedcall_send_hangup();
+                        }
+
 			}
 
 		}
@@ -1803,6 +1810,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 								document.getElementById("DialBlindTransfer").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRBLIND','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_XB_blindtransfer.gif\" border=0 alt=\"Dial Blind Transfer\"></a>";
 
 								document.getElementById("DialBlindVMail").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_XB_ammessage.gif\" border=0 alt=\"Blind Transfer VMail Message\"></a>";
+								document.getElementById("DialBlindVMail2").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_XB_ammessage.gif\" border=0 alt=\"Blind Transfer VMail Message\"></a>";
 
 								document.getElementById("VolumeUpSpan").innerHTML = "<a href=\"#\" onclick=\"volume_control('UP','" + MDchannel + "','');return false;\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_volume_up.gif\" BORDER=0></a>";
 								document.getElementById("VolumeDownSpan").innerHTML = "<a href=\"#\" onclick=\"volume_control('DOWN','" + MDchannel + "','');return false;\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_volume_down.gif\" BORDER=0></a>";
@@ -2812,6 +2820,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							document.getElementById("DialBlindTransfer").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRBLIND','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_XB_blindtransfer.gif\" border=0 alt=\"Dial Blind Transfer\"></a>";
 
 							document.getElementById("DialBlindVMail").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_XB_ammessage.gif\" border=0 alt=\"Blind Transfer VMail Message\"></a>";
+							document.getElementById("DialBlindVMail2").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_XB_ammessage.gif\" border=0 alt=\"Blind Transfer VMail Message\"></a>";
 		
 							if (lastcustserverip == server_ip)
 							{
@@ -3514,6 +3523,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			document.getElementById("LocalCloser").innerHTML = "<IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_XB_localcloser_OFF.gif\" border=0 alt=\"LOCAL CLOSER\">";
 			document.getElementById("DialBlindTransfer").innerHTML = "<IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_XB_blindtransfer_OFF.gif\" border=0 alt=\"Dial Blind Transfer\">";
 			document.getElementById("DialBlindVMail").innerHTML = "<IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_XB_ammessage_OFF.gif\" border=0 alt=\"Blind Transfer VMail Message\">";
+			document.getElementById("DialBlindVMail2").innerHTML = "<IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_XB_ammessage_OFF.gif\" border=0 alt=\"Blind Transfer VMail Message\">";
 			document.getElementById("VolumeUpSpan").innerHTML = "<IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_volume_up_off.gif\" BORDER=0>";
 			document.getElementById("VolumeDownSpan").innerHTML = "<IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_volume_down_off.gif\" BORDER=0>";
 			document.getElementById("RepullControl").innerHTML = "";
