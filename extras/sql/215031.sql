@@ -63,7 +63,7 @@ CREATE INDEX last_name ON osdial_list (last_name(3));##|##
 
 
 ######################################################
-08-19-2009
+# 08-19-2009
 
 CREATE TABLE osdial_postal_code_groups (
 	country_code SMALLINT(5) UNSIGNED,
