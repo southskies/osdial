@@ -851,7 +851,13 @@ if (!$telnet_port) {$telnet_port = '5038';}
 					} else {
 						$extension =~ s/\|.*//gi;
 					}
-					$QRYchannel = "$channel$US$extension";
+					
+					
+					if ($extension eq "agi") {
+						$QRYchannel = "$channel$US";
+					} else {
+						$QRYchannel = "$channel$US$extension";
+					}
 
 					if( ($DB) or ($UD_bad_grab) ){print "channel:   |$channel|\n";}
 					if( ($DB) or ($UD_bad_grab) ){print "extension: |$extension|\n";}
@@ -905,7 +911,11 @@ if (!$telnet_port) {$telnet_port = '5038';}
 
 						if ( (!$channel_in_DB) && (length($QRYchannel)>3) )
 							{
-							$stmtA = "INSERT INTO $live_channels (channel,server_ip,extension,channel_data) values('$channel','$server_ip','$extension','$channel_data')";
+							if ($extension eq "agi") {
+								$stmtA = "INSERT INTO $live_channels (channel,server_ip,channel_data) values('$channel','$server_ip','$channel_data')";
+							} else {
+								$stmtA = "INSERT INTO $live_channels (channel,server_ip,extension,channel_data) values('$channel','$server_ip','$extension','$channel_data')";
+							}
 								if( ($DB) or ($UD_bad_grab) ){print STDERR "\n|$stmtA|\n";}
 							$affected_rows = $dbhA->do($stmtA) or die  "Couldn't execute query: |$stmtA|\n";
 							}
