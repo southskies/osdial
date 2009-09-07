@@ -40,13 +40,18 @@ echo "<div class=\"footer\">\n";
 echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "	<tr><td align=\"left\" colspan=\"4\" height=\"1\" bgcolor=\"#999999\"></td></tr>\n";
 echo "	<tr bgcolor=\"$footer_color\">\n";
-echo "		<td height=\"15\" align=\"left\" width=\"33%\"><font size=\"0\" color=\"#1A4349\">&nbsp;&nbsp;Copyright &#169; 2009 Call Center Service Group, LC<!-- Script Runtime: $RUNtime sec --></td>\n";
+if (ereg("^Sli",$system_settings['admin_template'])) {
+    echo "		<td height=\"15\" align=\"left\" width=\"33%\"><font size=\"0\" color=\"#1A4349\">&nbsp;&nbsp;Copyright &#169; 2009 Call Center Service Group, LC<!-- Script Runtime: $RUNtime sec --></td>\n";
 #
 # NOTICE:
 # Removal or modification of the following line constitutes a breach of License and doing so may result in legal action.
-echo "    	<td align=\"center\" width=\"33%\"><a style=\"color:$footer_color;\" href=\"http://www.osdial.com\" target=\"_blank\"><img src=\"templates/" . $system_settings['admin_template'] . "/images/dlfoot.png\" height=\"9\" width=\"120\"></a></td>";
+    echo "    	<td align=\"center\" width=\"33%\"><a style=\"color:$footer_color;\" href=\"http://www.osdial.com\" target=\"_blank\"><img src=\"templates/" . $system_settings['admin_template'] . "/images/dlfoot.png\" height=\"9\" width=\"120\"></a></td>";
 #
 #
+} else {
+    echo "      <td width=\"33%\">&nbsp;</td>\n";
+    echo "      <td width=\"33%\">&nbsp;</td>\n";
+}
 
 # Update Check
 $stmt="select count(*) FROM system_settings where DATE(last_update_check)=DATE(NOW());";

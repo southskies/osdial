@@ -230,12 +230,12 @@ if ($ADD==31111111111)		{$hh='admin';	$sh='phones';	$title = "MODIFY PHONE";}
 if ($ADD==100000000000)		{$hh='admin';	$sh='server';	$title = "SERVER LIST";}
 if ($ADD==111111111111)		{$hh='admin';	$sh='server';	$title = "ADD NEW SERVER";}
 if ($ADD==211111111111)		{$hh='admin';	$sh='server';	$title = "ADDING NEW SERVER";}
-if ($ADD==221111111111)		{$hh='admin';	$sh='server';	$title = "ADDING NEW SERVER OSDial TRUNK RECORD";}
+if ($ADD==221111111111)		{$hh='admin';	$sh='server';	$title = "ADDING NEW SERVER $t1 TRUNK RECORD";}
 if ($ADD==411111111111)		{$hh='admin';	$sh='server';	$title = "MODIFY SERVER";}
-if ($ADD==421111111111)		{$hh='admin';	$sh='server';	$title = "MODIFY SERVER OSDial TRUNK RECORD";}
+if ($ADD==421111111111)		{$hh='admin';	$sh='server';	$title = "MODIFY SERVER $t1 TRUNK RECORD";}
 if ($ADD==511111111111)		{$hh='admin';	$sh='server';	$title = "DELETE SERVER";}
 if ($ADD==611111111111)		{$hh='admin';	$sh='server';	$title = "DELETE SERVER";}
-if ($ADD==621111111111)		{$hh='admin';	$sh='server';	$title = "DELETE SERVER OSDial TRUNK RECORD";}
+if ($ADD==621111111111)		{$hh='admin';	$sh='server';	$title = "DELETE SERVER $t1 TRUNK RECORD";}
 if ($ADD==311111111111)		{$hh='admin';	$sh='server';	$title = "MODIFY SERVER";}
 if ($ADD==499111111111111)	{$hh='admin';	$sh='server';	$title = "MODIFY ARCHIVE SERVER SETTINGS";}
 if ($ADD==499211111111111)	{$hh='admin';	$sh='server';	$title = "MODIFY QC SERVER SETTINGS";}
@@ -253,25 +253,25 @@ if ($ADD==4111111111111)	{$hh='admin';	$sh='conference';	$title = "MODIFY CONFER
 if ($ADD==5111111111111)	{$hh='admin';	$sh='conference';	$title = "DELETE CONFERENCE";}
 if ($ADD==6111111111111)	{$hh='admin';	$sh='conference';	$title = "DELETE CONFERENCE";}
 if ($ADD==3111111111111)	{$hh='admin';	$sh='conference';	$title = "MODIFY CONFERENCE";}
-if ($ADD==10000000000000)	{$hh='admin';	$sh='conference';	$title = "OSDial CONFERENCE LIST";}
-if ($ADD==11111111111111)	{$hh='admin';	$sh='conference';	$title = "ADD NEW OSDial CONFERENCE";}
-if ($ADD==21111111111111)	{$hh='admin';	$sh='conference';	$title = "ADDING NEW OSDial CONFERENCE";}
-if ($ADD==41111111111111)	{$hh='admin';	$sh='conference';	$title = "MODIFY OSDial CONFERENCE";}
-if ($ADD==51111111111111)	{$hh='admin';	$sh='conference';	$title = "DELETE OSDial CONFERENCE";}
-if ($ADD==61111111111111)	{$hh='admin';	$sh='conference';	$title = "DELETE OSDial CONFERENCE";}
-if ($ADD==31111111111111)	{$hh='admin';	$sh='conference';	$title = "MODIFY OSDial CONFERENCE";}
+if ($ADD==10000000000000)	{$hh='admin';	$sh='conference';	$title = "$t1 CONFERENCE LIST";}
+if ($ADD==11111111111111)	{$hh='admin';	$sh='conference';	$title = "ADD NEW $t1 CONFERENCE";}
+if ($ADD==21111111111111)	{$hh='admin';	$sh='conference';	$title = "ADDING NEW $t1 CONFERENCE";}
+if ($ADD==41111111111111)	{$hh='admin';	$sh='conference';	$title = "MODIFY $t1 CONFERENCE";}
+if ($ADD==51111111111111)	{$hh='admin';	$sh='conference';	$title = "DELETE $t1 CONFERENCE";}
+if ($ADD==61111111111111)	{$hh='admin';	$sh='conference';	$title = "DELETE $t1 CONFERENCE";}
+if ($ADD==31111111111111)	{$hh='admin';	$sh='conference';	$title = "MODIFY $t1 CONFERENCE";}
 
 # Admin - settings
-if ($ADD==411111111111111)	{$hh='admin';	$sh='settings';	$title = "MODIFY OSDial SYSTEM SETTINGS";}
-if ($ADD==311111111111111)	{$hh='admin';	$sh='settings';	$title = "MODIFY OSDial SYSTEM SETTINGS";}
+if ($ADD==411111111111111)	{$hh='admin';	$sh='settings';	$title = "MODIFY $t1 SYSTEM SETTINGS";}
+if ($ADD==311111111111111)	{$hh='admin';	$sh='settings';	$title = "MODIFY $t1 SYSTEM SETTINGS";}
 
 # admin - status
-if ($ADD==221111111111111)	{$hh='admin';	$sh='status';	$title = "ADDING OSDial SYSTEM STATUSES";}
-if ($ADD==231111111111111)	{$hh='admin';	$sh='status';	$title = "ADDING OSDial STATUS CATEGORY";}
-if ($ADD==421111111111111)	{$hh='admin';	$sh='status';	$title = "MODIFY OSDial SYSTEM STATUSES";}
-if ($ADD==431111111111111)	{$hh='admin';	$sh='status';	$title = "MODIFY OSDial STATUS CATEGORIES";}
-if ($ADD==321111111111111)	{$hh='admin';	$sh='status';	$title = "MODIFY OSDial SYSTEM STATUSES";}
-if ($ADD==331111111111111)	{$hh='admin';	$sh='status';	$title = "MODIFY OSDial STATUS CATEGORY";}
+if ($ADD==221111111111111)	{$hh='admin';	$sh='status';	$title = "ADDING $t1 SYSTEM STATUSES";}
+if ($ADD==231111111111111)	{$hh='admin';	$sh='status';	$title = "ADDING $t1 STATUS CATEGORY";}
+if ($ADD==421111111111111)	{$hh='admin';	$sh='status';	$title = "MODIFY $t1 SYSTEM STATUSES";}
+if ($ADD==431111111111111)	{$hh='admin';	$sh='status';	$title = "MODIFY $t1 STATUS CATEGORIES";}
+if ($ADD==321111111111111)	{$hh='admin';	$sh='status';	$title = "MODIFY $t1 SYSTEM STATUSES";}
+if ($ADD==331111111111111)	{$hh='admin';	$sh='status';	$title = "MODIFY $t1 STATUS CATEGORY";}
 
 # Reports
 if ($ADD==99999)		{$hh='reports';		$title = "HELP";}

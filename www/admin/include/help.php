@@ -42,40 +42,40 @@ echo "<html>\n";
 echo "<head>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n";
 echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $systems_settings['admin_template'] . "/styles.css\" media=\"screen\">\n";
-echo "<title>OSDial Administrator: REPORTS</title>\n";
+echo "<title>$t1 Administrator: REPORTS</title>\n";
 echo "</head>\n";
 echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";
 echo "<CENTER>\n";
 echo "<TABLE frame=box WIDTH=98% BGCOLOR=#AFCFD7 cellpadding=2 cellspacing=0>";
-echo "<TR><TD ALIGN=center><font FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=4><B>OSDial Help</B></FONT></td>";
+echo "<TR><TD ALIGN=center><font FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=4><B>$t1 Help</B></FONT></td>";
 echo "</tr>";
 echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 
 ?>
-<B><FONT SIZE=3>OSDial_Users Table</FONT></B><BR><BR>
+<B><FONT SIZE=3><?=$t1?>_Users Table</FONT></B><BR><BR>
 <A NAME="osdial_users-user">
 <BR>
-<B>Agent ID -</B> This field is where you put the OSDial agents ID number, can be up to 8 digits in length, Must be at least 2 characters in length.
+<B>Agent ID -</B> This field is where you put the <?=$t1?> agents ID number, can be up to 8 digits in length, Must be at least 2 characters in length.
 
 <BR>
 <A NAME="osdial_users-pass">
 <BR>
-<B>Password -</B> This field is where you put the OSDial agents password. Must be at least 2 characters in length.
+<B>Password -</B> This field is where you put the <?=$t1?> agents password. Must be at least 2 characters in length.
 
 <BR>
 <A NAME="osdial_users-full_name">
 <BR>
-<B>Full Name -</B> This field is where you put the OSDial agents full name. Must be at least 2 characters in length.
+<B>Full Name -</B> This field is where you put the <?=$t1?> agents full name. Must be at least 2 characters in length.
 
 <BR>
 <A NAME="osdial_users-user_level">
 <BR>
-<B>User Level -</B> This menu is where you select the OSDial agents user level. Must be a level of 1 to log into OSDial, Must be level greater than 2 to log in as a closer, Must be user level 8 or greater to get into admin web section.
+<B>User Level -</B> This menu is where you select the <?=$t1?> agents user level. Must be a level of 1 to log into <?=$t1?>, Must be level greater than 2 to log in as a closer, Must be user level 8 or greater to get into admin web section.
 
 <BR>
 <A NAME="osdial_users-user_group">
 <BR>
-<B>User Group -</B> This menu is where you select the OSDial agents group that this user will belong to. This does not have any restrictions at this time, this is just to subdivide users and allow for future features based upon it.
+<B>User Group -</B> This menu is where you select the <?=$t1?> agents group that this user will belong to. This does not have any restrictions at this time, this is just to subdivide users and allow for future features based upon it.
 
 <BR>
 <A NAME="osdial_users-phone_login">
@@ -115,12 +115,12 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <A NAME="osdial_users-osdial_recording">
 <BR>
-<B>OSDial Recording -</B> This option can prevent an agent from doing any recordings after they log in to OSDial. This option must be on for OSDial to follow the campaign recording session.
+<B><?=$t1?> Recording -</B> This option can prevent an agent from doing any recordings after they log in to <?=$t1?>. This option must be on for <?=$t1?> to follow the campaign recording session.
 
 <BR>
 <A NAME="osdial_users-osdial_transfers">
 <BR>
-<B>OSDial Transfers -</B> This option can prevent an agent from opening the transfer - conference session of OSDial. If this is disabled, the agent cannot third party call or blind transfer any calls.
+<B><?=$t1?> Transfers -</B> This option can prevent an agent from opening the transfer - conference session of <?=$t1?>. If this is disabled, the agent cannot third party call or blind transfer any calls.
 
 <BR>
 <A NAME="osdial_users-closer_default_blended">
@@ -130,7 +130,7 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <A NAME="osdial_users-osdial_recording_override">
 <BR>
-<B>OSDial Recording Override -</B> This option will override whatever the option is in the campaign for recording. DISABLED will not override the campaign recording setting. NEVER will disable recording on the client. ONDEMAND is the default and allows the agent to start and stop recording as needed. ALLCALLS will start recording on the client whenever a call is sent to an agent. ALLFORCE will start recording on the client whenever a call is sent to an agent giving the agent no option to stop recording. For ALLCALLS and ALLFORCE there is an option to use the Recording Delay to cut down on very short recordings and recude system load.
+<B><?=$t1?> Recording Override -</B> This option will override whatever the option is in the campaign for recording. DISABLED will not override the campaign recording setting. NEVER will disable recording on the client. ONDEMAND is the default and allows the agent to start and stop recording as needed. ALLCALLS will start recording on the client whenever a call is sent to an agent. ALLFORCE will start recording on the client whenever a call is sent to an agent giving the agent no option to stop recording. For ALLCALLS and ALLFORCE there is an option to use the Recording Delay to cut down on very short recordings and recude system load.
 
 <BR>
 <A NAME="osdial_users-osdial_users-campaign_ranks">
@@ -165,27 +165,27 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <A NAME="osdial_users-delete_lists">
 <BR>
-<B>Delete Lists -</B> This option if set to 1 allows the user to delete OSDial lists from the system.
+<B>Delete Lists -</B> This option if set to 1 allows the user to delete <?=$t1?> lists from the system.
 
 <BR>
 <A NAME="osdial_users-delete_campaigns">
 <BR>
-<B>Delete Campaigns -</B> This option if set to 1 allows the user to delete OSDial campaigns from the system.
+<B>Delete Campaigns -</B> This option if set to 1 allows the user to delete <?=$t1?> campaigns from the system.
 
 <BR>
 <A NAME="osdial_users-delete_ingroups">
 <BR>
-<B>Delete In-Groups -</B> This option if set to 1 allows the user to delete OSDial In-Groups from the system.
+<B>Delete In-Groups -</B> This option if set to 1 allows the user to delete <?=$t1?> In-Groups from the system.
 
 <BR>
 <A NAME="osdial_users-delete_remote_agents">
 <BR>
-<B>Delete Remote Agents -</B> This option if set to 1 allows the user to delete OSDial remote agents from the system.
+<B>Delete Remote Agents -</B> This option if set to 1 allows the user to delete <?=$t1?> remote agents from the system.
 
 <BR>
 <A NAME="osdial_users-load_leads">
 <BR>
-<B>Load Leads -</B> This option if set to 1 allows the user to load OSDial leads into the osdial_list table by way of the web based lead loader.
+<B>Load Leads -</B> This option if set to 1 allows the user to load <?=$t1?> leads into the osdial_list table by way of the web based lead loader.
 
 <BR>
 <A NAME="osdial_users-campaign_detail">
@@ -195,12 +195,12 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <A NAME="osdial_users-ast_admin_access">
 <BR>
-<B>AGC Admin Access -</B> This option if set to 1 allows the user to login to the OSDial admin pages.
+<B>AGC Admin Access -</B> This option if set to 1 allows the user to login to the <?=$t1?> admin pages.
 
 <BR>
 <A NAME="osdial_users-ast_delete_phones">
 <BR>
-<B>AGC Delete Phones -</B> This option if set to 1 allows the user to delete phone entries in the OSDial admin pages.
+<B>AGC Delete Phones -</B> This option if set to 1 allows the user to delete phone entries in the <?=$t1?> admin pages.
 
 <BR>
 <A NAME="osdial_users-delete_scripts">
@@ -220,12 +220,12 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <A NAME="osdial_users-delete_filters">
 <BR>
-<B>Delete Filters -</B> This option allows the user to be able to delete OSDial lead filters from the system.
+<B>Delete Filters -</B> This option allows the user to be able to delete <?=$t1?> lead filters from the system.
 
 <BR>
 <A NAME="osdial_users-delete_call_times">
 <BR>
-<B>Delete Call Times -</B> This option allows the user to be able to delete OSDial call times records and OSDial state call times records from the system.
+<B>Delete Call Times -</B> This option allows the user to be able to delete <?=$t1?> call times records and <?=$t1?> state call times records from the system.
 
 <BR>
 <A NAME="osdial_users-modify_call_times">
@@ -240,14 +240,14 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <A NAME="osdial_users-view_reports">
 <BR>
-<B>View Reports -</B> This option allows the user to view the OSDial reports.
+<B>View Reports -</B> This option allows the user to view the <?=$t1?> reports.
 
 
 
 
 <BR><BR><BR><BR>
 
-<B><FONT SIZE=3>OSDial_CAMPAIGNS TABLE</FONT></B><BR><BR>
+<B><FONT SIZE=3><?=$t1?>_CAMPAIGNS TABLE</FONT></B><BR><BR>
 <A NAME="osdial_campaigns-campaign_id">
 <BR>
 <B>Campaign ID -</B> This is the short name of the campaign, it is not editable after initial submission, cannot contain spaces and must be between 2 and 8 characters in length.
@@ -275,7 +275,7 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <A NAME="osdial_campaigns-campaign_stats_refresh">
 <BR>
-<B>Campaign Stats Refresh -</B> This checkbox will allow you to force a OSDial stats refresh, even if the campaign is not active.
+<B>Campaign Stats Refresh -</B> This checkbox will allow you to force a <?=$t1?> stats refresh, even if the campaign is not active.
 
 <BR>
 <A NAME="osdial_campaigns-active">
@@ -285,12 +285,12 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <A NAME="osdial_campaigns-park_ext">
 <BR>
-<B>Park Extension -</B> This is where you can customize the on-hold music for OSDial. Make sure the extension is in place in the extensions.conf and that it points to the filename below.
+<B>Park Extension -</B> This is where you can customize the on-hold music for <?=$t1?>. Make sure the extension is in place in the extensions.conf and that it points to the filename below.
 
 <BR>
 <A NAME="osdial_campaigns-park_file_name">
 <BR>
-<B>Park File Name -</B> This is where you can customize the on-hold music for OSDial. Make sure the filename is 10 characters in length or less and that the file is in place in the /var/lib/asterisk/sounds directory.
+<B>Park File Name -</B> This is where you can customize the on-hold music for <?=$t1?>. Make sure the filename is 10 characters in length or less and that the file is in place in the /var/lib/asterisk/sounds directory.
 
 <BR>
 <A NAME="osdial_campaigns-web_form_address">
@@ -371,7 +371,7 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <A NAME="osdial_campaigns-auto_dial_level">
 <BR>
-<B>Auto Dial Level -</B> This is where you set how many lines OSDial should use per active agent. zero 0 means auto dialing is off and the agents will click to dial each number. Otherwise OSDial will keep dialing lines equal to active agents multiplied by the dial level to arrive at how many lines this campaign on each server should allow. The ADAPT OVERRIDE checkbox allows you to force a new dial level even though the dial method is in an ADAPT mode. This is useful if there is a dramatic shift in the quality of leads and you want to drastically change the dial_level manually.
+<B>Auto Dial Level -</B> This is where you set how many lines <?=$t1?> should use per active agent. zero 0 means auto dialing is off and the agents will click to dial each number. Otherwise <?=$t1?> will keep dialing lines equal to active agents multiplied by the dial level to arrive at how many lines this campaign on each server should allow. The ADAPT OVERRIDE checkbox allows you to force a new dial level even though the dial method is in an ADAPT mode. This is useful if there is a dramatic shift in the quality of leads and you want to drastically change the dial_level manually.
 
 <BR>
 <A NAME="osdial_campaigns-available_only_ratio_tally">
@@ -457,22 +457,22 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <A NAME="osdial_campaigns-omit_phone_code">
 <BR>
-<B>Omit Phone Code -</B> This field allows you to leave out the phone_code field while dialing within OSDial. For instance if you are dialing in the UK from the UK you would have 44 in as your phone_code field for all leads, but you just want to dial 10 digits in your dial plan extensions.conf to place calls instead of 44 then 10 digits. Default is N.
+<B>Omit Phone Code -</B> This field allows you to leave out the phone_code field while dialing within <?=$t1?>. For instance if you are dialing in the UK from the UK you would have 44 in as your phone_code field for all leads, but you just want to dial 10 digits in your dial plan extensions.conf to place calls instead of 44 then 10 digits. Default is N.
 
 <BR>
 <A NAME="osdial_campaigns-campaign_cid">
 <BR>
-<B>Campaign CallerID -</B> This field allows for the sending of a custom callerid number on the outbound calls. This is the number that would show up on the callerid of the person you are calling. The default is UNKNOWN. If you are using T1 or E1s to dial out this option is only available if you are using PRIs - ISDN T1s or E1s - that have the custom callerid feature turned on, this will not work with Robbed-bit service -RBS- circuits. This will also work through most VOIP -SIP or IAX trunks- providers that allow dynamic outbound callerID. The custom callerID only applies to calls placed for the OSDial campaign directly, any 3rd party calls or transfers will not send the custom callerID. NOTE: Sometimes putting UNKNOWN or PRIVATE in the field will yield the sending of your default callerID number by your carrier with the calls. You may want to test this and put 0000000000 in the callerid field instead if you do not want to send you CallerID.
+<B>Campaign CallerID -</B> This field allows for the sending of a custom callerid number on the outbound calls. This is the number that would show up on the callerid of the person you are calling. The default is UNKNOWN. If you are using T1 or E1s to dial out this option is only available if you are using PRIs - ISDN T1s or E1s - that have the custom callerid feature turned on, this will not work with Robbed-bit service -RBS- circuits. This will also work through most VOIP -SIP or IAX trunks- providers that allow dynamic outbound callerID. The custom callerID only applies to calls placed for the <?=$t1?> campaign directly, any 3rd party calls or transfers will not send the custom callerID. NOTE: Sometimes putting UNKNOWN or PRIVATE in the field will yield the sending of your default callerID number by your carrier with the calls. You may want to test this and put 0000000000 in the callerid field instead if you do not want to send you CallerID.
 
 <BR>
 <A NAME="osdial_campaigns-campaign_vdad_exten">
 <BR>
-<B>Campaign OSDial extension -</B> This field allows for a custom OSDial transfer extension. This allows you to use different VDADtransfer...agi scripts depending upon your campaign. The default transfer AGI - exten 8365 agi-VDADtransfer.agi - just immediately sends the calls on to agents as soon as they are picked up. An additional sample political survey AGI is also now included - 8366 agi-VDADtransferSURVEY.agi - that plays a message to the called person and allows them to make a choice by pressing buttons - effectively pre-screening the lead - . Please note that except for surveys, political calls and charities this form of calling is illegal in the United States.
+<B>Campaign <?=$t1?> extension -</B> This field allows for a custom <?=$t1?> transfer extension. This allows you to use different VDADtransfer...agi scripts depending upon your campaign. The default transfer AGI - exten 8365 agi-VDADtransfer.agi - just immediately sends the calls on to agents as soon as they are picked up. An additional sample political survey AGI is also now included - 8366 agi-VDADtransferSURVEY.agi - that plays a message to the called person and allows them to make a choice by pressing buttons - effectively pre-screening the lead - . Please note that except for surveys, political calls and charities this form of calling is illegal in the United States.
 
 <BR>
 <A NAME="osdial_campaigns-campaign_rec_exten">
 <BR>
-<B>Campaign Rec extension -</B> This field allows for a custom recording extension to be used with OSDial. This allows you to use different extensions depending upon how long you want to allow a maximum recording and what type of codec you want to record in. The default exten is 8309 which if you follow the SCRATCH_INSTALL examples will record in the WAV format for upto one hour. Another option included in the examples is 8310 which will record in GSM format for upto one hour.
+<B>Campaign Rec extension -</B> This field allows for a custom recording extension to be used with <?=$t1?>. This allows you to use different extensions depending upon how long you want to allow a maximum recording and what type of codec you want to record in. The default exten is 8309 which if you follow the SCRATCH_INSTALL examples will record in the WAV format for upto one hour. Another option included in the examples is 8310 which will record in GSM format for upto one hour.
 
 <BR>
 <A NAME="osdial_campaigns-campaign_recording">
@@ -517,7 +517,7 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <A NAME="osdial_campaigns-xferconf_a_dtmf">
 <BR>
-<B>Xfer-Conf DTMF -</B> These four fields allow for you to have two sets of Transfer Conference and DTMF presets. When the call or campaign is loaded, the agent.php script will show two buttons on the transfer-conference frame and auto-populate the number-to-dial and the send-dtmf fields when pressed. If you want to allow Consultative Transfers, a fronter to a closer, you can place CXFER as one of the number-to-dial presets and the proper dial string will be sent to do a Local Consultative Transfer, then the agent can just LEAVE-3WAY-CALL and move on to their next call. If you want to allow Blind transfers of customers to a OSDial AGI script for logging or an IVR, then place AXFER in the number-to-dial field. You can also specify an custom extension after the AXFER or CXFER, for instance if you want to do Internal Consultative transfers instead of Local you would put CXFER90009 in the number-to-dial field.
+<B>Xfer-Conf DTMF -</B> These four fields allow for you to have two sets of Transfer Conference and DTMF presets. When the call or campaign is loaded, the agent.php script will show two buttons on the transfer-conference frame and auto-populate the number-to-dial and the send-dtmf fields when pressed. If you want to allow Consultative Transfers, a fronter to a closer, you can place CXFER as one of the number-to-dial presets and the proper dial string will be sent to do a Local Consultative Transfer, then the agent can just LEAVE-3WAY-CALL and move on to their next call. If you want to allow Blind transfers of customers to a <?=$t1?> AGI script for logging or an IVR, then place AXFER in the number-to-dial field. You can also specify an custom extension after the AXFER or CXFER, for instance if you want to do Internal Consultative transfers instead of Local you would put CXFER90009 in the number-to-dial field.
 
 <BR>
 <A NAME="osdial_campaigns-alt_number_dialing">
@@ -623,7 +623,7 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 
 <BR><BR><BR><BR>
 
-<B><FONT SIZE=3>OSDial_LISTS TABLE</FONT></B><BR><BR>
+<B><FONT SIZE=3><?=$t1?>_LISTS TABLE</FONT></B><BR><BR>
 <A NAME="osdial_lists-list_id">
 <BR>
 <B>List ID -</B> This is the numerical name of the list, it is not editable after initial submission, must contain only numbers and must be between 2 and 8 characters in length. Must be a number greater than 100.
@@ -666,23 +666,23 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <A NAME="osdial_lists-cost">
 <BR>
-<B>OSDial List Cost-</B> When a value is placed into the "cost" field of a list, each newly created lead will have that "cost" added to its record.  The OSDial List Cost report can then be run to give a basic cost analysis of the leads being dialed from the system.
+<B><?=$t1?> List Cost-</B> When a value is placed into the "cost" field of a list, each newly created lead will have that "cost" added to its record.  The <?=$t1?> List Cost report can then be run to give a basic cost analysis of the leads being dialed from the system.
 
 <BR>
 <A NAME="osdial_list-dnc">
 <BR>
-<B>OSDial DNC List -</B> This Do Not Call list contains every lead that has been set to a status of DNC in the system. Through the LISTS - ADD NUMBER TO DNC page you are able to manually add a number to this list so that it will not be called by campaigns that use the internal DNC list.
+<B><?=$t1?> DNC List -</B> This Do Not Call list contains every lead that has been set to a status of DNC in the system. Through the LISTS - ADD NUMBER TO DNC page you are able to manually add a number to this list so that it will not be called by campaigns that use the internal DNC list.
 
 <BR>
 <A NAME="osdial_list-cost">
 <BR>
-<B>OSDial Lead Cost-</B> When a value is placed into the "cost" field of a list, each newly created lead will have that "cost" added to its record.  The OSDial List Cost report can then be run to give a basic cost analysis of the leads being dialed from the system.
+<B><?=$t1?> Lead Cost-</B> When a value is placed into the "cost" field of a list, each newly created lead will have that "cost" added to its record.  The <?=$t1?> List Cost report can then be run to give a basic cost analysis of the leads being dialed from the system.
 
 
 
 <BR><BR><BR><BR>
 
-<B><FONT SIZE=3>OSDial_INBOUND_GROUPS TABLE</FONT></B><BR><BR>
+<B><FONT SIZE=3><?=$t1?>_INBOUND_GROUPS TABLE</FONT></B><BR><BR>
 <A NAME="osdial_inbound_groups-group_id">
 <BR>
 <B>Group ID -</B> This is the short name of the inbound group, it is not editable after initial submission, must not contain any spaces and must be between 2 and 20 characters in length.
@@ -695,22 +695,22 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <A NAME="osdial_inbound_groups-group_color">
 <BR>
-<B>Group Color -</B> This is the color that displays in the OSDial client app when a call comes in on this group. It must be between 2 and 7 characters long. If this is a hex color definition you must remember to put a # at the beginning of the string or OSDial will not work properly.
+<B>Group Color -</B> This is the color that displays in the <?=$t1?> client app when a call comes in on this group. It must be between 2 and 7 characters long. If this is a hex color definition you must remember to put a # at the beginning of the string or <?=$t1?> will not work properly.
 
 <BR>
 <A NAME="osdial_inbound_groups-active">
 <BR>
-<B>Active -</B> This determines whether this group show up in the selection box when a OSDial agent logs in.
+<B>Active -</B> This determines whether this group show up in the selection box when a <?=$t1?> agent logs in.
 
 <BR>
 <A NAME="osdial_inbound_groups-web_form_address">
 <BR>
-<B>Web Form -</B> This is the custom address that clicking on one of the WEB FORM buttons in OSDial will take you to for calls that come in on this group.
+<B>Web Form -</B> This is the custom address that clicking on one of the WEB FORM buttons in <?=$t1?> will take you to for calls that come in on this group.
 
 <BR>
 <A NAME="osdial_inbound_groups-web_form_extwindow">
 <BR>
-<B>Web Form External -</B> "Y" will display the WebForm in an external window, "N" will display in an OSDial frame on the agent screen.
+<B>Web Form External -</B> "Y" will display the WebForm in an external window, "N" will display in an <?=$t1?> frame on the agent screen.
 
 <BR>
 <A NAME="osdial_inbound_groups-next_agent_call">
@@ -727,7 +727,7 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <A NAME="osdial_inbound_groups-fronter_display">
 <BR>
-<B>Fronter Display -</B> This field determines whether the inbound OSDial agent would have the fronter name - if there is one - displayed in the Status field when the call comes to the agent.
+<B>Fronter Display -</B> This field determines whether the inbound <?=$t1?> agent would have the fronter name - if there is one - displayed in the Status field when the call comes to the agent.
 
 <BR>
 <A NAME="osdial_inbound_groups-ingroup_script">
@@ -747,7 +747,7 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <A NAME="osdial_inbound_groups-xferconf_a_dtmf">
 <BR>
-<B>Xfer-Conf DTMF -</B> These four fields allow for you to have two sets of Transfer Conference and DTMF presets. When the call or campaign is loaded, the agent.php script will show two buttons on the transfer-conference frame and auto-populate the number-to-dial and the send-dtmf fields when pressed. If you want to allow Consultative Transfers, a fronter to a closer, you can place CXFER as one of the number-to-dial presets and the proper dial string will be sent to do a Local Consultative Transfer, then the agent can just LEAVE-3WAY-CALL and move on to their next call. If you want to allow Blind transfers of customers to a OSDial AGI script for logging or an IVR, then place AXFER in the number-to-dial field. You can also specify an custom extension after the AXFER or CXFER, for instance if you want to do Internal Consultative transfers instead of Local you would put CXFER90009 in the number-to-dial field.
+<B>Xfer-Conf DTMF -</B> These four fields allow for you to have two sets of Transfer Conference and DTMF presets. When the call or campaign is loaded, the agent.php script will show two buttons on the transfer-conference frame and auto-populate the number-to-dial and the send-dtmf fields when pressed. If you want to allow Consultative Transfers, a fronter to a closer, you can place CXFER as one of the number-to-dial presets and the proper dial string will be sent to do a Local Consultative Transfer, then the agent can just LEAVE-3WAY-CALL and move on to their next call. If you want to allow Blind transfers of customers to a <?=$t1?> AGI script for logging or an IVR, then place AXFER in the number-to-dial field. You can also specify an custom extension after the AXFER or CXFER, for instance if you want to do Internal Consultative transfers instead of Local you would put CXFER90009 in the number-to-dial field.
 
 <BR>
 <A NAME="osdial_inbound_groups-drop_call_seconds">
@@ -833,10 +833,10 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 
 <BR><BR><BR><BR>
 
-<B><FONT SIZE=3>OSDial_REMOTE_AGENTS TABLE</FONT></B><BR><BR>
+<B><FONT SIZE=3><?=$t1?>_REMOTE_AGENTS TABLE</FONT></B><BR><BR>
 <A NAME="osdial_remote_agents-user_start">
 <BR>
-<B>Agent ID Start -</B> This is the starting Agent ID that is used when the remote agent entries are inserted into the system. If the Number of Lines is set higher than 1, this number is incremented by one until each line has an entry. Make sure you create a new OSDial agent account with a user level of 4 or great if you want them to be able to use the vdremote.php page for remote web access of this account.
+<B>Agent ID Start -</B> This is the starting Agent ID that is used when the remote agent entries are inserted into the system. If the Number of Lines is set higher than 1, this number is incremented by one until each line has an entry. Make sure you create a new <?=$t1?> agent account with a user level of 4 or great if you want them to be able to use the vdremote.php page for remote web access of this account.
 
 <BR>
 <A NAME="osdial_remote_agents-number_of_lines">
@@ -871,7 +871,7 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 
 <BR><BR><BR><BR>
 
-<B><FONT SIZE=3>OSDial_CAMPAIGN_LISTS</FONT></B><BR><BR>
+<B><FONT SIZE=3><?=$t1?>_CAMPAIGN_LISTS</FONT></B><BR><BR>
 <A NAME="osdial_campaign_lists">
 <BR>
 The lists within this campaign are listed here, whether they are active is denoted by the Y or N and you can go to the list screen by clicking on the list ID in the first column.
@@ -879,19 +879,19 @@ The lists within this campaign are listed here, whether they are active is denot
 
 <BR><BR><BR><BR>
 
-<B><FONT SIZE=3>OSDial_CAMPAIGN_STATUSES TABLE</FONT></B><BR><BR>
+<B><FONT SIZE=3><?=$t1?>_CAMPAIGN_STATUSES TABLE</FONT></B><BR><BR>
 <A NAME="osdial_campaign_statuses">
 <BR>
-Through the use of custom campaign statuses, you can have statuses that only exist for a specific campaign. The Status must be 1-8 characters in length, the description must be 2-30 characters in length and Selectable defines whether it shows up in OSDial as a disposition. The human_answered field is used when calculating the drop percentage, or abandon rate. Setting human_answered to Y will use this status when counting the human-answered calls. The Category option allows you to group several statuses into a catogy that can be used for statistical analysis.
+Through the use of custom campaign statuses, you can have statuses that only exist for a specific campaign. The Status must be 1-8 characters in length, the description must be 2-30 characters in length and Selectable defines whether it shows up in <?=$t1?> as a disposition. The human_answered field is used when calculating the drop percentage, or abandon rate. Setting human_answered to Y will use this status when counting the human-answered calls. The Category option allows you to group several statuses into a catogy that can be used for statistical analysis.
 
 
 
 <BR><BR><BR><BR>
 
-<B><FONT SIZE=3>OSDial_CAMPAIGN_HOTKEYS TABLE</FONT></B><BR><BR>
+<B><FONT SIZE=3><?=$t1?>_CAMPAIGN_HOTKEYS TABLE</FONT></B><BR><BR>
 <A NAME="osdial_campaign_hotkeys">
 <BR>
-Through the use of custom campaign hot keys, agents that use the OSDial web-client can hang up and disposition calls just by pressing a single key on their keyboard.</B> There are two special HotKey options that you can use in conjunction with Alternate Phone number dialing, ALTPH2 - Alternate Phone Hot Dial and ADDR3-----Address3 Hot Dial allow an agent to use a hotkey to hang up their call, stay on the same lead, and dial another contact number from that lead. 
+Through the use of custom campaign hot keys, agents that use the <?=$t1?> web-client can hang up and disposition calls just by pressing a single key on their keyboard.</B> There are two special HotKey options that you can use in conjunction with Alternate Phone number dialing, ALTPH2 - Alternate Phone Hot Dial and ADDR3-----Address3 Hot Dial allow an agent to use a hotkey to hang up their call, stay on the same lead, and dial another contact number from that lead. 
 
 
 
@@ -899,7 +899,7 @@ Through the use of custom campaign hot keys, agents that use the OSDial web-clie
 
 <BR><BR><BR><BR>
 
-<B><FONT SIZE=3>OSDial_LEAD_RECYCLE TABLE</FONT></B><BR><BR>
+<B><FONT SIZE=3><?=$t1?>_LEAD_RECYCLE TABLE</FONT></B><BR><BR>
 <A NAME="osdial_lead_recycle">
 <BR>
 Through the use of lead recycling, you can call specific statuses of leads again at a specified interval without resetting the entire list. Lead recycling is campaign-specific and does not have to be a selected dialable status in your campaign. The attempt delay field is the number of seconds until the lead can be placed back in the hopper, this number must be at least 120 seconds. The attempt maximum field is the maximum number of times that a lead of this status can be attempted before the list needs to be reset, this number can be from 1 to 10. You can activate and deactivate a lead recycle entry with the provided links.
@@ -910,7 +910,7 @@ Through the use of lead recycling, you can call specific statuses of leads again
 
 <BR><BR><BR><BR>
 
-<B><FONT SIZE=3>OSDial AUTO ALT DIAL STATUSES</FONT></B><BR><BR>
+<B><FONT SIZE=3><?=$t1?> AUTO ALT DIAL STATUSES</FONT></B><BR><BR>
 <A NAME="osdial_auto_alt_dial_statuses">
 <BR>
 If the Auto Alt-Number Dialing field is set, then the leads that are dispositioned under these auto alt dial statuses will have their alt_phone and-or address3 fields dialed after any of these no-answer statuses are set.
@@ -921,10 +921,10 @@ If the Auto Alt-Number Dialing field is set, then the leads that are disposition
 
 <BR><BR><BR><BR>
 
-<B><FONT SIZE=3>OSDial AGENT PAUSE CODES</FONT></B><BR><BR>
+<B><FONT SIZE=3><?=$t1?> AGENT PAUSE CODES</FONT></B><BR><BR>
 <A NAME="osdial_pause_codes">
 <BR>
-If the Agent Pause Codes Active field is set to active then the agents will be able to select from these pause codes when they click on the PAUSE button on their screens. This data is then stored in the OSDial agent log. The Pause code must contain only letters and numbers and be less than 7 characters long. The pause code name can be no longer than 30 characters.
+If the Agent Pause Codes Active field is set to active then the agents will be able to select from these pause codes when they click on the PAUSE button on their screens. This data is then stored in the <?=$t1?> agent log. The Pause code must contain only letters and numbers and be less than 7 characters long. The pause code name can be no longer than 30 characters.
 
 
 
@@ -932,15 +932,15 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 
 <BR><BR><BR><BR>
 
-<B><FONT SIZE=3>OSDial_USER_GROUPS TABLE</FONT></B><BR><BR>
+<B><FONT SIZE=3><?=$t1?>_USER_GROUPS TABLE</FONT></B><BR><BR>
 <A NAME="osdial_user_groups-user_group">
 <BR>
-<B>User Group -</B> This is the short name of a OSDial User group, try not to use any spaces or punctuation for this field. max 20 characters, minimum of 2 characters.
+<B>User Group -</B> This is the short name of a <?=$t1?> User group, try not to use any spaces or punctuation for this field. max 20 characters, minimum of 2 characters.
 
 <BR>
 <A NAME="osdial_user_groups-group_name">
 <BR>
-<B>Group Name -</B> This is the description of the OSDial user group max of 40 characters.
+<B>Group Name -</B> This is the description of the <?=$t1?> user group max of 40 characters.
 
 <BR>
 <A NAME="osdial_user_groups-allowed_campaigns">
@@ -953,25 +953,25 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 
 <BR><BR><BR><BR>
 
-<B><FONT SIZE=3>OSDial_SCRIPTS TABLE</FONT></B><BR><BR>
+<B><FONT SIZE=3><?=$t1?>_SCRIPTS TABLE</FONT></B><BR><BR>
 <A NAME="osdial_scripts-script_id">
 <BR>
-<B>Script ID -</B> This is the short name of a OSDial Script. This needs to be a unique identifier. Try not to use any spaces or punctuation for this field. max 10 characters, minimum of 2 characters.
+<B>Script ID -</B> This is the short name of a <?=$t1?> Script. This needs to be a unique identifier. Try not to use any spaces or punctuation for this field. max 10 characters, minimum of 2 characters.
 
 <BR>
 <A NAME="osdial_scripts-script_name">
-<B>Script Name -</B> This is the title of a OSDial Script. This is a short summary of the script. max 50 characters, minimum of 2 characters. There should be no spaces or punctuation of any kind in theis field.
+<B>Script Name -</B> This is the title of a <?=$t1?> Script. This is a short summary of the script. max 50 characters, minimum of 2 characters. There should be no spaces or punctuation of any kind in theis field.
 
 <BR>
 <A NAME="osdial_scripts-script_comments">
-<B>Script Comments -</B> This is where you can place comments for a OSDial Script such as -changed to free upgrade on Sept 23-.  max 255 characters, minimum of 2 characters.
+<B>Script Comments -</B> This is where you can place comments for a <?=$t1?> Script such as -changed to free upgrade on Sept 23-.  max 255 characters, minimum of 2 characters.
 
 <BR>
 <A NAME="osdial_scripts-script_text">
-<B>Script Text -</B> This is where you place the content of a OSDial Script. Minimum of 2 characters. You can have customer information be auto-populated in this script using "--A--field--B--" where field is one of the following fieldnames: vendor_lead_code, source_id, list_id, gmt_offset_now, called_since_last_reset, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, custom2, comments, lead_id, campaign, phone_login, group, channel_group, SQLdate, epoch, uniqueid, customer_zap_channel, server_ip, SIPexten, session_id. For example, this sentence would print the persons name in it----<BR><BR>  Hello, can I speak with --A--first_name--B-- --A--last_name--B-- please? Well hello --A--title--B-- --A--last_name--B-- how are you today?<BR><BR> This would read----<BR><BR>Hello, can I speak with John Doe please? Well hello Mr. Doe how are you today?<BR><BR> You can also use an iframe to load a separate window within the SCRIPT tab, here is an example with prepopulated variables:
+<B>Script Text -</B> This is where you place the content of a <?=$t1?> Script. Minimum of 2 characters. You can have customer information be auto-populated in this script using "--A--field--B--" where field is one of the following fieldnames: vendor_lead_code, source_id, list_id, gmt_offset_now, called_since_last_reset, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, custom2, comments, lead_id, campaign, phone_login, group, channel_group, SQLdate, epoch, uniqueid, customer_zap_channel, server_ip, SIPexten, session_id. For example, this sentence would print the persons name in it----<BR><BR>  Hello, can I speak with --A--first_name--B-- --A--last_name--B-- please? Well hello --A--title--B-- --A--last_name--B-- how are you today?<BR><BR> This would read----<BR><BR>Hello, can I speak with John Doe please? Well hello Mr. Doe how are you today?<BR><BR> You can also use an iframe to load a separate window within the SCRIPT tab, here is an example with prepopulated variables:
 
 <DIV style="height:200px;width:400px;background:white;overflow:scroll;font-size:12px;font-family:sans-serif;" id=iframe_example>
-&#60;iframe src="http://localhost/test_OSDial_output.php?lead_id=--A--lead_id--B--&#38;vendor_id=--A--vendor_lead_code--B--&#38;list_id=--A--list_id--B--&#38;gmt_offset_now=--A--gmt_offset_now--B--&#38;phone_code=--A--phone_code--B--&#38;phone_number=--A--phone_number--B--&#38;title=--A--title--B--&#38;first_name=--A--first_name--B--&#38;middle_initial=--A--middle_initial--B--&#38;last_name=--A--last_name--B--&#38;address1=--A--address1--B--&#38;address2=--A--address2--B--&#38;address3=--A--address3--B--&#38;city=--A--city--B--&#38;state=--A--state--B--&#38;province=--A--province--B--&#38;postal_code=--A--postal_code--B--&#38;country_code=--A--country_code--B--&#38;gender=--A--gender--B--&#38;date_of_birth=--A--date_of_birth--B--&#38;alt_phone=--A--alt_phone--B--&#38;email=--A--email--B--&#38;custom1=--A--custom1--B--&#38;custom2=--A--custom2--B--&#38;comments=--A--comments--B--&#38;user=--A--user--B--&#38;campaign=--A--campaign--B--&#38;phone_login=--A--phone_login--B--&#38;fronter=--A--fronter--B--&#38;closer=--A--user--B--&#38;group=--A--group--B--&#38;channel_group=--A--group--B--&#38;SQLdate=--A--SQLdate--B--&#38;epoch=--A--epoch--B--&#38;uniqueid=--A--uniqueid--B--&#38;customer_zap_channel=--A--customer_zap_channel--B--&#38;server_ip=--A--server_ip--B--&#38;SIPexten=--A--SIPexten--B--&#38;session_id=--A--session_id--B--&#38;phone=--A--phone--B--" style="width:580;height:290;background-color:transparent;" scrolling="auto" frameborder="0" allowtransparency="true" id="popupFrame" name="popupFrame" width="460" height="290" STYLE="z-index:17"&#62;
+&#60;iframe src="http://localhost/test_<?=$t1?>_output.php?lead_id=--A--lead_id--B--&#38;vendor_id=--A--vendor_lead_code--B--&#38;list_id=--A--list_id--B--&#38;gmt_offset_now=--A--gmt_offset_now--B--&#38;phone_code=--A--phone_code--B--&#38;phone_number=--A--phone_number--B--&#38;title=--A--title--B--&#38;first_name=--A--first_name--B--&#38;middle_initial=--A--middle_initial--B--&#38;last_name=--A--last_name--B--&#38;address1=--A--address1--B--&#38;address2=--A--address2--B--&#38;address3=--A--address3--B--&#38;city=--A--city--B--&#38;state=--A--state--B--&#38;province=--A--province--B--&#38;postal_code=--A--postal_code--B--&#38;country_code=--A--country_code--B--&#38;gender=--A--gender--B--&#38;date_of_birth=--A--date_of_birth--B--&#38;alt_phone=--A--alt_phone--B--&#38;email=--A--email--B--&#38;custom1=--A--custom1--B--&#38;custom2=--A--custom2--B--&#38;comments=--A--comments--B--&#38;user=--A--user--B--&#38;campaign=--A--campaign--B--&#38;phone_login=--A--phone_login--B--&#38;fronter=--A--fronter--B--&#38;closer=--A--user--B--&#38;group=--A--group--B--&#38;channel_group=--A--group--B--&#38;SQLdate=--A--SQLdate--B--&#38;epoch=--A--epoch--B--&#38;uniqueid=--A--uniqueid--B--&#38;customer_zap_channel=--A--customer_zap_channel--B--&#38;server_ip=--A--server_ip--B--&#38;SIPexten=--A--SIPexten--B--&#38;session_id=--A--session_id--B--&#38;phone=--A--phone--B--" style="width:580;height:290;background-color:transparent;" scrolling="auto" frameborder="0" allowtransparency="true" id="popupFrame" name="popupFrame" width="460" height="290" STYLE="z-index:17"&#62;
 &#60;/iframe&#62;
 </DIV>
 
@@ -986,10 +986,10 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 
 <BR><BR><BR><BR>
 
-<B><FONT SIZE=3>OSDial_LEAD_FILTERS TABLE</FONT></B><BR><BR>
+<B><FONT SIZE=3><?=$t1?>_LEAD_FILTERS TABLE</FONT></B><BR><BR>
 <A NAME="osdial_lead_filters-lead_filter_id">
 <BR>
-<B>Filter ID -</B> This is the short name of a OSDial Lead Filter. This needs to be a unique identifier. Do not use any spaces or punctuation for this field. max 10 characters, minimum of 2 characters.
+<B>Filter ID -</B> This is the short name of a <?=$t1?> Lead Filter. This needs to be a unique identifier. Do not use any spaces or punctuation for this field. max 10 characters, minimum of 2 characters.
 
 <BR>
 <A NAME="osdial_lead_filters-lead_filter_name">
@@ -997,7 +997,7 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 
 <BR>
 <A NAME="osdial_lead_filters-lead_filter_comments">
-<B>Filter Comments -</B> This is where you can place comments for a OSDial Filter such as -calls all California leads-.  max 255 characters, minimum of 2 characters.
+<B>Filter Comments -</B> This is where you can place comments for a <?=$t1?> Filter such as -calls all California leads-.  max 255 characters, minimum of 2 characters.
 
 <BR>
 <A NAME="osdial_lead_filters-lead_filter_sql">
@@ -1009,10 +1009,10 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 
 <BR><BR><BR><BR>
 
-<B><FONT SIZE=3>OSDial_CALL TIMES TABLE</FONT></B><BR><BR>
+<B><FONT SIZE=3><?=$t1?>_CALL TIMES TABLE</FONT></B><BR><BR>
 <A NAME="osdial_call_times-call_time_id">
 <BR>
-<B>Call Time ID -</B> This is the short name of a OSDial Call Time Definition. This needs to be a unique identifier. Do not use any spaces or punctuation for this field. max 10 characters, minimum of 2 characters.
+<B>Call Time ID -</B> This is the short name of a <?=$t1?> Call Time Definition. This needs to be a unique identifier. Do not use any spaces or punctuation for this field. max 10 characters, minimum of 2 characters.
 
 <BR>
 <A NAME="osdial_call_times-call_time_name">
@@ -1020,7 +1020,7 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 
 <BR>
 <A NAME="osdial_call_times-call_time_comments">
-<B>Call Time Comments -</B> This is where you can place comments for a OSDial Call Time Definition such as -10am to 4pm with extra call state restrictions-.  max 255 characters.
+<B>Call Time Comments -</B> This is where you can place comments for a <?=$t1?> Call Time Definition such as -10am to 4pm with extra call state restrictions-.  max 255 characters.
 
 <BR>
 <A NAME="osdial_call_times-ct_default_start">
@@ -1047,10 +1047,10 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 
 <BR><BR><BR><BR>
 
-<B><FONT SIZE=3>OSDial LIST LOADER FUNCTIONALITY</FONT></B><BR><BR>
+<B><FONT SIZE=3><?=$t1?> LIST LOADER FUNCTIONALITY</FONT></B><BR><BR>
 <A NAME="osdial_list_loader">
 <BR>
-The OSDial basic web-based lead loader is designed simply to take a lead file - up to 8MB in size - that is either tab or pipe delimited and load it into the osdial_list table. The lead loader allows for field choosing and TXT- Plain Text, CSV- Comma Separated Values and XLS- Excel file formats. The lead loader does not do data validation, but it does allow you to check for duplicates in itself, within the campaign or within the entire system. Also, make sure that you have created the list that these leads are to be under so that you can use them. Here is a list of the fields in their proper order for the lead files:
+The <?=$t1?> basic web-based lead loader is designed simply to take a lead file - up to 8MB in size - that is either tab or pipe delimited and load it into the osdial_list table. The lead loader allows for field choosing and TXT- Plain Text, CSV- Comma Separated Values and XLS- Excel file formats. The lead loader does not do data validation, but it does allow you to check for duplicates in itself, within the campaign or within the entire system. Also, make sure that you have created the list that these leads are to be under so that you can use them. Here is a list of the fields in their proper order for the lead files:
 	<OL>
 	<LI>Vendor Lead Code - shows up in the Vendor ID field of the GUI
 	<LI>Source Code - internal use only for admins and DBAs
@@ -1102,12 +1102,12 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="phones-voicemail_id">
 <BR>
-<B>Voicemail Box -</B> This field is for the voicemail box that the messages go to for the user of this phone. We use this to check for voicemail messages and for the user to be able to use the VOICEMAIL button on OSDial app.
+<B>Voicemail Box -</B> This field is for the voicemail box that the messages go to for the user of this phone. We use this to check for voicemail messages and for the user to be able to use the VOICEMAIL button on <?=$t1?> app.
 
 <BR>
 <A NAME="phones-outbound_cid">
 <BR>
-<B>Outbound CallerID -</B> This field is where you would enter the callerID number that you would like to appear on outbound calls placed form the OSDial web-client. This does not work on RBS, non-PRI, T1/E1s.
+<B>Outbound CallerID -</B> This field is where you would enter the callerID number that you would like to appear on outbound calls placed form the <?=$t1?> web-client. This does not work on RBS, non-PRI, T1/E1s.
 
 <BR>
 <A NAME="phones-phone_ip">
@@ -1182,7 +1182,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="phones-local_gmt">
 <BR>
-<B>Local GMT -</B> The difference from Greenwich Mean time, or ZULU time where the phone is located. DO NOT ADJUST FOR DAYLIGHT SAVINGS TIME. This is used by the OSDial campaign to accurately display the time and customer time.
+<B>Local GMT -</B> The difference from Greenwich Mean time, or ZULU time where the phone is located. DO NOT ADJUST FOR DAYLIGHT SAVINGS TIME. This is used by the <?=$t1?> campaign to accurately display the time and customer time.
 
 <BR>
 <A NAME="phones-ASTmgrUSERNAME">
@@ -1197,17 +1197,17 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="phones-login_user">
 <BR>
-<B>OSDial Default Agent -</B> This is to place a default value in the OSDial agent field whenever this phone user opens the OSDial client app. Leave blank for no agent.
+<B><?=$t1?> Default Agent -</B> This is to place a default value in the <?=$t1?> agent field whenever this phone user opens the <?=$t1?> client app. Leave blank for no agent.
 
 <BR>
 <A NAME="phones-login_pass">
 <BR>
-<B>OSDial Default Pass -</B> This is to place a default value in the OSDial password field whenever this phone user opens the OSDial client app. Leave blank for no pass.
+<B><?=$t1?> Default Pass -</B> This is to place a default value in the <?=$t1?> password field whenever this phone user opens the <?=$t1?> client app. Leave blank for no pass.
 
 <BR>
 <A NAME="phones-login_campaign">
 <BR>
-<B>OSDial Default Campaign -</B> This is to place a default value in the OSDial campaign field whenever this phone user opens the OSDial client app. Leave blank for no campaign.
+<B><?=$t1?> Default Campaign -</B> This is to place a default value in the <?=$t1?> campaign field whenever this phone user opens the <?=$t1?> client app. Leave blank for no campaign.
 
 <BR>
 <A NAME="phones-park_on_extension">
@@ -1220,19 +1220,19 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <B>Conf Exten -</B> This is the default Conference park extension for the client apps. Verify that a different one works before you change this.
 
 <BR>
-<A NAME="phones-OSDial_park_on_extension">
+<A NAME="phones-<?=$t1?>_park_on_extension">
 <BR>
-<B>OSDial Park Exten -</B> This is the default Parking extension for OSDial client app. Verify that a different one works before you change this.
+<B><?=$t1?> Park Exten -</B> This is the default Parking extension for <?=$t1?> client app. Verify that a different one works before you change this.
 
 <BR>
-<A NAME="phones-OSDial_park_on_filename">
+<A NAME="phones-<?=$t1?>_park_on_filename">
 <BR>
-<B>OSDial Park File -</B> This is the default OSDial park extension file name for the client apps. Verify that a different one works before you change this. limited to 10 characters.
+<B><?=$t1?> Park File -</B> This is the default <?=$t1?> park extension file name for the client apps. Verify that a different one works before you change this. limited to 10 characters.
 
 <BR>
 <A NAME="phones-monitor_prefix">
 <BR>
-<B>Monitor Prefix -</B> This is the dial plan prefix for monitoring of Zap channels automatically within the OSDial app. Only change according to the extensions.conf ZapBarge extensions records.
+<B>Monitor Prefix -</B> This is the dial plan prefix for monitoring of Zap channels automatically within the <?=$t1?> app. Only change according to the extensions.conf ZapBarge extensions records.
 
 <BR>
 <A NAME="phones-recording_exten">
@@ -1247,7 +1247,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="phones-voicemail_dump_exten">
 <BR>
-<B>VMAIL Dump Exten -</B> This is the dial plan prefix used to send calls directly to a user's voicemail from a live call in the OSDial app. verify with extensions.conf file before changing.
+<B>VMAIL Dump Exten -</B> This is the dial plan prefix used to send calls directly to a user's voicemail from a live call in the <?=$t1?> app. verify with extensions.conf file before changing.
 
 <BR>
 <A NAME="phones-ext_context">
@@ -1272,7 +1272,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="phones-install_directory">
 <BR>
-<B>Install Directory -</B> This is the place where the OSDial scripts are located on your machine. For Win32 it should be something like C:\AST_OSD and for UNIX it should be something like /usr/local/perl_TK. verify this manually.
+<B>Install Directory -</B> This is the place where the <?=$t1?> scripts are located on your machine. For Win32 it should be something like C:\AST_OSD and for UNIX it should be something like /usr/local/perl_TK. verify this manually.
 
 <BR>
 <A NAME="phones-local_web_callerID_URL">
@@ -1280,14 +1280,14 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <B>CallerID URL -</B> This is the web address of the page used to do custom callerID lookups. default testing address is: http://localhost/test_callerid_output.php
 
 <BR>
-<A NAME="phones-OSDial_web_URL">
+<A NAME="phones-<?=$t1?>_web_URL">
 <BR>
-<B>OSDial Default URL -</B> This is the web address of the page used to do custom OSDial Web Form queries. default testing address is: http://localhost/test_OSDial_output.php
+<B><?=$t1?> Default URL -</B> This is the web address of the page used to do custom <?=$t1?> Web Form queries. default testing address is: http://localhost/test_<?=$t1?>_output.php
 
 <BR>
 <A NAME="phones-AGI_call_logging_enabled">
 <BR>
-<B>Call Logging -</B> This is set to true if the call_log.agi file is in place in the extensions.conf file for all outbound and hang up 'h' extensions to log all calls. This should always be 1 because it is manditory for many OSDial features to work properly.
+<B>Call Logging -</B> This is set to true if the call_log.agi file is in place in the extensions.conf file for all outbound and hang up 'h' extensions to log all calls. This should always be 1 because it is manditory for many <?=$t1?> features to work properly.
 
 <BR>
 <A NAME="phones-user_switching_enabled">
@@ -1302,22 +1302,22 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="phones-admin_hangup_enabled">
 <BR>
-<B>Admin Hang Up -</B> Set to true to allow user to be able to hang up any line at will through OSDial. Good idea only to enable this for Admin users.
+<B>Admin Hang Up -</B> Set to true to allow user to be able to hang up any line at will through <?=$t1?>. Good idea only to enable this for Admin users.
 
 <BR>
 <A NAME="phones-admin_hijack_enabled">
 <BR>
-<B>Admin Hijack -</B> Set to true to allow user to be able to grab and redirect to their extension any line at will through OSDial. Good idea only to enable this for Admin users. But is very useful for Managers.
+<B>Admin Hijack -</B> Set to true to allow user to be able to grab and redirect to their extension any line at will through <?=$t1?>. Good idea only to enable this for Admin users. But is very useful for Managers.
 
 <BR>
 <A NAME="phones-admin_monitor_enabled">
 <BR>
-<B>Admin Monitor -</B> Set to true to allow user to be able to grab and redirect to their extension any line at will through OSDial. Good idea only to enable this for Admin users. But is very useful for Managers and as a training tool.
+<B>Admin Monitor -</B> Set to true to allow user to be able to grab and redirect to their extension any line at will through <?=$t1?>. Good idea only to enable this for Admin users. But is very useful for Managers and as a training tool.
 
 <BR>
 <A NAME="phones-call_parking_enabled">
 <BR>
-<B>Call Park -</B> Set to true to allow user to be able to park calls on OSDial hold to be picked up by any other OSDial user on the system. Calls stay on hold for upto a half hour then hang up. Usually enabled for all.
+<B>Call Park -</B> Set to true to allow user to be able to park calls on <?=$t1?> hold to be picked up by any other <?=$t1?> user on the system. Calls stay on hold for upto a half hour then hang up. Usually enabled for all.
 
 <BR>
 <A NAME="phones-updater_check_enabled">
@@ -1327,27 +1327,27 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="phones-AFLogging_enabled">
 <BR>
-<B>AF Logging -</B> Set to true to log many actions of OSDial usage to a text file on the user's computer.
+<B>AF Logging -</B> Set to true to log many actions of <?=$t1?> usage to a text file on the user's computer.
 
 <BR>
 <A NAME="phones-QUEUE_ACTION_enabled">
 <BR>
-<B>Queue Enabled -</B> Set to true to have client apps use the Asterisk Central Queue system. Required for OSDial and recommended for all users.
+<B>Queue Enabled -</B> Set to true to have client apps use the Asterisk Central Queue system. Required for <?=$t1?> and recommended for all users.
 
 <BR>
 <A NAME="phones-CallerID_popup_enabled">
 <BR>
-<B>CallerID Popup -</B> Set to true to allow for numbers defined in the extensions.conf file to send CallerID popup screens to OSDial users.
+<B>CallerID Popup -</B> Set to true to allow for numbers defined in the extensions.conf file to send CallerID popup screens to <?=$t1?> users.
 
 <BR>
 <A NAME="phones-voicemail_button_enabled">
 <BR>
-<B>VMail Button -</B> Set to true to display the VOICEMAIL button and the messages count display on OSDial.
+<B>VMail Button -</B> Set to true to display the VOICEMAIL button and the messages count display on <?=$t1?>.
 
 <BR>
 <A NAME="phones-enable_fast_refresh">
 <BR>
-<B>Fast Refresh -</B> Set to true to enable a new rate of refresh of call information for the OSDial. Default disabled rate is 1000 ms ,1 second. Can increase system load if you lower this number.
+<B>Fast Refresh -</B> Set to true to enable a new rate of refresh of call information for the <?=$t1?>. Default disabled rate is 1000 ms ,1 second. Can increase system load if you lower this number.
 
 <BR>
 <A NAME="phones-fast_refresh_rate">
@@ -1357,22 +1357,22 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="phones-enable_persistant_mysql">
 <BR>
-<B>Persistant MySQL -</B> If enabled the OSDial connection will remain connected instead of connecting every second. Useful if you have a fast refresh rate set. It will increase the number of connections on your MySQL machine.
+<B>Persistant MySQL -</B> If enabled the <?=$t1?> connection will remain connected instead of connecting every second. Useful if you have a fast refresh rate set. It will increase the number of connections on your MySQL machine.
 
 <BR>
 <A NAME="phones-auto_dial_next_number">
 <BR>
-<B>Auto Dial Next Number -</B> If enabled the OSDial client will dial the next number on the list automatically upon disposition of a call unless they selected to "Stop Dialing" on the disposition screen.
+<B>Auto Dial Next Number -</B> If enabled the <?=$t1?> client will dial the next number on the list automatically upon disposition of a call unless they selected to "Stop Dialing" on the disposition screen.
 
 <BR>
 <A NAME="phones-VDstop_rec_after_each_call">
 <BR>
-<B>Stop Rec after each call -</B> If enabled the OSDial client will stop whatever recording is going on after each call has been dispositioned. Useful if you are doing a lot of recording or you are using a web form to trigger recording.
+<B>Stop Rec after each call -</B> If enabled the <?=$t1?> client will stop whatever recording is going on after each call has been dispositioned. Useful if you are doing a lot of recording or you are using a web form to trigger recording.
 
 <BR>
 <A NAME="phones-enable_sipsak_messages">
 <BR>
-<B>Enable SIPSAK Messages -</B> If enabled the server will send messages to the SIP phone to display on the phone LCD display when logged into OSDial. Feature only works with SIP phones and requires sipsak application to be installed on the web server. Default is 0.
+<B>Enable SIPSAK Messages -</B> If enabled the server will send messages to the SIP phone to display on the phone LCD display when logged into <?=$t1?>. Feature only works with SIP phones and requires sipsak application to be installed on the web server. Default is 0.
 
 <BR>
 <A NAME="phones-DBX_server">
@@ -1455,7 +1455,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="servers-max_osdial_trunks">
 <BR>
-<B>Max OSDial Trunks -</B> This field will determine the maximum number of lines that the OSDial auto-dialer will attempt to call on this server. If you want to dedicate two full PRI T1s to dialing on a server then you would set this to 46. Default is 96.
+<B>Max <?=$t1?> Trunks -</B> This field will determine the maximum number of lines that the <?=$t1?> auto-dialer will attempt to call on this server. If you want to dedicate two full PRI T1s to dialing on a server then you would set this to 46. Default is 96.
 
 <BR>
 <A NAME="servers-telnet_host">
@@ -1505,7 +1505,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="servers-answer_transfer_agent">
 <BR>
-<B>OSDial AD extension -</B> The default extension if none is present in the campaign to send calls to for OSDial auto dialing. Default is '8365'
+<B><?=$t1?> AD extension -</B> The default extension if none is present in the campaign to send calls to for <?=$t1?> auto dialing. Default is '8365'
 
 <BR>
 <A NAME="servers-ext_context">
@@ -1520,22 +1520,22 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <BR>
 <A NAME="servers-vd_server_logs">
 <BR>
-<B>Server Logs -</B> Setting this option to Y will enable logging of all OSDial related scripts to their text log files. Setting this to N will stop writing logs to files for these processes, also the screen logging of asterisk will be disabled if this is set to N when Asterisk is started. Default is Y.
+<B>Server Logs -</B> Setting this option to Y will enable logging of all <?=$t1?> related scripts to their text log files. Setting this to N will stop writing logs to files for these processes, also the screen logging of asterisk will be disabled if this is set to N when Asterisk is started. Default is Y.
 
 <BR>
 <A NAME="servers-agi_output">
 <BR>
-<B>AGI Output -</B> Setting this option to NONE will disable output from all OSDial related AGI scripts. Setting this to STDERR will send the AGI output to the Asterisk CLI. Setting this to FILE will send the output to a file in the logs directory. Setting this to BOTH will send output to both the Asterisk CLI and a log file. Default is FILE.
+<B>AGI Output -</B> Setting this option to NONE will disable output from all <?=$t1?> related AGI scripts. Setting this to STDERR will send the AGI output to the Asterisk CLI. Setting this to FILE will send the output to a file in the logs directory. Setting this to BOTH will send output to both the Asterisk CLI and a log file. Default is FILE.
 
 <BR>
 <A NAME="servers-osdial_balance_active">
 <BR>
-<B>OSDial Balance Dialing -</B> Setting this field to Y will allow the server to place balance calls for campaigns in OSDial so that the defined dial level can be met even if there are no agents logged into that campaign on this server. Default is N.
+<B><?=$t1?> Balance Dialing -</B> Setting this field to Y will allow the server to place balance calls for campaigns in <?=$t1?> so that the defined dial level can be met even if there are no agents logged into that campaign on this server. Default is N.
 
 <BR>
 <A NAME="servers-balance_trunks_offlimits">
 <BR>
-<B>OSDial Balance Offlimits -</B> This setting defines the number of trunks to not allow OSDial balance dialing to use. For example if you have 40 max OSDial trunks and balance offlimits is set to 10 you will only be able to use 30 trunk lines for OSDial balance dialing. Default is 0.
+<B><?=$t1?> Balance Offlimits -</B> This setting defines the number of trunks to not allow <?=$t1?> balance dialing to use. For example if you have 40 max <?=$t1?> trunks and balance offlimits is set to 10 you will only be able to use 30 trunk lines for <?=$t1?> balance dialing. Default is 0.
 
 
 <BR><BR><BR><BR>
@@ -1543,7 +1543,7 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 <B><FONT SIZE=3>CONFERENCES TABLE</FONT></B><BR><BR>
 <A NAME="conferences-conf_exten">
 <BR>
-<B>Conference Number -</B> This field is where you put the meetme conference dialpna number. It is also recommended that the meetme number in meetme.conf matches this number for each entry. This is for the conferences in OSDial and is used for leave-3way-call functionality in OSDial.
+<B>Conference Number -</B> This field is where you put the meetme conference dialpna number. It is also recommended that the meetme number in meetme.conf matches this number for each entry. This is for the conferences in <?=$t1?> and is used for leave-3way-call functionality in <?=$t1?>.
 
 <BR>
 <A NAME="conferences-server_ip">
@@ -1555,10 +1555,10 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 
 <BR><BR><BR><BR>
 
-<B><FONT SIZE=3>OSDial_SERVER_TRUNKS TABLE</FONT></B><BR><BR>
+<B><FONT SIZE=3><?=$t1?>_SERVER_TRUNKS TABLE</FONT></B><BR><BR>
 <A NAME="osdial_server_trunks">
 <BR>
-OSDial Server Trunks allows you to restrict the outgoing lines that are used on this server for campaign dialing on a per-campaign basis. You have the option to reserve a specific number of lines to be used by only one campaign as well as allowing that campaign to run over its reserved lines into whatever lines remain open, as long at the total lines used by OSDial on this server is less than the Max OSDial Trunks setting. Not having any of these records will allow the campaign that dials the line first to have as many lines as it can get under the Max OSDial Trunks setting.
+<?=$t1?> Server Trunks allows you to restrict the outgoing lines that are used on this server for campaign dialing on a per-campaign basis. You have the option to reserve a specific number of lines to be used by only one campaign as well as allowing that campaign to run over its reserved lines into whatever lines remain open, as long at the total lines used by <?=$t1?> on this server is less than the Max <?=$t1?> Trunks setting. Not having any of these records will allow the campaign that dials the line first to have as many lines as it can get under the Max <?=$t1?> Trunks setting.
 
 
 
@@ -1579,7 +1579,7 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
 <BR>
 <A NAME="settings-enable_queuemetrics_logging">
 <BR>
-<B>Enable QueueMetrics Logging -</B> This setting allows you to define whether OSDial will insert log entries into the queue_log database table as Asterisk Queues activity does. QueueMetrics is a standalone, closed-source statistical analysis program. You must have QueueMetrics already installed and configured before enabling this feature. Default is 0.
+<B>Enable QueueMetrics Logging -</B> This setting allows you to define whether <?=$t1?> will insert log entries into the queue_log database table as Asterisk Queues activity does. QueueMetrics is a standalone, closed-source statistical analysis program. You must have QueueMetrics already installed and configured before enabling this feature. Default is 0.
 
 <BR>
 <A NAME="settings-queuemetrics_server_ip">
@@ -1609,7 +1609,7 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
 <BR>
 <A NAME="settings-queuemetrics_log_id">
 <BR>
-<B>QueueMetrics Log ID -</B> This is the server ID that all OSDial logs going into the QueueMetrics database will use as an identifier for each record.
+<B>QueueMetrics Log ID -</B> This is the server ID that all <?=$t1?> logs going into the QueueMetrics database will use as an identifier for each record.
 
 <BR>
 <A NAME="settings-queuemetrics_eq_prepend">
@@ -1619,12 +1619,12 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
 <BR>
 <A NAME="settings-osdial_agent_disable">
 <BR>
-<B>OSDial Agent Disable Display -</B> This field is used to select when to show an agent when their session has been disabled by the system, a manager action or by an external measure. The NOT_ACTIVE setting will disable the message on the agents screen. The LIVE_AGENT setting will only display the disabled message when the agents osdial_auto_calls record has been removed, such as during a force logout or emergency logout. 
+<B><?=$t1?> Agent Disable Display -</B> This field is used to select when to show an agent when their session has been disabled by the system, a manager action or by an external measure. The NOT_ACTIVE setting will disable the message on the agents screen. The LIVE_AGENT setting will only display the disabled message when the agents osdial_auto_calls record has been removed, such as during a force logout or emergency logout. 
 
 <BR>
 <A NAME="settings-allow_sipsak_messages">
 <BR>
-<B>Allow SIPSAK Messages -</B> If set to 1, this will allow the phones table setting to work properly, the server will send messages to the SIP phone to display on the phone LCD display when logged into OSDial. This feature only works with SIP phones and requires sipsak application to be installed on the web server. Default is 0. 
+<B>Allow SIPSAK Messages -</B> If set to 1, this will allow the phones table setting to work properly, the server will send messages to the SIP phone to display on the phone LCD display when logged into <?=$t1?>. This feature only works with SIP phones and requires sipsak application to be installed on the web server. Default is 0. 
 
 <BR>
 <A NAME="settings-admin_home_url">
@@ -1639,18 +1639,18 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
 
 <BR><BR><BR><BR>
 
-<B><FONT SIZE=3>OSDial_Statuses Table</FONT></B><BR><BR>
+<B><FONT SIZE=3><?=$t1?>_Statuses Table</FONT></B><BR><BR>
 <A NAME="osdial_statuses">
 <BR>
-Through the use of system statuses, you can have statuses that exist for campaign and in-group. The Status must be 1-6 characters in length, the description must be 2-30 characters in length and Selectable defines whether it shows up in OSDial as an agent disposition. The human_answered field is used when calculating the drop percentage, or abandon rate. Setting human_answered to Y will use this status when counting the human-answered calls. The Category option allows you to group several statuses into a catogy that can be used for statistical analysis.</B>
+Through the use of system statuses, you can have statuses that exist for campaign and in-group. The Status must be 1-6 characters in length, the description must be 2-30 characters in length and Selectable defines whether it shows up in <?=$t1?> as an agent disposition. The human_answered field is used when calculating the drop percentage, or abandon rate. Setting human_answered to Y will use this status when counting the human-answered calls. The Category option allows you to group several statuses into a catogy that can be used for statistical analysis.</B>
 
 
 <BR><BR><BR><BR>
 
-<B><FONT SIZE=3>OSDial_Status_Categories Table</FONT></B><BR><BR>
+<B><FONT SIZE=3><?=$t1?>_Status_Categories Table</FONT></B><BR><BR>
 <A NAME="osdial_status_categories">
 <BR>
-Through the use of system status categories, you can group together statuses to allow for statistical analysis on a group of statuses. The Category ID must be 2-20 characters in length with no spaces, the name must be 2-50 characters in length, the description is optional and Time On OSDial Display defines whether that status will be one of the upto 4 statuses that can be calculated and displayed on the Time On OSDial Real-Time report.</B>
+Through the use of system status categories, you can group together statuses to allow for statistical analysis on a group of statuses. The Category ID must be 2-20 characters in length with no spaces, the name must be 2-50 characters in length, the description is optional and Time On <?=$t1?> Display defines whether that status will be one of the upto 4 statuses that can be calculated and displayed on the Time On <?=$t1?> Real-Time report.</B>
 
 
 

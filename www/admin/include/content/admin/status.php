@@ -158,7 +158,7 @@ if ($ADD==321111111111111)
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	echo "<br><center>\n";
-	echo "<b><font color=$default_text size=+1>OSDial STATUSES WITHIN THIS SYSTEM &nbsp; $NWB#osdial_statuses$NWE</font></b><br><br>\n";
+	echo "<b><font color=$default_text size=+1>$t1 STATUSES WITHIN THIS SYSTEM &nbsp; $NWB#osdial_statuses$NWE</font></b><br><br>\n";
 	echo "<TABLE width=750 cellspacing=0>\n";
 	echo "<tr bgcolor=$menubarcolor><td align=center><font size=1 color=white>STATUS</font></td>";
 	echo "<td align=center><font size=1 color=white>DESCRIPTION</font></td>";
@@ -286,7 +286,7 @@ if ($ADD==231111111111111)
 			if ( ($row[0] > 3) and (ereg('Y',$tovdad_display)) )
 				{
 				$tovdad_display = 'N';
-				echo "<br><B><font color=red>ERROR: There are already 4 Status Categories set to Time On OSDial Display</font></B>\n";
+				echo "<br><B><font color=red>ERROR: There are already 4 Status Categories set to Time On $t1 Display</font></B>\n";
 				}
 
 			$stmt="INSERT INTO osdial_status_categories (vsc_id,vsc_name,vsc_description,tovdad_display) values('$vsc_id','$vsc_name','$vsc_description','$tovdad_display');";
@@ -348,7 +348,7 @@ if ($ADD==431111111111111)
 			if ( ($row[0] > 3) and (ereg('Y',$tovdad_display)) )
 				{
 				$tovdad_display = 'N';
-				echo "<br><B><font color=red>ERROR: There are already 4 Status Categories set to Time On OSDial Display</font></B>\n";
+				echo "<br><B><font color=red>ERROR: There are already 4 Status Categories set to Time On $t1 Display</font></B>\n";
 				}
 
 			$stmt="UPDATE osdial_status_categories SET vsc_name='$vsc_name',vsc_description='$vsc_description',tovdad_display='$tovdad_display' where vsc_id='$vsc_id';";
@@ -385,7 +385,7 @@ if ($ADD==331111111111111)
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	echo "<br>\n";
-	echo "<b><center><font color=$default_text>OSDial STATUS CATEGORIES &nbsp; $NWB#osdial_status_categories$NWE</font></center></b><br>\n";
+	echo "<b><center><font color=$default_text>$t1 STATUS CATEGORIES &nbsp; $NWB#osdial_status_categories$NWE</font></center></b><br>\n";
 	echo "<TABLE width=700 cellspacing=3>\n";
 	echo "<tr><td><font size=2 color=$default_text>CATEGORY</font></td><td><font size=2 color=$default_text>NAME</font></td><td><font size=2 color=$default_text>TO&nbsp;OSDail</font></td><td><font size=2 color=$default_text>STATUSES IN THIS CATEGORY</font></td></tr>\n";
 

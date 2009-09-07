@@ -292,7 +292,7 @@ if ($ADD==11111111111111)
 	echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=$default_text size=+1>ADD A NEW OSDial CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>ADD A NEW $t1 CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21111111111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Conference Number: </td><td align=left><input type=text name=conf_exten size=8 maxlength=7> (digits only)$NWB#conferences-conf_exten$NWE</td></tr>\n";
@@ -324,14 +324,14 @@ echo "<TABLE><TR><TD>\n";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
-		{echo "<br><font color=red>OSDial CONFERENCE NOT ADDED - there is already an OSDial conference in the system with this ID and server</font>\n";}
+		{echo "<br><font color=red>$t1 CONFERENCE NOT ADDED - there is already an $t1 conference in the system with this ID and server</font>\n";}
 	else
 		{
 		 if ( (strlen($conf_exten) < 1) or (strlen($server_ip) < 7) )
-			{echo "<br><font color=red>OSDial CONFERENCE NOT ADDED - Please go back and look at the data you entered</font>\n";}
+			{echo "<br><font color=red>$t1 CONFERENCE NOT ADDED - Please go back and look at the data you entered</font>\n";}
 		 else
 			{
-			echo "<br><font color=$default_text>OSDial CONFERENCE ADDED</font>\n";
+			echo "<br><font color=$default_text>$t1 CONFERENCE ADDED</font>\n";
 
 			$stmt="INSERT INTO osdial_conferences (conf_exten,server_ip) values('$conf_exten','$server_ip');";
 			$rslt=mysql_query($stmt, $link);
@@ -355,14 +355,14 @@ if ($ADD==41111111111111)
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ( ($row[0] > 0) && ( ($conf_exten != $old_conf_exten) or ($server_ip != $old_server_ip) ) )
-		{echo "<br><font color=red>OSDial CONFERENCE NOT MODIFIED - there is already a Conference in the system with this extension-server</font>\n";}
+		{echo "<br><font color=red>$t1 CONFERENCE NOT MODIFIED - there is already a Conference in the system with this extension-server</font>\n";}
 	else
 		{
 		 if ( (strlen($conf_exten) < 1) or (strlen($server_ip) < 7) )
-			{echo "<br><font color=red>OSDial CONFERENCE NOT MODIFIED - Please go back and look at the data you entered</font>\n";}
+			{echo "<br><font color=red>$t1 CONFERENCE NOT MODIFIED - Please go back and look at the data you entered</font>\n";}
 		 else
 			{
-			echo "<br><font color=$default_text>OSDial CONFERENCE MODIFIED: $conf_exten</font>\n";
+			echo "<br><font color=$default_text>$t1 CONFERENCE MODIFIED: $conf_exten</font>\n";
 
 			$stmt="UPDATE osdial_conferences set conf_exten='$conf_exten',server_ip='$server_ip',extension='$extension' where conf_exten='$old_conf_exten';";
 			$rslt=mysql_query($stmt, $link);
@@ -390,13 +390,13 @@ if ($ADD==51111111111111)
 
 	 if ( (strlen($conf_exten) < 2) or (strlen($server_ip) < 7) or ($LOGast_delete_phones < 1) )
 		{
-		 echo "<br><font color=red>OSDial CONFERENCE NOT DELETED - Please go back and look at the data you entered\n";
+		 echo "<br><font color=red>$t1 CONFERENCE NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Conference must be at least 2 characters in length\n";
 		 echo "<br>Server IP be at least 7 characters in length</font><br>\n";
 		}
 	 else
 		{
-		echo "<br><B><font color=$default_text>OSDial CONFERENCE DELETION CONFIRMATION: $conf_exten - $server_ip</B>\n";
+		echo "<br><B><font color=$default_text>$t1 CONFERENCE DELETION CONFIRMATION: $conf_exten - $server_ip</B>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=61111111111111&conf_exten=$conf_exten&server_ip=$server_ip&CoNfIrM=YES\">Click here to delete phone $conf_exten - $server_ip</a></font><br><br><br>\n";
 		}
 $ADD='31111111111111';		# go to osdial conference modification below
@@ -414,7 +414,7 @@ if ($ADD==61111111111111)
 
 	 if ( (strlen($conf_exten) < 2) or (strlen($server_ip) < 7) or ($CoNfIrM != 'YES') or ($LOGast_delete_phones < 1) )
 		{
-		 echo "<br><font color=red>OSDial CONFERENCE NOT DELETED - Please go back and look at the data you entered\n";
+		 echo "<br><font color=red>$t1 CONFERENCE NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Conference be at least 2 characters in length\n";
 		 echo "<br>Server IP be at least 7 characters in length</font><br>\n";
 		}
@@ -430,7 +430,7 @@ if ($ADD==61111111111111)
 			fwrite ($fp, "$date|!!!DELETING CONF!!!!|$PHP_AUTH_USER|$ip|conf_exten='$conf_exten'|server_ip='$server_ip'|\n");
 			fclose($fp);
 			}
-		echo "<br><B><font color=$default_text>OSDial CONFERENCE DELETION COMPLETED: $conf_exten - $server_ip</font></B>\n";
+		echo "<br><B><font color=$default_text>$t1 CONFERENCE DELETION COMPLETED: $conf_exten - $server_ip</font></B>\n";
 		echo "<br><br>\n";
 		}
 $ADD='10000000000000';		# go to osdial conference list
@@ -456,7 +456,7 @@ if ($ADD==31111111111111)
 
     $servers_list = get_servers($link, $row[1]);
 
-	echo "<center><br><font color=$default_text size=+1>MODIFY A OSDial CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>MODIFY A $t1 CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=41111111111111>\n";
 	echo "<input type=hidden name=old_conf_exten value=\"$row[0]\">\n";
 	echo "<input type=hidden name=old_server_ip value=\"$row[1]\">\n";
@@ -473,7 +473,7 @@ if ($ADD==31111111111111)
 
 	if ($LOGast_delete_phones > 0)
 		{
-		echo "<br><br><a href=\"$PHP_SELF?ADD=51111111111111&conf_exten=$conf_exten&server_ip=$server_ip\">DELETE THIS OSDial CONFERENCE</a>\n";
+		echo "<br><br><a href=\"$PHP_SELF?ADD=51111111111111&conf_exten=$conf_exten&server_ip=$server_ip\">DELETE THIS $t1 CONFERENCE</a>\n";
 		}
 	}
 	else

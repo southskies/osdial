@@ -60,7 +60,7 @@ if ($ADD==999999 and $SUB=='') {
 	    echo "<head>";
 
 	    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
-	    echo "<title>OSDial: Server Stats and Reports</title></head><body bgcolor=white>";
+	    echo "<title>$t1: Server Stats and Reports</title></head><body bgcolor=white>";
 	    echo "<font size=4 color=$default_text><br><center>SERVER STATS AND REPORTS</center></font><br><br>";
 	    echo "<ul class=>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=12\"><font face=\"arial,helvetica\" size=2>Time On Dialer (per campaign)</a> &nbsp;  <a href=\"$PHP_SELF?ADD=999999&SUB=11\"><font face=\"arial,helvetica\" size=2>(all campaigns SUMMARY)</a> &nbsp; &nbsp; SIP <a href=\"$PHP_SELF?ADD=999999&SUB=12&SIPmonitorLINK=1\"><font face=\"arial,helvetica\" size=2>Listen</a> - <a href=\"$PHP_SELF?ADD=999999&SUB=12&SIPmonitorLINK=2\"><font face=\"arial,helvetica\" size=2>Barge</a> &nbsp; &nbsp; IAX <a href=\"$PHP_SELF?ADD=999999&SUB=12&IAXmonitorLINK=1\"><font face=\"arial,helvetica\" size=2>Listen</a> - <a href=\"$PHP_SELF?ADD=999999&SUB=12&IAXmonitorLINK=2\"><font face=\"arial,helvetica\" size=2>Barge</a></font>";

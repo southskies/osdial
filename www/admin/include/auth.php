@@ -23,7 +23,7 @@
 
 if ($force_logout) {
 	if( (strlen($PHP_AUTH_USER)>0) or (strlen($PHP_AUTH_PW)>0) ) {
-		Header("WWW-Authenticate: Basic realm=\"OSDial-Administrator\"");
+		Header("WWW-Authenticate: Basic realm=\"$t1-Administrator\"");
 		Header("HTTP/1.0 401 Unauthorized");
 	}
 	#echo "<br><br><br><center>You have now logged out. Loading Login screen...</center>\n";
@@ -49,7 +49,7 @@ $browser = getenv("HTTP_USER_AGENT");
 
   if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or ($auth<1))
 	{
-    Header("WWW-Authenticate: Basic realm=\"OSDial-Administrator\"");
+    Header("WWW-Authenticate: Basic realm=\"$t1-Administrator\"");
     Header("HTTP/1.0 401 Unauthorized");
     echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
     exit;

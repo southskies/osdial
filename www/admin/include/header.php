@@ -400,8 +400,8 @@ if (strlen($admin_hh) > 1) {
                 <font face="arial,helvetica" color=<?=$default_text?> size=<?= $subheader_font_size ?>> &nbsp; 
                     <a href="<?= $PHP_SELF ?>?ADD=1000000000000"> Show Conferences </a> &nbsp; &nbsp; &nbsp; 
                     <a href="<?= $PHP_SELF ?>?ADD=1111111111111"> Add A New Conference </a> &nbsp; &nbsp; &nbsp; 
-                    <a href="<?= $PHP_SELF ?>?ADD=10000000000000"> Show OSDial Conferences </a> &nbsp; &nbsp; &nbsp; 
-                    <a href="<?= $PHP_SELF ?>?ADD=11111111111111"> Add A New OSDial Conference </a>
+                    <a href="<?= $PHP_SELF ?>?ADD=10000000000000"> Show <?=$t1?> Conferences </a> &nbsp; &nbsp; &nbsp; 
+                    <a href="<?= $PHP_SELF ?>?ADD=11111111111111"> Add A New <?=$t1?> Conference </a>
                 </font>
             </td>
         </tr>

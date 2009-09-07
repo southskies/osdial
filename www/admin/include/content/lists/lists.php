@@ -100,7 +100,7 @@ if ($ADD==112) {
 	$browser = getenv("HTTP_USER_AGENT");
 	
 	if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth)) {
-		Header("WWW-Authenticate: Basic realm=\"OSDial-Administrator\"");
+		Header("WWW-Authenticate: Basic realm=\"$t1-Administrator\"");
 		Header("HTTP/1.0 401 Unauthorized");
 		echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
 		exit;
@@ -116,12 +116,12 @@ if ($ADD==112) {
 				$LOGmodify_leads			=$row[1];
 	
 			if ($WeBRooTWritablE > 0) {
-				fwrite ($fp, "OSDial|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|$LOGfullname|\n");
+				fwrite ($fp, "$t1|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|$LOGfullname|\n");
 				fclose($fp);
 			}
 		} else {
 			if ($WeBRooTWritablE > 0) {
-				fwrite ($fp, "OSDial|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|\n");
+				fwrite ($fp, "$t1|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|\n");
 				fclose($fp);
 			}
 		}
@@ -946,7 +946,7 @@ if ($ADD==122) {
 	$browser = getenv("HTTP_USER_AGENT");
 
 	if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth)) {
-		Header("WWW-Authenticate: Basic realm=\"OSDial-LEAD-LOADER\"");
+		Header("WWW-Authenticate: Basic realm=\"$t1-LEAD-LOADER\"");
 		Header("HTTP/1.0 401 Unauthorized");
 		echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
 		exit;
@@ -2074,7 +2074,7 @@ if ($ADD==122) {
 			flush();
 			print "<table border=0 cellpadding=3 cellspacing=0 width=700 align=center>\r\n";
 			print "  <tr bgcolor='#330099'>\r\n";
-			print "    <th align=right><font class='standard' color='white'>OSDial Column</font></th>\r\n";
+			print "    <th align=right><font class='standard' color='white'>$t1 Column</font></th>\r\n";
 			print "    <th><font class='standard' color='white'>File data</font></th>\r\n";
 			print "  </tr>\r\n";
 				
@@ -2245,7 +2245,7 @@ if ($ADD==125) {
 	$browser = getenv("HTTP_USER_AGENT");
 	
 	if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth)) {
-		Header("WWW-Authenticate: Basic realm=\"OSDial-Administrator\"");
+		Header("WWW-Authenticate: Basic realm=\"$t1-Administrator\"");
 		Header("HTTP/1.0 401 Unauthorized");
 		echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
 		exit;
@@ -2261,12 +2261,12 @@ if ($ADD==125) {
 				$LOGmodify_leads			=$row[1];
 	
 			if ($WeBRooTWritablE > 0) {
-				fwrite ($fp, "OSDial|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|$LOGfullname|\n");
+				fwrite ($fp, "$t1|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|$LOGfullname|\n");
 				fclose($fp);
 			}
 		} else {
 			if ($WeBRooTWritablE > 0) {
-				fwrite ($fp, "OSDial|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|\n");
+				fwrite ($fp, "$t1|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|\n");
 				fclose($fp);
 			}
 		}
@@ -2459,7 +2459,7 @@ if ($ADD==611)
 		$rslt=mysql_query($stmt, $link);
 
     if ($SUB==1) {
-		  echo "<br><font color=$default_text>REMOVING LIST LEADS FROM OSDial_LIST TABLE</font>\n";
+		  echo "<br><font color=$default_text>REMOVING LIST LEADS FROM $t1 TABLE</font>\n";
 		  $stmt="DELETE from osdial_list where list_id='$list_id';";
 		  $rslt=mysql_query($stmt, $link);
     }
