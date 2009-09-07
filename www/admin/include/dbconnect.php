@@ -20,9 +20,14 @@
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
 #
-if ( file_exists("/etc/osdial.conf") )
+$conffile = "/etc/osdial.conf";
+$conffile2 = getcwd() . '/../../../db.conf';
+if ( file_exists($conffile2) ) {
+    $conffile = $conffile2;
+}
+if ( file_exists($conffile) )
 {
-$DBCagc = file("/etc/osdial.conf");
+$DBCagc = file($conffile);
 foreach ($DBCagc as $DBCline) 
 	{
 	$DBCline = preg_replace("/ |>|\n|\r|\t|\#.*|;.*/","",$DBCline);
