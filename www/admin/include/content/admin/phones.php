@@ -32,9 +32,9 @@ if ($ADD==11111111111)
 	{
     $servers_list = get_servers($link, '');
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>ADD A NEW PHONE</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>ADD A NEW PHONE</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21111111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 
@@ -80,7 +80,7 @@ if ($ADD==11111111111)
 if ($ADD==21111111111)
 {
 echo "<TABLE><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from phones where extension='$extension' and server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -92,7 +92,7 @@ echo "<TABLE><TR><TD>\n";
 			{echo "<br><font color=red>PHONE NOT ADDED - Please go back and look at the data you entered</font>\n";}
 		 else
 			{
-			echo "<br><font color=navy>PHONE ADDED</font>\n";
+			echo "<br><font color=$default_text>PHONE ADDED</font>\n";
 
 			$stmt="INSERT INTO phones (extension,dialplan_number,voicemail_id,phone_ip,computer_ip,server_ip,login,pass,status,active,phone_type,fullname,company,picture,protocol,local_gmt,outbound_cid) values('$extension','$dialplan_number','$voicemail_id','$phone_ip','$computer_ip','$server_ip','$login','$pass','$status','$active','$phone_type','$fullname','$company','$picture','$protocol','$local_gmt','$outbound_cid');";
 			$rslt=mysql_query($stmt, $link);
@@ -112,7 +112,7 @@ if ($ADD==41111111111)
 {
 	if ($LOGast_admin_access==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT count(*) from phones where extension='$extension' and server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
@@ -122,10 +122,10 @@ if ($ADD==41111111111)
 	else
 		{
 			 if ( (strlen($extension) < 1) or (strlen($server_ip) < 7) or (strlen($dialplan_number) < 1) or (strlen($voicemail_id) < 1) or (strlen($login) < 1)  or (strlen($pass) < 1))
-			{echo "<br><font color=navy>PHONE NOT MODIFIED - Please go back and look at the data you entered</font>\n";}
+			{echo "<br><font color=$default_text>PHONE NOT MODIFIED - Please go back and look at the data you entered</font>\n";}
 		 else
 			{
-			echo "<br><font color=navy>PHONE MODIFIED: $extension</font>\n";
+			echo "<br><font color=$default_text>PHONE MODIFIED: $extension</font>\n";
 
 			$stmt="UPDATE phones set extension='$extension', dialplan_number='$dialplan_number', voicemail_id='$voicemail_id', phone_ip='$phone_ip', computer_ip='$computer_ip', server_ip='$server_ip', login='$login', pass='$pass', status='$status', active='$active', phone_type='$phone_type', fullname='$fullname', company='$company', picture='$picture', protocol='$protocol', local_gmt='$local_gmt', ASTmgrUSERNAME='$ASTmgrUSERNAME', ASTmgrSECRET='$ASTmgrSECRET', login_user='$login_user', login_pass='$login_pass', login_campaign='$login_campaign', park_on_extension='$park_on_extension', conf_on_extension='$conf_on_extension', OSDIAL_park_on_extension='$OSDIAL_park_on_extension', OSDIAL_park_on_filename='$OSDIAL_park_on_filename', monitor_prefix='$monitor_prefix', recording_exten='$recording_exten', voicemail_exten='$voicemail_exten', voicemail_dump_exten='$voicemail_dump_exten', ext_context='$ext_context', dtmf_send_extension='$dtmf_send_extension', call_out_number_group='$call_out_number_group', client_browser='$client_browser', install_directory='$install_directory', local_web_callerID_URL='" . mysql_real_escape_string($local_web_callerID_URL) . "', OSDIAL_web_URL='" . mysql_real_escape_string($OSDIAL_web_URL) . "', AGI_call_logging_enabled='$AGI_call_logging_enabled', user_switching_enabled='$user_switching_enabled', conferencing_enabled='$conferencing_enabled', admin_hangup_enabled='$admin_hangup_enabled', admin_hijack_enabled='$admin_hijack_enabled', admin_monitor_enabled='$admin_monitor_enabled', call_parking_enabled='$call_parking_enabled', updater_check_enabled='$updater_check_enabled', AFLogging_enabled='$AFLogging_enabled', QUEUE_ACTION_enabled='$QUEUE_ACTION_enabled', CallerID_popup_enabled='$CallerID_popup_enabled', voicemail_button_enabled='$voicemail_button_enabled', enable_fast_refresh='$enable_fast_refresh', fast_refresh_rate='$fast_refresh_rate', enable_persistant_mysql='$enable_persistant_mysql', auto_dial_next_number='$auto_dial_next_number', VDstop_rec_after_each_call='$VDstop_rec_after_each_call', DBX_server='$DBX_server', DBX_database='$DBX_database', DBX_user='$DBX_user', DBX_pass='$DBX_pass', DBX_port='$DBX_port', DBY_server='$DBY_server', DBY_database='$DBY_database', DBY_user='$DBY_user', DBY_pass='$DBY_pass', DBY_port='$DBY_port', outbound_cid='$outbound_cid', enable_sipsak_messages='$enable_sipsak_messages' where extension='$old_extension' and server_ip='$old_server_ip';";
 			$rslt=mysql_query($stmt, $link);
@@ -149,7 +149,7 @@ $ADD=31111111111;	# go to phone modification form below
 
 if ($ADD==51111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($extension) < 2) or (strlen($server_ip) < 7) or ($LOGast_delete_phones < 1) )
 		{
@@ -159,7 +159,7 @@ if ($ADD==51111111111)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>PHONE DELETION CONFIRMATION: $extension - $server_ip</B>\n";
+		echo "<br><B><font color=$default_text>PHONE DELETION CONFIRMATION: $extension - $server_ip</B>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=61111111111&extension=$extension&server_ip=$server_ip&CoNfIrM=YES\">Click here to delete phone $extension - $server_ip</a></font><br><br><br>\n";
 		}
 $ADD='31111111111';		# go to phone modification below
@@ -173,7 +173,7 @@ $ADD='31111111111';		# go to phone modification below
 
 if ($ADD==61111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($extension) < 2) or (strlen($server_ip) < 7) or ($CoNfIrM != 'YES') or ($LOGast_delete_phones < 1) )
 		{
@@ -193,7 +193,7 @@ if ($ADD==61111111111)
 			fwrite ($fp, "$date|!!!DELETING PHONE!!!|$PHP_AUTH_USER|$ip|extension='$extension'|server_ip='$server_ip'|\n");
 			fclose($fp);
 			}
-		echo "<br><B><font color=navy>PHONE DELETION COMPLETED: $extension - $server_ip</font></B>\n";
+		echo "<br><B><font color=$default_text>PHONE DELETION COMPLETED: $extension - $server_ip</font></B>\n";
 		echo "<br><br>\n";
 		}
 $ADD='10000000000';		# go to phone list
@@ -210,14 +210,14 @@ if ($ADD==31111111111)
 	if ($LOGast_admin_access==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from phones where extension='$extension' and server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
     $servers_list = get_servers($link, $row[5]);
 
-	echo "<center><br><font color=navy size=+1>MODIFY A PHONE</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>MODIFY A PHONE</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=41111111111>\n";
 	echo "<input type=hidden name=old_extension value=\"$row[0]\">\n";
 	echo "<input type=hidden name=old_server_ip value=\"$row[5]\">\n";
@@ -318,7 +318,7 @@ if ($ADD==31111111111)
 if ($ADD==10000000000)
 {
 echo "<TABLE align=center><TR><TD>\n";
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 $EXTENlink='stage=EXTENDOWN';
 $PROTOlink='stage=PROTODOWN';
@@ -337,7 +337,7 @@ if (eregi("STATUSDOWN",$stage)) {$SQLorder='order by status desc';   $STATUSlink
 	$rslt=mysql_query($stmt, $link);
 	$phones_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=navy size=+1>PHONES<br><br><font size=-2>(<a href=#VMList>VoiceMail List</a>)</font><br><br>\n";
+echo "<center><br><font color=$default_text size=+1>PHONES<br><br><font size=-2>(<a href=#VMList>VoiceMail List</a>)</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=$menubarcolor>";
 echo "<td><a href=\"$PHP_SELF?ADD=10000000000&$EXTENlink\"><font size=1 color=white><B>EXTEN</B></a></td>";
@@ -356,7 +356,7 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td></tr>\n";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor><td><a href=\"$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]\"><font size=1 color=black>$row[0]</font></a></td><td><font size=1>$row[16]</td><td><font size=1>$row[5]</td><td><font size=1>$row[1]</td><td><font size=1>$row[2]</td><td><font size=1>$row[8]</td><td><font size=1>$row[11]</td><td><font size=1>$row[14]</td><td><font size=1>$row[15]</td>";
+		echo "<tr $bgcolor><td><a href=\"$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]\"><font size=1 color=$default_text>$row[0]</font></a></td><td><font size=1>$row[16]</td><td><font size=1>$row[5]</td><td><font size=1>$row[1]</td><td><font size=1>$row[2]</td><td><font size=1>$row[8]</td><td><font size=1>$row[11]</td><td><font size=1>$row[14]</td><td><font size=1>$row[15]</td>";
 		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]\">MODIFY</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=10&iframe=phone_stats.php?extension=$row[0]%26server_ip=$row[5]\">STATS</a></td></tr>\n";
 		$o++;
 	}
@@ -367,15 +367,15 @@ echo "</TABLE></center>\n";
 echo "<a name=VMList></a>";
 echo '<br><br><br><br>';
 echo '<center>';
-echo '<b><font color=navy size=-1>VOICE MAIL</b><br>';
+echo "<b><font color=$default_text size=-1>VOICE MAIL</b><br>";
 if (file_exists ('VMnow.txt') ) {
-	echo "<font color=navy><p> As of " . date("l dS o F h:i:s A",filectime('VMnow.txt') )  . "</p></font>";
+	echo "<font color=$default_text><p> As of " . date("l dS o F h:i:s A",filectime('VMnow.txt') )  . "</p></font>";
 	echo "<table align=center width=560><tr>";
-	echo "<td width=10 align=center><font color=navy>Context</td>";
-	echo "<td width=30 align=center><font color=navy>Mbox</font></td>";
-	echo "<td width=110 align=center><font color=navy>Agent</font></td>";
-	// no vmZone defined  echo "<td width=50><font color=navy>Zone</font></td>";
-	echo "<td width=35 align=right><font color=navy>NewMsgs</font></td><tr>";
+	echo "<td width=10 align=center><font color=$default_text>Context</td>";
+	echo "<td width=30 align=center><font color=$default_text>Mbox</font></td>";
+	echo "<td width=110 align=center><font color=$default_text>Agent</font></td>";
+	// no vmZone defined  echo "<td width=50><font color=$default_text>Zone</font></td>";
+	echo "<td width=35 align=right><font color=$default_text>NewMsgs</font></td><tr>";
 	echo "</table>";
 	// get a web page into an array and print it out ("l dS of F Y h:i:s A")
 	$fcontents = file( 'VMnow.txt' );

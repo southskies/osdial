@@ -28,7 +28,7 @@
 if ($ADD==22)
 {
 
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_campaign_statuses where campaign_id='$campaign_id' and status='$status';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -40,7 +40,7 @@ if ($ADD==22)
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		if ($row[0] > 0)
-			{echo "<br><font color=navy> CAMPAIGN STATUS NOT ADDED - there is already a global-status in the system with this name</font>\n";}
+			{echo "<br><font color=$default_text> CAMPAIGN STATUS NOT ADDED - there is already a global-status in the system with this name</font>\n";}
 		else
 			{
 			 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) or (strlen($status_name) < 2) )
@@ -51,7 +51,7 @@ if ($ADD==22)
 				}
 			 else
 				{
-				echo "<br><B><font color=navy> CAMPAIGN STATUS ADDED: $campaign_id - $status</font></B>\n";
+				echo "<br><B><font color=$default_text> CAMPAIGN STATUS ADDED: $campaign_id - $status</font></B>\n";
 
 				$stmt="INSERT INTO osdial_campaign_statuses (status,status_name,selectable,campaign_id,human_answered,category) values('$status','$status_name','$selectable','$campaign_id','$human_answered','$category');";
 				$rslt=mysql_query($stmt, $link);
@@ -79,7 +79,7 @@ if ($ADD==42)
 {
 	if ($LOGmodify_campaigns==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) )
 		{
@@ -91,7 +91,7 @@ if ($ADD==42)
 		{
 		if (ereg('delete',$stage))
 			{
-			echo "<br><B><font color=navy>CUSTOM CAMPAIGN STATUS DELETED: $campaign_id - $status</font></B>\n";
+			echo "<br><B><font color=$default_text>CUSTOM CAMPAIGN STATUS DELETED: $campaign_id - $status</font></B>\n";
 
 			$stmt="DELETE FROM osdial_campaign_statuses where campaign_id='$campaign_id' and status='$status';";
 			$rslt=mysql_query($stmt, $link);
@@ -110,7 +110,7 @@ if ($ADD==42)
 			}
 		if (ereg('modify',$stage))
 			{
-			echo "<br><B><font color=navy>CUSTOM CAMPAIGN STATUS MODIFIED: $campaign_id - $status</font></B>\n";
+			echo "<br><B><font color=$default_text>CUSTOM CAMPAIGN STATUS MODIFIED: $campaign_id - $status</font></B>\n";
 
 			$stmt="UPDATE osdial_campaign_statuses SET status_name='$status_name',selectable='$selectable',human_answered='$human_answered',category='$category' where campaign_id='$campaign_id' and status='$status';";
 			$rslt=mysql_query($stmt, $link);
@@ -140,9 +140,9 @@ $ADD=31;	# go to campaign modification form below
 if ($ADD==32)
 {
 echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-echo "<center><br><font color=navy size=+1>CUSTOM CAMPAIGN STATUSES</font><br><br>\n";
+echo "<center><br><font color=$default_text size=+1>CUSTOM CAMPAIGN STATUSES</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=$menubarcolor>\n";
 echo "<td><font color=white size=1>CAMPAIGN</font></td>\n";

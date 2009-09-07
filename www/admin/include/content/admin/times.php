@@ -31,9 +31,9 @@ if ($ADD==111111111)
 	if ($LOGmodify_call_times==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>ADD NEW CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>ADD NEW CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=211111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Call Time ID: </td><td align=left><input type=text name=call_time_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_call_times-call_time_id$NWE</td></tr>\n";
@@ -58,7 +58,7 @@ if ($ADD==111111111)
 
 if ($ADD==211111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_call_times where call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -76,7 +76,7 @@ if ($ADD==211111111)
 			$stmt="INSERT INTO osdial_call_times SET call_time_id='$call_time_id',call_time_name='$call_time_name',call_time_comments='$call_time_comments';";
 			$rslt=mysql_query($stmt, $link);
 
-			echo "<br><B><font color=navy>CALL TIME ADDED: $call_time_id</font></B>\n";
+			echo "<br><B><font color=$default_text>CALL TIME ADDED: $call_time_id</font></B>\n";
 
 			### LOG CHANGES TO LOG FILE ###
 			if ($WeBRooTWritablE > 0)
@@ -100,7 +100,7 @@ if ($ADD==411111111)
 {
 	if ($LOGmodify_call_times==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($call_time_id) < 2) or (strlen($call_time_name) < 2) )
 		{
@@ -128,7 +128,7 @@ if ($ADD==411111111)
 		$stmt="UPDATE osdial_call_times set call_time_name='$call_time_name', call_time_comments='$call_time_comments', ct_default_start='$ct_default_start', ct_default_stop='$ct_default_stop', ct_sunday_start='$ct_sunday_start', ct_sunday_stop='$ct_sunday_stop', ct_monday_start='$ct_monday_start', ct_monday_stop='$ct_monday_stop', ct_tuesday_start='$ct_tuesday_start', ct_tuesday_stop='$ct_tuesday_stop', ct_wednesday_start='$ct_wednesday_start', ct_wednesday_stop='$ct_wednesday_stop', ct_thursday_start='$ct_thursday_start', ct_thursday_stop='$ct_thursday_stop', ct_friday_start='$ct_friday_start', ct_friday_stop='$ct_friday_stop', ct_saturday_start='$ct_saturday_start', ct_saturday_stop='$ct_saturday_stop',use_recycle_gap='$use_recycle_gap' where call_time_id='$call_time_id';";
 		$rslt=mysql_query($stmt, $link);
 
-		echo "<br><B><font color=navy>CALL TIME MODIFIED</font></B>\n";
+		echo "<br><B><font color=$default_text>CALL TIME MODIFIED</font></B>\n";
 
 		### LOG CHANGES TO LOG FILE ###
 		if ($WeBRooTWritablE > 0)
@@ -141,7 +141,7 @@ if ($ADD==411111111)
 	}
 	else
 	{
-	echo "<font color=navy>You do not have permission to view this page</font>\n";
+	echo "<font color=$default_text>You do not have permission to view this page</font>\n";
 	exit;
 	}
 $ADD=311111111;	# go to call time modification form below
@@ -154,7 +154,7 @@ $ADD=311111111;	# go to call time modification form below
 
 if ($ADD==511111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($call_time_id) < 2) or ($LOGdelete_call_times < 1) )
 		{
@@ -163,7 +163,7 @@ if ($ADD==511111111)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>CALL TIME DELETION CONFIRMATION: $call_time_id</B>\n";
+		echo "<br><B><font color=$default_text>CALL TIME DELETION CONFIRMATION: $call_time_id</B>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=611111111&call_time_id=$call_time_id&CoNfIrM=YES\">Click here to delete call time $call_time_id</a></font><br><br><br>\n";
 		}
 
@@ -177,7 +177,7 @@ $ADD='311111111';		# go to call time modification below
 
 if ($ADD==611111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($call_time_id) < 2) or ($LOGdelete_call_times < 1) )
 		{
@@ -196,7 +196,7 @@ if ($ADD==611111111)
 			fwrite ($fp, "$date|!DELETING CALL TIME!|$PHP_AUTH_USER|$ip|call_time_id='$call_time_id'|\n");
 			fclose($fp);
 			}
-		echo "<br><B><font color=navy>CALL TIME DELETION COMPLETED: $call_time_id</font></B>\n";
+		echo "<br><B><font color=$default_text>CALL TIME DELETION COMPLETED: $call_time_id</font></B>\n";
 		echo "<br><br>\n";
 		}
 
@@ -262,7 +262,7 @@ if ($ADD==311111111)
 if ($LOGmodify_call_times==1)
 {
 echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from osdial_call_times where call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
@@ -288,9 +288,9 @@ echo "<TABLE align=center><TR><TD>\n";
 	$ct_state_call_times =	$row[19];
 	$use_recycle_gap =	    $row[20];
 
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-echo "<center><br><font color=navy size=+1>MODIFY A CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
+echo "<center><br><font color=$default_text size=+1>MODIFY A CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 echo "<input type=hidden name=ADD value=411111111>\n";
 echo "<input type=hidden name=call_time_id value=\"$call_time_id\">\n";
 echo "<TABLE>";
@@ -360,7 +360,7 @@ echo "</select></td>\n";
 echo "<td align=center colspan=4><input type=submit name=SUBMIT value=SUBMIT></FORM></td></tr>\n";
 
 echo "</TABLE><BR><BR>\n";
-echo "<font color=navy size=+1>CAMPAIGNS USING THIS CALL TIME</font><br><BR>\n";
+echo "<font color=$default_text size=+1>CAMPAIGNS USING THIS CALL TIME</font><br><BR>\n";
 echo "<TABLE>\n";
 
 	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns where local_call_time='$call_time_id';";
@@ -374,7 +374,7 @@ echo "<TABLE>\n";
 	}
 
 echo "</TABLE>\n";
-echo "<br><font color=navy size=+1>INBOUND GROUPS USING THIS CALL TIME</font><BR><br>\n";
+echo "<br><font color=$default_text size=+1>INBOUND GROUPS USING THIS CALL TIME</font><BR><br>\n";
 echo "<TABLE>\n";
 
 	$stmt="SELECT group_id,group_name from osdial_inbound_groups where call_time_id='$call_time_id';";
@@ -410,13 +410,13 @@ if ($ADD==100000000)
 {
 echo "<TABLE align=center><TR><TD>\n";
 
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from osdial_call_times order by call_time_id";
 	$rslt=mysql_query($stmt, $link);
 	$filters_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=navy size=+1>CALL TIMES</font><br><br>\n";
+echo "<center><br><font color=$default_text size=+1>CALL TIMES</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=$menubarcolor>";
 echo "<td><font size=1 color=white><B>ID</B></td>";
@@ -457,9 +457,9 @@ if ($ADD==1111111111)
 	if ($LOGmodify_call_times==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>ADD NEW STATE CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>ADD NEW STATE CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>State Call Time ID: </td><td align=left><input type=text name=call_time_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_call_times-call_time_id$NWE</td></tr>\n";
@@ -486,7 +486,7 @@ if ($ADD==1111111111)
 
 if ($ADD==2111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_state_call_times where state_call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -504,7 +504,7 @@ if ($ADD==2111111111)
 			$stmt="INSERT INTO osdial_state_call_times SET state_call_time_id='$call_time_id',state_call_time_name='$call_time_name',state_call_time_comments='$call_time_comments',state_call_time_state='$state_call_time_state';";
 			$rslt=mysql_query($stmt, $link);
 
-			echo "<br><B><font color=navy>STATE CALL TIME ADDED: $call_time_id</font></B>\n";
+			echo "<br><B><font color=$default_text>STATE CALL TIME ADDED: $call_time_id</font></B>\n";
 
 			### LOG CHANGES TO LOG FILE ###
 			if ($WeBRooTWritablE > 0)
@@ -528,7 +528,7 @@ if ($ADD==4111111111)
 {
 	if ($LOGmodify_call_times==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($call_time_id) < 2) or (strlen($call_time_name) < 2) or (strlen($state_call_time_state) < 2) )
 		{
@@ -556,7 +556,7 @@ if ($ADD==4111111111)
 		$stmt="UPDATE osdial_state_call_times set state_call_time_name='$call_time_name', state_call_time_comments='$call_time_comments', sct_default_start='$ct_default_start', sct_default_stop='$ct_default_stop', sct_sunday_start='$ct_sunday_start', sct_sunday_stop='$ct_sunday_stop', sct_monday_start='$ct_monday_start', sct_monday_stop='$ct_monday_stop', sct_tuesday_start='$ct_tuesday_start', sct_tuesday_stop='$ct_tuesday_stop', sct_wednesday_start='$ct_wednesday_start', sct_wednesday_stop='$ct_wednesday_stop', sct_thursday_start='$ct_thursday_start', sct_thursday_stop='$ct_thursday_stop', sct_friday_start='$ct_friday_start', sct_friday_stop='$ct_friday_stop', sct_saturday_start='$ct_saturday_start', sct_saturday_stop='$ct_saturday_stop', state_call_time_state='$state_call_time_state'  where state_call_time_id='$call_time_id';";
 		$rslt=mysql_query($stmt, $link);
 
-		echo "<br><B><font color=navy>STATE CALL TIME MODIFIED</font></B>\n";
+		echo "<br><B><font color=$default_text>STATE CALL TIME MODIFIED</font></B>\n";
 
 		### LOG CHANGES TO LOG FILE ###
 		if ($WeBRooTWritablE > 0)
@@ -582,7 +582,7 @@ $ADD=3111111111;	# go to state call time modification form below
 
 if ($ADD==5111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($call_time_id) < 2) or ($LOGdelete_call_times < 1) )
 		{
@@ -591,7 +591,7 @@ if ($ADD==5111111111)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>STATE CALL TIME DELETION CONFIRMATION: $call_time_id</B>\n";
+		echo "<br><B><font color=$default_text>STATE CALL TIME DELETION CONFIRMATION: $call_time_id</B>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=6111111111&call_time_id=$call_time_id&CoNfIrM=YES\">Click here to delete state call time $call_time_id</a></font><br><br><br>\n";
 		}
 
@@ -606,7 +606,7 @@ $ADD='3111111111';		# go to state call time modification below
 
 if ($ADD==6111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($call_time_id) < 2) or ($LOGdelete_call_times < 1) )
 		{
@@ -648,7 +648,7 @@ if ($ADD==6111111111)
 			fwrite ($fp, "$date|!DELETING CALL TIME!|$PHP_AUTH_USER|$ip|state_call_time_id='$call_time_id'|\n");
 			fclose($fp);
 			}
-		echo "<br><B><font color=navy>STATE CALL TIME DELETION COMPLETED: $call_time_id</font></B>\n";
+		echo "<br><B><font color=$default_text>STATE CALL TIME DELETION COMPLETED: $call_time_id</font></B>\n";
 		echo "<br><br>\n";
 		}
 
@@ -667,7 +667,7 @@ if ($ADD==3111111111)
 if ($LOGmodify_call_times==1)
 {
 echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from osdial_state_call_times where state_call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
@@ -692,9 +692,9 @@ echo "<TABLE align=center><TR><TD>\n";
 	$ct_saturday_start =	$row[18];
 	$ct_saturday_stop =		$row[19];
 
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-echo "<center><br><font color=navy size=+1>MODIFY A STATE CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
+echo "<center><br><font color=$default_text size=+1>MODIFY A STATE CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 echo "<input type=hidden name=ADD value=4111111111>\n";
 echo "<input type=hidden name=call_time_id value=\"$call_time_id\">\n";
 echo "<TABLE>";
@@ -713,7 +713,7 @@ echo "<tr bgcolor=#C1D6DF><td align=right>Saturday Start:</td><td align=left><in
 
 echo "<tr bgcolor=#C1D6DF><td align=center colspan=4><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 echo "</TABLE><BR><BR>\n";
-echo "<BR><font color=navy size=+1>CALL TIMES USING THIS STATE CALL TIME</font><BR>\n";
+echo "<BR><font color=$default_text size=+1>CALL TIMES USING THIS STATE CALL TIME</font><BR>\n";
 echo "<TABLE>\n";
 
 	$stmt="SELECT call_time_id,call_time_name from osdial_call_times where ct_state_call_times LIKE \"%|$call_time_id|%\";";
@@ -751,13 +751,13 @@ if ($ADD==1000000000)
 {
 echo "<TABLE align=center><TR><TD>\n";
 
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from osdial_state_call_times order by state_call_time_id";
 	$rslt=mysql_query($stmt, $link);
 	$filters_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=navy size=+1>STATE CALL TIMES</font><br><br>\n";
+echo "<center><br><font color=$default_text size=+1>STATE CALL TIMES</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=$menubarcolor>";
 echo "<td><font size=1 color=white><B>ID</B></td>";

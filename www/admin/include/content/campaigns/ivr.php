@@ -38,14 +38,14 @@ if ($campaign_id != '') {
 ######################
 if ($ADD == "1menu") {
     if ($LOGmodify_campaigns == 1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         $oivr_id = 0;
         $oivr = get_first_record($link, 'osdial_ivr', '*', "campaign_id='" . $campaign_id . "'");
         if ($oivr['campaign_id'] != "") {
             $SUB = "2keys";
             $ADD = "3menu"; # go to campaign modification form below
         } else {
-            echo "<br><B><font color=navy>IVR CREATED</font></B>\n";
+            echo "<br><B><font color=$default_text>IVR CREATED</font></B>\n";
             $stmt = "INSERT INTO osdial_ivr (campaign_id) VALUES ('$campaign_id');";
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
@@ -108,12 +108,12 @@ if ($ADD == "1keys" or $ADD == '4keys') {
 ######################
 if ($ADD == "1keys") {
     if ($LOGmodify_campaigns == 1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         if (($oivr_id == 0) or (strlen($oivr_opt_keypress) < 1) or (strlen($oivr_opt_action) < 1) or (strlen($oivr_opt_action_data) < 1)) {
             echo "<br><font color=red>KEY NOT CREATED - Please go back and look at the data you entered\n";
             $ADD = "2keys";
         } else {
-            echo "<br><B><font color=navy>KEY CREATED: $oivr_id - $oivr_opt_action - $oivr_opt_keypress</font></B>\n";
+            echo "<br><B><font color=$default_text>KEY CREATED: $oivr_id - $oivr_opt_action - $oivr_opt_keypress</font></B>\n";
             $stmt = "INSERT INTO osdial_ivr_options (ivr_id,parent_id,keypress,action,action_data) VALUES ('$oivr_id','$oivr_opt_parent_id','$oivr_opt_keypress','$oivr_opt_action','$oivr_opt_action_data');";
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
@@ -137,15 +137,15 @@ if ($ADD == "1keys") {
 # ADD=2keys add a new key
 ######################
 if ($ADD == "2keys" and ($oivr_opt_keypress == '' or $oivr_opt_action == '')) {
-    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-    echo "<center><br><font color=navy size=+1>YOU MUST SELECT A KEYPRESS AND AN ACTION</font><br><br>\n";
+    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+    echo "<center><br><font color=$default_text size=+1>YOU MUST SELECT A KEYPRESS AND AN ACTION</font><br><br>\n";
     $ADD = '3menu';
     $SUB = '2keys';
 }
 if ($ADD == "2keys") {
     echo "<TABLE align=center><TR><TD>\n";
-    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-    echo "<center><br><font color=navy size=+1>NEW KEYPRESS ACTION</font><br><br>\n";
+    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+    echo "<center><br><font color=$default_text size=+1>NEW KEYPRESS ACTION</font><br><br>\n";
 
     echo '<form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
     echo '<input type="hidden" name="ADD" value="1keys">';
@@ -430,7 +430,7 @@ if ($ADD == "2keys") {
 ######################
 if ($ADD == "4menu") {
     if ($LOGmodify_campaigns == 1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         if (($oivr_id < 1) or ($oivr_repeat_loops < 1) or ($oivr_wait_loops < 1) or ($oivr_wait_timeout < 1)) {
             echo "<br><font color=red>IVR NOT MODIFIED - Please go back and look at the data you entered\n";
         } else {
@@ -455,7 +455,7 @@ if ($ADD == "4menu") {
                 $oivr_allow_inbound = 'Y';
             }
 
-            echo "<br><B><font color=navy>IVR MODIFIED: $oivr_id - $campaign_id - $oivr_name</font></B>\n";
+            echo "<br><B><font color=$default_text>IVR MODIFIED: $oivr_id - $campaign_id - $oivr_name</font></B>\n";
             $stmt = "UPDATE osdial_ivr SET name='$oivr_name',announcement='$oivr_announcement',repeat_loops='$oivr_repeat_loops',wait_loops='$oivr_wait_loops',wait_timeout='$oivr_wait_timeout',answered_status='$oivr_answered_status',virtual_agents='$oivr_virtual_agents',status='$oivr_status',timeout_action='$oivr_timeout_action',reserve_agents='$oivr_reserve_agents',allow_inbound='$oivr_allow_inbound' where id='$oivr_id';";
             $rslt = mysql_query($stmt, $link);
 
@@ -547,12 +547,12 @@ if ($ADD == "4menu") {
 ######################
 if ($ADD == "4keys") {
     if ($LOGmodify_campaigns == 1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         if (($oivr_opt_id == 0) or (strlen($oivr_opt_keypress) < 1)) {
             echo $oivr_opt_id . '/' . $oivr_opt_keypress;
             echo "<br><font color=red>KEY NOT MODIFIED - Please go back and look at the data you entered\n";
         } else {
-            echo "<br><B><font color=navy>KEY MODIFIED: $oivr_opt_id - $oivr_opt_action</font></B>\n";
+            echo "<br><B><font color=$default_text>KEY MODIFIED: $oivr_opt_id - $oivr_opt_action</font></B>\n";
             $field_name = strtoupper($field_name);
             $stmt = "UPDATE osdial_ivr_options SET keypress='$oivr_opt_keypress',action='$oivr_opt_action',action_data='$oivr_opt_action_data',ivr_id='$oivr_id',parent_id='$oivr_opt_parent_id' where id='$oivr_opt_id';";
             $rslt = mysql_query($stmt, $link);
@@ -579,11 +579,11 @@ if ($ADD == "4keys") {
 ######################
 if ($ADD == "6keys") {
     if ($LOGmodify_campaigns == 1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         if ($oivr_opt_id < 1) {
             echo "<br><font color=red>KEYPRESS NOT DELETED - Could not find field id!\n";
         } else {
-            echo "<br><B><font color=navy>KEYPRESS DELETED: $oivr_opt_id - $oivr_opt_action</font></B>\n";
+            echo "<br><B><font color=$default_text>KEYPRESS DELETED: $oivr_opt_id - $oivr_opt_action</font></B>\n";
             $stmt = "DELETE FROM osdial_ivr_options WHERE id='$oivr_opt_id';";
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
@@ -608,8 +608,8 @@ if ($ADD == "6keys") {
 ######################
 if ($ADD == "3menu") {
     echo "<TABLE align=center><TR><TD>\n";
-    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-    echo "<center><br><font color=navy size=+1>INBOUND/OUTBOUND IVR</font><br><br>\n";
+    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+    echo "<center><br><font color=$default_text size=+1>INBOUND/OUTBOUND IVR</font><br><br>\n";
 
     $oivr = get_first_record($link, 'osdial_ivr', '*', "campaign_id='" . $campaign_id . "'");
 
@@ -727,7 +727,7 @@ if ($ADD == "3menu") {
     echo "</form>";
 
     echo "<br /><br /><hr width=50%>\n";
-    echo "<center><font color=navy size=+1>KEYPRESS AND ACTIONS</font><br><br>\n";
+    echo "<center><font color=$default_text size=+1>KEYPRESS AND ACTIONS</font><br><br>\n";
     echo "<table width=$section_width cellspacing=1 cellpadding=1>\n";
     echo "  <tr bgcolor=$menubarcolor>\n";
     echo "      <td align=center><font color=white size=1>KEYPRESS</font></td>\n";
@@ -815,8 +815,8 @@ if ($ADD == "3menu") {
 if ($ADD == "3keys") {
     $opt = get_first_record($link, 'osdial_ivr_options', '*', "id='" . $oivr_opt_id . "'");
     echo "<TABLE align=center><TR><TD>\n";
-    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-    echo "<center><br><font color=navy size=+1>MODIFY KEYPRESS ACTION</font><br><br>\n";
+    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+    echo "<center><br><font color=$default_text size=+1>MODIFY KEYPRESS ACTION</font><br><br>\n";
 
     echo '<form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
     echo '<input type="hidden" name="ADD" value="4keys">';
@@ -1196,7 +1196,7 @@ if ($ADD == "3keys") {
 
     if ($o == 'MENU') {
         echo "<br /><br /><hr width=50%>\n";
-        echo "<center><font color=navy size=+1>KEYPRESS AND ACTIONS</font><br><br>\n";
+        echo "<center><font color=$default_text size=+1>KEYPRESS AND ACTIONS</font><br><br>\n";
         echo "<table width=$section_width cellspacing=1 cellpadding=1>\n";
         echo "  <tr bgcolor=$menubarcolor>\n";
         echo "      <td align=center><font color=white size=1>KEYPRESS</font></td>\n";

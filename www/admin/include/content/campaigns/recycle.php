@@ -29,7 +29,7 @@
 if ($ADD==25)
 {
 	$status = eregi_replace("-----.*",'',$status);
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_lead_recycle where campaign_id='$campaign_id' and status='$status';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -46,7 +46,7 @@ if ($ADD==25)
 			}
 		 else
 			{
-			echo "<br><B><font color=navy>CAMPAIGN LEAD RECYCLE ADDED: $campaign_id - $status - $attempt_delay</font></B>\n";
+			echo "<br><B><font color=$default_text>CAMPAIGN LEAD RECYCLE ADDED: $campaign_id - $status - $attempt_delay</font></B>\n";
 
 			$stmt="INSERT INTO osdial_lead_recycle(campaign_id,status,attempt_delay,attempt_maximum,active) values('$campaign_id','$status','$attempt_delay','$attempt_maximum','$active');";
 			$rslt=mysql_query($stmt, $link);
@@ -74,7 +74,7 @@ if ($ADD==45)
 {
 	if ($LOGmodify_campaigns==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) or ($attempt_delay < 120)  or ($attempt_maximum < 1) or ($attempt_maximum > 999) )
 		{
@@ -85,7 +85,7 @@ if ($ADD==45)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>CAMPAIGN LEAD MODIFIED: $campaign_id - $status - $attempt_delay</font></B>\n";
+		echo "<br><B><font color=$default_text>CAMPAIGN LEAD MODIFIED: $campaign_id - $status - $attempt_delay</font></B>\n";
 
 		$stmt="UPDATE osdial_lead_recycle SET attempt_delay='$attempt_delay',attempt_maximum='$attempt_maximum',active='$active' where campaign_id='$campaign_id' and status='$status';";
 		$rslt=mysql_query($stmt, $link);
@@ -117,7 +117,7 @@ if ($ADD==65)
 {
 	if ($LOGmodify_campaigns==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) )
 		{
@@ -128,7 +128,7 @@ if ($ADD==65)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>CAMPAIGN LEAD RECYCLE DELETED: $campaign_id - $status - $attempt_delay</font></B>\n";
+		echo "<br><B><font color=$default_text>CAMPAIGN LEAD RECYCLE DELETED: $campaign_id - $status - $attempt_delay</font></B>\n";
 
 		$stmt="DELETE FROM osdial_lead_recycle where campaign_id='$campaign_id' and status='$status';";
 		$rslt=mysql_query($stmt, $link);
@@ -158,9 +158,9 @@ $ADD=31;	# go to campaign modification form below
 if ($ADD==35)
 {
 echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-echo "<center><br><font color=navy size=+1>CAMPAIGN LEAD RECYCLES</font><br><br>\n";
+echo "<center><br><font color=$default_text size=+1>CAMPAIGN LEAD RECYCLES</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=$menubarcolor>\n";
 echo "<td><font color=white size=1>CAMPAIGN</font></td>\n";

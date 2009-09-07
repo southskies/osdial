@@ -29,6 +29,7 @@ $subheader_font_size='2';
 $subcamp_font_size='2';
 $header_selected_bold='<b>';
 $header_nonselected_bold='';
+$default_text='#000080';
 $users_color =		'#C6CDA3';
 $campaigns_color =	'#C6CDA3';
 $lists_color =		'#C6CDA3';

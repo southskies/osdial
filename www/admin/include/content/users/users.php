@@ -31,9 +31,9 @@ if ($ADD=="1")
 	if ($LOGmodify_users==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>ADD A NEW AGENT<form action=$PHP_SELF method=POST></font><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>ADD A NEW AGENT<form action=$PHP_SELF method=POST></font><br><br>\n";
 	echo "<input type=hidden name=ADD value=2>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left><input type=text name=user size=20 maxlength=10>$NWB#osdial_users-user$NWE</td></tr>\n";
@@ -88,9 +88,9 @@ if ($ADD=="1A")
 	if ($LOGmodify_users==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>COPY AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>COPY AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2A>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left><input type=text name=user size=20 maxlength=10>$NWB#osdial_users-user$NWE</td></tr>\n";
@@ -131,7 +131,7 @@ if ($ADD=="1A")
 
 if ($ADD=="2")
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_users where user='$user';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -171,7 +171,7 @@ $ADD=3;
 
 if ($ADD=="2A")
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_users where user='$user';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -196,7 +196,7 @@ if ($ADD=="2A")
 			$stmtA="INSERT INTO osdial_campaign_agents (user,campaign_id,campaign_rank,campaign_weight,calls_today) SELECT \"$user\",campaign_id,campaign_rank,campaign_weight,\"0\" from osdial_campaign_agents where user=\"$source_user_id\";";
 			$rslt=mysql_query($stmtA, $link);
 
-			echo "<br><B><font color=navy> AGENT COPIED: $user copied from $source_user_id</font></B>\n";
+			echo "<br><B><font color=$default_text> AGENT COPIED: $user copied from $source_user_id</font></B>\n";
 			echo "<br><br>\n";
 			echo "<a href=\"$PHP_SELF?ADD=3&user=$user\">Click here to go to the user record</a>\n";
 			echo "<br><br>\n";
@@ -221,7 +221,7 @@ if ($ADD=="4A")
 {
 	if ($LOGmodify_users==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user_level) < 1) )
 		{
@@ -230,7 +230,7 @@ if ($ADD=="4A")
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>AGENT MODIFIED - ADMIN: $user</font></B>\n";
+		echo "<br><B><font color=$default_text>AGENT MODIFIED - ADMIN: $user</font></B>\n";
 
 		$stmt="UPDATE osdial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass',delete_users='$delete_users',delete_user_groups='$delete_user_groups',delete_lists='$delete_lists',delete_campaigns='$delete_campaigns',delete_ingroups='$delete_ingroups',delete_remote_agents='$delete_remote_agents',load_leads='$load_leads',campaign_detail='$campaign_detail',ast_admin_access='$ast_admin_access',ast_delete_phones='$ast_delete_phones',delete_scripts='$delete_scripts',modify_leads='$modify_leads',hotkeys_active='$hotkeys_active',change_agent_campaign='$change_agent_campaign',agent_choose_ingroups='$agent_choose_ingroups',closer_campaigns='$groups_value',scheduled_callbacks='$scheduled_callbacks',agentonly_callbacks='$agentonly_callbacks',agentcall_manual='$agentcall_manual',osdial_recording='$osdial_recording',osdial_transfers='$osdial_transfers',delete_filters='$delete_filters',alter_agent_interface_options='$alter_agent_interface_options',closer_default_blended='$closer_default_blended',delete_call_times='$delete_call_times',modify_call_times='$modify_call_times',modify_users='$modify_users',modify_campaigns='$modify_campaigns',modify_lists='$modify_lists',modify_scripts='$modify_scripts',modify_filters='$modify_filters',modify_ingroups='$modify_ingroups',modify_usergroups='$modify_usergroups',modify_remoteagents='$modify_remoteagents',modify_servers='$modify_servers',view_reports='$view_reports',osdial_recording_override='$osdial_recording_override',alter_custdata_override='$alter_custdata_override',manual_dial_allow_skip='$manual_dial_allow_skip' where user='$user';";
 		$rslt=mysql_query($stmt, $link);
@@ -263,7 +263,7 @@ if ($ADD=="4B")
 {
 	if ($LOGmodify_users==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user_level) < 1) )
 		{
@@ -272,7 +272,7 @@ if ($ADD=="4B")
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>AGENT MODIFIED - ADMIN: $user</font></B>\n";
+		echo "<br><B><font color=$default_text>AGENT MODIFIED - ADMIN: $user</font></B>\n";
 
 		$stmt="UPDATE osdial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass',hotkeys_active='$hotkeys_active',agent_choose_ingroups='$agent_choose_ingroups',closer_campaigns='$groups_value',scheduled_callbacks='$scheduled_callbacks',agentonly_callbacks='$agentonly_callbacks',agentcall_manual='$agentcall_manual',osdial_recording='$osdial_recording',osdial_transfers='$osdial_transfers',closer_default_blended='$closer_default_blended',osdial_recording_override='$osdial_recording_override',alter_custdata_override='$alter_custdata_override',manual_dial_allow_skip='$manual_dial_allow_skip' where user='$user';";
 		$rslt=mysql_query($stmt, $link);
@@ -304,7 +304,7 @@ if ($ADD==4)
 {
 	if ($LOGmodify_users==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user_level) < 1) )
 		{
@@ -313,7 +313,7 @@ if ($ADD==4)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>AGENT MODIFIED: $user</font></B>\n";
+		echo "<br><B><font color=$default_text>AGENT MODIFIED: $user</font></B>\n";
 
 		$stmt="UPDATE osdial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass' where user='$user';";
 		$rslt=mysql_query($stmt, $link);
@@ -342,7 +342,7 @@ $ADD=3;		# go to user modification below
 
 if ($ADD==5)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($user) < 2) or ($LOGdelete_users < 1) )
 		{
@@ -351,7 +351,7 @@ if ($ADD==5)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>AGENT DELETION CONFIRMATION: $user</B>\n";
+		echo "<br><B><font color=$default_text>AGENT DELETION CONFIRMATION: $user</B>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=6&user=$user&CoNfIrM=YES\">Click here to delete user $user</a></font><br><br><br>\n";
 		}
 
@@ -364,7 +364,7 @@ $ADD='3';		# go to user modification below
 
 if ($ADD==6)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( ( strlen($user) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_users < 1) )
 		{
@@ -389,7 +389,7 @@ if ($ADD==6)
 			fwrite ($fp, "$date|!!!DELETING AGENT!!!!|$PHP_AUTH_USER|$ip|$user|$stmtA|$stmt|\n");
 			fclose($fp);
 			}
-		echo "<br><B><font color=navy>AGENT DELETION COMPLETED: $user</font></B>\n";
+		echo "<br><B><font color=$default_text>AGENT DELETION COMPLETED: $user</font></B>\n";
 		echo "<br><br>\n";
 		}
 
@@ -405,7 +405,7 @@ if ($ADD==3)
 	if ($LOGmodify_users==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from osdial_users where user='$user';";
 	$rslt=mysql_query($stmt, $link);
@@ -459,7 +459,7 @@ if ($ADD==3)
 		}
 	else
 		{
-		echo "<center><br><font color=navy size=+1>MODIFY AN AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
+		echo "<center><br><font color=$default_text size=+1>MODIFY AN AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
 		if ($LOGuser_level > 8)
 			{echo "<input type=hidden name=ADD value=4A>\n";}
 		else
@@ -599,9 +599,9 @@ if ($ADD==3)
 if ($ADD==550)
 {
 echo "<TABLE align=center><TR><TD>\n";
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-echo "<center><br><font color=navy size=+1>SEARCH FOR AN AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
+echo "<center><br><font color=$default_text size=+1>SEARCH FOR AN AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
 echo "<input type=hidden name=ADD value=660>\n";
 echo "<TABLE width=$section_width cellspacing=3>\n";
 echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left><input type=text name=user size=20 maxlength=20></td></tr>\n";
@@ -633,7 +633,7 @@ echo "</TABLE></center>\n";
 if ($ADD==660)
 {
 echo "<TABLE><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$SQL = '';
 	if ($user) {$SQL .= " user LIKE \"%$user%\" and";}
@@ -648,7 +648,7 @@ echo "<TABLE><TR><TD>\n";
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
-echo "<br><font color=navy> SEARCH RESULTS:</font>\n";
+echo "<br><font color=$default_text> SEARCH RESULTS:</font>\n";
 echo "<center><TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 
 	$o=0;
@@ -687,13 +687,13 @@ if ($ADD==8)
 		echo "<br>Agent ($user) callback listings LIVE for more than one week have been made INACTIVE\n";
 		}
 	}
-$CBinactiveLINK = "<BR><a href=\"$PHP_SELF?ADD=8&SUB=89&user=$user\"><font color=navy>Remove LIVE Callbacks older than one month for this user</font></a><BR><a href=\"$PHP_SELF?ADD=8&SUB=899&user=$user\"><font color=navy>Remove LIVE Callbacks older than one week for this user</font></a><BR>";
+$CBinactiveLINK = "<BR><a href=\"$PHP_SELF?ADD=8&SUB=89&user=$user\"><font color=$default_text>Remove LIVE Callbacks older than one month for this user</font></a><BR><a href=\"$PHP_SELF?ADD=8&SUB=899&user=$user\"><font color=$default_text>Remove LIVE Callbacks older than one week for this user</font></a><BR>";
 
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$CBquerySQLwhere = "and user='$user'";
 
-echo "<br><font color=navy> AGENT CALLBACK HOLD LISTINGS: $user</font>\n";
+echo "<br><font color=$default_text> AGENT CALLBACK HOLD LISTINGS: $user</font>\n";
 $oldADD = "ADD=8&user=$user";
 $ADD='82';
 include('/opt/osdial/html/admin/include/content/lists/lists.php');
@@ -706,7 +706,7 @@ include('/opt/osdial/html/admin/include/content/lists/lists.php');
 if ($ADD==0 or $ADD==9)
 {
 echo "<TABLE align=center><TR><TD>\n";
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 $let = get_variable('let');
 $letSQL = '';
@@ -746,8 +746,8 @@ if (eregi("GROUPDOWN",$stage)) {$SQLorder='order by user_group desc';   $GROUPli
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font size=+1 color=navy>AGENTS</font><br><br>\n";
-echo "<center><font size=-1 color=navy>&nbsp;|&nbsp;";
+echo "<center><br><font size=+1 color=$default_text>AGENTS</font><br><br>\n";
+echo "<center><font size=-1 color=$default_text>&nbsp;|&nbsp;";
 echo (($let == "A") ? "A" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=A\">A</a>") . "&nbsp;|&nbsp;";
 echo (($let == "B") ? "B" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=B\">B</a>") . "&nbsp;|&nbsp;";
 echo (($let == "C") ? "C" : "<a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$group&let=C\">C</a>") . "&nbsp;|&nbsp;";
@@ -811,7 +811,7 @@ echo "</tr>";
         echo "<input type=hidden name=ADD value=$ADD>";
         echo "<input type=hidden name=SUB value=1>";
 		echo "<tr $bgcolor>";
-        echo "  <td><a href=\"$PHP_SELF?ADD=3&user=$row[1]\"><font size=1 color=black>$row[1]</a></td>";
+        echo "  <td><a href=\"$PHP_SELF?ADD=3&user=$row[1]\"><font size=1 color=$default_text>$row[1]</a></td>";
         echo "  <td><font size=1>$row[3]</td>";
         if ($ADD==9) {
 	        $stmt2="SELECT SUM(manual_dial_new_today),status_category_1,SUM(status_category_count_1),status_category_2,SUM(status_category_count_2),status_category_3,SUM(status_category_count_3),status_category_4,SUM(status_category_count_4) FROM osdial_campaign_agent_stats WHERE user='$row[1]' GROUP BY user";

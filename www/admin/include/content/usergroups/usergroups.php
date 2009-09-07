@@ -30,9 +30,9 @@ if ($ADD==111111)
 	if ($LOGmodify_usergroups==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>ADD NEW AGENTS GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>ADD NEW AGENTS GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=211111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Group: </td><td align=left><input type=text name=user_group size=15 maxlength=20> (no spaces or punctuation)$NWB#osdial_user_groups-user_group$NWE</td></tr>\n";
@@ -54,7 +54,7 @@ if ($ADD==111111)
 
 if ($ADD==211111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_user_groups where user_group='$user_group';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -72,7 +72,7 @@ if ($ADD==211111)
 			$stmt="INSERT INTO osdial_user_groups(user_group,group_name,allowed_campaigns) values('$user_group','$group_name','-ALL-CAMPAIGNS-');";
 			$rslt=mysql_query($stmt, $link);
 
-			echo "<br><B><font color=navy>USER GROUP ADDED: $user_group</font></B>\n";
+			echo "<br><B><font color=$default_text>USER GROUP ADDED: $user_group</font></B>\n";
 
 			### LOG CHANGES TO LOG FILE ###
 			if ($WeBRooTWritablE > 0)
@@ -95,7 +95,7 @@ if ($ADD==411111)
 {
 	if ($LOGmodify_usergroups==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($user_group) < 2) or (strlen($group_name) < 2) )
 		{
@@ -107,7 +107,7 @@ if ($ADD==411111)
 		$stmt="UPDATE osdial_user_groups set user_group='$user_group', group_name='$group_name',allowed_campaigns='$campaigns_value' where user_group='$OLDuser_group';";
 		$rslt=mysql_query($stmt, $link);
 
-		echo "<br><B><font color=navy>USER GROUP MODIFIED</font></B>\n";
+		echo "<br><B><font color=$default_text>USER GROUP MODIFIED</font></B>\n";
 
 		### LOG CHANGES TO LOG FILE ###
 		if ($WeBRooTWritablE > 0)
@@ -132,7 +132,7 @@ $ADD=311111;	# go to user group modification form below
 
 if ($ADD==511111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($user_group) < 2) or ($LOGdelete_user_groups < 1) )
 		{
@@ -141,7 +141,7 @@ if ($ADD==511111)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>USER GROUP DELETION CONFIRMATION: $user_group</B>\n";
+		echo "<br><B><font color=$default_text>USER GROUP DELETION CONFIRMATION: $user_group</B>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=611111&user_group=$user_group&CoNfIrM=YES\">Click here to delete user group $user_group</a></font><br><br><br>\n";
 		}
 
@@ -154,7 +154,7 @@ $ADD='311111';		# go to user group modification below
 
 if ($ADD==611111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($user_group) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_user_groups < 1) )
 		{
@@ -173,7 +173,7 @@ if ($ADD==611111)
 			fwrite ($fp, "$date|!DELETING USRGROUP!!|$PHP_AUTH_USER|$ip|user_group='$user_group'|\n");
 			fclose($fp);
 			}
-		echo "<br><B><font color=navy>USER GROUP DELETION COMPLETED: $user_group</font></B>\n";
+		echo "<br><B><font color=$default_text>USER GROUP DELETION COMPLETED: $user_group</font></B>\n";
 		echo "<br><br>\n";
 		}
 
@@ -189,16 +189,16 @@ if ($ADD==311111)
 	if ($LOGmodify_usergroups==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from osdial_user_groups where user_group='$user_group';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$user_group =		$row[0];
 	$group_name =		$row[1];
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>MODIFY A USER GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>MODIFY A USER GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=411111>\n";
 	echo "<input type=hidden name=OLDuser_group value=\"$user_group\">\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -279,13 +279,13 @@ if ($ADD==8111)
 		echo "<br>user group($user_group) callback listings LIVE for more than one week have been made INACTIVE\n";
 		}
 	}
-	$CBinactiveLINK = "<BR><a href=\"$PHP_SELF?ADD=8111&SUB=89&user_group=$user_group\"><font color=navy>Remove LIVE Callbacks older than one month for this user group</font></a><BR><a href=\"$PHP_SELF?ADD=8111&SUB=899&user_group=$user_group\"><font color=navy>Remove LIVE Callbacks older than one week for this user group</font></a><BR>";
+	$CBinactiveLINK = "<BR><a href=\"$PHP_SELF?ADD=8111&SUB=89&user_group=$user_group\"><font color=$default_text>Remove LIVE Callbacks older than one month for this user group</font></a><BR><a href=\"$PHP_SELF?ADD=8111&SUB=899&user_group=$user_group\"><font color=$default_text>Remove LIVE Callbacks older than one week for this user group</font></a><BR>";
 
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$CBquerySQLwhere = "and user_group='$user_group'";
 
-echo "<br><font color=navy> USER GROUP CALLBACK HOLD LISTINGS: $list_id</font>\n";
+echo "<br><font color=$default_text> USER GROUP CALLBACK HOLD LISTINGS: $list_id</font>\n";
 $oldADD = "ADD=8111&user_group=$user_group";
 $ADD='82';
 }
@@ -296,13 +296,13 @@ $ADD='82';
 if ($ADD==100000)
 {
 echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from osdial_user_groups order by user_group";
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=navy size=+1>USER GROUPS</font><br><br>\n";
+echo "<center><br><font color=$default_text size=+1>USER GROUPS</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=$menubarcolor>";
 echo "<td><font size=1 color=white><B>NAME</B></td>";

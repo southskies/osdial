@@ -33,9 +33,9 @@
 if ($ADD==111) {
 	if ($LOGmodify_lists==1)	{
 		echo "<TABLE align=center><TR><TD>\n";
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 		
-		echo "<center><br><font color=navy size=+1>ADD A NEW LIST</font><form action=$PHP_SELF method=POST><br><br>\n";
+		echo "<center><br><font color=$default_text size=+1>ADD A NEW LIST</font><form action=$PHP_SELF method=POST><br><br>\n";
 		echo "<input type=hidden name=ADD value=211>\n";
 		echo "<TABLE width=$section_width cellspacing=3>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>List ID: </td><td align=left><input type=text name=list_id size=8 maxlength=8> (digits only)$NWB#osdial_lists-list_id$NWE</td></tr>\n";
@@ -74,8 +74,8 @@ if ($ADD==111) {
 if ($ADD==112) {
 
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	echo "<center><br><font color=navy size=+1>SEARCH FOR A LEAD</font>\n";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+	echo "<center><br><font color=$default_text size=+1>SEARCH FOR A LEAD</font>\n";
 	
 	$PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);
 	$PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
@@ -136,7 +136,7 @@ if ($ADD==112) {
 		echo "<form method=post name=search action=\"$PHP_SELF\">\n";
 		echo "<input type=hidden name=ADD value=112>\n";
 		echo "<input type=hidden name=DB value=\"$DB\">\n";
-		echo "<br><center><font color=navy>Enter one of the following</font></center></td>";
+		echo "<br><center><font color=$default_text>Enter one of the following</font></center></td>";
 		echo "</tr>";
 		echo "<tr>\n";
 		echo "	<td align=right width=50%>Custom 2:&nbsp;</td>";
@@ -202,12 +202,12 @@ if ($ADD==112) {
 		if ($results_to_print < 1) {
 			//echo date("l F j, Y G:i:s A");
 			echo "<br><br><br><center>\n";
-			echo "<font size=3 color=navy>The item(s) you search for were not found.<br><br>\n";
+			echo "<font size=3 color=$default_text>The item(s) you search for were not found.<br><br>\n";
 			//echo "You can click on \"Browser Back\" and double check the information you entered.</font>\n";
 			echo "<a href='admin.php?ADD=112'>Search Again</a>";
 			echo "</center>\n";
 		} else {
-			echo "<p<font color=navy size=+1>Found:&nbsp;$results_to_print</font></b></p>";
+			echo "<p<font color=$default_text size=+1>Found:&nbsp;$results_to_print</font></b></p>";
 			echo "<font size=1>";
 			echo "<TABLE BGCOLOR=WHITE CELLPADDING=1 CELLSPACING=0>\n";
 			echo "<TR BGCOLOR=#716A5B>\n";
@@ -260,8 +260,8 @@ if ($ADD==1122) {
 
     if ($LOGmodify_lists==1) {
         echo "<table align=center><tr><td>\n";
-        echo "<font face=\"arial,helvetica\" color=black size=2>";
-        echo "<center><br><font color=navy size=+1>ADVANCED LEAD SEARCH</font>\n";
+        echo "<font face=\"arial,helvetica\" color=$default_text size=2>";
+        echo "<center><br><font color=$default_text size=+1>ADVANCED LEAD SEARCH</font>\n";
 
         $last_name = get_variable("last_name");
         $first_name = get_variable("first_name");
@@ -519,41 +519,41 @@ if ($ADD==1122) {
         echo "<table width=$section_width cellspacing=0 bgcolor=$oddrows>\n";
         echo "  <tr>\n";
         echo "    <td colspan=4>\n";
-        echo "      <br><center><font color=navy>Enter any combination of the following</font></center><br>\n";
+        echo "      <br><center><font color=$default_text>Enter any combination of the following</font></center><br>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td width=25% align=right><font color=navy size=2>Last Name</font></td>\n";
+        echo "    <td width=25% align=right><font color=$default_text size=2>Last Name</font></td>\n";
         echo "    <td width=25% align=left><input type=text name=last_name value=\"$last_name\" size=20 maxlength=30></td>\n";
-        echo "    <td width=25% align=right><font color=navy size=2>Lead ID</font></td>\n";
+        echo "    <td width=25% align=right><font color=$default_text size=2>Lead ID</font></td>\n";
         echo "    <td width=25% align=left><input type=text name=lead_id value=\"$lead_id\" size=10 maxlength=10></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=right><font color=navy size=2>First Name</font></td>\n";
+        echo "    <td align=right><font color=$default_text size=2>First Name</font></td>\n";
         echo "    <td align=left><input type=text name=first_name value=\"$first_name\" size=20 maxlength=30></td>\n";
-        echo "    <td align=right><font color=navy size=2>AreaCode or PhoneNumber</font></td>\n";
+        echo "    <td align=right><font color=$default_text size=2>AreaCode or PhoneNumber</font></td>\n";
         echo "    <td align=left>\n";
         echo "      <input type=text name=phone_number value=\"$phone_number\" size=10 maxlength=20>\n";
         if ($phone_search_alt == 1) $check = " checked";
-        echo "      <input type=checkbox name=phone_search_alt value=1$check> <font color=navy size=1>Alternates</font>\n";
+        echo "      <input type=checkbox name=phone_search_alt value=1$check> <font color=$default_text size=1>Alternates</font>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=right><font color=navy size=2>City</font></td>\n";
+        echo "    <td align=right><font color=$default_text size=2>City</font></td>\n";
         echo "    <td align=left><input type=text name=city value=\"$city\" size=20 maxlength=50></td>\n";
-        echo "    <td align=right><font color=navy size=2>ZIP / Postal Code</font></td>\n";
+        echo "    <td align=right><font color=$default_text size=2>ZIP / Postal Code</font></td>\n";
         echo "    <td align=left><input type=text name=postal_code value=\"$postal_code\" size=10 maxlength=10></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=right><font color=navy size=2>Email</font></td>\n";
+        echo "    <td align=right><font color=$default_text size=2>Email</font></td>\n";
         echo "    <td align=left><input type=text name=email value=\"$email\" size=20 maxlength=70></td>\n";
-        echo "    <td align=right><font color=navy size=2>External Key</font></td>\n";
+        echo "    <td align=right><font color=$default_text size=2>External Key</font></td>\n";
         echo "    <td align=left><input type=text name=external_key value=\"$external_key\" size=10 maxlength=100></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=right><font color=navy size=2>Custom1</font></td>\n";
+        echo "    <td align=right><font color=$default_text size=2>Custom1</font></td>\n";
         echo "    <td align=left><input type=text name=custom1 value=\"$custom1\" size=10 maxlength=255></td>\n";
-        echo "    <td align=right><font color=navy size=2>Custom2</font></td>\n";
+        echo "    <td align=right><font color=$default_text size=2>Custom2</font></td>\n";
         echo "    <td align=left><input type=text name=custom2 value=\"$custom2\" size=10 maxlength=255></td>\n";
         echo "  </tr>\n";
 
@@ -562,12 +562,12 @@ if ($ADD==1122) {
         echo "  </tr>\n";
 
         echo "  <tr>\n";
-        echo "    <td align=right><font color=navy size=2>Entered Between</font></td>\n";
-        echo "    <td align=left colspan=3><font color=navy size=2><input type=text name=entry_date_start value=\"$orig_entry_date_start\" size=10 maxlength=10> and <input type=text name=entry_date_end value=\"$orig_entry_date_end\" size=10 maxlength=10></font></td>\n";
+        echo "    <td align=right><font color=$default_text size=2>Entered Between</font></td>\n";
+        echo "    <td align=left colspan=3><font color=$default_text size=2><input type=text name=entry_date_start value=\"$orig_entry_date_start\" size=10 maxlength=10> and <input type=text name=entry_date_end value=\"$orig_entry_date_end\" size=10 maxlength=10></font></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=right><font color=navy size=2>Last Modified Between</font></td>\n";
-        echo "    <td align=left colspan=3><font color=navy size=2><input type=text name=modify_date_start value=\"$orig_modify_date_start\" size=10 maxlength=10> and <input type=text name=modify_date_end value=\"$orig_modify_date_end\" size=10 maxlength=10></font></td>\n";
+        echo "    <td align=right><font color=$default_text size=2>Last Modified Between</font></td>\n";
+        echo "    <td align=left colspan=3><font color=$default_text size=2><input type=text name=modify_date_start value=\"$orig_modify_date_start\" size=10 maxlength=10> and <input type=text name=modify_date_end value=\"$orig_modify_date_end\" size=10 maxlength=10></font></td>\n";
         echo "  </tr>\n";
 
         echo "  <tr>\n";
@@ -576,7 +576,7 @@ if ($ADD==1122) {
 
         echo "  <tr>\n";
         echo "    <td align=center>\n";
-        echo "      <font color=navy size=2>Campaigns</font><br>\n";
+        echo "      <font color=$default_text size=2>Campaigns</font><br>\n";
         echo "      <select name=campaigns[] size=5 multiple>\n";
         $krh = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name');
         echo format_select_options($krh, 'campaign_id', 'campaign_id', $campaigns, "-- ALL --");
@@ -584,7 +584,7 @@ if ($ADD==1122) {
         echo "    </td>\n";
 
         echo "    <td align=center>\n";
-        echo "      <font color=navy size=2>Lists</font><br>\n";
+        echo "      <font color=$default_text size=2>Lists</font><br>\n";
         echo "      <select name=lists[] size=5 multiple>\n";
         $krh = get_krh($link, 'osdial_lists', 'list_id,list_name,campaign_id');
         echo format_select_options($krh, 'list_id', 'list_name', $lists, "-- ALL --");
@@ -592,7 +592,7 @@ if ($ADD==1122) {
         echo "    </td>\n";
 
         echo "    <td align=center>\n";
-        echo "      <font color=navy size=2>Statuses</font><br>\n";
+        echo "      <font color=$default_text size=2>Statuses</font><br>\n";
         echo "      <select name=statuses[] size=5 multiple>\n";
         $krh = get_krh($link, 'osdial_statuses', 'status,status_name');
         echo format_select_options($krh, 'status', 'status_name', $statuses, "-- ALL --");
@@ -600,7 +600,7 @@ if ($ADD==1122) {
         echo "    </td>\n";
 
         echo "    <td align=center>\n";
-        echo "      <font color=navy size=2>Agents</font><br>\n";
+        echo "      <font color=$default_text size=2>Agents</font><br>\n";
         echo "      <select name=agents[] size=5 multiple>\n";
         $krh = get_krh($link, 'osdial_users', 'user,full_name');
         echo format_select_options($krh, 'user', 'full_name', $agents, "-- ALL --");
@@ -615,7 +615,7 @@ if ($ADD==1122) {
         echo "  <tr>\n";
 
         echo "    <td align=center>\n";
-        echo "      <font color=navy size=2>States</font><br>\n";
+        echo "      <font color=$default_text size=2>States</font><br>\n";
         echo "      <select name=states[] size=5 multiple>\n";
         $krh = get_krh($link, 'osdial_report_groups', 'group_value,group_label', "", "group_type='states'");
         echo format_select_options($krh, 'group_value', 'group_value', $states, "-- ALL --");
@@ -637,7 +637,7 @@ if ($ADD==1122) {
         $sel="";
         if ($s==0) $sel=" selected";
         echo "    <td align=center>\n";
-        echo "      <font color=navy size=2>TimeZones</font><br>\n";
+        echo "      <font color=$default_text size=2>TimeZones</font><br>\n";
         echo "      <select name=timezones[] size=5 multiple>\n";
         echo "        <option value=\"\"$sel>-- ALL --</option>\n";
         echo $timezoneOPTS;
@@ -645,7 +645,7 @@ if ($ADD==1122) {
         echo "    </td>\n";
 
         echo "    <td align=center>\n";
-        echo "      <font color=navy size=2>Sources</font><br>\n";
+        echo "      <font color=$default_text size=2>Sources</font><br>\n";
         echo "      <select name=sources[] size=5 multiple>\n";
         $krh = get_krh($link, 'osdial_report_groups', 'group_value,group_label', "", "group_type='lead_source_id'", "1000");
         echo format_select_options($krh, 'group_value', 'group_value', $sources, "-- ALL --");
@@ -653,7 +653,7 @@ if ($ADD==1122) {
         echo "    </td>\n";
 
         echo "    <td align=center>\n";
-        echo "      <font color=navy size=2>Vendor Codes</font><br>\n";
+        echo "      <font color=$default_text size=2>Vendor Codes</font><br>\n";
         echo "      <select name=vendor_codes[] size=5 multiple>\n";
         $krh = get_krh($link, 'osdial_report_groups', 'group_value,group_label', "", "group_type='lead_vendor_lead_code'", "1000");
         echo format_select_options($krh, 'group_value', 'group_value', $vendor_codes, "-- ALL --");
@@ -662,7 +662,7 @@ if ($ADD==1122) {
         echo "  </tr>\n";
 
         echo "  <tr>\n";
-        echo "    <td align=center colspan=4><br><font color=navy size=2>Results</font>";
+        echo "    <td align=center colspan=4><br><font color=$default_text size=2>Results</font>";
         echo "      <select name=numresults size=1>\n";
         foreach ($numresults_label as $k => $v) {
             $sel="";
@@ -670,7 +670,7 @@ if ($ADD==1122) {
             echo "        <option value=\"$k\"$sel>$v</option>\n";
         }
         echo "      </select>\n";
-        echo "      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color=navy size=2>Sort By</font>";
+        echo "      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color=$default_text size=2>Sort By</font>";
         echo "      <select name=sort size=1>\n";
         foreach ($sort_label as $k => $v) {
             $sel="";
@@ -736,14 +736,14 @@ if ($ADD==1122) {
                     $searchCount = ((($page - 1) * $numresults) + $results_to_print);
                     if ($searchCount < 1) $searchCount=0;
                 }
-                echo "<br><br><br><div id=\"advsearch\"><font color=navy size=3><b>Records Found:&nbsp;" . $searchCount . "</b></font></div>";
+                echo "<br><br><br><div id=\"advsearch\"><font color=$default_text size=3><b>Records Found:&nbsp;" . $searchCount . "</b></font></div>";
             }
         }
 
         $paginate = "";
         if ($results_to_print > 0) {
-            echo "<div id=\"advsearch\"><font color=navy size=3><b>Displaying:&nbsp;" . ((($page - 1) * $numresults) + 1) . " through " . ((($page - 1) * $numresults) + $results_to_print) . "</b></font></div>";
-            $paginate .= "<font color=navy size=2>\n";
+            echo "<div id=\"advsearch\"><font color=$default_text size=3><b>Displaying:&nbsp;" . ((($page - 1) * $numresults) + 1) . " through " . ((($page - 1) * $numresults) + $results_to_print) . "</b></font></div>";
+            $paginate .= "<font color=$default_text size=2>\n";
             if ($page == 1) {
                 $paginate .= "<font color=darkgrey>";
                 $paginate .= "&lt;&lt;&lt; First";
@@ -792,7 +792,7 @@ if ($ADD==1122) {
         echo "  </tr>\n";
         if ($results_to_print < 1) {
             echo "  <tr bgcolor=$oddrows>\n";
-            echo "    <td colspan=12 align=center><font size=3 color=navy>The item(s) you searched for were not found.</font></td>\n";
+            echo "    <td colspan=12 align=center><font size=3 color=$default_text>The item(s) you searched for were not found.</font></td>\n";
             echo "  </tr>\n";
         } else {
             $o=0;
@@ -839,7 +839,7 @@ if ($ADD==1122) {
 if ($ADD==121)
 {
 echo "<TABLE align=center><TR><TD align=center>\n";
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 if (strlen($phone_number) > 2) {
 	$stmt="SELECT count(*) from osdial_dnc where phone_number='$phone_number';";
@@ -862,7 +862,7 @@ if (strlen($phone_number) > 2) {
 	}
 }
 
-echo "<br><font color=navy size=+1>ADD A NUMBER TO THE DNC LIST</font><form action=$PHP_SELF method=POST><br><br>\n";
+echo "<br><font color=$default_text size=+1>ADD A NUMBER TO THE DNC LIST</font><form action=$PHP_SELF method=POST><br><br>\n";
 echo "<input type=hidden name=ADD value=121>\n";
 //echo "<center>";
 echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -881,9 +881,9 @@ echo "</TABLE></center>\n";
 if ($ADD==122) {
 	
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	
-	echo "<center><br><font color=navy size=+1>LOAD NEW LEADS</font><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>LOAD NEW LEADS</font><br><br>\n";
 	
 	
 	$PHP_AUTH_USER=$_SERVER['PHP_AUTH_USER'];
@@ -1177,7 +1177,7 @@ if ($ADD==122) {
 				if (count($field_check)>=3) {
 					flush();
 					$file=fopen("$lead_file", "r");
-					print "<center><font size=3 color='navy'><B>Processing $delim_name-delimited file...\n";
+					print "<center><font size=3 color='$default_text'><B>Processing $delim_name-delimited file...\n";
 	
 					if (strlen($list_id_override)>0) {
 						print "<BR><BR>LIST ID OVERRIDE FOR THIS FILE: $list_id_override<BR><BR>";
@@ -1378,9 +1378,9 @@ if ($ADD==122) {
 						if ($bad >'0') {
 							$FC="<font color='red'>";
 						} else {
-							$FC="<font color='black'>";
+							$FC="<font color='$default_text'>";
 						}
-						print "<BR><BR>Done</B><br><br> GOOD: <font color='black'>$good</font> &nbsp; &nbsp; &nbsp; BAD: $FC $bad </font> &nbsp; &nbsp; &nbsp; TOTAL: $FC $total</font></center>";
+						print "<BR><BR>Done</B><br><br> GOOD: <font color='$default_text'>$good</font> &nbsp; &nbsp; &nbsp; BAD: $FC $bad </font> &nbsp; &nbsp; &nbsp; TOTAL: $FC $total</font></center>";
 						$Imported++;
 						
 					} else {
@@ -1390,7 +1390,7 @@ if ($ADD==122) {
 					# copy($leadfile, "./osdial_temp_file.xls");
 					$file=fopen("$lead_file", "r");
 		
-					print "<center><font size=3 color='navy'><B>Processing Excel file... \n";
+					print "<center><font size=3 color='$default_text'><B>Processing Excel file... \n";
 					if (strlen($list_id_override)>0) 
 					{
 					print "<BR><BR>LIST ID OVERRIDE FOR THIS FILE: $list_id_override<BR><BR>\n";
@@ -1413,7 +1413,7 @@ if ($ADD==122) {
 					if ($WeBRooTWritablE > 0)
 						{$stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");}
 					
-					print "<center><font size=3 color='navy'><B>Processing CSV file... \n";
+					print "<center><font size=3 color='$default_text'><B>Processing CSV file... \n";
 					if (strlen($list_id_override)>0) 
 						{
 						print "<BR><BR>LIST ID OVERRIDE FOR THIS FILE: $list_id_override<BR><BR>";
@@ -1606,9 +1606,9 @@ if ($ADD==122) {
 					if ($bad >'0') {
 						$FC="<font color='red'>";
 					} else {
-						$FC="<font color='black'>";
+						$FC="<font color='$default_text'>";
 					}
-					print "<BR><BR>Done</B><br><br> GOOD: <font color='black'>$good</font> &nbsp; &nbsp; &nbsp; BAD: $FC $bad</font> &nbsp; &nbsp; &nbsp; TOTAL: $FC $total</font></center>";
+					print "<BR><BR>Done</B><br><br> GOOD: <font color='$default_text'>$good</font> &nbsp; &nbsp; &nbsp; BAD: $FC $bad</font> &nbsp; &nbsp; &nbsp; TOTAL: $FC $total</font></center>";
 					$Imported++;
                     $leadfile_name = '';
 				}
@@ -1658,7 +1658,7 @@ if ($ADD==122) {
 					flush();
 					$file=fopen("$lead_file", "r");
 					$total=0; $good=0; $bad=0; $dup=0; $post=0; $phone_list='';
-					print "<center><font size=3 color='navy'><B>Processing $delim_name-delimited file... ($tab_count|$pipe_count)\n";
+					print "<center><font size=3 color='$default_text'><B>Processing $delim_name-delimited file... ($tab_count|$pipe_count)\n";
 					if (strlen($list_id_override)>0) {
 						print "<BR><BR>LIST ID OVERRIDE FOR THIS FILE: $list_id_override<BR><BR>";
 					}
@@ -1842,9 +1842,9 @@ if ($ADD==122) {
 					if ($bad >'0') {
 						$FC="<font color='red'>";
 					} else {
-						$FC="<font color='black'>";
+						$FC="<font color='$default_text'>";
 					}
-					print "<BR><BR>Done</B><br><br> GOOD: <font color='black'>$good</font> &nbsp; &nbsp; &nbsp; BAD: $FC $bad</font> &nbsp; &nbsp; &nbsp; TOTAL: $FC $total</font></center>";
+					print "<BR><BR>Done</B><br><br> GOOD: <font color='$default_text'>$good</font> &nbsp; &nbsp; &nbsp; BAD: $FC $bad</font> &nbsp; &nbsp; &nbsp; TOTAL: $FC $total</font></center>";
 					$Imported++;
 		
 				} else {
@@ -1881,7 +1881,7 @@ if ($ADD==122) {
 					$stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");
 				}
 				
-				print "<center><font size=3 color='navy'><B>Processing CSV file... \n";
+				print "<center><font size=3 color='$default_text'><B>Processing CSV file... \n";
 		
 				if (strlen($list_id_override)>0) {
 					print "<BR><BR>LIST ID OVERRIDE FOR THIS FILE: $list_id_override<BR><BR>";
@@ -2062,9 +2062,9 @@ if ($ADD==122) {
 				if ($bad >'0') {
 					$FC="<font color='red'>";
 				} else {
-					$FC="<font color='black'>";
+					$FC="<font color='$default_text'>";
 				}
-				print "<BR><BR>Done</B><br><br> GOOD: <font color='black'>$good</font> &nbsp; &nbsp; &nbsp; BAD: $FC $bad</font> &nbsp; &nbsp; &nbsp; TOTAL: $FC $total</font></center>";
+				print "<BR><BR>Done</B><br><br> GOOD: <font color='$default_text'>$good</font> &nbsp; &nbsp; &nbsp; BAD: $FC $bad</font> &nbsp; &nbsp; &nbsp; TOTAL: $FC $total</font></center>";
 				
 			}
 			print "<script language='JavaScript1.2'>document.forms[0].leadfile.disabled=false; document.forms[0].submit_file.disabled=false; document.forms[0].reload_page.disabled=false;</script>";
@@ -2105,7 +2105,7 @@ if ($ADD==122) {
 				$field_check=explode($delimiter, $buffer);
 				flush();
 				$file=fopen("$lead_file", "r");
-				print "<center><font size=3 color='navy'><B>Processing $delim_name-delimited file...\n";
+				print "<center><font size=3 color='$default_text'><B>Processing $delim_name-delimited file...\n";
 	
 				if (strlen($list_id_override)>0) 
 					{
@@ -2169,7 +2169,7 @@ if ($ADD==122) {
 					$stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");
 				}
 				
-				print "<center><font size=3 color='navy'><B>Processing CSV file... \n";
+				print "<center><font size=3 color='$default_text'><B>Processing CSV file... \n";
 				
 				if (strlen($list_id_override)>0) {
 					print "<BR><BR>LIST ID OVERRIDE FOR THIS FILE: $list_id_override<BR><BR>";
@@ -2273,7 +2273,7 @@ if ($ADD==125) {
 	}
 	if ($LOGmodify_lists==1)	{
 		echo "<TABLE align=center><TR><TD>\n";
-		echo "<center><br><font color=navy size='2'>GENERATE TEST LEADS</font><br>(ONLY works with TEST list 998.)<form action=$PHP_SELF method=POST><br><br>\n";
+		echo "<center><br><font color=$default_text size='2'>GENERATE TEST LEADS</font><br>(ONLY works with TEST list 998.)<form action=$PHP_SELF method=POST><br><br>\n";
 		echo "<input type=hidden name=ADD value=126>\n";
 		echo "<TABLE width=$section_width cellspacing=3>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Phone Number: </td><td align=left><input type=text name=testphone size=8 maxlength=8> (digits only)$NWB#$NWE</td></tr>\n";
@@ -2313,7 +2313,7 @@ if ($ADD==126) {
 
 if ($ADD==211)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_lists where list_id='$list_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -2330,7 +2330,7 @@ if ($ADD==211)
 			 }
 		 else
 			{
-			echo "<br><B><font color=navy>LIST ADDED: $list_id</font></B>\n";
+			echo "<br><B><font color=$default_text>LIST ADDED: $list_id</font></B>\n";
 
 			$stmt="INSERT INTO osdial_lists (list_id,list_name,campaign_id,active,list_description,list_changedate) values('$list_id','$list_name','$campaign_id','$active','$list_description','$SQLdate');";
 			$rslt=mysql_query($stmt, $link);
@@ -2356,7 +2356,7 @@ if ($ADD==411)
 {
 	if ($LOGmodify_lists==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($list_name) < 2) or (strlen($campaign_id) < 2) )
 		{
@@ -2365,14 +2365,14 @@ if ($ADD==411)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>LIST MODIFIED: $list_id</font></B>\n";
+		echo "<br><B><font color=$default_text>LIST MODIFIED: $list_id</font></B>\n";
 
 		$stmt="UPDATE osdial_lists set list_name='$list_name',campaign_id='$campaign_id',active='$active',list_description='$list_description',list_changedate='$SQLdate',scrub_dnc='$scrub_dnc',cost='$cost' where list_id='$list_id';";
 		$rslt=mysql_query($stmt, $link);
 
 		if ($reset_list == 'Y')
 			{
-			echo "<br><font color=navy>RESETTING LIST-CALLED-STATUS</font>\n";
+			echo "<br><font color=$default_text>RESETTING LIST-CALLED-STATUS</font>\n";
 			$stmt="UPDATE osdial_list set called_since_last_reset='N' where list_id='$list_id';";
 			$rslt=mysql_query($stmt, $link);
 
@@ -2386,7 +2386,7 @@ if ($ADD==411)
 			}
 		if ($campaign_id != "$old_campaign_id")
 			{
-			echo "<br><font color=navy>REMOVING LIST HOPPER LEADS FROM OLD CAMPAIGN HOPPER ($old_campaign_id)</font>\n";
+			echo "<br><font color=$default_text>REMOVING LIST HOPPER LEADS FROM OLD CAMPAIGN HOPPER ($old_campaign_id)</font>\n";
 			$stmt="DELETE from osdial_hopper where list_id='$list_id' and campaign_id='$old_campaign_id';";
 			$rslt=mysql_query($stmt, $link);
 			}
@@ -2415,7 +2415,7 @@ $ADD=311;	# go to list modification form below
 
 if ($ADD==511)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($list_id) < 2) or ($LOGdelete_lists < 1) )
 		{
@@ -2425,10 +2425,10 @@ if ($ADD==511)
 	 else
 		{
       if ($SUB==1) {
-        echo "<br><B><font color=navy>LIST AND LEAD DELETION CONFIRMATION: $list_id</B>\n";
+        echo "<br><B><font color=$default_text>LIST AND LEAD DELETION CONFIRMATION: $list_id</B>\n";
         echo "<br><br><a href=\"$PHP_SELF?ADD=611&SUB=1&list_id=$list_id&CoNfIrM=YES\">Click here to delete list and all of its leads $list_id</a></font><br><br><br>\n";
       } else {
-		    echo "<br><B><font color=navy>LIST DELETION CONFIRMATION: $list_id</B>\n";
+		    echo "<br><B><font color=$default_text>LIST DELETION CONFIRMATION: $list_id</B>\n";
 		    echo "<br><br><a href=\"$PHP_SELF?ADD=611&list_id=$list_id&CoNfIrM=YES\">Click here to delete list $list_id</a></font><br><br><br>\n";
       }
 		}
@@ -2442,7 +2442,7 @@ $ADD='311';		# go to campaign modification below
 
 if ($ADD==611)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( ( strlen($list_id) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_lists < 1) )
 		{
@@ -2454,12 +2454,12 @@ if ($ADD==611)
 		$stmt="DELETE from osdial_lists where list_id='$list_id' limit 1;";
 		$rslt=mysql_query($stmt, $link);
 
-		echo "<br><font color=navy>REMOVING LIST HOPPER LEADS FROM OLD CAMPAIGN HOPPER ($list_id)</font>\n";
+		echo "<br><font color=$default_text>REMOVING LIST HOPPER LEADS FROM OLD CAMPAIGN HOPPER ($list_id)</font>\n";
 		$stmt="DELETE from osdial_hopper where list_id='$list_id';";
 		$rslt=mysql_query($stmt, $link);
 
     if ($SUB==1) {
-		  echo "<br><font color=navy>REMOVING LIST LEADS FROM OSDial_LIST TABLE</font>\n";
+		  echo "<br><font color=$default_text>REMOVING LIST LEADS FROM OSDial_LIST TABLE</font>\n";
 		  $stmt="DELETE from osdial_list where list_id='$list_id';";
 		  $rslt=mysql_query($stmt, $link);
     }
@@ -2471,7 +2471,7 @@ if ($ADD==611)
 			fwrite ($fp, "$date|!!!DELETING LIST!!!!|$PHP_AUTH_USER|$ip|list_id='$list_id'|\n");
 			fclose($fp);
 			}
-		echo "<br><B><font color=navy>LIST DELETION COMPLETED: $list_id</font></B>\n";
+		echo "<br><B><font color=$default_text>LIST DELETION COMPLETED: $list_id</font></B>\n";
 		echo "<br><br>\n";
 		}
 
@@ -2487,7 +2487,7 @@ if ($ADD==311)
 	if ($LOGmodify_lists==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from osdial_lists where list_id='$list_id';";
 	$rslt=mysql_query($stmt, $link);
@@ -2532,7 +2532,7 @@ if ($ADD==311)
     $can_scrub_dnc = $rowd[0];
 
 
-	echo "<center><br><font color=navy size=+1>MODIFY A LIST</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>MODIFY A LIST</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=411>\n";
 	echo "<input type=hidden name=list_id value=\"$row[0]\">\n";
 	echo "<input type=hidden name=old_campaign_id value=\"$row[2]\">\n";
@@ -2572,9 +2572,9 @@ if ($ADD==311)
 	echo "</TABLE></center>\n";
 
 	echo "<center>\n";
-	echo "<br><font color=navy size=+1>STATUSES WITHIN THIS LIST</font></b><br><br>\n";
+	echo "<br><font color=$default_text size=+1>STATUSES WITHIN THIS LIST</font></b><br><br>\n";
 	echo "<TABLE width=500 cellspacing=3>\n";
-	echo "<tr><td><font color=navy>STATUS</font></td><td><font color=navy>STATUS NAME</font></td><td><font color=navy>CALLED</font></td><td><font color=navy>NOT CALLED</font></td></tr>\n";
+	echo "<tr><td><font color=$default_text>STATUS</font></td><td><font color=$default_text>STATUS NAME</font></td><td><font color=$default_text>CALLED</font></td><td><font color=$default_text>NOT CALLED</font></td></tr>\n";
 
 	$leads_in_list = 0;
 	$leads_in_list_N = 0;
@@ -2640,7 +2640,7 @@ if ($ADD==311)
 		}
 	}
 
-	echo "<tr><td colspan=2><font size=1><font color=navy>SUBTOTALS</font></td><td><font size=1>$lead_list[Y_count]</td><td><font size=1>$lead_list[N_count]</td></tr>\n";
+	echo "<tr><td colspan=2><font size=1><font color=$default_text>SUBTOTALS</font></td><td><font size=1>$lead_list[Y_count]</td><td><font size=1>$lead_list[N_count]</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td><font size=1>TOTAL</td><td colspan=3 align=center><font size=1>$lead_list[count]</td></tr>\n";
 
 	echo "</table></center><br>\n";
@@ -2648,9 +2648,9 @@ if ($ADD==311)
 
 
 	echo "<center>\n";
-	echo "<br><font color=navy size=+1>TIME ZONES WITHIN THIS LIST</font></b><br><br>\n";
+	echo "<br><font color=$default_text size=+1>TIME ZONES WITHIN THIS LIST</font></b><br><br>\n";
 	echo "<TABLE width=500 cellspacing=3>\n";
-	echo "<tr><td><font color=navy>GMT OFFSET NOW (local time)</font></td><td><font color=navy>CALLED</font></td><td><font color=navy>NOT CALLED</font></td></tr>\n";
+	echo "<tr><td><font color=$default_text>GMT OFFSET NOW (local time)</font></td><td><font color=$default_text>CALLED</font></td><td><font color=$default_text>NOT CALLED</font></td></tr>\n";
 
 	$stmt="SELECT gmt_offset_now,called_since_last_reset,count(*) from osdial_list where list_id='$list_id' group by gmt_offset_now,called_since_last_reset order by gmt_offset_now,called_since_last_reset";
 	$rslt=mysql_query($stmt, $link);
@@ -2704,7 +2704,7 @@ if ($ADD==311)
 		}
 	}
 
-	echo "<tr><td><font size=1><font color=navy>SUBTOTALS</font></td><td><font size=1>$lead_list[Y_count]</td><td><font size=1>$lead_list[N_count]</td></tr>\n";
+	echo "<tr><td><font size=1><font color=$default_text>SUBTOTALS</font></td><td><font size=1>$lead_list[Y_count]</td><td><font size=1>$lead_list[N_count]</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td><font size=1>TOTAL</td><td colspan=2 align=center><font size=1>$lead_list[count]</td></tr>\n";
 
 	echo "</table></center><br>\n";
@@ -2752,9 +2752,9 @@ if ($ADD==311)
 
 
 	echo "<center>\n";
-	echo "<br><font color=navy size=+1>CALLED COUNTS WITHIN THIS LIST</font></b><br><br>\n";
+	echo "<br><font color=$default_text size=+1>CALLED COUNTS WITHIN THIS LIST</font></b><br><br>\n";
 	echo "<TABLE width=500 cellspacing=1>\n";
-	echo "<tr><td align=left><font size=1 color=navy>STATUS</td><td align=center><font size=1 color=navy>STATUS NAME</td>";
+	echo "<tr><td align=left><font size=1 color=$default_text>STATUS</td><td align=center><font size=1 color=$default_text>STATUS NAME</td>";
 	$first = $all_called_first;
 	while ($first <= $all_called_last)
 		{
@@ -2763,7 +2763,7 @@ if ($ADD==311)
 		echo "<td align=center $AB><font size=1>$first</td>";
 		$first++;
 		}
-	echo "<td align=center><font size=1 color=navy>SUBTOTAL</td></tr>\n";
+	echo "<td align=center><font size=1 color=$default_text>SUBTOTAL</td></tr>\n";
 
 		$sts=0;
 		$statuses_called_to_print = count($status);
@@ -2814,7 +2814,7 @@ if ($ADD==311)
 		$sts++;
 		}
 
-	echo "<tr><td align=center colspan=2><b><font size=1><font color=navy>TOTAL</font></td>";
+	echo "<tr><td align=center colspan=2><b><font size=1><font color=$default_text>TOTAL</font></td>";
 	$first = $all_called_first;
 	while ($first <= $all_called_last)
 		{
@@ -2869,13 +2869,13 @@ if ($ADD==811)
 		echo "<br>list($list_id) callback listings LIVE for more than one week have been made INACTIVE\n";
 		}
 	}
-$CBinactiveLINK = "<BR><a href=\"$PHP_SELF?ADD=811&SUB=89&list_id=$list_id\"><font color=navy>Remove LIVE Callbacks older than one month for this list</font></a><BR><a href=\"$PHP_SELF?ADD=811&SUB=899&list_id=$list_id\"><font color=navy>Remove LIVE Callbacks older than one week for this list</font></a><BR>";
+$CBinactiveLINK = "<BR><a href=\"$PHP_SELF?ADD=811&SUB=89&list_id=$list_id\"><font color=$default_text>Remove LIVE Callbacks older than one month for this list</font></a><BR><a href=\"$PHP_SELF?ADD=811&SUB=899&list_id=$list_id\"><font color=$default_text>Remove LIVE Callbacks older than one week for this list</font></a><BR>";
 
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$CBquerySQLwhere = "and list_id='$list_id'";
 
-echo "<br><font color=navy> LIST CALLBACK HOLD LISTINGS: $list_id</font>\n";
+echo "<br><font color=$default_text> LIST CALLBACK HOLD LISTINGS: $list_id</font>\n";
 $oldADD = "ADD=811&list_id=$list_id";
 $ADD='82';
 }
@@ -2945,7 +2945,7 @@ echo "$CBinactiveLINK";
 if ($ADD==100)
 {
 echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 $camp = get_variable('camp');
 $campSQL = '';
@@ -2959,9 +2959,9 @@ if ($dispact == 1) $dispactSQL = "AND active='Y'";
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=navy size=+1>LISTS</font><br>";
+echo "<center><br><font color=$default_text size=+1>LISTS</font><br>";
 if ($people_to_print > 20) {
-    echo "<center><font color=navy size=-1>";
+    echo "<center><font color=$default_text size=-1>";
     if ($dispact == '1') {
         echo "<a href=\"$PHP_SELF?ADD=100&camp=$camp&dispact=\">(Show Inactive)</a>";
     } else {

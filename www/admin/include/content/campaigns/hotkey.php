@@ -32,7 +32,7 @@ if ($ADD==23)
 	$status = $HKstatus_data[0];
 	$status_name = $HKstatus_data[1];
 
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_campaign_hotkeys where campaign_id='$campaign_id' and hotkey='$hotkey' and hotkey='$hotkey';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -48,7 +48,7 @@ if ($ADD==23)
 			}
 		 else
 			{
-			echo "<br><B><font color=navy> CAMPAIGN HOT KEY ADDED: $campaign_id - $status - $hotkey</font></B>\n";
+			echo "<br><B><font color=$default_text> CAMPAIGN HOT KEY ADDED: $campaign_id - $status - $hotkey</font></B>\n";
 
 			$stmt="INSERT INTO osdial_campaign_hotkeys values('$status','$hotkey','$status_name','$selectable','$campaign_id');";
 			$rslt=mysql_query($stmt, $link);
@@ -74,7 +74,7 @@ if ($ADD==43)
 {
 	if ($LOGmodify_campaigns==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) or (strlen($hotkey) < 1) )
 		{
@@ -85,7 +85,7 @@ if ($ADD==43)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>CUSTOM CAMPAIGN HOT KEY DELETED: $campaign_id - $status - $hotkey</font></B>\n";
+		echo "<br><B><font color=$default_text>CUSTOM CAMPAIGN HOT KEY DELETED: $campaign_id - $status - $hotkey</font></B>\n";
 
 		$stmt="DELETE FROM osdial_campaign_hotkeys where campaign_id='$campaign_id' and status='$status' and hotkey='$hotkey';";
 		$rslt=mysql_query($stmt, $link);
@@ -115,9 +115,9 @@ $ADD=31;	# go to campaign modification form below
 if ($ADD==33)
 {
 echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-echo "<center><br><font color=navy size=+1>CAMPAIGN HOTKEYS</font><br><br>\n";
+echo "<center><br><font color=$default_text size=+1>CAMPAIGN HOTKEYS</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=$menubarcolor>\n";
 echo "<td><font color=white size=1>CAMPAIGN</font></td>\n";

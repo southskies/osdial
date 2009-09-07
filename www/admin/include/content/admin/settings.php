@@ -33,9 +33,9 @@ if ($ADD==411111111111111)
 {
 	if ($LOGmodify_servers==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<br><font color=navy>OSDial SYSTEM SETTINGS MODIFIED</font>\n";
+	echo "<br><font color=$default_text>OSDial SYSTEM SETTINGS MODIFIED</font>\n";
 
 	$stmt="UPDATE system_settings set use_non_latin='$use_non_latin',webroot_writable='$webroot_writable',enable_queuemetrics_logging='$enable_queuemetrics_logging',queuemetrics_server_ip='$queuemetrics_server_ip',queuemetrics_dbname='$queuemetrics_dbname',queuemetrics_login='$queuemetrics_login',queuemetrics_pass='$queuemetrics_pass',queuemetrics_url='$queuemetrics_url',queuemetrics_log_id='$queuemetrics_log_id',queuemetrics_eq_prepend='$queuemetrics_eq_prepend',osdial_agent_disable='$osdial_agent_disable',allow_sipsak_messages='$allow_sipsak_messages',admin_home_url='$admin_home_url',enable_agc_xfer_log='$enable_agc_xfer_log',company_name='$company_name',admin_template='$admin_template',agent_template='$agent_template';";
 	$rslt=mysql_query($stmt, $link);
@@ -66,7 +66,7 @@ if ($ADD==311111111111111)
 	if ($LOGmodify_servers==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT version,install_date,use_non_latin,webroot_writable,enable_queuemetrics_logging,queuemetrics_server_ip,queuemetrics_dbname,queuemetrics_login,queuemetrics_pass,queuemetrics_url,queuemetrics_log_id,queuemetrics_eq_prepend,osdial_agent_disable,allow_sipsak_messages,admin_home_url,enable_agc_xfer_log,company_name,admin_template,agent_template from system_settings;";
 	$rslt=mysql_query($stmt, $link);
@@ -91,7 +91,7 @@ if ($ADD==311111111111111)
 	$admin_template =			        $row[17];
 	$agent_template =			        $row[18];
 
-	echo "<center><br><font color=navy size=+1>MODIFY OSDial SYSTEM SETTINGS</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>MODIFY OSDial SYSTEM SETTINGS</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=411111111111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Version: </td><td align=left> $version</td></tr>\n";

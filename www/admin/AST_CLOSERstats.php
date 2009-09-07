@@ -142,7 +142,7 @@ while ($i < $statcats_to_print)
 //echo "<TITLE>OSDIAL: Closer Stats</TITLE></HEAD><BODY BGCOLOR=WHITE>\n";
 echo "<table align=center cellpadding=0 cellspacing=0>";
 echo "<tr><td align=center>";
-echo "<br><font color=navy size=+1>CLOSER REPORT</font><br><br>";
+echo "<br><font color=$default_text size=+1>CLOSER REPORT</font><br><br>";
 echo "<FORM ACTION=\"$PHP_SELF\" METHOD=GET>\n";
 echo "<INPUT TYPE=TEXT NAME=query_date SIZE=10 MAXLENGTH=10 VALUE=\"$query_date\">\n";
 echo " to <INPUT TYPE=TEXT NAME=end_date SIZE=10 MAXLENGTH=10 VALUE=\"$end_date\">\n";

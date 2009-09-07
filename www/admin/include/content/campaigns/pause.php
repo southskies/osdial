@@ -29,7 +29,7 @@
 
 if ($ADD==27)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_pause_codes where campaign_id='$campaign_id' and pause_code='$pause_code';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -45,7 +45,7 @@ if ($ADD==27)
 			}
 		 else
 			{
-			echo "<br><B><font color=navy>AGENT PAUSE CODE ADDED: $campaign_id - $pause_code - $pause_code_name</font></B>\n";
+			echo "<br><B><font color=$default_text>AGENT PAUSE CODE ADDED: $campaign_id - $pause_code - $pause_code_name</font></B>\n";
 
 			$stmt="INSERT INTO osdial_pause_codes(campaign_id,pause_code,pause_code_name,billable) values('$campaign_id','$pause_code','$pause_code_name','$billable');";
 			$rslt=mysql_query($stmt, $link);
@@ -73,7 +73,7 @@ if ($ADD==47)
 {
 	if ($LOGmodify_campaigns==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($campaign_id) < 2) or (strlen($pause_code) < 1) or (strlen($pause_code) > 6) or (strlen($pause_code_name) < 2) )
 		{
@@ -83,7 +83,7 @@ if ($ADD==47)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>AGENT PAUSE CODE MODIFIED: $campaign_id - $pause_code - $pause_code_name</font></B>\n";
+		echo "<br><B><font color=$default_text>AGENT PAUSE CODE MODIFIED: $campaign_id - $pause_code - $pause_code_name</font></B>\n";
 
 		$stmt="UPDATE osdial_pause_codes SET pause_code_name='$pause_code_name',billable='$billable' where campaign_id='$campaign_id' and pause_code='$pause_code';";
 		$rslt=mysql_query($stmt, $link);
@@ -116,7 +116,7 @@ if ($ADD==67)
 {
 	if ($LOGmodify_campaigns==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($campaign_id) < 2) or (strlen($pause_code) < 1) )
 		{
@@ -125,7 +125,7 @@ if ($ADD==67)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>CAMPAIGN PAUSE CODE DELETED: $campaign_id - $pause_code</font></B>\n";
+		echo "<br><B><font color=$default_text>CAMPAIGN PAUSE CODE DELETED: $campaign_id - $pause_code</font></B>\n";
 
 		$stmt="DELETE FROM osdial_pause_codes where campaign_id='$campaign_id' and pause_code='$pause_code';";
 		$rslt=mysql_query($stmt, $link);
@@ -156,9 +156,9 @@ $ADD=31;	# go to campaign modification form below
 if ($ADD==37)
 {
 echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-echo "<center><br><font color=navy size=+1>CAMPAIGN AGENT PAUSE CODES</font><br><br>\n";
+echo "<center><br><font color=$default_text size=+1>CAMPAIGN AGENT PAUSE CODES</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=$menubarcolor>\n";
 echo "<td><font color=white size=1>CAMPAIGN</font></td>\n";

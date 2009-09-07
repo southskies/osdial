@@ -40,7 +40,7 @@ if ($ADD==73)
 	echo "</title>\n";
 	echo "</head>\n";
 	echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT dial_statuses,local_call_time,lead_filter_id from osdial_campaigns where campaign_id='$campaign_id';";
 	$rslt=mysql_query($stmt, $link);
@@ -110,9 +110,9 @@ if ($ADD==11)
 	if ($LOGmodify_campaigns==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>ADD A NEW CAMPAIGN</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>ADD A NEW CAMPAIGN</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Campaign ID: </td><td align=left><input type=text name=campaign_id size=10 maxlength=8>$NWB#osdial_campaigns-campaign_id$NWE</td></tr>\n";
@@ -159,9 +159,9 @@ if ($ADD==12)
 	if ($LOGmodify_campaigns==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>COPY A CAMPAIGN</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>COPY A CAMPAIGN</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=20>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Campaign ID: </td><td align=left><input type=text name=campaign_id size=10 maxlength=8>$NWB#osdial_campaigns-campaign_id$NWE</td></tr>\n";
@@ -202,7 +202,7 @@ if ($ADD==12)
 if ($ADD==21)
 {
 
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -225,7 +225,7 @@ if ($ADD==21)
 				}
 			 else
 				{
-				echo "<br><B><font color=navy> CAMPAIGN ADDED: $campaign_id</font></B>\n";
+				echo "<br><B><font color=$default_text> CAMPAIGN ADDED: $campaign_id</font></B>\n";
 
 				$stmt="INSERT INTO osdial_campaigns (campaign_id,campaign_name,campaign_description,active,dial_status_a,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,campaign_script,get_call_launch,campaign_changedate,campaign_stats_refresh,list_order_mix,web_form_address2,allow_tab_switch,campaign_call_time) values('$campaign_id','$campaign_name','$campaign_description','$active','NEW','DOWN','$park_ext','$park_file_name','" . mysql_real_escape_string($web_form_address) . "','$allow_closers','$hopper_level','$auto_dial_level','$next_agent_call','$local_call_time','$voicemail_ext','$script_id','$get_call_launch','$SQLdate','Y','DISABLED','" . mysql_real_escape_string($web_form_address2) . "','$allow_tab_switch','$campaign_call_time');";
 				$rslt=mysql_query($stmt, $link);
@@ -255,7 +255,7 @@ $ADD=31;
 if ($ADD==20)
 {
 
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -271,7 +271,7 @@ if ($ADD==20)
 			}
 		 else
 			{
-			echo "<br><B><font color=navy> CAMPAIGN COPIED: $campaign_id copied from $source_campaign_id</font></B>\n";
+			echo "<br><B><font color=$default_text> CAMPAIGN COPIED: $campaign_id copied from $source_campaign_id</font></B>\n";
 
 			$stmt="INSERT INTO osdial_campaigns (campaign_name,campaign_id,active,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,amd_send_to_vmx,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,lead_filter_id,drop_call_seconds,safe_harbor_message,safe_harbor_exten,display_dialable_count,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,concurrent_transfers,auto_alt_dial,auto_alt_dial_statuses,agent_pause_codes_active,campaign_description,campaign_changedate,campaign_stats_refresh,campaign_logindate,dial_statuses,disable_alter_custdata,no_hopper_leads_logins,list_order_mix,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,web_form_address2,allow_tab_switch,answers_per_hour_limit,campaign_call_time,preview_force_dial_time,manual_preview_default,web_form_extwindow,web_form2_extwindow,submit_method) SELECT \"$campaign_name\",\"$campaign_id\",\"N\",dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,amd_send_to_vmx,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,lead_filter_id,drop_call_seconds,safe_harbor_message,safe_harbor_exten,display_dialable_count,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,concurrent_transfers,auto_alt_dial,auto_alt_dial_statuses,agent_pause_codes_active,campaign_description,campaign_changedate,campaign_stats_refresh,campaign_logindate,dial_statuses,disable_alter_custdata,no_hopper_leads_logins,\"DISABLED\",campaign_allow_inbound,manual_dial_list_id,default_xfer_group,web_form_address2,allow_tab_switch,answers_per_hour_limit,campaign_call_time,preview_force_dial_time,manual_preview_default,web_form_extwindow,web_form2_extwindow,submit_method from osdial_campaigns where campaign_id='$source_campaign_id';";
 			$rslt=mysql_query($stmt, $link);
@@ -314,7 +314,7 @@ if ($ADD==41)
 {
 	if ($LOGmodify_campaigns==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($campaign_name) < 6) or (strlen($active) < 1) )
 		{
@@ -324,7 +324,7 @@ if ($ADD==41)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>CAMPAIGN MODIFIED: $campaign_id</font></B>\n";
+		echo "<br><B><font color=$default_text>CAMPAIGN MODIFIED: $campaign_id</font></B>\n";
 
 		if ($dial_method == 'MANUAL' and $campaign_allow_inbound != 'Y') 
 			{
@@ -363,7 +363,7 @@ if ($ADD==41)
 
 		if ($reset_hopper == 'Y')
 			{
-			echo "<br><font color=navy>RESETTING CAMPAIGN LEAD HOPPER\n";
+			echo "<br><font color=$default_text>RESETTING CAMPAIGN LEAD HOPPER\n";
 			echo "<br> - Wait 1 minute before dialing next number</font>\n";
 			$stmt="DELETE from osdial_hopper where campaign_id='$campaign_id' and status IN('READY','QUEUE','DONE');";
 			$rslt=mysql_query($stmt, $link);
@@ -403,7 +403,7 @@ if ($ADD==44)
 {
 	if ($LOGmodify_campaigns==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($campaign_name) < 6) or (strlen($active) < 1) )
 		{
@@ -412,7 +412,7 @@ if ($ADD==44)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>CAMPAIGN MODIFIED: $campaign_id</font></B>\n";
+		echo "<br><B><font color=$default_text>CAMPAIGN MODIFIED: $campaign_id</font></B>\n";
 
 		if ($dial_method == 'RATIO')
 			{
@@ -483,7 +483,7 @@ $ADD=34;	# go to campaign modification form below
 
 if ($ADD==51)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($campaign_id) < 2) or ($LOGdelete_campaigns < 1) )
 		{
@@ -492,7 +492,7 @@ if ($ADD==51)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>CAMPAIGN DELETION CONFIRMATION: $campaign_id</B>\n";
+		echo "<br><B><font color=$default_text>CAMPAIGN DELETION CONFIRMATION: $campaign_id</B>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=61&campaign_id=$campaign_id&CoNfIrM=YES\">Click here to delete campaign $campaign_id</a></font><br><br><br>\n";
 		}
 
@@ -505,7 +505,7 @@ $ADD='31';		# go to campaign modification below
 
 if ($ADD==52)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if (strlen($campaign_id) < 2)
 		{
@@ -514,7 +514,7 @@ if ($ADD==52)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>AGENT LOGOUT CONFIRMATION: $campaign_id</B>\n";
+		echo "<br><B><font color=$default_text>AGENT LOGOUT CONFIRMATION: $campaign_id</B>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=62&campaign_id=$campaign_id&CoNfIrM=YES\">Click here to log all agents out of $campaign_id</a></font><br><br><br>\n";
 		}
 
@@ -529,7 +529,7 @@ if ($ADD==53)
 {
 	if (eregi('IN',$stage))
 		{$group_id=$campaign_id;}
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if (strlen($campaign_id) < 2)
 		{
@@ -538,7 +538,7 @@ if ($ADD==53)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>VDAC CLEAR CONFIRMATION: $campaign_id</B>\n";
+		echo "<br><B><font color=$default_text>VDAC CLEAR CONFIRMATION: $campaign_id</B>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=63&campaign_id=$campaign_id&CoNfIrM=YES&&stage=$stage\">Click here to delete the oldest LIVE record in VDAC for $campaign_id</a></font><br><br><br>\n";
 		}
 
@@ -556,7 +556,7 @@ else
 
 if ($ADD==61)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( ( strlen($campaign_id) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_campaigns < 1) )
 		{
@@ -601,7 +601,7 @@ if ($ADD==61)
 		$stmt="DELETE from osdial_campaigns_list_mix where campaign_id='$campaign_id';";
 		$rslt=mysql_query($stmt, $link);
 
-		echo "<br><font color=navy>REMOVING LIST HOPPER LEADS FROM OLD CAMPAIGN HOPPER ($campaign_id)</font>\n";
+		echo "<br><font color=$default_text>REMOVING LIST HOPPER LEADS FROM OLD CAMPAIGN HOPPER ($campaign_id)</font>\n";
 		$stmt="DELETE from osdial_hopper where campaign_id='$campaign_id';";
 		$rslt=mysql_query($stmt, $link);
 
@@ -612,7 +612,7 @@ if ($ADD==61)
 			fwrite ($fp, "$date|!!DELETING CAMPAIGN!|$PHP_AUTH_USER|$ip|campaign_id='$campaign_id'|\n");
 			fclose($fp);
 			}
-		echo "<br><B><font color=navy>CAMPAIGN DELETION COMPLETED: $campaign_id</font></B>\n";
+		echo "<br><B><font color=$default_text>CAMPAIGN DELETION COMPLETED: $campaign_id</font></B>\n";
 		echo "<br><br>\n";
 		}
 
@@ -627,7 +627,7 @@ if ($ADD==62)
 {
 	if ($LOGmodify_campaigns==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if (strlen($campaign_id) < 2)
 		{
@@ -646,7 +646,7 @@ if ($ADD==62)
 			fwrite ($fp, "$date|!!AGENT LOGOUT!!!!!!|$PHP_AUTH_USER|$ip|campaign_id='$campaign_id'|\n");
 			fclose($fp);
 			}
-		echo "<br><B><font color=navy>AGENT LOGOUT COMPLETED: $campaign_id</font></B>\n";
+		echo "<br><B><font color=$default_text>AGENT LOGOUT COMPLETED: $campaign_id</font></B>\n";
 		echo "<br><br>\n";
 		}
 	}
@@ -669,7 +669,7 @@ if ($ADD==63)
 	{
 	if (eregi('IN',$stage))
 		{$group_id=$campaign_id;}
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if (strlen($campaign_id) < 2)
 		{
@@ -688,7 +688,7 @@ if ($ADD==63)
 			fwrite ($fp, "$date|EMERGENCY VDAC CLEAR|$PHP_AUTH_USER|$ip|campaign_id='$campaign_id'|\n");
 			fclose($fp);
 			}
-		echo "<br><B><font color=navy>LAST VDAC RECORD CLEARED FOR CAMPAIGN: $campaign_id</font></B>\n";
+		echo "<br><B><font color=$default_text>LAST VDAC RECORD CLEARED FOR CAMPAIGN: $campaign_id</font></B>\n";
 		echo "<br><br>\n";
 		}
 	}
@@ -712,7 +712,7 @@ else
 if ($ADD==30)
 {
 echo "<TABLE><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 echo "<font color=red>You do not have permission to view campaign $campaign_id</font>\n";
 }
 
@@ -923,13 +923,13 @@ if ($ADD==31)
 
 
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	echo "<center>\n";
 
 	if ($SUB < 1)
 		{
-		echo "<center><br><font color=navy size=+1>MODIFY CAMPAIGN</font><form action=$PHP_SELF method=POST></center>\n";
+		echo "<center><br><font color=$default_text size=+1>MODIFY CAMPAIGN</font><form action=$PHP_SELF method=POST></center>\n";
 		echo "<form action=$PHP_SELF method=POST>\n";
 		echo "<input type=hidden name=ADD value=41>\n";
 		echo "<input type=hidden name=campaign_id value=\"$campaign_id\">\n";
@@ -1169,8 +1169,8 @@ if ($ADD==31)
         if ($dispinact == 1) $dispinactSQL = "";
 
 	echo "<center>\n";
-	echo "<br><br><b><font color=navy size=+1>LISTS WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_campaign_lists$NWE</font></b><br>\n";
-    echo "<center><font color=navy size=-1>";
+	echo "<br><br><b><font color=$default_text size=+1>LISTS WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_campaign_lists$NWE</font></b><br>\n";
+    echo "<center><font color=$default_text size=-1>";
     if ($dispinact == '1') {
         echo "<a href=\"$PHP_SELF?ADD=$ADD&campaign_id=$campaign_id&dispinact=\">(Hide Inactive)</a>";
     } else {
@@ -1178,7 +1178,7 @@ if ($ADD==31)
     }
     echo "</font><br>\n";
 	echo "<TABLE width=400 cellspacing=3>\n";
-	echo "<tr><td><font color=navy>LIST ID</font></td><td><font color=navy>LIST NAME</font></td><td><font color=navy>ACTIVE</font></td></tr>\n";
+	echo "<tr><td><font color=$default_text>LIST ID</font></td><td><font color=$default_text>LIST NAME</font></td><td><font color=$default_text>ACTIVE</font></td></tr>\n";
 
 
 		$active_lists = 0;
@@ -1215,7 +1215,7 @@ if ($ADD==31)
 		#	{$fSQL = '';}
 
 			$camp_lists = eregi_replace(".$","",$camp_lists);
-		echo "<br><br><font color=navy>This campaign has $active_lists active lists and $inactive_lists inactive lists</font><br><br>\n";
+		echo "<br><br><font color=$default_text>This campaign has $active_lists active lists and $inactive_lists inactive lists</font><br><br>\n";
 
 		if ($display_dialable_count == 'Y')
 			{
@@ -1239,7 +1239,7 @@ if ($ADD==31)
 			$rowx=mysql_fetch_row($rslt);
 			$hopper_leads = "$rowx[0]";
 
-		echo "<font color=navy>This campaign has $hopper_leads leads in the dial hopper<br><br>\n";
+		echo "<font color=$default_text>This campaign has $hopper_leads leads in the dial hopper<br><br>\n";
 		echo "<a href=\"./AST_OSDIAL_hopperlist.php?group=$campaign_id\">Click here to see what leads are in the hopper right now</a><br><br>\n";
 		echo "<a href=\"$PHP_SELF?ADD=81&campaign_id=$campaign_id\">Click here to see all CallBack Holds in this campaign</a><BR><BR>\n";
 		echo "<a href=\"./AST_VDADstats.php?group=$campaign_id\">Click here to see a Time On Dialer report for this campaign</a></font><BR><BR>\n";
@@ -1268,13 +1268,13 @@ if ($ADD==31)
 
 
 		echo "<center>\n";
-		echo "<br><b><font color=navy size=+1>CUSTOM STATUSES WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_campaign_statuses$NWE</font></b><br><br>\n";
+		echo "<br><b><font color=$default_text size=+1>CUSTOM STATUSES WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_campaign_statuses$NWE</font></b><br><br>\n";
 		echo "<TABLE width=500 cellspacing=3>\n";
-		echo "<tr><td><font color=navy>STATUS</font></td>";
-		echo "<td><font color=navy>DESCRIPTION</font></td>";
-		echo "<td><font color=navy>SELECTABLE</font></td>";
-		echo "<td><font color=navy>HUMAN ANSWER</font></td>";
-		echo "<td><font color=navy>DELETE</font></td></tr>\n";
+		echo "<tr><td><font color=$default_text>STATUS</font></td>";
+		echo "<td><font color=$default_text>DESCRIPTION</font></td>";
+		echo "<td><font color=$default_text>SELECTABLE</font></td>";
+		echo "<td><font color=$default_text>HUMAN ANSWER</font></td>";
+		echo "<td><font color=$default_text>DELETE</font></td></tr>\n";
 
 		$stmt="SELECT * from osdial_campaign_statuses where campaign_id='$campaign_id'";
 		$rslt=mysql_query($stmt, $link);
@@ -1314,7 +1314,7 @@ if ($ADD==31)
 
 		echo "</table>\n";
 
-		echo "<br><br><br><font color=navy>ADD NEW CUSTOM CAMPAIGN STATUS</font><BR><form action=$PHP_SELF method=POST><br>\n";
+		echo "<br><br><br><font color=$default_text>ADD NEW CUSTOM CAMPAIGN STATUS</font><BR><form action=$PHP_SELF method=POST><br>\n";
 		echo "<input type=hidden name=ADD value=22>\n";
 		echo "<input type=hidden name=campaign_id value=\"$campaign_id\">\n";
 		echo "Status: <input type=text name=status size=10 maxlength=8> &nbsp; \n";
@@ -1334,7 +1334,7 @@ if ($ADD==31)
 	##### CAMPAIGN HOTKEYS #####
 	if ($SUB==23)
 		{
-		echo "<center><br><b><font color=navy size=+1>CUSTOM HOT KEYS WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_campaign_hotkeys$NWE</font></b><br><br>\n";
+		echo "<center><br><b><font color=$default_text size=+1>CUSTOM HOT KEYS WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_campaign_hotkeys$NWE</font></b><br><br>\n";
 		echo "<TABLE width=400 cellspacing=3 align=center>\n";
 		echo "<tr><td>HOT KEY</td><td>STATUS</td><td>DESCRIPTION</td><td>DELETE</td></tr>\n";
 
@@ -1357,7 +1357,7 @@ if ($ADD==31)
 
 		echo "</table></center>\n";
 
-		echo "<br><br><font color=navy>ADD NEW CUSTOM CAMPAIGN HOT KEY</font><BR><form action=$PHP_SELF method=POST><br>\n";
+		echo "<br><br><font color=$default_text>ADD NEW CUSTOM CAMPAIGN HOT KEY</font><BR><form action=$PHP_SELF method=POST><br>\n";
 		echo "<input type=hidden name=ADD value=23>\n";
 		echo "<input type=hidden name=selectable value=Y>\n";
 		echo "<input type=hidden name=campaign_id value=\"$campaign_id\">\n";
@@ -1384,9 +1384,9 @@ if ($ADD==31)
 	##### CAMPAIGN LEAD RECYCLING #####
 	if ($SUB==25)
 		{
-		echo "<br><br><b><font color=navy size=+1>LEAD RECYCLING WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_lead_recycle$NWE</font></b><br><br>\n";
+		echo "<br><br><b><font color=$default_text size=+1>LEAD RECYCLING WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_lead_recycle$NWE</font></b><br><br>\n";
 		echo "<TABLE width=500 cellspacing=3>\n";
-		echo "<tr><td><font color=navy>STATUS</font></td><td><font color=navy>ATTEMPT DELAY</font></td><td><font color=navy>ATTEMPT MAXIMUM</font></td><td><font color=navy>ACTIVE</font></td><td> </td><td><font color=navy>DELETE</font></td></tr>\n";
+		echo "<tr><td><font color=$default_text>STATUS</font></td><td><font color=$default_text>ATTEMPT DELAY</font></td><td><font color=$default_text>ATTEMPT MAXIMUM</font></td><td><font color=$default_text>ACTIVE</font></td><td> </td><td><font color=$default_text>DELETE</font></td></tr>\n";
 
 			$stmt="SELECT * from osdial_lead_recycle where campaign_id='$campaign_id' order by status";
 			$rslt=mysql_query($stmt, $link);
@@ -1415,7 +1415,7 @@ if ($ADD==31)
 
 		echo "</table>\n";
 
-		echo "<br><br><font color=navy>ADD NEW CAMPAIGN LEAD RECYCLE</font><BR><form action=$PHP_SELF method=POST><br>\n";
+		echo "<br><br><font color=$default_text>ADD NEW CAMPAIGN LEAD RECYCLE</font><BR><form action=$PHP_SELF method=POST><br>\n";
 		echo "<input type=hidden name=SUB value=25>\n";
 		echo "<input type=hidden name=ADD value=25>\n";
 		echo "<input type=hidden name=active value=\"N\">\n";
@@ -1433,9 +1433,9 @@ if ($ADD==31)
 	##### CAMPAIGN AUTO-ALT-NUMBER DIALING #####
 	if ($SUB==26)
 		{
-		echo "<br><br><b><font color=navy size=+1>AUTO ALT NUMBER DIALING FOR THIS CAMPAIGN &nbsp; $NWB#osdial_auto_alt_dial_statuses$NWE</font></b><br><br>\n";
+		echo "<br><br><b><font color=$default_text size=+1>AUTO ALT NUMBER DIALING FOR THIS CAMPAIGN &nbsp; $NWB#osdial_auto_alt_dial_statuses$NWE</font></b><br><br>\n";
 		echo "<TABLE width=500 cellspacing=3>\n";
-		echo "<tr><td><font color=navy>STATUSES</font></td><td><font color=navy>DELETE</font></td></tr>\n";
+		echo "<tr><td><font color=$default_text>STATUSES</font></td><td><font color=$default_text>DELETE</font></td></tr>\n";
 
 		$auto_alt_dial_statuses = preg_replace("/ -$/","",$auto_alt_dial_statuses);
 		$AADstatuses = explode(" ", $auto_alt_dial_statuses);
@@ -1456,7 +1456,7 @@ if ($ADD==31)
 
 		echo "</table>\n";
 
-		echo "<br><br><font color=navy>ADD NEW AUTO ALT NUMBER DIALING STATUS</font><BR><form action=$PHP_SELF method=POST><br>\n";
+		echo "<br><br><font color=$default_text>ADD NEW AUTO ALT NUMBER DIALING STATUS</font><BR><form action=$PHP_SELF method=POST><br>\n";
 		echo "<input type=hidden name=ADD value=26>\n";
 		echo "<input type=hidden name=campaign_id value=\"$campaign_id\">\n";
 		echo "Status: <select size=1 name=status>\n";
@@ -1470,9 +1470,9 @@ if ($ADD==31)
 	##### CAMPAIGN PAUSE CODES #####
 	if ($SUB==27)
 		{
-		echo "<br><br><b><font color=navy size=+1>AGENT PAUSE CODES FOR THIS CAMPAIGN &nbsp; $NWB#osdial_pause_codes$NWE</font></b><br><br>\n";
+		echo "<br><br><b><font color=$default_text size=+1>AGENT PAUSE CODES FOR THIS CAMPAIGN &nbsp; $NWB#osdial_pause_codes$NWE</font></b><br><br>\n";
 		echo "<TABLE width=500 cellspacing=3>\n";
-		echo "<tr><td><font color=navy>PAUSE CODES</font></td><td><font color=navy>BILLABLE</font></td><td><font color=navy>MODIFY</font></td><td><font color=navy>DELETE</font></td></tr>\n";
+		echo "<tr><td><font color=$default_text>PAUSE CODES</font></td><td><font color=$default_text>BILLABLE</font></td><td><font color=$default_text>MODIFY</font></td><td><font color=$default_text>DELETE</font></td></tr>\n";
 
 			$stmt="SELECT * from osdial_pause_codes where campaign_id='$campaign_id' order by pause_code";
 			$rslt=mysql_query($stmt, $link);
@@ -1499,7 +1499,7 @@ if ($ADD==31)
 
 		echo "</table>\n";
 
-		echo "<br><br><font color=navy>ADD NEW AGENT PAUSE CODE</font><BR><form action=$PHP_SELF method=POST><br>\n";
+		echo "<br><br><font color=$default_text>ADD NEW AGENT PAUSE CODE</font><BR><form action=$PHP_SELF method=POST><br>\n";
 		echo "<input type=hidden name=ADD value=27>\n";
 		echo "<input type=hidden name=campaign_id value=\"$campaign_id\">\n";
 		echo "Pause Code: <input type=text size=8 maxlength=6 name=pause_code>\n";
@@ -1667,8 +1667,8 @@ if ($ADD==34)
 	if ($SUB < 1)
 		{
 		echo "<TABLE align=center><TR><TD>\n";
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-		echo "<center><br><font color=navy size=+1>MODIFY CAMPAIGN</font><form action=$PHP_SELF method=POST></center>\n";
+		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+		echo "<center><br><font color=$default_text size=+1>MODIFY CAMPAIGN</font><form action=$PHP_SELF method=POST></center>\n";
 		echo "<form action=$PHP_SELF method=POST>\n";
 		echo "<input type=hidden name=ADD value=44>\n";
 		echo "<input type=hidden name=campaign_id value=\"$campaign_id\">\n";
@@ -1767,8 +1767,8 @@ if ($ADD==34)
             if ($dispinact == 1) $dispinactSQL = "";
 
 		echo "<center>\n";
-		echo "<br><br><b><font color=navy>LISTS WITHIN THIS CAMPAIGN: &nbsp; $NWB#osdial_campaign_lists$NWE</font></b><br>\n";
-        echo "<center><font color=navy size=-1>";
+		echo "<br><br><b><font color=$default_text>LISTS WITHIN THIS CAMPAIGN: &nbsp; $NWB#osdial_campaign_lists$NWE</font></b><br>\n";
+        echo "<center><font color=$default_text size=-1>";
         if ($dispinact == '1') {
             echo "<a href=\"$PHP_SELF?ADD=$ADD&campaign_id=$campaign_id&dispinact=\">(Hide Inactive)</a>";
         } else {
@@ -1776,7 +1776,7 @@ if ($ADD==34)
         }
         echo "</font><br>\n";
 		echo "<TABLE width=400 cellspacing=3>\n";
-		echo "<tr><td><font color=navy>LIST ID</font></td><td><font color=navy>LIST NAME</font></td><td><font color=navy>ACTIVE</font></td></tr>\n";
+		echo "<tr><td><font color=$default_text>LIST ID</font></td><td><font color=$default_text>LIST NAME</font></td><td><font color=$default_text>ACTIVE</font></td></tr>\n";
 
 			$active_lists = 0;
 			$inactive_lists = 0;
@@ -1813,7 +1813,7 @@ if ($ADD==34)
 		#	{$fSQL = '';}
 
 			$camp_lists = eregi_replace(".$","",$camp_lists);
-		echo "<font color=navy>This campaign has $active_lists active lists and $inactive_lists inactive lists</font><br><br>\n";
+		echo "<font color=$default_text>This campaign has $active_lists active lists and $inactive_lists inactive lists</font><br><br>\n";
 
 
 		if ($display_dialable_count == 'Y')
@@ -1836,7 +1836,7 @@ if ($ADD==34)
 			$rowx=mysql_fetch_row($rslt);
 			$hopper_leads = "$rowx[0]";
 
-		echo "<font color=navy>This campaign has $hopper_leads leads in the dial hopper<br><br>\n";
+		echo "<font color=$default_text>This campaign has $hopper_leads leads in the dial hopper<br><br>\n";
 		echo "<a href=\"./AST_OSDIAL_hopperlist.php?group=$campaign_id\">Click here to see what leads are in the hopper right now</a><br><br>\n";
 		echo "<a href=\"$PHP_SELF?ADD=81&campaign_id=$campaign_id\">Click here to see all CallBack Holds in this campaign</a><BR><BR>\n";
 		echo "<a href=\"./AST_VDADstats.php?group=$campaign_id\">Click here to see a Call report for this campaign</a></font><BR><BR>\n";
@@ -1846,9 +1846,9 @@ if ($ADD==34)
 
 		### list of agent rank or skill-level for this campaign
 		echo "<center>\n";
-		echo "<br><b><font color=navy>AGENT RANKS FOR THIS CAMPAIGN:</font></b><br>\n";
+		echo "<br><b><font color=$default_text>AGENT RANKS FOR THIS CAMPAIGN:</font></b><br>\n";
 		echo "<TABLE width=400 cellspacing=3>\n";
-		echo "<tr><td><font color=navy>USER</font></td><td> &nbsp; &nbsp; <font color=navy>RANK</font></td><td> &nbsp; &nbsp; <font color=navy>CALLS TODAY</font></td></tr>\n";
+		echo "<tr><td><font color=$default_text>USER</font></td><td> &nbsp; &nbsp; <font color=$default_text>RANK</font></td><td> &nbsp; &nbsp; <font color=$default_text>CALLS TODAY</font></td></tr>\n";
 
 			$stmt="SELECT user,campaign_rank,calls_today from osdial_campaign_agents where campaign_id='$campaign_id'";
 			$rsltx=mysql_query($stmt, $link);
@@ -1916,7 +1916,7 @@ if ( ($ADD==34) or ($ADD==31) )
 			}
 
 
-		echo "<br><br><b><font color=navy size=+1>LIST MIXES FOR THIS CAMPAIGN &nbsp; $NWB#osdial_campaigns-list_order_mix$NWE</font></b><br>\n";
+		echo "<br><br><b><font color=$default_text size=+1>LIST MIXES FOR THIS CAMPAIGN &nbsp; $NWB#osdial_campaigns-list_order_mix$NWE</font></b><br>\n";
 
 		$stmt="SELECT * from osdial_campaigns_list_mix where campaign_id='$campaign_id' order by status, vcl_id";
 		$rslt=mysql_query($stmt, $link);
@@ -2068,7 +2068,7 @@ if ( ($ADD==34) or ($ADD==31) )
 			}
 
 
-		echo "<br><br><B><font color=navy>ADD NEW LIST MIX</font></B><BR><form action=$PHP_SELF method=POST>\n";
+		echo "<br><br><B><font color=$default_text>ADD NEW LIST MIX</font></B><BR><form action=$PHP_SELF method=POST>\n";
 		echo "<table border=0>\n";
 		echo "<tr bgcolor=$oddrows><td><form action=\"$PHP_SELF#$vcl_id\" method=POST>\n";
 		echo "<input type=hidden name=ADD value=49>\n";
@@ -2117,13 +2117,13 @@ if ($ADD==81)
 		echo "<br>campaign($campaign_id) callback listings LIVE for more than one week have been made INACTIVE\n";
 		}
 	}
-$CBinactiveLINK = "<BR><a href=\"$PHP_SELF?ADD=81&SUB=89&campaign_id=$campaign_id\"><font color=navy>Remove LIVE Callbacks older than one month for this campaign</font></a><BR><a href=\"$PHP_SELF?ADD=81&SUB=899&campaign_id=$campaign_id\"><font color=navy>Remove LIVE Callbacks older than one week for this campaign</font></a><BR>";
+$CBinactiveLINK = "<BR><a href=\"$PHP_SELF?ADD=81&SUB=89&campaign_id=$campaign_id\"><font color=$default_text>Remove LIVE Callbacks older than one month for this campaign</font></a><BR><a href=\"$PHP_SELF?ADD=81&SUB=899&campaign_id=$campaign_id\"><font color=$default_text>Remove LIVE Callbacks older than one week for this campaign</font></a><BR>";
 
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$CBquerySQLwhere = "and campaign_id='$campaign_id'";
 
-echo "<br><font color=navy> CAMPAIGN CALLBACK HOLD LISTINGS: $campaign_id</font>\n";
+echo "<br><font color=$default_text> CAMPAIGN CALLBACK HOLD LISTINGS: $campaign_id</font>\n";
 $oldADD = "ADD=81&campaign_id=$campaign_id";
 $ADD='82';
 }
@@ -2134,7 +2134,7 @@ $ADD='82';
 if ($ADD==10)
 {
 echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT campaign_id from osdial_campaigns;";
 	$rslt=mysql_query($stmt, $link);
@@ -2152,9 +2152,9 @@ if ($dispact == 1) $dispactSQL = "AND active='Y'";
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=navy size=+1>CAMPAIGNS</font><br>\n";
+echo "<center><br><font color=$default_text size=+1>CAMPAIGNS</font><br>\n";
 if ($total_campaigns > 20) {
-    echo "<center><font color=navy size=-1>";
+    echo "<center><font color=$default_text size=-1>";
     if ($dispact == '1') {
         echo "<a href=\"$PHP_SELF?ADD=10&let=$let&dispact=\">(Show Inactive)</a>";
     } else {
@@ -2162,7 +2162,7 @@ if ($total_campaigns > 20) {
     }
     echo "</font><br>\n";
 }
-echo "<center><br><font size=-1 color=navy>&nbsp;|&nbsp;";
+echo "<center><br><font size=-1 color=$default_text>&nbsp;|&nbsp;";
 echo (($let == "A") ? "A" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=A\">A</a>") . "&nbsp;|&nbsp;";
 echo (($let == "B") ? "B" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=B\">B</a>") . "&nbsp;|&nbsp;";
 echo (($let == "C") ? "C" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=C\">C</a>") . "&nbsp;|&nbsp;";

@@ -31,9 +31,9 @@ if ($ADD==11111111)
 	if ($LOGmodify_filters==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>ADD NEW FILTER</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>ADD NEW FILTER</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Filter ID: </td><td align=left><input type=text name=lead_filter_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_lead_filters-lead_filter_id$NWE</td></tr>\n";
@@ -57,7 +57,7 @@ if ($ADD==11111111)
 
 if ($ADD==21111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_lead_filters where lead_filter_id='$lead_filter_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -76,7 +76,7 @@ if ($ADD==21111111)
 			$stmt="INSERT INTO osdial_lead_filters SET lead_filter_id='$lead_filter_id',lead_filter_name='$lead_filter_name',lead_filter_comments='$lead_filter_comments',lead_filter_sql='$lead_filter_sql';";
 			$rslt=mysql_query($stmt, $link);
 
-			echo "<br><B><font color=navy>FILTER ADDED: $lead_filter_id</font></B>\n";
+			echo "<br><B><font color=$default_text>FILTER ADDED: $lead_filter_id</font></B>\n";
 
 			### LOG CHANGES TO LOG FILE ###
 			if ($WeBRooTWritablE > 0)
@@ -99,7 +99,7 @@ if ($ADD==41111111)
 {
 	if ($LOGmodify_filters==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($lead_filter_id) < 2) or (strlen($lead_filter_name) < 2) or (strlen($lead_filter_sql) < 2) )
 		{
@@ -112,7 +112,7 @@ if ($ADD==41111111)
 		$stmt="UPDATE osdial_lead_filters set lead_filter_name='$lead_filter_name', lead_filter_comments='$lead_filter_comments', lead_filter_sql='$lead_filter_sql' where lead_filter_id='$lead_filter_id';";
 		$rslt=mysql_query($stmt, $link);
 
-		echo "<br><B><font color=navy>FILTER MODIFIED</font></B>\n";
+		echo "<br><B><font color=$default_text>FILTER MODIFIED</font></B>\n";
 
 		### LOG CHANGES TO LOG FILE ###
 		if ($WeBRooTWritablE > 0)
@@ -137,7 +137,7 @@ $ADD=31111111;	# go to filter modification form below
 
 if ($ADD==51111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($lead_filter_id) < 2) or ($LOGdelete_filters < 1) )
 		{
@@ -146,7 +146,7 @@ if ($ADD==51111111)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>FILTER DELETION CONFIRMATION: $lead_filter_id</B>\n";
+		echo "<br><B><font color=$default_text>FILTER DELETION CONFIRMATION: $lead_filter_id</B>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=61111111&lead_filter_id=$lead_filter_id&CoNfIrM=YES\">Click here to delete filter $lead_filter_id</a></font><br><br><br>\n";
 		}
 
@@ -160,7 +160,7 @@ $ADD='31111111';		# go to filter modification below
 
 if ($ADD==61111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($lead_filter_id) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_filters < 1) )
 		{
@@ -179,7 +179,7 @@ if ($ADD==61111111)
 			fwrite ($fp, "$date|!DELETING FILTER!!!!|$PHP_AUTH_USER|$ip|lead_filter_id='$lead_filter_id'|\n");
 			fclose($fp);
 			}
-		echo "<br><B><font color=navy>FILTER DELETION COMPLETED: $lead_filter_id</font></B>\n";
+		echo "<br><B><font color=$default_text>FILTER DELETION COMPLETED: $lead_filter_id</font></B>\n";
 		echo "<br><br>\n";
 		}
 
@@ -197,7 +197,7 @@ if ($ADD==31111111)
 	if ($LOGmodify_filters==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from osdial_lead_filters where lead_filter_id='$lead_filter_id';";
 	$rslt=mysql_query($stmt, $link);
@@ -205,9 +205,9 @@ if ($ADD==31111111)
 	$lead_filter_name =		$row[1];
 	$lead_filter_comments =	$row[2];
 	$lead_filter_sql =		$row[3];
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>MODIFY A FILTER</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>MODIFY A FILTER</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=41111111>\n";
 	echo "<input type=hidden name=lead_filter_id value=\"$lead_filter_id\">\n";
 	echo "<TABLE>";
@@ -233,7 +233,7 @@ if ($ADD==31111111)
 			}
 
 	echo "<BR><BR>";
-	echo "<center><br><font color=navy>TEST ON CAMPAIGN<form action=$PHP_SELF method=POST target=\"_blank\"><br>\n";
+	echo "<center><br><font color=$default_text>TEST ON CAMPAIGN<form action=$PHP_SELF method=POST target=\"_blank\"><br>\n";
 	echo "<input type=hidden name=lead_filter_id value=\"$lead_filter_id\">\n";
 	echo "<input type=hidden name=ADD value=\"73\">\n";
 	echo "<select size=1 name=campaign_id>\n";
@@ -266,13 +266,13 @@ if ($ADD==10000000)
 {
 echo "<TABLE align=center><TR><TD>\n";
 
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from osdial_lead_filters order by lead_filter_id";
 	$rslt=mysql_query($stmt, $link);
 	$filters_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=navy size=+1>LEAD FILTERS</font><br><br>\n";
+echo "<center><br><font color=$default_text size=+1>LEAD FILTERS</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=$menubarcolor>";
 echo "<td><font size=1 color=white><B>NAME</B></td>";

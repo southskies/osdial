@@ -33,9 +33,9 @@ if ($ADD==1111)
 	if ($LOGmodify_ingroups==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>ADD A NEW INBOUND GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>ADD A NEW INBOUND GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Group ID: </td><td align=left><input type=text name=group_id size=20 maxlength=20> (no spaces)$NWB#osdial_inbound_groups-group_id$NWE</td></tr>\n";
@@ -73,9 +73,9 @@ if ($ADD==1211)
 	if ($LOGmodify_ingroups==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>COPY INBOUND GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>COPY INBOUND GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2011>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Group ID: </td><td align=left><input type=text name=group_id size=20 maxlength=20> (no spaces)$NWB#osdial_inbound_groups-group_id$NWE</td></tr>\n";
@@ -115,7 +115,7 @@ if ($ADD==1211)
 
 if ($ADD==2111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_inbound_groups where group_id='$group_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -132,7 +132,7 @@ if ($ADD==2111)
 			{
 			 if ( (strlen($group_id) < 2) or (strlen($group_name) < 2)  or (strlen($group_color) < 2) or (strlen($group_id) > 20) or (eregi(' ',$group_id)) or (eregi("\-",$group_id)) or (eregi("\+",$group_id)) )
 				{
-				 echo "<br><font color=navy>GROUP NOT ADDED - Please go back and look at the data you entered\n";
+				 echo "<br><font color=$default_text>GROUP NOT ADDED - Please go back and look at the data you entered\n";
 				 echo "<br>Group ID must be between 2 and 20 characters in length and contain no ' -+'.\n";
 				 echo "<br>Group name and group color must be at least 2 characters in length</font><br>\n";
 				}
@@ -141,7 +141,7 @@ if ($ADD==2111)
 				$stmt="INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,web_form_address2,allow_tab_switch) values('$group_id','$group_name','$group_color','$active','" . mysql_real_escape_string($web_form_address) . "','$voicemail_ext','$next_agent_call','$fronter_display','$script_id','$get_call_launch','" . mysql_real_escape_string($web_form_address2) . "','$allow_tab_switch');";
 				$rslt=mysql_query($stmt, $link);
 
-				echo "<br><B><font color=navy>GROUP ADDED: $group_id</font></B>\n";
+				echo "<br><B><font color=$default_text>GROUP ADDED: $group_id</font></B>\n";
 
 				### LOG CHANGES TO LOG FILE ###
 				if ($WeBRooTWritablE > 0)
@@ -163,7 +163,7 @@ $ADD=3111;
 
 if ($ADD==2011)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_inbound_groups where group_id='$group_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -182,7 +182,7 @@ if ($ADD==2011)
 			$stmt="INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_message,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow) SELECT \"$group_id\",\"$group_name\",group_color,\"N\",web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_message,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow from osdial_inbound_groups where group_id=\"$source_group_id\";";
 			$rslt=mysql_query($stmt, $link);
 
-			echo "<br><B><font color=navy>GROUP ADDED: $group_id</font></B>\n";
+			echo "<br><B><font color=$default_text>GROUP ADDED: $group_id</font></B>\n";
 
 			### LOG CHANGES TO LOG FILE ###
 			if ($WeBRooTWritablE > 0)
@@ -204,7 +204,7 @@ if ($ADD==4111)
 {
 	if ($LOGmodify_ingroups==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($group_name) < 2) or (strlen($group_color) < 2) )
 		{
@@ -213,7 +213,7 @@ if ($ADD==4111)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>GROUP MODIFIED: $group_id</font></B>\n";
+		echo "<br><B><font color=$default_text>GROUP MODIFIED: $group_id</font></B>\n";
 
 		$stmt="UPDATE osdial_inbound_groups set group_name='$group_name', group_color='$group_color', active='$active', web_form_address='" . mysql_real_escape_string($web_form_address) . "', voicemail_ext='$voicemail_ext', next_agent_call='$next_agent_call', fronter_display='$fronter_display', ingroup_script='$script_id', get_call_launch='$get_call_launch', xferconf_a_dtmf='$xferconf_a_dtmf',xferconf_a_number='$xferconf_a_number', xferconf_b_dtmf='$xferconf_b_dtmf',xferconf_b_number='$xferconf_b_number',drop_message='$drop_message',drop_call_seconds='$drop_call_seconds',drop_exten='$drop_exten',call_time_id='$call_time_id',after_hours_action='$after_hours_action',after_hours_message_filename='$after_hours_message_filename',after_hours_exten='$after_hours_exten',after_hours_voicemail='$after_hours_voicemail',welcome_message_filename='$welcome_message_filename',moh_context='$moh_context',onhold_prompt_filename='$onhold_prompt_filename',prompt_interval='$prompt_interval',agent_alert_exten='$agent_alert_exten',agent_alert_delay='$agent_alert_delay',default_xfer_group='$default_xfer_group', web_form_address2='" . mysql_real_escape_string($web_form_address2) . "', allow_tab_switch='$allow_tab_switch', web_form_extwindow='$web_form_extwindow',web_form2_extwindow='$web_form2_extwindow' where group_id='$group_id';";
 		$rslt=mysql_query($stmt, $link);
@@ -242,7 +242,7 @@ $ADD=3111;	# go to in-group modification form below
 
 if ($ADD==5111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($group_id) < 2) or ($LOGdelete_ingroups < 1) )
 		{
@@ -251,7 +251,7 @@ if ($ADD==5111)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>IN-GROUP DELETION CONFIRMATION: $group_id</B>\n";
+		echo "<br><B><font color=$default_text>IN-GROUP DELETION CONFIRMATION: $group_id</B>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=6111&group_id=$group_id&CoNfIrM=YES\">Click here to delete in-group $group_id</a></font><br><br><br>\n";
 		}
 
@@ -265,7 +265,7 @@ $ADD='3111';		# go to in-group modification below
 
 if ($ADD==6111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($group_id) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_ingroups < 1) )
 		{
@@ -290,7 +290,7 @@ if ($ADD==6111)
 			fwrite ($fp, "$date|!DELETING IN-GROUP!!|$PHP_AUTH_USER|$ip|group_id='$group_id'|\n");
 			fclose($fp);
 			}
-		echo "<br><B><font color=navy>IN-GROUP DELETION COMPLETED: $group_id</font></B>\n";
+		echo "<br><B><font color=$default_text>IN-GROUP DELETION COMPLETED: $group_id</font></B>\n";
 		echo "<br><br>\n";
 		}
 
@@ -307,7 +307,7 @@ if ($ADD==3111)
 	if ($LOGmodify_ingroups==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from osdial_inbound_groups where group_id='$group_id';";
 	$rslt=mysql_query($stmt, $link);
@@ -370,7 +370,7 @@ if ($ADD==3111)
 		{$Xgroups_menu .= "<option value=\"---NONE---\">---NONE---</option>\n";}
 
 
-	echo "<center><br><font color=navy size=+1>MODIFY AN IN-GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>MODIFY AN IN-GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=4111>\n";
 	echo "<input type=hidden name=group_id value=\"$row[0]\">\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -445,9 +445,9 @@ if ($ADD==3111)
 
 	### list of agent rank or skill-level for this inbound group
 	echo "<center>\n";
-	echo "<br><font color=navy size=+1>AGENT RANKS FOR THIS INBOUND GROUP</font<br><br>\n";
+	echo "<br><font color=$default_text size=+1>AGENT RANKS FOR THIS INBOUND GROUP</font<br><br>\n";
 	echo "<TABLE width=400 cellspacing=3>\n";
-	echo "<tr><td><font color=navy>&nbsp;&nbsp;USER</font></td><td> &nbsp; &nbsp; <font color=navy>RANK</font></td><td> &nbsp; &nbsp; <font color=navy>CALLS TODAY</font></td></tr>\n";
+	echo "<tr><td><font color=$default_text>&nbsp;&nbsp;USER</font></td><td> &nbsp; &nbsp; <font color=$default_text>RANK</font></td><td> &nbsp; &nbsp; <font color=$default_text>CALLS TODAY</font></td></tr>\n";
 
 		$stmt="SELECT user,group_rank,calls_today from osdial_inbound_group_agents where group_id='$group_id'";
 		$rsltx=mysql_query($stmt, $link);
@@ -470,9 +470,9 @@ if ($ADD==3111)
 
 	echo "</table><br><br>\n";
 
-	echo "<br><font color=navy size=+1>CAMPAIGNS ASSIGNED TO THIS INBOUND GROUP</font<br><br>\n";
+	echo "<br><font color=$default_text size=+1>CAMPAIGNS ASSIGNED TO THIS INBOUND GROUP</font<br><br>\n";
 	echo "<TABLE width=400 cellspacing=3>\n";
-	echo "<tr><td align=center><font color=navy>CAMPAIGN_ID</font></td><td align=center><font color=navy>NAME</font></td><td align=center><font color=navy>ACTIVE</font></td></tr>\n";
+	echo "<tr><td align=center><font color=$default_text>CAMPAIGN_ID</font></td><td align=center><font color=$default_text>NAME</font></td><td align=center><font color=$default_text>ACTIVE</font></td></tr>\n";
 
 		$stmt="SELECT campaign_id,campaign_name,active from osdial_campaigns where closer_campaigns LIKE '% $group_id %'";
 		$rsltx=mysql_query($stmt, $link);
@@ -520,13 +520,13 @@ if ($ADD==3111)
 if ($ADD==1000)
 {
 echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from osdial_inbound_groups order by group_id";
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=navy size=+1>INBOUND GROUPS</font><br><br>\n";
+echo "<center><br><font color=$default_text size=+1>INBOUND GROUPS</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=$menubarcolor>";
 echo "<td><font size=1 color=white><B>ID</B></td>";

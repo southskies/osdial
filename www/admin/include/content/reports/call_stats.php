@@ -123,7 +123,7 @@ function report_call_stats() {
 
 
     $html .= "<TABLE><TR><TD>\n";
-    $html .= "<p class=centered><font color=navy size=+1>CALL STATS REPORT</font><br><br></p>";
+    $html .= "<p class=centered><font color=$default_text size=+1>CALL STATS REPORT</font><br><br></p>";
     #$html .= "<TABLE CELLPADDING=4 CELLSPACING=0><TR><TD>";
 
     if ($time_begin == '') {
@@ -163,7 +163,7 @@ function report_call_stats() {
     $html .= "</TD><TD VALIGN=TOP>";
     $html .= "<INPUT type=submit NAME=SUBMIT VALUE=SUBMIT>\n";
     $html .= "</TD><TD VALIGN=TOP> &nbsp; &nbsp; &nbsp; &nbsp; ";
-    $html .= "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+    $html .= "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
     if (strlen($group[0]) > 1) {
         $html .= " <a href=\"./admin.php?ADD=34&campaign_id=$group[0]\">MODIFY</a> | \n";
         $html .= " <a href=\"./admin.php?ADD=999999\">REPORTS</a> </FONT>\n";

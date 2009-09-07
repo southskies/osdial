@@ -431,15 +431,15 @@ function dialable_leads($DB, $link, $local_call_time, $dial_statuses, $camp_list
                     $active_leads = '0';
                 }
                 echo "|$DB|\n";
-                echo "<font color=navy> This campaign has $active_leads leads to be dialed in those lists</font>\n";
+                echo "<font color=$default_text> This campaign has $active_leads leads to be dialed in those lists</font>\n";
             } else {
-                echo "<font color=navy> No dial statuses selected for this campaign</font>\n";
+                echo "<font color=$default_text> No dial statuses selected for this campaign</font>\n";
             }
         } else {
-            echo "<font color=navy> No active lists selected for this campaign</font>\n";
+            echo "<font color=$default_text> No active lists selected for this campaign</font>\n";
         }
     } else {
-        echo "<font color=navy> No active lists selected for this campaign</font>\n";
+        echo "<font color=$default_text> No active lists selected for this campaign</font>\n";
     }
 }
 

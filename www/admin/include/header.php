@@ -204,7 +204,7 @@ if (strlen($campaigns_hh) > 1) {
     ?>
     <tr class='no-ul' bgcolor=<?= $subcamp_color ?>>
         <td height=20 align=left colspan=10>
-            <font face="arial,helvetica" color=black size=<?= $subcamp_font_size ?>> &nbsp; 
+            <font face="arial,helvetica" color=<?=$default_text?> size=<?= $subcamp_font_size ?>> &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=10"> Show Campaigns </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=11"> Add A New Campaign </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 <a href="<?= $PHP_SELF ?>?ADD=12"> Copy Campaign </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
@@ -264,7 +264,7 @@ if (strlen($lists_hh) > 1) {
     ?>
     <tr class='no-ul' bgcolor=<?= $lists_color ?>>
         <td height=20 align=left colspan=10>
-            <font face="arial,helvetica" color=black size=<?= $subheader_font_size ?>> &nbsp; 
+            <font face="arial,helvetica" color=<?=$default_text?> size=<?= $subheader_font_size ?>> &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=100"> Show Lists </a> &nbsp; &nbsp; &nbsp;
                 <a href="<?= $PHP_SELF ?>?ADD=111"> Add A New List </a> &nbsp; &nbsp; &nbsp;
                 <a href="<?= $PHP_SELF ?>?ADD=112"> Search For A Lead </a> &nbsp; &nbsp; &nbsp;
@@ -284,7 +284,7 @@ if (strlen($scripts_hh) > 1) {
     ?>
     <tr class='no-ul' bgcolor=<?= $scripts_color ?>>
         <td height=20 align=left colspan=10>
-            <font face="arial,helvetica" color=black size=<?= $subheader_font_size ?>> &nbsp; 
+            <font face="arial,helvetica" color=<?=$default_text?> size=<?= $subheader_font_size ?>> &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=1000000"> Show Scripts </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=1111111"> Add A New Script </a>
             </font>
@@ -296,7 +296,7 @@ if (strlen($filters_hh) > 1) {
     ?>
      <tr class='no-ul' bgcolor=<?= $filters_color ?>>
         <td height=20 align=left colspan=10>
-            <font face="arial,helvetica" color=black size=<?= $subheader_font_size ?>> &nbsp; 
+            <font face="arial,helvetica" color=<?=$default_text?> size=<?= $subheader_font_size ?>> &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=10000000"> Show Filters </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=11111111"> Add A New Filter </a>
             </font>
@@ -308,7 +308,7 @@ if (strlen($ingroups_hh) > 1) {
     ?>
     <tr class='no-ul' bgcolor=<?= $ingroups_color ?>>
         <td height=20 align=left colspan=10>
-            <font face="arial,helvetica" color=black size=<?= $subheader_font_size ?>> &nbsp; 
+            <font face="arial,helvetica" color=<?=$default_text?> size=<?= $subheader_font_size ?>> &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=1000"> Show In-Groups </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=1111"> Add A New In-Group </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=1211"> Copy In-Group </a>
@@ -321,7 +321,7 @@ if (strlen($usergroups_hh) > 1) {
     ?>
     <tr class='no-ul' bgcolor=<?= $usergroups_color ?>>
         <td height=20 align=left colspan=10>
-            <font face="arial,helvetica" color=black size=<?= $subheader_font_size ?>> &nbsp; 
+            <font face="arial,helvetica" color=<?=$default_text?> size=<?= $subheader_font_size ?>> &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=100000"> Show User Groups </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=111111"> Add A New User Group </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=999999&SUB=7&iframe=group_hourly_stats.php"> Group Hourly Report </a>
@@ -334,7 +334,7 @@ if (strlen($remoteagent_hh) > 1) {
     ?>
     <tr class='no-ul' bgcolor=<?= $remoteagent_color ?>>
         <td height=20 align=left colspan=10>
-            <font face="arial,helvetica" color=black size=<?= $subheader_font_size ?>> &nbsp; 
+            <font face="arial,helvetica" color=<?=$default_text?> size=<?= $subheader_font_size ?>> &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=10000"> Show External Agents </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=11111"> Add New External Agents </a>
             </font>
@@ -371,7 +371,7 @@ if (strlen($admin_hh) > 1) {
         ?>
         <tr class='no-ul' bgcolor=<?= $times_color ?>>
             <td height=20 align=left colspan=10>&nbsp;
-                <font face="arial,helvetica" color=black size=<?= $subheader_font_size ?>> &nbsp; 
+                <font face="arial,helvetica" color=<?=$default_text?> size=<?= $subheader_font_size ?>> &nbsp; 
                     <a href="<?= $PHP_SELF ?>?ADD=100000000"> Show Call Times </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                     <a href="<?= $PHP_SELF ?>?ADD=111111111"> Add A New Call Time </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                     <a href="<?= $PHP_SELF ?>?ADD=1000000000"> Show State Call Times </a> &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; 
@@ -385,7 +385,7 @@ if (strlen($admin_hh) > 1) {
         ?>
         <tr class='no-ul' bgcolor=<?= $phones_color ?>>
             <td height=20 align=left colspan=10>&nbsp;
-                <font face="arial,helvetica" color=black size=<?= $subheader_font_size ?>> &nbsp; 
+                <font face="arial,helvetica" color=<?=$default_text?> size=<?= $subheader_font_size ?>> &nbsp; 
                     <a href="<?= $PHP_SELF ?>?ADD=10000000000"> Show Phones </a> &nbsp; &nbsp; &nbsp; 
                     <a href="<?= $PHP_SELF ?>?ADD=11111111111"> Add A New Phone </a>
                 </font>
@@ -397,7 +397,7 @@ if (strlen($admin_hh) > 1) {
         ?>
         <tr class='no-ul' bgcolor=<?= $conference_color ?>>
             <td height=20 align=left colspan=10> &nbsp;
-                <font face="arial,helvetica" color=black size=<?= $subheader_font_size ?>> &nbsp; 
+                <font face="arial,helvetica" color=<?=$default_text?> size=<?= $subheader_font_size ?>> &nbsp; 
                     <a href="<?= $PHP_SELF ?>?ADD=1000000000000"> Show Conferences </a> &nbsp; &nbsp; &nbsp; 
                     <a href="<?= $PHP_SELF ?>?ADD=1111111111111"> Add A New Conference </a> &nbsp; &nbsp; &nbsp; 
                     <a href="<?= $PHP_SELF ?>?ADD=10000000000000"> Show OSDial Conferences </a> &nbsp; &nbsp; &nbsp; 
@@ -411,7 +411,7 @@ if (strlen($admin_hh) > 1) {
         ?>
         <tr class='no-ul' bgcolor=<?= $server_color ?>>
             <td height=20 align=left colspan=10> &nbsp;
-                <font face="arial,helvetica" color=black size=<?= $subheader_font_size ?>> &nbsp; 
+                <font face="arial,helvetica" color=<?=$default_text?> size=<?= $subheader_font_size ?>> &nbsp; 
                     <a href="<?= $PHP_SELF ?>?ADD=100000000000"> Show Servers </a> &nbsp; &nbsp; &nbsp; 
                     <a href="<?= $PHP_SELF ?>?ADD=111111111111"> Add A New Server </a> &nbsp; &nbsp; 
                     <a href="<?= $PHP_SELF ?>?ADD=399111111111111"> Archive Server </a> &nbsp; &nbsp; 
@@ -425,7 +425,7 @@ if (strlen($admin_hh) > 1) {
         ?>
         <tr class='no-ul' bgcolor=<?= $settings_color ?>>
             <td height=20 align=left colspan=10> &nbsp;
-                <font face="arial,helvetica" color=black size=<?= $subheader_font_size ?>> &nbsp; 
+                <font face="arial,helvetica" color=<?=$default_text?> size=<?= $subheader_font_size ?>> &nbsp; 
                     <a href="<?= $PHP_SELF ?>?ADD=311111111111111"> System Settings </a>
                 </font>
             </td>
@@ -436,7 +436,7 @@ if (strlen($admin_hh) > 1) {
         ?>
         <tr class='no-ul' bgcolor=<?= $status_color ?>>
             <td height=20 align=left colspan=10> &nbsp;
-                <font face="arial,helvetica" color=black size=<?= $subheader_font_size ?>>
+                <font face="arial,helvetica" color=<?=$default_text?> size=<?= $subheader_font_size ?>>
                     <a href="<?= $PHP_SELF ?>?ADD=321111111111111"> System Statuses </a> &nbsp; &nbsp; &nbsp; 
                     <a href="<?= $PHP_SELF ?>?ADD=331111111111111"> Status Categories </a>
                 </font>
@@ -455,7 +455,7 @@ if (strlen($admin_hh) > 1) {
 
 if (strlen($reports_hh) > 1) { 
     ?>
-    <tr bgcolor=<?= $reports_color ?>><td height=20 align=left colspan=10><font face="arial,helvetica" color=black size=<?= $subheader_font_size ?>><B> &nbsp; </B></td></tr>
+    <tr bgcolor=<?= $reports_color ?>><td height=20 align=left colspan=10><font face="arial,helvetica" color=<?=$default_text?> size=<?= $subheader_font_size ?>><B> &nbsp; </B></td></tr>
     <?
 }
     ?>

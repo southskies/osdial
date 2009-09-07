@@ -121,7 +121,7 @@ while ($i < $servers_to_print)
 //echo "<TITLE>OSDIAL: Server Performance</TITLE></HEAD><BODY BGCOLOR=WHITE>\n";
 echo "<table align=center cellpadding=0 cellspacing=0>";
 echo "<tr><td align=center>";
-echo "<br><font color=navy size=+1>SERVER PERFORMANCE</font><br><br>";
+echo "<br><font color=$default_text size=+1>SERVER PERFORMANCE</font><br><br>";
 echo "<FORM ACTION=\"$PHP_SELF\" METHOD=GET>\n";
 echo "Date: <INPUT TYPE=TEXT NAME=query_date SIZE=12 MAXLENGTH=10 VALUE=\"$query_date\"> &nbsp; \n";
 echo "From: <INPUT TYPE=TEXT NAME=begin_query_time SIZE=10 MAXLENGTH=8 VALUE=\"$begin_query_time\"> \n";

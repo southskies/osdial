@@ -184,7 +184,7 @@ echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n"
 ?>
 </head>
 <BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
-<CENTER><FONT FACE="Courier" COLOR=BLACK SIZE=3>
+<CENTER><FONT FACE="Courier" COLOR=<?=$default_text?> SIZE=3>
 
 <? 
 

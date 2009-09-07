@@ -87,7 +87,7 @@ function report_list_cost() {
 
     $html .= "<table align=center cellpadding=0 cellspacing=0>";
     $html .= "<tr><td align=center>";
-    $html .= "<br><font color=navy size=+1>LIST COST BY ENTRY DATE</font><br><br>";
+    $html .= "<br><font color=$default_text size=+1>LIST COST BY ENTRY DATE</font><br><br>";
     $html .= "<div class=\"noprint\">\n";
     $html .= "<form action=\"$PHP_SELF\" method=get>\n";
     $html .= "<input type=hidden name=ADD value=$ADD>\n";

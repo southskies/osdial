@@ -29,7 +29,7 @@
 if ($ADD==28)
 {
 	$status = eregi_replace("-----.*",'',$status);
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id' and dial_statuses LIKE \"% $status %\";";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -44,7 +44,7 @@ if ($ADD==28)
 			}
 		 else
 			{
-			#echo "<br><B><font color=navy>CAMPAIGN DIAL STATUS ADDED: $campaign_id - $status</font></B>\n";
+			#echo "<br><B><font color=$default_text>CAMPAIGN DIAL STATUS ADDED: $campaign_id - $status</font></B>\n";
 
 			$stmt="SELECT dial_statuses from osdial_campaigns where campaign_id='$campaign_id';";
 			$rslt=mysql_query($stmt, $link);
@@ -78,7 +78,7 @@ if ($ADD==68)
 {
 	if ($LOGmodify_campaigns==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id' and dial_statuses LIKE \"% $status %\";";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -93,7 +93,7 @@ if ($ADD==68)
 			}
 		 else
 			{
-			#echo "<br><B><font color=navy>CAMPAIGN DIAL STATUS REMOVED: $campaign_id - $status</font></B>\n";
+			#echo "<br><B><font color=$default_text>CAMPAIGN DIAL STATUS REMOVED: $campaign_id - $status</font></B>\n";
 
 			$stmt="SELECT dial_statuses from osdial_campaigns where campaign_id='$campaign_id';";
 			$rslt=mysql_query($stmt, $link);

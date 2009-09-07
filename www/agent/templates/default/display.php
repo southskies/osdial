@@ -2,6 +2,8 @@
 
 $default_fc='#1C4754';
 
+$default_text='#000080';
+
 $panel_bg='#7297A1';
 
 $status_fct          ='#1C4754';

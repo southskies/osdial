@@ -31,9 +31,9 @@ if ($ADD==111111111111)
 	if ($LOGmodify_servers==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>ADD A NEW SERVER</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>ADD A NEW SERVER</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=211111111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Server ID: </td><td align=left><input type=text name=server_id size=10 maxlength=10>$NWB#servers-server_id$NWE</td></tr>\n";
@@ -60,7 +60,7 @@ if ($ADD==111111111111)
 if ($ADD==211111111111)
 {
 echo "<TABLE><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from servers where server_id='$server_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -72,7 +72,7 @@ echo "<TABLE><TR><TD>\n";
 			{echo "<br><font color=red>SERVER NOT ADDED - Please go back and look at the data you entered</font>\n";}
 		 else
 			{
-			echo "<br><font color=navy>SERVER ADDED</font>\n";
+			echo "<br><font color=$default_text>SERVER ADDED</font>\n";
 
 			$stmt="INSERT INTO servers (server_id,server_description,server_ip,active,asterisk_version) values('$server_id','$server_description','$server_ip','$active','$asterisk_version');";
 			$rslt=mysql_query($stmt, $link);
@@ -89,7 +89,7 @@ $ADD=311111111111;
 
 if ($ADD==221111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT max_osdial_trunks from servers where server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$rowx=mysql_fetch_row($rslt);
@@ -122,7 +122,7 @@ if ($ADD==221111111111)
 				}
 			 else
 				{
-				echo "<br><B><font color=navy>OSDial SERVER TRUNK RECORD ADDED: $campaign_id - $server_ip - $dedicated_trunks - $trunk_restriction</font></B>\n";
+				echo "<br><B><font color=$default_text>OSDial SERVER TRUNK RECORD ADDED: $campaign_id - $server_ip - $dedicated_trunks - $trunk_restriction</font></B>\n";
 
 				$stmt="INSERT INTO osdial_server_trunks(server_ip,campaign_id,dedicated_trunks,trunk_restriction) values('$server_ip','$campaign_id','$dedicated_trunks','$trunk_restriction');";
 				$rslt=mysql_query($stmt, $link);
@@ -150,7 +150,7 @@ if ($ADD==411111111111)
 {
 	if ($LOGmodify_servers==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT count(*) from servers where server_id='$server_id';";
 	$rslt=mysql_query($stmt, $link);
@@ -170,7 +170,7 @@ if ($ADD==411111111111)
 				{echo "<br><font color=red>SERVER NOT MODIFIED - Please go back and look at the data you entered</font>\n";}
 			 else
 				{
-				echo "<br><font color=navy>SERVER MODIFIED: $server_ip</font>\n";
+				echo "<br><font color=$default_text>SERVER MODIFIED: $server_ip</font>\n";
 
 				$stmt="UPDATE servers set server_id='$server_id',server_description='$server_description',server_ip='$server_ip',active='$active',asterisk_version='$asterisk_version', max_osdial_trunks='$max_osdial_trunks', telnet_host='$telnet_host', telnet_port='$telnet_port', ASTmgrUSERNAME='$ASTmgrUSERNAME', ASTmgrSECRET='$ASTmgrSECRET', ASTmgrUSERNAMEupdate='$ASTmgrUSERNAMEupdate', ASTmgrUSERNAMElisten='$ASTmgrUSERNAMElisten', ASTmgrUSERNAMEsend='$ASTmgrUSERNAMEsend', local_gmt='$local_gmt', voicemail_dump_exten='$voicemail_dump_exten', answer_transfer_agent='$answer_transfer_agent', ext_context='$ext_context', sys_perf_log='$sys_perf_log', vd_server_logs='$vd_server_logs', agi_output='$agi_output', osdial_balance_active='$osdial_balance_active', balance_trunks_offlimits='$balance_trunks_offlimits' where server_id='$old_server_id';";
 				$rslt=mysql_query($stmt, $link);
@@ -195,7 +195,7 @@ if ($ADD==421111111111)
 {
 	if ($LOGmodify_servers==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT max_osdial_trunks from servers where server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$rowx=mysql_fetch_row($rslt);
@@ -221,7 +221,7 @@ if ($ADD==421111111111)
 			}
 		 else
 			{
-			echo "<br><B><font color=navy>OSDial SERVER TRUNK RECORD MODIFIED: $campaign_id - $server_ip - $dedicated_trunks - $trunk_restriction</font></B>\n";
+			echo "<br><B><font color=$default_text>OSDial SERVER TRUNK RECORD MODIFIED: $campaign_id - $server_ip - $dedicated_trunks - $trunk_restriction</font></B>\n";
 
 			$stmt="UPDATE osdial_server_trunks SET dedicated_trunks='$dedicated_trunks',trunk_restriction='$trunk_restriction' where campaign_id='$campaign_id' and server_ip='$server_ip';";
 			$rslt=mysql_query($stmt, $link);
@@ -253,7 +253,7 @@ $ADD=311111111111;	# go to server modification form below
 
 if ($ADD==511111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($server_id) < 2) or (strlen($server_ip) < 7) or ($LOGast_delete_phones < 1) )
 		{
@@ -263,7 +263,7 @@ if ($ADD==511111111111)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>SERVER DELETION CONFIRMATION: $server_id - $server_ip</B>\n";
+		echo "<br><B><font color=$default_text>SERVER DELETION CONFIRMATION: $server_id - $server_ip</B>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=611111111111&server_id=$server_id&server_ip=$server_ip&CoNfIrM=YES\">Click here to delete phone $server_id - $server_ip</a></font><br><br><br>\n";
 		}
 $ADD='311111111111';		# go to server modification below
@@ -278,7 +278,7 @@ $ADD='311111111111';		# go to server modification below
 
 if ($ADD==611111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($server_id) < 2) or (strlen($server_ip) < 7) or ($CoNfIrM != 'YES') or ($LOGast_delete_phones < 1) )
 		{
@@ -298,7 +298,7 @@ if ($ADD==611111111111)
 			fwrite ($fp, "$date|!!!DELETING SERVER!!|$PHP_AUTH_USER|$ip|server_id='$server_id'|server_ip='$server_ip'|\n");
 			fclose($fp);
 			}
-		echo "<br><B><font color=navy>SERVER DELETION COMPLETED: $server_id - $server_ip</font></B>\n";
+		echo "<br><B><font color=$default_text>SERVER DELETION COMPLETED: $server_id - $server_ip</font></B>\n";
 		echo "<br><br>\n";
 		}
 $ADD='100000000000';		# go to server list
@@ -313,7 +313,7 @@ if ($ADD==621111111111)
 {
 	if ($LOGmodify_servers==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($campaign_id) < 2) or (strlen($server_ip) < 7) )
 		{
@@ -323,7 +323,7 @@ if ($ADD==621111111111)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>OSDial SERVER TRUNK RECORD DELETED: $campaign_id - $server_ip</font></B>\n";
+		echo "<br><B><font color=$default_text>OSDial SERVER TRUNK RECORD DELETED: $campaign_id - $server_ip</font></B>\n";
 
 		$stmt="DELETE FROM osdial_server_trunks where campaign_id='$campaign_id' and server_ip='$server_ip';";
 		$rslt=mysql_query($stmt, $link);
@@ -356,7 +356,7 @@ if ($ADD==311111111111)
 	if ($LOGmodify_servers==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from servers where server_id='$server_id' or server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
@@ -364,7 +364,7 @@ if ($ADD==311111111111)
 	$server_id = $row[0];
 	$server_ip = $row[2];
 
-	echo "<center><br><font color=navy size=+1>MODIFY A SERVER</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>MODIFY A SERVER</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=411111111111>\n";
 	echo "<input type=hidden name=old_server_id value=\"$server_id\">\n";
 	echo "<input type=hidden name=old_server_ip value=\"$row[2]\">\n";
@@ -396,9 +396,9 @@ if ($ADD==311111111111)
 
 
 	### osdial server trunk records for this server
-	echo "<br><br><center><font color=navy size=+1>OSDial TRUNKS FOR THIS SERVER &nbsp;</font> $NWB#osdial_server_trunks$NWE<br>\n";
+	echo "<br><br><center><font color=$default_text size=+1>OSDial TRUNKS FOR THIS SERVER &nbsp;</font> $NWB#osdial_server_trunks$NWE<br>\n";
 	echo "<TABLE width=500 cellspacing=3>\n";
-	echo "<tr><td><font color=navy>CAMPAIGN</font></td><td><font color=navy>TRUNKS</font> </td><td><font color=navy>RESTRICTION</font> </td><td> </td><td><font color=navy>DELETE</font> </td></tr>\n";
+	echo "<tr><td><font color=$default_text>CAMPAIGN</font></td><td><font color=$default_text>TRUNKS</font> </td><td><font color=$default_text>RESTRICTION</font> </td><td> </td><td><font color=$default_text>DELETE</font> </td></tr>\n";
 
 		$stmt="SELECT * from osdial_server_trunks where server_ip='$server_ip' order by campaign_id";
 		$rslt=mysql_query($stmt, $link);
@@ -425,7 +425,7 @@ if ($ADD==311111111111)
 
 	echo "</table></font></center><br><br>\n";
 
-	echo "<br><center><font color=navy>ADD NEW SERVER OSDial TRUNK<BR><br></font></font><form action=$PHP_SELF method=POST>\n";
+	echo "<br><center><font color=$default_text>ADD NEW SERVER OSDial TRUNK<BR><br></font></font><form action=$PHP_SELF method=POST>\n";
 	echo "<input type=hidden name=ADD value=221111111111>\n";
 	echo "<input type=hidden name=server_ip value=\"$server_ip\">\n";
 	echo "TRUNKS: <input size=6 maxlength=4 name=dedicated_trunks><BR><br>\n";
@@ -440,9 +440,9 @@ if ($ADD==311111111111)
 
 	### list of phones on this server
 	echo "<center>\n";
-	echo "<br><font color=navy>PHONES WITHIN THIS SERVER</font><br><br>\n";
+	echo "<br><font color=$default_text>PHONES WITHIN THIS SERVER</font><br><br>\n";
 	echo "<TABLE width=400 cellspacing=3>\n";
-	echo "<tr><td><font color=navy>EXTENSION</font></td><td><font color=navy>NAME</font></td><td><font color=navy>ACTIVE</font></td></tr>\n";
+	echo "<tr><td><font color=$default_text>EXTENSION</font></td><td><font color=$default_text>NAME</font></td><td><font color=$default_text>ACTIVE</font></td></tr>\n";
 
 		$active_phones = 0;
 		$inactive_phones = 0;
@@ -471,7 +471,7 @@ if ($ADD==311111111111)
 
 	### list of conferences on this server
 	echo "<center>\n";
-	echo "<br><br><font color=navy>CONFERENCES WITHIN THIS SERVER</font><br><br>\n";
+	echo "<br><br><font color=$default_text>CONFERENCES WITHIN THIS SERVER</font><br><br>\n";
 	echo "<TABLE width=400 cellspacing=3>\n";
 	echo "<tr><td>CONFERENCE</td><td>EXTENSION</td></tr>\n";
 
@@ -500,9 +500,9 @@ if ($ADD==311111111111)
 
 	### list of osdial conferences on this server
 	echo "<center>\n";
-	echo "<br><br><font color=navy>OSDial CONFERENCES WITHIN THIS SERVER<br><br>\n";
+	echo "<br><br><font color=$default_text>OSDial CONFERENCES WITHIN THIS SERVER<br><br>\n";
 	echo "<TABLE width=400 cellspacing=3>\n";
-	echo "<tr><td><font color=navy>VD CONFERENCE</font></td><td><font color=navy>EXTENSION</font></td></tr>\n";
+	echo "<tr><td><font color=$default_text>VD CONFERENCE</font></td><td><font color=$default_text>EXTENSION</font></td></tr>\n";
 
 		$active_vdconfs = 0;
 		$stmt="SELECT conf_exten,extension from osdial_conferences where server_ip='$row[2]'";
@@ -530,7 +530,7 @@ if ($ADD==311111111111)
 	echo "<center><b>\n";
 
 		$camp_lists = eregi_replace(".$","",$camp_lists);
-	echo "<font color=navy>This server has $active_phones active phones and $inactive_phones inactive phones<br><br>\n";
+	echo "<font color=$default_text>This server has $active_phones active phones and $inactive_phones inactive phones<br><br>\n";
 	echo "This server has $active_confs active conferences<br><br>\n";
 	echo "This server has $active_vdconfs active OSDial conferences</font><br><br>\n";
 	echo "</b></center>\n";
@@ -554,13 +554,13 @@ if ($ADD==311111111111)
 if ($ADD==100000000000)
 {
 echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from servers order by server_id";
 	$rslt=mysql_query($stmt, $link);
 	$phones_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=navy size=+1>SERVERS</font><br><br>\n";
+echo "<center><br><font color=$default_text size=+1>SERVERS</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=$menubarcolor>";
 echo "<td><font size=1 color=white><B>ID</B></td>";
@@ -601,7 +601,7 @@ echo "</TABLE></center>\n";
 if ($ADD==499111111111111) {
 	if ($LOGmodify_servers==1) {
 
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=navy SIZE=2>";
+		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 		echo "<br>OSDial ARCHIVE SERVER MODIFIED\n";
 
 		if ($archive_transfer_method == "FTP" and $archive_port == "") {
@@ -657,7 +657,7 @@ if ($ADD==499111111111111) {
 if ($ADD=="399111111111111") {
 	if ($LOGmodify_servers==1) {
 		echo "<TABLE align=center><TR><TD>\n";
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 		$stmt="SELECT name,data FROM configuration WHERE name LIKE 'Archive%';";
 		$rslt = mysql_query($stmt, $link);
@@ -686,7 +686,7 @@ if ($ADD=="399111111111111") {
 			$c++;
 		}
 
-		echo "<center><br><font color=navy size=+1>MODIFY ARCHIVE SERVER SETTINGS</font><br><form action=$PHP_SELF method=POST>\n";
+		echo "<center><br><font color=$default_text size=+1>MODIFY ARCHIVE SERVER SETTINGS</font><br><form action=$PHP_SELF method=POST>\n";
 		echo "<input type=hidden name=ADD value=499111111111111>\n";
 		echo "<center><TABLE width=$section_width cellspacing=3>\n";
 
@@ -718,7 +718,7 @@ if ($ADD=="399111111111111") {
 if ($ADD==499911111111111) {
 	if ($LOGmodify_servers==1) {
 
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=navy SIZE=2>";
+		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 		echo "<br>OSDial EXTERNAL DNC DATABASE MODIFIED\n";
 
 		$stmt1 = "UPDATE configuration SET data='" . mysql_real_escape_string($external_dnc_active) . "' WHERE name='External_DNC_Active';";
@@ -760,7 +760,7 @@ if ($ADD==499911111111111) {
 if ($ADD=="399911111111111") {
 	if ($LOGmodify_servers==1) {
 		echo "<TABLE align=center><TR><TD>\n";
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 		$stmt="SELECT name,data FROM configuration WHERE name LIKE 'External_DNC%';";
 		$rslt = mysql_query($stmt, $link);
@@ -785,7 +785,7 @@ if ($ADD=="399911111111111") {
 			$c++;
 		}
 
-		echo "<center><br><font color=navy size=+1>MODIFY DNC DATABASE SETTINGS</font><br><form action=$PHP_SELF method=POST>\n";
+		echo "<center><br><font color=$default_text size=+1>MODIFY DNC DATABASE SETTINGS</font><br><form action=$PHP_SELF method=POST>\n";
 		echo "<input type=hidden name=ADD value=499911111111111>\n";
 		echo "<center><TABLE width=$section_width cellspacing=3>\n";
 
@@ -823,7 +823,7 @@ if ($ADD==499211111111111) {
 		if ($qc_server_transfer_type == "IMMEDIATE" or $qc_server_transfer_type == "BATCH") $qc_server_archive="NONE";
 		if ($qc_server_transfer_type == "IMMEDIATE") $qc_server_batch_time="0";
 
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=navy SIZE=2>";
+		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 		if ($SUB==1) {
 			$qcact = "ADD";
 			echo "<br>OSDial QC SERVER ADDED\n";
@@ -843,13 +843,13 @@ if ($ADD==499211111111111) {
 
 		} elseif ($SUB==3) {
 			$qcact = "ADD RULE";
-			echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+			echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 			echo "<br>OSDial QC SERVER RULE MODIFIED\n";
 
 			$stmt = "INSERT INTO qc_server_rules (qc_server_id,query) VALUES ('$qc_server_id','" . mysql_real_escape_string($qc_server_rule_query) . "');";
 		} elseif ($SUB==4) {
 			$qcact = "MODIFIED RULE";
-			echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+			echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 			echo "<br>OSDial QC SERVER RULE MODIFIED\n";
 
 			$stmt = "UPDATE qc_server_rules SET query='" . mysql_real_escape_string($qc_server_rule_query) ."' WHERE id='$qc_server_rule_id';";
@@ -884,7 +884,7 @@ if ($ADD==499211111111111) {
 ######################
 
 if ($ADD==699211111111111){
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	if ($SUB==2) {
 		# Delete rule entries
 		$stmt="DELETE from qc_server_rules where qc_server_id='$qc_server_id';";
@@ -927,13 +927,13 @@ if ($ADD==699211111111111){
 if ($ADD=="399211111111111") {
 	if ($LOGmodify_servers==1) {
 		echo "<TABLE align=center><TR><TD>\n";
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 		$stmt="SELECT id,name,description,host,transfer_method,transfer_type FROM qc_servers;";
 		$rslt = mysql_query($stmt, $link);
 		$rows = mysql_num_rows($rslt);
 
-		echo "<center><br><font color=navy size=+1>QC SERVER LIST</font><br>\n";
+		echo "<center><br><font color=$default_text size=+1>QC SERVER LIST</font><br>\n";
 		echo "<form action=$PHP_SELF method=POST>\n";
 		echo "<input type=hidden name=ADD value=399211111111111>\n";
 		echo "<input type=hidden name=SUB value=1>\n";
@@ -975,7 +975,7 @@ if ($ADD=="399211111111111") {
 		echo "</form>\n";
 
 		if ($SUB==1) {
-			echo "<br><font color=navy>NEW QC SERVER</font>\n";
+			echo "<br><font color=$default_text>NEW QC SERVER</font>\n";
 			echo "<form action=$PHP_SELF method=POST>\n";
 			$qc_server_transfer_method   = "FTP";
 			$qc_server_home_path         = "/home/USERNAME";
@@ -986,7 +986,7 @@ if ($ADD=="399211111111111") {
 			$qc_server_batch_time        = "0";
 		} elseif ($SUB>1) {
 			# Modify server
-			echo "<br><font color=navy>MODIFY QC SERVER</font>\n";
+			echo "<br><font color=$default_text>MODIFY QC SERVER</font>\n";
 			echo "<form action=$PHP_SELF method=POST>\n";
 			echo "<input type=hidden name=qc_server_id value=$qc_server_id>\n";
 
@@ -1034,12 +1034,12 @@ if ($ADD=="399211111111111") {
 
 		if ($SUB>1) {
 			# List QC rules
-			echo "<br><font color=navy>QC SERVER RULES</font>\n";
+			echo "<br><font color=$default_text>QC SERVER RULES</font>\n";
 			echo "<center><table width=$section_width cellspacing=1>\n";
-			echo "<tr bgcolor=navy>";
-			echo "<td align=center bgcolor=navy><font size=1 color=white>#</font></td>";
-			echo "<td align=center bgcolor=navy><font size=1 color=white>Query</font></td>";
-			echo "<td colspan=2 align=center bgcolor=navy><font size=1 color=white>&nbsp;</font></td>";
+			echo "<tr bgcolor=$default_text>";
+			echo "<td align=center bgcolor=$default_text><font size=1 color=white>#</font></td>";
+			echo "<td align=center bgcolor=$default_text><font size=1 color=white>Query</font></td>";
+			echo "<td colspan=2 align=center bgcolor=$default_text><font size=1 color=white>&nbsp;</font></td>";
 			echo "</tr>\n";
 
 			$stmt="SELECT * FROM qc_server_rules WHERE qc_server_id='$qc_server_id';";

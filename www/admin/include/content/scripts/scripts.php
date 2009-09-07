@@ -73,7 +73,7 @@ if ($ADD==7111111)
 echo "</title>\n";
 echo "</head>\n";
 echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 $stmt="SELECT * from osdial_scripts where script_id='$script_id';";
 $rslt=mysql_query($stmt, $link);
@@ -165,7 +165,7 @@ $script_text = eregi_replace('--A--session_id--B--',"$RGsession_id",$script_text
 $script_text = eregi_replace("\n","<BR>",$script_text);
 
 
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 echo "Preview Script: $script_id<BR>\n";
 echo "<TABLE WIDTH=600><TR><TD>\n";
@@ -189,9 +189,9 @@ if ($ADD==1111111)
 	if ($LOGmodify_scripts==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>ADD NEW SCRIPT</font><form name=scriptForm action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>ADD NEW SCRIPT</font><form name=scriptForm action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Script ID: </td><td align=left><input type=text name=script_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_scripts-script_id$NWE</td></tr>\n";
@@ -275,7 +275,7 @@ if ($ADD==1111111)
 
 if ($ADD==2111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_scripts where script_id='$script_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -293,7 +293,7 @@ if ($ADD==2111111)
 			$stmt="INSERT INTO osdial_scripts values('$script_id','$script_name','$script_comments','$script_text','$active');";
 			$rslt=mysql_query($stmt, $link);
 
-			echo "<br><B><font color=navy>SCRIPT ADDED: $script_id</font></B>\n";
+			echo "<br><B><font color=$default_text>SCRIPT ADDED: $script_id</font></B>\n";
 
 			### LOG CHANGES TO LOG FILE ###
 			if ($WeBRooTWritablE > 0)
@@ -318,7 +318,7 @@ if ($ADD==4111111)
 	{
 	echo "<!-- $script_text -->\n";
 	echo "<!--" . mysql_real_escape_string($script_text) . " -->\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($script_id) < 2) or (strlen($script_name) < 2) or (strlen($script_text) < 2) )
 		{
@@ -330,7 +330,7 @@ if ($ADD==4111111)
 		$stmt="UPDATE osdial_scripts set script_name='$script_name', script_comments='$script_comments', script_text='$script_text', active='$active' where script_id='$script_id';";
 		$rslt=mysql_query($stmt, $link);
 
-		echo "<br><B><font color=navy>SCRIPT MODIFIED</font></B>\n";
+		echo "<br><B><font color=$default_text>SCRIPT MODIFIED</font></B>\n";
 
 		### LOG CHANGES TO LOG FILE ###
 		if ($WeBRooTWritablE > 0)
@@ -357,7 +357,7 @@ $ADD=3111111;	# go to script modification form below
 
 if ($ADD==5111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($script_id) < 2) or ($LOGdelete_scripts < 1) )
 		{
@@ -366,7 +366,7 @@ if ($ADD==5111111)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>SCRIPT DELETION CONFIRMATION: $script_id</B>\n";
+		echo "<br><B><font color=$default_text>SCRIPT DELETION CONFIRMATION: $script_id</B>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=6111111&script_id=$script_id&CoNfIrM=YES\">Click here to delete script $script_id</a></font><br><br><br>\n";
 		}
 
@@ -381,7 +381,7 @@ $ADD='3111111';		# go to script modification below
 
 if ($ADD==6111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($script_id) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_scripts < 1) )
 		{
@@ -400,7 +400,7 @@ if ($ADD==6111111)
 			fwrite ($fp, "$date|!DELETING SCRIPT!!!!|$PHP_AUTH_USER|$ip|script_id='$script_id'|\n");
 			fclose($fp);
 			}
-		echo "<br><B><font color=navy>SCRIPT DELETION COMPLETED: $script_id</font></B>\n";
+		echo "<br><B><font color=$default_text>SCRIPT DELETION COMPLETED: $script_id</font></B>\n";
 		echo "<br><br>\n";
 		}
 
@@ -418,7 +418,7 @@ if ($ADD==3111111)
 	if ($LOGmodify_scripts==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from osdial_scripts where script_id='$script_id';";
 	$rslt=mysql_query($stmt, $link);
@@ -427,9 +427,9 @@ if ($ADD==3111111)
 	$script_comments =	$row[2];
 	$script_text =		$row[3];
 	$active =			$row[4];
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>MODIFY A SCRIPT</font><form name=scriptForm action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>MODIFY A SCRIPT</font><form name=scriptForm action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=4111111>\n";
 	echo "<input type=hidden name=script_id value=\"$script_id\">\n";
 	echo "<TABLE>";
@@ -519,13 +519,13 @@ if ($ADD==3111111)
 if ($ADD==1000000)
 {
 echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from osdial_scripts order by script_id";
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=navy size=+1>SCRIPTS</font><br><br>\n";
+echo "<center><br><font color=$default_text size=+1>SCRIPTS</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=$menubarcolor>";
 echo "<td><font size=1 color=white><B>NAME</B></td>";

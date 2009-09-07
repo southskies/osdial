@@ -172,9 +172,9 @@ function report_realtime_detail() {
 	$html .= "<input type=hidden name=RR value=$RR>\n";
 	
 	$html .= "<p class=centered>";
-	$html .= "<font color=navy size=+1>CAMPAIGN DETAILS</font><br><br>";
+	$html .= "<font color=$default_text size=+1>CAMPAIGN DETAILS</font><br><br>";
 	
-	$html .= "<FONT COLOR=navy SIZE=2>";
+	$html .= "<FONT COLOR=$default_text SIZE=2>";
 	$html .= "Update:&nbsp;";
 	if ($RR==38400) { $html .= "</font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
 	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">Daily</a>&nbsp;&nbsp;"; 
@@ -198,7 +198,7 @@ function report_realtime_detail() {
 	$html .= "<br></font>\n";
 	$html .= "</font>";
 	
-	$html .= "<font color=navy size=-1>Campaign:</font>\n";
+	$html .= "<font color=$default_text size=-1>Campaign:</font>\n";
 	$html .= "<INPUT TYPE=HIDDEN NAME=ADD VALUE=\"$ADD\">\n";
 	$html .= "<INPUT TYPE=HIDDEN NAME=SUB VALUE=\"$SUB\">\n";
 	$html .= "<INPUT TYPE=HIDDEN NAME=RR VALUE=\"$RR\">\n";
@@ -370,10 +370,10 @@ function report_realtime_detail() {
                 }
 		$html .= "</td></tr><tr><td align=center>";
 		$html .= "<table class=indents cellpadding=0 cellspacing=0><TR>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Dial Level:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALlev&nbsp;&nbsp;</TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Trunk Short/Fill:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $balanceSHORT / $balanceFILL&nbsp;&nbsp;</TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Filter:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALfilter&nbsp;&nbsp;</TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Time:</B></TD><TD ALIGN=LEFT><font size=2 color=navy>&nbsp; $NOW_TIME&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>Dial Level:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALlev&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>Trunk Short/Fill:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $balanceSHORT / $balanceFILL&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>Filter:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALfilter&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>Time:</B></TD><TD ALIGN=LEFT><font size=2 color=$default_text>&nbsp; $NOW_TIME&nbsp;&nbsp;</TD>";
 		$html .= "";
 		$html .= "</TR>";
 	
@@ -395,58 +395,58 @@ function report_realtime_detail() {
 			$html .= "<TR BGCOLOR=\"#CCCCCC\">";
 			$html .= "<TD ALIGN=RIGHT><font size=2><B>DL Diff:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $diffONEMIN&nbsp;&nbsp;</TD>";
 			$html .= "<TD ALIGN=RIGHT><font size=2><B>Diff:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $diffpctONEMIN%&nbsp;&nbsp;</TD>";
-		    $html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Avg Agents:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $agentsONEMIN&nbsp;&nbsp;</TD>";
+		    $html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>Avg Agents:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $agentsONEMIN&nbsp;&nbsp;</TD>";
 			$html .= "</TR>";
 		}
 
 		$html .= "<TR>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Dialable Leads:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DAleads&nbsp;&nbsp;</TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Recycles/Sched:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $recycle_total / $recycle_sched&nbsp;&nbsp;</TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Calls Today:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $callsTODAY&nbsp;&nbsp;</TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Dial Method:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALmethod&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>Dialable Leads:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DAleads&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>Recycles/Sched:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $recycle_total / $recycle_sched&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>Calls Today:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $callsTODAY&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>Dial Method:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALmethod&nbsp;&nbsp;</TD>";
 		$html .= "</TR>";
 		
 		$html .= "<TR>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Hopper Level:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $HOPlev&nbsp;&nbsp;</TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Drop/Answer:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $dropsTODAY / $answersTODAY&nbsp;&nbsp;</TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Statuses:</B></TD><TD ALIGN=LEFT colspan=3><font size=2>&nbsp; <span title=\"$DIALstatuses\">" . ellipse($DIALstatuses,40,true) . "</span>&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>Hopper Level:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $HOPlev&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>Drop/Answer:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $dropsTODAY / $answersTODAY&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>Statuses:</B></TD><TD ALIGN=LEFT colspan=3><font size=2>&nbsp; <span title=\"$DIALstatuses\">" . ellipse($DIALstatuses,40,true) . "</span>&nbsp;&nbsp;</TD>";
 		$html .= "</TR>";
 		
 		$html .= "<TR>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Leads In Hopper:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $VDhop&nbsp;&nbsp;</TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Drop %:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; ";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>Leads In Hopper:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $VDhop&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>Drop %:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; ";
 		if ($drpctTODAY >= $DROPmax) {
 			$html .= "<font color=red><B>$drpctTODAY%</B></font>";
 		} else {
 			$html .= "$drpctTODAY%";
 		}
 		$html .= "&nbsp;&nbsp;</TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=navy><B>Order:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALorder&nbsp;&nbsp;</TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>Order:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALorder&nbsp;&nbsp;</TD>";
 		$html .= "</tr><tr>";
 		if ( (!eregi('NULL',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
-			$html .= "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat1:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1tally&nbsp;&nbsp;</td>\n";
+			$html .= "<TD ALIGN=right><font size=2 color=$default_text><B>$VSCcat1:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1tally&nbsp;&nbsp;</td>\n";
 		}
 		if ( (!eregi('NULL',$VSCcat2)) and (strlen($VSCcat2)>0) ) {
-			$html .= "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat2:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2tally&nbsp;&nbsp;</td>\n";
+			$html .= "<TD ALIGN=right><font size=2 color=$default_text><B>$VSCcat2:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2tally&nbsp;&nbsp;</td>\n";
 		}
 		if ( (!eregi('NULL',$VSCcat3)) and (strlen($VSCcat3)>0) ) {
-			$html .= "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat3:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3tally&nbsp;&nbsp;</td>\n";
+			$html .= "<TD ALIGN=right><font size=2 color=$default_text><B>$VSCcat3:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3tally&nbsp;&nbsp;</td>\n";
 		}
 		if ( (!eregi('NULL',$VSCcat4)) and (strlen($VSCcat4)>0) ) {
-			$html .= "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat4:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4tally&nbsp;&nbsp;</td>\n";
+			$html .= "<TD ALIGN=right><font size=2 color=$default_text><B>$VSCcat4:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4tally&nbsp;&nbsp;</td>\n";
 		}
 		$html .= "</tr><tr>";
 		if ( (!eregi('NULL',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
-			$html .= "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat1/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1hourtally&nbsp;&nbsp;</td>\n";
+			$html .= "<TD ALIGN=right><font size=2 color=$default_text><B>$VSCcat1/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1hourtally&nbsp;&nbsp;</td>\n";
 		}
 		if ( (!eregi('NULL',$VSCcat2)) and (strlen($VSCcat2)>0) ) {
-			$html .= "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat2/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2hourtally&nbsp;&nbsp;</td>\n";
+			$html .= "<TD ALIGN=right><font size=2 color=$default_text><B>$VSCcat2/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2hourtally&nbsp;&nbsp;</td>\n";
 		}
 		if ( (!eregi('NULL',$VSCcat3)) and (strlen($VSCcat3)>0) ) {
-			$html .= "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat3/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3hourtally&nbsp;&nbsp;</td>\n";
+			$html .= "<TD ALIGN=right><font size=2 color=$default_text><B>$VSCcat3/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3hourtally&nbsp;&nbsp;</td>\n";
 		}
 		if ( (!eregi('NULL',$VSCcat4)) and (strlen($VSCcat4)>0) ) {
-			$html .= "<TD ALIGN=right><font size=2 color=navy><B>$VSCcat4/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4hourtally&nbsp;&nbsp;</td>\n";
+			$html .= "<TD ALIGN=right><font size=2 color=$default_text><B>$VSCcat4/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4hourtally&nbsp;&nbsp;</td>\n";
 		}
 		$html .= "</TR>";
 		
@@ -593,7 +593,7 @@ function report_realtime_detail() {
 	$LNbottomup="&#x2567;";
 	// column length 8|14|14|17|9|12
 	$Chtml = '';
-	$Chtml .= "<font color=navy>&nbsp;&nbsp;Calls Waiting                      $NOW_TIME\n";
+	$Chtml .= "<font color=$default_text>&nbsp;&nbsp;Calls Waiting                      $NOW_TIME\n";
 	//$Chtml .= "+--------+--------------+--------------+-----------------+---------+------------+\n";
 	$Chtml .=$LNtopleft.HorizLine(8).$LNtopdown.HorizLine(14).$LNtopdown.HorizLine(14).$LNtopdown.HorizLine(17).$LNtopdown.HorizLine(9).$LNtopdown.HorizLine(12).$LNtopright."<br>";
 	$Chtml .="$LNleft STATUS $LNcenterbar CAMPAIGN     $LNcenterbar PHONE NUMBER $LNcenterbar SERVER_IP       $LNcenterbar DIALTIME$LNcenterbar CALL TYPE  $LNright\n";
@@ -650,7 +650,7 @@ function report_realtime_detail() {
 	$agent_paused=0;
 	$agent_total=0;
 	$Ahtml = '';
-	$Ahtml .= "<font color=navy size=1 face=fixed,monospace>&nbsp;&nbsp;Agents Time On Calls Campaign: $group                    $NOW_TIME\n";
+	$Ahtml .= "<font color=$default_text size=1 face=fixed,monospace>&nbsp;&nbsp;Agents Time On Calls Campaign: $group                    $NOW_TIME\n";
 	
 	// Changed to draw solid lines
 	$LNtopleft="&#x2554;";
@@ -942,7 +942,7 @@ function report_realtime_detail() {
 
 		$Ahtml .= "$Dline";
 		
-		$Ahtml .= "  $agentcount <font color=navy>agents logged in on all servers</font>\n";
+		$Ahtml .= "  $agentcount <font color=$default_text>agents logged in on all servers</font>\n";
 		
 		
 		if ($agent_ready > 0) {$B='<FONT class="b1">'; $BG='</FONT>';}
@@ -965,15 +965,15 @@ function report_realtime_detail() {
 		
 		$html .= "<br><br>";
 		$html .= "<table width=730><tr><td>";
-		$html .= "  <font color=navy><SPAN class=\"khaki\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Paused > 10 seconds</B><br>";
+		$html .= "  <font color=$default_text><SPAN class=\"khaki\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Paused > 10 seconds</B><br>";
 		$html .= "  <SPAN class=\"yellow\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Paused > 1 minute</B><br>";
 		$html .= "  <SPAN class=\"olive\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Paused > 5 minutes</B></font>";
 		$html .= "</td><td>";
-		$html .= "  <font color=navy><SPAN class=\"lightblue\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Waiting for call</B><br>";
+		$html .= "  <font color=$default_text><SPAN class=\"lightblue\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Waiting for call</B><br>";
 		$html .= "  <SPAN class=\"blue\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Waiting for call > 1 minute</B><br>";
 		$html .= "  <SPAN class=\"midnightblue\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - Waiting for call > 5 minutes</B>";
 		$html .= "</td><td>";
-		$html .= "  <font color=navy><SPAN class=\"thistle\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - On call > 10 seconds</B><br>";
+		$html .= "  <font color=$default_text><SPAN class=\"thistle\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - On call > 10 seconds</B><br>";
 		$html .= "  <SPAN class=\"violet\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - On call > 1 minute</B><br>";
 		$html .= "  <SPAN class=\"purple\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - On call > 5 minutes</B>";
 		$html .= "</td></tr></table>";
@@ -987,54 +987,54 @@ function report_realtime_detail() {
 			list( $line_num, $line ) = each( $s1_load );
 			$load_ave_s1=rtrim($line);
             if (!$load_ave_s1>0) $load_ave_s1='-.--';
-			$Ahtml .= "  <font color=navy>Web Srvr Load Average:</font> $load_ave\n";
-			$Ahtml .= "  <font color=navy>SQL Srvr Load Average:</font> $load_ave_s1\n";
+			$Ahtml .= "  <font color=$default_text>Web Srvr Load Average:</font> $load_ave\n";
+			$Ahtml .= "  <font color=$default_text>SQL Srvr Load Average:</font> $load_ave_s1\n";
 		} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
-			$Ahtml .= "  <font color=navy>Dialer   Load Average:</font> $load_ave\n";
+			$Ahtml .= "  <font color=$default_text>Dialer   Load Average:</font> $load_ave\n";
 		} else {
-			$Ahtml .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave\n";
+			$Ahtml .= "  <font color=$default_text>SQL/Web  Load Average:</font> $load_ave\n";
 		}
 		if (file_exists($pref . 'D1_load.txt')) {
 			$d1_load = file($pref . 'D1_load.txt');
 			list( $line_num, $line ) = each( $d1_load ) ;
 			$load_ave_d1=rtrim($line);
             if (!$load_ave_d1>0) $load_ave_d1='-.--';
-			$Ahtml .= "  <font color=navy>Dialer 1 Load Average:</font> $load_ave_d1\n";
+			$Ahtml .= "  <font color=$default_text>Dialer 1 Load Average:</font> $load_ave_d1\n";
 		}
 		if (file_exists($pref . 'D2_load.txt')) {
 			$d2_load = file($pref . 'D2_load.txt');
 			list( $line_num, $line ) = each( $d2_load );
 			$load_ave_d2=rtrim($line);
             if (!$load_ave_d2>0) $load_ave_d2='-.--';
-			$Ahtml .= "  <font color=navy>Dialer 2 Load Average:</font> $load_ave_d2\n";
+			$Ahtml .= "  <font color=$default_text>Dialer 2 Load Average:</font> $load_ave_d2\n";
 		}
 		if (file_exists($pref . 'D3_load.txt')) {
 			$d3_load = file($pref . 'D3_load.txt');
 			list( $line_num, $line ) = each( $d3_load );
 			$load_ave_d3=rtrim($line);
             if (!$load_ave_d3>0) $load_ave_d3='-.--';
-			$Ahtml .= "  <font color=navy>Dialer 3 Load Average:</font> $load_ave_d3\n";
+			$Ahtml .= "  <font color=$default_text>Dialer 3 Load Average:</font> $load_ave_d3\n";
 		}
 		if (file_exists($pref . 'D4_load.txt')) {
 			$d4_load = file($pref . 'D4_load.txt');
 			list( $line_num, $line ) = each( $d4_load );
 			$load_ave_d4=rtrim($line);
             if (!$load_ave_d4>0) $load_ave_d4='-.--';
-			$Ahtml .= "  <font color=navy>Dialer 4 Load Average:</font> $load_ave_d4\n";
+			$Ahtml .= "  <font color=$default_text>Dialer 4 Load Average:</font> $load_ave_d4\n";
 		}
 		if (file_exists($pref . 'D5_load.txt')) {
 			$d5_load = file($pref . 'D5_load.txt');
 			list( $line_num, $line ) = each( $d5_load );
 			$load_ave_d5=rtrim($line);
             if (!$load_ave_d5>0) $load_ave_d5='-.--';
-			$Ahtml .= "  <font color=navy>Dialer 5 Load Average:</font> $load_ave_d5\n";
+			$Ahtml .= "  <font color=$default_text>Dialer 5 Load Average:</font> $load_ave_d5\n";
 		}
 		if (file_exists($pref . 'D6_load.txt')) {
 			$d6_load = file($pref . 'D6_load.txt');
 			list( $line_num, $line ) = each( $d6_load );
 			$load_ave_d6=rtrim($line);
             if (!$load_ave_d6>0) $load_ave_d6='-.--';
-			$Ahtml .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6\n";
+			$Ahtml .= "  <font color=$default_text>Dialer 6 Load Average:</font> $load_ave_d6\n";
 		}
 		//$html .= "<tr><td colspan=10>";
 		$html .= "$Ahtml";
@@ -1054,54 +1054,54 @@ function report_realtime_detail() {
 			list( $line_num, $line ) = each( $s1_load );
 			$load_ave_s1=rtrim($line);
             if (!$load_ave_s1>0) $load_ave_s1='-.--';
-			$Ahtml .= "  <font color=navy>Web Srvr Load Average:</font> $load_ave\n";
-			$Ahtml .= "  <font color=navy>SQL Srvr Load Average:</font> $load_ave_s1\n";
+			$Ahtml .= "  <font color=$default_text>Web Srvr Load Average:</font> $load_ave\n";
+			$Ahtml .= "  <font color=$default_text>SQL Srvr Load Average:</font> $load_ave_s1\n";
 		} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
-			$Ahtml .= "  <font color=navy>Dialer   Load Average:</font> $load_ave\n";
+			$Ahtml .= "  <font color=$default_text>Dialer   Load Average:</font> $load_ave\n";
 		} else {
-			$Ahtml .= "  <font color=navy>SQL/Web  Load Average:</font> $load_ave\n";
+			$Ahtml .= "  <font color=$default_text>SQL/Web  Load Average:</font> $load_ave\n";
 		}
 		if (file_exists($pref . 'D1_load.txt')) {
 			$d1_load = file($pref . 'D1_load.txt');
 			list( $line_num, $line ) = each( $d1_load ) ;
 			$load_ave_d1=rtrim($line);
             if (!$load_ave_d1>0) $load_ave_d1='-.--';
-			$Ahtml .= "  <font color=navy>Dialer 1 Load Average:</font> $load_ave_d1\n";
+			$Ahtml .= "  <font color=$default_text>Dialer 1 Load Average:</font> $load_ave_d1\n";
 		}
 		if (file_exists($pref . 'D2_load.txt')) {
 			$d2_load = file($pref . 'D2_load.txt');
 			list( $line_num, $line ) = each( $d2_load );
 			$load_ave_d2=rtrim($line);
             if (!$load_ave_d2>0) $load_ave_d2='-.--';
-			$Ahtml .= "  <font color=navy>Dialer 2 Load Average:</font> $load_ave_d2\n";
+			$Ahtml .= "  <font color=$default_text>Dialer 2 Load Average:</font> $load_ave_d2\n";
 		}
 		if (file_exists($pref . 'D3_load.txt')) {
 			$d3_load = file($pref . 'D3_load.txt');
 			list( $line_num, $line ) = each( $d3_load );
 			$load_ave_d3=rtrim($line);
             if (!$load_ave_d3>0) $load_ave_d3='-.--';
-			$Ahtml .= "  <font color=navy>Dialer 3 Load Average:</font> $load_ave_d3\n";
+			$Ahtml .= "  <font color=$default_text>Dialer 3 Load Average:</font> $load_ave_d3\n";
 		}
 		if (file_exists($pref . 'D4_load.txt')) {
 			$d4_load = file($pref . 'D4_load.txt');
 			list( $line_num, $line ) = each( $d4_load );
 			$load_ave_d4=rtrim($line);
             if (!$load_ave_d4>0) $load_ave_d4='-.--';
-			$Ahtml .= "  <font color=navy>Dialer 4 Load Average:</font> $load_ave_d4\n";
+			$Ahtml .= "  <font color=$default_text>Dialer 4 Load Average:</font> $load_ave_d4\n";
 		}
 		if (file_exists($pref . 'D5_load.txt')) {
 			$d5_load = file($pref . 'D5_load.txt');
 			list( $line_num, $line ) = each( $d5_load );
 			$load_ave_d5=rtrim($line);
             if (!$load_ave_d5>0) $load_ave_d5='-.--';
-			$Ahtml .= "  <font color=navy>Dialer 5 Load Average:</font> $load_ave_d5\n";
+			$Ahtml .= "  <font color=$default_text>Dialer 5 Load Average:</font> $load_ave_d5\n";
 		}
 		if (file_exists($pref . 'D6_load.txt')) {
 			$d6_load = file($pref . 'D6_load.txt');
 			list( $line_num, $line ) = each( $d6_load );
 			$load_ave_d6=rtrim($line);
             if (!$load_ave_d6>0) $load_ave_d6='-.--';
-			$Ahtml .= "  <font color=navy>Dialer 6 Load Average:</font> $load_ave_d6\n";
+			$Ahtml .= "  <font color=$default_text>Dialer 6 Load Average:</font> $load_ave_d6\n";
 		}
 		$html .= "$Ahtml";
 		

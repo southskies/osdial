@@ -28,7 +28,7 @@
 if ($ADD==26)
 {
 	$status = eregi_replace("-----.*",'',$status);
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id' and auto_alt_dial_statuses LIKE \"% $status %\";";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -43,7 +43,7 @@ if ($ADD==26)
 			}
 		 else
 			{
-			echo "<br><B><font color=navy>AUTO ALT DIAL STATUS ADDED: $campaign_id - $status</font></B>\n";
+			echo "<br><B><font color=$default_text>AUTO ALT DIAL STATUS ADDED: $campaign_id - $status</font></B>\n";
 
 			$stmt="SELECT auto_alt_dial_statuses from osdial_campaigns where campaign_id='$campaign_id';";
 			$rslt=mysql_query($stmt, $link);
@@ -75,7 +75,7 @@ if ($ADD==66)
 {
 	if ($LOGmodify_campaigns==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id' and auto_alt_dial_statuses LIKE \"% $status %\";";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -90,7 +90,7 @@ if ($ADD==66)
 			}
 		 else
 			{
-			echo "<br><B><font color=navy>AUTO ALT DIAL STATUS DELETED: $campaign_id - $status</font></B>\n";
+			echo "<br><B><font color=$default_text>AUTO ALT DIAL STATUS DELETED: $campaign_id - $status</font></B>\n";
 
 			$stmt="SELECT auto_alt_dial_statuses from osdial_campaigns where campaign_id='$campaign_id';";
 			$rslt=mysql_query($stmt, $link);
@@ -126,9 +126,9 @@ $ADD=31;	# go to campaign modification form below
 if ($ADD==36)
 {
 echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-echo "<center><br><font color=navy size=+1>CAMPAIGN LEAD AUTO-ALT DIALS</font><br><br>\n";
+echo "<center><br><font color=$default_text size=+1>CAMPAIGN LEAD AUTO-ALT DIALS</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=$menubarcolor>\n";
 echo "<td><font color=white size=1>CAMPAIGN</font></td>\n";

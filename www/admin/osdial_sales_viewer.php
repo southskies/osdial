@@ -85,7 +85,7 @@ function GatherListIDs() {
 <!-- body -->
 <table align=center cellpadding=0 cellspacing=0>
 <tr><td align=center>
-<br><font color=navy size=+1>RECENT OUTBOUND SALES REPORT</font><br>
+<br><font color=<?=$default_text?> size=+1>RECENT OUTBOUND SALES REPORT</font><br>
 <form action="<?=$PHP_SELF ?>" method=post onSubmit="return GatherListIDs()">
 <input type="hidden" name="list_ids">
 <table border=0 cellpadding=5 cellspacing=0 align=center width=600>
@@ -203,13 +203,13 @@ if ($submit_report && $list_ids) {
 	fwrite($dfile, "$stmt\n");
 	$rslt=mysql_query($stmt, $link);
 	$q=0;
-	print "<tr><th colspan=8><font class='standard_bold' color='navy'>Last ".mysql_num_rows($rslt)." sales made</font></th></tr>\n";
+	print "<tr><th colspan=8><font class='standard_bold' color='$default_text'>Last ".mysql_num_rows($rslt)." sales made</font></th></tr>\n";
 	print "<tr>\n";
-	print "\t<th><font color='navy' size='2'>Sales Rep(s)</font></th>\n";
-	print "\t<th><font color='navy' size='2'>Customer Name</font></th>\n";
-	print "\t<th><font color='navy' size='2'>Phone</font></th>\n";
-	print "\t<th><font color='navy' size='2'>Recording ID</font></th>\n";
-	print "\t<th><font color='navy' size='2'>Timestamp</font></th>\n";
+	print "\t<th><font color='$default_text' size='2'>Sales Rep(s)</font></th>\n";
+	print "\t<th><font color='$default_text' size='2'>Customer Name</font></th>\n";
+	print "\t<th><font color='$default_text' size='2'>Phone</font></th>\n";
+	print "\t<th><font color='$default_text' size='2'>Recording ID</font></th>\n";
+	print "\t<th><font color='$default_text' size='2'>Timestamp</font></th>\n";
 	print "</tr>\n";
 	while ($row=mysql_fetch_row($rslt)) {
 		$rec_stmt="select max(recording_id) from recording_log where lead_id='$row[4]'";

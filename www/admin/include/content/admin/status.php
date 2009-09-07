@@ -33,7 +33,7 @@
 if ($ADD==221111111111111)
 {
 
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_campaign_statuses where status='$status';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -50,13 +50,13 @@ if ($ADD==221111111111111)
 			{
 			 if ( (strlen($status) < 1) or (strlen($status_name) < 2) )
 				{
-				 echo "<br><font color=navy>SYSTEM STATUS NOT ADDED - Please go back and look at the data you entered\n";
+				 echo "<br><font color=$default_text>SYSTEM STATUS NOT ADDED - Please go back and look at the data you entered\n";
 				 echo "<br>status must be between 1 and 8 characters in length\n";
 				 echo "<br>status name must be between 2 and 30 characters in length</font><br>\n";
 				}
 			 else
 				{
-				echo "<br><B><font color=navy>SYSTEM STATUS ADDED: $status_name - $status</font></B>\n";
+				echo "<br><B><font color=$default_text>SYSTEM STATUS ADDED: $status_name - $status</font></B>\n";
 
 				$stmt="INSERT INTO osdial_statuses (status,status_name,selectable,human_answered,category) values('$status','$status_name','$selectable','$human_answered','$category');";
 				$rslt=mysql_query($stmt, $link);
@@ -83,7 +83,7 @@ if ($ADD==421111111111111)
 {
 	if ($LOGmodify_servers==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	if (ereg('delete',$stage))
 		{
@@ -95,7 +95,7 @@ if ($ADD==421111111111111)
 			}
 		else
 			{
-			echo "<br><B><font color=navy>SYSTEM STATUS DELETED: $status</font></B>\n";
+			echo "<br><B><font color=$default_text>SYSTEM STATUS DELETED: $status</font></B>\n";
 
 			$stmt="DELETE FROM osdial_statuses where status='$status';";
 			$rslt=mysql_query($stmt, $link);
@@ -122,7 +122,7 @@ if ($ADD==421111111111111)
 			}
 		else
 			{
-			echo "<br><B><font color=navy>SYSTEM STATUS MODIFIED: $status</font></B>\n";
+			echo "<br><B><font color=$default_text>SYSTEM STATUS MODIFIED: $status</font></B>\n";
 
 			$stmt="UPDATE osdial_statuses SET status_name='$status_name',selectable='$selectable',human_answered='$human_answered',category='$category' where status='$status';";
 			$rslt=mysql_query($stmt, $link);
@@ -155,10 +155,10 @@ if ($ADD==321111111111111)
 	if ($LOGmodify_servers==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	echo "<br><center>\n";
-	echo "<b><font color=navy size=+1>OSDial STATUSES WITHIN THIS SYSTEM &nbsp; $NWB#osdial_statuses$NWE</font></b><br><br>\n";
+	echo "<b><font color=$default_text size=+1>OSDial STATUSES WITHIN THIS SYSTEM &nbsp; $NWB#osdial_statuses$NWE</font></b><br><br>\n";
 	echo "<TABLE width=750 cellspacing=0>\n";
 	echo "<tr bgcolor=$menubarcolor><td align=center><font size=1 color=white>STATUS</font></td>";
 	echo "<td align=center><font size=1 color=white>DESCRIPTION</font></td>";
@@ -228,7 +228,7 @@ if ($ADD==321111111111111)
 
 	echo "</table>\n";
 
-	echo "<br><font color=navy>ADD NEW SYSTEM STATUS<BR><form action=$PHP_SELF method=POST><br>\n";
+	echo "<br><font color=$default_text>ADD NEW SYSTEM STATUS<BR><form action=$PHP_SELF method=POST><br>\n";
 	echo "<input type=hidden name=ADD value=221111111111111>\n";
 	echo "Status: <input type=text name=status size=7 maxlength=6> &nbsp; \n";
 	echo "Description: <input type=text name=status_name size=30 maxlength=30><BR><br>\n";
@@ -262,7 +262,7 @@ if ($ADD==321111111111111)
 if ($ADD==231111111111111)
 {
 
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_status_categories where vsc_id='$vsc_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -278,7 +278,7 @@ if ($ADD==231111111111111)
 			}
 		 else
 			{
-			echo "<br><B><font color=navy>STATUS CATEGORY ADDED: $vsc_id - $vsc_name</font></B>\n";
+			echo "<br><B><font color=$default_text>STATUS CATEGORY ADDED: $vsc_id - $vsc_name</font></B>\n";
 
 			$stmt="SELECT count(*) from osdial_status_categories where tovdad_display='Y' and vsc_id NOT IN('$vsc_id');";
 			$rslt=mysql_query($stmt, $link);
@@ -313,7 +313,7 @@ if ($ADD==431111111111111)
 {
 	if ($LOGmodify_servers==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($vsc_id) < 2)  or (preg_match("/^UNDEFINED$/i",$vsc_id)) )
 		{
@@ -325,7 +325,7 @@ if ($ADD==431111111111111)
 		{
 		if (ereg('delete',$stage))
 			{
-			echo "<br><B><font color=navy>STATUS CATEGORY DELETED: $vsc_id</font></B>\n";
+			echo "<br><B><font color=$default_text>STATUS CATEGORY DELETED: $vsc_id</font></B>\n";
 
 			$stmt="DELETE FROM osdial_status_categories where vsc_id='$vsc_id';";
 			$rslt=mysql_query($stmt, $link);
@@ -340,7 +340,7 @@ if ($ADD==431111111111111)
 			}
 		if (ereg('modify',$stage))
 			{
-			echo "<br><B><font color=navy>STATUS CATEGORY MODIFIED: $vsc_id</font></B>\n";
+			echo "<br><B><font color=$default_text>STATUS CATEGORY MODIFIED: $vsc_id</font></B>\n";
 
 			$stmt="SELECT count(*) from osdial_status_categories where tovdad_display='Y' and vsc_id NOT IN('$vsc_id');";
 			$rslt=mysql_query($stmt, $link);
@@ -382,12 +382,12 @@ if ($ADD==331111111111111)
 	if ($LOGmodify_servers==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	echo "<br>\n";
-	echo "<b><center><font color=navy>OSDial STATUS CATEGORIES &nbsp; $NWB#osdial_status_categories$NWE</font></center></b><br>\n";
+	echo "<b><center><font color=$default_text>OSDial STATUS CATEGORIES &nbsp; $NWB#osdial_status_categories$NWE</font></center></b><br>\n";
 	echo "<TABLE width=700 cellspacing=3>\n";
-	echo "<tr><td><font size=2 color=navy>CATEGORY</font></td><td><font size=2 color=navy>NAME</font></td><td><font size=2 color=navy>TO&nbsp;OSDail</font></td><td><font size=2 color=navy>STATUSES IN THIS CATEGORY</font></td></tr>\n";
+	echo "<tr><td><font size=2 color=$default_text>CATEGORY</font></td><td><font size=2 color=$default_text>NAME</font></td><td><font size=2 color=$default_text>TO&nbsp;OSDail</font></td><td><font size=2 color=$default_text>STATUSES IN THIS CATEGORY</font></td></tr>\n";
 
 		$stmt="SELECT * from osdial_status_categories order by vsc_id;";
 		$rslt=mysql_query($stmt, $link);
@@ -454,7 +454,7 @@ if ($ADD==331111111111111)
 
 	echo "</table>\n";
 
-	echo "<center><br><font color=navy>ADD NEW STATUS CATEGORY<BR><br></center><form action=$PHP_SELF method=POST>\n";
+	echo "<center><br><font color=$default_text>ADD NEW STATUS CATEGORY<BR><br></center><form action=$PHP_SELF method=POST>\n";
 	echo "<input type=hidden name=ADD value=231111111111111>\n";
 	echo "Category ID: <input type=text name=vsc_id size=20 maxlength=20> &nbsp; \n";
 	echo "Name: <input type=text name=vsc_name size=20 maxlength=50> &nbsp; \n";

@@ -240,7 +240,7 @@ $browser = getenv("HTTP_USER_AGENT");
 		<td margin='10' align='center'>
 			
 			<? 
-			echo "<br><font color=navy size='3'><b>LEAD MODIFICATION</b></font><BR><br><a href=\"./admin.php?ADD=112\">Search Again</a><br> \n";
+			echo "<br><font color=$default_text size='3'><b>LEAD MODIFICATION</b></font><BR><br><a href=\"./admin.php?ADD=112\">Search Again</a><br> \n";
 			
 			if ($end_call > 0)
 			{

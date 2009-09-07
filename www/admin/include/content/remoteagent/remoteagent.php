@@ -33,9 +33,9 @@ if ($ADD==11111)
 	{
     $servers_list = get_servers($link, $server_ip);
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>ADD NEW EXTERNAL AGENTS</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>ADD NEW EXTERNAL AGENTS</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Agent ID Start: </td><td align=left><input type=text name=user_start size=6 maxlength=20> (numbers only, incremented)$NWB#osdial_remote_agents-user_start$NWE</td></tr>\n";
@@ -69,7 +69,7 @@ if ($ADD==11111)
 
 if ($ADD==21111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_remote_agents where server_ip='$server_ip' and user_start='$user_start';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -87,7 +87,7 @@ if ($ADD==21111)
 			$stmt="INSERT INTO osdial_remote_agents values('','$user_start','$number_of_lines','$server_ip','$conf_exten','$status','$campaign_id','$groups_value');";
 			$rslt=mysql_query($stmt, $link);
 
-			echo "<br><B><font color=navy>REMOTE AGENTS ADDED: $user_start</font></B>\n";
+			echo "<br><B><font color=$default_text>REMOTE AGENTS ADDED: $user_start</font></B>\n";
 
 			### LOG CHANGES TO LOG FILE ###
 			if ($WeBRooTWritablE > 0)
@@ -110,7 +110,7 @@ if ($ADD==41111)
 {
 	if ($LOGmodify_remoteagents==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($server_ip) < 2) or (strlen($user_start) < 2)  or (strlen($campaign_id) < 2) or (strlen($conf_exten) < 2) )
 		{
@@ -122,7 +122,7 @@ if ($ADD==41111)
 		$stmt="UPDATE osdial_remote_agents set user_start='$user_start', number_of_lines='$number_of_lines', server_ip='$server_ip', conf_exten='$conf_exten', status='$status', campaign_id='$campaign_id', closer_campaigns='$groups_value' where remote_agent_id='$remote_agent_id';";
 		$rslt=mysql_query($stmt, $link);
 
-		echo "<br><B><font color=navy>REMOTE AGENTS MODIFIED</font></B>\n";
+		echo "<br><B><font color=$default_text>REMOTE AGENTS MODIFIED</font></B>\n";
 
 		### LOG CHANGES TO LOG FILE ###
 		if ($WeBRooTWritablE > 0)
@@ -148,7 +148,7 @@ $ADD=31111;	# go to remote agents modification form below
 
 if ($ADD==51111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($remote_agent_id) < 1) or ($LOGdelete_remote_agents < 1) )
 		{
@@ -157,7 +157,7 @@ if ($ADD==51111)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>REMOTE AGENT DELETION CONFIRMATION: $emote_agent_id</B>\n";
+		echo "<br><B><font color=$default_text>REMOTE AGENT DELETION CONFIRMATION: $emote_agent_id</B>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=61111&remote_agent_id=$remote_agent_id&CoNfIrM=YES\">Click here to delete remote agent $remote_agent_id</a></font><br><br><br>\n";
 		}
 
@@ -171,7 +171,7 @@ $ADD='31111';		# go to remote agent modification below
 
 if ($ADD==61111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($remote_agent_id) < 1) or ($CoNfIrM != 'YES') or ($LOGdelete_remote_agents < 1) )
 		{
@@ -190,7 +190,7 @@ if ($ADD==61111)
 			fwrite ($fp, "$date|!DELETING RMTAGENT!!|$PHP_AUTH_USER|$ip|remote_agent_id='$remote_agent_id'|\n");
 			fclose($fp);
 			}
-		echo "<br><B><font color=navy>REMOTE AGENT DELETION COMPLETED: $remote_agent_id</font></B>\n";
+		echo "<br><B><font color=$default_text>REMOTE AGENT DELETION COMPLETED: $remote_agent_id</font></B>\n";
 		echo "<br><br>\n";
 		}
 
@@ -207,7 +207,7 @@ if ($ADD==31111)
 	if ($LOGmodify_remoteagents==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from osdial_remote_agents where remote_agent_id='$remote_agent_id';";
 	$rslt=mysql_query($stmt, $link);
@@ -222,7 +222,7 @@ if ($ADD==31111)
 
     $servers_list = get_servers($link, $row[3]);
 
-	echo "<center><br><font color=navy size=+1>MODIFY A REMOTE AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>MODIFY A REMOTE AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=41111>\n";
 	echo "<input type=hidden name=remote_agent_id value=\"$row[0]\">\n";
 	
@@ -267,13 +267,13 @@ if ($ADD==31111)
 if ($ADD==10000)
 {
 echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from osdial_remote_agents order by server_ip,campaign_id,user_start";
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=navy size=+1>EXTERNAL AGENTS</font><br><br>\n";
+echo "<center><br><font color=$default_text size=+1>EXTERNAL AGENTS</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=$menubarcolor>";
 echo "<td><font size=1 color=white><B>ID</B></td>";

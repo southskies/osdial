@@ -36,9 +36,9 @@ if ($ADD==1111111111111)
 	{
     $servers_list = get_servers($link, $server_ip);
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>ADD A NEW CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>ADD A NEW CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111111111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Conference Number: </td><td align=left><input type=text name=conf_exten size=8 maxlength=7> (digits only)$NWB#conferences-conf_exten$NWE</td></tr>\n";
@@ -66,7 +66,7 @@ if ($ADD==1111111111111)
 if ($ADD==2111111111111)
 {
 echo "<TABLE><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -78,7 +78,7 @@ echo "<TABLE><TR><TD>\n";
 			{echo "<br><font color=red>CONFERENCE NOT ADDED - Please go back and look at the data you entered</font>\n";}
 		 else
 			{
-			echo "<br><font color=navy>CONFERENCE ADDED</font>\n";
+			echo "<br><font color=$default_text>CONFERENCE ADDED</font>\n";
 
 			$stmt="INSERT INTO conferences (conf_exten,server_ip) values('$conf_exten','$server_ip');";
 			$rslt=mysql_query($stmt, $link);
@@ -98,7 +98,7 @@ if ($ADD==4111111111111)
 {
 	if ($LOGast_admin_access==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT count(*) from conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
@@ -111,7 +111,7 @@ if ($ADD==4111111111111)
 			{echo "<br><font color=red>CONFERENCE NOT MODIFIED - Please go back and look at the data you entered</font>\n";}
 		 else
 			{
-			echo "<br><font color=navy>CONFERENCE MODIFIED: $conf_exten</font>\n";
+			echo "<br><font color=$default_text>CONFERENCE MODIFIED: $conf_exten</font>\n";
 
 			$stmt="UPDATE conferences set conf_exten='$conf_exten',server_ip='$server_ip',extension='$extension' where conf_exten='$old_conf_exten';";
 			$rslt=mysql_query($stmt, $link);
@@ -135,7 +135,7 @@ $ADD=3111111111111;	# go to conference modification form below
 
 if ($ADD==5111111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($conf_exten) < 2) or (strlen($server_ip) < 7) or ($LOGast_delete_phones < 1) )
 		{
@@ -145,7 +145,7 @@ if ($ADD==5111111111111)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>CONFERENCE DELETION CONFIRMATION: $conf_exten - $server_ip</B>\n";
+		echo "<br><B><font color=$default_text>CONFERENCE DELETION CONFIRMATION: $conf_exten - $server_ip</B>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=6111111111111&conf_exten=$conf_exten&server_ip=$server_ip&CoNfIrM=YES\">Click here to delete phone $conf_exten - $server_ip</a></font><br><br><br>\n";
 		}
 $ADD='3111111111111';		# go to conference modification below
@@ -159,7 +159,7 @@ $ADD='3111111111111';		# go to conference modification below
 
 if ($ADD==6111111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($conf_exten) < 2) or (strlen($server_ip) < 7) or ($CoNfIrM != 'YES') or ($LOGast_delete_phones < 1) )
 		{
@@ -179,7 +179,7 @@ if ($ADD==6111111111111)
 			fwrite ($fp, "$date|!!!DELETING CONF!!!!|$PHP_AUTH_USER|$ip|conf_exten='$conf_exten'|server_ip='$server_ip'|\n");
 			fclose($fp);
 			}
-		echo "<br><B><font color=navy>CONFERENCE DELETION COMPLETED: $conf_exten - $server_ip</font></B>\n";
+		echo "<br><B><font color=$default_text>CONFERENCE DELETION COMPLETED: $conf_exten - $server_ip</font></B>\n";
 		echo "<br><br>\n";
 		}
 $ADD='1000000000000';		# go to conference list
@@ -197,7 +197,7 @@ if ($ADD==3111111111111)
 	if ($LOGast_admin_access==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
@@ -207,7 +207,7 @@ if ($ADD==3111111111111)
 
     $servers_list = get_servers($link, $row[1]);
 
-	echo "<center><br><font color=navy size=+1>MODIFY A CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>MODIFY A CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=4111111111111>\n";
 	echo "<input type=hidden name=old_conf_exten value=\"$row[0]\">\n";
 	echo "<input type=hidden name=old_server_ip value=\"$row[1]\">\n";
@@ -242,13 +242,13 @@ if ($ADD==3111111111111)
 if ($ADD==1000000000000)
 {
 echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from conferences order by conf_exten";
 	$rslt=mysql_query($stmt, $link);
 	$phones_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=navy size=+1>CONFERENCES</font><br><br>\n";
+echo "<center><br><font color=$default_text size=+1>CONFERENCES</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=$menubarcolor>";
 echo "<td><font size=1 color=white><B>ID</B></td>";
@@ -290,9 +290,9 @@ if ($ADD==11111111111111)
 	{
     $servers_list = get_servers($link, $server_ip);
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=navy size=+1>ADD A NEW OSDial CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>ADD A NEW OSDial CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21111111111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Conference Number: </td><td align=left><input type=text name=conf_exten size=8 maxlength=7> (digits only)$NWB#conferences-conf_exten$NWE</td></tr>\n";
@@ -319,7 +319,7 @@ if ($ADD==11111111111111)
 if ($ADD==21111111111111)
 {
 echo "<TABLE><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -331,7 +331,7 @@ echo "<TABLE><TR><TD>\n";
 			{echo "<br><font color=red>OSDial CONFERENCE NOT ADDED - Please go back and look at the data you entered</font>\n";}
 		 else
 			{
-			echo "<br><font color=navy>OSDial CONFERENCE ADDED</font>\n";
+			echo "<br><font color=$default_text>OSDial CONFERENCE ADDED</font>\n";
 
 			$stmt="INSERT INTO osdial_conferences (conf_exten,server_ip) values('$conf_exten','$server_ip');";
 			$rslt=mysql_query($stmt, $link);
@@ -349,7 +349,7 @@ if ($ADD==41111111111111)
 {
 	if ($LOGast_admin_access==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT count(*) from osdial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
@@ -362,7 +362,7 @@ if ($ADD==41111111111111)
 			{echo "<br><font color=red>OSDial CONFERENCE NOT MODIFIED - Please go back and look at the data you entered</font>\n";}
 		 else
 			{
-			echo "<br><font color=navy>OSDial CONFERENCE MODIFIED: $conf_exten</font>\n";
+			echo "<br><font color=$default_text>OSDial CONFERENCE MODIFIED: $conf_exten</font>\n";
 
 			$stmt="UPDATE osdial_conferences set conf_exten='$conf_exten',server_ip='$server_ip',extension='$extension' where conf_exten='$old_conf_exten';";
 			$rslt=mysql_query($stmt, $link);
@@ -386,7 +386,7 @@ $ADD=31111111111111;	# go to osdial conference modification form below
 
 if ($ADD==51111111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($conf_exten) < 2) or (strlen($server_ip) < 7) or ($LOGast_delete_phones < 1) )
 		{
@@ -396,7 +396,7 @@ if ($ADD==51111111111111)
 		}
 	 else
 		{
-		echo "<br><B><font color=navy>OSDial CONFERENCE DELETION CONFIRMATION: $conf_exten - $server_ip</B>\n";
+		echo "<br><B><font color=$default_text>OSDial CONFERENCE DELETION CONFIRMATION: $conf_exten - $server_ip</B>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=61111111111111&conf_exten=$conf_exten&server_ip=$server_ip&CoNfIrM=YES\">Click here to delete phone $conf_exten - $server_ip</a></font><br><br><br>\n";
 		}
 $ADD='31111111111111';		# go to osdial conference modification below
@@ -410,7 +410,7 @@ $ADD='31111111111111';		# go to osdial conference modification below
 
 if ($ADD==61111111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	 if ( (strlen($conf_exten) < 2) or (strlen($server_ip) < 7) or ($CoNfIrM != 'YES') or ($LOGast_delete_phones < 1) )
 		{
@@ -430,7 +430,7 @@ if ($ADD==61111111111111)
 			fwrite ($fp, "$date|!!!DELETING CONF!!!!|$PHP_AUTH_USER|$ip|conf_exten='$conf_exten'|server_ip='$server_ip'|\n");
 			fclose($fp);
 			}
-		echo "<br><B><font color=navy>OSDial CONFERENCE DELETION COMPLETED: $conf_exten - $server_ip</font></B>\n";
+		echo "<br><B><font color=$default_text>OSDial CONFERENCE DELETION COMPLETED: $conf_exten - $server_ip</font></B>\n";
 		echo "<br><br>\n";
 		}
 $ADD='10000000000000';		# go to osdial conference list
@@ -446,7 +446,7 @@ if ($ADD==31111111111111)
 	if ($LOGast_admin_access==1)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from osdial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
@@ -456,7 +456,7 @@ if ($ADD==31111111111111)
 
     $servers_list = get_servers($link, $row[1]);
 
-	echo "<center><br><font color=navy size=+1>MODIFY A OSDial CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>MODIFY A OSDial CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=41111111111111>\n";
 	echo "<input type=hidden name=old_conf_exten value=\"$row[0]\">\n";
 	echo "<input type=hidden name=old_server_ip value=\"$row[1]\">\n";
@@ -490,13 +490,13 @@ if ($ADD==31111111111111)
 if ($ADD==10000000000000)
 {
 echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$stmt="SELECT * from osdial_conferences order by conf_exten";
 	$rslt=mysql_query($stmt, $link);
 	$phones_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=navy size=+1>CONFERENCES</font><br><br>\n";
+echo "<center><br><font color=$default_text size=+1>CONFERENCES</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=$menubarcolor>";
 echo "<td><font size=1 color=white><B>ID</B></td>";

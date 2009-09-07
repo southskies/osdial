@@ -75,8 +75,8 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8) {
 } elseif ($ADD==131 && $LOGuser_level > 8) {
 
 	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2>";
-	echo "<center><br><font color=navy size=+1>LEAD EXPORT</font><br><br>\n";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+	echo "<center><br><font color=$default_text size=+1>LEAD EXPORT</font><br><br>\n";
 
 	if ($LOGmodify_lists==1) {
         if ($statuses[0] != '') $target=' target="_blank"';

@@ -499,7 +499,7 @@ echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_tem
 //  Relogin
 if ($relogin == 'YES') {
 	echo "<title>$t1 web client: Re-Login</title>\n";
-	// echo "<style>a:link {color: blue} a:visited {color: navy} a:active {color: navy}</style>";
+	// echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 	echo "</head>\n";
 	
 	echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
@@ -575,7 +575,7 @@ if ($user_login_first == 1) {
 	if ( (strlen($VD_login)<1) or (strlen($VD_pass)<1) or (strlen($VD_campaign)<1) ) {
 		//echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
 		echo "<title>$t1 web client: Campaign Login</title>\n";
-		//echo "<style>a:link {color: blue} a:visited {color: navy} a:active {color: navy}</style>";
+		//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 		echo "</head>\n";
 		echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 NAME=osdial>\n";
 		
@@ -645,7 +645,7 @@ if ($user_login_first == 1) {
 	
 			echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
 			echo "<title>$t1 web client: Login</title>\n";
-			//echo "<style>a:link {color: blue} a:visited {color: navy} a:active {color: navy}</style>";
+			//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 			echo "</head>\n";
 			echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
 			echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
@@ -685,7 +685,7 @@ if ($user_login_first == 1) {
 if ( (strlen($phone_login)<2) or (strlen($phone_pass)<2) ) {
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
 	echo "<title>$t1 web client:  Phone Login</title>\n";
-	//echo "<style>a:link {color: blue} a:visited {color: navy} a:active {color: navy}</style>";
+	//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 	echo "</head>\n";
 	echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
 	
@@ -705,7 +705,7 @@ if ( (strlen($phone_login)<2) or (strlen($phone_pass)<2) ) {
 	echo "</tr>";
 	echo "<tr>";
 	echo "	<TD ALIGN=LEFT><font size=1>&nbsp;</TD>\n";
-	//echo "	<TD ALIGN=LEFT VALIGN=BOTTOM><font color=navy></TD>";
+	//echo "	<TD ALIGN=LEFT VALIGN=BOTTOM><font color=$default_text></TD>";
 	echo "	<TD ALIGN=center colspan=2><font color=" . $login_fc . "><b>Login To Your Phone</TD>";
 	echo "	<TD ALIGN=LEFT class=rborder><font size=1>&nbsp;</TD>\n";
 	echo "</TR>\n";
@@ -794,7 +794,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 		if ( (!eregi(" $VD_campaign ",$LOGallowed_campaigns)) and (!eregi("ALL-CAMPAIGNS",$LOGallowed_campaigns)) )
 			{
 			echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
-			//echo "<style>a:link {color: blue} a:visited {color: navy} a:active {color: navy}</style>";
+			//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 			echo "</head>\n";
 			echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
 			echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
@@ -1072,7 +1072,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 	{
 	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
 	echo "<title>$t1 web client: Campaign Login</title>\n";
-	//echo "<style>a:link {color: blue} a:visited {color: navy} a:active {color: navy}</style>";
+	//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 	echo "</head>\n";
 	echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
 	
@@ -1144,7 +1144,7 @@ $authphone=$row[0];
 if (!$authphone)
 	{
 	echo "<title>$t1 web client: Phone Login Error</title>\n";
-	//echo "<style>a:link {color: blue} a:visited {color: navy} a:active {color: navy}</style>";
+	//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 	echo "</head>\n";
 	echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
 	echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
@@ -1167,7 +1167,7 @@ if (!$authphone)
 	echo "</tr>";
 	echo "<tr>";
 	echo "	<TD ALIGN=LEFT><font size=1>&nbsp;</TD>\n";
-	//echo "	<TD ALIGN=LEFT VALIGN=BOTTOM><font color=navy></TD>";
+	//echo "	<TD ALIGN=LEFT VALIGN=BOTTOM><font color=$default_text></TD>";
 	echo "	<TD ALIGN=center colspan=2><font color=" . $login_fc . "><b><font color='red'>Invalid Login, please try again!</font></TD>";
 	echo "	<TD ALIGN=LEFT class=rborder><font size=1>&nbsp;</TD>\n";
 	echo "</TR>\n";
@@ -1557,7 +1557,7 @@ else
 	else
 		{
 		echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
-		//echo "<style>a:link {color: blue} a:visited {color: navy} a:active {color: navy}</style>";
+		//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 		echo "</head>\n";
 		echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
 		echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
@@ -1582,7 +1582,7 @@ else
 	if (strlen($session_id) < 1)
 		{
 		echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
-		//echo "<style>a:link {color: blue} a:visited {color: navy} a:active {color: navy}</style>";
+		//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 		echo "</head>\n";
 		echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
 		echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
