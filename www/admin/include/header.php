@@ -98,7 +98,7 @@ if ($hh=='reports')
 
 <div class=container>
 <div class=header>
-<table width=900 Oldwidth<?= $page_width ?> bgcolor=#E9E8D9 cellpadding=0 cellspacing=0 align=center class=across>
+<table width=900 Oldwidth<?= $page_width ?> bgcolor=<?= $maintable_color ?> cellpadding=0 cellspacing=0 align=center class=across>
     <tr>
         <td colspan=10>
             <table align='center' border='0' cellspacing='0' cellpadding='0'>
