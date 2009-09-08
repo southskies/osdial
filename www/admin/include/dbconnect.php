@@ -21,7 +21,8 @@
 #
 #
 $conffile = "/etc/osdial.conf";
-$conffile2 = getcwd() . '/../../../db.conf';
+$cp2 = explode('/', getcwd());
+$conffile2 = '/' . $cp2[1] . '/' . $cp2[2] . '/db.conf';
 if ( file_exists($conffile2) ) {
     $conffile = $conffile2;
 }
