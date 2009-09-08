@@ -33,7 +33,6 @@ header ("Content-type: text/html; charset=utf-8");
 echo "<html>\n";
 echo "<head>\n";
 echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n";
-$t1="OSDial"; if (ereg("^Sli",$system_settings['admin_template'])){ $t1=$system_settings['admin_template']; };
 if ($ADD==999999 && ($SUB==11 || $SUB==12 || $SUB==13 || $SUB==14)) {
 	if (!isset($RR)) { $RR=4; }
 	if ($RR <1) { $RR=4; }

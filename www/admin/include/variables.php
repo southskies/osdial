@@ -46,6 +46,7 @@ $PHP_AUTH_PW=$_SERVER['PHP_AUTH_PW'];
 $PHP_SELF=$_SERVER['PHP_SELF'];
 
 $system_settings = get_first_record($link, 'system_settings', '*','');
+$t1="OSDial"; if (ereg("^Sli",$system_settings['admin_template'])){ $t1=$system_settings['admin_template']; };
 $non_latin = $system_settings['use_non_latin'];
 $admin_home_url_LU = $system_settings['admin_home_url'];
 $user_company = $system_settings['company_name'];
