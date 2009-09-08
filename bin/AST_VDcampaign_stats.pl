@@ -99,7 +99,7 @@ $dbhA = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':' . $config->
 print 'CONNECTED TO DATABASE:  ' . $config->{VARDB_server} . '|' . $config->{VARDB_database} . "\n" if ($DBX);
 
 # Check to make sure we have all the stats records.
-my $stmtA = "INSERT INTO osdial_campaign_stats (campaign_id) VALUES ((select campaign_id from osdial_campaigns)) on duplicate key update campaign_id=VALUES(campaign_id);";
+my $stmtA = "INSERT INTO osdial_campaign_stats (campaign_id) (SELECT campaign_id FROM osdial_campaigns) on duplicate key update campaign_id=VALUES(campaign_id);";
 my $affected_rows = $dbhA->do($stmtA);
 
 my($master_loop, $stat_count) = (0,0);
@@ -319,6 +319,8 @@ sub updateStats {
 				$VSCtally = $aryA[0];
 				$rec_count++;
 			}
+		} else {
+			$CATstatusesSQL = "'----'";
 		}
 		# Get category count for last hour, as CATanswers_hour
 		my ($CATcalls_hour,$CATanswers_hour,$CATdrops_hour,$CATdrops_hour_pct) = calculateDrops ($dbhA, $osdial_log, $campaign_id, $CATstatusesSQL, $VDL_hour);
@@ -441,6 +443,8 @@ sub updateStats {
 					$VSCtally = $aryA[0];
 					$rec_count++;
 				}
+			} else {
+				$CATstatusesSQL = "'----'";
 			}
 			# Get category count for last hour, as CATanswers_hour
 			my ($CATcalls_hour,$CATanswers_hour) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $CATstatusesSQL, $VDL_hour);
