@@ -73,7 +73,7 @@ CREATE TABLE osdial_postal_code_groups (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 (
 	SELECT country_code,postal_code,GMT_offset FROM osdial_postal_codes GROUP BY country_code,postal_code
 );##|##
-  ## Adding table osdial_postal_code_groups for faster gmt lookups
+  ## Adding table osdial_postal_code_groups for faster gmt lookups;
 
 CREATE TABLE osdial_phone_code_groups (
 	country_code SMALLINT(5) UNSIGNED,
@@ -83,7 +83,7 @@ CREATE TABLE osdial_phone_code_groups (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 (
 	SELECT country_code,areacode,GMT_offset FROM osdial_phone_codes GROUP BY country_code,areacode
 );##|##
-  ## Adding table osdial_phone_code_groups for faster gmt lookups
+  ## Adding table osdial_phone_code_groups for faster gmt lookups;
 
 CREATE TABLE osdial_report_groups (
 	group_type VARCHAR(30),
