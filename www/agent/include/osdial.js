@@ -1306,7 +1306,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			if( document.images ) { document.images['livecall'].src = image_livecall_OFF.src;}
 		//	alert(RedirecTxFEr + "|" + auto_dial_level);
                         if (taskvar == 'XfeRVMAIL') {
-                                document.osdial_form.DispoSelection.value = 'AL';
+                                document.osdial_form.DispoSelection.value = 'AM';
                                 dialedcall_send_hangup('NO');
                                 DispoSelect_submit();
                         } else {
