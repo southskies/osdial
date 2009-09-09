@@ -29,7 +29,7 @@
 
 # The build variable gets set to the SVN revision automatically in release package.
 # Do no change.
-$build = '242-68';
+$build = 'SVN_Build';
 
 $STARTtime = date("U");
 $SQLdate = date("Y-m-d H:i:s");
