@@ -1403,11 +1403,9 @@ if ($stage == "end")
 				}
 
 			### delete call record from  osdial_auto_calls
-			$stmt = "DELETE from osdial_auto_calls where lead_id='$lead_id' and uniqueid='$uniqueid';";
+			$stmt = "DELETE from osdial_auto_calls where lead_id='$lead_id' and (uniqueid='$uniqueid' OR uniqueid IS NULL);";
 			if ($DB) {echo "$stmt\n";}
 			$rslt=mysql_query($stmt, $link);
-
-
 
 			$stmt = "UPDATE osdial_live_agents set status='PAUSED',lead_id='',uniqueid=0,callerid='',channel='',call_server_ip='',last_call_finish='$NOW_TIME',comments='' where user='$user' and server_ip='$server_ip';";
 			if ($DB) {echo "$stmt\n";}
@@ -1467,7 +1465,7 @@ if ($stage == "end")
 				mysql_close($linkB);
 				}
 
-			$stmt = "DELETE from osdial_auto_calls lead_id='$lead_id' and uniqueid='$uniqueid';";
+			$stmt = "DELETE from osdial_auto_calls where lead_id='$lead_id' and (uniqueid='$uniqueid' OR uniqueid IS NULL);";
 			if ($DB) {echo "$stmt\n";}
 			$rslt=mysql_query($stmt, $link);
 
