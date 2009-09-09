@@ -855,7 +855,7 @@ echo "</tr>";
         echo "  <td align=center><font size=1 color=white>" . ($contact_count + $sales_count) . "</font></td>";
         echo "  <td align=center><font size=1 color=white>" . $sales_count . "</font></td>";
         #echo "Total Contact: " . $contact_count . "<br />";
-        echo "  <td align=center><font size=1 color=white>" . $close_pct . " %</font></td>";
+        echo "  <td align=center><font size=1 color=white>" . sprintf('%5.2f',$close_pct) . " %</font></td>";
         echo "  <td><font size=1 color=white>&nbsp;</font></td>";
         echo "</tr>";
     } else {
