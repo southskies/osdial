@@ -834,7 +834,7 @@ echo "</tr>";
             echo "  <td><font size=1><input type=hidden name=mdn_user value=$row[1]><input type=text name=mdn_limit size=5 value=$row[46]></td>";
             echo "  <td align=center><font size=1>" . ($stat['CONTACT'] + $stat['SALE']) . "</td>";
             echo "  <td align=center><font size=1>" . $stat['SALE'] . "</td>";
-            echo "  <td align=center><font size=1>$close_pct %</td>";
+            echo "  <td align=center><font size=1>" . sprintf('%5.2f',$close_pct) . " %</td>";
         } else {
             echo "  <td><font size=1><a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$row[4]&group=$group&let=$let\">$row[4]</a></td>";
             echo "  <td><font size=1><a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$row[5]&let=$let\">$row[5]</a></td>";
