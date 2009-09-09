@@ -433,7 +433,7 @@ sub updateStats {
 			if ( length($CATstatusesSQL) > 2 ) {
 
 				# FIND STATUSES IN STATUS CATEGORY
-				$stmtA = "SELECT count(*) from $osdial_log where campaign_id='$campaign_id' and call_date > '$VDL_date' and status IN($CATstatusesSQL);";
+				$stmtA = "SELECT count(*) from $osdial_log where campaign_id='$campaign_id' and call_date > '$VDL_date' and status IN($CATstatusesSQL) and user='$agent';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows  = $sthA->rows;
