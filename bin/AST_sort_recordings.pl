@@ -81,17 +81,24 @@ my $odir = $config->{PATHarchive_home} . '/' . $config->{PATHarchive_sorted};
 opendir(FILE, $rdir."/");
 my @files = readdir(FILE);
 
-my $cps = 10;
+my $cps = 2;
 # Cycle through each file in the mixed directory
 foreach my $file (@files) {
 	# Check to see if filesize has changed.
-	my $size1 = (-s "$rdir/$file");
-	usleep(1000000/$cps);
-	my $size2 = (-s "$rdir/$file");
-	print "$file:  $size1 - $size2\n" if ($verbose);
+	my $size_checks = 10;
+	foreach (1..$size_checks) {
+		my $size1 = (-s "$rdir/$file");
+		usleep(1000000/$cps);
+		#sleep(1/$cps);
+		my $size2 = (-s "$rdir/$file");
+		print "$file:  $size1 - $size2\n" if ($verbose);
+		if (($size1 eq $size2)) {
+			$size_checks--;
+		}
+	}
 
 	# Grab a completed file of some format.
-	if ($file =~ /\.wav|\.gsm|\.ogg|\.mp3/i and $size1==$size2) {
+	if ($file =~ /\.wav|\.gsm|\.ogg|\.mp3/i and $size_checks == 0) {
 		# Pull SQL info from recording_log, list and campaign tables.
 		my $SQLfile = $file;
 		$SQLfile =~ s/-all\.wav|-all\.gsm|-all\.ogg|-all\.mp3//gi;

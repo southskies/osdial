@@ -218,23 +218,30 @@ if ($OGG > 0) {$dir2 = "$PATHDONEmonitor/OGG";}
  opendir(FILE, "$dir2/");
  @FILES = readdir(FILE);
 
-$cps=10;
+$cps=2;
 $i=0;
 foreach(@FILES)
    {
 	$size1 = 0;
 	$size2 = 0;
 
-	if ( (length($FILES[$i]) > 4) && (!-d $FILES[$i]) )
+	if ( (length($FILES[$i]) > 4) && ($FILES[$i] !~ /-all\.wav|-out\.wav|archive.lock|lost\+found/i) && (!-d $FILES[$i]) )
 		{
 
-		$size1 = (-s "$dir2/$FILES[$i]");
-		if ($DBX) {print "$FILES[$i] $size1\n";}
-		usleep(1000000/$cps);
-		$size2 = (-s "$dir2/$FILES[$i]");
-		if ($DBX) {print "$FILES[$i] $size2\n\n";}
+		my $size_checks = 10;
+		foreach (1..$size_checks) {
+			$size1 = (-s "$dir2/$FILES[$i]");
+			if ($DBX) {print "$FILES[$i] $size1\n";}
+			usleep(1000000/$cps);
+			#sleep(1/$cps);
+			$size2 = (-s "$dir2/$FILES[$i]");
+			if ($DBX) {print "$FILES[$i] $size2\n\n";}
+			if (($size1 eq $size2)) {
+				$size_checks--;
+			}
+		}
 
-		if ( ($FILES[$i] !~ /-all\.wav|-out\.wav|archive.lock|lost\+found/i) && ($size1 eq $size2) && (length($FILES[$i]) > 4))
+		if ( ($size_checks == 0) )
 			{
 			$recording_id='';
 			$SQLFILE = $FILES[$i];
