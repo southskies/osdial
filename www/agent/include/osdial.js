@@ -241,6 +241,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	var previous_dispo = '';
 	var previous_called_count = '';
 	var hot_keys_active = 0;
+	var dtmf_keys_active = 0;
 	var all_record = 'NO';
 	var all_record_count = 0;
 	var LeaDDispO = '';
@@ -4566,6 +4567,19 @@ if ($useIE > 0)
 					dialedcall_send_hangup('NO', 'YES', HKdispo_ary[0]);
 					}
 				}
+			} else if ( (dtmf_keys_active==1) && ( (VD_live_customer_call==1) || (MD_ring_secondS>5) ) ) {
+				var e = evt? evt : window.event;
+				if(!e) return;
+				var key = 0;
+				if (e.keyCode) { key = e.keyCode; } // for moz/fb, if keyCode==0 use 'which'
+				else if (typeof(e.which)!= 'undefined') { key = e.which; }
+
+				var dtmf_key = String.fromCharCode(key);
+				if (dtmf_key == "0" || dtmf_key == "1" || dtmf_key == "2" || dtmf_key == "3" || dtmf_key == "4" || dtmf_key == "5" ||
+			    	dtmf_key == "6" || dtmf_key == "7" || dtmf_key == "8" || dtmf_key == "9" || dtmf_key == "#" || dtmf_key == "*") { 
+					document.osdial_form.conf_dtmf.value=dtmf_key;
+					SendConfDTMF('<?=$session_id ?>');
+				}
 			}
 		}
 
@@ -4615,6 +4629,19 @@ else
 			//	AutoDialWaiting = 1;
 			//	AutoDial_ReSume_PauSe("VDADready");
 			//	alert(HKdispo + " - " + HKdispo_ary[0] + " - " + HKdispo_ary[1]);
+				}
+			} else if ( (dtmf_keys_active==1) && ( (VD_live_customer_call==1) || (MD_ring_secondS>5) ) ) {
+				var e = evt? evt : window.event;
+				if(!e) return;
+				var key = 0;
+				if (e.keyCode) { key = e.keyCode; } // for moz/fb, if keyCode==0 use 'which'
+				else if (typeof(e.which)!= 'undefined') { key = e.which; }
+
+				var dtmf_key = String.fromCharCode(key);
+				if (dtmf_key == "0" || dtmf_key == "1" || dtmf_key == "2" || dtmf_key == "3" || dtmf_key == "4" || dtmf_key == "5" ||
+			    	dtmf_key == "6" || dtmf_key == "7" || dtmf_key == "8" || dtmf_key == "9" || dtmf_key == "#" || dtmf_key == "*") { 
+					document.osdial_form.conf_dtmf.value=dtmf_key;
+					SendConfDTMF('<?=$session_id ?>');
 				}
 			}
 		}
@@ -5570,6 +5597,16 @@ else
 			document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOver=\"HotKeys('ON')\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_XB_hotkeysactive_OFF.gif\" border=0 alt=\"HOT KEYS INACTIVE\"></a>";
 			}
 		}
+
+	function DTMFKeys(DTMFstate) {
+		if ( (DTMFstate == 'ON') && (VD_live_customer_call == 1) ) {
+			dtmf_keys_active = 1;
+			document.getElementById("DTMFDialPad").setAttribute("onMouseOut", "DTMFKeys('OFF');");
+		} else {
+			dtmf_keys_active = 0;
+			document.getElementById("DTMFDialPad").setAttribute("onMouseOver", "DTMFKeys('ON');");
+		}
+	}
 
 	function ShoWTransferMain(showxfervar,showoffvar)
 		{

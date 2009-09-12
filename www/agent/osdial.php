@@ -2479,7 +2479,7 @@ foreach ($forms as $form) {
 							
 							<span id="SpacerSpanD"><IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=16 border=0></span>
 
-                        <div class="text_input" id="DTMFDialPad">
+                        <div class="text_input" id="DTMFDialPad" onMouseOver="DTMFKeys('ON');">
                             <table cellspacing=1 cellpadding=1 border=0>
                                 <tr>
                                     <td align=center>
