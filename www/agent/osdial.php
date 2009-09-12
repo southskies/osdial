@@ -2503,8 +2503,10 @@ foreach ($forms as $form) {
 					<input type=hidden name=list_id value="">
 					<input type=hidden name=called_count value="">
 					<input type=hidden name=gmt_offset_now value="">
+                    <!--
 					<input type=hidden name=gender value="">
 					<input type=hidden name=date_of_birth value="">
+                    -->
 					<input type=hidden name=country_code value="">
 					<input type=hidden name=uniqueid value="">
 					<input type=hidden name=callserverip value="">
@@ -2605,10 +2607,12 @@ foreach ($forms as $form) {
 							</td>
 							
 						</tr>
-						<tr>
-							<td align=right><font class="body_text"> <font color=<?=$form_fc?>>Vendor&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>Lead Code:&nbsp;</font></td>
-							<td align=left colspan='3'><font class="body_text"><input type=text size=22 name=vendor_lead_code maxlength=20 class="cust_form" value="">&nbsp;</td>
-						</tr>
+                        <tr>
+                            <td align=right><font class="body_text"> <font color=<?=$form_fc?>>Birth&nbsp;<br>Date:&nbsp;</font></td>
+                            <td align=left><font class="body_input"><input type=text size=12 name=date_of_birth maxlength=10 class="cust_form" value=""></font>&nbsp;<font class="body_text" color=<?=$form_fc?>>Gender:&nbsp;</font><font class="body_input"><select name=gender class="cust_form"><option></option><option>M</option><option>F</option></select></font></td>
+                            <td align=right><font class="body_text" color=<?=$form_fc?>>Vendor&nbsp;Code:&nbsp;</font><font class="body_input"><input type=text size=15 name=vendor_lead_code maxlength=20 class="cust_form" value=""></font></td>
+                        </tr>
+
 						<tr>
 							<td align=right><font class="body_text" color=<?=$form_fc?>>Custom1:&nbsp;</font></td>
 							<td align=left><font class="body_input"><input type=text size=22 name=custom1 maxlength=100 class="cust_form" value=""></font>&nbsp;</td>
@@ -2761,6 +2765,15 @@ foreach ($forms as $form) {
 <span style="visibility:hidden; position:absolute;left:190px;top:92px;z-index:18;" name="WebFormPanel2" id="WebFormPanel2">
 <iframe src="/osdial/agent/blank.php" width="780" height="375" name="WebFormPF2" id="WebFormPF2" style="background-color: white;"></iframe>
 </span>
+
+<?
+    echo "<script language=\"Javascript\">\n";
+
+    include('include/' . $VD_campaign . '_form_validation.js');
+
+    echo "</script>\n";
+?>
+
 
 </body>
 </html>
