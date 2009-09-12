@@ -1815,6 +1815,19 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 								document.getElementById("VolumeUpSpan").innerHTML = "<a href=\"#\" onclick=\"volume_control('UP','" + MDchannel + "','');return false;\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_volume_up.gif\" BORDER=0></a>";
 								document.getElementById("VolumeDownSpan").innerHTML = "<a href=\"#\" onclick=\"volume_control('DOWN','" + MDchannel + "','');return false;\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_volume_down.gif\" BORDER=0></a>";
 
+								document.getElementById("DTMFDialPad0").innerHTML = "<a href=\"#\" alt=\"0\" onclick=\"document.osdial_form.conf_dtmf.value='0'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_0.png\" border=0></a>";
+								document.getElementById("DTMFDialPad1").innerHTML = "<a href=\"#\" alt=\"1\" onclick=\"document.osdial_form.conf_dtmf.value='1'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_1.png\" border=0></a>";
+								document.getElementById("DTMFDialPad2").innerHTML = "<a href=\"#\" alt=\"2 - ABC\" onclick=\"document.osdial_form.conf_dtmf.value='2'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_2.png\" border=0></a>";
+								document.getElementById("DTMFDialPad3").innerHTML = "<a href=\"#\" alt=\"3 - DEF\" onclick=\"document.osdial_form.conf_dtmf.value='3'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_3.png\" border=0></a>";
+								document.getElementById("DTMFDialPad4").innerHTML = "<a href=\"#\" alt=\"4 - GHI\" onclick=\"document.osdial_form.conf_dtmf.value='4'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_4.png\" border=0></a>";
+								document.getElementById("DTMFDialPad5").innerHTML = "<a href=\"#\" alt=\"5 - JKL\" onclick=\"document.osdial_form.conf_dtmf.value='5'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_5.png\" border=0></a>";
+								document.getElementById("DTMFDialPad6").innerHTML = "<a href=\"#\" alt=\"6 - MNO\" onclick=\"document.osdial_form.conf_dtmf.value='6'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_6.png\" border=0></a>";
+								document.getElementById("DTMFDialPad7").innerHTML = "<a href=\"#\" alt=\"7 - PQRS\" onclick=\"document.osdial_form.conf_dtmf.value='7'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_7.png\" border=0></a>";
+								document.getElementById("DTMFDialPad8").innerHTML = "<a href=\"#\" alt=\"8 - TUV\" onclick=\"document.osdial_form.conf_dtmf.value='8'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_8.png\" border=0></a>";
+								document.getElementById("DTMFDialPad9").innerHTML = "<a href=\"#\" alt=\"9 - WXYZ\" onclick=\"document.osdial_form.conf_dtmf.value='9'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_9.png\" border=0></a>";
+								document.getElementById("DTMFDialPadStar").innerHTML = "<a href=\"#\" alt=\"*\" onclick=\"document.osdial_form.conf_dtmf.value='*'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_star.png\" border=0></a>";
+								document.getElementById("DTMFDialPadHash").innerHTML = "<a href=\"#\" alt=\"#\" onclick=\"document.osdial_form.conf_dtmf.value='#'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_hash.png\" border=0></a>";
+
 
 								// INSERT OSDIAL_LOG ENTRY FOR THIS CALL PROCESS
 								DialLog("start");
@@ -2821,7 +2834,20 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 							document.getElementById("DialBlindVMail").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_XB_ammessage.gif\" border=0 alt=\"Blind Transfer VMail Message\"></a>";
 							document.getElementById("DialBlindVMail2").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_XB_ammessage.gif\" border=0 alt=\"Blind Transfer VMail Message\"></a>";
-		
+
+							document.getElementById("DTMFDialPad0").innerHTML = "<a href=\"#\" alt=\"0\" onclick=\"document.osdial_form.conf_dtmf.value='0'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_0.png\" border=0></a>";
+							document.getElementById("DTMFDialPad1").innerHTML = "<a href=\"#\" alt=\"1\" onclick=\"document.osdial_form.conf_dtmf.value='1'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_1.png\" border=0></a>";
+							document.getElementById("DTMFDialPad2").innerHTML = "<a href=\"#\" alt=\"2 - ABC\" onclick=\"document.osdial_form.conf_dtmf.value='2'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_2.png\" border=0></a>";
+							document.getElementById("DTMFDialPad3").innerHTML = "<a href=\"#\" alt=\"3 - DEF\" onclick=\"document.osdial_form.conf_dtmf.value='3'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_3.png\" border=0></a>";
+							document.getElementById("DTMFDialPad4").innerHTML = "<a href=\"#\" alt=\"4 - GHI\" onclick=\"document.osdial_form.conf_dtmf.value='4'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_4.png\" border=0></a>";
+							document.getElementById("DTMFDialPad5").innerHTML = "<a href=\"#\" alt=\"5 - JKL\" onclick=\"document.osdial_form.conf_dtmf.value='5'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_5.png\" border=0></a>";
+							document.getElementById("DTMFDialPad6").innerHTML = "<a href=\"#\" alt=\"6 - MNO\" onclick=\"document.osdial_form.conf_dtmf.value='6'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_6.png\" border=0></a>";
+							document.getElementById("DTMFDialPad7").innerHTML = "<a href=\"#\" alt=\"7 - PQRS\" onclick=\"document.osdial_form.conf_dtmf.value='7'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_7.png\" border=0></a>";
+							document.getElementById("DTMFDialPad8").innerHTML = "<a href=\"#\" alt=\"8 - TUV\" onclick=\"document.osdial_form.conf_dtmf.value='8'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_8.png\" border=0></a>";
+							document.getElementById("DTMFDialPad9").innerHTML = "<a href=\"#\" alt=\"9 - WXYZ\" onclick=\"document.osdial_form.conf_dtmf.value='9'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_9.png\" border=0></a>";
+							document.getElementById("DTMFDialPadStar").innerHTML = "<a href=\"#\" alt=\"*\" onclick=\"document.osdial_form.conf_dtmf.value='*'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_star.png\" border=0></a>";
+							document.getElementById("DTMFDialPadHash").innerHTML = "<a href=\"#\" alt=\"#\" onclick=\"document.osdial_form.conf_dtmf.value='#'; SendConfDTMF('<?=$session_id ?>');return false;\"><img src=\"templates/<?= $agent_template ?>/images/dtmf_hash.png\" border=0></a>";
+	
 							if (lastcustserverip == server_ip)
 							{
 								document.getElementById("VolumeUpSpan").innerHTML = "<a href=\"#\" onclick=\"volume_control('UP','" + lastcustchannel + "','');return false;\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_volume_up.gif\" BORDER=0></a>";
@@ -3527,6 +3553,19 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			document.getElementById("VolumeUpSpan").innerHTML = "<IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_volume_up_off.gif\" BORDER=0>";
 			document.getElementById("VolumeDownSpan").innerHTML = "<IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_volume_down_off.gif\" BORDER=0>";
 			document.getElementById("RepullControl").innerHTML = "";
+
+			document.getElementById("DTMFDialPad0").innerHTML = "<img src=\"templates/<?= $agent_template ?>/images/dtmf_0_OFF.png\" border=0>";
+			document.getElementById("DTMFDialPad1").innerHTML = "<img src=\"templates/<?= $agent_template ?>/images/dtmf_1_OFF.png\" border=0>";
+			document.getElementById("DTMFDialPad2").innerHTML = "<img src=\"templates/<?= $agent_template ?>/images/dtmf_2_OFF.png\" border=0>";
+			document.getElementById("DTMFDialPad3").innerHTML = "<img src=\"templates/<?= $agent_template ?>/images/dtmf_3_OFF.png\" border=0>";
+			document.getElementById("DTMFDialPad4").innerHTML = "<img src=\"templates/<?= $agent_template ?>/images/dtmf_4_OFF.png\" border=0>";
+			document.getElementById("DTMFDialPad5").innerHTML = "<img src=\"templates/<?= $agent_template ?>/images/dtmf_5_OFF.png\" border=0>";
+			document.getElementById("DTMFDialPad6").innerHTML = "<img src=\"templates/<?= $agent_template ?>/images/dtmf_6_OFF.png\" border=0>";
+			document.getElementById("DTMFDialPad7").innerHTML = "<img src=\"templates/<?= $agent_template ?>/images/dtmf_7_OFF.png\" border=0>";
+			document.getElementById("DTMFDialPad8").innerHTML = "<img src=\"templates/<?= $agent_template ?>/images/dtmf_8_OFF.png\" border=0>";
+			document.getElementById("DTMFDialPad9").innerHTML = "<img src=\"templates/<?= $agent_template ?>/images/dtmf_9_OFF.png\" border=0>";
+			document.getElementById("DTMFDialPadStar").innerHTML = "<img src=\"templates/<?= $agent_template ?>/images/dtmf_star_OFF.png\" border=0>";
+			document.getElementById("DTMFDialPadHash").innerHTML = "<img src=\"templates/<?= $agent_template ?>/images/dtmf_hash_OFF.png\" border=0>";
 
 			document.osdial_form.custdatetime.value		= '';
 

@@ -2478,6 +2478,55 @@ foreach ($forms as $form) {
 							<span id="HangupControl"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_LB_hangupcustomer_OFF.gif" border=0 alt="Hangup Customer"></span>
 							
 							<span id="SpacerSpanD"><IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=16 border=0></span>
+
+                        <div class="text_input" id="DTMFDialPad">
+                            <table cellspacing=1 cellpadding=1 border=0>
+                                <tr>
+                                    <td align=center>
+                                        <span id="DTMFDialPad1"><a href="#" alt="1"><img src="templates/<?= $agent_template ?>/images/dtmf_1_OFF.png" border=0></a></span>
+                                    </td>
+                                    <td align=center>
+                                        <span id="DTMFDialPad2"><a href="#" alt="2 - ABC"><img src="templates/<?= $agent_template ?>/images/dtmf_2_OFF.png" border=0></a></span>
+                                    </td>
+                                    <td align=center>
+                                        <span id="DTMFDialPad3"><a href="#" alt="3 - DEF"><img src="templates/<?= $agent_template ?>/images/dtmf_3_OFF.png" border=0></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align=center>
+                                        <span id="DTMFDialPad4"><a href="#" alt="4 - GHI"><img src="templates/<?= $agent_template ?>/images/dtmf_4_OFF.png" border=0></a></span>
+                                    </td>
+                                    <td align=center>
+                                        <span id="DTMFDialPad5"><a href="#" alt="5 - JKL"><img src="templates/<?= $agent_template ?>/images/dtmf_5_OFF.png" border=0></a></span>
+                                    </td>
+                                    <td align=center>
+                                        <span id="DTMFDialPad6"><a href="#" alt="6 - MNO"><img src="templates/<?= $agent_template ?>/images/dtmf_6_OFF.png" border=0></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align=center>
+                                        <span id="DTMFDialPad7"><a href="#" alt="7 - PQRS"><img src="templates/<?= $agent_template ?>/images/dtmf_7_OFF.png" border=0></a></span>
+                                    </td>
+                                    <td align=center>
+                                        <span id="DTMFDialPad8"><a href="#" alt="8 - TUV"><img src="templates/<?= $agent_template ?>/images/dtmf_8_OFF.png" border=0></a></span>
+                                    </td>
+                                    <td align=center>
+                                        <span id="DTMFDialPad9"><a href="#" alt="9 - WXYZ"><img src="templates/<?= $agent_template ?>/images/dtmf_9_OFF.png" border=0></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align=center>
+                                        <span id="DTMFDialPadStar"><a href="#" alt="*"><img src="templates/<?= $agent_template ?>/images/dtmf_star_OFF.png" border=0></a></span>
+                                    </td>
+                                    <td align=center>
+                                        <span id="DTMFDialPad0"><a href="#" alt="0"><img src="templates/<?= $agent_template ?>/images/dtmf_0_OFF.png" border=0></a></span>
+                                    </td>
+                                    <td align=center>
+                                        <span id="DTMFDialPadHash"><a href="#" alt="#"><img src="templates/<?= $agent_template ?>/images/dtmf_hash_OFF.png" border=0></a></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
 							
 							<div class="text_input" id="SendDTMFdiv">
 								<span id="SendDTMF"><a href="#" onclick="SendConfDTMF('<?=$session_id ?>');return false;"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_LB_senddtmf.gif" border=0 alt="Send DTMF" align=top></a> <input type=text size=6 name=conf_dtmf class="cust_form" value="" maxlength=50>
