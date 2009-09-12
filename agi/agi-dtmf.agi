@@ -77,9 +77,9 @@ sub checkresult {
 }
 
 ### sleep for 5 tenths of a second
-usleep(1*500*1000);
+##usleep(1*500*1000);
 
-print "STREAM FILE silence \"\"\n";
+##print "STREAM FILE silence \"\"\n";
 
 $caller_id = "$caller_id$caller_idname";
 
@@ -90,27 +90,27 @@ foreach (@CALLERID_DIGITS)
 
 if ($CALLERID_DIGITS[$g] =~ /\d/) 
 	{
-	print "STREAM FILE $CALLERID_DIGITS[$g] \"\"\n";
+	print "STREAM FILE dtmf-$CALLERID_DIGITS[$g] \"\"\n";
 	print STDERR "DIGIT: $CALLERID_DIGITS[$g]\n";
 	}
 else
 	{
-	if ($CALLERID_DIGITS[$g] =~ /\#/) {print "STREAM FILE hash \"\"\n";}
-	if ($CALLERID_DIGITS[$g] =~ /\*/) {print "STREAM FILE star \"\"\n";}
+	if ($CALLERID_DIGITS[$g] =~ /\#/) {print "STREAM FILE dtmf-hash \"\"\n";}
+	if ($CALLERID_DIGITS[$g] =~ /\*/) {print "STREAM FILE dtmf-star \"\"\n";}
 	if ($CALLERID_DIGITS[$g] =~ /\,/) {sleep(1);}
 	print STDERR "NON-DIGIT: $CALLERID_DIGITS[$g]\n";
 	}
 $g++;
 
 ### sleep for 20 hundredths of a second
-usleep(1*150*1000);
+##usleep(1*150*1000);
 
-print "STREAM FILE silence \"\"\n";
+##print "STREAM FILE silence \"\"\n";
 
 ### sleep for 10 hundredths of a second
 usleep(1*100*1000);
 }
 
-print "STREAM FILE silence \"\"\n";
+##print "STREAM FILE silence \"\"\n";
 checkresult();
 
