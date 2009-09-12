@@ -96,10 +96,10 @@ CREATE TABLE osdial_report_groups (
 	(SELECT 'lead_source_id' AS group_type,source_id AS group_value,source_id AS group_label FROM osdial_list WHERE source_id!='' GROUP BY source_id)
 	UNION
 	(SELECT 'lead_vendor_lead_code' AS group_type,vendor_lead_code AS group_value,vendor_lead_code AS group_label FROM osdial_list WHERE vendor_lead_code!='' GROUP BY vendor_lead_code);##|##
-  ## Adding table osdial_report_groups for faster group selection
+  ## Adding table osdial_report_groups for faster group selection;
 
 ALTER TABLE osdial_users ADD manual_dial_allow_skip ENUM('0','1') default '1';##|##
- ##Add option to turn of skip lead in manual-dial mode.;
+ ## Add option to turn of skip lead in manual-dial mode.;
 
 
 
