@@ -225,15 +225,15 @@ function report_list_performance() {
         $html .= "    <td><font color=white size=2>&nbsp;</font></td>\n";
         $html .= "    <td align=center><font color=white style=\"font-size:1px;\"><b>&nbsp;</b></font></td>\n";
         if ($type == "hour") {
-            $html .= "    <td align=center colspan=7><font color=white size=2><b>Lead Analysis by Hour Called</b></font></td>\n";
+            $html .= "    <td align=center colspan=8><font color=white size=2><b>Lead Analysis by Hour Called</b></font></td>\n";
             $html .= "    <td align=center><font color=white style=\"font-size:1px;\"><b>&nbsp;</b></font></td>\n";
-            $html .= "    <td align=center colspan=7><font color=white size=2><b>Lead Analysis by Entry Hour</b></font></td>\n";
+            $html .= "    <td align=center colspan=8><font color=white size=2><b>Lead Analysis by Entry Hour</b></font></td>\n";
             $head1 = "||Lead Analysis by Hour Called||||||||Lead Analysis by Entry Hour";
             $head1 = "||Lead|Analysis|by|Hour|Called||||Lead|Analysis|by|Entry|Hour";
         } else {
-            $html .= "    <td align=center colspan=7><font color=white size=2><b>Lead Analysis by Date Called</b></font></td>\n";
+            $html .= "    <td align=center colspan=8><font color=white size=2><b>Lead Analysis by Date Called</b></font></td>\n";
             $html .= "    <td align=center><font color=white style=\"font-size:1px;\"><b>&nbsp;</b></font></td>\n";
-            $html .= "    <td align=center colspan=7><font color=white size=2><b>Lead Analysis by Entry Date</b></font></td>\n";
+            $html .= "    <td align=center colspan=8><font color=white size=2><b>Lead Analysis by Entry Date</b></font></td>\n";
             $head1 = "||Lead Analysis by Date Called||||||||Lead Analysis by Entry Date";
             $head1 = "||Lead|Analysis|by|Date|Called||||Lead|Analysis|by Entry|Date";
         }
@@ -252,6 +252,7 @@ function report_list_performance() {
         $html .= "    <td align=center><font color=white size=1><b>Calls</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>Contacts</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>Sales</b></font></td>\n";
+        $html .= "    <td align=center><font color=white size=1><b>Contact<br>Closing%</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>Closing%</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>Total Cost</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>Average Cost</b></font></td>\n";
@@ -260,12 +261,13 @@ function report_list_performance() {
         $html .= "    <td align=center><font color=white size=1><b>Leads Entered</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>Contacts</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>Sales</b></font></td>\n";
+        $html .= "    <td align=center><font color=white size=1><b>Contact<br>Closing%</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>Closing%</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>Total Cost</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>Average Cost</b></font></td>\n";
         $html .= "    <td align=center><font color=white size=1><b>Cost Per Sale</b></font></td>\n";
         $html .= "  </tr>\n";
-        $head2 .= "|Calls|Contacts|Sales|Closing%|Total Cost|Average Cost|Cost Per Sale||Leads Entered|Contacts|Sales|Closing%|Total Cost|Average Cost|Cost Per Sale";
+        $head2 .= "|Calls|Contacts|Sales|Contact Closing%|Closing%|Total Cost|Average Cost|Cost Per Sale||Leads Entered|Contacts|Sales|Contact Closing%|Closing%|Total Cost|Average Cost|Cost Per Sale";
         $html .= "<input type=hidden name=\"row" . $CSVrow++ . "\" value=\"" . $head2 . "\">\n";
 
         $stmt="SELECT $type(osdial_list.entry_date),sum(osdial_list.cost),count(*),sum(if(osdial_list.status IN ($SCcontacts,$SCsales),1,0)),sum(if(osdial_list.status IN ($SCsales),1,0)) FROM osdial_list,osdial_lists WHERE osdial_list.list_id=osdial_lists.list_id AND osdial_list.entry_date <= '$query_date_END' AND osdial_list.entry_date >= '$query_date_BEGIN' $group_olSQLand GROUP BY $type(osdial_list.entry_date);";
@@ -314,15 +316,19 @@ function report_list_performance() {
             }
 
 
+            $cnt_closing_pct = "0%";
+            if ($contacts > 0) $cnt_closing_pct = sprintf('%3.2f',(($sales / $contacts) * 100)) . "%";
             $closing_pct = "0%";
-            if ($contacts > 0) $closing_pct = sprintf('%3.2f',(($sales / $contacts) * 100)) . "%";
+            if ($calls > 0) $closing_pct = sprintf('%3.2f',(($sales / $calls) * 100)) . "%";
             $avg_cost = '0.00';
             if ($calls > 0) $avg_cost = sprintf('%3.2f',$cost / $calls);
             $cost_sale = '0.00';
             if ($sales > 0) $cost_sale = sprintf('%3.2f',$cost / $sales);
 
+            $newcnt_closing_pct = "0%";
+            if ($newcontacts > 0) $newcnt_closing_pct = sprintf('%3.2f',(($newsales / $newcontacts) * 100)) . "%";
             $newclosing_pct = "0%";
-            if ($newcontacts > 0) $newclosing_pct = sprintf('%3.2f',(($newsales / $newcontacts) * 100)) . "%";
+            if ($newleads > 0) $newclosing_pct = sprintf('%3.2f',(($newsales / $newleads) * 100)) . "%";
             $newavg_cost = '0.00';
             if ($newleads > 0) $newavg_cost = sprintf('%3.2f',$newcost / $newleads);
             $newcost_sale = '0.00';
@@ -340,6 +346,7 @@ function report_list_performance() {
             }
             $html .= "    <td align=right><font size=1>$contacts</font></td>\n";
             $html .= "    <td align=right><font size=1>$sales</font></td>\n";
+            $html .= "    <td align=right><font size=1>$cnt_closing_pct</font></td>\n";
             $html .= "    <td align=right><font size=1>$closing_pct</font></td>\n";
             $html .= "    <td align=right><font size=1>$cost</font></td>\n";
             $html .= "    <td align=right><font size=1>$avg_cost</font></td>\n";
@@ -348,6 +355,7 @@ function report_list_performance() {
             $html .= "    <td align=right><font size=1>$newleads</font></td>\n";
             $html .= "    <td align=right><font size=1>$newcontacts</font></td>\n";
             $html .= "    <td align=right><font size=1>$newsales</font></td>\n";
+            $html .= "    <td align=right><font size=1>$newcnt_closing_pct</font></td>\n";
             $html .= "    <td align=right><font size=1>$newclosing_pct</font></td>\n";
             $html .= "    <td align=right><font size=1>$newcost</font></td>\n";
             $html .= "    <td align=right><font size=1>$newavg_cost</font></td>\n";
@@ -370,15 +378,19 @@ function report_list_performance() {
         }
 
 
+        $TOTcnt_closing_pct = "0%";
+        if ($TOTcontacts > 0) $TOTcnt_closing_pct = sprintf('%3.2f',(($TOTsales / $TOTcontacts) * 100)) . "%";
         $TOTclosing_pct = "0%";
-        if ($TOTcontacts > 0) $TOTclosing_pct = sprintf('%3.2f',(($TOTsales / $TOTcontacts) * 100)) . "%";
+        if ($TOTcalls > 0) $TOTclosing_pct = sprintf('%3.2f',(($TOTsales / $TOTcalls) * 100)) . "%";
         $TOTavg_cost = '0.00';
         if ($TOTcalls > 0) $TOTavg_cost = sprintf('%3.2f',$TOTcost / $TOTcalls);
         $TOTcost_sale = '0.00';
         if ($TOTsales > 0) $TOTcost_sale = sprintf('%3.2f',$TOTcost / $TOTsales);
 
+        $TOTnewcnt_closing_pct = "0%";
+        if ($TOTnewcontacts > 0) $TOTnewcnt_closing_pct = sprintf('%3.2f',(($TOTnewsales / $TOTnewcontacts) * 100)) . "%";
         $TOTnewclosing_pct = "0%";
-        if ($TOTnewcontacts > 0) $TOTnewclosing_pct = sprintf('%3.2f',(($TOTnewsales / $TOTnewcontacts) * 100)) . "%";
+        if ($TOTnewcontacts > 0) $TOTnewclosing_pct = sprintf('%3.2f',(($TOTnewsales / $TOTnewleads) * 100)) . "%";
         $TOTnewavg_cost = '0.00';
         if ($TOTnewleads > 0) $TOTnewavg_cost = sprintf('%3.2f',$TOTnewcost / $TOTnewleads);
         $TOTnewcost_sale = '0.00';
@@ -390,6 +402,7 @@ function report_list_performance() {
         $html .= "    <td align=right><b><font color=white size=1>$TOTcalls</font></b></td>\n";
         $html .= "    <td align=right><b><font color=white size=1>$TOTcontacts</font></b></td>\n";
         $html .= "    <td align=right><b><font color=white size=1>$TOTsales</font></b></td>\n";
+        $html .= "    <td align=right><b><font color=white size=1>$TOTcnt_closing_pct</font></b></td>\n";
         $html .= "    <td align=right><b><font color=white size=1>$TOTclosing_pct</font></b></td>\n";
         $html .= "    <td align=right><b><font color=white size=1>$TOTcost</font></b></td>\n";
         $html .= "    <td align=right><b><font color=white size=1>$TOTavg_cost</font></b></td>\n";
@@ -398,6 +411,7 @@ function report_list_performance() {
         $html .= "    <td align=right><b><font color=white size=1>$TOTnewleads</font></b></td>\n";
         $html .= "    <td align=right><b><font color=white size=1>$TOTnewcontacts</font></b></td>\n";
         $html .= "    <td align=right><b><font color=white size=1>$TOTnewsales</font></b></td>\n";
+        $html .= "    <td align=right><b><font color=white size=1>$TOTnewcnt_closing_pct</font></b></td>\n";
         $html .= "    <td align=right><b><font color=white size=1>$TOTnewclosing_pct</font></b></td>\n";
         $html .= "    <td align=right><b><font color=white size=1>$TOTnewcost</font></b></td>\n";
         $html .= "    <td align=right><b><font color=white size=1>$TOTnewavg_cost</font></b></td>\n";
