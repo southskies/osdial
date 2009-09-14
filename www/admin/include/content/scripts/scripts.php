@@ -123,6 +123,7 @@ if (eregi("iframe src",$script_text))
 	$RGsession_id = eregi_replace(' ','+',$RGsession_id);
 	}
 
+# old variable substitution
 $script_text = eregi_replace('--A--vendor_lead_code--B--',"$vendor_lead_code",$script_text);
 $script_text = eregi_replace('--A--list_id--B--',"$list_id",$script_text);
 $script_text = eregi_replace('--A--gmt_offset_now--B--',"$gmt_offset_now",$script_text);
@@ -162,7 +163,49 @@ $script_text = eregi_replace('--A--customer_zap_channel--B--',"$RGcustomer_zap_c
 $script_text = eregi_replace('--A--server_ip--B--',"$RGserver_ip",$script_text);
 $script_text = eregi_replace('--A--SIPexten--B--',"$RGSIPexten",$script_text);
 $script_text = eregi_replace('--A--session_id--B--',"$RGsession_id",$script_text);
-$script_text = eregi_replace("\n","<BR>",$script_text);
+
+#new variable substitution
+$script_text = eregi_replace('\[\[vendor_lead_code\]\]',"$vendor_lead_code",$script_text);
+$script_text = eregi_replace('\[\[list_id\]\]',"$list_id",$script_text);
+$script_text = eregi_replace('\[\[gmt_offset_now\]\]',"$gmt_offset_now",$script_text);
+$script_text = eregi_replace('\[\[phone_code\]\]',"$phone_code",$script_text);
+$script_text = eregi_replace('\[\[phone_number\]\]',"$phone_number",$script_text);
+$script_text = eregi_replace('\[\[title\]\]',"$title",$script_text);
+$script_text = eregi_replace('\[\[first_name\]\]',"$first_name",$script_text);
+$script_text = eregi_replace('\[\[middle_initial\]\]',"$middle_initial",$script_text);
+$script_text = eregi_replace('\[\[last_name\]\]',"$last_name",$script_text);
+$script_text = eregi_replace('\[\[address1\]\]',"$address1",$script_text);
+$script_text = eregi_replace('\[\[address2\]\]',"$address2",$script_text);
+$script_text = eregi_replace('\[\[address3\]\]',"$address3",$script_text);
+$script_text = eregi_replace('\[\[city\]\]',"$city",$script_text);
+$script_text = eregi_replace('\[\[state\]\]',"$state",$script_text);
+$script_text = eregi_replace('\[\[province\]\]',"$province",$script_text);
+$script_text = eregi_replace('\[\[postal_code\]\]',"$postal_code",$script_text);
+$script_text = eregi_replace('\[\[country_code\]\]',"$country_code",$script_text);
+$script_text = eregi_replace('\[\[gender\]\]',"$gender",$script_text);
+$script_text = eregi_replace('\[\[date_of_birth\]\]',"$date_of_birth",$script_text);
+$script_text = eregi_replace('\[\[alt_phone\]\]',"$alt_phone",$script_text);
+$script_text = eregi_replace('\[\[email\]\]',"$email",$script_text);
+$script_text = eregi_replace('\[\[custom1\]\]',"$custom1",$script_text);
+$script_text = eregi_replace('\[\[custom2\]\]',"$custom2",$script_text);
+$script_text = eregi_replace('\[\[comments\]\]',"$comments",$script_text);
+$script_text = eregi_replace('\[\[fullname\]\]',"$RGfullname",$script_text);
+$script_text = eregi_replace('\[\[fronter\]\]',"$RGuser",$script_text);
+$script_text = eregi_replace('\[\[user\]\]',"$RGuser",$script_text);
+$script_text = eregi_replace('\[\[lead_id\]\]',"$RGlead_id",$script_text);
+$script_text = eregi_replace('\[\[campaign\]\]',"$RGcampaign",$script_text);
+$script_text = eregi_replace('\[\[phone_login\]\]',"$RGphone_login",$script_text);
+$script_text = eregi_replace('\[\[group\]\]',"$RGgroup",$script_text);
+$script_text = eregi_replace('\[\[channel_group\]\]',"$RGchannel_group",$script_text);
+$script_text = eregi_replace('\[\[SQLdate\]\]',"$RGSQLdate",$script_text);
+$script_text = eregi_replace('\[\[epoch\]\]',"$RGepoch",$script_text);
+$script_text = eregi_replace('\[\[uniqueid\]\]',"$RGuniqueid",$script_text);
+$script_text = eregi_replace('\[\[customer_zap_channel\]\]',"$RGcustomer_zap_channel",$script_text);
+$script_text = eregi_replace('\[\[server_ip\]\]',"$RGserver_ip",$script_text);
+$script_text = eregi_replace('\[\[SIPexten\]\]',"$RGSIPexten",$script_text);
+$script_text = eregi_replace('\[\[session_id\]\]',"$RGsession_id",$script_text);
+
+$script_text = eregi_replace("\n","<br>",$script_text);
 
 
 echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";

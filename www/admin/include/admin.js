@@ -136,8 +136,10 @@ function openNewWindow(url) {
   window.open (url,"",'width=620,height=300,scrollbars=yes,menubar=yes,address=yes');
 }
 function scriptInsertField() {
-	openField = '--A--';
-	closeField = '--B--';
+	//openField = '--A--';
+	openField = '[[';
+	//closeField = '--B--';
+	closeField = ']]';
 	var textBox = document.scriptForm.script_text;
 	var scriptIndex = document.getElementById("selectedField").selectedIndex;
 	var insValue =  document.getElementById('selectedField').options[scriptIndex].value;
@@ -161,8 +163,10 @@ function scriptInsertField() {
 }
 
 function scriptInsertAddtlField() {
-	openField = '--A--';
-	closeField = '--B--';
+	//openField = '--A--';
+	openField = '[[';
+	//closeField = '--B--';
+	closeField = ']]';
 	var textBox = document.scriptForm.script_text;
 	var scriptIndex = document.getElementById("selectedAddtlField").selectedIndex;
 	var insValue =  document.getElementById('selectedAddtlField').options[scriptIndex].value;
