@@ -504,6 +504,7 @@ if ($ADD==1122) {
         $sort_label['modify_date'] = "Modify Date";
         $sort_label['called_count'] = "Attempts";
         $sort_label['last_local_call_time']      = "Last Local Call Time";
+        $sort_label['post_date']      = "Post Dates";
 
         $direction_label['ASC']= "Ascending";
         $direction_label['DESC']= "Descending";
@@ -950,10 +951,20 @@ if ($ADD==1122) {
         }
         echo "</a></b></font></td>\n";
 
+        echo "    <td align=center><font class=awhite color=white size=2><b>";
+        if ($sort == "post_date" && $direction == "DESC") {
+            echo "<a href=\"" . $pageURL . "&sort=post_date&direction=ASC#advsearch\">PostDate&nbsp;^";
+        } elseif ($sort == "post_date") {
+            echo "<a href=\"" . $pageURL . "&sort=post_date&direction=DESC#advsearch\">PostDate&nbsp;v";
+        } else {
+            echo "<a href=\"" . $pageURL . "&sort=post_date&direction=DESC#advsearch\">PostDate";
+        }
+        echo "</a></b></font></td>\n";
+
         echo "  </tr>\n";
         if ($results_to_print < 1) {
             echo "  <tr bgcolor=$oddrows>\n";
-            echo "    <td colspan=12 align=center><font size=3 color=$default_text>The item(s) you searched for were not found.</font></td>\n";
+            echo "    <td colspan=17 align=center><font size=3 color=$default_text>The item(s) you searched for were not found.</font></td>\n";
             echo "  </tr>\n";
         } else {
             $o=0;
@@ -981,11 +992,12 @@ if ($ADD==1122) {
                 echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[1]</font></td>\n";
                 echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[2]</font></td>\n";
                 echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[30]</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[35]</font></td>\n";
                 echo "  </tr>\n";
             }
         }
         echo "  <tr bgcolor=$menubarcolor>\n";
-        echo "    <td colspan=16><font size=1>&nbsp;</font></td>\n";
+        echo "    <td colspan=17><font size=1>&nbsp;</font></td>\n";
         echo "  </tr>\n";
         echo "</table>\n";
 
