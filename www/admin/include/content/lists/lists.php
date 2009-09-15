@@ -326,7 +326,7 @@ if ($ADD==1122) {
             $count = 0;
         $sort = get_variable("sort");
         if ($sort == "")
-            $sort = "lead_id";
+            $sort = "called_count";
         $direction = get_variable("direction");
         if ($direction == "")
             $direction = "ASC";
@@ -335,7 +335,7 @@ if ($ADD==1122) {
 
         $pageURL ="?ADD=$ADD&last_name=$last_name&first_name=$first_name&phone_number=$phone_number&phone_search_alt=$phone_search_alt&lead_id=$lead_id&city=$city&postal_code=$postal_code&email=$email";
         $pageURL.="&entry_date_start=$orig_entry_date_start&entry_date_end=$orig_entry_date_end&modify_date_start=$orig_modify_date_start&modify_date_end=$orig_modify_date_end";
-        $pageURL.="&custom1=$custom1&custom2=$custom2&external_key=$external_key&numresults=$numresults&sort=$sort&direction=$direction";
+        $pageURL.="&custom1=$custom1&custom2=$custom2&external_key=$external_key&numresults=$numresults";
 
 
         if ($last_name)  $searchWHR .= " AND osdial_list.last_name LIKE '%" . mysql_real_escape_string($last_name) . "%'";
@@ -488,13 +488,21 @@ if ($ADD==1122) {
         $numresults_label['500']  = "500/page";
         $numresults_label['1000'] = "1000/page";
 
-        $sort_label['lead_id']     = "Lead ID";
+        $sort_label['list_id']     = "List#";
+        $sort_label['lead_id']     = "Lead#";
+        $sort_label['status']      = "Status";
         $sort_label['phone_number']= "Phone Number";
         $sort_label['last_name']   = "Last Name";
-        $sort_label['postal_code'] = "Postal Code";
-        $sort_label['status']      = "Status";
+        $sort_label['city']        = "City";
+        $sort_label['state']       = "State";
+        $sort_label['postal_code'] = "ZIP/PostalCode";
+        $sort_label['user']        = "Agent";
+        $sort_label['vendor_lead_code'] = "Vendor ID";
+        $sort_label['custom1']     = "Custom1";
+        $sort_label['gmt_offset_now'] = "Timezone";
         $sort_label['entry_date']  = "Entry Date";
         $sort_label['modify_date'] = "Modify Date";
+        $sort_label['called_count'] = "Attempts";
         $sort_label['last_local_call_time']      = "Last Local Call Time";
 
         $direction_label['ASC']= "Ascending";
@@ -508,6 +516,19 @@ if ($ADD==1122) {
         $timezone_label['MST'] = "-7";
         $timezone_label['NST'] = "-3.5";
         $timezone_label['PST'] = "-8";
+
+        $tz_revlabel['0'] = "0";
+        $tz_revlabel['-1'] = "-1";
+        $tz_revlabel['-2'] = "-2";
+        $tz_revlabel['-3'] = "-3";
+        $tz_revlabel['-3.5'] = "NST";
+        $tz_revlabel['-4'] = "AST";
+        $tz_revlabel['-5'] = "EST";
+        $tz_revlabel['-6'] = "CST";
+        $tz_revlabel['-7'] = "MST";
+        $tz_revlabel['-8'] = "PST";
+        $tz_revlabel['-9'] = "AKST";
+        $tz_revlabel['-10'] = "HAST";
 
 
         echo "<style type=text/css> content {vertical-align:center}</style>\n";
@@ -751,9 +772,9 @@ if ($ADD==1122) {
                 $paginate .= "&lt;&lt; Previous";
                 $paginate .= "</font>";
             } else {
-                $paginate .= "<a href=\"" . $pageURL . "&page=1&count=" . $searchCount . "#advsearch\">&lt;&lt;&lt; First</a>";
+                $paginate .= "<a href=\"" . $pageURL . "&sort=$sort&direction=$direction&page=1&count=" . $searchCount . "#advsearch\">&lt;&lt;&lt; First</a>";
                 $paginate .= "&nbsp;&nbsp;&nbsp;";
-                $paginate .= "<a href=\"" . $pageURL . "&page=" . ($page - 1) . "&count=" . $searchCount . "#advsearch\">&lt;&lt; Previous</a>";
+                $paginate .= "<a href=\"" . $pageURL . "&sort=$sort&direction=$direction&page=" . ($page - 1) . "&count=" . $searchCount . "#advsearch\">&lt;&lt; Previous</a>";
             }
             $paginate .= "&nbsp;&nbsp;&nbsp;";
             $paginate .= "[<b>$page</b> of $pages]";
@@ -766,29 +787,169 @@ if ($ADD==1122) {
                 $paginate .= "Last &gt;&gt;&gt;";
                 $paginate .= "</font>";
             } else {
-                $paginate .= "<a href=\"" . $pageURL . "&page=" . ($page + 1) . "&count=" . $searchCount . "#advsearch\">Next &gt;&gt;</a>";
+                $paginate .= "<a href=\"" . $pageURL . "&sort=$sort&direction=$direction&page=" . ($page + 1) . "&count=" . $searchCount . "#advsearch\">Next &gt;&gt;</a>";
                 $paginate .= "&nbsp;&nbsp;&nbsp;";
-                $paginate .= "<a href=\"" . $pageURL . "&page=" . ($pages) . "&count=" . $searchCount . "#advsearch\">Last &gt;&gt;&gt;</a>";
+                $paginate .= "<a href=\"" . $pageURL . "&sort=$sort&direction=$direction&page=" . ($pages) . "&count=" . $searchCount . "#advsearch\">Last &gt;&gt;&gt;</a>";
             }
             $paginate .= "</font>\n";
         }
 
         echo $paginate;
 
-        echo "<table bgcolor=white cellpadding=1 cellspacing=0>\n";
+        echo "<table bgcolor=white cellpadding=1 cellspacing=1>\n";
         echo "  <tr bgcolor=$menubarcolor>\n";
-        echo "    <td align=left><font color=white size=2><b>#</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
-        echo "    <td align=center><font color=white size=2><b>Lead ID</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
-        echo "    <td align=center><font color=white size=2><b>Status</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
-        echo "    <td align=center><font color=white size=2><b>Vendor ID</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
-        echo "    <td align=center><font color=white size=2><b>Agent</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
-        echo "    <td align=center><font color=white size=2><b>List ID</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
-        echo "    <td align=center><font color=white size=2><b>Phone</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
-        echo "    <td align=center><font color=white size=2><b>Name</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
-        echo "    <td align=center><font color=white size=2><b>City</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
-        echo "    <td align=center><font color=white size=2><b>State</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
-        echo "    <td align=center><font color=white size=2><b>Custom 1</b></font>&nbsp;&nbsp;&nbsp;</td>\n";
-        echo "    <td align=center><font color=white size=2><b>Last Call</b></font></td>\n";
+        echo "    <td align=left><font color=white size=2><b>#</b></font></td>\n";
+
+        echo "    <td align=center><font class=awhite color=white size=2><b>";
+        if ($sort == "list_id" && $direction == "DESC") {
+            echo "<a href=\"" . $pageURL . "&sort=list_id&direction=ASC#advsearch\">List#&nbsp;^";
+        } elseif ($sort == "list_id") {
+            echo "<a href=\"" . $pageURL . "&sort=list_id&direction=DESC#advsearch\">List#&nbsp;v";
+        } else {
+            echo "<a href=\"" . $pageURL . "&sort=list_id&direction=DESC#advsearch\">List#";
+        }
+        echo "</a></b></font></td>\n";
+
+        echo "    <td align=center><font class=awhite color=white size=2><b>";
+        if ($sort == "lead_id" && $direction == "DESC") {
+            echo "<a href=\"" . $pageURL . "&sort=lead_id&direction=ASC#advsearch\">Lead#&nbsp;^";
+        } elseif ($sort=="lead_id") {
+            echo "<a href=\"" . $pageURL . "&sort=lead_id&direction=DESC#advsearch\">Lead#&nbsp;v";
+        } else {
+            echo "<a href=\"" . $pageURL . "&sort=lead_id&direction=DESC#advsearch\">Lead#";
+        }
+        echo "</a></b></font></td>\n";
+
+        echo "    <td align=center><font class=awhite color=white size=2><b>";
+        if ($sort == "status" && $direction == "DESC") {
+            echo "<a href=\"" . $pageURL . "&sort=status&direction=ASC#advsearch\">Status&nbsp;^";
+        } elseif ($sort == "status") {
+            echo "<a href=\"" . $pageURL . "&sort=status&direction=DESC#advsearch\">Status&nbsp;v";
+        } else {
+            echo "<a href=\"" . $pageURL . "&sort=status&direction=DESC#advsearch\">Status";
+        }
+        echo "</a></b></font></td>\n";
+
+        echo "    <td align=center><font class=awhite color=white size=2><b>";
+        if ($sort == "phone_number" && $direction == "DESC") {
+            echo "<a href=\"" . $pageURL . "&sort=phone_number&direction=ASC#advsearch\">Phone#&nbsp;^";
+        } elseif ($sort=="phone_number") {
+            echo "<a href=\"" . $pageURL . "&sort=phone_number&direction=DESC#advsearch\">Phone#&nbsp;v";
+        } else {
+            echo "<a href=\"" . $pageURL . "&sort=phone_number&direction=DESC#advsearch\">Phone#";
+        }
+        echo "</a></b></font></td>\n";
+
+        echo "    <td align=center><font class=awhite color=white size=2><b>";
+        if ($sort == "last_name" && $direction == "DESC") {
+            echo "<a href=\"" . $pageURL . "&sort=last_name&direction=ASC#advsearch\">Name&nbsp;^";
+        } elseif ($state == "last_name") {
+            echo "<a href=\"" . $pageURL . "&sort=last_name&direction=DESC#advsearch\">Name&nbsp;v";
+        } else {
+            echo "<a href=\"" . $pageURL . "&sort=last_name&direction=DESC#advsearch\">Name";
+        }
+        echo "</a></b></font></td>\n";
+
+        echo "    <td align=center><font class=awhite color=white size=2><b>";
+        if ($sort == "city" && $direction == "DESC") {
+            echo "<a href=\"" . $pageURL . "&sort=city&direction=ASC#advsearch\">City&nbsp;^";
+        } elseif($sort == "city") {
+            echo "<a href=\"" . $pageURL . "&sort=city&direction=DESC#advsearch\">City&nbsp;v";
+        } else {
+            echo "<a href=\"" . $pageURL . "&sort=city&direction=DESC#advsearch\">City";
+        }
+        echo "</a></b></font></td>\n";
+
+        echo "    <td align=center><font class=awhite color=white size=2><b>";
+        if ($sort == "state" && $direction == "DESC") {
+            echo "<a href=\"" . $pageURL . "&sort=state&direction=ASC#advsearch\">State&nbsp;^";
+        } elseif($sort == "state") {
+            echo "<a href=\"" . $pageURL . "&sort=state&direction=DESC#advsearch\">State&nbsp;v";
+        } else {
+            echo "<a href=\"" . $pageURL . "&sort=state&direction=DESC#advsearch\">State";
+        }
+        echo "</a></b></font></td>\n";
+
+        echo "    <td align=center><font class=awhite color=white size=2><b>";
+        if ($sort == "postal_code" && $direction == "DESC") {
+            echo "<a href=\"" . $pageURL . "&sort=postal_code&direction=ASC#advsearch\">ZIP/Postal&nbsp;^";
+        } elseif($sort == "postal_code") {
+            echo "<a href=\"" . $pageURL . "&sort=postal_code&direction=DESC#advsearch\">ZIP/Postal&nbsp;v";
+        } else {
+            echo "<a href=\"" . $pageURL . "&sort=postal_code&direction=DESC#advsearch\">ZIP/Postal";
+        }
+        echo "</a></b></font></td>\n";
+
+        echo "    <td align=center><font class=awhite color=white size=2><b>";
+        if ($sort == "user" && $direction == "DESC") {
+            echo "<a href=\"" . $pageURL . "&sort=user&direction=ASC#advsearch\">Agent&nbsp;^";
+        } elseif ($sort == "vendor_lead_code") {
+            echo "<a href=\"" . $pageURL . "&sort=user&direction=DESC#advsearch\">Agent&nbsp;v";
+        } else {
+            echo "<a href=\"" . $pageURL . "&sort=user&direction=DESC#advsearch\">Agent";
+        }
+        echo "</a></b></font></td>\n";
+
+        echo "    <td align=center><font class=awhite color=white size=2><b>";
+        if ($sort == "vendor_lead_code" && $direction == "DESC") {
+            echo "<a href=\"" . $pageURL . "&sort=vendor_lead_code&direction=ASC#advsearch\">VendorID&nbsp;^";
+        } elseif ($sort == "vendor_lead_code") {
+            echo "<a href=\"" . $pageURL . "&sort=vendor_lead_code&direction=DESC#advsearch\">VendorID&nbsp;v";
+        } else {
+            echo "<a href=\"" . $pageURL . "&sort=vendor_lead_code&direction=DESC#advsearch\">VendorID";
+        }
+        echo "</a></b></font></td>\n";
+
+        echo "    <td align=center><font class=awhite color=white size=2><b>";
+        if ($sort == "custom1" && $direction == "DESC") {
+            echo "<a href=\"" . $pageURL . "&sort=custom1&direction=ASC#advsearch\">Custom1&nbsp;^";
+        } elseif ($sort == "custom1") {
+            echo "<a href=\"" . $pageURL . "&sort=custom1&direction=DESC#advsearch\">Custom1&nbsp;v";
+        } else {
+            echo "<a href=\"" . $pageURL . "&sort=custom1&direction=DESC#advsearch\">Custom1";
+        }
+        echo "</a></b></font></td>\n";
+
+        echo "    <td align=center><font class=awhite color=white size=2><b>";
+        if ($sort == "gmt_offset_now" && $direction == "DESC") {
+            echo "<a href=\"" . $pageURL . "&sort=gmt_offset_now&direction=ASC#advsearch\">TZ&nbsp;^";
+        } elseif ($sort == "gmt_offset_now") {
+            echo "<a href=\"" . $pageURL . "&sort=gmt_offset_now&direction=DESC#advsearch\">TZ&nbsp;v";
+        } else {
+            echo "<a href=\"" . $pageURL . "&sort=gmt_offset_now&direction=DESC#advsearch\">TZ";
+        }
+        echo "</a></b></font></td>\n";
+
+        echo "    <td align=center><font class=awhite color=white size=2><b>";
+        if ($sort == "entry_date" && $direction == "DESC") {
+            echo "<a href=\"" . $pageURL . "&sort=entry_date&direction=ASC#advsearch\">Entry&nbsp;^";
+        } elseif ($sort == "entry_date") {
+            echo "<a href=\"" . $pageURL . "&sort=entry_date&direction=DESC#advsearch\">Entry&nbsp;v";
+        } else {
+            echo "<a href=\"" . $pageURL . "&sort=entry_date&direction=DESC#advsearch\">Entry";
+        }
+        echo "</a></b></font></td>\n";
+
+        echo "    <td align=center><font class=awhite color=white size=2><b>";
+        if ($sort == "modify_date" && $direction == "DESC") {
+            echo "<a href=\"" . $pageURL . "&sort=modify_date&direction=ASC#advsearch\">Modified&nbsp;^";
+        } elseif ($sort == "modify_date") {
+            echo "<a href=\"" . $pageURL . "&sort=modify_date&direction=DESC#advsearch\">Modified&nbsp;v";
+        } else {
+            echo "<a href=\"" . $pageURL . "&sort=modify_date&direction=DESC#advsearch\">Modified";
+        }
+        echo "</a></b></font></td>\n";
+
+        echo "    <td align=center><font class=awhite color=white size=2><b>";
+        if ($sort == "called_count" && $direction == "DESC") {
+            echo "<a href=\"" . $pageURL . "&sort=called_count&direction=ASC#advsearch\">Attempts&nbsp;^";
+        } elseif ($sort == "called_count") {
+            echo "<a href=\"" . $pageURL . "&sort=called_count&direction=DESC#advsearch\">Attempts&nbsp;v";
+        } else {
+            echo "<a href=\"" . $pageURL . "&sort=called_count&direction=DESC#advsearch\">Attempts";
+        }
+        echo "</a></b></font></td>\n";
+
         echo "  </tr>\n";
         if ($results_to_print < 1) {
             echo "  <tr bgcolor=$oddrows>\n";
@@ -805,22 +966,26 @@ if ($ADD==1122) {
                     {$bgcolor='bgcolor='.$evenrows;}
                 echo "  <tr $bgcolor>\n";
                 echo "    <td align=left><font face=\"arial,helvetica\" size=1>" . ($o + (($page - 1) * $numresults)) . "</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1><a href=\"" . $pageURL . "&lists[]=$row[7]&sort=$sort&direction=$direction#advsearch\">$row[7]</a></font></td>\n";
                 echo "    <td align=center><font face=\"arial,helvetica\" size=1><a href=\"admin.php?ADD=999999&SUB=3&iframe=admin_modify_lead.php?lead_id=$row[0]\">$row[0]</a></font></td>\n";
                 echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[3]</font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[5]</font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[4]</font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[7]</font></td>\n";
                 echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[11]</font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[13] $row[15]</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[15], $row[13]</font></td>\n";
                 echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[19]</font></td>\n";
                 echo "    <td align=center><font face=\"arial,helvetica\" size=1>" . strtoupper($row[20]) . "</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[22]</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[4]</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[5]</font></td>\n";
                 echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[28]</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1>" . $tz_revlabel[($row[8] - $isdst)] . "</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[1]</font></td>\n";
                 echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[2]</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[30]</font></td>\n";
                 echo "  </tr>\n";
             }
         }
         echo "  <tr bgcolor=$menubarcolor>\n";
-        echo "    <td colspan=12><font size=1>&nbsp;</font></td>\n";
+        echo "    <td colspan=16><font size=1>&nbsp;</font></td>\n";
         echo "  </tr>\n";
         echo "</table>\n";
 

@@ -96,6 +96,28 @@
 		text-decoration: italic;
 	}
 
+	.awhite a {
+		color: white;
+		text-decoration: none;
+	}
+	.awhite a:link {
+		color: white;
+		text-decoration: none;
+	}
+
+	.awhite a:active {
+		color: white;
+		text-decoration: underline;
+	}
+	.awhite a:hover {
+		color: white;
+		text-decoration: underline;
+	}
+	.awhite a:visited {
+		color: white;
+		text-decoration: italic;
+	}
+
 	.no-ul a {
 		text-decoration: none;
 	}
