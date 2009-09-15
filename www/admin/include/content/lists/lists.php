@@ -988,7 +988,7 @@ if ($ADD==1122) {
                 echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[4]</font></td>\n";
                 echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[5]</font></td>\n";
                 echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[28]</font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1>" . $tz_revlabel[($row[8] - $isdst)] . "</font></td>\n";
+                echo "    <td align=center><font face=\"arial,helvetica\" size=1>" . $tz_revlabel[($row[8] - date("I"))] . "</font></td>\n";
                 echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[1]</font></td>\n";
                 echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[2]</font></td>\n";
                 echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[30]</font></td>\n";
