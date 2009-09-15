@@ -239,6 +239,8 @@ foreach(@conf)
 		{$VARDB_pass = $line;   $VARDB_pass =~ s/.*=//gi;}
 	if ( ($line =~ /^VARDB_port/) && ($CLIDB_port < 1) )
 		{$VARDB_port = $line;   $VARDB_port =~ s/.*=//gi;}
+	if ( ($line =~ /^VARflush_hopper_each_run/) && ($CLIflush_hopper_each_run < 1) )
+		{$VARflush_hopper_each_run = $line;   $VARflush_hopper_each_run =~ s/.*=//gi;}
 	$i++;
 	}
 
@@ -289,7 +291,7 @@ $GMT_now = ($secX - ($LOCAL_GMT_OFF * 3600));
 
 	if ($DB) {print "TIME DEBUG: $LOCAL_GMT_OFF_STD|$LOCAL_GMT_OFF|$isdst|   GMT: $hour:$min\n";}
 
-if ($wipe_hopper_clean)
+if ($wipe_hopper_clean || $VARflush_hopper_each_run == 1)
 	{
 	$stmtA = "DELETE from $osdial_hopper;";
 	$affected_rows = $dbhA->do($stmtA);
@@ -297,7 +299,7 @@ if ($wipe_hopper_clean)
 		$event_string = "|HOPPER WIPE CLEAN|";
 		&event_logger;
 
-	exit;
+	exit if ($wipe_hopper_clean);
 	}
 
 # Fix 0 and no-id lists.
