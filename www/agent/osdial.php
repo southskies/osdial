@@ -213,6 +213,7 @@ $version = 'SVN_Version';
 $build = 'SVN_Build';
 
 require("dbconnect.php");
+require('functions.php');
 
 if (isset($_GET["DB"]))						    {$DB=$_GET["DB"];}
         elseif (isset($_POST["DB"]))            {$DB=$_POST["DB"];}
@@ -1649,7 +1650,29 @@ else
 		$row=mysql_fetch_row($rslt);
 		$MMscriptid[$e] =$row[0];
 		$MMscriptname[$e] = urlencode($row[1]);
-		$MMscripttext[$e] = urlencode($row[2]);
+
+        $PMMscripttext = "<span style=\"display:block;\" id=\"SCRIPT_MAIN\">" . $row[2] . "</span>";
+
+        $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $row[0] . "'");
+        $hidebuttons = "document.getElementById('SCRIPT_MAIN').style.display='none';";
+        foreach ($buttons as $button) {
+            $hidebuttons .= "document.getElementById('SCRIPT_" . $button['script_button_id'] . "').style.display='none';";
+        }
+
+        foreach ($buttons as $button) {
+            $PMMscripttext .= "<span style=\"display:none;\" id=\"SCRIPT_" . $button['script_button_id'] . "\">";
+            $PMMscripttext .= "<center><input type=\"button\" value=\"MAIN\" onclick=\"$hidebuttons document.getElementById('SCRIPT_MAIN').style.display='block';\"></center><br>";
+            $PMMscripttext .= $button['script_button_text'];
+            $PMMscripttext .= "</span>";
+        }
+
+        foreach ($buttons as $button) {
+            $hbutton = "<input type=\"button\" value=\"" . $button['script_button_label'] . "\" onclick=\"$hidebuttons document.getElementById('SCRIPT_" . $button['script_button_id'] . "').style.display='block';\">";
+            $PMMscripttext = eregi_replace('\{\{' . $button['script_button_id'] . '\}\}',$hbutton,$PMMscripttext);
+        }
+
+
+		$MMscripttext[$e] = urlencode($PMMscripttext);
 		$MMscriptids = "$MMscriptids'$MMscriptid[$e]',";
 		$MMscriptnames = "$MMscriptnames'$MMscriptname[$e]',";
 		$MMscripttexts = "$MMscripttexts'$MMscripttext[$e]',";
@@ -1789,8 +1812,6 @@ $CCAL_OUT .= "</table>";
 ################################################################
 ### END - build the callback calendar (12 months)            ###
 ################################################################
-
-require('functions.php');
 
 $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
 $cnt = 0;

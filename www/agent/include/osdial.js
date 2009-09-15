@@ -361,6 +361,30 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		image_LB_resume_OFF.src="templates/<?= $agent_template ?>/images/vdc_LB_resume_OFF.gif";
 	var image_LB_senddtmf_OFF = new Image();
 		image_LB_senddtmf_OFF.src="templates/<?= $agent_template ?>/images/vdc_LB_senddtmf_OFF.gif";
+	var dtmf_0 = new Image(); dtmf_0.src="templates/<?= $agent_template ?>/images/dtmf_0.png";
+	var dtmf_1 = new Image(); dtmf_1.src="templates/<?= $agent_template ?>/images/dtmf_1.png";
+	var dtmf_2 = new Image(); dtmf_2.src="templates/<?= $agent_template ?>/images/dtmf_2.png";
+	var dtmf_3 = new Image(); dtmf_3.src="templates/<?= $agent_template ?>/images/dtmf_3.png";
+	var dtmf_4 = new Image(); dtmf_4.src="templates/<?= $agent_template ?>/images/dtmf_4.png";
+	var dtmf_5 = new Image(); dtmf_5.src="templates/<?= $agent_template ?>/images/dtmf_5.png";
+	var dtmf_6 = new Image(); dtmf_6.src="templates/<?= $agent_template ?>/images/dtmf_6.png";
+	var dtmf_7 = new Image(); dtmf_7.src="templates/<?= $agent_template ?>/images/dtmf_7.png";
+	var dtmf_8 = new Image(); dtmf_8.src="templates/<?= $agent_template ?>/images/dtmf_8.png";
+	var dtmf_9 = new Image(); dtmf_9.src="templates/<?= $agent_template ?>/images/dtmf_9.png";
+	var dtmf_star = new Image(); dtmf_star.src="templates/<?= $agent_template ?>/images/dtmf_star.png";
+	var dtmf_hash = new Image(); dtmf_hash.src="templates/<?= $agent_template ?>/images/dtmf_hash.png";
+	var dtmf_0_OFF = new Image(); dtmf_0_OFF.src="templates/<?= $agent_template ?>/images/dtmf_0_OFF.png";
+	var dtmf_1_OFF = new Image(); dtmf_1_OFF.src="templates/<?= $agent_template ?>/images/dtmf_1_OFF.png";
+	var dtmf_2_OFF = new Image(); dtmf_2_OFF.src="templates/<?= $agent_template ?>/images/dtmf_2_OFF.png";
+	var dtmf_3_OFF = new Image(); dtmf_3_OFF.src="templates/<?= $agent_template ?>/images/dtmf_3_OFF.png";
+	var dtmf_4_OFF = new Image(); dtmf_4_OFF.src="templates/<?= $agent_template ?>/images/dtmf_4_OFF.png";
+	var dtmf_5_OFF = new Image(); dtmf_5_OFF.src="templates/<?= $agent_template ?>/images/dtmf_5_OFF.png";
+	var dtmf_6_OFF = new Image(); dtmf_6_OFF.src="templates/<?= $agent_template ?>/images/dtmf_6_OFF.png";
+	var dtmf_7_OFF = new Image(); dtmf_7_OFF.src="templates/<?= $agent_template ?>/images/dtmf_7_OFF.png";
+	var dtmf_8_OFF = new Image(); dtmf_8_OFF.src="templates/<?= $agent_template ?>/images/dtmf_8_OFF.png";
+	var dtmf_9_OFF = new Image(); dtmf_9_OFF.src="templates/<?= $agent_template ?>/images/dtmf_9_OFF.png";
+	var dtmf_star_OFF = new Image(); dtmf_star_OFF.src="templates/<?= $agent_template ?>/images/dtmf_star_OFF.png";
+	var dtmf_hash_OFF = new Image(); dtmf_hash_OFF.src="templates/<?= $agent_template ?>/images/dtmf_hash_OFF.png";
 	//var image_ShowCallbackInfo_OFF = new Image();
 	//	image_ShowCallbackInfo_OFF.src = "templates/<?= $agent_template ?>/images/ShowCallbackInfo.png";
 
@@ -2174,7 +2198,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 								var regWFplus = new RegExp("\\+","ig");
 								textname = textname.replace(regWFplus, ' ');
 								texttext = texttext.replace(regWFplus, ' ');
-								var testscript = "<B>" + textname + "</B>\n\n<BR><BR>\n\n" + texttext;
+								var testscript = "<br><center><B>" + textname + "</B></center>\n\n<BR><BR>\n\n" + texttext;
 								document.getElementById("ScriptContents").innerHTML = testscript;
 								scriptUpdateFields();
 								}
@@ -2451,7 +2475,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							var regWFplus = new RegExp("\\+","ig");
 							textname = textname.replace(regWFplus, ' ');
 							texttext = texttext.replace(regWFplus, ' ');
-							var testscript = "<B>" + textname + "</B>\n\n<BR><BR>\n\n" + texttext;
+							var testscript = "<br><center><B>" + textname + "</B></center>\n\n<BR><BR>\n\n" + texttext;
 							document.getElementById("ScriptContents").innerHTML = testscript;
 							scriptUpdateFields();
 							}
@@ -2978,7 +3002,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 								var regWFplus = new RegExp("\\+","ig");
 								textname = textname.replace(regWFplus, ' ');
 								texttext = texttext.replace(regWFplus, ' ');
-								var testscript = "<B>" + textname + "</B>\n\n<BR><BR>\n\n" + texttext;
+								var testscript = "<br><center><B>" + textname + "</B></center>\n\n<BR><BR>\n\n" + texttext;
 								document.getElementById("ScriptContents").innerHTML = testscript;
 								scriptUpdateFields();
 								}

@@ -157,6 +157,9 @@ function scriptInsertField() {
 	textBox.value = textBox.value.substring(0, startPos)
 	+ openField + insValue + closeField
 	+ textBox.value.substring(endPos, textBox.value.length);
+  	document.scriptForm.script_text.focus();
+	textBox.selectionStart = startPos;
+	textBox.selectionEnd = startPos + openField.length + insValue.length + closeField.length;
   } else {
 	textBox.value += openField + insValue + closeField;
   }
@@ -184,6 +187,39 @@ function scriptInsertAddtlField() {
 	textBox.value = textBox.value.substring(0, startPos)
 	+ openField + insValue + closeField
 	+ textBox.value.substring(endPos, textBox.value.length);
+  	document.scriptForm.script_text.focus();
+	textBox.selectionStart = startPos;
+	textBox.selectionEnd = startPos + openField.length + insValue.length + closeField.length;
+  } else {
+	textBox.value += openField + insValue + closeField;
+  }
+}
+
+function scriptInsertButton() {
+	//openField = '--A--';
+	openField = '{{';
+	//closeField = '--B--';
+	closeField = '}}';
+	var textBox = document.scriptForm.script_text;
+	var scriptIndex = document.getElementById("selectedButton").selectedIndex;
+	var insValue =  document.getElementById('selectedButton').options[scriptIndex].value;
+  if (document.selection) {
+	//IE
+	textBox = document.scriptForm.script_text;
+	insValue = document.scriptForm.selectedButton.options[document.scriptForm.selectedButton.selectedIndex].text;
+	textBox.focus();
+	sel = document.selection.createRange();
+	sel.text = openField + insValue + closeField;
+  } else if (textBox.selectionStart || textBox.selectionStart == 0) {
+	//Mozilla
+	var startPos = textBox.selectionStart;
+	var endPos = textBox.selectionEnd;
+	textBox.value = textBox.value.substring(0, startPos)
+	+ openField + insValue + closeField
+	+ textBox.value.substring(endPos, textBox.value.length);
+  	document.scriptForm.script_text.focus();
+	textBox.selectionStart = startPos;
+	textBox.selectionEnd = startPos + openField.length + insValue.length + closeField.length;
   } else {
 	textBox.value += openField + insValue + closeField;
   }

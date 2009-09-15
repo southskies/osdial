@@ -70,16 +70,26 @@ if ($ADD==7111111)
 	$RGSIPexten = 'SIP/gs102';
 	$RGsession_id = '8600051';
 
-echo "</title>\n";
-echo "</head>\n";
-echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 $stmt="SELECT * from osdial_scripts where script_id='$script_id';";
 $rslt=mysql_query($stmt, $link);
 $row=mysql_fetch_row($rslt);
 $script_name =		$row[1];
 $script_text =		$row[3];
+
+$script_text = "<span style=\"display:block;\" id=\"SCRIPT_MAIN\">" . $script_text . "</span>";
+$buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'");
+$hidebuttons = "document.getElementById('SCRIPT_MAIN').style.display='none';";
+foreach ($buttons as $button) {
+    $hidebuttons .= "document.getElementById('SCRIPT_" . $button['script_button_id'] . "').style.display='none';";
+}
+
+
+foreach ($buttons as $button) {
+    $script_text .= "<span style=\"display:none;\" id=\"SCRIPT_" . $button['script_button_id'] . "\">";
+    $script_text .= "<center><input type=\"button\" value=\"TOP\" onclick=\"$hidebuttons document.getElementById('SCRIPT_MAIN').style.display='block';\"></center><br>";
+    $script_text .= $button['script_button_text'];
+    $script_text .= "</span>";
+}
 
 if (eregi("iframe src",$script_text))
 	{
@@ -205,20 +215,35 @@ $script_text = eregi_replace('\[\[server_ip\]\]',"$RGserver_ip",$script_text);
 $script_text = eregi_replace('\[\[SIPexten\]\]',"$RGSIPexten",$script_text);
 $script_text = eregi_replace('\[\[session_id\]\]',"$RGsession_id",$script_text);
 
+$buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'");
+foreach ($buttons as $button) {
+    $hbutton = "<input type=\"button\" value=\"" . $button['script_button_label'] . "\" onclick=\"$hidebuttons document.getElementById('SCRIPT_" . $button['script_button_id'] . "').style.display='block';\">";
+    $script_text = eregi_replace('\{\{' . $button['script_button_id'] . '\}\}',$hbutton,$script_text);
+}
+
 $script_text = eregi_replace("\n","<br>",$script_text);
 
+	echo "<TABLE align=center><TR><TD>\n";
+	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 echo "Preview Script: $script_id<BR>\n";
-echo "<TABLE WIDTH=600><TR><TD>\n";
-echo "<center><B>$script_name</B><BR></center>\n";
+echo "<center>";
+echo "<table width=600 cellpadding=10>";
+echo "  <tr bgcolor=$oddrows>";
+echo "    <td>";
+echo "      <center><b>$script_name</b></center>\n";
+echo "    </td>";
+echo "  </tr>";
+echo "  <tr bgcolor=$evenrows>";
+echo "    <td>";
 echo "$script_text\n";
-echo "</TD></TR></TABLE></center>\n";
+echo "    </td>";
+echo "  </tr>";
+echo "</table>";
+echo "</center>\n";
 
-echo "</BODY></HTML>\n";
-
-exit;
 }
 
 
@@ -355,41 +380,41 @@ $ADD=1000000;
 # ADD=4111111 modify script in the system
 ######################
 
-if ($ADD==4111111)
-{
-	if ($LOGmodify_scripts==1)
-	{
-	echo "<!-- $script_text -->\n";
-	echo "<!--" . mysql_real_escape_string($script_text) . " -->\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+if ($ADD==4111111) {
+	if ($LOGmodify_scripts==1) {
+	    echo "<!-- $script_text -->\n";
+	    echo "<!--" . mysql_real_escape_string($script_text) . " -->\n";
+	    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	 if ( (strlen($script_id) < 2) or (strlen($script_name) < 2) or (strlen($script_text) < 2) )
-		{
-		 echo "<br><font color=red>SCRIPT NOT MODIFIED - Please go back and look at the data you entered\n";
-		 echo "<br>Script name, description and text must be at least 2 characters in length</font><br>\n";
-		}
-	 else
-		{
-		$stmt="UPDATE osdial_scripts set script_name='$script_name', script_comments='$script_comments', script_text='$script_text', active='$active' where script_id='$script_id';";
-		$rslt=mysql_query($stmt, $link);
+        if ( (strlen($script_id) < 2) or (strlen($script_name) < 2) or (strlen($script_text) < 2) ) {
+            echo "<br><font color=red>SCRIPT NOT MODIFIED - Please go back and look at the data you entered\n";
+            echo "<br>Script name, description and text must be at least 2 characters in length</font><br>\n";
+        } else {
+            if ($script_button_id == "") {
+                $stype = "SCRIPT";
+                $sid = $script_id;
+                $stmt="UPDATE osdial_scripts set script_name='$script_name', script_comments='$script_comments', script_text='$script_text', active='$active' where script_id='$script_id';";
+            } else {
+                $stype = "BUTTON/OBJECTION";
+                $sid = $script_id . ":" . $script_button_id;
+                $stmt="UPDATE osdial_script_buttons set script_button_label='$script_name', script_button_description='$script_comments', script_button_text='$script_text' where script_id='$script_id' and script_button_id='$script_button_id';";
+            }
+		    $rslt=mysql_query($stmt, $link);
 
-		echo "<br><B><font color=$default_text>SCRIPT MODIFIED</font></B>\n";
+		    echo "<br><B><font color=$default_text>$stype MODIFIED</font></B>\n";
 
-		### LOG CHANGES TO LOG FILE ###
-		if ($WeBRooTWritablE > 0)
-			{
-			$fp = fopen ("./admin_changes_log.txt", "a");
-			fwrite ($fp, "$date|MODIFY SCRIPT ENTRY         |$PHP_AUTH_USER|$ip|$stmt|\n");
-			fclose($fp);
-			}
-		}
-	}
-	else
-	{
-	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
-	}
-$ADD=3111111;	# go to script modification form below
+		    ### LOG CHANGES TO LOG FILE ###
+		    if ($WeBRooTWritablE > 0) {
+			    $fp = fopen ("./admin_changes_log.txt", "a");
+			    fwrite ($fp, "$date|MODIFY $stype ENTRY         |$PHP_AUTH_USER|$ip|$sid|\n");
+			    fclose($fp);
+		    }
+	    }
+    } else {
+	    echo "<font color=red>You do not have permission to view this page</font>\n";
+	    exit;
+    }
+    $ADD=3111111;	# go to script modification form below
 }
 
 
@@ -398,22 +423,22 @@ $ADD=3111111;	# go to script modification form below
 # ADD=5111111 confirmation before deletion of script record
 ######################
 
-if ($ADD==5111111)
-{
+if ($ADD==5111111) {
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	 if ( (strlen($script_id) < 2) or ($LOGdelete_scripts < 1) )
-		{
+	 if ( (strlen($script_id) < 2) or ($LOGdelete_scripts < 1) ) {
 		 echo "<br><font color=red>SCRIPT NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Script_id must be at least 2 characters in length</font>\n";
-		}
-	 else
-		{
-		echo "<br><B><font color=$default_text>SCRIPT DELETION CONFIRMATION: $script_id</B>\n";
-		echo "<br><br><a href=\"$PHP_SELF?ADD=6111111&script_id=$script_id&CoNfIrM=YES\">Click here to delete script $script_id</a></font><br><br><br>\n";
-		}
-
-$ADD='3111111';		# go to script modification below
+	} else {
+        if ($script_button_id == "") {
+		    echo "<br><B><font color=$default_text>SCRIPT DELETION CONFIRMATION: $script_id</B>\n";
+    		echo "<br><br><a href=\"$PHP_SELF?ADD=6111111&script_id=$script_id&CoNfIrM=YES\">Click here to delete script $script_id</a></font><br><br><br>\n";
+		} else {
+		    echo "<br><B><font color=$default_text>BUTTON/OBJECTION DELETION CONFIRMATION: $script_id</B>\n";
+    		echo "<br><br><a href=\"$PHP_SELF?ADD=6111111&script_id=$script_id&script_button_id=$script_button_id&CoNfIrM=YES\">Click here to delete button/objection $script_id : $script_button_id</a></font><br><br><br>\n";
+        }
+    }
+    $ADD='3111111';		# go to script modification below
 }
 
 
@@ -422,32 +447,35 @@ $ADD='3111111';		# go to script modification below
 # ADD=6111111 delete script record
 ######################
 
-if ($ADD==6111111)
-{
+if ($ADD==6111111) {
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	 if ( (strlen($script_id) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_scripts < 1) )
-		{
+    $ADD='1000000';		# go to script list
+	 if ( (strlen($script_id) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_scripts < 1) ) {
 		 echo "<br><font color=red>SCRIPT NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Script_id be at least 2 characters in length</font><br>\n";
-		}
-	 else
-		{
-		$stmt="DELETE from osdial_scripts where script_id='$script_id' limit 1;";
+	} else {
+        if ($script_button_id == "") {
+		    $stmt="DELETE from osdial_scripts where script_id='$script_id' limit 1;";
+            $stype = "SCRIPT";
+            $sid = $script_id;
+        } else {
+		    $stmt="DELETE from osdial_script_buttons where script_id='$script_id' and script_button_id='$script_button_id' limit 1;";
+            $stype = "BUTTON/OBJECTION";
+            $sid = $script_id . ":" . $script_button_id;
+            $ADD='3111111';		# go to script modification below
+        }
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
-		if ($WeBRooTWritablE > 0)
-			{
+		if ($WeBRooTWritablE > 0) {
 			$fp = fopen ("./admin_changes_log.txt", "a");
-			fwrite ($fp, "$date|!DELETING SCRIPT!!!!|$PHP_AUTH_USER|$ip|script_id='$script_id'|\n");
+			fwrite ($fp, "$date|!DELETING $stype!!!!|$PHP_AUTH_USER|$ip|$sid|\n");
 			fclose($fp);
-			}
-		echo "<br><B><font color=$default_text>SCRIPT DELETION COMPLETED: $script_id</font></B>\n";
-		echo "<br><br>\n";
 		}
-
-$ADD='1000000';		# go to script list
+		echo "<br><B><font color=$default_text>$stype DELETION COMPLETED: $sid</font></B>\n";
+		echo "<br><br>\n";
+	}
 }
 
 
@@ -463,6 +491,30 @@ if ($ADD==3111111)
 	echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
+    if ($SUB == "--NEW--") {
+        $stmt="SELECT count(*) from osdial_script_buttons where script_id='$script_id' and script_button_id='$script_button_id';";
+        $rslt=mysql_query($stmt, $link);
+        $row=mysql_fetch_row($rslt);
+        if ($row[0] > 0) {
+            echo "<br><font color=red>BUTTON / OBJECTION NOT ADDED - there is already a button entry with this name</font>\n";
+        } else {
+            if ( (strlen($script_button_id) < 2) or (strlen($script_button_label) < 2) or (strlen($script_button_description) < 2) or ($script_button_id == 'MAIN')) {
+                echo "<br><font color=red>BUTTON / OBJECTION NOT ADDED - Please go back and look at the data you entered\n";
+                echo "<br>Button/Objection name, description and text must be at least 2 characters in length</font><br>\n";
+            } else {
+                $stmt="INSERT INTO osdial_script_buttons values('$script_id','$script_button_id','$script_button_description','$script_button_label','');";
+                $rslt=mysql_query($stmt, $link);
+                echo "<br><B><font color=$default_text>BUTTON / OBJECTION ADDED: $script_button_id</font></B>\n";
+                if ($WeBRooTWritablE > 0) {
+                    $fp = fopen ("./admin_changes_log.txt", "a");
+                    fwrite ($fp, "$date|ADD A NEW SCRIPT BUTTON ENTRY  |$PHP_AUTH_USER|$ip|$stmt|\n");
+                    fclose($fp);
+                }
+            }
+        }
+        $SUB = "";
+    }
+
 	$stmt="SELECT * from osdial_scripts where script_id='$script_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -470,19 +522,50 @@ if ($ADD==3111111)
 	$script_comments =	$row[2];
 	$script_text =		$row[3];
 	$active =			$row[4];
+
+    if ($SUB != "") {
+        $stmt="SELECT * from osdial_script_buttons where script_id='$script_id' and script_button_id='$SUB';";
+        $rslt=mysql_query($stmt, $link);
+        $row=mysql_fetch_row($rslt);
+        $script_button_id =	$row[1];
+        $script_comments =	$row[2];
+        $script_name =		$row[3];
+        $script_text =		$row[4];
+        $stype = "Button/Objection";
+        $stypec = "BUTTON/OBJECTION";
+        $id_label = $stype . " ID";
+        $name_label = $stype . " Label";
+        $comment_label = $stype . " Description";
+        $sid = $script_id . ": " . $script_button_id;
+    } else {
+        $stype = "Script";
+        $stypec = "SCRIPT";
+        $id_label = $stype . " ID";
+        $name_label = $stype . " Name";
+        $comment_label = $stype . " Comments";
+        $sid = $script_id;
+    }
+
+
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=$default_text size=+1>MODIFY A SCRIPT</font><form name=scriptForm action=$PHP_SELF method=POST><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>MODIFY A $stypec</font><form name=scriptForm action=$PHP_SELF method=POST><br>\n";
 	echo "<input type=hidden name=ADD value=4111111>\n";
 	echo "<input type=hidden name=script_id value=\"$script_id\">\n";
+    if ($SUB != "") {
+	    echo "<input type=hidden name=script_button_id value=\"$script_button_id\">\n";
+		echo "<center><a href=\"$PHP_SELF?ADD=$ADD&script_id=$script_id\">BACK TO SCRIPT: $script_id</a></center><br>\n";
+    }
 	echo "<TABLE>";
-	echo "<tr bgcolor=$oddrows><td align=right>Script ID: </td><td align=left><B>$script_id</B>$NWB#osdial_scripts-script_name$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Script Name: </td><td align=left><input type=text name=script_name size=40 maxlength=50 value=\"$script_name\"> (title of the script)$NWB#osdial_scripts-script_name$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Script Comments: </td><td align=left><input type=text name=script_comments size=50 maxlength=255 value=\"$script_comments\"> $NWB#osdial_scripts-script_comments$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option SELECTED>Y</option><option>N</option><option selected>$active</option></select>$NWB#osdial_scripts-active$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Script Text: <BR><BR><B><a href=\"javascript:openNewWindow('$PHP_SELF?ADD=7111111&script_id=$script_id')\">Preview Script</a></B> </td><td align=left>";
+	echo "<tr bgcolor=$oddrows><td align=right>$id_label: </td><td align=left><B>$sid</B>$NWB#osdial_scripts-script_name$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>$name_label: </td><td align=left><input type=text name=script_name size=40 maxlength=50 value=\"$script_name\">$NWB#osdial_scripts-script_name$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>$comment_label: </td><td align=left><input type=text name=script_comments size=50 maxlength=255 value=\"$script_comments\"> $NWB#osdial_scripts-script_comments$NWE</td></tr>\n";
+    if ($SUB == "") {
+	    echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option SELECTED>Y</option><option>N</option><option selected>$active</option></select>$NWB#osdial_scripts-active$NWE</td></tr>\n";
+    }
+	echo "<tr bgcolor=$oddrows><td align=right>$stype Text: <BR><BR><B><a href=\"javascript:openNewWindow('$PHP_SELF?ADD=7111111&script_id=$script_id')\">Preview Script</a></B> </td><td align=left>";
 	# BEGIN Insert Field
-	echo "<select id=\"selectedField\" name=\"selectedField\">";
+	echo "<font size=1>Fields: </font><select id=\"selectedField\" name=\"selectedField\">";
 	echo "<option>vendor_lead_code</option>";
 	echo "<option>source_id</option>";
 	echo "<option>list_id</option>";
@@ -524,7 +607,7 @@ if ($ADD==3111111)
 	echo "</select>";
 	echo "<input type=\"button\" name=\"insertField\" value=\"Insert\" onClick=\"scriptInsertField();\"><BR>";
 
-	echo "<select id=\"selectedAddtlField\" name=\"selectedAddtlField\">";
+	echo "<font size=1>Additional Fields: </font><select id=\"selectedAddtlField\" name=\"selectedAddtlField\">";
     $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
     foreach ($forms as $form) {
 	    $fcamps = split(',',$form['campaigns']);
@@ -538,15 +621,76 @@ if ($ADD==3111111)
 	echo "</select>";
 	echo "<input type=\"button\" name=\"insertAddtlField\" value=\"Insert\" onClick=\"scriptInsertAddtlField();\"><BR>";
 
+	echo "<font size=1>Buttons / Objections: </font><select id=\"selectedButton\" name=\"selectedButton\">";
+    $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='$script_id'");
+    foreach ($buttons as $button) {
+        echo "<option value=\"" . $button['script_button_id'] . "\">" . $button['script_button_id'] . ': ' . $button['script_button_label'] . "</option>\n";
+	}
+	echo "</select>";
+	echo "<input type=\"button\" name=\"insertButton\" value=\"Insert\" onClick=\"scriptInsertButton();\"><BR>";
+
 	# END Insert Field
 	echo "<TEXTAREA NAME=script_text ROWS=20 COLS=50>$script_text</TEXTAREA> $NWB#osdial_scripts-script_text$NWE</td></tr>\n";
 	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
-	echo "</TABLE></center>\n";
+	echo "</TABLE></form></center>\n";
 
-	if ($LOGdelete_scripts > 0)
-		{
-		echo "<br><br><a href=\"$PHP_SELF?ADD=5111111&script_id=$script_id\">DELETE THIS SCRIPT</a>\n";
-		}
+	if ($LOGdelete_scripts > 0) {
+		echo "<center><a href=\"$PHP_SELF?ADD=5111111&script_id=$script_id";
+        if ($SUB != "") {
+		    echo "&script_button_id=$script_button_id";
+        }
+		echo "\">DELETE THIS $stypec</a></center>\n";
+	}
+
+
+    # Sub-scripts / Buttons.
+    if ($SUB == "") {
+        echo "<br /><br /><hr width=50%>\n";
+        echo "<center><font color=$default_text size=+1>BUTTONS / OBJECTIONS & REBUTTALS</font><br><br>\n";
+        echo "<table width=$section_width cellspacing=1 cellpadding=1>\n";
+        echo "  <tr bgcolor=$menubarcolor>\n";
+        echo "      <td align=center><font color=white size=1>ID</font></td>\n";
+        echo "      <td align=center><font color=white size=1>BUTTON LABEL</font></td>\n";
+        echo "      <td align=center><font color=white size=1>DESCRIPTION</font></td>\n";
+        echo "      <td align=center><font color=white size=1>ACTION</font></td>\n";
+        echo "  </tr>\n";
+        $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'");
+        $cnt = 0;
+        foreach ($buttons as $button) {
+            if (eregi("1$|3$|5$|7$|9$",$cnt))
+                {$bgcolor='bgcolor='.$oddrows;}
+            else
+                {$bgcolor='bgcolor='.$evenrows;}
+    
+            echo '  <form action="' . $PHP_SELF . '" method="POST">';
+            echo '  <input type="hidden" name="ADD" value="' . $ADD . '">';
+            echo '  <input type="hidden" name="SUB" value="' . $button['script_button_id'] . '">';
+	        echo "  <input type=hidden name=script_id value=\"$script_id\">\n";
+            echo "  <tr>";
+            echo "      <td $bgcolor align=center>" . $button['script_button_id'] . "</td>";
+            echo "      <td $bgcolor align=center>" . $button['script_button_label'] . "</td>";
+            echo "      <td $bgcolor align=center>" . $button['script_button_description'] . "</td>";
+            echo "      <td $bgcolor align=center><input type=submit value=\"Edit\"></td>\n";
+            echo "  </tr>";
+            echo "  </form>";
+            $cnt++;
+        }
+        echo "  <tr><td colspan=4 bgcolor=$evenrows align=center></td></tr>\n";
+        echo '  <form action="' . $PHP_SELF . '" method="POST">';
+        echo '  <input type="hidden" name="ADD" value="' . $ADD . '">';
+        echo '  <input type="hidden" name="SUB" value="--NEW--">';
+	    echo "  <input type=hidden name=script_id value=\"$script_id\">\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$menubarcolor align=center><input type=text name=script_button_id size=10 maxlength=10 value=\"\"></td>\n";
+        echo "      <td bgcolor=$menubarcolor align=center><input type=text name=script_button_label size=20 maxlength=50 value=\"\"></td>\n";
+        echo "      <td bgcolor=$menubarcolor align=center><input type=text name=script_button_description size=30 maxlength=100 value=\"\"></td>\n";
+        echo "      <td bgcolor=$menubarcolor align=center><input type=submit value=\"New\"></td>\n";
+        echo "  </tr>\n";
+        echo "  </form>\n";
+        echo "</table>\n";
+    }
+
+
 	}
 	else
 	{

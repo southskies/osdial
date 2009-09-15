@@ -442,6 +442,10 @@ $script_comments = get_variable("script_comments");
 $script_id = get_variable("script_id");
 $script_name = get_variable("script_name");
 $script_text = get_variable("script_text");
+$script_button_id = get_variable("script_button_id");
+$script_button_description = get_variable("script_button_description");
+$script_button_label = get_variable("script_button_label");
+$script_button_text = get_variable("script_button_text");
 $scrub_dnc = get_variable("scrub_dnc");
 $selectable = get_variable("selectable");
 $SERVdisplay = get_variable("SERVdisplay");
@@ -520,6 +524,9 @@ $XFERgroups = get_variable("XFERgroups");
 
 if (isset($script_id)) {
     $script_id= strtoupper($script_id);
+}
+if (isset($script_button_id)) {
+    $script_button_id= strtoupper($script_button_id);
 }
 if (isset($lead_filter_id)) {
     $lead_filter_id = strtoupper($lead_filter_id);
