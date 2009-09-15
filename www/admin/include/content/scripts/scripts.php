@@ -258,6 +258,129 @@ if ($ADD==1111111)
 	{
 	echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+?>
+
+<script type="text/javascript" src="/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript">
+// Creates a new plugin class and a custom listbox
+tinymce.create('tinymce.plugins.ExamplePlugin', {
+    createControl: function(n, cm) {
+        switch (n) {
+            case 'helpb':
+                var helpb = cm.createButton('helpb', {
+                    title: 'Help',
+                     image : '/admin/help.gif',
+                     onclick : function() {
+                        window.open('/admin/admin.php?ADD=99999#osdial_scripts-script_text','','width=800,height=500,scrollbars=yes,menubar=yes,address=yes');
+                     }
+                });
+                return helpb;
+
+            case 'myfields':
+                var mlbf = cm.createListBox('myfields', {
+                     title : 'Form Fields',
+                     onselect : function(v) {
+                        tinyMCE.activeEditor.focus();
+                        tinyMCE.activeEditor.selection.setContent('<b>[[' + v + ']]</b>');
+                        tinyMCE.activeEditor.controlManager.get('myfields').set(-1);
+                     }
+                });
+
+                // Add some values to the list box
+                mlbf.add('vendor_lead_code', 'vendor_lead_code');
+                mlbf.add('source_id', 'source_id');
+                mlbf.add('list_id', 'list_id');
+                mlbf.add('gmt_offset_now', 'gmt_offset_now');
+                mlbf.add('called_since_last_reset', 'called_since_last_reset');
+                mlbf.add('phone_code', 'phone_code');
+                mlbf.add('phone_number', 'phone_number');
+                mlbf.add('title', 'title');
+                mlbf.add('first_name', 'first_name');
+                mlbf.add('middle_initial', 'middle_initial');
+                mlbf.add('last_name', 'last_name');
+                mlbf.add('address1', 'address1');
+                mlbf.add('address2', 'address2');
+                mlbf.add('address3', 'address3');
+                mlbf.add('city', 'city');
+                mlbf.add('state', 'state');
+                mlbf.add('province', 'province');
+                mlbf.add('postal_code', 'postal_code');
+                mlbf.add('country_code',' country_code');
+                mlbf.add('gender', 'gender');
+                mlbf.add('date_of_birth', 'date_of_birth');
+                mlbf.add('alt_phone', 'alt_phone');
+                mlbf.add('email', 'email');
+                mlbf.add('custom1', 'custom1');
+                mlbf.add('custom2', 'custom2');
+                mlbf.add('comments', 'comments');
+                mlbf.add('lead_id', 'lead_id');
+                mlbf.add('campaign', 'campaign');
+                mlbf.add('phone_login', 'phone_login');
+                mlbf.add('group', 'group');
+                mlbf.add('channel_group', 'channel_group');
+                mlbf.add('SQLdate', 'SQLdate');
+                mlbf.add('epoch', 'epoch');
+                mlbf.add('uniqueid', 'uniqueid');
+                mlbf.add('customer_zap_channel', 'customer_zap_channel');
+                mlbf.add('server_ip', 'server_ip');
+                mlbf.add('SIPexten', 'SIPexten');
+                mlbf.add('session_id', 'session_id');
+
+                // Return the new listbox instance
+                return mlbf;
+
+            case 'myaddtlfields':
+                var mlbaf = cm.createListBox('myaddtlfields', {
+                     title : 'Addtl Fields',
+                     onselect : function(v) {
+                        tinyMCE.activeEditor.focus();
+                        tinyMCE.activeEditor.selection.setContent('<b>[[' + v + ']]</b>');
+                        tinyMCE.activeEditor.controlManager.get('myaddtlfields').set(-1);
+                         //tinyMCE.activeEditor.windowManager.alert('Value selected:' + v);
+                     }
+                });
+
+                // Add some values to the list box
+<?
+    $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
+    foreach ($forms as $form) {
+	    $fcamps = split(',',$form['campaigns']);
+	    foreach ($fcamps as $fcamp) {
+            $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
+            foreach ($fields as $field) {
+                echo "      mlbaf.add('" . $form['name'] . '_' . $field['name'] . "','" . $form['name'] . '_' . $field['name'] . "');\n";
+			}
+		}
+	}
+?>
+
+                // Return the new listbox instance
+                return mlbaf;
+
+        }
+
+        return null;
+    }
+});
+
+// Register plugin with a short name
+tinymce.PluginManager.add('example', tinymce.plugins.ExamplePlugin);
+
+// Initialize TinyMCE with the new plugin and listbox
+tinyMCE.init({
+    plugins : '-example', // - tells TinyMCE to skip the loading of the plugin
+    mode : "textareas",
+    theme : "advanced",
+    theme_advanced_buttons1 : "separator,bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,hr,sub,sup,separator,cut,copy,paste,separator,undo,redo,separator",
+    theme_advanced_buttons2 : "separator,fontselect,fontsizeselect,forecolor,backcolor,separator,myfields,myaddtlfields,separator,helpb,separator",
+    theme_advanced_buttons3 : "",
+    theme_advanced_toolbar_location : "top",
+    theme_advanced_toolbar_align : "left",
+    theme_advanced_statusbar_location : "bottom"
+});
+</script>
+
+<?
 
 	echo "<center><br><font color=$default_text size=+1>ADD NEW SCRIPT</font><form name=scriptForm action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111111>\n";
@@ -266,66 +389,9 @@ if ($ADD==1111111)
 	echo "<tr bgcolor=$oddrows><td align=right>Script Name: </td><td align=left><input type=text name=script_name size=40 maxlength=50> (title of the script)$NWB#osdial_scripts-script_name$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Script Comments: </td><td align=left><input type=text name=script_comments size=50 maxlength=255> $NWB#osdial_scripts-script_comments$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option SELECTED>Y</option><option>N</option></select>$NWB#osdial_scripts-active$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Script Text: </td><td align=left>";
-	# BEGIN Insert Field
-	echo "<select id=\"selectedField\" name=\"selectedField\">";
-	echo "<option>vendor_lead_code</option>";
-	echo "<option>source_id</option>";
-	echo "<option>list_id</option>";
-	echo "<option>gmt_offset_now</option>";
-	echo "<option>called_since_last_reset</option>";
-	echo "<option>phone_code</option>";
-	echo "<option>phone_number</option>";
-	echo "<option>title</option>";
-	echo "<option>first_name</option>";
-	echo "<option>middle_initial</option>";
-	echo "<option>last_name</option>";
-	echo "<option>address1</option>";
-	echo "<option>address2</option>";
-	echo "<option>address3</option>";
-	echo "<option>city</option>";
-	echo "<option>state</option>";
-	echo "<option>province</option>";
-	echo "<option>postal_code</option>";
-	echo "<option>country_code</option>";
-	echo "<option>gender</option>";
-	echo "<option>date_of_birth</option>";
-	echo "<option>alt_phone</option>";
-	echo "<option>email</option>";
-	echo "<option>custom1</option>";
-	echo "<option>custom2</option>";
-	echo "<option>comments</option>";
-	echo "<option>lead_id</option>";
-	echo "<option>campaign</option>";
-	echo "<option>phone_login</option>";
-	echo "<option>group</option>";
-	echo "<option>channel_group</option>";
-	echo "<option>SQLdate</option>";
-	echo "<option>epoch</option>";
-	echo "<option>uniqueid</option>";
-	echo "<option>customer_zap_channel</option>";
-	echo "<option>server_ip</option>";
-	echo "<option>SIPexten</option>";
-	echo "<option>session_id</option>";
-	echo "</select>";
-	echo "<input type=\"button\" name=\"insertField\" value=\"Insert\" onClick=\"scriptInsertField();\"><BR>";
+	echo "<tr bgcolor=$oddrows><td align=center colspan=2>";
 
-	echo "<select id=\"selectedAddtlField\" name=\"selectedAddtlField\">";
-    $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
-    foreach ($forms as $form) {
-	    $fcamps = split(',',$form['campaigns']);
-	    foreach ($fcamps as $fcamp) {
-            $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
-            foreach ($fields as $field) {
-				echo "<option>" . $form['name'] . '_' . $field['name'] . "</option>\n";
-			}
-		}
-	}
-	echo "</select>";
-	echo "<input type=\"button\" name=\"insertAddtlField\" value=\"Insert\" onClick=\"scriptInsertAddtlField();\"><BR>";
-
-	# END Insert Field
-	echo "<TEXTAREA NAME=script_text ROWS=20 COLS=50 value=\"\"></TEXTAREA> $NWB#osdial_scripts-script_text$NWE</td></tr>\n";
+	echo "<TEXTAREA NAME=script_text ROWS=20 COLS=120 value=\"\"></TEXTAREA></td></tr>\n";
 	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
@@ -488,6 +554,162 @@ if ($ADD==3111111)
 {
 	if ($LOGmodify_scripts==1)
 	{
+?>
+
+<script type="text/javascript" src="/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript">
+// Creates a new plugin class and a custom listbox
+tinymce.create('tinymce.plugins.ExamplePlugin', {
+    createControl: function(n, cm) {
+        switch (n) {
+            case 'helpb':
+                var helpb = cm.createButton('helpb', {
+                    title: 'Help',
+                     image : '/admin/help.gif',
+                     onclick : function() {
+                        window.open('/admin/admin.php?ADD=99999#osdial_scripts-script_text','','width=800,height=500,scrollbars=yes,menubar=yes,address=yes');
+                     }
+                });
+                return helpb;
+
+            case 'previewb':
+                var previewb = cm.createButton('previewb', {
+                    label: 'Preview',
+                    title: 'Preview',
+                     //image : '/tinymce/plugins/media/img/shockwave.gif',
+                     onclick : function() {
+                        window.open('/admin/admin.php?ADD=7111111&script_id=<?= $script_id?>','','width=1000,height=700,scrollbars=yes,menubar=yes,address=yes');
+                     }
+                });
+                return previewb;
+
+            case 'myfields':
+                var mlbf = cm.createListBox('myfields', {
+                     title : 'Form Fields',
+                     onselect : function(v) {
+                        tinyMCE.activeEditor.focus();
+                        tinyMCE.activeEditor.selection.setContent('<b>[[' + v + ']]</b>');
+                        tinyMCE.activeEditor.controlManager.get('myfields').set(-1);
+                     }
+                });
+
+                // Add some values to the list box
+                mlbf.add('vendor_lead_code', 'vendor_lead_code');
+                mlbf.add('source_id', 'source_id');
+                mlbf.add('list_id', 'list_id');
+                mlbf.add('gmt_offset_now', 'gmt_offset_now');
+                mlbf.add('called_since_last_reset', 'called_since_last_reset');
+                mlbf.add('phone_code', 'phone_code');
+                mlbf.add('phone_number', 'phone_number');
+                mlbf.add('title', 'title');
+                mlbf.add('first_name', 'first_name');
+                mlbf.add('middle_initial', 'middle_initial');
+                mlbf.add('last_name', 'last_name');
+                mlbf.add('address1', 'address1');
+                mlbf.add('address2', 'address2');
+                mlbf.add('address3', 'address3');
+                mlbf.add('city', 'city');
+                mlbf.add('state', 'state');
+                mlbf.add('province', 'province');
+                mlbf.add('postal_code', 'postal_code');
+                mlbf.add('country_code',' country_code');
+                mlbf.add('gender', 'gender');
+                mlbf.add('date_of_birth', 'date_of_birth');
+                mlbf.add('alt_phone', 'alt_phone');
+                mlbf.add('email', 'email');
+                mlbf.add('custom1', 'custom1');
+                mlbf.add('custom2', 'custom2');
+                mlbf.add('comments', 'comments');
+                mlbf.add('lead_id', 'lead_id');
+                mlbf.add('campaign', 'campaign');
+                mlbf.add('phone_login', 'phone_login');
+                mlbf.add('group', 'group');
+                mlbf.add('channel_group', 'channel_group');
+                mlbf.add('SQLdate', 'SQLdate');
+                mlbf.add('epoch', 'epoch');
+                mlbf.add('uniqueid', 'uniqueid');
+                mlbf.add('customer_zap_channel', 'customer_zap_channel');
+                mlbf.add('server_ip', 'server_ip');
+                mlbf.add('SIPexten', 'SIPexten');
+                mlbf.add('session_id', 'session_id');
+
+                // Return the new listbox instance
+                return mlbf;
+
+            case 'myaddtlfields':
+                var mlbaf = cm.createListBox('myaddtlfields', {
+                     title : 'Addtl Fields',
+                     onselect : function(v) {
+                        tinyMCE.activeEditor.focus();
+                        tinyMCE.activeEditor.selection.setContent('<b>[[' + v + ']]</b>');
+                        tinyMCE.activeEditor.controlManager.get('myaddtlfields').set(-1);
+                         //tinyMCE.activeEditor.windowManager.alert('Value selected:' + v);
+                     }
+                });
+
+                // Add some values to the list box
+<?
+    $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
+    foreach ($forms as $form) {
+	    $fcamps = split(',',$form['campaigns']);
+	    foreach ($fcamps as $fcamp) {
+            $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
+            foreach ($fields as $field) {
+                echo "      mlbaf.add('" . $form['name'] . '_' . $field['name'] . "','" . $form['name'] . '_' . $field['name'] . "');\n";
+			}
+		}
+	}
+?>
+
+                // Return the new listbox instance
+                return mlbaf;
+
+            case 'mybuttons':
+                var mlb = cm.createListBox('mybuttons', {
+                     title : 'Buttons',
+                     onselect : function(v) {
+                        tinyMCE.activeEditor.focus();
+                        tinyMCE.activeEditor.selection.setContent('<b>{{' + v + '}}</b>');
+                        tinyMCE.activeEditor.controlManager.get('mybuttons').set(-1);
+                         //tinyMCE.activeEditor.windowManager.alert('Value selected:' + v);
+                     }
+                });
+
+                // Add some values to the list box
+<?
+    $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='$script_id'");
+    foreach ($buttons as $button) {
+        echo "      mlb.add('" . $button['script_button_id'] . ': ' . $button['script_button_label'] . "','" . $button['script_button_id'] . "');\n";
+	}
+?>
+
+                // Return the new listbox instance
+                return mlb;
+
+        }
+
+        return null;
+    }
+});
+
+// Register plugin with a short name
+tinymce.PluginManager.add('example', tinymce.plugins.ExamplePlugin);
+
+// Initialize TinyMCE with the new plugin and listbox
+tinyMCE.init({
+    plugins : '-example', // - tells TinyMCE to skip the loading of the plugin
+    mode : "textareas",
+    theme : "advanced",
+    theme_advanced_buttons1 : "separator,bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,hr,sub,sup,separator,cut,copy,paste,separator,undo,redo,separator",
+    theme_advanced_buttons2 : "separator,fontselect,fontsizeselect,forecolor,backcolor,separator,myfields,myaddtlfields,mybuttons,separator,helpb,separator,previewb,separator",
+    theme_advanced_buttons3 : "",
+    theme_advanced_toolbar_location : "top",
+    theme_advanced_toolbar_align : "left",
+    theme_advanced_statusbar_location : "bottom"
+});
+</script>
+
+<?
 	echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
@@ -546,6 +768,7 @@ if ($ADD==3111111)
         $sid = $script_id;
     }
 
+    $script_text = eregi_replace("\n","<br>",$script_text);
 
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
@@ -556,81 +779,16 @@ if ($ADD==3111111)
 	    echo "<input type=hidden name=script_button_id value=\"$script_button_id\">\n";
 		echo "<center><a href=\"$PHP_SELF?ADD=$ADD&script_id=$script_id\">BACK TO SCRIPT: $script_id</a></center><br>\n";
     }
-	echo "<TABLE>";
+	echo "<TABLE width=$section_width>";
 	echo "<tr bgcolor=$oddrows><td align=right>$id_label: </td><td align=left><B>$sid</B>$NWB#osdial_scripts-script_name$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>$name_label: </td><td align=left><input type=text name=script_name size=40 maxlength=50 value=\"$script_name\">$NWB#osdial_scripts-script_name$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>$comment_label: </td><td align=left><input type=text name=script_comments size=50 maxlength=255 value=\"$script_comments\"> $NWB#osdial_scripts-script_comments$NWE</td></tr>\n";
     if ($SUB == "") {
 	    echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option SELECTED>Y</option><option>N</option><option selected>$active</option></select>$NWB#osdial_scripts-active$NWE</td></tr>\n";
     }
-	echo "<tr bgcolor=$oddrows><td align=right>$stype Text: <BR><BR><B><a href=\"javascript:openNewWindow('$PHP_SELF?ADD=7111111&script_id=$script_id')\">Preview Script</a></B> </td><td align=left>";
-	# BEGIN Insert Field
-	echo "<font size=1>Fields: </font><select id=\"selectedField\" name=\"selectedField\">";
-	echo "<option>vendor_lead_code</option>";
-	echo "<option>source_id</option>";
-	echo "<option>list_id</option>";
-	echo "<option>gmt_offset_now</option>";
-	echo "<option>called_since_last_reset</option>";
-	echo "<option>phone_code</option>";
-	echo "<option>phone_number</option>";
-	echo "<option>title</option>";
-	echo "<option>first_name</option>";
-	echo "<option>middle_initial</option>";
-	echo "<option>last_name</option>";
-	echo "<option>address1</option>";
-	echo "<option>address2</option>";
-	echo "<option>address3</option>";
-	echo "<option>city</option>";
-	echo "<option>state</option>";
-	echo "<option>province</option>";
-	echo "<option>postal_code</option>";
-	echo "<option>country_code</option>";
-	echo "<option>gender</option>";
-	echo "<option>date_of_birth</option>";
-	echo "<option>alt_phone</option>";
-	echo "<option>email</option>";
-	echo "<option>custom1</option>";
-	echo "<option>custom2</option>";
-	echo "<option>comments</option>";
-	echo "<option>lead_id</option>";
-	echo "<option>campaign</option>";
-	echo "<option>phone_login</option>";
-	echo "<option>group</option>";
-	echo "<option>channel_group</option>";
-	echo "<option>SQLdate</option>";
-	echo "<option>epoch</option>";
-	echo "<option>uniqueid</option>";
-	echo "<option>customer_zap_channel</option>";
-	echo "<option>server_ip</option>";
-	echo "<option>SIPexten</option>";
-	echo "<option>session_id</option>";
-	echo "</select>";
-	echo "<input type=\"button\" name=\"insertField\" value=\"Insert\" onClick=\"scriptInsertField();\"><BR>";
+	echo "<tr bgcolor=$oddrows><td align=center colspan=2>";
 
-	echo "<font size=1>Additional Fields: </font><select id=\"selectedAddtlField\" name=\"selectedAddtlField\">";
-    $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
-    foreach ($forms as $form) {
-	    $fcamps = split(',',$form['campaigns']);
-	    foreach ($fcamps as $fcamp) {
-            $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
-            foreach ($fields as $field) {
-				echo "<option>" . $form['name'] . '_' . $field['name'] . "</option>\n";
-			}
-		}
-	}
-	echo "</select>";
-	echo "<input type=\"button\" name=\"insertAddtlField\" value=\"Insert\" onClick=\"scriptInsertAddtlField();\"><BR>";
-
-	echo "<font size=1>Buttons / Objections: </font><select id=\"selectedButton\" name=\"selectedButton\">";
-    $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='$script_id'");
-    foreach ($buttons as $button) {
-        echo "<option value=\"" . $button['script_button_id'] . "\">" . $button['script_button_id'] . ': ' . $button['script_button_label'] . "</option>\n";
-	}
-	echo "</select>";
-	echo "<input type=\"button\" name=\"insertButton\" value=\"Insert\" onClick=\"scriptInsertButton();\"><BR>";
-
-	# END Insert Field
-	echo "<TEXTAREA NAME=script_text ROWS=20 COLS=50>$script_text</TEXTAREA> $NWB#osdial_scripts-script_text$NWE</td></tr>\n";
+	echo "<TEXTAREA NAME=script_text ROWS=20 COLS=120>$script_text</TEXTAREA></td></tr>\n";
 	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></form></center>\n";
 
