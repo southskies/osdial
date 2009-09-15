@@ -221,7 +221,7 @@ foreach ($buttons as $button) {
     $script_text = eregi_replace('\{\{' . $button['script_button_id'] . '\}\}',$hbutton,$script_text);
 }
 
-$script_text = eregi_replace("\n","<br>",$script_text);
+$script_text = eregi_replace("\n","",$script_text);
 
 	echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
@@ -768,7 +768,7 @@ tinyMCE.init({
         $sid = $script_id;
     }
 
-    $script_text = eregi_replace("\n","<br>",$script_text);
+    $script_text = eregi_replace("\n","",$script_text);
 
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 

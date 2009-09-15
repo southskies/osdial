@@ -4994,7 +4994,7 @@ foreach ($forms as $form) {
 		encoded = encoded.replace(RGsession_id, SCsession_id);
 		}
 		decoded=encoded; // simple no ?
-		decoded = decoded.replace(RGnl, "<BR>");
+		//decoded = decoded.replace(RGnl, "<BR>");
 //	   while (i < encoded.length) {
 //		   var ch = encoded.charAt(i);
 //		   if (ch == "%") {
