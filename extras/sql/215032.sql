@@ -10,6 +10,12 @@ CREATE TABLE osdial_script_buttons (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;##|##
   ## Adds ability to have buttons/conditional scripting;
 
+ALTER TABLE osdial_list ADD COLUMN post_date DATETIME NOT NULL;##|##
+ ##Add post_date field to leads;
+
+INSERT INTO osdial_statuses VALUES ('PD','Post Date','Y','Y','CONTACT');##|##
+ ##Add post-date PD status.;
+
 
 
 UPDATE system_settings SET version='2.1.5.032';##|##

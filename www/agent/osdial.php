@@ -1813,6 +1813,134 @@ $CCAL_OUT .= "</table>";
 ### END - build the callback calendar (12 months)            ###
 ################################################################
 
+################################################################
+### BEGIN - build the postdate calendar (12 months)          ###
+################################################################
+define ('ADAY', (60*60*24));
+$PDdayARY = getdate();
+$PDmon = $PDdayARY['mon'];
+$PDyear = $PDdayARY['year'];
+$PDTODAY = date("Y-m");
+$PDTODAYmday = date("j");
+$PDINC=0;
+
+$PDmonths = Array('January','February','March','April','May','June',
+				'July','August','September','October','November','December');
+$PDdays = Array('Sun','Mon','Tue','Wed','Thu','Fri','Sat');
+
+$PDCAL_OUT = '';
+
+$PDCAL_OUT .= "<table border=0 cellpadding=2 cellspacing=2>";
+
+while ($PDINC < 12)
+{
+if ( ($PDINC == 0) || ($PDINC == 4) ||($PDINC == 8) )
+	{$PDCAL_OUT .= "<tr>";}
+
+$PDCAL_OUT .= "<td valign=top>";
+
+$PDYyear = $PDyear;
+$PDmonth=	($PDmon + $PDINC);
+if ($PDmonth > 12)
+	{
+	$PDmonth = ($PDmonth - 12);
+	$PDYyear++;
+	}
+$PDstart= mktime(11,0,0,$PDmonth,1,$PDYyear);
+$PDfirstdayARY = getdate($PDstart);
+#echo "|$PDmon|$PDmonth|$PDINC|\n";
+$PDPRNTDAY = date("Y-m", $PDstart);
+
+$PDCAL_OUT .= "<table border=1 cellpadding=1 bordercolor=\"" . $cal_border1 . "\" cellspacing=\"0\" bgcolor=\"" . $cal_bg1 . "\">";
+$PDCAL_OUT .= "<tr>";
+$PDCAL_OUT .= "<td colspan=7 bordercolor=\"" . $cal_border2 . "\" bgcolor=\"" . $cal_bg2 . "\">";
+$PDCAL_OUT .= "<div align=center><font color=\"" . $cal_fc . "\"><b><font face=\"Arial, Helvetica, sans-serif\" size=2>";
+$PDCAL_OUT .= "$PDfirstdayARY[month] $PDfirstdayARY[year]";
+$PDCAL_OUT .= "</font></b></font></div>";
+$PDCAL_OUT .= "</td>";
+$PDCAL_OUT .= "</tr>";
+
+foreach($PDdays as $PDday)
+{
+	$PDCLR=$cal_border2;
+$PDCAL_OUT .= "<td bordercolor=\"" . $PDCLR . "\">";
+$PDCAL_OUT .= "<div align=center><font color=\"" . $cal_fc . "\"><b><font face=\"Arial, Helvetica, sans-serif\" size=1>";
+$PDCAL_OUT .= "$PDday";
+$PDCAL_OUT .= "</font></b></font></div>";
+$PDCAL_OUT .= "</td>";
+}
+
+for( $PDcount=0;$PDcount<(6*7);$PDcount++)
+{
+	$PDdayarray = getdate($PDstart);
+	if((($PDcount) % 7) == 0)
+	{
+		if($PDdayarray['mon'] != $PDfirstdayARY['mon'])
+			break;
+		$PDCAL_OUT .= "</tr><tr>";
+	}
+	if($PDcount < $PDfirstdayARY['wday'] || $PDdayarray['mon'] != $PDmonth)
+	{
+		$PDCAL_OUT .= "<td bordercolor=\"" . $cal_border2 . "\"><font color=\"" . $cal_fc . "\"><b><font face=\"Arial, Helvetica, sans-serif\" size=\"1\">&nbsp;</font></b></font></td>";
+	}
+	else
+	{
+		if( ($PDdayarray['mday'] == $PDTODAYmday) and ($PDPRNTDAY == $PDTODAY) )
+		{
+		$PDPRNTmday = $PDdayarray['mday'];
+		if ($PDPRNTmday < 10) {$PDPRNTmday = "0$PDPRNTmday";}
+		$PDL = "<a href=\"#\" onclick=\"PD_date_pick('$PDPRNTDAY-$PDPRNTmday');return false;\">";
+		$PDEL = "</a>";
+
+		$PDCAL_OUT .= "<td bgcolor=\"" . $cal_bg3 . "\" bordercolor=\"" . $cal_border3 . "\">";
+		$PDCAL_OUT .= "<div align=center><font face=\"Arial, Helvetica, sans-serif\" size=1>";
+		$PDCAL_OUT .= "$PDL$PDdayarray[mday]$PDEL";
+		$PDCAL_OUT .= "</font></div>";
+		$PDCAL_OUT .= "</td>";
+			$PDstart += ADAY;
+		}
+		else
+		{
+	$PDCLR=$cal_bg1;
+	if ( ($PDdayarray['mday'] < $PDTODAYmday) and ($PDPRNTDAY == $PDTODAY) )
+		{
+		$PDCLR=$cal_bg4;
+		$PDL = '';
+		$PDEL = '';
+		}
+	else
+		{
+		$PDPRNTmday = $PDdayarray['mday'];
+		if ($PDPRNTmday < 10) {$PDPRNTmday = "0$PDPRNTmday";}
+		$PDL = "<a href=\"#\" onclick=\"PD_date_pick('$PDPRNTDAY-$PDPRNTmday');return false;\">";
+		$PDEL = "</a>";
+		}
+
+	$PDCAL_OUT .= "<td bgcolor=\"$PDCLR\" bordercolor=\"" . $cal_border2 . "\">";
+	$PDCAL_OUT .= "<div align=center><font face=\"Arial, Helvetica, sans-serif\" size=1>";
+	$PDCAL_OUT .= "$PDL$PDdayarray[mday]$PDEL";
+	$PDCAL_OUT .= "</font></div>";
+	$PDCAL_OUT .= "</td>";
+		$PDstart += ADAY;
+		}
+	}
+}
+$PDCAL_OUT .= "</tr>";
+$PDCAL_OUT .= "</table>";
+$PDCAL_OUT .= "</td>";
+
+if ( ($PDINC == 3) || ($PDINC == 7) ||($PDINC == 11) )
+	{$PDCAL_OUT .= "</tr>";}
+$PDINC++;
+}
+
+$PDCAL_OUT .= "</table>";
+
+#echo "$PDCAL_OUT\n";
+################################################################
+### END - build the postdate calendar (12 months)            ###
+################################################################
+
 $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
 $cnt = 0;
 foreach ($forms as $form) {
@@ -2367,6 +2495,23 @@ foreach ($forms as $form) {
 				
 					<a href="#" onclick="CallBackDatE_submit();return false;">SUBMIT</a><BR><BR>
 					<span id="CallBackDateContent"><?echo"$CCAL_OUT"?></span>
+					<BR><BR> &nbsp; 
+				</TD>
+			</TR>
+		</TABLE>
+	</span>
+
+	<!-- PostDate Window -->
+	<span style="position:absolute;left:0px;top:18px;z-index:35;" id="PostDateSelectBox">
+		<table border=1 bgcolor="<?=$callback_bg3?>" width=<?=$CAwidth ?> height=480>
+			<TR>
+				<TD align=center VALIGN=top><font color=<?=$callback_fc?>>Select a Post-Date :<span id="PostDatE"></span><BR>
+					<input type=hidden name=PostDatESelectioN ID="PostDatESelectioN">
+					<span id="PostDatEPrinT">Select a Date Below</span> &nbsp;
+					<BR>
+				
+					<a href="#" onclick="PostDatE_submit();return false;">SUBMIT</a><BR><BR>
+					<span id="PostDateContent"><?echo"$PDCAL_OUT"?></span>
 					<BR><BR> &nbsp; 
 				</TD>
 			</TR>

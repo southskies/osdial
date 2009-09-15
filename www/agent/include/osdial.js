@@ -52,6 +52,7 @@
 	var VU_hotkeys_active = '<? echo $VU_hotkeys_active ?>';
 	var VU_agent_choose_ingroups = '<? echo $VU_agent_choose_ingroups ?>';
 	var VU_agent_choose_ingroups_DV = '';
+	var PostDatETimE = '';
 	var CallBackDatETimE = '';
 	var CallBackrecipient = '';
 	var CallBackCommenTs = '';
@@ -4007,9 +4008,11 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				}
 			}
 
-			if ( (DispoChoice == 'CALLBK') && (scheduled_callbacks > 0) ) {showDiv('CallBackSelectBox');}
-			else
-				{
+			if ( (DispoChoice == 'CALLBK') && (scheduled_callbacks > 0) ) {
+				showDiv('CallBackSelectBox');
+			} else if ( (DispoChoice == 'PD' && PostDatETimE == '') ) {
+				showDiv('PostDateSelectBox');
+			} else {
 				var xmlhttp=false;
 				/*@cc_on @*/
 				/*@if (@_jscript_version >= 5)
@@ -4031,7 +4034,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					}
 				if (xmlhttp) 
 					{ 
-					DSupdate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=updateDISPO&format=text&user=" + user + "&pass=" + pass + "&dispo_choice=" + DispoChoice + "&lead_id=" + document.osdial_form.lead_id.value + "&campaign=" + campaign + "&auto_dial_level=" + auto_dial_level + "&agent_log_id=" + agent_log_id + "&CallBackDatETimE=" + CallBackDatETimE + "&list_id=" + document.osdial_form.list_id.value + "&recipient=" + CallBackrecipient + "&use_internal_dnc=" + use_internal_dnc + "&MDnextCID=" + LasTCID + "&comments=" + CallBackCommenTs;
+					DSupdate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=updateDISPO&format=text&user=" + user + "&pass=" + pass + "&dispo_choice=" + DispoChoice + "&lead_id=" + document.osdial_form.lead_id.value + "&campaign=" + campaign + "&auto_dial_level=" + auto_dial_level + "&agent_log_id=" + agent_log_id + "&PostDatETimE=" + PostDatETimE + "&CallBackDatETimE=" + CallBackDatETimE + "&list_id=" + document.osdial_form.list_id.value + "&recipient=" + CallBackrecipient + "&use_internal_dnc=" + use_internal_dnc + "&MDnextCID=" + LasTCID + "&comments=" + CallBackCommenTs;
 					xmlhttp.open('POST', 'vdc_db_query.php'); 
 					xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 					xmlhttp.send(DSupdate_query); 
@@ -5189,6 +5192,32 @@ else
 
 
 // ################################################################################
+// Populating the date field in the postdate frame prior to submission
+	function PD_date_pick(taskdate) {
+		document.osdial_form.PostDatESelectioN.value = taskdate;
+		document.getElementById("PostDatEPrinT").innerHTML = taskdate;
+	}
+
+// ################################################################################
+// Submitting the post date and time to the system
+	function PostDatE_submit() {
+		PostDatEForM = document.osdial_form.PostDatESelectioN.value;
+		if (PostDatEForM.length < 2) {
+			alert("You must choose a date");
+		} else {
+			PostDatETimE = PostDatEForM + " " + "00:00:00";
+
+			document.getElementById("PostDatEPrinT").innerHTML = "Select a Date Below";
+			document.osdial_form.PostDatESelectioN.value = '';
+
+			document.osdial_form.DispoSelection.value = 'PD';
+			hideDiv('PostDateSelectBox');
+			DispoSelect_submit();
+		}
+	}
+
+
+// ################################################################################
 // Finish the wrapup timer early
 	function WrapupFinish()
 		{
@@ -5222,6 +5251,7 @@ else
 			hideDiv('TransferMain');
 			hideDiv('WelcomeBoxA');
 			hideDiv('CallBackSelectBox');
+			hideDiv('PostDateSelectBox');
 			hideDiv('DispoButtonHideA');
 			hideDiv('DispoButtonHideB');
 			hideDiv('DispoButtonHideC');

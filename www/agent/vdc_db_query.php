@@ -296,6 +296,8 @@ if (isset($_GET["favorites_list"]))				{$favorites_list=$_GET["favorites_list"];
 	elseif (isset($_POST["favorites_list"]))	{$favorites_list=$_POST["favorites_list"];}
 if (isset($_GET["CallBackDatETimE"]))			{$CallBackDatETimE=$_GET["CallBackDatETimE"];}
 	elseif (isset($_POST["CallBackDatETimE"]))	{$CallBackDatETimE=$_POST["CallBackDatETimE"];}
+if (isset($_GET["PostDatETimE"]))			{$PostDatETimE=$_GET["PostDatETimE"];}
+	elseif (isset($_POST["PostDatETimE"]))	{$PostDatETimE=$_POST["PostDatETimE"];}
 if (isset($_GET["recipient"]))					{$recipient=$_GET["recipient"];}
 	elseif (isset($_POST["recipient"]))			{$recipient=$_POST["recipient"];}
 if (isset($_GET["callback_id"]))				{$callback_id=$_GET["callback_id"];}
@@ -2240,6 +2242,12 @@ if ($ACTION == 'updateDISPO')
 	$stmt="UPDATE osdial_list set status='$dispo_choice', user='$user' where lead_id='$lead_id';";
 		if ($format=='debug') {echo "\n<!-- $stmt -->";}
 	$rslt=mysql_query($stmt, $link);
+
+    if ($dispo_choice == 'PD') {
+	    $stmt="UPDATE osdial_list set post_date='$PostDatETimE' where lead_id='$lead_id';";
+		    if ($format=='debug') {echo "\n<!-- $stmt -->";}
+	    $rslt=mysql_query($stmt, $link);
+    }
 
 	$stmt="UPDATE osdial_log set status='$dispo_choice' where lead_id='$lead_id' and user='$user' order by uniqueid desc limit 1;";
 		if ($format=='debug') {echo "\n<!-- $stmt -->";}
