@@ -156,7 +156,7 @@ function report_list_cost() {
         $head = "DATE|LIST|LEADS|AVERAGE COST|TOTAL COST";
         $html .= "<input type=hidden name=\"row" . $CSVrow++ . "\" value=\"" . $head . "\">\n";
 
-        $stmt="SELECT date(osdial_list.entry_date),osdial_lists.list_id,osdial_lists.list_name,count(*),avg(osdial_list.cost),sum(osdial_list.cost) FROM osdial_list,osdial_lists WHERE entry_date <= '$query_date_END' AND entry_date >= '$query_date_BEGIN' AND osdial_lists.list_id=osdial_list.list_id $group_SQLand GROUP BY list_id;";
+        $stmt="SELECT date(osdial_list.entry_date),osdial_lists.list_id,osdial_lists.list_name,count(*),avg(osdial_list.cost),sum(osdial_list.cost) FROM osdial_list,osdial_lists WHERE entry_date <= '$query_date_END' AND entry_date >= '$query_date_BEGIN' AND osdial_lists.list_id=osdial_list.list_id $group_SQLand GROUP BY date(osdial_list.entry_date),list_id;";
         $rslt=mysql_query($stmt, $link);
         if ($DB) $html .= "$stmt\n";
         $rows_to_print = mysql_num_rows($rslt);
@@ -175,9 +175,20 @@ function report_list_cost() {
             }
     
             if ($i > 0 and $last_date != $row[0]) {
+                if ($SUBleads > 0) {
+                    $SUBavg_cost   = $SUBtotal_cost / $SUBleads;
+                }
+                $SUBleads      = sprintf("%7s",    $SUBleads); 
+                $SUBavg_cost   = sprintf("%8.2f",  $SUBavg_cost); 
+                $SUBtotal_cost = sprintf("%10.2f", $SUBtotal_cost); 
                 $html .= "  <tr bgcolor=$menubarcolor>\n";
-                $html .= "    <td colspan=5><font color=white style=\"font-size:1px;\">&nbsp;</font></td>\n";
+                $html .= "    <td align=left colspan=2><font color=white style=\"font-size:6pt;\">&nbsp;</font></td>\n";
+                $html .= "    <td align=right><font color=white style=\"font-size:6pt;\">$SUBleads</font></td>\n";
+                $html .= "    <td align=right><font color=white style=\"font-size:6pt;\">$SUBavg_cost</font></td>\n";
+                $html .= "    <td align=right><font color=white style=\"font-size:6pt;\">$SUBtotal_cost</font></td>\n";
                 $html .= "  </tr>\n";
+                $SUBleads      = 0;
+                $SUBtotal_cost = 0;
             }
 
             $date           = $row[0];
@@ -187,8 +198,9 @@ function report_list_cost() {
             $avg_cost       = $row[4];
             $total_cost     = $row[5];
 
+            $SUBleads      += $row[3];
+            $SUBtotal_cost += $row[5];
             $TOTleads      += $row[3];
-            $TOTavg_cost   += $row[4];
             $TOTtotal_cost += $row[5];
 
             $last_date      = $row[0];
@@ -214,6 +226,24 @@ function report_list_cost() {
             $i++;
         }
 
+        if ($SUBleads > 0) {
+            $SUBavg_cost   = $SUBtotal_cost / $SUBleads;
+        }
+        $SUBleads      = sprintf("%7s",    $SUBleads); 
+        $SUBavg_cost   = sprintf("%8.2f",  $SUBavg_cost); 
+        $SUBtotal_cost = sprintf("%10.2f", $SUBtotal_cost); 
+        $html .= "  <tr bgcolor=$menubarcolor>\n";
+        $html .= "    <td align=left colspan=2><font color=white style=\"font-size:6pt;\">&nbsp;</font></td>\n";
+        $html .= "    <td align=right><font color=white style=\"font-size:6pt;\">$SUBleads</font></td>\n";
+        $html .= "    <td align=right><font color=white style=\"font-size:6pt;\">$SUBavg_cost</font></td>\n";
+        $html .= "    <td align=right><font color=white style=\"font-size:6pt;\">$SUBtotal_cost</font></td>\n";
+        $html .= "  </tr>\n";
+        $SUBleads      = 0;
+        $SUBtotal_cost = 0;
+
+        if ($TOTleads > 0) {
+            $TOTavg_cost   = $TOTtotal_cost / $TOTleads;
+        }
         $TOTleads      = sprintf("%7s",    $TOTleads); 
         $TOTavg_cost   = sprintf("%8.2f",  $TOTavg_cost); 
         $TOTtotal_cost = sprintf("%10.2f", $TOTtotal_cost); 
