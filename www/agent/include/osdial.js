@@ -144,6 +144,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	var MDchannel = '';
 	var MD_ring_secondS = 0;
 	var MDlogEPOCH = 0;
+	var alt_dial_menu = 0;
+	var manual_dial_menu = 0;
 	var VD_live_customer_call = 0;
 	var VD_live_call_secondS = 0;
 	var XD_live_customer_call = 0;
@@ -1365,7 +1367,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 					{
 					reselect_alt_dial = 1;
 					alt_dial_active = 1;
-					var man_status = "Dial Alt Phone Number: <a href=\"#\" onclick=\"ManualDialOnly('MaiNPhonE')\"><font class=\"preview_text\">MAIN PHONE</font></a> or <a href=\"#\" onclick=\"ManualDialOnly('ALTPhoneE')\"><font class=\"preview_text\">ALT PHONE</font></a> or <a href=\"#\" onclick=\"ManualDialOnly('AddresS3')\"><font class=\"preview_text\">ADDRESS3</font></a> or <a href=\"#\" onclick=\"ManualDialAltDonE()\"><font class=\"preview_text_red\" style=color:<?=$status_preview_color?>>FINISH LEAD</font></a>"; 
+					alt_dial_menu = 1;
+					var man_status = "Dial Alt Phone Number: <a href=\"#\" id=\"mainphonelink\" onclick=\"document.getElementById('mainphonelink').setAttribute('onclick','void(0);'); alt_dial_menu=0; ManualDialOnly('MaiNPhonE');\"><font class=\"preview_text\">MAIN PHONE</font></a> or <a href=\"#\" id=\"altphonelink\" onclick=\"document.getElementById('altphonelink').setAttribute('onclick','void(0);'); alt_dial_menu=0; ManualDialOnly('ALTPhoneE');\"><font class=\"preview_text\">ALT PHONE</font></a> or <a href=\"#\" id=\"address3link\" onclick=\"document.getElementById('address3link').setAttribute('onclick','void(0);'); alt_dial_menu=0; ManualDialOnly('AddresS3');\"><font class=\"preview_text\">ADDRESS3</font></a> or <a href=\"#\" id=\"finishleadlink\" onclick=\"document.getElementById('finishleadlink').setAttribute('onclick','void(0);'); alt_dial_menu=0; ManualDialAltDonE();\"><font class=\"preview_text_red\" style=color:<?=$status_preview_color?>>FINISH LEAD</font></a>"; 
 					document.getElementById("MainStatuSSpan").innerHTML = man_status;
 					}
 				}
@@ -1504,7 +1507,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		{
 		if ( (AutoDialWaiting == 1) || (VD_live_customer_call==1) || (alt_dial_active==1) )
 			{
-			alert("YOU MUST BE PAUSED TO CHECK CALLBACKS IN AUTO-DIAL MODE");
+			alert("You must pause your session by clicking \"Pause\" \nbefore you can check callbacks. ");
 			}
 		else
 			{
@@ -1616,7 +1619,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		dial_timedout=0;
 		if ( (AutoDialWaiting == 1) || (VD_live_customer_call==1) || (alt_dial_active==1) )
 			{
-			alert("YOU MUST BE PAUSED TO MANUAL DIAL A NEW LEAD IN AUTO-DIAL MODE");
+			alert("You must pause your session by clicking \"Pause\" \nbefore you can place a call to a manually entered number. ");
 			}
 		else
 			{
@@ -1671,12 +1674,15 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		function NeWManuaLDiaLCalLSubmiTfast()
 		{
 		dial_timedout=0;
+		if ( document.osdial_form.phone_code.value.length < 1  ) {
+			document.osdial_form.phone_code.value = "1";
+		}
 		var MDDiaLCodEform = document.osdial_form.phone_code.value;
 		var MDPhonENumbeRform = document.osdial_form.phone_number.value;
 
 		if ( (MDDiaLCodEform.length < 1) || (MDPhonENumbeRform.length < 5) )
 			{
-			alert("YOU MUST ENTER A PHONE NUMBER AND DIAL CODE TO USE FAST DIAL");
+			alert("You must enter a number in the \"Phone\" field fast dial. \nThe \"CountryCode\" will default to \"1\".");
 			}
 		else
 			{
@@ -1913,9 +1919,9 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			{
 			reselect_preview_dial = 1;
 			var man_preview = 'YES';
-			var man_status = "&nbsp;&nbsp;&nbsp;&nbsp;<font style='text-decoration: blink;color:<?=$status_intense_color?>;'>Preview the Lead then <a href=\"#\" onclick=\"ManualDialOnly()\"><font class=\"preview_text\" color=<?=$status_preview_color?>>DIAL LEAD</font></a><font style='{text-decoration: blink;color:<?=$status_intense_color?>;'>";
+			var man_status = "&nbsp;&nbsp;&nbsp;&nbsp;<font style='text-decoration: blink;color:<?=$status_intense_color?>;'>Preview the Lead then <a href=\"#\" id=\"dialleadlink\" onclick=\"document.getElementById('dialleadlink').setAttribute('onclick','void(0);'); manual_dial_menu=0; ManualDialOnly();\"><font class=\"preview_text\" color=<?=$status_preview_color?>>DIAL LEAD</font></a><font style='{text-decoration: blink;color:<?=$status_intense_color?>;'>";
 				if (manual_dial_allow_skip == 1) {
-					man_status = man_status + " or </font><a href=\"#\" onclick=\"ManualDialSkip()\"><font class=\"preview_text\" color=<?=$status_preview_color?>>SKIP LEAD</font></a>"; 
+					man_status = man_status + " or </font><a href=\"#\" id=\"skipleadlink\"onclick=\"document.getElementById('skipleadlink').setAttribute('onclick','void(0);'); manual_dial_menu=0; ManualDialSkip();\"><font class=\"preview_text\" color=<?=$status_preview_color?>>SKIP LEAD</font></a>"; 
 				} else {
 					man_status = man_status + "</font>";
 				}
@@ -1992,7 +1998,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							if (inbound_man > 0)
 								{
 								auto_dial_level=starting_dial_level;
-								document.getElementById("DiaLControl").innerHTML = "<IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_pause_OFF.gif\" border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_resume.gif\" border=0 alt=\"Resume\"></a><BR><a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_dialnextnumber.gif\" border=0 alt=\"Dial Next Number\"></a>";
+								document.getElementById("DiaLControl").innerHTML = "<IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_pause_OFF.gif\" border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_resume.gif\" border=0 alt=\"Resume\"></a><BR><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_dialnextnumber_OFF.gif\" border=0 alt=\"Dial Next Number\">";
 								}
 							else
 								{
@@ -2157,15 +2163,15 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							{web_form_vars2 = '?' + web_form_vars2}
 
 						if (web_form_extwindow == 1) {
-							document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+							document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 						} else {
-							document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + VDIC_web_form_address + web_form_vars + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+							document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + VDIC_web_form_address + web_form_vars + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 						}
 							
 						if (web_form2_extwindow == 1) {
-							document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+							document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 						} else {
-							document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + VDIC_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+							document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + VDIC_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 						}
 
 						if (previewFD_time > 0 && document.osdial_form.LeadPreview.checked==true) {
@@ -2250,7 +2256,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		dial_timedout=0;
 		if (manual_dial_in_progress==1)
 			{
-			alert('YOU CANNOT SKIP A CALLBACK OR MANUAL DIAL, YOU MUST DIAL THE LEAD');
+			alert('You cannot skip a Call-Back or a call placed to a manually entered number.');
 			}
 		else
 			{
@@ -2356,7 +2362,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 							if (inbound_man > 0)
 								{
-								document.getElementById("DiaLControl").innerHTML = "<IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_pause_OFF.gif\" border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_resume.gif\" border=0 alt=\"Resume\"></a><BR><a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_dialnextnumber.gif\" border=0 alt=\"Dial Next Number\"></a>";
+								AutoDial_ReSume_PauSe('VDADready');
 								}
 							else
 								{
@@ -2536,6 +2542,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				}
 			AutoDialReady = 1;
 			AutoDialWaiting = 1;
+			manual_dial_menu=0;
+			alt_dial_menu=0;
 			if (inbound_man > 0)
 				{
 				auto_dial_level=starting_dial_level;
@@ -2551,10 +2559,12 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			var VDRP_stage = 'PAUSED';
 			AutoDialReady = 0;
 			AutoDialWaiting = 0;
+			manual_dial_menu=0;
+			alt_dial_menu=0;
 			if (inbound_man > 0)
 				{
 				auto_dial_level=starting_dial_level;
-				document.getElementById("DiaLControl").innerHTML = "<IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_pause_OFF.gif\" border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_resume.gif\" border=0 alt=\"Resume\"></a><BR><a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_dialnextnumber.gif\" border=0 alt=\"Dial Next Number\"></a>";
+				document.getElementById("DiaLControl").innerHTML = "<IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_pause_OFF.gif\" border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_resume.gif\" border=0 alt=\"Resume\"></a><BR><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_dialnextnumber_OFF.gif\" border=0 alt=\"Dial Next Number\">";
 				}
 			else
 				{
@@ -2974,20 +2984,20 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 							if (web_form_extwindow == 1)
 								{
-								document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+								document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 								}
 							else
 								{
-								document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + VDIC_web_form_address + web_form_vars + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+								document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + VDIC_web_form_address + web_form_vars + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 								}
 
 							if (web_form2_extwindow == 1)
 								{
-								document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+								document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 								}
 							else
 								{
-								document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + VDIC_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+								document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + VDIC_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 								}
 
 							if ( (campaign_recording == 'ALLCALLS') || (campaign_recording == 'ALLFORCE') )
@@ -3237,20 +3247,20 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 							if (web_form_extwindow == 1)
 								{
-								document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + RPLD_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+								document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + RPLD_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 								}
 							else
 								{
-								document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + RPLD_web_form_address + web_form_vars + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+								document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + RPLD_web_form_address + web_form_vars + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 								}
 
 							if (web_form2_extwindow == 1)
 								{
-								document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + RPLD_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+								document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + RPLD_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 								}
 							else
 								{
-								document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + RPLD_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+								document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + RPLD_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 								}
 
 						}
@@ -3354,40 +3364,40 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			{
 			if (web_form_extwindow == 1)
 				{
-				document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH('IN');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+				document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH('IN');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 				}
 			else
 				{
-				document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + VDIC_web_form_address + web_form_vars + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+				document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + VDIC_web_form_address + web_form_vars + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 				}
 
 			if (web_form2_extwindow == 1)
 				{
-				document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH('IN');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+				document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH('IN');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 				}
 			else
 				{
-				document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + VDIC_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+				document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + VDIC_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 				}
 			}
 		else 
 			{
 			if (web_form_extwindow == 1)
 				{
-				document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOut=\"WebFormRefresH('OUT');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+				document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOut=\"WebFormRefresH('OUT');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 				}
 			else
 				{
-				document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + VDIC_web_form_address + web_form_vars + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>\n";
+				document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + VDIC_web_form_address + web_form_vars + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 				}
 
 			if (web_form2_extwindow == 1)
 				{
-				document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOut=\"WebFormRefresH('OUT');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+				document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOut=\"WebFormRefresH('OUT');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 				}
 			else
 				{
-				document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + VDIC_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>\n";
+				document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + VDIC_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 				}
 			}
 		}
@@ -3935,7 +3945,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		{
 		if ( (AutoDialWaiting == 1) || (VD_live_customer_call==1) || (alt_dial_active==1) )
 			{
-			alert("YOU MUST BE PAUSED TO ENTER A PAUSE CODE IN AUTO-DIAL MODE");
+			alert("You must pause your session by clicking \"Pause\" \nbefore you can enter a pause-code. ");
 			}
 		else
 			{
@@ -4484,6 +4494,14 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // Log the user out of the system, if active call or active dial is occuring, don't let them.
 	function LogouT()
 		{
+		if (manual_dial_menu==1) {
+			alert("You cannot log out during a Manual Dial. \nPlease click \"Dial Lead\" or \"Skip Lead\" (if available).");
+			return;
+		}
+		if (alt_dial_menu==1) {
+			alert("You cannot log out without reattempting or dispositioning this lead. \nYou may reattempt by selecting \"Main Phone\", \"Alt Phone\", or \"Address3\". \n To disposition the lead, click \"Finish Lead\".");
+			return;
+		}
 		if (MD_channel_look==1)
 			{alert("You cannot log out during a Dial attempt. \nWait 50 seconds for the dial to fail out if it is not answered");}
 		else
@@ -5749,7 +5767,7 @@ else
 			{
 			if (showxfervar != 'OFF')
 				{
-				alert('YOU DO NOT HAVE PERMISSIONS TO TRANSFER CALLS');
+				alert('You do not have permissions to transfer calls.');
 				}
 			}
 		}
@@ -5784,7 +5802,7 @@ else
 				{
 				if (inbound_man > 0)
 					{
-					document.getElementById("DiaLControl").innerHTML = "<IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_pause_OFF.gif\" border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_resume.gif\" border=0 alt=\"Resume\"></a><BR><a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_dialnextnumber.gif\" border=0 alt=\"Dial Next Number\"></a>";
+					document.getElementById("DiaLControl").innerHTML = "<IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_pause_OFF.gif\" border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_resume.gif\" border=0 alt=\"Resume\"></a><BR><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_dialnextnumber_OFF.gif\" border=0 alt=\"Dial Next Number\">";
 					if (manual_dial_preview == 1)
 						{buildDiv('DiaLLeaDPrevieW');}
 					}
