@@ -241,6 +241,8 @@ foreach(@conf)
 		{$VARDB_port = $line;   $VARDB_port =~ s/.*=//gi;}
 	if ( ($line =~ /^VARflush_hopper_each_run/) && ($CLIflush_hopper_each_run < 1) )
 		{$VARflush_hopper_each_run = $line;   $VARflush_hopper_each_run =~ s/.*=//gi;}
+	if ( ($line =~ /^VARflush_hopper_manual/) && ($CLIflush_hopper_manual < 1) )
+		{$VARflush_hopper_manual = $line;   $VARflush_hopper_manual =~ s/.*=//gi;}
 	$i++;
 	}
 
@@ -291,16 +293,21 @@ $GMT_now = ($secX - ($LOCAL_GMT_OFF * 3600));
 
 	if ($DB) {print "TIME DEBUG: $LOCAL_GMT_OFF_STD|$LOCAL_GMT_OFF|$isdst|   GMT: $hour:$min\n";}
 
-if ($wipe_hopper_clean || $VARflush_hopper_each_run == 1)
-	{
+if ($wipe_hopper_clean) {
 	$stmtA = "DELETE from $osdial_hopper;";
 	$affected_rows = $dbhA->do($stmtA);
 	if ($DB) {print "Hopper Wiped Clean:  $affected_rows\n";}
-		$event_string = "|HOPPER WIPE CLEAN|";
-		&event_logger;
+	$event_string = "|HOPPER WIPE CLEAN|";
+	&event_logger;
+	exit;
+}
 
-	exit if ($wipe_hopper_clean);
-	}
+if ($VARflush_hopper_each_run == 1) {
+	$stmtA = "DELETE from $osdial_hopper where status='READY';";
+	$affected_rows = $dbhA->do($stmtA);
+	if ($DB) {print "     hopper flush each run:  $affected_rows\n";}
+	if ($DBX) {print "     |$stmtA|\n";}
+}
 
 # Fix 0 and no-id lists.
 $stmtA = "UPDATE osdial_list SET list_id='1' WHERE list_id='0' OR list_id='' OR list_id IS NULL;";
@@ -1104,6 +1111,13 @@ foreach(@campaign_id)
 	if ($DB) {print "     hopper GMT BAD cleared:  $affected_rows\n";}
 	if ($DBX) {print "     |$stmtA|\n";}
 
+	if ($VARflush_hopper_manual == 1 && $dial_method[$i] eq "MANUAL") {
+		$stmtA = "DELETE from $osdial_hopper where campaign_id='$campaign_id[$i]' and status='READY';";
+		$affected_rows = $dbhA->do($stmtA);
+		if ($DB) {print "     hopper flush manual $campaign_id[$i]:  $affected_rows\n";}
+		if ($DBX) {print "     |$stmtA|\n";}
+	}
+
  	### Find out how many leads are in the hopper from a specific campaign
 	$hopper_ready_count=0;
 	$stmtA = "SELECT count(*) from $osdial_hopper where campaign_id='$campaign_id[$i]' and status='READY';";
@@ -1351,7 +1365,7 @@ foreach(@campaign_id)
 			if ($lead_order[$i] =~ /^UP PHONE/) {$order_stmt = 'order by phone_number desc, lead_id asc';}
 			if ($lead_order[$i] =~ /^DOWN PHONE/) {$order_stmt = 'order by phone_number, lead_id asc';}
 			if ($lead_order[$i] =~ /^UP COUNT/) {$order_stmt = 'order by called_count desc, lead_id asc';}
-			if ($lead_order[$i] =~ /^DOWN COUNT/) {$order_stmt = 'order by called_count, lead_id asc';}
+			if ($lead_order[$i] =~ /^DOWN COUNT/) {$order_stmt = 'order by called_count, lead_id desc';}
 			if ($lead_order[$i] =~ /^RANDOM/) {$order_stmt = 'order by RAND()';}
 			if ($lead_order[$i] =~ / 2nd NEW$/) {$NEW_count = 2;}
 			if ($lead_order[$i] =~ / 3rd NEW$/) {$NEW_count = 3;}
