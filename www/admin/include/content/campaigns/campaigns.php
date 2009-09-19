@@ -1682,7 +1682,7 @@ if ($ADD==34)
 		echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$row[2]</option></select>$NWB#osdial_campaigns-active$NWE</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Park Extension: </td><td align=left>$row[9] - $row[10]$NWB#osdial_campaigns-park_ext$NWE</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left>$row[11]$NWB#osdial_campaigns-web_form_address$NWE</td></tr>\n";
-		echo "<tr bgcolor=$oddrows><td align=right>Web Form 2: </td><td align=left>$row[68]$NWB#osdial_campaigns-web_form_address$NWE</td></tr>\n";
+		echo "<tr bgcolor=$oddrows><td align=right>Web Form 2: </td><td align=left>$row[69]$NWB#osdial_campaigns-web_form_address$NWE</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Allow Closers: </td><td align=left>$row[12] $NWB#osdial_campaigns-allow_closers$NWE</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Default Transfer Group: </td><td align=left>$default_xfer_group $NWB#osdial_campaigns-default_xfer_group$NWE</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Allow Inbound and Blended: </td><td align=left>$campaign_allow_inbound $NWB#osdial_campaigns-campaign_allow_inbound$NWE</td></tr>\n";
