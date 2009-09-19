@@ -87,6 +87,12 @@ while ($i < $sthArows) {
 $sthA->finish;
 foreach my $qcs (@qc_servers) {
 	my $error;
+        $ENV{FTP_PASSIVE} = "0";
+        if ($qcs->{transfer_method} eq "FTP") {
+                $ENV{FTP_PASSIVE} = "1";
+        } elsif ($qcs->{transfer_method} eq "FTPA") {
+                $qcs->{transfer_method} = "FTP";
+        }
 	if ($qcs->{transfer_type} eq "IMMEDIATE") {
 		$error = modeImmediate($config,$verbose,$CLOtest,$dbhA,$qcs);
 	} elsif ($qcs->{transfer_type} eq "BATCH" or $qcs->{transfer_type} eq "ARCHIVE") {

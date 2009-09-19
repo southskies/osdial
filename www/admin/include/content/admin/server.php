@@ -606,6 +606,8 @@ if ($ADD==499111111111111) {
 
 		if ($archive_transfer_method == "FTP" and $archive_port == "") {
 			$archive_port = "21";
+		} elseif ($archive_transfer_method == "FTPA" and $archive_port == "") {
+			$archive_port = "21";
 		} elseif ($archive_transfer_method == "SFTP" and $archive_port == "") {
 			$archive_port = "22";
 		} elseif ($archive_transfer_method == "SCP" and $archive_port == "") {
@@ -689,9 +691,17 @@ if ($ADD=="399111111111111") {
 		echo "<center><br><font color=$default_text size=+1>MODIFY ARCHIVE SERVER SETTINGS</font><br><form action=$PHP_SELF method=POST>\n";
 		echo "<input type=hidden name=ADD value=499111111111111>\n";
 		echo "<center><TABLE width=$section_width cellspacing=3>\n";
-
 		echo "<tr bgcolor=$oddrows><td align=right>Archive Server Address: </td><td align=left><input type=text name=archive_hostname size=30 maxlength=30 value=\"$archive_hostname\">$NWB#settings-archive_hostname$NWE</td></tr>\n";
-		echo "<tr bgcolor=$oddrows><td align=right>Transfer Method: </td><td align=left><select size=1 name=archive_transfer_method><option>FTP</option><option>SFTP</option><option>SCP</option><option selected>$archive_transfer_method</option></select>$NWB#settings-archive_transfer_method$NWE</td></tr>\n";
+
+        echo "<tr bgcolor=#B6D3FC><td align=right>Archive Server Address: </td><td align=left><input type=text name=archive_hostname size=30 maxlength=30 value=\"$archive_hostname\">$NWB#settings-archive_hostname$NWE</td></tr>\n";
+        $atmsel = "<option selected>" . $archive_transfer_method . "</option>";
+        if ($archive_transfer_method == "FTP") {
+            $atmsel = "<option selected value=\"FTP\">FTP (passive)</option>";
+        } elseif ($archive_transfer_method == "FTPA") {
+            $atmsel = "<option selected value=\"FTPA\">FTP (active)</option>";
+        }
+        echo "<tr bgcolor=#B6D3FC><td align=right>Transfer Method: </td><td align=left><select size=1 name=archive_transfer_method><option value=\"FTP\">FTP (passive)</option><option value=\"FTPA\">FTP (active)</option><option>SFTP</option><option>SCP</option>$atmsel</select>$NWB#settings-archive_transfer_method$NWE</td></tr>\n";
+
 		echo "<tr bgcolor=$oddrows><td align=right>Port: </td><td align=left><input type=text name=archive_port size=6 maxlength=5 value=\"$archive_port\">$NWB#settings-archive_port$NWE</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Username: </td><td align=left><input type=text name=archive_username size=20 maxlength=20 value=\"$archive_username\">$NWB#settings-archive_username$NWE</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=archive_password size=20 maxlength=20 value=\"$archive_password\">$NWB#settings-archive_password$NWE</td></tr>\n";
@@ -1016,7 +1026,15 @@ if ($ADD=="399211111111111") {
 	
 			echo "<tr bgcolor=$oddrows><td align=right>Name: </td><td align=left><input type=text name=qc_server_name size=20 maxlength=20 value=\"$qc_server_name\">$NWB#qc-server_name$NWE</td></tr>\n";
 			echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=qc_server_description size=40 maxlength=100 value=\"$qc_server_description\">$NWB#qc-server_description$NWE</td></tr>\n";
-			echo "<tr bgcolor=$oddrows><td align=right>Transfer Method: </td><td align=left><select size=1 name=qc_server_transfer_method><option>FTP</option><option>SFTP</option><option>SCP</option><option selected>$qc_server_transfer_method</option></select>$NWB#qc-server_transfer_method$NWE</td></tr>\n";
+
+            $qctmsel = "<option selected>" . $qc_server_transfer_method . "</option>";
+            if ($qc_server_transfer_method == "FTP") {
+                $qctmsel = "<option selected value=\"FTP\">FTP (passive)</option>";
+            } elseif ($qc_server_transfer_method == "FTPA") {
+                $qctmsel = "<option selected value=\"FTPA\">FTP (active)</option>";
+            }
+            echo "<tr bgcolor=#B6D3FC><td align=right>Transfer Method: </td><td align=left><select size=1 name=qc_server_transfer_method><option value=\"FTP\">FTP (passive)</option><option value=\"FTPA\">FTP (active)</option><option>SFTP</option><option>SCP</option>$qctmsel</select>$NWB#qc-server_transfer_method$NWE</td></tr>\n";
+
 			echo "<tr bgcolor=$oddrows><td align=right>Hostname/IP: </td><td align=left><input type=text name=qc_server_host size=30 maxlength=50 value=\"$qc_server_host\">$NWB#qc-server_host$NWE</td></tr>\n";
 			echo "<tr bgcolor=$oddrows><td align=right>Username: </td><td align=left><input type=text name=qc_server_username size=30 maxlength=30 value=\"$qc_server_username\">$NWB#qc-server_username$NWE</td></tr>\n";
 			echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=qc_server_password size=30 maxlength=30 value=\"$qc_server_password\">$NWB#qc-server_password$NWE</td></tr>\n";
