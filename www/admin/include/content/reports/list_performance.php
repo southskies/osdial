@@ -144,6 +144,9 @@ function report_list_performance() {
         $i++;
     }
     $SCsales = eregi_replace(",$",'',$SCsales);
+    if ($csc_ct < 2) {
+        $SCsales = "'SALE','XFER'";
+    }
 
     $html .= "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/$admin_template/styles.css\" media=\"screen\">\n";
     $html .= "<style type=\"text/css\">\n";
