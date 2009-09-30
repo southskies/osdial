@@ -65,7 +65,7 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8) {
         foreach ($leads as $lead) {
             $output = '';
             foreach ($ffield as $field) {
-                $output .= '"' . strtr($lead[$field],'"','') . '",';
+                $output .= '"' . eregi_replace("\n","",strtr($lead[$field],'"','')) . '",';
             }
             echo chop($output,',') . "\r\n";
         }
