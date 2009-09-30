@@ -235,7 +235,7 @@ $i=0;
 while ($i < $rows_to_print)
 	{
 	$row=mysql_fetch_row($rslt);
-	$row[0] = ($row[0] - 1);	# subtract 1 for login/logout event compensation
+	#$row[0] = ($row[0] - 1);	# subtract 1 for login/logout event compensation
 	
 	$calls[$i] =		$row[0];
 	$talk_sec[$i] =		$row[1];
