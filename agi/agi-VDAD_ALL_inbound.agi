@@ -1256,7 +1256,7 @@ $now_date = "$year-$mon-$mday $hour:$min:$sec";
 	$CIDdate = "$mon$mday$hour$min$sec";
 	$tsSQLdate = "$year$mon$mday$hour$min$sec";
 	$SQLdate = "$year-$mon-$mday $hour:$min:$sec";
-	$VDADvoicemail_ext = '';
+	#$VDADvoicemail_ext = '';
 
 $DROPexten = '';
 if ($drop_seconds < 1) 
