@@ -536,8 +536,12 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // filter manual dialstring and pass on to originate call
 	function SendManualDial(taskFromConf)
 		{
+		var regXFvars = new RegExp("XFER","g");
 		if (taskFromConf == 'YES')
 			{
+                        if (document.osdial_form.xfernumber.value == '' && CalL_XC_a_NuMber.match(regXFvars)) {
+                                document.osdial_form.xfernumber.value = CalL_XC_a_NuMber;
+                        }
 			var manual_number = document.osdial_form.xfernumber.value;
 			var manual_string = manual_number.toString();
 			var dial_conf_exten = session_id;
@@ -547,7 +551,6 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			var manual_number = document.osdial_form.xfernumber.value;
 			var manual_string = manual_number.toString();
 			}
-		var regXFvars = new RegExp("XFER","g");
 		if (manual_string.match(regXFvars))
 			{
 			var donothing=1;
@@ -570,12 +573,16 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 					}
 				}
 			}
-		if (taskFromConf == 'YES')
-			{basic_originate_call(manual_string,'NO','YES',dial_conf_exten,'NO',taskFromConf);}
-		else
-			{basic_originate_call(manual_string,'NO','NO');}
+		if (manual_string != '') {
+			if (taskFromConf == 'YES')
+				{basic_originate_call(manual_string,'NO','YES',dial_conf_exten,'NO',taskFromConf);}
+			else
+				{basic_originate_call(manual_string,'NO','NO');}
 
-		MD_ring_secondS=0;
+			MD_ring_secondS=0;
+		} else {
+			 alert("You must enter a number.");
+		}
 		}
 
 // ################################################################################
@@ -1183,6 +1190,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				}
 			if (taskvar == 'XfeRLOCAL')
 				{
+				CustomerData_update();
 				var XfeRSelecT = document.getElementById("XfeRGrouP");
 				var queryCID = "XLvdcW" + epoch_sec + user_abb;
 				// 		 "90009*$group**$lead_id**$phone_number*$user*";
@@ -1336,6 +1344,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
                         if (taskvar == 'XfeRVMAIL') {
                                 document.osdial_form.DispoSelection.value = 'AM';
                                 dialedcall_send_hangup('NO');
+                              	alt_dial_active=0;
+                                reselect_alt_dial=0;
                                 DispoSelect_submit();
                         } else {
                                 dialedcall_send_hangup();
@@ -2051,10 +2061,11 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						source_id										= MDnextResponse_array[34];
 						document.osdial_form.custom2.value	= MDnextResponse_array[35];
 						external_key										= MDnextResponse_array[36];
+						document.osdial_form.post_date.value	= MDnextResponse_array[37];
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
-        $rcnt = $cnt + 37;
+        $rcnt = $cnt + 38;
         echo '          document.osdial_form.' . $ffields[$cnt] . ".value = MDnextResponse_array[" . $rcnt . "];\n";
         $cnt++;
     }
@@ -2117,6 +2128,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						"&dialed_label=" + dialed_label + '' +
 						"&source_id=" + source_id + '' +
 						"&external_key=" + external_key + '' +
+						"&post_date=" + document.osdial_form.post_date.value + 
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
@@ -2345,6 +2357,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							document.osdial_form.custom2.value='';
 							document.osdial_form.comments.value		='';
 							document.osdial_form.called_count.value	='';
+							document.osdial_form.post_date.value='';
 							VDCL_group_id = '';
 							fronter = '';
 							previous_called_count = '';
@@ -2817,10 +2830,11 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							source_id										= check_VDIC_array[38];
 							document.osdial_form.custom2.value	= check_VDIC_array[39];
 							external_key										= check_VDIC_array[40];
+							document.osdial_form.post_date.value	= check_VDIC_array[41];
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
-        $rcnt = $cnt + 41;
+        $rcnt = $cnt + 42;
         echo '          document.osdial_form.' . $ffields[$cnt] . ".value = check_VDIC_array[" . $rcnt . "];\n";
         $cnt++;
     }
@@ -2955,6 +2969,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							"&dialed_label=" + dialed_label + '' +
 							"&source_id=" + source_id + '' +
 							"&external_key=" + external_key + '' +
+							"&post_date=" + document.osdial_form.post_date.value + 
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
@@ -3153,6 +3168,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							document.osdial_form.called_count.value	= check_RPLD_array[24];
 							document.osdial_form.custom2.value	= check_RPLD_array[25];
 							external_key	= check_RPLD_array[26];
+							document.osdial_form.post_date.value	= check_RPLD_array[27];
 
 							if ( (dialed_label.length < 3) || (dialed_label=='NONE') )
 								dialed_label='MAIN';
@@ -3162,7 +3178,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
-        $rcnt = $cnt + 27;
+        $rcnt = $cnt + 28;
         echo '          document.osdial_form.' . $ffields[$cnt] . ".value = check_RPLD_array[" . $rcnt . "];\n";
         $cnt++;
     }
@@ -3218,6 +3234,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							"&dialed_label=" + dialed_label + '' +
 							"&source_id=" + source_id + '' +
 							"&external_key=" + external_key + '' +
+							"&post_date=" + document.osdial_form.post_date.value + '' +
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
@@ -3332,6 +3349,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		"&dialed_label=" + dialed_label + '' +
 		"&source_id=" + source_id + '' +
 		"&external_key=" + external_key + '' +
+		"&post_date=" + document.osdial_form.post_date.value + 
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
@@ -3886,6 +3904,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			"&email=" + document.osdial_form.email.value + 
 			"&custom1=" + document.osdial_form.custom1.value + 
 			"&custom2=" + document.osdial_form.custom2.value + 
+			"&post_date=" + document.osdial_form.post_date.value + 
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
@@ -4020,7 +4039,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 			if ( (DispoChoice == 'CALLBK') && (scheduled_callbacks > 0) ) {
 				showDiv('CallBackSelectBox');
-			} else if ( (DispoChoice == 'PD' && PostDatETimE == '') ) {
+			} else if ( (DispoChoice == 'PD' && PostDatETimE == '' && (document.osdial_form.post_date.value == '0000-00-00' || document.osdial_form.post_date.value == '0000-00-00 00:00:00') ) ) {
 				showDiv('PostDateSelectBox');
 			} else {
 				var xmlhttp=false;
@@ -4091,6 +4110,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				document.osdial_form.custom2.value='';
 				document.osdial_form.comments.value		='';
 				document.osdial_form.called_count.value	='';
+				document.osdial_form.post_date.value	='';
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {

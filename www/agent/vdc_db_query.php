@@ -672,7 +672,7 @@ if ($ACTION == 'manDiaLnextCaLL')
 			    $rslt=mysql_query($stmt, $link);
 			    $affected_rows = mysql_affected_rows($link);
             } else {
-			    $stmt = "SELECT hopper_id FROM osdial_hopper AS oh,osdial_list AS ol WHERE oh.lead_id=ol.lead_id AND oh.campaign_id='$campaign' AND oh.status='READY' AND ol.status!='NEW' ORDER BY hopper_id LIMIT 1";
+			    $stmt = "SELECT hopper_id FROM osdial_hopper AS oh,osdial_list AS ol WHERE oh.lead_id=ol.lead_id AND oh.campaign_id='$campaign' AND oh.status='READY' AND ol.status!='NEW' ORDER BY priority desc,hopper_id LIMIT 1";
 			    $rslt=mysql_query($stmt, $link);
 			    if ($DB) {echo "$stmt\n";}
 			    $mdn_hopper_ct = mysql_num_rows($rslt);
@@ -743,6 +743,7 @@ if ($ACTION == 'manDiaLnextCaLL')
 				$called_count	= trim("$row[30]");
 				$custom2		= trim("$row[31]");
 				$external_key	= trim("$row[32]");
+				$post_date  	= trim("$row[35]");
 				}
 
 			$called_count++;
@@ -925,6 +926,7 @@ if ($ACTION == 'manDiaLnextCaLL')
 			$LeaD_InfO .=	$source_id . "\n";
 			$LeaD_InfO .=	$custom2 . "\n";
 			$LeaD_InfO .=	$external_key . "\n";
+			$LeaD_InfO .=	$post_date . "\n";
 
 			$forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
 			$cnt = 0;
@@ -1753,6 +1755,7 @@ if ($ACTION == 'VDADcheckINCOMING')
 			$called_count	= trim("$row[30]");
 			$custom2		= trim("$row[31]");
 			$external_key	= trim("$row[32]");
+			$post_date  	= trim("$row[35]");
 			}
 
 		##### if lead is a callback, grab the callback comments
@@ -1979,6 +1982,7 @@ if ($ACTION == 'VDADcheckINCOMING')
 		$LeaD_InfO .=	$source_id . "\n";
 		$LeaD_InfO .=	$custom2 . "\n";
 		$LeaD_InfO .=	$external_key . "\n";
+		$LeaD_InfO .=	$post_date . "\n";
 
 		$forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
 		$cnt = 0;
@@ -2792,6 +2796,7 @@ if ($ACTION == 'RepullLeadData')
 		}
 		$custom2	= trim("$row[31]");
 		$external_key	= trim("$row[32]");
+		$post_date	= trim("$row[35]");
 	}
 
 	### update the old lead status to REPULL
@@ -2854,6 +2859,7 @@ if ($ACTION == 'RepullLeadData')
 	$LeaD_InfO .=	$called_count . "\n";
 	$LeaD_InfO .=	$custom2 . "\n";
 	$LeaD_InfO .=	$external_key . "\n";
+	$LeaD_InfO .=	$post_date . "\n";
 
 	$forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
 	$cnt = 0;

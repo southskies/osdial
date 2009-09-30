@@ -2918,8 +2918,13 @@ foreach ($forms as $form) {
 							
 						</tr>
                         <tr>
-                            <td align=right><font class="body_text"> <font color=<?=$form_fc?>>Birth&nbsp;<br>Date:&nbsp;</font></td>
-                            <td align=left><font class="body_input"><input type=text size=12 name=date_of_birth maxlength=10 class="cust_form" value=""></font>&nbsp;<font class="body_text" color=<?=$form_fc?>>Gender:&nbsp;</font><font class="body_input"><select name=gender class="cust_form"><option></option><option>M</option><option>F</option></select></font></td>
+                            <td align=right><font class="body_text"><font color=<?=$form_fc?>>Birth&nbsp;<br>Date:&nbsp;</font></td>
+                            <td align=left><font class="body_input"><input type=text size=12 name=date_of_birth maxlength=10 class="cust_form" value=""></font></td>
+                            <td align=right>&nbsp;<font class="body_text" color=<?=$form_fc?>>Gender:&nbsp;</font><font class="body_input"><select name=gender class="cust_form"><option></option><option>M</option><option>F</option></select></font></td>
+                        </tr>
+                        <tr>
+                            <td align=right><font class="body_text"><font color=<?=$form_fc?>>Post&nbsp;<br>Date:&nbsp;</font></td>
+                            <td align=left><font class="body_input"><input type=text size=22 name=post_date maxlength=20 class="cust_form" value=""></font></td>
                             <td align=right><font class="body_text" color=<?=$form_fc?>>Vendor&nbsp;Code:&nbsp;</font><font class="body_input"><input type=text size=15 name=vendor_lead_code maxlength=20 class="cust_form" value=""></font></td>
                         </tr>
 
