@@ -617,6 +617,10 @@ if ($ADD==1122) {
         echo "      <font color=$default_text size=2>Statuses</font><br>\n";
         echo "      <select name=statuses[] size=5 multiple>\n";
         $krh = get_krh($link, 'osdial_statuses', 'status,status_name');
+        $krh2 = get_krh($link, 'osdial_campaign_statuses', 'status,status_name');
+        foreach ($krh2 as $k => $v) {
+            $krh[$k] = $v;
+        }
         echo format_select_options($krh, 'status', 'status_name', $statuses, "-- ALL --");
         echo "      </select>\n";
         echo "    </td>\n";
