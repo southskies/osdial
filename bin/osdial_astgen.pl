@@ -434,7 +434,7 @@ sub gen_phones {
 	my $iphn = $achead;
 	my $ephn = $achead;
 
-	my $stmtA = "SELECT extension,dialplan_number,phone_ip,pass,protocol,phone_type FROM phones WHERE protocol IN ('SIP','IAX2','Zap','DAHDI') AND active='Y' AND (";
+	my $stmtA = "SELECT extension,dialplan_number,phone_ip,pass,protocol,phone_type,voicemail_id FROM phones WHERE protocol IN ('SIP','IAX2','Zap','DAHDI') AND active='Y' AND (";
 	foreach my $ip (@myips) {
 		$stmtA .= " server_ip=\'" . $ip . "\' OR";
 	}
@@ -444,6 +444,7 @@ sub gen_phones {
 	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	while (my @aryA = $sthA->fetchrow_array) {
+		$aryA[6] = '9999' if ($aryA[6] == "");
 		if ($aryA[4] eq "SIP" and $aryA[0] !~ /\@/) {
 			$sphn .= ";\n[". $aryA[0] ."]\n";
 			$sphn .= "type=friend\n";
@@ -466,6 +467,7 @@ sub gen_phones {
 			}
 			$sphn .= "qualify=5000\n";
 			$sphn .= "nat=yes\n";
+			$sphn .= "mailbox=" . $aryA[6] . "\@default\n";
 		} elsif ($aryA[4] eq "IAX2" and $aryA[0] !~ /\@|\//) {
 			$iphn .= ";\n[". $aryA[0] ."]\n";
 			$iphn .= "type=friend\n";
@@ -481,6 +483,7 @@ sub gen_phones {
 			$iphn .= "allow=$codec\n";
 			$iphn .= "qualify=5000\n";
 			$iphn .= "nat=yes\n";
+			$iphn .= "mailbox=" . $aryA[6] . "\@default\n";
 		}
 		my $dext = $aryA[4] . "/" . $aryA[0];
 		if ($aryA[4] =~ /SIP|IAX2/ and $aryA[0] =~ /\@/) {
