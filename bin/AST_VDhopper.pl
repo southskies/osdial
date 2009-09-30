@@ -243,6 +243,8 @@ foreach(@conf)
 		{$VARflush_hopper_each_run = $line;   $VARflush_hopper_each_run =~ s/.*=//gi;}
 	if ( ($line =~ /^VARflush_hopper_manual/) && ($CLIflush_hopper_manual < 1) )
 		{$VARflush_hopper_manual = $line;   $VARflush_hopper_manual =~ s/.*=//gi;}
+	if ( ($line =~ /^VARhopper_newentry_priority/) && ($CLIhopper_newentry_priority < 1) )
+		{$VARhopper_newentry_priority = $line;   $VARhopper_newentry_priority =~ s/.*=//gi;}
 	$i++;
 	}
 
@@ -1383,11 +1385,12 @@ foreach(@campaign_id)
 			@REC_status_to_hopper=@MT;
 			@REC_modify_to_hopper=@MT;
 			@REC_user_to_hopper=@MT;
+			@REC_priority_to_hopper=@MT;
 			if ($rec_ct[$i] > 0)
 				{
 				if ($DB) {print "     looking for RECYCLE leads, maximum of $hopper_level[$i]\n";}
 
-				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user FROM osdial_list where $recycle_SQL[$i] and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] limit $hopper_level[$i];";
+				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list where $recycle_SQL[$i] and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] limit $hopper_level[$i];";
 				if ($DBX) {print "     |$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1405,6 +1408,15 @@ foreach(@campaign_id)
 					$REC_status_to_hopper[$REC_rec_countLEADS] = "$aryA[5]";
 					$REC_modify_to_hopper[$REC_rec_countLEADS] = "$aryA[6]";
 					$REC_user_to_hopper[$REC_rec_countLEADS] = "$aryA[7]";
+					$REC_priority_to_hopper[$REC_rec_countLEADS] = "0";
+					if ($VARhopper_newentry_priority == 1) {
+						if ($aryA[5] eq "NEW") {
+							$REC_priority_to_hopper[$REC_rec_countLEADS] = "1";
+							$REC_priority_to_hopper[$REC_rec_countLEADS] = "2" if ($aryA[8] >= 0);
+						} else {
+							$REC_priority_to_hopper[$REC_rec_countLEADS] = "$aryA[8]";
+						}
+					}
 					if ($DB_show_offset) {print "LEAD_ADD: $aryA[2] $aryA[3] $aryA[4]\n";}
 					$REC_rec_countLEADS++;
 					}
@@ -1427,6 +1439,7 @@ foreach(@campaign_id)
 			@NEW_status_to_hopper=@MT;
 			@NEW_modify_to_hopper=@MT;
 			@NEW_user_to_hopper=@MT;
+			@NEW_priority_to_hopper=@MT;
 			if ( ($NEW_count > 0) && ($list_order_mix[$i] =~ /DISABLED/) )
 				{
 				$NEW_level = int($hopper_level[$i] / $NEW_count);   
@@ -1434,7 +1447,7 @@ foreach(@campaign_id)
 			#	$order_stmt = 'order by called_count, lead_id asc';
 				if ($DB) {print "     looking for $NEW_level NEW leads mixed in with $OTHER_level other leads\n";}
 
-				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user FROM osdial_list where called_since_last_reset='N' and status IN('NEW') and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $NEW_level;";
+				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list where called_since_last_reset='N' and status IN('NEW') and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $NEW_level;";
 				if ($DBX) {print "     |$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1450,6 +1463,15 @@ foreach(@campaign_id)
 					$NEW_status_to_hopper[$NEW_rec_countLEADS] = "$aryA[5]";
 					$NEW_modify_to_hopper[$NEW_rec_countLEADS] = "$aryA[6]";
 					$NEW_user_to_hopper[$NEW_rec_countLEADS] = "$aryA[7]";
+					$NEW_priority_to_hopper[$NEW_rec_countLEADS] = "0";
+					if ($VARhopper_newentry_priority == 1) {
+						if ($aryA[5] eq "NEW") {
+							$NEW_priority_to_hopper[$NEW_rec_countLEADS] = "1";
+							$NEW_priority_to_hopper[$NEW_rec_countLEADS] = "2" if ($aryA[8] >= 0);
+						} else {
+							$NEW_priority_to_hopper[$NEW_rec_countLEADS] = "$aryA[8]";
+						}
+					}
 					if ($DB_show_offset) {print "LEAD_ADD: $aryA[2] $aryA[3] $aryA[4]\n";}
 					$NEW_rec_countLEADS++;
 					}
@@ -1471,13 +1493,14 @@ foreach(@campaign_id)
 			@status_to_hopper=@MT;
 			@modify_to_hopper=@MT;
 			@user_to_hopper=@MT;
+			@priority_to_hopper=@MT;
 			if ($campaign_leads_to_call[$i] > 0)
 				{
 				if ($DB) {print "     lead call order:      $order_stmt\n";}
 
 				if ($list_order_mix[$i] =~ /DISABLED/)
 					{
-					$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user FROM osdial_list where $cclr and status IN($STATUSsql[$i]) and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $OTHER_level;";
+					$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list where $cclr and status IN($STATUSsql[$i]) and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $OTHER_level;";
 					if ($DBX) {print "     |$stmtA|\n";}
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1502,6 +1525,7 @@ foreach(@campaign_id)
 								$status_to_hopper[$rec_countLEADS] = "$NEW_status_to_hopper[$NEW_in]";
 								$modify_to_hopper[$rec_countLEADS] = "$NEW_modify_to_hopper[$NEW_in]";
 								$user_to_hopper[$rec_countLEADS] = "$NEW_user_to_hopper[$NEW_in]";
+								$priority_to_hopper[$rec_countLEADS] = "$NEW_priority_to_hopper[$NEW_in]";
 								if ($DB_show_offset) {print "LEAD_ADD:    $NEW_leads_to_hopper[$NEW_in]   $NEW_phone_to_hopper[$NEW_in]\n";}
 								$rec_countLEADS++;
 								$NEW_in++;
@@ -1530,6 +1554,15 @@ foreach(@campaign_id)
 						$status_to_hopper[$rec_countLEADS] = "$aryA[5]";
 						$modify_to_hopper[$rec_countLEADS] = "$aryA[6]";
 						$user_to_hopper[$rec_countLEADS] = "$aryA[7]";
+						$priority_to_hopper[$rec_countLEADS] = "0";
+						if ($VARhopper_newentry_priority == 1) {
+							if ($aryA[5] eq "NEW") {
+								$priority_to_hopper[$rec_countLEADS] = "1";
+								$priority_to_hopper[$rec_countLEADS] = "2" if ($aryA[8] >= 0);
+							} else {
+								$priority_to_hopper[$rec_countLEADS] = "$aryA[8]";
+							}
+						}
 						if ($DB_show_offset) {print "LEAD_ADD: $aryA[2] $aryA[3] $aryA[4]\n";}
 						$rec_countLEADS++;
 						$rec_count++;
@@ -1557,7 +1590,7 @@ foreach(@campaign_id)
 						if ($DBX) {print "  LM $x |$list_mix_stepARY[0]|$list_mix_stepARY[2]|$LM_step_goal[$x]|$list_mix_stepARY[3]|\n";}
 						$list_mix_dialableSQL = "(list_id='$list_mix_stepARY[0]' and status IN($list_mix_stepARY[3]))";
 
-						$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user FROM osdial_list where $cclr and $list_mix_dialableSQL and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $LM_step_goal[$x];";
+						$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list where $cclr and $list_mix_dialableSQL and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $LM_step_goal[$x];";
 						if ($DBX) {print "     |$stmtA|\n";}
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1580,8 +1613,17 @@ foreach(@campaign_id)
 									$order = ( ($x * 1000000) + $rec_count);
 									}
 								}
+							$LMpriority = "0";
+							if ($VARhopper_newentry_priority == 1) {
+								if ($aryA[5] eq "NEW") {
+									$LMpriority = "1";
+									$LMpriority = "2" if ($aryA[8] >= 0);
+								} else {
+									$LMpriority = "$aryA[8]";
+								}
+							}
 							$order = sprintf('%.09f',$order);
-							$LM_results[$z] = "$order$USX$aryA[0]$USX$aryA[1]$USX$aryA[2]$USX$aryA[3]$USX$aryA[4]$USX$aryA[5]$USX$aryA[6]$USX$aryA[7]";
+							$LM_results[$z] = "$order$USX$aryA[0]$USX$aryA[1]$USX$aryA[2]$USX$aryA[3]$USX$aryA[4]$USX$aryA[5]$USX$aryA[6]$USX$aryA[7]$USX$LMpriority";
 						#	if ($DBX) {print "     $z|$LM_results[$z]\n";}
 
 							$rec_count++;
@@ -1622,6 +1664,7 @@ foreach(@campaign_id)
 						$status_to_hopper[$rec_countLEADS] = "$aryA[6]";
 						$modify_to_hopper[$rec_countLEADS] = "$aryA[7]";
 						$user_to_hopper[$rec_countLEADS] = "$aryA[8]";
+						$priority_to_hopper[$rec_countLEADS] = "$aryA[9]";
 						if ($DB_show_offset) {print "LEAD_ADD: $aryA[3] $aryA[4] $aryA[5]\n";}
 						if ($DBX) {print "     $w|$LM_results[$w]\n";}
 						$rec_countLEADS++;
@@ -1642,6 +1685,7 @@ foreach(@campaign_id)
 					$status_to_hopper[$rec_countLEADS] = "$REC_status_to_hopper[$REC_insert_count]";
 					$modify_to_hopper[$rec_countLEADS] = "$REC_modify_to_hopper[$REC_insert_count]";
 					$user_to_hopper[$rec_countLEADS] = "$REC_user_to_hopper[$REC_insert_count]";
+					$priority_to_hopper[$rec_countLEADS] = "$REC_priority_to_hopper[$REC_insert_count]";
 					$rec_countLEADS++;
 					$REC_insert_count++;
 					}
@@ -1681,7 +1725,7 @@ foreach(@campaign_id)
 						}
 					if ($DNClead == '0')
 						{
-						$stmtA = "INSERT INTO $osdial_hopper (lead_id,campaign_id,status,user,list_id,gmt_offset_now,state,priority) values('$leads_to_hopper[$h]','$campaign_id[$i]','READY','','$lists_to_hopper[$h]','$gmt_to_hopper[$h]','$state_to_hopper[$h]','0');";
+						$stmtA = "INSERT INTO $osdial_hopper (lead_id,campaign_id,status,user,list_id,gmt_offset_now,state,priority) values('$leads_to_hopper[$h]','$campaign_id[$i]','READY','','$lists_to_hopper[$h]','$gmt_to_hopper[$h]','$state_to_hopper[$h]','$priority_to_hopper[$h]');";
 						$affected_rows = $dbhA->do($stmtA);
 						if ($DBX) {print "LEAD INSERTED: $affected_rows|$leads_to_hopper[$h]|\n";}
 						}
