@@ -900,7 +900,7 @@ if ($agent_search_method =~ /^SO|^LO/)
 
 			print "SET CONTEXT $ext_context\n";
 				checkresult();
-			print "SET EXTENSION $VDADconf_exten\n";
+			print "SET EXTENSION 7$VDADconf_exten\n";
 				checkresult();
 			print "SET PRIORITY 1\n";
 				checkresult();
@@ -1073,7 +1073,7 @@ if ($agent_search_method =~ /^LO|^LB/)
 				}
 			$alertVDADremDIALstr = "$VDADremDIALstr";
 			$alertVDADremDIALstr .= "7$VDADconf_exten";
-			$VDADremDIALstr .= "$VDADconf_exten";
+			$VDADremDIALstr .= "7$VDADconf_exten";
 
 			### if agent alert exten is not disabled, then trigger the alert and wait
 			if ($agent_alert_exten !~ /X/i)
