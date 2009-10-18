@@ -203,7 +203,7 @@ sub ivr_menu {
 		$sthA->finish();
 		agi_output("+++++ ODOI VALID DIGITS : $valid_digits");
 	
-		my $dtmf = stream_and_get_dtmf($menu{announcement},1,$menu{repeat_loops},$menu{wait_loops},$menu{wait_timeout},$menu{timeout_action},$valid_digits);
+		my $dtmf = stream_and_get_dtmf("ivr/" . $menu{announcement},1,$menu{repeat_loops},$menu{wait_loops},$menu{wait_timeout},$menu{timeout_action},$valid_digits);
 		agi_output("+++++ ODOI STATUS : pressed $dtmf");
 	
 		my $dkey = "key" . $dtmf;
@@ -221,6 +221,8 @@ sub ivr_menu {
 			$ivrloop = xfer_to_ingroup(@aparams);
 		} elsif ($menu{$dkey}{action} eq "HANGUP") {
 			$ivrloop = hangup_and_dispo(@aparams);
+		} elsif ($menu{$dkey}{action} eq "TVC_LOOKUP") {
+			$ivrloop = tvc_lookup_xfer(@aparams);
 		} elsif ($menu{$dkey}{action} eq "MENU") {
 			my $submenuref = {};
 			$submenuref->{ivrid} = $menu{ivrid};
@@ -552,21 +554,88 @@ sub hangup_and_dispo {
 }
 
 
+#Special lookup from db for TVC
+sub tvc_lookup_xfer {
+	my ($desc, $status, $stream1, $stream2, $ingroup, $tdbserver, $tdbdatabase, $tdbuser, $tdbpass, $tdbtable, $tdbmaps) = @_;
+
+	return 0 if ($tdbtable eq "" or $tdbmaps eq "");
+	$tdbmaps =~ s/ //g;
+	my %tmaps;
+	my @tflds;
+	foreach my $tmap (split(/,/,$tdbmaps)) {
+		my @tamap = split(/=/,$tmap);
+		$tmaps{$tamap[0]} = $tamap[1];
+		if ($tamap[1] =~ /\|/) {
+			push @tflds, split(/\|/,$tamap[1]);
+		} else {
+			push @tflds, $tamap[1];
+		}
+	}
+
+	agi_output("|tvclookup|playback on $stream1|") if ($vars->{DB});
+	my $s1res = stream_and_get_dtmf("ivr/" . $stream1, 10, 3, 10, 1000, 'BAD', '1234567890', 10, '');
+	agi_output("|tvclookup|got $s1res|") if ($vars->{DB});
+	return 0 if ($s1res eq "BAD");
+
+	agi_output("|tvclookup|playback on $stream2|") if ($vars->{DB});
+	my $s2res = stream_and_get_dtmf("ivr/" . $stream2, 6, 3, 10, 1000, 'BAD', '01234567890', 2, '#');
+	agi_output("|tvclookup|got $s2res|") if ($vars->{DB});
+	return 0 if ($s2res eq "BAD");
+
+	my $dbhC = DBI->connect("DBI:mysql:" . $tdbdatabase . ":" . $tdbserver . ":3306", $tdbuser, $tdbpass )
+	  or die "Couldn't connect to database: " . DBI->errstr;
+
+	my $stmtC = "SELECT " . join(',', @tflds) . " FROM $tdbtable WHERE " . $tmaps{'phone_number'} . "='" . $s1res . "' limit 1;";
+	my $sthC = $dbhC->prepare($stmtC) or die "preparing: ",$dbhC->errstr;
+	$sthC->execute or die "executing: $stmtC ", $dbhC->errstr;
+	my $qhr = $sthC->fetchrow_hashref;
+
+	foreach my $fld ( keys %{$qhr} ) {
+		$qhr->{$fld} =~ s/'"//g;
+		agi_output("|tvclookup|$fld|" . $qhr->{$fld}) if ($vars->{DB});
+	}
+	my $stmtA = "UPDATE osdial_list SET custom1='" . $s2res . "',";
+	foreach my $tkey (keys %tmaps) {
+		$stmtA .= $tkey . "='";
+		if ($tmaps{$tkey} =~ /\|/) {
+			foreach my $tconcat (split(/\|/,$tmaps{$tkey})) {
+				$stmtA .= $tconcat . '=' .$qhr->{$tconcat} . "||";
+			}
+		} else {
+			$stmtA .= $qhr->{$tmaps{$tkey}};
+		}
+		$stmtA .= "',";
+	}
+	chop($stmtA);
+	$stmtA .= " WHERE lead_id='" . $vars->{CIDlead_id} . "';";
+	my $affected_rows = $dbhA->do($stmtA);
+	agi_output("|$stmtA|$affected_rows|") if ($vars->{DB} > 1);
+
+	$dbhC->disconnect;
+
+	return xfer_to_ingroup(0, $status, $ingroup, 'NONE', 0);
+}
 
 sub stream_and_get_dtmf {
-	my ($stream, $dcount, $rptloops, $waitloops, $waittimeout, $timeout_action, $valid_digits) = @_;
+	my ($stream, $dcount, $rptloops, $waitloops, $waittimeout, $timeout_action, $valid_digits, $min_digits, $exit_digit) = @_;
 	return -1 unless ($stream);
 	$dcount = 1 unless ($dcount);
 	$rptloops = 3 unless ($rptloops);
 	$waitloops = 5 unless ($waitloops);
 	$waittimeout = 500 unless ($waittimeout);
 	$valid_digits = '0123456789#*' unless ($valid_digits);
+	$valid_digits .= $exit_digit if ($exit_digit ne '');
 	$valid_digits = ''  if ($valid_digits == -1);
+	$min_digits = $dcount if ($min_digits eq '');
 
 	my $orig_dcount = $dcount;
 	my $rpt = 0;
 	my $total_digits;
+	$valid_digits =~ s/\*/\\*/g;
+	$valid_digits =~ s/\#/\\#/g;
 	my $valid_pat = '[^' . $valid_digits . ']';
+
+	agi_output("stream_and_get_dtmf|$stream|$dcount|$rptloops|$waitloops|$waittimeout|$timeout_action|$valid_digits|$min_digits|$exit_digit|") if ($vars->{DB});
 
 	while (length($total_digits) < $dcount and $rpt < $rptloops) {
 
@@ -577,45 +646,34 @@ sub stream_and_get_dtmf {
 
 		$total_digits = '';
 		$stream =~ s/\....$//;
-		my $interrupt_digit = $AGI->stream_file('ivr/' . $stream,$valid_digits);
-
+		my $interrupt_digit = $AGI->stream_file($stream,$valid_digits);
 		if ($interrupt_digit) {
 			agi_output("int_digit |" . chr($interrupt_digit) . "|   total_digits |$total_digits|") if ($vars->{DB});
 			$total_digits=chr($interrupt_digit);
-			my $loop = 0;
-			while (length($total_digits) < $dcount and $loop < $waitloops) {
-				my $digit = $AGI->wait_for_digit($waittimeout);
-				if ($digit) {
-					$digit = chr($digit);
-					$digit =~ s/$valid_pat//g;
-					if ($digit) {
-						agi_output("    digit |$digit|   total_digits |$total_digits|") if ($vars->{DB});
-						$total_digits .= $digit;
-					}
-				} else {
-					$loop++;
-				}
-				$loop = $waitloops if (length($total_digits) >= $dcount);
-			}
-		} elsif ($interrupt_digit == 0) {
-			my $loop = 0;
-			while (length($total_digits) < $dcount and $loop < $waitloops) {
-				my $digit = $AGI->wait_for_digit($waittimeout);
-				if ($digit) {
-					$digit = chr($digit);
-					$digit =~ s/$valid_pat//g;
-					if ($digit) {
-						agi_output("    digit |$digit|   total_digits |$total_digits|") if ($vars->{DB});
-						$total_digits .= $digit;
-					}
-				} else {
-					$loop++;
-				}
-				$loop = $waitloops if (length($total_digits) >= $dcount);
-			}
-		} else {
-			$total_digits = '';
 		}
+
+		my $loop = 0;
+		while (length($total_digits) < $dcount and $loop < $waitloops) {
+			my $digit = $AGI->wait_for_digit($waittimeout);
+			if ($digit) {
+				$digit = chr($digit);
+				$digit =~ s/$valid_pat//g;
+				if ($digit ne '') {
+					agi_output("    digit |$digit|   total_digits |$total_digits|") if ($vars->{DB});
+					if ($exit_digit ne '' and $exit_digit eq $digit) {
+						$dcount = length($total_digits);
+						$orig_dcount = length($total_digits);
+					} else {
+						$total_digits .= $digit;
+					}
+				}
+				$loop=0;
+			} else {
+				$loop++;
+			}
+			$loop = $waitloops if (length($total_digits) >= $dcount);
+		}
+
 		if (length($total_digits) >= $dcount) {
 			$rpt = $rptloops;
 		} elsif ($rpt >= $rptloops) {
@@ -625,10 +683,10 @@ sub stream_and_get_dtmf {
 		}
 	}
 
-	if (length($total_digits) == $orig_dcount) {
-		return $total_digits;
-	} else {
+	if (length($total_digits) != $orig_dcount or length($total_digits) < $min_digits) {
 		return $timeout_action;
+	} else {
+		return $total_digits;
 	}
 }
 
