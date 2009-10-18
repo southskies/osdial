@@ -97,6 +97,8 @@ if ($ADD == "1keys" or $ADD == '4keys') {
 		$d_ary = array($oi1,$oi2,$oi3,$oi4,$oi5);
 	} elseif ($oivr_opt_action == 'MENU') {
 		$d_ary = array($oi1,$oi2,$oi3,$oi4,$oi5,$oi6,$oi7,$oi8);
+	} elseif ($oivr_opt_action == 'TVC_LOOKUP') {
+		$d_ary = array($oi1,$oi2,$oi3,$oi4,$oi5,$oi6,$oi7,$oi8,$oi9,$oi10,$oi11);
 	} else {
 		$d_ary = array($oi1,$oi2,$oi3,$oi4,$oi5,$oi6,$oi7,$oi8,$oi9);
 	}
@@ -274,6 +276,90 @@ if ($ADD == "2keys") {
         echo '<input type="hidden" name="oi1" value="1">';
     } elseif ($o == 'MENU_EXIT') { 
         echo '<input type="hidden" name="oi1" value="1">';
+    } elseif ($o == 'TVC_LOOKUP') { 
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>Description</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="50" maxlength="255" name="oi1" value=""></td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
+        echo '      <select name="oi2"><option value="">-NONE-</option>';
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
+        foreach ($status as $stat) {
+            if ($stat['status'] == 'VIXFER') {
+                $sel = ' selected';
+            }
+            echo "<option value=\"" . $stat['status'] . "\"" . $sel . ">" . $stat['status'] . " : " . $stat['status_name'] . "</option>";
+        }
+        echo "  </select></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>Phone# Prompt File</td>\n";
+    	echo '      <td bgcolor="' . $oddrows . '">';
+    	echo '          <select name="oi3">';
+    	echo "              <option value=\"\"> - NONE - </option>";
+    	$path = "/opt/osdial/html/ivr";
+    	$dir = @opendir($path);
+    	while ($file = readdir($dir)) {
+        	$sel = '';
+		if ($file != '.' and $file != '..') {
+        		echo "              <option $sel>$file</option>";
+		}
+    	}
+    	echo "          </select>";
+    	echo '      </td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>Agent# Prompt File</td>\n";
+    	echo '      <td bgcolor="' . $oddrows . '">';
+    	echo '          <select name="oi4">';
+    	echo "              <option value=\"\"> - NONE - </option>";
+    	$path = "/opt/osdial/html/ivr";
+    	$dir = @opendir($path);
+    	while ($file = readdir($dir)) {
+        	$sel = '';
+		if ($file != '.' and $file != '..') {
+        		echo "              <option $sel>$file</option>";
+		}
+    	}
+    	echo "          </select>";
+    	echo '      </td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>In-Group to transfer to</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
+        echo '      <select name="oi5"><option value="">-NONE-</option>';
+        $ingroups = get_krh($link, 'osdial_inbound_groups', 'group_id,group_name','',"active='Y'");
+        foreach ($ingroups as $ing) {
+            echo "<option value=\"" . $ing['group_id'] . "\">" . $ing['group_id'] . " : " . $ing['group_name'] . "</option>";
+        }
+        echo "  </select></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>MySQL Server:</td>";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="50" maxlength="255" name="oi6" value=""></td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>MySQL Database:</td>";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="50" maxlength="255" name="oi7" value=""></td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>MySQL User:</td>";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="50" maxlength="255" name="oi8" value=""></td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>MySQL Password:</td>";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="50" maxlength="255" name="oi9" value=""></td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>Table:</td>";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="50" maxlength="255" name="oi10" value=""></td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>Field Mappings:</td>";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="50" maxlength="1000" name="oi11" value=""><br><font size=-1>Format (use pipe to concat): phone_number=dbfld1,first_name=fname,comments=dbfld2|dbfld2|dbfld3</font></td>';
+        echo "  </tr>\n";
     } elseif ($o == 'XFER_INGROUP') { 
         echo "  <tr>\n";
         echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
@@ -796,6 +882,7 @@ if ($ADD == "3menu") {
     echo "      <option value=\"XFER_EXTERNAL\">Transfer to an External Number</option>";
     echo "      <option value=\"XFER_EXTERNAL_MULTI\">Transfer to One of Multiple External Numbers</option>";
     echo "      <option value=\"XFER_INGROUP\">Transfer to an In-Group</option>";
+    echo "      <option value=\"TVC_LOOKUP\">TVC Lookup</option>";
     echo "      <option value=\"HANGUP\">Disposition and Hangup</option>";
     echo "      <option value=\"MENU\">Sub-menu</option>";
     echo "      <option value=\"MENU_REPEAT\">Repeat the Menu (no-diposition)</option>";
@@ -1014,6 +1101,101 @@ if ($ADD == "3keys") {
         echo '<input type="hidden" name="oi1" value="1">';
     } elseif ($o == 'MENU_EXIT') { 
         echo '<input type="hidden" name="oi1" value="1">';
+    } elseif ($o == 'TVC_LOOKUP') { 
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>Description:</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="50" maxlength="255" name="oi1" value="' . $ad[0] . '"></td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
+        echo '      <select name="oi2"><option value="">-NONE-</option>';
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
+        foreach ($status as $stat) {
+            $sel='';
+            if ($stat['status'] == $ad[1]) {
+                $sel = ' selected';
+            }
+            echo "<option value=\"" . $stat['status'] . "\"" . $sel . ">" . $stat['status'] . " : " . $stat['status_name'] . "</option>";
+        }
+        echo "  </select></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>Phone# Playback File:</td>\n";
+    	echo '      <td bgcolor="' . $oddrows . '">';
+    	echo '          <select name="oi3">';
+    	echo "              <option value=\"\"> - NONE - </option>";
+    	$path = "/opt/osdial/html/ivr";
+    	$dir = @opendir($path);
+    	while ($file = readdir($dir)) {
+        	$sel = '';
+        	if ($file == $ad[2]) {
+            	$sel = ' selected';
+        	}
+		if ($file != '.' and $file != '..') {
+        		echo "              <option $sel>$file</option>";
+		}
+    	}
+    	echo "          </select>";
+    	echo '      </td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>Agent# Playback File:</td>\n";
+    	echo '      <td bgcolor="' . $oddrows . '">';
+    	echo '          <select name="oi4">';
+    	echo "              <option value=\"\"> - NONE - </option>";
+    	$path = "/opt/osdial/html/ivr";
+    	$dir = @opendir($path);
+    	while ($file = readdir($dir)) {
+        	$sel = '';
+        	if ($file == $ad[3]) {
+            	$sel = ' selected';
+        	}
+		if ($file != '.' and $file != '..') {
+        		echo "              <option $sel>$file</option>";
+		}
+    	}
+    	echo "          </select>";
+    	echo '      </td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>In-Group to transfer to</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '">';
+        echo '      <select name="oi5"><option value="">-NONE-</option>';
+        $ingroups = get_krh($link, 'osdial_inbound_groups', 'group_id,group_name','',"active='Y'");
+        foreach ($ingroups as $ing) {
+            $sel='';
+            if ($ing['group_id'] == $ad[4]) {
+                $sel = ' selected';
+            }
+            echo "<option value=\"" . $ing['group_id'] . "\"". $sel . ">" . $ing['group_id'] . " : " . $ing['group_name'] . "</option>";
+        }
+        echo "  </select></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>MySQL Server:</td>";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="50" maxlength="255" name="oi6" value="' . $ad[5] . '"></td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>MySQL Database:</td>";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="50" maxlength="255" name="oi7" value="' . $ad[6] . '"></td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>MySQL User:</td>";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="50" maxlength="255" name="oi8" value="' . $ad[7] . '"></td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>MySQL Password:</td>";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="50" maxlength="255" name="oi9" value="' . $ad[8] . '"></td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>Table:</td>";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="50" maxlength="255" name="oi10" value="' . $ad[9] . '"></td>';
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>Field Mappings:</td>";
+        echo '      <td bgcolor="' . $oddrows . '"><input type="text" size="50" maxlength="1000" name="oi11" value="' . $ad[10] . '"><br><font size=-1>Format (use pipe to concat): phone_number=dbfld1,first_name=fname,comments=dbfld2|dbfld2|dbfld3</font></td>';
+        echo "  </tr>\n";
     } elseif ($o == 'XFER_INGROUP') { 
         echo "  <tr>\n";
         echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
@@ -1262,6 +1444,7 @@ if ($ADD == "3keys") {
         echo "      <option value=\"XFER_EXTERNAL\">Transfer to an External Number</option>";
         echo "      <option value=\"XFER_EXTERNAL_MULTI\">Transfer to One of Multiple External Numbers</option>";
         echo "      <option value=\"XFER_INGROUP\">Transfer to an In-Group</option>";
+        echo "      <option value=\"TVC_LOOKUP\">TVC Lookup</option>";
         echo "      <option value=\"HANGUP\">Disposition and Hangup</option>";
         echo "      <option value=\"MENU\">Sub-menu</option>";
         echo "      <option value=\"MENU_REPEAT\">Repeat the Menu (no-diposition)</option>";
