@@ -511,9 +511,9 @@ if ($ACTION == 'regCLOSER')
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 
-		$stmt="UPDATE osdial_users set closer_campaigns='$closer_choice' where user='$user';";
-			if ($format=='debug') {echo "\n<!-- $stmt -->";}
-		$rslt=mysql_query($stmt, $link);
+		#$stmt="UPDATE osdial_users set closer_campaigns='$closer_choice' where user='$user';";
+		#	if ($format=='debug') {echo "\n<!-- $stmt -->";}
+		#$rslt=mysql_query($stmt, $link);
 		}
 
 	$in_groups_pre = preg_replace('/-$/','',$closer_choice);
