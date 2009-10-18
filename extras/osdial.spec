@@ -8,9 +8,12 @@ Release:	%{release}
 License:	GPL
 Group:		Applications/Telephony
 Source0:	osdial-%{version}.tgz
+Source1:	osdial-template-highcontrast.tgz
+Source2:	osdial-template-slingdial.tgz
 URL:		http://www.callcentersg.com
 Packager:	lottc@fugitol.com
 Vendor:         Call Center Service Group
+Requires:	openvpn
 Requires:	osdial-profile = %{version}-%{release}
 Conflicts:	astguiclient
 Conflicts:	vicidial
@@ -33,7 +36,7 @@ Conflicts:	vicidial
 BuildRequires:  dialog
 Requires:	osdial = %{version}-%{release}
 Requires:	osdial-common = %{version}-%{release}
-Requires:	osdial-asterisk = %{version}-%{release}
+Requires:	osdial-dialer = %{version}-%{release}
 Requires:	osdial-sql = %{version}-%{release}
 Requires:	osdial-web = %{version}-%{release}
 Obsoletes:	osdial-profile-install-all
@@ -44,7 +47,7 @@ BuildArch:	noarch
 %description profile
 OSDial - Single / All-in-One Server Profile.
           osdial-common
-          osdial-asterisk
+          osdial-dialer
           osdial-sql
           osdial-web
 
@@ -62,7 +65,7 @@ BuildRequires:  dialog
 Obsoletes:	osdial-livecd
 Requires:	osdial = %{version}-%{release}
 Requires:	osdial-common = %{version}-%{release}
-Requires:	osdial-asterisk = %{version}-%{release}
+Requires:	osdial-dialer = %{version}-%{release}
 Requires:	osdial-sql = %{version}-%{release}
 Requires:	osdial-web = %{version}-%{release}
 BuildArch:	noarch
@@ -85,7 +88,7 @@ BuildRequires:  dialog
 Obsoletes:	osdial-livecd
 Requires:	osdial = %{version}-%{release}
 Requires:	osdial-common = %{version}-%{release}
-Requires:	osdial-asterisk = %{version}-%{release}
+Requires:	osdial-dialer = %{version}-%{release}
 Requires:	osdial-sql = %{version}-%{release}
 Requires:	osdial-web = %{version}-%{release}
 BuildArch:	noarch
@@ -118,7 +121,7 @@ Conflicts:	vicidial
 BuildRequires:  dialog
 Requires:	osdial = %{version}-%{release}
 Requires:	osdial-common = %{version}-%{release}
-Requires:	osdial-asterisk = %{version}-%{release}
+Requires:	osdial-dialer = %{version}-%{release}
 BuildArch:	noarch
 
 %description profile-install-dialer
@@ -180,7 +183,7 @@ Provides:	osdial-profile = %{version}-%{release}
 Conflicts:	astguiclient
 Conflicts:	vicidial
 BuildRequires:  dialog
-Conflicts:	osdial-asterisk
+Conflicts:	osdial-dialer
 Requires:	osdial = %{version}-%{release}
 Requires:	osdial-common = %{version}-%{release}
 Requires:	osdial-web = %{version}-%{release}
@@ -207,7 +210,7 @@ Conflicts:	osdial-web
 Conflicts:	osdial-sql
 Requires:	osdial = %{version}-%{release}
 Requires:	osdial-common = %{version}-%{release}
-Requires:	osdial-asterisk = %{version}-%{release}
+Requires:	osdial-dialer = %{version}-%{release}
 Obsoletes:	osdial-profile-install-dialer
 BuildArch:	noarch
 
@@ -216,7 +219,30 @@ OSDial - Provides packages needed for multi-server
          configuration.  Only installs dialer
          components.
                osdial-common
-               osdial-asterisk
+               osdial-dialer
+
+%package profile-dialer-web
+Summary:	The OSDial predictive dialing suite.
+Group:		Applications/Telephony
+Provides:	osdial-profile = %{version}-%{release}
+Conflicts:	astguiclient
+Conflicts:	vicidial
+BuildRequires:  dialog
+Conflicts:	osdial-sql
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-common = %{version}-%{release}
+Requires:	osdial-dialer = %{version}-%{release}
+Requires:	osdial-web = %{version}-%{release}
+Obsoletes:	osdial-profile-install-dialer
+BuildArch:	noarch
+
+%description profile-dialer-web
+OSDial - Provides packages needed for multi-server
+         configuration.  Only installs dialer
+         components.
+               osdial-common
+               osdial-dialer
+               osdial-web
 
 %package profile-sql
 Summary:	The OSDial predictive dialing suite.
@@ -226,7 +252,7 @@ Conflicts:	astguiclient
 Conflicts:	vicidial
 BuildRequires:  dialog
 Conflicts:	osdial-web
-Conflicts:	osdial-asterisk
+Conflicts:	osdial-dialer
 Requires:	osdial = %{version}-%{release}
 Requires:	osdial-common = %{version}-%{release}
 Requires:	osdial-sql = %{version}-%{release}
@@ -247,7 +273,7 @@ Provides:	osdial-profile = %{version}-%{release}
 Conflicts:	astguiclient
 Conflicts:	vicidial
 BuildRequires:  dialog
-Conflicts:	osdial-asterisk
+Conflicts:	osdial-dialer
 Conflicts:	osdial-sql
 Requires:	osdial = %{version}-%{release}
 Requires:	osdial-common = %{version}-%{release}
@@ -269,9 +295,11 @@ Provides:	osdial-profile = %{version}-%{release}
 Conflicts:	astguiclient
 Conflicts:	vicidial
 BuildRequires:  dialog
-Conflicts:	osdial-asterisk
+Conflicts:	osdial-dialer
 Conflicts:	osdial-sql
 Conflicts:	osdial-web
+Requires:	vsftpd
+Requires:	httpd
 Requires:	osdial = %{version}-%{release}
 Requires:	osdial-common = %{version}-%{release}
 Obsoletes:	osdial-profile-install-archive
@@ -291,6 +319,8 @@ Summary:	OSDial backend scripts
 Group:		Applications/Telephony
 Obsoletes:	osdial-bin
 Requires:	osdial = %{version}-%{release}
+Requires:	osdial-profile = %{version}-%{release}
+Requires:	openvpn
 Requires:	perl-MD5
 Requires:	perl-Digest-SHA1
 Requires:	perl-DBI
@@ -331,7 +361,8 @@ OSDial backend scripts, needed by web, sql, etc.
 Summary: 	OSDial SQL files and update scripts.
 Group:		Applications/Telephony
 Requires:	osdial = %{version}-%{release}
-Requires:	osdial-common
+Requires:	osdial-profile = %{version}-%{release}
+Requires:	osdial-common = %{version}-%{release}
 Requires:	perl-DBI
 Requires:	perl-DBD-MySQL
 Requires:	mysql-server
@@ -346,10 +377,13 @@ install package and RPM.
 Summary:	OSDial user interface files
 Group:		Applications/Telephony
 Requires:	osdial = %{version}-%{release}
-Requires:	osdial-common
+Requires:	osdial-profile = %{version}-%{release}
+Requires:	osdial-common = %{version}-%{release}
 Requires:	php-pear
 Requires:	php-mysql
 Requires:	ploticus
+Requires:	httpd
+Requires:	tinymce
 Requires:	php-eaccelerator
 BuildArch:      noarch
 
@@ -357,23 +391,62 @@ BuildArch:      noarch
 OSDial user interface files.  Mainly the php scripts, directory
 structure and other supporting files.
 
-%package asterisk
-Summary:        OSDial generic asterisk configuration.
+%package dialer
+Summary:        OSDial generic Asterisk configuration.
 Group:          Applications/Telephony
 Requires:	osdial = %{version}-%{release}
-Requires:       osdial-common
-Requires:       asterisk12
-Requires:       zaptel12
-Requires:       wanpipe-util
-Requires:       kernel-PAE-module-wanpipe
-Requires:       kernel-PAE-module-zaptel
+Requires:	osdial-profile = %{version}-%{release}
+Requires:	osdial-asterisk = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
 Requires:       gawk
 Obsoletes:	osdial-config
 BuildArch:      noarch
 
+%description dialer
+The is a generic Asterisk configuration that should work out of box for most clients.
+
+
+
+%package asterisk
+Summary:        OSDial Asterisk 1.6 System
+Group:          Applications/Telephony
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-profile = %{version}-%{release}
+Requires:	osdial-dialer = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
+Requires:       asterisk >= 1.6.2.0
+Requires:       wanpipe-util
+Requires:       kernel-PAE-module-wanpipe
+Requires:       dahdi
+Requires:	dahdi-tools
+Requires:       gawk
+Requires:	mysql-server
+Provides:	osdial-asterisk16
+BuildArch:      noarch
+
 %description asterisk
-The is a generic configuration that should work out of box for most clients.
-SQL and web configuration has been moved to osdial-sql and osdial-web.
+This package contains dependency and setup instructions for Asterisk 1.6.
+
+
+
+%package asterisk12
+Summary:        OSDial Asterisk 1.2 System
+Group:          Applications/Telephony
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-profile = %{version}-%{release}
+Requires:	osdial-dialer = %{version}-%{release}
+Requires:       osdial-common = %{version}-%{release}
+Requires:       asterisk12 <= 1.3
+Requires:       wanpipe-util
+Requires:       kernel-PAE-module-wanpipe
+Requires:	kernel-PAE-module-zaptel
+Requires:       zaptel12
+Requires:       gawk
+Provides:	osdial-asterisk
+BuildArch:      noarch
+
+%description asterisk12
+This package contains dependency and setup instructions for Asterisk 1.2.
 
 %package debuginfo
 Summary:	OSDial debuginfo
@@ -383,9 +456,40 @@ BuildArch:      i386
 %description debuginfo
 OSDial debuginfo
 
+%package web-template-highcontrast
+Summary:	OSDial user interface files
+Group:		Applications/Telephony
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-common = %{version}-%{release}
+Requires:	osdial-profile = %{version}-%{release}
+Requires:	osdial-web = %{version}-%{release}
+Provides:	osdial-template-highcontrast
+BuildArch:      noarch
+
+%description web-template-highcontrast
+High Contrast Template
+
+%package -n slingdial
+Summary:	OSDial user interface files
+Group:		Applications/Telephony
+Requires:	osdial = %{version}-%{release}
+Requires:	osdial-common = %{version}-%{release}
+Requires:	osdial-profile = %{version}-%{release}
+Requires:	osdial-web = %{version}-%{release}
+Provides:	osdial-web-template-slingdial
+Provides:	osdial-template-slingdial
+BuildArch:      noarch
+
+%description -n slingdial
+template
+
+
+
 %prep
 %{__rm} -rf %{buildroot}
-%setup -n osdial-%{version}
+%setup -a 0 -n osdial-%{version}
+%setup -a 1 -D
+%setup -a 2 -D
 
 %build
 install -dp %{buildroot}
@@ -396,14 +500,15 @@ install -dp %{buildroot}
 mkdir -p %{buildroot}/etc/httpd/conf.d
 mkdir -p %{buildroot}/etc/init.d
 mkdir -p %{buildroot}/opt/osdial/html/ivr
-mkdir -p %{buildroot}/opt/osdial/recordings/processing/wav
-mkdir -p %{buildroot}/opt/osdial/recordings/processing/mp3
+mkdir -p %{buildroot}/opt/osdial/recordings/processing/unmixed
+mkdir -p %{buildroot}/opt/osdial/recordings/processing/mixed
 mkdir -p %{buildroot}/opt/osdial/recordings/completed
 mkdir -p %{buildroot}/opt/osdial/reports
 mkdir -p %{buildroot}/opt/osdial/backups
 mkdir -p %{buildroot}/var/log/osdial
 mkdir -p %{buildroot}/var/lib/asterisk/sounds/ivr
 cp extras/httpd-osdial.conf %{buildroot}/etc/httpd/conf.d/osdial.conf
+cp extras/httpd-osdial-archive.conf %{buildroot}/etc/httpd/conf.d/osdial-archive.conf
 cp extras/osdial.init %{buildroot}/etc/init.d/osdial
 mkdir -p %{buildroot}/etc/cron.hourly
 ln -s /opt/osdial/bin/AST_ntp_update.sh %{buildroot}/etc/cron.hourly
@@ -412,11 +517,17 @@ touch %{buildroot}/opt/osdial/html/admin/VMnow.txt
 
 # copy in asterisk configs
 %{__mkdir_p} %{buildroot}/etc/asterisk/startup.d
+%{__mkdir_p} %{buildroot}/etc/dahdi
 echo -e "#!/bin/bash\nexport TTY=screen" > %{buildroot}/etc/asterisk/startup.d/tty_screen.sh
 cp docs/conf_examples/*.conf %{buildroot}/etc/asterisk
 cp docs/conf_examples/README.osdial %{buildroot}/etc/asterisk
 
-mv %{buildroot}/etc/asterisk/zaptel.conf %{buildroot}/etc
+%{__perl} -pi -e 's|^VARserver_ip.*|VARserver_ip => 127.0.0.1|' %{buildroot}/etc/osdial.conf
+%{__perl} -pi -e 's|^VARHTTP_path.*|VARHTTP_path => http://127.0.0.1|' %{buildroot}/etc/osdial.conf
+%{__perl} -pi -e 's|^VARFTP_host.*|VARFTP_host => 127.0.0.1|' %{buildroot}/etc/osdial.conf
+%{__perl} -pi -e 's|^VARREPORT_host.*|VARREPORT_host => 127.0.0.1|' %{buildroot}/etc/osdial.conf
+#mv %{buildroot}/etc/asterisk/dahdi_system.conf %{buildroot}/etc/dahdi/system.conf
+rm %{buildroot}/etc/asterisk/dahdi_system.conf
 
 echo > %{buildroot}/opt/osdial/.osdial-all
 echo > %{buildroot}/opt/osdial/.osdial-install-all
@@ -428,21 +539,41 @@ echo > %{buildroot}/opt/osdial/.osdial-install-archive
 echo > %{buildroot}/opt/osdial/.osdial-live
 echo > %{buildroot}/opt/osdial/.osdial-control
 echo > %{buildroot}/opt/osdial/.osdial-dialer
+echo > %{buildroot}/opt/osdial/.osdial-dialer-web
 echo > %{buildroot}/opt/osdial/.osdial-sql
 echo > %{buildroot}/opt/osdial/.osdial-web
 echo > %{buildroot}/opt/osdial/.osdial-archive
+echo > %{buildroot}/opt/osdial/.osdial-asterisk
+echo > %{buildroot}/opt/osdial/.osdial-asterisk12
+
+cd osdial-template-highcontrast
+%{__make} DESTDIR=%{buildroot} install
+cd ..
+
+cd osdial-template-slingdial
+%{__make} DESTDIR=%{buildroot} install
+cd ..
+
 
 %clean
 %{__rm} -rf %{buildroot}
+
+%pre
+ASTUSER=`id asterisk`
+RETVAL=$?
+if [ "$RETVAL" -eq 1 ]; then
+	/usr/sbin/useradd -r -d /var/lib/asterisk asterisk
+fi
 
 %post profile-live
 INTY=$1
 if [ "$INTY" -eq 1 ]; then
 	echo > /opt/osdial/.osdial-live
+        echo "RUN_FIRSTBOOT=\"NO\"" > /etc/sysconfig/firstboot
         echo "NETWORKING=yes" > /etc/sysconfig/network
         echo "NETWORKING_IPV6=no" >> /etc/sysconfig/network
-        echo "HOSTNAME=osdial-livecd.callcentersg.com" >> /etc/sysconfig/network
-        echo "127.0.0.1 osdial-livecd.callcentersg.com osdial-livecd osdial" > /etc/hosts
+        echo "HOSTNAME=osdial-live.callcentersg.com" >> /etc/sysconfig/network
+        echo "127.0.0.1 osdial-live.callcentersg.com osdial-live" > /etc/hosts
         echo "127.0.0.1 localhost.localdomain localhost" >> /etc/hosts
         echo "::1       localhost6.localdomain6 localhost6" >> /etc/hosts
 	if [ ! -d "/usr/lib/syslinux" ]; then
@@ -451,8 +582,15 @@ if [ "$INTY" -eq 1 ]; then
 			/bin/ln -s /usr/share/syslinux /usr/lib/syslinux
 		fi
 	fi
+	/sbin/service syslog stop
 fi
 echo -n
+
+%post profile-archive
+        /sbin/chkconfig vsftpd on > /dev/null 2>&1
+	ln -sf /opt/osdial/recordings /var/lib/asterisk/recordings > /dev/null 2>&1
+	ln -sf /opt/osdial/reports /var/lib/asterisk/reports > /dev/null 2>&1
+	echo -n
 
 %post profile-install-all
 INTY=$1
@@ -568,7 +706,7 @@ if [ "$INTY" -eq 2 ]; then
 	mkdir /opt/osdial/backups/%{version}-%{release}/etc
 	cp /etc/osdial.conf /opt/osdial/backups/%{version}-%{release}/etc
 	if [ -d /etc/asterisk ]; then
-		[ -f /etc/zaptel.conf ] && cp /etc/zaptel.conf /opt/osdial/backups/%{version}-%{release}/etc
+		[ -f /etc/dahdi/system.conf ] && cp /etc/dahdi/system.conf /opt/osdial/backups/%{version}-%{release}/etc
 		[ -d /etc/asterisk ] && cp -r /etc/asterisk /opt/osdial/backups/%{version}-%{release}/etc
 	fi
 	if [ -d /var/lib/asterisk/agi-bin ]; then
@@ -579,7 +717,27 @@ if [ "$INTY" -eq 2 ]; then
 		mkdir /opt/osdial/backups/%{version}-%{release}/html
 		cp -r /opt/osdial/html/* /opt/osdial/backups/%{version}-%{release}/html
 	fi
+	if [ -f /etc/openvpn/osdial.up ]; then
+		HST=`/bin/hostname -s`        
+		if [ "$HST" = "osdial" -o "$HST" = "osdial-live" -o "$HST" = "osdial-ccsg" ]; then
+			echo "osdial" > /etc/openvpn/osdial.up                                    
+			echo "osdial1234" >> /etc/openvpn/osdial.up                               
+			else                                                                              
+			echo "${HST}" > /etc/openvpn/osdial.up                                    
+			echo "0o1s2d3i4a5l6${HST}6l5a4i3d2s1o0" >> /etc/openvpn/osdial.up         
+		fi                                                                                
+	fi    
+	# Run update script.
+	/opt/osdial/bin/sql/upgrade_sql.pl --skip-auth-fix
 fi
+mkdir -p /opt/osdial/reports > /dev/null 2>&1
+mkdir -p /opt/osdial/recordings > /dev/null 2>&1
+mkdir -p /opt/osdial/recordings/processing > /dev/null 2>&1
+mkdir -p /opt/osdial/recordings/processing/mixed > /dev/null 2>&1
+mkdir -p /opt/osdial/recordings/processing/unmixed > /dev/null 2>&1
+mkdir -p /opt/osdial/recordings/completed > /dev/null 2>&1
+chown -R asterisk:asterisk /opt/osdial/reports > /dev/null 2>&1
+chown -R asterisk:asterisk /opt/osdial/recordings > /dev/null 2>&1
 echo -n
 
 
@@ -607,13 +765,15 @@ if [ "$INTY" -eq 1 ]; then
 		MCNF="${MCNF}#===== END OSDIAL my.cnf Additions =====\n\n"
 		/usr/bin/perl -pi -e "s|old_passwords=1|$MCNF|" /etc/my.cnf
 		# Restart mysql
-		if [ ! -f "/opt/osdial/.osdial-live" ]; then
-			/sbin/service mysqld restart
-		fi
+		/sbin/service mysqld restart
 	fi
-	if [ ! -f "/opt/osdial/.osdial-live" ]; then
-		# Run update script.
-		/opt/osdial/bin/sql/upgrade_sql.pl
+	# Run update script.
+	if [ -f "/opt/osdial/.osdial-live" ]; then
+		/sbin/service mysqld start
+	fi
+	/opt/osdial/bin/sql/upgrade_sql.pl
+	if [ -f "/opt/osdial/.osdial-live" ]; then
+		/sbin/service mysqld stop
 	fi
 	# If it didn't get created, assume it is an installcd
 	if [ ! -d "/var/lib/mysql/osdial" ]; then
@@ -667,9 +827,10 @@ if [ "$INTY" -eq 1 ]; then
 		perl -pi -e "s|^post_max_size = 8M|post_max_size = 100M|" /etc/php.ini
 		perl -pi -e "s|^upload_max_filesize = 2M|upload_max_filesize = 100M|" /etc/php.ini
 		echo "; OSDIAL: modified" >> /etc/php.ini
-		if [ ! -f "/opt/osdial/.osdial-live" ]; then
-			/sbin/service httpd restart
-		fi
+		/sbin/service httpd restart
+	fi
+	if [ -f "/opt/osdial/.osdial-live" ]; then
+		/sbin/service httpd stop
 	fi
 	# cpuspeed can do bad things to ISDN/T1 cards
 	if [ -f /etc/rc3.d/S06cpuspeed ]; then
@@ -703,10 +864,9 @@ if [ "$INTY" -eq 2 ]; then
 fi
 echo -n
 
-%post asterisk
+%post dialer
 INTY=$1
 if [ "$INTY" -eq 1 ]; then
-	/sbin/chkconfig asterisk on > /dev/null 2>&1
 	# Put in some ramdisk on the dialer.
 	if [ "`grep OSDIAL /etc/rc.local`" ]; then
 		OSDTMP=/tmp/osdtmp.$$
@@ -734,12 +894,6 @@ if [ "$INTY" -eq 1 ]; then
         	echo "    osdial-config: Setting up keepalive services."
         	%{__perl} -pi -e 's|^VARactive_keepalives => XX$|VARactive_keepalives => 1234569|' /etc/osdial.conf
 	fi
-	# cpuspeed can do bad things to ISDN/T1 cards
-	if [ -f /etc/rc3.d/S06cpuspeed ]; then
-                	echo "    osdial-config: cpuspeed (scaling) detected, disabling!"
-                	/etc/init.d/cpuspeed stop > /dev/null 2>&1
-                	/sbin/chkconfig cpuspeed off > /dev/null 2>&1
-	fi
 	# We don't need cups
 	if [ -f /etc/rc3.d/S56cups ]; then
                 	echo "    osdial-config: CUPS detected, disabling!"
@@ -748,12 +902,113 @@ if [ "$INTY" -eq 1 ]; then
 	fi
 fi
 if [ "$INTY" -eq 2 ]; then
-	# Reset running procs.
-	if [ -n "`ps -ef | grep FastAGI`" ]; then
-		kill -9 `ps -ef | grep FastAGI | awk '{ print $2 }'` > /dev/null 2>&1
+	echo -n
+fi
+# Reset running procs.
+if [ -n "`ps -ef | grep FastAGI`" ]; then
+	kill -9 `ps -ef | grep FastAGI | awk '{ print $2 }'` > /dev/null 2>&1
+fi
+if [ -n "`ps -ef | grep AST`" ]; then
+	kill -9 `ps -ef | grep AST | awk '{ print $2 }'` > /dev/null 2>&1
+fi
+echo -n
+
+%post asterisk
+INTY=$1
+/sbin/chkconfig asterisk on > /dev/null 2>&1
+# cpuspeed can do bad things to ISDN/T1 cards
+if [ -f /etc/rc3.d/S06cpuspeed ]; then
+               	echo "    osdial-config: cpuspeed (scaling) detected, disabling!"
+               	/etc/init.d/cpuspeed stop > /dev/null 2>&1
+               	/sbin/chkconfig cpuspeed off > /dev/null 2>&1
+fi
+# Find and move zapata.conf
+mkdir -p /etc/zaptel.bak
+MOVED=0
+if [ -f "/etc/asterisk/zapata.conf" ]; then
+	if [ "$MOVED" = "0" ]; then
+		MOVED=1
+		cp -f /etc/asterisk/zapata.conf /etc/zaptel.bak > /dev/null 2>&1
+		mv -f /etc/asterisk/zapata.conf /etc/asterisk/chan_dahdi.conf > /dev/null 2>&1
+	else
+		mv -f /etc/asterisk/zapata.conf /etc/zaptel.bak > /dev/null 2>&1
 	fi
-	if [ -n "`ps -ef | grep AST`" ]; then
-		kill -9 `ps -ef | grep AST | awk '{ print $2 }'` > /dev/null 2>&1
+fi
+if [ -f "/etc/asterisk/zapata.conf.rpmsave" ]; then
+	if [ "$MOVED" = "0" ]; then
+		MOVED=1
+		cp -f /etc/asterisk/zapata.conf.rpmsave /etc/zaptel.bak > /dev/null 2>&1
+		mv -f /etc/asterisk/zapata.conf.rpmsave /etc/asterisk/chan_dahdi.conf > /dev/null 2>&1
+	else
+		mv -f /etc/asterisk/zapata.conf.rpmsave /etc/zaptel.bak > /dev/null 2>&1
+	fi
+fi
+if [ -f "/etc/asterisk/zapata.conf.rpmorig" ]; then
+	if [ "$MOVED" = "0" ]; then
+		MOVED=1
+		cp -f /etc/asterisk/zapata.conf.rpmorig /etc/zaptel.bak > /dev/null 2>&1
+		mv -f /etc/asterisk/zapata.conf.rpmorig /etc/asterisk/chan_dahdi.conf > /dev/null 2>&1
+	else
+		mv -f /etc/asterisk/zapata.conf.rpmorig /etc/zaptel.bak > /dev/null 2>&1
+	fi
+fi
+if [ -f "/etc/asterisk/zapata.conf.rpmnew" ]; then
+	if [ "$MOVED" = "0" ]; then
+		MOVED=1
+		cp -f /etc/asterisk/zapata.conf.rpmnew /etc/zaptel.bak > /dev/null 2>&1
+		mv -f /etc/asterisk/zapata.conf.rpmnew /etc/asterisk/chan_dahdi.conf > /dev/null 2>&1
+	else
+		mv -f /etc/asterisk/zapata.conf.rpmnew /etc/zaptel.bak > /dev/null 2>&1
+	fi
+fi
+echo -n
+
+%post asterisk12
+INTY=$1
+/sbin/chkconfig asterisk on > /dev/null 2>&1
+# cpuspeed can do bad things to ISDN/T1 cards
+if [ -f /etc/rc3.d/S06cpuspeed ]; then
+               	echo "    osdial-config: cpuspeed (scaling) detected, disabling!"
+               	/etc/init.d/cpuspeed stop > /dev/null 2>&1
+               	/sbin/chkconfig cpuspeed off > /dev/null 2>&1
+fi
+# Find and move chan_dahdi.conf
+mkdir -p /etc/dahdi.bak
+MOVED=0
+if [ -f "/etc/asterisk/chan_dahdi.conf" ]; then
+	if [ "$MOVED" = "0" ]; then
+		MOVED=1
+		cp -f /etc/asterisk/chan_dahdi.conf /etc/dahdi.bak > /dev/null 2>&1
+		mv -f /etc/asterisk/chan_dahdi.conf /etc/asterisk/zapata.conf > /dev/null 2>&1
+	else
+		mv -f /etc/asterisk/chan_dahdi.conf /etc/dahdi.bak > /dev/null 2>&1
+	fi
+fi
+if [ -f "/etc/asterisk/chan_dahdi.conf.rpmsave" ]; then
+	if [ "$MOVED" = "0" ]; then
+		MOVED=1
+		cp -f /etc/asterisk/chan_dahdi.conf.rpmsave /etc/dahdi.bak > /dev/null 2>&1
+		mv -f /etc/asterisk/chan_dahdi.conf.rpmsave /etc/asterisk/zapata.conf > /dev/null 2>&1
+	else
+		mv -f /etc/asterisk/chan_dahdi.conf.rpmsave /etc/dahdi.bak > /dev/null 2>&1
+	fi
+fi
+if [ -f "/etc/asterisk/chan_dahdi.conf.rpmorig" ]; then
+	if [ "$MOVED" = "0" ]; then
+		MOVED=1
+		cp -f /etc/asterisk/chan_dahdi.conf.rpmorig /etc/dahdi.bak > /dev/null 2>&1
+		mv -f /etc/asterisk/chan_dahdi.conf.rpmorig /etc/asterisk/zapata.conf > /dev/null 2>&1
+	else
+		mv -f /etc/asterisk/chan_dahdi.conf.rpmorig /etc/dahdi.bak > /dev/null 2>&1
+	fi
+fi
+if [ -f "/etc/asterisk/chan_dahdi.conf.rpmnew" ]; then
+	if [ "$MOVED" = "0" ]; then
+		MOVED=1
+		cp -f /etc/asterisk/chan_dahdi.conf.rpmnew /etc/dahdi.bak > /dev/null 2>&1
+		mv -f /etc/asterisk/chan_dahdi.conf.rpmnew /etc/asterisk/zapata.conf > /dev/null 2>&1
+	else
+		mv -f /etc/asterisk/chan_dahdi.conf.rpmnew /etc/dahdi.bak > /dev/null 2>&1
 	fi
 fi
 echo -n
@@ -770,22 +1025,17 @@ if [ "$INTY" -eq 2 ]; then
 			echo -e "#0 * * * * /opt/osdial/bin/AST_ntp_update.sh > /dev/null 2>&1" >> $CTB
 		fi
 
-		if [ -z "`grep osdial_astgen $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) Generate asterisk config files and reload modules" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/osdial_astgen.pl -q" >> $CTB
-		fi
-
-		if [ -z "`grep osdial_ivr_sync $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) Syncronize IVR recordings, arg is web server" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1" >> $CTB
-		fi
-
 		if [ -z "`grep Loadavg $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (ALL) Get load average." >> $CTB
 			echo -e "* * * * * cat /proc/loadavg | cut -d" " -f1 > /opt/osdial/html/admin/Loadavg.txt" >> $CTB
+		fi
+
+		if [ -z "`grep 'remove old osdial logs' $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
+			echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f" >> $CTB
+			echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f" >> $CTB
 		fi
 
 		if [ -z "`grep ADMIN_keepalive_ALL $CTB`" ]; then
@@ -794,11 +1044,14 @@ if [ "$INTY" -eq 2 ]; then
 			echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl" >> $CTB
 		fi
 
-		if [ -z "`grep 'remove old osdial logs' $CTB`" ]; then
+
+		if [ -z "`grep osdial_external_dnc $CTB`" ]; then
 			echo -e "" >> $CTB
-			echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
-			echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f" >> $CTB
-			echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f" >> $CTB
+			echo "### (sql) Actual Scrub against external DNC" >> $CTB
+			echo "* * * * * /opt/osdial/bin/osdial_external_dnc.pl" >> $CTB
+			echo -e "" >> $CTB
+			echo "### (sql) Schedule ALL to scrub against external DNC" >> $CTB
+			echo "0 1 * * * /opt/osdial/bin/osdial_external_dnc.pl --sched=ALL" >> $CTB
 		fi
 
 		if [ -z "`grep AST_CLEAR_auto_calls $CTB`" ]; then
@@ -810,7 +1063,7 @@ if [ "$INTY" -eq 2 ]; then
 		if [ -z "`grep AST_flush_DBqueue $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (sql) flush queue DB table every hour for entries older than 1 hour" >> $CTB
-			echo -e "11 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q" >> $CTB
+			echo -e "11,41 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q" >> $CTB
 		fi
 
 		if [ -z "`grep AST_cleanup_agent_log $CTB`" ]; then
@@ -851,10 +1104,22 @@ if [ "$INTY" -eq 2 ]; then
 			echo -e "#42 0 * * * /opt/osdial/bin/AST_sourceID_summary_export.pl" >> $CTB
 		fi
 
+		if [ -z "`grep osdial_astgen $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (dialer) Generate asterisk config files and reload modules" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/osdial_astgen.pl -q" >> $CTB
+		fi
+
+		if [ -z "`grep osdial_ivr_sync $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (dialer) Syncronize IVR recordings, arg is web server" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1" >> $CTB
+		fi
+
 		if [ -z "`grep VMnow $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (dialer) Write a file listing current voicemail" >> $CTB
-			echo -e "* * * * * /usr/sbin/asterisk -rx \"show voicemail users\" > /opt/osdisl/html/admin/VMnow.txt" >> $CTB
+			echo -e "* * * * * /usr/sbin/asterisk -rx \"show voicemail users\" > /opt/osdial/html/admin/VMnow.txt" >> $CTB
 		fi
 
 		if [ -z "`grep AST_manager_kill_hung_congested $CTB`" ]; then
@@ -890,29 +1155,35 @@ if [ "$INTY" -eq 2 ]; then
 		if [ -z "`grep AST_audio_archive $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (dialer) Send Recordings to archive server" >> $CTB
-			echo -e "#*/3 * * * * /opt/osdisl/bin/AST_audio_archive.pl" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/AST_audio_archive.pl" >> $CTB
 		fi
 
 		if [ -z "`grep AST_audio_compress $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (archive) Compress wav files to mp3" >> $CTB
-			echo -e "#*/2 * * * * /opt/osdisl/bin/AST_audio_compress.pl --MP3" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/AST_audio_compress.pl --MP3" >> $CTB
 		fi
 
 		if [ -z "`grep AST_sort_recordings $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (archive) Sort MP3s into campaign_id/date directory structure" >> $CTB
-			echo -e "#*/5 * * * * /opt/osdisl/bin/AST_sort_recordings.pl" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/AST_sort_recordings.pl" >> $CTB
 		fi
 
 		if [ -z "`grep AST_qc_transfer $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (archive) Send select MP3s to a third-party quality-control or offste archive server." >> $CTB
-			echo -e "#*/15 * * * * /opt/osdisl/bin/AST_qc_transfer.pl" >> $CTB
+			echo -e "*/15 * * * * /opt/osdial/bin/AST_qc_transfer.pl" >> $CTB
 		fi
 
 		kill -1 `ps -ef | grep crond | head -1 | awk '{ print $2 }'` > /dev/null 2>&1
 	fi
+fi
+echo -n
+
+%post -n slingdial
+if [ -d "/var/lib/mysql/osdial" ]; then
+	echo "UPDATE system_settings SET admin_template='SlingDial',agent_template='SlingDial';" | /usr/bin/mysql osdial
 fi
 echo -n
 
@@ -948,6 +1219,9 @@ echo -n
 %files profile-dialer
 %attr(0644,root,root) %{_opt}/osdial/.osdial-dialer
 
+%files profile-dialer-web
+%attr(0644,root,root) %{_opt}/osdial/.osdial-dialer-web
+
 %files profile-sql
 %attr(0644,root,root) %{_opt}/osdial/.osdial-sql
 
@@ -957,6 +1231,12 @@ echo -n
 %files profile-archive
 %attr(0644,root,root) %{_opt}/osdial/.osdial-archive
 
+%files asterisk
+%attr(0644,root,root) %{_opt}/osdial/.osdial-asterisk
+
+%files asterisk12
+%attr(0644,root,root) %{_opt}/osdial/.osdial-asterisk12
+
 
 
 %files
@@ -964,40 +1244,28 @@ echo -n
 
 %files sql
 %defattr(644,asterisk,asterisk,755)
-%attr(0644,root,root) %{_opt}/osdial/bin/sql/000000.sql
-%attr(0644,root,root) %{_opt}/osdial/bin/sql/204000.sql
-%attr(0644,root,root) %{_opt}/osdial/bin/sql/204001.sql
-%attr(0644,root,root) %{_opt}/osdial/bin/sql/204002.sql
-%attr(0644,root,root) %{_opt}/osdial/bin/sql/204003.sql
-%attr(0644,root,root) %{_opt}/osdial/bin/sql/204004.sql
-%attr(0644,root,root) %{_opt}/osdial/bin/sql/204005.sql
-%attr(0644,root,root) %{_opt}/osdial/bin/sql/204006.sql
-%attr(0644,root,root) %{_opt}/osdial/bin/sql/204007.sql
-%attr(0644,root,root) %{_opt}/osdial/bin/sql/210000.sql
-%attr(0644,root,root) %{_opt}/osdial/bin/sql/210001.sql
-%attr(0644,root,root) %{_opt}/osdial/bin/sql/210002.sql
-%attr(0644,root,root) %{_opt}/osdial/bin/sql/210003.sql
-%attr(0644,root,root) %{_opt}/osdial/bin/sql/210004.sql
-%attr(0644,root,root) %{_opt}/osdial/bin/sql/999999.sql
-%attr(0644,root,root) %{_opt}/osdial/bin/sql/upgrade_sql.map
-%attr(0755,root,root) %{_opt}/osdial/bin/sql/upgrade_sql.pl
-%attr(0755,root,root) %{_opt}/osdial/bin/sql/upstream_converison.sh
+#%attr(0644,root,root) %{_opt}/osdial/bin/sql/*.sql
+#%attr(0644,root,root) %{_opt}/osdial/bin/sql/upgrade_sql.map
+#%attr(0755,root,root) %{_opt}/osdial/bin/sql/upgrade_sql.pl
+%attr(0755,root,root) %{_opt}/osdial/bin/sql/upstream_conversion.sh
 
 
-%files asterisk
+%files dialer
 %defattr(644,asterisk,asterisk,755)
 %attr(0755,asterisk,asterisk) %{_sysconfdir}/asterisk/startup.d/tty_screen.sh
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/amd.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/cdr.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/dnsmgr.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/extensions.conf
+%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/extconfig.conf
+%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/res_mysql.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/iax.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/iaxprov.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/indications.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/logger.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/manager.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/meetme.conf
-%attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/modules.conf
+%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/modules.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/musiconhold.conf
 %attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_extensions.conf
 %attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_extensions_conferences.conf
@@ -1010,47 +1278,47 @@ echo -n
 %attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_iax.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/osdial_iax_custom.conf
 %attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_iax_phones.conf
-%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_iax_registrations.conf
+%attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/osdial_iax_registrations.conf
 %attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_iax_servers.conf
-%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_iax_trunks.conf
+%attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/osdial_iax_trunks.conf
 %attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_manager.conf
 %attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_meetme.conf
 %attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_sip.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/osdial_sip_custom.conf
 %attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_sip_phones.conf
-%attr(0644,asterisk,asterisk) %config %{_sysconfdir}/asterisk/osdial_sip_registrations.conf
+%attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/osdial_sip_registrations.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/osdial_sip_trunks.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/oss.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/phone.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/sip.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/voicemail.conf
-%attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/zapata.conf
-%attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/zaptel.conf
+%attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/asterisk/chan_dahdi.conf
+#%attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/dahdi/system.conf
 %attr(0644,asterisk,asterisk) %{_sysconfdir}/asterisk/README.osdial
 %dir %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/sounds/ivr
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/conf.gsm
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/park.gsm
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/,.wav
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/0.gsm
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/0.wav
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/1.gsm
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/1.wav
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/2.gsm
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/2.wav
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/3.gsm
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/3.wav
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/4.gsm
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/4.wav
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/5.gsm
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/5.wav
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/6.gsm
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/6.wav
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/7.gsm
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/7.wav
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/8.gsm
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/8.wav
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/9.gsm
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/9.wav
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-0.gsm
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-0.wav
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-1.gsm
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-1.wav
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-2.gsm
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-2.wav
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-3.gsm
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-3.wav
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-4.gsm
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-4.wav
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-5.gsm
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-5.wav
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-6.gsm
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-6.wav
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-7.gsm
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-7.wav
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-8.gsm
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-8.wav
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-9.gsm
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-9.wav
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/US_pol_survey_hello.gsm
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/US_pol_survey_transfer.gsm
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/US_reminder_callback.gsm
@@ -1064,20 +1332,24 @@ echo -n
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/enter.gsm
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/four_digit_id.gsm
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/generic_hold.gsm
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/hash.gsm
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/hash.wav
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-hash.gsm
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-hash.wav
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/hold_tone.gsm
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/ld_invalid_pin_number.gsm
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/ld_welcome_pin_number.gsm
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/leave.gsm
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/silence.wav
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/sip-silence.gsm
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/star.gsm
-%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/star.wav
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-star.gsm
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/dtmf-star.wav
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/vm-goodbye.gsm
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/vm-msgsaved.gsm
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/vm-rec-generic.gsm
 %attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/vm-review.gsm
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/check-number-dial-again.gsm
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/connected.gsm
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/extension.gsm
+%attr(0644,asterisk,asterisk) %{_var}/lib/asterisk/sounds/not-yet-connected.gsm
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/VD_amd.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/VD_amd_post.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/VD_auto_post_VERIFY.agi
@@ -1098,6 +1370,7 @@ echo -n
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADtransferSURVEY.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-VDADtransferTEST.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDoutboundIVR.agi
+%attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-OSDivr.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-dtmf.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-record_prompts.agi
 %attr(0755,asterisk,asterisk) %{_var}/lib/asterisk/agi-bin/agi-station_monitor.agi
@@ -1110,8 +1383,12 @@ echo -n
 %files common
 %defattr(644,asterisk,asterisk,755)
 %dir %attr(0755,asterisk,asterisk) %{_var}/log/osdial
+%attr(0644,asterisk,asterisk) %{_sysconfdir}/httpd/conf.d/osdial-archive.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/osdial.conf
-%attr(0755,root,root) %{_sysconfdir}/init.d/osdial
+%attr(0755,asterisk,asterisk) %{_sysconfdir}/init.d/osdial
+%attr(0644,asterisk,asterisk) %{_opt}/osdial/bin/sql/*.sql
+%attr(0644,asterisk,asterisk) %{_opt}/osdial/bin/sql/upgrade_sql.map
+%attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/sql/upgrade_sql.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_CLEAR_auto_calls.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_audio_archive.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_audio_compress.pl
@@ -1179,16 +1456,11 @@ echo -n
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/start_asterisk_boot.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/AST_ntp_update.sh
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/osdial_astgen.pl
+%attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/osdial_external_dnc.pl
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/osdial.cron
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/ip_relay
 %attr(0755,asterisk,asterisk) %{_opt}/osdial/bin/safe_ip_relay
 %attr(0755,asterisk,asterisk) %{_sysconfdir}/cron.hourly/AST_ntp_update.sh
-%dir %{_opt}/osdial/reports
-%dir %{_opt}/osdial/recordings
-%dir %{_opt}/osdial/recordings/processing
-%dir %{_opt}/osdial/recordings/processing/mp3
-%dir %{_opt}/osdial/recordings/processing/wav
-%dir %{_opt}/osdial/recordings/completed
 %attr(0644,root,root) /usr/share/doc/osdial-2.1.0/ALTERNATE_NUMBER_DIALING.txt
 %attr(0644,root,root) /usr/share/doc/osdial-2.1.0/BALANCE_FILL_PROCESS.txt
 %attr(0644,root,root) /usr/share/doc/osdial-2.1.0/CALLBACKS_PROCESS.txt
@@ -1200,6 +1472,8 @@ echo -n
 %attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/cdr.conf
 %attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/dnsmgr.conf
 %attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/extensions.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/extconfig.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/res_mysql.conf
 %attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/iax.conf
 %attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/iaxprov.conf
 %attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/indications.conf
@@ -1234,103 +1508,60 @@ echo -n
 %attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/phone.conf
 %attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/sip.conf
 %attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/voicemail.conf
-%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/zapata.conf
-%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/zaptel.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/chan_dahdi.conf
+%attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/dahdi_system.conf
 %attr(0644,root,root) /usr/share/doc/osdial-2.1.0/conf_examples/README.osdial
 %attr(0644,root,root) /usr/share/doc/osdial-2.1.0/LICENSE.txt
+%attr(0640,root,root) /etc/openvpn/osdial-ca.crt
+%attr(0640,root,root) /etc/openvpn/osdial.up
+%attr(0640,root,root) /etc/openvpn/osdial-ta.key
+%attr(0640,root,root) /etc/openvpn/osdial.conf
+%attr(0640,root,root) /etc/openvpn/osdial2.conf
+
+
+%files web-template-highcontrast
+%defattr(644,asterisk,asterisk,755)
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/agent/templates/HighContrast
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/agent/templates/HighContrast/images
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/admin/templates/HighContrast
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/admin/templates/HighContrast/images
+%attr(0644,apache,asterisk) %{_opt}/osdial/html/agent/templates/HighContrast/*.php
+%attr(0644,apache,asterisk) %{_opt}/osdial/html/agent/templates/HighContrast/*.css
+%attr(0644,apache,asterisk) %{_opt}/osdial/html/agent/templates/HighContrast/images/*
+%attr(0644,apache,asterisk) %{_opt}/osdial/html/admin/templates/HighContrast/*.php
+%attr(0644,apache,asterisk) %{_opt}/osdial/html/admin/templates/HighContrast/*.css
+%attr(0644,apache,asterisk) %{_opt}/osdial/html/admin/templates/HighContrast/images/*
+
+%files -n slingdial
+%defattr(644,asterisk,asterisk,755)
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/agent/templates/SlingDial
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/agent/templates/SlingDial/images
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/admin/templates/SlingDial
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/admin/templates/SlingDial/images
+%attr(0644,apache,asterisk) %{_opt}/osdial/html/agent/templates/SlingDial/*.php
+%attr(0644,apache,asterisk) %{_opt}/osdial/html/agent/templates/SlingDial/*.css
+%attr(0644,apache,asterisk) %{_opt}/osdial/html/agent/templates/SlingDial/images/*
+%attr(0644,apache,asterisk) %{_opt}/osdial/html/admin/templates/SlingDial/*.php
+%attr(0644,apache,asterisk) %{_opt}/osdial/html/admin/templates/SlingDial/*.css
+%attr(0644,apache,asterisk) %{_opt}/osdial/html/admin/templates/SlingDial/images/*
 
 %files web
 %defattr(644,asterisk,asterisk,755)
 %attr(0644,asterisk,asterisk) %{_sysconfdir}/httpd/conf.d/osdial.conf
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/ivr
-%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/images
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/agent
-%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/agent/images
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/agent/templates
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/agent/templates/default
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/agent/templates/default/images
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/admin
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/admin/ploticus
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/admin/agent_reports
 %attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/admin/server_reports
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/admin/templates
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/admin/templates/default
+%attr(0775,apache,asterisk) %dir %{_opt}/osdial/html/admin/templates/default/images
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/index.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/osdial-bg.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/AgentLoginDn.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/AgentLoginUp.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/ControlLoginDn.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/ControlLoginUp.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/clientCompany.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/defaultCompany.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/a.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/b.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/c.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/d.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/e.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/f.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/g.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/h.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/i.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/j.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/k.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/l.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/m.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/n.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/o.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/p.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/q.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/r.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/s.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/t.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/u.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/v.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/w.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/x.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/y.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/z.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/A.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/B.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/C.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/D.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/E.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/F.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/G.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/H.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/I.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/J.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/K.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/L.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/M.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/N.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/O.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/P.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/Q.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/R.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/S.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/T.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/U.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/V.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/W.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/X.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/Y.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/Z.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/0.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/1.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/2.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/3.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/4.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/5.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/6.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/7.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/8.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/9.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/space.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/exclamation.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/at.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/ampersand.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/hyphen.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/period.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/comma.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/colon.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/test.html
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/images/rawtest.html
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/active_list_refresh.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/astguiclient.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/call_log_display.php
@@ -1344,233 +1575,19 @@ echo -n
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/osdial.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/voicemail_check.php
 %attr(0644,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/agent/webform_redirect.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/images/across140.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/images/across146.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/images/across160.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/images/across2x146.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/images/top15.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/images/top16.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/images/topleft.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/images/topright.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/images/dlfoot.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_check_voicemail_BLINK.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_check_voicemail_BLINK_e.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_check_voicemail_BLINK_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_check_voicemail_BLINK_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_check_voicemail_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_check_voicemail_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_check_voicemail_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_check_voicemail_ON.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_check_voicemail_ON_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_check_voicemail_ON_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_live_call_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_live_call_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_live_call_OFF_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_live_call_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_live_call_ON.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_live_call_ON_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_live_call_ON_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_live_call_ON_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_tab_active_lines.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_tab_active_lines_el.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_tab_active_lines_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_tab_active_lines_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_tab_astguiclient.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_tab_astguiclient_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_tab_conferences.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_tab_conferences_el.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_tab_conferences_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_tab_conferences_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_tab_main.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_tab_main_el.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_tab_main_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agc_tab_main_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/blank.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/br.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/de.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/down.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/el.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/en.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/fr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/it.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/pt.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/remove.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/up.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_dialnextnumber.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_dialnextnumber_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_dialnextnumber_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_dialnextnumber_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_dialnextnumber_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_dialnextnumber_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_grabparkedcall.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_grabparkedcall_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_grabparkedcall_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_grabparkedcall_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_grabparkedcall_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_grabparkedcall_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_hangupcustomer.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_hangupcustomer_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_hangupcustomer_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_hangupcustomer_OFF_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_hangupcustomer_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_hangupcustomer_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_hangupcustomer_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_hangupcustomer_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_parkcall.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_parkcall_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_parkcall_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_parkcall_OFF_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_parkcall_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_parkcall_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_parkcall_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_parkcall_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_pause.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_pause_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_pause_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_pause_OFF_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_pause_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_pause_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_pause_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_pause_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_resume.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_resume_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_resume_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_resume_OFF_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_resume_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_resume_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_resume_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_resume_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_senddtmf.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_senddtmf_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_senddtmf_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_senddtmf_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_senddtmf_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_senddtmf_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_spacer.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_startrecording.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_startrecording_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_startrecording_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_startrecording_OFF_p.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_startrecording_OFF_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_startrecording_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_startrecording_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_startrecording_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_startrecording_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_stoprecording.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_stoprecording_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_stoprecording_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_stoprecording_OFF_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_stoprecording_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_stoprecording_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_stoprecording_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_stoprecording_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_transferconf.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_transferconf_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_transferconf_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_transferconf_OFF_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_transferconf_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_transferconf_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_transferconf_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_transferconf_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_webform.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_webform_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_webform_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_webform_OFF_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_webform_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_webform_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_webform_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_webform_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_RPLD_on.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_ammessage.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_ammessage_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_blindtransfer.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_blindtransfer_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_blindtransfer_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_blindtransfer_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_blindtransfer_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_blindtransfer_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_channel.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_channel_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_channel_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_code.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_dialwithcustomer.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_dialwithcustomer_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_dialwithcustomer_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_dialwithcustomer_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_dialwithcustomer_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_dialwithcustomer_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hangupbothlines.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hangupbothlines_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hangupbothlines_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hangupbothlines_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hangupbothlines_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hangupbothlines_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hangupxferline.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hangupxferline_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hangupxferline_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hangupxferline_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hangupxferline_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hangupxferline_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_header.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_header_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_header_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hotkeysactive.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hotkeysactive_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hotkeysactive_OFF_es-orig.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hotkeysactive_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hotkeysactive_OFF_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hotkeysactive_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hotkeysactive_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hotkeysactive_pl.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hotkeysactive_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hotkeysinactive_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_internalcloser.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_internalcloser_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_internalcloser_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_internalcloser_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_internalcloser_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_internalcloser_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_leave3waycall.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_leave3waycall_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_leave3waycall_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_leave3waycall_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_leave3waycall_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_leave3waycall_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_localcloser.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_localcloser_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_localcloser_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_localcloser_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_localcloser_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_localcloser_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_number.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_number_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_number_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_parkcustomerdial.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_parkcustomerdial_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_parkcustomerdial_OFF_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_parkcustomerdial_OFF_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_parkcustomerdial_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_parkcustomerdial_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_seconds.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_seconds_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_seconds_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_tab_script.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_tab_script_es.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_tab_script_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_tab_osdial.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_tab_osdial_ptbr.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_tab_buttons1.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_tab_buttons2.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_volume_MUTE.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_volume_UNMUTE.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_volume_down.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_volume_down_off.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_volume_up.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_volume_up_off.gif
+%attr(0644,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/agent/webform_redirect.php
+%attr(0644,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/agent/webform-event_members.php
+%attr(0644,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/agent/webform-print_form.php
+%attr(0644,apache,asterisk) %{_opt}/osdial/html/agent/templates/default/*.php
+%attr(0644,apache,asterisk) %{_opt}/osdial/html/agent/templates/default/*.css
+%attr(0644,apache,asterisk) %{_opt}/osdial/html/agent/templates/default/images/*
+%attr(0644,apache,asterisk) %{_opt}/osdial/html/admin/templates/default/*.php
+%attr(0644,apache,asterisk) %{_opt}/osdial/html/admin/templates/default/*.css
+%attr(0644,apache,asterisk) %{_opt}/osdial/html/admin/templates/default/images/*
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/copyright.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/tocsv.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_CLOSERstats.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_VDADstats.php
+#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_VDADstats.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_OSDIAL_hopperlist.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_admin_log_display.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_agent_disposition.php
@@ -1582,10 +1599,10 @@ echo -n
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_inboundEXTstats_department.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_parkstats.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_server_performance.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_timeonVDAD.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_timeonVDADall.php
+#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_timeonVDAD.php
+#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_timeonVDADall.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_timeonVDADallREC.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_timeonVDADallSUMMARY.php
+#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_timeonVDADallSUMMARY.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/AST_timeonpark.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/admin.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/admin_modify_lead.php
@@ -1633,10 +1650,10 @@ echo -n
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/iframe.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/listmix.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/pause.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/outbound_ivr.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/ivr.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/realtime.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/realtime_detail.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/realtime_summary.php
+#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/realtime_detail.php
+#%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/realtime_summary.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/recycle.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/campaigns/status.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/filters/filters.php
@@ -1648,6 +1665,11 @@ echo -n
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/lists/lists.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/reports/iframe.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/reports/reports.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/reports/realtime_detail.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/reports/realtime_summary.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/reports/call_stats.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/reports/list_cost.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/reports/list_performance.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/remoteagent/iframe.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/remoteagent/remoteagent.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/scripts/iframe.php
@@ -1657,7 +1679,6 @@ echo -n
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/users/iframe.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/users/users.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/dbconnect.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/display.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/footer.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/functions.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/header.php
@@ -1673,60 +1694,11 @@ echo -n
 %attr(0664,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/admin/discover_stmts.txt
 %attr(0664,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/admin/listloader_stmts.txt
 %attr(0664,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/admin/project_auth_entries.txt
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/styles.css
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/styles-print.css
 %attr(0664,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/agent/osdial_auth_entries.txt
 %attr(0664,apache,asterisk) %config(noreplace) %{_opt}/osdial/html/agent/osdial_debug.txt
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/styles.css
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/blank.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/functions.php
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/AgentTopLeft.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/AgentTopRight.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/AgentTopRightS.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/ControlLoginDn.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/ControlLoginUp.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/LoginAgainDn.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/LoginAgainUp.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/ShowCallbackInfo_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/ShowCallbackInfo_ON.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agentsidetab_cancel.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agentsidetab_extra.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agentsidetab_line.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agentsidetab_press.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agentsidetab_select.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agentsidetab_tab.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/agentsidetab_top.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/down150.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/down200.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/down240.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/down350.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/down433.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/down435.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/down550.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/formtab.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/loginagain-bg.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/muted.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/mutedoff.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/sidebar.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/sidebar2.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/sidebar2S.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/topleft.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/topright.png
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_dialnextnumber_dn.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_hangupcustomer_dn.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_parkcall_dn.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_senddtmf_dn.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_startrecording_dn.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_stoprecording_dn.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_transerconf.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_transferconf_dn.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_webform1.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_webform1_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_webform2.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_webform2_OFF.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_LB_webform_dn.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_RPLD_off.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_XB_hotkeysinactive.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_tab_osdial-i.gif
-%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/images/vdc_tab_script-a.gif
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/include/osdial.js
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/index.php
 #%attr(0664,apache,asterisk) %{_opt}/osdial/html/agent/test_OSDIAL_output.php
