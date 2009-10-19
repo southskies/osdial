@@ -40,6 +40,12 @@ if (isset($_GET["end_date"]))				{$end_date=$_GET["end_date"];}
 	elseif (isset($_POST["end_date"]))		{$end_date=$_POST["end_date"];}
 if (isset($_GET["user"]))				{$user=$_GET["user"];}
 	elseif (isset($_POST["user"]))		{$user=$_POST["user"];}
+if (isset($_GET["extension"]))				{$ELOext=$_GET["extension"];}
+	elseif (isset($_POST["extension"]))		{$ELOext=$_POST["extension"];}
+if (isset($_GET["conf_exten"]))				{$ELOconf=$_GET["conf_exten"];}
+	elseif (isset($_POST["conf_exten"]))		{$ELOconf=$_POST["conf_exten"];}
+if (isset($_GET["server_ip"]))				{$ELOserver=$_GET["server_ip"];}
+	elseif (isset($_POST["server_ip"]))		{$ELOserver=$_POST["server_ip"];}
 if (isset($_GET["group"]))				{$group=$_GET["group"];}
 	elseif (isset($_POST["group"]))		{$group=$_POST["group"];}
 if (isset($_GET["stage"]))				{$stage=$_GET["stage"];}
@@ -168,6 +174,9 @@ if ($stage == "log_agent_out")
 	$stmt="DELETE from osdial_live_agents where user='" . mysql_real_escape_string($user) . "';";
 	$rslt=mysql_query($stmt, $link);
 
+	$stmt="UPDATE osdial_conferences SET extension='' WHERE extension='" . mysql_real_escape_string($ELOext) . "' AND conf_exten='" . mysql_real_escape_string($ELOconf) . "' AND server_ip='" . mysql_real_escape_string($ELOserver) . "';";
+	$rslt=mysql_query($stmt, $link);
+
 	echo "Agent $user - $full_name has been emergency logged out, make sure they close their web browser<BR>\n";
 	
 	exit;
@@ -206,6 +215,9 @@ if ($agents_to_print > 0)
 
 		echo "<form action=$PHP_SELF method=POST>\n";
 		echo "<input type=hidden name=user value=\"$user\">\n";
+		echo "<input type=hidden name=extension value=\"$Aextension\">\n";
+		echo "<input type=hidden name=conf_exten value=\"$Asession_id\">\n";
+		echo "<input type=hidden name=server_ip value=\"$Aserver_ip\">\n";
 		echo "<input type=hidden name=stage value=\"log_agent_out\">\n";
 		echo "<input type=submit name=submit value=\"EMERGENCY LOG AGENT OUT\"><BR></form>\n";
 	}
