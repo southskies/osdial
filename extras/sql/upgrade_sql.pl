@@ -27,6 +27,8 @@
 use strict;
 use DBI;
 use Getopt::Long;
+use IO::Interface::Simple;
+use IO::Socket::Multicast;
 use threads;
 use threads::shared;
 use Time::HiRes qw( usleep );
@@ -35,7 +37,7 @@ $|++;
 my $prog = 'upgrade_sql.pl';
 
 my $secStart = time();
-my($DB, $CLOhelp, $CLOtest, $CLOsaf);
+my($DB, $CLOhelp, $CLOtest, $CLOsaf, $CLOinst);
 my($dbhT,$dbhA);
 
 # Get OSD configuration directives.
@@ -46,7 +48,8 @@ if (scalar @ARGV) {
 		'help!' => \$CLOhelp,
 		'debug!' => \$DB,
 		'test!' => \$CLOtest,
-		'skip-auth-fix!' => \$CLOsaf
+		'skip-auth-fix!' => \$CLOsaf,
+		'install!' => \$CLOinst
 	);
 	if ($DB) {
 		print "----- DEBUGGING -----\n";
@@ -55,6 +58,7 @@ if (scalar @ARGV) {
 		print "CLOhelp-     $CLOhelp\n";
 		print "CLOtest-     $CLOtest\n";
 		print "CLOsaf-      $CLOsaf\n";
+		print "CLOinst-     $CLOinst\n";
 		print "\n";
 	}
 	if ($CLOhelp) {
@@ -62,6 +66,7 @@ if (scalar @ARGV) {
 		print "allowed run-time options:\n";
 		print "  [--help]         = This screen\n";
 		print "  [--debug]        = debug\n";
+		print "  [--install]      = Install DB on this server if not found.\n";
 		print "  [--skip-auth-fix]= Skip the DB user authentication fixes\n";
 		print "  [-t|--test]      = test only\n\n";
 		exit 0;
@@ -98,7 +103,7 @@ my $connerr = 0;
 my $install = 0;
 my $examples = 0;
 if ($CLOsaf != 1) {
-	if ( ! -d "/var/lib/mysql/" . $config->{VARDB_database} ) {
+	if ( ($CLOinst) and (! -d "/var/lib/mysql/" . $config->{VARDB_database}) ) {
 		print "    OSDial database (" . $config->{VARDB_database} . ") is not detected, creating.\n";
 		my $cdb = "CREATE DATABASE " . $config->{VARDB_database} . ";";
 		`echo "$cdb" | mysql -u root`;
@@ -109,29 +114,67 @@ if ($CLOsaf != 1) {
 		$vmap{'examples'} = '999999';
 	} else {
 		print "Testing database connection...\n" if ($DB);
-		$dbhT = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':' . $config->{VARDB_server} . ':' . $config->{VARDB_port}, $config->{VARDB_user}, $config->{VARDB_pass} )
-	   	or ($connerr=1);
-		my $dores = $dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';");
-		print "dores:" . $dores . "\n" if($DB);
-		$connerr = 1;
-		$connerr = 0 if ($dores eq "0E0" or $dores > 0);
+		$dbhT = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':' . $config->{VARDB_server} . ':' . $config->{VARDB_port}, $config->{VARDB_user}, $config->{VARDB_pass} ) or ($connerr=1);
+		$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		$dbhT->do("GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		print "connerr:" . $connerr . "\n" if($DB);
 		$dbhT->disconnect();
 	}
 	
-	if ($connerr == 1) {
+	if (($connerr == 1) and (-d "/var/lib/mysql/" . $config->{VARDB_database})) {
 		print "Correcting Database Permissions...\n" if ($DB);
 		$connerr = 0;
-		$dbhT = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . '::' . $config->{VARDB_port}, "root", "" )
+		$dbhT = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':127.0.0.1:' . $config->{VARDB_port}, "root", "" )
 	  	or die "Couldn't connect to database: " . DBI->errstr;
 		$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
 		$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'localhost' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		$dbhT->do("GRANT GRANT OPTION on mysql.* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		$dbhT->do("GRANT GRANT OPTION on mysql.* TO '" . $config->{VARDB_user} . "'\@'localhost' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		$dbhT->do("GRANT GRANT OPTION on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
 		$dbhT->do("GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
 		$dbhT->do("GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'localhost' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		$dbhT->do("GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
 		$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
 		$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'localhost' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
 		$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
 		$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'\%' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+		# Now grant for all IPs on this machine.
+		my @interfaces = IO::Interface::Simple->interfaces;
+		foreach my $interface (@interfaces) {
+			my $ip = IO::Interface::Simple->new($interface);
+                        if ($ip->address) {
+				$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $ip->address . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+				$dbhT->do("GRANT GRANT OPTION on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $ip->address . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+				$dbhT->do("GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $ip->address . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';");
+				$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $ip->address . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
+			}
+		}
+		# Update MySQL auth for other servers...
+		my $stmtT = "SELECT server_ip FROM servers;";
+		my $sthT = $dbhT->prepare($stmtT) or die "preparing: ", $dbhT->errstr;
+		$sthT->execute or die "executing: $stmtT ", $dbhT->errstr;
+		my @sipary;
+		while (my @aryT = $sthT->fetchrow_array) {
+			push @sipary, $aryT[0];
+		}
+		$sthT->finish();
+		foreach my $sip (@sipary) {
+			$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $sip . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';");
+			$dbhT->do("GRANT GRANT OPTION on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $sip . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';");
+			$dbhT->do("GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $sip . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';");
+			$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $sip . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';");
+		}
 		$dbhT->disconnect();
+	} elsif ($connerr == 1) {
+		print "\n\nWARNING: Cannot update the user permissions in MySQL.";
+		print   "\n         If you haven't already, Please run the update process on the MySQL server.";
+		print   "\n         If you have and the problem persists, you should execute the following SQL statements directly:";
+		print   "\n" . "        GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+		print   "\n" . "        GRANT GRANT OPTION on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+		print   "\n" . "        GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+		print   "\n" . "        GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+		print "\n\n";
 	}
 }
 
@@ -141,6 +184,8 @@ $dbhA = DBI->connect(@dbiconn)
 print '    Connected to Database:  ' . $config->{VARDB_server} . '|' . $config->{VARDB_database} . "\n" if ($DB);
 
 my ($stmtA, $sthA, @aryA, $ver);
+
+
 print "    Starting upgrade loop...\n";
 my $uploop = 0;
 while ($uploop < 1) {
