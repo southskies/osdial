@@ -269,7 +269,7 @@ while ($sthArows > $rec_count)
 		$ZorD = "Zap";
 		if ($DBasterisk_version =~ /^1\.6/) {
 			$ZorD = "DAHDI";
-			$dbhD = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
+			$dbhD = DBI->connect("DBI:mysql:dialer:127.0.0.1:3306", "osdial", "osdial1234")
 			 or die "Couldn't connect to database: " . DBI->errstr;
 		}
 		if ($DBtelnet_host)				{$telnet_host = $DBtelnet_host;}
