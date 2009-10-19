@@ -209,7 +209,8 @@ install-asterisk-sample-config:
 	@echo "Installing documents in $(DESTDIR)$(PATHdocs)..."
 	@install -d -m 755 $(DESTDIR)$(PATHdocs)/conf_examples
 	@install -p -m 644 ./docs/*.txt $(DESTDIR)$(PATHdocs)
-	@install -p -m 644 ./docs/conf_examples/* $(DESTDIR)$(PATHdocs)/conf_examples
+	@install -p -m 644 ./docs/conf_examples/*.conf $(DESTDIR)$(PATHdocs)/conf_examples
+	@install -p -m 644 ./docs/conf_examples/*.osdial $(DESTDIR)$(PATHdocs)/conf_examples
 
 .install-complete:
 	@echo
