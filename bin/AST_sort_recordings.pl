@@ -36,6 +36,8 @@ $|++;
 
 my $prog = "AST_sort_recordings.pl";
 
+my $use_size_checks = 0;
+
 # Get AGC configuration directives.
 my $config = getAGCconfig('/etc/osdial.conf');
 
@@ -84,77 +86,85 @@ my @files = readdir(FILE);
 my $cps = 2;
 # Cycle through each file in the mixed directory
 foreach my $file (@files) {
-	# Check to see if filesize has changed.
-	my $size_checks = 10;
-	foreach (1..$size_checks) {
-		my $size1 = (-s "$rdir/$file");
-		usleep(1000000/$cps);
-		#sleep(1/$cps);
-		my $size2 = (-s "$rdir/$file");
-		print "$file:  $size1 - $size2\n" if ($verbose);
-		if (($size1 eq $size2)) {
-			$size_checks--;
-		}
-	}
-
-	# Grab a completed file of some format.
-	if ($file =~ /\.wav|\.gsm|\.ogg|\.mp3/i and $size_checks == 0) {
-		# Pull SQL info from recording_log, list and campaign tables.
-		my $SQLfile = $file;
-		$SQLfile =~ s/-all\.wav|-all\.gsm|-all\.ogg|-all\.mp3//gi;
-		$stmtA = "SELECT recording_log.recording_id,osdial_lists.campaign_id,DATE(recording_log.start_time),recording_log.lead_id FROM recording_log,osdial_list,osdial_lists WHERE recording_log.lead_id=osdial_list.lead_id AND osdial_list.list_id=osdial_lists.list_id AND filename='$SQLfile' ORDER BY recording_id DESC LIMIT 1;";
-		print "$stmtA|\n" if($verbose > 2);
-		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-		$sthArows=$sthA->rows;
-		#if ($sthArows > 0) {
-			my(@aryA,$camp,$date,$extdir,$destdir);
-			my($rcid,$lead) = (0,0);
-			
-			@aryA = $sthA->fetchrow_array;
-			$rcid = $aryA[0];
-			$camp = $aryA[1];
-			$date = $aryA[2];
-			$lead = $aryA[3];
-
-			# If we can't identify it, tag it.
-			$camp = "UNKNOWN" if ($camp eq "");
-
-			# Following on applies to Vista.
-			$extdir = "/AIG" if ($file =~ /AIG/);
-
-			# Move file into sorted location.
-			$destdir = $odir.'/'.$camp.'/'.$date.$extdir;
-			system("mkdir", "-p", $destdir) unless ($CLOtest);
-			system("mv", $rdir.'/'.$file, $destdir.'/'.$file) unless ($CLOtest);
-			system("chmod", "777", $destdir.'/'.$file) unless ($CLOtest);
-			print "Would mv $rdir/$file $destdir/$file\n" if ($CLOtest);
-
-			my $event = $file . ' sorted';
-
-			if ($rcid > 0) {
-				# Update the recording_log with the http link.
-				$stmtA = "UPDATE recording_log SET location='" . $config->{VARHTTP_path} . '/' . $config->{PATHarchive_sorted} . "/$camp/$date$extdir/$file' WHERE recording_id='$rcid';";
-				print "$stmtA|\n" if($verbose > 2);
-				my $rlsts = $dbhA->do($stmtA) unless ($CLOtest);
-				print "." if ($verbose > 1);
-				$event .= ', added to recording_log (' . $rlsts . ')' if ($rlsts > 0);
-            
-				# If lead was found mark it as PENDING transfer, otherwise NOTFOUND...insert into qc_transfer_log.
-				$stmtA = "INSERT IGNORE INTO qc_recordings (recording_id,lead_id,filename,location) VALUES('$rcid','$lead','$file','$destdir');";
-				print "$stmtA|\n" if($verbose > 2);
-				my $qtlsts = $dbhA->do($stmtA) unless ($CLOtest or $file =~ /AIG/);
-				print "-" if ($verbose > 1);
-				$event .= ', added to qc_recordings (' . $qtlsts . ')' if ($qtlsts > 0);
-			} else {
-				$event .= ', was not found in recording_log';
+	if ($file =~ /\.wav$|\.gsm$|\.ogg$|\.mp3$/i) {
+		# Check to see if filesize has changed.
+		my $size_checks = 10;
+		if ($use_size_checks) {
+			foreach (1..$size_checks) {
+				my $size1 = (-s "$rdir/$file");
+				usleep(1000000/$cps);
+				#sleep(1/$cps);
+				my $size2 = (-s "$rdir/$file");
+				print "$file:  $size1 - $size2\n" if ($verbose);
+				if (($size1 eq $size2)) {
+					$size_checks--;
+				}
 			}
+		} else {
+			$size_checks = 1;
+			my $lsof_ret = `/usr/sbin/lsof '$rdir/$file'`;
+			$size_checks = 0 unless ($lsof_ret);
+		}
 
-			print $event . "\n" if ($verbose);
-			eventLogger($config->{PATHlogs},'sort_recordings',$event);
-			
-		#}
-		$sthA->finish();
+		# Grab a completed file of some format.
+		if ($size_checks == 0) {
+			# Pull SQL info from recording_log, list and campaign tables.
+			my $SQLfile = $file;
+			$SQLfile =~ s/-all\.wav|-all\.gsm|-all\.ogg|-all\.mp3//gi;
+			$stmtA = "SELECT recording_log.recording_id,osdial_lists.campaign_id,DATE(recording_log.start_time),recording_log.lead_id FROM recording_log,osdial_list,osdial_lists WHERE recording_log.lead_id=osdial_list.lead_id AND osdial_list.list_id=osdial_lists.list_id AND filename='$SQLfile' ORDER BY recording_id DESC LIMIT 1;";
+			print "$stmtA|\n" if($verbose > 2);
+			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+			$sthArows=$sthA->rows;
+			#if ($sthArows > 0) {
+				my(@aryA,$camp,$date,$extdir,$destdir);
+				my($rcid,$lead) = (0,0);
+				
+				@aryA = $sthA->fetchrow_array;
+				$rcid = $aryA[0];
+				$camp = $aryA[1];
+				$date = $aryA[2];
+				$lead = $aryA[3];
+	
+				# If we can't identify it, tag it.
+				$camp = "UNKNOWN" if ($camp eq "");
+	
+				# Following on applies to Vista.
+				$extdir = "/AIG" if ($file =~ /AIG/);
+	
+				# Move file into sorted location.
+				$destdir = $odir.'/'.$camp.'/'.$date.$extdir;
+				system("mkdir", "-p", $destdir) unless ($CLOtest);
+				system("mv", $rdir.'/'.$file, $destdir.'/'.$file) unless ($CLOtest);
+				system("chmod", "777", $destdir.'/'.$file) unless ($CLOtest);
+				print "Would mv $rdir/$file $destdir/$file\n" if ($CLOtest);
+	
+				my $event = $file . ' sorted';
+	
+				if ($rcid > 0) {
+					# Update the recording_log with the http link.
+					$stmtA = "UPDATE recording_log SET location='" . $config->{VARHTTP_path} . '/' . $config->{PATHarchive_sorted} . "/$camp/$date$extdir/$file' WHERE recording_id='$rcid';";
+					print "$stmtA|\n" if($verbose > 2);
+					my $rlsts = $dbhA->do($stmtA) unless ($CLOtest);
+					print "." if ($verbose > 1);
+					$event .= ', added to recording_log (' . $rlsts . ')' if ($rlsts > 0);
+            	
+					# If lead was found mark it as PENDING transfer, otherwise NOTFOUND...insert into qc_transfer_log.
+					$stmtA = "INSERT IGNORE INTO qc_recordings (recording_id,lead_id,filename,location) VALUES('$rcid','$lead','$file','$destdir');";
+					print "$stmtA|\n" if($verbose > 2);
+					my $qtlsts = $dbhA->do($stmtA) unless ($CLOtest or $file =~ /AIG/);
+					print "-" if ($verbose > 1);
+					$event .= ', added to qc_recordings (' . $qtlsts . ')' if ($qtlsts > 0);
+				} else {
+					$event .= ', was not found in recording_log';
+				}
+	
+				print $event . "\n" if ($verbose);
+				eventLogger($config->{PATHlogs},'sort_recordings',$event);
+				
+			#}
+			$sthA->finish();
+		}
 	}
 }
 

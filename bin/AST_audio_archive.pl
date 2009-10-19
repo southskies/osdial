@@ -57,6 +57,7 @@
 use Time::HiRes ('gettimeofday','usleep','sleep');
 
 $GSM=0;   $MP3=0;   $OGG=0;   $WAV=0;   $NODATEDIR=1;
+my $use_size_checks = 0;
 
 # Default variables for FTP
 $VARFTP_host = '10.0.0.4';
@@ -229,16 +230,22 @@ foreach(@FILES)
 		{
 
 		my $size_checks = 10;
-		foreach (1..$size_checks) {
-			$size1 = (-s "$dir2/$FILES[$i]");
-			if ($DBX) {print "$FILES[$i] $size1\n";}
-			usleep(1000000/$cps);
-			#sleep(1/$cps);
-			$size2 = (-s "$dir2/$FILES[$i]");
-			if ($DBX) {print "$FILES[$i] $size2\n\n";}
-			if (($size1 eq $size2)) {
-				$size_checks--;
+		if ($use_size_checks) {
+			foreach (1..$size_checks) {
+				$size1 = (-s "$dir2/$FILES[$i]");
+				if ($DBX) {print "$FILES[$i] $size1\n";}
+				usleep(1000000/$cps);
+				#sleep(1/$cps);
+				$size2 = (-s "$dir2/$FILES[$i]");
+				if ($DBX) {print "$FILES[$i] $size2\n\n";}
+				if (($size1 eq $size2)) {
+					$size_checks--;
+				}
 			}
+		} else {
+			$size_checks = 1;
+			my $lsof_ret = `/usr/sbin/lsof '$dir2/$FILES[$i]'`;
+			$size_checks = 0 unless ($lsof_ret);
 		}
 
 		if ( ($size_checks == 0) )
@@ -251,8 +258,8 @@ foreach(@FILES)
 			$OUTfile = $SQLFILE . "-out.wav";
 
 			if (-e $dir2 . "/" . $INfile) {
-				`mv -f "$dir2/$INfile" "$dir2/$ALLfile"`;
-				`rm -f "$dir2/$OUTfile"`;
+				`mv -f '$dir2/$INfile' '$dir2/$ALLfile'`;
+				`rm -f '$dir2/$OUTfile'`;
 			}
 			
 
@@ -302,7 +309,7 @@ foreach(@FILES)
 				$ftp->put("$dir2/$ALLfile", "$ALLfile");
 				$ftp->quit;
 
-				`rm -f "$dir2/$ALLfile"`;
+				`rm -f '$dir2/$ALLfile'`;
 
 				$stmtA = "UPDATE recording_log set location='$VARHTTP_path/$recordingsdir/$start_date_PATH$ALLfile' where recording_id='$recording_id';" if ($dnt);
 					if($DB){print STDERR "\n|$stmtA|\n";}

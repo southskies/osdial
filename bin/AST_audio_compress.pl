@@ -51,6 +51,7 @@
 use Time::HiRes ('gettimeofday','usleep','sleep');
 
 $GSM=0;   $MP3=0;   $OGG=0;   $WAV=0;
+my $use_size_checks = 0;
 
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1) {
@@ -216,15 +217,24 @@ foreach(@FILES) {
 	if ( (length($FILES[$i]) > 4) && ($FILES[$i] !~ /out\.|in\.|lost\+found/i) && (!-d $FILES[$i]) ) {
 
 		my $size_checks = 10;
-		foreach (1..$size_checks) {
-			$size1 = (-s "$dir2/$FILES[$i]");
-			if ($DBX) {print "$FILES[$i] $size1\n";}
-			usleep(1000000/$cps);
-			#sleep(1/$cps);
-			$size2 = (-s "$dir2/$FILES[$i]");
-			if ($DBX) {print "$FILES[$i] $size2\n\n";}
-			if (($size1 eq $size2)) {
-				$size_checks--;
+		if ($use_size_checks) {
+			foreach (1..$size_checks) {
+				$size1 = (-s "$dir1/$FILES[$i]");
+				if ($DBX) {print "$FILES[$i] $size1\n";}
+				usleep(1000000/$cps);
+				#sleep(1/$cps);
+				$size2 = (-s "$dir1/$FILES[$i]");
+				if ($DBX) {print "$FILES[$i] $size2\n\n";}
+				if (($size1 eq $size2)) {
+					$size_checks--;
+				}
+			}
+		} else {
+			$size_checks = 1;
+			if ($FILES[$i] =~ /\.wav$/i) {
+				my $lsof_ret = `/usr/sbin/lsof '$dir1/$FILES[$i]'`;
+				$size_checks = 0 unless ($lsof_ret);
+				#if ($DBX) {print "$dir1/$FILES[$i] $size_checks\n";}
 			}
 		}
 
@@ -246,15 +256,20 @@ foreach(@FILES) {
 			$sthA->finish();
 
 
-			if ($GSM > 0) {
+			if (-s "$dir1/$FILES[$i]" == 0) {
+				`rm -f '$dir1/$FILES[$i]'`;
+				$stmtA = "UPDATE recording_log set location='' where recording_id='$recording_id';";
+					if($DBX){print STDERR "\n|$stmtA|\n";}
+				$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
+			} elsif ($GSM > 0) {
 				$GSMfile = $FILES[$i];
 				$GSMfile =~ s/-all\.wav/-all.gsm/gi;
 
 				if ($DB) {print "|$recording_id|$ALLfile|$GSMfile|     |$SQLfile|\n";}
 
-				`$soxbin "$dir1/$ALLfile" "$dir2/mixed/$GSMfile"`;
+				`$soxbin '$dir1/$ALLfile' '$dir2/mixed/$GSMfile'`;
 				if (-e "$dir2/mixed/$GSMfile") {
-					`rm -f $dir1/$ALLfile`;
+					`rm -f '$dir1/$ALLfile'`;
 				}
 
 				$stmtA = "UPDATE recording_log set location='http://$server_ip/$PATHarchive_mixed/../mixed/$GSMfile' where recording_id='$recording_id';";
@@ -266,9 +281,9 @@ foreach(@FILES) {
 
 				if ($DB) {print "|$recording_id|$ALLfile|$OGGfile|     |$SQLfile|\n";}
 
-				`$soxbin "$dir1/$ALLfile" "$dir2/mixed/$OGGfile"`;
+				`$soxbin '$dir1/$ALLfile' '$dir2/mixed/$OGGfile'`;
 				if (-e "$dir2/mixed/$OGGfile") {
-					`rm -f $dir1/$ALLfile`;
+					`rm -f '$dir1/$ALLfile'`;
 				}
 
 				$stmtA = "UPDATE recording_log set location='http://$server_ip/$PATHarchive_mixed/../mixed/$OGGfile' where recording_id='$recording_id';";
@@ -280,9 +295,9 @@ foreach(@FILES) {
 
 				if ($DB) {print "|$recording_id|$ALLfile|$MP3file|     |$SQLfile|\n";}
 
-				`$lamebin -b 16 -m m --silent "$dir1/$ALLfile" "$dir2/mixed/$MP3file"`;
+				`$lamebin -b 16 -m m --silent '$dir1/$ALLfile' '$dir2/mixed/$MP3file'`;
 				if (-e "$dir2/mixed/$MP3file") {
-					`rm -f $dir1/$ALLfile`;
+					`rm -f '$dir1/$ALLfile'`;
 				}
 
 				$stmtA = "UPDATE recording_log set location='http://$server_ip/$PATHarchive_mixed/../mixed/$MP3file' where recording_id='$recording_id';";
@@ -294,9 +309,9 @@ foreach(@FILES) {
 
 				if ($DB) {print "|$recording_id|$ALLfile|$WAVfile|     |$SQLfile|\n";}
 
-				`$soxbin "$dir1/$ALLfile" "$dir2/mixed/$WAVfile"`;
+				`$soxbin '$dir1/$ALLfile' '$dir2/mixed/$WAVfile'`;
 				if (-e "$dir2/mixed/$WAVfile") {
-					`rm -f $dir1/$ALLfile`;
+					`rm -f '$dir1/$ALLfile'`;
 				}
 
 				$stmtA = "UPDATE recording_log set location='http://$server_ip/$PATHarchive_mixed/../mixed/$WAVfile' where recording_id='$recording_id';";
