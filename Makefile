@@ -132,7 +132,7 @@ install-docs: .osdial.config
 	@install -d -m 755 $(DESTDIR)$(PATHsounds)
 	@install -p -m 755 ./bin/* $(DESTDIR)$(PATHhome)
 	@install -p -m 644 ./extras/osdial.cron $(DESTDIR)$(PATHhome)
-	#@install -p -m 755 ./extras/ip_relay/ip_relay $(DESTDIR)$(PATHhome)
+	@#install -p -m 755 ./extras/ip_relay/ip_relay $(DESTDIR)$(PATHhome)
 	@install -p -m 755 ./extras/perl/Asterisk.pm $(DESTDIR)$(PATHhome)/libs
 	@install -p -m 755 ./extras/perl/Asterisk/* $(DESTDIR)$(PATHhome)/libs/Asterisk
 	@install -p -m 644 ./extras/gmt/GMT_USA_zip.txt $(DESTDIR)$(PATHhome)
