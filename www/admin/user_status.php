@@ -174,7 +174,7 @@ if ($stage == "log_agent_out")
 	$stmt="DELETE from osdial_live_agents where user='" . mysql_real_escape_string($user) . "';";
 	$rslt=mysql_query($stmt, $link);
 
-	$stmt="UPDATE osdial_conferences SET extension='' WHERE extension='" . mysql_real_escape_string($ELOext) . "' AND conf_exten='" . mysql_real_escape_string($ELOconf) . "' AND server_ip='" . mysql_real_escape_string($ELOserver) . "';";
+	$stmt="UPDATE osdial_conferences SET extension='' WHERE extension='" . mysql_real_escape_string($ELOext) . "' AND server_ip='" . mysql_real_escape_string($ELOserver) . "';";
 	$rslt=mysql_query($stmt, $link);
 
 	echo "Agent $user - $full_name has been emergency logged out, make sure they close their web browser<BR>\n";
