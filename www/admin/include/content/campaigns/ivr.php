@@ -75,7 +75,7 @@ if ($ADD == "1keys" or $ADD == '4keys') {
             $recfilename = $_FILES['recfile']['name'];
             $recfilename = ereg_replace("[^-\_\.0-9a-zA-Z]","",$recfilename);
             if ($recfilename != '') {
-                copy($recfiletmp, "/opt/osdial/html/ivr/" . $recfilename);
+                copy($recfiletmp, $WeBServeRRooT . "/ivr/" . $recfilename);
                 if ($oivr_opt_action == 'MENU') {
                     $oi3 = $recfilename;
                 } else {
@@ -180,7 +180,7 @@ if ($ADD == "2keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = "/opt/osdial/html/ivr";
+    	$path = $WeBServeRRooT . "/ivr";
     	$dir = @opendir($path);
     	while ($file = readdir($dir)) {
         	$sel = '';
@@ -212,7 +212,7 @@ if ($ADD == "2keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = "/opt/osdial/html/ivr";
+    	$path = $WeBServeRRooT . "/ivr";
     	$dir = @opendir($path);
     	while ($file = readdir($dir)) {
         	$sel = '';
@@ -245,7 +245,7 @@ if ($ADD == "2keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi3">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = "/opt/osdial/html/ivr";
+    	$path = $WeBServeRRooT . "/ivr";
     	$dir = @opendir($path);
     	while ($file = readdir($dir)) {
         	$sel = '';
@@ -299,7 +299,7 @@ if ($ADD == "2keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi3">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = "/opt/osdial/html/ivr";
+    	$path = $WeBServeRRooT . "/ivr";
     	$dir = @opendir($path);
     	while ($file = readdir($dir)) {
         	$sel = '';
@@ -315,7 +315,7 @@ if ($ADD == "2keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi4">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = "/opt/osdial/html/ivr";
+    	$path = $WeBServeRRooT . "/ivr";
     	$dir = @opendir($path);
     	while ($file = readdir($dir)) {
         	$sel = '';
@@ -366,7 +366,7 @@ if ($ADD == "2keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = "/opt/osdial/html/ivr";
+    	$path = $WeBServeRRooT . "/ivr";
     	$dir = @opendir($path);
     	while ($file = readdir($dir)) {
         	$sel = '';
@@ -421,7 +421,7 @@ if ($ADD == "2keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = "/opt/osdial/html/ivr";
+    	$path = $WeBServeRRooT . "/ivr";
     	$dir = @opendir($path);
     	while ($file = readdir($dir)) {
         	$sel = '';
@@ -458,7 +458,7 @@ if ($ADD == "2keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = "/opt/osdial/html/ivr";
+    	$path = $WeBServeRRooT . "/ivr";
     	$dir = @opendir($path);
     	while ($file = readdir($dir)) {
         	$sel = '';
@@ -526,7 +526,7 @@ if ($ADD == "4menu") {
             $recfilename = $_FILES['recfile']['name'];
             $recfilename = ereg_replace("[^-\_\.0-9a-zA-Z]","",$recfilename);
             if ($recfilename != '') {
-                copy($recfiletmp, "/opt/osdial/html/ivr/" . $recfilename);
+                copy($recfiletmp, $WeBServeRRooT . "/ivr/" . $recfilename);
                 $oivr_announcement = $recfilename;
             }
 
@@ -714,7 +714,7 @@ if ($ADD == "3menu") {
     echo '      <td bgcolor="' . $oddrows . '">';
     echo '          <select name="oivr_announcement">';
     echo "              <option value=\"\"> - NONE - </option>";
-    $path = "/opt/osdial/html/ivr";
+    $path = $WeBServeRRooT . "/ivr";
     $dir = @opendir($path);
     while ($file = readdir($dir)) {
         $sel = '';
@@ -958,7 +958,7 @@ if ($ADD == "3keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = "/opt/osdial/html/ivr";
+    	$path = $WeBServeRRooT . "/ivr";
     	$dir = @opendir($path);
     	while ($file = readdir($dir)) {
         	$sel = '';
@@ -994,7 +994,7 @@ if ($ADD == "3keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = "/opt/osdial/html/ivr";
+    	$path = $WeBServeRRooT . "/ivr";
     	$dir = @opendir($path);
     	while ($file = readdir($dir)) {
         	$sel = '';
@@ -1032,7 +1032,7 @@ if ($ADD == "3keys") {
 	#echo '<input type="text" size="30" maxlength="255" name="oi3" value="' . $ad[2] . '"><br />';
     	echo '          <select name="oi3">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = "/opt/osdial/html/ivr";
+    	$path = $WeBServeRRooT . "/ivr";
     	$dir = @opendir($path);
     	while ($file = readdir($dir)) {
         	$sel = '';
@@ -1125,7 +1125,7 @@ if ($ADD == "3keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi3">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = "/opt/osdial/html/ivr";
+    	$path = $WeBServeRRooT . "/ivr";
     	$dir = @opendir($path);
     	while ($file = readdir($dir)) {
         	$sel = '';
@@ -1144,7 +1144,7 @@ if ($ADD == "3keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi4">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = "/opt/osdial/html/ivr";
+    	$path = $WeBServeRRooT . "/ivr";
     	$dir = @opendir($path);
     	while ($file = readdir($dir)) {
         	$sel = '';
@@ -1202,7 +1202,7 @@ if ($ADD == "3keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = "/opt/osdial/html/ivr";
+    	$path = $WeBServeRRooT . "/ivr";
     	$dir = @opendir($path);
     	while ($file = readdir($dir)) {
         	$sel = '';
@@ -1274,7 +1274,7 @@ if ($ADD == "3keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = "/opt/osdial/html/ivr";
+    	$path = $WeBServeRRooT . "/ivr";
     	$dir = @opendir($path);
     	while ($file = readdir($dir)) {
         	$sel = '';
@@ -1314,7 +1314,7 @@ if ($ADD == "3keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = "/opt/osdial/html/ivr";
+    	$path = $WeBServeRRooT . "/ivr";
     	$dir = @opendir($path);
     	while ($file = readdir($dir)) {
         	$sel = '';
