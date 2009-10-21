@@ -17,7 +17,12 @@ if [ ! -d "$TMPIVR" ]; then
 fi
 cd $TMPIVR
 wget --mirror -nH http://$WEB/osdial/ivr > /dev/null 2>&1
-cd osdial/ivr
+if [ -d "$TMPIVR/osdial" ]; then
+	cd osdial/ivr
+else
+	wget --mirror -nH http://$WEB/ivr > /dev/null 2>&1
+	cd ivr
+fi
 for i in `ls *.wav *.WAV *.gsm *.GSM *.mp3 *.MP3`; do
 	if [ ! -f "$IVRDIR/$i" ]; then
 		cp -f "$i" $IVRDIR
