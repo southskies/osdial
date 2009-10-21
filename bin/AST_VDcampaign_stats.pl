@@ -128,17 +128,21 @@ while ( $master_loop < $CLOloops ) {
 	} else {
 		$swhere = "( (active='Y') or (campaign_stats_refresh='Y') )";
 	}
-	$stmtA = "SELECT campaign_id,UNIX_TIMESTAMP(campaign_changedate),campaign_stats_refresh from osdial_campaigns where ". $swhere;
+	$stmtA = "SELECT campaign_id,UNIX_TIMESTAMP(campaign_changedate),campaign_stats_refresh,(TIME_TO_SEC(SUBTIME(TIME(SYSDATE()),TIME(campaign_changedate)))/60) from osdial_campaigns where ". $swhere;
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows  = $sthA->rows;
 	$rec_count = 0;
 	while ( $sthArows > $rec_count ) {
 		my @aryA = $sthA->fetchrow_array;
-		$campaign_id[$rec_count]                    = $aryA[0];
-		$campaign_changedate[$rec_count]            = $aryA[1];
-		$campaign_stats_refresh[$rec_count]         = $aryA[2];
-		$rec_count++;
+		if ($aryA[3] <= 121 or $aryA[2] eq "Y") {
+			$campaign_id[$rec_count]                    = $aryA[0];
+			$campaign_changedate[$rec_count]            = $aryA[1];
+			$campaign_stats_refresh[$rec_count]         = $aryA[2];
+			$rec_count++;
+		} else {
+			$sthArows--;
+		}
 	}
 	$sthA->finish();
 	print logDate() . " CAMPAIGNS TO PROCESSES CAMPAIGN STATS FOR:  $rec_count|$#campaign_id       IT: $master_loop\n" if ($DB);
@@ -379,25 +383,33 @@ sub updateStats {
 	########################################################
 	# Get Agents and update campaign stats for each agent. #
 	########################################################
-	my @agents;
-	$stmtA = "SELECT user FROM osdial_users;";
+	my %agents;
+	#$stmtA = "SELECT user FROM osdial_users;";
+	$stmtA = "SELECT user,count(*),(TIME_TO_SEC(SUBTIME(TIME(SYSDATE()),TIME(MAX(event_time))))/60) FROM osdial_agent_log WHERE sub_status='LOGIN' AND event_time >= DATE(NOW()) group by user;";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	while ( my @aryA = $sthA->fetchrow_array ) {
-		push @agents, $aryA[0];
+		if ($aryA[2] <= 121) {
+			$agents{$aryA[0]} = $aryA[2];
+		}
 	}
 	$sthA->finish();
 
-	foreach my $agent (@agents) {
+	foreach my $agent (keys %agents) {
 		# Create campaign/server entry if it doesn't exist.
 		my $stmtA = "INSERT INTO osdial_campaign_agent_stats (campaign_id,user) VALUES ('$campaign_id','$agent') on duplicate key update campaign_id='$campaign_id';";
 		my $affected_rows = $dbhA->do($stmtA);
+		my ($VCScalls_today,$VCSanswers_today) = (0,0);
+		my ($VCScalls_hour,$VCSanswers_hour) = (0,0);
+		my ($VCScalls_halfhour,$VCSanswers_halfhour) = (0,0);
+		my ($VCScalls_five,$VCSanswers_five) = (0,0);
+		my ($VCScalls_one,$VCSanswers_one) = (0,0);
 
-		my ($VCScalls_today,$VCSanswers_today) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $camp_ANS_STAT_SQL, $VDL_date);
-		my ($VCScalls_hour,$VCSanswers_hour) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $camp_ANS_STAT_SQL, $VDL_hour);
-		my ($VCScalls_halfhour,$VCSanswers_halfhour) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $camp_ANS_STAT_SQL, $VDL_halfhour);
-		my ($VCScalls_five,$VCSanswers_five) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $camp_ANS_STAT_SQL, $VDL_five);
-		my ($VCScalls_one,$VCSanswers_one) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $camp_ANS_STAT_SQL, $VDL_one);
+		($VCScalls_today,$VCSanswers_today) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $camp_ANS_STAT_SQL, $VDL_date);
+		($VCScalls_hour,$VCSanswers_hour) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $camp_ANS_STAT_SQL, $VDL_hour) if ($agents{$agent} <= 121);
+		($VCScalls_halfhour,$VCSanswers_halfhour) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $camp_ANS_STAT_SQL, $VDL_halfhour) if ($agents{$agent} <= 61);
+		($VCScalls_five,$VCSanswers_five) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $camp_ANS_STAT_SQL, $VDL_five) if ($agents{$agent} <= 11);
+		($VCScalls_one,$VCSanswers_one) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $camp_ANS_STAT_SQL, $VDL_one) if ($agents{$agent} <= 3);
 
 		my $VSCupdateSQL='';
 		my $g=0;
@@ -447,7 +459,8 @@ sub updateStats {
 				$CATstatusesSQL = "'----'";
 			}
 			# Get category count for last hour, as CATanswers_hour
-			my ($CATcalls_hour,$CATanswers_hour) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $CATstatusesSQL, $VDL_hour);
+			my ($CATcalls_hour,$CATanswers_hour) = (0,0);
+			($CATcalls_hour,$CATanswers_hour) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $CATstatusesSQL, $VDL_hour) if ($agents{$agent} <= 121);
 			$g++;
 			$VSCupdateSQL .= "status_category_$g='$VSCcategory',status_category_count_$g='$VSCtally',status_category_hour_count_$g='$CATanswers_hour',";
 			print "     $campaign_id|$g|$VSCcategory|$VSCtally|$CATanswers_hour|$CATstatusesSQL|\n" if ($DBX);
