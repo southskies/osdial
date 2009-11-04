@@ -74,9 +74,16 @@ if ($last_check==0) {
 	$update_version = $system_settings['last_update_version'];
 }
 
+$avtest1 = explode('/',$admin_version);
+$avtest2 = explode('.',$avtest1[0]);
+$avtest = sprintf('%02d%04d%04d%05d',$avtest2[0],$avtest2[1],$avtest2[2],$avtest2[3]);
+
+$uvtest1 = explode('/',$update_version);
+$uvtest2 = explode('.',$uvtest1[0]);
+$uvtest = sprintf('%02d%04d%04d%05d',$uvtest2[0],$uvtest2[1],$uvtest2[2],$uvtest2[3]);
 
 echo "    	<td align=\"right\" width=\"16%\">";
-if ($update_version != $admin_version) {
+if ($uvtest > $avtest) {
 	echo "              <font size=\"0\" color=\"#1A4349\" style=\"text-decoration: blink;\" title=\"Version #$update_version is now available!  You should run 'yum update' on all servers when all agents are logged out and their is sufficient time to complete the update.\">NEW UPDATE #$update_version</font>";
 }
 echo "          </td>";
