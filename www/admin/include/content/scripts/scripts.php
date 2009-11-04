@@ -424,7 +424,7 @@ if ($ADD==2111111)
 			 }
 		 else
 			{
-			$stmt="INSERT INTO osdial_scripts values('$script_id','$script_name','$script_comments','$script_text','$active');";
+            $stmt="INSERT INTO osdial_scripts values('" . mysql_real_escape_string($script_id) . "','" . mysql_real_escape_string($script_name) . "','" . mysql_real_escape_string($script_comments) . "','" . mysql_real_escape_string($script_text) . "','" . mysql_real_escape_string($active) . "');";
 			$rslt=mysql_query($stmt, $link);
 
 			echo "<br><B><font color=$default_text>SCRIPT ADDED: $script_id</font></B>\n";
@@ -448,8 +448,6 @@ $ADD=1000000;
 
 if ($ADD==4111111) {
 	if ($LOGmodify_scripts==1) {
-	    echo "<!-- $script_text -->\n";
-	    echo "<!--" . mysql_real_escape_string($script_text) . " -->\n";
 	    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
         if ( (strlen($script_id) < 2) or (strlen($script_name) < 2) or (strlen($script_text) < 2) ) {
@@ -459,11 +457,11 @@ if ($ADD==4111111) {
             if ($script_button_id == "") {
                 $stype = "SCRIPT";
                 $sid = $script_id;
-                $stmt="UPDATE osdial_scripts set script_name='$script_name', script_comments='$script_comments', script_text='$script_text', active='$active' where script_id='$script_id';";
+                $stmt="UPDATE osdial_scripts set script_name='" . mysql_real_escape_string($script_name) . "', script_comments='" . mysql_real_escape_string($script_comments) . "', script_text='" . mysql_real_escape_string($script_text) . "', active='" . mysql_real_escape_string($active) . "' where script_id='$script_id';";
             } else {
                 $stype = "BUTTON/OBJECTION";
                 $sid = $script_id . ":" . $script_button_id;
-                $stmt="UPDATE osdial_script_buttons set script_button_label='$script_name', script_button_description='$script_comments', script_button_text='$script_text' where script_id='$script_id' and script_button_id='$script_button_id';";
+                $stmt="UPDATE osdial_script_buttons set script_button_label='" . mysql_real_escape_string($script_name) . "', script_button_description='" . mysql_real_escape_string($script_comments) . "', script_button_text='" . mysql_real_escape_string($script_text) . "' where script_id='$script_id' and script_button_id='$script_button_id';";
             }
 		    $rslt=mysql_query($stmt, $link);
 
@@ -724,7 +722,7 @@ tinyMCE.init({
                 echo "<br><font color=red>BUTTON / OBJECTION NOT ADDED - Please go back and look at the data you entered\n";
                 echo "<br>Button/Objection name, description and text must be at least 2 characters in length</font><br>\n";
             } else {
-                $stmt="INSERT INTO osdial_script_buttons values('$script_id','$script_button_id','$script_button_description','$script_button_label','');";
+                $stmt="INSERT INTO osdial_script_buttons values('" . mysql_real_escape_string($script_id) . "','" . mysql_real_escape_string($script_button_id) . "','" . mysql_real_escape_string($script_button_description) . "','" . mysql_real_escape_string($script_button_label) . "','');";
                 $rslt=mysql_query($stmt, $link);
                 echo "<br><B><font color=$default_text>BUTTON / OBJECTION ADDED: $script_button_id</font></B>\n";
                 if ($WeBRooTWritablE > 0) {
