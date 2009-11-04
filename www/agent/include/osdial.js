@@ -82,7 +82,7 @@
 	<? $h=0;
 	while ($HK_statuses_camp > $h)
 	{
-	echo "hotkeys['$HKhotkey[$h]'] = \"$HKstatus[$h] ----- $HKstatus_name[$h] ----- $HKxferextens[$h]\";\n";
+	echo "hotkeys['$HKhotkey[$h]'] = \"$HKstatus[$h] ----- $HKstatus_name[$h] ----- $HKxfer_exten[$h]\";\n";
 	$h++;
 	}
 	?>
@@ -4626,7 +4626,7 @@ if ($useIE > 0)
 					{
 					HKdispo_display = 4;
 					HKfinish=1;
-					document.getElementById("HotKeyDispo").innerHTML = HKdispo_ary[0] + " - " + HKdispo_ary[1];
+					document.getElementById("HotKeyDispo").innerHTML = HKdispo_ary[0] + " - " + HKdispo_ary[1] + " - " + HKdispo_ary[2];
 					showDiv('HotKeyActionBox');
 					hideDiv('HotKeyEntriesBox');
 					document.osdial_form.DispoSelection.value = HKdispo_ary[0];
@@ -4640,6 +4640,7 @@ if ($useIE > 0)
 						mainxfer_send_redirect('XfeRBLIND',lastcustchannel,lastcustserverip);
 						dialedcall_send_hangup('NO');
 						alt_dial_active=0;
+						alt_dial_menu=0;
 						reselect_alt_dial=0;
 						DispoSelect_submit();
 						document.osdial_form.xfernumber.value = '';
@@ -4698,7 +4699,7 @@ else
 					{
 					HKdispo_display = 4;
 					HKfinish=1;
-					document.getElementById("HotKeyDispo").innerHTML = HKdispo_ary[0] + " - " + HKdispo_ary[1];
+					document.getElementById("HotKeyDispo").innerHTML = HKdispo_ary[0] + " - " + HKdispo_ary[1] + " - " + HKdispo_ary[2];
 					showDiv('HotKeyActionBox');
 					hideDiv('HotKeyEntriesBox');
 					document.osdial_form.DispoSelection.value = HKdispo_ary[0];
@@ -4712,6 +4713,7 @@ else
 						mainxfer_send_redirect('XfeRBLIND',lastcustchannel,lastcustserverip);
 						dialedcall_send_hangup('NO');
 						alt_dial_active=0;
+						alt_dial_menu=0;
 						reselect_alt_dial=0;
 						DispoSelect_submit();
 						document.osdial_form.xfernumber.value = '';

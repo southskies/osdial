@@ -209,8 +209,8 @@
 
 # The version/build variables get set to the SVN revision automatically in release package.
 # Do not change.
-$version = 'SVN_Version';
-$build = 'SVN_Build';
+$version = '2.1.5.034';
+$build = '495-145';
 
 require("dbconnect.php");
 require('functions.php');
@@ -883,7 +883,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 				$HKhotkey[$w] =$row[0];
 				$HKstatus[$w] =$row[1];
 				$HKstatus_name[$w] =$row[2];
-				$HKxfer_exten[$w] =$row[5];
+				$HKxfer_exten[$w] =$row[3];
 				$HKhotkeys = "$HKhotkeys'$HKhotkey[$w]',";
 				$HKstatuses = "$HKstatuses'$HKstatus[$w]',";
 				$HKstatusnames = "$HKstatusnames'$HKstatus_name[$w]',";
