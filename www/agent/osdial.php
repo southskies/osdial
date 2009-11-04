@@ -869,7 +869,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 			$VARstatusnames = substr("$VARstatusnames", 0, -1); 
 
 			##### grab the campaign-specific HotKey statuses that can be used for dispositioning by an agent
-			$stmt="SELECT hotkey,status,status_name FROM osdial_campaign_hotkeys WHERE selectable='Y' and status != 'NEW' and campaign_id='$VD_campaign' order by hotkey limit 9;";
+			$stmt="SELECT hotkey,status,status_name,xfer_exten FROM osdial_campaign_hotkeys WHERE selectable='Y' and status != 'NEW' and campaign_id='$VD_campaign' order by hotkey limit 9;";
 			$rslt=mysql_query($stmt, $link);
 			if ($DB) {echo "$stmt\n";}
 			$HK_statuses_camp = mysql_num_rows($rslt);
@@ -883,9 +883,11 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 				$HKhotkey[$w] =$row[0];
 				$HKstatus[$w] =$row[1];
 				$HKstatus_name[$w] =$row[2];
+				$HKxfer_exten[$w] =$row[5];
 				$HKhotkeys = "$HKhotkeys'$HKhotkey[$w]',";
 				$HKstatuses = "$HKstatuses'$HKstatus[$w]',";
 				$HKstatusnames = "$HKstatusnames'$HKstatus_name[$w]',";
+				$HKxferextens = "$HKxferextens'$HKxfer_exten[$w]',";
 				if ($w < 3)
 					{$HKboxA = "$HKboxA <font class=\"skb_text\">$HKhotkey[$w]</font> - $HKstatus[$w] - $HKstatus_name[$w]<BR>";}
 				if ( ($w >= 3) and ($w < 6) )
@@ -897,6 +899,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 			$HKhotkeys = substr("$HKhotkeys", 0, -1); 
 			$HKstatuses = substr("$HKstatuses", 0, -1); 
 			$HKstatusnames = substr("$HKstatusnames", 0, -1); 
+			$HKxferextens = substr("$HKxferextens", 0, -1); 
 
 			##### grab the statuses to be dialed for your campaign as well as other campaign settings
 			$stmt="SELECT park_ext,park_file_name,web_form_address,allow_closers,auto_dial_level,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,agent_pause_codes_active,no_hopper_leads_logins,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,xfer_groups,web_form_address2,allow_tab_switch,preview_force_dial_time,manual_preview_default,web_form_extwindow,web_form2_extwindow,dial_method,submit_method FROM osdial_campaigns where campaign_id = '$VD_campaign';";

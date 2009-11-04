@@ -282,7 +282,7 @@ if ($ADD==20)
 			$stmtA="INSERT INTO osdial_campaign_statuses (status,status_name,selectable,campaign_id,human_answered,category) SELECT status,status_name,selectable,\"$campaign_id\",human_answered,category from osdial_campaign_statuses where campaign_id='$source_campaign_id';";
 			$rslt=mysql_query($stmtA, $link);
 
-			$stmtA="INSERT INTO osdial_campaign_hotkeys (status,hotkey,status_name,selectable,campaign_id) SELECT status,hotkey,status_name,selectable,\"$campaign_id\" from osdial_campaign_hotkeys where campaign_id='$source_campaign_id';";
+			$stmtA="INSERT INTO osdial_campaign_hotkeys (status,hotkey,status_name,selectable,campaign_id,xfer_exten) SELECT status,hotkey,status_name,selectable,\"$campaign_id\",xfer_exten from osdial_campaign_hotkeys where campaign_id='$source_campaign_id';";
 			$rslt=mysql_query($stmtA, $link);
 
 			$stmtA="INSERT INTO osdial_lead_recycle (status,attempt_delay,attempt_maximum,active,campaign_id) SELECT status,attempt_delay,attempt_maximum,active,\"$campaign_id\" from osdial_lead_recycle where campaign_id='$source_campaign_id';";
@@ -1336,7 +1336,7 @@ if ($ADD==31)
 		{
 		echo "<center><br><b><font color=$default_text size=+1>CUSTOM HOT KEYS WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_campaign_hotkeys$NWE</font></b><br><br>\n";
 		echo "<TABLE width=400 cellspacing=3 align=center>\n";
-		echo "<tr><td>HOT KEY</td><td>STATUS</td><td>DESCRIPTION</td><td>DELETE</td></tr>\n";
+		echo "<tr><td>HOT KEY</td><td>STATUS</td><td>DESCRIPTION</td><td>XFER</td><td>DELETE</td></tr>\n";
 
 			$stmt="SELECT * from osdial_campaign_hotkeys where campaign_id='$campaign_id' order by hotkey";
 			$rslt=mysql_query($stmt, $link);
@@ -1351,7 +1351,7 @@ if ($ADD==31)
 			else
 				{$bgcolor='bgcolor='.$evenrows;}
 
-			echo "<tr $bgcolor><td><font size=1>$rowx[1]</td><td><font size=1>$rowx[0]</td><td><font size=1>$rowx[2]</td><td><font size=1><a href=\"$PHP_SELF?ADD=43&campaign_id=$campaign_id&status=$rowx[0]&hotkey=$rowx[1]&action=DELETE\">DELETE</a></td></tr>\n";
+			echo "<tr $bgcolor><td><font size=1>$rowx[1]</td><td><font size=1>$rowx[0]</td><td><font size=1>$rowx[2]</td><td><font size=1>$rowx[5]</font></td><td><font size=1><a href=\"$PHP_SELF?ADD=43&campaign_id=$campaign_id&status=$rowx[0]&hotkey=$rowx[1]&action=DELETE\">DELETE</a></td></tr>\n";
 
 			}
 
@@ -1377,6 +1377,7 @@ if ($ADD==31)
 		echo "<option value=\"ALTPH2-----Alternate Phone Hot Dial\">ALTPH2 - Alternate Phone Hot Dial</option>\n";
 		echo "<option value=\"ADDR3-----Address3 Hot Dial\">ADDR3 - Address3 Hot Dial</option>\n";
 		echo "</select> &nbsp; \n";
+		echo "<input type=text name=xfer_exten value=\"\"><BR>\n";
 		echo "<input type=submit name=submit value=ADD><BR>\n";
 		echo "</form><BR>\n";
 		}

@@ -529,6 +529,7 @@ $xferconf_a_dtmf = get_variable("xferconf_a_dtmf");
 $xferconf_a_number = get_variable("xferconf_a_number");
 $xferconf_b_dtmf = get_variable("xferconf_b_dtmf");
 $xferconf_b_number = get_variable("xferconf_b_number");
+$xfer_exten = get_variable("xfer_exten");
 $XFERgroups = get_variable("XFERgroups");
 
 

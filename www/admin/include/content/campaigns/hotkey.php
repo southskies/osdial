@@ -33,7 +33,7 @@ if ($ADD==23)
 	$status_name = $HKstatus_data[1];
 
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-	$stmt="SELECT count(*) from osdial_campaign_hotkeys where campaign_id='$campaign_id' and hotkey='$hotkey' and hotkey='$hotkey';";
+	$stmt="SELECT count(*) from osdial_campaign_hotkeys where campaign_id='$campaign_id' and hotkey='$hotkey';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -48,16 +48,16 @@ if ($ADD==23)
 			}
 		 else
 			{
-			echo "<br><B><font color=$default_text> CAMPAIGN HOT KEY ADDED: $campaign_id - $status - $hotkey</font></B>\n";
+			echo "<br><B><font color=$default_text> CAMPAIGN HOT KEY ADDED: $campaign_id - $status - $hotkey - $xfer_exten</font></B>\n";
 
-			$stmt="INSERT INTO osdial_campaign_hotkeys values('$status','$hotkey','$status_name','$selectable','$campaign_id');";
+			$stmt="INSERT INTO osdial_campaign_hotkeys values('$status','$hotkey','$status_name','$selectable','$campaign_id','$xfer_exten');";
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
 			if ($WeBRooTWritablE > 0)
 				{
 				$fp = fopen ("./admin_changes_log.txt", "a");
-				fwrite ($fp, "$date|ADD A NEW CAMPAIGN HOT KEY |$PHP_AUTH_USER|$ip|'$status','$hotkey','$status_name','$selectable','$campaign_id'|\n");
+				fwrite ($fp, "$date|ADD A NEW CAMPAIGN HOT KEY |$PHP_AUTH_USER|$ip|'$status','$hotkey','$status_name','$selectable','$campaign_id','$xfer_exten'|\n");
 				fclose($fp);
 				}
 			}

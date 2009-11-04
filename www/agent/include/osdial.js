@@ -77,11 +77,12 @@
 	HKhotkeys = new Array(<? echo $HKhotkeys ?>);
 	HKstatuses = new Array(<? echo $HKstatuses ?>);
 	HKstatusnames = new Array(<? echo $HKstatusnames ?>);
+	HKxferextens = new Array(<? echo $HKxferextens ?>);
 	var hotkeys = new Array();
 	<? $h=0;
 	while ($HK_statuses_camp > $h)
 	{
-	echo "hotkeys['$HKhotkey[$h]'] = \"$HKstatus[$h] ----- $HKstatus_name[$h]\";\n";
+	echo "hotkeys['$HKhotkey[$h]'] = \"$HKstatus[$h] ----- $HKstatus_name[$h] ----- $HKxferextens[$h]\";\n";
 	$h++;
 	}
 	?>
@@ -4629,7 +4630,20 @@ if ($useIE > 0)
 					showDiv('HotKeyActionBox');
 					hideDiv('HotKeyEntriesBox');
 					document.osdial_form.DispoSelection.value = HKdispo_ary[0];
-					dialedcall_send_hangup('NO', 'YES', HKdispo_ary[0]);
+					if ( (HKdispo_ary[2] == '') )
+						{
+						dialedcall_send_hangup('NO', 'YES', HKdispo_ary[0]);
+						}
+					else
+						{
+						document.osdial_form.xfernumber.value = HKdispo_ary[2];
+						mainxfer_send_redirect('XfeRBLIND',lastcustchannel,lastcustserverip);
+						dialedcall_send_hangup('NO');
+						alt_dial_active=0;
+						reselect_alt_dial=0;
+						DispoSelect_submit();
+						document.osdial_form.xfernumber.value = '';
+						}
 					}
 				}
 			} else if ( (dtmf_keys_active==1) && ( (VD_live_customer_call==1) || (MD_ring_secondS>5) ) ) {
@@ -4688,7 +4702,20 @@ else
 					showDiv('HotKeyActionBox');
 					hideDiv('HotKeyEntriesBox');
 					document.osdial_form.DispoSelection.value = HKdispo_ary[0];
-					dialedcall_send_hangup('NO', 'YES', HKdispo_ary[0]);
+					if ( (HKdispo_ary[2] == '') )
+						{
+						dialedcall_send_hangup('NO', 'YES', HKdispo_ary[0]);
+						}
+					else
+						{
+						document.osdial_form.xfernumber.value = HKdispo_ary[2];
+						mainxfer_send_redirect('XfeRBLIND',lastcustchannel,lastcustserverip);
+						dialedcall_send_hangup('NO');
+						alt_dial_active=0;
+						reselect_alt_dial=0;
+						DispoSelect_submit();
+						document.osdial_form.xfernumber.value = '';
+						}
 					}
 			//	DispoSelect_submit();
 			//	AutoDialWaiting = 1;
