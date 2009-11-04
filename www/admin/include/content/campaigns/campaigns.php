@@ -1377,7 +1377,7 @@ if ($ADD==31)
 		echo "<option value=\"ALTPH2-----Alternate Phone Hot Dial\">ALTPH2 - Alternate Phone Hot Dial</option>\n";
 		echo "<option value=\"ADDR3-----Address3 Hot Dial\">ADDR3 - Address3 Hot Dial</option>\n";
 		echo "</select> &nbsp; \n";
-		echo "<input type=text name=xfer_exten value=\"\"><BR>\n";
+		echo "<input type=text name=xfer_exten size=10 maxlength=20 value=\"\"><BR>\n";
 		echo "<input type=submit name=submit value=ADD><BR>\n";
 		echo "</form><BR>\n";
 		}
