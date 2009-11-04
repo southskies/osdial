@@ -394,8 +394,17 @@ while($one_day_interval > 0)
 		# Update closer campaigns if ivr is set to allow inbound.
 		$stmtA = "UPDATE osdial_remote_agents as ra,osdial_campaigns as c,osdial_ivr as i SET ra.closer_campaigns=c.closer_campaigns WHERE ra.campaign_id=c.campaign_id AND c.campaign_id=i.campaign_id AND i.allow_inbound='Y' AND ra.user_start LIKE 'va%';";
 		$affected_rows = $dbhA->do($stmtA);
+		print "|$affected_rows|$stmtA\n" if ($DBX);
 		$stmtA = "UPDATE osdial_remote_agents as ra,osdial_campaigns as c,osdial_ivr as i SET ra.closer_campaigns='' WHERE ra.campaign_id=c.campaign_id AND c.campaign_id=i.campaign_id AND i.allow_inbound='N' AND ra.user_start LIKE 'va%';";
 		$affected_rows = $dbhA->do($stmtA);
+		print "|$affected_rows|$stmtA\n" if ($DBX);
+
+		$stmtA = "UPDATE osdial_users as u,osdial_remote_agents as ra SET u.closer_campaigns=ra.closer_campaigns WHERE u.user=ra.user_start AND ra.user_start LIKE 'va%';";
+		$affected_rows = $dbhA->do($stmtA);
+		print "|$affected_rows|$stmtA\n" if ($DBX);
+		$stmtA = "UPDATE osdial_users as u,osdial_live_agents as la SET la.closer_campaigns=u.closer_campaigns WHERE u.user=la.user AND la.user LIKE 'va%';";
+		$affected_rows = $dbhA->do($stmtA);
+		print "|$affected_rows|$stmtA\n" if ($DBX);
 
 	###############################################################################
 	###### first grab all of the ACTIVE remote agents information from the database
