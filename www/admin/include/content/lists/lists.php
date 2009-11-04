@@ -2896,7 +2896,7 @@ if ($ADD==311)
 	$leads_in_list = 0;
 	$leads_in_list_N = 0;
 	$leads_in_list_Y = 0;
-	$stmt="SELECT status,called_count,count(*) from osdial_list where list_id='$list_id' group by status,called_count order by status,called_count";
+	$stmt="SELECT status,if(called_count>49,50,called_count),count(*) from osdial_list where list_id='$list_id' group by status,if(called_count>49,50,called_count) order by status,called_count";
 	$rslt=mysql_query($stmt, $link);
 	$status_called_to_print = mysql_num_rows($rslt);
 
@@ -2941,6 +2941,7 @@ if ($ADD==311)
 		{
 		if (eregi("1$|3$|5$|7$|9$", $first)) {$AB='bgcolor="#AFEEEE"';} 
 		else{$AB='bgcolor="#E0FFFF"';}
+        if ($first == 50) {$first = "50+";}
 		echo "<td align=center $AB><font size=1>$first</td>";
 		$first++;
 		}
