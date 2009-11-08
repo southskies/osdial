@@ -108,7 +108,35 @@ if ($CLOshowip) {
 }
 
 
-if (-f "/etc/asterisk/osdial_extensions.conf") {
+my $asterisk_version;
+if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
+	#Check and set Asterisk version.
+	$asterisk_version = `/usr/sbin/asterisk -V`;
+	chomp $asterisk_version;
+	$asterisk_version =~ s/Asterisk //;
+	if ($asterisk_version ne "") {
+		my $stmtA = "update servers set asterisk_version='$asterisk_version' where server_ip='" . $config->{VARserver_ip} . "';";
+		print STDERR "\n|$stmtA|\n" if ($DB);
+		my $sthA = $dbhA->do($stmtA) if (!$CLOtest);
+	}
+
+	#Fix some version related config differences
+	if ($asterisk_version =~ /^1\.6/) {
+		my $pr = `perl -pi -e 's|^exten => h,1,DeadAGI|exten => h,1,AGI|g' /etc/asterisk/osdial_extensions.conf`;
+		my $pr = `perl -pi -e 's|^noload => chan_agent.so|load => chan_agent.so|g' /etc/asterisk/modules.conf`;
+		my $pr = `perl -pi -e 's|^noload => app_queue.so|load => app_queue.so|g' /etc/asterisk/modules.conf`;
+		if (-e "/etc/asterisk/zapata.conf" and not -e "/etc/asterisk/chan_dahdi.conf") {
+			my $pr = `cp /etc/asterisk/zapata.conf /etc/asterisk/chan_dahdi.conf`;
+		}
+	} elsif ($asterisk_version =~ /^1\.2/) {
+		my $pr = `perl -pi -e 's|^exten => h,1,AGI|exten => h,1,DeadAGI|g' /etc/asterisk/osdial_extensions.conf`;
+		my $pr = `perl -pi -e 's|^load => chan_agent.so|noload => chan_agent.so|g' /etc/asterisk/modules.conf`;
+		my $pr = `perl -pi -e 's|^load => app_queue.so|noload => app_queue.so|g' /etc/asterisk/modules.conf`;
+		if (-e "/etc/asterisk/chan_dahdi.conf" and not -e "/etc/asterisk/zapata.conf") {
+			my $pr = `cp /etc/asterisk/chan_dahdi.conf /etc/asterisk/zapata.conf`;
+		}
+	}
+
 	# TODO: Fix calc_password to not be so aggressive.
 	#my $pass = calc_password();
 	my $pass = '6l5a4i3d2s1o0o1s2d3i4a5l6';
@@ -272,7 +300,11 @@ sub gen_servers {
 		$isvr .= "nat=no\n";
 	}
 
-	write_reload($esvr,'osdial_extensions_servers','extensions reload');
+	my $extreload = "extensions reload";
+	if ($asterisk_version =~ /^1\.6/) {
+		$extreload = "dialplan reload";
+	}
+	write_reload($esvr,'osdial_extensions_servers',$extreload);
 	write_reload($isvr,'osdial_iax_servers','iax2 reload');
 	
 }
@@ -298,18 +330,9 @@ sub gen_conferences {
 	$cnf .= "exten => _5555860XXXX,2,Hangup\n";
 
 	my $stmtA = "SELECT conf_exten,server_ip FROM conferences where";
-	my $stmtB = "SELECT asterisk_version FROM servers where";
 	foreach my $ip (@myips) {
 		$stmtA .= " server_ip=\'" . $ip . "\' OR";
-		$stmtB .= " server_ip=\'" . $ip . "\' OR";
 	}
-	chop $stmtB; chop $stmtB; chop $stmtB;
-	$stmtB .= ' limit 1;';
-	print $stmtB . "\n" if ($DB);
-	my $sthA = $dbhA->prepare($stmtB) or die "preparing: ", $dbhA->errstr;
-	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-	my @aryA = $sthA->fetchrow_array;
-	my $asterisk_version = $aryA[0];
 
 	if ($asterisk_version =~ /^1\.6/) {
 		$cnf .= ";\n; DAHDIBarge direct channel extensions\n";
@@ -422,8 +445,14 @@ sub gen_conferences {
 	$mtm .= ";\n; OSDIAL Virtual Agent Conferences\n";
 	$mtm .= $mtm2;
 
-	write_reload($cnf,'osdial_extensions_conferences','extensions reload');
-	write_reload($mtm,'osdial_meetme','reload app_meetme.so');
+	my $extreload = "extensions reload";
+	my $mmreload = "reload app_meetme.so";
+	if ($asterisk_version =~ /^1\.6/) {
+		$extreload = "dialplan reload";
+		$mmreload = "config reload /etc/asterisk/meetme.conf";
+	}
+	write_reload($cnf,'osdial_extensions_conferences',$extreload);
+	write_reload($mtm,'osdial_meetme',$mmreload);
 }
 
 # Generate agent extensions, and sip/iax agent phones.
@@ -493,9 +522,13 @@ sub gen_phones {
 		$ephn .= "exten => _" . $aryA[1] . ",1,Dial(" . $dext . ",55,to)\n";
 	}
 
+	my $extreload = "extensions reload";
+	if ($asterisk_version =~ /^1\.6/) {
+		$extreload = "dialplan reload";
+	}
 	write_reload($sphn,'osdial_sip_phones','sip reload');
 	write_reload($iphn,'osdial_iax_phones','iax2 reload');
-	write_reload($ephn,'osdial_extensions_phones','extensions reload');
+	write_reload($ephn,'osdial_extensions_phones',$extreload);
 }
 
 
