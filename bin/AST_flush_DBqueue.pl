@@ -249,19 +249,6 @@ else
 				 }
         if (!$Q) {print " - optimize osdial_hopper          \n";}
 
-	if ( -e "/usr/sbin/asterisk" ) {
-		my $aver = `/usr/sbin/asterisk -V`;
-		chomp $aver;
-		$aver =~ s/Asterisk //;
-
-		if ($aver ne "") {
-        		$stmtA = "update servers set asterisk_version='$aver' where server_ip='$server_ip';";
-                	print STDERR "\n|$stmtA|\n" if ($DB);
-			$sthA = $dbhA->do($stmtA) if (!$T);
-        		print " - updated servers.asterisk_version\n" if (!$Q);
-		}
-	}
-
 	# update the osdial_report_groups table
 	$stmtA =  "INSERT IGNORE INTO osdial_report_groups";
 	$stmtA .= "  (SELECT 'states' AS group_type,state AS group_value,state AS group_label FROM osdial_postal_codes WHERE country_code='1' GROUP BY state)";
