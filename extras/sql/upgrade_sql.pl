@@ -103,10 +103,12 @@ my $connerr = 0;
 my $install = 0;
 my $examples = 0;
 if ($CLOsaf != 1) {
-	if ( ($CLOinst) and (! -d "/var/lib/mysql/" . $config->{VARDB_database}) ) {
-		print "    OSDial database (" . $config->{VARDB_database} . ") is not detected, creating.\n";
-		my $cdb = "CREATE DATABASE " . $config->{VARDB_database} . ";";
-		`echo "$cdb" | mysql -u root`;
+	if ( ($CLOinst) and (! -f "/var/lib/mysql/" . $config->{VARDB_database} . "/system_settings.ibd") ) {
+		if ( (! -d "/var/lib/mysql/" . $config->{VARDB_database}) ) {
+			print "    OSDial database (" . $config->{VARDB_database} . ") is not detected, creating.\n";
+			my $cdb = "CREATE DATABASE " . $config->{VARDB_database} . ";";
+			`echo "$cdb" | mysql -u root`;
+		}
 		$connerr = 1;
 		$install = 1;
 		$examples = 1;
