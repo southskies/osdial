@@ -39,6 +39,7 @@ start() {
 		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-control" -o -f "/opt/osdial/.osdial-install-control" -o -f "/opt/osdial/.osdial-sql" -o -f "/opt/osdial/.osdial-install-sql" -o -f "/opt/osdial/.osdial-live" ]; then
 			# Install DB
 			[ "$OSDIAL_MYSQL_INSTALL" = "YES" ] && /opt/osdial/bin/sql/upgrade_sql.pl --install
+			[ ! -f "/var/lib/mysql/osdial/system_settings.ibd" ] && /opt/osdial/bin/sql/upgrade_sql.pl --install
 
 			# Get server timezone and update in osdial database
 			OSDTZ=`date +%:::z`
