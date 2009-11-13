@@ -1,5 +1,116 @@
+2009-11-08  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r500] bin/osdial_astgen.pl: Moved in asterisk version check and
+	  DB update. Added version specific config changes. Update reload
+	  statments for version specific commands.
+	* [r499] bin/AST_flush_DBqueue.pl: Move version check to
+	  osdial_astgen.pl
+
+2009-11-04  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r498] www/admin/include/content/scripts/scripts.php: Fix SQL
+	  escaping on script update/insert.
+	* [r497] www/admin/include/footer.php: Fix version comparison.
+	* [r496] www/agent/include/osdial.js, www/agent/osdial.php: fix
+	  xfer_exten
+	* [r495] www/admin/include/content/campaigns/campaigns.php: add max
+	  length on xfer_exten.
+	* [r494] extras/sql/215034.sql, extras/sql/upgrade_sql.map,
+	  version, www/admin/include/content/campaigns/campaigns.php,
+	  www/admin/include/content/campaigns/hotkey.php,
+	  www/admin/include/validation.php,
+	  www/admin/include/variables.php, www/agent/include/osdial.js,
+	  www/agent/osdial.php: Add ability to xfer to an extension on
+	  hotkey press.
+	* [r493] bin/AST_VDremote_agents.pl: Update virtual agent inbound
+	  groups on agents additions
+	* [r492] www/admin/include/content/lists/lists.php: Limit call
+	  counts to 50 on list display.
+
+2009-10-21  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r491] bin/osdial_ivr_sync.sh: fix web path
+	* [r490] www/admin/include/content/campaigns/ivr.php,
+	  www/admin/include/content/users/users.php: replace absolute paths
+	  with WeBServeRRooT
+	* [r489] bin/AST_VDcampaign_stats.pl: Added conditions that will
+	  stop the stats from being run when there hasn't been any
+	  activity.
+
+2009-10-20  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r488] www/admin/user_status.php: Fix clearing of conferences on
+	  emergency logout
+
+2009-10-19  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r487] bin/AST_update.pl: Wrong DB/pass for Asterisk Realtime
+	  Channels.
+	* [r486] www/admin/user_status.php: Modified Emergency Logout to
+	  clear agent's conference channel as well.
+	* [r485] Makefile: oops
+	* [r484] Makefile: oops
+	* [r483] bin/AST_audio_archive.pl, bin/AST_audio_compress.pl,
+	  bin/AST_sort_recordings.pl: Change to use lsof to see if file is
+	  open.
+	* [r482] extras/sql/upgrade_sql.pl: Fix auth routines
+	* [r481] Makefile, extras/ip_relay/ip_relay,
+	  extras/ip_relay/ip_relay_1.0.021902.tar: Moved IP relay to its
+	  own RPM package
+
+2009-10-18  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r480] docs/conf_examples/chan-dahdi.conf,
+	  docs/conf_examples/chan_dahdi.conf: Fix wrong filename.
+	* [r479] extras/osdial.spec: Update osdial.spec
+	* [r478] www/admin/include/variables.php: Add additional IVR option
+	  variables.
+	* [r477] www/admin/include/content/campaigns/ivr.php: Add
+	  TVC_LOOKUP menus
+	* [r476] agi/agi-OSDivr.agi: Refine stream_and_get_dtmf. Add
+	  TVC_LOOKUP function.
+	* [r475] docs/conf_examples/modules.conf: Some systems use Queues
+	  in conjunction with OSDial and require the chan_agent.so and
+	  app_queue.so modules.
+	* [r474] bin/AST_send_action_child.pl: Fixes funky call to
+	  XXYYXXYYXXYYXX extension and resulting Asterisk notification.
+	* [r473] bin/AST_update.pl: Fix backward compatibility with
+	  Asterisk 1.2
+	* [r472] www/agent/vdc_db_query.php: User's selection of ingroups
+	  shouldn't update their admin selected ingroup settings.
+	* [r471] www/agent/include/osdial.js: Fix bad Script regex.
+	* [r470] agi/agi-VDAD_ALL_inbound.agi: Update inbound to do a quiet
+	  entry.
+
+2009-09-30  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r469] www/admin/AST_agent_performance_detail.php: Removed
+	  deduction for login/logout
+	* [r468] www/agent/include/osdial.js, www/agent/osdial.php,
+	  www/agent/vdc_db_query.php: Added/moved postdate field, clear
+	  alt_phone_dial var in osdial.js
+	* [r467] bin/AST_VDhopper.pl: Added prioritization based on age of
+	  lead to hopper when VARhopper_newentry_priority is set
+	* [r466] www/admin/include/content/lists/lists.php: Add campaign
+	  specific statuses to adv lead search
+	* [r465] bin/AST_DB_optimize.pl: Cleanup on a couple SQL
+	  statements.
+	* [r464] bin/osdial_astgen.pl: Added mailbox declaration to phones.
+	* [r463] docs/conf_examples/osdial_extensions.conf: Fix
+	  ASTblind/ASTloop auth in defailt config
+	* [r462] www/admin/include/content/reports/list_performance.php:
+	  Add SALE/XFER if no SALE dispos defined
+	* [r461] www/agent/webform-print_form.php: Add a webform for
+	  printing given template when match given statuses.
+	* [r460] www/admin/include/content/lists/export.php: Fix newline
+	  problem in comment fields.
+	* [r459] agi/agi-VDAD_ALL_inbound.agi: Add comment to voicemail
+	  variable clearing.
+
 2009-09-19  Lott Caskey <lottcaskey@gmail.com>
 
+	* [r458] ChangeLog, extras/osdial.conf, version: version bump,
+	  added missing settings to osdial.conf
 	* [r457] bin/AST_qc_transfer.pl, extras/sql/215033.sql,
 	  extras/sql/upgrade_sql.map,
 	  www/admin/include/content/admin/server.php: Added ability to

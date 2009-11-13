@@ -150,20 +150,22 @@ if ($CLOsaf != 1) {
 				$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $ip->address . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
 			}
 		}
-		# Update MySQL auth for other servers...
-		my $stmtT = "SELECT server_ip FROM servers;";
-		my $sthT = $dbhT->prepare($stmtT) or die "preparing: ", $dbhT->errstr;
-		$sthT->execute or die "executing: $stmtT ", $dbhT->errstr;
-		my @sipary;
-		while (my @aryT = $sthT->fetchrow_array) {
-			push @sipary, $aryT[0];
-		}
-		$sthT->finish();
-		foreach my $sip (@sipary) {
-			$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $sip . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';");
-			$dbhT->do("GRANT GRANT OPTION on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $sip . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';");
-			$dbhT->do("GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $sip . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';");
-			$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $sip . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';");
+		if ($install < 1) {
+			# Update MySQL auth for other servers...
+			my $stmtT = "SELECT server_ip FROM servers;";
+			my $sthT = $dbhT->prepare($stmtT) or die "preparing: ", $dbhT->errstr;
+			$sthT->execute or die "executing: $stmtT ", $dbhT->errstr;
+			my @sipary;
+			while (my @aryT = $sthT->fetchrow_array) {
+				push @sipary, $aryT[0];
+			}
+			$sthT->finish();
+			foreach my $sip (@sipary) {
+				$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $sip . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';");
+				$dbhT->do("GRANT GRANT OPTION on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $sip . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';");
+				$dbhT->do("GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $sip . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';");
+				$dbhT->do("GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $sip . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';");
+			}
 		}
 		$dbhT->disconnect();
 	} elsif ($connerr == 1) {
