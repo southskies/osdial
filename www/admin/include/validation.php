@@ -187,6 +187,7 @@ if ($non_latin < 1)	{
 	$allow_tab_switch = ereg_replace("[^NY]","",$allow_tab_switch);
 	$web_form_extwindow = ereg_replace("[^NY]","",$web_form_extwindow);
 	$web_form2_extwindow = ereg_replace("[^NY]","",$web_form2_extwindow);
+	$use_custom2_callerid = ereg_replace("[^NY]","",$use_custom2_callerid);
 	
 	### ALPHA-NUMERIC ONLY ###
 	$user_start = ereg_replace("[^0-9a-zA-Z]","",$user_start);

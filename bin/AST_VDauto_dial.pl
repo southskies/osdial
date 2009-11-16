@@ -313,6 +313,7 @@ while($one_day_interval > 0)
 		@DBIPserver_trunks_other=@MT;
 		@DBIPserver_trunks_allowed=@MT;
 		@DBIPdial_method=@MT;
+		@DBIPuse_custom2_callerid=@MT;
 
 		$active_line_counter=0;
 		$user_counter=0;
@@ -465,7 +466,7 @@ while($one_day_interval > 0)
 
 			### grab the dial_level and multiply by active agents to get your goalcalls
 			$DBIPadlevel[$user_CIPct]=0;
-			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound,answers_per_hour_limit,campaign_call_time,dial_method FROM osdial_campaigns where campaign_id='$DBIPcampaign[$user_CIPct]'";
+			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound,answers_per_hour_limit,campaign_call_time,dial_method,use_custom2_callerid FROM osdial_campaigns where campaign_id='$DBIPcampaign[$user_CIPct]'";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -496,6 +497,7 @@ while($one_day_interval > 0)
 					$DBIPanswers_per_hour_limit[$user_CIPct] =	($aryA[12] * 1);
 					$DBIPcampaign_call_time[$user_CIPct] =	$aryA[13];
 					$DBIPdial_method[$user_CIPct] =	$aryA[14];
+					$DBIPuse_custom2_callerid[$user_CIPct] =	$aryA[15];
 				$rec_count++;
 				}
 			$sthA->finish();
@@ -807,7 +809,7 @@ while($one_day_interval > 0)
 
 					if ($UDaffected_rows)
 						{
-						$lead_id=''; $phone_code=''; $phone_number=''; $called_count='';
+						$lead_id=''; $phone_code=''; $phone_number=''; $called_count=''; $custom2='';
 						while ($call_CMPIPct < $UDaffected_rows)
 							{
 							$stmtA = "SELECT lead_id,alt_dial FROM osdial_hopper where campaign_id='$DBIPcampaign[$user_CIPct]' and status='QUEUE' and user='VDAD_$server_ip' order by priority desc,hopper_id LIMIT 1";
@@ -861,6 +863,7 @@ while($one_day_interval > 0)
 									$address3 =					"$aryA[18]";
 									$alt_phone =				"$aryA[26]";
 									$called_count =				"$aryA[30]";
+									$custom2 =				"$aryA[31]";
 
 									$rec_countCUSTDATA++;
 								$rec_count++;
@@ -929,7 +932,18 @@ while($one_day_interval > 0)
 							   if (length($DBIPvdadexten[$user_CIPct]) > 0) {$VDAD_dial_exten = "$DBIPvdadexten[$user_CIPct]";}
 							   else {$VDAD_dial_exten = "$answer_transfer_agent";}
 							   
-							   if (length($DBIPcampaigncid[$user_CIPct]) > 6) {$CCID = "$DBIPcampaigncid[$user_CIPct]";   $CCID_on++;}
+							if (length($DBIPcampaigncid[$user_CIPct]) > 6) {
+								$CCID = "$DBIPcampaigncid[$user_CIPct]";
+								$CCID_on++;
+							}
+							if ($DBIPuse_custom2_callerid[$user_CIPct] eq "Y") {
+								$tcustom2 = $custom2;
+								$tcustom2 =~ s/[^0-9]//g;
+								if (length($tcustom2) > 6) {
+									$CCID = $tcustom2;
+									$CCID_on++;
+								}
+							}
 							   if ($DBIPdialprefix[$user_CIPct] =~ /x/i) {$Local_out_prefix = '';}
 
 								if ($RECcount)
