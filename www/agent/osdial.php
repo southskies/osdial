@@ -947,7 +947,13 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 				$web_form2_extwindow = 	    $row[38];
 				$dial_method = 	    $row[39];
 				$submit_method = 	    $row[40];
-				$use_custom2_callerid = 	    $row[40];
+				$use_custom2_callerid = 	    $row[41];
+                if ($previewFD_time == "") {
+                    $previewFD_time = "0";
+                }
+                if ($use_custom2_callerid != "Y") {
+                    $use_custom2_callerid = "N";
+                }
 
 			if ( (!ereg('DISABLED',$VU_osdial_recording_override)) and ($VU_osdial_recording > 0) )
 				{

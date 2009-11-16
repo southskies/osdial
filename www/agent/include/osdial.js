@@ -673,10 +673,10 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			else
 				{var queryCID = "DVagcW" + epoch_sec + user_abb;}
 
-			if (use_custom2_callerid == 'Y') {
+			lead_cid = document.osdial_form.custom2.value;
+			cid = campaign_cid;
+			if (use_custom2_callerid == 'Y' && lead_cid != '') {
 				cid = lead_cid;
-			} else {
-				cid = campaign_cid;
 			}
 			VMCoriginate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=Originate&format=text&channel=" + originatevalue + "&queryCID=" + queryCID + "&exten=" + orig_prefix + "" + dialnum + "&ext_context=" + ext_context + "&ext_priority=1&outbound_cid=" + cid;
 			cid = campaign_cid;
@@ -1974,10 +1974,10 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			}
 		if (xmlhttp) 
 			{ 
-			if (use_custom2_callerid == 'Y') {
+			lead_cid = document.osdial_form.custom2.value;
+			cid = campaign_cid;
+			if (use_custom2_callerid == 'Y' && lead_cid != '') {
 				cid = lead_cid;
-			} else {
-				cid = campaign_cid;
 			}
 			manDiaLnext_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLnextCaLL&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&ext_context=" + ext_context + "&dial_timeout=" + dial_timeout + "&dial_prefix=" + dial_prefix + "&campaign_cid=" + cid + "&preview=" + man_preview + "&agent_log_id=" + agent_log_id + "&callback_id=" + mdnCBid + "&lead_id=" + mdnBDleadid + "&phone_code=" + mdnDiaLCodE + "&phone_number=" + mdnPhonENumbeR + "&list_id=" + mdnLisT_id + "&stage=" + mdnStagE  + "&use_internal_dnc=" + use_internal_dnc + "&omit_phone_code=" + omit_phone_code;
 			cid = campaign_cid;
@@ -2467,10 +2467,10 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			}
 		if (xmlhttp) 
 			{ 
-			if (use_custom2_callerid == 'Y') {
+			lead_cid = document.osdial_form.custom2.value;
+			cid = campaign_cid;
+			if (use_custom2_callerid == 'Y' && lead_cid != '') {
 				cid = lead_cid;
-			} else {
-				cid = campaign_cid;
 			}
 			manDiaLonly_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLonly&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&phone_number=" + manDiaLonly_num + "&phone_code=" + document.osdial_form.phone_code.value + "&campaign=" + campaign + "&ext_context=" + ext_context + "&dial_timeout=" + dial_timeout + "&dial_prefix=" + dial_prefix + "&campaign_cid=" + cid + "&omit_phone_code=" + omit_phone_code;
 			cid = campaign_cid;
