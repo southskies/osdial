@@ -93,28 +93,28 @@ start() {
 		echo >> /etc/issue
 		echo >> /etc/issue
 		echo >> /etc/issue
-		echo "                    OSDial - The OpenSource Dialer" >> /etc/issue
+		echo "OSDial - The OpenSource Dialer" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
 		echo >> /etc/issue
 		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-control" -o -f "/opt/osdial/.osdial-install-control" -o -f "/opt/osdial/.osdial-sql" -o -f "/opt/osdial/.osdial-install-sql" -o -f "/opt/osdial/.osdial-live" ]; then
-			echo "                             $COMPANY" >> /etc/issue
+			echo "$COMPANY" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
 			echo >> /etc/issue
 		fi
-		echo "            Paid support available through Call Center Service Group">> /etc/issue
-		echo "                          800-221-0251 (opt 2)">> /etc/issue
+		echo "Paid support available through Call Center Service Group" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
+		echo "800-221-0251" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
 		echo >> /etc/issue
-		echo "           OSDial is available for download at http://www.osdial.com/" >> /etc/issue
+		echo "OSDial is available for download at http://www.osdial.com/" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
 		echo >> /etc/issue
 		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-control" -o -f "/opt/osdial/.osdial-install-control" -o -f "/opt/osdial/.osdial-sql" -o -f "/opt/osdial/.osdial-install-sql" -o -f "/opt/osdial/.osdial-live" ]; then
-			echo "           You may now boot the Agent-DemoCD in another computer" >> /etc/issue
-			echo "            or point your Firefox browser to http://$INET/" >> /etc/issue
+			echo "You may now boot the Agent-DemoCD in another computer" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
+			echo "or point your Firefox browser to http://$INET/" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
 			echo >> /etc/issue
-			echo "                  Admin Login and Password: admin / admin" >> /etc/issue
+			echo "Admin Login and Password: admin / admin" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
 			echo >> /etc/issue
-			echo "                  Phone Login and Password:  1000 / 1000" >> /etc/issue
-			echo "                  Agent Login and Password:  1000 / 1000" >> /etc/issue
+			echo "Phone Login and Password:  1000 / 1000" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
+			echo "Agent Login and Password:  1000 / 1000" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
 			echo >> /etc/issue
 		fi
-		echo "             Temporary root password is osdial1234, change ASAP!" >> /etc/issue
+		echo "Temporary root password is osdial1234, change ASAP!" | awk '{l=length();s=int((79-l)/2); printf "%"(s+l)"s\n",$0}' >> /etc/issue
 		echo >> /etc/issue
 		echo " --- " >> /etc/issue
 
