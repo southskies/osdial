@@ -19,6 +19,15 @@
 	</tr>
 	<tr>
 		<td>
+            <p>Portions of the OSDial Software are also copyright by the following parties:</p>
+            Copyright &copy; 2009 Lott Caskey <lottcaskey@gmail.com> LICENSE: AGPLv3<br />
+            Copyright &copy; 2009 Steve Szmidt <info@callcentersg.com> LICENSE: AGPLv3<br />
+            Copyright &copy; 2008 Matt Florell <vicidial@gmail.com> LICENSE: AGPLv2<br />
+            Copyright &copy; 2008 Joe Johnson <vicidial@gmail.com> LICENSE: AGPLv2<br />
+        </td>
+    </tr>
+	<tr>
+		<td>
 			<br><br><br>
 			<h3 style="text-align: center;" >GNU AFFERO GENERAL PUBLIC LICENSE</h3>
 			<p style="text-align: center;">Version 3, 19 November 2007</p>
