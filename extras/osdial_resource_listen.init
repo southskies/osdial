@@ -1,0 +1,61 @@
+#!/bin/bash
+#
+# osdial_resource_listen	Listen for server stats for OSDial
+#
+# Author:	Lott Caskey <lottcaskey@gmail.com>
+#
+# chkconfig:	345 61 14
+#
+# description:	Listens for broadcasted servers stats using
+#		multicast within the subnet for client discovery
+#		and write the output to /opt/osdial/html/admin
+# processname:	osdial_resource_listen
+#
+
+# Source function library.
+. /etc/init.d/functions
+. /etc/sysconfig/osdial
+
+RETVAL=0
+proc=osdial_resource_listen
+
+[ ! -d "/opt/osdial/html/admin" ] && exit 1
+
+start() {
+        echo -n $"Starting $proc: "
+        daemon "/opt/osdial/bin/$proc '$OSDIAL_LABEL' &"
+        RETVAL=$?
+        echo
+        [ $RETVAL -eq 0 ] && touch /var/lock/subsys/$proc
+}
+
+stop() {
+        echo -n $"Shutting down $proc: "
+	killproc $proc
+	echo
+        [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/$proc
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status $proc
+        RETVAL=$?
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo $"Usage: $proc {start|stop|status|restart}"
+        exit 1
+        ;;
+esac
+
+exit $RETVAL
+

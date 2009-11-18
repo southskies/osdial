@@ -154,6 +154,7 @@ if ($non_latin < 1)	{
 	$agent_alert_delay = ereg_replace("[^0-9]","",$agent_alert_delay);
 	$manual_dial_list_id = ereg_replace("[^0-9]","",$manual_dial_list_id);
 	$xfer_exten = ereg_replace("[^0-9]","",$xfer_exten);
+	$cpuinfo = ereg_replace("[^0-9]","",$cpuinfo);
 	
 	### DIGITS and DASHES
 	$group_rank = ereg_replace("[^-0-9]","",$group_rank);

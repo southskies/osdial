@@ -37,6 +37,7 @@ function report_realtime_detail() {
 	if (!isset($orderby))		{$orderby='timeup';}
 	if (!isset($SERVdisplay))	{$SERVdisplay=1;}	# 0=no, 1=yes
 	if (!isset($CALLSdisplay))	{$CALLSdisplay=1;}	# 0=no, 1=yes
+	if (!isset($cpuinfo))	{$cpuinfo=0;}	# 0=std, 1=extended
 	
 	if ($RR==0)  {$RR=4;} //debug - fix
 	if ($orderby=='') 	{$orderby="timeup";} //debug - fix
@@ -158,7 +159,7 @@ function report_realtime_detail() {
 	
 	
 	//$html .= "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
-	//$html .= "<META HTTP-EQUIV=Refresh CONTENT=\"$RR; URL=$PHP_SELF?RR=$RR&DB=$DB&group=$group&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">\n";
+	//$html .= "<META HTTP-EQUIV=Refresh CONTENT=\"$RR; URL=$PHP_SELF?RR=$RR&DB=$DB&group=$group&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">\n";
 	
 	$html .= "<TABLE align=center><TR><TD>\n";
 	$html .= "<FONT SIZE=1>";
@@ -177,19 +178,19 @@ function report_realtime_detail() {
 	$html .= "<FONT COLOR=$default_text SIZE=2>";
 	$html .= "Update:&nbsp;";
 	if ($RR==38400) { $html .= "</font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
-	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">Daily</a>&nbsp;&nbsp;"; 
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">Daily</a>&nbsp;&nbsp;"; 
 	
 	if ($RR==3600) { $html .= "</font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
-	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=3600&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">Hourly</a>&nbsp;&nbsp;";
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=3600&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">Hourly</a>&nbsp;&nbsp;";
 	
 	if ($RR==60) { $html .= "</font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
-	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=60&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">1min</a>&nbsp;&nbsp;";
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=60&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">1min</a>&nbsp;&nbsp;";
 	
 	if ($RR==10) { $html .= "</font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
-	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=10&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">10sec</a>&nbsp;&nbsp;";
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=10&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">10sec</a>&nbsp;&nbsp;";
 	
 	if ($RR==4) { $html .= "</font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
-	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=4&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">4sec</a>&nbsp;&nbsp;";
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=4&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">4sec</a>&nbsp;&nbsp;";
 	
 	$html .= "<font size=2>";
 	
@@ -212,6 +213,7 @@ function report_realtime_detail() {
 	$html .= "<INPUT TYPE=HIDDEN NAME=orderby VALUE=\"$orderby\">\n";
 	$html .= "<INPUT TYPE=HIDDEN NAME=SERVdisplay VALUE=\"$SERVdisplay\">\n";
 	$html .= "<INPUT TYPE=HIDDEN NAME=CALLSdisplay VALUE=\"$CALLSdisplay\">\n";
+	$html .= "<INPUT TYPE=HIDDEN NAME=cpuinfo VALUE=\"$cpuinfo\">\n";
 	$html .= "<SELECT SIZE=1 NAME=group>\n";
 	if ($group == "XXXX-ALL-ACTIVE-XXXX") $aasel = "selected";
 	$html .= "<option value=\"XXXX-ALL-ACTIVE-XXXX\" $aasel>XXXX-ALL-ACTIVE-XXXX</option>\n";
@@ -454,29 +456,29 @@ function report_realtime_detail() {
 		$html .= "<TD ALIGN=LEFT COLSPAN=8>";
 		
 		if ($adastats<2) {
-			$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=2&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\"><font size=1>VIEW MORE SETTINGS</font></a>";
+			$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=2&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\"><font size=1>VIEW MORE SETTINGS</font></a>";
 		} else {
-			$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=1&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\"><font size=1>VIEW LESS SETTINGS</font></a>";
+			$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=1&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\"><font size=1>VIEW LESS SETTINGS</font></a>";
 		}
 		if ($UGdisplay>0) {
-			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=0&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\"><font size=1>HIDE USER GROUP</font></a>";
+			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=0&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\"><font size=1>HIDE USER GROUP</font></a>";
 		} else {
-			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=1&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\"><font size=1>VIEW USER GROUP</font></a>";
+			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=1&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\"><font size=1>VIEW USER GROUP</font></a>";
 		}
 		if ($UidORname>0) {
-			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=0&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\"><font size=1>SHOW AGENT ID</font></a>";
+			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=0&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\"><font size=1>SHOW AGENT ID</font></a>";
 		} else {
-			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=1&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\"><font size=1>SHOW AGENT NAME</font></a>";
+			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=1&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\"><font size=1>SHOW AGENT NAME</font></a>";
 		}
 		if ($SERVdisplay>0) {
-			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=0&CALLSdisplay=$CALLSdisplay\"><font size=1>HIDE SERVER INFO</font></a>";
+			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=0&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\"><font size=1>HIDE SERVER INFO</font></a>";
 		} else {
-			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=1&CALLSdisplay=$CALLSdisplay\"><font size=1>SHOW SERVER INFO</font></a>";
+			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=1&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\"><font size=1>SHOW SERVER INFO</font></a>";
 		}
 		if ($CALLSdisplay>0) {
-			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=0\"><font size=1>HIDE WAITING CALLS DETAIL</font></a>";
+			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=0&cpuinfo=$cpuinfo\"><font size=1>HIDE WAITING CALLS DETAIL</font></a>";
 		} else {
-			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=1\"><font size=1>SHOW WAITING CALLS DETAIL</font></a>";
+			$html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=1&cpuinfo=$cpuinfo\"><font size=1>SHOW WAITING CALLS DETAIL</font></a>";
 		}
 		$html .= "</TD>";
 		$html .= "</TR>";
@@ -671,9 +673,9 @@ function report_realtime_detail() {
 	$HDstation =	HorizLine(12)."&#x2564;"; //12
 	$HTstation =	"  STATION   &#x2502;";
 	$HDuser =		HorizLine(20)."&#x2564;"; //20
-	$HTuser =		"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=userup&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">USER</a>          &#x2502;";
+	$HTuser =		"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=userup&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">USER</a>          &#x2502;";
 	$HDusergroup =		HorizLine(14)."&#x2564;"; //14
-	$HTusergroup =		" <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=groupup&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">USER GROUP</a>   &#x2502;";
+	$HTusergroup =		" <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=groupup&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">USER GROUP</a>   &#x2502;";
 	$HDsessionid =		HorizLine(11)."&#x2564;"; //18
 	$HTsessionid =		" SESSIONID       &#x2502;";
 	$HDbarge =		HorizLine(7)."&#x2564;"; //7
@@ -685,9 +687,9 @@ function report_realtime_detail() {
 	$HDcall_server_ip =	HorizLine(17)."&#x2564;"; //17
 	$HTcall_server_ip =	" CALL SERVER IP  &#x2502;";
 	$HDtime =			HorizLine(9)."&#x2564;"; //9
-	$HTtime =			"&nbsp;&nbsp;<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=timeup&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">MM:SS</a>  &#x2502;";
+	$HTtime =			"&nbsp;&nbsp;<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=timeup&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">MM:SS</a>  &#x2502;";
 	$HDcampaign =		HorizLine(12)."&#x2557;"; //12
-	$HTcampaign =		"&nbsp;&nbsp;<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=campaignup&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay\">CAMPAIGN</a>  &#x2551;";
+	$HTcampaign =		"&nbsp;&nbsp;<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=campaignup&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">CAMPAIGN</a>  &#x2551;";
 	
 	if ($UGdisplay < 1)	{
 		$HDusergroup =	'';
@@ -978,132 +980,157 @@ function report_realtime_detail() {
 		$html .= "  <SPAN class=\"purple\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - On call > 5 minutes</B>";
 		$html .= "</td></tr></table>";
 		
-		$load_ave = rtrim(getloadavg());
-        if (!$load_ave>0) $load_ave='-.--';
-		
-		$Ahtml="<br><pre><font face=Fixed,monospace SIZE=1>";
-		if (file_exists($pref . 'S1_load.txt')) {
-			$s1_load = file($pref . 'S1_load.txt');
-			list( $line_num, $line ) = each( $s1_load );
-			$load_ave_s1=rtrim($line);
-            if (!$load_ave_s1>0) $load_ave_s1='-.--';
-			$Ahtml .= "  <font color=$default_text>Web Srvr Load Average:</font> $load_ave\n";
-			$Ahtml .= "  <font color=$default_text>SQL Srvr Load Average:</font> $load_ave_s1\n";
-		} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
-			$Ahtml .= "  <font color=$default_text>Dialer   Load Average:</font> $load_ave\n";
+		if (file_exists($pref . 'loadmon.txt')) {
+			$html .= "<br><br><br>";
+			if ($cpuinfo == 0 ) {
+				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=1\"><font size=1>EXTENDED INFO</font></a>";
+				eval("\$html .= \"" . file_get_contents($pref . 'loadmon.txt') . "\";");
+			} else {
+				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=0\"><font size=1>STANDARD INFO</font></a>";
+				eval("\$html .= \"" . file_get_contents($pref . 'loadmon-xtd.txt') . "\";");
+			}
 		} else {
-			$Ahtml .= "  <font color=$default_text>SQL/Web  Load Average:</font> $load_ave\n";
-		}
-		if (file_exists($pref . 'D1_load.txt')) {
-			$d1_load = file($pref . 'D1_load.txt');
-			list( $line_num, $line ) = each( $d1_load ) ;
-			$load_ave_d1=rtrim($line);
-            if (!$load_ave_d1>0) $load_ave_d1='-.--';
-			$Ahtml .= "  <font color=$default_text>Dialer 1 Load Average:</font> $load_ave_d1\n";
-		}
-		if (file_exists($pref . 'D2_load.txt')) {
-			$d2_load = file($pref . 'D2_load.txt');
-			list( $line_num, $line ) = each( $d2_load );
-			$load_ave_d2=rtrim($line);
-            if (!$load_ave_d2>0) $load_ave_d2='-.--';
-			$Ahtml .= "  <font color=$default_text>Dialer 2 Load Average:</font> $load_ave_d2\n";
-		}
-		if (file_exists($pref . 'D3_load.txt')) {
-			$d3_load = file($pref . 'D3_load.txt');
-			list( $line_num, $line ) = each( $d3_load );
-			$load_ave_d3=rtrim($line);
-            if (!$load_ave_d3>0) $load_ave_d3='-.--';
-			$Ahtml .= "  <font color=$default_text>Dialer 3 Load Average:</font> $load_ave_d3\n";
-		}
-		if (file_exists($pref . 'D4_load.txt')) {
-			$d4_load = file($pref . 'D4_load.txt');
-			list( $line_num, $line ) = each( $d4_load );
-			$load_ave_d4=rtrim($line);
-            if (!$load_ave_d4>0) $load_ave_d4='-.--';
-			$Ahtml .= "  <font color=$default_text>Dialer 4 Load Average:</font> $load_ave_d4\n";
-		}
-		if (file_exists($pref . 'D5_load.txt')) {
-			$d5_load = file($pref . 'D5_load.txt');
-			list( $line_num, $line ) = each( $d5_load );
-			$load_ave_d5=rtrim($line);
-            if (!$load_ave_d5>0) $load_ave_d5='-.--';
-			$Ahtml .= "  <font color=$default_text>Dialer 5 Load Average:</font> $load_ave_d5\n";
-		}
-		if (file_exists($pref . 'D6_load.txt')) {
-			$d6_load = file($pref . 'D6_load.txt');
-			list( $line_num, $line ) = each( $d6_load );
-			$load_ave_d6=rtrim($line);
-            if (!$load_ave_d6>0) $load_ave_d6='-.--';
-			$Ahtml .= "  <font color=$default_text>Dialer 6 Load Average:</font> $load_ave_d6\n";
-		}
-		//$html .= "<tr><td colspan=10>";
-		$html .= "$Ahtml";
-		$html .= "</pre>";
+			$load_ave = rtrim(getloadavg());
+			if (!$load_ave>0) $load_ave='-.--';
 		
+			$Ahtml="<br><pre><font face=Fixed,monospace SIZE=1>";
+			if (file_exists($pref . 'S1_load.txt')) {
+				$s1_load = file($pref . 'S1_load.txt');
+				list( $line_num, $line ) = each( $s1_load );
+				$load_ave_s1=rtrim($line);
+				if (!$load_ave_s1>0) $load_ave_s1='-.--';
+				$Ahtml .= "  <font color=$default_text>Web Srvr Load Average:</font> $load_ave\n";
+				$Ahtml .= "  <font color=$default_text>SQL Srvr Load Average:</font> $load_ave_s1\n";
+			} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
+				$Ahtml .= "  <font color=$default_text>Dialer   Load Average:</font> $load_ave\n";
+			} else {
+				$Ahtml .= "  <font color=$default_text>SQL/Web  Load Average:</font> $load_ave\n";
+			}
+			if (file_exists($pref . 'D1_load.txt')) {
+				$d1_load = file($pref . 'D1_load.txt');
+				list( $line_num, $line ) = each( $d1_load );
+				$load_ave_d1=rtrim($line);
+				if (!$load_ave_d1>0) $load_ave_d1='-.--';
+				$Ahtml .= "  <font color=$default_text>Dialer 1 Load Average:</font> $load_ave_d1\n";
+			}
+			if (file_exists($pref . 'D2_load.txt')) {
+				$d2_load = file($pref . 'D2_load.txt');
+				list( $line_num, $line ) = each( $d2_load );
+				$load_ave_d2=rtrim($line);
+				if (!$load_ave_d2>0) $load_ave_d2='-.--';
+				$Ahtml .= "  <font color=$default_text>Dialer 2 Load Average:</font> $load_ave_d2\n";
+			}
+			if (file_exists($pref . 'D3_load.txt')) {
+				$d3_load = file($pref . 'D3_load.txt');
+				list( $line_num, $line ) = each( $d3_load );
+				$load_ave_d3=rtrim($line);
+				if (!$load_ave_d3>0) $load_ave_d3='-.--';
+				$Ahtml .= "  <font color=$default_text>Dialer 3 Load Average:</font> $load_ave_d3\n";
+			}
+			if (file_exists($pref . 'D4_load.txt')) {
+				$d4_load = file($pref . 'D4_load.txt');
+				list( $line_num, $line ) = each( $d4_load );
+				$load_ave_d4=rtrim($line);
+				if (!$load_ave_d4>0) $load_ave_d4='-.--';
+				$Ahtml .= "  <font color=$default_text>Dialer 4 Load Average:</font> $load_ave_d4\n";
+			}
+			if (file_exists($pref . 'D5_load.txt')) {
+				$d5_load = file($pref . 'D5_load.txt');
+				list( $line_num, $line ) = each( $d5_load );
+				$load_ave_d5=rtrim($line);
+				if (!$load_ave_d5>0) $load_ave_d5='-.--';
+				$Ahtml .= "  <font color=$default_text>Dialer 5 Load Average:</font> $load_ave_d5\n";
+			}
+			if (file_exists($pref . 'D6_load.txt')) {
+				$d6_load = file($pref . 'D6_load.txt');
+				list( $line_num, $line ) = each( $d6_load );
+				$load_ave_d6=rtrim($line);
+				if (!$load_ave_d6>0) $load_ave_d6='-.--';
+				$Ahtml .= "  <font color=$default_text>Dialer 6 Load Average:</font> $load_ave_d6\n";
+			}
+			//$html .= "<tr><td colspan=10>";
+			$html .= "$Ahtml";
+			$html .= "</pre>";
+		}
 	} else {
 	
 		$html .= "&nbsp;&nbsp;<font color=red>&bull;&nbsp;&nbsp;NO AGENTS ON CALLS</font> \n";
-		$Ahtml = "<br><br>";
 		
-		$load_ave = rtrim(getloadavg());
-        if (!$load_ave>0) $load_ave='-.--';
-		
-		$Ahtml="<br><pre><font face=Fixed,monospace SIZE=1>";
-		if (file_exists($pref . 'S1_load.txt')) {
-			$s1_load = file($pref . 'S1_load.txt');
-			list( $line_num, $line ) = each( $s1_load );
-			$load_ave_s1=rtrim($line);
-            if (!$load_ave_s1>0) $load_ave_s1='-.--';
-			$Ahtml .= "  <font color=$default_text>Web Srvr Load Average:</font> $load_ave\n";
-			$Ahtml .= "  <font color=$default_text>SQL Srvr Load Average:</font> $load_ave_s1\n";
-		} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
-			$Ahtml .= "  <font color=$default_text>Dialer   Load Average:</font> $load_ave\n";
+		if (file_exists($pref . 'loadmon.txt')) {
+			$html .= "<br><br><br>";
+			if ($cpuinfo == 0 ) {
+				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=0\"><font size=1><b>STANDARD INFO</b></font></a>";
+				$html .= " - ";
+				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=1\"><font size=1>EXTENDED INFO</font></a>";
+				eval("\$html .= \"" . file_get_contents($pref . 'loadmon.txt') . "\";");
+			} else {
+				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=0\"><font size=1>STANDARD INFO</font></a>";
+				$html .= " - ";
+				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=1\"><font size=1><b>EXTENDED INFO</b></font></a>";
+				eval("\$html .= \"" . file_get_contents($pref . 'loadmon-xtd.txt') . "\";");
+			}
 		} else {
-			$Ahtml .= "  <font color=$default_text>SQL/Web  Load Average:</font> $load_ave\n";
+			$Ahtml = "<br><br>";
+			$load_ave = rtrim(getloadavg());
+			if (!$load_ave>0) $load_ave='-.--';
+		
+			$Ahtml="<br><pre><font face=Fixed,monospace SIZE=1>";
+			if (file_exists($pref . 'S1_load.txt')) {
+				$s1_load = file($pref . 'S1_load.txt');
+				list( $line_num, $line ) = each( $s1_load );
+				$load_ave_s1=rtrim($line);
+				if (!$load_ave_s1>0) $load_ave_s1='-.--';
+				$Ahtml .= "  <font color=$default_text>Web Srvr Load Average:</font> $load_ave\n";
+				$Ahtml .= "  <font color=$default_text>SQL Srvr Load Average:</font> $load_ave_s1\n";
+			} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
+				$Ahtml .= "  <font color=$default_text>Dialer   Load Average:</font> $load_ave\n";
+			} else {
+				$Ahtml .= "  <font color=$default_text>SQL/Web  Load Average:</font> $load_ave\n";
+			}
+			if (file_exists($pref . 'D1_load.txt')) {
+				$d1_load = file($pref . 'D1_load.txt');
+				list( $line_num, $line ) = each( $d1_load ) ;
+				$load_ave_d1=rtrim($line);
+				if (!$load_ave_d1>0) $load_ave_d1='-.--';
+				$Ahtml .= "  <font color=$default_text>Dialer 1 Load Average:</font> $load_ave_d1\n";
+			}
+			if (file_exists($pref . 'D2_load.txt')) {
+				$d2_load = file($pref . 'D2_load.txt');
+				list( $line_num, $line ) = each( $d2_load );
+				$load_ave_d2=rtrim($line);
+				if (!$load_ave_d2>0) $load_ave_d2='-.--';
+				$Ahtml .= "  <font color=$default_text>Dialer 2 Load Average:</font> $load_ave_d2\n";
+			}
+			if (file_exists($pref . 'D3_load.txt')) {
+				$d3_load = file($pref . 'D3_load.txt');
+				list( $line_num, $line ) = each( $d3_load );
+				$load_ave_d3=rtrim($line);
+				if (!$load_ave_d3>0) $load_ave_d3='-.--';
+				$Ahtml .= "  <font color=$default_text>Dialer 3 Load Average:</font> $load_ave_d3\n";
+			}
+			if (file_exists($pref . 'D4_load.txt')) {
+				$d4_load = file($pref . 'D4_load.txt');
+				list( $line_num, $line ) = each( $d4_load );
+				$load_ave_d4=rtrim($line);
+				if (!$load_ave_d4>0) $load_ave_d4='-.--';
+				$Ahtml .= "  <font color=$default_text>Dialer 4 Load Average:</font> $load_ave_d4\n";
+			}
+			if (file_exists($pref . 'D5_load.txt')) {
+				$d5_load = file($pref . 'D5_load.txt');
+				list( $line_num, $line ) = each( $d5_load );
+				$load_ave_d5=rtrim($line);
+				if (!$load_ave_d5>0) $load_ave_d5='-.--';
+				$Ahtml .= "  <font color=$default_text>Dialer 5 Load Average:</font> $load_ave_d5\n";
+			}
+			if (file_exists($pref . 'D6_load.txt')) {
+				$d6_load = file($pref . 'D6_load.txt');
+				list( $line_num, $line ) = each( $d6_load );
+				$load_ave_d6=rtrim($line);
+				if (!$load_ave_d6>0) $load_ave_d6='-.--';
+				$Ahtml .= "  <font color=$default_text>Dialer 6 Load Average:</font> $load_ave_d6\n";
+			}
+			$html .= "$Ahtml";
 		}
-		if (file_exists($pref . 'D1_load.txt')) {
-			$d1_load = file($pref . 'D1_load.txt');
-			list( $line_num, $line ) = each( $d1_load ) ;
-			$load_ave_d1=rtrim($line);
-            if (!$load_ave_d1>0) $load_ave_d1='-.--';
-			$Ahtml .= "  <font color=$default_text>Dialer 1 Load Average:</font> $load_ave_d1\n";
-		}
-		if (file_exists($pref . 'D2_load.txt')) {
-			$d2_load = file($pref . 'D2_load.txt');
-			list( $line_num, $line ) = each( $d2_load );
-			$load_ave_d2=rtrim($line);
-            if (!$load_ave_d2>0) $load_ave_d2='-.--';
-			$Ahtml .= "  <font color=$default_text>Dialer 2 Load Average:</font> $load_ave_d2\n";
-		}
-		if (file_exists($pref . 'D3_load.txt')) {
-			$d3_load = file($pref . 'D3_load.txt');
-			list( $line_num, $line ) = each( $d3_load );
-			$load_ave_d3=rtrim($line);
-            if (!$load_ave_d3>0) $load_ave_d3='-.--';
-			$Ahtml .= "  <font color=$default_text>Dialer 3 Load Average:</font> $load_ave_d3\n";
-		}
-		if (file_exists($pref . 'D4_load.txt')) {
-			$d4_load = file($pref . 'D4_load.txt');
-			list( $line_num, $line ) = each( $d4_load );
-			$load_ave_d4=rtrim($line);
-            if (!$load_ave_d4>0) $load_ave_d4='-.--';
-			$Ahtml .= "  <font color=$default_text>Dialer 4 Load Average:</font> $load_ave_d4\n";
-		}
-		if (file_exists($pref . 'D5_load.txt')) {
-			$d5_load = file($pref . 'D5_load.txt');
-			list( $line_num, $line ) = each( $d5_load );
-			$load_ave_d5=rtrim($line);
-            if (!$load_ave_d5>0) $load_ave_d5='-.--';
-			$Ahtml .= "  <font color=$default_text>Dialer 5 Load Average:</font> $load_ave_d5\n";
-		}
-		if (file_exists($pref . 'D6_load.txt')) {
-			$d6_load = file($pref . 'D6_load.txt');
-			list( $line_num, $line ) = each( $d6_load );
-			$load_ave_d6=rtrim($line);
-            if (!$load_ave_d6>0) $load_ave_d6='-.--';
-			$Ahtml .= "  <font color=$default_text>Dialer 6 Load Average:</font> $load_ave_d6\n";
-		}
-		$html .= "$Ahtml";
 		
 	}
 	$html .= "</pre>";

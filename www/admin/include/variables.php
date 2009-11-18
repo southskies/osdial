@@ -182,6 +182,7 @@ $ct_wednesday_start = get_variable("ct_wednesday_start");
 $ct_wednesday_stop = get_variable("ct_wednesday_stop");
 $custom1_field = get_variable("custom1_field");
 $custom2_field = get_variable("custom2_field");
+$cpuinfo = get_variable("cpuinfo");
 
 $date_of_birth_field = get_variable("date_of_birth_field");
 $DB = get_variable("DB");
