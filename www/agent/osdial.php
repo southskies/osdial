@@ -209,8 +209,8 @@
 
 # The version/build variables get set to the SVN revision automatically in release package.
 # Do not change.
-$version = '2.1.5.034';
-$build = '495-145';
+$version = 'SVN_Version';
+$build = 'SVN_Build';
 
 require("dbconnect.php");
 require('functions.php');
@@ -2311,7 +2311,7 @@ foreach ($forms as $form) {
 	</span>
 	
 	<!-- Transfer Link -->
-	<span style="position:absolute;left:5px;top:<?=$HTheight ?>px;z-index:21;" id="TransferMain">
+	<span style="position:absolute;left:185px;top:<?=$HTheight ?>px;z-index:21;" id="TransferMain">
 		<table bgcolor="<?=$xfer_bg1?>" frame=box width=<?=$XFwidth-255 ?>>
 			<tr>
 				<td align=left>
