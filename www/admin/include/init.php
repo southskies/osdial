@@ -32,7 +32,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 	$campaigns_to_print = mysql_num_rows($rslt);
 	$campaigns_list='';
 	$campaigns_value='';
-	$RANKcampaigns_list="<tr><td>CAMPAIGN</td><td> &nbsp; &nbsp; RANK</td><td> &nbsp; &nbsp; CALLS</td></tr>\n";
+	$RANKcampaigns_list="<tr bgcolor=$menubarcolor><td align=left><font size=1 color=white><b>CAMPAIGN</b></font></td><td align=center><font size=1 color=white><b>RANK</b></font></td><td align=right><font size=1 color=white><b>CALLS</b></font></td></tr>\n";
 
 	$o=0;
 	while ($campaigns_to_print > $o)
@@ -112,10 +112,10 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 			}
 		if ($RANK_camp_active < 1) {$CR_disabled = 'DISABLED';}
 
-		$RANKcampaigns_list .= "<tr $bgcolor><td>";
+		$RANKcampaigns_list .= "<tr class=row $bgcolor><td>";
 		$campaigns_list .= "<a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id_values[$o]\">$campaign_id_values[$o]</a> - $campaign_name_values[$o] <BR>\n";
-		$RANKcampaigns_list .= "<a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id_values[$o]\">$campaign_id_values[$o]</a> - $campaign_name_values[$o] </td>";
-		$RANKcampaigns_list .= "<td> &nbsp; &nbsp; <select size=1 name=RANK_$campaign_id_values[$o] $CR_disabled>\n";
+		$RANKcampaigns_list .= "<font size=1><a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id_values[$o]\">$campaign_id_values[$o]</a> - $campaign_name_values[$o]</font></td>";
+		$RANKcampaigns_list .= "<td align=center><select style=\"font-size: 8px;\" size=1 name=RANK_$campaign_id_values[$o] $CR_disabled>\n";
 		$h="9";
 		while ($h>=-9)
 			{
@@ -126,9 +126,10 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 			$h--;
 			}
 		$RANKcampaigns_list .= "</select></td>\n";
-		$RANKcampaigns_list .= "<td align=right> &nbsp; &nbsp; $calls_today</td></tr>\n";
+		$RANKcampaigns_list .= "<td align=right><font size=1>$calls_today</font></td></tr>\n";
 		$o++;
 		}
+	$RANKcampaigns_list .= "<tr bgcolor=$menubarcolor height=8px><td colspan=3><font color=white size=1></font></td></tr>\n";
 	##### END get campaigns listing for rankings #####
 
 
@@ -189,7 +190,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 	$groups_list='';
 	$groups_value='';
 	$XFERgroups_list='';
-	$RANKgroups_list="<tr><td>INBOUND GROUP</td><td> &nbsp; &nbsp; RANK</td><td> &nbsp; &nbsp; CALLS</td></tr>\n";
+	$RANKgroups_list="<tr bgcolor=$menubarcolor><td align=left><font size=1 color=white><b>INBOUND GROUP</b></font></td><td align=center><font size=1 color=white><b>RANK</b></font></td><td align=right><font size=1 color=white><b>CALLS</b></font></td></tr>\n";
 
 	$o=0;
 	while ($groups_to_print > $o)
@@ -236,13 +237,13 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 		else {$group_rank = $SELECT_group_rank;}
 
 		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor="#CBDCE0"';} 
+			{$bgcolor='bgcolor="' . $oddrows . '"';} 
 		else
-			{$bgcolor='bgcolor="#C1D6DB"';}
+			{$bgcolor='bgcolor="' . $evenrows . '"';}
 
 		$groups_list .= "<input type=\"checkbox\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
 		$XFERgroups_list .= "<input type=\"checkbox\" name=\"XFERgroups[]\" value=\"$group_id_values[$o]\"";
-		$RANKgroups_list .= "<tr $bgcolor><td><input type=\"checkbox\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
+		$RANKgroups_list .= "<tr $bgcolor class=row><td align=left><font size=1><input type=\"checkbox\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
 		$p=0;
 		$group_ct = count($groups);
 		while ($p < $group_ct)
@@ -268,8 +269,8 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 			}
 		$groups_list .= "> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">$group_id_values[$o]</a> - $group_name_values[$o] <BR>\n";
 		$XFERgroups_list .= "> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">$group_id_values[$o]</a> - $group_name_values[$o] <BR>\n";
-		$RANKgroups_list .= "> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">$group_id_values[$o]</a> - $group_name_values[$o] </td>";
-		$RANKgroups_list .= "<td> &nbsp; &nbsp; <select size=1 name=RANK_$group_id_values[$o]>\n";
+		$RANKgroups_list .= "> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">$group_id_values[$o]</a> - $group_name_values[$o]</font></td>";
+		$RANKgroups_list .= "<td align=center><select size=1 style=\"font-size: 8px;\" name=RANK_$group_id_values[$o]>\n";
 		$h="9";
 		while ($h>=-9)
 			{
@@ -280,9 +281,10 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 			$h--;
 			}
 		$RANKgroups_list .= "</select></td>\n";
-		$RANKgroups_list .= "<td align=right> &nbsp; &nbsp; $calls_today</td></tr>\n";
+		$RANKgroups_list .= "<td align=right><font size=1>$calls_today</font></td></tr>\n";
 		$o++;
 		}
+	$RANKgroups_list .= "<tr bgcolor=$menubarcolor height=8px><td colspan=3><font size=1 color=white></font></td></tr>\n";
 	if (strlen($groups_value)>2) {$groups_value .= " -";}
 	if (strlen($XFERgroups_value)>2) {$XFERgroups_value .= " -";}
 	}

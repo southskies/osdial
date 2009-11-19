@@ -142,3 +142,4 @@
 		Xbackground-image: URL(images/across140.png);
 		Xbackground-repeat:repeat-y;
 	}
+	tr.row:hover {background-color: #B4CCD6;}

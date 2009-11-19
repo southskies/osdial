@@ -139,7 +139,7 @@ if ($ADD==11)
 	echo "</select>$NWB#osdial_campaigns-campaign_script$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Get Call Launch: </td><td align=left><select size=1 name=get_call_launch><option selected>NONE</option><option>SCRIPT</option><option>WEBFORM</option></select>$NWB#osdial_campaigns-get_call_launch$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Allow Tab Switch: </td><td align=left><select size=1 name=allow_tab_switch><option selected>Y</option><option>N</option></select>$NWB#osdial_campaigns-allow_tab_switch$NWE</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr><td align=center colspan=2><input type=submit name=SUBMIT value=ADD style=\"width: 100%;\"></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -183,7 +183,7 @@ if ($ADD==12)
 	echo "$campaigns_list";
 	echo "</select>$NWB#osdial_campaigns-campaign_id$NWE</td></tr>\n";
 	
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr><td align=center colspan=2><input type=submit name=SUBMIT value=COPY style=\"width: 100%;\"></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -1163,7 +1163,7 @@ if ($ADD==31)
 		echo "$XFERgroups_list";
 		echo "</td></tr>\n";
 
-		echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+		echo "<tr><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT style=\"width: 100%;\"></td></tr>\n";
 		echo "</TABLE></center></FORM>\n";
 
         $dispinact = get_variable('dispinact');
@@ -1179,8 +1179,8 @@ if ($ADD==31)
         echo "<a href=\"$PHP_SELF?ADD=$ADD&campaign_id=$campaign_id&dispinact=1\">(Show Inactive)</a>";
     }
     echo "</font><br>\n";
-	echo "<TABLE width=400 cellspacing=3>\n";
-	echo "<tr><td><font color=$default_text>LIST ID</font></td><td><font color=$default_text>LIST NAME</font></td><td><font color=$default_text>ACTIVE</font></td></tr>\n";
+	echo "<TABLE width=400 cellspacing=1>\n";
+    echo "<tr bgcolor=$menubarcolor><td><font color=white size=1><b>LIST ID</b></font></td><td><font color=white size=1><b>LIST NAME</b></font></td><td><font color=white size=1><b>ACTIVE</b></font></td></tr>\n";
 
 
 		$active_lists = 0;
@@ -1205,6 +1205,7 @@ if ($ADD==31)
 
 			echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td><font size=1>$rowx[2]</td><td><font size=1>$rowx[1]</td></tr>\n";
 			}
+        echo "<tr bgcolor=$menubarcolor height=8px><td colspan=3><font color=white size=1></font></td></tr>\n";
 		echo "</table></center><br>\n";
 		echo "<center><b>\n";
 
@@ -1338,7 +1339,7 @@ if ($ADD==31)
 		{
 		echo "<center><br><b><font color=$default_text size=+1>CUSTOM HOT KEYS WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_campaign_hotkeys$NWE</font></b><br><br>\n";
 		echo "<TABLE width=400 cellspacing=3 align=center>\n";
-		echo "<tr><td>HOT KEY</td><td>STATUS</td><td>DESCRIPTION</td><td>XFER</td><td>DELETE</td></tr>\n";
+		echo "<tr bgcolor=$menubarcolor><td><font size=1 color=white><b>HOT KEY</b></font></td><td><font size=1 color=white><b>STATUS</b></font></td><td><font size=1 color=white><b>DESCRIPTION</b></font></td><td><font size=1 color=white><b>DELETE</b></font></td></tr>\n";
 
 			$stmt="SELECT * from osdial_campaign_hotkeys where campaign_id='$campaign_id' order by hotkey";
 			$rslt=mysql_query($stmt, $link);
@@ -1357,6 +1358,7 @@ if ($ADD==31)
 
 			}
 
+        echo "<tr bgcolor=$menubarcolor height=8px><td colspan=4><font size=1 color=white></font></td></tr>\n";
 		echo "</table></center>\n";
 
 		echo "<br><br><font color=$default_text>ADD NEW CUSTOM CAMPAIGN HOT KEY</font><BR><form action=$PHP_SELF method=POST><br>\n";
@@ -1763,7 +1765,7 @@ if ($ADD==34)
 
 	    echo "<tr bgcolor=$oddrows><td align=right>Answers Per Hour Limit: </td><td align=left><input type=text name=answers_per_hour_limit size=10 maxlength=10 value=\"$answers_per_hour_limit\">$NWB#osdial_campaigns-answers_per_hour_limit$NWE</td></tr>\n";
 
-		echo "<tr bgcolor=$oddrows><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+		echo "<tr><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT style=\"width: 100%;\"></td></tr>\n";
 		echo "</TABLE></center></FORM>\n";
 
             $dispinact = get_variable('dispinact');
@@ -1851,8 +1853,8 @@ if ($ADD==34)
 		### list of agent rank or skill-level for this campaign
 		echo "<center>\n";
 		echo "<br><b><font color=$default_text>AGENT RANKS FOR THIS CAMPAIGN:</font></b><br>\n";
-		echo "<TABLE width=400 cellspacing=3>\n";
-		echo "<tr><td><font color=$default_text>USER</font></td><td> &nbsp; &nbsp; <font color=$default_text>RANK</font></td><td> &nbsp; &nbsp; <font color=$default_text>CALLS TODAY</font></td></tr>\n";
+		echo "<TABLE width=400 cellspacing=1>\n";
+		echo "<tr bgcolor=$menubarcolor><td><font color=white size=1><b>USER</b></font></td><td><font color=white size=1><b>RANK</b></font></td><td><font color=white size=1><b>CALLS</b></font></td></tr>\n";
 
 			$stmt="SELECT user,campaign_rank,calls_today from osdial_campaign_agents where campaign_id='$campaign_id'";
 			$rsltx=mysql_query($stmt, $link);
@@ -1871,6 +1873,7 @@ if ($ADD==34)
 			echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">$rowx[0]</a></td><td><font size=1>$rowx[1]</td><td><font size=1>$rowx[2]</td></tr>\n";
 			}
 
+		echo "<tr bgcolor=$menubarcolor height=8px><td colspan=3><font color=white size=1></font></td></tr>\n";
 		echo "</table></center><br>\n";
 
 
@@ -2207,7 +2210,7 @@ echo "<td align=center colspan=7><font size=1 color=white><B>LINKS</B></td>";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=34&campaign_id=$row[0]\">$row[0]</a></td>";
+		echo "<tr class=row $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=34&campaign_id=$row[0]\">$row[0]</a></td>";
 		echo "<td><font size=1> $row[1] </td>";
 		echo "<td align=center><font size=1> $row[2]</td>";
 		echo "<td><font size=1> $row[3]</td><td><font size=1>$row[4]</td><td><font size=1>$row[5]</td>";
@@ -2215,7 +2218,9 @@ echo "<td align=center colspan=7><font size=1 color=white><B>LINKS</B></td>";
 		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=31&campaign_id=$row[0]\">MODIFY</a></td></tr>\n";
 		$o++;
 	}
-
+echo "<tr bgcolor=$menubarcolor>";
+echo "  <td colspan=9 height=8px><font size=1 color=white>&nbsp;</font></td>";
+echo "</tr>";
 echo "</TABLE></center>\n";
 }
 

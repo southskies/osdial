@@ -68,7 +68,7 @@ if ($ADD=="1")
 	echo "<tr bgcolor=$oddrows><td align=right>Phone Login: </td><td align=left><input type=text name=phone_login size=20 maxlength=20>$NWB#osdial_users-phone_login$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Phone Pass: </td><td align=left><input type=text name=phone_pass size=20 maxlength=20>$NWB#osdial_users-phone_pass$NWE</td></tr>\n";
 	
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr><td align=center colspan=2><input type=submit name=SUBMIT value=ADD style=\"width: 100%;\"></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -115,7 +115,7 @@ if ($ADD=="1A")
 		}
 	echo "$Uusers_list";
 	echo "</select>$NWB#osdial_users-user$NWE</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr><td align=center colspan=2><input type=submit name=SUBMIT value=COPY style=\"width: 100%;\"></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -500,6 +500,7 @@ if ($ADD==3)
 		echo "</select>$NWB#osdial_users-user_group$NWE</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Phone Login: </td><td align=left><input type=text name=phone_login size=20 maxlength=20 value=\"$phone_login\">$NWB#osdial_users-phone_login$NWE</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Phone Pass: </td><td align=left><input type=text name=phone_pass size=20 maxlength=20 value=\"$phone_pass\">$NWB#osdial_users-phone_pass$NWE</td></tr>\n";
+		echo "<tr><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT style=\"width: 100%;\"></td></tr>\n";
 
 		if ( ($LOGuser_level > 8) or ($LOGalter_agent_interface == "1") )
 			{
@@ -516,11 +517,13 @@ if ($ADD==3)
 			echo "<tr bgcolor=$oddrows><td align=right>$t1 Recording Override: </td><td align=left><select size=1 name=osdial_recording_override><option>DISABLED</option><option>NEVER</option><option>ONDEMAND</option><option>ALLCALLS</option><option>ALLFORCE</option><option SELECTED>$osdial_recording_override</option></select>$NWB#osdial_users-osdial_recording_override$NWE</td></tr>\n";
 			echo "<tr bgcolor=$oddrows><td align=right>Agent Alter Customer Data Override: </td><td align=left><select size=1 name=alter_custdata_override><option>NOT_ACTIVE</option><option>ALLOW_ALTER</option><option SELECTED>$alter_custdata_override</option></select>$NWB#osdial_users-alter_custdata_override$NWE</td></tr>\n";
 			echo "<tr bgcolor=$oddrows><td align=right>Manual-Dial Allow Skip-Lead: </td><td align=left><select size=1 name=manual_dial_allow_skip><option>0</option><option>1</option><option SELECTED>$manual_dial_allow_skip</option></select>$NWB#osdial_users-manual_dial_allow_skip$NWE</td></tr>\n";
+			echo "<tr><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT style=\"width: 100%;\"></td></tr>\n";
 			echo "<tr><td>&nbsp;</td></tr>";
 			echo "<tr bgcolor=$oddrows><td align=center colspan=2>Campaign Ranks: $NWB#osdial_users-campaign_ranks$NWE<BR>\n";
 			echo "<table border=0>\n";
 			echo "$RANKcampaigns_list";
 			echo "</table>\n";
+			echo "<tr><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT style=\"width: 100%;\"></td></tr>\n";
 			echo "</td></tr>\n";
 			echo "<tr><td>&nbsp;</td></tr>";
 			echo "<tr bgcolor=$oddrows><td align=center colspan=2>Inbound Groups: $NWB#osdial_users-closer_campaigns$NWE<BR>\n";
@@ -528,8 +531,9 @@ if ($ADD==3)
 			echo "$RANKgroups_list";
 			echo "</table>\n";
 			echo "</td></tr>\n";
+			echo "<tr><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT style=\"width: 100%;\"></td></tr>\n";
 			}
-		if ($LOGuser_level > 8)
+		if ($LOGuser_level > 8 && $user_level > 8)
 			{
 			echo "<tr><td>&nbsp;</td></tr>";
 			echo "<tr bgcolor=$menubarcolor><td colspan=2 align=center><font color=white><B>ADMIN INTERFACE OPTIONS:</td></tr>\n";
@@ -571,8 +575,41 @@ if ($ADD==3)
 			echo "<tr bgcolor=$unusualrows><td align=right>Modify Call Times: </td><td align=left><select size=1 name=modify_call_times><option>0</option><option>1</option><option SELECTED>$modify_call_times</option></select>$NWB#osdial_users-modify_call_times$NWE</td></tr>\n";
 			echo "<tr bgcolor=$oddrows><td align=right>Delete Call Times: </td><td align=left><select size=1 name=delete_call_times><option>0</option><option>1</option><option SELECTED>$delete_call_times</option></select>$NWB#osdial_users-delete_call_times$NWE</td></tr>\n";
 			echo "<tr bgcolor=$unusualrows><td align=right>Modify Servers: </td><td align=left><select size=1 name=modify_servers><option>0</option><option>1</option><option SELECTED>$modify_servers</option></select>$NWB#osdial_users-modify_sections$NWE</td></tr>\n";
-			}
-		echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+			echo "<tr><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT style=\"width: 100%;\"></td></tr>\n";
+		} else {
+			echo "<input type=hidden name=view_reports value=$view_reports>\n";
+			echo "<input type=hidden name=alter_agent_interface_options value=$alter_agent_interface_options>\n";
+			echo "<input type=hidden name=modify_users value=$modify_users>\n";
+			echo "<input type=hidden name=change_agent_campaign value=$change_agent_campaign>\n";
+			echo "<input type=hidden name=delete_users value=$delete_users>\n";
+			echo "<input type=hidden name=modify_usergroups value=$modify_usergroups>\n";
+			echo "<input type=hidden name=delete_user_groups value=$delete_user_groups>\n";
+			echo "<input type=hidden name=modify_lists value=$modify_lists>\n";
+			echo "<input type=hidden name=delete_lists value=$delete_lists>\n";
+			echo "<input type=hidden name=load_leads value=$load_leads>\n";
+			echo "<input type=hidden name=modify_leads value=$modify_leads>\n";
+			echo "<input type=hidden name=modify_campaigns value=$modify_campaigns>\n";
+			echo "<input type=hidden name=campaign_detail value=$campaign_detail>\n";
+			echo "<input type=hidden name=delete_campaigns value=$delete_campaigns>\n";
+
+			echo "<input type=hidden name=modify_ingroups value=$modify_ingroups>\n";
+			echo "<input type=hidden name=delete_ingroups value=$delete_ingroups>\n";
+
+			echo "<input type=hidden name=modify_remoteagents value=$modify_remoteagents>\n";
+			echo "<input type=hidden name=delete_remote_agents value=$delete_remote_agents>\n";
+
+			echo "<input type=hidden name=modify_scripts value=$modify_scripts>\n";
+			echo "<input type=hidden name=delete_scripts value=$delete_scripts>\n";
+
+			echo "<input type=hidden name=modify_filters value=$modify_filters>\n";
+			echo "<input type=hidden name=delete_filters value=$delete_filters>\n";
+
+			echo "<input type=hidden name=ast_admin_access value=$ast_admin_access>\n";
+			echo "<input type=hidden name=ast_delete_phones value=$ast_delete_phones>\n";
+			echo "<input type=hidden name=modify_call_times value=$modify_call_times>\n";
+			echo "<input type=hidden name=delete_call_times value=$delete_call_times>\n";
+			echo "<input type=hidden name=modify_servers value=$modify_servers>\n";
+		}
 		echo "</TABLE></center>\n";
 
 		echo "<center><br><br><a href=\"$PHP_SELF?ADD=999999&SUB=1&iframe=AST_agent_time_sheet.php?agent=$row[1]\">Click here for user time sheet</a>\n";
@@ -621,7 +658,7 @@ echo "<tr bgcolor=$oddrows><td align=right>User Group: </td><td align=left><sele
 	}
 echo "$groups_list</select></td></tr>\n";
 
-echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=search value=search></td></tr>\n";
+echo "<tr><td align=center colspan=2><input type=submit name=search value=SEARCH style=\"width: 100%;\"></td></tr>\n";
 echo "</TABLE></center>\n";
 
 }
@@ -810,7 +847,7 @@ echo "</tr>";
         echo "<form action=$PHP_SELF method=POST>";
         echo "<input type=hidden name=ADD value=$ADD>";
         echo "<input type=hidden name=SUB value=1>";
-		echo "<tr $bgcolor>";
+		echo "<tr class=row $bgcolor>";
         echo "  <td><a href=\"$PHP_SELF?ADD=3&user=$row[1]\"><font size=1 color=$default_text>$row[1]</a></td>";
         echo "  <td><font size=1>$row[3]</td>";
         if ($ADD==9) {
@@ -831,7 +868,7 @@ echo "</tr>";
                 $row[46] = "";
             if ($stat['CONTACT'] > 0) $close_pct = (($stat['SALE'] / ($stat['CONTACT'] + $stat['SALE'])) * 100);
             echo "  <td align=center><font size=1>$row2[0]</td>";
-            echo "  <td><font size=1><input type=hidden name=mdn_user value=$row[1]><input type=text name=mdn_limit size=5 value=$row[46]></td>";
+            echo "  <td><font size=1><input type=hidden name=mdn_user value=$row[1]><input style=\"font-size: 7px;\" type=text name=mdn_limit size=5 value=$row[46]></td>";
             echo "  <td align=center><font size=1>" . ($stat['CONTACT'] + $stat['SALE']) . "</td>";
             echo "  <td align=center><font size=1>" . $stat['SALE'] . "</td>";
             echo "  <td align=center><font size=1>" . sprintf('%5.2f',$close_pct) . " %</td>";
@@ -860,11 +897,7 @@ echo "</tr>";
         echo "</tr>";
     } else {
         echo "<tr bgcolor=$menubarcolor>";
-        echo "  <td><font size=1 color=white>&nbsp;</font></td>";
-        echo "  <td><font size=1 color=white>&nbsp;</font></td>";
-        echo "  <td><font size=1 color=white>&nbsp;</font></td>";
-        echo "  <td><font size=1 color=white>&nbsp;</font></td>";
-        echo "  <td><font size=1 color=white>&nbsp;</font></td>";
+        echo "  <td colspan=5 height=8px><font size=1 color=white></font></td>";
         echo "</tr>";
     }
 
