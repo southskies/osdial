@@ -64,25 +64,26 @@ function report_realtime_summary() {
 	$html .= "<input type=hidden name=group value=$group>\n";
 	$html .= "<input type=hidden name=campaign_id value=$campaign_id>\n";
 	$html .= "<input type=hidden name=RR value=$RR>\n";
+	$html .= "<input type=hidden name=cpuinfo value=$cpuinfo>\n";
 	
 	$html .= "<p class=centered><font color=$default_text size=+1>ALL CAMPAIGNS SUMMARY</font<br><br>";
 	$html .= "<font color=$default_text size=-1>Update:&nbsp;";
 	if ($RR==38400) { $html .= "<font size=+1>"; }
-	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats\">Daily</a>&nbsp;&nbsp;";
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">Daily</a>&nbsp;&nbsp;";
 	if ($RR==3600) { $html .= "<font size=+1>"; } else { $html .= "<font size=-1>"; }
-	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=3600&DB=$DB&adastats=$adastats\">Hourly</a>&nbsp;&nbsp;";
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=3600&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">Hourly</a>&nbsp;&nbsp;";
 	if ($RR==600) { $html .= "<font size=+1>"; } else { $html .= "<font size=-1>"; }
-	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=600&DB=$DB&adastats=$adastats\">10min</a>&nbsp;&nbsp;";
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=600&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">10min</a>&nbsp;&nbsp;";
 	if ($RR==30) { $html .= "<font size=+1>"; } else { $html .= "<font size=-1>"; }
-	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=30&DB=$DB&adastats=$adastats\">30sec</a>&nbsp;&nbsp;";
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=30&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">30sec</a>&nbsp;&nbsp;";
 	if ($RR==4) { $html .= "<font size=+1>"; } else { $html .= "<font size=-1>"; }
-	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=4&DB=$DB&adastats=$adastats\">4sec</a>&nbsp;&nbsp;";
+	$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=4&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">4sec</a>&nbsp;&nbsp;";
 	$html .= "</font>";
 	$html .= "&nbsp;-&nbsp;&nbsp;";
 	if ($adastats<2) {
-		$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=2\"><font size=1>VIEW MORE SETTINGS</font></a>";
+		$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=2&cpuinfo=$cpuinfo\"><font size=1>VIEW MORE SETTINGS</font></a>";
 	} else {
-		$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=1\"><font size=1>VIEW LESS SETTINGS</font></a>";
+		$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=1&cpuinfo=$cpuinfo\"><font size=1>VIEW LESS SETTINGS</font></a>";
 	}
 	$html .= "</p>\n\n";
 	
@@ -95,7 +96,7 @@ function report_realtime_summary() {
 		
 		$group = $groups[$k];
 		$group_name = $group_names[$k];
-		$html .= "<hr><font class=realtimeindents size=-1><b><a href=\"./admin.php?ADD=$ADD&SUB=" . ($SUB + 1) . "&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats\">$group - $group_name</a></b> &nbsp; - &nbsp; ";
+		$html .= "<hr><font class=realtimeindents size=-1><b><a href=\"./admin.php?ADD=$ADD&SUB=" . ($SUB + 1) . "&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">$group - $group_name</a></b> &nbsp; - &nbsp; ";
 		$html .= "<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a> </font>\n";
 		
 		
@@ -431,62 +432,79 @@ function report_realtime_summary() {
 	$html .= "</div>";
 	$html .= "&nbsp;";
  
-	$load_ave = getloadavg();
+	if (file_exists($pref . 'resources.txt')) {
+		$html .= "<br><br><br>";
+		$html .= "<center>";
+		if ($cpuinfo == 0 ) {
+			$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=0\"><font size=1><b>STANDARD INFO</b></font></a>";
+			$html .= " - ";
+			$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=1\"><font size=1>EXTENDED INFO</font></a>";
+			eval("\$html .= \"" . file_get_contents($pref . 'resources.txt') . "\";");
+		} else {
+			$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=0\"><font size=1>STANDARD INFO</font></a>";
+			$html .= " - ";
+			$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&cpuinfo=1\"><font size=1><b>EXTENDED INFO</b></font></a>";
+			eval("\$html .= \"" . file_get_contents($pref . 'resources-xtd.txt') . "\";");
+		}
+		$html .= "</center>";
+	} else {
+		$load_ave = getloadavg();
 	
-	// Get server loads, txt file from other servers
-	//$load_ave = get_server_load($load_ave);
+		// Get server loads, txt file from other servers
+		//$load_ave = get_server_load($load_ave);
 		
 	
-	$Ahtml="<pre><font face=Fixed,monospace SIZE=-2>";
-	if (file_exists($pref . 'S1_load.txt')) {
-		$s1_load = file($pref . 'S1_load.txt');
-		list( $line_num, $line ) = each( $s1_load );
-		$load_ave_s1=$line;
-		$Ahtml .= "  <font color=$default_text>Apache   Load Average:</font> $load_ave<br>";
-		$Ahtml .= "  <font color=$default_text>MySQL    Load Average:</font> $load_ave_s1";
-	} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
-		$Ahtml .= "  <font color=$default_text>Dialer Load Average:</font> $load_ave<br>";
-	} else {
-		$Ahtml .= "  <font color=$default_text>SQL/Web  Load Average:</font> $load_ave";
+		$Ahtml="<pre><font face=Fixed,monospace SIZE=-2>";
+		if (file_exists($pref . 'S1_load.txt')) {
+			$s1_load = file($pref . 'S1_load.txt');
+			list( $line_num, $line ) = each( $s1_load );
+			$load_ave_s1=$line;
+			$Ahtml .= "  <font color=$default_text>Apache   Load Average:</font> $load_ave<br>";
+			$Ahtml .= "  <font color=$default_text>MySQL    Load Average:</font> $load_ave_s1";
+		} elseif (!file_exists($pref . 'D1_load.txt')&& !file_exists($pref . 'D2_load.txt') && !file_exists($pref . 'D3_load.txt') && !file_exists($pref . 'D4_load.txt') && !file_exists($pref . 'D5_load.txt') && !file_exists($pref . 'D6_load.txt')) {
+			$Ahtml .= "  <font color=$default_text>Dialer Load Average:</font> $load_ave<br>";
+		} else {
+			$Ahtml .= "  <font color=$default_text>SQL/Web  Load Average:</font> $load_ave";
+		}
+		if (file_exists($pref . 'D1_load.txt')) {
+			$d1_load = file($pref . 'D1_load.txt');
+			list( $line_num, $line ) = each( $d1_load ) ;
+			$load_ave_d1=$line;
+			$Ahtml .= "  <font color=$default_text>Dialer 1 Load Average:</font> $load_ave_d1";
+		}
+		if (file_exists($pref . 'D2_load.txt')) {
+			$d2_load = file($pref . 'D2_load.txt');
+			list( $line_num, $line ) = each( $d2_load );
+			$load_ave_d2=$line;
+			$Ahtml .= "  <font color=$default_text>Dialer 2 Load Average:</font> $load_ave_d2";
+		}
+		if (file_exists($pref . 'D3_load.txt')) {
+			$d3_load = file($pref . 'D3_load.txt');
+			list( $line_num, $line ) = each( $d3_load );
+			$load_ave_d3=$line;
+			$Ahtml .= "  <font color=$default_text>Dialer 3 Load Average:</font> $load_ave_d3";
+		}
+		if (file_exists($pref . 'D4_load.txt')) {
+			$d4_load = file($pref . 'D4_load.txt');
+			list( $line_num, $line ) = each( $d4_load );
+			$load_ave_d4=$line;
+			$Ahtml .= "  <font color=$default_text>Dialer 4 Load Average:</font> $load_ave_d4";
+		}
+		if (file_exists($pref . 'D5_load.txt')) {
+			$d5_load = file($pref . 'D5_load.txt');
+			list( $line_num, $line ) = each( $d5_load );
+			$load_ave_d5=$line;
+			$Ahtml .= "  <font color=$default_text>Dialer 5 Load Average:</font> $load_ave_d5";
+		}
+		if (file_exists($pref . 'D6_load.txt')) {
+			$d6_load = file($pref . 'D6_load.txt');
+			list( $line_num, $line ) = each( $d6_load );
+			$load_ave_d6=$line;
+			$Ahtml .= "  <font color=$default_text>Dialer 6 Load Average:</font> $load_ave_d6";
+		}
+		$Ahtml .= "</pre>";
+		$html .= "$Ahtml";
 	}
-	if (file_exists($pref . 'D1_load.txt')) {
-		$d1_load = file($pref . 'D1_load.txt');
-		list( $line_num, $line ) = each( $d1_load ) ;
-		$load_ave_d1=$line;
-		$Ahtml .= "  <font color=$default_text>Dialer 1 Load Average:</font> $load_ave_d1";
-	}
-	if (file_exists($pref . 'D2_load.txt')) {
-		$d2_load = file($pref . 'D2_load.txt');
-		list( $line_num, $line ) = each( $d2_load );
-		$load_ave_d2=$line;
-		$Ahtml .= "  <font color=$default_text>Dialer 2 Load Average:</font> $load_ave_d2";
-	}
-	if (file_exists($pref . 'D3_load.txt')) {
-		$d3_load = file($pref . 'D3_load.txt');
-		list( $line_num, $line ) = each( $d3_load );
-		$load_ave_d3=$line;
-		$Ahtml .= "  <font color=$default_text>Dialer 3 Load Average:</font> $load_ave_d3";
-	}
-	if (file_exists($pref . 'D4_load.txt')) {
-		$d4_load = file($pref . 'D4_load.txt');
-		list( $line_num, $line ) = each( $d4_load );
-		$load_ave_d4=$line;
-		$Ahtml .= "  <font color=$default_text>Dialer 4 Load Average:</font> $load_ave_d4";
-	}
-	if (file_exists($pref . 'D5_load.txt')) {
-		$d5_load = file($pref . 'D5_load.txt');
-		list( $line_num, $line ) = each( $d5_load );
-		$load_ave_d5=$line;
-		$Ahtml .= "  <font color=$default_text>Dialer 5 Load Average:</font> $load_ave_d5";
-	}
-	if (file_exists($pref . 'D6_load.txt')) {
-		$d6_load = file($pref . 'D6_load.txt');
-		list( $line_num, $line ) = each( $d6_load );
-		$load_ave_d6=$line;
-		$Ahtml .= "  <font color=$default_text>Dialer 6 Load Average:</font> $load_ave_d6";
-	}
-	$html .= "$Ahtml";
-	$html .= "</pre>";
 	$html .= "<TABLE WIDTH='<?=$page_width ?>' BGCOLOR=#E9E8D9 cellpadding=0 cellspacing=0 align=center class=across>";
 
     return $html;

@@ -6,11 +6,14 @@
 
 use strict;
 use IO::Socket::Multicast;
+use Number::Format;
 
 $|++;
 
 my $DB = 0;
 $DB = 1 if ($ARGV[0] eq '-v');
+
+my $nf = new Number::Format;
 
 my $sock;
 my %hosts;
@@ -27,10 +30,10 @@ while (1) {
 				$kvh{$k} = $v;
 			}
 			$hosts{$kvh{ip}} = \%kvh;
-			open(HTML, ">/opt/osdial/html/admin/loadmon.txt");
+			open(HTML, ">/opt/osdial/html/admin/resources.txt");
 			print HTML output_html(%hosts);
 			close(HTML);
-			open(HTML, ">/opt/osdial/html/admin/loadmon-xtd.txt");
+			open(HTML, ">/opt/osdial/html/admin/resources-xtd.txt");
 			print HTML output_html_extended(%hosts);
 			close(HTML);
 		}
@@ -44,9 +47,9 @@ sub output_html {
 	$html = "<br><table bgcolor=grey cellspacing=1 cellpadding=3>\n";
 	$html .= "  <tr bgcolor=\$menubarcolor>\n";
 	$html .= "   ";
-	$html .= "<td><font color=white size=1><b>System</b></font></td>";
-	$html .= "<td><font color=white size=1><b>CPU%</b></font></td>";
-	$html .= "<td><font color=white size=1><b>MEM%</b></font></td>";
+	$html .= "<td align=center><font color=white size=1><b>System</b></font></td>";
+	$html .= "<td align=center><font color=white size=1><b>CPU%</b></font></td>";
+	$html .= "<td align=center><font color=white size=1><b>MEM%</b></font></td>";
 	$html .= "\n";
 	$html .= "  </tr>\n";
 	my $col = '$oddrows';
@@ -74,29 +77,29 @@ sub output_html_extended {
 	$html = "<br><table bgcolor=grey cellspacing=1 cellpadding=3>\n";
 	$html .= "  <tr bgcolor=\$menubarcolor>\n";
 	$html .= "    ";
-	$html .= "<td colspan=5><font color=white size=1><b>System</b></font></td>";
-	$html .= "<td colspan=4><font color=white size=1><b>LoadAvg</b></font></td>";
-	$html .= "<td colspan=2><font color=white size=1><b>CPU</b></font></td>";
-	$html .= "<td colspan=4><font color=white size=1><b>MEM</b></font></td>";
+	$html .= "<td colspan=5 align=center><font color=white size=1><b>System</b></font></td>";
+	$html .= "<td colspan=4 align=center><font color=white size=1><b>LoadAvg</b></font></td>";
+	$html .= "<td colspan=2 align=center><font color=white size=1><b>CPU</b></font></td>";
+	$html .= "<td colspan=4 align=center><font color=white size=1><b>MEM</b></font></td>";
 	$html .= "\n";
 	$html .= "  </tr>\n";
 	$html .= "  <tr bgcolor=\$menubarcolor>\n";
 	$html .= "    ";
-	$html .= "<td><font color=white size=1><b>Label</b></font></td>";
-	$html .= "<td><font color=white size=1><b>IP</b></font></td>";
-	$html .= "<td><font color=white size=1><b>Host</b></font></td>";
-	$html .= "<td><font color=white size=1><b>Domain</b></font></td>";
-	$html .= "<td><font color=white size=1><b>Timestamp</b></font></td>";
-	$html .= "<td><font color=white size=1><b>OneMin</b></font></td>";
-	$html .= "<td><font color=white size=1><b>FiveMin</b></font></td>";
-	$html .= "<td><font color=white size=1><b>TenMin</b></font></td>";
-	$html .= "<td><font color=white size=1><b>Procs</b></font></td>";
-	$html .= "<td><font color=white size=1><b>Count</b></font></td>";
-	$html .= "<td><font color=white size=1><b>Pct</b></font></td>";
-	$html .= "<td><font color=white size=1><b>Total</b></font></td>";
-	$html .= "<td><font color=white size=1><b>Free</b></font></td>";
-	$html .= "<td><font color=white size=1><b>Swap</b></font></td>";
-	$html .= "<td><font color=white size=1><b>Pct</b></font></td>";
+	$html .= "<td align=center><font color=white size=1><b>Label</b></font></td>";
+	$html .= "<td align=center><font color=white size=1><b>IP</b></font></td>";
+	$html .= "<td align=center><font color=white size=1><b>Host</b></font></td>";
+	$html .= "<td align=center><font color=white size=1><b>Domain</b></font></td>";
+	$html .= "<td align=center><font color=white size=1><b>Timestamp</b></font></td>";
+	$html .= "<td align=center><font color=white size=1><b>1min</b></font></td>";
+	$html .= "<td align=center><font color=white size=1><b>5min</b></font></td>";
+	$html .= "<td align=center><font color=white size=1><b>10min</b></font></td>";
+	$html .= "<td align=center><font color=white size=1><b>Procs</b></font></td>";
+	$html .= "<td align=center><font color=white size=1><b>Count</b></font></td>";
+	$html .= "<td align=center><font color=white size=1><b>Pct</b></font></td>";
+	$html .= "<td align=center><font color=white size=1><b>Total</b></font></td>";
+	$html .= "<td align=center><font color=white size=1><b>Free</b></font></td>";
+	$html .= "<td align=center><font color=white size=1><b>Pct</b></font></td>";
+	$html .= "<td align=center><font color=white size=1><b>Swap</b></font></td>";
 	$html .= "\n";
 	$html .= "  </tr>\n";
 	my $col = '$oddrows';
@@ -114,10 +117,10 @@ sub output_html_extended {
 		$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{load_procs} . "</font></td>";
 		$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{cpu_count} . "</font></td>";
 		$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{cpu_pct} . "</font></td>";
-		$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{mem_total} . "k</font></td>";
-		$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{mem_free} . "k</font></td>";
-		$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{swap_used} . "k</font></td>";
+		$html .= "<td align=right><font size=1 color=\$default_text>" . $nf->format_number($hosts{$host}->{mem_total}) . "k</font></td>";
+		$html .= "<td align=right><font size=1 color=\$default_text>" . $nf->format_number($hosts{$host}->{mem_free}) . "k</font></td>";
 		$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{mem_pct} . "</font></td>";
+		$html .= "<td align=right><font size=1 color=\$default_text>" . $nf->format_number($hosts{$host}->{swap_used}) . "k</font></td>";
 		$html .= "\n";
 		$html .= "  </tr>\n";
 		if ($col eq '$oddrows') {

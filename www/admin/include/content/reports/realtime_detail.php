@@ -982,13 +982,19 @@ function report_realtime_detail() {
 		
 		if (file_exists($pref . 'loadmon.txt')) {
 			$html .= "<br><br><br>";
+            $html .= "<center>";
 			if ($cpuinfo == 0 ) {
+				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=0\"><font size=1><b>STANDARD INFO</b></font></a>";
+				$html .= " - ";
 				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=1\"><font size=1>EXTENDED INFO</font></a>";
 				eval("\$html .= \"" . file_get_contents($pref . 'loadmon.txt') . "\";");
 			} else {
 				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=0\"><font size=1>STANDARD INFO</font></a>";
+				$html .= " - ";
+				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=1\"><font size=1><b>EXTENDED INFO</b></font></a>";
 				eval("\$html .= \"" . file_get_contents($pref . 'loadmon-xtd.txt') . "\";");
 			}
+            $html .= "</center>";
 		} else {
 			$load_ave = rtrim(getloadavg());
 			if (!$load_ave>0) $load_ave='-.--';
@@ -1058,6 +1064,7 @@ function report_realtime_detail() {
 		
 		if (file_exists($pref . 'loadmon.txt')) {
 			$html .= "<br><br><br>";
+            $html .= "<center>";
 			if ($cpuinfo == 0 ) {
 				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=0\"><font size=1><b>STANDARD INFO</b></font></a>";
 				$html .= " - ";
@@ -1069,6 +1076,7 @@ function report_realtime_detail() {
 				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=1\"><font size=1><b>EXTENDED INFO</b></font></a>";
 				eval("\$html .= \"" . file_get_contents($pref . 'loadmon-xtd.txt') . "\";");
 			}
+            $html .= "</center>";
 		} else {
 			$Ahtml = "<br><br>";
 			$load_ave = rtrim(getloadavg());
