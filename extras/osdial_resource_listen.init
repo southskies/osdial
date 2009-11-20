@@ -14,7 +14,7 @@
 
 # Source function library.
 . /etc/init.d/functions
-. /etc/sysconfig/osdial
+[ -f "/etc/sysconfig/osdial" ] && . /etc/sysconfig/osdial
 
 RETVAL=0
 proc=osdial_resource_listen
