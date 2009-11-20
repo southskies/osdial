@@ -51,6 +51,16 @@ start() {
 				echo "UPDATE phones SET local_gmt='$OSDTZ';" | mysql osdial > /dev/null 2>&1
 			fi
 
+			# Direct them to setup their static IP address
+			dialog --clear --timeout $TIMEOUT\
+				--backtitle "OSDial - The OpenSource Dialer" \
+				--title "OSDial FirstRun - Customize Login - Timeout: $TIMEOUT seconds" \
+				--msgbox "\nNetwork Configuration\n\nThe default installation uses DHCP to auto-configure your network devices. While this is fine for evaluating OSDial, it is strongly recomended that you use a static IP addresses in a production environment.\n\nPress ENTER to configure your network devices now.\nTo postpone network device configuration, wait $TIMEOUT seconds." 15 75
+			if [ "$?" = "0" ]; then
+				/usr/sbin/system-config-network
+				/sbin/service network restart
+			fi
+
 			# Prompt for Company, Binfone Username and Password
 			dialog --clear --timeout $TIMEOUT \
 				--backtitle "OSDial - The OpenSource Dialer" \
@@ -164,8 +174,11 @@ start() {
 	if [ -f /etc/openvpn/osdial.up ]; then
 		HST=`/bin/hostname -s`
 		if [ "$HST" = "osdial" -o "$HST" = "osdial-live" -o "$HST" = "osdial-ccsg" -o "$HST" = "osd" -o -z "$HST" ]; then
-			UUID=`/usr/bin/uuidgen | awk -F- '{ print $1 }'`
-			HST="osdial-${UUID}"
+			OVHST=`/usr/bin/head -1 /etc/openvpn/osdial.up`
+			if [ "$OVHST" = "osdial" -o "$OVHST" = "osdial-live" -o "$OVHST" = "osdial-ccsg" -o "$OVHST" = "osd" -o -z "$OVHST" ]; then
+				UUID=`/usr/bin/uuidgen | awk -F- '{ print $1 }'`
+				HST="osdial-${UUID}"
+			fi
 		fi
 		echo "${HST}" > /etc/openvpn/osdial.up
 		echo "0o1s2d3i4a5l6${HST}6l5a4i3d2s1o0" >> /etc/openvpn/osdial.up
