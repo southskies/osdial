@@ -765,12 +765,14 @@ if ($ADD==1122) {
             if ($v == "") $v = $k;
             if ($k != "") $fieldOPTS .= "        <option value=\"" . $k . "\"$sel>" . $v . "</option>\n";
         }
-        echo "    <td align=center colspan=4>\n";
-        echo "      <font color=$default_text size=2>CSV Export Fields</font><br>\n";
-        echo "      <select name=fields[] size=5 multiple>\n";
-        echo $fieldOPTS;
-        echo "      </select>\n";
-        echo "    </td>\n";
+        if ($LOGuser_level > 8) {
+            echo "    <td align=center colspan=4>\n";
+            echo "      <font color=$default_text size=2>CSV Export Fields</font><br>\n";
+            echo "      <select name=fields[] size=5 multiple>\n";
+            echo $fieldOPTS;
+            echo "      </select>\n";
+            echo "    </td>\n";
+        }
 
         echo "  <tr>\n";
         echo "    <td align=center colspan=4><br><font color=$default_text size=2>Results</font>";
