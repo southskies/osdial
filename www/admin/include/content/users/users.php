@@ -533,7 +533,7 @@ if ($ADD==3)
 			echo "</td></tr>\n";
 			echo "<tr><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT style=\"width: 100%;\"></td></tr>\n";
 			}
-		if ($LOGuser_level > 8 && $user_level > 8)
+		if ($LOGuser_level > 8 && $user_level > 7)
 			{
 			echo "<tr><td>&nbsp;</td></tr>";
 			echo "<tr bgcolor=$menubarcolor><td colspan=2 align=center><font color=white><B>ADMIN INTERFACE OPTIONS:</td></tr>\n";
