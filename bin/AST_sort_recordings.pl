@@ -111,7 +111,7 @@ foreach my $file (@files) {
 			# Pull SQL info from recording_log, list and campaign tables.
 			my $SQLfile = $file;
 			$SQLfile =~ s/-all\.wav|-all\.gsm|-all\.ogg|-all\.mp3//gi;
-			$stmtA = "SELECT recording_log.recording_id,osdial_lists.campaign_id,DATE(recording_log.start_time),recording_log.lead_id FROM recording_log,osdial_list,osdial_lists WHERE recording_log.lead_id=osdial_list.lead_id AND osdial_list.list_id=osdial_lists.list_id AND filename='$SQLfile' ORDER BY recording_id DESC LIMIT 1;";
+			$stmtA = "SELECT recording_log.recording_id,osdial_lists.campaign_id,DATE(recording_log.start_time),recording_log.lead_id FROM recording_log LEFT JOIN osdial_list ON (recording_log.lead_id=osdial_list.lead_id) LEFT JOIN osdial_lists ON (osdial_list.list_id=osdial_lists.list_id) WHERE filename='$SQLfile' ORDER BY recording_id DESC LIMIT 1;";
 			print "$stmtA|\n" if($verbose > 2);
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
