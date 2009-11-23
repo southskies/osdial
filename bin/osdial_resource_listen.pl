@@ -53,19 +53,23 @@ sub output_html {
 	$html .= "\n";
 	$html .= "  </tr>\n";
 	my $col = '$oddrows';
+	my %uhost;
 	foreach my $host (sort keys %hosts) {
-		$html .= "  <tr bgcolor=$col>\n";
-		$html .= "    ";
-		$html .= "<td><font size=1 color=\$default_text>" . $hosts{$host}->{label} . "</font></td>";
-		$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{cpu_pct} . "</font></td>";
-		$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{mem_pct} . "</font></td>";
-		$html .= "\n";
-		$html .= "  </tr>\n";
-		if ($col eq '$oddrows') {
-			$col = '$evenrows';
-		} else {
-			$col = '$oddrows';
+		if ($hosts{$host}->{host} and $uhost{$hosts{$host}->{host}} < 1) {
+			$html .= "  <tr bgcolor=$col>\n";
+			$html .= "    ";
+			$html .= "<td><font size=1 color=\$default_text>" . $hosts{$host}->{label} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{cpu_pct} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{mem_pct} . "</font></td>";
+			$html .= "\n";
+			$html .= "  </tr>\n";
+			if ($col eq '$oddrows') {
+				$col = '$evenrows';
+			} else {
+				$col = '$oddrows';
+			}
 		}
+		$uhost{$hosts{$host}->{host}}++;
 	}
 	$html .= "  <tr bgcolor=\$menubarcolor><td colspan=3><font size=1></font></td></tr>\n";
 	$html .= "</table>\n";
@@ -103,31 +107,35 @@ sub output_html_extended {
 	$html .= "\n";
 	$html .= "  </tr>\n";
 	my $col = '$oddrows';
+	my %uhost;
 	foreach my $host (sort keys %hosts) {
-		$html .= "  <tr bgcolor=$col>\n";
-		$html .= "    ";
-		$html .= "<td><font size=1 color=\$default_text>" . $hosts{$host}->{label} . "</font></td>";
-		$html .= "<td><font size=1 color=\$default_text>" . $hosts{$host}->{ip} . "</font></td>";
-		$html .= "<td><font size=1 color=\$default_text>" . $hosts{$host}->{host} . "</font></td>";
-		$html .= "<td><font size=1 color=\$default_text>" . $hosts{$host}->{domain} . "</font></td>";
-		$html .= "<td><font size=1 color=\$default_text>" . $hosts{$host}->{timestamp} . "</font></td>";
-		$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{load_one} . "</font></td>";
-		$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{load_five} . "</font></td>";
-		$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{load_ten} . "</font></td>";
-		$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{load_procs} . "</font></td>";
-		$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{cpu_count} . "</font></td>";
-		$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{cpu_pct} . "</font></td>";
-		$html .= "<td align=right><font size=1 color=\$default_text>" . $nf->format_number($hosts{$host}->{mem_total}) . "k</font></td>";
-		$html .= "<td align=right><font size=1 color=\$default_text>" . $nf->format_number($hosts{$host}->{mem_free}) . "k</font></td>";
-		$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{mem_pct} . "</font></td>";
-		$html .= "<td align=right><font size=1 color=\$default_text>" . $nf->format_number($hosts{$host}->{swap_used}) . "k</font></td>";
-		$html .= "\n";
-		$html .= "  </tr>\n";
-		if ($col eq '$oddrows') {
-			$col = '$evenrows';
-		} else {
-			$col = '$oddrows';
+		if ($hosts{$host}->{host} and $uhost{$hosts{$host}->{host}} < 1) {
+			$html .= "  <tr bgcolor=$col>\n";
+			$html .= "    ";
+			$html .= "<td><font size=1 color=\$default_text>" . $hosts{$host}->{label} . "</font></td>";
+			$html .= "<td><font size=1 color=\$default_text>" . $hosts{$host}->{ip} . "</font></td>";
+			$html .= "<td><font size=1 color=\$default_text>" . $hosts{$host}->{host} . "</font></td>";
+			$html .= "<td><font size=1 color=\$default_text>" . $hosts{$host}->{domain} . "</font></td>";
+			$html .= "<td><font size=1 color=\$default_text>" . $hosts{$host}->{timestamp} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{load_one} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{load_five} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{load_ten} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{load_procs} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{cpu_count} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{cpu_pct} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=\$default_text>" . $nf->format_number($hosts{$host}->{mem_total}) . "k</font></td>";
+			$html .= "<td align=right><font size=1 color=\$default_text>" . $nf->format_number($hosts{$host}->{mem_free}) . "k</font></td>";
+			$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{mem_pct} . "</font></td>";
+			$html .= "<td align=right><font size=1 color=\$default_text>" . $nf->format_number($hosts{$host}->{swap_used}) . "k</font></td>";
+			$html .= "\n";
+			$html .= "  </tr>\n";
+			if ($col eq '$oddrows') {
+				$col = '$evenrows';
+			} else {
+				$col = '$oddrows';
+			}
 		}
+		$uhost{$hosts{$host}->{host}}++;
 	}
 	$html .= "  <tr bgcolor=\$menubarcolor><td colspan=15><font size=1></font></td></tr>\n";
 	$html .= "</table>\n";
