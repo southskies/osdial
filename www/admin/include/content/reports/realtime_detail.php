@@ -980,19 +980,19 @@ function report_realtime_detail() {
 		$html .= "  <SPAN class=\"purple\"><B>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN> - On call > 5 minutes</B>";
 		$html .= "</td></tr></table>";
 		
-		if (file_exists($pref . 'loadmon.txt')) {
+		if (file_exists($pref . 'resources.txt')) {
 			$html .= "<br><br><br>";
             $html .= "<center>";
 			if ($cpuinfo == 0 ) {
 				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=0\"><font size=1><b>STANDARD INFO</b></font></a>";
 				$html .= " - ";
 				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=1\"><font size=1>EXTENDED INFO</font></a>";
-				eval("\$html .= \"" . file_get_contents($pref . 'loadmon.txt') . "\";");
+				eval("\$html .= \"" . file_get_contents($pref . 'resources.txt') . "\";");
 			} else {
 				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=0\"><font size=1>STANDARD INFO</font></a>";
 				$html .= " - ";
 				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=1\"><font size=1><b>EXTENDED INFO</b></font></a>";
-				eval("\$html .= \"" . file_get_contents($pref . 'loadmon-xtd.txt') . "\";");
+				eval("\$html .= \"" . file_get_contents($pref . 'resources-xtd.txt') . "\";");
 			}
             $html .= "</center>";
 		} else {
@@ -1062,19 +1062,19 @@ function report_realtime_detail() {
 	
 		$html .= "&nbsp;&nbsp;<font color=red>&bull;&nbsp;&nbsp;NO AGENTS ON CALLS</font> \n";
 		
-		if (file_exists($pref . 'loadmon.txt')) {
+		if (file_exists($pref . 'resources.txt')) {
 			$html .= "<br><br><br>";
             $html .= "<center>";
 			if ($cpuinfo == 0 ) {
 				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=0\"><font size=1><b>STANDARD INFO</b></font></a>";
 				$html .= " - ";
 				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=1\"><font size=1>EXTENDED INFO</font></a>";
-				eval("\$html .= \"" . file_get_contents($pref . 'loadmon.txt') . "\";");
+				eval("\$html .= \"" . file_get_contents($pref . 'resources.txt') . "\";");
 			} else {
 				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=0\"><font size=1>STANDARD INFO</font></a>";
 				$html .= " - ";
 				$html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=1\"><font size=1><b>EXTENDED INFO</b></font></a>";
-				eval("\$html .= \"" . file_get_contents($pref . 'loadmon-xtd.txt') . "\";");
+				eval("\$html .= \"" . file_get_contents($pref . 'resources-xtd.txt') . "\";");
 			}
             $html .= "</center>";
 		} else {
