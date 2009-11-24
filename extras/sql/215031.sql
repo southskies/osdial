@@ -103,7 +103,5 @@ ALTER TABLE osdial_users ADD manual_dial_allow_skip ENUM('0','1') default '1';##
 
 
 
-UPDATE system_settings SET version='2.1.5.031';##|##
- ##Updating database to version 2.1.5.031;
-UPDATE system_settings SET last_update_check=DATE_SUB(NOW(), INTERVAL 1 DAY);##|##
- ##Clearing last_update_check flag.;
+UPDATE system_settings SET version='2.1.5.031',last_update_check=DATE_SUB(NOW(), INTERVAL 1 DAY);##|##
+ ##    Updating database to version 2.1.5.031, and clearing last_update_check flag.;

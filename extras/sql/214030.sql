@@ -58,7 +58,5 @@ INSERT INTO osdial_statuses values('INBND','Inbound Call','N','Y','SYSTEM');##|#
 
 
 
-UPDATE system_settings SET version='2.1.4.030';##|##
- ##Updating database to version 2.1.4.030;
-UPDATE system_settings SET last_update_check=DATE_SUB(NOW(), INTERVAL 1 DAY);##|##
- ##Clearing last_update_check flag.;
+UPDATE system_settings SET version='2.1.4.030',last_update_check=DATE_SUB(NOW(), INTERVAL 1 DAY);##|##
+ ##    Updating database to version 2.1.4.030 and clearing last_update_check flag.;
