@@ -2247,6 +2247,10 @@ if ($ACTION == 'updateDISPO')
 		if ($format=='debug') {echo "\n<!-- $stmt -->";}
 	$rslt=mysql_query($stmt, $link);
 
+	$stmt="UPDATE osdial_campaigns SET campaign_changedate=NOW() WHERE campaign_id='$campaign';";
+		if ($format=='debug') {echo "\n<!-- $stmt -->";}
+	$rslt=mysql_query($stmt, $link);
+
     if ($dispo_choice == 'PD') {
 	    $stmt="UPDATE osdial_list set post_date='$PostDatETimE' where lead_id='$lead_id';";
 		    if ($format=='debug') {echo "\n<!-- $stmt -->";}
