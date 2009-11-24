@@ -37,7 +37,7 @@ $|++;
 my $prog = 'upgrade_sql.pl';
 
 my $secStart = time();
-my($DB, $CLOhelp, $CLOtest, $CLOsaf, $CLOinst);
+my($DB, $CLOhelp, $CLOinfo, $CLOinst, $CLOsaf, $CLOtest);
 my($dbhT,$dbhA);
 
 # Get OSD configuration directives.
@@ -45,27 +45,31 @@ my $config = getOSDconfig('/etc/osdial.conf');
 
 if (scalar @ARGV) {
 	GetOptions(
-		'help!' => \$CLOhelp,
 		'debug!' => \$DB,
-		'test!' => \$CLOtest,
+		'help!' => \$CLOhelp,
+		'info!' => \$CLOinfo,
+		'install!' => \$CLOinst,
 		'skip-auth-fix!' => \$CLOsaf,
-		'install!' => \$CLOinst
+		'test!' => \$CLOtest
 	);
 	if ($DB) {
 		print "----- DEBUGGING -----\n";
 		print "----- Testing Mode -----\n" if ($CLOtest);
 		print "VARS-\n";
+		print "DB-          $DB\n";
 		print "CLOhelp-     $CLOhelp\n";
-		print "CLOtest-     $CLOtest\n";
-		print "CLOsaf-      $CLOsaf\n";
+		print "CLOinfo-     $CLOinfo\n";
 		print "CLOinst-     $CLOinst\n";
+		print "CLOsaf-      $CLOsaf\n";
+		print "CLOtest-     $CLOtest\n";
 		print "\n";
 	}
 	if ($CLOhelp) {
 		print "\n\n" . $prog . "\n";
 		print "allowed run-time options:\n";
-		print "  [--help]         = This screen\n";
 		print "  [--debug]        = debug\n";
+		print "  [--help]         = This screen\n";
+		print "  [--info]         = Display detailed information on changes.\n";
 		print "  [--install]      = Install DB on this server if not found.\n";
 		print "  [--skip-auth-fix]= Skip the DB user authentication fixes\n";
 		print "  [-t|--test]      = test only\n\n";
@@ -216,13 +220,14 @@ while ($uploop < 1) {
 		print "      Upgrade is not possible with this version!\n";
 		$uploop = 2;
 	} else {
-		print "      Got version $ver from database.\n";
-		print "      Applying SQL update using " . $vmap{$ver} . ".sql ";
-		open (SQL, $path . $vmap{$ver} . '.sql');
 		my $sql;
 		my $gosql = 0;
 		my @chars = qw(- \ | /);
 		my $cur = 0;
+		my $linepos = 0;
+		my $sqlfile = $vmap{$ver} . ".sql"; 
+		print "        Current DB Version: $ver       SQL Update File: $sqlfile\n";
+		open (SQL, $path . $sqlfile);
 		while (my $line = <SQL>) {
 			chomp $line;
 			if ($line !~ /^#/ and $line ne '') {
@@ -235,7 +240,7 @@ while ($uploop < 1) {
 				my $tdone : shared; 
 				($nsql,$comm) = split(/##\|##/,$sql);
 				$tdone = 0;
-				if ($comm eq "") {
+				if ($CLOinfo != 1 or $comm eq "") {
 					print "\n  Trying ($nsql) " if ($DB);
 					my $thr1 = threads->create(
 						sub {
@@ -251,12 +256,17 @@ while ($uploop < 1) {
 						print "\b";
 					}
 					$thr1->join();
+					if ($linepos > 79) {
+						print "\n";
+						$linepos=0;
+					}
 					print ".";
+					$linepos++;
 				} else {
 					$comm =~ s/#SQL#/$nsql/g;
 					$comm =~ s/ ##/\n/g;
 					$comm =~ s/;$//g;
-					print "\n--------------------------------------------------------------------------------";
+					print "\n-------------------------------------------------------------------------------";
 					print $comm;
 					print "\nApplying...";
 					my $thr1 = threads->create(
@@ -274,6 +284,7 @@ while ($uploop < 1) {
 					}
 					$thr1->join();
 					print "*DONE*\n";
+					$linepos=0;
 				}
 				$gosql = 0;
 				$sql = '';
