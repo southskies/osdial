@@ -117,7 +117,7 @@ while ( $master_loop < $CLOloops ) {
 	my $VDL_ninty =            $secX - 90;
 
 	my($stmtA,$sthA,$sthArows,$rec_count);
-	my(@campaign_id,@campaign_changedate,@campaign_stats_refresh);
+	my(@campaign_id,@campaign_lastcall,@campaign_stats_refresh);
 	
 	
 	
@@ -128,7 +128,7 @@ while ( $master_loop < $CLOloops ) {
 	} else {
 		$swhere = "( (active='Y') or (campaign_stats_refresh='Y') )";
 	}
-	$stmtA = "SELECT campaign_id,UNIX_TIMESTAMP(campaign_changedate),campaign_stats_refresh,(TIME_TO_SEC(SUBTIME(TIME(SYSDATE()),TIME(campaign_changedate)))/60) from osdial_campaigns where ". $swhere;
+	$stmtA = "SELECT campaign_id,UNIX_TIMESTAMP(campaign_lastcall),campaign_stats_refresh,(TIME_TO_SEC(SUBTIME(TIME(SYSDATE()),TIME(campaign_lastcall)))/60) from osdial_campaigns where ". $swhere;
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows  = $sthA->rows;
@@ -137,7 +137,7 @@ while ( $master_loop < $CLOloops ) {
 		my @aryA = $sthA->fetchrow_array;
 		if ($aryA[3] <= 121 or $aryA[2] eq "Y") {
 			$campaign_id[$rec_count]                    = $aryA[0];
-			$campaign_changedate[$rec_count]            = $aryA[1];
+			$campaign_lastcall[$rec_count]            = $aryA[1];
 			$campaign_stats_refresh[$rec_count]         = $aryA[2];
 			$rec_count++;
 		} else {
@@ -179,7 +179,7 @@ while ( $master_loop < $CLOloops ) {
 			} else {
 				$affected_rows = $dbhA->do($stmtA);
 			}
-		} elsif ( $campaign_changedate[$i] >= $VDL_ninty ) {
+		} elsif ( $campaign_lastcall[$i] >= $VDL_ninty ) {
 			print "     CHANGEDATE OVERRIDE: $campaign_id[$i]\n" if ($DB);
 			updateStats($campaign_id[$i],$VDL_date,$VDL_one,$VDL_five,$VDL_hour,$VDL_halfhour);
 			$RESETdrop_count_updater++;

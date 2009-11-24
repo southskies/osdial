@@ -918,6 +918,10 @@ while($one_day_interval > 0)
 									}
 								$affected_rows = $dbhA->do($stmtA);
 
+								# Update campaign_lastcall so that campaign_stats will regenerate.
+								$stmtA = "UPDATE osdial_campaigns SET campaign_lastcall=NOW() WHERE campaign_id='" . $DBIPcampaign[$user_CIPct] . "';";
+								$affected_rows = $dbhA->do($stmtA);
+
 								$stmtA = "DELETE FROM osdial_hopper where lead_id='$lead_id'";
 								$affected_rows = $dbhA->do($stmtA);
 
