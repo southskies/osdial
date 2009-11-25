@@ -80,7 +80,7 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8) {
 
 	if ($LOGmodify_lists==1) {
         if ($statuses[0] != '') $target=' target="_blank"';
-        echo "<form action=$PHP_SELF method=post$target>\n";
+        echo "<form name=export action=$PHP_SELF method=post$target>\n";
         echo "<input type=hidden name='ADD' value=\"$ADD\">\n";
         echo "<table align=center width=700 border=0 cellpadding=5 cellspacing=0 bgcolor=$oddrows>\n";
         echo " <tr><td>\n";
@@ -100,7 +100,9 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8) {
             echo "  </select>\n";
             echo "  <br />\n";
             echo "  <br />\n";
-            echo "  <input type=submit value=\"Next ->\">\n";
+            echo " </td></tr>\n";
+            echo " <tr bgcolor=$menubarcolor><td>\n";
+            echo "  <input style=\"width: 100%;\" type=submit value=\"Next ->\">\n";
         } elseif ($statuses[0] == '') {
             $list = get_first_record($link,'osdial_lists','*',"list_id='" . $list_id . "'");
             echo "  <input type=hidden name='list_id' value=\"$list_id\">\n";
@@ -122,34 +124,41 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8) {
             }
             sort($stats);
 
-            echo "  <table align=center border=0 cellpadding=2 cellspacing=0 bgcolor=$oddrows>\n";
+            $unchkjs = '';
+            foreach ($stats as $stat) {
+                $unchkjs .= "document.getElementById('" . $stat['status'] . "').checked=false;";
+            }
+            echo "  <table align=center border=0 cellpadding=1 cellspacing=0 bgcolor=$oddrows>\n";
             echo "  <tr bgcolor=$menubarcolor>\n";
             echo "      <td><font size=1 color=white>&nbsp;</font></td>\n";
             echo "      <td><font size=1 color=white><b>STATUS</b></font></td>\n";
             echo "      <td><font size=1 color=white><b>DESCRIPTION</b></font></td>\n";
             echo "   </tr>\n";
             echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=statuses[] value="-CALLED-" checked></td>' . "\n";
-            echo "      <td><b>CALLED</b></td>\n";
-            echo "      <td><b> - Export CALLED statuses</b> <font size=1>(ALL excluding NEW leads)</font></td>\n";
+            echo '      <td align=right><input onclick="' . "document.getElementById('called').checked=false;" . $unchkjs .'" type=checkbox name=statuses[] id=all value="-ALL-" checked></td>' . "\n";
+            echo "      <td><label for=all><font size=2><b>ALL</b></font></label></td>\n";
+            echo "      <td><label for=all><font size=2><b>- Export ALL statuses</b></font></label></td>\n";
             echo "   </tr>\n";
+            echo "  <tr><td colspan=3><hr></td></tr>\n";
             echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=statuses[] value="-ALL-"></td>' . "\n";
-            echo "      <td><b>ALL</b></td>\n";
-            echo "      <td><b> - Export ALL statuses</b></td>\n";
+            echo '      <td align=right><input onclick="' . "document.getElementById('all').checked=false;" . $unchkjs .'" type=checkbox name=statuses[] id=called value="-CALLED-"></td>' . "\n";
+            echo "      <td><label for=called><font size=2><b>CALLED</b></font></label></td>\n";
+            echo "      <td><label for=called><font size=2><b>- Export CALLED statuses</b> </font><font size=1>(ALL excluding NEW leads)</font></label></td>\n";
             echo "   </tr>\n";
             echo "  <tr><td colspan=3><hr></td></tr>\n";
             foreach ($stats as $stat) {
                 echo "   <tr>\n";
-                echo '      <td align=right><input type=checkbox name=statuses[] value="' . $stat['status']. "\"></td>\n";
-                echo '      <td>' . $stat['status'] . "</td>\n";
-                echo '      <td> - ' . $stat['status_name'] . "</td>\n";
+                echo '      <td align=right><input onclick="' . "document.getElementById('called').checked=false;document.getElementById('all').checked=false;" . '" type=checkbox name=statuses[] id="' . $stat['status'] . '" value="' . $stat['status']. "\"></td>\n";
+                echo '      <td><label for=' . $stat['status'] . '><font size=2>' . $stat['status'] . "</font></label></td>\n";
+                echo '      <td><label for=' . $stat['status'] . '><font size=2>- ' . $stat['status_name'] . "</font></label></td>\n";
                 echo "   </tr>\n";
             }
             echo "  </table>\n";
             echo "  <br />\n";
             echo "  <br />\n";
-            echo "  <input type=submit value=\"Next ->\">\n";
+            echo " </td></tr>\n";
+            echo " <tr bgcolor=$menubarcolor><td>\n";
+            echo "  <input style=\"width: 100%;\" type=submit value=\"Next ->\">\n";
         } elseif ($fields[0] == '') {
             $list = get_first_record($link,'osdial_lists','*',"list_id='" . $list_id . "'");
             echo "  <input type=hidden name='SUB' value=\"2\">\n";
@@ -169,229 +178,84 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8) {
             echo "  <br />\n";
             echo "  <br />\n";
 
-            echo "  <table align=center border=0 cellpadding=2 cellspacing=0 bgcolor=$oddrows>\n";
+            echo "  <table align=center border=0 cellpadding=1 cellspacing=0 bgcolor=$oddrows>\n";
             echo "  <tr bgcolor=$menubarcolor>\n";
             echo "      <td><font size=1 color=white>&nbsp;</font></td>\n";
             echo "      <td><font size=1 color=white><b>FIELD</b></font></td>\n";
             echo "      <td><font size=1 color=white><b>DESCRIPTION</b></font></td>\n";
             echo "   </tr>\n";
+
+            $flds['lead_id'] = "Unique lead number";
+            $flds['entry_date'] = "The date/time loaded";
+            $flds['modify_date'] = "The date/time last modified";
+            $flds['status'] = "The last status/disposition on lead";
+            $flds['user'] = "The last agent to call";
+            $flds['vendor_lead_code'] = "Vendor Code";
+            $flds['list_id'] = "List ID";
+            $flds['gmt_offset_now'] = "Timezone (GMT offset)";
+            $flds['called_since_last_reset'] = "Flag indicating call-count since last reset";
+            $flds['phone_code'] = "Phone Code";
+            $flds['phone_number'] = "Phone Number";
+            $flds['alt_phone'] = "Alternate Phone Number / Phone2";
+            $flds['title'] = "Title";
+            $flds['first_name'] = "First Name";
+            $flds['middle_initial'] = "Middle Initial";
+            $flds['last_name'] = "Last Name";
+            $flds['address1'] = "Address 1";
+            $flds['address2'] = "Address 2";
+            $flds['address3'] = "Address 3 / Phone3";
+            $flds['city'] = "City";
+            $flds['state'] = "State";
+            $flds['province'] = "Province";
+            $flds['postal_code'] = "Postal Code / ZIP";
+            $flds['country_code'] = "Country Code";
+            $flds['Gender'] = "Gender";
+            $flds['date_of_birth'] = "Birth Date";
+            $flds['email'] = "Email Address";
+            $flds['custom1'] = "Custom Field 1";
+            $flds['custom2'] = "Custom Field 2";
+            $flds['external_key'] = "External Key";
+            $flds['comments'] = "Comments";
+            $flds['called_count'] = "# of Times Called";
+            $flds['last_local_call_time'] = "Local Date/Time of Last Call";
+            $flds['cost'] = "Cost of Lead";
+            $flds['post_date'] = "Post Date";
+
+            foreach ($flds as $k => $v) {
+                $unchkjs .= "document.getElementById('" . $k . "').checked=false;";
+            }
+
             echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="-ALL-" checked></td>' . "\n";
-            echo "      <td><b>ALL</b></td>\n";
-            echo "      <td><b> - Export ALL fields</b></td>\n";
+            echo '      <td align=right><input onclick="' . $unchkjs . '" type=checkbox name=fields[] id=ALL value="-ALL-" checked></td>' . "\n";
+            echo "      <td><label for=ALL><font size=2><b>ALL</b></font></label></td>\n";
+            echo "      <td><label for=ALL><font size=2><b>- Export ALL fields</b></font></label></td>\n";
             echo "   </tr>\n";
             echo "  <tr><td colspan=3><hr></td></tr>\n";
 
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="lead_id"></td>' . "\n";
-            echo "      <td>lead_id</td>\n";
-            echo "      <td> - Unique lead numbertd>\n";
-            echo "   </tr>\n";
+            foreach ($flds as $k => $v) {
+                echo "   <tr>\n";
+                echo '      <td align=right><input onclick="' . "document.getElementById('ALL').checked=false;" . '" type=checkbox name=fields[] id="' . $k . '" value="' . $k . '"></td>' . "\n";
+                echo "      <td><label for=$k><font size=2>$k</font></label></td>\n";
+                echo "      <td><label for=$k><font size=2>- $v</font></label></td>\n";
+                echo "   </tr>\n";
+            }
 
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="entry_date"></td>' . "\n";
-            echo "      <td>entry_date</td>\n";
-            echo "      <td> - The date/time loaded</td>\n";
-            echo "   </tr>\n";
 
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="modify_date"></td>' . "\n";
-            echo "      <td>modify_date</td>\n";
-            echo "      <td> - Last call/modify date/time</td>\n";
-            echo "   </tr>\n";
 
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="status"></td>' . "\n";
-            echo "      <td>status</td>\n";
-            echo "      <td> - The status/disposition of lead</td>\n";
-            echo "   </tr>\n";
 
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="user"></td>' . "\n";
-            echo "      <td>user</td>\n";
-            echo "      <td> - Last agent</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="vendor_lead_code"></td>' . "\n";
-            echo "      <td>vendor_lead_code</td>\n";
-            echo "      <td> - Vendor assigned lead number</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="source_id"></td>' . "\n";
-            echo "      <td>source_id</td>\n";
-            echo "      <td> - Source ID</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="list_id"></td>' . "\n";
-            echo "      <td>list_id</td>\n";
-            echo "      <td> - List ID</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="gmt_offset_now"></td>' . "\n";
-            echo "      <td>gmt_offset_now</td>\n";
-            echo "      <td> - Timezone (GMT offset)</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="called_since_last_reset"></td>' . "\n";
-            echo "      <td>called_since_last_reset</td>\n";
-            echo "      <td> - Flag for calls since last reset</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="phone_code"></td>' . "\n";
-            echo "      <td>phone_code</td>\n";
-            echo "      <td> - Phone code</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="phone_number"></td>' . "\n";
-            echo "      <td>phone_number</td>\n";
-            echo "      <td> - Phone number</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="title"></td>' . "\n";
-            echo "      <td>title</td>\n";
-            echo "      <td> - Title</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="first_name"></td>' . "\n";
-            echo "      <td>first_name</td>\n";
-            echo "      <td> - First name</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="middle_initial"></td>' . "\n";
-            echo "      <td>middle_initial</td>\n";
-            echo "      <td> - Middle Initial</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="last_name"></td>' . "\n";
-            echo "      <td>last_name</td>\n";
-            echo "      <td> - Last name</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="address1"></td>' . "\n";
-            echo "      <td>address1</td>\n";
-            echo "      <td> - Address line 1</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="address2"></td>' . "\n";
-            echo "      <td>address2</td>\n";
-            echo "      <td> - Address line 2</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="address3"></td>' . "\n";
-            echo "      <td>address3</td>\n";
-            echo "      <td> - Address line 3 / Alt Phone 3</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="city"></td>' . "\n";
-            echo "      <td>city</td>\n";
-            echo "      <td> - City</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="state"></td>' . "\n";
-            echo "      <td>state</td>\n";
-            echo "      <td> - State</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="province"></td>' . "\n";
-            echo "      <td>province</td>\n";
-            echo "      <td> - Province</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="postal_code"></td>' . "\n";
-            echo "      <td>postal_code</td>\n";
-            echo "      <td> - ZIP / Postal code</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="country_code"></td>' . "\n";
-            echo "      <td>country_code</td>\n";
-            echo "      <td> - Country code</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="gender"></td>' . "\n";
-            echo "      <td>gender</td>\n";
-            echo "      <td> - Gender</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="date_of_birth"></td>' . "\n";
-            echo "      <td>date_of_birth</td>\n";
-            echo "      <td> - Date of birth</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="alt_phone"></td>' . "\n";
-            echo "      <td>alt_phone</td>\n";
-            echo "      <td> - Alternate phone number</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="email"></td>' . "\n";
-            echo "      <td>email</td>\n";
-            echo "      <td> - Email address</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="custom1"></td>' . "\n";
-            echo "      <td>custom1</td>\n";
-            echo "      <td> - Custom1</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="custom2"></td>' . "\n";
-            echo "      <td>custom2</td>\n";
-            echo "      <td> - Custom2</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="external_key"></td>' . "\n";
-            echo "      <td>external_key</td>\n";
-            echo "      <td> - External Key</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="comments"></td>' . "\n";
-            echo "      <td>comments</td>\n";
-            echo "      <td> - Comments</td>\n";
-            echo "   </tr>\n";
-
-            echo "   <tr>\n";
-            echo '      <td align=right><input type=checkbox name=fields[] value="called_count"></td>' . "\n";
-            echo "      <td>called_count</td>\n";
-            echo "      <td> - Times call attempted</td>\n";
-            echo "   </tr>\n";
 
             echo "  </table>\n";
             echo "  <br />\n";
             echo "  <br />\n";
-            echo "  <input type=submit value=\"Get File\" onclick=\"window.location='" . $PHP_SELF . "?ADD=100'\">\n";
+            echo " </td></tr>\n";
+            echo " <tr bgcolor=$menubarcolor><td>\n";
+            echo "  <input style=\"width: 100%\" type=submit value=\"Get File\" onclick=\"window.location='" . $PHP_SELF . "?ADD=100'\">\n";
         } else {
 	        echo "<font color=red>Unexpected Error!</font>\n";
         }
 
 
-        echo "  <br />";
-        echo "  </center>\n";
-        echo " <tr><td>\n";
+        echo " </td></tr>\n";
         echo "</table>\n";
         echo "</form>\n";
         echo "</center>\n";
