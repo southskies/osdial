@@ -143,3 +143,4 @@
 		Xbackground-repeat:repeat-y;
 	}
 	tr.row:hover {background-color: #B4CCD6;}
+	td.hover:hover {background-color: #A4DCE6; font-weight:bold;}

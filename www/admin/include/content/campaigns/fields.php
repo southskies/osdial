@@ -311,7 +311,7 @@ if ($ADD == "3fields" and $SUB != '2fields') {
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
         
-        echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=3fields&SUB=2fields&id=" . $form['id'] . "\">" . $form['name'] . "</a></td>";
+        echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=3fields&SUB=2fields&id=" . $form['id'] . "\">" . $form['name'] . "</a></td>";
         echo "<td><font size=1> " . $form['description'] . " </td>";
         echo "<td><font size=1> ";
         if ($form['campaigns'] == '') {
@@ -323,6 +323,9 @@ if ($ADD == "3fields" and $SUB != '2fields') {
         echo "<td><font size=1><a href=\"$PHP_SELF?ADD=3fields&SUB=2fields&id=" . $form['id'] . "\">MODIFY FORM</a></td></tr>\n";
         $cnt++;
     }
+    echo "<tr bgcolor=$menubarcolor>";
+    echo "  <td colspan=4 height=8px><font size=1 color=white></font></td>";
+    echo "</tr>";
     echo "</TABLE></center>\n";
 
     echo "<br /><br /><center><a href=$PHP_SELF?ADD=2form>ADD NEW FORM</a></center>";
@@ -412,13 +415,13 @@ if ($ADD == "3fields" and $SUB == '2fields') {
         echo '  <input type="hidden" name="ADD" value="4fields">';
         echo '  <input type="hidden" name="form_id" value="' . $form['id'] . '">';
         echo '  <input type="hidden" name="field_id" value="' . $field['id'] . '">';
-        echo "  <tr>";
-        echo "      <td $bgcolor align=center><input type=text name=field_name size=15 maxlength=15 value=\"" . $field['name'] . "\"></td>";
-        echo "      <td $bgcolor align=center><input type=text name=field_description size=20 maxlength=50 value=\"" . $field['description'] . "\"></td>";
-        echo "      <td $bgcolor align=center><input type=text name=field_options size=20 maxlength=255 value=\"" . $field['options'] . "\"></td>";
-        echo "      <td $bgcolor align=center><input type=text name=field_length size=2 maxlength=2 value=\"" . $field['length'] . "\"></td>";
-        echo "      <td $bgcolor align=center><input type=text name=field_priority size=2 maxlength=2 value=\"" . $field['priority'] . "\"></td>";
-        echo "      <td $bgcolor align=center><input type=submit value=\"Save\"> <a href=$PHP_SELF?ADD=6fields&form_id=" . $form['id'] . "&field_id=" . $field['id'] . ">DELETE</a></td>\n";
+        echo "  <tr $bgcolor class=row>";
+        echo "      <td align=center><input style=\"font-size: 7pt;\" type=text name=field_name size=15 maxlength=15 value=\"" . $field['name'] . "\"></td>";
+        echo "      <td align=center><input style=\"font-size: 7pt;\" type=text name=field_description size=20 maxlength=50 value=\"" . $field['description'] . "\"></td>";
+        echo "      <td align=center><input style=\"font-size: 7pt;\" type=text name=field_options size=20 maxlength=255 value=\"" . $field['options'] . "\"></td>";
+        echo "      <td align=center><input style=\"font-size: 7pt;\" type=text name=field_length size=2 maxlength=2 value=\"" . $field['length'] . "\"></td>";
+        echo "      <td align=center><input style=\"font-size: 7pt;\" type=text name=field_priority size=2 maxlength=2 value=\"" . $field['priority'] . "\"></td>";
+        echo "      <td align=center><input type=submit value=\"Save\"> <a href=$PHP_SELF?ADD=6fields&form_id=" . $form['id'] . "&field_id=" . $field['id'] . ">DELETE</a></td>\n";
         echo "  </tr>";
         echo "  </form>";
         if ($field['priority'] > $pri) {
@@ -427,18 +430,18 @@ if ($ADD == "3fields" and $SUB == '2fields') {
         $cnt++;
     }
     $pri++;
-    echo "  <tr><td colspan=6 bgcolor=$evenrows align=center>(options are a comma separated list that will appear as a drop-down)</td></tr>\n";
     echo '  <form action="' . $PHP_SELF . '" method="POST">';
     echo '  <input type="hidden" name="ADD" value="2fields">';
     echo '  <input type="hidden" name="form_id" value="' . $form['id'] . '">';
-    echo "  <tr>\n";
-    echo "      <td bgcolor=$oddrows align=center><input type=text name=field_name size=15 maxlength=15 value=\"\"></td>\n";
-    echo "      <td bgcolor=$evenrows align=center><input type=text name=field_description size=20 maxlength=50 value=\"\"></td>\n";
-    echo "      <td bgcolor=$oddrows align=center><input type=text name=field_options size=20 maxlength=255 value=\"\"></td>\n";
-    echo "      <td bgcolor=$evenrows align=center><input type=text name=field_length size=2 maxlength=2 value=\"22\"></td>\n";
-    echo "      <td bgcolor=$oddrows align=center><input type=text name=field_priority size=2 maxlength=2 value=\"$pri\"></td>\n";
-    echo "      <td bgcolor=$menubarcolor align=center><input type=submit value=\"New\"></td>\n";
+    echo "  <tr bgcolor=$menubarcolor>\n";
+    echo "      <td align=center><input style=\"font-size: 7pt;\" type=text name=field_name size=15 maxlength=15 value=\"\"></td>\n";
+    echo "      <td align=center><input style=\"font-size: 7pt;\" type=text name=field_description size=20 maxlength=50 value=\"\"></td>\n";
+    echo "      <td align=center><input style=\"font-size: 7pt;\" type=text name=field_options size=20 maxlength=255 value=\"\"></td>\n";
+    echo "      <td align=center><input style=\"font-size: 7pt;\" type=text name=field_length size=2 maxlength=2 value=\"22\"></td>\n";
+    echo "      <td align=center><input style=\"font-size: 7pt;\" type=text name=field_priority size=2 maxlength=2 value=\"$pri\"></td>\n";
+    echo "      <td align=center><input type=submit value=\"New\"></td>\n";
     echo "  </tr>\n";
+    echo "  <tr><td colspan=6 bgcolor=$menubarcolor align=center><font size=1 color=white>(options are a comma separated list that will appear as a drop-down)</font></td></tr>\n";
     echo "  </form>\n";
     echo "</table>\n";
 

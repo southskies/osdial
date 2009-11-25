@@ -58,7 +58,7 @@ if ($ADD==111) {
 		echo "<option SELECTED>$campaign_id</option>\n";
 		echo "</select>$NWB#osdial_lists-campaign_id$NWE</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option SELECTED>N</option></select>$NWB#osdial_lists-active$NWE</td></tr>\n";
-		echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+		echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 		echo "</TABLE></center>\n";
 	} else {
 		echo "<font color=red>You do not have permission to view this page</font>\n";
@@ -155,7 +155,7 @@ if ($ADD==112) {
 		echo "	<td align=left><input type=text name=lead_id value=\"$lead_id\" size=10 maxlength=10></td>";
 		echo "</tr>\n";
 		echo "<tr>";
-		echo "<th colspan=2><center><br><input type=submit name=submit value=SUBMIT></b></center><br></th>\n";
+		echo "<td colspan=2 bgcolor=$menubarcolor><input style=\"width: 100%;\" type=submit name=submit value=SUBMIT></td>\n";
 		echo "</form>\n";
 		echo "</tr>";
 		echo "</table>\n";
@@ -278,6 +278,9 @@ if ($ADD==1122) {
         $entry_date_end = get_variable("entry_date_end");
         $modify_date_start = get_variable("modify_date_start");
         $modify_date_end = get_variable("modify_date_end");
+        $lastcall_date_start = get_variable("lastcall_date_start");
+        $lastcall_date_end = get_variable("lastcall_date_end");
+        $use_osdial_log = get_variable("use_osdial_log");
 
         $orig_entry_date_start = "";
         $orig_entry_date_end = "";
@@ -301,6 +304,18 @@ if ($ADD==1122) {
             $orig_modify_date_start = $tmp1[0];
             $tmp2 = explode(" ",$modify_date_end);
             $orig_modify_date_end = $tmp2[0];
+        }
+
+        $orig_lastcall_date_start = "";
+        $orig_lastcall_date_end = "";
+        if ($lastcall_date_start != "" and $lastcall_date_end == "") $lastcall_date_end = $lastcall_date_start;
+        if ($lastcall_date_start != "") {
+            $lastcall_date_start .= " 00:00:00";
+            $lastcall_date_end .= " 23:59:59";
+            $tmp1 = explode(" ",$lastcall_date_start);
+            $orig_lastcall_date_start = $tmp1[0];
+            $tmp2 = explode(" ",$lastcall_date_end);
+            $orig_lastcall_date_end = $tmp2[0];
         }
 
         $phone_number = ereg_replace("[^0-9]","",$phone_number);
@@ -336,15 +351,16 @@ if ($ADD==1122) {
 
         $pageURL ="?ADD=$ADD&last_name=$last_name&first_name=$first_name&phone_number=$phone_number&phone_search_alt=$phone_search_alt&lead_id=$lead_id&city=$city&postal_code=$postal_code&email=$email";
         $pageURL.="&entry_date_start=$orig_entry_date_start&entry_date_end=$orig_entry_date_end&modify_date_start=$orig_modify_date_start&modify_date_end=$orig_modify_date_end";
+        $pageURL.="&lastcall_date_start=$orig_lastcall_date_start&lastcall_date_end=$orig_lastcall_date_end&use_osdial_log=$use_osdial_log";
         $pageURL.="&custom1=$custom1&custom2=$custom2&external_key=$external_key&numresults=$numresults";
 
 
-        if ($last_name)  $searchWHR .= " AND osdial_list.last_name LIKE '%" . mysql_real_escape_string($last_name) . "%'";
-        if ($first_name) $searchWHR .= " AND osdial_list.first_name LIKE '%" . mysql_real_escape_string($first_name) . "%'";
         if ($phone_number) {
             $notac = "%";
             if (strlen($phone_number) == 3) $notac="";
-            if ($phone_search_alt) {
+            if ($use_osdial_log) {
+                $searchWHR .= " AND osdial_log.phone_number LIKE '" . $notac . mysql_real_escape_string($phone_number) . "%'";
+            } elseif ($phone_search_alt) {
                 $searchWHR .= " AND (osdial_list.phone_number LIKE '" . $notac . mysql_real_escape_string($phone_number) . "%'";
                 $searchWHR .= " OR osdial_list.alt_phone LIKE '" . $notac . mysql_real_escape_string($phone_number) . "%'";
                 $searchWHR .= " OR osdial_list.address3 LIKE '" . $notac . mysql_real_escape_string($phone_number) . "%')";
@@ -352,17 +368,20 @@ if ($ADD==1122) {
                 $searchWHR .= " AND osdial_list.phone_number LIKE '" . $notac . mysql_real_escape_string($phone_number) . "%'";
             }
         }
-        if ($lead_id)      $searchWHR .= " AND osdial_list.lead_id='" . mysql_real_escape_string($lead_id) . "'";
-        if ($city)         $searchWHR .= " AND osdial_list.city LIKE '%" . mysql_real_escape_string($city) . "%'";
-        if ($postal_code)  $searchWHR .= " AND osdial_list.postal_code LIKE '" . mysql_real_escape_string($postal_code) . "%'";
-        if ($email)        $searchWHR .= " AND osdial_list.email LIKE '%" . mysql_real_escape_string($email) . "%'";
-        if ($external_key) $searchWHR .= " AND osdial_list.external_key LIKE '%" . mysql_real_escape_string($external_key) . "%'";
-        if ($custom1)      $searchWHR .= " AND osdial_list.custom1 LIKE '%" . mysql_real_escape_string($custom1) . "%'";
-        if ($custom2)      $searchWHR .= " AND osdial_list.custom2 LIKE '%" . mysql_real_escape_string($custom2) . "%'";
-
-        if ($entry_date_start)  $searchWHR .= " AND osdial_list.entry_date BETWEEN '" . mysql_real_escape_string($entry_date_start) . "' AND '" . mysql_real_escape_string($entry_date_end) . "'";
-        if ($modify_date_start) $searchWHR .= " AND osdial_list.modify_date BETWEEN '" . mysql_real_escape_string($modify_date_start) . "' AND '" . mysql_real_escape_string($modify_date_end) . "'";
-
+        if ($lead_id) {
+            if ($use_osdial_log) {
+                $searchWHR .= " AND osdial_log.lead_id='" . mysql_real_escape_string($lead_id) . "'";
+            } else {
+                $searchWHR .= " AND osdial_list.lead_id='" . mysql_real_escape_string($lead_id) . "'";
+            }
+        }
+        if ($lastcall_date_start) {
+            if ($use_osdial_log) {
+                $searchWHR .= " AND osdial_log.call_date BETWEEN '" . mysql_real_escape_string($lastcall_date_start) . "' AND '" . mysql_real_escape_string($lastcall_date_end) . "'";
+            } else {
+                $searchWHR .= " AND osdial_list.last_local_call_time BETWEEN '" . mysql_real_escape_string($lastcall_date_start) . "' AND '" . mysql_real_escape_string($lastcall_date_end) . "'";
+            }
+        }
 
         ### process campaigns group
         $campaignIN = "";
@@ -374,7 +393,11 @@ if ($ADD==1122) {
         }
         if ($campaignIN != "") {
             $campaignIN = rtrim($campaignIN,",");
-            $searchWHR .= " AND osdial_lists.campaign_id IN ($campaignIN)";
+            if ($use_osdial_log) {
+                $searchWHR .= " AND osdial_log.campaign_id IN ($campaignIN)";
+            } else {
+                $searchWHR .= " AND osdial_lists.campaign_id IN ($campaignIN)";
+            }
         }
 
 
@@ -388,7 +411,11 @@ if ($ADD==1122) {
         }
         if ($listIN != "") {
             $listIN = rtrim($listIN,",");
-            $searchWHR .= " AND osdial_list.list_id IN ($listIN)";
+            if ($use_osdial_log) {
+                $searchWHR .= " AND osdial_log.list_id IN ($listIN)";
+            } else {
+                $searchWHR .= " AND osdial_list.list_id IN ($listIN)";
+            }
         }
 
 
@@ -402,7 +429,11 @@ if ($ADD==1122) {
         }
         if ($statusIN != "") {
             $statusIN = rtrim($statusIN,",");
-            $searchWHR .= " AND osdial_list.status IN ($statusIN)";
+            if ($use_osdial_log) {
+                $searchWHR .= " AND osdial_log.status IN ($statusIN)";
+            } else {
+                $searchWHR .= " AND osdial_list.status IN ($statusIN)";
+            }
         }
 
 
@@ -416,7 +447,11 @@ if ($ADD==1122) {
         }
         if ($agentIN != "") {
             $agentIN = rtrim($agentIN,",");
-            $searchWHR .= " AND osdial_list.user IN ($agentIN)";
+            if ($use_osdial_log) {
+                $searchWHR .= " AND osdial_log.user IN ($agentIN)";
+            } else {
+                $searchWHR .= " AND osdial_list.user IN ($agentIN)";
+            }
         }
 
 
@@ -461,6 +496,18 @@ if ($ADD==1122) {
             $searchWHR .= " AND osdial_list.vendor_lead_code IN ($vendor_codeIN)";
         }
 
+        if ($last_name)    $searchWHR .= " AND osdial_list.last_name LIKE '%" . mysql_real_escape_string($last_name) . "%'";
+        if ($first_name)   $searchWHR .= " AND osdial_list.first_name LIKE '%" . mysql_real_escape_string($first_name) . "%'";
+        if ($city)         $searchWHR .= " AND osdial_list.city LIKE '%" . mysql_real_escape_string($city) . "%'";
+        if ($postal_code)  $searchWHR .= " AND osdial_list.postal_code LIKE '" . mysql_real_escape_string($postal_code) . "%'";
+        if ($email)        $searchWHR .= " AND osdial_list.email LIKE '%" . mysql_real_escape_string($email) . "%'";
+        if ($external_key) $searchWHR .= " AND osdial_list.external_key LIKE '%" . mysql_real_escape_string($external_key) . "%'";
+        if ($custom1)      $searchWHR .= " AND osdial_list.custom1 LIKE '%" . mysql_real_escape_string($custom1) . "%'";
+        if ($custom2)      $searchWHR .= " AND osdial_list.custom2 LIKE '%" . mysql_real_escape_string($custom2) . "%'";
+
+        if ($entry_date_start)  $searchWHR .= " AND osdial_list.entry_date BETWEEN '" . mysql_real_escape_string($entry_date_start) . "' AND '" . mysql_real_escape_string($entry_date_end) . "'";
+        if ($modify_date_start) $searchWHR .= " AND osdial_list.modify_date BETWEEN '" . mysql_real_escape_string($modify_date_start) . "' AND '" . mysql_real_escape_string($modify_date_end) . "'";
+
 
         ### process timezones group
         $timezoneIN = "";
@@ -482,31 +529,54 @@ if ($ADD==1122) {
             $countWHR .= " AND osdial_list.gmt_offset_now IN ($timezoneCNTIN)";
         }
 
-	$searchFLD = '';
+        $searchFLD = '';
         $field_cnt = 0;
         $field_all = 0;
-        $statusJOIN = '';
+        $status_found = 0;
+        $fieldJOIN = '';
+
         foreach ($fields as $field) {
             if ($field == "*") {
-                    $field_all = 1;
-                    $fieldJOIN = " LEFT JOIN osdial_statuses ON (osdial_list.status=osdial_statuses.status) ";
+                $field_all = 1;
+                $status_found++;
             } elseif ($field == "status") {
-                    $fieldJOIN = " LEFT JOIN osdial_statuses ON (osdial_list.status=osdial_statuses.status) ";
-                    $searchFLD .= "osdial_list.status,osdial_statuses.status_name,";
-            } elseif ($field == "campaign_id") {
+                $status_found++;
+            } elseif ($field == "campaign_id" or $field == "lead_id" or $field == "list_id" or $field == "user" or $field == "phone_number") {
+                if ($use_osdial_log) {
+                    $searchFLD .= "osdial_log." . $field . ",";
+                } else {
                     $searchFLD .= "osdial_lists." . $field . ",";
+                }
             } else {
-                    $searchFLD .= "osdial_list." . $field . ",";
+                $searchFLD .= "osdial_list." . $field . ",";
             }
             $field_cnt++;
         }
-        if ($field_cnt == 0) {
-            $searchFLD = "osdial_list.*,osdial_lists.campaign_id";
-        } elseif ($field_all == 1) {
-            $searchFLD = "osdial_list.*,osdial_lists.campaign_id,osdial_list.status,osdial_statuses.status_name";
-        } else {
-            $searchFLD = rtrim($searchFLD,",");
+
+        if ($field_cnt == 0 or $field_all == 1) {
+            $searchFLD = "osdial_list.*,";
+            if ($use_osdial_log) {
+                $searchFLD .= "osdial_log.*,";
+            } else {
+                $searchFLD .= "osdial_lists.campaign_id,";
+            }
+        } elseif ($use_osdial_log and $field_cnt > 0) {
+            $searchFLD .= "osdial_log.call_date,osdial_log.length_in_sec,";
         }
+
+        if ($status_found) {
+            if ($use_osdial_log) {
+                    $fieldJOIN = " LEFT JOIN osdial_statuses ON (osdial_log.status=osdial_statuses.status) ";
+                    $searchFLD .= "osdial_log.status,";
+            } else {
+                    $fieldJOIN = " LEFT JOIN osdial_statuses ON (osdial_list.status=osdial_statuses.status) ";
+                    $searchFLD .= "osdial_list.status,";
+            }
+            $searchFLD .= "osdial_statuses.status_name,";
+        }
+
+        $searchFLD = rtrim($searchFLD,",");
+
 
         $numresults_label['25']   = "25/page";
         $numresults_label['50']   = "50/page";
@@ -544,7 +614,9 @@ if ($ADD==1122) {
         $timezone_label['MST'] = "-7";
         $timezone_label['NST'] = "-3.5";
         $timezone_label['PST'] = "-8";
+        $timezone_label['PHT'] = "8";
 
+        $tz_revlabel['8'] = "PHT";
         $tz_revlabel['0'] = "0";
         $tz_revlabel['-1'] = "-1";
         $tz_revlabel['-2'] = "-2";
@@ -624,7 +696,7 @@ if ($ADD==1122) {
         echo "    <td align=left>\n";
         echo "      <input type=text name=phone_number value=\"$phone_number\" size=10 maxlength=20>\n";
         if ($phone_search_alt == 1) $check = " checked";
-        echo "      <input type=checkbox name=phone_search_alt value=1$check> <font color=$default_text size=1>Alternates</font>\n";
+        echo "      <input type=checkbox name=phone_search_alt id=phone_seach_alt value=1$check> <font color=$default_text size=1><label for=phone_search_alt>Alternates</label></font>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
@@ -651,16 +723,43 @@ if ($ADD==1122) {
         echo "  </tr>\n";
 
         echo "  <tr>\n";
-        echo "    <td align=right><font color=$default_text size=2>Entered Between</font></td>\n";
-        echo "    <td align=left colspan=3><font color=$default_text size=2><input type=text name=entry_date_start value=\"$orig_entry_date_start\" size=10 maxlength=10> and <input type=text name=entry_date_end value=\"$orig_entry_date_end\" size=10 maxlength=10></font></td>\n";
+        echo "    <td align=right><font color=$default_text size=2>Entry Date</font></td>\n";
+        echo "    <td align=left colspan=2><font color=$default_text size=2><input type=text name=entry_date_start value=\"$orig_entry_date_start\" size=10 maxlength=10> to <input type=text name=entry_date_end value=\"$orig_entry_date_end\" size=10 maxlength=10></font></td>\n";
+        $fieldOPTS="";
+        foreach ($field_label as $k => $v) {
+            $sel="";
+            foreach ($fields as $field) {
+                if ($k != "" and $k == $field) {
+                    $sel=" selected";
+                }
+            }
+            if ($v == "") $v = $k;
+            if ($k != "") $fieldOPTS .= "        <option value=\"" . $k . "\"$sel>" . $v . "</option>\n";
+        }
+        if ($LOGuser_level > 8) {
+            echo "    <td align=center valign=top rowspan=4>\n";
+            echo "      <font color=$default_text size=2>CSV Export Fields</font><br>\n";
+            echo "      <select name=fields[] size=5 multiple>\n";
+            echo $fieldOPTS;
+            echo "      </select>\n";
+            echo "    </td>\n";
+        }
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=right><font color=$default_text size=2>Last Modified Between</font></td>\n";
-        echo "    <td align=left colspan=3><font color=$default_text size=2><input type=text name=modify_date_start value=\"$orig_modify_date_start\" size=10 maxlength=10> and <input type=text name=modify_date_end value=\"$orig_modify_date_end\" size=10 maxlength=10></font></td>\n";
+        echo "    <td align=right><font color=$default_text size=2>Modified Date</font></td>\n";
+        echo "    <td align=left colspan=3><font color=$default_text size=2><input type=text name=modify_date_start value=\"$orig_modify_date_start\" size=10 maxlength=10> to <input type=text name=modify_date_end value=\"$orig_modify_date_end\" size=10 maxlength=10></font></td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td align=right><font color=$default_text size=2>Last Call Date</font></td>\n";
+        echo "    <td align=left colspan=3><font color=$default_text size=2>\n";
+        echo "      <input type=text name=lastcall_date_start value=\"$orig_lastcall_date_start\" size=10 maxlength=10> to <input type=text name=lastcall_date_end value=\"$orig_lastcall_date_end\" size=10 maxlength=10></font>\n";
+        if ($use_osdial_log == 1) $check = " checked";
+        echo "      <br><input type=checkbox name=use_osdial_log id=use_osdial_log value=1$check> <font color=$default_text size=1><label for=use_osdial_log>Output Lead History (Must Enter Call Date)</label></font>\n";
+        echo "  </td>\n";
         echo "  </tr>\n";
 
         echo "  <tr>\n";
-        echo "    <td colspan=4><br></td>\n";
+        echo "    <td colspan=4><br><br></td>\n";
         echo "  </tr>\n";
 
         echo "  <tr>\n";
@@ -700,6 +799,10 @@ if ($ADD==1122) {
         echo "      </select>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
+        $agents_label = Array();
+        foreach ($krh as $k => $v) {
+            $agents_label[$k] = $v['full_name'];
+        }
 
         echo "  <tr>\n";
         echo "    <td colspan=4><br></td>\n";
@@ -754,25 +857,6 @@ if ($ADD==1122) {
         echo "    </td>\n";
         echo "  </tr>\n";
 
-        $fieldOPTS="";
-        foreach ($field_label as $k => $v) {
-            $sel="";
-            foreach ($fields as $field) {
-                if ($k != "" and $k == $field) {
-                    $sel=" selected";
-                }
-            }
-            if ($v == "") $v = $k;
-            if ($k != "") $fieldOPTS .= "        <option value=\"" . $k . "\"$sel>" . $v . "</option>\n";
-        }
-        if ($LOGuser_level > 8) {
-            echo "    <td align=center colspan=4>\n";
-            echo "      <font color=$default_text size=2>CSV Export Fields</font><br>\n";
-            echo "      <select name=fields[] size=5 multiple>\n";
-            echo $fieldOPTS;
-            echo "      </select>\n";
-            echo "    </td>\n";
-        }
 
         echo "  <tr>\n";
         echo "    <td align=center colspan=4><br><font color=$default_text size=2>Results</font>";
@@ -809,8 +893,13 @@ if ($ADD==1122) {
 
 
 
-        $countTBL = " FROM osdial_list JOIN osdial_lists ON (osdial_lists.list_id=osdial_list.list_id)";
-        $searchTBL = " FROM osdial_list JOIN osdial_lists ON (osdial_lists.list_id=osdial_list.list_id) LEFT JOIN osdial_postal_code_groups ON (osdial_postal_code_groups.country_code=osdial_list.phone_code AND osdial_postal_code_groups.postal_code=osdial_list.postal_code) LEFT JOIN osdial_phone_code_groups ON (osdial_phone_code_groups.country_code=osdial_list.country_code AND osdial_phone_code_groups.areacode=left(osdial_list.phone_number,3))" . $fieldJOIN;
+        if ($use_osdial_log) {
+            $mainTBL = "osdial_log JOIN osdial_list ON (osdial_log.lead_id=osdial_list.lead_id)";
+        } else {
+            $mainTBL = "osdial_list";
+        }
+        $countTBL = " FROM " . $mainTBL ." JOIN osdial_lists ON (osdial_lists.list_id=osdial_list.list_id)";
+        $searchTBL = " FROM " . $mainTBL ." JOIN osdial_lists ON (osdial_lists.list_id=osdial_list.list_id) LEFT JOIN osdial_postal_code_groups ON (osdial_postal_code_groups.country_code=osdial_list.phone_code AND osdial_postal_code_groups.postal_code=osdial_list.postal_code) LEFT JOIN osdial_phone_code_groups ON (osdial_phone_code_groups.country_code=osdial_list.country_code AND osdial_phone_code_groups.areacode=left(osdial_list.phone_number,3))" . $fieldJOIN;
 
         #$countSQL  = "SELECT count(*) " . $searchSQL . ";";
         $countSQL = "SELECT count(*)" . $countTBL . $searchWHR . $countWHR . ";";
@@ -890,24 +979,14 @@ if ($ADD==1122) {
 
         echo $paginate;
 
-        echo "<table bgcolor=white cellpadding=1 cellspacing=1>\n";
+        echo "<table bgcolor=grey cellspacing=1>\n";
         echo "  <tr bgcolor=$menubarcolor>\n";
         if ($field_cnt > 0 or $results_to_print < 1) {
             echo "    <td colspan=17><font size=1>&nbsp;</font></td>\n";
         } else {
-            echo "    <td align=left><font color=white size=2><b>#</b></font></td>\n";
+            echo "    <td align=left title=\"Record #\"><font color=white size=2><b>#</b></font></td>\n";
 
-            echo "    <td align=center><font class=awhite color=white size=2><b>";
-            if ($sort == "list_id" && $direction == "DESC") {
-                echo "<a href=\"" . $pageURL . "&sort=list_id&direction=ASC#advsearch\">List#&nbsp;^";
-            } elseif ($sort == "list_id") {
-                echo "<a href=\"" . $pageURL . "&sort=list_id&direction=DESC#advsearch\">List#&nbsp;v";
-            } else {
-                echo "<a href=\"" . $pageURL . "&sort=list_id&direction=DESC#advsearch\">List#";
-            }
-            echo "</a></b></font></td>\n";
-
-            echo "    <td align=center><font class=awhite color=white size=2><b>";
+            echo "    <td align=center title=\"Lead ID\"><font class=awhite color=white size=2><b>";
             if ($sort == "lead_id" && $direction == "DESC") {
                 echo "<a href=\"" . $pageURL . "&sort=lead_id&direction=ASC#advsearch\">Lead#&nbsp;^";
             } elseif ($sort=="lead_id") {
@@ -917,7 +996,17 @@ if ($ADD==1122) {
             }
             echo "</a></b></font></td>\n";
 
-            echo "    <td align=center><font class=awhite color=white size=2><b>";
+            echo "    <td align=center title=\"List ID\"><font class=awhite color=white size=2><b>";
+            if ($sort == "list_id" && $direction == "DESC") {
+                echo "<a href=\"" . $pageURL . "&sort=list_id&direction=ASC#advsearch\">List#&nbsp;^";
+            } elseif ($sort == "list_id") {
+                echo "<a href=\"" . $pageURL . "&sort=list_id&direction=DESC#advsearch\">List#&nbsp;v";
+            } else {
+                echo "<a href=\"" . $pageURL . "&sort=list_id&direction=DESC#advsearch\">List#";
+            }
+            echo "</a></b></font></td>\n";
+
+            echo "    <td align=center title=\"Last Status / Disposition\"><font class=awhite color=white size=2><b>";
             if ($sort == "status" && $direction == "DESC") {
                 echo "<a href=\"" . $pageURL . "&sort=status&direction=ASC#advsearch\">Status&nbsp;^";
             } elseif ($sort == "status") {
@@ -927,7 +1016,7 @@ if ($ADD==1122) {
             }
             echo "</a></b></font></td>\n";
 
-            echo "    <td align=center><font class=awhite color=white size=2><b>";
+            echo "    <td align=center title=\"Primary Phone Number\"><font class=awhite color=white size=2><b>";
             if ($sort == "phone_number" && $direction == "DESC") {
                 echo "<a href=\"" . $pageURL . "&sort=phone_number&direction=ASC#advsearch\">Phone#&nbsp;^";
             } elseif ($sort=="phone_number") {
@@ -937,7 +1026,7 @@ if ($ADD==1122) {
             }
             echo "</a></b></font></td>\n";
 
-            echo "    <td align=center><font class=awhite color=white size=2><b>";
+            echo "    <td align=center title=\"Last Name, First Name\"><font class=awhite color=white size=2><b>";
             if ($sort == "last_name" && $direction == "DESC") {
                 echo "<a href=\"" . $pageURL . "&sort=last_name&direction=ASC#advsearch\">Name&nbsp;^";
             } elseif ($state == "last_name") {
@@ -947,7 +1036,7 @@ if ($ADD==1122) {
             }
             echo "</a></b></font></td>\n";
 
-            echo "    <td align=center><font class=awhite color=white size=2><b>";
+            echo "    <td align=center title=\"City\"><font class=awhite color=white size=2><b>";
             if ($sort == "city" && $direction == "DESC") {
                 echo "<a href=\"" . $pageURL . "&sort=city&direction=ASC#advsearch\">City&nbsp;^";
             } elseif($sort == "city") {
@@ -957,7 +1046,7 @@ if ($ADD==1122) {
             }
             echo "</a></b></font></td>\n";
 
-            echo "    <td align=center><font class=awhite color=white size=2><b>";
+            echo "    <td align=center title=\"State\"><font class=awhite color=white size=2><b>";
             if ($sort == "state" && $direction == "DESC") {
                 echo "<a href=\"" . $pageURL . "&sort=state&direction=ASC#advsearch\">State&nbsp;^";
             } elseif($sort == "state") {
@@ -967,17 +1056,17 @@ if ($ADD==1122) {
             }
             echo "</a></b></font></td>\n";
 
-            echo "    <td align=center><font class=awhite color=white size=2><b>";
+            echo "    <td align=center title=\"ZIP / Postal Code\"><font class=awhite color=white size=2><b>";
             if ($sort == "postal_code" && $direction == "DESC") {
-                echo "<a href=\"" . $pageURL . "&sort=postal_code&direction=ASC#advsearch\">ZIP/Postal&nbsp;^";
+                echo "<a href=\"" . $pageURL . "&sort=postal_code&direction=ASC#advsearch\">ZIP&nbsp;^";
             } elseif($sort == "postal_code") {
-                echo "<a href=\"" . $pageURL . "&sort=postal_code&direction=DESC#advsearch\">ZIP/Postal&nbsp;v";
+                echo "<a href=\"" . $pageURL . "&sort=postal_code&direction=DESC#advsearch\">ZIP&nbsp;v";
             } else {
-                echo "<a href=\"" . $pageURL . "&sort=postal_code&direction=DESC#advsearch\">ZIP/Postal";
+                echo "<a href=\"" . $pageURL . "&sort=postal_code&direction=DESC#advsearch\">ZIP";
             }
             echo "</a></b></font></td>\n";
 
-            echo "    <td align=center><font class=awhite color=white size=2><b>";
+            echo "    <td align=center title=\"Agent/User ID\"><font class=awhite color=white size=2><b>";
             if ($sort == "user" && $direction == "DESC") {
                 echo "<a href=\"" . $pageURL . "&sort=user&direction=ASC#advsearch\">Agent&nbsp;^";
             } elseif ($sort == "vendor_lead_code") {
@@ -987,7 +1076,7 @@ if ($ADD==1122) {
             }
             echo "</a></b></font></td>\n";
 
-            echo "    <td align=center><font class=awhite color=white size=2><b>";
+            echo "    <td align=center title=\"Vendor Lead Code\"><font class=awhite color=white size=2><b>";
             if ($sort == "vendor_lead_code" && $direction == "DESC") {
                 echo "<a href=\"" . $pageURL . "&sort=vendor_lead_code&direction=ASC#advsearch\">VendorID&nbsp;^";
             } elseif ($sort == "vendor_lead_code") {
@@ -997,7 +1086,7 @@ if ($ADD==1122) {
             }
             echo "</a></b></font></td>\n";
 
-            echo "    <td align=center><font class=awhite color=white size=2><b>";
+            echo "    <td align=center title=\"Custom Field #1\"><font class=awhite color=white size=2><b>";
             if ($sort == "custom1" && $direction == "DESC") {
                 echo "<a href=\"" . $pageURL . "&sort=custom1&direction=ASC#advsearch\">Custom1&nbsp;^";
             } elseif ($sort == "custom1") {
@@ -1007,7 +1096,7 @@ if ($ADD==1122) {
             }
             echo "</a></b></font></td>\n";
 
-            echo "    <td align=center><font class=awhite color=white size=2><b>";
+            echo "    <td align=center title=\"Timezone\"><font class=awhite color=white size=2><b>";
             if ($sort == "gmt_offset_now" && $direction == "DESC") {
                 echo "<a href=\"" . $pageURL . "&sort=gmt_offset_now&direction=ASC#advsearch\">TZ&nbsp;^";
             } elseif ($sort == "gmt_offset_now") {
@@ -1017,7 +1106,17 @@ if ($ADD==1122) {
             }
             echo "</a></b></font></td>\n";
 
-            echo "    <td align=center><font class=awhite color=white size=2><b>";
+            echo "    <td align=center title=\"# of Call Attempts\"><font class=awhite color=white size=2><b>";
+            if ($sort == "called_count" && $direction == "DESC") {
+                echo "<a href=\"" . $pageURL . "&sort=called_count&direction=ASC#advsearch\">Calls&nbsp;^";
+            } elseif ($sort == "called_count") {
+                echo "<a href=\"" . $pageURL . "&sort=called_count&direction=DESC#advsearch\">Calls&nbsp;v";
+            } else {
+                echo "<a href=\"" . $pageURL . "&sort=called_count&direction=DESC#advsearch\">Calls";
+            }
+            echo "</a></b></font></td>\n";
+
+            echo "    <td align=center title=\"Entry Date\"><font class=awhite color=white size=2><b>";
             if ($sort == "entry_date" && $direction == "DESC") {
                 echo "<a href=\"" . $pageURL . "&sort=entry_date&direction=ASC#advsearch\">Entry&nbsp;^";
             } elseif ($sort == "entry_date") {
@@ -1027,7 +1126,7 @@ if ($ADD==1122) {
             }
             echo "</a></b></font></td>\n";
 
-            echo "    <td align=center><font class=awhite color=white size=2><b>";
+            echo "    <td align=center title=\"Modified Date\"><font class=awhite color=white size=2><b>";
             if ($sort == "modify_date" && $direction == "DESC") {
                 echo "<a href=\"" . $pageURL . "&sort=modify_date&direction=ASC#advsearch\">Modified&nbsp;^";
             } elseif ($sort == "modify_date") {
@@ -1037,23 +1136,13 @@ if ($ADD==1122) {
             }
             echo "</a></b></font></td>\n";
 
-            echo "    <td align=center><font class=awhite color=white size=2><b>";
-            if ($sort == "called_count" && $direction == "DESC") {
-                echo "<a href=\"" . $pageURL . "&sort=called_count&direction=ASC#advsearch\">Attempts&nbsp;^";
-            } elseif ($sort == "called_count") {
-                echo "<a href=\"" . $pageURL . "&sort=called_count&direction=DESC#advsearch\">Attempts&nbsp;v";
-            } else {
-                echo "<a href=\"" . $pageURL . "&sort=called_count&direction=DESC#advsearch\">Attempts";
-            }
-            echo "</a></b></font></td>\n";
-
-            echo "    <td align=center><font class=awhite color=white size=2><b>";
+            echo "    <td align=center title=\"Post Date\"><font class=awhite color=white size=2><b>";
             if ($sort == "post_date" && $direction == "DESC") {
-                echo "<a href=\"" . $pageURL . "&sort=post_date&direction=ASC#advsearch\">PostDate&nbsp;^";
+                echo "<a href=\"" . $pageURL . "&sort=post_date&direction=ASC#advsearch\">Post&nbsp;^";
             } elseif ($sort == "post_date") {
-                echo "<a href=\"" . $pageURL . "&sort=post_date&direction=DESC#advsearch\">PostDate&nbsp;v";
+                echo "<a href=\"" . $pageURL . "&sort=post_date&direction=DESC#advsearch\">Post&nbsp;v";
             } else {
-                echo "<a href=\"" . $pageURL . "&sort=post_date&direction=DESC#advsearch\">PostDate";
+                echo "<a href=\"" . $pageURL . "&sort=post_date&direction=DESC#advsearch\">Post";
             }
             echo "</a></b></font></td>\n";
         }
@@ -1062,11 +1151,20 @@ if ($ADD==1122) {
         if ($field_cnt > 0) {
             $csvfile = "advsearch_" . date("Ymd-His") . ".csv";
             $fcsv = fopen ("./" . $csvfile, "a");
+            $fld_cnt = mysql_num_fields($rslt);
+            $fld_names = Array();
+            $o=0;
+            while ($fld_cnt > $o) {
+                $fld_names[] = mysql_field_table($rslt, $o) . "." . mysql_field_name($rslt, $o);
+                $o++;
+            }
+            fputcsv($fcsv, $fld_names);
+            
             $o=0;
             while ($results_to_print > $o) {
                 $row=mysql_fetch_row($rslt);
                 fputcsv($fcsv, $row);
-		$o++;
+                $o++;
             }
             fclose($fcsv);
             echo "  <tr bgcolor=$oddrows>\n";
@@ -1085,24 +1183,28 @@ if ($ADD==1122) {
                     {$bgcolor='bgcolor='.$oddrows;} 
                 else
                     {$bgcolor='bgcolor='.$evenrows;}
-                echo "  <tr $bgcolor>\n";
-                echo "    <td align=left><font face=\"arial,helvetica\" size=1>" . ($o + (($page - 1) * $numresults)) . "</font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1><a href=\"" . $pageURL . "&lists[]=$row[7]&sort=$sort&direction=$direction#advsearch\">$row[7]</a></font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1><a href=\"admin.php?ADD=999999&SUB=3&iframe=admin_modify_lead.php?lead_id=$row[0]\">$row[0]</a></font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[3]</font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[11]</font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[15], $row[13]</font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[19]</font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1>" . strtoupper($row[20]) . "</font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[22]</font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[4]</font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[5]</font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[28]</font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1>" . $tz_revlabel[($row[8] - date("I"))] . "</font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[1]</font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[2]</font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[30]</font></td>\n";
-                echo "    <td align=center><font face=\"arial,helvetica\" size=1>$row[35]</font></td>\n";
+                if ($row[1] == '0000-00-00 00:00:00') $row[1] = "";
+                if ($row[2] == '0000-00-00 00:00:00') $row[2] = "";
+                if ($row[35] == '0000-00-00 00:00:00') $row[35] = "";
+                if (strlen($row[11]) == 10) $row[11] = substr($row[11],0,3) . "-" . substr($row[11],3,3) . "-" . substr($row[11],6,4);
+                echo "  <tr $bgcolor class=row>\n";
+                echo "    <td nowrap align=left><font face=\"arial,helvetica\" size=1>" . ($o + (($page - 1) * $numresults)) . "</font></td>\n";
+                echo "    <td nowrap align=center title=\"$row[0]\"><font face=\"arial,helvetica\" size=1><a href=\"admin.php?ADD=999999&SUB=3&iframe=admin_modify_lead.php?lead_id=$row[0]\">$row[0]</a></font></td>\n";
+                echo "    <td nowrap align=center title=\"$row[7]\"><font face=\"arial,helvetica\" size=1><a href=\"" . $pageURL . "&lists[]=$row[7]&sort=$sort&direction=$direction#advsearch\">$row[7]</a></font></td>\n";
+                echo "    <td nowrap align=center title=\"$row[3]\"><font face=\"arial,helvetica\" size=1>$row[3]</font></td>\n";
+                echo "    <td nowrap align=center title=\"$row[11]\"><font face=\"arial,helvetica\" size=1>$row[11]</font></td>\n";
+                echo "    <td nowrap align=left title=\"$row[15], $row[13]\"><font face=\"arial,helvetica\" size=1>" . ellipse($row[15] . ", " . $row[13], 10, true) . "</font></td>\n";
+                echo "    <td nowrap align=left title=\"$row[19]\"><font face=\"arial,helvetica\" size=1>" . ellipse($row[19],10,true) . "</font></td>\n";
+                echo "    <td nowrap align=center title=\"" . strtoupper($row[20]) ."\"><font face=\"arial,helvetica\" size=1>" . strtoupper($row[20]) . "</font></td>\n";
+                echo "    <td nowrap align=center title=\"$row[22]\"><font face=\"arial,helvetica\" size=1>$row[22]</font></td>\n";
+                echo "    <td nowrap align=center title=\"" . $row[4] . " (" . $agents_label[$row[4]] . ")\"><font face=\"arial,helvetica\" size=1>$row[4]</font></td>\n";
+                echo "    <td nowrap align=center title=\"$row[4]\"><font face=\"arial,helvetica\" size=1>$row[5]</font></td>\n";
+                echo "    <td nowrap align=center title=\"$row[28]\"><font face=\"arial,helvetica\" size=1>$row[28]</font></td>\n";
+                echo "    <td nowrap align=center title=\"" . $tz_revlabel[($row[8] - date("I"))] . " (" . $row[8]. ")\"><font face=\"arial,helvetica\" size=1>" . $tz_revlabel[($row[8] - date("I"))] . "</font></td>\n";
+                echo "    <td nowrap align=center title=\"$row[30]\"><font face=\"arial,helvetica\" size=1>$row[30]</font></td>\n";
+                echo "    <td nowrap align=center title=\"$row[1]\"><font face=\"arial,helvetica\" size=1>&nbsp;" . ellipse($row[1],10,false) . "&nbsp;</font></td>\n";
+                echo "    <td nowrap align=center title=\"$row[2]\"><font face=\"arial,helvetica\" size=1>&nbsp;$row[2]&nbsp;</font></td>\n";
+                echo "    <td nowrap align=center title=\"$row[35]\"><font face=\"arial,helvetica\" size=1>" . ellipse($row[35],10,false) . "</font></td>\n";
                 echo "  </tr>\n";
             }
         }
@@ -1154,7 +1256,7 @@ echo "<input type=hidden name=ADD value=121>\n";
 //echo "<center>";
 echo "<TABLE width=$section_width cellspacing=3>\n";
 echo "<tr bgcolor=$oddrows><td align=right>Phone Number: </td><td align=left><input type=text name=phone_number size=14 maxlength=12> (digits only)$NWB#osdial_list-dnc$NWE</td></tr>\n";
-echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 echo "</TABLE></center>\n";
 
 }
@@ -1184,6 +1286,7 @@ if ($ADD==122) {
 	$list_id_override = (preg_replace("/\D/","",$list_id_override));
 	$phone_code_override = (preg_replace("/\D/","",$phone_code_override));
 	$Imported=get_variable('Imported');
+    $file_layout = get_variable('file_layout');
 	
 	#############################################
 	##### START SYSTEM_SETTINGS LOOKUP #####
@@ -1371,11 +1474,11 @@ if ($ADD==122) {
 		<input type=hidden name='leadfile_name' value="<?=$leadfile_name ?>">
 		<input type=hidden name='Imported' value=''>
 <? 
-		if ($file_layout!="custom" or $leadfile_name == "") {
+		if (!$OK_to_process and ($file_layout!="custom" or $leadfile_name == "")) {
             if ($phone_code_override == "") { $phone_code_override = "1";}
 			$Imported++;
-?>
-<?		echo "	<table align=center width=\"700\" border=0 cellpadding=5 cellspacing=0 bgcolor=$oddrows>";
+            echo "	<table align=center width=\"700\" border=0 cellpadding=5 cellspacing=0 bgcolor=$oddrows>";
+        
 ?>				
 				<tr>
 					<td align=right width="35%"><B><font face="arial, helvetica" size=2>Load leads from this file:</font></B></td>
@@ -1430,9 +1533,12 @@ if ($ADD==122) {
 					<td align=right width="25%"><font face="arial, helvetica" size=2>Lead Time Zone Lookup: </font></td>
 					<td align=left width="75%"><font face="arial, helvetica" size=1><select size=1 name=postalgmt><option selected value="AREA">COUNTRY CODE AND AREA CODE ONLY</option><option value="POSTAL">POSTAL CODE FIRST</option></select></td>
 				</tr>
-				<tr>
-					<!-- td align=center colspan=2><input type=submit value="SUBMIT" name='submit_file'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=button onClick="javascript:document.location='new_listloader_superL.php'" value="START OVER" name='reload_page'></td -->
-					<td align=center colspan=2><input type=submit value="SUBMIT" name='submit_file'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=button onClick="javascript:document.location='admin.php?ADD=122'" value="START OVER" name='reload_page'>
+				<tr bgcolor=<?= $menubarcolor ?>>
+					<td align=center>
+                      <input style="width: 100%;" type=button onClick="javascript:document.location='admin.php?ADD=122'" value="START OVER" name='reload_page'>
+					</td>
+					<td align=center>
+                      <input style="width: 100%;" type=submit value="SUBMIT" name='submit_file'>
 					</td>
 				</tr>
 			</table>
@@ -1900,9 +2006,7 @@ if ($ADD==122) {
                     $leadfile_name = '';
 				}
 				print "<script language='JavaScript1.2'>document.forms[0].leadfile.disabled=false; document.forms[0].submit_file.disabled=false; document.forms[0].reload_page.disabled=false;</script>";
-			} 
-		
-		if ($leadfile_name) {
+		} elseif ($leadfile_name) {
 			# Look for list id before importing leads
 			if ($list_id_override) {
 				$stmt="select list_id from osdial_lists where list_id='$list_id_override';";
@@ -2359,11 +2463,14 @@ if ($ADD==122) {
 		} else {
 			print "<script language='JavaScript1.2'>document.forms[0].leadfile.disabled=true; document.forms[0].submit_file.disabled=true; document.forms[0].reload_page.disabled=true;</script><HR>";
 			flush();
-			print "<table border=0 cellpadding=3 cellspacing=0 width=700 align=center>\r\n";
-			print "  <tr bgcolor='#330099'>\r\n";
-			print "    <th align=right><font class='standard' color='white'>$t1 Column</font></th>\r\n";
-			print "    <th><font class='standard' color='white'>File data</font></th>\r\n";
-			print "  </tr>\r\n";
+			print "<table border=0 cellspacing=1 width=400 align=center bgcolor=grey>\n";
+			print "  <tr bgcolor=$menubarcolor>\n";
+			print "    <td align=center colspan=2><font color=white size=1><b>FIELD MAPPINGS</b></font></td>\n";
+			print "  </tr>\n";
+			print "  <tr bgcolor=$menubarcolor>\n";
+			print "    <td align=center><font color=white size=1><b>" . strtoupper($t1) . " LEAD FIELD</b></font></td>\n";
+			print "    <td align=center><font color=white size=1><b>FILE HEADER ROW</b></font></td>\n";
+			print "  </tr>\n";
 				
 			$rslt=mysql_query("select vendor_lead_code, source_id, list_id, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, comments, custom2, external_key, cost from osdial_list limit 1", $link);
 			
@@ -2406,14 +2513,20 @@ if ($ADD==122) {
 				$buffer=stripslashes($buffer);
 				$row=explode($delimiter, eregi_replace("[\'\"]", "", $buffer));
 				
+                $o=0;
 				for ($i=0; $i<mysql_num_fields($rslt); $i++) {
 	
 					if ( (mysql_field_name($rslt, $i)=="list_id" and $list_id_override!="") or (mysql_field_name($rslt, $i)=="phone_code" and $phone_code_override!="") ) {
 						print "<!-- skipping " . mysql_field_name($rslt, $i) . " -->\n";
 					} else {
-						print "  <tr bgcolor=#D9E6FE>\r\n";
-						print "    <td align=right><font class=standard>".strtoupper(eregi_replace("_", " ", mysql_field_name($rslt, $i))).": </font></td>\r\n";
-						print "    <td align=center><select name='".mysql_field_name($rslt, $i)."_field'>\r\n";
+		                if (eregi("1$|3$|5$|7$|9$", $o)) {
+                            $bgcolor='bgcolor='.$oddrows;
+                        } else {
+                            $bgcolor='bgcolor='.$evenrows;
+                        }
+						print "  <tr class=row $bgcolor>\r\n";
+						print "    <td align=center><font size=1>".strtoupper(eregi_replace("_", " ", mysql_field_name($rslt, $i))).": </font></td>\r\n";
+						print "    <td align=center><select style=\"font-size: 7pt;\" name='".mysql_field_name($rslt, $i)."_field'>\r\n";
 						print "     <option value='-1'>(none)</option>\r\n";
 	
 						for ($j=0; $j<count($row); $j++) {
@@ -2423,6 +2536,7 @@ if ($ADD==122) {
 	
 						print "    </select></td>\r\n";
 						print "  </tr>\r\n";
+                        $o++;
 					}
 	
 				}
@@ -2467,13 +2581,19 @@ if ($ADD==122) {
 	
 				$total=0; $good=0; $bad=0; $dup=0; $post=0; $phone_list='';
 				$row=fgetcsv($file, 1000, ",");
+                $o=0;
 				for ($i=0; $i<mysql_num_fields($rslt); $i++) {
 					if ( (mysql_field_name($rslt, $i)=="list_id" and $list_id_override!="") or (mysql_field_name($rslt, $i)=="phone_code" and $phone_code_override!="") ) {
 						print "<!-- skipping " . mysql_field_name($rslt, $i) . " -->\n";
 					} else {
-						print "  <tr bgcolor=#D9E6FE>\r\n";
-						print "    <td align=right><font class=standard>".strtoupper(eregi_replace("_", " ", mysql_field_name($rslt, $i))).": </font></td>\r\n";
-						print "    <td align=center><select name='".mysql_field_name($rslt, $i)."_field'>\r\n";
+		                if (eregi("1$|3$|5$|7$|9$", $o)) {
+                            $bgcolor='bgcolor='.$oddrows;
+                        } else {
+                            $bgcolor='bgcolor='.$evenrows;
+                        }
+						print "  <tr class=row $bgcolor>\r\n";
+						print "    <td align=center><font size=1>".strtoupper(eregi_replace("_", " ", mysql_field_name($rslt, $i))).": </font></td>\r\n";
+						print "    <td align=center><select style=\"font-size: 7pt;\" name='".mysql_field_name($rslt, $i)."_field'>\r\n";
 						print "     <option value='-1'>(none)</option>\r\n";
 	
 						for ($j=0; $j<count($row); $j++) {
@@ -2483,17 +2603,19 @@ if ($ADD==122) {
 	
 						print "    </select></td>\r\n";
 						print "  </tr>\r\n";
+                        $o++;
 					}
 				}
 			}
-			print "  <tr bgcolor='#330099'>\r\n";
-			print "  <input type=hidden name=dupcheck value=\"$dupcheck\">\r\n";
-			print "  <input type=hidden name=postalgmt value=\"$postalgmt\">\r\n";
-			print "  <input type=hidden name=lead_file value=\"$lead_file\">\r\n";
-			print "  <input type=hidden name=list_id_override value=\"$list_id_override\">\r\n";
-			print "  <input type=hidden name=phone_code_override value=\"$phone_code_override\">\r\n";
-			print "<input type=hidden name=ADD value=122>\n"; // debug -added
-			print "    <th colspan=2><input type=submit name='OK_to_process' value='OK TO PROCESS'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type=button onClick=\"javascript:document.location='admin.php?ADD=122'\" value=\"START OVER\" name='reload_page'></th>\r\n";
+			print "  <input type=hidden name=dupcheck value=\"$dupcheck\">\n";
+			print "  <input type=hidden name=postalgmt value=\"$postalgmt\">\n";
+			print "  <input type=hidden name=lead_file value=\"$lead_file\">\n";
+			print "  <input type=hidden name=list_id_override value=\"$list_id_override\">\n";
+			print "  <input type=hidden name=phone_code_override value=\"$phone_code_override\">\n";
+			print "  <input type=hidden name=ADD value=122>\n"; // debug -added
+			print "  <tr bgcolor=$menubarcolor>\n";
+            print "    <td align=center><input style=\"width: 100%; font-size: 7pt;\" type=button onClick=\"javascript:document.location='admin.php?ADD=122'\" value=\"START OVER\" name='reload_page'></td>\n";
+			print "    <td align=center><input style=\"width: 100%; font-size: 7pt;\" type=submit name='OK_to_process' value='OK TO PROCESS'></td>\n";
 			print "  </tr>\r\n";
 			print "</table>\r\n";
 		}
@@ -2852,16 +2974,25 @@ if ($ADD==311)
 	    echo "<tr bgcolor=$oddrows><td align=right>External DNC Scrub Now: </td><td align=left><select size=1 name=scrub_dnc><option>Y</option><option selected>N</option></select>$NWB#osdial_lists-srub_dnc$NWE</td></tr>\n";
 	    echo "<tr bgcolor=$oddrows><td align=right>Last External Scrub: </td><td align=left>$list_scrub_last : $list_scrub_info</td></tr>\n";
     }
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2>";
-	echo "<input type=button name=addleads value=\"ADD LEADS\" onclick=\"window.location='admin.php?ADD=122&list_id_override=$row[0]'\">&nbsp;&nbsp;|&nbsp;&nbsp;";
-	echo "<input type=submit name=SUBMIT value=SUBMIT>";
-	echo "</td></tr>\n";
+	echo "<tr bgcolor=$menubarcolor>";
+    echo "<td align=center>";
+	echo "<input style=\"width: 100%;\" type=button name=addleads value=\"ADD LEADS\" onclick=\"window.location='admin.php?ADD=122&list_id_override=$row[0]'\">";
+	echo "</td>";
+    echo "<td align=center>";
+	echo "<input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT>";
+	echo "</td>";
+    echo "</tr>\n";
 	echo "</TABLE></center>\n";
 
 	echo "<center>\n";
-	echo "<br><font color=$default_text size=+1>STATUSES WITHIN THIS LIST</font></b><br><br>\n";
-	echo "<TABLE width=500 cellspacing=3>\n";
-	echo "<tr><td><font color=$default_text>STATUS</font></td><td><font color=$default_text>STATUS NAME</font></td><td><font color=$default_text>CALLED</font></td><td><font color=$default_text>NOT CALLED</font></td></tr>\n";
+	echo "<br><font color=$default_text size=+1>STATUSES WITHIN THIS LIST</font></b><br>\n";
+	echo "<table bgcolor=grey width=500 cellspacing=1>\n";
+	echo "  <tr bgcolor=$menubarcolor>\n";
+    echo "    <td><font size=1 color=white><b>STATUS</b></font></td>\n";
+    echo "    <td><font size=1 color=white><b>STATUS NAME</b></font></td>\n";
+    echo "    <td><font size=1 color=white><b>CALLED</b></font></td>\n";
+    echo "    <td><font size=1 color=white><b>NOT CALLED</b></font></td>\n";
+    echo "  </tr>\n";
 
 	$leads_in_list = 0;
 	$leads_in_list_N = 0;
@@ -2922,22 +3053,38 @@ if ($ADD==311)
 			$CLE='';
 			}
 
-		echo "<tr $bgcolor><td><font size=1>$CLB$dispo$CLE</td><td><font size=1>$statuses_list[$dispo]</td><td><font size=1>".$lead_list['Y'][$dispo]."</td><td><font size=1>".$lead_list['N'][$dispo]." </td></tr>\n";
+		echo "  <tr $bgcolor class=row>\n";
+        echo "    <td><font size=1>$CLB$dispo$CLE</font></td>\n";
+        echo "    <td><font size=1>$statuses_list[$dispo]</font></td>\n";
+        echo "    <td align=right><font size=1>".$lead_list['Y'][$dispo]."</font></td>\n";
+        echo "    <td align=right><font size=1>".$lead_list['N'][$dispo]."</font></td>\n";
+        echo "  </tr>\n";
 		$o++;
 		}
 	}
 
-	echo "<tr><td colspan=2><font size=1><font color=$default_text>SUBTOTALS</font></td><td><font size=1>$lead_list[Y_count]</td><td><font size=1>$lead_list[N_count]</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td><font size=1>TOTAL</td><td colspan=3 align=center><font size=1>$lead_list[count]</td></tr>\n";
+	echo "  <tr bgcolor=$menubarcolor>\n";
+    echo "    <td colspan=2><font size=1 color=white><b>SUBTOTALS</b></font></td>\n";
+    echo "    <td align=right><font size=1 color=white><b>" . $lead_list[Y_count] . "</b></font></td>\n";
+    echo "    <td align=right><font size=1 color=white><b>" . $lead_list[N_count] . "</b></font></td>\n";
+    echo "  </tr>\n";
+	echo "  <tr bgcolor=$menubarcolor>\n";
+    echo "    <td colspan=2><font size=1 color=white><b>TOTAL</b></font></td>\n";
+    echo "    <td colspan=2 align=center><font size=1 color=white><b>" . $lead_list[count] . "</b></font></td>\n";
+    echo "  </tr>\n";
 
 	echo "</table></center><br>\n";
 	unset($lead_list);
 
 
 	echo "<center>\n";
-	echo "<br><font color=$default_text size=+1>TIME ZONES WITHIN THIS LIST</font></b><br><br>\n";
-	echo "<TABLE width=500 cellspacing=3>\n";
-	echo "<tr><td><font color=$default_text>GMT OFFSET NOW (local time)</font></td><td><font color=$default_text>CALLED</font></td><td><font color=$default_text>NOT CALLED</font></td></tr>\n";
+	echo "<br><font color=$default_text size=+1>TIME ZONES WITHIN THIS LIST</font></b><br>\n";
+	echo "<table bgcolor=grey width=500 cellspacing=1>\n";
+	echo "  <tr bgcolor=$menubarcolor>\n";
+    echo "    <td><font color=white size=1><b>GMT OFFSET NOW (local time)</b></font></td>\n";
+    echo "    <td><font color=white size=1><b>CALLED</b></font></td>\n";
+    echo "    <td><font color=white size=1><b>NOT CALLED</b></font></td>\n";
+    echo "  </tr>\n";
 
 	$stmt="SELECT gmt_offset_now,called_since_last_reset,count(*) from osdial_list where list_id='$list_id' group by gmt_offset_now,called_since_last_reset order by gmt_offset_now,called_since_last_reset";
 	$rslt=mysql_query($stmt, $link);
@@ -2973,36 +3120,53 @@ if ($ADD==311)
 	    $o++;
 	}
 
-	if ($lead_list['count'] > 0)
-	{
-		while (list($tzone,) = each($lead_list[$since_reset]))
-		{
-		$LOCALzone=3600 * $tzone;
-		$LOCALdate=gmdate("D M Y H:i", time() + $LOCALzone);
+	    if ($lead_list['count'] > 0) {
+            $o=0;
+		    while (list($tzone,) = each($lead_list[$since_reset])) {
+		    $LOCALzone=3600 * $tzone;
+		    $LOCALdate=gmdate("D M Y H:i", time() + $LOCALzone);
 
-		if ($tzone >= 0) {$DISPtzone = "$plus$tzone";}
-		else {$DISPtzone = "$tzone";}
-		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor='.$oddrows;} 
-		else
-			{$bgcolor='bgcolor='.$evenrows;}
+		    if ($tzone >= 0) {
+                $DISPtzone = "$plus$tzone";
+            } else {
+                $DISPtzone = "$tzone";
+            }
+		    if (eregi("1$|3$|5$|7$|9$", $o)) {
+                $bgcolor='bgcolor='.$oddrows;
+            } else {
+                $bgcolor='bgcolor='.$evenrows;
+            }
 
-			echo "<tr $bgcolor><td><font size=1>".$DISPtzone." &nbsp; &nbsp; ($LOCALdate)</td><td><font size=1>".$lead_list['Y'][$tzone]."</td><td><font size=1>".$lead_list['N'][$tzone]."</td></tr>\n";
+			echo "  <tr $bgcolor class=row>\n";
+            echo "    <td><font size=1>".$DISPtzone." &nbsp; &nbsp; ($LOCALdate)</td>\n";
+            echo "    <td><font size=1>".$lead_list['Y'][$tzone]."</td>\n";
+            echo "    <td><font size=1>".$lead_list['N'][$tzone]."</td>\n";
+            echo "  </tr>\n";
+            $o++;
 		}
 	}
 
-	echo "<tr><td><font size=1><font color=$default_text>SUBTOTALS</font></td><td><font size=1>$lead_list[Y_count]</td><td><font size=1>$lead_list[N_count]</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td><font size=1>TOTAL</td><td colspan=2 align=center><font size=1>$lead_list[count]</td></tr>\n";
+	echo "  <tr bgcolor=$menubarcolor>\n";
+    echo "    <td><font color=white size=1><b>SUBTOTALS</b></font></td>\n";
+    echo "    <td align=right><font color=white size=1><b>" . $lead_list[Y_count] . "</b></font></td>\n";
+    echo "    <td align=right><font color=white size=1><b>" . $lead_list[N_count] . "</b></font></td>\n";
+    echo "  </tr>\n";
+	echo "  <tr bgcolor=$menubarcolor>\n";
+    echo "    <td><font color=white size=1><b>TOTAL</b></font></td>\n";
+    echo "    <td colspan=2 align=center><font color=white size=1><b>" . $lead_list[count] . "</b></font></td>\n";
+    echo "  </tr>\n";
 
 	echo "</table></center><br>\n";
 	unset($lead_list);
 
 
 
+    $count_cols=30;
 	$leads_in_list = 0;
 	$leads_in_list_N = 0;
 	$leads_in_list_Y = 0;
-	$stmt="SELECT status,if(called_count>49,50,called_count),count(*) from osdial_list where list_id='$list_id' group by status,if(called_count>49,50,called_count) order by status,called_count";
+    $max_col_grouping = "if(called_count>" . ($count_cols - 1) . "," . $count_cols . ",called_count)";
+	$stmt="SELECT status,$max_col_grouping,count(*) from osdial_list where list_id='$list_id' group by status,$max_col_grouping order by status,called_count";
 	$rslt=mysql_query($stmt, $link);
 	$status_called_to_print = mysql_num_rows($rslt);
 
@@ -3039,79 +3203,202 @@ if ($ADD==311)
 
 
 	echo "<center>\n";
-	echo "<br><font color=$default_text size=+1>CALLED COUNTS WITHIN THIS LIST</font></b><br><br>\n";
-	echo "<TABLE width=500 cellspacing=1>\n";
-	echo "<tr><td align=left><font size=1 color=$default_text>STATUS</td><td align=center><font size=1 color=$default_text>STATUS NAME</td>";
+	echo "<br><font color=$default_text size=4>CALLED COUNTS WITHIN THIS LIST</font></b><br>\n";
+	echo "<table style=\"cursor:crosshair;\" bgcolor=grey width=500 cellspacing=1>\n";
+	echo "  <tr style=\"cusrsor:crosshair;\" bgcolor=$menubarcolor>\n";
+    echo "    <td style=\"cusrsor:crosshair;\" align=left><font size=1 color=white><b>STATUS</b></td>\n";
+    echo "    <td style=\"cusrsor:crosshair;\" align=left><font size=1 color=white><b>STATUS&nbsp;NAME</b></td>";
 	$first = $all_called_first;
-	while ($first <= $all_called_last)
-		{
-		if (eregi("1$|3$|5$|7$|9$", $first)) {$AB='bgcolor="#AFEEEE"';} 
-		else{$AB='bgcolor="#E0FFFF"';}
-        if ($first == 50) {$first = "50+";}
-		echo "<td align=center $AB><font size=1>$first</td>";
+	while ($first <= $all_called_last) {
+        $flabel = $first;
+        if ($first == 30) $flabel = "30+";
+        if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $flabel;
+        if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $flabel;
+        if (strlen($flabel) == 3) $flabel = '&nbsp;' . $flabel;
+		echo "    <td style=\"cusrsor:crosshair;\" align=right><font size=1 color=white><b>$flabel</b></font></td>";
 		$first++;
-		}
-	echo "<td align=center><font size=1 color=$default_text>SUBTOTAL</td></tr>\n";
+	}
+	echo "    <td style=\"cusrsor:crosshair;\" align=right><font size=1 color=white><b>&nbsp;&nbsp;SUB</b></font></td>\n";
+    echo "  </tr>\n";
 
-		$sts=0;
-		$statuses_called_to_print = count($status);
-		while ($statuses_called_to_print > $sts) 
-		{
-		$Pstatus = $status[$sts];
-		if (eregi("1$|3$|5$|7$|9$", $sts))
-			{$bgcolor="bgcolor=$evenrows";   $AB="bgcolor=$oddrows";} 
-		else
-			{$bgcolor="bgcolor=$oddrows";   $AB="bgcolor=$evenrows";}
+	$sts=0;
+	$statuses_called_to_print = count($status);
+	while ($statuses_called_to_print > $sts) {
+	$Pstatus = $status[$sts];
+	if (eregi("1$|3$|5$|7$|9$", $sts)) {
+        $bgcolor="bgcolor=$evenrows";   $AB="bgcolor=$oddrows";
+    } else {
+        $bgcolor="bgcolor=$oddrows";   $AB="bgcolor=$evenrows";
+    }
 	#	echo "$status[$sts]|$status_called_first[$sts]|$status_called_last[$sts]|$leads_in_sts[$sts]|\n";
 	#	echo "$status[$sts]|";
-		echo "<tr $bgcolor><td><font size=1>$Pstatus</td><td><font size=1>$statuses_list[$Pstatus]</td>";
+	echo "  <tr $bgcolor style=\"cursor:crosshair;\" class=row>\n";
+    echo "     <td style=\"cusrsor:crosshair;\" nowrap><font size=1>$Pstatus</td>\n";
+    echo "     <td style=\"cusrsor:crosshair;\" nowrap><font size=1>$statuses_list[$Pstatus]</td>";
 
-		$first = $all_called_first;
-		while ($first <= $all_called_last)
-			{
-			if (eregi("1$|3$|5$|7$|9$", $sts))
-				{
-				if (eregi("1$|3$|5$|7$|9$", $first)) {$AB="bgcolor=$oddrows";} 
-				else{$AB="bgcolor=$evenrows";}
-				}
-			else
-				{
-				if (eregi("0$|2$|4$|6$|8$", $first)) {$AB="bgcolor=$oddrows";} 
-				else{$AB="bgcolor=$evenrows";}
-				}
-
-			$called_printed=0;
-			$o=0;
-			while ($status_called_to_print > $o) 
-				{
-				if ( ($count_statuses[$o] == "$Pstatus") and ($count_called[$o] == "$first") )
-					{
-					$called_printed++;
-					echo "<td $AB><font size=1> $count_count[$o]</td>";
-					}
-
-
-				$o++;
-				}
-			if (!$called_printed) 
-				{echo "<td $AB><font size=1> &nbsp;</td>";}
-			$first++;
-			}
-		echo "<td><font size=1>$leads_in_sts[$sts]</td></tr>\n\n";
-
-		$sts++;
-		}
-
-	echo "<tr><td align=center colspan=2><b><font size=1><font color=$default_text>TOTAL</font></td>";
 	$first = $all_called_first;
-	while ($first <= $all_called_last)
-		{
-		if (eregi("1$|3$|5$|7$|9$", $first)) {$AB='bgcolor="#AFEEEE"';} 
-		else{$AB='bgcolor="#E0FFFF"';}
-		echo "<td align=center $AB><b><font size=1>$all_called_count[$first]</td>";
-		$first++;
+	while ($first <= $all_called_last) {
+		$called_printed=0;
+		$o=0;
+		while ($status_called_to_print > $o) {
+			if ( ($count_statuses[$o] == "$Pstatus") and ($count_called[$o] == "$first") ) {
+                $lplural = '';
+                $fplural = '';
+                if ($count_count[$o] != 1) $lplural = 's';
+                if ($first != 1) $fplural = 's';
+                $clabel = $count_count[$o];
+                if (strlen($clabel) == 1) $clabel = '&nbsp;&nbsp;&nbsp;' . $count_count[$o];
+                if (strlen($clabel) == 2) $clabel = '&nbsp;&nbsp;' . $count_count[$o];
+                if (strlen($clabel) == 3) $clabel = '&nbsp;' . $count_count[$o];
+				echo "    <td style=\"cursor:crosshair;\" class=hover align=right title=\"$count_count[$o] Lead$lplural, Called $first Time$fplural, Last Dispositioned as '$Pstatus'\"><font size=1>$clabel</font></td>\n";
+				$called_printed++;
+			}
+			$o++;
 		}
-	echo "<td align=center><b><font size=1>$leads_in_list</td></tr>\n";
+		if (!$called_printed) echo "    <td style=\"cursor:crosshair;\" class=hover align=right><font size=1>&nbsp;&nbsp;&nbsp;&nbsp;</font></td>";
+		$first++;
+	}
+	echo "    <td style=\"cursor:crosshair;\" align=right title=\"Subtotal for '$Pstatus': $leads_in_sts[$sts]\"><font size=1><b>$leads_in_sts[$sts]</b></font></td>\n";
+    echo "  </tr>\n";
+
+	$sts++;
+	}
+
+	echo "  <tr style=\"cusrsor:crosshair;\" bgcolor=$menubarcolor>";
+    echo "    <td style=\"cusrsor:crosshair;\" align=left colspan=2><b><font size=1 color=white><b>TOTAL</b></font></td>";
+	$first = $all_called_first;
+	while ($first <= $all_called_last) {
+        if ($all_called_count[$first] == 0 or $all_called_count[$first] == '') $all_called_count[$first] = '0';
+        $flabel = $all_called_count[$first];
+        if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $all_called_count[$first];
+        if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $all_called_count[$first];
+        if (strlen($flabel) == 3) $flabel = '&nbsp;' . $all_called_count[$first];
+		echo "    <td style=\"cusrsor:crosshair;\" align=right class=right title=\"$first Lead Count Total: $all_called_count[$first] Leads\"><font size=1 color=white><b>$flabel</b></font></td>";
+		$first++;
+	}
+	echo "    <td style=\"cusrsor:crosshair;\" align=right title=\"Total: $leads_in_list Leads\"><b><font size=1 color=white><b>$leads_in_list</b></font></td>\n";
+    echo "  </tr>\n";
+
+	echo "</table></center><br>\n";
+
+
+    $count_cols=30;
+	$leads_in_list = 0;
+	$leads_in_list_N = 0;
+	$leads_in_list_Y = 0;
+    $max_col_grouping = "if(cnt>" . ($count_cols - 1) . "," . $count_cols . ",cnt)";
+	$stmt="SELECT stat,$max_col_grouping,count(*) FROM (select osdial_log.status AS stat,count(*) AS cnt from osdial_list JOIN osdial_log ON (osdial_list.lead_id=osdial_log.lead_id) where osdial_list.list_id='$list_id' group by osdial_log.lead_id,osdial_log.status,osdial_log.lead_id order by osdial_log.status,count(*)) AS t1 group by $max_col_grouping,stat order by stat,$max_col_grouping;";
+	$rslt=mysql_query($stmt, $link);
+	$status_called_to_print = mysql_num_rows($rslt);
+
+	$o=0;
+	$sts=0;
+	$first_row=1;
+	$all_called_first=1000;
+	$all_called_last=0;
+	while ($status_called_to_print > $o) 
+	{
+	$rowx=mysql_fetch_row($rslt);
+	$leads_in_list = ($leads_in_list + $rowx[2]);
+	$count_statuses[$o]			= "$rowx[0]";
+	$count_called[$o]			= "$rowx[1]";
+	$count_count[$o]			= "$rowx[2]";
+	$all_called_count[$rowx[1]] = ($all_called_count[$rowx[1]] + $rowx[2]);
+
+	if ( (strlen($status[$sts]) < 1) or ($status[$sts] != "$rowx[0]") )
+		{
+		if ($first_row) {$first_row=0;}
+		else {$sts++;}
+		$status[$sts] = "$rowx[0]";
+		$status_called_first[$sts] = "$rowx[1]";
+		if ($status_called_first[$sts] < $all_called_first) {$all_called_first = $status_called_first[$sts];}
+		}
+	$leads_in_sts[$sts] = ($leads_in_sts[$sts] + $rowx[2]);
+	$status_called_last[$sts] = "$rowx[1]";
+	if ($status_called_last[$sts] > $all_called_last) {$all_called_last = $status_called_last[$sts];}
+
+	$o++;
+	}
+
+
+
+
+	echo "<center>\n";
+	echo "<br><font color=$default_text size=4>PER-LEAD DISPOSITION COUNTS FROM LOG</font></b><br>\n";
+	echo "<table style=\"cursor:crosshair;\" bgcolor=grey width=500 cellspacing=1>\n";
+	echo "  <tr style=\"cusrsor:crosshair;\" bgcolor=$menubarcolor>\n";
+    echo "    <td style=\"cusrsor:crosshair;\" align=left><font size=1 color=white><b>STATUS</b></td>\n";
+    echo "    <td style=\"cusrsor:crosshair;\" align=left><font size=1 color=white><b>STATUS&nbsp;NAME</b></td>";
+	$first = $all_called_first;
+	while ($first <= $all_called_last) {
+        $flabel = $first;
+        if ($first == 30) $flabel = "30+";
+        if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $flabel;
+        if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $flabel;
+        if (strlen($flabel) == 3) $flabel = '&nbsp;' . $flabel;
+		echo "    <td style=\"cusrsor:crosshair;\" align=right><font size=1 color=white><b>$flabel</b></font></td>";
+		$first++;
+	}
+	echo "    <td style=\"cusrsor:crosshair;\" align=right><font size=1 color=white><b>&nbsp;&nbsp;SUB</b></font></td>\n";
+    echo "  </tr>\n";
+
+	$sts=0;
+	$statuses_called_to_print = count($status);
+	while ($statuses_called_to_print > $sts) {
+	$Pstatus = $status[$sts];
+	if (eregi("1$|3$|5$|7$|9$", $sts)) {
+        $bgcolor="bgcolor=$evenrows";   $AB="bgcolor=$oddrows";
+    } else {
+        $bgcolor="bgcolor=$oddrows";   $AB="bgcolor=$evenrows";
+    }
+	#	echo "$status[$sts]|$status_called_first[$sts]|$status_called_last[$sts]|$leads_in_sts[$sts]|\n";
+	#	echo "$status[$sts]|";
+	echo "  <tr $bgcolor style=\"cursor:crosshair;\" class=row>\n";
+    echo "     <td style=\"cusrsor:crosshair;\" nowrap><font size=1>$Pstatus</td>\n";
+    echo "     <td style=\"cusrsor:crosshair;\" nowrap><font size=1>$statuses_list[$Pstatus]</td>";
+
+	$first = $all_called_first;
+	while ($first <= $all_called_last) {
+		$called_printed=0;
+		$o=0;
+		while ($status_called_to_print > $o) {
+			if ( ($count_statuses[$o] == "$Pstatus") and ($count_called[$o] == "$first") ) {
+                $lplural = ',';
+                $fplural = '';
+                if ($count_count[$o] != 1) $lplural = 's, Each';
+                if ($first != 1) $fplural = 's';
+                $clabel = $count_count[$o];
+                if (strlen($clabel) == 1) $clabel = '&nbsp;&nbsp;&nbsp;' . $count_count[$o];
+                if (strlen($clabel) == 2) $clabel = '&nbsp;&nbsp;' . $count_count[$o];
+                if (strlen($clabel) == 3) $clabel = '&nbsp;' . $count_count[$o];
+				echo "    <td style=\"cursor:crosshair;\" class=hover align=right title=\"$count_count[$o] Lead$lplural Dispositioned as '$Pstatus' $first Time$fplural\"><font size=1>$clabel</font></td>\n";
+				$called_printed++;
+			}
+			$o++;
+		}
+		if (!$called_printed) echo "    <td style=\"cursor:crosshair;\" class=hover align=right><font size=1>&nbsp;&nbsp;&nbsp;&nbsp;</font></td>";
+		$first++;
+	}
+	echo "    <td style=\"cursor:crosshair;\" align=right title=\"Subtotal for '$Pstatus': $leads_in_sts[$sts]\"><font size=1><b>$leads_in_sts[$sts]</b></font></td>\n";
+    echo "  </tr>\n";
+
+	$sts++;
+	}
+
+	echo "  <tr style=\"cusrsor:crosshair;\" bgcolor=$menubarcolor>";
+    echo "    <td style=\"cusrsor:crosshair;\" align=left colspan=2><b><font size=1 color=white><b>TOTAL</b></font></td>";
+	$first = $all_called_first;
+	while ($first <= $all_called_last) {
+        if ($all_called_count[$first] == 0 or $all_called_count[$first] == '') $all_called_count[$first] = '0';
+        $flabel = $all_called_count[$first];
+        if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $all_called_count[$first];
+        if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $all_called_count[$first];
+        if (strlen($flabel) == 3) $flabel = '&nbsp;' . $all_called_count[$first];
+		echo "    <td style=\"cusrsor:crosshair;\" align=right class=right title=\"$first Attempt Total: $all_called_count[$first] Calls\"><font size=1 color=white><b>$flabel</b></font></td>";
+		$first++;
+	}
+	echo "    <td style=\"cusrsor:crosshair;\" align=right title=\"Total: $leads_in_list Calls\"><b><font size=1 color=white><b>$leads_in_list</b></font></td>\n";
+    echo "  </tr>\n";
 
 	echo "</table></center><br>\n";
 
@@ -3163,7 +3450,7 @@ echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$CBquerySQLwhere = "and list_id='$list_id'";
 
-echo "<br><font color=$default_text> LIST CALLBACK HOLD LISTINGS: $list_id</font>\n";
+echo "<center><br><br><font size=4 color=$default_text> LIST CALLBACK HOLD LISTINGS: $list_id<br><br></font></center>\n";
 $oldADD = "ADD=811&list_id=$list_id";
 $ADD='82';
 }
@@ -3187,7 +3474,7 @@ if (eregi("ENDATEDOWN",$stage)) {$SQLorder='order by entry_time desc,';   $LEVEL
 	$rslt=mysql_query($stmt, $link);
 	$cb_to_print = mysql_num_rows($rslt);
 
-echo "<TABLE><TR><TD>\n";
+echo "<TABLE width=100%><TR><TD>\n";
 echo "<center><TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr bgcolor=$menubarcolor>\n";
 echo "<td><font size=1 color=white>LEAD</td><td><font size=1 color=white>LIST</td>\n";
@@ -3206,7 +3493,7 @@ echo "<td><a href=\"$PHP_SELF?$oldADD&$GROUPlink\"><font size=1 color=white><B>G
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor>";
+		echo "<tr $bgcolor class=row>";
 		echo "<td><font size=1><A HREF=\"admin_modify_lead.php?lead_id=$row[1]\" target=\"_blank\">$row[1]</A></td>";
 		echo "<td><font size=1><A HREF=\"$PHP_SELF?ADD=311&list_id=$row[2]\">$row[2]</A></td>";
 		echo "<td><font size=1><A HREF=\"$PHP_SELF?ADD=31&campaign_id=$row[3]\">$row[3]</A></td>";
@@ -3220,9 +3507,12 @@ echo "<td><a href=\"$PHP_SELF?$oldADD&$GROUPlink\"><font size=1 color=white><B>G
 		$o++;
 	}
 
+echo "<tr bgcolor=$menubarcolor>";
+echo "  <td colspan=9 height=8px><font size=1 color=white></font></td>";
+echo "</tr>";
 echo "</TABLE></center>\n";
 
-echo "$CBinactiveLINK";
+echo "<center>$CBinactiveLINK</center>";
 }
 
 
@@ -3274,7 +3564,7 @@ echo "<td align=center colspan=3><font size=1 color=white><B>LINKS</B></td>";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">$row[0]</a></td>";
+		echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">$row[0]</a></td>";
 		echo "<td><font size=1>$row[1]</td>";
 		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=100&camp=$row[2]&dispact=$dispact\">$row[2]</a></td>";
 		echo "<td><font size=1>$row[4]</td>";
@@ -3290,6 +3580,9 @@ echo "<td align=center colspan=3><font size=1 color=white><B>LINKS</B></td>";
 		$o++;
 	}
 
+echo "<tr bgcolor=$menubarcolor>";
+echo "  <td colspan=9 height=8px><font size=1 color=white></font></td>";
+echo "</tr>";
 echo "</TABLE></center>\n";
 }
 

@@ -520,14 +520,14 @@ if ($ADD==3)
 			echo "<tr><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT style=\"width: 100%;\"></td></tr>\n";
 			echo "<tr><td>&nbsp;</td></tr>";
 			echo "<tr bgcolor=$oddrows><td align=center colspan=2>Campaign Ranks: $NWB#osdial_users-campaign_ranks$NWE<BR>\n";
-			echo "<table border=0>\n";
+			echo "<table bgcolor=grey cellspacing=1 border=0>\n";
 			echo "$RANKcampaigns_list";
 			echo "</table>\n";
 			echo "<tr><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT style=\"width: 100%;\"></td></tr>\n";
 			echo "</td></tr>\n";
 			echo "<tr><td>&nbsp;</td></tr>";
 			echo "<tr bgcolor=$oddrows><td align=center colspan=2>Inbound Groups: $NWB#osdial_users-closer_campaigns$NWE<BR>\n";
-			echo "<table border=0>\n";
+			echo "<table bgcolor=grey cellspacing=1 border=0>\n";
 			echo "$RANKgroups_list";
 			echo "</table>\n";
 			echo "</td></tr>\n";

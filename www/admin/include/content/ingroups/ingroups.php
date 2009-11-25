@@ -53,7 +53,7 @@ if ($ADD==1111)
 	echo "</select>$NWB#osdial_inbound_groups-ingroup_script$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Get Call Launch: </td><td align=left><select size=1 name=get_call_launch><option selected>NONE</option><option>SCRIPT</option><option>WEBFORM</option></select>$NWB#osdial_inbound_groups-get_call_launch$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Allow Tab Switch: </td><td align=left><select size=1 name=allow_tab_switch><option selected>Y</option><option>N</option></select>$NWB#osdial_inbound_groups-allow_tab_switch$NWE</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -97,7 +97,7 @@ if ($ADD==1211)
 	echo "$groups_list";
 	echo "</select>$NWB#osdial_inbound_groups-group_id$NWE</td></tr>\n";
 
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -440,14 +440,14 @@ if ($ADD==3111)
 	echo "$Xgroups_menu";
 	echo "</select>$NWB#osdial_inbound_groups-default_xfer_group$NWE</td></tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 
 	### list of agent rank or skill-level for this inbound group
 	echo "<center>\n";
 	echo "<br><font color=$default_text size=+1>AGENT RANKS FOR THIS INBOUND GROUP</font<br><br>\n";
-	echo "<TABLE width=400 cellspacing=3>\n";
-	echo "<tr><td><font color=$default_text>&nbsp;&nbsp;USER</font></td><td> &nbsp; &nbsp; <font color=$default_text>RANK</font></td><td> &nbsp; &nbsp; <font color=$default_text>CALLS TODAY</font></td></tr>\n";
+	echo "<table bgcolor=grey width=400 cellspacing=1>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center><font color=white size=1><b>USER</b></font></td><td align=center><font color=white size=1><b>RANK</b></font></td><td align=center><font size=1 color=white><b>CALLS TODAY</b></font></td></tr>\n";
 
 		$stmt="SELECT user,group_rank,calls_today from osdial_inbound_group_agents where group_id='$group_id'";
 		$rsltx=mysql_query($stmt, $link);
@@ -463,16 +463,19 @@ if ($ADD==3111)
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
 
-		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">$rowx[0]</a></td><td><font size=1>$rowx[1]</td><td><font size=1>$rowx[2]</td></tr>\n";
+		echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">$rowx[0]</a></td><td align=right><font size=1>$rowx[1]</td><td align=right><font size=1>$rowx[2]</td></tr>\n";
 		}
 
 	//echo "</table><br>\n";
 
+    echo "<tr bgcolor=$menubarcolor>";
+    echo "  <td colspan=3 height=8px><font size=1 color=white></font></td>";
+    echo "</tr>";
 	echo "</table><br><br>\n";
 
 	echo "<br><font color=$default_text size=+1>CAMPAIGNS ASSIGNED TO THIS INBOUND GROUP</font<br><br>\n";
-	echo "<TABLE width=400 cellspacing=3>\n";
-	echo "<tr><td align=center><font color=$default_text>CAMPAIGN_ID</font></td><td align=center><font color=$default_text>NAME</font></td><td align=center><font color=$default_text>ACTIVE</font></td></tr>\n";
+	echo "<table bgcolor=grey width=400 cellspacing=1>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center><font size=1 color=white><b>CAMPAIGN_ID</b></font></td><td align=center><font size=1 color=white><b>NAME</b></font></td><td align=center><font size=1 color=white><b>ACTIVE</b></font></td></tr>\n";
 
 		$stmt="SELECT campaign_id,campaign_name,active from osdial_campaigns where closer_campaigns LIKE '% $group_id %'";
 		$rsltx=mysql_query($stmt, $link);
@@ -484,15 +487,18 @@ if ($ADD==3111)
 			$o++;
 
 		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor="#CBDCE0"';} 
+			{$bgcolor='bgcolor="' . $oddrows . '"';} 
 		else
-			{$bgcolor='bgcolor="#C1D6DB"';}
+			{$bgcolor='bgcolor="' . $evenrows . '"';}
 
-		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=34&campaign_id=$rowx[0]\">$rowx[0]</a></td><td><font size=1>$rowx[1]</td><td align=center><font size=1>$rowx[2]</td></tr>\n";
+		echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=34&campaign_id=$rowx[0]\">$rowx[0]</a></td><td><font size=1>$rowx[1]</td><td align=center><font size=1>$rowx[2]</td></tr>\n";
 		}
 
 	//echo "</table><br>\n";
 
+    echo "<tr bgcolor=$menubarcolor>";
+    echo "  <td colspan=3 height=8px><font size=1 color=white></font></td>";
+    echo "</tr>";
 	echo "</table><br><br>\n";
 
 	#echo "<a href=\"./AST_CLOSERstats.php?group=$group_id\">Click here to see a report for this inbound group</a><BR><BR>\n";
@@ -543,7 +549,7 @@ echo "<td align=center colspan=1><font size=1 color=white><B>LINKS</B></td>";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=3111&group_id=$row[0]\">$row[0]</a></td>";
+		echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=3111&group_id=$row[0]\">$row[0]</a></td>";
 		echo "<td><font size=1> $row[1]</td>";
 		echo "<td align=center><font size=1> $row[3]</td>";
 		echo "<td align=center><font size=1> $row[5]</td>";
@@ -552,6 +558,9 @@ echo "<td align=center colspan=1><font size=1 color=white><B>LINKS</B></td>";
 		$o++;
 	}
 
+echo "<tr bgcolor=$menubarcolor>";
+echo "  <td colspan=5 height=8px><font size=1 color=white></font></td>";
+echo "</tr>";
 echo "</TABLE></center>\n";
 }
 

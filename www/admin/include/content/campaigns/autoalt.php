@@ -157,7 +157,7 @@ echo "</tr>\n";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=31&SUB=26&campaign_id=$campaigns_id_list[$o]\">$campaigns_id_list[$o]</a></td>";
+		echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=31&SUB=26&campaign_id=$campaigns_id_list[$o]\">$campaigns_id_list[$o]</a></td>";
 		echo "<td><font size=1> $campaigns_name_list[$o] </td>";
 		echo "<td><font size=1> ";
 
@@ -178,6 +178,9 @@ echo "</tr>\n";
 		$o++;
 		}
 
+echo "<tr bgcolor=$menubarcolor>";
+echo "  <td colspan=4 height=8px><font size=1 color=white></font></td>";
+echo "</tr>";
 echo "</TABLE></center>\n";
 }
 

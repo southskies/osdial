@@ -41,7 +41,7 @@ if ($ADD==111111111)
 	echo "<tr bgcolor=$oddrows><td align=right>Call Time Comments: </td><td align=left><input type=text name=call_time_comments size=50 maxlength=255> $NWB#osdial_call_times-call_time_comments$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=center colspan=2>Day and time options will appear once you have created the Call Time Definition</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -293,20 +293,21 @@ echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 echo "<center><br><font color=$default_text size=+1>MODIFY A CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 echo "<input type=hidden name=ADD value=411111111>\n";
 echo "<input type=hidden name=call_time_id value=\"$call_time_id\">\n";
-echo "<TABLE>";
-echo "<tr bgcolor=#C1D6DF><td align=right>Call Time ID: </td><td align=left colspan=3><B>$call_time_id</B>$NWB#osdial_call_times-call_time_id$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Call Time Name: </td><td align=left colspan=3><input type=text name=call_time_name size=40 maxlength=50 value=\"$call_time_name\"> (short description of the call time)$NWB#osdial_call_times-call_time_name$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Call Time Comments: </td><td align=left colspan=3><input type=text name=call_time_comments size=50 maxlength=255 value=\"$call_time_comments\"> $NWB#osdial_call_times-call_time_comments$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Default Start:</td><td align=left><input type=text name=ct_default_start size=5 maxlength=4 value=\"$ct_default_start\"> </td><td align=right>Default Stop:</td><td align=left><input type=text name=ct_default_stop size=5 maxlength=4 value=\"$ct_default_stop\"> $NWB#osdial_call_times-ct_default_start$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Sunday Start:</td><td align=left><input type=text name=ct_sunday_start size=5 maxlength=4 value=\"$ct_sunday_start\"> </td><td align=right>Sunday Stop:</td><td align=left><input type=text name=ct_sunday_stop size=5 maxlength=4 value=\"$ct_sunday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Monday Start:</td><td align=left><input type=text name=ct_monday_start size=5 maxlength=4 value=\"$ct_monday_start\"> </td><td align=right>Monday Stop:</td><td align=left><input type=text name=ct_monday_stop size=5 maxlength=4 value=\"$ct_monday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Tuesday Start:</td><td align=left><input type=text name=ct_tuesday_start size=5 maxlength=4 value=\"$ct_tuesday_start\"> </td><td align=right>Tuesday Stop:</td><td align=left><input type=text name=ct_tuesday_stop size=5 maxlength=4 value=\"$ct_tuesday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Wednesday Start:</td><td align=left><input type=text name=ct_wednesday_start size=5 maxlength=4 value=\"$ct_wednesday_start\"> </td><td align=right>Wednesday Stop:</td><td align=left><input type=text name=ct_wednesday_stop size=5 maxlength=4 value=\"$ct_wednesday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Thursday Start:</td><td align=left><input type=text name=ct_thursday_start size=5 maxlength=4 value=\"$ct_thursday_start\"> </td><td align=right>Thursday Stop:</td><td align=left><input type=text name=ct_thursday_stop size=5 maxlength=4 value=\"$ct_thursday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Friday Start:</td><td align=left><input type=text name=ct_friday_start size=5 maxlength=4 value=\"$ct_friday_start\"> </td><td align=right>Friday Stop:</td><td align=left><input type=text name=ct_friday_stop size=5 maxlength=4 value=\"$ct_friday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Saturday Start:</td><td align=left><input type=text name=ct_saturday_start size=5 maxlength=4 value=\"$ct_saturday_start\"> </td><td align=right>Saturday Stop:</td><td align=left><input type=text name=ct_saturday_stop size=5 maxlength=4 value=\"$ct_saturday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Add No-Call Periods to Recylce Delay: </td><td align=left colspan=3><select name=use_recycle_gap><option>N</option><option>Y</option><option>$use_recycle_gap</option></select>$NWB#osdial_call_times-use_recycle_gap$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=center colspan=4><input type=submit name=SUBMIT value=SUBMIT></FORM></td></tr>\n";
+echo "<table cellspacing=1>";
+echo "<tr bgcolor=$oddrows><td align=right>Call Time ID: </td><td align=left colspan=3><B>$call_time_id</B>$NWB#osdial_call_times-call_time_id$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Call Time Name: </td><td align=left colspan=3><input type=text name=call_time_name size=40 maxlength=50 value=\"$call_time_name\"> (short description of the call time)$NWB#osdial_call_times-call_time_name$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Call Time Comments: </td><td align=left colspan=3><input type=text name=call_time_comments size=50 maxlength=255 value=\"$call_time_comments\"> $NWB#osdial_call_times-call_time_comments$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Default Start:</td><td align=left><input type=text name=ct_default_start size=5 maxlength=4 value=\"$ct_default_start\"> </td><td align=right>Default Stop:</td><td align=left><input type=text name=ct_default_stop size=5 maxlength=4 value=\"$ct_default_stop\"> $NWB#osdial_call_times-ct_default_start$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Sunday Start:</td><td align=left><input type=text name=ct_sunday_start size=5 maxlength=4 value=\"$ct_sunday_start\"> </td><td align=right>Sunday Stop:</td><td align=left><input type=text name=ct_sunday_stop size=5 maxlength=4 value=\"$ct_sunday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Monday Start:</td><td align=left><input type=text name=ct_monday_start size=5 maxlength=4 value=\"$ct_monday_start\"> </td><td align=right>Monday Stop:</td><td align=left><input type=text name=ct_monday_stop size=5 maxlength=4 value=\"$ct_monday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Tuesday Start:</td><td align=left><input type=text name=ct_tuesday_start size=5 maxlength=4 value=\"$ct_tuesday_start\"> </td><td align=right>Tuesday Stop:</td><td align=left><input type=text name=ct_tuesday_stop size=5 maxlength=4 value=\"$ct_tuesday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Wednesday Start:</td><td align=left><input type=text name=ct_wednesday_start size=5 maxlength=4 value=\"$ct_wednesday_start\"> </td><td align=right>Wednesday Stop:</td><td align=left><input type=text name=ct_wednesday_stop size=5 maxlength=4 value=\"$ct_wednesday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Thursday Start:</td><td align=left><input type=text name=ct_thursday_start size=5 maxlength=4 value=\"$ct_thursday_start\"> </td><td align=right>Thursday Stop:</td><td align=left><input type=text name=ct_thursday_stop size=5 maxlength=4 value=\"$ct_thursday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Friday Start:</td><td align=left><input type=text name=ct_friday_start size=5 maxlength=4 value=\"$ct_friday_start\"> </td><td align=right>Friday Stop:</td><td align=left><input type=text name=ct_friday_stop size=5 maxlength=4 value=\"$ct_friday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Saturday Start:</td><td align=left><input type=text name=ct_saturday_start size=5 maxlength=4 value=\"$ct_saturday_start\"> </td><td align=right>Saturday Stop:</td><td align=left><input type=text name=ct_saturday_stop size=5 maxlength=4 value=\"$ct_saturday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Add No-Call Periods to Recylce Delay: </td><td align=left colspan=3><select name=use_recycle_gap><option>N</option><option>Y</option><option>$use_recycle_gap</option></select>$NWB#osdial_call_times-use_recycle_gap$NWE</td></tr>\n";
+echo "<tr bgcolor=$menubarcolor><td align=center colspan=4><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></FORM></td></tr>\n";
+echo "</table><br><br>\n";
 
 $ct_srs=1;
 $b=0;
@@ -316,21 +317,31 @@ if (strlen($ct_state_call_times)>2)
 	$state_rules = explode('|',$ct_state_call_times);
 	$ct_srs = ((count($state_rules)) - 1);
 	}
-echo "<tr bgcolor=#C1D6DF><td align=center rowspan=$ct_srs>Active State Call Time Definitions for this Record: </td>\n";
-echo "<td align=center colspan=3>&nbsp;</td></tr>\n";
-while($ct_srs >= $b)
-	{
-	if (strlen($state_rules[$b])>0)
-		{
+echo "<table bgcolor=grey width=500 cellspacing=1 bgcolor=grey>\n";
+echo "<tr bgcolor=$menubarcolor><td align=center colspan=3><font size=1 color=white><b>ACTIVE STATE CALL TIME DEFINITIONS</b></font></td></tr>\n";
+echo "<tr bgcolor=$menubarcolor><td align=center><font size=1 color=white><b>STATE CALL-TIME ID</b></font></td><td align=center><font size=1 color=white><b>DESCRIPTION</b></font></td><td align=center><font size=1 color=white><b>ACTION</b></font></td></tr>\n";
+$o=0;
+while($ct_srs >= $b) {
+	if (strlen($state_rules[$b])>0) {
+		if (eregi("1$|3$|5$|7$|9$", $o)) {
+            $bgcolor='bgcolor='.$oddrows;
+        } else {
+            $bgcolor='bgcolor='.$evenrows;
+        }
 		$stmt="SELECT state_call_time_state,state_call_time_name from osdial_state_call_times where state_call_time_id='$state_rules[$b]';";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
-		echo "<tr bgcolor=#C1D6DF><td align=right><a href=\"$PHP_SELF?ADD=3111111111&call_time_id=$state_rules[$b]\">$state_rules[$b] </a> - <a href=\"$PHP_SELF?ADD=321111111&call_time_id=$call_time_id&state_rule=$state_rules[$b]&stage=REMOVE\">REMOVE </a></td><td align=left colspan=2>$row[0] - $row[1]</td></tr>\n";
+		echo "  <tr class=row $bgcolor>\n";
+        echo "    <td align=left nowrap><a href=\"$PHP_SELF?ADD=3111111111&call_time_id=$state_rules[$b]\">$state_rules[$b]</a></td>\n";
+        echo "    <td align=left nowrap>$row[0] - $row[1]</td>\n";
+        echo "    <td align=center nowrap><a href=\"$PHP_SELF?ADD=321111111&call_time_id=$call_time_id&state_rule=$state_rules[$b]&stage=REMOVE\">REMOVE</a></td>\n";
+        echo "  </tr>\n";
 		$srs_SQL .= "'$state_rules[$b]',";
 		$srs_state_SQL .= "'$row[0]',";
-		}
-	$b++;
+        $o++;
 	}
+	$b++;
+}
 if (strlen($srs_SQL)>2)
 	{
 	$srs_SQL = "$srs_SQL''";
@@ -350,45 +361,64 @@ while ($sct_to_print > $o) {
 	$sct_list .= "<option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
 	$o++;
 }
-echo "<tr bgcolor=#C1D6DF><td align=right><form action=$PHP_SELF method=POST>\n";
+echo "<form action=$PHP_SELF method=POST>\n";
 echo "<input type=hidden name=ADD value=321111111>\n";
 echo "<input type=hidden name=stage value=\"ADD\">\n";
 echo "<input type=hidden name=call_time_id value=\"$call_time_id\">\n";
-echo "Add state call time rule: </td><td align=left colspan=2><select size=1 name=state_rule>\n";
-echo "$sct_list";
-echo "</select></td>\n";
-echo "<td align=center colspan=4><input type=submit name=SUBMIT value=SUBMIT></FORM></td></tr>\n";
+echo "  <tr bgcolor=$menubarcolor>\n";
+echo "    <td align=center colspan=2><select size=1 name=state_rule>$sct_list</select></td>\n";
+echo "    <td align=center><input style=\"width: 100%;\" type=submit name=SUBMIT value=ADD></td>\n";
+echo "  </tr>\n";
+echo "  </form>\n";
 
-echo "</TABLE><BR><BR>\n";
-echo "<font color=$default_text size=+1>CAMPAIGNS USING THIS CALL TIME</font><br><BR>\n";
-echo "<TABLE>\n";
+echo "</table><br><br><br>\n";
+echo "<font color=$default_text size=+1>CAMPAIGNS USING THIS CALL TIME</font><br>\n";
+echo "<table width=500 cellspacing=1 bgcolor=grey>\n";
+echo "<tr bgcolor=$menubarcolor><td align=center><font size=1 color=white><b>Campaign ID</b></font></td><td align=center><font size=1 color=white><b>Campaign Description</b></font></td></tr>\n";
 
 	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns where local_call_time='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
 	$camps_to_print = mysql_num_rows($rslt);
 	$o=0;
 	while ($camps_to_print > $o) {
+		if (eregi("1$|3$|5$|7$|9$", $o)) {
+            $bgcolor='bgcolor='.$oddrows;
+        } else {
+            $bgcolor='bgcolor='.$evenrows;
+        }
 		$row=mysql_fetch_row($rslt);
-		echo "<TR><TD><a href=\"$PHP_SELF?ADD=31&campaign_id=$row[0]\">$row[0] </a></TD><TD> $row[1]<BR></TD></TR>\n";
+		echo "<tr $bgcolor class=row><td nowrap><a href=\"$PHP_SELF?ADD=31&campaign_id=$row[0]\">$row[0]</a></td><td nowrap>$row[1]</td></tr>\n";
 		$o++;
 	}
+echo "<tr bgcolor=$menubarcolor>";
+echo "  <td colspan=2 height=8px><font size=1 color=white></font></td>";
+echo "</tr>";
+echo "</table>\n";
 
-echo "</TABLE>\n";
-echo "<br><font color=$default_text size=+1>INBOUND GROUPS USING THIS CALL TIME</font><BR><br>\n";
-echo "<TABLE>\n";
+
+
+echo "<br><br><font color=$default_text size=+1>INBOUND GROUPS USING THIS CALL TIME</font><br>\n";
+echo "<table width=500 cellspacing=1 bgcolor=grey>\n";
+echo "<tr bgcolor=$menubarcolor><td align=center><font size=1 color=white><b>InGroup ID</b></font></td><td align=center><font size=1 color=white><b>InGroup Description</b></font></td></tr>\n";
 
 	$stmt="SELECT group_id,group_name from osdial_inbound_groups where call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
 	$camps_to_print = mysql_num_rows($rslt);
 	$o=0;
 	while ($camps_to_print > $o) {
+		if (eregi("1$|3$|5$|7$|9$", $o)) {
+            $bgcolor='bgcolor='.$oddrows;
+        } else {
+            $bgcolor='bgcolor='.$evenrows;
+        }
 		$row=mysql_fetch_row($rslt);
-		echo "<TR><TD><a href=\"$PHP_SELF?ADD=3111&group_id=$row[0]\">$row[0] </a></TD><TD> $row[1]<BR></TD></TR>\n";
+		echo "<tr $bgcolor class=row><td nowrap><a href=\"$PHP_SELF?ADD=3111&group_id=$row[0]\">$row[0]</a></td><td nowrap>$row[1]</td></tr>\n";
 		$o++;
 	}
-
-echo "</TABLE>\n";
-echo "</center><BR><BR>\n";
+echo "<tr bgcolor=$menubarcolor>";
+echo "  <td colspan=2 height=8px><font size=1 color=white></font></td>";
+echo "</table>\n";
+echo "</center><br><br>\n";
 
 if ($LOGdelete_call_times > 0)
 	{
@@ -432,7 +462,7 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=311111111&call_time_id=$row[0]\">$row[0]</a></td>";
+		echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=311111111&call_time_id=$row[0]\">$row[0]</a></td>";
 		echo "<td><font size=1> $row[1]</td>";
 		echo "<td align=center><font size=1> $row[3] </td>";
 		echo "<td align=center><font size=1> $row[4] </td>";
@@ -440,6 +470,9 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
 		$o++;
 	}
 
+echo "<tr bgcolor=$menubarcolor>";
+echo "  <td colspan=5 height=8px><font size=1 color=white></font></td>";
+echo "</tr>";
 echo "</TABLE></center>\n";
 }
 
@@ -468,7 +501,7 @@ if ($ADD==1111111111)
 	echo "<tr bgcolor=$oddrows><td align=right>State Call Time Comments: </td><td align=left><input type=text name=call_time_comments size=50 maxlength=255> $NWB#osdial_call_times-call_time_comments$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=center colspan=2>Day and time options will appear once you have created the Call Time Definition</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -698,35 +731,44 @@ echo "<center><br><font color=$default_text size=+1>MODIFY A STATE CALL TIME</fo
 echo "<input type=hidden name=ADD value=4111111111>\n";
 echo "<input type=hidden name=call_time_id value=\"$call_time_id\">\n";
 echo "<TABLE>";
-echo "<tr bgcolor=#C1D6DF><td align=right>Call Time ID: </td><td align=left colspan=3><B>$call_time_id</B>$NWB#osdial_call_times-call_time_id$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>State Call Time State: </td><td align=left colspan=3><input type=text name=state_call_time_state size=4 maxlength=2 value=\"$state_call_time_state\"> $NWB#osdial_call_times-state_call_time_state$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>State Call Time Name: </td><td align=left colspan=3><input type=text name=call_time_name size=40 maxlength=50 value=\"$call_time_name\"> (short description of the call time)$NWB#osdial_call_times-call_time_name$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>State Call Time Comments: </td><td align=left colspan=3><input type=text name=call_time_comments size=50 maxlength=255 value=\"$call_time_comments\"> $NWB#osdial_call_times-call_time_comments$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Default Start:</td><td align=left><input type=text name=ct_default_start size=5 maxlength=4 value=\"$ct_default_start\"> </td><td align=right>Default Stop:</td><td align=left><input type=text name=ct_default_stop size=5 maxlength=4 value=\"$ct_default_stop\"> $NWB#osdial_call_times-ct_default_start$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Sunday Start:</td><td align=left><input type=text name=ct_sunday_start size=5 maxlength=4 value=\"$ct_sunday_start\"> </td><td align=right>Sunday Stop:</td><td align=left><input type=text name=ct_sunday_stop size=5 maxlength=4 value=\"$ct_sunday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Monday Start:</td><td align=left><input type=text name=ct_monday_start size=5 maxlength=4 value=\"$ct_monday_start\"> </td><td align=right>Monday Stop:</td><td align=left><input type=text name=ct_monday_stop size=5 maxlength=4 value=\"$ct_monday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Tuesday Start:</td><td align=left><input type=text name=ct_tuesday_start size=5 maxlength=4 value=\"$ct_tuesday_start\"> </td><td align=right>Tuesday Stop:</td><td align=left><input type=text name=ct_tuesday_stop size=5 maxlength=4 value=\"$ct_tuesday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Wednesday Start:</td><td align=left><input type=text name=ct_wednesday_start size=5 maxlength=4 value=\"$ct_wednesday_start\"> </td><td align=right>Wednesday Stop:</td><td align=left><input type=text name=ct_wednesday_stop size=5 maxlength=4 value=\"$ct_wednesday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Thursday Start:</td><td align=left><input type=text name=ct_thursday_start size=5 maxlength=4 value=\"$ct_thursday_start\"> </td><td align=right>Thursday Stop:</td><td align=left><input type=text name=ct_thursday_stop size=5 maxlength=4 value=\"$ct_thursday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Friday Start:</td><td align=left><input type=text name=ct_friday_start size=5 maxlength=4 value=\"$ct_friday_start\"> </td><td align=right>Friday Stop:</td><td align=left><input type=text name=ct_friday_stop size=5 maxlength=4 value=\"$ct_friday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
-echo "<tr bgcolor=#C1D6DF><td align=right>Saturday Start:</td><td align=left><input type=text name=ct_saturday_start size=5 maxlength=4 value=\"$ct_saturday_start\"> </td><td align=right>Saturday Stop:</td><td align=left><input type=text name=ct_saturday_stop size=5 maxlength=4 value=\"$ct_saturday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Call Time ID: </td><td align=left colspan=3><B>$call_time_id</B>$NWB#osdial_call_times-call_time_id$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>State Call Time State: </td><td align=left colspan=3><input type=text name=state_call_time_state size=4 maxlength=2 value=\"$state_call_time_state\"> $NWB#osdial_call_times-state_call_time_state$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>State Call Time Name: </td><td align=left colspan=3><input type=text name=call_time_name size=40 maxlength=50 value=\"$call_time_name\"> (short description of the call time)$NWB#osdial_call_times-call_time_name$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>State Call Time Comments: </td><td align=left colspan=3><input type=text name=call_time_comments size=50 maxlength=255 value=\"$call_time_comments\"> $NWB#osdial_call_times-call_time_comments$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Default Start:</td><td align=left><input type=text name=ct_default_start size=5 maxlength=4 value=\"$ct_default_start\"> </td><td align=right>Default Stop:</td><td align=left><input type=text name=ct_default_stop size=5 maxlength=4 value=\"$ct_default_stop\"> $NWB#osdial_call_times-ct_default_start$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Sunday Start:</td><td align=left><input type=text name=ct_sunday_start size=5 maxlength=4 value=\"$ct_sunday_start\"> </td><td align=right>Sunday Stop:</td><td align=left><input type=text name=ct_sunday_stop size=5 maxlength=4 value=\"$ct_sunday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Monday Start:</td><td align=left><input type=text name=ct_monday_start size=5 maxlength=4 value=\"$ct_monday_start\"> </td><td align=right>Monday Stop:</td><td align=left><input type=text name=ct_monday_stop size=5 maxlength=4 value=\"$ct_monday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Tuesday Start:</td><td align=left><input type=text name=ct_tuesday_start size=5 maxlength=4 value=\"$ct_tuesday_start\"> </td><td align=right>Tuesday Stop:</td><td align=left><input type=text name=ct_tuesday_stop size=5 maxlength=4 value=\"$ct_tuesday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Wednesday Start:</td><td align=left><input type=text name=ct_wednesday_start size=5 maxlength=4 value=\"$ct_wednesday_start\"> </td><td align=right>Wednesday Stop:</td><td align=left><input type=text name=ct_wednesday_stop size=5 maxlength=4 value=\"$ct_wednesday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Thursday Start:</td><td align=left><input type=text name=ct_thursday_start size=5 maxlength=4 value=\"$ct_thursday_start\"> </td><td align=right>Thursday Stop:</td><td align=left><input type=text name=ct_thursday_stop size=5 maxlength=4 value=\"$ct_thursday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Friday Start:</td><td align=left><input type=text name=ct_friday_start size=5 maxlength=4 value=\"$ct_friday_start\"> </td><td align=right>Friday Stop:</td><td align=left><input type=text name=ct_friday_stop size=5 maxlength=4 value=\"$ct_friday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
+echo "<tr bgcolor=$oddrows><td align=right>Saturday Start:</td><td align=left><input type=text name=ct_saturday_start size=5 maxlength=4 value=\"$ct_saturday_start\"> </td><td align=right>Saturday Stop:</td><td align=left><input type=text name=ct_saturday_stop size=5 maxlength=4 value=\"$ct_saturday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
 
-echo "<tr bgcolor=#C1D6DF><td align=center colspan=4><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+echo "<tr bgcolor=$menubarcolor><td align=center colspan=4><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 echo "</TABLE><BR><BR>\n";
 echo "<BR><font color=$default_text size=+1>CALL TIMES USING THIS STATE CALL TIME</font><BR>\n";
-echo "<TABLE>\n";
+echo "<table width=500 cellspacing=1 bgcolor=grey>\n";
+echo "<tr bgcolor=$menubarcolor><td align=center><font size=1 color=white><b>CALL-TIME ID</b></font></td><td align=center><font size=1 color=white><b>DESCRIPTION</b></font></td></tr>\n";
 
 	$stmt="SELECT call_time_id,call_time_name from osdial_call_times where ct_state_call_times LIKE \"%|$call_time_id|%\";";
 	$rslt=mysql_query($stmt, $link);
 	$camps_to_print = mysql_num_rows($rslt);
 	$o=0;
 	while ($camps_to_print > $o) {
+		if (eregi("1$|3$|5$|7$|9$", $o)) {
+            $bgcolor='bgcolor='.$oddrows;
+        } else {
+            $bgcolor='bgcolor='.$evenrows;
+        }
 		$row=mysql_fetch_row($rslt);
-		echo "<TR><TD><a href=\"$PHP_SELF?ADD=311111111&call_time_id=$row[0]\">$row[0] </a></TD><TD> $row[1]<BR></TD></TR>\n";
+		echo "<tr $bgcolor class=row><td align=center><font size=1><a href=\"$PHP_SELF?ADD=311111111&call_time_id=$row[0]\">$row[0]</a></font></td><td nowrap><font size=1>$row[1]</font></td></tr>\n";
 		$o++;
 	}
 
-echo "</TABLE>\n";
+echo "<tr bgcolor=$menubarcolor>";
+echo "  <td colspan=2 height=8px><font size=1 color=white></font></td>";
+echo "</tr>";
+echo "</table>\n";
 echo "</center><BR><BR><br>\n";
 
 if ($LOGdelete_call_times > 0)
@@ -770,11 +812,12 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
 	$o=0;
 	while ($filters_to_print > $o) {
 		$row=mysql_fetch_row($rslt);
-		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor='.$oddrows;} 
-		else
-			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=3111111111&call_time_id=$row[0]\">$row[0]</a></td>";
+		if (eregi("1$|3$|5$|7$|9$", $o)) {
+            $bgcolor='bgcolor='.$oddrows;
+        } else {
+            $bgcolor='bgcolor='.$evenrows;
+        }
+		echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=3111111111&call_time_id=$row[0]\">$row[0]</a></td>";
 		echo "<td align=center><font size=1> $row[1]</td>";
 		echo "<td><font size=1> $row[2]</td>";
 		echo "<td><font size=1> $row[3]</td>";
@@ -783,6 +826,9 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
 		$o++;
 	}
 
+echo "<tr bgcolor=$menubarcolor>";
+echo "  <td colspan=6 height=8px><font size=1 color=white></font></td>";
+echo "</tr>";
 echo "</TABLE></center>\n";
 }
 

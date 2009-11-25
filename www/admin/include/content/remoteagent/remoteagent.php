@@ -51,7 +51,7 @@ if ($ADD==11111)
 	echo "<tr bgcolor=$oddrows><td align=right>Inbound Groups: </td><td align=left>\n";
 	echo "$groups_list";
 	echo "$NWB#osdial_remote_agents-closer_campaigns$NWE</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	echo "NOTE: It can take up to 30 seconds for changes submitted on this screen to go live\n";
 	}
@@ -242,7 +242,7 @@ if ($ADD==31111)
 	echo "<tr bgcolor=$oddrows><td align=right>Inbound Groups: </td><td align=left>\n";
 	echo "$groups_list";
 	echo "$NWB#osdial_remote_agents-closer_campaigns$NWE</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	
 	echo "NOTE: It can take up to 30 seconds for changes submitted on this screen to go live\n";
@@ -291,7 +291,7 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=31111&remote_agent_id=$row[0]\">$row[1]</a></td>";
+		echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=31111&remote_agent_id=$row[0]\">$row[1]</a></td>";
 		echo "<td align=center><font size=1> $row[2]</td>";
 		echo "<td align=center><font size=1> $row[3]</td>";
 		echo "<td><font size=1> $row[4]</td>";
@@ -301,6 +301,9 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
 		$o++;
 	}
 
+echo "<tr bgcolor=$menubarcolor>";
+echo "  <td colspan=7 height=8px><font size=1 color=white></font></td>";
+echo "</tr>";
 echo "</TABLE></center>\n";
 }
 

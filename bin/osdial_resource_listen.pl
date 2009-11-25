@@ -56,7 +56,7 @@ sub output_html {
 	my %uhost;
 	foreach my $host (sort keys %hosts) {
 		if ($hosts{$host}->{host} and $uhost{$hosts{$host}->{host}} < 1) {
-			$html .= "  <tr bgcolor=$col>\n";
+			$html .= "  <tr bgcolor=$col class=row>\n";
 			$html .= "    ";
 			$html .= "<td><font size=1 color=\$default_text>" . $hosts{$host}->{label} . "</font></td>";
 			$html .= "<td align=right><font size=1 color=\$default_text>" . $hosts{$host}->{cpu_pct} . "</font></td>";
@@ -110,7 +110,7 @@ sub output_html_extended {
 	my %uhost;
 	foreach my $host (sort keys %hosts) {
 		if ($hosts{$host}->{host} and $uhost{$hosts{$host}->{host}} < 1) {
-			$html .= "  <tr bgcolor=$col>\n";
+			$html .= "  <tr bgcolor=$col class=row>\n";
 			$html .= "    ";
 			$html .= "<td><font size=1 color=\$default_text>" . $hosts{$host}->{label} . "</font></td>";
 			$html .= "<td><font size=1 color=\$default_text>" . $hosts{$host}->{ip} . "</font></td>";

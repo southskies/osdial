@@ -37,7 +37,7 @@ if ($ADD==111111)
 	echo "<TABLE width=$section_width cellspacing=3>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Group: </td><td align=left><input type=text name=user_group size=15 maxlength=20> (no spaces or punctuation)$NWB#osdial_user_groups-user_group$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=group_name size=40 maxlength=40> (description of group)$NWB#osdial_user_groups-group_name$NWE</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -207,7 +207,7 @@ if ($ADD==311111)
 	echo "<tr bgcolor=$oddrows><td align=right>Allowed Campaigns: </td><td align=left>\n";
 	echo "$campaigns_list";
 	echo "$NWB#osdial_user_groups-allowed_campaigns$NWE</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 
 
@@ -219,9 +219,13 @@ if ($ADD==311111)
 		$users_to_print = mysql_num_rows($rsltx);
 
 		echo "<center>\n";
-		echo "<br><b>AGENTS WITHIN THIS AGENTS GROUP: $users_to_print</b><br>\n";
-		echo "<TABLE width=400 cellspacing=3>\n";
-		echo "<tr><td>USER</td><td>FULL NAME</td><td>LEVEL</td></tr>\n";
+		echo "<br><font color=$default_text size=4><b>AGENTS WITHIN THIS GROUP</b></font><br>\n";
+		echo "<table bgcolor=grey width=400 cellspacing=1>\n";
+		echo "  <tr bgcolor=$menubarcolor>\n";
+        echo "    <td><font size=1 color=white><b>USER</b></font></td>\n";
+        echo "    <td><font size=1 color=white><b>FULL NAME</b></font></td>\n";
+        echo "    <td><font size=1 color=white><b>LEVEL</b></font></td>\n";
+        echo "  </tr>\n";
 
 		$o=0;
 		while ($users_to_print > $o) 
@@ -234,13 +238,16 @@ if ($ADD==311111)
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
 
-		echo "<tr $bgcolor>\n";
+		echo "<tr $bgcolor class=row>\n";
 		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">$rowx[0]</a></td>\n";
 		echo "<td><font size=1>$rowx[1]</td>\n";
 		echo "<td><font size=1>$rowx[2]</td>\n";
 		echo "</tr>\n";
 		}
 
+    echo "<tr bgcolor=$menubarcolor>";
+    echo "  <td colspan=3 height=8px><font size=1 color=white></font></td>";
+    echo "</tr>";
 	echo "</table></center><br>\n";
 
 
@@ -316,12 +323,15 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=311111&user_group=$row[0]\">$row[0]</a></td>";
+		echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=311111&user_group=$row[0]\">$row[0]</a></td>";
 		echo "<td><font size=1> $row[1]</td>";
 		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=311111&user_group=$row[0]\">MODIFY</a></td></tr>\n";
 		$o++;
 	}
 
+echo "<tr bgcolor=$menubarcolor>";
+echo "  <td colspan=3 height=8px><font size=1 color=white></font></td>";
+echo "</tr>";
 echo "</TABLE></center>\n";
 }
 

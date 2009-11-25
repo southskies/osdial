@@ -1181,8 +1181,8 @@ if ($ADD==31) {
         echo "<a href=\"$PHP_SELF?ADD=$ADD&campaign_id=$campaign_id&dispinact=1\">(Show Inactive)</a>";
     }
     echo "</font><br>\n";
-    echo "<TABLE width=400 cellspacing=1>\n";
-    echo "<tr bgcolor=$menubarcolor><td><font color=white size=1><b>LIST ID</b></font></td><td><font color=white size=1><b>LIST NAME</b></font></td><td><font color=white size=1><b>ACTIVE</b></font></td></tr>\n";
+    echo "<table bgcolor=grey width=400 cellspacing=1>\n";
+    echo "<tr bgcolor=$menubarcolor><td align=center><font color=white size=1><b>LIST ID</b></font></td><td align=center><font color=white size=1><b>LIST NAME</b></font></td><td align=center><font color=white size=1><b>ACTIVE</b></font></td></tr>\n";
 
 
         $active_lists = 0;
@@ -1205,7 +1205,7 @@ if ($ADD==31) {
             else
                 {$bgcolor='bgcolor='.$evenrows;}
 
-            echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td><font size=1>$rowx[2]</td><td><font size=1>$rowx[1]</td></tr>\n";
+            echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td><font size=1>$rowx[2]</td><td align=center><font size=1>$rowx[1]</td></tr>\n";
             }
         echo "<tr bgcolor=$menubarcolor height=8px><td colspan=3><font color=white size=1></font></td></tr>\n";
         echo "</table></center><br>\n";
@@ -1271,7 +1271,7 @@ if ($ADD==31) {
 
 
             echo "<center><br><font color=$default_text size=+1>CUSTOM STATUSES WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_campaign_statuses$NWE</font><br><br>\n";
-            echo "  <table width=500 cellspacing=1 align=center>\n";
+            echo "  <table bgcolor=grey width=500 cellspacing=1 align=center>\n";
             echo "    <tr bgcolor=$menubarcolor>\n";
             echo "      <td align=center><font color=white size=1><b>STATUS</b></font></td>\n";
             echo "      <td align=center><font color=white size=1><b>DESCRIPTION</b></font></td>\n";
@@ -1333,7 +1333,7 @@ if ($ADD==31) {
         ##### CAMPAIGN HOTKEYS #####
         if ($SUB==23) {
             echo "<center><br><font color=$default_text size=+1>CUSTOM HOT KEYS WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_campaign_hotkeys$NWE</font><br><br>\n";
-            echo "  <table width=500 cellspacing=1 align=center>\n";
+            echo "  <table bgcolor=grey width=500 cellspacing=1 align=center>\n";
             echo "    <tr bgcolor=$menubarcolor>\n";
             echo "      <td align=center><font size=1 color=white><b>HOT&nbsp;KEY</b></font></td>\n";
             echo "      <td colspan=2 align=center><font size=1 color=white><b>STATUS</b></font></td>\n";
@@ -1392,7 +1392,7 @@ if ($ADD==31) {
         ##### CAMPAIGN LEAD RECYCLING #####
         if ($SUB==25) {
             echo "<br><font color=$default_text size=+1>LEAD RECYCLING WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_lead_recycle$NWE</font><br><br>\n";
-            echo "  <table width=500 cellspacing=1>\n";
+            echo "  <table bgcolor=grey width=500 cellspacing=1>\n";
             echo "    <tr bgcolor=$menubarcolor>\n";
             echo "      <td></td>\n";
             echo "      <td colspan=2 align=center><font size=1 color=white><b>ATTEMPT</b></font></td>\n";
@@ -1457,7 +1457,7 @@ if ($ADD==31) {
         ##### CAMPAIGN AUTO-ALT-NUMBER DIALING #####
         if ($SUB==26) {
             echo "<center><br><font color=$default_text size=+1>AUTO ALT NUMBER DIALING FOR THIS CAMPAIGN &nbsp; $NWB#osdial_auto_alt_dial_statuses$NWE</font><br><br>\n";
-            echo "  <table width=300 cellspacing=1>\n";
+            echo "  <table bgcolor=grey width=300 cellspacing=1>\n";
             echo "    <tr bgcolor=$menubarcolor>\n";
             echo "      <td align=center><font color=white size=1><b>STATUSES</b></font></td>\n";
             echo "      <td align=center><font color=white size=1><b>ACTIONS</b></font></td>\n";
@@ -1496,7 +1496,7 @@ if ($ADD==31) {
         ##### CAMPAIGN PAUSE CODES #####
         if ($SUB==27) {
             echo "<center><br><font color=$default_text size=+1>AGENT PAUSE CODES FOR THIS CAMPAIGN &nbsp; $NWB#osdial_pause_codes$NWE</font><br><br>\n";
-            echo "  <table width=500 cellspacing=1>\n";
+            echo "  <table bgcolor=grey width=500 cellspacing=1>\n";
             echo "    <tr bgcolor=$menubarcolor>\n";
             echo "      <td align=center><font color=white size=1><b>PAUSE&nbsp;CODE</b></font></td>\n";
             echo "      <td align=center><font color=white size=1><b>DESCRIPTION</b></font></td>\n";
@@ -1809,8 +1809,8 @@ if ($ADD==34)
             echo "<a href=\"$PHP_SELF?ADD=$ADD&campaign_id=$campaign_id&dispinact=1\">(Show Inactive)</a>";
         }
         echo "</font><br>\n";
-        echo "<TABLE width=400 cellspacing=3>\n";
-        echo "<tr><td><font color=$default_text>LIST ID</font></td><td><font color=$default_text>LIST NAME</font></td><td><font color=$default_text>ACTIVE</font></td></tr>\n";
+        echo "<table bgcolor=grey width=400 cellspacing=1>\n";
+        echo "<tr bgcolor=$menubarcolor><td align=center><font color=white size=1><b>LIST ID</b></font></td><td align=center><font color=white size=1><b>LIST NAME</b></font></td><td align=center><font color=white size=1><b>ACTIVE</b></font></td></tr>\n";
 
             $active_lists = 0;
             $inactive_lists = 0;
@@ -1831,10 +1831,11 @@ if ($ADD==34)
             else
                 {$bgcolor='bgcolor='.$evenrows;}
 
-            echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td><font size=1>$rowx[2]</td><td><font size=1>$rowx[1]</td></tr>\n";
+            echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td><font size=1>$rowx[2]</td><td align=center><font size=1>$rowx[1]</td></tr>\n";
 
             }
 
+        echo "<tr bgcolor=$menubarcolor height=8px><td colspan=3><font color=white size=1></font></td></tr>\n";
         echo "</table></center><br>\n";
         echo "<center><b>\n";
 
@@ -1881,8 +1882,8 @@ if ($ADD==34)
         ### list of agent rank or skill-level for this campaign
         echo "<center>\n";
         echo "<br><b><font color=$default_text>AGENT RANKS FOR THIS CAMPAIGN:</font></b><br>\n";
-        echo "<TABLE width=400 cellspacing=1>\n";
-        echo "<tr bgcolor=$menubarcolor><td><font color=white size=1><b>USER</b></font></td><td><font color=white size=1><b>RANK</b></font></td><td><font color=white size=1><b>CALLS</b></font></td></tr>\n";
+        echo "<table bgcolor=grey width=400 cellspacing=1>\n";
+        echo "<tr bgcolor=$menubarcolor><td align=center><font color=white size=1><b>USER</b></font></td><td align=center><font color=white size=1><b>RANK</b></font></td><td align=center><font color=white size=1><b>CALLS</b></font></td></tr>\n";
 
             $stmt="SELECT user,campaign_rank,calls_today from osdial_campaign_agents where campaign_id='$campaign_id'";
             $rsltx=mysql_query($stmt, $link);
@@ -1898,7 +1899,7 @@ if ($ADD==34)
         else
             {$bgcolor='bgcolor='.$evenrows;}
 
-            echo "<tr $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">$rowx[0]</a></td><td><font size=1>$rowx[1]</td><td><font size=1>$rowx[2]</td></tr>\n";
+            echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">$rowx[0]</a></td><td align=right><font size=1>$rowx[1]</td><td align=right><font size=1>$rowx[2]</td></tr>\n";
             }
 
         echo "<tr bgcolor=$menubarcolor height=8px><td colspan=3><font color=white size=1></font></td></tr>\n";

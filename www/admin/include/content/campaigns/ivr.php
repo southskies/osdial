@@ -501,7 +501,7 @@ if ($ADD == "2keys") {
 
     echo "  <tr><td colspan=2 bgcolor=$oddrows>&nbsp;</td></tr>\n";
     echo "  <tr>\n";
-    echo "      <td colspan=2 bgcolor=$menubarcolor align=center><input type=submit value=\"Create Key Entry\"></td>\n";
+    echo "      <td colspan=2 bgcolor=$menubarcolor align=center><input style=\"width: 100%;\" type=submit value=\"Create Key Entry\"></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
 
@@ -806,7 +806,7 @@ if ($ADD == "3menu") {
     echo "  <tr>\n";
     echo "  <tr><td colspan=2 bgcolor=$oddrows>&nbsp;</td></tr>\n";
     echo "  <tr>\n";
-    echo "      <td colspan=2 bgcolor=$menubarcolor align=center><input type=submit value=\"Save Form\"></td>\n";
+    echo "      <td colspan=2 bgcolor=$menubarcolor align=center><input style=\"width: 100%;\" type=submit value=\"Save Form\"></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
 
@@ -814,12 +814,12 @@ if ($ADD == "3menu") {
 
     echo "<br /><br /><hr width=50%>\n";
     echo "<center><font color=$default_text size=+1>KEYPRESS AND ACTIONS</font><br><br>\n";
-    echo "<table width=$section_width cellspacing=1 cellpadding=1>\n";
+    echo "<table bgcolor=grey width=$section_width cellspacing=1 cellpadding=1>\n";
     echo "  <tr bgcolor=$menubarcolor>\n";
-    echo "      <td align=center><font color=white size=1>KEYPRESS</font></td>\n";
-    echo "      <td align=center><font color=white size=1>ACTION</font></td>\n";
-    echo "      <td align=center><font color=white size=1>DISPOSITION</font></td>\n";
-    echo "      <td align=center><font color=white size=1>&nbsp;</font></td>\n";
+    echo "      <td align=center><font color=white size=1><b>KEYPRESS</b></font></td>\n";
+    echo "      <td align=center><font color=white size=1><b>ACTION</b></font></td>\n";
+    echo "      <td align=center><font color=white size=1><b>DISPOSITION</b</font></td>\n";
+    echo "      <td align=center colspan=2><font color=white size=1><b>ACTIONS</b></font></td>\n";
     echo "  </tr>\n";
     $oivr_opts = get_krh($link, 'osdial_ivr_options', '*', 'keypress', "ivr_id='" . $oivr['id'] . "' AND parent_id='0'");
     $cnt = 0;
@@ -835,15 +835,16 @@ if ($ADD == "3menu") {
         echo '  <input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
         echo '  <input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
         echo '  <input type="hidden" name="oivr_opt_id" value="' . $opt['id'] . '">';
-        echo "  <tr>";
-        echo "      <td $bgcolor align=center>" . $opt['keypress'] . "</td>";
-        echo "      <td $bgcolor align=center>" . $opt['action'] . "</td>";
+        echo "  <tr $bgcolor class=row>";
+        echo "      <td align=center><font size=1>" . $opt['keypress'] . "</font></td>";
+        echo "      <td align=center><font size=1>" . $opt['action'] . "</font></td>";
         if ($opt['action'] == 'MENU') {
-            echo "      <td $bgcolor align=center>" . $ad[6] . "</td>";
+            echo "      <td align=center><font size=1>" . $ad[6] . "</font></td>";
         } else {
-            echo "      <td $bgcolor align=center>" . $ad[1] . "</td>";
+            echo "      <td align=center><font size=1>" . $ad[1] . "</font></td>";
         }
-        echo "      <td $bgcolor align=center><input type=submit value=\"Edit\">  <a href=$PHP_SELF?ADD=6keys&campaign_id=" . $campaign_id . "&oivr_id=" . $oivr['id'] . "&oivr_opt_id=" . $opt['id'] . ">DELETE</a></td>\n";
+        echo "      <td align=center><font size=1><a href=$PHP_SELF?ADD=6keys&campaign_id=" . $campaign_id . "&oivr_id=" . $oivr['id'] . "&oivr_opt_id=" . $opt['id'] . ">DELETE</a></font></td>\n";
+        echo "      <td align=center><input style=\"font-size: 7pt; width: 100%;\" type=submit value=\"Edit\"></td>\n";
         echo "  </tr>";
         echo "  </form>";
         $cnt++;
@@ -853,9 +854,9 @@ if ($ADD == "3menu") {
     echo '  <input type="hidden" name="ADD" value="2keys">';
     echo '  <input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
     echo '  <input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
-    echo "  <tr>\n";
-    echo "      <td bgcolor=$oddrows align=center>";
-    echo '<select name="oivr_opt_keypress">';
+    echo "  <tr bgcolor=$menubarcolor>\n";
+    echo "      <td align=center>";
+    echo '<select style=\"font-size: 7pt;\" name="oivr_opt_keypress">';
     echo ' <option value="" selected> - SELECT DIGIT -</option>';
     $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $oivr_opt_parent_id . "'");
     $tkey = '';
@@ -876,7 +877,7 @@ if ($ADD == "3menu") {
     if ( ! preg_match('/\*/', $tkey) ) { echo ' <option value="*"> - * -</option>'; }
     echo "</select>\n";
     echo "</td>\n";
-    echo "      <td bgcolor=$oddrows align=center><select name=\"oivr_opt_action\">";
+    echo "      <td align=center><select style=\"font-size: 7pt;\" name=\"oivr_opt_action\">";
     echo "      <option value=\"\"> - Select an Action - </option>";
     echo "      <option value=\"PLAYFILE\">Play an Audio File</option>";
     echo "      <option value=\"XFER_EXTERNAL\">Transfer to an External Number</option>";
@@ -888,8 +889,8 @@ if ($ADD == "3menu") {
     echo "      <option value=\"MENU_REPEAT\">Repeat the Menu (no-diposition)</option>";
     echo "      <option value=\"MENU_EXIT\">Exit from Menu (no-diposition)</option>";
     echo "      </td>\n";
-    echo "      <td bgcolor=$oddrows align=center></td>\n";
-    echo "      <td bgcolor=$menubarcolor align=center><input type=submit value=\"New\"></td>\n";
+    echo "      <td align=center></td>\n";
+    echo "      <td align=center colspan=2><input style=\"width: 100%; font-size: 7pt;\" type=submit value=\"New\"></td>\n";
     echo "  </tr>\n";
     echo "  </form>\n";
     echo "</table>\n";
@@ -1370,7 +1371,7 @@ if ($ADD == "3keys") {
 
     echo "  <tr><td colspan=2 bgcolor=$oddrows>&nbsp;</td></tr>\n";
     echo "  <tr>\n";
-    echo "      <td colspan=2 bgcolor=$menubarcolor align=center><input type=submit value=\"Update Key Entry\"></td>\n";
+    echo "      <td colspan=2 bgcolor=$menubarcolor align=center><input style=\"width: 100%;\" type=submit value=\"Update Key Entry\"></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
 
@@ -1379,12 +1380,12 @@ if ($ADD == "3keys") {
     if ($o == 'MENU') {
         echo "<br /><br /><hr width=50%>\n";
         echo "<center><font color=$default_text size=+1>KEYPRESS AND ACTIONS</font><br><br>\n";
-        echo "<table width=$section_width cellspacing=1 cellpadding=1>\n";
+        echo "<table width=$section_width cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         echo "  <tr bgcolor=$menubarcolor>\n";
-        echo "      <td align=center><font color=white size=1>KEYPRESS</font></td>\n";
-        echo "      <td align=center><font color=white size=1>ACTION</font></td>\n";
-        echo "      <td align=center><font color=white size=1>DISPOSITION</font></td>\n";
-        echo "      <td align=center><font color=white size=1>&nbsp;</font></td>\n";
+        echo "      <td align=center><font color=white size=1><b>KEYPRESS</b></font></td>\n";
+        echo "      <td align=center><font color=white size=1><b>ACTION</b></font></td>\n";
+        echo "      <td align=center><font color=white size=1><b>DISPOSITION</b></font></td>\n";
+        echo "      <td align=center colspan=2><font color=white size=1><b>ACTIONS</b></font></td>\n";
         echo "  </tr>\n";
         $oivr_opts = get_krh($link, 'osdial_ivr_options', '*', 'keypress', "ivr_id='" . $oivr['id'] . "' AND parent_id='$oivr_opt_id'");
         $cnt = 0;
@@ -1400,11 +1401,12 @@ if ($ADD == "3keys") {
             echo '  <input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
             echo '  <input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
             echo '  <input type="hidden" name="oivr_opt_id" value="' . $opt['id'] . '">';
-            echo "  <tr>";
-            echo "      <td $bgcolor align=center>" . $opt['keypress'] . "</td>";
-            echo "      <td $bgcolor align=center>" . $opt['action'] . "</td>";
-            echo "      <td $bgcolor align=center>" . $ad[1] . "</td>";
-            echo "      <td $bgcolor align=center><input type=submit value=\"Edit\">  <a href=$PHP_SELF?ADD=6keys&campaign_id=" . $campaign_id . "&oivr_id=" . $oivr['id'] . "&oivr_opt_id=" . $opt['id'] . ">DELETE</a></td>\n";
+            echo "  <tr $bgcolor class=row>";
+            echo "      <td align=center><font size=1>" . $opt['keypress'] . "</font></td>";
+            echo "      <td align=center><font size=1>" . $opt['action'] . "</font></td>";
+            echo "      <td align=center><font size=1>" . $ad[1] . "</font></td>";
+            echo "      <td align=center><font size=1><a href=$PHP_SELF?ADD=6keys&campaign_id=" . $campaign_id . "&oivr_id=" . $oivr['id'] . "&oivr_opt_id=" . $opt['id'] . ">DELETE</a></font></td>\n";
+            echo "      <td align=center><input style=\"font-size: 7pt; width: 100%;\" type=submit value=\"Edit\"></td>\n";
             echo "  </tr>";
             echo "  </form>";
             $cnt++;
@@ -1415,9 +1417,9 @@ if ($ADD == "3keys") {
         echo '  <input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
         echo '  <input type="hidden" name="oivr_opt_parent_id" value="' . $oivr_opt_id . '">';
         echo '  <input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
-        echo "  <tr>\n";
-        echo "      <td bgcolor=$oddrows align=center>";
-        echo '<select name="oivr_opt_keypress">';
+        echo "  <tr bgcolor=$menubarcolor>\n";
+        echo "      <td align=center>";
+        echo '<select style=\"font-size: 7pt;\" name="oivr_opt_keypress">';
         echo ' <option value="" selected> - SELECT DIGIT -</option>';
         $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr['id'] . "' AND parent_id='" . $oivr_opt_id . "'");
         $tkey = '';
@@ -1438,7 +1440,7 @@ if ($ADD == "3keys") {
         if ( ! preg_match('/\*/', $tkey) ) { echo ' <option value="*"> - * -</option>'; }
         echo "</select>\n";
         echo "</td>\n";
-        echo "      <td bgcolor=$oddrows align=center><select name=\"oivr_opt_action\">";
+        echo "      <td align=center><select style=\"font-size: 7pt;\" name=\"oivr_opt_action\">";
         echo "      <option value=\"\"> - Select an Action - </option>";
         echo "      <option value=\"PLAYFILE\">Play an Audio File</option>";
         echo "      <option value=\"XFER_EXTERNAL\">Transfer to an External Number</option>";
@@ -1450,8 +1452,8 @@ if ($ADD == "3keys") {
         echo "      <option value=\"MENU_REPEAT\">Repeat the Menu (no-diposition)</option>";
         echo "      <option value=\"MENU_EXIT\">Exit from Menu (no-diposition)</option>";
         echo "      </td>\n";
-        echo "      <td bgcolor=$oddrows align=center></td>\n";
-        echo "      <td bgcolor=$menubarcolor align=center><input type=submit value=\"New\"></td>\n";
+        echo "      <td align=center></td>\n";
+        echo "      <td align=center colspan=2><input style=\"font-size: 7pt; width: 100%;\" type=submit value=\"New\"></td>\n";
         echo "  </tr>\n";
         echo "  </form>\n";
         echo "</table>\n";
