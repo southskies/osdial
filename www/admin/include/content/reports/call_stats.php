@@ -82,14 +82,18 @@ function report_call_stats() {
     $i=0;
     $group_string='|';
     $group_ct = count($group);
+    $group_list = '';
     while($i < $group_ct) {
         $group_string .= "$group[$i]|";
         $group_SQL .= "'$group[$i]',";
         $groupQS .= "&group[]=$group[$i]";
+        $group_list .= $group[$i];
+        if ($i != $group_ct - 1) $group_list .= ", ";
         $i++;
     }
     if ( (ereg("--ALL--",$group_string) ) or ($group_ct < 1) ) {
         $group_SQL = "";
+        $group_list = "--ALL--";
     } else {
         $group_SQL = eregi_replace(",$",'',$group_SQL);
         $group_SQLand = "and campaign_id IN($group_SQL)";
@@ -109,22 +113,14 @@ function report_call_stats() {
         $i++;
     }
 
-    #$html .= "<HTML>\n";
-    #$html .= "<HEAD>\n";
-    #$html .= "<STYLE type=\"text/css\">\n";
-    #$html .= "<!--\n";
-    #$html .= "-->\n";
-    #$html .= "</STYLE>\n";
-
-    #$html .= "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
-    #$html .= "<TITLE>OSDIAL: VDAD Stats</TITLE></HEAD><BODY BGCOLOR=WHITE marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";
-
     $short_header=1;
 
 
-    $html .= "<TABLE><TR><TD>\n";
-    $html .= "<p class=centered><font color=$default_text size=+1>CALL STATS REPORT</font><br><br></p>";
-    #$html .= "<TABLE CELLPADDING=4 CELLSPACING=0><TR><TD>";
+    $html .= "<br>\n";
+    $html .= "<table align=center>\n";
+    $html .= "  <tr>\n";
+    $html .= "    <td>\n";
+    $html .= "      <center><font color=$default_text size=4>CALL REPORT</font></center>\n";
 
     if ($time_begin == '') {
         $time_begin = '00:00';
@@ -132,81 +128,81 @@ function report_call_stats() {
     if ($time_end == '') {
         $time_end = '23:59';
     }
-    $html .= "<div class=\"noprint\">\n";
-    $html .= "<FORM ACTION=\"$PHP_SELF\" METHOD=GET>\n";
-    $html .= "<TABLE CELLSPACING=3><TR><TD VALIGN=TOP> Dates:<BR>";
-    $html .= "<INPUT TYPE=HIDDEN NAME=agent_hours VALUE=\"$agent_hours\">\n";
-    $html .= "<INPUT TYPE=HIDDEN NAME=ADD VALUE=\"$ADD\">\n";
-    $html .= "<INPUT TYPE=HIDDEN NAME=SUB VALUE=\"$SUB\">\n";
-    $html .= "<INPUT TYPE=HIDDEN NAME=DB VALUE=\"$DB\">\n";
-    $html .= "<INPUT TYPE=TEXT NAME=query_date SIZE=10 MAXLENGTH=10 VALUE=\"$query_date\">";
-    $html .= "<INPUT TYPE=TEXT NAME=time_begin SIZE=5 MAXLENGTH=5 VALUE=\"$time_begin\">\n";
-    $html .= "<BR> to <BR><INPUT TYPE=TEXT NAME=end_date SIZE=10 MAXLENGTH=10 VALUE=\"$end_date\">";
-    $html .= "<INPUT TYPE=TEXT NAME=time_end SIZE=5 MAXLENGTH=5 VALUE=\"$time_end\">\n";
-    $html .= "</TD><TD VALIGN=TOP> Campaigns:<BR>";
-    $html .= "<SELECT SIZE=5 NAME=group[] multiple>\n";
-    if  (eregi("--ALL--",$group_string)) {
-        $html .= "<option value=\"--ALL--\" selected>-- ALL CAMPAIGNS --</option>\n";
+    $html .= "      <div class=\"noprint\">\n";
+    $html .= "      <form action=\"$PHP_SELF\" method=GET>\n";
+    $html .= "      <input type=hidden name=agent_hours value=\"$agent_hours\">\n";
+    $html .= "      <input type=hidden name=ADD value=\"$ADD\">\n";
+    $html .= "      <input type=hidden name=SUB value=\"$SUB\">\n";
+    $html .= "      <input type=hidden name=DB value=\"$DB\">\n";
+    $html .= "      <table bgcolor=$oddrows cellspacing=3>\n";
+    $html .= "        <tr>\n";
+    $html .= "          <td colspan=3 align=center>\n";
+    $html .= "            <font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
+    if (strlen($group[0]) > 1) {
+        $html .= "              <a href=\"./admin.php?ADD=34&campaign_id=$group[0]\">MODIFY</a> | \n";
     } else {
-        $html .= "<option value=\"--ALL--\">-- ALL CAMPAIGNS --</option>\n";
+        $html .= "              <a href=\"./admin.php?ADD=10\">CAMPAIGNS</a> | \n";
     }
+    $html .= "              <a href=\"./admin.php?ADD=999999\">REPORTS</a>\n";
+    $html .= "            </font><br><br>\n";
+    $html .= "          </td>\n";
+    $html .= "        </tr>\n";
+    $html .= "        <tr>\n";
+    $html .= "          <td> Dates:<br>\n";
+    $html .= "            <input type=text name=query_date size=10 maxlength=10 value=\"$query_date\">\n";
+    $html .= "            <input type=text name=time_begin size=5 maxlength=5 value=\"$time_begin\">\n";
+    $html .= "            <br> to <br>\n";
+    $html .= "            <input type=text name=end_date size=10 maxlength=10 value=\"$end_date\">\n";
+    $html .= "            <input type=text name=time_end size=5 maxlength=5 value=\"$time_end\">\n";
+    $html .= "          </td>\n";
+    $html .= "          <td> Campaigns:<br>\n";
+    $html .= "            <select size=5 name=group[] multiple>\n";
+    $gsel=''; if  (eregi("--ALL--",$group_string)) $gsel = "selected";
+    $html .= "              <option value=\"--ALL--\" $gsel>-- ALL CAMPAIGNS --</option>\n";
     $o=0;
     while ($campaigns_to_print > $o) {
-        if (eregi("$groups[$o]\|",$group_string)) {
-            $html .= "<option selected value=\"$groups[$o]\">$groups[$o]</option>\n";
-        } else {
-            $html .= "<option value=\"$groups[$o]\">$groups[$o]</option>\n";
-        }
+        $gsel=''; if (eregi("$groups[$o]\|",$group_string)) $gsel = "selected";
+        $html .= "              <option value=\"$groups[$o]\" $gsel>$groups[$o]</option>\n";
         $o++;
     }
-    $html .= "</SELECT>\n";
-    $html .= "</TD><TD VALIGN=TOP>";
-    $html .= "<INPUT type=submit NAME=SUBMIT VALUE=SUBMIT>\n";
-    $html .= "</TD><TD VALIGN=TOP> &nbsp; &nbsp; &nbsp; &nbsp; ";
-    $html .= "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-    if (strlen($group[0]) > 1) {
-        $html .= " <a href=\"./admin.php?ADD=34&campaign_id=$group[0]\">MODIFY</a> | \n";
-        $html .= " <a href=\"./admin.php?ADD=999999\">REPORTS</a> </FONT>\n";
-    } else {
-        $html .= " <a href=\"./admin.php?ADD=10\">CAMPAIGNS</a> | \n";
-        $html .= " <a href=\"./admin.php?ADD=999999\">REPORTS</a> </FONT>\n";
-    }
-    $html .= "</TD></TR>";
-    $html .= "<tr><td colspan=3>";
-    $uclc = '';
-    if ($use_closer_log) {
-        $uclc = 'checked';
-        $use_agent_log=0;
-    }
-    $ualc = '';
-    if ($use_agent_log or $group=='') {
-        $ualc = 'checked';
-    }
-    $cgc = '';
-    if ($comment_grouping) {
-        $cgc = 'checked';
-    }
-    $html .= "<input type=\"checkbox\" name=\"use_closer_log\" value=\"1\" $uclc> Include Closer/Inbound Stats<br />";
-    $html .= "<input type=\"checkbox\" name=\"use_agent_log\" value=\"1\" $ualc> Use Agent Log for Agent Stats<br />";
-    $html .= "<input type=\"checkbox\" name=\"comment_grouping\" value=\"1\" $cgc> Group Call Status by Extended Log Data<br />";
-    $html .= "</td></tr>";
-    $html .= "</TABLE>";
-    $html .= "</FORM>\n\n";
-    $html .= "</div>\n";
+    $html .= "            </select>\n";
+    $html .= "          </td>\n";
+    $html .= "          <td>\n";
+    $uclc = ''; if ($use_closer_log) {$uclc = 'checked'; $use_agent_log=0;}
+    $ualc = ''; if ($use_agent_log or $group=='') $ualc = 'checked';
+    $cgc = ''; if ($comment_grouping) $cgc = 'checked';
+    $html .= "            <br><input type=\"checkbox\" name=\"use_closer_log\" id=\"use_closer_log\" value=\"1\" $uclc><label for=\"use_closer_log\"> Include Closer/Inbound Stats</label><br />\n";
+    $html .= "            <input type=\"checkbox\" name=\"use_agent_log\" id=\"use_agent_log\" value=\"1\" $ualc><label for=\"use_agent_log\"> Use Agent Log for Agent Stats</label><br />\n";
+    $html .= "            <input type=\"checkbox\" name=\"comment_grouping\" id=\"comment_grouping\" value=\"1\" $cgc><label for=\"comment_grouping\"> Group Call Status by Extended Log Data</label><br /><br>\n";
+    $html .= "          </td>\n";
+    $html .= "        </tr>\n";
+    $html .= "        <tr><td colspan=3>&nbsp;</td></tr>\n";
+    $html .= "        <tr class=tabfooter>\n";
+    $html .= "          <td colspan=3 align=center class=tabbutton>\n";
+    $html .= "            <input type=submit name=submit value=submit>\n";
+    $html .= "          </td>\n";
+    $html .= "        </tr>\n";
+    $html .= "      </table>\n";
+    $html .= "      </form>\n";
+    $html .= "      </div>\n\n";
     
-    $html .= "<PRE><FONT SIZE=2>\n\n";
-
 
     # If no campaign, return now.
     if (strlen($group[0]) < 1) {
         $html .= "\n\n";
         $html .= "PLEASE SELECT A CAMPAIGN AND DATE ABOVE AND CLICK SUBMIT\n";
+        $html .= "    </td>\n";
+        $html .= "  </tr>\n";
+        $html .= "</table>\n";
         return $html;
     }
 
+    $plain='';
+    $table='';
     $query_date_BEGIN = "$query_date $time_begin:00";   
     $query_date_END = "$end_date $time_end:59";
 
+    $html .= "<div class=onlyprint><pre>\n\n";
     $html .= "OSDIAL: Auto-dial Stats                             $NOW_TIME\n";
 
     $html .= "\n";
@@ -229,11 +225,15 @@ function report_call_stats() {
     }
     $closer_campaignsSQL = eregi_replace(",$",'',$closer_campaignsSQL);
     $ccprint = preg_replace("/'',/","",$closer_campaignsSQL);
+    $ccprint2 = preg_replace("/,/",", ",$ccprint);
+    $ccprint2 = preg_replace("/'/","    ",$ccprint2);
     $ccprint = preg_replace("/,/","\n",$ccprint);
     $ccprint = preg_replace("/'/","    ",$ccprint);
     $html .= $ccprint . "\n\n";
     $closer_SQLand = "and campaign_id IN($closer_campaignsSQL)";
+    $html .= "</pre></div>";
 
+    $html .= "<div class=onlyprint><pre>\n\n";
     $html .= "---------- TOTALS\n";
 
     if ($use_closer_log) {
@@ -254,11 +254,13 @@ function report_call_stats() {
         $average_hold_seconds = round($average_hold_seconds, 2);
         $average_hold_seconds =    sprintf("%10s", $average_hold_seconds);
     }
+    $TOTAVGseconds = $average_hold_seconds;
     $html .= "Total Calls placed from this Campaign:        $TOTALcalls\n";
     $html .= "Average Call Length for all Calls in seconds: $average_hold_seconds\n";
+    $html .= "</pre></div>";
 
 
-    $html .= "\n\n";
+    $html .= "<div class=onlyprint><pre>\n\n";
     $html .= "---------- DROPS\n";
 
     if ($use_closer_log) {
@@ -375,11 +377,12 @@ function report_call_stats() {
     $AVG_ANSWERagent_non_pause_sec = sprintf("%10s", $AVG_ANSWERagent_non_pause_sec);
     
     $html .= "Productivity Rating:                          $AVG_ANSWERagent_non_pause_sec\n";
+    $html .= "</pre></div>";
     
     
     
     
-    $html .= "\n\n";
+    $html .= "<div class=onlyprint><pre>\n\n";
     $html .= "---------- AUTO-DIAL NO ANSWERS\n";
     
     if ($use_closer_log) {
@@ -409,18 +412,107 @@ function report_call_stats() {
     
     $html .= "Total NA calls -Busy,Disconnect,RingNoAnswer: $NAcalls  $NApercent%\n";
     $html .= "Average Call Length for NA Calls in seconds:  $average_na_seconds\n";
+    $html .= "</pre></div>\n";
+
+    $table .= "<br><br>\n";
+    $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
+    $table .= "  <tr><td align=center><font color=$default_text size=3>CALL REPORT SUMMARY INFORMATION</font></td></tr>\n";
+    $table .= "  <tr>\n";
+    $table .= "    <td align=center>\n";
+    $table .= "      <table width=400 align=center cellspacing=1 bgcolor=grey>\n";
+    $table .= "        <tr class=tabheader>\n";
+    $table .= "          <td align=center colspan=2>Report Details</td>\n";
+    $table .= "        </tr>\n";
+    $table .= "        <tr bgcolor=$evenrows class=\"row font1\">\n";
+    $table .= "          <td>Date/Time Report Was Run</td><td>$NOW_TIME</td>";
+    $table .= "        </tr>\n";
+    $table .= "        <tr bgcolor=$oddrows class=\"row font1\">\n";
+    $table .= "          <td>Date/Time Start</td><td>$query_date_BEGIN</td>";
+    $table .= "        </tr>\n";
+    $table .= "        <tr bgcolor=$evenrows class=\"row font1\">\n";
+    $table .= "          <td>Date/Time End</td><td>$query_date_END</td>";
+    $table .= "        </tr>\n";
+    $table .= "        <tr bgcolor=$oddrows class=\"row font1\">\n";
+    $table .= "          <td>Selected Campaigns</td><td>$group_list</td>";
+    $table .= "        </tr>\n";
+    $table .= "        <tr bgcolor=$evenrows class=\"row font1\">\n";
+    $table .= "          <td>Included InGroups</td><td>$ccprint2</td>";
+    $table .= "        </tr>\n";
+    $table .= "        <tr class=tabheader>\n";
+    $table .= "          <td align=center colspan=2>TOTALS</td>\n";
+    $table .= "        </tr>\n";
+    $table .= "        <tr bgcolor=$oddrows class=\"row font1\">\n";
+    $table .= "          <td>Totals Calls for Selected Campaigns</td><td>$TOTALcalls</td>";
+    $table .= "        </tr>\n";
+    $table .= "        <tr bgcolor=$evenrows class=\"row font1\">\n";
+    $table .= "          <td>Average Call Legnth</td><td>$TOTAVGseconds seconds</td>";
+    $table .= "        </tr>\n";
+    $table .= "        <tr bgcolor=$oddrows class=\"row font1\">\n";
+    $table .= "          <td>Total Human Answered Calls</td><td>$ANSWERcalls</td>";
+    $table .= "        </tr>\n";
+    $table .= "        <tr bgcolor=$evenrows class=\"row font1\">\n";
+    $table .= "          <td>Productivity Rating</td><td>$AVG_ANSWERagent_non_pause_sec</td>";
+    $table .= "        </tr>\n";
+    $table .= "        <tr class=tabheader>\n";
+    $table .= "          <td align=center colspan=2>DROPS</td>\n";
+    $table .= "        </tr>\n";
+    $table .= "        <tr bgcolor=$oddrows class=\"row font1\">\n";
+    $table .= "          <td>Total DROP Calls</td><td>$DROPcalls</td>";
+    $table .= "        </tr>\n";
+    $table .= "        <tr bgcolor=$evenrows class=\"row font1\">\n";
+    $table .= "          <td>Percentage of DROP to Total Calls</td><td>$DROPpercent%</td>";
+    $table .= "        </tr>\n";
+    $table .= "        <tr bgcolor=$oddrows class=\"row font1\">\n";
+    $table .= "          <td>Percentage of DROP to Human Answered Calls</td><td>$DROPANSWERpercent%</td>";
+    $table .= "        </tr>\n";
+    $table .= "        <tr bgcolor=$evenrows class=\"row font1\">\n";
+    $table .= "          <td>Average Call Length for DROP Calls</td><td>$average_hold_seconds seconds</td>";
+    $table .= "        </tr>\n";
+    $table .= "        <tr class=tabheader>\n";
+    $table .= "          <td align=center colspan=2>AUTO-DIAL NO-ANSWERS</td>\n";
+    $table .= "        </tr>\n";
+    $table .= "        <tr bgcolor=$oddrows class=\"row font1\">\n";
+    $table .= "          <td>Total NA Calls</td><td>$NAcalls</td>";
+    $table .= "        </tr>\n";
+    $table .= "        <tr bgcolor=$evenrows class=\"row font1\">\n";
+    $table .= "          <td>Percentage of NA to Total Calls</td><td>$NApercent%</td>";
+    $table .= "        </tr>\n";
+    $table .= "        <tr bgcolor=$oddrows class=\"row font1\">\n";
+    $table .= "          <td>Average Call Length for NA Calls</td><td>$average_na_seconds seconds</td>";
+    $table .= "        </tr>\n";
+    $table .= "        <tr class=tabfooter>\n";
+    $table .= "          <td colspan=2></td>\n";
+    $table .= "        </tr>\n";
+    $table .= "      </table>\n";
+    $table .= "    </td>\n";
+    $table .= "  </tr>\n";
+    $table .= "</table>\n";
+
+    $html .= "<div class=noprint>$table</div>\n";
     
     
     ##############################
     #########  CALL HANGUP REASON STATS
     
     $TOTALcalls = 0;
+    $plain='';
+    $table='';
     
-    $html .= "\n\n";
-    $html .= "---------- CALL HANGUP REASON STATS\n";
-    $html .= "+----------------------+------------+\n";
-    $html .= "| HANGUP REASON        | CALLS      |\n";
-    $html .= "+----------------------+------------+\n";
+    $plain .= "---------- CALL HANGUP REASON STATS\n";
+    $plain .= "+----------------------+------------+\n";
+    $plain .= "| HANGUP REASON        | CALLS      |\n";
+    $plain .= "+----------------------+------------+\n";
+
+    $table .= "<br><br>\n";
+    $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
+    $table .= "  <tr><td align=center><font color=$default_text size=3>CALL HANGUP REASON STATS</font></td></tr>\n";
+    $table .= "  <tr>\n";
+    $table .= "    <td align=center>\n";
+    $table .= "      <table width=300 align=center cellspacing=1 bgcolor=grey>\n";
+    $table .= "        <tr class=tabheader>\n";
+    $table .= "          <td align=center>Hangup Reason</td>\n";
+    $table .= "          <td align=center>Calls</td>\n";
+    $table .= "        </tr>\n";
     
     if ($use_closer_log) {
         $stmt="SELECT count(*),term_reason FROM ((select uniqueid,term_reason from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand) UNION (select uniqueid,term_reason from osdial_closer_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $closer_SQLand)) AS t group by term_reason;";
@@ -446,45 +538,102 @@ function report_call_stats() {
         if (ereg("NONE",$reason))    {$reason = 'NO CONTACT          ';}
         if (ereg("CALLER",$reason)) {$reason = 'CUSTOMER            ';}
     
-        $html .= "| $reason | $REASONcount |\n";
+        $plain .= "| $reason | $REASONcount |\n";
+
+        $bgcolor='bgcolor='.$evenrows;
+        if (eregi("1$|3$|5$|7$|9$", $i)) $bgcolor='bgcolor='.$oddrows;
+        $table .= "        <tr $bgcolor class=\"row font1\">\n";
+        $table .= "          <td align=left>$reason</td>\n";
+        $table .= "          <td align=right>$REASONcount</td>\n";
+        $table .= "        </tr>\n";
         $i++;
     }
     
     $TOTALcalls =        sprintf("%10s", $TOTALcalls);
     
-    $html .= "+----------------------+------------+\n";
-    $html .= "| TOTAL:               | $TOTALcalls |\n";
-    $html .= "+----------------------+------------+\n";
-    
-    
-    
+    $plain .= "+----------------------+------------+\n";
+    $plain .= "| TOTAL:               | $TOTALcalls |\n";
+    $plain .= "+----------------------+------------+\n";
+
+    $table .= "        <tr class=tabfooter>\n";
+    $table .= "          <td align=left>TOTAL</td>\n";
+    $table .= "          <td align=right>$TOTALcalls</td>\n";
+    $table .= "        </tr>\n";
+    $table .= "      </table>\n";
+    $table .= "    </td>\n";
+    $table .= "  </tr>\n";
+    $table .= "</table>\n";
+
+    $html .= "<div class=onlyprint><pre>\n\n$plain</pre></div>\n";
+    $html .= "<div class=noprint>$table</div>";
     
     
     ##############################
     #########  CALL STATUS STATS
+    $table='';
+    $plain='';
+    $export='';
+
     $CSVrows = 0;
-    $html .= "<form target=\"_new\" action=\"/osdial/admin/tocsv.php\">";
-    $html .= "<input type=hidden name=\"name\" value=\"css\">";
+    $export .= "<form target=\"_new\" action=\"/osdial/admin/tocsv.php\">";
+    $export .= "<input type=hidden name=\"name\" value=\"css\">";
     
     $TOTALcalls = 0;
     
-    $html .= "\n\n";
-    $html .= "---------- CALL STATUS STATS\n";
+    $plain .= "\n\n";
+    $plain .= "---------- CALL DISPOSITION STATS\n";
     $head = '';
+    $table .= "<br><br>\n";
+    $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
+    $table .= "  <tr><td align=center><font color=$default_text size=3>CALL DISPOSITION STATS</font></td></tr>\n";
+    $table .= "  <tr>\n";
+    $table .= "    <td align=center>\n";
+    $table .= "      <table width=700 align=center cellspacing=1 bgcolor=grey>\n";
     if ($comment_grouping) {
-        $html .= "+------------------------------------------+--------+----------------------+----------------------+------------+----------------------------------+----------+\n";
-        $html .= "|                                          |        |                      |                      |            |      CALL TIME                   |AGENT TIME|\n";
-        $html .= "| EXTENDED DATA                            | STATUS | DESCRIPTION          | CATEGORY             | CALLS      | TOTAL TIME | AVG TIME |CALLS/HOUR|CALLS/HOUR|\n";
-        $html .= "+------------------------------------------+--------+----------------------+----------------------+------------+------------+----------+----------+----------+\n";
+        $plain .= "+------------------------------------------+--------+----------------------+----------------------+------------+----------------------------------+----------+\n";
+        $plain .= "|                                          |        |                      |                      |            |      CALL TIME                   |AGENT TIME|\n";
+        $plain .= "| EXTENDED DATA                            | STATUS | DESCRIPTION          | CATEGORY             | CALLS      | TOTAL TIME | AVG TIME |CALLS/HOUR|CALLS/HOUR|\n";
+        $plain .= "+------------------------------------------+--------+----------------------+----------------------+------------+------------+----------+----------+----------+\n";
+        $table .= "        <tr class=tabheader>\n";
+        $table .= "          <td colspan=5>&nbsp;</td>\n";
+        $table .= "          <td colspan=3 align=center>Call Time</td>\n";
+        $table .= "          <td align=center>Agent Time</td>\n";
+        $table .= "        </tr>\n";
+        $table .= "        <tr class=tabheader>\n";
+        $table .= "          <td align=center>Extended Data</td>\n";
+        $table .= "          <td align=center>Status</td>\n";
+        $table .= "          <td align=center>Description</td>\n";
+        $table .= "          <td align=center>Category</td>\n";
+        $table .= "          <td align=center>Calls</td>\n";
+        $table .= "          <td align=center>Total Time</td>\n";
+        $table .= "          <td align=center>Avg Time</td>\n";
+        $table .= "          <td align=center>Calls/Hour</td>\n";
+        $table .= "          <td align=center>Calls/Hour</td>\n";
+        $table .= "        </tr>\n";
         $head = "Extended Data|Status|Description|Category|Calls|Call Total Time|Call Avg Time|Calls/Hour|Agent Calls/Hour";
     } else {
-        $html .= "+--------+----------------------+----------------------+------------+----------------------------------+----------+\n";
-        $html .= "|        |                      |                      |            |      CALL TIME                   |AGENT TIME|\n";
-        $html .= "| STATUS | DESCRIPTION          | CATEGORY             | CALLS      | TOTAL TIME | AVG TIME |CALLS/HOUR|CALLS/HOUR|\n";
-        $html .= "+--------+----------------------+----------------------+------------+------------+----------+----------+----------+\n";
+        $plain .= "+--------+----------------------+----------------------+------------+----------------------------------+----------+\n";
+        $plain .= "|        |                      |                      |            |      CALL TIME                   |AGENT TIME|\n";
+        $plain .= "| STATUS | DESCRIPTION          | CATEGORY             | CALLS      | TOTAL TIME | AVG TIME |CALLS/HOUR|CALLS/HOUR|\n";
+        $plain .= "+--------+----------------------+----------------------+------------+------------+----------+----------+----------+\n";
+        $table .= "        <tr class=tabheader>\n";
+        $table .= "          <td colspan=4>&nbsp;</td>\n";
+        $table .= "          <td colspan=3 align=center>Call Time</td>\n";
+        $table .= "          <td align=center>Agent Time</td>\n";
+        $table .= "        </tr>\n";
+        $table .= "        <tr class=tabheader>\n";
+        $table .= "          <td align=center>Status</td>\n";
+        $table .= "          <td align=center>Description</td>\n";
+        $table .= "          <td align=center>Category</td>\n";
+        $table .= "          <td align=center>Calls</td>\n";
+        $table .= "          <td align=center>Total Time</td>\n";
+        $table .= "          <td align=center>Avg Time</td>\n";
+        $table .= "          <td align=center>Calls/Hour</td>\n";
+        $table .= "          <td align=center>Calls/Hour</td>\n";
+        $table .= "        </tr>\n";
         $head = "Status|Description|Category|Calls|Call Total Time|Call Avg Time|Calls/Hour|Agent Calls/Hour";
     }
-    $html .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"" . $head . "\">";
+    $export .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"" . $head . "\">";
     $CSVrows++;
     
     
@@ -602,13 +751,36 @@ function report_call_stats() {
         }
     
         $line = '';
+        $bgcolor='bgcolor='.$evenrows;
+        if (eregi("1$|3$|5$|7$|9$", $i)) $bgcolor='bgcolor='.$oddrows;
         if ($comment_grouping) {
+            $table .= "        <tr $bgcolor class=\"row font1\">\n";
+            $table .= "          <td align=left>$comment</td>\n";
+            $table .= "          <td align=left>$status</td>\n";
+            $table .= "          <td align=left>$status_name</td>\n";
+            $table .= "          <td align=left>$statcat</td>\n";
+            $table .= "          <td align=right>$STATUScount</td>\n";
+            $table .= "          <td align=right>$STATUShours</td>\n";
+            $table .= "          <td align=right>$STATUSavg</td>\n";
+            $table .= "          <td align=right>$STATUSrate</td>\n";
+            $table .= "          <td align=right>$AGENTrate</td>\n";
+            $table .= "        </tr>\n";
             $line = "$comment | $status | $status_name | $statcat | $STATUScount | $STATUShours | $STATUSavg | $STATUSrate | $AGENTrate";
         } else {
+            $table .= "        <tr $bgcolor class=\"row font1\">\n";
+            $table .= "          <td align=left>$status</td>\n";
+            $table .= "          <td align=left>$status_name</td>\n";
+            $table .= "          <td align=left>$statcat</td>\n";
+            $table .= "          <td align=right>$STATUScount</td>\n";
+            $table .= "          <td align=right>$STATUShours</td>\n";
+            $table .= "          <td align=right>$STATUSavg</td>\n";
+            $table .= "          <td align=right>$STATUSrate</td>\n";
+            $table .= "          <td align=right>$AGENTrate</td>\n";
+            $table .= "        </tr>\n";
             $line = "$status | $status_name | $statcat | $STATUScount | $STATUShours | $STATUSavg | $STATUSrate | $AGENTrate";
         }
-        $html .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"" . $line . "\">";
-        $html .= "| $line |\n";
+        $export .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"" . $line . "\">";
+        $plain .= "| $line |\n";
         $CSVrows++;
     
         $i++;
@@ -679,41 +851,96 @@ function report_call_stats() {
     while(strlen($aTOTALrate)>8) {$aTOTALrate = substr("$aTOTALrate", 0, -1);}
     
     if ($comment_grouping) {
-        $html .= "+------------------------------------------+--------+----------------------+----------------------+------------+------------+----------+----------+----------+\n";
-        $html .= "| TOTAL:                                                                                          | $TOTALcalls | $TOTALhours | $TOTALavg | $TOTALrate |          |\n";
-        $html .= "|   AGENT TIME                                                                                    |            | $aTOTALhours |                     | $aTOTALrate |\n";
-        $html .= "+-------------------------------------------------------------------------------------------------+------------+------------+---------------------+----------+\n";
+        $plain .= "+------------------------------------------+--------+----------------------+----------------------+------------+------------+----------+----------+----------+\n";
+        $plain .= "| TOTAL:                                                                                          | $TOTALcalls | $TOTALhours | $TOTALavg | $TOTALrate |          |\n";
+        $plain .= "|   AGENT TIME                                                                                    |            | $aTOTALhours |                     | $aTOTALrate |\n";
+        $plain .= "+-------------------------------------------------------------------------------------------------+------------+------------+---------------------+----------+\n";
+        $table .= "        <tr class=tabfooter>\n";
+        $table .= "          <td colspan=4 align=left>Total</td>\n";
+        $table .= "          <td align=right>$TOTALcalls</td>\n";
+        $table .= "          <td align=right>$TOTALhours</td>\n";
+        $table .= "          <td align=right>$TOTALavg</td>\n";
+        $table .= "          <td align=right>$TOTALrate</td>\n";
+        $table .= "          <td>&nbsp;</td>\n";
+        $table .= "        </tr>\n";
+        $table .= "        <tr class=tabfooter>\n";
+        $table .= "          <td colspan=4 align=left>Agent Time</td>\n";
+        $table .= "          <td align=left>&nbsp;</td>\n";
+        $table .= "          <td align=right>$aTOTALhours</td>\n";
+        $table .= "          <td colspan=2>&nbsp;</td>\n";
+        $table .= "          <td align=right>$aTOTALrate</td>\n";
+        $table .= "        </tr>\n";
     } else {
-        $html .= "+--------+----------------------+----------------------+------------+------------+----------+----------+----------+\n";
-        $html .= "| TOTAL:                                               | $TOTALcalls | $TOTALhours | $TOTALavg | $TOTALrate |          |\n";
-        $html .= "|   AGENT TIME                                         |            | $aTOTALhours |                     | $aTOTALrate |\n";
-        $html .= "+------------------------------------------------------+------------+------------+---------------------+----------+\n";
+        $plain .= "+--------+----------------------+----------------------+------------+------------+----------+----------+----------+\n";
+        $plain .= "| TOTAL:                                               | $TOTALcalls | $TOTALhours | $TOTALavg | $TOTALrate |          |\n";
+        $plain .= "|   AGENT TIME                                         |            | $aTOTALhours |                     | $aTOTALrate |\n";
+        $plain .= "+------------------------------------------------------+------------+------------+---------------------+----------+\n";
+        $table .= "        <tr class=tabfooter>\n";
+        $table .= "          <td colspan=3 align=left>TOTALS</td>\n";
+        $table .= "          <td align=right>$TOTALcalls</td>\n";
+        $table .= "          <td align=right>$TOTALhours</td>\n";
+        $table .= "          <td align=right>$TOTALavg</td>\n";
+        $table .= "          <td align=right>$TOTALrate</td>\n";
+        $table .= "          <td>&nbsp;</td>\n";
+        $table .= "        </tr>\n";
+        $table .= "        <tr class=tabfooter>\n";
+        $table .= "          <td colspan=3 align=left>AGENT TIME</td>\n";
+        $table .= "          <td align=left>&nbsp;</td>\n";
+        $table .= "          <td align=right>$aTOTALhours</td>\n";
+        $table .= "          <td colspan=2>&nbsp;</td>\n";
+        $table .= "          <td align=right>$aTOTALrate</td>\n";
+        $table .= "        </tr>\n";
     }
-    $html .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">";
-    $html .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
-    $html .= "</form>";
+    $export .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">";
+    $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
+    $export .= "</form>";
+
+    $table .= "      </table>\n";
+    $table .= "    </td>\n";
+    $table .= "  </tr>\n";
+    $table .= "</table>\n";
+
+    $html .= "<div class=onlyprint><pre>\n\n$plain</pre></div>\n";
+    $html .= "<div class=noprint>$table<br><center>$export</center></div>";
     
     
     
     ##############################
     #########  STATUS CATEGORY STATS
+    $table='';
+    $plain='';
+    $export='';
+
     $CSVrows = 0;
-    $html .= "<form target=\"_new\" action=\"/osdial/admin/tocsv.php\">";
-    $html .= "<input type=hidden name=\"name\" value=\"cscs\">";
+    $export .= "<form target=\"_new\" action=\"/osdial/admin/tocsv.php\">";
+    $export .= "<input type=hidden name=\"name\" value=\"cscs\">";
     
-    $html .= "\n\n";
-    $html .= "---------- CUSTOM STATUS CATEGORY STATS\n";
-    $html .= "+----------------------+--------------------------------+------------+\n";
-    $html .= "| CATEGORY             | DESCRIPTION                    | CALLS      |\n";
-    $html .= "+----------------------+--------------------------------+------------+\n";
-    $html .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"Category|Description|Calls\">";
+    $table .= "<br><br>\n";
+    $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
+    $table .= "  <tr><td align=center><font color=$default_text size=3>CUSTOM STATUS CATEGORY STATS</font></td></tr>\n";
+    $table .= "  <tr>\n";
+    $table .= "    <td align=center>\n";
+    $table .= "      <table width=500 align=center cellspacing=1 bgcolor=grey>\n";
+    $table .= "        <tr class=tabheader>\n";
+    $table .= "          <td align=center>Category</td>\n";
+    $table .= "          <td align=center>Description</td>\n";
+    $table .= "          <td align=center>Calls</td>\n";
+    $table .= "        </tr>\n";
+
+    $plain .= "---------- CUSTOM STATUS CATEGORY STATS\n";
+    $plain .= "+----------------------+--------------------------------+------------+\n";
+    $plain .= "| CATEGORY             | DESCRIPTION                    | CALLS      |\n";
+    $plain .= "+----------------------+--------------------------------+------------+\n";
+    $export .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"Category|Description|Calls\">";
     $CSVrows++;
     
     
-    $csgs_html = '';
+    $csgs_table = '';
+    $csgs_plain = '';
     $TOTCATcalls=0;
     $TOTCATcontact=0;
     $TOTCATsale=0;
+    $found_undef=0;
     $r=0;
     while ($r < $statcats_to_print) {
         $TOTCATcalls = ($TOTCATcalls + $vsc_count[$r]);
@@ -728,18 +955,35 @@ function report_call_stats() {
             $TOTCATsale += $CATcount;
         }
         if ($CATcount > 0) {
+            $bgcolor='bgcolor='.$evenrows;
+            if (eregi("1$|3$|5$|7$|9$", $r)) $bgcolor='bgcolor='.$oddrows;
             # Put "Undefined" on bottom.
             if ($vsc_id[$r] != 'UNDEFINED') {
-                $html .= "| $category | $CATname | $CATcount |\n";
+                $plain .= "| $category | $CATname | $CATcount |\n";
+                $table .= "        <tr $bgcolor class=\"row font1\">\n";
+                $table .= "          <td>$category</td>\n";
+                $table .= "          <td>$CATname</td>\n";
+                $table .= "          <td align=right>$CATcount</td>\n";
+                $table .= "        </tr>\n";
             } else {
-                $csgs_html = "| $category | $CATname | $CATcount |\n";
+                $csgs_plain = "| $category | $CATname | $CATcount |\n";
+                $ccgs_table = "          <td>$category</td>\n";
+                $ccgs_table .= "          <td>$CATname</td>\n";
+                $ccgs_table .= "          <td align=right>$CATcount</td>\n";
+                $ccgs_table .= "        </tr>\n";
+                $found_undef++;
             }
         }
-        $html .= "<input type=hidden name=\"row$CSVrows\" value=\"$category|$CATname|$CATcount\">";
+        $export .= "<input type=hidden name=\"row$CSVrows\" value=\"$category|$CATname|$CATcount\">";
         $CSVrows++;
         $r++;
     }
-    $html .= $csgs_html;
+    if ($found_undef > 0) {
+        $bgcolor='bgcolor='.$evenrows;
+        if (eregi("1$|3$|5$|7$|9$", $r)) $bgcolor='bgcolor='.$oddrows;
+        $plain .= $csgs_plain;
+        $table .= "        <tr $bgcolor class=\"row font1\">\n" . $ccgs_table;
+    }
     
     if ($TOTCATcontact > 0) {
         $TOTCATconversion = ($TOTCATsale / $TOTCATcontact) * 100;
@@ -749,27 +993,60 @@ function report_call_stats() {
     $TOTCATcalls =    sprintf("%10s", $TOTCATcalls);
     while(strlen($TOTCATcalls)>10) {$TOTCATcalls = substr("$TOTCATcalls", 0, -1);}
     
-    $html .= "+-------------------------------------------------------+------------+\n";
-    $html .= "| TOTAL                                                 | $TOTCATcalls |\n";
-    $html .= "+-------------------------------------------------------+------------+\n";
-    $html .= "| CONVERSION RATE  (CONTACTS / SALE+XFER)               |    $TOTCATconversion |\n";
-    $html .= "+-------------------------------------------------------+------------+\n";
-    $html .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">";
-    $html .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
-    $html .= "</form>";
+    $plain .= "+-------------------------------------------------------+------------+\n";
+    $plain .= "| TOTAL                                                 | $TOTCATcalls |\n";
+    $plain .= "+-------------------------------------------------------+------------+\n";
+    $plain .= "| CONVERSION RATE  (CONTACTS / SALE+XFER)               |    $TOTCATconversion |\n";
+    $plain .= "+-------------------------------------------------------+------------+\n";
+    $table .= "        <tr class=tabfooter>\n";
+    $table .= "          <td colspan=2 align=left>TOTAL</td>\n";
+    $table .= "          <td align=right>$TOTCATcalls</td>\n";
+    $table .= "        </tr>\n";
+    $table .= "        <tr class=tabfooter>\n";
+    $table .= "          <td colspan=2 align=left>CONVERSION RATE <span style=\"font-size: 6pt;\">(CONTACTS / SALE+XFER)</span></td>\n";
+    $table .= "          <td align=right>$TOTCATconversion</td>\n";
+    $table .= "        </tr>\n";
+    $table .= "      </table>\n";
+    $table .= "    </td>\n";
+    $table .= "  </tr>\n";
+    $table .= "</table>\n";
+    $export .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">";
+    $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
+    $export .= "</form>";
+
+    $html .= "<div class=onlyprint><pre>\n\n$plain</pre></div>\n";
+    $html .= "<div class=noprint>$table<br><center>$export</center></div>";
 
 
 
     if ($comment_grouping) {
-        $html .= "\n\n";
-        $html .= "---------- CONVERSION RATE BASED ON EXTENDED DATA\n";
-        $html .= "+----------------------------------------------------+----------+----------+----------+----------+\n";
-        $html .= "| EXTENDED DATA                                      | CONTACTS |    DNC   |   SALES  |   RATE   |\n";
-        $html .= "+----------------------------------------------------+----------+----------+----------+----------+\n";
+        $table='';
+        $plain='';
+        $export='';
+
+        $plain .= "---------- CONVERSION RATE BASED ON EXTENDED DATA\n";
+        $plain .= "+----------------------------------------------------+----------+----------+----------+----------+\n";
+        $plain .= "| EXTENDED DATA                                      | CONTACTS |    DNC   |   SALES  |   RATE   |\n";
+        $plain .= "+----------------------------------------------------+----------+----------+----------+----------+\n";
+        $table .= "<br><br>\n";
+        $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
+        $table .= "  <tr><td align=center><font color=$default_text size=3>CONVERSION RATE BASED ON EXTENDED DATA</font></td></tr>\n";
+        $table .= "  <tr>\n";
+        $table .= "    <td align=center>\n";
+        $table .= "      <table width=600 align=center cellspacing=1 bgcolor=grey>\n";
+        $table .= "        <tr class=tabheader>\n";
+        $table .= "          <td align=center>Extended Data</td>\n";
+        $table .= "          <td align=center>Contacts</td>\n";
+        $table .= "          <td align=center>DNC</td>\n";
+        $table .= "          <td align=center>SALES</td>\n";
+        $table .= "          <td align=center>Rate</td>\n";
+        $table .= "        </tr>\n";
+
         $TOTCATcontact = 0;
         $TOTCATdnc = 0;
         $TOTCATsale = 0;
         $TOTCATconversion = 0;
+        $o=0;
         foreach ($cnvrate as $edkey => $edval) {
             $CATcontact = 0;
             $CATdnc = 0;
@@ -799,7 +1076,17 @@ function report_call_stats() {
                 while(strlen($CATsale)>5) {$CATsale = substr("$CATsale", 0, -1);}
                 $ed =    sprintf("%-50s", $edkey); 
                 while(strlen($ed)>50) {$ed = substr("$ed", 0, -1);}    
-                $html .= '| ' . $ed . ' |    ' . $CATcontact . ' |   ' . $CATdnc . '  |   ' . $CATsale . '  |   ' . $CATconversion . "|\n";
+                $plain .= '| ' . $ed . ' |    ' . $CATcontact . ' |   ' . $CATdnc . '  |   ' . $CATsale . '  |   ' . $CATconversion . "|\n";
+                $bgcolor='bgcolor='.$evenrows;
+                if (eregi("1$|3$|5$|7$|9$", $o)) $bgcolor='bgcolor='.$oddrows;
+                $table .= "        <tr $bgcolor class=\"row font1\">\n";
+                $table .= "          <td>$ed</td>\n";
+                $table .= "          <td align=right>$CATcontact</td>\n";
+                $table .= "          <td align=right>$CATdnc</td>\n";
+                $table .= "          <td align=right>$CATsale</td>\n";
+                $table .= "          <td align=right>$CATconversion</td>\n";
+                $table .= "        </tr>\n";
+                $o++;
             }
         }
         if ($TOTCATcontact > 0) {
@@ -812,30 +1099,63 @@ function report_call_stats() {
             while(strlen($TOTCATdnc)>5) {$TOTCATdnc = substr("$TOTCATdnc", 0, -1);}
             $TOTCATsale =    sprintf("%5s", $TOTCATsale);
             while(strlen($TOTCATsale)>5) {$TOTCATsale = substr("$TOTCATsale", 0, -1);}
-            $html .= "+----------------------------------------------------+----------+----------+----------+----------+\n";
-            $html .= "+ TOTALS                                             ";
-            $html .= '|    ' . $TOTCATcontact . ' |   ' . $TOTCATdnc . '  |   ' . $TOTCATsale . '  |   ' . $TOTCATconversion . "|\n";
+            $plain .= "+----------------------------------------------------+----------+----------+----------+----------+\n";
+            $plain .= "+ TOTALS                                             ";
+            $plain .= '|    ' . $TOTCATcontact . ' |   ' . $TOTCATdnc . '  |   ' . $TOTCATsale . '  |   ' . $TOTCATconversion . "|\n";
+            $table .= "        <tr class=tabfooter>\n";
+            $table .= "          <td>TOTALS</td>\n";
+            $table .= "          <td align=right>$TOTCATcontact</td>\n";
+            $table .= "          <td align=right>$TOTCATdnc</td>\n";
+            $table .= "          <td align=right>$TOTCATsale</td>\n";
+            $table .= "          <td align=right>$TOTCATconversion</td>\n";
+            $table .= "        </tr>\n";
+        } else {
+            $table .= "        <tr class=tabfooter>\n";
+            $table .= "          <td colspan=5></td>\n";
+            $table .= "        </tr>\n";
         }
-        $html .= "+----------------------------------------------------+----------+----------+----------+----------+\n\n";
+        $plain .= "+----------------------------------------------------+----------+----------+----------+----------+\n\n";
+        $table .= "      </table>\n";
+        $table .= "    </td>\n";
+        $table .= "  </tr>\n";
+        $table .= "</table>\n";
+
+        $html .= "<div class=onlyprint><pre>\n\n$plain</pre></div>\n";
+        $html .= "<div class=noprint>$table</div>";
     }
     
     ##############################
     #########  USER STATS
+    $table='';
+    $plain='';
+    $export='';
+
     $CSVrows = 0;
-    $html .= "<form target=\"_new\" action=\"/osdial/admin/tocsv.php\">";
-    $html .= "<input type=hidden name=\"name\" value=\"us\">";
+    $export .= "<form target=\"_new\" action=\"/osdial/admin/tocsv.php\">";
+    $export .= "<input type=hidden name=\"name\" value=\"us\">";
     
     $TOTagents=0;
     $TOTcalls=0;
     $TOTtime=0;
     $TOTavg=0;
     
-    $html .= "\n\n";
-    $html .= "---------- AGENT STATS\n";
-    $html .= "+---------------------------------------------+------------+----------+--------+\n";
-    $html .= "| AGENT                                       | CALLS      | TIME M   | AVRG M |\n";
-    $html .= "+---------------------------------------------+------------+----------+--------+\n";
-    $html .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"Agent|Calls|Time|Average\">";
+    $plain .= "---------- AGENT STATS\n";
+    $plain .= "+---------------------------------------------+------------+----------+--------+\n";
+    $plain .= "| AGENT                                       | CALLS      | TIME M   | AVRG M |\n";
+    $plain .= "+---------------------------------------------+------------+----------+--------+\n";
+    $table .= "<br><br>\n";
+    $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
+    $table .= "  <tr><td align=center><font color=$default_text size=3>AGENT STATS</font></td></tr>\n";
+    $table .= "  <tr>\n";
+    $table .= "    <td align=center>\n";
+    $table .= "      <table width=600 align=center cellspacing=1 bgcolor=grey>\n";
+    $table .= "        <tr class=tabheader>\n";
+    $table .= "          <td align=center>Agent</td>\n";
+    $table .= "          <td align=center>Calls</td>\n";
+    $table .= "          <td align=center>Time M</td>\n";
+    $table .= "          <td align=center>Avg M</td>\n";
+    $table .= "        </tr>\n";
+    $export .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"Agent|Calls|Time|Average\">";
     $CSVrows++;
     
     if ($use_closer_log) {
@@ -887,8 +1207,16 @@ function report_call_stats() {
         $USERavgTALK_MS = sprintf("%6s", $USERavgTALK_MS);
     
         $line = "$user - $full_name | $USERcalls |   $USERtotTALK_MS | $USERavgTALK_MS";
-        $html .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"$line\">";
-        $html .= "| $line |\n";
+        $export .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"$line\">";
+        $plain .= "| $line |\n";
+        $bgcolor='bgcolor='.$evenrows;
+        if (eregi("1$|3$|5$|7$|9$", $i)) $bgcolor='bgcolor='.$oddrows;
+        $table .= "        <tr $bgcolor class=\"row font1\">\n";
+        $table .= "          <td>$user - $full_name</td>\n";
+        $table .= "          <td align=right>$USERcalls</td>\n";
+        $table .= "          <td align=right>$USERtotTALK_MS</td>\n";
+        $table .= "          <td align=right>$USERavgTALK_MS</td>\n";
+        $table .= "        </tr>\n";
         $CSVrows++;
     
         $i++;
@@ -938,22 +1266,37 @@ function report_call_stats() {
     $AVGwait_MS = "$AVGwait_M_int:$AVGwait_S";
     $AVGwait = sprintf("%6s", $AVGwait_MS);
     
-    $html .= "+---------------------------------------------+------------+----------+--------+\n";
-    $html .= "| TOTAL Agents:                   $TOTagents  | $TOTcalls | $TOTtime | $TOTavg |\n";
-    $html .= "+---------------------------------------------+------------+----------+--------+\n";
-    $html .= "| Average Wait time between calls                                       $AVGwait |\n";
-    $html .= "+------------------------------------------------------------------------------+\n";
-    $html .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">";
-    $html .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
-    $html .= "</form>";
+    $plain .= "+---------------------------------------------+------------+----------+--------+\n";
+    $plain .= "| TOTAL Agents:                   $TOTagents  | $TOTcalls | $TOTtime | $TOTavg |\n";
+    $plain .= "+---------------------------------------------+------------+----------+--------+\n";
+    $plain .= "| Average Wait time between calls                                       $AVGwait |\n";
+    $plain .= "+------------------------------------------------------------------------------+\n";
+    $table .= "        <tr class=tabfooter>\n";
+    $table .= "          <td>TOTAL Agents: $TOTagents</td>\n";
+    $table .= "          <td align=right>$TOTcalls</td>\n";
+    $table .= "          <td align=right>$TOTtime</td>\n";
+    $table .= "          <td align=right>$TOTavg</td>\n";
+    $table .= "        </tr>\n";
+    $table .= "        <tr class=tabfooter>\n";
+    $table .= "          <td colspan=3 align=left>Average Wait Time Between Calls</td>\n";
+    $table .= "          <td align=right>$AVGwait</td>\n";
+    $table .= "        </tr>\n";
+    $table .= "      </table>\n";
+    $table .= "    </td>\n";
+    $table .= "  </tr>\n";
+    $table .= "</table>\n";
+
+    $export .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">";
+    $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
+    $export .= "</form>";
+
+    $html .= "<div class=onlyprint><pre>\n\n$plain</pre></div>\n";
+    $html .= "<div class=noprint>$table<br><center>$export</center></div>";
     
     ##############################
     #########  TIME STATS
-    
-    $html .= "\n\n";
-    $html .= "---------- TIME STATS";
-    
-    $html .= "<FONT SIZE=0>";
+    $plain='';
+    $table='';
     
     $hi_hour_count=0;
     $last_full_record=0;
@@ -1057,12 +1400,37 @@ function report_call_stats() {
         $hour_multiplier = (100 / $hi_hour_count);
     }
     
-    $html .= "<!-- HICOUNT: $hi_hour_count|$hour_multiplier -->\n";
-    $html .= "GRAPH IN 15 MINUTE INCREMENTS OF TOTAL CALLS PLACED FROM SELECTED CAMPAIGNS\n";
+    $plain .= "<!-- HICOUNT: $hi_hour_count|$hour_multiplier -->\n";
+    $plain .= "---------- TIME STATS\n";
+    $plain .= "GRAPH IN 15 MINUTE INCREMENTS OF TOTAL CALLS PLACED FROM SELECTED CAMPAIGNS\n";
+
+    $table .= "<br><br>\n";
+    $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
+    $table .= "  <tr>\n";
+    $table .= "    <td align=center><font color=$default_text size=3>TIME STATS</font></td>\n";
+    $table .= "  <tr>\n";
+    $table .= "  </tr>\n";
+    $table .= "    <td align=center><font color=$default_text size=1>GRAPH IN 15 MINUTE INCREMENTS OF TOTAL CALLS PLACED FROM SELECTED CAMPAIGNS</font></td>\n";
+    $table .= "  </tr>\n";
+    $table .= "  <tr>\n";
+    $table .= "    <td align=center>\n";
+    $table .= "      <table width=600 align=center cellspacing=0 cellpadding=0 style=\"border-spacing:0px 2px;\" bgcolor=grey>\n";
+    $table .= "        <tr class=tabheader style=\"font-size: 6pt; font-family: monospace;\">\n";
+    $table .= "          <td>&nbsp;</td>\n";
+    $table .= "          <td align=center>|</td>\n";
+    $table .= "          <td colspan=103 align=center style=\"font-size:8pt;\">Call Scale</td>\n";
+    $table .= "          <td align=center>|</td>\n";
+    $table .= "          <td colspan=2>&nbsp;</td>\n";
+    $table .= "        </tr>\n";
+    $table .= "        <tr class=tabheader style=\"font-size: 6pt; font-family: monospace;\">\n";
+    $table .= "          <td align=center>&nbsp;HOUR&nbsp;&nbsp;</td>\n";
+    $table .= "          <td align=center>|</td>\n";
     
     $k=1;
     $Mk=0;
     $call_scale = '0';
+    $table_scale = Array();
+    $table_scale[] = "          <td align=center>0</td>\n";
     while ($k <= 102) {
         if ($Mk >= 5) {
             $Mk=0;
@@ -1074,16 +1442,36 @@ function report_call_stats() {
             }
             $LENscale_num = (strlen($scale_num));
             $k = ($k + $LENscale_num);
+            if ($k > 103) {
+                $call_scale = substr($call_scale,0,(103-$LENscale_num));
+                foreach (range(1,$k-103) as $ele) {
+                    $junk = array_pop($table_scale);
+                }
+            }
+
             $call_scale .= "$scale_num";
+            foreach (range(0,$LENscale_num-1) as $ele) {
+                $table_scale[] = "          <td align=center>" . substr($scale_num,$ele,1) . "</td>\n";
+            }
         } else {
             $call_scale .= " ";
+            $table_scale[] = "          <td align=center>&nbsp;</td>\n";
             $k++;   $Mk++;
         }
     }
+
+    foreach ($table_scale as $ele) {
+        $table .= $ele;
+    }
+
+    $table .= "          <td align=center>|</td>\n";
+    $table .= "          <td align=center>&nbsp;&nbsp;DROPS&nbsp;</td>\n";
+    $table .= "          <td align=center>&nbsp;TOTAL&nbsp;</td>\n";
+    $table .= "        </tr>\n";
     
-    $html .= "+------+-------------------------------------------------------------------------------------------------------+-------+-------+\n";
-    $html .= "| HOUR |$call_scale| DROPS | TOTAL |\n";
-    $html .= "+------+-------------------------------------------------------------------------------------------------------+-------+-------+\n";
+    $plain .= "+------+-------------------------------------------------------------------------------------------------------+-------+-------+\n";
+    $plain .= "| HOUR |$call_scale| DROPS | TOTAL |\n";
+    $plain .= "+------+-------------------------------------------------------------------------------------------------------+-------+-------+\n";
     
     $ZZ = '00';
     $i=0;
@@ -1092,6 +1480,9 @@ function report_call_stats() {
     $no_lines_yet=1;
     
     while ($i <= 96) {
+        $bgcolor='bgcolor='.$evenrows;
+        if (eregi("1$|3$|5$|7$|9$", $i)) $bgcolor='bgcolor='.$oddrows;
+
         $char_counter=0;
         $time = '      ';
         if ($h >= 4) {
@@ -1109,9 +1500,16 @@ function report_call_stats() {
                 $do_nothing=1;
             } else {
                 $hour_count[$i] =    sprintf("%-5s", $hour_count[$i]);
-                $html .= "|$time|";
-                $k=0;   while ($k <= 102) {$html .= " ";   $k++;}
-                $html .= "| 0     | $hour_count[$i] |\n";
+                $plain .= "|$time|";
+                $table .= "        <tr $bgcolor class=\"row\" title=\"$time\" style=\"font-weight: bold; font-family: monospace; font-size: 7pt;\">\n";
+                $table .= "          <td align=right>&nbsp;$time&nbsp;</td>\n";
+                $table .= "          <td align=center style=\"font-size: 6pt;\">|</td>\n";
+                $k=0;   while ($k <= 102) {$plain .= " ";  $table .= "          <td align=center>&nbsp;</td>\n"; $k++;}
+                $plain .= "| 0     | $hour_count[$i] |\n";
+                $table .= "          <td align=center style=\"font-size: 6pt;\">|</td>\n";
+                $table .= "          <td align=right>0&nbsp;</td>\n";
+                $table .= "          <td align=right>$Ghour_count&nbsp;</td>\n";
+                $table .= "        </tr>\n";
             }
         } else {
             $no_lines_yet=0;
@@ -1122,12 +1520,24 @@ function report_call_stats() {
             if ($Gdrop_count < 1) {
                 $hour_count[$i] =    sprintf("%-5s", $hour_count[$i]);
     
-                $html .= "|$time|<SPAN class=\"green\">";
-                $k=0;   while ($k <= $Xhour_count) {$html .= "*";   $k++;   $char_counter++;}
-                $html .= "*X</SPAN>";   $char_counter++;
-                $k=0;   while ($k <= $Yhour_count) {$html .= " ";   $k++;   $char_counter++;}
-                    while ($char_counter <= 101) {$html .= " ";   $char_counter++;}
-                $html .= "| 0     | $hour_count[$i] |\n";
+                $plain .= "|$time|<SPAN class=\"green\">";
+                $table .= "        <tr $bgcolor class=\"row\" title=\"$time\" style=\"font-weight: bold; font-family: monospace; font-size: 7pt;\">\n";
+                $table .= "          <td align=right>&nbsp;$time&nbsp;</td>\n";
+                $table .= "          <td align=center style=\"font-size: 6pt;\">|</td>\n";
+                $table .= "          <td align=center>&nbsp;</td>\n";
+
+                $k=0;   while ($k <= $Xhour_count) {$plain .= "*";   $table .= "          <td align=center style=\"color: green;\">#</td>\n"; $k++;   $char_counter++;}
+                $plain .= "*X</SPAN>";   $char_counter++;
+
+                $k=0;   while ($k <= $Yhour_count) {$plain .= " ";   $table .= "          <td align=center>&nbsp;</td>\n"; $k++;   $char_counter++;}
+                    while ($char_counter <= 101) {$plain .= " ";   $table .= "          <td align=center>&nbsp;</td>\n"; $char_counter++;}
+
+                $plain .= "| 0     | $hour_count[$i] |\n";
+                $table .= "          <td align=center>&nbsp;</td>\n";
+                $table .= "          <td align=center style=\"font-size: 6pt;\">|</td>\n";
+                $table .= "          <td align=right>0&nbsp;</td>\n";
+                $table .= "          <td align=right>$Ghour_count&nbsp;</td>\n";
+                $table .= "        </tr>\n";
     
             } else {
                 $Xdrop_count = ($Gdrop_count * $hour_multiplier);
@@ -1137,31 +1547,60 @@ function report_call_stats() {
                 $hour_count[$i] =    sprintf("%-5s", $hour_count[$i]);
                 $drop_count[$i] =    sprintf("%-5s", $drop_count[$i]);
     
-                $html .= "|$time|<SPAN class=\"red\">";
-                $k=0;   while ($k <= $Xdrop_count) {$html .= ">";   $k++;   $char_counter++;}
-                $html .= "D</SPAN><SPAN class=\"green\">";   $char_counter++;
-                $k=0;   while ($k <= $XXhour_count) {$html .= "*";   $k++;   $char_counter++;}
-                $html .= "X</SPAN>";   $char_counter++;
-                $k=0;   while ($k <= $Yhour_count) {$html .= " ";   $k++;   $char_counter++;}
-                while ($char_counter <= 102) {$html .= " ";   $char_counter++;}
-                $html .= "| $drop_count[$i] | $hour_count[$i] |\n";
+                $plain .= "|$time|<SPAN class=\"red\">";
+                $table .= "        <tr $bgcolor class=\"row\" title=\"$time\" style=\"font-weight: bold; font-family: monospace; font-size: 7pt;\">\n";
+                $table .= "          <td align=right>&nbsp;$time&nbsp;</td>\n";
+                $table .= "          <td align=center style=\"font-size: 6pt;\">|</td>\n";
+                $table .= "          <td align=center>&nbsp;</td>\n";
+
+                $k=0;   while ($k <= $Xdrop_count) {$plain .= ">";   $table .= "          <td align=center style=\"color: red;\">D</td>\n"; $k++;   $char_counter++;}
+                $plain .= "D</SPAN><SPAN class=\"green\">";   $char_counter++;
+
+                $k=0;   while ($k <= $XXhour_count) {$plain .= "*";   $table .= "          <td align=center style=\"color: green;\">#</td>\n"; $k++;   $char_counter++;}
+                $plain .= "X</SPAN>";   $char_counter++;
+
+                $k=0;   while ($k <= $Yhour_count) {$plain .= " ";   $table .= "          <td align=center>&nbsp;</td>\n"; $k++;   $char_counter++;}
+                while ($char_counter <= 102) {$plain .= " ";   $table .= "          <td align=center>&nbsp;</td>\n"; $char_counter++;}
+
+                $plain .= "| $drop_count[$i] | $hour_count[$i] |\n";
+                $table .= "          <td align=center>&nbsp;</td>\n";
+                $table .= "          <td align=center style=\"font-size: 6pt;\">|</td>\n";
+                $table .= "          <td align=right>$Gdrop_count&nbsp;</td>\n";
+                $table .= "          <td align=right>$Ghour_count&nbsp;</td>\n";
+                $table .= "        </tr>\n";
             }
         }
         $i++;
         $h++;
     }
     
-    $html .= "+------+-------------------------------------------------------------------------------------------------------+-------+-------+\n";
-    
+    $plain .= "+------+-------------------------------------------------------------------------------------------------------+-------+-------+\n";
+    $table .= "        <tr class=tabfooter style=\"font-size: 6pt; font-family: monospace;\">\n";
+    $table .= "          <td>&nbsp;</td>\n";
+    $table .= "          <td align=center>|</td>\n";
+    $table .= "          <td colspan=103 align=center>&nbsp;</td>\n";
+    $table .= "          <td align=center>|</td>\n";
+    $table .= "          <td colspan=2>&nbsp;</td>\n";
+    $table .= "        </tr>\n";
+    $table .= "      </table>\n";
+    $table .= "    </td>\n";
+    $table .= "  </tr>\n";
+    $table .= "</table>\n";
+
+    $html .= "<div class=onlyprint><font size=0><pre>\n\n$plain</pre></font></div>\n";
+    $html .= "<div class=noprint>$table</div>\n";
+
     $ENDtime = date("U");
     $RUNtime = ($ENDtime - $STARTtime);
-    $html .= "\nRun Time: $RUNtime seconds\n";
-    $html .= "</PRE>\n";
-    #$html .= "</TD></TR></TABLE>\n";
+    $html .= "<div class=onlyprint><pre>\n\n\nRun Time: $RUNtime seconds</pre></div>\n";
+    $html .= "<div class=noprint><br><br><br><center><font size=2 color=$default_text>Run Time: $RUNtime seconds</font></center></div>\n";
+    $html .= "    </td>\n";
+    $html .= "  </tr>\n";
+    $html .= "</table>\n";
     
-    #$html .= "</BODY></HTML>\n";
-	$html .= "</td>";
-	$html .= "<TABLE WIDTH='<?=$page_width ?>' BGCOLOR=#E9E8D9 cellpadding=0 cellspacing=0 align=center class=across>";
+    ##$html .= "</BODY></HTML>\n";
+	#$html .= "</td>";
+	#$html .= "<TABLE WIDTH='$page_width' BGCOLOR=#E9E8D9 cellpadding=0 cellspacing=0 align=center class=across>";
 
     return $html;
 }
