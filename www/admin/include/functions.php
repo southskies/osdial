@@ -1069,4 +1069,15 @@ function getloadavg() {
 	return $loadavg;
 }
 
+function optnum2let($val=0) {
+    $ret = "<option value=$val selected>";
+    if ($val == 0) {
+        $ret .= "N";
+    } else {
+        $ret .= "Y";
+    }
+    $ret .= "</option>";
+    return $ret;
+}
+
 ?>
