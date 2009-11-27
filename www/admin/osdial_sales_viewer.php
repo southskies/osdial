@@ -59,6 +59,7 @@ if (isset($_GET["forc"]))						{$forc=$_GET["forc"];}
 </head -->
 <?
 include("dbconnect.php");
+include("templates/default/display.php");
 #include("/home/www/phpsubs/stylesheet.inc");
 ?>
 <link rel="stylesheet" type="text/css" href="templates/<?= $admin_template ?>/styles.css" media="screen">
