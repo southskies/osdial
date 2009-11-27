@@ -1,5 +1,5 @@
 <? 
-### report_list_performance.php
+### report_lead_performance_campaign.php
 ### 
 #
 # Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
@@ -24,7 +24,7 @@
 #
 # 090814-1200 - First build
 
-function report_list_performance() {
+function report_lead_performance_campaign() {
     #############################################
     ##### START REPORT #####
     $report_start = date("U");
@@ -160,7 +160,7 @@ function report_list_performance() {
 
     $html .= "<table align=center cellpadding=0 cellspacing=0>";
     $html .= "<tr><td align=center>";
-    $html .= "<br><font color=$default_text size=+1>LIST PERFORMANCE REPORT</font><br><br>";
+    $html .= "<br><font color=$default_text size=+1>LEAD PERFORMANCE BY CAMPAIGN</font><br><br>";
     $html .= "<div class=\"noprint\">\n";
     $html .= "<form action=\"$PHP_SELF\" method=get>\n";
     $html .= "<input type=hidden name=type value=$type>\n";
@@ -213,7 +213,7 @@ function report_list_performance() {
         $query_date_BEGIN = "$start_date $start_time:00";
         $query_date_END = "$end_date $end_time:59";
 
-        $html .= "OSDIAL: List Performance by Entry Date                         " . date("Y-m-d H:i:s") . "\n";
+        $html .= "OSDIAL: List Performance Campaign / Entry Date                         " . date("Y-m-d H:i:s") . "\n";
 
         $html .= "Time range: $query_date_BEGIN to $query_date_END\n\n";
 

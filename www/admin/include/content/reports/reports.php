@@ -69,7 +69,8 @@ if ($ADD==999999 and $SUB=='') {
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=19\"><font face=\"arial,helvetica\" size=2>Agent Performance Detail</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=osdial_sales_viewer.php\"><font face=\"arial,helvetica\" size=2>Agent Spreadsheet Performance</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=16\"><font face=\"arial,helvetica\" size=2>List Cost by Entry Date</a></font>";
-	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=17\"><font face=\"arial,helvetica\" size=2>List Performance and Analysis</a></font>";
+	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=17\"><font face=\"arial,helvetica\" size=2>Lead Performance and Analysis by Campaign</a></font>";
+	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=18\"><font face=\"arial,helvetica\" size=2>Lead Performance and Analysis by List</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_server_performance.php\"><font face=\"arial,helvetica\" size=2>Server Performance</a></font>";
 
 	    if ($enable_queuemetrics_logging_LU > 0) {
@@ -121,8 +122,11 @@ if ($ADD==999999 and $SUB=='') {
         require($WeBServeRRooT . '/admin/include/content/reports/list_cost.php');
         echo report_list_cost();
     } elseif ($SUB==17) {
-        require($WeBServeRRooT . '/admin/include/content/reports/list_performance.php');
-        echo report_list_performance();
+        require($WeBServeRRooT . '/admin/include/content/reports/lead_performance_campaign.php');
+        echo report_lead_performance_campaign();
+    } elseif ($SUB==18) {
+        require($WeBServeRRooT . '/admin/include/content/reports/lead_performance_list.php');
+        echo report_lead_performance_list();
     } elseif ($SUB==19) {
         require($WeBServeRRooT . '/admin/include/content/reports/agent_performance_detail.php');
         echo report_agent_performance_detail();
