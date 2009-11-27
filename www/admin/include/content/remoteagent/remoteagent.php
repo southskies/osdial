@@ -51,7 +51,7 @@ if ($ADD==11111)
 	echo "<tr bgcolor=$oddrows><td align=right>Inbound Groups: </td><td align=left>\n";
 	echo "$groups_list";
 	echo "$NWB#osdial_remote_agents-closer_campaigns$NWE</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	echo "NOTE: It can take up to 30 seconds for changes submitted on this screen to go live\n";
 	}
@@ -242,7 +242,7 @@ if ($ADD==31111)
 	echo "<tr bgcolor=$oddrows><td align=right>Inbound Groups: </td><td align=left>\n";
 	echo "$groups_list";
 	echo "$NWB#osdial_remote_agents-closer_campaigns$NWE</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	
 	echo "NOTE: It can take up to 30 seconds for changes submitted on this screen to go live\n";
@@ -274,15 +274,16 @@ echo "<TABLE align=center><TR><TD>\n";
 	$people_to_print = mysql_num_rows($rslt);
 
 echo "<center><br><font color=$default_text size=+1>EXTERNAL AGENTS</font><br><br>\n";
-echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr bgcolor=$menubarcolor>";
-echo "<td><font size=1 color=white><B>ID</B></td>";
-echo "<td align=center><font size=1 color=white><B>LINES</B></td>";
-echo "<td align=center><font size=1 color=white><B>SERVER</B></td>";
-echo "<td><font size=1 color=white><B>EXTENSION</B></td>";
-echo "<td align=center><font size=1 color=white><B>ACTIVE</B></td>";
-echo "<td><font size=1 color=white><B>CAMPAIGN</B></td>";
-echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
+echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "  <tr class=tabheader>\n";
+echo "    <td>ID</td>\n";
+echo "    <td align=center>LINES</td>\n";
+echo "    <td align=center>SERVER</td>\n";
+echo "    <td>EXTENSION</td>\n";
+echo "    <td align=center>ACTIVE</td>\n";
+echo "    <td>CAMPAIGN</td>\n";
+echo "    <td align=center>LINKS</td>\n";
+echo "  </tr>\n";
 
 	$o=0;
 	while ($people_to_print > $o) {
@@ -291,19 +292,21 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=31111&remote_agent_id=$row[0]\">$row[1]</a></td>";
-		echo "<td align=center><font size=1> $row[2]</td>";
-		echo "<td align=center><font size=1> $row[3]</td>";
-		echo "<td><font size=1> $row[4]</td>";
-		echo "<td align=center><font size=1> $row[5]</td>";
-		echo "<td><font size=1> $row[6]</td>";
-		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=31111&remote_agent_id=$row[0]\">MODIFY</a></td></tr>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=31111&remote_agent_id=$row[0]\">$row[1]</a></td>\n";
+		echo "    <td align=center>$row[2]</td>\n";
+		echo "    <td align=center>$row[3]</td>\n";
+		echo "    <td>$row[4]</td>\n";
+		echo "    <td align=center>$row[5]</td>\n";
+		echo "    <td>$row[6]</td>\n";
+		echo "    <td align=center><a href=\"$PHP_SELF?ADD=31111&remote_agent_id=$row[0]\">MODIFY</a></td>\n";
+        echo "  </tr>\n";
 		$o++;
 	}
 
-echo "<tr bgcolor=$menubarcolor>";
-echo "  <td colspan=7 height=8px><font size=1 color=white></font></td>";
-echo "</tr>";
+echo "  <tr class=tabfooter>\n";
+echo "    <td colspan=7></td>\n";
+echo "  </tr>\n";
 echo "</TABLE></center>\n";
 }
 

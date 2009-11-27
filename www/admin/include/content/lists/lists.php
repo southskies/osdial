@@ -58,7 +58,7 @@ if ($ADD==111) {
 		echo "<option SELECTED>$campaign_id</option>\n";
 		echo "</select>$NWB#osdial_lists-campaign_id$NWE</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option SELECTED>N</option></select>$NWB#osdial_lists-active$NWE</td></tr>\n";
-		echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+		echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 		echo "</TABLE></center>\n";
 	} else {
 		echo "<font color=red>You do not have permission to view this page</font>\n";
@@ -154,8 +154,8 @@ if ($ADD==112) {
 		echo "	<td align=right>Lead ID:&nbsp;</td>";
 		echo "	<td align=left><input type=text name=lead_id value=\"$lead_id\" size=10 maxlength=10></td>";
 		echo "</tr>\n";
-		echo "<tr>";
-		echo "<td colspan=2 bgcolor=$menubarcolor><input style=\"width: 100%;\" type=submit name=submit value=SUBMIT></td>\n";
+		echo "<tr class=tabfooter>";
+		echo "<td colspan=2 class=tabbutton><input type=submit name=submit value=SUBMIT></td>\n";
 		echo "</form>\n";
 		echo "</tr>";
 		echo "</table>\n";
@@ -980,7 +980,7 @@ if ($ADD==1122) {
         echo $paginate;
 
         echo "<table bgcolor=grey cellspacing=1>\n";
-        echo "  <tr bgcolor=$menubarcolor>\n";
+        echo "  <tr class=tabheader>\n";
         if ($field_cnt > 0 or $results_to_print < 1) {
             echo "    <td colspan=17><font size=1>&nbsp;</font></td>\n";
         } else {
@@ -1208,8 +1208,8 @@ if ($ADD==1122) {
                 echo "  </tr>\n";
             }
         }
-        echo "  <tr bgcolor=$menubarcolor>\n";
-        echo "    <td colspan=17><font size=1>&nbsp;</font></td>\n";
+        echo "  <tr class=tabfooter>\n";
+        echo "    <td colspan=17></td>\n";
         echo "  </tr>\n";
         echo "</table>\n";
 
@@ -1256,7 +1256,7 @@ echo "<input type=hidden name=ADD value=121>\n";
 //echo "<center>";
 echo "<TABLE width=$section_width cellspacing=3>\n";
 echo "<tr bgcolor=$oddrows><td align=right>Phone Number: </td><td align=left><input type=text name=phone_number size=14 maxlength=12> (digits only)$NWB#osdial_list-dnc$NWE</td></tr>\n";
-echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 echo "</TABLE></center>\n";
 
 }
@@ -1533,12 +1533,12 @@ if ($ADD==122) {
 					<td align=right width="25%"><font face="arial, helvetica" size=2>Lead Time Zone Lookup: </font></td>
 					<td align=left width="75%"><font face="arial, helvetica" size=1><select size=1 name=postalgmt><option selected value="AREA">COUNTRY CODE AND AREA CODE ONLY</option><option value="POSTAL">POSTAL CODE FIRST</option></select></td>
 				</tr>
-				<tr bgcolor=<?= $menubarcolor ?>>
-					<td align=center>
-                      <input style="width: 100%;" type=button onClick="javascript:document.location='admin.php?ADD=122'" value="START OVER" name='reload_page'>
+				<tr class=tabfooter>
+					<td align=center class=tabbutton>
+                      <input type=button onClick="javascript:document.location='admin.php?ADD=122'" value="START OVER" name='reload_page'>
 					</td>
-					<td align=center>
-                      <input style="width: 100%;" type=submit value="SUBMIT" name='submit_file'>
+					<td align=center class=tabbutton>
+                      <input type=submit value="SUBMIT" name='submit_file'>
 					</td>
 				</tr>
 			</table>
@@ -2464,12 +2464,12 @@ if ($ADD==122) {
 			print "<script language='JavaScript1.2'>document.forms[0].leadfile.disabled=true; document.forms[0].submit_file.disabled=true; document.forms[0].reload_page.disabled=true;</script><HR>";
 			flush();
 			print "<table border=0 cellspacing=1 width=400 align=center bgcolor=grey>\n";
-			print "  <tr bgcolor=$menubarcolor>\n";
-			print "    <td align=center colspan=2><font color=white size=1><b>FIELD MAPPINGS</b></font></td>\n";
+			print "  <tr class=tabheader>\n";
+			print "    <td align=center colspan=2>FIELD MAPPINGS</td>\n";
 			print "  </tr>\n";
-			print "  <tr bgcolor=$menubarcolor>\n";
-			print "    <td align=center><font color=white size=1><b>" . strtoupper($t1) . " LEAD FIELD</b></font></td>\n";
-			print "    <td align=center><font color=white size=1><b>FILE HEADER ROW</b></font></td>\n";
+			print "  <tr class=tabheader>\n";
+			print "    <td align=center>" . strtoupper($t1) . " LEAD FIELD</td>\n";
+			print "    <td align=center>FILE HEADER ROW</td>\n";
 			print "  </tr>\n";
 				
 			$rslt=mysql_query("select vendor_lead_code, source_id, list_id, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, comments, custom2, external_key, cost from osdial_list limit 1", $link);
@@ -2524,9 +2524,9 @@ if ($ADD==122) {
                         } else {
                             $bgcolor='bgcolor='.$evenrows;
                         }
-						print "  <tr class=row $bgcolor>\r\n";
-						print "    <td align=center><font size=1>".strtoupper(eregi_replace("_", " ", mysql_field_name($rslt, $i))).": </font></td>\r\n";
-						print "    <td align=center><select style=\"font-size: 7pt;\" name='".mysql_field_name($rslt, $i)."_field'>\r\n";
+						print "  <tr class=\"row font1\" $bgcolor>\r\n";
+						print "    <td align=center>".strtoupper(eregi_replace("_", " ", mysql_field_name($rslt, $i))).": </font></td>\r\n";
+						print "    <td align=center class=tabinput><select name='".mysql_field_name($rslt, $i)."_field'>\r\n";
 						print "     <option value='-1'>(none)</option>\r\n";
 	
 						for ($j=0; $j<count($row); $j++) {
@@ -2591,9 +2591,9 @@ if ($ADD==122) {
                         } else {
                             $bgcolor='bgcolor='.$evenrows;
                         }
-						print "  <tr class=row $bgcolor>\r\n";
-						print "    <td align=center><font size=1>".strtoupper(eregi_replace("_", " ", mysql_field_name($rslt, $i))).": </font></td>\r\n";
-						print "    <td align=center><select style=\"font-size: 7pt;\" name='".mysql_field_name($rslt, $i)."_field'>\r\n";
+						print "  <tr class=\"row font1\" $bgcolor>\r\n";
+						print "    <td align=center>".strtoupper(eregi_replace("_", " ", mysql_field_name($rslt, $i))).": </td>\r\n";
+						print "    <td align=center class=tabinput><select name='".mysql_field_name($rslt, $i)."_field'>\r\n";
 						print "     <option value='-1'>(none)</option>\r\n";
 	
 						for ($j=0; $j<count($row); $j++) {
@@ -2613,9 +2613,9 @@ if ($ADD==122) {
 			print "  <input type=hidden name=list_id_override value=\"$list_id_override\">\n";
 			print "  <input type=hidden name=phone_code_override value=\"$phone_code_override\">\n";
 			print "  <input type=hidden name=ADD value=122>\n"; // debug -added
-			print "  <tr bgcolor=$menubarcolor>\n";
-            print "    <td align=center><input style=\"width: 100%; font-size: 7pt;\" type=button onClick=\"javascript:document.location='admin.php?ADD=122'\" value=\"START OVER\" name='reload_page'></td>\n";
-			print "    <td align=center><input style=\"width: 100%; font-size: 7pt;\" type=submit name='OK_to_process' value='OK TO PROCESS'></td>\n";
+			print "  <tr class=tabfooter>\n";
+            print "    <td align=center class=tabbutton><input type=button onClick=\"javascript:document.location='admin.php?ADD=122'\" value=\"START OVER\" name='reload_page'></td>\n";
+			print "    <td align=center class=tabbutton><input type=submit name='OK_to_process' value='OK TO PROCESS'></td>\n";
 			print "  </tr>\r\n";
 			print "</table>\r\n";
 		}
@@ -2687,7 +2687,7 @@ if ($ADD==125) {
 		echo "<TABLE width=$section_width cellspacing=3>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Phone Number: </td><td align=left><input type=text name=testphone size=8 maxlength=8> (digits only)$NWB#$NWE</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Number of leads: </td><td align=left><input type=text name=testnbr size=20 maxlength=20>$NWB#osdial_lists-list_name$NWE</td></tr>\n";
-		echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+		echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 			echo "</TABLE></center>\n";
 	} else {
 		echo "<font color=red>You do not have permission to view this page.</font>\n";
@@ -2974,12 +2974,12 @@ if ($ADD==311)
 	    echo "<tr bgcolor=$oddrows><td align=right>External DNC Scrub Now: </td><td align=left><select size=1 name=scrub_dnc><option>Y</option><option selected>N</option></select>$NWB#osdial_lists-srub_dnc$NWE</td></tr>\n";
 	    echo "<tr bgcolor=$oddrows><td align=right>Last External Scrub: </td><td align=left>$list_scrub_last : $list_scrub_info</td></tr>\n";
     }
-	echo "<tr bgcolor=$menubarcolor>";
-    echo "<td align=center>";
-	echo "<input style=\"width: 100%;\" type=button name=addleads value=\"ADD LEADS\" onclick=\"window.location='admin.php?ADD=122&list_id_override=$row[0]'\">";
+	echo "<tr class=tabfooter>";
+    echo "<td align=center class=tabbutton>";
+	echo "<input type=button name=addleads value=\"ADD LEADS\" onclick=\"window.location='admin.php?ADD=122&list_id_override=$row[0]'\">";
 	echo "</td>";
-    echo "<td align=center>";
-	echo "<input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT>";
+    echo "<td align=center class=tabbutton>";
+	echo "<input type=submit name=SUBMIT value=SUBMIT>";
 	echo "</td>";
     echo "</tr>\n";
 	echo "</TABLE></center>\n";
@@ -2987,11 +2987,11 @@ if ($ADD==311)
 	echo "<center>\n";
 	echo "<br><font color=$default_text size=+1>STATUSES WITHIN THIS LIST</font></b><br>\n";
 	echo "<table bgcolor=grey width=500 cellspacing=1>\n";
-	echo "  <tr bgcolor=$menubarcolor>\n";
-    echo "    <td><font size=1 color=white><b>STATUS</b></font></td>\n";
-    echo "    <td><font size=1 color=white><b>STATUS NAME</b></font></td>\n";
-    echo "    <td><font size=1 color=white><b>CALLED</b></font></td>\n";
-    echo "    <td><font size=1 color=white><b>NOT CALLED</b></font></td>\n";
+	echo "  <tr class=tabheader>\n";
+    echo "    <td align=center>STATUS</td>\n";
+    echo "    <td align=center>STATUS NAME</td>\n";
+    echo "    <td align=center>CALLED</td>\n";
+    echo "    <td align=center>NOT CALLED</td>\n";
     echo "  </tr>\n";
 
 	$leads_in_list = 0;
@@ -3053,24 +3053,24 @@ if ($ADD==311)
 			$CLE='';
 			}
 
-		echo "  <tr $bgcolor class=row>\n";
-        echo "    <td><font size=1>$CLB$dispo$CLE</font></td>\n";
-        echo "    <td><font size=1>$statuses_list[$dispo]</font></td>\n";
-        echo "    <td align=right><font size=1>".$lead_list['Y'][$dispo]."</font></td>\n";
-        echo "    <td align=right><font size=1>".$lead_list['N'][$dispo]."</font></td>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td>$CLB$dispo$CLE</td>\n";
+        echo "    <td>$statuses_list[$dispo]</td>\n";
+        echo "    <td align=right>".$lead_list['Y'][$dispo]."</td>\n";
+        echo "    <td align=right>".$lead_list['N'][$dispo]."</td>\n";
         echo "  </tr>\n";
 		$o++;
 		}
 	}
 
-	echo "  <tr bgcolor=$menubarcolor>\n";
-    echo "    <td colspan=2><font size=1 color=white><b>SUBTOTALS</b></font></td>\n";
-    echo "    <td align=right><font size=1 color=white><b>" . $lead_list[Y_count] . "</b></font></td>\n";
-    echo "    <td align=right><font size=1 color=white><b>" . $lead_list[N_count] . "</b></font></td>\n";
+	echo "  <tr class=tabfooter>\n";
+    echo "    <td colspan=2>SUBTOTALS</td>\n";
+    echo "    <td align=right>" . $lead_list[Y_count] . "</td>\n";
+    echo "    <td align=right>" . $lead_list[N_count] . "</td>\n";
     echo "  </tr>\n";
-	echo "  <tr bgcolor=$menubarcolor>\n";
-    echo "    <td colspan=2><font size=1 color=white><b>TOTAL</b></font></td>\n";
-    echo "    <td colspan=2 align=center><font size=1 color=white><b>" . $lead_list[count] . "</b></font></td>\n";
+	echo "  <tr class=tabfooter>\n";
+    echo "    <td colspan=2>TOTAL</td>\n";
+    echo "    <td colspan=2 align=center><b>" . $lead_list[count] . "</td>\n";
     echo "  </tr>\n";
 
 	echo "</table></center><br>\n";
@@ -3080,10 +3080,10 @@ if ($ADD==311)
 	echo "<center>\n";
 	echo "<br><font color=$default_text size=+1>TIME ZONES WITHIN THIS LIST</font></b><br>\n";
 	echo "<table bgcolor=grey width=500 cellspacing=1>\n";
-	echo "  <tr bgcolor=$menubarcolor>\n";
-    echo "    <td><font color=white size=1><b>GMT OFFSET NOW (local time)</b></font></td>\n";
-    echo "    <td><font color=white size=1><b>CALLED</b></font></td>\n";
-    echo "    <td><font color=white size=1><b>NOT CALLED</b></font></td>\n";
+	echo "  <tr class=tabheader>\n";
+    echo "    <td align=center>GMT OFFSET NOW (local time)</td>\n";
+    echo "    <td align=center>CALLED</td>\n";
+    echo "    <td align=center>NOT CALLED</td>\n";
     echo "  </tr>\n";
 
 	$stmt="SELECT gmt_offset_now,called_since_last_reset,count(*) from osdial_list where list_id='$list_id' group by gmt_offset_now,called_since_last_reset order by gmt_offset_now,called_since_last_reset";
@@ -3137,23 +3137,23 @@ if ($ADD==311)
                 $bgcolor='bgcolor='.$evenrows;
             }
 
-			echo "  <tr $bgcolor class=row>\n";
-            echo "    <td><font size=1>".$DISPtzone." &nbsp; &nbsp; ($LOCALdate)</td>\n";
-            echo "    <td><font size=1>".$lead_list['Y'][$tzone]."</td>\n";
-            echo "    <td><font size=1>".$lead_list['N'][$tzone]."</td>\n";
+			echo "  <tr $bgcolor class=\"row font1\">\n";
+            echo "    <td>".$DISPtzone." &nbsp; &nbsp; ($LOCALdate)</td>\n";
+            echo "    <td align=right>".$lead_list['Y'][$tzone]."</td>\n";
+            echo "    <td align=right>".$lead_list['N'][$tzone]."</td>\n";
             echo "  </tr>\n";
             $o++;
 		}
 	}
 
-	echo "  <tr bgcolor=$menubarcolor>\n";
-    echo "    <td><font color=white size=1><b>SUBTOTALS</b></font></td>\n";
-    echo "    <td align=right><font color=white size=1><b>" . $lead_list[Y_count] . "</b></font></td>\n";
-    echo "    <td align=right><font color=white size=1><b>" . $lead_list[N_count] . "</b></font></td>\n";
+	echo "  <tr class=tabfooter>\n";
+    echo "    <td>SUBTOTALS</td>\n";
+    echo "    <td align=right>" . $lead_list[Y_count] . "</td>\n";
+    echo "    <td align=right>" . $lead_list[N_count] . "</td>\n";
     echo "  </tr>\n";
-	echo "  <tr bgcolor=$menubarcolor>\n";
-    echo "    <td><font color=white size=1><b>TOTAL</b></font></td>\n";
-    echo "    <td colspan=2 align=center><font color=white size=1><b>" . $lead_list[count] . "</b></font></td>\n";
+	echo "  <tr class=tabfooter>\n";
+    echo "    <td>TOTAL</td>\n";
+    echo "    <td colspan=2 align=center>" . $lead_list[count] . "</td>\n";
     echo "  </tr>\n";
 
 	echo "</table></center><br>\n";
@@ -3205,9 +3205,9 @@ if ($ADD==311)
 	echo "<center>\n";
 	echo "<br><font color=$default_text size=4>CALLED COUNTS WITHIN THIS LIST</font></b><br>\n";
 	echo "<table style=\"cursor:crosshair;\" bgcolor=grey width=500 cellspacing=1>\n";
-	echo "  <tr style=\"cusrsor:crosshair;\" bgcolor=$menubarcolor>\n";
-    echo "    <td style=\"cusrsor:crosshair;\" align=left><font size=1 color=white><b>STATUS</b></td>\n";
-    echo "    <td style=\"cusrsor:crosshair;\" align=left><font size=1 color=white><b>STATUS&nbsp;NAME</b></td>";
+	echo "  <tr style=\"cusrsor:crosshair;\" class=tabheader>\n";
+    echo "    <td style=\"cusrsor:crosshair;\" align=left>STATUS</td>\n";
+    echo "    <td style=\"cusrsor:crosshair;\" align=left>STATUS&nbsp;NAME</td>";
 	$first = $all_called_first;
 	while ($first <= $all_called_last) {
         $flabel = $first;
@@ -3215,10 +3215,10 @@ if ($ADD==311)
         if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $flabel;
         if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $flabel;
         if (strlen($flabel) == 3) $flabel = '&nbsp;' . $flabel;
-		echo "    <td style=\"cusrsor:crosshair;\" align=right><font size=1 color=white><b>$flabel</b></font></td>";
+		echo "    <td style=\"cusrsor:crosshair;\" align=right>$flabel</td>";
 		$first++;
 	}
-	echo "    <td style=\"cusrsor:crosshair;\" align=right><font size=1 color=white><b>&nbsp;&nbsp;SUB</b></font></td>\n";
+	echo "    <td style=\"cusrsor:crosshair;\" align=right>&nbsp;&nbsp;SUB</td>\n";
     echo "  </tr>\n";
 
 	$sts=0;
@@ -3232,9 +3232,9 @@ if ($ADD==311)
     }
 	#	echo "$status[$sts]|$status_called_first[$sts]|$status_called_last[$sts]|$leads_in_sts[$sts]|\n";
 	#	echo "$status[$sts]|";
-	echo "  <tr $bgcolor style=\"cursor:crosshair;\" class=row>\n";
-    echo "     <td style=\"cusrsor:crosshair;\" nowrap><font size=1>$Pstatus</td>\n";
-    echo "     <td style=\"cusrsor:crosshair;\" nowrap><font size=1>$statuses_list[$Pstatus]</td>";
+	echo "  <tr $bgcolor style=\"cursor:crosshair;\" class=\"row font1\">\n";
+    echo "     <td style=\"cusrsor:crosshair;\" nowrap>$Pstatus</td>\n";
+    echo "     <td style=\"cusrsor:crosshair;\" nowrap>$statuses_list[$Pstatus]</td>";
 
 	$first = $all_called_first;
 	while ($first <= $all_called_last) {
@@ -3250,22 +3250,22 @@ if ($ADD==311)
                 if (strlen($clabel) == 1) $clabel = '&nbsp;&nbsp;&nbsp;' . $count_count[$o];
                 if (strlen($clabel) == 2) $clabel = '&nbsp;&nbsp;' . $count_count[$o];
                 if (strlen($clabel) == 3) $clabel = '&nbsp;' . $count_count[$o];
-				echo "    <td style=\"cursor:crosshair;\" class=hover align=right title=\"$count_count[$o] Lead$lplural, Called $first Time$fplural, Last Dispositioned as '$Pstatus'\"><font size=1>$clabel</font></td>\n";
+				echo "    <td style=\"cursor:crosshair;\" class=hover align=right title=\"$count_count[$o] Lead$lplural, Called $first Time$fplural, Last Dispositioned as '$Pstatus'\">$clabel</td>\n";
 				$called_printed++;
 			}
 			$o++;
 		}
-		if (!$called_printed) echo "    <td style=\"cursor:crosshair;\" class=hover align=right><font size=1>&nbsp;&nbsp;&nbsp;&nbsp;</font></td>";
+		if (!$called_printed) echo "    <td style=\"cursor:crosshair;\" class=hover align=right>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
 		$first++;
 	}
-	echo "    <td style=\"cursor:crosshair;\" align=right title=\"Subtotal for '$Pstatus': $leads_in_sts[$sts]\"><font size=1><b>$leads_in_sts[$sts]</b></font></td>\n";
+	echo "    <td style=\"cursor:crosshair;\" align=right title=\"Subtotal for '$Pstatus': $leads_in_sts[$sts]\"><b>$leads_in_sts[$sts]</b></td>\n";
     echo "  </tr>\n";
 
 	$sts++;
 	}
 
-	echo "  <tr style=\"cusrsor:crosshair;\" bgcolor=$menubarcolor>";
-    echo "    <td style=\"cusrsor:crosshair;\" align=left colspan=2><b><font size=1 color=white><b>TOTAL</b></font></td>";
+	echo "  <tr style=\"cusrsor:crosshair;\" class=tabfooter>";
+    echo "    <td style=\"cusrsor:crosshair;\" align=left colspan=2>TOTAL</td>";
 	$first = $all_called_first;
 	while ($first <= $all_called_last) {
         if ($all_called_count[$first] == 0 or $all_called_count[$first] == '') $all_called_count[$first] = '0';
@@ -3273,10 +3273,10 @@ if ($ADD==311)
         if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $all_called_count[$first];
         if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $all_called_count[$first];
         if (strlen($flabel) == 3) $flabel = '&nbsp;' . $all_called_count[$first];
-		echo "    <td style=\"cusrsor:crosshair;\" align=right class=right title=\"$first Lead Count Total: $all_called_count[$first] Leads\"><font size=1 color=white><b>$flabel</b></font></td>";
+		echo "    <td style=\"cusrsor:crosshair;\" align=right class=right title=\"$first Lead Count Total: $all_called_count[$first] Leads\">$flabel</td>";
 		$first++;
 	}
-	echo "    <td style=\"cusrsor:crosshair;\" align=right title=\"Total: $leads_in_list Leads\"><b><font size=1 color=white><b>$leads_in_list</b></font></td>\n";
+	echo "    <td style=\"cusrsor:crosshair;\" align=right title=\"Total: $leads_in_list Leads\">$leads_in_list</td>\n";
     echo "  </tr>\n";
 
 	echo "</table></center><br>\n";
@@ -3326,9 +3326,9 @@ if ($ADD==311)
 	echo "<center>\n";
 	echo "<br><font color=$default_text size=4>PER-LEAD DISPOSITION COUNTS FROM LOG</font></b><br>\n";
 	echo "<table style=\"cursor:crosshair;\" bgcolor=grey width=500 cellspacing=1>\n";
-	echo "  <tr style=\"cusrsor:crosshair;\" bgcolor=$menubarcolor>\n";
-    echo "    <td style=\"cusrsor:crosshair;\" align=left><font size=1 color=white><b>STATUS</b></td>\n";
-    echo "    <td style=\"cusrsor:crosshair;\" align=left><font size=1 color=white><b>STATUS&nbsp;NAME</b></td>";
+	echo "  <tr style=\"cusrsor:crosshair;\" class=tabheader>\n";
+    echo "    <td style=\"cusrsor:crosshair;\" align=left>STATUS</td>\n";
+    echo "    <td style=\"cusrsor:crosshair;\" align=left>STATUS&nbsp;NAME</td>";
 	$first = $all_called_first;
 	while ($first <= $all_called_last) {
         $flabel = $first;
@@ -3336,10 +3336,10 @@ if ($ADD==311)
         if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $flabel;
         if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $flabel;
         if (strlen($flabel) == 3) $flabel = '&nbsp;' . $flabel;
-		echo "    <td style=\"cusrsor:crosshair;\" align=right><font size=1 color=white><b>$flabel</b></font></td>";
+		echo "    <td style=\"cusrsor:crosshair;\" align=right>$flabel</td>";
 		$first++;
 	}
-	echo "    <td style=\"cusrsor:crosshair;\" align=right><font size=1 color=white><b>&nbsp;&nbsp;SUB</b></font></td>\n";
+	echo "    <td style=\"cusrsor:crosshair;\" align=right>&nbsp;&nbsp;SUB</td>\n";
     echo "  </tr>\n";
 
 	$sts=0;
@@ -3353,9 +3353,9 @@ if ($ADD==311)
     }
 	#	echo "$status[$sts]|$status_called_first[$sts]|$status_called_last[$sts]|$leads_in_sts[$sts]|\n";
 	#	echo "$status[$sts]|";
-	echo "  <tr $bgcolor style=\"cursor:crosshair;\" class=row>\n";
-    echo "     <td style=\"cusrsor:crosshair;\" nowrap><font size=1>$Pstatus</td>\n";
-    echo "     <td style=\"cusrsor:crosshair;\" nowrap><font size=1>$statuses_list[$Pstatus]</td>";
+	echo "  <tr $bgcolor style=\"cursor:crosshair;\" class=\"row font1\">\n";
+    echo "     <td style=\"cusrsor:crosshair;\" nowrap>$Pstatus</td>\n";
+    echo "     <td style=\"cusrsor:crosshair;\" nowrap>$statuses_list[$Pstatus]</td>";
 
 	$first = $all_called_first;
 	while ($first <= $all_called_last) {
@@ -3371,22 +3371,22 @@ if ($ADD==311)
                 if (strlen($clabel) == 1) $clabel = '&nbsp;&nbsp;&nbsp;' . $count_count[$o];
                 if (strlen($clabel) == 2) $clabel = '&nbsp;&nbsp;' . $count_count[$o];
                 if (strlen($clabel) == 3) $clabel = '&nbsp;' . $count_count[$o];
-				echo "    <td style=\"cursor:crosshair;\" class=hover align=right title=\"$count_count[$o] Lead$lplural Dispositioned as '$Pstatus' $first Time$fplural\"><font size=1>$clabel</font></td>\n";
+				echo "    <td style=\"cursor:crosshair;\" class=hover align=right title=\"$count_count[$o] Lead$lplural Dispositioned as '$Pstatus' $first Time$fplural\">$clabel</td>\n";
 				$called_printed++;
 			}
 			$o++;
 		}
-		if (!$called_printed) echo "    <td style=\"cursor:crosshair;\" class=hover align=right><font size=1>&nbsp;&nbsp;&nbsp;&nbsp;</font></td>";
+		if (!$called_printed) echo "    <td style=\"cursor:crosshair;\" class=hover align=right>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
 		$first++;
 	}
-	echo "    <td style=\"cursor:crosshair;\" align=right title=\"Subtotal for '$Pstatus': $leads_in_sts[$sts]\"><font size=1><b>$leads_in_sts[$sts]</b></font></td>\n";
+	echo "    <td style=\"cursor:crosshair;\" align=right title=\"Subtotal for '$Pstatus': $leads_in_sts[$sts]\"><b>$leads_in_sts[$sts]</b></td>\n";
     echo "  </tr>\n";
 
 	$sts++;
 	}
 
-	echo "  <tr style=\"cusrsor:crosshair;\" bgcolor=$menubarcolor>";
-    echo "    <td style=\"cusrsor:crosshair;\" align=left colspan=2><b><font size=1 color=white><b>TOTAL</b></font></td>";
+	echo "  <tr style=\"cusrsor:crosshair;\" class=tabfooter>";
+    echo "    <td style=\"cusrsor:crosshair;\" align=left colspan=2>TOTAL</td>";
 	$first = $all_called_first;
 	while ($first <= $all_called_last) {
         if ($all_called_count[$first] == 0 or $all_called_count[$first] == '') $all_called_count[$first] = '0';
@@ -3394,10 +3394,10 @@ if ($ADD==311)
         if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $all_called_count[$first];
         if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $all_called_count[$first];
         if (strlen($flabel) == 3) $flabel = '&nbsp;' . $all_called_count[$first];
-		echo "    <td style=\"cusrsor:crosshair;\" align=right class=right title=\"$first Attempt Total: $all_called_count[$first] Calls\"><font size=1 color=white><b>$flabel</b></font></td>";
+		echo "    <td style=\"cusrsor:crosshair;\" align=right class=right title=\"$first Attempt Total: $all_called_count[$first] Calls\">$flabel</td>";
 		$first++;
 	}
-	echo "    <td style=\"cusrsor:crosshair;\" align=right title=\"Total: $leads_in_list Calls\"><b><font size=1 color=white><b>$leads_in_list</b></font></td>\n";
+	echo "    <td style=\"cusrsor:crosshair;\" align=right title=\"Total: $leads_in_list Calls\">$leads_in_list</td>\n";
     echo "  </tr>\n";
 
 	echo "</table></center><br>\n";
@@ -3475,16 +3475,18 @@ if (eregi("ENDATEDOWN",$stage)) {$SQLorder='order by entry_time desc,';   $LEVEL
 	$cb_to_print = mysql_num_rows($rslt);
 
 echo "<TABLE width=100%><TR><TD>\n";
-echo "<center><TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr bgcolor=$menubarcolor>\n";
-echo "<td><font size=1 color=white>LEAD</td><td><font size=1 color=white>LIST</td>\n";
-echo "<td><font size=1 color=white> CAMPAIGN</td>\n";
-echo "<td><a href=\"$PHP_SELF?$oldADD&$ENDATElink\"><font size=1 color=white><B>ENTRY DATE</B></a></td>\n";
-echo "<td><font size=1 color=white>CALLBACK DATE</td>\n";
-echo "<td><a href=\"$PHP_SELF?$oldADD&$USERlink\"><font size=1 color=white><B>USER</B></a></td>\n";
-echo "<td><font size=1 color=white>RECIPIENT</td>\n";
-echo "<td><font size=1 color=white>STATUS</td>\n";
-echo "<td><a href=\"$PHP_SELF?$oldADD&$GROUPlink\"><font size=1 color=white><B>GROUP</B></a></td></tr>\n";
+echo "<center><table width=$section_width cellspacing=1 cellpadding=0 bgcolor=grey>\n";
+echo "  <tr class=tabheader>\n";
+echo "    <td>LEAD</td>\n";
+echo "    <td>LIST</td>\n";
+echo "    <td>CAMPAIGN</td>\n";
+echo "    <td><a href=\"$PHP_SELF?$oldADD&$ENDATElink\">ENTRY DATE</a></td>\n";
+echo "    <td>CALLBACK DATE</td>\n";
+echo "    <td><a href=\"$PHP_SELF?$oldADD&$USERlink\">USER</a></td>\n";
+echo "    <td>RECIPIENT</td>\n";
+echo "    <td>STATUS</td>\n";
+echo "    <td><a href=\"$PHP_SELF?$oldADD&$GROUPlink\">GROUP</a></td>\n";
+echo "  </tr>\n";
 
 	$o=0;
 	while ($cb_to_print > $o) {
@@ -3493,23 +3495,23 @@ echo "<td><a href=\"$PHP_SELF?$oldADD&$GROUPlink\"><font size=1 color=white><B>G
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor class=row>";
-		echo "<td><font size=1><A HREF=\"admin_modify_lead.php?lead_id=$row[1]\" target=\"_blank\">$row[1]</A></td>";
-		echo "<td><font size=1><A HREF=\"$PHP_SELF?ADD=311&list_id=$row[2]\">$row[2]</A></td>";
-		echo "<td><font size=1><A HREF=\"$PHP_SELF?ADD=31&campaign_id=$row[3]\">$row[3]</A></td>";
-		echo "<td><font size=1>$row[5]</td>";
-		echo "<td><font size=1>$row[6]</td>";
-		echo "<td><font size=1><A HREF=\"$PHP_SELF?ADD=3&user=$row[8]\">$row[8]</A></td>";
-		echo "<td><font size=1>$row[9]</td>";
-		echo "<td><font size=1>$row[4]</td>";
-		echo "<td><font size=1><A HREF=\"$PHP_SELF?ADD=311111&user_group=$row[11]\">$row[11]</A></td>";
-		echo "</tr>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+		echo "    <td><a href=\"admin_modify_lead.php?lead_id=$row[1]\" target=\"_blank\">$row[1]</a></td>\n";
+		echo "    <td><a href=\"$PHP_SELF?ADD=311&list_id=$row[2]\">$row[2]</a></td>\n";
+		echo "    <td><a href=\"$PHP_SELF?ADD=31&campaign_id=$row[3]\">$row[3]</a></td>\n";
+		echo "    <td>$row[5]</td>\n";
+		echo "    <td>$row[6]</td>\n";
+		echo "    <td><a href=\"$PHP_SELF?ADD=3&user=$row[8]\">$row[8]</a></td>\n";
+		echo "    <td>$row[9]</td>\n";
+		echo "    <td>$row[4]</td>\n";
+		echo "    <td><a href=\"$PHP_SELF?ADD=311111&user_group=$row[11]\">$row[11]</a></td>\n";
+		echo "  </tr>\n";
 		$o++;
 	}
 
-echo "<tr bgcolor=$menubarcolor>";
-echo "  <td colspan=9 height=8px><font size=1 color=white></font></td>";
-echo "</tr>";
+echo "  <tr class=tabfooter>";
+echo "    <td colspan=9></td>";
+echo "  </tr>";
 echo "</TABLE></center>\n";
 
 echo "<center>$CBinactiveLINK</center>";
@@ -3549,14 +3551,14 @@ if ($people_to_print > 20) {
 }
 echo "<br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr bgcolor=$menubarcolor>";
-echo "<td><font size=1 color=white><B>ID</B></td>";
-echo "<td><font size=1 color=white><B>NAME</B></td>";
-echo "<td><font size=1 color=white><B>CAMPAIGN</B></td>";
-echo "<td><font size=1 color=white><B>DESCRIPTION</B></td>";
-echo "<td align=center><font size=1 color=white><B>MODIFIED</B></td>";
-echo "<td align=center><font size=1 color=white><B>ACTIVE</B></td>";
-echo "<td align=center colspan=3><font size=1 color=white><B>LINKS</B></td>";
+echo "<tr class=tabheader>";
+echo "<td>ID</td>";
+echo "<td>NAME</td>";
+echo "<td>CAMPAIGN</td>";
+echo "<td>DESCRIPTION</td>";
+echo "<td align=center>MODIFIED</td>";
+echo "<td align=center>ACTIVE</td>";
+echo "<td align=center colspan=3>LINKS</td>";
 	$o=0;
 	while ($people_to_print > $o) {
 		$row=mysql_fetch_row($rslt);
@@ -3564,25 +3566,26 @@ echo "<td align=center colspan=3><font size=1 color=white><B>LINKS</B></td>";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">$row[0]</a></td>";
-		echo "<td><font size=1>$row[1]</td>";
-		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=100&camp=$row[2]&dispact=$dispact\">$row[2]</a></td>";
-		echo "<td><font size=1>$row[4]</td>";
-		echo "<td align=center><font size=1>$row[5]</td>";
-		echo "<td align=center><font size=1> $row[3]</td>";
-		echo "<td><font size=1>$row[7]</td>";
-		#echo "<td><font size=1> &nbsp;</td>";
-		echo "<td colspan=2 align=center><font size=1><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">MODIFY</a>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">$row[0]</a></td>\n";
+		echo "    <td>$row[1]</td>\n";
+		echo "    <td><a href=\"$PHP_SELF?ADD=100&camp=$row[2]&dispact=$dispact\">$row[2]</a></td>\n";
+		echo "    <td>$row[4]</td>\n";
+		echo "    <td align=center>$row[5]</td>\n";
+		echo "    <td align=center>$row[3]</td>\n";
+		echo "    <td>$row[7]</td>\n";
+		echo "    <td colspan=2 align=center><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">MODIFY</a>";
         if ($LOGuser_leve > 8) {
-		    echo " | <font size=1><a href=\"$PHP_SELF?ADD=131&list_id=$row[0]\">EXPORT</a>\n";
+		    echo " | <a href=\"$PHP_SELF?ADD=131&list_id=$row[0]\">EXPORT</a>";
         }
-		echo " | <font size=1><a href=\"$PHP_SELF?ADD=122&list_id_override=$row[0]\">ADD LEADS</a></td></tr>\n";
+		echo " | <a href=\"$PHP_SELF?ADD=122&list_id_override=$row[0]\">ADD LEADS</a></td>\n";
+        echo "  </tr>\n";
 		$o++;
 	}
 
-echo "<tr bgcolor=$menubarcolor>";
-echo "  <td colspan=9 height=8px><font size=1 color=white></font></td>";
-echo "</tr>";
+echo "  <tr class=tabfooter>\n";
+echo "    <td colspan=9></td>\n";
+echo "  </tr>\n";
 echo "</TABLE></center>\n";
 }
 

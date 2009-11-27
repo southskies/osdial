@@ -32,7 +32,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 	$campaigns_to_print = mysql_num_rows($rslt);
 	$campaigns_list='';
 	$campaigns_value='';
-	$RANKcampaigns_list="<tr bgcolor=$menubarcolor><td align=left><font size=1 color=white><b>CAMPAIGN</b></font></td><td align=center><font size=1 color=white><b>RANK</b></font></td><td align=right><font size=1 color=white><b>CALLS</b></font></td></tr>\n";
+	$RANKcampaigns_list="<tr class=tabheader><td align=left>CAMPAIGN</td><td align=center>RANK</td><td align=right>CALLS</td></tr>\n";
 
 	$o=0;
 	while ($campaigns_to_print > $o)
@@ -190,7 +190,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 	$groups_list='';
 	$groups_value='';
 	$XFERgroups_list='';
-	$RANKgroups_list="<tr bgcolor=$menubarcolor><td align=left><font size=1 color=white><b>INBOUND GROUP</b></font></td><td align=center><font size=1 color=white><b>RANK</b></font></td><td align=right><font size=1 color=white><b>CALLS</b></font></td></tr>\n";
+	$RANKgroups_list="<tr class=tabheader><td align=left>INBOUND GROUP</td><td align=center>RANK</td><td align=right>CALLS</td></tr>\n";
 
 	$o=0;
 	while ($groups_to_print > $o)

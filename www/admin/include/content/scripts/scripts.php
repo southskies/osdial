@@ -392,7 +392,7 @@ tinyMCE.init({
 	echo "<tr bgcolor=$oddrows><td align=center colspan=2>";
 
 	echo "<TEXTAREA NAME=script_text ROWS=20 COLS=120 value=\"\"></TEXTAREA></td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -787,7 +787,7 @@ tinyMCE.init({
 	echo "<tr bgcolor=$oddrows><td align=center colspan=2>";
 
 	echo "<TEXTAREA NAME=script_text ROWS=20 COLS=120>$script_text</TEXTAREA></td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></form></center>\n";
 
 	if ($LOGdelete_scripts > 0) {
@@ -804,11 +804,11 @@ tinyMCE.init({
         echo "<br /><br /><hr width=50%>\n";
         echo "<center><font color=$default_text size=+1>BUTTONS / OBJECTIONS & REBUTTALS</font><br><br>\n";
         echo "<table bgcolor=grey width=$section_width cellspacing=1 cellpadding=1>\n";
-        echo "  <tr bgcolor=$menubarcolor>\n";
-        echo "      <td align=center><font color=white size=1><b>ID</b></font></td>\n";
-        echo "      <td align=center><font color=white size=1><b>BUTTON LABEL</b></font></td>\n";
-        echo "      <td align=center><font color=white size=1><b>DESCRIPTION</b></font></td>\n";
-        echo "      <td align=center><font color=white size=1><b>ACTION</b></font></td>\n";
+        echo "  <tr class=tabheader>\n";
+        echo "      <td align=center>ID</td>\n";
+        echo "      <td align=center>BUTTON LABEL</td>\n";
+        echo "      <td align=center>DESCRIPTION</td>\n";
+        echo "      <td align=center>ACTION</td>\n";
         echo "  </tr>\n";
         $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'");
         $cnt = 0;
@@ -822,25 +822,24 @@ tinyMCE.init({
             echo '  <input type="hidden" name="ADD" value="' . $ADD . '">';
             echo '  <input type="hidden" name="SUB" value="' . $button['script_button_id'] . '">';
 	        echo "  <input type=hidden name=script_id value=\"$script_id\">\n";
-            echo "  <tr $bgcolor class=row>";
-            echo "      <td align=center><font size=1>" . $button['script_button_id'] . "</font></td>";
-            echo "      <td align=center><font size=1>" . $button['script_button_label'] . "</font></td>";
-            echo "      <td align=center><font size=1>" . $button['script_button_description'] . "</font></td>";
-            echo "      <td align=center><input style=\"width: 100%; font-size: 7pt;\" type=submit value=\"Edit\"></td>\n";
-            echo "  </tr>";
-            echo "  </form>";
+            echo "  <tr $bgcolor class=\"row font1\">\n";
+            echo "      <td align=center>" . $button['script_button_id'] . "</td>\n";
+            echo "      <td align=center>" . $button['script_button_label'] . "</td>\n";
+            echo "      <td align=center>" . $button['script_button_description'] . "</td>\n";
+            echo "      <td align=center class=tabbutton1><input type=submit value=\"Edit\"></td>\n";
+            echo "  </tr>\n";
+            echo "  </form>\n";
             $cnt++;
         }
-        echo "  <tr><td colspan=4 bgcolor=$evenrows align=center></td></tr>\n";
         echo '  <form action="' . $PHP_SELF . '" method="POST">';
         echo '  <input type="hidden" name="ADD" value="' . $ADD . '">';
         echo '  <input type="hidden" name="SUB" value="--NEW--">';
 	    echo "  <input type=hidden name=script_id value=\"$script_id\">\n";
-        echo "  <tr>\n";
-        echo "      <td bgcolor=$menubarcolor align=center><input style=\"font-size: 7pt;\" type=text name=script_button_id size=10 maxlength=10 value=\"\"></td>\n";
-        echo "      <td bgcolor=$menubarcolor align=center><input style=\"font-size: 7pt;\" type=text name=script_button_label size=20 maxlength=50 value=\"\"></td>\n";
-        echo "      <td bgcolor=$menubarcolor align=center><input style=\"font-size: 7pt;\" type=text name=script_button_description size=30 maxlength=100 value=\"\"></td>\n";
-        echo "      <td bgcolor=$menubarcolor align=center><input style=\"width: 100%; font-size: 7pt;\" type=submit value=\"NEW\"></td>\n";
+        echo "  <tr class=tabfooter>\n";
+        echo "      <td class=tabinput align=center><input type=text name=script_button_id size=10 maxlength=10 value=\"\"></td>\n";
+        echo "      <td class=tabinput align=center><input type=text name=script_button_label size=20 maxlength=50 value=\"\"></td>\n";
+        echo "      <td class=tabinput align=center><input type=text name=script_button_description size=30 maxlength=100 value=\"\"></td>\n";
+        echo "      <td class=tabbutton1 align=center><input type=submit value=\"NEW\"></td>\n";
         echo "  </tr>\n";
         echo "  </form>\n";
         echo "</table>\n";
@@ -869,11 +868,12 @@ echo "<TABLE align=center><TR><TD>\n";
 	$people_to_print = mysql_num_rows($rslt);
 
 echo "<center><br><font color=$default_text size=+1>SCRIPTS</font><br><br>\n";
-echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr bgcolor=$menubarcolor>";
-echo "<td><font size=1 color=white><B>NAME</B></td>";
-echo "<td><font size=1 color=white><B>DESCRIPTION</B></td>";
-echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
+echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "  <tr class=tabheader>";
+echo "    <td>NAME</td>\n";
+echo "    <td>DESCRIPTION</td>\n";
+echo "    <td align=center>LINKS</td>\n";
+echo "  </tr>\n";
 
 	$o=0;
 	while ($people_to_print > $o) {
@@ -882,16 +882,18 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=3111111&script_id=$row[0]\">$row[0]</a></td>";
-		echo "<td><font size=1> $row[1]</td>";
-		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=3111111&script_id=$row[0]\">MODIFY</a></td></tr>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=3111111&script_id=$row[0]\">$row[0]</a></td>\n";
+		echo "    <td>$row[1]</td>\n";
+		echo "    <td align=center><a href=\"$PHP_SELF?ADD=3111111&script_id=$row[0]\">MODIFY</a></td>\n";
+        echo "  </tr>\n";
 		$o++;
 	}
 
-echo "<tr bgcolor=$menubarcolor>";
-echo "  <td colspan=3 height=8px><font size=1 color=white></font></td>";
-echo "</tr>";
-echo "</TABLE></center>\n";
+echo "  <tr class=tabfooter>\n";
+echo "    <td colspan=3></td>\n";
+echo "  </tr>\n";
+echo "</table></center>\n";
 }
 
 ?>

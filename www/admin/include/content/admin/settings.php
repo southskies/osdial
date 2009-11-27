@@ -151,7 +151,7 @@ if ($ADD==311111111111111)
 	echo "$NWB#settings-agent_template$NWE</td></tr>\n";
 
 
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=submit VALUE=SUBMIT></td></tr>\n";
+	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	echo "</form>\n";
 	}

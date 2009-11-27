@@ -41,7 +41,7 @@ if ($ADD==111111111111)
 	echo "<tr bgcolor=$oddrows><td align=right>Server IP Address: </td><td align=left><input type=text name=server_ip size=20 maxlength=15>$NWB#servers-server_ip$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option></select>$NWB#servers-active$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Asterisk Version: </td><td align=left><input type=text name=asterisk_version size=20 maxlength=20>$NWB#servers-asterisk_version$NWE</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=submit VALUE=SUBMIT></td></tr>\n";
+	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -391,14 +391,19 @@ if ($ADD==311111111111)
 	echo "<tr bgcolor=$oddrows><td align=right>System Performance: </td><td align=left><select size=1 name=sys_perf_log><option>Y</option><option>N</option><option selected>$row[17]</option></select>$NWB#servers-sys_perf_log$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Server Logs: </td><td align=left><select size=1 name=vd_server_logs><option>Y</option><option>N</option><option selected>$row[18]</option></select>$NWB#servers-vd_server_logs$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>AGI Output: </td><td align=left><select size=1 name=agi_output><option>NONE</option><option>STDERR</option><option>FILE</option><option>BOTH</option><option selected>$row[19]</option></select>$NWB#servers-agi_output$NWE</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=submit VALUE=SUBMIT></td></tr>\n";
+	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
 	echo "</TABLE></center></form>\n";
 
 
 	### osdial server trunk records for this server
 	echo "<br><br><center><font color=$default_text size=+1>$t1 TRUNKS FOR THIS SERVER &nbsp;</font> $NWB#osdial_server_trunks$NWE<br>\n";
 	echo "<table width=600 cellspacing=1 bgcolor=grey>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center><font size=1 color=white><b>TRUNKS</b></font></td><td align=center><font size=1 color=white><b>CAMPAIGN</b></font></td><td align=center><font size=1 color=white><b>RESTRICTION</b></font></td><td align=center colspan=2><font size=1 color=white><b>ACTIONS</b></font></td></tr>\n";
+	echo "  <tr class=tabheader>\n";
+    echo "    <td align=center>TRUNKS</td>\n";
+    echo "    <td align=center>CAMPAIGN</td>\n";
+    echo "    <td align=center>RESTRICTION</td>\n";
+    echo "    <td align=center colspan=2>ACTIONS</td>\n";
+    echo "  </tr>\n";
 
 		$stmt="SELECT * from osdial_server_trunks where server_ip='$server_ip' order by campaign_id";
 		$rslt=mysql_query($stmt, $link);
@@ -417,12 +422,12 @@ if ($ADD==311111111111)
 		echo "  <input type=hidden name=server_ip value=\"$server_ip\">\n";
 		echo "  <input type=hidden name=campaign_id value=\"$rowx[1]\">\n";
 		echo "  <input type=hidden name=ADD value=421111111111>\n";
-		echo "  <tr $bgcolor class=row>\n";
-		echo "    <td align=center><input style=\"font-size: 7pt;\" size=6 maxlength=4 name=dedicated_trunks value=\"$rowx[2]\"></td>\n";
-        echo "    <td align=center><font size=1>$rowx[1]</font></td>";
-		echo "    <td align=center><select style=\"font-size: 7pt;\" size=1 name=trunk_restriction><option>MAXIMUM_LIMIT</option><option>OVERFLOW_ALLOWED</option><option SELECTED>$rowx[3]</option></select></td>\n";
-		echo "    <td align=center><font size=1><a href=\"$PHP_SELF?ADD=621111111111&campaign_id=$rowx[1]&server_ip=$server_ip\">DELETE</a></font></td>\n";
-		echo "    <td align=center><input style=\"width: 100%; font-size: 7pt;\" type=submit name=submit value=MODIFY></td>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+		echo "    <td align=center class=tabinput><input size=6 maxlength=4 name=dedicated_trunks value=\"$rowx[2]\"></td>\n";
+        echo "    <td align=center>$rowx[1]</td>";
+		echo "    <td align=center class=tabinput><select size=1 name=trunk_restriction><option>MAXIMUM_LIMIT</option><option>OVERFLOW_ALLOWED</option><option SELECTED>$rowx[3]</option></select></td>\n";
+		echo "    <td align=center><a href=\"$PHP_SELF?ADD=621111111111&campaign_id=$rowx[1]&server_ip=$server_ip\">DELETE</a></td>\n";
+		echo "    <td align=center class=tabbutton1><input type=submit name=submit value=MODIFY></td>\n";
         echo "  </tr>\n";
         echo "  </form>\n";
 		}
@@ -430,11 +435,11 @@ if ($ADD==311111111111)
     echo "  <form action=$PHP_SELF method=POST>\n";
 	echo "  <input type=hidden name=ADD value=221111111111>\n";
 	echo "  <input type=hidden name=server_ip value=\"$server_ip\">\n";
-	echo "  <tr bgcolor=$menubarcolor>\n";
-    echo "    <td align=center><input style=\"font-size: 7pt;\" size=6 maxlength=4 name=dedicated_trunks></td>\n";
-    echo "    <td align=center><select style=\"font-size: 7pt;\" size=1 name=campaign_id>$campaigns_list</select></td>\n";
-	echo "    <td align=center><select style=\"font-size: 7pt;\" size=1 name=trunk_restriction><option>MAXIMUM_LIMIT</option><option>OVERFLOW_ALLOWED</option></select></td>\n";
-    echo "    <td align=center colspan=2><input style=\"width: 100%; font-size: 7pt;\" type=submit name=submit value=ADD></td>\n";
+	echo "  <tr class=tabfooter>\n";
+    echo "    <td align=center class=tabinput><input size=6 maxlength=4 name=dedicated_trunks></td>\n";
+    echo "    <td align=center class=tabinput><select size=1 name=campaign_id>$campaigns_list</select></td>\n";
+	echo "    <td align=center class=tabinput><select size=1 name=trunk_restriction><option>MAXIMUM_LIMIT</option><option>OVERFLOW_ALLOWED</option></select></td>\n";
+    echo "    <td align=center colspan=2 class=tabcutton1><input type=submit name=submit value=ADD></td>\n";
     echo "  </tr>\n";
     echo "  </form>\n";
 	echo "</table>\n";
@@ -445,7 +450,11 @@ if ($ADD==311111111111)
 	echo "<center>\n";
 	echo "<br><font color=$default_text>PHONES WITHIN THIS SERVER</font><br>\n";
 	echo "<table width=400 cellspacing=1 bgcolor=grey>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center><font size=1 color=white><b>EXTENSION</b></font></td><td align=center><font size=1 color=white><b>NAME</b></font></td><td align=center><font size=1 color=white><b>ACTIVE</b></font></td></tr>\n";
+	echo "  <tr class=tabheader>\n";
+    echo "    <td align=center>EXTENSION</td>\n";
+    echo "    <td align=center>NAME</td>\n";
+    echo "    <td align=center>ACTIVE</td>\n";
+    echo "  </tr>\n";
 
 		$active_phones = 0;
 		$inactive_phones = 0;
@@ -466,12 +475,16 @@ if ($ADD==311111111111)
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
 
-		echo "<tr $bgcolor class=row><td align=center><font size=1><a href=\"$PHP_SELF?ADD=31111111111&extension=$rowx[0]&server_ip=$row[2]\">$rowx[0]</a></td><td align=center><font size=1>$rowx[2]</td><td align=center><font size=1>$rowx[1]</td></tr>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td align=center><a href=\"$PHP_SELF?ADD=31111111111&extension=$rowx[0]&server_ip=$row[2]\">$rowx[0]</a></td>\n";
+        echo "    <td align=center>$rowx[2]</td>\n";
+        echo "    <td align=center>$rowx[1]</td>\n";
+        echo "  </tr>\n";
 		}
 
-    echo "<tr bgcolor=$menubarcolor>";
-    echo "  <td colspan=3 height=8px><font size=1 color=white></font></td>";
-    echo "</tr>";
+    echo "  <tr class=tabfooter>\n";
+    echo "    <td colspan=3></td>\n";
+    echo "  </tr>\n";
 	echo "</table></font></center><br>\n";
 
 
@@ -479,7 +492,10 @@ if ($ADD==311111111111)
 	echo "<center>\n";
 	echo "<br><br><font color=$default_text>CONFERENCES WITHIN THIS SERVER</font><br>\n";
 	echo "<table width=400 cellspacing=1 bgcolor=grey>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center><font size=1 color=white><b>CONFERENCE</b></font></td><td align=center><font size=1 color=white><b>EXTENSION</b></font></td></tr>\n";
+	echo "  <tr class=tabheader>\n";
+    echo "    <td align=center>CONFERENCE</td>\n";
+    echo "    <td align=center>EXTENSION</td>\n";
+    echo "  </tr>\n";
 
 		$active_confs = 0;
 		$stmt="SELECT conf_exten,extension from conferences where server_ip='$row[2]'";
@@ -498,12 +514,15 @@ if ($ADD==311111111111)
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
 
-		echo "<tr $bgcolor class=row><td align=center><font size=1><a href=\"$PHP_SELF?ADD=3111111111111&conf_exten=$rowx[0]&server_ip=$row[2]\">$rowx[0]</a></td><td align=center><font size=1>$rowx[2]</td></tr>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td align=center><a href=\"$PHP_SELF?ADD=3111111111111&conf_exten=$rowx[0]&server_ip=$row[2]\">$rowx[0]</a></td>\n";
+        echo "    <td align=center>$rowx[2]</td>\n";
+        echo "  </tr>\n";
 		}
 
-    echo "<tr bgcolor=$menubarcolor>";
-    echo "  <td colspan=2 height=8px><font size=1 color=white></font></td>";
-    echo "</tr>";
+    echo "  <tr class=tabfooter>\n";
+    echo "    <td colspan=2></td>\n";
+    echo "  </tr>\n";
 	echo "</table></font></center><br>\n";
 
 
@@ -511,7 +530,10 @@ if ($ADD==311111111111)
 	echo "<center>\n";
 	echo "<br><br><font color=$default_text>$t1 CONFERENCES WITHIN THIS SERVER<br>\n";
 	echo "<table width=400 cellspacing=1 bgcolor=grey>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center><font size=1 color=white><b>$t1 CONFERENCE</b></font></td><td align=center><font size=1 color=white><b>EXTENSION</b></font></td></tr>\n";
+	echo "  <tr class=tabheader>\n";
+    echo "    <td align=center>$t1 CONFERENCE</td>\n";
+    echo "    <td align=center>EXTENSION</td>\n";
+    echo "  </tr>\n";
 
 		$active_vdconfs = 0;
 		$stmt="SELECT conf_exten,extension from osdial_conferences where server_ip='$row[2]'";
@@ -530,12 +552,15 @@ if ($ADD==311111111111)
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
 
-		echo "<tr $bgcolor class=row><td align=center><font size=1><a href=\"$PHP_SELF?ADD=31111111111111&conf_exten=$rowx[0]&server_ip=$row[2]\">$rowx[0]</a></td><td align=center><font size=1>$rowx[2]</td></tr>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td align=center><a href=\"$PHP_SELF?ADD=31111111111111&conf_exten=$rowx[0]&server_ip=$row[2]\">$rowx[0]</a></td>\n";
+        echo "    <td align=center>$rowx[2]</td>\n";
+        echo "  </tr>\n";
 		}
 
-    echo "<tr bgcolor=$menubarcolor>";
-    echo "  <td colspan=2 height=8px><font size=1 color=white></font></td>";
-    echo "</tr>";
+    echo "  <tr class=tabfooter>\n";
+    echo "    <td colspan=2></td>\n";
+    echo "  </tr>\n";
 	echo "</table></font></center><br>\n";
 
 
@@ -573,14 +598,15 @@ echo "<TABLE align=center><TR><TD>\n";
 	$phones_to_print = mysql_num_rows($rslt);
 
 echo "<center><br><font color=$default_text size=+1>SERVERS</font><br><br>\n";
-echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr bgcolor=$menubarcolor>";
-echo "<td><font size=1 color=white><B>ID</B></td>";
-echo "<td><font size=1 color=white><B>DESCRIPTION</B></td>";
-echo "<td><font size=1 color=white><B>SERVER</B></td>";
-echo "<td><font size=1 color=white><B>ASTERISK</B></td>";
-echo "<td align=center><font size=1 color=white><B>ACTIVE</B></td>";
-echo "<td align=center colspan=2><font size=1 color=white><B>LINKS</B></td>";
+echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "  <tr class=tabheader>\n";
+echo "    <td>ID</td>\n";
+echo "    <td>DESCRIPTION</td>\n";
+echo "    <td>SERVER</td>\n";
+echo "    <td>ASTERISK</td>\n";
+echo "    <td align=center>ACTIVE</td>\n";
+echo "    <td align=center colspan=2>LINKS</td>\n";
+echo "  </tr>\n";
 
 	$o=0;
 	while ($phones_to_print > $o) {
@@ -589,19 +615,20 @@ echo "<td align=center colspan=2><font size=1 color=white><B>LINKS</B></td>";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=311111111111&server_id=$row[0]\">$row[0]</a></td>";
-		echo "<td><font size=1>$row[1]</td>";
-		echo "<td><font size=1> $row[2]</td>";
-		echo "<td><font size=1> $row[4]</td>";
-		echo "<td align=center><font size=1> $row[3]</td>";
-		echo "<td><font size=1> &nbsp;</td>";
-		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=311111111111&server_id=$row[0]\">MODIFY</a></td></tr>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=311111111111&server_id=$row[0]\">$row[0]</a></td>\n";
+		echo "    <td>$row[1]</td>\n";
+		echo "    <td>$row[2]</td>\n";
+		echo "    <td>$row[4]</td>\n";
+		echo "    <td align=center>$row[3]</td>\n";
+		echo "    <td colspan=2 align=center><a href=\"$PHP_SELF?ADD=311111111111&server_id=$row[0]\">MODIFY</a></td>\n";
+        echo "  </tr>\n";
 		$o++;
 	}
 
-echo "<tr bgcolor=$menubarcolor>";
-echo "  <td colspan=7 height=8px><font size=1 color=white></font></td>";
-echo "</tr>";
+echo "  <tr class=tabfooter>\n";
+echo "    <td colspan=7></td>\n";
+echo "  </tr>\n";
 echo "</TABLE></center>\n";
 }
 
@@ -724,7 +751,7 @@ if ($ADD=="399111111111111") {
 		echo "<tr bgcolor=$oddrows><td align=right>Mix Format: </td><td align=left><select size=1 name=archive_mix_format><option>MP3</option><option>WAV</option><option>GSM</option><option>OGG</option><option selected>$archive_mix_format</option></select>$NWB#settings-archive_mix_format$NWE</td></tr>\n";
 
 
-		echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=submit VALUE=SUBMIT></td></tr>\n";
+		echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
 		echo "</TABLE></center>\n";
 		echo "</form>\n";
 	} else {
@@ -821,7 +848,7 @@ if ($ADD=="399911111111111") {
 		echo "<tr bgcolor=$oddrows><td align=right>SQL: </td><td align=left><input type=text name=external_dnc_sql size=40 maxlength=255 value=\"$external_dnc_sql\">$NWB#settings-external_dnc_sql$NWE</td></tr>\n";
 
 
-		echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=submit VALUE=SUBMIT></td></tr>\n";
+		echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
 		echo "</TABLE></center>\n";
 		echo "</form>\n";
 	} else {
@@ -962,15 +989,15 @@ if ($ADD=="399211111111111") {
 		echo "<input type=hidden name=ADD value=399211111111111>\n";
 		echo "<input type=hidden name=SUB value=1>\n";
 		echo "<center><table bgcolor=grey width=$section_width cellspacing=1>\n";
-		echo "<tr bgcolor=$menubarcolor>";
-		echo "<td align=center><font size=1 color=white><b>#</font></td>";
-		echo "<td align=center><font size=1 color=white><b>NAME</b></font></td>";
-		echo "<td align=center><font size=1 color=white><b>DESCRIPTION</b></font></td>";
-		echo "<td align=center><font size=1 color=white><b>HOST</b></font></td>";
-		echo "<td align=center><font size=1 color=white><b>METHOD</b></font></td>";
-		echo "<td align=center><font size=1 color=white><b>TYPE</b></font></td>";
-		echo "<td colspan=2><font size=1 color=white>&nbsp;</font></td>";
-		echo "</tr>\n";
+		echo "  <tr class=tabheader>\n";
+		echo "    <td align=center>#</td>\n";
+		echo "    <td align=center>NAME</td>\n";
+		echo "    <td align=center>DESCRIPTION</td>\n";
+		echo "    <td align=center>HOST</td>\n";
+		echo "    <td align=center>METHOD</td>\n";
+		echo "    <td align=center>TYPE</td>\n";
+		echo "    <td colspan=2>&nbsp;</td>\n";
+		echo "  </tr>\n";
                 $c = 0;
 		while ($rows > $c) {
 			$row = mysql_fetch_row($rslt);
@@ -981,20 +1008,20 @@ if ($ADD=="399211111111111") {
 				{$bgcolor='bgcolor='.$evenrows;}
 			
 
-			echo "<tr $bgcolor class=row>";
-			echo "<td><font size=1>$c</td>";
-			echo "<td><font size=1><a href=\"$PHP_SELF?ADD=399211111111111&SUB=2&qc_server_id=$row[0]\">$row[1]</a></td>";
-			echo "<td><font size=1>$row[2]</td>";
-			echo "<td><font size=1>$row[3]</td>";
-			echo "<td><font size=1>$row[4]</td>";
-			echo "<td><font size=1>$row[5]</td>";
-			echo "<td><font size=1><a href=\"$PHP_SELF?ADD=399211111111111&SUB=2&qc_server_id=$row[0]\">MODIFY</a></td>";
-			echo "<td><font size=1><a href=\"$PHP_SELF?ADD=699211111111111&SUB=2&qc_server_id=$row[0]\">REMOVE</a></td>";
-			echo "</tr>\n";
+			echo "  <tr $bgcolor class=\"row font1\">\n";
+			echo "    <td>$c</td>\n";
+			echo "    <td><a href=\"$PHP_SELF?ADD=399211111111111&SUB=2&qc_server_id=$row[0]\">$row[1]</a></td>\n";
+			echo "    <td>$row[2]</td>\n";
+			echo "    <td>$row[3]</td>\n";
+			echo "    <td>$row[4]</td>\n";
+			echo "    <td>$row[5]</td>\n";
+			echo "    <td><a href=\"$PHP_SELF?ADD=399211111111111&SUB=2&qc_server_id=$row[0]\">MODIFY</a></td>\n";
+			echo "    <td><a href=\"$PHP_SELF?ADD=699211111111111&SUB=2&qc_server_id=$row[0]\">REMOVE</a></td>\n";
+			echo "  </tr>\n";
 
 			$c++;
 		}
-		echo "<tr bgcolor=$menubarcolor><td align=center colspan=8><input style=\"width: 100%;\" type=submit name=submit VALUE=NEW></td></tr>\n";
+		echo "  <tr class=tabfooter><td align=center colspan=8 class=tabbutton><input type=submit name=submit VALUE=NEW></td></tr>\n";
 		echo "</TABLE></center>\n";
 		echo "</form>\n";
 
@@ -1059,7 +1086,7 @@ if ($ADD=="399211111111111") {
 			echo "<tr bgcolor=$oddrows><td align=right>Batch Time (hour): </td><td align=left><select size=1 name=qc_server_batch_time><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option><option>15</option><option>16</option><option>17</option><option>18</option><option>19</option><option>20</option><option>21</option><option>22</option><option>23</option><option selected>$qc_server_batch_time</option></select>$NWB#qc-server_batch_time$NWE</td></tr>\n";
 			echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=qc_server_active><option>Y</option><option>N</option><option selected>$qc_server_active</option></select>$NWB#qc-server_active$NWE</td></tr>\n";
 	
-			echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=submit VALUE=SUBMIT></td></tr>\n";
+			echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
 			echo "</TABLE></center>\n";
 			echo "</form>\n";
 		}
@@ -1068,11 +1095,11 @@ if ($ADD=="399211111111111") {
 			# List QC rules
 			echo "<br><font color=$default_text>QC SERVER RULES</font>\n";
 			echo "<center><table cellspacing=1 width=$section_width bgcolor=grey>\n";
-			echo "<tr bgcolor=$menubarcolor>";
-			echo "<td align=center><font size=1 color=white><b>#</b></font></td>";
-			echo "<td align=center><font size=1 color=white><b>QUERY</b></font></td>";
-			echo "<td colspan=2 align=center><font size=1 color=white><b>ACTIONS</b></font></td>";
-			echo "</tr>\n";
+			echo "  <tr class=tabheader>\n";
+			echo "    <td align=center>#</td>\n";
+			echo "    <td align=center>QUERY</td>\n";
+			echo "    <td colspan=2 align=center>ACTIONS</td>\n";
+			echo "  </tr>\n";
 
 			$stmt="SELECT * FROM qc_server_rules WHERE qc_server_id='$qc_server_id';";
 			$rslt = mysql_query($stmt, $link);
@@ -1087,12 +1114,12 @@ if ($ADD=="399211111111111") {
 					{$bgcolor='bgcolor='.$evenrows;}
 				
 	
-				echo "<tr $bgcolor class=row>";
-				echo "<td><font size=1>$c</td>";
-				echo "<td><font size=1>$row[2]</td>";
-				echo "<td align=center><font size=1><a href=\"$PHP_SELF?ADD=399211111111111&SUB=4&qc_server_id=$qc_server_id&qc_server_rule_id=$row[0]\">MODIFY</a></td>";
-				echo "<td align=center><font size=1><a href=\"$PHP_SELF?ADD=699211111111111&SUB=4&qc_server_id=$qc_server_id&qc_server_rule_id=$row[0]\">REMOVE</a></td>";
-				echo "</tr>\n";
+				echo "  <tr $bgcolor class=\"row font1\">\n";
+				echo "    <td>$c</td>\n";
+				echo "    <td>$row[2]</td>\n";
+				echo "    <td align=center><a href=\"$PHP_SELF?ADD=399211111111111&SUB=4&qc_server_id=$qc_server_id&qc_server_rule_id=$row[0]\">MODIFY</a></td>\n";
+				echo "    <td align=center><a href=\"$PHP_SELF?ADD=699211111111111&SUB=4&qc_server_id=$qc_server_id&qc_server_rule_id=$row[0]\">REMOVE</a></td>\n";
+				echo "  </tr>\n";
 	
 				$c++;
 			}
@@ -1114,11 +1141,11 @@ if ($ADD=="399211111111111") {
 				$qcfld .= "<input type=hidden name=SUB value=3>\n";
 				$qcract = "NEW";
 			}
-			$qcfld .= "<tr bgcolor=$menubarcolor>";
-			$qcfld .= "<td>&nbsp;</td>";
-			$qcfld .= "<td align=center><input type=text name=qc_server_rule_query size=60 maxlength=255 value=\"$qc_server_rule_query\">$NWB#qc-server_rule_query$NWE</td>";
-			$qcfld .= "<td align=center colspan=2><input style=\"width: 100%;\" type=submit name=submit VALUE=$qcract></td>";
-			$qcfld .= "</tr></form>\n";
+			$qcfld .= "  <tr class=tabfooter>\n";
+			$qcfld .= "    <td>&nbsp;</td>\n";
+			$qcfld .= "    <td align=center class=tabinput><input type=text name=qc_server_rule_query size=60 maxlength=255 value=\"$qc_server_rule_query\">$NWB#qc-server_rule_query$NWE</td>\n";
+			$qcfld .= "    <td align=center colspan=2 class=tabbutton1><input type=submit name=submit VALUE=$qcract></td>\n";
+			$qcfld .= "  </tr></form>\n";
 			echo $qcfld;
 			echo "</table>\n";
 		}

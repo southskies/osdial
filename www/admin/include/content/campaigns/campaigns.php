@@ -139,7 +139,7 @@ if ($ADD==11)
     echo "</select>$NWB#osdial_campaigns-campaign_script$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Get Call Launch: </td><td align=left><select size=1 name=get_call_launch><option selected>NONE</option><option>SCRIPT</option><option>WEBFORM</option></select>$NWB#osdial_campaigns-get_call_launch$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Allow Tab Switch: </td><td align=left><select size=1 name=allow_tab_switch><option selected>Y</option><option>N</option></select>$NWB#osdial_campaigns-allow_tab_switch$NWE</td></tr>\n";
-    echo "<tr><td align=center colspan=2><input type=submit name=SUBMIT value=ADD style=\"width: 100%;\"></td></tr>\n";
+    echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=ADD></td></tr>\n";
     echo "</TABLE></center>\n";
     }
     else
@@ -183,7 +183,7 @@ if ($ADD==12)
     echo "$campaigns_list";
     echo "</select>$NWB#osdial_campaigns-campaign_id$NWE</td></tr>\n";
     
-    echo "<tr><td align=center colspan=2><input type=submit name=SUBMIT value=COPY style=\"width: 100%;\"></td></tr>\n";
+    echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=COPY></td></tr>\n";
     echo "</TABLE></center>\n";
     }
     else
@@ -1165,7 +1165,7 @@ if ($ADD==31) {
         echo "$XFERgroups_list";
         echo "</td></tr>\n";
 
-        echo "<tr><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT style=\"width: 100%;\"></td></tr>\n";
+        echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
         echo "</TABLE></center></FORM>\n";
 
         $dispinact = get_variable('dispinact');
@@ -1182,7 +1182,7 @@ if ($ADD==31) {
     }
     echo "</font><br>\n";
     echo "<table bgcolor=grey width=400 cellspacing=1>\n";
-    echo "<tr bgcolor=$menubarcolor><td align=center><font color=white size=1><b>LIST ID</b></font></td><td align=center><font color=white size=1><b>LIST NAME</b></font></td><td align=center><font color=white size=1><b>ACTIVE</b></font></td></tr>\n";
+    echo "<tr class=tabheader><td align=center>LIST ID</td><td align=center>LIST NAME</td><td align=center>ACTIVE</td></tr>\n";
 
 
         $active_lists = 0;
@@ -1205,9 +1205,9 @@ if ($ADD==31) {
             else
                 {$bgcolor='bgcolor='.$evenrows;}
 
-            echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td><font size=1>$rowx[2]</td><td align=center><font size=1>$rowx[1]</td></tr>\n";
+            echo "<tr $bgcolor class=\"row font1\"><td><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td>$rowx[2]</td><td align=center>$rowx[1]</td></tr>\n";
             }
-        echo "<tr bgcolor=$menubarcolor height=8px><td colspan=3><font color=white size=1></font></td></tr>\n";
+        echo "<tr class=tabfooter><td colspan=3></td></tr>\n";
         echo "</table></center><br>\n";
         echo "<center><b>\n";
 
@@ -1271,14 +1271,14 @@ if ($ADD==31) {
 
 
             echo "<center><br><font color=$default_text size=+1>CUSTOM STATUSES WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_campaign_statuses$NWE</font><br><br>\n";
-            echo "  <table bgcolor=grey width=500 cellspacing=1 align=center>\n";
-            echo "    <tr bgcolor=$menubarcolor>\n";
-            echo "      <td align=center><font color=white size=1><b>STATUS</b></font></td>\n";
-            echo "      <td align=center><font color=white size=1><b>DESCRIPTION</b></font></td>\n";
-            echo "      <td align=center><font color=white size=1><b>SELECTABLE</b></font></td>\n";
-            echo "      <td align=center><font color=white size=1><b>HUMAN&nbsp;ANSWER</b></font></td>\n";
-            echo "      <td align=center><font color=white size=1><b>CATEGORY</b></font></td>\n";
-            echo "      <td align=center><font color=white size=1><b>ACTIONS</b></font></td>\n";
+            echo "  <table bgcolor=grey width=$section_width cellspacing=1 align=center>\n";
+            echo "    <tr class=tabheader>\n";
+            echo "      <td align=center>STATUS</td>\n";
+            echo "      <td align=center>DESCRIPTION</td>\n";
+            echo "      <td align=center>SELECTABLE</td>\n";
+            echo "      <td align=center>HUMAN&nbsp;ANSWER</td>\n";
+            echo "      <td align=center>CATEGORY</td>\n";
+            echo "      <td colspan=2 align=center>ACTIONS</td>\n";
             echo "    </tr>\n";
 
             $stmt="SELECT * from osdial_campaign_statuses where campaign_id='$campaign_id'";
@@ -1301,15 +1301,14 @@ if ($ADD==31) {
                 echo "    <input type=hidden name=stage value=modify>\n";
                 echo "    <input type=hidden name=status value=\"$rowx[0]\">\n";
                 echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
-                echo "    <tr $bgcolor class=row>\n";
+                echo "    <tr $bgcolor class=\"row font1\">\n";
                 echo "      <td nowrap><font size=1>$rowx[0]</font></td>\n";
-                echo "      <td align=center nowrap><input style=\"font-size: 7pt;\" type=text name=status_name size=20 maxlength=30 value=\"$rowx[1]\"></td>\n";
-                echo "      <td align=center nowrap><select style=\"font-size: 7pt;\" size=1 name=selectable><option>Y</option><option>N</option><option selected>$rowx[2]</option></select></td>\n";
-                echo "      <td align=center nowrap><select style=\"font-size: 7pt;\" size=1 name=human_answered><option>Y</option><option>N</option><option selected>$rowx[4]</option></select></td>\n";
-                echo "      <td align=center nowrap><select style=\"font-size: 7pt;\" size=1 name=category>$cats_list<option selected value=\"$AScategory\">$AScategory - $catsname_list[$AScategory]</option></select></td>\n";
-                echo "      <td align=center nowrap>\n";
-                echo "        <font size=1><input style=\"font-size: 7pt;\" type=submit name=submit value=MODIFY> &nbsp; <a href=\"$PHP_SELF?ADD=42&campaign_id=$campaign_id&status=$rowx[0]&stage=delete\">DELETE</a>\n";
-                echo "      </td>\n";
+                echo "      <td align=center class=tabinput nowrap><input type=text name=status_name size=20 maxlength=30 value=\"$rowx[1]\"></td>\n";
+                echo "      <td align=center class=tabinput nowrap><select size=1 name=selectable><option>Y</option><option>N</option><option selected>$rowx[2]</option></select></td>\n";
+                echo "      <td align=center class=tabinput nowrap><select size=1 name=human_answered><option>Y</option><option>N</option><option selected>$rowx[4]</option></select></td>\n";
+                echo "      <td align=center class=tabinput nowrap><select size=1 name=category>$cats_list<option selected value=\"$AScategory\">$AScategory - $catsname_list[$AScategory]</option></select></td>\n";
+                echo "      <td align=center><a href=\"$PHP_SELF?ADD=42&campaign_id=$campaign_id&status=$rowx[0]&stage=delete\">DELETE</a></td>\n";
+                echo "      <td align=center class=tabinput class=tabbutton1 nowrap><input type=submit name=submit value=MODIFY></td>\n";
                 echo "    </tr>\n";
                 echo "    </form>\n";
             }
@@ -1317,13 +1316,13 @@ if ($ADD==31) {
             echo "    <form action=$PHP_SELF method=POST><br>\n";
             echo "    <input type=hidden name=ADD value=22>\n";
             echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
-            echo "    <tr bgcolor=$menubarcolor>\n";
-            echo "      <td align=center><input style=\"font-size: 7pt;\" type=text name=status size=10 maxlength=8></td>\n";
-            echo "      <td align=center><input style=\"font-size: 7pt;\" type=text name=status_name size=20 maxlength=30></td>\n";
-            echo "      <td align=center><select style=\"font-size: 7pt;\" size=1 name=selectable><option>Y</option><option>N</option></select></td>\n";
-            echo "      <td align=center><select style=\"font-size: 7pt;\" size=1 name=human_answered><option>Y</option><option>N</option></select></td>\n";
-            echo "      <td align=center><select style=\"font-size: 7pt;\" size=1 name=category>$cats_list<option selected value=\"$AScategory\">$AScategory - $catsname_list[$AScategory]</option></select></td>\n";
-            echo "      <td align=center><input style=\"width: 100%;font-size: 7pt;\"type=submit name=submit value=ADD></td>\n";
+            echo "    <tr class=tabfooter>\n";
+            echo "      <td class=tabinput align=center><input type=text name=status size=10 maxlength=8></td>\n";
+            echo "      <td class=tabinput align=center><input type=text name=status_name size=20 maxlength=30></td>\n";
+            echo "      <td class=tabinput align=center><select size=1 name=selectable><option>Y</option><option>N</option></select></td>\n";
+            echo "      <td class=tabinput align=center><select size=1 name=human_answered><option>Y</option><option>N</option></select></td>\n";
+            echo "      <td class=tabinput align=center><select size=1 name=category>$cats_list<option selected value=\"$AScategory\">$AScategory - $catsname_list[$AScategory]</option></select></td>\n";
+            echo "      <td class=tabbutton1 colspan=2 align=center><input type=submit name=submit value=ADD></td>\n";
             echo "    </tr>\n";
             echo "    </form>\n";
             echo "  </table>\n";
@@ -1334,11 +1333,11 @@ if ($ADD==31) {
         if ($SUB==23) {
             echo "<center><br><font color=$default_text size=+1>CUSTOM HOT KEYS WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_campaign_hotkeys$NWE</font><br><br>\n";
             echo "  <table bgcolor=grey width=500 cellspacing=1 align=center>\n";
-            echo "    <tr bgcolor=$menubarcolor>\n";
-            echo "      <td align=center><font size=1 color=white><b>HOT&nbsp;KEY</b></font></td>\n";
-            echo "      <td colspan=2 align=center><font size=1 color=white><b>STATUS</b></font></td>\n";
-            echo "      <td align=center><font size=1 color=white><b>XFER&nbsp;EXTEN</b></font></td>\n";
-            echo "      <td align=center><font size=1 color=white><b>ACTIONS</b></font></td>\n";
+            echo "    <tr class=tabheader>\n";
+            echo "      <td align=center>HOT&nbsp;KEY</td>\n";
+            echo "      <td align=center>STATUS</td>\n";
+            echo "      <td align=center>XFER&nbsp;EXTEN</td>\n";
+            echo "      <td align=center>ACTIONS</td>\n";
             echo "    </tr>\n";
 
             $stmt="SELECT * from osdial_campaign_hotkeys where campaign_id='$campaign_id' order by hotkey";
@@ -1355,12 +1354,11 @@ if ($ADD==31) {
                     $bgcolor='bgcolor='.$evenrows;
                 }
 
-                echo "    <tr $bgcolor class=row>\n";
-                echo "      <td><font size=1>$rowx[1]</font></td>\n";
-                echo "      <td><font size=1>$rowx[0]</font></td>\n";
-                echo "      <td><font size=1>$rowx[2]</font></td>\n";
-                echo "      <td><font size=1>$rowx[5]</font></td>\n";
-                echo "      <td align=center><font size=1><a href=\"$PHP_SELF?ADD=43&campaign_id=$campaign_id&status=$rowx[0]&hotkey=$rowx[1]&action=DELETE\">DELETE</a></font></td>\n";
+                echo "    <tr $bgcolor class=\"row font1\">\n";
+                echo "      <td align=center>$rowx[1]</td>\n";
+                echo "      <td>$rowx[0] - $rowx[2]</td>\n";
+                echo "      <td align=center>$rowx[5]</td>\n";
+                echo "      <td align=center><a href=\"$PHP_SELF?ADD=43&campaign_id=$campaign_id&status=$rowx[0]&hotkey=$rowx[1]&action=DELETE\">DELETE</a></td>\n";
                 echo "    </tr>\n";
             }
 
@@ -1368,21 +1366,21 @@ if ($ADD==31) {
             echo "    <input type=hidden name=ADD value=23>\n";
             echo "    <input type=hidden name=selectable value=Y>\n";
             echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
-            echo "    <tr bgcolor=$menubarcolor>\n";
-            echo "      <td align=center>\n";
-            echo "        <select style=\"font-size: 7pt;\" size=1 name=hotkey>\n";
+            echo "    <tr class=tabfooter>\n";
+            echo "      <td class=tabinput align=center>\n";
+            echo "        <select size=1 name=hotkey>\n";
             echo "          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option>\n";
             echo "        </select>\n";
             echo "      </td>\n";
-            echo "      <td colspan=2 align=center>\n";
-            echo "        <select style=\"font-size: 7pt;\" size=1 name=HKstatus>\n";
+            echo "      <td class=tabinput align=center>\n";
+            echo "        <select size=1 name=HKstatus>\n";
             echo "          $HKstatuses_list\n";
             echo "          <option value=\"ALTPH2-----Alternate Phone Hot Dial\">ALTPH2 - Alternate Phone Hot Dial</option>\n";
             echo "          <option value=\"ADDR3-----Address3 Hot Dial\">ADDR3 - Address3 Hot Dial</option>\n";
             echo "        </select>\n";
             echo "      </td>\n";
-            echo "      <td align=center><input style=\"font-size: 7pt;\" type=text name=xfer_exten size=10 maxlength=20 value=\"\"></td>\n";
-            echo "      <td align=center><input style=\"font-size: 7pt; width: 100%;\" type=submit name=submit value=ADD></td>\n";
+            echo "      <td class=tabinput align=center><input type=text name=xfer_exten size=10 maxlength=20 value=\"\"></td>\n";
+            echo "      <td class=tabbutton1 align=center><input type=submit name=submit value=ADD></td>\n";
             echo "    </tr>\n";
             echo "    </form>\n";
             echo "  </table>\n";
@@ -1392,18 +1390,18 @@ if ($ADD==31) {
         ##### CAMPAIGN LEAD RECYCLING #####
         if ($SUB==25) {
             echo "<br><font color=$default_text size=+1>LEAD RECYCLING WITHIN THIS CAMPAIGN &nbsp; $NWB#osdial_lead_recycle$NWE</font><br><br>\n";
-            echo "  <table bgcolor=grey width=500 cellspacing=1>\n";
-            echo "    <tr bgcolor=$menubarcolor>\n";
-            echo "      <td></td>\n";
-            echo "      <td colspan=2 align=center><font size=1 color=white><b>ATTEMPT</b></font></td>\n";
-            echo "      <td colspan=2></td>\n";
+            echo "  <table bgcolor=grey width=600 cellspacing=1>\n";
+            echo "    <tr class=tabheader>\n";
+            echo "      <td>&nbsp;</td>\n";
+            echo "      <td colspan=2 align=center>ATTEMPT</td>\n";
+            echo "      <td colspan=3>&nbsp;</td>\n";
             echo "    </tr>\n";
-            echo "    <tr bgcolor=$menubarcolor>\n";
-            echo "      <td align=center><font color=white size=1><b>STATUS</b></font></td>\n";
-            echo "      <td align=center><font color=white size=1><b>DELAY</b></font></td>\n";
-            echo "      <td align=center><font color=white size=1><b>MAXIMUM</b></font></td>\n";
-            echo "      <td align=center><font color=white size=1><b>ACTIVE</b></font></td>\n";
-            echo "      <td align=center><font color=white size=1><b>ACTIONS</b></font></td>\n";
+            echo "    <tr class=tabheader>\n";
+            echo "      <td align=center>STATUS</td>\n";
+            echo "      <td align=center>DELAY</td>\n";
+            echo "      <td align=center>MAXIMUM</td>\n";
+            echo "      <td align=center>ACTIVE</td>\n";
+            echo "      <td colspan=2 align=center>ACTIONS</td>\n";
             echo "    </tr>\n";
 
             $stmt="SELECT * from osdial_lead_recycle where campaign_id='$campaign_id' order by status";
@@ -1425,14 +1423,13 @@ if ($ADD==31) {
                 echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
                 echo "    <input type=hidden name=SUB value=25>\n";
                 echo "    <input type=hidden name=ADD value=45>\n";
-                echo "    <tr $bgcolor class=row>\n";
-                echo "      <td align=center><font size=1>$rowx[2]</font></td>\n";
-                echo "      <td align=center><input style=\"font-size: 7pt;\" type=text size=7 maxlength=5 name=attempt_delay value=\"$rowx[3]\"></td>\n";
-                echo "      <td align=center><input style=\"font-size: 7pt;\" type=text size=5 maxlength=3 name=attempt_maximum value=\"$rowx[4]\"></td>\n";
-                echo "      <td align=center><select style=\"font-size: 7pt;\" size=1 name=active><option>Y</option><option>N</option><option SELECTED>$rowx[5]</option></select></td>\n";
-                echo "      <td align=center nowrap>\n";
-                echo "        <input style=\"font-size: 7pt;\" type=submit name=submit value=MODIFY> &nbsp; &nbsp; <font size=1><a href=\"$PHP_SELF?ADD=65&campaign_id=$campaign_id&status=$rowx[2]\">DELETE</a></font>\n";
-                echo "      </td>\n";
+                echo "    <tr $bgcolor class=\"row font1\">\n";
+                echo "      <td align=center>$rowx[2]</td>\n";
+                echo "      <td class=tabinput align=center><input type=text size=7 maxlength=5 name=attempt_delay value=\"$rowx[3]\"></td>\n";
+                echo "      <td class=tabinput align=center><input type=text size=5 maxlength=3 name=attempt_maximum value=\"$rowx[4]\"></td>\n";
+                echo "      <td class=tabinput align=center><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$rowx[5]</option></select></td>\n";
+                echo "      <td align=center><a href=\"$PHP_SELF?ADD=65&campaign_id=$campaign_id&status=$rowx[2]\">DELETE</a></td>\n";
+                echo "      <td class=tabbutton1 align=center nowrap><input type=submit name=submit value=MODIFY></td>\n";
                 echo "    </tr>\n";
                 echo "    </form>";
             }
@@ -1442,12 +1439,12 @@ if ($ADD==31) {
             echo "    <input type=hidden name=ADD value=25>\n";
             echo "    <input type=hidden name=active value=\"N\">\n";
             echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
-            echo "    <tr bgcolor=$menubarcolor>\n";
-            echo "      <td align=center><select style=\"font-size: 7pt;\" size=1 name=status>$LRstatuses_list</select></td>";
-            echo "      <td align=center><input style=\"font-size: 7pt;\" type=text size=7 maxlength=5 name=attempt_delay></td>\n";
-            echo "      <td align=center><input style=\"font-size: 7pt;\" type=text size=5 maxlength=3 name=attempt_maximum></td>\n";
+            echo "    <tr class=tabfooter>\n";
+            echo "      <td class=tabinput align=center><select size=1 name=status>$LRstatuses_list</select></td>";
+            echo "      <td class=tabinput align=center><input type=text size=7 maxlength=5 name=attempt_delay></td>\n";
+            echo "      <td class=tabinput align=center><input type=text size=5 maxlength=3 name=attempt_maximum></td>\n";
             echo "      <td></td>";
-            echo "      <td align=center><input style=\"font-size: 7pt; width: 100%;\" type=submit name=submit value=ADD></td>\n";
+            echo "      <td colspan=2 class=tabbutton1 align=center><input type=submit name=submit value=ADD></td>\n";
             echo "    </tr>";
             echo "    </form>";
             echo "  </table>\n";
@@ -1458,9 +1455,9 @@ if ($ADD==31) {
         if ($SUB==26) {
             echo "<center><br><font color=$default_text size=+1>AUTO ALT NUMBER DIALING FOR THIS CAMPAIGN &nbsp; $NWB#osdial_auto_alt_dial_statuses$NWE</font><br><br>\n";
             echo "  <table bgcolor=grey width=300 cellspacing=1>\n";
-            echo "    <tr bgcolor=$menubarcolor>\n";
-            echo "      <td align=center><font color=white size=1><b>STATUSES</b></font></td>\n";
-            echo "      <td align=center><font color=white size=1><b>ACTIONS</b></font></td>\n";
+            echo "    <tr class=tabheader>\n";
+            echo "      <td align=center>STATUSES</td>\n";
+            echo "      <td align=center>ACTIONS</td>\n";
             echo "    </tr>\n";
 
             $auto_alt_dial_statuses = preg_replace("/ -$/","",$auto_alt_dial_statuses);
@@ -1476,18 +1473,18 @@ if ($ADD==31) {
                 }
                 $o++;
 
-                echo "    <tr $bgcolor>\n";
-                echo "      <td align=center><font size=1>$AADstatuses[$o]</td>\n";
-                echo "      <td align=center><font size=1><a href=\"$PHP_SELF?ADD=66&campaign_id=$campaign_id&status=$AADstatuses[$o]\">DELETE</a></td>\n";
+                echo "    <tr $bgcolor class=\"row font1\">\n";
+                echo "      <td align=center>$AADstatuses[$o]</td>\n";
+                echo "      <td align=center><a href=\"$PHP_SELF?ADD=66&campaign_id=$campaign_id&status=$AADstatuses[$o]\">DELETE</a></td>\n";
                 echo "    </tr>\n";
             }
 
             echo "    <form action=$PHP_SELF method=POST><br>\n";
             echo "    <input type=hidden name=ADD value=26>\n";
             echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
-            echo "    <tr bgcolor=$menubarcolor>\n";
-            echo "      <td align=center><select style=\"font-size: 7pt\" size=1 name=status>$LRstatuses_list</select></td>\n";
-            echo "      <td align=center><input style=\"font-size: 7pt;width: 100%\" type=submit name=submit value=ADD></td>\n";
+            echo "    <tr class=tabfooter>\n";
+            echo "      <td align=center class=tabinput><select size=1 name=status>$LRstatuses_list</select></td>\n";
+            echo "      <td align=center class=tabbutton1><input type=submit name=submit value=ADD></td>\n";
             echo "    </form>\n";
             echo "  </table>\n";
             echo "</center>\n";
@@ -1496,12 +1493,12 @@ if ($ADD==31) {
         ##### CAMPAIGN PAUSE CODES #####
         if ($SUB==27) {
             echo "<center><br><font color=$default_text size=+1>AGENT PAUSE CODES FOR THIS CAMPAIGN &nbsp; $NWB#osdial_pause_codes$NWE</font><br><br>\n";
-            echo "  <table bgcolor=grey width=500 cellspacing=1>\n";
-            echo "    <tr bgcolor=$menubarcolor>\n";
-            echo "      <td align=center><font color=white size=1><b>PAUSE&nbsp;CODE</b></font></td>\n";
-            echo "      <td align=center><font color=white size=1><b>DESCRIPTION</b></font></td>\n";
-            echo "      <td align=center><font color=white size=1><b>BILLABLE</b></font></td>\n";
-            echo "      <td align=center><font color=white size=1><b>ACTIONS</font></td>\n";
+            echo "  <table bgcolor=grey width=600 cellspacing=1>\n";
+            echo "    <tr class=tabheader>\n";
+            echo "      <td align=center>PAUSE CODE</td>\n";
+            echo "      <td align=center>DESCRIPTION</td>\n";
+            echo "      <td align=center>BILLABLE</td>\n";
+            echo "      <td align=center colspan=2>ACTIONS</td>\n";
             echo "    </tr>\n";
 
             $stmt="SELECT * from osdial_pause_codes where campaign_id='$campaign_id' order by pause_code";
@@ -1522,13 +1519,12 @@ if ($ADD==31) {
                 echo "    <input type=hidden name=ADD value=47>\n";
                 echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
                 echo "    <input type=hidden name=pause_code value=\"$rowx[0]\"> &nbsp;\n";
-                echo "    <tr $bgcolor>\n";
-                echo "      <td align=center><font size=1>$rowx[0]</font></td>\n";
-                echo "      <td align=center><input style=\"font-size: 7pt;\" type=text size=20 maxlength=30 name=pause_code_name value=\"$rowx[1]\"></td>\n";
-                echo "      <td align=center><select style=\"font-size: 7pt;\" size=1 name=billable><option>YES</option><option>NO</option><option>HALF</option><option SELECTED>$rowx[2]</option></select></td>\n";
-                echo "      <td align=center nowrap>\n";
-                echo "        <input style=\"font-size: 7pt;\" type=submit name=submit value=MODIFY><font size=1> &nbsp; <a href=\"$PHP_SELF?ADD=67&campaign_id=$campaign_id&pause_code=$rowx[0]\">DELETE</a></font>\n";
-                echo "      </td>\n";
+                echo "    <tr $bgcolor class=\"row font1\">\n";
+                echo "      <td align=center>$rowx[0]</td>\n";
+                echo "      <td align=center class=tabinput><input type=text size=20 maxlength=30 name=pause_code_name value=\"$rowx[1]\"></td>\n";
+                echo "      <td align=center class=tabinput><select size=1 name=billable><option>YES</option><option>NO</option><option>HALF</option><option SELECTED>$rowx[2]</option></select></td>\n";
+                echo "      <td align=center><a href=\"$PHP_SELF?ADD=67&campaign_id=$campaign_id&pause_code=$rowx[0]\">DELETE</a></td>\n";
+                echo "      <td align=center class=tabbutton1><input type=submit name=submit value=MODIFY></td>\n";
                 echo "    </tr>\n";
                 echo "    </form>\n";
             }
@@ -1536,11 +1532,11 @@ if ($ADD==31) {
             echo "    <form action=$PHP_SELF method=POST><br>\n";
             echo "    <input type=hidden name=ADD value=27>\n";
             echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
-            echo "    <tr bgcolor=$menubarcolor>\n";
-            echo "      <td align=center><input style=\"font-size: 7pt;\" type=text size=8 maxlength=6 name=pause_code></td>\n";
-            echo "      <td align=center><input style=\"font-size: 7pt;\" type=text size=20 maxlength=30 name=pause_code_name></td>\n";
-            echo "      <td align=center><select style=\"font-size: 7pt;\" size=1 name=billable><option>YES</option><option>NO</option><option>HALF</option></select></td>\n";
-            echo "      <td align=center><input style=\"font-size: 7pt;width: 100%;\" type=submit name=submit value=ADD></td>\n";
+            echo "    <tr class=tabfooter>\n";
+            echo "      <td align=center class=tabinput><input type=text size=8 maxlength=6 name=pause_code></td>\n";
+            echo "      <td align=center class=tabinput><input type=text size=20 maxlength=30 name=pause_code_name></td>\n";
+            echo "      <td align=center class=tabinput><select size=1 name=billable><option>YES</option><option>NO</option><option>HALF</option></select></td>\n";
+            echo "      <td align=center class=tabbutton1 colspan=2><input type=submit name=submit value=ADD></td>\n";
             echo "    </tr>\n";
             echo "    </form>\n";
             echo "  </table>\n";
@@ -1793,7 +1789,7 @@ if ($ADD==34)
 
         echo "<tr bgcolor=$oddrows><td align=right>Answers Per Hour Limit: </td><td align=left><input type=text name=answers_per_hour_limit size=10 maxlength=10 value=\"$answers_per_hour_limit\">$NWB#osdial_campaigns-answers_per_hour_limit$NWE</td></tr>\n";
 
-        echo "<tr><td align=center colspan=2><input type=submit name=SUBMIT value=SUBMIT style=\"width: 100%;\"></td></tr>\n";
+        echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
         echo "</TABLE></center></FORM>\n";
 
             $dispinact = get_variable('dispinact');
@@ -1810,7 +1806,7 @@ if ($ADD==34)
         }
         echo "</font><br>\n";
         echo "<table bgcolor=grey width=400 cellspacing=1>\n";
-        echo "<tr bgcolor=$menubarcolor><td align=center><font color=white size=1><b>LIST ID</b></font></td><td align=center><font color=white size=1><b>LIST NAME</b></font></td><td align=center><font color=white size=1><b>ACTIVE</b></font></td></tr>\n";
+        echo "<tr class=tabheader><td align=center>LIST ID</td><td align=center>LIST NAME</td><td align=center>ACTIVE</td></tr>\n";
 
             $active_lists = 0;
             $inactive_lists = 0;
@@ -1831,11 +1827,11 @@ if ($ADD==34)
             else
                 {$bgcolor='bgcolor='.$evenrows;}
 
-            echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td><font size=1>$rowx[2]</td><td align=center><font size=1>$rowx[1]</td></tr>\n";
+            echo "<tr $bgcolor class=\"row font1\"><td><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td>$rowx[2]</td><td align=center>$rowx[1]</td></tr>\n";
 
             }
 
-        echo "<tr bgcolor=$menubarcolor height=8px><td colspan=3><font color=white size=1></font></td></tr>\n";
+        echo "<tr class=tabfooter><td colspan=3></td></tr>\n";
         echo "</table></center><br>\n";
         echo "<center><b>\n";
 
@@ -1883,7 +1879,7 @@ if ($ADD==34)
         echo "<center>\n";
         echo "<br><b><font color=$default_text>AGENT RANKS FOR THIS CAMPAIGN:</font></b><br>\n";
         echo "<table bgcolor=grey width=400 cellspacing=1>\n";
-        echo "<tr bgcolor=$menubarcolor><td align=center><font color=white size=1><b>USER</b></font></td><td align=center><font color=white size=1><b>RANK</b></font></td><td align=center><font color=white size=1><b>CALLS</b></font></td></tr>\n";
+        echo "<tr class=tabheader><td align=center>USER</td><td align=center>RANK</td><td align=center>CALLS</td></tr>\n";
 
             $stmt="SELECT user,campaign_rank,calls_today from osdial_campaign_agents where campaign_id='$campaign_id'";
             $rsltx=mysql_query($stmt, $link);
@@ -1899,10 +1895,10 @@ if ($ADD==34)
         else
             {$bgcolor='bgcolor='.$evenrows;}
 
-            echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">$rowx[0]</a></td><td align=right><font size=1>$rowx[1]</td><td align=right><font size=1>$rowx[2]</td></tr>\n";
+            echo "<tr $bgcolor class=\"row font1\"><td><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">$rowx[0]</a></td><td align=right>$rowx[1]</td><td align=right>$rowx[2]</td></tr>\n";
             }
 
-        echo "<tr bgcolor=$menubarcolor height=8px><td colspan=3><font color=white size=1></font></td></tr>\n";
+        echo "<tr class=tabfooter><td colspan=3></td></tr>\n";
         echo "</table></center><br>\n";
 
 
@@ -1929,13 +1925,10 @@ if ($ADD==34)
 if ( ( ($ADD==34) or ($ADD==31) ) and ( (!eregi("$campaign_id",$LOGallowed_campaigns)) and (!eregi("ALL-CAMPAIGNS",$LOGallowed_campaigns)) ) ) 
     {$ADD=30;}    # send to not allowed screen if not in osdial_user_groups allowed_campaigns list
 
-if ( ($ADD==34) or ($ADD==31) )
-{
-    if ($LOGmodify_campaigns==1)
-    {
+if ( ($ADD==34) or ($ADD==31) ) {
+    if ($LOGmodify_campaigns==1) {
     ##### CAMPAIGN LIST MIX SETTINGS #####
-    if ($SUB==29)
-        {
+    if ($SUB==29) {
         ##### get list_id listings for dynamic pulldown
         $stmt="SELECT list_id,list_name from osdial_lists where campaign_id='$campaign_id' order by list_id";
         $rslt=mysql_query($stmt, $link);
@@ -1943,67 +1936,77 @@ if ( ($ADD==34) or ($ADD==31) )
         $mixlists_list="";
 
         $o=0;
-        while ($mixlists_to_print > $o)
-            {
+        while ($mixlists_to_print > $o) {
             $rowx=mysql_fetch_row($rslt);
             $mixlists_list .= "<option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
             $mixlistsname_list["$rowx[0]"] = "$rowx[1]";
             $o++;
-            }
+        }
 
 
         echo "<br><font color=$default_text size=+1>LIST MIXES FOR THIS CAMPAIGN &nbsp; $NWB#osdial_campaigns-list_order_mix$NWE</font><br><br>\n";
+        echo "<table width=$section_width cellspacing=1 cellpadding=0 bgcolor=grey class=row>\n";
 
         $stmt="SELECT * from osdial_campaigns_list_mix where campaign_id='$campaign_id' order by status, vcl_id";
         $rslt=mysql_query($stmt, $link);
         $listmixes = mysql_num_rows($rslt);
         $o=0;
-        while ($listmixes > $o) 
-            {
+        while ($listmixes > $o) {
             $rowx=mysql_fetch_row($rslt);
             $vcl_id=$rowx[0];
             $o++;
 
-            if ($o < 2)
-                {$tablecolor="bgcolor=$oddrows";   $bgcolor="bgcolor=$evenrows";}
-            else
-                {
-                if (eregi("1$|3$|5$|7$|9$", $o))
-                    {$tablecolor="bgcolor=$evenrows";   $bgcolor="bgcolor=$oddrows";} 
-                else
-                    {$tablecolor="bgcolor=$oddrows";   $bgcolor="bgcolor=$evenrows";}
-                }
-            echo "<a name=\"$vcl_id\"><BR>\n";
-            #echo "<span id=\"LISTMIX$US$vcl_id$US$o\">";
-            echo "<TABLE width=740 cellspacing=1 $tablecolor>\n";
-            echo "<tr><td colspan=6>\n";
-            echo "<form action=\"$PHP_SELF#$vcl_id\" method=POST name=$vcl_id id=$vcl_id>\n";
-            echo "<input type=hidden name=ADD value=49>\n";
-            echo "<input type=hidden name=SUB value=29>\n";
-            echo "<input type=hidden name=stage value=\"MODIFY\">\n";
-            echo "<input type=hidden name=vcl_id value=\"$vcl_id\">\n";
-            echo "<input type=hidden name=campaign_id value=\"$campaign_id\">\n";
-            echo "<input type=hidden name=list_mix_container$US$vcl_id id=list_mix_container$US$vcl_id value=\"\">\n";
-            echo "<B>$vcl_id:</B>\n";
-            echo "<input type=text size=40 maxlength=50 name=vcl_name$US$vcl_id id=vcl_name$US$vcl_id value=\"$rowx[1]\">\n";
-            echo " &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=49&SUB=29&stage=DELMIX&campaign_id=$campaign_id&vcl_id=$vcl_id\">DELETE LIST MIX</a></td></tr>\n";
-            echo "<tr><td colspan=3>Status: \n";
-            if ($rowx[5]=='INACTIVE')
-                {
-                echo "<B>$rowx[5]</B>\n";
-                echo "<a href=\"$PHP_SELF?ADD=49&SUB=29&stage=SETACTIVE&campaign_id=$campaign_id&vcl_id=$vcl_id\"><font size=1>SET TO ACTIVE</font></a></td>\n";
-                }
-            else
-                {echo "<B>$rowx[5]</B></td>\n";}
-            echo "<td colspan=3>Method:\n";
-            echo "<select size=1 name=mix_method$US$vcl_id id=method$US$vcl_id><option value=\"EVEN_MIX\">EVEN_MIX</option><option value=\"IN_ORDER\">IN_ORDER</option><option value=\"RANDOM\">RANDOM</option><option SELECTED value=\"$rowx[4]\">$rowx[4]</option></select></td></tr>\n";
-            echo "<tr bgcolor=$menubarcolor>\n";
-            echo "<td align=center><font color=white size=1><b>LIST ID</b></font></td>\n";
-            echo "<td align=center><font color=white size=1><b>PRIORITY</b></font></td>\n";
-            echo "<td align=center><font color=white size=1><b>%&nbsp;MIX</b></font></td>\n";
-            echo "<td align=center><font color=white size=1><b>STATUSES</b></font></td>\n";
-            echo "<td align=center><font color=white size=1><b>STATUS&nbsp;ACTIONS</b></font></td>\n";
-            echo "</tr>\n";
+            if (eregi("1$|3$|5$|7$|9$", $o)) {
+                $tablecolor="bgcolor=$evenrows";
+                $bgcolor="bgcolor=$oddrows";
+            } else {
+                $tablecolor="bgcolor=$oddrows";
+                $bgcolor="bgcolor=$evenrows";
+            }
+            echo " <tr>\n";
+            echo "  <td>\n";
+            echo "<table width=$section_width cellspacing=1 $tablecolor class=row>\n";
+            echo "  <form action=\"$PHP_SELF#$vcl_id\" method=POST name=$vcl_id id=$vcl_id>\n";
+            echo "  <input type=hidden name=ADD value=49>\n";
+            echo "  <input type=hidden name=SUB value=29>\n";
+            echo "  <input type=hidden name=stage value=\"MODIFY\">\n";
+            echo "  <input type=hidden name=vcl_id value=\"$vcl_id\">\n";
+            echo "  <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
+            echo "  <input type=hidden name=list_mix_container$US$vcl_id id=list_mix_container$US$vcl_id value=\"\">\n";
+            echo "  <tr>\n";
+            echo "    <td colspan=3>Status: <B>$rowx[5]</B>\n";
+            if ($rowx[5]=='INACTIVE') {
+                echo "<a href=\"$PHP_SELF?ADD=49&SUB=29&stage=SETACTIVE&campaign_id=$campaign_id&vcl_id=$vcl_id\"><font size=1>SET TO ACTIVE</font></a>\n";
+            }
+            echo "    </td>\n";
+            echo "    <td colspan=3 align=right nowrap class=font3>\n";
+            echo "      <a href=\"$PHP_SELF?ADD=49&SUB=29&stage=DELMIX&campaign_id=$campaign_id&vcl_id=$vcl_id\">DELETE LIST MIX</a>\n";
+            echo "    </td>\n";
+            echo "  </tr>\n";
+            echo "  <tr>\n";
+            echo "    <td colspan=2 nowrap align=left class=font2>\n";
+            echo "      Mix ID: <B>$vcl_id:</B>\n";
+            echo "    </td>\n";
+            echo "    <td colspan=2 nowrap align=center class=font2>\n";
+            echo "      Mix Name: <input type=text size=40 maxlength=50 name=vcl_name$US$vcl_id id=vcl_name$US$vcl_id value=\"$rowx[1]\">\n";
+            echo "    </td>\n";
+            echo "    <td colspan=2 align=right class=font2>\n";
+            echo "      Mix Method: \n";
+            echo "      <select size=1 name=mix_method$US$vcl_id id=method$US$vcl_id>\n";
+            echo "        <option value=\"EVEN_MIX\">EVEN_MIX</option>\n";
+            echo "        <option value=\"IN_ORDER\">IN_ORDER</option>\n";
+            echo "        <option value=\"RANDOM\">RANDOM</option>\n";
+            echo "        <option SELECTED value=\"$rowx[4]\">$rowx[4]</option>\n";
+            echo "      </select>\n";
+            echo "    </td>\n";
+            echo "  </tr>\n";
+            echo "  <tr class=tabheader>\n";
+            echo "    <td align=center>LIST ID</td>\n";
+            echo "    <td align=center>PRIORITY</td>\n";
+            echo "    <td align=center>%&nbsp;MIX</td>\n";
+            echo "    <td align=center>STATUSES</td>\n";
+            echo "    <td align=center>STATUS&nbsp;ACTIONS</td>\n";
+            echo "  </tr>\n";
 
 # list_id|order|percent|statuses|:list_id|order|percent|statuses|:...
 # 101|1|40| A B NA -|:102|2|25| NEW -|:103|3|30| DROP CALLBK -|:101|4|5| DROP -|
@@ -2015,8 +2018,7 @@ if ( ($ADD==34) or ($ADD==31) )
             $MIXentries = explode(":", $rowx[3]);
             $Ms_to_print = (count($MIXentries) - 0);
             $q=0;
-            while ($Ms_to_print > $q) 
-                {
+            while ($Ms_to_print > $q) {
                 $MIXdetails = explode('|', $MIXentries[$q]);
                 $MIXdetailsLIST = $MIXdetails[0];
 
@@ -2025,114 +2027,135 @@ if ( ($ADD==34) or ($ADD==31) )
                 $Ds_to_print = (count($Dstatuses) - 0);
                 $Dsql = '';
                 $r=0;
-                while ($Ds_to_print > $r) 
-                    {
+                while ($Ds_to_print > $r) {
                     $r++;
                     $Dsql .= "'$Dstatuses[$r]',";
-                    }
+                }
                 $Dsql = preg_replace("/,$/","",$Dsql);
 
-                echo "<tr $bgcolor><td NOWRAP><font size=3>\n";
-                echo "<input type=hidden name=list_id$US$q$US$vcl_id id=list_id$US$q$US$vcl_id value=$MIXdetailsLIST>\n";
-                echo "<a href=\"$PHP_SELF?ADD=311&list_id=$MIXdetailsLIST\">List</a>: $MIXdetailsLIST &nbsp; <font size=1><a href=\"$PHP_SELF?ADD=49&SUB=29&stage=REMOVE&campaign_id=$campaign_id&vcl_id=$vcl_id&mix_container_item=$q&list_id=$MIXdetailsLIST#$vcl_id\">REMOVE</a></font></td>\n";
+                #echo "  <tr $bgcolor class=font2>\n";
+                echo "  <tr class=font2>\n";
+                echo "    <td NOWRAP>\n";
+                echo "      <input type=hidden name=list_id$US$q$US$vcl_id id=list_id$US$q$US$vcl_id value=$MIXdetailsLIST>\n";
+                echo "      <a href=\"$PHP_SELF?ADD=311&list_id=$MIXdetailsLIST\">List: $MIXdetailsLIST</a> &nbsp; \n";
+                echo "      <a href=\"$PHP_SELF?ADD=49&SUB=29&stage=REMOVE&campaign_id=$campaign_id&vcl_id=$vcl_id&mix_container_item=$q&list_id=$MIXdetailsLIST#$vcl_id\">REMOVE</a>\n";
+                echo "    </td>\n";
 
-                echo "<td><select size=1 name=priority$US$q$US$vcl_id id=priority$US$q$US$vcl_id>\n";
+                echo "    <td align=center>\n";
+                echo "      <select size=1 name=priority$US$q$US$vcl_id id=priority$US$q$US$vcl_id>\n";
                 $n=10;
-                while ($n>=1)
-                    {
-                    echo "<option value=\"$n\">$n</option>\n";
+                while ($n>=1) {
+                    echo "        <option value=\"$n\">$n</option>\n";
                     $n = ($n-1);
-                    }
-                echo "<option SELECTED value=\"$MIXdetails[1]\">$MIXdetails[1]</option></select></td>\n";
+                }
+                echo "        <option SELECTED value=\"$MIXdetails[1]\">$MIXdetails[1]</option>\n";
+                echo "      </select>\n";
+                echo "    </td>\n";
 
-                echo "<td><select size=1 name=\"percentage$US$q$US$vcl_id\" id=\"percentage$US$q$US$vcl_id\" onChange=\"mod_mix_percent('$vcl_id','$Ms_to_print')\">\n";
+                echo "    <td align=center>\n";
+                echo "      <select size=1 name=\"percentage$US$q$US$vcl_id\" id=\"percentage$US$q$US$vcl_id\" onChange=\"mod_mix_percent('$vcl_id','$Ms_to_print')\">\n";
                 $n=100;
-                while ($n>=0)
-                    {
-                    echo "<option value=\"$n\">$n</option>\n";
+                while ($n>=0) {
+                    echo "        <option value=\"$n\">$n</option>\n";
                     $n = ($n-5);
-                    }
-                echo "<option SELECTED value=\"$MIXdetails[2]\">$MIXdetails[2]</option></select></td>\n";
+                }
+                echo "        <option SELECTED value=\"$MIXdetails[2]\">$MIXdetails[2]</option>\n";
+                echo "      </select>\n";
+                echo "    </td>\n";
 
                 
-                echo "<td><input type=hidden name=status$US$q$US$vcl_id id=status$US$q$US$vcl_id value=\"$MIXdetails[3]\"><input type=text size=20 maxlength=255 name=ROstatus$US$q$US$vcl_id id=ROstatus$US$q$US$vcl_id value=\"$MIXdetails[3]\" READONLY></td>\n";
-                echo "<td NOWRAP>\n";
+                echo "    <td align=center>\n";
+                echo "      <input type=hidden name=status$US$q$US$vcl_id id=status$US$q$US$vcl_id value=\"$MIXdetails[3]\">\n";
+                echo "      <input type=text size=30 maxlength=255 name=ROstatus$US$q$US$vcl_id id=ROstatus$US$q$US$vcl_id value=\"$MIXdetails[3]\" READONLY>\n";
+                echo "    </td>\n";
 
+                echo "    <td nowrap>\n";
+                echo "      <select size=1 name=dial_status$US$q$US$vcl_id id=dial_status$US$q$US$vcl_id>\n";
+                echo "        <option value=\"\"> - Select A Status - </option>\n";
+                echo "        $dial_statuses_list";
+                echo "      </select>\n";
+                echo "      <b>\n";
+                echo "        <a href=\"#\" onclick=\"mod_mix_status('ADD','$vcl_id','$q');return false;\">ADD</a> &nbsp; \n";
+                echo "        <a href=\"#\" onclick=\"mod_mix_status('REMOVE','$vcl_id','$q');return false;\">REMOVE</a>\n";
+                echo "      </b>\n";
+                echo "    </td>\n";
 
-
-                echo "<select size=1 name=dial_status$US$q$US$vcl_id id=dial_status$US$q$US$vcl_id>\n";
-                echo "<option value=\"\"> - Select A Status - </option>\n";
-
-                echo "$dial_statuses_list";
-                echo "</select> <font size=2><B>\n";
-                echo "<a href=\"#\" onclick=\"mod_mix_status('ADD','$vcl_id','$q');return false;\">ADD</a> &nbsp; \n";
-                echo "<a href=\"#\" onclick=\"mod_mix_status('REMOVE','$vcl_id','$q');return false;\">REMOVE</a>\n";
-                echo "</font></B></td></tr>\n";
-
-
-                echo "</td></tr>\n";
-
+                echo "  </tr>\n";
 
                 $q++;
 
-                }
-
-
-
-            
-            echo "<tr $bgcolor><td colspan=3 align=right><font size=2>\n";
-            echo "Difference %: <input type=text size=4 name=PCT_DIFF_$vcl_id id=PCT_DIFF_$vcl_id value=0 readonly>\n";
-            echo "</td>\n";
-
-            echo "<td colspan=2><input style=\"width: 100%;\" type=button name=submit_$vcl_id id=submit_$vcl_id value=\"SAVE LISTMIX RULES\" onClick=\"submit_mix('$vcl_id','$Ms_to_print')\"></td>\n";
-            echo "</tr></form>\n";
-            echo "<tr $bgcolor>\n";
-            echo "<td colspan=5>&nbsp;<span id=ERROR_$vcl_id></span></td>\n";
-            echo "</tr>\n";
-
-
-            echo "<form action=\"$PHP_SELF#$vcl_id\" method=POST name=$vcl_id id=$vcl_id>\n";
-            echo "<input type=hidden name=ADD value=49>\n";
-            echo "<input type=hidden name=SUB value=29>\n";
-            echo "<input type=hidden name=stage value=\"ADD\">\n";
-            echo "<input type=hidden name=vcl_id value=\"$vcl_id\">\n";
-            echo "<input type=hidden name=campaign_id value=\"$campaign_id\">\n";
-            echo "<tr $bgcolor><td colspan=4 align=right><font size=2>\n";
-            echo "List: <select size=1 name=list_id>\n";
-            echo "$mixlists_list";
-            echo "<option selected value=\"\">ADD ANOTHER LIST</option>\n";
-            echo "</select></td>\n";
-            
-            if ($q > 9) {$AE_disabled = 'DISABLED';}
-            else {$AE_disabled = '';}
-            echo "<td><input style=\"width: 100%;\" type=submit name=submit value=\"ADD LIST\" $AE_disabled>\n";
-            echo "</td></tr>\n";
-            echo "</form>\n";
-            echo "</table>\n";
-            #echo "</span>\n";
             }
 
+            echo "  <tr class=font2>\n";
+            echo "    <td colspan=3 align=right>Difference %: <input type=text size=4 name=PCT_DIFF_$vcl_id id=PCT_DIFF_$vcl_id value=0 readonly></td>\n";
+            echo "    <td colspan=2 class=tabbutton><input type=button name=submit_$vcl_id id=submit_$vcl_id value=\"SAVE LISTMIX RULES\" onClick=\"submit_mix('$vcl_id','$Ms_to_print')\"></td>\n";
+            echo "  </tr>\n";
+            echo "  </form>\n";
+            echo "  <tr class=font2>\n";
+            echo "    <td colspan=5>&nbsp;<span id=ERROR_$vcl_id></span></td>\n";
+            echo "  </tr>\n";
 
-        echo "<br><br><B><font color=$default_text>ADD NEW LIST MIX</font></B><BR><form action=$PHP_SELF method=POST>\n";
-        echo "<table border=0>\n";
-        echo "<tr bgcolor=$oddrows><td><form action=\"$PHP_SELF#$vcl_id\" method=POST>\n";
-        echo "<input type=hidden name=ADD value=49>\n";
-        echo "<input type=hidden name=SUB value=29>\n";
-        echo "<input type=hidden name=stage value=\"NEWMIX\">\n";
-        echo "<input type=hidden name=campaign_id value=\"$campaign_id\">\n";
-        echo "Mix ID: <input type=text size=20 maxlength=20 name=vcl_id value=\"\"></td>\n";
-        echo "<td>Mix Name: <input type=text size=30 maxlength=50 name=vcl_name value=\"\"></td>\n";
-        echo "<td>Mix Method: ";
-        echo "<select size=1 name=mix_method><option value=\"EVEN_MIX\">EVEN_MIX</option><option value=\"IN_ORDER\">IN_ORDER</option><option value=\"RANDOM\">RANDOM</option></select></td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td>List: <select size=1 name=list_id>\n";
-        echo "$mixlists_list";
-        echo "</select></td>\n";
-        echo "<td>Dial Status: <select size=1 name=status>\n";
-        echo "$dial_statuses_list";
-        echo "</select></td>\n";
-        echo "<td><input style=\"width: 100%;\" type=submit name=submit value=\"ADD NEW MIX\"></td>\n";
+
+            echo "  <form action=\"$PHP_SELF#$vcl_id\" method=POST name=$vcl_id id=$vcl_id>\n";
+            echo "  <input type=hidden name=ADD value=49>\n";
+            echo "  <input type=hidden name=SUB value=29>\n";
+            echo "  <input type=hidden name=stage value=\"ADD\">\n";
+            echo "  <input type=hidden name=vcl_id value=\"$vcl_id\">\n";
+            echo "  <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
+            echo "  <tr class=font2>\n";
+            echo "    <td colspan=4 align=right>\n";
+            echo "      List: \n";
+            echo "      <select size=1 name=list_id>\n";
+            echo "        $mixlists_list";
+            echo "        <option selected value=\"\">ADD ANOTHER LIST</option>\n";
+            echo "      </select>\n";
+            echo "    </td>\n";
+            
+            if ($q > 9) {
+                $AE_disabled = 'DISABLED';
+            } else {
+                $AE_disabled = '';
+            }
+            echo "    <td class=tabbutton><input type=submit name=submit value=\"ADD LIST\" $AE_disabled></td>\n";
+            echo "  </tr>\n";
+            echo "  </form>\n";
+            echo "</table>\n";
+
+            echo "  </td>\n";
+            echo " </tr>\n";
+        }
+
+        echo " <tr bgcolor=$evenrows>\n";
+        echo "  <td align=center>\n";
+        echo "<br><b><font color=$default_text>ADD NEW LIST MIX</font></b><br>\n";
+        #echo "<form action=$PHP_SELF method=POST>\n";
+        echo "<form action=\"$PHP_SELF#$vcl_id\" method=POST>\n";
+        echo " <input type=hidden name=ADD value=49>\n";
+        echo " <input type=hidden name=SUB value=29>\n";
+        echo " <input type=hidden name=stage value=\"NEWMIX\">\n";
+        echo " <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
+        echo " <table border=0 width=$section_width cellpadding=0 cellspacing=1>\n";
+        echo "  <tr class=tabheader>\n";
+        echo "    <td align=center>ID</td>\n";
+        echo "    <td align=center>Name</td>\n";
+        echo "    <td align=center>Method</td>\n";
+        echo "    <td align=center>List</td>\n";
+        echo "    <td align=center>Status</td>\n";
+        echo "    <td align=center>Actions</td>\n";
+        echo "  </tr>\n";
+        echo "  <tr class=tabfooter>\n";
+        echo "    <td align=center class=tabinput><input type=text size=20 maxlength=20 name=vcl_id value=\"\"></td>\n";
+        echo "    <td align=center class=tabinput><input type=text size=30 maxlength=50 name=vcl_name value=\"\"></td>\n";
+        echo "    <td align=center class=tabinput><select size=1 name=mix_method><option value=\"EVEN_MIX\">EVEN_MIX</option><option value=\"IN_ORDER\">IN_ORDER</option><option value=\"RANDOM\">RANDOM</option></select></td>\n";
+        echo "    <td align=center class=tabinput><select size=1 name=list_id>$mixlists_list</select></td>\n";
+        echo "    <td align=center class=tabinput><select size=1 name=status>$dial_statuses_list</select></td>\n";
+        echo "    <td align=center class=tabbutton1><input type=submit name=submit value=\"ADD NEW MIX\"></td>\n";
+        echo "  </tr>\n";
+        echo " </table>\n";
         echo "</form>";
-        echo "</tr>\n";
+
+        echo "  </td>\n";
+        echo " </tr>\n";
         echo "</table>\n";
 
         echo "<br>\n";
@@ -2206,42 +2229,27 @@ if ($total_campaigns > 20) {
     } else {
         echo "<a href=\"$PHP_SELF?ADD=10&let=$let&dispact=1\">(Hide Inactive)</a>";
     }
-    echo "</font><br>\n";
+    echo "</font><br><br>\n";
 }
-echo "<center><br><font size=-1 color=$default_text>&nbsp;|&nbsp;";
-echo (($let == "A") ? "A" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=A\">A</a>") . "&nbsp;|&nbsp;";
-echo (($let == "B") ? "B" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=B\">B</a>") . "&nbsp;|&nbsp;";
-echo (($let == "C") ? "C" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=C\">C</a>") . "&nbsp;|&nbsp;";
-echo (($let == "D") ? "D" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=D\">D</a>") . "&nbsp;|&nbsp;";
-echo (($let == "E") ? "E" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=E\">E</a>") . "&nbsp;|&nbsp;";
-echo (($let == "F") ? "F" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=F\">F</a>") . "&nbsp;|&nbsp;";
-echo (($let == "G") ? "G" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=G\">G</a>") . "&nbsp;|&nbsp;";
-echo (($let == "H") ? "H" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=H\">H</a>") . "&nbsp;|&nbsp;";
-echo (($let == "I") ? "I" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=I\">I</a>") . "&nbsp;|&nbsp;";
-echo (($let == "J") ? "J" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=J\">J</a>") . "&nbsp;|&nbsp;";
-echo (($let == "K") ? "K" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=K\">K</a>") . "&nbsp;|&nbsp;";
-echo (($let == "L") ? "L" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=L\">L</a>") . "&nbsp;|&nbsp;";
-echo (($let == "M") ? "M" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=M\">M</a>") . "&nbsp;|&nbsp;";
-echo (($let == "N") ? "N" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=N\">N</a>") . "&nbsp;|&nbsp;";
-echo (($let == "O") ? "O" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=O\">O</a>") . "&nbsp;|&nbsp;";
-echo (($let == "P") ? "P" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=P\">P</a>") . "&nbsp;|&nbsp;";
-echo (($let == "Q") ? "Q" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=Q\">Q</a>") . "&nbsp;|&nbsp;";
-echo (($let == "R") ? "R" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=R\">R</a>") . "&nbsp;|&nbsp;";
-echo (($let == "S") ? "S" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=S\">S</a>") . "&nbsp;|&nbsp;";
-echo (($let == "T") ? "T" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=T\">T</a>") . "&nbsp;|&nbsp;";
-echo (($let == "U") ? "U" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=U\">U</a>") . "&nbsp;|&nbsp;";
-echo (($let == "V") ? "V" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=V\">V</a>") . "&nbsp;|&nbsp;";
-echo (($let == "W") ? "W" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=W\">W</a>") . "&nbsp;|&nbsp;";
-echo (($let == "X") ? "X" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=X\">X</a>") . "&nbsp;|&nbsp;";
-echo (($let == "Y") ? "Y" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=Y\">Y</a>") . "&nbsp;|&nbsp;";
-echo (($let == "Z") ? "Z" : "<a href=\"$PHP_SELF?ADD=10&dispact=$dispact&let=Z\">Z</a>") . "&nbsp;|&nbsp;";
+echo "<center><font size=-1 color=$default_text>&nbsp;|&nbsp;";
+echo "<a href=\"$PHP_SELF?ADD=$ADD&dispact=$dispact&let=\">-ALL-</a>&nbsp;|&nbsp;";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;";
+foreach (range('A','Z') as $slet) {
+    echo (($let == "$slet") ? $slet : "<a href=\"$PHP_SELF?ADD=$ADD&dispact=$dispact&let=$slet\">$slet</a>") . "&nbsp;|&nbsp;";
+}
+echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;";
+foreach (range('0','9') as $snum) {
+    echo (($let == "$snum") ? $snum : "<a href=\"$PHP_SELF?ADD=$ADD&dispact=$dispact&let=$snum\">$snum</a>") . "&nbsp;|&nbsp;";
+}
 echo "</font><br>\n";
-echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr bgcolor=$menubarcolor>";
-echo "<td><font size=1 color=white><B>ID</B></td>";
-echo "<td><font size=1 color=white><B>DESCRIPTION</B></td>";
-echo "<td align=center><font size=1 color=white><B>ACTIVE</B></td>";
-echo "<td align=center colspan=7><font size=1 color=white><B>LINKS</B></td>";
+
+echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "  <tr class=tabheader>\n";
+echo "    <td>ID</td>\n";
+echo "    <td>DESCRIPTION</td>\n";
+echo "    <td align=center>ACTIVE</td>\n";
+echo "    <td align=center colspan=7>LINKS</td>\n";
+echo "  </tr>\n";
     $o=0;
     while ($people_to_print > $o) {
         $row=mysql_fetch_row($rslt);
@@ -2249,17 +2257,17 @@ echo "<td align=center colspan=7><font size=1 color=white><B>LINKS</B></td>";
             {$bgcolor='bgcolor='.$oddrows;} 
         else
             {$bgcolor='bgcolor='.$evenrows;}
-        echo "<tr class=row $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=34&campaign_id=$row[0]\">$row[0]</a></td>";
-        echo "<td><font size=1> $row[1] </td>";
-        echo "<td align=center><font size=1> $row[2]</td>";
-        echo "<td><font size=1> $row[3]</td><td><font size=1>$row[4]</td><td><font size=1>$row[5]</td>";
-        echo "<td><font size=1> $row[6]</td><td><font size=1>$row[7]</td><td><font size=1> &nbsp;</td>";
-        echo "<td><font size=1><a href=\"$PHP_SELF?ADD=31&campaign_id=$row[0]\">MODIFY</a></td></tr>\n";
+        echo "  <tr class=\"row font1\" $bgcolor>\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=34&campaign_id=$row[0]\">$row[0]</a></td>\n";
+        echo "    <td>$row[1]</td>\n";
+        echo "    <td align=center><font size=1>$row[2]</td>\n";
+        echo "    <td colspan=7 align=center><a href=\"$PHP_SELF?ADD=31&campaign_id=$row[0]\">MODIFY</a></td>\n";
+        echo "  </tr>\n";
         $o++;
     }
-echo "<tr bgcolor=$menubarcolor>";
-echo "  <td colspan=10 height=8px><font size=1 color=white></font></td>";
-echo "</tr>";
+echo "  <tr class=tabfooter>";
+echo "    <td colspan=10></td>";
+echo "  </tr>";
 echo "</TABLE></center>\n";
 }
 

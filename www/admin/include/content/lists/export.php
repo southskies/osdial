@@ -101,8 +101,8 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8) {
             echo "  <br />\n";
             echo "  <br />\n";
             echo " </td></tr>\n";
-            echo " <tr bgcolor=$menubarcolor><td>\n";
-            echo "  <input style=\"width: 100%;\" type=submit value=\"Next ->\">\n";
+            echo " <tr class=tabfooter><td class=tabbutton>\n";
+            echo "  <input type=submit value=\"Next ->\">\n";
         } elseif ($statuses[0] == '') {
             $list = get_first_record($link,'osdial_lists','*',"list_id='" . $list_id . "'");
             echo "  <input type=hidden name='list_id' value=\"$list_id\">\n";
@@ -129,21 +129,21 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8) {
                 $unchkjs .= "document.getElementById('" . $stat['status'] . "').checked=false;";
             }
             echo "  <table align=center border=0 cellpadding=1 cellspacing=0 bgcolor=$oddrows>\n";
-            echo "  <tr bgcolor=$menubarcolor>\n";
-            echo "      <td><font size=1 color=white>&nbsp;</font></td>\n";
-            echo "      <td><font size=1 color=white><b>STATUS</b></font></td>\n";
-            echo "      <td><font size=1 color=white><b>DESCRIPTION</b></font></td>\n";
+            echo "  <tr class=tabheader>\n";
+            echo "      <td>&nbsp;</td>\n";
+            echo "      <td>STATUS</td>\n";
+            echo "      <td>DESCRIPTION</td>\n";
             echo "   </tr>\n";
-            echo "   <tr>\n";
+            echo "   <tr class=font2>\n";
             echo '      <td align=right><input onclick="' . "document.getElementById('called').checked=false;" . $unchkjs .'" type=checkbox name=statuses[] id=all value="-ALL-" checked></td>' . "\n";
-            echo "      <td><label for=all><font size=2><b>ALL</b></font></label></td>\n";
-            echo "      <td><label for=all><font size=2><b>- Export ALL statuses</b></font></label></td>\n";
+            echo "      <td><label for=all><b>ALL</b></label></td>\n";
+            echo "      <td><label for=all><b>- Export ALL statuses</b></label></td>\n";
             echo "   </tr>\n";
             echo "  <tr><td colspan=3><hr></td></tr>\n";
-            echo "   <tr>\n";
+            echo "   <tr class=font2>\n";
             echo '      <td align=right><input onclick="' . "document.getElementById('all').checked=false;" . $unchkjs .'" type=checkbox name=statuses[] id=called value="-CALLED-"></td>' . "\n";
-            echo "      <td><label for=called><font size=2><b>CALLED</b></font></label></td>\n";
-            echo "      <td><label for=called><font size=2><b>- Export CALLED statuses</b> </font><font size=1>(ALL excluding NEW leads)</font></label></td>\n";
+            echo "      <td><label for=called><b>CALLED</b></label></td>\n";
+            echo "      <td><label for=called><b>- Export CALLED statuses</b> <font size=1>(ALL excluding NEW leads)</font></label></td>\n";
             echo "   </tr>\n";
             echo "  <tr><td colspan=3><hr></td></tr>\n";
             foreach ($stats as $stat) {
@@ -157,8 +157,8 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8) {
             echo "  <br />\n";
             echo "  <br />\n";
             echo " </td></tr>\n";
-            echo " <tr bgcolor=$menubarcolor><td>\n";
-            echo "  <input style=\"width: 100%;\" type=submit value=\"Next ->\">\n";
+            echo " <tr class=tabfooter><td class=tabbutton>\n";
+            echo "  <input type=submit value=\"Next ->\">\n";
         } elseif ($fields[0] == '') {
             $list = get_first_record($link,'osdial_lists','*',"list_id='" . $list_id . "'");
             echo "  <input type=hidden name='SUB' value=\"2\">\n";
@@ -179,10 +179,10 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8) {
             echo "  <br />\n";
 
             echo "  <table align=center border=0 cellpadding=1 cellspacing=0 bgcolor=$oddrows>\n";
-            echo "  <tr bgcolor=$menubarcolor>\n";
-            echo "      <td><font size=1 color=white>&nbsp;</font></td>\n";
-            echo "      <td><font size=1 color=white><b>FIELD</b></font></td>\n";
-            echo "      <td><font size=1 color=white><b>DESCRIPTION</b></font></td>\n";
+            echo "  <tr class=tabheader>\n";
+            echo "      <td>&nbsp;</td>\n";
+            echo "      <td>FIELD</td>\n";
+            echo "      <td>DESCRIPTION</td>\n";
             echo "   </tr>\n";
 
             $flds['lead_id'] = "Unique lead number";
@@ -225,18 +225,18 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8) {
                 $unchkjs .= "document.getElementById('" . $k . "').checked=false;";
             }
 
-            echo "   <tr>\n";
+            echo "   <tr class=font2>\n";
             echo '      <td align=right><input onclick="' . $unchkjs . '" type=checkbox name=fields[] id=ALL value="-ALL-" checked></td>' . "\n";
-            echo "      <td><label for=ALL><font size=2><b>ALL</b></font></label></td>\n";
-            echo "      <td><label for=ALL><font size=2><b>- Export ALL fields</b></font></label></td>\n";
+            echo "      <td><label for=ALL><b>ALL</b></label></td>\n";
+            echo "      <td><label for=ALL><b>- Export ALL fields</b></label></td>\n";
             echo "   </tr>\n";
             echo "  <tr><td colspan=3><hr></td></tr>\n";
 
             foreach ($flds as $k => $v) {
-                echo "   <tr>\n";
+                echo "   <tr class=font2>\n";
                 echo '      <td align=right><input onclick="' . "document.getElementById('ALL').checked=false;" . '" type=checkbox name=fields[] id="' . $k . '" value="' . $k . '"></td>' . "\n";
-                echo "      <td><label for=$k><font size=2>$k</font></label></td>\n";
-                echo "      <td><label for=$k><font size=2>- $v</font></label></td>\n";
+                echo "      <td><label for=$k>$k</label></td>\n";
+                echo "      <td><label for=$k>- $v</label></td>\n";
                 echo "   </tr>\n";
             }
 
@@ -248,8 +248,8 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8) {
             echo "  <br />\n";
             echo "  <br />\n";
             echo " </td></tr>\n";
-            echo " <tr bgcolor=$menubarcolor><td>\n";
-            echo "  <input style=\"width: 100%\" type=submit value=\"Get File\" onclick=\"window.location='" . $PHP_SELF . "?ADD=100'\">\n";
+            echo " <tr class=tabfooter><td class=tabbutton>\n";
+            echo "  <input type=submit value=\"Get File\" onclick=\"window.location='" . $PHP_SELF . "?ADD=100'\">\n";
         } else {
 	        echo "<font color=red>Unexpected Error!</font>\n";
         }

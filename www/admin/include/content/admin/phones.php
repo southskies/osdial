@@ -60,7 +60,7 @@ if ($ADD==11111111111)
 	echo "<tr bgcolor=$oddrows><td align=right>Picture: </td><td align=left><input type=text name=picture size=20 maxlength=19 value=\"$row[13]\">$NWB#phones-picture$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Client Protocol: </td><td align=left><select size=1 name=protocol><option>SIP</option><option>DAHDI</option><option>Zap</option><option>IAX2</option><option>EXTERNAL</option><option selected>$row[16]</option></select>$NWB#phones-protocol$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Local GMT: </td><td align=left><select size=1 name=local_gmt><option>12.75</option><option>12.00</option><option>11.00</option><option>10.00</option><option>9.50</option><option>9.00</option><option>8.00</option><option>7.00</option><option>6.50</option><option>6.00</option><option>5.75</option><option>5.50</option><option>5.00</option><option>4.50</option><option>4.00</option><option>3.50</option><option>3.00</option><option>2.00</option><option>1.00</option><option>0.00</option><option>-1.00</option><option>-2.00</option><option>-3.00</option><option>-3.50</option><option>-4.00</option><option>-5.00</option><option>-6.00</option><option>-7.00</option><option>-8.00</option><option>-9.00</option><option>-10.00</option><option>-11.00</option><option>-12.00</option><option selected>$row[17]</option></select> (Do NOT Adjust for DST)$NWB#phones-local_gmt$NWE</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=submit VALUE=SUBMIT></td></tr>\n";
+	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -293,7 +293,7 @@ if ($ADD==31111111111)
 	echo "<tr bgcolor=$oddrows><td align=right>DBY User: </td><td align=left><input type=text name=DBY_user size=15 maxlength=15 value=\"$row[62]\"> (Secondary DB Login)$NWB#phones-DBY_user$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>DBY Pass: </td><td align=left><input type=text name=DBY_pass size=15 maxlength=15 value=\"$row[63]\"> (Secondary DB Secret)$NWB#phones-DBY_pass$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>DBY Port: </td><td align=left><input type=text name=DBY_port size=6 maxlength=6 value=\"$row[64]\"> (Secondary DB Port)$NWB#phones-DBY_port$NWE</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=submit VALUE=SUBMIT></td></tr>\n";
+	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 
 	echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=10&iframe=phone_stats.php?extension=$row[0]%26server_ip=$row[5]'\">Click here for phone stats</a><br><br>\n";
@@ -338,16 +338,17 @@ if (eregi("STATUSDOWN",$stage)) {$SQLorder='order by status desc';   $STATUSlink
 	$phones_to_print = mysql_num_rows($rslt);
 
 echo "<center><br><font color=$default_text size=+1>PHONES<br><br><font size=-2>(<a href=#VMList>VoiceMail List</a>)</font><br><br>\n";
-echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr bgcolor=$menubarcolor>";
-echo "<td><a href=\"$PHP_SELF?ADD=10000000000&$EXTENlink\"><font size=1 color=white><B>EXTEN</B></a></td>";
-echo "<td><a href=\"$PHP_SELF?ADD=10000000000&$PROTOlink\"><font size=1 color=white><B>PROTO</B></a></td>";
-echo "<td><a href=\"$PHP_SELF?ADD=10000000000&$SERVERlink\"><font size=1 color=white><B>SERVER</B></a></td>";
-echo "<td colspan=2><font size=1 color=white><B>DIAL PLAN</B></td>";
-echo "<td><a href=\"$PHP_SELF?ADD=10000000000&$STATUSlink\"><font size=1 color=white><B>STATUS</B></a></td>";
-echo "<td><font size=1 color=white><B>NAME</B></td>";
-echo "<td colspan=2><font size=1 color=white><B>VMAIL</B></td>";
-echo "<td align=center><font size=1 color=white><B>LINKS</B></td></tr>\n";
+echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "  <tr class=tabheader>";
+echo "    <td><a href=\"$PHP_SELF?ADD=10000000000&$EXTENlink\">EXTEN</a></td>\n";
+echo "    <td><a href=\"$PHP_SELF?ADD=10000000000&$PROTOlink\">PROTO</a></td>\n";
+echo "    <td><a href=\"$PHP_SELF?ADD=10000000000&$SERVERlink\">SERVER</a></td>\n";
+echo "    <td colspan=2>DIAL PLAN</B></td>\n";
+echo "    <td><a href=\"$PHP_SELF?ADD=10000000000&$STATUSlink\">STATUS</a></td>\n";
+echo "    <td>NAME</td>\n";
+echo "    <td colspan=2>VMAIL</td>\n";
+echo "    <td align=center>LINKS</td>\n";
+echo "  </tr>\n";
 
 	$o=0;
 	while ($phones_to_print > $o) {
@@ -356,15 +357,25 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td></tr>\n";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor class=row><td><a href=\"$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]\"><font size=1 color=$default_text>$row[0]</font></a></td><td><font size=1>$row[16]</td><td><font size=1>$row[5]</td><td><font size=1>$row[1]</td><td><font size=1>$row[2]</td><td><font size=1>$row[8]</td><td><font size=1>$row[11]</td><td><font size=1>$row[14]</td><td><font size=1>$row[15]</td>";
-		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]\">MODIFY</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=10&iframe=phone_stats.php?extension=$row[0]%26server_ip=$row[5]\">STATS</a></td></tr>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]\">$row[0]</a></td>\n";
+        echo "    <td>$row[16]</td>\n";
+        echo "    <td>$row[5]</td>\n";
+        echo "    <td>$row[1]</td>\n";
+        echo "    <td>$row[2]</td>\n";
+        echo "    <td>$row[8]</td>\n";
+        echo "    <td>$row[11]</td>\n";
+        echo "    <td>$row[14]</td>\n";
+        echo "    <td>$row[15]</td>\n";
+		echo "    <td align=center><a href=\"$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]\">MODIFY</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=10&iframe=phone_stats.php?extension=$row[0]%26server_ip=$row[5]\">STATS</a></td>\n";
+        echo "  </tr>\n";
 		$o++;
 	}
 
-echo "<tr bgcolor=$menubarcolor>";
-echo "  <td colspan=10 height=8px><font size=1 color=white></font></td>";
-echo "</tr>";
-echo "</TABLE></center>\n";
+echo "  <tr class=tabfooter>\n";
+echo "    <td colspan=10></td>\n";
+echo "  </tr>\n";
+echo "</table></center>\n";
 
 // List all voicemail on dialer 1
 echo "<a name=VMList></a>";
@@ -373,12 +384,13 @@ echo '<center>';
 echo "<b><font color=$default_text size=-1>VOICE MAIL</b><br>";
 if (file_exists ('VMnow.txt') ) {
 	echo "<font color=$default_text><p> As of " . date("l dS o F h:i:s A",filectime('VMnow.txt') )  . "</p></font>";
-	echo "<table bgcolor=grey cellspacing=1 align=center width=560><tr bgcolor=$menubarcolor>";
-	echo "<td width=10 align=center><font size=1 color=white><b>Context</b></td>";
-	echo "<td width=30 align=center><font size=1 color=white><b>Mbox</b></font></td>";
-	echo "<td width=110 align=center><font size=1 color=white><b>Agent</b></font></td>";
-	// no vmZone defined  echo "<td width=50><font size=1 color=white><b>Zone</b></font></td>";
-	echo "<td width=35 align=right><font size=1 color=white><b>NewMsgs</b></font></td><tr>";
+	echo "<table bgcolor=grey cellspacing=1 align=center width=560>\n";
+    echo "  <tr class=tabheader>\n";
+	echo "    <td width=10 align=center>Context</td>\n";
+	echo "    <td width=30 align=center>Mbox</td>\n";
+	echo "    <td width=110 align=center>Agent</td>\n";
+	echo "    <td width=35 align=right>NewMsgs</td>\n";
+    echo "  </tr>";
 	#echo "</table>";
 	// get a web page into an array and print it out ("l dS of F Y h:i:s A")
 	$fcontents = file( 'VMnow.txt' );
@@ -398,9 +410,9 @@ if (file_exists ('VMnow.txt') ) {
             }
             $line = rtrim($line);
             $lary = preg_split("/\\s+/",$line);
-			echo "  <tr $bgcolor class=row>\n";
-            echo "    <td><font size=1>" . $lary[0] . "</font></td>\n";
-            echo "    <td><font size=1>" . $lary[1] . "</font></td>\n";
+			echo "  <tr $bgcolor class=\"row font1\">\n";
+            echo "    <td>" . $lary[0] . "</td>\n";
+            echo "    <td>" . $lary[1] . "</td>\n";
             $llast = count($lary) - 1;
             $lagent='';
             if ($llast - 1 > 2) {
@@ -409,16 +421,16 @@ if (file_exists ('VMnow.txt') ) {
                 }
                 $lagent = rtrim($lagent);
             }
-            echo "    <td><font size=1>" . $lagent . "</font></td>\n";
-            echo "    <td align=right><font size=1>" . $lary[$llast] . "</font></td>\n";
+            echo "    <td>" . $lagent . "</td>\n";
+            echo "    <td align=right>" . $lary[$llast] . "</td>\n";
             echo "</tr>";
 			#echo "<tr><td><pre>" . $line . "</td></tr>";
             $o++;
 		}
 	}
-    echo "<tr bgcolor=$menubarcolor>";
-    echo "  <td colspan=4 height=8px><font size=1 color=white></font></td>";
-    echo "</tr>";
+    echo "  <tr class=tabfooter>\n";
+    echo "    <td colspan=4></td>\n";
+    echo "  </tr>\n";
 	echo "</table>";
 } else {
 	echo "Error! VMnow.txt is missing!";

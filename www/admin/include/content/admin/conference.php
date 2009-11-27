@@ -47,7 +47,7 @@ if ($ADD==1111111111111)
 	echo "$servers_list";
 	#echo "<option SELECTED>$server_ip</option>\n";
 	echo "</select>$NWB#conferences-server_ip$NWE</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=submit VALUE=SUBMIT></td></tr>\n";
+	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -219,7 +219,7 @@ if ($ADD==3111111111111)
 	#echo "<option SELECTED>$row[1]</option>\n";
 	echo "</select>$NWB#conferences-server_ip$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Current Extension: </td><td align=left><input type=text name=extension size=20 maxlength=20 value=\"$row[2]\"></td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=submit VALUE=SUBMIT></td></tr>\n";
+	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 
 	if ($LOGast_delete_phones > 0)
@@ -249,12 +249,13 @@ echo "<TABLE align=center><TR><TD>\n";
 	$phones_to_print = mysql_num_rows($rslt);
 
 echo "<center><br><font color=$default_text size=+1>CONFERENCES</font><br><br>\n";
-echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr bgcolor=$menubarcolor>";
-echo "<td><font size=1 color=white><B>ID</B></td>";
-echo "<td><font size=1 color=white><B>SERVER</B></td>";
-echo "<td><font size=1 color=white><B>EXTENSION</B></td>";
-echo "<td align=center colspan=3><font size=1 color=white><B>LINKS</B></td>";
+echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "  <tr class=tabheader>\n";
+echo "    <td>ID</td>\n";
+echo "    <td>SERVER</td>\n";
+echo "    <td>EXTENSION</td>\n";
+echo "    <td align=center colspan=3>LINKS</td>\n";
+echo "  </tr>\n";
 
 	$o=0;
 	while ($phones_to_print > $o) {
@@ -263,20 +264,18 @@ echo "<td align=center colspan=3><font size=1 color=white><B>LINKS</B></td>";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "  <tr $bgcolor class=row>\n";
-        echo "    <td><font size=1><a href=\"$PHP_SELF?ADD=3111111111111&conf_exten=$row[0]&server_ip=$row[1]\">$row[0]</a></td>\n";
-		echo "    <td><font size=1>$row[1]</td>\n";
-		echo "    <td><font size=1>$row[2]</td>\n";
-		echo "    <td><font size=1>$row[4]</td>\n";
-		echo "    <td><font size=1>&nbsp;</td>\n";
-		echo "    <td align=center><font size=1><a href=\"$PHP_SELF?ADD=3111111111111&conf_exten=$row[0]&server_ip=$row[1]\">MODIFY</a></td>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=3111111111111&conf_exten=$row[0]&server_ip=$row[1]\">$row[0]</a></td>\n";
+		echo "    <td>$row[1]</td>\n";
+		echo "    <td>$row[2]</td>\n";
+		echo "    <td colspan=3 align=center><a href=\"$PHP_SELF?ADD=3111111111111&conf_exten=$row[0]&server_ip=$row[1]\">MODIFY</a></td>\n";
         echo "  </tr>\n";
 		$o++;
 	}
 
-echo "<tr bgcolor=$menubarcolor>";
-echo "  <td colspan=6 height=8px><font size=1 color=white></font></td>";
-echo "</tr>";
+echo "  <tr class=tabfooter>\n";
+echo "    <td colspan=6></td>\n";
+echo "  </tr>\n";
 echo "</table></center>\n";
 }
 
@@ -306,7 +305,7 @@ if ($ADD==11111111111111)
 	echo "$servers_list";
 	#echo "<option SELECTED>$server_ip</option>\n";
 	echo "</select>$NWB#conferences-server_ip$NWE</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=submit VALUE=SUBMIT></td></tr>\n";
+	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -473,7 +472,7 @@ if ($ADD==31111111111111)
 	#echo "<option SELECTED>$row[1]</option>\n";
 	echo "</select>$NWB#conferences-server_ip$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Current Extension: </td><td align=left><input type=text name=extension size=20 maxlength=20 value=\"$row[2]\"></td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=submit VALUE=SUBMIT></td></tr>\n";
+	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 
 	if ($LOGast_delete_phones > 0)
@@ -503,11 +502,12 @@ echo "<TABLE align=center><TR><TD>\n";
 
 echo "<center><br><font color=$default_text size=+1>$t1 CONFERENCES</font><br><br>\n";
 echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr bgcolor=$menubarcolor>";
-echo "<td><font size=1 color=white><B>ID</B></td>";
-echo "<td><font size=1 color=white><B>SERVER</B></td>";
-echo "<td><font size=1 color=white><B>EXTENSION</B></td>";
-echo "<td align=center colspan=3><font size=1 color=white><B>LINKS</B></td>";
+echo "  <tr class=tabheader>\n";
+echo "    <td>IDB></td>\n";
+echo "    <td>SERVERB></td>\n";
+echo "    <td>EXTENSIONB></td>\n";
+echo "    <td align=center colspan=3>LINKS</td>\n";
+echo "  </tr>\n";
 
 	$o=0;
 	while ($phones_to_print > $o) {
@@ -516,20 +516,18 @@ echo "<td align=center colspan=3><font size=1 color=white><B>LINKS</B></td>";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "  <tr $bgcolor class=row>\n";
-        echo "    <td><font size=1><a href=\"$PHP_SELF?ADD=31111111111111&conf_exten=$row[0]&server_ip=$row[1]\">$row[0]</a></td>";
-		echo "    <td><font size=1>$row[1]</td>\n";
-		echo "    <td><font size=1>$row[2]</td>\n";
-        echo "    <td><font size=1>$row[4]</td>\n";
-        echo "    <td><font size=1>&nbsp;</td>\n";
-		echo "    <td align=center><font size=1><a href=\"$PHP_SELF?ADD=31111111111111&conf_exten=$row[0]&server_ip=$row[1]\">MODIFY</a></td>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=31111111111111&conf_exten=$row[0]&server_ip=$row[1]\">$row[0]</a></td>\n";
+		echo "    <td>$row[1]</td>\n";
+		echo "    <td>$row[2]</td>\n";
+		echo "    <td colspan=3 align=center><a href=\"$PHP_SELF?ADD=31111111111111&conf_exten=$row[0]&server_ip=$row[1]\">MODIFY</a></td>\n";
         echo "  </tr>\n";
 		$o++;
 	}
 
-echo "<tr bgcolor=$menubarcolor>";
-echo "  <td colspan=6 height=8px><font size=1 color=white></font></td>";
-echo "</tr>";
+echo "  <tr class=tabfooter>\n";
+echo "    <td colspan=6></td>\n";
+echo "  </tr>\n";
 echo "</table></center>\n";
 }
 

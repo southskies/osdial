@@ -139,16 +139,16 @@ $ADD=31;	# go to campaign modification form below
 ######################
 if ($ADD==32)
 {
-echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+echo "<table align=center><tr><td>\n";
+	echo "<FONT FACE=\"Arial,Helvetica\" COLOR=$default_text SIZE=2>";
 
 echo "<center><br><font color=$default_text size=+1>CUSTOM CAMPAIGN STATUSES</font><br><br>\n";
-echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr bgcolor=$menubarcolor>\n";
-echo "<td><font color=white size=1>CAMPAIGN</font></td>\n";
-echo "<td><font color=white size=1>NAME</font></td>\n";
-echo "<td><font color=white size=1>STATUSES</font></td>\n";
-echo "<td><font color=white size=1>LINKS</font></td>\n";
+echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "<tr class=tabheader>\n";
+echo "<td>CAMPAIGN</td>\n";
+echo "<td>NAME</td>\n";
+echo "<td align=center>STATUSES</td>\n";
+echo "<td align=center>LINKS</td>\n";
 echo "</tr>\n";
 
 	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
@@ -171,9 +171,10 @@ echo "</tr>\n";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr class=row $bgcolor><td><font size=1><a href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaigns_id_list[$o]\">$campaigns_id_list[$o]</a></td>";
-		echo "<td><font size=1> $campaigns_name_list[$o] </td>";
-		echo "<td><font size=1> ";
+		echo "  <tr class=\"row font1\" $bgcolor>\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaigns_id_list[$o]\">$campaigns_id_list[$o]</a></td>";
+		echo "    <td>$campaigns_name_list[$o]</td>";
+		echo "    <td align=center>";
 
 		$stmt="SELECT status from osdial_campaign_statuses where campaign_id='$campaigns_id_list[$o]' order by status";
 		$rslt=mysql_query($stmt, $link);
@@ -187,15 +188,16 @@ echo "</tr>\n";
 			}
 		if ($p<1) 
 			{echo "<font color=grey><DEL>NONE</DEL></font>";}
-		echo "</td>";
-		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaigns_id_list[$o]\">MODIFY STATUSES</a></td></tr>\n";
+		echo "    </td>";
+		echo "    <td align=center><a href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaigns_id_list[$o]\">MODIFY STATUSES</a></td>\n";
+        echo "  </tr>\n";
 		$o++;
 		}
 
-echo "<tr bgcolor=$menubarcolor>";
-echo "  <td colspan=4 height=8px><font size=1 color=white></font></td>";
+echo "<tr class=tabfooter>";
+echo "  <td colspan=4></td>";
 echo "</tr>";
-echo "</TABLE></center>\n";
+echo "</table></center>\n";
 }
 
 

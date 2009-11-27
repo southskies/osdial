@@ -146,12 +146,12 @@ function report_list_cost() {
         $html .= "<input type=hidden name=\"name\" value=\"lcr\">\n";
 
         $html .= "<table width=100% cellspacing=1 cellpadding=1 bgcolor=grey>\n";
-        $html .= "  <tr bgcolor=$menubarcolor>\n";
-        $html .= "    <td><font color=white size=1><b>DATE</b></font></td>\n";
-        $html .= "    <td><font color=white size=1><b>LIST</b></font></td>\n";
-        $html .= "    <td align=center><font color=white size=1><b>LEADS</b></font></td>\n";
-        $html .= "    <td align=center><font color=white size=1><b>AVERAGE COST</b></font></td>\n";
-        $html .= "    <td align=center><font color=white size=1><b>TOTAL COST</b></font></td>\n";
+        $html .= "  <tr class=tabheader>\n";
+        $html .= "    <td>DATE</td>\n";
+        $html .= "    <td>LIST</td>\n";
+        $html .= "    <td align=center>LEADS</td>\n";
+        $html .= "    <td align=center>AVERAGE COST</td>\n";
+        $html .= "    <td align=center>TOTAL COST</td>\n";
         $html .= "  </tr>\n";
         $head = "DATE|LIST|LEADS|AVERAGE COST|TOTAL COST";
         $html .= "<input type=hidden name=\"row" . $CSVrow++ . "\" value=\"" . $head . "\">\n";
@@ -181,7 +181,7 @@ function report_list_cost() {
                 $SUBleads      = sprintf("%7s",    $SUBleads); 
                 $SUBavg_cost   = sprintf("%8.2f",  $SUBavg_cost); 
                 $SUBtotal_cost = sprintf("%10.2f", $SUBtotal_cost); 
-                $html .= "  <tr bgcolor=$menubarcolor>\n";
+                $html .= "  <tr class=tabfooter>\n";
                 $html .= "    <td align=left colspan=2><font color=white style=\"font-size:6pt;\">&nbsp;</font></td>\n";
                 $html .= "    <td align=right><font color=white style=\"font-size:6pt;\">$SUBleads</font></td>\n";
                 $html .= "    <td align=right><font color=white style=\"font-size:6pt;\">$SUBavg_cost</font></td>\n";
@@ -213,12 +213,12 @@ function report_list_cost() {
             $avg_cost   = sprintf("%8.2f",  $avg_cost); 
             $total_cost = sprintf("%10.2f", $total_cost); 
 
-            $html .= "  <tr $bgcolor>\n";
-            $html .= "    <td align=left><font size=1>$date</font></td>\n";
-            $html .= "    <td align=left><font size=1>$name</font></td>\n";
-            $html .= "    <td align=right><font size=1>$leads</font></td>\n";
-            $html .= "    <td align=right><font size=1>$avg_cost</font></td>\n";
-            $html .= "    <td align=right><font size=1>$total_cost</font></td>\n";
+            $html .= "  <tr $bgcolor class=\"row font1\">\n";
+            $html .= "    <td align=left>$date</td>\n";
+            $html .= "    <td align=left>$name</td>\n";
+            $html .= "    <td align=right>$leads</td>\n";
+            $html .= "    <td align=right>$avg_cost</td>\n";
+            $html .= "    <td align=right>$total_cost</td>\n";
             $html .= "  </tr>\n";
             $line = "$date|$name|$leads|$avg_cost|$total_cost";
             $html .= "<input type=hidden name=\"row" . $CSVrow++ . "\" value=\"" . $line . "\">\n";
@@ -232,7 +232,7 @@ function report_list_cost() {
         $SUBleads      = sprintf("%7s",    $SUBleads); 
         $SUBavg_cost   = sprintf("%8.2f",  $SUBavg_cost); 
         $SUBtotal_cost = sprintf("%10.2f", $SUBtotal_cost); 
-        $html .= "  <tr bgcolor=$menubarcolor>\n";
+        $html .= "  <tr class=tabfooter>\n";
         $html .= "    <td align=left colspan=2><font color=white style=\"font-size:6pt;\">&nbsp;</font></td>\n";
         $html .= "    <td align=right><font color=white style=\"font-size:6pt;\">$SUBleads</font></td>\n";
         $html .= "    <td align=right><font color=white style=\"font-size:6pt;\">$SUBavg_cost</font></td>\n";
@@ -248,11 +248,11 @@ function report_list_cost() {
         $TOTavg_cost   = sprintf("%8.2f",  $TOTavg_cost); 
         $TOTtotal_cost = sprintf("%10.2f", $TOTtotal_cost); 
     
-        $html .= "  <tr bgcolor=$menubarcolor>\n";
-        $html .= "    <td align=left colspan=2><font color=white size=1>TOTAL</font></td>\n";
-        $html .= "    <td align=right><font color=white size=1><b>$TOTleads</b></font></td>\n";
-        $html .= "    <td align=right><font color=white size=1><b>$TOTavg_cost</b></font></td>\n";
-        $html .= "    <td align=right><font color=white size=1><b>$TOTtotal_cost</b></font></td>\n";
+        $html .= "  <tr class=tabfooter>\n";
+        $html .= "    <td align=left colspan=2>TOTAL</td>\n";
+        $html .= "    <td align=right>$TOTleads</td>\n";
+        $html .= "    <td align=right>$TOTavg_cost</td>\n";
+        $html .= "    <td align=right>$TOTtotal_cost</td>\n";
         $html .= "  </tr>\n";
         $html .= "</table>\n";
         $line = "||||";

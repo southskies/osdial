@@ -160,12 +160,14 @@ if ($ADD==321111111111111)
 	echo "<br><center>\n";
 	echo "<font color=$default_text size=4>$t1 SYSTEM-WIDE STATUSES &nbsp; $NWB#osdial_statuses$NWE</font><br><br>\n";
 	echo "<table width=800 cellspacing=1 bgcolor=grey>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center><font size=1 color=white><b>STATUS</b></font></td>";
-	echo "<td align=center><font size=1 color=white><b>DESCRIPTION</b></font></td>";
-	echo "<td><font size=1 color=white><b>SELECTABLE</b></font></td>";
-	echo "<td><font size=1 color=white><b>HUMAN&nbsp;ANSWER</b></font></td>";
-	echo "<td align=center><font size=1 color=white><b>CATEGORY</b></font></td>";
-	echo "<td align=center colspan=2><font size=1 color=white><b>ACTIONS</b></font></td></tr>\n";
+	echo "  <tr class=tabheader>\n";
+    echo "    <td align=center>STATUS</td>\n";
+	echo "    <td align=center>DESCRIPTION</td>\n";
+	echo "    <td>SELECTABLE</td>\n";
+	echo "    <td>HUMAN&nbsp;ANSWER</td>\n";
+	echo "    <td align=center>CATEGORY</td>\n";
+	echo "    <td align=center colspan=2>ACTIONS</td>\n";
+    echo "  </tr>\n";
 
 	##### get status category listings for dynamic pulldown
 	$stmt="SELECT vsc_id,vsc_name from osdial_status_categories order by vsc_id desc";
@@ -202,13 +204,13 @@ if ($ADD==321111111111111)
 		echo "  <input type=hidden name=ADD value=421111111111111>\n";
 		echo "  <input type=hidden name=stage value=modify>\n";
 		echo "  <input type=hidden name=status value=\"$rowx[0]\">\n";
-		echo "  <tr $bgcolor class=row>\n";
-        echo "    <td><font size=2><B>$rowx[0]</B></td>\n";
-		echo "    <td align=center><input style=\"font-size: 7pt;\" type=text name=status_name size=20 maxlength=30 value=\"$rowx[1]\"></td>\n";
-		echo "    <td align=center><select style=\"font-size: 7pt;\" size=1 name=selectable><option>Y</option><option>N</option><option selected>$rowx[2]</option></select></td>\n";
-		echo "    <td align=center><select style=\"font-size: 7pt;\" size=1 name=human_answered><option>Y</option><option>N</option><option selected>$rowx[3]</option></select></td>\n";
-		echo "    <td align=center><select style=\"font-size: 7pt;\" size=1 name=category>$cats_list<option selected value=\"$AScategory\">$AScategory - $catsname_list[$AScategory]</option></select></td>\n";
-		echo "    <td align=center nowrap><font size=1>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td><b>$rowx[0]</b></td>\n";
+		echo "    <td align=center class=tabinput><input type=text name=status_name size=20 maxlength=30 value=\"$rowx[1]\"></td>\n";
+		echo "    <td align=center class=tabinput><select size=1 name=selectable><option>Y</option><option>N</option><option selected>$rowx[2]</option></select></td>\n";
+		echo "    <td align=center class=tabinput><select size=1 name=human_answered><option>Y</option><option>N</option><option selected>$rowx[3]</option></select></td>\n";
+		echo "    <td align=center class=tabinput><select size=1 name=category>$cats_list<option selected value=\"$AScategory\">$AScategory - $catsname_list[$AScategory]</option></select></td>\n";
+		echo "    <td align=center nowrap>\n";
 		
 		if (preg_match("/^B$|^NA$|^DNC$|^NA$|^DROP$|^INCALL$|^QUEUE$|^NEW$/i",$rowx[0])) {
 			echo "      <del>DELETE</del>\n";
@@ -217,20 +219,20 @@ if ($ADD==321111111111111)
 		}
 		echo "      </font>\n";
         echo "    </td>\n";
-		echo "    <td align=center nowrap><input style=\"width: 100%; font-size: 7pt;\" type=submit name=submit value=MODIFY></td>\n";
+		echo "    <td align=center nowrap class=tabbutton1><input type=submit name=submit value=MODIFY></td>\n";
         echo "  </tr>\n";
         echo "  </form>\n";
 	}
 
     echo "  <form action=$PHP_SELF method=POST>\n";
 	echo "  <input type=hidden name=ADD value=221111111111111>\n";
-	echo "  <tr bgcolor=$menubarcolor>\n";
-    echo "    <td align=center><input style=\"font-size: 7pt;\" size=7 maxlength=6 name=status></td>\n";
-    echo "    <td align=center><input style=\"font-size: 7pt;\" size=30 maxlength=30 name=status_name></td>\n";
-    echo "    <td align=center><select style=\"font-size: 7pt;\" size=1 name=selectable><option>Y</option><option>N</option></select></td>\n";
-    echo "    <td align=center><select style=\"font-size: 7pt;\" size=1 name=human_answered><option>Y</option><option>N</option></select></td>\n";
-	echo "    <td align=center><select style=\"font-size: 7pt;\" size=1 name=category>$cats_list</select></td>\n";
-    echo "    <td align=center colspan=2><input style=\"width: 100%; font-size: 7pt;\" type=submit name=submit value=ADD></td>\n";
+	echo "  <tr class=tabfooter>\n";
+    echo "    <td align=center class=tabinput><input size=7 maxlength=6 name=status></td>\n";
+    echo "    <td align=center class=tabinput><input size=30 maxlength=30 name=status_name></td>\n";
+    echo "    <td align=center class=tabinput><select size=1 name=selectable><option>Y</option><option>N</option></select></td>\n";
+    echo "    <td align=center class=tabinput><select size=1 name=human_answered><option>Y</option><option>N</option></select></td>\n";
+	echo "    <td align=center class=tabinput><select size=1 name=category>$cats_list</select></td>\n";
+    echo "    <td align=center colspan=2 class=tabbutton1><input type=submit name=submit value=ADD></td>\n";
     echo "  </tr>\n";
     echo "  </form>\n";
 	echo "</table>\n";
@@ -383,12 +385,12 @@ if ($ADD==331111111111111)
 	echo "<br>\n";
 	echo "<center><font size=4 color=$default_text>$t1 STATUS CATEGORIES &nbsp; $NWB#osdial_status_categories$NWE</font></center><br>\n";
 	echo "<table width=800 cellspacing=1 bgcolor=grey>\n";
-	echo "  <tr bgcolor=$menubarcolor>\n";
-    echo "    <td align=center><font size=2 color=white>CATEGORY</font></td>\n";
-    echo "    <td align=center><font size=2 color=white>NAME</font></td>\n";
-    echo "    <td align=center><font size=2 color=white>DESCRIPTION</font></td>\n";
-    echo "    <td align=center><font size=2 color=white>ON&nbsp;REALTIME</font></td>\n";
-    echo "    <td align=center colspan=2><font size=2 color=white>ACTIONS</font></td>\n";
+	echo "  <tr class=tabheader>\n";
+    echo "    <td align=center>CATEGORY</td>\n";
+    echo "    <td align=center>NAME</td>\n";
+    echo "    <td align=center>DESCRIPTION</td>\n";
+    echo "    <td align=center>ON&nbsp;REALTIME</td>\n";
+    echo "    <td align=center colspan=2>ACTIONS</td>\n";
     echo "  </tr>\n";
 
 		$stmt="SELECT * from osdial_status_categories order by vsc_id;";
@@ -440,13 +442,13 @@ if ($ADD==331111111111111)
 			echo "  <input type=hidden name=ADD value=431111111111111>\n";
 			echo "  <input type=hidden name=stage value=modify>\n";
 			echo "  <input type=hidden name=vsc_id value=\"$Avsc_id[$p]\">\n";
-			echo "  <tr $bgcolor class=row title=\"Statuses in Category: $CATstatuses\">\n";
-            echo "    <td><font size=1><b>$Avsc_id[$p]</b></td>\n";
-			echo "    <td align=center><input style=\"font-size: 7pt;\" type=text name=vsc_name size=20 maxlength=50 value=\"$Avsc_name[$p]\"></td>\n";
-			echo "    <td align=center><input style=\"font-size: 7pt;\" type=text name=vsc_description size=40 maxlength=255 value=\"$Avsc_description[$p]\"></td>\n";
-			echo "    <td align=center><select style=\"font-size: 7pt;\" size=1 name=tovdad_display><option>Y</option><option>N</option><option selected>$Atovdad_display[$p]</option></select></td>\n";
+			echo "  <tr $bgcolor class=\"row font1\" title=\"Statuses in Category: $CATstatuses\">\n";
+            echo "    <td><b>$Avsc_id[$p]</b></td>\n";
+			echo "    <td align=center class=tabinput><input type=text name=vsc_name size=20 maxlength=50 value=\"$Avsc_name[$p]\"></td>\n";
+			echo "    <td align=center class=tabinput><input type=text name=vsc_description size=40 maxlength=255 value=\"$Avsc_description[$p]\"></td>\n";
+			echo "    <td align=center class=tabinput><select size=1 name=tovdad_display><option>Y</option><option>N</option><option selected>$Atovdad_display[$p]</option></select></td>\n";
 			echo "    <td align=center><font size=1><a href=\"$PHP_SELF?ADD=431111111111111&vsc_id=$Avsc_id[$p]&stage=delete\">DELETE</a></font></td>\n";
-			echo "    <td align=center><input style=\"width: 100%; font-size: 7pt;\" type=submit name=submit value=MODIFY></td>\n";
+			echo "    <td align=center class=tabbutton1><input type=submit name=submit value=MODIFY></td>\n";
 			echo "  </tr>\n";
             echo "  </form>\n";
 
@@ -455,12 +457,12 @@ if ($ADD==331111111111111)
 
     echo "  <form action=$PHP_SELF method=POST>\n";
 	echo "  <input type=hidden name=ADD value=231111111111111>\n";
-    echo "  <tr bgcolor=$menubarcolor>\n";
-    echo "    <td align=center><input style=\"font-size: 7pt;\" type=text name=vsc_id size=15 maxlength=20></td>\n";
-    echo "    <td align=center><input style=\"font-size: 7pt;\" type=text name=vsc_name size=20 maxlength=50></td>\n";
-    echo "    <td align=center><input style=\"font-size: 7pt;\" type=text name=vsc_description size=40 maxlength=255></td>\n";
-    echo "    <td align=center><select style=\"font-size: 7pt;\" size=1 name=tovdad_display><option>N</option><option>Y</option></select></td>\n";
-    echo "    <td align=center colspan=2><input style=\"width: 100%; font-size: 7pt;\" type=submit name=submit value=ADD></td>\n";
+    echo "  <tr class=tabfooter>\n";
+    echo "    <td align=center class=tabinput><input type=text name=vsc_id size=15 maxlength=20></td>\n";
+    echo "    <td align=center class=tabinput><input type=text name=vsc_name size=20 maxlength=50></td>\n";
+    echo "    <td align=center class=tabinput><input type=text name=vsc_description size=40 maxlength=255></td>\n";
+    echo "    <td align=center class=tabinput><select size=1 name=tovdad_display><option>N</option><option>Y</option></select></td>\n";
+    echo "    <td align=center colspan=2 class=tabbutton1><input type=submit name=submit value=ADD></td>\n";
     echo "  </tr>\n";
     echo "  </form>\n";
 	echo "</table>\n";

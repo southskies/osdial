@@ -298,13 +298,13 @@ echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 echo "<center><br><font color=$default_text size=+1>CAMPAIGN LIST MIXES</font><br><br>\n";
-echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr bgcolor=$menubarcolor>\n";
-echo "<td><font color=white size=1>CAMPAIGN</font></td>\n";
-echo "<td><font color=white size=1>NAME</font></td>\n";
-echo "<td><font color=white size=1>LIST MIX</font></td>\n";
-echo "<td><font color=white size=1>LINKS</font></td>\n";
-echo "</tr>\n";
+echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "  <tr class=tabheader>\n";
+echo "    <td>CAMPAIGN</td>\n";
+echo "    <td>NAME</td>\n";
+echo "    <td align=center>LIST MIX</td>\n";
+echo "    <td align=center>LINKS</td>\n";
+echo "  </tr>\n";
 
 	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
 	$rslt=mysql_query($stmt, $link);
@@ -326,9 +326,10 @@ echo "</tr>\n";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=31&SUB=29&campaign_id=$campaigns_id_list[$o]\">$campaigns_id_list[$o]</a></td>";
-		echo "<td><font size=1> $campaigns_name_list[$o] </td>";
-		echo "<td><font size=1> ";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=31&SUB=29&campaign_id=$campaigns_id_list[$o]\">$campaigns_id_list[$o]</a></td>\n";
+		echo "    <td>$campaigns_name_list[$o]</td>\n";
+		echo "    <td align=center>";
 
 		$stmt="SELECT vcl_id from osdial_campaigns_list_mix where campaign_id='$campaigns_id_list[$o]' order by status,vcl_id;";
 		$rslt=mysql_query($stmt, $link);
@@ -342,15 +343,17 @@ echo "</tr>\n";
 			}
 		if ($p<1) 
 			{echo "<font color=grey><DEL>NONE</DEL></font>";}
-		echo "</td>";
-		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=31&SUB=29&campaign_id=$campaigns_id_list[$o]\">MODIFY LIST MIX</a></td></tr>\n";
+		echo "</td>\n";
+		echo "    <td align=center><a href=\"$PHP_SELF?ADD=31&SUB=29&campaign_id=$campaigns_id_list[$o]\">MODIFY LIST MIX</a></td>\n";
+        echo "  </tr>\n";
 		$o++;
 		}
 
-echo "<tr bgcolor=$menubarcolor>";
-echo "  <td colspan=4 height=8px><font size=1 color=white></font></td>";
-echo "</tr>";
-echo "</TABLE></center>\n";
+echo "  <tr class=tabfooter>";
+echo "    <td colspan=4></td>";
+echo "  </tr>";
+echo "</table>\n";
+echo "</center>\n";
 }
 
 require("campaigns.php");

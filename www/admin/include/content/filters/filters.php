@@ -40,7 +40,7 @@ if ($ADD==11111111)
 	echo "<tr bgcolor=$oddrows><td align=right>Filter Name: </td><td align=left><input type=text name=lead_filter_name size=30 maxlength=30> (short description of the filter)$NWB#osdial_lead_filters-lead_filter_name$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Filter Comments: </td><td align=left><input type=text name=lead_filter_comments size=50 maxlength=255> $NWB#osdial_lead_filters-lead_filter_comments$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Filter SQL: </td><td align=left><TEXTAREA NAME=lead_filter_sql ROWS=20 COLS=50 value=\"\"></TEXTAREA> $NWB#osdial_lead_filters-lead_filter_sql$NWE</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -215,7 +215,7 @@ if ($ADD==31111111)
 	echo "<tr bgcolor=$oddrows><td align=right>Filter Name: </td><td align=left><input type=text name=lead_filter_name size=40 maxlength=50 value=\"$lead_filter_name\"> (short description of the filter)$NWB#osdial_lead_filters-lead_filter_name$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Filter Comments: </td><td align=left><input type=text name=lead_filter_comments size=50 maxlength=255 value=\"$lead_filter_comments\"> $NWB#osdial_lead_filters-lead_filter_comments$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Filter SQL:</td><td align=left><TEXTAREA NAME=lead_filter_sql ROWS=20 COLS=50>$lead_filter_sql</TEXTAREA> $NWB#osdial_lead_filters-lead_filter_sql$NWE</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</table></form>\n";
 
 		##### get campaigns listing for dynamic pulldown
@@ -273,11 +273,12 @@ echo "<TABLE align=center><TR><TD>\n";
 	$filters_to_print = mysql_num_rows($rslt);
 
 echo "<center><br><font color=$default_text size=+1>LEAD FILTERS</font><br><br>\n";
-echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr bgcolor=$menubarcolor>";
-echo "<td><font size=1 color=white><B>NAME</B></td>";
-echo "<td><font size=1 color=white><B>DESCRIPTION</B></td>";
-echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
+echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "  <tr class=tabheader>\n";
+echo "    <td>NAME</td>\n";
+echo "    <td>DESCRIPTION</td>\n";
+echo "    <td align=center>LINKS</td>\n";
+echo "  </tr>\n";
 
 	$o=0;
 	while ($filters_to_print > $o) {
@@ -286,16 +287,18 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=31111111&lead_filter_id=$row[0]\">$row[0]</a></td>";
-		echo "<td><font size=1> $row[1]</td>";
-		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=31111111&lead_filter_id=$row[0]\">MODIFY</a></td></tr>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=31111111&lead_filter_id=$row[0]\">$row[0]</a></td>\n";
+		echo "    <td>$row[1]</td>\n";
+		echo "    <td align=center><a href=\"$PHP_SELF?ADD=31111111&lead_filter_id=$row[0]\">MODIFY</a></td>\n";
+        echo "  </tr>\n";
 		$o++;
 	}
 
-echo "<tr bgcolor=$menubarcolor>";
-echo "  <td colspan=3 height=8px><font size=1 color=white></font></td>";
-echo "</tr>";
-echo "</TABLE></center>\n";
+echo "  <tr class=tabfooter>\n";
+echo "    <td colspan=3></td>\n";
+echo "  </tr>\n";
+echo "</table></center>\n";
 }
 
 

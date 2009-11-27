@@ -41,7 +41,7 @@ if ($ADD==111111111)
 	echo "<tr bgcolor=$oddrows><td align=right>Call Time Comments: </td><td align=left><input type=text name=call_time_comments size=50 maxlength=255> $NWB#osdial_call_times-call_time_comments$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=center colspan=2>Day and time options will appear once you have created the Call Time Definition</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -306,7 +306,7 @@ echo "<tr bgcolor=$oddrows><td align=right>Thursday Start:</td><td align=left><i
 echo "<tr bgcolor=$oddrows><td align=right>Friday Start:</td><td align=left><input type=text name=ct_friday_start size=5 maxlength=4 value=\"$ct_friday_start\"> </td><td align=right>Friday Stop:</td><td align=left><input type=text name=ct_friday_stop size=5 maxlength=4 value=\"$ct_friday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
 echo "<tr bgcolor=$oddrows><td align=right>Saturday Start:</td><td align=left><input type=text name=ct_saturday_start size=5 maxlength=4 value=\"$ct_saturday_start\"> </td><td align=right>Saturday Stop:</td><td align=left><input type=text name=ct_saturday_stop size=5 maxlength=4 value=\"$ct_saturday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
 echo "<tr bgcolor=$oddrows><td align=right>Add No-Call Periods to Recylce Delay: </td><td align=left colspan=3><select name=use_recycle_gap><option>N</option><option>Y</option><option>$use_recycle_gap</option></select>$NWB#osdial_call_times-use_recycle_gap$NWE</td></tr>\n";
-echo "<tr bgcolor=$menubarcolor><td align=center colspan=4><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></FORM></td></tr>\n";
+echo "<tr class=tabfooter><td align=center class=tabbutton colspan=4><input type=submit name=SUBMIT value=SUBMIT></FORM></td></tr>\n";
 echo "</table><br><br>\n";
 
 $ct_srs=1;
@@ -318,8 +318,14 @@ if (strlen($ct_state_call_times)>2)
 	$ct_srs = ((count($state_rules)) - 1);
 	}
 echo "<table bgcolor=grey width=500 cellspacing=1 bgcolor=grey>\n";
-echo "<tr bgcolor=$menubarcolor><td align=center colspan=3><font size=1 color=white><b>ACTIVE STATE CALL TIME DEFINITIONS</b></font></td></tr>\n";
-echo "<tr bgcolor=$menubarcolor><td align=center><font size=1 color=white><b>STATE CALL-TIME ID</b></font></td><td align=center><font size=1 color=white><b>DESCRIPTION</b></font></td><td align=center><font size=1 color=white><b>ACTION</b></font></td></tr>\n";
+echo "  <tr class=tabheader>\n";
+echo "    <td align=center colspan=3>ACTIVE STATE CALL TIME DEFINITIONS</td>\n";
+echo "  </tr>\n";
+echo "  <tr class=tabheader>\n";
+echo "    <td align=center>STATE CALL-TIME ID</td>\n";
+echo "    <td align=center>DESCRIPTION</td>\n";
+echo "    <td align=center>ACTION</td>\n";
+echo "  </tr>\n";
 $o=0;
 while($ct_srs >= $b) {
 	if (strlen($state_rules[$b])>0) {
@@ -331,7 +337,7 @@ while($ct_srs >= $b) {
 		$stmt="SELECT state_call_time_state,state_call_time_name from osdial_state_call_times where state_call_time_id='$state_rules[$b]';";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
-		echo "  <tr class=row $bgcolor>\n";
+		echo "  <tr class=\"row font1\" $bgcolor>\n";
         echo "    <td align=left nowrap><a href=\"$PHP_SELF?ADD=3111111111&call_time_id=$state_rules[$b]\">$state_rules[$b]</a></td>\n";
         echo "    <td align=left nowrap>$row[0] - $row[1]</td>\n";
         echo "    <td align=center nowrap><a href=\"$PHP_SELF?ADD=321111111&call_time_id=$call_time_id&state_rule=$state_rules[$b]&stage=REMOVE\">REMOVE</a></td>\n";
@@ -365,16 +371,19 @@ echo "<form action=$PHP_SELF method=POST>\n";
 echo "<input type=hidden name=ADD value=321111111>\n";
 echo "<input type=hidden name=stage value=\"ADD\">\n";
 echo "<input type=hidden name=call_time_id value=\"$call_time_id\">\n";
-echo "  <tr bgcolor=$menubarcolor>\n";
-echo "    <td align=center colspan=2><select size=1 name=state_rule>$sct_list</select></td>\n";
-echo "    <td align=center><input style=\"width: 100%;\" type=submit name=SUBMIT value=ADD></td>\n";
+echo "  <tr class=tabfooter>\n";
+echo "    <td align=center colspan=2 class=tabinput><select size=1 name=state_rule>$sct_list</select></td>\n";
+echo "    <td align=center class=tabbutton1><input type=submit name=SUBMIT value=ADD></td>\n";
 echo "  </tr>\n";
 echo "  </form>\n";
 
 echo "</table><br><br><br>\n";
 echo "<font color=$default_text size=+1>CAMPAIGNS USING THIS CALL TIME</font><br>\n";
 echo "<table width=500 cellspacing=1 bgcolor=grey>\n";
-echo "<tr bgcolor=$menubarcolor><td align=center><font size=1 color=white><b>Campaign ID</b></font></td><td align=center><font size=1 color=white><b>Campaign Description</b></font></td></tr>\n";
+echo "  <tr class=tabheader>\n";
+echo "    <td align=center>Campaign ID</td>\n";
+echo "    <td align=center>Campaign Description</td>\n";
+echo "  </tr>\n";
 
 	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns where local_call_time='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
@@ -387,19 +396,25 @@ echo "<tr bgcolor=$menubarcolor><td align=center><font size=1 color=white><b>Cam
             $bgcolor='bgcolor='.$evenrows;
         }
 		$row=mysql_fetch_row($rslt);
-		echo "<tr $bgcolor class=row><td nowrap><a href=\"$PHP_SELF?ADD=31&campaign_id=$row[0]\">$row[0]</a></td><td nowrap>$row[1]</td></tr>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td nowrap><a href=\"$PHP_SELF?ADD=31&campaign_id=$row[0]\">$row[0]</a></td>\n";
+        echo "    <td nowrap>$row[1]</td>\n";
+        echo "  </tr>\n";
 		$o++;
 	}
-echo "<tr bgcolor=$menubarcolor>";
-echo "  <td colspan=2 height=8px><font size=1 color=white></font></td>";
-echo "</tr>";
+echo "  <tr class=tabfooter>\n";
+echo "    <td colspan=2></td>\n";
+echo "  </tr>\n";
 echo "</table>\n";
 
 
 
 echo "<br><br><font color=$default_text size=+1>INBOUND GROUPS USING THIS CALL TIME</font><br>\n";
 echo "<table width=500 cellspacing=1 bgcolor=grey>\n";
-echo "<tr bgcolor=$menubarcolor><td align=center><font size=1 color=white><b>InGroup ID</b></font></td><td align=center><font size=1 color=white><b>InGroup Description</b></font></td></tr>\n";
+echo "  <tr class=tabheader>\n";
+echo "    <td align=center>InGroup ID</td>\n";
+echo "    <td align=center>InGroup Description</td>\n";
+echo "  </tr>\n";
 
 	$stmt="SELECT group_id,group_name from osdial_inbound_groups where call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
@@ -412,11 +427,15 @@ echo "<tr bgcolor=$menubarcolor><td align=center><font size=1 color=white><b>InG
             $bgcolor='bgcolor='.$evenrows;
         }
 		$row=mysql_fetch_row($rslt);
-		echo "<tr $bgcolor class=row><td nowrap><a href=\"$PHP_SELF?ADD=3111&group_id=$row[0]\">$row[0]</a></td><td nowrap>$row[1]</td></tr>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td nowrap><a href=\"$PHP_SELF?ADD=3111&group_id=$row[0]\">$row[0]</a></td>\n";
+        echo "    <td nowrap>$row[1]</td>\n";
+        echo "  </tr>\n";
 		$o++;
 	}
-echo "<tr bgcolor=$menubarcolor>";
-echo "  <td colspan=2 height=8px><font size=1 color=white></font></td>";
+echo "  <tr class=tabfooter>\n";
+echo "    <td colspan=2></td>\n";
+echo "  </tr>\n";
 echo "</table>\n";
 echo "</center><br><br>\n";
 
@@ -447,13 +466,14 @@ echo "<TABLE align=center><TR><TD>\n";
 	$filters_to_print = mysql_num_rows($rslt);
 
 echo "<center><br><font color=$default_text size=+1>CALL TIMES</font><br><br>\n";
-echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr bgcolor=$menubarcolor>";
-echo "<td><font size=1 color=white><B>ID</B></td>";
-echo "<td><font size=1 color=white><B>NAME</B></td>";
-echo "<td align=center><font size=1 color=white><B>START</B></td>";
-echo "<td align=center><font size=1 color=white><B>STOP</B></td>";
-echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
+echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "  <tr class=tabheader>\n";
+echo "    <td>ID</td>\n";
+echo "    <td>NAME</td>\n";
+echo "    <td align=center>START</td>\n";
+echo "    <td align=center>STOP</td>\n";
+echo "    <td align=center>LINKS</td>\n";
+echo "  </tr>\n";
 
 	$o=0;
 	while ($filters_to_print > $o) {
@@ -462,18 +482,20 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=311111111&call_time_id=$row[0]\">$row[0]</a></td>";
-		echo "<td><font size=1> $row[1]</td>";
-		echo "<td align=center><font size=1> $row[3] </td>";
-		echo "<td align=center><font size=1> $row[4] </td>";
-		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=311111111&call_time_id=$row[0]\">MODIFY</a></td></tr>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=311111111&call_time_id=$row[0]\">$row[0]</a></td>\n";
+		echo "    <td>$row[1]</td>\n";
+		echo "    <td align=center>$row[3] </td>";
+		echo "    <td align=center>$row[4] </td>";
+		echo "    <td align=center><a href=\"$PHP_SELF?ADD=311111111&call_time_id=$row[0]\">MODIFY</a></td>\n";
+        echo "  </tr>\n";
 		$o++;
 	}
 
-echo "<tr bgcolor=$menubarcolor>";
-echo "  <td colspan=5 height=8px><font size=1 color=white></font></td>";
-echo "</tr>";
-echo "</TABLE></center>\n";
+echo "  <tr class=tabfooter>\n";
+echo "    <td colspan=5></td>\n";
+echo "  </tr>\n";
+echo "</table></center>\n";
 }
 
 
@@ -501,7 +523,7 @@ if ($ADD==1111111111)
 	echo "<tr bgcolor=$oddrows><td align=right>State Call Time Comments: </td><td align=left><input type=text name=call_time_comments size=50 maxlength=255> $NWB#osdial_call_times-call_time_comments$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=center colspan=2>Day and time options will appear once you have created the Call Time Definition</td></tr>\n";
-	echo "<tr bgcolor=$menubarcolor><td align=center colspan=2><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
 	else
@@ -744,11 +766,14 @@ echo "<tr bgcolor=$oddrows><td align=right>Thursday Start:</td><td align=left><i
 echo "<tr bgcolor=$oddrows><td align=right>Friday Start:</td><td align=left><input type=text name=ct_friday_start size=5 maxlength=4 value=\"$ct_friday_start\"> </td><td align=right>Friday Stop:</td><td align=left><input type=text name=ct_friday_stop size=5 maxlength=4 value=\"$ct_friday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
 echo "<tr bgcolor=$oddrows><td align=right>Saturday Start:</td><td align=left><input type=text name=ct_saturday_start size=5 maxlength=4 value=\"$ct_saturday_start\"> </td><td align=right>Saturday Stop:</td><td align=left><input type=text name=ct_saturday_stop size=5 maxlength=4 value=\"$ct_saturday_stop\"> $NWB#osdial_call_times-ct_sunday_start$NWE</td></tr>\n";
 
-echo "<tr bgcolor=$menubarcolor><td align=center colspan=4><input style=\"width: 100%;\" type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+echo "<tr class=tabfooter><td align=center colspan=4 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 echo "</TABLE><BR><BR>\n";
 echo "<BR><font color=$default_text size=+1>CALL TIMES USING THIS STATE CALL TIME</font><BR>\n";
 echo "<table width=500 cellspacing=1 bgcolor=grey>\n";
-echo "<tr bgcolor=$menubarcolor><td align=center><font size=1 color=white><b>CALL-TIME ID</b></font></td><td align=center><font size=1 color=white><b>DESCRIPTION</b></font></td></tr>\n";
+echo "  <tr class=tabheader>\n";
+echo "    <td align=center>CALL-TIME ID</td>\n";
+echo "    <td align=center>DESCRIPTION</td>\n";
+echo "  </tr>\n";
 
 	$stmt="SELECT call_time_id,call_time_name from osdial_call_times where ct_state_call_times LIKE \"%|$call_time_id|%\";";
 	$rslt=mysql_query($stmt, $link);
@@ -761,13 +786,16 @@ echo "<tr bgcolor=$menubarcolor><td align=center><font size=1 color=white><b>CAL
             $bgcolor='bgcolor='.$evenrows;
         }
 		$row=mysql_fetch_row($rslt);
-		echo "<tr $bgcolor class=row><td align=center><font size=1><a href=\"$PHP_SELF?ADD=311111111&call_time_id=$row[0]\">$row[0]</a></font></td><td nowrap><font size=1>$row[1]</font></td></tr>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td align=center><a href=\"$PHP_SELF?ADD=311111111&call_time_id=$row[0]\">$row[0]</a></font></td>\n";
+        echo "    <td nowrap>$row[1]</font></td>\n";
+        echo "  </tr>\n";
 		$o++;
 	}
 
-echo "<tr bgcolor=$menubarcolor>";
-echo "  <td colspan=2 height=8px><font size=1 color=white></font></td>";
-echo "</tr>";
+echo "  <tr class=tabfooter>\n";
+echo "    <td colspan=2></td>\n";
+echo "  </tr>\n";
 echo "</table>\n";
 echo "</center><BR><BR><br>\n";
 
@@ -800,14 +828,15 @@ echo "<TABLE align=center><TR><TD>\n";
 	$filters_to_print = mysql_num_rows($rslt);
 
 echo "<center><br><font color=$default_text size=+1>STATE CALL TIMES</font><br><br>\n";
-echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr bgcolor=$menubarcolor>";
-echo "<td><font size=1 color=white><B>ID</B></td>";
-echo "<td align=center><font size=1 color=white><B>STATE</B></td>";
-echo "<td><font size=1 color=white><B>NAME</B></td>";
-echo "<td><font size=1 color=white><B>COMMENT</B></td>";
-echo "<td align=center><font size=1 color=white><B>START</B></td>";
-echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
+echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "  <tr class=tabheader>";
+echo "    <td>ID</td>\n";
+echo "    <td align=center>STATE</td>\n";
+echo "    <td>NAME</td>\n";
+echo "    <td>COMMENT</td>\n";
+echo "    <td align=center>START</td>\n";
+echo "    <td align=center>LINKS</td>\n";
+echo "  </tr>\n";
 
 	$o=0;
 	while ($filters_to_print > $o) {
@@ -817,19 +846,21 @@ echo "<td align=center><font size=1 color=white><B>LINKS</B></td>";
         } else {
             $bgcolor='bgcolor='.$evenrows;
         }
-		echo "<tr $bgcolor class=row><td><font size=1><a href=\"$PHP_SELF?ADD=3111111111&call_time_id=$row[0]\">$row[0]</a></td>";
-		echo "<td align=center><font size=1> $row[1]</td>";
-		echo "<td><font size=1> $row[2]</td>";
-		echo "<td><font size=1> $row[3]</td>";
-		echo "<td align=center><font size=1> $row[4] </td>";
-		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=3111111111&call_time_id=$row[0]\">MODIFY</a></td></tr>\n";
+		echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=3111111111&call_time_id=$row[0]\">$row[0]</a></td>\n";
+		echo "    <td align=center>$row[1]</td>\n";
+		echo "    <td>$row[2]</td>\n";
+		echo "    <td>$row[3]</td>\n";
+		echo "    <td align=center>$row[4]</td>\n";
+		echo "    <td align=center><a href=\"$PHP_SELF?ADD=3111111111&call_time_id=$row[0]\">MODIFY</a></td>\n";
+        echo "  </tr>\n";
 		$o++;
 	}
 
-echo "<tr bgcolor=$menubarcolor>";
-echo "  <td colspan=6 height=8px><font size=1 color=white></font></td>";
-echo "</tr>";
-echo "</TABLE></center>\n";
+echo "  <tr class=tabfooter>\n";
+echo "    <td colspan=6></td>\n";
+echo "  </tr>\n";
+echo "</table></center>\n";
 }
 
 
