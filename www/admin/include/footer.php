@@ -27,28 +27,32 @@
 
 # Footer is required 'as is'.
 #
-echo "</td></tr></table></center>\n";
-echo "<br /><br /><br /><br /><br />";
-echo "</td></tr>";
-echo "</table>";
+echo "      <br /><br /><br /><br /><br />\n";
+echo "    </td>\n";
+echo "  </tr>\n";
+echo " </table>\n";
+#echo "</center>\n";
+#echo "</td></tr>";
+#echo "</table>";
+# Close Content DIV
 echo "</div>\n";
 
 $ENDtime = date("U");
 $RUNtime = ($ENDtime - $STARTtime);
 
 echo "<div class=\"footer\">\n";
-echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
-echo "	<tr><td align=\"left\" colspan=\"4\" height=\"1\" bgcolor=\"#999999\"></td></tr>\n";
-echo "	<tr bgcolor=\"$footer_color\">\n";
+echo " <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
+echo "  <tr><td align=\"left\" colspan=\"4\" height=\"1\" bgcolor=\"#999999\"></td></tr>\n";
+echo "  <tr bgcolor=\"$footer_color\">\n";
 if (ereg("^Sli",$system_settings['admin_template'])) {
-    echo "      <td width=\"33%\">&nbsp;</td>\n";
-    echo "      <td width=\"33%\">&nbsp;</td>\n";
+    echo "    <td width=\"33%\">&nbsp;</td>\n";
+    echo "    <td width=\"33%\">&nbsp;</td>\n";
 } else {
-    echo "		<td height=\"15\" align=\"left\" width=\"33%\"><font size=\"0\" color=\"#1A4349\">&nbsp;&nbsp;Copyright &#169; 2009 Call Center Service Group, LC<!-- Script Runtime: $RUNtime sec --></td>\n";
+    echo "    <td height=\"15\" align=\"left\" width=\"33%\"><font size=\"0\" color=\"#1A4349\">&nbsp;&nbsp;Copyright &#169; 2009 Call Center Service Group, LC<!-- Script Runtime: $RUNtime sec --><font></td>\n";
 #
 # NOTICE:
 # Removal or modification of the following line constitutes a breach of License and doing so may result in legal action.
-    echo "    	<td align=\"center\" width=\"33%\"><a style=\"color:$footer_color;\" href=\"http://www.osdial.com\" target=\"_blank\"><img src=\"templates/" . $system_settings['admin_template'] . "/images/dlfoot.png\" height=\"9\" width=\"120\"></a></td>";
+    echo "    <td align=\"center\" width=\"33%\"><a style=\"color:$footer_color;\" href=\"http://www.osdial.com\" target=\"_blank\"><img src=\"templates/" . $system_settings['admin_template'] . "/images/dlfoot.png\" height=\"9\" width=\"120\"></a></td>\n";
 #
 #
 }
@@ -82,20 +86,21 @@ $uvtest1 = explode('/',$update_version);
 $uvtest2 = explode('.',$uvtest1[0]);
 $uvtest = sprintf('%02d%04d%04d%05d',$uvtest2[0],$uvtest2[1],$uvtest2[2],$uvtest2[3]);
 
-echo "    	<td align=\"right\" width=\"16%\">";
+echo "    <td align=\"right\" width=\"16%\">\n";
 if ($uvtest > $avtest) {
-	echo "              <font size=\"0\" color=\"#1A4349\" style=\"text-decoration: blink;\" title=\"Version #$update_version is now available!  You should run 'yum update' on all servers when all agents are logged out and their is sufficient time to complete the update.\">NEW UPDATE #$update_version</font>";
+	echo "      <font size=\"0\" color=\"#1A4349\" style=\"text-decoration: blink;\" title=\"Version #$update_version is now available!  You should run 'yum update' on all servers when all agents are logged out and their is sufficient time to complete the update.\">NEW UPDATE #$update_version</font>\n";
 }
-echo "          </td>";
-echo "    	<td align=\"right\" width=\"16%\"><font size=\"0\" color=\"#1A4349\">Version: $admin_version/$build&nbsp;&nbsp;</td>";
-echo "	</tr>";
-echo "	<tr><td align=\"left\" colspan=\"4\" height=\"1\" bgcolor=\"#666666\"></td></tr>";
-echo "</table>";
-echo "<br />";
-echo "</div>";
+echo "    </td>\n";
+echo "    <td align=\"right\" width=\"16%\"><font size=\"0\" color=\"#1A4349\">Version: $admin_version/$build&nbsp;&nbsp;</font></td>\n";
+echo "  </tr>\n";
+echo "  <tr><td align=\"left\" colspan=\"4\" height=\"1\" bgcolor=\"#666666\"></td></tr>\n";
+echo " </table>\n";
+# Close Footer DIV.
+echo "</div>\n\n";
 
-echo "</div>";
-echo "</body>";
-echo "</html>";
+# Close Container DIV.
+echo "</div>\n";
+echo "</body>\n";
+echo "</html>\n";
 
 ?>
