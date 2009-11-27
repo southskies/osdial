@@ -36,6 +36,7 @@
 #
 
 require("dbconnect.php");
+include("templates/default/display.php");
 
 $PHP_AUTH_USER=$_SERVER['PHP_AUTH_USER'];
 $PHP_AUTH_PW=$_SERVER['PHP_AUTH_PW'];
