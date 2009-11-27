@@ -67,10 +67,10 @@ if ($ADD==999999 and $SUB=='') {
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=15\"><font face=\"arial,helvetica\" size=2>Call Report</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_CLOSERstats.php\"><font face=\"arial,helvetica\" size=2>Inbound / Closer Report</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=19\"><font face=\"arial,helvetica\" size=2>Agent Performance Detail</a></font>";
-	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=osdial_sales_viewer.php\"><font face=\"arial,helvetica\" size=2>Agent Spreadsheet Performance</a></font>";
+	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=osdial_sales_viewer.php\"><font face=\"arial,helvetica\" size=2>Recent Outbound Sales</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=16\"><font face=\"arial,helvetica\" size=2>List Cost by Entry Date</a></font>";
-	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=17\"><font face=\"arial,helvetica\" size=2>Lead Performance and Analysis by Campaign</a></font>";
-	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=18\"><font face=\"arial,helvetica\" size=2>Lead Performance and Analysis by List</a></font>";
+	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=17\"><font face=\"arial,helvetica\" size=2>Lead Performance by Campaign</a></font>";
+	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=18\"><font face=\"arial,helvetica\" size=2>Lead Performance by List</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_server_performance.php\"><font face=\"arial,helvetica\" size=2>Server Performance</a></font>";
 
 	    if ($enable_queuemetrics_logging_LU > 0) {

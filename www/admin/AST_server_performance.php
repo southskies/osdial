@@ -30,6 +30,7 @@
 #
 
 require("dbconnect.php");
+include("templates/default/display.php");
 
 #############################################
 ##### START SYSTEM_SETTINGS LOOKUP #####

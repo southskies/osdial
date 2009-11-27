@@ -716,30 +716,26 @@ echo "</TABLE></center>\n";
 ######################
 # ADD=8 find all callbacks on hold by an Agent
 ######################
-if ($ADD==8)
-{
-	if ($LOGmodify_users==1)
-	{
-		if ($SUB==89)
-		{
-		$stmt="UPDATE osdial_callbacks SET status='INACTIVE' where user='$user' and status='LIVE' and callback_time < '$past_month_date';";
-		$rslt=mysql_query($stmt, $link);
-		echo "<br>Agent ($user) callback listings LIVE for more than one month have been made INACTIVE\n";
+if ($ADD==8) {
+	if ($LOGmodify_users==1) {
+		if ($SUB==89) {
+		    $stmt="UPDATE osdial_callbacks SET status='INACTIVE' where user='$user' and status='LIVE' and callback_time < '$past_month_date';";
+		    $rslt=mysql_query($stmt, $link);
+		   echo "<br>Agent ($user) callback listings LIVE for more than one month have been made INACTIVE\n";
 		}
-		if ($SUB==899)
-		{
-		$stmt="UPDATE osdial_callbacks SET status='INACTIVE' where user='$user' and status='LIVE' and callback_time < '$past_week_date';";
-		$rslt=mysql_query($stmt, $link);
-		echo "<br>Agent ($user) callback listings LIVE for more than one week have been made INACTIVE\n";
+		if ($SUB==899) {
+		    $stmt="UPDATE osdial_callbacks SET status='INACTIVE' where user='$user' and status='LIVE' and callback_time < '$past_week_date';";
+		    $rslt=mysql_query($stmt, $link);
+		    echo "<br>Agent ($user) callback listings LIVE for more than one week have been made INACTIVE\n";
 		}
 	}
-$CBinactiveLINK = "<BR><a href=\"$PHP_SELF?ADD=8&SUB=89&user=$user\"><font color=$default_text>Remove LIVE Callbacks older than one month for this user</font></a><BR><a href=\"$PHP_SELF?ADD=8&SUB=899&user=$user\"><font color=$default_text>Remove LIVE Callbacks older than one week for this user</font></a><BR>";
+    $CBinactiveLINK = "<BR><a href=\"$PHP_SELF?ADD=8&SUB=89&user=$user\"><font color=$default_text>Remove LIVE Callbacks older than one month for this user</font></a><BR><a href=\"$PHP_SELF?ADD=8&SUB=899&user=$user\"><font color=$default_text>Remove LIVE Callbacks older than one week for this user</font></a><BR>";
 
 echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$CBquerySQLwhere = "and user='$user'";
 
-echo "<br><font color=$default_text> AGENT CALLBACK HOLD LISTINGS: $user</font>\n";
+echo "<br><br><center><font color=$default_text size=4>AGENT CALLBACK HOLD LISTINGS: $user</font></center>\n";
 $oldADD = "ADD=8&user=$user";
 $ADD='82';
 include($WeBServeRRooT . '/admin/include/content/lists/lists.php');

@@ -151,7 +151,7 @@
 	.tabheader a:active { text-transform: uppercase; color: #FFFFFF; text-decoration: none; }
 	.tabheader a:hover { text-transform: uppercase; color: #FFFFFF; text-decoration: none; }
 	.tabheader a:visited { text-transform: uppercase; color: #FFFFFF; text-decoration: none; }
-	.tabheader { text-transform: uppercase; color: #FFFFFF; font-family: Arial,Helvetica; font-weight: bold; font-size: 8pt; background-color: #547e9e; }
+	.tabheader { text-align: center; text-transform: uppercase; color: #FFFFFF; font-family: Arial,Helvetica; font-weight: bold; font-size: 8pt; background-color: #547e9e; }
 
 	.tabfooter a { color: #FFFFFF; text-decoration: none; }
 	.tabfooter a:link { color: #FFFFFF; text-decoration: none; } 

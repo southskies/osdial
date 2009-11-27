@@ -32,16 +32,13 @@
 
 if ($ADD==111) {
 	if ($LOGmodify_lists==1)	{
-		echo "<TABLE align=center><TR><TD>\n";
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-		
-		echo "<center><br><font color=$default_text size=+1>ADD A NEW LIST</font><form action=$PHP_SELF method=POST><br><br>\n";
+		echo "<center><br><font color=$default_text size=4>ADD A NEW LIST</font><form action=$PHP_SELF method=POST><br></center>\n";
 		echo "<input type=hidden name=ADD value=211>\n";
-		echo "<TABLE width=$section_width cellspacing=3>\n";
-		echo "<tr bgcolor=$oddrows><td align=right>List ID: </td><td align=left><input type=text name=list_id size=8 maxlength=8> (digits only)$NWB#osdial_lists-list_id$NWE</td></tr>\n";
-		echo "<tr bgcolor=$oddrows><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20>$NWB#osdial_lists-list_name$NWE</td></tr>\n";
-		echo "<tr bgcolor=$oddrows><td align=right>List Description: </td><td align=left><input type=text name=list_description size=30 maxlength=255>$NWB#osdial_lists-list_description$NWE</td></tr>\n";
-		echo "<tr bgcolor=$oddrows><td align=right>Campaign: </td><td align=left><select size=1 name=campaign_id>\n";
+		echo "<table width=$section_width bgcolor=$oddrows align=center cellspacing=3>\n";
+		echo "  <tr bgcolor=$oddrows><td align=right width=50%>List ID: </td><td align=left width=50%><input type=text name=list_id size=8 maxlength=8> (digits only)$NWB#osdial_lists-list_id$NWE</td></tr>\n";
+		echo "  <tr bgcolor=$oddrows><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20>$NWB#osdial_lists-list_name$NWE</td></tr>\n";
+		echo "  <tr bgcolor=$oddrows><td align=right>List Description: </td><td align=left><input type=text name=list_description size=30 maxlength=255>$NWB#osdial_lists-list_description$NWE</td></tr>\n";
+		echo "  <tr bgcolor=$oddrows><td align=right>Campaign: </td><td align=left><select size=1 name=campaign_id>\n";
 		
 			$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
 			$rslt=mysql_query($stmt, $link);
@@ -51,15 +48,15 @@ if ($ADD==111) {
 			$o=0;
 			while ($campaigns_to_print > $o) {
 				$rowx=mysql_fetch_row($rslt);
-				$campaigns_list .= "<option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
+				$campaigns_list .= "      <option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
 				$o++;
 			}
-		echo "$campaigns_list";
-		echo "<option SELECTED>$campaign_id</option>\n";
-		echo "</select>$NWB#osdial_lists-campaign_id$NWE</td></tr>\n";
-		echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option SELECTED>N</option></select>$NWB#osdial_lists-active$NWE</td></tr>\n";
-		echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
-		echo "</TABLE></center>\n";
+		echo "      $campaigns_list";
+		echo "      <option SELECTED>$campaign_id</option>\n";
+		echo "    </select>$NWB#osdial_lists-campaign_id$NWE</td></tr>\n";
+		echo "  <tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option SELECTED>N</option></select>$NWB#osdial_lists-active$NWE</td></tr>\n";
+		echo "  <tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+		echo "</table>\n";
 	} else {
 		echo "<font color=red>You do not have permission to view this page</font>\n";
 		exit;
@@ -684,37 +681,37 @@ if ($ADD==1122) {
         echo "    </td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td width=25% align=right><font color=$default_text size=2>Last Name</font></td>\n";
+        echo "    <td width=25% align=right><font size=2>Last Name</font></td>\n";
         echo "    <td width=25% align=left><input type=text name=last_name value=\"$last_name\" size=20 maxlength=30></td>\n";
-        echo "    <td width=25% align=right><font color=$default_text size=2>Lead ID</font></td>\n";
+        echo "    <td width=25% align=right><font size=2>Lead ID</font></td>\n";
         echo "    <td width=25% align=left><input type=text name=lead_id value=\"$lead_id\" size=10 maxlength=10></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=right><font color=$default_text size=2>First Name</font></td>\n";
+        echo "    <td align=right><font size=2>First Name</font></td>\n";
         echo "    <td align=left><input type=text name=first_name value=\"$first_name\" size=20 maxlength=30></td>\n";
-        echo "    <td align=right><font color=$default_text size=2>AreaCode or PhoneNumber</font></td>\n";
+        echo "    <td align=right><font size=2>AreaCode or PhoneNumber</font></td>\n";
         echo "    <td align=left>\n";
         echo "      <input type=text name=phone_number value=\"$phone_number\" size=10 maxlength=20>\n";
         if ($phone_search_alt == 1) $check = " checked";
-        echo "      <input type=checkbox name=phone_search_alt id=phone_seach_alt value=1$check> <font color=$default_text size=1><label for=phone_search_alt>Alternates</label></font>\n";
+        echo "      <input type=checkbox name=phone_search_alt id=phone_seach_alt value=1$check> <font size=1><label for=phone_search_alt>Alternates</label></font>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=right><font color=$default_text size=2>City</font></td>\n";
+        echo "    <td align=right><font size=2>City</font></td>\n";
         echo "    <td align=left><input type=text name=city value=\"$city\" size=20 maxlength=50></td>\n";
-        echo "    <td align=right><font color=$default_text size=2>ZIP / Postal Code</font></td>\n";
+        echo "    <td align=right><font size=2>ZIP / Postal Code</font></td>\n";
         echo "    <td align=left><input type=text name=postal_code value=\"$postal_code\" size=10 maxlength=10></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=right><font color=$default_text size=2>Email</font></td>\n";
+        echo "    <td align=right><font size=2>Email</font></td>\n";
         echo "    <td align=left><input type=text name=email value=\"$email\" size=20 maxlength=70></td>\n";
-        echo "    <td align=right><font color=$default_text size=2>External Key</font></td>\n";
+        echo "    <td align=right><font size=2>External Key</font></td>\n";
         echo "    <td align=left><input type=text name=external_key value=\"$external_key\" size=10 maxlength=100></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=right><font color=$default_text size=2>Custom1</font></td>\n";
+        echo "    <td align=right><font size=2>Custom1</font></td>\n";
         echo "    <td align=left><input type=text name=custom1 value=\"$custom1\" size=10 maxlength=255></td>\n";
-        echo "    <td align=right><font color=$default_text size=2>Custom2</font></td>\n";
+        echo "    <td align=right><font size=2>Custom2</font></td>\n";
         echo "    <td align=left><input type=text name=custom2 value=\"$custom2\" size=10 maxlength=255></td>\n";
         echo "  </tr>\n";
 
@@ -723,8 +720,8 @@ if ($ADD==1122) {
         echo "  </tr>\n";
 
         echo "  <tr>\n";
-        echo "    <td align=right><font color=$default_text size=2>Entry Date</font></td>\n";
-        echo "    <td align=left colspan=2><font color=$default_text size=2><input type=text name=entry_date_start value=\"$orig_entry_date_start\" size=10 maxlength=10> to <input type=text name=entry_date_end value=\"$orig_entry_date_end\" size=10 maxlength=10></font></td>\n";
+        echo "    <td align=right><font size=2>Entry Date</font></td>\n";
+        echo "    <td align=left colspan=2><font size=2><input type=text name=entry_date_start value=\"$orig_entry_date_start\" size=10 maxlength=10> to <input type=text name=entry_date_end value=\"$orig_entry_date_end\" size=10 maxlength=10></font></td>\n";
         $fieldOPTS="";
         foreach ($field_label as $k => $v) {
             $sel="";
@@ -738,7 +735,7 @@ if ($ADD==1122) {
         }
         if ($LOGuser_level > 8) {
             echo "    <td align=center valign=top rowspan=4>\n";
-            echo "      <font color=$default_text size=2>CSV Export Fields</font><br>\n";
+            echo "      <font size=2>CSV Export Fields</font><br>\n";
             echo "      <select name=fields[] size=5 multiple>\n";
             echo $fieldOPTS;
             echo "      </select>\n";
@@ -746,15 +743,15 @@ if ($ADD==1122) {
         }
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=right><font color=$default_text size=2>Modified Date</font></td>\n";
-        echo "    <td align=left colspan=3><font color=$default_text size=2><input type=text name=modify_date_start value=\"$orig_modify_date_start\" size=10 maxlength=10> to <input type=text name=modify_date_end value=\"$orig_modify_date_end\" size=10 maxlength=10></font></td>\n";
+        echo "    <td align=right><font size=2>Modified Date</font></td>\n";
+        echo "    <td align=left colspan=3><font size=2><input type=text name=modify_date_start value=\"$orig_modify_date_start\" size=10 maxlength=10> to <input type=text name=modify_date_end value=\"$orig_modify_date_end\" size=10 maxlength=10></font></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=right><font color=$default_text size=2>Last Call Date</font></td>\n";
-        echo "    <td align=left colspan=3><font color=$default_text size=2>\n";
+        echo "    <td align=right><font size=2>Last Call Date</font></td>\n";
+        echo "    <td align=left colspan=3><font size=2>\n";
         echo "      <input type=text name=lastcall_date_start value=\"$orig_lastcall_date_start\" size=10 maxlength=10> to <input type=text name=lastcall_date_end value=\"$orig_lastcall_date_end\" size=10 maxlength=10></font>\n";
         if ($use_osdial_log == 1) $check = " checked";
-        echo "      <br><input type=checkbox name=use_osdial_log id=use_osdial_log value=1$check> <font color=$default_text size=1><label for=use_osdial_log>Output Lead History (Must Enter Call Date)</label></font>\n";
+        echo "      <br><input type=checkbox name=use_osdial_log id=use_osdial_log value=1$check> <font size=1><label for=use_osdial_log>Output Lead History (Must Enter Call Date)</label></font>\n";
         echo "  </td>\n";
         echo "  </tr>\n";
 
@@ -764,7 +761,7 @@ if ($ADD==1122) {
 
         echo "  <tr>\n";
         echo "    <td align=center>\n";
-        echo "      <font color=$default_text size=2>Campaigns</font><br>\n";
+        echo "      <font size=2>Campaigns</font><br>\n";
         echo "      <select name=campaigns[] size=5 multiple>\n";
         $krh = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name');
         echo format_select_options($krh, 'campaign_id', 'campaign_id', $campaigns, "-- ALL --");
@@ -772,7 +769,7 @@ if ($ADD==1122) {
         echo "    </td>\n";
 
         echo "    <td align=center>\n";
-        echo "      <font color=$default_text size=2>Lists</font><br>\n";
+        echo "      <font size=2>Lists</font><br>\n";
         echo "      <select name=lists[] size=5 multiple>\n";
         $krh = get_krh($link, 'osdial_lists', 'list_id,list_name,campaign_id');
         echo format_select_options($krh, 'list_id', 'list_name', $lists, "-- ALL --");
@@ -780,7 +777,7 @@ if ($ADD==1122) {
         echo "    </td>\n";
 
         echo "    <td align=center>\n";
-        echo "      <font color=$default_text size=2>Statuses</font><br>\n";
+        echo "      <font size=2>Statuses</font><br>\n";
         echo "      <select name=statuses[] size=5 multiple>\n";
         $krh = get_krh($link, 'osdial_statuses', 'status,status_name');
         $krh2 = get_krh($link, 'osdial_campaign_statuses', 'status,status_name');
@@ -792,7 +789,7 @@ if ($ADD==1122) {
         echo "    </td>\n";
 
         echo "    <td align=center>\n";
-        echo "      <font color=$default_text size=2>Agents</font><br>\n";
+        echo "      <font size=2>Agents</font><br>\n";
         echo "      <select name=agents[] size=5 multiple>\n";
         $krh = get_krh($link, 'osdial_users', 'user,full_name');
         echo format_select_options($krh, 'user', 'full_name', $agents, "-- ALL --");
@@ -811,7 +808,7 @@ if ($ADD==1122) {
         echo "  <tr>\n";
 
         echo "    <td align=center>\n";
-        echo "      <font color=$default_text size=2>States</font><br>\n";
+        echo "      <font size=2>States</font><br>\n";
         echo "      <select name=states[] size=5 multiple>\n";
         $krh = get_krh($link, 'osdial_report_groups', 'group_value,group_label', "", "group_type='states'");
         echo format_select_options($krh, 'group_value', 'group_value', $states, "-- ALL --");
@@ -833,7 +830,7 @@ if ($ADD==1122) {
         $sel="";
         if ($s==0) $sel=" selected";
         echo "    <td align=center>\n";
-        echo "      <font color=$default_text size=2>TimeZones</font><br>\n";
+        echo "      <font size=2>TimeZones</font><br>\n";
         echo "      <select name=timezones[] size=5 multiple>\n";
         echo "        <option value=\"\"$sel>-- ALL --</option>\n";
         echo $timezoneOPTS;
@@ -841,7 +838,7 @@ if ($ADD==1122) {
         echo "    </td>\n";
 
         echo "    <td align=center>\n";
-        echo "      <font color=$default_text size=2>Sources</font><br>\n";
+        echo "      <font size=2>Sources</font><br>\n";
         echo "      <select name=sources[] size=5 multiple>\n";
         $krh = get_krh($link, 'osdial_report_groups', 'group_value,group_label', "", "group_type='lead_source_id'", "1000");
         echo format_select_options($krh, 'group_value', 'group_value', $sources, "-- ALL --");
@@ -849,7 +846,7 @@ if ($ADD==1122) {
         echo "    </td>\n";
 
         echo "    <td align=center>\n";
-        echo "      <font color=$default_text size=2>Vendor Codes</font><br>\n";
+        echo "      <font size=2>Vendor Codes</font><br>\n";
         echo "      <select name=vendor_codes[] size=5 multiple>\n";
         $krh = get_krh($link, 'osdial_report_groups', 'group_value,group_label', "", "group_type='lead_vendor_lead_code'", "1000");
         echo format_select_options($krh, 'group_value', 'group_value', $vendor_codes, "-- ALL --");
@@ -859,7 +856,7 @@ if ($ADD==1122) {
 
 
         echo "  <tr>\n";
-        echo "    <td align=center colspan=4><br><font color=$default_text size=2>Results</font>";
+        echo "    <td align=center colspan=4><br><font size=2>Results</font>";
         echo "      <select name=numresults size=1>\n";
         foreach ($numresults_label as $k => $v) {
             $sel="";
@@ -867,7 +864,7 @@ if ($ADD==1122) {
             echo "        <option value=\"$k\"$sel>$v</option>\n";
         }
         echo "      </select>\n";
-        echo "      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color=$default_text size=2>Sort By</font>";
+        echo "      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size=2>Sort By</font>";
         echo "      <select name=sort size=1>\n";
         foreach ($sort_label as $k => $v) {
             $sel="";
@@ -1254,8 +1251,8 @@ if (strlen($phone_number) > 2) {
 echo "<br><font color=$default_text size=+1>ADD A NUMBER TO THE DNC LIST</font><form action=$PHP_SELF method=POST><br><br>\n";
 echo "<input type=hidden name=ADD value=121>\n";
 //echo "<center>";
-echo "<TABLE width=$section_width cellspacing=3>\n";
-echo "<tr bgcolor=$oddrows><td align=right>Phone Number: </td><td align=left><input type=text name=phone_number size=14 maxlength=12> (digits only)$NWB#osdial_list-dnc$NWE</td></tr>\n";
+echo "<TABLE width=$section_width bgcolor=$oddrows cellspacing=3>\n";
+echo "<tr bgcolor=$oddrows><td align=right width=50%>Phone Number: </td><td align=left width=50%><input type=text name=phone_number size=14 maxlength=12> (digits only)$NWB#osdial_list-dnc$NWE</td></tr>\n";
 echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 echo "</TABLE></center>\n";
 
@@ -3427,66 +3424,61 @@ if ($ADD==311)
 ######################
 # ADD=811 find all callbacks on hold within a List
 ######################
-if ($ADD==811)
-{
-	if ($LOGmodify_lists==1)
-	{
-		if ($SUB==89)
-		{
-		$stmt="UPDATE osdial_callbacks SET status='INACTIVE' where list_id='$list_id' and status='LIVE' and callback_time < '$past_month_date';";
-		$rslt=mysql_query($stmt, $link);
-		echo "<br>list($list_id) callback listings LIVE for more than one month have been made INACTIVE\n";
+if ($ADD==811) {
+	if ($LOGmodify_lists==1) {
+		if ($SUB==89) {
+		    $stmt="UPDATE osdial_callbacks SET status='INACTIVE' where list_id='$list_id' and status='LIVE' and callback_time < '$past_month_date';";
+		    $rslt=mysql_query($stmt, $link);
+		    echo "<br>list($list_id) callback listings LIVE for more than one month have been made INACTIVE\n";
 		}
-		if ($SUB==899)
-		{
-		$stmt="UPDATE osdial_callbacks SET status='INACTIVE' where list_id='$list_id' and status='LIVE' and callback_time < '$past_week_date';";
-		$rslt=mysql_query($stmt, $link);
-		echo "<br>list($list_id) callback listings LIVE for more than one week have been made INACTIVE\n";
+		if ($SUB==899) {
+		    $stmt="UPDATE osdial_callbacks SET status='INACTIVE' where list_id='$list_id' and status='LIVE' and callback_time < '$past_week_date';";
+		    $rslt=mysql_query($stmt, $link);
+		    echo "<br>list($list_id) callback listings LIVE for more than one week have been made INACTIVE\n";
 		}
 	}
-$CBinactiveLINK = "<BR><a href=\"$PHP_SELF?ADD=811&SUB=89&list_id=$list_id\"><font color=$default_text>Remove LIVE Callbacks older than one month for this list</font></a><BR><a href=\"$PHP_SELF?ADD=811&SUB=899&list_id=$list_id\"><font color=$default_text>Remove LIVE Callbacks older than one week for this list</font></a><BR>";
+    $CBinactiveLINK = "<BR><a href=\"$PHP_SELF?ADD=811&SUB=89&list_id=$list_id\"><font color=$default_text>Remove LIVE Callbacks older than one month for this list</font></a><BR><a href=\"$PHP_SELF?ADD=811&SUB=899&list_id=$list_id\"><font color=$default_text>Remove LIVE Callbacks older than one week for this list</font></a><BR>";
 
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$CBquerySQLwhere = "and list_id='$list_id'";
 
-echo "<center><br><br><font size=4 color=$default_text> LIST CALLBACK HOLD LISTINGS: $list_id<br><br></font></center>\n";
-$oldADD = "ADD=811&list_id=$list_id";
-$ADD='82';
+    echo "<center><br><br><font size=4 color=$default_text>LIST CALLBACK HOLD LISTINGS: $list_id<br><br></font></center>\n";
+    $oldADD = "ADD=811&list_id=$list_id";
+    $ADD='82';
 }
 
 
 ######################
 # ADD=82 display all callbacks on hold
 ######################
-if ($ADD==82)
-{
+if ($ADD==82) {
 
-$USERlink='stage=USERIDDOWN';
-$GROUPlink='stage=GROUPDOWN';
-$ENDATElink='stage=ENDATEDOWN';
-$SQLorder='order by ';
-if (eregi("USERIDDOWN",$stage)) {$SQLorder='order by user desc,';   $USERlink='stage=USERIDUP';}
-if (eregi("GROUPDOWN",$stage)) {$SQLorder='order by user_group desc,';   $NAMElink='stage=NAMEUP';}
-if (eregi("ENDATEDOWN",$stage)) {$SQLorder='order by entry_time desc,';   $LEVELlink='stage=LEVELUP';}
+    $USERlink='stage=USERIDDOWN';
+    $GROUPlink='stage=GROUPDOWN';
+    $ENDATElink='stage=ENDATEDOWN';
+    $SQLorder='order by ';
+    if (eregi("USERIDDOWN",$stage)) {$SQLorder='order by user desc,';   $USERlink='stage=USERIDUP';}
+    if (eregi("GROUPDOWN",$stage)) {$SQLorder='order by user_group desc,';   $NAMElink='stage=NAMEUP';}
+    if (eregi("ENDATEDOWN",$stage)) {$SQLorder='order by entry_time desc,';   $LEVELlink='stage=LEVELUP';}
 
-	$stmt="SELECT * from osdial_callbacks where status IN('ACTIVE','LIVE') $CBquerySQLwhere $SQLorder recipient,status desc,callback_time";
-	$rslt=mysql_query($stmt, $link);
-	$cb_to_print = mysql_num_rows($rslt);
+    $stmt="SELECT * from osdial_callbacks where status IN('ACTIVE','LIVE') $CBquerySQLwhere $SQLorder recipient,status desc,callback_time";
+    $rslt=mysql_query($stmt, $link);
+    $cb_to_print = mysql_num_rows($rslt);
 
-echo "<TABLE width=100%><TR><TD>\n";
-echo "<center><table width=$section_width cellspacing=1 cellpadding=0 bgcolor=grey>\n";
-echo "  <tr class=tabheader>\n";
-echo "    <td>LEAD</td>\n";
-echo "    <td>LIST</td>\n";
-echo "    <td>CAMPAIGN</td>\n";
-echo "    <td><a href=\"$PHP_SELF?$oldADD&$ENDATElink\">ENTRY DATE</a></td>\n";
-echo "    <td>CALLBACK DATE</td>\n";
-echo "    <td><a href=\"$PHP_SELF?$oldADD&$USERlink\">USER</a></td>\n";
-echo "    <td>RECIPIENT</td>\n";
-echo "    <td>STATUS</td>\n";
-echo "    <td><a href=\"$PHP_SELF?$oldADD&$GROUPlink\">GROUP</a></td>\n";
-echo "  </tr>\n";
+    echo "<TABLE width=100%><TR><TD>\n";
+    echo "<center><table width=$section_width cellspacing=1 cellpadding=0 bgcolor=grey>\n";
+    echo "  <tr class=tabheader>\n";
+    echo "    <td>LEAD</td>\n";
+    echo "    <td>LIST</td>\n";
+    echo "    <td>CAMPAIGN</td>\n";
+    echo "    <td><a href=\"$PHP_SELF?$oldADD&$ENDATElink\">ENTRY DATE</a></td>\n";
+    echo "    <td>CALLBACK DATE</td>\n";
+    echo "    <td><a href=\"$PHP_SELF?$oldADD&$USERlink\">USER</a></td>\n";
+    echo "    <td>RECIPIENT</td>\n";
+    echo "    <td>STATUS</td>\n";
+    echo "    <td><a href=\"$PHP_SELF?$oldADD&$GROUPlink\">GROUP</a></td>\n";
+    echo "  </tr>\n";
 
 	$o=0;
 	while ($cb_to_print > $o) {
@@ -3509,12 +3501,12 @@ echo "  </tr>\n";
 		$o++;
 	}
 
-echo "  <tr class=tabfooter>";
-echo "    <td colspan=9></td>";
-echo "  </tr>";
-echo "</TABLE></center>\n";
+    echo "  <tr class=tabfooter>";
+    echo "    <td colspan=9></td>";
+    echo "  </tr>";
+    echo "</TABLE></center>\n";
 
-echo "<center>$CBinactiveLINK</center>";
+    echo "<center>$CBinactiveLINK</center>";
 }
 
 
@@ -3573,8 +3565,8 @@ echo "<td align=center colspan=3>LINKS</td>";
 		echo "    <td>$row[4]</td>\n";
 		echo "    <td align=center>$row[5]</td>\n";
 		echo "    <td align=center>$row[3]</td>\n";
-		echo "    <td>$row[7]</td>\n";
-		echo "    <td colspan=2 align=center><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">MODIFY</a>";
+		#echo "    <td>$row[7]</td>\n";
+		echo "    <td colspan=3 align=center><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">MODIFY</a>";
         if ($LOGuser_leve > 8) {
 		    echo " | <a href=\"$PHP_SELF?ADD=131&list_id=$row[0]\">EXPORT</a>";
         }

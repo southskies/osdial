@@ -1247,7 +1247,7 @@ if ($ADD==31) {
         echo "<font color=$default_text>This campaign has $hopper_leads leads in the dial hopper<br><br>\n";
         echo "<a href=\"./AST_OSDIAL_hopperlist.php?group=$campaign_id\">Click here to see what leads are in the hopper right now</a><br><br>\n";
         echo "<a href=\"$PHP_SELF?ADD=81&campaign_id=$campaign_id\">Click here to see all CallBack Holds in this campaign</a><BR><BR>\n";
-        echo "<a href=\"./AST_VDADstats.php?group=$campaign_id\">Click here to see a Time On Dialer report for this campaign</a></font><BR><BR>\n";
+        echo "<a href=\"$PHP_SELF?ADD=999999&SUB=15&group=$campaign_id\">Click here to see a Time On Dialer report for this campaign</a></font><BR><BR>\n";
         echo "</b></center>\n";
         }
 
@@ -1870,7 +1870,7 @@ if ($ADD==34)
         echo "<font color=$default_text>This campaign has $hopper_leads leads in the dial hopper<br><br>\n";
         echo "<a href=\"./AST_OSDIAL_hopperlist.php?group=$campaign_id\">Click here to see what leads are in the hopper right now</a><br><br>\n";
         echo "<a href=\"$PHP_SELF?ADD=81&campaign_id=$campaign_id\">Click here to see all CallBack Holds in this campaign</a><BR><BR>\n";
-        echo "<a href=\"./AST_VDADstats.php?group=$campaign_id\">Click here to see a Call report for this campaign</a></font><BR><BR>\n";
+        echo "<a href=\"$PHP_SELF?ADD=999999&SUB=15&group=$campaign_id\">Click here to see a Time On Dialer report for this campaign</a></font><BR><BR>\n";
         echo "</b></center>\n";
 
         echo "<br>\n";
@@ -2169,32 +2169,29 @@ if ( ($ADD==34) or ($ADD==31) ) {
 ######################
 # ADD=81 find all callbacks on hold within a Campaign
 ######################
-if ($ADD==81)
-{
-    if ($LOGmodify_campaigns==1)
-    {
-        if ($SUB==89)
-        {
-        $stmt="UPDATE osdial_callbacks SET status='INACTIVE' where campaign_id='$campaign_id' and status='LIVE' and callback_time < '$past_month_date';";
-        $rslt=mysql_query($stmt, $link);
-        echo "<br>campaign($campaign_id) callback listings LIVE for more than one month have been made INACTIVE\n";
+if ($ADD==81) {
+    if ($LOGmodify_campaigns==1) {
+        if ($SUB==89) {
+            $stmt="UPDATE osdial_callbacks SET status='INACTIVE' where campaign_id='$campaign_id' and status='LIVE' and callback_time < '$past_month_date';";
+            $rslt=mysql_query($stmt, $link);
+            echo "<br>campaign($campaign_id) callback listings LIVE for more than one month have been made INACTIVE\n";
         }
-        if ($SUB==899)
-        {
-        $stmt="UPDATE osdial_callbacks SET status='INACTIVE' where campaign_id='$campaign_id' and status='LIVE' and callback_time < '$past_week_date';";
-        $rslt=mysql_query($stmt, $link);
-        echo "<br>campaign($campaign_id) callback listings LIVE for more than one week have been made INACTIVE\n";
+        if ($SUB==899) {
+            $stmt="UPDATE osdial_callbacks SET status='INACTIVE' where campaign_id='$campaign_id' and status='LIVE' and callback_time < '$past_week_date';";
+            $rslt=mysql_query($stmt, $link);
+            echo "<br>campaign($campaign_id) callback listings LIVE for more than one week have been made INACTIVE\n";
         }
     }
-$CBinactiveLINK = "<BR><a href=\"$PHP_SELF?ADD=81&SUB=89&campaign_id=$campaign_id\"><font color=$default_text>Remove LIVE Callbacks older than one month for this campaign</font></a><BR><a href=\"$PHP_SELF?ADD=81&SUB=899&campaign_id=$campaign_id\"><font color=$default_text>Remove LIVE Callbacks older than one week for this campaign</font></a><BR>";
+    $CBinactiveLINK = "<BR><a href=\"$PHP_SELF?ADD=81&SUB=89&campaign_id=$campaign_id\"><font color=$default_text>Remove LIVE Callbacks older than one month for this campaign</font></a><BR><a href=\"$PHP_SELF?ADD=81&SUB=899&campaign_id=$campaign_id\"><font color=$default_text>Remove LIVE Callbacks older than one week for this campaign</font></a><BR>";
 
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
     $CBquerySQLwhere = "and campaign_id='$campaign_id'";
 
-echo "<br><font color=$default_text> CAMPAIGN CALLBACK HOLD LISTINGS: $campaign_id</font>\n";
-$oldADD = "ADD=81&campaign_id=$campaign_id";
-$ADD='82';
+    echo "<br><br><center><font color=$default_text size=4>CAMPAIGN CALLBACK HOLD LISTINGS: $campaign_id</font></center>\n";
+    $oldADD = "ADD=81&campaign_id=$campaign_id";
+    $ADD='82';
+    include($WeBServeRRooT . "/admin/include/content/lists/lists.php");
 }
 
 ######################
