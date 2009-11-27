@@ -66,7 +66,7 @@ if ($ADD==999999 and $SUB=='') {
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=12\"><font face=\"arial,helvetica\" size=2>Time On Dialer (per campaign)</a> &nbsp;  <a href=\"$PHP_SELF?ADD=999999&SUB=11\"><font face=\"arial,helvetica\" size=2>(all campaigns SUMMARY)</a> &nbsp; &nbsp; SIP <a href=\"$PHP_SELF?ADD=999999&SUB=12&SIPmonitorLINK=1\"><font face=\"arial,helvetica\" size=2>Listen</a> - <a href=\"$PHP_SELF?ADD=999999&SUB=12&SIPmonitorLINK=2\"><font face=\"arial,helvetica\" size=2>Barge</a> &nbsp; &nbsp; IAX <a href=\"$PHP_SELF?ADD=999999&SUB=12&IAXmonitorLINK=1\"><font face=\"arial,helvetica\" size=2>Listen</a> - <a href=\"$PHP_SELF?ADD=999999&SUB=12&IAXmonitorLINK=2\"><font face=\"arial,helvetica\" size=2>Barge</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=15\"><font face=\"arial,helvetica\" size=2>Call Report</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_CLOSERstats.php\"><font face=\"arial,helvetica\" size=2>Inbound / Closer Report</a></font>";
-	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_agent_performance_detail.php\"><font face=\"arial,helvetica\" size=2>Agent Performance Detail</a></font>";
+	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=19\"><font face=\"arial,helvetica\" size=2>Agent Performance Detail</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=osdial_sales_viewer.php\"><font face=\"arial,helvetica\" size=2>Agent Spreadsheet Performance</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=16\"><font face=\"arial,helvetica\" size=2>List Cost by Entry Date</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=17\"><font face=\"arial,helvetica\" size=2>List Performance and Analysis</a></font>";
@@ -123,6 +123,9 @@ if ($ADD==999999 and $SUB=='') {
     } elseif ($SUB==17) {
         require($WeBServeRRooT . '/admin/include/content/reports/list_performance.php');
         echo report_list_performance();
+    } elseif ($SUB==19) {
+        require($WeBServeRRooT . '/admin/include/content/reports/agent_performance_detail.php');
+        echo report_agent_performance_detail();
     }
 }
 
