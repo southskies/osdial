@@ -233,7 +233,7 @@ else
 echo " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $user - $full_name \n";
 echo " &nbsp; &nbsp; &nbsp; GROUP: $user_group <BR><BR>\n";
 
-echo "<a href=\"./AST_agent_time_sheet.php?agent=$user\">OSDIAL Time Sheet</a>\n";
+echo "<a href=\"./admin.php?ADD=999999&SUB=20&agent=$user\">OSDIAL Time Sheet</a>\n";
 echo " - <a href=\"./user_stats.php?user=$user\">User Stats</a>\n";
 echo " - <a href=\"./admin.php?ADD=3&user=$user\">Modify User</a>\n";
 
