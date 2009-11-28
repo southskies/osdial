@@ -48,6 +48,7 @@ function report_lead_performance_campaign() {
     if ($end_date=="") $end_date = $start_date;
     if (strlen($start_time) < 5) $start_time = "00:00";
     if (strlen($end_time) < 5) $end_time = "23:59";
+    if ($group=='') $group[] = '--ALL--';
 
     $stmt="select campaign_id,campaign_name from osdial_campaigns;";
     $rslt=mysql_query($stmt, $link);
@@ -167,18 +168,13 @@ function report_lead_performance_campaign() {
     $html .= "<input type=hidden name=ADD value=$ADD>\n";
     $html .= "<input type=hidden name=SUB value=$SUB>\n";
     $html .= "<input type=hidden name=DB value=$DB>\n";
-    $html .= "<table border=0>\n";
-    $html .= "  <tr>\n";
-    $html .= "    <td>\n";
-    if ($type == "hour") {
-        $html .= "      Date: <input type=text name=start_date size=10 maxlength=10 value=\"$start_date\"><br>\n";
-        $html .= "      Time: <input type=text name=start_time size=5 maxlength=5 value=\"$start_time\"> to <input type=text name=end_time size=5 maxlength=5 value=\"$end_time\">\n";
-    } else {
-        $html .= "      Date: <input type=text name=start_date size=10 maxlength=10 value=\"$start_date\"> to <input type=text name=end_date size=10 maxlength=10 value=\"$end_date\">\n";
-    }
-    $html .= "    </td>\n";
-    $html .= "    <td>\n";
-    $html .= "      Campaign(s):<br>\n";
+    $html .= "<table border=0 bgcolor=grey cellspacing=1>\n";
+    $html .= "  <tr class=tabheader>\n";
+    $html .= "    <td>Campaign</td>\n";
+    $html .= "    <td>Date Range</td>\n";
+    $html .= "  </tr>\n";
+    $html .= "  <tr class=tabfooter>\n";
+    $html .= "    <td rowspan=3>\n";
     $html .= "      <select size=5 name=group[] multiple>\n";
     if  (eregi("--ALL--",$group_string)) {
         $html .= "        <option value=\"--ALL--\" selected>-- ALL CAMPAIGNS --</option>\n";
@@ -197,9 +193,15 @@ function report_lead_performance_campaign() {
     $html .= "      </select>\n";
     $html .= "    </td>\n";
     $html .= "    <td>\n";
+    $html .= "      <input type=text name=start_date size=10 maxlength=10 value=\"$start_date\"> to <input type=text name=end_date size=10 maxlength=10 value=\"$end_date\">\n";
+    $html .= "    </td>\n";
+    $html .= "  </tr>\n";
+    $html .= "  <tr class=tabfooter valign=bottom>\n";
+    $html .= "    <td rowspan=2 class=tabbutton>\n";
     $html .= "      <input type=submit name=submit value=submit>\n";
     $html .= "    </td>\n";
     $html .= "  </tr>\n";
+    $html .= "  <tr class=tabfooter></tr>\n";
     $html .= "</table>\n";
     $html .= "</form>\n";
     $html .= "</div>\n";
@@ -207,9 +209,7 @@ function report_lead_performance_campaign() {
     $html .= "<font size=2><pre>";
 
 
-    if (!$group) {
-        $html .= "Please Select Campaign(s) And Date\n";
-    } else {
+    if ($group) {
         $query_date_BEGIN = "$start_date $start_time:00";
         $query_date_END = "$end_date $end_time:59";
 
@@ -428,18 +428,18 @@ function report_lead_performance_campaign() {
         $html .= "<input type=hidden name=\"rows\" value=\"" . $CSVrow . "\">\n";
         $html .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
         $html .= "</form>";
+
+        $report_end = date("U");
+        $report_time = ($report_end - $report_start);
+        $html .= "<pre>\n";
+        $html .= "\nRun Time: $report_time seconds\n";
+        $html .= "</pre>\n";
     }
 
-    $report_end = date("U");
-    $report_time = ($report_end - $report_start);
-    $html .= "<pre>\n";
-    $html .= "\nRun Time: $report_time seconds\n";
+    #$html .= "</font>\n";
 
-    $html .= "</pre>\n";
-    $html .= "</font>\n";
-
-    $html .= "</td>";
-    $html .= "<table width=$page_width bgcolor=#e9e8d9 cellpadding=0 cellspacing=0 align=center class=across>";
+    #$html .= "</td>";
+    #$html .= "<table width=$page_width bgcolor=#e9e8d9 cellpadding=0 cellspacing=0 align=center class=across>";
     return $html;
 }
 

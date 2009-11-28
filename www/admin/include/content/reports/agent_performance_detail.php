@@ -54,6 +54,8 @@ function report_agent_performance_detail() {
     if (!isset($group)) {$group = '';}
     if (!isset($query_date)) {$query_date = $NOW_DATE;}
     if (!isset($end_date)) {$end_date = $NOW_DATE;}
+    if ($query_date=="") {$query_date = $NOW_DATE;}
+    if ($end_date=="") {$end_date = $NOW_DATE;}
 
     $stmt="select campaign_id from osdial_campaigns;";
     $rslt=mysql_query($stmt, $link);
@@ -82,7 +84,7 @@ function report_agent_performance_detail() {
     $html .= "  <input type=hidden name=ADD value=\"$ADD\">\n";
     $html .= "  <input type=hidden name=SUB value=\"$SUB\">\n";
     $html .= "  <input type=hidden name=DB value=\"$DB\">\n";
-    $html .= "  <table align=center cellpadding=0 cellspacing=0>\n";
+    $html .= "  <table width=650 align=center cellpadding=0 cellspacing=0>\n";
     $html .= "    <tr>\n";
     $html .= "      <td align=center colspan=5>\n";
     $html .= "        <font color=$default_text size=4>AGENT PERFORMANCE REPORT</font>\n";
@@ -136,7 +138,9 @@ function report_agent_performance_detail() {
     $html .= "          <option value=\"ALL\">ALL</option>\n";
     $html .= "        </select>\n";
     $html .= "      </td>\n";
-    $html .= "      <td align=center>\n";
+    $html .= "    </tr>\n";
+    $html .= "    <tr class=tabheader>\n";
+    $html .= "      <td align=center colspan=4 class=tabbutton>\n";
     $html .= "        <input type=submit name=submit value=SUBMIT>\n";
     $html .= "      </td>\n";
     $html .= "    </tr>\n";
@@ -154,12 +158,7 @@ function report_agent_performance_detail() {
     $export .= "<form method=post target=\"_new\" action=\"/osdial/admin/tocsv.php\">\n";
     $export .= "<input type=hidden name=\"name\" value=\"css\">\n";
 
-    if (!$group) {
-        $html .= "<div class=noprint>\n";
-        $html .= "Please Select A Campaign And Date-Time\n";
-        $html .= " NOTE: stats taken from shift specified\n";
-        $html .= "</div>\n";
-    } else {
+    if ($group) {
         if ($shift == 'AM') {
             $time_BEGIN=$AM_shift_BEGIN;
             $time_END=$AM_shift_END;

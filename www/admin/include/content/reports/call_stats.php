@@ -189,8 +189,6 @@ function report_call_stats() {
 
     # If no campaign, return now.
     if (strlen($group[0]) < 1) {
-        $html .= "\n\n";
-        $html .= "PLEASE SELECT A CAMPAIGN AND DATE ABOVE AND CLICK SUBMIT\n";
         $html .= "    </td>\n";
         $html .= "  </tr>\n";
         $html .= "</table>\n";

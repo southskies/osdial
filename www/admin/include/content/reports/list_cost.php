@@ -43,6 +43,7 @@ function report_list_cost() {
 
     if ($query_date=="") $query_date = date("Y-m-d");
     if ($end_date=="") $end_date = date("Y-m-d");
+    if (count($group)==0 or $group=='') $group[] = '--ALL--';
 
     $stmt="select list_id,list_name from osdial_lists;";
     $rslt=mysql_query($stmt, $link);
@@ -93,12 +94,13 @@ function report_list_cost() {
     $html .= "<input type=hidden name=ADD value=$ADD>\n";
     $html .= "<input type=hidden name=SUB value=$SUB>\n";
     $html .= "<input type=hidden name=DB value=$DB>\n";
-    $html .= "<table border=0>\n";
-    $html .= "  <tr>\n";
-    $html .= "    <td>\n";
-    $html .= "      <input type=text name=query_date size=10 maxlength=10 value=\"$query_date\"> to <input type=text name=end_date size=10 maxlength=10 value=\"$end_date\">\n";
-    $html .= "    </td>\n";
-    $html .= "    <td>\n";
+    $html .= "<table border=0 bgcolor=grey cellspacing=1>\n";
+    $html .= "  <tr class=tabheader>\n";
+    $html .= "    <td>Campaign</td>\n";
+    $html .= "    <td>Date Range</td>\n";
+    $html .= "  </tr>\n";
+    $html .= "  <tr class=tabfooter>\n";
+    $html .= "    <td rowspan=3>\n";
     $html .= "      <select size=5 name=group[] multiple>\n";
     if  (eregi("--ALL--",$group_string)) {
         $html .= "        <option value=\"--ALL--\" selected>-- ALL LISTS --</option>\n";
@@ -117,9 +119,15 @@ function report_list_cost() {
     $html .= "      </select>\n";
     $html .= "    </td>\n";
     $html .= "    <td>\n";
+    $html .= "      <input type=text name=query_date size=10 maxlength=10 value=\"$query_date\"> to <input type=text name=end_date size=10 maxlength=10 value=\"$end_date\">\n";
+    $html .= "    </td>\n";
+    $html .= "  </tr>\n";
+    $html .= "  <tr class=tabfooter valign=bottom>\n";
+    $html .= "    <td rowspan=2 class=tabbutton>\n";
     $html .= "      <input type=submit name=submit value=submit>\n";
     $html .= "    </td>\n";
     $html .= "  </tr>\n";
+    $html .= "  <tr class=tabfooter></tr>\n";
     $html .= "</table>\n";
     $html .= "</form>\n\n";
     $html .= "</div>\n\n";
@@ -127,9 +135,7 @@ function report_list_cost() {
     $html .= "<pre><font size=2>";
 
 
-    if (!$group) {
-        $html .= "Please Select A List And Date\n";
-    } else {
+    if ($group) {
         if (strlen($time_BEGIN) < 6) $time_BEGIN = "00:00:00";
         if (strlen($time_END) < 6) $time_END = "23:59:59";
         $query_date_BEGIN = "$query_date $time_BEGIN";   
@@ -145,13 +151,17 @@ function report_list_cost() {
         $html .= "<form target=\"_new\" action=\"/osdial/admin/tocsv.php\">\n";
         $html .= "<input type=hidden name=\"name\" value=\"lcr\">\n";
 
-        $html .= "<table width=100% cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $html .= "<table width=500 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $html .= "  <tr class=tabheader>\n";
+        $html .= "    <td colspan=3>&nbsp;</td>\n";
+        $html .= "    <td colspan=2>COST</td>\n";
+        $html .= "  </tr>\n";
         $html .= "  <tr class=tabheader>\n";
         $html .= "    <td>DATE</td>\n";
         $html .= "    <td>LIST</td>\n";
         $html .= "    <td align=center>LEADS</td>\n";
-        $html .= "    <td align=center>AVERAGE COST</td>\n";
-        $html .= "    <td align=center>TOTAL COST</td>\n";
+        $html .= "    <td align=center>AVERAGE</td>\n";
+        $html .= "    <td align=center>TOTAL</td>\n";
         $html .= "  </tr>\n";
         $head = "DATE|LIST|LEADS|AVERAGE COST|TOTAL COST";
         $html .= "<input type=hidden name=\"row" . $CSVrow++ . "\" value=\"" . $head . "\">\n";
@@ -263,17 +273,15 @@ function report_list_cost() {
         $html .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
         $html .= "</form>";
 
+        $report_end = date("U");
+        $report_time = ($report_end - $report_start);
+        $html .= "<pre>\n";
+        $html .= "\nRun Time: $report_time seconds\n";
+        $html .= "</pre>\n";
     }
 
-    $report_end = date("U");
-    $report_time = ($report_end - $report_start);
-
-    $html .= "<pre><font size=2>\n";
-    $html .= "\nRun Time: $report_time seconds\n";
-    $html .= "</font></pre>\n";
-
-    $html .= "</td>";
-    $html .= "<table width=$page_width bgcolor=#e9e8d9 cellpadding=0 cellspacing=0 align=center class=across>";
+    #$html .= "</td>";
+    #$html .= "<table width=$page_width bgcolor=#e9e8d9 cellpadding=0 cellspacing=0 align=center class=across>";
     return $html;
 }
 

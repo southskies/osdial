@@ -38,6 +38,8 @@ function report_realtime_detail() {
 	if (!isset($SERVdisplay))	{$SERVdisplay=1;}	# 0=no, 1=yes
 	if (!isset($CALLSdisplay))	{$CALLSdisplay=1;}	# 0=no, 1=yes
 	if (!isset($cpuinfo))	{$cpuinfo=0;}	# 0=std, 1=extended
+
+    if ($group='') {$group='XXXX-ALL-ACTIVE-XXXX';}
 	
 	if ($RR==0)  {$RR=4;} //debug - fix
 	if ($orderby=='') 	{$orderby="timeup";} //debug - fix
@@ -252,9 +254,7 @@ function report_realtime_detail() {
 	$html .= "<br>";
 
 	
-	if (!$group) {
-		$html .= "<p class=indents>Please select a campaign!</p></FORM>\n"; 
-	} else {
+	if ($group) {
 		$stmt="select auto_dial_level,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,lead_filter_id,hopper_level,dial_method,adaptive_maximum_level,adaptive_dropped_percentage,adaptive_dl_diff_target,adaptive_intensity,available_only_ratio_tally,adaptive_latest_server_time,local_call_time,dial_timeout,dial_statuses,active from osdial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
 		if ($group=='XXXX-ALL-ACTIVE-XXXX') {
 			$stmt="select avg(auto_dial_level),min(dial_status_a),min(dial_status_b),min(dial_status_c),min(dial_status_d),min(dial_status_e),min(lead_order),min(lead_filter_id),sum(hopper_level),min(dial_method),avg(adaptive_maximum_level),avg(adaptive_dropped_percentage),avg(adaptive_dl_diff_target),avg(adaptive_intensity),min(available_only_ratio_tally),min(adaptive_latest_server_time),min(local_call_time),avg(dial_timeout),min(dial_statuses),active from osdial_campaigns;";
@@ -1143,8 +1143,8 @@ function report_realtime_detail() {
 	}
 	$html .= "</pre>";
 	
-	$html .= "</td>";
-	$html .= "<TABLE WIDTH='<?=$page_width ?>' BGCOLOR=#E9E8D9 cellpadding=0 cellspacing=0 align=center class=across>";
+	#$html .= "</td>";
+	#$html .= "<TABLE WIDTH='$page_width' BGCOLOR=#E9E8D9 cellpadding=0 cellspacing=0 align=center class=across>";
 
     return $html;
 }

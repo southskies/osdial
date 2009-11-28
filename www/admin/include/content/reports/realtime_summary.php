@@ -505,8 +505,9 @@ function report_realtime_summary() {
 		$Ahtml .= "</pre>";
 		$html .= "$Ahtml";
 	}
-	$html .= "<TABLE WIDTH='<?=$page_width ?>' BGCOLOR=#E9E8D9 cellpadding=0 cellspacing=0 align=center class=across>";
 
+
+	#$html .= "<TABLE WIDTH='$page_width' BGCOLOR=#E9E8D9 cellpadding=0 cellspacing=0 align=center class=across>";
     return $html;
 }
 
