@@ -133,7 +133,7 @@ echo "<input type=submit name=submit value=submit>\n";
 echo " &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $user - $full_name\n";
 
 echo " - <a href=\"./admin.php?ADD=999999&SUB=20&agent=$user\">OSDIAL Time Sheet</a>\n";
-echo " - <a href=\"./user_status.php?user=$user\">User Status</a>\n";
+echo " - <a href=\"./admin.php?ADD=999999&SUB=22&agent=$user\">User Status</a>\n";
 echo " - <a href=\"./admin.php?ADD=3&user=$user\">Modify User</a>\n";
 
 

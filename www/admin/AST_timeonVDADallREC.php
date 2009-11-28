@@ -913,7 +913,7 @@ $talking_to_print = mysql_num_rows($rslt);
 
 		$agentcount++;
 
-		$Aecho .= "| $G$extension$EG | <a href=\"./user_status.php?user=$Luser\" target=\"_blank\">$G$user$EG</a> |$UGD $G$sessionid$EG$L$R | $G$status$EG $CM | $LL   | $SVD$G$call_time_MS$EG | $G$campaign_id$EG |\n";
+		$Aecho .= "| $G$extension$EG | <a href=\"./admin.php?ADD=999999&SUB=22&agent=$Luser\" target=\"_blank\">$G$user$EG</a> |$UGD $G$sessionid$EG$L$R | $G$status$EG $CM | $LL   | $SVD$G$call_time_MS$EG | $G$campaign_id$EG |\n";
 
 		$i++;
 		}

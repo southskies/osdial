@@ -936,7 +936,7 @@ function report_realtime_detail() {
 			}
 
 			if ($disp_agent) {
-				$Ahtml .= "$LNleft $G$extension $LNcenterbar <a href=\"./user_status.php?user=$Luser\" target=\"_blank\">$G$user$EG</a> $LNcenterbar$UGD $sessionid$L$R $LNcenterbar $status $CM $LNcenterbar $SVD$call_time_MS $LNcenterbar $campaign_id$EG $LNright\n";
+				$Ahtml .= "$LNleft $G$extension $LNcenterbar <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$Luser\" target=\"_blank\">$G$user$EG</a> $LNcenterbar$UGD $sessionid$L$R $LNcenterbar $status $CM $LNcenterbar $SVD$call_time_MS $LNcenterbar $campaign_id$EG $LNright\n";
 			}
 	
 			$i++;
