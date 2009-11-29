@@ -39,6 +39,8 @@ function report_agent_timesheet() {
     $DB = get_variable("DB");
 
     $html = '';
+    $head = '';
+    $form = '';
     $plain = '';
     $table = '';
 
@@ -48,45 +50,48 @@ function report_agent_timesheet() {
 
     if ($query_date == "") {$query_date = $NOW_DATE;}
 
-    $html .= "<div class=noprint>\n";
-    $html .= "<br><center><font size=4 color=$default_text>AGENT TIMESHEET</font><br>\n";
-    if ($agent != "") {
-        $html .= "<span class=font2><a href=\"$PHP_SELF?ADD=999999&SUB=21&user=$agent\">User Stats</a>\n";
-        $html .= " - <a href=\"$PHP_SELF?ADD=999999&SUB=22&user=$agent\">User Status</a>\n";
-        $html .= " - <a href=\"$PHP_SELF?ADD=3&user=$agent\">Modify User</a></span>\n";
+    $head .= "<br>\n";
+    $head .= "<center><font size=4 color=$default_text>AGENT TIMESHEET</font></center><br>\n";
+    if ($agent) {
+        $stmt="select full_name from osdial_users where user='$agent';";
+        $rslt=mysql_query($stmt, $link);
+        if ($DB) {$html .= "$stmt\n";}
+        $row=mysql_fetch_row($rslt);
+        $full_name = $row[0];
+
+        $head .= "<center><font color=$default_text size=3><b>$agent - $full_name</b></font></center>\n";
+        $head .= "<center>\n";
+        $head .= "<span class=font2><a href=\"$PHP_SELF?ADD=999999&SUB=22&user=$agent\">Agent Status</a>\n";
+        $head .= " - <a href=\"$PHP_SELF?ADD=999999&SUB=21&user=$agent\">Agent Stats</a>\n";
+        $head .= " - <a href=\"$PHP_SELF?ADD=3&user=$agent\">Modify Agent</a></span>\n";
+        $head .= "</center>\n";
     }
-    $html .= "</center><br>\n";
-    $html .= "<form action=\"$PHP_SELF\" method=get>\n";
-    $html .= "  <input type=hidden name=ADD value=\"$ADD\">\n";
-    $html .= "  <input type=hidden name=SUB value=\"$SUB\">\n";
-    $html .= "  <input type=hidden name=DB value=\"$DB\">\n";
-    $html .= "  <table width=300 align=center cellspacing=0 bgcolor=grey>\n";
-    $html .= "    <tr class=tabheader>\n";
-    $html .= "      <td>Date</td>\n";
-    $html .= "      <td>User ID</td>\n";
-    $html .= "    </tr>\n";
-    $html .= "    <tr class=tabheader>\n";
-    $html .= "      <td><input type=text name=query_date size=11 maxlength=10 value=\"$query_date\"></td>\n";
-    $html .= "      <td><input type=text name=agent size=16 maxlength=15 value=\"$agent\"></td>\n";
-    $html .= "    </tr>\n";
-    $html .= "    <tr class=tabheader>\n";
-    $html .= "      <td colspan=2 class=tabbutton><input type=submit name=submit value=SUBMIT></td>\n";
-    $html .= "    </tr>\n";
-    $html .= "  </table>\n";
-    $html .= "</form>\n\n";
-    $html .= "</div>\n";
+
+    $form .= "<br>\n";
+    $form .= "<form action=\"$PHP_SELF\" method=get>\n";
+    $form .= "  <input type=hidden name=ADD value=\"$ADD\">\n";
+    $form .= "  <input type=hidden name=SUB value=\"$SUB\">\n";
+    $form .= "  <input type=hidden name=DB value=\"$DB\">\n";
+    $form .= "  <table width=300 align=center cellspacing=0 bgcolor=grey>\n";
+    $form .= "    <tr class=tabheader>\n";
+    $form .= "      <td>Date</td>\n";
+    $form .= "      <td>Agent ID</td>\n";
+    $form .= "    </tr>\n";
+    $form .= "    <tr class=tabheader>\n";
+    $form .= "      <td><input type=text name=query_date size=11 maxlength=10 value=\"$query_date\"></td>\n";
+    $form .= "      <td><input type=text name=agent size=16 maxlength=15 value=\"$agent\"></td>\n";
+    $form .= "    </tr>\n";
+    $form .= "    <tr class=tabheader>\n";
+    $form .= "      <td colspan=2 class=tabbutton><input type=submit name=submit value=SUBMIT></td>\n";
+    $form .= "    </tr>\n";
+    $form .= "  </table>\n";
+    $form .= "</form>\n\n";
 
     if ($agent) {
         $query_date_BEGIN = "$query_date 00:00:00";   
         $query_date_END = "$query_date 23:59:59";
         $time_BEGIN = "00:00:00";   
         $time_END = "23:59:59";
-
-        $stmt="select full_name from osdial_users where user='$agent';";
-        $rslt=mysql_query($stmt, $link);
-        if ($DB) {$html .= "$stmt\n";}
-        $row=mysql_fetch_row($rslt);
-        $full_name = $row[0];
 
         $plain .= "OSDIAL: Agent Time Sheet                             $NOW_TIME\n";
 
@@ -133,17 +138,15 @@ function report_agent_timesheet() {
 
         if ($start == "") $start = "NONE";
         if ($end == "") $end = "NONE";
-        $table .= "<br><br>\n";
+        $table .= "<br>\n";
         $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
         $table .= "  <tr><td align=center><font color=$default_text size=3>AGENT TIMES</font></td></tr>\n";
         $table .= "  <tr>\n";
         $table .= "    <td align=center>\n";
         $table .= "      <table width=300 align=center cellspacing=1 bgcolor=grey>\n";
         $table .= "        <tr class=tabheader>\n";
-        $table .= "          <td colspan=2></td>\n";
-        $table .= "        </tr>\n";
-        $table .= "        <tr class=tabheader>\n";
-        $table .= "          <td colspan=2>$agent - $full_name</td>\n";
+        $table .= "          <td></td>\n";
+        $table .= "          <td>TIME</td>\n";
         $table .= "        </tr>\n";
         $table .= "        <tr bgcolor=$oddrows class=\"row font1\">\n";
         $table .= "          <td align=center>FIRST LOGIN</td>\n";
@@ -350,9 +353,12 @@ function report_agent_timesheet() {
         $table .= "  </tr>\n";
         $table .= "</table>\n";
 
-
-        $html .= "<div class=onlyprint><pre>\n\n$plain\n</pre></div><div class=noprint>$table</div>\n";
     }
+
+    $html .= "<div class=noprint>$head</div>\n";
+    $html .= "<div class=noprint>$table</div>\n";
+    $html .= "<div class=onlyprint><pre>\n\n$plain\n</pre></div>\n";
+    $html .= "<div class=noprint>$form</div>\n";
 
     return $html;
 }
