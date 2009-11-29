@@ -29,32 +29,28 @@ function report_realtime_detail() {
     $html = '';
 	$pref = '';
 
-	if (!isset($RR))			{$RR=4;}
-	if (!isset($group))			{$group='';}
-	if (!isset($usergroup))		{$usergroup='';}
-	if (!isset($UGdisplay))		{$UGdisplay=0;}	# 0=no, 1=yes
-	if (!isset($UidORname))		{$UidORname=0;}	# 0=id, 1=name
-	if (!isset($orderby))		{$orderby='timeup';}
-	if (!isset($SERVdisplay))	{$SERVdisplay=1;}	# 0=no, 1=yes
-	if (!isset($CALLSdisplay))	{$CALLSdisplay=1;}	# 0=no, 1=yes
-	if (!isset($cpuinfo))	{$cpuinfo=0;}	# 0=std, 1=extended
-
-    if ($group='') {$group='XXXX-ALL-ACTIVE-XXXX';}
+    $RR = get_variable('RR');
+    $group = get_variable('group');
+    $usergroup = get_variable('usergroup');
+    $UGdisplay = get_variable('UGdisplay');
+    $UidORname = get_variable('UidORname');
+    $orderby = get_variable('orderby');
+    $SERVdisplay = get_variable('SERVdisplay');
+    $CALLSdisplay = get_variable('CALLSdisplay');
+    $cpuinfo = get_variable('cpuinfo');
+    $DB = get_variable('DB');
+    $adastats = get_variable('adastats');
+    $SIPmonitorLINK = get_variable('SIPmonitorLINK');
+    $IAXmonitorLINK = get_variable('IAXmonitorLINK');
+    if ($RR=='') {$RR=4;}
+    if ($group=='') {$group='XXXX-ALL-ACTIVE-XXXX';}
+    if ($UGdisplay=='') {$UGdisplay=0;}
+    if ($UidORname=='') {$UidORname=0;}
+    if ($orderby=='') {$orderby='timeup';}
+    if ($SERVdisplay=='') {$SERVdisplay=1;}
+    if ($CALLSdisplay=='') {$CALLSdisplay=1;}
+    if ($cpuinfo=='') {$cpuinfo=1;}
 	
-	if ($RR==0)  {$RR=4;} //debug - fix
-	if ($orderby=='') 	{$orderby="timeup";} //debug - fix
-
-	
-	while ( list( $line_num, $line ) = each( $fcontents ) ) {
-			// Exit if the Verbosity line shows up - Obscured by only listing vm context 'default'
-				//if ( substr($line,0,9) == "Verbosity") {
-				//        break;
-				//}
-				// Ensuring only vm entries show up
-				if ( substr($line,0,7) == "default" ) {
-				$html .= "<tr><td><pre>" . $line . "</td></tr>";
-				}
-		}
 	
 	$NOW_TIME = date("Y-m-d H:i:s");
 	$NOW_DAY = date("Y-m-d");
@@ -217,11 +213,11 @@ function report_realtime_detail() {
 	$html .= "<INPUT TYPE=HIDDEN NAME=CALLSdisplay VALUE=\"$CALLSdisplay\">\n";
 	$html .= "<INPUT TYPE=HIDDEN NAME=cpuinfo VALUE=\"$cpuinfo\">\n";
 	$html .= "<SELECT SIZE=1 NAME=group>\n";
-	if ($group == "XXXX-ALL-ACTIVE-XXXX") $aasel = "selected";
+	$aasel=''; if ($group == "XXXX-ALL-ACTIVE-XXXX") $aasel = "selected";
 	$html .= "<option value=\"XXXX-ALL-ACTIVE-XXXX\" $aasel>XXXX-ALL-ACTIVE-XXXX</option>\n";
-	if ($group == "XXXX-OUTBOUND-XXXX") $outsel = "selected";
+	$outsel=''; if ($group == "XXXX-OUTBOUND-XXXX") $outsel = "selected";
 	$html .= "<option value=\"XXXX-OUTBOUND-XXXX\" $outsel>XXXX-OUTBOUND-XXXX</option>\n";
-	if ($group == "XXXX-INBOUND-XXXX") $insel = "selected";
+	$insel=''; if ($group == "XXXX-INBOUND-XXXX") $insel = "selected";
 	$html .= "<option value=\"XXXX-INBOUND-XXXX\" $insel>XXXX-INBOUND-XXXX</option>\n";
 	$o=0;
 
@@ -676,16 +672,20 @@ function report_realtime_detail() {
 	$HTuser =		"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=userup&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">USER</a>          &#x2502;";
 	$HDusergroup =		HorizLine(14)."&#x2564;"; //14
 	$HTusergroup =		" <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=groupup&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">USER GROUP</a>   &#x2502;";
-	$HDsessionid =		HorizLine(11)."&#x2564;"; //18
-	$HTsessionid =		" SESSIONID       &#x2502;";
-	$HDbarge =		HorizLine(7)."&#x2564;"; //7
-	$HTbarge =		" BARGE &#x2502;";
+    $HXusergroup =      $LNcentcross.CenterLine(14);
+    $HBusergroup =      $LNbottomup.HorizLine(14);
+	$HDsessionid =		HorizLine(11).HorizLine(7)."&#x2564;"; //10
+	$HTsessionid =		"    SESSIONID     &#x2502;";
+    $HXmonitor =      CenterLine(7);
+    $HBmonitor =      HorizLine(7);
 	$HDstatus =		HorizLine(10)."&#x2564;"; //10
 	$HTstatus =		"  STATUS  &#x2502;";
 	$HDserver_ip =		HorizLine(17)."&#x2564;"; //17
 	$HTserver_ip =		"    SERVER IP    &#x2502;";
 	$HDcall_server_ip =	HorizLine(17)."&#x2564;"; //17
 	$HTcall_server_ip =	" CALL SERVER IP  &#x2502;";
+    $HXserver =      $LNcentcross.CenterLine(17).$LNcentcross.CenterLine(17);
+    $HBserver =      $LNbottomup.HorizLine(17).$LNbottomup.HorizLine(17);
 	$HDtime =			HorizLine(9)."&#x2564;"; //9
 	$HTtime =			"&nbsp;&nbsp;<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=timeup&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">MM:SS</a>  &#x2502;";
 	$HDcampaign =		HorizLine(12)."&#x2557;"; //12
@@ -694,40 +694,31 @@ function report_realtime_detail() {
 	if ($UGdisplay < 1)	{
 		$HDusergroup =	'';
 		$HTusergroup =	'';
+		$HXusergroup =	'';
+		$HBusergroup =	'';
 	}
-	if ( ($SIPmonitorLINK<1) && ($IAXmonitorLINK<1) ) {
-		$HDsessionid =	HorizLine(11)."&#x2564";; //11
-		$HTsessionid =	" SESSIONID &#x2502;";
+
+	if ( ($SIPmonitorLINK<1) and ($IAXmonitorLINK<1) ) {
+	    $HDsessionid = HorizLine(11)."&#x2564;";
+	    $HTsessionid = " SESSIONID &#x2502;";
+    	$HXmonitor = '';
+    	$HBmonitor = '';
 	}
-	if ( ($SIPmonitorLINK<2) && ($IAXmonitorLINK<2) ) {
-		$HDbarge =		'';
-		$HTbarge =		'';
-	}
+
 	if ($SERVdisplay < 1)	{
 		$HDserver_ip =		'';
 		$HTserver_ip =		'';
 		$HDcall_server_ip =	'';
 		$HTcall_server_ip =	'';
+		$HXserver =	'';
+		$HBserver =	'';
 	}
 		
-	$Aline  = "$LNtopleft$HDstation$HDuser$HDusergroup$HDsessionid$HDbarge$HDstatus$HDserver_ip$HDcall_server_ip$HDtime$HDcampaign\n";
-	$Bline  = "$LNleft$HTstation$HTuser$HTusergroup$HTsessionid$HTbarge$HTstatus$HTserver_ip$HTcall_server_ip$HTtime$HTcampaign\n";
-	if ($UGdisplay < 1)	{
-		$Cline  = $LNcenterleft.CenterLine(12).$LNcentcross.CenterLine(20).$LNcentcross.CenterLine(11).$LNcentcross.CenterLine(10).$LNcentcross.CenterLine(17).$LNcentcross.CenterLine(17).$LNcentcross.CenterLine(9).$LNcentcross.CenterLine(12).$LNcentright."\n";
-		$Dline  = $LNbottomleft.HorizLine(12).$LNbottomup.HorizLine(20).$LNbottomup.HorizLine(11).$LNbottomup.HorizLine(10).$LNbottomup.HorizLine(17).$LNbottomup.HorizLine(17).$LNbottomup.HorizLine(9).$LNbottomup.HorizLine(12).$LNbottomright."</font>\n";
-		if ($SERVdisplay < 1) {
-			$Cline  = $LNcenterleft.CenterLine(12).$LNcentcross.CenterLine(20).$LNcentcross.CenterLine(11).$LNcentcross.CenterLine(10).$LNcentcross.CenterLine(9).$LNcentcross.CenterLine(12).$LNcentright."\n";
-			$Dline  = $LNbottomleft.HorizLine(12).$LNbottomup.HorizLine(20).$LNbottomup.HorizLine(11).$LNbottomup.HorizLine(10).$LNbottomup.HorizLine(9).$LNbottomup.HorizLine(12).$LNbottomright."</font>\n";
-		}
-	} else {	
-		$Cline  = $LNcenterleft.CenterLine(12).$LNcentcross.CenterLine(20).$LNcentcross.CenterLine(14).$LNcentcross.CenterLine(11).$LNcentcross.CenterLine(10).$LNcentcross.CenterLine(17).$LNcentcross.CenterLine(17).$LNcentcross.CenterLine(9).$LNcentcross.CenterLine(12).$LNcentright."\n";
-		$Dline  = $LNbottomleft.HorizLine(12).$LNbottomup.HorizLine(20).$LNbottomup.HorizLine(14).$LNbottomup.HorizLine(11).$LNbottomup.HorizLine(10).$LNbottomup.HorizLine(17).$LNbottomup.HorizLine(17).$LNbottomup.HorizLine(9).$LNbottomup.HorizLine(12).$LNbottomright."</font>\n";
-		if ($SERVdisplay < 1) {
-			$Cline  = $LNcenterleft.CenterLine(12).$LNcentcross.CenterLine(20).$LNcentcross.CenterLine(14).$LNcentcross.CenterLine(11).$LNcentcross.CenterLine(10).$LNcentcross.CenterLine(9).$LNcentcross.CenterLine(12).$LNcentright."\n";
-			$Dline  = $LNbottomleft.HorizLine(12).$LNbottomup.HorizLine(20).$LNbottomup.HorizLine(14).$LNbottomup.HorizLine(11).$LNbottomup.HorizLine(10).$LNbottomup.HorizLine(9).$LNbottomup.HorizLine(12).$LNbottomright."</font>\n";
-		}
-	}
-	
+	$Aline  = "$LNtopleft$HDstation$HDuser$HDusergroup$HDsessionid$HDstatus$HDserver_ip$HDcall_server_ip$HDtime$HDcampaign\n";
+	$Bline  = "$LNleft$HTstation$HTuser$HTusergroup$HTsessionid$HTstatus$HTserver_ip$HTcall_server_ip$HTtime$HTcampaign\n";
+	$Cline  = $LNcenterleft.CenterLine(12).$LNcentcross.CenterLine(20).$HXusergroup.$LNcentcross.CenterLine(11).$HXmonitor.$LNcentcross.CenterLine(10).$HXserver.$LNcentcross.CenterLine(9).$LNcentcross.CenterLine(12).$LNcentright."\n";
+	$Dline  = $LNbottomleft.HorizLine(12).$LNbottomup.HorizLine(20).$HBusergroup.$LNbottomup.HorizLine(11).$HBmonitor.$LNbottomup.HorizLine(10).$HBserver.$LNbottomup.HorizLine(9).$LNbottomup.HorizLine(12).$LNbottomright."</font>\n";
+
 	
 	$Ahtml .= "$Aline";
 	$Ahtml .= "$Bline";
@@ -905,10 +896,10 @@ function report_realtime_detail() {
 	
 			$L='';
 			$R='';
-			if ($SIPmonitorLINK>0) {$L=" <a href=\"sip:6$Lsessionid@$server_ip\">LISTEN</a>";   $R='';}
-			if ($IAXmonitorLINK>0) {$L=" <a href=\"iax:6$Lsessionid@$server_ip\">LISTEN</a>";   $R='';}
-			if ($SIPmonitorLINK>1) {$R=" $LNcenterbar <a href=\"sip:$Lsessionid@$server_ip\">BARGE</a>";}
-			if ($IAXmonitorLINK>1) {$R=" $LNcenterbar <a href=\"iax:$Lsessionid@$server_ip\">BARGE</a>";}
+			if ($SIPmonitorLINK==1) {$L="<a href=\"sip:6$Lsessionid@$server_ip\">LISTEN</a> ";   $R='';}
+			if ($IAXmonitorLINK==1) {$L="<a href=\"iax:6$Lsessionid@$server_ip\">LISTEN</a> ";   $R='';}
+			if ($SIPmonitorLINK==2) {$R=" <a href=\"sip:$Lsessionid@$server_ip\">BARGE</a> ";}
+			if ($IAXmonitorLINK==2) {$R=" <a href=\"iax:$Lsessionid@$server_ip\">BARGE</a> ";}
 	
 			//if ($UGdisplay > 0)	{$UGD = " $G$user_group$EG $LNcenterbar";}
 			if ($UGdisplay > 0)	{
