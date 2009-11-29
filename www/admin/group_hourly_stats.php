@@ -199,7 +199,7 @@ echo "<tr><td><font size=2>TSR </td><td align=left><font size=2>ID </td><td alig
 		echo "<td align=right><font size=2> $VDcount[$o]</td>\n";
 		echo "<td align=right><font size=2> $VDtotal[$o]</td>\n";
 		echo "<td align=right><font size=2> $VDday[$o]</td>\n";
-		echo "<td align=right><font size=1><a href=\"./admin.php?ADD=3&user=$VDuser[$o]\">MODIFY</a> | <a href=\"./user_stats.php?user=$VDuser[$o]\">STATS</a></td></tr>\n";
+		echo "<td align=right><font size=1><a href=\"./admin.php?ADD=3&user=$VDuser[$o]\">MODIFY</a> | <a href=\"./admin.php?ADD=999999&SUB=21&agent=$VDuser[$o]\">STATS</a></td></tr>\n";
 		$total_calls = ($total_calls + $VDtotal[$o]);
 		$hour_calls = ($hour_calls + $VDcount[$o]);
 		$day_calls = ($day_calls + $VDday[$o]);

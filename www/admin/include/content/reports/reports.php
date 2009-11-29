@@ -72,6 +72,7 @@ if ($ADD==999999 and $SUB=='') {
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=17\"><font face=\"arial,helvetica\" size=2>Lead Performance by Campaign</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=18\"><font face=\"arial,helvetica\" size=2>Lead Performance by List</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=20\"><font face=\"arial,helvetica\" size=2>Agent Timesheet</a></font>";
+	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=21\"><font face=\"arial,helvetica\" size=2>Agent Stats</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=22\"><font face=\"arial,helvetica\" size=2>Agent Status</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_server_performance.php\"><font face=\"arial,helvetica\" size=2>Server Performance</a></font>";
 
@@ -135,6 +136,9 @@ if ($ADD==999999 and $SUB=='') {
     } elseif ($SUB==20) {
         require($WeBServeRRooT . '/admin/include/content/reports/agent_timesheet.php');
         echo report_agent_timesheet();
+    } elseif ($SUB==21) {
+        require($WeBServeRRooT . '/admin/include/content/reports/agent_stats.php');
+        echo report_agent_stats();
     } elseif ($SUB==22) {
         require($WeBServeRRooT . '/admin/include/content/reports/agent_status.php');
         echo report_agent_status();

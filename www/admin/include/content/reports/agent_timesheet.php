@@ -61,8 +61,8 @@ function report_agent_timesheet() {
 
         $head .= "<center><font color=$default_text size=3><b>$agent - $full_name</b></font></center>\n";
         $head .= "<center>\n";
-        $head .= "<span class=font2><a href=\"$PHP_SELF?ADD=999999&SUB=22&user=$agent\">Agent Status</a>\n";
-        $head .= " - <a href=\"$PHP_SELF?ADD=999999&SUB=21&user=$agent\">Agent Stats</a>\n";
+        $head .= "<span class=font2><a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$agent\">Agent Status</a>\n";
+        $head .= " - <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$agent&begin_date=$query_date&end_date=$query_date\">Agent Stats</a>\n";
         $head .= " - <a href=\"$PHP_SELF?ADD=3&user=$agent\">Modify Agent</a></span>\n";
         $head .= "</center>\n";
     }
@@ -72,7 +72,7 @@ function report_agent_timesheet() {
     $form .= "  <input type=hidden name=ADD value=\"$ADD\">\n";
     $form .= "  <input type=hidden name=SUB value=\"$SUB\">\n";
     $form .= "  <input type=hidden name=DB value=\"$DB\">\n";
-    $form .= "  <table width=300 align=center cellspacing=0 bgcolor=grey>\n";
+    $form .= "  <table width=350 align=center cellspacing=0 bgcolor=grey>\n";
     $form .= "    <tr class=tabheader>\n";
     $form .= "      <td>Date</td>\n";
     $form .= "      <td>Agent ID</td>\n";
@@ -356,9 +356,9 @@ function report_agent_timesheet() {
     }
 
     $html .= "<div class=noprint>$head</div>\n";
+    $html .= "<div class=noprint>$form</div>\n";
     $html .= "<div class=noprint>$table</div>\n";
     $html .= "<div class=onlyprint><pre>\n\n$plain\n</pre></div>\n";
-    $html .= "<div class=noprint>$form</div>\n";
 
     return $html;
 }

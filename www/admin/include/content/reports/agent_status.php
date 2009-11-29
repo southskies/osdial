@@ -67,9 +67,9 @@ function report_agent_status() {
 
         $head .= "<center><font color=$default_text size=3><b>$agent - $full_name</b></font></center>\n";
         $head .= "<center>\n";
-        $head .= "<span class=font2><a href=\"$PHP_SELF?ADD=999999&SUB=20&user=$agent\">Agent Timesheet</a>\n";
-        $head .= " - <a href=\"$PHP_SELF?ADD=999999&SUB=21&user=$agent\">Agent Stats</a>\n";
-        $head .= " - <a href=\"$PHP_SELF?ADD=3&user=$agent\">Modify User</a></span>\n";
+        $head .= "<span class=font2><a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$agent\">Agent Timesheet</a>\n";
+        $head .= " - <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$agent\">Agent Stats</a>\n";
+        $head .= " - <a href=\"$PHP_SELF?ADD=3&user=$agent\">Modify Agent</a></span>\n";
         $head .= "</center>\n";
     }
 
@@ -78,12 +78,12 @@ function report_agent_status() {
     $form .= "  <input type=hidden name=ADD value=\"$ADD\">\n";
     $form .= "  <input type=hidden name=SUB value=\"$SUB\">\n";
     $form .= "  <input type=hidden name=DB value=\"$DB\">\n";
-    $form .= "  <table align=center cellspacing=1 bgcolor=grey>\n";
+    $form .= "  <table align=center cellspacing=1 bgcolor=grey width=350>\n";
     $form .= "    <tr class=tabheader>\n";
     $form .= "      <td>Agent #</td>\n";
     $form .= "      <td>&nbsp;<td>\n";
     $form .= "    </tr>\n";
-    $form .= "    <tr class=tabfooter>\n";
+    $form .= "    <tr class=tabheader>\n";
     $form .= "      <td><input type=textbox name=agent value=\"$agent\"></td>\n";
     $form .= "      <td class=tabbutton><input type=submit name=submit value=LOOKUP></td>\n";
     $form .= "    </tr>\n";
@@ -236,8 +236,8 @@ function report_agent_status() {
     }
 
     $html .= "<div class=noprint>$head</div>\n";
-    $html .= "<div class=noprint>$table</div>\n";
     $html .= "<div class=noprint>$form</div>\n";
+    $html .= "<div class=noprint>$table</div>\n";
 
     return $html;
 }

@@ -148,7 +148,7 @@ if (strlen($users_hh) > 1) {
                 <a href="<?= $PHP_SELF ?>?ADD=550"> Search For An Agent </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 <a href="<?= $PHP_SELF ?>?ADD=9"> Lead Allocation </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                <? if ($user != "") { ?>
-                <a href="<?= $PHP_SELF ?>?ADD=999999&SUB=1&iframe=user_stats.php?user=<?= $user ?>"> Agent Stats </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                <a href="<?= $PHP_SELF ?>?ADD=999999&SUB=21&agent=<?= $user ?>"> Agent Stats </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 <a href="<?= $PHP_SELF ?>?ADD=999999&SUB=22&agent=<?= $user ?>"> Agent Status </a> 
                <? } ?>
             </font>
