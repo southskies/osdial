@@ -241,20 +241,21 @@ function report_agent_performance_detail() {
         }
 
 
-        $plain .= "+-----------------+----------+--------+--------+---------+--------+--------+--------+--------+--------+--------+--------+--------+\n";
-        $plain .= "|    USER NAME    |    ID    | CALLS  |NEWCALLS|  TIME   | PAUSE  |PAUSEAVG|  WAIT  | WAITAVG|  TALK  | TALKAVG| DISPO  | DISPAVG|\n";
-        $plain .= "+-----------------+----------+--------+--------+---------+--------+--------+--------+--------+--------+--------+--------+--------+\n";
+        $plain .= "+-----------------+----------+--------+---------+--------+--------+--------+--------+--------+--------+--------+--------+\n";
+        $plain .= "|   AGENT NAME    |    ID    | CALLS  |  TIME   | PAUSE  |PAUSEAVG|  WAIT  | WAITAVG|  TALK  | TALKAVG| DISPO  | DISPAVG|\n";
+        $plain .= "+-----------------+----------+--------+---------+--------+--------+--------+--------+--------+--------+--------+--------+\n";
         $plain_status .= "+-----------------+----------+$statusesHEAD\n";
-        $plain_status .= "|    USER NAME    |    ID    |$statusesHTML\n";
+        $plain_status .= "|   AGENT NAME    |    ID    |$statusesHTML\n";
         $plain_status .= "+-----------------+----------+$statusesHEAD\n";
 
         $table .= "<br><br>\n";
-        $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
+        $table .= "<table align=center cellspacing=0 cellpadding=0 width=$section_width\">\n";
         $table .= "  <tr><td align=center><font color=$default_text size=3>AGENT PERFORMANCE DETAIL</font></td></tr>\n";
         $table .= "  <tr>\n";
         $table .= "    <td align=center>\n";
-        $table .= "      <table width=800 align=center cellspacing=1 bgcolor=grey>\n";
-        $table .= "        <tr class=tabheader style=\"font-size: 7pt;\">\n";
+        $table .= "      <div style=\"overflow: auto; width:" . $section_width . "px;padding:3px;background-color:grey;\">\n";
+        $table .= "      <table width=800 align=center cellspacing=1 bgcolor=grey style=\"cursor:crosshait;\">\n";
+        $table .= "        <tr class=tabheader style=\"font-size: 8pt;\">\n";
         $table .= "          <td colspan=4></td>\n";
         $table .= "          <td align=center bgcolor=grey></td>\n";
         $table .= "          <td align=center colspan=2>PAUSE</td>\n";
@@ -269,8 +270,8 @@ function report_agent_performance_detail() {
             $table .= "          <td align=center colspan=" . count($statusesARY) . ">STATUSES</td>\n";
         }
         $table .= "        </tr>\n";
-        $table .= "        <tr class=tabheader style=\"font-size: 7pt;\">\n";
-        $table .= "          <td align=center nowrap>User Name</td>\n";
+        $table .= "        <tr class=tabheader style=\"font-size: 8pt;\">\n";
+        $table .= "          <td align=center nowrap>Agent Name</td>\n";
         $table .= "          <td align=center>ID</td>\n";
         $table .= "          <td align=center>Calls</td>\n";
         #$table .= "          <td align=center>NewCalls</td>\n";
@@ -287,7 +288,7 @@ function report_agent_performance_detail() {
         $table .= "          <td align=center bgcolor=grey></td>\n";
         $table .= "          <td align=center>Tot</td>\n";
         $table .= "          <td align=center>Avg</td>\n";
-        $head = "USER NAME|USER ID|CALLS|TIME|PAUSE TIME|PAUSE AVG|WAIT TIME|WAIT AVG|TALK TIME|TALK AVG|DISPO TIME|DISPO AVG";
+        $head = "AGENT NAME|AGENT ID|CALLS|TIME|PAUSE TIME|PAUSE AVG|WAIT TIME|WAIT AVG|TALK TIME|TALK AVG|DISPO TIME|DISPO AVG";
         if (count($statusesARY) > 0) {
             $table .= "          <td align=center bgcolor=grey></td>\n";
             foreach ($statusesARY as $st1) {
@@ -362,20 +363,17 @@ function report_agent_performance_detail() {
             $Swait_avg=0; if ( ($Scalls > 0) and ($Swait_sec > 0) ) {$Swait_avg = ($Swait_sec/$Scalls);}
             $Sdispo_avg=0; if ( ($Scalls > 0) and ($Sdispo_sec > 0) ) {$Sdispo_avg = ($Sdispo_sec/$Scalls);}
 
+            $Tcalls = $Scalls;;
             $Scalls =    sprintf("%6s", $Scalls);
+            $Tnew_calls = $Snew_calls;
             $Snew_calls =    sprintf("%6s", $Snew_calls);
 
-            if ($non_latin < 1) {
-                $Sfull_name=    sprintf("%-15s", $Sfull_name); 
-                while(strlen($Sfull_name)>15) {$Sfull_name = substr("$Sfull_name", 0, -1);}
-                $Suser =        sprintf("%-8s", $Suser);
-                while(strlen($Suser)>8) {$Suser = substr("$Suser", 0, -1);}
-            } else {    
-                $Sfull_name=    sprintf("%-45s", $Sfull_name); 
-                while(mb_strlen($Sfull_name,'utf-8')>15) {$Sfull_name = mb_substr("$Sfull_name", 0, -1,'utf-8');}
-                $Suser =    sprintf("%-24s", $Suser);
-                while(mb_strlen($Suser,'utf-8')>8) {$Suser = mb_substr("$Suser", 0, -1,'utf-8');}
-            }
+            $Tfull_name = $Sfull_name;
+            $Sfull_name=    sprintf("%-15s", $Sfull_name); 
+            while(strlen($Sfull_name)>15) {$Sfull_name = substr("$Sfull_name", 0, -1);}
+            $Tuser = $Suser;
+            $Suser =        sprintf("%-8s", $Suser);
+            while(strlen($Suser)>8) {$Suser = substr("$Suser", 0, -1);}
 
             $USERtime_M = ($Stime / 60);
             $USERtime_M = round($USERtime_M, 2);
@@ -467,35 +465,38 @@ function report_agent_performance_detail() {
             $USERavgDISPO_MS = "$USERavgDISPO_M_int:$USERavgDISPO_S";
             $pfUSERavgDISPO_MS =        sprintf("%6s", $USERavgDISPO_MS);
 
-            $eline = "|$Sfull_name|$Suser|$Scalls|$Snew_calls|$pfUSERtime_MS|$pfUSERtotPAUSE_MS|$pfUSERavgPAUSE_MS|$pfUSERtotWAIT_MS|$pfUSERavgWAIT_MS|$pfUSERtotTALK_MS|$pfUSERavgTALK_MS|$pfUSERtotDISPO_MS|$pfUSERavgDISPO_MS";
-            $plain .= "| $Sfull_name | $Suser | $Scalls | $Snew_calls | $pfUSERtime_MS | $pfUSERtotPAUSE_MS | $pfUSERavgPAUSE_MS | $pfUSERtotWAIT_MS | $pfUSERavgWAIT_MS | $pfUSERtotTALK_MS | $pfUSERavgTALK_MS | $pfUSERtotDISPO_MS | $pfUSERavgDISPO_MS |\n";
+            $eline = "$Tfull_name|$Tuser|$Tcalls|$USERtime_MS|$USERtotPAUSE_MS|$USERavgPAUSE_MS|$USERtotWAIT_MS|$USERavgWAIT_MS|$USERtotTALK_MS|$USERavgTALK_MS|$USERtotDISPO_MS|$USERavgDISPO_MS";
+            $plain .= "| $Sfull_name | $Suser | $Scalls | $pfUSERtime_MS | $pfUSERtotPAUSE_MS | $pfUSERavgPAUSE_MS | $pfUSERtotWAIT_MS | $pfUSERavgWAIT_MS | $pfUSERtotTALK_MS | $pfUSERavgTALK_MS | $pfUSERtotDISPO_MS | $pfUSERavgDISPO_MS |\n";
             $plain_status .= "| $Sfull_name | $Suser |$SstatusesHTML\n";
 
             $bgcolor='bgcolor='.$evenrows;
             if (eregi("1$|3$|5$|7$|9$", $m)) $bgcolor='bgcolor='.$oddrows;
-            $table .= "        <tr $bgcolor class=\"row\" style=\"font-size: 7pt;\">\n";
-            $table .= "          <td align=left nowrap>$Sfull_name</td>\n";
-            $table .= "          <td align=left>$Suser</td>\n";
-            $table .= "          <td align=right>$Scalls</td>\n";
-            #$table .= "          <td align=right>$Snew_Calls</td>\n";
-            $table .= "          <td align=right>$pfUSERtime_MS</td>\n";
-            $table .= "          <td align=center bgcolor=grey></td>\n";
-            $table .= "          <td align=right>$pfUSERtotPAUSE_MS</td>\n";
-            $table .= "          <td align=right>$pfUSERavgPAUSE_MS</td>\n";
-            $table .= "          <td align=center bgcolor=grey></td>\n";
-            $table .= "          <td align=right>$pfUSERtotWAIT_MS</td>\n";
-            $table .= "          <td align=right>$pfUSERavgWAIT_MS</td>\n";
-            $table .= "          <td align=center bgcolor=grey></td>\n";
-            $table .= "          <td align=right>$pfUSERtotTALK_MS</td>\n";
-            $table .= "          <td align=right>$pfUSERavgTALK_MS</td>\n";
-            $table .= "          <td align=center bgcolor=grey></td>\n";
-            $table .= "          <td align=right>$pfUSERtotDISPO_MS</td>\n";
-            $table .= "          <td align=right>$pfUSERavgDISPO_MS</td>\n";
+            $tid = "$Tfull_name ($Tuser)";
+            $table .= "        <tr $bgcolor class=\"row\" style=\"font-size: 8pt;\">\n";
+            $table .= "          <td align=left title=\"$tid\" nowrap>$Tfull_name</td>\n";
+            $table .= "          <td align=left title=\"$tid\">$Tuser</td>\n";
+            $table .= "          <td align=right title=\"$tid Total Calls: $Tcalls\">$Tcalls</td>\n";
+            #$table .= "          <td align=right title=\"$tid\">$Tnew_Calls</td>\n";
+            $table .= "          <td align=right title=\"$tid Total Time: $Tcalls\">$USERtime_MS</td>\n";
+            $table .= "          <td align=center bgcolor=grey title=\"$tid\"></td>\n";
+            $table .= "          <td align=right title=\"$tid Total Pause Time: $USERtotPAUSE_MS\">$USERtotPAUSE_MS</td>\n";
+            $table .= "          <td align=right title=\"$tid Average Paused Time: $USERavgPAUSE_MS\">$USERavgPAUSE_MS</td>\n";
+            $table .= "          <td align=center bgcolor=grey title=\"$tid\"></td>\n";
+            $table .= "          <td align=right title=\"$tid Total Time Wait Time: $USERtotWAIT_MS \">$USERtotWAIT_MS</td>\n";
+            $table .= "          <td align=right title=\"$tid Average Wait Time: $USERavgWAIT_MS \">$USERavgWAIT_MS</td>\n";
+            $table .= "          <td align=center bgcolor=grey title=\"$tid\"></td>\n";
+            $table .= "          <td align=right title=\"$tid Total Talk Time: $USERtotTALK_MS\">$USERtotTALK_MS</td>\n";
+            $table .= "          <td align=right title=\"$tid Average Talk Time: $USERavgTALK_MS \">$USERavgTALK_MS</td>\n";
+            $table .= "          <td align=center bgcolor=grey title=\"$tid\"></td>\n";
+            $table .= "          <td align=right title=\"$tid Total Diposition Time $USERtotDISPO_MS \">$USERtotDISPO_MS</td>\n";
+            $table .= "          <td align=right title=\"$tid Average Diposition Time $USERavgDISPO_MS \">$USERavgDISPO_MS</td>\n";
             if (count($SstatusesARY) > 0) {
-                $table .= "          <td align=center bgcolor=grey></td>\n";
+                $table .= "          <td align=center bgcolor=grey title=\"$tid\"></td>\n";
+                $sac=0;
                 foreach ($SstatusesARY as $sa1) {
                     $eline .= '|' . $sa1;
-                    $table .= "          <td align=right style=\"font-size: 7pt; font-family: monospace;\">$sa1</td>\n";
+                    $table .= "          <td align=right title=\"$tid Dispositioned $sa1 Calls as $statusesARY[$sac]\" style=\"font-size: 7pt; font-family: monospace;\">$sa1</td>\n";
+                    $sac++;
                 }
             }
             $table .= "        </tr>\n";
@@ -644,16 +645,16 @@ function report_agent_performance_detail() {
             while(strlen($TOTavgWAIT_MS)>6) {$TOTavgWAIT_MS = substr("$TOTavgWAIT_MS", 0, -1);}
 
 
-        $plain .= "+-----------------+----------+--------+--------+---------+--------+--------+--------+--------+--------+--------+--------+--------+\n";
-        $plain .= "|  TOTALS        AGENTS:$TOT_AGENTS | $TOTcalls| $TOTnew_calls | $TOTtime_MS|$TOTtotPAUSE_MS| $TOTavgPAUSE_MS |$TOTtotWAIT_MS| $TOTavgWAIT_MS |$TOTtotTALK_MS| $TOTavgTALK_MS |$TOTtotDISPO_MS| $TOTavgDISPO_MS |\n";
-        $plain .= "+----------------------------+--------+--------+---------+--------+--------+--------+--------+--------+--------+--------+--------+\n";
+        $plain .= "+-----------------+----------+--------+---------+--------+--------+--------+--------+--------+--------+--------+--------+\n";
+        $plain .= "|  TOTALS        AGENTS:$TOT_AGENTS | $TOTcalls| $TOTtime_MS|$TOTtotPAUSE_MS| $TOTavgPAUSE_MS |$TOTtotWAIT_MS| $TOTavgWAIT_MS |$TOTtotTALK_MS| $TOTavgTALK_MS |$TOTtotDISPO_MS| $TOTavgDISPO_MS |\n";
+        $plain .= "+----------------------------+--------+---------+--------+--------+--------+--------+--------+--------+--------+--------+\n";
         $plain .= "\n";
         $plain_status .= "+-----------------+----------+$statusesHEAD\n";
         $plain_status .= "|  TOTALS                    |$SUMstatusesHTML\n";
         $plain_status .= "+-----------------+----------+$statusesHEAD\n";
         $plain_status .= "\n";
 
-        $table .= "        <tr class=tabfooter style=\"font-size: 7pt;\">\n";
+        $table .= "        <tr class=tabfooter style=\"font-size: 8pt;\">\n";
         $table .= "          <td colspan=2 align=center nowrap>AGENTS: $TOT_AGENTS</td>\n";
         $table .= "          <td align=right nowrap>&nbsp;&nbsp;$TOTcalls</td>\n";
         #$table .= "          <td align=right>$TOTnew_calls</td>\n";
@@ -678,6 +679,7 @@ function report_agent_performance_detail() {
         }
         $table .= "        </tr>\n";
         $table .= "      </table>\n";
+        $table .= "      </div>\n";
         $table .= "    </td>\n";
         $table .= "  </tr>\n";
         $table .= "</table>\n";
