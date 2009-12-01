@@ -396,7 +396,7 @@ function report_agent_stats() {
             $table .= "    <td title=\"Record #: $u\">$u</td>\n";
             $table .= "    <td align=left title=\"Lead #: $row[12]\"><a href=\"admin_modify_lead.php?lead_id=$row[12]\" target=\"_blank\">$row[12]</a></td>\n";
             $table .= "    <td align=center title=\"Date/Time: $row[4]\">$row[4]</td>\n";
-            $table .= "    <td align=right title=\"Recording Length: $row[8]\">$row[8]</td>\n";
+            $table .= "    <td align=right title=\"Recording Length: $row[8] seconds\">$row[8]</td>\n";
             $table .= "    <td align=right title=\"Recording ID $row[0]\">$row[0]</td>\n";
             $table .= "    <td align=center title=\"Filename: $row[10]\">$row[10]</td>\n";
             $table .= "    <td align=center title=\"File Location: $row[11]\">$location</td>\n";

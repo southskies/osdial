@@ -253,7 +253,7 @@ function report_agent_performance_detail() {
         $table .= "  <tr><td align=center><font color=$default_text size=3>AGENT PERFORMANCE DETAIL</font></td></tr>\n";
         $table .= "  <tr>\n";
         $table .= "    <td align=center>\n";
-        $table .= "      <div style=\"overflow: auto; width:" . $section_width . "px;padding:3px;background-color:grey;\">\n";
+        $table .= "      <div style=\"overflow: auto; width:" . $section_width . "px;\">\n";
         $table .= "      <table width=800 align=center cellspacing=1 bgcolor=grey style=\"cursor:crosshair;\">\n";
         $table .= "        <tr class=tabheader style=\"font-size: 8pt;\">\n";
         $table .= "          <td colspan=4></td>\n";
