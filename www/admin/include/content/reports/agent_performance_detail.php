@@ -254,7 +254,7 @@ function report_agent_performance_detail() {
         $table .= "  <tr>\n";
         $table .= "    <td align=center>\n";
         $table .= "      <div style=\"overflow: auto; width:" . $section_width . "px;padding:3px;background-color:grey;\">\n";
-        $table .= "      <table width=800 align=center cellspacing=1 bgcolor=grey style=\"cursor:crosshait;\">\n";
+        $table .= "      <table width=800 align=center cellspacing=1 bgcolor=grey style=\"cursor:crosshair;\">\n";
         $table .= "        <tr class=tabheader style=\"font-size: 8pt;\">\n";
         $table .= "          <td colspan=4></td>\n";
         $table .= "          <td align=center bgcolor=grey></td>\n";
@@ -655,26 +655,28 @@ function report_agent_performance_detail() {
         $plain_status .= "\n";
 
         $table .= "        <tr class=tabfooter style=\"font-size: 8pt;\">\n";
-        $table .= "          <td colspan=2 align=center nowrap>AGENTS: $TOT_AGENTS</td>\n";
-        $table .= "          <td align=right nowrap>&nbsp;&nbsp;$TOTcalls</td>\n";
+        $table .= "          <td colspan=2 align=center title=\"Total Number of Agents: $TOT_AGENTS\" nowrap>AGENTS: $TOT_AGENTS</td>\n";
+        $table .= "          <td align=right title=\"Total Calls: $TOTcalls\" nowrap>&nbsp;&nbsp;$TOTcalls</td>\n";
         #$table .= "          <td align=right>$TOTnew_calls</td>\n";
-        $table .= "          <td align=right nowrap>&nbsp;&nbsp;$TOTtime_MS</td>\n";
+        $table .= "          <td align=right title=\"Total Time: $TOTtime_MS\" nowrap>&nbsp;&nbsp;$TOTtime_MS</td>\n";
         $table .= "          <td align=center bgcolor=grey></td>\n";
-        $table .= "          <td align=right nowrap>&nbsp;&nbsp;$TOTtotPAUSE_MS</td>\n";
-        $table .= "          <td align=right nowrap>&nbsp;&nbsp;$TOTavgPAUSE_MS</td>\n";
+        $table .= "          <td align=right title=\"Total Pause Time: $TOTtotPAUSE_MS\" nowrap>&nbsp;&nbsp;$TOTtotPAUSE_MS</td>\n";
+        $table .= "          <td align=right title=\"Average Pause Time: $TOTavgPAUSE_MS\" nowrap>&nbsp;&nbsp;$TOTavgPAUSE_MS</td>\n";
         $table .= "          <td align=center bgcolor=grey></td>\n";
-        $table .= "          <td align=right nowrap>&nbsp;&nbsp;$TOTtotWAIT_MS</td>\n";
-        $table .= "          <td align=right nowrap>&nbsp;&nbsp;$TOTavgWAIT_MS</td>\n";
+        $table .= "          <td align=right title=\"Total Wait Time: $TOTtotWAIT_MS\" nowrap>&nbsp;&nbsp;$TOTtotWAIT_MS</td>\n";
+        $table .= "          <td align=right title=\"Average Wait Time: $TOTavgWAIT_MS\" nowrap>&nbsp;&nbsp;$TOTavgWAIT_MS</td>\n";
         $table .= "          <td align=center bgcolor=grey></td>\n";
-        $table .= "          <td align=right nowrap>&nbsp;&nbsp;$TOTtotTALK_MS</td>\n";
-        $table .= "          <td align=right nowrap>&nbsp;&nbsp;$TOTavgTALK_MS</td>\n";
+        $table .= "          <td align=right title=\"Total Talk Time: $TOTtotTALK_MS\" nowrap>&nbsp;&nbsp;$TOTtotTALK_MS</td>\n";
+        $table .= "          <td align=right title=\"Average Talk Time: $TOTavgTALK_MS\" nowrap>&nbsp;&nbsp;$TOTavgTALK_MS</td>\n";
         $table .= "          <td align=center bgcolor=grey></td>\n";
-        $table .= "          <td align=right nowrap>&nbsp;&nbsp;$TOTtotDISPO_MS</td>\n";
-        $table .= "          <td align=right nowrap>&nbsp;&nbsp;$TOTavgDISPO_MS</td>\n";
+        $table .= "          <td align=right title=\"Total Disposition Time: $TOTtotDISPO_MS\" nowrap>&nbsp;&nbsp;$TOTtotDISPO_MS</td>\n";
+        $table .= "          <td align=right title=\"Average Disposition Time: $TOTavgDISPO_MS\" nowrap>&nbsp;&nbsp;$TOTavgDISPO_MS</td>\n";
         if (count($SUMstatusesARY) > 0) {
             $table .= "          <td align=center bgcolor=grey></td>\n";
+            $ssc=0;
             foreach ($SUMstatusesARY as $ss1) {
-                $table .= "          <td align=right style=\"font-family: monospace;\" nowrap>$ss1</td>\n";
+                $table .= "          <td align=right title=\"$ss1 Calls Dispositioned as $statusesARY[$ssc]\" style=\"font-family: monospace;\" nowrap>$ss1</td>\n";
+                $ssc++;
             }
         }
         $table .= "        </tr>\n";
