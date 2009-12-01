@@ -237,9 +237,17 @@ function report_agent_stats() {
         
 
         
+        #$stmt="select * from osdial_log where user='" . mysql_real_escape_string($agent) . "' and call_date >= '" . mysql_real_escape_string($begin_date) . " 0:00:01'  and call_date <= '" . mysql_real_escape_string($end_date) . " 23:59:59' order by call_date desc limit 10000;";
+        $stmt="SELECT event_time, wait_sec, talk_sec, dispo_sec, pause_sec, osdial_agent_log.status, phone_number, user_group, campaign_id, list_id, osdial_agent_log.lead_id FROM osdial_agent_log, osdial_list WHERE osdial_agent_log.lead_id=osdial_list.lead_id AND osdial_agent_log.user='" . mysql_real_escape_string($agent) . "' AND event_time >= '" . mysql_real_escape_string($begin_date) . " 0:00:01' AND event_time <= '" . mysql_real_escape_string($end_date) . " 23:59:59' ORDER BY osdial_agent_log.event_time DESC LIMIT 10000;";
+        $rslt=mysql_query($stmt, $link);
+        $logs_to_print = mysql_num_rows($rslt);
+        
         $table .= "<br>\n";
         $table .= "<center><font color=$default_text size=3><b>OUTBOUND CALLS</b></font></center>\n";
-        $table .= "<table align=center width=750 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $table .= "<center>\n";
+        $th=''; if ($logs_to_print>30) $th = "height:500px;";
+        $table .= "<div style=\"overflow:auto;width:770px;$th\">\n";
+        $table .= "<table align=center width=750 cellspacing=1 cellpadding=1 bgcolor=grey style=\"cursor:crosshair;\">\n";
         $table .= "  <tr class=tabheader>\n";
         $table .= "    <td colspan=12 style=\"font-size: 7pt;\">W=wait&nbsp;&nbsp;&nbsp;T=talk&nbsp;&nbsp;&nbsp;D=disposition&nbsp;&nbsp;&nbsp;P=pause</td>\n";
         $table .= "  </tr>\n";
@@ -258,11 +266,6 @@ function report_agent_stats() {
         $table .= "    <td>LEAD</td>\n";
         $table .= "  </tr>\n";
         
-        #$stmt="select * from osdial_log where user='" . mysql_real_escape_string($agent) . "' and call_date >= '" . mysql_real_escape_string($begin_date) . " 0:00:01'  and call_date <= '" . mysql_real_escape_string($end_date) . " 23:59:59' order by call_date desc limit 10000;";
-        $stmt="SELECT event_time, wait_sec, talk_sec, dispo_sec, pause_sec, osdial_agent_log.status, phone_number, user_group, campaign_id, list_id, osdial_agent_log.lead_id FROM osdial_agent_log, osdial_list WHERE osdial_agent_log.lead_id=osdial_list.lead_id AND osdial_agent_log.user='" . mysql_real_escape_string($agent) . "' AND event_time >= '" . mysql_real_escape_string($begin_date) . " 0:00:01' AND event_time <= '" . mysql_real_escape_string($end_date) . " 23:59:59' ORDER BY osdial_agent_log.event_time DESC LIMIT 10000;";
-        $rslt=mysql_query($stmt, $link);
-        $logs_to_print = mysql_num_rows($rslt);
-        
         $u=0;
         while ($logs_to_print > $u) {
             $row=mysql_fetch_row($rslt);
@@ -275,30 +278,39 @@ function report_agent_stats() {
             $u++;
             $event = str_replace(" ", "&nbsp;", $row[0]);
             $table .= "  <tr $bgcolor class=\"row font1\">\n";
-            $table .= "    <td align=left>$u</td>\n";
-            $table .= "    <td align=center>$event</td>\n";
-            $table .= "    <td align=right title=\"Wait (seconds)\">$row[1]</td>\n";
-            $table .= "    <td align=right title=\"Talk (seconds)\">$row[2]</td>\n";
-            $table .= "    <td align=right title=\"Disposition (seconds)\">$row[3]</td>\n";
-            $table .= "    <td align=right title=\"Pause (seconds)\">$row[4]</td>\n";
-            $table .= "    <td align=left>&nbsp;&nbsp;$row[5]</td>\n";
-            $table .= "    <td align=center>$row[6]</td>\n";
-            $table .= "    <td align=left>$row[7]</td>\n";
-            $table .= "    <td align=left>$row[8]</td>\n";
-            $table .= "    <td align=center>$row[9]</td>\n";
-            $table .= "    <td align=right><a href=\"admin_modify_lead.php?lead_id=$row[10]\" target=\"_blank\">$row[10]</a></td>\n";
+            $table .= "    <td align=left title=\"Record #: $u\">$u</td>\n";
+            $table .= "    <td align=center title=\"Date/Time: $event\">$event</td>\n";
+            $table .= "    <td align=right title=\"Wait Time: $row[1] seconds\">$row[1]</td>\n";
+            $table .= "    <td align=right title=\"Talk Time: $row[2] seconds\">$row[2]</td>\n";
+            $table .= "    <td align=right title=\"Disposition Time: $row[3] seconds\">$row[3]</td>\n";
+            $table .= "    <td align=right title=\"Pause Time: $row[4] seconds\">$row[4]</td>\n";
+            $table .= "    <td align=left title=\"Status: $row[5]\">&nbsp;&nbsp;$row[5]</td>\n";
+            $table .= "    <td align=center title=\"Phone #: $row[6]\">$row[6]</td>\n";
+            $table .= "    <td align=left title=\"Agent Group: $row[7]\">$row[7]</td>\n";
+            $table .= "    <td align=left title=\"Campaign ID: $row[8]\">$row[8]</td>\n";
+            $table .= "    <td align=center title=\"List ID: $row[9]\">$row[9]</td>\n";
+            $table .= "    <td align=right title=\"Lead #: $row[10]\"><a href=\"admin_modify_lead.php?lead_id=$row[10]\" target=\"_blank\">$row[10]</a></td>\n";
             $table .= "  </tr>\n";
         }
         $table .= "  <tr class=tabfooter>\n";
         $table .= "    <td colspan=12></td>";
         $table .= "  </tr>\n";
         $table .= "</table>\n";
+        $table .= "</div>\n";
+        $table .= "</center>\n";
         
         
 
+        $stmt="select * from osdial_closer_log where user='" . mysql_real_escape_string($agent) . "' and call_date >= '" . mysql_real_escape_string($begin_date) . " 0:00:01'  and call_date <= '" . mysql_real_escape_string($end_date) . " 23:59:59' order by call_date desc limit 10000;";
+        $rslt=mysql_query($stmt, $link);
+        $logs_to_print = mysql_num_rows($rslt);
+        
         $table .= "<br>\n";
         $table .= "<center><b><font color=$default_text size=3>INBOUND / CLOSER CALLS</b></font></center>\n";
-        $table .= "<table align=center width=750 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $table .= "<center>\n";
+        $th=''; if ($logs_to_print>30) $th = "height:500px;";
+        $table .= "<div style=\"overflow:auto;width:770px;$th\">\n";
+        $table .= "<table align=center width=750 cellspacing=1 cellpadding=1 bgcolor=grey style=\"cursor:crosshair;\">\n";
         $table .= "  <tr class=tabheader>\n";
         $table .= "    <td># </td>\n";
         $table .= "    <td>DATE/TIME </td>\n";
@@ -306,14 +318,10 @@ function report_agent_stats() {
         $table .= "    <td>STATUS</td>\n";
         $table .= "    <td>PHONE</td>\n";
         $table .= "    <td>CAMPAIGN</td>\n";
-        $table .= "    <td>WAIT (S)</td>\n";
+        $table .= "    <td>WAIT</td>\n";
         $table .= "    <td>LIST</td>\n";
         $table .= "    <td>LEAD</td>\n";
         $table .= "  </tr>\n";
-        
-        $stmt="select * from osdial_closer_log where user='" . mysql_real_escape_string($agent) . "' and call_date >= '" . mysql_real_escape_string($begin_date) . " 0:00:01'  and call_date <= '" . mysql_real_escape_string($end_date) . " 23:59:59' order by call_date desc limit 10000;";
-        $rslt=mysql_query($stmt, $link);
-        $logs_to_print = mysql_num_rows($rslt);
         
         $u=0;
         while ($logs_to_print > $u) {
@@ -327,27 +335,36 @@ function report_agent_stats() {
             $u++;
             $row[4] = str_replace(" ", "&nbsp;", $row[4]);
             $table .= "  <tr $bgcolor class=\"row font1\">\n";
-            $table .= "    <td>$u</td>\n";
-            $table .= "    <td align=center>$row[4]</td>\n";
-            $table .= "    <td align=right>$row[7]</td>\n";
-            $table .= "    <td align=left>&nbsp;&nbsp;$row[8]</td>\n";
-            $table .= "    <td align=center>$row[10]</td>\n";
-            $table .= "    <td align=left>&nbsp;&nbsp;$row[3]</td>\n";
-            $table .= "    <td align=right>$row[14]</td>\n";
-            $table .= "    <td align=left>&nbsp;&nbsp;$row[2]</td>\n";
-            $table .= "    <td align=right><a href=\"admin_modify_lead.php?lead_id=$row[1]\" target=\"_blank\">$row[1]</a></td>\n";
+            $table .= "    <td title=\"Record #: $u\">$u</td>\n";
+            $table .= "    <td align=center title=\"Date/Time: $row[4]\">$row[4]</td>\n";
+            $table .= "    <td align=right title=\"Call Length: $row[7] seconds\">$row[7]</td>\n";
+            $table .= "    <td align=left title=\"Status: $row[8]\">&nbsp;&nbsp;$row[8]</td>\n";
+            $table .= "    <td align=center title=\"Phone #: $row[10]\">$row[10]</td>\n";
+            $table .= "    <td align=left title=\"Campaign ID: $row[3]\">&nbsp;&nbsp;$row[3]</td>\n";
+            $table .= "    <td align=right title=\"Wait Time: $row[14] seconds\">$row[14]</td>\n";
+            $table .= "    <td align=left title=\"List ID: $row[2]\">&nbsp;&nbsp;$row[2]</td>\n";
+            $table .= "    <td align=right title=\"Lead #: $row[1]\"><a href=\"admin_modify_lead.php?lead_id=$row[1]\" target=\"_blank\">$row[1]</a></td>\n";
             $table .= "  </tr>\n";
         }
         $table .= "  <tr class=tabfooter>\n";
         $table .= "    <td colspan=9></td>";
         $table .= "  </tr>\n";
         $table .= "</table>\n";
+        $table .= "</div>\n";
+        $table .= "</center>\n";
         
         
+        
+        $stmt="select * from recording_log where user='" . mysql_real_escape_string($agent) . "' and start_time >= '" . mysql_real_escape_string($begin_date) . " 0:00:01'  and start_time <= '" . mysql_real_escape_string($end_date) . " 23:59:59' order by recording_id desc limit 10000;";
+        $rslt=mysql_query($stmt, $link);
+        $logs_to_print = mysql_num_rows($rslt);
         
         $table .= "<br>\n";
         $table .= "<center><font color=$default_text size=3><b>RECORDINGS</b></font></center>\n";
-        $table .= "<table align=center width=750 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $table .= "<center>\n";
+        $th=''; if ($logs_to_print>30) $th = "height:500px;";
+        $table .= "<div style=\"overflow:auto;width:770px;$th\">\n";
+        $table .= "<table align=center width=750 cellspacing=1 cellpadding=1 bgcolor=grey style=\"cursor:crosshair;\">\n";
         $table .= "  <tr class=tabheader>\n";
         $table .= "    <td># </td>\n";
         $table .= "    <td>LEAD</td>\n";
@@ -357,10 +374,6 @@ function report_agent_stats() {
         $table .= "    <td>FILENAME</td>\n";
         $table .= "    <td>LOCATION</td>\n";
         $table .= "  </tr>\n";
-        
-        $stmt="select * from recording_log where user='" . mysql_real_escape_string($agent) . "' and start_time >= '" . mysql_real_escape_string($begin_date) . " 0:00:01'  and start_time <= '" . mysql_real_escape_string($end_date) . " 23:59:59' order by recording_id desc limit 10000;";
-        $rslt=mysql_query($stmt, $link);
-        $logs_to_print = mysql_num_rows($rslt);
         
         $u=0;
         while ($logs_to_print > $u) {
@@ -380,13 +393,13 @@ function report_agent_stats() {
             $u++;
             $row[4] = str_replace(" ", "&nbsp;", $row[4]);
             $table .= "  <tr $bgcolor class=\"row font1\">\n";
-            $table .= "    <td>$u</td>\n";
-            $table .= "    <td align=left><a href=\"admin_modify_lead.php?lead_id=$row[12]\" target=\"_blank\">$row[12]</a></td>\n";
-            $table .= "    <td align=center>$row[4]</td>\n";
-            $table .= "    <td align=right>$row[8]</td>\n";
-            $table .= "    <td align=right>$row[0]</td>\n";
-            $table .= "    <td align=center>$row[10]</td>\n";
-            $table .= "    <td align=center>$location</td>\n";
+            $table .= "    <td title=\"Record #: $u\">$u</td>\n";
+            $table .= "    <td align=left title=\"Lead #: $row[12]\"><a href=\"admin_modify_lead.php?lead_id=$row[12]\" target=\"_blank\">$row[12]</a></td>\n";
+            $table .= "    <td align=center title=\"Date/Time: $row[4]\">$row[4]</td>\n";
+            $table .= "    <td align=right title=\"Recording Length: $row[8]\">$row[8]</td>\n";
+            $table .= "    <td align=right title=\"Recording ID $row[0]\">$row[0]</td>\n";
+            $table .= "    <td align=center title=\"Filename: $row[10]\">$row[10]</td>\n";
+            $table .= "    <td align=center title=\"File Location: $row[11]\">$location</td>\n";
             $table .= "  </tr>\n";
         
         }
@@ -394,6 +407,8 @@ function report_agent_stats() {
         $table .= "    <td colspan=7></td>";
         $table .= "  </tr>\n";
         $table .= "</table>\n";
+        $table .= "</div>\n";
+        $table .= "</center>\n";
     }
         
     $ENDtime = date("U");
