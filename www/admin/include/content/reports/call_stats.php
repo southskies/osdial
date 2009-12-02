@@ -940,6 +940,7 @@ function report_call_stats() {
     $TOTCATsale=0;
     $found_undef=0;
     $r=0;
+    $r2=0;
     while ($r < $statcats_to_print) {
         $TOTCATcalls = ($TOTCATcalls + $vsc_count[$r]);
         $category =    sprintf("%-20s", $vsc_id[$r]); while(strlen($category)>20) {$category = substr("$category", 0, -1);}
@@ -954,7 +955,7 @@ function report_call_stats() {
         }
         if ($CATcount > 0) {
             $bgcolor='bgcolor='.$evenrows;
-            if (eregi("1$|3$|5$|7$|9$", $r)) $bgcolor='bgcolor='.$oddrows;
+            if (eregi("1$|3$|5$|7$|9$", $r2)) $bgcolor='bgcolor='.$oddrows;
             # Put "Undefined" on bottom.
             if ($vsc_id[$r] != 'UNDEFINED') {
                 $plain .= "| $category | $CATname | $CATcount |\n";
@@ -971,6 +972,7 @@ function report_call_stats() {
                 $ccgs_table .= "        </tr>\n";
                 $found_undef++;
             }
+            $r2++;
         }
         $export .= "<input type=hidden name=\"row$CSVrows\" value=\"$category|$CATname|$CATcount\">";
         $CSVrows++;
@@ -978,7 +980,7 @@ function report_call_stats() {
     }
     if ($found_undef > 0) {
         $bgcolor='bgcolor='.$evenrows;
-        if (eregi("1$|3$|5$|7$|9$", $r)) $bgcolor='bgcolor='.$oddrows;
+        if (eregi("1$|3$|5$|7$|9$", $r2)) $bgcolor='bgcolor='.$oddrows;
         $plain .= $csgs_plain;
         $table .= "        <tr $bgcolor class=\"row font1\">\n" . $ccgs_table;
     }
@@ -1300,7 +1302,7 @@ function report_call_stats() {
     $last_full_record=0;
     $i=0;
     $h=0;
-    while ($i <= 96) {
+    while ($i < 96) {
         if ($use_closer_log) {
             $stmt="SELECT count(*) FROM ((select uniqueid from osdial_log where call_date >= '$query_date $h:00:00' and call_date <= '$query_date $h:14:59' $group_SQLand) UNION (select uniqueid from osdial_closer_log where call_date >= '$query_date $h:00:00' and call_date <= '$query_date $h:14:59' $closer_SQLand)) AS t;";
         } else {
