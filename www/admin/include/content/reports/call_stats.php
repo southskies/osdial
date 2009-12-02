@@ -134,7 +134,7 @@ function report_call_stats() {
     $html .= "      <input type=hidden name=ADD value=\"$ADD\">\n";
     $html .= "      <input type=hidden name=SUB value=\"$SUB\">\n";
     $html .= "      <input type=hidden name=DB value=\"$DB\">\n";
-    $html .= "      <table bgcolor=$oddrows cellspacing=3>\n";
+    $html .= "      <table align=center bgcolor=$oddrows cellspacing=3>\n";
     $html .= "        <tr>\n";
     $html .= "          <td colspan=3 align=center>\n";
     $html .= "            <font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
