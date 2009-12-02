@@ -210,9 +210,6 @@ function report_call_stats() {
     $rslt=mysql_query($stmt, $link);
     $ccamps_to_print = mysql_num_rows($rslt);
     $c=0;
-    if ($ccamps_to_print > 0) {
-        $html .= "In-Groups included in this report:\n";
-    }
     while ($ccamps_to_print > $c) {
         $row=mysql_fetch_row($rslt);
         $closer_campaigns = $row[0];
@@ -222,26 +219,28 @@ function report_call_stats() {
         $c++;
     }
     $closer_campaignsSQL = eregi_replace(",$",'',$closer_campaignsSQL);
-    $ccprint = preg_replace("/'',/","",$closer_campaignsSQL);
-    $ccprint2 = preg_replace("/,/",", ",$ccprint);
-    $ccprint2 = preg_replace("/'/","    ",$ccprint2);
-    $ccprint = preg_replace("/,/","\n",$ccprint);
-    $ccprint = preg_replace("/'/","    ",$ccprint);
-    $html .= $ccprint . "\n\n";
     $closer_SQLand = "and campaign_id IN($closer_campaignsSQL)";
-    $html .= "</pre></div>";
-
-    $html .= "<div class=onlyprint><pre>\n\n";
-    $html .= "---------- TOTALS\n";
 
     if ($use_closer_log) {
         $stmt="SELECT count(*),sum(length_in_sec) FROM ((select uniqueid,length_in_sec from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand) UNION (select uniqueid,length_in_sec from osdial_closer_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $closer_SQLand)) AS t;";
+        $ccprint = preg_replace("/'',/","",$closer_campaignsSQL);
+        $ccprint2 = preg_replace("/,/",", ",$ccprint);
+        $ccprint2 = preg_replace("/'/","    ",$ccprint2);
+        $ccprint = preg_replace("/,/","\n",$ccprint);
+        $ccprint = preg_replace("/'/","    ",$ccprint);
+        $html .= "In-Groups included in this report:\n";
+        $html .= $ccprint . "\n\n";
     } else {
         $stmt="select count(*),sum(length_in_sec) from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand;";
     }
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $row=mysql_fetch_row($rslt);
+
+    $html .= "</pre></div>";
+
+    $html .= "<div class=onlyprint><pre>\n\n";
+    $html .= "---------- TOTALS\n";
 
     $TOTALcalls =    sprintf("%10s", $row[0]);
     $TOTALsec =        $row[1];
