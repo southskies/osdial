@@ -719,7 +719,7 @@ $hi_hour_count=0;
 $last_full_record=0;
 $i=0;
 $h=0;
-while ($i <= 96)
+while ($i < 96)
 	{
 	$stmt="select count(*) from osdial_closer_log where call_date >= '$query_date $h:00:00' and call_date <= '$query_date $h:14:59' and campaign_id='" . mysql_real_escape_string($group) . "';";
 	$rslt=mysql_query($stmt, $link);
