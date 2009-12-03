@@ -65,7 +65,7 @@ if ($ADD==999999 and $SUB=='') {
 	    echo "<ul class=>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=12\"><font face=\"arial,helvetica\" size=2>Time On Dialer (per campaign)</a> &nbsp;  <a href=\"$PHP_SELF?ADD=999999&SUB=11\"><font face=\"arial,helvetica\" size=2>(all campaigns SUMMARY)</a> &nbsp; &nbsp; SIP <a href=\"$PHP_SELF?ADD=999999&SUB=12&SIPmonitorLINK=1\"><font face=\"arial,helvetica\" size=2>Listen</a> - <a href=\"$PHP_SELF?ADD=999999&SUB=12&SIPmonitorLINK=2\"><font face=\"arial,helvetica\" size=2>Barge</a> &nbsp; &nbsp; IAX <a href=\"$PHP_SELF?ADD=999999&SUB=12&IAXmonitorLINK=1\"><font face=\"arial,helvetica\" size=2>Listen</a> - <a href=\"$PHP_SELF?ADD=999999&SUB=12&IAXmonitorLINK=2\"><font face=\"arial,helvetica\" size=2>Barge</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=15\"><font face=\"arial,helvetica\" size=2>Call Report</a></font>";
-	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_CLOSERstats.php\"><font face=\"arial,helvetica\" size=2>Inbound / Closer Report</a></font>";
+	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=23\"><font face=\"arial,helvetica\" size=2>Inbound / Closer Report</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=19\"><font face=\"arial,helvetica\" size=2>Agent Performance Detail</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=osdial_sales_viewer.php\"><font face=\"arial,helvetica\" size=2>Recent Outbound Sales</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=16\"><font face=\"arial,helvetica\" size=2>List Cost by Entry Date</a></font>";
@@ -142,6 +142,9 @@ if ($ADD==999999 and $SUB=='') {
     } elseif ($SUB==22) {
         require($WeBServeRRooT . '/admin/include/content/reports/agent_status.php');
         echo report_agent_status();
+    } elseif ($SUB==23) {
+        require($WeBServeRRooT . '/admin/include/content/reports/closer_stats.php');
+        echo report_closer_stats();
     }
 }
 
