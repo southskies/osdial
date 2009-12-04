@@ -52,120 +52,117 @@ if (isset($_GET["sales_time_frame"]))			{$sales_time_frame=$_GET["sales_time_fra
 if (isset($_GET["forc"]))						{$forc=$_GET["forc"];}
 	elseif (isset($_POST["forc"]))				{$forc=$_POST["forc"];}
 
-?>
-<!-- html>
-<head>
-<title>OSDIAL recent sales lookup</title>
-</head -->
-<?
 include("dbconnect.php");
 include("templates/default/display.php");
-#include("/home/www/phpsubs/stylesheet.inc");
-?>
-<link rel="stylesheet" type="text/css" href="templates/<?= $admin_template ?>/styles.css" media="screen">
-<script language="JavaScript1.2">
-function GatherListIDs() {
-		var ListIDstr="";
-		var ListIDstr2="";
-	    for (var i=0; i<document.forms[0].list_id.options.length; i++) {
-			ListIDstr2+=document.forms[0].list_id.options[i].value;
-			ListIDstr2+=",";
-			if (document.forms[0].list_id.options[i].selected) {
-				ListIDstr+=document.forms[0].list_id.options[i].value;
-				ListIDstr+=",";
-			}
-		}
-		if (ListIDstr.length>0) {
-			document.forms[0].list_ids.value=ListIDstr;
-		} else {
-			document.forms[0].list_ids.value=ListIDstr2;
-		}
-		return true;
+if (!isset($admin_template)) {$admin_template='default';}
+
+echo "<html>\n";
+echo "<head>\n";
+echo "  <title>OSDIAL recent sales lookup</title>\n";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/$admin_template/styles.css\" media=\"screen\">\n";
+echo "<script language=\"JavaScript1.2\">\n";
+echo "  function GatherListIDs() {\n";
+echo "    var ListIDstr=\"\";\n";
+echo "    var ListIDstr2=\"\";\n";
+echo "    for (var i=0; i<document.forms[0].list_id.options.length; i++) {\n";
+echo "      ListIDstr2+=document.forms[0].list_id.options[i].value;\n";
+echo "      ListIDstr2+=\",\";\n";
+echo "      if (document.forms[0].list_id.options[i].selected) {\n";
+echo "        ListIDstr+=document.forms[0].list_id.options[i].value;\n";
+echo "        ListIDstr+=\",\";\n";
+echo "      }\n";
+echo "    }\n";
+echo "    if (ListIDstr.length>0) {\n";
+echo "      document.forms[0].list_ids.value=ListIDstr;\n";
+echo "    } else {\n";
+echo "      document.forms[0].list_ids.value=ListIDstr2;\n";
+echo "    }\n";
+echo "  return true;\n";
+echo "}\n";
+echo "</script>\n";
+echo "</head>\n";
+echo "<body>\n";
+echo "<table align=center cellpadding=0 cellspacing=0>\n";
+echo "  <tr>\n";
+echo "    <td align=center>\n";
+echo "      <br><font color=$default_text size=+1>RECENT OUTBOUND SALES REPORT</font><br>\n";
+echo "      <form action=\"$PHP_SELF\" method=post onSubmit=\"return GatherListIDs()\">\n";
+echo "      <input type=\"hidden\" name=\"list_ids\">\n";
+echo "      <table border=0 cellpadding=5 cellspacing=0 align=center width=600>\n";
+echo "        <tr>\n";
+echo "          <th colspan=3><br></th>\n";
+echo "        </tr>\n";
+echo "        <tr bgcolor='$oddrows'>\n";
+echo "          <td colspan=3>\n";
+echo "            <table width=100%>\n";
+echo "              <tr>\n";
+echo "                <td align=right width=200 nowrap><font class=font2>Campaign:</td>\n";
+echo "                <td align=left>\n";
+echo "                  <select name=\"dcampaign\" onChange=\"this.form.submit();\">\n";
+if ($dcampaign) {
+    $stmt="select campaign_id, campaign_name from osdial_campaigns where campaign_id='$dcampaign'";
+    $rslt=mysql_query($stmt, $link);
+    while ($row=mysql_fetch_array($rslt)) {
+        echo "                  <option value='$row[campaign_id]' selected>$row[campaign_id] - $row[campaign_name]</option>\n";
+    }
+} 
+echo "                  <option value=''>----------- Select -----------</option>\n";
+$stmt="select distinct vc.campaign_id, vc.campaign_name from osdial_campaigns vc, osdial_lists vl where vc.campaign_id=vl.campaign_id order by vc.campaign_name asc";
+$rslt=mysql_query($stmt, $link);
+while ($row=mysql_fetch_array($rslt)) {
+    echo "                  <option value='$row[campaign_id]'>$row[campaign_id] - $row[campaign_name]</option>\n";
 }
-</script>
-<!-- body -->
-<table align=center cellpadding=0 cellspacing=0>
-<tr><td align=center>
-<br><font color=<?=$default_text?> size=+1>RECENT OUTBOUND SALES REPORT</font><br>
-<form action="<?=$PHP_SELF ?>" method=post onSubmit="return GatherListIDs()">
-<input type="hidden" name="list_ids">
-<table border=0 cellpadding=5 cellspacing=0 align=center width=600>
-<tr>
-	<th colspan=3>
-	<BR></th>
-</tr>
-<tr bgcolor='#CCCCCC'>
-	<td colspan=3>
-		<table width=100%>
-			<td align=right width=200 nowrap><font class='standard_bold'>Campaign:</td>
-			<td align=left><select name="dcampaign" onChange="this.form.submit();">
-			<? 
-			if ($dcampaign) {
-				$stmt="select campaign_id, campaign_name from osdial_campaigns where campaign_id='$dcampaign'";
-				$rslt=mysql_query($stmt, $link);
-				while ($row=mysql_fetch_array($rslt)) {
-					print "\t\t<option value='$row[campaign_id]' selected>$row[campaign_id] - $row[campaign_name]</option>\n";
-				}
-			} 
-			?>
-			<option value=''>----------- Select -----------</option>
-			<?
-				$stmt="select distinct vc.campaign_id, vc.campaign_name from osdial_campaigns vc, osdial_lists vl where vc.campaign_id=vl.campaign_id order by vc.campaign_name asc";
-				$rslt=mysql_query($stmt, $link);
-				while ($row=mysql_fetch_array($rslt)) {
-					print "\t\t<option value='$row[campaign_id]'>$row[campaign_id] - $row[campaign_name]</option>\n";
-				}
-			?>
-			</select></td>
-			</tr>
-			<?
-			if ($dcampaign) {
-			?>
-			<tr bgcolor='#CCCCCC'>
-				<td align=right width=200 nowrap><font class='standard_bold'>Select list ID(s) # (optional):</td>
-				<td align=left><select name="list_id" multiple size="4">
-				<?
-					$stmt="select list_id, list_name from osdial_lists where campaign_id='$dcampaign' order by list_id asc";
-					$rslt=mysql_query($stmt, $link);
-					while ($row=mysql_fetch_array($rslt)) {
-						print "\t\t<option value='$row[list_id]'>$row[list_id] - $row[list_name]</option>\n";
-					}
-				?>
-				</select></td>
-			</tr>
-			<?
-				}
-			?>
-		</table>
-	</td>
-</tr>
-<tr bgcolor='#EEEEEE'>
-	<th align=left width=350><font class='standard_bold'>View sales made within the last <select name="sales_time_frame">
-	<option value=''>----------</option>
-	<option value='15'>15 minutes</option>
-	<option value='30'>30 minutes</option>
-	<option value='45'>45 minutes</option>
-	<option value='60'>1 hour</option>
-	<option value='120'>2 hours</option>
-	<option value='180'>3 hours</option>
-	<option value='240'>4 hours</option>
-	<option value='360'>6 hours</option>
-	<option value='480'>8 hours</option>
-	</select></th>
-	<th width=50>OR...</th>
-	<th align=right width=200><font class='standard_bold'>View the last <input type=text size=5 maxlength=5 name="sales_number"> sales**</font></th>
-</tr>
-<tr bgcolor='#EEEEEE'><th colspan=3><font class="small_standard">(If you enter values in both fields, the results will be limited by the first criteria met)</font></th></tr>
-<tr bgcolor='#CCCCCC'>
-	<td align=right><font class="standard_bold">Campaign is:&nbsp;&nbsp;&nbsp;&nbsp;<input type=radio name="forc" value="F">Transfer</font></td>
-	<td colspan=2 align=left><font class="standard_bold">&nbsp;&nbsp;<input type=radio name="forc" value="C" checked>Non-transfer</font></td>
-</tr>
-<tr><th colspan=3><input type=submit name="submit_report" value="SUBMIT"></th></tr>
-<!-- <tr><th colspan=3><input type=checkbox name="weekly_report" value="WEEKLY_REPORT"><font class="small_standard">Generate weekly report</font></th></tr> //-->
-<tr><td colspan=3 align=center><font class="small_standard">** - sorted by call date</font></td></tr>
-</table>
-</form>
-<?
+echo "                  </select>\n";
+echo "                </td>\n";
+echo "              </tr>\n";
+if ($dcampaign) {
+    echo "              <tr bgcolor='$oddrows'>\n";
+    echo "                <td align=right width=200 nowrap><font class=font2>Select list ID(s) #:<br><span class=font1>(optional)</span></td>\n";
+    echo "                <td align=left>\n";
+    echo "                  <select name=\"list_id\" multiple size=\"4\">\n";
+    $stmt="select list_id, list_name from osdial_lists where campaign_id='$dcampaign' order by list_id asc";
+    $rslt=mysql_query($stmt, $link);
+    while ($row=mysql_fetch_array($rslt)) {
+        echo "                    <option value='$row[list_id]'>$row[list_id] - $row[list_name]</option>\n";
+    }
+    echo "                  </select>\n";
+    echo "                </td>\n";
+    echo "              </tr>\n";
+}
+echo "            </table>\n";
+echo "          </td>\n";
+echo "        </tr>\n";
+echo "        <tr bgcolor=$oddrows>\n";
+echo "          <td align=center width=350 colspan=3><br><font class=font2>View sales made within the last\n";
+echo "            <select name=sales_time_frame>\n";
+echo "              <option value=''>----------</option>\n";
+echo "              <option value='15'>15 minutes</option>\n";
+echo "              <option value='30'>30 minutes</option>\n";
+echo "              <option value='45'>45 minutes</option>\n";
+echo "              <option value='60'>1 hour</option>\n";
+echo "              <option value='120'>2 hours</option>\n";
+echo "              <option value='180'>3 hours</option>\n";
+echo "              <option value='240'>4 hours</option>\n";
+echo "              <option value='360'>6 hours</option>\n";
+echo "              <option value='480'>8 hours</option>\n";
+echo "            </select><br>\n";
+echo "          <b>OR</b><br>\n";
+echo "          <font class=font2>View the last <input type=text size=5 maxlength=5 name=sales_number> sales**</font>\n";
+echo "        </tr>\n";
+echo "        <tr bgcolor='$oddrows'>\n";
+echo "          <td colspan=3 align=center><font class=font1>(If you enter values in both fields, the results will be limited by the first criteria met)</font><br><br></td>\n";
+echo "        </tr>\n";
+echo "        <tr bgcolor='$oddrows'>\n";
+echo "          <td align=right><font class=font2>Campaign is:&nbsp;&nbsp;&nbsp;&nbsp;<input type=radio name=forc value=F>Transfer</font></td>\n";
+echo "          <td colspan=2 align=left><font class=font2>&nbsp;&nbsp;<input type=radio name=forc value=C checked>Non-transfer</font></td>\n";
+echo "        </tr>\n";
+echo "        <tr class=tabfooter>\n";
+echo "          <td colspan=3 class=tabbutton><input type=submit name=submit_report value=SUBMIT></td>\n";
+echo "        </tr>\n";
+echo "        <!-- <tr><th colspan=3><input type=checkbox name=weekly_report value=WEEKLY_REPORT><font class=small_standard>Generate weekly report</font></th></tr> //-->\n";
+echo "        <tr><td colspan=3 align=center><font class=font1>** - sorted by call date</font></td></tr>\n";
+echo "      </table>\n";
+echo "      </form>\n";
 if ($submit_report && $list_ids) {
 
 	$now=date("YmdHis");
@@ -191,8 +188,8 @@ if ($submit_report && $list_ids) {
 		$timestamp=date("YmdHis", mktime(date("H"),date("i"),date("s"),date("m"),(date("d")-1),date("Y")));
 		$hours=24;
 	}
-	print "<HR>";
-	print "<table border=0 cellpadding=5 cellspacing=0 align=center>";
+	echo "      <hr>\n";
+	echo "      <table border=0 cellpadding=5 cellspacing=1 bgcolor=grey align=center>\n";
 	$i=0;
 
 	$dfile=fopen("discover_stmts.txt", "w");
@@ -204,14 +201,17 @@ if ($submit_report && $list_ids) {
 	fwrite($dfile, "$stmt\n");
 	$rslt=mysql_query($stmt, $link);
 	$q=0;
-	print "<tr><th colspan=8><font class='standard_bold' color='$default_text'>Last ".mysql_num_rows($rslt)." sales made</font></th></tr>\n";
-	print "<tr>\n";
-	print "\t<th><font color='$default_text' size='2'>Sales Rep(s)</font></th>\n";
-	print "\t<th><font color='$default_text' size='2'>Customer Name</font></th>\n";
-	print "\t<th><font color='$default_text' size='2'>Phone</font></th>\n";
-	print "\t<th><font color='$default_text' size='2'>Recording ID</font></th>\n";
-	print "\t<th><font color='$default_text' size='2'>Timestamp</font></th>\n";
-	print "</tr>\n";
+	echo "        <tr>\n";
+    echo "          <th colspan=8 bgcolor=$oddrows><font class='standard_bold' color='$default_text'>Last ".mysql_num_rows($rslt)." sales made</font></th>\n";
+    echo "        </tr>\n";
+	echo "        <tr class=tabheader>\n";
+	echo "          <td>Sales Rep(s)</td>\n";
+	echo "          <td>Customer Name</td>\n";
+	echo "          <td>Phone</td>\n";
+	echo "          <td>Recording ID</td>\n";
+	echo "          <td>Timestamp</td>\n";
+	echo "        </tr>\n";
+    $i=0;
 	while ($row=mysql_fetch_row($rslt)) {
 		$rec_stmt="select max(recording_id) from recording_log where lead_id='$row[4]'";
 		$rec_rslt=mysql_query($rec_stmt, $link);
@@ -231,28 +231,36 @@ if ($submit_report && $list_ids) {
 			$rep_name=$row[5];
 		}
 
-		if ($i%2==0) {$bgcolor="#999999";} else {$bgcolor="#CCCCCC";}
-		print "<tr bgcolor='$bgcolor'>\n";
-		print "\t<th><font size='2'>$rep_name</font></th>\n";
-		print "\t<th><font size='2'>$row[0] $row[1]</font></th>\n";
-		print "\t<th><font size='2'>$row[2]</font></th>\n";
-		print "\t<th><font size='2'>$rec_row[0]</font></th>\n";
-		print "\t<th><font size='2'>$row[3]</font></th>\n";
-		print "</tr>\n";
+		if ($i%2==0) {$bgcolor=$evenrows;} else {$bgcolor=$oddrows;}
+		echo "        <tr class=\"row font1\" bgcolor='$bgcolor'>\n";
+		echo "          <td>$rep_name</td>\n";
+		echo "          <td>$row[0] $row[1]</td>\n";
+		echo "          <td>$row[2]</td>\n";
+		echo "          <td>$rec_row[0]</td>\n";
+		echo "          <td>$row[3]</td>\n";
+		echo "        </tr>\n";
 		flush();
+        $i++;
 	}
-	print "</table>";
+	echo "        <tr class=tabfooter>\n";
+	echo "          <td></td>\n";
+	echo "          <td></td>\n";
+	echo "          <td></td>\n";
+	echo "          <td></td>\n";
+	echo "          <td></td>\n";
+	echo "        </tr>\n";
+	echo "      </table>";
+	echo "<!-- $WeBServeRRooT/admin/spreadsheet_sales_viewer.pl $list_ids $sales_number $timestamp $forc $now $dcampaign -->\n";
 	passthru("$WeBServeRRooT/admin/spreadsheet_sales_viewer.pl $list_ids $sales_number $timestamp $forc $now $dcampaign");
-#	print "\n\n<BR>$WeBServeRRooT/osdial/spreadsheet_sales_viewer.pl $list_ids $sales_number $timestamp $forc $now $dcampaign<BR>\n";
 	flush();
-	print "<table align=center border=0 cellpadding=3 cellspacing=5 width=700><tr bgcolor='#CCCCCC'>";
+	echo "<table align=center border=0 cellpadding=3 cellspacing=5 width=700><tr bgcolor='$oddrows'>";
 	if ($forc=="F") {
-		print "<th width='50%'><font size='2'><a href='osdial_fronter_report_$now.xls'>View complete Excel fronter report for this shift</a></font></th>";
+		echo "<th width='50%'><font size='2'><a href='osdial_fronter_report_$now.xls'>View complete Excel fronter report for this shift</a></font></th>";
 	}
-	print "<th width='50%'><font size='2'<a href='osdial_closer_report_$now.xls'>View complete Excel sales report for this shift</a></font></th>";
-	print "</tr></table>";
+	echo "<th width='50%'><font size='2'<a href='osdial_closer_report_$now.xls'>View complete Excel sales report for this shift</a></font></th>";
+	echo "</tr></table>";
 }
+echo "</body>\n";
+echo "</html>\n";
 ?>
-<!-- /body>
-</html -->
 
