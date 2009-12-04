@@ -174,6 +174,7 @@ $HIGHprocesses =$row[4];
 if ($row[2] > $row[3]) {$HIGHlimit = $row[2];}
 else {$HIGHlimit = $row[3];}
 if ($HIGHlimit < $row[4]) {$HIGHlimit = $row[4];}
+if ($HIGHlimit == "") {$HIGHlimit=100;}
 
 $stmt="select AVG(cpu_user_percent),AVG(cpu_system_percent),AVG(cpu_idle_percent) from server_performance where start_time <= '" . mysql_real_escape_string($query_date_END) . "' and start_time >= '" . mysql_real_escape_string($query_date_BEGIN) . "' and server_ip='" . mysql_real_escape_string($group) . "';";
 $rslt=mysql_query($stmt, $link);
@@ -322,7 +323,7 @@ fwrite ($HTMfp, "$HTMcontent");
 fclose($HTMfp);
 
 
-passthru("/usr/local/bin/pl -png $DOCroot/$HTMfile -o $DOCroot/$PNGfile");
+passthru("/usr/bin/pl -png $DOCroot/$HTMfile -o $DOCroot/$PNGfile");
 
 sleep(1);
 
@@ -331,7 +332,7 @@ echo "\n";
 echo "<IMG SRC=\"/$PLOTroot/$PNGfile\">\n";
 
 
-echo "<!-- /usr/local/bin/pl -png $DOCroot/$HTMfile -o $DOCroot/$PNGfile -->";
+echo "<!-- /usr/bin/pl -png $DOCroot/$HTMfile -o $DOCroot/$PNGfile -->";
 
 }
 
