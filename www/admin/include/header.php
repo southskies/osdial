@@ -207,7 +207,7 @@ if (strlen($campaigns_hh) > 1) {
                 <a href="<?= $PHP_SELF ?>?ADD=10"> Show Campaigns </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=11"> Add A New Campaign </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 <a href="<?= $PHP_SELF ?>?ADD=12"> Copy Campaign </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                <a href="<?= $PHP_SELF ?>?ADD=999999&SUB=13&iframe=AST_timeonVDADallSUMMARY.php"> Real-Time Campaigns Summary </a>
+                <a href="<?= $PHP_SELF ?>?ADD=999999&SUB=11"> Real-Time Campaigns Summary </a>
             </font>
         </td>
     </tr>
