@@ -63,7 +63,7 @@ if ($ADD==999999 and $SUB=='') {
 	    echo "<title>$t1: Server Stats and Reports</title></head><body bgcolor=white>";
 	    echo "<font size=4 color=$default_text><br><center>SERVER STATS AND REPORTS</center></font><br><br>";
 	    echo "<ul class=>";
-	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=12\"><font face=\"arial,helvetica\" size=2>Time On Dialer (per campaign)</a> &nbsp;  <a href=\"$PHP_SELF?ADD=999999&SUB=11\"><font face=\"arial,helvetica\" size=2>(all campaigns SUMMARY)</a> &nbsp; &nbsp; SIP <a href=\"$PHP_SELF?ADD=999999&SUB=12&SIPmonitorLINK=1\"><font face=\"arial,helvetica\" size=2>Listen</a> - <a href=\"$PHP_SELF?ADD=999999&SUB=12&SIPmonitorLINK=2\"><font face=\"arial,helvetica\" size=2>Barge</a> &nbsp; &nbsp; IAX <a href=\"$PHP_SELF?ADD=999999&SUB=12&IAXmonitorLINK=1\"><font face=\"arial,helvetica\" size=2>Listen</a> - <a href=\"$PHP_SELF?ADD=999999&SUB=12&IAXmonitorLINK=2\"><font face=\"arial,helvetica\" size=2>Barge</a></font>";
+	    echo "<li><font face=\"arial,helvetica\" size=2><a href=\"$PHP_SELF?ADD=999999&SUB=12\">Time On Dialer (per campaign)</a></font> &nbsp;  <font face=\"arial,helvetica\" size=1><a href=\"$PHP_SELF?ADD=999999&SUB=11\">(all campaigns SUMMARY)</a> &nbsp; &nbsp; SIP <a href=\"$PHP_SELF?ADD=999999&SUB=12&SIPmonitorLINK=1\">Listen</a> - <a href=\"$PHP_SELF?ADD=999999&SUB=12&SIPmonitorLINK=2\">Barge</a> &nbsp; &nbsp; IAX <a href=\"$PHP_SELF?ADD=999999&SUB=12&IAXmonitorLINK=1\">Listen</a> - <a href=\"$PHP_SELF?ADD=999999&SUB=12&IAXmonitorLINK=2\">Barge</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=15\"><font face=\"arial,helvetica\" size=2>Call Report</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=23\"><font face=\"arial,helvetica\" size=2>Inbound / Closer Report</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=19\"><font face=\"arial,helvetica\" size=2>Agent Performance Detail</a></font>";
@@ -74,6 +74,7 @@ if ($ADD==999999 and $SUB=='') {
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=20\"><font face=\"arial,helvetica\" size=2>Agent Timesheet</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=21\"><font face=\"arial,helvetica\" size=2>Agent Stats</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=22\"><font face=\"arial,helvetica\" size=2>Agent Status</a></font>";
+	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=24\"><font face=\"arial,helvetica\" size=2>User-Group Hourly Status</a></font>";
 	    echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_server_performance.php\"><font face=\"arial,helvetica\" size=2>Server Performance</a></font>";
 
 	    if ($enable_queuemetrics_logging_LU > 0) {
@@ -101,7 +102,7 @@ if ($ADD==999999 and $SUB=='') {
 		    echo "	<td align=center>$active[$o]</td>\n";
 		    echo "	<td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonVDAD.php?server_ip=$server_ip[$o]\">LINK</a></td>\n";
 		    echo "	<td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonpark.php?server_ip=$server_ip[$o]\">LINK</a></td>\n";
-		    echo "	<td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonVDAD.php?server_ip=$server_ip[$o]&closer_display=1\">LINK</a></td>\n";
+		    echo "	<td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonVDAD.php?server_ip=$server_ip[$o]%26closer_display=1\">LINK</a></td>\n";
 		    echo "</tr>";
 		    $o++;
 		}
@@ -145,6 +146,9 @@ if ($ADD==999999 and $SUB=='') {
     } elseif ($SUB==23) {
         require($WeBServeRRooT . '/admin/include/content/reports/closer_stats.php');
         echo report_closer_stats();
+    } elseif ($SUB==24) {
+        require($WeBServeRRooT . '/admin/include/content/reports/usergroup_hourly.php');
+        echo report_usergroup_hourly();
     }
 }
 

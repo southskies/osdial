@@ -323,7 +323,7 @@ if (strlen($usergroups_hh) > 1) {
             <font face="arial,helvetica" color=<?=$default_text?> size=<?= $subheader_font_size ?>> &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=100000"> Show User Groups </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=111111"> Add A New User Group </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-                <a href="<?= $PHP_SELF ?>?ADD=999999&SUB=7&iframe=group_hourly_stats.php"> Group Hourly Report </a>
+                <a href="<?= $PHP_SELF ?>?ADD=999999&SUB=24"> Group Hourly Report </a>
             </font>
         </td>
     </tr>
