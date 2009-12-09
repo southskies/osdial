@@ -721,7 +721,7 @@ if ($ADD==1122) {
 
         echo "  <tr>\n";
         echo "    <td align=right><font size=2>Entry Date</font></td>\n";
-        echo "    <td align=left colspan=2><font size=2><input type=text name=entry_date_start value=\"$orig_entry_date_start\" size=10 maxlength=10> to <input type=text name=entry_date_end value=\"$orig_entry_date_end\" size=10 maxlength=10></font></td>\n";
+        echo "    <td align=left colspan=2><font size=2><input type=text name=entry_date_start value=\"$orig_entry_date_start\" size=10 maxlength=10 title=\"Format: YYYY-MM-DD\"> to <input type=text name=entry_date_end value=\"$orig_entry_date_end\" size=10 maxlength=10 title=\"Format: YYYY-MM-DD\"></font></td>\n";
         $fieldOPTS="";
         foreach ($field_label as $k => $v) {
             $sel="";
@@ -744,19 +744,23 @@ if ($ADD==1122) {
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=right><font size=2>Modified Date</font></td>\n";
-        echo "    <td align=left colspan=3><font size=2><input type=text name=modify_date_start value=\"$orig_modify_date_start\" size=10 maxlength=10> to <input type=text name=modify_date_end value=\"$orig_modify_date_end\" size=10 maxlength=10></font></td>\n";
+        echo "    <td align=left colspan=3><font size=2><input type=text name=modify_date_start value=\"$orig_modify_date_start\" size=10 maxlength=10 title=\"Format: YYYY-MM-DD\"> to <input type=text name=modify_date_end value=\"$orig_modify_date_end\" size=10 maxlength=10 title=\"Format: YYYY-MM-DD\"></font></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=right><font size=2>Last Call Date</font></td>\n";
         echo "    <td align=left colspan=3><font size=2>\n";
-        echo "      <input type=text name=lastcall_date_start value=\"$orig_lastcall_date_start\" size=10 maxlength=10> to <input type=text name=lastcall_date_end value=\"$orig_lastcall_date_end\" size=10 maxlength=10></font>\n";
+        echo "      <input type=text name=lastcall_date_start value=\"$orig_lastcall_date_start\" size=10 maxlength=10 title=\"Format: YYYY-MM-DD\"> to <input type=text name=lastcall_date_end value=\"$orig_lastcall_date_end\" size=10 maxlength=10 title=\"Format: YYYY-MM-DD\"></font>\n";
         if ($use_osdial_log == 1) $check = " checked";
-        echo "      <br><input type=checkbox name=use_osdial_log id=use_osdial_log value=1$check> <font size=1><label for=use_osdial_log>Output Lead History (Must Enter Call Date)</label></font>\n";
         echo "  </td>\n";
         echo "  </tr>\n";
 
         echo "  <tr>\n";
-        echo "    <td colspan=4><br><br></td>\n";
+        echo "    <td>\n";
+        echo "    </td>\n";
+        echo "    <td colspan=3 align=left>\n";
+        echo "      <input type=checkbox name=use_osdial_log id=use_osdial_log value=1$check> <font size=1><label for=use_osdial_log>Output Lead History (Must Enter Call Date)</label></font>\n";
+        echo "      <br><br>\n";
+        echo "    </td>\n";
         echo "  </tr>\n";
 
         echo "  <tr>\n";
