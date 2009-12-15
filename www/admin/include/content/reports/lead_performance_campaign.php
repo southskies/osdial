@@ -220,7 +220,7 @@ function report_lead_performance_campaign() {
         $html .= "</pre>\n";
 
         $CSVrow=0;
-        $html .= "<form target=\"_new\" action=\"/osdial/admin/tocsv.php\">\n";
+        $html .= "<form target=\"_new\" action=\"/admin/tocsv.php\">\n";
         $html .= "<input type=hidden name=\"name\" value=\"lpr\">\n";
 
         $html .= "<table cellspacing=1 cellpadding=1 bgcolor=grey>\n";

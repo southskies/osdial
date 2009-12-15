@@ -148,7 +148,7 @@ function report_list_cost() {
         $html .= "</font></pre>\n";
 
         $CSVrow=0;
-        $html .= "<form target=\"_new\" action=\"/osdial/admin/tocsv.php\">\n";
+        $html .= "<form target=\"_new\" action=\"/admin/tocsv.php\">\n";
         $html .= "<input type=hidden name=\"name\" value=\"lcr\">\n";
 
         $html .= "<table width=500 cellspacing=1 cellpadding=1 bgcolor=grey>\n";

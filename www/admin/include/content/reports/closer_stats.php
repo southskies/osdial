@@ -629,7 +629,7 @@ function report_closer_stats() {
     $export='';
 
     $CSVrows = 0;
-    $export .= "<form target=\"_new\" action=\"/osdial/admin/tocsv.php\">";
+    $export .= "<form target=\"_new\" action=\"/admin/tocsv.php\">";
     $export .= "<input type=hidden name=\"name\" value=\"css\">";
     
     $TOTALcalls = 0;
@@ -878,7 +878,7 @@ function report_closer_stats() {
     $export='';
 
     $CSVrows = 0;
-    $export .= "<form target=\"_new\" action=\"/osdial/admin/tocsv.php\">";
+    $export .= "<form target=\"_new\" action=\"/admin/tocsv.php\">";
     $export .= "<input type=hidden name=\"name\" value=\"cscs\">";
     
     $table .= "<br><br>\n";
@@ -983,7 +983,7 @@ function report_closer_stats() {
     $export='';
 
     $CSVrows = 0;
-    $export .= "<form target=\"_new\" action=\"/osdial/admin/tocsv.php\">";
+    $export .= "<form target=\"_new\" action=\"/admin/tocsv.php\">";
     $export .= "<input type=hidden name=\"name\" value=\"us\">";
     
     $TOTagents=0;

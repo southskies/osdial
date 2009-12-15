@@ -155,7 +155,7 @@ function report_agent_performance_detail() {
     $export = '';
 
     $CSVrows = 0;
-    $export .= "<form method=post target=\"_new\" action=\"/osdial/admin/tocsv.php\">\n";
+    $export .= "<form method=post target=\"_new\" action=\"/admin/tocsv.php\">\n";
     $export .= "<input type=hidden name=\"name\" value=\"css\">\n";
 
     if ($group) {
