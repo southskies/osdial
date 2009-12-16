@@ -412,6 +412,8 @@ if ( ($DB_amd_send_to_vmx =~ /Y/) && (length($DB_am_message_exten) > 0) )
 	print "SET PRIORITY 1\n";
 		checkresult();
 
+	sleep 2;
+
 	exit;
 	}
 
