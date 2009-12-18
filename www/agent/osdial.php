@@ -2176,7 +2176,7 @@ foreach ($forms as $form) {
 	
 	<!-- Choose From Available Call Backs -->
 	<span style="position:absolute;left:0px;top:18px;z-index:38;" id="CallBacKsLisTBox">
-		<table border=1 bgcolor="<?=$callback_bg?>" width=<?=$CAwidth ?> height=460>
+		<table border=1 bgcolor="<?=$callback_bg?>" width=<?=$CAwidth+13 ?> height=460>
 			<TR>
                 <TD align=center VALIGN=top> Callbacks For Agent <?= $VD_login ?><br><br>Click on a callback below to call the customer back now.<br> (When you click on a record below to call it, it will be removed from the list.)<br>
 					<BR>
