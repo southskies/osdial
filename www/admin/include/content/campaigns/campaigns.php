@@ -2228,6 +2228,7 @@ if ($total_campaigns > 20) {
     }
     echo "</font><br><br>\n";
 }
+echo "<br>";
 echo "<center><font size=-1 color=$default_text>&nbsp;|&nbsp;";
 echo "<a href=\"$PHP_SELF?ADD=$ADD&dispact=$dispact&let=\">-ALL-</a>&nbsp;|&nbsp;";
 echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;";
