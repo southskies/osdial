@@ -1569,7 +1569,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						var CB_calls = all_CBs_array[0];
 						var loop_ct=0;
 						var conv_start=0;
-						var CB_HTML = "<table width=610><tr bgcolor=<?=$callback_bg2?>><td><font class=\"log_title\">#</td><td><font class=\"log_title\"> CALLBACK DATE/TIME</td><td><font class=\"log_title\">NUMBER</td><td><font class=\"log_title\">NAME</td><td><font class=\"log_title\"> STATUS</td><td align=right><font class=\"log_title\">CAMPAIGN</td><td><font class=\"log_title\">LAST CALL DATE/TIME</td><td align=left><font class=\"log_title\"> COMMENTS</td></tr>"
+						var CB_HTML = "<table width=710><tr bgcolor=<?=$callback_bg2?>><td><font class=\"log_title\">#</td><td align=\"center\"><font class=\"log_title\"> CALLBACK DATE/TIME</td><td align=\"center\"><font class=\"log_title\">NUMBER</td><td align=\"center\"><font class=\"log_title\">NAME</td><td align=\"center\"><font class=\"log_title\"> STATUS</td><td align=\"center\"><font class=\"log_title\">CAMPAIGN</td><td align=\"center\"><font class=\"log_title\">LAST CALL DATE/TIME</td><td align=\"left\"><font class=\"log_title\"> COMMENTS</td></tr>";
 						while (loop_ct < CB_calls)
 							{
 							loop_ct++;
