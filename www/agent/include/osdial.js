@@ -1477,8 +1477,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 // ################################################################################
 // Request number of USERONLY callbacks for this agent
-	function CalLBacKsCounTCheck()
-		{
+	function CalLBacKsCounTCheck() {
 		var xmlhttp=false;
 		/*@cc_on @*/
 		/*@if (@_jscript_version >= 5)
@@ -1494,31 +1493,29 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		  }
 		 }
 		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined')
-			{
+		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
 			xmlhttp = new XMLHttpRequest();
-			}
-		if (xmlhttp) 
-			{ 
+		}
+		if (xmlhttp) { 
 			CBcount_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=CalLBacKCounT&campaign=" + campaign + "&format=text";
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 			xmlhttp.send(CBcount_query); 
-			xmlhttp.onreadystatechange = function() 
-				{ 
-				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) 
-					{
+			xmlhttp.onreadystatechange = function() { 
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 				//	alert(xmlhttp.responseText);
 					var CBcounT = xmlhttp.responseText;
-					if (CBcounT == 0) {var CBprint = "NO";}
-					else {var CBprint = CBcounT;}
-						document.getElementById("CBstatusSpan").innerHTML ="<a href=\"#\" onclick=\"CalLBacKsLisTCheck();return false;\">" + CBprint + " ACTIVE CALLBACKS</a>";
-						
+					if (CBcounT == 0) {
+						var CBprint = "NO";
+					} else {
+						var CBprint = CBcounT;
 					}
+						document.getElementById("CBstatusSpan").innerHTML ="<a href=\"#\" onclick=\"CalLBacKsLisTCheck();return false;\"><font color=\"#FFFF00\""> + CBprint + " ACTIVE CALLBACKS</font></a>";
 				}
-			delete xmlhttp;
 			}
+			delete xmlhttp;
 		}
+	}
 
 
 // ################################################################################
@@ -1569,7 +1566,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						var CB_calls = all_CBs_array[0];
 						var loop_ct=0;
 						var conv_start=0;
-						var CB_HTML = "<table width=710><tr bgcolor=<?=$callback_bg2?>><td><font class=\"log_title\">#</td><td align=\"center\"><font class=\"log_title\"> CALLBACK DATE/TIME</td><td align=\"center\"><font class=\"log_title\">NUMBER</td><td align=\"center\"><font class=\"log_title\">NAME</td><td align=\"center\"><font class=\"log_title\"> STATUS</td><td align=\"center\"><font class=\"log_title\">CAMPAIGN</td><td align=\"center\"><font class=\"log_title\">LAST CALL DATE/TIME</td><td align=\"left\"><font class=\"log_title\"> COMMENTS</td></tr>";
+						var CB_HTML = "<table width=900><tr bgcolor=<?=$callback_bg2?>><td><font class=\"log_title\">#</td><td align=\"center\"><font class=\"log_title\"> CALLBACK DATE/TIME</td><td align=\"center\"><font class=\"log_title\">NUMBER</td><td align=\"center\"><font class=\"log_title\">NAME</td><td align=\"center\"><font class=\"log_title\"> STATUS</td><td align=\"center\"><font class=\"log_title\">CAMPAIGN</td><td align=\"center\"><font class=\"log_title\">LAST CALL DATE/TIME</td><td align=\"left\"><font class=\"log_title\"> COMMENTS</td></tr>";
 						while (loop_ct < CB_calls)
 							{
 							loop_ct++;

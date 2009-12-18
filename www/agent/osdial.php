@@ -2074,7 +2074,7 @@ foreach ($forms as $form) {
 	<!--
 	#inputArea{font-family: "dejavu sans",Sans-Serif;background-color: #d6e5f4;padding: 0px;}
 	input, textarea{color: black;font-family: "dejavu sans",Sans-serif;font-size: 1.0em;padding: 0px;}
-	div.scroll_callback {height: 300px; width: 620px; overflow: scroll;}
+	div.scroll_callback {height: 300px; width: 920px; overflow: scroll;}
 	div.scroll_list {height: 400px; width: 140px; overflow: scroll;}
 	div.scroll_script {height: <?=$SSheight ?>px; width: <?=$SDwidth ?>px; background: #FFF5EC; overflow: scroll; font-size: 12px;  font-family: sans-serif;}
 	div.text_input {overflow: auto; font-size: 10px;  font-family: sans-serif;}
