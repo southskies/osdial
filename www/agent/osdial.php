@@ -329,7 +329,7 @@ $LogouTKicKAlL			= '1';	# set to 1 to hangup all calls in session upon agent log
 
 $TEST_all_statuses		= '0';	# TEST variable allows all statuses in dispo screen
 
-$BROWSER_HEIGHT		= 526;	# set to the minimum browser height, default=500
+$BROWSER_HEIGHT		= 500;	# set to the minimum browser height, default=500
 $BROWSER_WIDTH			= 980;	# set to the minimum browser width, default=770
 
 ### SCREEN WIDTH AND HEIGHT CALCULATIONS ###
@@ -355,7 +355,7 @@ $MBheight =  ($MASTERheight + 65 +92);	# 365 - Manual Dial Buttons
 $CBheight =  ($MASTERheight + 140);	# 350 - Agent Callback, pause code, volume control Buttons and agent status
 $SSheight =  ($MASTERheight + 31 -25);		# 331 - script content
 $HTheight =  ($MASTERheight + 10);		# 310 - transfer frame, callback comments and hotkey
-$BPheight =  ($MASTERheight - 250);	# 50 - bottom buffer
+$BPheight =  ($MASTERheight - 275);	# 50 - bottom buffer
 
 
 $US='_';
@@ -2140,7 +2140,7 @@ foreach ($forms as $form) {
 					&nbsp;<font class="body_tiny" color=<?=$default_fc?>><span id=AgentStatusCalls></span>
 				</td>
 				<td valign='middle'>
-					<? echo "&nbsp;<a href=\"#\" onclick=\"LogouT();return false;\"><font size=1 color='red'>LOGOUT</font></a>&nbsp;"; ?>
+					&nbsp;<a href="#" onclick="LogouT();return false;"><font size=1 color='red'>LOGOUT</font></a>&nbsp;
 				</TD>
 				<TD WIDTH=110><font class="body_text"><IMG SRC="templates/<?= $agent_template ?>/images/agc_live_call_OFF.gif" NAME=livecall ALT="Live Call" WIDTH=109 HEIGHT=30 BORDER=0></TD>
 			</TR>
@@ -2178,7 +2178,7 @@ foreach ($forms as $form) {
 	<span style="position:absolute;left:0px;top:18px;z-index:38;" id="CallBacKsLisTBox">
 		<table border=1 bgcolor="<?=$callback_bg?>" width=<?=$CAwidth ?> height=460>
 			<TR>
-				<TD align=center VALIGN=top> CALLBACKS FOR AGENT <? echo $VD_login ?>:<BR>Click on a callback below to call the customer back now. If you click on a record below to call it, it will be removed from the list.
+                <TD align=center VALIGN=top> Callbacks For Agent <?= $VD_login ?><br><br>Click on a callback below to call the customer back now.<br> (When you click on a record below to call it, it will be removed from the list.)<br>
 					<BR>
 					<div class="scroll_callback" id="CallBacKsLisT"></div>
 					<BR> &nbsp; 
@@ -2192,9 +2192,9 @@ foreach ($forms as $form) {
 	
 	<!-- Manual Dial -->
 	<span style="position:absolute;left:0px;top:18px;z-index:39;" id="NeWManuaLDiaLBox">
-		<table border=1 bgcolor="<?=$mandial_bg?>" width=<?=$CAwidth-10 ?> height=545>
+		<table border=1 bgcolor="<?= $mandial_bg ?>" width=<?= $CAwidth-10 ?> height=545>
 			<TR>
-				<TD align=center VALIGN=top><br><font color=<?=$mandial_fc?>><b>New Manual Dial Lead For <font color=<?=$mandial_bfc?>><? echo "$VD_login"?><font color=<?=$mandial_fc?>> In Campaign <font color=<?=$mandial_bfc?>><? echo "$VD_campaign" ?></b><font color=<?=$mandial_fc?>><BR><BR>Enter information below for the new lead you wish to call.
+				<TD align=center VALIGN=top><br><font color=<?= $mandial_fc ?>><b>New Manual Dial Lead For <font color=<?=$mandial_bfc?>><?= $VD_login ?><font color=<?=$mandial_fc?>> In Campaign <font color=<?=$mandial_bfc?>><?= $VD_campaign ?></b><font color=<?= $mandial_fc ?>><BR><BR>Enter information below for the new lead you wish to call.
 				<BR>
 				<? 
 				if (eregi("X",dial_prefix))
@@ -2202,7 +2202,7 @@ foreach ($forms as $form) {
 					echo "Note: a dial prefix of $dial_prefix will be added to the beginning of this number<BR>\n";
 					}
 				?>
-				Note: all new manual dial leads will go into list <? echo $manual_dial_list_id ?><BR><BR>
+				Note: all new manual dial leads will go into list <?= $manual_dial_list_id ?><BR><BR>
 				<table>
 					<tr>
 						<td align=right><font class="body_text"> <font color=<?=$mandial_fc?>>Country Code: </td>
@@ -2253,14 +2253,14 @@ foreach ($forms as $form) {
 			<tr>
 				<TD width=200>
 					<font class="sk_text">
-					<span id="HotKeyBoxA"><? echo $HKboxA ?></span>
+					<span id="HotKeyBoxA"><?= $HKboxA ?></span>
 					</font>
 				</TD>
 				<TD width=200><font class="sk_text">
-					<span id="HotKeyBoxB"><? echo $HKboxB ?></span>
+					<span id="HotKeyBoxB"><?= $HKboxB ?></span>
 					</font></TD>
 				<TD><font class="sk_text">
-					<span id="HotKeyBoxC"><? echo $HKboxC ?></span>
+					<span id="HotKeyBoxC"><?= $HKboxC ?></span>
 					</font>
 				</TD>
 			</TR>
@@ -2666,7 +2666,7 @@ foreach ($forms as $form) {
 	<span style="position:absolute;left:2px;top: 480px;z-index:15;" id="MaiNfooterspan">
 		<table id="MaiNfooter" width=<?=$MNwidth+10 ?> class=bottom>
 			<tr height=15>
-				<td height=15><font face="Arial,Helvetica" size=1><?=$t1?> Agent version: <? echo $version ?>&nbsp;&nbsp;Build: <? echo $build ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;Server: <? echo $server_ip ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><BR>
+				<td height=15><font face="Arial,Helvetica" size=1><?=$t1?> Agent version: <?= $version ?>&nbsp;&nbsp;Build: <?= $build ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;Server: <?= $server_ip ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><BR>
 					<font class="body_small"><span id="busycallsdisplay"><a href="#"  onclick="conf_channels_detail('SHOW');">Show conference call channel information</a><BR><BR>&nbsp;</span></font>
 				</td>
 				<td align=right height=0>
