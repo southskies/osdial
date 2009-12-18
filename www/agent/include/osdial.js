@@ -1505,12 +1505,14 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 				//	alert(xmlhttp.responseText);
 					var CBcounT = xmlhttp.responseText;
+					var CBstatusHTML = "<a href=\"#\" onclick=\"CalLBacKsLisTCheck();return false;\">";
 					if (CBcounT == 0) {
-						var CBprint = "NO";
+						CBstatusHTML += "NO ACTIVE CALLBACKS";
 					} else {
-						var CBprint = CBcounT;
+						CBstatusHTML += "<font color=\"#FFFF00\">" + CBcount + " ACTIVE CALLBACKS</font>";
 					}
-						document.getElementById("CBstatusSpan").innerHTML ="<a href=\"#\" onclick=\"CalLBacKsLisTCheck();return false;\"><font color=\"#FFFF00\""> + CBprint + " ACTIVE CALLBACKS</font></a>";
+					CBstatusHTML += "</a>";
+					document.getElementById("CBstatusSpan").innerHTML = CBstatusHTML;
 				}
 			}
 			delete xmlhttp;
