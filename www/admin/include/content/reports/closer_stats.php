@@ -1215,7 +1215,7 @@ function report_closer_stats() {
     $table .= "          <td colspan=2>&nbsp;</td>\n";
     $table .= "        </tr>\n";
     $table .= "        <tr class=tabheader style=\"font-size: 6pt; font-family: monospace;\">\n";
-    $table .= "          <td align=center>&nbsp;HOUR&nbsp;&nbsp;</td>\n";
+    $table .= "          <td align=center>&nbsp;&nbsp;TIME&nbsp;&nbsp;</td>\n";
     $table .= "          <td align=center>|</td>\n";
     
     $k=1;
@@ -1262,10 +1262,9 @@ function report_closer_stats() {
     $table .= "        </tr>\n";
     
     $plain .= "+------+-------------------------------------------------------------------------------------------------------+-------+-------+\n";
-    $plain .= "| HOUR |$call_scale| DROPS | TOTAL |\n";
+    $plain .= "| TIME |$call_scale| DROPS | TOTAL |\n";
     $plain .= "+------+-------------------------------------------------------------------------------------------------------+-------+-------+\n";
     
-    $ZZ = '00';
     $i=0;
     $h=4;
     $hour= -1;
@@ -1281,20 +1280,21 @@ function report_closer_stats() {
             $hour++;
             $h=0;
             if ($hour < 10) {$hour = "0$hour";}
-            $time = "+$hour$ZZ+";
+            $time = "$hour:00";
+            $etime = "$hour:14";
         }
-        if ($h == 1) {$time = "   15 ";}
-        if ($h == 2) {$time = "   30 ";}
-        if ($h == 3) {$time = "   45 ";}
+        if ($h == 1) {$time = "$hour:15"; $etime = "$hour:29";}
+        if ($h == 2) {$time = "$hour:30"; $etime = "$hour:44";}
+        if ($h == 3) {$time = "$hour:45"; $etime = "$hour:59";}
         $Ghour_count = $hour_count[$i];
         if ($Ghour_count < 1) {
             if ( ($no_lines_yet) or ($i > $last_full_record) ) {
                 $do_nothing=1;
             } else {
                 $hour_count[$i] =    sprintf("%-5s", $hour_count[$i]);
-                $plain .= "|$time|";
-                $table .= "        <tr $bgcolor class=\"row\" title=\"$time\" style=\"font-weight: bold; font-family: monospace; font-size: 7pt;\">\n";
-                $table .= "          <td align=right>&nbsp;$time&nbsp;</td>\n";
+                $plain .= "| $time|";
+                $table .= "        <tr $bgcolor class=\"row\" title=\"Time Period: $time to $etime\" style=\"font-weight: bold; font-family: monospace; font-size: 7pt;\">\n";
+                $table .= "          <td align=center>$time</td>\n";
                 $table .= "          <td align=center style=\"font-size: 6pt;\">|</td>\n";
                 $k=0;   while ($k <= 102) {$plain .= " ";  $table .= "          <td align=center>&nbsp;</td>\n"; $k++;}
                 $plain .= "| 0     | $hour_count[$i] |\n";
@@ -1312,13 +1312,13 @@ function report_closer_stats() {
             if ($Gdrop_count < 1) {
                 $hour_count[$i] =    sprintf("%-5s", $hour_count[$i]);
     
-                $plain .= "|$time|<SPAN class=\"green\">";
-                $table .= "        <tr $bgcolor class=\"row\" title=\"$time\" style=\"font-weight: bold; font-family: monospace; font-size: 7pt;\">\n";
-                $table .= "          <td align=right>&nbsp;$time&nbsp;</td>\n";
+                $plain .= "| $time|<SPAN class=\"green\">";
+                $table .= "        <tr $bgcolor class=\"row\" title=\"Time Period: $time to $etime\" style=\"font-weight: bold; font-family: monospace; font-size: 7pt;\">\n";
+                $table .= "          <td align=center>$time</td>\n";
                 $table .= "          <td align=center style=\"font-size: 6pt;\">|</td>\n";
                 $table .= "          <td align=center>&nbsp;</td>\n";
 
-                $k=0;   while ($k <= $Xhour_count) {$plain .= "*";   $table .= "          <td align=center style=\"color: green;\">#</td>\n"; $k++;   $char_counter++;}
+                $k=0;   while ($k <= $Xhour_count) {$plain .= "*";   $table .= "          <td align=center style=\"padding-top: 1px; padding-bottom: 1px;\"><span style=\"background-color: green;\">&nbsp;</span></td>\n"; $k++;   $char_counter++;}
                 $plain .= "*X</SPAN>";   $char_counter++;
 
                 $k=0;   while ($k <= $Yhour_count) {$plain .= " ";   $table .= "          <td align=center>&nbsp;</td>\n"; $k++;   $char_counter++;}
@@ -1339,16 +1339,16 @@ function report_closer_stats() {
                 $hour_count[$i] =    sprintf("%-5s", $hour_count[$i]);
                 $drop_count[$i] =    sprintf("%-5s", $drop_count[$i]);
     
-                $plain .= "|$time|<SPAN class=\"red\">";
-                $table .= "        <tr $bgcolor class=\"row\" title=\"$time\" style=\"font-weight: bold; font-family: monospace; font-size: 7pt;\">\n";
-                $table .= "          <td align=right>&nbsp;$time&nbsp;</td>\n";
+                $plain .= "| $time|<SPAN class=\"red\">";
+                $table .= "        <tr $bgcolor class=\"row\" title=\"Time Period: $time to $etime\" style=\"font-weight: bold; font-family: monospace; font-size: 7pt;\">\n";
+                $table .= "          <td align=center>$time</td>\n";
                 $table .= "          <td align=center style=\"font-size: 6pt;\">|</td>\n";
                 $table .= "          <td align=center>&nbsp;</td>\n";
 
-                $k=0;   while ($k <= $Xdrop_count) {$plain .= ">";   $table .= "          <td align=center style=\"color: red;\">D</td>\n"; $k++;   $char_counter++;}
+                $k=0;   while ($k <= $Xdrop_count) {$plain .= ">";   $table .= "          <td align=center style=\"padding-top: 1px; padding-bottom: 1px;\"><span style=\"background-color: red;\">&nbsp;</span></td>\n"; $k++;   $char_counter++;}
                 $plain .= "D</SPAN><SPAN class=\"green\">";   $char_counter++;
 
-                $k=0;   while ($k <= $XXhour_count) {$plain .= "*";   $table .= "          <td align=center style=\"color: green;\">#</td>\n"; $k++;   $char_counter++;}
+                $k=0;   while ($k <= $XXhour_count) {$plain .= "*";   $table .= "          <td align=center style=\"padding-top: 1px; padding-bottom: 1px;\"><span style=\"background-color: green;\">&nbsp;</span></td>\n"; $k++;   $char_counter++;}
                 $plain .= "X</SPAN>";   $char_counter++;
 
                 $k=0;   while ($k <= $Yhour_count) {$plain .= " ";   $table .= "          <td align=center>&nbsp;</td>\n"; $k++;   $char_counter++;}
