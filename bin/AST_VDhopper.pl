@@ -1677,15 +1677,15 @@ foreach(@campaign_id)
 				### finish inserting any recycled leads if any
 				while ($REC_rec_countLEADS > $REC_insert_count)
 					{
-					$leads_to_hopper[$rec_countLEADS] = "$REC_leads_to_hopper[$REC_insert_count]";
-					$lists_to_hopper[$rec_countLEADS] = "$REC_lists_to_hopper[$REC_insert_count]";
-					$gmt_to_hopper[$rec_countLEADS] = "$REC_gmt_to_hopper[$REC_insert_count]";
-					$state_to_hopper[$rec_countLEADS] = "$REC_state_to_hopper[$REC_insert_count]";
-					$phone_to_hopper[$rec_countLEADS] = "$REC_phone_to_hopper[$REC_insert_count]";
-					$status_to_hopper[$rec_countLEADS] = "$REC_status_to_hopper[$REC_insert_count]";
-					$modify_to_hopper[$rec_countLEADS] = "$REC_modify_to_hopper[$REC_insert_count]";
-					$user_to_hopper[$rec_countLEADS] = "$REC_user_to_hopper[$REC_insert_count]";
-					$priority_to_hopper[$rec_countLEADS] = "$REC_priority_to_hopper[$REC_insert_count]";
+					$leads_to_hopper[$rec_countLEADS] = $REC_leads_to_hopper[$REC_insert_count];
+					$lists_to_hopper[$rec_countLEADS] = $REC_lists_to_hopper[$REC_insert_count];
+					$gmt_to_hopper[$rec_countLEADS] = $REC_gmt_to_hopper[$REC_insert_count];
+					$state_to_hopper[$rec_countLEADS] = $REC_state_to_hopper[$REC_insert_count];
+					$phone_to_hopper[$rec_countLEADS] = $REC_phone_to_hopper[$REC_insert_count];
+					$status_to_hopper[$rec_countLEADS] = $REC_status_to_hopper[$REC_insert_count];
+					$modify_to_hopper[$rec_countLEADS] = $REC_modify_to_hopper[$REC_insert_count];
+					$user_to_hopper[$rec_countLEADS] = $REC_user_to_hopper[$REC_insert_count];
+					$priority_to_hopper[$rec_countLEADS] = $REC_priority_to_hopper[$REC_insert_count];
 					$rec_countLEADS++;
 					$REC_insert_count++;
 					}
@@ -1698,7 +1698,7 @@ foreach(@campaign_id)
 			$h=0;
 			foreach(@leads_to_hopper)
 				{
-				if ($leads_to_hopper[$h] != '0')
+				if ($leads_to_hopper[$h] != 0)
 					{
 					$DNClead=0;
 					if ($use_internal_dnc[$i] =~ /Y/)
@@ -1707,23 +1707,17 @@ foreach(@campaign_id)
 						$stmtA = "SELECT count(*) from osdial_dnc where phone_number='$phone_to_hopper[$h]';";
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-						$sthArows=$sthA->rows;
-						$rec_count=0;
-						while ($sthArows > $rec_count)
-							{
-							@aryA = $sthA->fetchrow_array;
-							$DNClead =		 "$aryA[0]";
-							$rec_count++;
-							}
+						@aryA = $sthA->fetchrow_array;
+						$DNClead = $aryA[0];
 						$sthA->finish();
-						if ($DNClead != '0')
+						if ($DNClead != 0)
 							{
 							$stmtA = "UPDATE osdial_list SET status='DNCL' where lead_id='$leads_to_hopper[$h]';";
 							$affected_rows = $dbhA->do($stmtA);
 							if ($DBX) {print "Flagging DNC lead:     $affected_rows  $phone_to_hopper[$h]\n";}
 							}
 						}
-					if ($DNClead == '0')
+					if ($DNClead == 0)
 						{
 						$stmtA = "INSERT INTO $osdial_hopper (lead_id,campaign_id,status,user,list_id,gmt_offset_now,state,priority) values('$leads_to_hopper[$h]','$campaign_id[$i]','READY','','$lists_to_hopper[$h]','$gmt_to_hopper[$h]','$state_to_hopper[$h]','$priority_to_hopper[$h]');";
 						$affected_rows = $dbhA->do($stmtA);
