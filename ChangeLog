@@ -1,3 +1,415 @@
+2009-12-22  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r598] bin/AST_VDhopper.pl: Fix some numeric / string evals.
+	* [r597] bin/OSDconfig, extras/osdial.conf: Add variables for SVN
+	  version / build tagging
+	* [r596] extras/osdial.spec: Update spec-file.
+	* [r595] bin/ADMIN_update_server_ip.pl: Update the server_ip of
+	  some other important tables too.
+	* [r594] bin/AST_VDauto_dial.pl: B/DC/NA were being recorded as 1
+	  second long. These statuses should be zero. Also, epoch times for
+	  B/DC/NA/DROP were off by one.
+	* [r593] bin/osdial_astgen.pl, extras/sql/220038.sql,
+	  extras/sql/upgrade_sql.map, version: Security fix. Change default
+	  context for phones to osdial and add context when creating
+	  SIP/IAX entries..
+
+2009-12-21  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r592] docs/conf_examples/extensions.conf,
+	  docs/conf_examples/iax.conf,
+	  docs/conf_examples/osdial_extensions_outbound.conf,
+	  docs/conf_examples/sip.conf: Change global context on sip/iax to
+	  incoming. Add incoming context that does an immediate hangup.
+	  Disable International calling by default.
+	* [r591] www/admin/include/content/reports/call_stats.php,
+	  www/admin/include/content/reports/closer_stats.php: Change styles
+	  on Time Stats.
+
+2009-12-18  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r590] www/agent/osdial.php: Cosmetic changes to callbacks -
+	  steve
+	* [r589] www/agent/include/osdial.js: Fix javascript formatting.
+	* [r588] www/agent/include/osdial.js: Cosmetic changes to callbacks
+	  - steve
+	* [r587] www/agent/include/osdial.js, www/agent/osdial.php:
+	  Cosmetic changes to callbacks - steve
+	* [r586] www/admin/include/content/campaigns/campaigns.php: Add
+	  space after campaigns header.
+	* [r585] www/agent/include/osdial.js: line 1572 in (agent)
+	  osdial.js was modified to center headings and adjust the width -
+	  steve
+	* [r584] www/agent/osdial.php: Cosmetic changes to Agent interface.
+
+2009-12-16  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r583] www/agent/templates/default/images/muted.gif: New
+	  muted.gif on agent screen.
+	* [r582] extras/my.cnf: Update default DB settings.
+	* [r581] agi/VD_amd.agi, agi/VD_amd_post.agi: Change AMD AGIs to
+	  update end_epoch.
+
+2009-12-15  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r580]
+	  www/admin/include/content/reports/agent_performance_detail.php,
+	  www/admin/include/content/reports/call_stats.php,
+	  www/admin/include/content/reports/closer_stats.php,
+	  www/admin/include/content/reports/lead_performance_campaign.php,
+	  www/admin/include/content/reports/lead_performance_list.php,
+	  www/admin/include/content/reports/list_cost.php: Fix URL on
+	  export to CSV.
+
+2009-12-09  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r579] www/admin/include/content/lists/lists.php: Added format
+	  tooltip help for dates.
+
+2009-12-07  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r578] extras/my.cnf: Defaults for InnoDB v1.0.6.
+
+2009-12-04  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r577] www/admin/osdial_sales_viewer.php: Adjust styles to match
+	  OSDial.
+	* [r576] www/admin/AST_server_performance.php: Fix path and yscale.
+	* [r575] www/admin/include/header.php: Various report fixes
+	* [r574] www/admin/AST_timeonVDAD.php,
+	  www/admin/include/content/campaigns/campaigns.php,
+	  www/admin/include/header.php: Various report fixes
+	* [r573] www/admin/group_hourly_stats.php,
+	  www/admin/include/content/reports/reports.php,
+	  www/admin/include/content/reports/usergroup_hourly.php,
+	  www/admin/include/header.php: Move Group Hourly Stats to
+	  reporting function.
+
+2009-12-03  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r572] www/admin/AST_CLOSERstats.php,
+	  www/admin/include/content/reports/closer_stats.php,
+	  www/admin/include/content/reports/reports.php: Moved
+	  AST_CLOSERstats.php to reporting function. Modified to fit new
+	  report theme.
+	* [r571] www/admin/AST_CLOSERstats.php: Update for migration to
+	  report function.
+
+2009-12-02  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r570] www/admin/include/content/reports/call_stats.php:
+	  centering on report parameters.
+	* [r569]
+	  www/admin/include/content/reports/agent_performance_detail.php:
+	  Fix display of statuses containing a dash.
+	* [r568] www/admin/include/content/reports/call_stats.php: Was
+	  displaying all ingroups in campaign.
+	* [r567] www/admin/include/content/reports/call_stats.php: SQL bug,
+	  significant speed up to report.
+
+2009-12-01  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r566]
+	  www/admin/include/content/reports/agent_performance_detail.php,
+	  www/admin/include/content/reports/agent_stats.php: Some quick
+	  fixes.
+	* [r565] www/admin/include/content/reports/agent_stats.php: Added
+	  scrollbars on activity logs. Added tooltip explainations.
+	* [r564]
+	  www/admin/include/content/reports/agent_performance_detail.php:
+	  Fix off by one on csv export. Added scrollbar to table.
+
+2009-11-30  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r563]
+	  www/admin/include/content/reports/agent_performance_detail.php:
+	  Fix off by one on csv export. Added scrollbar to table.
+
+2009-11-29  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r562] www/admin/include/content/reports/realtime_detail.php: Fix
+	  assignment problem on ALL group.
+	* [r561] www/admin/admin_modify_lead.php,
+	  www/admin/group_hourly_stats.php,
+	  www/admin/include/content/reports/agent_stats.php,
+	  www/admin/include/content/reports/agent_status.php,
+	  www/admin/include/content/reports/agent_timesheet.php,
+	  www/admin/include/content/reports/reports.php,
+	  www/admin/include/content/users/users.php,
+	  www/admin/include/header.php, www/admin/user_stats.php: Moved
+	  user_stats.php into reporting function as Agent Stats. Updated
+	  all links that were pointing to user_stats. Remove old
+	  user_stats.php.
+	* [r560] www/admin/user_stats.php: Perform some cleanup before
+	  moving to reporting function.
+	* [r559] www/admin/include/content/reports/agent_status.php,
+	  www/admin/include/content/reports/agent_timesheet.php: Some
+	  structure changes.
+
+2009-11-28  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r558] www/admin/AST_timeonVDADallREC.php,
+	  www/admin/include/auth.php,
+	  www/admin/include/content/reports/agent_status.php,
+	  www/admin/include/content/reports/realtime_detail.php,
+	  www/admin/include/content/reports/reports.php,
+	  www/admin/include/content/users/users.php,
+	  www/admin/include/header.php, www/admin/user_stats.php,
+	  www/admin/user_status.php: Added Agent Status to the reporting
+	  function. Remove the old application. Updated any other scripts
+	  that use to call user_status.php to now refer back to the
+	  appropriate section in the reports.
+	* [r557] www/admin/user_status.php: Clean up the user_status script
+	  to ease transition to reports function.
+	* [r556]
+	  www/admin/include/content/reports/agent_performance_detail.php,
+	  www/admin/include/content/reports/call_stats.php,
+	  www/admin/include/content/reports/lead_performance_campaign.php,
+	  www/admin/include/content/reports/lead_performance_list.php,
+	  www/admin/include/content/reports/list_cost.php,
+	  www/admin/include/content/reports/realtime_detail.php,
+	  www/admin/include/content/reports/realtime_summary.php,
+	  www/admin/include/content/reports/reports.php: Updates to forms
+	  and various defaults on reports.
+	* [r555] www/admin/AST_agent_time_sheet.php,
+	  www/admin/include/content/reports/agent_timesheet.php,
+	  www/admin/include/content/users/users.php,
+	  www/admin/user_stats.php, www/admin/user_status.php: Deprecated
+	  old time_sheet, but new aget_timesheet into report function and
+	  link to various calling scripts.
+
+2009-11-27  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r554] www/admin/AST_inboundEXTstats_department.php: Script not
+	  used, removing.
+	* [r553] www/admin/AST_inboundEXTstats.php: Script not used,
+	  removing.
+	* [r552] www/admin/AST_agent_time_sheet_archive.php: Script is not
+	  used, removing.
+	* [r551] www/admin/AST_CLOSERstats.php,
+	  www/admin/AST_server_performance.php,
+	  www/admin/include/content/campaigns/campaigns.php,
+	  www/admin/include/content/lists/lists.php,
+	  www/admin/include/content/reports/reports.php,
+	  www/admin/include/content/users/users.php,
+	  www/admin/templates/default/styles.css: Various UI updates as
+	  suggested by Steve.
+	* [r550]
+	  www/admin/include/content/reports/lead_performance_campaign.php,
+	  www/admin/include/content/reports/lead_performance_list.php,
+	  www/admin/include/content/reports/list_performance.php,
+	  www/admin/include/content/reports/reports.php: Renamed
+	  list_performance to lead_performance_campaign and added
+	  lead_performance_list.
+	* [r549] www/admin/include/content/admin/conference.php,
+	  www/admin/include/content/admin/phones.php,
+	  www/admin/include/content/admin/server.php,
+	  www/admin/include/content/admin/settings.php,
+	  www/admin/include/content/admin/status.php,
+	  www/admin/include/content/admin/times.php,
+	  www/admin/include/content/campaigns/autoalt.php,
+	  www/admin/include/content/campaigns/campaigns.php,
+	  www/admin/include/content/campaigns/fields.php,
+	  www/admin/include/content/campaigns/hotkey.php,
+	  www/admin/include/content/campaigns/ivr.php,
+	  www/admin/include/content/campaigns/listmix.php,
+	  www/admin/include/content/campaigns/pause.php,
+	  www/admin/include/content/campaigns/recycle.php,
+	  www/admin/include/content/campaigns/status.php,
+	  www/admin/include/content/filters/filters.php,
+	  www/admin/include/content/ingroups/ingroups.php,
+	  www/admin/include/content/lists/export.php,
+	  www/admin/include/content/lists/lists.php,
+	  www/admin/include/content/remoteagent/remoteagent.php,
+	  www/admin/include/content/reports/list_cost.php,
+	  www/admin/include/content/reports/list_performance.php,
+	  www/admin/include/content/scripts/scripts.php,
+	  www/admin/include/content/usergroups/usergroups.php,
+	  www/admin/include/content/users/users.php,
+	  www/admin/include/init.php: Updated and normalized display of UI
+	  elements to call CSS classes.
+	* [r548] www/admin/templates/default/styles.css: Added classes to
+	  assist in normalized and consistent display of UI elements.
+	* [r547] www/admin/include/footer.php: Fix some table
+	  inconsistencies
+	* [r546] www/admin/osdial_sales_viewer.php: Fix font-color
+	  (templates/default/display.php not imported.
+	* [r545] www/admin/styles-print.css: Remove color classes. Added
+	  onlyprint class.
+	* [r544] www/admin/AST_CLOSERstats.php: Fix font-color
+	  (templates/default/display.php not imported.
+	* [r543] www/admin/include/functions.php: Added optnum2let function
+	  to assist in changing 0 / 1 options on the User's permissions
+	  page to N / Y.
+	* [r542] www/admin/AST_agent_performance_detail.php: Moved to
+	  include/contents/reports
+	* [r541]
+	  www/admin/include/content/reports/agent_performance_detail.php,
+	  www/admin/include/content/reports/reports.php: Adjusted Agent
+	  Performance Detail to work in the reports framework as a called
+	  function.
+	* [r540] www/admin/AST_agent_performance_detail.php: Adjusted to
+	  work in the reports framework as a called function.
+	* [r539] www/admin/AST_agent_performance_detail.php: Adjusted
+	  report to use the new OSDial look. Added ability to export to
+	  CSV. And media=print.
+	* [r538] www/admin/AST_agent_performance.php: Removing old and
+	  unused report.
+
+2009-11-26  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r537] www/admin/include/content/reports/call_stats.php: Updated
+	  styling to be more consistant with the rest of OSDial. Original
+	  PRE text output is sent to media=printer.
+
+2009-11-25  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r536] www/agent/webform_test.php: Added a test webform script
+	  that outputs a tables a fields and values in textboxes.
+	* [r535] bin/osdial_resource_listen.pl,
+	  www/admin/include/content/admin/conference.php,
+	  www/admin/include/content/admin/phones.php,
+	  www/admin/include/content/admin/server.php,
+	  www/admin/include/content/admin/settings.php,
+	  www/admin/include/content/admin/status.php,
+	  www/admin/include/content/admin/times.php,
+	  www/admin/include/content/campaigns/autoalt.php,
+	  www/admin/include/content/campaigns/campaigns.php,
+	  www/admin/include/content/campaigns/fields.php,
+	  www/admin/include/content/campaigns/hotkey.php,
+	  www/admin/include/content/campaigns/ivr.php,
+	  www/admin/include/content/campaigns/listmix.php,
+	  www/admin/include/content/campaigns/pause.php,
+	  www/admin/include/content/campaigns/recycle.php,
+	  www/admin/include/content/filters/filters.php,
+	  www/admin/include/content/ingroups/ingroups.php,
+	  www/admin/include/content/lists/lists.php,
+	  www/admin/include/content/remoteagent/remoteagent.php,
+	  www/admin/include/content/scripts/scripts.php,
+	  www/admin/include/content/usergroups/usergroups.php,
+	  www/admin/include/content/users/users.php,
+	  www/admin/templates/default/styles.css: Cleanup UI styles and
+	  make more consistant. Added 'PER-LEAD DISPOSITION COUNTS FROM
+	  LOG' to List edit. Fixed List loading to not display form after
+	  processing.
+	* [r534] www/admin/include/content/lists/export.php: Fix formatting
+	  and add javascript for checkbox selection.
+
+2009-11-24  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r533] extras/sql/upgrade_sql.pl: On update loop, only display
+	  information on updated items if --info is passed. Make a 80-char
+	  screen safe.
+	* [r532] extras/sql/999999.sql: Add campaign_lastcall field on TEST
+	  campaign creation. Fine tune default TEST campaign settings.
+	* [r531] extras/sql/214030.sql, extras/sql/215031.sql,
+	  extras/sql/215032.sql, extras/sql/215033.sql,
+	  extras/sql/215034.sql, extras/sql/220035.sql,
+	  extras/sql/220036.sql: Combine version update and
+	  last_update_check clear into one step.
+	* [r530] bin/AST_VDauto_dial.pl, bin/AST_VDcampaign_stats.pl,
+	  extras/sql/220037.sql, extras/sql/upgrade_sql.map, version,
+	  www/agent/vdc_db_query.php: Added campaign_lastcall to
+	  osdial_campaigns table. Have AST_VDauto_dial.pl update
+	  campaign_lastcall before removing hopper entry. Update
+	  campaign_lastcall after agent dispositions each call. Change
+	  AST_VDcampaign_stats.pl to use campaign_lastcall to determine if
+	  there was and recent activity in campaign and if stats should be
+	  regenerated.
+	* [r529] bin/AST_VDpredictive.pl: Removed unused script.
+	* [r528] www/agent/vdc_db_query.php: Update the campaign_changedate
+	  on dispo so that campaign_stats will regenerate from agent
+	  activity.
+
+2009-11-23  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r527] bin/osdial_resource_listen.pl: Only output 1 detected
+	  unique host.
+	* [r526] www/admin/include/content/reports/realtime_detail.php:
+	  rename loadmon to resources.
+	* [r525] bin/AST_sort_recordings.pl: Made select use a left-join.
+
+2009-11-21  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r524] www/admin/include/content/users/users.php: Change title
+	  bar color for Agent Interface Options
+	* [r523] www/admin/include/content/users/users.php: Fix to allow
+	  for Admin interface changes to users belonging to level 8 or 9
+	  (Only level 9 can modify permissions).
+	* [r522] www/admin/include/content/lists/lists.php: Make CSV export
+	  only available for user_level > 8.
+
+2009-11-20  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r521] extras/osdial.init: Added IP configuration on firstboot.
+	* [r520] extras/osdial.conf: Make the minimum default dial-level
+	  1.5
+	* [r519] www/admin/templates/default/images/osdial-bg.png: New
+	  OSDial 2.2 graphic
+	* [r518] extras/osdial_resource_listen.init,
+	  extras/osdial_resource_send.init: Make /etc/sysconfig/osdial
+	  optional.
+	* [r517] www/admin/include/content/lists/lists.php: Added lead
+	  export to advanced lead search.
+
+2009-11-19  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r516] www/admin/include/content/campaigns/campaigns.php,
+	  www/admin/templates/default/display.php: ISO- GUI touchups
+	* [r515] www/admin/include/content/campaigns/campaigns.php,
+	  www/admin/include/content/campaigns/status.php,
+	  www/admin/include/content/users/users.php,
+	  www/admin/include/init.php,
+	  www/admin/templates/default/display.php,
+	  www/admin/templates/default/styles.css: ISO- Interface cleanup.
+	* [r514] bin/osdial_resource_listen.pl,
+	  www/admin/include/content/reports/realtime_detail.php,
+	  www/admin/include/content/reports/realtime_summary.php: Update to
+	  use resources.txt instead.
+
+2009-11-18  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r513] Makefile: fix Makefile
+	* [r512] Makefile, bin/osdial_resource_listen.pl,
+	  bin/osdial_resource_send.pl, extras/osdial_resource_listen.init,
+	  extras/osdial_resource_send.init,
+	  www/admin/include/content/reports/realtime_detail.php,
+	  www/admin/include/header.php, www/admin/include/validation.php,
+	  www/admin/include/variables.php: Add multicast resource
+	  monitoring.
+	* [r511] www/agent/osdial.php: Adjust trasnfer-conf window position
+	* [r510] www/admin/copyright.php: Add various parties to
+	  copyright.php
+
+2009-11-16  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r509] extras/sql/999999.sql: Fix campaign in example SQL.
+	* [r508] extras/osdial.cron: VMnow.txt was being placed in a bad
+	  directory.
+	* [r507] extras/osdial.init: Better centering on /etc/issue
+	  generation.
+	* [r506] extras/sql/upgrade_sql.map,
+	  www/admin/include/content/campaigns/campaigns.php,
+	  www/agent/include/osdial.js, www/agent/osdial.php: Fixes for
+	  custom2 callerid.
+	* [r505] bin/AST_VDauto_dial.pl, extras/sql/220036.sql, version,
+	  www/admin/include/content/campaigns/campaigns.php,
+	  www/admin/include/help.php, www/admin/include/validation.php,
+	  www/admin/include/variables.php, www/agent/include/osdial.js,
+	  www/agent/osdial.php: Added per-lead callerid through use of
+	  custom2 field.
+
+2009-11-13  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r504] extras/osdial.init: Version 2.2.0\!
+	* [r503] extras/sql/upgrade_sql.pl: Version 2.2.0\!
+	* [r502] extras/sql/220035.pl, extras/sql/220035.sql: Version
+	  2.2.0\!
+	* [r501] ChangeLog, docs/conf_examples/modules.conf,
+	  extras/osdial.init, extras/sql/220035.pl, extras/sql/999999.sql,
+	  extras/sql/upgrade_sql.map, extras/sql/upgrade_sql.pl, version:
+	  Version 2.2.0\!
+
 2009-11-08  Lott Caskey <lottcaskey@gmail.com>
 
 	* [r500] bin/osdial_astgen.pl: Moved in asterisk version check and
