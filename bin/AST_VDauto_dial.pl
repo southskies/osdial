@@ -1171,7 +1171,8 @@ while($one_day_interval > 0)
 							if ($CLstatus =~ /LIVE/) {$CLnew_status = 'DROP';}
 							else 
 								{
-								$end_epoch = ($now_date_epoch + 1);
+								$CLstage=0;
+								$end_epoch = $now_date_epoch;
                                                                 $OL_status = $CLnew_status;
                                                                 $OL_status = $orig_status if ($orig_status =~ /^CR/);
 								$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch,server_ip) values('$CLuniqueid','$CLlead_id','$CLcampaign_id','$SQLdate','$now_date_epoch','$OL_status','$CLphone_code','$CLphone_number','VDAD','N','$CLstage','$end_epoch','$VARserver_ip')";
@@ -1476,7 +1477,7 @@ while($one_day_interval > 0)
 				$CLstage =~ s/LIVE|-//gi;
 				if ($CLstage < 0.25) {$CLstage=1;}
 
-				$end_epoch = ($now_date_epoch + 1);
+				$end_epoch = $now_date_epoch;
 				$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch,server_ip) values('$CLuniqueid','$CLlead_id','$CLcampaign_id','$SQLdate','$now_date_epoch','DROP','$CLphone_code','$CLphone_number','VDAD','N','$CLstage','$end_epoch','$VARserver_ip')";
 					if($M){print STDERR "\n|$stmtA|\n";}
 				$affected_rows = $dbhA->do($stmtA);
