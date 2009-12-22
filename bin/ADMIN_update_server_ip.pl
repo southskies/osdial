@@ -387,6 +387,56 @@ $stmtA = "UPDATE osdial_server_trunks SET server_ip='$VARserver_ip' where server
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
+print "  Updating osdial_auto_calls table...\n";
+$stmtA = "UPDATE osdial_auto_calls SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating osdial_auto_calls table...\n";
+$stmtA = "UPDATE osdial_auto_calls SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating live_channels table...\n";
+$stmtA = "UPDATE live_channels SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating live_inbound table...\n";
+$stmtA = "UPDATE live_inbound SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating live_sip_channels table...\n";
+$stmtA = "UPDATE live_sip_channels SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating osdial_campaign_server_stats table...\n";
+$stmtA = "UPDATE osdial_campaign_server_stats SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating osdial_carriers table...\n";
+$stmtA = "UPDATE osdial_carriers SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating osdial_manager table...\n";
+$stmtA = "UPDATE osdial_manager SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating parked_channels table...\n";
+$stmtA = "UPDATE parked_channels SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
+print "  Updating web_client_sessions table...\n";
+$stmtA = "UPDATE web_client_sessions SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
+$affected_rows = $dbhA->do($stmtA);
+if ($DB) {print "     |$affected_rows|$stmtA|\n";}
+
 $dbhA->disconnect();
 
 # Now we need to kill off all the keep-alives, so they will pick up the active server_ip...
@@ -396,25 +446,8 @@ if ($pids) {
         $jumk = `kill -9 $pids`;
 }
 
-### format the new server_ip dialstring for example to use with extensions.conf
-$S='*';
-if( $VARserver_ip =~ m/(\S+)\.(\S+)\.(\S+)\.(\S+)/ )
-	{
-	$a = leading_zero($1); 
-	$b = leading_zero($2); 
-	$c = leading_zero($3); 
-	$d = leading_zero($4);
-	$VARremDIALstr = "$a$S$b$S$c$S$d";
-	}
 
 print "\nSERVER IP ADDRESS CHANGE FOR OSDIAL FINISHED!\n";
-print "\nPlease remember to change your extensions.conf entries for the new IP address:\n";
-print "exten => _$VARremDIALstr*8600XXX,1,Goto(default,${EXTEN:16},1)\n";
-print "exten => _$VARremDIALstr*8600XXX*.,1,Goto(default,${EXTEN:16},1)\n";
-print "exten => _$VARremDIALstr*78600XXX,1,Goto(default,${EXTEN:16},1)\n";
-print "exten => _$VARremDIALstr*78600XXX*.,1,Goto(default,${EXTEN:16},1)\n";
-print "exten => _8600XXX*.,1,AGI(agi-VDADfixCXFER.agi)\n";
-print "exten => _78600XXX*.,1,AGI(agi-VDADfixCXFER.agi)\n";
 
 
 $secy = time();		$secz = ($secy - $secX);		$minz = ($secz/60);		# calculate script runtime so far
