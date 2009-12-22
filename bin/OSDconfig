@@ -47,7 +47,7 @@ SetDefaults ()
 	# default path to asterisk sounds directory:
 	PATHsounds="/var/lib/asterisk/sounds"
 	# default path to asterisk recording directory:
-	PATHmonitor="/var/spool/asterisk/monitor"
+	PATHmonitor="/var/spool/asterisk/VDmonitor"
 	# default path to asterisk recording DONE directory:
 	PATHDONEmonitor="/opt/osdial/recordings/processing/unmixed"
 	PATHarchive_home="/opt/osdial/recordings"
@@ -57,7 +57,7 @@ SetDefaults ()
 	# the IP address of this machine.  default to best guess:
 	VARserver_ip=`/sbin/ifconfig eth0 | grep 'inet addr' | awk -F: '{ print $2 }' | awk '{ print $1 }'`
 	# default database server variables:
-	VARDB_server="localhost"
+	VARDB_server="127.0.0.1"
 	VARDB_database="osdial"
 	VARDB_user="osdial"
 	VARDB_pass="osdial1234"
@@ -86,8 +86,8 @@ SetDefaults ()
 	VARfastagi_log_checkfordead="30"
 	VARfastagi_log_checkforwait="60"
 	# Other settings
-	VARcps="9"
-	VARadapt_min_level="3"
+	VARcps="10"
+	VARadapt_min_level="1.5"
 	VARadapt_overlimit_mod="20"
 }
 
@@ -729,6 +729,7 @@ SaveConfig ()
 	echo "# this is the osdial.configuration file" >> $PATHconf
 	echo "# all comments will be lost if you run install.pl again" >> $PATHconf
 	echo "OSDversion => $OSDversion" >> $PATHconf
+	echo "OSDbuild => $OSDbuild" >> $PATHconf
 	echo "" >> $PATHconf
 	echo "# Location of Documentation and Samples" >> $PATHconf
 	echo "PATHdocs => $PATHdocs" >> $PATHconf
@@ -835,9 +836,12 @@ fi
 
 # Set defaults and load configuration.
 SetDefaults
+SVNversion="SVN_Version"
+SVNbuild="SVN_Build"
 if [ -f "version" -a -f "INSTALL" ]; then
 {
 	OSDversion=`cat version`
+	OSDbuild="0"
 	INSTALL="yes"
 	# If a config for install is in current directory, use that.
 	if [ -f ".osdial.config" ]; then
@@ -862,10 +866,18 @@ if [ -f "$PATHconf" ]; then
 }
 fi
 
-# If version is blank, assume 2.1.0"
-if [ "$OSDversion" = "" ]; then
+# If version is blank, assume 2.2.0"
+if [ -z "$OSDversion" ]; then
 {
-	OSDversion="2.1.0"
+	OSDversion="2.2.0"
+	OSDbuild="0"
+}
+fi
+
+if [ -n "$SVNversion" ]; then
+{
+	OSDversion=$SVNversion
+	OSDbuild=$SVNbuild
 }
 fi
 
@@ -963,12 +975,14 @@ if [ "$OUTPUT" != "no" ]; then
 fi
 
 if [ "$1" = "--env-make" ]; then
+	export OSDversion OSDbuild SVNversion SVNbuild
 	export PATHconf PATHhome PATHlogs PATHagi PATHweb PATHsounds
 	export PATHmonitor PATHDONEmonitor PATHdocs DESTDIR
 	make $2
 fi
 
 if [ "$RUNINSTALL" = "yes" ]; then
+	export OSDversion OSDbuild SVNversion SVNbuild
 	export PATHconf PATHhome PATHlogs PATHagi PATHweb PATHsounds
 	export PATHmonitor PATHDONEmonitor PATHdocs DESTDIR
 	make install
