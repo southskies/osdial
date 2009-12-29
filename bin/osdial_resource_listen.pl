@@ -15,10 +15,19 @@ $DB = 1 if ($ARGV[0] eq '-v');
 
 my $nf = new Number::Format;
 
+# Get OSD configuration directives.
+my $config = getOSDconfig('/etc/osdial.conf');
+my $webroot = $config->{PATHweb};
+$webroot = "/opt/osdial/html";
+my $sreg = $config->{WEBserver_stats_regex};
+my $shost = $config->{WEBserver_stats_remote_scp_host};
+my $spath = $config->{WEBserver_stats_remote_scp_path};
+
 my $sock;
 my %hosts;
 
 while (1) {
+	my $count=0;
 	while ($sock = initsocks($sock)) {
 		my $data;
 		next unless $sock->recv($data,1024);
@@ -29,13 +38,25 @@ while (1) {
 				my($k,$v) = split(/=/,$kv);
 				$kvh{$k} = $v;
 			}
-			$hosts{$kvh{ip}} = \%kvh;
-			open(HTML, ">/opt/osdial/html/admin/resources.txt");
-			print HTML output_html(%hosts);
-			close(HTML);
-			open(HTML, ">/opt/osdial/html/admin/resources-xtd.txt");
-			print HTML output_html_extended(%hosts);
-			close(HTML);
+			
+			if ($kvh{ip} =~ /$sreg/ or $kvh{host} =~ /$sreg/) {
+				$hosts{$kvh{ip}} = \%kvh;
+				open(HTML, ">" . $webroot . "/admin/resources.txt");
+				print HTML output_html(%hosts);
+				close(HTML);
+				open(HTML, ">" . $webroot . "/admin/resources-xtd.txt");
+				print HTML output_html_extended(%hosts);
+				close(HTML);
+				$count++;
+			}
+		}
+		if ($count>9) {
+			$count=0;
+			# Send to remote server every 10 grabs.
+			if ($shost ne "" and $spath ne "") {
+				my $cmd = "/usr/bin/scp " . $webroot . "/admin/resources*.txt " . $shost . ":" . $spath . '> /dev/null 2>&1';
+				my $send = `$cmd`;
+			}
 		}
 	}
 	sleep 5;
@@ -160,3 +181,22 @@ sub initsocks {
 	}
 	return $sock;
 }
+
+sub getOSDconfig {
+	my($AGCpath) = @_;
+	my %config;
+	$config{PATHconf} = $AGCpath;
+	open(CONF, $config{PATHconf}) || die "can't open " . $config{PATHconf} . ": " . $! . "\n";
+	while (my $line = <CONF>) {
+		$line =~ s/ |>|"|'|\n|\r|\t|\#.*|;.*//gi;
+		if ($line =~ /=|:/) {
+			my($key,$val) = split /=|:/, $line;
+			$config{$key} = $val;
+		}
+	}
+	$config{VARDB_port} = '3306' unless ($config{VARDB_port});
+	$config{VARFTP_port} = '21' unless ($config{VARFTP_port});
+	$config{VARREPORT_port} = '21' unless ($config{VARREPORT_port});
+	return \%config;
+}
+
