@@ -1380,7 +1380,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 					if (CBcounT == 0) {
 						CBstatusHTML += "NO ACTIVE CALLBACKS";
 					} else {
-						CBstatusHTML += "<font color=\"#FFFF00\">" + CBcount + " ACTIVE CALLBACKS</font>";
+						CBstatusHTML += "<font color=\"#FFFF00\">" + CBcounT + " ACTIVE CALLBACKS</font>";
 					}
 					CBstatusHTML += "</a>";
 					document.getElementById("CBstatusSpan").innerHTML = CBstatusHTML;
