@@ -51,7 +51,6 @@ function report_agent_performance_detail() {
     $NOW_DATE = date("Y-m-d");
     $NOW_TIME = date("Y-m-d H:i:s");
     $STARTtime = date("U");
-    if (!isset($group)) {$group = '';}
     if (!isset($query_date)) {$query_date = $NOW_DATE;}
     if (!isset($end_date)) {$end_date = $NOW_DATE;}
     if ($query_date=="") {$query_date = $NOW_DATE;}
@@ -104,6 +103,7 @@ function report_agent_performance_detail() {
     $html .= "      </td>\n";
     $html .= "      <td align=center>\n";
     $html .= "        <select size=1 name=group>\n";
+    $html .= "          <option value=\"--ALL--\">-- ALL CAMPAIGNS --</option>\n";
     $o=0;
     while ($campaigns_to_print > $o) {
         if ($groups[$o] == $group) {
@@ -184,6 +184,11 @@ function report_agent_performance_detail() {
             $ugSQL='';
         }
 
+	$groupSQL = '';
+	if ($group!="--ALL--") {
+		$groupSQL = "and campaign_id='" . mysql_real_escape_string($group) . "'";	
+	}
+
         $plain .= "OSDIAL: Agent Performance Detail                        $NOW_TIME\n";
 
         $plain .= "Time range: $query_date_BEGIN to $query_date_END\n\n";
@@ -204,7 +209,7 @@ function report_agent_performance_detail() {
         $user_namesARY[0]='';
         $k=0;
 
-        $stmt="select count(*) as calls,sum(talk_sec) as talk,full_name,osdial_users.user,sum(pause_sec),sum(wait_sec),sum(dispo_sec),status,sum(if(lead_called_count='1',1,0)) from osdial_users,osdial_agent_log where event_time <= '$query_date_END' and event_time >= '$query_date_BEGIN' and osdial_users.user=osdial_agent_log.user and campaign_id='" . mysql_real_escape_string($group) . "' and pause_sec<36000 and wait_sec<36000 and talk_sec<36000 and dispo_sec<36000 $ugSQL group by full_name,status order by status desc,full_name limit 100000;";
+        $stmt="select count(*) as calls,sum(talk_sec) as talk,full_name,osdial_users.user,sum(pause_sec),sum(wait_sec),sum(dispo_sec),status,sum(if(lead_called_count='1',1,0)) from osdial_users,osdial_agent_log where event_time <= '$query_date_END' and event_time >= '$query_date_BEGIN' and osdial_users.user=osdial_agent_log.user $groupSQL and pause_sec<36000 and wait_sec<36000 and talk_sec<36000 and dispo_sec<36000 $ugSQL group by full_name,status order by status desc,full_name limit 100000;";
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $rows_to_print = mysql_num_rows($rslt);
