@@ -295,6 +295,7 @@ sub gen_servers {
 		$isvr .= "auth=md5\n";
 		$isvr .= "secret=$pass\n";
 		$isvr .= "disallow=all\n";
+		$isvr .= "requirecalltoken=no\n";
 		$isvr .= "allow=$codec\n";
 		$isvr .= "peercontext=osdial\n";
 		$isvr .= "nat=no\n";
@@ -513,6 +514,7 @@ sub gen_phones {
 			$iphn .= "disallow=all\n";
 			$iphn .= "allow=$codec\n";
 			$iphn .= "qualify=5000\n";
+			$iphn .= "requirecalltoken=no\n";
 			$iphn .= "nat=yes\n";
 			$iphn .= "context=" . $aryA[7] . "\n";
 			$iphn .= "mailbox=" . $aryA[6] . "\@default\n";
