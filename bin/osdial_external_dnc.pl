@@ -119,6 +119,17 @@ if ($CLOsched) {
 }
 
 
+# Check to see if External DNC as more than 3 active processes
+my $edncprocs = `ps -ef | grep osdial_external_dnc.pl | grep asterisk | wc -l`;
+chomp($edncprocs);
+if ($edncprocs > 3) {
+	print "\n\n External DNC already has $edncprocs running, exiting...\n\n" if ($DB);
+	$dbhA->disconnect();
+	exit_now();
+}
+
+
+
 # Connect to External DNC database
 my $dbhB = DBI->connect("DBI:mysql:" . $ext_dnc{'External_DNC_Database'} . ":" . $ext_dnc{'External_DNC_Address'}, $ext_dnc{'External_DNC_Username'}, $ext_dnc{'External_DNC_Password'} )
   or die "Couldn't connect to DNC database: " . DBI->errstr;
