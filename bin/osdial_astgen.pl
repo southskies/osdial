@@ -295,7 +295,6 @@ sub gen_servers {
 		$isvr .= "auth=md5\n";
 		$isvr .= "secret=$pass\n";
 		$isvr .= "disallow=all\n";
-		$isvr .= "requirecalltoken=no\n";
 		$isvr .= "allow=$codec\n";
 		$isvr .= "peercontext=osdial\n";
 		$isvr .= "nat=no\n";
@@ -523,7 +522,16 @@ sub gen_phones {
 		if ($aryA[4] =~ /SIP|IAX2/ and $aryA[0] =~ /\@/) {
 			my($sext,$ssrv) = split /\@/,$aryA[0];
 			$dext = $aryA[4] . "/" . $ssrv . "/" . $sext;
+		} elsif ($aryA[4] =~ /DAHDI|Zap/) {
+			if ($aryA[2] >= 1 and $aryA[2] <= 999) {
+				$dext = $aryA[4] . "/" . $aryA[2];
+			} elsif (length($aryA[0]) == 3 or length($aryA[0]) == 4) {
+				$dext = $aryA[4] . "/" . substr($aryA[0],1);
+			} elsif (length($aryA[0]) == 5) {
+				$dext = $aryA[4] . "/" . substr($aryA[0],2);
+			}
 		}
+
 		$ephn .= "exten => _" . $aryA[1] . ",1,Dial(" . $dext . ",55,to)\n";
 	}
 
