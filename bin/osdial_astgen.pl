@@ -463,7 +463,7 @@ sub gen_phones {
 	my $iphn = $achead;
 	my $ephn = $achead;
 
-	my $stmtA = "SELECT extension,dialplan_number,phone_ip,pass,protocol,phone_type,voicemail_id,ext_context FROM phones WHERE protocol IN ('SIP','IAX2','Zap','DAHDI') AND active='Y' AND (";
+	my $stmtA = "SELECT extension,dialplan_number,phone_ip,pass,protocol,phone_type,voicemail_id,ext_context FROM phones WHERE protocol IN ('SIP','IAX2','Zap','DAHDI','EXTERNAL') AND active='Y' AND (";
 	foreach my $ip (@myips) {
 		$stmtA .= " server_ip=\'" . $ip . "\' OR";
 	}
@@ -523,16 +523,22 @@ sub gen_phones {
 			my($sext,$ssrv) = split /\@/,$aryA[0];
 			$dext = $aryA[4] . "/" . $ssrv . "/" . $sext;
 		} elsif ($aryA[4] =~ /DAHDI|Zap/) {
+			$dext = $aryA[4] . "/" . $aryA[0];
+		} elsif ($aryA[4] =~ /EXTERNAL/ and $aryA[5] =~ /DAHDI|Zap/i) {
+			$dext = "";
+			my $proto = "";
+			$proto = "Zap" if ($aryA[5] =~ /Zap/i);
+			$proto = "DAHDI" if ($aryA[5] =~ /DAHDI/i);
 			if ($aryA[2] >= 1 and $aryA[2] <= 999) {
-				$dext = $aryA[4] . "/" . $aryA[2];
+				$dext = $proto . "/" . $aryA[2];
 			} elsif (length($aryA[0]) == 3 or length($aryA[0]) == 4) {
-				$dext = $aryA[4] . "/" . substr($aryA[0],1);
+				$dext = $proto . "/" . substr($aryA[0],1);
 			} elsif (length($aryA[0]) == 5) {
-				$dext = $aryA[4] . "/" . substr($aryA[0],2);
+				$dext = $proto . "/" . substr($aryA[0],2);
 			}
 		}
 
-		$ephn .= "exten => _" . $aryA[1] . ",1,Dial(" . $dext . ",55,to)\n";
+		$ephn .= "exten => _" . $aryA[1] . ",1,Dial(" . $dext . ",55,to)\n" if ($dext ne "");
 	}
 
 	my $extreload = "extensions reload";
