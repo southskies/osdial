@@ -183,21 +183,26 @@ if ( ($GSM > 0) || ($OGG > 0) || ($WAV >0))
 		}
 	}
 
-if ($MP3 > 0)
-	{
+if ($MP3 > 0) {
 	### find lame mp3 encoder binary to do the compression
 	$lamebin = '';
-	if ( -e ('/usr/bin/lame')) {$lamebin = '/usr/bin/lame';}
-	else 
-		{
-		if ( -e ('/usr/local/bin/lame')) {$lamebin = '/usr/local/bin/lame';}
-		else
-			{
-			print "Can't find lame binary! Exiting...\n";
-			exit
-			}
-		}
+	$lameopts = '';
+	if (-e '/usr/bin/toolame' and -e '/usr/bin/sox') {
+		$lamebin = '/usr/bin/toolame';
+		$lameopts = '-s 16 -b 16 -m j';
+		$soxbin = '/usr/bin/sox';
+	} elsif (-e '/usr/bin/lame') {
+	#if (-e '/usr/bin/lame') {
+		$lamebin = '/usr/bin/lame';
+		$lameopts = '-b 16 -m m --silent';
+	} elsif (-e '/usr/local/bin/lame') {
+		$lamebin = '/usr/local/bin/lame';
+		$lameopts = '-b 16 -m m --silent';
+	} else {
+		print "Can't find lame binary! Exiting...\n";
+		exit
 	}
+}
 
 
 
@@ -295,7 +300,14 @@ foreach(@FILES) {
 
 				if ($DB) {print "|$recording_id|$ALLfile|$MP3file|     |$SQLfile|\n";}
 
-				`$lamebin -b 16 -m m --silent '$dir1/$ALLfile' '$dir2/mixed/$MP3file'`;
+				# WAV must be 16k to convert using toolame
+				if ($lamebin =~ /toolame/) {
+					my $junk = `mv '$dir1/$ALLfile' /tmp`;
+					$junk = `$soxbin '/tmp/$ALLfile' -r 16000 -c 1 '$dir1/$ALLfile' resample -ql`;
+					$junk = `rm -f '/tmp/$ALLfile'`;
+				}
+
+				my $junk = `$lamebin $lameopts '$dir1/$ALLfile' '$dir2/mixed/$MP3file'`;
 				if (-e "$dir2/mixed/$MP3file") {
 					`rm -f '$dir1/$ALLfile'`;
 				}
