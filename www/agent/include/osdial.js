@@ -210,7 +210,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	var custchannellive=0;
 	var xferchannellive=0;
 	var nochannelinsession=0;
-	var agc_dial_prefix = '91';
+	var agc_dial_prefix = dial_prefix + '1';
 	var conf_silent_prefix = '<? echo $conf_silent_prefix ?>';
 	var menuheight = 30;
 	var menuwidth = 30;
@@ -550,12 +550,11 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			var donothing=1;
 		} else {
 			if (document.osdial_form.xferoverride.checked==false) {
-				if (manual_string.length=='11') {
-					manual_string = "9" + manual_string;
-				} else if (manual_string.length=='10') {
-					manual_string = "91" + manual_string;
-				} else if (manual_string.length=='7') {
-					manual_string = "9" + manual_string;
+				if (manual_string.length=='10') {
+					manual_string = '1' + manual_string;
+				}
+				if (manual_string.length=='7' || manual_string.length >= 10) {
+					manual_string = dial_prefix + manual_string;
 				}
 			}
 		}
