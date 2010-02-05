@@ -3527,25 +3527,40 @@ $camp = get_variable('camp');
 $campSQL = '';
 if ($camp != '') $campSQL = "AND campaign_id='$camp'";
 
+$let = get_variable('let');
+$letSQL = '';
+if ($let != '') $letSQL = "AND (campaign_id LIKE '$let%' OR list_id LIKE '$let%')";
+
 $dispact = get_variable('dispact');
 $dispactSQL = '';
 if ($dispact == 1) $dispactSQL = "AND active='Y'";
 
-	$stmt="SELECT * from osdial_lists WHERE 1=1 $campSQL $dispactSQL order by list_id";
+	$stmt="SELECT * from osdial_lists WHERE 1=1 $campSQL $letSQL $dispactSQL order by list_id";
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
 echo "<center><br><font color=$default_text size=+1>LISTS</font><br>";
 if ($people_to_print > 20) {
-    echo "<center><font color=$default_text size=-1>";
+    echo "<font color=$default_text size=-1>";
     if ($dispact == '1') {
-        echo "<a href=\"$PHP_SELF?ADD=100&camp=$camp&dispact=\">(Show Inactive)</a>";
+        echo "<a href=\"$PHP_SELF?ADD=100&camp=$camp&let=$let&dispact=\">(Show Inactive)</a>";
     } else {
-        echo "<a href=\"$PHP_SELF?ADD=100&camp=$camp&dispact=1\">(Hide Inactive)</a>";
+        echo "<a href=\"$PHP_SELF?ADD=100&camp=$camp&let=$let&dispact=1\">(Hide Inactive)</a>";
     }
     echo "</font><br>\n";
 }
 echo "<br>\n";
+echo "<font size=-1 color=$default_text>&nbsp;|&nbsp;";
+echo "<a href=\"$PHP_SELF?ADD=$ADD&dispact=$dispact&let=\">-ALL-</a>&nbsp;|&nbsp;";
+echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;";
+foreach (range('A','Z') as $slet) {
+    echo (($let == "$slet") ? $slet : "<a href=\"$PHP_SELF?ADD=$ADD&dispact=$dispact&let=$slet\">$slet</a>") . "&nbsp;|&nbsp;";
+}
+echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;";
+foreach (range('0','9') as $snum) {
+    echo (($let == "$snum") ? $snum : "<a href=\"$PHP_SELF?ADD=$ADD&dispact=$dispact&let=$snum\">$snum</a>") . "&nbsp;|&nbsp;";
+}
+echo "</font><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "<tr class=tabheader>";
 echo "<td>ID</td>";
