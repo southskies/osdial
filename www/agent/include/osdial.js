@@ -788,9 +788,11 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 								document.getElementById("AgentStatusDiaLs").innerHTML = DiaLCalLs;
 							}
 							if ( (AGLogiN == 'DEAD_VLA') && ( (osdial_agent_disable == 'LIVE_AGENT') || (osdial_agent_disable == 'ALL') ) ) {
+								manual_dial_menu=0; alt_dial_menu=0; MD_channel_look=0; VD_live_customer_call=0;
 								showDiv('AgenTDisablEBoX');
 							}
 							if ( (AGLogiN == 'DEAD_EXTERNAL') && ( (osdial_agent_disable == 'EXTERNAL') || (osdial_agent_disable == 'ALL') ) ) {
+								manual_dial_menu=0; alt_dial_menu=0; MD_channel_look=0; VD_live_customer_call=0;
 								showDiv('AgenTDisablEBoX');
 							}
 						}
@@ -798,8 +800,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						var VLAStatuS = VLAStatuS_array[1];
 						if ( (VLAStatuS == 'PAUSED') && (AutoDialWaiting == 1) ) {
 							if (PausENotifYCounTer > 10) {
-								alert('Your session has been paused');
 								AutoDial_ReSume_PauSe('VDADpause');
+								alert('Your session has been paused');
 								PausENotifYCounTer=0;
 							} else {
 								PausENotifYCounTer++;
@@ -4101,10 +4103,12 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // ################################################################################
 // Log the user out of the system when they close their browser while logged in
 	function BrowserCloseLogout() {
-		if (logout_stop_timeouts < 1) {
-			LogouT();
-			alert("PLEASE CLICK THE LOGOUT LINK TO LOG OUT NEXT TIME!\n");
-		}
+		manual_dial_menu=0;
+		alt_dial_menu=0;
+		MD_channel_look=0;
+		VD_live_customer_call=0;
+		LogouT();
+		alert("PLEASE CLICK THE LOGOUT LINK TO LOG OUT NEXT TIME!\n");
 	}
 
 
