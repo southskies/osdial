@@ -1,0 +1,61 @@
+<?php
+#
+# Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+#
+#     This file is part of OSDial.
+#
+#     OSDial is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as
+#     published by the Free Software Foundation, either version 3 of
+#     the License, or (at your option) any later version.
+#
+#     OSDial is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public
+#     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+
+
+
+######################
+# ADD=999999 display reports section
+######################
+if ($LOGview_reports==1) {
+    if ($ADD==999999 and $SUB=='') {
+        echo "<font size=4 color=$default_text><br><center>CUSTOM REPORTS</center></font><br>";
+        echo "<ul class=>";
+        echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=1001\"><font face=\"arial,helvetica\" size=2>Report 1</a></font>";
+        echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=1002\"><font face=\"arial,helvetica\" size=2>Report 2</a></font>";
+        echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=1003\"><font face=\"arial,helvetica\" size=2>Report 3</a></font>";
+        echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=1004\"><font face=\"arial,helvetica\" size=2>Report 4</a></font>";
+        echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=1005\"><font face=\"arial,helvetica\" size=2>Report 5</a></font>";
+        echo "</ul>";
+
+    } elseif ($ADD==999999) {
+        if ($SUB==1001) {
+            require($WeBServeRRooT . '/admin/include/content/reports/custom1.php');
+            echo report_custom1();
+        } elseif ($SUB==1002) {
+            require($WeBServeRRooT . '/admin/include/content/reports/custom2.php');
+            echo report_custom2();
+        } elseif ($SUB==1003) {
+            require($WeBServeRRooT . '/admin/include/content/reports/custom3.php');
+            echo report_custom3();
+        } elseif ($SUB==1004) {
+            require($WeBServeRRooT . '/admin/include/content/reports/custom4.php');
+            echo report_custom4();
+        } elseif ($SUB==1005) {
+            require($WeBServeRRooT . '/admin/include/content/reports/custom5.php');
+            echo report_custom5();
+        }
+    }
+} else {
+    echo "<font color=red>You do not have permission to view this page</font>\n";
+}
+
+
+?>
