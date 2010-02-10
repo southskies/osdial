@@ -1,10 +1,8 @@
 #!/usr/bin/perl
 #
-# agi-dtmf.agi - script for playing DTMF tones received as the callerid field
+# agi-dtmf.agi - Parse in callerid and play dtmf files.
 #
-## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
-## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
-## Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+## Copyright (C) 2010  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
 ##
 ##     This file is part of OSDial.
 ##
@@ -22,95 +20,114 @@
 ##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 ##
 # 
-# DTMF sound files must be in /var/lib/asterisk/sounds for this to work
-#
-# Accepted values are: 1 2 3 4 5 6 7 8 9 0 # * ,
-# comma means pause for 1 second
+# This is a completed rewrite of the upstream agi-dtmf.agi.
 #
 #
 
-$|=1;
-while(<STDIN>) {
-	chomp;
-	last unless length($_);
-	if (/^agi_(\w+)\:\s+(.*)$/) {
-		$AGI{$1} = $2;
-	}
-	if (/^agi_callerid\:\s+(.*)$/)		{$caller_id = $1;}
-	if (/^agi_calleridname\:\s+(.*)$/)          {$caller_idname = $1;}
-}
+$|++;
 
-print STDERR "AGI Environment Dump:\n";
-foreach $i (sort keys %AGI) {
-	print STDERR " -- $i = $AGI{$i}\n";
-}
-
+use strict;
+use DBI;
 use Time::HiRes ('gettimeofday','usleep','sleep');  # necessary to have perl sleep command of less than one second
-
 use Asterisk::AGI;
-my $agi = new Asterisk::AGI;
 
-my $clid = $agi->get_variable('CALLERID');
-my $clidname = $agi->get_variable('CALLERIDNAME');
+my $AGI = new Asterisk::AGI;
+my $vars = {};
+my $server = {};
 
-print STDERR "X.  |$clid|$caller_id|$clidname|\n";
+# Get OSD configuration directives.
+$vars = getOSDconfig('/etc/osdial.conf');
+
+$vars->{DB} = 0 unless ($vars->{DB});
+$vars->{script} = 'agi-dtmf.agi';
+
+$vars->{start_epoch} = time();
+$vars->{start_date} = sql_date($vars->{start_epoch});
+$vars->{AGILOGFILE} = $vars->{PATHlogs} . "/agiout." . $vars->{start_date};
+$vars->{AGILOGFILE} =~ s/ .*//g;
 
 
-sub checkresult {
-	my $res = <STDIN>;
-	my $retval;
-	$tests++;
-	chomp $res;
-	if ($res =~ /^200/) {
-		$res =~ /result=(-?\d+)/;
-		if (!length($1)) {
-			print STDERR "FAIL ($res)\n";
-			$fail++;
-		} else {
-			print STDERR "PASS ($1)\n";
-			$pass++;
-		}
+# Connect to database.
+my $dbhA = DBI->connect("DBI:mysql:" . $vars->{VARDB_database} . ":" . $vars->{VARDB_server} . ":" . $vars->{VARDB_port}, $vars->{VARDB_user}, $vars->{VARDB_pass} )
+  or die "Couldn't connect to database: " . DBI->errstr;
+
+### Grab Server values from the database
+my $stmtA = "SELECT * FROM servers where server_ip = '" . $vars->{VARserver_ip} . "';";
+my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+$server = $sthA->fetchrow_hashref;
+$sthA->finish();
+
+# Read AGI vars.
+my %aout = $AGI->ReadParse();
+agi_output("AGI Environment Dump:");
+foreach my $i (sort keys %aout) {
+        $AGI->{$i} = $aout{$i};
+        agi_output(" -- $i = " . $AGI->{$i});
+}
+
+
+my @digits = split(//, $AGI->{callerid});
+@digits = split(//, $AGI->{calleridname}) if ($AGI->{callerid} =~ /unknown/i);
+
+# Send out DTMF for each digit recieved in callerid.
+foreach my $dtmf (@digits) {
+	$dtmf = "hash" if ($dtmf =~ /\#/);
+	$dtmf = "star" if ($dtmf =~ /\*/);
+	if ($dtmf eq ',') {
+		sleep(1);
 	} else {
-		print STDERR "FAIL (unexpected result '$res')\n";
-		$fail++;
+		$AGI->stream_file("dtmf-" . $dtmf);
+	}
+        agi_output("DTMF: " . $dtmf);
+	usleep(1*100*1000);
+}
+
+
+
+### Other subroutines.
+sub agi_output {
+	my ($agi_string,$extinfo) = @_;
+	if ($server->{agi_output}) {
+		my $date = sql_date();
+		$agi_string .= '|' . $AGI->{uniqueid};
+		$agi_string .= '|' . $AGI->{CIDlead_id} if ($AGI->{CIDlead_id});
+		$agi_string .= '|' . join('|',$AGI->{channel},$AGI->{extension},$AGI->{priority},$AGI->{type},$AGI->{accountcode}) if ($extinfo);
+		if ($server->{agi_output} =~ /FILE|BOTH/) {
+			### open the log file for writing ###
+			open(Lout, ">>" . $vars->{AGILOGFILE}) || die "Can't open " . $vars->{AGILOGFILE} . ": $!\n";
+			print Lout "$date|" . $vars->{script} . "|$$|$agi_string\n";
+			close(Lout);
+		}
+		### send to STDERR writing ###
+		print STDERR "$date|" . $vars->{script} . "|$$|$agi_string\n" if ($server->{agi_output} =~ /STDERR|FILE/ or $vars->{DB} > 1);
 	}
 }
 
-### sleep for 5 tenths of a second
-##usleep(1*500*1000);
-
-##print "STREAM FILE silence \"\"\n";
-
-$caller_id = "$caller_id$caller_idname";
-
-@CALLERID_DIGITS = split(//, $caller_id);
-
-foreach (@CALLERID_DIGITS)
-{
-
-if ($CALLERID_DIGITS[$g] =~ /\d/) 
-	{
-	print "STREAM FILE dtmf-$CALLERID_DIGITS[$g] \"\"\n";
-	print STDERR "DIGIT: $CALLERID_DIGITS[$g]\n";
-	}
-else
-	{
-	if ($CALLERID_DIGITS[$g] =~ /\#/) {print "STREAM FILE dtmf-hash \"\"\n";}
-	if ($CALLERID_DIGITS[$g] =~ /\*/) {print "STREAM FILE dtmf-star \"\"\n";}
-	if ($CALLERID_DIGITS[$g] =~ /\,/) {sleep(1);}
-	print STDERR "NON-DIGIT: $CALLERID_DIGITS[$g]\n";
-	}
-$g++;
-
-### sleep for 20 hundredths of a second
-##usleep(1*150*1000);
-
-##print "STREAM FILE silence \"\"\n";
-
-### sleep for 10 hundredths of a second
-usleep(1*100*1000);
+sub sql_date {
+	my($tms) = @_;
+	$tms = time() unless ($tms);
+	my ($s,$m,$h,$D,$M,$Y,$wday,$yday,$isdst) = localtime($tms);
+	$Y += 1900;
+	return sprintf('%.4d-%.2d-%.2d %.2d:%.2d:%.2d', $Y, ++$M, $D, $h, $m, $s);
 }
 
-##print "STREAM FILE silence \"\"\n";
-checkresult();
+
+sub getOSDconfig {
+        my($AGCpath) = @_;
+        my %config;
+        $config{PATHconf} = $AGCpath;
+        open(CONF, $config{PATHconf}) || die "can't open " . $config{PATHconf} . ": " . $! . "\n";
+        while (my $line = <CONF>) {
+                $line =~ s/ |>|"|'|\n|\r|\t|\#.*|;.*//gi;
+                if ($line =~ /=|:/) {
+                        my($key,$val) = split /=|:/, $line;
+                        $config{$key} = $val;
+                }
+        }
+        $config{VARDB_port} = '3306' unless ($config{VARDB_port});
+        $config{VARFTP_port} = '21' unless ($config{VARFTP_port});
+        $config{VARREPORT_port} = '21' unless ($config{VARREPORT_port});
+        return \%config;
+}
 
