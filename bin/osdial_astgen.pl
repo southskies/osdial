@@ -536,6 +536,8 @@ sub gen_phones {
 			} elsif (length($aryA[0]) == 5) {
 				$dext = $proto . "/" . substr($aryA[0],2);
 			}
+		} elsif ($aryA[4] =~ /EXTERNAL/) {
+			$dext = "";
 		}
 
 		$ephn .= "exten => _" . $aryA[1] . ",1,Dial(" . $dext . ",55,to)\n" if ($dext ne "");
