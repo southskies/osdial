@@ -228,23 +228,24 @@ while(<STDIN>)
 	if (/^agi_type\:\s+(.*)$/)		{$type = $1;}
 	if (/^agi_callerid\:\s+(.*)$/)		{$callerid = $1;}
 	if (/^agi_calleridname\:\s+(.*)$/)	{$calleridname = $1;}
+	if (/^agi_accountcode\:\s+(.*)$/)	{$accountcode = $1;}
 }
 
 if ( (length($callerid)>20) && ($callerid =~ /\"\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S/) )
   {
    $callerid =~ s/^\"//gi;
    $callerid =~ s/\".*$//gi;
-	### set the callerid to the ACQS value(calleridname)
+	### set the callerid to the ACQS value(accountcode)
 	print "SET CALLERID $callerid\n";
 	checkresult();
 	if ($AGILOG) {$agi_string = "callerID changed: $callerid";   &agi_output;}
   }
 if ( (
-(length($calleridname)>5) && ( (!$callerid) or ($callerid =~ /unknown|private|00000000/i) or ($callerid =~ /5551212/) )
-) or ( (length($calleridname)>17) && ($calleridname =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) ) )
+(length($accountcode)>5) && ( (!$callerid) or ($callerid =~ /unknown|private|00000000/i) or ($callerid =~ /5551212/) )
+) or ( (length($accountcode)>17) && ($accountcode =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) ) )
   {
-   $callerid = $calleridname;
-	### set the callerid to the ACQS value(calleridname)
+   $callerid = $accountcode;
+	### set the callerid to the ACQS value(accountcode)
 	print "SET CALLERID $callerid\n";
 	checkresult();
 	if ($AGILOG) {$agi_string = "callerID changed: $callerid";   &agi_output;}
@@ -258,7 +259,7 @@ foreach $i (sort keys %AGI)
 	if ($AGILOG) {$agi_string = " -- $i = $AGI{$i}";   &agi_output;}
 }
 
-if ($AGILOG) {$agi_string = "AGI Variables: |$unique_id|$channel|$extension|$type|$callerid|$calleridname|$priority|";   &agi_output;}
+if ($AGILOG) {$agi_string = "AGI Variables: |$unique_id|$channel|$extension|$type|$callerid|$accountcode|$priority|";   &agi_output;}
 
 $VDADcampaign='';
 $VDADphone='';
@@ -592,7 +593,7 @@ if ($rec_countWAIT < $DBconcurrent_transfers)
 			}
 
 		if ($VDADconf_exten =~ /^87......$/) {
-			$stmtA="INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$callerid','Channel: Local/$VDADconf_exten\@$ext_context','Context: $ext_context','Exten: 487487','Priority: 1','Callerid: \"$callerid\" <0000000000>','','','','','');";
+			$stmtA="INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$callerid','Channel: Local/$VDADconf_exten\@$ext_context','Context: $ext_context','Exten: 487487','Priority: 1','Callerid: \"ooo\" <0000000000>','Account: $callerid','','','','');";
 			$affected_rows = $dbhA->do($stmtA);
 			if ($AGILOG) {$agi_string = "$affected_rows|$stmtA";   &agi_output;}
 		}

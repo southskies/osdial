@@ -204,24 +204,25 @@ while(<STDIN>)
 	if (/^agi_type\:\s+(.*)$/)		{$type = $1;}
 	if (/^agi_callerid\:\s+(.*)$/)		{$callerid = $1;}
 	if (/^agi_calleridname\:\s+(.*)$/)	{$calleridname = $1;}
+	if (/^agi_accountcode\:\s+(.*)$/)	{$accountcode = $1;}
 }
 
 if ( (length($callerid)>20) && ($callerid =~ /\"\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S/) )
   {
    $callerid =~ s/^\"//gi;
    $callerid =~ s/\".*$//gi;
-#	### set the callerid to the ACQS value(calleridname)
+#	### set the callerid to the ACQS value(accountcode)
 #	print "SET CALLERID $callerid\n";
 #	checkresult();
 #	print STDERR "callerID changed: $callerid\n";
 
   }
 if ( (
-(length($calleridname)>5) && ( (!$callerid) or ($callerid =~ /unknown|private|00000000/i) or ($callerid =~ /5551212/) )
-) or ( (length($calleridname)>17) && ($calleridname =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) ) )
+(length($accountcode)>5) && ( (!$callerid) or ($callerid =~ /unknown|private|00000000/i) or ($callerid =~ /5551212/) )
+) or ( (length($accountcode)>17) && ($accountcode =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) ) )
   {
-   $callerid = $calleridname;
-#	### set the callerid to the ACQS value(calleridname)
+   $callerid = $accountcode;
+#	### set the callerid to the ACQS value(accountcode)
 #	print "SET CALLERID $callerid\n";
 #	checkresult();
 #	print STDERR "callerID changed: $callerid\n";
@@ -235,7 +236,7 @@ foreach $i (sort keys %AGI)
 	if ($AGILOG) {$agi_string = " -- $i = $AGI{$i}";   &agi_output;}
 }
 
-if ($AGILOG) {$agi_string = "AGI Variables: |$unique_id|$channel|$extension|$type|$callerid|$calleridname|$priority|";   &agi_output;}
+if ($AGILOG) {$agi_string = "AGI Variables: |$unique_id|$channel|$extension|$type|$callerid|$accountcode|$priority|";   &agi_output;}
 
 $VDADcampaign='';
 $VDADphone='';

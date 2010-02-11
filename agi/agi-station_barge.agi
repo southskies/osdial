@@ -88,6 +88,7 @@ while(<STDIN>)
 	if (/^agi_type\:\s+(.*)$/)		{$type = $1;}
 	if (/^agi_callerid\:\s+(.*)$/)		{$callerid = $1;}
 	if (/^agi_calleridname\:\s+(.*)$/)	{$calleridname = $1;}
+	if (/^agi_accountcode\:\s+(.*)$/)	{$accountcode = $1;}
 }
 
 $lu = substr($extension, 1, 4);

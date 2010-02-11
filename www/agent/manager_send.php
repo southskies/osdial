@@ -272,7 +272,7 @@ if ($ACTION=="SysCIDOriginate")
 	}
 	else
 	{
-	$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$queryCID','Channel: $channel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','Callerid: $queryCID','','','','','');";
+	$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$queryCID','Channel: $channel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','Callerid: $queryCID','Account: $queryCID','','','','');";
 		if ($format=='debug') {echo "\n<!-- $stmt -->";}
 	$rslt=mysql_query($stmt, $link);
 	echo "Originate command sent for Exten $exten Channel $channel on $server_ip\n";
@@ -365,10 +365,11 @@ if ($ACTION=="Originate")
 	else
 	{
 	if (strlen($outbound_cid)>1)
-		{$outCID = "\"$queryCID\" <$outbound_cid>";}
+		{$outCID = "\"ooo\" <$outbound_cid>";}
+		#{$outCID = "\"$queryCID\" <$outbound_cid>";}
 	else
 		{$outCID = "$queryCID";}
-	$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$queryCID','Channel: $channel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','Callerid: $outCID','','','','','');";
+	$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$queryCID','Channel: $channel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','Callerid: $outCID','Account: $queryCID','','','','');";
 		if ($format=='debug') {echo "\n<!-- $stmt -->";}
 	$rslt=mysql_query($stmt, $link);
 	echo "Originate command sent for Exten $exten Channel $channel on $server_ip\n";
@@ -739,7 +740,7 @@ if ($ACTION=="RedirectXtraCX")
 				if (strlen($D_s_ip[3])<3) {$D_s_ip[3] = "0$D_s_ip[3]";}
 				$dest_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]$S$dest_session_id$S$lead_id$S$dest_user$S$phone_code$S$phone_number$S$campaign$S";
 
-				$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$call_server_ip','','Redirect','$queryCID','Channel: $channel','Context: $ext_context','Exten: $dest_dialstring','Priority: $ext_priority','CallerID: $queryCID','','','','','');";
+				$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$call_server_ip','','Redirect','$queryCID','Channel: $channel','Context: $ext_context','Exten: $dest_dialstring','Priority: $ext_priority','CallerID: $queryCID','Account: $queryCID','','','','');";
 					if ($format=='debug') {echo "\n<!-- $stmt -->";}
 				$rslt=mysql_query($stmt, $link);
 
@@ -867,7 +868,7 @@ if ($ACTION=="RedirectXtra")
 			{
 				if ( ($server_ip=="$call_server_ip") or (strlen($call_server_ip)<7) )
 				{
-					$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $channel','ExtraChannel: $extrachannel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','CallerID: $queryCID','','','','');";
+					$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $channel','ExtraChannel: $extrachannel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','CallerID: $queryCID','Account: $queryCID','','','');";
 						if ($format=='debug') {echo "\n<!-- $stmt -->";}
 					$rslt=mysql_query($stmt, $link);
 
@@ -888,11 +889,11 @@ if ($ACTION=="RedirectXtra")
 					if (strlen($D_s_ip[3])<3) {$D_s_ip[3] = "0$D_s_ip[3]";}
 					$dest_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]$S$exten";
 
-					$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$call_server_ip','','Redirect','$queryCID','Channel: $channel','Context: $ext_context','Exten: $dest_dialstring','Priority: $ext_priority','CallerID: $queryCID','','','','','');";
+					$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$call_server_ip','','Redirect','$queryCID','Channel: $channel','Context: $ext_context','Exten: $dest_dialstring','Priority: $ext_priority','CallerID: $queryCID','Account: $queryCID','','','','');";
 						if ($format=='debug') {echo "\n<!-- $stmt -->";}
 					$rslt=mysql_query($stmt, $link);
 
-					$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $extrachannel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','CallerID: $queryCID','','','','','');";
+					$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $extrachannel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','CallerID: $queryCID','Account: $queryCID','','','','');";
 						if ($format=='debug') {echo "\n<!-- $stmt -->";}
 					$rslt=mysql_query($stmt, $link);
 
@@ -983,7 +984,7 @@ if ($ACTION=="Redirect")
 		}
 		if ($channel_live==1)
 		{
-		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $channel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','CallerID: $queryCID','','','','','');";
+		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $channel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','CallerID: $queryCID','Account: $queryCID','','','','');";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 
@@ -1095,7 +1096,7 @@ if ( ($ACTION=="MonitorConf") || ($ACTION=="StopMonitorConf") )
 
 	if ($ACTION=="MonitorConf")
 		{
-		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$filename','Channel: $channel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','Callerid: $filename','','','','','');";
+		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$filename','Channel: $channel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','Callerid: $filename','Account: $filename','','','','');";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 
@@ -1180,7 +1181,7 @@ if ($ACTION=="VolumeControl")
 	$local_AMP = '@';
 	$volume_local_channel = "$local_DEF$participant_number$vol_prefix$exten$local_AMP$ext_context";
 
-	$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$queryCID','Channel: $volume_local_channel','Context: $ext_context','Exten: 8300','Priority: 1','Callerid: $queryCID','','','','$channel','$exten');";
+	$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$queryCID','Channel: $volume_local_channel','Context: $ext_context','Exten: 8300','Priority: 1','Callerid: $queryCID','Account: $queryCID','','','$channel','$exten');";
 		if ($format=='debug') {echo "\n<!-- $stmt -->";}
 	$rslt=mysql_query($stmt, $link);
 	echo "Volume command sent for Conference $exten, Stage $stage Channel $channel on $server_ip\n";

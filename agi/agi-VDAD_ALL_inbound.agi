@@ -221,18 +221,19 @@ while(<STDIN>) {
 	if (/^agi_type\:\s+(.*)$/)		{$type = $1;}
 	if (/^agi_callerid\:\s+(.*)$/)		{$callerid = $1;}
 	if (/^agi_calleridname\:\s+(.*)$/)	{$calleridname = $1;}
+	if (/^agi_accountcode\:\s+(.*)$/)	{$accountcode = $1;}
 }
 
 
-if ( ($callerid =~ /\".*\"/) && ( (!$calleridname) or ($calleridname =~ /unknown/) ) ) {
-	$calleridname = $callerid;
-	$calleridname =~ s/\<\d\d\d\d\d\d\d\d\d\d\>//gi;
-	$calleridname =~ s/\"|\" //gi;
+if ( ($callerid =~ /\".*\"/) && ( (!$accountcode) or ($accountcode =~ /unknown/) ) ) {
+	$accountcode = $callerid;
+	$accountcode =~ s/\<\d\d\d\d\d\d\d\d\d\d\>//gi;
+	$accountcode =~ s/\"|\" //gi;
 }
 
 $callerid =~ s/\D//gi;
-$calleridname =~ s/unknown//gi;
-$callerid = $calleridname if ( (!$callerid) or ($callerid =~ /unknown/) );
+$accountcode =~ s/unknown//gi;
+$callerid = $accountcode if ( (!$callerid) or ($callerid =~ /unknown/) );
 
 
 
@@ -269,7 +270,7 @@ if ($call_handle_method =~ /^CID/) {
 	$phone_number = '';
 	$phone_number = $callerid if (length($callerid)>0);
 	$VLcomments = '';
-	$VLcomments = $calleridname if (length($calleridname)>0);
+	$VLcomments = $accountcode if (length($accountcode)>0);
 }
 
 #if ($channel =~ /^SIP/) {$channel =~ s/-.*//gi;}
@@ -518,7 +519,6 @@ if ( ($hm < $ct_default_start) || ($hm > $ct_default_stop) ) {
 
 	if ($after_hours_action =~ /EXTENSION|VOICEMAIL/) {
 		$DROPexten = "$after_hours_exten" if ($after_hours_action =~ /EXTENSION/);
-		}
 		$DROPexten = "$voicemail_dump_exten$after_hours_voicemail" if ($after_hours_action =~ /VOICEMAIL/);
 		### if DROP extension is defined then send the dropped call there instead of hangup
 		if (length($DROPexten)>0) {
@@ -770,7 +770,7 @@ while ($drop_timer <= $DROP_TIME) {
 					$VHqueryCID = "VH$CIDdate$VDADconf_exten";
 
 					### insert a NEW record to the osdial_manager table to play the alert message to the agent
-					$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$VHqueryCID','Exten: $agent_alert_exten','Context: $ext_context','Channel: Local/7$VDADconf_exten$at$ext_context','Priority: 1','Callerid: $CIDstring','Timeout: 10','','','','')";
+					$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$VHqueryCID','Exten: $agent_alert_exten','Context: $ext_context','Channel: Local/7$VDADconf_exten$at$ext_context','Priority: 1','Callerid: $CIDstring','Timeout: 10','Account: $CIDstring','','','')";
 					$affected_rows = $dbhA->do($stmtA);  
 					if ($AGILOG) {$agi_string = "--    VDCL agent alert: |$VHqueryCID|7$VDADconf_exten|$channel|insert to osdial_manager";   &agi_output;}
 
@@ -971,7 +971,7 @@ while ($drop_timer <= $DROP_TIME) {
 					$VHqueryCID = "VH$CIDdate$VDADconf_exten";
 
 					### insert a NEW record to the osdial_manager table to play the alert message to the agent
-					$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$VHqueryCID','Exten: $agent_alert_exten','Context: $ext_context','Channel: Local/$alertVDADremDIALstr$at$ext_context','Priority: 1','Callerid: $CIDstring','Timeout: 10','','','','')";
+					$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$VHqueryCID','Exten: $agent_alert_exten','Context: $ext_context','Channel: Local/$alertVDADremDIALstr$at$ext_context','Priority: 1','Callerid: $CIDstring','Timeout: 10','Account: $CIDstring','','','')";
 					$affected_rows = $dbhA->do($stmtA);  
 					if ($AGILOG) {$agi_string = "--    VDCL agent alert: |$VHqueryCID|$alertVDADremDIALstr|$channel|insert to osdial_manager";   &agi_output;}
 

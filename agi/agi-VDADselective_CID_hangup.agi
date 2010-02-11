@@ -135,24 +135,25 @@ while(<STDIN>)
 	if (/^agi_extension\:\s+(.*)$/)		{$extension = $1;}
 	if (/^agi_callerid\:\s+(.*)$/)		{$callerid = $1;}
 	if (/^agi_calleridname\:\s+(.*)$/)	{$calleridname = $1;}
+	if (/^agi_accountcode\:\s+(.*)$/)	{$accountcode = $1;}
 
-	if ( ($callerid =~ /\".*\"/) && ( (!$calleridname) or ($calleridname =~ /unknown/) ) )
+	if ( ($callerid =~ /\".*\"/) && ( (!$accountcode) or ($accountcode =~ /unknown/) ) )
 		{
-		$calleridname = $callerid;
-		$calleridname =~ s/\<\d\d\d\d\d\d\d\d\d\d\>//gi;
-		$calleridname =~ s/\"|\" //gi;
+		$accountcode = $callerid;
+		$accountcode =~ s/\<\d\d\d\d\d\d\d\d\d\d\>//gi;
+		$accountcode =~ s/\"|\" //gi;
 		}
 
 		$callerid =~ s/\D//gi;
-		$calleridname =~ s/unknown//gi;
+		$accountcode =~ s/unknown//gi;
 	if ( (!$callerid) or ($callerid =~ /unknown/) )
-		{$callerid = $calleridname;}
+		{$callerid = $accountcode;}
 
 	if (length($callerid)>0) {$phone_number = $callerid;}
 	   else {$phone_number = '';}
 }
 
-$CIDlead_id = $calleridname;
+$CIDlead_id = $accountcode;
 $CIDlead_id = substr($CIDlead_id, 11, 9);
 $CIDlead_id = ($CIDlead_id + 0);
 
@@ -197,7 +198,7 @@ if ($areacode !~ /$clear_area_codes/)
 
 }
 
-if ($AGILOG) {$agi_string = "AGI Variables: |$extension|$areacode|$phone_number|$callerid|$calleridname|$channel|";   &agi_output;}
+if ($AGILOG) {$agi_string = "AGI Variables: |$extension|$areacode|$phone_number|$callerid|$accountcode|$channel|";   &agi_output;}
 
 exit;
 

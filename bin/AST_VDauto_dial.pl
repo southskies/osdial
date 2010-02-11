@@ -970,10 +970,10 @@ while($one_day_interval > 0)
 								### use manager middleware-app to connect the next call to the meetme room
 								# VmmddhhmmssLLLLLLLLL
 									$VqueryCID = "V$CIDdate$PADlead_id";
-								if ($CCID_on) {$CIDstring = "\"$VqueryCID\" <$CCID>";}
-								else {$CIDstring = "$VqueryCID";}
+								if ($CCID_on) {$CIDstring = "\"ooo\" <$CCID>";}
+								else {$CIDstring = "ooo";}
 								### insert a NEW record to the osdial_manager table to be processed
-									$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$DBIPaddress[$user_CIPct]','','Originate','$VqueryCID','Exten: $VDAD_dial_exten','Context: $ext_context','Channel: $local_DEF$Ndialstring$local_AMP$ext_context','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','','','','')";
+									$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$DBIPaddress[$user_CIPct]','','Originate','$VqueryCID','Exten: $VDAD_dial_exten','Context: $ext_context','Channel: $local_DEF$Ndialstring$local_AMP$ext_context','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','Account: $VqueryCID','','','')";
 									$affected_rows = $dbhA->do($stmtA);
 
 									$event_string = "|     number call dialed|$DBIPcampaign[$user_CIPct]|$VqueryCID|$stmtA|$gmt_offset_now|$alt_dial|";

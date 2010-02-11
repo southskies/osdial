@@ -1562,7 +1562,7 @@ else
 			}
 
 		### insert a NEW record to the osdial_manager table to be processed
-		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$SIqueryCID','Channel: $SIP_user','Context: $ext_context','Exten: $session_id','Priority: 1','Callerid: $SIqueryCID','','','','','');";
+		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$SIqueryCID','Channel: $SIP_user','Context: $ext_context','Exten: $session_id','Priority: 1','Callerid: $SIqueryCID','Account: $SIqueryCID','','','','');";
 		if ($DB) {echo "$stmt\n";}
 		$rslt=mysql_query($stmt, $link);
 		$affected_rows = mysql_affected_rows($link);

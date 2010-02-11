@@ -283,6 +283,7 @@ sub process_request {
 	$fullCID=0;
 	$callerid='';
 	$calleridname='';
+	$accountcode='';
 	$|=1;
 	while(<STDIN>) {
 		chomp;
@@ -307,6 +308,7 @@ sub process_request {
 			@CID = split(/-----/, $request);
 			$callerid =	$CID[2];
 			$calleridname =	$CID[3];
+			$accountcode =	$CID[3];
 			$agi_string = "URL fullCID: |$callerid|$calleridname|$request|";   
 			&agi_output;
 			}
@@ -328,12 +330,13 @@ sub process_request {
 			{
 			if (/^agi_callerid\:\s+(.*)$/)		{$callerid = $1;}
 			if (/^agi_calleridname\:\s+(.*)$/)	{$calleridname = $1;}
-			if ( $calleridname =~ /\"/)  {$calleridname =~ s/\"//gi;}
-	#	if ( (length($calleridname)>5) && ( (!$callerid) or ($callerid =~ /unknown|private|00000000/i) or ($callerid =~ /5551212/) ) )
+			if (/^agi_accountcode\:\s+(.*)$/)	{$accountcode = $1;}
+			if ( $accountcode =~ /\"/)  {$accountcode =~ s/\"//gi;}
+	#	if ( (length($accountcode)>5) && ( (!$callerid) or ($callerid =~ /unknown|private|00000000/i) or ($callerid =~ /5551212/) ) )
 		if ( ( 
-		(length($calleridname)>5) && ( (!$callerid) or ($callerid =~ /unknown|private|00000000/i) or ($callerid =~ /5551212/) )
-		) or ( (length($calleridname)>17) && ($calleridname =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) ) )
-			{$callerid = $calleridname;}
+		(length($accountcode)>5) && ( (!$callerid) or ($callerid =~ /unknown|private|00000000/i) or ($callerid =~ /5551212/) )
+		) or ( (length($accountcode)>17) && ($accountcode =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) ) )
+			{$callerid = $accountcode;}
 
 			### allow for ANI being sent with the DNIS "*3125551212*9999*"
 			if ($extension =~ /^\*\d\d\d\d\d\d\d\d\d\d\*/)
@@ -344,7 +347,7 @@ sub process_request {
 				$extension =~ s/^\*\d\d\d\d\d\d\d\d\d\d\*//gi;
 				$extension =~ s/\*$//gi;
 				}
-			$calleridname = $callerid;
+			$accountcode = $callerid;
 			}
 	}
 
@@ -604,7 +607,7 @@ sub process_request {
 				open(out, ">>$PATHlogs/HANGUP_cause-output.txt")
 						|| die "Can't open $PATHlogs/HANGUP_cause-output.txt: $!\n";
 
-				print out "$now_date|$hangup_cause|$dialstatus|$dial_time|$ring_time|$unique_id|$channel|$extension|$type|$callerid|$calleridname|$priority|\n";
+				print out "$now_date|$hangup_cause|$dialstatus|$dial_time|$ring_time|$unique_id|$channel|$extension|$type|$callerid|$accountcode|$priority|\n";
 
 				close(out);
 			}
@@ -701,7 +704,7 @@ sub process_request {
 
 				if (!$rec_countCUSTDATA)
 					{
-					if ($AGILOG) {$agi_string = "VD hangup: no VDAC record found: $uniqueid $calleridname";   &agi_output;}
+					if ($AGILOG) {$agi_string = "VD hangup: no VDAC record found: $uniqueid $accountcode";   &agi_output;}
 					}
 				else
 					{
@@ -807,7 +810,7 @@ sub process_request {
 					$Euniqueid=$uniqueid;
 					$Euniqueid =~ s/\.\d+$//gi;
 
-					if ($calleridname !~ /^Y\d\d\d\d/)
+					if ($accountcode !~ /^Y\d\d\d\d/)
 						{	
 						########## FIND AND UPDATE osdial_log ##########
 						$stmtA = "SELECT start_epoch,status,user,term_reason,comments FROM osdial_log FORCE INDEX(lead_id) where lead_id = '$VD_lead_id' and uniqueid LIKE \"$Euniqueid%\" limit 1;";
@@ -829,9 +832,9 @@ sub process_request {
 						$sthA->finish();
 						}
 
-					if ( (!$epc_countCUSTDATA) || ($calleridname =~ /^Y\d\d\d\d/) )
+					if ( (!$epc_countCUSTDATA) || ($accountcode =~ /^Y\d\d\d\d/) )
 						{
-						if ($AGILOG) {$agi_string = "no VDL record found: $uniqueid $calleridname $VD_lead_id $uniqueid $VD_uniqueid";   &agi_output;}
+						if ($AGILOG) {$agi_string = "no VDL record found: $uniqueid $accountcode $VD_lead_id $uniqueid $VD_uniqueid";   &agi_output;}
 
 						$secX = time();
 						$Rtarget = ($secX - 21600);	# look for VDCL entry within last 6 hours
@@ -869,7 +872,7 @@ sub process_request {
 						}
 					if (!$epc_countCUSTDATA)
 						{
-						if ($AGILOG) {$agi_string = "no VDL or VDCL record found: $uniqueid $calleridname $VD_lead_id $uniqueid $VD_uniqueid";   &agi_output;}
+						if ($AGILOG) {$agi_string = "no VDL or VDCL record found: $uniqueid $accountcode $VD_lead_id $uniqueid $VD_uniqueid";   &agi_output;}
 						}
 					else
 						{
@@ -901,7 +904,7 @@ sub process_request {
 							$SQL_status = "term_reason='CALLER',";
 							}
 
-						if ($calleridname !~ /^Y\d\d\d\d/)
+						if ($accountcode !~ /^Y\d\d\d\d/)
 							{
 							$VDL_update=1;
 							$stmtA = "UPDATE osdial_log FORCE INDEX(lead_id) set $SQL_status end_epoch='$now_date_epoch',length_in_sec='$VD_seconds' where lead_id = '$VD_lead_id' and uniqueid LIKE \"$Euniqueid%\";";
@@ -915,7 +918,7 @@ sub process_request {
 						########## UPDATE osdial_closer_log ##########
 						if ( (length($VD_closecallid) < 1) || ($VDL_update > 0) )
 							{
-							if ($AGILOG) {$agi_string = "no VDCL record found: $uniqueid|$calleridname|$VD_lead_id|$uniqueid|$VD_uniqueid|$VDL_update";   &agi_output;}
+							if ($AGILOG) {$agi_string = "no VDCL record found: $uniqueid|$accountcode|$VD_lead_id|$uniqueid|$VD_uniqueid|$VDL_update";   &agi_output;}
 							}
 						else
 							{

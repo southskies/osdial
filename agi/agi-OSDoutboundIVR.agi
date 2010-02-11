@@ -64,7 +64,7 @@ $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $server = $sthA->fetchrow_hashref;
 $sthA->finish();
 
-#my ($uniqueid, $priority, $channel, $extension, $type, $callerid, $calleridname);
+#my ($uniqueid, $priority, $channel, $extension, $type, $callerid, $calleridname, $accountcode);
 #while(<STDIN>) {
 #        chomp;
 #        last unless length($_);
@@ -81,6 +81,7 @@ $sthA->finish();
 #        if (/^agi_type\:\s+(.*)$/)              {$vars->{'AGI'}{'type'} = $1;}
 #        if (/^agi_callerid\:\s+(.*)$/)          {$vars->{'AGI'}{'callerid'} = $1;}
 #        if (/^agi_calleridname\:\s+(.*)$/)      {$vars->{'AGI'}{'calleridname'} = $1;}
+#        if (/^agi_accountcode\:\s+(.*)$/)      {$vars->{'AGI'}{'accountcode'} = $1;}
 #}
 
 my %aout = $AGI->ReadParse();
@@ -97,11 +98,11 @@ if ( (length($AGI->{callerid})>20) && ($AGI->{callerid} =~ /\"\S\S\S\S\S\S\S\S\S
 	agi_execute("SET CALLERID " . $AGI->{callerid});
 	agi_output("callerID1 changed from '" . $orig . "' to '" . $AGI->{callerid} . "'.");
 }
-if ( ((length($AGI->{calleridname})>5) && ( (!$AGI->{callerid}) or ($AGI->{callerid} =~ /unknown|private|00000000/i) or ($AGI->{callerid} =~ /5551212/) ))
-   or ( (length($AGI->{calleridname})>17) && ($AGI->{calleridname} =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) ) ) {
-	$AGI->{callerid} = $AGI->{calleridname};
+if ( ((length($AGI->{accountcode})>5) && ( (!$AGI->{callerid}) or ($AGI->{callerid} =~ /unknown|private|00000000/i) or ($AGI->{callerid} =~ /5551212/) ))
+   or ( (length($AGI->{accountcode})>17) && ($AGI->{accountcode} =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) ) ) {
+	$AGI->{callerid} = $AGI->{accountcode};
 	agi_execute("SET CALLERID " . $AGI->{callerid});
-	agi_output("callerID2 changed from '" . $AGI->{calleridname} . "' to '" . $AGI->{callerid} . "'.");
+	agi_output("callerID2 changed from '" . $AGI->{accountcode} . "' to '" . $AGI->{callerid} . "'.");
 }
 $AGI->{callerid} =~ s/\"//gi;
 $vars->{CIDlead_id} = (substr($AGI->{callerid}, 11, 9) + 0);

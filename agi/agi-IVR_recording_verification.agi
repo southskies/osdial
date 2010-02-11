@@ -209,19 +209,20 @@ while(<STDIN>)
 	if (/^agi_channel\:\s+(.*)$/)		{$channel = $1;}
 	if (/^agi_callerid\:\s+(.*)$/)		{$callerid = $1;}
 	if (/^agi_calleridname\:\s+(.*)$/)	{$calleridname = $1;}
+	if (/^agi_accountcode\:\s+(.*)$/)	{$accountcode = $1;}
 }
 
-if ( ($callerid =~ /\".*\"/) && ( (!$calleridname) or ($calleridname =~ /unknown/) ) )
+if ( ($callerid =~ /\".*\"/) && ( (!$accountcode) or ($accountcode =~ /unknown/) ) )
 	{
-	$calleridname = $callerid;
-	$calleridname =~ s/\<\d\d\d\d\d\d\d\d\d\d\>//gi;
-	$calleridname =~ s/\"|\" //gi;
+	$accountcode = $callerid;
+	$accountcode =~ s/\<\d\d\d\d\d\d\d\d\d\d\>//gi;
+	$accountcode =~ s/\"|\" //gi;
 	}
 
 	$callerid =~ s/\D//gi;
-	$calleridname =~ s/unknown//gi;
+	$accountcode =~ s/unknown//gi;
 if ( (!$callerid) or ($callerid =~ /unknown/) )
-	{$callerid = $calleridname;}
+	{$callerid = $accountcode;}
 
 $phone_number=$callerid;
 

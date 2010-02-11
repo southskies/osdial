@@ -317,6 +317,7 @@ while($one_day_interval > 0)
 				$ame{'callerid'} = $ame{'calleridnum'} if ($ame{'calleridnum'});
 				$ame{'state'} = $ame{'channelstatedesc'} if ($ame{'channelstatedesc'});
 				$ame{'srcuniqueid'} = $ame{'uniqueid'} if ($ame{'uniqueid'});
+				$ame{'accountcode'} = $ame{'account'} if ($ame{'account'});
 
 				if ($DB) {
 					foreach my $clkey (keys %ame) {
@@ -327,11 +328,11 @@ while($one_day_interval > 0)
 
 
 				##### look for special osdial conference call event #####
-				if ( ($ame{'event'} =~ /Dial/i || $ame{'state'} =~ /Up/i) && ($ame{'calleridname'} =~ /DCagcW/) ) {
+				if ( ($ame{'event'} =~ /Dial/i || $ame{'state'} =~ /Up/i) && ($ame{'accountcode'} =~ /DCagcW/) ) {
 					if ($ame{'event'} =~ /Dial/i) {
 						if ($ame{'destination'} ne "") {
 							$channel = $ame{'destination'};
-							$callid = $ame{'calleridname'};
+							$callid = $ame{'accountcode'};
 							$uniqueid = $ame{'srcuniqueid'};
 							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
 							if ($channel !~ /local/i) {
@@ -343,7 +344,7 @@ while($one_day_interval > 0)
 					if ($ame{'state'} =~ /^Up/i) {
 						if ($ame{'channel'} ne "") {
 							$channel = $ame{'channel'};
-							$callid = $ame{'calleridname'};
+							$callid = $ame{'accountcode'};
 							$uniqueid = $ame{'srcuniqueid'};
 							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid' and status='SENT';";
 							my $affected_rows = $dbhA->do($stmtA);
@@ -378,7 +379,7 @@ while($one_day_interval > 0)
 						if ( ($ame{'channel'} ne "") && ($ame{'uniqueid'} ne "") ) {
 							$channel = $ame{'channel'};
 							$callid = $ame{'callerid'};
-							$callid = $ame{'calleridname'} if ($ame{'calleridname'} ne "");
+							$callid = $ame{'accountcode'} if ($ame{'accountcode'} ne "");
 							$uniqueid = $ame{'uniqueid'};
 							$stmtA = "UPDATE osdial_manager set status='SENT', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
 							my $affected_rows = $dbhA->do($stmtA);
@@ -390,7 +391,7 @@ while($one_day_interval > 0)
 						if ( ($ame{'channel'} ne "") && ($ame{'uniqueid'} ne "") ) {
 							$channel = $ame{'channel'};
 							$callid = $ame{'callerid'};
-							$callid = $ame{'calleridname'} if ($ame{'calleridname'} ne "");
+							$callid = $ame{'accountcode'} if ($ame{'accountcode'} ne "");
 							$uniqueid = $ame{'uniqueid'};
 							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
 							if ($channel !~ /local/i) {
@@ -404,7 +405,7 @@ while($one_day_interval > 0)
 						if ( ($ame{'channel'} ne "") && ($ame{'uniqueid'} ne "") ) {
 							$channel = $ame{'channel'};
 							$callid = $ame{'callerid'};
-							$callid = $ame{'calleridname'} if ($ame{'calleridname'} ne "");
+							$callid = $ame{'accountcode'} if ($ame{'accountcode'} ne "");
 							$uniqueid = $ame{'uniqueid'};
 							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
 							my $affected_rows = $dbhA->do($stmtA);

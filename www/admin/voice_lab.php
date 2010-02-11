@@ -211,7 +211,7 @@ if ($NEW_VOICE_LAB > 0)
 		else
 			{$dial_string = $remote_dialstring;}
 
-		$stmt="INSERT INTO osdial_manager values('','','$MYSQL_datetime','NEW','N','$agents_servers[$o]','','Originate','VL$FILE_datetime$o','Channel: $local_DEF$dial_string$local_AMP$ext_context','Context: $ext_context','Exten: $agents_sessions[$o]','Priority: 1','Callerid: VL$FILE_datetime$o','','','','','')";
+		$stmt="INSERT INTO osdial_manager values('','','$MYSQL_datetime','NEW','N','$agents_servers[$o]','','Originate','VL$FILE_datetime$o','Channel: $local_DEF$dial_string$local_AMP$ext_context','Context: $ext_context','Exten: $agents_sessions[$o]','Priority: 1','Callerid: VL$FILE_datetime$o','Account: VL$FILE_datetime$o','','','','')";
 		echo "|$stmt|\n<BR><BR>\n";
 		$rslt=mysql_query($stmt, $link);
 
@@ -257,7 +257,7 @@ else
 		$nn='99';
 		$n='9';
 
-		$stmt="INSERT INTO osdial_manager values('','','$MYSQL_datetime','NEW','N','$server_ip','','Originate','VL$FILE_datetime$nn','Channel: $local_DEF$n$session_id$local_AMP$ext_context','Context: $ext_context','Exten: $message','Priority: 1','Callerid: VL$FILE_datetime$nn','','','','','')";
+		$stmt="INSERT INTO osdial_manager values('','','$MYSQL_datetime','NEW','N','$server_ip','','Originate','VL$FILE_datetime$nn','Channel: $local_DEF$n$session_id$local_AMP$ext_context','Context: $ext_context','Exten: $message','Priority: 1','Callerid: VL$FILE_datetime$nn','Account: VL$FILE_datetime$nn','','','','')";
 		echo "|$stmt|\n<BR><BR>\n";
 		$rslt=mysql_query($stmt, $link);
 
@@ -310,7 +310,7 @@ if ($KILL_VOICE_LAB > 1)
 	{
 	$kill_dial_string = "5555$session_id";
 	$hangup_exten='8300';
-	$stmt="INSERT INTO osdial_manager values('','','$MYSQL_datetime','NEW','N','$server_ip','','Originate','VLK$FILE_datetime','Channel: $local_DEF$kill_dial_string$local_AMP$ext_context','Context: $ext_context','Exten: $hangup_exten','Priority: 1','Callerid: VLK$FILE_datetime','','','','','')";
+	$stmt="INSERT INTO osdial_manager values('','','$MYSQL_datetime','NEW','N','$server_ip','','Originate','VLK$FILE_datetime','Channel: $local_DEF$kill_dial_string$local_AMP$ext_context','Context: $ext_context','Exten: $hangup_exten','Priority: 1','Callerid: VLK$FILE_datetime','Account: VLK$FILE_datetime','','','','')";
 	echo "|$stmt|\n<BR><BR>\n";
 	$rslt=mysql_query($stmt, $link);
 

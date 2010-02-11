@@ -117,6 +117,7 @@ while(<STDIN>) {
 	if (/^agi_type\:\s+(.*)$/)		{$type = $1;}
 	if (/^agi_callerid\:\s+(.*)$/)		{$callerid = $1;}
 	if (/^agi_calleridname\:\s+(.*)$/)	{$calleridname = $1;}
+	if (/^agi_accountcode\:\s+(.*)$/)	{$accountcode = $1;}
 }
 
 	if ($V)
@@ -128,7 +129,7 @@ while(<STDIN>) {
 		}
 	}
 
-if ($CLIOUT) {print STDERR "****** DEBUG: |$unique_id|$channel|$extension|$type|$callerid|$calleridname|\n";}
+if ($CLIOUT) {print STDERR "****** DEBUG: |$unique_id|$channel|$extension|$type|$callerid|$accountcode|\n";}
 
 if ($SPEAK) 
 	{

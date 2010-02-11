@@ -857,8 +857,8 @@ if ($ACTION == 'manDiaLnextCaLL')
 
 				# Create unique calleridname to track the call: MmmddhhmmssLLLLLLLLL
 					$MqueryCID = "M$CIDdate$PADlead_id";
-				if ($CCID_on) {$CIDstring = "\"$MqueryCID\" <$CCID>";}
-				else {$CIDstring = "$MqueryCID";}
+				if ($CCID_on) {$CIDstring = "\"ooo\" <$CCID>";}
+				else {$CIDstring = "ooo";}
 
 				### whether to omit phone_code or not
 				if (eregi('Y',$omit_phone_code)) 
@@ -867,7 +867,7 @@ if ($ACTION == 'manDiaLnextCaLL')
 					{$Ndialstring = "$Local_out_prefix$phone_code$phone_number";}
 				### insert the call action into the osdial_manager table to initiate the call
 				#	$stmt = "INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$MqueryCID','Exten: $conf_exten','Context: $ext_context','Channel: $local_DEF$Local_out_prefix$phone_code$phone_number$local_AMP$ext_context','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','','','','');";
-				$stmt = "INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$MqueryCID','Exten: $Ndialstring','Context: $ext_context','Channel: $local_DEF$conf_exten$local_AMP$ext_context$Local_persist','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','','','','');";
+				$stmt = "INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$MqueryCID','Exten: $Ndialstring','Context: $ext_context','Channel: $local_DEF$conf_exten$local_AMP$ext_context$Local_persist','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','Account: $MqueryCID','','','');";
 				if ($DB) {echo "$stmt\n";}
 				$rslt=mysql_query($stmt, $link);
 
@@ -1035,7 +1035,7 @@ if ($ACTION == 'manDiaLonly')
 
 		# Create unique calleridname to track the call: MmmddhhmmssLLLLLLLLL
 			$MqueryCID = "M$CIDdate$PADlead_id";
-		if ($CCID_on) {$CIDstring = "\"$MqueryCID\" <$CCID>";}
+		if ($CCID_on) {$CIDstring = "\"ooo\" <$CCID>";}
 		else {$CIDstring = "$MqueryCID";}
 
 		### whether to omit phone_code or not
@@ -1045,7 +1045,7 @@ if ($ACTION == 'manDiaLonly')
 			{$Ndialstring = "$Local_out_prefix$phone_code$phone_number";}
 		### insert the call action into the osdial_manager table to initiate the call
 		#	$stmt = "INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$MqueryCID','Exten: $conf_exten','Context: $ext_context','Channel: $local_DEF$Local_out_prefix$phone_code$phone_number$local_AMP$ext_context','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','','','','');";
-		$stmt = "INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$MqueryCID','Exten: $Ndialstring','Context: $ext_context','Channel: $local_DEF$conf_exten$local_AMP$ext_context$Local_persist','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','','','','');";
+		$stmt = "INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$MqueryCID','Exten: $Ndialstring','Context: $ext_context','Channel: $local_DEF$conf_exten$local_AMP$ext_context$Local_persist','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','Account: $MqueryCID','','','');";
 		if ($DB) {echo "$stmt\n";}
 		$rslt=mysql_query($stmt, $link);
 
@@ -2138,7 +2138,7 @@ else
 		$kick_local_channel = "$local_DEF$conf_exten$local_AMP$ext_context";
 		$queryCID = "ULGH3458$StarTtime";
 
-		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$queryCID','Channel: $kick_local_channel','Context: $ext_context','Exten: 8300','Priority: 1','Callerid: $queryCID','','','','$channel','$exten');";
+		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$queryCID','Channel: $kick_local_channel','Context: $ext_context','Exten: 8300','Priority: 1','Callerid: $queryCID','Account: $queryCID','','','$channel','$exten');";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 		}

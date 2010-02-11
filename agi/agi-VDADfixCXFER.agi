@@ -179,6 +179,11 @@ while(<STDIN>)
 	if (/^agi_uniqueid\:\s+(.*)$/)		{$unique_id = $1; $uniqueid = $unique_id;}
 	if (/^agi_channel\:\s+(.*)$/)		{$channel = $1;}
 	if (/^agi_extension\:\s+(.*)$/)		{$extension = $1;}
+	if (/^agi_type\:\s+(.*)$/)		{$type = $1;}
+	if (/^agi_priority\:\s+(.*)$/)		{$priority = $1;}
+	if (/^agi_callerid\:\s+(.*)$/)	{$callerid= $1;}
+	if (/^agi_calleridname\:\s+(.*)$/)	{$calleridname = $1;}
+	if (/^agi_accountcode\:\s+(.*)$/)	{$accountcode = $1;}
 }
 
 # 010*010*011*011*
@@ -200,7 +205,7 @@ foreach $i (sort keys %AGI)
 	if ($AGILOG) {$agi_string = " -- $i = $AGI{$i}";   &agi_output;}
 }
 
-if ($AGILOG) {$agi_string = "AGI Variables: |$unique_id|$channel|$extension|$type|$callerid|$calleridname|$priority|";   &agi_output;}
+if ($AGILOG) {$agi_string = "AGI Variables: |$unique_id|$channel|$extension|$type|$callerid|$calleridname|$accountcode|$priority|";   &agi_output;}
 
 if ($AGILOG) {$agi_string = "CXFERfix : $lead_id $user $channel $uniqueid";   &agi_output;}
 

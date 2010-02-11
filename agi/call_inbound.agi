@@ -198,9 +198,10 @@ while(<STDIN>) {
 	if (/^agi_type\:\s+(.*)$/)		{$type = $1;}
 	if (/^agi_callerid\:\s+(.*)$/)		{$callerid = $1;}
 	if (/^agi_calleridname\:\s+(.*)$/)	{$calleridname = $1;}
-        if ( $calleridname =~ /\"/)  {$calleridname =~ s/\"//gi;}
-         if ( (length($calleridname)>5) && ( (!$callerid) or ($callerid =~ /unknown|private|00000000/i) or ($callerid =~ /5551212/) ) )
-            {$callerid = $calleridname;}
+	if (/^agi_accountcode\:\s+(.*)$/)	{$accountcode = $1;}
+        if ( $accountcode =~ /\"/)  {$accountcode =~ s/\"//gi;}
+         if ( (length($accountcode)>5) && ( (!$callerid) or ($callerid =~ /unknown|private|00000000/i) or ($callerid =~ /5551212/) ) )
+            {$callerid = $accountcode;}
 
 	### allow for ANI being sent with the DNIS "*3125551212*9999*"
 	if ($extension =~ /^\*\d\d\d\d\d\d\d\d\d\d\*/)
@@ -228,7 +229,7 @@ foreach $i (sort keys %AGI)
 if ($AGILOG) {$agi_string = "AGI Variables: |$unique_id|$channel|$extension|$type|$callerid|";   &agi_output;}
 
 
-        $callerid = "\"$calleridname\" <$callerid>";
+        $callerid = "\"$accountcode\" <$callerid>";
 
 if ($extension =~ /h/i) {$stage = 'END';}
 else {$stage = 'START';}

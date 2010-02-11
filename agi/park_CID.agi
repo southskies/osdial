@@ -134,6 +134,7 @@ if (length($ARGV[0])>1)
 		$fullCID=1;
 		$callerid =	$CID[2];
 		$calleridname =	$CID[3];
+		$accountcode =	$CID[3];
 		}
 
 	if ($args =~ /--help/i)
@@ -188,9 +189,10 @@ while(<STDIN>) {
 		{
 		if (/^agi_callerid\:\s+(.*)$/)		{$callerid = $1;}
 		if (/^agi_calleridname\:\s+(.*)$/)	{$calleridname = $1;}
-		if ( $calleridname =~ /\"/)  {$calleridname =~ s/\"//gi;}
+		if (/^agi_accountcode\:\s+(.*)$/)	{$accountcode = $1;}
+		if ( $accountcode =~ /\"/)  {$accountcode =~ s/\"//gi;}
 		if ( (!$callerid) or ($callerid =~ /unknown/) )
-			{$callerid = $calleridname;}
+			{$callerid = $accountcode;}
 
 		### allow for ANI being sent with the DNIS "*3125551212*9999*"
 		if ($extension =~ /^\*\d\d\d\d\d\d\d\d\d\d\*/)
@@ -201,7 +203,7 @@ while(<STDIN>) {
 			$extension =~ s/^\*\d\d\d\d\d\d\d\d\d\d\*//gi;
 			$extension =~ s/\*$//gi;
 			}
-		$calleridname = $callerid;
+		$accountcode = $callerid;
 		}
 }
 
