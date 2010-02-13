@@ -44,8 +44,10 @@ require('admin/templates/' . $system_settings['admin_template'] . '/display.php'
 
 		var osdhtml = '';
 		var lstkrn = 0;
+        var preload = new Image();
 		for (var l in phrase.split("")) {
 			if (let[phrase[l]]) {
+                preload.src(images + let[phrase[l]]);
 				osdhtml += '<img style="margin-left: ' + lstkrn + 'px;" border="0" src="' + images + let[phrase[l]] + '">';
 				if (krnon)
 					lstkrn = krn[phrase[l]] - krnon;
