@@ -223,6 +223,7 @@ sub gen_servers {
 	$isvr .= "secret=$pass\n";
 	$isvr .= "disallow=all\n";
 	$isvr .= "allow=$codec\n";
+	$isvr .= "requirecalltoken=no\n";
 	$isvr .= "qualify=no\n";
 
 	$isvr .= ";\n; IAX loopback for blind monitoring\n";
@@ -236,6 +237,7 @@ sub gen_servers {
 	$isvr .= "secret=$pass\n";
 	$isvr .= "disallow=all\n";
 	$isvr .= "allow=$codec\n";
+	$isvr .= "requirecalltoken=no\n";
 	$isvr .= "qualify=no\n";
 
 	# Get my server
@@ -265,6 +267,7 @@ sub gen_servers {
 		$isvr .= "disallow=all\n";
 		$isvr .= "allow=$codec\n";
 		$isvr .= "context=osdial\n";
+		$isvr .= "requirecalltoken=no\n";
 		$isvr .= "nat=no\n";
 
 	}
@@ -297,6 +300,7 @@ sub gen_servers {
 		$isvr .= "disallow=all\n";
 		$isvr .= "allow=$codec\n";
 		$isvr .= "peercontext=osdial\n";
+		$isvr .= "requirecalltoken=no\n";
 		$isvr .= "nat=no\n";
 	}
 
