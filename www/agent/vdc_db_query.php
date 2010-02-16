@@ -1845,6 +1845,16 @@ if ($ACTION == 'VDADcheckINCOMING')
 				$VDCL_web_form_extwin   = $row[10];
 				$VDCL_web_form_extwin2  = $row[11];
 				}
+
+			$stmt = "SELECT web_form_address,web_form_address2 FROM osdial_lists WHERE list_id='$list_id';";
+			if ($DB) {echo "$stmt\n";}
+			$rslt=mysql_query($stmt, $link);
+			$list_cnt = mysql_num_rows($rslt);
+			if ($list_cnt > 0) {
+                if ($row[0] != "") $VDCL_web_form_address = $row[0];
+                if ($row[1] != "") $VDCL_web_form_address2 = $row[1];
+            }
+
 			echo "$VDCL_web_form_address|||||$VDCL_campaign_script|$VDCL_get_call_launch|$VDCL_xferconf_a_dtmf|$VDCL_xferconf_a_number|$VDCL_xferconf_b_dtmf|$VDCL_xferconf_b_number|$VDCL_default_xfer_group|$VDCL_allow_tab_switch|$VDCL_web_form_address2|$VDCL_web_form_extwin|$VDCL_web_form_extwin2|\n|\n";
 			
 			$stmt = "select phone_number,alt_dial from osdial_auto_calls where callerid = '$callerid' order by call_time desc limit 1;";

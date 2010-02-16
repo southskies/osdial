@@ -2766,7 +2766,7 @@ if ($ADD==411) {
         } else {
             echo "<br><B><font color=$default_text>LIST MODIFIED: $list_id</font></B>\n";
 
-            $stmt="UPDATE osdial_lists set list_name='$list_name',campaign_id='$campaign_id',active='$active',list_description='$list_description',list_changedate='$SQLdate',scrub_dnc='$scrub_dnc',cost='$cost' where list_id='$list_id';";
+            $stmt="UPDATE osdial_lists set list_name='$list_name',campaign_id='$campaign_id',active='$active',list_description='$list_description',list_changedate='$SQLdate',scrub_dnc='$scrub_dnc',cost='$cost',web_form_address='" . mysql_real_escape_string($web_form_address) . "',web_form_address2='" . mysql_real_escape_string($web_form_address2) . "' where list_id='$list_id';";
             $rslt=mysql_query($stmt, $link);
 
             if ($reset_list == 'Y') {
@@ -2881,6 +2881,8 @@ if ($ADD==311) {
         $list_scrub_last = $row[8];
         $list_scrub_info = $row[9];
         $cost = $row[10];
+        $web_form_address = $row[11];
+        $web_form_address2 = $row[12];
 
         # grab names of global statuses and statuses in the selected campaign
         $stmt="SELECT * from osdial_statuses order by status";
@@ -2945,6 +2947,8 @@ if ($ADD==311) {
             echo "<tr bgcolor=$oddrows><td align=right>External DNC Scrub Now: </td><td align=left><select size=1 name=scrub_dnc><option>Y</option><option selected>N</option></select>$NWB#osdial_lists-srub_dnc$NWE</td></tr>\n";
             echo "<tr bgcolor=$oddrows><td align=right>Last External Scrub: </td><td align=left>$list_scrub_last : $list_scrub_info</td></tr>\n";
         }
+        echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"$web_form_address\">$NWB#osdial_lists-web_form_address$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255 value=\"$web_form_address2\">$NWB#osdial_lists-web_form_address$NWE</td></tr>\n";
         echo "<tr class=tabfooter>";
         echo "<td align=center class=tabbutton>";
         echo "<input type=button name=addleads value=\"ADD LEADS\" onclick=\"window.location='admin.php?ADD=122&list_id_override=$row[0]'\">";
