@@ -2701,17 +2701,17 @@ if ($ADD==125) {
 # ADD=126 generates test leads to test campaign
 ######################
 if ($ADD==126) {
-	echo "<TABLE align=center>";
-	echo "	<tr>";
-	echo "		<td>";
+    echo "<TABLE align=center>";
+    echo "	<tr>";
+    echo "		<td>";
 	
-	$stmt="insert into osdial_list where list_id='998'";
-				$rslt=mysql_query($stmt, $link);
-				$row=mysql_fetch_row($rslt);
-	
-	echo "		</td>";
-	echo "	</tr>";
-	echo "</table>";
+    $stmt="insert into osdial_list where list_id='998'";
+    $rslt=mysql_query($stmt, $link);
+    $row=mysql_fetch_row($rslt);
+
+    echo "		</td>";
+    echo "	</tr>";
+    echo "</table>";
 }
 
 
@@ -2721,40 +2721,34 @@ if ($ADD==126) {
 # ADD=211 adds the new list to the system
 ######################
 
-if ($ADD==211)
-{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-	$stmt="SELECT count(*) from osdial_lists where list_id='$list_id';";
-	$rslt=mysql_query($stmt, $link);
-	$row=mysql_fetch_row($rslt);
-	if ($row[0] > 0)
-		{echo "<br><font color=red>LIST NOT ADDED - there is already a list in the system with this ID</font>\n";}
-	else
-		{
-		 if ( (strlen($campaign_id) < 2) or (strlen($list_name) < 2)  or ($list_id < 100) or (strlen($list_id) > 8) )
-			{
-			 echo "<br><font color=red>LIST NOT ADDED - Please go back and look at the data you entered\n";
-			 echo "<br>List ID must be between 2 and 8 characters in length\n";
-			 echo "<br>List name must be at least 2 characters in length\n";
-			 echo "<br>List ID must be greater than 100</font><br>\n";
-			 }
-		 else
-			{
-			echo "<br><B><font color=$default_text>LIST ADDED: $list_id</font></B>\n";
+if ($ADD==211) {
+    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+    $stmt="SELECT count(*) from osdial_lists where list_id='$list_id';";
+    $rslt=mysql_query($stmt, $link);
+    $row=mysql_fetch_row($rslt);
+    if ($row[0] > 0) {
+        echo "<br><font color=red>LIST NOT ADDED - there is already a list in the system with this ID</font>\n";
+    } else {
+        if ( (strlen($campaign_id) < 2) or (strlen($list_name) < 2)  or ($list_id < 100) or (strlen($list_id) > 8) ) {
+            echo "<br><font color=red>LIST NOT ADDED - Please go back and look at the data you entered\n";
+            echo "<br>List ID must be between 2 and 8 characters in length\n";
+            echo "<br>List name must be at least 2 characters in length\n";
+            echo "<br>List ID must be greater than 100</font><br>\n";
+        } else {
+            echo "<br><B><font color=$default_text>LIST ADDED: $list_id</font></B>\n";
 
-			$stmt="INSERT INTO osdial_lists (list_id,list_name,campaign_id,active,list_description,list_changedate) values('$list_id','$list_name','$campaign_id','$active','$list_description','$SQLdate');";
-			$rslt=mysql_query($stmt, $link);
+            $stmt="INSERT INTO osdial_lists (list_id,list_name,campaign_id,active,list_description,list_changedate) values('$list_id','$list_name','$campaign_id','$active','$list_description','$SQLdate');";
+            $rslt=mysql_query($stmt, $link);
 
-			### LOG CHANGES TO LOG FILE ###
-			if ($WeBRooTWritablE > 0)
-				{
-				$fp = fopen ("./admin_changes_log.txt", "a");
-				fwrite ($fp, "$date|ADD A NEW LIST      |$PHP_AUTH_USER|$ip|$stmt|\n");
-				fclose($fp);
-				}
-			}
-		}
-$ADD=311;
+            ### LOG CHANGES TO LOG FILE ###
+            if ($WeBRooTWritablE > 0) {
+                $fp = fopen ("./admin_changes_log.txt", "a");
+                fwrite ($fp, "$date|ADD A NEW LIST      |$PHP_AUTH_USER|$ip|$stmt|\n");
+                fclose($fp);
+            }
+        }
+    }
+    $ADD=311;
 }
 
 
@@ -2762,60 +2756,49 @@ $ADD=311;
 # ADD=411 submit list modifications to the system
 ######################
 
-if ($ADD==411)
-{
-	if ($LOGmodify_lists==1)
-	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+if ($ADD==411) {
+    if ($LOGmodify_lists==1) {
+        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	 if ( (strlen($list_name) < 2) or (strlen($campaign_id) < 2) )
-		{
-		 echo "<br><font color=red>LIST NOT MODIFIED - Please go back and look at the data you entered\n";
-		 echo "<br>list name must be at least 2 characters in length</font><br>\n";
-		}
-	 else
-		{
-		echo "<br><B><font color=$default_text>LIST MODIFIED: $list_id</font></B>\n";
+        if ( (strlen($list_name) < 2) or (strlen($campaign_id) < 2) ) {
+            echo "<br><font color=red>LIST NOT MODIFIED - Please go back and look at the data you entered\n";
+            echo "<br>list name must be at least 2 characters in length</font><br>\n";
+        } else {
+            echo "<br><B><font color=$default_text>LIST MODIFIED: $list_id</font></B>\n";
 
-		$stmt="UPDATE osdial_lists set list_name='$list_name',campaign_id='$campaign_id',active='$active',list_description='$list_description',list_changedate='$SQLdate',scrub_dnc='$scrub_dnc',cost='$cost' where list_id='$list_id';";
-		$rslt=mysql_query($stmt, $link);
+            $stmt="UPDATE osdial_lists set list_name='$list_name',campaign_id='$campaign_id',active='$active',list_description='$list_description',list_changedate='$SQLdate',scrub_dnc='$scrub_dnc',cost='$cost' where list_id='$list_id';";
+            $rslt=mysql_query($stmt, $link);
 
-		if ($reset_list == 'Y')
-			{
-			echo "<br><font color=$default_text>RESETTING LIST-CALLED-STATUS</font>\n";
-			$stmt="UPDATE osdial_list set called_since_last_reset='N' where list_id='$list_id';";
-			$rslt=mysql_query($stmt, $link);
+            if ($reset_list == 'Y') {
+                echo "<br><font color=$default_text>RESETTING LIST-CALLED-STATUS</font>\n";
+                $stmt="UPDATE osdial_list set called_since_last_reset='N' where list_id='$list_id';";
+                $rslt=mysql_query($stmt, $link);
 
-			### LOG RESET TO LOG FILE ###
-			if ($WeBRooTWritablE > 0)
-				{
-				$fp = fopen ("./admin_changes_log.txt", "a");
-				fwrite ($fp, "$date|RESET LIST CALLED   |$PHP_AUTH_USER|$ip|list_name='$list_name'|\n");
-				fclose($fp);
-				}
-			}
-		if ($campaign_id != "$old_campaign_id")
-			{
-			echo "<br><font color=$default_text>REMOVING LIST HOPPER LEADS FROM OLD CAMPAIGN HOPPER ($old_campaign_id)</font>\n";
-			$stmt="DELETE from osdial_hopper where list_id='$list_id' and campaign_id='$old_campaign_id';";
-			$rslt=mysql_query($stmt, $link);
-			}
+                ### LOG RESET TO LOG FILE ###
+                if ($WeBRooTWritablE > 0) {
+                    $fp = fopen ("./admin_changes_log.txt", "a");
+                    fwrite ($fp, "$date|RESET LIST CALLED   |$PHP_AUTH_USER|$ip|list_name='$list_name'|\n");
+                    fclose($fp);
+                }
+            }
+            if ($campaign_id != "$old_campaign_id") {
+                echo "<br><font color=$default_text>REMOVING LIST HOPPER LEADS FROM OLD CAMPAIGN HOPPER ($old_campaign_id)</font>\n";
+                $stmt="DELETE from osdial_hopper where list_id='$list_id' and campaign_id='$old_campaign_id';";
+                $rslt=mysql_query($stmt, $link);
+            }
 
-		### LOG CHANGES TO LOG FILE ###
-		if ($WeBRooTWritablE > 0)
-			{
-			$fp = fopen ("./admin_changes_log.txt", "a");
-			fwrite ($fp, "$date|MODIFY LIST INFO    |$PHP_AUTH_USER|$ip|list_name='$list_name',campaign_id='$campaign_id',active='$active',list_description='$list_description' where list_id='$list_id'|\n");
-			fclose($fp);
-			}
-		}
-	}
-	else
-	{
-	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
-	}
-$ADD=311;	# go to list modification form below
+            ### LOG CHANGES TO LOG FILE ###
+            if ($WeBRooTWritablE > 0) {
+                $fp = fopen ("./admin_changes_log.txt", "a");
+                fwrite ($fp, "$date|MODIFY LIST INFO    |$PHP_AUTH_USER|$ip|list_name='$list_name',campaign_id='$campaign_id',active='$active',list_description='$list_description' where list_id='$list_id'|\n");
+                fclose($fp);
+            }
+        }
+    } else {
+        echo "<font color=red>You do not have permission to view this page</font>\n";
+        exit;
+    }
+    $ADD=311;	# go to list modification form below
 }
 
 
@@ -2823,605 +2806,578 @@ $ADD=311;	# go to list modification form below
 # ADD=511 confirmation before deletion of list
 ######################
 
-if ($ADD==511)
-{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+if ($ADD==511) {
+    echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>";
 
-	 if ( (strlen($list_id) < 2) or ($LOGdelete_lists < 1) )
-		{
-		 echo "<br><font color=red>LIST NOT DELETED - Please go back and look at the data you entered\n";
-		 echo "<br>List_id be at least 2 characters in length</font>\n";
-		}
-	 else
-		{
-      if ($SUB==1) {
-        echo "<br><B><font color=$default_text>LIST AND LEAD DELETION CONFIRMATION: $list_id</B>\n";
-        echo "<br><br><a href=\"$PHP_SELF?ADD=611&SUB=1&list_id=$list_id&CoNfIrM=YES\">Click here to delete list and all of its leads $list_id</a></font><br><br><br>\n";
-      } else {
-		    echo "<br><B><font color=$default_text>LIST DELETION CONFIRMATION: $list_id</B>\n";
-		    echo "<br><br><a href=\"$PHP_SELF?ADD=611&list_id=$list_id&CoNfIrM=YES\">Click here to delete list $list_id</a></font><br><br><br>\n";
-      }
-		}
-
-$ADD='311';		# go to campaign modification below
+    if ( (strlen($list_id) < 2) or ($LOGdelete_lists < 1) ) {
+        echo "<br><font color=red>LIST NOT DELETED - Please go back and look at the data you entered\n";
+        echo "<br>List_id be at least 2 characters in length</font>\n";
+    } else {
+        if ($SUB==1) {
+            echo "<br><B><font color=$default_text>LIST AND LEAD DELETION CONFIRMATION: $list_id</B>\n";
+            echo "<br><br><a href=\"$PHP_SELF?ADD=611&SUB=1&list_id=$list_id&CoNfIrM=YES\">Click here to delete list and all of its leads $list_id</a></font><br><br><br>\n";
+        } else {
+            echo "<br><B><font color=$default_text>LIST DELETION CONFIRMATION: $list_id</B>\n";
+            echo "<br><br><a href=\"$PHP_SELF?ADD=611&list_id=$list_id&CoNfIrM=YES\">Click here to delete list $list_id</a></font><br><br><br>\n";
+        }
+    }
+    $ADD='311';		# go to campaign modification below
 }
 
 ######################
 # ADD=611 delete list record and all leads within it
 ######################
 
-if ($ADD==611)
-{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+if ($ADD==611) {
+    echo "<font face=\"Arial,Helvetica\" color=$default_text SIZE=2>";
 
-	 if ( ( strlen($list_id) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_lists < 1) )
-		{
-		 echo "<br><font color=red>LIST NOT DELETED - Please go back and look at the data you entered\n";
-		 echo "<br>List_id be at least 2 characters in length</font><br>\n";
-		}
-	 else
-		{
-		$stmt="DELETE from osdial_lists where list_id='$list_id' limit 1;";
-		$rslt=mysql_query($stmt, $link);
+    if ( ( strlen($list_id) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_lists < 1) ) {
+        echo "<br><font color=red>LIST NOT DELETED - Please go back and look at the data you entered\n";
+        echo "<br>List_id be at least 2 characters in length</font><br>\n";
+    } else {
+        $stmt="DELETE from osdial_lists where list_id='$list_id' limit 1;";
+        $rslt=mysql_query($stmt, $link);
 
-		echo "<br><font color=$default_text>REMOVING LIST HOPPER LEADS FROM OLD CAMPAIGN HOPPER ($list_id)</font>\n";
-		$stmt="DELETE from osdial_hopper where list_id='$list_id';";
-		$rslt=mysql_query($stmt, $link);
+        echo "<br><font color=$default_text>REMOVING LIST HOPPER LEADS FROM OLD CAMPAIGN HOPPER ($list_id)</font>\n";
+        $stmt="DELETE from osdial_hopper where list_id='$list_id';";
+        $rslt=mysql_query($stmt, $link);
 
-    if ($SUB==1) {
-		  echo "<br><font color=$default_text>REMOVING LIST LEADS FROM $t1 TABLE</font>\n";
-		  $stmt="DELETE from osdial_list where list_id='$list_id';";
-		  $rslt=mysql_query($stmt, $link);
+        if ($SUB==1) {
+            echo "<br><font color=$default_text>REMOVING LIST LEADS FROM $t1 TABLE</font>\n";
+            $stmt="DELETE from osdial_list where list_id='$list_id';";
+            $rslt=mysql_query($stmt, $link);
+        }
+
+        ### LOG CHANGES TO LOG FILE ###
+        if ($WeBRooTWritablE > 0) {
+            $fp = fopen ("./admin_changes_log.txt", "a");
+            fwrite ($fp, "$date|!!!DELETING LIST!!!!|$PHP_AUTH_USER|$ip|list_id='$list_id'|\n");
+            fclose($fp);
+        }
+        echo "<br><B><font color=$default_text>LIST DELETION COMPLETED: $list_id</font></B>\n";
+        echo "<br><br>\n";
     }
-
-		### LOG CHANGES TO LOG FILE ###
-		if ($WeBRooTWritablE > 0)
-			{
-			$fp = fopen ("./admin_changes_log.txt", "a");
-			fwrite ($fp, "$date|!!!DELETING LIST!!!!|$PHP_AUTH_USER|$ip|list_id='$list_id'|\n");
-			fclose($fp);
-			}
-		echo "<br><B><font color=$default_text>LIST DELETION COMPLETED: $list_id</font></B>\n";
-		echo "<br><br>\n";
-		}
-
-$ADD='100';		# go to lists list
+    $ADD='100';		# go to lists list
 }
 
 ######################
 # ADD=311 modify list info in the system
 ######################
 
-if ($ADD==311)
-{
-	if ($LOGmodify_lists==1)
-	{
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+if ($ADD==311) {
+    if ($LOGmodify_lists==1) {
+        echo "<TABLE align=center><TR><TD>\n";
+        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	$stmt="SELECT * from osdial_lists where list_id='$list_id';";
-	$rslt=mysql_query($stmt, $link);
-	$row=mysql_fetch_row($rslt);
-	$campaign_id = $row[2];
-	$active = $row[3];
-	$list_description = $row[4];
-	$list_changedate = $row[5];
-	$list_lastcalldate = $row[6];
-	$list_scrub_dnc = $row[7];
-	$list_scrub_last = $row[8];
-	$list_scrub_info = $row[9];
-	$cost = $row[10];
+        $stmt="SELECT * from osdial_lists where list_id='$list_id';";
+        $rslt=mysql_query($stmt, $link);
+        $row=mysql_fetch_row($rslt);
+        $campaign_id = $row[2];
+        $active = $row[3];
+        $list_description = $row[4];
+        $list_changedate = $row[5];
+        $list_lastcalldate = $row[6];
+        $list_scrub_dnc = $row[7];
+        $list_scrub_last = $row[8];
+        $list_scrub_info = $row[9];
+        $cost = $row[10];
 
-	# grab names of global statuses and statuses in the selected campaign
-	$stmt="SELECT * from osdial_statuses order by status";
-	$rslt=mysql_query($stmt, $link);
-	$statuses_to_print = mysql_num_rows($rslt);
+        # grab names of global statuses and statuses in the selected campaign
+        $stmt="SELECT * from osdial_statuses order by status";
+        $rslt=mysql_query($stmt, $link);
+        $statuses_to_print = mysql_num_rows($rslt);
 
-	$o=0;
-	while ($statuses_to_print > $o) {
-		$rowx=mysql_fetch_row($rslt);
-		$statuses_list["$rowx[0]"] = "$rowx[1]";
-		$o++;
-	}
-
-	$stmt="SELECT * from osdial_campaign_statuses where campaign_id='$campaign_id' order by status";
-	$rslt=mysql_query($stmt, $link);
-	$Cstatuses_to_print = mysql_num_rows($rslt);
-
-	$o=0;
-	while ($Cstatuses_to_print > $o) {
-		$rowx=mysql_fetch_row($rslt);
-		$statuses_list["$rowx[0]"] = "$rowx[1]";
-		$o++;
-	}
-	# end grab status names
-
-	$stmt="SELECT data FROM configuration WHERE name='External_DNC_Active';";
-	$rslt=mysql_query($stmt, $link);
-	$rowd=mysql_fetch_row($rslt);
-    $can_scrub_dnc = $rowd[0];
-
-
-	echo "<center><br><font color=$default_text size=+1>MODIFY A LIST</font><form action=$PHP_SELF method=POST><br><br>\n";
-	echo "<input type=hidden name=ADD value=411>\n";
-	echo "<input type=hidden name=list_id value=\"$row[0]\">\n";
-	echo "<input type=hidden name=old_campaign_id value=\"$row[2]\">\n";
-	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>List ID: </td><td align=left><b>$row[0]</b>$NWB#osdial_lists-list_id$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20 value=\"$row[1]\">$NWB#osdial_lists-list_name$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>List Description: </td><td align=left><input type=text name=list_description size=30 maxlength=255 value=\"$list_description\">$NWB#osdial_lists-list_description$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Per-Lead Cost: </td><td align=left><input type=text name=cost size=10 maxlength=10 value=\"" . sprintf('%3.4f',$cost) . "\">$NWB#osdial_lists-cost$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=34&campaign_id=$campaign_id\">Campaign</a>: </td><td align=left><select size=1 name=campaign_id>\n";
-
-	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
-	$rslt=mysql_query($stmt, $link);
-	$campaigns_to_print = mysql_num_rows($rslt);
-	$campaigns_list='';
-
-	$o=0;
-	while ($campaigns_to_print > $o) {
-		$rowx=mysql_fetch_row($rslt);
-		$campaigns_list .= "<option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
-		$o++;
-	}
-	echo "$campaigns_list";
-	echo "<option SELECTED>$campaign_id</option>\n";
-	echo "</select>$NWB#osdial_lists-campaign_id$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$active</option></select>$NWB#osdial_lists-active$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Reset Lead-Called-Status for this list: </td><td align=left><select size=1 name=reset_list><option>Y</option><option SELECTED>N</option></select>$NWB#osdial_lists-reset_list$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>List Change Date: </td><td align=left>$list_changedate &nbsp; $NWB#osdial_lists-list_changedate$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>List Last Call Date: </td><td align=left>$list_lastcalldate &nbsp; $NWB#osdial_lists-list_lastcalldate$NWE</td></tr>\n";
-    if ($can_scrub_dnc == 'Y') {
-	    echo "<tr bgcolor=$oddrows><td align=right>External DNC Scrub Now: </td><td align=left><select size=1 name=scrub_dnc><option>Y</option><option selected>N</option></select>$NWB#osdial_lists-srub_dnc$NWE</td></tr>\n";
-	    echo "<tr bgcolor=$oddrows><td align=right>Last External Scrub: </td><td align=left>$list_scrub_last : $list_scrub_info</td></tr>\n";
-    }
-	echo "<tr class=tabfooter>";
-    echo "<td align=center class=tabbutton>";
-	echo "<input type=button name=addleads value=\"ADD LEADS\" onclick=\"window.location='admin.php?ADD=122&list_id_override=$row[0]'\">";
-	echo "</td>";
-    echo "<td align=center class=tabbutton>";
-	echo "<input type=submit name=SUBMIT value=SUBMIT>";
-	echo "</td>";
-    echo "</tr>\n";
-	echo "</TABLE></center>\n";
-
-	echo "<center>\n";
-	echo "<br><font color=$default_text size=+1>STATUSES WITHIN THIS LIST</font></b><br>\n";
-	echo "<table bgcolor=grey width=500 cellspacing=1>\n";
-	echo "  <tr class=tabheader>\n";
-    echo "    <td align=center>STATUS</td>\n";
-    echo "    <td align=center>STATUS NAME</td>\n";
-    echo "    <td align=center>CALLED</td>\n";
-    echo "    <td align=center>NOT CALLED</td>\n";
-    echo "  </tr>\n";
-
-	$leads_in_list = 0;
-	$leads_in_list_N = 0;
-	$leads_in_list_Y = 0;
-	$stmt="SELECT status,called_since_last_reset,count(*) from osdial_list where list_id='$list_id' group by status,called_since_last_reset order by status,called_since_last_reset";
-	if ($DB) {echo "$stmt\n";}
-	$rslt=mysql_query($stmt, $link);
-	$statuses_to_print = mysql_num_rows($rslt);
-
-	$o=0;
-	$lead_list['count'] = 0;
-	$lead_list['Y_count'] = 0;
-	$lead_list['N_count'] = 0;
-	while ($statuses_to_print > $o) 
-	{
-	    $rowx=mysql_fetch_row($rslt);
-	    
-	    $lead_list['count'] = ($lead_list['count'] + $rowx[2]);
-	    if ($rowx[1] == 'N') 
-	    {
-		$since_reset = 'N';
-		$since_resetX = 'Y';
-	    }
-	    else 
-	    {
-		$since_reset = 'Y';
-		$since_resetX = 'N';
-	    } 
-	    $lead_list[$since_reset][$rowx[0]] = ($lead_list[$since_reset][$rowx[0]] + $rowx[2]);
-	    $lead_list[$since_reset.'_count'] = ($lead_list[$since_reset.'_count'] + $rowx[2]);
-	    #If opposite side is not set, it may not in the future so give it a value of zero
-	    if (!isset($lead_list[$since_resetX][$rowx[0]])) 
-	    {
-		$lead_list[$since_resetX][$rowx[0]]=0;
-	    }
-	    $o++;
-	}
- 
-	$o=0;
-	if ($lead_list['count'] > 0)
-	{
-		while (list($dispo,) = each($lead_list[$since_reset]))
-		{
-
-		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor='.$oddrows;} 
-		else
-			{$bgcolor='bgcolor='.$evenrows;}
-
-		if ($dispo == 'CBHOLD')
-			{
-			$CLB="<a href=\"$PHP_SELF?ADD=811&list_id=$list_id\">";
-			$CLE="</a>";
-			}
-		else
-			{
-			$CLB='';
-			$CLE='';
-			}
-
-		echo "  <tr $bgcolor class=\"row font1\">\n";
-        echo "    <td>$CLB$dispo$CLE</td>\n";
-        echo "    <td>$statuses_list[$dispo]</td>\n";
-        echo "    <td align=right>".$lead_list['Y'][$dispo]."</td>\n";
-        echo "    <td align=right>".$lead_list['N'][$dispo]."</td>\n";
-        echo "  </tr>\n";
-		$o++;
-		}
-	}
-
-	echo "  <tr class=tabfooter>\n";
-    echo "    <td colspan=2>SUBTOTALS</td>\n";
-    echo "    <td align=right>" . $lead_list[Y_count] . "</td>\n";
-    echo "    <td align=right>" . $lead_list[N_count] . "</td>\n";
-    echo "  </tr>\n";
-	echo "  <tr class=tabfooter>\n";
-    echo "    <td colspan=2>TOTAL</td>\n";
-    echo "    <td colspan=2 align=center><b>" . $lead_list[count] . "</td>\n";
-    echo "  </tr>\n";
-
-	echo "</table></center><br>\n";
-	unset($lead_list);
-
-
-	echo "<center>\n";
-	echo "<br><font color=$default_text size=+1>TIME ZONES WITHIN THIS LIST</font></b><br>\n";
-	echo "<table bgcolor=grey width=500 cellspacing=1>\n";
-	echo "  <tr class=tabheader>\n";
-    echo "    <td align=center>GMT OFFSET NOW (local time)</td>\n";
-    echo "    <td align=center>CALLED</td>\n";
-    echo "    <td align=center>NOT CALLED</td>\n";
-    echo "  </tr>\n";
-
-	$stmt="SELECT gmt_offset_now,called_since_last_reset,count(*) from osdial_list where list_id='$list_id' group by gmt_offset_now,called_since_last_reset order by gmt_offset_now,called_since_last_reset";
-	$rslt=mysql_query($stmt, $link);
-	$statuses_to_print = mysql_num_rows($rslt);
-
-	$o=0;
-	$plus='+';
-	$lead_list['count'] = 0;
-	$lead_list['Y_count'] = 0;
-	$lead_list['N_count'] = 0;
-	while ($statuses_to_print > $o) 
-	{
-	    $rowx=mysql_fetch_row($rslt);
-	    
-	    $lead_list['count'] = ($lead_list['count'] + $rowx[2]);
-	    if ($rowx[1] == 'N') 
-	    {
-		$since_reset = 'N';
-		$since_resetX = 'Y';
-	    }
-	    else 
-	    {
-		$since_reset = 'Y';
-		$since_resetX = 'N';
-	    } 
-	    $lead_list[$since_reset][$rowx[0]] = ($lead_list[$since_reset][$rowx[0]] + $rowx[2]);
-	    $lead_list[$since_reset.'_count'] = ($lead_list[$since_reset.'_count'] + $rowx[2]);
-	    #If opposite side is not set, it may not in the future so give it a value of zero
-	    if (!isset($lead_list[$since_resetX][$rowx[0]])) 
-	    {
-		$lead_list[$since_resetX][$rowx[0]]=0;
-	    }
-	    $o++;
-	}
-
-	    if ($lead_list['count'] > 0) {
-            $o=0;
-		    while (list($tzone,) = each($lead_list[$since_reset])) {
-		    $LOCALzone=3600 * $tzone;
-		    $LOCALdate=gmdate("D M Y H:i", time() + $LOCALzone);
-
-		    if ($tzone >= 0) {
-                $DISPtzone = "$plus$tzone";
-            } else {
-                $DISPtzone = "$tzone";
-            }
-		    if (eregi("1$|3$|5$|7$|9$", $o)) {
-                $bgcolor='bgcolor='.$oddrows;
-            } else {
-                $bgcolor='bgcolor='.$evenrows;
-            }
-
-			echo "  <tr $bgcolor class=\"row font1\">\n";
-            echo "    <td>".$DISPtzone." &nbsp; &nbsp; ($LOCALdate)</td>\n";
-            echo "    <td align=right>".$lead_list['Y'][$tzone]."</td>\n";
-            echo "    <td align=right>".$lead_list['N'][$tzone]."</td>\n";
-            echo "  </tr>\n";
+        $o=0;
+        while ($statuses_to_print > $o) {
+            $rowx=mysql_fetch_row($rslt);
+            $statuses_list["$rowx[0]"] = "$rowx[1]";
             $o++;
-		}
-	}
+        }
 
-	echo "  <tr class=tabfooter>\n";
-    echo "    <td>SUBTOTALS</td>\n";
-    echo "    <td align=right>" . $lead_list[Y_count] . "</td>\n";
-    echo "    <td align=right>" . $lead_list[N_count] . "</td>\n";
-    echo "  </tr>\n";
-	echo "  <tr class=tabfooter>\n";
-    echo "    <td>TOTAL</td>\n";
-    echo "    <td colspan=2 align=center>" . $lead_list[count] . "</td>\n";
-    echo "  </tr>\n";
+        $stmt="SELECT * from osdial_campaign_statuses where campaign_id='$campaign_id' order by status";
+        $rslt=mysql_query($stmt, $link);
+        $Cstatuses_to_print = mysql_num_rows($rslt);
 
-	echo "</table></center><br>\n";
-	unset($lead_list);
+        $o=0;
+        while ($Cstatuses_to_print > $o) {
+            $rowx=mysql_fetch_row($rslt);
+            $statuses_list["$rowx[0]"] = "$rowx[1]";
+            $o++;
+        }
+        # end grab status names
 
-
-
-    $count_cols=30;
-	$leads_in_list = 0;
-	$leads_in_list_N = 0;
-	$leads_in_list_Y = 0;
-    $max_col_grouping = "if(called_count>" . ($count_cols - 1) . "," . $count_cols . ",called_count)";
-	$stmt="SELECT status,$max_col_grouping,count(*) from osdial_list where list_id='$list_id' group by status,$max_col_grouping order by status,called_count";
-	$rslt=mysql_query($stmt, $link);
-	$status_called_to_print = mysql_num_rows($rslt);
-
-	$o=0;
-	$sts=0;
-	$first_row=1;
-	$all_called_first=1000;
-	$all_called_last=0;
-	while ($status_called_to_print > $o) 
-	{
-	$rowx=mysql_fetch_row($rslt);
-	$leads_in_list = ($leads_in_list + $rowx[2]);
-	$count_statuses[$o]			= "$rowx[0]";
-	$count_called[$o]			= "$rowx[1]";
-	$count_count[$o]			= "$rowx[2]";
-	$all_called_count[$rowx[1]] = ($all_called_count[$rowx[1]] + $rowx[2]);
-
-	if ( (strlen($status[$sts]) < 1) or ($status[$sts] != "$rowx[0]") )
-		{
-		if ($first_row) {$first_row=0;}
-		else {$sts++;}
-		$status[$sts] = "$rowx[0]";
-		$status_called_first[$sts] = "$rowx[1]";
-		if ($status_called_first[$sts] < $all_called_first) {$all_called_first = $status_called_first[$sts];}
-		}
-	$leads_in_sts[$sts] = ($leads_in_sts[$sts] + $rowx[2]);
-	$status_called_last[$sts] = "$rowx[1]";
-	if ($status_called_last[$sts] > $all_called_last) {$all_called_last = $status_called_last[$sts];}
-
-	$o++;
-	}
+        $stmt="SELECT data FROM configuration WHERE name='External_DNC_Active';";
+        $rslt=mysql_query($stmt, $link);
+        $rowd=mysql_fetch_row($rslt);
+        $can_scrub_dnc = $rowd[0];
 
 
+        echo "<center><br><font color=$default_text size=+1>MODIFY A LIST</font><form action=$PHP_SELF method=POST><br><br>\n";
+        echo "<input type=hidden name=ADD value=411>\n";
+        echo "<input type=hidden name=list_id value=\"$row[0]\">\n";
+        echo "<input type=hidden name=old_campaign_id value=\"$row[2]\">\n";
+        echo "<TABLE width=$section_width cellspacing=3>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>List ID: </td><td align=left><b>$row[0]</b>$NWB#osdial_lists-list_id$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20 value=\"$row[1]\">$NWB#osdial_lists-list_name$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>List Description: </td><td align=left><input type=text name=list_description size=30 maxlength=255 value=\"$list_description\">$NWB#osdial_lists-list_description$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Per-Lead Cost: </td><td align=left><input type=text name=cost size=10 maxlength=10 value=\"" . sprintf('%3.4f',$cost) . "\">$NWB#osdial_lists-cost$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=34&campaign_id=$campaign_id\">Campaign</a>: </td><td align=left><select size=1 name=campaign_id>\n";
+
+        $stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
+        $rslt=mysql_query($stmt, $link);
+        $campaigns_to_print = mysql_num_rows($rslt);
+        $campaigns_list='';
+
+        $o=0;
+        while ($campaigns_to_print > $o) {
+            $rowx=mysql_fetch_row($rslt);
+            $campaigns_list .= "<option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
+            $o++;
+        }
+        echo "$campaigns_list";
+        echo "<option SELECTED>$campaign_id</option>\n";
+        echo "</select>$NWB#osdial_lists-campaign_id$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$active</option></select>$NWB#osdial_lists-active$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Reset Lead-Called-Status for this list: </td><td align=left><select size=1 name=reset_list><option>Y</option><option SELECTED>N</option></select>$NWB#osdial_lists-reset_list$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>List Change Date: </td><td align=left>$list_changedate &nbsp; $NWB#osdial_lists-list_changedate$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>List Last Call Date: </td><td align=left>$list_lastcalldate &nbsp; $NWB#osdial_lists-list_lastcalldate$NWE</td></tr>\n";
+        if ($can_scrub_dnc == 'Y') {
+            echo "<tr bgcolor=$oddrows><td align=right>External DNC Scrub Now: </td><td align=left><select size=1 name=scrub_dnc><option>Y</option><option selected>N</option></select>$NWB#osdial_lists-srub_dnc$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Last External Scrub: </td><td align=left>$list_scrub_last : $list_scrub_info</td></tr>\n";
+        }
+        echo "<tr class=tabfooter>";
+        echo "<td align=center class=tabbutton>";
+        echo "<input type=button name=addleads value=\"ADD LEADS\" onclick=\"window.location='admin.php?ADD=122&list_id_override=$row[0]'\">";
+        echo "</td>";
+        echo "<td align=center class=tabbutton>";
+        echo "<input type=submit name=SUBMIT value=SUBMIT>";
+        echo "</td>";
+        echo "</tr>\n";
+        echo "</TABLE></center>\n";
+
+        echo "<center>\n";
+        echo "<br><font color=$default_text size=+1>STATUSES WITHIN THIS LIST</font></b><br>\n";
+        echo "<table bgcolor=grey width=500 cellspacing=1>\n";
+        echo "  <tr class=tabheader>\n";
+        echo "    <td align=center>STATUS</td>\n";
+        echo "    <td align=center>STATUS NAME</td>\n";
+        echo "    <td align=center>CALLED</td>\n";
+        echo "    <td align=center>NOT CALLED</td>\n";
+        echo "  </tr>\n";
+
+        $leads_in_list = 0;
+        $leads_in_list_N = 0;
+        $leads_in_list_Y = 0;
+        $stmt="SELECT status,called_since_last_reset,count(*) from osdial_list where list_id='$list_id' group by status,called_since_last_reset order by status,called_since_last_reset";
+        if ($DB) echo "$stmt\n";
+        $rslt=mysql_query($stmt, $link);
+        $statuses_to_print = mysql_num_rows($rslt);
+
+        $o=0;
+        $lead_list['count'] = 0;
+        $lead_list['Y_count'] = 0;
+        $lead_list['N_count'] = 0;
+        while ($statuses_to_print > $o) {
+            $rowx=mysql_fetch_row($rslt);
+	    
+            $lead_list['count'] = ($lead_list['count'] + $rowx[2]);
+            if ($rowx[1] == 'N') {
+                $since_reset = 'N';
+                $since_resetX = 'Y';
+            } else {
+                $since_reset = 'Y';
+                $since_resetX = 'N';
+            } 
+            $lead_list[$since_reset][$rowx[0]] = ($lead_list[$since_reset][$rowx[0]] + $rowx[2]);
+            $lead_list[$since_reset.'_count'] = ($lead_list[$since_reset.'_count'] + $rowx[2]);
+            #If opposite side is not set, it may not in the future so give it a value of zero
+            if (!isset($lead_list[$since_resetX][$rowx[0]])) {
+                $lead_list[$since_resetX][$rowx[0]]=0;
+            }
+            $o++;
+        }
+ 
+        $o=0;
+        if ($lead_list['count'] > 0) {
+            while (list($dispo,) = each($lead_list[$since_reset])) {
+
+                if (eregi("1$|3$|5$|7$|9$", $o)) {
+                    $bgcolor='bgcolor='.$oddrows;
+                } else {
+                    $bgcolor='bgcolor='.$evenrows;
+                }
+
+                if ($dispo == 'CBHOLD') {
+                    $CLB="<a href=\"$PHP_SELF?ADD=811&list_id=$list_id\">";
+                    $CLE="</a>";
+                } else {
+                    $CLB='';
+                    $CLE='';
+                }
+
+                echo "  <tr $bgcolor class=\"row font1\">\n";
+                echo "    <td>$CLB$dispo$CLE</td>\n";
+                echo "    <td>$statuses_list[$dispo]</td>\n";
+                echo "    <td align=right>".$lead_list['Y'][$dispo]."</td>\n";
+                echo "    <td align=right>".$lead_list['N'][$dispo]."</td>\n";
+                echo "  </tr>\n";
+                $o++;
+            }
+        }
+
+        echo "  <tr class=tabfooter>\n";
+        echo "    <td colspan=2>SUBTOTALS</td>\n";
+        echo "    <td align=right>" . $lead_list[Y_count] . "</td>\n";
+        echo "    <td align=right>" . $lead_list[N_count] . "</td>\n";
+        echo "  </tr>\n";
+        echo "  <tr class=tabfooter>\n";
+        echo "    <td colspan=2>TOTAL</td>\n";
+        echo "    <td colspan=2 align=center><b>" . $lead_list[count] . "</td>\n";
+        echo "  </tr>\n";
+
+        echo "</table></center><br>\n";
+        unset($lead_list);
 
 
-	echo "<center>\n";
-	echo "<br><font color=$default_text size=4>CALLED COUNTS WITHIN THIS LIST</font></b><br>\n";
-	echo "<table style=\"cursor:crosshair;\" bgcolor=grey width=500 cellspacing=1>\n";
-	echo "  <tr style=\"cusrsor:crosshair;\" class=tabheader>\n";
-    echo "    <td style=\"cusrsor:crosshair;\" align=left>STATUS</td>\n";
-    echo "    <td style=\"cusrsor:crosshair;\" align=left>STATUS&nbsp;NAME</td>";
-	$first = $all_called_first;
-	while ($first <= $all_called_last) {
-        $flabel = $first;
-        if ($first == 30) $flabel = "30+";
-        if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $flabel;
-        if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $flabel;
-        if (strlen($flabel) == 3) $flabel = '&nbsp;' . $flabel;
-		echo "    <td style=\"cusrsor:crosshair;\" align=right>$flabel</td>";
-		$first++;
-	}
-	echo "    <td style=\"cusrsor:crosshair;\" align=right>&nbsp;&nbsp;SUB</td>\n";
-    echo "  </tr>\n";
+        echo "<center>\n";
+        echo "<br><font color=$default_text size=+1>TIME ZONES WITHIN THIS LIST</font></b><br>\n";
+        echo "<table bgcolor=grey width=500 cellspacing=1>\n";
+        echo "  <tr class=tabheader>\n";
+        echo "    <td align=center>GMT OFFSET NOW (local time)</td>\n";
+        echo "    <td align=center>CALLED</td>\n";
+        echo "    <td align=center>NOT CALLED</td>\n";
+        echo "  </tr>\n";
 
-	$sts=0;
-	$statuses_called_to_print = count($status);
-	while ($statuses_called_to_print > $sts) {
-	$Pstatus = $status[$sts];
-	if (eregi("1$|3$|5$|7$|9$", $sts)) {
-        $bgcolor="bgcolor=$evenrows";   $AB="bgcolor=$oddrows";
-    } else {
-        $bgcolor="bgcolor=$oddrows";   $AB="bgcolor=$evenrows";
-    }
-	#	echo "$status[$sts]|$status_called_first[$sts]|$status_called_last[$sts]|$leads_in_sts[$sts]|\n";
-	#	echo "$status[$sts]|";
-	echo "  <tr $bgcolor style=\"cursor:crosshair;\" class=\"row font1\">\n";
-    echo "     <td style=\"cusrsor:crosshair;\" nowrap>$Pstatus</td>\n";
-    echo "     <td style=\"cusrsor:crosshair;\" nowrap>$statuses_list[$Pstatus]</td>";
+        $stmt="SELECT gmt_offset_now,called_since_last_reset,count(*) from osdial_list where list_id='$list_id' group by gmt_offset_now,called_since_last_reset order by gmt_offset_now,called_since_last_reset";
+        $rslt=mysql_query($stmt, $link);
+        $statuses_to_print = mysql_num_rows($rslt);
 
-	$first = $all_called_first;
-	while ($first <= $all_called_last) {
-		$called_printed=0;
-		$o=0;
-		while ($status_called_to_print > $o) {
-			if ( ($count_statuses[$o] == "$Pstatus") and ($count_called[$o] == "$first") ) {
-                $lplural = '';
-                $fplural = '';
-                if ($count_count[$o] != 1) $lplural = 's';
-                if ($first != 1) $fplural = 's';
-                $clabel = $count_count[$o];
-                if (strlen($clabel) == 1) $clabel = '&nbsp;&nbsp;&nbsp;' . $count_count[$o];
-                if (strlen($clabel) == 2) $clabel = '&nbsp;&nbsp;' . $count_count[$o];
-                if (strlen($clabel) == 3) $clabel = '&nbsp;' . $count_count[$o];
-				echo "    <td style=\"cursor:crosshair;\" class=hover align=right title=\"$count_count[$o] Lead$lplural, Called $first Time$fplural, Last Dispositioned as '$Pstatus'\">$clabel</td>\n";
-				$called_printed++;
-			}
-			$o++;
-		}
-		if (!$called_printed) echo "    <td style=\"cursor:crosshair;\" class=hover align=right>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
-		$first++;
-	}
-	echo "    <td style=\"cursor:crosshair;\" align=right title=\"Subtotal for '$Pstatus': $leads_in_sts[$sts]\"><b>$leads_in_sts[$sts]</b></td>\n";
-    echo "  </tr>\n";
+        $o=0;
+        $plus='+';
+        $lead_list['count'] = 0;
+        $lead_list['Y_count'] = 0;
+        $lead_list['N_count'] = 0;
+        while ($statuses_to_print > $o) {
+            $rowx=mysql_fetch_row($rslt);
 
-	$sts++;
-	}
+            $lead_list['count'] = ($lead_list['count'] + $rowx[2]);
+            if ($rowx[1] == 'N') {
+                $since_reset = 'N';
+                $since_resetX = 'Y';
+            } else {
+                $since_reset = 'Y';
+                $since_resetX = 'N';
+            } 
+            $lead_list[$since_reset][$rowx[0]] = ($lead_list[$since_reset][$rowx[0]] + $rowx[2]);
+            $lead_list[$since_reset.'_count'] = ($lead_list[$since_reset.'_count'] + $rowx[2]);
+            #If opposite side is not set, it may not in the future so give it a value of zero
+            if (!isset($lead_list[$since_resetX][$rowx[0]])) {
+                $lead_list[$since_resetX][$rowx[0]]=0;
+            }
+            $o++;
+        }
 
-	echo "  <tr style=\"cusrsor:crosshair;\" class=tabfooter>";
-    echo "    <td style=\"cusrsor:crosshair;\" align=left colspan=2>TOTAL</td>";
-	$first = $all_called_first;
-	while ($first <= $all_called_last) {
-        if ($all_called_count[$first] == 0 or $all_called_count[$first] == '') $all_called_count[$first] = '0';
-        $flabel = $all_called_count[$first];
-        if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $all_called_count[$first];
-        if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $all_called_count[$first];
-        if (strlen($flabel) == 3) $flabel = '&nbsp;' . $all_called_count[$first];
-		echo "    <td style=\"cusrsor:crosshair;\" align=right class=right title=\"$first Lead Count Total: $all_called_count[$first] Leads\">$flabel</td>";
-		$first++;
-	}
-	echo "    <td style=\"cusrsor:crosshair;\" align=right title=\"Total: $leads_in_list Leads\">$leads_in_list</td>\n";
-    echo "  </tr>\n";
+        if ($lead_list['count'] > 0) {
+            $o=0;
+            while (list($tzone,) = each($lead_list[$since_reset])) {
+                $LOCALzone=3600 * $tzone;
+                $LOCALdate=gmdate("D M Y H:i", time() + $LOCALzone);
 
-	echo "</table></center><br>\n";
+                if ($tzone >= 0) {
+                    $DISPtzone = "$plus$tzone";
+                } else {
+                    $DISPtzone = "$tzone";
+                }
+                if (eregi("1$|3$|5$|7$|9$", $o)) {
+                    $bgcolor='bgcolor='.$oddrows;
+                } else {
+                    $bgcolor='bgcolor='.$evenrows;
+                }
 
+                echo "  <tr $bgcolor class=\"row font1\">\n";
+                echo "    <td>".$DISPtzone." &nbsp; &nbsp; ($LOCALdate)</td>\n";
+                echo "    <td align=right>".$lead_list['Y'][$tzone]."</td>\n";
+                echo "    <td align=right>".$lead_list['N'][$tzone]."</td>\n";
+                echo "  </tr>\n";
+                $o++;
+            }
+        }
 
-    $count_cols=30;
-	$leads_in_list = 0;
-	$leads_in_list_N = 0;
-	$leads_in_list_Y = 0;
-    $max_col_grouping = "if(cnt>" . ($count_cols - 1) . "," . $count_cols . ",cnt)";
-	$stmt="SELECT stat,$max_col_grouping,count(*) FROM (select osdial_log.status AS stat,count(*) AS cnt from osdial_list JOIN osdial_log ON (osdial_list.lead_id=osdial_log.lead_id) where osdial_list.list_id='$list_id' group by osdial_log.lead_id,osdial_log.status,osdial_log.lead_id order by osdial_log.status,count(*)) AS t1 group by $max_col_grouping,stat order by stat,$max_col_grouping;";
-	$rslt=mysql_query($stmt, $link);
-	$status_called_to_print = mysql_num_rows($rslt);
+        echo "  <tr class=tabfooter>\n";
+        echo "    <td>SUBTOTALS</td>\n";
+        echo "    <td align=right>" . $lead_list[Y_count] . "</td>\n";
+        echo "    <td align=right>" . $lead_list[N_count] . "</td>\n";
+        echo "  </tr>\n";
+        echo "  <tr class=tabfooter>\n";
+        echo "    <td>TOTAL</td>\n";
+        echo "    <td colspan=2 align=center>" . $lead_list[count] . "</td>\n";
+        echo "  </tr>\n";
 
-	$o=0;
-	$sts=0;
-	$first_row=1;
-	$all_called_first=1000;
-	$all_called_last=0;
-	while ($status_called_to_print > $o) 
-	{
-	$rowx=mysql_fetch_row($rslt);
-	$leads_in_list = ($leads_in_list + $rowx[2]);
-	$count_statuses[$o]			= "$rowx[0]";
-	$count_called[$o]			= "$rowx[1]";
-	$count_count[$o]			= "$rowx[2]";
-	$all_called_count[$rowx[1]] = ($all_called_count[$rowx[1]] + $rowx[2]);
-
-	if ( (strlen($status[$sts]) < 1) or ($status[$sts] != "$rowx[0]") )
-		{
-		if ($first_row) {$first_row=0;}
-		else {$sts++;}
-		$status[$sts] = "$rowx[0]";
-		$status_called_first[$sts] = "$rowx[1]";
-		if ($status_called_first[$sts] < $all_called_first) {$all_called_first = $status_called_first[$sts];}
-		}
-	$leads_in_sts[$sts] = ($leads_in_sts[$sts] + $rowx[2]);
-	$status_called_last[$sts] = "$rowx[1]";
-	if ($status_called_last[$sts] > $all_called_last) {$all_called_last = $status_called_last[$sts];}
-
-	$o++;
-	}
-
-
-
-
-	echo "<center>\n";
-	echo "<br><font color=$default_text size=4>PER-LEAD DISPOSITION COUNTS FROM LOG</font></b><br>\n";
-	echo "<table style=\"cursor:crosshair;\" bgcolor=grey width=500 cellspacing=1>\n";
-	echo "  <tr style=\"cusrsor:crosshair;\" class=tabheader>\n";
-    echo "    <td style=\"cusrsor:crosshair;\" align=left>STATUS</td>\n";
-    echo "    <td style=\"cusrsor:crosshair;\" align=left>STATUS&nbsp;NAME</td>";
-	$first = $all_called_first;
-	while ($first <= $all_called_last) {
-        $flabel = $first;
-        if ($first == 30) $flabel = "30+";
-        if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $flabel;
-        if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $flabel;
-        if (strlen($flabel) == 3) $flabel = '&nbsp;' . $flabel;
-		echo "    <td style=\"cusrsor:crosshair;\" align=right>$flabel</td>";
-		$first++;
-	}
-	echo "    <td style=\"cusrsor:crosshair;\" align=right>&nbsp;&nbsp;SUB</td>\n";
-    echo "  </tr>\n";
-
-	$sts=0;
-	$statuses_called_to_print = count($status);
-	while ($statuses_called_to_print > $sts) {
-	$Pstatus = $status[$sts];
-	if (eregi("1$|3$|5$|7$|9$", $sts)) {
-        $bgcolor="bgcolor=$evenrows";   $AB="bgcolor=$oddrows";
-    } else {
-        $bgcolor="bgcolor=$oddrows";   $AB="bgcolor=$evenrows";
-    }
-	#	echo "$status[$sts]|$status_called_first[$sts]|$status_called_last[$sts]|$leads_in_sts[$sts]|\n";
-	#	echo "$status[$sts]|";
-	echo "  <tr $bgcolor style=\"cursor:crosshair;\" class=\"row font1\">\n";
-    echo "     <td style=\"cusrsor:crosshair;\" nowrap>$Pstatus</td>\n";
-    echo "     <td style=\"cusrsor:crosshair;\" nowrap>$statuses_list[$Pstatus]</td>";
-
-	$first = $all_called_first;
-	while ($first <= $all_called_last) {
-		$called_printed=0;
-		$o=0;
-		while ($status_called_to_print > $o) {
-			if ( ($count_statuses[$o] == "$Pstatus") and ($count_called[$o] == "$first") ) {
-                $lplural = ',';
-                $fplural = '';
-                if ($count_count[$o] != 1) $lplural = 's, Each';
-                if ($first != 1) $fplural = 's';
-                $clabel = $count_count[$o];
-                if (strlen($clabel) == 1) $clabel = '&nbsp;&nbsp;&nbsp;' . $count_count[$o];
-                if (strlen($clabel) == 2) $clabel = '&nbsp;&nbsp;' . $count_count[$o];
-                if (strlen($clabel) == 3) $clabel = '&nbsp;' . $count_count[$o];
-				echo "    <td style=\"cursor:crosshair;\" class=hover align=right title=\"$count_count[$o] Lead$lplural Dispositioned as '$Pstatus' $first Time$fplural\">$clabel</td>\n";
-				$called_printed++;
-			}
-			$o++;
-		}
-		if (!$called_printed) echo "    <td style=\"cursor:crosshair;\" class=hover align=right>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
-		$first++;
-	}
-	echo "    <td style=\"cursor:crosshair;\" align=right title=\"Subtotal for '$Pstatus': $leads_in_sts[$sts]\"><b>$leads_in_sts[$sts]</b></td>\n";
-    echo "  </tr>\n";
-
-	$sts++;
-	}
-
-	echo "  <tr style=\"cusrsor:crosshair;\" class=tabfooter>";
-    echo "    <td style=\"cusrsor:crosshair;\" align=left colspan=2>TOTAL</td>";
-	$first = $all_called_first;
-	while ($first <= $all_called_last) {
-        if ($all_called_count[$first] == 0 or $all_called_count[$first] == '') $all_called_count[$first] = '0';
-        $flabel = $all_called_count[$first];
-        if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $all_called_count[$first];
-        if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $all_called_count[$first];
-        if (strlen($flabel) == 3) $flabel = '&nbsp;' . $all_called_count[$first];
-		echo "    <td style=\"cusrsor:crosshair;\" align=right class=right title=\"$first Attempt Total: $all_called_count[$first] Calls\">$flabel</td>";
-		$first++;
-	}
-	echo "    <td style=\"cusrsor:crosshair;\" align=right title=\"Total: $leads_in_list Calls\">$leads_in_list</td>\n";
-    echo "  </tr>\n";
-
-	echo "</table></center><br>\n";
+        echo "</table></center><br>\n";
+        unset($lead_list);
 
 
 
+        $count_cols=30;
+        $leads_in_list = 0;
+        $leads_in_list_N = 0;
+        $leads_in_list_Y = 0;
+        $max_col_grouping = "if(called_count>" . ($count_cols - 1) . "," . $count_cols . ",called_count)";
+        $stmt="SELECT status,$max_col_grouping,count(*) from osdial_list where list_id='$list_id' group by status,$max_col_grouping order by status,called_count";
+        $rslt=mysql_query($stmt, $link);
+        $status_called_to_print = mysql_num_rows($rslt);
+
+        $o=0;
+        $sts=0;
+        $first_row=1;
+        $all_called_first=1000;
+        $all_called_last=0;
+        while ($status_called_to_print > $o) {
+            $rowx=mysql_fetch_row($rslt);
+            $leads_in_list = ($leads_in_list + $rowx[2]);
+            $count_statuses[$o]			= "$rowx[0]";
+            $count_called[$o]			= "$rowx[1]";
+            $count_count[$o]			= "$rowx[2]";
+            $all_called_count[$rowx[1]] = ($all_called_count[$rowx[1]] + $rowx[2]);
+
+            if ( (strlen($status[$sts]) < 1) or ($status[$sts] != "$rowx[0]") ) {
+                if ($first_row) {
+                    $first_row=0;
+                } else {
+                    $sts++;
+                }
+                $status[$sts] = "$rowx[0]";
+                $status_called_first[$sts] = "$rowx[1]";
+                if ($status_called_first[$sts] < $all_called_first) {
+                    $all_called_first = $status_called_first[$sts];
+                }
+            }
+            $leads_in_sts[$sts] = ($leads_in_sts[$sts] + $rowx[2]);
+            $status_called_last[$sts] = "$rowx[1]";
+            if ($status_called_last[$sts] > $all_called_last) {
+                $all_called_last = $status_called_last[$sts];
+            }
+            $o++;
+        }
 
 
-	echo "<center>\n";
-	echo "<br><br><a href=\"$PHP_SELF?ADD=811&list_id=$list_id\">Click here to see all CallBack Holds in this list</a><BR><BR>\n";
-	echo "</center>\n";
+        echo "<center>\n";
+        echo "<br><font color=$default_text size=4>CALLED COUNTS WITHIN THIS LIST</font></b><br>\n";
+        echo "<table style=\"cursor:crosshair;\" bgcolor=grey width=500 cellspacing=1>\n";
+        echo "  <tr style=\"cusrsor:crosshair;\" class=tabheader>\n";
+        echo "    <td style=\"cusrsor:crosshair;\" align=left>STATUS</td>\n";
+        echo "    <td style=\"cusrsor:crosshair;\" align=left>STATUS&nbsp;NAME</td>";
+        $first = $all_called_first;
+        while ($first <= $all_called_last) {
+            $flabel = $first;
+            if ($first == 30) $flabel = "30+";
+            if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $flabel;
+            if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $flabel;
+            if (strlen($flabel) == 3) $flabel = '&nbsp;' . $flabel;
+            echo "    <td style=\"cusrsor:crosshair;\" align=right>$flabel</td>";
+            $first++;
+        }
+        echo "    <td style=\"cusrsor:crosshair;\" align=right>&nbsp;&nbsp;SUB</td>\n";
+        echo "  </tr>\n";
+        $sts=0;
+        $statuses_called_to_print = count($status);
+        while ($statuses_called_to_print > $sts) {
+            $Pstatus = $status[$sts];
+            if (eregi("1$|3$|5$|7$|9$", $sts)) {
+                $bgcolor="bgcolor=$evenrows";   $AB="bgcolor=$oddrows";
+            } else {
+                $bgcolor="bgcolor=$oddrows";   $AB="bgcolor=$evenrows";
+            }
+            #	echo "$status[$sts]|$status_called_first[$sts]|$status_called_last[$sts]|$leads_in_sts[$sts]|\n";
+            #	echo "$status[$sts]|";
+            echo "  <tr $bgcolor style=\"cursor:crosshair;\" class=\"row font1\">\n";
+            echo "     <td style=\"cusrsor:crosshair;\" nowrap>$Pstatus</td>\n";
+            echo "     <td style=\"cusrsor:crosshair;\" nowrap>$statuses_list[$Pstatus]</td>";
+
+            $first = $all_called_first;
+            while ($first <= $all_called_last) {
+                $called_printed=0;
+                $o=0;
+                while ($status_called_to_print > $o) {
+                    if ( ($count_statuses[$o] == "$Pstatus") and ($count_called[$o] == "$first") ) {
+                        $lplural = '';
+                        $fplural = '';
+                        if ($count_count[$o] != 1) $lplural = 's';
+                        if ($first != 1) $fplural = 's';
+                        $clabel = $count_count[$o];
+                        if (strlen($clabel) == 1) $clabel = '&nbsp;&nbsp;&nbsp;' . $count_count[$o];
+                        if (strlen($clabel) == 2) $clabel = '&nbsp;&nbsp;' . $count_count[$o];
+                        if (strlen($clabel) == 3) $clabel = '&nbsp;' . $count_count[$o];
+                        echo "    <td style=\"cursor:crosshair;\" class=hover align=right title=\"$count_count[$o] Lead$lplural, Called $first Time$fplural, Last Dispositioned as '$Pstatus'\">$clabel</td>\n";
+                        $called_printed++;
+                    }
+                    $o++;
+                }
+                if (!$called_printed) echo "    <td style=\"cursor:crosshair;\" class=hover align=right>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+                $first++;
+            }
+            echo "    <td style=\"cursor:crosshair;\" align=right title=\"Subtotal for '$Pstatus': $leads_in_sts[$sts]\"><b>$leads_in_sts[$sts]</b></td>\n";
+            echo "  </tr>\n";
+
+            $sts++;
+        }
+
+        echo "  <tr style=\"cusrsor:crosshair;\" class=tabfooter>";
+        echo "    <td style=\"cusrsor:crosshair;\" align=left colspan=2>TOTAL</td>";
+        $first = $all_called_first;
+        while ($first <= $all_called_last) {
+            if ($all_called_count[$first] == 0 or $all_called_count[$first] == '') $all_called_count[$first] = '0';
+            $flabel = $all_called_count[$first];
+            if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $all_called_count[$first];
+            if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $all_called_count[$first];
+            if (strlen($flabel) == 3) $flabel = '&nbsp;' . $all_called_count[$first];
+            echo "    <td style=\"cusrsor:crosshair;\" align=right class=right title=\"$first Lead Count Total: $all_called_count[$first] Leads\">$flabel</td>";
+            $first++;
+        }
+        echo "    <td style=\"cusrsor:crosshair;\" align=right title=\"Total: $leads_in_list Leads\">$leads_in_list</td>\n";
+        echo "  </tr>\n";
+        echo "</table></center><br>\n";
+
+
+        $count_cols=30;
+        $leads_in_list = 0;
+        $leads_in_list_N = 0;
+        $leads_in_list_Y = 0;
+        $max_col_grouping = "if(cnt>" . ($count_cols - 1) . "," . $count_cols . ",cnt)";
+        $stmt="SELECT stat,$max_col_grouping,count(*) FROM (select osdial_log.status AS stat,count(*) AS cnt from osdial_list JOIN osdial_log ON (osdial_list.lead_id=osdial_log.lead_id) where osdial_list.list_id='$list_id' group by osdial_log.lead_id,osdial_log.status,osdial_log.lead_id order by osdial_log.status,count(*)) AS t1 group by $max_col_grouping,stat order by stat,$max_col_grouping;";
+        $rslt=mysql_query($stmt, $link);
+        $status_called_to_print = mysql_num_rows($rslt);
+
+        $o=0;
+        $sts=0;
+        $first_row=1;
+        $all_called_first=1000;
+        $all_called_last=0;
+        while ($status_called_to_print > $o) {
+            $rowx=mysql_fetch_row($rslt);
+            $leads_in_list = ($leads_in_list + $rowx[2]);
+            $count_statuses[$o]			= "$rowx[0]";
+            $count_called[$o]			= "$rowx[1]";
+            $count_count[$o]			= "$rowx[2]";
+            $all_called_count[$rowx[1]] = ($all_called_count[$rowx[1]] + $rowx[2]);
+
+            if ( (strlen($status[$sts]) < 1) or ($status[$sts] != "$rowx[0]") ) {
+                if ($first_row) {
+                    $first_row=0;
+                } else {
+                    $sts++;
+                }
+                $status[$sts] = "$rowx[0]";
+                $status_called_first[$sts] = "$rowx[1]";
+                if ($status_called_first[$sts] < $all_called_first) {
+                    $all_called_first = $status_called_first[$sts];
+                }
+            }
+            $leads_in_sts[$sts] = ($leads_in_sts[$sts] + $rowx[2]);
+            $status_called_last[$sts] = "$rowx[1]";
+            if ($status_called_last[$sts] > $all_called_last) {
+                $all_called_last = $status_called_last[$sts];
+            }
+            $o++;
+        }
+
+
+
+
+        echo "<center>\n";
+        echo "<br><font color=$default_text size=4>PER-LEAD DISPOSITION COUNTS FROM LOG</font></b><br>\n";
+        echo "<table style=\"cursor:crosshair;\" bgcolor=grey width=500 cellspacing=1>\n";
+        echo "  <tr style=\"cusrsor:crosshair;\" class=tabheader>\n";
+        echo "    <td style=\"cusrsor:crosshair;\" align=left>STATUS</td>\n";
+        echo "    <td style=\"cusrsor:crosshair;\" align=left>STATUS&nbsp;NAME</td>";
+        $first = $all_called_first;
+        while ($first <= $all_called_last) {
+            $flabel = $first;
+            if ($first == 30) $flabel = "30+";
+            if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $flabel;
+            if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $flabel;
+            if (strlen($flabel) == 3) $flabel = '&nbsp;' . $flabel;
+            echo "    <td style=\"cusrsor:crosshair;\" align=right>$flabel</td>";
+            $first++;
+        }
+        echo "    <td style=\"cusrsor:crosshair;\" align=right>&nbsp;&nbsp;SUB</td>\n";
+        echo "  </tr>\n";
+
+        $sts=0;
+        $statuses_called_to_print = count($status);
+        while ($statuses_called_to_print > $sts) {
+            $Pstatus = $status[$sts];
+            if (eregi("1$|3$|5$|7$|9$", $sts)) {
+                $bgcolor="bgcolor=$evenrows";   $AB="bgcolor=$oddrows";
+            } else {
+                $bgcolor="bgcolor=$oddrows";   $AB="bgcolor=$evenrows";
+            }
+            #	echo "$status[$sts]|$status_called_first[$sts]|$status_called_last[$sts]|$leads_in_sts[$sts]|\n";
+            #	echo "$status[$sts]|";
+            echo "  <tr $bgcolor style=\"cursor:crosshair;\" class=\"row font1\">\n";
+            echo "     <td style=\"cusrsor:crosshair;\" nowrap>$Pstatus</td>\n";
+            echo "     <td style=\"cusrsor:crosshair;\" nowrap>$statuses_list[$Pstatus]</td>";
+
+            $first = $all_called_first;
+            while ($first <= $all_called_last) {
+                $called_printed=0;
+                $o=0;
+                while ($status_called_to_print > $o) {
+                    if ( ($count_statuses[$o] == "$Pstatus") and ($count_called[$o] == "$first") ) {
+                        $lplural = ',';
+                        $fplural = '';
+                        if ($count_count[$o] != 1) $lplural = 's, Each';
+                        if ($first != 1) $fplural = 's';
+                        $clabel = $count_count[$o];
+                        if (strlen($clabel) == 1) $clabel = '&nbsp;&nbsp;&nbsp;' . $count_count[$o];
+                        if (strlen($clabel) == 2) $clabel = '&nbsp;&nbsp;' . $count_count[$o];
+                        if (strlen($clabel) == 3) $clabel = '&nbsp;' . $count_count[$o];
+                        echo "    <td style=\"cursor:crosshair;\" class=hover align=right title=\"$count_count[$o] Lead$lplural Dispositioned as '$Pstatus' $first Time$fplural\">$clabel</td>\n";
+                        $called_printed++;
+                    }
+                    $o++;
+                }
+                if (!$called_printed) echo "    <td style=\"cursor:crosshair;\" class=hover align=right>&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+                $first++;
+            }
+            echo "    <td style=\"cursor:crosshair;\" align=right title=\"Subtotal for '$Pstatus': $leads_in_sts[$sts]\"><b>$leads_in_sts[$sts]</b></td>\n";
+            echo "  </tr>\n";
+            $sts++;
+        }
+
+        echo "  <tr style=\"cusrsor:crosshair;\" class=tabfooter>";
+        echo "    <td style=\"cusrsor:crosshair;\" align=left colspan=2>TOTAL</td>";
+        $first = $all_called_first;
+        while ($first <= $all_called_last) {
+            if ($all_called_count[$first] == 0 or $all_called_count[$first] == '') $all_called_count[$first] = '0';
+            $flabel = $all_called_count[$first];
+            if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $all_called_count[$first];
+            if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $all_called_count[$first];
+            if (strlen($flabel) == 3) $flabel = '&nbsp;' . $all_called_count[$first];
+            echo "    <td style=\"cusrsor:crosshair;\" align=right class=right title=\"$first Attempt Total: $all_called_count[$first] Calls\">$flabel</td>";
+            $first++;
+        }
+        echo "    <td style=\"cusrsor:crosshair;\" align=right title=\"Total: $leads_in_list Calls\">$leads_in_list</td>\n";
+        echo "  </tr>\n";
+
+        echo "</table></center><br>\n";
+
+
+
+
+
+        echo "<center>\n";
+        echo "<br><br><a href=\"$PHP_SELF?ADD=811&list_id=$list_id\">Click here to see all CallBack Holds in this list</a><BR><BR>\n";
+        echo "</center>\n";
 	
-	if ($LOGdelete_lists > 0)
-		{
-		echo "<br><br><a href=\"$PHP_SELF?ADD=511&list_id=$list_id\">DELETE THIS LIST</a>\n";
-    echo "<br><br><a href=\"$PHP_SELF?ADD=511&SUB=1&list_id=$list_id\">DELETE THIS LIST AND ITS LEADS</a> (WARNING: Will damage call-backs made in this list!)\n";
-		}
-	}
-	else
-	{
-	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
-	}
+        if ($LOGdelete_lists > 0) {
+            echo "<br><br><a href=\"$PHP_SELF?ADD=511&list_id=$list_id\">DELETE THIS LIST</a>\n";
+            echo "<br><br><a href=\"$PHP_SELF?ADD=511&SUB=1&list_id=$list_id\">DELETE THIS LIST AND ITS LEADS</a> (WARNING: Will damage call-backs made in this list!)\n";
+        }
+    } else {
+        echo "<font color=red>You do not have permission to view this page</font>\n";
+        exit;
+    }
 }
 
 
@@ -3518,86 +3474,86 @@ if ($ADD==82) {
 ######################
 # ADD=100 display all lists
 ######################
-if ($ADD==100)
-{
-echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+if ($ADD==100) {
+    echo "<TABLE align=center><TR><TD>\n";
+    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-$camp = get_variable('camp');
-$campSQL = '';
-if ($camp != '') $campSQL = "AND campaign_id='$camp'";
+    $camp = get_variable('camp');
+    $campSQL = '';
+    if ($camp != '') $campSQL = "AND campaign_id='$camp'";
 
-$let = get_variable('let');
-$letSQL = '';
-if ($let != '') $letSQL = "AND (campaign_id LIKE '$let%' OR list_id LIKE '$let%')";
+    $let = get_variable('let');
+    $letSQL = '';
+    if ($let != '') $letSQL = "AND (campaign_id LIKE '$let%' OR list_id LIKE '$let%')";
 
-$dispact = get_variable('dispact');
-$dispactSQL = '';
-if ($dispact == 1) $dispactSQL = "AND active='Y'";
+    $dispact = get_variable('dispact');
+    $dispactSQL = '';
+    if ($dispact == 1) $dispactSQL = "AND active='Y'";
 
-	$stmt="SELECT * from osdial_lists WHERE 1=1 $campSQL $letSQL $dispactSQL order by list_id";
-	$rslt=mysql_query($stmt, $link);
-	$people_to_print = mysql_num_rows($rslt);
+    $stmt="SELECT * from osdial_lists WHERE 1=1 $campSQL $letSQL $dispactSQL order by list_id";
+    $rslt=mysql_query($stmt, $link);
+    $people_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font color=$default_text size=+1>LISTS</font><br>";
-if ($people_to_print > 20) {
-    echo "<font color=$default_text size=-1>";
-    if ($dispact == '1') {
-        echo "<a href=\"$PHP_SELF?ADD=100&camp=$camp&let=$let&dispact=\">(Show Inactive)</a>";
-    } else {
-        echo "<a href=\"$PHP_SELF?ADD=100&camp=$camp&let=$let&dispact=1\">(Hide Inactive)</a>";
+    echo "<center><br><font color=$default_text size=+1>LISTS</font><br>";
+    if ($people_to_print > 20) {
+        echo "<font color=$default_text size=-1>";
+        if ($dispact == '1') {
+            echo "<a href=\"$PHP_SELF?ADD=100&camp=$camp&let=$let&dispact=\">(Show Inactive)</a>";
+        } else {
+            echo "<a href=\"$PHP_SELF?ADD=100&camp=$camp&let=$let&dispact=1\">(Hide Inactive)</a>";
+        }
+        echo "</font><br>\n";
+    }
+    echo "<br>\n";
+    echo "<font size=-1 color=$default_text>&nbsp;|&nbsp;";
+    echo "<a href=\"$PHP_SELF?ADD=$ADD&dispact=$dispact&let=\">-ALL-</a>&nbsp;|&nbsp;";
+    echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;";
+    foreach (range('A','Z') as $slet) {
+        echo (($let == "$slet") ? $slet : "<a href=\"$PHP_SELF?ADD=$ADD&dispact=$dispact&let=$slet\">$slet</a>") . "&nbsp;|&nbsp;";
+    }
+    echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;";
+    foreach (range('0','9') as $snum) {
+        echo (($let == "$snum") ? $snum : "<a href=\"$PHP_SELF?ADD=$ADD&dispact=$dispact&let=$snum\">$snum</a>") . "&nbsp;|&nbsp;";
     }
     echo "</font><br>\n";
-}
-echo "<br>\n";
-echo "<font size=-1 color=$default_text>&nbsp;|&nbsp;";
-echo "<a href=\"$PHP_SELF?ADD=$ADD&dispact=$dispact&let=\">-ALL-</a>&nbsp;|&nbsp;";
-echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;";
-foreach (range('A','Z') as $slet) {
-    echo (($let == "$slet") ? $slet : "<a href=\"$PHP_SELF?ADD=$ADD&dispact=$dispact&let=$slet\">$slet</a>") . "&nbsp;|&nbsp;";
-}
-echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;";
-foreach (range('0','9') as $snum) {
-    echo (($let == "$snum") ? $snum : "<a href=\"$PHP_SELF?ADD=$ADD&dispact=$dispact&let=$snum\">$snum</a>") . "&nbsp;|&nbsp;";
-}
-echo "</font><br>\n";
-echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "<tr class=tabheader>";
-echo "<td>ID</td>";
-echo "<td>NAME</td>";
-echo "<td>CAMPAIGN</td>";
-echo "<td>DESCRIPTION</td>";
-echo "<td align=center>MODIFIED</td>";
-echo "<td align=center>ACTIVE</td>";
-echo "<td align=center colspan=3>LINKS</td>";
-	$o=0;
-	while ($people_to_print > $o) {
-		$row=mysql_fetch_row($rslt);
-		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor='.$oddrows;} 
-		else
-			{$bgcolor='bgcolor='.$evenrows;}
-		echo "  <tr $bgcolor class=\"row font1\">\n";
-        echo "    <td><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">$row[0]</a></td>\n";
-		echo "    <td>$row[1]</td>\n";
-		echo "    <td><a href=\"$PHP_SELF?ADD=100&camp=$row[2]&dispact=$dispact\">$row[2]</a></td>\n";
-		echo "    <td>$row[4]</td>\n";
-		echo "    <td align=center>$row[5]</td>\n";
-		echo "    <td align=center>$row[3]</td>\n";
-		#echo "    <td>$row[7]</td>\n";
-		echo "    <td colspan=3 align=center><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">MODIFY</a>";
-        if ($LOGuser_leve > 8) {
-		    echo " | <a href=\"$PHP_SELF?ADD=131&list_id=$row[0]\">EXPORT</a>";
+    echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
+    echo "<tr class=tabheader>";
+    echo "<td>ID</td>";
+    echo "<td>NAME</td>";
+    echo "<td>CAMPAIGN</td>";
+    echo "<td>DESCRIPTION</td>";
+    echo "<td align=center>MODIFIED</td>";
+    echo "<td align=center>ACTIVE</td>";
+    echo "<td align=center colspan=3>LINKS</td>";
+    $o=0;
+    while ($people_to_print > $o) {
+        $row=mysql_fetch_row($rslt);
+        if (eregi("1$|3$|5$|7$|9$", $o)) {
+            $bgcolor='bgcolor='.$oddrows;
+        } else {
+            $bgcolor='bgcolor='.$evenrows;
         }
-		echo " | <a href=\"$PHP_SELF?ADD=122&list_id_override=$row[0]\">ADD LEADS</a></td>\n";
+        echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">$row[0]</a></td>\n";
+        echo "    <td>$row[1]</td>\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=100&camp=$row[2]&dispact=$dispact\">$row[2]</a></td>\n";
+        echo "    <td>$row[4]</td>\n";
+        echo "    <td align=center>$row[5]</td>\n";
+        echo "    <td align=center>$row[3]</td>\n";
+        #echo "    <td>$row[7]</td>\n";
+        echo "    <td colspan=3 align=center><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">MODIFY</a>";
+        if ($LOGuser_leve > 8) {
+            echo " | <a href=\"$PHP_SELF?ADD=131&list_id=$row[0]\">EXPORT</a>";
+        }
+        echo " | <a href=\"$PHP_SELF?ADD=122&list_id_override=$row[0]\">ADD LEADS</a></td>\n";
         echo "  </tr>\n";
-		$o++;
-	}
+        $o++;
+    }
 
-echo "  <tr class=tabfooter>\n";
-echo "    <td colspan=9></td>\n";
-echo "  </tr>\n";
-echo "</TABLE></center>\n";
+    echo "  <tr class=tabfooter>\n";
+    echo "    <td colspan=9></td>\n";
+    echo "  </tr>\n";
+    echo "</TABLE></center>\n";
 }
 
 
