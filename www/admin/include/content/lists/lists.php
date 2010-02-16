@@ -2947,8 +2947,8 @@ if ($ADD==311) {
             echo "<tr bgcolor=$oddrows><td align=right>External DNC Scrub Now: </td><td align=left><select size=1 name=scrub_dnc><option>Y</option><option selected>N</option></select>$NWB#osdial_lists-srub_dnc$NWE</td></tr>\n";
             echo "<tr bgcolor=$oddrows><td align=right>Last External Scrub: </td><td align=left>$list_scrub_last : $list_scrub_info</td></tr>\n";
         }
-        echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"$web_form_address\">$NWB#osdial_lists-web_form_address$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255 value=\"$web_form_address2\">$NWB#osdial_lists-web_form_address$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Web Form 1 (campaign override): </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"$web_form_address\">$NWB#osdial_lists-web_form_address$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Web Form 2 (campaign override): </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255 value=\"$web_form_address2\">$NWB#osdial_lists-web_form_address$NWE</td></tr>\n";
         echo "<tr class=tabfooter>";
         echo "<td align=center class=tabbutton>";
         echo "<input type=button name=addleads value=\"ADD LEADS\" onclick=\"window.location='admin.php?ADD=122&list_id_override=$row[0]'\">";

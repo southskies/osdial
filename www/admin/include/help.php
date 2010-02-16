@@ -683,6 +683,10 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <B><?=$t1?> Lead Cost-</B> When a value is placed into the "cost" field of a list, each newly created lead will have that "cost" added to its record.  The <?=$t1?> List Cost report can then be run to give a basic cost analysis of the leads being dialed from the system.
 
+<BR>
+<A NAME="osdial_lists-web_form_address">
+<BR>
+<B>Web Form -</B> This is where you can set the custom web page that will be opened when the user clicks on one of the WEB FORM buttons.  If not blank, this will override the campaign specific Web Form to which this list belongs.
 
 
 <BR><BR><BR><BR>
