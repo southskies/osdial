@@ -928,6 +928,38 @@ if ($ACTION == 'manDiaLnextCaLL')
 			$LeaD_InfO .=	$external_key . "\n";
 			$LeaD_InfO .=	$post_date . "\n";
 
+            $web_form_address = "";
+            $web_form_address2 = "";
+            $web_form_extwindow = "";
+            $web_form2_extwindow = "";
+
+            # Get web_form_address vars from campaign.
+            $stmt = "SELECT web_form_address,web_form_address2,web_form_extwindow,web_form2_extwindow FROM osdial_campaigns WHERE campaign_id='$campaign';";
+            if ($DB) {echo "$stmt\n";}
+            $rslt=mysql_query($stmt, $link);
+            $list_cnt = mysql_num_rows($rslt);
+            if ($list_cnt > 0) {
+                $row=mysql_fetch_row($rslt);
+                $web_form_address = $row[0];
+                $web_form_address2 = $row[1];
+            }
+
+            # Get web_form_address vars from list.
+            $stmt = "SELECT web_form_address,web_form_address2 FROM osdial_lists WHERE list_id='$list_id';";
+            if ($DB) {echo "$stmt\n";}
+            $rslt=mysql_query($stmt, $link);
+            $list_cnt = mysql_num_rows($rslt);
+            if ($list_cnt > 0) {
+                $row=mysql_fetch_row($rslt);
+                if ($row[0] != "") $web_form_address = $row[0];
+                if ($row[1] != "") $web_form_address2 = $row[1];
+            }
+
+			$LeaD_InfO .=	$web_form_address . "\n";
+			$LeaD_InfO .=	$web_form_address2 . "\n";
+			$LeaD_InfO .=	$web_form_extwindow . "\n";
+			$LeaD_InfO .=	$web_form2_extwindow . "\n";
+
 			$forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
 			$cnt = 0;
 			foreach ($forms as $form) {
@@ -1846,11 +1878,12 @@ if ($ACTION == 'VDADcheckINCOMING')
 				$VDCL_web_form_extwin2  = $row[11];
 				}
 
-			$stmt = "SELECT web_form_address,web_form_address2 FROM osdial_lists WHERE list_id='$list_id';";
-			if ($DB) {echo "$stmt\n";}
-			$rslt=mysql_query($stmt, $link);
-			$list_cnt = mysql_num_rows($rslt);
-			if ($list_cnt > 0) {
+            $stmt = "SELECT web_form_address,web_form_address2 FROM osdial_lists WHERE list_id='$list_id';";
+            if ($DB) {echo "$stmt\n";}
+            $rslt=mysql_query($stmt, $link);
+            $list_cnt = mysql_num_rows($rslt);
+            if ($list_cnt > 0) {
+                $row=mysql_fetch_row($rslt);
                 if ($row[0] != "") $VDCL_web_form_address = $row[0];
                 if ($row[1] != "") $VDCL_web_form_address2 = $row[1];
             }

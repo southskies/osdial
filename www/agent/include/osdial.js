@@ -1886,6 +1886,18 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						document.osdial_form.custom2.value	= MDnextResponse_array[35];
 						external_key										= MDnextResponse_array[36];
 						document.osdial_form.post_date.value	= MDnextResponse_array[37];
+						VDIC_web_form_address = MDnextResponse_array[38];
+						VDIC_web_form_address2 = MDnextResponse_array[39];
+						if (MDnextResponse_array[40] == "Y") {
+							web_form_extwindow = 1;
+						} else {
+							web_form_extwindow = 0;
+						}
+						if (MDnextResponse_array[41] == "Y") {
+							web_form2_extwindow = 1;
+						} else {
+							web_form2_extwindow = 0;
+						}
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
@@ -4103,12 +4115,14 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // ################################################################################
 // Log the user out of the system when they close their browser while logged in
 	function BrowserCloseLogout() {
-		manual_dial_menu=0;
-		alt_dial_menu=0;
-		MD_channel_look=0;
-		VD_live_customer_call=0;
-		LogouT();
-		alert("PLEASE CLICK THE LOGOUT LINK TO LOG OUT NEXT TIME!\n");
+		if (logout_stop_timeouts < 1) {
+			manual_dial_menu=0;
+			alt_dial_menu=0;
+			MD_channel_look=0;
+			VD_live_customer_call=0;
+			LogouT();
+			alert("PLEASE CLICK THE LOGOUT LINK TO LOG OUT NEXT TIME!\n");
+		}
 	}
 
 
