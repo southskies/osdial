@@ -1,7 +1,7 @@
 <?php
 
 #
-# Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+# Copyright (C) 2009-2010  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
 #
 #     This file is part of OSDial.
 #
@@ -19,14 +19,11 @@
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
 # 090428-0927 - Moved variables into function at end for readability.
+# 100217-1156 - Allow more dynamic field-mapping control.
 
 # This program redirects the webform to a different URL that might need
 # different keys/values passed.  Just edit the $url variable and use the
 # variables listed below
-
-
-include("../admin/include/functions.php");
-include("../admin/include/variables.php");
 
 # Modify $url or set the url variable to redirect elsewhere.
 
@@ -48,6 +45,10 @@ include("../admin/include/variables.php");
 #     http://www.osdial.com/webform_test.php?id=3483&lead=120&list=1000&number=4075551212
 #  
 
+include("../admin/include/functions.php");
+include("../admin/include/variables.php");
+
+
 $url = get_variable("url");
 if ($url == "") {
     #$url = "http://www.osdial.com/webform_test.php?id=$external_key&lead=$lead_id&list=$list_id&number=$phone_number";
@@ -56,8 +57,11 @@ if ($url == "") {
     $fields = get_variable("fields");
     if ($fields != "") {
         $url .= "?";
+        # Split out comma-sep fields
         foreach (explode(",",$fields) as $maps) {
+            # Split field at $, left=ext_map, left=
             $map = explode("$",$maps);
+            # Since we are eval'ing a passed var, lets put add constaints to make a bit more secure.
             if (strlen($map[1]) > 3 and strlen($map[1]) < 20) {
                 eval("\$map[1] = \$" . $map[1] . ";");
                 $url .= $map[0] . "=" . $map[1] . "&";
