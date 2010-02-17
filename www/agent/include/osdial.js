@@ -1901,7 +1901,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
-        $rcnt = $cnt + 38;
+        $rcnt = $cnt + 42;
         echo '          document.osdial_form.' . $ffields[$cnt] . ".value = MDnextResponse_array[" . $rcnt . "];\n";
         $cnt++;
     }
@@ -1984,9 +1984,6 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						var regWF = new RegExp("\\`|\\~|\\:|\\;|\\#|\\'|\\\"|\\{|\\}|\\(|\\)|\\*|\\^|\\%|\\$|\\!|\\%|\\r|\\t|\\n","ig");
 						web_form_vars = web_form_vars.replace(regWFspace, '+');
 						web_form_vars = web_form_vars.replace(regWF, '');
-
-						VDIC_web_form_address = OSDiaL_web_form_address;
-						VDIC_web_form_address2 = OSDiaL_web_form_address2;
 
 						if (LeaDPreVDispO == 'CALLBK') {
 							document.getElementById("CusTInfOSpaN").innerHTML = "&nbsp;&nbsp;<B><font color=<?=$status_intense_color?>>Previous Callback</font>&nbsp;</B>";
