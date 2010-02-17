@@ -28,7 +28,7 @@
 include("../admin/include/functions.php");
 include("../admin/include/variables.php");
 
-# Modify the $url variable to redirect elsewhere.
+# Modify $url or set the url variable to redirect elsewhere.
 
 #   Variables passed to webform:
 #    lead_id vendor_id list_id gmt_offset_now phone_code phone_number title
@@ -39,9 +39,33 @@ include("../admin/include/variables.php");
 #    customer_server_ip server_ip SIPexten session_id phone parked_by dispo
 #    dialed_number dialed_label source_id external_key
 
-#$url = "http://www.osdial.com/webform_test.php?id=$external_key&lead=$lead_id&list=$list_id&number=$phone_number";
-$url = "http://www.osdial.com/webform_test.php?id=$external_key";
+# Passing the "fields" variable allows you to specify field mappings, given that url is specified.
+#   Consider the following:
+#     url=http:///www.osdial.com/webform_test.php&fields=id$external_key,lead$lead_id,list$list_id,number$phone_number
+#   Would map the following, substituting the given OSDial variable with the current lead's value:
+#     http://www.osdial.com/webform_test.php?id=$external_key&lead=$lead_id&list=$list_id&number=$phone_number
+#   Which might result in something like this being passed:
+#     http://www.osdial.com/webform_test.php?id=3483&lead=120&list=1000&number=4075551212
+#  
 
+$url = get_variable("url");
+if ($url == "") {
+    #$url = "http://www.osdial.com/webform_test.php?id=$external_key&lead=$lead_id&list=$list_id&number=$phone_number";
+    $url = "http://www.osdial.com/webform_test.php?id=$external_key";
+} else {
+    $fields = get_variable("fields");
+    if ($fields != "") {
+        $url .= "?";
+        foreach (explode(",",$fields) as $maps) {
+            $map = explode("$",$maps);
+            if (strlen($map[1]) > 3 and strlen($map[1]) < 20) {
+                eval("\$map[1] = \$" . $map[1] . ";");
+                $url .= $map[0] . "=" . $map[1] . "&";
+            }
+        }
+        $url = rtrim($url,"&");
+    }
+}
 
 
 
