@@ -186,7 +186,11 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	var cid_name = '<? echo $campaign_cid_name ?>';
 	var campaign_cid = '<? echo $campaign_cid ?>';
 	var campaign_cid_name = '<? echo $campaign_cid_name ?>';
+	var phone_cid = '<? echo $phone_cid ?>';
+	var phone_cid_name = '<? echo $phone_cid_name ?>';
+	var xfer_cid_mode = '<? echo $xfer_cid_mode ?>';
 	var lead_cid = '<? echo $campaign_cid ?>';
+	var lead_cust2_cid = '<? echo $campaign_cid ?>';
 	var use_custom2_callerid = '<? echo $use_custom2_callerid ?>';
 	var campaign_vdad_exten = '<? echo $campaign_vdad_exten ?>';
 	var campaign_leads_to_call = '<? echo $campaign_leads_to_call ?>';
@@ -649,12 +653,20 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				var queryCID = "DVagcW" + epoch_sec + user_abb;
 			}
 
-			lead_cid = document.osdial_form.custom2.value;
-			cid = campaign_cid;
-			cid_name = campaign_cid_name;
-			if (use_custom2_callerid == 'Y' && lead_cid != '') {
+			lead_cust2_cid = document.osdial_form.custom2.value;
+			lead_cid = document.osdial_form.phone_number.value;
+			if (xfer_cid_mode == 'LEAD_CUSTOM2' && lead_cid != '') {
+				cid = lead_cust2_cid;
+				cid_name = lead_cust2_cid;
+			} else if (xfer_cid_mode == 'LEAD') {
 				cid = lead_cid;
 				cid_name = lead_cid;
+			} else if (xfer_cid_mode == 'PHONE') {
+				cid = phone_cid;
+				cid_name = phone_cid_name;
+			} else {
+				cid = campaign_cid;
+				cid_name = campaign_cid_name;
 			}
 			VMCoriginate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=Originate&format=text&channel=" + originatevalue + "&queryCID=" + queryCID + "&exten=" + orig_prefix + "" + dialnum + "&ext_context=" + ext_context + "&ext_priority=1&outbound_cid=" + cid + "&outbound_cid_name=" + cid_name;
 			cid = campaign_cid;
@@ -1794,12 +1806,12 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			xmlhttp = new XMLHttpRequest();
 		}
 		if (xmlhttp) { 
-			lead_cid = document.osdial_form.custom2.value;
+			lead_cust2_cid = document.osdial_form.custom2.value;
 			cid = campaign_cid;
 			cid_name = campaign_cid_name;
-			if (use_custom2_callerid == 'Y' && lead_cid != '') {
-				cid = lead_cid;
-				cid_name = lead_cid;
+			if (use_custom2_callerid == 'Y' && lead_cust2_cid != '') {
+				cid = lead_cust2_cid;
+				cid_name = lead_cust2_cid;
 			}
 			manDiaLnext_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLnextCaLL&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&ext_context=" + ext_context + "&dial_timeout=" + dial_timeout + "&dial_prefix=" + dial_prefix + "&campaign_cid=" + cid + "&campaign_cid_name=" + cid_name + "&preview=" + man_preview + "&agent_log_id=" + agent_log_id + "&callback_id=" + mdnCBid + "&lead_id=" + mdnBDleadid + "&phone_code=" + mdnDiaLCodE + "&phone_number=" + mdnPhonENumbeR + "&list_id=" + mdnLisT_id + "&stage=" + mdnStagE  + "&use_internal_dnc=" + use_internal_dnc + "&omit_phone_code=" + omit_phone_code;
 			cid = campaign_cid;
@@ -2255,12 +2267,12 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			xmlhttp = new XMLHttpRequest();
 		}
 		if (xmlhttp) { 
-			lead_cid = document.osdial_form.custom2.value;
+			lead_cust2_cid = document.osdial_form.custom2.value;
 			cid = campaign_cid;
 			cid_name = campaign_cid_name;
-			if (use_custom2_callerid == 'Y' && lead_cid != '') {
-				cid = lead_cid;
-				cid_name = lead_cid;
+			if (use_custom2_callerid == 'Y' && lead_cust2_cid != '') {
+				cid = lead_cust2_cid;
+				cid_name = lead_cust2_cid;
 			}
 			manDiaLonly_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLonly&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&phone_number=" + manDiaLonly_num + "&phone_code=" + document.osdial_form.phone_code.value + "&campaign=" + campaign + "&ext_context=" + ext_context + "&dial_timeout=" + dial_timeout + "&dial_prefix=" + dial_prefix + "&campaign_cid=" + cid + "&campaign_cid_name=" + cid_name + "&omit_phone_code=" + omit_phone_code;
 			cid = campaign_cid;

@@ -465,6 +465,16 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <B>Campaign CallerID -</B> This field allows for the sending of a custom callerid number on the outbound calls. This is the number that would show up on the callerid of the person you are calling. The default is UNKNOWN. If you are using T1 or E1s to dial out this option is only available if you are using PRIs - ISDN T1s or E1s - that have the custom callerid feature turned on, this will not work with Robbed-bit service -RBS- circuits. This will also work through most VOIP -SIP or IAX trunks- providers that allow dynamic outbound callerID. The custom callerID only applies to calls placed for the <?=$t1?> campaign directly, any 3rd party calls or transfers will not send the custom callerID. NOTE: Sometimes putting UNKNOWN or PRIVATE in the field will yield the sending of your default callerID number by your carrier with the calls. You may want to test this and put 0000000000 in the callerid field instead if you do not want to send you CallerID.
 
 <BR>
+<A NAME="osdial_campaigns-campaign_cid_name">
+<BR>
+<B>Campaign CallerID Name -</B> This field allows the setting of a custom callerid name.  Not all PRI/VoIP carriers allow this option to be used and the remote carrier may also override any callerid name you set.
+
+<BR>
+<A NAME="osdial_campaigns-xfer_cid_mode">
+<BR>
+<B>XFER/3rd-Party CID Mode -</B> This option controls what CID information is passed to transfers and 3rd-party calls.  The options are as follows: CAMPAIGN: (default) Use the campaigns CID settings.  PHONE: Use the CID settings defined under the agents phone.  LEAD: Use the the phone number from the called lead.  LEAD_CUSTOM2: Use the data in the custom2 field of the lead.
+
+<BR>
 <A NAME="osdial_campaigns-use_custom2_callerid">
 <BR>
 <B>Use Custom2 CallerID -</B> By setting this option to Y, the CallerID will be set to the custom2 field of the lead.  If the custom2 field does not contain a numeric value, the defailt Campaign CallerID will be used.
@@ -1117,6 +1127,11 @@ The <?=$t1?> basic web-based lead loader is designed simply to take a lead file 
 <A NAME="phones-outbound_cid">
 <BR>
 <B>Outbound CallerID -</B> This field is where you would enter the callerID number that you would like to appear on outbound calls placed form the <?=$t1?> web-client. This does not work on RBS, non-PRI, T1/E1s.
+
+<BR>
+<A NAME="phones-outbound_cid_name">
+<BR>
+<B>Outbound CallerID Name -</B> This field allows the setting of a custom callerid name.  Not all PRI/VoIP carriers allow this option to be used and the remote carrier may also override any callerid name you set.
 
 <BR>
 <A NAME="phones-phone_ip">

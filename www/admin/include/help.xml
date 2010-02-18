@@ -380,6 +380,14 @@
   This field allows for the sending of a custom callerid number on the outbound calls. This is the number that would show up on the callerid of the person you are calling. The default is UNKNOWN. If you are using T1 or E1s to dial out this option is only available if you are using PRIs - ISDN T1s or E1s - that have the custom callerid feature turned on, this will not work with Robbed-bit service -RBS- circuits. This will also work through most VOIP -SIP or IAX trunks- providers that allow dynamic outbound callerID. The custom callerID only applies to calls placed for the OSDial campaign directly, any 3rd party calls or transfers will not send the custom callerID. NOTE: Sometimes putting UNKNOWN or PRIVATE in the field will yield the sending of your default callerID number by your carrier with the calls. You may want to test this and put 0000000000 in the callerid field instead if you do not want to send you CallerID.
     </item>
 
+    <item pathId="campaign_cid_name" title="Campaign CallerID Name">
+  This field allows the setting of a custom callerid name.  Not all PRI/VoIP carriers allow this option to be used and the remote carrier may also override any callerid name you set.
+    </item>
+
+    <item pathId="xfer_cid_mode" title="XFER/3rd-Party CID Mode">
+  This option controls what CID information is passed to transfers and 3rd-party calls.  The options are as follows: CAMPAIGN: (default) Use the campaigns CID settings.  PHONE: Use the CID settings defined under the agents phone.  LEAD: Use the the phone number from the called lead.  LEAD_CUSTOM2: Use the data in the custom2 field of the lead.
+    </item>
+
     <item pathId="campaign_vdad_exten" title="Campaign OSDial extension">
   This field allows for a custom OSDial transfer extension. This allows you to use different VDADtransfer...agi scripts depending upon your campaign. The default transfer AGI - exten 8365 agi-VDADtransfer.agi - just immediately sends the calls on to agents as soon as they are picked up. An additional sample political survey AGI is also now included - 8366 agi-VDADtransferSURVEY.agi - that plays a message to the called person and allows them to make a choice by pressing buttons - effectively pre-screening the lead - . Please note that except for surveys, political calls and charities this form of calling is illegal in the United States.
     </item>
@@ -891,6 +899,10 @@ The OSDial basic web-based lead loader is designed simply to take a lead file - 
 
     <item pathId="outbound_cid" title="Outbound CallerID">
   This field is where you would enter the callerID number that you would like to appear on outbound calls placed form the OSDial web-client. This does not work on RBS, non-PRI, T1/E1s.
+    </item>
+
+    <item pathId="outbound_cid_name" title="Outbound CallerID Name">
+  This field allows the setting of a custom callerid name.  Not all PRI/VoIP carriers allow this option to be used and the remote carrier may also override any callerid name you set.
     </item>
 
     <item pathId="phone_ip" title="Phone IP address">

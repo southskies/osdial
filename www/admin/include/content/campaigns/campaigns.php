@@ -1083,6 +1083,7 @@ if ($ADD==31) {
         echo "<tr bgcolor=$oddrows><td align=right>Campaign CallerID Name: </td><td align=left><input type=text name=campaign_cid_name size=20 maxlength=40 value=\"$campaign_cid_name\">$NWB#osdial_campaigns-campaign_cid_name$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Campaign CallerID: </td><td align=left><input type=text name=campaign_cid size=20 maxlength=20 value=\"$campaign_cid\">$NWB#osdial_campaigns-campaign_cid$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Use Custom2 CallerID: </td><td align=left><select name=use_custom2_callerid><option>N</option><option>Y</option><option selected>$use_custom2_callerid</option></select>$NWB#osdial_campaigns-use_custom2_callerid$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>3rd-Party CID Mode: </td><td align=left><select name=xfer_cid_mode><option>CAMPAIGN</option><option>PHONE</option><option>LEAD</option><option>LEAD_CUSTOM2</option><option selected>$xfer_cid_mode</option></select>$NWB#osdial_campaigns-xfer_cid_mode$NWE</td></tr>\n";
 
         echo "<tr bgcolor=$oddrows><td align=right>Campaign $t1 exten: </td><td align=left><input type=text name=campaign_vdad_exten size=10 maxlength=20 value=\"$campaign_vdad_exten\">$NWB#osdial_campaigns-campaign_vdad_exten$NWE</td></tr>\n";
 
