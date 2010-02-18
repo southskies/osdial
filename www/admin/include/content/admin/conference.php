@@ -113,7 +113,7 @@ if ($ADD==4111111111111)
 			{
 			echo "<br><font color=$default_text>CONFERENCE MODIFIED: $conf_exten</font>\n";
 
-			$stmt="UPDATE conferences set conf_exten='$conf_exten',server_ip='$server_ip',extension='$extension' where conf_exten='$old_conf_exten';";
+			$stmt="UPDATE conferences set conf_exten='$conf_exten',server_ip='$server_ip',extension='$extension' where conf_exten='$old_conf_exten' and server_ip='$old_server_ip';";
 			$rslt=mysql_query($stmt, $link);
 			}
 		}
@@ -368,7 +368,7 @@ if ($ADD==41111111111111)
 			{
 			echo "<br><font color=$default_text>$t1 CONFERENCE MODIFIED: $conf_exten</font>\n";
 
-			$stmt="UPDATE osdial_conferences set conf_exten='$conf_exten',server_ip='$server_ip',extension='$extension' where conf_exten='$old_conf_exten';";
+			$stmt="UPDATE osdial_conferences set conf_exten='$conf_exten',server_ip='$server_ip',extension='$extension' where conf_exten='$old_conf_exten' and server_ip='$old_server_ip';";
 			$rslt=mysql_query($stmt, $link);
 
 			}
