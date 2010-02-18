@@ -121,21 +121,38 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 	}
 
 	#Fix some version related config differences
+	my($oedata);
+	open(OE, "/etc/asterisk/osdial_extensions.conf");
+	while (my $oeline = <OE>) {
+		$oedata .= $oeline;
+	}
+	close(OE);
+	my($moddata);
+	open(MOD, "/etc/asterisk/modules.conf");
+	while (my $modline = <MOD>) {
+		$moddata .= $modline;
+	}
+	close(MOD);
+	my $oereload;
 	if ($asterisk_version =~ /^1\.6/) {
-		my $pr = `perl -pi -e 's|^exten => h,1,DeadAGI|exten => h,1,AGI|g' /etc/asterisk/osdial_extensions.conf`;
-		my $pr = `perl -pi -e 's|^noload => chan_agent.so|load => chan_agent.so|g' /etc/asterisk/modules.conf`;
-		my $pr = `perl -pi -e 's|^noload => app_queue.so|load => app_queue.so|g' /etc/asterisk/modules.conf`;
+		$oereload = "dialplan reload";
+		$oedata =~ s/^exten => h,1,DeadAGI/exten => h,1,AGI/g; 
+		$moddata =~ s/^noload => chan_agent.so/load => chan_agent.so/g;
+		$moddata =~ s/^noload => app_queue.so/load => app_queue.so/g;
 		if (-e "/etc/asterisk/zapata.conf" and not -e "/etc/asterisk/chan_dahdi.conf") {
 			my $pr = `cp /etc/asterisk/zapata.conf /etc/asterisk/chan_dahdi.conf`;
 		}
 	} elsif ($asterisk_version =~ /^1\.2/) {
-		my $pr = `perl -pi -e 's|^exten => h,1,AGI|exten => h,1,DeadAGI|g' /etc/asterisk/osdial_extensions.conf`;
-		my $pr = `perl -pi -e 's|^load => chan_agent.so|noload => chan_agent.so|g' /etc/asterisk/modules.conf`;
-		my $pr = `perl -pi -e 's|^load => app_queue.so|noload => app_queue.so|g' /etc/asterisk/modules.conf`;
+		$oereload = "extensions reload";
+		$oedata =~ s/^exten => h,1,AGI/exten => h,1,DeadAGI/g; 
+		$moddata =~ s/^load => chan_agent.so/noload => chan_agent.so/g;
+		$moddata =~ s/^load => app_queue.so/noload => app_queue.so/g;
 		if (-e "/etc/asterisk/chan_dahdi.conf" and not -e "/etc/asterisk/zapata.conf") {
 			my $pr = `cp /etc/asterisk/chan_dahdi.conf /etc/asterisk/zapata.conf`;
 		}
 	}
+	write_reload($oedata,'osdial_extensions','dialplan reload');
+	write_reload($moddata,'modules','reload');
 
 	# TODO: Fix calc_password to not be so aggressive.
 	#my $pass = calc_password();
