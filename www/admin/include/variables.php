@@ -135,6 +135,7 @@ $answers_per_hour_limit = get_variable("answers_per_hour_limit");
 $CallerID_popup_enabled = get_variable("CallerID_popup_enabled");
 $campaign_allow_inbound = get_variable("campaign_allow_inbound");
 $campaign_cid = get_variable("campaign_cid");
+$campaign_cid_name = get_variable("campaign_cid_name");
 $campaign_description = get_variable("campaign_description");
 $campaign_detail = get_variable("campaign_detail");
 $campaign_id = get_variable("campaign_id");
@@ -353,6 +354,7 @@ $osdial_recording_override = get_variable("osdial_recording_override");
 $osdial_transfers = get_variable("osdial_transfers");
 $OSDIAL_web_URL = get_variable("OSDIAL_web_URL");
 $outbound_cid = get_variable("outbound_cid");
+$outbound_cid_name = get_variable("outbound_cid_name");
 
 $oi1 = get_variable("oi1");
 $oi2 = get_variable("oi2");
@@ -531,6 +533,7 @@ $xferconf_a_dtmf = get_variable("xferconf_a_dtmf");
 $xferconf_a_number = get_variable("xferconf_a_number");
 $xferconf_b_dtmf = get_variable("xferconf_b_dtmf");
 $xferconf_b_number = get_variable("xferconf_b_number");
+$xfer_cid_mode = get_variable("xfer_cid_mode");
 $xfer_exten = get_variable("xfer_exten");
 $XFERgroups = get_variable("XFERgroups");
 

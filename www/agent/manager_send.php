@@ -139,6 +139,8 @@ if (isset($_GET["secondS"]))				{$secondS=$_GET["secondS"];}
 	elseif (isset($_POST["secondS"]))		{$secondS=$_POST["secondS"];}
 if (isset($_GET["outbound_cid"]))			{$outbound_cid=$_GET["outbound_cid"];}
 	elseif (isset($_POST["outbound_cid"]))	{$outbound_cid=$_POST["outbound_cid"];}
+if (isset($_GET["outbound_cid_name"]))			{$outbound_cid_name=$_GET["outbound_cid_name"];}
+	elseif (isset($_POST["outbound_cid_name"]))	{$outbound_cid_name=$_POST["outbound_cid_name"];}
 if (isset($_GET["agent_log_id"]))			{$agent_log_id=$_GET["agent_log_id"];}
 	elseif (isset($_POST["agent_log_id"]))	{$agent_log_id=$_POST["agent_log_id"];}
 if (isset($_GET["call_server_ip"]))				{$call_server_ip=$_GET["call_server_ip"];}
@@ -365,10 +367,9 @@ if ($ACTION=="Originate")
 	else
 	{
 	if (strlen($outbound_cid)>1)
-		{$outCID = "\"ooo\" <$outbound_cid>";}
-		#{$outCID = "\"$queryCID\" <$outbound_cid>";}
+		{$outCID = "\"$outbound_cid_name\" <$outbound_cid>";}
 	else
-		{$outCID = "$queryCID";}
+		{$outCID = "\"\" <0000000000>";}
 	$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$queryCID','Channel: $channel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','Callerid: $outCID','Account: $queryCID','','','','');";
 		if ($format=='debug') {echo "\n<!-- $stmt -->";}
 	$rslt=mysql_query($stmt, $link);

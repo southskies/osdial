@@ -183,7 +183,9 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	var dial_timeout = '<? echo $dial_timeout ?>';
 	var dial_prefix = '<? echo $dial_prefix ?>';
 	var cid = '<? echo $campaign_cid ?>';
+	var cid_name = '<? echo $campaign_cid_name ?>';
 	var campaign_cid = '<? echo $campaign_cid ?>';
+	var campaign_cid_name = '<? echo $campaign_cid_name ?>';
 	var lead_cid = '<? echo $campaign_cid ?>';
 	var use_custom2_callerid = '<? echo $use_custom2_callerid ?>';
 	var campaign_vdad_exten = '<? echo $campaign_vdad_exten ?>';
@@ -649,11 +651,14 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 			lead_cid = document.osdial_form.custom2.value;
 			cid = campaign_cid;
+			cid_name = campaign_cid_name;
 			if (use_custom2_callerid == 'Y' && lead_cid != '') {
 				cid = lead_cid;
+				cid_name = lead_cid;
 			}
-			VMCoriginate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=Originate&format=text&channel=" + originatevalue + "&queryCID=" + queryCID + "&exten=" + orig_prefix + "" + dialnum + "&ext_context=" + ext_context + "&ext_priority=1&outbound_cid=" + cid;
+			VMCoriginate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=Originate&format=text&channel=" + originatevalue + "&queryCID=" + queryCID + "&exten=" + orig_prefix + "" + dialnum + "&ext_context=" + ext_context + "&ext_priority=1&outbound_cid=" + cid + "&outbound_cid_name=" + cid_name;
 			cid = campaign_cid;
+			cid_name = campaign_cid_name;
 			xmlhttp.open('POST', 'manager_send.php'); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 			xmlhttp.send(VMCoriginate_query); 
@@ -1791,11 +1796,14 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		if (xmlhttp) { 
 			lead_cid = document.osdial_form.custom2.value;
 			cid = campaign_cid;
+			cid_name = campaign_cid_name;
 			if (use_custom2_callerid == 'Y' && lead_cid != '') {
 				cid = lead_cid;
+				cid_name = lead_cid;
 			}
-			manDiaLnext_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLnextCaLL&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&ext_context=" + ext_context + "&dial_timeout=" + dial_timeout + "&dial_prefix=" + dial_prefix + "&campaign_cid=" + cid + "&preview=" + man_preview + "&agent_log_id=" + agent_log_id + "&callback_id=" + mdnCBid + "&lead_id=" + mdnBDleadid + "&phone_code=" + mdnDiaLCodE + "&phone_number=" + mdnPhonENumbeR + "&list_id=" + mdnLisT_id + "&stage=" + mdnStagE  + "&use_internal_dnc=" + use_internal_dnc + "&omit_phone_code=" + omit_phone_code;
+			manDiaLnext_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLnextCaLL&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&ext_context=" + ext_context + "&dial_timeout=" + dial_timeout + "&dial_prefix=" + dial_prefix + "&campaign_cid=" + cid + "&campaign_cid_name=" + cid_name + "&preview=" + man_preview + "&agent_log_id=" + agent_log_id + "&callback_id=" + mdnCBid + "&lead_id=" + mdnBDleadid + "&phone_code=" + mdnDiaLCodE + "&phone_number=" + mdnPhonENumbeR + "&list_id=" + mdnLisT_id + "&stage=" + mdnStagE  + "&use_internal_dnc=" + use_internal_dnc + "&omit_phone_code=" + omit_phone_code;
 			cid = campaign_cid;
+			cid_name = campaign_cid_name;
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 			xmlhttp.send(manDiaLnext_query); 
@@ -2249,11 +2257,14 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		if (xmlhttp) { 
 			lead_cid = document.osdial_form.custom2.value;
 			cid = campaign_cid;
+			cid_name = campaign_cid_name;
 			if (use_custom2_callerid == 'Y' && lead_cid != '') {
 				cid = lead_cid;
+				cid_name = lead_cid;
 			}
-			manDiaLonly_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLonly&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&phone_number=" + manDiaLonly_num + "&phone_code=" + document.osdial_form.phone_code.value + "&campaign=" + campaign + "&ext_context=" + ext_context + "&dial_timeout=" + dial_timeout + "&dial_prefix=" + dial_prefix + "&campaign_cid=" + cid + "&omit_phone_code=" + omit_phone_code;
+			manDiaLonly_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLonly&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&phone_number=" + manDiaLonly_num + "&phone_code=" + document.osdial_form.phone_code.value + "&campaign=" + campaign + "&ext_context=" + ext_context + "&dial_timeout=" + dial_timeout + "&dial_prefix=" + dial_prefix + "&campaign_cid=" + cid + "&campaign_cid_name=" + cid_name + "&omit_phone_code=" + omit_phone_code;
 			cid = campaign_cid;
+			cid_name = campaign_cid_name;
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 			xmlhttp.send(manDiaLonly_query); 

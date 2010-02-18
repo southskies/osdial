@@ -294,6 +294,7 @@ if ($non_latin < 1)	{
 	$source_user_id = ereg_replace("[^-\_0-9a-zA-Z]","",$source_user_id);
 	$source_group_id = ereg_replace("[^-\_0-9a-zA-Z]","",$source_group_id);
 	$default_xfer_group = ereg_replace("[^-\_0-9a-zA-Z]","",$default_xfer_group);
+	$xfer_cid_mode = ereg_replace("[^-\_0-9a-zA-Z]","",$xfer_cid_mode);
 	
 	### ALPHA-NUMERIC and spaces
 	$lead_order = ereg_replace("[^ 0-9a-zA-Z]","",$lead_order);
@@ -331,6 +332,8 @@ if ($non_latin < 1)	{
 	$vcl_name = ereg_replace("[^ \.\,-\_0-9a-zA-Z]","",$vcl_name);
 	$vsc_name = ereg_replace("[^ \.\,-\_0-9a-zA-Z]","",$vsc_name);
 	$vsc_description = ereg_replace("[^ \.\,-\_0-9a-zA-Z]","",$vsc_description);
+	$campaign_cid_name = ereg_replace("[^ \.\,-\_0-9a-zA-Z]","",$campaign_cid_name);
+	$outbound_cid_name = ereg_replace("[^ \.\,-\_0-9a-zA-Z]","",$outbound_cid_name);
 	
 	### ALPHA-NUMERIC and underscore and dash and slash and at and dot
 	$call_out_number_group = ereg_replace("[^-\.\:\/\@\_0-9a-zA-Z]","",$call_out_number_group);

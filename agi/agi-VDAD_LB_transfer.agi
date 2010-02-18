@@ -618,7 +618,7 @@ if ($rec_countWAIT < $DBconcurrent_transfers)
 		$VDADremDIALstr .= "$VDADconf_exten";
 
 		if ($VDADconf_exten =~ /^87......$/) {
-			$stmtA="INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$callerid','Channel: Local/$VDADremDIALstr\@$ext_context','Context: $ext_context','Exten: 487487','Priority: 1','Callerid: \"ooo\" <0000000000>','Account: $callerid','','','','');";
+			$stmtA="INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$callerid','Channel: Local/$VDADremDIALstr\@$ext_context','Context: $ext_context','Exten: 487487','Priority: 1','Callerid: \"\" <0000000000>','Account: $callerid','','','','');";
 			$affected_rows = $dbhA->do($stmtA);
 			if ($AGILOG) {$agi_string = "$affected_rows|$stmtA";   &agi_output;}
 		}

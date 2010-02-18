@@ -300,6 +300,7 @@ while($one_day_interval > 0)
 		@DBIPdialtimeout=@MT;
 		@DBIPdialprefix=@MT;
 		@DBIPcampaigncid=@MT;
+		@DBIPcampaigncidname=@MT;
 		@DBIPexistcalls=@MT;
 		@DBIPgoalcalls=@MT;
 		@DBIPmakecalls=@MT;
@@ -466,7 +467,7 @@ while($one_day_interval > 0)
 
 			### grab the dial_level and multiply by active agents to get your goalcalls
 			$DBIPadlevel[$user_CIPct]=0;
-			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound,answers_per_hour_limit,campaign_call_time,dial_method,use_custom2_callerid FROM osdial_campaigns where campaign_id='$DBIPcampaign[$user_CIPct]'";
+			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound,answers_per_hour_limit,campaign_call_time,dial_method,use_custom2_callerid,campaign_cid_name FROM osdial_campaigns where campaign_id='$DBIPcampaign[$user_CIPct]'";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -498,6 +499,7 @@ while($one_day_interval > 0)
 					$DBIPcampaign_call_time[$user_CIPct] =	$aryA[13];
 					$DBIPdial_method[$user_CIPct] =	$aryA[14];
 					$DBIPuse_custom2_callerid[$user_CIPct] =	$aryA[15];
+					$DBIPcampaigncidname[$user_CIPct] =	"$aryA[16]";
 				$rec_count++;
 				}
 			$sthA->finish();
@@ -925,7 +927,9 @@ while($one_day_interval > 0)
 								$stmtA = "DELETE FROM osdial_hopper where lead_id='$lead_id'";
 								$affected_rows = $dbhA->do($stmtA);
 
-								$CCID_on=0;   $CCID='';
+								$CCID_on=0;
+								$CCID='';
+								$CCID_NAME='';
 								$local_DEF = 'Local/';
 								$local_AMP = '@';
 								$Local_out_prefix = '9';
@@ -938,6 +942,7 @@ while($one_day_interval > 0)
 							   
 							if (length($DBIPcampaigncid[$user_CIPct]) > 6) {
 								$CCID = "$DBIPcampaigncid[$user_CIPct]";
+								$CCID_NAME = "$DBIPcampaigncidname[$user_CIPct]";
 								$CCID_on++;
 							}
 							if ($DBIPuse_custom2_callerid[$user_CIPct] eq "Y") {
@@ -970,8 +975,8 @@ while($one_day_interval > 0)
 								### use manager middleware-app to connect the next call to the meetme room
 								# VmmddhhmmssLLLLLLLLL
 									$VqueryCID = "V$CIDdate$PADlead_id";
-								if ($CCID_on) {$CIDstring = "\"ooo\" <$CCID>";}
-								else {$CIDstring = "ooo";}
+								if ($CCID_on) {$CIDstring = "\"$CCID_NAME\" <$CCID>";}
+								else {$CIDstring = "\"\" <0000000000>";}
 								### insert a NEW record to the osdial_manager table to be processed
 									$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$DBIPaddress[$user_CIPct]','','Originate','$VqueryCID','Exten: $VDAD_dial_exten','Context: $ext_context','Channel: $local_DEF$Ndialstring$local_AMP$ext_context','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','Account: $VqueryCID','','','')";
 									$affected_rows = $dbhA->do($stmtA);

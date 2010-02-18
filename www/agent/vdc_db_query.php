@@ -212,6 +212,8 @@ if (isset($_GET["dial_prefix"]))				{$dial_prefix=$_GET["dial_prefix"];}
 	elseif (isset($_POST["dial_prefix"]))		{$dial_prefix=$_POST["dial_prefix"];}
 if (isset($_GET["campaign_cid"]))				{$campaign_cid=$_GET["campaign_cid"];}
 	elseif (isset($_POST["campaign_cid"]))		{$campaign_cid=$_POST["campaign_cid"];}
+if (isset($_GET["campaign_cid_name"]))				{$campaign_cid_name=$_GET["campaign_cid_name"];}
+	elseif (isset($_POST["campaign_cid_name"]))		{$campaign_cid_name=$_POST["campaign_cid_name"];}
 if (isset($_GET["MDnextCID"]))					{$MDnextCID=$_GET["MDnextCID"];}
 	elseif (isset($_POST["MDnextCID"]))			{$MDnextCID=$_POST["MDnextCID"];}
 if (isset($_GET["uniqueid"]))					{$uniqueid=$_GET["uniqueid"];}
@@ -839,7 +841,9 @@ if ($ACTION == 'manDiaLnextCaLL')
 			if ( (strlen($preview)<1) || ($preview == 'NO') )
 				{
 				### prepare variables to place manual call from OSDiaL
-				$CCID_on=0;   $CCID='';
+				$CCID_on=0;
+                $CCID='';
+                $CCID_NAME='';
 				$local_DEF = 'Local/';
 				$local_AMP = '@';
 				$Local_out_prefix = '9';
@@ -849,7 +853,11 @@ if ($ACTION == 'manDiaLnextCaLL')
 				if ($dial_timeout > 4) {$Local_dial_timeout = $dial_timeout;}
 				$Local_dial_timeout = ($Local_dial_timeout * 1000);
 				if (strlen($dial_prefix) > 0) {$Local_out_prefix = "$dial_prefix";}
-				if (strlen($campaign_cid) > 6) {$CCID = "$campaign_cid";   $CCID_on++;}
+				if (strlen($campaign_cid) > 6) {
+                    $CCID = "$campaign_cid";
+                    $CCID_NAME = "$campaign_cid_name";
+                    $CCID_on++;
+                }
 				if (eregi("x",$dial_prefix)) {$Local_out_prefix = '';}
 
 				$PADlead_id = sprintf("%09s", $lead_id);
@@ -857,8 +865,8 @@ if ($ACTION == 'manDiaLnextCaLL')
 
 				# Create unique calleridname to track the call: MmmddhhmmssLLLLLLLLL
 					$MqueryCID = "M$CIDdate$PADlead_id";
-				if ($CCID_on) {$CIDstring = "\"ooo\" <$CCID>";}
-				else {$CIDstring = "ooo";}
+				if ($CCID_on) {$CIDstring = "\"$CCID_NAME\" <$CCID>";}
+				else {$CIDstring = "\"\" <0000000000>";}
 
 				### whether to omit phone_code or not
 				if (eregi('Y',$omit_phone_code)) 
@@ -1050,7 +1058,9 @@ if ($ACTION == 'manDiaLonly')
 		$calls_today++;
 
 		### prepare variables to place manual call from OSDiaL
-		$CCID_on=0;   $CCID='';
+		$CCID_on=0;
+        $CCID='';
+        $CCID_NAME='';
 		$local_DEF = 'Local/';
 		$local_AMP = '@';
 		$Local_out_prefix = '9';
@@ -1059,7 +1069,11 @@ if ($ACTION == 'manDiaLonly')
 		if ($dial_timeout > 4) {$Local_dial_timeout = $dial_timeout;}
 		$Local_dial_timeout = ($Local_dial_timeout * 1000);
 		if (strlen($dial_prefix) > 0) {$Local_out_prefix = "$dial_prefix";}
-		if (strlen($campaign_cid) > 6) {$CCID = "$campaign_cid";   $CCID_on++;}
+		if (strlen($campaign_cid) > 6) {
+            $CCID = "$campaign_cid";
+            $CCID_NAME = "$campaign_cid_name";
+            $CCID_on++;
+        }
 		if (eregi("x",$dial_prefix)) {$Local_out_prefix = '';}
 
 		$PADlead_id = sprintf("%09s", $lead_id);
@@ -1067,8 +1081,8 @@ if ($ACTION == 'manDiaLonly')
 
 		# Create unique calleridname to track the call: MmmddhhmmssLLLLLLLLL
 			$MqueryCID = "M$CIDdate$PADlead_id";
-		if ($CCID_on) {$CIDstring = "\"ooo\" <$CCID>";}
-		else {$CIDstring = "$MqueryCID";}
+		if ($CCID_on) {$CIDstring = "\"$CCID_NAME\" <$CCID>";}
+		else {$CIDstring = "\"\" <0000000000>";}
 
 		### whether to omit phone_code or not
 		if (eregi('Y',$omit_phone_code)) 

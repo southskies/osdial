@@ -310,7 +310,7 @@ sub xfer_to_external {
 	my $IqueryCID = $VqueryCID;
 	$IqueryCID =~ s/^V/I/;
 	#$stmtA="INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $vars->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/8" . $vars->{conf_exten} . "\@" . $server->{ext_context} . "','Context: " . $server->{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"$XqueryCID\" <" . $campaign->{campaign_cid} . ">','','','','','');";
-	$stmtA="INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $vars->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $vars->{conf_server} . "*8" . $vars->{conf_exten} . "\@" . $server->{ext_context} . "','Context: " . $server->{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"ooo\" <" . $campaign->{campaign_cid} . ">','Account: $XqueryCID','','','','');";
+	$stmtA="INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $vars->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $vars->{conf_server} . "*8" . $vars->{conf_exten} . "\@" . $server->{ext_context} . "','Context: " . $server->{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"" . $campaign->{campaign_cid_name} . "\" <" . $campaign->{campaign_cid} . ">','Account: $XqueryCID','','','','');";
 	my $xfer = $dbhA->do($stmtA);
 	while ($xfer) {
 		sleep(1);
@@ -424,7 +424,7 @@ sub xfer_to_ingroup {
 	my $XqueryCID = $VqueryCID;
 	$XqueryCID =~ s/^V/I/;
 	#my $stmtA="INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $vars->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/8" . $vars->{conf_exten} . "\@" . $server->{ext_context} . "','Context: " . $server->{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"$XqueryCID\" <" . $campaign->{campaign_cid} . ">','','','','','');";
-	my $stmtA="INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $vars->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $vars->{conf_server} . "*8" . $vars->{conf_exten} . "\@" . $server->{ext_context} . "','Context: " . $server->{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"ooo\" <" . $campaign->{campaign_cid} . ">','Account: $XqueryCID','','','','');";
+	my $stmtA="INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $vars->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $vars->{conf_server} . "*8" . $vars->{conf_exten} . "\@" . $server->{ext_context} . "','Context: " . $server->{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"" . $campaign->{campaign_cid_name} . "\" <" . $campaign->{campaign_cid} . ">','Account: $XqueryCID','','','','');";
 	my $xfer = $dbhA->do($stmtA);
 	while ($xfer) {
 		sleep(1);
