@@ -494,8 +494,8 @@ sub gen_phones {
 	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	while (my @aryA = $sthA->fetchrow_array) {
-		$aryA[6] = '9999' if ($aryA[6] == "");
-		$aryA[7] = 'osdial' if ($aryA[7] == "");
+		$aryA[6] = '9999' if ($aryA[6] eq "");
+		$aryA[7] = 'osdial' if ($aryA[7] eq "");
 		if ($aryA[4] eq "SIP" and $aryA[0] !~ /\@/) {
 			$sphn .= ";\n[". $aryA[0] ."]\n";
 			$sphn .= "type=friend\n";
