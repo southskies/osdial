@@ -215,7 +215,7 @@ if ($action) {
 			}
 		#	print "$participant|$cmd_line_j|$meetme";
 		}
-		$participant = "" unless ($participant > 0);
+		$participant = "1" unless ($participant > 0);
 		$cmd_line_b =~ s/XXYYXXYYXXYYXX/$participant/gi;
 		$cmd_line_j = '';
 		$cmd_line_k = '';
