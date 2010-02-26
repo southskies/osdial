@@ -1080,4 +1080,9 @@ function optnum2let($val=0) {
     return $ret;
 }
 
+# Simple shorthand for mysql_real_escape_string.
+function mres($val) {
+    return mysql_real_escape_string($val);
+}
+
 ?>
