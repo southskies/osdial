@@ -3364,12 +3364,16 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							if (hotkeysused == 'YES') {
 								reselect_alt_dial = 0;
 								manual_auto_hotkey = 1;
+								alt_dial_active = 0;
+								alt_dial_menu = 0;
 							}
 						}
 					}
 				} else {
 					if (hotkeysused == 'YES') {
 						manual_auto_hotkey = 1;
+						alt_dial_active = 0;
+						alt_dial_menu = 0;
 					} else {
 						document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_dialnextnumber.gif\" border=0 alt=\"Dial Next Number\"></a>";
 					}
@@ -3387,6 +3391,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							if (hotkeysused == 'YES') {
 								manual_auto_hotkey=1;
 								alt_dial_active=0;
+								alt_dial_menu = 0;
 								document.getElementById("MainStatuSSpan").style.backgroundColor = '<?=$status_bg?>';
 								document.getElementById("MainStatuSSpan").innerHTML = '';
 								if (inbound_man > 0) {
