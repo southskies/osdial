@@ -242,6 +242,21 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <B>View Reports -</B> This option allows the user to view the <?=$t1?> reports.
 
+<BR>
+<A NAME="osdial_users-export_leads">
+<BR>
+<B>Export Leads -</B> This option allows you to export leads from both Lead Export and Advanced Lead Search reports.
+
+<BR>
+<A NAME="osdial_users-agent_api_access">
+<BR>
+<B>Agent API Access -</B> The option grants API access for Agent functions using this users credentials.
+
+<BR>
+<A NAME="osdial_users-admin_api_access">
+<BR>
+<B>Admin API Access -</B> The option grants API access for Admin functions using this users credentials.
+
 
 
 

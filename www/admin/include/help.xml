@@ -198,6 +198,19 @@
     <item pathId="view_reports" title="View Reports">
         This option allows the user to view the OSDial reports.
     </item>
+
+    <item pathId="export_leads" title="Export Leads">
+        This option allows you to export leads from both Lead Export and Advanced Lead Search reports.
+    </item>
+
+    <item pathId="agent_api_access" title="Agent API Access">
+        The option grants API access for Agent functions using this users credentials.
+    </item>
+
+    <item pathId="admin_api_access" title="Admin API Access">
+        The option grants API access for Admin functions using this users credentials.
+    </item>
+
   </section>
 
 

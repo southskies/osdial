@@ -36,10 +36,12 @@ if ($non_latin < 1)	{
 	### DIGITS ONLY ###
 	$adaptive_dropped_percentage = ereg_replace("[^0-9]","",$adaptive_dropped_percentage);
 	$adaptive_latest_server_time = ereg_replace("[^0-9]","",$adaptive_latest_server_time);
+	$admin_api_access = ereg_replace("[^0-9]","",$admin_api_access);
 	$admin_hangup_enabled = ereg_replace("[^0-9]","",$admin_hangup_enabled);
 	$admin_hijack_enabled = ereg_replace("[^0-9]","",$admin_hijack_enabled);
 	$admin_monitor_enabled = ereg_replace("[^0-9]","",$admin_monitor_enabled);
 	$AFLogging_enabled = ereg_replace("[^0-9]","",$AFLogging_enabled);
+	$agent_api_access = ereg_replace("[^0-9]","",$agent_api_access);
 	$agent_choose_ingroups = ereg_replace("[^0-9]","",$agent_choose_ingroups);
 	$agentcall_manual = ereg_replace("[^0-9]","",$agentcall_manual);
 	$agentonly_callbacks = ereg_replace("[^0-9]","",$agentonly_callbacks);
@@ -99,6 +101,7 @@ if ($non_latin < 1)	{
 	$drop_exten = ereg_replace("[^0-9]","",$drop_exten);
 	$enable_fast_refresh = ereg_replace("[^0-9]","",$enable_fast_refresh);
 	$enable_persistant_mysql = ereg_replace("[^0-9]","",$enable_persistant_mysql);
+	$export_leads = ereg_replace("[^0-9]","",$export_leads);
 	$fast_refresh_rate = ereg_replace("[^0-9]","",$fast_refresh_rate);
 	$hopper_level = ereg_replace("[^0-9]","",$hopper_level);
 	$hotkey = ereg_replace("[^0-9]","",$hotkey);
