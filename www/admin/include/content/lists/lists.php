@@ -1467,83 +1467,88 @@ if ($ADD==122) {
 	\\\\-->\n
 	</style>\n";
 
-?>
 
-
-	<form action=<?=$PHP_SELF ?> method=post onSubmit="ParseFileName()" enctype="multipart/form-data">
-		<input type=hidden name='ADD' value='122'>
-		<input type=hidden name='leadfile_name' value="<?=$leadfile_name ?>">
-		<input type=hidden name='Imported' value=''>
-<? 
+        echo "  <form action=$PHP_SELF method=post onSubmit=\"ParseFileName()\" enctype=\"multipart/form-data\">\n";
+        echo "      <input type=hidden name='ADD' value='122'>\n";
+        echo "      <input type=hidden name='leadfile_name' value=\"$leadfile_name\">\n";
+        echo "      <input type=hidden name='Imported' value=''>\n";
 		if (!$OK_to_process and ($file_layout!="custom" or $leadfile_name == "")) {
             if ($phone_code_override == "") { $phone_code_override = "1";}
 			$Imported++;
-            echo "	<table align=center width=\"700\" border=0 cellpadding=5 cellspacing=0 bgcolor=$oddrows>";
+            echo "	        <table align=center width=\"700\" border=0 cellpadding=5 cellspacing=0 bgcolor=$oddrows>\n";
+            echo "              <tr>\n";
+            echo "                  <td align=right width=\"35%\"><B><font face=\"arial, helvetica\" size=2>Load leads from this file:</font></B></td>\n";
+            echo "                  <td align=left width=\"65%\"><input type=file name=\"leadfile\" value=\"$leadfile\">$NWB#osdial_list_loader$NWE</td>\n";
+            echo "              </tr>\n";
+            echo "              <tr>\n";
+            echo "                  <td align=right width=\"25%\"><font face=\"arial, helvetica\" size=2>List ID: </font></td>\n";
+            echo "                  <td align=left width=\"75%\"><font face=\"arial, helvetica\" size=1>\n";
+            echo "                      <select size=1 name=list_id_override>\n";
         
-?>				
-				<tr>
-					<td align=right width="35%"><B><font face="arial, helvetica" size=2>Load leads from this file:</font></B></td>
-					<td align=left width="65%"><input type=file name="leadfile" value="<?=$leadfile ?>"> <? echo "$NWB#osdial_list_loader$NWE"; ?></td>
-				</tr>
-				<tr>
-                    <td align=right width="25%"><font face="arial, helvetica" size=2>List ID: </font></td>
-                    <td align=left width="75%"><font face="arial, helvetica" size=1>
-                        <select size=1 name=list_id_override>
-                            <?
-                            $stmt="SELECT list_id,list_name FROM osdial_lists;";
-                            $rslt=mysql_query($stmt, $link);
-                            $lrows = mysql_num_rows($rslt);
-                            if ($lrows > 0) {
-                                $count = 0;
-                                if ($list_id_override < 1) {
-                                    echo "            <option value=\"1\">[ PLEASE SELECT A LIST ]</option>\n";
-                                }
-                                while ($count < $lrows) {
-                                    $row=mysql_fetch_row($rslt);
-                                    $lsel = '';
-                                    if ($row[0] == $list_id_override) { $lsel = ' selected'; }
-                                    echo '            <option value="' . $row[0] . '"' . $lsel . '>' . $row[0] . ' - ' . $row[1] . "</option>\n";
-                                    $count++;
-                                }
-                            } else {
-                                echo "            <option value=\"1\">[ ERROR, YOU MUST FIRST ADD A LIST]</option>\n";
-                            }
-                        ?>
-                        </select>
-                        <!-- <input type=text value="<?=$list_id_override ?>" name='list_id_override' size=10 maxlength=8>-->
-                    </td>
-				</tr>
-				<tr>
-					<td align=right width="25%"><font face="arial, helvetica" size=2>Phone Code: </font></td>
-					<td align=left width="75%"><font face="arial, helvetica" size=1><input type=text value="<?=$phone_code_override ?>" name='phone_code_override' size=8 maxlength=6> (numbers only or leave blank for values in the file)</td>
-				</tr>
-				<tr>
-					<td align=right><B><font face="arial, helvetica" size=2>File layout to use:</font></B></td>
-					<td align=left><font face="arial, helvetica" size=2><input type=radio name="file_layout" value="custom" checked>Custom Layout&nbsp;&nbsp;&nbsp;&nbsp;<input type=radio name="file_layout" value="standard">Predefined Layout</td>
-				</tr>
-				<tr>
-					<td align=right width="25%"><font face="arial, helvetica" size=2>Lead Duplicate Check: </font></td>
-					<td align=left width="75%"><font face="arial, helvetica" size=1><select size=1 name=dupcheck>
-					<option value="NONE">NO DUPLICATE CHECK</option>
-					<option selected value="DUPLIST">CHECK FOR DUPLICATES BY PHONE IN LIST ID</option>
-					<option value="DUPCAMP">CHECK FOR DUPLICATES BY PHONE IN ALL CAMPAIGN LISTS</option>
-					<option value="DUPSYS">CHECK FOR DUPLICATES BY PHONE IN ENTIRE SYSTEM</option>
-					</select></td>
-				</tr>
-				<tr>
-					<td align=right width="25%"><font face="arial, helvetica" size=2>Lead Time Zone Lookup: </font></td>
-					<td align=left width="75%"><font face="arial, helvetica" size=1><select size=1 name=postalgmt><option selected value="AREA">COUNTRY CODE AND AREA CODE ONLY</option><option value="POSTAL">POSTAL CODE FIRST</option></select></td>
-				</tr>
-				<tr class=tabfooter>
-					<td align=center class=tabbutton>
-                      <input type=button onClick="javascript:document.location='admin.php?ADD=122'" value="START OVER" name='reload_page'>
-					</td>
-					<td align=center class=tabbutton>
-                      <input type=submit value="SUBMIT" name='submit_file'>
-					</td>
-				</tr>
-			</table>
-<? 
+            $stmt="SELECT list_id,list_name FROM osdial_lists;";
+            $rslt=mysql_query($stmt, $link);
+            $lrows = mysql_num_rows($rslt);
+            if ($lrows > 0) {
+                $count = 0;
+                if ($list_id_override < 1) {
+                    echo "            <option value=\"1\">[ PLEASE SELECT A LIST ]</option>\n";
+                }
+                while ($count < $lrows) {
+                    $row=mysql_fetch_row($rslt);
+                    $lsel = '';
+                    if ($row[0] == $list_id_override) { $lsel = ' selected'; }
+                    echo '            <option value="' . $row[0] . '"' . $lsel . '>' . $row[0] . ' - ' . $row[1] . "</option>\n";
+                    $count++;
+                }
+            } else {
+                echo "            <option value=\"1\">[ ERROR, YOU MUST FIRST ADD A LIST]</option>\n";
+            }
+
+            echo "                      </select>\n";
+            echo "                      <!-- <input type=text value=\"$list_id_override\" name='list_id_override' size=10 maxlength=8>-->\n";
+            echo "                    </td>\n";
+            echo "                  </tr>\n";
+            echo "                  <tr>\n";
+            echo "                      <td align=right width=\"25%\"><font face=\"arial, helvetica\" size=2>Phone Code: </font></td>\n";
+            echo "                      <td align=left width=\"75%\"><font face=\"arial, helvetica\" size=1>\n";
+            echo "                          <input type=text value=\"$phone_code_override\" name='phone_code_override' size=8 maxlength=6> (numbers only or leave blank for values in the file)\n";
+            echo "                      </td>\n";
+            echo "                  </tr>\n";
+            echo "                  <tr>\n";
+            echo "                      <td align=right><B><font face=\"arial, helvetica\" size=2>File layout to use:</font></B></td>\n";
+            echo "                      <td align=left><font face=\"arial, helvetica\" size=2>\n";
+            echo "                          <input type=radio name=\"file_layout\" value=\"custom\" checked>Custom Layout&nbsp;&nbsp;&nbsp;&nbsp;<input type=radio name=\"file_layout\" value=\"standard\">Predefined Layout\n";
+            echo "                      </td>\n";
+            echo "                  </tr>\n";
+            echo "                  <tr>\n";
+            echo "                      <td align=right width=\"25%\"><font face=\"arial, helvetica\" size=2>Lead Duplicate Check: </font></td>\n";
+            echo "                      <td align=left width=\"75%\"><font face=\"arial, helvetica\" size=1>\n";
+            echo "                          <select size=1 name=dupcheck>\n";
+            echo "                              <option value=\"NONE\">NO DUPLICATE CHECK</option>\n";
+            echo "                              <option selected value=\"DUPLIST\">CHECK FOR DUPLICATES BY PHONE IN LIST ID</option>\n";
+            echo "                              <option value=\"DUPCAMP\">CHECK FOR DUPLICATES BY PHONE IN ALL CAMPAIGN LISTS</option>\n";
+            echo "                              <option value=\"DUPSYS\">CHECK FOR DUPLICATES BY PHONE IN ENTIRE SYSTEM</option>\n";
+            echo "                          </select>\n";
+            echo "                      </td>\n";
+            echo "                  </tr>\n";
+            echo "                  <tr>\n";
+            echo "                      <td align=right width=\"25%\"><font face=\"arial, helvetica\" size=2>Lead Time Zone Lookup: </font></td>\n";
+            echo "                      <td align=left width=\"75%\"><font face=\"arial, helvetica\" size=1>\n";
+            echo "                          <select size=1 name=postalgmt>\n";
+            echo "                              <option selected value=\"AREA\">COUNTRY CODE AND AREA CODE ONLY</option>\n";
+            echo "                              <option value=\"POSTAL\">POSTAL CODE FIRST</option>\n";
+            echo "                          </select>\n";
+            echo "                      </td>\n";
+            echo "                  </tr>\n";
+            echo "                  <tr class=tabfooter>\n";
+            echo "                      <td align=center class=tabbutton>\n";
+            echo "                          <input type=button onClick=\"javascript:document.location='admin.php?ADD=122'\" value=\"START OVER\" name='reload_page'>\n";
+            echo "                      </td>\n";
+            echo "                      <td align=center class=tabbutton>\n";
+            echo "                          <input type=submit value=\"SUBMIT\" name='submit_file'>\n";
+            echo "                      </td>\n";
+            echo "                  </tr>\n";
+            echo "               </table>\n";
 		}
 		
 		if ($OK_to_process) {
