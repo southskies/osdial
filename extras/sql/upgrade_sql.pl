@@ -178,10 +178,29 @@ if ($CLOsaf != 1) {
 		print "\n\nWARNING: Cannot update the user permissions in MySQL.";
 		print   "\n         If you haven't already, Please run the update process on the MySQL server.";
 		print   "\n         If you have and the problem persists, you should execute the following SQL statements directly:";
-		print   "\n" . "        GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
-		print   "\n" . "        GRANT GRANT OPTION on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
-		print   "\n" . "        GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
-		print   "\n" . "        GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+		print "\n\n      GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+		print   "\n      GRANT GRANT OPTION on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+		print   "\n      GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+		print   "\n      GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+
+		if ($config->{VARDB_server} ne $config->{VARserver_ip}) {
+			print "\n\n      GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARserver_ip} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+			print   "\n      GRANT GRANT OPTION on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARserver_ip} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+			print   "\n      GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARserver_ip} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+			print   "\n      GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARserver_ip} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+		}
+
+		
+		my @interfaces = IO::Interface::Simple->interfaces;
+		foreach my $interface (@interfaces) {
+			my $ip = IO::Interface::Simple->new($interface);
+                        if ($interface =~ /^eth/ and $ip->address =~ /^10\.|^192\.168\.|^172\.(1[6-9]|2[0-9]|3[01])\./ and $ip->address ne $config->{VARDB_server} and $ip->address ne $config->{VARserver_ip}) {
+				print "\n\n      GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARserver_ip} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+				print   "\n      GRANT GRANT OPTION on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARserver_ip} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+				print   "\n      GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARserver_ip} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+				print   "\n      GRANT ALL on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARserver_ip} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';";
+			}
+		}
 		print "\n\n";
 	}
 }
