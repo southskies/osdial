@@ -1085,4 +1085,97 @@ function mres($val) {
     return mysql_real_escape_string($val);
 }
 
+
+# Determine if current local time of the lead is in our local call time.
+function dialable_gmt($DB,$link,$local_call_time,$gmt_offset,$state) {
+
+    $dialable = 0;
+    $pzone = (3600 * $gmt_offset) + time();
+    $pmin = gmdate("i", $pzone);
+    $phour = gmdate("G", $pzone) * 100;
+    $gday = gmdate("w", $pzone);
+    $ghr = ($phour + $pmin);
+
+    $ct = get_first_record($link, 'osdial_call_times', '*', sprintf("call_time_id='%s'",mres($local_call_time)));
+
+    # gday: 0 = Sunday, 1 = Monday, 2 = Tuesday, 3 = Wednesday, 4 = Thursday, 5 = Friday, 6 = Saturday
+    if ($gday == 0) {
+        if (($ghr >= $ct['ct_sunday_start'] and $ghr < $ct['ct_sunday_stop'])
+          or ($ct['ct_sunday_start'] < 1 and $ct['ct_sunday_stop'] < 1 and $ghr >= $ct['ct_default_start'] and $ghr < $ct['ct_default_stop']))
+            $dialable=1;
+    } elseif ($gday == 1) {
+        if (($ghr >= $ct['ct_monday_start'] and $ghr < $ct['ct_monday_stop'])
+          or ($ct['ct_monday_start'] < 1 and $ct['ct_monday_stop'] < 1 and $ghr >= $ct['ct_default_start'] and $ghr < $ct['ct_default_stop']))
+            $dialable=1;
+    } elseif ($gday == 2) {
+        if (($ghr >= $ct['ct_tuesday_start'] and $ghr < $ct['ct_tuesday_stop'])
+          or ($ct['ct_tuesday_start'] < 1 and $ct['ct_tuesday_stop'] < 1 and $ghr >= $ct['ct_default_start'] and $ghr < $ct['ct_default_stop']))
+            $dialable=1;
+    } elseif ($gday == 3) {
+        if (($ghr >= $ct['ct_wednesday_start'] and $ghr < $ct['ct_wednesday_stop'])
+          or ($ct['ct_wednesday_start'] < 1 and $ct['ct_wednesday_stop'] < 1 and $ghr >= $ct['ct_default_start'] and $ghr < $ct['ct_default_stop']))
+            $dialable=1;
+    } elseif ($gday == 4) {
+        if (($ghr >= $ct['ct_thursday_start'] and $ghr < $ct['ct_thursday_stop'])
+          or ($ct['ct_thursday_start'] < 1 and $ct['ct_thursday_stop'] < 1 and $ghr >= $ct['ct_default_start'] and $ghr < $ct['ct_default_stop']))
+            $dialable=1;
+    } elseif ($gday == 5) {
+        if (($ghr >= $ct['ct_friday_start'] and $ghr < $ct['ct_friday_stop'])
+          or ($ct['ct_friday_start'] < 1 and $ct['ct_friday_stop'] < 1 and $ghr >= $ct['ct_default_start'] and $ghr < $ct['ct_default_stop']))
+            $dialable=1;
+    } elseif ($gday == 6) {
+        if (($ghr >= $ct['ct_saturday_start'] and $ghr < $ct['ct_saturday_stop'])
+          or ($ct['ct_saturday_start'] < 1 and $ct['ct_saturday_stop'] < 1 and $ghr >= $ct['ct_default_start'] and $ghr < $ct['ct_default_stop']))
+            $dialable=1;
+    }
+
+    # If state is blank, assume that we don't want to check by state...
+    $sdialable = 1;
+    if ($state != "" and strlen($ct['ct_state_call_times'])>2) {
+        foreach (explode('|',$ct['ct_state_call_times']) as $sr) {
+            if (strlen($sr) > 1) {
+                $sct = get_first_record($link, 'osdial_state_call_times', '*', sprintf("state_call_time_id='%s' AND state_call_time_state='%s'", mres($sr), mres(strtoupper($state)) ));
+                if (strtoupper($sct['state_call_time_state']) == strtoupper($state)) {
+                    $sdialable = 0;
+                    # gday: 0 = Sunday, 1 = Monday, 2 = Tuesday, 3 = Wednesday, 4 = Thursday, 5 = Friday, 6 = Saturday
+                    if ($gday == 0) {
+                        if (($ghr >= $sct['sct_sunday_start'] and $ghr < $sct['sct_sunday_stop'])
+                          or ($sct['sct_sunday_start'] < 1 and $sct['sct_sunday_stop'] < 1 and $ghr >= $sct['sct_default_start'] and $ghr < $sct['sct_default_stop']))
+                            $sdialable=1;
+                    } elseif ($gday == 1) {
+                        if (($ghr >= $sct['sct_monday_start'] and $ghr < $sct['sct_monday_stop'])
+                          or ($sct['sct_monday_start'] < 1 and $sct['sct_monday_stop'] < 1 and $ghr >= $sct['sct_default_start'] and $ghr < $sct['sct_default_stop']))
+                            $sdialable=1;
+                    } elseif ($gday == 2) {
+                        if (($ghr >= $sct['sct_tuesday_start'] and $ghr < $sct['sct_tuesday_stop'])
+                          or ($sct['sct_tuesday_start'] < 1 and $sct['sct_tuesday_stop'] < 1 and $ghr >= $sct['sct_default_start'] and $ghr < $sct['sct_default_stop']))
+                            $sdialable=1;
+                    } elseif ($gday == 3) {
+                        if (($ghr >= $sct['sct_wednesday_start'] and $ghr < $sct['sct_wednesday_stop'])
+                          or ($sct['sct_wednesday_start'] < 1 and $sct['sct_wednesday_stop'] < 1 and $ghr >= $sct['sct_default_start'] and $ghr < $sct['sct_default_stop']))
+                            $sdialable=1;
+                    } elseif ($gday == 4) {
+                        if (($ghr >= $sct['sct_thursday_start'] and $ghr < $sct['sct_thursday_stop'])
+                          or ($sct['sct_thursday_start'] < 1 and $sct['sct_thursday_stop'] < 1 and $ghr >= $sct['sct_default_start'] and $ghr < $sct['sct_default_stop']))
+                            $sdialable=1;
+                    } elseif ($gday == 5) {
+                        if (($ghr >= $sct['sct_friday_start'] and $ghr < $sct['sct_friday_stop'])
+                          or ($sct['sct_friday_start'] < 1 and $sct['sct_friday_stop'] < 1 and $ghr >= $sct['sct_default_start'] and $ghr < $sct['sct_default_stop']))
+                            $sdialable=1;
+                    } elseif ($gday == 6) {
+                        if (($ghr >= $sct['sct_saturday_start'] and $ghr < $sct['sct_saturday_stop'])
+                          or ($sct['sct_saturday_start'] < 1 and $sct['sct_saturday_stop'] < 1 and $ghr >= $sct['sct_default_start'] and $ghr < $sct['sct_default_stop']))
+                            $sdialable=1;
+                    }
+                }
+            }
+        }
+    }
+    if ($sdialable < 1) $dialable = 0;
+
+
+    return $dialable;
+}
+
+
 ?>
