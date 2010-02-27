@@ -270,7 +270,7 @@ if (strlen($lists_hh) > 1) {
                 <a href="<?= $PHP_SELF ?>?ADD=1122"> Advanced Lead Search </a> &nbsp; &nbsp; &nbsp;
                 <a href="<?= $PHP_SELF ?>?ADD=121"> Add Number To DNC </a> &nbsp; &nbsp; &nbsp;
                 <a href="<?= $PHP_SELF ?>?ADD=122"> Load New Leads </a> &nbsp; &nbsp; &nbsp;
-                <? if ($LOGuser_level > 8) {
+                <? if ($LOGuser_level > 8 && $LOGexport_leads) {
                     echo "          <a href=\"$PHP_SELF?ADD=131\"> Lead Export </a>\n";
                 }
                 ?>

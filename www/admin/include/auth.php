@@ -94,6 +94,9 @@ $browser = getenv("HTTP_USER_AGENT");
 			$LOGmodify_remoteagents		=$row[41];
 			$LOGmodify_servers			=$row[42];
 			$LOGview_reports			=$row[43];
+			$LOGexport_leads			=$row[48];
+			$LOGadmin_api_access		=$row[49];
+			$LOGagent_api_access		=$row[50];
 
 			$stmt="SELECT allowed_campaigns from osdial_user_groups where user_group='$LOGuser_group';";
 			$rslt=mysql_query($stmt, $link);

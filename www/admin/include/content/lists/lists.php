@@ -733,7 +733,7 @@ if ($ADD==1122) {
             if ($v == "") $v = $k;
             if ($k != "") $fieldOPTS .= "        <option value=\"" . $k . "\"$sel>" . $v . "</option>\n";
         }
-        if ($LOGuser_level > 8) {
+        if ($LOGuser_level > 8 && $LOGexport_leads > 0) {
             echo "    <td align=center valign=top rowspan=4>\n";
             echo "      <font size=2>CSV Export Fields</font><br>\n";
             echo "      <select name=fields[] size=5 multiple>\n";
@@ -1149,7 +1149,7 @@ if ($ADD==1122) {
         }
         echo "  </tr>\n";
 
-        if ($field_cnt > 0) {
+        if ($field_cnt > 0 && $LOGexport_leads > 0) {
             $csvfile = "advsearch_" . date("Ymd-His") . ".csv";
             $fcsv = fopen ("./" . $csvfile, "a");
             $fld_cnt = mysql_num_fields($rslt);
