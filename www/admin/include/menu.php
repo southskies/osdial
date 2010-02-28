@@ -144,7 +144,7 @@ if ($ADD==1121)			{$hh='lists';	$sh="modify_lead";     $title = "Lead Modificati
 if ($ADD==1122)			{$hh='lists';	$sh="advanced_search"; $title = "Advanced Lead Search";}
 if ($ADD==121)			{$hh='lists';	$title = "Add New DNC";}
 if ($ADD==131)			{$hh='lists';	$sh="export";          $title = "Export Leads";}
-if ($ADD==122)			{$hh='lists';	$title = "Load New Leads";}
+if ($ADD==122)			{$hh='lists';	$sh="list_loader";     $title = "Load New Leads";}
 if ($ADD==211)			{$hh='lists';	$title = "New List Addition";}
 if ($ADD==411)			{$hh='lists';	$title = "Modify List";}
 if ($ADD==511)			{$hh='lists';	$title = "Delete List";}

@@ -108,6 +108,7 @@ if ($non_latin < 1)	{
 	$hotkey = ereg_replace("[^0-9]","",$hotkey);
 	$hotkeys_active = ereg_replace("[^0-9]","",$hotkeys_active);
 	$list_id = ereg_replace("[^0-9]","",$list_id);
+	$list_id_override = ereg_replace("[^0-9]","",$list_id_override);
 	$load_leads = ereg_replace("[^0-9]","",$load_leads);
 	$max_osdial_trunks = ereg_replace("[^0-9]","",$max_osdial_trunks);
 	$modify_call_times = ereg_replace("[^0-9]","",$modify_call_times);
