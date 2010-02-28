@@ -20,8 +20,7 @@
 #
 
 if ($ADD==1122) {
-
-    if ($LOGmodify_lists==1) {
+    if ($LOGmodify_lists==1 and $LOGuser_level > 7) {
         echo "<table align=center><tr><td>\n";
         echo "<font face=\"arial,helvetica\" color=$default_text size=2>";
         echo "<center><br><font color=$default_text size=+1>ADVANCED LEAD SEARCH</font>\n";
