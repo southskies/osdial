@@ -463,7 +463,6 @@ if ( (eregi("POSTAL",$postalgmt)) && (strlen($postal_code)>4) )
 			$dst_range =	$row[4];
 			$PC_processed++;
 			$postalgmt_found++;
-			$post++;
 			}
 		}
 	}
@@ -1059,7 +1058,10 @@ if (!$AC_processed)
 	$AC_processed++;
 	}
 
-return $gmt_offset;
+$ret = Array();
+$ret[] = $gmt_offset;
+$ret[] = $postalgmt_found;
+return $ret;
 }
 
 function getloadavg() {
@@ -1177,5 +1179,20 @@ function dialable_gmt($DB,$link,$local_call_time,$gmt_offset,$state) {
     return $dialable;
 }
 
+
+
+# Function to format a return pretty-fied XML.
+function prettyXML($pretty,$indent=1) {
+    $xa = explode("\n", preg_replace("/>\s*</",">\n<",$pretty) );
+    $pretty = array_shift($xa) . "\n";
+    if ($indent < 1) $indent = 1;
+    $cindent = 0;
+    foreach($xa as $e) {
+        if ( preg_match('/^<\/.+>$/',$e)) $cindent -= $indent;
+        $pretty .=  str_repeat(' ', $cindent) . $e . "\n";
+        if (preg_match('/^<([\w])+[^>\/]*>$/U',$e)) $cindent += $indent;
+    }
+    return $pretty;
+}
 
 ?>
