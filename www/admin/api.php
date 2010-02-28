@@ -427,25 +427,23 @@ if ($xml['function'] == "version") {
                 $vdreason = "add_lead LEAD HAS NOT BEEN ADDED";
             } else {
                 $lead_id = mysql_insert_id($link);
-                #if (is_array($xml->params->additional_fields)) {
-                    foreach ($xml->params->additional_fields->additional_field as $af) {
-                        $form = get_first_record($link, 'osdial_campaign_forms', '*', sprintf("name='%s'", mres($af['form'])) );
-                        $field = get_first_record($link, 'osdial_campaign_fields', '*', sprintf("form_id='%s' AND name='%s'", mres($form['id']), mres($af['field'])) );
-                        $afins = sprintf("INSERT INTO osdial_list_fields SET lead_id='%s',field_id='%s',value='%s';", mres($lead_id), mres($field['id']), mres($af) );
-                        if ($xml['debug'] > 0) $debug .= "AF INSERT: " . $afins . "\n";
-                        $rslt=mysql_query($afins, $link);
-                        $afinsres = mysql_affected_rows($link);
-                        if ($afinsres > 0) {
-                            $af_ids[] = mysql_insert_id($link);
-                            $af_id_stats[$af_count] = 1;
-                            $af_success++;
-                        } else {
-                            $af_id_stats[$af_count] = 0;
-                            $af_failed++;
-                        }
-                        $af_count++;
+                foreach ($xml->params->additional_fields->additional_field as $af) {
+                    $form = get_first_record($link, 'osdial_campaign_forms', '*', sprintf("name='%s'", mres($af['form'])) );
+                    $field = get_first_record($link, 'osdial_campaign_fields', '*', sprintf("form_id='%s' AND name='%s'", mres($form['id']), mres($af['field'])) );
+                    $afins = sprintf("INSERT INTO osdial_list_fields SET lead_id='%s',field_id='%s',value='%s';", mres($lead_id), mres($field['id']), mres($af) );
+                    if ($xml['debug'] > 0) $debug .= "AF INSERT: " . $afins . "\n";
+                    $rslt=mysql_query($afins, $link);
+                    $afinsres = mysql_affected_rows($link);
+                    if ($afinsres > 0) {
+                        $af_ids[] = mysql_insert_id($link);
+                        $af_id_stats[$af_count] = 1;
+                        $af_success++;
+                    } else {
+                        $af_id_stats[$af_count] = 0;
+                        $af_failed++;
                     }
-                #}
+                    $af_count++;
+                 }
             }
 
             if (preg_match('/^Y$|^YES$|^T$|^TRUE$|^1$/i',$xml->params->add_to_hopper) and $status != "ERROR") {
