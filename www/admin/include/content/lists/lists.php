@@ -82,7 +82,7 @@ if ($ADD==112) {
 	$NOW_TIME = date("Y-m-d H:i:s");
 	
 	
-	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 7 and modify_leads='1';";
+	$stmt = sprintf("SELECT count(*) from osdial_users where user='%s' and pass='%s' and user_level > 7 and modify_leads='1';", mres($PHP_AUTH_USER), mres($PHP_AUTH_PW));
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -106,7 +106,7 @@ if ($ADD==112) {
 		if($auth>0) {
 			$office_no=strtoupper($PHP_AUTH_USER);
 			$password=strtoupper($PHP_AUTH_PW);
-				$stmt="SELECT full_name,modify_leads from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
+				$stmt = sprintf("SELECT full_name,modify_leads from osdial_users where user='%s' and pass='%s'", mres($PHP_AUTH_USER), mres($PHP_AUTH_PW));
 				$rslt=mysql_query($stmt, $link);
 				$row=mysql_fetch_row($rslt);
 				$LOGfullname				=$row[0];
@@ -166,28 +166,19 @@ if ($ADD==112) {
 	} else {
 		
 		if ($last_name and $first_name) {
-			$stmt="SELECT * from osdial_list where last_name LIKE '" . mysql_real_escape_string($last_name) . "%' AND first_name LIKE '" . mysql_real_escape_string($first_name) . "%' order by modify_date desc limit 1000";
-			//$stmt="SELECT * from osdial_list where last_name='" . mysql_real_escape_string($last_name) . "' and first_name='" . mysql_real_escape_string($first_name) . "' order by modify_date desc limit 1000";
+			$stmt = sprintf("SELECT * from osdial_list where last_name LIKE '%s' AND first_name LIKE '%s' order by modify_date desc limit 1000", mres($last_name) . '%', mres($first_name) . '%');
+		} elseif ($last_name) {
+			$stmt = sprintf("SELECT * from osdial_list where last_name='%s' order by modify_date desc limit 1000", mres($last_name));
+		} elseif ($vendor_id) {
+			$stmt = sprintf("SELECT * from osdial_list where vendor_lead_code='%s' order by modify_date desc limit 1000", mres($vendor_id));
+		} elseif ($phone) {
+			$stmt = sprintf("SELECT * from osdial_list where phone_number='%s' order by modify_date desc limit 1000", mres($phone));
+		} elseif ($lead_id) {
+			$stmt = sprintf("SELECT * from osdial_list where lead_id='%s' order by modify_date desc limit 1000", mres($lead_id));
 		} else {
-			if ($last_name) {
-				$stmt="SELECT * from osdial_list where last_name='" . mysql_real_escape_string($last_name) . "' order by modify_date desc limit 1000";
-			} else {
-				if ($vendor_id) {
-					$stmt="SELECT * from osdial_list where vendor_lead_code='" . mysql_real_escape_string($vendor_id) . "' order by modify_date desc limit 1000";
-				} else {
-					if ($phone) {
-						$stmt="SELECT * from osdial_list where phone_number='" . mysql_real_escape_string($phone) . "' order by modify_date desc limit 1000";
-					} else {
-						if ($lead_id) {
-							$stmt="SELECT * from osdial_list where lead_id='" . mysql_real_escape_string($lead_id) . "' order by modify_date desc limit 1000";
-						} else {
-							print "ERROR: You must search for something!";
-							exit;
-						}
-					}
-				}
-			}
-		} 
+			echo "ERROR: You must search for something!";
+		    exit;
+		}
 		
 		
 		if ($DB) {
@@ -356,27 +347,27 @@ if ($ADD==1122) {
             $notac = "%";
             if (strlen($phone_number) == 3) $notac="";
             if ($use_osdial_log) {
-                $searchWHR .= " AND osdial_log.phone_number LIKE '" . $notac . mysql_real_escape_string($phone_number) . "%'";
+                $searchWHR .= " AND osdial_log.phone_number LIKE '" . $notac . mres($phone_number) . "%'";
             } elseif ($phone_search_alt) {
-                $searchWHR .= " AND (osdial_list.phone_number LIKE '" . $notac . mysql_real_escape_string($phone_number) . "%'";
-                $searchWHR .= " OR osdial_list.alt_phone LIKE '" . $notac . mysql_real_escape_string($phone_number) . "%'";
-                $searchWHR .= " OR osdial_list.address3 LIKE '" . $notac . mysql_real_escape_string($phone_number) . "%')";
+                $searchWHR .= " AND (osdial_list.phone_number LIKE '" . $notac . mres($phone_number) . "%'";
+                $searchWHR .= " OR osdial_list.alt_phone LIKE '" . $notac . mres($phone_number) . "%'";
+                $searchWHR .= " OR osdial_list.address3 LIKE '" . $notac . mres($phone_number) . "%')";
             } else {
-                $searchWHR .= " AND osdial_list.phone_number LIKE '" . $notac . mysql_real_escape_string($phone_number) . "%'";
+                $searchWHR .= " AND osdial_list.phone_number LIKE '" . $notac . mres($phone_number) . "%'";
             }
         }
         if ($lead_id) {
             if ($use_osdial_log) {
-                $searchWHR .= " AND osdial_log.lead_id='" . mysql_real_escape_string($lead_id) . "'";
+                $searchWHR .= " AND osdial_log.lead_id='" . mres($lead_id) . "'";
             } else {
-                $searchWHR .= " AND osdial_list.lead_id='" . mysql_real_escape_string($lead_id) . "'";
+                $searchWHR .= " AND osdial_list.lead_id='" . mres($lead_id) . "'";
             }
         }
         if ($lastcall_date_start) {
             if ($use_osdial_log) {
-                $searchWHR .= " AND osdial_log.call_date BETWEEN '" . mysql_real_escape_string($lastcall_date_start) . "' AND '" . mysql_real_escape_string($lastcall_date_end) . "'";
+                $searchWHR .= " AND osdial_log.call_date BETWEEN '" . mres($lastcall_date_start) . "' AND '" . mres($lastcall_date_end) . "'";
             } else {
-                $searchWHR .= " AND osdial_list.last_local_call_time BETWEEN '" . mysql_real_escape_string($lastcall_date_start) . "' AND '" . mysql_real_escape_string($lastcall_date_end) . "'";
+                $searchWHR .= " AND osdial_list.last_local_call_time BETWEEN '" . mres($lastcall_date_start) . "' AND '" . mres($lastcall_date_end) . "'";
             }
         }
 
@@ -385,7 +376,7 @@ if ($ADD==1122) {
         foreach ($campaigns as $campaign) {
             if ($campaign != "") {
                 $pageURL .= "&campaigns[]=$campaign";
-                $campaignIN .= "'" . mysql_real_escape_string($campaign) . "',";
+                $campaignIN .= "'" . mres($campaign) . "',";
             }
         }
         if ($campaignIN != "") {
@@ -403,7 +394,7 @@ if ($ADD==1122) {
         foreach ($lists as $list) {
             if ($list != "") {
                 $pageURL .= "&lists[]=$list";
-                $listIN .= "'" . mysql_real_escape_string($list) . "',";
+                $listIN .= "'" . mres($list) . "',";
             }
         }
         if ($listIN != "") {
@@ -421,7 +412,7 @@ if ($ADD==1122) {
         foreach ($statuses as $status) {
             if ($status != "") {
                 $pageURL .= "&statuses[]=$status";
-                $statusIN .= "'" . mysql_real_escape_string($status) . "',";
+                $statusIN .= "'" . mres($status) . "',";
             }
         }
         if ($statusIN != "") {
@@ -439,7 +430,7 @@ if ($ADD==1122) {
         foreach ($agents as $agent) {
             if ($agent != "") {
                 $pageURL .= "&agents[]=$agent";
-                $agentIN .= "'" . mysql_real_escape_string($agent) . "',";
+                $agentIN .= "'" . mres($agent) . "',";
             }
         }
         if ($agentIN != "") {
@@ -457,7 +448,7 @@ if ($ADD==1122) {
         foreach ($states as $state) {
             if ($state != "") {
                 $pageURL .= "&states[]=$state";
-                $stateIN .= "'" . mysql_real_escape_string($state) . "',";
+                $stateIN .= "'" . mres($state) . "',";
             }
         }
         if ($stateIN != "") {
@@ -471,7 +462,7 @@ if ($ADD==1122) {
         foreach ($sources as $source) {
             if ($source != "") {
                 $pageURL .= "&sources[]=$source";
-                $sourceIN .= "'" . mysql_real_escape_string($source) . "',";
+                $sourceIN .= "'" . mres($source) . "',";
             }
         }
         if ($sourceIN != "") {
@@ -485,7 +476,7 @@ if ($ADD==1122) {
         foreach ($vendor_codes as $vendor_code) {
             if ($vendor_code != "") {
                 $pageURL .= "&vendor_codes[]=$vendor_code";
-                $vendor_codeIN .= "'" . mysql_real_escape_string($vendor_code) . "',";
+                $vendor_codeIN .= "'" . mres($vendor_code) . "',";
             }
         }
         if ($vendor_codeIN != "") {
@@ -493,17 +484,17 @@ if ($ADD==1122) {
             $searchWHR .= " AND osdial_list.vendor_lead_code IN ($vendor_codeIN)";
         }
 
-        if ($last_name)    $searchWHR .= " AND osdial_list.last_name LIKE '%" . mysql_real_escape_string($last_name) . "%'";
-        if ($first_name)   $searchWHR .= " AND osdial_list.first_name LIKE '%" . mysql_real_escape_string($first_name) . "%'";
-        if ($city)         $searchWHR .= " AND osdial_list.city LIKE '%" . mysql_real_escape_string($city) . "%'";
-        if ($postal_code)  $searchWHR .= " AND osdial_list.postal_code LIKE '" . mysql_real_escape_string($postal_code) . "%'";
-        if ($email)        $searchWHR .= " AND osdial_list.email LIKE '%" . mysql_real_escape_string($email) . "%'";
-        if ($external_key) $searchWHR .= " AND osdial_list.external_key LIKE '%" . mysql_real_escape_string($external_key) . "%'";
-        if ($custom1)      $searchWHR .= " AND osdial_list.custom1 LIKE '%" . mysql_real_escape_string($custom1) . "%'";
-        if ($custom2)      $searchWHR .= " AND osdial_list.custom2 LIKE '%" . mysql_real_escape_string($custom2) . "%'";
+        if ($last_name)    $searchWHR .= " AND osdial_list.last_name LIKE '%" . mres($last_name) . "%'";
+        if ($first_name)   $searchWHR .= " AND osdial_list.first_name LIKE '%" . mres($first_name) . "%'";
+        if ($city)         $searchWHR .= " AND osdial_list.city LIKE '%" . mres($city) . "%'";
+        if ($postal_code)  $searchWHR .= " AND osdial_list.postal_code LIKE '" . mres($postal_code) . "%'";
+        if ($email)        $searchWHR .= " AND osdial_list.email LIKE '%" . mres($email) . "%'";
+        if ($external_key) $searchWHR .= " AND osdial_list.external_key LIKE '%" . mres($external_key) . "%'";
+        if ($custom1)      $searchWHR .= " AND osdial_list.custom1 LIKE '%" . mres($custom1) . "%'";
+        if ($custom2)      $searchWHR .= " AND osdial_list.custom2 LIKE '%" . mres($custom2) . "%'";
 
-        if ($entry_date_start)  $searchWHR .= " AND osdial_list.entry_date BETWEEN '" . mysql_real_escape_string($entry_date_start) . "' AND '" . mysql_real_escape_string($entry_date_end) . "'";
-        if ($modify_date_start) $searchWHR .= " AND osdial_list.modify_date BETWEEN '" . mysql_real_escape_string($modify_date_start) . "' AND '" . mysql_real_escape_string($modify_date_end) . "'";
+        if ($entry_date_start)  $searchWHR .= " AND osdial_list.entry_date BETWEEN '" . mres($entry_date_start) . "' AND '" . mres($entry_date_end) . "'";
+        if ($modify_date_start) $searchWHR .= " AND osdial_list.modify_date BETWEEN '" . mres($modify_date_start) . "' AND '" . mres($modify_date_end) . "'";
 
 
         ### process timezones group
@@ -512,11 +503,11 @@ if ($ADD==1122) {
         foreach ($timezones as $timezone) {
             if ($timezone != "") {
                 $pageURL .= "&timezones[]=$timezone";
-                $timezoneIN .= mysql_real_escape_string($timezone) . ",";
+                $timezoneIN .= mres($timezone) . ",";
 	            $isdst = date("I");
                 $timezoneDST = $timezone;
                 if ($isdst) $timezoneDST += 1;
-                $timezoneCNTIN .= mysql_real_escape_string($timezoneDST) . ",";
+                $timezoneCNTIN .= mres($timezoneDST) . ",";
             }
         }
         if ($timezoneIN != "") {
@@ -1232,13 +1223,13 @@ echo "<TABLE align=center><TR><TD align=center>\n";
 echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 if (strlen($phone_number) > 2) {
-	$stmt="SELECT count(*) from osdial_dnc where phone_number='$phone_number';";
+	$stmt = sprintf("SELECT count(*) from osdial_dnc where phone_number='%s';", mres($phone_number));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0) {
 		echo "<br>DNC NOT ADDED - This phone number is already in the Do Not Call List: $phone_number<BR><BR>\n";
 	} else {
-		$stmt="INSERT INTO osdial_dnc (phone_number) values('$phone_number');";
+		$stmt = sprintf("INSERT INTO osdial_dnc (phone_number) values('%s');", mres($phone_number));
 		$rslt=mysql_query($stmt, $link);
 
 		echo "<br><B>DNC ADDED: $phone_number</B><BR><BR>\n";
@@ -1273,7 +1264,7 @@ if ($ADD==122) {
 	echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	
-	echo "<center><br><font color=$default_text size=+1>LOAD NEW LEADS</font><br><br>\n";
+	echo "<center><br><font color=$default_text size=+1>LOAD NEW LEADS</font><br><hr><br>\n";
 	
 	
 	$PHP_AUTH_USER=$_SERVER['PHP_AUTH_USER'];
@@ -1282,26 +1273,36 @@ if ($ADD==122) {
 	$leadfile=$_FILES["leadfile"];
 	$LF_orig = $_FILES['leadfile']['name'];
 	$LF_path = $_FILES['leadfile']['tmp_name'];
-	if (isset($_FILES["leadfile"]))				{$leadfile_name=$_FILES["leadfile"]['name'];}
+	if (isset($_FILES["leadfile"])) $leadfile_name=$_FILES["leadfile"]['name'];
+
+    $single_insert = 1;
+    $dot_count=0;
+    @apache_setenv('no-gzip', 1);
+    @ini_set('zlib.output_compression', 0);
 
 	$list_id_override = (preg_replace("/\D/","",$list_id_override));
 	$phone_code_override = (preg_replace("/\D/","",$phone_code_override));
-	$Imported=get_variable('Imported');
+	$Imported = get_variable('Imported');
     $file_layout = get_variable('file_layout');
 	
+	$aff_fields = get_variable('aff_fields');
+	$aff_field = Array();
+	$affcnt = 0;
+
+    if (strlen($aff_fields) > 0) $single_insert = 1;
+
 	#############################################
 	##### START SYSTEM_SETTINGS LOOKUP #####
 	$stmt = "SELECT use_non_latin FROM system_settings;";
 	$rslt=mysql_query($stmt, $link);
-	if ($DB) {echo "$stmt\n";}
+	if ($DB) echo "$stmt\n";
 	$qm_conf_ct = mysql_num_rows($rslt);
 	$i=0;
-	while ($i < $qm_conf_ct)
-		{
+	while ($i < $qm_conf_ct) {
 		$row=mysql_fetch_row($rslt);
 		$non_latin =					$row[0];
 		$i++;
-		}
+	}
 	##### END SETTINGS LOOKUP #####
 	###########################################
 	
@@ -1316,22 +1317,14 @@ if ($ADD==122) {
 	$NOW_TIME = date("Y-m-d H:i:s");
 	$FILE_datetime = $STARTtime;
 
-	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 7;";
-	if ($DB) {
-		echo "|$stmt|\n";
-	}
-	
-	if ($non_latin > 0) {
-		$rslt=mysql_query("SET NAMES 'UTF8'");
-	}
-		
+	$stmt = sprintf("SELECT count(*) from osdial_users where user='%s' and pass='%s' and user_level > 7;", mres($PHP_AUTH_USER), mres($PHP_AUTH_PW));
+	if ($DB) echo "|$stmt|\n";
+	if ($non_latin > 0) $rslt=mysql_query("SET NAMES 'UTF8'");
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$auth=$row[0];
 
-	if ($WeBRooTWritablE > 0) {
-		$fp = fopen ("./project_auth_entries.txt", "a");
-	}
+	if ($WeBRooTWritablE > 0) $fp = fopen ("./project_auth_entries.txt", "a");
 	$date = date("r");
 	$ip = getenv("REMOTE_ADDR");
 	$browser = getenv("HTTP_USER_AGENT");
@@ -1341,34 +1334,26 @@ if ($ADD==122) {
 		Header("HTTP/1.0 401 Unauthorized");
 		echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
 		exit;
-	} else {
-
-		if($auth>0) {
-			$office_no=strtoupper($PHP_AUTH_USER);
-			$password=strtoupper($PHP_AUTH_PW);
-			$stmt="SELECT load_leads from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
-			$rslt=mysql_query($stmt, $link);
-			$row=mysql_fetch_row($rslt);
-			$LOGload_leads				=$row[0];
+	} elseif ($auth > 0) {
+		$office_no=strtoupper($PHP_AUTH_USER);
+		$password=strtoupper($PHP_AUTH_PW);
+		$stmt = sprintf("SELECT load_leads from osdial_users where user='%s' and pass='%s'", mres($PHP_AUTH_USER), mres($PHP_AUTH_PW));
+		$rslt=mysql_query($stmt, $link);
+		$row=mysql_fetch_row($rslt);
+		$LOGload_leads				=$row[0];
 	
-			if ($LOGload_leads < 1)
-				{
-				echo "You do not have permissions to load leads\n";
-				exit;
-				}
-			if ($WeBRooTWritablE > 0) 
-				{
-				fwrite ($fp, "LIST_LOAD|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|$LOGfullname|\n");
-				fclose($fp);
-				}
-		} else {
-			if ($WeBRooTWritablE > 0) {
-				fwrite ($fp, "LIST_LOAD|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|\n");
-				fclose($fp);
-			}
+		if ($LOGload_leads < 1) {
+			echo "You do not have permissions to load leads\n";
+			exit;
 		}
+		if ($WeBRooTWritablE > 0) {
+			fwrite ($fp, "LIST_LOAD|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|$LOGfullname|\n");
+			fclose($fp);
+		}
+	} elseif ($WeBRooTWritablE > 0) {
+			fwrite ($fp, "LIST_LOAD|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|\n");
+			fclose($fp);
 	}
-
 	
 	$script_name = getenv("SCRIPT_NAME");
 	$server_name = getenv("SERVER_NAME");
@@ -1379,8 +1364,6 @@ if ($ADD==122) {
 		$HTTPprotocol = 'http://';
 	}
 	$admDIR = "$HTTPprotocol$server_name$script_name";
-	//$admDIR = eregi_replace('new_listloader_superL.php','',$admDIR);  // debug - original line
-	//$admDIR = eregi_replace('admin.php?ADD=122','',$admDIR); // debug
 	$admSCR = 'admin.php?ADD=122'; //    debug -       admin.php is already in admDIR 
 	$NWB = " &nbsp; <a href=\"javascript:openNewWindow('$admDIR$admSCR?ADD=99999";
 	$NWE = "')\"><IMG SRC=\"help.gif\" WIDTH=20 HEIGHT=20 BORDER=0 ALT=\"HELP\" ALIGN=TOP></A>";
@@ -1403,20 +1386,14 @@ if ($ADD==122) {
 	$dsec = ( ( ($hour * 3600) + ($min * 60) ) + $sec );
 
 	### Grab Server GMT value from the database
-	$stmt="SELECT local_gmt FROM servers where server_ip = '$server_ip';";
+	$stmt = sprintf("SELECT local_gmt FROM servers where server_ip = '%s';",mres($server_ip));
 	$rslt=mysql_query($stmt, $link);
 	$gmt_recs = mysql_num_rows($rslt);
 	if ($gmt_recs > 0) {
 		$row=mysql_fetch_row($rslt);
-		$DBSERVER_GMT		=		"$row[0]";
-		if (strlen($DBSERVER_GMT)>0)	{
-			$SERVER_GMT = $DBSERVER_GMT;
-		}
-		
-		if ($isdst) {
-			$SERVER_GMT++;
-		} 
-		
+		$DBSERVER_GMT = "$row[0]";
+		if (strlen($DBSERVER_GMT)>0) $SERVER_GMT = $DBSERVER_GMT;
+		if ($isdst) $SERVER_GMT++;
 	} else {
 		$SERVER_GMT = date("O");
 		$SERVER_GMT = eregi_replace("\+","",$SERVER_GMT);
@@ -1427,1126 +1404,640 @@ if ($ADD==122) {
 	$LOCAL_GMT_OFF = $SERVER_GMT;
 	$LOCAL_GMT_OFF_STD = $SERVER_GMT;
 	
-	#if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOCAL GMT OFFSET NOW: $LOCAL_GMT_OFF\n";}
-	
-	
 	echo "<!-- VERSION: $version     BUILD: $build -->\n";
 	echo "<!-- SEED TIME  $secX:   $year-$mon-$mday $hour:$min:$sec  LOCAL GMT OFFSET NOW: $LOCAL_GMT_OFF  DST: $isdst -->\n";
 
-	function macfontfix($fontsize) {
-		$browser = getenv("HTTP_USER_AGENT");
-		$pctype = explode("(", $browser);
-		if (ereg("Mac",$pctype[1])) {
-			/* Browser is a Mac.  If not Netscape 6, raise fonts */
-			$blownbrowser = explode('/', $browser);
-			$ver = explode(' ', $blownbrowser[1]);
-			$ver = $ver[0];
-			if ($ver >= 5.0) {
-				return $fontsize; 
-			} else { 
-				return ($fontsize+2); 
-			}
-		} else {
-			return $fontsize;	/* Browser is not a Mac - don't touch fonts */ 
-		}
-	}
-	
-	echo "<style type=\"text/css\">\n
-	<!--\n
-	.title {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(18)."pt}\n
-	.standard {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(10)."pt}\n
-	.small_standard {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(8)."pt}\n
-	.tiny_standard {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(6)."pt}\n
-	.standard_bold {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(10)."pt; font-weight: bold}\n
-	.standard_header {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(14)."pt; font-weight: bold}\n
-	.standard_bold_highlight {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(10)."pt; font-weight: bold; color: white; BACKGROUND-COLOR: black}\n
-	.standard_bold_blue_highlight {  font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold; BACKGROUND-COLOR: blue}\n
-	A.employee_standard {  font-family: garamond, sans-serif; font-size: ".macfontfix(10)."pt; font-style: normal; font-variant: normal; font-weight: bold; text-decoration: none}\n
-	.employee_standard {  font-family: garamond, sans-serif; font-size: ".macfontfix(10)."pt; font-weight: bold}\n
-	.employee_title {  font-family: Garamond, sans-serif; font-size: ".macfontfix(14)."pt; font-weight: bold}\n
-	\\\\-->\n
-	</style>\n";
+	#function macfontfix($fontsize) {
+	#	$browser = getenv("HTTP_USER_AGENT");
+	#	$pctype = explode("(", $browser);
+	#	if (ereg("Mac",$pctype[1])) {
+	#		/* Browser is a Mac.  If not Netscape 6, raise fonts */
+	#		$blownbrowser = explode('/', $browser);
+	#		$ver = explode(' ', $blownbrowser[1]);
+	#		$ver = $ver[0];
+	#		if ($ver >= 5.0) {
+	#			return $fontsize; 
+	#		} else { 
+	#			return ($fontsize+2); 
+	#		}
+	#	} else {
+	#		return $fontsize;	/* Browser is not a Mac - don't touch fonts */ 
+	#	}
+	#}
+	#
+	#echo "<style type=\"text/css\">\n
+	#<!--\n
+	#.title {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(18)."pt}\n
+	#.standard {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(10)."pt}\n
+	#.small_standard {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(8)."pt}\n
+	#.tiny_standard {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(6)."pt}\n
+	#.standard_bold {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(10)."pt; font-weight: bold}\n
+	#.standard_header {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(14)."pt; font-weight: bold}\n
+	#.standard_bold_highlight {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(10)."pt; font-weight: bold; color: white; BACKGROUND-COLOR: black}\n
+	#.standard_bold_blue_highlight {  font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold; BACKGROUND-COLOR: blue}\n
+	#A.employee_standard {  font-family: garamond, sans-serif; font-size: ".macfontfix(10)."pt; font-style: normal; font-variant: normal; font-weight: bold; text-decoration: none}\n
+	#.employee_standard {  font-family: garamond, sans-serif; font-size: ".macfontfix(10)."pt; font-weight: bold}\n
+	#.employee_title {  font-family: Garamond, sans-serif; font-size: ".macfontfix(14)."pt; font-weight: bold}\n
+	#\\\\-->\n
+	#</style>\n";
 
 
-        echo "  <form action=$PHP_SELF method=post onSubmit=\"ParseFileName()\" enctype=\"multipart/form-data\">\n";
-        echo "      <input type=hidden name='ADD' value='122'>\n";
-        echo "      <input type=hidden name='leadfile_name' value=\"$leadfile_name\">\n";
-        echo "      <input type=hidden name='Imported' value=''>\n";
-		if (!$OK_to_process and ($file_layout!="custom" or $leadfile_name == "")) {
-            if ($phone_code_override == "") { $phone_code_override = "1";}
-			$Imported++;
-            echo "	        <table align=center width=\"700\" border=0 cellpadding=5 cellspacing=0 bgcolor=$oddrows>\n";
-            echo "              <tr>\n";
-            echo "                  <td align=right width=\"35%\"><B><font face=\"arial, helvetica\" size=2>Load leads from this file:</font></B></td>\n";
-            echo "                  <td align=left width=\"65%\"><input type=file name=\"leadfile\" value=\"$leadfile\">$NWB#osdial_list_loader$NWE</td>\n";
-            echo "              </tr>\n";
-            echo "              <tr>\n";
-            echo "                  <td align=right width=\"25%\"><font face=\"arial, helvetica\" size=2>List ID: </font></td>\n";
-            echo "                  <td align=left width=\"75%\"><font face=\"arial, helvetica\" size=1>\n";
-            echo "                      <select size=1 name=list_id_override>\n";
+    echo "  <form action=$PHP_SELF method=post onSubmit=\"ParseFileName()\" enctype=\"multipart/form-data\">\n";
+    echo "      <input type=hidden name='ADD' value='122'>\n";
+    echo "      <input type=hidden name='leadfile_name' value=\"$leadfile_name\">\n";
+    echo "      <input type=hidden name='Imported' value=''>\n";
+	if (!$OK_to_process and ($file_layout != "custom" or $leadfile_name == "")) {
+        if ($phone_code_override == "") $phone_code_override = "1";
+		$Imported++;
+        echo "	        <table align=center width=\"700\" border=0 cellpadding=5 cellspacing=0 bgcolor=$oddrows>\n";
+        echo "              <tr>\n";
+        echo "                  <td align=right width=\"35%\"><B><font face=\"arial, helvetica\" size=2>Load leads from this file:</font></B></td>\n";
+        echo "                  <td align=left width=\"65%\"><input type=file name=\"leadfile\" value=\"$leadfile\">$NWB#osdial_list_loader$NWE</td>\n";
+        echo "              </tr>\n";
+        echo "              <tr>\n";
+        echo "                  <td align=right width=\"25%\"><font face=\"arial, helvetica\" size=2>List ID: </font></td>\n";
+        echo "                  <td align=left width=\"75%\"><font face=\"arial, helvetica\" size=1>\n";
+        echo "                      <select size=1 name=list_id_override>\n";
         
-            $stmt="SELECT list_id,list_name FROM osdial_lists;";
-            $rslt=mysql_query($stmt, $link);
-            $lrows = mysql_num_rows($rslt);
-            if ($lrows > 0) {
-                $count = 0;
-                if ($list_id_override < 1) {
-                    echo "            <option value=\"1\">[ PLEASE SELECT A LIST ]</option>\n";
-                }
-                while ($count < $lrows) {
-                    $row=mysql_fetch_row($rslt);
-                    $lsel = '';
-                    if ($row[0] == $list_id_override) { $lsel = ' selected'; }
-                    echo '            <option value="' . $row[0] . '"' . $lsel . '>' . $row[0] . ' - ' . $row[1] . "</option>\n";
-                    $count++;
-                }
-            } else {
-                echo "            <option value=\"1\">[ ERROR, YOU MUST FIRST ADD A LIST]</option>\n";
+        $stmt="SELECT list_id,list_name FROM osdial_lists;";
+        $rslt=mysql_query($stmt, $link);
+        $lrows = mysql_num_rows($rslt);
+        if ($lrows > 0) {
+            $count = 0;
+            if ($list_id_override < 1) echo "            <option value=\"1\">[ PLEASE SELECT A LIST ]</option>\n";
+            while ($count < $lrows) {
+                $row=mysql_fetch_row($rslt);
+                $lsel = '';
+                if ($row[0] == $list_id_override) $lsel = ' selected';
+                echo '            <option value="' . $row[0] . '"' . $lsel . '>' . $row[0] . ' - ' . $row[1] . "</option>\n";
+                $count++;
             }
+        } else {
+            echo "            <option value=\"1\">[ ERROR, YOU MUST FIRST ADD A LIST]</option>\n";
+        }
 
-            echo "                      </select>\n";
-            echo "                      <!-- <input type=text value=\"$list_id_override\" name='list_id_override' size=10 maxlength=8>-->\n";
-            echo "                    </td>\n";
-            echo "                  </tr>\n";
-            echo "                  <tr>\n";
-            echo "                      <td align=right width=\"25%\"><font face=\"arial, helvetica\" size=2>Phone Code: </font></td>\n";
-            echo "                      <td align=left width=\"75%\"><font face=\"arial, helvetica\" size=1>\n";
-            echo "                          <input type=text value=\"$phone_code_override\" name='phone_code_override' size=8 maxlength=6> (numbers only or leave blank for values in the file)\n";
-            echo "                      </td>\n";
-            echo "                  </tr>\n";
-            echo "                  <tr>\n";
-            echo "                      <td align=right><B><font face=\"arial, helvetica\" size=2>File layout to use:</font></B></td>\n";
-            echo "                      <td align=left><font face=\"arial, helvetica\" size=2>\n";
-            echo "                          <input type=radio name=\"file_layout\" value=\"custom\" checked>Custom Layout&nbsp;&nbsp;&nbsp;&nbsp;<input type=radio name=\"file_layout\" value=\"standard\">Predefined Layout\n";
-            echo "                      </td>\n";
-            echo "                  </tr>\n";
-            echo "                  <tr>\n";
-            echo "                      <td align=right width=\"25%\"><font face=\"arial, helvetica\" size=2>Lead Duplicate Check: </font></td>\n";
-            echo "                      <td align=left width=\"75%\"><font face=\"arial, helvetica\" size=1>\n";
-            echo "                          <select size=1 name=dupcheck>\n";
-            echo "                              <option value=\"NONE\">NO DUPLICATE CHECK</option>\n";
-            echo "                              <option selected value=\"DUPLIST\">CHECK FOR DUPLICATES BY PHONE IN LIST ID</option>\n";
-            echo "                              <option value=\"DUPCAMP\">CHECK FOR DUPLICATES BY PHONE IN ALL CAMPAIGN LISTS</option>\n";
-            echo "                              <option value=\"DUPSYS\">CHECK FOR DUPLICATES BY PHONE IN ENTIRE SYSTEM</option>\n";
-            echo "                          </select>\n";
-            echo "                      </td>\n";
-            echo "                  </tr>\n";
-            echo "                  <tr>\n";
-            echo "                      <td align=right width=\"25%\"><font face=\"arial, helvetica\" size=2>Lead Time Zone Lookup: </font></td>\n";
-            echo "                      <td align=left width=\"75%\"><font face=\"arial, helvetica\" size=1>\n";
-            echo "                          <select size=1 name=postalgmt>\n";
-            echo "                              <option selected value=\"AREA\">COUNTRY CODE AND AREA CODE ONLY</option>\n";
-            echo "                              <option value=\"POSTAL\">POSTAL CODE FIRST</option>\n";
-            echo "                          </select>\n";
-            echo "                      </td>\n";
-            echo "                  </tr>\n";
-            echo "                  <tr class=tabfooter>\n";
-            echo "                      <td align=center class=tabbutton>\n";
-            echo "                          <input type=button onClick=\"javascript:document.location='admin.php?ADD=122'\" value=\"START OVER\" name='reload_page'>\n";
-            echo "                      </td>\n";
-            echo "                      <td align=center class=tabbutton>\n";
-            echo "                          <input type=submit value=\"SUBMIT\" name='submit_file'>\n";
-            echo "                      </td>\n";
-            echo "                  </tr>\n";
-            echo "               </table>\n";
-		}
+        echo "                      </select>\n";
+        echo "                      <!-- <input type=text value=\"$list_id_override\" name='list_id_override' size=10 maxlength=8>-->\n";
+        echo "                    </td>\n";
+        echo "                  </tr>\n";
+        echo "                  <tr>\n";
+        echo "                      <td align=right width=\"25%\"><font face=\"arial, helvetica\" size=2>Phone Code: </font></td>\n";
+        echo "                      <td align=left width=\"75%\"><font face=\"arial, helvetica\" size=1>\n";
+        echo "                          <input type=text value=\"$phone_code_override\" name='phone_code_override' size=8 maxlength=6> (numbers only or leave blank for values in the file)\n";
+        echo "                      </td>\n";
+        echo "                  </tr>\n";
+        echo "                  <tr>\n";
+        echo "                      <td align=right><B><font face=\"arial, helvetica\" size=2>File layout to use:</font></B></td>\n";
+        echo "                      <td align=left><font face=\"arial, helvetica\" size=2>\n";
+        echo "                          <input type=radio name=\"file_layout\" value=\"custom\" checked>Custom Layout&nbsp;&nbsp;&nbsp;&nbsp;<input type=radio name=\"file_layout\" value=\"standard\">Predefined Layout\n";
+        echo "                      </td>\n";
+        echo "                  </tr>\n";
+        echo "                  <tr>\n";
+        echo "                      <td align=right width=\"25%\"><font face=\"arial, helvetica\" size=2>Lead Duplicate Check: </font></td>\n";
+        echo "                      <td align=left width=\"75%\"><font face=\"arial, helvetica\" size=1>\n";
+        echo "                          <select size=1 name=dupcheck>\n";
+        echo "                              <option value=\"NONE\">NO DUPLICATE CHECK</option>\n";
+        echo "                              <option selected value=\"DUPLIST\">CHECK FOR DUPLICATES BY PHONE IN LIST ID</option>\n";
+        echo "                              <option value=\"DUPCAMP\">CHECK FOR DUPLICATES BY PHONE IN ALL CAMPAIGN LISTS</option>\n";
+        echo "                              <option value=\"DUPCAMPACT\">CHECK FOR DUPLICATES BY PHONE IN ONLY ACTIVE CAMPAIGN LISTS</option>\n";
+        echo "                              <option value=\"DUPSYS\">CHECK FOR DUPLICATES BY PHONE IN ALL LISTS ON SYSTEM</option>\n";
+        echo "                              <option value=\"DUPSYSACT\">CHECK FOR DUPLICATES BY PHONE IN ONLY ACTIVE LISTS ON SYSTEM</option>\n";
+        echo "                          </select>\n";
+        echo "                      </td>\n";
+        echo "                  </tr>\n";
+        echo "                  <tr>\n";
+        echo "                      <td align=right width=\"25%\"><font face=\"arial, helvetica\" size=2>Lead Time Zone Lookup: </font></td>\n";
+        echo "                      <td align=left width=\"75%\"><font face=\"arial, helvetica\" size=1>\n";
+        echo "                          <select size=1 name=postalgmt>\n";
+        echo "                              <option selected value=\"AREA\">COUNTRY CODE AND AREA CODE ONLY</option>\n";
+        echo "                              <option value=\"POSTAL\">POSTAL CODE FIRST</option>\n";
+        echo "                          </select>\n";
+        echo "                      </td>\n";
+        echo "                  </tr>\n";
+        echo "                  <tr class=tabfooter>\n";
+        echo "                      <td align=center class=tabbutton>\n";
+        echo "                          <input type=button onClick=\"javascript:document.location='admin.php?ADD=122'\" value=\"START OVER\" name='reload_page'>\n";
+        echo "                      </td>\n";
+        echo "                      <td align=center class=tabbutton>\n";
+        echo "                          <input type=submit value=\"SUBMIT\" name='submit_file'>\n";
+        echo "                      </td>\n";
+        echo "                  </tr>\n";
+        echo "               </table>\n";
+	}
 		
-		if ($OK_to_process) {
-			print "<script language='JavaScript1.2'>document.forms[0].leadfile.disabled=true;document.forms[0].list_id_override.disabled=true;document.forms[0].phone_code_override.disabled=true; document.forms[0].submit_file.disabled=true; document.forms[0].reload_page.disabled=true;</script>";
-			flush();
-			$total=0; $good=0; $bad=0; $dup=0; $post=0; $phone_list='';
+	if ($OK_to_process) {
+		echo "<script language='javascript'>\ndocument.forms[0].leadfile.disabled=true;\ndocument.forms[0].list_id_override.disabled=true;\ndocument.forms[0].phone_code_override.disabled=true;\ndocument.forms[0].submit_file.disabled=true;\ndocument.forms[0].reload_page.disabled=true;\n</script>\n";
+		ob_flush();
+		flush();
+		$total=0; $good=0; $bad=0; $dup=0; $post=0;
 
-			if (!eregi(".csv", $leadfile_name) && !eregi(".xls", $leadfile_name)) {
-				# copy($leadfile, "./osdial_temp_file.txt");
-				$file=fopen("$lead_file", "r");
-				if ($WeBRooTWritablE > 0) {
-					$stmt_file=fopen("listloader_stmts.txt", "w");
-				}
-				$buffer=fgets($file, 4096);
-				$tab_count=substr_count($buffer, "\t");
-				$pipe_count=substr_count($buffer, "|");
-	
-				if ($tab_count>$pipe_count) {
-					$delimiter="\t";  $delim_name="tab";
-				} else {
-					$delimiter="|";  $delim_name="pipe";
-				}
-				$field_check=explode($delimiter, $buffer);
-	
-				if (count($field_check)>=3) {
-					flush();
-					$file=fopen("$lead_file", "r");
-					print "<center><font size=3 color='$default_text'><B>Processing $delim_name-delimited file...\n";
-	
-					if (strlen($list_id_override)>0) {
-						print "<BR><BR>LIST ID OVERRIDE FOR THIS FILE: $list_id_override<BR><BR>";
-					}
+        # Process an Excel 
+		if (eregi(".xls$", $leadfile_name)) {
+			# copy($leadfile, "./osdial_temp_file.xls");
+			$file=fopen("$lead_file", "r");
 		
-					if (strlen($phone_code_override)>0) 
-						{
-						print "<BR><BR>PHONE CODE OVERRIDE FOR THIS FILE: $phone_code_override<BR><BR>";
-						}
-		
-						while (!feof($file)) {
-							$record++;
-							$buffer=rtrim(fgets($file, 4096));
-							$buffer=stripslashes($buffer);
-		
-							if (strlen($buffer)>0) {
-								$row=explode($delimiter, eregi_replace("[\'\"]", "", $buffer));
-		
-								$pulldate=date("Y-m-d H:i:s");
-								$entry_date =			"$pulldate";
-								$modify_date =			"";
-								$status =				"NEW";
-								$user =                 "";
-								$vendor_lead_code =		mysql_real_escape_string($row[$vendor_lead_code_field]);
-								$source_code =			mysql_real_escape_string($row[$source_id_field]);
-								$source_id=             $source_code;
-								$list_id =				mysql_real_escape_string($row[$list_id_field]);
-								$gmt_offset =			'0';
-								$called_since_last_reset='N';
-								$phone_code =			eregi_replace("[^0-9]", "", $row[$phone_code_field]);
-								$phone_number =			eregi_replace("[^0-9]", "", $row[$phone_number_field]);
-								$USarea = 			    substr($phone_number, 0, 3);
-								$title =				mysql_real_escape_string($row[$title_field]);
-								$first_name =			mysql_real_escape_string($row[$first_name_field]);
-								$middle_initial =		mysql_real_escape_string($row[$middle_initial_field]);
-								$last_name =			mysql_real_escape_string($row[$last_name_field]);
-								$address1 =				mysql_real_escape_string($row[$address1_field]);
-								$address2 =				mysql_real_escape_string($row[$address2_field]);
-								$address3 =				mysql_real_escape_string($row[$address3_field]);
-								$city =                 mysql_real_escape_string($row[$city_field]);
-								$state =				mysql_real_escape_string($row[$state_field]);
-								$province =				mysql_real_escape_string($row[$province_field]);
-								$postal_code =			mysql_real_escape_string($row[$postal_code_field]);
-								$country_code =			mysql_real_escape_string($row[$country_code_field]);
-								$gender =				mysql_real_escape_string($row[$gender_field]);
-								$date_of_birth =		mysql_real_escape_string($row[$date_of_birth_field]);
-								$alt_phone =			eregi_replace("[^0-9]", "", $row[$alt_phone_field]);
-								$email =				mysql_real_escape_string($row[$email_field]);
-								$custom1 =		        mysql_real_escape_string($row[$custom1_field]);
-								$comments =				mysql_real_escape_string(trim($row[$comments_field]));
-								$custom2 =		        mysql_real_escape_string($row[$custom2_field]);
-								$external_key =		    mysql_real_escape_string($row[$external_key_field]);
-								$cost =		            mysql_real_escape_string($row[$cost_field]);
-		
-								if (strlen($list_id_override)>0) 
-									{
-								#	print "<BR><BR>LIST ID OVERRIDE FOR THIS FILE: $list_id_override<BR><BR>";
-									$list_id = $list_id_override;
-									}
-								if (strlen($phone_code_override)>0) 
-									{
-									$phone_code = $phone_code_override;
-									}
+			echo "<center><font size=3 color='$default_text'><B>Processing Excel file... \n<br>";
 
-                                # Try to grab cost if zero.
-                                if ($cost == 0) {
-                                    $lcost = get_first_record($link, 'osdial_lists', '*', "list_id='" . mysql_real_escape_string($list_id) . "'");
-                                    $cost = $lcost['cost'];
-                                }
+			if (strlen($list_id_override)>0) echo "<BR>LIST ID OVERRIDE: $list_id_override<BR>\n";
+			if (strlen($phone_code_override)>0) echo "<BR>PHONE CODE OVERRIDE: $phone_code_override<BR>\n";
+
+            echo "<iframe name='lead_count' width='600' height='250' align='middle' frameborder='0' scrolling='no'></iframe>\n<br>\n";
+            echo "<div name='load_win' id='load_win' style='width:850px;align:center;'>\n";
+            echo "  <div name='load_status' id='load_status' style='float:left;text-align:center;width:50%;height:200px;overflow:auto;'></div>\n";
+            echo "  <div name='load_error' id='load_error' style='float:left;text-align:left;width:50%;height:200px;overflow:auto;'></div>\n";
+            echo "</div>";
+            require($WeBServeRRooT . "/admin/include/footer.php");
+
+			$dupcheckCLI=''; $postalgmtCLI='';
+			if (eregi("DUPLIST",$dupcheck)) {$dupcheckCLI='--duplicate-check';}
+			if (eregi("DUPCAMP",$dupcheck)) {$dupcheckCLI='--duplicate-campaign-check';}
+			if (eregi("DUPSYS",$dupcheck)) {$dupcheckCLI='--duplicate-system-check';}
+			if (eregi("POSTAL",$postalgmt)) {$postalgmtCLI='--postal-code-gmt';}
+			passthru("$WeBServeRRooT/admin/listloader_super.pl $vendor_lead_code_field,$source_id_field,$list_id_field,$phone_code_field,$phone_number_field,$title_field,$first_name_field,$middle_initial_field,$last_name_field,$address1_field,$address2_field,$address3_field,$city_field,$state_field,$province_field,$postal_code_field,$country_code_field,$gender_field,$date_of_birth_field,$alt_phone_field,$email_field,$custom1_field,$comments_field, --forcelistid=$list_id_override --forcephonecode=$phone_code_override --lead-file=$lead_file $postalgmtCLI $dupcheckCLI");
+
+        # Process a CSV/PSV/TSV
+		} else {
+			$file=fopen("$lead_file", "r");
+
+			$buffer=fgets($file, 4096);
+			$comma_count=substr_count($buffer, ",");
+			$tab_count=substr_count($buffer, "\t");
+			$pipe_count=substr_count($buffer, "|");
+	
+			if ($tab_count > $comma_count and $tab_count > $pipe_count) {
+				$delimiter="\t";  $delim_name="TSV (tab-separated values)";
+			} elseif ($pipe_count > $tab_count and $pipe_count > $comma_count) {
+				$delimiter="|";  $delim_name="PSV (pipe-separated values)";
+			} else {
+				$delimiter=",";  $delim_name="CSV (comma-separated values)";
+			}
+
+            flush();
+			$file=fopen("$lead_file", "r");
 		
-								##### Check for duplicate phone numbers in osdial_list table for all lists in a campaign #####
-								if (eregi("DUPCAMP",$dupcheck))
-									{
-										$dup_lead=0;
-										$dup_lists='';
-									$stmt="select campaign_id from osdial_lists where list_id='$list_id';";
-									$rslt=mysql_query($stmt, $link);
-									$ci_recs = mysql_num_rows($rslt);
-									if ($ci_recs > 0)
-										{
-										$row=mysql_fetch_row($rslt);
-										$dup_camp =			$row[0];
-		
-										$stmt="select list_id from osdial_lists where campaign_id='$dup_camp';";
-										$rslt=mysql_query($stmt, $link);
-										$li_recs = mysql_num_rows($rslt);
-										if ($li_recs > 0)
-											{
-											$L=0;
-											while ($li_recs > $L)
-												{
-												$row=mysql_fetch_row($rslt);
-												$dup_lists .=	"'$row[0]',";
-												$L++;
-												}
-											$dup_lists = eregi_replace(",$",'',$dup_lists);
-		
-											$stmt="select list_id from osdial_list where phone_number='$phone_number' and list_id IN($dup_lists) limit 1;";
-											$rslt=mysql_query($stmt, $link);
-											$pc_recs = mysql_num_rows($rslt);
-											if ($pc_recs > 0)
-												{
-												$dup_lead=1;
-												$row=mysql_fetch_row($rslt);
-												$dup_lead_list =	$row[0];
-												}
-											if ($dup_lead < 1)
-												{
-												if (eregi("$phone_number$US$list_id",$phone_list))
-													{$dup_lead++; $dup++;}
-												}
-											}
-										}
-									}
-		
-								##### Check for duplicate phone numbers in osdial_list table entire database #####
-								if (eregi("DUPSYS",$dupcheck))
-									{
-									$dup_lead=0;
-									$stmt="select list_id from osdial_list where phone_number='$phone_number';";
-									$rslt=mysql_query($stmt, $link);
-									$pc_recs = mysql_num_rows($rslt);
-									if ($pc_recs > 0)
-										{
-										$dup_lead=1;
-										$row=mysql_fetch_row($rslt);
-										$dup_lead_list =	$row[0];
-										}
-									if ($dup_lead < 1)
-										{
-										if (eregi("$phone_number$US$list_id",$phone_list))
-											{$dup_lead++; $dup++;}
-										}
-									}
-		
-								##### Check for duplicate phone numbers in osdial_list table for one list_id #####
-								if (eregi("DUPLIST",$dupcheck))
-									{
-									$dup_lead=0;
-									$stmt="select count(*) from osdial_list where phone_number='$phone_number' and list_id='$list_id';";
-									$rslt=mysql_query($stmt, $link);
-									$pc_recs = mysql_num_rows($rslt);
-									if ($pc_recs > 0)
-										{
-										$row=mysql_fetch_row($rslt);
-										$dup_lead =			$row[0];
-										$dup_lead_list =	$list_id;
-										}
-									if ($dup_lead < 1)
-										{
-										if (eregi("$phone_number$US$list_id",$phone_list))
-											{$dup_lead++; $dup++;}
-										}
-									}
-		
-								if ( (strlen($phone_number)>6) and ($dup_lead<1) )
-									{
-									if (strlen($phone_code)<1) {$phone_code = '1';}
-		
-									$US='_';
-									$phone_list .= "$phone_number$US$list_id|";
-		
-									$gmt_offset = lookup_gmt($phone_code,$USarea,$state,$LOCAL_GMT_OFF_STD,$Shour,$Smin,$Ssec,$Smon,$Smday,$Syear,$postalgmt,$postal_code);
-		
-									if ($multi_insert_counter > 8) {
-										### insert good deal into pending_transactions table ###
-										$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00','$cost','0000-00-00 00:00:00');";
-										$rslt=mysql_query($stmtZ, $link);
-										if ($WeBRooTWritablE > 0) 
-											{fwrite($stmt_file, $stmtZ."\r\n");}
-										$multistmt='';
-										$multi_insert_counter=0;
-		
-									} else {
-										$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00','$cost','0000-00-00 00:00:00'),";
-										$multi_insert_counter++;
-									}
-		
-									$good++;
-								} else {
-									if ($bad < 1000000) {print "<BR></b><font size=1 color=red>record $total BAD- PHONE: $phone_number ROW: |$row[0]| DUP: $dup_lead  $dup_lead_list</font><b>\n";}
-									$bad++;
-								}
-								$total++;
-								if ($total%100==0) {
-									print "<script language='JavaScript1.2'>ShowProgress($good, $bad, $total, $dup, $post)</script>";
-									usleep(1000);
-									flush();
-								}
-							}
-						}
-						if ($multi_insert_counter!=0) {
-							$stmtZ = "INSERT INTO osdial_list values".substr($multistmt, 0, -1).";";
-							mysql_query($stmtZ, $link);
-							if ($WeBRooTWritablE > 0) 
-								{fwrite($stmt_file, $stmtZ."\r\n");}
-						}
-						if ($bad >'0') {
-							$FC="<font color='red'>";
-						} else {
-							$FC="<font color='$default_text'>";
-						}
-						print "<BR><BR>Done</B><br><br> GOOD: <font color='$default_text'>$good</font> &nbsp; &nbsp; &nbsp; BAD: $FC $bad </font> &nbsp; &nbsp; &nbsp; TOTAL: $FC $total</font></center>";
-						$Imported++;
-						
-					} else {
-						print "<center><font face='arial, helvetica' size=3 color='#990000'><B>ERROR: The file does not have the required number of fields to process it.</B></font></center>";
-					}
-				} else if (!eregi(".csv", $leadfile_name)) {
-					# copy($leadfile, "./osdial_temp_file.xls");
-					$file=fopen("$lead_file", "r");
-		
-					print "<center><font size=3 color='$default_text'><B>Processing Excel file... \n";
-					if (strlen($list_id_override)>0) 
-					{
-					print "<BR><BR>LIST ID OVERRIDE FOR THIS FILE: $list_id_override<BR><BR>\n";
-					}
-					if (strlen($phone_code_override)>0) 
-					{
-					print "<BR><BR>PHONE CODE OVERRIDE FOR THIS FILE: $phone_code_override<BR><BR>\n";
-					}
-				# print "|$WeBServeRRooT/admin/listloader_super.pl $vendor_lead_code_field,$source_id_field,$list_id_field,$phone_code_field,$phone_number_field,$title_field,$first_name_field,$middle_initial_field,$last_name_field,$address1_field,$address2_field,$address3_field,$city_field,$state_field,$province_field,$postal_code_field,$country_code_field,$gender_field,$date_of_birth_field,$alt_phone_field,$email_field,$custom1_field,$comments_field, --forcelistid=$list_id_override --lead_file=$lead_file|";
-					$dupcheckCLI=''; $postalgmtCLI='';
-					if (eregi("DUPLIST",$dupcheck)) {$dupcheckCLI='--duplicate-check';}
-					if (eregi("DUPCAMP",$dupcheck)) {$dupcheckCLI='--duplicate-campaign-check';}
-					if (eregi("DUPSYS",$dupcheck)) {$dupcheckCLI='--duplicate-system-check';}
-					if (eregi("POSTAL",$postalgmt)) {$postalgmtCLI='--postal-code-gmt';}
-					passthru("$WeBServeRRooT/admin/listloader_super.pl $vendor_lead_code_field,$source_id_field,$list_id_field,$phone_code_field,$phone_number_field,$title_field,$first_name_field,$middle_initial_field,$last_name_field,$address1_field,$address2_field,$address3_field,$city_field,$state_field,$province_field,$postal_code_field,$country_code_field,$gender_field,$date_of_birth_field,$alt_phone_field,$email_field,$custom1_field,$comments_field, --forcelistid=$list_id_override --forcephonecode=$phone_code_override --lead-file=$lead_file $postalgmtCLI $dupcheckCLI");
-				} else {
-					# copy($leadfile, "./osdial_temp_file.csv");
-					$file=fopen("$lead_file", "r");
-		
-					if ($WeBRooTWritablE > 0)
-						{$stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");}
+			if ($WeBRooTWritablE > 0 and $single_insert < 1) $stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");
 					
-					print "<center><font size=3 color='$default_text'><B>Processing CSV file... \n";
-					if (strlen($list_id_override)>0) 
-						{
-						print "<BR><BR>LIST ID OVERRIDE FOR THIS FILE: $list_id_override<BR><BR>";
-						}
-		
-					if (strlen($phone_code_override)>0) 
-						{
-						print "<BR><BR>PHONE CODE OVERRIDE FOR THIS FILE: $phone_code_override<BR><BR>";
-						}
-		
-					while($row=fgetcsv($file, 1000, ",")) {
-		
-						$pulldate=date("Y-m-d H:i:s");
-						$entry_date =			"$pulldate";
-						$modify_date =			"";
-						$status =				"NEW";
-						$user =                 "";
-						$vendor_lead_code =		mysql_real_escape_string($row[$vendor_lead_code_field]);
-						$source_code =			mysql_real_escape_string($row[$source_id_field]);
-						$source_id=             $source_code;
-						$list_id =				mysql_real_escape_string($row[$list_id_field]);
-						$gmt_offset =			'0';
-						$called_since_last_reset='N';
-						$phone_code =			eregi_replace("[^0-9]", "", $row[$phone_code_field]);
-						$phone_number =			eregi_replace("[^0-9]", "", $row[$phone_number_field]);
-						$USarea = 			    substr($phone_number, 0, 3);
-						$title =				mysql_real_escape_string($row[$title_field]);
-						$first_name =			mysql_real_escape_string($row[$first_name_field]);
-						$middle_initial =		mysql_real_escape_string($row[$middle_initial_field]);
-						$last_name =			mysql_real_escape_string($row[$last_name_field]);
-						$address1 =				mysql_real_escape_string($row[$address1_field]);
-						$address2 =				mysql_real_escape_string($row[$address2_field]);
-						$address3 =				mysql_real_escape_string($row[$address3_field]);
-						$city =                 mysql_real_escape_string($row[$city_field]);
-						$state =				mysql_real_escape_string($row[$state_field]);
-						$province =				mysql_real_escape_string($row[$province_field]);
-						$postal_code =			mysql_real_escape_string($row[$postal_code_field]);
-						$country_code =			mysql_real_escape_string($row[$country_code_field]);
-						$gender =				mysql_real_escape_string($row[$gender_field]);
-						$date_of_birth =		mysql_real_escape_string($row[$date_of_birth_field]);
-						$alt_phone =			eregi_replace("[^0-9]", "", $row[$alt_phone_field]);
-						$email =				mysql_real_escape_string($row[$email_field]);
-						$custom1 =		        mysql_real_escape_string($row[$custom1_field]);
-						$comments =				mysql_real_escape_string(trim($row[$comments_field]));
-						$custom2 =		        mysql_real_escape_string($row[$custom2_field]);
-						$external_key =		    mysql_real_escape_string($row[$external_key_field]);
-						$cost =		            mysql_real_escape_string($row[$cost_field]);
-		
-							if (strlen($list_id_override)>0) 
-								{
-								$list_id = $list_id_override;
-								}
-							if (strlen($phone_code_override)>0) 
-								{
-								$phone_code = $phone_code_override;
-								}
+			echo "<center><font size=3 color='$default_text'><B>Processing $delim_name file... \n<br>";
 
-                            # Try to grab cost if its zero 
-                            if ($cost == 0) {
-                                $lcost = get_first_record($link, 'osdial_lists', '*', "list_id='" . mysql_real_escape_string($list_id) . "'");
-                                $cost = $lcost['cost'];
+            echo "<iframe name='lead_count' width='600' height='250' align='middle' frameborder='0' scrolling='no'></iframe>\n<br>\n";
+            echo "<div name='load_win' id='load_win' style='width:850px;align:center;'>\n";
+            echo "  <div name='load_status' id='load_status' style='float:left;text-align:center;width:50%;height:200px;overflow:auto;'></div>\n";
+            echo "  <div name='load_error' id='load_error' style='float:left;text-align:left;width:50%;height:200px;overflow:auto;'></div>\n";
+            echo "</div>";
+            require($WeBServeRRooT . "/admin/include/footer.php");
+
+			while($row=fgetcsv($file, 1000, $delimiter)) {
+				$pulldate=date("Y-m-d H:i:s");
+				$entry_date =			"$pulldate";
+				$modify_date =			"";
+				$status =				"NEW";
+				$user =                 "";
+				$vendor_lead_code =		$row[$vendor_lead_code_field];
+				$source_code =			$row[$source_id_field];
+				$source_id=             $source_code;
+				$list_id =				$row[$list_id_field];
+				$gmt_offset =			'0';
+				$called_since_last_reset='N';
+				$phone_code =			eregi_replace("[^0-9]", "", $row[$phone_code_field]);
+				$phone_number =			eregi_replace("[^0-9]", "", $row[$phone_number_field]);
+				$USarea = 			    substr($phone_number, 0, 3);
+				$title =				$row[$title_field];
+				$first_name =			$row[$first_name_field];
+				$middle_initial =		$row[$middle_initial_field];
+				$last_name =			$row[$last_name_field];
+				$address1 =				$row[$address1_field];
+				$address2 =				$row[$address2_field];
+				$address3 =				$row[$address3_field];
+				$city =                 $row[$city_field];
+				$state =				$row[$state_field];
+				$province =				$row[$province_field];
+				$postal_code =			$row[$postal_code_field];
+				$country_code =			$row[$country_code_field];
+				$gender =				$row[$gender_field];
+				$date_of_birth =		$row[$date_of_birth_field];
+				$alt_phone =			eregi_replace("[^0-9]", "", $row[$alt_phone_field]);
+				$email =				$row[$email_field];
+				$custom1 =		        $row[$custom1_field];
+				$comments =				trim($row[$comments_field]);
+				$custom2 =		        $row[$custom2_field];
+				$external_key =		    $row[$external_key_field];
+				$cost =		            $row[$cost_field];
+
+                $aflds = explode(',',$aff_fields);
+                foreach ($aflds as $afld) {
+                    $aff_field[$afld] = $row[get_variable($afld)];
+                }
+		
+				if (strlen($list_id_override)>0) $list_id = $list_id_override;
+				if (strlen($phone_code_override)>0) $phone_code = $phone_code_override;
+				if (strlen($phone_code)<1) $phone_code = '1';
+
+                $list_camp = get_first_record($link, 'osdial_lists', '*', sprintf("list_id='%s'", mres($list_id)));
+
+                # Try to grab cost if its zero 
+                if ($cost == 0) $cost = $list_camp['cost'];
+
+
+                if ($dupcheck != "" and $dupcheck != "NONE") {
+				    $dup_lead=0;
+                    $dup_list = '';
+                    $dup_list_active = '';
+                    $dup_syslist = '';
+                    $dup_syslist_active = '';
+
+                    if (preg_match('/^DUPCAMP/i',$dupcheck)) {
+                        $camp_lists = get_krh($link, 'osdial_lists', 'list_id,active', '', sprintf("campaign_id='%s'",mres($list_camp['campaign_id'])), '');
+                        foreach ($camp_lists as $clist) {
+                            if ($clist['list_id'] != "") {
+                                $dup_list .= "'" . mres($clist['list_id']) . "',";
+                                if ($clist['active'] == "Y")
+                                    $dup_list_active .= "'" . mres($clist['list_id']) . "',";
                             }
+                        }
+                        $dup_list = rtrim($dup_list,',');
+                        $dup_list_active = rtrim($dup_list_active,',');
+                    }
+
+                    if (preg_match('/^DUPSYS/i',$dupcheck)) {
+                        $sys_lists = get_krh($link, 'osdial_lists', 'list_id,active', '', '', '');
+                        foreach ($sys_lists as $slist) {
+                            if ($slist['list_id'] != "") {
+                                $dup_syslist .= "'" . mres($slist['list_id']) . "',";
+                                if ($slist['active'] == "Y")
+                                    $dup_syslist_active .= "'" . mres($slist['list_id']) . "',";
+                            }
+                        }
+                        $dup_syslist = rtrim($dup_syslist,',');
+                        $dup_syslist_active = rtrim($dup_syslist_active,',');
+                    }
+
+
+                    if (preg_match('/^DUPCAMP$/i',$dupcheck)) {
+                        $dup_where = sprintf("phone_number='%s' AND list_id IN (%s)",mres($phone_number),$dup_list);
+
+                    } elseif (preg_match('/^DUPCAMPACT$/i',$dupcheck)) {
+                        $dup_where = sprintf("phone_number='%s' AND list_id IN (%s)",mres($phone_number),$dup_list_active);
+
+                    } elseif (preg_match('/^DUPSYS$/i',$dupcheck)) {
+                        $dup_where = sprintf("phone_number='%s' AND list_id IN (%s)",mres($phone_number),$dup_syslist);
+
+                    } elseif (preg_match('/^DUPSYSACT$/i',$dupcheck)) {
+                        $dup_where = sprintf("phone_number='%s' AND list_id IN (%s)",mres($phone_number),$dup_syslist_active);
+
+                    } elseif (preg_match('/^DUPLIST$/i',$dupcheck)) {
+                        $dup_where = sprintf("phone_number='%s' AND list_id='%s'",mres($phone_number),mres($list_id));
+                    }
+
+                    # Check for the duplicate.
+                    $gfr_dup = get_first_record($link, 'osdial_list', 'lead_id,list_id', $dup_where);
+                    if ($gfr_dup['lead_id'] > 0) {
+                        $dup_lead++;
+                        $dup++;
+                    }
+                }
+
+
+				if (strlen($phone_number) > 6 and strlen($phone_number) < 17 and $dup_lead < 1) {
+					$gmtl = lookup_gmt($phone_code,$USarea,$state,$LOCAL_GMT_OFF_STD,$Shour,$Smin,$Ssec,$Smon,$Smday,$Syear,$postalgmt,$postal_code);
+					$gmt_offset = $gmtl[0];
+                    $postal = $gmtl[1];
+                    if ($postal > 0) $post++;
 		
-							##### Check for duplicate phone numbers in osdial_list table for all lists in a campaign #####
-							if (eregi("DUPCAMP",$dupcheck))
-								{
-									$dup_lead=0;
-									$dup_lists='';
-								$stmt="select campaign_id from osdial_lists where list_id='$list_id';";
-								$rslt=mysql_query($stmt, $link);
-								$ci_recs = mysql_num_rows($rslt);
-								if ($ci_recs > 0)
-									{
-									$row=mysql_fetch_row($rslt);
-									$dup_camp =			$row[0];
+					if ($single_insert > 0) {
+						$stmtZ = sprintf("INSERT INTO osdial_list values ('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00');",mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost));
+						$rslt=mysql_query($stmtZ, $link);
+                        $lead_id = mysql_insert_id($link);
+                        foreach ($aff_field as $k => $v) {
+                            if (strlen($v)>0) {
+                                $afs = explode('_',$k);
+                                $stmt = sprintf("INSERT INTO osdial_list_fields SET lead_id='%s',field_id='%s',value='%s';", mres($lead_id), mres($afs[2]),mres($v));
+						        $rslt=mysql_query($stmt, $link);
+                                $affcnt++;
+                            }
+                        }
+
+					} elseif ($multi_insert_counter > 8) {
+						### insert good deal into pending_transactions table ###
+						$stmtZ = sprintf("INSERT INTO osdial_list values%s('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00');",$multistmt,mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost));
+						$rslt=mysql_query($stmtZ, $link);
+						if ($WeBRooTWritablE > 0) fwrite($stmt_file, $stmtZ."\r\n");
+						$multistmt='';
+						$multi_insert_counter=0;
 		
-									$stmt="select list_id from osdial_lists where campaign_id='$dup_camp';";
-									$rslt=mysql_query($stmt, $link);
-									$li_recs = mysql_num_rows($rslt);
-									if ($li_recs > 0)
-										{
-										$L=0;
-										while ($li_recs > $L)
-											{
-											$row=mysql_fetch_row($rslt);
-											$dup_lists .=	"'$row[0]',";
-											$L++;
-											}
-										$dup_lists = eregi_replace(",$",'',$dup_lists);
-		
-										$stmt="select list_id from osdial_list where phone_number='$phone_number' and list_id IN($dup_lists) limit 1;";
-										$rslt=mysql_query($stmt, $link);
-										$pc_recs = mysql_num_rows($rslt);
-										if ($pc_recs > 0)
-											{
-											$dup_lead=1;
-											$row=mysql_fetch_row($rslt);
-											$dup_lead_list =	$row[0];
-											}
-										if ($dup_lead < 1)
-											{
-											if (eregi("$phone_number$US$list_id",$phone_list))
-												{$dup_lead++; $dup++;}
-											}
-										}
-									}
-								}
-					
-							##### Check for duplicate phone numbers in osdial_list table entire database #####
-							if (eregi("DUPSYS",$dupcheck))
-								{
-								$dup_lead=0;
-								$stmt="select list_id from osdial_list where phone_number='$phone_number';";
-								$rslt=mysql_query($stmt, $link);
-								$pc_recs = mysql_num_rows($rslt);
-								if ($pc_recs > 0)
-									{
-									$dup_lead=1;
-									$row=mysql_fetch_row($rslt);
-									$dup_lead_list =	$row[0];
-									}
-								if ($dup_lead < 1)
-									{
-									if (eregi("$phone_number$US$list_id",$phone_list))
-										{$dup_lead++; $dup++;}
-									}
-								}
-		
-							##### Check for duplicate phone numbers in osdial_list table for one list_id #####
-							if (eregi("DUPLIST",$dupcheck))
-								{
-								$dup_lead=0;
-								$stmt="select count(*) from osdial_list where phone_number='$phone_number' and list_id='$list_id';";
-								$rslt=mysql_query($stmt, $link);
-								$pc_recs = mysql_num_rows($rslt);
-								if ($pc_recs > 0)
-									{
-									$row=mysql_fetch_row($rslt);
-									$dup_lead =			$row[0];
-									}
-								if ($dup_lead < 1)
-									{
-									if (eregi("$phone_number$US$list_id",$phone_list))
-										{$dup_lead++; $dup++;}
-									}
-								}
-		
-							if ( (strlen($phone_number)>6) and ($dup_lead<1) )
-								{
-								if (strlen($phone_code)<1) {$phone_code = '1';}
-		
-								$US='_';
-								$phone_list .= "$phone_number$US$list_id|";
-		
-								$gmt_offset = lookup_gmt($phone_code,$USarea,$state,$LOCAL_GMT_OFF_STD,$Shour,$Smin,$Ssec,$Smon,$Smday,$Syear,$postalgmt,$postal_code);
-		
-		
-							if ($multi_insert_counter > 8) {
-								### insert good deal into pending_transactions table ###
-								$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00','$cost','0000-00-00 00:00:00');";
-								$rslt=mysql_query($stmtZ, $link);
-								if ($WeBRooTWritablE > 0) 
-									{fwrite($stmt_file, $stmtZ."\r\n");}
-								$multistmt='';
-								$multi_insert_counter=0;
-		
-							} else {
-								$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00','$cost','0000-00-00 00:00:00'),";
-								$multi_insert_counter++;
-							}
-		
-							$good++;
-						} else {
-							if ($bad < 1000000) {print "<BR></b><font size=1 color=red>record $total BAD- PHONE: $phone_number ROW: |$row[0]| DUP: $dup_lead</font><b>\n";}
-							$bad++;
-						}
-						$total++;
-						if ($total%100==0) {
-							print "<script language='JavaScript1.2'>ShowProgress($good, $bad, $total, $dup, $post)</script>";
-							usleep(1000);
-							flush();
-						}
-					}
-					if ($multi_insert_counter!=0) {
-						$stmtZ = "INSERT INTO osdial_list values".substr($multistmt, 0, -1).";";
-						mysql_query($stmtZ, $link);
-						if ($WeBRooTWritablE > 0) 
-							{fwrite($stmt_file, $stmtZ."\r\n");}
-					}
-					if ($bad >'0') {
-						$FC="<font color='red'>";
-					} else {
-						$FC="<font color='$default_text'>";
-					}
-					print "<BR><BR>Done</B><br><br> GOOD: <font color='$default_text'>$good</font> &nbsp; &nbsp; &nbsp; BAD: $FC $bad</font> &nbsp; &nbsp; &nbsp; TOTAL: $FC $total</font></center>";
-					$Imported++;
-                    $leadfile_name = '';
-				}
-				print "<script language='JavaScript1.2'>document.forms[0].leadfile.disabled=false; document.forms[0].submit_file.disabled=false; document.forms[0].reload_page.disabled=false;</script>";
-		} elseif ($leadfile_name) {
-			# Look for list id before importing leads
-			if ($list_id_override) {
-				$stmt="select list_id from osdial_lists where list_id='$list_id_override';";
-				$rslt=mysql_query($stmt, $link);
-				$row=mysql_fetch_row($rslt);
-				$ListID=$row[0];
-				if ($ListID == "") {
-					echo "<br><br>You are trying to load leads into a non existent list $list_id_override<br>";
+				    } else {
+					    $multistmt .= sprintf("('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00'),",mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost));
+					    $multi_insert_counter++;
+				    }
+				    $good++;
+
+				} elseif ($dup_lead > 0) {
+                    echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=#ff6600>record " . ($total + 1) . " DUP-$dup: L$dup_lead / P$phone_number</font></b><br>';\n</script>\n";
+                } else {
+                    $bad++;
+                    echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=red>record " . ($total + 1) . " BAD-$bad: P$phone_number</font></b><br>';\n</script>\n";
+                }
+				ob_flush();
+				flush();
+				$total++;
+
+				if ($total%200==0) {
+				    echo "<script language='javascript'>\nShowProgress($good, $bad, $total, $dup, $post, $affcnt);\n</script>\n";
+                    echo "<script language='javascript'>\ndocument.getElementById('load_status').innerHTML += '.';\n</script>\n";
+                    if ($dot_count >= 80) {
+                        echo "<script language='javascript'>\ndocument.getElementById('load_status').innerHTML += '<br>';\n</script>\n";
+                        $dot_count=0;
+                    }
+				    ob_flush();
+				    flush();
+                    $dot_count++;
 				}
 			}
-			
-			
-			$total=0; $good=0; $bad=0; $dup=0; $post=0; $phone_list='';
-			if ($file_layout=="standard") {
-		
-				print "<script language='JavaScript1.2'>document.forms[0].leadfile.disabled=true; document.forms[0].submit_file.disabled=true; document.forms[0].reload_page.disabled=true;</script>";
-				flush();
-		
-				if (!eregi(".csv", $leadfile_name) && !eregi(".xls", $leadfile_name)) {
-		
-				if ($WeBRooTWritablE > 0) {
-					copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.txt");
-					$lead_file = "./osdial_temp_file.txt";
-				} else {
-					copy($LF_path, "/tmp/osdial_temp_file.txt");
-					$lead_file = "/tmp/osdial_temp_file.txt";
-				}
-				$file=fopen("$lead_file", "r");
-				if ($WeBRooTWritablE > 0)
-					{$stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");}
-		
-				$buffer=fgets($file, 4096);
-				$tab_count=substr_count($buffer, "\t");
-				$pipe_count=substr_count($buffer, "|");
-		
-				if ($tab_count>$pipe_count) {$delimiter="\t";  $delim_name="tab";} else {$delimiter="|";  $delim_name="pipe";}
-				$field_check=explode($delimiter, $buffer);
-		
-				if (count($field_check)>=3) {
-					flush();
-					$file=fopen("$lead_file", "r");
-					$total=0; $good=0; $bad=0; $dup=0; $post=0; $phone_list='';
-					print "<center><font size=3 color='$default_text'><B>Processing $delim_name-delimited file... ($tab_count|$pipe_count)\n";
-					if (strlen($list_id_override)>0) {
-						print "<BR><BR>LIST ID OVERRIDE FOR THIS FILE: $list_id_override<BR><BR>";
-					}
-					if (strlen($phone_code_override)>0) {
-						print "<BR><BR>PHONE CODE OVERRIDE FOR THIS FILE: $phone_code_override<BR><BR>\n";
-					}
-					while (!feof($file)) {
-						$record++;
-						$buffer=rtrim(fgets($file, 4096));
-						$buffer=stripslashes($buffer);
-		
-						if (strlen($buffer)>0) {
-							$row=explode($delimiter, eregi_replace("[\'\"]", "", $buffer));
-		
-							$pulldate=date("Y-m-d H:i:s");
-							$entry_date =			"$pulldate";
-							$modify_date =			"";
-							$status =				"NEW";
-							$user ="";
-							$vendor_lead_code =		$row[0];
-							$source_code =			$row[1];
-							$source_id=$source_code;
-							$list_id =				$row[2];
-							$gmt_offset =			'0';
-							$called_since_last_reset='N';
-							$phone_code =			eregi_replace("[^0-9]", "", $row[3]);
-							$phone_number =			eregi_replace("[^0-9]", "", $row[4]);
-							$USarea = 			substr($phone_number, 0, 3);
-							$title =				$row[5];
-							$first_name =			$row[6];
-							$middle_initial =		$row[7];
-							$last_name =			$row[8];
-							$address1 =				$row[9];
-							$address2 =				$row[10];
-							$address3 =				$row[11];
-							$city =$row[12];
-							$state =				$row[13];
-							$province =				$row[14];
-							$postal_code =			$row[15];
-							$country_code =			$row[16];
-							$gender =				$row[17];
-							$date_of_birth =		$row[18];
-							$alt_phone =			eregi_replace("[^0-9]", "", $row[19]);
-							$email =				$row[20];
-							$custom1 =		$row[21];
-							$comments =				trim($row[22]);
-		
-							if (strlen($list_id_override)>0) {
-								$list_id = $list_id_override;
-							}
-							if (strlen($phone_code_override)>0) {
-								$phone_code = $phone_code_override;
-							}
+			if ($single_insert < 1 and $multi_insert_counter!=0) {
+				$stmtZ = "INSERT INTO osdial_list values".substr($multistmt, 0, -1).";";
+				mysql_query($stmtZ, $link);
+				if ($WeBRooTWritablE > 0) fwrite($stmt_file, $stmtZ."\r\n");
+			}
 
-                            # Grab cost as its zero.
-                            $lcost = get_first_record($link, 'osdial_lists', '*', "list_id='" . mysql_real_escape_string($list_id) . "'");
-                            $cost = $lcost['cost'];
-		
-							##### Check for duplicate phone numbers in osdial_list table for all lists in a campaign #####
-							if (eregi("DUPCAMP",$dupcheck)) {
-								$dup_lead=0;
-								$dup_lists='';
-								$stmt="select campaign_id from osdial_lists where list_id='$list_id';";
-								$rslt=mysql_query($stmt, $link);
-								$ci_recs = mysql_num_rows($rslt);
-								if ($ci_recs > 0) {
-									$row=mysql_fetch_row($rslt);
-									$dup_camp =			$row[0];
-		
-									$stmt="select list_id from osdial_lists where campaign_id='$dup_camp';";
-									$rslt=mysql_query($stmt, $link);
-									$li_recs = mysql_num_rows($rslt);
-									if ($li_recs > 0) {
-										$L=0;
-										while ($li_recs > $L) {
-											$row=mysql_fetch_row($rslt);
-											$dup_lists .=	"'$row[0]',";
-											$L++;
-										}
-										$dup_lists = eregi_replace(",$",'',$dup_lists);
-		
-										$stmt="select list_id from osdial_list where phone_number='$phone_number' and list_id IN($dup_lists) limit 1;";
-										$rslt=mysql_query($stmt, $link);
-										$pc_recs = mysql_num_rows($rslt);
-										if ($pc_recs > 0) {
-											$dup_lead=1;
-											$row=mysql_fetch_row($rslt);
-											$dup_lead_list =	$row[0];
-										}
-										if ($dup_lead < 1) {
-											if (eregi("$phone_number$US$list_id",$phone_list)) {
-												$dup_lead++; $dup++;
-											}
-										}
-									}
-								}
-							}
-		
-							##### Check for duplicate phone numbers in osdial_list table entire database #####
-							if (eregi("DUPSYS",$dupcheck)) {
-								$dup_lead=0;
-								$stmt="select list_id from osdial_list where phone_number='$phone_number';";
-								$rslt=mysql_query($stmt, $link);
-								$pc_recs = mysql_num_rows($rslt);
-								if ($pc_recs > 0) {
-									$dup_lead=1;
-									$row=mysql_fetch_row($rslt);
-									$dup_lead_list =	$row[0];
-								}
-								if ($dup_lead < 1) {
-									if (eregi("$phone_number$US$list_id",$phone_list)) {
-										$dup_lead++; $dup++;
-									}
-								}
-							}
-		
-							##### Check for duplicate phone numbers in osdial_list table for one list_id #####
-							if (eregi("DUPLIST",$dupcheck)) {
-								$dup_lead=0;
-								$stmt="select count(*) from osdial_list where phone_number='$phone_number' and list_id='$list_id';";
-								$rslt=mysql_query($stmt, $link);
-								$pc_recs = mysql_num_rows($rslt);
-								if ($pc_recs > 0) {
-									$row=mysql_fetch_row($rslt);
-									$dup_lead =			$row[0];
-								}
-								if ($dup_lead < 1) {
-									if (eregi("$phone_number$US$list_id",$phone_list)) {
-										$dup_lead++; $dup++;
-									}
-								}
-							}
-		
-							if ( (strlen($phone_number)>6) and ($dup_lead<1) ) {
-								if (strlen($phone_code)<1) {
-									$phone_code = '1';
-								}
-		
-								$US='_';
-								$phone_list .= "$phone_number$US$list_id|";
-	
-								$gmt_offset = lookup_gmt($phone_code,$USarea,$state,$LOCAL_GMT_OFF_STD,$Shour,$Smin,$Ssec,$Smon,$Smday,$Syear,$postalgmt,$postal_code);
-		
-		
-								if ($multi_insert_counter > 8) {
-									### insert good deal into pending_transactions table ###
-									$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00','$cost','0000-00-00 00:00:00');";
-									$rslt=mysql_query($stmtZ, $link);
-									if ($WeBRooTWritablE > 0) 
-										{fwrite($stmt_file, $stmtZ."\r\n");}
-									$multistmt='';
-									$multi_insert_counter=0;
-		
-								} else {
-									$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00','$cost','0000-00-00 00:00:00'),";
-									$multi_insert_counter++;
-								}
-		
-								$good++;
-							} else {
-								if ($bad < 1000000) {
-									print "<BR></b><font size=1 color=red>record $total BAD- PHONE: $phone_number ROW: |$row[0]| DUP: $dup_lead</font><b>\n";
-								}
-								$bad++;
-							}
-							$total++;
-							if ($total%100==0) {
-								print "<script language='JavaScript1.2'>ShowProgress($good, $bad, $total, $dup, $post)</script>";
-								usleep(1000);
-								flush();
-							}
-						}
-					}
-					if ($multi_insert_counter!=0) {
-						$stmtZ = "INSERT INTO osdial_list values".substr($multistmt, 0, -1).";";
-						mysql_query($stmtZ, $link);
-						if ($WeBRooTWritablE > 0) {
-							fwrite($stmt_file, $stmtZ."\r\n");
-						}
-					}
-					if ($bad >'0') {
-						$FC="<font color='red'>";
-					} else {
-						$FC="<font color='$default_text'>";
-					}
-					print "<BR><BR>Done</B><br><br> GOOD: <font color='$default_text'>$good</font> &nbsp; &nbsp; &nbsp; BAD: $FC $bad</font> &nbsp; &nbsp; &nbsp; TOTAL: $FC $total</font></center>";
-					$Imported++;
-		
-				} else {
-					print "<center><font face='arial, helvetica' size=3 color='#990000'><B>ERROR: The file does not have the required number of fields to process it.</B></font></center>";
-				}
-			} else if (!eregi(".csv", $leadfile_name)) {
-				if ($WeBRooTWritablE > 0) {
-					copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.xls");
-					$lead_file = "$WeBServeRRooT/admin/osdial_temp_file.xls";
-				} else {
-					copy($LF_path, "/tmp/osdial_temp_file.xls");
-					$lead_file = "/tmp/osdial_temp_file.xls";
-				}
-				$file=fopen("$lead_file", "r");
-		
-			#	echo "|$WeBServeRRooT/admin/listloader.pl --forcelistid=$list_id_override --lead-file=$lead_file|";
-				$dupcheckCLI=''; $postalgmtCLI='';
-				if (eregi("DUPLIST",$dupcheck)) {$dupcheckCLI='--duplicate-check';}
-				if (eregi("DUPCAMP",$dupcheck)) {$dupcheckCLI='--duplicate-campaign-check';}
-				if (eregi("DUPSYS",$dupcheck)) {$dupcheckCLI='--duplicate-system-check';}
-				if (eregi("POSTAL",$postalgmt)) {$postalgmtCLI='--postal-code-gmt';}
-				passthru("$WeBServeRRooT/admin/listloader.pl --forcelistid=$list_id_override --forcephonecode=$phone_code_override --lead-file=$lead_file  $postalgmtCLI $dupcheckCLI");
+			echo "<script language='javascript'>\nShowProgress($good, $bad, $total, $dup, $post, $affcnt);\n</script>\n";
+            $dwin = 'load_status';
+            if (($dup + $bad) == 0) $dwin = 'load_win';
+            $lmenu = ''; if ($list_id_override > 0) $lmenu = "<br><br><span style=text-align:center;font-size:14px;><a href=/admin/admin.php?ADD=311&list_id=$list_id_override>[ Back to List ]</a></span>";
+            echo "<script language='javascript'>\ndocument.getElementById('$dwin').innerHTML = '<span style=text-align:center;font-size:48px;><b>DONE<b></span>$lmenu';\n</script>\n";
+			$Imported++;
+            $leadfile_name = '';
+		}
+		echo "<script language='javascript'>\ndocument.forms[0].leadfile.disabled=false;\ndocument.forms[0].submit_file.disabled=false;\ndocument.forms[0].reload_page.disabled=false;\n</script>\n";
+        exit;
+
+	} elseif ($leadfile) {
+		# Look for list id before importing leads
+		if ($list_id_override > 0) {
+            $list_camp = get_first_record($link, 'osdial_lists', '*', sprintf("list_id='%s'", mres($list_id_override)));
+			if ($list_camp['list_id'] == "") echo "<br><br>You are trying to load leads into a non existent list $list_id_override<br>";
+		}
 			
-			} else {
-				if ($WeBRooTWritablE > 0) {
-					copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.csv");
-					$lead_file = "$WeBServeRRooT/admin/osdial_temp_file.csv";
-				} else {
-					copy($LF_path, "/tmp/osdial_temp_file.csv");
-					$lead_file = "/tmp/osdial_temp_file.csv";
-				}
-				$file=fopen("$lead_file", "r");
-				if ($WeBRooTWritablE > 0) {
-					$stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");
-				}
+		$total=0; $good=0; $bad=0; $dup=0; $post=0;
+		if ($file_layout=="standard") {
+			echo "<script language='javascript'>\ndocument.forms[0].leadfile.disabled=true;\ndocument.forms[0].submit_file.disabled=true;\ndocument.forms[0].reload_page.disabled=true;\n</script>\n";
+			ob_flush();
+			flush();
+		
+            # Process the "standard" style Excel file.
+		    if (eregi(".xls$", $leadfile_name)) {
+			    if ($WeBRooTWritablE > 0) {
+				    copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.xls");
+				    $lead_file = "$WeBServeRRooT/admin/osdial_temp_file.xls";
+			    } else {
+				    copy($LF_path, "/tmp/osdial_temp_file.xls");
+				    $lead_file = "/tmp/osdial_temp_file.xls";
+			    }
+			    $file=fopen("$lead_file", "r");
+		
+			    $dupcheckCLI='';
+                $postalgmtCLI='';
+			    if (eregi("DUPLIST",$dupcheck)) $dupcheckCLI='--duplicate-check';
+			    if (eregi("DUPCAMP",$dupcheck)) $dupcheckCLI='--duplicate-campaign-check';
+			    if (eregi("DUPSYS",$dupcheck)) $dupcheckCLI='--duplicate-system-check';
+			    if (eregi("POSTAL",$postalgmt)) $postalgmtCLI='--postal-code-gmt';
+			    passthru("$WeBServeRRooT/admin/listloader.pl --forcelistid=$list_id_override --forcephonecode=$phone_code_override --lead-file=$lead_file  $postalgmtCLI $dupcheckCLI");
+			
+            # Process "standard" CSV/TSV/PSV
+		    } else {
+		    	if ($WeBRooTWritablE > 0) {
+		    		copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.csv");
+		    		$lead_file = "$WeBServeRRooT/admin/osdial_temp_file.csv";
+		    	} else {
+		    		copy($LF_path, "/tmp/osdial_temp_file.csv");
+		    		$lead_file = "/tmp/osdial_temp_file.csv";
+		    	}
+		    	$file=fopen("$lead_file", "r");
+		    	$buffer=fgets($file, 4096);
+		    	$comma_count=substr_count($buffer, ",");
+		    	$tab_count=substr_count($buffer, "\t");
+		    	$pipe_count=substr_count($buffer, "|");
+	
+		    	if ($tab_count > $comma_count and $tab_count > $pipe_count) {
+		    		$delimiter="\t";  $delim_name="TSV (tab-separated values)";
+		    	} elseif ($pipe_count > $tab_count and $pipe_count > $comma_count) {
+		    		$delimiter="|";  $delim_name="PSV (pipe-separated values)";
+		    	} else {
+		    		$delimiter=",";  $delim_name="CSV (comma-separated values)";
+		    	}
+
+                flush();
+		    	$file=fopen("$lead_file", "r");
+		    	if ($WeBRooTWritablE > 0 and $single_insert < 1) $stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");
 				
-				print "<center><font size=3 color='$default_text'><B>Processing CSV file... \n";
+		    	echo "<center><font size=3 color='$default_text'><B>Processing $delim_name file... \n<br>";
 		
-				if (strlen($list_id_override)>0) {
-					print "<BR><BR>LIST ID OVERRIDE FOR THIS FILE: $list_id_override<BR><BR>";
-				}
-				if (strlen($phone_code_override)>0) {
-					print "<BR><BR>PHONE CODE OVERRIDE FOR THIS FILE: $phone_code_override<BR><BR>";
-				}
-		
-				while ($row=fgetcsv($file, 1000, ",")) {
-					$pulldate=date("Y-m-d H:i:s");
-					$entry_date =			"$pulldate";
-					$modify_date =			"";
-					$status =				"NEW";
-					$user ="";
-					$vendor_lead_code =		$row[0];
-					$source_code =			$row[1];
-					$source_id=$source_code;
-					$list_id =				$row[2];
-					$gmt_offset =			'0';
-					$called_since_last_reset='N';
-					$phone_code =			eregi_replace("[^0-9]", "", $row[3]);
-					$phone_number =			eregi_replace("[^0-9]", "", $row[4]);
-					$USarea = 			substr($phone_number, 0, 3);
-					$title =				$row[5];
-					$first_name =			$row[6];
-					$middle_initial =		$row[7];
-					$last_name =			$row[8];
-					$address1 =				$row[9];
-					$address2 =				$row[10];
-					$address3 =				$row[11];
-					$city =$row[12];
-					$state =				$row[13];
-					$province =				$row[14];
-					$postal_code =			$row[15];
-					$country_code =			$row[16];
-					$gender =				$row[17];
-					$date_of_birth =		$row[18];
-					$alt_phone =			eregi_replace("[^0-9]", "", $row[19]);
-					$email =				$row[20];
-					$custom1 =		$row[21];
-					$comments =				trim($row[22]);
-	
-					if (strlen($list_id_override)>0) {
-						$list_id = $list_id_override;
-					}
-					if (strlen($phone_code_override)>0) {
-						$phone_code = $phone_code_override;
-					}
+                echo "<iframe name='lead_count' width='600' height='250' align='middle' frameborder='0' scrolling='no'></iframe>\n<br>\n";
+                echo "<div name='load_win' id='load_win' style='width:850px;align:center;'>\n";
+                echo "  <div name='load_status' id='load_status' style='float:left;text-align:center;width:50%;height:200px;overflow:auto;'></div>\n";
+                echo "  <div name='load_error' id='load_error' style='float:left;text-align:left;width:50%;height:200px;overflow:auto;'></div>\n";
+                echo "</div>";
+                require($WeBServeRRooT . "/admin/include/footer.php");
 
-                    # Grab cost as its zero.
-                    $lcost = get_first_record($link, 'osdial_lists', '*', "list_id='" . mysql_real_escape_string($list_id) . "'");
-                    $cost = $lcost['cost'];
+		    	while ($row=fgetcsv($file, 1000, $delimiter)) {
+		    		$pulldate=date("Y-m-d H:i:s");
+		    		$entry_date =			"$pulldate";
+		    		$modify_date =			"";
+		    		$status =				"NEW";
+		    		$user ="";
+		    		$vendor_lead_code =		$row[0];
+		    		$source_code =			$row[1];
+		    		$source_id=$source_code;
+		    		$list_id =				$row[2];
+		    		$gmt_offset =			'0';
+		    		$called_since_last_reset='N';
+		    		$phone_code =			eregi_replace("[^0-9]", "", $row[3]);
+		    		$phone_number =			eregi_replace("[^0-9]", "", $row[4]);
+		    		$USarea = 			substr($phone_number, 0, 3);
+		    		$title =				$row[5];
+		    		$first_name =			$row[6];
+		    		$middle_initial =		$row[7];
+		    		$last_name =			$row[8];
+		    		$address1 =				$row[9];
+		    		$address2 =				$row[10];
+		    		$address3 =				$row[11];
+		    		$city =$row[12];
+		    		$state =				$row[13];
+		    		$province =				$row[14];
+		    		$postal_code =			$row[15];
+		    		$country_code =			$row[16];
+		    		$gender =				$row[17];
+		    		$date_of_birth =		$row[18];
+		    		$alt_phone =			eregi_replace("[^0-9]", "", $row[19]);
+		    		$email =				$row[20];
+		    		$custom1 =		$row[21];
+		    		$comments =				trim($row[22]);
 	
-					##### Check for duplicate phone numbers in osdial_list table for all lists in a campaign #####
-					if (eregi("DUPCAMP",$dupcheck)) {
-						$dup_lead=0;
-						$dup_lists='';
-						$stmt="select campaign_id from osdial_lists where list_id='$list_id';";
-						$rslt=mysql_query($stmt, $link);
-						$ci_recs = mysql_num_rows($rslt);
-						if ($ci_recs > 0) {
-							$row=mysql_fetch_row($rslt);
-							$dup_camp =			$row[0];
+		    		if (strlen($list_id_override)>0) $list_id = $list_id_override;
+		    		if (strlen($phone_code_override)>0) $phone_code = $phone_code_override;
+		    		if (strlen($phone_code)<1) $phone_code = '1';
+
+                    $list_camp = get_first_record($link, 'osdial_lists', '*', sprintf("list_id='%s'", mres($list_id)));
+
+                    # Try to grab cost if its zero 
+                    if ($cost == 0) $cost = $list_camp['cost'];
+
+
+                    if ($dupcheck != "" and $dupcheck != "NONE") {
+				        $dup_lead=0;
+                        $dup_list = '';
+                        $dup_list_active = '';
+                        $dup_syslist = '';
+                        $dup_syslist_active = '';
+
+                        if (preg_match('/^DUPCAMP/i',$dupcheck)) {
+                            $camp_lists = get_krh($link, 'osdial_lists', 'list_id,active', '', sprintf("campaign_id='%s'",mres($list_camp['campaign_id'])), '');
+                            foreach ($camp_lists as $clist) {
+                                if ($clist['list_id'] != "") {
+                                    $dup_list .= "'" . mres($clist['list_id']) . "',";
+                                    if ($clist['active'] == "Y")
+                                        $dup_list_active .= "'" . mres($clist['list_id']) . "',";
+                                }
+                            }
+                            $dup_list = rtrim($dup_list,',');
+                            $dup_list_active = rtrim($dup_list_active,',');
+                        }
+
+                        if (preg_match('/^DUPSYS/i',$dupcheck)) {
+                            $sys_lists = get_krh($link, 'osdial_lists', 'list_id,active', '', '', '');
+                            foreach ($sys_lists as $slist) {
+                                if ($slist['list_id'] != "") {
+                                    $dup_syslist .= "'" . mres($slist['list_id']) . "',";
+                                    if ($slist['active'] == "Y")
+                                        $dup_syslist_active .= "'" . mres($slist['list_id']) . "',";
+                                }
+                            }
+                            $dup_syslist = rtrim($dup_syslist,',');
+                            $dup_syslist_active = rtrim($dup_syslist_active,',');
+                        }
+
+
+                        if (preg_match('/^DUPCAMP$/i',$dupcheck)) {
+                            $dup_where = sprintf("phone_number='%s' AND list_id IN (%s)",mres($phone_number),$dup_list);
+
+                        } elseif (preg_match('/^DUPCAMPACT$/i',$dupcheck)) {
+                            $dup_where = sprintf("phone_number='%s' AND list_id IN (%s)",mres($phone_number),$dup_list_active);
+
+                        } elseif (preg_match('/^DUPSYS$/i',$dupcheck)) {
+                            $dup_where = sprintf("phone_number='%s' AND list_id IN (%s)",mres($phone_number),$dup_syslist);
+
+                        } elseif (preg_match('/^DUPSYSACT$/i',$dupcheck)) {
+                            $dup_where = sprintf("phone_number='%s' AND list_id IN (%s)",mres($phone_number),$dup_syslist_active);
+
+                        } elseif (preg_match('/^DUPLIST$/i',$dupcheck)) {
+                            $dup_where = sprintf("phone_number='%s' AND list_id='%s'",mres($phone_number),mres($list_id));
+                        }
+
+                        # Check for the duplicate.
+                        $gfr_dup = get_first_record($link, 'osdial_list', 'lead_id,list_id', $dup_where);
+                        if ($gfr_dup['lead_id'] > 0) {
+                            $dup_lead++;
+                            $dup++;
+                        }
+                    }
+
+
+	                if (strlen($phone_number) > 6 and strlen($phone_number) < 17 and $dup_lead < 1) {
+					    $gmtl = lookup_gmt($phone_code,$USarea,$state,$LOCAL_GMT_OFF_STD,$Shour,$Smin,$Ssec,$Smon,$Smday,$Syear,$postalgmt,$postal_code);
+					    $gmt_offset = $gmtl[0];
+                        $postal = $gmtl[1];
+                        if ($postal > 0) $post++;
 	
-							$stmt="select list_id from osdial_lists where campaign_id='$dup_camp';";
-							$rslt=mysql_query($stmt, $link);
-							$li_recs = mysql_num_rows($rslt);
-							if ($li_recs > 0) {
-								$L=0;
-								while ($li_recs > $L) {
-									$row=mysql_fetch_row($rslt);
-									$dup_lists .=	"'$row[0]',";
-									$L++;
-								}
-								
-								$dup_lists = eregi_replace(",$",'',$dup_lists);
-	
-								$stmt="select list_id from osdial_list where phone_number='$phone_number' and list_id IN($dup_lists) limit 1;";
-								$rslt=mysql_query($stmt, $link);
-								$pc_recs = mysql_num_rows($rslt);
-								if ($pc_recs > 0) {
-									$dup_lead=1;
-									$row=mysql_fetch_row($rslt);
-									$dup_lead_list =	$row[0];
-								}
-								if ($dup_lead < 1) {
-									if (eregi("$phone_number$US$list_id",$phone_list)) {
-										$dup_lead++; $dup++;
-									}
-								}
-							}
-						}
-					}
-		
-					##### Check for duplicate phone numbers in osdial_list table entire database #####
-					if (eregi("DUPSYS",$dupcheck)) {
-						$dup_lead=0;
-						$stmt="select list_id from osdial_list where phone_number='$phone_number';";
-						$rslt=mysql_query($stmt, $link);
-						$pc_recs = mysql_num_rows($rslt);
-						if ($pc_recs > 0) {
-							$dup_lead=1;
-							$row=mysql_fetch_row($rslt);
-							$dup_lead_list =	$row[0];
-						}
-						if ($dup_lead < 1) {
-							if (eregi("$phone_number$US$list_id",$phone_list)) {
-								$dup_lead++; $dup++;
-							}
-						}
-					}
-	
-					##### Check for duplicate phone numbers in osdial_list table for one list_id #####
-					if (eregi("DUPLIST",$dupcheck)) {
-						$dup_lead=0;
-						$stmt="select count(*) from osdial_list where phone_number='$phone_number' and list_id='$list_id';";
-						$rslt=mysql_query($stmt, $link);
-						$pc_recs = mysql_num_rows($rslt);
-						if ($pc_recs > 0) {
-							$row=mysql_fetch_row($rslt);
-							$dup_lead =			$row[0];
-						}
-						if ($dup_lead < 1) {
-							if (eregi("$phone_number$US$list_id",$phone_list)) {
-								$dup_lead++; $dup++;
-							}
-						}
-					}
-	
-					if ( (strlen($phone_number)>6) and ($dup_lead<1) ) {
-						if (strlen($phone_code)<1) {
-							$phone_code = '1';
-						}
-	
-						$US='_';
-						$phone_list .= "$phone_number$US$list_id|";
-	
-						$gmt_offset = lookup_gmt($phone_code,$USarea,$state,$LOCAL_GMT_OFF_STD,$Shour,$Smin,$Ssec,$Smon,$Smday,$Syear,$postalgmt,$postal_code);
-	
-	
-						if ($multi_insert_counter > 8) {
-							### insert good deal into pending_transactions table ###
-							$stmtZ = "INSERT INTO osdial_list values$multistmt('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00','$cost','0000-00-00 00:00:00');";
+						if ($single_insert > 0) {
+							$stmtZ = sprintf("INSERT INTO osdial_list values ('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00');",mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost));
 							$rslt=mysql_query($stmtZ, $link);
-							if ($WeBRooTWritablE > 0) 
-								{fwrite($stmt_file, $stmtZ."\r\n");}
+
+						} elseif ($multi_insert_counter > 8) {
+							### insert good deal into pending_transactions table ###
+							$stmtZ = sprintf("INSERT INTO osdial_list values%s('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00');",$multistmt,mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost));
+							$rslt=mysql_query($stmtZ, $link);
+							if ($WeBRooTWritablE > 0) fwrite($stmt_file, $stmtZ."\r\n");
 							$multistmt='';
 							$multi_insert_counter=0;
 		
 						} else {
-							$multistmt .= "('','$entry_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country_code','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments',0,'$custom2','$external_key','2008-01-01 00:00:00','$cost','0000-00-00 00:00:00'),";
+							$multistmt .= sprintf("('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00'),",mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost));
 							$multi_insert_counter++;
 						}
-		
 						$good++;
 						
-					} else {
-					
-						if ($bad < 1000000) {
-							print "<BR></b><font size=1 color=red>record $total BAD- PHONE: $phone_number ROW: |$row[0]| DUP: $dup_lead</font><b>\n";
-						}
-						$bad++;
-					}
+					} elseif ($dup_lead > 0) {
+                        echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=#ff6600>record " . ($total + 1) . " DUP-$dup: L$dup_lead / P$phone_number</font></b><br>';\n</script>\n";
+                    } else {
+                        $bad++;
+                        echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=red>record " . ($total + 1) . " BAD-$bad: P$phone_number</font></b><br>';\n</script>\n";
+                    }
+					ob_flush();
+					flush();
 					$total++;
-					if ($total%100==0) {
-						print "<script language='JavaScript1.2'>ShowProgress($good, $bad, $total, $dup, $post)</script>";
-						usleep(1000);
+
+					if ($total%200==0) {
+						echo "<script language='javascript'>\nShowProgress($good, $bad, $total, $dup, $post, $affcnt);\n</script>\n";
+                        echo "<script language='javascript'>\ndocument.getElementById('load_status').innerHTML += '.';\n</script>\n";
+                        if ($dot_count >= 80) {
+                            echo "<script language='javascript'>\ndocument.getElementById('load_status').innerHTML += '<br>';\n</script>\n";
+                            $dot_count=0;
+                        }
+						ob_flush();
 						flush();
+                        $dot_count++;
 					}
 				}
-				if ($multi_insert_counter!=0) {
+				if ($single_insert < 1 and $multi_insert_counter != 0) {
 					$stmtZ = "INSERT INTO osdial_list values".substr($multistmt, 0, -1).";";
 					mysql_query($stmtZ, $link);
-					if ($WeBRooTWritablE > 0) {
-						fwrite($stmt_file, $stmtZ."\r\n");
-					}
+					if ($WeBRooTWritablE > 0) fwrite($stmt_file, $stmtZ."\r\n");
 				}
-				if ($bad >'0') {
-					$FC="<font color='red'>";
-				} else {
-					$FC="<font color='$default_text'>";
-				}
-				print "<BR><BR>Done</B><br><br> GOOD: <font color='$default_text'>$good</font> &nbsp; &nbsp; &nbsp; BAD: $FC $bad</font> &nbsp; &nbsp; &nbsp; TOTAL: $FC $total</font></center>";
-				
+			    echo "<script language='javascript'>\nShowProgress($good, $bad, $total, $dup, $post, $affcnt);\n</script>\n";
+                $dwin = 'load_status';
+                if (($dup + $bad) == 0) $dwin = 'load_win';
+                $lmenu = ''; if ($list_id_override > 0) $lmenu = "<br><br><span style=text-align:center;font-size:14px;><a href=/admin/admin.php?ADD=311&list_id=$list_id_override>[ Back to List ]</a></span>";
+                echo "<script language='javascript'>\ndocument.getElementById('dwin').innerHTML = '<span style=text-align:center;font-size:48px;><b>DONE<b></span>$lmenu';\n</script>\n";
 			}
-			print "<script language='JavaScript1.2'>document.forms[0].leadfile.disabled=false; document.forms[0].submit_file.disabled=false; document.forms[0].reload_page.disabled=false;</script>";
+			echo "<script language='javascript'>\ndocument.forms[0].leadfile.disabled=false;\ndocument.forms[0].submit_file.disabled=false;\ndocument.forms[0].reload_page.disabled=false;\n</script>\n";
+            exit;
 	
+
+        # Field Mapping screen.
 		} else {
-			print "<script language='JavaScript1.2'>document.forms[0].leadfile.disabled=true; document.forms[0].submit_file.disabled=true; document.forms[0].reload_page.disabled=true;</script><HR>";
+			echo "<script language='javascript'>\ndocument.forms[0].leadfile.disabled=true;\ndocument.forms[0].submit_file.disabled=true;\ndocument.forms[0].reload_page.disabled=true;\n</script>\n<br>\n";
+			ob_flush();
 			flush();
-			print "<table border=0 cellspacing=1 width=400 align=center bgcolor=grey>\n";
-			print "  <tr class=tabheader>\n";
-			print "    <td align=center colspan=2>FIELD MAPPINGS</td>\n";
-			print "  </tr>\n";
-			print "  <tr class=tabheader>\n";
-			print "    <td align=center>" . strtoupper($t1) . " LEAD FIELD</td>\n";
-			print "    <td align=center>FILE HEADER ROW</td>\n";
-			print "  </tr>\n";
+			echo "<table border=0 cellspacing=1 width=400 align=center bgcolor=grey>\n";
+			echo "  <tr class=tabheader>\n";
+			echo "    <td align=center colspan=2>FIELD MAPPINGS</td>\n";
+			echo "  </tr>\n";
+			echo "  <tr class=tabheader>\n";
+			echo "    <td align=center>" . strtoupper($t1) . " LEAD FIELD</td>\n";
+			echo "    <td align=center width=50%>FILE HEADER ROW</td>\n";
+			echo "  </tr>\n";
+
+            $afmaps = Array();
+            $afjoin = "";
+			if (strlen($list_id_override)>0) {
+                $gfr_list = get_first_record($link, 'osdial_lists', 'campaign_id', sprintf("list_id='%s'",mres($list_id_override)) );
+			    if (strlen($gfr_list['campaign_id'])>0) {
+                    $camp = $gfr_list['campaign_id'];
+                    $af_forms = get_krh($link, 'osdial_campaign_forms', '*', 'name ASC', sprintf("deleted='0' AND (campaigns='ALL' OR campaigns='%s' OR campaigns LIKE '%s,' OR campaigns LIKE ',%s')",mres($camp),mres($camp),mres($camp)), '');
+                    foreach ($af_forms as $afform) {
+                        $af_fields = get_krh($link, 'osdial_campaign_fields', '*', 'name ASC', sprintf("deleted='0' AND form_id='%s'",$afform['id']), '');
+                        foreach ($af_fields as $affield) {
+                            $afmaps['AF_' . $afform['id'] . '_' . $affield['id']] = $afform['name'] . '_' . $affield['name'];
+                            $afjoin .= 'AF_' . $afform['id'] . '_' . $affield['id'] . ',';
+                        }
+                    }
+                }
+			}
+            rtrim($afjoin,',');
 				
-			$rslt=mysql_query("select vendor_lead_code, source_id, list_id, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, comments, custom2, external_key, cost from osdial_list limit 1", $link);
+			$rslt=mysql_query("select phone_code, list_id, vendor_lead_code, source_id, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, comments, custom2, external_key, cost from osdial_list limit 1", $link);
 			
 	
-			if (!eregi(".csv", $leadfile_name) && !eregi(".xls", $leadfile_name)) 
-				{
-				if ($WeBRooTWritablE > 0)
-					{
-					copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.txt");
-					$lead_file = "$WeBServeRRooT/admin/osdial_temp_file.txt";
-					}
-				else
-					{
-					copy($LF_path, "/tmp/osdial_temp_file.txt");
-					$lead_file = "/tmp/osdial_temp_file.txt";
-					}
-				$file=fopen("$lead_file", "r");
-				if ($WeBRooTWritablE > 0)
-					{$stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");}
-	
-				$buffer=fgets($file, 4096);
-				$tab_count=substr_count($buffer, "\t");
-				$pipe_count=substr_count($buffer, "|");
-	
-				if ($tab_count>$pipe_count) {$delimiter="\t";  $delim_name="tab";} else {$delimiter="|";  $delim_name="pipe";}
-				$field_check=explode($delimiter, $buffer);
-				flush();
-				$file=fopen("$lead_file", "r");
-				print "<center><font size=3 color='$default_text'><B>Processing $delim_name-delimited file...\n";
-	
-				if (strlen($list_id_override)>0) 
-					{
-					print "<BR><BR>LIST ID OVERRIDE FOR THIS FILE: $list_id_override<BR><BR>";
-					}
-				if (strlen($phone_code_override)>0) 
-					{
-					print "<BR><BR>PHONE CODE OVERRIDE FOR THIS FILE: $phone_code_override<BR><BR>";
-					}
-				$buffer=rtrim(fgets($file, 4096));
-				$buffer=stripslashes($buffer);
-				$row=explode($delimiter, eregi_replace("[\'\"]", "", $buffer));
-				
-                $o=0;
-				for ($i=0; $i<mysql_num_fields($rslt); $i++) {
-	
-					if ( (mysql_field_name($rslt, $i)=="list_id" and $list_id_override!="") or (mysql_field_name($rslt, $i)=="phone_code" and $phone_code_override!="") ) {
-						print "<!-- skipping " . mysql_field_name($rslt, $i) . " -->\n";
-					} else {
-		                if (eregi("1$|3$|5$|7$|9$", $o)) {
-                            $bgcolor='bgcolor='.$oddrows;
-                        } else {
-                            $bgcolor='bgcolor='.$evenrows;
-                        }
-						print "  <tr class=\"row font1\" $bgcolor>\r\n";
-						print "    <td align=center>".strtoupper(eregi_replace("_", " ", mysql_field_name($rslt, $i))).": </font></td>\r\n";
-						print "    <td align=center class=tabinput><select name='".mysql_field_name($rslt, $i)."_field'>\r\n";
-						print "     <option value='-1'>(none)</option>\r\n";
-	
-						for ($j=0; $j<count($row); $j++) {
-							eregi_replace("\"", "", $row[$j]);
-							print "     <option value='$j'>\"$row[$j]\"</option>\r\n";
-						}
-	
-						print "    </select></td>\r\n";
-						print "  </tr>\r\n";
-                        $o++;
-					}
-	
-				}
-			} else if (!eregi(".csv", $leadfile_name)) {
+            # Process Excel file for field selection.
+			if (eregi(".xls$", $leadfile_name)) {
 				if ($WeBRooTWritablE > 0) {
 					copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.xls");
 					$lead_file = "$WeBServeRRooT/admin/osdial_temp_file.xls";
@@ -2555,13 +2046,14 @@ if ($ADD==122) {
 					$lead_file = "/tmp/osdial_temp_file.xls";
 				}
 	
-				#	echo "|$WeBServeRRooT/admin/listloader_rowdisplay.pl --lead-file=$lead_file|";
 				$dupcheckCLI=''; $postalgmtCLI='';
 				if (eregi("DUPLIST",$dupcheck)) {$dupcheckCLI='--duplicate-check';}
 				if (eregi("DUPCAMP",$dupcheck)) {$dupcheckCLI='--duplicate-campaign-check';}
 				if (eregi("DUPSYS",$dupcheck)) {$dupcheckCLI='--duplicate-system-check';}
 				if (eregi("POSTAL",$postalgmt)) {$postalgmtCLI='--postal-code-gmt';}
 				passthru("$WeBServeRRooT/admin/listloader_rowdisplay.pl --lead-file=$lead_file $postalgmtCLI $dupcheckCLI");
+
+            # Process CSV/PSV/TSV file for field selection.
 			} else {
 				if ($WeBRooTWritablE > 0) {
 					copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.csv");
@@ -2570,62 +2062,98 @@ if ($ADD==122) {
 					copy($LF_path, "/tmp/osdial_temp_file.csv");
 					$lead_file = "/tmp/osdial_temp_file.csv";
 				}
+
 				$file=fopen("$lead_file", "r");
+			    $buffer=fgets($file, 4096);
+			    $comma_count=substr_count($buffer, ",");
+			    $tab_count=substr_count($buffer, "\t");
+			    $pipe_count=substr_count($buffer, "|");
 	
-				if ($WeBRooTWritablE > 0) {
-					$stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");
-				}
-				
-				print "<center><font size=3 color='$default_text'><B>Processing CSV file... \n";
-				
-				if (strlen($list_id_override)>0) {
-					print "<BR><BR>LIST ID OVERRIDE FOR THIS FILE: $list_id_override<BR><BR>";
-				}
-				if (strlen($phone_code_override)>0) {
-					print "<BR><BR>PHONE CODE OVERRIDE FOR THIS FILE: $phone_code_override<BR><BR>";
-				}
+			    if ($tab_count > $comma_count and $tab_count > $pipe_count) {
+			    	$delimiter="\t";  $delim_name="TSV (tab-separated values)";
+			    } elseif ($pipe_count > $tab_count and $pipe_count > $comma_count) {
+			    	$delimiter="|";  $delim_name="PSV (pipe-separated values)";
+			    } else {
+			    	$delimiter=",";  $delim_name="CSV (comma-separated values)";
+			    }
+
+                flush();
+			    $file=fopen("$lead_file", "r");
 	
-				$total=0; $good=0; $bad=0; $dup=0; $post=0; $phone_list='';
-				$row=fgetcsv($file, 1000, ",");
-                $o=0;
+				if ($WeBRooTWritablE > 0 and $single_insert < 1) $stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");
+				
+				echo "<center><font size=3 color='$default_text'><B>Processing $delim_name file... \n<br>";
+				
+				$row=fgetcsv($file, 1000, $delimiter);
 				for ($i=0; $i<mysql_num_fields($rslt); $i++) {
-					if ( (mysql_field_name($rslt, $i)=="list_id" and $list_id_override!="") or (mysql_field_name($rslt, $i)=="phone_code" and $phone_code_override!="") ) {
-						print "<!-- skipping " . mysql_field_name($rslt, $i) . " -->\n";
-					} else {
-		                if (eregi("1$|3$|5$|7$|9$", $o)) {
-                            $bgcolor='bgcolor='.$oddrows;
-                        } else {
-                            $bgcolor='bgcolor='.$evenrows;
-                        }
-						print "  <tr class=\"row font1\" $bgcolor>\r\n";
-						print "    <td align=center>".strtoupper(eregi_replace("_", " ", mysql_field_name($rslt, $i))).": </td>\r\n";
-						print "    <td align=center class=tabinput><select name='".mysql_field_name($rslt, $i)."_field'>\r\n";
-						print "     <option value='-1'>(none)</option>\r\n";
-	
-						for ($j=0; $j<count($row); $j++) {
-							eregi_replace("\"", "", $row[$j]);
-							print "     <option value='$j'>\"$row[$j]\"</option>\r\n";
-						}
-	
-						print "    </select></td>\r\n";
-						print "  </tr>\r\n";
-                        $o++;
-					}
+		            if (eregi("1$|3$|5$|7$|9$", $i)) {
+                        $bgcolor='bgcolor='.$oddrows;
+                    } else {
+                        $bgcolor='bgcolor='.$evenrows;
+                    }
+					echo "  <tr class=\"row font1\" $bgcolor>\n";
+					echo "    <td align=center>".strtoupper(eregi_replace("_", " ", mysql_field_name($rslt, $i))).": </td>\n";
+					echo "    <td align=center class=tabinput>\n";
+					if (mysql_field_name($rslt, $i) == "list_id" and $list_id_override != "") {
+						echo "      <a title='The List ID was set from the Load New Leads options menu, it will not be pulled from the file.'><center><font color=red><b>$list_id_override</b></font><center></a>\n";
+                    } elseif (mysql_field_name($rslt, $i) == "phone_code" and $phone_code_override != "") {
+						echo "      <a title='The Phone Code was set from the Load New Leads options menu, it will not be pulled from the file.'><center><font color=red><b>$phone_code_override</b></font><center></a>\n";
+                    } else {
+                        echo "      <select name='".mysql_field_name($rslt, $i)."_field'>\n";
+					    echo "        <option value='-1'>(none)</option>\n";
+					    for ($j=0; $j<count($row); $j++) {
+						    eregi_replace("\"", "", $row[$j]);
+						    echo "        <option value='$j'>\"$row[$j]\"</option>\n";
+					    }
+					    echo "      </select>\n";
+                    }
+                    echo "    </td>\n";
+					echo "  </tr>\n";
 				}
 			}
-			print "  <input type=hidden name=dupcheck value=\"$dupcheck\">\n";
-			print "  <input type=hidden name=postalgmt value=\"$postalgmt\">\n";
-			print "  <input type=hidden name=lead_file value=\"$lead_file\">\n";
-			print "  <input type=hidden name=list_id_override value=\"$list_id_override\">\n";
-			print "  <input type=hidden name=phone_code_override value=\"$phone_code_override\">\n";
-			print "  <input type=hidden name=ADD value=122>\n"; // debug -added
-			print "  <tr class=tabfooter>\n";
-            print "    <td align=center class=tabbutton><input type=button onClick=\"javascript:document.location='admin.php?ADD=122'\" value=\"START OVER\" name='reload_page'></td>\n";
-			print "    <td align=center class=tabbutton><input type=submit name='OK_to_process' value='OK TO PROCESS'></td>\n";
-			print "  </tr>\r\n";
-			print "</table>\r\n";
+
+            # Display Additional Form Fields if a "custom" lead load.
+            if (count($afmaps) > 0 and $file_layout == "custom") {
+			    echo "  <input type=hidden name=aff_fields value=\"$afjoin\">\n";
+			    echo "  <tr class=tabheader>\n";
+			    echo "    <td align=center colspan=2>ADDITIONAL FORM FIELDS</td>\n";
+			    echo "  </tr>\n";
+                $o=0;
+                foreach ($afmaps as $k => $v) {
+		            if (eregi("1$|3$|5$|7$|9$", $o)) {
+                        $bgcolor='bgcolor='.$oddrows;
+                    } else {
+                        $bgcolor='bgcolor='.$evenrows;
+                    }
+					echo "  <tr class=\"row font1\" $bgcolor>\n";
+					echo "    <td align=left>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".strtoupper(eregi_replace("_", " ", $v)).": </td>\n";
+					echo "    <td align=center class=tabinput>\n";
+                    echo "      <select name='$k'>\n";
+					echo "        <option value='-1'>(none)</option>\n";
+					for ($j=0; $j<count($row); $j++) {
+					    eregi_replace("\"", "", $row[$j]);
+					    echo "        <option value='$j'>\"$row[$j]\"</option>\n";
+					}
+					echo "      </select>\n";
+                    echo "    </td>\n";
+					echo "  </tr>\n";
+                    $o++;
+                }
+            }
+
+			echo "  <input type=hidden name=dupcheck value=\"$dupcheck\">\n";
+			echo "  <input type=hidden name=postalgmt value=\"$postalgmt\">\n";
+			echo "  <input type=hidden name=lead_file value=\"$lead_file\">\n";
+			echo "  <input type=hidden name=list_id_override value=\"$list_id_override\">\n";
+			echo "  <input type=hidden name=phone_code_override value=\"$phone_code_override\">\n";
+			echo "  <input type=hidden name=ADD value=122>\n";
+			echo "  <tr class=tabfooter>\n";
+            echo "    <td align=center class=tabbutton><input type=button onClick=\"javascript:document.location='admin.php?ADD=122'\" value=\"START OVER\" name='reload_page'></td>\n";
+			echo "    <td align=center class=tabbutton><input type=submit name='OK_to_process' value='OK TO PROCESS'></td>\n";
+			echo "  </tr>\r\n";
+			echo "</table>\r\n";
 		}
-		print "<script language='JavaScript1.2'>document.forms[0].leadfile.disabled=false; document.forms[0].submit_file.disabled=false; document.forms[0].reload_page.disabled=false;</script>";
+		echo "<script language='javascript'>\ndocument.forms[0].leadfile.disabled=false;\ndocument.forms[0].submit_file.disabled=false;\ndocument.forms[0].reload_page.disabled=false;\n</script>\n";
 	}
 				
 	echo "</form>\n";
@@ -2771,7 +2299,7 @@ if ($ADD==411) {
         } else {
             echo "<br><B><font color=$default_text>LIST MODIFIED: $list_id</font></B>\n";
 
-            $stmt="UPDATE osdial_lists set list_name='$list_name',campaign_id='$campaign_id',active='$active',list_description='$list_description',list_changedate='$SQLdate',scrub_dnc='$scrub_dnc',cost='$cost',web_form_address='" . mysql_real_escape_string($web_form_address) . "',web_form_address2='" . mysql_real_escape_string($web_form_address2) . "' where list_id='$list_id';";
+            $stmt="UPDATE osdial_lists set list_name='$list_name',campaign_id='$campaign_id',active='$active',list_description='$list_description',list_changedate='$SQLdate',scrub_dnc='$scrub_dnc',cost='$cost',web_form_address='" . mres($web_form_address) . "',web_form_address2='" . mres($web_form_address2) . "' where list_id='$list_id';";
             $rslt=mysql_query($stmt, $link);
 
             if ($reset_list == 'Y') {
