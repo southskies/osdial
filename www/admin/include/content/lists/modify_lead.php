@@ -1,5 +1,5 @@
 <?
-# admin_modify_lead.php
+# modify_lead.php
 #
 # Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
 # Copyright (C) 2010  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
@@ -41,7 +41,7 @@ if ($ADD==1121) {
 	        if ($DB) echo "|$stmt|\n";
 	        $rslt=mysql_query($stmt, $link);
 			
-            echo "<a href=\"./admin_modify_lead.php?lead_id=$lead_id\">[ Return Back to Lead #$lead_id ]</a><br><br>\n";
+            echo "<a href=\"$PHP_SELF?ADD=1121&lead_id=$lead_id\">[ Return Back to Lead #$lead_id ]</a><br><br>\n";
 	        echo "<b>Lead Information Modified.</b><br><br>\n";
 				
 	        ### inactivate osdial_callbacks record for this lead 

@@ -289,7 +289,7 @@ function report_agent_stats() {
             $table .= "    <td align=left title=\"Agent Group: $row[7]\">$row[7]</td>\n";
             $table .= "    <td align=left title=\"Campaign ID: $row[8]\">$row[8]</td>\n";
             $table .= "    <td align=center title=\"List ID: $row[9]\">$row[9]</td>\n";
-            $table .= "    <td align=right title=\"Lead #: $row[10]\"><a href=\"admin_modify_lead.php?lead_id=$row[10]\" target=\"_blank\">$row[10]</a></td>\n";
+            $table .= "    <td align=right title=\"Lead #: $row[10]\"><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[10]\" target=\"_blank\">$row[10]</a></td>\n";
             $table .= "  </tr>\n";
         }
         $table .= "  <tr class=tabfooter>\n";
@@ -343,7 +343,7 @@ function report_agent_stats() {
             $table .= "    <td align=left title=\"Campaign ID: $row[3]\">&nbsp;&nbsp;$row[3]</td>\n";
             $table .= "    <td align=right title=\"Wait Time: $row[14] seconds\">$row[14]</td>\n";
             $table .= "    <td align=left title=\"List ID: $row[2]\">&nbsp;&nbsp;$row[2]</td>\n";
-            $table .= "    <td align=right title=\"Lead #: $row[1]\"><a href=\"admin_modify_lead.php?lead_id=$row[1]\" target=\"_blank\">$row[1]</a></td>\n";
+            $table .= "    <td align=right title=\"Lead #: $row[1]\"><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[1]\" target=\"_blank\">$row[1]</a></td>\n";
             $table .= "  </tr>\n";
         }
         $table .= "  <tr class=tabfooter>\n";
@@ -394,7 +394,7 @@ function report_agent_stats() {
             $row[4] = str_replace(" ", "&nbsp;", $row[4]);
             $table .= "  <tr $bgcolor class=\"row font1\">\n";
             $table .= "    <td title=\"Record #: $u\">$u</td>\n";
-            $table .= "    <td align=left title=\"Lead #: $row[12]\"><a href=\"admin_modify_lead.php?lead_id=$row[12]\" target=\"_blank\">$row[12]</a></td>\n";
+            $table .= "    <td align=left title=\"Lead #: $row[12]\"><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[12]\" target=\"_blank\">$row[12]</a></td>\n";
             $table .= "    <td align=center title=\"Date/Time: $row[4]\">$row[4]</td>\n";
             $table .= "    <td align=right title=\"Recording Length: $row[8] seconds\">$row[8]</td>\n";
             $table .= "    <td align=right title=\"Recording ID $row[0]\">$row[0]</td>\n";

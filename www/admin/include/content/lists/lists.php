@@ -221,7 +221,7 @@ if ($ADD==112) {
 					{$bgcolor='bgcolor='.$evenrows;}
 				echo "<TR $bgcolor>\n";
 				echo "<TD ALIGN=LEFT><FONT FACE=\"ARIAL,HELVETICA\" SIZE=1>$o</FONT></TD>\n";
-                echo "<TD ALIGN=CENTER><FONT FACE=\"ARIAL,HELVETICA\" SIZE=1><a href=\"admin.php?ADD=999999&SUB=3&iframe=admin_modify_lead.php?lead_id=$row[0]\">$row[0]</a></FONT></TD>\n";
+                echo "<TD ALIGN=CENTER><FONT FACE=\"ARIAL,HELVETICA\" SIZE=1><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[0]\" target=\"_blank\">$row[0]</a></FONT></TD>\n";
 				echo "<TD ALIGN=CENTER><FONT FACE=\"ARIAL,HELVETICA\" SIZE=1>$row[3]</FONT></TD>\n";
 				echo "<TD ALIGN=CENTER><FONT FACE=\"ARIAL,HELVETICA\" SIZE=1>$row[5]</FONT></TD>\n";
 				echo "<TD ALIGN=CENTER><FONT FACE=\"ARIAL,HELVETICA\" SIZE=1>$row[4]</FONT></TD>\n";
@@ -934,6 +934,7 @@ if ($ADD==1122) {
                 }
                 echo "<br><br><br><div id=\"advsearch\"><font color=$default_text size=3><b>Records Found:&nbsp;" . $searchCount . "</b></font></div>";
             }
+            flush();
         }
 
         $paginate = "";
@@ -1139,6 +1140,7 @@ if ($ADD==1122) {
             echo "</a></b></font></td>\n";
         }
         echo "  </tr>\n";
+        flush();
 
         if ($field_cnt > 0 && $LOGexport_leads > 0) {
             $csvfile = "advsearch_" . date("Ymd-His") . ".csv";
@@ -1151,11 +1153,13 @@ if ($ADD==1122) {
                 $o++;
             }
             fputcsv($fcsv, $fld_names);
+            flush();
             
             $o=0;
             while ($results_to_print > $o) {
                 $row=mysql_fetch_row($rslt);
                 fputcsv($fcsv, $row);
+                flush();
                 $o++;
             }
             fclose($fcsv);
@@ -1181,7 +1185,7 @@ if ($ADD==1122) {
                 if (strlen($row[11]) == 10) $row[11] = substr($row[11],0,3) . "-" . substr($row[11],3,3) . "-" . substr($row[11],6,4);
                 echo "  <tr $bgcolor class=row>\n";
                 echo "    <td nowrap align=left><font face=\"arial,helvetica\" size=1>" . ($o + (($page - 1) * $numresults)) . "</font></td>\n";
-                echo "    <td nowrap align=center title=\"$row[0]\"><font face=\"arial,helvetica\" size=1><a href=\"admin.php?ADD=999999&SUB=3&iframe=admin_modify_lead.php?lead_id=$row[0]\">$row[0]</a></font></td>\n";
+                echo "    <td nowrap align=center title=\"$row[0]\"><font face=\"arial,helvetica\" size=1><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[0]\" target=\"_blank\">$row[0]</a></font></td>\n";
                 echo "    <td nowrap align=center title=\"$row[7]\"><font face=\"arial,helvetica\" size=1><a href=\"" . $pageURL . "&lists[]=$row[7]&sort=$sort&direction=$direction#advsearch\">$row[7]</a></font></td>\n";
                 echo "    <td nowrap align=center title=\"$row[3]\"><font face=\"arial,helvetica\" size=1>$row[3]</font></td>\n";
                 echo "    <td nowrap align=center title=\"$row[11]\"><font face=\"arial,helvetica\" size=1>$row[11]</font></td>\n";
@@ -1198,12 +1202,14 @@ if ($ADD==1122) {
                 echo "    <td nowrap align=center title=\"$row[2]\"><font face=\"arial,helvetica\" size=1>&nbsp;$row[2]&nbsp;</font></td>\n";
                 echo "    <td nowrap align=center title=\"$row[35]\"><font face=\"arial,helvetica\" size=1>" . ellipse($row[35],10,false) . "</font></td>\n";
                 echo "  </tr>\n";
+                flush();
             }
         }
         echo "  <tr class=tabfooter>\n";
         echo "    <td colspan=17></td>\n";
         echo "  </tr>\n";
         echo "</table>\n";
+        flush();
 
         echo $paginate;
     } else {
@@ -1407,41 +1413,6 @@ if ($ADD==122) {
 	echo "<!-- VERSION: $version     BUILD: $build -->\n";
 	echo "<!-- SEED TIME  $secX:   $year-$mon-$mday $hour:$min:$sec  LOCAL GMT OFFSET NOW: $LOCAL_GMT_OFF  DST: $isdst -->\n";
 
-	#function macfontfix($fontsize) {
-	#	$browser = getenv("HTTP_USER_AGENT");
-	#	$pctype = explode("(", $browser);
-	#	if (ereg("Mac",$pctype[1])) {
-	#		/* Browser is a Mac.  If not Netscape 6, raise fonts */
-	#		$blownbrowser = explode('/', $browser);
-	#		$ver = explode(' ', $blownbrowser[1]);
-	#		$ver = $ver[0];
-	#		if ($ver >= 5.0) {
-	#			return $fontsize; 
-	#		} else { 
-	#			return ($fontsize+2); 
-	#		}
-	#	} else {
-	#		return $fontsize;	/* Browser is not a Mac - don't touch fonts */ 
-	#	}
-	#}
-	#
-	#echo "<style type=\"text/css\">\n
-	#<!--\n
-	#.title {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(18)."pt}\n
-	#.standard {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(10)."pt}\n
-	#.small_standard {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(8)."pt}\n
-	#.tiny_standard {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(6)."pt}\n
-	#.standard_bold {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(10)."pt; font-weight: bold}\n
-	#.standard_header {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(14)."pt; font-weight: bold}\n
-	#.standard_bold_highlight {  font-family: Arial, Helvetica, sans-serif; font-size: ".macfontfix(10)."pt; font-weight: bold; color: white; BACKGROUND-COLOR: black}\n
-	#.standard_bold_blue_highlight {  font-family: Arial, Helvetica, sans-serif; font-size: 10pt; font-weight: bold; BACKGROUND-COLOR: blue}\n
-	#A.employee_standard {  font-family: garamond, sans-serif; font-size: ".macfontfix(10)."pt; font-style: normal; font-variant: normal; font-weight: bold; text-decoration: none}\n
-	#.employee_standard {  font-family: garamond, sans-serif; font-size: ".macfontfix(10)."pt; font-weight: bold}\n
-	#.employee_title {  font-family: Garamond, sans-serif; font-size: ".macfontfix(14)."pt; font-weight: bold}\n
-	#\\\\-->\n
-	#</style>\n";
-
-
     echo "  <form action=$PHP_SELF method=post onSubmit=\"ParseFileName()\" enctype=\"multipart/form-data\">\n";
     echo "      <input type=hidden name='ADD' value='122'>\n";
     echo "      <input type=hidden name='leadfile_name' value=\"$leadfile_name\">\n";
@@ -1537,9 +1508,6 @@ if ($ADD==122) {
 			$file=fopen("$lead_file", "r");
 		
 			echo "<center><font size=3 color='$default_text'><B>Processing Excel file... \n<br>";
-
-			if (strlen($list_id_override)>0) echo "<BR>LIST ID OVERRIDE: $list_id_override<BR>\n";
-			if (strlen($phone_code_override)>0) echo "<BR>PHONE CODE OVERRIDE: $phone_code_override<BR>\n";
 
             echo "<iframe name='lead_count' width='600' height='250' align='middle' frameborder='0' scrolling='no'></iframe>\n<br>\n";
             echo "<div name='load_win' id='load_win' style='width:850px;align:center;'>\n";
@@ -1720,7 +1688,7 @@ if ($ADD==122) {
 						### insert good deal into pending_transactions table ###
 						$stmtZ = sprintf("INSERT INTO osdial_list values%s('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00');",$multistmt,mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost));
 						$rslt=mysql_query($stmtZ, $link);
-						if ($WeBRooTWritablE > 0) fwrite($stmt_file, $stmtZ."\r\n");
+						if ($WeBRooTWritablE > 0) fwrite($stmt_file, $stmtZ."\n");
 						$multistmt='';
 						$multi_insert_counter=0;
 		
@@ -1755,7 +1723,7 @@ if ($ADD==122) {
 			if ($single_insert < 1 and $multi_insert_counter!=0) {
 				$stmtZ = "INSERT INTO osdial_list values".substr($multistmt, 0, -1).";";
 				mysql_query($stmtZ, $link);
-				if ($WeBRooTWritablE > 0) fwrite($stmt_file, $stmtZ."\r\n");
+				if ($WeBRooTWritablE > 0) fwrite($stmt_file, $stmtZ."\n");
 			}
 
 			echo "<script language='javascript'>\nShowProgress($good, $bad, $total, $dup, $post, $affcnt);\n</script>\n";
@@ -1954,7 +1922,7 @@ if ($ADD==122) {
 							### insert good deal into pending_transactions table ###
 							$stmtZ = sprintf("INSERT INTO osdial_list values%s('','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',0,'%s','%s','2008-01-01 00:00:00','%s','0000-00-00 00:00:00');",$multistmt,mres($entry_date),mres($modify_date),mres($status),mres($user),mres($vendor_lead_code),mres($source_id),mres($list_id),mres($gmt_offset),mres($called_since_last_reset),mres($phone_code),mres($phone_number),mres($title),mres($first_name),mres($middle_initial),mres($last_name),mres($address1),mres($address2),mres($address3),mres($city),mres($state),mres($province),mres($postal_code),mres($country_code),mres($gender),mres($date_of_birth),mres($alt_phone),mres($email),mres($custom1),mres($comments),mres($custom2),mres($external_key),mres($cost));
 							$rslt=mysql_query($stmtZ, $link);
-							if ($WeBRooTWritablE > 0) fwrite($stmt_file, $stmtZ."\r\n");
+							if ($WeBRooTWritablE > 0) fwrite($stmt_file, $stmtZ."\n");
 							$multistmt='';
 							$multi_insert_counter=0;
 		
@@ -1989,7 +1957,7 @@ if ($ADD==122) {
 				if ($single_insert < 1 and $multi_insert_counter != 0) {
 					$stmtZ = "INSERT INTO osdial_list values".substr($multistmt, 0, -1).";";
 					mysql_query($stmtZ, $link);
-					if ($WeBRooTWritablE > 0) fwrite($stmt_file, $stmtZ."\r\n");
+					if ($WeBRooTWritablE > 0) fwrite($stmt_file, $stmtZ."\n");
 				}
 			    echo "<script language='javascript'>\nShowProgress($good, $bad, $total, $dup, $post, $affcnt);\n</script>\n";
                 $dwin = 'load_status';
@@ -2003,6 +1971,7 @@ if ($ADD==122) {
 
         # Field Mapping screen.
 		} else {
+            $badfile=0;
 			echo "<script language='javascript'>\ndocument.forms[0].leadfile.disabled=true;\ndocument.forms[0].submit_file.disabled=true;\ndocument.forms[0].reload_page.disabled=true;\n</script>\n<br>\n";
 			ob_flush();
 			flush();
@@ -2021,7 +1990,7 @@ if ($ADD==122) {
                 $gfr_list = get_first_record($link, 'osdial_lists', 'campaign_id', sprintf("list_id='%s'",mres($list_id_override)) );
 			    if (strlen($gfr_list['campaign_id'])>0) {
                     $camp = $gfr_list['campaign_id'];
-                    $af_forms = get_krh($link, 'osdial_campaign_forms', '*', 'name ASC', sprintf("deleted='0' AND (campaigns='ALL' OR campaigns='%s' OR campaigns LIKE '%s,' OR campaigns LIKE ',%s')",mres($camp),mres($camp),mres($camp)), '');
+                    $af_forms = get_krh($link, 'osdial_campaign_forms', '*', 'name ASC', sprintf("deleted='0' AND (campaigns='ALL' OR campaigns='%s' OR campaigns LIKE '%s,%%' OR campaigns LIKE '%%,%s')",mres($camp),mres($camp),mres($camp)), '');
                     foreach ($af_forms as $afform) {
                         $af_fields = get_krh($link, 'osdial_campaign_fields', '*', 'name ASC', sprintf("deleted='0' AND form_id='%s'",$afform['id']), '');
                         foreach ($af_fields as $affield) {
@@ -2054,7 +2023,7 @@ if ($ADD==122) {
 				passthru("$WeBServeRRooT/admin/listloader_rowdisplay.pl --lead-file=$lead_file $postalgmtCLI $dupcheckCLI");
 
             # Process CSV/PSV/TSV file for field selection.
-			} else {
+			} elseif (preg_match('/\.txt$|\.csv$|\.psv$|\.tsv$|\.tab$/i', $leadfile_name)) {
 				if ($WeBRooTWritablE > 0) {
 					copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.csv");
 					$lead_file = "$WeBServeRRooT/admin/osdial_temp_file.csv";
@@ -2110,48 +2079,59 @@ if ($ADD==122) {
                     echo "    </td>\n";
 					echo "  </tr>\n";
 				}
-			}
-
-            # Display Additional Form Fields if a "custom" lead load.
-            if (count($afmaps) > 0 and $file_layout == "custom") {
-			    echo "  <input type=hidden name=aff_fields value=\"$afjoin\">\n";
-			    echo "  <tr class=tabheader>\n";
-			    echo "    <td align=center colspan=2>ADDITIONAL FORM FIELDS</td>\n";
-			    echo "  </tr>\n";
-                $o=0;
-                foreach ($afmaps as $k => $v) {
-		            if (eregi("1$|3$|5$|7$|9$", $o)) {
-                        $bgcolor='bgcolor='.$oddrows;
-                    } else {
-                        $bgcolor='bgcolor='.$evenrows;
-                    }
-					echo "  <tr class=\"row font1\" $bgcolor>\n";
-					echo "    <td align=left>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".strtoupper(eregi_replace("_", " ", $v)).": </td>\n";
-					echo "    <td align=center class=tabinput>\n";
-                    echo "      <select name='$k'>\n";
-					echo "        <option value='-1'>(none)</option>\n";
-					for ($j=0; $j<count($row); $j++) {
-					    eregi_replace("\"", "", $row[$j]);
-					    echo "        <option value='$j'>\"$row[$j]\"</option>\n";
-					}
-					echo "      </select>\n";
-                    echo "    </td>\n";
-					echo "  </tr>\n";
-                    $o++;
-                }
+			} else {
+                # Oops, we didn't recognize the file extension.
+                $badfile=1;
             }
 
-			echo "  <input type=hidden name=dupcheck value=\"$dupcheck\">\n";
-			echo "  <input type=hidden name=postalgmt value=\"$postalgmt\">\n";
-			echo "  <input type=hidden name=lead_file value=\"$lead_file\">\n";
-			echo "  <input type=hidden name=list_id_override value=\"$list_id_override\">\n";
-			echo "  <input type=hidden name=phone_code_override value=\"$phone_code_override\">\n";
-			echo "  <input type=hidden name=ADD value=122>\n";
-			echo "  <tr class=tabfooter>\n";
-            echo "    <td align=center class=tabbutton><input type=button onClick=\"javascript:document.location='admin.php?ADD=122'\" value=\"START OVER\" name='reload_page'></td>\n";
-			echo "    <td align=center class=tabbutton><input type=submit name='OK_to_process' value='OK TO PROCESS'></td>\n";
-			echo "  </tr>\r\n";
-			echo "</table>\r\n";
+            if ($badfile == 0) {
+                # Display Additional Form Fields if a "custom" lead load.
+                if (count($afmaps) > 0 and $file_layout == "custom") {
+			        echo "  <input type=hidden name=aff_fields value=\"$afjoin\">\n";
+			        echo "  <tr class=tabheader>\n";
+			        echo "    <td align=center colspan=2>ADDITIONAL FORM FIELDS</td>\n";
+			        echo "  </tr>\n";
+                    $o=0;
+                    foreach ($afmaps as $k => $v) {
+		                if (eregi("1$|3$|5$|7$|9$", $o)) {
+                            $bgcolor='bgcolor='.$oddrows;
+                        } else {
+                            $bgcolor='bgcolor='.$evenrows;
+                        }
+					    echo "  <tr class=\"row font1\" $bgcolor>\n";
+					    echo "    <td align=left>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".strtoupper(eregi_replace("_", " ", $v)).": </td>\n";
+					    echo "    <td align=center class=tabinput>\n";
+                        echo "      <select name='$k'>\n";
+					    echo "        <option value='-1'>(none)</option>\n";
+					    for ($j=0; $j<count($row); $j++) {
+					        eregi_replace("\"", "", $row[$j]);
+					        echo "        <option value='$j'>\"$row[$j]\"</option>\n";
+					    }
+					    echo "      </select>\n";
+                        echo "    </td>\n";
+					    echo "  </tr>\n";
+                        $o++;
+                    }
+                }
+
+			    echo "  <input type=hidden name=dupcheck value=\"$dupcheck\">\n";
+			    echo "  <input type=hidden name=postalgmt value=\"$postalgmt\">\n";
+			    echo "  <input type=hidden name=lead_file value=\"$lead_file\">\n";
+			    echo "  <input type=hidden name=list_id_override value=\"$list_id_override\">\n";
+			    echo "  <input type=hidden name=phone_code_override value=\"$phone_code_override\">\n";
+			    echo "  <input type=hidden name=ADD value=122>\n";
+			    echo "  <tr class=tabfooter>\n";
+                echo "    <td align=center class=tabbutton><input type=button onClick=\"javascript:document.location='admin.php?ADD=122'\" value=\"START OVER\" name='reload_page'></td>\n";
+			    echo "    <td align=center class=tabbutton><input type=submit name='OK_to_process' value='OK TO PROCESS'></td>\n";
+			    echo "  </tr>\n";
+			    echo "</table>\n";
+            } else {
+			    echo "  <tr class=tabfooter>\n";
+                echo "    <td align=center class=tabbutton colspan=2><input type=button onClick=\"javascript:document.location='admin.php?ADD=122'\" value=\"START OVER\" name='reload_page'></td>\n";
+			    echo "  </tr>\n";
+			    echo "</table>\n";
+                echo "<br><br><center><b>The uploaded file format is not supported, CSV format is often the best choice when preparing and loading lists.</b></center>\n";
+            }
 		}
 		echo "<script language='javascript'>\ndocument.forms[0].leadfile.disabled=false;\ndocument.forms[0].submit_file.disabled=false;\ndocument.forms[0].reload_page.disabled=false;\n</script>\n";
 	}
@@ -2985,7 +2965,7 @@ if ($ADD==82) {
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
 		echo "  <tr $bgcolor class=\"row font1\">\n";
-		echo "    <td><a href=\"admin_modify_lead.php?lead_id=$row[1]\" target=\"_blank\">$row[1]</a></td>\n";
+		echo "    <td><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[1]\" target=\"_blank\">$row[1]</a></td>\n";
 		echo "    <td><a href=\"$PHP_SELF?ADD=311&list_id=$row[2]\">$row[2]</a></td>\n";
 		echo "    <td><a href=\"$PHP_SELF?ADD=31&campaign_id=$row[3]\">$row[3]</a></td>\n";
 		echo "    <td>$row[5]</td>\n";
