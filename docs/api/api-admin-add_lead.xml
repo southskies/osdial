@@ -1,0 +1,47 @@
+<?xml version='1.0' standalone='yes'?>
+<api user="admin" pass="XXXXX" function="add_lead" mode="admin" test="0" debug="0" vdcompat="0">
+  <params>
+    <dnc_check>YES</dnc_check>
+    <duplicate_check>LIST</duplicate_check>
+    <gmt_lookup_method>POSTAL</gmt_lookup_method>
+
+    <add_to_hopper>NO</add_to_hopper>
+    <hopper_priority>0</hopper_priority>
+    <hopper_local_call_time_check></hopper_local_call_time_check>
+    <hopper_campaign_call_time_check></hopper_campaign_call_time_check>
+
+    <vendor_lead_code></vendor_lead_code>
+    <source_id></source_id>
+    <list_id>1000</list_id>
+    <phone_code>1</phone_code>
+    <phone_number>9992031212</phone_number>
+    <title></title>
+    <first_name>John</first_name>
+    <middle_initial></middle_initial>
+    <last_name>Doe</last_name>
+    <address1>1234 Test Ave</address1>
+    <address2>Apt. 31-B</address2>
+    <address3></address3>
+    <city>Orlando</city>
+    <state>FL</state>
+    <province></province>
+    <postal_code>32801</postal_code>
+    <country_code>USA</country_code>
+    <gender>m</gender>
+    <date_of_birth>1970-01-01</date_of_birth>
+    <alt_phone></alt_phone>
+    <email>john@doe.com</email>
+    <custom1></custom1>
+    <custom2></custom2>
+    <comments>This is a test of the lead loading.</comments>
+    <external_key>88975347</external_key>
+    <cost>1.23</cost>
+    <post_date>2010-03-20T14:30:00</post_date>
+
+    <additional_fields>
+      <additional_field form="CREDITCARD" field="NAME">John Doe</additional_field>
+      <additional_field form="CREDITCARD" field="ADDRESS">9928 CC Lane</additional_field>
+    </additional_fields>
+
+  </params>
+</api>

@@ -1,0 +1,459 @@
+
+OSDial API Documentation
+----------------------------------------------------
+
+  The OSDial API is handled through a set of XML or GET/POST requests to the API application.
+
+  Accessing the API via URL:
+    The API application URL is located at:
+       http://yourserver/admin/api.php
+
+     When calling the API, you can POST (or GET) the XML to the variable "xml".  POST is often
+     the better choice, as GET has memory size limitations.  If you where to access the API
+     using GET, it would look like this in your brower:
+       http://yourserver/admin/api.php?xml=<api function="version"/>
+
+     Compatibility:
+       While XML seemed the right way to go when developing an API, it was important to provide
+       compatibility for the upstream vendor, VD.  It is designed in such a way that you can
+       seemlessly point any existing applications using the VD API to this one, without formating
+       in XML.
+
+         VD POST/GET Style Input / VD Style Output
+           http://yourserver/admin/api.php?function=version
+
+         OSDial XML Style Input / VD Style Output
+           http://yourserver/admin/api.php?xml=<api function="version" vdcompat="1"/>
+
+
+  Accessing the API via Command-Line:
+    The API application is located on the filesystem at:
+      /opt/osdial/html/admin/api.php
+
+    The API allows you to call it directly from the command-line when specifying an XML file
+    to parse, just as it would through the URL.  As an example, you might do the following:
+      /usr/bin/php /opt/osdial/html/admin/api.php /root/lead_to_load.xml
+    
+
+
+
+  This single application handles all Agent and Admin functions.  I will list then briefly cover
+  those functions here.  
+
+                                API Function List
+      Mode          Function             Description
+      ---------------------------------------------------------------------------------------
+      admin         add_lead             Function will load a lead with the given parameters
+                                         and optionally directly place the lead into the
+                                         Campaign's Hopper, in effect immediately dialing
+                                         the lead.
+
+      admin/agent   version              The function simply returns the OSDial version.
+
+
+
+
+----------------------------------------------------------------- add_lead -------------------------------------------------------------
+
+  Function: add_lead  -  Sample XML File
+  ---------------------------------------
+<?xml version='1.0' standalone='yes'?>
+<api mode="admin" function="add_lead" user="admin" pass="XXXXX" test="0" debug="0" vdcompat="0">
+  <params>
+    <dnc_check>YES</dnc_check>
+    <duplicate_check>LIST</duplicate_check>
+    <gmt_lookup_method>POSTAL</gmt_lookup_method>
+
+    <add_to_hopper>NO</add_to_hopper>
+    <hopper_priority>0</hopper_priority>
+    <hopper_local_call_time_check></hopper_local_call_time_check>
+    <hopper_campaign_call_time_check></hopper_campaign_call_time_check>
+
+    <vendor_lead_code></vendor_lead_code>
+    <source_id></source_id>
+    <list_id>1000</list_id>
+    <phone_code>1</phone_code>
+    <phone_number>9992031212</phone_number>
+    <title></title>
+    <first_name>John</first_name>
+    <middle_initial></middle_initial>
+    <last_name>Doe</last_name>
+    <address1>1234 Test Ave</address1>
+    <address2>Apt. 31-B</address2>
+    <address3></address3>
+    <city>Orlando</city>
+    <state>FL</state>
+    <province></province>
+    <postal_code>32801</postal_code>
+    <country_code>USA</country_code>
+    <gender>m</gender>
+    <date_of_birth>1970-01-01</date_of_birth>
+    <alt_phone></alt_phone>
+    <email>john@doe.com</email>
+    <custom1></custom1>
+    <custom2></custom2>
+    <comments>This is a test of the lead loading.</comments>
+    <external_key>88975347</external_key>
+    <cost>1.23</cost>
+    <post_date>2010-03-20T14:30:00</post_date>
+
+    <additional_fields>
+      <additional_field form="CREDITCARD" field="NAME">John Doe</additional_field>
+      <additional_field form="CREDITCARD" field="ADDRESS">9928 CC Lane</additional_field>
+    </additional_fields>
+
+  </params>
+</api>
+  ---------------------------------------
+
+
+
+
+  Function: add_lead  -  Field by Field Definitions
+  --------------------------------------------------
+<api mode="admin" function="add_lead" user="admin" pass="XXXXX" test="0" debug="0" vdcompat="0">
+  The top-level-node, api, contains the attributes used to authenticate, call functions, control
+  output, testing, and debug.  The order that the options appear in is insignificant, so long as
+  values and sub-values remain in their required containers.  For "add_lead", the top-level-node
+  "api" contains the child-node "params", the child-node "params" contains several other
+  child-nodes pertaining to lead data and controlling the lead-load behavior.  The node "params"
+  has another child-node called "additional_fields" that allow you to load custom data into the
+  custom form for the lead.
+
+    The layout as an example:
+      <api>
+        <params>
+          ...
+          <additional_fields>
+            ...
+          </additional_fields>
+        </params>
+      </api>
+    
+
+  Top-Level-Node (api) Attributes:
+    mode
+      The mode of the action, "admin" or "agent".  The mode determines what functions are allowed
+      to be called.  Access to the modes is controlled by the User options "Admin API Access" and
+      "Agent API Access".
+    function
+      The function / operation being performed, in this case, "add_lead".
+    user
+      The user (agent) that you will be accessing this function with.  In order to use the
+      "add_lead" function, the user must have a user_level of 8 or more and they must have thei
+      options "Modify Leads" and "Admin API Access" enabled.
+    pass
+      The user's password as defined in the Control/Admin GUI.
+    test
+      When set to "1", data will not be added, updated, or removed from the system.  If set to
+      "0" or undefined, then all data transactions will occur normally.
+    debug
+      Outputs additional information that might assist you in determining where a problem might
+      be occurring.  To turn on, set to "1".  When undefined or set to "0", debug information
+      will not be outputted.
+    vdcompat
+      When set to "1", the API will try to mimic the behavior of the VD API.
+
+
+  <params>
+    This container, "params" is only a holder of a set of data being passed into the "add_lead"
+    function.  It is required and all lead values and load options must be contained within.
+
+
+    Lead Loading Options
+    --------------------
+    <dnc_check>Y</dnc_check>
+      When set to "Y", the phone number of the submitted lead will be checked against the system
+      wide DNC list and if founf will not be loaded.  When set to "N", the system will not check
+      the phone number against the system-wide DNC list.  If this is set to "AREACODE", it will
+      check for an entry in osdial_dnc with an areacode followed by 7 Xs.
+        Ie. 321XXXXXXX
+      If this entry exists in the DNC list and this option is set to "AREACODE", then it will
+      effectively consider all calls in that area-code on the DNC.
+
+    <duplicate_check>LIST</duplicate_check>
+      Controls the behavior of the duplicate checking functions, they are:
+                     N - Do not check for duplicates.
+                  LIST - Check for duplicates in the defined list_id.
+              CAMPAIGN - Search ALL lists belonging to the campaign of the defined list_id.
+        CAMPAIGNACTIVE - Search only ACTIVE lists belonging to the campaign of the defined list_id.
+                SYSTEM - Search ALL lists in the System.
+          SYSTEMACTIVE - Search only ACTIVE lists in the System.
+
+    <gmt_lookup_method>POSTAL</gmt_lookup_method>
+      Controls whether or not to first try a postal-code lookup to determine the timezone (GMT) of the
+      lead.  If set to "POSTAL" it will make the attempt and then try to determine the GMT by the
+      areacode of the phone_number.  If set to "AREACODE" or undefined, it will not attempt a lookup
+      by postal-code.
+         
+
+    <add_to_hopper>N</add_to_hopper>
+      If set to "Y" and the lead loaded successfully, it will be placed in the dialer to be immediately
+      clalled.  If set to "N", normal dialing rules for the campaign will apply.
+
+    <hopper_priority>0</hopper_priority>
+      The higher the priority, the sooner it will be called.
+
+    <hopper_local_call_time_check></hopper_local_call_time_check>
+      If set to "Y" or undefined, the system will make sure that the local call-time / timezone rules
+      are followed, not allowing the lead to be put in the hopper if too early / late for that timezone.
+      If set to "N", then the system wont check and the lead will be called regardless of what the local
+      time is.  The default behavior is to do what is defined in the campaign, which usually means
+      following local call-time rules.
+      
+    <hopper_campaign_call_time_check></hopper_campaign_call_time_check>
+      If set to "Y" or undefined, the system will make sure that the lead will only be called within the
+      campaigns (servers) local time if before/after a campaign start/stop time, the lead will not put
+      in the hopperi.  If set to "N", then the system wont check and the lead will be called regardless
+      of what the campaigns start/stop time is.  The default behavior is to do what is defined in the
+      campaign, which usually means following campaign call-time rules.
+
+
+
+    Lead Data
+    ---------------
+    <vendor_lead_code></vendor_lead_code>
+      Optional.
+
+    <source_id></source_id>
+      Optional.
+
+    <list_id>1000</list_id>
+      Required, and it must be a valid list_id.
+
+    <phone_code>1</phone_code>
+      Required.
+
+    <phone_number>9992031212</phone_number>
+      Required.
+
+    <title></title>
+      Optional.
+
+    <first_name>John</first_name>
+      Optional, but stongly recommended.
+
+    <middle_initial></middle_initial>
+      Optional.
+
+    <last_name>Doe</last_name>
+      Optional, but stongly recommended.
+
+    <address1>1234 Test Ave</address1>
+      Optional, but stongly recommended.
+
+    <address2>Apt. 31-B</address2>
+      Optional.
+
+    <address3></address3>
+      Optional.  Can be used as a tertiary phone number.
+
+    <city>Orlando</city>
+      Optional, but stongly recommended.
+
+    <state>FL</state>
+      Optional, but stongly recommended as it may have an effect on the ability to determine the timezone.
+
+    <province></province>
+      Optional.
+
+    <postal_code>32801</postal_code>
+      Optional, but stongly recommended as it may have an effect on the ability to determine the timezone.
+
+    <country_code>USA</country_code>
+      Optional.
+
+    <gender>m</gender>
+      Optional.
+
+    <date_of_birth>1970-01-01</date_of_birth>
+      Optional.
+
+    <alt_phone></alt_phone>
+      Optional.  The secondary phone number.
+
+    <email>john@doe.com</email>
+      Optional.
+
+    <custom1></custom1>
+      Optional.
+
+    <custom2></custom2>
+      Optional.
+
+    <comments>This is a test of the lead loading.</comments>
+      Optional.
+
+    <external_key>88975347</external_key>
+      Optional.  An "external_key" that can be used to link to some other database.
+
+    <cost>1.23</cost>
+      Optional.  Should only contain numerical data.  The "cost" of this lead.
+
+    <post_date>2010-03-20T14:30:00</post_date>
+      Optional.  Date/Time should be in ISO 8601 format.
+
+
+    Lead Data - Additional (Custom) Forms and Fields
+    ------------------------------------------------
+    <additional_fields>
+      The "additional_fields" node is a container that holds several "additional_field" nodes.  It is
+      required to load data into the Additional / Custom Forms and Fields.
+
+      <additional_field form="CREDITCARD" field="NAME">John Doe</additional_field>
+      <additional_field form="CREDITCARD" field="ADDRESS">9928 CC Lane</additional_field>
+        The "additional_field" node requires the "form" and "field" attributes, as well as a contained value.
+
+          The "form" attribute should be given the case-sensative name of the Form.  For a list of Form names,
+          in the Admin GUI, click "Campaigns", and then click the "Additional Fields" sub-menu.  The list of
+          names here is what you would use for the the "form" attribute.
+
+          The "field" attribute should be given the case-sensative name of the specific Field within the Form.
+          For a list of Field names, in the Admin GUI, click "Campaigns", and then click the "Additional Fields"
+          sub-menu.  Now, click the name of the Form you entered in the previous attribute, this will pull up a
+          list of "Additional Form Fields", the list of names here is what you would use for the "field" attribute.
+
+          Now, to assign a value to the additional_form_field, simply put the value between the "additional_field"
+          tags / containers.
+
+    </additional_fields>
+      The required closing container tag for "additional_fields".
+
+  </params>
+    The required closing container tag for "params".
+
+</api>
+  The required closing container tag for "api".
+  --------------------------------------------------
+
+
+
+  Function: add_lead   Results (OSDial XML Style)
+  --------------------------------------------------
+  The below result example show a full successful transaction.  Should it have failed, the "results" node would
+  not have been given and the "status" node would give a description of the failure.
+
+
+  OSDial XML Style outputfrom adding a lead and placing in hopper:
+
+<?xml version="1.0"?>
+<response>
+ <request>
+  <api user="admin" pass="XXXXXX" function="add_lead" mode="admin" test="0" debug="0" vdcompat="0">
+   <params>
+    <dnc_check>Y</dnc_check>
+    <duplicate_check>LIST</duplicate_check>
+    <gmt_lookup_method>POSTAL</gmt_lookup_method>
+    <add_to_hopper>Y</add_to_hopper>
+    <hopper_priority>0</hopper_priority>
+    <list_id>997</list_id>
+    <phone_code>1</phone_code>
+    <phone_number>9992031212</phone_number>
+    <first_name>John</first_name>
+    <last_name>Doe</last_name>
+    <address1>1234 Test Ave</address1>
+    <address2>Apt. 31-B</address2>
+    <city>Orlando</city>
+    <state>FL</state>
+    <postal_code>32801</postal_code>
+    <country_code>USA</country_code>
+    <gender>m</gender>
+    <date_of_birth>1970-01-01</date_of_birth>
+    <email>john@doe.com</email>
+    <comments>This is a test of the lead loading.</comments>
+    <external_key>88975347</external_key>
+    <cost>1.23</cost>
+    <post_date>2010-03-20T14:30:00</post_date>
+    <additional_fields>
+     <additional_field form="CREDITCARD" field="NAME">John Doe</additional_field>
+     <additional_field form="CREDITCARD" field="ADDRESS">9928 CC Lane</additional_field>
+    </additional_fields>
+   </params>
+  </api>
+ </request>
+ <status code="SUCCESS" start="2010-02-27 06:42:00" start_epoch="1267270920" end="2010-02-27 06:42:00" end_epoch="1267270920" runtime="0">Lead added.</status>
+ <result records="1">
+  <record id="0">
+   <phone_number>9992031212</phone_number>
+   <list_id>997</list_id>
+   <lead_id>6167677</lead_id>
+   <gmt_offset>-5.0</gmt_offset>
+   <addition_fields total="2" success="2" failed="0">
+    <field id="850801" success="1"/>
+    <field id="850802" success="1"/>
+   </addition_fields>
+   <hopper_notice>Lead added to hopper.</hopper_notice>
+   <hopper_id>9662</hopper_id>
+  </record>
+ </result>
+</response>
+  --------------------------------------------------
+
+
+  Function: add_lead   Results (VD Style)
+  --------------------------------------------------
+  VD Style output from adding a lead and placing in hopper:
+
+SUCCESS: add_lead LEAD HAS BEEN ADDED - 9992031212|997|6167678|-5.0|6666
+NOTICE: add_lead ADDED TO HOPPER - 9992031212|6167678|2|6666
+  --------------------------------------------------
+
+
+
+
+
+    
+----------------------------------------------------------------- version --------------------------------------------------------------
+
+  Function: version  -  Sample XML File
+  ---------------------------------------
+<?xml version='1.0' standalone='yes'?>
+<api function="version" vdcompat="0"/>
+  ---------------------------------------
+
+
+
+
+  Function: version  -  Field by Field Definitions
+  --------------------------------------------------
+  This function only requires the function attribute to be set to "version".
+<api function="version" vdcompat="0"/>
+  Top-Level-Node (api) Attributes:
+    function
+      The function / operation being performed, in this case, "version".
+    vdcompat
+      When set to "1", the API will try to mimic the behavior of the VD API.
+  --------------------------------------------------
+
+
+
+
+
+  Function: version   Results (OSDial XML Style)
+  --------------------------------------------------
+  OSDial XML Style output from querying the version:
+
+<?xml version="1.0"?>
+<response>
+ <request>
+  <api function="version" vdcompat="0"/>
+ </request>
+ <status code="SUCCESS" start="2010-02-27 09:07:56" start_epoch="1267279676" end="2010-02-27 09:07:56" end_epoch="1267279676" runtime="0"/>
+ <result records="1">
+  <record id="0">
+   <version>2.2.1.041</version>
+   <build>650-198</build>
+  </record>
+ </result>
+</response>
+  --------------------------------------------------
+
+
+
+
+  Function: version   Results (VD Style)
+  --------------------------------------------------
+  VD Style output from querying the version:
+
+VERSION: 2.2.1.041|BUILD: 650-198|DATE: 2010-02-27 09:18:40|EPOCH: 1267280320
+  --------------------------------------------------
