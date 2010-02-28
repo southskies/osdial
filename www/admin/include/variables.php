@@ -124,6 +124,15 @@ $auto_dial_level = get_variable("auto_dial_level");
 $auto_dial_next_number = get_variable("auto_dial_next_number");
 $available_only_ratio_tally = get_variable("available_only_ratio_tally");
 
+$add_closer_record = get_variable("add_closer_record");
+$address1 = get_variable("address1");
+$address2 = get_variable("address2");
+$address3 = get_variable("address3");
+$alt_phone = get_variable("alt_phone");
+$alf_id = get_variable("alf_id");
+$alf_fld_id = get_variable("alf_fld_id");
+$alf_val = get_variable("alf_val");
+
 $balance_trunks_offlimits = get_variable("balance_trunks_offlimits");
 $billable = get_variable("billable");
 
@@ -187,7 +196,22 @@ $custom1_field = get_variable("custom1_field");
 $custom2_field = get_variable("custom2_field");
 $cpuinfo = get_variable("cpuinfo");
 
+$call_began = get_variable("call_began");
+$callback_id = get_variable("callback_id");
+$channel = get_variable("channel");
+$city = get_variable("city");
+$comments = get_variable("comments");
+$country_code = get_variable("country_code");
+$custom1 = get_variable("custom1");
+$custom2 = get_variable("custom2");
+$CBchangeANYtoUSER = get_variable("CBchangeANYtoUSER");
+$CBchangeUSERtoANY = get_variable("CBchangeUSERtoANY");
+$CBchangeUSERtoUSER = get_variable("CBchangeUSERtoUSER");
+$CBuser = get_variable("CBuser");
+
 $date_of_birth_field = get_variable("date_of_birth_field");
+$date_of_birth = get_variable("date_of_birth");
+$dispo = get_variable("dispo");
 $DB = get_variable("DB");
 $DBX_database = get_variable("DBX_database");
 $DBX_pass = get_variable("DBX_pass");
@@ -228,6 +252,9 @@ $drop_message = get_variable("drop_message");
 $dtmf_send_extension = get_variable("dtmf_send_extension");
 $dupcheck = get_variable("dupcheck");
 
+
+$email = get_variable("email");
+$end_call = get_variable("end_call");
 $email_field = get_variable("email_field");
 $enable_agc_xfer_log = get_variable("enable_agc_xfer_log");
 $enable_fast_refresh = get_variable("enable_fast_refresh");
@@ -267,6 +294,7 @@ $fronter_display = get_variable("fronter_display");
 $full_name = get_variable("full_name");
 $fullname = get_variable("fullname");
 
+$gender = get_variable("gender");
 $gender_field = get_variable("gender_field");
 $get_call_launch = get_variable("get_call_launch");
 $group = get_variable("group");
@@ -317,6 +345,7 @@ $manual_dial_allow_skip = get_variable("manual_dial_allow_skip");
 $manual_dial_list_id = get_variable("manual_dial_list_id");
 $manual_preview_default = get_variable("manual_preview_default");
 $max_osdial_trunks = get_variable("max_osdial_trunks");
+$middle_initial = get_variable("middle_initial");
 $middle_initial_field = get_variable("middle_initial_field");
 $mix_container_item = get_variable("mix_container_item");
 $mix_method = get_variable("mix_method");
@@ -333,6 +362,9 @@ $modify_servers = get_variable("modify_servers");
 $modify_usergroups = get_variable("modify_usergroups");
 $modify_users = get_variable("modify_users");
 $moh_context = get_variable("moh_context");
+$modify_logs = get_variable("modify_logs");
+$modify_closer_logs = get_variable("modify_closer_logs");
+$modify_agent_logs = get_variable("modify_agent_logs");
 
 $next_agent_call = get_variable("next_agent_call");
 $no_hopper_leads_logins = get_variable("no_hopper_leads_logins");
@@ -398,6 +430,7 @@ $oivr_opt_keypress = get_variable("oivr_opt_keypress");
 $oivr_opt_action = get_variable("oivr_opt_action");
 $oivr_opt_action_data = get_variable("oivr_opt_action_data");
 $oivr_opt_last_state = get_variable("oivr_opt_last_state");
+$old_phone = get_variable("old_phone");
 
 $park_ext = get_variable("park_ext");
 $park_file_name = get_variable("park_file_name");
@@ -421,6 +454,12 @@ $preview_force_dial_time = get_variable("preview_force_dial_time");
 $prompt_interval = get_variable("prompt_interval");
 $protocol = get_variable("protocol");
 $province_field = get_variable("province_field");
+
+$parked_time = get_variable("parked_time");
+$phone_code = get_variable("phone_code");
+$post_date = get_variable("post_date");
+$postal_code = get_variable("postal_code");
+$province = get_variable("province");
 
 $qc_server_archive = get_variable("qc_server_archive");
 $qc_server_active = get_variable("qc_server_active");
@@ -488,11 +527,17 @@ $submit_file = get_variable("submit_file");
 $submit_method = get_variable("submit_method");
 $sys_perf_log = get_variable("sys_perf_log");
 
+$save_aff = get_variable("save_aff");
+$source_id = get_variable("source_id");
+$state = get_variable("state");
+
 $telnet_host = get_variable("telnet_host");
 $telnet_port = get_variable("telnet_port");
+$title = get_variable("title");
 $title_field = get_variable("title_field");
 $tovdad_display = get_variable("tovdad_display");
 $trunk_restriction = get_variable("trunk_restriction");
+$tsr = get_variable("tsr");
 
 $UGdisplay = get_variable("UGdisplay");
 $UidORname = get_variable("UidORname");

@@ -34,6 +34,7 @@
 
 if ($non_latin < 1)	{
 	### DIGITS ONLY ###
+	$alt_phone = ereg_replace("[^0-9]","",$alt_phone);
 	$adaptive_dropped_percentage = ereg_replace("[^0-9]","",$adaptive_dropped_percentage);
 	$adaptive_latest_server_time = ereg_replace("[^0-9]","",$adaptive_latest_server_time);
 	$admin_api_access = ereg_replace("[^0-9]","",$admin_api_access);
@@ -141,6 +142,7 @@ if ($non_latin < 1)	{
 	$OSDIAL_park_on_extension = ereg_replace("[^0-9]","",$OSDIAL_park_on_extension);
 	$osdial_recording = ereg_replace("[^0-9]","",$osdial_recording);
 	$osdial_transfers = ereg_replace("[^0-9]","",$osdial_transfers);
+	$old_phone = ereg_replace("[^0-9]","",$old_phone);
 	$voicemail_button_enabled = ereg_replace("[^0-9]","",$voicemail_button_enabled);
 	$voicemail_dump_exten = ereg_replace("[^0-9]","",$voicemail_dump_exten);
 	$voicemail_ext = ereg_replace("[^0-9]","",$voicemail_ext);
