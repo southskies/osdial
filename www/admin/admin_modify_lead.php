@@ -224,6 +224,8 @@ $browser = getenv("HTTP_USER_AGENT");
 		}
 	}
 
+require($WeBServeRRooT . "/admin/templates/default/display.php");
+include($WeBServeRRooT . "/admin/templates/" . $admin_template . "/display.php");
 ?>
 <!-- html>
 <head -->
