@@ -56,21 +56,60 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8 && $LOGexport_leads > 0) {
         $sfield .= 'phone_code,phone_number,title,first_name,middle_initial,last_name,address1,address2,address3,city,state,province,';
         $sfield .= 'postal_code,country_code,gender,date_of_birth,alt_phone,email,custom1,comments,called_count,custom2,external_key';
     }
+    $ffield = explode(',',$sfield);
+    $ssfield = $sfield;
+
+    $aff_export = get_variable("aff_export");
+    $camp = '';
+    # Export the AFF fields names.
+    if ($aff_export > 0) {
+        $sfield .= ',';
+        $list = get_first_record($link, 'osdial_lists', '*', sprintf("list_id='%s'",mres($list_id)));
+        $camp = $list['campaign_id'];
+        $affrms = get_krh($link, 'osdial_campaign_forms', '*', 'priority ASC', sprintf("deleted='0' AND (campaigns='ALL' OR campaigns='%s' OR campaigns LIKE '%s,%%' OR campaigns LIKE '%%,%s')",mres($camp),mres($camp),mres($camp)), '');
+        if (count($affrms) > 0) {
+            foreach ($affrms as $affrm) {
+                $afflds = get_krh($link, 'osdial_campaign_fields', '*', 'priority ASC', sprintf("deleted='0' AND form_id='%s'",mres($affrm['id'])), '');
+                if (count($afflds) > 0) {
+                    foreach ($afflds as $affld) {
+                        $sfield .= $affrm['name'] . '_' . $affld['name'] . ',';
+                    }
+                }
+            }
+        }
+        $sfield = chop($sfield,',');
+    }
 
     echo $sfield . "\r\n";
-    $ffield = explode(',',$sfield);
+    ob_flush();
+    flush();
 
-    $leads = get_krh($link,'osdial_list',$sfield,'',$swhere);
-    if (is_array($leads)) {
-        foreach ($leads as $lead) {
-            $output = '';
-            foreach ($ffield as $field) {
-                $output .= '"' . eregi_replace("\n","",strtr($lead[$field],'"','')) . '",';
-            }
-            echo chop($output,',') . "\r\n";
+    $stmt="SELECT " . $ssfield . " FROM osdial_list WHERE " . $swhere . ";";
+    $rslt=mysql_query($stmt, $link);
+    while ($row = mysql_fetch_array($rslt, MYSQL_BOTH)) {
+        $output = '';
+        foreach ($ffield as $field) {
+            $output .= '"' . eregi_replace("\n","",strtr($row[$field],'"','')) . '",';
         }
+        # Export the AFF values
+        if ($aff_export > 0) {
+            $affrms = get_krh($link, 'osdial_campaign_forms', '*', 'priority ASC', sprintf("deleted='0' AND (campaigns='ALL' OR campaigns='%s' OR campaigns LIKE '%s,%%' OR campaigns LIKE '%%,%s')",mres($camp),mres($camp),mres($camp)), '');
+            if (count($affrms) > 0) {
+                foreach ($affrms as $affrm) {
+                    $afflds = get_krh($link, 'osdial_campaign_fields', '*', 'priority ASC', sprintf("deleted='0' AND form_id='%s'",mres($affrm['id'])), '');
+                    if (count($afflds) > 0) {
+                        foreach ($afflds as $affld) {
+                            $alf = get_first_record($link, 'osdial_list_fields', '*', sprintf("lead_id='%s' AND field_id='%s'",$row['lead_id'],$affld['id']));
+                            $output .= '"' . eregi_replace("\n","",strtr($alf['value'],'"','')) . '",';
+                        }
+                    }
+                }
+            }
+        }
+        echo chop($output,',') . "\r\n";
+        ob_flush();
+        flush();
     }
-        
 
 } elseif ($ADD==131 && $LOGuser_level > 8 && $LOGexport_leads > 0) {
 
@@ -116,11 +155,15 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8 && $LOGexport_leads > 0) {
 
             $sstats = get_krh($link,'osdial_statuses','*','','');
             $cstats = get_krh($link,'osdial_campaign_statuses','*','',"campaign_id='" . $list['campaign_id'] . "'");
-            foreach ($sstats as $stat) {
-                $stats[$stat['status']] = $stat;
+            if (count($sstats) > 0) {
+                foreach ($sstats as $stat) {
+                    $stats[$stat['status']] = $stat;
+                }
             }
-            foreach ($cstats as $stat) {
-                $stats[$stat['status']] = $stat;
+            if (count($cstats) > 0) {
+                foreach ($cstats as $stat) {
+                    $stats[$stat['status']] = $stat;
+                }
             }
             sort($stats);
 
@@ -229,6 +272,13 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8 && $LOGexport_leads > 0) {
             echo '      <td align=right><input onclick="' . $unchkjs . '" type=checkbox name=fields[] id=ALL value="-ALL-" checked></td>' . "\n";
             echo "      <td><label for=ALL><b>ALL</b></label></td>\n";
             echo "      <td><label for=ALL><b>- Export ALL fields</b></label></td>\n";
+            echo "   </tr>\n";
+            echo "  <tr><td colspan=3><hr></td></tr>\n";
+
+            echo "   <tr class=font2>\n";
+            echo '      <td align=right><input type=checkbox name=aff_export id=aff_export value="1"></td>' . "\n";
+            echo "      <td><label for=aff_export><b>AFF_ALL</b></label></td>\n";
+            echo "      <td><label for=aff_export><b>- Export ALL related Additional Form Fields.<br><font size=1>(in addition to selected fields.)</font></b></label></td>\n";
             echo "   </tr>\n";
             echo "  <tr><td colspan=3><hr></td></tr>\n";
 
