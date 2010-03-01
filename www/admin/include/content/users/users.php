@@ -761,26 +761,26 @@ echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 $let = get_variable('let');
 $letSQL = '';
-if ($let != '') $letSQL = "AND (user LIKE '$let%' OR full_name LIKE '$let%' OR full_name LIKE '% $let%')";
+if ($let != '') $letSQL = sprintf("AND (user LIKE '%s%%' OR full_name LIKE '%s%%' OR full_name LIKE '%% %s%%')",mres($let),mres($let),mres($let));
 
 $num = get_variable('num');
 $numSQL = '';
-if ($num != '') $numSQL = "AND (user LIKE '$num%')";
+if ($num != '') $numSQL = sprintf("AND (user LIKE '%s%%')",mres($num));
 
 $level = get_variable('level');
 $levelSQL = '';
-if ($level != '') $levelSQL = "AND user_level='$level'";
+if ($level != '') $levelSQL = sprintf("AND user_level='%'",mres($level));
 
 $group = get_variable('group');
 $groupSQL = '';
-if ($group != '') $groupSQL = "AND user_group='$group'";
+if ($group != '') $groupSQL = sprintf("AND user_group='%'",mres($group));
 
 $mdn_user = get_variable('mdn_user');
-if ($SUB==1 and $mdn_user != "") {
+if ($SUB==1 and $mdn_user != "" and $LOGmodify_users > 0 and $LOGuser_level > 7) {
     $mdn_limit = get_variable('mdn_limit');
     if ($mdn_limit == "" or $mdn_limit < 0)
         $mdn_limit = -1;
-    $stmt="UPDATE osdial_users SET manual_dial_new_limit='$mdn_limit' WHERE user='$mdn_user';";
+    $stmt=sprintf("UPDATE osdial_users SET manual_dial_new_limit='%s' WHERE user='%s';",mres($mdn_limit),mres($mdn_user));
     $rslt=mysql_query($stmt, $link);
 }
 
@@ -845,40 +845,47 @@ echo "  </tr>\n";
         } else {
             $bgcolor='bgcolor='.$evenrows;
         }
-        echo "  <form action=$PHP_SELF method=POST>\n";
-        echo "  <input type=hidden name=ADD value=$ADD>\n";
-        echo "  <input type=hidden name=SUB value=1>\n";
-		echo "  <tr class=\"row font1\" $bgcolor>\n";
-        echo "    <td><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">$row[1]</a></td>\n";
-        echo "    <td>$row[3]</td>\n";
-        if ($ADD==9) {
-	        $stmt2="SELECT SUM(manual_dial_new_today),status_category_1,SUM(status_category_count_1),status_category_2,SUM(status_category_count_2),status_category_3,SUM(status_category_count_3),status_category_4,SUM(status_category_count_4) FROM osdial_campaign_agent_stats WHERE user='$row[1]' GROUP BY user";
-	        $rslt2=mysql_query($stmt2, $link);
-		    $row2=mysql_fetch_row($rslt2);
-            $stat['SALE'] = 0;
-            $stat['CONTACT'] = 0;
-            $stat[$row2[1]] = $row2[2];
-            $stat[$row2[3]] = $row2[4];
-            $stat[$row2[5]] = $row2[6];
-            $stat[$row2[7]] = $row2[8];
-            $new_count += $row2[0];
-            $sales_count += $stat['SALE'];
-            $contact_count += $stat['CONTACT'];
-            $close_pct = 0;
-            if ($row[46] < 0)
-                $row[46] = "";
-            if ($stat['CONTACT'] > 0) $close_pct = (($stat['SALE'] / ($stat['CONTACT'] + $stat['SALE'])) * 100);
-            echo "    <td align=center>$row2[0]</td>\n";
-            echo "    <td align=center class=tabinput><input type=hidden name=mdn_user value=$row[1]><input type=text name=mdn_limit size=5 value=$row[46]></td>\n";
-            echo "    <td align=right>" . ($stat['CONTACT'] + $stat['SALE']) . "</td>\n";
-            echo "    <td align=right>" . $stat['SALE'] . "</td>\n";
-            echo "    <td align=right>" . sprintf('%5.2f',$close_pct) . " %</td>\n";
-        } else {
-            echo "    <td align=center><a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$row[4]&group=$group&let=$let\">$row[4]</a></td>\n";
-            echo "    <td><a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$row[5]&let=$let\">$row[5]</a></td>\n";
+            echo "  <form action=$PHP_SELF method=POST>\n";
+            echo "  <input type=hidden name=ADD value=$ADD>\n";
+            echo "  <input type=hidden name=SUB value=1>\n";
+        if ($row[5] != "VIRTUAL") {
+		    echo "  <tr class=\"row font1\" $bgcolor>\n";
+            echo "    <td><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">$row[1]</a></td>\n";
+            echo "    <td>$row[3]</td>\n";
+            if ($ADD==9) {
+	            $stmt2="SELECT SUM(manual_dial_new_today),status_category_1,SUM(status_category_count_1),status_category_2,SUM(status_category_count_2),status_category_3,SUM(status_category_count_3),status_category_4,SUM(status_category_count_4) FROM osdial_campaign_agent_stats WHERE user='$row[1]' GROUP BY user";
+	            $rslt2=mysql_query($stmt2, $link);
+		        $row2=mysql_fetch_row($rslt2);
+                $stat['SALE'] = 0;
+                $stat['CONTACT'] = 0;
+                $stat[$row2[1]] = $row2[2];
+                $stat[$row2[3]] = $row2[4];
+                $stat[$row2[5]] = $row2[6];
+                $stat[$row2[7]] = $row2[8];
+                $new_count += $row2[0];
+                $sales_count += $stat['SALE'];
+                $contact_count += $stat['CONTACT'];
+                $close_pct = 0;
+                if ($row[46] < 0) $row[46] = "";
+                if ($stat['CONTACT'] > 0) $close_pct = (($stat['SALE'] / ($stat['CONTACT'] + $stat['SALE'])) * 100);
+                echo "    <td align=center>$row2[0]</td>\n";
+                echo "    <td align=center class=tabinput>\n";
+                if ($LOGmodify_users > 0 and $LOGuser_level > 7) {
+                    echo "      <input type=hidden name=mdn_user value=$row[1]><input type=text name=mdn_limit size=5 value=$row[46]>\n";
+                } else {
+                    echo "      $row[46]\n";
+                }
+                echo "    </td>\n";
+                echo "    <td align=right>" . ($stat['CONTACT'] + $stat['SALE']) . "</td>\n";
+                echo "    <td align=right>" . $stat['SALE'] . "</td>\n";
+                echo "    <td align=right>" . sprintf('%5.2f',$close_pct) . " %</td>\n";
+            } else {
+                echo "    <td align=center><a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$row[4]&group=$group&let=$let\">$row[4]</a></td>\n";
+                echo "    <td><a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$row[5]&let=$let\">$row[5]</a></td>\n";
+            }
+		    echo "    <td align=center class=font1 nowrap><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">MODIFY</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$row[1]\">STATS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$row[1]\">STATUS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$row[1]\">TIME</a></td>\n";
+            echo "  </tr>\n";
         }
-		echo "    <td align=center class=font1 nowrap><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">MODIFY</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$row[1]\">STATS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$row[1]\">STATUS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$row[1]\">TIME</a></td>\n";
-        echo "  </tr>\n";
         echo "</form>\n";
 		$o++;
 	}
