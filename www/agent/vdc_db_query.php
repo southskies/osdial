@@ -2639,41 +2639,6 @@ if ( ($ACTION == 'VDADpause') || ($ACTION == 'VDADready') )
 }
 
 
-################################################################################
-### UpdatEFavoritEs - update the osdial favorites list for this extension
-################################################################################
-if ($ACTION == 'UpdatEFavoritEs')
-{
-	$row='';   $rowx='';
-	$channel_live=1;
-	if ( (strlen($favorites_list)<1) || (strlen($user)<1) || (strlen($exten)<1) )
-	{
-	echo "favorites list $favorites_list is not valid\n";
-	exit;
-	}
-	else
-	{
-	$stmt = "select count(*) from phone_favorites where extension='$exten' and server_ip='$server_ip';";
-	if ($DB) {echo "$stmt\n";}
-	$rslt=mysql_query($stmt, $link);
-	$row=mysql_fetch_row($rslt);
-
-	if ($row[0] > 0)
-		{
-		$stmt="UPDATE phone_favorites set extensions_list=\"$favorites_list\" where extension='$exten' and server_ip='$server_ip';";
-			if ($format=='debug') {echo "\n<!-- $stmt -->";}
-		$rslt=mysql_query($stmt, $link);
-		}
-	else
-		{
-		$stmt="INSERT INTO phone_favorites values('$exten','$server_ip',\"$favorites_list\");";
-			if ($format=='debug') {echo "\n<!-- $stmt -->";}
-		$rslt=mysql_query($stmt, $link);
-		}
-	}
-	echo "Favorites list has been updated to $favorites_list for $exten\n";
-}
-
 
 ################################################################################
 ### PauseCodeSubmit - Update osdial_agent_log with pause code
