@@ -1675,6 +1675,41 @@ The <?=$t1?> basic web-based lead loader is designed simply to take a lead file 
 <BR>
 <B>Enable Agent Transfer Logfile -</B> This option will log to a text logfile on the webserver every time a call is transferred to an agent. Default is 0, disabled.
 
+<BR>
+<A NAME="settings-agent_template">
+<BR>
+<B>Agent Template -</B> This is used to easily apply different template styles to the Agent GUI.
+
+<BR>
+<A NAME="settings-admin_template">
+<BR>
+<B>Admin Template -</B> This is used to easily apply different template styles to the Admin GUI.
+
+<BR>
+<A NAME="settings-enable_lead_allocation">
+<BR>
+<B>Enable Lead Allocation Menu -</B> When enabled (1) the Lead Allocation option appears under the Agent menus sub-section, otherwise it is not shown.
+
+<BR>
+<A NAME="settings-enable_filters">
+<BR>
+<B>Enable Filters Menu -</B> When enabled (1) the Filter menu (top-level) is displayed for all users, otherwise it is not shown.
+
+<BR>
+<A NAME="settings-enable_external_agetns">
+<BR>
+<B>Enable External Agents -</B> When enabled (1) the External Agents menu (top-level) is displayed for all users, otherwise it is not shown.
+
+<BR>
+<A NAME="settings-enable_multicompany">
+<BR>
+<B>Enable Multi-Comapny -</B> Allows you define multiple companies and allocate users / leads / lists / campiagns / etc, so that only user of that company can access their data.
+<BR>
+
+<A NAME="settings-multicompany_admin">
+<BR>
+<B>Multi-Comapny Administrator -</B> Gerneally all user will belong to some company...except one, the multicompany admin.  Put the administrators user in hear.
+
 
 <BR><BR><BR><BR>
 
