@@ -125,16 +125,26 @@ if ($hh=='reports')
         </td>
     </tr>
     <tr class='no-ul'>
+     <? if (($system_settings['enable_filters'] + $system_settings['enable_external_agents']) == 0) { ?>
+        <td height=25 align=center>&nbsp;</td>
+     <? } ?>
         <td height=25 align=center <?= $users_hh ?>><a href="<?= $PHP_SELF ?>?ADD=0"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> Agents </font></a></td>
         <td height=25 align=center <?= $campaigns_hh ?>><a href="<?= $PHP_SELF ?>?ADD=10"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> Campaigns </font></a></td>
         <td height=25 align=center <?= $lists_hh ?>><a href="<?= $PHP_SELF ?>?ADD=100"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> Lists </font></a></td>
         <td height=25 align=center <?= $scripts_hh ?>><a href="<?= $PHP_SELF ?>?ADD=1000000"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> Scripts </font></a></td>
+     <? if ($system_settings['enable_filters'] > 0) { ?>
         <td height=25 align=center <?= $filters_hh ?>><a href="<?= $PHP_SELF ?>?ADD=10000000"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> Filters </font></a></td>
+     <? } ?>
         <td height=25 align=center <?= $ingroups_hh ?>><a href="<?= $PHP_SELF ?>?ADD=1000"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> In-Groups </font></a></td>
         <td height=25 align=center <?= $usergroups_hh ?>><a href="<?= $PHP_SELF ?>?ADD=100000"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> User Groups </font></a></td>
+     <? if ($system_settings['enable_external_agents'] > 0) { ?>
         <td height=25 align=center <?= $remoteagent_hh ?>><a href="<?= $PHP_SELF ?>?ADD=10000"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> External Agents </font></a></td>
-        <td height=25 align=center <?= $reports_hh ?>><a href="<?= $PHP_SELF ?>?ADD=999999"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> Reports </font></a></td>
-        <td height=25 align=center <?= $admin_hh ?>><a href="<?= $PHP_SELF ?>?ADD=10000000000"><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> Setup </font></a></td>
+     <? } ?>
+        <td height=25 align=center <?= $reports_hh ?>><? if ($LOGview_reports > 0) { ?><a href="<?= $PHP_SELF ?>?ADD=999999"><? } ?><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> Reports </font><? if ($LOGview_reports > 0) { ?></a><? } ?></td>
+        <td height=25 align=center <?= $admin_hh ?>><? if ($LOGuser_level > 8) { ?><a href="<?= $PHP_SELF ?>?ADD=10000000000"><? } ?><font face="arial,helvetica" color=<?= $menu_h1_color ?> size=<?= $header_font_size ?>> Setup </font><? if ($LOGuser_level > 8) { ?></a><? } ?></td>
+     <? if (($system_settings['enable_filters'] + $system_settings['enable_external_agents']) < 2) { ?>
+        <td height=25 align=center>&nbsp;</td>
+     <? } ?>
     </tr>
     <?
 if (strlen($users_hh) > 1) { 
@@ -146,7 +156,9 @@ if (strlen($users_hh) > 1) {
                 <a href="<?= $PHP_SELF ?>?ADD=1"> Add A New Agent </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 <a href="<?= $PHP_SELF ?>?ADD=1A"> Copy Agent </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 <a href="<?= $PHP_SELF ?>?ADD=550"> Search For An Agent </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+               <? if ($system_settings['enable_lead_allocation'] > 0) { ?>
                 <a href="<?= $PHP_SELF ?>?ADD=9"> Lead Allocation </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+               <? } ?>
                <? if ($user != "") { ?>
                 <a href="<?= $PHP_SELF ?>?ADD=999999&SUB=21&agent=<?= $user ?>"> Agent Stats </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
                 <a href="<?= $PHP_SELF ?>?ADD=999999&SUB=22&agent=<?= $user ?>"> Agent Status </a> 
@@ -269,8 +281,10 @@ if (strlen($lists_hh) > 1) {
                 <a href="<?= $PHP_SELF ?>?ADD=112"> Search For A Lead </a> &nbsp; &nbsp; &nbsp;
                 <a href="<?= $PHP_SELF ?>?ADD=1122"> Advanced Lead Search </a> &nbsp; &nbsp; &nbsp;
                 <a href="<?= $PHP_SELF ?>?ADD=121"> Add Number To DNC </a> &nbsp; &nbsp; &nbsp;
-                <a href="<?= $PHP_SELF ?>?ADD=122"> Load New Leads </a> &nbsp; &nbsp; &nbsp;
-                <? if ($LOGuser_level > 8 && $LOGexport_leads) {
+                <? if ($LOGuser_level > 7 && $LOGload_leads > 0) {
+                    echo "           <a href=\"$PHP_SELF?ADD=122\"> Load New Leads </a> &nbsp; &nbsp; &nbsp;\n";
+                }
+                if ($LOGuser_level > 8 && $LOGexport_leads > 0) {
                     echo "          <a href=\"$PHP_SELF?ADD=131\"> Lead Export </a>\n";
                 }
                 ?>
@@ -323,7 +337,7 @@ if (strlen($usergroups_hh) > 1) {
             <font face="arial,helvetica" color=<?=$default_text?> size=<?= $subheader_font_size ?>> &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=100000"> Show User Groups </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                 <a href="<?= $PHP_SELF ?>?ADD=111111"> Add A New User Group </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-                <a href="<?= $PHP_SELF ?>?ADD=999999&SUB=24"> Group Hourly Report </a>
+                <a href="<?= $PHP_SELF ?>?ADD=999999&SUB=24&group=<?= $LOG['user_group'] ?>"> Group Hourly Report </a>
             </font>
         </td>
     </tr>
