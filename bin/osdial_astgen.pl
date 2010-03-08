@@ -136,22 +136,22 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 	my $oereload;
 	if ($asterisk_version =~ /^1\.6/) {
 		$oereload = "dialplan reload";
-		$oedata =~ s/^exten => h,1,DeadAGI/exten => h,1,AGI/g; 
-		$moddata =~ s/^noload => chan_agent.so/load => chan_agent.so/g;
-		$moddata =~ s/^noload => app_queue.so/load => app_queue.so/g;
+		$oedata =~ s/^exten => h,1,DeadAGI/exten => h,1,AGI/gm;
+		$moddata =~ s/^noload => chan_agent.so/load => chan_agent.so/gm;
+		$moddata =~ s/^noload => app_queue.so/load => app_queue.so/gm;
 		if (-e "/etc/asterisk/zapata.conf" and not -e "/etc/asterisk/chan_dahdi.conf") {
 			my $pr = `cp /etc/asterisk/zapata.conf /etc/asterisk/chan_dahdi.conf`;
 		}
 	} elsif ($asterisk_version =~ /^1\.2/) {
 		$oereload = "extensions reload";
-		$oedata =~ s/^exten => h,1,AGI/exten => h,1,DeadAGI/g; 
-		$moddata =~ s/^load => chan_agent.so/noload => chan_agent.so/g;
-		$moddata =~ s/^load => app_queue.so/noload => app_queue.so/g;
+		$oedata =~ s/^exten => h,1,AGI/exten => h,1,DeadAGI/gm; 
+		$moddata =~ s/^load => chan_agent.so/noload => chan_agent.so/gm;
+		$moddata =~ s/^load => app_queue.so/noload => app_queue.so/gm;
 		if (-e "/etc/asterisk/chan_dahdi.conf" and not -e "/etc/asterisk/zapata.conf") {
 			my $pr = `cp /etc/asterisk/chan_dahdi.conf /etc/asterisk/zapata.conf`;
 		}
 	}
-	write_reload($oedata,'osdial_extensions','dialplan reload');
+	write_reload($oedata,'osdial_extensions',$oereload);
 	write_reload($moddata,'modules','reload');
 
 	# TODO: Fix calc_password to not be so aggressive.
