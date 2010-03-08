@@ -3,22 +3,13 @@
 ALTER TABLE conferences ADD PRIMARY KEY (conf_exten,server_ip);##|##
  ##    Add primary key.;
 
-ALTER TABLE osdial_agent_log MODIFY campaign_id VARCHAR(20);##|##
- ##    Field length or NULL correction.;
-
 ALTER TABLE osdial_callbacks MODIFY campaign_id VARCHAR(20);##|##
  ##    Field length or NULL correction.;
 
-ALTER TABLE osdial_campaign_agents DROP INDEX campaign_id;##|##
+ALTER TABLE osdial_campaign_agents DROP INDEX campaign_id, DROP INDEX user;##|##
  ##    Bad index.;
 
-ALTER TABLE osdial_campaign_agents DROP INDEX user;##|##
- ##    Bad index.;
-
-ALTER TABLE osdial_campaign_agents MODIFY campaign_id VARCHAR(20) NOT NULL;##|##
- ##    Field length or NULL correction.;
-
-ALTER TABLE osdial_campaign_agents MODIFY user VARCHAR(20) NOT NULL;##|##
+ALTER TABLE osdial_campaign_agents MODIFY campaign_id VARCHAR(20) NOT NULL, MODIFY user VARCHAR(20) NOT NULL;##|##
  ##    Field length or NULL correction.;
 
 ALTER TABLE osdial_campaign_agents ADD PRIMARY KEY (campaign_id,user);##|##
@@ -33,13 +24,7 @@ ALTER TABLE osdial_campaign_hotkeys MODIFY campaign_id VARCHAR(20) NOT NULL;##|#
 ALTER TABLE osdial_campaign_hotkeys ADD PRIMARY KEY (campaign_id,hotkey);##|##
  ##    Add primary key.;
 
-ALTER TABLE osdial_campaign_server_stats DROP INDEX campaign_id;##|##
- ##    Bad index.;
-
-ALTER TABLE osdial_campaign_server_stats DROP INDEX server_ip;##|##
- ##    Bad index.;
-
-ALTER TABLE osdial_campaign_server_stats DROP INDEX camp_serv;##|##
+ALTER TABLE osdial_campaign_server_stats DROP INDEX campaign_id, DROP INDEX server_ip, DROP INDEX camp_serv;##|##
  ##    Bad index.;
 
 ALTER TABLE osdial_campaign_server_stats ADD PRIMARY KEY (campaign_id,server_ip);##|##
@@ -75,8 +60,6 @@ ALTER TABLE osdial_lists MODIFY campaign_id VARCHAR(20) NOT NULL;##|##
 ALTER TABLE osdial_live_agents MODIFY campaign_id VARCHAR(20) NOT NULL;##|##
  ##    Field length or NULL correction.;
 
-ALTER TABLE osdial_log MODIFY campaign_id VARCHAR(20);##|##
- ##    Field length or NULL correction.;
 
 ALTER TABLE osdial_pause_codes DROP INDEX campaign_id;##|##
  ##    Bad index.;
@@ -90,31 +73,13 @@ ALTER TABLE osdial_pause_codes ADD PRIMARY KEY (campaign_id,pause_code);##|##
 ALTER TABLE osdial_remote_agents MODIFY campaign_id VARCHAR(20) NOT NULL;##|##
  ##    Field length or NULL correction.;
 
-ALTER TABLE osdial_user_log MODIFY campaign_id VARCHAR(20) NOT NULL;##|##
- ##    Field length or NULL correction.;
-
 ALTER TABLE phones DROP INDEX server_ip;##|##
  ##    Bad index.;
 
-ALTER TABLE phones MODIFY server_ip VARCHAR(15) NOT NULL;##|##
- ##    Field length or NULL correction.;
-
-ALTER TABLE phones MODIFY extension VARCHAR(100) NOT NULL;##|##
+ALTER TABLE phones MODIFY login VARCHAR(20), MODIFY login_campaign VARCHAR(20), MODIFY extension VARCHAR(100) NOT NULL, MODIFY server_ip VARCHAR(15) NOT NULL;##|##
  ##    Field length or NULL correction.;
 
 ALTER TABLE phones ADD PRIMARY KEY (server_ip,extension);##|##
- ##    Add primary key.;
-
-ALTER TABLE phones MODIFY login VARCHAR(20);##|##
- ##    Field length or NULL correction.;
-
-ALTER TABLE phones MODIFY login_campaign VARCHAR(20);##|##
- ##    Field length or NULL correction.;
-
-DELETE FROM server_performance;##|##
- ##    Table does not have a primary key, but ould actually have duplicates.  So we need to clear it before putting a primary key on it.;
-
-ALTER TABLE server_performance ADD PRIMARY KEY (server_ip,start_time);##|##
  ##    Add primary key.;
 
 ALTER TABLE server_updater ADD PRIMARY KEY (server_ip);##|##
@@ -129,6 +94,11 @@ ALTER TABLE web_client_sessions DROP INDEX session_name;##|##
 ALTER TABLE web_client_sessions ADD PRIMARY KEY (session_name);##|##
  ##    Add primary key.;
 
+ALTER TABLE parked_channels ADD PRIMARY KEY (server_ip,channel);##|##
+ ##    Add primary key.;
+
+UPDATE osdial_users SER manual_dial_new_limit='-1' WHERE manual_dial_new_limit='0';##|##
+ ##    Fix so the default it unlimited manual dial / NEW / calls for manual dial agents..;
+
 UPDATE system_settings SET version='2.2.1.043',last_update_check=DATE_SUB(NOW(), INTERVAL 1 DAY);##|##
  ##    Updating database to version 2.2.1.043 and clearing last_update_check flag.;
-
