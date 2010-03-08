@@ -36,7 +36,7 @@ CREATE TABLE osdial_companies (
   system_statuses ENUM('0','1') NOT NULL default '0',
   system_status_categories ENUM('0','1') NOT NULL default '0',
   api_access ENUM('0','1') NOT NULL default '0',
-  dnc_method ENUM('SYSTEM','COMPANY','BOTH','NONE') NOT NULL default 'SYSTEM',
+  dnc_method ENUM('SYSTEM','COMPANY','BOTH','NONE') NOT NULL default 'SYSTEM'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;##|##
  ## Initial mutli-company table.;
 

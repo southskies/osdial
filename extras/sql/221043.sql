@@ -97,7 +97,7 @@ ALTER TABLE web_client_sessions ADD PRIMARY KEY (session_name);##|##
 ALTER TABLE parked_channels ADD PRIMARY KEY (server_ip,channel);##|##
  ##    Add primary key.;
 
-UPDATE osdial_users SER manual_dial_new_limit='-1' WHERE manual_dial_new_limit='0';##|##
+UPDATE osdial_users SET manual_dial_new_limit='-1' WHERE manual_dial_new_limit='0';##|##
  ##    Fix so the default it unlimited manual dial / NEW / calls for manual dial agents..;
 
 UPDATE system_settings SET version='2.2.1.043',last_update_check=DATE_SUB(NOW(), INTERVAL 1 DAY);##|##
