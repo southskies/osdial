@@ -27,7 +27,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 
 	#TODO: functionalize
 	##### BEGIN get campaigns listing for rankings #####
-	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
+	$stmt = sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE campaign_id IN %s ORDER BY campaign_id;",$LOG['allowed_campaignsSQL']);
 	$rslt=mysql_query($stmt, $link);
 	$campaigns_to_print = mysql_num_rows($rslt);
 	$campaigns_list='';
@@ -47,7 +47,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 	$o=0;
 	while ($campaigns_to_print > $o)
 		{
-		$stmt="SELECT campaign_rank,calls_today from osdial_campaign_agents where user='$user' and campaign_id='$campaign_id_values[$o]'";
+		$stmt = "SELECT campaign_rank,calls_today from osdial_campaign_agents where user='$user' and campaign_id='$campaign_id_values[$o]'";
 		$rslt=mysql_query($stmt, $link);
 		$ranks_to_print = mysql_num_rows($rslt);
 		if ($ranks_to_print > 0)
@@ -137,7 +137,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 	$xfer_groupsSQL='';
 	if ( (($ADD>20) and ($ADD<70)) and ($ADD!=41) )
 	{
-	$stmt="SELECT closer_campaigns,xfer_groups from osdial_campaigns where campaign_id='$campaign_id';";
+	$stmt = sprintf("SELECT closer_campaigns,xfer_groups from osdial_campaigns where campaign_id='%s' AND campaign_id IN %s;",mres($campaign_id),$LOG['allowed_campaignsSQL']);
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$closer_campaigns =	$row[0];
@@ -166,7 +166,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 
 	if ( (($ADD==31111) or ($ADD==31111)) and (count($groups)<1) )
 	{
-	$stmt="SELECT closer_campaigns from osdial_remote_agents where remote_agent_id='$remote_agent_id';";
+	$stmt = sprintf("SELECT closer_campaigns from osdial_remote_agents where remote_agent_id='$remote_agent_id' and campaign_id IN %s;",mres($remote_agent_id),$LOG['allowed_campaignsSQL']);
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$closer_campaigns =	$row[0];
@@ -184,7 +184,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 	$groups = explode(" ", $closer_campaigns);
 	}
 
-	$stmt="SELECT group_id,group_name from osdial_inbound_groups order by group_id";
+	$stmt=sprintf("SELECT group_id,group_name from osdial_inbound_groups where group_id IN %s order by group_id",$LOG['allowed_ingroupsSQL']);
 	$rslt=mysql_query($stmt, $link);
 	$groups_to_print = mysql_num_rows($rslt);
 	$groups_list='';
@@ -318,7 +318,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 			}
 	$campaigns_list.="> ALL-CAMPAIGNS - AGENTS CAN VIEW ANY CAMPAIGN</B><BR>\n";
 
-	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
+	$stmt=sprintf("SELECT campaign_id,campaign_name from osdial_campaigns WHERE campaign_id IN %s order by campaign_id",$LOG['allowed_campaignsSQL']);
 	$rslt=mysql_query($stmt, $link);
 	$campaigns_to_print = mysql_num_rows($rslt);
 

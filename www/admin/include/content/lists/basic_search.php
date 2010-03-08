@@ -80,19 +80,19 @@ if ($ADD==112) {
         } else {
             $good_query=1;
             if ($last_name and $first_name) {
-                $stmt = sprintf("SELECT * FROM osdial_list WHERE last_name LIKE '%s' AND first_name LIKE '%s' ORDER BY modify_date DESC LIMIT 1000;", mres($last_name) . '%', mres($first_name) . '%');
+                $stmt = sprintf("SELECT * FROM osdial_list,osdial_lists WHERE osdial_list.list_id=osdial_lists.list_id AND campaign_id IN %s AND last_name LIKE '%s' AND first_name LIKE '%s' ORDER BY modify_date DESC LIMIT 1000;", $LOG['allowed_campaignsSQL'], mres($last_name) . '%', mres($first_name) . '%');
             } elseif ($last_name) {
-                $stmt = sprintf("SELECT * FROM osdial_list WHERE last_name='%s' ORDER BY modify_date DESC LIMIT 1000;", mres($last_name));
+                $stmt = sprintf("SELECT * FROM osdial_list,osdial_lists WHERE osdial_list.list_id=osdial_lists.list_id AND campaign_id IN %s AND last_name LIKE '%s' ORDER BY modify_date DESC LIMIT 1000;", $LOG['allowed_campaignsSQL'], mres($last_name) . '%');
             } elseif ($custom1) {
-                $stmt = sprintf("SELECT * FROM osdial_list WHERE custom1='%s' ORDER BY modify_date DESC LIMIT 1000;", mres($custom1));
+                $stmt = sprintf("SELECT * FROM osdial_list,osdial_lists WHERE osdial_list.list_id=osdial_lists.list_id AND campaign_id IN %s AND custom1='%s' ORDER BY modify_date DESC LIMIT 1000;", $LOG['allowed_campaignsSQL'], mres($custom1));
             } elseif ($custom2) {
-                $stmt = sprintf("SELECT * FROM osdial_list WHERE custom2='%s' ORDER BY modify_date DESC LIMIT 1000;", mres($custom2));
+                $stmt = sprintf("SELECT * FROM osdial_list,osdial_lists WHERE osdial_list.list_id=osdial_lists.list_id AND campaign_id IN %s AND custom2='%s' ORDER BY modify_date DESC LIMIT 1000;", $LOG['allowed_campaignsSQL'], mres($custom2));
             } elseif ($vendor_id) {
-                $stmt = sprintf("SELECT * FROM osdial_list WHERE vendor_lead_code='%s' ORDER BY modify_date DESC LIMIT 1000;", mres($vendor_id));
+                $stmt = sprintf("SELECT * FROM osdial_list,osdial_lists WHERE osdial_list.list_id=osdial_lists.list_id AND campaign_id IN %s AND vendor_lead_code='%s' ORDER BY modify_date DESC LIMIT 1000;", $LOG['allowed_campaignsSQL'], mres($vendor_id));
             } elseif ($phone) {
-                $stmt = sprintf("SELECT * FROM osdial_list WHERE phone_number='%s' ORDER BY modify_date DESC LIMIT 1000;", mres($phone));
+                $stmt = sprintf("SELECT * FROM osdial_list,osdial_lists WHERE osdial_list.list_id=osdial_lists.list_id AND campaign_id IN %s AND phone_number='%s' ORDER BY modify_date DESC LIMIT 1000;", $LOG['allowed_campaignsSQL'], mres($phone));
             } elseif ($lead_id) {
-                $stmt = sprintf("SELECT * FROM osdial_list WHERE lead_id='%s' ORDER BY modify_date DESC LIMIT 1000;", mres($lead_id));
+                $stmt = sprintf("SELECT * FROM osdial_list,osdial_lists WHERE osdial_list.list_id=osdial_lists.list_id AND campaign_id IN %s AND lead_id='%s' ORDER BY modify_date DESC LIMIT 1000;", $LOG['allowed_campaignsSQL'], mres($lead_id));
             } else {
                 echo "ERROR: You must search for something!";
                 $good_query=0;

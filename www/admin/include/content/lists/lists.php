@@ -40,7 +40,7 @@ if ($ADD==111) {
 		echo "  <tr bgcolor=$oddrows><td align=right>List Description: </td><td align=left><input type=text name=list_description size=30 maxlength=255>$NWB#osdial_lists-list_description$NWE</td></tr>\n";
 		echo "  <tr bgcolor=$oddrows><td align=right>Campaign: </td><td align=left><select size=1 name=campaign_id>\n";
 		
-			$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
+			$stmt=sprintf("SELECT campaign_id,campaign_name from osdial_campaigns where campaign_id IN %s order by campaign_id",$LOG['allowed_campaignsSQL']);
 			$rslt=mysql_query($stmt, $link);
 			$campaigns_to_print = mysql_num_rows($rslt);
 			$campaigns_list='';
@@ -59,7 +59,6 @@ if ($ADD==111) {
 		echo "</table>\n";
 	} else {
 		echo "<font color=red>You do not have permission to view this page</font>\n";
-		exit;
 	}
 }
 
@@ -404,7 +403,7 @@ if ($ADD==311) {
         echo "<tr bgcolor=$oddrows><td align=right>Per-Lead Cost: </td><td align=left><input type=text name=cost size=10 maxlength=10 value=\"" . sprintf('%3.4f',$cost) . "\">$NWB#osdial_lists-cost$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=34&campaign_id=$campaign_id\">Campaign</a>: </td><td align=left><select size=1 name=campaign_id>\n";
 
-        $stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
+        $stmt=sprintf("SELECT campaign_id,campaign_name from osdial_campaigns where campaign_id IN %s order by campaign_id", $LOG['allowed_campaignsSQL']);
         $rslt=mysql_query($stmt, $link);
         $campaigns_to_print = mysql_num_rows($rslt);
         $campaigns_list='';
@@ -973,7 +972,7 @@ if ($ADD==100) {
     $dispactSQL = '';
     if ($dispact == 1) $dispactSQL = "AND active='Y'";
 
-    $stmt="SELECT * from osdial_lists WHERE 1=1 $campSQL $letSQL $dispactSQL order by list_id";
+    $stmt = sprintf("SELECT * from osdial_lists WHERE campaign_id IN %s %s %s %s order by list_id",$LOG['allowed_campaignsSQL'],$campSQL, $letSQL, $dispactSQL);
     $rslt=mysql_query($stmt, $link);
     $people_to_print = mysql_num_rows($rslt);
 

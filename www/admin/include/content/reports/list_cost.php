@@ -45,7 +45,7 @@ function report_list_cost() {
     if ($end_date=="") $end_date = date("Y-m-d");
     if (count($group)==0 or $group=='') $group[] = '--ALL--';
 
-    $stmt="select list_id,list_name from osdial_lists;";
+    $stmt=sprintf("SELECT list_id,list_name from osdial_lists WHERE campaign_id IN %s;",$LOG['allowed_campaignsSQL']);
     $rslt=mysql_query($stmt, $link);
     if ($DB) $html .= "$stmt\n";
     $lists_to_print = mysql_num_rows($rslt);
@@ -67,12 +67,12 @@ function report_list_cost() {
         $i++;
     }
     if ( (ereg("--ALL--",$group_string) ) or ($group_ct < 1) ) {
-        $group_SQL = "";
-        $group_SQLand = "";
+        $group_SQLand = sprintf("AND osdial_lists.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
+        $group_SQL = sprintf("WHERE osdial_lists.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
     } else {
         $group_SQL = eregi_replace(",$",'',$group_SQL);
-        $group_SQLand = "and osdial_list.list_id IN($group_SQL)";
-        $group_SQL = "where osdial_list.list_id IN($group_SQL)";
+        $group_SQLand = sprintf("AND osdial_lists.campaign_id IN %s AND osdial_list.list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
+        $group_SQL = sprintf("WHERE osdial_lists.campaign_id IN %s AND osdial_list.list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
     }
 
 
@@ -96,7 +96,7 @@ function report_list_cost() {
     $html .= "<input type=hidden name=DB value=$DB>\n";
     $html .= "<table border=0 bgcolor=grey cellspacing=1>\n";
     $html .= "  <tr class=tabheader>\n";
-    $html .= "    <td>Campaign</td>\n";
+    $html .= "    <td>List(s)</td>\n";
     $html .= "    <td>Date Range</td>\n";
     $html .= "  </tr>\n";
     $html .= "  <tr class=tabfooter>\n";

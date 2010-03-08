@@ -83,7 +83,7 @@ if ($ADD==1211)
 
 	echo "<tr bgcolor=$oddrows><td align=right>Source Group ID: </td><td align=left><select size=1 name=source_group_id>\n";
 
-		$stmt="SELECT group_id,group_name from osdial_inbound_groups order by group_id";
+		$stmt=sprintf("SELECT group_id,group_name FROM osdial_inbound_groups WHERE group_id IN %s ORDER BY group_id",$LOG['allowed_ingroupsSQL']);
 		$rslt=mysql_query($stmt, $link);
 		$groups_to_print = mysql_num_rows($rslt);
 		$groups_list='';
@@ -542,7 +542,7 @@ if ($ADD==1000)
 echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	$stmt="SELECT * from osdial_inbound_groups order by group_id";
+	$stmt=sprintf("SELECT * FROM osdial_inbound_groups WHERE group_id IN %s ORDER BY group_id",$LOG['allowed_ingroupsSQL']);
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 

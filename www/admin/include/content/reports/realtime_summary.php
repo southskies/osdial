@@ -36,7 +36,7 @@ function report_realtime_summary() {
 	$NOW_TIME = date("Y-m-d H:i:s");
 	$STARTtime = date("U");
 	
-	$stmt="select campaign_id,campaign_name from osdial_campaigns where active='Y';";
+	$stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE active='Y' AND campaign_id IN %s;",$LOG['allowed_campaignsSQL']);
 	$rslt=mysql_query($stmt, $link);
 	if (!isset($DB)) { $DB=0; }
 	if ($DB) { $html .= "$stmt\n"; }
@@ -100,12 +100,12 @@ function report_realtime_summary() {
 		$html .= "<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a> </font>\n";
 		
 		
-		$stmt = "select count(*) from osdial_campaigns where campaign_id='$group' and campaign_allow_inbound='Y';";
+		$stmt = sprintf("SELECT count(*) FROM osdial_campaigns WHERE campaign_id IN %s AND campaign_id='%s' and campaign_allow_inbound='Y';",$LOG['allowed_campaignsSQL'],mres($group));
 		$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			$campaign_allow_inbound = $row[0];
 		
-		$stmt="select auto_dial_level,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,lead_filter_id,hopper_level,dial_method,adaptive_maximum_level,adaptive_dropped_percentage,adaptive_dl_diff_target,adaptive_intensity,available_only_ratio_tally,adaptive_latest_server_time,local_call_time,dial_timeout,dial_statuses from osdial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
+		$stmt=sprintf("SELECT auto_dial_level,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,lead_filter_id,hopper_level,dial_method,adaptive_maximum_level,adaptive_dropped_percentage,adaptive_dl_diff_target,adaptive_intensity,available_only_ratio_tally,adaptive_latest_server_time,local_call_time,dial_timeout,dial_statuses FROM osdial_campaigns WHERE campaign_id IN %s AND campaign_id='%s';",$LOG['allowed_campaignsSQL'],mres($group));
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$DIALlev =	$row[0];
@@ -130,12 +130,12 @@ function report_realtime_summary() {
 		$DIALstatuses = (preg_replace("/ -$|^ /","",$DIALstatuses));
 		$DIALstatuses = (ereg_replace(' ',', ',$DIALstatuses));
 		
-		$stmt="select count(*) from osdial_hopper where campaign_id='" . mysql_real_escape_string($group) . "';";
+		$stmt=sprintf("SELECT count(*) FROM osdial_hopper WHERE campaign_id IN %s AND campaign_id='%s';",$LOG['allowed_campaignsSQL'],mres($group));
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$VDhop = $row[0];
 		
-		$stmt="select dialable_leads,calls_today,drops_today,drops_answers_today_pct,differential_onemin,agents_average_onemin,balance_trunk_fill,answers_today,status_category_1,status_category_count_1,status_category_2,status_category_count_2,status_category_3,status_category_count_3,status_category_4,status_category_count_4,status_category_hour_count_1,status_category_hour_count_2,status_category_hour_count_3,status_category_hour_count_4,recylce_total,recycle_sched from osdial_campaign_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
+		$stmt=sprintf("SELECT dialable_leads,calls_today,drops_today,drops_answers_today_pct,differential_onemin,agents_average_onemin,balance_trunk_fill,answers_today,status_category_1,status_category_count_1,status_category_2,status_category_count_2,status_category_3,status_category_count_3,status_category_4,status_category_count_4,status_category_hour_count_1,status_category_hour_count_2,status_category_hour_count_3,status_category_hour_count_4,recylce_total,recycle_sched FROM osdial_campaign_stats WHERE campaign_id IN %s AND campaign_id='%s';",$LOG['allowed_campaignsSQL'],mres($group));
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$DAleads =	$row[0];
@@ -168,7 +168,7 @@ function report_realtime_summary() {
 			$diffpctONEMIN = '0.00';
 		}
 		
-		$stmt="select sum(local_trunk_shortage) from osdial_campaign_server_stats where campaign_id='" . mysql_real_escape_string($group) . "';";
+		$stmt=sprintf("SELECT sum(local_trunk_shortage) FROM osdial_campaign_server_stats WHERE campaign_id IN %s AND campaign_id='%s';",$LOG['allowed_campaignsSQL'],mres($group));
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$balanceSHORT = $row[0];
@@ -273,14 +273,14 @@ function report_realtime_summary() {
 		###### OUTBOUND CALLS
 		################################################################################
 		if ($campaign_allow_inbound > 0) {
-			$stmt="select closer_campaigns from osdial_campaigns where campaign_id='" . mysql_real_escape_string($group) . "';";
+			$stmt=sprintf("SELECT closer_campaigns FROM osdial_campaigns WHERE campaign_id IN %s AND campaign_id='%s';",$LOG['allowed_campaignsSQL'],mres($group));
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			$closer_campaigns = preg_replace("/^ | -$/","",$row[0]);
 			$closer_campaigns = preg_replace("/ /","','",$closer_campaigns);
 			$closer_campaigns = "'$closer_campaigns'";
 		
-			$stmt="select status from osdial_auto_calls where status NOT IN('XFER') and ( (call_type='IN' and campaign_id IN($closer_campaigns)) or (campaign_id='" . mysql_real_escape_string($group) . "' and call_type='OUT') );";
+			$stmt=sprintf("SELECT status FROM osdial_auto_calls WHERE campaign_id IN %s AND status NOT IN('XFER') AND ( (call_type='IN' AND campaign_id IN($closer_campaigns)) OR (campaign_id='%s' AND call_type='OUT') );",$LOG['allowed_campaignsSQL'],mres($group));
 		} else {
 			if ($group=='XXXX-ALL-ACTIVE-XXXX') { 
 				$groupSQL = '';
@@ -289,10 +289,10 @@ function report_realtime_summary() {
 			} elseif ($group=='XXXX-INBOUND-XXXX') { 
 				$groupSQL = ' and length(closer_campaigns)>5';
 			} else {
-				$groupSQL = " and campaign_id='" . mysql_real_escape_string($group) . "'";
+				$groupSQL = sprintf(" AND campaign_id='%s'",mres($group));
 			}
 		
-			$stmt="select status from osdial_auto_calls where status NOT IN('XFER') $groupSQL;";
+			$stmt=sprintf("SELECT status FROM osdial_auto_calls WHERE campaign_id IN %s AND status NOT IN('XFER') %s;",$LOG['allowed_campaignsSQL'],$groupSQL);
 		}
 		$rslt=mysql_query($stmt, $link);
 		
@@ -349,7 +349,7 @@ function report_realtime_summary() {
 		$agent_paused=0;
 		$agent_total=0;
 		
-		$stmt="select extension,user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id from osdial_live_agents where campaign_id='" . mysql_real_escape_string($group) . "';";
+		$stmt=sprintf("SELECT extension,user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),call_server_ip,campaign_id FROM osdial_live_agents WHERE campaign_id IN %s AND campaign_id='%s';",$LOG['allowed_campaignsSQL'],mres($group));
 		$rslt=mysql_query($stmt, $link);
 		if ($DB) {
 			$html .= "$stmt\n";

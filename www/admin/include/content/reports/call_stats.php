@@ -68,7 +68,7 @@ function report_call_stats() {
     if ($query_date == '') {$query_date = $NOW_DATE;}
     if ($end_date == '') {$end_date = $NOW_DATE;}
     
-    $stmt="select campaign_id from osdial_campaigns;";
+    $stmt=sprintf("SELECT campaign_id FROM osdial_campaigns WHERE campaign_id IN %s;",$LOG['allowed_campaignsSQL']);
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $campaigns_to_print = mysql_num_rows($rslt);
@@ -92,15 +92,16 @@ function report_call_stats() {
         $i++;
     }
     if ( (ereg("--ALL--",$group_string) ) or ($group_ct < 1) ) {
-        $group_SQL = "";
+        $group_SQLand = sprintf("AND campaign_id IN %s",$LOG['allowed_campaignsSQL']);
+        $group_SQL = sprintf("WHERE campaign_id IN %s",$LOG['allowed_campaignsSQL']);
         $group_list = "--ALL--";
     } else {
         $group_SQL = eregi_replace(",$",'',$group_SQL);
-        $group_SQLand = "and campaign_id IN($group_SQL)";
-        $group_SQL = "where campaign_id IN($group_SQL)";
+        $group_SQLand = sprintf("AND campaign_id IN %s AND campaign_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
+        $group_SQL = sprintf("WHERE campaign_id IN %s AND campaign_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
     }
 
-    $stmt="select vsc_id,vsc_name from osdial_status_categories;";
+    $stmt="SELECT vsc_id,vsc_name FROM osdial_status_categories;";
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $statcats_to_print = mysql_num_rows($rslt);
@@ -206,7 +207,7 @@ function report_call_stats() {
     $html .= "\n";
     $html .= "Time range: $query_date_BEGIN to $query_date_END\n\n";
 
-    $stmt = "select closer_campaigns from osdial_campaigns $group_SQL;";
+    $stmt = "SELECT closer_campaigns FROM osdial_campaigns $group_SQL;";
     $rslt=mysql_query($stmt, $link);
     $ccamps_to_print = mysql_num_rows($rslt);
     $c=0;

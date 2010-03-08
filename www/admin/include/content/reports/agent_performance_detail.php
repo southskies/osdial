@@ -56,7 +56,7 @@ function report_agent_performance_detail() {
     if ($query_date=="") {$query_date = $NOW_DATE;}
     if ($end_date=="") {$end_date = $NOW_DATE;}
 
-    $stmt="select campaign_id from osdial_campaigns;";
+    $stmt=sprintf("SELECT campaign_id FROM osdial_campaigns WHERE campaign_id IN %s;",$LOG['allowed_campaignsSQL']);
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $campaigns_to_print = mysql_num_rows($rslt);
@@ -66,7 +66,7 @@ function report_agent_performance_detail() {
         $groups[$i] =$row[0];
         $i++;
     }
-    $stmt="select user_group from osdial_user_groups;";
+    $stmt=sprintf("SELECT user_group FROM osdial_user_groups WHERE user_group IN %s;",$LOG['allowed_usergroupsSQL']);
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $user_groups_to_print = mysql_num_rows($rslt);
@@ -178,16 +178,15 @@ function report_agent_performance_detail() {
         $query_date_BEGIN = "$query_date $time_BEGIN";   
         $query_date_END = "$end_date $time_END";
 
+        $ugSQL = sprintf(' AND osdial_agent_log.user_group IN %s ',$LOG['allowed_usergroupsSQL']);
         if (strlen($user_group)>0) {
-            $ugSQL="and osdial_agent_log.user_group='$user_group'";
-        } else {
-            $ugSQL='';
+            $ugSQL .= sprintf(" AND osdial_agent_log.user_group='%s' ",mres($user_group));
         }
 
-	$groupSQL = '';
-	if ($group!="--ALL--") {
-		$groupSQL = "and campaign_id='" . mysql_real_escape_string($group) . "'";	
-	}
+        $groupSQL = sprintf(' AND campaign_id IN %s ',$LOG['allowed_campaignsSQL']);
+        if ($group!="--ALL--") {
+            $groupSQL .= sprintf(" AND campaign_id='%s' ", mres($group));	
+        }
 
         $plain .= "OSDIAL: Agent Performance Detail                        $NOW_TIME\n";
 

@@ -50,7 +50,7 @@ if ($ADD=="1")
 	
 	echo "<tr bgcolor=$oddrows><td align=right>User Group: </td><td align=left><select size=1 name=user_group>\n";
 
-		$stmt="SELECT user_group,group_name from osdial_user_groups order by user_group";
+		$stmt = sprintf("SELECT user_group,group_name FROM osdial_user_groups WHERE user_group IN %s ORDER BY user_group",$LOG['allowed_usergroupsSQL']);
 		$rslt=mysql_query($stmt, $link);
 		$Ugroups_to_print = mysql_num_rows($rslt);
 		$Ugroups_list='';
@@ -102,7 +102,7 @@ if ($ADD=="1A")
 
 	echo "<tr bgcolor=$oddrows><td align=right>Source Agent: </td><td align=left><select size=1 name=source_user_id>\n";
 
-		$stmt="SELECT user,full_name from osdial_users where user_level < $levelMAX order by full_name;";
+		$stmt = sprintf("SELECT user,full_name FROM osdial_users WHERE user_level < $levelMAX AND user_group IN %s ORDER BY full_name;", $LOG['allowed_usergroupsSQL']);
 		$rslt=mysql_query($stmt, $link);
 		$Uusers_to_print = mysql_num_rows($rslt);
 		$Uusers_list='';
@@ -197,9 +197,7 @@ if ($ADD=="2A")
 			$rslt=mysql_query($stmtA, $link);
 
 			echo "<br><B><font color=$default_text> AGENT COPIED: $user copied from $source_user_id</font></B>\n";
-			echo "<br><br>\n";
-			echo "<a href=\"$PHP_SELF?ADD=3&user=$user\">Click here to go to the user record</a>\n";
-			echo "<br><br>\n";
+			echo "<br>\n";
 
 			### LOG CHANGES TO LOG FILE ###
 			if ($WeBRooTWritablE > 0)
@@ -210,7 +208,7 @@ if ($ADD=="2A")
 				}
 			}
 		}
-exit;
+    $ADD=3;
 }
 
 ######################
@@ -456,7 +454,7 @@ if ($ADD==3)
 	$admin_api_access = 	$row[49];
 	$agent_api_access = 	$row[50];
 
-	if ( ($user_level >= $LOGuser_level) and ($LOGuser_level < 9) )
+	if ( ($user_level >= $LOGuser_level) and ($LOGuser_level < 9) and (!eregi(':' . $user_group . ':', $LOG['allowed_usergroupsSTR'])) )
 		{
 		echo "<br><font color=red>You do not have permissions to modify this user: $row[1]</font>\n";
 		}
@@ -487,7 +485,7 @@ if ($ADD==3)
 		echo "<option SELECTED>$row[4]</option></select>$NWB#osdial_users-user_level$NWE</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right><A HREF=\"$PHP_SELF?ADD=311111&user_group=$user_group\">User Group</A>: </td><td align=left><select size=1 name=user_group>\n";
 
-			$stmt="SELECT user_group,group_name from osdial_user_groups order by user_group";
+			$stmt = sprintf("SELECT user_group,group_name from osdial_user_groups WHERE user_group IN %s order by user_group",$LOG['allowed_usergroupsSQL']);
 			$rslt=mysql_query($stmt, $link);
 			$Ugroups_to_print = mysql_num_rows($rslt);
 			$Ugroups_list='';
@@ -664,7 +662,7 @@ echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input
 echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></td></tr>\n";
 echo "<tr bgcolor=$oddrows><td align=right>User Group: </td><td align=left><select size=1 name=user_group>\n";
 
-	$stmt="SELECT * from osdial_user_groups order by user_group";
+	$stmt = sprintf("SELECT * from osdial_user_groups where user_group IN %s order by user_group",$LOG['allowed_usergroupsSQL']);
 	$rslt=mysql_query($stmt, $link);
 	$groups_to_print = mysql_num_rows($rslt);
 	$o=0;
@@ -769,11 +767,11 @@ if ($num != '') $numSQL = sprintf("AND (user LIKE '%s%%')",mres($num));
 
 $level = get_variable('level');
 $levelSQL = '';
-if ($level != '') $levelSQL = sprintf("AND user_level='%'",mres($level));
+if ($level != '') $levelSQL = sprintf("AND user_level='%s'",mres($level));
 
 $group = get_variable('group');
 $groupSQL = '';
-if ($group != '') $groupSQL = sprintf("AND user_group='%'",mres($group));
+if ($group != '') $groupSQL = sprintf("AND user_group='%s'",mres($group));
 
 $mdn_user = get_variable('mdn_user');
 if ($SUB==1 and $mdn_user != "" and $LOGmodify_users > 0 and $LOGuser_level > 7) {
@@ -797,7 +795,7 @@ if (eregi("LEVELUP",$stage)) {$SQLorder='order by user_level asc';   $LEVELlink=
 if (eregi("LEVELDOWN",$stage)) {$SQLorder='order by user_level desc';   $LEVELlink='stage=LEVELUP';}
 if (eregi("GROUPUP",$stage)) {$SQLorder='order by user_group asc';   $GROUPlink='stage=GROUPDOWN';}
 if (eregi("GROUPDOWN",$stage)) {$SQLorder='order by user_group desc';   $GROUPlink='stage=GROUPUP';}
-	$stmt="SELECT * from osdial_users WHERE 1=1 $letSQL $numSQL $levelSQL $groupSQL $SQLorder";
+	$stmt = sprintf("SELECT * from osdial_users WHERE user_group IN %s %s %s %s %s %s", $LOG['allowed_usergroupsSQL'],$letSQL,$numSQL,$levelSQL,$groupSQL,$SQLorder);
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 

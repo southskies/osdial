@@ -25,26 +25,23 @@
 # ADD=111111 display the ADD NEW AGENTS GROUP SCREEN
 ######################
 
-if ($ADD==111111)
-{
-	if ($LOGmodify_usergroups==1)
-	{
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+if ($ADD==111111) {
+    if ($LOGmodify_usergroups==1 and $LOG['allowed_campaignsALL'] > 0) {
+        echo "<TABLE align=center><TR><TD>\n";
+        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	echo "<center><br><font color=$default_text size=+1>ADD NEW AGENTS GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
-	echo "<input type=hidden name=ADD value=211111>\n";
-	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Group: </td><td align=left><input type=text name=user_group size=15 maxlength=20> (no spaces or punctuation)$NWB#osdial_user_groups-user_group$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=group_name size=40 maxlength=40> (description of group)$NWB#osdial_user_groups-group_name$NWE</td></tr>\n";
-	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
-	echo "</TABLE></center>\n";
-	}
-	else
-	{
-	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
-	}
+        echo "<center><br><font color=$default_text size=+1>ADD NEW AGENTS GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
+        echo "<input type=hidden name=ADD value=211111>\n";
+        echo "<TABLE width=$section_width cellspacing=3>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Group: </td><td align=left><input type=text name=user_group size=15 maxlength=20> (no spaces or punctuation)$NWB#osdial_user_groups-user_group$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=group_name size=40 maxlength=40> (description of group)$NWB#osdial_user_groups-group_name$NWE</td></tr>\n";
+        echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+        echo "</TABLE></center>\n";
+    } elseif ($LOG['allowed_campaignsALL'] < 1) {
+        echo "<br><font color=red>USER GROUP NOT MODIFIED - You may only view your User Group resources.</font><br>\n";
+    } else {
+        echo "<font color=red>You do not have permission to view this page</font>\n";
+    }
 }
 
 
@@ -91,93 +88,81 @@ $ADD=100000;
 # ADD=411111 modify user group info in the system
 ######################
 
-if ($ADD==411111)
-{
-	if ($LOGmodify_usergroups==1)
-	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+if ($ADD==411111) {
+    if ($LOGmodify_usergroups==1) {
+        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	 if ( (strlen($user_group) < 2) or (strlen($group_name) < 2) )
-		{
-		 echo "<br><font color=red>USER GROUP NOT MODIFIED - Please go back and look at the data you entered\n";
-		 echo "<br>Group name and description must be at least 2 characters in length</font><br>\n";
-		}
-	 else
-		{
-		$stmt="UPDATE osdial_user_groups set user_group='$user_group', group_name='$group_name',allowed_campaigns='$campaigns_value' where user_group='$OLDuser_group';";
-		$rslt=mysql_query($stmt, $link);
+        if ($LOG['allowed_campaignsALL'] < 1) {
+            echo "<br><font color=red>USER GROUP NOT MODIFIED - You may only view your User Group resources.</font><br>\n";
+        } elseif ( (strlen($user_group) < 2) or (strlen($group_name) < 2) ) {
+            echo "<br><font color=red>USER GROUP NOT MODIFIED - Please go back and look at the data you entered\n";
+            echo "<br>Group name and description must be at least 2 characters in length</font><br>\n";
+        } else {
+            $stmt="UPDATE osdial_user_groups set user_group='$user_group', group_name='$group_name',allowed_campaigns='$campaigns_value' where user_group='$OLDuser_group';";
+            $rslt=mysql_query($stmt, $link);
 
-		echo "<br><B><font color=$default_text>USER GROUP MODIFIED</font></B>\n";
+            echo "<br><B><font color=$default_text>USER GROUP MODIFIED</font></B>\n";
 
-		### LOG CHANGES TO LOG FILE ###
-		if ($WeBRooTWritablE > 0)
-			{
-			$fp = fopen ("./admin_changes_log.txt", "a");
-			fwrite ($fp, "$date|MODIFY USER GROUP ENTRY     |$PHP_AUTH_USER|$ip|$stmt|\n");
-			fclose($fp);
-			}
-		}
-	}
-	else
-	{
-	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
-	}
-$ADD=311111;	# go to user group modification form below
+            ### LOG CHANGES TO LOG FILE ###
+            if ($WeBRooTWritablE > 0) {
+                $fp = fopen ("./admin_changes_log.txt", "a");
+                fwrite ($fp, "$date|MODIFY USER GROUP ENTRY     |$PHP_AUTH_USER|$ip|$stmt|\n");
+                fclose($fp);
+            }
+        }
+        $ADD=311111;	# go to user group modification form below
+    } else {
+        echo "<font color=red>You do not have permission to view this page</font>\n";
+    }
 }
 
 ######################
 # ADD=511111 confirmation before deletion of user group record
 ######################
 
-if ($ADD==511111)
-{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+if ($ADD==511111) {
+    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	 if ( (strlen($user_group) < 2) or ($LOGdelete_user_groups < 1) )
-		{
-		 echo "<br><font color=red>USER GROUP NOT DELETED - Please go back and look at the data you entered\n";
-		 echo "<br>User_group be at least 2 characters in length</font><br>\n";
-		}
-	 else
-		{
-		echo "<br><B><font color=$default_text>USER GROUP DELETION CONFIRMATION: $user_group</B>\n";
-		echo "<br><br><a href=\"$PHP_SELF?ADD=611111&user_group=$user_group&CoNfIrM=YES\">Click here to delete user group $user_group</a></font><br><br><br>\n";
-		}
+    if ($LOG['allowed_campaignsALL'] < 1) {
+        echo "<br><font color=red>USER GROUP NOT DELETED - You may only view your User Group resources.</font><br>\n";
+    } elseif ( (strlen($user_group) < 2) or ($LOGdelete_user_groups < 1) ) {
+        echo "<br><font color=red>USER GROUP NOT DELETED - Please go back and look at the data you entered\n";
+        echo "<br>User_group be at least 2 characters in length</font><br>\n";
+    } else {
+        echo "<br><B><font color=$default_text>USER GROUP DELETION CONFIRMATION: $user_group</B>\n";
+        echo "<br><br><a href=\"$PHP_SELF?ADD=611111&user_group=$user_group&CoNfIrM=YES\">Click here to delete user group $user_group</a></font><br><br><br>\n";
+    }
 
-$ADD='311111';		# go to user group modification below
+    $ADD='311111';		# go to user group modification below
 }
 
 ######################
 # ADD=611111 delete user group record
 ######################
 
-if ($ADD==611111)
-{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+if ($ADD==611111) {
+    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	 if ( (strlen($user_group) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_user_groups < 1) )
-		{
-		 echo "<br><font color=red>USER GROUP NOT DELETED - Please go back and look at the data you entered\n";
-		 echo "<br>User_group be at least 2 characters in length</font><br>\n";
-		}
-	 else
-		{
-		$stmt="DELETE from osdial_user_groups where user_group='$user_group' limit 1;";
-		$rslt=mysql_query($stmt, $link);
+    if ($LOG['allowed_campaignsALL'] < 1) {
+        echo "<br><font color=red>USER GROUP NOT DELETED - You may only view your User Group resources.</font><br>\n";
+    } elseif ( (strlen($user_group) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_user_groups < 1) ) {
+        echo "<br><font color=red>USER GROUP NOT DELETED - Please go back and look at the data you entered\n";
+        echo "<br>User_group be at least 2 characters in length</font><br>\n";
+    } else {
+        $stmt="DELETE from osdial_user_groups where user_group='$user_group' limit 1;";
+        $rslt=mysql_query($stmt, $link);
 
-		### LOG CHANGES TO LOG FILE ###
-		if ($WeBRooTWritablE > 0)
-			{
-			$fp = fopen ("./admin_changes_log.txt", "a");
-			fwrite ($fp, "$date|!DELETING USRGROUP!!|$PHP_AUTH_USER|$ip|user_group='$user_group'|\n");
-			fclose($fp);
-			}
-		echo "<br><B><font color=$default_text>USER GROUP DELETION COMPLETED: $user_group</font></B>\n";
-		echo "<br><br>\n";
-		}
+        ### LOG CHANGES TO LOG FILE ###
+        if ($WeBRooTWritablE > 0) {
+            $fp = fopen ("./admin_changes_log.txt", "a");
+            fwrite ($fp, "$date|!DELETING USRGROUP!!|$PHP_AUTH_USER|$ip|user_group='$user_group'|\n");
+            fclose($fp);
+        }
+        echo "<br><B><font color=$default_text>USER GROUP DELETION COMPLETED: $user_group</font></B>\n";
+        echo "<br><br>\n";
+    }
 
-$ADD='100000';		# go to user group list
+    $ADD='100000';		# go to user group list
 }
 
 ######################
@@ -254,7 +239,7 @@ if ($ADD==311111)
 
 	echo "<br><br><a href=\"$PHP_SELF?ADD=8111&user_group=$user_group\">Click here to see all CallBack Holds in this user group</a><BR><BR>\n";
 
-	if ($LOGdelete_user_groups > 0)
+	if ($LOGdelete_user_groups > 0 and $LOG['allowed_campaignsALL'] > 0)
 		{
 		echo "<br><br><a href=\"$PHP_SELF?ADD=511111&user_group=$user_group\">DELETE THIS USER GROUP</a>\n";
 		}
@@ -262,7 +247,6 @@ if ($ADD==311111)
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 
@@ -305,7 +289,7 @@ if ($ADD==100000)
 echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	$stmt="SELECT * from osdial_user_groups order by user_group";
+	$stmt=sprintf("SELECT * from osdial_user_groups where user_group IN %s order by user_group", $LOG['allowed_usergroupsSQL']);
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 

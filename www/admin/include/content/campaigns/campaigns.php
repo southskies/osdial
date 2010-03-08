@@ -169,7 +169,7 @@ if ($ADD==12)
 
     echo "<tr bgcolor=$oddrows><td align=right>Source Campaign: </td><td align=left><select size=1 name=source_campaign_id>\n";
 
-        $stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
+        $stmt=sprintf("SELECT campaign_id,campaign_name from osdial_campaigns where campaign_id IN %s order by campaign_id",$LOG['allowed_campaignsSQL']);
         $rslt=mysql_query($stmt, $link);
         $campaigns_to_print = mysql_num_rows($rslt);
         $campaigns_list='';
@@ -706,18 +706,6 @@ else
 }
 
 
-######################
-# ADD=30 campaign not allowed
-######################
-
-if ($ADD==30)
-{
-echo "<TABLE><TR><TD>\n";
-    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-echo "<font color=red>You do not have permission to view campaign $campaign_id</font>\n";
-}
-
-
 
 ######################
 # ADD=31 modify campaign info in the system - Detail view
@@ -729,7 +717,7 @@ if ( ($LOGcampaign_detail < 1) and ($ADD==31) ) {
 }
 
 # send to not allowed screen if not in osdial_user_groups allowed_campaigns list
-if ( ($ADD==31) and ( (!eregi("$campaign_id",$LOGallowed_campaigns)) and (!eregi("ALL-CAMPAIGNS",$LOGallowed_campaigns)) ) ) {
+if ( ($ADD==31) and (!eregi(':' . $campaign_id . ':',$LOG['allowed_campaignsSTR'])) ) {
     $ADD=30;
 }
 
@@ -1571,8 +1559,10 @@ if ($ADD==31) {
 # ADD=34 modify campaign info in the system - Basic View
 ######################
 
-if ( ($ADD==34) and ( (!eregi("$campaign_id",$LOGallowed_campaigns)) and (!eregi("ALL-CAMPAIGNS",$LOGallowed_campaigns)) ) ) 
-    {$ADD=30;}    # send to not allowed screen if not in osdial_user_groups allowed_campaigns list
+# send to not allowed screen if not in osdial_user_groups allowed_campaigns list
+if ( ($ADD==34) and (!eregi(':' . $campaign_id . ':',$LOG['allowed_campaignsSTR'])) ) {
+    $ADD=30;
+}
 
 if ($ADD==34)
 {
@@ -1928,8 +1918,10 @@ if ($ADD==34)
 ######################
 # ADD=31 or 34 and SUB=29 for list mixes
 ######################
-if ( ( ($ADD==34) or ($ADD==31) ) and ( (!eregi("$campaign_id",$LOGallowed_campaigns)) and (!eregi("ALL-CAMPAIGNS",$LOGallowed_campaigns)) ) ) 
-    {$ADD=30;}    # send to not allowed screen if not in osdial_user_groups allowed_campaigns list
+# send to not allowed screen if not in osdial_user_groups allowed_campaigns list
+if ( ( ($ADD==34) or ($ADD==31) ) and (!eregi(':' . $campaign_id . ':',$LOG['allowed_campaignsSTR'])) ) {
+    $ADD=30;
+}
 
 if ( ($ADD==34) or ($ADD==31) ) {
     if ($LOGmodify_campaigns==1) {
@@ -2173,6 +2165,19 @@ if ( ($ADD==34) or ($ADD==31) ) {
 
 
 ######################
+# ADD=30 campaign not allowed
+######################
+if ($ADD==30) {
+    echo "<TABLE><TR><TD>\n";
+    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+    echo "<font color=red>You do not have permission to view campaign $campaign_id</font>\n";
+}
+
+
+
+
+
+######################
 # ADD=81 find all callbacks on hold within a Campaign
 ######################
 if ($ADD==81) {
@@ -2208,10 +2213,6 @@ if ($ADD==10)
 echo "<TABLE align=center><TR><TD>\n";
     echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-    $stmt="SELECT campaign_id from osdial_campaigns;";
-    $rslt=mysql_query($stmt, $link);
-    $total_campaigns = mysql_num_rows($rslt);
-
 $let = get_variable('let');
 $letSQL = '';
 if ($let != '') $letSQL = "AND campaign_id LIKE '$let%'";
@@ -2220,12 +2221,13 @@ $dispact = get_variable('dispact');
 $dispactSQL = '';
 if ($dispact == 1) $dispactSQL = "AND active='Y'";
 
-    $stmt="SELECT * from osdial_campaigns WHERE 1=1 $letSQL $dispactSQL order by campaign_id";
+    $stmt=sprintf("SELECT * from osdial_campaigns WHERE campaign_id IN %s %s %s order by campaign_id",$LOG['allowed_campaignsSQL'],$letSQL,$dispactSQL);
+
     $rslt=mysql_query($stmt, $link);
     $people_to_print = mysql_num_rows($rslt);
 
 echo "<center><br><font color=$default_text size=+1>CAMPAIGNS</font><br>\n";
-if ($total_campaigns > 20) {
+if ($people_to_print > 20) {
     echo "<center><font color=$default_text size=-1>";
     if ($dispact == '1') {
         echo "<a href=\"$PHP_SELF?ADD=10&let=$let&dispact=\">(Show Inactive)</a>";

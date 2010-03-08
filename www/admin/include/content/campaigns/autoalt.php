@@ -137,7 +137,7 @@ echo "    <td>AUTO-ALT DIAL</td>\n";
 echo "    <td align=center>LINKS</td>\n";
 echo "  </tr>\n";
 
-	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
+	$stmt=sprintf("SELECT campaign_id,campaign_name from osdial_campaigns where campaign_id IN %s order by campaign_id",$LOG['allowed_campaignsSQL']);
 	$rslt=mysql_query($stmt, $link);
 	$campaigns_to_print = mysql_num_rows($rslt);
 

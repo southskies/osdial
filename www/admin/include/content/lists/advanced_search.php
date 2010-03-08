@@ -146,6 +146,12 @@ if ($ADD==1122) {
         }
 
         ### process campaigns group
+        if ($use_osdial_log) {
+            $searchWHR .= sprintf(" AND osdial_log.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
+        } else {
+            $searchWHR .= sprintf(" AND osdial_lists.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
+        }
+
         $campaignIN = "";
         foreach ($campaigns as $campaign) {
             if ($campaign != "") {
@@ -532,7 +538,7 @@ if ($ADD==1122) {
         echo "    <td align=center>\n";
         echo "      <font size=2>Campaigns</font><br>\n";
         echo "      <select name=campaigns[] size=5 multiple>\n";
-        $krh = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name');
+        $krh = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name','',sprintf("campaign_id IN %s",$LOG['allowed_campaignsSQL']));
         echo format_select_options($krh, 'campaign_id', 'campaign_id', $campaigns, "-- ALL --");
         echo "      </select>\n";
         echo "    </td>\n";
@@ -540,7 +546,7 @@ if ($ADD==1122) {
         echo "    <td align=center>\n";
         echo "      <font size=2>Lists</font><br>\n";
         echo "      <select name=lists[] size=5 multiple>\n";
-        $krh = get_krh($link, 'osdial_lists', 'list_id,list_name,campaign_id');
+        $krh = get_krh($link, 'osdial_lists', 'list_id,list_name,campaign_id','',sprintf("campaign_id IN %s",$LOG['allowed_campaignsSQL']));
         echo format_select_options($krh, 'list_id', 'list_name', $lists, "-- ALL --");
         echo "      </select>\n";
         echo "    </td>\n";

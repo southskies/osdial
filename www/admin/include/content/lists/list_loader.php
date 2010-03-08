@@ -83,7 +83,7 @@ if ($ADD==122) {
         echo "                  <td align=left width=\"75%\"><font face=\"arial, helvetica\" size=1>\n";
         echo "                      <select size=1 name=list_id_override>\n";
         
-        $stmt="SELECT list_id,list_name FROM osdial_lists;";
+        $stmt=sprintf("SELECT list_id,list_name FROM osdial_lists WHERE campaign_id IN %s;",$LOG['allowed_campaignsSQL']);
         $rslt=mysql_query($stmt, $link);
         $lrows = mysql_num_rows($rslt);
         if ($lrows > 0) {

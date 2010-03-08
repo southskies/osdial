@@ -58,7 +58,7 @@ function report_agent_status() {
     $head .= "<br>\n";
     $head .= "<center><font size=4 color=$default_text>AGENT STATUS</font></center><br>\n";
     if ($agent) {
-        $stmt="SELECT full_name,user_group from osdial_users where user='" . mysql_real_escape_string($agent) . "';";
+        $stmt=sprintf("SELECT full_name,user_group FROM osdial_users WHERE user_group IN %s AND user='%s';",$LOG['allowed_usergroupsSQL'],mres($agent));
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
@@ -91,7 +91,7 @@ function report_agent_status() {
     $form .= "</form>\n";
 
     if ($agent) {
-        $stmt="SELECT * from osdial_live_agents where user='" . mysql_real_escape_string($agent) . "';";
+        $stmt=sprintf("SELECT osdial_live_agents.* FROM osdial_live_agents JOIN osdial_users ON (osdial_live_agents.user=osdial_users.user) WHERE user_group IN %s AND osdial_live_agents.user='%s';",$LOG['allowed_usergroupsSQL'],mres($agent));
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $agents_to_print = mysql_num_rows($rslt);
@@ -108,7 +108,7 @@ function report_agent_status() {
             $i++;
         }
 
-        $stmt="select * from osdial_campaigns;";
+        $stmt=sprintf("SELECT * FROM osdial_campaigns WHERE campaign_id IN %s;",$LOG['allowed_campaignsSQL']);
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $groups_to_print = mysql_num_rows($rslt);

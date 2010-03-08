@@ -66,7 +66,7 @@ function report_usergroup_hourly() {
     $html .= "      <td align=center>\n";
     $html .= "        <select size=1 name=group>\n";
 
-    $stmt="SELECT * from osdial_user_groups order by user_group;";
+    $stmt = sprintf("SELECT * FROM osdial_user_groups WHERE user_group IN %s ORDER BY user_group;",$LOG['allowed_usergroupsSQL']);
     if ($DB) {$html .= "$stmt\n";}
     $rslt=mysql_query($stmt, $link);
     $groups_to_print = mysql_num_rows($rslt);
@@ -91,9 +91,13 @@ function report_usergroup_hourly() {
     $html .= "    </table>\n";
     $html .= "    </form>\n";
     $html .= "    <br><br>\n";
+    if ($LOG['allowed_usergroupsALL'] < 1 and $LOG['user_group'] != $group) {
+        $head .= "<center><font color=red>You can only run the report for others in you User Group.</font></center>\n";
+        $agent == "";
+    }
 
     if ( ($group) and ($status) and ($date_with_hour) ) {
-        $stmt="SELECT user,full_name from osdial_users where user_group = '" . mysql_real_escape_string($group) . "' order by full_name desc;";
+        $stmt="SELECT user,full_name from osdial_users where user_group = '" . mres($group) . "' order by full_name desc;";
         if ($DB) {$html .= "$stmt\n";}
         $rslt=mysql_query($stmt, $link);
         $tsrs_to_print = mysql_num_rows($rslt);
@@ -107,19 +111,19 @@ function report_usergroup_hourly() {
 
         $o=0;
         while($o < $tsrs_to_print) {
-            $stmt="select count(*) from osdial_log where call_date >= '" . mysql_real_escape_string($date_with_hour) . ":00:00' and  call_date <= '" . mysql_real_escape_string($date_with_hour) . ":59:59' and user='$VDuser[$o]';";
+            $stmt="select count(*) from osdial_log where call_date >= '" . mres($date_with_hour) . ":00:00' and  call_date <= '" . mres($date_with_hour) . ":59:59' and user='$VDuser[$o]';";
             if ($DB) {$html .= "$stmt\n";}
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
             $VDtotal[$o] = "$row[0]";
 
-            $stmt="select count(*) from osdial_log where call_date >= '" . mysql_real_escape_string($date_no_hour) . " 00:00:00' and  call_date <= '" . mysql_real_escape_string($date_no_hour) . " 23:59:59' and user='$VDuser[$o]' and status='" . mysql_real_escape_string($status) . "';";
+            $stmt="select count(*) from osdial_log where call_date >= '" . mres($date_no_hour) . " 00:00:00' and  call_date <= '" . mres($date_no_hour) . " 23:59:59' and user='$VDuser[$o]' and status='" . mres($status) . "';";
             if ($DB) {$html .= "$stmt\n";}
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
             $VDday[$o] = "$row[0]";
 
-            $stmt="select count(*) from osdial_log where call_date >= '" . mysql_real_escape_string($date_with_hour) . ":00:00' and  call_date <= '" . mysql_real_escape_string($date_with_hour) . ":59:59' and user='$VDuser[$o]' and status='" . mysql_real_escape_string($status) . "';";
+            $stmt="select count(*) from osdial_log where call_date >= '" . mres($date_with_hour) . ":00:00' and  call_date <= '" . mres($date_with_hour) . ":59:59' and user='$VDuser[$o]' and status='" . mres($status) . "';";
             if ($DB) {$html .= "$stmt\n";}
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);

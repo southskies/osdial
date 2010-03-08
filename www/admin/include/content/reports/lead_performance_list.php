@@ -50,7 +50,7 @@ function report_lead_performance_list() {
     if (strlen($end_time) < 5) $end_time = "23:59";
     if ($group=='') $group[] = '--ALL--';
 
-    $stmt="select list_id,list_name from osdial_lists;";
+    $stmt=sprintf("SELECT list_id,list_name FROM osdial_lists WHERE campaign_id IN %s;",$LOG['allowed_campaignsSQL']);
     $rslt=mysql_query($stmt, $link);
     if ($DB) $html .= "$stmt\n";
     $lists_to_print = mysql_num_rows($rslt);
@@ -72,26 +72,27 @@ function report_lead_performance_list() {
         $i++;
     }
     if ( (ereg("--ALL--",$group_string) ) or ($group_ct < 1) ) {
-        $group_SQL = "";
-        $group_olSQL = "";
-        $group_ocSQL = "";
-        $group_logSQL = "";
-        $group_SQLand = "";
-        $group_olSQLand = "";
-        $group_ocSQLand = "";
-        $group_logSQLand = "";
+        $group_logSQLand = sprintf("AND osdial_log.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
+        $group_olSQLand = sprintf("AND osdial_lists.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
+        $group_ocSQLand = sprintf("AND osdial_campaigns.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
+        $group_SQLand = sprintf("AND campaign_id IN %s",$LOG['allowed_campaignsSQL']);
+
+        $group_logSQL = sprintf("WHERE osdial_log.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
+        $group_olSQL = sprintf("WHERE osdial_lists.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
+        $group_ocSQL = sprintf("WHERE osdial_campaigns.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
+        $group_SQL = sprintf("WHERE campaign_id IN %s",$LOG['allowed_campaignsSQL']);
     } else {
         $group_SQL = eregi_replace(",$",'',$group_SQL);
 
-        $group_logSQLand = "and osdial_log.list_id IN($group_SQL)";
-        $group_olSQLand = "and osdial_lists.list_id IN($group_SQL)";
-        $group_ocSQLand = "and osdial_campaigns.campaign_id IN($group_SQL)";
-        $group_SQLand = "and osdial_list.list_id IN($group_SQL)";
+        $group_logSQLand = sprintf("AND osdial_log.campaign_id IN %s AND osdial_log.campaign_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
+        $group_olSQLand = sprintf("AND osdial_lists.campaign_id IN %s AND osdial_lists.campaign_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
+        $group_ocSQLand = sprintf("AND osdial_campaigns.campaign_id IN %s AND osdial_campaigns.campaign_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
+        $group_SQLand = sprintf("AND campaign_id IN %s AND campaign_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
 
-        $group_logSQL = "where osdial_log.list_id IN($group_SQL)";
-        $group_olSQL = "where osdial_lists.list_id IN($group_SQL)";
-        $group_ocSQL = "where osdial_campaigns.campaign_id IN($group_SQL)";
-        $group_SQL = "where osdial_list.list_id IN($group_SQL)";
+        $group_logSQL = sprintf("WHERE osdial_log.campaign_id IN %s AND osdial_log.campaign_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
+        $group_olSQL = sprintf("WHERE osdial_lists.campaign_id IN %s AND osdial_lists.campaign_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
+        $group_ocSQL = sprintf("WHERE osdial_campaigns.campaign_id IN %s AND osdial_campaigns.campaign_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
+        $group_SQL = sprintf("WHERE campaign_id IN %s AND campaign_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
     }
 
 

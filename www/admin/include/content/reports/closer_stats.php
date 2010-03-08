@@ -65,7 +65,7 @@ function report_closer_stats() {
     if ($query_date == '') {$query_date = $NOW_DATE;}
     if ($end_date == '') {$end_date = $NOW_DATE;}
     
-    $stmt="select group_id from osdial_inbound_groups;";
+    $stmt=sprintf("SELECT group_id FROM osdial_inbound_groups WHERE group_id IN %s;",$LOG['allowed_ingroupsSQL']);
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $campaigns_to_print = mysql_num_rows($rslt);
@@ -89,12 +89,13 @@ function report_closer_stats() {
         $i++;
     }
     if ( (ereg("--ALL--",$group_string) ) or ($group_ct < 1) ) {
-        $group_SQL = "";
         $group_list = "--ALL--";
+        $group_SQLand = sprintf("AND campaign_id IN %s",$LOG['allowed_ingroupsSQL']);
+        $group_SQL = sprintf("WHERE campaign_id IN %s",$LOG['allowed_ingroupsSQL']);
     } else {
         $group_SQL = eregi_replace(",$",'',$group_SQL);
-        $group_SQLand = "and campaign_id IN($group_SQL)";
-        $group_SQL = "where campaign_id IN($group_SQL)";
+        $group_SQLand = sprintf("AND campaign_id IN %s AND campaign_id IN(%s)",$LOG['allowed_ingroupsSQL'],$group_SQL);
+        $group_SQL = sprintf("WHERE campaign_id IN %s AND campaign_id IN(%s)",$LOG['allowed_ingroupsSQL'],$group_SQL);
     }
 
     $stmt="select vsc_id,vsc_name from osdial_status_categories;";

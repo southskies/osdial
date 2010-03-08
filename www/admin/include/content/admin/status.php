@@ -33,30 +33,30 @@
 if ($ADD==221111111111111)
 {
 
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-	$stmt="SELECT count(*) from osdial_campaign_statuses where status='$status';";
-	$rslt=mysql_query($stmt, $link);
-	$row=mysql_fetch_row($rslt);
-	if ($row[0] > 0)
-		{echo "<br><font color=red>SYSTEM STATUS NOT ADDED - there is already a campaign-status in the system with this name: $row[0]</font>\n";}
-	else
-		{
-		$stmt="SELECT count(*) from osdial_statuses where status='$status';";
-		$rslt=mysql_query($stmt, $link);
-		$row=mysql_fetch_row($rslt);
-		if ($row[0] > 0)
-			{echo "<br><font color=red>SYSTEM STATUS NOT ADDED - there is already a global-status in the system with this name</font>\n";}
-		else
+    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+    $stmt="SELECT count(*) from osdial_campaign_statuses where status='$status';";
+    $rslt=mysql_query($stmt, $link);
+    $row=mysql_fetch_row($rslt);
+    if ($row[0] > 0)
+        {echo "<br><font color=red>SYSTEM STATUS NOT ADDED - there is already a campaign-status in the system with this name: $row[0]</font>\n";}
+    else
+        {
+        $stmt="SELECT count(*) from osdial_statuses where status='$status';";
+    $rslt=mysql_query($stmt, $link);
+    $row=mysql_fetch_row($rslt);
+    if ($row[0] > 0)
+    {echo "<br><font color=red>SYSTEM STATUS NOT ADDED - there is already a global-status in the system with this name</font>\n";}
+    else
 			{
-			 if ( (strlen($status) < 1) or (strlen($status_name) < 2) )
-				{
-				 echo "<br><font color=$default_text>SYSTEM STATUS NOT ADDED - Please go back and look at the data you entered\n";
-				 echo "<br>status must be between 1 and 8 characters in length\n";
-				 echo "<br>status name must be between 2 and 30 characters in length</font><br>\n";
+    if ( (strlen($status) < 1) or (strlen($status_name) < 2) )
+    {
+    echo "<br><font color=$default_text>SYSTEM STATUS NOT ADDED - Please go back and look at the data you entered\n";
+    echo "<br>status must be between 1 and 8 characters in length\n";
+    echo "<br>status name must be between 2 and 30 characters in length</font><br>\n";
 				}
-			 else
-				{
-				echo "<br><B><font color=$default_text>SYSTEM STATUS ADDED: $status_name - $status</font></B>\n";
+    else
+    {
+    echo "<br><B><font color=$default_text>SYSTEM STATUS ADDED: $status_name - $status</font></B>\n";
 
 				$stmt="INSERT INTO osdial_statuses (status,status_name,selectable,human_answered,category) values('$status','$status_name','$selectable','$human_answered','$category');";
 				$rslt=mysql_query($stmt, $link);
