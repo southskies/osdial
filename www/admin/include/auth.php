@@ -82,6 +82,8 @@ if ($force_logout) {
                 if ($LOG['company']['status'] != 'ACTIVE') {
                     $failexit=1;
                     $fps = "OSDIAL|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|COMPANY_" . $LOG['company']['status'] . "||\n";
+                    echo "<a href=\"$PHP_SELF?force_logout=1\"><font face=\"arial,helvetica\" size=1>Logout</a></font><br><br>\n";
+                    echo "<font color=red>Error, Company is currently marked " . $LOG['company']['status'] . ".</font>";
                 }
             }
             $LOG['companies'] = get_krh($link, 'osdial_companies', '*','','','');
@@ -119,9 +121,12 @@ if ($force_logout) {
                 }
             }
             $ingrps = get_krh($link, 'osdial_inbound_groups', 'group_id','',sprintf("group_id LIKE '%s___%%'",$LOG['company_prefix']),'');
-            foreach ($ingrps as $ingrp) {
-               $LOGaiA[] = $ingrp['group_id'];
+            if (is_array($ingrps)) {
+                foreach ($ingrps as $ingrp) {
+                    $LOGaiA[] = $ingrp['group_id'];
+                }
             }
+
             foreach ($LOGacA as $c) {
                 $LOGacSQL .= "'" . mres($c) . "',";
             }
