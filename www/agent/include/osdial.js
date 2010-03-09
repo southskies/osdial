@@ -420,6 +420,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 	var manual_dial_allow_skip = '<? echo $VU_manual_dial_allow_skip ?>';
 
+	var multicomp = '<? echo $multicomp ?>';
+
 
 // ################################################################################
 // Send Hangup command for Live call connected to phone now to Manager
@@ -4014,7 +4016,13 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			var live_CSC_HTML = "<table class=acrossagent cellpadding=5 cellspacing=5 width=500><tr><td align=center><B><font color=<?=$closer_fc?>>Groups Not Selected</font></B></td><td align=center><B><font color=<?=$closer_fc?>>Selected Groups</font></B></td></tr><tr><td bgcolor=\"<?=$closer_bg?>\" height=300 width=240 valign=top><font class=\"log_text\"><span id=CloserSelectAdd>";
 			var loop_ct = 0;
 			while (loop_ct < INgroupCOUNT) {
-				live_CSC_HTML = live_CSC_HTML + "<a href=\"#\" onclick=\"CloserSelect_change('" + VARingroups[loop_ct] + "','ADD');return false;\">" + VARingroups[loop_ct] + "<BR>";
+				live_CSC_HTML = live_CSC_HTML + "<a href=\"#\" onclick=\"CloserSelect_change('" + VARingroups[loop_ct] + "','ADD');return false;\">";
+				if (multicomp > 0) {
+					live_CSC_HTML = live_CSC_HTML + VARingroups[loop_ct].substr(0,3);
+				} else {
+					live_CSC_HTML = live_CSC_HTML + VARingroups[loop_ct];
+				}
+				live_CSC_HTML = live_CSC_HTML + "<BR>";
 				loop_ct++;
 			}
 			live_CSC_HTML = live_CSC_HTML + "</span></font></td><td height=300 width=240 valign=top bgcolor=\"<?=$closer_bg?>\"><font class=\"log_text\"><span id=CloserSelectDelete></span></font></td></tr></table>";
@@ -4068,10 +4076,22 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				}
 
 				if (CSCcolumn == 'DELETE') {
-					live_CSC_HTML_DELETE = live_CSC_HTML_DELETE + "<a href=\"#\" onclick=\"CloserSelect_change('" + VARingroups[loop_ct] + "','DELETE');return false;\">" + VARingroups[loop_ct] + "<BR>";
+					live_CSC_HTML_DELETE = live_CSC_HTML_DELETE + "<a href=\"#\" onclick=\"CloserSelect_change('" + VARingroups[loop_ct] + "','DELETE');return false;\">";
+					if (multicomp > 0) {
+						live_CSC_HTML_DELETE = live_CSC_HTML_DELETE + VARingroups[loop_ct].substr(0,3);
+					} else {
+						live_CSC_HTML_DELETE = live_CSC_HTML_DELETE + VARingroups[loop_ct];
+					}
+					live_CSC_HTML_DELETE = live_CSC_HTML_DELETE + "<BR>";
 					live_CSC_LIST_value = live_CSC_LIST_value + VARingroups[loop_ct] + " ";
 				} else {
-					live_CSC_HTML_ADD = live_CSC_HTML_ADD + "<a href=\"#\" onclick=\"CloserSelect_change('" + VARingroups[loop_ct] + "','ADD');return false;\">" + VARingroups[loop_ct] + "<BR>";
+					live_CSC_HTML_ADD = live_CSC_HTML_ADD + "<a href=\"#\" onclick=\"CloserSelect_change('" + VARingroups[loop_ct] + "','ADD');return false;\">";
+					if (multicomp > 0) {
+						live_CSC_HTML_ADD = live_CSC_HTML_ADD + VARingroups[loop_ct].substr(0,3);
+					} else {
+						live_CSC_HTML_ADD = live_CSC_HTML_ADD + VARingroups[loop_ct];
+					}
+					live_CSC_HTML_ADD = live_CSC_HTML_ADD + "<BR>";
 				}
 				loop_ct++;
 			}
@@ -5488,7 +5508,13 @@ if ($useIE > 0) {
 					} else {
 						XfeR_SelecT = '';
 					}
-					live_XfeR_HTML = live_XfeR_HTML + "<option " + XfeR_SelecT + "value=\"" + VARxfergroups[loop_ct] + "\">" + VARxfergroups[loop_ct] + " - " + VARxfergroupsnames[loop_ct] + "</option>\n";
+					live_XfeR_HTML = live_XfeR_HTML + "<option " + XfeR_SelecT + "value=\"" + VARxfergroups[loop_ct] + "\">";
+					if (multicomp > 0) {
+						live_XfeR_HTML = live_XfeR_HTML + VARxfergroups[loop_ct].substr(0,3);
+					} else {
+						live_XfeR_HTML = live_XfeR_HTML + VARxfergroups[loop_ct];
+					}
+					live_XfeR_HTML = live_XfeR_HTML + " - " + VARxfergroupsnames[loop_ct] + "</option>\n";
 					loop_ct++;
 				}
 

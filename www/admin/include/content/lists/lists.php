@@ -48,11 +48,11 @@ if ($ADD==111) {
 			$o=0;
 			while ($campaigns_to_print > $o) {
 				$rowx=mysql_fetch_row($rslt);
-				$campaigns_list .= "      <option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
+				$campaigns_list .= "      <option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
 				$o++;
 			}
 		echo "      $campaigns_list";
-		echo "      <option SELECTED>$campaign_id</option>\n";
+		echo "      <option value=\"\" SELECTED>- SELECT CAMPAIGN -</option>\n";
 		echo "    </select>$NWB#osdial_lists-campaign_id$NWE</td></tr>\n";
 		echo "  <tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option SELECTED>N</option></select>$NWB#osdial_lists-active$NWE</td></tr>\n";
 		echo "  <tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
@@ -411,11 +411,11 @@ if ($ADD==311) {
         $o=0;
         while ($campaigns_to_print > $o) {
             $rowx=mysql_fetch_row($rslt);
-            $campaigns_list .= "<option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
+            $campaigns_list .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
             $o++;
         }
         echo "$campaigns_list";
-        echo "<option SELECTED>$campaign_id</option>\n";
+        echo "<option value=\"$campaign_id\" SELECTED>" . mclabel($campaign_id) . "</option>\n";
         echo "</select>$NWB#osdial_lists-campaign_id$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$active</option></select>$NWB#osdial_lists-active$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Reset Lead-Called-Status for this list: </td><td align=left><select size=1 name=reset_list><option>Y</option><option SELECTED>N</option></select>$NWB#osdial_lists-reset_list$NWE</td></tr>\n";
@@ -1018,7 +1018,7 @@ if ($ADD==100) {
         echo "  <tr $bgcolor class=\"row font1\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">$row[0]</a></td>\n";
         echo "    <td>$row[1]</td>\n";
-        echo "    <td><a href=\"$PHP_SELF?ADD=100&camp=$row[2]&dispact=$dispact\">$row[2]</a></td>\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=100&camp=$row[2]&dispact=$dispact\">" . mclabel($row[2]) . "</a></td>\n";
         echo "    <td>$row[4]</td>\n";
         echo "    <td align=center>$row[5]</td>\n";
         echo "    <td align=center>$row[3]</td>\n";

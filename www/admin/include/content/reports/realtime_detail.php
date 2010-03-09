@@ -222,12 +222,12 @@ function report_realtime_detail() {
 
     $group_name = '';
 	while ($groups_to_print > $o)	{
+        $gsel='';
 		if ($groups[$o] == $group) {
-			$html .= "<option selected value=\"$groups[$o]\">$groups[$o] - $group_names[$o]</option>\n";
+            $gsel = 'selected';
             $group_name = $group_names[$o];
-		} else {
-			$html .= "<option value=\"$groups[$o]\">$groups[$o] - $group_names[$o]</option>\n";
 		}
+		$html .= "<option $gsel value=\"$groups[$o]\">" . mclabel($groups[$o]) . " - $group_names[$o]</option>\n";
 		$o++;
 	}
 	$html .= "</SELECT>\n";
@@ -607,7 +607,7 @@ function report_realtime_detail() {
 	$p=0;
 	while($p<$k) {
 		$Cstatus =			sprintf("%-6s", $CDstatus[$p]);
-		$Ccampaign_id =		sprintf("%-12s", $CDcampaign_id[$p]);
+		$Ccampaign_id =		sprintf("%-12s", mclabel($CDcampaign_id[$p]));
 		$Cphone_number =	sprintf("%-12s", $CDphone_number[$p]);
 		$Cserver_ip =		sprintf("%-15s", $CDserver_ip[$p]);
 		$Ccall_type =		sprintf("%-10s", $CDcall_type[$p]);
@@ -782,14 +782,14 @@ function report_realtime_detail() {
 				}
 			}
 			$Luser =			$row[1];
-			$user =				sprintf("%-18s", $row[1]);
+			$user =				sprintf("%-18s", mclabel($row[1]));
 			$Lsessionid =		$row[2];
 			$sessionid =		sprintf("%-9s", $row[2]);
 			$Lstatus =			$row[3];
 			$status =			sprintf("%-6s", $row[3]);
 			$server_ip =		sprintf("%-15s", $row[4]);
 			$call_server_ip =	sprintf("%-15s", $row[7]);
-			$campaign_id =	sprintf("%-10s", $row[8]);
+			$campaign_id =	sprintf("%-10s", mclabel($row[8]));
 			$comments=		$row[11];
 			$lead_id=		$row[12];
 
@@ -822,12 +822,12 @@ function report_realtime_detail() {
 	
 			if ($UGdisplay > 0) {
 				if ($non_latin < 1) {
-					$user_group =		sprintf("%-12s", $row[9]);
+					$user_group =		sprintf("%-12s", mclabel($row[9]));
 					while(strlen($user_group)>12) {
 						$user_group = substr("$user_group", 0, -1);
 					}
 				} else {
-					$user_group =		sprintf("%-40s", $row[9]);
+					$user_group =		sprintf("%-40s", mclabel($row[9]));
 					while(mb_strlen($user_group, 'utf-8')>12) {
 						$user_group = mb_substr("$user_group", 0, -1,'utf8');
 					}

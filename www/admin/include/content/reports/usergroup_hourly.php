@@ -73,11 +73,11 @@ function report_usergroup_hourly() {
     $o=0;
     while ($groups_to_print > $o) {
         $rowx=mysql_fetch_row($rslt);
+        $gsel = "";
         if ($group == $rowx[0]) {
-            $html .= "          <option selected value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
-        } else {
-            $html .= "          <option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
+            $gsel = "selected";
         }
+        $html .= "          <option $gsel value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
         $o++;
     }
     $html .= "        </select>\n";
@@ -131,7 +131,7 @@ function report_usergroup_hourly() {
             $o++;
         }
 
-        $html .= "  <center><a href=\"./admin.php?ADD=3111&group_id=$group\">" . strtoupper($group) . "</a></center>\n";
+        $html .= "  <center><a href=\"./admin.php?ADD=3111&group_id=$group\">" . strtoupper(mclabel($group)) . "</a></center>\n";
         $html .= "  <table bgcolor=grey align=center width=600 cellspacing=1 cellpadding=0>\n";
         $html .= "    <tr class=tabheader>\n";
         $html .= "      <td colspan=2></td>\n";
@@ -158,7 +158,7 @@ function report_usergroup_hourly() {
                 $bgcolor='bgcolor="' . $evenrows . '"';
             }
             $html .= "    <tr $bgcolor class=\"row font1\">\n";
-            $html .= "      <td>$VDuser[$o]</td>";
+            $html .= "      <td>" . mclabel($VDuser[$o]) . "</td>";
             $html .= "      <td align=left>$VDname[$o]</td>\n";
             $html .= "      <td align=right>$VDcount[$o]</td>\n";
             $html .= "      <td align=right>$VDtotal[$o]</td>\n";

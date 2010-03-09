@@ -65,4 +65,11 @@ function get_first_record($link, $tbl, $flds="*", $whr="") {
     return $gfrrow;
 }
 
+# Returns string with first three chars stripped if multicomp_user
+function mclabel($strdat) {
+    global $multicomp;
+    if ($multicomp > 0) $strdat = substr($strdat,3);
+    return $strdat;
+}
+
 ?>

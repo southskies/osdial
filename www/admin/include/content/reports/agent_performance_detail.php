@@ -106,11 +106,11 @@ function report_agent_performance_detail() {
     $html .= "          <option value=\"--ALL--\">-- ALL CAMPAIGNS --</option>\n";
     $o=0;
     while ($campaigns_to_print > $o) {
+        $gsel='';
         if ($groups[$o] == $group) {
-            $html .= "          <option selected value=\"$groups[$o]\">$groups[$o]</option>\n";
-        } else {
-            $html .= "          <option value=\"$groups[$o]\">$groups[$o]</option>\n";
+            $gsel = 'selected';
         }
+        $html .= "          <option $gsel value=\"$groups[$o]\">" . mclabel($groups[$o]) . "</option>\n";
         $o++;
     }
     $html .= "        </select>\n";
@@ -120,12 +120,12 @@ function report_agent_performance_detail() {
     $html .= "          <option value=\"\">-- ALL USER GROUPS --</option>\n";
     $o=0;
     while ($user_groups_to_print > $o) {
-            if ($user_groups[$o] == $user_group) {
-                $html .= "          <option selected value=\"$user_groups[$o]\">$user_groups[$o]</option>\n";
-            } else {
-                $html .= "          <option value=\"$user_groups[$o]\">$user_groups[$o]</option>\n";
-            }
-            $o++;
+        $gsel='';
+        if ($user_groups[$o] == $user_group) {
+            $gsel = 'selected';
+        }
+        $html .= "          <option $gsel value=\"$user_groups[$o]\">" . mclabel($user_groups[$o]) . "</option>\n";
+        $o++;
     }
     $html .= "        </select>\n";
     $html .= "      </td>\n";
@@ -375,8 +375,8 @@ function report_agent_performance_detail() {
             $Tfull_name = $Sfull_name;
             $Sfull_name=    sprintf("%-15s", $Sfull_name); 
             while(strlen($Sfull_name)>15) {$Sfull_name = substr("$Sfull_name", 0, -1);}
-            $Tuser = $Suser;
-            $Suser =        sprintf("%-8s", $Suser);
+            $Tuser = mclabel($Suser);
+            $Suser =        sprintf("%-8s", mclabel($Suser));
             while(strlen($Suser)>8) {$Suser = substr("$Suser", 0, -1);}
 
             $USERtime_M = ($Stime / 60);

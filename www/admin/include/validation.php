@@ -68,6 +68,7 @@ if ($non_latin < 1)	{
 	$conf_exten = ereg_replace("[^0-9]","",$conf_exten);
 	$conf_on_extension = ereg_replace("[^0-9]","",$conf_on_extension);
 	$conferencing_enabled = ereg_replace("[^0-9]","",$conferencing_enabled);
+	$company_id = ereg_replace("[^0-9]","",$company_id);
 	$ct_default_start = ereg_replace("[^0-9]","",$ct_default_start);
 	$ct_default_stop = ereg_replace("[^0-9]","",$ct_default_stop);
 	$ct_friday_start = ereg_replace("[^0-9]","",$ct_friday_start);

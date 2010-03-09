@@ -38,7 +38,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 	while ($campaigns_to_print > $o)
 		{
 		$rowx=mysql_fetch_row($rslt);
-		$campaigns_list .= "<option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
+		$campaigns_list .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
 		$campaign_id_values[$o] = $rowx[0];
 		$campaign_name_values[$o] = $rowx[1];
 		$o++;
@@ -113,8 +113,8 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 		if ($RANK_camp_active < 1) {$CR_disabled = 'DISABLED';}
 
 		$RANKcampaigns_list .= "<tr class=row $bgcolor><td>";
-		$campaigns_list .= "<a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id_values[$o]\">$campaign_id_values[$o]</a> - $campaign_name_values[$o] <BR>\n";
-		$RANKcampaigns_list .= "<font size=1><a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id_values[$o]\">$campaign_id_values[$o]</a> - $campaign_name_values[$o]</font></td>";
+		$campaigns_list .= "<a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id_values[$o]\">" . mclabel($campaign_id_values[$o]) . "</a> - $campaign_name_values[$o] <BR>\n";
+		$RANKcampaigns_list .= "<font size=1><a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id_values[$o]\">" . mclabel($campaign_id_values[$o]) . "</a> - $campaign_name_values[$o]</font></td>";
 		$RANKcampaigns_list .= "<td align=center><select style=\"font-size: 8px;\" size=1 name=RANK_$campaign_id_values[$o] $CR_disabled>\n";
 		$h="9";
 		while ($h>=-9)
@@ -267,9 +267,9 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 				}
 			$p++;
 			}
-		$groups_list .= "> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">$group_id_values[$o]</a> - $group_name_values[$o] <BR>\n";
-		$XFERgroups_list .= "> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">$group_id_values[$o]</a> - $group_name_values[$o] <BR>\n";
-		$RANKgroups_list .= "> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">$group_id_values[$o]</a> - $group_name_values[$o]</font></td>";
+		$groups_list .= "> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o] <BR>\n";
+		$XFERgroups_list .= "> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o] <BR>\n";
+		$RANKgroups_list .= "> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o]</font></td>";
 		$RANKgroups_list .= "<td align=center><select size=1 style=\"font-size: 8px;\" name=RANK_$group_id_values[$o]>\n";
 		$h="9";
 		while ($h>=-9)
@@ -341,7 +341,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 		#	echo "<!--  O $p|$campaign_id_value|$campaigns[$p]| -->";
 			$p++;
 			}
-		$campaigns_list .= "> $campaign_id_value - $campaign_name_value<BR>\n";
+		$campaigns_list .= "> " . mclabel($campaign_id_value) . " - $campaign_name_value<BR>\n";
 		$o++;
 		}
 	if (strlen($campaigns_value)>2) {$campaigns_value .= " -";}

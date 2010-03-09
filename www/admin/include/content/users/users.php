@@ -36,7 +36,18 @@ if ($ADD=="1")
 	echo "<center><br><font color=$default_text size=+1>ADD A NEW AGENT<form action=$PHP_SELF method=POST></font><br><br>\n";
 	echo "<input type=hidden name=ADD value=2>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left><input type=text name=user size=20 maxlength=10>$NWB#osdial_users-user$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left>\n";
+    if ($LOG['multicomp_admin'] > 0) {
+        $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
+        echo "<select name=company_id>\n";
+        foreach ($comps as $comp) {
+            echo "<option value=$comp[id]>" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
+        }
+        echo "</select>\n";
+    } elseif ($LOG['multicomp']>0) {
+        echo "<input type=hidden name=company_id value=$LOG[company_id]><font color=$default_text>" . $LOG[company_prefix] . "</font>&nbsp;";
+    }
+    echo "<input type=text name=user size=20 maxlength=10>$NWB#osdial_users-user$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=pass size=20 maxlength=10>$NWB#osdial_users-pass$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=20 maxlength=100>$NWB#osdial_users-full_name$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level>";
@@ -58,11 +69,11 @@ if ($ADD=="1")
 		$o=0;
 		while ($Ugroups_to_print > $o) {
 			$rowx=mysql_fetch_row($rslt);
-			$Ugroups_list .= "<option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
+			$Ugroups_list .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
 			$o++;
 		}
 	echo "$Ugroups_list";
-	echo "<option SELECTED>$user_group</option>\n";
+	echo "<option value=\"\" SELECTED>- SELECT USER GROUP -</option>\n";
 	echo "</select>$NWB#osdial_users-user_group$NWE</td></tr>\n";
 	
 	echo "<tr bgcolor=$oddrows><td align=right>Phone Login: </td><td align=left><input type=text name=phone_login size=20 maxlength=20>$NWB#osdial_users-phone_login$NWE</td></tr>\n";
@@ -93,7 +104,18 @@ if ($ADD=="1A")
 	echo "<center><br><font color=$default_text size=+1>COPY AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2A>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left><input type=text name=user size=20 maxlength=10>$NWB#osdial_users-user$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left>";
+    if ($LOG['multicomp_admin'] > 0) {
+        $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
+        echo "<select name=company_id>\n";
+        foreach ($comps as $comp) {
+            echo "<option value=$comp[id]>" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
+        }
+        echo "</select>\n";
+    } elseif ($LOG['multicomp']>0) {
+        echo "<input type=hidden name=company_id value=$LOG[company_id]><font color=$default_text>" . $LOG[company_prefix] . "</font>&nbsp;";
+    }
+    echo "<input type=text name=user size=20 maxlength=10>$NWB#osdial_users-user$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=pass size=20 maxlength=10>$NWB#osdial_users-pass$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=20 maxlength=100>$NWB#osdial_users-full_name$NWE</td></tr>\n";
 
@@ -110,7 +132,7 @@ if ($ADD=="1A")
 		$o=0;
 		while ($Uusers_to_print > $o) {
 			$rowx=mysql_fetch_row($rslt);
-			$Uusers_list .= "<option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
+			$Uusers_list .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
 			$o++;
 		}
 	echo "$Uusers_list";
@@ -132,7 +154,9 @@ if ($ADD=="1A")
 if ($ADD=="2")
 {
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-	$stmt="SELECT count(*) from osdial_users where user='$user';";
+    $preuser = $user;
+    if ($LOG['multicomp'] > 0) $preuser = (($company_id * 1) + 100) . $user;
+	$stmt="SELECT count(*) from osdial_users where user='$preuser';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -149,6 +173,7 @@ if ($ADD=="2")
 			{
 			echo "<br><B>AGENT ADDED: $user</B>\n";
 
+            if ($LOG['multicomp'] > 0) $user = (($company_id * 1) + 100) . $user;
 			$stmt="INSERT INTO osdial_users (user,pass,full_name,user_level,user_group,phone_login,phone_pass) values('$user','$pass','$full_name','$user_level','$user_group','$phone_login','$phone_pass');";
 			$rslt=mysql_query($stmt, $link);
 
@@ -172,7 +197,9 @@ $ADD=3;
 if ($ADD=="2A")
 {
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-	$stmt="SELECT count(*) from osdial_users where user='$user';";
+    $preuser = $user;
+    if ($LOG['multicomp'] > 0) $preuser = (($company_id * 1) + 100) . $user;
+	$stmt="SELECT count(*) from osdial_users where user='$preuser';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -187,6 +214,7 @@ if ($ADD=="2A")
 			}
 		 else
 			{
+            if ($LOG['multicomp'] > 0) $user = (($company_id * 1) + 100) . $user;
 			$stmt="INSERT INTO osdial_users (user,pass,full_name,user_level,user_group,phone_login,phone_pass,delete_users,delete_user_groups,delete_lists,delete_campaigns,delete_ingroups,delete_remote_agents,load_leads,campaign_detail,ast_admin_access,ast_delete_phones,delete_scripts,modify_leads,hotkeys_active,change_agent_campaign,agent_choose_ingroups,closer_campaigns,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,delete_filters,alter_agent_interface_options,closer_default_blended,delete_call_times,modify_call_times,modify_users,modify_campaigns,modify_lists,modify_scripts,modify_filters,modify_ingroups,modify_usergroups,modify_remoteagents,modify_servers,view_reports,osdial_recording_override,alter_custdata_override,manual_dial_allow_skip,export_leads,admin_api_access,agent_api_access) SELECT \"$user\",\"$pass\",\"$full_name\",user_level,user_group,phone_login,phone_pass,delete_users,delete_user_groups,delete_lists,delete_campaigns,delete_ingroups,delete_remote_agents,load_leads,campaign_detail,ast_admin_access,ast_delete_phones,delete_scripts,modify_leads,hotkeys_active,change_agent_campaign,agent_choose_ingroups,closer_campaigns,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,delete_filters,alter_agent_interface_options,closer_default_blended,delete_call_times,modify_call_times,modify_users,modify_campaigns,modify_lists,modify_scripts,modify_filters,modify_ingroups,modify_usergroups,modify_remoteagents,modify_servers,view_reports,osdial_recording_override,alter_custdata_override,manual_dial_allow_skip,export_leads,admin_api_access,agent_api_access from osdial_users where user=\"$source_user_id\";";
 			$rslt=mysql_query($stmt, $link);
 
@@ -472,7 +500,14 @@ if ($ADD==3)
 			}
 		echo "<input type=hidden name=user value=\"$row[1]\">\n";
 		echo "<TABLE width=$section_width cellspacing=3>\n";
-		echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left><b>$row[1]</b>$NWB#osdial_users-user$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left>\n";
+        if ($LOG['multicomp']>0 and preg_match($LOG['companiesRE'],$row[1])) {
+            echo "<font color=$default_text>" . substr($row[1],0,3) . "</font>&nbsp;";
+            echo "<b>" . substr($row[1],3) . "</b>";
+        } else {
+            echo "<b>$row[1]</b>";
+        }
+        echo "$NWB#osdial_users-user$NWE</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=pass size=20 maxlength=10 value=\"$row[2]\">$NWB#osdial_users-pass$NWE</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=30 maxlength=30 value=\"$row[3]\">$NWB#osdial_users-full_name$NWE</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level>";
@@ -493,11 +528,11 @@ if ($ADD==3)
 			$o=0;
 			while ($Ugroups_to_print > $o) {
 				$rowx=mysql_fetch_row($rslt);
-				$Ugroups_list .= "<option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
+				$Ugroups_list .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
 				$o++;
 			}
 		echo "$Ugroups_list";
-		echo "<option SELECTED>$user_group</option>\n";
+		echo "<option SELECTED value=\"$user_group\">" . mclabel($user_group) . "</option>\n";
 		echo "</select>$NWB#osdial_users-user_group$NWE</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Phone Login: </td><td align=left><input type=text name=phone_login size=20 maxlength=20 value=\"$phone_login\">$NWB#osdial_users-phone_login$NWE</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>Phone Pass: </td><td align=left><input type=text name=phone_pass size=20 maxlength=20 value=\"$phone_pass\">$NWB#osdial_users-phone_pass$NWE</td></tr>\n";
@@ -661,6 +696,7 @@ echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left><in
 echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=30 maxlength=30></td></tr>\n";
 echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></td></tr>\n";
 echo "<tr bgcolor=$oddrows><td align=right>User Group: </td><td align=left><select size=1 name=user_group>\n";
+	echo "<option value=\"\">- ALL USERGROUPS -</option>\n";
 
 	$stmt = sprintf("SELECT * from osdial_user_groups where user_group IN %s order by user_group",$LOG['allowed_usergroupsSQL']);
 	$rslt=mysql_query($stmt, $link);
@@ -669,7 +705,7 @@ echo "<tr bgcolor=$oddrows><td align=right>User Group: </td><td align=left><sele
 	$groups_list='';
 	while ($groups_to_print > $o) {
 		$rowx=mysql_fetch_row($rslt);
-		$groups_list .= "<option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
+		$groups_list .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
 		$o++;
 	}
 echo "$groups_list</select></td></tr>\n";
@@ -685,7 +721,7 @@ echo "</TABLE></center>\n";
 
 if ($ADD==660)
 {
-echo "<TABLE><TR><TD>\n";
+echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	$SQL = '';
@@ -701,8 +737,11 @@ echo "<TABLE><TR><TD>\n";
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
-echo "<br><font color=$default_text> SEARCH RESULTS:</font>\n";
-echo "<center><TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "<center><br><font size=+1 color=$default_text>SEARCH RESULTS</font><br><br>\n";
+echo "<table align=center width=$section_width cellspacing=0 cellpadding=1>\n";
+echo "  <tr class=\"tabheader\">\n";
+echo "    <td colspan=5></td>\n";
+echo "  </tr>\n";
 
 	$o=0;
 	while ($people_to_print > $o) {
@@ -711,12 +750,20 @@ echo "<center><TABLE width=$section_width cellspacing=0 cellpadding=1>\n";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor><td><font size=1>$row[1]</td><td><font size=1>$row[3]</td><td><font size=1>$row[4]</td><td><font size=1>$row[5]</td>";
-		echo "<td><font size=1><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">MODIFY</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$row[1]\">STATS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$row[1]\">STATUS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$row[1]\">TIME</a></td></tr>\n";
+		echo "<tr $bgcolor class=\"row font1\">\n";
+        echo "  <td>$row[1]</td>\n";
+        echo "  <td>$row[3]</td>\n";
+        echo "  <td>$row[4]</td>\n";
+        echo "  <td>" . mclabel($row[5]) . "</td>\n";
+		echo "  <td align=center><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">MODIFY</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$row[1]\">STATS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$row[1]\">STATUS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$row[1]\">TIME</a></td>\n";
+        echo "</tr>\n";
 		$o++;
 	}
 
-echo "</TABLE></center>\n";
+echo "  <tr class=\"tabfooter\">\n";
+echo "    <td colspan=5></td>\n";
+echo "  </tr>\n";
+echo "</table></center>\n";
 
 }
 
@@ -759,11 +806,11 @@ echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 $let = get_variable('let');
 $letSQL = '';
-if ($let != '') $letSQL = sprintf("AND (user LIKE '%s%%' OR full_name LIKE '%s%%' OR full_name LIKE '%% %s%%')",mres($let),mres($let),mres($let));
+if ($let != '') $letSQL = sprintf("AND (user LIKE '%s%s%%' OR full_name LIKE '%s%%' OR full_name LIKE '%% %s%%')",$LOG['company_prefix'],mres($let),mres($let),mres($let));
 
 $num = get_variable('num');
 $numSQL = '';
-if ($num != '') $numSQL = sprintf("AND (user LIKE '%s%%')",mres($num));
+if ($num != '') $numSQL = sprintf("AND (user LIKE '%s%s%%')",$LOG['company_prefix'],mres($num));
 
 $level = get_variable('level');
 $levelSQL = '';
@@ -795,7 +842,11 @@ if (eregi("LEVELUP",$stage)) {$SQLorder='order by user_level asc';   $LEVELlink=
 if (eregi("LEVELDOWN",$stage)) {$SQLorder='order by user_level desc';   $LEVELlink='stage=LEVELUP';}
 if (eregi("GROUPUP",$stage)) {$SQLorder='order by user_group asc';   $GROUPlink='stage=GROUPDOWN';}
 if (eregi("GROUPDOWN",$stage)) {$SQLorder='order by user_group desc';   $GROUPlink='stage=GROUPUP';}
-	$stmt = sprintf("SELECT * from osdial_users WHERE user_group IN %s %s %s %s %s %s", $LOG['allowed_usergroupsSQL'],$letSQL,$numSQL,$levelSQL,$groupSQL,$SQLorder);
+    if ($LOG['multicomp'] > 0) {
+	    $stmt = sprintf("SELECT * from osdial_users WHERE user LIKE '%s___%%' AND user_group IN %s %s %s %s %s %s", $LOG['company_prefix'],$LOG['allowed_usergroupsSQL'],$letSQL,$numSQL,$levelSQL,$groupSQL,$SQLorder);
+    } else {
+	    $stmt = sprintf("SELECT * from osdial_users WHERE user_group IN %s %s %s %s %s %s",$LOG['allowed_usergroupsSQL'],$letSQL,$numSQL,$levelSQL,$groupSQL,$SQLorder);
+    }
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
@@ -848,7 +899,13 @@ echo "  </tr>\n";
             echo "  <input type=hidden name=SUB value=1>\n";
         if ($row[5] != "VIRTUAL") {
 		    echo "  <tr class=\"row font1\" $bgcolor>\n";
-            echo "    <td><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">$row[1]</a></td>\n";
+            echo "    <td><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">";
+            if (($LOG['multicomp'] > 0 and preg_match($LOG['companiesRE'],$row[1])) or $LOG['multcomp_user'] > 0) {
+                echo substr($row[1],0,3) . "&nbsp;" . substr($row[1],3);;
+            } else {
+                echo $row[1];
+            }
+            echo "</a></td>\n";
             echo "    <td>$row[3]</td>\n";
             if ($ADD==9) {
 	            $stmt2="SELECT SUM(manual_dial_new_today),status_category_1,SUM(status_category_count_1),status_category_2,SUM(status_category_count_2),status_category_3,SUM(status_category_count_3),status_category_4,SUM(status_category_count_4) FROM osdial_campaign_agent_stats WHERE user='$row[1]' GROUP BY user";
@@ -879,7 +936,7 @@ echo "  </tr>\n";
                 echo "    <td align=right>" . sprintf('%5.2f',$close_pct) . " %</td>\n";
             } else {
                 echo "    <td align=center><a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$row[4]&group=$group&let=$let\">$row[4]</a></td>\n";
-                echo "    <td><a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$row[5]&let=$let\">$row[5]</a></td>\n";
+                echo "    <td><a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$row[5]&let=$let\">" . mclabel($row[5]) . "</a></td>\n";
             }
 		    echo "    <td align=center class=font1 nowrap><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">MODIFY</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$row[1]\">STATS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$row[1]\">STATUS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$row[1]\">TIME</a></td>\n";
             echo "  </tr>\n";

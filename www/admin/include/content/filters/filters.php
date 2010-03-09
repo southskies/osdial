@@ -36,7 +36,19 @@ if ($ADD==11111111)
 	echo "<center><br><font color=$default_text size=+1>ADD NEW FILTER</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Filter ID: </td><td align=left><input type=text name=lead_filter_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_lead_filters-lead_filter_id$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Filter ID: </td><td align=left>";
+    if ($LOG['multicomp_admin'] > 0) {
+        $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
+        echo "<select name=company_id>\n";
+        foreach ($comps as $comp) {
+            echo "<option value=$comp[id]>" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
+        }
+        echo "</select>\n";
+    } elseif ($LOG['multicomp']>0) {
+        echo "<input type=hidden name=company_id value=$LOG[company_id]>";
+        #echo "<font color=$default_text>" . $LOG[company_prefix] . "</font>";
+    }
+    echo "<input type=text name=lead_filter_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_lead_filters-lead_filter_id$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Filter Name: </td><td align=left><input type=text name=lead_filter_name size=30 maxlength=30> (short description of the filter)$NWB#osdial_lead_filters-lead_filter_name$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Filter Comments: </td><td align=left><input type=text name=lead_filter_comments size=50 maxlength=255> $NWB#osdial_lead_filters-lead_filter_comments$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Filter SQL: </td><td align=left><TEXTAREA NAME=lead_filter_sql ROWS=20 COLS=50 value=\"\"></TEXTAREA> $NWB#osdial_lead_filters-lead_filter_sql$NWE</td></tr>\n";
@@ -58,7 +70,9 @@ if ($ADD==11111111)
 if ($ADD==21111111)
 {
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-	$stmt="SELECT count(*) from osdial_lead_filters where lead_filter_id='$lead_filter_id';";
+    $prelead_filter_id = $lead_filter_id;
+    if ($LOG['multicomp'] > 0) $prelead_filter_id = (($company_id * 1) + 100) . $lead_filter_id;
+	$stmt="SELECT count(*) from osdial_lead_filters where lead_filter_id='$prelead_filter_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -72,6 +86,7 @@ if ($ADD==21111111)
 			 }
 		 else
 			{
+            if ($LOG['multicomp'] > 0) $lead_filter_id = (($company_id * 1) + 100) . $lead_filter_id;
 			$lead_filter_sql = mysql_real_escape_string($lead_filter_sql);
 			$stmt="INSERT INTO osdial_lead_filters SET lead_filter_id='$lead_filter_id',lead_filter_name='$lead_filter_name',lead_filter_comments='$lead_filter_comments',lead_filter_sql='$lead_filter_sql';";
 			$rslt=mysql_query($stmt, $link);
@@ -211,7 +226,7 @@ if ($ADD==31111111)
 	echo "<input type=hidden name=ADD value=41111111>\n";
 	echo "<input type=hidden name=lead_filter_id value=\"$lead_filter_id\">\n";
 	echo "<TABLE>";
-	echo "<tr bgcolor=$oddrows><td align=right>Filter ID: </td><td align=left><B>$lead_filter_id</B>$NWB#osdial_lead_filters-lead_filter_id$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Filter ID: </td><td align=left><B>" . mclabel($lead_filter_id) . "</B>$NWB#osdial_lead_filters-lead_filter_id$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Filter Name: </td><td align=left><input type=text name=lead_filter_name size=40 maxlength=50 value=\"$lead_filter_name\"> (short description of the filter)$NWB#osdial_lead_filters-lead_filter_name$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Filter Comments: </td><td align=left><input type=text name=lead_filter_comments size=50 maxlength=255 value=\"$lead_filter_comments\"> $NWB#osdial_lead_filters-lead_filter_comments$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Filter SQL:</td><td align=left><TEXTAREA NAME=lead_filter_sql ROWS=20 COLS=50>$lead_filter_sql</TEXTAREA> $NWB#osdial_lead_filters-lead_filter_sql$NWE</td></tr>\n";
@@ -228,7 +243,7 @@ if ($ADD==31111111)
 		while ($campaigns_to_print > $o)
 			{
 			$rowx=mysql_fetch_row($rslt);
-			$campaigns_list .= "<option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
+			$campaigns_list .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
 			$o++;
 			}
 
@@ -288,7 +303,7 @@ echo "  </tr>\n";
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
 		echo "  <tr $bgcolor class=\"row font1\">\n";
-        echo "    <td><a href=\"$PHP_SELF?ADD=31111111&lead_filter_id=$row[0]\">$row[0]</a></td>\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=31111111&lead_filter_id=$row[0]\">" . mclabel($row[0]) . "</a></td>\n";
 		echo "    <td>$row[1]</td>\n";
 		echo "    <td align=center><a href=\"$PHP_SELF?ADD=31111111&lead_filter_id=$row[0]\">MODIFY</a></td>\n";
         echo "  </tr>\n";

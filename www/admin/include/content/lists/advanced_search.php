@@ -539,7 +539,7 @@ if ($ADD==1122) {
         echo "      <font size=2>Campaigns</font><br>\n";
         echo "      <select name=campaigns[] size=5 multiple>\n";
         $krh = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name','',sprintf("campaign_id IN %s",$LOG['allowed_campaignsSQL']));
-        echo format_select_options($krh, 'campaign_id', 'campaign_id', $campaigns, "-- ALL --");
+        echo format_select_options($krh, 'campaign_id', 'campaign_id', $campaigns, "-- ALL --",$LOG['multicomp_user']);
         echo "      </select>\n";
         echo "    </td>\n";
 
@@ -566,8 +566,8 @@ if ($ADD==1122) {
         echo "    <td align=center>\n";
         echo "      <font size=2>Agents</font><br>\n";
         echo "      <select name=agents[] size=5 multiple>\n";
-        $krh = get_krh($link, 'osdial_users', 'user,full_name');
-        echo format_select_options($krh, 'user', 'full_name', $agents, "-- ALL --");
+        $krh = get_krh($link, 'osdial_users', 'user,full_name','',sprintf("user_group IN %s",$LOG['allowed_usergroupsSQL']));
+        echo format_select_options($krh, 'user', 'full_name', $agents, "-- ALL --",$LOG['multicomp_user']);
         echo "      </select>\n";
         echo "    </td>\n";
         echo "  </tr>\n";

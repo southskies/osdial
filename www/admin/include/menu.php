@@ -227,6 +227,15 @@ if ($ADD==51111111111)		{$hh='admin';	$sh='phones';	$title = "DELETE PHONE";}
 if ($ADD==61111111111)		{$hh='admin';	$sh='phones';	$title = "DELETE PHONE";}
 if ($ADD==31111111111)		{$hh='admin';	$sh='phones';	$title = "MODIFY PHONE";}
 
+# Admin - companies
+if ($ADD=="10comp")		{$hh='admin';	$sh='company';	$title = "COMPANY LIST";}
+if ($ADD=="11comp")		{$hh='admin';	$sh='company';	$title = "ADD NEW COMPANY";}
+if ($ADD=="21comp")		{$hh='admin';	$sh='company';	$title = "ADDING NEW COMPANY";}
+if ($ADD=="41comp")		{$hh='admin';	$sh='company';	$title = "MODIFY COMPANY";}
+if ($ADD=="51comp")		{$hh='admin';	$sh='company';	$title = "DELETE COMPANY";}
+if ($ADD=="61comp")		{$hh='admin';	$sh='company';	$title = "DELETE COMPANY";}
+if ($ADD=="31comp")		{$hh='admin';	$sh='company';	$title = "MODIFY COMPANY";}
+
 # Admin - Server
 if ($ADD==100000000000)		{$hh='admin';	$sh='server';	$title = "SERVER LIST";}
 if ($ADD==111111111111)		{$hh='admin';	$sh='server';	$title = "ADD NEW SERVER";}

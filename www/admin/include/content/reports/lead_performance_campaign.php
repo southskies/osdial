@@ -171,7 +171,7 @@ function report_lead_performance_campaign() {
     $html .= "<input type=hidden name=DB value=$DB>\n";
     $html .= "<table border=0 bgcolor=grey cellspacing=1>\n";
     $html .= "  <tr class=tabheader>\n";
-    $html .= "    <td>Campaign</td>\n";
+    $html .= "    <td>Campaign(s)</td>\n";
     $html .= "    <td>Date Range</td>\n";
     $html .= "  </tr>\n";
     $html .= "  <tr class=tabfooter>\n";
@@ -184,11 +184,11 @@ function report_lead_performance_campaign() {
     }
     $o=0;
     while ($camps_to_print > $o) {
+        $gsel='';
         if (eregi("$groups[$o]\|",$group_string)) {
-            $html .= "        <option selected value=\"$groups[$o]\">$groups[$o]: $group_names[$o]</option>\n";
-        } else {
-            $html .= "        <option value=\"$groups[$o]\">$groups[$o]: $group_names[$o]</option>\n";
+            $gsel='selected';
         }
+        $html .= "        <option $gsel value=\"$groups[$o]\">" . mclabel($groups[$o]) . ": $group_names[$o]</option>\n";
         $o++;
     }
     $html .= "      </select>\n";

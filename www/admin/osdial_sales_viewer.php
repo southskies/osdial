@@ -24,21 +24,6 @@
 #
 
 
-#############################################
-##### START SYSTEM_SETTINGS LOOKUP #####
-$stmt = "SELECT use_non_latin,admin_template FROM system_settings;";
-$rslt=mysql_query($stmt, $link);
-if ($DB) {echo "$stmt\n";}
-$qm_conf_ct = mysql_num_rows($rslt);
-$i=0;
-while ($i < $qm_conf_ct)
-	{
-	$row=mysql_fetch_row($rslt);
-	$non_latin =					$row[0];
-	$admin_template =				$row[1];
-	$i++;
-	}
-
 if (isset($_GET["dcampaign"]))					{$dcampaign=$_GET["dcampaign"];}
 	elseif (isset($_POST["dcampaign"]))			{$dcampaign=$_POST["dcampaign"];}
 if (isset($_GET["submit_report"]))				{$submit_report=$_GET["submit_report"];}
@@ -52,14 +37,18 @@ if (isset($_GET["sales_time_frame"]))			{$sales_time_frame=$_GET["sales_time_fra
 if (isset($_GET["forc"]))						{$forc=$_GET["forc"];}
 	elseif (isset($_POST["forc"]))				{$forc=$_POST["forc"];}
 
-include("dbconnect.php");
-include("templates/default/display.php");
-if (!isset($admin_template)) {$admin_template='default';}
+include("include/dbconnect.php");
+include($WeBServeRRooT . "/admin/include/functions.php");
+include($WeBServeRRooT . "/admin/include/variables.php");
+include($WeBServeRRooT . "/admin/include/auth.php");
+include($WeBServeRRooT . "/admin/templates/default/display.php");
+include($WeBServeRRooT . "/admin/templates/" . $system_settings['admin_template'] . "/display.php");
 
 echo "<html>\n";
 echo "<head>\n";
 echo "  <title>OSDIAL recent sales lookup</title>\n";
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/$admin_template/styles.css\" media=\"screen\">\n";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/default/styles.css\" media=\"screen\">\n";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $system_settings['admin_template'] . "/styles.css\" media=\"screen\">\n";
 echo "<script language=\"JavaScript1.2\">\n";
 echo "  function GatherListIDs() {\n";
 echo "    var ListIDstr=\"\";\n";
@@ -100,30 +89,35 @@ echo "                <td align=right width=200 nowrap><font class=font2>Campaig
 echo "                <td align=left>\n";
 echo "                  <select name=\"dcampaign\" onChange=\"this.form.submit();\">\n";
 if ($dcampaign) {
-    $stmt="select campaign_id, campaign_name from osdial_campaigns where campaign_id='$dcampaign'";
+    $stmt="SELECT campaign_id, campaign_name FROM osdial_campaigns WHERE campaign_id='$dcampaign';";
     $rslt=mysql_query($stmt, $link);
     while ($row=mysql_fetch_array($rslt)) {
-        echo "                  <option value='$row[campaign_id]' selected>$row[campaign_id] - $row[campaign_name]</option>\n";
+        echo "                  <option value='$row[campaign_id]' selected>" . mclabel($row[campaign_id]) . " - $row[campaign_name]</option>\n";
     }
 } 
 echo "                  <option value=''>----------- Select -----------</option>\n";
-$stmt="select distinct vc.campaign_id, vc.campaign_name from osdial_campaigns vc, osdial_lists vl where vc.campaign_id=vl.campaign_id order by vc.campaign_name asc";
+$stmt=sprintf("SELECT distinct vc.campaign_id, vc.campaign_name FROM osdial_campaigns vc, osdial_lists vl WHERE vc.campaign_id=vl.campaign_id AND vc.campaign_id IN %s ORDER BY vc.campaign_name ASC;",$LOG['allowed_campaignsSQL']);
 $rslt=mysql_query($stmt, $link);
 while ($row=mysql_fetch_array($rslt)) {
-    echo "                  <option value='$row[campaign_id]'>$row[campaign_id] - $row[campaign_name]</option>\n";
+    echo "                  <option value='$row[campaign_id]'>" . mclabel($row[campaign_id]) . " - $row[campaign_name]</option>\n";
 }
 echo "                  </select>\n";
 echo "                </td>\n";
 echo "              </tr>\n";
 if ($dcampaign) {
     echo "              <tr bgcolor='$oddrows'>\n";
-    echo "                <td align=right width=200 nowrap><font class=font2>Select list ID(s) #:<br><span class=font1>(optional)</span></td>\n";
+    echo "                <td align=right width=200 nowrap><font class=font2>List ID(s) #:<br><span class=font1>(optional)</span></td>\n";
     echo "                <td align=left>\n";
     echo "                  <select name=\"list_id\" multiple size=\"4\">\n";
     $stmt="select list_id, list_name from osdial_lists where campaign_id='$dcampaign' order by list_id asc";
     $rslt=mysql_query($stmt, $link);
     while ($row=mysql_fetch_array($rslt)) {
-        echo "                    <option value='$row[list_id]'>$row[list_id] - $row[list_name]</option>\n";
+        $lsel='';
+	    $lists=explode(",", $list_ids);
+	    for ($i=0; $i<count($lists); $i++) {
+		    if (strlen($lists[$i]>0) and $lists[$i] == $row['list_id']) $lsel = "selected";
+	    }
+        echo "                    <option $lsel value='$row[list_id]'>$row[list_id] - $row[list_name]</option>\n";
     }
     echo "                  </select>\n";
     echo "                </td>\n";

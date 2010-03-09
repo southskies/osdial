@@ -84,7 +84,7 @@ function report_closer_stats() {
         $group_string .= "$group[$i]|";
         $group_SQL .= "'$group[$i]',";
         $groupQS .= "&group[]=$group[$i]";
-        $group_list .= $group[$i];
+        $group_list .= mclabel($group[$i]);
         if ($i != $group_ct - 1) $group_list .= ", ";
         $i++;
     }
@@ -160,7 +160,7 @@ function report_closer_stats() {
     $o=0;
     while ($campaigns_to_print > $o) {
         $gsel=''; if (eregi("$groups[$o]\|",$group_string)) $gsel = "selected";
-        $html .= "              <option value=\"$groups[$o]\" $gsel>$groups[$o]</option>\n";
+        $html .= "              <option value=\"$groups[$o]\" $gsel>" . mclabel($groups[$o]) . "</option>\n";
         $o++;
     }
     $html .= "            </select>\n";

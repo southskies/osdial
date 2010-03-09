@@ -112,14 +112,16 @@ if ($ADD == "2form") {
             echo "  <tr>\n";
             echo "      <td bgcolor=$oddrows align=right>Campaigns:</td>\n";
             echo "      <td bgcolor=$oddrows>\n";
-            echo "        <input type=\"checkbox\" name=\"campaigns[]\" value=\"-ALL-\"> <b>ALL - FORM IN ALL CAMPAIGNS</b>\n";
+            if ($LOG['multicomp'] == 0) {
+                echo "        <input type=\"checkbox\" name=\"campaigns[]\" value=\"-ALL-\"> <b>ALL - FORM IN ALL CAMPAIGNS</b>\n";
+            }
             echo "      </td>";
             echo "  </tr>\n";
             $campaigns = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name','',sprintf('campaign_id IN %s',$LOG['allowed_campaignsSQL']));
             foreach ($campaigns as $camp) {
                 echo "  <tr>\n";
                 echo "      <td bgcolor=$oddrows align=right>&nbsp;</td>\n";
-                echo "      <td bgcolor=$oddrows><input type=\"checkbox\" name=\"campaigns[]\" value=\"" . $camp['campaign_id'] . "\"> " . $camp['campaign_id'] . ' - ' . $camp['campaign_name'] . '</td>';
+                echo "      <td bgcolor=$oddrows><input type=\"checkbox\" name=\"campaigns[]\" value=\"" . $camp['campaign_id'] . "\"> " . mclabel($camp['campaign_id']) . ' - ' . $camp['campaign_name'] . '</td>';
                 echo "  </tr>\n";
             }
         }
@@ -339,7 +341,9 @@ if ($ADD == "3fields" and $SUB != '2fields') {
 			{$bgcolor='bgcolor='.$evenrows;}
         
         foreach ($LOG['allowed_campaigns'] as $acamp) {
-            if (preg_match('/^ALL$|^' . $acamp . ',|,' . $acamp . '$|,' . $acamp . ',/',$form['campaigns'])) {
+            $allmatch = "";
+            if ($LOG['multicomp'] == 0) $allmatch = '^ALL$|';
+            if (preg_match('/' . $allmatch . '^' . $acamp . '$|^' . $acamp . ',|,' . $acamp . '$|,' . $acamp . ',/',$form['campaigns'])) {
                 echo "  <tr $bgcolor class=\"row font1\">\n";
                 echo "    <td><a href=\"$PHP_SELF?ADD=3fields&SUB=2fields&id=" . $form['id'] . "\">" . $form['name'] . "</a></td>\n";
                 echo "    <td>" . $form['description'] . "</td>\n";
@@ -390,11 +394,13 @@ if ($ADD == "3fields" and $SUB == '2fields') {
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Campaigns:</td>\n";
-    if ($form['campaigns'] == 'ALL') {
-        $ac = 'checked';
-    }
     echo '      <td bgcolor=' . $oddrows . '>' . "\n";
-    echo '<input type="checkbox" name="campaigns[]" value="-ALL-" ' . $ac . '> <b>ALL - FORM IN ALL CAMPAIGNS</b>';
+    if ($LOG['multicomp'] == 0) {
+        if ($form['campaigns'] == 'ALL') {
+            $ac = 'checked';
+        }
+        echo '<input type="checkbox" name="campaigns[]" value="-ALL-" ' . $ac . '> <b>ALL - FORM IN ALL CAMPAIGNS</b>';
+    }
     echo '</td>';
     echo "  </tr>\n";
     $campaigns = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name','',sprintf('campaign_id IN %s',$LOG['allowed_campaignsSQL']));
@@ -408,7 +414,7 @@ if ($ADD == "3fields" and $SUB == '2fields') {
                 $cc = 'checked';
             }
         }
-        echo '      <td bgcolor=' . $oddrows . '><input type="checkbox" name="campaigns[]" value="' . $camp['campaign_id'] . '" ' . $cc . '> ' . $camp['campaign_id'] . ' - ' . $camp['campaign_name'] . '</td>';
+        echo '      <td bgcolor=' . $oddrows . '><input type="checkbox" name="campaigns[]" value="' . $camp['campaign_id'] . '" ' . $cc . '> ' . mclabel($camp['campaign_id']) . ' - ' . $camp['campaign_name'] . '</td>';
         echo "  </tr>\n";
     }
     echo "  <tr><td colspan=2 bgcolor=$evenrows>&nbsp;</td></tr>\n";

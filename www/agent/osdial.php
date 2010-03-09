@@ -279,9 +279,11 @@ $CIDdate = date("ymdHis");
 
 $random = (rand(1000000, 9999999) + 10000000);
 
+$multicomp=0;
+
 #############################################
 ##### START SYSTEM_SETTINGS LOOKUP #####
-$stmt = "SELECT use_non_latin,agent_template FROM system_settings;";
+$stmt = "SELECT use_non_latin,agent_template,enable_multicompany FROM system_settings;";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}
 $qm_conf_ct = mysql_num_rows($rslt);
@@ -291,6 +293,7 @@ while ($i < $qm_conf_ct)
 	$row=mysql_fetch_row($rslt);
 	$non_latin =					$row[0];
 	$agent_template =				$row[1];
+	$multicomp =		    	    $row[2];
 	$i++;
 	}
 ##### END SETTINGS LOOKUP #####
@@ -298,6 +301,7 @@ while ($i < $qm_conf_ct)
 
 require("templates/default/display.php");
 include("templates/" . $agent_template . "/display.php");
+
 
 # options now set in DB:
 #$alt_phone_dialing		= '1';	# allow agents to call alt phone numbers
@@ -430,12 +434,12 @@ if ($campaign_login_list > 0) {
 		if ($VD_campaign)
 			{
 			if ( (eregi("$VD_campaign",$rowx[0])) and (strlen($VD_campaign) == strlen($rowx[0])) )
-				{$camp_form_code .= "<option value=\"$rowx[0]\" SELECTED>$rowx[0]$campname</option>\n";}
+				{$camp_form_code .= "<option value=\"$rowx[0]\" SELECTED>" . mclabel($rowx[0]) . "$campname</option>\n";}
 			else
-				{$camp_form_code .= "<option value=\"$rowx[0]\">$rowx[0]$campname</option>\n";}
+				{$camp_form_code .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . "$campname</option>\n";}
 			}
 		else
-			{$camp_form_code .= "<option value=\"$rowx[0]\">$rowx[0]$campname</option>\n";}
+			{$camp_form_code .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . "$campname</option>\n";}
 		$o++;
 		}
 	$camp_form_code .= "</select>\n";
@@ -489,6 +493,13 @@ if ($LogiNAJAX > 0) {
 				delete xmlhttp;
 			}
 		}
+
+		function login_focus() {
+            document.osdial_form.VD_campaign.blur();
+            document.osdial_form.VD_login.focus();
+            document.osdial_form.VD_campaign.onfocus=function(){login_allowable_campaigns();};
+        }
+
 	</script>
 
 
@@ -2120,7 +2131,7 @@ foreach ($forms as $form) {
 					<INPUT TYPE=HIDDEN NAME=extension>
 					<font class="body_text">
 	<? 
-					echo "<font color=" . $login_fc . ">&nbsp;&nbsp;Logged in as user <b>$VD_login</b> on phone <b>$phone_login</b> to campaign <b>$VD_campaign</b>&nbsp;</font>\n"; ?>
+					echo "<font color=" . $login_fc . ">&nbsp;&nbsp;Logged in as user <b>" . mclabel($VD_login) . "</b> on phone <b>" . mclabel($phone_login) . "</b> to campaign <b>" . mclabel($VD_campaign) . "</b>&nbsp;</font>\n"; ?>
 				</TD>
 				<TD COLSPAN=3 VALIGN=TOP ALIGN=RIGHT>
 				</TD>

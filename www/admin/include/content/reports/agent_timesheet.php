@@ -44,6 +44,14 @@ function report_agent_timesheet() {
     $plain = '';
     $table = '';
 
+    $company_prefix = "";
+    if ($LOG['multicomp_user'] > 0) {
+        $company_prefix = $LOG['company_prefix'];
+        if (substr($agent,0,3) == $LOG['company_prefix']) {
+            $agent = substr($agent,3);
+        }
+    }
+
     $NOW_DATE = date("Y-m-d");
     $NOW_TIME = date("Y-m-d H:i:s");
     $STARTtime = date("U");
@@ -53,7 +61,7 @@ function report_agent_timesheet() {
     $head .= "<br>\n";
     $head .= "<center><font size=4 color=$default_text>AGENT TIMESHEET</font></center><br>\n";
     if ($agent) {
-        $stmt=sprintf("SELECT full_name FROM osdial_users WHERE user_group IN %s AND user='%s';",$LOG['allowed_usergroupsSQL'],mres($agent));
+        $stmt=sprintf("SELECT full_name FROM osdial_users WHERE user_group IN %s AND user='%s';",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent));
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
@@ -96,10 +104,11 @@ function report_agent_timesheet() {
         $plain .= "OSDIAL: Agent Time Sheet                             $NOW_TIME\n";
 
         $plain .= "Time range: $query_date_BEGIN to $query_date_END\n\n";
-        $plain .= "---------- AGENT TIME SHEET: $agent - $full_name -------------\n\n";
+        $plain .= "---------- AGENT TIME SHEET: " . $agent . " - $full_name -------------\n\n";
+        
 
 
-        $stmt=sprintf("SELECT event_time,UNIX_TIMESTAMP(event_time) FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),mres($agent));
+        $stmt=sprintf("SELECT event_time,UNIX_TIMESTAMP(event_time) FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$company_prefix . mres($agent));
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
@@ -108,7 +117,7 @@ function report_agent_timesheet() {
         $firstlog = $row[0];
         $start = $row[1];
 
-        $stmt=sprintf("SELECT event_time,UNIX_TIMESTAMP(event_time) FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time DESC LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),mres($agent));
+        $stmt=sprintf("SELECT event_time,UNIX_TIMESTAMP(event_time) FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time DESC LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$company_prefix . mres($agent));
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$rslt .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
@@ -166,7 +175,7 @@ function report_agent_timesheet() {
         $table .= "</table>\n";
 
         # Call Summary
-        $stmt=sprintf("SELECT count(*) as calls,sum(talk_sec) as talk,avg(talk_sec),sum(pause_sec),avg(pause_sec),sum(wait_sec),avg(wait_sec),sum(dispo_sec),avg(dispo_sec),avg(talk_sec+pause_sec+wait_sec+dispo_sec) FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' AND event_time >= '%s' AND user='%s' AND pause_sec<48800 AND wait_sec<48800 AND talk_sec<48800 AND dispo_sec<48800 LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),mres($agent));
+        $stmt=sprintf("SELECT count(*) as calls,sum(talk_sec) as talk,avg(talk_sec),sum(pause_sec),avg(pause_sec),sum(wait_sec),avg(wait_sec),sum(dispo_sec),avg(dispo_sec),avg(talk_sec+pause_sec+wait_sec+dispo_sec) FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' AND event_time >= '%s' AND user='%s' AND pause_sec<48800 AND wait_sec<48800 AND talk_sec<48800 AND dispo_sec<48800 LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$company_prefix . mres($agent));
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$plain .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);

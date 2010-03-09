@@ -75,39 +75,40 @@ if ($LOGview_reports==1) {
         echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=21\"><font face=\"arial,helvetica\" size=2>Agent Stats</a></font>";
         echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=22\"><font face=\"arial,helvetica\" size=2>Agent Status</a></font>";
         echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=24\"><font face=\"arial,helvetica\" size=2>User-Group Hourly Status</a></font>";
-        echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_server_performance.php\"><font face=\"arial,helvetica\" size=2>Server Performance</a></font>";
+        if ($LOG['multicomp_user'] == 0) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_server_performance.php\"><font face=\"arial,helvetica\" size=2>Server Performance</a></font>";
 
-        if ($enable_queuemetrics_logging_LU > 0) {
+        if ($LOG['multicomp_user'] == 0 and $enable_queuemetrics_logging_LU > 0) {
             echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=$queuemetrics_url_LU\"><font face=\"arial,helvetica\" size=2>QUEUEMETRICS REPORTS</a></font>\n";
         }
 
         echo "</ul>";
-        echo "<pre><table frame=box cellpadding=0 cellspacing=4>";
-        echo "<tr>";
-        echo "  <td align=center><font color=$default_text>&nbsp;Server&nbsp;&nbsp;</td>";
-        echo "  <td align=center><font color=$default_text>&nbsp;Description&nbsp;&nbsp;</td>";
-        echo "  <td align=center><font color=$default_text>&nbsp;IP Address&nbsp;&nbsp;</td>";
-        echo "  <td align=center><font color=$default_text>&nbsp;Active&nbsp;&nbsp;</td>";
-        echo "  <td align=center><font color=$default_text>&nbsp;Dialer Time&nbsp;&nbsp;</td>";
-        echo "  <td align=center><font color=$default_text>&nbsp;Park Time&nbsp;&nbsp;</td>";
-        echo "  <td align=center><font color=$default_text>&nbsp;Closer/Inbound Time&nbsp;</td>";
-        echo "  </tr>";
-
-        $o=0;
-        while ($servers_to_print > $o) {
+        if ($LOG['multicomp_user'] == 0) {
+            echo "<pre><table frame=box cellpadding=0 cellspacing=4>";
             echo "<tr>";
-            echo "  <td align=center>$server_id[$o]</td>\n";
-            echo "  <td align=center>$server_description[$o]</td>\n";
-            echo "  <td align=center>$server_ip[$o]</td>\n";
-            echo "  <td align=center>$active[$o]</td>\n";
-            echo "  <td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonVDAD.php?server_ip=$server_ip[$o]\">LINK</a></td>\n";
-            echo "  <td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonpark.php?server_ip=$server_ip[$o]\">LINK</a></td>\n";
-            echo "  <td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonVDAD.php?server_ip=$server_ip[$o]%26closer_display=1\">LINK</a></td>\n";
-            echo "</tr>";
-            $o++;
-        }
+            echo "  <td align=center><font color=$default_text>&nbsp;Server&nbsp;&nbsp;</td>";
+            echo "  <td align=center><font color=$default_text>&nbsp;Description&nbsp;&nbsp;</td>";
+            echo "  <td align=center><font color=$default_text>&nbsp;IP Address&nbsp;&nbsp;</td>";
+            echo "  <td align=center><font color=$default_text>&nbsp;Active&nbsp;&nbsp;</td>";
+            echo "  <td align=center><font color=$default_text>&nbsp;Dialer Time&nbsp;&nbsp;</td>";
+            echo "  <td align=center><font color=$default_text>&nbsp;Park Time&nbsp;&nbsp;</td>";
+            echo "  <td align=center><font color=$default_text>&nbsp;Closer/Inbound Time&nbsp;</td>";
+            echo "  </tr>";
 
-        echo "</table>\n";
+            $o=0;
+            while ($servers_to_print > $o) {
+                echo "<tr>";
+                echo "  <td align=center>$server_id[$o]</td>\n";
+                echo "  <td align=center>$server_description[$o]</td>\n";
+                echo "  <td align=center>$server_ip[$o]</td>\n";
+                echo "  <td align=center>$active[$o]</td>\n";
+                echo "  <td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonVDAD.php?server_ip=$server_ip[$o]\">LINK</a></td>\n";
+                echo "  <td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonpark.php?server_ip=$server_ip[$o]\">LINK</a></td>\n";
+                echo "  <td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonVDAD.php?server_ip=$server_ip[$o]%26closer_display=1\">LINK</a></td>\n";
+                echo "</tr>";
+                $o++;
+            }
+            echo "</table>\n";
+        }
 
     } elseif ($ADD==999999) {
         if ($SUB==11) {

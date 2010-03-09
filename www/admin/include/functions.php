@@ -72,7 +72,8 @@ function get_first_record($link, $tbl, $flds="*", $whr="") {
 #####   kval = The description for the option
 #####   ksel = The selected option (optional)
 #####   kdef= Prefix a default label ie, "NONE" or "ALL" option. (optional, boolean)
-function format_select_options($krh, $kkey, $kval, $ksel="!", $kdef="") {
+function format_select_options($krh, $kkey, $kval, $ksel="!", $kdef="", $kcomp=false) {
+    global $LOG;
     $option = '';
     $selopt = '';
     if (is_array($ksel)) {
@@ -82,7 +83,11 @@ function format_select_options($krh, $kkey, $kval, $ksel="!", $kdef="") {
     } else {
         if ($ksel == "") $selopt = " selected";
     }
-    if ($kdef != "") $option = "  <option value=\"\"" . $selopt . ">" . $kdef . "</option>\n";
+    if ($kdef != "") {
+        $option = "  <option value=\"\"" . $selopt . ">";
+        $option .= $kdef;
+        $option .= "</option>\n";
+    }
     foreach ($krh as $ele) {
         $selopt = '';
         if (is_array($ksel)) {
@@ -92,7 +97,12 @@ function format_select_options($krh, $kkey, $kval, $ksel="!", $kdef="") {
         } else {
             if ($ksel == $ele[$kkey]) $selopt = " selected";
         }
-        $option .= '<option value="' . $ele[$kkey] . '"' . $selopt . '>' . $ele[$kkey];
+        $option .= '<option value="' . $ele[$kkey] . '"' . $selopt . '>';
+        if ($kcomp) {
+            $option .= mclabel($ele[$kkey]);
+        } else {
+            $option .= $ele[$kkey];
+        }
         if ($kkey != $kval) $option .= ' - ' . $ele[$kval];
         $option .= '</option>';
     }
@@ -101,28 +111,30 @@ function format_select_options($krh, $kkey, $kval, $ksel="!", $kdef="") {
 
 ##### get scripts listing for dynamic pulldown
 function get_scripts($link, $selected="") {
-    $krh = get_krh($link, 'osdial_scripts', 'script_id,script_name');
-    return format_select_options($krh, 'script_id', 'script_name', $selected, "NONE");
+    global $LOG;
+    $krh = get_krh($link, 'osdial_scripts', 'script_id,script_name','',sprintf("script_id LIKE '%s___%%'",$LOG['company_prefix']));
+    return format_select_options($krh, 'script_id', 'script_name', $selected, "NONE", true);
 }
 
 
 ##### get filters listing for dynamic pulldown
 function get_filters($link, $selected="") {
-    $krh = get_krh($link, 'osdial_lead_filters', 'lead_filter_id,lead_filter_name');
-    return format_select_options($krh, 'lead_filter_id', 'lead_filter_name', $selected, "NONE");
+    global $LOG;
+    $krh = get_krh($link, 'osdial_lead_filters', 'lead_filter_id,lead_filter_name','',sprintf("lead_filter_id LIKE '%s___%%'",$LOG['company_prefix']));
+    return format_select_options($krh, 'lead_filter_id', 'lead_filter_name', $selected, "NONE", true);
 }
 
 
 ##### get call_times listing for dynamic pulldown
 function get_calltimes($link, $selected="") {
     $krh = get_krh($link, 'osdial_call_times', 'call_time_id,call_time_name');
-    return format_select_options($krh, 'call_time_id', 'call_time_name', $selected, "NONE");
+    return format_select_options($krh, 'call_time_id', 'call_time_name', $selected, "NONE", false);
 }
 
 ##### get server listing for dynamic pulldown
 function get_servers($link, $selected="") {
     $krh = get_krh($link, 'servers', 'server_ip,server_description');
-    return format_select_options($krh, 'server_ip', 'server_description', $selected, "NONE");
+    return format_select_options($krh, 'server_ip', 'server_description', $selected, "NONE", false);
 }
 
 
@@ -1193,6 +1205,30 @@ function prettyXML($pretty,$indent=1) {
         if (preg_match('/^<([\w])+[^>\/]*>$/U',$e)) $cindent += $indent;
     }
     return $pretty;
+}
+
+
+# Quick function for bg row color.
+function bgcolor($cnt) {
+    global $oddrows;
+    global $evenrows;
+    $bgc = 'bgcolor="';
+    if (eregi("1$|3$|5$|7$|9$", $cnt)) {
+        $bgc .= $oddrows;
+    } else {
+        $bgc .= $evenrows;
+    }
+    $bgc .= '"';
+    return $bgc;
+}
+
+
+# Returns string with first three chars stripped if multicomp_user
+function mclabel($strdat) {
+    global $LOG;
+    if ($LOG['multicomp_user'] > 0) $strdat = substr($strdat,3);
+    if ($LOG['multicomp_admin'] > 0 and preg_match($LOG['companiesRE'],$strdat)) $strdat = substr($strdat,0,3) . '&nbsp;' . substr($strdat,3);
+    return $strdat;
 }
 
 ?>

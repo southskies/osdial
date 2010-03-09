@@ -385,7 +385,19 @@ tinyMCE.init({
 	echo "<center><br><font color=$default_text size=+1>ADD NEW SCRIPT</font><form name=scriptForm action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Script ID: </td><td align=left><input type=text name=script_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_scripts-script_id$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Script ID: </td><td align=left>";
+    if ($LOG['multicomp_admin'] > 0) {
+        $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
+        echo "<select name=company_id>\n";
+        foreach ($comps as $comp) {
+            echo "<option value=$comp[id]>" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
+        }
+        echo "</select>\n";
+    } elseif ($LOG['multicomp']>0) {
+        echo "<input type=hidden name=company_id value=$LOG[company_id]>";
+        #echo "<font color=$default_text>" . $LOG[company_prefix] . "</font>";
+    }
+    echo "<input type=text name=script_id size=12 maxlength=10> (no spaces or punctuation)$NWB#osdial_scripts-script_id$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Script Name: </td><td align=left><input type=text name=script_name size=40 maxlength=50> (title of the script)$NWB#osdial_scripts-script_name$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Script Comments: </td><td align=left><input type=text name=script_comments size=50 maxlength=255> $NWB#osdial_scripts-script_comments$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option SELECTED>Y</option><option>N</option></select>$NWB#osdial_scripts-active$NWE</td></tr>\n";
@@ -410,7 +422,9 @@ tinyMCE.init({
 if ($ADD==2111111)
 {
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-	$stmt="SELECT count(*) from osdial_scripts where script_id='$script_id';";
+    $prescript_id = $script_id;
+    if ($LOG['multicomp'] > 0) $prescript_id = (($company_id * 1) + 100) . $script_id;
+	$stmt="SELECT count(*) from osdial_scripts where script_id='$prescript_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -424,6 +438,7 @@ if ($ADD==2111111)
 			 }
 		 else
 			{
+            if ($LOG['multicomp'] > 0) $script_id = (($company_id * 1) + 100) . $script_id;
             $stmt="INSERT INTO osdial_scripts values('" . mysql_real_escape_string($script_id) . "','" . mysql_real_escape_string($script_name) . "','" . mysql_real_escape_string($script_comments) . "','" . mysql_real_escape_string($script_text) . "','" . mysql_real_escape_string($active) . "');";
 			$rslt=mysql_query($stmt, $link);
 
@@ -775,10 +790,10 @@ tinyMCE.init({
 	echo "<input type=hidden name=script_id value=\"$script_id\">\n";
     if ($SUB != "") {
 	    echo "<input type=hidden name=script_button_id value=\"$script_button_id\">\n";
-		echo "<center><a href=\"$PHP_SELF?ADD=$ADD&script_id=$script_id\">BACK TO SCRIPT: $script_id</a></center><br>\n";
+		echo "<center><a href=\"$PHP_SELF?ADD=$ADD&script_id=$script_id\">BACK TO SCRIPT: " . mclabel($script_id) . "</a></center><br>\n";
     }
 	echo "<TABLE width=$section_width>";
-	echo "<tr bgcolor=$oddrows><td align=right>$id_label: </td><td align=left><B>$sid</B>$NWB#osdial_scripts-script_name$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>$id_label: </td><td align=left><B>" . mclabel($sid) . "</B>$NWB#osdial_scripts-script_name$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>$name_label: </td><td align=left><input type=text name=script_name size=40 maxlength=50 value=\"$script_name\">$NWB#osdial_scripts-script_name$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>$comment_label: </td><td align=left><input type=text name=script_comments size=50 maxlength=255 value=\"$script_comments\"> $NWB#osdial_scripts-script_comments$NWE</td></tr>\n";
     if ($SUB == "") {
@@ -863,7 +878,7 @@ if ($ADD==1000000)
 echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	$stmt="SELECT * from osdial_scripts order by script_id";
+	$stmt=sprintf("SELECT * FROM osdial_scripts WHERE script_id LIKE '%s___%%' ORDER BY script_id;",$LOG['company_prefix']);
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
@@ -883,7 +898,7 @@ echo "  </tr>\n";
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
 		echo "  <tr $bgcolor class=\"row font1\">\n";
-        echo "    <td><a href=\"$PHP_SELF?ADD=3111111&script_id=$row[0]\">$row[0]</a></td>\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=3111111&script_id=$row[0]\">" . mclabel($row[0]) . "</a></td>\n";
 		echo "    <td>$row[1]</td>\n";
 		echo "    <td align=center><a href=\"$PHP_SELF?ADD=3111111&script_id=$row[0]\">MODIFY</a></td>\n";
         echo "  </tr>\n";

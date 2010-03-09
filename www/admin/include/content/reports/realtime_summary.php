@@ -96,7 +96,7 @@ function report_realtime_summary() {
 		
 		$group = $groups[$k];
 		$group_name = $group_names[$k];
-		$html .= "<hr><font class=realtimeindents size=-1><b><a href=\"./admin.php?ADD=$ADD&SUB=" . ($SUB + 1) . "&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">$group - $group_name</a></b> &nbsp; - &nbsp; ";
+		$html .= "<hr><font class=realtimeindents size=-1><b><a href=\"./admin.php?ADD=$ADD&SUB=" . ($SUB + 1) . "&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats&cpuinfo=$cpuinfo\">" . mclabel($group) . " - $group_name</a></b> &nbsp; - &nbsp; ";
 		$html .= "<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a> </font>\n";
 		
 		

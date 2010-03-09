@@ -33,7 +33,19 @@ if ($ADD==111111) {
         echo "<center><br><font color=$default_text size=+1>ADD NEW AGENTS GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=211111>\n";
         echo "<TABLE width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Group: </td><td align=left><input type=text name=user_group size=15 maxlength=20> (no spaces or punctuation)$NWB#osdial_user_groups-user_group$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Group: </td><td align=left>";
+        if ($LOG['multicomp_admin'] > 0) {
+            $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
+            echo "<select name=company_id>\n";
+            foreach ($comps as $comp) {
+                echo "<option value=$comp[id]>" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
+            }
+            echo "</select>\n";
+        } elseif ($LOG['multicomp']>0) {
+            echo "<input type=hidden name=company_id value=$LOG[company_id]>";
+            #echo "<font color=$default_text>" . $LOG[company_prefix] . "</font>";
+        }
+        echo "<input type=text name=user_group size=15 maxlength=20> (no spaces or punctuation)$NWB#osdial_user_groups-user_group$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=group_name size=40 maxlength=40> (description of group)$NWB#osdial_user_groups-group_name$NWE</td></tr>\n";
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
         echo "</TABLE></center>\n";
@@ -52,7 +64,9 @@ if ($ADD==111111) {
 if ($ADD==211111)
 {
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-	$stmt="SELECT count(*) from osdial_user_groups where user_group='$user_group';";
+    $preuser_group = $user_group;
+    if ($LOG['multicomp'] > 0) $preuser_group = (($company_id * 1) + 100) . $user_group;
+	$stmt="SELECT count(*) from osdial_user_groups where user_group='$preuser_group';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -66,6 +80,10 @@ if ($ADD==211111)
 			 }
 		 else
 			{
+            if ($LOG['multicomp'] > 0) $user_group = (($company_id * 1) + 100) . $user_group;
+            $LOG['allowed_usergroupsSQL'] = rtrim($LOG['allowed_usergroupsSQL'],')');
+            $LOG['allowed_usergroupsSQL'] .= ",'$user_group')";
+            $LOG['allowed_usergroupsSTR'] .= "$user_group:";
 			$stmt="INSERT INTO osdial_user_groups(user_group,group_name,allowed_campaigns) values('$user_group','$group_name','-ALL-CAMPAIGNS-');";
 			$rslt=mysql_query($stmt, $link);
 
@@ -91,6 +109,8 @@ $ADD=100000;
 if ($ADD==411111) {
     if ($LOGmodify_usergroups==1) {
         echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+        $preuser_group = $user_group;
+        if ($LOG['multicomp'] > 0) $preuser_group = (($company_id * 1) + 100) . $user_group;
 
         if ($LOG['allowed_campaignsALL'] < 1) {
             echo "<br><font color=red>USER GROUP NOT MODIFIED - You may only view your User Group resources.</font><br>\n";
@@ -98,6 +118,7 @@ if ($ADD==411111) {
             echo "<br><font color=red>USER GROUP NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>Group name and description must be at least 2 characters in length</font><br>\n";
         } else {
+            if ($LOG['multicomp'] > 0) $user_group = (($company_id * 1) + 100) . $user_group;
             $stmt="UPDATE osdial_user_groups set user_group='$user_group', group_name='$group_name',allowed_campaigns='$campaigns_value' where user_group='$OLDuser_group';";
             $rslt=mysql_query($stmt, $link);
 
@@ -187,7 +208,28 @@ if ($ADD==311111)
 	echo "<input type=hidden name=ADD value=411111>\n";
 	echo "<input type=hidden name=OLDuser_group value=\"$user_group\">\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Group: </td><td align=left><input type=text name=user_group size=15 maxlength=20 value=\"$user_group\"> (no spaces or punctuation)$NWB#osdial_user_groups-user_group$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Group: </td><td align=left>";
+    if ($LOG['multicomp_admin'] > 0) {
+        $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
+        echo "<select name=company_id>\n";
+        foreach ($comps as $comp) {
+            $csel = "";
+            if ((substr($user_group,0,3) * 1 - 100) == $comp['id']) $csel = "selected";
+            echo "<option value=$comp[id] $csel>" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
+        }
+        echo "</select>\n";
+    } elseif ($LOG['multicomp']>0) {
+        echo "<input type=hidden name=company_id value=$LOG[company_id]>";
+        #echo "<font color=$default_text>" . $LOG[company_prefix] . "</font>";
+    }
+    echo "<input type=text name=user_group size=15 maxlength=20 value=\"";
+    if ($LOG['multicomp']>0 and preg_match($LOG['companiesRE'],$user_group)) {
+        echo substr($user_group,3);
+    } else {
+        echo $user_group;
+    }
+    echo "\">";
+    echo " (no spaces or punctuation)$NWB#osdial_user_groups-user_group$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=group_name size=40 maxlength=40 value=\"$group_name\"> (description of group)$NWB#osdial_user_groups-group_name$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Allowed Campaigns: </td><td align=left>\n";
 	echo "$campaigns_list";
@@ -224,7 +266,7 @@ if ($ADD==311111)
 			{$bgcolor='bgcolor='.$evenrows;}
 
 		echo "  <tr $bgcolor class=\"row font1\">\n";
-		echo "    <td><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">$rowx[0]</a></td>\n";
+		echo "    <td><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">" . mclabel($rowx[0]) . "</a></td>\n";
 		echo "    <td>$rowx[1]</td>\n";
 		echo "    <td>$rowx[2]</td>\n";
 		echo "  </tr>\n";
@@ -309,7 +351,7 @@ echo "  </tr>\n";
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
 		echo "  <tr $bgcolor class=\"row font1\">\n";
-        echo "    <td><a href=\"$PHP_SELF?ADD=311111&user_group=$row[0]\">$row[0]</a></td>\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=311111&user_group=$row[0]\">" . mclabel($row[0]) . "</a></td>\n";
 		echo "    <td>$row[1]</td>\n";
 		echo "    <td align=center><a href=\"$PHP_SELF?ADD=311111&user_group=$row[0]\">MODIFY</a></td>\n";
         echo "  </tr>\n";

@@ -115,14 +115,26 @@ if ($ADD==11)
     echo "<center><br><font color=$default_text size=+1>ADD A NEW CAMPAIGN</font><form action=$PHP_SELF method=POST><br><br>\n";
     echo "<input type=hidden name=ADD value=21>\n";
     echo "<TABLE width=$section_width cellspacing=3>\n";
-    echo "<tr bgcolor=$oddrows><td align=right>Campaign ID: </td><td align=left><input type=text name=campaign_id size=10 maxlength=8>$NWB#osdial_campaigns-campaign_id$NWE</td></tr>\n";
+    echo "<tr bgcolor=$oddrows><td align=right>Campaign ID: </td><td align=left>";
+    if ($LOG['multicomp_admin'] > 0) {
+        $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
+        echo "<select name=company_id>\n";
+        foreach ($comps as $comp) {
+            echo "<option value=$comp[id]>" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
+        }
+        echo "</select>\n";
+    } elseif ($LOG['multicomp']>0) {
+        echo "<input type=hidden name=company_id value=$LOG[company_id]>";
+        #echo "<font color=$default_text>" . $LOG[company_prefix] . "</font>";
+    }
+    echo "<input type=text name=campaign_id size=10 maxlength=8>$NWB#osdial_campaigns-campaign_id$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Campaign Name: </td><td align=left><input type=text name=campaign_name size=30 maxlength=30>$NWB#osdial_campaigns-campaign_name$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Campaign Description: </td><td align=left><input type=text name=campaign_description size=30 maxlength=255>$NWB#osdial_campaigns-campaign_description$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option></select>$NWB#osdial_campaigns-active$NWE</td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=right>Park Extension: </td><td align=left><input type=text name=park_ext size=10 maxlength=10>$NWB#osdial_campaigns-park_ext$NWE</td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=right>Park Filename: </td><td align=left><input type=text name=park_file_name size=10 maxlength=10>$NWB#osdial_campaigns-park_file_name$NWE</td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left><input type=text name=web_form_address size=50 maxlength=255>$NWB#osdial_campaigns-web_form_address$NWE</td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=right>Web Form 2: </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255>$NWB#osdial_campaigns-web_form_address$NWE</td></tr>\n";
+    echo "<tr bgcolor=$oddrows><td align=right>Park Extension: </td><td align=left><input type=text name=park_ext size=10 maxlength=10 value=\"8301\">$NWB#osdial_campaigns-park_ext$NWE</td></tr>\n";
+    echo "<tr bgcolor=$oddrows><td align=right>Park Filename: </td><td align=left><input type=text name=park_file_name size=10 maxlength=10 value=\"park\">$NWB#osdial_campaigns-park_file_name$NWE</td></tr>\n";
+    echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"/osdial/agent/webform_redirect.php\">$NWB#osdial_campaigns-web_form_address$NWE</td></tr>\n";
+    echo "<tr bgcolor=$oddrows><td align=right>Web Form 2: </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255 value=\"/osdial/agent/webform_redirect.php\">$NWB#osdial_campaigns-web_form_address$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Allow Closers: </td><td align=left><select size=1 name=allow_closers><option>Y</option><option>N</option></select>$NWB#osdial_campaigns-allow_closers$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Hopper Level: </td><td align=left><select size=1 name=hopper_level><option>1</option><option>5</option><option>10</option><option>20</option><option>50</option><option>100</option><option>200</option><option>500</option><option>1000</option><option>2000</option></select>$NWB#osdial_campaigns-hopper_level$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Auto Dial Level: </td><td align=left><select size=1 name=auto_dial_level><option selected>0</option><option>1</option><option>1.1</option><option>1.2</option><option>1.3</option><option>1.4</option><option>1.5</option><option>1.6</option><option>1.7</option><option>1.8</option><option>1.9</option><option>2.0</option><option>2.2</option><option>2.5</option><option>2.7</option><option>3.0</option><option>3.5</option><option>4.0</option></select>(0 = off)$NWB#osdial_campaigns-auto_dial_level$NWE</td></tr>\n";
@@ -164,7 +176,19 @@ if ($ADD==12)
     echo "<center><br><font color=$default_text size=+1>COPY A CAMPAIGN</font><form action=$PHP_SELF method=POST><br><br>\n";
     echo "<input type=hidden name=ADD value=20>\n";
     echo "<TABLE width=$section_width cellspacing=3>\n";
-    echo "<tr bgcolor=$oddrows><td align=right>Campaign ID: </td><td align=left><input type=text name=campaign_id size=10 maxlength=8>$NWB#osdial_campaigns-campaign_id$NWE</td></tr>\n";
+    echo "<tr bgcolor=$oddrows><td align=right>Campaign ID: </td><td align=left>";
+    if ($LOG['multicomp_admin'] > 0) {
+        $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
+        echo "<select name=company_id>\n";
+        foreach ($comps as $comp) {
+            echo "<option value=$comp[id]>" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
+        }
+        echo "</select>\n";
+    } elseif ($LOG['multicomp']>0) {
+        echo "<input type=hidden name=company_id value=$LOG[company_id]>";
+        #echo "<font color=$default_text>" . $LOG[company_prefix] . "</font>";
+    }
+    echo "<input type=text name=campaign_id size=10 maxlength=8>$NWB#osdial_campaigns-campaign_id$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Campaign Name: </td><td align=left><input type=text name=campaign_name size=30 maxlength=30>$NWB#osdial_campaigns-campaign_name$NWE</td></tr>\n";
 
     echo "<tr bgcolor=$oddrows><td align=right>Source Campaign: </td><td align=left><select size=1 name=source_campaign_id>\n";
@@ -177,7 +201,7 @@ if ($ADD==12)
         $o=0;
         while ($campaigns_to_print > $o) {
             $rowx=mysql_fetch_row($rslt);
-            $campaigns_list .= "<option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
+            $campaigns_list .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
             $o++;
         }
     echo "$campaigns_list";
@@ -203,14 +227,16 @@ if ($ADD==21)
 {
 
     echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-    $stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id';";
+    $precampaign_id = $campaign_id;
+    if ($LOG['multicomp'] > 0) $precampaign_id = (($company_id * 1) + 100) . $campaign_id;
+    $stmt="SELECT count(*) from osdial_campaigns where campaign_id='$precampaign_id';";
     $rslt=mysql_query($stmt, $link);
     $row=mysql_fetch_row($rslt);
     if ($row[0] > 0)
         {echo "<br><font color=red> CAMPAIGN NOT ADDED - there is already a campaign in the system with this ID</font>\n";}
     else
         {
-        $stmt="SELECT count(*) from osdial_inbound_groups where group_id='$campaign_id';";
+        $stmt="SELECT count(*) from osdial_inbound_groups where group_id='$precampaign_id';";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         if ($row[0] > 0)
@@ -225,8 +251,13 @@ if ($ADD==21)
                 }
              else
                 {
+                if ($LOG['multicomp'] > 0) $campaign_id = (($company_id * 1) + 100) . $campaign_id;
                 echo "<br><B><font color=$default_text> CAMPAIGN ADDED: $campaign_id</font></B>\n";
 
+                $LOG['companiesRE'] = rtrim($LOG['companiesRE'], '/') . "|^" . (($company_id * 1) + 100) . "/";
+                $LOG['allowed_campaignsSQL'] = rtrim($LOG['allowed_campaignsSQL'], ')');
+                $LOG['allowed_campaignsSQL'] .= ",'$campaign_id')";
+                $LOG['allowed_campaignsSTR'] .= "$campaign_id:";
                 $stmt="INSERT INTO osdial_campaigns (campaign_id,campaign_name,campaign_description,active,dial_status_a,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,campaign_script,get_call_launch,campaign_changedate,campaign_stats_refresh,list_order_mix,web_form_address2,allow_tab_switch,campaign_call_time) values('$campaign_id','$campaign_name','$campaign_description','$active','NEW','DOWN','$park_ext','$park_file_name','" . mysql_real_escape_string($web_form_address) . "','$allow_closers','$hopper_level','$auto_dial_level','$next_agent_call','$local_call_time','$voicemail_ext','$script_id','$get_call_launch','$SQLdate','Y','DISABLED','" . mysql_real_escape_string($web_form_address2) . "','$allow_tab_switch','$campaign_call_time');";
                 $rslt=mysql_query($stmt, $link);
 
@@ -256,7 +287,9 @@ if ($ADD==20)
 {
 
     echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-    $stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id';";
+    $precampaign_id = $campaign_id;
+    if ($LOG['multicomp'] > 0) $precampaign_id = (($company_id * 1) + 100) . $campaign_id;
+    $stmt="SELECT count(*) from osdial_campaigns where campaign_id='$precampaign_id';";
     $rslt=mysql_query($stmt, $link);
     $row=mysql_fetch_row($rslt);
     if ($row[0] > 0)
@@ -271,8 +304,13 @@ if ($ADD==20)
             }
          else
             {
+            if ($LOG['multicomp'] > 0) $campaign_id = (($company_id * 1) + 100) . $campaign_id;
             echo "<br><B><font color=$default_text> CAMPAIGN COPIED: $campaign_id copied from $source_campaign_id</font></B>\n";
 
+            $LOG['companiesRE'] = rtrim($LOG['companiesRE'], '/') . "|^" . (($company_id * 1) + 100) . "/";
+            $LOG['allowed_campaignsSQL'] = rtrim($LOG['allowed_campaignsSQL'], ')');
+            $LOG['allowed_campaignsSQL'] .= ",'$campaign_id')";
+            $LOG['allowed_campaignsSTR'] .= "$campaign_id:";
             $stmt="INSERT INTO osdial_campaigns (campaign_name,campaign_id,active,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,amd_send_to_vmx,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,lead_filter_id,drop_call_seconds,safe_harbor_message,safe_harbor_exten,display_dialable_count,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,concurrent_transfers,auto_alt_dial,auto_alt_dial_statuses,agent_pause_codes_active,campaign_description,campaign_changedate,campaign_stats_refresh,campaign_logindate,dial_statuses,disable_alter_custdata,no_hopper_leads_logins,list_order_mix,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,web_form_address2,allow_tab_switch,answers_per_hour_limit,campaign_call_time,preview_force_dial_time,manual_preview_default,web_form_extwindow,web_form2_extwindow,submit_method,use_custom2_callerid,campaign_cid_name,xfer_cid_mode) SELECT \"$campaign_name\",\"$campaign_id\",\"N\",dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,amd_send_to_vmx,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,lead_filter_id,drop_call_seconds,safe_harbor_message,safe_harbor_exten,display_dialable_count,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,concurrent_transfers,auto_alt_dial,auto_alt_dial_statuses,agent_pause_codes_active,campaign_description,campaign_changedate,campaign_stats_refresh,campaign_logindate,dial_statuses,disable_alter_custdata,no_hopper_leads_logins,\"DISABLED\",campaign_allow_inbound,manual_dial_list_id,default_xfer_group,web_form_address2,allow_tab_switch,answers_per_hour_limit,campaign_call_time,preview_force_dial_time,manual_preview_default,web_form_extwindow,web_form2_extwindow,submit_method,use_custom2_callerid,campaign_cid_name,xfer_cid_mode from osdial_campaigns where campaign_id='$source_campaign_id';";
             $rslt=mysql_query($stmt, $link);
 
@@ -908,7 +946,7 @@ if ($ADD==31) {
                 $Xgroups_menu .= "SELECTED ";
                 $Xgroups_selected++;
             }
-            $Xgroups_menu .= "value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
+            $Xgroups_menu .= "value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
             $o++;
         }
         if ($Xgroups_selected < 1) {
@@ -929,7 +967,9 @@ if ($ADD==31) {
         echo "<input type=hidden name=ADD value=41>\n";
         echo "<input type=hidden name=campaign_id value=\"$campaign_id\">\n";
         echo "<TABLE width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Campaign ID: </td><td align=left><b>$row[0]</b>$NWB#osdial_campaigns-campaign_id$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Campaign ID: </td><td align=left>";
+        echo "<b>" . mclabel($row[0]) . "</b>";
+        echo "$NWB#osdial_campaigns-campaign_id$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Campaign Name: </td><td align=left><input type=text name=campaign_name size=40 maxlength=40 value=\"$campaign_name\">$NWB#osdial_campaigns-campaign_name$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Campaign Description: </td><td align=left><input type=text name=campaign_description size=40 maxlength=255 value=\"$campaign_description\">$NWB#osdial_campaigns-campaign_description$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Campaign Change Date: </td><td align=left>$campaign_changedate &nbsp; $NWB#osdial_campaigns-campaign_changedate$NWE</td></tr>\n";
@@ -1699,7 +1739,9 @@ if ($ADD==34)
         echo "<input type=hidden name=ADD value=44>\n";
         echo "<input type=hidden name=campaign_id value=\"$campaign_id\">\n";
         echo "<TABLE width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Campaign ID: </td><td align=left><b>$row[0]</b>$NWB#osdial_campaigns-campaign_id$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Campaign ID: </td><td align=left>";
+        echo "<b>" . mclabel($row[0]) . "</b>";
+        echo "$NWB#osdial_campaigns-campaign_id$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Campaign Name: </td><td align=left><input type=text name=campaign_name size=40 maxlength=40 value=\"$row[1]\">$NWB#osdial_campaigns-campaign_name$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Campaign Description: </td><td align=left>$row[57]$NWB#osdial_campaigns-campaign_description$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Campaign Change Date: </td><td align=left>$campaign_changedate &nbsp; $NWB#osdial_campaigns-campaign_changedate$NWE</td></tr>\n";
@@ -1779,7 +1821,13 @@ if ($ADD==34)
             }
         echo "</select> $NWB#osdial_campaigns-adaptive_intensity$NWE</td></tr>\n";
 
-        echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=3111111&script_id=$script_id\">Script</a>: </td><td align=left>$script_id</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=3111111&script_id=$script_id\">Script</a>: </td><td align=left>";
+        if ($LOG['mutlicomp_user'] > 0) {
+            echo substr($script_id,3);
+        } else {
+            echo $script_id;
+        }
+        echo "</td></tr>\n";
 
         echo "<tr bgcolor=$oddrows><td align=right>Get Call Launch: </td><td align=left>$get_call_launch</td></tr>\n";
 
@@ -1891,7 +1939,7 @@ if ($ADD==34)
         else
             {$bgcolor='bgcolor='.$evenrows;}
 
-            echo "<tr $bgcolor class=\"row font1\"><td><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">$rowx[0]</a></td><td align=right>$rowx[1]</td><td align=right>$rowx[2]</td></tr>\n";
+            echo "<tr $bgcolor class=\"row font1\"><td><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">" . mclabel($rowx[0]) . "</a></td><td align=right>$rowx[1]</td><td align=right>$rowx[2]</td></tr>\n";
             }
 
         echo "<tr class=tabfooter><td colspan=3></td></tr>\n";
@@ -2215,7 +2263,7 @@ echo "<TABLE align=center><TR><TD>\n";
 
 $let = get_variable('let');
 $letSQL = '';
-if ($let != '') $letSQL = "AND campaign_id LIKE '$let%'";
+if ($let != '') $letSQL = sprintf("AND campaign_id LIKE '%s%s%%'",$LOG['company_prefix'],$let);
 
 $dispact = get_variable('dispact');
 $dispactSQL = '';
@@ -2264,7 +2312,7 @@ echo "  </tr>\n";
         else
             {$bgcolor='bgcolor='.$evenrows;}
         echo "  <tr class=\"row font1\" $bgcolor>\n";
-        echo "    <td><a href=\"$PHP_SELF?ADD=34&campaign_id=$row[0]\">$row[0]</a></td>\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=34&campaign_id=$row[0]\">" . mclabel($row[0]) . "</a></td>\n";
         echo "    <td>$row[1]</td>\n";
         echo "    <td align=center><font size=1>$row[2]</td>\n";
         echo "    <td colspan=7 align=center><a href=\"$PHP_SELF?ADD=31&campaign_id=$row[0]\">MODIFY</a></td>\n";

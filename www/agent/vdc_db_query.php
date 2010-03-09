@@ -330,7 +330,7 @@ header ("Pragma: no-cache");                          // HTTP/1.0
 
 #############################################
 ##### START SYSTEM_SETTINGS LOOKUP #####
-$stmt = "SELECT use_non_latin FROM system_settings;";
+$stmt = "SELECT use_non_latin,enable_multicompany FROM system_settings;";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}
 $qm_conf_ct = mysql_num_rows($rslt);
@@ -339,6 +339,7 @@ while ($i < $qm_conf_ct)
 	{
 	$row=mysql_fetch_row($rslt);
 	$non_latin =					$row[0];
+	$multicomp =					$row[1];
 	$i++;
 	}
 ##### END SETTINGS LOOKUP #####
@@ -433,7 +434,7 @@ if ($ACTION == 'LogiNCamPaigns')
 {
 	if ( (strlen($user)<1) )
 	{
-	echo "<select size=1 name=VD_campaign id=VD_campaign onFocus=\"login_allowable_campaigns()\">\n";
+	echo "<select size=1 name=VD_campaign id=VD_campaign onfocus=\"login_focus();\">\n";
 	echo "<option value=\"\">-- ERROR --</option>\n";
 	echo "</select>\n";
 	exit;
@@ -461,7 +462,7 @@ if ($ACTION == 'LogiNCamPaigns')
 		$LOGallowed_campaignsSQL = "and campaign_id IN('$LOGallowed_campaignsSQL')";
 		}
 
-	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns where active='Y' $LOGallowed_campaignsSQL order by campaign_id";
+	$stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE active='Y' AND campaign_id LIKE '%s___%%' %s order by campaign_id;",substr($user,0,3),$LOGallowed_campaignsSQL);
 	$rslt=mysql_query($stmt, $link);
 	$camps_to_print = mysql_num_rows($rslt);
 
@@ -469,7 +470,7 @@ if ($ACTION == 'LogiNCamPaigns')
 	while ($camps_to_print > $o) 
 		{
 		$rowx=mysql_fetch_row($rslt);
-		echo "<option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
+		echo "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
 		$o++;
 		}
 	echo "</select>\n";

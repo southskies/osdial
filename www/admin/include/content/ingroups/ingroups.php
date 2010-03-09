@@ -38,7 +38,19 @@ if ($ADD==1111)
 	echo "<center><br><font color=$default_text size=+1>ADD A NEW INBOUND GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Group ID: </td><td align=left><input type=text name=group_id size=20 maxlength=20> (no spaces)$NWB#osdial_inbound_groups-group_id$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Group ID: </td><td align=left>";
+    if ($LOG['multicomp_admin'] > 0) {
+        $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
+        echo "<select name=company_id>\n";
+        foreach ($comps as $comp) {
+            echo "<option value=$comp[id]>" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
+        }
+        echo "</select>\n";
+    } elseif ($LOG['multicomp']>0) {
+        echo "<input type=hidden name=company_id value=$LOG[company_id]>";
+        #echo "<font color=$default_text>" . $LOG[company_prefix] . "</font>";
+    }
+    echo "<input type=text name=group_id size=20 maxlength=20> (no spaces)$NWB#osdial_inbound_groups-group_id$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Group Name: </td><td align=left><input type=text name=group_name size=30 maxlength=30>$NWB#osdial_inbound_groups-group_name$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Group Color: </td><td align=left id=\"group_color_td\"><input type=text name=group_color size=7 maxlength=7>$NWB#osdial_inbound_groups-group_color$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option SELECTED>Y</option><option>N</option></select>$NWB#osdial_inbound_groups-active$NWE</td></tr>\n";
@@ -78,7 +90,19 @@ if ($ADD==1211)
 	echo "<center><br><font color=$default_text size=+1>COPY INBOUND GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2011>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Group ID: </td><td align=left><input type=text name=group_id size=20 maxlength=20> (no spaces)$NWB#osdial_inbound_groups-group_id$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Group ID: </td><td align=left>";
+    if ($LOG['multicomp_admin'] > 0) {
+        $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
+        echo "<select name=company_id>\n";
+        foreach ($comps as $comp) {
+            echo "<option value=$comp[id]>" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
+        }
+        echo "</select>\n";
+    } elseif ($LOG['multicomp']>0) {
+        echo "<input type=hidden name=company_id value=$LOG[company_id]>";
+        #echo "<font color=$default_text>" . $LOG[company_prefix] . "</font>";
+    }
+    echo "<input type=text name=group_id size=20 maxlength=20> (no spaces)$NWB#osdial_inbound_groups-group_id$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Group Name: </td><td align=left><input type=text name=group_name size=30 maxlength=30>$NWB#osdial_inbound_groups-group_name$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>Source Group ID: </td><td align=left><select size=1 name=source_group_id>\n";
@@ -91,7 +115,7 @@ if ($ADD==1211)
 		$o=0;
 		while ($groups_to_print > $o) {
 			$rowx=mysql_fetch_row($rslt);
-			$groups_list .= "<option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
+			$groups_list .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
 			$o++;
 		}
 	echo "$groups_list";
@@ -116,14 +140,16 @@ if ($ADD==1211)
 if ($ADD==2111)
 {
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-	$stmt="SELECT count(*) from osdial_inbound_groups where group_id='$group_id';";
+    $pregroup_id = $group_id;
+    if ($LOG['multicomp'] > 0) $pregroup_id = (($company_id * 1) + 100) . $group_id;
+	$stmt="SELECT count(*) from osdial_inbound_groups where group_id='$pregroup_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
 		{echo "<br><font color=red>GROUP NOT ADDED - there is already a group in the system with this ID</font>\n";}
 	else
 		{
-		$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$group_id';";
+		$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$pregroup_id';";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		if ($row[0] > 0)
@@ -138,6 +164,7 @@ if ($ADD==2111)
 				}
 			 else
 				{
+                if ($LOG['multicomp'] > 0) $group_id = (($company_id * 1) + 100) . $group_id;
 				$stmt="INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,web_form_address2,allow_tab_switch) values('$group_id','$group_name','$group_color','$active','" . mysql_real_escape_string($web_form_address) . "','$voicemail_ext','$next_agent_call','$fronter_display','$script_id','$get_call_launch','" . mysql_real_escape_string($web_form_address2) . "','$allow_tab_switch');";
 				$rslt=mysql_query($stmt, $link);
 
@@ -164,7 +191,9 @@ $ADD=3111;
 if ($ADD==2011)
 {
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-	$stmt="SELECT count(*) from osdial_inbound_groups where group_id='$group_id';";
+    $pregroup_id = $group_id;
+    if ($LOG['multicomp'] > 0) $pregroup_id = (($company_id * 1) + 100) . $group_id;
+	$stmt="SELECT count(*) from osdial_inbound_groups where group_id='$pregroup_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -179,6 +208,7 @@ if ($ADD==2011)
 			}
 		 else
 			{
+            if ($LOG['multicomp'] > 0) $group_id = (($company_id * 1) + 100) . $group_id;
 			$stmt="INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_message,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow) SELECT \"$group_id\",\"$group_name\",group_color,\"N\",web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_message,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow from osdial_inbound_groups where group_id=\"$source_group_id\";";
 			$rslt=mysql_query($stmt, $link);
 
@@ -361,7 +391,7 @@ if ($ADD==3111)
 			$Xgroups_menu .= "SELECTED ";
 			$Xgroups_selected++;
 			}
-		$Xgroups_menu .= "value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
+		$Xgroups_menu .= "value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
 		$o++;
 		}
 	if ($Xgroups_selected < 1) 
@@ -374,7 +404,7 @@ if ($ADD==3111)
 	echo "<input type=hidden name=ADD value=4111>\n";
 	echo "<input type=hidden name=group_id value=\"$row[0]\">\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Group ID: </td><td align=left><b>$row[0]</b>$NWB#osdial_inbound_groups-group_id$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Group ID: </td><td align=left><b>" . mclabel($row[0]) . "</b>$NWB#osdial_inbound_groups-group_id$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Group Name: </td><td align=left><input type=text name=group_name size=30 maxlength=30 value=\"$row[1]\">$NWB#osdial_inbound_groups-group_name$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Group Color: </td><td align=left bgcolor=\"$row[2]\" id=\"group_color_td\"><input type=text name=group_color size=7 maxlength=7 value=\"$row[2]\">$NWB#osdial_inbound_groups-group_color$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$active</option></select>$NWB#osdial_inbound_groups-active$NWE</td></tr>\n";
@@ -565,7 +595,7 @@ echo "  </tr>\n";
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
 		echo "  <tr $bgcolor class=\"row font1\">\n";
-        echo "    <td><a href=\"$PHP_SELF?ADD=3111&group_id=$row[0]\">$row[0]</a></td>\n";
+        echo "    <td><a href=\"$PHP_SELF?ADD=3111&group_id=$row[0]\">" . mclabel($row[0]) . "</a></td>\n";
 		echo "    <td>$row[1]</td>\n";
 		echo "    <td align=center>$row[3]</td>\n";
 		echo "    <td align=center>$row[5]</td>\n";
