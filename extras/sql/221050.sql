@@ -54,7 +54,7 @@ ALTER TABLE osdial_inbound_groups MODIFY ingroup_script VARCHAR(20);##|##
 ALTER TABLE osdial_campaigns MODIFY lead_filter_id VARCHAR(20);##|##
  ##    Adjust size of campaign lead_filter_id field.;
 
-ALTER TABLE osdial_companies MODIFY dnc_method enum('SYSTEM','COMPANY','BOTH');##|##
+ALTER TABLE osdial_companies MODIFY dnc_method enum('SYSTEM','COMPANY','BOTH') default 'BOTH';##|##
  ##    Fix typo in dnc_method field.;
 
 CREATE TABLE osdial_dnc_company (
