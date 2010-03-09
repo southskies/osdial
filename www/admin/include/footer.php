@@ -48,7 +48,7 @@ if (ereg("^Sli",$system_settings['admin_template'])) {
     echo "    <td width=\"33%\">&nbsp;</td>\n";
     echo "    <td width=\"33%\">&nbsp;</td>\n";
 } else {
-    echo "    <td height=\"15\" align=\"left\" width=\"33%\"><font size=\"0\" color=\"#1A4349\">&nbsp;&nbsp;Copyright &#169; 2009 Call Center Service Group, LC<!-- Script Runtime: $RUNtime sec --><font></td>\n";
+    echo "    <td height=\"15\" align=\"left\" width=\"33%\"><font size=\"0\" color=\"#1A4349\">&nbsp;&nbsp;Copyright &#169; 2009-2010 Call Center Service Group, LC<!-- Script Runtime: $RUNtime sec --><font></td>\n";
 #
 # NOTICE:
 # Removal or modification of the following line constitutes a breach of License and doing so may result in legal action.
