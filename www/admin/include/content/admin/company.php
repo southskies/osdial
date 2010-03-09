@@ -92,8 +92,8 @@ if ($ADD=="21comp") {
             echo "<font size=1 color=$default_text>SAMPLE SCRIPT ADDED</font><br>\n";
 
             $olins = "INSERT INTO osdial_lists VALUES ";
-            $olins .= sprintf("(%s998,'Default inbound list','TEST','N',NULL,NULL,NULL,'N',NULL,'',0,'',''),",$cmp);
-            $olins .= sprintf("(%s999,'Default manual list','TEST','N',NULL,NULL,NULL,'N',NULL,'',0,'','');",$cmp);
+            $olins .= sprintf("(%s998,'Default inbound list','%sTEST','N',NULL,NULL,NULL,'N',NULL,'',0,'',''),",$cmp,$cmp);
+            $olins .= sprintf("(%s999,'Default manual list','%sTEST','N',NULL,NULL,NULL,'N',NULL,'',0,'','');",$cmp,$cmp);
             $rslt=mysql_query($olins, $link);
             echo "<font size=1 color=$default_text>SAMPLE LISTS ADDED</font><br>\n";
 
