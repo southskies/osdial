@@ -47,12 +47,12 @@ if ($force_logout) {
     $LOG = get_first_record($link, 'osdial_users', '*', sprintf("user='%s' and pass='%s'",mres($PHP_AUTH_USER),mres($PHP_AUTH_PW)) );
     $auth=count($LOG);
 
-    if(strlen($PHP_AUTH_USER) < 2 or strlen($PHP_AUTH_PW) < 2 or $auth < 1 and $LOG['user_level'] > 7) {
+    if(strlen($PHP_AUTH_USER) < 2 or strlen($PHP_AUTH_PW) < 2 or $auth < 1 or $LOG['user_level'] < 8) {
         Header("WWW-Authenticate: Basic realm=\"$t1-Administrator\"");
         Header("HTTP/1.0 401 Unauthorized");
         if (!preg_match('/wget/i',$browser)) $fps = "OSDIAL|BADAUTH|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|||\n";
         $failexit=1;
-    } elseif($auth > 0) {
+    } elseif ($auth > 0) {
         # And array of the allowed campagins
         $LOGacA = Array();
         $LOGagA = Array();
