@@ -393,6 +393,18 @@ echo "<html>\n";
 echo "<head>\n";
 echo "<!-- VERSION: $version     BUILD: $build -->\n";
 
+if ($multicomp > 0) {
+    if ($VD_login != "" and $phone_login != "") {
+        if (substr($VD_login,0,3) != substr($phone_login,0,3)) {
+            $phone_login='';
+            $phone_pass='';
+            $VD_login='';
+            $VD_pass='';
+            echo "<center><font color=red>ERROR: The Phone Login and User Login must belong to the same company.</font></center>";
+        }
+    }
+}
+
 if ($campaign_login_list > 0) {
 	$camp_form_code  = "<select style=\"font-size:8pt;\" size=1 name=VD_campaign id=VD_campaign onFocus=\"login_allowable_campaigns()\">\n";
 	$camp_form_code .= "<option value=\"\"></option>\n";
@@ -446,7 +458,6 @@ if ($campaign_login_list > 0) {
 } else {
 	$camp_form_code = "<INPUT TYPE=TEXT NAME=VD_campaign SIZE=10 MAXLENGTH=20 VALUE=\"$VD_campaign\">\n";
 }
-
 
 if ($LogiNAJAX > 0) {
 

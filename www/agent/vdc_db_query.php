@@ -441,8 +441,6 @@ if ($ACTION == 'LogiNCamPaigns')
 	}
 	else
 	{
-	echo "<select style=\"font-size:8pt;\" size=1 name=VD_campaign id=VD_campaign>\n";
-	echo "<option value=\"\">-- PLEASE SELECT A CAMPAIGN --</option>\n";
 
 	$stmt="SELECT user_group from osdial_users where user='$user' and pass='$pass'";
 	if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
@@ -463,12 +461,25 @@ if ($ACTION == 'LogiNCamPaigns')
 		}
 
     if ($multicomp > 0) {
+	    $stmt=sprintf("SELECT count(*) FROM osdial_companies WHERE id='%s' AND status='ACTIVE';",((substr($user,0,3) * 1) - 100) );
+	    $rslt=mysql_query($stmt, $link);
+	    $row=mysql_fetch_row($rslt);
+        if ($row[0] < 1) {
+	        echo "<select size=1 name=VD_campaign id=VD_campaign onfocus=\"login_focus();\">\n";
+	        echo "<option value=\"\">-- ERROR --</option>\n";
+	        echo "</select>\n";
+	        exit;
+        }
+
 	    $stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE active='Y' AND campaign_id LIKE '%s___%%' %s order by campaign_id;",substr($user,0,3),$LOGallowed_campaignsSQL);
     } else {
 	    $stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE active='Y' %s order by campaign_id;",$LOGallowed_campaignsSQL);
     }
 	$rslt=mysql_query($stmt, $link);
 	$camps_to_print = mysql_num_rows($rslt);
+
+	echo "<select style=\"font-size:8pt;\" size=1 name=VD_campaign id=VD_campaign>\n";
+	echo "<option value=\"\">-- PLEASE SELECT A CAMPAIGN --</option>\n";
 
 	$o=0;
 	while ($camps_to_print > $o) 
