@@ -242,7 +242,7 @@ if ($ADD==31111111111) {
         echo "<TABLE width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Phone extension: </td><td align=left>";
         $ext = $row[0];
-        if ($LOG['multicomp'] > 0 and !preg_match('/\/|@/',$row[0])) {
+        if ($LOG['multicomp'] > 0 and !preg_match('/\/|@/',$row[0]) and preg_match($LOG['companiesRE'],$row[0])) {
             echo "<font color=$default_text>" . $row[12] . "</font>";
             if ($row[12] == substr($row[0],0,3)) $ext = substr($row[0],3);
         }
@@ -251,7 +251,7 @@ if ($ADD==31111111111) {
         echo "<tr bgcolor=$oddrows><td align=right>Dial Plan Number: </td><td align=left>";
         $dpn = $row[1];
         if ($LOG['multicomp'] > 0) {
-            if (preg_match('/SIP|IAX/',$row[16])) {
+            if (preg_match('/SIP|IAX/',$row[16]) and preg_match($LOG['companiesRE'],$row[1])) {
                 echo "<font color=$default_text>" . $row[12] . "</font>";
                 if ($row[12] == substr($row[1],0,3)) $dpn = substr($row[1],3);
             }
@@ -260,7 +260,7 @@ if ($ADD==31111111111) {
         echo " (digits only)$NWB#phones-dialplan_number$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Voicemail Box: </td><td align=left>";
         $vmb = $row[2];
-        if ($LOG['multicomp'] > 0) {
+        if ($LOG['multicomp'] > 0 and preg_match($LOG['companiesRE'],$row[2])) {
             echo "<font color=$default_text>" . $row[12] . "</font>";
             if ($row[12] == substr($row[2],0,3)) $vmb = substr($row[2],3);
         }
@@ -277,7 +277,7 @@ if ($ADD==31111111111) {
         echo "</select>$NWB#phones-server_ip$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Login: </td><td align=left>";
         $plog = $row[6];
-        if ($LOG['multicomp'] > 0) {
+        if ($LOG['multicomp'] > 0 and preg_match($LOG['companiesRE'],$row[6])) {
             echo "<font color=$default_text>" . $row[12] . "</font>";
             if ($row[12] == substr($row[6],0,3)) $plog = substr($row[6],3);
         }
@@ -289,7 +289,7 @@ if ($ADD==31111111111) {
         echo "<tr bgcolor=$oddrows><td align=right>Phone Type: </td><td align=left><input type=text name=phone_type size=20 maxlength=50 value=\"$row[10]\">$NWB#phones-phone_type$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=fullname size=20 maxlength=50 value=\"$row[11]\">$NWB#phones-fullname$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Company: </td><td align=left>";
-        if ($LOG['multicomp_admin'] > 0) {
+        if ($LOG['multicomp_admin'] > 0 and preg_match($LOG['companiesRE'],$row[12])) {
             $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
             echo "<select name=company>\n";
             foreach ($comps as $comp) {
@@ -299,7 +299,7 @@ if ($ADD==31111111111) {
             }
             echo "</select>\n";
             echo "$NWB#phones-company$NWE";
-        } elseif ($LOG['multicomp']>0) {
+        } elseif ($LOG['multicomp']>0 and preg_match($LOG['companiesRE'],$row[0])) {
             echo "<input type=hidden name=company value=$row[12]>";
             echo "<font color=$default_text>" . $row[12] . "</font>";
         } else {
@@ -428,7 +428,7 @@ if ($ADD==10000000000) {
         }
         echo "  <tr $bgcolor class=\"row font1\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]\">";
-        if (!preg_match('/\/|@/',$row[0])) {
+        if ($LOG['multicomp'] and !preg_match('/\/|@/',$row[0]) and preg_match($LOG['campaignsRE'],$row[0])) {
             echo $row[12] . "&nbsp;" . substr($row[0],3);
         } else {
             echo $row[0];

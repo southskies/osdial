@@ -504,7 +504,7 @@ if ($ADD==1122) {
             if ($v == "") $v = $k;
             if ($k != "") $fieldOPTS .= "        <option value=\"" . $k . "\"$sel>" . $v . "</option>\n";
         }
-        if ($LOGuser_level > 8 && $LOGexport_leads > 0) {
+        if ($LOG['user_level'] > 8 && $LOG['export_leads'] > 0 && ($LOG['multicomp_user'] == 0 or $LOG['company']['export_leads'] > 0)) {
             echo "    <td align=center valign=top rowspan=4>\n";
             echo "      <font size=2>CSV Export Fields</font><br>\n";
             echo "      <select name=fields[] size=5 multiple>\n";

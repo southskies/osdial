@@ -340,7 +340,7 @@ if (strlen($lists_hh) > 1) {
     if ($LOG['user_level'] > 7 && $LOG['load_leads'] > 0) {
         echo "        <a href=\"$PHP_SELF?ADD=122\"> Load New Leads </a> &nbsp; &nbsp; &nbsp;\n";
     }
-    if ($LOG['user_level'] > 8 && $LOG['export_leads'] > 0) {
+    if ($LOG['user_level'] > 8 && $LOG['export_leads'] > 0 && ($LOG['multicomp_user'] == 0 or $LOG['company']['export_leads'] > 0)) {
         echo "        <a href=\"$PHP_SELF?ADD=131\"> Lead Export </a>\n";
     }
     echo "      </font>\n";
