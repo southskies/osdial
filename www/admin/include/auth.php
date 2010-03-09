@@ -76,6 +76,13 @@ if ($force_logout) {
                 $LOG['company_prefix'] = substr($LOG['user'],0,3);
                 $LOG['company_id'] = ((substr($LOG['user'],0,3) * 1) - 100);
                 $LOG['multicomp_user'] = 1;
+                $LOG['company'] = get_first_record($link, 'osdial_companies', '*', sprintf("id='%s'",mres($LOG['company_id'])) );
+                # Set banner title.
+                $user_company = $LOG['company']['name'];
+                if ($LOG['company']['status'] != 'ACTIVE') {
+                    $failexit=1;
+                    $fps = "OSDIAL|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|COMPANY_" . $LOG['company']['status'] . "||\n";
+                }
             }
             $LOG['companies'] = get_krh($link, 'osdial_companies', '*','','','');
             $LOG['companiesRE'] = '/';
@@ -84,9 +91,7 @@ if ($force_logout) {
             }
             $LOG['companiesRE'] = rtrim($LOG['companiesRE'],'|') . '/';
 
-            $LOG['company'] = get_first_record($link, 'osdial_companies', '*', sprintf("id='%s'",mres($LOG['company_id'])) );
-            # Set banner title.
-            $user_company = $LOG['company']['name'];
+
         }
 
         # Get the allowed campaigns.
@@ -155,7 +160,7 @@ if ($force_logout) {
         flush();
         $LOGallowed_campaigns = $LOG['allowed_campaignsSTR'];
 
-        $fps = "OSDIAL|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|" . $LOG['full_name'] . "|" . $LOG['allowed_campaignsSTR'] . "|\n";
+        if ($failexit==0) $fps = "OSDIAL|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|" . $LOG['full_name'] . "|" . $LOG['allowed_campaignsSTR'] . "|\n";
 
     } else {
         $fps = "OSDIAL|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|||\n";
