@@ -223,6 +223,20 @@ if ($xml['function'] == "version") {
         if ($xml['debug'] > 0)
             $debug .= sprintf("AUTH: Success. user=%s, pass=%s, admin_api_access=%s, modify_leads=%s, user_level=%s\n", $xml['user'], $xml['pass'], $auth['admin_api_access'], $auth['modify_leads'], $auth['user_level']);
     }
+    # Validate Company Access.
+    if ($status != "ERROR") {
+        if ($system_settings['enable_multicompany'] > 0) {
+            $comp = get_first_record($link, 'osdial_companies', '*', sprintf("company_id='%s'",((substr($xml['user'],0,3) * 1) - 100) ));
+            if ($comp['api_access'] < 1) {
+                $status = "ERROR";
+                $reason = "Access Denied.";
+                $vdreason = "add_lead USER DOES NOT HAVE PERMISSION TO ADD LEADS TO THE SYSTEM";
+            } else {
+                if ($xml['debug'] > 0)
+                    $debug .= sprintf("COMPANY AUTH: Success. company_id=%s, api_access=%s\n", $comp['id'], $comp['api_access']);
+            }
+        }
+    }
 
     # Validate fields.
     $xml->params->phone_code = preg_replace('/[^0-9]/',"",$xml->params->phone_code);
