@@ -35,7 +35,7 @@ if ($ADD==111) {
 		echo "<center><br><font color=$default_text size=4>ADD A NEW LIST</font><form action=$PHP_SELF method=POST><br></center>\n";
 		echo "<input type=hidden name=ADD value=211>\n";
 		echo "<table width=$section_width bgcolor=$oddrows align=center cellspacing=3>\n";
-		echo "  <tr bgcolor=$oddrows><td align=right width=50%>List ID: </td><td align=left width=50%><input type=text name=list_id size=8 maxlength=8> (digits only)$NWB#osdial_lists-list_id$NWE</td></tr>\n";
+		echo "  <tr bgcolor=$oddrows><td align=right width=50%>List ID: </td><td align=left width=50%><input type=text name=list_id size=12 maxlength=12 value=\"" . date("YmdHi") . "\"> (digits only)$NWB#osdial_lists-list_id$NWE</td></tr>\n";
 		echo "  <tr bgcolor=$oddrows><td align=right>List Name: </td><td align=left><input type=text name=list_name size=20 maxlength=20>$NWB#osdial_lists-list_name$NWE</td></tr>\n";
 		echo "  <tr bgcolor=$oddrows><td align=right>List Description: </td><td align=left><input type=text name=list_description size=30 maxlength=255>$NWB#osdial_lists-list_description$NWE</td></tr>\n";
 		echo "  <tr bgcolor=$oddrows><td align=right>Campaign: </td><td align=left><select size=1 name=campaign_id>\n";
@@ -236,8 +236,9 @@ if ($ADD==211) {
     $row=mysql_fetch_row($rslt);
     if ($row[0] > 0) {
         echo "<br><font color=red>LIST NOT ADDED - there is already a list in the system with this ID</font>\n";
+        $ADD=100;
     } else {
-        if ( (strlen($campaign_id) < 2) or (strlen($list_name) < 2)  or ($list_id < 100) or (strlen($list_id) > 8) ) {
+        if ( (strlen($campaign_id) < 2) or (strlen($list_name) < 2)  or ($list_id < 100) or (strlen($list_id) > 12) ) {
             echo "<br><font color=red>LIST NOT ADDED - Please go back and look at the data you entered\n";
             echo "<br>List ID must be between 2 and 8 characters in length\n";
             echo "<br>List name must be at least 2 characters in length\n";
@@ -255,8 +256,8 @@ if ($ADD==211) {
                 fclose($fp);
             }
         }
+        $ADD=311;
     }
-    $ADD=311;
 }
 
 
