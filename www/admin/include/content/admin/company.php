@@ -33,7 +33,7 @@ if ($ADD=="11comp") {
         echo "<input type=hidden name=ADD value=21comp>\n";
 
         echo "<table width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right width=50%>Name: </td><td align=left><input type=text name=company_name size=30 maxlength=100 value=\"\">$NWB#companies-company_name$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right width=50%>Company Name: </td><td align=left><input type=text name=company_name size=30 maxlength=100 value=\"\">$NWB#companies-company_name$NWE</td></tr>\n";
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</table></center>\n";
     } else {
@@ -65,33 +65,43 @@ if ($ADD=="21comp") {
             $srv = get_first_record($link, 'servers', '*', '');
 
 
-            # Add inital company data.
+            echo "<br><br>\n";
+            # Add inital sample configuration.
             $pins = "INSERT INTO phones VALUES ";
-            $pins .= sprintf("('%s1000','%s1000','%s1000','','','%s','%s1000','1000','ACTIVE','Y','SIP','Ext %s 1000','%s','NA',0,0,'SIP','-5.00','cron','1234','','','','8301','8302','8301','park','8612','8309','8501','85026666666666','default','local/8500998@default','Zap/g2/','/usr/bin/mozilla','/usr/local/perl_TK','http://localhost/test_callerid_output.php','http://localhost/test_osdial_output.php','1','1','1','0','0','1','1','1','1','1','1','1','0',1000,'0','1','1','','asterisk','cron','1234',3306,'','asterisk','cron','1234',3306,'1000','0',''),",$cmp,$cmp,$cmp,$srv['server_ip'],$cmp,$cmp,$cmp);
-            $pins .= sprintf("('%s9999','9999','%s9999','','','%s','%s9999','9999','ACTIVE','Y','Test','Test Phone','%s','NA',0,0,'EXTERNAL','-5.00','cron','1234','','','','8301','8302','8301','park','8612','8309','8501','85026666666666','default','local/8500998@default','Zap/g2/','/usr/bin/mozilla','/usr/local/perl_TK','http://localhost/test_callerid_output.php','http://localhost/test_osdial_output.php','1','1','1','0','0','1','1','1','1','1','1','1','0',1000,'0','1','1','','asterisk','cron','1234',3306,'','asterisk','cron','1234',3306,'9999','0','');",$cmp,$cmp,$srv['server_ip'],$cmp,$cmp);
+            $pins .= sprintf("('%s1001','%s1001','%s1001','','','%s','%s1001','1001','ACTIVE','Y','SIP','Ext %s 1001','%s','NA',0,0,'SIP','-5.00','cron','1234','','','','8301','8302','8301','park','8612','8309','8501','85026666666666','osdialBLOCK','local/8500998@osdial','Zap/g2/','/usr/bin/mozilla','/usr/local/perl_TK','http://localhost/test_callerid_output.php','http://localhost/test_osdial_output.php','1','1','1','0','0','1','1','1','1','1','1','1','0',1000,'0','1','1','','asterisk','cron','1234',3306,'','asterisk','cron','1234',3306,'1001','0',''),",$cmp,$cmp,$cmp,$srv['server_ip'],$cmp,$cmp,$cmp);
+            $pins .= sprintf("('%s1002','%s1002','%s1002','','','%s','%s1002','1002','ACTIVE','Y','SIP','Ext %s 1002','%s','NA',0,0,'SIP','-5.00','cron','1234','','','','8301','8302','8301','park','8612','8309','8501','85026666666666','osdialBLOCK','local/8500998@osdial','Zap/g2/','/usr/bin/mozilla','/usr/local/perl_TK','http://localhost/test_callerid_output.php','http://localhost/test_osdial_output.php','1','1','1','0','0','1','1','1','1','1','1','1','0',1000,'0','1','1','','asterisk','cron','1234',3306,'','asterisk','cron','1234',3306,'1002','0',''),",$cmp,$cmp,$cmp,$srv['server_ip'],$cmp,$cmp,$cmp);
+            $pins .= sprintf("('%s9999','9999','%s9999','','','%s','%s9999','9999','ACTIVE','Y','Test','Test Phone','%s','NA',0,0,'EXTERNAL','-5.00','cron','1234','','','','8301','8302','8301','park','8612','8309','8501','85026666666666','osdialBLOCK','local/8500998@osdial','Zap/g2/','/usr/bin/mozilla','/usr/local/perl_TK','http://localhost/test_callerid_output.php','http://localhost/test_osdial_output.php','1','1','1','0','0','1','1','1','1','1','1','1','0',1000,'0','1','1','','asterisk','cron','1234',3306,'','asterisk','cron','1234',3306,'9999','0','');",$cmp,$cmp,$srv['server_ip'],$cmp,$cmp);
             $rslt=mysql_query($pins, $link);
+            echo "<font size=1 color=$default_text>SAMPLE PHONE CONFIGURATION ADDED</font><br>\n";
 
             $uins = "INSERT INTO osdial_users VALUES ";
             $uins .= sprintf("('','%sadmin','admin','Admin %s',9,'%sADMIN','','','1','1','1','1','1','1','1','1','1','1','1','1','0','1','1','','1','0','1','1','1','1','1','0','1','1','1','1','1','1','1','1','1','1','1','1','DISABLED','NOT_ACTIVE',-1,'1','1','1','1'),",$cmp,$cmp,$cmp);
-            $uins .= sprintf("('','%s1000','1000','Agent %s 1000',4,'%sAGENTS','','','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','','1','1','1','1','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','DISABLED','NOT_ACTIVE',-1,'1','0','0','0');",$cmp,$cmp,$cmp);
+            $uins .= sprintf("('','%s1001','1001','Agent %s 1001',4,'%sAGENTS','','','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','','1','1','1','1','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','DISABLED','NOT_ACTIVE',-1,'1','0','0','0'),",$cmp,$cmp,$cmp);
+            $uins .= sprintf("('','%s1002','1002','Agent %s 1002',4,'%sAGENTS','','','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','','1','1','1','1','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','DISABLED','NOT_ACTIVE',-1,'1','0','0','0');",$cmp,$cmp,$cmp);
             $rslt=mysql_query($uins, $link);
+            echo "<font size=1 color=$default_text>SAMPLE USER CONFIGURATION ADDED</font><br>\n";
 
             $ugins = "INSERT INTO osdial_user_groups VALUES ";
             $ugins .= sprintf("('%sADMIN','OSDIAL ADMINISTRATORS',' -ALL-CAMPAIGNS- - -'),('%sAGENTS','Agent User Group',' -ALL-CAMPAIGNS- - -');",$cmp,$cmp);
             $rslt=mysql_query($ugins, $link);
+            echo "<font size=1 color=$default_text>SAMPLE USERGROUP CONFIGURATION ADDED</font><br>\n";
 
             $sins = "INSERT INTO osdial_scripts VALUES ";
-            $sins .= sprintf("('%sTEST','Test Script','Just a quick test','Hello Mr/Mrs [[last_name]]," . '\r\n\r\n' . "We are calling you at [[phone_number]]." . '\r\n\r\n' . "Your address is:" . '\r\n' . "[[address1]]" . '\r\n' . "[[city]], [[state]] [[postal_code]]" . '\r\n\r\n' . "Thank-you','Y');",$cmp);
+            $sins .= sprintf("('%sTEST','Test Script','Just a quick test','Hello Mr/Mrs [[last_name]],<br><br>We are calling you at [[phone_number]].<br><br>Your address is:<br>[[address1]]<br>[[city]], [[state]] [[postal_code]]<br><br>Thank-you','Y');",$cmp);
             $rslt=mysql_query($sins, $link);
+            echo "<font size=1 color=$default_text>SAMPLE SCRIPT ADDED</font><br>\n";
 
             $olins = "INSERT INTO osdial_lists VALUES ";
             $olins .= sprintf("(%s998,'Default inbound list','TEST','N',NULL,NULL,NULL,'N',NULL,'',0,'',''),",$cmp);
             $olins .= sprintf("(%s999,'Default manual list','TEST','N',NULL,NULL,NULL,'N',NULL,'',0,'','');",$cmp);
             $rslt=mysql_query($olins, $link);
+            echo "<font size=1 color=$default_text>SAMPLE LISTS ADDED</font><br>\n";
+
 
             $ocins = "INSERT INTO osdial_campaigns VALUES ";
             $ocins .= sprintf("('%sTEST','Test Campaign %s','Y','','','','','','DOWN','8301','park','/osdial/agent/webform_redirect.php','Y',200,'0','oldest_call_finish','24hours','',28,'9','0000000000','8368','8309','ONDEMAND','CAMPAIGN_AGENT_FULLDATE_CUSTPHONE','','NONE','8320','Y','','','','','N','Y','NONE',8,'Y','8307','Y',0,'Wrapup Call','','Y',0,'N','MANUAL','N',3,'3.0','2100','0',0,'AUTO','NONE',' A AA B N NA DC -','N','Test Campaign','2010-03-08 00:19:25','N',NULL,' A AA AL AM B CALLBK DROP NEW N NA -','N','Y','DISABLED','Y',%s999,'---NONE---','','/osdial/agent/webform_redirect.php','Y',0,'',10,'Y','Y','Y','NORMAL','N','2008-01-01 00:00:00','','CAMPAIGN');",$cmp,$cmp,$cmp);
             $rslt=mysql_query($ocins, $link);
+            echo "<font size=1 color=$default_text>SAMPLE CAMPAIGN ADDED</font><br>\n";
 
             $ochkins = "INSERT INTO osdial_campaign_hotkeys VALUES ";
             $ochkins .= sprintf("('N','1','No Answer','Y','%sTEST',''),",$cmp);
@@ -100,6 +110,9 @@ if ($ADD=="21comp") {
             $ochkins .= sprintf("('CALLBK','4','Call Back','Y','%sTEST',''),",$cmp);
             $ochkins .= sprintf("('SALE','5','Sale Made','Y','%sTEST','');",$cmp);
             $rslt=mysql_query($ochkins, $link);
+            echo "<font size=1 color=$default_text>SAMPLE CAMPAIGN-HOTKEYS ADDED</font><br>\n";
+
+            echo "<br>";
         }
         $ADD="31comp";
     } else {
@@ -189,12 +202,12 @@ if ($ADD=="31comp") {
         echo "<input type=hidden name=ADD value=41comp>\n";
         echo "<input type=hidden name=company_id value=$comp[id]>\n";
         echo "<table width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Company ID Prefix: </td><td align=left><font color=$default_text>" . (($comp[id] * 1) + 100) . "</font></td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Name: </td><td align=left><input type=text name=company_name size=30 maxlength=100 value=\"$comp[name]\">$NWB#companies-company_name$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select name=company_status><option>INACTIVE</option><option>ACTIVE</option><option>SUSPENDED</option><option>TERMINATED</option><option selected>$comp[status]</option></select>$NWB#companies-name$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Company Prefix: </td><td align=left><font color=$default_text>" . (($comp[id] * 1) + 100) . "</font></td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Company Name: </td><td align=left><input type=text name=company_name size=30 maxlength=100 value=\"$comp[name]\">$NWB#companies-company_name$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select name=company_status><option>INACTIVE</option><option>ACTIVE</option><option>SUSPENDED</option><option>TERMINATED</option><option selected>$comp[status]</option></select>$NWB#companies-status$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Enable Campaign IVR: </td><td align=left><select name=company_enable_campaign_ivr><option>0</option><option>1</option><option selected>$comp[enable_campaign_ivr]</option></select>$NWB#companies-enable_campaign_ivr$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Enable Campaign ListMix: </td><td align=left><select name=company_enable_campaign_listmix><option>0</option><option>1</option><option selected>$comp[enable_campaign_listmix]</option></select>$NWB#companies-enable_campaign_listmix$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Enable Lead Export: </td><td align=left><select name=company_export_leads><option>0</option><option>1</option><option selected>$comp[export_leads]</option></select>$NWB#companies-export_leads$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Export Leads: </td><td align=left><select name=company_export_leads><option>0</option><option>1</option><option selected>$comp[export_leads]</option></select>$NWB#companies-export_leads$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Enable Scripts: </td><td align=left><select name=company_enable_scripts><option>0</option><option>1</option><option selected>$comp[enable_scripts]</option></select>$NWB#companies-enable_scripts$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Enable Filters: </td><td align=left><select name=company_enable_filters><option>0</option><option>1</option><option selected>$comp[enable_filters]</option></select>$NWB#companies-enable_filters$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Enable In-Groups: </td><td align=left><select name=company_enable_ingroups><option>0</option><option>1</option><option selected>$comp[enable_ingroups]</option></select>$NWB#companies-enable_ingroups$NWE</td></tr>\n";
@@ -204,8 +217,8 @@ if ($ADD=="31comp") {
         echo "<tr bgcolor=$oddrows><td align=right>Enable System Conferences: </td><td align=left><select name=company_enable_system_conferences><option>0</option><option>1</option><option selected>$comp[enable_system_conferences]</option></select>$NWB#companies-enable_system_conferences$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Enable System Servers: </td><td align=left><select name=company_enable_system_servers><option>0</option><option>1</option><option selected>$comp[enable_system_servers]</option></select>$NWB#companies-enable_system_servers$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Enable System Statuses: </td><td align=left><select name=company_enable_system_statuses><option>0</option><option>1</option><option selected>$comp[enable_system_statuses]</option></select>$NWB#companies-enable_system_statuses$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Enable API Access: </td><td align=left><select name=company_api_access><option>0</option><option>1</option><option selected>$comp[api_access]</option></select>$NWB#companies-api_access$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>DNC Check Method: </td><td align=left><select name=company_dnc_method><option>SYSTEM</option><option>CAMPAIGN</option><option>BOTH</option><option>NONE</option><option selected>$comp[dnc_method]</option></select>$NWB#companies-dnc_method$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>API Access: </td><td align=left><select name=company_api_access><option>0</option><option>1</option><option selected>$comp[api_access]</option></select>$NWB#companies-api_access$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>DNC Method: </td><td align=left><select name=company_dnc_method><option>SYSTEM</option><option>COMPANY</option><option>BOTH</option><option selected>$comp[dnc_method]</option></select>$NWB#companies-dnc_method$NWE</td></tr>\n";
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</TABLE></center>\n";
 
