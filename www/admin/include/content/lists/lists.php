@@ -240,7 +240,7 @@ if ($ADD==211) {
     } else {
         if ( (strlen($campaign_id) < 2) or (strlen($list_name) < 2)  or ($list_id < 100) or (strlen($list_id) > 12) ) {
             echo "<br><font color=red>LIST NOT ADDED - Please go back and look at the data you entered\n";
-            echo "<br>List ID must be between 2 and 8 characters in length\n";
+            echo "<br>List ID must be between 2 and 12 characters in length\n";
             echo "<br>List name must be at least 2 characters in length\n";
             echo "<br>List ID must be greater than 100</font><br>\n";
         } else {
