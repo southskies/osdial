@@ -462,7 +462,11 @@ if ($ACTION == 'LogiNCamPaigns')
 		$LOGallowed_campaignsSQL = "and campaign_id IN('$LOGallowed_campaignsSQL')";
 		}
 
-	$stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE active='Y' AND campaign_id LIKE '%s___%%' %s order by campaign_id;",substr($user,0,3),$LOGallowed_campaignsSQL);
+    if ($multicomp > 0) {
+	    $stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE active='Y' AND campaign_id LIKE '%s___%%' %s order by campaign_id;",substr($user,0,3),$LOGallowed_campaignsSQL);
+    } else {
+	    $stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE active='Y' %s order by campaign_id;",$LOGallowed_campaignsSQL);
+    }
 	$rslt=mysql_query($stmt, $link);
 	$camps_to_print = mysql_num_rows($rslt);
 
