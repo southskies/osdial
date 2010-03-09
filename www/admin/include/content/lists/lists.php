@@ -68,70 +68,71 @@ if ($ADD==111) {
 # ADD=121 display the ADD NUMBER TO DNC FORM SCREEN and add a new number
 ######################
 
-if ($ADD==121)
-{
-echo "<TABLE align=center><TR><TD align=center>\n";
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+if ($ADD==121) {
+	if ($LOGmodify_lists==1)	{
+        echo "<TABLE align=center><TR><TD align=center>\n";
+        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-if (strlen($phone_number) > 2) {
-    $dncs=0;
-    $dncc=0;
-    $dncsskip=0;
+        if (strlen($phone_number) > 2) {
+            $dncs=0;
+            $dncc=0;
+            $dncsskip=0;
 
-    if ($LOG['multicomp_user'] > 0) {
-        if (preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
-	        $stmt = sprintf("SELECT count(*) FROM osdial_dnc_company WHERE company_id='%s' AND phone_number='%s';", mres($LOG['company_id']),mres($phone_number));
-        	$rslt=mysql_query($stmt, $link);
-        	$row=mysql_fetch_row($rslt);
-            $dncc=$row[0];
+            if ($LOG['multicomp_user'] > 0) {
+                if (preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
+                    $stmt = sprintf("SELECT count(*) FROM osdial_dnc_company WHERE company_id='%s' AND phone_number='%s';", mres($LOG['company_id']),mres($phone_number));
+                    $rslt=mysql_query($stmt, $link);
+                    $row=mysql_fetch_row($rslt);
+                    $dncc=$row[0];
+                }
+                if (preg_match('/COMPANY/',$LOG['company']['dnc_method'])) $dncsskip++;
+            }
+
+            if ($dncsskip==0) {
+                $stmt = sprintf("SELECT count(*) from osdial_dnc where phone_number='%s';", mres($phone_number));
+                $rslt=mysql_query($stmt, $link);
+                $row=mysql_fetch_row($rslt);
+                $dncs=$row[0];
+            }
+
+            if ($dncs > 0 or $dncc > 0) {
+                echo "<br>DNC NOT ADDED - This phone number is already in the ";
+                if ($dncs > 0 and $dncc > 0) {
+                    echo "System and Company";
+                } elseif ($dncs > 0) {
+                    echo "System";
+                } elseif ($dncc > 0) {
+                    echo "Company";
+                }
+                echo " Do Not Call List: $phone_number<BR><BR>\n";
+            } else {
+                if ($LOG['multicomp_user'] > 0 and preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
+                    $stmt = sprintf("INSERT INTO osdial_dnc_company (company_id,phone_number) values('%s','%s');", mres($LOG['company_id']),mres($phone_number));
+                } else {
+                    $stmt = sprintf("INSERT INTO osdial_dnc (phone_number) values('%s');", mres($phone_number));
+                }
+                $rslt=mysql_query($stmt, $link);
+
+                echo "<br><B>DNC ADDED: $phone_number</B><BR><BR>\n";
+
+                ### LOG INSERTION TO LOG FILE ###
+                if ($WeBRooTWritablE > 0) {
+                    $fp = fopen ("./admin_changes_log.txt", "a");
+                    fwrite ($fp, "$date|ADD A NEW DNC NUMBER|$PHP_AUTH_USER|$ip|'$phone_number'|\n");
+                    fclose($fp);
+                }
+            }
         }
-        if (preg_match('/COMPANY/',$LOG['company']['dnc_method'])) $dncsskip++;
+
+        echo "<br><font color=$default_text size=+1>ADD A NUMBER TO THE DNC LIST</font><form action=$PHP_SELF method=POST><br><br>\n";
+        echo "<input type=hidden name=ADD value=121>\n";
+        echo "<TABLE width=$section_width bgcolor=$oddrows cellspacing=3>\n";
+        echo "<tr bgcolor=$oddrows><td align=right width=50%>Phone Number: </td><td align=left width=50%><input type=text name=phone_number size=14 maxlength=12> (digits only)$NWB#osdial_list-dnc$NWE</td></tr>\n";
+        echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+        echo "</TABLE></center>\n";
+    } else {
+        echo "<font color=red>You do not have permission to view this page</font>\n";
     }
-
-    if ($dncsskip==0) {
-	    $stmt = sprintf("SELECT count(*) from osdial_dnc where phone_number='%s';", mres($phone_number));
-	    $rslt=mysql_query($stmt, $link);
-	    $row=mysql_fetch_row($rslt);
-        $dncs=$row[0];
-    }
-
-	if ($dncs > 0 or $dncc > 0) {
-		echo "<br>DNC NOT ADDED - This phone number is already in the ";
-        if ($dncs > 0 and $dncc > 0) {
-            echo "System and Company";
-        } elseif ($dncs > 0) {
-             echo "System";
-        } elseif ($dncc > 0) {
-             echo "Company";
-        }
-        echo " Do Not Call List: $phone_number<BR><BR>\n";
-	} else {
-        if ($LOG['multicomp_user'] > 0 and preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
-		    $stmt = sprintf("INSERT INTO osdial_dnc_company (company_id,phone_number) values('%s','%s');", mres($LOG['company_id']),mres($phone_number));
-        } else {
-		    $stmt = sprintf("INSERT INTO osdial_dnc (phone_number) values('%s');", mres($phone_number));
-        }
-		$rslt=mysql_query($stmt, $link);
-
-		echo "<br><B>DNC ADDED: $phone_number</B><BR><BR>\n";
-
-		### LOG INSERTION TO LOG FILE ###
-		if ($WeBRooTWritablE > 0) {
-			$fp = fopen ("./admin_changes_log.txt", "a");
-			fwrite ($fp, "$date|ADD A NEW DNC NUMBER|$PHP_AUTH_USER|$ip|'$phone_number'|\n");
-			fclose($fp);
-		}
-	}
-}
-
-echo "<br><font color=$default_text size=+1>ADD A NUMBER TO THE DNC LIST</font><form action=$PHP_SELF method=POST><br><br>\n";
-echo "<input type=hidden name=ADD value=121>\n";
-//echo "<center>";
-echo "<TABLE width=$section_width bgcolor=$oddrows cellspacing=3>\n";
-echo "<tr bgcolor=$oddrows><td align=right width=50%>Phone Number: </td><td align=left width=50%><input type=text name=phone_number size=14 maxlength=12> (digits only)$NWB#osdial_list-dnc$NWE</td></tr>\n";
-echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
-echo "</TABLE></center>\n";
-
 }
 
 
@@ -140,55 +141,6 @@ echo "</TABLE></center>\n";
 # ADD=125 generates test leads to test campaign
 ######################
 if ($ADD==125) {
-	$PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);
-	$PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
-	
-	$STARTtime = date("U");
-	$TODAY = date("Y-m-d");
-	$NOW_TIME = date("Y-m-d H:i:s");
-	
-	
-	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 7 and modify_leads='1';";
-	if ($DB) {echo "|$stmt|\n";}
-	$rslt=mysql_query($stmt, $link);
-	$row=mysql_fetch_row($rslt);
-	$auth=$row[0];
-	
-	if ($WeBRooTWritablE > 0) {
-		$fp = fopen ("./project_auth_entries.txt", "a");
-	}
-	
-	$date = date("r");
-	$ip = getenv("REMOTE_ADDR");
-	$browser = getenv("HTTP_USER_AGENT");
-	
-	if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth)) {
-		Header("WWW-Authenticate: Basic realm=\"$t1-Administrator\"");
-		Header("HTTP/1.0 401 Unauthorized");
-		echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
-		exit;
-	} else {
-	
-		if($auth>0) {
-			$office_no=strtoupper($PHP_AUTH_USER);
-			$password=strtoupper($PHP_AUTH_PW);
-				$stmt="SELECT full_name,modify_leads from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW'";
-				$rslt=mysql_query($stmt, $link);
-				$row=mysql_fetch_row($rslt);
-				$LOGfullname				=$row[0];
-				$LOGmodify_leads			=$row[1];
-	
-			if ($WeBRooTWritablE > 0) {
-				fwrite ($fp, "$t1|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|$LOGfullname|\n");
-				fclose($fp);
-			}
-		} else {
-			if ($WeBRooTWritablE > 0) {
-				fwrite ($fp, "$t1|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|\n");
-				fclose($fp);
-			}
-		}
-	}
 	if ($LOGmodify_lists==1)	{
 		echo "<TABLE align=center><TR><TD>\n";
 		echo "<center><br><font color=$default_text size='2'>GENERATE TEST LEADS</font><br>(ONLY works with TEST list 998.)<form action=$PHP_SELF method=POST><br><br>\n";
@@ -200,7 +152,6 @@ if ($ADD==125) {
 			echo "</TABLE></center>\n";
 	} else {
 		echo "<font color=red>You do not have permission to view this page.</font>\n";
-		exit;
 	}
 }
 
@@ -209,17 +160,21 @@ if ($ADD==125) {
 # ADD=126 generates test leads to test campaign
 ######################
 if ($ADD==126) {
-    echo "<TABLE align=center>";
-    echo "	<tr>";
-    echo "		<td>";
+	if ($LOGmodify_lists==1)	{
+        echo "<TABLE align=center>";
+        echo "	<tr>";
+        echo "		<td>";
 	
-    $stmt="insert into osdial_list where list_id='998'";
-    $rslt=mysql_query($stmt, $link);
-    $row=mysql_fetch_row($rslt);
+        $stmt="insert into osdial_list where list_id='998'";
+        $rslt=mysql_query($stmt, $link);
+        $row=mysql_fetch_row($rslt);
 
-    echo "		</td>";
-    echo "	</tr>";
-    echo "</table>";
+        echo "		</td>";
+        echo "	</tr>";
+        echo "</table>";
+	} else {
+		echo "<font color=red>You do not have permission to view this page.</font>\n";
+	}
 }
 
 
@@ -230,34 +185,39 @@ if ($ADD==126) {
 ######################
 
 if ($ADD==211) {
-    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-    $stmt="SELECT count(*) from osdial_lists where list_id='$list_id';";
-    $rslt=mysql_query($stmt, $link);
-    $row=mysql_fetch_row($rslt);
-    if ($row[0] > 0) {
-        echo "<br><font color=red>LIST NOT ADDED - there is already a list in the system with this ID</font>\n";
-        $ADD=100;
-    } else {
-        if ( (strlen($campaign_id) < 2) or (strlen($list_name) < 2)  or ($list_id < 100) or (strlen($list_id) > 12) ) {
-            echo "<br><font color=red>LIST NOT ADDED - Please go back and look at the data you entered\n";
-            echo "<br>List ID must be between 2 and 12 characters in length\n";
-            echo "<br>List name must be at least 2 characters in length\n";
-            echo "<br>List ID must be greater than 100</font><br>\n";
+	if ($LOGmodify_lists==1)	{
+        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+        $stmt="SELECT count(*) from osdial_lists where list_id='$list_id';";
+        $rslt=mysql_query($stmt, $link);
+        $row=mysql_fetch_row($rslt);
+        if ($row[0] > 0) {
+            echo "<br><font color=red>LIST NOT ADDED - there is already a list in the system with this ID</font>\n";
+            $ADD=100;
         } else {
-            echo "<br><B><font color=$default_text>LIST ADDED: $list_id</font></B>\n";
+            if ( (strlen($campaign_id) < 2) or (strlen($list_name) < 2)  or ($list_id < 100) or (strlen($list_id) > 12) ) {
+                echo "<br><font color=red>LIST NOT ADDED - Please go back and look at the data you entered\n";
+                echo "<br>List ID must be between 2 and 12 characters in length\n";
+                echo "<br>List name must be at least 2 characters in length\n";
+                echo "<br>List ID must be greater than 100</font><br>\n";
+                $ADD=100;
+            } else {
+                echo "<br><B><font color=$default_text>LIST ADDED: $list_id</font></B>\n";
 
-            $stmt="INSERT INTO osdial_lists (list_id,list_name,campaign_id,active,list_description,list_changedate) values('$list_id','$list_name','$campaign_id','$active','$list_description','$SQLdate');";
-            $rslt=mysql_query($stmt, $link);
+                $stmt="INSERT INTO osdial_lists (list_id,list_name,campaign_id,active,list_description,list_changedate) values('$list_id','$list_name','$campaign_id','$active','$list_description','$SQLdate');";
+                $rslt=mysql_query($stmt, $link);
 
-            ### LOG CHANGES TO LOG FILE ###
-            if ($WeBRooTWritablE > 0) {
-                $fp = fopen ("./admin_changes_log.txt", "a");
-                fwrite ($fp, "$date|ADD A NEW LIST      |$PHP_AUTH_USER|$ip|$stmt|\n");
-                fclose($fp);
+                ### LOG CHANGES TO LOG FILE ###
+                if ($WeBRooTWritablE > 0) {
+                    $fp = fopen ("./admin_changes_log.txt", "a");
+                    fwrite ($fp, "$date|ADD A NEW LIST      |$PHP_AUTH_USER|$ip|$stmt|\n");
+                    fclose($fp);
+                }
+                $ADD=311;
             }
         }
-        $ADD=311;
-    }
+	} else {
+		echo "<font color=red>You do not have permission to view this page.</font>\n";
+	}
 }
 
 
@@ -303,11 +263,10 @@ if ($ADD==411) {
                 fclose($fp);
             }
         }
+        $ADD=311;	# go to list modification form below
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
-        exit;
     }
-    $ADD=311;	# go to list modification form below
 }
 
 
@@ -316,21 +275,25 @@ if ($ADD==411) {
 ######################
 
 if ($ADD==511) {
-    echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>";
+    if ($LOGmodify_lists==1) {
+        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>";
 
-    if ( (strlen($list_id) < 2) or ($LOGdelete_lists < 1) ) {
-        echo "<br><font color=red>LIST NOT DELETED - Please go back and look at the data you entered\n";
-        echo "<br>List_id be at least 2 characters in length</font>\n";
-    } else {
-        if ($SUB==1) {
-            echo "<br><B><font color=$default_text>LIST AND LEAD DELETION CONFIRMATION: $list_id</B>\n";
-            echo "<br><br><a href=\"$PHP_SELF?ADD=611&SUB=1&list_id=$list_id&CoNfIrM=YES\">Click here to delete list and all of its leads $list_id</a></font><br><br><br>\n";
+        if ( (strlen($list_id) < 2) or ($LOGdelete_lists < 1) ) {
+            echo "<br><font color=red>LIST NOT DELETED - Please go back and look at the data you entered\n";
+            echo "<br>List_id be at least 2 characters in length</font>\n";
         } else {
-            echo "<br><B><font color=$default_text>LIST DELETION CONFIRMATION: $list_id</B>\n";
-            echo "<br><br><a href=\"$PHP_SELF?ADD=611&list_id=$list_id&CoNfIrM=YES\">Click here to delete list $list_id</a></font><br><br><br>\n";
+            if ($SUB==1) {
+                echo "<br><B><font color=$default_text>LIST AND LEAD DELETION CONFIRMATION: $list_id</B>\n";
+                echo "<br><br><a href=\"$PHP_SELF?ADD=611&SUB=1&list_id=$list_id&CoNfIrM=YES\">Click here to delete list and all of its leads $list_id</a></font><br><br><br>\n";
+            } else {
+                echo "<br><B><font color=$default_text>LIST DELETION CONFIRMATION: $list_id</B>\n";
+                echo "<br><br><a href=\"$PHP_SELF?ADD=611&list_id=$list_id&CoNfIrM=YES\">Click here to delete list $list_id</a></font><br><br><br>\n";
+            }
         }
+        $ADD='311';		# go to campaign modification below
+    } else {
+        echo "<font color=red>You do not have permission to view this page</font>\n";
     }
-    $ADD='311';		# go to campaign modification below
 }
 
 ######################
@@ -338,35 +301,39 @@ if ($ADD==511) {
 ######################
 
 if ($ADD==611) {
-    echo "<font face=\"Arial,Helvetica\" color=$default_text SIZE=2>";
+    if ($LOGmodify_lists==1) {
+        echo "<font face=\"Arial,Helvetica\" color=$default_text SIZE=2>";
 
-    if ( ( strlen($list_id) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_lists < 1) ) {
-        echo "<br><font color=red>LIST NOT DELETED - Please go back and look at the data you entered\n";
-        echo "<br>List_id be at least 2 characters in length</font><br>\n";
-    } else {
-        $stmt="DELETE from osdial_lists where list_id='$list_id' limit 1;";
-        $rslt=mysql_query($stmt, $link);
-
-        echo "<br><font color=$default_text>REMOVING LIST HOPPER LEADS FROM OLD CAMPAIGN HOPPER ($list_id)</font>\n";
-        $stmt="DELETE from osdial_hopper where list_id='$list_id';";
-        $rslt=mysql_query($stmt, $link);
-
-        if ($SUB==1) {
-            echo "<br><font color=$default_text>REMOVING LIST LEADS FROM $t1 TABLE</font>\n";
-            $stmt="DELETE from osdial_list where list_id='$list_id';";
+        if ( ( strlen($list_id) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_lists < 1) ) {
+            echo "<br><font color=red>LIST NOT DELETED - Please go back and look at the data you entered\n";
+            echo "<br>List_id be at least 2 characters in length</font><br>\n";
+        } else {
+            $stmt="DELETE from osdial_lists where list_id='$list_id' limit 1;";
             $rslt=mysql_query($stmt, $link);
-        }
 
-        ### LOG CHANGES TO LOG FILE ###
-        if ($WeBRooTWritablE > 0) {
-            $fp = fopen ("./admin_changes_log.txt", "a");
-            fwrite ($fp, "$date|!!!DELETING LIST!!!!|$PHP_AUTH_USER|$ip|list_id='$list_id'|\n");
-            fclose($fp);
+            echo "<br><font color=$default_text>REMOVING LIST HOPPER LEADS FROM OLD CAMPAIGN HOPPER ($list_id)</font>\n";
+            $stmt="DELETE from osdial_hopper where list_id='$list_id';";
+            $rslt=mysql_query($stmt, $link);
+
+            if ($SUB==1) {
+                echo "<br><font color=$default_text>REMOVING LIST LEADS FROM $t1 TABLE</font>\n";
+                $stmt="DELETE from osdial_list where list_id='$list_id';";
+                $rslt=mysql_query($stmt, $link);
+            }
+
+            ### LOG CHANGES TO LOG FILE ###
+            if ($WeBRooTWritablE > 0) {
+                $fp = fopen ("./admin_changes_log.txt", "a");
+                fwrite ($fp, "$date|!!!DELETING LIST!!!!|$PHP_AUTH_USER|$ip|list_id='$list_id'|\n");
+                fclose($fp);
+            }
+            echo "<br><B><font color=$default_text>LIST DELETION COMPLETED: $list_id</font></B>\n";
+            echo "<br><br>\n";
         }
-        echo "<br><B><font color=$default_text>LIST DELETION COMPLETED: $list_id</font></B>\n";
-        echo "<br><br>\n";
+        $ADD='100';		# go to lists list
+    } else {
+        echo "<font color=red>You do not have permission to view this page</font>\n";
     }
-    $ADD='100';		# go to lists list
 }
 
 ######################
@@ -889,7 +856,6 @@ if ($ADD==311) {
         }
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
-        exit;
     }
 }
 
