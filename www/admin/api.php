@@ -341,12 +341,39 @@ if ($xml['function'] == "version") {
     if (preg_match('/^Y$|^YES$|^T$|^TRUE$|^1$|^AREACODE$/i',$xml->params->dnc_check) and $status != "ERROR") {
         if (preg_match('/^AREACODE$/i',$xml->params->dnc_check))
             $xml->params->phone_number = substr($xml->params->phone_number, 0, 3) . 'XXXXXXX';
-        $dnc_where = sprintf("phone_number='%s'",mres($xml->params->phone_number));
-        if ($xml['debug'] > 0) $debug .= "DNC_WHERE: " . $dnc_where . "\n";
-        $dnc = get_first_record($link, 'osdial_dnc', 'count(*) AS count', $dnc_where);
-        if ($dnc['count'] > 0) {
+        $dncc=0;
+        $dncs=0;
+        $dncsskip=0;
+
+        if ($system_settings['enable_multicompany'] > 0) {
+            if (preg_match('/COMPANY|BOTH/',$comp['dnc_method'])) {
+                $dnc_where = sprintf("company_id='%s' AND phone_number='%s'",$comp['id'],mres($xml->params->phone_number));
+                if ($xml['debug'] > 0) $debug .= "DNC_COMP_WHERE: " . $dnc_where . "\n";
+                $dnc = get_first_record($link, 'osdial_dnc_company', 'count(*) AS count', $dnc_where);
+                $dncs = $dnc['count'];
+                $dncc=$dnc['count'];
+            }
+            if (preg_match('/COMPANY/',$comp['dnc_method'])) $dncsskip++;
+        }
+
+        if ($dncsskip==0) {
+            $dnc_where = sprintf("phone_number='%s'",mres($xml->params->phone_number));
+            if ($xml['debug'] > 0) $debug .= "DNC_WHERE: " . $dnc_where . "\n";
+            $dnc = get_first_record($link, 'osdial_dnc', 'count(*) AS count', $dnc_where);
+            $dncs = $dnc['count'];
+        }
+
+        if ($dncs > 0 or $dncc > 0) {
             $status = "ERROR";
-            $reason = "Phone Number is in systen DNC list.";
+            $reason = "Phone Number is in ";
+            if ($dncs > 0 and $dncc > 0) {
+                $reason .= "System and Company";
+            } elseif ($dncs > 0) {
+                $reason .= "System";
+            } elseif ($dncc > 0) {
+                $reason .= "Company";
+            }
+            $reason .= " DNC list.";
             $vdreason = "add_lead PHONE NUMBER IN DNC";
         }
     }

@@ -74,13 +74,43 @@ echo "<TABLE align=center><TR><TD align=center>\n";
 echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 if (strlen($phone_number) > 2) {
-	$stmt = sprintf("SELECT count(*) from osdial_dnc where phone_number='%s';", mres($phone_number));
-	$rslt=mysql_query($stmt, $link);
-	$row=mysql_fetch_row($rslt);
-	if ($row[0] > 0) {
-		echo "<br>DNC NOT ADDED - This phone number is already in the Do Not Call List: $phone_number<BR><BR>\n";
+    $dncs=0;
+    $dncc=0;
+    $dncsskip=0;
+
+    if ($LOG['multicomp_user'] > 0) {
+        if (preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
+	        $stmt = sprintf("SELECT count(*) FROM osdial_dnc_company WHERE company_id='%s' AND phone_number='%s';", mres($LOG['company_id']),mres($phone_number));
+        	$rslt=mysql_query($stmt, $link);
+        	$row=mysql_fetch_row($rslt);
+            $dncc=$row[0];
+        }
+        if (preg_match('/COMPANY/',$LOG['company']['dnc_method'])) $dncsskip++;
+    }
+
+    if ($dncsskip==0) {
+	    $stmt = sprintf("SELECT count(*) from osdial_dnc where phone_number='%s';", mres($phone_number));
+	    $rslt=mysql_query($stmt, $link);
+	    $row=mysql_fetch_row($rslt);
+        $dncs=$row[0];
+    }
+
+	if ($dncs > 0 or $dncc > 0) {
+		echo "<br>DNC NOT ADDED - This phone number is already in the ";
+        if ($dncs > 0 and $dncc > 0) {
+            echo "System and Company";
+        } elseif ($dncs > 0) {
+             echo "System";
+        } elseif ($dncc > 0) {
+             echo "Company";
+        }
+        echo " Do Not Call List: $phone_number<BR><BR>\n";
 	} else {
-		$stmt = sprintf("INSERT INTO osdial_dnc (phone_number) values('%s');", mres($phone_number));
+        if ($LOG['multicomp_user'] > 0 and preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
+		    $stmt = sprintf("INSERT INTO osdial_dnc_company (company_id,phone_number) values('%s','%s');", mres($LOG['company_id']),mres($phone_number));
+        } else {
+		    $stmt = sprintf("INSERT INTO osdial_dnc (phone_number) values('%s');", mres($phone_number));
+        }
 		$rslt=mysql_query($stmt, $link);
 
 		echo "<br><B>DNC ADDED: $phone_number</B><BR><BR>\n";

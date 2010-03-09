@@ -246,7 +246,7 @@ $sthA->finish();
 
 #############################################
 ##### START QUEUEMETRICS LOGGING LOOKUP #####
-$stmtA = "SELECT enable_queuemetrics_logging,queuemetrics_server_ip,queuemetrics_dbname,queuemetrics_login,queuemetrics_pass,queuemetrics_log_id FROM system_settings;";
+$stmtA = "SELECT enable_queuemetrics_logging,queuemetrics_server_ip,queuemetrics_dbname,queuemetrics_login,queuemetrics_pass,queuemetrics_log_id,enable_multicompany FROM system_settings;";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -260,6 +260,7 @@ while ($sthArows > $rec_count)
 		$queuemetrics_login=			"$aryA[3]";
 		$queuemetrics_pass =			"$aryA[4]";
 		$queuemetrics_log_id =			"$aryA[5]";
+		$enable_multicompany =			"$aryA[6]";
 	 $rec_count++;
 	}
 $sthA->finish();
@@ -1262,14 +1263,43 @@ while($one_day_interval > 0)
 									if (length($VD_alt_phone)>5) {
 										$VD_alt_dnc_count=0;
 										if ($VD_use_internal_dnc =~ /Y/) {
-											$stmtA="SELECT count(*) FROM osdial_dnc where phone_number='$VD_alt_phone';";
-											if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
-											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-											if (@aryA = $sthA->fetchrow_array) {
-												$VD_alt_dnc_count =	"$aryA[0]";
+											$dncsskip=0;
+											if ($enable_multicompany > 0) {
+												$comp_id=0;
+												$dnc_method='';
+												$stmtA="SELECT comp_id,dnc_method FROM osdial_companies WHERE company_id='" . ((substr($CLcampaign_id,0,3) * 1) - 100) . "';";
+												if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+												$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+												$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+												if (@aryA = $sthA->fetchrow_array) {
+													$comp_id = $aryA[0];
+													$dnc_method = $aryA[1];
+												}
+												$sthA->finish();
+												if ($dnc_method =~ /COMPANY|BOTH/) {
+													$stmtA="SELECT count(*) FROM osdial_dnc_company WHERE company_id='$comp_id' AND phone_number='$VD_alt_phone';";
+													if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+													$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+													$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+													if (@aryA = $sthA->fetchrow_array) {
+														$VD_alt_dnc_count += $aryA[0];
+													}
+													$sthA->finish();
+												}
+												if ($dnc_method =~ /COMPANY/) {
+													$dncsskip++;
+												}
 											}
-											$sthA->finish();
+											if ($dncsskip==0) {
+												$stmtA="SELECT count(*) FROM osdial_dnc WHERE phone_number='$VD_alt_phone';";
+												if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+												$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+												$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+												if (@aryA = $sthA->fetchrow_array) {
+													$VD_alt_dnc_count += $aryA[0];
+												}
+												$sthA->finish();
+											}
 										}
 										if ($VD_alt_dnc_count < 1) {
 											$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='$CLcampaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ALT',user='',priority='25';";
@@ -1568,7 +1598,7 @@ while($one_day_interval > 0)
 
 			#############################################
 			##### START QUEUEMETRICS LOGGING LOOKUP #####
-			$stmtA = "SELECT enable_queuemetrics_logging,queuemetrics_server_ip,queuemetrics_dbname,queuemetrics_login,queuemetrics_pass,queuemetrics_log_id FROM system_settings;";
+			$stmtA = "SELECT enable_queuemetrics_logging,queuemetrics_server_ip,queuemetrics_dbname,queuemetrics_login,queuemetrics_pass,queuemetrics_log_id,enable_multicompany FROM system_settings;";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -1582,6 +1612,7 @@ while($one_day_interval > 0)
 					$queuemetrics_login=			"$aryA[3]";
 					$queuemetrics_pass =			"$aryA[4]";
 					$queuemetrics_log_id =			"$aryA[5]";
+					$enable_multicompany =			"$aryA[6]";
 				 $rec_count++;
 				}
 			$sthA->finish();

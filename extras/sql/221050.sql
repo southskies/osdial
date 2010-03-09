@@ -54,5 +54,16 @@ ALTER TABLE osdial_inbound_groups MODIFY ingroup_script VARCHAR(20);##|##
 ALTER TABLE osdial_campaigns MODIFY lead_filter_id VARCHAR(20);##|##
  ##    Adjust size of campaign lead_filter_id field.;
 
+ALTER TABLE osdial_companies MODIFY dnc_method enum('SYSTEM','COMPANY','BOTH');##|##
+ ##    Fix typo in dnc_method field.;
+
+CREATE TABLE osdial_dnc_company (
+  company_id TINYINT(3) UNSIGNED NOT NULL,
+  phone_number varchar(12) NOT NULL,
+  creation_date timestamp NOT NULL default CURRENT_TIMESTAMP,
+  PRIMARY KEY (company_id,phone_number)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;##|##
+ ##    Add osdial_dnc_company table.;
+
 UPDATE system_settings SET version='2.2.1.050',last_update_check=DATE_SUB(NOW(), INTERVAL 1 DAY);##|##
  ##    Updating database to version 2.2.1.050 and clearing last_update_check flag.;

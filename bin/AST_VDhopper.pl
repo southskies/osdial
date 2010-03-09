@@ -276,6 +276,19 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 	$sthA->finish();
 
 
+### Get system_settings.
+	$stmtA = "SELECT enable_multicompany FROM system_settings;";
+	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+	$sthArows=$sthA->rows;
+	$rec_count=0;
+	while ($sthArows > $rec_count) {
+		@aryA = $sthA->fetchrow_array;
+		$enable_multicompany = $aryA[0];
+		$rec_count++;
+	}
+	$sthA->finish();
+
 
 $secX = time();
 	($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime($secX);
@@ -1696,44 +1709,66 @@ foreach(@campaign_id)
 				}
 
 			$h=0;
-			foreach(@leads_to_hopper)
-				{
-				if ($leads_to_hopper[$h] != 0)
-					{
+			foreach(@leads_to_hopper) {
+				if ($leads_to_hopper[$h] != 0) {
 					$DNClead=0;
-					if ($use_internal_dnc[$i] =~ /Y/)
-						{
+					if ($use_internal_dnc[$i] =~ /Y/) {
 						if ($DB) {print "     Doing DNC Check: $phone_to_hopper[$h] - $use_internal_dnc[$i]\n";}
-						$stmtA = "SELECT count(*) from osdial_dnc where phone_number='$phone_to_hopper[$h]';";
-						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-						@aryA = $sthA->fetchrow_array;
-						$DNClead = $aryA[0];
-						$sthA->finish();
-						if ($DNClead != 0)
-							{
+						$dncsskip=0;
+						if ($enable_multicompany > 0) {
+							$comp_id=0;
+							$dnc_method='';
+							$stmtA="SELECT comp_id,dnc_method FROM osdial_companies WHERE company_id='" . ((substr($campaign_id[$i],0,3) * 1) - 100) . "';";
+							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+							if (@aryA = $sthA->fetchrow_array) {
+								$comp_id = $aryA[0];
+								$dnc_method = $aryA[1];
+							}
+							$sthA->finish();
+							if ($dnc_method =~ /COMPANY|BOTH/) {
+								$stmtA="SELECT count(*) FROM osdial_dnc_company WHERE company_id='$comp_id' AND phone_number='$phone_to_hopper[$h]';";
+								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+								@aryA = $sthA->fetchrow_array;
+								$DNClead += $aryA[0];
+								$sthA->finish();
+							}
+							if ($dnc_method =~ /COMPANY/) {
+								$dncsskip++;
+							}
+						}
+
+						if ($dncsskip==0) {
+							$stmtA = "SELECT count(*) from osdial_dnc where phone_number='$phone_to_hopper[$h]';";
+							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+							@aryA = $sthA->fetchrow_array;
+							$DNClead += $aryA[0];
+							$sthA->finish();
+						}
+
+						if ($DNClead != 0) {
 							$stmtA = "UPDATE osdial_list SET status='DNCL' where lead_id='$leads_to_hopper[$h]';";
 							$affected_rows = $dbhA->do($stmtA);
 							if ($DBX) {print "Flagging DNC lead:     $affected_rows  $phone_to_hopper[$h]\n";}
-							}
 						}
-					if ($DNClead == 0)
-						{
+					}
+					if ($DNClead == 0) {
 						$stmtA = "INSERT INTO $osdial_hopper (lead_id,campaign_id,status,user,list_id,gmt_offset_now,state,priority) values('$leads_to_hopper[$h]','$campaign_id[$i]','READY','','$lists_to_hopper[$h]','$gmt_to_hopper[$h]','$state_to_hopper[$h]','$priority_to_hopper[$h]');";
 						$affected_rows = $dbhA->do($stmtA);
 						if ($DBX) {print "LEAD INSERTED: $affected_rows|$leads_to_hopper[$h]|\n";}
-						}
 					}
-				$h++;
 				}
-				if ($DB) {print "     DONE with this campaign\n";}
-
+			$h++;
 			}
+			if ($DB) {print "     DONE with this campaign\n";}
 		}
+	}
 	
 	
 	$i++;
-	}
+}
 
 
 $dbhA->disconnect();

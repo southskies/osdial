@@ -62,7 +62,11 @@ if ($ADD==1121) {
 			
 	        ### add lead to the internal DNC list 
 	        if ($dispo != $status and $status == 'DNC') {
-		        $stmt="INSERT INTO osdial_dnc (phone_number) values('" . mres($phone_number) . "');";
+                if ($LOG['multicomp_user'] > 0 and preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
+                    $stmt = sprintf("INSERT INTO osdial_dnc_company (company_id,phone_number) values('%s','%s');", mres($LOG['company_id']),mres($phone_number));
+                } else {
+                    $stmt = sprintf("INSERT INTO osdial_dnc (phone_number) values('%s');", mres($phone_number));
+                }
 		        if ($DB) echo "|$stmt|\n";
 		        $rslt=mysql_query($stmt, $link);
 		        echo "<br>Lead added to DNC List: $lead_id - $phone_number<br>\n";

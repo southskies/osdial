@@ -604,21 +604,44 @@ if ($ACTION == 'manDiaLnextCaLL')
 		}
 	else
 		{
-		if (strlen($phone_number)>3)
-			{
-			if ($use_internal_dnc=='Y')
-				{
-				$stmt="SELECT count(*) FROM osdial_dnc where phone_number='$phone_number';";
-				$rslt=mysql_query($stmt, $link);
-				if ($DB) {echo "$stmt\n";}
-				$row=mysql_fetch_row($rslt);
+		if (strlen($phone_number)>3) {
+			if ($use_internal_dnc=='Y') {
+                $dncs=0;
+                $dncsskip=0;
+
+                if ($multicomp > 0) {
+                    $dnc_method='';
+				    $stmt=sprintf("SELECT company_id,dnc_method FROM osdial_companies WHERE company_id='%s';",((substr($user,0,3) * 1) - 100));
+				    $rslt=mysql_query($stmt, $link);
+				    if ($DB) {echo "$stmt\n";}
+				    $row=mysql_fetch_row($rslt);
+                    $comp_id=$row[0];
+                    $dnc_method=$row[1];
+
+                    if (preg_match('/COMPANY|BOTH/',$dnc_method)) {
+				        $stmt=sprintf("SELECT count(*) FROM osdial_dnc_company WHERE company_id='%s' AND phone_number='%s';",$comp_id,$phone_number);
+				        $rslt=mysql_query($stmt, $link);
+				        if ($DB) {echo "$stmt\n";}
+				        $row=mysql_fetch_row($rslt);
+                        $dncs+=$row[0];
+                    }
+
+                    if (preg_match('/COMPANY/',$dnc_method)) $dncsskip++;
+                }
+
+                if ($dncsskip==0) {
+				    $stmt="SELECT count(*) FROM osdial_dnc WHERE phone_number='$phone_number';";
+				    $rslt=mysql_query($stmt, $link);
+				    if ($DB) {echo "$stmt\n";}
+				    $row=mysql_fetch_row($rslt);
+                    $dncs+=$row[0];
+                }
 				
-				if ($row[0] > 0)
-					{
+				if ($dncs > 0) {
 					echo "DNC NUMBER\n";
 					exit;
-					}
 				}
+			}
 			if ($stage=='lookup')
 				{
 				$stmt="SELECT lead_id FROM osdial_list where phone_number='$phone_number' order by modify_date desc LIMIT 1;";
@@ -2334,17 +2357,33 @@ if ($ACTION == 'updateDISPO')
 		$rslt=mysql_query($stmt, $link);
 		}
 
-	if ( ($use_internal_dnc=='Y') and ($dispo_choice=='DNC') )
-		{
+	if ( ($use_internal_dnc=='Y') and ($dispo_choice=='DNC') ) {
+        $dnc_method='';
+        $comp_id=0;
+        if ($multicomp > 0) {
+            $dnc_method='';
+			$stmt=sprintf("SELECT company_id,dnc_method FROM osdial_companies WHERE company_id='%s';",((substr($user,0,3) * 1) - 100));
+			$rslt=mysql_query($stmt, $link);
+			if ($DB) {echo "$stmt\n";}
+			$row=mysql_fetch_row($rslt);
+            $comp_id=$row[0];
+            $dnc_method=$row[1];
+        }
+
 		$stmt = "select phone_number from osdial_list where lead_id='$lead_id';";
 		if ($DB) {echo "$stmt\n";}
 		$rslt=mysql_query($stmt, $link);
-			$row=mysql_fetch_row($rslt);
-		$stmt="INSERT INTO osdial_dnc (phone_number) values('$row[0]');";
+		$row=mysql_fetch_row($rslt);
+
+        if (preg_match('/COMPANY|BOTH/',$dnc_method)) {
+		    $stmt="INSERT INTO osdial_dnc_company (company_id,phone_number) values('$comp_id','$row[0]');";
+        } else {
+		    $stmt="INSERT INTO osdial_dnc (phone_number) values('$row[0]');";
+        }
 		$rslt=mysql_query($stmt, $link);
 		if ($DB) {echo "$stmt\n";}
-		}
-	}
+	  }
+    }
 
 	$dispo_sec=0;
 	$StarTtime = date("U");
