@@ -655,7 +655,7 @@ if ($ACTION == 'manDiaLnextCaLL')
 			}
 			if ($stage=='lookup')
 				{
-				$stmt="SELECT lead_id FROM osdial_list where phone_number='$phone_number' order by modify_date desc LIMIT 1;";
+				$stmt=sprintf("SELECT lead_id FROM osdial_list JOIN osdial_lists ON (osdial_list.list_id=osdial_lists.list_id) WHERE campaign_id='%s' AND phone_number='%s' ORDER BY modify_date DESC LIMIT 1;",$campaign,$phone_number);
 				$rslt=mysql_query($stmt, $link);
 				if ($DB) {echo "$stmt\n";}
 				$man_leadID_ct = mysql_num_rows($rslt);
