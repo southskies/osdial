@@ -1727,6 +1727,71 @@ Through the use of system statuses, you can have statuses that exist for campaig
 Through the use of system status categories, you can group together statuses to allow for statistical analysis on a group of statuses. The Category ID must be 2-20 characters in length with no spaces, the name must be 2-50 characters in length, the description is optional and Time On <?=$t1?> Display defines whether that status will be one of the upto 4 statuses that can be calculated and displayed on the Time On <?=$t1?> Real-Time report.</B>
 
 
+<br><br><br><br>
+
+<b><font size=3>Multi-Company Configuration</font></b><br><br>
+
+<a name="companies-company_name">
+<br><b>Company Name -</b> This name will be displayed as the title banner on reports and configuration screens.
+<br>
+
+<a name="companies-status">
+<br><b>Status -</b> This option allows you to control the current status of the company.  ACTIVE, INACTIVE, SUSPENDED, TERMINATED.
+<br>
+
+<a name="companies-enable_campaign_ivr">
+<br><b>Enable Campaign IVR -</b> This enables admin menu access to the Campaign's In/Out IVR. (Default: OFF)
+<br>
+
+<a name="companies-enable_campaign_listmix">
+<br><b>Enable Campaign ListMix -</b> This enables admin menu access to the Campaign's ListMix Configuration. (Default: ON)
+<br>
+
+<a name="companies-export_leads">
+<br><b>Export Leads -</b> This enables admin users of the Company to export leads. (Default: ON)
+<br>
+
+<a name="companies-enable_scripts">
+<br><b>Enable Scripts -</b> This enables admin menu access to the Scripts configuration. (Default: ON)
+<br>
+
+<a name="companies-enable_filters">
+<br><b>Enable Filters -</b> This enables admin menu access to the Filters configuration. (Default: OFF)
+<br>
+
+<a name="companies-enable_ingroups">
+<br><b>Enable In-Groups -</b> This enables admin menu access to the In-Groups configuration. (Default: OFF)
+<br>
+
+<a name="companies-enable_external_agents">
+<br><b>Enable External-Agents -</b> This enables admin menu access to the External/Remote Agetns configuration. (Default: OFF)
+<br>
+
+<a name="companies-enable_system_calltimes">
+<br><b>Enable System CallTimes -</b> This enables admin menu access to the Global System CallTimes configuration. (Default: OFF)
+<br>
+
+<a name="companies-enable_system_phones">
+<br><b>Enable System Phones -</b> This enables admin menu access to the System Phones configuration. (Default: ON)
+<br>
+
+<a name="companies-enable_system_servers">
+<br><b>Enable System Servers -</b> This enables admin menu access to the Global System Servers configuration. (Default: OFF)
+<br>
+
+<a name="companies-enable_system_statuses">
+<br><b>Enable System Statuses -</b> This enables admin menu access to the Global System Statuses configuration. (Default: OFF)
+<br>
+
+<a name="companies-api_access">
+<br><b>API Access -</b> This enables authorizes admin in the company to utilize the system API. (Default: OFF)
+<br>
+
+<a name="companies-dnc_method">
+<br><b>DNC Method -</b> This signals what tables to use when checking DNC numbers.  SYSTEM- Global DNC List, COMPANY- Company DNC List, BOTH- Global and Company DNC Lists
+<br>
+
+
 
 
 <BR><BR><BR><BR><BR><BR><BR><BR>

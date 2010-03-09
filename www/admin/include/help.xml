@@ -1372,6 +1372,68 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
 
   </section>
 
+  <section pathId="companies" title="Multi-Company Configuration">
+    <item pathId="company_name" title="Company Name">
+    This name will be displayed as the title banner on reports and configuration screens.
+    </item>
+
+    <item pathId="status" title="Status">
+    This option allows you to control the current status of the company.  ACTIVE, INACTIVE, SUSPENDED, TERMINATED.
+    </item>
+
+    <item pathId="enable_campaign_ivr" title="Enable Campaign IVR">
+    This enables admin menu access to the Campaign's In/Out IVR. (Default: OFF)
+    </item>
+
+    <item pathId="enable_campaign_listmix" title="Enable Campaign ListMix">
+    This enables admin menu access to the Campaign's ListMix Configuration. (Default: ON)
+    </item>
+
+    <item pathId="export_leads" title="Export Leads">
+    This enables admin users of the Company to export leads. (Default: ON)
+    </item>
+
+    <item pathId="enable_scripts" title="Enable Scripts">
+    This enables admin menu access to the Scripts configuration. (Default: ON)
+    </item>
+
+    <item pathId="enable_filters" title="Enable Filters">
+    This enables admin menu access to the Filters configuration. (Default: OFF)
+    </item>
+
+    <item pathId="enable_ingroups" title="Enable In-Groups">
+    This enables admin menu access to the In-Groups configuration. (Default: OFF)
+    </item>
+
+    <item pathId="enable_external_agents" title="Enable External-Agents">
+    This enables admin menu access to the External/Remote Agetns configuration. (Default: OFF)
+    </item>
+
+    <item pathId="enable_system_calltimes" title="Enable System CallTimes">
+    This enables admin menu access to the Global System CallTimes configuration. (Default: OFF)
+    </item>
+
+    <item pathId="enable_system_phones" title="Enable System Phones">
+    This enables admin menu access to the System Phones configuration. (Default: ON)
+    </item>
+
+    <item pathId="enable_system_servers" title="Enable System Servers">
+    This enables admin menu access to the Global System Servers configuration. (Default: OFF)
+    </item>
+
+    <item pathId="enable_system_statuses" title="Enable System Statuses">
+    This enables admin menu access to the Global System Statuses configuration. (Default: OFF)
+    </item>
+
+    <item pathId="api_access" title="API Access">
+    This enables authorizes admin in the company to utilize the system API. (Default: OFF)
+    </item>
+
+    <item pathId="dnc_method" title="DNC Method">
+    This signals what tables to use when checking DNC numbers.  SYSTEM- Global DNC List, COMPANY- Company DNC List, BOTH- Global and Company DNC Lists
+    </item>
+  </section>
+
 
 
   <section pathId="osdial_statuses" title="OSDial_Statuses Table">
