@@ -98,8 +98,13 @@ function report_agent_performance_detail() {
     $html .= "    </tr>\n";
     $html .= "    <tr class=tabheader>\n";
     $html .= "      <td align=center>\n";
+    $html .= "        <script>\nvar cal1 = new CalendarPopup('caldiv1');\ncal1.showNavigationDropdowns();\n</script>\n";
     $html .= "        <input type=text name=query_date size=10 maxlength=10 value=\"$query_date\">\n";
+    $html .= "        <a href=# onclick=\"cal1.addDisabledDates('clear','clear');cal1.addDisabledDates(formatDate(parseDate(document.forms[0].end_date.value).addDays(1),'yyyy-MM-dd'),null);cal1.select(document.forms[0].query_date,'acal1','yyyy-MM-dd'); return false;\" name=acal1 id=acal1>\n";
+    $html .= "        <img width=18 src=\"templates/default/images/calendar.png\" style=border:0px;></a>\n";
     $html .= "        to <input type=text name=end_date size=10 maxlength=10 value=\"$end_date\">\n";
+    $html .= "        <a href=# onclick=\"cal1.addDisabledDates('clear','clear');cal1.addDisabledDates(null,formatDate(parseDate(document.forms[0].query_date.value).addDays(-1),'yyyy-MM-dd'));cal1.select(document.forms[0].end_date,'acal1','yyyy-MM-dd'); return false;\" name=acal1 id=acal1>\n";
+    $html .= "        <img width=18 src=\"templates/default/images/calendar.png\" style=border:0px;></a>\n";
     $html .= "      </td>\n";
     $html .= "      <td align=center>\n";
     $html .= "        <select size=1 name=group>\n";
@@ -146,6 +151,7 @@ function report_agent_performance_detail() {
     $html .= "    </tr>\n";
     $html .= "  </table>\n";
     $html .= " </form>\n\n";
+    $html .= "<div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;layer-background-color:white;\"></div>\n";
     $html .= "</div>\n";
     //$html .= "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a href=\"./admin.php?ADD=34&campaign_id=$group\">MODIFY</a> | <a href=\"./admin.php?ADD=999999\">REPORTS</a> </FONT>\n";
 

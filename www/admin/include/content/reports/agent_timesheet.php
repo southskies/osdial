@@ -86,7 +86,10 @@ function report_agent_timesheet() {
     $form .= "      <td>Agent ID</td>\n";
     $form .= "    </tr>\n";
     $form .= "    <tr class=tabheader>\n";
-    $form .= "      <td><input type=text name=query_date size=11 maxlength=10 value=\"$query_date\"></td>\n";
+    $form .= "      <td><script>\nvar cal1 = new CalendarPopup('caldiv1');\ncal1.showNavigationDropdowns();\n</script>\n";
+    $form .= "      <input type=text name=query_date size=11 maxlength=10 value=\"$query_date\">\n";
+    $form .= "      <a href=# onclick=\"cal1.addDisabledDates(formatDate(new Date().addDays(1),'yyyy-MM-dd'),null);cal1.select(document.forms[0].query_date,'acal1','yyyy-MM-dd'); return false;\" name=acal1 id=acal1>\n";
+    $form .= "      <img width=18 src=\"templates/default/images/calendar.png\" style=border:0px;></a></td>\n";
     $form .= "      <td><input type=text name=agent size=16 maxlength=15 value=\"$agent\"></td>\n";
     $form .= "    </tr>\n";
     $form .= "    <tr class=tabheader>\n";
@@ -94,6 +97,7 @@ function report_agent_timesheet() {
     $form .= "    </tr>\n";
     $form .= "  </table>\n";
     $form .= "</form>\n\n";
+    $form .= "<div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;layer-background-color:white;\"></div>\n";
 
     if ($agent) {
         $query_date_BEGIN = "$query_date 00:00:00";   
