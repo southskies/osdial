@@ -393,6 +393,7 @@ echo "<html>\n";
 echo "<head>\n";
 echo "<!-- VERSION: $version     BUILD: $build -->\n";
 
+$company_prefix='';
 if ($multicomp > 0) {
     $company_prefix = substr($phone_login,0,3);
     if ($VD_login != "" and $phone_login != "") {
@@ -778,7 +779,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 		$login=strtoupper($VD_login);
 		$password=strtoupper($VD_pass);
 		##### grab the full name of the agent
-		$stmt="SELECT full_name,user_level,hotkeys_active,agent_choose_ingroups,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,closer_default_blended,user_group,osdial_recording_override,manual_dial_allow_skip from osdial_users where user='$VD_login' and pass='$VD_pass'";
+		$stmt="SELECT full_name,user_level,hotkeys_active,agent_choose_ingroups,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,closer_default_blended,user_group,osdial_recording_override,manual_dial_allow_skip,xfer_agent2agent from osdial_users where user='$VD_login' and pass='$VD_pass'";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$LOGfullname=$row[0];
@@ -794,6 +795,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 		$VU_user_group=$row[10];
 		$VU_osdial_recording_override=$row[11];
 		$VU_manual_dial_allow_skip=$row[12];
+		$LOGxfer_agent2agent=$row[13];
 
 		if ($WeBRooTWritablE > 0)
 			{
@@ -1032,7 +1034,9 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 			if ($campaign_allow_inbound > 0)
 				{
 				$VARingroups='';
-				$stmt="select group_id from osdial_inbound_groups where active = 'Y' and group_id IN($closer_campaigns) order by group_id limit 60;";
+                $closerSQL = "group_id IN($closer_campaigns)";
+                if ($LOGxfer_agent2agent > 0) $closerSQL = "($closerSQL OR group_id = 'A2A_$VD_login')";
+				$stmt="select group_id from osdial_inbound_groups where active = 'Y' and $closerSQL order by group_id limit 60;";
 				$rslt=mysql_query($stmt, $link);
 				if ($DB) {echo "$stmt\n";}
 				$closer_ct = mysql_num_rows($rslt);
@@ -1055,7 +1059,9 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 			if ($allow_closers == 'Y')
 				{
 				$VARxfergroups='';
-				$stmt="select group_id,group_name from osdial_inbound_groups where active = 'Y' and group_id IN($xfer_groups) order by group_id limit 60;";
+                $xferSQL = "group_id IN($xfer_groups)";
+                if ($LOGxfer_agent2agent > 0) $xferSQL = "($xferSQL OR group_id LIKE 'A2A_$company_prefix%')";
+				$stmt="select group_id,group_name from osdial_inbound_groups where active = 'Y' and $xferSQL order by group_id limit 60;";
 				$rslt=mysql_query($stmt, $link);
 				if ($DB) {echo "$stmt\n";}
 				$xfer_ct = mysql_num_rows($rslt);

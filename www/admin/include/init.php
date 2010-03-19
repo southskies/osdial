@@ -180,7 +180,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
         $groups = explode(" ", $closer_campaigns);
     }
 
-    $stmt=sprintf("SELECT group_id,group_name from osdial_inbound_groups where group_id IN %s order by group_id",$LOG['allowed_ingroupsSQL']);
+    $stmt=sprintf("SELECT group_id,group_name from osdial_inbound_groups where group_id IN %s AND group_id NOT LIKE 'A2A_%%' order by group_id",$LOG['allowed_ingroupsSQL']);
     $rslt=mysql_query($stmt, $link);
     $groups_to_print = mysql_num_rows($rslt);
     $groups_list='';

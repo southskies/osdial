@@ -499,73 +499,58 @@ if ($ACTION == 'LogiNCamPaigns')
 ### regCLOSER - update the osdial_live_agents table to reflect the closer
 ###             inbound choices made upon login
 ################################################################################
-if ($ACTION == 'regCLOSER')
-{
-	$row='';   $rowx='';
-	$channel_live=1;
-	if ( (strlen($closer_choice)<1) || (strlen($user)<1) )
-	{
-	$channel_live=0;
-	echo "Group Choice $closer_choice is not valid\n";
-	exit;
-	}
-	else
-	{
-		if ($closer_choice == "MGRLOCK-")
-		{
-		$stmt="SELECT closer_campaigns FROM osdial_users where user='$user' LIMIT 1;";
-		$rslt=mysql_query($stmt, $link);
-		if ($DB) {echo "$stmt\n";}
-			$row=mysql_fetch_row($rslt);
-			$closer_choice =$row[0];
+if ($ACTION == 'regCLOSER') {
+    $row='';
+    $rowx='';
+    $channel_live=1;
+    if ( (strlen($closer_choice)<1) || (strlen($user)<1) ) {
+        $channel_live=0;
+        echo "Group Choice $closer_choice is not valid\n";
+        exit;
+    } else {
+        $stmt="SELECT closer_campaigns,xfer_agent2agent FROM osdial_users where user='$user' LIMIT 1;";
+        $rslt=mysql_query($stmt, $link);
+        if ($DB) echo "$stmt\n";
+        $row=mysql_fetch_row($rslt);
+        $closer_campaigns =$row[0];
+        $xfer_agent2agent =$row[1];
 
-		$stmt="UPDATE osdial_live_agents set closer_campaigns='$closer_choice' where user='$user' and server_ip='$server_ip';";
-			if ($format=='debug') {echo "\n<!-- $stmt -->";}
-		$rslt=mysql_query($stmt, $link);
-		}
-		else
-		{
-		$stmt="UPDATE osdial_live_agents set closer_campaigns='$closer_choice' where user='$user' and server_ip='$server_ip';";
-			if ($format=='debug') {echo "\n<!-- $stmt -->";}
-		$rslt=mysql_query($stmt, $link);
+        if ($closer_choice == "MGRLOCK-") $closer_choice = $closer_campaigns;
+        if ($xfer_agent2agent > 0) $closer_choice = rtrim($closer_choice,'-') . "A2A_$user -";
 
-		#$stmt="UPDATE osdial_users set closer_campaigns='$closer_choice' where user='$user';";
-		#	if ($format=='debug') {echo "\n<!-- $stmt -->";}
-		#$rslt=mysql_query($stmt, $link);
-		}
+        $stmt="UPDATE osdial_live_agents set closer_campaigns='$closer_choice' where user='$user' and server_ip='$server_ip';";
+        if ($format=='debug') echo "\n<!-- $stmt -->";
+        $rslt=mysql_query($stmt, $link);
 
-	$in_groups_pre = preg_replace('/-$/','',$closer_choice);
-	$in_groups = explode(" ",$in_groups_pre);
-	$in_groups_ct = count($in_groups);
-	$k=1;
-	while ($k < $in_groups_ct)
-		{
-		if (strlen($in_groups[$k])>1)
-			{
-			$stmt="SELECT group_weight,calls_today FROM osdial_inbound_group_agents where user='$user' and group_id='$in_groups[$k]';";
-			$rslt=mysql_query($stmt, $link);
-			if ($DB) {echo "$stmt\n";}
-			$viga_ct = mysql_num_rows($rslt);
-			if ($viga_ct > 0)
-				{
-				$row=mysql_fetch_row($rslt);
-				$group_weight = $row[0];
-				$calls_today =	$row[1];
-				}
-			else
-				{
-				$group_weight = 0;
-				$calls_today =	0;
-				}
-			$stmt="INSERT INTO osdial_live_inbound_agents set user='$user',group_id='$in_groups[$k]',group_weight='$group_weight',calls_today='$calls_today',last_call_time='$NOW_TIME',last_call_finish='$NOW_TIME';";
-				if ($format=='debug') {echo "\n<!-- $stmt -->";}
-			$rslt=mysql_query($stmt, $link);
-			}
-		$k++;
-		}
-
-	}
-	echo "Closer In Group Choice $closer_choice has been registered to user $user\n";
+        $in_groups_pre = preg_replace('/-$/','',$closer_choice);
+        $in_groups = explode(" ",$in_groups_pre);
+        $in_groups_ct = count($in_groups);
+        $k=1;
+        while ($k < $in_groups_ct) {
+            if (strlen($in_groups[$k])>1) {
+                $stmt="SELECT group_weight,calls_today FROM osdial_inbound_group_agents where user='$user' and group_id='$in_groups[$k]';";
+                $rslt=mysql_query($stmt, $link);
+                if ($DB) echo "$stmt\n";
+                $viga_ct = mysql_num_rows($rslt);
+                if (preg_match('/^A2A_/',$in_groups[$k])) {
+                    $group_weight = 10;
+                    $calls_today =	$row[1];
+                } elseif ($viga_ct > 0) {
+                    $row=mysql_fetch_row($rslt);
+                    $group_weight = $row[0];
+                    $calls_today =	$row[1];
+                } else {
+                    $group_weight = 0;
+                    $calls_today =	0;
+                }
+                $stmt="INSERT INTO osdial_live_inbound_agents set user='$user',group_id='$in_groups[$k]',group_weight='$group_weight',calls_today='$calls_today',last_call_time='$NOW_TIME',last_call_finish='$NOW_TIME';";
+                if ($format=='debug') echo "\n<!-- $stmt -->";
+                $rslt=mysql_query($stmt, $link);
+            }
+            $k++;
+        }
+    }
+    echo "Closer In Group Choice $closer_choice has been registered to user $user\n";
 }
 
 

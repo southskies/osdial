@@ -162,6 +162,7 @@ if ($non_latin < 1)	{
 	$manual_dial_list_id = ereg_replace("[^0-9]","",$manual_dial_list_id);
 	$xfer_exten = ereg_replace("[^0-9]","",$xfer_exten);
 	$cpuinfo = ereg_replace("[^0-9]","",$cpuinfo);
+	$xfer_agent2agent = ereg_replace("[^0-9]","",$xfer_agent2agent);
 	
 	### DIGITS and DASHES
 	$group_rank = ereg_replace("[^-0-9]","",$group_rank);

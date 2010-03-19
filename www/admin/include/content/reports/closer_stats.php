@@ -65,7 +65,7 @@ function report_closer_stats() {
     if ($query_date == '') {$query_date = $NOW_DATE;}
     if ($end_date == '') {$end_date = $NOW_DATE;}
     
-    $stmt=sprintf("SELECT group_id FROM osdial_inbound_groups WHERE group_id IN %s;",$LOG['allowed_ingroupsSQL']);
+    $stmt=sprintf("SELECT group_id FROM osdial_inbound_groups WHERE group_id IN %s OR group_id LIKE 'A2A_%s%%';",$LOG['allowed_ingroupsSQL'],$company_prefix);
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $campaigns_to_print = mysql_num_rows($rslt);

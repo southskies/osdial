@@ -605,6 +605,7 @@ $xferconf_b_number = get_variable("xferconf_b_number");
 $xfer_cid_mode = get_variable("xfer_cid_mode");
 $xfer_exten = get_variable("xfer_exten");
 $XFERgroups = get_variable("XFERgroups");
+$xfer_agent2agent = get_variable("xfer_agent2agent");
 
 
 

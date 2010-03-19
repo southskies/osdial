@@ -134,7 +134,7 @@ function get_calltimes($link, $selected="") {
 ##### get server listing for dynamic pulldown
 function get_servers($link, $selected="") {
     $krh = get_krh($link, 'servers', 'server_ip,server_description');
-    return format_select_options($krh, 'server_ip', 'server_description', $selected, "NONE", false);
+    return format_select_options($krh, 'server_ip', 'server_description', $selected, "", false);
 }
 
 

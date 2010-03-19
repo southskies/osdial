@@ -131,7 +131,7 @@ function report_realtime_detail() {
     $html .= "   .b4 {color: white; background-color: #0000FF}\n";
 
 	
-	$stmt="SELECT group_id,group_color FROM osdial_inbound_groups;";
+    $stmt=sprintf("SELECT group_id,group_color FROM osdial_inbound_groups WHERE group_id IN %s OR group_id LIKE 'A2A_%s%%';",$LOG['allowed_ingroupsSQL'],$company_prefix);
 	$rslt=mysql_query($stmt, $link);
 	if ($DB) {$html .= "$stmt\n";}
 	$INgroups_to_print = mysql_num_rows($rslt);

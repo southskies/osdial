@@ -108,6 +108,7 @@
 	var decoded = '';
 	var view_scripts = '<? echo $view_scripts ?>';
 	var LOGfullname = '<? echo $LOGfullname ?>';
+	var LOGxfer_agent2agent = '<? echo $LOGxfer_agent2agent ?>';
 	var recLIST = '';
 	var filename = '';
 	var last_filename = '';
@@ -4016,13 +4017,15 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			var live_CSC_HTML = "<table class=acrossagent cellpadding=5 cellspacing=5 width=500><tr><td align=center><B><font color=<?=$closer_fc?>>Groups Not Selected</font></B></td><td align=center><B><font color=<?=$closer_fc?>>Selected Groups</font></B></td></tr><tr><td bgcolor=\"<?=$closer_bg?>\" height=300 width=240 valign=top><font class=\"log_text\"><span id=CloserSelectAdd>";
 			var loop_ct = 0;
 			while (loop_ct < INgroupCOUNT) {
-				live_CSC_HTML = live_CSC_HTML + "<a href=\"#\" onclick=\"CloserSelect_change('" + VARingroups[loop_ct] + "','ADD');return false;\">";
-				if (multicomp > 0) {
-					live_CSC_HTML = live_CSC_HTML + VARingroups[loop_ct].substr(0,3);
-				} else {
-					live_CSC_HTML = live_CSC_HTML + VARingroups[loop_ct];
+				if (VARingroups[loop_ct].substr(0,4) != "A2A_") {
+					live_CSC_HTML = live_CSC_HTML + "<a href=\"#\" onclick=\"CloserSelect_change('" + VARingroups[loop_ct] + "','ADD');return false;\">";
+					if (multicomp > 0) {
+						live_CSC_HTML = live_CSC_HTML + VARingroups[loop_ct].substr(0,3);
+					} else {
+						live_CSC_HTML = live_CSC_HTML + VARingroups[loop_ct];
+					}
+					live_CSC_HTML = live_CSC_HTML + "<BR>";
 				}
-				live_CSC_HTML = live_CSC_HTML + "<BR>";
 				loop_ct++;
 			}
 			live_CSC_HTML = live_CSC_HTML + "</span></font></td><td height=300 width=240 valign=top bgcolor=\"<?=$closer_bg?>\"><font class=\"log_text\"><span id=CloserSelectDelete></span></font></td></tr></table>";

@@ -215,7 +215,7 @@ if ($ADD=="2A")
 		 else
 			{
             if ($LOG['multicomp'] > 0) $user = (($company_id * 1) + 100) . $user;
-			$stmt="INSERT INTO osdial_users (user,pass,full_name,user_level,user_group,phone_login,phone_pass,delete_users,delete_user_groups,delete_lists,delete_campaigns,delete_ingroups,delete_remote_agents,load_leads,campaign_detail,ast_admin_access,ast_delete_phones,delete_scripts,modify_leads,hotkeys_active,change_agent_campaign,agent_choose_ingroups,closer_campaigns,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,delete_filters,alter_agent_interface_options,closer_default_blended,delete_call_times,modify_call_times,modify_users,modify_campaigns,modify_lists,modify_scripts,modify_filters,modify_ingroups,modify_usergroups,modify_remoteagents,modify_servers,view_reports,osdial_recording_override,alter_custdata_override,manual_dial_allow_skip,export_leads,admin_api_access,agent_api_access) SELECT \"$user\",\"$pass\",\"$full_name\",user_level,user_group,phone_login,phone_pass,delete_users,delete_user_groups,delete_lists,delete_campaigns,delete_ingroups,delete_remote_agents,load_leads,campaign_detail,ast_admin_access,ast_delete_phones,delete_scripts,modify_leads,hotkeys_active,change_agent_campaign,agent_choose_ingroups,closer_campaigns,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,delete_filters,alter_agent_interface_options,closer_default_blended,delete_call_times,modify_call_times,modify_users,modify_campaigns,modify_lists,modify_scripts,modify_filters,modify_ingroups,modify_usergroups,modify_remoteagents,modify_servers,view_reports,osdial_recording_override,alter_custdata_override,manual_dial_allow_skip,export_leads,admin_api_access,agent_api_access from osdial_users where user=\"$source_user_id\";";
+			$stmt="INSERT INTO osdial_users (user,pass,full_name,user_level,user_group,phone_login,phone_pass,delete_users,delete_user_groups,delete_lists,delete_campaigns,delete_ingroups,delete_remote_agents,load_leads,campaign_detail,ast_admin_access,ast_delete_phones,delete_scripts,modify_leads,hotkeys_active,change_agent_campaign,agent_choose_ingroups,closer_campaigns,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,delete_filters,alter_agent_interface_options,closer_default_blended,delete_call_times,modify_call_times,modify_users,modify_campaigns,modify_lists,modify_scripts,modify_filters,modify_ingroups,modify_usergroups,modify_remoteagents,modify_servers,view_reports,osdial_recording_override,alter_custdata_override,manual_dial_allow_skip,export_leads,admin_api_access,agent_api_access,xfer_agent2agent) SELECT \"$user\",\"$pass\",\"$full_name\",user_level,user_group,phone_login,phone_pass,delete_users,delete_user_groups,delete_lists,delete_campaigns,delete_ingroups,delete_remote_agents,load_leads,campaign_detail,ast_admin_access,ast_delete_phones,delete_scripts,modify_leads,hotkeys_active,change_agent_campaign,agent_choose_ingroups,closer_campaigns,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,delete_filters,alter_agent_interface_options,closer_default_blended,delete_call_times,modify_call_times,modify_users,modify_campaigns,modify_lists,modify_scripts,modify_filters,modify_ingroups,modify_usergroups,modify_remoteagents,modify_servers,view_reports,osdial_recording_override,alter_custdata_override,manual_dial_allow_skip,export_leads,admin_api_access,agent_api_access,xfer_agent2agent from osdial_users where user=\"$source_user_id\";";
 			$rslt=mysql_query($stmt, $link);
 
 			$stmtA="INSERT INTO osdial_inbound_group_agents (user,group_id,group_rank,group_weight,calls_today) SELECT \"$user\",group_id,group_rank,group_weight,\"0\" from osdial_inbound_group_agents where user=\"$source_user_id\";";
@@ -243,41 +243,44 @@ if ($ADD=="2A")
 # ADD=4A submit user modifications to the system - ADMIN
 ######################
 
-if ($ADD=="4A")
-{
-	if ($LOGmodify_users==1)
-	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+if ($ADD=="4A") {
+    if ($LOGmodify_users==1) {
+        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	 if ( (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user_level) < 1) )
-		{
-		 echo "<br><font color=red>AGENT NOT MODIFIED - Please go back and look at the data you entered\n";
-		 echo "<br>Password and Full Name each need ot be at least 2 characters in length</font><br>\n";
-		}
-	 else
-		{
-		echo "<br><B><font color=$default_text>AGENT MODIFIED - ADMIN: $user</font></B>\n";
+        if ( (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user_level) < 1) ) {
+            echo "<br><font color=red>AGENT NOT MODIFIED - Please go back and look at the data you entered\n";
+            echo "<br>Password and Full Name each need ot be at least 2 characters in length</font><br>\n";
+        } else {
+            echo "<br><B><font color=$default_text>AGENT MODIFIED - ADMIN: $user</font></B>\n";
 
-		$stmt="UPDATE osdial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass',delete_users='$delete_users',delete_user_groups='$delete_user_groups',delete_lists='$delete_lists',delete_campaigns='$delete_campaigns',delete_ingroups='$delete_ingroups',delete_remote_agents='$delete_remote_agents',load_leads='$load_leads',campaign_detail='$campaign_detail',ast_admin_access='$ast_admin_access',ast_delete_phones='$ast_delete_phones',delete_scripts='$delete_scripts',modify_leads='$modify_leads',hotkeys_active='$hotkeys_active',change_agent_campaign='$change_agent_campaign',agent_choose_ingroups='$agent_choose_ingroups',closer_campaigns='$groups_value',scheduled_callbacks='$scheduled_callbacks',agentonly_callbacks='$agentonly_callbacks',agentcall_manual='$agentcall_manual',osdial_recording='$osdial_recording',osdial_transfers='$osdial_transfers',delete_filters='$delete_filters',alter_agent_interface_options='$alter_agent_interface_options',closer_default_blended='$closer_default_blended',delete_call_times='$delete_call_times',modify_call_times='$modify_call_times',modify_users='$modify_users',modify_campaigns='$modify_campaigns',modify_lists='$modify_lists',modify_scripts='$modify_scripts',modify_filters='$modify_filters',modify_ingroups='$modify_ingroups',modify_usergroups='$modify_usergroups',modify_remoteagents='$modify_remoteagents',modify_servers='$modify_servers',view_reports='$view_reports',osdial_recording_override='$osdial_recording_override',alter_custdata_override='$alter_custdata_override',manual_dial_allow_skip='$manual_dial_allow_skip',export_leads='$export_leads',admin_api_access='$admin_api_access',agent_api_access='$agent_api_access' where user='$user';";
-		$rslt=mysql_query($stmt, $link);
+            # Force inclusion through agent interface instead of adding into agents ingroups.
+            #if ($xfer_agent2agent > 0) {
+            #    if (!preg_match('/A2A_' . $user . '/',$groups_value)) {
+            #        $groups_value = " A2A_$user" . $groups_value;
+            #    }
+            #}
 
+            $stmt="UPDATE osdial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass',delete_users='$delete_users',delete_user_groups='$delete_user_groups',delete_lists='$delete_lists',delete_campaigns='$delete_campaigns',delete_ingroups='$delete_ingroups',delete_remote_agents='$delete_remote_agents',load_leads='$load_leads',campaign_detail='$campaign_detail',ast_admin_access='$ast_admin_access',ast_delete_phones='$ast_delete_phones',delete_scripts='$delete_scripts',modify_leads='$modify_leads',hotkeys_active='$hotkeys_active',change_agent_campaign='$change_agent_campaign',agent_choose_ingroups='$agent_choose_ingroups',closer_campaigns='$groups_value',scheduled_callbacks='$scheduled_callbacks',agentonly_callbacks='$agentonly_callbacks',agentcall_manual='$agentcall_manual',osdial_recording='$osdial_recording',osdial_transfers='$osdial_transfers',delete_filters='$delete_filters',alter_agent_interface_options='$alter_agent_interface_options',closer_default_blended='$closer_default_blended',delete_call_times='$delete_call_times',modify_call_times='$modify_call_times',modify_users='$modify_users',modify_campaigns='$modify_campaigns',modify_lists='$modify_lists',modify_scripts='$modify_scripts',modify_filters='$modify_filters',modify_ingroups='$modify_ingroups',modify_usergroups='$modify_usergroups',modify_remoteagents='$modify_remoteagents',modify_servers='$modify_servers',view_reports='$view_reports',osdial_recording_override='$osdial_recording_override',alter_custdata_override='$alter_custdata_override',manual_dial_allow_skip='$manual_dial_allow_skip',export_leads='$export_leads',admin_api_access='$admin_api_access',agent_api_access='$agent_api_access',xfer_agent2agent='$xfer_agent2agent' where user='$user';";
+            $rslt=mysql_query($stmt, $link);
 
+            ### LOG CHANGES TO LOG FILE ###
+            if ($WeBRooTWritablE > 0) {
+                $fp = fopen ("./admin_changes_log.txt", "a");
+                fwrite ($fp, "$date|MODIFY AGENT INFO    |$PHP_AUTH_USER|$ip|$stmt|\n");
+                fclose($fp);
+            }
 
-		### LOG CHANGES TO LOG FILE ###
-		if ($WeBRooTWritablE > 0)
-			{
-			$fp = fopen ("./admin_changes_log.txt", "a");
-			fwrite ($fp, "$date|MODIFY AGENT INFO    |$PHP_AUTH_USER|$ip|$stmt|\n");
-			fclose($fp);
-			}
-		}
-	}
-	else
-	{
-	echo " <font color=red>You do not have permission to view this page</font>\n";
-	exit;
-	}
-$ADD=3;		# go to user modification below
+            if ($xfer_agent2agent > 0) {
+                $stmt="INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,voicemail_ext,next_agent_call,fronter_display,drop_call_seconds,agent_alert_exten) values('A2A_$user','Agent2Agent $user','pink','Y','$user','oldest_call_finish','Y','600','X');";
+            } else {
+                $stmt="DELETE FROM osdial_inbound_groups WHERE group_id='A2A_$user';";
+            }
+            $rslt=mysql_query($stmt, $link);
+        }
+        $ADD=3;		# go to user modification below
+    } else {
+        echo " <font color=red>You do not have permission to view this page</font>\n";
+    }
 }
 
 
@@ -481,6 +484,7 @@ if ($ADD==3)
 	$export_leads = 	$row[48];
 	$admin_api_access = 	$row[49];
 	$agent_api_access = 	$row[50];
+	$xfer_agent2agent = 	$row[51];
 
 	if ( ($user_level >= $LOGuser_level) and ($LOGuser_level < 9) and (!eregi(':' . $user_group . ':', $LOG['allowed_usergroupsSTR'])) )
 		{
@@ -553,6 +557,12 @@ if ($ADD==3)
 			echo "<tr bgcolor=$oddrows><td align=right>$t1 Recording Override: </td><td align=left><select size=1 name=osdial_recording_override><option>DISABLED</option><option>NEVER</option><option>ONDEMAND</option><option>ALLCALLS</option><option>ALLFORCE</option><option SELECTED>$osdial_recording_override</option></select>$NWB#osdial_users-osdial_recording_override$NWE</td></tr>\n";
 			echo "<tr bgcolor=$oddrows><td align=right>Agent Alter Customer Data Override: </td><td align=left><select size=1 name=alter_custdata_override><option>NOT_ACTIVE</option><option>ALLOW_ALTER</option><option SELECTED>$alter_custdata_override</option></select>$NWB#osdial_users-alter_custdata_override$NWE</td></tr>\n";
 			echo "<tr bgcolor=$oddrows><td align=right>Manual-Dial Allow Skip-Lead: </td><td align=left><select size=1 name=manual_dial_allow_skip><option value=0>N</option><option value=1>Y</option>" . optnum2let($manual_dial_allow_skip) . "</select>$NWB#osdial_users-manual_dial_allow_skip$NWE</td></tr>\n";
+			echo "<tr bgcolor=$oddrows>\n";
+            echo "  <td align=right>Agent2Agent Transfers: </td>\n";
+            echo "  <td align=left><select size=1 name=xfer_agent2agent><option value=0>N</option><option value=1>Y</option>" . optnum2let($xfer_agent2agent) . "</select>\n";
+            if ($xfer_agent2agent > 0) echo "  <a href=\"$PHP_SELF?ADD=3111&group_id=A2A_$user\">Modify Agent2Agent Options</a>\n";
+            echo "  $NWB#osdial_users-xfer_agent2agent$NWE</td>\n";
+            echo "</tr>\n";
 			echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 			}
 		if ($LOGuser_level > 8 && $user_level > 7)
