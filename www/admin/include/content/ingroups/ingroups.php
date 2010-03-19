@@ -572,7 +572,7 @@ if ($ADD==1000)
 echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	$stmt=sprintf("SELECT * FROM osdial_inbound_groups WHERE group_id IN %s ORDER BY group_id",$LOG['allowed_ingroupsSQL']);
+	$stmt=sprintf("SELECT * FROM osdial_inbound_groups WHERE group_id IN %s AND group_id NOT LIKE 'A2A_%%' ORDER BY group_id",$LOG['allowed_ingroupsSQL']);
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
