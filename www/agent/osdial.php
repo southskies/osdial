@@ -394,6 +394,7 @@ echo "<head>\n";
 echo "<!-- VERSION: $version     BUILD: $build -->\n";
 
 if ($multicomp > 0) {
+    $company_prefix = substr($phone_login,0,3);
     if ($VD_login != "" and $phone_login != "") {
         if (substr($VD_login,0,3) != substr($phone_login,0,3)) {
             $phone_login='';
@@ -406,57 +407,51 @@ if ($multicomp > 0) {
 }
 
 if ($campaign_login_list > 0) {
-	$camp_form_code  = "<select style=\"font-size:8pt;\" size=1 name=VD_campaign id=VD_campaign onFocus=\"login_allowable_campaigns()\">\n";
-	$camp_form_code .= "<option value=\"\"></option>\n";
-	
-	$LOGallowed_campaignsSQL='';
-	if ($relogin == 'YES')
-	{
-		$stmt="SELECT user_group from osdial_users where user='$VD_login' and pass='$VD_pass'";
-		if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}	
-		
-		$rslt=mysql_query($stmt, $link);
-		$row=mysql_fetch_row($rslt);
-		$VU_user_group=$row[0];
-	
-		$stmt="SELECT allowed_campaigns from osdial_user_groups where user_group='$VU_user_group';";
-		$rslt=mysql_query($stmt, $link);
-		$row=mysql_fetch_row($rslt);
-		if ( (!eregi("ALL-CAMPAIGNS",$row[0])) )
-			{
-			$LOGallowed_campaignsSQL = eregi_replace(' -','',$row[0]);
-			$LOGallowed_campaignsSQL = eregi_replace(' ',"','",$LOGallowed_campaignsSQL);
-			$LOGallowed_campaignsSQL = "and campaign_id IN('$LOGallowed_campaignsSQL')";
-			}
-	}
-	
-	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns where active='Y' $LOGallowed_campaignsSQL order by campaign_id";
-	if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
-	$rslt=mysql_query($stmt, $link);
-	$camps_to_print = mysql_num_rows($rslt);
-	
-	$o=0;
-	while ($camps_to_print > $o) 
-		{
-		$rowx=mysql_fetch_row($rslt);
-		if ($show_campname_pulldown)
-			{$campname = " - $rowx[1]";}
-		else
-			{$campname = '';}
-		if ($VD_campaign)
-			{
-			if ( (eregi("$VD_campaign",$rowx[0])) and (strlen($VD_campaign) == strlen($rowx[0])) )
-				{$camp_form_code .= "<option value=\"$rowx[0]\" SELECTED>" . mclabel($rowx[0]) . "$campname</option>\n";}
-			else
-				{$camp_form_code .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . "$campname</option>\n";}
-			}
-		else
-			{$camp_form_code .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . "$campname</option>\n";}
-		$o++;
-		}
-	$camp_form_code .= "</select>\n";
+    $camp_form_code  = "<select style=\"font-size:8pt;\" size=1 name=VD_campaign id=VD_campaign onFocus=\"login_allowable_campaigns()\">\n";
+    $camp_form_code .= "<option value=\"\"></option>\n";
+
+    $LOGallowed_campaignsSQL='';
+    if ($relogin == 'YES') {
+        $stmt="SELECT user_group from osdial_users where user='$VD_login' and pass='$VD_pass'";
+        if ($non_latin > 0) $rslt=mysql_query("SET NAMES 'UTF8'");
+
+        $rslt=mysql_query($stmt, $link);
+        $row=mysql_fetch_row($rslt);
+        $VU_user_group=$row[0];
+
+        $stmt="SELECT allowed_campaigns from osdial_user_groups where user_group='$VU_user_group';";
+        $rslt=mysql_query($stmt, $link);
+        $row=mysql_fetch_row($rslt);
+        if ( (!eregi("ALL-CAMPAIGNS",$row[0])) ) {
+            $LOGallowed_campaignsSQL = eregi_replace(' -','',$row[0]);
+            $LOGallowed_campaignsSQL = eregi_replace(' ',"','",$LOGallowed_campaignsSQL);
+            $LOGallowed_campaignsSQL = "and campaign_id IN('$LOGallowed_campaignsSQL')";
+        }
+    }
+
+    if ($multicomp) $LOGallowed_campaignsSQL .= " and campaign_id LIKE '" . $company_prefix . "%'";
+
+    $stmt="SELECT campaign_id,campaign_name from osdial_campaigns where active='Y' $LOGallowed_campaignsSQL order by campaign_id";
+    if ($non_latin > 0) $rslt=mysql_query("SET NAMES 'UTF8'");
+    $rslt=mysql_query($stmt, $link);
+    $camps_to_print = mysql_num_rows($rslt);
+
+    $o=0;
+    while ($camps_to_print > $o) {
+        $rowx=mysql_fetch_row($rslt);
+        $campname = '';
+        if ($show_campname_pulldown) $campname = " - $rowx[1]";
+
+        if ($VD_campaign == $rowx[0]) {
+            $camp_form_code .= "<option value=\"$rowx[0]\" SELECTED>" . mclabel($rowx[0]) . "$campname</option>\n";
+        } else {
+            $camp_form_code .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . "$campname</option>\n";
+        }
+        $o++;
+    }
+    $camp_form_code .= "</select>\n";
 } else {
-	$camp_form_code = "<INPUT TYPE=TEXT NAME=VD_campaign SIZE=10 MAXLENGTH=20 VALUE=\"$VD_campaign\">\n";
+    $camp_form_code = "<INPUT TYPE=TEXT NAME=VD_campaign SIZE=10 MAXLENGTH=20 VALUE=\"$VD_campaign\">\n";
 }
 
 if ($LogiNAJAX > 0) {
