@@ -34,6 +34,19 @@ if ($ADD=="11comp") {
 
         echo "<table width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right width=50%>Company Name: </td><td align=left><input type=text name=company_name size=30 maxlength=100 value=\"\">$NWB#companies-company_name$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows>\n";
+        echo "  <td align=right>Default Server IP: </td>\n";
+        echo "  <td align=left>\n";
+        echo "    <select name=server_ip>\n";
+        $servers = get_krh($link, 'servers', '*','','','');
+        foreach ($servers as $server) {
+            echo "      <option value=\"$server[server_ip]\">$server[server_ip] - $server[server_id]</option>\n";
+        }
+        echo "    </select>\n";
+        echo "    $NWB#companies-default_server_ip$NWE\n";
+        echo "  </td>\n";
+        echo "</tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Default Local GMT: </td><td align=left><select size=1 name=local_gmt><option>12.75</option><option>12.00</option><option>11.00</option><option>10.00</option><option>9.50</option><option>9.00</option><option>8.00</option><option>7.00</option><option>6.50</option><option>6.00</option><option>5.75</option><option>5.50</option><option>5.00</option><option>4.50</option><option>4.00</option><option>3.50</option><option>3.00</option><option>2.00</option><option>1.00</option><option>0.00</option><option>-1.00</option><option>-2.00</option><option>-3.00</option><option>-3.50</option><option>-4.00</option><option selected>-5.00</option><option>-6.00</option><option>-7.00</option><option>-8.00</option><option>-9.00</option><option>-10.00</option><option>-11.00</option><option>-12.00</option></select> (Do NOT Adjust for DST)$NWB#companies-default_local_gmt$NWE</td></tr>\n";
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</table></center>\n";
     } else {
@@ -52,7 +65,7 @@ if ($ADD=="21comp") {
     if ($LOG['multicomp_admin'] > 0) {
         echo "<table><tr><td>\n";
         echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>";
-        if (strlen($company_name) < 5) {
+        if (strlen($company_name) < 3) {
             echo "<br><font color=red>COMPANY NOT ADDED - Please go back and look at the data you entered</font>\n";
         } else {
             echo "<br><font color=$default_text>COMAPNY ADDED</font>\n";
@@ -62,22 +75,20 @@ if ($ADD=="21comp") {
             $company_id =  mysql_insert_id($link);
 
             $cmp = (($company_id * 1) + 100);
-            $srv = get_first_record($link, 'servers', '*', '');
-
 
             echo "<br><br>\n";
             # Add inital sample configuration.
             $pins = "INSERT INTO phones VALUES ";
-            $pins .= sprintf("('%s1001','%s1001','%s1001','','','%s','%s1001','1001','ACTIVE','Y','SIP','Ext %s 1001','%s','NA',0,0,'SIP','-5.00','cron','1234','','','','8301','8302','8301','park','8612','8309','8501','85026666666666','osdialBLOCK','local/8500998@osdial','Zap/g2/','/usr/bin/mozilla','/usr/local/perl_TK','http://localhost/test_callerid_output.php','http://localhost/test_osdial_output.php','1','1','1','0','0','1','1','1','1','1','1','1','0',1000,'0','1','1','','asterisk','cron','1234',3306,'','asterisk','cron','1234',3306,'1001','0',''),",$cmp,$cmp,$cmp,$srv['server_ip'],$cmp,$cmp,$cmp);
-            $pins .= sprintf("('%s1002','%s1002','%s1002','','','%s','%s1002','1002','ACTIVE','Y','SIP','Ext %s 1002','%s','NA',0,0,'SIP','-5.00','cron','1234','','','','8301','8302','8301','park','8612','8309','8501','85026666666666','osdialBLOCK','local/8500998@osdial','Zap/g2/','/usr/bin/mozilla','/usr/local/perl_TK','http://localhost/test_callerid_output.php','http://localhost/test_osdial_output.php','1','1','1','0','0','1','1','1','1','1','1','1','0',1000,'0','1','1','','asterisk','cron','1234',3306,'','asterisk','cron','1234',3306,'1002','0',''),",$cmp,$cmp,$cmp,$srv['server_ip'],$cmp,$cmp,$cmp);
-            $pins .= sprintf("('%s9999','9999','%s9999','','','%s','%s9999','9999','ACTIVE','Y','Test','Test Phone','%s','NA',0,0,'EXTERNAL','-5.00','cron','1234','','','','8301','8302','8301','park','8612','8309','8501','85026666666666','osdialBLOCK','local/8500998@osdial','Zap/g2/','/usr/bin/mozilla','/usr/local/perl_TK','http://localhost/test_callerid_output.php','http://localhost/test_osdial_output.php','1','1','1','0','0','1','1','1','1','1','1','1','0',1000,'0','1','1','','asterisk','cron','1234',3306,'','asterisk','cron','1234',3306,'9999','0','');",$cmp,$cmp,$srv['server_ip'],$cmp,$cmp);
+            $pins .= sprintf("('%s1001','%s1001','%s1001','','','%s','%s1001','1001','ACTIVE','Y','SIP','Ext %s 1001','%s','NA',0,0,'SIP','%s','cron','1234','','','','8301','8302','8301','park','8612','8309','8501','85026666666666','osdial','local/8500998@osdial','Zap/g2/','/usr/bin/mozilla','/usr/local/perl_TK','http://localhost/test_callerid_output.php','http://localhost/test_osdial_output.php','1','1','1','0','0','1','1','1','1','1','1','1','0',1000,'0','1','1','','asterisk','cron','1234',3306,'','asterisk','cron','1234',3306,'%s1001','0',''),",$cmp,$cmp,$cmp,$server_ip,$cmp,$cmp,$cmp,$local_gmt,$cmp);
+            $pins .= sprintf("('%s1002','%s1002','%s1002','','','%s','%s1002','1002','ACTIVE','Y','SIP','Ext %s 1002','%s','NA',0,0,'SIP','%s','cron','1234','','','','8301','8302','8301','park','8612','8309','8501','85026666666666','osdial','local/8500998@osdial','Zap/g2/','/usr/bin/mozilla','/usr/local/perl_TK','http://localhost/test_callerid_output.php','http://localhost/test_osdial_output.php','1','1','1','0','0','1','1','1','1','1','1','1','0',1000,'0','1','1','','asterisk','cron','1234',3306,'','asterisk','cron','1234',3306,'%s1002','0',''),",$cmp,$cmp,$cmp,$server_ip,$cmp,$cmp,$cmp,$local_gmt,$cmp);
+            $pins .= sprintf("('%s9999','9999','%s9999','','','%s','%s9999','9999','ACTIVE','Y','Test','Test Phone','%s','NA',0,0,'EXTERNAL','%s','cron','1234','','','','8301','8302','8301','park','8612','8309','8501','85026666666666','osdial','local/8500998@osdial','Zap/g2/','/usr/bin/mozilla','/usr/local/perl_TK','http://localhost/test_callerid_output.php','http://localhost/test_osdial_output.php','1','1','1','0','0','1','1','1','1','1','1','1','0',1000,'0','1','1','','asterisk','cron','1234',3306,'','asterisk','cron','1234',3306,'%s9999','0','');",$cmp,$cmp,$server_ip,$cmp,$cmp,$local_gmt,$cmp);
             $rslt=mysql_query($pins, $link);
             echo "<font size=1 color=$default_text>SAMPLE PHONE CONFIGURATION ADDED</font><br>\n";
 
             $uins = "INSERT INTO osdial_users VALUES ";
-            $uins .= sprintf("('','%sadmin','admin','Admin %s',9,'%sADMIN','','','1','1','1','1','1','1','1','1','1','1','1','1','0','1','1','','1','0','1','1','1','1','1','0','1','1','1','1','1','1','1','1','1','1','1','1','DISABLED','NOT_ACTIVE',-1,'1','1','1','1'),",$cmp,$cmp,$cmp);
-            $uins .= sprintf("('','%s1001','1001','Agent %s 1001',4,'%sAGENTS','','','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','','1','1','1','1','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','DISABLED','NOT_ACTIVE',-1,'1','0','0','0'),",$cmp,$cmp,$cmp);
-            $uins .= sprintf("('','%s1002','1002','Agent %s 1002',4,'%sAGENTS','','','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','','1','1','1','1','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','DISABLED','NOT_ACTIVE',-1,'1','0','0','0');",$cmp,$cmp,$cmp);
+            $uins .= sprintf("('','%sadmin','admin','Admin %s',9,'%sADMIN','','','1','1','1','1','1','1','1','1','1','1','1','1','0','1','1','','1','0','1','1','1','1','1','0','1','1','1','1','1','1','1','1','1','1','1','1','DISABLED','NOT_ACTIVE',-1,'1','1','1','1','0'),",$cmp,$cmp,$cmp);
+            $uins .= sprintf("('','%s1001','1001','Agent %s 1001',4,'%sAGENTS','','','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','','1','1','1','1','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','DISABLED','NOT_ACTIVE',-1,'1','0','0','0','0'),",$cmp,$cmp,$cmp);
+            $uins .= sprintf("('','%s1002','1002','Agent %s 1002',4,'%sAGENTS','','','0','0','0','0','0','0','0','0','0','0','0','0','1','0','0','','1','1','1','1','1','0','0','1','0','0','0','0','0','0','0','0','0','0','0','0','DISABLED','NOT_ACTIVE',-1,'1','0','0','0','0');",$cmp,$cmp,$cmp);
             $rslt=mysql_query($uins, $link);
             echo "<font size=1 color=$default_text>SAMPLE USER CONFIGURATION ADDED</font><br>\n";
 
@@ -130,12 +141,12 @@ if ($ADD=="41comp") {
     if ($LOG['multicomp_admin']>0) {
         echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>";
 
-        if (strlen($company_name) < 5) {
+        if (strlen($company_name) < 3) {
             echo "<br><font color=$default_text>COMPANY NOT MODIFIED - Please go back and look at the data you entered</font>\n";
         } else {
             echo "<br><font color=$default_text>COMPANY MODIFIED: $company_id : $company_name</font>\n";
 
-            $stmt=sprintf("UPDATE osdial_companies SET name='%s',status='%s',enable_campaign_ivr='%s',enable_campaign_listmix='%s',export_leads='%s',enable_scripts='%s',enable_filters='%s',enable_ingroups='%s',enable_external_agents='%s',enable_system_calltimes='%s',enable_system_phones='%s',enable_system_conferences='%s',enable_system_servers='%s',enable_system_statuses='%s',api_access='%s',dnc_method='%s' WHERE id='%s';",mres($company_name),mres($company_status),mres($company_enable_campaign_ivr),mres($company_enable_campaign_listmix),mres($company_export_leads),mres($company_enable_scripts),mres($company_enable_filters),mres($company_enable_ingroups),mres($company_enable_external_agents),mres($company_enable_system_calltimes),mres($company_enable_system_phones),mres($company_enable_system_conferences),mres($company_enable_system_servers),mres($company_enable_system_statuses),mres($company_api_access),mres($company_dnc_method),mres($company_id));
+            $stmt=sprintf("UPDATE osdial_companies SET name='%s',status='%s',enable_campaign_ivr='%s',enable_campaign_listmix='%s',export_leads='%s',enable_scripts='%s',enable_filters='%s',enable_ingroups='%s',enable_external_agents='%s',enable_system_calltimes='%s',enable_system_phones='%s',enable_system_conferences='%s',enable_system_servers='%s',enable_system_statuses='%s',api_access='%s',dnc_method='%s',default_server_ip='%s',default_local_gmt='%s' WHERE id='%s';",mres($company_name),mres($company_status),mres($company_enable_campaign_ivr),mres($company_enable_campaign_listmix),mres($company_export_leads),mres($company_enable_scripts),mres($company_enable_filters),mres($company_enable_ingroups),mres($company_enable_external_agents),mres($company_enable_system_calltimes),mres($company_enable_system_phones),mres($company_enable_system_conferences),mres($company_enable_system_servers),mres($company_enable_system_statuses),mres($company_api_access),mres($company_dnc_method),mres($server_ip),mres($local_gmt),mres($company_id));
             $rslt=mysql_query($stmt, $link);
         }
         $ADD="31comp";	# go to company modification form below
@@ -219,6 +230,21 @@ if ($ADD=="31comp") {
         echo "<tr bgcolor=$oddrows><td align=right>Enable System Statuses: </td><td align=left><select name=company_enable_system_statuses><option>0</option><option>1</option><option selected>$comp[enable_system_statuses]</option></select>$NWB#companies-enable_system_statuses$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>API Access: </td><td align=left><select name=company_api_access><option>0</option><option>1</option><option selected>$comp[api_access]</option></select>$NWB#companies-api_access$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>DNC Method: </td><td align=left><select name=company_dnc_method><option>SYSTEM</option><option>COMPANY</option><option>BOTH</option><option selected>$comp[dnc_method]</option></select>$NWB#companies-dnc_method$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows>\n";
+        echo "  <td align=right>Default Server IP: </td>\n";
+        echo "  <td align=left>\n";
+        echo "    <select name=server_ip>\n";
+        $servers = get_krh($link, 'servers', '*','','','');
+        foreach ($servers as $server) {
+            $csel = '';
+            if ($comp['default_server_ip'] == $server['server_ip']) $csel = 'selected';
+            echo "      <option $csel value=\"$server[server_ip]\">$server[server_ip] - $server[server_id]</option>\n";
+        }
+        echo "    </select>\n";
+        echo "    $NWB#companies-default_server_ip$NWE\n";
+        echo "  </td>\n";
+        echo "</tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Default Local GMT: </td><td align=left><select size=1 name=local_gmt><option>12.75</option><option>12.00</option><option>11.00</option><option>10.00</option><option>9.50</option><option>9.00</option><option>8.00</option><option>7.00</option><option>6.50</option><option>6.00</option><option>5.75</option><option>5.50</option><option>5.00</option><option>4.50</option><option>4.00</option><option>3.50</option><option>3.00</option><option>2.00</option><option>1.00</option><option>0.00</option><option>-1.00</option><option>-2.00</option><option>-3.00</option><option>-3.50</option><option>-4.00</option><option>-5.00</option><option>-6.00</option><option>-7.00</option><option>-8.00</option><option>-9.00</option><option>-10.00</option><option>-11.00</option><option>-12.00</option><option selected>$comp[default_local_gmt]</option></select> (Do NOT Adjust for DST)$NWB#companies-default_local_gmt$NWE</td></tr>\n";
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</TABLE></center>\n";
 
