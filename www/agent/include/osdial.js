@@ -4020,11 +4020,11 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				if (VARingroups[loop_ct].substr(0,4) != "A2A_") {
 					live_CSC_HTML = live_CSC_HTML + "<a href=\"#\" onclick=\"CloserSelect_change('" + VARingroups[loop_ct] + "','ADD');return false;\">";
 					if (multicomp > 0) {
-						live_CSC_HTML = live_CSC_HTML + VARingroups[loop_ct].substr(0,3);
+						live_CSC_HTML = live_CSC_HTML + VARingroups[loop_ct].substr(3);
 					} else {
 						live_CSC_HTML = live_CSC_HTML + VARingroups[loop_ct];
 					}
-					live_CSC_HTML = live_CSC_HTML + "<BR>";
+					live_CSC_HTML = live_CSC_HTML + "</a><BR>";
 				}
 				loop_ct++;
 			}
@@ -4078,23 +4078,25 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					CSCcolumn = 'DELETE';
 				}
 
-				if (CSCcolumn == 'DELETE') {
-					live_CSC_HTML_DELETE = live_CSC_HTML_DELETE + "<a href=\"#\" onclick=\"CloserSelect_change('" + VARingroups[loop_ct] + "','DELETE');return false;\">";
-					if (multicomp > 0) {
-						live_CSC_HTML_DELETE = live_CSC_HTML_DELETE + VARingroups[loop_ct].substr(0,3);
+				if (VARingroups[loop_ct].substr(0,4) != "A2A_") {
+					if (CSCcolumn == 'DELETE') {
+						live_CSC_HTML_DELETE = live_CSC_HTML_DELETE + "<a href=\"#\" onclick=\"CloserSelect_change('" + VARingroups[loop_ct] + "','DELETE');return false;\">";
+						if (multicomp > 0) {
+							live_CSC_HTML_DELETE = live_CSC_HTML_DELETE + VARingroups[loop_ct].substr(3);
+						} else {
+							live_CSC_HTML_DELETE = live_CSC_HTML_DELETE + VARingroups[loop_ct];
+						}
+						live_CSC_HTML_DELETE = live_CSC_HTML_DELETE + "</a><BR>";
+						live_CSC_LIST_value = live_CSC_LIST_value + VARingroups[loop_ct] + " ";
 					} else {
-						live_CSC_HTML_DELETE = live_CSC_HTML_DELETE + VARingroups[loop_ct];
+						live_CSC_HTML_ADD = live_CSC_HTML_ADD + "<a href=\"#\" onclick=\"CloserSelect_change('" + VARingroups[loop_ct] + "','ADD');return false;\">";
+						if (multicomp > 0) {
+							live_CSC_HTML_ADD = live_CSC_HTML_ADD + VARingroups[loop_ct].substr(3);
+						} else {
+							live_CSC_HTML_ADD = live_CSC_HTML_ADD + VARingroups[loop_ct];
+						}
+						live_CSC_HTML_ADD = live_CSC_HTML_ADD + "</a><BR>";
 					}
-					live_CSC_HTML_DELETE = live_CSC_HTML_DELETE + "<BR>";
-					live_CSC_LIST_value = live_CSC_LIST_value + VARingroups[loop_ct] + " ";
-				} else {
-					live_CSC_HTML_ADD = live_CSC_HTML_ADD + "<a href=\"#\" onclick=\"CloserSelect_change('" + VARingroups[loop_ct] + "','ADD');return false;\">";
-					if (multicomp > 0) {
-						live_CSC_HTML_ADD = live_CSC_HTML_ADD + VARingroups[loop_ct].substr(0,3);
-					} else {
-						live_CSC_HTML_ADD = live_CSC_HTML_ADD + VARingroups[loop_ct];
-					}
-					live_CSC_HTML_ADD = live_CSC_HTML_ADD + "<BR>";
 				}
 				loop_ct++;
 			}
@@ -5512,12 +5514,17 @@ if ($useIE > 0) {
 						XfeR_SelecT = '';
 					}
 					live_XfeR_HTML = live_XfeR_HTML + "<option " + XfeR_SelecT + "value=\"" + VARxfergroups[loop_ct] + "\">";
-					if (multicomp > 0) {
-						live_XfeR_HTML = live_XfeR_HTML + VARxfergroups[loop_ct].substr(0,3);
-					} else {
-						live_XfeR_HTML = live_XfeR_HTML + VARxfergroups[loop_ct];
+					if (VARxfergroups[loop_ct].substr(0,4) == "A2A_") {
+                                                live_XfeR_HTML = live_XfeR_HTML + "Agent " + VARxfergroups[loop_ct].substr(4);
+                                        } else {
+						if (multicomp > 0) {
+							live_XfeR_HTML = live_XfeR_HTML + VARxfergroups[loop_ct].substr(3);
+						} else {
+							live_XfeR_HTML = live_XfeR_HTML + VARxfergroups[loop_ct];
+						}
+						live_XfeR_HTML = live_XfeR_HTML + " - " + VARxfergroupsnames[loop_ct];
 					}
-					live_XfeR_HTML = live_XfeR_HTML + " - " + VARxfergroupsnames[loop_ct] + "</option>\n";
+					live_XfeR_HTML = live_XfeR_HTML + "</option>\n";
 					loop_ct++;
 				}
 

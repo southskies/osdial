@@ -1060,7 +1060,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 				{
 				$VARxfergroups='';
                 $xferSQL = "group_id IN($xfer_groups)";
-                if ($LOGxfer_agent2agent > 0) $xferSQL = "($xferSQL OR group_id LIKE 'A2A_$company_prefix%')";
+                if ($LOGxfer_agent2agent > 0) $xferSQL = "($xferSQL OR group_id LIKE 'A2A_$company_prefix%') AND group_id != 'A2A_$VD_login'";
 				$stmt="select group_id,group_name from osdial_inbound_groups where active = 'Y' and $xferSQL order by group_id limit 60;";
 				$rslt=mysql_query($stmt, $link);
 				if ($DB) {echo "$stmt\n";}
