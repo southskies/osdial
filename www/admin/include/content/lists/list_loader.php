@@ -104,7 +104,7 @@ if ($ADD==122) {
         echo "                    </td>\n";
         echo "                  </tr>\n";
         echo "                  <tr>\n";
-        echo "                      <td align=right width=\"25%\"><font face=\"arial, helvetica\" size=2>Phone Code: </font></td>\n";
+        echo "                      <td align=right width=\"25%\"><font face=\"arial, helvetica\" size=2>Phone (Country) Code: </font></td>\n";
         echo "                      <td align=left width=\"75%\"><font face=\"arial, helvetica\" size=1>\n";
         echo "                          <input type=text value=\"$phone_code_override\" name='phone_code_override' size=8 maxlength=6> (numbers only or leave blank for values in the file)\n";
         echo "                      </td>\n";
@@ -712,12 +712,18 @@ if ($ADD==122) {
                         $bgcolor='bgcolor='.$evenrows;
                     }
 					echo "  <tr class=\"row font1\" $bgcolor>\n";
-					echo "    <td align=center>".strtoupper(eregi_replace("_", " ", mysql_field_name($rslt, $i))).": </td>\n";
+                    if (mysql_field_name($rslt, $i) == "phone_code") {
+					    echo "    <td align=center>PHONE (country) CODE:</td>\n";
+                    } elseif (mysql_field_name($rslt, $i) == "country_code") {
+					    echo "    <td align=center>COUNTRY (abbreviation):</td>\n";
+                    } else {
+					    echo "    <td align=center>".strtoupper(eregi_replace("_", " ", mysql_field_name($rslt, $i))).": </td>\n";
+                    }
 					echo "    <td align=center class=tabinput>\n";
 					if (mysql_field_name($rslt, $i) == "list_id" and $list_id_override != "") {
 						echo "      <a title='The List ID was set from the Load New Leads options menu, it will not be pulled from the file.'><center><font color=red><b>$list_id_override</b></font><center></a>\n";
                     } elseif (mysql_field_name($rslt, $i) == "phone_code" and $phone_code_override != "") {
-						echo "      <a title='The Phone Code was set from the Load New Leads options menu, it will not be pulled from the file.'><center><font color=red><b>$phone_code_override</b></font><center></a>\n";
+						echo "      <a title='The Phone (Country) Code was set from the Load New Leads options menu, it will not be pulled from the file.'><center><font color=red><b>$phone_code_override</b></font><center></a>\n";
                     } else {
                         echo "      <select name='".mysql_field_name($rslt, $i)."_field'>\n";
 					    echo "        <option value='-1'>(none)</option>\n";
