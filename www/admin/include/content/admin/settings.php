@@ -60,6 +60,10 @@ if ($ADD==311111111111111) {
         echo "      <font color=$default_text size=+1>MODIFY SYSTEM SETTINGS</font>\n";
         echo "      <form action=$PHP_SELF method=POST><br>\n";
         echo "      <input type=hidden name=ADD value=411111111111111>\n";
+        if (!file_exists($WeBServeRRooT . '/admin/include/content/admin/company.php')) {
+            echo "      <input type=hidden name=multicompany_admin value=admin>\n";
+            echo "      <input type=hidden name=enable_multicompany value=0>\n";
+        }
         echo "      <table cellspacing=3>\n";
         echo "        <tr class=tabheader><td colspan=2></td></tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
@@ -206,23 +210,25 @@ if ($ADD==311111111111111) {
         echo "          </td>\n";
         echo "        </tr>\n";
 
-        echo "        <tr class=tabheader><td colspan=2>Multi-Company</td></tr>\n";
+        if (file_exists($WeBServeRRooT . '/admin/include/content/admin/company.php')) {
+            echo "        <tr class=tabheader><td colspan=2>Multi-Company</td></tr>\n";
 
-        echo "        <tr bgcolor=$oddrows>\n";
-        echo "          <td align=right>Enable Multi-Company Support:</td>\n";
-        echo "          <td align=left>\n";
-        echo "            <select size=1 name=enable_multicompany>\n";
-        echo "              <option>1</option>\n";
-        echo "              <option>0</option>\n";
-        echo "              <option selected>$system_settings[enable_multicompany]</option>\n";
-        echo "            </select>\n";
-        echo "            $NWB#settings-enable_multicompany$NWE\n";
-        echo "          </td>\n";
-        echo "        </tr>\n";
-        echo "        <tr bgcolor=$oddrows>\n";
-        echo "          <td align=right>Multi-Company Administator:</td>\n";
-        echo "          <td align=left><input type=text name=multicompany_admin size=10 maxlength=15 value=\"$system_settings[multicompany_admin]\"></td>\n";
-        echo "        </tr>\n";
+            echo "        <tr bgcolor=$oddrows>\n";
+            echo "          <td align=right>Enable Multi-Company Support:</td>\n";
+            echo "          <td align=left>\n";
+            echo "            <select size=1 name=enable_multicompany>\n";
+            echo "              <option>1</option>\n";
+            echo "              <option>0</option>\n";
+            echo "              <option selected>$system_settings[enable_multicompany]</option>\n";
+            echo "            </select>\n";
+            echo "            $NWB#settings-enable_multicompany$NWE\n";
+            echo "          </td>\n";
+            echo "        </tr>\n";
+            echo "        <tr bgcolor=$oddrows>\n";
+            echo "          <td align=right>Multi-Company Administator:</td>\n";
+            echo "          <td align=left><input type=text name=multicompany_admin size=10 maxlength=15 value=\"$system_settings[multicompany_admin]\"></td>\n";
+            echo "        </tr>\n";
+        }
 
         echo "        <tr class=tabheader><td colspan=2>Queuemetrics</td></tr>\n";
 
