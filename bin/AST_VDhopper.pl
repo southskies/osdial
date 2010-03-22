@@ -1718,7 +1718,7 @@ foreach(@campaign_id)
 						if ($enable_multicompany > 0) {
 							$comp_id=0;
 							$dnc_method='';
-							$stmtA="SELECT comp_id,dnc_method FROM osdial_companies WHERE company_id='" . ((substr($campaign_id[$i],0,3) * 1) - 100) . "';";
+							$stmtA="SELECT id,dnc_method FROM osdial_companies WHERE id='" . ((substr($campaign_id[$i],0,3) * 1) - 100) . "';";
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 							if (@aryA = $sthA->fetchrow_array) {
