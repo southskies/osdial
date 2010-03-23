@@ -782,14 +782,14 @@ function report_realtime_detail() {
 				}
 			}
 			$Luser =			$row[1];
-			$user =				sprintf("%-18s", mclabel($row[1]));
+			$user =				sprintf("%-18s", preg_replace('/&nbsp;/',' ',mclabel($row[1])));
 			$Lsessionid =		$row[2];
 			$sessionid =		sprintf("%-9s", $row[2]);
 			$Lstatus =			$row[3];
 			$status =			sprintf("%-6s", $row[3]);
 			$server_ip =		sprintf("%-15s", $row[4]);
 			$call_server_ip =	sprintf("%-15s", $row[7]);
-			$campaign_id =	sprintf("%-10s", mclabel($row[8]));
+			$campaign_id =	sprintf("%-10s", preg_replace('/&nbsp;/',' ',mclabel($row[8])));
 			$comments=		$row[11];
 			$lead_id=		$row[12];
 
