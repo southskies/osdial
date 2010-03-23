@@ -162,7 +162,6 @@ if ($force_logout) {
         foreach ($LOG as $k => $v ) {
             if ($k != "") eval("\$LOG" . $k . " = \$LOG['" . $k . "'];");
         }
-        flush();
         $LOGallowed_campaigns = $LOG['allowed_campaignsSTR'];
 
         if ($failexit==0) $fps = "OSDIAL|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|" . $LOG['full_name'] . "|" . $LOG['allowed_campaignsSTR'] . "|\n";
