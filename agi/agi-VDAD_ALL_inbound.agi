@@ -76,6 +76,8 @@
 #
 # 090420-1342 - Merge in term_reason/uniqueid from 2.0.5
 
+$|++;
+
 $script = 'agi-VDAD_ALL_inbound.agi';
 
 $DROP_TIME = 360;	### default number of seconds to wait until you drop a waiting call
@@ -179,6 +181,20 @@ while ($sthArows > $rec_count) {
 }
 $sthA->finish();
 
+### Grab system settings.
+$stmtA = "SELECT enable_multicompany FROM system_settings;";
+$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+$sthArows=$sthA->rows;
+$rec_count=0;
+while ($sthArows > $rec_count) {
+	@aryA = $sthA->fetchrow_array;
+	$multicomp = $aryA[0];
+	$rec_count++;
+}
+$sthA->finish();
+
+
 
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1) {
@@ -205,7 +221,22 @@ if (length($ARGV[0])>1) {
 	$Scampaign_id = 	$ARGV_vars[9];
 }
 
-$|=1;
+if ($multicomp == 1) {
+        if ($channel_group =~ /^IN_/) {
+                $stmtA = "SELECT group_id FROM osdial_inbound_groups WHERE group_id LIKE '\%$channel_group';";
+                $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+                $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+                $sthArows=$sthA->rows;
+                $rec_count=0;
+                while ($sthArows > $rec_count) {
+                        @aryA = $sthA->fetchrow_array;
+                        $channel_group = $aryA[0];
+                        $rec_count++;
+                }
+                $sthA->finish();
+        }
+}
+
 while(<STDIN>) {
 	chomp;
 	last unless length($_);
