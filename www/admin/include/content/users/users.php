@@ -206,7 +206,7 @@ if ($ADD=="2A")
 		{echo "<br><font color=red> AGENT NOT ADDED - there is already a user in the system with this user number</font>\n";}
 	else
 		{
-		 if ( (strlen($user) < 2) or (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user) > 8) )
+		 if ( (strlen($user) < 2) or (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user) > 8) or (strlen($user_group) < 1) )
 			{
 			 echo "<br><font color=red> AGENT NOT ADDED - Please go back and look at the data you entered\n";
 			 echo "<br>user id must be between 2 and 8 characters long\n";
