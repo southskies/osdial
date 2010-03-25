@@ -214,19 +214,19 @@ if ($xml['function'] == "version") {
     $dup_syslist_active = '';
 
     # Authenticate connection first.
-    $auth = get_first_record($link, 'osdial_users', 'admin_api_access,modify_leads,user_level', sprintf("user='%s' and pass='%s'",mres($xml['user']),mres($xml['pass'])) );
-    if ($auth['admin_api_access'] < 1 or $auth['modify_leads'] < 1 or $auth['user_level'] < 8) {
+    $auth = get_first_record($link, 'osdial_users', 'admin_api_access,load_leads,user_level', sprintf("user='%s' and pass='%s'",mres($xml['user']),mres($xml['pass'])) );
+    if ($auth['admin_api_access'] < 1 or $auth['load_leads'] < 1 or $auth['user_level'] < 8) {
         $status = "ERROR";
         $reason = "Access Denied.";
         $vdreason = "add_lead USER DOES NOT HAVE PERMISSION TO ADD LEADS TO THE SYSTEM";
     } else {
         if ($xml['debug'] > 0)
-            $debug .= sprintf("AUTH: Success. user=%s, pass=%s, admin_api_access=%s, modify_leads=%s, user_level=%s\n", $xml['user'], $xml['pass'], $auth['admin_api_access'], $auth['modify_leads'], $auth['user_level']);
+            $debug .= sprintf("AUTH: Success. user=%s, pass=%s, admin_api_access=%s, load_leads=%s, user_level=%s\n", $xml['user'], $xml['pass'], $auth['admin_api_access'], $auth['load_leads'], $auth['user_level']);
     }
     # Validate Company Access.
     if ($status != "ERROR") {
         if ($system_settings['enable_multicompany'] > 0) {
-            $comp = get_first_record($link, 'osdial_companies', '*', sprintf("company_id='%s'",((substr($xml['user'],0,3) * 1) - 100) ));
+            $comp = get_first_record($link, 'osdial_companies', '*', sprintf("id='%s'",((substr($xml['user'],0,3) * 1) - 100) ));
             if ($comp['api_access'] < 1) {
                 $status = "ERROR";
                 $reason = "Access Denied.";

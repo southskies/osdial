@@ -141,7 +141,7 @@ OSDial API Documentation
     user
       The user (agent) that you will be accessing this function with.  In order to use the
       "add_lead" function, the user must have a user_level of 8 or more and they must have thei
-      options "Modify Leads" and "Admin API Access" enabled.
+      options "Load Leads" and "Admin API Access" enabled.
     pass
       The user's password as defined in the Control/Admin GUI.
     test
