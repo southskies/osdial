@@ -878,7 +878,7 @@ if ($ADD==1000000)
 echo "<TABLE align=center><TR><TD>\n";
 	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-	$stmt=sprintf("SELECT * FROM osdial_scripts WHERE script_id LIKE '%s___%%' ORDER BY script_id;",$LOG['company_prefix']);
+	$stmt=sprintf("SELECT * FROM osdial_scripts WHERE script_id LIKE '%s__%%' ORDER BY script_id;",$LOG['company_prefix']);
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 

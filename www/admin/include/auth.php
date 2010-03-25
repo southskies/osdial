@@ -104,12 +104,12 @@ if ($force_logout) {
             if (preg_match('/\-ALL\-CAMPAIGNS\-/',$LOGac)) {
                 $LOG['allowed_campaignsALL'] = 1;
                 # Pack all the valid UGs
-                $ugs = get_krh($link, 'osdial_user_groups', 'user_group','',sprintf("user_group LIKE '%s___%%'",$LOG['company_prefix']),'');
+                $ugs = get_krh($link, 'osdial_user_groups', 'user_group','',sprintf("user_group LIKE '%s__%%'",$LOG['company_prefix']),'');
                 foreach ($ugs as $ugg) {
                     $LOGagA[] = $ugg['user_group'];
                 }
                 # Now go and get all campaigns...
-                $camps = get_krh($link, 'osdial_campaigns', 'campaign_id','',sprintf("campaign_id LIKE '%s___%%'",$LOG['company_prefix']),'');
+                $camps = get_krh($link, 'osdial_campaigns', 'campaign_id','',sprintf("campaign_id LIKE '%s__%%'",$LOG['company_prefix']),'');
                 foreach ($camps as $camp) {
                     $LOGacA[] = $camp['campaign_id'];
                 }
@@ -120,7 +120,7 @@ if ($force_logout) {
                     if (strlen(rtrim($c,'-')) > 0) $LOGacA[] = $c;
                 }
             }
-            $ingrps = get_krh($link, 'osdial_inbound_groups', 'group_id','',sprintf("group_id LIKE '%s___%%'",$LOG['company_prefix']),'');
+            $ingrps = get_krh($link, 'osdial_inbound_groups', 'group_id','',sprintf("group_id LIKE '%s__%%'",$LOG['company_prefix']),'');
             if (is_array($ingrps)) {
                 foreach ($ingrps as $ingrp) {
                     $LOGaiA[] = $ingrp['group_id'];

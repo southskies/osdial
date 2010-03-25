@@ -471,7 +471,7 @@ if ($ACTION == 'LogiNCamPaigns')
 	        exit;
         }
 
-	    $stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE active='Y' AND campaign_id LIKE '%s___%%' %s order by campaign_id;",substr($user,0,3),$LOGallowed_campaignsSQL);
+	    $stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE active='Y' AND campaign_id LIKE '%s__%%' %s order by campaign_id;",substr($user,0,3),$LOGallowed_campaignsSQL);
     } else {
 	    $stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE active='Y' %s order by campaign_id;",$LOGallowed_campaignsSQL);
     }
