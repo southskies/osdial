@@ -195,7 +195,6 @@ while ($sthArows > $rec_count) {
 $sthA->finish();
 
 
-
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1) {
 	if ($AGILOG) {$agi_string = "Perl Environment Dump:";   &agi_output;}
@@ -222,19 +221,19 @@ if (length($ARGV[0])>1) {
 }
 
 if ($multicomp == 1) {
-        if ($channel_group =~ /^IN_/) {
-                $stmtA = "SELECT group_id FROM osdial_inbound_groups WHERE group_id LIKE '\%$channel_group';";
-                $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-                $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-                $sthArows=$sthA->rows;
-                $rec_count=0;
-                while ($sthArows > $rec_count) {
-                        @aryA = $sthA->fetchrow_array;
-                        $channel_group = $aryA[0];
-                        $rec_count++;
-                }
-                $sthA->finish();
-        }
+	if ($channel_group =~ /^IN_/) {
+		$stmtA = "SELECT group_id FROM osdial_inbound_groups WHERE group_id LIKE '\%$channel_group';";
+		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		$sthArows=$sthA->rows;
+		$rec_count=0;
+		while ($sthArows > $rec_count) {
+			@aryA = $sthA->fetchrow_array;
+			$channel_group = $aryA[0];
+			$rec_count++;
+		}
+		$sthA->finish();
+	}
 }
 
 while(<STDIN>) {
@@ -420,6 +419,11 @@ while ($sthArows > $cbc) {
 	$cbc++;
 }
 $sthA->finish();
+
+if ($agent_alert_exten =~ /^X$|^8304$/) {
+	$agent_alert_exten = '8304';
+	$agent_alert_delay = '300';
+}
 
 if ($wday==0) {$daySQL=',ct_sunday_start,ct_sunday_stop';}
 if ($wday==1) {$daySQL=',ct_monday_start,ct_monday_stop';}
@@ -801,9 +805,9 @@ while ($drop_timer <= $DROP_TIME) {
 					$VHqueryCID = "VH$CIDdate$VDADconf_exten";
 
 					### insert a NEW record to the osdial_manager table to play the alert message to the agent
-					$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$VHqueryCID','Exten: $agent_alert_exten','Context: $ext_context','Channel: Local/$VDADconf_exten$at$ext_context','Priority: 1','Callerid: $CIDstring','Timeout: 10','Account: $CIDstring','','','')";
+					$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$VHqueryCID','Exten: $agent_alert_exten','Context: $ext_context','Channel: Local/7$VDADconf_exten$at$ext_context','Priority: 1','Callerid: $CIDstring','Timeout: 10','Account: $CIDstring','','','')";
 					$affected_rows = $dbhA->do($stmtA);  
-					if ($AGILOG) {$agi_string = "--    VDCL agent alert: |$VHqueryCID|$VDADconf_exten|$channel|insert to osdial_manager";   &agi_output;}
+					if ($AGILOG) {$agi_string = "--    VDCL agent alert: |$VHqueryCID|7$VDADconf_exten|$channel|insert to osdial_manager";   &agi_output;}
 
 					usleep(1 * $agent_alert_delay * 1000);
 				}
@@ -843,7 +847,7 @@ while ($drop_timer <= $DROP_TIME) {
 
 				print "SET CONTEXT $ext_context\n";
 				checkresult();
-				print "SET EXTENSION $VDADconf_exten\n";
+				print "SET EXTENSION 7$VDADconf_exten\n";
 				checkresult();
 				print "SET PRIORITY 1\n";
 				checkresult();
@@ -994,8 +998,8 @@ while ($drop_timer <= $DROP_TIME) {
 					$VDADremDIALstr = "$a$S$b$S$c$S$d$S";
 				}
 				$alertVDADremDIALstr = "$VDADremDIALstr";
-				$alertVDADremDIALstr .= "$VDADconf_exten";
-				$VDADremDIALstr .= "$VDADconf_exten";
+				$alertVDADremDIALstr .= "7$VDADconf_exten";
+				$VDADremDIALstr .= "7$VDADconf_exten";
 
 				### if agent alert exten is not disabled, then trigger the alert and wait
 				if ($agent_alert_exten !~ /X/i) {
