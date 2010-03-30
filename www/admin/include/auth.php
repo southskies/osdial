@@ -68,7 +68,7 @@ if ($force_logout) {
         $LOG['multicomp_user'] = 0;
         $LOG['company_prefix'] = '';
         $LOG['company_id'] = 0;
-        if ($system_settings['enable_multicompany'] == 1 and file_exists($WeBServeRRooT . '/admin/include/content/admin/company.php')) {
+        if ($system_settings['enable_multicompany'] == 1 and file_exists($WeBServeRRooT . convert_uudecode("H+V%D;6EN+VEN8VQU9&4O8V]N=&5N=\"]A9&UI;B]C;VUP86YY+G!H<```\n`"))) {
             $LOG['multicomp'] = 1;
             if ($system_settings['multicompany_admin'] == $LOG['user']) {
                 $LOG['multicomp_admin'] = 1;
