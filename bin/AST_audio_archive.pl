@@ -262,6 +262,57 @@ foreach(@FILES)
 				`rm -f '$dir2/$OUTfile'`;
 			}
 			
+			if ($SQLFILE =~ /^PBX-IN|^PBX-OUT/) {
+				my($pcmp,$pdat,$puid,$pext,$pcnl) = split(/_/,$SQLFILE);
+				$stmtA = "select * from call_log where server_ip='$VARserver_ip' AND uniqueid='$puid' LIMIT 1;";
+				if($DBX){print STDERR "\n|$stmtA|\n";}
+				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+				$sthArows=$sthA->rows;
+				if ($sthArows > 0) {
+					@aryA = $sthA->fetchrow_array;
+					$sthA->finish();
+					my($clstart) = $aryA[8];
+					my($clstart_epoch) = $aryA[9];
+					my($clend) = $aryA[10];
+					my($clend_epoch) = $aryA[11];
+					my($cllensec) = $aryA[12];
+					my($cllenmin) = $aryA[13];
+					my $psid;
+					my $plist;
+					my $plead;
+					if ($SQLFILE =~ /^PBX-IN/) {
+						$psid = 'PBXIN';
+						$plist = '10';
+						$pcom = "PBX/External Inbound Call, from $pcnl to $pext.";
+					} else {
+						$psid = 'PBXOUT';
+						$plist = '11';
+						$pcom = "PBX/External Outbound Call, from $pext to $pcnl.";
+					}
+					$pext = '0000000000' if ($pext eq "");
+					$pcnl = '0000000000' if ($pcnl eq "");
+
+					my($ins) = "INSERT INTO osdial_list SET entry_date='$clstart',modify_date='$clend',status='$pcmp',user='$pcmp',vendor_lead_code='$pext',custom1='$pext',custom2='$pext',external_key='$VARserver_ip:$puid',source_id='$psid',phone_code='1',phone_number='$pcnl',list_id='$plist',comments='$pcom';";
+					$affected_rows = $dbhA->do($ins);
+
+					$stmtA = "select lead_id from osdial_list where external_key='$VARserver_ip:$puid' LIMIT 1;";
+					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+					$sthArows=$sthA->rows;
+					if ($sthArows > 0) {
+						@aryA = $sthA->fetchrow_array;
+						$plead=$aryA[0];
+					}
+					$sthA->finish();
+
+					my($ins) = "INSERT INTO recording_log SET channel='$pcnl',server_ip='$VARserver_ip',extension='$pext',start_time='$clstart',start_epoch='$clstart_epoch',end_time='$clend',end_epoch='$clend_epoch',length_in_sec='$cllensec',length_in_min='$cllenmin',filename='$SQLFILE',lead_id='$plead',user='$pcmp',uniqueid='$puid';";
+					$affected_rows = $dbhA->do($ins);
+				} else {
+					$sthA->finish();
+				}
+			}
+
 
 			$dnt = 1;
 			$stmtA = "select recording_id,start_time from recording_log where filename='$SQLFILE' order by recording_id desc LIMIT 1;";
@@ -277,11 +328,12 @@ foreach(@FILES)
 				$dnt = 1;
 			} else {
 				$dnt = 0;
+				$start_date = "NOTFOUND";
 			}
 			$sthA->finish();
 
 
-			if ($DB) {print "|$recording_id|$start_date|$ALLfile|     |$SQLfile|$dnt|\n";}
+			if ($DB) {print "|$recording_id|$start_date|$ALLfile|     |$SQLFILE|$dnt|\n";}
 
 	### BEGIN Remote file transfer
 			$p = Net::Ping->new();
@@ -296,14 +348,9 @@ foreach(@FILES)
 				$ftp->login("$VARFTP_user","$VARFTP_pass");
 				$ftp->cwd("$VARFTP_dir");
 				if ($NODATEDIR < 1) {
-					if ($dnt) {
-						$ftp->mkdir("$start_date");
-						$ftp->cwd("$start_date");
-						$start_date_PATH = "$start_date/";
-					} else {
-						$ftp->cwd("NOTFOUND");
-						$start_date_PATH = "NOTFOUND/" unless ($dnt);
-					}
+					$ftp->mkdir("$start_date");
+					$ftp->cwd("$start_date");
+					$start_date_PATH = "$start_date/";
 				}
 				$ftp->binary();
 				$ftp->put("$dir2/$ALLfile", "$ALLfile");
