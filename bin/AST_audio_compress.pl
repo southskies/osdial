@@ -189,7 +189,7 @@ if ($MP3 > 0) {
 	$lameopts = '';
 	if (-e '/usr/bin/toolame' and -e '/usr/bin/sox') {
 		$lamebin = '/usr/bin/toolame';
-		$lameopts = '-s 16 -b 16 -m j';
+		$lameopts = '-s 16 -b 32 -m j';
 		$soxbin = '/usr/bin/sox';
 	} elsif (-e '/usr/bin/lame') {
 	#if (-e '/usr/bin/lame') {
@@ -303,8 +303,10 @@ foreach(@FILES) {
 				# WAV must be 16k to convert using toolame
 				if ($lamebin =~ /toolame/) {
 					my $junk = `mv '$dir1/$ALLfile' /tmp`;
-					$junk = `$soxbin '/tmp/$ALLfile' -r 16000 -c 1 '$dir1/$ALLfile' resample -ql`;
+					$junk = `$soxbin '/tmp/$ALLfile' -r 32000 -c 1 '/tmp/32-$ALLfile' resample -ql`;
+					$junk = `$soxbin '/tmp/32-$ALLfile' -r 16000 -c 1 '$dir1/$ALLfile' resample -ql`;
 					$junk = `rm -f '/tmp/$ALLfile'`;
+					$junk = `rm -f '/tmp/32-$ALLfile'`
 				}
 
 				my $junk = `$lamebin $lameopts '$dir1/$ALLfile' '$dir2/mixed/$MP3file'`;
