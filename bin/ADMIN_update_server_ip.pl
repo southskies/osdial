@@ -367,18 +367,8 @@ $stmtA = "UPDATE osdial_conferences SET server_ip='$VARserver_ip' where server_i
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
-print "  Updating osdial_stations table...\n";
-$stmtA = "UPDATE osdial_stations SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
-$affected_rows = $dbhA->do($stmtA);
-if ($DB) {print "     |$affected_rows|$stmtA|\n";}
-
 print "  Updating osdial_remote_agents table...\n";
 $stmtA = "UPDATE osdial_remote_agents SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
-$affected_rows = $dbhA->do($stmtA);
-if ($DB) {print "     |$affected_rows|$stmtA|\n";}
-
-print "  Updating phone_favorites table...\n";
-$stmtA = "UPDATE phone_favorites SET server_ip='$VARserver_ip' where server_ip='$VARold_server_ip';";
 $affected_rows = $dbhA->do($stmtA);
 if ($DB) {print "     |$affected_rows|$stmtA|\n";}
 
