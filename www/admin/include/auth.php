@@ -113,6 +113,10 @@ if ($force_logout) {
                 foreach ($camps as $camp) {
                     $LOGacA[] = $camp['campaign_id'];
                 }
+                if ($LOG['user_level'] > 8 and $LOG['multicomp'] == 0) {
+                    $LOGacA[] = 'PBX-IN';
+                    $LOGacA[] = 'PBX-OUT';
+                }
             } else {
                 $LOG['allowed_campaignsALL'] = 0;
                 $LOGagA[] = $LOG['user_group'];
