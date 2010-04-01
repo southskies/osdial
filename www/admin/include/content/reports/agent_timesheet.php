@@ -179,7 +179,7 @@ function report_agent_timesheet() {
         $table .= "</table>\n";
 
         # Call Summary
-        $stmt=sprintf("SELECT count(*) as calls,sum(talk_sec) as talk,avg(talk_sec),sum(pause_sec),avg(pause_sec),sum(wait_sec),avg(wait_sec),sum(dispo_sec),avg(dispo_sec),avg(talk_sec+pause_sec+wait_sec+dispo_sec) FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' AND event_time >= '%s' AND user='%s' AND pause_sec<48800 AND wait_sec<48800 AND talk_sec<48800 AND dispo_sec<48800 LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$company_prefix . mres($agent));
+        $stmt=sprintf("SELECT count(*) as calls,sum(talk_sec) as talk,avg(talk_sec),sum(pause_sec),avg(pause_sec),sum(wait_sec),avg(wait_sec),sum(dispo_sec),avg(dispo_sec),avg(talk_sec+pause_sec+wait_sec+dispo_sec) FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' AND event_time >= '%s' AND user='%s' AND pause_sec<36000 AND wait_sec<36000 AND talk_sec<36000 AND dispo_sec<36000 AND status IS NOT NULL and status != '' LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$company_prefix . mres($agent));
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$plain .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
@@ -312,9 +312,9 @@ function report_agent_timesheet() {
         $pfTOTAL_AVG_MS =        sprintf("%6s", $TOTAL_AVG_MS);
 
         $plain .= "TOTAL CALLS TAKEN: $row[0]\n";
-        $plain .= "TALK TIME:               $pfTALK_TIME_HMS     AVERAGE: $pfTALK_AVG_MS\n";
         $plain .= "PAUSE TIME:              $pfPAUSE_TIME_HMS     AVERAGE: $pfPAUSE_AVG_MS\n";
         $plain .= "WAIT TIME:               $pfWAIT_TIME_HMS     AVERAGE: $pfWAIT_AVG_MS\n";
+        $plain .= "TALK TIME:               $pfTALK_TIME_HMS     AVERAGE: $pfTALK_AVG_MS\n";
         $plain .= "WRAPUP TIME:             $pfWRAPUP_TIME_HMS     AVERAGE: $pfWRAPUP_AVG_MS\n";
         $plain .= "----------------------------------------------------------------\n";
         $plain .= "TOTAL ACTIVE AGENT TIME: $pfTOTAL_TIME_HMS\n";
@@ -331,11 +331,6 @@ function report_agent_timesheet() {
         $table .= "          <td>TIME</td>\n";
         $table .= "          <td>AVERAGE</td>\n";
         $table .= "        </tr>\n";
-        $table .= "        <tr bgcolor=$oddrows class=\"row font1\">\n";
-        $table .= "          <td align=center>TALK</td>\n";
-        $table .= "          <td align=right>$pfTALK_TIME_HMS</td>\n";
-        $table .= "          <td align=right>$pfTALK_AVG_MS</td>\n";
-        $table .= "        </tr>\n";
         $table .= "        <tr bgcolor=$evenrows class=\"row font1\">\n";
         $table .= "          <td align=center>PAUSE</td>\n";
         $table .= "          <td align=right>$pfPAUSE_TIME_HMS</td>\n";
@@ -345,6 +340,11 @@ function report_agent_timesheet() {
         $table .= "          <td align=center>WAIT</td>\n";
         $table .= "          <td align=right>$pfWAIT_TIME_HMS</td>\n";
         $table .= "          <td align=right>$pfWAIT_AVG_MS</td>\n";
+        $table .= "        </tr>\n";
+        $table .= "        <tr bgcolor=$oddrows class=\"row font1\">\n";
+        $table .= "          <td align=center>TALK</td>\n";
+        $table .= "          <td align=right>$pfTALK_TIME_HMS</td>\n";
+        $table .= "          <td align=right>$pfTALK_AVG_MS</td>\n";
         $table .= "        </tr>\n";
         $table .= "        <tr bgcolor=$evenrows class=\"row font1\">\n";
         $table .= "          <td align=center>DISPO</td>\n";
