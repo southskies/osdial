@@ -391,6 +391,11 @@ while ($sthArows > $cbc) {
 }
 $sthA->finish();
 
+if ($agent_alert_exten =~ /^$|^X$|^8304$/) {
+	$agent_alert_exten = '8304';
+	$agent_alert_delay = '350';
+}
+
 if ($wday==0) {$daySQL=',ct_sunday_start,ct_sunday_stop';}
 if ($wday==1) {$daySQL=',ct_monday_start,ct_monday_stop';}
 if ($wday==2) {$daySQL=',ct_tuesday_start,ct_tuesday_stop';}
