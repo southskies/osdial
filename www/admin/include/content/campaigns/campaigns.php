@@ -1459,7 +1459,7 @@ if ($ADD==31) {
                 echo "    <input type=hidden name=ADD value=45>\n";
                 echo "    <tr $bgcolor class=\"row font1\">\n";
                 echo "      <td align=center>$rowx[2]</td>\n";
-                echo "      <td class=tabinput align=center><input type=text size=7 maxlength=5 name=attempt_delay value=\"$rowx[3]\"></td>\n";
+                echo "      <td class=tabinput align=center><input type=text size=10 maxlength=10 name=attempt_delay value=\"$rowx[3]\"></td>\n";
                 echo "      <td class=tabinput align=center><input type=text size=5 maxlength=3 name=attempt_maximum value=\"$rowx[4]\"></td>\n";
                 echo "      <td class=tabinput align=center><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$rowx[5]</option></select></td>\n";
                 echo "      <td align=center><a href=\"$PHP_SELF?ADD=65&campaign_id=$campaign_id&status=$rowx[2]\">DELETE</a></td>\n";
@@ -1475,7 +1475,7 @@ if ($ADD==31) {
             echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
             echo "    <tr class=tabfooter>\n";
             echo "      <td class=tabinput align=center><select size=1 name=status>$LRstatuses_list</select></td>";
-            echo "      <td class=tabinput align=center><input type=text size=7 maxlength=5 name=attempt_delay></td>\n";
+            echo "      <td class=tabinput align=center><input type=text size=10 maxlength=10 name=attempt_delay></td>\n";
             echo "      <td class=tabinput align=center><input type=text size=5 maxlength=3 name=attempt_maximum></td>\n";
             echo "      <td></td>";
             echo "      <td colspan=2 class=tabbutton1 align=center><input type=submit name=submit value=ADD></td>\n";
