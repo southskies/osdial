@@ -2211,7 +2211,7 @@ foreach ($forms as $form) {
 					<BR> &nbsp; 
 					<a href="#" onclick="CalLBacKsLisTCheck();return false;">Refresh</a>
 					&nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; 
-					<a href="#" onclick="hideDiv('CallBacKsLisTBox');return false;">Go Back</a>
+					<a href="#" onclick="if (PCSpause==1) {AutoDial_ReSume_PauSe('VDADready');} hideDiv('CallBacKsLisTBox');return false;">Go Back</a>
 				</TD>
 			</TR>
 		</TABLE>
@@ -2261,7 +2261,7 @@ foreach ($forms as $form) {
 				<BR>
 				<a href="#" onclick="NeWManuaLDiaLCalLSubmiT();return false;"><b>Dial Now</a>
 				&nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; 
-				<a href="#" onclick="hideDiv('NeWManuaLDiaLBox');return false;">Go Back</b></a>
+				<a href="#" onclick="if (PCSpause==1) {AutoDial_ReSume_PauSe('VDADready');} hideDiv('NeWManuaLDiaLBox');return false;">Go Back</b></a>
 				</TD>
 			</TR>
 		</TABLE>

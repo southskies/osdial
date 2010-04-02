@@ -423,6 +423,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 	var multicomp = '<? echo $multicomp ?>';
 
+	var PCSpause = 0;
+
 
 // ################################################################################
 // Send Hangup command for Live call connected to phone now to Manager
@@ -1415,9 +1417,13 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Request list of USERONLY callbacks for this agent
 	function CalLBacKsLisTCheck() {
-		if ( (AutoDialWaiting == 1) || (VD_live_customer_call==1) || (alt_dial_active==1) ) {
-			alert("You must pause your session by clicking \"Pause\" \nbefore you can check callbacks. ");
+		if ( (VD_live_customer_call==1) || (alt_dial_active==1) ) {
+			alert("You must hangup and disposition your active call\nbefore you can place a call to a callback. ");
 		} else {
+			if (AutoDialWaiting==1 && VD_live_customer_call==0 && alt_dial_active==0) {
+				AutoDial_ReSume_PauSe('VDADpause');
+				PCSpause=1;
+			}
 			showDiv('CallBacKsLisTBox');
 
 			var xmlhttp=false;
@@ -1517,12 +1523,18 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // Open page to enter details for a new manual dial lead
 	function NeWManuaLDiaLCalL(TVfast) {
 		dial_timedout=0;
-		if ( (AutoDialWaiting == 1) || (VD_live_customer_call==1) || (alt_dial_active==1) ) {
-			alert("You must pause your session by clicking \"Pause\" \nbefore you can place a call to a manually entered number. ");
-		} else if (TVfast=='FAST') {
-			NeWManuaLDiaLCalLSubmiTfast();
+		if ( (VD_live_customer_call==1) || (alt_dial_active==1) ) {
+			alert("You must hangup and disposition your active call\nbefore you can place a call to a manually entered number. ");
 		} else {
-			showDiv('NeWManuaLDiaLBox');
+			if (AutoDialWaiting==1 && VD_live_customer_call==0 && alt_dial_active==0) {
+				AutoDial_ReSume_PauSe('VDADpause');
+				PCSpause=1;
+			}
+			if (TVfast=='FAST') {
+				NeWManuaLDiaLCalLSubmiTfast();
+			} else {
+				showDiv('NeWManuaLDiaLBox');
+			}
 		}
 	}
 
@@ -2353,7 +2365,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 // ################################################################################
 // Set the client to READY and start looking for calls (VDADready, VDADpause)
-	function AutoDial_ReSume_PauSe(taskaction,taskagentlog) {
+	function AutoDial_ReSume_PauSe(taskaction,taskagentlog,taskwrapup) {
 		if (taskaction == 'VDADready') {
 			var VDRP_stage = 'READY';
 			if (INgroupCOUNT > 0) {
@@ -2367,6 +2379,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			AutoDialWaiting = 1;
 			manual_dial_menu=0;
 			alt_dial_menu=0;
+			PCSpause=0;
 			if (inbound_man > 0) {
 				auto_dial_level=starting_dial_level;
 				document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADpause');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_pause.gif\" border=0 alt=\" Pause \"></a><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_resume_OFF.gif\" border=0 alt=\"Resume\"></a><BR><a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_dialnextnumber.gif\" border=0 alt=\"Dial Next Number\"></a>";
@@ -2406,17 +2419,23 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			xmlhttp = new XMLHttpRequest();
 		}
 		if (xmlhttp) { 
-			autoDiaLready_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=" + taskaction + "&user=" + user + "&pass=" + pass + "&stage=" + VDRP_stage + "&agent_log_id=" + agent_log_id + "&agent_log=" + taskagentlog + "&campaign=" + campaign;
+			autoDiaLready_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=" + taskaction + "&user=" + user + "&pass=" + pass + "&stage=" + VDRP_stage + "&agent_log_id=" + agent_log_id + "&agent_log=" + taskagentlog + "&wrapup=" + taskwrapup + "&campaign=" + campaign;
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 			xmlhttp.send(autoDiaLready_query); 
 			xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-					//alert(xmlhttp.responseText);
+					var check_dispo = null;
+					check_dispo = xmlhttp.responseText;
+					var check_DS_array=check_dispo.split("\n");
+					if (check_DS_array[1] == 'Next agent_log_id:') {
+						agent_log_id = check_DS_array[2];
+					}
 				}
 			}
 			delete xmlhttp;
 		}
+		//if (VDRP_stage=='PAUSED' && inbound_man < 1 && agent_pause_codes_active=='Y') {PCSpause=1; PauseCodeSelectContent_create();}
 	}
 
 
@@ -3645,9 +3664,13 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // ################################################################################
 // Generate the Pause Code Chooser panel
 	function PauseCodeSelectContent_create() {
-		if ( (AutoDialWaiting == 1) || (VD_live_customer_call==1) || (alt_dial_active==1) ) {
-			alert("You must pause your session by clicking \"Pause\" \nbefore you can enter a pause-code. ");
+		if ( (VD_live_customer_call==1) || (alt_dial_active==1) ) {
+			alert("You must hangup and disposition your call before clicking \"Pause\". ");
 		} else {
+			if (inbound_man == 0 && AutoDialReady==1) {
+				AutoDial_ReSume_PauSe('VDADpause');
+				PCSpause = 1;
+			}
 			showDiv('PauseCodeSelectBox');
 			WaitingForNextStep=1;
 			PauseCode_HTML = '';
@@ -3662,7 +3685,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					PauseCode_HTML = PauseCode_HTML + "</span></font></td><td bgcolor=\"<?=$pause_bg2?>\" height=300 width=240 valign=top><font class=\"log_text\"><span id=PauseCodeSelectB>";
 				}
 			}
-			PauseCode_HTML = PauseCode_HTML + "</span></font></td></tr></table><BR><BR><font size=3 \"><b><a href=\"#\" onclick=\"PauseCodeSelect_submit('');return false;\">Go Back</a>";
+			PauseCode_HTML = PauseCode_HTML + "</span></font></td></tr></table><BR><BR><font size=3 \"><b><a href=\"#\" onclick=\"if (PCSpause==1) {AutoDial_ReSume_PauSe('VDADready');} PauseCodeSelect_submit('');return false;\">Go Back</a>";
 			document.getElementById("PauseCodeSelectContent").innerHTML = PauseCode_HTML;
 		}
 	}
@@ -3695,6 +3718,9 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // ################################################################################
 // Update osdial_list lead record with disposition selection
 	function DispoSelect_submit() {
+
+		var group = campaign;
+		if (VDCL_group_id.length > 1) group = VDCL_group_id;
 
 		var DispoChoice = document.osdial_form.DispoSelection.value;
 
@@ -3738,7 +3764,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					xmlhttp = new XMLHttpRequest();
 				}
 				if (xmlhttp) { 
-					DSupdate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=updateDISPO&format=text&user=" + user + "&pass=" + pass + "&dispo_choice=" + DispoChoice + "&lead_id=" + document.osdial_form.lead_id.value + "&campaign=" + campaign + "&auto_dial_level=" + auto_dial_level + "&agent_log_id=" + agent_log_id + "&PostDatETimE=" + PostDatETimE + "&CallBackDatETimE=" + CallBackDatETimE + "&list_id=" + document.osdial_form.list_id.value + "&recipient=" + CallBackrecipient + "&use_internal_dnc=" + use_internal_dnc + "&MDnextCID=" + LasTCID + "&comments=" + CallBackCommenTs;
+					DSupdate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=updateDISPO&format=text&user=" + user + "&pass=" + pass + "&dispo_choice=" + DispoChoice + "&lead_id=" + document.osdial_form.lead_id.value + "&campaign=" + campaign + "&auto_dial_level=" + auto_dial_level + "&agent_log_id=" + agent_log_id + "&PostDatETimE=" + PostDatETimE + "&CallBackDatETimE=" + CallBackDatETimE + "&list_id=" + document.osdial_form.list_id.value + "&recipient=" + CallBackrecipient + "&use_internal_dnc=" + use_internal_dnc + "&MDnextCID=" + LasTCID + "&stage=" + group + "&comments=" + CallBackCommenTs;
 					xmlhttp.open('POST', 'vdc_db_query.php'); 
 					xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 					xmlhttp.send(DSupdate_query); 
@@ -3820,7 +3846,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					if (document.osdial_form.DispoSelectStop.checked==true) {
 						if (auto_dial_level != '0') {
 							AutoDialWaiting = 0;
-							AutoDial_ReSume_PauSe("VDADpause","NO");
+							AutoDial_ReSume_PauSe("VDADpause");
 							//document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML;
 						}
 						OSDiaL_pause_calling = 1;
@@ -3830,7 +3856,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					} else {
 						if (auto_dial_level != '0') {
 							AutoDialWaiting = 1;
-							AutoDial_ReSume_PauSe("VDADready","NO");
+							AutoDial_ReSume_PauSe("VDADready","NEW_ID");
 							//document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_ready;
 						} else {
 							// trigger HotKeys manual dial automatically go to next lead
@@ -4005,7 +4031,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			delete xmlhttp;
 		}
 		if (auto_dial_level > 0) {
-			AutoDial_ReSume_PauSe("VDADpause","NO");
+			AutoDial_ReSume_PauSe("VDADpause");
 		}
 	}
 
@@ -5147,7 +5173,7 @@ if ($useIE > 0) {
 						if (document.osdial_form.DispoSelectStop.checked==true) {
 							if (auto_dial_level != '0') {
 								AutoDialWaiting = 0;
-								AutoDial_ReSume_PauSe("VDADpause","NO");
+								AutoDial_ReSume_PauSe("VDADpause");
 								//document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML;
 							}
 							OSDiaL_pause_calling = 1;
@@ -5157,7 +5183,7 @@ if ($useIE > 0) {
 						} else {
 							if (auto_dial_level != '0') {
 								AutoDialWaiting = 1;
-								AutoDial_ReSume_PauSe("VDADready","NO");
+								AutoDial_ReSume_PauSe("VDADready","NEW_ID","WRAPUP");
 								//document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_ready;
 							}
 						}
