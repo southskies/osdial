@@ -711,7 +711,8 @@ while ($drop_timer <= $DROP_TIME) {
 				$sthA->finish();
 
 				if ($sthArows > 0) {
-					$stmtA = "UPDATE osdial_live_agents set status='QUEUE',lead_id='$insert_lead_id',uniqueid='$unique_id', channel='$channel', callerid='$accountcode' where user='$VDADuser';";
+					my $random = int( rand(9999999)) + 10000000;
+					$stmtA = "UPDATE osdial_live_agents set status='QUEUE',lead_id='$insert_lead_id',random_id='$random',uniqueid='$unique_id', channel='$channel', callerid='$accountcode' where user='$VDADuser';";
 					my $affected_rows = $dbhA->do($stmtA);
 					$found_agents=$affected_rows;
 				} else {
@@ -721,7 +722,8 @@ while ($drop_timer <= $DROP_TIME) {
 				$stmtA = "UNLOCK TABLES;";
 				my $LOCKaffected_rows = $dbhA->do($stmtA);
 			} else {
-				$stmtA = "UPDATE osdial_live_agents set status='QUEUE',lead_id='$insert_lead_id',uniqueid='$unique_id', channel='$channel', callerid='$accountcode' where status IN('CLOSER','READY') and server_ip='$VARserver_ip' and campaign_id IN($INBOUNDcampsSQL) and closer_campaigns LIKE \"% $channel_group %\" and last_update_time > '$BDtsSQLdate' $agent_call_order limit 1;";
+				my $random = int( rand(9999999)) + 10000000;
+				$stmtA = "UPDATE osdial_live_agents set status='QUEUE',random_id='$random',lead_id='$insert_lead_id',uniqueid='$unique_id', channel='$channel', callerid='$accountcode' where status IN('CLOSER','READY') and server_ip='$VARserver_ip' and campaign_id IN($INBOUNDcampsSQL) and closer_campaigns LIKE \"% $channel_group %\" and last_update_time > '$BDtsSQLdate' $agent_call_order limit 1;";
 				my $affected_rows = $dbhA->do($stmtA);
 				$found_agents=$affected_rows;
 			}
@@ -903,7 +905,8 @@ while ($drop_timer <= $DROP_TIME) {
 				$sthA->finish();
 
 				if ($sthArows > 0) {
-					$stmtA = "UPDATE osdial_live_agents set status='QUEUE',lead_id='$insert_lead_id',uniqueid='$unique_id', channel='$channel', callerid='$accountcode', call_server_ip='$VARserver_ip' where user='$VDADuser';";
+					my $random = int( rand(9999999)) + 10000000;
+					$stmtA = "UPDATE osdial_live_agents set status='QUEUE',random_id='$random',lead_id='$insert_lead_id',uniqueid='$unique_id', channel='$channel', callerid='$accountcode', call_server_ip='$VARserver_ip' where user='$VDADuser';";
 					my $affected_rows = $dbhA->do($stmtA);
 					$found_agents=$affected_rows;
 				} else {
@@ -913,7 +916,8 @@ while ($drop_timer <= $DROP_TIME) {
 				$stmtA = "UNLOCK TABLES;";
 				my $LOCKaffected_rows = $dbhA->do($stmtA);
 			} else {
-				$stmtA = "UPDATE osdial_live_agents set status='QUEUE',lead_id='$insert_lead_id',uniqueid='$unique_id', channel='$channel', callerid='$accountcode', call_server_ip='$VARserver_ip' where status IN('CLOSER','READY') and campaign_id IN($INBOUNDcampsSQL) and closer_campaigns LIKE \"% $channel_group %\" and last_update_time > '$BDtsSQLdate' $agent_call_order limit 1;";
+				my $random = int( rand(9999999)) + 10000000;
+				$stmtA = "UPDATE osdial_live_agents set status='QUEUE',random_id='$random',lead_id='$insert_lead_id',uniqueid='$unique_id', channel='$channel', callerid='$accountcode', call_server_ip='$VARserver_ip' where status IN('CLOSER','READY') and campaign_id IN($INBOUNDcampsSQL) and closer_campaigns LIKE \"% $channel_group %\" and last_update_time > '$BDtsSQLdate' $agent_call_order limit 1;";
 				my $affected_rows = $dbhA->do($stmtA);
 				$found_agents=$affected_rows;
 			}

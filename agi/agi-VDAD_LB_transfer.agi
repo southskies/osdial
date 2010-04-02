@@ -529,7 +529,8 @@ if ($DBconcurrent_transfers =~ /AUTO/)
 $sthA->finish();
 if ($rec_countWAIT < $DBconcurrent_transfers)
 	{
-	$stmtA = "UPDATE osdial_live_agents set status='QUEUE',lead_id='$CIDlead_id',uniqueid='$unique_id', channel='$channel', call_server_ip='$VARserver_ip', callerid='$callerid' where status = 'READY' and campaign_id='$VDADcampaign' and last_update_time > '$BDtsSQLdate' $agent_call_order limit 1;";
+	my $random = int( rand(9999999)) + 10000000;
+	$stmtA = "UPDATE osdial_live_agents set status='QUEUE',random_id='$random',lead_id='$CIDlead_id',uniqueid='$unique_id', channel='$channel', call_server_ip='$VARserver_ip', callerid='$callerid' where status = 'READY' and campaign_id='$VDADcampaign' and last_update_time > '$BDtsSQLdate' $agent_call_order limit 1;";
 	$affected_rows = $dbhA->do($stmtA);
 	if ($AGILOG) {$agi_string = "--    VDAD get agent: |$affected_rows|update of vla table: $VDADcampaign|$VARserver_ip\n|$stmtA|";   &agi_output;}
 	if ($affected_rows > 0)

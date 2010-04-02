@@ -216,7 +216,8 @@ if ($AGILOG) {$agi_string = "CXFERfix : $lead_id $user $channel $uniqueid";   &a
 	if ($AGILOG) {$agi_string = "callerID changed: $CIDlead";   &agi_output;}
 
 ########## FIND AND UPDATE osdial_live_agents ##########
-$stmtA = "UPDATE osdial_live_agents SET channel='$channel',call_server_ip='$VARserver_ip',uniqueid='$uniqueid' where user='$user' and lead_id='$lead_id';";
+my $random = int( rand(9999999)) + 10000000;
+$stmtA = "UPDATE osdial_live_agents SET channel='$channel',random_id='$random',call_server_ip='$VARserver_ip',uniqueid='$uniqueid' where user='$user' and lead_id='$lead_id';";
 	if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
 if ($AGILOG) {$agi_string = "--    VDAD osdial_live_agents update: |$affected_rows|$lead_id|";   &agi_output;}

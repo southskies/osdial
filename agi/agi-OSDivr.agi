@@ -110,8 +110,8 @@ my @scsip = split(/\./,$live_agents->{server_ip});
 my $csip = sprintf('%3.3d*%3.3d*%3.3d*%3.3d', @scsip);
 $vars->{conf_server} = $csip;
 
-
-my $stmtA = "UPDATE osdial_live_agents SET channel='" . $AGI->{orig_channel} . "',status='INCALL',last_call_time='" . $vars->{start_date} . "' WHERE callerid='" . $AGI->{callerid} . "' LIMIT 1;";
+my $random = int( rand(9999999)) + 10000000;
+my $stmtA = "UPDATE osdial_live_agents SET channel='" . $AGI->{orig_channel} . "',status='INCALL',random_id='" . $random . "',last_call_time='" . $vars->{start_date} . "' WHERE callerid='" . $AGI->{callerid} . "' LIMIT 1;";
 my $affected_rows = $dbhA->do($stmtA);
 my $stmtA = "UPDATE osdial_auto_calls SET channel='" . $AGI->{orig_channel} . "' WHERE callerid='" . $AGI->{callerid} . "' LIMIT 1;";
 my $affected_rows = $dbhA->do($stmtA);
