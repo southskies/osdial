@@ -107,6 +107,8 @@ if (isset($_GET["session_name"]))			{$session_name=$_GET["session_name"];}
 	elseif (isset($_POST["session_name"]))	{$session_name=$_POST["session_name"];}
 if (isset($_GET["ACTION"]))					{$ACTION=$_GET["ACTION"];}
 	elseif (isset($_POST["ACTION"]))		{$ACTION=$_POST["ACTION"];}
+if (isset($_GET["account"]))				{$phone_ip=$_GET["account"];}
+	elseif (isset($_POST["account"]))		{$phone_ip=$_POST["account"];}
 if (isset($_GET["queryCID"]))				{$queryCID=$_GET["queryCID"];}
 	elseif (isset($_POST["queryCID"]))		{$queryCID=$_POST["queryCID"];}
 if (isset($_GET["format"]))					{$format=$_GET["format"];}
@@ -448,7 +450,7 @@ if ($ACTION=="Hangup")
 #				echo "Channel $channel is not live on $call_server_ip, Hangup command not inserted\n";
 #			}	
 #		}
-		if ( ($auto_dial_level > 0) and (strlen($CalLCID)>2) and (strlen($exten)>2) and ($secondS > 4))
+		if ( ($auto_dial_level > 0) and (strlen($CalLCID)>2) and (strlen($exten)>2) and ($secondS > 0))
 		{
 			$stmt="SELECT count(*) FROM osdial_auto_calls where channel='$channel' and callerid='$CalLCID';";
 				if ($format=='debug') {echo "\n<!-- $stmt -->";}
@@ -473,6 +475,29 @@ if ($ACTION=="Hangup")
 				}
 			}	
 		}
+        if ( ($auto_dial_level < 1) and (strlen($stage)>2) and (strlen($channel)>2) and (strlen($exten)>2) ) {
+            $stmt="SELECT count(*) FROM live_channels where server_ip = '$call_server_ip' and channel='$channel' and extension NOT LIKE \"%$exten%\";";
+            if ($format=='debug') {echo "\n<!-- $stmt -->";}
+            $rslt=mysql_query($stmt, $link);
+            $row=mysql_fetch_row($rslt);
+            if ($row[0] > 0)
+                {
+                $channel_live=0;
+                echo "Channel $channel in use by another agent on $call_server_ip, Hangup command not inserted $rowx[0]\n$stmt\n";
+                if ($WeBRooTWritablE > 0)
+                    {
+                    $fp = fopen ("./osdial_debug.txt", "a");
+                    fwrite ($fp, "$NOW_TIME|MDCHU|$user|$channel|$call_server_ip|$exten|\n");
+                    fclose($fp);
+                    }
+                }
+            else
+                {
+                echo "$stmt\n";
+                }
+            }
+
+
 		if ($channel_live==1)
 		{
 		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$call_server_ip','','Hangup','$queryCID','Channel: $channel','','','','','','','','','');";
