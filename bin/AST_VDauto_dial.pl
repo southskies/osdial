@@ -138,7 +138,7 @@ print "no command line options set\n";
 
 # constants
 $US='__';
-$MT[0]='';
+@MT=();
 $RECcount=''; ### leave blank for no REC count
 $RECprefix='7'; ### leave blank for no REC prefix
 $useJAMdebugFILE='1'; ### leave blank for no Jam call debug file writing
@@ -320,7 +320,7 @@ while($one_day_interval > 0)
 		$active_line_counter=0;
 		$user_counter=0;
 		$user_campaigns = '|';
-		$user_campaignsSQL = "''";
+		$user_campaignsSQL = "";
 		$user_campaigns_counter = 0;
 		$user_campaignIP = '|';
 		$user_CIPct = 0;
@@ -350,7 +350,7 @@ while($one_day_interval > 0)
 					{
 					if ($campaigns_update !~ /'$DBlive_campaign[$user_counter]'/) {$campaigns_update .= "'$DBlive_campaign[$user_counter]',"; $CPcount++;}
 					$user_campaigns .= "$DBlive_campaign[$user_counter]|";
-					$user_campaignsSQL .= ",'$DBlive_campaign[$user_counter]'";
+					$user_campaignsSQL .= "'$DBlive_campaign[$user_counter]',";
 					$DBcampaigns[$user_campaigns_counter] = $DBlive_campaign[$user_counter];
 					$user_campaigns_counter++;
 					}
@@ -365,6 +365,7 @@ while($one_day_interval > 0)
 			$rec_count++;
 			}
 		$sthA->finish();
+		chop($user_campaignsSQL);
 
 		### see how many total VDAD calls are going on right now for max limiter
 		$stmtA = "SELECT count(*) FROM osdial_auto_calls where server_ip='$server_ip' and status IN('SENT','RINGING','LIVE','XFER','CLOSER');";
@@ -383,13 +384,16 @@ while($one_day_interval > 0)
 		$event_string="LIVE AGENTS LOGGED IN: $user_counter   ACTIVE CALLS: $active_line_counter";
 		&event_logger;
 
-		$stmtA = "UPDATE osdial_campaign_server_stats set local_trunk_shortage='0' where server_ip='$server_ip' and campaign_id NOT IN($user_campaignsSQL);";
-		$UVCSSaffected_rows = $dbhA->do($stmtA);
-		if ($UVCSSaffected_rows > 0) 
-			{
-			$event_string="OLD TRUNK SHORTS CLEARED: $UVCSSaffected_rows |$user_campaignsSQL|";
-			&event_logger;
-			}
+		if ($user_campaignsSQL ne '') {
+			$stmtA = "UPDATE osdial_campaign_server_stats set local_trunk_shortage='0' where server_ip='$server_ip' and campaign_id NOT IN($user_campaignsSQL);";
+			$UVCSSaffected_rows = $dbhA->do($stmtA);
+			if ($UVCSSaffected_rows > 0) 
+				{
+				$event_string="OLD TRUNK SHORTS CLEARED: $UVCSSaffected_rows |$user_campaignsSQL|";
+				&event_logger;
+				}
+		}
+
 		$user_CIPct = 0;
 		foreach(@DBIPcampaign)
 			{
