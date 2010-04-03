@@ -270,20 +270,28 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 				 }
 
 
-	$stmtA = "UPDATE osdial_campaign_stats SET dialable_leads='0', calls_today='0', answers_today='0', drops_today='0', drops_today_pct='0', drops_answers_today_pct='0', calls_hour='0', answers_hour='0', drops_hour='0', drops_hour_pct='0', calls_halfhour='0', answers_halfhour='0', drops_halfhour='0', drops_halfhour_pct='0', calls_fivemin='0', answers_fivemin='0', drops_fivemin='0', drops_fivemin_pct='0', calls_onemin='0', answers_onemin='0', drops_onemin='0', drops_onemin_pct='0', differential_onemin='0', agents_average_onemin='0', balance_trunk_fill='0', status_category_count_1='0', status_category_count_2='0', status_category_count_3='0', status_category_count_4='0', status_category_hour_count_1='0', status_category_hour_count_2='0', status_category_hour_count_3='0', status_category_hour_count_4='0', recycle_total='0', recycle_sched='0', amd_onemin='0', failed_onemin='0', agents_paused='0', agents_incall='0', agents_waiting='0', waiting_calls='0';";
+	$stmtA = "DELETE FROM osdial_campaign_stats;";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) 
 			{
 			$affected_rows = $dbhA->do($stmtA);
-			if(!$Q){print STDERR "\n|$affected_rows osdial_campaign_stats records reset|\n";}
+			if(!$Q){print STDERR "\n|$affected_rows osdial_campaign_stats records deleted|\n";}
 			}
 
-	$stmtA = "UPDATE osdial_campaign_server_stats SET local_trunk_shortage='0', calls_onemin='0', answers_onemin='0', drops_onemin='0', amd_onemin='0', failed_onemin='0';";
+	$stmtA = "DELETE FROM osdial_campaign_server_stats;";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 		if (!$T) 
 			{
 			$affected_rows = $dbhA->do($stmtA);
 			if(!$Q){print STDERR "\n|$affected_rows osdial_campaign_server_stats records deleted|\n";}
+			}
+
+	$stmtA = "DELETE FROM osdial_campaign_agent_stats;";
+		if($DB){print STDERR "\n|$stmtA|\n";}
+		if (!$T) 
+			{
+			$affected_rows = $dbhA->do($stmtA);
+			if(!$Q){print STDERR "\n|$affected_rows osdial_campaign_agent_stats records deleted|\n";}
 			}
 
 	$stmtA = "delete from osdial_live_inbound_agents;";
@@ -309,14 +317,6 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 			$affected_rows = $dbhA->do($stmtA);
 			if(!$Q){print STDERR "\n|$affected_rows osdial_campaign_agents call counts reset|\n";}
 			}
-
-        $stmtA = "delete from osdial_campaign_agent_stats;";
-                if($DB){print STDERR "\n|$stmtA|\n";}
-                if (!$T)
-                        {
-                        $affected_rows = $dbhA->do($stmtA);
-                        if(!$Q){print STDERR "\n|$affected_rows osdial_campaign_agent_stats reset|\n";}
-                        }
 
 
 		$dbhA->disconnect();
