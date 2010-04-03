@@ -93,7 +93,7 @@ print "no command line options set\n";
 
 # constants
 $US='__';
-$MT[0]='';
+@MT=();
 $RECcount=''; ### leave blank for no REC count
 $RECprefix='7'; ### leave blank for no REC prefix
 

@@ -31,7 +31,7 @@
 # constants
 $DB=0;  # Debug flag, set to 0 for no debug messages per minute
 $US='__';
-$MT[0]='';
+@MT=();
 
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1)

@@ -67,7 +67,7 @@ $secX = time();
 # constants
 $DB=1;  # Debug flag, set to 0 for no debug messages, lots of output
 $US='_';
-$MT[0]='';
+@MT=();
 
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1)

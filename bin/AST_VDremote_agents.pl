@@ -113,7 +113,7 @@ print "no command line options set\n";
 
 # constants
 $US='__';
-$MT[0]='';
+@MT=();
 $local_DEF = 'Local/';
 $conf_silent_prefix = '7';
 $local_AMP = '@';

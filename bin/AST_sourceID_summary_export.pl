@@ -32,7 +32,7 @@
 
 $txt = '.txt';
 $US = '_';
-$MT[0] = '';
+@MT=();
 
 # Default FTP account variables
 $VARREPORT_host = '10.0.0.4';

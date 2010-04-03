@@ -197,7 +197,7 @@ $duplicatelist = '998';
 
 $US = '_';
 $phone_list = '|';
-$MT[0]='';
+@MT=();
 
 if (!$VARDB_port) {$VARDB_port='3306';}
 

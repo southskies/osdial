@@ -40,7 +40,7 @@
 # 70823-1633 - added ability to restrict by list_id
 #
 
-$MT[0]='';
+@MT=();
 
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1)

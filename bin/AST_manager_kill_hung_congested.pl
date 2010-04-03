@@ -49,7 +49,7 @@
 # constants
 $DB=0;  # Debug flag, set to 0 for no debug messages, On an active system this will generate thousands of lines of output per minute
 $US='__';
-$MT[0]='';
+@MT=();
 
 
 ### begin parsing run-time options ###

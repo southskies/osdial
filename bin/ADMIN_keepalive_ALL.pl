@@ -33,7 +33,7 @@
 #
 
 $DB=0; # Debug flag
-$MT[0]='';   $MT[1]='';
+@MT=();
 @psline=@MT;
 
 ### begin parsing run-time options ###

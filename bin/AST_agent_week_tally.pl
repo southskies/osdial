@@ -38,7 +38,7 @@
 
 $txt = '.txt';
 $US = '_';
-$MT[0] = '';
+@MT=();
 
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1)

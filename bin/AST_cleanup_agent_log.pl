@@ -37,7 +37,7 @@
 # constants
 $COUNTER_OUTPUT=1;	# set to 1 to display the counter as the script runs
 $US='__';
-$MT[0]='';
+@MT=();
 
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1)

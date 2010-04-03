@@ -79,7 +79,7 @@
 # constants
 $DB=0;  # Debug flag, set to 0 for no debug messages, On an active system this will generate lots of lines of output per minute
 $US='__';
-$MT[0]='';
+@MT=();
 #$osdial_hopper='TEST_osdial_hopper';	# for testing
 $osdial_hopper='osdial_hopper';
 
