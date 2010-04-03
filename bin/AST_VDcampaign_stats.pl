@@ -45,7 +45,7 @@ my $secStart = time();
 # Get AGC configuration directives.
 my $config = getAGCconfig('/etc/osdial.conf');
 
-my ($dbhA,$stmtA,$sthA,$sthArows,$rec_count,$affected_rows);
+my ($dbhA,$stmtA,$sthA,$sthArows,$rec_count);
 my ($DB, $DBX, $CLOhelp, $CLOcampaign, $CLOrecalc, $CLOtest, $CLOloops, $CLOdelay, $event_ext);
 
 ### begin parsing run-time options ###
@@ -99,8 +99,8 @@ $dbhA = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':' . $config->
 print 'CONNECTED TO DATABASE:  ' . $config->{VARDB_server} . '|' . $config->{VARDB_database} . "\n" if ($DBX);
 
 # Check to make sure we have all the stats records.
-my $stmtA = "INSERT INTO osdial_campaign_stats (campaign_id) (SELECT campaign_id FROM osdial_campaigns) on duplicate key update campaign_id=VALUES(campaign_id);";
-my $affected_rows = $dbhA->do($stmtA);
+#my $stmtA = "INSERT INTO osdial_campaign_stats (campaign_id) (SELECT campaign_id FROM osdial_campaigns) on duplicate key update campaign_id=VALUES(campaign_id);";
+#my $affected_rows = $dbhA->do($stmtA);
 
 my($master_loop, $stat_count) = (0,0);
 my($drop_count_updater, $RESETdrop_count_updater) = (0,0);
@@ -177,7 +177,7 @@ while ( $master_loop < $CLOloops ) {
 			if ($CLOtest) {
 				print $stmtA . "\n";
 			} else {
-				$affected_rows = $dbhA->do($stmtA);
+				my $affected_rows = $dbhA->do($stmtA);
 			}
 		} elsif ( $campaign_lastcall[$i] >= $VDL_ninty ) {
 			print "     CHANGEDATE OVERRIDE: $campaign_id[$i]\n" if ($DB);
@@ -212,12 +212,28 @@ exit 0;
 
 sub updateStats {
 	my ($campaign_id,$VDL_date,$VDL_one,$VDL_five,$VDL_hour,$VDL_halfhour) = @_;
+
+	my $multi_sql='';
+	my $stat_rows='';
+	my $sstat_rows='';
+	my $astat_rows='';
+
+	my $VSCupdateSQLcol='';
+	my $VSCupdateSQLdat='';
+	my $g=0;
+	while ( $g < 4 ) {
+		$g++;
+		$VSCupdateSQLcol .= "status_category_$g,status_category_count_$g,status_category_hour_count_$g,";
+		$VSCupdateSQLdat .= "status_category_$g=VALUES(status_category_$g),status_category_count_$g=VALUES(status_category_$g),status_category_hour_count_$g=VALUES(status_category_$g),";
+	}
+	chop($VSCupdateSQLcol);
+	chop($VSCupdateSQLdat);
 	
 	my $osdial_log = 'osdial_log FORCE INDEX (call_date) ';
 	#my $osdial_log = 'osdial_log';
 	my $camp_ANS_STAT_SQL;
 	
-	my($stmtA,$sthA,$sthArows,$rec_count,$affected_rows);
+	my($stmtA,$sthA,$sthArows,$rec_count);
 	my $VCSdrops_answers_today_pct;
 
 	# GET LIST OF HUMAN-ANSWERED STATUSES
@@ -329,22 +345,27 @@ sub updateStats {
 		# Get category count for last hour, as CATanswers_hour
 		my ($CATcalls_hour,$CATanswers_hour,$CATdrops_hour,$CATdrops_hour_pct) = calculateDrops ($dbhA, $osdial_log, $campaign_id, $CATstatusesSQL, $VDL_hour);
 		$g++;
-		$VSCupdateSQL .= "status_category_$g='$VSCcategory',status_category_count_$g='$VSCtally',status_category_hour_count_$g='$CATanswers_hour',";
+		#$VSCupdateSQL .= "status_category_$g='$VSCcategory',status_category_count_$g='$VSCtally',status_category_hour_count_$g='$CATanswers_hour',";
+		$VSCupdateSQL .= "'$VSCcategory','$VSCtally','$CATanswers_hour',";
 		print "     $campaign_id|$g|$VSCcategory|$VSCtally|$CATanswers_hour|$CATstatusesSQL|\n" if ($DBX);
 	}
 	while ( $g < 4 ) {
 		$g++;
-		$VSCupdateSQL .= "status_category_$g='',status_category_count_$g='0',status_category_hour_count_$g='0',";
+		#$VSCupdateSQL .= "status_category_$g='',status_category_count_$g='0',status_category_hour_count_$g='0',";
+		$VSCupdateSQL .= "'','0','0',";
 	}
 	chop($VSCupdateSQL);
 
 
 	# Ok, write all the data we have collected to the campaigns stats table.
-	$stmtA = "UPDATE osdial_campaign_stats SET calls_today='$VCScalls_today',answers_today='$VCSanswers_today',drops_today='$VCSdrops_today',drops_today_pct='$VCSdrops_today_pct',drops_answers_today_pct='$VCSdrops_answers_today_pct',calls_hour='$VCScalls_hour',answers_hour='$VCSanswers_hour',drops_hour='$VCSdrops_hour',drops_hour_pct='$VCSdrops_hour_pct',calls_halfhour='$VCScalls_halfhour',answers_halfhour='$VCSanswers_halfhour',drops_halfhour='$VCSdrops_halfhour',drops_halfhour_pct='$VCSdrops_halfhour_pct',calls_fivemin='$VCScalls_five',answers_fivemin='$VCSanswers_five',drops_fivemin='$VCSdrops_five',drops_fivemin_pct='$VCSdrops_five_pct',calls_onemin='$VCScalls_one',answers_onemin='$VCSanswers_one',drops_onemin='$VCSdrops_one',drops_onemin_pct='$VCSdrops_one_pct',amd_onemin='$AMDanswers_one',failed_onemin='$FAILanswers_one',$VSCupdateSQL where campaign_id='$campaign_id';";
+	#$stmtA = "UPDATE osdial_campaign_stats SET calls_today='$VCScalls_today',answers_today='$VCSanswers_today',drops_today='$VCSdrops_today',drops_today_pct='$VCSdrops_today_pct',drops_answers_today_pct='$VCSdrops_answers_today_pct',calls_hour='$VCScalls_hour',answers_hour='$VCSanswers_hour',drops_hour='$VCSdrops_hour',drops_hour_pct='$VCSdrops_hour_pct',calls_halfhour='$VCScalls_halfhour',answers_halfhour='$VCSanswers_halfhour',drops_halfhour='$VCSdrops_halfhour',drops_halfhour_pct='$VCSdrops_halfhour_pct',calls_fivemin='$VCScalls_five',answers_fivemin='$VCSanswers_five',drops_fivemin='$VCSdrops_five',drops_fivemin_pct='$VCSdrops_five_pct',calls_onemin='$VCScalls_one',answers_onemin='$VCSanswers_one',drops_onemin='$VCSdrops_one',drops_onemin_pct='$VCSdrops_one_pct',amd_onemin='$AMDanswers_one',failed_onemin='$FAILanswers_one',$VSCupdateSQL where campaign_id='$campaign_id';";
+	$multi_sql = "('$campaign_id','$VCScalls_today','$VCSanswers_today','$VCSdrops_today','$VCSdrops_today_pct','$VCSdrops_answers_today_pct','$VCScalls_hour','$VCSanswers_hour','$VCSdrops_hour','$VCSdrops_hour_pct','$VCScalls_halfhour','$VCSanswers_halfhour','$VCSdrops_halfhour','$VCSdrops_halfhour_pct','$VCScalls_five','$VCSanswers_five','$VCSdrops_five','$VCSdrops_five_pct','$VCScalls_one','$VCSanswers_one','$VCSdrops_one','$VCSdrops_one_pct','$AMDanswers_one','$FAILanswers_one',$VSCupdateSQL)";
+
+	$stmtA = "INSERT INTO osdial_campaign_stats (campaign_id,calls_today,answers_today,drops_today,drops_today_pct,drops_answers_today_pct,calls_hour,answers_hour,drops_hour,drops_hour_pct,calls_halfhour,answers_halfhour,drops_halfhour,drops_halfhour_pct,calls_fivemin,answers_fivemin,drops_fivemin,drops_fivemin_pct,calls_onemin,answers_onemin,drops_onemin,drops_onemin_pct,amd_onemin,failed_onemin,$VSCupdateSQLcol) VALUES $multi_sql ON DUPLICATE KEY UPDATE calls_today=VALUES(calls_today),answers_today=VALUES(answers_today),drops_today=VALUES(drops_today),drops_today_pct=VALUES(drops_today_pct),calls_hour=VALUES(calls_hour),answers_hour=VALUES(answers_hour),drops_hour=VALUES(drops_hour),drops_hour_pct=VALUES(drops_hour_pct),calls_halfhour=VALUES(calls_halfhour),answers_halfhour=VALUES(answers_halfhour),drops_halfhour=VALUES(drops_halfhour),drops_halfhour_pct=VALUES(drops_halfhour_pct),calls_fivemin=VALUES(calls_fivemin),answers_fivemin=VALUES(answers_fivemin),drops_fivemin=VALUES(drops_fivemin),drops_fivemin_pct=VALUES(drops_fivemin_pct),calls_onemin=VALUES(calls_onemin),answers_onemin=VALUES(answers_onemin),drops_onemin=VALUES(drops_onemin),drops_onemin_pct=VALUES(drops_onemin_pct),amd_onemin=VALUES(amd_onemin),failed_onemin=VALUES(failed_onemin),$VSCupdateSQLdat;";
 	if ($CLOtest) {
 		print $stmtA . "\n";
 	} else {
-		$affected_rows = $dbhA->do($stmtA);
+		$stat_rows = $dbhA->do($stmtA);
 	}
 	print "$campaign_id|$stmtA|\n" if ($DBX);
 	my $event_string = "|$campaign_id|";
@@ -356,6 +377,7 @@ sub updateStats {
 	# Get server IPs and update campaign stats for each server. #
 	#############################################################
 	my @servers;
+	$multi_sql='';
 	$stmtA = "SELECT server_ip FROM servers WHERE active='Y';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -366,17 +388,27 @@ sub updateStats {
 
 	foreach my $server (@servers) {
 		# Create campaign/server entry if it doesn't exist.
-		my $stmtA = "INSERT INTO osdial_campaign_server_stats (campaign_id,server_ip) VALUES ('$campaign_id','$server') on duplicate key update campaign_id='$campaign_id';";
-		my $affected_rows = $dbhA->do($stmtA);
+		#my $stmtA = "INSERT INTO osdial_campaign_server_stats (campaign_id,server_ip) VALUES ('$campaign_id','$server') on duplicate key update campaign_id='$campaign_id';";
+		#my $affected_rows = $dbhA->do($stmtA);
 
 		my ($VCScalls_one,$VCSanswers_one,$VCSdrops_one,$VCSdrops_one_pct) = calculateDropsServer ($dbhA, $osdial_log, $campaign_id, $server, $camp_ANS_STAT_SQL, $VDL_one);
 		my ($AMDcalls_one,$AMDanswers_one,$AMDdrops_one,$AMDdrops_one_pct) = calculateDropsServer ($dbhA, $osdial_log, $campaign_id, $server, $camp_AMD_SQL, $VDL_one);
 		my ($FAILcalls_one,$FAILanswers_one,$FAILdrops_one,$FAILdrops_one_pct) = calculateDropsServer ($dbhA, $osdial_log, $campaign_id, $server, $camp_FAIL_SQL, $VDL_one);
-		$stmtA = "UPDATE osdial_campaign_server_stats SET calls_onemin='$VCScalls_one',answers_onemin='$VCSanswers_one',drops_onemin='$VCSdrops_one',amd_onemin='$AMDanswers_one',failed_onemin='$FAILanswers_one' WHERE campaign_id='$campaign_id' AND server_ip='$server';";
+		#$stmtA = "UPDATE osdial_campaign_server_stats SET calls_onemin='$VCScalls_one',answers_onemin='$VCSanswers_one',drops_onemin='$VCSdrops_one',amd_onemin='$AMDanswers_one',failed_onemin='$FAILanswers_one' WHERE campaign_id='$campaign_id' AND server_ip='$server';";
+		$multi_sql .= "('$campaign_id','$server','$VCScalls_one','$VCSanswers_one','$VCSdrops_one','$AMDanswers_one','$FAILanswers_one'),";
+		#if ($CLOtest) {
+		#	print $stmtA . "\n";
+		#} else {
+		#	$affected_rows = $dbhA->do($stmtA);
+		#}
+	}
+	if ($multi_sql ne '') {
+		chop($multi_sql);
+		$stmtA = "INSERT INTO osdial_campaign_server_stats (campaign_id,server_ip,calls_onemin,answers_onemin,drops_onemin,amd_onemin,failed_onemin) VALUES $multi_sql ON DUPLICATE KEY UPDATE calls_onemin=VALUES(calls_onemin),answers_onemin=VALUES(answers_onemin),drops_onemin=VALUES(drops_onemin),amd_onemin=VALUES(amd_onemin),failed_onemin=VALUES(failed_onemin);";
 		if ($CLOtest) {
 			print $stmtA . "\n";
 		} else {
-			$affected_rows = $dbhA->do($stmtA);
+			$sstat_rows = $dbhA->do($stmtA);
 		}
 	}
 
@@ -384,6 +416,7 @@ sub updateStats {
 	# Get Agents and update campaign stats for each agent. #
 	########################################################
 	my %agents;
+	$multi_sql='';
 	#$stmtA = "SELECT user FROM osdial_users;";
 	$stmtA = "SELECT user,count(*),(TIME_TO_SEC(SUBTIME(TIME(SYSDATE()),TIME(MAX(event_time))))/60) FROM osdial_agent_log WHERE sub_status='LOGIN' AND event_time >= DATE(NOW()) group by user;";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
@@ -397,8 +430,8 @@ sub updateStats {
 
 	foreach my $agent (keys %agents) {
 		# Create campaign/server entry if it doesn't exist.
-		my $stmtA = "INSERT INTO osdial_campaign_agent_stats (campaign_id,user) VALUES ('$campaign_id','$agent') on duplicate key update campaign_id='$campaign_id';";
-		my $affected_rows = $dbhA->do($stmtA);
+		#my $stmtA = "INSERT INTO osdial_campaign_agent_stats (campaign_id,user) VALUES ('$campaign_id','$agent') on duplicate key update campaign_id='$campaign_id';";
+		#my $affected_rows = $dbhA->do($stmtA);
 		my ($VCScalls_today,$VCSanswers_today) = (0,0);
 		my ($VCScalls_hour,$VCSanswers_hour) = (0,0);
 		my ($VCScalls_halfhour,$VCSanswers_halfhour) = (0,0);
@@ -462,22 +495,35 @@ sub updateStats {
 			my ($CATcalls_hour,$CATanswers_hour) = (0,0);
 			($CATcalls_hour,$CATanswers_hour) = calculateCallsAgent ($dbhA, $osdial_log, $campaign_id, $agent, $CATstatusesSQL, $VDL_hour) if ($agents{$agent} <= 121);
 			$g++;
-			$VSCupdateSQL .= "status_category_$g='$VSCcategory',status_category_count_$g='$VSCtally',status_category_hour_count_$g='$CATanswers_hour',";
+			#$VSCupdateSQL .= "status_category_$g='$VSCcategory',status_category_count_$g='$VSCtally',status_category_hour_count_$g='$CATanswers_hour',";
+			$VSCupdateSQL .= "'$VSCcategory','$VSCtally','$CATanswers_hour',";
 			print "     $campaign_id|$g|$VSCcategory|$VSCtally|$CATanswers_hour|$CATstatusesSQL|\n" if ($DBX);
 		}
 		while ( $g < 4 ) {
 			$g++;
-			$VSCupdateSQL .= "status_category_$g='',status_category_count_$g='0',status_category_hour_count_$g='0',";
+			#$VSCupdateSQL .= "status_category_$g='',status_category_count_$g='0',status_category_hour_count_$g='0',";
+			$VSCupdateSQL .= "'','0','0',";
 		}
 		chop($VSCupdateSQL);
 
-		$stmtA = "UPDATE osdial_campaign_agent_stats SET calls_today='$VCScalls_today',answers_today='$VCSanswers_today',calls_hour='$VCScalls_hour',answers_hour='$VCSanswers_hour',calls_halfhour='$VCScalls_halfhour',answers_halfhour='$VCSanswers_halfhour',calls_fivemin='$VCScalls_five',answers_fivemin='$VCSanswers_five',calls_onemin='$VCScalls_one',answers_onemin='$VCSanswers_one',$VSCupdateSQL WHERE campaign_id='$campaign_id' AND user='$agent';";
+		$multi_sql .= "('$campaign_id','$agent','$VCScalls_today','$VCSanswers_today','$VCScalls_hour','$VCSanswers_hour','$VCScalls_halfhour','$VCSanswers_halfhour','$VCScalls_five','$VCSanswers_five','$VCScalls_one','$VCSanswers_one',$VSCupdateSQL),";
+		#$stmtA = "UPDATE osdial_campaign_agent_stats SET calls_today='$VCScalls_today',answers_today='$VCSanswers_today',calls_hour='$VCScalls_hour',answers_hour='$VCSanswers_hour',calls_halfhour='$VCScalls_halfhour',answers_halfhour='$VCSanswers_halfhour',calls_fivemin='$VCScalls_five',answers_fivemin='$VCSanswers_five',calls_onemin='$VCScalls_one',answers_onemin='$VCSanswers_one',$VSCupdateSQL WHERE campaign_id='$campaign_id' AND user='$agent';";
+		#if ($CLOtest) {
+		#	print $stmtA . "\n";
+		#} else {
+		#	$affected_rows = $dbhA->do($stmtA);
+		#}
+	}
+	if ($multi_sql ne '') {
+		chop($multi_sql);
+		$stmtA = "INSERT INTO osdial_campaign_agent_stats (campaign_id,user,calls_today,answers_today,calls_hour,answers_hour,calls_halfhour,answers_halfhour,calls_fivemin,answers_fivemin,calls_onemin,answers_onemin,$VSCupdateSQLcol) VALUES $multi_sql ON DUPLICATE KEY UPDATE calls_today=VALUES(calls_today),answers_today=VALUES(answers_today),calls_hour=VALUES(calls_hour),answers_hour=VALUES(answers_hour),calls_halfhour=VALUES(calls_halfhour),answers_halfhour=VALUES(answers_halfhour),calls_fivemin=VALUES(calls_fivemin),answers_fivemin=VALUES(answers_fivemin),calls_onemin=VALUES(calls_onemin),answers_onemin=VALUES(answers_onemin),$VSCupdateSQLdat;";
 		if ($CLOtest) {
 			print $stmtA . "\n";
 		} else {
-			$affected_rows = $dbhA->do($stmtA);
+			$astat_rows = $dbhA->do($stmtA);
 		}
 	}
+
 }
 
 sub calculateDrops {
