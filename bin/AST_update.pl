@@ -1150,7 +1150,7 @@ $sthA->finish();
 
 	&get_time_now;
 
-$stmtU = "UPDATE $server_updater set last_update='$now_date' where server_ip='$server_ip'";
+$stmtU = "INSERT INTO $server_updater (server_ip,last_update) VALUES ('$server_ip','$now_date') ON DUPLICATE KEY UPDATE last_update=VALUES(last_update);";
 	if($DB){print STDERR "\n|$stmtU|\n";}
 $affected_rows = $dbhA->do($stmtU);
 
