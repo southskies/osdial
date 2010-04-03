@@ -50,7 +50,7 @@ function report_realtime_detail() {
     if ($orderby=='') {$orderby='exten';}
     if ($orddir=='') {$orddir='down';}
     if ($SERVdisplay=='') {$SERVdisplay=0;}
-    if ($CALLSdisplay=='') {$CALLSdisplay=1;}
+    if ($CALLSdisplay=='') {$CALLSdisplay=0;}
     if ($cpuinfo=='') {$cpuinfo=0;}
 
 
@@ -123,10 +123,37 @@ function report_realtime_detail() {
     $html .= "   .khaki {color: black; background-color: #F0E68C}\n";
     $html .= "   .orange {color: black; background-color: orange}\n";
     $html .= "   .black {color: #FF0000; background-color: black}\n";
-    $html .= "   .orange1 {color: white; background-color: #CC9999}\n";
-    $html .= "   .orange2 {color: white; background-color: #CC6666}\n";
-    $html .= "   .orange3 {color: white; background-color: #CC0000}\n";
+    #$html .= "   .pause0 {color: white; background-color: #FFEEBB}\n";
+    #$html .= "   .pause1 {color: white; background-color: #FFCC99}\n";
+    #$html .= "   .pause2 {color: white; background-color: #FF9966}\n";
+    #$html .= "   .pause3 {color: white; background-color: #CC6633}\n";
+    $html .= "   .pause0 {color: black; background-color: #FFDDDD}\n";
+    $html .= "   .pause1 {color: black; background-color: #DDBBBB}\n";
+    $html .= "   .pause2 {color: black; background-color: #DD7777}\n";
+    $html .= "   .pause3 {color: white; background-color: #AA0000}\n";
+    $html .= "   .dispo0 {color: black; background-color: #FFEECC}\n";
+    $html .= "   .dispo1 {color: black; background-color: #EEFF99}\n";
+    $html .= "   .dispo2 {color: black; background-color: #DDEE66}\n";
+    $html .= "   .dispo3 {color: black; background-color: #BBBB66}\n";
+    $html .= "   .wait0 {color: black; background-color: #DDDDFF}\n";
+    $html .= "   .wait1 {color: black; background-color: #CCCCEE}\n";
+    $html .= "   .wait2 {color: black; background-color: #9999DD}\n";
+    $html .= "   .wait3 {color: white; background-color: #333366}\n";
+    #$html .= "   .call0 {color: black; background-color: #DDFFDD} \n";
+    #$html .= "   .call1 {color: black; background-color: #9CC375} \n";
+    #$html .= "   .call2 {color: black; background-color: #77DD77} \n";
+    #$html .= "   .call3 {color: white; background-color: #00AA00}\n";
+    $html .= "   .call0 {color: black; background-color: #BDFF99} \n";
+    $html .= "   .call1 {color: black; background-color: #9CDD75} \n";
+    $html .= "   .call2 {color: white; background-color: #76AA59} \n";
+    $html .= "   .call3 {color: white; background-color: #578F41}\n";
+    #$html .= "   .pausecode {color: black; background-color: #99CC66}\n";
+    $html .= "   .pausecode {color: black; background-color: #FF9966}\n";
     $html .= "   .outcamp {color: black; background-color: #CCEEFF}\n";
+    $html .= "   .agtphn0 {color: #700000}\n";
+    $html .= "   .agtphn1 {color: white; background-color: #700000}\n";
+    $html .= "   .dead0 {color: black}\n";
+    $html .= "   .dead1 {color: #FF0000; background-color: black}\n";
 
     $html .= "   .r1 {color: black; background-color: #FFCCCC}\n";
     $html .= "   .r2 {color: black; background-color: #FF9999}\n";
@@ -858,6 +885,12 @@ function report_realtime_detail() {
             } else {
                 $Alogin[$i] = "$Aextension[$i]-----$i";
             }
+
+            $stmt=sprintf("SELECT count(*) FROM live_sip_channels WHERE channel LIKE '%s%%' AND server_ip='%s' AND extension='%s';",mres($Achannel[$i]),mres($Aserver_ip[$i]),mres($Asessionid[$i]));
+            $rslt=mysql_query($stmt, $link);
+            $row=mysql_fetch_row($rslt);
+            $Auser_connected[$i] = $row[0];
+
             $i++;
         }
 
@@ -878,10 +911,11 @@ function report_realtime_detail() {
             $phone =            sprintf("%-10s", $phone_split[0]);
             $Luser =            $Auser[$i];
             $user =             sprintf("%-18s", preg_replace('/&nbsp;/',' ',mclabel($Auser[$i])));
-            $Lsessionid =       $Asessionid[$i];
-            $sessionid =        sprintf("%-9s", $Asessionid[$i]);
             $Lstatus =          $Astatus[$i];
             $status =           sprintf("%-6s", $Astatus[$i]);
+            $Lsessionid =       $Asessionid[$i];
+            if ($Auser_connected[$i] == 0) { $Lsessionid='-------'; $Lstatus='AGTPHN'; }
+            $sessionid =        sprintf("%-9s", $Lsessionid);
             $server_ip =        sprintf("%-15s", $Aserver_ip[$i]);
             $call_server_ip =   sprintf("%-15s", $Acall_server_ip[$i]);
             $campaign_id =      sprintf("%-13s", preg_replace('/&nbsp;/',' ',mclabel($Acampaign_id[$i])));
@@ -984,10 +1018,22 @@ function report_realtime_detail() {
                     $agent_total++;
                     $Lstatus = 'DISPO';
                     $status = sprintf("%-6s",'DISPO');
-                    $G='<span class="orange1">'; $EG='</span>';
-                    #if ($call_time_S >= 10) {$G='<span class="orange1">'; $EG='</span>';}
-                    if ($call_time_M_int >= 1) {$G='<span class="orange2">'; $EG='</span>';}
-                    if ($call_time_M_int >= 5) {$G='<span class="orange3">'; $EG='</span>';}
+                    $G='<span class="dispo0">'; $EG='</span>';
+                    if ($call_time_S >= 15) {$G='<span class="dispo1">'; $EG='</span>';}
+                    if ($call_time_S >= 30) {$G='<span class="dispo2">'; $EG='</span>';}
+                    if ($call_time_M_int >= 1) {$G='<span class="dispo3">'; $EG='</span>';}
+                }
+            } elseif ($Lstatus=='AGTPHN') {
+                if ($call_time_M_int >= 360) {
+                    $j++;
+                    continue;
+                } else {
+                    $agent_dead++;
+                    $agent_total++;
+                    $Lstatus = 'AGTPHN';
+                    $status = sprintf("%-6s",'AGTPHN');
+                    $G='<span class="agtphn0">'; $EG='</span>';
+                    if ($call_time_S >= 10) {$G='<span class="agtphn1">'; $EG='</span>';}
                 }
             } elseif ($Lstatus=='DEAD') {
                 if ($call_time_M_int >= 360) {
@@ -998,17 +1044,19 @@ function report_realtime_detail() {
                     $agent_total++;
                     $Lstatus = 'DEAD';
                     $status = sprintf("%-6s",'DEAD');
-                    $G='<span class="black">'; $EG='</span>';
-                    if ($call_time_S >= 10) {$G='<span class="black">'; $EG='</span>';}
+                    if ($call_time_S < 5) {$G='<span class="dead0">'; $EG='</span>'; $status=sprintf('%-6s','HUNGUP');}
+                    if ($call_time_S >= 5) {$G='<span class="dead1">'; $EG='</span>';}
                 }
             } elseif (preg_match('/INCALL|QUEUE/i',$Lstatus)) {
                 $agent_incall++;
                 $agent_total++;
                 if ($Lstatus=='INCALL') {
-                    $G='<span class="thistle">'; $EG='</span>';
-                    #if ($call_time_S >= 10) {$G='<span class="thistle">'; $EG='</span>';}
-                    if ($call_time_M_int >= 1) {$G='<span class="violet">'; $EG='</span>';}
-                    if ($call_time_M_int >= 5) {$G='<span class="purple">'; $EG='</span>';}
+                    $G='<span class="call0">'; $EG='</span>';
+                    if ($call_time_S >= 30) {$G='<span class="call1">'; $EG='</span>';}
+                    if ($call_time_M_int >= 2) {$G='<span class="call2">'; $EG='</span>';}
+                    if ($call_time_M_int >= 10) {$G='<span class="call3">'; $EG='</span>';}
+                    if ($call_time_S < 5 and $CM!='M') {$status = sprintf('%-6s','ANSWER');}
+                    if ($lstatus != "" and $lstatus != "      ") $status = $lstatus;
                 }
             } elseif ($Lstatus=='PAUSED') {
                 if ($call_time_M_int >= 360) {
@@ -1023,17 +1071,22 @@ function report_realtime_detail() {
                     }
                     $agent_paused++;
                     $agent_total++;
-                    $G='<span class="khaki">'; $EG='</span>';
-                    #if ($call_time_S >= 10) {$G='<span class="khaki">'; $EG='</span>';}
-                    if ($call_time_M_int >= 1) {$G='<span class="yellow">'; $EG='</span>';}
-                    if ($call_time_M_int >= 5) {$G='<span class="olive">'; $EG='</span>';}
+                    $G='<span class="pause0">'; $EG='</span>';
+                    if ($call_time_S >= 10) {$G='<span class="pause1">'; $EG='</span>';}
+                    if ($call_time_M_int >= 1) {$G='<span class="pause2">'; $EG='</span>';}
+                    if ($call_time_M_int >= 5) {$G='<span class="pause3">'; $EG='</span>';}
+                    if (strlen($pausecode) > 0 and $pausecode != 'LOGIN') {$G='<span class="pausecode">'; $EG='</span>';}
                 }
             } elseif (preg_match('/READY|CLOSER/i',$Lstatus)) {
                 $agent_ready++;
                 $agent_total++;
-                $G='<span class="lightblue">'; $EG='</span>';
-                if ($call_time_M_int >= 1) {$G='<span class="blue">'; $EG='</span>';}
-                if ($call_time_M_int >= 5) {$G='<span class="midnightblue">'; $EG='</span>';}
+                #$G='<span class="lightblue">'; $EG='</span>';
+                #if ($call_time_M_int >= 1) {$G='<span class="blue">'; $EG='</span>';}
+                #if ($call_time_M_int >= 5) {$G='<span class="midnightblue">'; $EG='</span>';}
+                $G='<span class="wait0">'; $EG='</span>';
+                if ($call_time_S >= 30) {$G='<span class="wait1">'; $EG='</span>';}
+                if ($call_time_M_int >= 1) {$G='<span class="wait2">'; $EG='</span>';}
+                if ($call_time_M_int >= 2) {$G='<span class="wait3">'; $EG='</span>';}
             }
 
             if ($agent_pause_codes_active>0) $pausecode = sprintf('%-6s', $pausecode);
@@ -1065,10 +1118,6 @@ function report_realtime_detail() {
             $INGRP = sprintf('%-20s',$vac_campaign);
 
             $agentcount++;
-
-            if ($Lstatus=='INCALL' and $lstatus != "" and $lstatus != "      ") {
-                $status = $lstatus;
-            }
 
 
             $disp_agent = 1;
@@ -1102,28 +1151,46 @@ function report_realtime_detail() {
         $html .= $Chtml;
         $html .= $Ahtml;
 
-        $html .= '<br><br>';
-        $html .= '<center><table width=750><tr><td width=75px>&nbsp;</td><td width=200px>';
-        $html .= "  <font color=$default_text><span class=\"khaki\">&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Paused</b><br>";
-        $html .= '  <span class="yellow"><b>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Paused >&nbsp;&nbsp;1min</b><br>';
-        $html .= '  <span class="olive"><b>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Paused >&nbsp;&nbsp;5min</b></font>';
-        $html .= '</td><td width=260px>';
-        $html .= "  <font color=$default_text><span class=\"lightblue\">&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Waiting for call</b><br>";
-        $html .= '  <span class="blue">&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Waiting for call > 1min</b><br>';
-        $html .= '  <span class="midnightblue">&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Waiting for call > 5min</b></font>';
-        $html .= '</td><td width=215px>';
-        $html .= "  <font color=$default_text><span class=\"thistle\">&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - On call</b><br>";
-        $html .= '  <span class="violet">&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - On call >&nbsp;&nbsp;1min</b><br>';
-        $html .= '  <span class="purple">&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - On call >&nbsp;&nbsp;5min</b></font>';
-        $html .= '</td></tr><tr><td colspan=4 height=1px></td>';
-        $html .= '</tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>';
-        $html .= "  <font color=$default_text><span class=\"orange1\">&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Disposition</b><br>";
-        $html .= '  <span class="orange2">&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Disposition > 1min</b><br>';
-        $html .= '  <span class="orange3">&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Disposition > 5min</b></font>';
-        $html .= '</td><td>&nbsp;</td></tr><tr><td colspan=4 height=1px></td>';
-        $html .= '</tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>';
-        $html .= "  <font color=$default_text><span class=\"black\">&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Dead Call</b></font>";
-        $html .= '</td><td>&nbsp;</td></tr></table></center>';
+        $html .= "<br><br><center>";
+        $html .= "<table width=700><tr><td width=5px>&nbsp;</td><td width=265>";
+        $html .= "  <font color=$default_text>";
+        $html .= "  <span class=wait0>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Waiting for call</b><br>";
+        $html .= "  <span class=wait1>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Waiting for call > 30sec</b><br>";
+        $html .= "  <span class=wait2>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Waiting for call >&nbsp;&nbsp;1min</b><br>";
+        $html .= "  <span class=wait3>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Waiting for call >&nbsp;&nbsp;2min</b>";
+        $html .= "  </font>";
+        $html .= "</td><td width=230px>";
+        $html .= "  <font color=$default_text>";
+        $html .= "  <span class=call0>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - On call</b><br>";
+        $html .= "  <span class=call1>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - On call > 30sec</b><br>";
+        $html .= "  <span class=call2>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - On call >&nbsp;&nbsp;2min</b><br>";
+        $html .= "  <span class=call3>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - On call >&nbsp;10min</b>";
+        $html .= "  </font>";
+        $html .= "</td><td width=200px>";
+        $html .= "  <font color=$default_text>";
+        $html .= "  <span class=pause0>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Paused</b><br>";
+        $html .= "  <span class=pause1>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Paused > 10sec</b><br>";
+        $html .= "  <span class=pause2><b>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Paused >&nbsp;&nbsp;1min</b><br>";
+        $html .= "  <span class=pause3><b>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Paused >&nbsp;&nbsp;5min</b>";
+        $html .= "  </font>";
+        $html .= "</td></tr><tr><td colspan=4 height=1px></td>";
+        $html .= "</tr><tr><td>&nbsp;</td><td valign=top>";
+        $html .= "  <font color=$default_text>&nbsp;</font>";
+        $html .= "</td><td valign=top>";
+        $html .= "  <font color=$default_text>";
+        $html .= "  <span class=dispo0>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Disposition</b><br>";
+        $html .= "  <span class=dispo1>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Disposition > 15sec</b><br>";
+        $html .= "  <span class=dispo2>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Disposition > 30sec</b><br>";
+        $html .= "  <span class=dispo3>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Disposition >&nbsp;&nbsp;1min</b>";
+        $html .= "  </font>";
+        $html .= "</td><td valign=top>";
+        $html .= "  <font color=$default_text>";
+        $html .= "  <span class=pausecode>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Pause Code</b><br><br>";
+        $html .= "  <span class=agtphn1>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Agent Phone Issue</b><br>";
+        $html .= "  <span class=dead1>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Dead Call</b>";
+        $html .= "  </font>";
+        $html .= "</td></tr>";
+        $html .= "</table></center>";
     } else {
         $html .= "&nbsp;&nbsp;<font color=red>&bull;&nbsp;&nbsp;NO AGENTS ON CALLS</font> \n";
         $html .= '<br>';
