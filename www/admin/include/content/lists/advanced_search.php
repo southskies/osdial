@@ -441,10 +441,14 @@ if ($ADD==1122) {
 
         echo "<style type=text/css> content {vertical-align:center}</style>\n";
         echo "<br><br><center>\n";
-        echo "<form method=post name=search action=\"$PHP_SELF\">\n";
+
+        echo "<div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;layer-background-color:white;\"></div>\n";
+        echo "<div id=\"caldiv2\" style=\"position:absolute;visibility:hidden;background-color:white;layer-background-color:white;\"></div>\n";
+        echo "<div id=\"caldiv3\" style=\"position:absolute;visibility:hidden;background-color:white;layer-background-color:white;\"></div>\n";
+
+        echo "<form method=post name=advsearch_form action=\"$PHP_SELF\">\n";
         echo "<input type=hidden name=ADD value=1122>\n";
         echo "<input type=hidden name=DB value=\"$DB\">\n";
-
         echo "<table width=$section_width cellspacing=0 bgcolor=$oddrows>\n";
         echo "  <tr>\n";
         echo "    <td colspan=4>\n";
@@ -492,7 +496,29 @@ if ($ADD==1122) {
 
         echo "  <tr>\n";
         echo "    <td align=right><font size=2>Entry Date</font></td>\n";
-        echo "    <td align=left colspan=2><font size=2><input type=text name=entry_date_start value=\"$orig_entry_date_start\" size=10 maxlength=10 title=\"Format: YYYY-MM-DD\"> to <input type=text name=entry_date_end value=\"$orig_entry_date_end\" size=10 maxlength=10 title=\"Format: YYYY-MM-DD\"></font></td>\n";
+        echo "    <td align=left colspan=2>\n";
+        echo "      <script>\n";
+        echo "        var cal1 = new CalendarPopup('caldiv1');\n";
+        echo "        cal1.showNavigationDropdowns();\n";
+        echo "      </script>\n";
+        echo "      <font size=2><input type=text name=entry_date_start value=\"$orig_entry_date_start\" size=10 maxlength=10 title=\"Format: YYYY-MM-DD\">\n";
+        echo "      <a href=# onclick=\"";
+        echo          "cal1.addDisabledDates('clear','clear');";
+        echo          "if (document.forms[0].entry_date_end.value.length==10) cal1.addDisabledDates(formatDate(parseDate(document.forms[0].entry_date_end.value).addDays(1),'yyyy-MM-dd'),null);";
+        echo          "cal1.select(document.forms[0].entry_date_start,'EDacal1','yyyy-MM-dd');";
+        echo          "return false;";
+        echo          "\" name=EDacal1 id=EDacal1>\n";
+        echo "      <img width=12 src=\"templates/default/images/calendar.png\" style=border:0px;></a>\n";
+        echo "      to \n";
+        echo "      <input type=text name=entry_date_end value=\"$orig_entry_date_end\" size=10 maxlength=10 title=\"Format: YYYY-MM-DD\">\n";
+        echo "      <a href=# onclick=\"";
+        echo          "cal1.addDisabledDates('clear','clear');";
+        echo          "if (document.forms[0].entry_date_start.value.length==10) cal1.addDisabledDates(null,formatDate(parseDate(document.forms[0].entry_date_start.value).addDays(-1),'yyyy-MM-dd'));";
+        echo          "cal1.select(document.forms[0].entry_date_end,'EDacal2','yyyy-MM-dd');";
+        echo          "return false;";
+        echo          "\" name=EDacal2 id=EDacal2>\n";
+        echo "      <img width=12 src=\"templates/default/images/calendar.png\" style=border:0px;></a>\n";
+        echo "      </font></td>\n";
         $fieldOPTS="";
         foreach ($field_label as $k => $v) {
             $sel="";
@@ -515,12 +541,55 @@ if ($ADD==1122) {
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=right><font size=2>Modified Date</font></td>\n";
-        echo "    <td align=left colspan=3><font size=2><input type=text name=modify_date_start value=\"$orig_modify_date_start\" size=10 maxlength=10 title=\"Format: YYYY-MM-DD\"> to <input type=text name=modify_date_end value=\"$orig_modify_date_end\" size=10 maxlength=10 title=\"Format: YYYY-MM-DD\"></font></td>\n";
+        echo "    <td align=left colspan=3>\n";
+        echo "      <script>\n";
+        echo "        var cal2 = new CalendarPopup('caldiv2');\n";
+        echo "        cal2.showNavigationDropdowns();\n";
+        echo "      </script>\n";
+        echo "      <font size=2><input type=text name=modify_date_start value=\"$orig_modify_date_start\" size=10 maxlength=10 title=\"Format: YYYY-MM-DD\">\n";
+        echo "      <a href=# onclick=\"";
+        echo          "cal2.addDisabledDates('clear','clear');";
+        echo          "if (document.forms[0].modify_date_end.value.length==10) cal2.addDisabledDates(formatDate(parseDate(document.forms[0].modify_date_end.value).addDays(1),'yyyy-MM-dd'),null);";
+        echo          "cal2.select(document.forms[0].modify_date_start,'MDacal1','yyyy-MM-dd');";
+        echo          "return false;";
+        echo          "\" name=MDacal1 id=MDacal1>\n";
+        echo "      <img width=12 src=\"templates/default/images/calendar.png\" style=border:0px;></a>\n";
+        echo "      to\n";
+        echo "      <input type=text name=modify_date_end value=\"$orig_modify_date_end\" size=10 maxlength=10 title=\"Format: YYYY-MM-DD\">\n";
+        echo "      <a href=# onclick=\"";
+        echo          "cal2.addDisabledDates('clear','clear');";
+        echo          "if (document.forms[0].modify_date_start.value.length==10) cal2.addDisabledDates(null,formatDate(parseDate(document.forms[0].modify_date_start.value).addDays(-1),'yyyy-MM-dd'));";
+        echo          "cal2.select(document.forms[0].modify_date_end,'MDacal2','yyyy-MM-dd');";
+        echo          "return false;";
+        echo          "\" name=MDacal2 id=MDacal2>\n";
+        echo "      <img width=12 src=\"templates/default/images/calendar.png\" style=border:0px;></a>\n";
+        echo "      </font></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=right><font size=2>Last Call Date</font></td>\n";
         echo "    <td align=left colspan=3><font size=2>\n";
-        echo "      <input type=text name=lastcall_date_start value=\"$orig_lastcall_date_start\" size=10 maxlength=10 title=\"Format: YYYY-MM-DD\"> to <input type=text name=lastcall_date_end value=\"$orig_lastcall_date_end\" size=10 maxlength=10 title=\"Format: YYYY-MM-DD\"></font>\n";
+        echo "      <script>\n";
+        echo "        var cal3 = new CalendarPopup('caldiv3');\n";
+        echo "        cal3.showNavigationDropdowns();\n";
+        echo "      </script>\n";
+        echo "      <input type=text name=lastcall_date_start value=\"$orig_lastcall_date_start\" size=10 maxlength=10 title=\"Format: YYYY-MM-DD\">\n";
+        echo "      <a href=# onclick=\"";
+        echo          "cal3.addDisabledDates('clear','clear');";
+        echo          "if (document.forms[0].lastcall_date_end.value.length==10) cal3.addDisabledDates(formatDate(parseDate(document.forms[0].lastcall_date_end.value).addDays(1),'yyyy-MM-dd'),null);";
+        echo          "cal3.select(document.forms[0].lastcall_date_start,'LCDacal1','yyyy-MM-dd');";
+        echo          "return false;";
+        echo          "\" name=LCDacal1 id=LCDacal1>\n";
+        echo "      <img width=12 src=\"templates/default/images/calendar.png\" style=border:0px;></a>\n";
+        echo "      to \n";
+        echo "      <input type=text name=lastcall_date_end value=\"$orig_lastcall_date_end\" size=10 maxlength=10 title=\"Format: YYYY-MM-DD\">\n";
+        echo "      <a href=# onclick=\"";
+        echo          "cal3.addDisabledDates('clear','clear');";
+        echo          "if (document.forms[0].lastcall_date_start.value.length==10) cal3.addDisabledDates(null,formatDate(parseDate(document.forms[0].lastcall_date_start.value).addDays(-1),'yyyy-MM-dd'));";
+        echo          "cal3.select(document.forms[0].lastcall_date_end,'LCDacal2','yyyy-MM-dd');";
+        echo          "return false;";
+        echo          "\" name=LCDacal2 id=LCDacal2>\n";
+        echo "      <img width=12 src=\"templates/default/images/calendar.png\" style=border:0px;></a>\n";
+        echo "    </font>\n";
         if ($use_osdial_log == 1) $check = " checked";
         echo "  </td>\n";
         echo "  </tr>\n";
@@ -611,8 +680,6 @@ if ($ADD==1122) {
         echo $timezoneOPTS;
         echo "      </select>\n";
         echo "    </td>\n";
-        ob_flush();
-        flush();
 
         echo "    <td align=center>\n";
         echo "      <font size=2>Sources</font><br>\n";
@@ -621,8 +688,6 @@ if ($ADD==1122) {
         echo format_select_options($krh, 'group_value', 'group_value', $sources, "-- ALL --");
         echo "      </select>\n";
         echo "    </td>\n";
-        ob_flush();
-        flush();
 
         echo "    <td align=center>\n";
         echo "      <font size=2>Vendor Codes</font><br>\n";
@@ -632,8 +697,6 @@ if ($ADD==1122) {
         echo "      </select>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
-        ob_flush();
-        flush();
 
 
         echo "  <tr>\n";
@@ -643,8 +706,6 @@ if ($ADD==1122) {
             $sel="";
             if ($numresults==$k) $sel=" selected";
             echo "        <option value=\"$k\"$sel>$v</option>\n";
-            ob_flush();
-            flush();
         }
         echo "      </select>\n";
         echo "      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size=2>Sort By</font>";
@@ -653,8 +714,6 @@ if ($ADD==1122) {
             $sel="";
             if ($sort==$k) $sel=" selected";
             echo "        <option value=\"$k\"$sel>$v</option>\n";
-            ob_flush();
-            flush();
         }
         echo "      </select>\n";
         echo "      <select name=direction size=1>\n";
@@ -662,8 +721,6 @@ if ($ADD==1122) {
             $sel="";
             if ($direction==$k) $sel=" selected";
             echo "        <option value=\"$k\"$sel>$v</option>\n";
-            ob_flush();
-            flush();
         }
         echo "      </select>\n";
         echo "    </td>\n";
@@ -674,8 +731,7 @@ if ($ADD==1122) {
         echo "  </tr>\n";
         echo "</table>\n";
         echo "</form>\n";
-        ob_flush();
-        flush();
+
 
 
 
@@ -728,8 +784,6 @@ if ($ADD==1122) {
                 }
                 echo "<br><br><br><div id=\"advsearch\"><font color=$default_text size=3><b>Records Found:&nbsp;" . $searchCount . "</b></font></div>";
             }
-            ob_flush();
-            flush();
         }
 
         $paginate = "";
@@ -935,8 +989,6 @@ if ($ADD==1122) {
             echo "</a></b></font></td>\n";
         }
         echo "  </tr>\n";
-        ob_flush();
-        flush();
 
         if ($field_cnt > 0 && $LOGexport_leads > 0) {
             $csvfile = "advsearch_" . date("Ymd-His") . ".csv";
@@ -949,15 +1001,11 @@ if ($ADD==1122) {
                 $o++;
             }
             fputcsv($fcsv, $fld_names);
-            ob_flush();
-            flush();
             
             $o=0;
             while ($results_to_print > $o) {
                 $row=mysql_fetch_row($rslt);
                 fputcsv($fcsv, $row);
-                ob_flush();
-                flush();
                 $o++;
             }
             fclose($fcsv);
@@ -981,8 +1029,6 @@ if ($ADD==1122) {
                 if ($row[2] == '0000-00-00 00:00:00') $row[2] = "";
                 if ($row[35] == '0000-00-00 00:00:00') $row[35] = "";
                 if (strlen($row[11]) == 10) $row[11] = substr($row[11],0,3) . "-" . substr($row[11],3,3) . "-" . substr($row[11],6,4);
-                ob_flush();
-                flush();
                 echo "  <tr $bgcolor class=row>\n";
                 echo "    <td nowrap align=left><font face=\"arial,helvetica\" size=1>" . ($o + (($page - 1) * $numresults)) . "</font></td>\n";
                 echo "    <td nowrap align=center title=\"$row[0]\"><font face=\"arial,helvetica\" size=1><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[0]\" target=\"_blank\">$row[0]</a></font></td>\n";
@@ -992,8 +1038,6 @@ if ($ADD==1122) {
                 echo "    <td nowrap align=left title=\"$row[15], $row[13]\"><font face=\"arial,helvetica\" size=1>" . ellipse($row[15] . ", " . $row[13], 10, true) . "</font></td>\n";
                 echo "    <td nowrap align=left title=\"$row[19]\"><font face=\"arial,helvetica\" size=1>" . ellipse($row[19],10,true) . "</font></td>\n";
                 echo "    <td nowrap align=center title=\"" . strtoupper($row[20]) ."\"><font face=\"arial,helvetica\" size=1>" . strtoupper($row[20]) . "</font></td>\n";
-                ob_flush();
-                flush();
                 echo "    <td nowrap align=center title=\"$row[22]\"><font face=\"arial,helvetica\" size=1>$row[22]</font></td>\n";
                 echo "    <td nowrap align=center title=\"" . $row[4] . " (" . $agents_label[$row[4]] . ")\"><font face=\"arial,helvetica\" size=1>$row[4]</font></td>\n";
                 echo "    <td nowrap align=center title=\"$row[4]\"><font face=\"arial,helvetica\" size=1>$row[5]</font></td>\n";
@@ -1004,20 +1048,15 @@ if ($ADD==1122) {
                 echo "    <td nowrap align=center title=\"$row[2]\"><font face=\"arial,helvetica\" size=1>&nbsp;$row[2]&nbsp;</font></td>\n";
                 echo "    <td nowrap align=center title=\"$row[35]\"><font face=\"arial,helvetica\" size=1>" . ellipse($row[35],10,false) . "</font></td>\n";
                 echo "  </tr>\n";
-                ob_flush();
-                flush();
             }
         }
         echo "  <tr class=tabfooter>\n";
         echo "    <td colspan=17></td>\n";
         echo "  </tr>\n";
         echo "</table>\n";
-        ob_flush();
-        flush();
 
         echo $paginate;
-        ob_flush();
-        flush();
+        echo "</center>\n";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }
