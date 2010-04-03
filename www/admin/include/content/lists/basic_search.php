@@ -133,7 +133,7 @@ if ($ADD==112) {
                         } else {
                             $bgcolor='bgcolor='.$evenrows;
                         }
-                        echo "  <tr $bgcolor class=\"row font1\">\n";
+                        echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[0]');\">\n";
                         echo "    <td>" . ($o+1) . "</td>\n";
                         echo "    <td><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[0]\" target=\"_blank\">$row[0]</a></td>\n";
                         echo "    <td>$row[3]</td>\n";

@@ -292,7 +292,7 @@ echo "  </tr>\n";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "  <tr $bgcolor class=\"row font1\">\n";
+		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=31111&remote_agent_id=$row[0]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=31111&remote_agent_id=$row[0]\">$row[1]</a></td>\n";
 		echo "    <td align=center>$row[2]</td>\n";
 		echo "    <td align=center>$row[3]</td>\n";

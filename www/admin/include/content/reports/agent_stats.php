@@ -291,7 +291,7 @@ function report_agent_stats() {
         
             $u++;
             $event = str_replace(" ", "&nbsp;", $row[0]);
-            $table .= "  <tr $bgcolor class=\"row font1\">\n";
+            $table .= "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[10]');\">\n";
             $table .= "    <td align=left title=\"Record #: $u\">$u</td>\n";
             $table .= "    <td align=center title=\"Date/Time: $event\">$event</td>\n";
             $table .= "    <td align=right title=\"Wait Time: $row[1] seconds\">$row[1]</td>\n";
@@ -348,7 +348,7 @@ function report_agent_stats() {
         
             $u++;
             $row[4] = str_replace(" ", "&nbsp;", $row[4]);
-            $table .= "  <tr $bgcolor class=\"row font1\">\n";
+            $table .= "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[1]');\">\n";
             $table .= "    <td title=\"Record #: $u\">$u</td>\n";
             $table .= "    <td align=center title=\"Date/Time: $row[4]\">$row[4]</td>\n";
             $table .= "    <td align=right title=\"Call Length: $row[7] seconds\">$row[7]</td>\n";
@@ -398,7 +398,8 @@ function report_agent_stats() {
                 $bgcolor='bgcolor="' . $evenrows . '"';
             }
         
-            $location = eregi_replace("^//", "/", $row[11]);
+            $Slocation = eregi_replace("^//", "/", $row[11]);
+            $location = $Slocation;
             $locshort = ellipse($location,30,true);
             if (eregi("http",$location) or eregi("^/",$location)) {
                 $location = "<a target=\"_new\" title=\"$location\" href=\"$location\">$locshort</a>";
@@ -406,7 +407,7 @@ function report_agent_stats() {
         
             $u++;
             $row[4] = str_replace(" ", "&nbsp;", $row[4]);
-            $table .= "  <tr $bgcolor class=\"row font1\">\n";
+            $table .= "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$Slocation');\">\n";
             $table .= "    <td title=\"Record #: $u\">$u</td>\n";
             $table .= "    <td align=left title=\"Lead #: $row[12]\"><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[12]\" target=\"_blank\">$row[12]</a></td>\n";
             $table .= "    <td align=center title=\"Date/Time: $row[4]\">$row[4]</td>\n";

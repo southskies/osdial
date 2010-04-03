@@ -1012,7 +1012,7 @@ if ($ADD==100) {
         } else {
             $bgcolor='bgcolor='.$evenrows;
         }
-        echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=311&list_id=$row[0]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">$row[0]</a></td>\n";
         echo "    <td>$row[1]</td>\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=100&camp=$row[2]&dispact=$dispact\">" . mclabel($row[2]) . "</a></td>\n";

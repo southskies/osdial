@@ -217,7 +217,7 @@ function usnotime()  {
 
 
 function openNewWindow(url) {
-  window.open (url,"",'width=700,height=300,scrollbars=yes,menubar=yes,address=yes');
+  window.open (url,"_blank",'');
 }
 
 

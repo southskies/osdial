@@ -1282,7 +1282,7 @@ if ($ADD==31) {
             else
                 {$bgcolor='bgcolor='.$evenrows;}
 
-            echo "<tr $bgcolor class=\"row font1\"><td><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td>$rowx[2]</td><td align=center>$rowx[1]</td></tr>\n";
+            echo "<tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=311&list_id=$rowx[0]');\"><td><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td>$rowx[2]</td><td align=center>$rowx[1]</td></tr>\n";
             }
         echo "<tr class=tabfooter><td colspan=3></td></tr>\n";
         echo "</table></center><br>\n";
@@ -1899,7 +1899,7 @@ if ($ADD==34)
             else
                 {$bgcolor='bgcolor='.$evenrows;}
 
-            echo "<tr $bgcolor class=\"row font1\"><td><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td>$rowx[2]</td><td align=center>$rowx[1]</td></tr>\n";
+            echo "<tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=311&list_id=$rowx[0]');\"><td><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td>$rowx[2]</td><td align=center>$rowx[1]</td></tr>\n";
 
             }
 
@@ -1956,7 +1956,7 @@ if ($ADD==34)
         else
             {$bgcolor='bgcolor='.$evenrows;}
 
-            echo "<tr $bgcolor class=\"row font1\"><td><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">" . mclabel($rowx[0]) . "</a></td><td align=right>$rowx[1]</td><td align=right>$rowx[2]</td></tr>\n";
+            echo "<tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=3&user=$rowx[0]');\"><td><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">" . mclabel($rowx[0]) . "</a></td><td align=right>$rowx[1]</td><td align=right>$rowx[2]</td></tr>\n";
             }
 
         echo "<tr class=tabfooter><td colspan=3></td></tr>\n";
@@ -2327,7 +2327,7 @@ echo "  </tr>\n";
             {$bgcolor='bgcolor='.$oddrows;} 
         else
             {$bgcolor='bgcolor='.$evenrows;}
-        echo "  <tr class=\"row font1\" $bgcolor>\n";
+        echo "  <tr class=\"row font1\" $bgcolor ondblclick=\"window.location='$PHP_SELF?ADD=34&campaign_id=$row[0]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=34&campaign_id=$row[0]\">" . mclabel($row[0]) . "</a></td>\n";
         echo "    <td>$row[1]</td>\n";
         echo "    <td align=center><font size=1>$row[2]</td>\n";

@@ -171,7 +171,7 @@ echo "</tr>\n";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "  <tr class=\"row font1\" $bgcolor>\n";
+		echo "  <tr class=\"row font1\" $bgcolor ondblclick=\"window.location='$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaigns_id_list[$o]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaigns_id_list[$o]\">" . mclabel($campaigns_id_list[$o]) . "</a></td>";
 		echo "    <td>$campaigns_name_list[$o]</td>";
 		echo "    <td align=center>";

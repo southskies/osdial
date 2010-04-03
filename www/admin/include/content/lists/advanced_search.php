@@ -1029,7 +1029,7 @@ if ($ADD==1122) {
                 if ($row[2] == '0000-00-00 00:00:00') $row[2] = "";
                 if ($row[35] == '0000-00-00 00:00:00') $row[35] = "";
                 if (strlen($row[11]) == 10) $row[11] = substr($row[11],0,3) . "-" . substr($row[11],3,3) . "-" . substr($row[11],6,4);
-                echo "  <tr $bgcolor class=row>\n";
+                echo "  <tr $bgcolor class=row ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[0]');\">\n";
                 echo "    <td nowrap align=left><font face=\"arial,helvetica\" size=1>" . ($o + (($page - 1) * $numresults)) . "</font></td>\n";
                 echo "    <td nowrap align=center title=\"$row[0]\"><font face=\"arial,helvetica\" size=1><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[0]\" target=\"_blank\">$row[0]</a></font></td>\n";
                 echo "    <td nowrap align=center title=\"$row[7]\"><font face=\"arial,helvetica\" size=1><a href=\"" . $pageURL . "&lists[]=$row[7]&sort=$sort&direction=$direction#advsearch\">$row[7]</a></font></td>\n";

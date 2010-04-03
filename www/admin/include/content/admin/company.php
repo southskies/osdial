@@ -278,7 +278,7 @@ if ($ADD=="10comp") {
         $c=0;
         $comps = get_krh($link, 'osdial_companies', '*','','','');
         foreach ($comps as $comp) {
-            echo "  <tr " . bgcolor($c++) . " class=\"row font1\">\n";
+            echo "  <tr " . bgcolor($c++) . " class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=31comp&company_id=$comp[id]';\">\n";
             echo "    <td><a href=\"$PHP_SELF?ADD=31comp&company_id=$comp[id]\">" . (($comp[id] * 1) + 100) . "</a></td>\n";
             echo "    <td>$comp[status]</td>\n";
             echo "    <td>$comp[name]</td>\n";

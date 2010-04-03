@@ -686,7 +686,7 @@ if ($ADD==3)
         echo "    <td align=center valign=top>\n";
 		echo "      <table bgcolor=grey cellspacing=1 border=0>\n";
 		echo "        $RANKgroups_list";
-		echo "        <tr class=tabfooter><td align=center class=tabbutton colspan=3><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+		echo "        <tr class=tabfooter><td align=center class=tabbutton colspan=4><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 		echo "      </table>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
@@ -769,7 +769,11 @@ echo "<TABLE align=center><TR><TD>\n";
 echo "<center><br><font size=+1 color=$default_text>SEARCH RESULTS</font><br><br>\n";
 echo "<table align=center width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "  <tr class=\"tabheader\">\n";
-echo "    <td colspan=5></td>\n";
+echo "    <td>ID</td>\n";
+echo "    <td>Full Name</td>\n";
+echo "    <td>Level</td>\n";
+echo "    <td>User Group</td>\n";
+echo "    <td>Links</td>\n";
 echo "  </tr>\n";
 
 	$o=0;
@@ -779,7 +783,7 @@ echo "  </tr>\n";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor class=\"row font1\">\n";
+		echo "<tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=3&user=$row[1]');\">\n";
         echo "  <td>$row[1]</td>\n";
         echo "  <td>$row[3]</td>\n";
         echo "  <td>$row[4]</td>\n";
@@ -940,7 +944,7 @@ echo "  </tr>\n";
             echo "  <input type=hidden name=ADD value=$ADD>\n";
             echo "  <input type=hidden name=SUB value=1>\n";
         if ($row[5] != "VIRTUAL") {
-		    echo "  <tr class=\"row font1\" $bgcolor>\n";
+		    echo "  <tr class=\"row font1\" $bgcolor ondblclick=\"window.location='$PHP_SELF?ADD=3&user=$row[1]';\">\n";
             echo "    <td><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">";
             if (($LOG['multicomp'] > 0 and preg_match($LOG['companiesRE'],$row[1])) or $LOG['multcomp_user'] > 0) {
                 echo substr($row[1],0,3) . "&nbsp;" . substr($row[1],3);;

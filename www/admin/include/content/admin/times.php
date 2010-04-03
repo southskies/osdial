@@ -337,7 +337,7 @@ while($ct_srs >= $b) {
 		$stmt="SELECT state_call_time_state,state_call_time_name from osdial_state_call_times where state_call_time_id='$state_rules[$b]';";
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
-		echo "  <tr class=\"row font1\" $bgcolor>\n";
+		echo "  <tr class=\"row font1\" $bgcolor ondblclick=\"openNewWindow('$PHP_SELF?ADD=3111111111&call_time_id=$state_rules[$b]');\">\n";
         echo "    <td align=left nowrap><a href=\"$PHP_SELF?ADD=3111111111&call_time_id=$state_rules[$b]\">$state_rules[$b]</a></td>\n";
         echo "    <td align=left nowrap>$row[0] - $row[1]</td>\n";
         echo "    <td align=center nowrap><a href=\"$PHP_SELF?ADD=321111111&call_time_id=$call_time_id&state_rule=$state_rules[$b]&stage=REMOVE\">REMOVE</a></td>\n";
@@ -396,7 +396,7 @@ echo "  </tr>\n";
             $bgcolor='bgcolor='.$evenrows;
         }
 		$row=mysql_fetch_row($rslt);
-		echo "  <tr $bgcolor class=\"row font1\">\n";
+		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=31&campaign_id=$row[0]');\">\n";
         echo "    <td nowrap><a href=\"$PHP_SELF?ADD=31&campaign_id=$row[0]\">$row[0]</a></td>\n";
         echo "    <td nowrap>$row[1]</td>\n";
         echo "  </tr>\n";
@@ -427,7 +427,7 @@ echo "  </tr>\n";
             $bgcolor='bgcolor='.$evenrows;
         }
 		$row=mysql_fetch_row($rslt);
-		echo "  <tr $bgcolor class=\"row font1\">\n";
+		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=3111&group_id=$row[0]');\">\n";
         echo "    <td nowrap><a href=\"$PHP_SELF?ADD=3111&group_id=$row[0]\">$row[0]</a></td>\n";
         echo "    <td nowrap>$row[1]</td>\n";
         echo "  </tr>\n";
@@ -482,7 +482,7 @@ echo "  </tr>\n";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "  <tr $bgcolor class=\"row font1\">\n";
+		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=311111111&call_time_id=$row[0]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=311111111&call_time_id=$row[0]\">$row[0]</a></td>\n";
 		echo "    <td>$row[1]</td>\n";
 		echo "    <td align=center>$row[3] </td>";
@@ -786,7 +786,7 @@ echo "  </tr>\n";
             $bgcolor='bgcolor='.$evenrows;
         }
 		$row=mysql_fetch_row($rslt);
-		echo "  <tr $bgcolor class=\"row font1\">\n";
+		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=311111111&call_time_id=$row[0]');\">\n";
         echo "    <td align=center><a href=\"$PHP_SELF?ADD=311111111&call_time_id=$row[0]\">$row[0]</a></font></td>\n";
         echo "    <td nowrap>$row[1]</font></td>\n";
         echo "  </tr>\n";
@@ -846,7 +846,7 @@ echo "  </tr>\n";
         } else {
             $bgcolor='bgcolor='.$evenrows;
         }
-		echo "  <tr $bgcolor class=\"row font1\">\n";
+		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=3111111111&call_time_id=$row[0]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=3111111111&call_time_id=$row[0]\">$row[0]</a></td>\n";
 		echo "    <td align=center>$row[1]</td>\n";
 		echo "    <td>$row[2]</td>\n";

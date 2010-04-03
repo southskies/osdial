@@ -475,7 +475,7 @@ if ($ADD==311111111111)
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
 
-		echo "  <tr $bgcolor class=\"row font1\">\n";
+		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=31111111111&extension=$rowx[0]&server_ip=$row[2]');\">\n";
         echo "    <td align=center><a href=\"$PHP_SELF?ADD=31111111111&extension=$rowx[0]&server_ip=$row[2]\">$rowx[0]</a></td>\n";
         echo "    <td align=center>$rowx[2]</td>\n";
         echo "    <td align=center>$rowx[1]</td>\n";
@@ -514,7 +514,7 @@ if ($ADD==311111111111)
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
 
-		echo "  <tr $bgcolor class=\"row font1\">\n";
+		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=3111111111111&conf_exten=$rowx[0]&server_ip=$row[2]');\">\n";
         echo "    <td align=center><a href=\"$PHP_SELF?ADD=3111111111111&conf_exten=$rowx[0]&server_ip=$row[2]\">$rowx[0]</a></td>\n";
         echo "    <td align=center>$rowx[2]</td>\n";
         echo "  </tr>\n";
@@ -552,7 +552,7 @@ if ($ADD==311111111111)
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
 
-		echo "  <tr $bgcolor class=\"row font1\">\n";
+		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=31111111111111&conf_exten=$rowx[0]&server_ip=$row[2]');\">\n";
         echo "    <td align=center><a href=\"$PHP_SELF?ADD=31111111111111&conf_exten=$rowx[0]&server_ip=$row[2]\">$rowx[0]</a></td>\n";
         echo "    <td align=center>$rowx[2]</td>\n";
         echo "  </tr>\n";
@@ -615,7 +615,7 @@ echo "  </tr>\n";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "  <tr $bgcolor class=\"row font1\">\n";
+		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=311111111111&server_id=$row[0]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=311111111111&server_id=$row[0]\">$row[0]</a></td>\n";
 		echo "    <td>$row[1]</td>\n";
 		echo "    <td>$row[2]</td>\n";
@@ -1008,7 +1008,7 @@ if ($ADD=="399211111111111") {
 				{$bgcolor='bgcolor='.$evenrows;}
 			
 
-			echo "  <tr $bgcolor class=\"row font1\">\n";
+			echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=399211111111111&SUB=2&qc_server_id=$row[0]';\">\n";
 			echo "    <td>$c</td>\n";
 			echo "    <td><a href=\"$PHP_SELF?ADD=399211111111111&SUB=2&qc_server_id=$row[0]\">$row[1]</a></td>\n";
 			echo "    <td>$row[2]</td>\n";

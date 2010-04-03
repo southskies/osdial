@@ -497,7 +497,7 @@ if ($ADD==3111)
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
 
-		echo "  <tr $bgcolor class=\"row font1\">\n";
+		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=3&user=$rowx[0]');\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">$rowx[0]</a></td>\n";
         echo "    <td align=right>$rowx[1]</td>\n";
         echo "    <td align=right>$rowx[2]</td>\n";
@@ -533,7 +533,7 @@ if ($ADD==3111)
 		else
 			{$bgcolor='bgcolor="' . $evenrows . '"';}
 
-		echo "  <tr $bgcolor class=\"row font1\">\n";
+		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=34&campaign_id=$rowx[0]');\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=34&campaign_id=$rowx[0]\">$rowx[0]</a></td>\n";
         echo "    <td>$rowx[1]</td>\n";
         echo "    <td align=center>$rowx[2]</td>\n";
@@ -594,7 +594,7 @@ echo "  </tr>\n";
 			{$bgcolor='bgcolor='.$oddrows;} 
 		else
 			{$bgcolor='bgcolor='.$evenrows;}
-		echo "  <tr $bgcolor class=\"row font1\">\n";
+		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=3111&group_id=$row[0]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=3111&group_id=$row[0]\">" . mclabel($row[0]) . "</a></td>\n";
 		echo "    <td>$row[1]</td>\n";
 		echo "    <td align=center>$row[3]</td>\n";
