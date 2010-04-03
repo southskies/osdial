@@ -276,6 +276,18 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 
 				}
 
+            $web_epoch = date("U");
+            $stmt="select UNIX_TIMESTAMP(last_update),UNIX_TIMESTAMP(sql_time) from server_updater where server_ip='$server_ip';";
+            if ($DB) {echo "|$stmt|\n";}
+            $rslt=mysql_query($stmt, $link);
+            $row=mysql_fetch_row($rslt);
+            $dialer_epoch = $row[0];
+            $sql_epoch = $row[1];
+            $time_diff = ($dialer_epoch - $sql_epoch);
+            $web_diff = ($web_epoch - $sql_epoch);
+
+
+            if ((($time_diff > 8) or ($time_diff < -8) or ($web_diff > 8) or ($web_diff < -8) ) and (eregi("0$",$StarTtime))) {$Alogin='TIME_SYNC';}
 			if ($Acount < 1) {$Alogin='DEAD_VLA';}
 			if ($AexternalDEAD > 0) {$Alogin='DEAD_EXTERNAL';}
 
@@ -283,9 +295,9 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 
 			}
 		$total_conf=0;
-		#$stmt="SELECT channel FROM live_sip_channels where server_ip = '$server_ip' and extension = '$conf_exten';";
+		$stmt="SELECT channel FROM live_sip_channels where server_ip = '$server_ip' and extension = '$conf_exten';";
         # Hide monitoring channels
-		$stmt="SELECT channel FROM live_sip_channels where server_ip = '$server_ip' and extension = '$conf_exten' AND channel NOT LIKE 'Local/686_____@%' AND channel NOT LIKE 'Local/786_____@%';";
+		#$stmt="SELECT channel FROM live_sip_channels where server_ip = '$server_ip' and extension = '$conf_exten' AND channel NOT LIKE 'Local/686_____@%' AND channel NOT LIKE 'Local/786_____@%';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 		if ($rslt) {$sip_list = mysql_num_rows($rslt);}
