@@ -186,7 +186,9 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
     $groups_list='';
     $groups_value='';
     $XFERgroups_list='';
-    $RANKgroups_list="<tr class=tabheader><td align=left>INBOUND GROUP</td><td align=center>RANK</td><td align=right>CALLS</td></tr>\n";
+    $RANKgroups_list="<tr class=tabheader><td>&nbsp;</td><td align=left>INBOUND GROUP</td><td align=center>RANK</td><td align=right>CALLS</td></tr>\n";
+    $groups_listTAB="<tr class=tabheader><td>&nbsp;</td><td align=left>INBOUND GROUP</td></tr>\n";
+    $XFERgroups_listTAB="<tr class=tabheader><td>&nbsp;</td><td align=left>TRANSFER GROUP</td></tr>\n";
 
     $o=0;
     while ($groups_to_print > $o) {
@@ -236,14 +238,17 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
             $bgcolor='bgcolor="' . $evenrows . '"';
         }
 
-        $groups_list .= "<input type=\"checkbox\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
-        $XFERgroups_list .= "<input type=\"checkbox\" name=\"XFERgroups[]\" value=\"$group_id_values[$o]\"";
-        $RANKgroups_list .= "<tr $bgcolor class=row><td align=left><font size=1><input type=\"checkbox\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
+        $groups_list        .= "<input type=\"checkbox\" id=\"GL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
+        $groups_listTAB     .= "<tr $bgcolor title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"GL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
+        $XFERgroups_list    .= "<input type=\"checkbox\" id=\"XGL$group_id_values[$o]\" name=\"XFERgroups[]\" value=\"$group_id_values[$o]\"";
+        $XFERgroups_listTAB .= "<tr $bgcolor title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"XGL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
+        $RANKgroups_list    .= "<tr $bgcolor title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"RGL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
         $p=0;
         $group_ct = count($groups);
         while ($p < $group_ct) {
             if ($group_id_values[$o] == $groups[$p]) {
                 $groups_list .= " CHECKED";
+                $groups_listTAB .= " CHECKED";
                 $RANKgroups_list .= " CHECKED";
                 $groups_value .= " $group_id_values[$o]";
             }
@@ -254,14 +259,17 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
         while ($p < $XFERgroup_ct) {
             if ($group_id_values[$o] == $XFERgroups[$p]) {
                 $XFERgroups_list .= " CHECKED";
+                $XFERgroups_listTAB .= " CHECKED";
                 $XFERgroups_value .= " $group_id_values[$o]";
             }
             $p++;
         }
-        $groups_list .= "> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o] <BR>\n";
-        $XFERgroups_list .= "> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o] <BR>\n";
-        $RANKgroups_list .= "> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o]</font></td>";
-        $RANKgroups_list .= "<td align=center><select size=1 style=\"font-size: 8px;\" name=RANK_$group_id_values[$o]>\n";
+        $groups_list         .= "><label for=\"GL$group_id_values[$o]\"> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o] </label><BR>\n";
+        $XFERgroups_list     .= "><label for=\"XGL$group_id_values[$o]\"> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o] </label><BR>\n";
+        $groups_listTAB      .= "></font></td><td onclick=\"document.getElementById('GL$group_id_values[$o]').click();\"><font size=1><a onclick=\"document.getElementById('GL$group_id_values[$o]').click();\" href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o]</font></td></tr>";
+        $XFERgroups_listTAB  .= "></font></td><td onclick=\"document.getElementById('XGL$group_id_values[$o]').click();\"><font size=1><a onclick=\"document.getElementById('XGL$group_id_values[$o]').click();\" href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o]</font></td></tr>";
+        $RANKgroups_list     .= "></font></td><td onclick=\"document.getElementById('RGL$group_id_values[$o]').click();\"><font size=1><a onclick=\"document.getElementById('RGL$group_id_values[$o]').click();\" href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o]</font></td>";
+        $RANKgroups_list     .= "<td align=center><select size=1 style=\"font-size: 8px;\" name=RANK_$group_id_values[$o]>\n";
         $h="9";
         while ($h>=-9) {
             $RANKgroups_list .= "<option value=\"$h\"";
@@ -272,10 +280,12 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
             $h--;
         }
         $RANKgroups_list .= "</select></td>\n";
-        $RANKgroups_list .= "<td align=right><font size=1>$calls_today</font></td></tr>\n";
+        $RANKgroups_list .= "<td align=right onclick=\"document.getElementById('RGL$group_id_values[$o]').click();\"><font size=1>$calls_today</font></td></tr>\n";
         $o++;
     }
-    $RANKgroups_list .= "<tr bgcolor=$menubarcolor height=8px><td colspan=3><font size=1 color=white></font></td></tr>\n";
+    $RANKgroups_list    .= "<tr bgcolor=$menubarcolor height=8px><td colspan=4><font size=1 color=white></font></td></tr>\n";
+    $groups_listTAB     .= "<tr bgcolor=$menubarcolor height=8px><td colspan=2><font size=1 color=white></font></td></tr>\n";
+    $XFERgroups_listTAB .= "<tr bgcolor=$menubarcolor height=8px><td colspan=2><font size=1 color=white></font></td></tr>\n";
     if (strlen($groups_value)>2) {
         $groups_value .= " -";
     }
@@ -298,7 +308,7 @@ if ( ($ADD==211111) or ($ADD==311111) or ($ADD==411111) or ($ADD==511111) or ($A
     }
 
     $campaigns_value='';
-    $campaigns_list='<B><input type="checkbox" name="campaigns[]" value="-ALL-CAMPAIGNS-"';
+    $campaigns_list='<B><input type="checkbox" id="GLxxALLxx" name="campaigns[]" value="-ALL-CAMPAIGNS-"';
     $p=0;
     while ($p<100) {
         if (eregi('ALL-CAMPAIGNS',$campaigns[$p])) {
@@ -307,7 +317,7 @@ if ( ($ADD==211111) or ($ADD==311111) or ($ADD==411111) or ($ADD==511111) or ($A
         }
         $p++;
     }
-    $campaigns_list.="> ALL-CAMPAIGNS - AGENTS CAN VIEW ANY CAMPAIGN</B><BR>\n";
+    $campaigns_list.="><label for=\"GLxxALLxx\"> ALL-CAMPAIGNS - AGENTS CAN VIEW ANY CAMPAIGN</label></B><BR>\n";
 
     $stmt=sprintf("SELECT campaign_id,campaign_name from osdial_campaigns WHERE campaign_id IN %s order by campaign_id",$LOG['allowed_campaignsSQL']);
     $rslt=mysql_query($stmt, $link);
@@ -318,7 +328,7 @@ if ( ($ADD==211111) or ($ADD==311111) or ($ADD==411111) or ($ADD==511111) or ($A
         $rowx=mysql_fetch_row($rslt);
         $campaign_id_value = $rowx[0];
         $campaign_name_value = $rowx[1];
-        $campaigns_list .= "<input type=\"checkbox\" name=\"campaigns[]\" value=\"$campaign_id_value\"";
+        $campaigns_list .= "<input type=\"checkbox\" id=\"GL$campaign_id_value\" name=\"campaigns[]\" value=\"$campaign_id_value\"";
         $p=0;
         while ($p<100) {
             if ($campaign_id_value == $campaigns[$p]) {
@@ -329,7 +339,7 @@ if ( ($ADD==211111) or ($ADD==311111) or ($ADD==411111) or ($ADD==511111) or ($A
             # echo "<!--  O $p|$campaign_id_value|$campaigns[$p]| -->";
             $p++;
         }
-        $campaigns_list .= "> " . mclabel($campaign_id_value) . " - $campaign_name_value<BR>\n";
+        $campaigns_list .= "><label for=\"GL$campaign_id_value\"> " . mclabel($campaign_id_value) . " - $campaign_name_value</label><BR>\n";
         $o++;
     }
     if (strlen($campaigns_value)>2) {
