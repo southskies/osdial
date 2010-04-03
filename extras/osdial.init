@@ -201,6 +201,7 @@ start() {
 }
 
 stop() {
+	/opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1 &
 	echo
 	return 0
 }

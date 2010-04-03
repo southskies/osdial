@@ -94,11 +94,6 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
 	print " - osdial_conferences reset\n";
 
-#	$stmtA = "UPDATE osdial_manager set status='DEAD' where server_ip='$server_ip' and status='NEW';";
-#		if($DB){print STDERR "\n|$stmtA|\n";}
-#	$dbhA->query($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
-#	print " - osdial_manager queue reset\n";
-
 	$stmtA = "DELETE from osdial_manager where server_ip='$server_ip';";
 		if($DB){print STDERR "\n|$stmtA|\n";}
 	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
@@ -114,12 +109,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
 	print " - osdial_live_agents delete\n";
 
-	$stmtA = "DELETE from osdial_users where full_name='5555';";
-			if($DB){print STDERR "\n|$stmtA|\n";}
-	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
-	print " - osdial__users delete\n";
-
-	$stmtA = "UPDATE osdial_campaign_server_stats SET local_trunk_shortage='0', calls_onemin='0', answers_onemin='0', drops_onemin='0', amd_onemin='0', failed_onemin='0';";
+	$stmtA = "DELETE FROM osdial_campaign_server_stats WHERE server_ip='$server_ip';";
 			if($DB){print STDERR "\n|$stmtA|\n";}
 	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
 	print " - osdial_campaign_server_stats delete\n";
@@ -128,6 +118,31 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 			if($DB){print STDERR "\n|$stmtA|\n";}
 	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
 	print " - osdial_hopper delete\n";
+
+	$stmtA = "DELETE from live_channels WHERE server_ip='$server_ip';";
+			if($DB){print STDERR "\n|$stmtA|\n";}
+	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
+	print " - live_channels delete\n";
+
+	$stmtA = "DELETE from live_inbound WHERE server_ip='$server_ip';";
+			if($DB){print STDERR "\n|$stmtA|\n";}
+	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
+	print " - live_inbound delete\n";
+
+	$stmtA = "DELETE from live_sip_channels WHERE server_ip='$server_ip';";
+			if($DB){print STDERR "\n|$stmtA|\n";}
+	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
+	print " - live_sip_channels delete\n";
+
+	$stmtA = "DELETE from parked_channels WHERE server_ip='$server_ip';";
+			if($DB){print STDERR "\n|$stmtA|\n";}
+	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
+	print " - parked_channels delete\n";
+
+	$stmtA = "DELETE from web_client_sessions WHERE server_ip='$server_ip';";
+			if($DB){print STDERR "\n|$stmtA|\n";}
+	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query: |$stmtA|\n";
+	print " - web_client_sessions delete\n";
 
 	$dbhA->disconnect();
 
