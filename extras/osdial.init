@@ -225,6 +225,15 @@ stop_relay() {
 	fi
 }
 
+reload() {
+	[ -n "`ps -ef | grep FastAGI`" ] && kill -9 `ps -ef | grep FastAGI | awk '{ print $2 }'` > /dev/null 2>&1
+        echo "  -- Killed FastAGI processes."
+	[ -n "`ps -ef | grep AST`" ] && kill -9 `ps -ef | grep AST | awk '{ print $2 }'` > /dev/null 2>&1
+	echo "  -- Killed AST processes."
+	echo "  -- Done."
+	return 0
+}
+
 # See how we were called.
 case "$1" in
   start)
@@ -234,6 +243,9 @@ case "$1" in
   stop)
 	stop_relay
 	stop
+	;;
+  reload)
+	reload
 	;;
   reconfig)
 	reconfig
@@ -249,7 +261,7 @@ case "$1" in
 	stop_relay
 	;;
   *)
-	echo "Usage: osdial {start|stop|restart|reconfig| start_relay|stop_relay|restart_relay}"
+	echo "Usage: osdial {start|stop|restart|reload|reconfig| start_relay|stop_relay|restart_relay}"
 	exit 1
 esac
 
