@@ -226,12 +226,39 @@ stop_relay() {
 }
 
 reload() {
-	[ -n "`ps -ef | grep FastAGI`" ] && kill -9 `ps -ef | grep FastAGI | awk '{ print $2 }'` > /dev/null 2>&1
-        echo "  -- Killed FastAGI processes."
-	[ -n "`ps -ef | grep AST`" ] && kill -9 `ps -ef | grep AST | awk '{ print $2 }'` > /dev/null 2>&1
-	echo "  -- Killed AST processes."
-	echo "  -- Done."
-	return 0
+	KFAGI=0
+	if [ -n "`ps -ef | grep FastAGI`" ]; then
+		kill -9 `ps -ef | grep FastAGI | awk '{ print $2 }'` > /dev/null 2>&1
+        	echo "  -- Stopping OSDial FastAGI processes."
+		KFAGI=1
+	fi
+
+	KAST=0
+	if [ -n "`ps -ef | grep AST`" ]; then
+		kill -9 `ps -ef | grep AST | awk '{ print $2 }'` > /dev/null 2>&1
+		echo "  -- Stopping OSDial AST processes."
+		KAST=1
+	fi
+
+	if [ $KFAGI -eq 1 -o $KAST -eq 1 ]; then
+		echo
+		TIME=`date +%H:%M:%S`
+		SEC=`date +%S`
+		STS=`expr 60 - $SEC`
+		echo "  -- The time is now $TIME, the OSDial processes will reload about $STS seconds."
+		echo -n "      "
+		while [ $STS -gt 1 ]; do
+			STS=`expr $STS - 1`
+			echo -n '.'
+			sleep 1
+		done
+		echo
+		echo "  -- Done."
+		return 0
+	else
+		echo "  -- Could not find any running OSDial processes."
+		return 1
+	fi
 }
 
 # See how we were called.
