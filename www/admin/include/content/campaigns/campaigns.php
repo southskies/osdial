@@ -130,7 +130,7 @@ if ($ADD==11)
     echo "<tr bgcolor=$oddrows><td align=right>Script: </td><td align=left><select size=1 name=script_id>\n";
     echo get_scripts($link, '');
     echo "</select>$NWB#osdial_campaigns-campaign_script$NWE</td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=right>Get Call Launch: </td><td align=left><select size=1 name=get_call_launch><option selected>NONE</option><option>SCRIPT</option><option>WEBFORM</option></select>$NWB#osdial_campaigns-get_call_launch$NWE</td></tr>\n";
+    echo "<tr bgcolor=$oddrows><td align=right>Get Call Launch: </td><td align=left><select size=1 name=get_call_launch><option selected>NONE</option><option>SCRIPT</option><option>WEBFORM</option><option>WEBFORM2</option></select>$NWB#osdial_campaigns-get_call_launch$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Allow Tab Switch: </td><td align=left><select size=1 name=allow_tab_switch><option selected>Y</option><option>N</option></select>$NWB#osdial_campaigns-allow_tab_switch$NWE</td></tr>\n";
     echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=ADD></td></tr>\n";
     echo "</table></center>\n";
@@ -1134,7 +1134,7 @@ if ($ADD==31) {
         #echo "<option selected value=\"$script_id\">$script_id - $scriptname_list[$script_id]</option>\n";
         echo "</select>$NWB#osdial_campaigns-campaign_script$NWE</td></tr>\n";
 
-        echo "<tr bgcolor=$oddrows><td align=right>Get Call Launch: </td><td align=left><select size=1 name=get_call_launch><option selected>NONE</option><option>SCRIPT</option><option>WEBFORM</option><option selected>$get_call_launch</option></select>$NWB#osdial_campaigns-get_call_launch$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Get Call Launch: </td><td align=left><select size=1 name=get_call_launch><option selected>NONE</option><option>SCRIPT</option><option>WEBFORM</option><option>WEBFORM2</option><option selected>$get_call_launch</option></select>$NWB#osdial_campaigns-get_call_launch$NWE</td></tr>\n";
 
         echo "<tr bgcolor=$oddrows><td align=right>Answers Per Hour Limit: </td><td align=left><input type=text name=answers_per_hour_limit size=10 maxlength=10 value=\"$answers_per_hour_limit\">$NWB#osdial_campaigns-answers_per_hour_limit$NWE</td></tr>\n";
 
