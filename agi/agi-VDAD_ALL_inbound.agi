@@ -225,19 +225,6 @@ while(<STDIN>) {
 }
 
 
-if ( ($callerid =~ /\".*\"/) && ( (!$accountcode) or ($accountcode =~ /unknown/) ) ) {
-	$accountcode = $callerid;
-	$accountcode =~ s/\<\d\d\d\d\d\d\d\d\d\d\>//gi;
-	$accountcode =~ s/\"|\" //gi;
-}
-
-$callerid = $accountcode if ( (!$callerid) or ($callerid =~ /unknown/) );
-$callerid =~ s/\".*\"//;
-$callerid =~ s/\D//gi;
-$accountcode =~ s/unknown//gi;
-
-
-
 if ($call_handle_method =~ /^CLOSER/) {
 	### allow for internal PRI/IAX/SIP transfer data string "90009*CL_uk3survy_*8301*10000123*universal***"
 	if ($extension =~ /^900\d\d\*|^9900\d\d\*/) {
@@ -271,13 +258,13 @@ if ($call_handle_method =~ /^CID/) {
 	$phone_number = '';
 	$phone_number = $callerid if (length($callerid)>0);
 	$VLcomments = '';
-	$VLcomments = $accountcode if (length($accountcode)>0);
+	$VLcomments = $calleridname if (length($calleridname)>0);
 }
 
 #if ($channel =~ /^SIP/) {$channel =~ s/-.*//gi;}
 #if ($channel =~ /^Zap\//) {$channel =~ s/-\d$//gi;}
-if (length($callerid)<10) {$callerid = $parked_by;}
-if (length($pin)>0) {$callerid = $pin;}
+if (length($accountcode)<10) {$accountcode = $parked_by;}
+if (length($pin)>0) {$accountcode = $pin;}
 
 
 if ($call_handle_method =~ /^ANI/) {
@@ -756,7 +743,7 @@ while ($drop_timer <= $DROP_TIME) {
 
 				$stmtA = "UPDATE osdial_auto_calls set status='CLOSER', stage='CLOSER-$drop_timer' where callerid='$accountcode';";
 				$affected_rows = $dbhA->do($stmtA);
-				if ($AGILOG) {$agi_string = "--    VDCL XFER : |$affected_rows|$callerid|$accountcode\n|$stmtA|";   &agi_output;}
+				if ($AGILOG) {$agi_string = "--    VDCL XFER : |$affected_rows|$accountcode\n|$stmtA|";   &agi_output;}
 				if ($affected_rows < 1) {
 					$stmtA = "INSERT INTO osdial_auto_calls (server_ip,campaign_id,status,lead_id,uniqueid,callerid,channel,phone_code,phone_number,call_time,call_type,stage)  values('$VARserver_ip','$channel_group','CLOSER','$insert_lead_id','$uniqueid','$accountcode','$channel','$phone_code','$phone_number','$SQLdate','IN','CLOSER-$drop_timer')";
 					$affected_rows = $dbhA->do($stmtA);
@@ -866,7 +853,7 @@ while ($drop_timer <= $DROP_TIME) {
 
 				&agi_output;
 			}
-			if ($AGILOG) {$agi_string = "WWWWW VDAD XFER LOCAL WAIT: |$rec_countWAIT|$channel_group|$channel|$callerid|$accountcode|$uniqueid|$drop_timer|";   &agi_output;}
+			if ($AGILOG) {$agi_string = "WWWWW VDAD XFER LOCAL WAIT: |$rec_countWAIT|$channel_group|$channel|$accountcode|$uniqueid|$drop_timer|";   &agi_output;}
 		}
 	}
 
@@ -948,7 +935,7 @@ while ($drop_timer <= $DROP_TIME) {
 				}
 				$stmtA = "UPDATE osdial_auto_calls set status='CLOSER', stage='CLOSER-$drop_timer' where callerid='$accountcode';";
 				my $affected_rows = $dbhA->do($stmtA);
-				if ($AGILOG) {$agi_string = "--    VDCL XFER REMOTE: |$affected_rows|update of vac table: $callerid|$accountcode\n|$stmtA|";   &agi_output;}
+				if ($AGILOG) {$agi_string = "--    VDCL XFER REMOTE: |$affected_rows|update of vac table: $accountcode\n|$stmtA|";   &agi_output;}
 				if ($affected_rows < 1) {
 					$stmtA = "INSERT INTO osdial_auto_calls (server_ip,campaign_id,status,lead_id,uniqueid,callerid,channel,phone_code,phone_number,call_time,call_type,stage)  values('$VARserver_ip','$channel_group','CLOSER','$insert_lead_id','$uniqueid','$accountcode','$channel','$phone_code','$phone_number','$SQLdate','IN','CLOSER-$drop_timer')";
 					$affected_rows = $dbhA->do($stmtA);
@@ -1069,7 +1056,7 @@ while ($drop_timer <= $DROP_TIME) {
 				&agi_output;
 			}
 
-			if ($AGILOG) {$agi_string = "WWWWW VDAD XFER BALANCE WAIT: |$rec_countWAITrem|$channel_group|$channel|$callerid|$accountcode|$uniqueid|$drop_timer|";   &agi_output;}
+			if ($AGILOG) {$agi_string = "WWWWW VDAD XFER BALANCE WAIT: |$rec_countWAITrem|$channel_group|$channel|$accountcode|$uniqueid|$drop_timer|";   &agi_output;}
 		}
 	}
 
