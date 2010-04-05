@@ -302,13 +302,13 @@ sub process_request {
 		if (/^agi_extension\:\s+(.*)$/)		{$extension = $1;}
 		if (/^agi_type\:\s+(.*)$/)			{$type = $1;}
 		if (/^agi_request\:\s+(.*)$/)		{$request = $1;}
+		if (/^agi_accountcode\:\s+(.*)$/)		{$accountcode = $1;}
 		if ( ($request =~ /--fullCID--/i) && (!$fullCID) )
 			{
 			$fullCID=1;
 			@CID = split(/-----/, $request);
 			$callerid =	$CID[2];
 			$calleridname =	$CID[3];
-			$accountcode =	$CID[3];
 			$agi_string = "URL fullCID: |$callerid|$calleridname|$request|";   
 			&agi_output;
 			}
@@ -330,13 +330,11 @@ sub process_request {
 			{
 			if (/^agi_callerid\:\s+(.*)$/)		{$callerid = $1;}
 			if (/^agi_calleridname\:\s+(.*)$/)	{$calleridname = $1;}
-			if (/^agi_accountcode\:\s+(.*)$/)	{$accountcode = $1;}
-			if ( $accountcode =~ /\"/)  {$accountcode =~ s/\"//gi;}
-	#	if ( (length($accountcode)>5) && ( (!$callerid) or ($callerid =~ /unknown|private|00000000/i) or ($callerid =~ /5551212/) ) )
+			if ( $calleridname =~ /\"/)  {$calleridname =~ s/\"//gi;}
 		if ( ( 
-		(length($accountcode)>5) && ( (!$callerid) or ($callerid =~ /unknown|private|00000000/i) or ($callerid =~ /5551212/) )
-		) or ( (length($accountcode)>17) && ($accountcode =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) ) )
-			{$callerid = $accountcode;}
+		(length($calleridname)>5) && ( (!$callerid) or ($callerid =~ /unknown|private|00000000/i) or ($callerid =~ /5551212/) )
+		) or ( (length($calleridname)>17) && ($calleridname =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) ) )
+			{$callerid = $calleridname;}
 
 			### allow for ANI being sent with the DNIS "*3125551212*9999*"
 			if ($extension =~ /^\*\d\d\d\d\d\d\d\d\d\d\*/)
@@ -347,7 +345,7 @@ sub process_request {
 				$extension =~ s/^\*\d\d\d\d\d\d\d\d\d\d\*//gi;
 				$extension =~ s/\*$//gi;
 				}
-			$accountcode = $callerid;
+			$calleridname = $callerid;
 			}
 	}
 
@@ -369,7 +367,7 @@ sub process_request {
 
 	if ($AGILOG) 
 		{
-		$agi_string = "AGI Variables: |$unique_id|$channel|$extension|$type|$callerid|";   
+		$agi_string = "AGI Variables: |$unique_id|$channel|$extension|$type|$callerid|$accountcode|";   
 		&agi_output;
 		}
 
@@ -472,9 +470,9 @@ sub process_request {
 				$extension = $SIP_ext;
 				}
 
-			if ( ($callerid =~ /^V|^M/) && ($callerid =~ /\d\d\d\d\d\d\d\d\d/) && (length($number_dialed)<1) )
+			if ( ($accountcode =~ /^V|^M/) && ($accountcode =~ /\d\d\d\d\d\d\d\d\d/) && (length($number_dialed)<1) )
 				{
-				$stmtA = "SELECT cmd_line_b,cmd_line_d FROM osdial_manager where callerid='$callerid' limit 1;";
+				$stmtA = "SELECT cmd_line_b,cmd_line_d FROM osdial_manager where callerid='$accountcode' limit 1;";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -489,12 +487,12 @@ sub process_request {
 					$rec_count++;
 					}
 				$sthA->finish();
-				if ($callerid =~ /^V/) {$number_dialed = "$cmd_line_d";}
-				if ($callerid =~ /^M/) {$number_dialed = "$cmd_line_b";}
+				if ($accountcode =~ /^V/) {$number_dialed = "$cmd_line_d";}
+				if ($accountcode =~ /^M/) {$number_dialed = "$cmd_line_b";}
 				$number_dialed =~ s/\D//gi;
 				if (length($number_dialed)<1) {$number_dialed=$extension;}
 				}
-			$stmtA = "INSERT INTO call_log (uniqueid,channel,channel_group,type,server_ip,extension,number_dialed,start_time,start_epoch,end_time,end_epoch,length_in_sec,length_in_min,caller_code) values('$unique_id','$channel','$channel_group','$type','$VARserver_ip','$extension','$number_dialed','$now_date','$now_date_epoch','','','','','$callerid')";
+			$stmtA = "INSERT INTO call_log (uniqueid,channel,channel_group,type,server_ip,extension,number_dialed,start_time,start_epoch,end_time,end_epoch,length_in_sec,length_in_min,caller_code) values('$unique_id','$channel','$channel_group','$type','$VARserver_ip','$extension','$number_dialed','$now_date','$now_date_epoch','','','','','$accountcode')";
 
 			if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 			$affected_rows = $dbhA->do($stmtA);
@@ -607,7 +605,7 @@ sub process_request {
 				open(out, ">>$PATHlogs/HANGUP_cause-output.txt")
 						|| die "Can't open $PATHlogs/HANGUP_cause-output.txt: $!\n";
 
-				print out "$now_date|$hangup_cause|$dialstatus|$dial_time|$ring_time|$unique_id|$channel|$extension|$type|$callerid|$accountcode|$priority|\n";
+				print out "$now_date|$hangup_cause|$dialstatus|$dial_time|$ring_time|$unique_id|$channel|$extension|$type|$accountcode|$priority|\n";
 
 				close(out);
 			}
@@ -617,16 +615,15 @@ sub process_request {
 			}
 
 
-			$callerid =~ s/\"//gi;
-			$CIDlead_id = $callerid;
+			$CIDlead_id = $accountcode;
 			$CIDlead_id = substr($CIDlead_id, 11, 9);
 			$CIDlead_id = ($CIDlead_id + 0);
 
-			if ($AGILOG) {$agi_string = "VD_hangup : $callerid $channel $priority $CIDlead_id";   &agi_output;}
+			if ($AGILOG) {$agi_string = "VD_hangup : $accountcode $channel $priority $CIDlead_id";   &agi_output;}
 
 			if ($channel =~ /^Local/)
 			{
-				if ( ($PRI =~ /^PRI$/) && ($callerid =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) && ( ($dialstatus =~ /BUSY|CONGESTION/) || ($hangup_cause =~ /^27$|^29$|^34$|^38$/) || ( ($dialstatus =~ /CHANUNAVAIL/) && ($hangup_cause =~ /^1$|^28$/) ) ) )
+				if ( ($PRI =~ /^PRI$/) && ($accountcode =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) && ( ($dialstatus =~ /BUSY|CONGESTION/) || ($hangup_cause =~ /^27$|^29$|^34$|^38$/) || ( ($dialstatus =~ /CHANUNAVAIL/) && ($hangup_cause =~ /^1$|^28$/) ) ) )
 				{
 					if ($dialstatus =~ /CONGESTION/) {$VDL_status='CRC'; $VDAC_status = 'BUSY';}
 					if ($dialstatus =~ /BUSY/) {$VDL_status = 'B'; $VDAC_status = 'BUSY';}
@@ -651,7 +648,7 @@ sub process_request {
 					$VDADaffected_rows = $dbhA->do($stmtA);
 					if ($AGILOG) {$agi_string = "--    VDAD osdial_list update: |$VDADaffected_rows|$CIDlead_id";   &agi_output;}
 
-					$stmtA = "UPDATE osdial_auto_calls set status='$VDAC_status' where callerid = '$callerid';";
+					$stmtA = "UPDATE osdial_auto_calls set status='$VDAC_status' where callerid = '$accountcode';";
 						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 					$VDACaffected_rows = $dbhA->do($stmtA);
 					if ($AGILOG) {$agi_string = "--    VDAC update: |$VDACaffected_rows|$CIDlead_id";   &agi_output;}
@@ -670,7 +667,7 @@ sub process_request {
 				}
 				else
 				{
-					if ($AGILOG) {$agi_string = "--    VD_hangup Local DEBUG: |$PRI|$callerid|$dialstatus|$hangup_cause|";   &agi_output;}
+					if ($AGILOG) {$agi_string = "--    VD_hangup Local DEBUG: |$PRI|$accountcode|$dialstatus|$hangup_cause|";   &agi_output;}
 				}
 
 				if ($AGILOG) {$agi_string = "+++++ VDAD START LOCAL CHANNEL: EXITING- $priority";   &agi_output;}
@@ -681,7 +678,7 @@ sub process_request {
 
 				########## FIND AND DELETE osdial_auto_calls ##########
 				$VD_alt_dial = 'NONE';
-				$stmtA = "SELECT lead_id,callerid,campaign_id,alt_dial,stage,UNIX_TIMESTAMP(call_time),uniqueid,status FROM osdial_auto_calls where uniqueid = '$uniqueid' or callerid = '$callerid' limit 1;";
+				$stmtA = "SELECT lead_id,callerid,campaign_id,alt_dial,stage,UNIX_TIMESTAMP(call_time),uniqueid,status FROM osdial_auto_calls where uniqueid = '$uniqueid' or callerid = '$accountcode' limit 1;";
 					if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -924,7 +921,7 @@ sub process_request {
 						else
 							{
 							if ($VD_status =~ /^DONE$|^INCALL$|^XFER$/)
-								{$VDCLSQL_status = "term_reason='CALLER',";}
+								{$VDCLSQL_update = "term_reason='CALLER',";}
 							else
 								{
 								if ( ($VD_term_reason !~ /AGENT|CALLER|QUEUETIMEOUT|AFTERHOURS|HOLDRECALLXFER|HOLDTIME/) && ( ($VD_user =~ /VDAD|VDCL/) || (length($VD_user) < 1) ) )
