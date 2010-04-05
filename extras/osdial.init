@@ -278,8 +278,7 @@ case "$1" in
 	reconfig
 	;;
   restart)
-	stop
-	start
+	reload
 	;;
   start_relay)
 	start_relay
