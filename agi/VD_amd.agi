@@ -200,28 +200,6 @@ while(<STDIN>)
 	if (/^agi_accountcode\:\s+(.*)$/)	{$accountcode = $1;}
 }
 
-if ( (length($callerid)>20) && ($callerid =~ /\"\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S/) )
-  {
-   $callerid =~ s/^\"//gi;
-   $callerid =~ s/\".*$//gi;
-#	### set the callerid to the ACQS value(accountcode)
-#	print "SET CALLERID $callerid\n";
-#	checkresult();
-#	print STDERR "callerID changed: $callerid\n";
-
-  }
-if ( (
-(length($accountcode)>5) && ( (!$callerid) or ($callerid =~ /unknown|private|00000000/i) or ($callerid =~ /5551212/) )
-) or ( (length($accountcode)>17) && ($accountcode =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) ) )
-  {
-   $callerid = $accountcode;
-#	### set the callerid to the ACQS value(accountcode)
-#	print "SET CALLERID $callerid\n";
-#	checkresult();
-#	print STDERR "callerID changed: $callerid\n";
-  }
-
-
 if ($AGILOG) {$agi_string = "AGI Environment Dump:";   &agi_output;}
 
 foreach $i (sort keys %AGI) 
@@ -229,15 +207,14 @@ foreach $i (sort keys %AGI)
 	if ($AGILOG) {$agi_string = " -- $i = $AGI{$i}";   &agi_output;}
 }
 
-if ($AGILOG) {$agi_string = "AGI Variables: |$unique_id|$channel|$extension|$type|$callerid|";   &agi_output;}
+if ($AGILOG) {$agi_string = "AGI Variables: |$unique_id|$channel|$extension|$type|$accountcode|";   &agi_output;}
 
 
 $VDADcampaign='';
 $VDADphone='';
 $VDADphone_code='';
 
-$callerid =~ s/\"//gi;
-$CIDlead_id = $callerid;
+$CIDlead_id = $accountcode;
 $CIDlead_id = substr($CIDlead_id, 11, 9);
 $CIDlead_id = ($CIDlead_id + 0);
 $VD_lead_id = $CIDlead_id;
@@ -273,7 +250,7 @@ if ($AMD_LOG)
 	{
 	open(Lout, ">>$PATHlogs/AMD_log.txt")
 			|| die "Can't open $PATHlogs/AMD_log.txt: $!\n";
-	print Lout "$now_date|$VD_lead_id|      |$AMDSTATUS|$AMDCAUSE|$calleridnum|\n";
+	print Lout "$now_date|$VD_lead_id|      |$AMDSTATUS|$AMDCAUSE|$accountcode|\n";
 	close(Lout);
 	}
 
@@ -314,7 +291,7 @@ $sthA->finish();
 
 
 ########## FIND osdial_auto_calls record ##########
-$stmtA = "SELECT campaign_id,phone_code,phone_number FROM osdial_auto_calls where callerid='$callerid' order by auto_call_id desc limit 1;";
+$stmtA = "SELECT campaign_id,phone_code,phone_number FROM osdial_auto_calls where callerid='$accountcode' order by auto_call_id desc limit 1;";
 	if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -338,7 +315,7 @@ $stmtA = "UPDATE osdial_list set status='AA' where lead_id = '$VD_lead_id';";
 if ($AGILOG) {$agi_string = "--    VDAD osdial_list update: |$affected_rows|$VD_lead_id";   &agi_output;}
 
 ########## DELETE osdial_auto_calls entry ##########
-$stmtA = "DELETE FROM osdial_auto_calls where callerid='$callerid' order by auto_call_id desc limit 1;";
+$stmtA = "DELETE FROM osdial_auto_calls where callerid='$accountcode' order by auto_call_id desc limit 1;";
 	$affected_rows = $dbhA->do($stmtA);
 if ($AGILOG) {$agi_string = "--    VDAC record deleted: |$affected_rows|   |$VD_lead_id|$uniqueid|$VD_callerid";   &agi_output;}
 

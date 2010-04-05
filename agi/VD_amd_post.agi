@@ -207,28 +207,6 @@ while(<STDIN>)
 	if (/^agi_accountcode\:\s+(.*)$/)	{$accountcode = $1;}
 }
 
-if ( (length($callerid)>20) && ($callerid =~ /\"\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S/) )
-  {
-   $callerid =~ s/^\"//gi;
-   $callerid =~ s/\".*$//gi;
-#	### set the callerid to the ACQS value(accountcode)
-#	print "SET CALLERID $callerid\n";
-#	checkresult();
-#	print STDERR "callerID changed: $callerid\n";
-
-  }
-if ( (
-(length($accountcode)>5) && ( (!$callerid) or ($callerid =~ /unknown|private|00000000/i) or ($callerid =~ /5551212/) )
-) or ( (length($accountcode)>17) && ($accountcode =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) ) )
-  {
-   $callerid = $accountcode;
-#	### set the callerid to the ACQS value(accountcode)
-#	print "SET CALLERID $callerid\n";
-#	checkresult();
-#	print STDERR "callerID changed: $callerid\n";
-  }
-
-
 if ($AGILOG) {$agi_string = "AGI Environment Dump:";   &agi_output;}
 
 foreach $i (sort keys %AGI) 
@@ -236,15 +214,14 @@ foreach $i (sort keys %AGI)
 	if ($AGILOG) {$agi_string = " -- $i = $AGI{$i}";   &agi_output;}
 }
 
-if ($AGILOG) {$agi_string = "AGI Variables: |$unique_id|$channel|$extension|$type|$callerid|$accountcode|$priority|";   &agi_output;}
+if ($AGILOG) {$agi_string = "AGI Variables: |$unique_id|$channel|$extension|$type|$accountcode|$priority|";   &agi_output;}
 
 $VDADcampaign='';
 $VDADphone='';
 $VDADphone_code='';
 
 
-$callerid =~ s/\"//gi;
-$CIDlead_id = $callerid;
+$CIDlead_id = $accountcode;
 $CIDlead_id = substr($CIDlead_id, 11, 9);
 $CIDlead_id = ($CIDlead_id + 0);
 $VD_lead_id = $CIDlead_id;
