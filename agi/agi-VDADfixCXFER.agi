@@ -211,7 +211,7 @@ if ($AGILOG) {$agi_string = "CXFERfix : $lead_id $user $channel $uniqueid";   &a
 
 	$CIDlead = sprintf("%010s", $lead_id);
 	$CIDlead = "C123412345$CIDlead";
-	print "SET CALLERID $CIDlead\n";
+	print "SET CDR(accountcode) $CIDlead\n";
 	checkresult();
 	if ($AGILOG) {$agi_string = "callerID changed: $CIDlead";   &agi_output;}
 
