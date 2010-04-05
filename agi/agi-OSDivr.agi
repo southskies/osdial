@@ -65,26 +65,10 @@ foreach my $i (sort keys %aout) {
 	agi_output(" -- $i = " . $AGI->{$i});
 }
 
-if ( (length($AGI->{callerid})>20) && ($AGI->{callerid} =~ /\"\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S\S/) ) {
-	my $orig = $AGI->{callerid};
-	$AGI->{callerid} =~ s/^\"//gi;
-	$AGI->{callerid} =~ s/\".*$//gi;
-	agi_execute("SET CALLERID " . $AGI->{callerid});
-	agi_output("callerID1 changed from '" . $orig . "' to '" . $AGI->{callerid} . "'.");
-}
-if ( ((length($AGI->{accountcode})>5) && ( (!$AGI->{callerid}) or ($AGI->{callerid} =~ /unknown|private|00000000/i) or ($AGI->{callerid} =~ /5551212/) ))
-   or ( (length($AGI->{accountcode})>17) && ($AGI->{accountcode} =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) ) ) {
-	$AGI->{callerid} = $AGI->{accountcode};
-	agi_execute("SET CALLERID " . $AGI->{callerid});
-	agi_output("callerID2 changed from '" . $AGI->{accountcode} . "' to '" . $AGI->{callerid} . "'.");
-}
-$AGI->{callerid} =~ s/\"//gi;
-
-
 my $live_agents = {};
 my $latry = 5;
 while ($latry > 0) {
-	$stmtA = "SELECT * FROM osdial_live_agents WHERE callerid='" . $AGI->{callerid} . "' LIMIT 1;";
+	$stmtA = "SELECT * FROM osdial_live_agents WHERE callerid='" . $AGI->{accountcode} . "' LIMIT 1;";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	my $larows = $sthA->rows();
@@ -99,10 +83,10 @@ while ($latry > 0) {
 	$sthA->finish();
 }
 
-$AGI->{orig_callerid} = $AGI->{callerid};
+$AGI->{orig_accountcode} = $AGI->{accountcode};
 $AGI->{orig_channel} = $AGI->{channel};
 $AGI->{orig_uniqueid} = $AGI->{uniqueid};
-$AGI->{callerid} = $live_agents->{callerid};
+$AGI->{accountcode} = $live_agents->{callerid};
 $AGI->{channel} = $live_agents->{channel};
 $AGI->{uniqueid} = $live_agents->{uniqueid};
 $vars->{conf_exten} = $live_agents->{conf_exten};
@@ -111,12 +95,12 @@ my $csip = sprintf('%3.3d*%3.3d*%3.3d*%3.3d', @scsip);
 $vars->{conf_server} = $csip;
 
 my $random = int( rand(9999999)) + 10000000;
-my $stmtA = "UPDATE osdial_live_agents SET channel='" . $AGI->{orig_channel} . "',status='INCALL',random_id='" . $random . "',last_call_time='" . $vars->{start_date} . "' WHERE callerid='" . $AGI->{callerid} . "' LIMIT 1;";
+my $stmtA = "UPDATE osdial_live_agents SET channel='" . $AGI->{orig_channel} . "',status='INCALL',random_id='" . $random . "',last_call_time='" . $vars->{start_date} . "' WHERE callerid='" . $AGI->{accountcode} . "' LIMIT 1;";
 my $affected_rows = $dbhA->do($stmtA);
-my $stmtA = "UPDATE osdial_auto_calls SET channel='" . $AGI->{orig_channel} . "' WHERE callerid='" . $AGI->{callerid} . "' LIMIT 1;";
+my $stmtA = "UPDATE osdial_auto_calls SET channel='" . $AGI->{orig_channel} . "' WHERE callerid='" . $AGI->{accountcode} . "' LIMIT 1;";
 my $affected_rows = $dbhA->do($stmtA);
 
-$vars->{CIDlead_id} = (substr($AGI->{callerid}, 11, 9) + 0);
+$vars->{CIDlead_id} = (substr($AGI->{accountcode}, 11, 9) + 0);
 
 agi_output("+++++ ODOI START : " . $server->{asterisk_version},1);
 
@@ -124,7 +108,7 @@ agi_output("+++++ ODOI START : " . $server->{asterisk_version},1);
 my ($affected_rows, $safe_harbor_message, $safe_harbor_exten);
 
 ### Grab call parameters from osdial_auto_calls table
-	$stmtA = "SELECT * FROM osdial_auto_calls where callerid='" . $AGI->{callerid} . "' order by call_time desc limit 1;";
+	$stmtA = "SELECT * FROM osdial_auto_calls where callerid='" . $AGI->{accountcode} . "' order by call_time desc limit 1;";
 	agi_output("|$stmtA|") if ($vars->{DB} > 1);
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -304,7 +288,7 @@ sub xfer_to_external {
 	my $call_length = $xepoch - $vars->{start_time};
 
 	agi_output("ODOI: transferring call to $number|" . $vars->{conf_exten});
-	my $VqueryCID = $AGI->{callerid};
+	my $VqueryCID = $AGI->{accountcode};
 	my $XqueryCID = $VqueryCID;
 	$XqueryCID =~ s/^V/X/;
 	my $IqueryCID = $VqueryCID;
@@ -420,7 +404,7 @@ sub xfer_to_ingroup {
     }
 
 	agi_output("ODOI: transferring call to $number|" . $vars->{conf_exten});
-	my $VqueryCID = $AGI->{callerid};
+	my $VqueryCID = $AGI->{accountcode};
 	my $XqueryCID = $VqueryCID;
 	$XqueryCID =~ s/^V/I/;
 	#my $stmtA="INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $vars->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/8" . $vars->{conf_exten} . "\@" . $server->{ext_context} . "','Context: " . $server->{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"$XqueryCID\" <" . $campaign->{campaign_cid} . ">','','','','','');";
@@ -478,7 +462,7 @@ sub hangup_and_dispo {
 	update_status($dbhB,$status);
 
 	### insert a NEW Hangup record to the osdial_manager table to be processed
-	my $VHqueryCID = $AGI->{orig_callerid};
+	my $VHqueryCID = $AGI->{orig_accountcode};
 	#my $stmtA = "INSERT INTO osdial_manager values('','','$tdate','NEW','N','" . $vars->{VARserver_ip} . "','','Hangup','$VHqueryCID','Channel: " . $AGI->{channel} . "','','','','','','','','','')";
 	#my $affected_rows = $dbhB->do($stmtA);
 	#agi_output("$affected_rows|$stmtA|") if ($vars->{DB} > 1);
@@ -711,7 +695,7 @@ sub agi_output {
 		my $date = sql_date();
 		$agi_string .= '|' . $AGI->{uniqueid};
 		$agi_string .= '|' . $vars->{CIDlead_id};
-		$agi_string .= '|' . join('|',$AGI->{channel},$AGI->{extension},$AGI->{priority},$AGI->{type},$AGI->{callerid}) if ($extinfo);
+		$agi_string .= '|' . join('|',$AGI->{channel},$AGI->{extension},$AGI->{priority},$AGI->{type},$AGI->{accountcode}) if ($extinfo);
 
 		if ($server->{agi_output} =~ /FILE|BOTH/) {
 			### open the log file for writing ###
