@@ -212,53 +212,84 @@ reconfig() {
 }
 
 start_relay() {
+	ret=0
 	if [ -f "/opt/osdial/bin/ip_relay" -a -f "/etc/asterisk/osdial_iax.conf" ]; then
+		echo -n $"OSDial: Starting IP Relay: "
 		/opt/osdial/bin/safe_ip_relay 40569 127.0.0.1    4569 9999999 > /dev/null 2>&1 &
+		let ret+=$?;
 		/opt/osdial/bin/safe_ip_relay 41569 127.0.0.1    4569 9999999 > /dev/null 2>&1 &
+		let ret+=$?;
+    		[ $ret -eq 0 ] && success || failure
+		echo
 	fi
+	return $ret
 }
 
 stop_relay() {
+	ret=0
 	if [ -f "/opt/osdial/bin/ip_relay" -a -f "/etc/asterisk/osdial_iax.conf" ]; then
+		echo -n $"OSDial: Stopping IP Relay: "
 		kill `ps -C safe_ip_relay -o pid --no-heading` > /dev/null 2>&1
+		let ret+=$?;
 		kill `ps -C ip_relay -o pid --no-heading` > /dev/null 2>&1
+		let ret+=$?;
+    		[ $ret -eq 0 ] && success || failure
+		echo
 	fi
+	return $ret
 }
 
 reload() {
+	stop_relay
+	start_relay
+	ret=0
+
+	echo -n $"OSDial: Clearing SQL Server States: "
+	/opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1
+	let ret+=$?;
+    	[ $ret -eq 0 ] && success || failure
+	echo
+
 	KFAGI=0
-	if [ -n "`ps -ef | grep FastAGI`" ]; then
-		kill -9 `ps -ef | grep FastAGI | awk '{ print $2 }'` > /dev/null 2>&1
-        	echo "  -- Stopping OSDial FastAGI processes."
+	if [ -n "`ps -ef | grep FastAGI | grep -v grep`" ]; then
 		KFAGI=1
+		echo -n $"OSDial: Stopping FastAGI: "
+		kill -9 `ps -ef | grep FastAGI | awk '{ print $2 }' | grep -v grep` > /dev/null 2>&1
+		let ret+=$?;
+    		[ $ret -eq 0 ] && success || failure
+		echo
 	fi
 
 	KAST=0
-	if [ -n "`ps -ef | grep AST`" ]; then
-		kill -9 `ps -ef | grep AST | awk '{ print $2 }'` > /dev/null 2>&1
-		echo "  -- Stopping OSDial AST processes."
+	if [ -n "`ps -ef | grep AST | grep -v grep`" ]; then
 		KAST=1
+		echo -n $"OSDial: Stopping AST processes: "
+		kill -9 `ps -ef | grep AST | awk '{ print $2 }' | grep -v grep` > /dev/null 2>&1
+		let ret+=$?;
+    		[ $ret -eq 0 ] && success || failure
+		echo
 	fi
 
 	if [ $KFAGI -eq 1 -o $KAST -eq 1 ]; then
-		echo
 		TIME=`date +%H:%M:%S`
 		SEC=`date +%S`
-		STS=`expr 60 - $SEC`
-		echo "  -- The time is now $TIME, the OSDial processes will reload about $STS seconds."
-		echo -n "      "
+		let STS=60-$SEC
+		echo -n $"OSDial: Starting (${STS}sec)."
 		while [ $STS -gt 1 ]; do
-			STS=`expr $STS - 1`
-			echo -n '.'
-			sleep 1
+			let STS=$STS-4
+			echo -n "."
+			sleep 4
 		done
+		echo -n ": "
+		let ret+=$?;
+    		[ $ret -eq 0 ] && success || failure
 		echo
-		echo "  -- Done."
-		return 0
 	else
-		echo "  -- Could not find any running OSDial processes."
-		return 1
+		echo -n $"OSDial: No Keepalives Active: "
+    		success
+		echo
 	fi
+	return $ret
 }
 
 # See how we were called.
