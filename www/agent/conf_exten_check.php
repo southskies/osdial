@@ -276,22 +276,28 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 
 				}
 
-            $web_epoch = date("U");
-            $stmt="select UNIX_TIMESTAMP(last_update),UNIX_TIMESTAMP(sql_time) from server_updater where server_ip='$server_ip';";
-            if ($DB) {echo "|$stmt|\n";}
-            $rslt=mysql_query($stmt, $link);
-            $row=mysql_fetch_row($rslt);
-            $dialer_epoch = $row[0];
-            $sql_epoch = $row[1];
-            $time_diff = ($dialer_epoch - $sql_epoch);
-            $web_diff = ($web_epoch - $sql_epoch);
+            $time_diff = 0; $sql_diff = 0; $dialer_diff = 0;
+            if (preg_match('0$',$StarTtime)) {
+                $web_epoch = date("U");
+                $stmt="select UNIX_TIMESTAMP(last_update),UNIX_TIMESTAMP(sql_time) from server_updater where server_ip='$server_ip';";
+                if ($DB) {echo "|$stmt|\n";}
+                $rslt=mysql_query($stmt, $link);
+                $row=mysql_fetch_row($rslt);
+                $dialer_epoch = $row[0];
+                $sql_epoch = $row[1];
+                $time_diff = ($dialer_epoch - $sql_epoch);
+                $sql_diff = ($web_epoch - $sql_epoch);
+                $dialer_diff = ($web_epoch - $dialer_epoch);
 
+                if ($time_diff > 8 or $time_diff < -8 or $dialer_diff > 12 or $dialer_diff < -12 or $sql_diff > 12 or $sql_diff < -12) {
+                    $Alogin='TIME_SYNC';
+                }
+            }
 
-            if ((($time_diff > 8) or ($time_diff < -8) or ($web_diff > 8) or ($web_diff < -8) ) and (eregi("0$",$StarTtime))) {$Alogin='TIME_SYNC';}
 			if ($Acount < 1) {$Alogin='DEAD_VLA';}
 			if ($AexternalDEAD > 0) {$Alogin='DEAD_EXTERNAL';}
 
-			echo 'DateTime: ' . $NOW_TIME . '|UnixTime: ' . $StarTtime . '|Logged-in: ' . $Alogin . '|CampCalls: ' . $RingCalls . '|Status: ' . $Astatus . '|DiaLCalls: ' . $DiaLCalls . "|\n";
+			echo 'DateTime: ' . $NOW_TIME . '|UnixTime: ' . $StarTtime . '|Logged-in: ' . $Alogin . '|CampCalls: ' . $RingCalls . '|Status: ' . $Astatus . '|DiaLCalls: ' . $DiaLCalls . "|TimeSync: Diff=$time_diff Dialer=$dialer_diff SQL=$sql_diff|\n";
 
 			}
 		$total_conf=0;
