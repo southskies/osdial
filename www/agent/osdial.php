@@ -1319,6 +1319,7 @@ else
 		$extension = "$dialplan_number$AT$ext_context";
 		}
 	$SIP_user = "$protocol/$extension";
+	$SIP_user_DiaL = "$protocol/$extension";
 
 	$stmt="SELECT asterisk_version from servers where server_ip='$server_ip';";
 	if ($DB) {echo "|$stmt|\n";}
@@ -1401,54 +1402,53 @@ else
 		$stmt="SELECT conf_exten FROM osdial_conferences WHERE extension='$SIP_user' AND server_ip='$server_ip' LIMIT 1;";
 		$rslt=mysql_query($stmt, $link);
 		if ($DB) {echo "$stmt\n";}
-        $old_conf_ct = mysql_num_rows($rslt);
-		$use_prev_conf = 0;
-		if ($old_conf_ct > 0) {
+        $prev_conf_ct = mysql_num_rows($rslt);
+		$got_conf = 0;
+		if ($prev_conf_ct > 0) {
 			$row=mysql_fetch_row($rslt);
-			$prev_conf_exten =$row[0];
+			$session_id =$row[0];
 
-            # Check to see if another extension has the conf already
-            $stmt="SELECT extension FROM osdial_live_agents WHERE extension!='$SIP_user' AND conf_exten='$prev_conf_exten' AND server_ip='$server_ip' LIMIT 1;";
+            echo "<!-- Using previous conference $session_id | $SIP_user | $server_ip -->\n";
+
+            $stmt="UPDATE osdial_list set status='N', user='' where status IN('QUEUE','INCALL') and user ='$VD_login';";
+	        $rslt=mysql_query($stmt, $link);
+            $affected_rows = mysql_affected_rows($link);
+            echo "<!-- old QUEUE and INCALL reverted list:   |$affected_rows| -->\n";
+
+            $stmt="DELETE from osdial_hopper where status IN('QUEUE','INCALL','DONE') and user ='$VD_login';";
+            if ($DB) {echo "$stmt\n";}
+            $rslt=mysql_query($stmt, $link);
+            $affected_rows = mysql_affected_rows($link);
+            echo "<!-- old QUEUE and INCALL reverted hopper: |$affected_rows| -->\n";
+        } else {
+            # Lets get a new one...
+			$stmt="SELECT count(*) FROM osdial_conferences WHERE server_ip='$server_ip' AND (extension='' OR extension is null);";
 		    $rslt=mysql_query($stmt, $link);
     		if ($DB) {echo "$stmt\n";}
-            $agent_conf_ct = mysql_num_rows($rslt);
-            if ($agent_conf_ct < 1) {
-                # Alright! No other live agents currently have this conf and then use the previously found conf.
-                $session_id = $prev_conf_exten;
-                $use_prev_conf = 1;
-            } else {
-                # OK, so an this conf_exten already has a live agent, lets fix this osdial_conference by assigning
-                # the live agent extension  and then grab a new one.
-			    $row=mysql_fetch_row($rslt);
-                $la_exten = $row[0];
-                $stmt="UPDATE osdial_conferences SET extension='$la_exten' WHERE conf_exten='$prev_conf_exten' AND server_ip='$server_ip';";
+			$row=mysql_fetch_row($rslt);
+            $new_conf_ct = $row[0];
+            if ($new_conf_ct > 0) {
+                $stmt="UPDATE osdial_conferences SET extension='$SIP_user' WHERE server_ip='$server_ip' AND (extension='' OR extension is null) LIMIT 1;";
 		        $rslt=mysql_query($stmt, $link);
-                $use_prev_conf = 0;
+
+		        $stmt="SELECT conf_exten FROM osdial_conferences WHERE extension='$SIP_user' AND server_ip='$server_ip';";
+		        $rslt=mysql_query($stmt, $link);
+			    $row=mysql_fetch_row($rslt);
+                $session_id=$row[0];
+                $got_conf=1;
+                echo "<!-- Using new conference $session_id | $SIP_user | $server_ip -->\n";
             }
-
-            # Ok, we have what we need now lets clear out any other records that match SIP_user on this server.
-		    $stmt="UPDATE osdial_conferences SET extension='' WHERE extension='$SIP_user' AND server_ip='$server_ip';";
-        	$rslt=mysql_query($stmt, $link);
-		}
-
-        $ocmmtype = "PREVIOUS";
-		if ($use_prev_conf == 0) {
-			##### grab the next available osdial_conference room and reserve it
-            $ocmmtype = "NEW";
-			$stmt="SELECT conf_exten FROM osdial_conferences WHERE server_ip='$server_ip' AND ((extension='') OR (extension is null)) LIMIT 1;";
-			$rslt=mysql_query($stmt, $link);
-			if ($DB) {echo "$stmt\n";}
-			$free_conf_ct = mysql_num_rows($rslt);
-			$i=0;
-			while ($i < $free_conf_ct) {
-				$row=mysql_fetch_row($rslt);
-				$session_id =$row[0];
-				$i++;
-			}
         }
-        print "<!-- USING $ocmmtype MEETME ROOM - $session_id - $NOW_TIME - $SIP_user -->\n";
-		$stmt="UPDATE osdial_conferences SET extension='$SIP_user' WHERE server_ip='$server_ip' AND conf_exten='$session_id';";
-		$rslt=mysql_query($stmt, $link);
+
+		#$stmt="DELETE FROM osdial_live_agents WHERE user='$VD_login';";
+		#$rslt=mysql_query($stmt, $link);
+        #$affected_rows = mysql_affected_rows($link);
+        #echo "<!-- old osdial_live_agents records cleared: |$affected_rows| -->\n";
+
+		#$stmt="DELETE FROM osdial_live_inbound_agents WHERE user='$VD_login';";
+		#$rslt=mysql_query($stmt, $link);
+        #$affected_rows = mysql_affected_rows($link);
+        #echo "<!-- old osdial_live_inbound_agents records cleared: |$affected_rows| -->\n";
 
         # User is logged in elsewhere
 		$stmt="SELECT user,extension,server_ip,conf_exten FROM osdial_live_agents WHERE user='$VD_login' LIMIT 1;";
@@ -1487,68 +1487,6 @@ else
 		    echo "</html>\n\n";
 		    exit;
         }
-
-        # Phone is logged in elsewhere
-		$stmt="SELECT user,extension,server_ip,conf_exten FROM osdial_live_agents WHERE extension='$SIP_user' AND server_ip='$server_ip' LIMIT 1;";
-		$rslt=mysql_query($stmt, $link);
-		if ($DB) {echo "$stmt\n";}
-		$ola_phone_ct = mysql_num_rows($rslt);
-
-        if ($ola_phone_ct) {
-		    $row=mysql_fetch_row($rslt);
-		    echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
-		    echo "</head>\n";
-		    echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
-		    echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
-		    echo "<!-- INTERNATIONALIZATION-LINKS-PLACEHOLDER-OSDIAL -->\n";
-		    echo "</TR></TABLE>\n";
-		    echo "<B>Sorry, your phone is in use by another user!</b><br>";
-            echo "<i>Please see your manager and give him the following information:</i><br>\n";
-            echo "<table border=1>";
-		    echo "<tr><td>UserID</td><td>$row[0]</td></tr>\n";
-		    echo "<tr><td>Extension</td><td>$row[1]</td></tr>\n";
-		    echo "<tr><td>ServerID</td><td>$row[2]</td></tr>\n";
-		    echo "<tr><td>SessionID</td><td>$row[3]</td></tr>\n";
-            echo "</table><hr>\n";
-		    echo "<FORM ACTION=\"$PHP_SELF\" METHOD=POST>\n";
-		    echo "<INPUT TYPE=HIDDEN NAME=DB VALUE=\"$DB\">\n";
-		    echo "<INPUT TYPE=HIDDEN NAME=phone_login VALUE=\"$phone_login\">\n";
-		    echo "<INPUT TYPE=HIDDEN NAME=phone_pass VALUE=\"$phone_pass\">\n";
-		    echo "Login: <INPUT TYPE=TEXT NAME=VD_login SIZE=10 MAXLENGTH=20 VALUE=\"$VD_login\">\n<br>";
-		    echo "Password: <INPUT TYPE=PASSWORD NAME=VD_pass SIZE=10 MAXLENGTH=20 VALUE=\"$VD_pass\"><br>\n";
-		    echo "Campaign: <span id=\"LogiNCamPaigns\">$camp_form_code</span><br>\n";
-		    echo "&nbsp;";
-		    echo "<INPUT TYPE=SUBMIT NAME=SUBMIT VALUE=SUBMIT> &nbsp; \n";
-		    echo "<span id=\"LogiNReseT\"></span>\n";
-		    echo "</FORM>\n\n";
-		    echo "</body>\n\n";
-		    echo "</html>\n\n";
-		    exit;
-        }
-
-		#$stmt="DELETE FROM osdial_live_agents WHERE user='$VD_login';";
-		#if ($DB) {echo "$stmt\n";}
-		#$rslt=mysql_query($stmt, $link);
-		#$affected_rows = mysql_affected_rows($link);
-		#print "<!-- old osdial_live_agents records cleared: |$affected_rows| -->\n";
-
-		#$stmt="DELETE FROM osdial_live_inbound_agents WHERE user='$VD_login';";
-		#if ($DB) {echo "$stmt\n";}
-		#$rslt=mysql_query($stmt, $link);
-		#$affected_rows = mysql_affected_rows($link);
-		#print "<!-- old osdial_live_inbound_agents records cleared: |$affected_rows| -->\n";
-
-		$stmt="UPDATE osdial_list SET status='N', user='' WHERE status IN('QUEUE','INCALL') AND user='$VD_login';";
-		if ($DB) {echo "$stmt\n";}
-		$rslt=mysql_query($stmt, $link);
-		$affected_rows = mysql_affected_rows($link);
-		print "<!-- old QUEUE and INCALL reverted list:   |$affected_rows| -->\n";
-
-		$stmt="DELETE FROM osdial_hopper WHERE status IN('QUEUE','INCALL','DONE') AND user='$VD_login';";
-		if ($DB) {echo "$stmt\n";}
-		$rslt=mysql_query($stmt, $link);
-		$affected_rows = mysql_affected_rows($link);
-		print "<!-- old QUEUE and INCALL reverted hopper: |$affected_rows| -->\n";
 
 
 	#	print "<B>You have logged in as user: $VD_login on phone: $SIP_user to campaign: $VD_campaign</B><BR>\n";
@@ -1589,11 +1527,11 @@ else
 			}
 
 		### insert a NEW record to the osdial_manager table to be processed
-		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$SIqueryCID','Channel: $SIP_user','Context: $ext_context','Exten: $session_id','Priority: 1','Callerid: $SIqueryCID','Account: $SIqueryCID','','','','');";
+		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$SIqueryCID','Channel: $SIP_user_DiaL','Context: $ext_context','Exten: $session_id','Priority: 1','Callerid: \"$SIqueryCID\" <$campaign_cid>','Account: $SIqueryCID','','','','');";
 		if ($DB) {echo "$stmt\n";}
 		$rslt=mysql_query($stmt, $link);
 		$affected_rows = mysql_affected_rows($link);
-		print "<!-- call placed to session_id: $session_id from phone: $SIP_user -->\n";
+		print "<!-- call placed to session_id: $session_id from phone: $SIP_user_DiaL -->\n";
 
 		if ($auto_dial_level > 0)
 			{
@@ -2167,7 +2105,7 @@ foreach ($forms as $form) {
 					&nbsp;<font class="body_tiny" color=<?=$default_fc?>><span id=AgentStatusCalls></span>
 				</td>
 				<td valign='middle'>
-					&nbsp;<a href="#" onclick="LogouT();return false;"><font size=1 color='red'>LOGOUT</font></a>&nbsp;
+					&nbsp;<a href="#" onclick="LogouT('NORMAL');return false;"><font size=1 color='red'>LOGOUT</font></a>&nbsp;
 				</TD>
 				<TD WIDTH=110><font class="body_text"><IMG SRC="templates/<?= $agent_template ?>/images/agc_live_call_OFF.gif" NAME=livecall ALT="Live Call" WIDTH=109 HEIGHT=30 BORDER=0></TD>
 			</TR>
@@ -2495,7 +2433,17 @@ foreach ($forms as $form) {
 	<span style="position:absolute;left:0px;top:0px;z-index:29;" id="AgenTDisablEBoX">
 		<table class=acrossagent border=0 width=<?=$CAwidth ?> height=564>
 			<TR>
-				<TD align=center><font color=<?=$login_fc?>>Your login session has been disabled, you need to logout.<br><BR><a href="#" onclick="LogouT();return false;"><font text-decoration=blink>LOGOUT</font></a><BR><BR><a href="#" onclick="hideDiv('AgenTDisablEBoX');return false;"><font color=grey>Go Back</font></a>
+				<TD align=center><font color=<?=$login_fc?>>Your login session has been disabled, you need to logout.<br><BR><a href="#" onclick="LogouT('DISABLED');return false;"><font text-decoration=blink>LOGOUT</font></a><BR><BR><a href="#" onclick="hideDiv('AgenTDisablEBoX');return false;"><font color=grey>Go Back</font></a>
+				</TD>
+			</TR>
+		</TABLE>
+	</span>
+
+	<!-- System Disabled -->
+	<span style="position:absolute;left:0px;top:0px;z-index:29;" id="SysteMDisablEBoX">
+		<table class=acrossagent border=0 width=<?=$CAwidth ?> height=564>
+			<TR>
+				<TD align=center><font color=<?=$login_fc?>>There is a time synchronization problem with your system, please tell your system administrator.<BR><span id="SysteMDisablEInfo"></span><BR><BR><a href="#" onclick="hideDiv('SysteMDisablEBoX');return false;"><font color=grey>Go Back</font></a>
 				</TD>
 			</TR>
 		</TABLE>

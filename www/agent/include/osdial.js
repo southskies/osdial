@@ -147,6 +147,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	var MD_ring_secondS = 0;
 	var MDlogEPOCH = 0;
 	var alt_dial_menu = 0;
+	var agentphonelive = 0;
 	var manual_dial_menu = 0;
 	var VD_live_customer_call = 0;
 	var VD_live_call_secondS = 0;
@@ -500,7 +501,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 					Nactiveext = null;
 					Nactiveext = xmlhttp.responseText;
-				//	alert(xmlhttp.responseText);
+					//alert(xmlhttp.responseText);
 				}
 			}
 			delete xmlhttp;
@@ -643,7 +644,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				var originatevalue = "Local/" + tasknum + "@" + ext_context;
 			} else {
 				var dialnum = tasknum;
-				if (protocol == 'EXTERNAL') {
+				if ( (protocol == 'EXTERNAL') || (protocol == 'Local') )  {
 					var protodial = 'Local';
 					var extendial = extension + "@" + ext_context;
 				} else {
@@ -800,6 +801,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							var CamPCalLs = CamPCalLs_array[1];
 							var DiaLCalLs_array = check_time_array[5].split("DiaLCalls: ");
 							var DiaLCalLs = DiaLCalLs_array[1];
+							var TimeSync_array = check_time_array[6].split("TimeSync: ");
+							var TimeSyncInfo = TimeSync_array[1];
 							if (AGLogiN != 'N') {
 								document.getElementById("AgentStatusStatus").innerHTML = AGLogiN;
 							}
@@ -810,12 +813,23 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 								document.getElementById("AgentStatusDiaLs").innerHTML = DiaLCalLs;
 							}
 							if ( (AGLogiN == 'DEAD_VLA') && ( (osdial_agent_disable == 'LIVE_AGENT') || (osdial_agent_disable == 'ALL') ) ) {
-								manual_dial_menu=0; alt_dial_menu=0; MD_channel_look=0; VD_live_customer_call=0;
+								if (manual_dial_menu==1 || alt_dial_menu==1 || MD_channel_look==1 || VD_live_customer_call==1) {
+									MD_channel_look=0;
+									document.osdial_form.DispoSelection.value = 'NA';
+									dialedcall_send_hangup('NO','YES');
+								}
 								showDiv('AgenTDisablEBoX');
 							}
 							if ( (AGLogiN == 'DEAD_EXTERNAL') && ( (osdial_agent_disable == 'EXTERNAL') || (osdial_agent_disable == 'ALL') ) ) {
-								manual_dial_menu=0; alt_dial_menu=0; MD_channel_look=0; VD_live_customer_call=0;
+								if (manual_dial_menu==1 || alt_dial_menu==1 || MD_channel_look==1 || VD_live_customer_call==1) {
+									document.osdial_form.DispoSelection.value = 'NA';
+									dialedcall_send_hangup('NO','YES');
+								}
 								showDiv('AgenTDisablEBoX');
+							}
+							if ( (AGLogiN == 'TIME_SYNC') && (osdial_agent_disable == 'ALL') ) {
+								document.getElementById("SysteMDisablEInfo").innerHTML = TimeSyncInfo;
+								showDiv('SysteMDisablEBoX');
 							}
 						}
 						var VLAStatuS_array = check_time_array[4].split("Status: ");
@@ -823,8 +837,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						if ( (VLAStatuS == 'PAUSED') && (AutoDialWaiting == 1) ) {
 							if (PausENotifYCounTer > 10) {
 								AutoDial_ReSume_PauSe('VDADpause');
-								alert('Your session has been paused');
 								PausENotifYCounTer=0;
+								alert('Your session has been paused');
 							} else {
 								PausENotifYCounTer++;
 							}
@@ -842,6 +856,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 								var LMAalter=0;
 								var LMAcontent_change=0;
 								var LMAcontent_match=0;
+								agentphonelive=0;
 								var conv_start=-1;
 								var live_conf_HTML = "<font face=\"Arial,Helvetica\"><B>LIVE CALLS IN YOUR SESSION:</B></font><BR><TABLE WIDTH=<?=$SDwidth ?>><TR><TD><font class=\"log_title\">#</TD><TD><font class=\"log_title\">REMOTE CHANNEL</TD><TD><font class=\"log_title\">HANGUP</TD><TD><font class=\"log_title\">VOLUME</TD></TR>";
 								if ( (LMAcount > live_conf_calls)  || (LMAcount < live_conf_calls) || (LMAforce > 0)) {
@@ -888,7 +903,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 									}
 
 									if (volumecontrol_active > 0) {
-										if (protocol != 'EXTERNAL') {
+										if ( (protocol != 'EXTERNAL') && (protocol != 'Local')) {
 											var regAGNTchan = new RegExp(protocol + '/' + extension,"g");
 											if  ( (channelfieldA.match(regAGNTchan)) && (agentchannel != channelfieldA) ) {
 												agentchannel = channelfieldA;
@@ -923,10 +938,13 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 									if (LMAalter > 0) {
 										LMAcount++;
 									}
+									if (agentchannel==channelfieldA){agentphonelive++;}
 									ARY_ct++;
 								}
 								//var debug_LMA = LMAcontent_match+"|"+LMAcontent_change+"|"+LMAcount+"|"+live_conf_calls+"|"+LMAe[0]+LMAe[1]+LMAe[2]+LMAe[3]+LMAe[4]+LMAe[5];
 								//document.getElementById("confdebug").innerHTML = debug_LMA + "<BR>";
+
+								if (agentphonelive < 1) { agentchannel=''; }
 
 								live_conf_HTML = live_conf_HTML + "</table>";
 
@@ -1289,6 +1307,12 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	function DialLog(taskMDstage) {
 		if (taskMDstage == "start") {
 			var MDlogEPOCH = 0;
+            var UID_test = document.osdial_form.uniqueid.value;
+            if (UID_test.length < 4)
+                {
+                UID_test = epoch_sec + '.' + random;
+                document.osdial_form.uniqueid.value = UID_test;
+                }
 		} else if (alt_phone_dialing == 1) {
 			if (document.osdial_form.DiaLAltPhonE.checked==true) {
 				reselect_alt_dial = 1;
@@ -1397,7 +1421,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			xmlhttp.send(CBcount_query); 
 			xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-				//	alert(xmlhttp.responseText);
+					//alert(xmlhttp.responseText);
 					var CBcounT = xmlhttp.responseText;
 					var CBstatusHTML = "<a href=\"#\" onclick=\"CalLBacKsLisTCheck();return false;\">";
 					if (CBcounT == 0) {
@@ -1634,7 +1658,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 					var MDlookResponse = null;
-				//	alert(xmlhttp.responseText);
+					//alert(xmlhttp.responseText);
 					MDlookResponse = xmlhttp.responseText;
 					var MDlookResponse_array=MDlookResponse.split("\n");
 					var MDlookCID = MDlookResponse_array[0];
@@ -1656,6 +1680,10 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							if ( (XDchannel.match(regMDL)) && (asterisk_version != '1.0.8') && (asterisk_version != '1.0.9') && (MD_ring_secondS < 10) ) {
 								// bad grab of Local channel, try again
 								MD_ring_secondS++;
+								var dispnum = lead_dial_number;
+								var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
+								document.getElementById("MainStatuSSpan").style.backgroundColor = '<?=$status_bg?>';
+								document.getElementById("MainStatuSSpan").innerHTML = " Calling: " + status_display_number + "&nbsp;&nbsp;<font color=<?=$status_bg?>>UID: " + CIDcheck + "</font><font color=<?=$status_intense_color?> style='text-decoration:blink;'><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
 							} else {
 								document.osdial_form.xferuniqueid.value	= MDlookResponse_array[0];
 								document.osdial_form.xferchannel.value	= MDlookResponse_array[1];
@@ -1688,6 +1716,11 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							if ( (MDchannel.match(regMDL)) && (asterisk_version != '1.0.8') && (asterisk_version != '1.0.9') ) {
 								// bad grab of Local channel, try again
 								MD_ring_secondS++;
+								var dispnum = lead_dial_number;
+								var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
+
+								document.getElementById("MainStatuSSpan").style.backgroundColor = '<?=$status_bg?>';
+								document.getElementById("MainStatuSSpan").innerHTML = " Calling: " + status_display_number + "&nbsp;&nbsp;<font color=<?=$status_bg?>>UID: " + CIDcheck + "</font><font color=<?=$status_intense_color?> style='text-decoration:blink;'><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
 							} else {
 								custchannellive=1;
 
@@ -2111,7 +2144,9 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 									WebFormPanelDisplay2(VDIC_web_form_address2 + web_form_vars2);
 								}
 							}
-						}
+						} else {
+						    reselect_preview_dial = 1;
+                        }
 					}
 				}
 			}
@@ -2307,7 +2342,6 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						alert("call was not placed, there was an error:\n" + MDOnextResponse);
 					} else {
 						MD_channel_look=1;
-						custchannellive=1;
 
 						var dispnum = manDiaLonly_num;
 						var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
@@ -2916,11 +2950,11 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 					if (xmlhttprequestrepull.readyState == 4 && xmlhttprequestrepull.status == 200) {
 						var check_incoming = null;
 						check_incoming = xmlhttprequestrepull.responseText;
-					//	alert(checkRPLD_query);
-					//	alert(xmlhttprequestrepull.responseText);
+						//alert(checkRPLD_query);
+						//alert(xmlhttprequestrepull.responseText);
 						var check_RPLD_array=check_incoming.split("\n");
 						if (check_RPLD_array[0] > 0) { //<>
-					//		alert(xmlhttprequestrepull.responseText);
+							//alert(xmlhttprequestrepull.responseText);
 
 							RPLD_web_form_address = OSDiaL_web_form_address;
 							RPLD_web_form_address2 = OSDiaL_web_form_address2;
@@ -3667,7 +3701,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		if ( (VD_live_customer_call==1) || (alt_dial_active==1) ) {
 			alert("You must hangup and disposition your call before clicking \"Pause\". ");
 		} else {
-			if (inbound_man == 0 && AutoDialReady==1) {
+			if (AutoDialReady==1) {
 				AutoDial_ReSume_PauSe('VDADpause');
 				PCSpause = 1;
 			}
@@ -3769,11 +3803,11 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 					xmlhttp.send(DSupdate_query); 
 					xmlhttp.onreadystatechange = function() { 
-						if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+						if (xmlhttp.readyState == 4 && xmlhttp.status == 200 && (auto_dial_level < 1)) {
 							var check_dispo = null;
 							check_dispo = xmlhttp.responseText;
 							var check_DS_array=check_dispo.split("\n");
-						//	alert(xmlhttp.responseText + "\n|" + check_DS_array[1] + "\n|" + check_DS_array[2] + "|");
+							//alert(xmlhttp.responseText + "\n|" + check_DS_array[1] + "\n|" + check_DS_array[2] + "|");
 							if (check_DS_array[1] == 'Next agent_log_id:') {
 								agent_log_id = check_DS_array[2];
 							}
@@ -3989,9 +4023,10 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		WaitingForNextStep=0;
 		nochannelinsession=0;
 
-		if (protocol == 'EXTERNAL') {
+		if (protocol == 'EXTERNAL' || protocol == 'Local') {
 			var protodial = 'Local';
-			var extendial = extension + "@" + ext_context;
+			var extendial = extension;
+			//var extendial = extension + "@" + ext_context;
 		} else {
 			var protodial = protocol;
 			var extendial = extension;
@@ -4192,11 +4227,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // Log the user out of the system when they close their browser while logged in
 	function BrowserCloseLogout() {
 		if (logout_stop_timeouts < 1) {
-			manual_dial_menu=0;
-			alt_dial_menu=0;
-			MD_channel_look=0;
-			VD_live_customer_call=0;
-			LogouT();
+			LogouT('CLOSE');
 			alert("PLEASE CLICK THE LOGOUT LINK TO LOG OUT NEXT TIME!\n");
 		}
 	}
@@ -4204,70 +4235,91 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 // ################################################################################
 // Log the user out of the system, if active call or active dial is occuring, don't let them.
-	function LogouT() {
+	function LogouT(tempreason) {
 		if (manual_dial_menu==1) {
-			alert("You cannot log out during a Manual Dial. \nPlease click \"Dial Lead\" or \"Skip Lead\" (if available).");
-			return;
-		}
-		if (alt_dial_menu==1) {
-			alert("You cannot log out without reattempting or dispositioning this lead. \nYou may reattempt by selecting \"Main Phone\", \"Alt Phone\", or \"Address3\". \n To disposition the lead, click \"Finish Lead\".");
-			return;
-		}
-		if (MD_channel_look==1) {
-			alert("You cannot log out during a Dial attempt. \nWait 50 seconds for the dial to fail out if it is not answered");
-		} else {
-			if (VD_live_customer_call==1) {
-				alert("STILL A LIVE CALL! Hang it up then you can log out.\n" + VD_live_customer_call);
+			if (tempreason=='CLOSE') {
+				document.osdial_form.DispoSelection.value = 'NA';
+				dialedcall_send_hangup('NO','YES');
 			} else {
-				if (previewFD_time > 0) {
-					clearTimeout(previewFD_timeout_id);
-					clearInterval(previewFD_display_id);
-					document.getElementById("PreviewFDTimeSpan").innerHTML = "";
-				}
-				var xmlhttp=false;
-				/*@cc_on @*/
-				/*@if (@_jscript_version >= 5)
-				// JScript gives us Conditional compilation, we can cope with old IE versions.
-				// and security blocked creation of the objects.
-				 try {
-				  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-				 } catch (e) {
-				  try {
-				   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-				  } catch (E) {
-				   xmlhttp = false;
-				  }
-				 }
-				@end @*/
-				if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-					xmlhttp = new XMLHttpRequest();
-				}
-				if (xmlhttp) { 
-					VDlogout_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=userLOGout&format=text&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&conf_exten=" + session_id + "&extension=" + extension + "&protocol=" + protocol + "&agent_log_id=" + agent_log_id + "&no_delete_sessions=" + no_delete_sessions + "&phone_ip=" + phone_ip + "&enable_sipsak_messages=" + enable_sipsak_messages + "&LogouTKicKAlL=" + LogouTKicKAlL + "&ext_context=" + ext_context;
-					xmlhttp.open('POST', 'vdc_db_query.php'); 
-					xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
-					xmlhttp.send(VDlogout_query); 
-					xmlhttp.onreadystatechange = function() { 
-						if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-							//alert(VDlogout_query);
-							//alert(xmlhttp.responseText);
-						}
-					}
-					delete xmlhttp;
-				}
-
-				hideDiv('MainPanel');
-				showDiv('LogouTBox');
-
-				//document.getElementById("LogouTBoxLink").innerHTML = "<a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\"><img src='images/LoginAgainUp.png' width='128' height='28' align=center border='0'></a>";
-				
-				document.getElementById("LogouTBoxLink").innerHTML = "<map=Loginmap><a OnMouseOver=\"lagain.src='templates/<?= $agent_template ?>/images/LoginAgainDn.png'\" OnMouseOut=\"lagain.src='templates/<?= $agent_template ?>/images/LoginAgainUp.png'\" usemap=Loginmap href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\"><img src='templates/<?= $agent_template ?>/images/LoginAgainUp.png' width='128' height='28' align=center border='0' name=lagain></a>";
-
-				logout_stop_timeouts = 1;
-					
-				//window.location= agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass;
+				alert("You cannot log out during a Manual Dial. \nPlease click \"Dial Lead\" or \"Skip Lead\" (if available).");
+				return;
+			}
+		} else if (alt_dial_menu==1) {
+			if (tempreason=='CLOSE') {
+				document.osdial_form.DispoSelection.value = 'NA';
+				dialedcall_send_hangup('NO','YES');
+			} else {
+				alert("You cannot log out without reattempting or dispositioning this lead. \nYou may reattempt by selecting \"Main Phone\", \"Alt Phone\", or \"Address3\". \n To disposition the lead, click \"Finish Lead\".");
+				return;
+			}
+		} else if (MD_channel_look==1) {
+			if (tempreason=='CLOSE') {
+				document.osdial_form.DispoSelection.value = 'NA';
+				dialedcall_send_hangup('NO','YES');
+			} else {
+				alert("You cannot log out during a Dial attempt. \nWait 50 seconds for the dial to fail out if it is not answered");
+				return;
+			}
+		} else if (VD_live_customer_call==1) {
+			if (tempreason=='CLOSE') {
+				document.osdial_form.DispoSelection.value = 'NA';
+				dialedcall_send_hangup('NO','YES');
+			} else {
+				alert("STILL A LIVE CALL! Hang it up then you can log out.\n" + VD_live_customer_call);
+				return;
 			}
 		}
+		if (previewFD_time > 0) {
+			clearTimeout(previewFD_timeout_id);
+			clearInterval(previewFD_display_id);
+			document.getElementById("PreviewFDTimeSpan").innerHTML = "";
+		}
+
+		var xmlhttp=false;
+		/*@cc_on @*/
+		/*@if (@_jscript_version >= 5)
+		// JScript gives us Conditional compilation, we can cope with old IE versions.
+		// and security blocked creation of the objects.
+		 try {
+		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+		 } catch (e) {
+		  try {
+		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		  } catch (E) {
+		   xmlhttp = false;
+		  }
+		 }
+		@end @*/
+		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
+			xmlhttp = new XMLHttpRequest();
+		}
+		if (xmlhttp) { 
+			VDlogout_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=userLOGout&format=text&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&conf_exten=" + session_id + "&extension=" + extension + "&protocol=" + protocol + "&agent_log_id=" + agent_log_id + "&no_delete_sessions=" + no_delete_sessions + "&phone_ip=" + phone_ip + "&enable_sipsak_messages=" + enable_sipsak_messages + "&LogouTKicKAlL=" + LogouTKicKAlL + "&ext_context=" + ext_context;
+			xmlhttp.open('POST', 'vdc_db_query.php'); 
+			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+			xmlhttp.send(VDlogout_query); 
+			xmlhttp.onreadystatechange = function() { 
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+					//alert(VDlogout_query);
+					//alert(xmlhttp.responseText);
+				}
+			}
+			delete xmlhttp;
+		}
+
+
+		if (tempreason=='CLOSE') return;
+
+		hideDiv('MainPanel');
+		showDiv('LogouTBox');
+
+			//document.getElementById("LogouTBoxLink").innerHTML = "<a href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\"><img src='images/LoginAgainUp.png' width='128' height='28' align=center border='0'></a>";
+				
+		document.getElementById("LogouTBoxLink").innerHTML = "<map=Loginmap><a OnMouseOver=\"lagain.src='templates/<?= $agent_template ?>/images/LoginAgainDn.png'\" OnMouseOut=\"lagain.src='templates/<?= $agent_template ?>/images/LoginAgainUp.png'\" usemap=Loginmap href=\"" + agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass + "\"><img src='templates/<?= $agent_template ?>/images/LoginAgainUp.png' width='128' height='28' align=center border='0' name=lagain></a>";
+
+		logout_stop_timeouts = 1;
+					
+		//window.location= agcPAGE + "?relogin=YES&session_epoch=" + epoch_sec + "&session_id=" + session_id + "&session_name=" + session_name + "&VD_login=" + user + "&VD_campaign=" + campaign + "&phone_login=" + phone_login + "&phone_pass=" + phone_pass + "&VD_pass=" + pass;
 
 	}
 
@@ -4985,6 +5037,7 @@ if ($useIE > 0) {
 			hideDiv('DispoSelectBox');
 			hideDiv('LogouTBox');
 			hideDiv('AgenTDisablEBoX');
+            		hideDiv('SysteMDisablEBoX');
 			hideDiv('CustomerGoneBox');
 			hideDiv('NoneInSessionBox');
 			hideDiv('WrapupBox');
@@ -5011,7 +5064,7 @@ if ($useIE > 0) {
 			if (agentcallsstatus != '1') {
 				hideDiv('AgentStatusSpan');
 			}
-			if ( ( (auto_dial_level > 0) && (inbound_man == 0) ) || (manual_dial_preview < 1) ) {
+			if ( ( (auto_dial_level > 0) && (inbound_man != 0) ) || (manual_dial_preview < 1) ) {
 				clearDiv('DiaLLeaDPrevieW');
 			}
 			if (alt_phone_dialing != 1) {
