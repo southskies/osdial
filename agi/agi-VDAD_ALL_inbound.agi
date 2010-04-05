@@ -179,6 +179,11 @@ while ($sthArows > $rec_count) {
 }
 $sthA->finish();
 
+$stmtA = "SELECT enable_multicompany FROM system_settings;";
+$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+@aryA = $sthA->fetchrow_array;
+$multicomp=$aryA[0];
 
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1) {
@@ -349,7 +354,9 @@ $sthA->finish();
 
 ### Grab inbound groups values from the database
 $cbc=0;
-$stmtA = "SELECT call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,drop_call_seconds,drop_message,drop_exten,next_agent_call,voicemail_ext FROM osdial_inbound_groups where group_id = '$channel_group';";
+$groupidSQL = "group_id='$channel_group'";
+$groupidSQL = "group_id LIKE '___$channel_group'" if ($multicomp and $channel_group =~ /^IN_/);
+$stmtA = "SELECT call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,drop_call_seconds,drop_message,drop_exten,next_agent_call,voicemail_ext,group_id FROM osdial_inbound_groups where $groupidSQL;";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -374,6 +381,7 @@ while ($sthArows > $cbc) {
 	$CAMP_callorder	=				"$aryA[14]";
 	$VDADvoicemail_ext =			"$aryA[15]";
 	$VDADvoicemail_ext =~ s/\D//gi;
+	$channel_group =			"$aryA[16]";
 	$cbc++;
 }
 $sthA->finish();
