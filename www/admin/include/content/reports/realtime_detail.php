@@ -886,10 +886,14 @@ function report_realtime_detail() {
                 $Alogin[$i] = "$Aextension[$i]-----$i";
             }
 
-            $stmt=sprintf("SELECT count(*) FROM live_sip_channels WHERE channel LIKE '%s%%' AND server_ip='%s' AND extension='%s';",mres($Achannel[$i]),mres($Aserver_ip[$i]),mres($Asessionid[$i]));
-            $rslt=mysql_query($stmt, $link);
-            $row=mysql_fetch_row($rslt);
-            $Auser_connected[$i] = $row[0];
+            if ($Acomments[$i] == "INBOUND") {
+                $Auser_connected[$i] = 1;
+            } else {
+                $stmt=sprintf("SELECT count(*) FROM live_sip_channels WHERE channel LIKE '%s%%' AND server_ip='%s' AND extension='%s';",mres($Achannel[$i]),mres($Aserver_ip[$i]),mres($Asessionid[$i]));
+                $rslt=mysql_query($stmt, $link);
+                $row=mysql_fetch_row($rslt);
+                $Auser_connected[$i] = $row[0];
+            }
 
             $i++;
         }
@@ -1043,8 +1047,8 @@ function report_realtime_detail() {
                     $agent_dead++;
                     $agent_total++;
                     $Lstatus = 'DEAD';
-                    $status = sprintf("%-6s",'DEAD');
-                    if ($call_time_S < 5) {$G='<span class="dead0">'; $EG='</span>'; $status=sprintf('%-6s','HUNGUP');}
+                    $status = sprintf("%-6s",'HUNGUP');
+                    if ($call_time_S < 30) {$G='<span class="dead0">'; $EG='</span>'; $status=sprintf('%-6s','HUNGUP');}
                     if ($call_time_S >= 5) {$G='<span class="dead1">'; $EG='</span>';}
                 }
             } elseif (preg_match('/INCALL|QUEUE/i',$Lstatus)) {
