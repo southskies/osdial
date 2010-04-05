@@ -261,7 +261,7 @@ if ($call_handle_method =~ /^CLOSER/) {
 		$JqueryCID = "J$CIDdate$PADlead_id";
 		$accountcode = $JqueryCID;
 		### set the accountcode to the filename of the audio for on-hold
-		print "SET CDR(accountcode) $JqueryCID\n";
+		print "SET VARIABLE CDR(accountcode) $JqueryCID\n";
 		checkresult();
 		if ($AGILOG) {$agi_string = "AccountCode changed: $JqueryCID";   &agi_output;}
 	}
@@ -600,7 +600,7 @@ $PADlead_id = sprintf("%09s", $insert_lead_id);	while (length($PADlead_id) > 9) 
 $YqueryCID = "Y$CIDdate$PADlead_id";
 $accountcode = $YqueryCID;
 ### set the accountcode 
-print "SET CDR(accountcode) $YqueryCID\n";
+print "SET VARIABLE CDR(accountcode) $YqueryCID\n";
 checkresult();
 if ($AGILOG) {$agi_string = "AccountCode changed: $YqueryCID";   &agi_output;}
 
