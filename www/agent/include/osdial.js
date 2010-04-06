@@ -426,6 +426,16 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 	var PCSpause = 0;
 
+	var debugWindowOpened = 0;
+	var debugLevel = 0;
+	var debugWindow = 0;
+	var debugLevelColors = new Array();
+	debugLevelColors[0] = '#000000';
+	debugLevelColors[1] = '#000000';
+	debugLevelColors[2] = '#330099';
+	debugLevelColors[3] = '#336633';
+	debugLevelColors[4] = '#993300';
+	debugLevelColors[5] = '#CC0000';
 
 // ################################################################################
 // Send Hangup command for Live call connected to phone now to Manager
@@ -1035,7 +1045,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 					document.getElementById("RecorDControl").innerHTML = conf_rec_start_html;
 				}
 			}
-			confmonitor_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=" + taskconfrectype + "&format=text&channel=" + channelrec + "&filename=" + filename + "&exten=" + query_recording_exten + "&ext_context=" + ext_context + "&lead_id=" + document.osdial_form.lead_id.value + "&ext_priority=1";
+			confmonitor_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=" + taskconfrectype + "&format=text&channel=" + channelrec + "&filename=" + filename + "&exten=" + query_recording_exten + "&ext_context=" + ext_context + "&lead_id=" + document.osdial_form.lead_id.value + "&ext_priority=1&CalLCID=" + CalLCID;
 			xmlhttp.open('POST', 'manager_send.php'); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 			xmlhttp.send(confmonitor_query); 
@@ -5250,6 +5260,7 @@ if ($useIE > 0) {
 
 	function all_refresh() {
 		epoch_sec++;
+		debug("all_refresh: " + epoch_sec,5);
 		check_n++;
 		var year= t.getYear()
 		var month= t.getMonth()
@@ -5820,5 +5831,40 @@ foreach ($forms as $form) {
 			}
 			web_form_frame_open2 = 0;
 			document.getElementById('WebFormPF2').src = '/osdial/agent/blank.php';
+		}
+	}
+
+	function openDebugWindow() {
+		if (debugWindowOpened==1) {
+			if (debugWindow.closed) {
+				debugWindowOpened=0;
+			}
+		}
+		if (debugWindowOpened==0) {
+			debugWindow = window.open("", 'osddebug', 'dependent=1,toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=800,height=300');
+			var dhead = debugWindow.document.createElement("div");
+			dhead.innerHTML = "<h2>OSDial Debug<h2>";
+			debugWindow.document.body.appendChild(dhead);
+			debugWindowOpened++;
+		}
+		debugLevel++;
+		if (debugLevel > 5) debugLevel=1;
+		var dh = debugWindow.document.createElement("div");
+		dh.innerHTML = "<b>Setting Debug Level to " + debugLevel + "</b><br>";
+		debugWindow.document.body.appendChild(dh);
+		debugWindow.focus();
+	}
+
+	function debug(debugOutput,dlevel) {
+		if (!dlevel) dlevel=1;
+		if (debugWindowOpened==1) {
+			if (!debugWindow.closed) {
+				if (dlevel <= debugLevel) {
+					var dh = debugWindow.document.createElement("div");
+					dh.setAttribute("style","color:" + debugLevelColors[dlevel] + ";");
+					dh.innerHTML = debugOutput + "<br>";
+					debugWindow.document.body.appendChild(dh);
+				}
+			}
 		}
 	}

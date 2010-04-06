@@ -353,6 +353,7 @@ $SDwidth =  ($MASTERwidth + 170 - 296);	# 600 - scroll script, customer data and
 $HKwidth =  ($MASTERwidth + 70);	# 500 - Hotkeys button
 $HSwidth =  ($MASTERwidth + 1);	# 431 - Header spacer
 
+$DBheight =  ($MASTERheight + 230);	# Debug
 $HKheight =  ($MASTERheight + 105 + 10);	# 405 - HotKey active Button
 $AMheight =  ($MASTERheight + 110);	# 400 - Agent mute and preset dial links
 $MBheight =  ($MASTERheight + 65 +92);	# 365 - Manual Dial Buttons
@@ -1527,7 +1528,7 @@ else
 			}
 
 		### insert a NEW record to the osdial_manager table to be processed
-		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$SIqueryCID','Channel: $SIP_user_DiaL','Context: $ext_context','Exten: $session_id','Priority: 1','Callerid: \"$SIqueryCID\" <$campaign_cid>','Account: $SIqueryCID','','','','');";
+		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$SIqueryCID','Channel: $SIP_user_DiaL','Context: $ext_context','Exten: $session_id','Priority: 1','Callerid: \"OSDial#$SIP_user\" <$campaign_cid>','Account: $SIqueryCID','','','','');";
 		if ($DB) {echo "$stmt\n";}
 		$rslt=mysql_query($stmt, $link);
 		$affected_rows = mysql_affected_rows($link);
@@ -2206,6 +2207,11 @@ foreach ($forms as $form) {
 	</span>
 	
 	
+	<!-- Debug -->
+	<span style="position:absolute;left:970px;top:<?=$DBheight ?>px;z-index:16;" id="DebugLink">
+        <font class="body_text"><a href="#" onclick="openDebugWindow();return false;">o</a></font>
+	</span>
+
 	<!-- Disposition Hot Keys Window -->
 	<span style="position:absolute;left:92px;top:<?=$HTheight+45 ?>px;z-index:24;" id="HotKeyEntriesBox">
 		<table frame=box bgcolor="<?=$hotkey_bg1?>" width=610 Oldwidth<?=$HCwidth ?> height=70>
