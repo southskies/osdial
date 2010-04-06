@@ -893,6 +893,12 @@ function report_realtime_detail() {
                 $rslt=mysql_query($stmt, $link);
                 $row=mysql_fetch_row($rslt);
                 $Auser_connected[$i] = $row[0];
+                if ($Auser_connected[$i] == 0) {
+                    $stmt=sprintf("SELECT count(*) FROM live_sip_channels WHERE channel LIKE '%s%%' AND server_ip='%s' AND extension='%s';",mres($Aextension[$i]),mres($Aserver_ip[$i]),mres($Asessionid[$i]));
+                    $rslt=mysql_query($stmt, $link);
+                    $row=mysql_fetch_row($rslt);
+                    $Auser_connected[$i] = $row[0];
+                }
             }
 
             $i++;
@@ -962,6 +968,7 @@ function report_realtime_detail() {
             }
 
             $CM=' ';
+            $lstatus='';
             if ($Lstatus=='INCALL') {
                 if ($comments=='AUTO') {
                     $CM='A';
@@ -1049,7 +1056,7 @@ function report_realtime_detail() {
                     $Lstatus = 'DEAD';
                     $status = sprintf("%-6s",'HUNGUP');
                     if ($call_time_S < 30) {$G='<span class="dead0">'; $EG='</span>'; $status=sprintf('%-6s','HUNGUP');}
-                    if ($call_time_S >= 5) {$G='<span class="dead1">'; $EG='</span>';}
+                    if ($call_time_M >= 5) {$G='<span class="dead1">'; $EG='</span>';}
                 }
             } elseif (preg_match('/INCALL|QUEUE/i',$Lstatus)) {
                 $agent_incall++;
@@ -1093,7 +1100,7 @@ function report_realtime_detail() {
                 if ($call_time_M_int >= 2) {$G='<span class="wait3">'; $EG='</span>';}
             }
 
-            if ($agent_pause_codes_active>0) $pausecode = sprintf('%-6s', $pausecode);
+            if ($agent_pause_codes_active>0) $pausecode = sprintf('%-6s', $pausecode) . ' ' . $LNcenterbar . ' ';
 
             $L='';
             $R='';
@@ -1127,7 +1134,7 @@ function report_realtime_detail() {
             $disp_agent = 1;
             if ($group == "XXXX-ALL-ACTIVE-XXXX" and $campaign_active<1) $disp_agent = 0;
 
-            if ($disp_agent) $Ahtml .= "$LNleft$G $extension $LNcenterbar <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$Luser\" target=\"_blank\">$G$user$EG</a> $LNcenterbar $UGD$sessionid$L$R $LNcenterbar $status $CM $LNcenterbar $pausecode $LNcenterbar $SVD$call_time_MS $LNcenterbar $campaign_id $LNcenterbar $calls_today $LNcenterbar $INGRP$EG$LNright\n";
+            if ($disp_agent) $Ahtml .= "$LNleft$G $extension $LNcenterbar <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$Luser\" target=\"_blank\">$G$user$EG</a> $LNcenterbar $UGD$sessionid$L$R $LNcenterbar $status $CM $LNcenterbar $pausecode$SVD$call_time_MS $LNcenterbar $campaign_id $LNcenterbar $calls_today $LNcenterbar $INGRP$EG$LNright\n";
 
             $j++;
         }
@@ -1191,7 +1198,7 @@ function report_realtime_detail() {
         $html .= "  <font color=$default_text>";
         $html .= "  <span class=pausecode>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Pause Code</b><br><br>";
         $html .= "  <span class=agtphn1>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Agent Phone Issue</b><br>";
-        $html .= "  <span class=dead1>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Dead Call</b>";
+        $html .= "  <span class=dead1>&nbsp;&nbsp;&nbsp;&nbsp;</span><b> - Dead Call / Hungup</b>";
         $html .= "  </font>";
         $html .= "</td></tr>";
         $html .= "</table></center>";
