@@ -224,7 +224,7 @@ sub updateStats {
 	while ( $g < 4 ) {
 		$g++;
 		$VSCupdateSQLcol .= "status_category_$g,status_category_count_$g,status_category_hour_count_$g,";
-		$VSCupdateSQLdat .= "status_category_$g=VALUES(status_category_$g),status_category_count_$g=VALUES(status_category_$g),status_category_hour_count_$g=VALUES(status_category_$g),";
+		$VSCupdateSQLdat .= "status_category_$g=VALUES(status_category_$g),status_category_count_$g=VALUES(status_category_count_$g),status_category_hour_count_$g=VALUES(status_category_hour_count_$g),";
 	}
 	chop($VSCupdateSQLcol);
 	chop($VSCupdateSQLdat);
@@ -336,7 +336,7 @@ sub updateStats {
 			$rec_count = 0;
 			while ( $sthArows > $rec_count ) {
 				my @aryA     = $sthA->fetchrow_array;
-				$VSCtally = $aryA[0];
+					$VSCtally = $aryA[0];
 				$rec_count++;
 			}
 		} else {
