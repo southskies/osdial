@@ -980,8 +980,9 @@ while($one_day_interval > 0)
 								### use manager middleware-app to connect the next call to the meetme room
 								# VmmddhhmmssLLLLLLLLL
 									$VqueryCID = "V$CIDdate$PADlead_id";
+								if ($CCID_NAME eq "") { $CCID_NAME="unknown"; }
 								if ($CCID_on) {$CIDstring = "\"$CCID_NAME\" <$CCID>";}
-								else {$CIDstring = "\"\" <0000000000>";}
+								else {$CIDstring = "\"unknown\" <0000000000>";}
 								### insert a NEW record to the osdial_manager table to be processed
 									$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$DBIPaddress[$user_CIPct]','','Originate','$VqueryCID','Exten: $VDAD_dial_exten','Context: $ext_context','Channel: $local_DEF$Ndialstring$local_AMP$ext_context','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','Account: $VqueryCID','','','')";
 									$affected_rows = $dbhA->do($stmtA);
