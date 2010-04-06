@@ -527,6 +527,12 @@ if (!$telnet_port) {$telnet_port = '5038';}
 					$channel_match =~ s/^IAX2\///gi;
 					$channel_match =~ s/\*/\\\*/gi;
 					if ($IAX2_client_list =~ /\|$channel_match\|/i) {$test_iax_count++;}
+					$channel_match2=$channel;
+					$channel_match2 =~ s/-\d+$//gi;
+					$channel_match2 =~ s/^IAX2\///gi;
+					$channel_match2 =~ s/\*/\\\*/gi;
+					print "\nCCM: $channel_match2\n";
+					if ($IAX2_client_list =~ /\|$channel_match2\|/i) {$test_iax_count++;}
 					}
 				if ($ZorD_client_count) 
 					{
@@ -711,6 +717,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 					$rec_count++;
 					}
 				$sthA->finish();
+				print "\nICL: $IAX2_client_list \n";
 
 			##### LOOK FOR SIP CLIENTS AS DEFINED IN THE phones TABLE SO THEY ARE NOT MISLABELED AS TRUNKS
 				print STDERR "LOOKING FOR SIP clients assigned to this server:\n";
@@ -875,9 +882,19 @@ if (!$telnet_port) {$telnet_port = '5038';}
 						$channel_match =~ s/\/\d+$|-\d+$//gi;
 						$channel_match =~ s/^IAX2\///gi;
 						$channel_match =~ s/\*/\\\*/gi;
-	#					print "checking for IAX2 client:   |$channel_match|\n";
-						if ($IAX2_client_list =~ /\|$channel_match\|/i) {$line_type = 'CLIENT';}
+						print "checking for IAX2 client:   |$channel_match|";
+						if ($IAX2_client_list =~ /\|$channel_match\|/i) { print " X"; $line_type = 'CLIENT';}
+						print "\n";
+						if ($IAX2_client_list !~ /\|$channel_match\|/i) {
+							$channel_match=$channel;
+							$channel_match =~ s/-\d+$//gi;
+							$channel_match =~ s/^IAX2\///gi;
+							$channel_match =~ s/\*/\\\*/gi;
+							print "checking for IAX2 client2:   |$channel_match|";
+							if ($IAX2_client_list =~ /\|$channel_match\|/i) { print " X"; $line_type = 'CLIENT';}
+							print "\n";
 						}
+					}
 					if ($ZorD_client_count) 
 						{
 						$channel_match=$channel;
@@ -932,12 +949,12 @@ if (!$telnet_port) {$telnet_port = '5038';}
 							$sipchan_in_DB=0;
 						foreach(@DBsips)
 							{
-							if ( ($DBsips[$k] eq "$QRYchannel") && (!$sipchan_in_DB) )
+							if( ($DB) or ($UD_bad_grab) ){print "DB $k|$DBsips[$k]|     |\n";}
+							if ( ($DBsips[$k] ne "") && ($DBsips[$k] eq "$QRYchannel") && (!$sipchan_in_DB) )
 								{
 								$DBsips[$k] = '';
 								$sipchan_in_DB++;
 								}
-							if( ($DB) or ($UD_bad_grab) ){print "DB $k|$DBsips[$k]|     |";}
 							$k++;
 							}
 
