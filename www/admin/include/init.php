@@ -241,7 +241,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
         $groups_list        .= "<input type=\"checkbox\" id=\"GL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
         $groups_listTAB     .= "<tr $bgcolor title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"GL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
         $XFERgroups_list    .= "<input type=\"checkbox\" id=\"XGL$group_id_values[$o]\" name=\"XFERgroups[]\" value=\"$group_id_values[$o]\"";
-        $XFERgroups_listTAB .= "<tr $bgcolor title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"XGL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
+        $XFERgroups_listTAB .= "<tr $bgcolor title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"XGL$group_id_values[$o]\" name=\"XFERgroups[]\" value=\"$group_id_values[$o]\"";
         $RANKgroups_list    .= "<tr $bgcolor title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"RGL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
         $p=0;
         $group_ct = count($groups);
