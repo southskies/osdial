@@ -43,6 +43,7 @@ if ($ADD==1122) {
         $lastcall_date_start = get_variable("lastcall_date_start");
         $lastcall_date_end = get_variable("lastcall_date_end");
         $use_osdial_log = get_variable("use_osdial_log");
+        $use_osdial_closer_log = get_variable("use_osdial_closer_log");
 
         $orig_entry_date_start = "";
         $orig_entry_date_end = "";
@@ -113,7 +114,7 @@ if ($ADD==1122) {
 
         $pageURL ="?ADD=$ADD&last_name=$last_name&first_name=$first_name&phone_number=$phone_number&phone_search_alt=$phone_search_alt&lead_id=$lead_id&city=$city&postal_code=$postal_code&email=$email";
         $pageURL.="&entry_date_start=$orig_entry_date_start&entry_date_end=$orig_entry_date_end&modify_date_start=$orig_modify_date_start&modify_date_end=$orig_modify_date_end";
-        $pageURL.="&lastcall_date_start=$orig_lastcall_date_start&lastcall_date_end=$orig_lastcall_date_end&use_osdial_log=$use_osdial_log";
+        $pageURL.="&lastcall_date_start=$orig_lastcall_date_start&lastcall_date_end=$orig_lastcall_date_end&use_osdial_closer_log=$use_osdial_closer_log";
         $pageURL.="&custom1=$custom1&custom2=$custom2&external_key=$external_key&numresults=$numresults";
 
 
@@ -122,6 +123,8 @@ if ($ADD==1122) {
             if (strlen($phone_number) == 3) $notac="";
             if ($use_osdial_log) {
                 $searchWHR .= " AND osdial_log.phone_number LIKE '" . $notac . mres($phone_number) . "%'";
+            } elseif ($use_osdial_closer_log) {
+                $searchWHR .= " AND osdial_closer_log.phone_number LIKE '" . $notac . mres($phone_number) . "%'";
             } elseif ($phone_search_alt) {
                 $searchWHR .= " AND (osdial_list.phone_number LIKE '" . $notac . mres($phone_number) . "%'";
                 $searchWHR .= " OR osdial_list.alt_phone LIKE '" . $notac . mres($phone_number) . "%'";
@@ -133,6 +136,8 @@ if ($ADD==1122) {
         if ($lead_id) {
             if ($use_osdial_log) {
                 $searchWHR .= " AND osdial_log.lead_id='" . mres($lead_id) . "'";
+            } elseif ($use_osdial_closer_log) {
+                $searchWHR .= " AND osdial_closer_log.lead_id='" . mres($lead_id) . "'";
             } else {
                 $searchWHR .= " AND osdial_list.lead_id='" . mres($lead_id) . "'";
             }
@@ -140,6 +145,8 @@ if ($ADD==1122) {
         if ($lastcall_date_start) {
             if ($use_osdial_log) {
                 $searchWHR .= " AND osdial_log.call_date BETWEEN '" . mres($lastcall_date_start) . "' AND '" . mres($lastcall_date_end) . "'";
+            } elseif ($use_osdial_closer_log) {
+                $searchWHR .= " AND osdial_closer_log.call_date BETWEEN '" . mres($lastcall_date_start) . "' AND '" . mres($lastcall_date_end) . "'";
             } else {
                 $searchWHR .= " AND osdial_list.last_local_call_time BETWEEN '" . mres($lastcall_date_start) . "' AND '" . mres($lastcall_date_end) . "'";
             }
@@ -163,6 +170,8 @@ if ($ADD==1122) {
             $campaignIN = rtrim($campaignIN,",");
             if ($use_osdial_log) {
                 $searchWHR .= " AND osdial_log.campaign_id IN ($campaignIN)";
+            } elseif ($use_osdial_closer_log) {
+                $searchWHR .= " AND osdial_closer_log.campaign_id IN ($campaignIN)";
             } else {
                 $searchWHR .= " AND osdial_lists.campaign_id IN ($campaignIN)";
             }
@@ -181,6 +190,8 @@ if ($ADD==1122) {
             $listIN = rtrim($listIN,",");
             if ($use_osdial_log) {
                 $searchWHR .= " AND osdial_log.list_id IN ($listIN)";
+            } elseif ($use_osdial_closer_log) {
+                $searchWHR .= " AND osdial_closer_log.list_id IN ($listIN)";
             } else {
                 $searchWHR .= " AND osdial_list.list_id IN ($listIN)";
             }
@@ -199,6 +210,8 @@ if ($ADD==1122) {
             $statusIN = rtrim($statusIN,",");
             if ($use_osdial_log) {
                 $searchWHR .= " AND osdial_log.status IN ($statusIN)";
+            } elseif ($use_osdial_closer_log) {
+                $searchWHR .= " AND osdial_closer_log.status IN ($statusIN)";
             } else {
                 $searchWHR .= " AND osdial_list.status IN ($statusIN)";
             }
@@ -217,6 +230,8 @@ if ($ADD==1122) {
             $agentIN = rtrim($agentIN,",");
             if ($use_osdial_log) {
                 $searchWHR .= " AND osdial_log.user IN ($agentIN)";
+            } elseif ($use_osdial_closer_log) {
+                $searchWHR .= " AND osdial_closer_log.user IN ($agentIN)";
             } else {
                 $searchWHR .= " AND osdial_list.user IN ($agentIN)";
             }
@@ -325,17 +340,24 @@ if ($ADD==1122) {
             $searchFLD = "osdial_list.*,";
             if ($use_osdial_log) {
                 $searchFLD .= "osdial_log.*,";
+            } elseif ($use_osdial_closer_log) {
+                $searchFLD .= "osdial_closer_log.*,";
             } else {
                 $searchFLD .= "osdial_lists.campaign_id,";
             }
         } elseif ($use_osdial_log and $field_cnt > 0) {
-            $searchFLD .= "osdial_log.call_date,osdial_log.length_in_sec,";
+            $searchFLD .= "osdial_log.call_date,osdial_closer_log.length_in_sec,";
+        } elseif ($use_osdial_closer_log and $field_cnt > 0) {
+            $searchFLD .= "osdial_closer_log.call_date,osdial_closer_log.length_in_sec,";
         }
 
         if ($status_found) {
             if ($use_osdial_log) {
                     $fieldJOIN = " LEFT JOIN osdial_statuses ON (osdial_log.status=osdial_statuses.status) ";
                     $searchFLD .= "osdial_log.status,";
+            } elseif ($use_osdial_closer_log) {
+                    $fieldJOIN = " LEFT JOIN osdial_statuses ON (osdial_closer_log.status=osdial_statuses.status) ";
+                    $searchFLD .= "osdial_closer_log.status,";
             } else {
                     $fieldJOIN = " LEFT JOIN osdial_statuses ON (osdial_list.status=osdial_statuses.status) ";
                     $searchFLD .= "osdial_list.status,";
@@ -591,6 +613,7 @@ if ($ADD==1122) {
         echo "      <img width=12 src=\"templates/default/images/calendar.png\" style=border:0px;></a>\n";
         echo "    </font>\n";
         if ($use_osdial_log == 1) $check = " checked";
+        if ($use_osdial_closer_log == 1) $check2 = " checked";
         echo "  </td>\n";
         echo "  </tr>\n";
 
@@ -598,7 +621,8 @@ if ($ADD==1122) {
         echo "    <td>\n";
         echo "    </td>\n";
         echo "    <td colspan=3 align=left>\n";
-        echo "      <input type=checkbox name=use_osdial_log id=use_osdial_log value=1$check> <font size=1><label for=use_osdial_log>Output Lead History (Must Enter Call Date)</label></font>\n";
+        echo "      <input type=checkbox name=use_osdial_log id=use_osdial_log value=1$check> <font size=1><label for=use_osdial_log>Output Outbound History</label></font><br>\n";
+        echo "      <input type=checkbox name=use_osdial_closer_log id=use_osdial_closer_log value=1$check2> <font size=1><label for=use_osdial_closer_log>Output Closer/Inbound History</label></font>\n";
         echo "      <br><br>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
@@ -737,6 +761,8 @@ if ($ADD==1122) {
 
         if ($use_osdial_log) {
             $mainTBL = "osdial_log JOIN osdial_list ON (osdial_log.lead_id=osdial_list.lead_id)";
+        } elseif ($use_osdial_closer_log) {
+            $mainTBL = "osdial_closer_log JOIN osdial_list ON (osdial_closer_log.lead_id=osdial_list.lead_id)";
         } else {
             $mainTBL = "osdial_list";
         }
