@@ -1180,10 +1180,11 @@ else
 			{
 			$row=mysql_fetch_row($rslt);
 			$wait_sec = (($StarTtime - $row[0]) + $row[1]);
-			}
-		$stmt="UPDATE osdial_agent_log set wait_sec='$wait_sec',wait_epoch='$StarTtime',talk_epoch='$StarTtime',lead_id='$lead_id' where agent_log_id='$agent_log_id';";
+
+		    $stmt="UPDATE osdial_agent_log set wait_sec='$wait_sec',wait_epoch='$StarTtime',talk_epoch='$StarTtime',lead_id='$lead_id' where agent_log_id='$agent_log_id';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
-		$rslt=mysql_query($stmt, $link);
+		    $rslt=mysql_query($stmt, $link);
+			}
 
 		$stmt="UPDATE osdial_auto_calls set uniqueid='$uniqueid',channel='$channel' where callerid='$MDnextCID';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
@@ -1811,19 +1812,17 @@ if ($stage == "end")
 	$rslt=mysql_query($stmt, $link);
 
 	$VDpr_ct = mysql_num_rows($rslt);
-	if ($VDpr_ct > 0)
-		{
+	if ($VDpr_ct > 0) {
 		$row=mysql_fetch_row($rslt);
-        if ( (eregi("NULL",$row[0])) or ($row[0] < 1000) )
-            {
+        if ( (eregi("NULL",$row[0])) or ($row[0] < 1000) ) {
             $talk_epochSQL=",talk_epoch='$StarTtime'";
             $row[0]=$row[2];
-            }
+        }
 		$talk_sec = (($StarTtime - $row[0]) + $row[1]);
-		}
-	$stmt="UPDATE osdial_agent_log set talk_sec='$talk_sec',dispo_epoch='$StarTtime',uniqueid='$uniqueid' $talk_epochSQL where agent_log_id='$agent_log_id';";
+	    $stmt="UPDATE osdial_agent_log set talk_sec='$talk_sec',dispo_epoch='$StarTtime',uniqueid='$uniqueid' $talk_epochSQL where agent_log_id='$agent_log_id';";
 		if ($format=='debug') {echo "\n<!-- $stmt -->";}
-	$rslt=mysql_query($stmt, $link);
+	    $rslt=mysql_query($stmt, $link);
+		}
 
 	}
 }
@@ -2419,18 +2418,31 @@ else
 		}
 
 	$pause_sec=0;
-	$stmt = "select pause_epoch,pause_sec,wait_epoch,talk_epoch,dispo_epoch from osdial_agent_log where agent_log_id='$agent_log_id';";
+	$stmt = "select pause_epoch,pause_sec,wait_epoch,wait_sec,talk_epoch,talk_sec,dispo_epoch,dispo_sec from osdial_agent_log where agent_log_id='$agent_log_id';";
 	if ($DB) {echo "$stmt\n";}
 	$rslt=mysql_query($stmt, $link);
 	$VDpr_ct = mysql_num_rows($rslt);
-	if ( ($VDpr_ct > 0) and (strlen($row[3]<5)) and (strlen($row[4]<5)) )
+	$row=mysql_fetch_row($rslt);
+    $pause_epoch = $row[0];
+    $pause_sec   = $row[1];
+    $wait_epoch  = $row[2];
+    $wait_sec    = $row[3];
+    $talk_epoch  = $row[4];
+    $talk_sec    = $row[5];
+    $dispo_epoch = $row[6];
+    $dispo_sec   = $row[7];
+	if ( ($VDpr_ct > 0) )
 		{
-		$row=mysql_fetch_row($rslt);
-		$pause_sec = (($StarTtime - $row[0]) + $row[1]);
+            if (strlen($talk_epoch)<5 and strlen($dispo_epoch)<5) $wait_epoch = $StarTtime;
+            if (strlen($talk_epoch)<5) $talk_epoch = $StarTtime;
+            if (strlen($dispo_epoch)<5) $dispo_epoch = $StarTtime;
+		    $pause_sec = ($wait_epoch - $pause_epoch);
+		    $wait_sec = ($talk_epoch - $wait_epoch);
+		    $talk_sec = ($dispo_epoch - $talk_epoch);
 
-		$stmt="UPDATE osdial_agent_log set pause_sec='$pause_sec',wait_epoch='$StarTtime' where agent_log_id='$agent_log_id';";
+		    $stmt="UPDATE osdial_agent_log set pause_sec='$pause_sec',wait_epoch='$wait_epoch',wait_sec='$wait_sec',talk_epoch='$talk_epoch',talk_sec='$talk_sec',dispo_epoch='$dispo_epoch',dispo_sec='$dispo_sec' where agent_log_id='$agent_log_id';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
-		$rslt=mysql_query($stmt, $link);
+		    $rslt=mysql_query($stmt, $link);
 		}
 
 		if ($vla_delete > 0) 
@@ -2587,19 +2599,27 @@ if ($ACTION == 'updateDISPO')
 	$dispo_sec=0;
     $dispo_epochSQL='';
 	$StarTtime = date("U");
-	$stmt = "select dispo_epoch,dispo_sec,talk_epoch from osdial_agent_log where agent_log_id='$agent_log_id';";
+	$stmt = "select dispo_epoch,dispo_sec,talk_epoch,talk_sec,wait_epoch,wait_sec,pause_epoch,pause_sec from osdial_agent_log where agent_log_id='$agent_log_id';";
 	if ($DB) {echo "$stmt\n";}
 	$rslt=mysql_query($stmt, $link);
 	$VDpr_ct = mysql_num_rows($rslt);
 	if ($VDpr_ct > 0)
 		{
 		$row=mysql_fetch_row($rslt);
-        if ( (eregi("NULL",$row[0])) or ($row[0] < 1000) )
+        $dispo_epoch = $row[0];
+        $dispo_sec   = $row[1];
+        $talk_epoch  = $row[2];
+        $talk_sec    = $row[3];
+        $wait_epoch  = $row[4];
+        $wait_sec    = $row[5];
+        $pause_epoch = $row[6];
+        $pause_sec   = $row[7];
+        if ( (eregi("NULL",$dispo_epoch)) or ($dispo_epoch < 1000) )
             {
             $dispo_epochSQL=",dispo_epoch='$StarTtime'";
-            $row[0]=$row[2];
+            $dispo_epoch=$talk_epoch;
             }
-		$dispo_sec = (($StarTtime - $row[0]) + $row[1]);
+		$dispo_sec = (($StarTtime - $dispo_epoch) + $dispo_sec);
 		}
 	$stmt="UPDATE osdial_agent_log set dispo_sec='$dispo_sec',status='$dispo_choice' $dispo_epochSQL where agent_log_id='$agent_log_id';";
 		if ($format=='debug') {echo "\n<!-- $stmt -->";}
@@ -2619,6 +2639,48 @@ if ($ACTION == 'updateDISPO')
 
     if ($auto_dial_level < 1)
         {
+            if ( (eregi("NULL",$wait_epoch)) or ($wait_epoch < 1000) ) {
+                $wait_epoch = $StarTtime;
+                $pause_sec = ($wait_epoch - $pause_epoch);
+                $stmt="UPDATE osdial_agent_log set pause_sec='$pause_sec',wait_epoch='$wait_epoch' where agent_log_id='$agent_log_id';";
+                if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
+            } else {
+                $pause_sec = ($wait_epoch - $pause_epoch);
+                $stmt="UPDATE osdial_agent_log set pause_sec='$pause_sec' where agent_log_id='$agent_log_id';";
+                if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
+            }
+            if ( (eregi("NULL",$talk_epoch)) or ($talk_epoch < 1000) ) {
+                $talk_epoch = $StarTtime;
+                $wait_sec = ($talk_epoch - $wait_epoch);
+                $stmt="UPDATE osdial_agent_log set wait_sec='$wait_sec',talk_epoch='$talk_epoch' where agent_log_id='$agent_log_id';";
+                if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
+            } else {
+                $wait_sec = ($talk_epoch - $wait_epoch);
+                $stmt="UPDATE osdial_agent_log set wait_sec='$wait_sec' where agent_log_id='$agent_log_id';";
+                if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
+            }
+            if ( (eregi("NULL",$dispo_epoch)) or ($dispo_epoch < 1000) ) {
+                $dispo_epoch = $StarTtime;
+                $talk_sec = ($dispo_epoch - $talk_epoch);
+                $stmt="UPDATE osdial_agent_log set talk_sec='$talk_sec',dispo_epoch='$dispo_epoch' where agent_log_id='$agent_log_id';";
+                if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
+            } else {
+                $talk_sec = ($dispo_epoch - $talk_epoch);
+                $stmt="UPDATE osdial_agent_log set talk_sec='$talk_sec' where agent_log_id='$agent_log_id';";
+                if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
+            }
+            $dispo_sec = ($StarTtime - $dispo_epoch);
+            $stmt="UPDATE osdial_agent_log set dispo_sec='$dispo_sec' where agent_log_id='$agent_log_id';";
+            if ($format=='debug') {echo "\n<!-- $stmt -->";}
+            $rslt=mysql_query($stmt, $link);
+
+
 	    $stmt="INSERT INTO osdial_agent_log (user,server_ip,event_time,campaign_id,pause_epoch,pause_sec,wait_epoch,user_group) values('$user','$server_ip','$NOW_TIME','$campaign','$StarTtime','0','$StarTtime','$user_group');";
 	    if ($DB) {echo "$stmt\n";}
 	    $rslt=mysql_query($stmt, $link);
@@ -2848,29 +2910,28 @@ if ( ($ACTION == 'VDADpause') || ($ACTION == 'VDADready') )
 		}
 
 	$pause_sec=0;
-	$stmt = "select pause_epoch,pause_sec,wait_epoch,wait_sec,dispo_epoch from osdial_agent_log where agent_log_id='$agent_log_id';";
+	$stmt = "select pause_epoch,pause_sec,wait_epoch,wait_sec,talk_epoch,talk_sec,dispo_epoch,dispo_sec from osdial_agent_log where agent_log_id='$agent_log_id';";
 	if ($DB) {echo "$stmt\n";}
 	$rslt=mysql_query($stmt, $link);
 	$VDpr_ct = mysql_num_rows($rslt);
 	if ($VDpr_ct > 0)
 		{
 		$row=mysql_fetch_row($rslt);
-        $dispo_epoch = $row[4];
-		$wait_sec=0;
-		if ($row[2] > 0)
-			{
-			$wait_sec = (($StarTtime - $row[2]) + $row[3]);
-			}
-		if ( (eregi("NULL",$row[4])) or ($row[4] < 1000) )
-			{$pause_sec = (($StarTtime - $row[0]) + $row[1]);}
-		else
-			{$pause_sec = (($row[4] - $row[0]) + $row[1]);}
+        $pause_epoch = $row[0];
+        $pause_sec   = $row[1];
+        $wait_epoch  = $row[2];
+        $wait_sec    = $row[3];
+        $talk_epoch  = $row[4];
+        $talk_sec    = $row[5];
+        $dispo_epoch = $row[6];
+        $dispo_sec   = $row[7];
 
 		}
 	if ($ACTION == 'VDADready')
 		{
         if ( (eregi("NULL",$dispo_epoch)) or ($dispo_epoch < 1000) )
             {
+            $pause_sec = $StarTtime - $pause_epoch;
 		    $stmt="UPDATE osdial_agent_log set pause_sec='$pause_sec',wait_epoch='$StarTtime' where agent_log_id='$agent_log_id';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		    $rslt=mysql_query($stmt, $link);
@@ -2880,7 +2941,10 @@ if ( ($ACTION == 'VDADpause') || ($ACTION == 'VDADready') )
 		{
         if ( (eregi("NULL",$dispo_epoch)) or ($dispo_epoch < 1000) )
             {
-		    $stmt="UPDATE osdial_agent_log set wait_sec='$wait_sec' where agent_log_id='$agent_log_id';";
+            $pause_sec = ($wait_epoch - $pause_sec);
+		    $wait_sec=0;
+		    if ($wait_epoch > 0) $wait_sec = (($StarTtime - $wait_epoch) + $wait_sec);
+		    $stmt="UPDATE osdial_agent_log set pause_sec='$pause_sec',wait_sec='$wait_sec' where agent_log_id='$agent_log_id';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		    $rslt=mysql_query($stmt, $link);
             }
@@ -2896,15 +2960,15 @@ if ( ($ACTION == 'VDADpause') || ($ACTION == 'VDADready') )
         else
             {
             $dispo_sec = ($StarTtime - $dispo_epoch);
-            $stmt="UPDATE osdial_agent_log set dispo_sec='$dispo_sec' where agent_log_id='$agent_log_id';";
+            $talk_sec = ($dispo_epoch - $talk_epoch);
+            $stmt="UPDATE osdial_agent_log set talk_sec='$talk_sec',talk_epoch='$talk_epoch',dispo_sec='$dispo_sec' where agent_log_id='$agent_log_id';";
             }
 
         if ($format=='debug') {echo "\n<!-- $stmt -->";}
         $rslt=mysql_query($stmt, $link);
         }
 
-    if ($agent_log == 'NEW_ID')
-        {
+    if (($agent_log == 'NEW_ID') and (eregi("NULL",$talk_epoch) or ($talk_epoch < 1000)) and (eregi("NULL",$talk_epoch) or ($talk_epoch < 1000))) {
         $user_group='';
         $stmt="SELECT user_group FROM osdial_users where user='$user' LIMIT 1;";
         $rslt=mysql_query($stmt, $link);
@@ -2916,11 +2980,52 @@ if ( ($ACTION == 'VDADpause') || ($ACTION == 'VDADready') )
             $user_group =       trim("$row[0]");
             }
 
-        $stmt="INSERT INTO osdial_agent_log (user,server_ip,event_time,campaign_id,pause_epoch,pause_sec,wait_epoch,user_group) values('$user','$server_ip','$NOW_TIME','$campaign','$StarTtime','0','$StarTtime','$user_group');";
-        if ($DB) {echo "$stmt\n";}
-        $rslt=mysql_query($stmt, $link);
-        $affected_rows = mysql_affected_rows($link);
-        $agent_log_id = mysql_insert_id($link);
+            if ( (eregi("NULL",$wait_epoch)) or ($wait_epoch < 1000) ) {
+                $wait_epoch = $StarTtime;
+                $pause_sec = ($wait_epoch - $pause_epoch);
+                $stmt="UPDATE osdial_agent_log set pause_sec='$pause_sec',wait_epoch='$wait_epoch' where agent_log_id='$agent_log_id';";
+                if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
+            } else {
+                $pause_sec = ($wait_epoch - $pause_epoch);
+                $stmt="UPDATE osdial_agent_log set pause_sec='$pause_sec' where agent_log_id='$agent_log_id';";
+                if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
+            }
+            if ( (eregi("NULL",$talk_epoch)) or ($talk_epoch < 1000) ) {
+                $talk_epoch = $StarTtime;
+                $wait_sec = ($talk_epoch - $wait_epoch);
+                $stmt="UPDATE osdial_agent_log set wait_sec='$wait_sec',talk_epoch='$talk_epoch' where agent_log_id='$agent_log_id';";
+                if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
+            } else {
+                $wait_sec = ($talk_epoch - $wait_epoch);
+                $stmt="UPDATE osdial_agent_log set wait_sec='$wait_sec' where agent_log_id='$agent_log_id';";
+                if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
+            }
+            if ( (eregi("NULL",$dispo_epoch)) or ($dispo_epoch < 1000) ) {
+                $dispo_epoch = $StarTtime;
+                $talk_sec = ($dispo_epoch - $talk_epoch);
+                $stmt="UPDATE osdial_agent_log set talk_sec='$talk_sec',dispo_epoch='$dispo_epoch' where agent_log_id='$agent_log_id';";
+                if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
+            } else {
+                $talk_sec = ($dispo_epoch - $talk_epoch);
+                $stmt="UPDATE osdial_agent_log set talk_sec='$talk_sec' where agent_log_id='$agent_log_id';";
+                if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
+            }
+            $dispo_sec = ($StarTtime - $dispo_epoch);
+            $stmt="UPDATE osdial_agent_log set dispo_sec='$dispo_sec' where agent_log_id='$agent_log_id';";
+            if ($format=='debug') {echo "\n<!-- $stmt -->";}
+            $rslt=mysql_query($stmt, $link);
+
+            $stmt="INSERT INTO osdial_agent_log (user,server_ip,event_time,campaign_id,pause_epoch,pause_sec,wait_epoch,user_group) values('$user','$server_ip','$NOW_TIME','$campaign','$StarTtime','0','$StarTtime','$user_group');";
+            if ($DB) {echo "$stmt\n";}
+            $rslt=mysql_query($stmt, $link);
+            $affected_rows = mysql_affected_rows($link);
+            $agent_log_id = mysql_insert_id($link);
         }
 	}
     echo 'Agent ' . $user . ' is now in status ' . $stage . "\nNext agent_log_id:\n$agent_log_id\n";
