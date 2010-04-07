@@ -197,6 +197,10 @@ install-docs: .osdial.config
 	@install -p -m 644 ./www/admin/include/content/scripts/* $(DESTDIR)$(PATHweb)/admin/include/content/scripts
 	@install -p -m 644 ./www/admin/include/content/usergroups/* $(DESTDIR)$(PATHweb)/admin/include/content/usergroups
 	@install -p -m 644 ./www/admin/include/content/users/* $(DESTDIR)$(PATHweb)/admin/include/content/users
+	cd perl
+	perl Makefile.PL
+	make
+	make install
 
 install-asterisk-sample-configs: install-asterisk-sample-config
 
