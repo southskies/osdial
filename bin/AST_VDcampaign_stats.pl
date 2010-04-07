@@ -234,7 +234,7 @@ sub updateStats {
 	my $camp_ANS_STAT_SQL;
 	
 	my($stmtA,$sthA,$sthArows,$rec_count);
-	my $VCSdrops_answers_today_pct;
+	my $VCSdrops_answers_today_pct=0;
 
 	# GET LIST OF HUMAN-ANSWERED STATUSES
 	$stmtA = "SELECT status from osdial_statuses where human_answered='Y';";
@@ -272,7 +272,7 @@ sub updateStats {
 	my ($VCScalls_one,$VCSanswers_one,$VCSdrops_one,$VCSdrops_one_pct) = calculateDrops ($dbhA, $osdial_log, $campaign_id, $camp_ANS_STAT_SQL, $VDL_one);
 	$VCSdrops_answers_today_pct = ( ( $VCSdrops_today / $VCSanswers_today ) * 100 ) if ($VCSanswers_today > 0);
 	$VCSdrops_answers_today_pct = sprintf( "%.2f", $VCSdrops_answers_today_pct );
-	print "$campaign_id|$VCSdrops_five_pct|$VCSdrops_today_pct\n" if ($DBX);
+	print "** $campaign_id|$VCSdrops_five_pct|$VCSdrops_today_pct|$VCSdrops_answers_today_pct\n" if ($DBX);
 
 	# Get misc data, AMD/Fails
 	my $camp_AMD_SQL = "'AA','AL','AM'";
@@ -361,7 +361,7 @@ sub updateStats {
 	#$stmtA = "UPDATE osdial_campaign_stats SET calls_today='$VCScalls_today',answers_today='$VCSanswers_today',drops_today='$VCSdrops_today',drops_today_pct='$VCSdrops_today_pct',drops_answers_today_pct='$VCSdrops_answers_today_pct',calls_hour='$VCScalls_hour',answers_hour='$VCSanswers_hour',drops_hour='$VCSdrops_hour',drops_hour_pct='$VCSdrops_hour_pct',calls_halfhour='$VCScalls_halfhour',answers_halfhour='$VCSanswers_halfhour',drops_halfhour='$VCSdrops_halfhour',drops_halfhour_pct='$VCSdrops_halfhour_pct',calls_fivemin='$VCScalls_five',answers_fivemin='$VCSanswers_five',drops_fivemin='$VCSdrops_five',drops_fivemin_pct='$VCSdrops_five_pct',calls_onemin='$VCScalls_one',answers_onemin='$VCSanswers_one',drops_onemin='$VCSdrops_one',drops_onemin_pct='$VCSdrops_one_pct',amd_onemin='$AMDanswers_one',failed_onemin='$FAILanswers_one',$VSCupdateSQL where campaign_id='$campaign_id';";
 	$multi_sql = "('$campaign_id','$VCScalls_today','$VCSanswers_today','$VCSdrops_today','$VCSdrops_today_pct','$VCSdrops_answers_today_pct','$VCScalls_hour','$VCSanswers_hour','$VCSdrops_hour','$VCSdrops_hour_pct','$VCScalls_halfhour','$VCSanswers_halfhour','$VCSdrops_halfhour','$VCSdrops_halfhour_pct','$VCScalls_five','$VCSanswers_five','$VCSdrops_five','$VCSdrops_five_pct','$VCScalls_one','$VCSanswers_one','$VCSdrops_one','$VCSdrops_one_pct','$AMDanswers_one','$FAILanswers_one',$VSCupdateSQL)";
 
-	$stmtA = "INSERT INTO osdial_campaign_stats (campaign_id,calls_today,answers_today,drops_today,drops_today_pct,drops_answers_today_pct,calls_hour,answers_hour,drops_hour,drops_hour_pct,calls_halfhour,answers_halfhour,drops_halfhour,drops_halfhour_pct,calls_fivemin,answers_fivemin,drops_fivemin,drops_fivemin_pct,calls_onemin,answers_onemin,drops_onemin,drops_onemin_pct,amd_onemin,failed_onemin,$VSCupdateSQLcol) VALUES $multi_sql ON DUPLICATE KEY UPDATE calls_today=VALUES(calls_today),answers_today=VALUES(answers_today),drops_today=VALUES(drops_today),drops_today_pct=VALUES(drops_today_pct),calls_hour=VALUES(calls_hour),answers_hour=VALUES(answers_hour),drops_hour=VALUES(drops_hour),drops_hour_pct=VALUES(drops_hour_pct),calls_halfhour=VALUES(calls_halfhour),answers_halfhour=VALUES(answers_halfhour),drops_halfhour=VALUES(drops_halfhour),drops_halfhour_pct=VALUES(drops_halfhour_pct),calls_fivemin=VALUES(calls_fivemin),answers_fivemin=VALUES(answers_fivemin),drops_fivemin=VALUES(drops_fivemin),drops_fivemin_pct=VALUES(drops_fivemin_pct),calls_onemin=VALUES(calls_onemin),answers_onemin=VALUES(answers_onemin),drops_onemin=VALUES(drops_onemin),drops_onemin_pct=VALUES(drops_onemin_pct),amd_onemin=VALUES(amd_onemin),failed_onemin=VALUES(failed_onemin),$VSCupdateSQLdat;";
+	$stmtA = "INSERT INTO osdial_campaign_stats (campaign_id,calls_today,answers_today,drops_today,drops_today_pct,drops_answers_today_pct,calls_hour,answers_hour,drops_hour,drops_hour_pct,calls_halfhour,answers_halfhour,drops_halfhour,drops_halfhour_pct,calls_fivemin,answers_fivemin,drops_fivemin,drops_fivemin_pct,calls_onemin,answers_onemin,drops_onemin,drops_onemin_pct,amd_onemin,failed_onemin,$VSCupdateSQLcol) VALUES $multi_sql ON DUPLICATE KEY UPDATE calls_today=VALUES(calls_today),answers_today=VALUES(answers_today),drops_today=VALUES(drops_today),drops_today_pct=VALUES(drops_today_pct),drops_answers_today_pct=VALUES(drops_answers_today_pct),calls_hour=VALUES(calls_hour),answers_hour=VALUES(answers_hour),drops_hour=VALUES(drops_hour),drops_hour_pct=VALUES(drops_hour_pct),calls_halfhour=VALUES(calls_halfhour),answers_halfhour=VALUES(answers_halfhour),drops_halfhour=VALUES(drops_halfhour),drops_halfhour_pct=VALUES(drops_halfhour_pct),calls_fivemin=VALUES(calls_fivemin),answers_fivemin=VALUES(answers_fivemin),drops_fivemin=VALUES(drops_fivemin),drops_fivemin_pct=VALUES(drops_fivemin_pct),calls_onemin=VALUES(calls_onemin),answers_onemin=VALUES(answers_onemin),drops_onemin=VALUES(drops_onemin),drops_onemin_pct=VALUES(drops_onemin_pct),amd_onemin=VALUES(amd_onemin),failed_onemin=VALUES(failed_onemin),$VSCupdateSQLdat;";
 	if ($CLOtest) {
 		print $stmtA . "\n";
 	} else {
