@@ -1231,4 +1231,21 @@ function mclabel($strdat) {
     return $strdat;
 }
 
+
+# Function to parse given seconds into hhh:mm:ss format.
+function fmt_hms($seconds) {
+    $hrs = intval(($seconds / 3600));
+    $mins = intval(($seconds - ($hrs * 3600)) / 60);
+    $secs = intval(($seconds - (($hrs * 3600) + ($mins * 60))));
+    return sprintf('%d:%02d:%02d',$hrs,$mins,$secs);
+}
+
+
+# Function to parse given seconds into mmm:ss format.
+function fmt_ms($seconds) {
+    $mins = intval($seconds / 60);
+    $secs = intval(($seconds - ($mins * 60)));
+    return sprintf('%d:%02d',$mins,$secs);
+}
+
 ?>
