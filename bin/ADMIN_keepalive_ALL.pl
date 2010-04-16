@@ -103,7 +103,7 @@ foreach(@conf)
 #	6 - FastAGI_log\n";
 #	7 - AST_VDauto_dial_FILL\n";
 #	8 - ip_relay for blind monitoring\n";
-#	9 - AST_VDcampaign_stats (If multi-server system, this must only be on one server)\n";
+#	9 - OSDcampaign_stats (If multi-server system, this must only be on one server)\n";
 
 
 if ($VARactive_keepalives =~ /X/)
@@ -117,7 +117,7 @@ $AST_send_listen=0;
 $AST_VDauto_dial=0;
 $AST_VDremote_agents=0;
 $AST_VDadapt=0;
-$AST_VDcampaign_stats=0;
+$OSDcampaign_stats=0;
 $FastAGI_log=0;
 $AST_VDauto_dial_FILL=0;
 $ip_relay=0;
@@ -127,7 +127,7 @@ $runningAST_listen=0;
 $runningAST_VDauto_dial=0;
 $runningAST_VDremote_agents=0;
 $runningAST_VDadapt=0;
-$runningAST_VDcampaign_stats=0;
+$runningOSDcampaign_stats=0;
 $runningFastAGI_log=0;
 $runningAST_VDauto_dial_FILL=0;
 $runningip_relay=0;
@@ -174,8 +174,8 @@ if ($VARactive_keepalives =~ /8/)
 	}
 if ($VARactive_keepalives =~ /9/) 
 	{
-	$AST_VDcampaign_stats=1;
-	if ($DB) {print "AST_VDcampaign_stats set to keepalive\n";}
+	$OSDcampaign_stats=1;
+	if ($DB) {print "OSDcampaign_stats set to keepalive\n";}
 	}
 
 $REGhome = $PATHhome;
@@ -249,10 +249,10 @@ if ($DBX) {print "$i|$psoutput[$i]|     \n";}
 		$runningip_relay++;
 		if ($DB) {print "ip_relay RUNNING:                |$psoutput[$i]|\n";}
 		}
-	if ($psline[1] =~ /$REGhome\/AST_VDcampaign_stats\.pl/) 
+	if ($psline[1] =~ /$REGhome\/OSDcampaign_stats\.pl/) 
 		{
-		$runningAST_VDcampaign_stats++;
-		if ($DB) {print "AST_VDcampaign_stats RUNNING:             |$psline[1]|\n";}
+		$runningOSDcampaign_stats++;
+		if ($DB) {print "OSDcampaign_stats RUNNING:             |$psline[1]|\n";}
 		}
 $i++;
 }
@@ -321,7 +321,7 @@ if (
 	( ($AST_VDauto_dial > 0) && ($runningAST_VDauto_dial < 1) ) ||
 	( ($AST_VDremote_agents > 0) && ($runningAST_VDremote_agents < 1) ) ||
 	( ($AST_VDadapt > 0) && ($runningAST_VDadapt < 1) ) ||
-	( ($AST_VDcampaign_stats > 0) && ($runningAST_VDcampaign_stats < 1) ) ||
+	( ($OSDcampaign_stats > 0) && ($runningOSDcampaign_stats < 1) ) ||
 	( ($FastAGI_log > 0) && ($runningFastAGI_log < 1) ) ||
 	( ($AST_VDauto_dial_FILL > 0) && ($runningAST_VDauto_dial_FILL < 1) ) ||
 	( ($ip_relay > 0) && ($runningip_relay < 1) )
@@ -391,10 +391,10 @@ foreach (@psoutput2)
 		$runningip_relay++;
 		if ($DB) {print "ip_relay RUNNING:                |$psoutput2[$i]|\n";}
 		}
-	if ($psline[1] =~ /$REGhome\/AST_VDcampaign_stats\.pl/) 
+	if ($psline[1] =~ /$REGhome\/OSDcampaign_stats\.pl/) 
 		{
-		$runningAST_VDcampaign_stats++;
-		if ($DB) {print "AST_VDcampaign_stats RUNNING:             |$psline[1]|\n";}
+		$runningOSDcampaign_stats++;
+		if ($DB) {print "OSDcampaign_stats RUNNING:             |$psline[1]|\n";}
 		}
 	$i++;
 	}
@@ -436,11 +436,11 @@ if ( ($AST_VDadapt > 0) && ($runningAST_VDadapt < 1) )
 	# add a '-L' to the command below to activate logging
 	`/usr/bin/screen -d -m -S ASTVDadapt $PATHhome/AST_VDadapt.pl --debug`;
 	}
-if ( ($AST_VDcampaign_stats > 0) && ($runningAST_VDcampaign_stats < 1) )
+if ( ($OSDcampaign_stats > 0) && ($runningOSDcampaign_stats < 1) )
 	{ 
-	if ($DB) {print "starting AST_VDcampaign_stats...\n";}
+	if ($DB) {print "starting OSDcampaign_stats...\n";}
 	# add a '-L' to the command below to activate logging
-	`/usr/bin/screen -d -m -S ASTVDcampaignstats $PATHhome/AST_VDcampaign_stats.pl --debug`;
+	`/usr/bin/screen -d -m -S OSDcampaignstats $PATHhome/OSDcampaign_stats.pl --debug`;
 	}
 if ( ($FastAGI_log > 0) && ($runningFastAGI_log < 1) )
 	{ 
