@@ -1,0 +1,109 @@
+select extension,extension,voicemail_id,outbound_cid,server_ip,login,pass,status,active,phone_type,fullname,company,protocol,local_gmt from phones where extension NOT IN ('1000','1001','1002','1003','1004','1005','1006','1007','1008','1009','9999') into outfile '/tmp/p.out';
+load data infile '/tmp/p.out' into table phones (extension,dialplan_number,voicemail_id,outbound_cid,server_ip,login,pass,status,active,phone_type,fullname,company,protocol,local_gmt);
+
+
+select user_group,group_name,allowed_campaigns from vicidial_user_groups where user_group NOT IN ('ADMIN','AGENTS') into outfile '/tmp/ug.out';
+load data infile '/tmp/ug.out' into table osdial_user_groups (user_group,group_name,allowed_campaigns);
+
+
+select group_id,group_name,group_color,active,web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,'Y',call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group from vicidial_inbound_groups where group_id !='AGENTDIRECT' into outfile '/tmp/ig.out';
+load data infile '/tmp/ig.out' into table osdial_inbound_groups (group_id,group_name,group_color,active,web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_message,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group);
+
+
+select lead_filter_id,lead_filter_name,lead_filter_comments,lead_filter_sql from vicidial_lead_filters into outfile '/tmp/vlfilter.out';
+load data infile '/tmp/vlfilter.out' into table osdial_lead_filters (lead_filter_id,lead_filter_name,lead_filter_comments,lead_filter_sql);
+
+
+select script_id,script_name,script_comments,script_text,active from vicidial_scripts into outfile '/tmp/vscript.out';
+load data infile '/tmp/vscript.out' into table osdial_scripts (script_id,script_name,script_comments,script_text,active);
+
+
+select campaign_id,campaign_name,active,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,amd_send_to_vmx,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,lead_filter_id,drop_call_seconds,'Y',safe_harbor_exten,display_dialable_count,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,concurrent_transfers,auto_alt_dial,auto_alt_dial_statuses,agent_pause_codes_active,campaign_description,campaign_changedate,campaign_stats_refresh,campaign_logindate,dial_statuses,disable_alter_custdata,no_hopper_leads_logins,list_order_mix,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,xfer_groups from vicidial_campaigns WHERE campaign_id != 'TEST' into outfile '/tmp/c.out';
+load data infile '/tmp/c.out' into table osdial_campaigns (campaign_id,campaign_name,active,dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,amd_send_to_vmx,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,lead_filter_id,drop_call_seconds,safe_harbor_message,safe_harbor_exten,display_dialable_count,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,concurrent_transfers,auto_alt_dial,auto_alt_dial_statuses,agent_pause_codes_active,campaign_description,campaign_changedate,campaign_stats_refresh,campaign_logindate,dial_statuses,disable_alter_custdata,no_hopper_leads_logins,list_order_mix,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,xfer_groups);
+
+
+select list_id,list_name,campaign_id,active,list_description,list_changedate,list_lastcalldate from vicidial_lists where list_id NOT IN ('998','999') into outfile '/tmp/l.out';
+load data infile '/tmp/l.out' into table osdial_lists (list_id,list_name,campaign_id,active,list_description,list_changedate,list_lastcalldate);
+
+
+select lead_id,entry_date,modify_date,status,user,vendor_lead_code,source_id,list_id,gmt_offset_now,called_since_last_reset,phone_code,phone_number,title,first_name,middle_initial,last_name,address1,address2,address3,city,state,province,postal_code,country_code,gender,date_of_birth,alt_phone,email,security_phrase,comments,called_count,last_local_call_time from vicidial_list into outfile '/tmp/vl.out';
+load data infile '/tmp/vl.out' into table osdial_list (lead_id,entry_date,modify_date,status,user,vendor_lead_code,source_id,list_id,gmt_offset_now,called_since_last_reset,phone_code,phone_number,title,first_name,middle_initial,last_name,address1,address2,address3,city,state,province,postal_code,country_code,gender,date_of_birth,alt_phone,email,custom1,comments,called_count,last_local_call_time);
+
+
+select callback_id,lead_id,list_id,campaign_id,status,entry_time,callback_time,modify_date,user,recipient,comments,user_group from vicidial_callbacks into outfile '/tmp/vlcd.out';
+load data infile '/tmp/vlcd.out' into table osdial_callbacks (callback_id,lead_id,list_id,campaign_id,status,entry_time,callback_time,modify_date,user,recipient,comments,user_group);
+
+
+select status,status_name,selectable,campaign_id,human_answered,category from vicidial_campaign_statuses into outfile '/tmp/ocs.out';
+load data infile '/tmp/ocs.out' into table osdial_campaign_statuses (status,status_name,selectable,campaign_id,human_answered,category);
+
+
+select vsc_id,vsc_name,vsc_description,tovdad_display from vicidial_status_categories WHERE vsc_id NOT IN ('CONTACT','IVR','NOCONTACT','SALE','SYSTEM','UNDEFINED','01') into outfile '/tmp/vstatc.out';
+load data infile '/tmp/vstatc.out' into table osdial_status_categories (vsc_id,vsc_name,vsc_description,tovdad_display);
+
+
+select status,hotkey,status_name,selectable,campaign_id from vicidial_campaign_hotkeys into outfile '/tmp/vchk.out';
+load data infile '/tmp/vchk.out' into table osdial_campaign_hotkeys (status,hotkey,status_name,selectable,campaign_id);
+
+
+select recycle_id,campaign_id,status,attempt_delay,attempt_maximum,active from vicidial_lead_recycle into outfile '/tmp/lr.out';
+load data infile '/tmp/lr.out' into table osdial_lead_recycle (recycle_id,campaign_id,status,attempt_delay,attempt_maximum,active);
+
+
+select vcl_id,vcl_name,campaign_id,list_mix_container,mix_method,status from vicidial_campaigns_list_mix into outfile '/tmp/vclm.out';
+load data infile '/tmp/vclm.out' into table osdial_campaigns_list_mix (vcl_id,vcl_name,campaign_id,list_mix_container,mix_method,status);
+
+
+select pause_code,pause_code_name,billable,campaign_id from vicidial_pause_codes into outfile '/tmp/vpc.out';
+load data infile '/tmp/vpc.out' into table osdial_pause_codes (pause_code,pause_code_name,billable,campaign_id);
+
+
+select status,status_name,selectable,human_answered,category from vicidial_statuses where status NOT IN ('A','AA','AFAX','AL','AM','B','CALLBK','CBHOLD','CRC','CRF','CRO','CRR','DC','DEC','DNC','DNCE','DNCL','DROP','INBND','INCALL','N','NA','NEW','NI','NP','PD','PU','PM','QUEUE','SALE','SVYEXT','SVYVM','SVYHU','SVYREC','QVMAIL','VAXFER','VDNC','VEXFER','VIXFER','VNI','VPLAY','VPU','VTO','XDROP','XFER') into outfile '/tmp/vss.out';
+load data infile '/tmp/vss.out' into table osdial_statuses (status,status_name,selectable,human_answered,category);
+
+
+select call_time_id,call_time_name,call_time_comments,ct_default_start,ct_default_stop,ct_sunday_start,ct_sunday_stop,ct_monday_start,ct_monday_stop,ct_tuesday_start,ct_tuesday_stop,ct_wednesday_start,ct_wednesday_stop,ct_thursday_start,ct_thursday_stop,ct_friday_start,ct_friday_stop,ct_saturday_start,ct_saturday_stop,ct_state_call_times from vicidial_call_times WHERE call_time_id NOT IN ('12pm-5pm','12pm-9pm','24hours','5pm-9pm','9am-5pm','9am-9pm') into outfile '/tmp/vtime.out';
+load data infile '/tmp/vtime.out' into table osdial_call_times (call_time_id,call_time_name,call_time_comments,ct_default_start,ct_default_stop,ct_sunday_start,ct_sunday_stop,ct_monday_start,ct_monday_stop,ct_tuesday_start,ct_tuesday_stop,ct_wednesday_start,ct_wednesday_stop,ct_thursday_start,ct_thursday_stop,ct_friday_start,ct_friday_stop,ct_saturday_start,ct_saturday_stop,ct_state_call_times);
+
+
+select state_call_time_id,state_call_time_name,state_call_time_comments,sct_default_start,sct_default_stop,sct_sunday_start,sct_sunday_stop,sct_monday_start,sct_monday_stop,sct_tuesday_start,sct_tuesday_stop,sct_wednesday_start,sct_wednesday_stop,sct_thursday_start,sct_thursday_stop,sct_friday_start,sct_friday_stop,sct_saturday_start,sct_saturday_stop from vicidial_state_call_times WHERE state_call_time_id NOT IN ('alabama','illinois','indiana','kentucky','louisiana','massachuse','mississipp','nebraska','nevada','pennsylvan','rhodeislan','sdakota','tennessee','texas','utah','washington','wyoming') into outfile '/tmp/vstime.out';
+load data infile '/tmp/vstime.out' into table osdial_state_call_times (state_call_time_id,state_call_time_name,state_call_time_comments,sct_default_start,sct_default_stop,sct_sunday_start,sct_sunday_stop,sct_monday_start,sct_monday_stop,sct_tuesday_start,sct_tuesday_stop,sct_wednesday_start,sct_wednesday_stop,sct_thursday_start,sct_thursday_stop,sct_friday_start,sct_friday_stop,sct_saturday_start,sct_saturday_stop);
+
+
+select user_id,user,pass,full_name,user_level,user_group,phone_login,phone_pass,delete_users,delete_user_groups,delete_lists,delete_campaigns,delete_ingroups,delete_remote_agents,load_leads,campaign_detail,ast_admin_access,ast_delete_phones,delete_scripts,modify_leads,hotkeys_active,change_agent_campaign,agent_choose_ingroups,closer_campaigns,scheduled_callbacks,agentonly_callbacks,agentcall_manual,vicidial_recording,vicidial_transfers,delete_filters,alter_agent_interface_options,closer_default_blended,delete_call_times,modify_call_times,modify_users,modify_campaigns,modify_lists,modify_scripts,modify_filters,modify_ingroups,modify_usergroups,modify_remoteagents,modify_servers,view_reports,vicidial_recording_override,alter_custdata_override,vdc_agent_api_access,vdc_agent_api_access,download_lists from vicidial_users where user NOT IN ('admin','6666','VDAD') into outfile '/tmp/vu.out';
+load data infile '/tmp/vu.out' into table osdial_users (user_id,user,pass,full_name,user_level,user_group,phone_login,phone_pass,delete_users,delete_user_groups,delete_lists,delete_campaigns,delete_ingroups,delete_remote_agents,load_leads,campaign_detail,ast_admin_access,ast_delete_phones,delete_scripts,modify_leads,hotkeys_active,change_agent_campaign,agent_choose_ingroups,closer_campaigns,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,delete_filters,alter_agent_interface_options,closer_default_blended,delete_call_times,modify_call_times,modify_users,modify_campaigns,modify_lists,modify_scripts,modify_filters,modify_ingroups,modify_usergroups,modify_remoteagents,modify_servers,view_reports,osdial_recording_override,alter_custdata_override,agent_api_access,admin_api_access,export_leads);
+
+
+select uniqueid,channel,channel_group,type,server_ip,extension,number_dialed,caller_code,start_time,start_epoch,end_time,end_epoch,length_in_sec,length_in_min from call_log into outfile '/tmp/cl.out';
+load data infile '/tmp/cl.out' into table call_log (uniqueid,channel,channel_group,type,server_ip,extension,number_dialed,caller_code,start_time,start_epoch,end_time,end_epoch,length_in_sec,length_in_min);
+
+
+select recording_id,channel,server_ip,extension,start_time,start_epoch,end_time,end_epoch,length_in_sec,length_in_min,filename,location,lead_id,user,vicidial_id from recording_log into outfile '/tmp/rl.out';
+load data infile '/tmp/rl.out' ignore into table recording_log (recording_id,channel,server_ip,extension,start_time,start_epoch,end_time,end_epoch,length_in_sec,length_in_min,filename,location,lead_id,user,uniqueid);
+
+
+select agent_log_id,user,server_ip,event_time,lead_id,campaign_id,pause_epoch,pause_sec,wait_epoch,wait_sec,talk_epoch,talk_sec,dispo_epoch,dispo_sec,status,user_group,comments,sub_status from vicidial_agent_log into outfile '/tmp/val.out';
+load data infile '/tmp/val.out' into table osdial_agent_log (agent_log_id,user,server_ip,event_time,lead_id,campaign_id,pause_epoch,pause_sec,wait_epoch,wait_sec,talk_epoch,talk_sec,dispo_epoch,dispo_sec,status,user_group,comments,sub_status);
+
+
+select closecallid,lead_id,list_id,campaign_id,call_date,start_epoch,end_epoch,length_in_sec,status,phone_code,phone_number,user,comments,processed,user_group,term_reason,uniqueid from vicidial_closer_log into outfile '/tmp/vcllog.out';
+load data infile '/tmp/vcllog.out' into table osdial_closer_log (closecallid,lead_id,list_id,campaign_id,call_date,start_epoch,end_epoch,length_in_sec,status,phone_code,phone_number,user,comments,processed,user_group,term_reason,uniqueid);
+
+
+select uniqueid,lead_id,list_id,campaign_id,call_date,start_epoch,end_epoch,length_in_sec,status,phone_code,phone_number,user,comments,processed,user_group,term_reason from vicidial_log into outfile '/tmp/vlog.out';
+load data infile '/tmp/vlog.out' into table osdial_log (uniqueid,lead_id,list_id,campaign_id,call_date,start_epoch,end_epoch,length_in_sec,status,phone_code,phone_number,user,comments,processed,user_group,term_reason);
+
+
+select user_log_id,user,event,campaign_id,event_date,event_epoch,user_group from vicidial_user_log into outfile '/tmp/vulog.out';
+load data infile '/tmp/vulog.out' into table osdial_user_log (user_log_id,user,event,campaign_id,event_date,event_epoch,user_group);
+
+
+select xfercallid,lead_id,list_id,campaign_id,call_date,phone_code,phone_number,user,closer from vicidial_xfer_log into outfile '/tmp/vxlog.out';
+load data infile '/tmp/vxlog.out' into table osdial_xfer_log (xfercallid,lead_id,list_id,campaign_id,call_date,phone_code,phone_number,user,closer);
+
+
+select phone_number from vicidial_dnc into outfile '/tmp/vdnc.out';
+load data infile '/tmp/vdnc.out' ignore into table osdial_dnc (phone_number);
+
+select phone_number from vicidial_campaign_dnc into outfile '/tmp/vcdnc.out';
+load data infile '/tmp/vcdnc.out' ignore into table osdial_dnc (phone_number);
