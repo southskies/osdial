@@ -115,6 +115,7 @@ install-docs: .osdial.config
 	@install -p -m 644 ./.osdial.config $(DESTDIR)/etc/osdial.conf
 	@echo "Creating log directory $(DESTDIR)$(PATHlogs)..."
 	@install -d -m 777 $(DESTDIR)$(PATHlogs)
+	#(cd perl; perl Makefile.PL INSTALLDIRS="vendor"; make; make install)
 
 .install-base: .install-common
 	@echo "Installing OSDial base components..."
@@ -197,10 +198,6 @@ install-docs: .osdial.config
 	@install -p -m 644 ./www/admin/include/content/scripts/* $(DESTDIR)$(PATHweb)/admin/include/content/scripts
 	@install -p -m 644 ./www/admin/include/content/usergroups/* $(DESTDIR)$(PATHweb)/admin/include/content/usergroups
 	@install -p -m 644 ./www/admin/include/content/users/* $(DESTDIR)$(PATHweb)/admin/include/content/users
-	cd perl
-	perl Makefile.PL
-	make
-	make install
 
 install-asterisk-sample-configs: install-asterisk-sample-config
 
