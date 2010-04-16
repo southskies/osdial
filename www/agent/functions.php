@@ -72,4 +72,9 @@ function mclabel($strdat) {
     return $strdat;
 }
 
+# Simple shorthand for mysql_real_escape_string.
+function mres($val) {
+    return mysql_real_escape_string($val);
+}
+
 ?>
