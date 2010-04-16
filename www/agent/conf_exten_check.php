@@ -289,7 +289,7 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
                 $sql_diff = ($web_epoch - $sql_epoch);
                 $dialer_diff = ($web_epoch - $dialer_epoch);
 
-                if ($time_diff > 8 or $time_diff < -8 or $dialer_diff > 12 or $dialer_diff < -12 or $sql_diff > 12 or $sql_diff < -12) {
+                if ($time_diff > 8 or $time_diff < -8) {
                     $Alogin='TIME_SYNC';
                 }
             }
