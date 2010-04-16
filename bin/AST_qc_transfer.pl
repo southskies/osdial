@@ -223,6 +223,8 @@ sub transferFiles {
 
 	foreach my $rec (keys %{$recs}) {
 		my($status,$update,$template,$file,$remoteloc);
+		$recs->{$rec}->{dateND} = $recs->{$rec}->{date};
+		$recs->{$rec}->{dateND} =~ s/-//g;
 		$template = $qcs->{location_template};
 		$template =~ s/\\/\//g;
 		foreach my $key (keys %{$recs->{$rec}}) {
