@@ -319,7 +319,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	var flag_channels = '<? echo $flag_channels ?>';
 	var flag_string = '<? echo $flag_string ?>';
 	var DiaLControl_auto_HTML = "<IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_pause_OFF.gif\" border=0 alt=\"Pause\"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_resume.gif\" border=0 alt=\"Resume\"></a>";
-	var DiaLControl_auto_HTML_ready = "<a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADpause');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_pause.gif\" border=0 alt=\"Pause\"></a><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_resume_OFF.gif\" border=0 alt=\"Resume\">";
+	var DiaLControl_auto_HTML_ready = "<a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADpause','NEW_ID');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_pause.gif\" border=0 alt=\"Pause\"></a><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_resume_OFF.gif\" border=0 alt=\"Resume\">";
 	var DiaLControl_auto_HTML_OFF = "<IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_pause_OFF.gif\" border=0 alt=\"Pause\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_resume_OFF.gif\" border=0 alt=\"Resume\">";
 	var DiaLControl_manual_HTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_dialnextnumber.gif\" border=0 alt=\"Dial Next Number\"></a>";
 	var image_blank = new Image();
@@ -846,7 +846,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						var VLAStatuS = VLAStatuS_array[1];
 						if ( (VLAStatuS == 'PAUSED') && (AutoDialWaiting == 1) ) {
 							if (PausENotifYCounTer > 10) {
-								AutoDial_ReSume_PauSe('VDADpause');
+								AutoDial_ReSume_PauSe('VDADpause','NEW_ID');
 								PausENotifYCounTer=0;
 								alert('Your session has been paused');
 							} else {
@@ -1455,7 +1455,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			alert("You must hangup and disposition your active call\nbefore you can place a call to a callback. ");
 		} else {
 			if (AutoDialWaiting==1 && VD_live_customer_call==0 && alt_dial_active==0) {
-				AutoDial_ReSume_PauSe('VDADpause');
+				AutoDial_ReSume_PauSe('VDADpause','NEW_ID');
 				PCSpause=1;
 			}
 			showDiv('CallBacKsLisTBox');
@@ -1561,7 +1561,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			alert("You must hangup and disposition your active call\nbefore you can place a call to a manually entered number. ");
 		} else {
 			if (AutoDialWaiting==1 && VD_live_customer_call==0 && alt_dial_active==0) {
-				AutoDial_ReSume_PauSe('VDADpause');
+				AutoDial_ReSume_PauSe('VDADpause','NEW_ID');
 				PCSpause=1;
 			}
 			if (TVfast=='FAST') {
@@ -1824,7 +1824,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			if (AutoDialReady==0)
 				document.osdial_form.DispoSelectStop.checked=true;
 
-			AutoDial_ReSume_PauSe('VDADpause');
+			AutoDial_ReSume_PauSe('VDADpause','NEW_ID');
 
 			document.getElementById("DiaLControl").innerHTML = "<IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_pause_OFF.gif\" border=0 alt=\" Pause \"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_resume_OFF.gif\" border=0 alt=\"Resume\"><BR><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_dialnextnumber_OFF.gif\" border=0 alt=\"Dial Next Number\">";
 		} else {
@@ -2426,7 +2426,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			PCSpause=0;
 			if (inbound_man > 0) {
 				auto_dial_level=starting_dial_level;
-				document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADpause');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_pause.gif\" border=0 alt=\" Pause \"></a><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_resume_OFF.gif\" border=0 alt=\"Resume\"></a><BR><a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_dialnextnumber.gif\" border=0 alt=\"Dial Next Number\"></a>";
+				document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADpause','NEW_ID');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_pause.gif\" border=0 alt=\" Pause \"></a><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_resume_OFF.gif\" border=0 alt=\"Resume\"></a><BR><a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_dialnextnumber.gif\" border=0 alt=\"Dial Next Number\"></a>";
 			} else {
 				document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_ready;
 			}
@@ -2464,6 +2464,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		}
 		if (xmlhttp) { 
 			autoDiaLready_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=" + taskaction + "&user=" + user + "&pass=" + pass + "&stage=" + VDRP_stage + "&agent_log_id=" + agent_log_id + "&agent_log=" + taskagentlog + "&wrapup=" + taskwrapup + "&campaign=" + campaign;
+			debug("AutoDial_ReSume_PauSe called: vdc_db_query.php?" + autoDiaLready_query,4);
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 			xmlhttp.send(autoDiaLready_query); 
@@ -2472,8 +2473,10 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 					var check_dispo = null;
 					check_dispo = xmlhttp.responseText;
 					var check_DS_array=check_dispo.split("\n");
-					if (check_DS_array[1] == 'Next agent_log_id:') {
+					debug("AutoDial_ReSume_PauSe return: " + check_DS_array[0] + "|" + check_DS_array[1] + "|" + check_DS_array[2] + "|",3);
+					if (check_DS_array[1] == 'Next agent_log_id:' && taskagentlog=="NEW_ID") {
 						agent_log_id = check_DS_array[2];
+						debug("AutoDial_ReSume_PauSe agent_log_id set: " + agent_log_id,4);
 					}
 				}
 			}
@@ -3712,7 +3715,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			alert("You must hangup and disposition your call before clicking \"Pause\". ");
 		} else {
 			if (AutoDialReady==1) {
-				AutoDial_ReSume_PauSe('VDADpause');
+				AutoDial_ReSume_PauSe('VDADpause','NEW_ID');
 				PCSpause = 1;
 			}
 			showDiv('PauseCodeSelectBox');
@@ -3809,17 +3812,19 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				}
 				if (xmlhttp) { 
 					DSupdate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=updateDISPO&format=text&user=" + user + "&pass=" + pass + "&dispo_choice=" + DispoChoice + "&lead_id=" + document.osdial_form.lead_id.value + "&campaign=" + campaign + "&auto_dial_level=" + auto_dial_level + "&agent_log_id=" + agent_log_id + "&PostDatETimE=" + PostDatETimE + "&CallBackDatETimE=" + CallBackDatETimE + "&list_id=" + document.osdial_form.list_id.value + "&recipient=" + CallBackrecipient + "&use_internal_dnc=" + use_internal_dnc + "&MDnextCID=" + LasTCID + "&stage=" + group + "&comments=" + CallBackCommenTs;
+					debug("updateDISPO called: vdc_db_query.php?" + DSupdate_query,4);
 					xmlhttp.open('POST', 'vdc_db_query.php'); 
 					xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 					xmlhttp.send(DSupdate_query); 
 					xmlhttp.onreadystatechange = function() { 
-						if (xmlhttp.readyState == 4 && xmlhttp.status == 200 && (auto_dial_level < 1)) {
+						if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 							var check_dispo = null;
 							check_dispo = xmlhttp.responseText;
 							var check_DS_array=check_dispo.split("\n");
-							//alert(xmlhttp.responseText + "\n|" + check_DS_array[1] + "\n|" + check_DS_array[2] + "|");
+							debug("updateDISPO return: " + check_DS_array[0] + "|" + check_DS_array[1] + "|" + check_DS_array[2] + "|",3);
 							if (check_DS_array[1] == 'Next agent_log_id:') {
 								agent_log_id = check_DS_array[2];
+								debug("updateDISPO agent_log_id set: " + agent_log_id,4);
 							}
 						}
 					}
@@ -3863,8 +3868,10 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				VDCL_group_id = '';
 				fronter = '';
 
+				var rp_newid="NEW_ID";
 				if (manual_dial_in_progress==1) {
 					manual_dial_finished();
+					rp_newid="";
 				}
 				hideDiv('DispoSelectBox');
 				hideDiv('DispoButtonHideA');
@@ -3890,7 +3897,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					if (document.osdial_form.DispoSelectStop.checked==true) {
 						if (auto_dial_level != '0') {
 							AutoDialWaiting = 0;
-							AutoDial_ReSume_PauSe("VDADpause");
+							AutoDial_ReSume_PauSe("VDADpause",rp_newid);
 							//document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML;
 						}
 						OSDiaL_pause_calling = 1;
@@ -3900,7 +3907,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					} else {
 						if (auto_dial_level != '0') {
 							AutoDialWaiting = 1;
-							AutoDial_ReSume_PauSe("VDADready","NEW_ID");
+							AutoDial_ReSume_PauSe("VDADready",rp_newid);
 							//document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_ready;
 						} else {
 							// trigger HotKeys manual dial automatically go to next lead
@@ -4076,7 +4083,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			delete xmlhttp;
 		}
 		if (auto_dial_level > 0) {
-			AutoDial_ReSume_PauSe("VDADpause");
+			AutoDial_ReSume_PauSe("VDADpause","NEW_ID");
 		}
 	}
 
@@ -4307,6 +4314,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			VDlogout_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=userLOGout&format=text&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&conf_exten=" + session_id + "&extension=" + extension + "&protocol=" + protocol + "&agent_log_id=" + agent_log_id + "&no_delete_sessions=" + no_delete_sessions + "&phone_ip=" + phone_ip + "&enable_sipsak_messages=" + enable_sipsak_messages + "&LogouTKicKAlL=" + LogouTKicKAlL + "&ext_context=" + ext_context;
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+			debug("userLOGout called: vdc_db_query.php?" + VDlogout_query,1);
 			xmlhttp.send(VDlogout_query); 
 			xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
@@ -4562,28 +4570,30 @@ foreach ($forms as $form) {
     $fcamps = split(',',$form['campaigns']);
     foreach ($fcamps as $fcamp) {
         $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
-        foreach ($fields as $field) {
-            if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
-                $var = "      var SC" . $form['name'] . '_' . $field['name'] . ' = "';
-                if ($field['options'] == '') {
-                    $var .= "<input type=text size=" . $field['length'] . " maxlength=255 name=" . $form['name'] . '_' . $field['name'] . ' id=' . $form['name'] . '_' . $field['name'];
-                    $var .= " onfocus=document.getElementById('" . $form['name'] . '_' . $field['name'] . "').value=document.getElementById('AF" . $field['id'] . "').value";
-                    $var .= " onchange=document.getElementById('AF" . $field['id'] . "').value=document.getElementById('" . $form['name'] . '_' . $field['name'] . "').value";
-                    $var .= ' class=cust_form value=\"\">';
-                } else {
-                    $var .= "<select name=" . $form['name'] . '_' . $field['name'] . ' id=' . $form['name'] . '_' . $field['name'];
-                    $var .= " onfocus=document.getElementById('" . $form['name'] . '_' . $field['name'] . "').value=document.getElementById('AF" . $field['id'] . "').value";
-                    $var .= " onchange=document.getElementById('AF" . $field['id'] . "').value=document.getElementById('" . $form['name'] . '_' . $field['name'] . "').value";
-                    $var .= ">";
-                    $options = split(',',$field['options']);
-                    foreach ($options as $opt) {
-                        $var .= "<option>" . $opt . "</option>";
+	if (is_array($fields)) {
+            foreach ($fields as $field) {
+                if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
+                    $var = "      var SC" . $form['name'] . '_' . $field['name'] . ' = "';
+                    if ($field['options'] == '') {
+                        $var .= "<input type=text size=" . $field['length'] . " maxlength=255 name=" . $form['name'] . '_' . $field['name'] . ' id=' . $form['name'] . '_' . $field['name'];
+                        $var .= " onfocus=document.getElementById('" . $form['name'] . '_' . $field['name'] . "').value=document.getElementById('AF" . $field['id'] . "').value";
+                        $var .= " onchange=document.getElementById('AF" . $field['id'] . "').value=document.getElementById('" . $form['name'] . '_' . $field['name'] . "').value";
+                        $var .= ' class=cust_form value=\"\">';
+                    } else {
+                        $var .= "<select name=" . $form['name'] . '_' . $field['name'] . ' id=' . $form['name'] . '_' . $field['name'];
+                        $var .= " onfocus=document.getElementById('" . $form['name'] . '_' . $field['name'] . "').value=document.getElementById('AF" . $field['id'] . "').value";
+                        $var .= " onchange=document.getElementById('AF" . $field['id'] . "').value=document.getElementById('" . $form['name'] . '_' . $field['name'] . "').value";
+                        $var .= ">";
+                        $options = split(',',$field['options']);
+                        foreach ($options as $opt) {
+                            $var .= "<option>" . $opt . "</option>";
+                        }
+                        $var .= "</select>";
                     }
-                    $var .= "</select>";
-                }
-                $var .= '";';
-                echo $var . "\n";
-                $cnt++;
+                    $var .= '";';
+                    echo $var . "\n";
+                    $cnt++;
+		}
             }
         }
     }
@@ -4637,10 +4647,12 @@ foreach ($forms as $form) {
     $fcamps = split(',',$form['campaigns']);
     foreach ($fcamps as $fcamp) {
         $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
-        foreach ($fields as $field) {
-            if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
-                echo "      	var SC" . $form['name'] . '_' . $field['name'] . ' = SC' . $form['name'] . '_' . $field['name'] . ".replace(RGplus,'+');\n";
-                $cnt++;
+	if (is_array($fields)) {
+            foreach ($fields as $field) {
+                if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
+                    echo "      	var SC" . $form['name'] . '_' . $field['name'] . ' = SC' . $form['name'] . '_' . $field['name'] . ".replace(RGplus,'+');\n";
+                    $cnt++;
+		}
             }
         }
     }
@@ -4741,13 +4753,15 @@ foreach ($forms as $form) {
     $fcamps = split(',',$form['campaigns']);
     foreach ($fcamps as $fcamp) {
         $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
-        foreach ($fields as $field) {
-            if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
-                echo "      	var RGO" . $form['name'] . '_' . $field['name'] . ' = new RegExp("--A--' . $form['name'] . '_' . $field['name'] . '--B--","g");' . "\n";
-                echo "      	var RG" . $form['name'] . '_' . $field['name'] . ' = new RegExp("\\[\\[' . $form['name'] . '_' . $field['name'] . '\\]\\]","g");' . "\n";
-                echo "      	encoded = encoded.replace(RGO" . $form['name'] . '_' . $field['name'] . ',SC' . $form['name'] . '_' . $field['name'] . ");\n";
-                echo "      	encoded = encoded.replace(RG" . $form['name'] . '_' . $field['name'] . ',SC' . $form['name'] . '_' . $field['name'] . ");\n";
-                $cnt++;
+	if (is_array($fields)) {
+            foreach ($fields as $field) {
+                if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
+                    echo "      	var RGO" . $form['name'] . '_' . $field['name'] . ' = new RegExp("--A--' . $form['name'] . '_' . $field['name'] . '--B--","g");' . "\n";
+                    echo "      	var RG" . $form['name'] . '_' . $field['name'] . ' = new RegExp("\\[\\[' . $form['name'] . '_' . $field['name'] . '\\]\\]","g");' . "\n";
+                    echo "      	encoded = encoded.replace(RGO" . $form['name'] . '_' . $field['name'] . ',SC' . $form['name'] . '_' . $field['name'] . ");\n";
+                    echo "      	encoded = encoded.replace(RG" . $form['name'] . '_' . $field['name'] . ',SC' . $form['name'] . '_' . $field['name'] . ");\n";
+                    $cnt++;
+		}
             }
         }
     }
@@ -5236,7 +5250,7 @@ if ($useIE > 0) {
 						if (document.osdial_form.DispoSelectStop.checked==true) {
 							if (auto_dial_level != '0') {
 								AutoDialWaiting = 0;
-								AutoDial_ReSume_PauSe("VDADpause");
+								AutoDial_ReSume_PauSe("VDADpause","NEW_ID");
 								//document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML;
 							}
 							OSDiaL_pause_calling = 1;
@@ -5751,15 +5765,17 @@ foreach ($forms as $form) {
     $fcamps = split(',',$form['campaigns']);
     foreach ($fcamps as $fcamp) {
         $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
-        foreach ($fields as $field) {
-            if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
-                echo "    try {\n";
-                echo "      document.getElementById(\"" . $form['name'] . '_' . $field['name'] . "\").value = document.getElementById(\"AF" . $field['id'] . "\").value;\n";
-		echo "    }\n";
-                echo "    catch(error) {\n";
-		echo "      var a=1;\n";
-		echo "    }\n";
-                $cnt++;
+	if (is_array($fields)) {
+            foreach ($fields as $field) {
+                if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
+                    echo "    try {\n";
+                    echo "      document.getElementById(\"" . $form['name'] . '_' . $field['name'] . "\").value = document.getElementById(\"AF" . $field['id'] . "\").value;\n";
+		    echo "    }\n";
+                    echo "    catch(error) {\n";
+		    echo "      var a=1;\n";
+		    echo "    }\n";
+                    $cnt++;
+                }
             }
         }
     }
@@ -5861,8 +5877,8 @@ foreach ($forms as $form) {
 			if (!debugWindow.closed) {
 				if (dlevel <= debugLevel) {
 					var dh = debugWindow.document.createElement("div");
-					dh.setAttribute("style","color:" + debugLevelColors[dlevel] + ";");
-					dh.innerHTML = debugOutput + "<br>";
+					dh.setAttribute("style","color:" + debugLevelColors[dlevel] + ";font-size:8pt;");
+					dh.innerHTML = debugOutput + "<br><br>";
 					debugWindow.document.body.appendChild(dh);
 				}
 			}
