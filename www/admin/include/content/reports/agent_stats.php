@@ -110,12 +110,13 @@ function report_agent_stats() {
     if (!$LOGview_reports) {
         $table .= "<center><font color=red>You do not have permission to view this page</font></center>\n";
     } elseif($agent) {
-        $stmt=sprintf("SELECT count(*),status,sum(talk_sec) FROM osdial_agent_log WHERE user_group IN %s AND user='%s' and event_time >= '%s 0:00:01'  and event_time <= '%s 23:59:59' AND status!='' GROUP BY status ORDER BY status;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date));
+        #$stmt=sprintf("SELECT count(*),status,sum(talk_sec) FROM osdial_agent_log WHERE user_group IN %s AND user='%s' and event_time >= '%s 0:00:01'  and event_time <= '%s 23:59:59' AND status!='' GROUP BY status ORDER BY status;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date));
+        $stmt=sprintf("SELECT count(*),status,sum(length_in_sec) FROM ((SELECT status,length_in_sec FROM osdial_log WHERE user='%s' AND call_date BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND status!='') UNION (SELECT status,length_in_sec FROM osdial_closer_log WHERE user='%s' AND call_date BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND status!='')) AS lr GROUP BY status;",$company_prefix . mres($agent),mres($begin_date),mres($end_date),$company_prefix . mres($agent),mres($begin_date),mres($end_date));
         $rslt=mysql_query($stmt, $link);
         $statuses_to_print = mysql_num_rows($rslt);
         
         $table .= "  <br>\n";
-        $table .= "  <center><font color=$default_text size=3><b>DISPOSITION SUMMARY</b></font></center>\n";
+        $table .= "  <center><font color=$default_text size=3><b>CALL DISPOSITION SUMMARY</b></font></center>\n";
         $table .= "  <table align=center width=300 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $table .= "    <tr class=tabheader>\n";
         $table .= "      <td>STATUS</td>\n";
@@ -137,38 +138,66 @@ function report_agent_stats() {
             $total_calls += $row[0];
             $total_seconds += $row[2];
             $call_seconds = $row[2];
-            $call_hours = ($call_seconds / 3600);
-            $call_hours = round($call_hours, 2);
-            $call_hours_int = intval("$call_hours");
-            $call_minutes = ($call_hours - $call_hours_int);
-            $call_minutes = ($call_minutes * 60);
-            $call_minutes_int = round($call_minutes, 0);
-            if ($call_minutes_int < 10) {$call_minutes_int = "0$call_minutes_int";}
-        
+
             $table .= "  <tr $bgcolor class=\"row font1\">\n";
             $table .= "    <td>$row[1]</td>\n";
             $table .= "    <td align=right>$row[0]</td>\n";
-            $table .= "    <td align=right>$call_hours_int:$call_minutes_int</td>\n";
+            $table .= "    <td align=right>" . fmt_hms($call_seconds) . "</td>\n";
             $table .= "  </tr>\n";
         
             $o++;
         }
         
-        $total_hours = ($total_seconds / 3600);
-        $total_hours = round($total_hours, 2);
-        $total_hours_int = intval("$total_hours");
-        $total_minutes = ($total_hours - $total_hours_int);
-        $total_minutes = ($total_minutes * 60);
-        $total_minutes_int = round($total_minutes, 0);
-        if ($total_minutes_int < 10) {$total_minutes_int = "0$total_minutes_int";}
+        $table .= "  <tr class=tabfooter>\n";
+        $table .= "    <td>TOTAL CALLS</td>\n";
+        $table .= "    <td align=right>$total_calls</td>\n";
+        $table .= "    <td align=right>" . fmt_hms($total_seconds) . "</td>\n";
+        $table .= "  </tr>\n";
+        $table .= "</table>\n";
+
+        $stmt=sprintf("SELECT count(*),status,sum(talk_sec) FROM osdial_agent_log WHERE user_group IN %s AND user='%s' and event_time >= '%s 0:00:01'  and event_time <= '%s 23:59:59' AND status!='' GROUP BY status ORDER BY status;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date));
+        $rslt=mysql_query($stmt, $link);
+        $statuses_to_print = mysql_num_rows($rslt);
+        
+        $table .= "  <br>\n";
+        $table .= "  <center><font color=$default_text size=3><b>AGENT DISPOSITION SUMMARY</b></font></center>\n";
+        $table .= "  <table align=center width=300 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $table .= "    <tr class=tabheader>\n";
+        $table .= "      <td>STATUS</td>\n";
+        $table .= "      <td>COUNT</td>\n";
+        $table .= "      <td>TIME</td>\n";
+        $table .= "    </tr>\n";
+        
+        $total_calls=0;
+        $total_seconds=0;
+        $o=0;
+        while ($statuses_to_print > $o) {
+            $row=mysql_fetch_row($rslt);
+            if (eregi("1$|3$|5$|7$|9$", $o)) {
+                $bgcolor='bgcolor="' . $oddrows . '"';
+            } else {
+                $bgcolor='bgcolor="' . $evenrows . '"';
+            }
+        
+            $total_calls += $row[0];
+            $total_seconds += $row[2];
+            $call_seconds = $row[2];
+
+            $table .= "  <tr $bgcolor class=\"row font1\">\n";
+            $table .= "    <td>$row[1]</td>\n";
+            $table .= "    <td align=right>$row[0]</td>\n";
+            $table .= "    <td align=right>" . fmt_hms($call_seconds) . "</td>\n";
+            $table .= "  </tr>\n";
+        
+            $o++;
+        }
         
         $table .= "  <tr class=tabfooter>\n";
         $table .= "    <td>TOTAL CALLS</td>\n";
         $table .= "    <td align=right>$total_calls</td>\n";
-        $table .= "    <td align=right>$total_hours_int:$total_minutes_int</td>\n";
+        $table .= "    <td align=right>" . fmt_hms($total_seconds) . "</td>\n";
         $table .= "  </tr>\n";
         $table .= "</table>\n";
-
 
         
         $table .= "<br>\n";
@@ -209,14 +238,7 @@ function report_agent_stats() {
                     $event_stop_seconds = $event_epoch;
                     $event_seconds = ($event_stop_seconds - $event_start_seconds);
                     $total_login_time = ($total_login_time + $event_seconds);
-                    $event_hours = ($event_seconds / 3600);
-                    $event_hours = round($event_hours, 2);
-                    $event_hours_int = intval("$event_hours");
-                    $event_minutes = ($event_hours - $event_hours_int);
-                    $event_minutes = ($event_minutes * 60);
-                    $event_minutes_int = round($event_minutes, 0);
-                    if ($event_minutes_int < 10) {$event_minutes_int = "0$event_minutes_int";}
-                    $event_time = "$event_hours_int:$event_minutes_int";
+                    $event_time = fmt_hms($event_seconds);
                     $event_start_seconds='';
                     $event_stop_seconds='';
                 }
@@ -232,27 +254,19 @@ function report_agent_stats() {
             $o++;
         }
         
-        $total_login_hours = ($total_login_time / 3600);
-        $total_login_hours = round($total_login_hours, 2);
-        $total_login_hours_int = intval("$total_login_hours");
-        $total_login_minutes = ($total_login_hours - $total_login_hours_int);
-        $total_login_minutes = ($total_login_minutes * 60);
-        $total_login_minutes_int = round($total_login_minutes, 0);
-        if ($total_login_minutes_int < 10) {$total_login_minutes_int = "0$total_login_minutes_int";}
-        
         $table .= "  <tr class=tabfooter>\n";
         $table .= "    <td>TOTAL</td>";
         $table .= "    <td></td>\n";
         $table .= "    <td></td>\n";
         $table .= "    <td></td>\n";
-        $table .= "    <td align=right>$total_login_hours_int:$total_login_minutes_int</td>\n";
+        $table .= "    <td align=right>" . fmt_hms($total_login_time) . "</td>\n";
         $table .= "  </tr>\n";
         $table .= "</table>\n";
         
 
         
         #$stmt="select * from osdial_log where user='" . mres($agent) . "' and call_date >= '" . mres($begin_date) . " 0:00:01'  and call_date <= '" . mres($end_date) . " 23:59:59' order by call_date desc limit 10000;";
-        $stmt=sprintf("SELECT event_time, wait_sec, talk_sec, dispo_sec, pause_sec, osdial_agent_log.status, phone_number, user_group, campaign_id, list_id, osdial_agent_log.lead_id FROM osdial_agent_log, osdial_list WHERE user_group IN %s AND osdial_agent_log.lead_id=osdial_list.lead_id AND osdial_agent_log.user='%s' AND event_time >= '%s 0:00:01' AND event_time <= '%s 23:59:59' ORDER BY osdial_agent_log.event_time DESC LIMIT 10000;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date));
+        $stmt=sprintf("SELECT osdial_agent_log.event_time, osdial_agent_log.wait_sec, osdial_agent_log.talk_sec, osdial_agent_log.dispo_sec, osdial_agent_log.pause_sec, osdial_agent_log.status, osdial_list.phone_number, osdial_agent_log.user_group, osdial_agent_log.campaign_id, osdial_list.list_id, osdial_agent_log.lead_id FROM osdial_agent_log JOIN osdial_log ON (osdial_agent_log.lead_id=osdial_log.lead_id) JOIN osdial_list ON (osdial_agent_log.lead_id=osdial_list.lead_id) WHERE osdial_agent_log.user_group IN %s AND osdial_agent_log.user='%s' AND event_time BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND osdial_log.user='%s' AND call_date BETWEEN '%s 0:00:01' AND '%s 23:59:59' ORDER BY osdial_agent_log.event_time DESC LIMIT 10000;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date),$company_prefix . mres($agent),mres($begin_date),mres($end_date));
         $rslt=mysql_query($stmt, $link);
         $logs_to_print = mysql_num_rows($rslt);
         
@@ -315,24 +329,31 @@ function report_agent_stats() {
         
         
 
-        $stmt=sprintf("SELECT * FROM osdial_closer_log WHERE user_group IN %s AND user='%s' and call_date >= '%s 0:00:01'  and call_date <= '%s 23:59:59' order by call_date desc limit 10000;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date));
+
+        $stmt=sprintf("SELECT osdial_agent_log.event_time, osdial_agent_log.wait_sec, osdial_agent_log.talk_sec, osdial_agent_log.dispo_sec, osdial_agent_log.pause_sec, osdial_agent_log.status, osdial_list.phone_number, osdial_agent_log.user_group, osdial_agent_log.campaign_id, osdial_list.list_id, osdial_agent_log.lead_id FROM osdial_agent_log JOIN osdial_closer_log ON (osdial_agent_log.lead_id=osdial_closer_log.lead_id) JOIN osdial_list ON (osdial_agent_log.lead_id=osdial_list.lead_id) WHERE osdial_agent_log.user_group IN %s AND osdial_agent_log.user='%s' AND event_time BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND osdial_closer_log.user='%s' AND call_date BETWEEN '%s 0:00:01' AND '%s 23:59:59' ORDER BY osdial_agent_log.event_time DESC LIMIT 10000;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date),$company_prefix . mres($agent),mres($begin_date),mres($end_date));
         $rslt=mysql_query($stmt, $link);
         $logs_to_print = mysql_num_rows($rslt);
         
         $table .= "<br>\n";
-        $table .= "<center><b><font color=$default_text size=3>INBOUND / CLOSER CALLS</b></font></center>\n";
+        $table .= "<center><font color=$default_text size=3><b>INBOUND/CLOSER CALLS</b></font></center>\n";
         $table .= "<center>\n";
         $th=''; if ($logs_to_print>30) $th = "height:500px;";
         $table .= "<div style=\"overflow:auto;width:770px;$th\">\n";
         $table .= "<table align=center width=750 cellspacing=1 cellpadding=1 bgcolor=grey style=\"cursor:crosshair;\">\n";
         $table .= "  <tr class=tabheader>\n";
+        $table .= "    <td colspan=12 style=\"font-size: 7pt;\">W=wait&nbsp;&nbsp;&nbsp;T=talk&nbsp;&nbsp;&nbsp;D=disposition&nbsp;&nbsp;&nbsp;P=pause</td>\n";
+        $table .= "  </tr>\n";
+        $table .= "  <tr class=tabheader>\n";
         $table .= "    <td># </td>\n";
-        $table .= "    <td>DATE/TIME </td>\n";
-        $table .= "    <td>LEN</td>\n";
+        $table .= "    <td>DATE/TIME</td>\n";
+        $table .= "    <td>W</td>\n";
+        $table .= "    <td>T</td>\n";
+        $table .= "    <td>D</td>\n";
+        $table .= "    <td>P</td>\n";
         $table .= "    <td>STATUS</td>\n";
         $table .= "    <td>PHONE</td>\n";
+        $table .= "    <td>GROUP</td>\n";
         $table .= "    <td>CAMPAIGN</td>\n";
-        $table .= "    <td>WAIT</td>\n";
         $table .= "    <td>LIST</td>\n";
         $table .= "    <td>LEAD</td>\n";
         $table .= "  </tr>\n";
@@ -347,25 +368,81 @@ function report_agent_stats() {
             }
         
             $u++;
-            $row[4] = str_replace(" ", "&nbsp;", $row[4]);
-            $table .= "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[1]');\">\n";
-            $table .= "    <td title=\"Record #: $u\">$u</td>\n";
-            $table .= "    <td align=center title=\"Date/Time: $row[4]\">$row[4]</td>\n";
-            $table .= "    <td align=right title=\"Call Length: $row[7] seconds\">$row[7]</td>\n";
-            $table .= "    <td align=left title=\"Status: $row[8]\">&nbsp;&nbsp;$row[8]</td>\n";
-            $table .= "    <td align=center title=\"Phone #: $row[10]\">$row[10]</td>\n";
-            $table .= "    <td align=left title=\"Campaign ID: " . mclabel($row[3]) . "\">&nbsp;&nbsp;" . mclabel($row[3]) . "</td>\n";
-            $table .= "    <td align=right title=\"Wait Time: $row[14] seconds\">$row[14]</td>\n";
-            $table .= "    <td align=left title=\"List ID: $row[2]\">&nbsp;&nbsp;$row[2]</td>\n";
-            $table .= "    <td align=right title=\"Lead #: $row[1]\"><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[1]\" target=\"_blank\">$row[1]</a></td>\n";
+            $event = str_replace(" ", "&nbsp;", $row[0]);
+            $table .= "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[10]');\">\n";
+            $table .= "    <td align=left title=\"Record #: $u\">$u</td>\n";
+            $table .= "    <td align=center title=\"Date/Time: $event\">$event</td>\n";
+            $table .= "    <td align=right title=\"Wait Time: $row[1] seconds\">$row[1]</td>\n";
+            $table .= "    <td align=right title=\"Talk Time: $row[2] seconds\">$row[2]</td>\n";
+            $table .= "    <td align=right title=\"Disposition Time: $row[3] seconds\">$row[3]</td>\n";
+            $table .= "    <td align=right title=\"Pause Time: $row[4] seconds\">$row[4]</td>\n";
+            $table .= "    <td align=left title=\"Status: $row[5]\">&nbsp;&nbsp;$row[5]</td>\n";
+            $table .= "    <td align=center title=\"Phone #: $row[6]\">$row[6]</td>\n";
+            $table .= "    <td align=left title=\"Agent Group: " . mclabel($row[7]) . "\">" . mclabel($row[7]) . "</td>\n";
+            $table .= "    <td align=left title=\"Campaign ID: " . mclabel($row[8]) . "\">" . mclabel($row[8]) . "</td>\n";
+            $table .= "    <td align=center title=\"List ID: $row[9]\">$row[9]</td>\n";
+            $table .= "    <td align=right title=\"Lead #: $row[10]\"><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[10]\" target=\"_blank\">$row[10]</a></td>\n";
             $table .= "  </tr>\n";
         }
         $table .= "  <tr class=tabfooter>\n";
-        $table .= "    <td colspan=9></td>";
+        $table .= "    <td colspan=12></td>";
         $table .= "  </tr>\n";
         $table .= "</table>\n";
         $table .= "</div>\n";
         $table .= "</center>\n";
+        
+
+        #$stmt=sprintf("SELECT * FROM osdial_closer_log WHERE user_group IN %s AND user='%s' and call_date >= '%s 0:00:01'  and call_date <= '%s 23:59:59' order by call_date desc limit 10000;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date));
+        #$rslt=mysql_query($stmt, $link);
+        #$logs_to_print = mysql_num_rows($rslt);
+        
+        #$table .= "<br>\n";
+        #$table .= "<center><b><font color=$default_text size=3>INBOUND / CLOSER CALLS</b></font></center>\n";
+        #$table .= "<center>\n";
+        #$th=''; if ($logs_to_print>30) $th = "height:500px;";
+        #$table .= "<div style=\"overflow:auto;width:770px;$th\">\n";
+        #$table .= "<table align=center width=750 cellspacing=1 cellpadding=1 bgcolor=grey style=\"cursor:crosshair;\">\n";
+        #$table .= "  <tr class=tabheader>\n";
+        #$table .= "    <td># </td>\n";
+        #$table .= "    <td>DATE/TIME </td>\n";
+        #$table .= "    <td>LEN</td>\n";
+        #$table .= "    <td>STATUS</td>\n";
+        #$table .= "    <td>PHONE</td>\n";
+        #$table .= "    <td>CAMPAIGN</td>\n";
+        #$table .= "    <td>WAIT</td>\n";
+        #$table .= "    <td>LIST</td>\n";
+        #$table .= "    <td>LEAD</td>\n";
+        #$table .= "  </tr>\n";
+        
+        #$u=0;
+        #while ($logs_to_print > $u) {
+        #    $row=mysql_fetch_row($rslt);
+        #    if (eregi("1$|3$|5$|7$|9$", $u)) {
+        #        $bgcolor='bgcolor="' . $oddrows . '"';
+        #    } else {
+        #        $bgcolor='bgcolor="' . $evenrows . '"';
+        #    }
+        
+        #    $u++;
+        #    $row[4] = str_replace(" ", "&nbsp;", $row[4]);
+        #    $table .= "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[1]');\">\n";
+        #    $table .= "    <td title=\"Record #: $u\">$u</td>\n";
+        #    $table .= "    <td align=center title=\"Date/Time: $row[4]\">$row[4]</td>\n";
+        #    $table .= "    <td align=right title=\"Call Length: $row[7] seconds\">$row[7]</td>\n";
+        #    $table .= "    <td align=left title=\"Status: $row[8]\">&nbsp;&nbsp;$row[8]</td>\n";
+        #    $table .= "    <td align=center title=\"Phone #: $row[10]\">$row[10]</td>\n";
+        #    $table .= "    <td align=left title=\"Campaign ID: " . mclabel($row[3]) . "\">&nbsp;&nbsp;" . mclabel($row[3]) . "</td>\n";
+        #    $table .= "    <td align=right title=\"Wait Time: $row[14] seconds\">$row[14]</td>\n";
+        #    $table .= "    <td align=left title=\"List ID: $row[2]\">&nbsp;&nbsp;$row[2]</td>\n";
+        #    $table .= "    <td align=right title=\"Lead #: $row[1]\"><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[1]\" target=\"_blank\">$row[1]</a></td>\n";
+        #    $table .= "  </tr>\n";
+        #}
+        #$table .= "  <tr class=tabfooter>\n";
+        #$table .= "    <td colspan=9></td>";
+        #$table .= "  </tr>\n";
+        #$table .= "</table>\n";
+        #$table .= "</div>\n";
+        #$table .= "</center>\n";
         
         
         
