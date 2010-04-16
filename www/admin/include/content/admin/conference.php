@@ -503,9 +503,9 @@ echo "<TABLE align=center><TR><TD>\n";
 echo "<center><br><font color=$default_text size=+1>$t1 CONFERENCES</font><br><br>\n";
 echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "  <tr class=tabheader>\n";
-echo "    <td>IDB></td>\n";
-echo "    <td>SERVERB></td>\n";
-echo "    <td>EXTENSIONB></td>\n";
+echo "    <td>ID</td>\n";
+echo "    <td>SERVER</td>\n";
+echo "    <td>EXTENSION</td>\n";
 echo "    <td align=center colspan=3>LINKS</td>\n";
 echo "  </tr>\n";
 
