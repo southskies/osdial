@@ -26,6 +26,7 @@ use strict;
 use warnings;
 
 use DBI;
+use Asterisk::AGI;
 
 our $VERSION = '2.2.1.053';
 
@@ -94,32 +95,75 @@ sub new {
         foreach my $key (keys %options) {
                 $self->{$key} = $options{$key};
         }
+	$self->{DB} = 0 unless ($self->{DB});
         bless $self, $class;
 
-	print STDERR "  -- OSDial: new:  Initializing OSDial module, debug-level is " . $self->{DB} . ".\n" if ($self->{DB}>4);
+	$self->debug(1,'new',"Initializing OSDial module, debug-level is %s.",$self->{DB});
 	
         $self->_load_config();
         $self->{settings} = $self->sql_query("SELECT * FROM system_settings LIMIT 1;");
+	foreach my $st (keys %{$self->{settings}}) {
+		$self->debug(4,'new','    %-30s => %-30s.',$st,$self->{settings}{$st});	
+	}
         $self->{server} = $self->sql_query(sprintf("SELECT * FROM servers WHERE server_ip='%s';", $self->{VARserver_ip}));
+	foreach my $st (keys %{$self->{server}}) {
+		$self->debug(4,'new','    %-30s => %-30s.',$st,$self->{server}{$st});	
+	}
         return $self;
 }
 
+# Start AGI when called first time, Allows for passing commands on subsequest requests.
+# use OSDial;
+# my $osdial = new OSDial;
+# $osdial->AGI('agi-script_name.agi');
+# $osdial->AGI->verbose("OSDial Rocks",1);
+# $osdial->AGI->hangup();
+#
+sub AGI {
+	my ($self,$mod) = @_;
+	if (!defined $self->{_agi}) {
+		die "  -- OSDial [AGI]: Function must be passed the name of the calling module." unless ($mod);
+
+		$self->{_agi} = new Asterisk::AGI;
+		my %aout = $self->{_agi}->ReadParse();
+		$self->agi_output("AGI Environment Dump:");
+		foreach my $i (sort keys %aout) {
+		        $self->{_agi}{$i} = $aout{$i};
+		        $self->agi_output(" -- $i = " . $self->{_agi}{$i});
+		}
+		$self->{_agi}{mod} = $mod;
+		return 1;
+	}
+	return $self->{_agi};
+}
+
+
+
+sub debug {
+	my ($self, $lev, $mod, $string, @params) = @_;
+	if($self->{DB}>=$lev) {
+		my $p = 2+$lev;
+		my @sprint = (' ',$mod,@params);
+		$string .= "\n" unless($string =~ /\n$/);
+		print STDERR sprintf('%'.$p.'s-- OSDial [%s]:  '.$string,@sprint);
+	}
+}
 
 sub _load_config {
 	my $self = shift;
         if (-e $self->{PATHconf}) {
-		print STDERR "  -- OSDial: _load_config:  Loading configuration file (" . $self->{DB} . ").\n" if ($self->{DB}>4);
+		$self->debug(4,'_load_config',"Loading configuration file (%s).",$self->{PATHconf});
         	open(CONF, $self->{PATHconf}) or die 'OSDial: Error opening ' . $self->{PATHconf} . "\n";
         	while (my $line = <CONF>) {
         	        $line =~ s/ |>|"|'|\n|\r|\t|\#.*|;.*//gi;
         	        if ($line =~ /=|:/) {
         	                my($key,$val) = split /=|:/, $line;
         	                $self->{$key} = $val;
-				print STDERR "  -- OSDial: _load_config:    Setting: $key    => $val\n" if ($self->{DB}>4);
+				$self->debug(4,'_load_config',"    %-40s => %-40s.",$key,$val);
         	        }
         	}
 	} else {
-		print STDERR '  -- OSDial: _load_config:  Configuration file (' . $self->{PATHconf} . ") does not exist.\n";
+		$self->debug(0,'_load_config',"Configuration file (%s) does not exist.",$self->{PATHconf});
 	}
 }
 
@@ -130,7 +174,7 @@ sub sql_connect {
 	$self->{_sql}{$dbh} = {'connected'=>0} if (!defined $self->{_sql}{$dbh});
 	if ($self->{_sql}{$dbh}{connected}<1) {
 		my $dsn = 'DBI:mysql:' . $self->{VARDB_database} . ':' . $self->{VARDB_server} . ':' . $self->{VARDB_port};
-		print STDERR "  -- OSDial: sql_connect:  Connecting to dbh $dbh at DSN: $dsn.\n" if ($self->{DB}>9);
+		$self->debug(5,'sql_connect',"Connecting to dbh %s at DSN: %s.",$dbh,$dsn);
 		$self->{_sql}{$dbh}{dbh} = DBI->connect($dsn,$self->{VARDB_user},$self->{VARDB_pass}) or die '  -- OSDial: sql_connect:  ERROR ' . $self->{_sql}{$dbh}{dbh}->errstr;
 		$self->{_sql}{$dbh}{dbh}{PrintError} = 0;
 		$self->{_sql}{$dbh}{connected} = 1;
@@ -142,7 +186,7 @@ sub sql_disconnect {
 	$dbh = 'A' unless ($dbh);
 	$self->{_sql}{$dbh} = {'connected'=>0} if (!defined $self->{_sql}{$dbh});
 	if ($self->{_sql}{$dbh}{connected}>0) {
-		print STDERR "  -- OSDial: sql_disconnect:  Disconnecting from dbh $dbh.\n" if ($self->{DB}>9);
+		$self->debug(5,'sql_disconnect',"Disconnecting from dbh %s.",$dbh);
 		$self->{_sql}{$dbh}{dbh}->disconnect();
 		$self->{_sql}{$dbh}{connected} = 0;
 	}
@@ -190,7 +234,7 @@ sub sql_query {
 
 			# stmt is blank or same, but query already finished, clear and exit.
 			} elsif ($stmt eq '' or $stmt eq $self->{_sql}{$dbh}{last_stmt}) {
-				print STDERR "  -- OSDial: sql_query $dbh:    [iteration]  already sent last row for this query, sending undef and exiting.\n" if ($self->{DB}>9);
+				$self->debug(9,'sql_query',"DBH %-6s  [iteration]  already sent last row for this query, sending undef and exiting.",$dbh);
 				delete $self->{_sql}{$dbh}{last_stmt};
 				delete $self->{_sql}{$dbh}{rows};
 				delete $self->{_sql}{$dbh}{row};
@@ -201,7 +245,7 @@ sub sql_query {
 		if (defined $self->{_sql}{$dbh}{sth}) {
 			# They current and previous run differ, clear and run new stmt.
 			if ($stmt ne '' and $stmt ne $self->{_sql}{$dbh}{last_stmt}) {
-				print STDERR "  -- OSDial: sql_query $dbh:    [iteration]  last_stmt and stmt differ, clearing and moving on.\n" if ($self->{DB}>9);
+				$self->debug(9,'sql_query',"DBH %-6s  [iteration]  last_stmt and stmt differ, clearing and moving on.",$dbh);
 				$self->{_sql}{$dbh}{sth}->finish();
 				delete $self->{_sql}{$dbh}{last_stmt};
 				delete $self->{_sql}{$dbh}{rows};
@@ -210,7 +254,7 @@ sub sql_query {
 
 			# stmt is blank, so lets set it to the last_stmt.
 			} elsif ($stmt eq '' or $stmt eq $self->{_sql}{$dbh}{last_stmt}) {
-				print STDERR "  -- OSDial: sql_query $dbh:    [iteration]  stmt blank or same as last_stmt, moving on.\n" if ($self->{DB}>9);
+				$self->debug(9,'sql_query',"DBH %-6s  [iteration]  stmt blank or same as last_stmt, moving on.",$dbh);
 				$self->{_sql}{$dbh}{last_stmt} = $stmt;
 			}
 		}
@@ -218,7 +262,7 @@ sub sql_query {
 
 	# If connected to DB and sth has not been defined, issue query.
 	if (defined $self->{_sql}{$dbh}{dbh} and !defined $self->{_sql}{$dbh}{sth}) {
-		print STDERR "  -- OSDial: sql_query $dbh:  [execute query]  $stmt.\n" if ($self->{DB}>9);
+		$self->debug(5,'sql_query',"DBH %-6s  [execute]  STMT:  %s",$dbh, $stmt);
         	$self->{_sql}{$dbh}{sth} = $self->{_sql}{$dbh}{dbh}->prepare($stmt) or die "  -- OSDial: sql_query $dbh:  ERROR " . $self->{_sql}{$dbh}{dbh}->errstr;
         	$self->{_sql}{$dbh}{sth}->execute or die "  -- OSDial: sql_query $dbh:  ERROR " . $self->{_sql}{$dbh}{dbh}->errstr;
 		$self->{_sql}{$dbh}{rows} = 0;
@@ -232,23 +276,23 @@ sub sql_query {
 		if (!defined $self->{_sql}{$dbh}{row}) {
 			$self->{_sql}{$dbh}{row} = 0;
 			$self->{_sql}{$dbh}{rows} = $self->{_sql}{$dbh}{sth}->rows();
-			print STDERR "  -- OSDial: sql_query $dbh:  [set rows]  Total rows found: " . $self->{_sql}{$dbh}{rows} . ".\n" if ($self->{DB}>9);
+			$self->debug(5,'sql_query',"DBH %-6s  [row_count]  %s",$dbh, $self->{_sql}{$dbh}{row});
 		}
 
 		# Test if we were just initializing or if we are running.
 		if ($opts->{init} > 0) {
-			print STDERR "  -- OSDial: sql_query $dbh:  [init]  Init is set, returning before getting first row.\n" if ($self->{DB}>9);
+			$self->debug(9,'sql_query',"DBH %-6s  [init]  Init is set, returning before getting first row.",$dbh);
 			return $self->{_sql}{$dbh}{rows};
 		} else {
 			# Get the record and increment count if we find one.
-			print STDERR "  -- OSDial: sql_query $dbh:    [fetch row]  Getting row, iteration #: " . $self->{_sql}{$dbh}{row} . ".\n" if ($self->{DB}>9);
+			$self->debug(6,'sql_query',"DBH %-6s  [fetch_row]  Getting row, iteration # %s.",$dbh, $self->{_sql}{$dbh}{row});
         		$row = $self->{_sql}{$dbh}{sth}->fetchrow_hashref;
 			$row->{ROW} = ++$self->{_sql}{$dbh}{row} if ($row);
 		}
 
 		# If row count and current row are equal destroy sth and return row if there is one.
 		if ($self->{_sql}{$dbh}{row} == $self->{_sql}{$dbh}{rows}) {
-			print STDERR "  -- OSDial: sql_query $dbh:    [last row]  Reached last row, exiting.\n" if ($self->{DB}>9);
+			$self->debug(7,'sql_query',"DBH %-6s  [last_row]  Reached last row, exiting.",$dbh);
 			$self->{_sql}{$dbh}{sth}->finish();
 			delete $self->{_sql}{$dbh}{sth};
 		}
@@ -284,7 +328,7 @@ sub sql_execute {
 
 	return $self->sql_query($opts) if ($stmt =~ /^select/i);
 
-	print STDERR "  -- OSDial: sql_execute $dbh:  executing: $stmt.\n" if ($self->{DB}>9);
+	$self->debug(5,'sql_query',"DBH %-6s  [execute]  STMT:  %s",$dbh, $stmt);
 	$self->{_sql}{$dbh}{rows} = $self->{_sql}{$dbh}{dbh}->do($stmt) or die "  -- OSDial: sql_execute $dbh:  ERROR " . $self->{_sql}{$dbh}{dbh}->errstr;
 	return $self->{_sql}{$dbh}{rows};
 }
@@ -304,20 +348,20 @@ sub get_date {
 
 
 sub agi_output {
-	my ($self,$script,$AGI,$agi_string,$extinfo) = @_;
-	if ($self->{server}{agi_output} and $script and $AGI and $agi_string) {
-		$agi_string .= '|' . $AGI->{uniqueid} if ($AGI->{uniqueid});
-		$agi_string .= '|' . $AGI->{CIDlead_id} if ($AGI->{CIDlead_id});
-		$agi_string .= '|' . join('|',$AGI->{channel},$AGI->{extension},$AGI->{priority},$AGI->{type},$AGI->{accountcode}) if ($extinfo);
+	my ($self,$agi_string,$extinfo) = @_;
+	if ($self->{server}{agi_output} and $self->{_agi}{mod} and $self->{_agi} and $agi_string) {
+		$agi_string .= '|' . $self->{_agi}{uniqueid} if ($self->{_agi}{uniqueid});
+		$agi_string .= '|' . $self->{_agi}{CIDlead_id} if ($self->{_agi}{CIDlead_id});
+		$agi_string .= '|' . join('|',$self->{_agi}{channel},$self->{_agi}{extension},$self->{_agi}{priority},$self->{_agi}{type},$self->{_agi}{accountcode}) if ($extinfo);
 		if ($self->{server}{agi_output} =~ /FILE|BOTH/) {
 			### open the log file for writing ###
         		my $logfile = $self->{PATHlogs} . '/agiout.' . $self->get_date();
 			open(Lout, '>>' . $logfile) or die '  -- OSDial: agi_output:  Error opening ' . $logfile . "\n";
-			print Lout sprintf("\%s|\%s|\%s|\%s\n",$self->get_datetime(),$script,$$,$agi_string);
+			print Lout sprintf("\%s|\%s|\%s|\%s\n",$self->get_datetime(),$self->{_agi}{mod},$$,$agi_string);
 			close(Lout);
 		}
 		### send to STDERR writing ###
-		print STDERR sprintf("\%s|\%s|\%s|\%s\n",$self->get_datetime(),$script,$$,$agi_string) if ($self->{server}{agi_output} =~ /STDERR|BOTH/ or $self->{DB} > 1);
+		$self->debug(2,'agi_output','%s|%s|%s|%s',$self->get_datetime(),$self->{_agi}{mod},$$,$agi_string) if ($self->{server}{agi_output} =~ /STDERR|BOTH/);
 	}
 }
 
