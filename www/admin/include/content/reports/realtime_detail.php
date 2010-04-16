@@ -924,7 +924,8 @@ function report_realtime_detail() {
             $Lstatus =          $Astatus[$i];
             $status =           sprintf("%-6s", $Astatus[$i]);
             $Lsessionid =       $Asessionid[$i];
-            if ($Auser_connected[$i] == 0) { $Lsessionid='-------'; $Lstatus='AGTPHN'; }
+            #if ($Auser_connected[$i] == 0) { $Lsessionid='-------'; $Lstatus='AGTPHN'; }
+            if ($Auser_connected[$i] == 0) { $Lstatus='AGTPHN'; }
             $sessionid =        sprintf("%-9s", $Lsessionid);
             $server_ip =        sprintf("%-15s", $Aserver_ip[$i]);
             $call_server_ip =   sprintf("%-15s", $Acall_server_ip[$i]);
