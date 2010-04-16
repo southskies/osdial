@@ -277,7 +277,7 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 				}
 
             $time_diff = 0; $sql_diff = 0; $dialer_diff = 0;
-            if (preg_match('0$',$StarTtime)) {
+            if (preg_match('/0$/',$StarTtime)) {
                 $web_epoch = date("U");
                 $stmt="select UNIX_TIMESTAMP(last_update),UNIX_TIMESTAMP(sql_time) from server_updater where server_ip='$server_ip';";
                 if ($DB) {echo "|$stmt|\n";}
