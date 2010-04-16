@@ -270,16 +270,26 @@ reload() {
 		echo
 	fi
 
-	if [ $KFAGI -eq 1 -o $KAST -eq 1 ]; then
+	KOSD=0
+	if [ -n "`ps -ef | grep OSD | grep -v grep`" ]; then
+		KOSD=1
+		echo -n $"OSDial: Stopping OSD processes: "
+		kill -9 `ps -ef | grep OSD | awk '{ print $2 }' | grep -v grep` > /dev/null 2>&1
+		let ret+=$?;
+    		[ $ret -eq 0 ] && success || failure
+		echo
+	fi
+
+	if [ $KFAGI -eq 1 -o $KAST -eq 1 -o $KOSD -eq 1 ]; then
 		TIME=`date +%H:%M:%S`
 		SEC=`date +%S`
 		let STS=60-$SEC
-		echo -n $"OSDial: Starting (${STS}sec)."
-		while [ $STS -gt 1 ]; do
-			let STS=$STS-4
-			echo -n "."
-			sleep 4
-		done
+		echo -n $"OSDial: Starting in approx. ${STS}sec"
+		#while [ $STS -gt 1 ]; do
+		#	let STS=$STS-4
+		#	echo -n "."
+		#	sleep 4
+		#done
 		echo -n ": "
 		let ret+=$?;
     		[ $ret -eq 0 ] && success || failure
