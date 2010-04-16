@@ -7,6 +7,11 @@ require('admin/templates/' . $system_settings['admin_template'] . '/display.php'
 <html>
 <head><title>Choose Login:</title></head>
 <body>
+<?
+    $browser = getenv("HTTP_USER_AGENT");
+    if (!preg_match('/wget/i',$browser)) {
+?>
+
 <script language="javascript">
     // OSDial font function.
     //   id = html id
@@ -64,6 +69,7 @@ require('admin/templates/' . $system_settings['admin_template'] . '/display.php'
         document.getElementById(id).innerHTML = osdhtml;
     }
 </script>
+<? } ?>
 <br><br><br>
 
 <table align=center border=0 align=center width=518 height=368 background="admin/templates/<?=$system_settings['admin_template']?>/images/osdial-bg.png">
