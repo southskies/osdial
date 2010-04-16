@@ -149,7 +149,9 @@ if ($LOGview_reports==1) {
             echo report_usergroup_hourly();
         }
     }
-    include($WeBServeRRooT . '/admin/include/content/reports/custom.php');
+    if (file_exists($WeBServeRRooT . '/admin/include/content/reports/custom.php')) {
+        include($WeBServeRRooT . '/admin/include/content/reports/custom.php');
+    }
 } else {
     echo "<font color=red>You do not have permission to view this page</font>\n";
 }
