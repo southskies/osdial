@@ -1726,20 +1726,23 @@ else
 
         $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $row[0] . "'");
         $hidebuttons = "document.getElementById('SCRIPT_MAIN').style.display='none';";
-        foreach ($buttons as $button) {
-            $hidebuttons .= "document.getElementById('SCRIPT_" . $button['script_button_id'] . "').style.display='none';";
-        }
 
-        foreach ($buttons as $button) {
-            $PMMscripttext .= "<span style=\"display:none;\" id=\"SCRIPT_" . $button['script_button_id'] . "\">";
-            $PMMscripttext .= "<center><input type=\"button\" value=\"MAIN\" onclick=\"$hidebuttons document.getElementById('SCRIPT_MAIN').style.display='block';\"></center><br>";
-            $PMMscripttext .= $button['script_button_text'];
-            $PMMscripttext .= "</span>";
-        }
+        if (is_array($buttons)) {
+            foreach ($buttons as $button) {
+                $hidebuttons .= "document.getElementById('SCRIPT_" . $button['script_button_id'] . "').style.display='none';";
+            }
 
-        foreach ($buttons as $button) {
-            $hbutton = "<input type=\"button\" value=\"" . $button['script_button_label'] . "\" onclick=\"$hidebuttons document.getElementById('SCRIPT_" . $button['script_button_id'] . "').style.display='block';\">";
-            $PMMscripttext = eregi_replace('\{\{' . $button['script_button_id'] . '\}\}',$hbutton,$PMMscripttext);
+            foreach ($buttons as $button) {
+                $PMMscripttext .= "<span style=\"display:none;\" id=\"SCRIPT_" . $button['script_button_id'] . "\">";
+                $PMMscripttext .= "<center><input type=\"button\" value=\"MAIN\" onclick=\"$hidebuttons document.getElementById('SCRIPT_MAIN').style.display='block';\"></center><br>";
+                $PMMscripttext .= $button['script_button_text'];
+                $PMMscripttext .= "</span>";
+            }
+
+            foreach ($buttons as $button) {
+                $hbutton = "<input type=\"button\" value=\"" . $button['script_button_label'] . "\" onclick=\"$hidebuttons document.getElementById('SCRIPT_" . $button['script_button_id'] . "').style.display='block';\">";
+                $PMMscripttext = eregi_replace('\{\{' . $button['script_button_id'] . '\}\}',$hbutton,$PMMscripttext);
+            }
         }
 
 
@@ -3075,7 +3078,9 @@ foreach ($forms as $form) {
 <?
     echo "<script language=\"Javascript\">\n";
 
-    include('include/' . $VD_campaign . '_form_validation.js');
+    if (file_exists($WeBServeRRooT . '/agent/include/' . $VD_campaign . '_form_validation.js')) {
+        include($WeBServeRRooT . '/agent/include/' . $VD_campaign . '_form_validation.js');
+    }
 
     echo "</script>\n";
 ?>
