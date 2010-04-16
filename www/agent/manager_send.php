@@ -357,6 +357,12 @@ if ($ACTION=="OriginateVDRelogin")
 	$queryCID = "$SIPSAK_prefix$campaign$DS$CIDdate";
 
 	}
+    $user_channel = $channel;
+    if ($protocol == 'EXTERNAL' or $protocol == 'Local') {
+        $user_channel .= '@' . $ext_context;
+    }
+    $outbound_cid_name = "OSDial#$user_channel";
+    $outbound_cid = "0000000000";
 	$ACTION="Originate";
 }
 

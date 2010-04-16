@@ -452,7 +452,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 
 	push @list_channels, "Response: Follows\r\n";
 	push @list_channels, "Privilege: Command\r\n";
-	$stmtD = "SELECT if(substr(c.callerid_name,1,7)='OSDial#' AND c.accountcode LIKE 'S___________________',substr(c.callerid_name,8),c.channel),c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.flags,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto)";
+	$stmtD = "SELECT if(substr(c.callerid_name,1,7)='OSDial#' AND (c.accountcode LIKE 'S___________________' OR c.accountcode LIKE 'ACagcW______________'),substr(c.callerid_name,8),c.channel),c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.flags,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto)";
 	if($DB){print STDERR "|$stmtD|\n";}
 	$sthD = $dbhD->prepare($stmtD) or die "preparing: ",$dbhD->errstr;
 	$sthD->execute or die "executing: $stmtD ", $dbhD->errstr;
