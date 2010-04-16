@@ -886,7 +886,7 @@ function report_realtime_detail() {
                 $Alogin[$i] = "$Aextension[$i]-----$i";
             }
 
-            if ($Acomments[$i] == "INBOUND") {
+            if ($Acomments[$i] == "INBOUND" or preg_match('/^R\//',$Aextension[$i])) {
                 $Auser_connected[$i] = 1;
             } else {
                 $stmt=sprintf("SELECT count(*) FROM live_sip_channels WHERE channel LIKE '%s%%' AND server_ip='%s' AND extension='%s';",mres($Achannel[$i]),mres($Aserver_ip[$i]),mres($Asessionid[$i]));
