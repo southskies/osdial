@@ -174,10 +174,10 @@ sub set_campaign_stats {
 	chop($ainsmulti);
 	chop($sinsmulti);
 	print "  -- OSDcampaign_stats.pl: set_campaign_stats: cins: " . $cinshead . $cinsmulti . $cinsonupd . "\n\n\n" if ($osdial->{DB}>1);
-	print "  -- OSDcampaign_stats.pl: set_campaign_stats: ains: " . $ainshead . $ainsmulti . $ainsonupd . "\n\n\n" if ($osdial->{DB}>1);
-	print "  -- OSDcampaign_stats.pl: set_campaign_stats: sins: " . $sinshead . $sinsmulti . $sinsonupd . "\n\n\n" if ($osdial->{DB}>1);
 	$osdial->sql_execute($cinshead . $cinsmulti . $cinsonupd);
+	print "  -- OSDcampaign_stats.pl: set_campaign_stats: ains: " . $ainshead . $ainsmulti . $ainsonupd . "\n\n\n" if ($osdial->{DB}>1);
 	$osdial->sql_execute($ainshead . $ainsmulti . $ainsonupd);
+	print "  -- OSDcampaign_stats.pl: set_campaign_stats: sins: " . $sinshead . $sinsmulti . $sinsonupd . "\n\n\n" if ($osdial->{DB}>1);
 	$osdial->sql_execute($sinshead . $sinsmulti . $sinsonupd);
 	return 1;
 }
@@ -252,7 +252,7 @@ sub get_campaign_stats {
 
 
 	# Start campaign stat data collection
-	while (my $res = $osdial->sql_query("SELECT * from osdial_log where call_date >= '$today';")) {
+	while (my $res = $osdial->sql_query("SELECT osdial_log.* FROM osdial_log JOIN osdial_campaigns ON (osdial_log.campaign_id=osdial_campaigns.campaign_id) where call_date >= '$today';")) {
 		if ($res->{campaign_id} ne "") {
 			my $agent    = $res->{user};
 			my $campaign = $res->{campaign_id};
