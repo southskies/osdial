@@ -424,6 +424,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 	var multicomp = '<? echo $multicomp ?>';
 
+	var recording_id = 0;
+
 	var PCSpause = 0;
 
 	var debugWindowOpened = 0;
@@ -440,6 +442,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Send Hangup command for Live call connected to phone now to Manager
 	function livehangup_send_hangup(taskvar) {
+		debug("<b>livehangup_send_hangup:</b> taskvar=" + taskvar,2);
 		var xmlhttp=false;
 		/*@cc_on @*/
 		/*@if (@_jscript_version >= 5)
@@ -479,6 +482,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	// ################################################################################
 	// Send volume control command for meetme participant
 	function volume_control(taskdirection,taskvolchannel,taskagentmute) {
+		debug("<b>volume_control:</b> taskdirection=" + taskdirection + " taskvolchannel=" + taskvolchannel + " taskagentmute=" + taskagentmute,2);
 		if (taskagentmute=='AgenT') {
 			taskvolchannel = agentchannel;
 		}
@@ -531,6 +535,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // park customer and place 3way call
 	function xfer_park_dial() {
+		debug("<b>xfer_park_dial</b>",2);
 		mainxfer_send_redirect('ParK',lastcustchannel,lastcustserverip);
 
 		SendManualDial('YES');
@@ -539,6 +544,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // place 3way and customer into other conference and fake-hangup the lines
 	function leave_3way_call(tempvarattempt) {
+		debug("<b>leave_3way_call:</b> tempvarattempt=" + tempvarattempt,2);
 		mainxfer_send_redirect('3WAY','','',tempvarattempt);
 
 		//document.osdial_form.callchannel.value = '';
@@ -556,6 +562,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // filter manual dialstring and pass on to originate call
 	function SendManualDial(taskFromConf) {
+		debug("<b>SendManualDial:</b> taskFromConf=" + taskFromConf,2);
 		var regXFvars = new RegExp("XFER","g");
 		if (taskFromConf == 'YES') {
                         if (document.osdial_form.xfernumber.value == '' && CalL_XC_a_NuMber.match(regXFvars)) {
@@ -595,6 +602,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Send Originate command to manager to place a phone call
 	function basic_originate_call(tasknum,taskprefix,taskreverse,taskdialvalue,tasknowait,taskconfxfer) {
+		debug("<b>basic_originate_call:</b> tasknum=" + tasknum + " taskprefix=" + taskprefix + " taskreverse=" + taskreverse + " taskdialvalue=" + taskdialvalue+ " tasknowait=" + tasknowait + " taskconfxfer=" + taskconfxfer,2);
 		var regCXFvars = new RegExp("CXFER","g");
 		var tasknum_string = tasknum.toString();
 		if (tasknum_string.match(regCXFvars)) {
@@ -710,6 +718,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // filter conf_dtmf send string and pass on to originate call
 	function SendConfDTMF(taskconfdtmf) {
+		debug("<b>SendConfDTMF:</b> taskconfdtmf=" + taskconfdtmf,2);
 		var dtmf_number = document.osdial_form.conf_dtmf.value;
 		var dtmf_string = dtmf_number.toString();
 		var conf_dtmf_room = taskconfdtmf;
@@ -751,6 +760,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Check to see if there are any channels live in the agent's conference meetme room
 	function check_for_conf_calls(taskconfnum,taskforce) {
+		debug("<b>check_for_conf_calls:</b> taskconfnum=" + taskconfnum + " taskforce=" + taskforce,5);
 		if (typeof(xmlhttprequestcheckconf) == "undefined") {
 			//alert (xmlhttprequestcheckconf == xmlhttpSendConf);
 			custchannellive--;
@@ -987,6 +997,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Send MonitorConf/StopMonitorConf command for recording of conferences
 	function conf_send_recording(taskconfrectype,taskconfrec,taskconffile) {
+		debug("<b>check_send_recording:</b> taskconfrectype=" + taskconfrectype + " taskconfrec=" + taskconfrec + " taskconffile=" + taskconffile,2);
 		var xmlhttp=false;
 		/*@cc_on @*/
 		/*@if (@_jscript_version >= 5)
@@ -1068,6 +1079,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						} 
 						document.getElementById("RecorDingFilename").innerHTML = RecDispNamE;
 						document.getElementById("RecorDID").innerHTML = RClookID_array[1];
+						recording_id = RClookID_array[1];
 					}
 				}
 			}
@@ -1079,6 +1091,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // Send Redirect command for live call to Manager sends phone name where call is going to
 // Covers the following types: XFER, VMAIL, ENTRY, CONF, PARK, FROMPARK, XfeRLOCAL, XfeRINTERNAL, XfeRBLIND, VfeRVMAIL
 	function mainxfer_send_redirect(taskvar,taskxferconf,taskserverip,taskdebugnote) {
+		debug("<b>mainxfer_send_redirect:</b> taskvar=" + taskvar + " taskxferconf=" + taskxferconf + " taskserverip=" + taskserverip + " taskdebugnote=" + taskdebugnote,2);
 		if (auto_dial_level == 0) {
 			RedirecTxFEr = 1;
 		}
@@ -1306,6 +1319,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Finish the alternate dialing and move on to disposition the call
 	function ManualDialAltDonE() {
+		debug("<b>ManualDialAltDonE:</b>",2);
 		alt_phone_dialing=starting_alt_phone_dialing;
 		alt_dial_active = 0;
 		open_dispo_screen=1;
@@ -1315,6 +1329,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Insert or update the osdial_log entry for a customer call
 	function DialLog(taskMDstage) {
+		debug("<b>DialLog:</b> taskMDstage=" + taskMDstage,2);
 		if (taskMDstage == "start") {
 			var MDlogEPOCH = 0;
             var UID_test = document.osdial_form.uniqueid.value;
@@ -1392,6 +1407,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 								}
 								document.getElementById("RecorDingFilename").innerHTML = RecDispNamE;
 								document.getElementById("RecorDID").innerHTML = MDlogRecorDings_array[3];
+								recording_id = MDlogRecorDings_array[3];
 							}
 						}
 					}
@@ -1406,6 +1422,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Request number of USERONLY callbacks for this agent
 	function CalLBacKsCounTCheck() {
+		debug("<b>CalLBacKsCounTCheck:</b>",4);
 		var xmlhttp=false;
 		/*@cc_on @*/
 		/*@if (@_jscript_version >= 5)
@@ -1451,6 +1468,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Request list of USERONLY callbacks for this agent
 	function CalLBacKsLisTCheck() {
+		debug("<b>CalLBacKsLisTCheck:</b>",2);
 		if ( (VD_live_customer_call==1) || (alt_dial_active==1) ) {
 			alert("You must hangup and disposition your active call\nbefore you can place a call to a callback. ");
 		} else {
@@ -1528,6 +1546,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Open up a callback customer record as manual dial preview mode
 	function new_callback_call(taskCBid,taskLEADid) {
+		debug("<b>new_callback_call:</b> taskCBid=" + taskCBid + " taskLEADid=" + taskLEADid,2);
 		alt_phone_dialing=1;
 		auto_dial_level=0;
 		manual_dial_in_progress=1;
@@ -1544,6 +1563,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Finish Callback and go back to original screen
 	function manual_dial_finished() {
+		debug("<b>manual_dial_finished:</b>",2);
 		alt_phone_dialing=starting_alt_phone_dialing;
 		auto_dial_level=starting_dial_level;
 		MainPanelToFront();
@@ -1556,6 +1576,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Open page to enter details for a new manual dial lead
 	function NeWManuaLDiaLCalL(TVfast) {
+		debug("<b>NeWManuaLDiaLCalL:</b> TVfast=" + TVfast,2);
 		dial_timedout=0;
 		if ( (VD_live_customer_call==1) || (alt_dial_active==1) ) {
 			alert("You must hangup and disposition your active call\nbefore you can place a call to a manually entered number. ");
@@ -1576,6 +1597,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Insert the new manual dial as a lead and go to manual dial screen
 	function NeWManuaLDiaLCalLSubmiT() {
+		debug("<b>NeWManuaLDiaLCalLSubmiT:</b>",2);
 		dial_timedout=0;
 		hideDiv('NeWManuaLDiaLBox');
 		var MDDiaLCodEform = document.osdial_form.MDDiaLCodE.value;
@@ -1607,6 +1629,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Fast version of manual dial
 	function NeWManuaLDiaLCalLSubmiTfast() {
+		debug("<b>NeWManuaLDiaLCalLSubmiTfast:</b>",2);
 		dial_timedout=0;
 		if ( document.osdial_form.phone_code.value.length < 1  ) {
 			document.osdial_form.phone_code.value = "1";
@@ -1637,6 +1660,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Request lookup of manual dial channel
 	function ManualDialCheckChanneL(taskCheckOR) {
+		debug("<b>ManualDialCheckChanneL:</b>",4);
 		if (taskCheckOR == 'YES') {
 			var CIDcheck = XDnextCID;
 		} else {
@@ -1810,6 +1834,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Send the Manual Dial Next Number request
 	function ManualDialNext(mdnCBid,mdnBDleadid,mdnDiaLCodE,mdnPhonENumbeR,mdnStagE) {
+		debug("<b>ManualDialNext:</b> mdnCBid=" + mdnCBid + " mdnBDleadid=" + mdnBDleadid + " mdnDiaLCodE=" + mdnDiaLCodE + " mdnPhonENumbeR=" + mdnPhonENumbeR + " mdnStagE=" + mdnStagE,2);
 		dial_timedout=0;
 		if (previewFD_time > 0) {
 			clearTimeout(previewFD_timeout_id);
@@ -2052,6 +2077,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
         $cnt++;
     }
 ?>
+							"&recording_id=" + recording_id + 
 							webform_session;
 						
 						//$OSDIAL_web_QUERY_STRING =~ s/ /+/gi;
@@ -2168,6 +2194,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Send the Manual Dial Skip
 	function ManualDialSkip() {
+		debug("<b>ManualDialSkip:</b>",2);
 		dial_timedout=0;
 		if (manual_dial_in_progress==1) {
 			alert('You cannot skip a Call-Back or a call placed to a manually entered number.');
@@ -2279,6 +2306,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Send the Manual Dial Only - dial the previewed lead
 	function ManualDialOnly(taskaltnum) {
+		debug("<b>ManualDialOnly:</b> taskaltnum=" + taskaltnum,2);
 		dial_timedout=0;
 		if (previewFD_time > 0) {
 			clearTimeout(previewFD_timeout_id);
@@ -2410,6 +2438,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Set the client to READY and start looking for calls (VDADready, VDADpause)
 	function AutoDial_ReSume_PauSe(taskaction,taskagentlog,taskwrapup) {
+		debug("<b>AutoDial_ReSume_PauSe:</b> taskaction=" + taskaction + " taskagentlog=" + taskagentlog + " taskwrapup=" + taskwrapup,2);
 		if (taskaction == 'VDADready') {
 			var VDRP_stage = 'READY';
 			if (INgroupCOUNT > 0) {
@@ -2464,7 +2493,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		}
 		if (xmlhttp) { 
 			autoDiaLready_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=" + taskaction + "&user=" + user + "&pass=" + pass + "&stage=" + VDRP_stage + "&agent_log_id=" + agent_log_id + "&agent_log=" + taskagentlog + "&wrapup=" + taskwrapup + "&campaign=" + campaign;
-			debug("AutoDial_ReSume_PauSe called: vdc_db_query.php?" + autoDiaLready_query,4);
+			debug("<b>AutoDial_ReSume_PauSe called:</b> vdc_db_query.php?" + autoDiaLready_query,4);
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 			xmlhttp.send(autoDiaLready_query); 
@@ -2473,10 +2502,10 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 					var check_dispo = null;
 					check_dispo = xmlhttp.responseText;
 					var check_DS_array=check_dispo.split("\n");
-					debug("AutoDial_ReSume_PauSe return: " + check_DS_array[0] + "|" + check_DS_array[1] + "|" + check_DS_array[2] + "|",3);
+					debug("<b>AutoDial_ReSume_PauSe return:</b> " + check_DS_array[0] + "|" + check_DS_array[1] + "|" + check_DS_array[2] + "|",3);
 					if (check_DS_array[1] == 'Next agent_log_id:' && taskagentlog=="NEW_ID") {
 						agent_log_id = check_DS_array[2];
-						debug("AutoDial_ReSume_PauSe agent_log_id set: " + agent_log_id,4);
+						debug("<b>AutoDial_ReSume_PauSe agent_log_id set:</b> " + agent_log_id,4);
 					}
 				}
 			}
@@ -2489,6 +2518,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Check to see if there is a call being sent from the auto-dialer to agent conf
 	function ReChecKCustoMerChaN() {
+		debug("<b>ReChecKCustoMerChaN:</b>",2);
 		var xmlhttp=false;
 		/*@cc_on @*/
 		/*@if (@_jscript_version >= 5)
@@ -2541,6 +2571,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Check to see if there is a call being sent from the auto-dialer to agent conf
 	function check_for_auto_incoming() {
+		debug("<b>check_for_auto_incoming:</b>",5);
 		if (typeof(xmlhttprequestcheckauto) == "undefined") {
 			all_record = 'NO';
 			all_record_count=0;
@@ -2826,6 +2857,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
         $cnt++;
     }
 ?>
+								"&recording_id=" + recording_id + 
 								webform_session;
 							
 							var regWFspace = new RegExp(" ","ig");
@@ -2927,6 +2959,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Check to see if there is a call being sent from the auto-dialer to agent conf
 	function RepullLeadData(lookup) {
+		debug("<b>RepullLeadData:</b> lookup=" + lookup,2);
 		if (typeof(xmlhttprequestrepull) == "undefined") {
 			var oldlead = document.osdial_form.lead_id.value;
 			var oldphone = document.osdial_form.phone_number.value;
@@ -3077,6 +3110,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
         $cnt++;
     }
 ?>
+								"&recording_id=" + recording_id + 
 								webform_session;
 							
 							var regWFspace = new RegExp(" ","ig");
@@ -3123,6 +3157,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // refresh the content of the web form URL
 	function WebFormRefresH(taskrefresh) {
+		debug("<b>WebFormRefresH:</b> taskrefresh=" + taskrefresh,2);
 		if (VDCL_group_id.length > 1) {
 			var group = VDCL_group_id;
 		} else {
@@ -3190,6 +3225,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
         $cnt++;
     }
 ?>
+			"&recording_id=" + recording_id + 
 			webform_session;
 		
 		var regWFspace = new RegExp(" ","ig");
@@ -3244,6 +3280,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Send hangup a second time from the dispo screen 
 	function DispoHanguPAgaiN() {
+		debug("<b>DispoHanguPAgaiN:</b>",2);
 		form_cust_channel = AgaiNHanguPChanneL;
 		//document.osdial_form.callchannel.value = AgaiNHanguPChanneL;
 		document.getElementById("callchannel").innerHTML = AgaiNHanguPChanneL;
@@ -3262,6 +3299,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Send leave 3way call a second time from the dispo screen 
 	function DispoLeavE3wayAgaiN() {
+		debug("<b>DispoLeavE3wayAgaiN:</b>",2);
 		XDchannel = DispO3wayXtrAchannel;
 		document.osdial_form.xfernumber.value = DispO3wayCalLxfernumber;
 		MDchannel = DispO3waychannel;
@@ -3282,6 +3320,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Start Hangup Functions for both 
 	function bothcall_send_hangup() {
+		debug("<b>bothcall_send_hangup:</b>",2);
 		if (lastcustchannel.length > 3) {
 			dialedcall_send_hangup();
 		}
@@ -3293,6 +3332,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Send Hangup command for customer call connected to the conference now to Manager
 	function dialedcall_send_hangup(dispowindow,hotkeysused,altdispo) {
+		debug("<b>dialedcall_send_hangup:</b> dispowindow=" + dispowindow + " hotkeysused=" + hotkeysused + " altdispo=" + altdispo,2);
 		//var form_cust_channel = document.osdial_form.callchannel.value;
 		var form_cust_channel = document.getElementById("callchannel").innerHTML;
 		var form_cust_serverip = document.osdial_form.callserverip.value;
@@ -3491,6 +3531,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Send Hangup command for 3rd party call connected to the conference now to Manager
 	function xfercall_send_hangup() {
+		debug("<b>xfercall_send_hangup:</b>",2);
 		var xferchannel = document.osdial_form.xferchannel.value;
 		var xfer_channel = lastxferchannel;
 		var process_post_hangup=0;
@@ -3565,6 +3606,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Send Hangup command for any Local call that is not in the quiet(7) entry - used to stop manual dials even if no connect
 	function DialTimeHangup() {
+		debug("<b>DialTimeHangup:</b>",2);
 		if (RedirecTxFEr < 1) {
 			//alert("RedirecTxFEr|" + RedirecTxFEr);
 			MD_channel_look=0;
@@ -3608,6 +3650,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Update osdial_list lead record with all altered values from form
 	function CustomerData_update() {
+		debug("<b>CustomerData_update:</b>",2);
 
 		var REGcommentsAMP = new RegExp('&',"g");
 		var REGcommentsQUES = new RegExp("\\?","g");
@@ -3681,6 +3724,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // ################################################################################
 // Generate the Call Disposition Chooser panel
 function DispoSelectContent_create(taskDSgrp,taskDSstage) {
+	debug("<b>DispoSelectContent_create:</b> taskDSgrp=" + taskDSstage,2);
 	AgentDispoing = 1;
 	var VD_statuses_ct_half = parseInt(VD_statuses_ct / 2);
 	var scroll = '';
@@ -3711,6 +3755,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // ################################################################################
 // Generate the Pause Code Chooser panel
 	function PauseCodeSelectContent_create() {
+		debug("<b>PauseCodeSelectContent_create:</b>",2);
 		if ( (VD_live_customer_call==1) || (alt_dial_active==1) ) {
 			alert("You must hangup and disposition your call before clicking \"Pause\". ");
 		} else {
@@ -3740,6 +3785,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // ################################################################################
 // open web form, then submit disposition
 	function WeBForMDispoSelect_submit() {
+		debug("<b>WeBForMDispoSelect_submit:</b>",2);
 		var DispoChoice = document.osdial_form.DispoSelection.value;
 
 		if (DispoChoice.length < 1) {
@@ -3765,6 +3811,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // ################################################################################
 // Update osdial_list lead record with disposition selection
 	function DispoSelect_submit() {
+		debug("<b>DispoSelect_submit:</b>",2);
 
 		var group = campaign;
 		if (VDCL_group_id.length > 1) group = VDCL_group_id;
@@ -3812,7 +3859,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				}
 				if (xmlhttp) { 
 					DSupdate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=updateDISPO&format=text&user=" + user + "&pass=" + pass + "&dispo_choice=" + DispoChoice + "&lead_id=" + document.osdial_form.lead_id.value + "&campaign=" + campaign + "&auto_dial_level=" + auto_dial_level + "&agent_log_id=" + agent_log_id + "&PostDatETimE=" + PostDatETimE + "&CallBackDatETimE=" + CallBackDatETimE + "&list_id=" + document.osdial_form.list_id.value + "&recipient=" + CallBackrecipient + "&use_internal_dnc=" + use_internal_dnc + "&MDnextCID=" + LasTCID + "&stage=" + group + "&comments=" + CallBackCommenTs;
-					debug("updateDISPO called: vdc_db_query.php?" + DSupdate_query,4);
+					debug("<b>updateDISPO called:</b> vdc_db_query.php?" + DSupdate_query,4);
 					xmlhttp.open('POST', 'vdc_db_query.php'); 
 					xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 					xmlhttp.send(DSupdate_query); 
@@ -3821,10 +3868,10 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 							var check_dispo = null;
 							check_dispo = xmlhttp.responseText;
 							var check_DS_array=check_dispo.split("\n");
-							debug("updateDISPO return: " + check_DS_array[0] + "|" + check_DS_array[1] + "|" + check_DS_array[2] + "|",3);
+							debug("<b>updateDISPO return:</b> " + check_DS_array[0] + "|" + check_DS_array[1] + "|" + check_DS_array[2] + "|",3);
 							if (check_DS_array[1] == 'Next agent_log_id:') {
 								agent_log_id = check_DS_array[2];
-								debug("updateDISPO agent_log_id set: " + agent_log_id,4);
+								debug("<b>updateDISPO agent_log_id set:</b> " + agent_log_id,4);
 							}
 						}
 					}
@@ -3883,6 +3930,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 				document.getElementById("RecorDingFilename").innerHTML = "&nbsp;";
 				document.getElementById("RecorDID").innerHTML = "&nbsp;";
+				recording_id=0;
 
 				document.getElementById("MainStatuSSpan").style.backgroundColor = '<?=$status_bg?>';
 				document.getElementById("MainStatuSSpan").innerHTML = "";
@@ -3926,6 +3974,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // ################################################################################
 // Submit the Pause Code 
 	function PauseCodeSelect_submit(newpausecode) {
+		debug("<b>PauseCodeSelect_submit:</b> newpausecode=" + newpausecode,2);
 		hideDiv('PauseCodeSelectBox');
 		WaitingForNextStep=0;
 
@@ -3966,16 +4015,19 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // ################################################################################
 // Populate the dtmf and xfer number for each preset link in xfer-conf frame
 	function DtMf_PreSet_a() {
+		debug("<b>DtMf_PreSet_a:</b>",2);
 		document.osdial_form.conf_dtmf.value = CalL_XC_a_Dtmf;
 		document.osdial_form.xfernumber.value = CalL_XC_a_NuMber;
 	}
 
 	function DtMf_PreSet_b() {
+		debug("<b>DtMf_PreSet_b:</b>",2);
 		document.osdial_form.conf_dtmf.value = CalL_XC_b_Dtmf;
 		document.osdial_form.xfernumber.value = CalL_XC_b_NuMber;
 	}
 
 	function DtMf_PreSet_a_DiaL() {
+		debug("<b>DtMf_PreSet_a_DiaL:</b>",2);
 		ShoWTransferMain("ON");
 		document.osdial_form.conf_dtmf.value = CalL_XC_a_Dtmf;
 		document.osdial_form.xfernumber.value = CalL_XC_a_NuMber;
@@ -3984,6 +4036,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	}
 
 	function DtMf_PreSet_b_DiaL() {
+		debug("<b>DtMf_PreSet_b_DiaL:</b>",2);
 		ShoWTransferMain("ON");
 		document.osdial_form.conf_dtmf.value = CalL_XC_b_Dtmf;
 		document.osdial_form.xfernumber.value = CalL_XC_b_NuMber;
@@ -3994,6 +4047,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // ################################################################################
 // Show message that customer has hungup the call before agent has
 	function CustomerChanneLGone() {
+		debug("<b>CustomerChanneLGone:</b>",2);
 		showDiv('CustomerGoneBox');
 
 		//document.osdial_form.callchannel.value = '';
@@ -4007,12 +4061,14 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	}
 
 	function CustomerGoneOK() {
+		debug("<b>CustomerGoneOK:</b>",2);
 		hideDiv('CustomerGoneBox');
 		WaitingForNextStep=0;
 		custchannellive=0;
 	}
 
 	function CustomerGoneHangup() {
+		debug("<b>CustomerGoneHangup:</b>",2);
 		hideDiv('CustomerGoneBox');
 		WaitingForNextStep=0;
 		custchannellive=0;
@@ -4023,6 +4079,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // ################################################################################
 // Show message that there are no voice channels in the OSDIAL session
 	function NoneInSession() {
+		debug("<b>NoneInSession:</b>",2);
 		showDiv('NoneInSessionBox');
 
 		document.getElementById("NoneInSessionID").innerHTML = session_id;
@@ -4030,12 +4087,14 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	}
 
 	function NoneInSessionOK() {
+		debug("<b>NoneInSessionOK:</b>",2);
 		hideDiv('NoneInSessionBox');
 		WaitingForNextStep=0;
 		nochannelinsession=0;
 	}
 
 	function NoneInSessionCalL() {
+		debug("<b>NoneInSessionCalL:</b>",2);
 		hideDiv('NoneInSessionBox');
 		WaitingForNextStep=0;
 		nochannelinsession=0;
@@ -4091,6 +4150,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // ################################################################################
 // Generate the Closer In Group Chooser panel
 	function CloserSelectContent_create() {
+		debug("<b>CloserSelectContent_create:</b>",2);
 		if (VU_agent_choose_ingroups == '1') {
 			var live_CSC_HTML = "<table class=acrossagent cellpadding=5 cellspacing=5 width=500><tr><td align=center><B><font color=<?=$closer_fc?>>Groups Not Selected</font></B></td><td align=center><B><font color=<?=$closer_fc?>>Selected Groups</font></B></td></tr><tr><td bgcolor=\"<?=$closer_bg?>\" height=300 width=240 valign=top><font class=\"log_text\"><span id=CloserSelectAdd>";
 			var loop_ct = 0;
@@ -4121,6 +4181,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // ################################################################################
 // Move a Closer In Group record to the selected column or reverse
 	function CloserSelect_change(taskCSgrp,taskCSchange) {
+		debug("<b>CloserSelect_change:</b> taskCSgrp=" + taskCSgrp + " taskCSchange=" + taskCSchange,2);
 		var CloserSelectListValue = document.osdial_form.CloserSelectList.value;
 		var CSCchange = 0;
 		var regCS = new RegExp(" "+taskCSgrp+" ","ig");
@@ -4188,6 +4249,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // ################################################################################
 // Update osdial_live_agents record with closer in group choices
 	function CloserSelect_submit() {
+		debug("<b>CloserSelect_submit:</b>",2);
 		if (inbound_man > 0) {
 			document.osdial_form.CloserSelectBlended.checked=false;
 		}
@@ -4243,6 +4305,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // ################################################################################
 // Log the user out of the system when they close their browser while logged in
 	function BrowserCloseLogout() {
+		debug("<b>BrowseCloseLogout:</b>",2);
 		if (logout_stop_timeouts < 1) {
 			LogouT('CLOSE');
 			alert("PLEASE CLICK THE LOGOUT LINK TO LOG OUT NEXT TIME!\n");
@@ -4253,6 +4316,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // ################################################################################
 // Log the user out of the system, if active call or active dial is occuring, don't let them.
 	function LogouT(tempreason) {
+		debug("<b>LogouT:</b>",2);
 		if (manual_dial_menu==1) {
 			if (tempreason=='CLOSE') {
 				document.osdial_form.DispoSelection.value = 'NA';
@@ -4314,7 +4378,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			VDlogout_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=userLOGout&format=text&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&conf_exten=" + session_id + "&extension=" + extension + "&protocol=" + protocol + "&agent_log_id=" + agent_log_id + "&no_delete_sessions=" + no_delete_sessions + "&phone_ip=" + phone_ip + "&enable_sipsak_messages=" + enable_sipsak_messages + "&LogouTKicKAlL=" + LogouTKicKAlL + "&ext_context=" + ext_context;
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
-			debug("userLOGout called: vdc_db_query.php?" + VDlogout_query,1);
+			debug("<b>userLOGout called:</b> vdc_db_query.php?" + VDlogout_query,1);
 			xmlhttp.send(VDlogout_query); 
 			xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
@@ -4347,6 +4411,7 @@ if ($useIE > 0) {
 // ################################################################################
 // MSIE-only hotkeypress function to bind hotkeys defined in the campaign to dispositions
 	function hotkeypress(evt) {
+		debug("<b>hotkeypress:</b> evt=" + evt,5);
 		enter_disable();
 		if ( (hot_keys_active==1) && ((VD_live_customer_call==1) || (MD_ring_secondS>5) ) ) {
 			var e = evt? evt : window.event;
@@ -4416,6 +4481,7 @@ if ($useIE > 0) {
 // ################################################################################
 // W3C-compliant hotkeypress function to bind hotkeys defined in the campaign to dispositions
 	function hotkeypress(evt) {
+		debug("<b>hotkeypress:</b> evt=" + evt,5);
 		enter_disable();
 		if ( (hot_keys_active==1) && ( (VD_live_customer_call==1) || (MD_ring_secondS>5) ) ) {
 			var e = evt? evt : window.event;
@@ -4491,6 +4557,7 @@ if ($useIE > 0) {
 // ################################################################################
 // disable enter/return keys to not clear out vars on customer info
 	function enter_disable(evt) {
+		debug("<b>enter_disable:</b> evt=" + evt,5);
 		var e = evt? evt : window.event;
 		if(!e) return;
 		var key = 0;
@@ -4507,6 +4574,7 @@ if ($useIE > 0) {
 // ################################################################################
 // decode the scripttext and scriptname so that it can be didsplayed
 	function URLDecode(encodedvar,scriptformat) {
+		debug("<b>URLDecode:</b> encodedvar=" + encodedvar + " scriptformat=" + scriptformat,2);
 		// Replace %ZZ with equivalent character
 		// Put [ERR] in output if %ZZ is invalid.
 		var HEXCHAR = "0123456789ABCDEFabcdef"; 
@@ -4864,6 +4932,7 @@ foreach ($forms as $form) {
 // ################################################################################
 // Taken form php.net Angelos
 function utf8_decode(utftext) {
+	debug("<b>utf8_decode:</b> utftext=" + utftext,5);
         var string = "";
         var i = 0;
         var c = c1 = c2 = 0;
@@ -4891,6 +4960,7 @@ function utf8_decode(utftext) {
 // ################################################################################
 // Move the Dispo frame out of the way and change the link to maximize
 	function DispoMinimize() {
+		debug("<b>DispoMinimize:</b>",2);
 		showDiv('DispoButtonHideA');
 		showDiv('DispoButtonHideB');
 		showDiv('DispoButtonHideC');
@@ -4902,6 +4972,7 @@ function utf8_decode(utftext) {
 // ################################################################################
 // Move the Dispo frame to the top and change the link to minimize
 	function DispoMaximize() {
+		debug("<b>DispoMaximize:</b>",2);
 		document.getElementById("DispoSelectBox").style.top = 1;
 		document.getElementById("DispoSelectMaxMin").innerHTML = "<a href=\"#\" onclick=\"DispoMinimize()\">minimize</a>";
 		hideDiv('DispoButtonHideA');
@@ -4913,6 +4984,7 @@ function utf8_decode(utftext) {
 // ################################################################################
 // Hide the CBcommentsBox span upon click
 	function CBcommentsBoxhide() {
+		debug("<b>CDcommentsBoxhide:</b>",2);
 		CBentry_time = '';
 		CBcallback_time = '';
 		CBuser = '';
@@ -4928,6 +5000,7 @@ function utf8_decode(utftext) {
 // ################################################################################
 // Populating the date field in the callback frame prior to submission
 	function CB_date_pick(taskdate) {
+		debug("<b>CB_date_pick:</b> taskdate=" + taskdate,2);
 		document.osdial_form.CallBackDatESelectioN.value = taskdate;
 		document.getElementById("CallBackDatEPrinT").innerHTML = taskdate;
 	}
@@ -4936,6 +5009,7 @@ function utf8_decode(utftext) {
 // ################################################################################
 // Submitting the callback date and time to the system
 	function CallBackDatE_submit() {
+		debug("<b>CallBackDatE_submit:</b>",2);
 		CallBackDatEForM = document.osdial_form.CallBackDatESelectioN.value;
 		CallBackCommenTs = document.osdial_form.CallBackCommenTsField.value;
 		if (CallBackDatEForM.length < 2) {
@@ -5013,6 +5087,7 @@ if ($useIE > 0) {
 // ################################################################################
 // Populating the date field in the postdate frame prior to submission
 	function PD_date_pick(taskdate) {
+		debug("<b>PD_date_pick:</b> taskdate=" + taskdate,2);
 		document.osdial_form.PostDatESelectioN.value = taskdate;
 		document.getElementById("PostDatEPrinT").innerHTML = taskdate;
 	}
@@ -5020,6 +5095,7 @@ if ($useIE > 0) {
 // ################################################################################
 // Submitting the post date and time to the system
 	function PostDatE_submit() {
+		debug("<b>PostDatE_submit:</b>",2);
 		PostDatEForM = document.osdial_form.PostDatESelectioN.value;
 		if (PostDatEForM.length < 2) {
 			alert("You must choose a date");
@@ -5039,6 +5115,7 @@ if ($useIE > 0) {
 // ################################################################################
 // Finish the wrapup timer early
 	function WrapupFinish() {
+		debug("<b>WrapupFinish:</b>",2);
 		wrapup_counter=999;
 	}
 
@@ -5046,11 +5123,13 @@ if ($useIE > 0) {
 // ################################################################################
 // GLOBAL FUNCTIONS
 	function begin_all_refresh() {
+		debug("<b>begin_all_refresh:</b>",2);
 		<? if ( ($HK_statuses_camp > 0) && ( ($user_level>=$HKuser_level) or ($VU_hotkeys_active > 0) ) ) {echo "document.onkeypress = hotkeypress;\n";} ?>
 		all_refresh();
 	}
 
 	function start_all_refresh() {
+		debug("<b>start_all_refresh:</b>",5);
 		if (OSDiaL_closer_login_checked==0) {
 			hideDiv('NothingBox');
 			hideDiv('CBcommentsBox');
@@ -5274,7 +5353,7 @@ if ($useIE > 0) {
 
 	function all_refresh() {
 		epoch_sec++;
-		debug("all_refresh: " + epoch_sec,5);
+		debug("<b>all_refresh:</b> " + epoch_sec,5);
 		check_n++;
 		var year= t.getYear()
 		var month= t.getMonth()
@@ -5396,18 +5475,21 @@ if ($useIE > 0) {
 
 // Pauses the refreshing of the lists
 	function pause() {
+		debug("<b>pause:</b>",2);
 		active_display=2;
 		display_message="  - ACTIVE DISPLAY PAUSED - ";
 	}
 
 // resumes the refreshing of the lists
 	function start() {
+		debug("<b>start:</b>",2);
 		active_display=1;
 		display_message='';
 	}
 
 // lowers by 1000 milliseconds the time until the next refresh
 	function faster() {
+		debug("<b>faster:</b>",2);
 		if (refresh_interval>1001) {
 			refresh_interval=(refresh_interval - 1000);
 		}
@@ -5416,6 +5498,7 @@ if ($useIE > 0) {
 
 // raises by 1000 milliseconds the time until the next refresh
 	function slower() {
+		debug("<b>slower:</b>",2);
 		refresh_interval=(refresh_interval + 1000);
 	}
 
@@ -5426,11 +5509,13 @@ if ($useIE > 0) {
 
 // forces immediate refresh of list content
 	function activeext_force_refresh() {
+		debug("<b>activeext_force_refresh:</b>",2);
 		getactiveext();
 	}
 
 // changes order of activeext list to ascending
 	function activeext_order_asc() {
+		debug("<b>activeext_order_asc:</b>",2);
 		activeext_order="asc";
 		getactiveext();
 		desc_order_HTML ='<a href="#" onclick="activeext_order_desc();return false;">ORDER</a>';
@@ -5439,6 +5524,7 @@ if ($useIE > 0) {
 
 // changes order of activeext list to descending
 	function activeext_order_desc() {
+		debug("<b>activeext_order_desc:</b>",2);
 		activeext_order="desc";   getactiveext();
 		asc_order_HTML ='<a href="#" onclick="activeext_order_asc();return false;">ORDER</a>';
 		document.getElementById("activeext_order").innerHTML = asc_order_HTML;
@@ -5451,11 +5537,13 @@ if ($useIE > 0) {
 
 // forces immediate refresh of list content
 	function busytrunk_force_refresh() {
+		debug("<b>busytrunk_force_refresh:</b>",2);
 		getbusytrunk();
 	}
 
 // changes order of busytrunk list to ascending
 	function busytrunk_order_asc() {
+		debug("<b>busytrunk_order_asc:</b>",2);
 		busytrunk_order="asc";
 		getbusytrunk();
 		desc_order_HTML ='<a href="#" onclick="busytrunk_order_desc();return false;">ORDER</a>';
@@ -5464,6 +5552,7 @@ if ($useIE > 0) {
 
 // changes order of busytrunk list to descending
 	function busytrunk_order_desc() {
+		debug("<b>busytrunk_order_desc:</b>",2);
 		busytrunk_order="desc";
 		getbusytrunk();
 		asc_order_HTML ='<a href="#" onclick="busytrunk_order_asc();return false;">ORDER</a>';
@@ -5472,6 +5561,7 @@ if ($useIE > 0) {
 
 // forces immediate refresh of list content
 	function busytrunkhangup_force_refresh() {
+		debug("<b>busytrunkhangup_force_refresh:</b>",2);
 		busytrunkhangup();
 	}
 
@@ -5481,11 +5571,13 @@ if ($useIE > 0) {
 
 // forces immediate refresh of list content
 	function busyext_force_refresh() {
+		debug("<b>busyext_force_refresh:</b>",2);
 		getbusyext();
 	}
 
 // changes order of busyext list to ascending
 	function busyext_order_asc() {
+		debug("<b>busyext_order_asc:</b>",2);
 		busyext_order="asc";
 		getbusyext();
 		desc_order_HTML ='<a href="#" onclick="busyext_order_desc();return false;">ORDER</a>';
@@ -5494,6 +5586,7 @@ if ($useIE > 0) {
 
 // changes order of busyext list to descending
 	function busyext_order_desc() {
+		debug("<b>busyext_order_desc:</b>",2);
 		busyext_order="desc";
 		getbusyext();
 		asc_order_HTML ='<a href="#" onclick="busyext_order_asc();return false;">ORDER</a>';
@@ -5502,12 +5595,14 @@ if ($useIE > 0) {
 
 // forces immediate refresh of list content
 	function busylocalhangup_force_refresh() {
+		debug("<b>busylocalhangup_force_refresh:</b>",2);
 		busylocalhangup();
 	}
 
 
 // functions to hide and show different DIVs
 	function showDiv(divvar) {
+		debug("<b>showDiv:</b> divvar=" + divvar,4);
 		if (document.getElementById(divvar)) {
 			divref = document.getElementById(divvar).style;
 			divref.visibility = 'visible';
@@ -5515,6 +5610,7 @@ if ($useIE > 0) {
 	}
 
 	function hideDiv(divvar) {
+		debug("<b>hideDiv:</b> divvar=" + divvar,4);
 		if (document.getElementById(divvar)) {
 			divref = document.getElementById(divvar).style;
 			divref.visibility = 'hidden';
@@ -5522,6 +5618,7 @@ if ($useIE > 0) {
 	}
 
 	function clearDiv(divvar) {
+		debug("<b>clearDiv:</b> divvar=" + divvar,4);
 		if (document.getElementById(divvar)) {
 			document.getElementById(divvar).innerHTML = '';
 			if (divvar == 'DiaLLeaDPrevieW') {
@@ -5536,6 +5633,7 @@ if ($useIE > 0) {
 	}
 
 	function buildDiv(divvar) {
+		debug("<b>buildDiv:</b> divvar=" + divvar,4);
 		if (document.getElementById(divvar)) {
 			var buildDivHTML = "";
 			if (divvar == 'DiaLLeaDPrevieW') {
@@ -5558,6 +5656,7 @@ if ($useIE > 0) {
 	}
 
 	function conf_channels_detail(divvar) {
+		debug("<b>conf_channels_detail:</b> divvar=" + divvar,2);
 		if (divvar == 'SHOW') {
 			conf_channels_xtra_display = 1;
 			document.getElementById("busycallsdisplay").innerHTML = "<a href=\"#\"  onclick=\"conf_channels_detail('HIDE');\">Hide conference call channel information</a>";
@@ -5573,6 +5672,7 @@ if ($useIE > 0) {
 	}
 
 	function HotKeys(HKstate) {
+		debug("<b>HotKeys:</b> HKstate=" + HKstate,2);
 		if ( (HKstate == 'ON') && (HKbutton_allowed == 1) ) {
 			showDiv('HotKeyEntriesBox');
 			hot_keys_active = 1;
@@ -5585,6 +5685,7 @@ if ($useIE > 0) {
 	}
 
 	function DTMFKeys(DTMFstate) {
+		debug("<b>DTMFKeys:</b> DTMFstate=" + DTMFstate,2);
 		if ( (DTMFstate == 'ON') && (VD_live_customer_call == 1) ) {
 			dtmf_keys_active = 1;
 			document.getElementById("DTMFDialPad").setAttribute("onMouseOut", "DTMFKeys('OFF');");
@@ -5595,6 +5696,7 @@ if ($useIE > 0) {
 	}
 
 	function ShoWTransferMain(showxfervar,showoffvar) {
+		debug("<b>ShoWTransferMain:</b> showxfervar=" + showxfervar + " showoffvar=" + showoffvar,2);
 		if (VU_osdial_transfers == '1') {
 			if (showxfervar == 'ON') {
 				var xfer_height = <?=$HTheight ?>;
@@ -5648,6 +5750,7 @@ if ($useIE > 0) {
 	}
 
 	function MainPanelToFront(resumevar) {
+		debug("<b>MainPanelToFront:</b> resumevar=" + resumevar,2);
 		document.getElementById("MainTable").style.backgroundColor="<?=$panel_bg?>";
 		document.getElementById("MaiNfooter").style.backgroundColor="<?=$panel_bg?>";
 		hideDiv('ScriptPanel');
@@ -5686,6 +5789,7 @@ if ($useIE > 0) {
 	}
 
 	function ScriptPanelToFront() {
+		debug("<b>ScriptPanelToFront:</b>",2);
 		showDiv('ScriptPanel');
 		document.getElementById("MainTable").style.backgroundColor="<?=$script_bg?>";
 		document.getElementById("MaiNfooter").style.backgroundColor="<?=$script_bg?>";
@@ -5695,6 +5799,7 @@ if ($useIE > 0) {
 	}
 	
 	function ChangeImageX(img, new_src) {
+		debug("<b>ChangeImageX:</b> img=" + img + " new_src=" + new_src,2);
 		var cur_src = img.src.substring(img.src.lastIndexOf("/")+1);
 		
 		if (cur_src == new_src) {
@@ -5706,6 +5811,7 @@ if ($useIE > 0) {
 	}
 
 	function ChooseForm() {
+		debug("<b>ChooseForm:</b>",2);
 		var main_img = "vdc_tab_buttons1.gif";
 		var scrpt_img = "vdc_tab_buttons2.gif";
 
@@ -5722,23 +5828,28 @@ if ($useIE > 0) {
 	}
 	
 	function imageSwap(buttonID, img1) {
+		debug("<b>imageSwap:</b> buttonID=" + buttonID + " img1=" + img1,2);
 		document.getElementById(buttonID).src = img1;
 	}
 
 	function AddtlFormOver() {
+		debug("<b>AddtlFormOver:</b>",2);
 		document.getElementById('AddtlFormTab').style.visibility='hidden'; 
 		document.getElementById('AddtlFormTabExpanded').style.visibility='visible'; 
 	}
 
 	function AddtlFormButOver(AFform) {
+		debug("<b>AddtlFormButOver:</b> AFform=" + AFform,2);
 		document.getElementById('AddtlFormBut' + AFform).style.background='url(templates/<?= $agent_template ?>/images/agentsidetab_select.png)'; 
 	}
 
 	function AddtlFormButOut(AFform) {
+		debug("<b>AddtlFormButOut:</b> AFform=" + AFform,2);
 		document.getElementById('AddtlFormBut' + AFform).style.background='url(templates/<?= $agent_template ?>/images/agentsidetab_extra.png)'; 
 	}
 
 	function AddtlFormSelect(AFform) {
+		debug("<b>AddtlFormSelect:</b> AFform=" + AFform,2);
 		if (AFform != 'Cancel') {
 			document.getElementById('AddtlFormBut' + AFform).style.background='url(templates/<?= $agent_template ?>/images/agentsidetab_press.png)'; 
 <?
@@ -5759,6 +5870,7 @@ if ($useIE > 0) {
 	}
 
 	function scriptUpdateFields() {
+		debug("<b>scriptUpdateFields:</b>",2);
 <?
 $cnt = 0;
 foreach ($forms as $form) {
@@ -5784,6 +5896,7 @@ foreach ($forms as $form) {
 	}
 
 	function previewFDDisplayTime() {
+		debug("<b>previewFDDisplayTime:</b>",3);
 		if (previewFD_time > 0 ) {
 			if ( previewFD_time_remaining > 0 ) {
 				previewFD_time_remaining--;
@@ -5796,6 +5909,7 @@ foreach ($forms as $form) {
 	}
 
 	function WebFormPanelDisplay(webform) {
+		debug("<b>WebFormPanelDisplay:</b> webform=" + webform,2);
 		WebFormRefresH();
 		if (web_form2_extwindow == 0 && web_form_frame_open2 > 0) {
 			document.getElementById('WebFormPanel2').style.visibility='hidden'; 
@@ -5815,6 +5929,7 @@ foreach ($forms as $form) {
 	}
 
 	function WebFormPanelDisplay2(webform) {
+		debug("<b>WebFormPanelDisplay2:</b> webform=" + webform,2);
 		WebFormRefresH();
 		if (web_form_extwindow == 0 && web_form_frame_open1 > 0) {
 			document.getElementById('WebFormPanel1').style.visibility='hidden'; 
@@ -5834,6 +5949,7 @@ foreach ($forms as $form) {
 	}
 
 	function CloseWebFormPanels() {
+		debug("<b>CloseWebFormPanels:</b>",2);
 		if (web_form_extwindow == 0) {
 			if (web_form_frame_open1 > 0) {
 				document.getElementById('WebFormPanel1').style.visibility = 'hidden';
