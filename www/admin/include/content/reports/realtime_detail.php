@@ -169,14 +169,16 @@ function report_realtime_detail() {
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $INgroups_to_print = mysql_num_rows($rslt);
-    if ($INgroups_to_print > 0) {
-        $g=0;
-        while ($g < $INgroups_to_print) {
-            $row=mysql_fetch_row($rslt);
-            $group_id[$g] = $row[0];
-            $group_color[$g] = $row[1];
-            $html .= "   .$group_id[$g] {color: black; background-color: $group_color[$g]}\n";
-            $g++;
+    if (is_array($INgroups_to_print)) {
+        if ($INgroups_to_print > 0) {
+            $g=0;
+            while ($g < $INgroups_to_print) {
+                $row=mysql_fetch_row($rslt);
+                $group_id[$g] = $row[0];
+                $group_color[$g] = $row[1];
+                $html .= "   .$group_id[$g] {color: black; background-color: $group_color[$g]}\n";
+                $g++;
+            }
         }
     }
 
