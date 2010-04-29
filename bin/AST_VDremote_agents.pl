@@ -563,7 +563,7 @@ while($one_day_interval > 0)
 					else
 						{
 						# grab the user_level of the agent
-						$DBuser_level[$h]='1';
+						$DBuser_level[$h]='7';
 						$stmtA = "SELECT user_level FROM osdial_users where user='$DBuser_start[$h]';";
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
