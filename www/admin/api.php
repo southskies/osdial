@@ -127,6 +127,8 @@ if ($xml['vdcompat'] > 0) {
     if ($xml->params->add_to_hopper == "" ) $xml->params->add_to_hopper = get_variable("add_to_hopper");
     if ($xml->params->hopper_local_call_time_check == "" ) $xml->params->hopper_local_call_time_check = get_variable("hopper_local_call_time_check");
     if ($xml->params->hopper_campaign_call_time_check == "" ) $xml->params->hopper_campaign_call_time_check = get_variable("hopper_campaign_call_time_check");
+    if ($xml->params->hopper_priority == "" ) $xml->params->hopper_priority = get_variable("hopper_priority");
+    if ($xml->params->hopper_priority == "" ) $xml->params->hopper_priority = get_variable("priority");
 
     # The following provide compatibility for add_lead
     if ($xml->params->vendor_lead_code == "" ) $xml->params->vendor_lead_code = get_variable("vendor_lead_code");
@@ -510,7 +512,6 @@ if ($xml['function'] == "version") {
                     $reason = "Lead not added to hopper, current time is outside the allowed calling time of the campaign.";
                     $vdreason = "add_lead NOT ADDED TO HOPPER, OUTSIDE OF CAMPAIGN CALL TIME";
                 } else {
-                    if ($xml->params->hopper_priority < 1) $xml->params->hopper_priority = 0;
                     $hopins = "INSERT INTO osdial_hopper SET status='READY',user='',";
                     $hopins .= sprintf("lead_id='%s',campaign_id='%s',list_id='%s',", mres($lead_id), mres($list_campaign_id), mres($xml->params->list_id) );
                     $hopins .= sprintf("gmt_offset_now='%s',state='%s',priority='%s';", mres($gmt_offset_now), mres(strtoupper($xml->params->state)), mres($xml->params->hopper_priority));
