@@ -1014,7 +1014,7 @@ if ($ADD==31) {
         $n=100;
         while ($n>=1) {
             $sel='';
-            if ($h==$adaptive_dropped_percentage) $sel='selected';
+            if ($n==$adaptive_dropped_percentage) $sel='selected';
             echo "<option value=\"$n\" $sel>$n %</option>\n";
             $n--;
         }
