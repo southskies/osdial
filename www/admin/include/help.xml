@@ -1432,6 +1432,19 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
     <item pathId="dnc_method" title="DNC Method">
     This signals what tables to use when checking DNC numbers.  SYSTEM- Global DNC List, COMPANY- Company DNC List, BOTH- Global and Company DNC Lists
     </item>
+
+    <item pathId="default_local_gmt" title="Default Local GMT">
+    The default Local GMT that is used when creating phones for this company.
+    </item>
+
+    <item pathId="default_server_ip" title="Default Server IP">
+    The default Server IP that is used when creating phones for this company.
+    </item>
+
+    <item pathId="default_ext_context" title="Default Ext Context">
+    The default Extension Context that is used when creating phones for this company.  Some defaults are:  osdial- Access to OSDial extensions and outbound dialing.  osdialEXT- Access to OSDial extensions, no outbound dialing.  osdialBLOCK- No access to OSDial extensions or outbound dialing.
+    </item>
+
   </section>
 
 

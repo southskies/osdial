@@ -98,7 +98,14 @@ if ($ADD==21111111111) {
         echo "<TABLE><TR><TD>\n";
         echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         $preextension = $extension;
-        if ($LOG['multicomp'] > 0) $preextension = (($company * 1) + 0) . $extension;
+        $ext_context='osdial';
+        if ($LOG['multicomp'] > 0) {
+            $preextension = (($company * 1) + 0) . $extension;
+            $stmt="SELECT default_ext_context from osdial_companies where id='$preextension';";
+            $rslt=mysql_query($stmt, $link);
+            $row=mysql_fetch_row($rslt);
+            if ($row[0] != '') $ext_context=$row[0];
+        }
         $stmt="SELECT count(*) from phones where extension='$preextension' and server_ip='$server_ip';";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
@@ -116,7 +123,7 @@ if ($ADD==21111111111) {
                     $voicemail_id = (($company * 1) + 0) . $voicemail_id;
                     $login = (($company * 1) + 0) . $login;
                 }
-                $stmt="INSERT INTO phones (extension,dialplan_number,voicemail_id,phone_ip,computer_ip,server_ip,login,pass,status,active,phone_type,fullname,company,picture,protocol,local_gmt,outbound_cid,outbound_cid_name) values('$extension','$dialplan_number','$voicemail_id','$phone_ip','$computer_ip','$server_ip','$login','$pass','$status','$active','$phone_type','$fullname','$company','$picture','$protocol','$local_gmt','$outbound_cid','$outbound_cid_name');";
+                $stmt="INSERT INTO phones (extension,dialplan_number,voicemail_id,phone_ip,computer_ip,server_ip,login,pass,status,active,phone_type,fullname,company,picture,protocol,local_gmt,outbound_cid,outbound_cid_name,ext_context) values('$extension','$dialplan_number','$voicemail_id','$phone_ip','$computer_ip','$server_ip','$login','$pass','$status','$active','$phone_type','$fullname','$company','$picture','$protocol','$local_gmt','$outbound_cid','$outbound_cid_name','$ext_context');";
                 $rslt=mysql_query($stmt, $link);
             }
         }

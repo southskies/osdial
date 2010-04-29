@@ -1791,6 +1791,17 @@ Through the use of system status categories, you can group together statuses to 
 <br><b>DNC Method -</b> This signals what tables to use when checking DNC numbers.  SYSTEM- Global DNC List, COMPANY- Company DNC List, BOTH- Global and Company DNC Lists
 <br>
 
+<a name="companies-default_local_gmt">
+<br><b>Default Local GMT -</b> The default Local GMT that is used when creating phones for this company.
+<br>
+
+<a name="companies-default_server_ip">
+<br><b>Default Server IP -</b> The default Server IP that is used when creating phones for this company.
+<br>
+
+<a name="companies-default_ext_context">
+<br><b>Default Ext Context -</b> The default Extension Context that is used when creating phones for this company.  Some defaults are:  osdial- Access to OSDial extensions and outbound dialing.  osdialEXT- Access to OSDial extensions, no outbound dialing.  osdialBLOCK- No access to OSDial extensions or outbound dialing.
+<br>
 
 
 
