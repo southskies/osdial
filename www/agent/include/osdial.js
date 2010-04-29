@@ -2494,10 +2494,10 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		if (xmlhttp) { 
 			autoDiaLready_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=" + taskaction + "&user=" + user + "&pass=" + pass + "&stage=" + VDRP_stage + "&agent_log_id=" + agent_log_id + "&agent_log=" + taskagentlog + "&wrapup=" + taskwrapup + "&campaign=" + campaign;
 			debug("<b>AutoDial_ReSume_PauSe called:</b> vdc_db_query.php?" + autoDiaLready_query,4);
-			xmlhttp.open('POST', 'vdc_db_query.php'); 
+			xmlhttp.open('POST', 'vdc_db_query.php',false); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 			xmlhttp.send(autoDiaLready_query); 
-			xmlhttp.onreadystatechange = function() { 
+			//xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 					var check_dispo = null;
 					check_dispo = xmlhttp.responseText;
@@ -2508,7 +2508,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						debug("<b>AutoDial_ReSume_PauSe agent_log_id set:</b> " + agent_log_id,4);
 					}
 				}
-			}
+			//}
 			delete xmlhttp;
 		}
 		//if (VDRP_stage=='PAUSED' && inbound_man < 1 && agent_pause_codes_active=='Y') {PCSpause=1; PauseCodeSelectContent_create();}
@@ -3860,10 +3860,11 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				if (xmlhttp) { 
 					DSupdate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=updateDISPO&format=text&user=" + user + "&pass=" + pass + "&dispo_choice=" + DispoChoice + "&lead_id=" + document.osdial_form.lead_id.value + "&campaign=" + campaign + "&auto_dial_level=" + auto_dial_level + "&agent_log_id=" + agent_log_id + "&PostDatETimE=" + PostDatETimE + "&CallBackDatETimE=" + CallBackDatETimE + "&list_id=" + document.osdial_form.list_id.value + "&recipient=" + CallBackrecipient + "&use_internal_dnc=" + use_internal_dnc + "&MDnextCID=" + LasTCID + "&stage=" + group + "&comments=" + CallBackCommenTs;
 					debug("<b>updateDISPO called:</b> vdc_db_query.php?" + DSupdate_query,4);
-					xmlhttp.open('POST', 'vdc_db_query.php'); 
+					xmlhttp.open('POST', 'vdc_db_query.php',false); 
 					xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 					xmlhttp.send(DSupdate_query); 
-					xmlhttp.onreadystatechange = function() { 
+					//xmlhttp.onreadystatechange = function() { 
+						debug(xmlhttp.readyState,1);
 						if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 							var check_dispo = null;
 							check_dispo = xmlhttp.responseText;
@@ -3874,7 +3875,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 								debug("<b>updateDISPO agent_log_id set:</b> " + agent_log_id,4);
 							}
 						}
-					}
+					//}
 					delete xmlhttp;
 				}
 				// CLEAR ALL FORM VARIABLES

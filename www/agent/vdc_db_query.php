@@ -1003,11 +1003,13 @@ if ($ACTION == 'manDiaLnextCaLL')
                 $fcamps = split(',',$form['campaigns']);
                 foreach ($fcamps as $fcamp) {
                     if ($fcamp == 'ALL' or $fcamp == $campaign) {
-                            	$fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
-                            	foreach ($fields as $field) {
-                            $vdlf = get_first_record($link, 'osdial_list_fields', '*', "lead_id='" . $lead_id . "' AND field_id='" . $field['id'] . "'");
-                            $LeaD_InfO .= $vdlf['value'] . "\n";
-                            $cnt++;
+                        $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
+                        if (is_array($fields)) {
+                            foreach ($fields as $field) {
+                                $vdlf = get_first_record($link, 'osdial_list_fields', '*', "lead_id='" . $lead_id . "' AND field_id='" . $field['id'] . "'");
+                                $LeaD_InfO .= $vdlf['value'] . "\n";
+                                $cnt++;
+                            }
                         }
                     }
                 }
@@ -2520,7 +2522,7 @@ if ($ACTION == 'updateDISPO') {
         exit;
     } else {
         $random = (rand(1000000, 9999999) + 10000000);
-        $stmt="UPDATE osdial_live_agents set lead_id='',last_call_finish='$NOW_TIME',random_id='$random' where user='$user' and server_ip='$server_ip';";
+        $stmt="UPDATE osdial_live_agents set comments='',lead_id='',last_call_finish='$NOW_TIME',random_id='$random' where user='$user' and server_ip='$server_ip';";
         if ($format=='debug') {echo "\n<!-- $stmt -->";}
         $rslt=mysql_query($stmt, $link);
 
@@ -2593,7 +2595,7 @@ if ($ACTION == 'updateDISPO') {
         $dispo_sec=0;
         $dispo_epochSQL='';
         $StarTtime = date("U");
-        $stmt = "select dispo_epoch,dispo_sec,talk_epoch,talk_sec,wait_epoch,wait_sec,pause_epoch,pause_sec from osdial_agent_log where agent_log_id='$agent_log_id';";
+        $stmt = "select dispo_epoch,dispo_sec,talk_epoch,talk_sec,wait_epoch,wait_sec,pause_epoch,pause_sec from osdial_agent_log where agent_log_id='$agent_log_id' AND status IS NULL;";
         if ($format=='debug') {echo "\n<!-- $stmt -->";}
         $rslt=mysql_query($stmt, $link);
         $VDpr_ct = mysql_num_rows($rslt);
@@ -2630,9 +2632,13 @@ if ($ACTION == 'updateDISPO') {
             $stmt="UPDATE osdial_agent_log set pause_sec='$pause_sec',wait_epoch='$wait_epoch',wait_sec='$wait_sec',talk_epoch='$talk_epoch',talk_sec='$talk_sec',dispo_epoch='$dispo_epoch',dispo_sec='$dispo_sec',status='$dispo_choice' where agent_log_id='$agent_log_id';";
             if ($format=='debug') {echo "\n<!-- $stmt -->";}
             $rslt=mysql_query($stmt, $link);
+        } else {
+            $stmt="INSERT INTO osdial_agent_log SET user='$user',server_ip='$server_ip',event_time='$NOW_TIME',campaign_id='$campaign',lead_id='$lead_id',user_group='$user_group',pause_epoch='$StarTtime',pause_sec='0',wait_epoch='$StarTtime',wait_sec='0',talk_epoch='$StarTtime',talk_sec='0',dispo_epoch='$StarTtime',dispo_sec='0',status='$dispo_choice';";
+            if ($format=='debug') {echo "\n<!-- $stmt -->";}
+            $rslt=mysql_query($stmt, $link);
         }
 
-        if ($auto_dial_level == 0) {
+        if ($auto_dial_level == 0 or $VDpr_ct == 0) {
             $stmt="INSERT INTO osdial_agent_log (user,server_ip,event_time,campaign_id,pause_epoch,pause_sec,wait_epoch,user_group) values('$user','$server_ip','$NOW_TIME','$campaign','$StarTtime','0','$StarTtime','$user_group');";
             if ($format=='debug') {echo "\n<!-- $stmt -->";}
             $rslt=mysql_query($stmt, $link);
