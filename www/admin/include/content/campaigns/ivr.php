@@ -593,7 +593,7 @@ if ($ADD == "4menu") {
                     }
                     if ($ufnd == 0) {
                         $stmt = "INSERT INTO osdial_users (user,pass,full_name,user_level,user_group) ";
-                        $stmt .= "VALUES ('$usr','ViRtUaLaGeNt','Virtual Agent','4','VIRTUAL');";
+                        $stmt .= "VALUES ('$usr','ViRtUaLaGeNt','Virtual Agent','7','VIRTUAL');";
                         $rslt = mysql_query($stmt, $link);
                         $icnt++;
                     }
