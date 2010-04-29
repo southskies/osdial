@@ -173,12 +173,18 @@ sub set_campaign_stats {
 	chop($cinsmulti);
 	chop($ainsmulti);
 	chop($sinsmulti);
-	print "  -- OSDcampaign_stats.pl: set_campaign_stats: cins: " . $cinshead . $cinsmulti . $cinsonupd . "\n\n\n" if ($osdial->{DB}>1);
-	$osdial->sql_execute($cinshead . $cinsmulti . $cinsonupd);
-	print "  -- OSDcampaign_stats.pl: set_campaign_stats: ains: " . $ainshead . $ainsmulti . $ainsonupd . "\n\n\n" if ($osdial->{DB}>1);
-	$osdial->sql_execute($ainshead . $ainsmulti . $ainsonupd);
-	print "  -- OSDcampaign_stats.pl: set_campaign_stats: sins: " . $sinshead . $sinsmulti . $sinsonupd . "\n\n\n" if ($osdial->{DB}>1);
-	$osdial->sql_execute($sinshead . $sinsmulti . $sinsonupd);
+	if ($chdone>0) {
+		print "  -- OSDcampaign_stats.pl: set_campaign_stats: cins: " . $cinshead . $cinsmulti . $cinsonupd . "\n\n\n" if ($osdial->{DB}>1);
+		$osdial->sql_execute($cinshead . $cinsmulti . $cinsonupd);
+	}
+	if ($ahdone>0) {
+		print "  -- OSDcampaign_stats.pl: set_campaign_stats: ains: " . $ainshead . $ainsmulti . $ainsonupd . "\n\n\n" if ($osdial->{DB}>1);
+		$osdial->sql_execute($ainshead . $ainsmulti . $ainsonupd);
+	}
+	if ($shdone>0) {
+		print "  -- OSDcampaign_stats.pl: set_campaign_stats: sins: " . $sinshead . $sinsmulti . $sinsonupd . "\n\n\n" if ($osdial->{DB}>1);
+		$osdial->sql_execute($sinshead . $sinsmulti . $sinsonupd);
+	}
 	return 1;
 }
 
