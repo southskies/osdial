@@ -144,11 +144,11 @@ echo "Total leads in hopper right now:       $TOTALcalls\n";
 
 echo "\n";
 echo "---------- LEADS IN HOPPER\n";
-echo "+------+----------+--------------+--------------+-----------------+-------+--------+-------+--------+-------+\n";
-echo "| NUM  | PRIORITY | LEAD ID      | LIST ID      | PHONE NUM       | STATE | STATUS | COUNT | GMT    | ALT   |\n";
-echo "+------+----------+--------------+--------------+-----------------+-------+--------+-------+--------+-------+\n";
+echo "+------+---------+----------+--------------+--------------+-----------------+-------+---------+-------+--------+-------+\n";
+echo "| NUM  | HSTATUS | PRIORITY | LEAD ID      | LIST ID      | PHONE NUM       | STATE | LSTATUS | COUNT | GMT    | ALT   |\n";
+echo "+------+---------+----------+--------------+--------------+-----------------+-------+---------+-------+--------+-------+\n";
 
-$stmt="SELECT osdial_hopper.lead_id,phone_number,osdial_hopper.state,osdial_list.status,called_count,osdial_hopper.gmt_offset_now,hopper_id,alt_dial,osdial_hopper.list_id,osdial_hopper.priority FROM osdial_hopper,osdial_list WHERE osdial_hopper.campaign_id='" . mysql_real_escape_string($group) . "' AND osdial_hopper.lead_id=osdial_list.lead_id ORDER BY status ASC, priority DESC,hopper_id limit 2000;";
+$stmt="SELECT osdial_hopper.lead_id,phone_number,osdial_hopper.state,osdial_list.status,called_count,osdial_hopper.gmt_offset_now,hopper_id,alt_dial,osdial_hopper.list_id,osdial_hopper.priority,osdial_hopper.status FROM osdial_hopper,osdial_list WHERE osdial_hopper.campaign_id='" . mysql_real_escape_string($group) . "' AND osdial_hopper.lead_id=osdial_list.lead_id ORDER BY osdial_hopper.status DESC, priority DESC,hopper_id limit 2000;";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}
 $users_to_print = mysql_num_rows($rslt);
@@ -161,21 +161,22 @@ while ($i < $users_to_print)
 	$lead_id =		sprintf("%-12s", $row[0]);
 	$phone_number =	sprintf("%-15s", $row[1]);
 	$state =		sprintf("%-5s", $row[2]);
-	$status =		sprintf("%-6s", $row[3]);
+	$status =		sprintf("%-7s", $row[3]);
 	$count =		sprintf("%-5s", $row[4]);
 	$gmt =			sprintf("%-6s", $row[5]);
 	$hopper_id =	sprintf("%-6s", $row[6]);
 	$alt_dial =		sprintf("%-5s", $row[7]);
 	$list_id =		sprintf("%-12s", $row[8]);
 	$priority =		sprintf("%-8s", $row[9]);
+	$hstatus =		sprintf("%-7s", $row[10]);
 
-if ($DB) {echo "| $FMT_i | $priority | $lead_id | $list_id | $phone_number | $state | $status | $count | $gmt | $hopper_id |\n";}
-else {echo "| $FMT_i | $priority | $lead_id | $list_id | $phone_number | $state | $status | $count | $gmt | $alt_dial |\n";}
+if ($DB) {echo "| $FMT_i | $hstatus | $priority | $lead_id | $list_id | $phone_number | $state | $status | $count | $gmt | $hopper_id |\n";}
+else {echo "| $FMT_i | $hstatus | $priority | $lead_id | $list_id | $phone_number | $state | $status | $count | $gmt | $alt_dial |\n";}
 
 	$i++;
 	}
 
-echo "+------+----------+--------------+--------------+-----------------+-------+--------+-------+--------+-------+\n";
+echo "+------+---------+----------+--------------+--------------+-----------------+-------+---------+-------+--------+-------+\n";
 
 
 }

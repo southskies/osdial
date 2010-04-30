@@ -565,7 +565,7 @@ while($one_day_interval > 0)
 							my $UDaffected_rows=0;
 							if ($call_CMPIPct < $DB_camp_server_trunks_to_dial[$server_CIPct])
 								{
-								$stmtA = "UPDATE osdial_hopper SET status='QUEUE', user='VDAD_$DB_camp_server_server_ip[$server_CIPct]' WHERE campaign_id='$DBfill_campaign[$camp_CIPct]' AND status IN ('API','READY') ORDER BY status ASC,priority DESC,hopper_id LIMIT $DB_camp_server_trunks_to_dial[$server_CIPct];";
+								$stmtA = "UPDATE osdial_hopper SET status='QUEUE', user='VDAD_$DB_camp_server_server_ip[$server_CIPct]' WHERE campaign_id='$DBfill_campaign[$camp_CIPct]' AND status IN ('API','READY') ORDER BY status DESC,priority DESC,hopper_id LIMIT $DB_camp_server_trunks_to_dial[$server_CIPct];";
 								print "|$stmtA|\n";
 								$UDaffected_rows = $dbhA->do($stmtA);
 								print "hopper rows updated to QUEUE: |$UDaffected_rows|\n";

@@ -698,12 +698,12 @@ if ($ACTION == 'manDiaLnextCaLL')
             }
             ### grab the next lead in the hopper for this campaign and reserve it for the user
             if ($mdn_limit < 0 or $mdn_today <= $mdn_limit) {
-                $stmt = "UPDATE osdial_hopper SET status='QUEUE', user='$user' WHERE campaign_id='$campaign' AND status IN ('API','READY') ORDER BY status ASC, priority DESC, hopper_id LIMIT 1;";
+                $stmt = "UPDATE osdial_hopper SET status='QUEUE', user='$user' WHERE campaign_id='$campaign' AND status IN ('API','READY') ORDER BY status DESC, priority DESC, hopper_id LIMIT 1;";
                 if ($DB) {echo "$stmt\n";}
                 $rslt=mysql_query($stmt, $link);
                 $affected_rows = mysql_affected_rows($link);
             } else {
-                $stmt = "SELECT hopper_id FROM osdial_hopper AS oh,osdial_list AS ol WHERE oh.lead_id=ol.lead_id AND oh.campaign_id='$campaign' AND oh.status IN ('API','READY') AND ol.status!='NEW' ORDER BY oh.status ASC, oh.priority DESC, hopper_id LIMIT 1";
+                $stmt = "SELECT hopper_id FROM osdial_hopper AS oh,osdial_list AS ol WHERE oh.lead_id=ol.lead_id AND oh.campaign_id='$campaign' AND oh.status IN ('API','READY') AND ol.status!='NEW' ORDER BY oh.status DESC, oh.priority DESC, hopper_id LIMIT 1";
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) {echo "$stmt\n";}
                 $mdn_hopper_ct = mysql_num_rows($rslt);

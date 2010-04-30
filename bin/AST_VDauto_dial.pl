@@ -809,7 +809,7 @@ while($one_day_interval > 0)
 				my $UDaffected_rows=0;
 				if ($call_CMPIPct < $DBIPmakecalls[$user_CIPct])
 					{
-					$stmtA = "UPDATE osdial_hopper SET status='QUEUE', user='VDAD_$server_ip' WHERE campaign_id='$DBIPcampaign[$user_CIPct]' AND status IN ('API','READY') ORDER BY status ASC,priority DESC,hopper_id LIMIT $DBIPmakecalls[$user_CIPct];";
+					$stmtA = "UPDATE osdial_hopper SET status='QUEUE', user='VDAD_$server_ip' WHERE campaign_id='$DBIPcampaign[$user_CIPct]' AND status IN ('API','READY') ORDER BY status DESC,priority DESC,hopper_id LIMIT $DBIPmakecalls[$user_CIPct];";
 					print "|$stmtA|\n";
 					$UDaffected_rows = $dbhA->do($stmtA);
 					print "hopper rows updated to QUEUE: |$UDaffected_rows|\n";
