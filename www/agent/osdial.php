@@ -1080,7 +1080,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 				}
 
 			##### grab the number of leads in the hopper for this campaign
-			$stmt="SELECT count(*) FROM osdial_hopper where campaign_id = '$VD_campaign' and status='READY';";
+			$stmt="SELECT count(*) FROM osdial_hopper WHERE campaign_id = '$VD_campaign' AND status IN ('API','READY');";
 			$rslt=mysql_query($stmt, $link);
 			if ($DB) {echo "$stmt\n";}
 			$row=mysql_fetch_row($rslt);

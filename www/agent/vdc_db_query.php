@@ -698,12 +698,12 @@ if ($ACTION == 'manDiaLnextCaLL')
             }
             ### grab the next lead in the hopper for this campaign and reserve it for the user
             if ($mdn_limit < 0 or $mdn_today <= $mdn_limit) {
-                $stmt = "UPDATE osdial_hopper SET status='QUEUE', user='$user' WHERE campaign_id='$campaign' AND status='READY' ORDER BY hopper_id LIMIT 1";
+                $stmt = "UPDATE osdial_hopper SET status='QUEUE', user='$user' WHERE campaign_id='$campaign' AND status IN ('API','READY') ORDER BY status ASC, priority DESC, hopper_id LIMIT 1;";
                 if ($DB) {echo "$stmt\n";}
                 $rslt=mysql_query($stmt, $link);
                 $affected_rows = mysql_affected_rows($link);
             } else {
-                $stmt = "SELECT hopper_id FROM osdial_hopper AS oh,osdial_list AS ol WHERE oh.lead_id=ol.lead_id AND oh.campaign_id='$campaign' AND oh.status='READY' AND ol.status!='NEW' ORDER BY priority desc,hopper_id LIMIT 1";
+                $stmt = "SELECT hopper_id FROM osdial_hopper AS oh,osdial_list AS ol WHERE oh.lead_id=ol.lead_id AND oh.campaign_id='$campaign' AND oh.status IN ('API','READY') AND ol.status!='NEW' ORDER BY oh.status ASC, oh.priority DESC, hopper_id LIMIT 1";
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) {echo "$stmt\n";}
                 $mdn_hopper_ct = mysql_num_rows($rslt);
@@ -711,7 +711,7 @@ if ($ACTION == 'manDiaLnextCaLL')
                     $row=mysql_fetch_row($rslt);
                     $hopper_id =$row[0];
 
-                    $stmt = "UPDATE osdial_hopper SET status='QUEUE', user='$user' WHERE hopper_id='$hopper_id'";
+                    $stmt = "UPDATE osdial_hopper SET status='QUEUE', user='$user' WHERE hopper_id='$hopper_id';";
                     if ($DB) {echo "$stmt\n";}
                     $rslt=mysql_query($stmt, $link);
                     $affected_rows = mysql_affected_rows($link);
@@ -725,7 +725,7 @@ if ($ACTION == 'manDiaLnextCaLL')
         if (!$CBleadIDset)
             {
             ##### grab the lead_id of the reserved user in osdial_hopper
-            $stmt="SELECT lead_id FROM osdial_hopper where campaign_id='$campaign' and status='QUEUE' and user='$user' LIMIT 1;";
+            $stmt="SELECT lead_id FROM osdial_hopper WHERE campaign_id='$campaign' AND status='QUEUE' AND user='$user' LIMIT 1;";
             $rslt=mysql_query($stmt, $link);
             if ($DB) {echo "$stmt\n";}
             $hopper_leadID_ct = mysql_num_rows($rslt);
@@ -856,7 +856,7 @@ if ($ACTION == 'manDiaLnextCaLL')
             if (!$CBleadIDset)
                 {
                 ### delete the lead from the hopper
-                $stmt = "DELETE FROM osdial_hopper where lead_id='$lead_id';";
+                $stmt = "DELETE FROM osdial_hopper WHERE lead_id='$lead_id';";
                 if ($DB) {echo "$stmt\n";}
                 $rslt=mysql_query($stmt, $link);
                 }
@@ -2710,18 +2710,18 @@ if ($ACTION == 'updateDISPO') {
         $row=mysql_fetch_row($rslt);
 
         if ( ($auto_dial_level > 0) and (ereg(" $dispo_choice ",$row[0])) ) {
-            $stmt = "select count(*) from osdial_hopper where lead_id='$lead_id' and status='HOLD';";
+            $stmt = "SELECT count(*) FROM osdial_hopper WHERE lead_id='$lead_id' AND status='HOLD';";
             if ($format=='debug') {echo "\n<!-- $stmt -->";}
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
 
             if ($row[0] > 0) {
-                $stmt="UPDATE osdial_hopper set status='READY' where lead_id='$lead_id' and status='HOLD' limit 1;";
+                $stmt="UPDATE osdial_hopper SET status='READY' WHERE lead_id='$lead_id' AND status='HOLD' LIMIT 1;";
                 if ($format=='debug') {echo "\n<!-- $stmt -->";}
                 $rslt=mysql_query($stmt, $link);
             }
         } else {
-            $stmt="DELETE from osdial_hopper where lead_id='$lead_id' and status='HOLD';";
+            $stmt="DELETE FROM osdial_hopper WHERE lead_id='$lead_id' AND status='HOLD';";
             if ($format=='debug') {echo "\n<!-- $stmt -->";}
             $rslt=mysql_query($stmt, $link);
         }

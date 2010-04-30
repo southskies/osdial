@@ -80,8 +80,6 @@
 $DB=0;  # Debug flag, set to 0 for no debug messages, On an active system this will generate lots of lines of output per minute
 $US='__';
 @MT=();
-#$osdial_hopper='TEST_osdial_hopper';	# for testing
-$osdial_hopper='osdial_hopper';
 
 # options
 $insert_auto_CB_to_hopper	= 1; # set to 1 to automatically insert ANYONE callbacks into the hopper
@@ -309,7 +307,7 @@ $GMT_now = ($secX - ($LOCAL_GMT_OFF * 3600));
 	if ($DB) {print "TIME DEBUG: $LOCAL_GMT_OFF_STD|$LOCAL_GMT_OFF|$isdst|   GMT: $hour:$min\n";}
 
 if ($wipe_hopper_clean) {
-	$stmtA = "DELETE from $osdial_hopper;";
+	$stmtA = "DELETE from osdial_hopper where status!='API';";
 	$affected_rows = $dbhA->do($stmtA);
 	if ($DB) {print "Hopper Wiped Clean:  $affected_rows\n";}
 	$event_string = "|HOPPER WIPE CLEAN|";
@@ -318,7 +316,7 @@ if ($wipe_hopper_clean) {
 }
 
 if ($VARflush_hopper_each_run == 1) {
-	$stmtA = "DELETE from $osdial_hopper where status='READY';";
+	$stmtA = "DELETE from osdial_hopper where status='READY';";
 	$affected_rows = $dbhA->do($stmtA);
 	if ($DB) {print "     hopper flush each run:  $affected_rows\n";}
 	if ($DBX) {print "     |$stmtA|\n";}
@@ -349,7 +347,7 @@ if ($DB) {print "Inactive Lists:  $inactive_lists_count\n";}
 if ($inactive_lists_count > 0)
 	{
 	chop($inactive_lists);
-	$stmtA = "DELETE from $osdial_hopper where list_id IN($inactive_lists);";
+	$stmtA = "DELETE from osdial_hopper where list_id IN($inactive_lists) AND status!='API';";
 	$affected_rows = $dbhA->do($stmtA);
 	if ($DB) {print "Inactive List Leads Deleted:  $affected_rows |$stmtA|\n";}
 		$event_string = "|INACTIVE LIST DEL|$affected_rows|";
@@ -418,7 +416,7 @@ if ($CBHOLD_count > 0)
 				$event_string = "|CALLBACKS LISTACT|$affected_rows|";
 				&event_logger;
 
-			$stmtA = "INSERT INTO $osdial_hopper SET lead_id='$CA_lead_id[$CAu]',campaign_id='$CA_campaign_id[$CAu]',list_id='$CA_list_id[$CAu]',gmt_offset_now='$CA_gmt_offset_now[$CAu]',user='',state='$CA_state[$CAu]',priority='50';";
+			$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CA_lead_id[$CAu]',campaign_id='$CA_campaign_id[$CAu]',list_id='$CA_list_id[$CAu]',gmt_offset_now='$CA_gmt_offset_now[$CAu]',user='',state='$CA_state[$CAu]',priority='50';";
 			$affected_rows = $dbhA->do($stmtA);
 			if ($DB) {print "ANYONE Scheduled Callback Inserted into hopper:  $affected_rows|$CA_lead_id[$CAu]\n";}
 			$CAu++;
@@ -1115,19 +1113,19 @@ foreach(@campaign_id)
 	if ($DB) {print "Starting hopper run for $campaign_id[$i] campaign- GMT: $local_call_time[$i]   HOPPER: $hopper_level[$i] \n";}
 
 	### Delete the DONE leads if there are any
-	$stmtA = "DELETE from $osdial_hopper where campaign_id='$campaign_id[$i]' and status IN('DONE');";
+	$stmtA = "DELETE from osdial_hopper WHERE campaign_id='$campaign_id[$i]' AND status IN('DONE');";
 	$affected_rows = $dbhA->do($stmtA);
 	if ($DB) {print "     hopper DONE cleared:  $affected_rows\n";}
 	if ($DBX) {print "     |$stmtA|\n";}
 
 	### Delete the leads that are out of GMT time range if there are any
-	$stmtA = "DELETE from $osdial_hopper where campaign_id='$campaign_id[$i]' and ($del_gmtSQL[$i]);";
+	$stmtA = "DELETE FROM osdial_hopper WHERE campaign_id='$campaign_id[$i]' AND ($del_gmtSQL[$i]) AND status!='API';";
 	$affected_rows = $dbhA->do($stmtA);
 	if ($DB) {print "     hopper GMT BAD cleared:  $affected_rows\n";}
 	if ($DBX) {print "     |$stmtA|\n";}
 
 	if ($VARflush_hopper_manual == 1 && $dial_method[$i] eq "MANUAL") {
-		$stmtA = "DELETE from $osdial_hopper where campaign_id='$campaign_id[$i]' and status='READY';";
+		$stmtA = "DELETE FROM osdial_hopper WHERE campaign_id='$campaign_id[$i]' AND status='READY';";
 		$affected_rows = $dbhA->do($stmtA);
 		if ($DB) {print "     hopper flush manual $campaign_id[$i]:  $affected_rows\n";}
 		if ($DBX) {print "     |$stmtA|\n";}
@@ -1135,7 +1133,7 @@ foreach(@campaign_id)
 
  	### Find out how many leads are in the hopper from a specific campaign
 	$hopper_ready_count=0;
-	$stmtA = "SELECT count(*) from $osdial_hopper where campaign_id='$campaign_id[$i]' and status='READY';";
+	$stmtA = "SELECT status,count(*) FROM osdial_hopper WHERE campaign_id='$campaign_id[$i]' AND status IN ('API','READY') GROUP BY status;";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -1143,8 +1141,9 @@ foreach(@campaign_id)
 	while ($sthArows > $rec_count)
 		{
 		@aryA = $sthA->fetchrow_array;
-		$hopper_ready_count = $aryA[0];
-		if ($DB) {print "     hopper READY count:   $hopper_ready_count\n";}
+		$hopper_ready_count_stat = $aryA[0];
+		$hopper_ready_count += $aryA[1];
+		if ($DB) {print "     hopper $hopper_ready_count_stat count:   $hopper_ready_count\n";}
 		if ($DBX) {print "     |$stmtA|\n";}
 		$rec_count++;
 		}
@@ -1354,7 +1353,7 @@ foreach(@campaign_id)
 				}
 			if ($DB) {print "     Getting Leads to add to hopper\n";}
 			### grab leads already in hopper so we don't duplicate
-			$stmtA = "SELECT lead_id FROM $osdial_hopper where campaign_id='$campaign_id[$i]';";
+			$stmtA = "SELECT lead_id FROM osdial_hopper WHERE campaign_id='$campaign_id[$i]';";
 			if ($DBX) {print "     |$stmtA|\n";}
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1755,7 +1754,7 @@ foreach(@campaign_id)
 						}
 					}
 					if ($DNClead == 0) {
-						$stmtA = "INSERT INTO $osdial_hopper (lead_id,campaign_id,status,user,list_id,gmt_offset_now,state,priority) values('$leads_to_hopper[$h]','$campaign_id[$i]','READY','','$lists_to_hopper[$h]','$gmt_to_hopper[$h]','$state_to_hopper[$h]','$priority_to_hopper[$h]');";
+						$stmtA = "INSERT INTO osdial_hopper (lead_id,campaign_id,status,user,list_id,gmt_offset_now,state,priority) values('$leads_to_hopper[$h]','$campaign_id[$i]','READY','','$lists_to_hopper[$h]','$gmt_to_hopper[$h]','$state_to_hopper[$h]','$priority_to_hopper[$h]');";
 						$affected_rows = $dbhA->do($stmtA);
 						if ($DBX) {print "LEAD INSERTED: $affected_rows|$leads_to_hopper[$h]|\n";}
 					}

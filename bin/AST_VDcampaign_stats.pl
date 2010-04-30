@@ -154,15 +154,16 @@ while ( $master_loop < $CLOloops ) {
 		
 		### Find out how many leads are in the hopper from a specific campaign
 		my $hopper_ready_count = 0;
-		$stmtA = "SELECT count(*) from osdial_hopper where campaign_id='$campaign_id[$i]' and status='READY';";
+		$stmtA = "SELECT status,count(*) from osdial_hopper where campaign_id='$campaign_id[$i]' and status IN ('API','READY') GROUP BY status;";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows  = $sthA->rows;
 		$rec_count = 0;
 		while ( $sthArows > $rec_count ) {
 			my @aryA               = $sthA->fetchrow_array;
-			$hopper_ready_count = $aryA[0];
-			print "     $campaign_id[$i] hopper READY count:   $hopper_ready_count\n" if ($DB);
+			$hopper_ready_count_stat = $aryA[0];
+			$hopper_ready_count += $aryA[1];
+			print "     $campaign_id[$i] hopper $hoppper_ready_count_stat count:   $hopper_ready_count\n" if ($DB);
 			$rec_count++;
 		}
 		$sthA->finish();

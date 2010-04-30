@@ -565,9 +565,9 @@ while($one_day_interval > 0)
 							my $UDaffected_rows=0;
 							if ($call_CMPIPct < $DB_camp_server_trunks_to_dial[$server_CIPct])
 								{
-								$stmtA = "UPDATE osdial_hopper set status='QUEUE', user='VDAD_$DB_camp_server_server_ip[$server_CIPct]' where campaign_id='$DBfill_campaign[$camp_CIPct]' and status='READY' order by priority desc,hopper_id LIMIT $DB_camp_server_trunks_to_dial[$server_CIPct]";
+								$stmtA = "UPDATE osdial_hopper SET status='QUEUE', user='VDAD_$DB_camp_server_server_ip[$server_CIPct]' WHERE campaign_id='$DBfill_campaign[$camp_CIPct]' AND status IN ('API','READY') ORDER BY status ASC,priority DESC,hopper_id LIMIT $DB_camp_server_trunks_to_dial[$server_CIPct];";
 								print "|$stmtA|\n";
-							   $UDaffected_rows = $dbhA->do($stmtA);
+								$UDaffected_rows = $dbhA->do($stmtA);
 								print "hopper rows updated to QUEUE: |$UDaffected_rows|\n";
 
 									if ($UDaffected_rows)
@@ -575,13 +575,13 @@ while($one_day_interval > 0)
 									$lead_id=''; $phone_code=''; $phone_number=''; $called_count='';
 										while ($call_CMPIPct < $UDaffected_rows)
 										{
-										$stmtA = "SELECT lead_id FROM osdial_hopper where campaign_id='$DBfill_campaign[$camp_CIPct]' and status='QUEUE' and user='VDAD_$DB_camp_server_server_ip[$server_CIPct]' order by priority desc,hopper_id LIMIT 1";
+										$stmtA = "SELECT lead_id FROM osdial_hopper WHERE campaign_id='$DBfill_campaign[$camp_CIPct]' AND status='QUEUE' AND user='VDAD_$DB_camp_server_server_ip[$server_CIPct]' ORDER BY priority DESC,hopper_id LIMIT 1;";
 										print "|$stmtA|\n";
 											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 											$sthArows=$sthA->rows;
 											$rec_count=0;
-											 $rec_countCUSTDATA=0;
+											$rec_countCUSTDATA=0;
 											while ($sthArows > $rec_count)
 												{
 												@aryA = $sthA->fetchrow_array;
@@ -603,9 +603,9 @@ while($one_day_interval > 0)
 											}
 										else
 											{
-											$stmtA = "UPDATE osdial_hopper set status='INCALL' where lead_id='$lead_id'";
+											$stmtA = "UPDATE osdial_hopper SET status='INCALL' WHERE lead_id='$lead_id';";
 											print "|$stmtA|\n";
-										   $UQaffected_rows = $dbhA->do($stmtA);
+											$UQaffected_rows = $dbhA->do($stmtA);
 											print "hopper row updated to INCALL: |$UQaffected_rows|$lead_id|\n";
 
 											$stmtA = "SELECT * FROM osdial_list where lead_id='$lead_id';";
@@ -613,7 +613,7 @@ while($one_day_interval > 0)
 											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 											$sthArows=$sthA->rows;
 											$rec_count=0;
-											 $rec_countCUSTDATA=0;
+											$rec_countCUSTDATA=0;
 											while ($sthArows > $rec_count)
 												{
 												@aryA = $sthA->fetchrow_array;
@@ -660,7 +660,7 @@ while($one_day_interval > 0)
 												$stmtA = "UPDATE osdial_list set called_since_last_reset='$CSLR', called_count='$called_count',user='VDAD',last_local_call_time='$LLCT_DATE' where lead_id='$lead_id'";
 												$affected_rows = $dbhA->do($stmtA);
 
-												$stmtA = "DELETE FROM osdial_hopper where lead_id='$lead_id'";
+												$stmtA = "DELETE FROM osdial_hopper WHERE lead_id='$lead_id';";
 												$affected_rows = $dbhA->do($stmtA);
 
 												$CCID_on=0;
