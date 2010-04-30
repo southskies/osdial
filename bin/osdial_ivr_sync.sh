@@ -10,10 +10,10 @@ if [ -z "$WEB" ]; then
 fi
 
 if [ ! -d "$IVRDIR" ]; then
-	mkdir -p $IVRDIR
+	mkdir -p $IVRDIR > /dev/null 2>&1
 fi
 if [ ! -d "$TMPIVR" ]; then
-	mkdir $TMPIVR
+	mkdir $TMPIVR > /dev/null 2>&1
 fi
 cd $TMPIVR
 wget --mirror -nH http://$WEB/osdial/ivr > /dev/null 2>&1
@@ -23,8 +23,31 @@ else
 	wget --mirror -nH http://$WEB/ivr > /dev/null 2>&1
 	cd ivr
 fi
-for i in `ls *.wav *.WAV *.gsm *.GSM *.mp3 *.MP3`; do
+for i in `ls *.wav 2>/dev/null`; do
+	fileNE=`echo $i | awk '{ sub(/.wav$/, ""); print }'`
 	if [ ! -f "$IVRDIR/$i" ]; then
-		cp -f "$i" $IVRDIR
+		cp -f "$i" $IVRDIR > /dev/null 2>&1
+		/usr/sbin/asterisk -rx "file convert $IVRDIR/$i $IVRDIR/$fileNE.sln16" > /dev/null 2>&1
+		/usr/sbin/asterisk -rx "file convert $IVRDIR/$i $IVRDIR/$fileNE.ulaw" > /dev/null 2>&1
+		/usr/sbin/asterisk -rx "file convert $IVRDIR/$i $IVRDIR/$fileNE.gsm" > /dev/null 2>&1
+	fi
+done
+for i in `ls *.gsm 2>/dev/null`; do
+	fileNE=`echo $i | awk '{ sub(/.gsm$/, ""); print }'`
+	if [ ! -f "$IVRDIR/$i" ]; then
+		cp -f "$i" $IVRDIR > /dev/null 2>&1
+		/usr/sbin/asterisk -rx "file convert $IVRDIR/$i $IVRDIR/$fileNE.sln16" > /dev/null 2>&1
+		/usr/sbin/asterisk -rx "file convert $IVRDIR/$i $IVRDIR/$fileNE.ulaw" > /dev/null 2>&1
+		/usr/sbin/asterisk -rx "file convert $IVRDIR/$i $IVRDIR/$fileNE.wav" > /dev/null 2>&1
+	fi
+done
+for i in `ls *.mp3 2>/dev/null`; do
+	fileNE=`echo $i | awk '{ sub(/.mp3$/, ""); print }'`
+	if [ ! -f "$IVRDIR/$i" ]; then
+		cp -f "$i" $IVRDIR > /dev/null 2>&1
+		/usr/sbin/asterisk -rx "file convert $IVRDIR/$i $IVRDIR/$fileNE.sln16" > /dev/null 2>&1
+		/usr/sbin/asterisk -rx "file convert $IVRDIR/$i $IVRDIR/$fileNE.ulaw" > /dev/null 2>&1
+		/usr/sbin/asterisk -rx "file convert $IVRDIR/$i $IVRDIR/$fileNE.gsm" > /dev/null 2>&1
+		/usr/sbin/asterisk -rx "file convert $IVRDIR/$i $IVRDIR/$fileNE.wav" > /dev/null 2>&1
 	fi
 done
