@@ -222,7 +222,7 @@ sub get_campaign_stats {
 	my $swhere = "(active='Y' or campaign_stats_refresh='Y')";
 	$swhere = "campaign_id='$CLOcampaign'" if ($CLOcampaign);
 	while ( my $sret = $osdial->sql_query("SELECT campaign_id FROM osdial_campaigns WHERE $swhere;") ) {
-		my $campaign = $sret->{campaign_id};
+		my $campaign = uc($sret->{campaign_id});
 		$cdata->{$campaign}{campaign} = { 
 			'calls_today'=>0,   'answers_today'=>0,   'drops_today'=>0,   'drops_today_pct'=>0,   'drops_answers_today_pct'=>0,
 			'calls_hour'=>0,    'answers_hour'=>0,    'drops_hour'=>0,    'drops_hour_pct'=>0,
@@ -248,7 +248,7 @@ sub get_campaign_stats {
 
 	# Load in Custom Campaign Statuses, overriding System Statuses per Campaign.
 	while ( my $sret = $osdial->sql_query("SELECT campaign_id,status,human_answered,category FROM osdial_campaign_statuses;") ) {
-		my $campaign = $sret->{campaign_id};
+		my $campaign = uc($sret->{campaign_id});
 		my $status   = $sret->{status};
 		my $category = $sret->{category};
 		$category    = 'UNDEFINED' if ($category eq '');
@@ -261,7 +261,7 @@ sub get_campaign_stats {
 	while (my $res = $osdial->sql_query("SELECT osdial_log.* FROM osdial_log JOIN osdial_campaigns ON (osdial_log.campaign_id=osdial_campaigns.campaign_id) where call_date >= '$today';")) {
 		if ($res->{campaign_id} ne "") {
 			my $agent    = $res->{user};
-			my $campaign = $res->{campaign_id};
+			my $campaign = uc($res->{campaign_id});
 			my $status   = $res->{status};
 			my $server   = $res->{server_ip};
 			my $statcat  = join('',keys %{$statusref->{$campaign}{$status}});
