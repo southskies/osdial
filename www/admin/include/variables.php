@@ -573,6 +573,7 @@ $user_switching_enabled = get_variable("user_switching_enabled");
 $use_custom2_callerid = get_variable("use_custom2_callerid");
 $use_recycle_gap = get_variable("use_recycle_gap");
 
+$VAdisplay = get_variable("VAdisplay");
 $vcl_id = get_variable("vcl_id");
 $vcl_name = get_variable("vcl_name");
 $vd_server_logs = get_variable("vd_server_logs");

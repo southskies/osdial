@@ -38,6 +38,7 @@ function report_realtime_detail() {
     $orddir = get_variable('orddir');
     $SERVdisplay = get_variable('SERVdisplay');
     $CALLSdisplay = get_variable('CALLSdisplay');
+    $VAdisplay = get_variable('VAdisplay');
     $cpuinfo = get_variable('cpuinfo');
     $DB = get_variable('DB');
     $adastats = get_variable('adastats');
@@ -51,6 +52,7 @@ function report_realtime_detail() {
     if ($orddir=='') {$orddir='down';}
     if ($SERVdisplay=='') {$SERVdisplay=0;}
     if ($CALLSdisplay=='') {$CALLSdisplay=0;}
+    if ($VAdisplay=='') {$VAdisplay=0;}
     if ($cpuinfo=='') {$cpuinfo=0;}
 
 
@@ -209,19 +211,19 @@ function report_realtime_detail() {
     $html .= "Update:&nbsp;";
 
     if ($RR==38400) { $html .= "</font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
-    $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">Daily</a>&nbsp;&nbsp;"; 
+    $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=38400&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\">Daily</a>&nbsp;&nbsp;"; 
 
     if ($RR==3600) { $html .= "</font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
-    $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=3600&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">Hourly</a>&nbsp;&nbsp;";
+    $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=3600&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\">Hourly</a>&nbsp;&nbsp;";
 
     if ($RR==60) { $html .= "</font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
-    $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=60&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">1min</a>&nbsp;&nbsp;";
+    $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=60&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\">1min</a>&nbsp;&nbsp;";
 
     if ($RR==10) { $html .= "</font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
-    $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=10&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">10sec</a>&nbsp;&nbsp;";
+    $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=10&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\">10sec</a>&nbsp;&nbsp;";
 
     if ($RR==4) { $html .= "</font><font size=+1>"; } else { $html .= "</font><font size=-1>"; }
-    $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=4&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">4sec</a>&nbsp;&nbsp;";
+    $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&campaign_id=$campaign_id&group=$group&RR=4&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\">4sec</a>&nbsp;&nbsp;";
 
     $html .= "<font size=2>";
 
@@ -244,6 +246,7 @@ function report_realtime_detail() {
     $html .= "<input type=hidden name=orderby value=\"$orderby\">\n";
     $html .= "<input type=hidden name=SERVdisplay value=\"$SERVdisplay\">\n";
     $html .= "<input type=hidden name=CALLSdisplay value=\"$CALLSdisplay\">\n";
+    $html .= "<input type=hidden name=VAdisplay value=\"$VAdisplay\">\n";
     $html .= "<input type=hidden name=cpuinfo value=\"$cpuinfo\">\n";
 
     $html .= "<select size=1 name=group>\n";
@@ -489,29 +492,36 @@ function report_realtime_detail() {
         $html .= "<td align=left colspan=8>";
 
         if ($adastats<2) {
-            $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=2&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\"><font size=1>VIEW MORE SETTINGS</font></a>";
+            $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=2&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\"><font size=1>VIEW MORE SETTINGS</font></a>";
         } else {
-            $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=1&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\"><font size=1>VIEW LESS SETTINGS</font></a>";
+            $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=1&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\"><font size=1>VIEW LESS SETTINGS</font></a>";
         }
         if ($UGdisplay>0) {
-            $html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=0&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\"><font size=1>HIDE USER GROUP</font></a>";
+            $html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=0&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\"><font size=1>HIDE USER GROUP</font></a>";
         } else {
-            $html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=1&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\"><font size=1>VIEW USER GROUP</font></a>";
+            $html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=1&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\"><font size=1>VIEW USER GROUP</font></a>";
         }
         if ($UidORname>0) {
-            $html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=0&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\"><font size=1>SHOW AGENT ID</font></a>";
+            $html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=0&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\"><font size=1>SHOW AGENT ID</font></a>";
         } else {
-            $html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=1&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\"><font size=1>SHOW AGENT NAME</font></a>";
+            $html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=1&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\"><font size=1>SHOW AGENT NAME</font></a>";
         }
         if ($SERVdisplay>0) {
-            $html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=0&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\"><font size=1>HIDE SERVER INFO</font></a>";
+            $html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=0&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\"><font size=1>HIDE SERVER INFO</font></a>";
         } else {
-            $html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=1&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\"><font size=1>SHOW SERVER INFO</font></a>";
+            $html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=1&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\"><font size=1>SHOW SERVER INFO</font></a>";
         }
         if ($CALLSdisplay>0) {
-            $html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=0&cpuinfo=$cpuinfo\"><font size=1>HIDE WAITING CALLS DETAIL</font></a>";
+            $html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=0&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\"><font size=1>HIDE WAITING CALLS DETAIL</font></a>";
         } else {
-            $html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=1&cpuinfo=$cpuinfo\"><font size=1>SHOW WAITING CALLS DETAIL</font></a>";
+            $html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=1&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\"><font size=1>SHOW WAITING CALLS DETAIL</font></a>";
+        }
+        if ($VAdisplay==0) {
+            $html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=1&cpuinfo=$cpuinfo\"><font size=1>SHOW LIVE VIRTUAL AGENTS</font></a>";
+        } elseif ($VAdisplay==1) {
+            $html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=2&cpuinfo=$cpuinfo\"><font size=1>SHOW ALL VIRTUAL AGENTS</font></a>";
+        } else {
+            $html .= " &nbsp; &nbsp; &nbsp; <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=0&cpuinfo=$cpuinfo\"><font size=1>HIDE VIRTUAL AGENTS</font></a>";
         }
         $html .= "</td>";
         $html .= "</tr>";
@@ -712,11 +722,11 @@ function report_realtime_detail() {
 
 
     $HDstation = HorizLine(15).$LNtopdown; //12
-    $HTstation = "   <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=exten&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">STATION</a>     ".$LNcenterbar;
+    $HTstation = "   <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=exten&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\">STATION</a>     ".$LNcenterbar;
     $HXstation = CenterLine(15).$LNcentcross;
     $HBstation = HorizLine(15).$LNbottomup;
     $HDuser = HorizLine(20).$LNtopdown; //20
-    $HTuser = "      <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=user&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">USER</a>          ".$LNcenterbar;
+    $HTuser = "      <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=user&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\">USER</a>          ".$LNcenterbar;
     $HXuser = CenterLine(20).$LNcentcross;
     $HBuser = HorizLine(20).$LNbottomup;
     $HDusergroup ='';
@@ -725,13 +735,13 @@ function report_realtime_detail() {
     $HBusergroup ='';
     if ($UGdisplay > 0) {
         $HDusergroup = HorizLine(14).$LNtopdown; //14
-        $HTusergroup = " <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=group&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">USER GROUP</a>   ".$LNcenterbar;
+        $HTusergroup = " <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=group&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\">USER GROUP</a>   ".$LNcenterbar;
         $HXusergroup = CenterLine(14).$LNcentcross;
         $HBusergroup = HorizLine(14).$LNbottomup;
     }
     if ( ($SIPmonitorLINK<1) and ($IAXmonitorLINK<1) ) {
         $HDsessionid = HorizLine(11).$LNtopdown; //11
-        $HTsessionid = " <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=conf&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">SESSIONID</a> ".$LNcenterbar;
+        $HTsessionid = " <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=conf&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\">SESSIONID</a> ".$LNcenterbar;
         $HXsessionid = CenterLine(11).$LNcentcross;
         $HBsessionid = HorizLine(11).$LNbottomup;
         $HDmonitor = '';
@@ -740,7 +750,7 @@ function report_realtime_detail() {
         $HBmonitor = '';
     } else {
         $HDsessionid = HorizLine(11); //11
-        $HTsessionid = " <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=conf&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">SESSIONID</a> ";
+        $HTsessionid = " <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=conf&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\">SESSIONID</a> ";
         $HXsessionid = CenterLine(11);
         $HBsessionid = HorizLine(11);
         $HDmonitor = HorizLine(7).$LNtopdown;
@@ -772,7 +782,7 @@ function report_realtime_detail() {
     $HBcall_server_ip = '';
     if ($SERVdisplay > 0) {
         $HDserver_ip = HorizLine(17).$LNtopdown; //17
-        $HTserver_ip = "    <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=server&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">SERVER IP</a>    ".$LNcenterbar;
+        $HTserver_ip = "    <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=server&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\">SERVER IP</a>    ".$LNcenterbar;
         $HXserver_ip = CenterLine(17).$LNcentcross;
         $HBserver_ip = HorizLine(17).$LNbottomup;
         $HDcall_server_ip = HorizLine(17).$LNtopdown; //17
@@ -781,7 +791,7 @@ function report_realtime_detail() {
         $HBcall_server_ip = HorizLine(17).$LNbottomup;
     }
     $HDtime = HorizLine(9).$LNtopdown; //9
-    $HTtime = "  <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=time&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">MM:SS</a>  ".$LNcenterbar;
+    $HTtime = "  <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=time&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\">MM:SS</a>  ".$LNcenterbar;
     $HXtime = CenterLine(9).$LNcentcross;
     $HBtime = HorizLine(9).$LNbottomup;
     $HDcampaign = HorizLine(15).$LNtopdown; //15
@@ -789,7 +799,7 @@ function report_realtime_detail() {
     $HXcampaign = CenterLine(15).$LNcentcross;
     $HBcampaign = HorizLine(15).$LNbottomup;
     $HDcalls = HorizLine(7).$LNtopdown; //7
-    $HTcalls = " <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=calls&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=$cpuinfo\">CALLS</a> ".$LNcenterbar;
+    $HTcalls = " <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=calls&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\">CALLS</a> ".$LNcenterbar;
     $HXcalls = CenterLine(7).$LNcentcross;
     $HBcalls = HorizLine(7).$LNbottomup;
     $HDingrp = HorizLine(21); //21
@@ -817,7 +827,14 @@ function report_realtime_detail() {
     $usergroupSQL = '';
     if (strlen($usergroup)>0) $usergroupSQL = sprintf(" and user_group='%s'",mres($usergroup));
 
-    $stmt=sprintf("SELECT extension,osdial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),UNIX_TIMESTAMP(last_update_time),call_server_ip,osdial_live_agents.campaign_id,osdial_users.user_group,osdial_users.full_name,osdial_live_agents.comments,osdial_live_agents.calls_today,osdial_live_agents.callerid,lead_id,osdial_live_agents.uniqueid,osdial_live_agents.channel FROM osdial_live_agents,osdial_users WHERE campaign_id IN %s AND osdial_live_agents.user=osdial_users.user %s %s ORDER BY %s;",$LOG['allowed_campaignsSQL'],$groupSQL,$usergroupSQL,$orderSQL);
+      $vadispSQL = "";
+    if ($VAdisplay == 0) {
+      $vadispSQL = "AND osdial_live_agents.extension NOT LIKE 'R/va%'";
+    } elseif ($VAdisplay == 1) {
+      $vadispSQL = "AND (osdial_live_agents.extension NOT LIKE 'R/va%' OR status!='READY')";
+    }
+
+    $stmt=sprintf("SELECT extension,osdial_live_agents.user,conf_exten,status,server_ip,UNIX_TIMESTAMP(last_call_time),UNIX_TIMESTAMP(last_call_finish),UNIX_TIMESTAMP(last_update_time),call_server_ip,osdial_live_agents.campaign_id,osdial_users.user_group,osdial_users.full_name,osdial_live_agents.comments,osdial_live_agents.calls_today,osdial_live_agents.callerid,lead_id,osdial_live_agents.uniqueid,osdial_live_agents.channel FROM osdial_live_agents,osdial_users WHERE campaign_id IN %s AND osdial_live_agents.user=osdial_users.user %s %s %s ORDER BY %s;",$LOG['allowed_campaignsSQL'],$groupSQL,$usergroupSQL,$vadispSQL,$orderSQL);
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $talking_to_print = mysql_num_rows($rslt);
@@ -1217,14 +1234,14 @@ function report_realtime_detail() {
         $html .= '<br>';
         $html .= '<center>';
         if ($cpuinfo == 0 ) {
-            $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=0\"><font size=1><b>STANDARD INFO</b></font></a>";
+            $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=0\"><font size=1><b>STANDARD INFO</b></font></a>";
             $html .= ' - ';
-            $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=1\"><font size=1>EXTENDED INFO</font></a>";
+            $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=1\"><font size=1>EXTENDED INFO</font></a>";
             eval("\$html .= \"" . file_get_contents($pref . 'resources.txt') . "\";");
         } else {
-            $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=0\"><font size=1>STANDARD INFO</font></a>";
+            $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=0\"><font size=1>STANDARD INFO</font></a>";
             $html .= ' - ';
-            $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&cpuinfo=1\"><font size=1><b>EXTENDED INFO</b></font></a>";
+            $html .= "<a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=$orderby&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=1\"><font size=1><b>EXTENDED INFO</b></font></a>";
             eval("\$html .= \"" . file_get_contents($pref . 'resources-xtd.txt') . "\";");
         }
         $html .= '</center>';
