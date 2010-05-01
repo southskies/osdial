@@ -12,8 +12,14 @@ DELETE FROM server_updater;##|##
 ALTER TABLE server_updater ADD sql_time timestamp NOT NULL default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;##|##
  ##    Increase filename size in recording_log.;
 
+SET old_alter_table=1;##|##
+ ##    Turn old_alter_table on.;
+
 ALTER IGNORE TABLE server_updater ADD PRIMARY KEY (server_ip);##|##
  ##    Add primary key.;
+
+SET old_alter_table=0;##|##
+ ##    Turn old_alter_table off.;
 
 UNLOCK TABLES;##|##
  ##    Unlock Tables.;

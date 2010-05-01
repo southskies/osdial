@@ -9,8 +9,14 @@ ALTER TABLE server_performance DROP PRIMARY KEY;##|##
 DELETE FROM server_performance;##|##
  ##    The Server Performane table does not have a primary key, but could actually have duplicates, so we must clear it;
 
+SET old_alter_table=1;##|##
+ ##    Turn old_alter_table on.;
+
 ALTER IGNORE TABLE server_performance ADD PRIMARY KEY (server_ip,start_time);##|##
  ##    Add primary key.;
+
+SET old_alter_table=0;##|##
+ ##    Turn old_alter_table off.;
 
 UNLOCK TABLES;##|##
  ##    Unlock Tables.;

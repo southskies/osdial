@@ -22,17 +22,6 @@ ALTER TABLE server_updater DROP PRIMARY KEY;##|##
 ALTER TABLE parked_channels DROP PRIMARY KEY;##|##
  ##    Drop primary key.;
 
-DELETE FROM osdial_campaign_server_stats;##|##
- ##    Clean records in osdial_campaign_server_stats.;
-DELETE FROM osdial_campaign_agents;##|##
- ##    Clean records in osdial_campaign_agents.;
-DELETE FROM web_client_sessions;##|##
- ##    Clean records in web_client_sessions.;
-DELETE FROM server_updater;##|##
- ##    Clean records in server_updater.;
-DELETE FROM parked_channels;##|##
- ##    Clean records in parked_channels.;
-
 ALTER TABLE osdial_campaign_agents MODIFY campaign_id VARCHAR(20) NOT NULL, MODIFY user VARCHAR(20) NOT NULL;##|##
  ##    Field length or NULL correction.;
 ALTER TABLE osdial_campaign_hotkeys MODIFY campaign_id VARCHAR(20) NOT NULL;##|##
@@ -60,6 +49,9 @@ ALTER TABLE osdial_remote_agents MODIFY campaign_id VARCHAR(20) NOT NULL;##|##
 ALTER TABLE phones MODIFY login VARCHAR(20), MODIFY login_campaign VARCHAR(20), MODIFY extension VARCHAR(100) NOT NULL, MODIFY server_ip VARCHAR(15) NOT NULL;##|##
  ##    Field length or NULL correction.;
 
+SET old_alter_table=1;##|##
+ ##    Turn old_alter_table on.;
+
 ALTER IGNORE TABLE osdial_campaign_server_stats ADD PRIMARY KEY (campaign_id,server_ip);##|##
  ##    Add primary key.;
 ALTER IGNORE TABLE osdial_campaign_agents ADD PRIMARY KEY (campaign_id,user);##|##
@@ -70,7 +62,6 @@ ALTER IGNORE TABLE server_updater ADD PRIMARY KEY (server_ip);##|##
  ##    Add primary key.;
 ALTER IGNORE TABLE parked_channels ADD PRIMARY KEY (server_ip,channel);##|##
  ##    Add primary key.;
-
 ALTER IGNORE TABLE osdial_campaign_hotkeys ADD PRIMARY KEY (campaign_id,hotkey);##|##
  ##    Add primary key.;
 ALTER IGNORE TABLE conferences ADD PRIMARY KEY (conf_exten,server_ip);##|##
@@ -85,6 +76,9 @@ ALTER IGNORE TABLE phones ADD PRIMARY KEY (server_ip,extension);##|##
  ##    Add primary key.;
 ALTER IGNORE TABLE servers ADD PRIMARY KEY (server_ip);##|##
  ##    Add primary key.;
+
+SET old_alter_table=0;##|##
+ ##    Turn old_alter_table off.;
 
 UNLOCK TABLES;##|##
  ##    Unlock tables.;
