@@ -1,0 +1,43 @@
+# 05/01/2010
+
+set session old_alter_table=1;##|##
+ ##    Use old_alter_table.;
+
+ALTER TABLE server_updater DROP PRIMARY KEY;##|##
+ ##    Drop server_updater primary key.;
+
+ALTER IGNORE TABLE server_updater ADD PRIMARY KEY (server_ip);##|##
+ ##    Add server_updater primary key.;
+
+ALTER TABLE server_performance DROP PRIMARY KEY;##|##
+ ##    Drop server_performance primary key.;
+
+ALTER IGNORE TABLE server_performance ADD PRIMARY KEY (server_ip,start_time);##|##
+ ##    Add server_performance primary key.;
+
+ALTER TABLE web_client_sessions DROP PRIMARY KEY;##|##
+ ##    Drop web_client_sessions primary key.;
+
+ALTER IGNORE TABLE web_client_sessions ADD PRIMARY KEY (session_name);##|##
+ ##    Add web_client_sessions primary key.;
+
+ALTER TABLE osdial_campaign_server_stats DROP PRIMARY KEY;##|##
+ ##    Drop osdial_campaign_server_stats primary key.;
+
+ALTER IGNORE TABLE osdial_campaign_server_stats ADD PRIMARY KEY (campaign_id,server_ip);##|##
+ ##    Add osdial_campaign_server_stats primary key.;
+
+ALTER TABLE osdial_campaign_stats DROP PRIMARY KEY;##|##
+ ##    Drop osdial_campaign_stats primary key.;
+
+ALTER IGNORE TABLE osdial_campaign_stats ADD PRIMARY KEY (campaign_id);##|##
+ ##    Add osdial_campaign_stats primary key.;
+
+ALTER TABLE osdial_campaign_agent_stats DROP PRIMARY KEY;##|##
+ ##    Drop osdial_campaign_agent_stats primary key.;
+
+ALTER IGNORE TABLE osdial_campaign_agent_stats ADD PRIMARY KEY (campaign_id,user);##|##
+ ##    Add osdial_campaign_agent_stats primary key.;
+
+UPDATE system_settings SET version='2.2.1.056',last_update_check=DATE_SUB(NOW(), INTERVAL 1 DAY);##|##
+ ##    Updating database to version 2.2.1.056 and clearing last_update_check flag.;
