@@ -50,18 +50,25 @@ if ($ADD=="1") {
         echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=20 maxlength=100>$NWB#osdial_users-full_name$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level>";
         $h=0;
-        while ($h<=$LOGuser_level) {
+	    if ($LOGuser_level==9) {
+            $levelMAX=$LOGuser_level;
+        } else {
+            $levelMAX=($LOGuser_level-1);
+        }
+        while ($h<=$levelMAX) {
             echo "<option value=$h>";
-            if ($h==0) {
-                echo "0 - Disabled";
-            } elseif ($h==4) {
-                echo "4 - Closer / Inbound";
+		    if ($h==0) {
+                echo "$h - Disabled";
+            } elseif ($h>=1 and $h <=3) {
+                echo "$h - Outbound $h";
+            } elseif ($h>=4 and $h <=7) {
+                echo "$h - Outbound / Inbound / Closer $h";
             } elseif ($h==8) {
-                echo "8 - Manager";
+                echo "$h - Manager";
             } elseif ($h==9) {
-                echo "9 - Administrator";
+                echo "$h - Administrator";
             } else {
-                echo "$h";
+			    echo "$h";
             }
             echo "</option>";
             $h++;
@@ -76,17 +83,22 @@ if ($ADD=="1") {
         $Ugroups_list='';
 
         $o=0;
+        $gotsel=0;
         while ($Ugroups_to_print > $o) {
             $rowx=mysql_fetch_row($rslt);
-            $Ugroups_list .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
+            $sel='';
+            if (preg_match('/AGENTS$/',$rowx[0]) and $gotsel==0) {
+                $sel='selected';
+                $gotsel++;
+            }
+            $Ugroups_list .= "<option value=\"$rowx[0]\" $sel>" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
             $o++;
         }
         echo "$Ugroups_list";
-        echo "<option value=\"\" SELECTED>- SELECT USER GROUP -</option>\n";
         echo "</select>$NWB#osdial_users-user_group$NWE</td></tr>\n";
 
-        echo "<tr bgcolor=$oddrows><td align=right>Phone Login: </td><td align=left><input type=text name=phone_login size=20 maxlength=20>$NWB#osdial_users-phone_login$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Phone Pass: </td><td align=left><input type=text name=phone_pass size=20 maxlength=20>$NWB#osdial_users-phone_pass$NWE</td></tr>\n";
+        #echo "<tr bgcolor=$oddrows><td align=right>Phone Login: </td><td align=left><input type=text name=phone_login size=20 maxlength=20>$NWB#osdial_users-phone_login$NWE</td></tr>\n";
+        #echo "<tr bgcolor=$oddrows><td align=right>Phone Pass: </td><td align=left><input type=text name=phone_pass size=20 maxlength=20>$NWB#osdial_users-phone_pass$NWE</td></tr>\n";
 
         echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=ADD></td></tr>\n";
         echo "</TABLE></center>\n";
@@ -125,12 +137,15 @@ if ($ADD=="1A")
 	echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=pass size=20 maxlength=10>$NWB#osdial_users-pass$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=20 maxlength=100>$NWB#osdial_users-full_name$NWE</td></tr>\n";
 
-	if ($LOGuser_level==9) {$levelMAX=10;}
-	else {$levelMAX=$LOGuser_level;}
+	if ($LOGuser_level==9) {
+        $levelMAX=$LOGuser_level;
+    } else {
+        $levelMAX=($LOGuser_level-1);
+    }
 
 	echo "<tr bgcolor=$oddrows><td align=right>Source Agent: </td><td align=left><select size=1 name=source_user_id>\n";
 
-		$stmt = sprintf("SELECT user,full_name FROM osdial_users WHERE user_level < $levelMAX AND user_group IN %s ORDER BY full_name;", $LOG['allowed_usergroupsSQL']);
+		$stmt = sprintf("SELECT user,full_name FROM osdial_users WHERE user_level <= $levelMAX AND user NOT IN ('PBX-OUT','PBX-IN') AND user_group IN %s ORDER BY full_name;", $LOG['allowed_usergroupsSQL']);
 		$rslt=mysql_query($stmt, $link);
 		$Uusers_to_print = mysql_num_rows($rslt);
 		$Uusers_list='';
@@ -169,10 +184,10 @@ if ($ADD=="2")
 		{echo "<br><font color=red> AGENT NOT ADDED - there is already a user in the system with this user number</font>\n";}
 	else
 		{
-		 if ( (strlen($user) < 2) or (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user) > 8) )
+		 if ( (strlen($user) < 2) or (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user) > 15) )
 			{
 			 echo "<br><font color=red> AGENT NOT ADDED - Please go back and look at the data you entered\n";
-			 echo "<br>user id must be between 2 and 8 characters long\n";
+			 echo "<br>user id must be between 2 and 15 characters long\n";
 			 echo "<br>full name and password must be at least 2 characters long</font><br>\n";
 			}
 		 else
@@ -212,11 +227,11 @@ if ($ADD=="2A")
 		{echo "<br><font color=red> AGENT NOT ADDED - there is already a user in the system with this user number</font>\n";}
 	else
 		{
-		 if ( (strlen($user) < 2) or (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user) > 8) or (strlen($user_group) < 1) )
+		 if ( (strlen($user) < 2) or (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user) > 15) )
 			{
 			 echo "<br><font color=red> AGENT NOT ADDED - Please go back and look at the data you entered\n";
-			 echo "<br>user id must be between 2 and 8 characters long\n";
-			 echo "<br>full name and password must be at least 2 characters long</font><br>\n";
+			 echo "<br>user id must be between 2 and 15 characters long : " . strlen($user) . " : " . strlen($pass) . "\n";
+			 echo "<br>full name and password must be at least 2 characters long : " . strlen($full_name) . "</font><br>\n";
 			}
 		 else
 			{
@@ -492,7 +507,13 @@ if ($ADD==3)
 	$agent_api_access = 	$row[50];
 	$xfer_agent2agent = 	$row[51];
 
-	if ( ($user_level >= $LOGuser_level) and ($LOGuser_level < 9) and (!eregi(':' . $user_group . ':', $LOG['allowed_usergroupsSTR'])) )
+	if ($LOGuser_level==9) {
+        $levelMAX=$LOGuser_level;
+    } else {
+        $levelMAX=($LOGuser_level-1);
+    }
+
+	if ( ($user_level > $levelMAX) and ($LOGuser_level < 9) and (!eregi(':' . $user_group . ':', $LOG['allowed_usergroupsSTR'])) )
 		{
 		echo "<br><font color=red>You do not have permissions to modify this user: $row[1]</font>\n";
 		}
@@ -503,7 +524,7 @@ if ($ADD==3)
 			{echo "<input type=hidden name=ADD value=4A>\n";}
 		else
 			{
-			if ($LOGalter_agent_interface == "1")
+			if ($LOGalter_agent_interface_options == "1")
 				{echo "<input type=hidden name=ADD value=4B>\n";}
 			else
 				{echo "<input type=hidden name=ADD value=4>\n";}
@@ -522,18 +543,20 @@ if ($ADD==3)
 		echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=30 maxlength=30 value=\"$row[3]\">$NWB#osdial_users-full_name$NWE</td></tr>\n";
 		echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level>";
 		$h=0;
-		while ($h<=$LOGuser_level) {
+		while ($h<=$levelMAX) {
             $sel='';
             if ($h==$row[4]) $sel='selected';
             echo "<option value=$h $sel>";
 		    if ($h==0) {
-                echo "0 - Disabled";
-            } elseif ($h==4) {
-                echo "4 - Closer / Inbound";
+                echo "$h - Disabled";
+            } elseif ($h>=1 and $h <=3) {
+                echo "$h - Outbound $h";
+            } elseif ($h>=4 and $h <=7) {
+                echo "$h - Outbound / Inbound / Closer $h";
             } elseif ($h==8) {
-                echo "8 - Manager";
+                echo "$h - Manager";
             } elseif ($h==9) {
-                echo "9 - Administrator";
+                echo "$h - Administrator";
             } else {
 			    echo "$h";
             }
@@ -551,17 +574,17 @@ if ($ADD==3)
 			$o=0;
 			while ($Ugroups_to_print > $o) {
 				$rowx=mysql_fetch_row($rslt);
-				$Ugroups_list .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
+                $sel=''; if ($rowx[0] == $user_group) $sel='selected';
+				$Ugroups_list .= "<option value=\"$rowx[0]\" $sel>" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
 				$o++;
 			}
 		echo "$Ugroups_list";
-		echo "<option SELECTED value=\"$user_group\">" . mclabel($user_group) . "</option>\n";
 		echo "</select>$NWB#osdial_users-user_group$NWE</td></tr>\n";
-		echo "<tr bgcolor=$oddrows><td align=right>Phone Login: </td><td align=left><input type=text name=phone_login size=20 maxlength=20 value=\"$phone_login\">$NWB#osdial_users-phone_login$NWE</td></tr>\n";
-		echo "<tr bgcolor=$oddrows><td align=right>Phone Pass: </td><td align=left><input type=text name=phone_pass size=20 maxlength=20 value=\"$phone_pass\">$NWB#osdial_users-phone_pass$NWE</td></tr>\n";
+		#echo "<tr bgcolor=$oddrows><td align=right>Phone Login: </td><td align=left><input type=text name=phone_login size=20 maxlength=20 value=\"$phone_login\">$NWB#osdial_users-phone_login$NWE</td></tr>\n";
+		#echo "<tr bgcolor=$oddrows><td align=right>Phone Pass: </td><td align=left><input type=text name=phone_pass size=20 maxlength=20 value=\"$phone_pass\">$NWB#osdial_users-phone_pass$NWE</td></tr>\n";
 		echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 
-		if ( ($LOGuser_level > 8) or ($LOGalter_agent_interface == "1") )
+		if ( ($LOGuser_level > 8) or ($LOGalter_agent_interface_options == "1") )
 			{
 			echo "<tr><td>&nbsp;</td></tr>";
 			echo "<tr class=\"tabheader font3\"><td colspan=2 align=center>AGENT INTERFACE OPTIONS</td></tr>\n";
@@ -666,6 +689,8 @@ if ($ADD==3)
 			echo "<input type=hidden name=agent_api_access value=$agent_api_access>\n";
 			echo "<input type=hidden name=admin_api_access value=$admin_api_access>\n";
 		}
+		echo "<input type=hidden name=phone_login value=$phone_login>\n";
+		echo "<input type=hidden name=phone_pass value=$phone_pass>\n";
 		echo "</table></center>\n";
 
         echo "<br><br>";
@@ -692,10 +717,10 @@ if ($ADD==3)
         echo "  </tr>\n";
 		echo "</table>\n";
 
-		echo "<center><br><br><br><br><br><a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$row[1]\">Click here for user time sheet</a>\n";
-		echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$row[1]\">Click here for user status</a>\n";
-		echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$row[1]\">Click here for user stats</a>\n";
-		echo "<br><br><a href=\"$PHP_SELF?ADD=8&user=$row[1]\">Click here for user CallBack Holds</a></center>\n";
+		#echo "<center><br><br><br><br><br><a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$row[1]\">Click here for user time sheet</a>\n";
+		#echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$row[1]\">Click here for user status</a>\n";
+		#echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$row[1]\">Click here for user stats</a>\n";
+		#echo "<br><br><a href=\"$PHP_SELF?ADD=8&user=$row[1]\">Click here for user CallBack Holds</a></center>\n";
 		if ($LOGdelete_users > 0)
 			{
 			echo "<br><br><a href=\"$PHP_SELF?ADD=5&user=$row[1]\">DELETE THIS AGENT</a>\n";
@@ -713,18 +738,57 @@ if ($ADD==3)
 # ADD=550 search form
 ######################
 
-if ($ADD==550)
-{
-echo "<TABLE align=center><TR><TD>\n";
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+if ($ADD==550) {
+    echo "<TABLE align=center><TR><TD>\n";
+    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
-echo "<center><br><font color=$default_text size=+1>SEARCH FOR AN AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
-echo "<input type=hidden name=ADD value=660>\n";
-echo "<TABLE width=$section_width cellspacing=3>\n";
-echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left><input type=text name=user size=20 maxlength=20></td></tr>\n";
-echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=30 maxlength=30></td></tr>\n";
-echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></td></tr>\n";
-echo "<tr bgcolor=$oddrows><td align=right>User Group: </td><td align=left><select size=1 name=user_group>\n";
+    echo "<center><br><font color=$default_text size=+1>SEARCH FOR AN AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
+    echo "<input type=hidden name=ADD value=660>\n";
+    echo "<TABLE width=$section_width cellspacing=3>\n";
+    #echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left><input type=text name=user size=20 maxlength=20></td></tr>\n";
+    echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left>\n";
+    if ($LOG['multicomp_admin'] > 0) {
+        $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
+        echo "<select name=company_id>\n";
+        echo '<option value="" selected> -- ALL COMPANIES -- </option>' . "\n";
+        foreach ($comps as $comp) {
+            echo "<option value=$comp[id]>" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
+        }
+        echo "</select>\n";
+    } elseif ($LOG['multicomp']>0) {
+        echo "<input type=hidden name=company_id value=$LOG[company_id]><font color=$default_text>" . $LOG[company_prefix] . "</font>&nbsp;";
+    }
+    echo "<input type=text name=user size=20 maxlength=10></td></tr>\n";
+    echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=30 maxlength=30></td></tr>\n";
+    echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level>";
+    $h=0;
+	if ($LOGuser_level==9) {
+        $levelMAX=$LOGuser_level;
+    } else {
+        $levelMAX=($LOGuser_level-1);
+    }
+    echo '<option value=""> -- ALL USER LEVELS -- </option>';
+    while ($h<=$levelMAX) {
+        echo "<option value=$h>";
+		if ($h==0) {
+            echo "$h - Disabled";
+        } elseif ($h>=1 and $h <=3) {
+            echo "$h - Outbound $h";
+        } elseif ($h>=4 and $h <=7) {
+            echo "$h - Outbound / Inbound / Closer $h";
+        } elseif ($h==8) {
+            echo "$h - Manager";
+        } elseif ($h==9) {
+            echo "$h - Administrator";
+        } else {
+			echo "$h";
+        }
+        echo "</option>";
+        $h++;
+    }
+    echo "</select></td></tr>\n";
+    #echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option></select></td></tr>\n";
+    echo "<tr bgcolor=$oddrows><td align=right>User Group: </td><td align=left><select size=1 name=user_group>\n";
 	echo "<option value=\"\">- ALL USERGROUPS -</option>\n";
 
 	$stmt = sprintf("SELECT * from osdial_user_groups where user_group IN %s order by user_group",$LOG['allowed_usergroupsSQL']);
@@ -737,44 +801,69 @@ echo "<tr bgcolor=$oddrows><td align=right>User Group: </td><td align=left><sele
 		$groups_list .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
 		$o++;
 	}
-echo "$groups_list</select></td></tr>\n";
+    echo "$groups_list</select></td></tr>\n";
 
-echo "<tr class=tabfooter><td align=center  class=tabbutton colspan=2><input type=submit name=search value=SEARCH></td></tr>\n";
-echo "</TABLE></center>\n";
-
+    echo "<tr class=tabfooter><td align=center  class=tabbutton colspan=2><input type=submit name=search value=SEARCH></td></tr>\n";
+    echo "</TABLE></center>\n";
 }
 
 ######################
 # ADD=660 user search results
 ######################
 
-if ($ADD==660)
-{
-echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+if ($ADD==660) {
+    echo "<table align=center><tr><td>\n";
+	echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>";
 
-	$SQL = '';
-	if ($user) {$SQL .= " user LIKE \"%$user%\" and";}
-	if ($full_name) {$SQL .= " full_name LIKE \"%$full_name%\" and";}
-	if ($user_level > 0) {$SQL .= " user_level LIKE \"%$user_level%\" and";}
-	if ($user_group) {$SQL .= " user_group = '$user_group' and";}
-	$SQL = eregi_replace(" and$", "", $SQL);
-	if (strlen($SQL)>5) {$SQL = "where $SQL";}
+	if ($LOGuser_level==9) {
+        $levelMAX=$LOGuser_level;
+    } else {
+        $levelMAX=($LOGuser_level-1);
+    }
 
-	$stmt="SELECT * from osdial_users $SQL order by full_name desc;";
-#	echo "\n|$stmt|\n";
+    $preuser = $user;
+    if ($LOG['multicomp'] > 0) {
+        if ($company_id > 0) {
+            $preuser = (($company_id * 1) + 100) . $user;
+        } else {
+            $preuser = '%' . $user;
+        }
+    }
+
+    $userSQL='';
+    $nameSQL='';
+    $levelSQL=sprintf("AND user_level<='%s' ",mres($levelMAX));
+    $groupSQL=sprintf("AND user_group IN %s ",$LOG['allowed_usergroupsSQL']);
+
+	if ($preuser)    $userSQL .= sprintf("AND user LIKE '%s%%' ",mres($preuser));
+	if ($full_name)  $nameSQL .= sprintf("AND full_name LIKE '%%%s%%' ",mres($full_name));
+	if ($user_level) $levelSQL .= sprintf("AND user_level LIKE '%%%s%%' ",mres($user_level));
+	if ($user_group) $groupSQL .= sprintf("AND user_group='%s' ",mres($user_group));
+
+    $srt = get_variable('srt');
+    if ($srt == '') $srt='user';
+    $srtdir = get_variable('srtdir');
+    if ($srtdir == '') $srtdir='ASC';
+
+	$stmt=sprintf("SELECT * FROM osdial_users WHERE user NOT IN ('PBX-IN','PBX-OUT') %s %s %s %s ORDER BY %s %s;",$userSQL,$nameSQL,$levelSQL,$groupSQL,mres($srt),mres($srtdir));
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
-echo "<center><br><font size=+1 color=$default_text>SEARCH RESULTS</font><br><br>\n";
-echo "<table align=center width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "  <tr class=\"tabheader\">\n";
-echo "    <td>ID</td>\n";
-echo "    <td>Full Name</td>\n";
-echo "    <td>Level</td>\n";
-echo "    <td>User Group</td>\n";
-echo "    <td>Links</td>\n";
-echo "  </tr>\n";
+    if ($srtdir=='ASC') {
+        $srtdir='DESC';
+    } else {
+        $srtdir='ASC';
+    }
+
+    echo "<center><br><font size=+1 color=$default_text>SEARCH RESULTS</font><br><br>\n";
+    echo "<table align=center width=$section_width cellspacing=0 cellpadding=1>\n";
+    echo "  <tr class=\"tabheader\">\n";
+    echo "    <td><a href=\"$PHP_SELF?ADD=$ADD&srt=user&srtdir=$srtdir&user=$user&full_name=$full_name&user_level=$user_level&user_group=$user_group&company_id=$company_id\">USER ID</a></td>\n";
+    echo "    <td><a href=\"$PHP_SELF?ADD=$ADD&srt=full_name&srtdir=$srtdir&user=$user&full_name=$full_name&user_level=$user_level&user_group=$user_group&company_id=$company_id\">FULL NAME</a></td>\n";
+    echo "    <td><a href=\"$PHP_SELF?ADD=$ADD&srt=user_level&srtdir=$srtdir&user=$user&full_name=$full_name&user_level=$user_level&user_group=$user_group&company_id=$company_id\">LEVEL</a></td>\n";
+    echo "    <td><a href=\"$PHP_SELF?ADD=$ADD&srt=user_group&srtdir=$srtdir&user=$user&full_name=$full_name&user_level=$user_level&user_group=$user_group&company_id=$company_id\">GROUP</a></td>\n";
+    echo "    <td>Links</td>\n";
+    echo "  </tr>\n";
 
 	$o=0;
 	while ($people_to_print > $o) {
@@ -793,10 +882,10 @@ echo "  </tr>\n";
 		$o++;
 	}
 
-echo "  <tr class=\"tabfooter\">\n";
-echo "    <td colspan=5></td>\n";
-echo "  </tr>\n";
-echo "</table></center>\n";
+    echo "  <tr class=\"tabfooter\">\n";
+    echo "    <td colspan=5></td>\n";
+    echo "  </tr>\n";
+    echo "</table></center>\n";
 
 }
 
@@ -845,9 +934,15 @@ $num = get_variable('num');
 $numSQL = '';
 if ($num != '') $numSQL = sprintf("AND (user LIKE '%s%s%%')",$LOG['company_prefix'],mres($num));
 
+	if ($LOGuser_level==9) {
+        $levelMAX=$LOGuser_level;
+    } else {
+        $levelMAX=($LOGuser_level-1);
+    }
+
 $level = get_variable('level');
-$levelSQL = '';
-if ($level != '') $levelSQL = sprintf("AND user_level='%s'",mres($level));
+$levelSQL = sprintf("AND user_level <= '%s'",mres($levelMAX));
+if ($level != '') $levelSQL .= sprintf(" AND user_level='%s'",mres($level));
 
 $group = get_variable('group');
 $groupSQL = '';

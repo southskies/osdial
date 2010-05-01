@@ -194,11 +194,16 @@ if (strlen($users_hh) > 1) {
     echo "        <a href=\"$PHP_SELF?ADD=1A\"> Copy Agent </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\n";
     echo "        <a href=\"$PHP_SELF?ADD=550\"> Search For An Agent </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\n";
     if ($system_settings['enable_lead_allocation'] > 0) {
-        echo "        <a href=\"$PHP_SELF?ADD=9\"> Lead Allocation </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\n";
+        echo "        <a href=\"$PHP_SELF?ADD=9\"> Lead Allocation </a> &nbsp; &nbsp;\n";
+    } else {
+        echo "        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;\n";
     }
-    if ($user != "") {
-        echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$user\"> Agent Stats </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\n";
-        echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$user\"> Agent Status </a> \n";
+    if ($user != "" and $ADD!=550 and $ADD!=660) {
+        echo "        | &nbsp; &nbsp;\n";
+        echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$user\"> Stats </a> &nbsp; &nbsp; &nbsp;\n";
+        echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$user\"> Status </a> &nbsp; &nbsp; &nbsp;\n";
+        echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$user\"> Time </a> &nbsp; &nbsp; &nbsp;\n";
+        echo "        <a href=\"$PHP_SELF?ADD=8&agent=$user\"> Callbacks </a> \n";
     }
     echo "      </font>\n";
     echo "    </td>\n";
