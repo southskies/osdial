@@ -140,7 +140,12 @@ install-docs: .osdial.config
 	@install -p -m 644 ./extras/gmt/phone_codes_GMT.txt $(DESTDIR)$(PATHhome)
 	@install -p -m 644 ./extras/sql/* $(DESTDIR)$(PATHhome)/sql
 	@install -p -m 755 ./agi/* $(DESTDIR)$(PATHagi)
-	@install -p -m 644 ./sounds/* $(DESTDIR)$(PATHsounds)
+	#@install -p -m 644 ./sounds/*.wav   $(DESTDIR)$(PATHsounds)
+	@install -p -m 644 ./sounds/*.gsm   $(DESTDIR)$(PATHsounds)
+	@install -p -m 644 ./sounds/*.g729  $(DESTDIR)$(PATHsounds)
+	@install -p -m 644 ./sounds/*.ulaw  $(DESTDIR)$(PATHsounds)
+	#@install -p -m 644 ./sounds/*.sln   $(DESTDIR)$(PATHsounds)
+	#@install -p -m 644 ./sounds/*.sln16 $(DESTDIR)$(PATHsounds)
 	@install -p -m 644 ./extras/openvpn/* $(DESTDIR)/etc/openvpn
 	@[ -d $(DESTDIR)/var/lib/mysql/osdial ] && /usr/bin/perl $(DESTDIR)$(PATHhome)/sql/upgrade_sql.pl || :
 
