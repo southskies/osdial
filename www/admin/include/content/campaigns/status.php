@@ -36,13 +36,13 @@ if ($ADD==22)
 		{echo "<br><font color=red> CAMPAIGN STATUS NOT ADDED - there is already a campaign-status in the system with this name</font>\n";}
 	else
 		{
-		$stmt="SELECT count(*) from osdial_statuses where status='$status';";
-		$rslt=mysql_query($stmt, $link);
-		$row=mysql_fetch_row($rslt);
-		if ($row[0] > 0)
-			{echo "<br><font color=$default_text> CAMPAIGN STATUS NOT ADDED - there is already a global-status in the system with this name</font>\n";}
-		else
-			{
+		#$stmt="SELECT count(*) from osdial_statuses where status='$status';";
+		#$rslt=mysql_query($stmt, $link);
+		#$row=mysql_fetch_row($rslt);
+		#if ($row[0] > 0)
+		#	{echo "<br><font color=$default_text> CAMPAIGN STATUS NOT ADDED - there is already a global-status in the system with this name</font>\n";}
+		#else
+		#	{
 			 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) or (strlen($status_name) < 2) )
 				{
 				 echo "<br><font color=red> CAMPAIGN STATUS NOT ADDED - Please go back and look at the data you entered\n";
@@ -64,7 +64,7 @@ if ($ADD==22)
 					fclose($fp);
 					}
 				}
-			}
+		#	}
 		}
 $SUB=22;
 $ADD=31;
