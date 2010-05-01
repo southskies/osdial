@@ -969,9 +969,10 @@ if ($ACTION == 'manDiaLnextCaLL')
             $web_form_address2 = "";
             $web_form_extwindow = "";
             $web_form2_extwindow = "";
+            $campaign_script = "";
 
             # Get web_form_address vars from campaign.
-            $stmt = "SELECT web_form_address,web_form_address2,web_form_extwindow,web_form2_extwindow FROM osdial_campaigns WHERE campaign_id='$campaign';";
+            $stmt = "SELECT web_form_address,web_form_address2,web_form_extwindow,web_form2_extwindow,campaign_script FROM osdial_campaigns WHERE campaign_id='$campaign';";
             if ($DB) {echo "$stmt\n";}
             $rslt=mysql_query($stmt, $link);
             $list_cnt = mysql_num_rows($rslt);
@@ -981,10 +982,11 @@ if ($ACTION == 'manDiaLnextCaLL')
                 $web_form_address2 = $row[1];
                 $web_form_extwindow = $row[2];
                 $web_form2_extwindow = $row[3];
+                $campaign_script = $row[4];
             }
 
             # Get web_form_address vars from list.
-            $stmt = "SELECT web_form_address,web_form_address2 FROM osdial_lists WHERE list_id='$list_id';";
+            $stmt = "SELECT web_form_address,web_form_address2,list_script FROM osdial_lists WHERE list_id='$list_id';";
             if ($DB) {echo "$stmt\n";}
             $rslt=mysql_query($stmt, $link);
             $list_cnt = mysql_num_rows($rslt);
@@ -992,12 +994,14 @@ if ($ACTION == 'manDiaLnextCaLL')
                 $row=mysql_fetch_row($rslt);
                 if ($row[0] != "") $web_form_address = $row[0];
                 if ($row[1] != "") $web_form_address2 = $row[1];
+                if ($row[2] != "") $campaign_script = $row[2];
             }
 
             $LeaD_InfO .=	$web_form_address . "\n";
             $LeaD_InfO .=	$web_form_address2 . "\n";
             $LeaD_InfO .=	$web_form_extwindow . "\n";
             $LeaD_InfO .=	$web_form2_extwindow . "\n";
+            $LeaD_InfO .=	$campaign_script . "\n";
 
             $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
             $cnt = 0;
@@ -2085,7 +2089,7 @@ if ($ACTION == 'VDADcheckINCOMING')
                 $VDCL_web_form_extwin2      = $row[11];
                 }
 
-            $stmt = "SELECT web_form_address,web_form_address2 FROM osdial_lists WHERE list_id='$list_id';";
+            $stmt = "SELECT web_form_address,web_form_address2,list_script FROM osdial_lists WHERE list_id='$list_id';";
             if ($DB) {echo "$stmt\n";}
             $rslt=mysql_query($stmt, $link);
             $list_cnt = mysql_num_rows($rslt);
@@ -2093,6 +2097,7 @@ if ($ACTION == 'VDADcheckINCOMING')
                 $row=mysql_fetch_row($rslt);
                 if ($row[0] != "") $VDCL_web_form_address = $row[0];
                 if ($row[1] != "") $VDCL_web_form_address2 = $row[1];
+                if ($row[2] != "") $VDCL_campaign_script = $row[2];
             }
 
             echo "$VDCL_web_form_address|||||$VDCL_campaign_script|$VDCL_get_call_launch|$VDCL_xferconf_a_dtmf|$VDCL_xferconf_a_number|$VDCL_xferconf_b_dtmf|$VDCL_xferconf_b_number|$VDCL_default_xfer_group|$VDCL_allow_tab_switch|$VDCL_web_form_address2|$VDCL_web_form_extwin|$VDCL_web_form_extwin2|\n|\n";
@@ -2153,6 +2158,17 @@ if ($ACTION == 'VDADcheckINCOMING')
                 $VDCL_web_form_extwin   = $row[31];
                 $VDCL_web_form_extwin2  = $row[32];
 
+                $stmt = "SELECT web_form_address,web_form_address2,list_script FROM osdial_lists WHERE list_id='$list_id';";
+                if ($DB) {echo "$stmt\n";}
+                $rslt=mysql_query($stmt, $link);
+                $list_cnt = mysql_num_rows($rslt);
+                if ($list_cnt > 0) {
+                    $row=mysql_fetch_row($rslt);
+                    if ($row[0] != "") $VDCL_group_web = $row[0];
+                    if ($row[1] != "") $VDCL_group_web2 = $row[1];
+                    if ($row[2] != "") $VDCL_ingroup_script = $row[2];
+                }
+
                 $stmt = "select campaign_script,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,web_form_address,web_form_address2 from osdial_campaigns where campaign_id='$campaign';";
                 if ($DB) {echo "$stmt\n";}
                 $rslt=mysql_query($stmt, $link);
@@ -2187,7 +2203,7 @@ if ($ACTION == 'VDADcheckINCOMING')
                 }
             else
                 {
-                $stmt = "select campaign_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,allow_tab_switch from osdial_campaigns where campaign_id='$VDADchannel_group';";
+                $stmt = "select campaign_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,allow_tab_switch,web_form_address,web_form_address2 from osdial_campaigns where campaign_id='$VDADchannel_group';";
                 if ($DB) {echo "$stmt\n";}
                 $rslt=mysql_query($stmt, $link);
                 $VDIG_cid_ct = mysql_num_rows($rslt);
@@ -2201,6 +2217,19 @@ if ($ACTION == 'VDADcheckINCOMING')
                     $VDCL_xferconf_b_dtmf   = $row[4];
                     $VDCL_xferconf_b_number = $row[5];
                     $VDCL_allow_tab_switch  = $row[6];
+                    $VDCL_group_web         = $row[7];
+                    $VDCL_group_web2        = $row[8];
+                    }
+
+                    $stmt = "SELECT web_form_address,web_form_address2,list_script FROM osdial_lists WHERE list_id='$list_id';";
+                    if ($DB) {echo "$stmt\n";}
+                    $rslt=mysql_query($stmt, $link);
+                    $list_cnt = mysql_num_rows($rslt);
+                    if ($list_cnt > 0) {
+                        $row=mysql_fetch_row($rslt);
+                        if ($row[0] != "") $VDCL_group_web = $row[0];
+                        if ($row[1] != "") $VDCL_group_web2 = $row[1];
+                        if ($row[2] != "") $VDCL_ingroup_script = $row[2];
                     }
                 }
 

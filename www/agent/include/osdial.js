@@ -2005,10 +2005,13 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						} else {
 							web_form2_extwindow = 0;
 						}
+						if (MDnextResponse_array[42] != "") {
+							campaign_script = MDnextResponse_array[42];
+						}
 <?
     $cnt = 0;
     foreach ($jfields as $jfield) {
-        $rcnt = $cnt + 42;
+        $rcnt = $cnt + 43;
         echo '          document.osdial_form.' . $ffields[$cnt] . ".value = MDnextResponse_array[" . $rcnt . "];\n";
         $cnt++;
     }

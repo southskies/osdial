@@ -713,6 +713,10 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <B>Web Form -</B> This is where you can set the custom web page that will be opened when the user clicks on one of the WEB FORM buttons.  The default fieldset will be sent via an HTTP GET to the given URL.<br><br>You can optionally define a custom mapping and deliver only the specified content with the URL. The customer information be auto-populated in this URL using "[[field]]" where field is one of the following fieldnames: lead_id, vendor_id, list_id, gmt_offset_now, phone_code, phone_number, title, first_name, middle_initial, last_name, address1, address2, address3, city, state, province, postal_code, country_code, gender, date_of_birth, alt_phone, email, custom1, custom2, comments, user, pass, campaign, phone_login, phone_pass, fronter, closer, group, channel_group, SQLdate, epoch, uniqueid, customer_zap_channel, customer_server_ip, server_ip, SIPexten, session_id, phone, parked_by, dispo, dialed_number, dialed_label, source_id, external_key, post_date, recording_id, and all Additional Form Fields in the form of FORM_FIELD.<br>For example, the web-form <b>/osdial/agent/webform_redirect.php?id=[[external_key]]&amp;lead=[[lead_id]]&amp;phone=[[phone_number]]&amp;result=[[dispo]]</b> might be sent as <b>/osdial/agent/webform_redirect.php?id=112233&amp;lead=123456&amp;phone=7275551212&amp;result=SALE</b>
 
+<BR>
+<A NAME="osdial_lists-list_script">
+<BR>
+<b>List Script -</b> This option allows you to choose the script that will appear on the agents screen for this specific list. Select NONE to show no script for this campaign.
 
 <BR><BR><BR><BR>
 
