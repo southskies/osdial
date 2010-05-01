@@ -29,17 +29,17 @@ DELETE FROM osdial_campaign_server_stats;##|##
 DELETE FROM osdial_campaign_agent_stats;##|##
  ##    Clear records in osdial_campaign_agent_stats.;
 
-ALTER TABLE server_updater ADD PRIMARY KEY (server_ip);##|##
+ALTER IGNORE TABLE server_updater ADD PRIMARY KEY (server_ip);##|##
  ##    Add server_updater primary key.;
-ALTER TABLE server_performance ADD PRIMARY KEY (server_ip,start_time);##|##
+ALTER IGNORE TABLE server_performance ADD PRIMARY KEY (server_ip,start_time);##|##
  ##    Add server_performance primary key.;
-ALTER TABLE web_client_sessions ADD PRIMARY KEY (session_name);##|##
+ALTER IGNORE TABLE web_client_sessions ADD PRIMARY KEY (session_name);##|##
  ##    Add web_client_sessions primary key.;
-ALTER TABLE osdial_campaign_stats ADD PRIMARY KEY (campaign_id);##|##
+ALTER IGNORE TABLE osdial_campaign_stats ADD PRIMARY KEY (campaign_id);##|##
  ##    Add osdial_campaign_stats primary key.;
-ALTER TABLE osdial_campaign_server_stats ADD PRIMARY KEY (campaign_id,server_ip);##|##
+ALTER IGNORE TABLE osdial_campaign_server_stats ADD PRIMARY KEY (campaign_id,server_ip);##|##
  ##    Add osdial_campaign_server_stats primary key.;
-ALTER TABLE osdial_campaign_agent_stats ADD PRIMARY KEY (campaign_id,user);##|##
+ALTER IGNORE TABLE osdial_campaign_agent_stats ADD PRIMARY KEY (campaign_id,user);##|##
  ##    Add osdial_campaign_agent_stats primary key.;
 
 UNLOCK TABLES;##|##
