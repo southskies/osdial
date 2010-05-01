@@ -1284,6 +1284,7 @@ else
 	$install_directory=$row[35];
 	$local_web_callerID_URL=$row[36];
 	$OSDiaL_web_URL=$row[37];
+    if (preg_match('/^$|dial_output.php$/i',$OSDiaL_web_URL)) $OSDiaL_web_URL = '/osdial/agent/webform_redirect.php';
 	$AGI_call_logging_enabled=$row[38];
 	$user_switching_enabled=$row[39];
 	$conferencing_enabled=$row[40];
@@ -1338,28 +1339,25 @@ else
 		print "<!-- CAMPAIGN DEFAULT PARKING: |$OSDiaL_park_on_extension|$OSDiaL_park_on_filename| -->\n";
 
 	# If a web form address is not set, use the default one
-	if (strlen($web_form_address)>0)
-		{
-		$OSDiaL_web_form_address = "$web_form_address";
-		print "<!-- CAMPAIGN CUSTOM WEB FORM:   |$OSDiaL_web_form_address| -->\n";
-		}
-	else
-		{
-		$OSDiaL_web_form_address = "$OSDiaL_web_URL";
-		print "<!-- CAMPAIGN DEFAULT WEB FORM:  |$OSDiaL_web_form_address| -->\n";
-		$OSDiaL_web_form_address_enc = rawurlencode($OSDiaL_web_form_address);
+	if (strlen($web_form_address)>0) {
+		$OSDiaL_web_form_address = $web_form_address;
+	} elseif (strlen($OSDiaL_web_URL)>0) {
+		$OSDiaL_web_form_address = $OSDiaL_web_URL;
+	} else {
+		$OSDiaL_web_form_address = '/osdial/agent/webform_redirect.php';
+	}
+	print "<!-- CAMPAIGN DEFAULT WEB FORM:  |$OSDiaL_web_form_address| -->\n";
+	$OSDiaL_web_form_address_enc = rawurlencode($OSDiaL_web_form_address);
 
-		}
 	# If web form 2 address is not set, use the default one
 	if (strlen($web_form_address2)>0) {
-		$OSDiaL_web_form_address2 = "$web_form_address2";
-		print "<!-- CAMPAIGN CUSTOM WEB FORM2:   |$OSDiaL_web_form_address2| -->\n";
+		$OSDiaL_web_form_address2 = $web_form_address2;
+	} elseif (strlen($OSDiaL_web_URL)>0) {
+		$OSDiaL_web_form_address2 = $OSDiaL_web_URL;
 	} else {
-		$OSDiaL_web_form_address2 = "$OSDiaL_web_URL";
-		print "<!-- CAMPAIGN DEFAULT WEB FORM2:  |$OSDiaL_web_form_address2| -->\n";
-		$OSDiaL_web_form_address2_enc = rawurlencode($OSDiaL_web_form_address2);
+		$OSDiaL_web_form_address2 = '/osdial/agent/webform_redirect.php';
 	}
-	$OSDiaL_web_form_address_enc = rawurlencode($OSDiaL_web_form_address);
+	print "<!-- CAMPAIGN DEFAULT WEB FORM2:  |$OSDiaL_web_form_address2| -->\n";
 	$OSDiaL_web_form_address2_enc = rawurlencode($OSDiaL_web_form_address2);
 
 	# If closers are allowed on this campaign

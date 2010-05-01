@@ -979,6 +979,8 @@ if ($ACTION == 'manDiaLnextCaLL')
                 $row=mysql_fetch_row($rslt);
                 $web_form_address = $row[0];
                 $web_form_address2 = $row[1];
+                $web_form_extwindow = $row[2];
+                $web_form2_extwindow = $row[3];
             }
 
             # Get web_form_address vars from list.

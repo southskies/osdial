@@ -173,6 +173,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	var OSDiaL_web_form_address2_enc = '<? echo $OSDiaL_web_form_address2_enc ?>';
 	var VDIC_web_form_address = '<? echo $OSDiaL_web_form_address ?>';
 	var VDIC_web_form_address2 = '<? echo $OSDiaL_web_form_address2 ?>';
+	var wf_enc_address = '<? echo $OSDiaL_web_form_address ?>';
+	var wf2_enc_address = '<? echo $OSDiaL_web_form_address2 ?>';
 	var web_form_extwindow = <?= $web_form_extwindow ?>;
 	var web_form2_extwindow = <?= $web_form2_extwindow ?>;
 	var CalL_ScripT_id = '';
@@ -1991,6 +1993,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						document.osdial_form.post_date.value	= MDnextResponse_array[37];
 						VDIC_web_form_address = MDnextResponse_array[38];
 						VDIC_web_form_address2 = MDnextResponse_array[39];
+						if (VDIC_web_form_address == '') VDIC_web_form_address = OSDiaL_web_form_address;
+						if (VDIC_web_form_address2 == '') VDIC_web_form_address2 = OSDiaL_web_form_address2;
 						if (MDnextResponse_array[40] == "Y") {
 							web_form_extwindow = 1;
 						} else {
@@ -2114,16 +2118,22 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							web_form_vars2 = '?' + web_form_vars2;
 						}
 
+						wf_enc_address = webform_rewrite(VDIC_web_form_address);
+						if (wf_enc_address == VDIC_web_form_address) wf_enc_address += web_form_vars;
+
+						wf2_enc_address = webform_rewrite(VDIC_web_form_address2);
+						if (wf2_enc_address == VDIC_web_form_address2) wf2_enc_address += web_form_vars2;
+
 						if (web_form_extwindow == 1) {
-							document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+							document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + wf_enc_address + "\" target=\"webform\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 						} else {
-							document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + VDIC_web_form_address + web_form_vars + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+							document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + wf_enc_address + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 						}
 							
 						if (web_form2_extwindow == 1) {
-							document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+							document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + wf2_enc_address + "\" target=\"webform2\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 						} else {
-							document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + VDIC_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+							document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + wf2_enc_address + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 						}
 
 						if (previewFD_time > 0 && document.osdial_form.LeadPreview.checked==true) {
@@ -2166,18 +2176,18 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 							if (get_call_launch == 'WEBFORM') {
 								if (web_form_extwindow == 1) {
-									window.open(VDIC_web_form_address + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+									window.open(wf_enc_address, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
 								} else {
 									CloseWebFormPanels();
-									WebFormPanelDisplay(VDIC_web_form_address + web_form_vars);
+									WebFormPanelDisplay(wf_enc_address);
 								}
 							}
 							if (get_call_launch == 'WEBFORM2') {
 								if (web_form2_extwindow == 1) {
-									window.open(VDIC_web_form_address2 + "" + web_form_vars, 'webform2', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+									window.open(wf2_enc_address, 'webform2', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
 								} else {
 									CloseWebFormPanels();
-									WebFormPanelDisplay2(VDIC_web_form_address2 + web_form_vars2);
+									WebFormPanelDisplay2(wf2_enc_address);
 								}
 							}
 						} else {
@@ -2413,18 +2423,18 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 						if (get_call_launch == 'WEBFORM') {
 							if (web_form_extwindow == 1) {
-								window.open(VDIC_web_form_address + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+								window.open(wf_enc_address, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
 							} else {
 								CloseWebFormPanels();
-								WebFormPanelDisplay(VDIC_web_form_address + web_form_vars);
+								WebFormPanelDisplay(wf_enc_address);
 							}
 						}
 						if (get_call_launch == 'WEBFORM2') {
 							if (web_form2_extwindow == 1) {
-								window.open(VDIC_web_form_address2 + "" + web_form_vars2, 'webform2', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+								window.open(wf2_enc_address, 'webform2', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
 							} else {
 								CloseWebFormPanels();
-								WebFormPanelDisplay2(VDIC_web_form_address2 + web_form_vars2);
+								WebFormPanelDisplay2(wf2_enc_address);
 							}
 						}
 					}
@@ -2611,8 +2621,6 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							AutoDialWaiting = 0;
 
 							var VDIC_data_VDAC=check_VDIC_array[1].split("|");
-							VDIC_web_form_address = OSDiaL_web_form_address
-							VDIC_web_form_address2 = OSDiaL_web_form_address2
 							var VDIC_fronter='';
 
 							var VDIC_data_VDIG=check_VDIC_array[2].split("|");
@@ -2638,6 +2646,10 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							if (VDIC_data_VDIG[13].length > 5) {
 								VDIC_web_form_address2 = VDIC_data_VDIG[13];
 							}
+
+							if (VDIC_web_form_address == '') VDIC_web_form_address = OSDiaL_web_form_address;
+							if (VDIC_web_form_address2 == '') VDIC_web_form_address2 = OSDiaL_web_form_address2;
+
 							if (VDIC_data_VDIG[14] == "Y") {
 								web_form_extwindow = 1;
 							} else {
@@ -2648,6 +2660,12 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							} else {
 								web_form2_extwindow = 0;
 							}
+
+							wf_enc_address = webform_rewrite(VDIC_web_form_address);
+							if (wf_enc_address == VDIC_web_form_address) wf_enc_address += web_form_vars;
+
+							wf2_enc_address = webform_rewrite(VDIC_web_form_address2);
+							if (wf2_enc_address == VDIC_web_form_address2) wf2_enc_address += web_form_vars2;
 
 							var VDIC_data_VDFR=check_VDIC_array[3].split("|");
 							if ( (VDIC_data_VDFR[1].length > 1) && (VDCL_fronter_display == 'Y') ) {
@@ -2880,16 +2898,22 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 								web_form_vars2 = '?' + web_form_vars2;
 							}
 
+							wf_enc_address = webform_rewrite(VDIC_web_form_address);
+							if (wf_enc_address == VDIC_web_form_address) wf_enc_address += web_form_vars;
+
+							wf2_enc_address = webform_rewrite(VDIC_web_form_address2);
+							if (wf2_enc_address == VDIC_web_form_address2) wf2_enc_address += web_form_vars2;
+
 							if (web_form_extwindow == 1) {
-								document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+								document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + wf_enc_address + "\" target=\"webform\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 							} else {
-								document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + VDIC_web_form_address + web_form_vars + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+								document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + wf_enc_address + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 							}
 
 							if (web_form2_extwindow == 1) {
-								document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+								document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + wf2_enc_address + "\" target=\"webform2\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 							} else {
-								document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + VDIC_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+								document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + wf2_enc_address + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 							}
 
 							if ( (campaign_recording == 'ALLCALLS') || (campaign_recording == 'ALLFORCE') ) {
@@ -2916,18 +2940,18 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 							if (CalL_AutO_LauncH == 'WEBFORM') {
 								if (web_form_extwindow == 1) {
-									window.open(VDIC_web_form_address + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+									window.open(wf_enc_address, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
 								} else {
 									CloseWebFormPanels();
-									WebFormPanelDisplay(VDIC_web_form_address + web_form_vars);
+									WebFormPanelDisplay(wf_enc_address);
 								}
 							}
 							if (CalL_AutO_LauncH == 'WEBFORM2') {
 								if (web_form2_extwindow == 1) {
-									window.open(VDIC_web_form_address2 + "" + web_form_vars2, 'webform2', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+									window.open(wf2_enc_address, 'webform2', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
 								} else {
 									CloseWebFormPanels();
-									WebFormPanelDisplay2(VDIC_web_form_address2 + web_form_vars2);
+									WebFormPanelDisplay2(wf2_enc_address);
 								}
 							}
 
@@ -3002,8 +3026,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						if (check_RPLD_array[0] > 0) { //<>
 							//alert(xmlhttprequestrepull.responseText);
 
-							RPLD_web_form_address = OSDiaL_web_form_address;
-							RPLD_web_form_address2 = OSDiaL_web_form_address2;
+							if (VDIC_web_form_address == '') VDIC_web_form_address = OSDiaL_web_form_address;
+							if (VDIC_web_form_address2 == '') VDIC_web_form_address2 = OSDiaL_web_form_address2;
 
 							document.osdial_form.lead_id.value		= check_RPLD_array[0];
 							document.osdial_form.vendor_lead_code.value	= check_RPLD_array[1];
@@ -3122,27 +3146,33 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							web_form_vars2 = web_form_vars;
 
 							var regWFAvars = new RegExp("\\?","ig");
-							if (RPLD_web_form_address.match(regWFAvars)) {
+							if (VDIC_web_form_address.match(regWFAvars)) {
 								web_form_vars = '&' + web_form_vars;
 							} else {
 								web_form_vars = '?' + web_form_vars;
 							}
-							if (RPLD_web_form_address2.match(regWFAvars)) {
+							if (VDIC_web_form_address2.match(regWFAvars)) {
 								web_form_vars2 = '&' + web_form_vars2;
 							} else {
 								web_form_vars2 = '?' + web_form_vars2;
 							}
 
+							wf_enc_address = webform_rewrite(VDIC_web_form_address);
+							if (wf_enc_address == VDIC_web_form_address) wf_enc_address += web_form_vars;
+
+							wf2_enc_address = webform_rewrite(VDIC_web_form_address2);
+							if (wf2_enc_address == VDIC_web_form_address2) wf2_enc_address += web_form_vars2;
+
 							if (web_form_extwindow == 1) {
-								document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + RPLD_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+								document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + wf_enc_address + "\" target=\"webform\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 							} else {
-								document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + RPLD_web_form_address + web_form_vars + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+								document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + wf_enc_address + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 							}
 
 							if (web_form2_extwindow == 1) {
-								document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + RPLD_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+								document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + wf2_enc_address + "\" target=\"webform2\" onMouseOver=\"WebFormRefresH();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 							} else {
-								document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + RPLD_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+								document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + wf2_enc_address + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 							}
 
 						}
@@ -3248,30 +3278,36 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			web_form_vars2 = '?' + web_form_vars2;
 		}
 
+		wf_enc_address = webform_rewrite(VDIC_web_form_address);
+		if (wf_enc_address == VDIC_web_form_address) wf_enc_address += web_form_vars;
+
+		wf2_enc_address = webform_rewrite(VDIC_web_form_address2);
+		if (wf2_enc_address == VDIC_web_form_address2) wf2_enc_address += web_form_vars2;
+
 
 		if (taskrefresh == 'OUT') {
 			if (web_form_extwindow == 1) {
-				document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOver=\"WebFormRefresH('IN');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+				document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + wf_enc_address + "\" target=\"webform\" onMouseOver=\"WebFormRefresH('IN');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 			} else {
-				document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + VDIC_web_form_address + web_form_vars + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+				document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + wf_enc_address + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 			}
 
 			if (web_form2_extwindow == 1) {
-				document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOver=\"WebFormRefresH('IN');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+				document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + wf2_enc_address + "\" target=\"webform2\" onMouseOver=\"WebFormRefresH('IN');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 			} else {
-				document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + VDIC_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+				document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + wf2_enc_address + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 			}
 		} else {
 			if (web_form_extwindow == 1) {
-				document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + VDIC_web_form_address + web_form_vars + "\" target=\"vdcwebform\" onMouseOut=\"WebFormRefresH('OUT');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+				document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + wf_enc_address + "\" target=\"webform\" onMouseOut=\"WebFormRefresH('OUT');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 			} else {
-				document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + VDIC_web_form_address + web_form_vars + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+				document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + wf_enc_address + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
 			}
 
 			if (web_form2_extwindow == 1) {
-				document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + VDIC_web_form_address2 + web_form_vars2 + "\" target=\"vdcwebform2\" onMouseOut=\"WebFormRefresH('OUT');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+				document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + wf2_enc_address + "\" target=\"webform2\" onMouseOut=\"WebFormRefresH('OUT');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 			} else {
-				document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + VDIC_web_form_address2 + web_form_vars2 + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+				document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + wf2_enc_address + "');\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
 			}
 		}
 	}
@@ -3798,9 +3834,9 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			WebFormRefresH();
 
 			if (submit_method == 2) {
-				window.open(VDIC_web_form_address2 + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+				window.open(wf2_enc_address, 'webform2', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
 			} else {
-				window.open(VDIC_web_form_address + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+				window.open(wf_enc_address, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
 			}
 
 			DispoSelect_submit();
@@ -3828,9 +3864,9 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				LeaDDispO = DispoChoice;
 				WebFormRefresH();
 				if (submit_method == 2) {
-					window.open(VDIC_web_form_address2 + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+					window.open(wf2_enc_address, 'webform2', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
 				} else {
-					window.open(VDIC_web_form_address + "" + web_form_vars, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
+					window.open(wf_enc_address, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
 				}
 			}
 
@@ -4573,7 +4609,210 @@ if ($useIE > 0) {
 
 
 // ################################################################################
-// decode the scripttext and scriptname so that it can be didsplayed
+// An additional encodeURIComponent which also encodes (+) plus.
+	function encodeURIComponent2(component) {
+		return encodeURIComponent(component).replace(/%20/g, '+');
+	}
+
+// ################################################################################
+// Do the variable substituion on the given string.
+	function webform_rewrite(wf_encoded) {
+		debug("<b>webform_rewrite:</b> wf_encoded=" + wf_encoded,2);
+
+		var SCvendor_lead_code = encodeURIComponent2(document.osdial_form.vendor_lead_code.value);
+		var SCsource_id = encodeURIComponent2(source_id);
+		var SClist_id = encodeURIComponent2(document.osdial_form.list_id.value);
+		var SCgmt_offset_now = encodeURIComponent2(document.osdial_form.gmt_offset_now.value);
+		var SCcalled_since_last_reset = encodeURIComponent2("");
+		var SCphone_code = encodeURIComponent2(document.osdial_form.phone_code.value);
+		var SCphone_number = encodeURIComponent2(document.osdial_form.phone_number.value);
+		var SCphone = encodeURIComponent2(document.osdial_form.phone_number.value);
+		var SCdialed_number = encodeURIComponent2(dialed_number);
+		var SCdialed_label = encodeURIComponent2(dialed_label);
+		var SCtitle = encodeURIComponent2(document.osdial_form.title.value);
+		var SCfirst_name = encodeURIComponent2(document.osdial_form.first_name.value);
+		var SCmiddle_initial = encodeURIComponent2(document.osdial_form.middle_initial.value);
+		var SClast_name = encodeURIComponent2(document.osdial_form.last_name.value);
+		var SCaddress1 = encodeURIComponent2(document.osdial_form.address1.value);
+		var SCaddress2 = encodeURIComponent2(document.osdial_form.address2.value);
+		var SCaddress3 = encodeURIComponent2(document.osdial_form.address3.value);
+		var SCcity = encodeURIComponent2(document.osdial_form.city.value);
+		var SCstate = encodeURIComponent2(document.osdial_form.state.value);
+		var SCprovince = encodeURIComponent2(document.osdial_form.province.value);
+		var SCpostal_code = encodeURIComponent2(document.osdial_form.postal_code.value);
+		var SCcountry_code = encodeURIComponent2(document.osdial_form.country_code.value);
+		var SCgender = encodeURIComponent2(document.osdial_form.gender.value);
+		var SCdate_of_birth = encodeURIComponent2(document.osdial_form.date_of_birth.value);
+		var SCalt_phone = encodeURIComponent2(document.osdial_form.alt_phone.value);
+		var SCemail = encodeURIComponent2(document.osdial_form.email.value);
+		var SCcustom1 = encodeURIComponent2(document.osdial_form.custom1.value);
+		var SCcustom2 = encodeURIComponent2(document.osdial_form.custom2.value);
+		var SCcomments = encodeURIComponent2(document.osdial_form.comments.value);
+		var SCfullname = encodeURIComponent2(LOGfullname);
+		var SCfronter = encodeURIComponent2(fronter);
+		var SCuser = encodeURIComponent2(user);
+		var SCpass = encodeURIComponent2(pass);
+		var SClead_id = encodeURIComponent2(document.osdial_form.lead_id.value);
+		var SCcampaign = encodeURIComponent2(campaign);
+		var SCcampaign_id = encodeURIComponent2(campaign);
+		var SCphone_login = encodeURIComponent2(phone_login);
+		var SCphone_pass = encodeURIComponent2(phone_pass);
+		var SCgroup = encodeURIComponent2(group);
+		var SCchannel_group = encodeURIComponent2(group);
+		var SCSQLdate = encodeURIComponent2(SQLdate);
+		var SCepoch = encodeURIComponent2(UnixTime);
+		var SCuniqueid = encodeURIComponent2(document.osdial_form.uniqueid.value);
+		var SCcustomer_zap_channel = encodeURIComponent2(lastcustchannel);
+		var SCserver_ip = encodeURIComponent2(server_ip);
+		var SCSIPexten = encodeURIComponent2(extension);
+		var SCsession_id = encodeURIComponent2(session_id);
+		var SCdispo = encodeURIComponent2(LeaDDispO);
+		var SCdisposition = encodeURIComponent2(LeaDDispO);
+		var SCstatus = encodeURIComponent2(LeaDDispO);
+		var SCexternal_key = encodeURIComponent2(external_key);
+		var SCpost_date = encodeURIComponent2(document.osdial_form.post_date.value);
+		var SCrecording_id = encodeURIComponent2(recording_id);
+		//var SCwebform_session = encodeURIComponent2(webform_session);
+
+
+		// New Variable substitution
+		var RGvendor_lead_code = new RegExp("\\[\\[vendor_lead_code\\]\\]","g");
+		var RGsource_id = new RegExp("\\[\\[source_id\\]\\]","g");
+		var RGlist_id = new RegExp("\\[\\[list_id\\]\\]","g");
+		var RGgmt_offset_now = new RegExp("\\[\\[gmt_offset_now\\]\\]","g");
+		var RGcalled_since_last_reset = new RegExp("\\[\\[called_since_last_reset\\]\\]","g");
+		var RGphone_code = new RegExp("\\[\\[phone_code\\]\\]","g");
+		var RGphone_number = new RegExp("\\[\\[phone_number\\]\\]","g");
+		var RGphone = new RegExp("\\[\\[phone\\]\\]","g");
+		var RGdialed_number = new RegExp("\\[\\[dialed_number\\]\\]","g");
+		var RGdialed_label = new RegExp("\\[\\[dialed_label\\]\\]","g");
+		var RGtitle = new RegExp("\\[\\[title\\]\\]","g");
+		var RGfirst_name = new RegExp("\\[\\[first_name\\]\\]","g");
+		var RGmiddle_initial = new RegExp("\\[\\[middle_initial\\]\\]","g");
+		var RGlast_name = new RegExp("\\[\\[last_name\\]\\]","g");
+		var RGaddress1 = new RegExp("\\[\\[address1\\]\\]","g");
+		var RGaddress2 = new RegExp("\\[\\[address2\\]\\]","g");
+		var RGaddress3 = new RegExp("\\[\\[address3\\]\\]","g");
+		var RGcity = new RegExp("\\[\\[city\\]\\]","g");
+		var RGstate = new RegExp("\\[\\[state\\]\\]","g");
+		var RGprovince = new RegExp("\\[\\[province\\]\\]","g");
+		var RGpostal_code = new RegExp("\\[\\[postal_code\\]\\]","g");
+		var RGcountry_code = new RegExp("\\[\\[country_code\\]\\]","g");
+		var RGgender = new RegExp("\\[\\[gender\\]\\]","g");
+		var RGdate_of_birth = new RegExp("\\[\\[date_of_birth\\]\\]","g");
+		var RGalt_phone = new RegExp("\\[\\[alt_phone\\]\\]","g");
+		var RGemail = new RegExp("\\[\\[email\\]\\]","g");
+		var RGcustom1 = new RegExp("\\[\\[custom1\\]\\]","g");
+		var RGcustom2 = new RegExp("\\[\\[custom2\\]\\]","g");
+		var RGcomments = new RegExp("\\[\\[comments\\]\\]","g");
+		var RGfullname = new RegExp("\\[\\[fullname\\]\\]","g");
+		var RGfronter = new RegExp("\\[\\[fronter\\]\\]","g");
+		var RGuser = new RegExp("\\[\\[user\\]\\]","g");
+		var RGpass = new RegExp("\\[\\[pass\\]\\]","g");
+		var RGlead_id = new RegExp("\\[\\[lead_id\\]\\]","g");
+		var RGcampaign = new RegExp("\\[\\[campaign\\]\\]","g");
+		var RGcampaign_id = new RegExp("\\[\\[campaign_id\\]\\]","g");
+		var RGphone_login = new RegExp("\\[\\[phone_login\\]\\]","g");
+		var RGphone_pass = new RegExp("\\[\\[phone_pass\\]\\]","g");
+		var RGgroup = new RegExp("\\[\\[group\\]\\]","g");
+		var RGchannel_group = new RegExp("\\[\\[channel_group\\]\\]","g");
+		var RGSQLdate = new RegExp("\\[\\[SQLdate\\]\\]","g");
+		var RGepoch = new RegExp("\\[\\[epoch\\]\\]","g");
+		var RGuniqueid = new RegExp("\\[\\[uniqueid\\]\\]","g");
+		var RGcustomer_zap_channel = new RegExp("\\[\\[customer_zap_channel\\]\\]","g");
+		var RGserver_ip = new RegExp("\\[\\[server_ip\\]\\]","g");
+		var RGSIPexten = new RegExp("\\[\\[SIPexten\\]\\]","g");
+		var RGsession_id = new RegExp("\\[\\[session_id\\]\\]","g");
+		var RGdispo = new RegExp("\\[\\[dispo\\]\\]","g");
+		var RGdisposition = new RegExp("\\[\\[disposition\\]\\]","g");
+		var RGstatus = new RegExp("\\[\\[status\\]\\]","g");
+		var RGexternal_key = new RegExp("\\[\\[external_key\\]\\]","g");
+		var RGpost_date = new RegExp("\\[\\[post_date\\]\\]","g");
+		var RGrecording_id = new RegExp("\\[\\[recording_id\\]\\]","g");
+		//var RGwebform_session = new RegExp("\\[\\[webform_session\\]\\]","g");
+<?
+$cnt = 0;
+foreach ($forms as $form) {
+    $fcamps = split(',',$form['campaigns']);
+    foreach ($fcamps as $fcamp) {
+        $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
+	if (is_array($fields)) {
+            foreach ($fields as $field) {
+                if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
+                    echo "      var SC" . $form['name'] . '_' . $field['name'] . ' = ' . "encodeURIComponent2(document.getElementById('AF" . $field['id'] . "').value);\n";
+                    echo "      var RG" . $form['name'] . '_' . $field['name'] . ' = new RegExp("\\[\\[' . $form['name'] . '_' . $field['name'] . '\\]\\]","g");' . "\n";
+                    echo "      wf_encoded = wf_encoded.replace(RG" . $form['name'] . '_' . $field['name'] . ',SC' . $form['name'] . '_' . $field['name'] . ");\n";
+                    $cnt++;
+		}
+            }
+        }
+    }
+}
+?>
+
+		// New substitution
+		wf_encoded = wf_encoded.replace(RGvendor_lead_code, SCvendor_lead_code);
+		wf_encoded = wf_encoded.replace(RGsource_id, SCsource_id);
+		wf_encoded = wf_encoded.replace(RGlist_id, SClist_id);
+		wf_encoded = wf_encoded.replace(RGgmt_offset_now, SCgmt_offset_now);
+		wf_encoded = wf_encoded.replace(RGcalled_since_last_reset, SCcalled_since_last_reset);
+		wf_encoded = wf_encoded.replace(RGphone_code, SCphone_code);
+		wf_encoded = wf_encoded.replace(RGphone_number, SCphone_number);
+		wf_encoded = wf_encoded.replace(RGphone, SCphone);
+		wf_encoded = wf_encoded.replace(RGdialed_number, SCdialed_number);
+		wf_encoded = wf_encoded.replace(RGdialed_label, SCdialed_label);
+		wf_encoded = wf_encoded.replace(RGtitle, SCtitle);
+		wf_encoded = wf_encoded.replace(RGfirst_name, SCfirst_name);
+		wf_encoded = wf_encoded.replace(RGmiddle_initial, SCmiddle_initial);
+		wf_encoded = wf_encoded.replace(RGlast_name, SClast_name);
+		wf_encoded = wf_encoded.replace(RGaddress1, SCaddress1);
+		wf_encoded = wf_encoded.replace(RGaddress2, SCaddress2);
+		wf_encoded = wf_encoded.replace(RGaddress3, SCaddress3);
+		wf_encoded = wf_encoded.replace(RGcity, SCcity);
+		wf_encoded = wf_encoded.replace(RGstate, SCstate);
+		wf_encoded = wf_encoded.replace(RGprovince, SCprovince);
+		wf_encoded = wf_encoded.replace(RGpostal_code, SCpostal_code);
+		wf_encoded = wf_encoded.replace(RGcountry_code, SCcountry_code);
+		wf_encoded = wf_encoded.replace(RGgender, SCgender);
+		wf_encoded = wf_encoded.replace(RGdate_of_birth, SCdate_of_birth);
+		wf_encoded = wf_encoded.replace(RGalt_phone, SCalt_phone);
+		wf_encoded = wf_encoded.replace(RGemail, SCemail);
+		wf_encoded = wf_encoded.replace(RGcustom1, SCcustom1);
+		wf_encoded = wf_encoded.replace(RGcustom2, SCcustom2);
+		wf_encoded = wf_encoded.replace(RGcomments, SCcomments);
+		wf_encoded = wf_encoded.replace(RGfullname, SCfullname);
+		wf_encoded = wf_encoded.replace(RGfronter, SCfronter);
+		wf_encoded = wf_encoded.replace(RGuser, SCuser);
+		wf_encoded = wf_encoded.replace(RGpass, SCpass);
+		wf_encoded = wf_encoded.replace(RGlead_id, SClead_id);
+		wf_encoded = wf_encoded.replace(RGcampaign, SCcampaign);
+		wf_encoded = wf_encoded.replace(RGcampaign_id, SCcampaign_id);
+		wf_encoded = wf_encoded.replace(RGphone_login, SCphone_login);
+		wf_encoded = wf_encoded.replace(RGphone_pass, SCphone_pass);
+		wf_encoded = wf_encoded.replace(RGgroup, SCgroup);
+		wf_encoded = wf_encoded.replace(RGchannel_group, SCchannel_group);
+		wf_encoded = wf_encoded.replace(RGSQLdate, SCSQLdate);
+		wf_encoded = wf_encoded.replace(RGepoch, SCepoch);
+		wf_encoded = wf_encoded.replace(RGuniqueid, SCuniqueid);
+		wf_encoded = wf_encoded.replace(RGcustomer_zap_channel, SCcustomer_zap_channel);
+		wf_encoded = wf_encoded.replace(RGserver_ip, SCserver_ip);
+		wf_encoded = wf_encoded.replace(RGSIPexten, SCSIPexten);
+		wf_encoded = wf_encoded.replace(RGsession_id, SCsession_id);
+		wf_encoded = wf_encoded.replace(RGdispo, SCdispo);
+		wf_encoded = wf_encoded.replace(RGdisposition, SCdisposition);
+		wf_encoded = wf_encoded.replace(RGstatus, SCstatus);
+		wf_encoded = wf_encoded.replace(RGexternal_key, SCexternal_key);
+		wf_encoded = wf_encoded.replace(RGpost_date, SCpost_date);
+		wf_encoded = wf_encoded.replace(RGrecording_id, SCrecording_id);
+		//wf_encoded = wf_encoded.replace(RGwebform_session, SCwebform_session);
+
+		debug("<b>webform_rewrite:</b> DONE wf_encoded=" + wf_encoded,2);
+		return wf_encoded;
+	}
+
+
+// ################################################################################
+// decode the scripttext and scriptname so that it can be displayed
 	function URLDecode(encodedvar,scriptformat) {
 		debug("<b>URLDecode:</b> encodedvar=" + encodedvar + " scriptformat=" + scriptformat,2);
 		// Replace %ZZ with equivalent character
