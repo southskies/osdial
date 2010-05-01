@@ -241,12 +241,11 @@ while ($uploop < 1) {
 	} else {
 		my $sql;
 		my $gosql = 0;
-		my @chars = qw(- \ | /);
-		my $cur = 0;
 		my $linepos = 0;
 		my $sqlfile = $vmap{$ver} . ".sql"; 
 		print "        Current DB Version: $ver       SQL Update File: $sqlfile\n";
 		open (SQL, $path . $sqlfile);
+		my $dbh = DBI->connect(@dbiconn);
 		while (my $line = <SQL>) {
 			chomp $line;
 			if ($line !~ /^#/ and $line ne '') {
@@ -254,26 +253,26 @@ while ($uploop < 1) {
 				$gosql = 1 if ($line =~ /;$/);
 			}
 			if ($gosql) {
-				my $nsql : shared;
-				my $comm : shared;
-				my $tdone : shared; 
-				($nsql,$comm) = split(/##\|##/,$sql);
-				$tdone = 0;
+				#my $nsql :shared;
+				#my $comm :shared;
+				my $tdone :shared = 0; 
+				my ($nsql,$comm) = split(/##\|##/,$sql);
+				#$tdone = 0;
 				if ($CLOinfo != 1 or $comm eq "") {
 					print "\n  Trying ($nsql) " if ($DB);
 					my $thr1 = threads->create(
 						sub {
-							my($dbh) = DBI->connect(@dbiconn);
-							$dbh->do($nsql) unless ($CLOtest);
-							$dbh->disconnect();
-							$tdone = 1;
+							my @chars = qw(- \ | /);
+							my $cur = 0;
+							while (!$tdone) {
+								$cur = 0 if ($cur == @chars);
+								print $chars[$cur++];
+								usleep(100000);
+								print "\b";
+							}
 						});
-					while (!$tdone) {
-						$cur = 0 if ($cur == @chars);
-						print $chars[$cur++];
-						usleep(100000);
-						print "\b";
-					}
+					$dbh->do($nsql) unless ($CLOtest);
+					$tdone = 1;
 					$thr1->join();
 					if ($linepos > 79) {
 						print "\n";
@@ -290,17 +289,17 @@ while ($uploop < 1) {
 					print "\nApplying...";
 					my $thr1 = threads->create(
 						sub {
-							my($dbh) = DBI->connect(@dbiconn);
-							$dbh->do($nsql) unless ($CLOtest);
-							$dbh->disconnect();
-							$tdone = 1;
+							my @chars = qw(- \ | /);
+							my $cur = 0;
+							while (!$tdone) {
+								$cur = 0 if ($cur == @chars);
+								print $chars[$cur++];
+								usleep(100000);
+								print "\b";
+							}
 						});
-					while (!$tdone) {
-						$cur = 0 if ($cur == @chars);
-						print $chars[$cur++];
-						usleep(100000);
-						print "\b";
-					}
+					$dbh->do($nsql) unless ($CLOtest);
+					$tdone = 1;
 					$thr1->join();
 					print "*DONE*\n";
 					$linepos=0;
@@ -309,6 +308,7 @@ while ($uploop < 1) {
 				$sql = '';
 			}
 		}
+		$dbh->disconnect();
 		print "\n";
 	}
 }
