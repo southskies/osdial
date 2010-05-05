@@ -347,6 +347,7 @@ foreach(@FILES)
 				$start_date_PATH='';
 				$FTPdb=0;
 				$sts=0;
+				`cp -f '$dir2/$ALLfile' '$PATHarchive_home/$PATHarchive_backup'`;
 				if ($VARFTP_host eq "127.0.0.1") {
 						`mv '$dir2/$ALLfile' '$PATHarchive_home/$PATHarchive_unmixed'`;
 				} else {

@@ -1125,16 +1125,16 @@ function report_realtime_detail() {
             $L='';
             $R='';
             $PAsrv_ip = explode('.',$Lserver_ip);
-            $Pserver_ip = sprintf('%03d*%03d*%03d*%03d*',$PAsrv_ip[0],$PAsrv_ip[1],$PAsrv_ip[2],$PAsrv_ip[3]);
+            $Pserver_ip = sprintf('%03d%03d%03d%03d',$PAsrv_ip[0],$PAsrv_ip[1],$PAsrv_ip[2],$PAsrv_ip[3]);
 
             #if ($SIPmonitorLINK==1) {$L="<a href=\"sip:6$Lsessionid@$Lserver_ip\">LISTEN</a> ";   $R='';}
             #if ($IAXmonitorLINK==1) {$L="<a href=\"iax:6$Lsessionid@$Lserver_ip\">LISTEN</a> ";   $R='';}
             #if ($SIPmonitorLINK==2) {$R=" <a href=\"sip:$Lsessionid@$Lserver_ip\">BARGE</a> ";}
             #if ($IAXmonitorLINK==2) {$R=" <a href=\"iax:$Lsessionid@$Lserver_ip\">BARGE</a> ";}
-            if ($SIPmonitorLINK==1) {$L=sprintf('<a href="sip://%s6%s">LISTEN</a> ',$Pserver_ip,$Lsessionid);   $R='';}
-            if ($IAXmonitorLINK==1) {$L=sprintf('<a href="iax://%s6%s">LISTEN</a> ',$Pserver_ip,$Lsessionid);   $R='';}
-            if ($SIPmonitorLINK==2) {$R=sprintf(' <a href="sip://%s%s">BARGE</a> ', $Pserver_ip,$Lsessionid);}
-            if ($IAXmonitorLINK==2) {$R=sprintf(' <a href="iax://%s%s">BARGE</a> ', $Pserver_ip,$Lsessionid);}
+            if ($SIPmonitorLINK==1) {$L=sprintf('<a href="sip:%s6%s@%s">LISTEN</a> ',$Pserver_ip,$Lsessionid,$Lserver_ip);   $R='';}
+            if ($IAXmonitorLINK==1) {$L=sprintf('<a href="iax:%s6%s@%s">LISTEN</a> ',$Pserver_ip,$Lsessionid,$Lserver_ip);   $R='';}
+            if ($SIPmonitorLINK==2) {$R=sprintf(' <a href="sip:%s%s@%s">BARGE</a> ', $Pserver_ip,$Lsessionid,$Lserver_ip);}
+            if ($IAXmonitorLINK==2) {$R=sprintf(' <a href="iax:%s%s@%s">BARGE</a> ', $Pserver_ip,$Lsessionid,$Lserver_ip);}
 
             $UGD = '';
             if ($UGdisplay > 0)    $UGD = $user_group . ' ' . $LNcenterbar . ' ';
