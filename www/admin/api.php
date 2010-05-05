@@ -27,6 +27,8 @@ require("include/dbconnect.php");
 require("include/functions.php");
 require("include/variables.php");
 
+$file_debug=0;
+
 
 ### Grab Server GMT value from the database
 $isdst = date("I");
@@ -160,6 +162,7 @@ if ($xml['vdcompat'] > 0) {
     if ($xml->params->external_key == "" ) $xml->params->external_key = get_variable("external_key");
     if ($xml->params->cost == "" ) $xml->params->cost = get_variable("cost");
     if ($xml->params->post_date == "" ) $xml->params->post_date = get_variable("post_date");
+    if ($xml->params->agent == "" ) $xml->params->agent = get_variable("agent");
 }
 
 
@@ -183,6 +186,8 @@ if (preg_match('/^Y$|^YES$|^T$|^TRUE$|^1$/i',$xml['debug'])) {
 } else {
     $xml['debug'] += 0;
 }
+
+if ($file_debug > 0) $xml['debug'] = 1;
 
 if ($xml['user'] == "" and $xml['username'] != "") {
     $xml['user'] = $xml["username"];
@@ -452,7 +457,7 @@ if ($xml['function'] == "version") {
 
         if ($xml['test'] < 1) {
             $ins =  "INSERT INTO osdial_list SET status='NEW',called_since_last_reset='N',entry_date=NOW(),last_local_call_time=NOW(),";
-            $ins .= sprintf("user='%s',vendor_lead_code='%s',source_id='%s',list_id='%s',", mres($xml['user']), mres($xml->params->vendor_lead_code), mres($xml->params->source_id), mres($xml->params->list_id) );
+            $ins .= sprintf("user='%s',vendor_lead_code='%s',source_id='%s',list_id='%s',", mres($xml->params->agent), mres($xml->params->vendor_lead_code), mres($xml->params->source_id), mres($xml->params->list_id) );
             $ins .= sprintf("gmt_offset_now='%s',phone_code='%s',phone_number='%s',title='%s',", mres($gmt_offset_now), mres($xml->params->phone_code), mres($xml->params->phone_number), mres($xml->params->title) );
             $ins .= sprintf("first_name='%s',middle_initial='%s',last_name='%s',address1='%s',", mres($xml->params->first_name), mres($xml->params->middle_initial), mres($xml->params->last_name), mres($xml->params->address1) );
             $ins .= sprintf("address2='%s',address3='%s',city='%s',state='%s',", mres($xml->params->address2), mres($xml->params->address3), mres($xml->params->city), mres(strtoupper($xml->params->state)) );
@@ -499,6 +504,7 @@ if ($xml['function'] == "version") {
                     if (preg_match('/^NOSTATE$/',$xml->params->hopper_local_call_time_check)) $state = "";
                     $ldialable = dialable_gmt($xml['debug'],$link,$camp['local_call_time'],$gmt_offset_now,$state);
                 }
+                if (preg_match('/^Y$|^YES$|^T$|^TRUE$|^1$/i',$xml->params->hopper_campaign_call_time_check) and $camp['campaign_call_time'] == "") $xml->params->hopper_campaign_call_time_check = "N";
                 if (preg_match('/^$|^DEFAULT$/i',$xml->params->hopper_campaign_call_time_check) and $camp['campaign_call_time'] != "") $xml->params->hopper_campaign_call_time_check = "Y";
                 if (preg_match('/^Y$|^YES$|^T$|^TRUE$|^1$/i',$xml->params->hopper_campaign_call_time_check))
                     $cdialable = dialable_gmt($xml['debug'],$link,$camp['campaign_call_time'],$local_gmt,'');
@@ -582,7 +588,7 @@ $end_epoch = date("U");
 $result->status['end'] = $end;
 $result->status['end_epoch'] = $end_epoch;
 $result->status['runtime'] = ($end_epoch - $start_epoch);
-if ($xml['debug'] > 0)
+if ($xml['debug'] > 0 and $file_debug==0)
     $result->debug = $debug;
 
 
@@ -591,11 +597,23 @@ if ($xml['vdcompat'] > 0) {
     if ($vdstatus == "") $vdstatus = $result->status['code'];
     if ($vdreason == "") $vdreason = $result->status;
     echo $vdstatus . ": " . $vdreason . "\n";
-    if ($xml['debug'] > 0)
+    if ($xml['debug'] > 0 and $file_debug==0)
         echo "\n\nDEBUG\n-------------------------------------------\n" . $result->debug . "\n\n";
 } else {
     echo prettyXML($result->asXML());
 }
+
+if ($file_debug>0) {
+    $result->debug = $debug;
+    $fps = "\n###### START ######\n# $start\n" . prettyXML($result->asXML()) . "\n#######  END  ######\n# " . date("Y-m-d H:i:s") . "\n\n";
+    if ($WeBRooTWritablE > 0) {
+        $fp = fopen($WeBServeRRooT . "/admin/api_debug_output.txt", "a");
+        fwrite ($fp, $fps);
+        fclose($fp);
+    }
+}
+
+
 exit;
 
 
