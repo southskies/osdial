@@ -271,9 +271,11 @@ sub gen_servers {
 	while (my @aryA = $sthA->fetchrow_array) {
 		my @sip = split /\./, $aryA[1];
 		my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
+		my $fsip2 = sprintf('%.3d%.3d%.3d%.3d',@sip);
 		$iname = $aryA[0];
 		$esvr .= ";\n;" . $aryA[0] . ' - ' . $aryA[1] . "\n";
 		$esvr .= "exten => _" . $fsip . "*.,1,Goto(osdial,\${EXTEN:16},1)\n";
+		$esvr .= "exten => _" . $fsip2 . ".,1,Goto(osdial,\${EXTEN:16},1)\n";
 		$isvr .= ";\n;" . $aryA[0] . ' - ' . $aryA[1] . "\n";
 		$isvr .= "[" . $aryA[0] . "]\n";
 		$isvr .= "type=user\n";
