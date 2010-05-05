@@ -168,6 +168,10 @@ foreach(@conf)
 		{$PATHmonitor = $line;   $PATHmonitor =~ s/.*=//gi;}
 	if ( ($line =~ /PATHDONEmonitor/) && ($CLIDONEmonitor < 1) )
 		{$PATHDONEmonitor = $line;   $PATHDONEmonitor =~ s/.*=//gi;}
+	if ( ($line =~ /PATHarchive_home/) && ($CLIarchive_home < 1) )
+		{$PATHarchive_home = $line;   $PATHarchive_home =~ s/.*=//gi;}
+	if ( ($line =~ /PATHarchive_unmixed/) && ($CLIarchive_unmixed < 1) )
+		{$PATHarchive_unmixed = $line;   $PATHarchive_unmixed =~ s/.*=//gi;}
 	if ( ($line =~ /^VARserver_ip/) && ($CLIserver_ip < 1) )
 		{$VARserver_ip = $line;   $VARserver_ip =~ s/.*=//gi;}
 	if ( ($line =~ /^VARDB_server/) && ($CLIDB_server < 1) )
@@ -343,20 +347,25 @@ foreach(@FILES)
 				$start_date_PATH='';
 				$FTPdb=0;
 				$sts=0;
-				if ($DBX>0) {$FTPdb=1;}
-				$ftp = Net::FTP->new("$VARFTP_host", Port => $VARFTP_port, Debug => $FTPdb);
-				$ftp->login("$VARFTP_user","$VARFTP_pass");
-				$ftp->cwd("$VARFTP_dir");
-				if ($NODATEDIR < 1) {
-					$ftp->mkdir("$start_date");
-					$ftp->cwd("$start_date");
-					$start_date_PATH = "$start_date/";
-				}
-				$ftp->binary();
-				$ftp->put("$dir2/$ALLfile", "$ALLfile");
-				$ftp->quit;
+				if ($VARFTP_host eq "127.0.0.1") {
+						`mv '$dir2/$ALLfile' '$PATHarchive_home/$PATHarchive_unmixed'`;
+				} else {
+					if ($DBX>0) {$FTPdb=1;}
+					$ftp = Net::FTP->new("$VARFTP_host", Port => $VARFTP_port, Debug => $FTPdb);
+					if ($ftp->login("$VARFTP_user","$VARFTP_pass")) {
+						$ftp->cwd("$VARFTP_dir");
+						if ($NODATEDIR < 1) {
+							$ftp->mkdir("$start_date");
+							$ftp->cwd("$start_date");
+							$start_date_PATH = "$start_date/";
+						}
+						$ftp->binary();
+						$ftp->put("$dir2/$ALLfile", "$ALLfile");
+						$ftp->quit;
 
-				`rm -f '$dir2/$ALLfile'`;
+						`rm -f '$dir2/$ALLfile'`;
+					}
+				}
 
 				$stmtA = "UPDATE recording_log set location='$VARHTTP_path/$recordingsdir/$start_date_PATH$ALLfile' where recording_id='$recording_id';" if ($dnt);
 					if($DB){print STDERR "\n|$stmtA|\n";}
