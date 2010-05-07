@@ -172,6 +172,8 @@ foreach(@conf)
 		{$PATHarchive_home = $line;   $PATHarchive_home =~ s/.*=//gi;}
 	if ( ($line =~ /PATHarchive_unmixed/) && ($CLIarchive_unmixed < 1) )
 		{$PATHarchive_unmixed = $line;   $PATHarchive_unmixed =~ s/.*=//gi;}
+	if ( ($line =~ /PATHarchive_backup/) && ($CLIarchive_backup < 1) )
+		{$PATHarchive_backup = $line;   $PATHarchive_backup =~ s/.*=//gi;}
 	if ( ($line =~ /^VARserver_ip/) && ($CLIserver_ip < 1) )
 		{$VARserver_ip = $line;   $VARserver_ip =~ s/.*=//gi;}
 	if ( ($line =~ /^VARDB_server/) && ($CLIDB_server < 1) )
@@ -202,6 +204,8 @@ foreach(@conf)
 # Customized Variables
 $server_ip = $VARserver_ip;		# Asterisk server IP
 if (!$VARDB_port) {$VARDB_port='3306';}
+
+if ($VARachive_backup eq "") {$VARarchive_backup='processing/backup';}
 
 $recordingsdir = $VARFTP_dir;
 
