@@ -58,9 +58,9 @@ if ($force_logout) {
         $LOGagA = Array();
         $LOGaiA = Array();
         # allowed_campaigns in SQL form
-        $LOGacSQL = '';
-        $LOGagSQL = '';
-        $LOGaiSQL = '';
+        $LOGacSQL = "'',";
+        $LOGagSQL = "'',";
+        $LOGaiSQL = "'',";
 
         # Setup multicomp
         $LOG['multicomp'] = 0;
