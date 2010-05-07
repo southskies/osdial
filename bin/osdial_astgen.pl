@@ -275,7 +275,7 @@ sub gen_servers {
 		$iname = $aryA[0];
 		$esvr .= ";\n;" . $aryA[0] . ' - ' . $aryA[1] . "\n";
 		$esvr .= "exten => _" . $fsip . "*.,1,Goto(osdial,\${EXTEN:16},1)\n";
-		$esvr .= "exten => _" . $fsip2 . ".,1,Goto(osdial,\${EXTEN:16},1)\n";
+		$esvr .= "exten => _" . $fsip2 . ".,1,Goto(osdial,\${EXTEN:12},1)\n";
 		$isvr .= ";\n;" . $aryA[0] . ' - ' . $aryA[1] . "\n";
 		$isvr .= "[" . $aryA[0] . "]\n";
 		$isvr .= "type=user\n";
