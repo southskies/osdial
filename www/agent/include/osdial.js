@@ -675,6 +675,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			}
 			if (taskconfxfer == 'YES') {
 				var queryCID = "DCagcW" + epoch_sec + user_abb;
+				document.getElementById("HangupControl").innerHTML = "<a href=\"#\" onclick=\"bothcall_send_hangup();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_hangupcustomer.gif\" border=0 alt=\"Hangup Customer\"></a>";
 			} else {
 				var queryCID = "DVagcW" + epoch_sec + user_abb;
 			}
@@ -1207,6 +1208,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				DispO3wayCalLserverip = redirectserverip;
 				DispO3wayCalLxfernumber = document.osdial_form.xfernumber.value;
 				DispO3wayCalLcamptail = '';
+
 
 				xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=" + redirecttype + "&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&exten=" + redirectdestination + "&ext_context=" + ext_context + "&ext_priority=1&extrachannel=" + redirectXTRAvalue + "&lead_id=" + document.osdial_form.lead_id.value + "&phone_code=" + document.osdial_form.phone_code.value + "&phone_number=" + document.osdial_form.phone_number.value+ "&filename=" + taskdebugnote + "&campaign=" + XfeRSelecT.value + "&session_id=" + session_id;
 
@@ -3360,11 +3362,11 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 // Start Hangup Functions for both 
 	function bothcall_send_hangup() {
 		debug("<b>bothcall_send_hangup:</b>",2);
-		if (lastcustchannel.length > 3) {
-			dialedcall_send_hangup();
-		}
 		if (lastxferchannel.length > 3) {
 			xfercall_send_hangup();
+		}
+		if (lastcustchannel.length > 3) {
+			dialedcall_send_hangup();
 		}
 	}
 
