@@ -390,36 +390,34 @@ if ($ACTION=="Originate")
 ######################
 # ACTION=HangupConfDial  - find the Local channel that is in the conference and needs to be hung up
 ######################
-if ($ACTION=="HangupConfDial")
-{
-	$row='';   $rowx='';
-	$channel_live=1;
-	if ( (strlen($exten)<3) or (strlen($queryCID)<15) or (strlen($ext_context)<1) )
-	{
-		$channel_live=0;
-		echo "conference $exten is not valid or ext_context $ext_context or queryCID $queryCID is not valid, Hangup command not inserted\n";
-	}
-	else
-	{
-		$local_DEF = 'Local/';
-		$local_AMP = '@';
-		$hangup_channel_prefix = "$local_DEF$exten$local_AMP$ext_context";
+$local_hangup=0;
+if ($ACTION=="HangupConfDial") {
+    $row='';
+    $rowx='';
+    $channel_live=1;
+    if (strlen($exten)<3 or strlen($queryCID)<15 or strlen($ext_context)<1) {
+        $channel_live=0;
+        echo "conference $exten is not valid or ext_context $ext_context or queryCID $queryCID is not valid, Hangup command not inserted\n";
+    } else {
+        $local_DEF = 'Local/';
+        $local_AMP = '@';
+        $hangup_channel_prefix = "$local_DEF$exten$local_AMP$ext_context";
 
-		$stmt="SELECT count(*) FROM live_sip_channels where server_ip = '$server_ip' and channel LIKE \"$hangup_channel_prefix%\";";
-			if ($format=='debug') {echo "\n<!-- $stmt -->";}
-		$rslt=mysql_query($stmt, $link);
-		$row=mysql_fetch_row($rslt);
-		if ($row > 0)
-		{
-			$stmt="SELECT channel FROM live_sip_channels where server_ip = '$server_ip' and channel LIKE \"$hangup_channel_prefix%\";";
-				if ($format=='debug') {echo "\n<!-- $stmt -->";}
-			$rslt=mysql_query($stmt, $link);
-			$rowx=mysql_fetch_row($rslt);
-			$channel=$rowx[0];
-			$ACTION="Hangup";
-			$queryCID = eregi_replace("^.","G",$queryCID);
-		}
-	}
+        $stmt="SELECT count(*) FROM live_sip_channels WHERE server_ip='$server_ip' AND channel LIKE '$hangup_channel_prefix%';";
+        if ($format=='debug') echo "\n<!-- $stmt -->";
+        $rslt=mysql_query($stmt, $link);
+        $row=mysql_fetch_row($rslt);
+        if ($row > 0) {
+            $stmt="SELECT channel FROM live_sip_channels WHERE server_ip='$server_ip' AND channel LIKE '$hangup_channel_prefix%';";
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+            $rowx=mysql_fetch_row($rslt);
+            $channel=$rowx[0];
+            $local_hangup=1;
+            $ACTION="Hangup";
+            $queryCID = eregi_replace("^.","G",$queryCID);
+        }
+    }
 }
 
 
@@ -427,91 +425,80 @@ if ($ACTION=="HangupConfDial")
 ######################
 # ACTION=Hangup  - insert Hangup Manager statement
 ######################
-if ($ACTION=="Hangup")
-{
-	$row='';   $rowx='';
-	$channel_live=1;
-	if ( (strlen($channel)<3) or (strlen($queryCID)<15) )
-	{
-		$channel_live=0;
-		echo "Channel $channel is not valid or queryCID $queryCID is not valid, Hangup command not inserted\n";
-	}
-	else
-	{
-		if (strlen($call_server_ip)<7) {$call_server_ip = $server_ip;}
+if ($ACTION=="Hangup") {
+    $row='';
+    $rowx='';
+    $channel_live=1;
+    if ( (strlen($channel)<3) or (strlen($queryCID)<15) ) {
+        $channel_live=0;
+        echo "Channel $channel is not valid or queryCID $queryCID is not valid, Hangup command not inserted\n";
+    } else {
+        if (strlen($call_server_ip)<7) $call_server_ip = $server_ip;
+        if ($local_hangup>0) {
+            $dbout = "$NOW_TIME|LOCHU|$user|$channel|$server_ip|$call_server_ip|$exten|$ext_context|$hangup_channel_prefix|$channel|";
+        } elseif ($auto_dial_level>0) {
+            $dbout = "$NOW_TIME|ADCHU|$user|$channel|$call_server_ip|$exten|$secondS|$CalLCID|";
+            if (strlen($CalLCID)>2 and strlen($exten)>2 and $secondS>0) {
+                $stmt="SELECT count(*) FROM osdial_auto_calls where channel='$channel' and callerid='$CalLCID';";
+                if ($format=='debug') echo "\n<!-- $stmt -->";
+                $rslt=mysql_query($stmt, $link);
+                $rowx=mysql_fetch_row($rslt);
+                $dbout .= "ACL:$rowx[0]|";
+                if ($rowx[0]==0) {
+                    echo "Call $CalLCID $channel is not live on $call_server_ip, Checking Live Channel...\n";
 
-#		$stmt="SELECT count(*) FROM live_channels where server_ip = '$call_server_ip' and channel='$channel';";
-#			if ($format=='debug') {echo "\n<!-- $stmt -->";}
-#		$rslt=mysql_query($stmt, $link);
-#		$row=mysql_fetch_row($rslt);
-#		if ($row[0]==0)
-#		{
-#			$stmt="SELECT count(*) FROM live_sip_channels where server_ip = '$call_server_ip' and channel='$channel';";
-#				if ($format=='debug') {echo "\n<!-- $stmt -->";}
-#			$rslt=mysql_query($stmt, $link);
-#			$rowx=mysql_fetch_row($rslt);
-#			if ($rowx[0]==0)
-#			{
-#				$channel_live=0;
-#				echo "Channel $channel is not live on $call_server_ip, Hangup command not inserted\n";
-#			}	
-#		}
-		if ( ($auto_dial_level > 0) and (strlen($CalLCID)>2) and (strlen($exten)>2) and ($secondS > 0))
-		{
-			$stmt="SELECT count(*) FROM osdial_auto_calls where channel='$channel' and callerid='$CalLCID';";
-				if ($format=='debug') {echo "\n<!-- $stmt -->";}
-			$rslt=mysql_query($stmt, $link);
-			$rowx=mysql_fetch_row($rslt);
-			if ($rowx[0]==0)
-			{
-			echo "Call $CalLCID $channel is not live on $call_server_ip, Checking Live Channel...\n";
-
-				$stmt="SELECT count(*) FROM live_channels where server_ip = '$call_server_ip' and channel='$channel' and extension LIKE \"%$exten\";";
-					if ($format=='debug') {echo "\n<!-- $stmt -->";}
-				$rslt=mysql_query($stmt, $link);
-				$row=mysql_fetch_row($rslt);
-				if ($row[0]==0)
-				{
-				$channel_live=0;
-				echo "Channel $channel is not live on $call_server_ip, Hangup command not inserted $rowx[0]\n$stmt\n";
-				}
-				else
-				{
-				echo "$stmt\n";
-				}
-			}	
-		}
-        if ( ($auto_dial_level < 1) and (strlen($stage)>2) and (strlen($channel)>2) and (strlen($exten)>2) ) {
-            $stmt="SELECT count(*) FROM live_channels where server_ip = '$call_server_ip' and channel='$channel' and extension NOT LIKE \"%$exten%\";";
-            if ($format=='debug') {echo "\n<!-- $stmt -->";}
-            $rslt=mysql_query($stmt, $link);
-            $row=mysql_fetch_row($rslt);
-            if ($row[0] > 0)
-                {
-                $channel_live=0;
-                echo "Channel $channel in use by another agent on $call_server_ip, Hangup command not inserted $rowx[0]\n$stmt\n";
-                if ($WeBRooTWritablE > 0)
-                    {
-                    $fp = fopen ("./osdial_debug.txt", "a");
-                    fwrite ($fp, "$NOW_TIME|MDCHU|$user|$channel|$call_server_ip|$exten|\n");
-                    fclose($fp);
+                    $stmt="SELECT count(*) FROM live_channels WHERE server_ip='$call_server_ip' AND channel='$channel' AND extension LIKE '%$exten';";
+                    if ($format=='debug') echo "\n<!-- $stmt -->";
+                    $rslt=mysql_query($stmt, $link);
+                    $row=mysql_fetch_row($rslt);
+                    $dbout .= "LC:$row[0]|";
+                    if ($row[0]==0) {
+                        $channel_live=0;
+                        echo "Channel $channel is not live on $call_server_ip, Hangup command not inserted $rowx[0]\n$stmt\n";
+                        $stmt="SELECT count(*) FROM live_channels WHERE channel='$channel' AND extension LIKE '%$exten';";
+                        $rslt=mysql_query($stmt, $link);
+                        $row=mysql_fetch_row($rslt);
+                        $dbout .= "LC:$row[0]|";
+                    } else {
+                        echo "$stmt\n";
                     }
-                }
-            else
-                {
-                echo "$stmt\n";
-                }
+                }	
+            } else {
+                $dbout .= "BADDATA|";
             }
+        } else {
+            $dbout = "$NOW_TIME|MDCHU|$user|$channel|$call_server_ip|$exten|$stage|";
+            if (strlen($stage)>2 and strlen($channel)>2 and strlen($exten)>2) {
+                $stmt="SELECT count(*) FROM live_channels WHERE server_ip='$call_server_ip' AND channel='$channel' AND extension NOT LIKE '%$exten%';";
+                if ($format=='debug') echo "\n<!-- $stmt -->";
+                $rslt=mysql_query($stmt, $link);
+                $row=mysql_fetch_row($rslt);
+                $dbout .= "AA:$row[0]|";
+                if ($row[0] > 0) {
+                    $channel_live=0;
+                    echo "Channel $channel in use by another agent on $call_server_ip, Hangup command not inserted $row[0]\n$stmt\n";
+                } else {
+                    echo "$stmt\n";
+                }
+            } else {
+                $dbout .= "NOSTAGE|";
+            }
+        }
+        $dbout .= "LIVE:$channel_live|";
 
+        if ($channel_live==1) {
+            $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$call_server_ip','','Hangup','$queryCID','Channel: $channel','','','','','','','','','');";
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+            echo "Hangup command sent for Channel $channel on $call_server_ip\n";
+        }
 
-		if ($channel_live==1)
-		{
-		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$call_server_ip','','Hangup','$queryCID','Channel: $channel','','','','','','','','','');";
-			if ($format=='debug') {echo "\n<!-- $stmt -->";}
-		$rslt=mysql_query($stmt, $link);
-		echo "Hangup command sent for Channel $channel on $call_server_ip\n";
-		}
-	}
+        if ($WeBRooTWritablE > 0) {
+            $fp = fopen ("./osdial_debug.txt", "a");
+            fwrite ($fp, "$dbout\n");
+            fclose($fp);
+        }
+    }
 }
 
 
