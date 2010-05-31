@@ -107,12 +107,12 @@ echo "          <td class='across-top' width='15'><img src='templates/$system_se
 echo "        </tr>\n";
 echo "        <tr valign='top'>\n";
 echo "          <td align=left width=33%>\n";
-echo "              <font face=\"arial,helvetica\" color=white size=2>&nbsp;&nbsp;<B><a href=\"$admin_home_url_LU\"><font face=\"arial,helvetica\" color=$home_color size=1>HOME</a>\n";
-echo "              | <a href=\"$PHP_SELF?force_logout=1\"><font face=\"arial,helvetica\" color=$logout_color size=1>Logout</a>\n";
+echo "              <font face=\"arial,helvetica\" color=white size=2>&nbsp;&nbsp;</font><B><a href=\"$admin_home_url_LU\"><font face=\"arial,helvetica\" color=$home_color size=1>HOME</font></a>\n";
+echo "              | <a href=\"$PHP_SELF?force_logout=1\"><font face=\"arial,helvetica\" color=$logout_color size=1>Logout</font></a>\n";
 echo "          </td>\n";
 echo "          <td class='user-company' align=center width=33%>\n";
 echo "              <font color=$company_color>$user_company</font><br />\n";
-echo "              <font color=$header_color size=2><b><br>$t1 Administrator<b><br><br><br></font>\n";
+echo "              <font color=$header_color size=2><b><br>$t1 Administrator</b><br><br><br></font>\n";
 echo "          </td>\n";
 echo "          <td align=right width=33%>";
 echo "              <font face=\"arial,helvetica\" color=$clock_color size=2>" . date("l F j, Y") . "&nbsp;&nbsp;<br>";
