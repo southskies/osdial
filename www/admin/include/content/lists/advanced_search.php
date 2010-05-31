@@ -1013,8 +1013,10 @@ if ($ADD==1122) {
                 echo "<a href=\"" . $pageURL . "&sort=post_date&direction=DESC#advsearch\">Post";
             }
             echo "</a></b></font></td>\n";
+            echo "    <td align=center title=\"Recordings\"><font class=awhite color=white size=2><b>REC</b></font></td>\n";
         }
         echo "  </tr>\n";
+
 
         if ($field_cnt > 0 && $LOGexport_leads > 0) {
             $csvfile = "advsearch_" . date("Ymd-His") . ".csv";
@@ -1026,11 +1028,17 @@ if ($ADD==1122) {
                 $fld_names[] = mysql_field_table($rslt, $o) . "." . mysql_field_name($rslt, $o);
                 $o++;
             }
+            $fld_names[] = "REC";
             fputcsv($fcsv, $fld_names);
             
             $o=0;
             while ($results_to_print > $o) {
                 $row=mysql_fetch_row($rslt);
+                if ($row[0] > 0) {
+                    $rslt2=mysql_query(sprintf("SELECT location FROM recording_log WHERE lead_id='%s' ORDER BY recording_id DESC LIMIT 1;",$row[0]), $link);
+                    $row2=mysql_fetch_row($rslt2);
+                    $row[] = 'http://' . $_SERVER['SERVER_ADDR'] . $row2[0];
+                }
                 fputcsv($fcsv, $row);
                 $o++;
             }
@@ -1046,6 +1054,12 @@ if ($ADD==1122) {
             $o=0;
             while ($results_to_print > $o) {
                 $row=mysql_fetch_row($rslt);
+                $recloc = '';
+                if ($row[0] > 0) {
+                    $rslt2=mysql_query(sprintf("SELECT location FROM recording_log WHERE lead_id='%s' ORDER BY recording_id DESC LIMIT 1;",$row[0]), $link);
+                    $row2=mysql_fetch_row($rslt2);
+                    $recloc = $row2[0];
+                }
                 $o++;
                 if (eregi("1$|3$|5$|7$|9$", $o)) 
                     {$bgcolor='bgcolor='.$oddrows;} 
@@ -1067,12 +1081,17 @@ if ($ADD==1122) {
                 echo "    <td nowrap align=center title=\"$row[22]\"><font face=\"arial,helvetica\" size=1>$row[22]</font></td>\n";
                 echo "    <td nowrap align=center title=\"" . $row[4] . " (" . $agents_label[$row[4]] . ")\"><font face=\"arial,helvetica\" size=1>$row[4]</font></td>\n";
                 echo "    <td nowrap align=center title=\"$row[4]\"><font face=\"arial,helvetica\" size=1>$row[5]</font></td>\n";
-                echo "    <td nowrap align=center title=\"$row[28]\"><font face=\"arial,helvetica\" size=1>$row[28]</font></td>\n";
+                echo "    <td nowrap align=center title=\"$row[28]\"><font face=\"arial,helvetica\" size=1>" . ellipse($row[28],10,true) . "</font></td>\n";
                 echo "    <td nowrap align=center title=\"" . $tz_revlabel[($row[8] - date("I"))] . " (" . $row[8]. ")\"><font face=\"arial,helvetica\" size=1>" . $tz_revlabel[($row[8] - date("I"))] . "</font></td>\n";
                 echo "    <td nowrap align=center title=\"$row[30]\"><font face=\"arial,helvetica\" size=1>$row[30]</font></td>\n";
                 echo "    <td nowrap align=center title=\"$row[1]\"><font face=\"arial,helvetica\" size=1>&nbsp;" . ellipse($row[1],10,false) . "&nbsp;</font></td>\n";
                 echo "    <td nowrap align=center title=\"$row[2]\"><font face=\"arial,helvetica\" size=1>&nbsp;$row[2]&nbsp;</font></td>\n";
                 echo "    <td nowrap align=center title=\"$row[35]\"><font face=\"arial,helvetica\" size=1>" . ellipse($row[35],10,false) . "</font></td>\n";
+                echo "    <td nowrap align=center title=\"$recloc\"><font face=\"arial,helvetica\" size=1>";
+                if ($recloc != "") {
+                    echo "<a target=\"_new\" href=\"http://" . $_SERVER['SERVER_ADDR'] . "$recloc\">[rec]</a>";
+                }
+                echo "</font></td>\n";
                 echo "  </tr>\n";
             }
         }
