@@ -64,8 +64,8 @@
 ### (dialer) remove old recordings more than 7 days old
 24 0 * * * /usr/bin/find /var/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs rm -f
 
-### (dialer) remove backed up rordings > 7 deays.
-24 0 * * * /usr/bin/find /opt/osdial/recordings/backups -maxdepth 2 -type f -mtime +7 -print | xargs rm -f
+### (dialer) remove old recording backups
+24 0 * * * /usr/bin/find /opt/osdial/backups/recordings -maxdepth 2 -type f -mtime +7 -print | xargs rm -f
 
 ### (dialer) Send Recordings to archive server
 * * * * * /opt/osdial/bin/AST_audio_archive.pl
