@@ -73,8 +73,8 @@ if ($ADD == "1keys" or $ADD == '4keys') {
             $recfile = $_FILES['recfile'];
             $recfiletmp = $_FILES['recfile']['tmp_name'];
             $recfilename = $_FILES['recfile']['name'];
-            $recfilename = preg_replace('/ /g','_',$recfilename);
-            $recfilename = preg_replace('/[^-\_\.0-9a-zA-Z]/g',"",$recfilename);
+            $recfilename = preg_replace('/ /','_',$recfilename);
+            $recfilename = preg_replace('/[^-\_\.0-9a-zA-Z]/',"",$recfilename);
             $recfilename = preg_replace('/\.wav$/i','.wav',$recfilename);
             $recfilename = preg_replace('/\.gsm$/i','.gsm',$recfilename);
             $recfilename = preg_replace('/\.mp3$/i','.mp3',$recfilename);
@@ -528,8 +528,8 @@ if ($ADD == "4menu") {
             $recfile = $_FILES['recfile'];
             $recfiletmp = $_FILES['recfile']['tmp_name'];
             $recfilename = $_FILES['recfile']['name'];
-            $recfilename = preg_replace('/ /g','_',$recfilename);
-            $recfilename = preg_replace('/[^-\_\.0-9a-zA-Z]/g',"",$recfilename);
+            $recfilename = preg_replace('/ /','_',$recfilename);
+            $recfilename = preg_replace('/[^-\_\.0-9a-zA-Z]/',"",$recfilename);
             $recfilename = preg_replace('/\.wav$/i','.wav',$recfilename);
             $recfilename = preg_replace('/\.gsm$/i','.gsm',$recfilename);
             $recfilename = preg_replace('/\.mp3$/i','.mp3',$recfilename);
