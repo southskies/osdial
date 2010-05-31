@@ -7,7 +7,7 @@ ALTER TABLE server_updater DROP PRIMARY KEY;##|##
  ##    Drop primary key if its there.;
 
 DELETE FROM server_updater;##|##
- ##    Clear server updater records.
+ ##    Clear server updater records.;
 
 ALTER TABLE server_updater ADD sql_time timestamp NOT NULL default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;##|##
  ##    Increase filename size in recording_log.;
