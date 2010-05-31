@@ -96,6 +96,7 @@ OSDial API Documentation
     <external_key>88975347</external_key>
     <cost>1.23</cost>
     <post_date>2010-03-20T14:30:00</post_date>
+    <agent>1001</agent>
 
     <additional_fields>
       <additional_field form="CREDITCARD" field="NAME">John Doe</additional_field>
@@ -293,6 +294,9 @@ OSDial API Documentation
     <post_date>2010-03-20T14:30:00</post_date>
       Optional.  Date/Time should be in ISO 8601 format.
 
+    <agent>1001</agent>
+      Optional.  Agent to assign lead too.
+
 
     Lead Data - Additional (Custom) Forms and Fields
     ------------------------------------------------
@@ -364,6 +368,7 @@ OSDial API Documentation
     <external_key>88975347</external_key>
     <cost>1.23</cost>
     <post_date>2010-03-20T14:30:00</post_date>
+    <agent>1001</agent>
     <additional_fields>
      <additional_field form="CREDITCARD" field="NAME">John Doe</additional_field>
      <additional_field form="CREDITCARD" field="ADDRESS">9928 CC Lane</additional_field>

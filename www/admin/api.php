@@ -518,8 +518,8 @@ if ($xml['function'] == "version") {
                     $reason = "Lead not added to hopper, current time is outside the allowed calling time of the campaign.";
                     $vdreason = "add_lead NOT ADDED TO HOPPER, OUTSIDE OF CAMPAIGN CALL TIME";
                 } else {
-                    $hopins = "INSERT INTO osdial_hopper SET status='API',user='',";
-                    $hopins .= sprintf("lead_id='%s',campaign_id='%s',list_id='%s',", mres($lead_id), mres($list_campaign_id), mres($xml->params->list_id) );
+                    $hopins = "INSERT INTO osdial_hopper SET status='API',";
+                    $hopins .= sprintf("lead_id='%s',campaign_id='%s',list_id='%s',user='%s',", mres($lead_id), mres($list_campaign_id), mres($xml->params->list_id), mres($xml->params->agent) );
                     $hopins .= sprintf("gmt_offset_now='%s',state='%s',priority='%s';", mres($gmt_offset_now), mres(strtoupper($xml->params->state)), mres($xml->params->hopper_priority));
                     if ($xml['debug'] > 0) $debug .= "HOPPER INSERT: " . $hopins . "\n";
                     $rslt=mysql_query($hopins, $link);
