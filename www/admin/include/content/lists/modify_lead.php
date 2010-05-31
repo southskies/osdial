@@ -125,6 +125,15 @@ if ($ADD==1121) {
 		        $rslt=mysql_query($stmt, $link);
 		        echo "<br>osdial_callback record changed to USERONLY, user: $CBuser<br>\n";
 	        }	
+
+            if ($VARclient == 'OSDR') {
+                if ($confirm_sale > 0) {
+                    if (strlen($confirm_id) > 0) {
+                        $stmt = sprintf("UPDATE osdial_list SET status='%s' WHERE lead_id='%s';", mres($confirm_status), mres($confirm_id));
+                        $rslt = mysql_query($stmt, $link);
+                    }
+                }
+            }
 			
             $ld = get_first_record($link, 'osdial_list', '*', sprintf("lead_id='%s'",mres($lead_id)));
 			
@@ -693,6 +702,22 @@ if ($ADD==1121) {
                 echo "        <td colspan=8></td>\n";
                 echo "      </tr>\n";
 	            echo "    </table>\n";
+                if ($VARclient == 'OSDR') {
+                    if ($ld['status'] == "SALE") {
+                        echo '<form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
+		                echo '<input type="hidden" name="DB" value="' . $DB . '">';
+		                echo '<input type="hidden" name="ADD" value="' . $ADD . '">';
+		                echo '<input type="hidden" name="SUB" value="' . $SUB . '">';
+		                echo '<input type="hidden" name="lead_id" value="' . $ld['lead_id'] . '">';
+		                echo '<input type="hidden" name="confirm_sale" value=1>';
+		                echo '<input type="hidden" name="confirm_id" value="' . $ld['lead_id'] . '">';
+		                echo '<input type="hidden" name="confirm_status" value="VERLIS">';
+		                echo "    <center>\n";
+                        echo "      <input type=\"submit\" value=\"CONFIRM SALE\">\n";
+                        echo "    </center>\n";
+                        echo "</form>\n";
+                    }
+                }
                 echo "    <br><br><br>\n";
             } else {
 		        echo "lead lookup FAILED for lead_id $ld[lead_id] &nbsp; &nbsp; &nbsp; $SQLdate\n<br><br>\n";
