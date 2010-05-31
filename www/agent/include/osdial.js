@@ -4745,7 +4745,7 @@ foreach ($forms as $form) {
             foreach ($fields as $field) {
                 if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
                     echo "      var SC" . $form['name'] . '_' . $field['name'] . ' = ' . "encodeURIComponent2(document.getElementById('AF" . $field['id'] . "').value);\n";
-                    echo "      var RG" . $form['name'] . '_' . $field['name'] . ' = new RegExp("\\[\\[' . $form['name'] . '_' . $field['name'] . '\\]\\]","g");' . "\n";
+                    echo "      var RG" . $form['name'] . '_' . $field['name'] . ' = new RegExp("\\\\[\\\\[' . $form['name'] . '_' . $field['name'] . '\\\\]\\\\]","g");' . "\n";
                     echo "      wf_encoded = wf_encoded.replace(RG" . $form['name'] . '_' . $field['name'] . ',SC' . $form['name'] . '_' . $field['name'] . ");\n";
                     $cnt++;
 		}
@@ -5070,7 +5070,7 @@ foreach ($forms as $form) {
             foreach ($fields as $field) {
                 if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
                     echo "      	var RGO" . $form['name'] . '_' . $field['name'] . ' = new RegExp("--A--' . $form['name'] . '_' . $field['name'] . '--B--","g");' . "\n";
-                    echo "      	var RG" . $form['name'] . '_' . $field['name'] . ' = new RegExp("\\[\\[' . $form['name'] . '_' . $field['name'] . '\\]\\]","g");' . "\n";
+                    echo "      	var RG" . $form['name'] . '_' . $field['name'] . ' = new RegExp("\\\\[\\\\[' . $form['name'] . '_' . $field['name'] . '\\\\]\\\\]","g");' . "\n";
                     echo "      	encoded = encoded.replace(RGO" . $form['name'] . '_' . $field['name'] . ',SC' . $form['name'] . '_' . $field['name'] . ");\n";
                     echo "      	encoded = encoded.replace(RG" . $form['name'] . '_' . $field['name'] . ',SC' . $form['name'] . '_' . $field['name'] . ");\n";
                     $cnt++;
