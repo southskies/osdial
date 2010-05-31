@@ -553,7 +553,8 @@ function report_realtime_detail() {
         }
         $closer_campaignsSQL = preg_replace('/,$/','',$closer_campaignsSQL);
 
-        $stmtB=sprintf("FROM osdial_auto_calls WHERE campaign_id IN %s AND status NOT IN('XFER') AND ( (call_type='IN' AND campaign_id IN(%s)) OR (campaign_id='%s' AND call_type IN('OUT','OUTBALANCE')) ) ORDER BY campaign_id,call_time;",$LOG['allowed_campaignsSQL'],$closer_campaignsSQL,mres($group));
+        #$stmtB=sprintf("FROM osdial_auto_calls WHERE campaign_id IN %s AND status NOT IN('XFER') AND ( (call_type='IN' AND campaign_id IN(%s)) OR (campaign_id='%s' AND call_type IN('OUT','OUTBALANCE')) ) ORDER BY campaign_id,call_time;",$LOG['allowed_campaignsSQL'],$closer_campaignsSQL,mres($group));
+        $stmtB=sprintf("FROM osdial_auto_calls WHERE status NOT IN('XFER') AND ( (call_type='IN' AND campaign_id IN(%s)) OR (campaign_id='%s' AND call_type IN('OUT','OUTBALANCE')) ) ORDER BY campaign_id,call_time;",$closer_campaignsSQL,mres($group));
     } else {
         $groupSQL = '';
         if (!preg_match('/^XXXX/',$group)) {
