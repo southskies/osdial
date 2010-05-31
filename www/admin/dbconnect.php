@@ -46,6 +46,8 @@ foreach ($DBCagc as $DBCline)
 		{$VARDB_pass = $DBCline;   $VARDB_pass = preg_replace("/.*=/","",$VARDB_pass);}
 	if (ereg("^VARDB_port", $DBCline))
 		{$VARDB_port = $DBCline;   $VARDB_port = preg_replace("/.*=/","",$VARDB_port);}
+	if (ereg("^VARclient", $DBCline))
+		{$VARclient = $DBCline;   $VARclient = preg_replace("/.*=/","",$VARclient);}
 	}
 
 }
