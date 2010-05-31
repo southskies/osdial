@@ -169,13 +169,20 @@ sub _load_config {
 
 
 sub sql_connect {
-	my ($self, $dbh) = @_;
+	my ($self, $dbh, $dbname, $dbserver, $dbport, $dbuser, $dbpass) = @_;
 	$dbh = 'A' unless ($dbh);
+	unless ($dbname) {
+		$dbname = $self->{VARDB_database};
+		$dbsrvr = $self->{VARDB_server};
+		$dbport = $self->{VARDB_port};
+		$dbuser = $self->{VARDB_user};
+		$dbpass = $self->{VARDB_pass};
+	}
 	$self->{_sql}{$dbh} = {'connected'=>0} if (!defined $self->{_sql}{$dbh});
 	if ($self->{_sql}{$dbh}{connected}<1) {
-		my $dsn = 'DBI:mysql:' . $self->{VARDB_database} . ':' . $self->{VARDB_server} . ':' . $self->{VARDB_port};
+		my $dsn = 'DBI:mysql:' . $dbname . ':' . $dbsrvr . ':' . $dbport;
 		$self->debug(5,'sql_connect',"Connecting to dbh %s at DSN: %s.",$dbh,$dsn);
-		$self->{_sql}{$dbh}{dbh} = DBI->connect($dsn,$self->{VARDB_user},$self->{VARDB_pass}) or die '  -- OSDial: sql_connect:  ERROR ' . $self->{_sql}{$dbh}{dbh}->errstr;
+		$self->{_sql}{$dbh}{dbh} = DBI->connect($dsn,$dbuser,$dbpass) or die '  -- OSDial: sql_connect:  ERROR ' . $self->{_sql}{$dbh}{dbh}->errstr;
 		$self->{_sql}{$dbh}{dbh}{PrintError} = 0;
 		$self->{_sql}{$dbh}{connected} = 1;
 	}
