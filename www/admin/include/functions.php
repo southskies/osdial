@@ -1201,7 +1201,7 @@ function prettyXML($pretty,$indent=1) {
     $cindent = 0;
     foreach($xa as $e) {
         if ( preg_match('/^<\/.+>$/',$e)) $cindent -= $indent;
-        if ($e>0) $pretty .=  str_repeat(' ', $cindent) . $e . "\n";
+        if ($e) $pretty .=  str_repeat(' ', $cindent) . $e . "\n";
         if (preg_match('/^<([\w])+[^>\/]*>$/U',$e)) $cindent += $indent;
     }
     return $pretty;
