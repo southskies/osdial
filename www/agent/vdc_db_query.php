@@ -322,6 +322,10 @@ if (isset($_GET["oldlead"]))						{$oldlead=$_GET["oldlead"];}
     elseif (isset($_POST["oldlead"]))			{$oldlead=$_POST["oldlead"];}
 if (isset($_GET["lookup"]))						{$lookup=$_GET["lookup"];}
     elseif (isset($_POST["lookup"]))			{$lookup=$_POST["lookup"];}
+if (isset($_GET["script_id"]))						{$script_id=$_GET["script_id"];}
+    elseif (isset($_POST["script_id"]))			{$script_id=$_POST["script_id"];}
+if (isset($_GET["script_button_id"]))						{$script_button_id=$_GET["script_button_id"];}
+    elseif (isset($_POST["script_button_id"]))			{$script_button_id=$_POST["script_button_id"];}
 
 
 header ("Content-type: text/html; charset=utf-8");
@@ -3313,6 +3317,17 @@ if ($ACTION == 'RepullLeadData')
     }
 
     echo $LeaD_InfO;
+}
+
+################################################################################
+### ScriptButtonLog - log the button press within the script.              
+################################################################################
+if ($ACTION == 'ScriptButtonLog') {
+    $stmt = "INSERT INTO osdial_script_button_log SET lead_id='$lead_id',script_id='$script_id',script_button_id='$script_button_id',user='$user';";
+    if ($DB) {echo "$stmt\n";}
+    $rslt=mysql_query($stmt, $link);
+
+    echo "DONE.";
 }
 
 
