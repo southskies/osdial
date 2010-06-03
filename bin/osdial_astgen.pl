@@ -508,16 +508,20 @@ sub gen_phones {
 			} else {
 				$sphn .= "host=dynamic\n";
 			}
-			if ($aryA[5] =~ /Grandstream/i) {
-				$sphn .= "dtmfmode=rfc2833\n";
-				$sphn .= "relaxdtmf=yes\n";
-				$sphn .= "disallow=all\n";
-				$sphn .= "allow=$codec\n";
-			} else {
-				$sphn .= "dtmfmode=inband\n";
-				$sphn .= "disallow=all\n";
-				$sphn .= "allow=$codec\n";
-			}
+			$sphn .= "dtmfmode=auto\n";
+			$sphn .= "relaxdtmf=yes\n";
+			$sphn .= "disallow=all\n";
+			$sphn .= "allow=$codec\n";
+			#if ($aryA[5] =~ /Grandstream/i) {
+			#	$sphn .= "dtmfmode=rfc2833\n";
+			#	$sphn .= "relaxdtmf=yes\n";
+			#	$sphn .= "disallow=all\n";
+			#	$sphn .= "allow=$codec\n";
+			#} else {
+			#	$sphn .= "dtmfmode=inband\n";
+			#	$sphn .= "disallow=all\n";
+			#	$sphn .= "allow=$codec\n";
+			#}
 			$sphn .= "qualify=5000\n";
 			$sphn .= "nat=yes\n";
 			$sphn .= "context=" . $aryA[7] . "\n";
@@ -532,7 +536,6 @@ sub gen_phones {
 			} else {
 				$iphn .= "host=dynamic\n";
 			}
-			$iphn .= "dtmfmode=inband\n";
 			$iphn .= "disallow=all\n";
 			$iphn .= "allow=$codec\n";
 			$iphn .= "qualify=5000\n";
@@ -563,7 +566,7 @@ sub gen_phones {
 			$dext = "";
 		}
 
-		$ephn .= "exten => _" . $aryA[1] . ",1,Dial(" . $dext . ",55,to)\n" if ($dext ne "");
+		$ephn .= "exten => _" . $aryA[1] . ",1,Dial(" . $dext . ",55,o)\n" if ($dext ne "");
 	}
 
 	my $extreload = "extensions reload";
