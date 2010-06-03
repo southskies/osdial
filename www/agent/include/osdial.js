@@ -4889,13 +4889,15 @@ foreach ($forms as $form) {
                     $var = "      var SC" . $form['name'] . '_' . $field['name'] . ' = "';
                     if ($field['options'] == '') {
                         $var .= "<input type=text size=" . $field['length'] . " maxlength=255 name=" . $form['name'] . '_' . $field['name'] . ' id=' . $form['name'] . '_' . $field['name'];
-                        $var .= " onfocus=document.getElementById('" . $form['name'] . '_' . $field['name'] . "').value=document.getElementById('AF" . $field['id'] . "').value";
-                        $var .= " onchange=document.getElementById('AF" . $field['id'] . "').value=document.getElementById('" . $form['name'] . '_' . $field['name'] . "').value";
+                        $var .= " onfocus=\\\"this.value=document.getElementById('AF" . $field['id'] . "').value;\\\"";
+                        $var .= " onchange=\\\"var afv=this; document.getElementById('AF" . $field['id'] . "').value=afv.value;";
+                        $var .= " var aflist=document.getElementsByName('" . $form['name'] . '_' . $field['name'] . "'); for(var afli=0;afli<aflist.length;afli&#43;&#43;){if(afv.value!=aflist[afli].value) aflist[afli].value=afv.value;};\\\"";
                         $var .= ' class=cust_form value=\"\">';
                     } else {
                         $var .= "<select name=" . $form['name'] . '_' . $field['name'] . ' id=' . $form['name'] . '_' . $field['name'];
-                        $var .= " onfocus=document.getElementById('" . $form['name'] . '_' . $field['name'] . "').value=document.getElementById('AF" . $field['id'] . "').value";
-                        $var .= " onchange=document.getElementById('AF" . $field['id'] . "').value=document.getElementById('" . $form['name'] . '_' . $field['name'] . "').value";
+                        $var .= " onfocus=\\\"this.value=document.getElementById('AF" . $field['id'] . "').value;\\\"";
+                        $var .= " onchange=\\\"var afv=this; document.getElementById('AF" . $field['id'] . "').value=afv.value;";
+                        $var .= " var aflist=document.getElementsByName('" . $form['name'] . '_' . $field['name'] . "'); for(var afli=0;afli<aflist.length;afli&#43;&#43;){if(afv.value!=aflist[afli].value) aflist[afli].value=afv.value;};\\\"";
                         $var .= ">";
                         $options = split(',',$field['options']);
                         foreach ($options as $opt) {
@@ -6126,7 +6128,11 @@ foreach ($forms as $form) {
             foreach ($fields as $field) {
                 if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
                     echo "    try {\n";
-                    echo "      document.getElementById(\"" . $form['name'] . '_' . $field['name'] . "\").value = document.getElementById(\"AF" . $field['id'] . "\").value;\n";
+                    echo "      var afv=document.getElementById('AF" . $field['id'] . "');\n";
+                    echo "      var aflist=document.getElementsByName('" . $form['name'] . '_' . $field['name'] . "');\n";
+                    echo "      for(var afli=0;afli<aflist.length;afli++){\n";
+                    echo "        if(afv.value!=aflist[afli].value) aflist[afli].value=afv.value;\n";
+                    echo "      }\n";
 		    echo "    }\n";
                     echo "    catch(error) {\n";
 		    echo "      var a=1;\n";

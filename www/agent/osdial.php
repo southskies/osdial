@@ -2977,14 +2977,26 @@ foreach ($forms as $form) {
 									echo "          <td align=right><font color=$form_fc class=body_text>" . $field['description'] . ":&nbsp;</font></td>\n";
 									echo "          <td>\n";
 									if ($field['options'] == '') {
-									echo "          <input type=text size=" . $field['length'] . " maxlength=255 name=AF" . $field['id'] . " id=AF" . $field['id'] . " class=body_input value=\"\">\n";
+									    echo "          <input type=text size=" . $field['length'] . " maxlength=255 name=AF" . $field['id'] . " id=AF" . $field['id'];
+                                        echo "            onchange=\"var afv=this;";
+                                        echo "              var aflist=document.getElementsByName('" . $form['name'] . '_' . $field['name'] . "');";
+                                        echo "              for(var afli=0;afli<aflist.length;afli++){";
+                                        echo "                if(afv.value!=aflist[afli].value) aflist[afli].value=afv.value;";
+                                        echo "              };\"";
+                                        echo "            class=cust_form value=\"\">\n";
 									} else {
-									echo "          <select name=AF" . $field['id'] . " id=AF" . $field['id'] . ">\n";
-									$options = split(',',$field['options']);
-									foreach ($options as $opt) {
-										echo "              <option>" . $opt . "</option>\n";
-									}
-									echo "          </select>\n";
+									    echo "          <select name=AF" . $field['id'] . " id=AF" . $field['id'];
+                                        echo "            onchange=\"var afv=this;";
+                                        echo "              var aflist=document.getElementsByName('" . $form['name'] . '_' . $field['name'] . "');";
+                                        echo "              for(var afli=0;afli<aflist.length;afli++){";
+                                        echo "                if(afv.value!=aflist[afli].value) aflist[afli].value=afv.value;";
+                                        echo "              };\"";
+                                        echo "          >\n";
+									    $options = split(',',$field['options']);
+									    foreach ($options as $opt) {
+										    echo "              <option>" . $opt . "</option>\n";
+									    }
+									    echo "          </select>\n";
 									}
 									echo "          </td>\n";
 									echo "      </tr>\n";
