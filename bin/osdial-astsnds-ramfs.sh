@@ -1,4 +1,26 @@
 #!/bin/bash
+#
+#  osdial-astsnds-ramfs.sh: Script used move Asterisk sounds files
+#                           to RAMFS, maintain, and synchronize them.
+#
+#  Copyright (C) 2010  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+#
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+#
+
 
 [ -n "$1" ] && DB=1 || DB=0
 
@@ -30,8 +52,19 @@ elif [ -n "$RAMMNT" ]; then
 		[ $DB -gt 0 ] && echo -e "\nERROR: Fatal error, all sounds directories missing.!\n" || :
 		exit 1
 	elif [ ! -d "${ASTDIR}/sounds.ramfs" -a -d "${ASTDIR}/sounds" ]; then
+		# Check for available space.
+		[ $DB -gt 0 ] && echo -e "\nChecking for available/required memory." || :
+		RAMAVAIL=`df -k | grep "${RAMDIR}" | awk '{ print $4 }'`
+		let RAMAVAIL+=0
+		RAMREQ=`du -sk ${ASTDIR}/sounds/| awk '{ print $1 }'`
+		let RAMREQ+=1024*256
+		[ $DB -gt 0 ] && echo -e "\nAvailable RAMFS Space: ${RAMAVAIL}k   Required RAMFS Space: ${RAMREQ}k" || :
+		if [ $RAMREQ -gt $RAMAVAIL ]; then
+			[ $DB -gt 0 ] && echo -e "\nERROR: There is not enough available memory to use this function.!\n" || :
+			exit 1
+		fi
 		# Initial creation.
-		[ $DB -gt 0 ] && echo -e "\nInitial move of sound files to RAMFS." || :
+		[ $DB -gt 0 ] && echo -e "\nMoving sound files to RAMFS." || :
 		mv ${ASTDIR}/sounds ${ASTDIR}/sounds.ramfs
 		mkdir -p ${RAMDIR}/sounds
 		cp -rf ${ASTDIR}/sounds.ramfs/* ${RAMDIR}/sounds
