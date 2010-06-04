@@ -2859,49 +2859,49 @@ foreach ($forms as $form) {
 									<font class="body_text"> <font color=<?=$form_fc?>>Title:&nbsp;</font>
 								</td>
 								<td align=left colspan=2>
-									<font class="body_input"><input type=text size=4 name=title maxlength=4 class="cust_form" value=""></font>&nbsp; 
+									<font class="body_input"><input type=text size=4 name=title id=title maxlength=4 class="cust_form" value=""></font>&nbsp; 
 									<font class="body_text" color=<?=$form_fc?>>First:</font>
-									<font class="body_input"> <input type=text size=14 name=first_name maxlength=30 class="cust_form" value=""></font>&nbsp; 
+									<font class="body_input"> <input type=text size=14 name=first_name id=first_name maxlength=30 class="cust_form" value=""></font>&nbsp; 
 									<font class="body_text" color=<?=$form_fc?>>MI:</font> 
-									<font class="body_input"><input type=text size=1 name=middle_initial maxlength=1 class="cust_form" value=""></font>&nbsp; 
-									<font class="body_text" color=<?=$form_fc?>>Last:</font> <font class="body_input"><input type=text size=15 name=last_name maxlength=30 class="cust_form" value=""></font>
+									<font class="body_input"><input type=text size=1 name=middle_initial id=middle_initial maxlength=1 class="cust_form" value=""></font>&nbsp; 
+									<font class="body_text" color=<?=$form_fc?>>Last:</font> <font class="body_input"><input type=text size=15 name=last_name id=last_name maxlength=30 class="cust_form" value=""></font>
 								</td>
 							</tr>
 							<!-- Hooks for company field
 							<tr>
 								<td align=right><font class="body_text" color=<?=$form_fc?>>Company:&nbsp;</font></td>
-								<td align=left colspan=2><font class="body_input"><input type=text size=58 name=company maxlength=100 class="cust_form" value=""></font></td>
+								<td align=left colspan=2><font class="body_input"><input type=text size=58 name=company id=company maxlength=100 class="cust_form" value=""></font></td>
 							-->
 							<tr>
 								<td align=right><font class="body_text" color=<?=$form_fc?>>Address1:&nbsp;</font></td>
-								<td align=left colspan=2><font class="body_input"><input type=text size=58 name=address1 maxlength=100 class="cust_form" value=""></font></td>
+								<td align=left colspan=2><font class="body_input"><input type=text size=58 name=address1 id=address1 maxlength=100 class="cust_form" value=""></font></td>
 							</tr>
 							<tr>
 								<td align=right><font class="body_text" color=<?=$form_fc?>>Address2:&nbsp;</font></td>
-								<td align=left><font class="body_input"><input type=text size=22 name=address2 maxlength=100 class="cust_form" value=""></font></td>
-								<td align=right><font class="body_text" color=<?=$form_fc?>>Address3:&nbsp;</font><font class="body_input"><input type=text size=22 name=address3 maxlength=100 class="cust_form" value=""></font></td>
+								<td align=left><font class="body_input"><input type=text size=22 name=address2 id=address2 maxlength=100 class="cust_form" value=""></font></td>
+								<td align=right><font class="body_text" color=<?=$form_fc?>>Address3:&nbsp;</font><font class="body_input"><input type=text size=22 name=address3 id=address3 maxlength=100 class="cust_form" value=""></font></td>
 							</tr>
 							<tr>
 								<td align=right><font class="body_text" color=<?=$form_fc?>>City:&nbsp;</font></td>
-								<td align=left><font class="body_input"><input type=text size=22 name=city maxlength=50 class="cust_form" value=""></font>&nbsp;</td>
+								<td align=left><font class="body_input"><input type=text size=22 name=city id=city maxlength=50 class="cust_form" value=""></font>&nbsp;</td>
 								<td align=right> 
-									<font class="body_text" color=<?=$form_fc?>>State:&nbsp;</font> <font class="body_input"><input type=text size=2 name=state maxlength=2 class="cust_form" value=""></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									<font class="body_text" color=<?=$form_fc?>>Zip:&nbsp;</font><font class="body_input"><input type=text size=9 name=postal_code maxlength=10 class="cust_form" value=""></font>
+									<font class="body_text" color=<?=$form_fc?>>State:&nbsp;</font> <font class="body_input"><input type=text size=2 name=state id=state maxlength=2 class="cust_form" value=""></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<font class="body_text" color=<?=$form_fc?>>Zip:&nbsp;</font><font class="body_input"><input type=text size=9 name=postal_code id=postal_code maxlength=10 class="cust_form" value=""></font>
 								</td>
 							</tr>
 							<tr>
 								<td align=right><font class="body_text" color=<?=$form_fc?>>Province:&nbsp;</font></td>
-								<td align=left><font class="body_input"><input type=text size=22 name=province maxlength=50 class="cust_form" value=""></font>&nbsp;</td>
-								<td align=right> <font class="body_text" color=<?=$form_fc?>>Email:&nbsp;</font><font class="body_input"><input type=text size=22 name=email maxlength=70 class="cust_form" value=""></font></td>
+								<td align=left><font class="body_input"><input type=text size=22 name=province id=province maxlength=50 class="cust_form" value=""></font>&nbsp;</td>
+								<td align=right> <font class="body_text" color=<?=$form_fc?>>Email:&nbsp;</font><font class="body_input"><input type=text size=22 name=email id=email maxlength=70 class="cust_form" value=""></font></td>
 							</tr>
 							<tr>
 								<td align=right><font class="body_text" color=<?=$form_fc?>>Phone:&nbsp;</font></td>
 								<td colspan=2>
 									<table width=100%>
 										<tr>
-											<td align=left colspan=2><font class="body_input"><input type=text size=11 name=phone_number maxlength=12 class="cust_form" value=""></font></td>
-											<td align=right><font class="body_text" color=<?=$form_fc?>>CountryCode:&nbsp;</font><font class="body_input"><input type=text size=4 name=phone_code maxlength=10 class="cust_form" value=""></font></td>
-											<td align=right><font class="body_text" color=<?=$form_fc?>>Alt. Phone:&nbsp;</font><font class="body_input"><input type=text size=12 name=alt_phone maxlength=12 class="cust_form" value=""></font></td>
+											<td align=left colspan=2><font class="body_input"><input type=text size=11 name=phone_number id=phone_number maxlength=12 class="cust_form" value=""></font></td>
+											<td align=right><font class="body_text" color=<?=$form_fc?>>PhoneCode:&nbsp;</font><font class="body_input"><input type=text size=4 name=phone_code id=phone_code maxlength=10 class="cust_form" value=""></font></td>
+											<td align=right><font class="body_text" color=<?=$form_fc?>>Alt. Phone:&nbsp;</font><font class="body_input"><input type=text size=12 name=alt_phone id=alt_phone maxlength=12 class="cust_form" value=""></font></td>
 										</tr>
 									</table>
 								</td>
@@ -2910,31 +2910,30 @@ foreach ($forms as $form) {
 							<td align=right valign=top><font class="body_text" color=<?=$form_fc?>>Comments:&nbsp;</font></td>
 							<td align=left colspan=2>
 								<font class="body_tiny">
-	<?
-								if ( ($multi_line_comments) )
-									{echo "<TEXTAREA NAME=comments ROWS=2 COLS=56 class=\"cust_form\" value=\"\"></TEXTAREA>\n";}
-								else
-									{echo "<input type=text size=56 name=comments maxlength=255 class=\"cust_form\" value=\"\">\n";}
-	?>
+	                            <? if ($multi_line_comments) { ?>
+                                    <textarea name=comments id=comments rows=2 cols=56 class="cust_form" value=""></textarea>
+								<? } else { ?>
+									<input type=text size=56 name=comments id=comments maxlength=255 class="cust_form" value="">
+                                <? } ?>
 								</font>
 							</td>
 							
 						</tr>
                         <tr>
                             <td align=right><font class="body_text"><font color=<?=$form_fc?>>Birth&nbsp;<br>Date:&nbsp;</font></td>
-                            <td align=left><font class="body_input"><input type=text size=12 name=date_of_birth maxlength=10 class="cust_form" value=""></font></td>
-                            <td align=right>&nbsp;<font class="body_text" color=<?=$form_fc?>>Gender:&nbsp;</font><font class="body_input"><select name=gender class="cust_form"><option></option><option>M</option><option>F</option></select></font></td>
+                            <td align=left><font class="body_input"><input type=text size=12 name=date_of_birth id=date_of_birth maxlength=10 class="cust_form" value=""></font></td>
+                            <td align=right>&nbsp;<font class="body_text" color=<?=$form_fc?>>Gender:&nbsp;</font><font class="body_input"><select name=gender id=gender class="cust_form"><option></option><option>M</option><option>F</option></select></font></td>
                         </tr>
                         <tr>
                             <td align=right><font class="body_text"><font color=<?=$form_fc?>>Post&nbsp;<br>Date:&nbsp;</font></td>
-                            <td align=left><font class="body_input"><input type=text size=22 name=post_date maxlength=20 class="cust_form" value=""></font></td>
-                            <td align=right><font class="body_text" color=<?=$form_fc?>>Vendor&nbsp;Code:&nbsp;</font><font class="body_input"><input type=text size=15 name=vendor_lead_code maxlength=20 class="cust_form" value=""></font></td>
+                            <td align=left><font class="body_input"><input type=text size=22 name=post_date id=post_date maxlength=20 class="cust_form" value=""></font></td>
+                            <td align=right><font class="body_text" color=<?=$form_fc?>>Vendor&nbsp;Code:&nbsp;</font><font class="body_input"><input type=text size=15 name=vendor_lead_code id=vendor_lead_code maxlength=20 class="cust_form" value=""></font></td>
                         </tr>
 
 						<tr>
 							<td align=right><font class="body_text" color=<?=$form_fc?>>Custom1:&nbsp;</font></td>
-							<td align=left><font class="body_input"><input type=text size=22 name=custom1 maxlength=100 class="cust_form" value=""></font>&nbsp;</td>
-							<td align=right><font class="body_text" color=<?=$form_fc?>>Custom2:&nbsp;</font><font class="body_input"><input type=text size=22 name=custom2 maxlength=100 class="cust_form" value=""></font></td>
+							<td align=left><font class="body_input"><input type=text size=22 name=custom1 id=custom1 maxlength=100 class="cust_form" value=""></font>&nbsp;</td>
+							<td align=right><font class="body_text" color=<?=$form_fc?>>Custom2:&nbsp;</font><font class="body_input"><input type=text size=22 name=custom2 id=custom2 maxlength=100 class="cust_form" value=""></font></td>
 						</tr>
 						
 						

@@ -31,30 +31,6 @@
 if ($ADD==7111111)
 {
 	##### TEST VARIABLES #####
-	$vendor_lead_code = 'VENDOR:LEAD;CODE';
-	$list_id = 'LISTID';
-	$gmt_offset_now = 'GMTOFFSET';
-	$phone_code = '1';
-	$phone_number = '7275551212';
-	$title = 'Mr.';
-	$first_name = 'JOHN';
-	$middle_initial = 'Q';
-	$last_name = 'PUBLIC';
-	$address1 = '1234 Main St.';
-	$address2 = 'Apt. 3';
-	$address3 = 'ADDRESS3';
-	$city = 'CHICAGO';
-	$state = 'IL';
-	$province = 'PROVINCE';
-	$postal_code = '33760';
-	$country_code = 'USA';
-	$gender = 'M';
-	$date_of_birth = '1970-01-01';
-	$alt_phone = '3125551212';
-	$email = 'test@test.com';
-	$custom1 = 'custom1';
-	$custom2 = 'custom2';
-	$comments = 'COMMENTS FIELD';
 	$fullname = 'JOE AGENT';
 	$user = '1001';
 	$pass = '1001';
@@ -71,6 +47,55 @@ if ($ADD==7111111)
 	$server_ip = '10.10.10.15';
 	$SIPexten = 'SIP/gs102';
 	$session_id = '8600051';
+	$list_id = date("YmdHis");
+	$gmt_offset_now = '-5.0';
+
+	$title = 'Mr.';
+    $EFtitle = "<input type=text size=4 name=title id=title maxlength=4 value=\"$title\">";
+	$first_name = 'JOHN';
+    $EFfirst_name = "<input type=text size=14 name=first_name id=first_name maxlength=30 value=\"$first_name\">";
+	$middle_initial = 'Q';
+    $EFmiddle_initial = "<input type=text size=1 name=middle_initial id=middle_initial maxlength=1 value=\"$middle_initial\">";
+	$last_name = 'PUBLIC';
+    $EFlast_name = "<input type=text size=15 name=last_name id=last_name maxlength=30 value=\"$last_name\">";
+	$address1 = '1234 Main St.';
+    $EFaddress1 = "<input type=text size=58 name=address1 id=address1 maxlength=100 value=\"$address1\">";
+	$address2 = 'Apt. 3';
+    $EFaddress2 = "<input type=text size=22 name=address2 id=address2 maxlength=100 value=\"$address2\">";
+	$address3 = 'ADDRESS3';
+    $EFaddress3 = "<input type=text size=22 name=address3 id=address3 maxlength=100 value=\"$address3\">";
+	$city = 'CHICAGO';
+    $EFcity = "<input type=text size=22 name=city id=city maxlength=50 value=\"$city\">";
+	$state = 'IL';
+    $EFstate = "<input type=text size=2 name=state id=state maxlength=2 value=\"$state\">";
+	$province = 'PROVINCE';
+    $EFprovince = "<input type=text size=22 name=province id=province maxlength=50 value=\"$province\">";
+	$postal_code = '33760';
+    $EFpostal_code = "<input type=text size=9 name=postal_code id=postal_code maxlength=10 value=\"$postal_code\">";
+	$country_code = 'USA';
+    $EFcountry_code = "<input type=text size=4 name=country_code id=country_code maxlength=5 value=\"$country_code\">";
+	$phone_code = '1';
+    $EFphone_code = "<input type=text size=4 name=phone_code id=phone_code maxlength=10 value=\"$phone_code\">";
+	$phone_number = '7275551212';
+    $EFphone_number = "<input type=text size=12 name=phone_number id=phone_number maxlength=12 value=\"$phone_number\">";
+	$alt_phone = '3125551212';
+    $EFalt_phone = "<input type=text size=12 name=alt_phone id=alt_phone maxlength=12 value=\"$alt_phone\">";
+	$email = 'test@test.com';
+    $EFemail = "<input type=text size=22 name=email id=email maxlength=70 value=\"$email\">";
+	$date_of_birth = '1970-01-01';
+    $EFdate_of_birth = "<input type=text size=22 name=date_of_birth id=date_of_birth maxlength=20 value=\"$date_of_birth\">";
+	$gender = 'M';
+    $EFgender = "<select name=gender id=gender class=cust_form><option></option><option selected>M</option><option>F</option></select>";
+	$post_date = date("Y-m-d");
+    $EFpost_date = "<input type=text size=22 name=post_date id=post_date maxlength=20 value=\"$post_date\">";
+	$vendor_lead_code = 'GOLDLEADS';
+    $EFvendor_lead_code = "<input type=text size=15 name=vendor_lead_code id=vendor_lead_code maxlength=20 value=\"$vendor_lead_code\">";
+	$comments = 'COMMENTS FIELD';
+    $EFcomments = "<textarea name=comments id=comments rows=2 cols=56>$comments</textarea>";
+	$custom1 = 'custom1';
+    $EFcustom1 = "<input type=text size=22 name=custom1 id=custom1 maxlength=100 value=\"$custom1\">";
+	$custom2 = 'custom2';
+    $EFcustom2 = "<input type=text size=22 name=custom2 id=custom2 maxlength=100 value=\"$custom2\">";
 
 $stmt="SELECT * from osdial_scripts where script_id='$script_id';";
 $rslt=mysql_query($stmt, $link);
@@ -93,8 +118,7 @@ foreach ($buttons as $button) {
     $script_text .= "</span>";
 }
 
-if (eregi("iframe src",$script_text))
-	{
+if (eregi("iframe src",$script_text)) {
 	$vendor_lead_code = eregi_replace(' ','+',$vendor_lead_code);
 	$list_id = eregi_replace(' ','+',$list_id);
 	$gmt_offset_now = eregi_replace(' ','+',$gmt_offset_now);
@@ -134,91 +158,116 @@ if (eregi("iframe src",$script_text))
 	$server_ip = eregi_replace(' ','+',$server_ip);
 	$SIPexten = eregi_replace(' ','+',$SIPexten);
 	$session_id = eregi_replace(' ','+',$session_id);
-	}
+}
 
 # old variable substitution
-$script_text = eregi_replace('--A--vendor_lead_code--B--',"$vendor_lead_code",$script_text);
-$script_text = eregi_replace('--A--list_id--B--',"$list_id",$script_text);
-$script_text = eregi_replace('--A--gmt_offset_now--B--',"$gmt_offset_now",$script_text);
-$script_text = eregi_replace('--A--phone_code--B--',"$phone_code",$script_text);
-$script_text = eregi_replace('--A--phone_number--B--',"$phone_number",$script_text);
-$script_text = eregi_replace('--A--title--B--',"$title",$script_text);
-$script_text = eregi_replace('--A--first_name--B--',"$first_name",$script_text);
-$script_text = eregi_replace('--A--middle_initial--B--',"$middle_initial",$script_text);
-$script_text = eregi_replace('--A--last_name--B--',"$last_name",$script_text);
-$script_text = eregi_replace('--A--address1--B--',"$address1",$script_text);
-$script_text = eregi_replace('--A--address2--B--',"$address2",$script_text);
-$script_text = eregi_replace('--A--address3--B--',"$address3",$script_text);
-$script_text = eregi_replace('--A--city--B--',"$city",$script_text);
-$script_text = eregi_replace('--A--state--B--',"$state",$script_text);
-$script_text = eregi_replace('--A--province--B--',"$province",$script_text);
-$script_text = eregi_replace('--A--postal_code--B--',"$postal_code",$script_text);
-$script_text = eregi_replace('--A--country_code--B--',"$country_code",$script_text);
-$script_text = eregi_replace('--A--gender--B--',"$gender",$script_text);
-$script_text = eregi_replace('--A--date_of_birth--B--',"$date_of_birth",$script_text);
-$script_text = eregi_replace('--A--alt_phone--B--',"$alt_phone",$script_text);
-$script_text = eregi_replace('--A--email--B--',"$email",$script_text);
-$script_text = eregi_replace('--A--custom1--B--',"$custom1",$script_text);
-$script_text = eregi_replace('--A--custom2--B--',"$custom2",$script_text);
-$script_text = eregi_replace('--A--comments--B--',"$comments",$script_text);
-$script_text = eregi_replace('--A--fullname--B--',"$fullname",$script_text);
-$script_text = eregi_replace('--A--fronter--B--',"$fronter",$script_text);
-$script_text = eregi_replace('--A--user--B--',"$user",$script_text);
-$script_text = eregi_replace('--A--pass--B--',"$pass",$script_text);
-$script_text = eregi_replace('--A--lead_id--B--',"$lead_id",$script_text);
-$script_text = eregi_replace('--A--campaign--B--',"$campaign",$script_text);
-$script_text = eregi_replace('--A--phone_login--B--',"$phone_login",$script_text);
-$script_text = eregi_replace('--A--group--B--',"$group",$script_text);
-$script_text = eregi_replace('--A--channel_group--B--',"$channel_group",$script_text);
-$script_text = eregi_replace('--A--SQLdate--B--',"$SQLdate",$script_text);
-$script_text = eregi_replace('--A--epoch--B--',"$epoch",$script_text);
-$script_text = eregi_replace('--A--uniqueid--B--',"$uniqueid",$script_text);
-$script_text = eregi_replace('--A--customer_zap_channel--B--',"$customer_zap_channel",$script_text);
-$script_text = eregi_replace('--A--server_ip--B--',"$server_ip",$script_text);
-$script_text = eregi_replace('--A--SIPexten--B--',"$SIPexten",$script_text);
-$script_text = eregi_replace('--A--session_id--B--',"$session_id",$script_text);
+$script_text = eregi_replace('--A--vendor_lead_code--B--',$vendor_lead_code,$script_text);
+$script_text = eregi_replace('--A--list_id--B--',$list_id,$script_text);
+$script_text = eregi_replace('--A--gmt_offset_now--B--',$gmt_offset_now,$script_text);
+$script_text = eregi_replace('--A--phone_code--B--',$phone_code,$script_text);
+$script_text = eregi_replace('--A--phone_number--B--',$phone_number,$script_text);
+$script_text = eregi_replace('--A--title--B--',$title,$script_text);
+$script_text = eregi_replace('--A--first_name--B--',$first_name,$script_text);
+$script_text = eregi_replace('--A--middle_initial--B--',$middle_initial,$script_text);
+$script_text = eregi_replace('--A--last_name--B--',$last_name,$script_text);
+$script_text = eregi_replace('--A--address1--B--',$address1,$script_text);
+$script_text = eregi_replace('--A--address2--B--',$address2,$script_text);
+$script_text = eregi_replace('--A--address3--B--',$address3,$script_text);
+$script_text = eregi_replace('--A--city--B--',$city,$script_text);
+$script_text = eregi_replace('--A--state--B--',$state,$script_text);
+$script_text = eregi_replace('--A--province--B--',$province,$script_text);
+$script_text = eregi_replace('--A--postal_code--B--',$postal_code,$script_text);
+$script_text = eregi_replace('--A--country_code--B--',$country_code,$script_text);
+$script_text = eregi_replace('--A--gender--B--',$gender,$script_text);
+$script_text = eregi_replace('--A--date_of_birth--B--',$date_of_birth,$script_text);
+$script_text = eregi_replace('--A--alt_phone--B--',$alt_phone,$script_text);
+$script_text = eregi_replace('--A--email--B--',$email,$script_text);
+$script_text = eregi_replace('--A--custom1--B--',$custom1,$script_text);
+$script_text = eregi_replace('--A--custom2--B--',$custom2,$script_text);
+$script_text = eregi_replace('--A--comments--B--',$comments,$script_text);
+$script_text = eregi_replace('--A--fullname--B--',$fullname,$script_text);
+$script_text = eregi_replace('--A--fronter--B--',$fronter,$script_text);
+$script_text = eregi_replace('--A--user--B--',$user,$script_text);
+$script_text = eregi_replace('--A--pass--B--',$pass,$script_text);
+$script_text = eregi_replace('--A--lead_id--B--',$lead_id,$script_text);
+$script_text = eregi_replace('--A--campaign--B--',$campaign,$script_text);
+$script_text = eregi_replace('--A--phone_login--B--',$phone_login,$script_text);
+$script_text = eregi_replace('--A--group--B--',$group,$script_text);
+$script_text = eregi_replace('--A--channel_group--B--',$channel_group,$script_text);
+$script_text = eregi_replace('--A--SQLdate--B--',$SQLdate,$script_text);
+$script_text = eregi_replace('--A--epoch--B--',$epoch,$script_text);
+$script_text = eregi_replace('--A--uniqueid--B--',$uniqueid,$script_text);
+$script_text = eregi_replace('--A--customer_zap_channel--B--',$customer_zap_channel,$script_text);
+$script_text = eregi_replace('--A--server_ip--B--',$server_ip,$script_text);
+$script_text = eregi_replace('--A--SIPexten--B--',$SIPexten,$script_text);
+$script_text = eregi_replace('--A--session_id--B--',$session_id,$script_text);
 
 #new variable substitution
-$script_text = eregi_replace('\[\[vendor_lead_code\]\]',"$vendor_lead_code",$script_text);
-$script_text = eregi_replace('\[\[list_id\]\]',"$list_id",$script_text);
-$script_text = eregi_replace('\[\[gmt_offset_now\]\]',"$gmt_offset_now",$script_text);
-$script_text = eregi_replace('\[\[phone_code\]\]',"$phone_code",$script_text);
-$script_text = eregi_replace('\[\[phone_number\]\]',"$phone_number",$script_text);
-$script_text = eregi_replace('\[\[title\]\]',"$title",$script_text);
-$script_text = eregi_replace('\[\[first_name\]\]',"$first_name",$script_text);
-$script_text = eregi_replace('\[\[middle_initial\]\]',"$middle_initial",$script_text);
-$script_text = eregi_replace('\[\[last_name\]\]',"$last_name",$script_text);
-$script_text = eregi_replace('\[\[address1\]\]',"$address1",$script_text);
-$script_text = eregi_replace('\[\[address2\]\]',"$address2",$script_text);
-$script_text = eregi_replace('\[\[address3\]\]',"$address3",$script_text);
-$script_text = eregi_replace('\[\[city\]\]',"$city",$script_text);
-$script_text = eregi_replace('\[\[state\]\]',"$state",$script_text);
-$script_text = eregi_replace('\[\[province\]\]',"$province",$script_text);
-$script_text = eregi_replace('\[\[postal_code\]\]',"$postal_code",$script_text);
-$script_text = eregi_replace('\[\[country_code\]\]',"$country_code",$script_text);
-$script_text = eregi_replace('\[\[gender\]\]',"$gender",$script_text);
-$script_text = eregi_replace('\[\[date_of_birth\]\]',"$date_of_birth",$script_text);
-$script_text = eregi_replace('\[\[alt_phone\]\]',"$alt_phone",$script_text);
-$script_text = eregi_replace('\[\[email\]\]',"$email",$script_text);
-$script_text = eregi_replace('\[\[custom1\]\]',"$custom1",$script_text);
-$script_text = eregi_replace('\[\[custom2\]\]',"$custom2",$script_text);
-$script_text = eregi_replace('\[\[comments\]\]',"$comments",$script_text);
-$script_text = eregi_replace('\[\[fullname\]\]',"$fullname",$script_text);
-$script_text = eregi_replace('\[\[fronter\]\]',"$fronter",$script_text);
-$script_text = eregi_replace('\[\[user\]\]',"$user",$script_text);
-$script_text = eregi_replace('\[\[pass\]\]',"$pass",$script_text);
-$script_text = eregi_replace('\[\[lead_id\]\]',"$lead_id",$script_text);
-$script_text = eregi_replace('\[\[campaign\]\]',"$campaign",$script_text);
-$script_text = eregi_replace('\[\[phone_login\]\]',"$phone_login",$script_text);
-$script_text = eregi_replace('\[\[group\]\]',"$group",$script_text);
-$script_text = eregi_replace('\[\[channel_group\]\]',"$channel_group",$script_text);
-$script_text = eregi_replace('\[\[SQLdate\]\]',"$SQLdate",$script_text);
-$script_text = eregi_replace('\[\[epoch\]\]',"$epoch",$script_text);
-$script_text = eregi_replace('\[\[uniqueid\]\]',"$uniqueid",$script_text);
-$script_text = eregi_replace('\[\[customer_zap_channel\]\]',"$customer_zap_channel",$script_text);
-$script_text = eregi_replace('\[\[server_ip\]\]',"$server_ip",$script_text);
-$script_text = eregi_replace('\[\[SIPexten\]\]',"$SIPexten",$script_text);
-$script_text = eregi_replace('\[\[session_id\]\]',"$session_id",$script_text);
+$script_text = eregi_replace('\[\[list_id\]\]',$list_id,$script_text);
+$script_text = eregi_replace('\[\[gmt_offset_now\]\]',$gmt_offset_now,$script_text);
+$script_text = eregi_replace('\[\[fullname\]\]',$fullname,$script_text);
+$script_text = eregi_replace('\[\[fronter\]\]',$fronter,$script_text);
+$script_text = eregi_replace('\[\[user\]\]',$user,$script_text);
+$script_text = eregi_replace('\[\[pass\]\]',$pass,$script_text);
+$script_text = eregi_replace('\[\[lead_id\]\]',$lead_id,$script_text);
+$script_text = eregi_replace('\[\[campaign\]\]',$campaign,$script_text);
+$script_text = eregi_replace('\[\[phone_login\]\]',$phone_login,$script_text);
+$script_text = eregi_replace('\[\[group\]\]',$group,$script_text);
+$script_text = eregi_replace('\[\[channel_group\]\]',$channel_group,$script_text);
+$script_text = eregi_replace('\[\[SQLdate\]\]',$SQLdate,$script_text);
+$script_text = eregi_replace('\[\[epoch\]\]',$epoch,$script_text);
+$script_text = eregi_replace('\[\[uniqueid\]\]',$uniqueid,$script_text);
+$script_text = eregi_replace('\[\[customer_zap_channel\]\]',$customer_zap_channel,$script_text);
+$script_text = eregi_replace('\[\[server_ip\]\]',$server_ip,$script_text);
+$script_text = eregi_replace('\[\[SIPexten\]\]',$SIPexten,$script_text);
+$script_text = eregi_replace('\[\[session_id\]\]',$session_id,$script_text);
+
+$script_text = eregi_replace('\[\[title\]\]',             $title,$script_text);
+$script_text = eregi_replace('\[\[EFtitle\]\]',           $EFtitle,$script_text);
+$script_text = eregi_replace('\[\[first_name\]\]',        $first_name,$script_text);
+$script_text = eregi_replace('\[\[EFfirst_name\]\]',      $EFfirst_name,$script_text);
+$script_text = eregi_replace('\[\[middle_initial\]\]',    $middle_initial,$script_text);
+$script_text = eregi_replace('\[\[EFmiddle_initial\]\]',  $EFmiddle_initial,$script_text);
+$script_text = eregi_replace('\[\[last_name\]\]',         $last_name,$script_text);
+$script_text = eregi_replace('\[\[EFlast_name\]\]',       $EFlast_name,$script_text);
+$script_text = eregi_replace('\[\[address1\]\]',          $address1,$script_text);
+$script_text = eregi_replace('\[\[EFaddress1\]\]',        $EFaddress1,$script_text);
+$script_text = eregi_replace('\[\[address2\]\]',          $address2,$script_text);
+$script_text = eregi_replace('\[\[EFaddress2\]\]',        $EFaddress2,$script_text);
+$script_text = eregi_replace('\[\[address3\]\]',          $address3,$script_text);
+$script_text = eregi_replace('\[\[EFaddress3\]\]',        $EFaddress3,$script_text);
+$script_text = eregi_replace('\[\[city\]\]',              $city,$script_text);
+$script_text = eregi_replace('\[\[EFcity\]\]',            $EFcity,$script_text);
+$script_text = eregi_replace('\[\[state\]\]',             $state,$script_text);
+$script_text = eregi_replace('\[\[EFstate\]\]',           $EFstate,$script_text);
+$script_text = eregi_replace('\[\[province\]\]',          $province,$script_text);
+$script_text = eregi_replace('\[\[EFprovince\]\]',        $EFprovince,$script_text);
+$script_text = eregi_replace('\[\[postal_code\]\]',       $postal_code,$script_text);
+$script_text = eregi_replace('\[\[EFpostal_code\]\]',     $EFpostal_code,$script_text);
+$script_text = eregi_replace('\[\[country_code\]\]',      $country_code,$script_text);
+$script_text = eregi_replace('\[\[EFcountry_code\]\]',    $EFcountry_code,$script_text);
+$script_text = eregi_replace('\[\[phone_code\]\]',        $phone_code,$script_text);
+$script_text = eregi_replace('\[\[EFphone_code\]\]',      $EFphone_code,$script_text);
+$script_text = eregi_replace('\[\[phone_number\]\]',      $phone_number,$script_text);
+$script_text = eregi_replace('\[\[EFphone_number\]\]',    $EFphone_number,$script_text);
+$script_text = eregi_replace('\[\[alt_phone\]\]',         $alt_phone,$script_text);
+$script_text = eregi_replace('\[\[EFalt_phone\]\]',       $EFalt_phone,$script_text);
+$script_text = eregi_replace('\[\[email\]\]',             $email,$script_text);
+$script_text = eregi_replace('\[\[EFemail\]\]',           $EFemail,$script_text);
+$script_text = eregi_replace('\[\[gender\]\]',            $gender,$script_text);
+$script_text = eregi_replace('\[\[EFgender\]\]',          $EFgender,$script_text);
+$script_text = eregi_replace('\[\[date_of_birth\]\]',     $date_of_birth,$script_text);
+$script_text = eregi_replace('\[\[EFdate_of_birth\]\]',   $EFdate_of_birth,$script_text);
+$script_text = eregi_replace('\[\[post_date\]\]',         $post_date,$script_text);
+$script_text = eregi_replace('\[\[EFpost_date\]\]',       $EFpost_date,$script_text);
+$script_text = eregi_replace('\[\[vendor_lead_code\]\]',  $vendor_lead_code,$script_text);
+$script_text = eregi_replace('\[\[EFvendor_lead_code\]\]',$EFvendor_lead_code,$script_text);
+$script_text = eregi_replace('\[\[comments\]\]',          $comments,$script_text);
+$script_text = eregi_replace('\[\[EFcomments\]\]',        $EFcomments,$script_text);
+$script_text = eregi_replace('\[\[custom1\]\]',           $custom1,$script_text);
+$script_text = eregi_replace('\[\[EFcustom1\]\]',         $EFcustom1,$script_text);
+$script_text = eregi_replace('\[\[custom2\]\]',           $custom2,$script_text);
+$script_text = eregi_replace('\[\[EFcustom2\]\]',         $EFcustom2,$script_text);
 
 $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'");
 foreach ($buttons as $button) {
@@ -337,6 +386,45 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                 // Return the new listbox instance
                 return mlbf;
 
+            case 'myeditfields':
+                var mlbef = cm.createListBox('myeditfields', {
+                     title : 'Editable Fields',
+                     onselect : function(v) {
+                        tinyMCE.activeEditor.focus();
+                        tinyMCE.activeEditor.selection.setContent('[[EF' + v + ']]');
+                        tinyMCE.activeEditor.controlManager.get('myeditfields').set(-1);
+                     }
+                });
+
+                // Add some values to the list box
+                mlbef.add('title', 'title');
+                mlbef.add('first_name', 'first_name');
+                mlbef.add('middle_initial', 'middle_initial');
+                mlbef.add('last_name', 'last_name');
+                mlbef.add('address1', 'address1');
+                mlbef.add('address2', 'address2');
+                mlbef.add('address3', 'address3');
+                mlbef.add('city', 'city');
+                mlbef.add('state', 'state');
+                mlbef.add('province', 'province');
+                mlbef.add('postal_code', 'postal_code');
+                mlbef.add('country_code',' country_code');
+                mlbef.add('email', 'email');
+                mlbef.add('phone_code', 'phone_code');
+                mlbef.add('phone_number', 'phone_number');
+                mlbef.add('alt_phone', 'alt_phone');
+                mlbef.add('comments', 'comments');
+                mlbef.add('date_of_birth', 'date_of_birth');
+                mlbef.add('gender', 'gender');
+                mlbef.add('post_date', 'post_date');
+                mlbef.add('vendor_lead_code', 'vendor_lead_code');
+                mlbef.add('custom1', 'custom1');
+                mlbef.add('custom2', 'custom2');
+
+
+                // Return the new listbox instance
+                return mlbef;
+
             case 'myaddtlfields':
                 var mlbaf = cm.createListBox('myaddtlfields', {
                      title : 'Addtl Fields',
@@ -379,11 +467,11 @@ tinyMCE.init({
     plugins : '-example', // - tells TinyMCE to skip the loading of the plugin
     mode : "textareas",
     theme : "advanced",
-    theme_advanced_buttons1 : "separator,bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,hr,sub,sup,separator,cut,copy,paste,separator,undo,redo,separator",
-    theme_advanced_buttons2 : "separator,fontselect,fontsizeselect,forecolor,backcolor,separator,myfields,myaddtlfields,separator,helpb,separator",
+    theme_advanced_buttons1 : "separator,fontselect,fontsizeselect,forecolor,backcolor,separator,bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,hr,sub,sup,separator,cut,copy,paste,separator,undo,redo,separator",
+    theme_advanced_buttons2 : "separator,myfields,separator,myeditfields,separator,myaddtlfields,separator,helpb,separator",
     theme_advanced_buttons3 : "",
     theme_advanced_toolbar_location : "top",
-    theme_advanced_toolbar_align : "left",
+    theme_advanced_toolbar_align : "center",
     theme_advanced_statusbar_location : "bottom"
 });
 </script>
@@ -657,12 +745,51 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                 // Return the new listbox instance
                 return mlbf;
 
+            case 'myeditfields':
+                var mlbef = cm.createListBox('myeditfields', {
+                     title : 'Editable Fields',
+                     onselect : function(v) {
+                        tinyMCE.activeEditor.focus();
+                        tinyMCE.activeEditor.selection.setContent('[[EF' + v + ']]');
+                        tinyMCE.activeEditor.controlManager.get('myeditfields').set(-1);
+                     }
+                });
+
+                // Add some values to the list box
+                mlbef.add('title', 'title');
+                mlbef.add('first_name', 'first_name');
+                mlbef.add('middle_initial', 'middle_initial');
+                mlbef.add('last_name', 'last_name');
+                mlbef.add('address1', 'address1');
+                mlbef.add('address2', 'address2');
+                mlbef.add('address3', 'address3');
+                mlbef.add('city', 'city');
+                mlbef.add('state', 'state');
+                mlbef.add('province', 'province');
+                mlbef.add('postal_code', 'postal_code');
+                mlbef.add('country_code',' country_code');
+                mlbef.add('email', 'email');
+                mlbef.add('phone_code', 'phone_code');
+                mlbef.add('phone_number', 'phone_number');
+                mlbef.add('alt_phone', 'alt_phone');
+                mlbef.add('comments', 'comments');
+                mlbef.add('date_of_birth', 'date_of_birth');
+                mlbef.add('gender', 'gender');
+                mlbef.add('post_date', 'post_date');
+                mlbef.add('vendor_lead_code', 'vendor_lead_code');
+                mlbef.add('custom1', 'custom1');
+                mlbef.add('custom2', 'custom2');
+
+
+                // Return the new listbox instance
+                return mlbef;
+
             case 'myaddtlfields':
                 var mlbaf = cm.createListBox('myaddtlfields', {
                      title : 'Addtl Fields',
                      onselect : function(v) {
                         tinyMCE.activeEditor.focus();
-                        tinyMCE.activeEditor.selection.setContent('<b>[[' + v + ']]</b>');
+                        tinyMCE.activeEditor.selection.setContent('[[' + v + ']]');
                         tinyMCE.activeEditor.controlManager.get('myaddtlfields').set(-1);
                          //tinyMCE.activeEditor.windowManager.alert('Value selected:' + v);
                      }
@@ -721,11 +848,11 @@ tinyMCE.init({
     plugins : '-example', // - tells TinyMCE to skip the loading of the plugin
     mode : "textareas",
     theme : "advanced",
-    theme_advanced_buttons1 : "separator,bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,hr,sub,sup,separator,cut,copy,paste,separator,undo,redo,separator",
-    theme_advanced_buttons2 : "separator,fontselect,fontsizeselect,forecolor,backcolor,separator,myfields,myaddtlfields,mybuttons,separator,helpb,separator,previewb,separator",
+    theme_advanced_buttons1 : "separator,fontselect,fontsizeselect,forecolor,backcolor,separator,bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,hr,sub,sup,separator,cut,copy,paste,separator,undo,redo,separator",
+    theme_advanced_buttons2 : "separator,myfields,separator,myeditfields,separator,myaddtlfields,separator,mybuttons,separator,helpb,separator,previewb,separator",
     theme_advanced_buttons3 : "",
     theme_advanced_toolbar_location : "top",
-    theme_advanced_toolbar_align : "left",
+    theme_advanced_toolbar_align : "center",
     theme_advanced_statusbar_location : "bottom"
 });
 </script>

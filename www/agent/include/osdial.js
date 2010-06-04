@@ -4681,35 +4681,13 @@ if ($useIE > 0) {
 
 
 		// New Variable substitution
-		var RGvendor_lead_code = new RegExp("\\[\\[vendor_lead_code\\]\\]","g");
 		var RGsource_id = new RegExp("\\[\\[source_id\\]\\]","g");
 		var RGlist_id = new RegExp("\\[\\[list_id\\]\\]","g");
 		var RGgmt_offset_now = new RegExp("\\[\\[gmt_offset_now\\]\\]","g");
 		var RGcalled_since_last_reset = new RegExp("\\[\\[called_since_last_reset\\]\\]","g");
-		var RGphone_code = new RegExp("\\[\\[phone_code\\]\\]","g");
-		var RGphone_number = new RegExp("\\[\\[phone_number\\]\\]","g");
 		var RGphone = new RegExp("\\[\\[phone\\]\\]","g");
 		var RGdialed_number = new RegExp("\\[\\[dialed_number\\]\\]","g");
 		var RGdialed_label = new RegExp("\\[\\[dialed_label\\]\\]","g");
-		var RGtitle = new RegExp("\\[\\[title\\]\\]","g");
-		var RGfirst_name = new RegExp("\\[\\[first_name\\]\\]","g");
-		var RGmiddle_initial = new RegExp("\\[\\[middle_initial\\]\\]","g");
-		var RGlast_name = new RegExp("\\[\\[last_name\\]\\]","g");
-		var RGaddress1 = new RegExp("\\[\\[address1\\]\\]","g");
-		var RGaddress2 = new RegExp("\\[\\[address2\\]\\]","g");
-		var RGaddress3 = new RegExp("\\[\\[address3\\]\\]","g");
-		var RGcity = new RegExp("\\[\\[city\\]\\]","g");
-		var RGstate = new RegExp("\\[\\[state\\]\\]","g");
-		var RGprovince = new RegExp("\\[\\[province\\]\\]","g");
-		var RGpostal_code = new RegExp("\\[\\[postal_code\\]\\]","g");
-		var RGcountry_code = new RegExp("\\[\\[country_code\\]\\]","g");
-		var RGgender = new RegExp("\\[\\[gender\\]\\]","g");
-		var RGdate_of_birth = new RegExp("\\[\\[date_of_birth\\]\\]","g");
-		var RGalt_phone = new RegExp("\\[\\[alt_phone\\]\\]","g");
-		var RGemail = new RegExp("\\[\\[email\\]\\]","g");
-		var RGcustom1 = new RegExp("\\[\\[custom1\\]\\]","g");
-		var RGcustom2 = new RegExp("\\[\\[custom2\\]\\]","g");
-		var RGcomments = new RegExp("\\[\\[comments\\]\\]","g");
 		var RGfullname = new RegExp("\\[\\[fullname\\]\\]","g");
 		var RGfronter = new RegExp("\\[\\[fronter\\]\\]","g");
 		var RGuser = new RegExp("\\[\\[user\\]\\]","g");
@@ -4732,9 +4710,57 @@ if ($useIE > 0) {
 		var RGdisposition = new RegExp("\\[\\[disposition\\]\\]","g");
 		var RGstatus = new RegExp("\\[\\[status\\]\\]","g");
 		var RGexternal_key = new RegExp("\\[\\[external_key\\]\\]","g");
-		var RGpost_date = new RegExp("\\[\\[post_date\\]\\]","g");
 		var RGrecording_id = new RegExp("\\[\\[recording_id\\]\\]","g");
 		//var RGwebform_session = new RegExp("\\[\\[webform_session\\]\\]","g");
+
+		var RGtitle = new RegExp("\\[\\[title\\]\\]","g");
+		var RGfirst_name = new RegExp("\\[\\[first_name\\]\\]","g");
+		var RGmiddle_initial = new RegExp("\\[\\[middle_initial\\]\\]","g");
+		var RGlast_name = new RegExp("\\[\\[last_name\\]\\]","g");
+		var RGaddress1 = new RegExp("\\[\\[address1\\]\\]","g");
+		var RGaddress2 = new RegExp("\\[\\[address2\\]\\]","g");
+		var RGaddress3 = new RegExp("\\[\\[address3\\]\\]","g");
+		var RGcity = new RegExp("\\[\\[city\\]\\]","g");
+		var RGstate = new RegExp("\\[\\[state\\]\\]","g");
+		var RGprovince = new RegExp("\\[\\[province\\]\\]","g");
+		var RGpostal_code = new RegExp("\\[\\[postal_code\\]\\]","g");
+		var RGcountry_code = new RegExp("\\[\\[country_code\\]\\]","g");
+		var RGphone_code = new RegExp("\\[\\[phone_code\\]\\]","g");
+		var RGphone_number = new RegExp("\\[\\[phone_number\\]\\]","g");
+		var RGalt_phone = new RegExp("\\[\\[alt_phone\\]\\]","g");
+		var RGgender = new RegExp("\\[\\[gender\\]\\]","g");
+		var RGdate_of_birth = new RegExp("\\[\\[date_of_birth\\]\\]","g");
+		var RGemail = new RegExp("\\[\\[email\\]\\]","g");
+		var RGvendor_lead_code = new RegExp("\\[\\[vendor_lead_code\\]\\]","g");
+		var RGcomments = new RegExp("\\[\\[comments\\]\\]","g");
+		var RGcustom1 = new RegExp("\\[\\[custom1\\]\\]","g");
+		var RGcustom2 = new RegExp("\\[\\[custom2\\]\\]","g");
+		var RGpost_date = new RegExp("\\[\\[post_date\\]\\]","g");
+
+		// Editable Fields
+		var RGEFtitle = new RegExp("\\[\\[EFtitle\\]\\]","g");
+		var RGEFfirst_name = new RegExp("\\[\\[EFfirst_name\\]\\]","g");
+		var RGEFmiddle_initial = new RegExp("\\[\\[EFmiddle_initial\\]\\]","g");
+		var RGEFlast_name = new RegExp("\\[\\[EFlast_name\\]\\]","g");
+		var RGEFaddress1 = new RegExp("\\[\\[EFaddress1\\]\\]","g");
+		var RGEFaddress2 = new RegExp("\\[\\[EFaddress2\\]\\]","g");
+		var RGEFaddress3 = new RegExp("\\[\\[EFaddress3\\]\\]","g");
+		var RGEFcity = new RegExp("\\[\\[EFcity\\]\\]","g");
+		var RGEFstate = new RegExp("\\[\\[EFstate\\]\\]","g");
+		var RGEFprovince = new RegExp("\\[\\[EFprovince\\]\\]","g");
+		var RGEFpostal_code = new RegExp("\\[\\[EFpostal_code\\]\\]","g");
+		var RGEFcountry_code = new RegExp("\\[\\[EFcountry_code\\]\\]","g");
+		var RGEFphone_code = new RegExp("\\[\\[EFphone_code\\]\\]","g");
+		var RGEFphone_number = new RegExp("\\[\\[EFphone_number\\]\\]","g");
+		var RGEFalt_phone = new RegExp("\\[\\[EFalt_phone\\]\\]","g");
+		var RGEFgender = new RegExp("\\[\\[EFgender\\]\\]","g");
+		var RGEFdate_of_birth = new RegExp("\\[\\[EFdate_of_birth\\]\\]","g");
+		var RGEFemail = new RegExp("\\[\\[EFemail\\]\\]","g");
+		var RGEFvendor_lead_code = new RegExp("\\[\\[EFvendor_lead_code\\]\\]","g");
+		var RGEFcomments = new RegExp("\\[\\[EFcomments\\]\\]","g");
+		var RGEFcustom1 = new RegExp("\\[\\[EFcustom1\\]\\]","g");
+		var RGEFcustom2 = new RegExp("\\[\\[EFcustom2\\]\\]","g");
+		var RGEFpost_date = new RegExp("\\[\\[EFpost_date\\]\\]","g");
 <?
 $cnt = 0;
 foreach ($forms as $form) {
@@ -4756,35 +4782,13 @@ foreach ($forms as $form) {
 ?>
 
 		// New substitution
-		wf_encoded = wf_encoded.replace(RGvendor_lead_code, SCvendor_lead_code);
 		wf_encoded = wf_encoded.replace(RGsource_id, SCsource_id);
 		wf_encoded = wf_encoded.replace(RGlist_id, SClist_id);
 		wf_encoded = wf_encoded.replace(RGgmt_offset_now, SCgmt_offset_now);
 		wf_encoded = wf_encoded.replace(RGcalled_since_last_reset, SCcalled_since_last_reset);
-		wf_encoded = wf_encoded.replace(RGphone_code, SCphone_code);
-		wf_encoded = wf_encoded.replace(RGphone_number, SCphone_number);
 		wf_encoded = wf_encoded.replace(RGphone, SCphone);
 		wf_encoded = wf_encoded.replace(RGdialed_number, SCdialed_number);
 		wf_encoded = wf_encoded.replace(RGdialed_label, SCdialed_label);
-		wf_encoded = wf_encoded.replace(RGtitle, SCtitle);
-		wf_encoded = wf_encoded.replace(RGfirst_name, SCfirst_name);
-		wf_encoded = wf_encoded.replace(RGmiddle_initial, SCmiddle_initial);
-		wf_encoded = wf_encoded.replace(RGlast_name, SClast_name);
-		wf_encoded = wf_encoded.replace(RGaddress1, SCaddress1);
-		wf_encoded = wf_encoded.replace(RGaddress2, SCaddress2);
-		wf_encoded = wf_encoded.replace(RGaddress3, SCaddress3);
-		wf_encoded = wf_encoded.replace(RGcity, SCcity);
-		wf_encoded = wf_encoded.replace(RGstate, SCstate);
-		wf_encoded = wf_encoded.replace(RGprovince, SCprovince);
-		wf_encoded = wf_encoded.replace(RGpostal_code, SCpostal_code);
-		wf_encoded = wf_encoded.replace(RGcountry_code, SCcountry_code);
-		wf_encoded = wf_encoded.replace(RGgender, SCgender);
-		wf_encoded = wf_encoded.replace(RGdate_of_birth, SCdate_of_birth);
-		wf_encoded = wf_encoded.replace(RGalt_phone, SCalt_phone);
-		wf_encoded = wf_encoded.replace(RGemail, SCemail);
-		wf_encoded = wf_encoded.replace(RGcustom1, SCcustom1);
-		wf_encoded = wf_encoded.replace(RGcustom2, SCcustom2);
-		wf_encoded = wf_encoded.replace(RGcomments, SCcomments);
 		wf_encoded = wf_encoded.replace(RGfullname, SCfullname);
 		wf_encoded = wf_encoded.replace(RGfronter, SCfronter);
 		wf_encoded = wf_encoded.replace(RGuser, SCuser);
@@ -4807,14 +4811,90 @@ foreach ($forms as $form) {
 		wf_encoded = wf_encoded.replace(RGdisposition, SCdisposition);
 		wf_encoded = wf_encoded.replace(RGstatus, SCstatus);
 		wf_encoded = wf_encoded.replace(RGexternal_key, SCexternal_key);
-		wf_encoded = wf_encoded.replace(RGpost_date, SCpost_date);
 		wf_encoded = wf_encoded.replace(RGrecording_id, SCrecording_id);
 		//wf_encoded = wf_encoded.replace(RGwebform_session, SCwebform_session);
+
+		wf_encoded = wf_encoded.replace(RGtitle, SCtitle);
+		wf_encoded = wf_encoded.replace(RGfirst_name, SCfirst_name);
+		wf_encoded = wf_encoded.replace(RGmiddle_initial, SCmiddle_initial);
+		wf_encoded = wf_encoded.replace(RGlast_name, SClast_name);
+		wf_encoded = wf_encoded.replace(RGaddress1, SCaddress1);
+		wf_encoded = wf_encoded.replace(RGaddress2, SCaddress2);
+		wf_encoded = wf_encoded.replace(RGaddress3, SCaddress3);
+		wf_encoded = wf_encoded.replace(RGcity, SCcity);
+		wf_encoded = wf_encoded.replace(RGstate, SCstate);
+		wf_encoded = wf_encoded.replace(RGprovince, SCprovince);
+		wf_encoded = wf_encoded.replace(RGpostal_code, SCpostal_code);
+		wf_encoded = wf_encoded.replace(RGcountry_code, SCcountry_code);
+		wf_encoded = wf_encoded.replace(RGphone_code, SCphone_code);
+		wf_encoded = wf_encoded.replace(RGphone_number, SCphone_number);
+		wf_encoded = wf_encoded.replace(RGalt_phone, SCalt_phone);
+		wf_encoded = wf_encoded.replace(RGgender, SCgender);
+		wf_encoded = wf_encoded.replace(RGdate_of_birth, SCdate_of_birth);
+		wf_encoded = wf_encoded.replace(RGvendor_lead_code, SCvendor_lead_code);
+		wf_encoded = wf_encoded.replace(RGemail, SCemail);
+		wf_encoded = wf_encoded.replace(RGcomments, SCcomments);
+		wf_encoded = wf_encoded.replace(RGcustom1, SCcustom1);
+		wf_encoded = wf_encoded.replace(RGcustom2, SCcustom2);
+		wf_encoded = wf_encoded.replace(RGpost_date, SCpost_date);
+
+		// Editable Fields
+		wf_encoded = wf_encoded.replace(RGEFtitle, SCtitle);
+		wf_encoded = wf_encoded.replace(RGEFfirst_name, SCfirst_name);
+		wf_encoded = wf_encoded.replace(RGEFmiddle_initial, SCmiddle_initial);
+		wf_encoded = wf_encoded.replace(RGEFlast_name, SClast_name);
+		wf_encoded = wf_encoded.replace(RGEFaddress1, SCaddress1);
+		wf_encoded = wf_encoded.replace(RGEFaddress2, SCaddress2);
+		wf_encoded = wf_encoded.replace(RGEFaddress3, SCaddress3);
+		wf_encoded = wf_encoded.replace(RGEFcity, SCcity);
+		wf_encoded = wf_encoded.replace(RGEFstate, SCstate);
+		wf_encoded = wf_encoded.replace(RGEFprovince, SCprovince);
+		wf_encoded = wf_encoded.replace(RGEFpostal_code, SCpostal_code);
+		wf_encoded = wf_encoded.replace(RGEFcountry_code, SCcountry_code);
+		wf_encoded = wf_encoded.replace(RGEFphone_code, SCphone_code);
+		wf_encoded = wf_encoded.replace(RGEFphone_number, SCphone_number);
+		wf_encoded = wf_encoded.replace(RGEFalt_phone, SCalt_phone);
+		wf_encoded = wf_encoded.replace(RGEFemail, SCemail);
+		wf_encoded = wf_encoded.replace(RGEFcomments, SCcomments);
+		wf_encoded = wf_encoded.replace(RGEFdate_of_birth, SCdate_of_birth);
+		wf_encoded = wf_encoded.replace(RGEFgender, SCgender);
+		wf_encoded = wf_encoded.replace(RGEFpost_date, SCpost_date);
+		wf_encoded = wf_encoded.replace(RGEFvendor_lead_code, SCvendor_lead_code);
+		wf_encoded = wf_encoded.replace(RGEFcustom1, SCcustom1);
+		wf_encoded = wf_encoded.replace(RGEFcustom2, SCcustom2);
 
 		debug("<b>webform_rewrite:</b> DONE wf_encoded=" + wf_encoded,2);
 		return wf_encoded;
 	}
 
+
+// ################################################################################
+// Builds JS for Editable Field elements.
+	function EFjs(elename) {
+		var eled;
+                eled = " onfocus=\"this.value=document.getElementById('" + elename + "').value;\"";
+                eled += " onchange=\"document.getElementById('" + elename + "').value=this.value; updateEFfld('" + elename + "',this);\" ";
+		return eled;
+	}
+
+	function updateEFfld(elename,eleobj) {
+		try {
+                	var efv;
+			if (eleobj) {
+				efv=eleobj;
+			} else {
+				efv=document.getElementById(elename);
+				efv.setAttribute("onchange","updateEFfld('" + elename + "',this);");
+			}
+                	var eflist=document.getElementsByName('EF' + elename);
+			for (var efli=0; efli<eflist.length; efli++) {
+				if(efv.value!=eflist[efli].value)
+					eflist[efli].value=efv.value;
+			}
+		} catch(error) {
+			var a=1;
+		}
+	}
 
 // ################################################################################
 // decode the scripttext and scriptname so that it can be displayed
@@ -4835,32 +4915,10 @@ foreach ($forms as $form) {
 		encoded=utf8_decode(xtest);
 
 		if (scriptformat == 'YES') {
-			var SCvendor_lead_code = document.osdial_form.vendor_lead_code.value;
 			var SCsource_id = source_id;
 			var SClist_id = document.osdial_form.list_id.value;
 			var SCgmt_offset_now = document.osdial_form.gmt_offset_now.value;
 			var SCcalled_since_last_reset = "";
-			var SCphone_code = document.osdial_form.phone_code.value;
-			var SCphone_number = document.osdial_form.phone_number.value;
-			var SCtitle = document.osdial_form.title.value;
-			var SCfirst_name = document.osdial_form.first_name.value;
-			var SCmiddle_initial = document.osdial_form.middle_initial.value;
-			var SClast_name = document.osdial_form.last_name.value;
-			var SCaddress1 = document.osdial_form.address1.value;
-			var SCaddress2 = document.osdial_form.address2.value;
-			var SCaddress3 = document.osdial_form.address3.value;
-			var SCcity = document.osdial_form.city.value;
-			var SCstate = document.osdial_form.state.value;
-			var SCprovince = document.osdial_form.province.value;
-			var SCpostal_code = document.osdial_form.postal_code.value;
-			var SCcountry_code = document.osdial_form.country_code.value;
-			var SCgender = document.osdial_form.gender.value;
-			var SCdate_of_birth = document.osdial_form.date_of_birth.value;
-			var SCalt_phone = document.osdial_form.alt_phone.value;
-			var SCemail = document.osdial_form.email.value;
-			var SCcustom1 = document.osdial_form.custom1.value;
-			var SCcustom2 = document.osdial_form.custom2.value;
-			var SCcomments = document.osdial_form.comments.value;
 			var SCfullname = LOGfullname;
 			var SCfronter = fronter;
 			var SCuser = user;
@@ -4877,6 +4935,85 @@ foreach ($forms as $form) {
 			var SCserver_ip = server_ip;
 			var SCSIPexten = extension;
 			var SCsession_id = session_id;
+
+			var SCtitle = document.osdial_form.title.value;
+			var SCfirst_name = document.osdial_form.first_name.value;
+			var SCmiddle_initial = document.osdial_form.middle_initial.value;
+			var SClast_name = document.osdial_form.last_name.value;
+			var SCaddress1 = document.osdial_form.address1.value;
+			var SCaddress2 = document.osdial_form.address2.value;
+			var SCaddress3 = document.osdial_form.address3.value;
+			var SCcity = document.osdial_form.city.value;
+			var SCstate = document.osdial_form.state.value;
+			var SCpostal_code = document.osdial_form.postal_code.value;
+			var SCprovince = document.osdial_form.province.value;
+			var SCcountry_code = document.osdial_form.country_code.value;
+			var SCemail = document.osdial_form.email.value;
+			var SCphone_code = document.osdial_form.phone_code.value;
+			var SCphone_number = document.osdial_form.phone_number.value;
+			var SCalt_phone = document.osdial_form.alt_phone.value;
+			var SCcomments = document.osdial_form.comments.value;
+			var SCdate_of_birth = document.osdial_form.date_of_birth.value;
+			var SCgender = document.osdial_form.gender.value;
+			var SCpost_date = document.osdial_form.post_date.value;
+			var SCvendor_lead_code = document.osdial_form.vendor_lead_code.value;
+			var SCcustom1 = document.osdial_form.custom1.value;
+			var SCcustom2 = document.osdial_form.custom2.value;
+
+			// Editable Fields
+			var SCEFVtitle =            document.osdial_form.title.value;
+			var SCEFVfirst_name =       document.osdial_form.first_name.value;
+			var SCEFVmiddle_initial =   document.osdial_form.middle_initial.value;
+			var SCEFVlast_name =        document.osdial_form.last_name.value;
+			var SCEFVaddress1 =         document.osdial_form.address1.value;
+			var SCEFVaddress2 =         document.osdial_form.address2.value;
+			var SCEFVaddress3 =         document.osdial_form.address3.value;
+			var SCEFVcity =             document.osdial_form.city.value;
+			var SCEFVstate =            document.osdial_form.state.value;
+			var SCEFVpostal_code =      document.osdial_form.postal_code.value;
+			var SCEFVprovince =         document.osdial_form.province.value;
+			var SCEFVcountry_code =     document.osdial_form.country_code.value;
+			var SCEFVemail =            document.osdial_form.email.value;
+			var SCEFVphone_code =       document.osdial_form.phone_code.value;
+			var SCEFVphone_number =     document.osdial_form.phone_number.value;
+			var SCEFValt_phone =        document.osdial_form.alt_phone.value;
+			var SCEFVcomments =         document.osdial_form.comments.value;
+			var SCEFVdate_of_birth =    document.osdial_form.date_of_birth.value;
+			var SCEFVgender =           document.osdial_form.gender.value;
+			var SCEFVpost_date =        document.osdial_form.post_date.value;
+			var SCEFVvendor_lead_code = document.osdial_form.vendor_lead_code.value;
+			var SCEFVcustom1 =          document.osdial_form.custom1.value;
+			var SCEFVcustom2 =          document.osdial_form.custom2.value;
+
+			var SCEFtitle =            '<input type=text size=4 maxlength=4 name=EFtitle id=EFtitle class=cust_form ' + EFjs('title') + ' >';
+			var SCEFfirst_name =       '<input type=text size=14 maxlength=30 name=EFfirst_name id=EFfirst_name class=cust_form ' + EFjs('first_name') + ' >';
+			var SCEFmiddle_initial =   '<input type=text size=1 maxlength=1 name=EFmiddle_initial id=EFmiddle_initial class=cust_form ' + EFjs('middle_initial') + ' >';
+			var SCEFlast_name =        '<input type=text size=15 maxlength=30 name=EFlast_name id=EFlast_name class=cust_form ' + EFjs('last_name') + ' >';
+			var SCEFaddress1 =         '<input type=text size=58 maxlength=100 name=EFaddress1 id=EFaddress1 class=cust_form ' + EFjs('address1') + ' >';
+			var SCEFaddress2 =         '<input type=text size=22 maxlength=100 name=EFaddress2 id=EFaddress2 class=cust_form ' + EFjs('address2') + ' >';
+			var SCEFaddress3 =         '<input type=text size=22 maxlength=100 name=EFaddress3 id=EFaddress3 class=cust_form ' + EFjs('address3') + ' >';
+			var SCEFcity =             '<input type=text size=22 maxlength=50 name=EFcity id=EFcity class=cust_form ' + EFjs('city') + ' >';
+			var SCEFstate =            '<input type=text size=2 maxlength=2 name=EFstate id=EFstate class=cust_form ' + EFjs('state') + ' >';
+			var SCEFpostal_code =      '<input type=text size=9 maxlength=10 name=EFpostal_code id=EFpostal_code class=cust_form ' + EFjs('postal_code') + ' >';
+			var SCEFprovince =         '<input type=text size=22 maxlength=50 name=EFprovince id=EFprovince class=cust_form ' + EFjs('province') + ' >';
+			var SCEFcountry_code =     '<input type=text size=5 maxlength=5 name=EFcountry_code id=EFcountry_code class=cust_form ' + EFjs('country_code') + ' >';
+			var SCEFemail =            '<input type=text size=22 maxlength=70 name=EFemail id=EFemail class=cust_form ' + EFjs('email') + ' >';
+			var SCEFphone_code =       '<input type=text size=4 maxlength=10 name=EFphone_code id=EFphone_code class=cust_form ' + EFjs('phone_code') + ' >';
+			var SCEFphone_number =     '<input type=text size=11 maxlength=12 name=EFphone_number id=EFphone_number class=cust_form ' + EFjs('phone_number') + ' >';
+			var SCEFalt_phone =        '<input type=text size=12 maxlength=12 name=EFalt_phone id=EFalt_phone class=cust_form ' + EFjs('alt_phone') + ' >';
+			<? if ($multi_line_comments) { ?>
+			var SCEFcomments =         '<textarea rows=2 cols=56 name=EFcomments id=EFcomments class=cust_form ' + EFjs('comments') + ' ></textarea>';
+			<? } else { ?>
+			var SCEFcomments =         '<input type=text size=56 maxlength=255 name=EFcomments id=EFcomments class=cust_form ' + EFjs('comments') + ' >';
+			<? } ?>
+			var SCEFdate_of_birth =    '<input type=text size=12 maxlength=10 name=EFdate_of_birth id=EFdate_of_birth class=cust_form ' + EFjs('date_of_birth') + ' >';
+			var SCEFgender =           '<select name=EFgender id=EFgender class=cust_form ' + EFjs('gender') + ' ><option></option><option>M</option><option>F</option></select>';
+			var SCEFpost_date =        '<input type=text size=12 maxlength=10 name=EFpost_date id=EFpost_date class=cust_form ' + EFjs('post_date') + ' >';
+			var SCEFvendor_lead_code = '<input type=text size=15 maxlength=20 name=EFvendor_lead_code id=EFvendor_lead_code class=cust_form ' + EFjs('vendor_lead_code') + ' >';
+			var SCEFcustom1 =          '<input type=text size=22 maxlength=100 name=EFcustom1 id=EFcustom1 class=cust_form ' + EFjs('custom1') + ' >';
+			var SCEFcustom2 =          '<input type=text size=22 maxlength=100 name=EFcustom2 id=EFcustom2 class=cust_form ' + EFjs('custom2') + ' >';
+
+
 <?
 $cnt = 0;
 foreach ($forms as $form) {
@@ -4916,32 +5053,10 @@ foreach ($forms as $form) {
 ?>
 
 			if (encoded.match(RGiframe)) {
-				SCvendor_lead_code = SCvendor_lead_code.replace(RGplus,'+');
 				SCsource_id = SCsource_id.replace(RGplus,'+');
 				SClist_id = SClist_id.replace(RGplus,'+');
 				SCgmt_offset_now = SCgmt_offset_now.replace(RGplus,'+');
 				SCcalled_since_last_reset = SCcalled_since_last_reset.replace(RGplus,'+');
-				SCphone_code = SCphone_code.replace(RGplus,'+');
-				SCphone_number = SCphone_number.replace(RGplus,'+');
-				SCtitle = SCtitle.replace(RGplus,'+');
-				SCfirst_name = SCfirst_name.replace(RGplus,'+');
-				SCmiddle_initial = SCmiddle_initial.replace(RGplus,'+');
-				SClast_name = SClast_name.replace(RGplus,'+');
-				SCaddress1 = SCaddress1.replace(RGplus,'+');
-				SCaddress2 = SCaddress2.replace(RGplus,'+');
-				SCaddress3 = SCaddress3.replace(RGplus,'+');
-				SCcity = SCcity.replace(RGplus,'+');
-				SCstate = SCstate.replace(RGplus,'+');
-				SCprovince = SCprovince.replace(RGplus,'+');
-				SCpostal_code = SCpostal_code.replace(RGplus,'+');
-				SCcountry_code = SCcountry_code.replace(RGplus,'+');
-				SCgender = SCgender.replace(RGplus,'+');
-				SCdate_of_birth = SCdate_of_birth.replace(RGplus,'+');
-				SCalt_phone = SCalt_phone.replace(RGplus,'+');
-				SCemail = SCemail.replace(RGplus,'+');
-				SCcustom1 = SCcustom1.replace(RGplus,'+');
-				SCcustom2 = SCcustom2.replace(RGplus,'+');
-				SCcomments = SCcomments.replace(RGplus,'+');
 				SCfullname = SCfullname.replace(RGplus,'+');
 				SCfronter = SCfronter.replace(RGplus,'+');
 				SCuser = SCuser.replace(RGplus,'+');
@@ -4956,6 +5071,57 @@ foreach ($forms as $form) {
 				SCcustomer_zap_channel = SCcustomer_zap_channel.replace(RGplus,'+');
 				SCserver_ip = SCserver_ip.replace(RGplus,'+');
 				SCSIPexten = SCSIPexten.replace(RGplus,'+');
+
+				SCtitle = SCtitle.replace(RGplus,'+');
+				SCfirst_name = SCfirst_name.replace(RGplus,'+');
+				SCmiddle_initial = SCmiddle_initial.replace(RGplus,'+');
+				SClast_name = SClast_name.replace(RGplus,'+');
+				SCaddress1 = SCaddress1.replace(RGplus,'+');
+				SCaddress2 = SCaddress2.replace(RGplus,'+');
+				SCaddress3 = SCaddress3.replace(RGplus,'+');
+				SCcity = SCcity.replace(RGplus,'+');
+				SCstate = SCstate.replace(RGplus,'+');
+				SCpostal_code = SCpostal_code.replace(RGplus,'+');
+				SCprovince = SCprovince.replace(RGplus,'+');
+				SCcountry_code = SCcountry_code.replace(RGplus,'+');
+				SCphone_code = SCphone_code.replace(RGplus,'+');
+				SCphone_number = SCphone_number.replace(RGplus,'+');
+				SCalt_phone = SCalt_phone.replace(RGplus,'+');
+				SCemail = SCemail.replace(RGplus,'+');
+				SCcomments = SCcomments.replace(RGplus,'+');
+				SCdate_of_birth = SCdate_of_birth.replace(RGplus,'+');
+				SCgender = SCgender.replace(RGplus,'+');
+				SCpost_date = SCpost_date.replace(RGplus,'+');
+				SCvendor_lead_code = SCvendor_lead_code.replace(RGplus,'+');
+				SCcustom1 = SCcustom1.replace(RGplus,'+');
+				SCcustom2 = SCcustom2.replace(RGplus,'+');
+
+				// Editable Fields
+				SCEFtitle = SCEFtitle.replace(RGplus,'+');
+				SCEFfirst_name = SCEFfirst_name.replace(RGplus,'+');
+				SCEFmiddle_initial = SCEFmiddle_initial.replace(RGplus,'+');
+				SCEFlast_name = SCEFlast_name.replace(RGplus,'+');
+				SCEFaddress1 = SCEFaddress1.replace(RGplus,'+');
+				SCEFaddress2 = SCEFaddress2.replace(RGplus,'+');
+				SCEFaddress3 = SCEFaddress3.replace(RGplus,'+');
+				SCEFcity = SCEFcity.replace(RGplus,'+');
+				SCEFstate = SCEFstate.replace(RGplus,'+');
+				SCEFpostal_code = SCEFpostal_code.replace(RGplus,'+');
+				SCEFprovince = SCEFprovince.replace(RGplus,'+');
+				SCEFcountry_code = SCEFcountry_code.replace(RGplus,'+');
+				SCEFphone_code = SCEFphone_code.replace(RGplus,'+');
+				SCEFphone_number = SCEFphone_number.replace(RGplus,'+');
+				SCEFalt_phone = SCEFalt_phone.replace(RGplus,'+');
+				SCEFemail = SCEFemail.replace(RGplus,'+');
+				SCEFcomments = SCEFcomments.replace(RGplus,'+');
+				SCEFdate_of_birth = SCEFdate_of_birth.replace(RGplus,'+');
+				SCEFgender = SCEFgender.replace(RGplus,'+');
+				SCEFpost_date = SCEFpost_date.replace(RGplus,'+');
+				SCEFvendor_lead_code = SCEFvendor_lead_code.replace(RGplus,'+');
+				SCEFcustom1 = SCEFcustom1.replace(RGplus,'+');
+				SCEFcustom2 = SCEFcustom2.replace(RGplus,'+');
+
+
 <?
 $cnt = 0;
 foreach ($forms as $form) {
@@ -5062,6 +5228,32 @@ foreach ($forms as $form) {
 			var RGserver_ip = new RegExp("\\[\\[server_ip\\]\\]","g");
 			var RGSIPexten = new RegExp("\\[\\[SIPexten\\]\\]","g");
 			var RGsession_id = new RegExp("\\[\\[session_id\\]\\]","g");
+			var RGpost_date = new RegExp("\\[\\[post_date\\]\\]","g");
+
+			// Editable Fields
+			var RGEFtitle = new RegExp("\\[\\[EFtitle\\]\\]","g");
+			var RGEFfirst_name = new RegExp("\\[\\[EFfirst_name\\]\\]","g");
+			var RGEFmiddle_initial = new RegExp("\\[\\[EFmiddle_initial\\]\\]","g");
+			var RGEFlast_name = new RegExp("\\[\\[EFlast_name\\]\\]","g");
+			var RGEFaddress1 = new RegExp("\\[\\[EFaddress1\\]\\]","g");
+			var RGEFaddress2 = new RegExp("\\[\\[EFaddress2\\]\\]","g");
+			var RGEFaddress3 = new RegExp("\\[\\[EFaddress3\\]\\]","g");
+			var RGEFcity = new RegExp("\\[\\[EFcity\\]\\]","g");
+			var RGEFstate = new RegExp("\\[\\[EFstate\\]\\]","g");
+			var RGEFpostal_code = new RegExp("\\[\\[EFpostal_code\\]\\]","g");
+			var RGEFprovince = new RegExp("\\[\\[EFprovince\\]\\]","g");
+			var RGEFcountry_code = new RegExp("\\[\\[EFcountry_code\\]\\]","g");
+			var RGEFemail = new RegExp("\\[\\[EFemail\\]\\]","g");
+			var RGEFphone_code = new RegExp("\\[\\[EFphone_code\\]\\]","g");
+			var RGEFphone_number = new RegExp("\\[\\[EFphone_number\\]\\]","g");
+			var RGEFalt_phone = new RegExp("\\[\\[EFalt_phone\\]\\]","g");
+			var RGEFcomments = new RegExp("\\[\\[EFcomments\\]\\]","g");
+			var RGEFgender = new RegExp("\\[\\[EFgender\\]\\]","g");
+			var RGEFdate_of_birth = new RegExp("\\[\\[EFdate_of_birth\\]\\]","g");
+			var RGEFpost_date = new RegExp("\\[\\[EFpost_date\\]\\]","g");
+			var RGEFvendor_lead_code = new RegExp("\\[\\[EFvendor_lead_code\\]\\]","g");
+			var RGEFcustom1 = new RegExp("\\[\\[EFcustom1\\]\\]","g");
+			var RGEFcustom2 = new RegExp("\\[\\[EFcustom2\\]\\]","g");
 <?
 $cnt = 0;
 foreach ($forms as $form) {
@@ -5170,6 +5362,32 @@ foreach ($forms as $form) {
 			encoded = encoded.replace(RGserver_ip, SCserver_ip);
 			encoded = encoded.replace(RGSIPexten, SCSIPexten);
 			encoded = encoded.replace(RGsession_id, SCsession_id);
+
+			// Editable Fields
+			encoded = encoded.replace(RGEFtitle,            SCEFtitle);
+			encoded = encoded.replace(RGEFfirst_name,       SCEFfirst_name);
+			encoded = encoded.replace(RGEFmiddle_initial,   SCEFmiddle_initial);
+			encoded = encoded.replace(RGEFlast_name,        SCEFlast_name);
+			encoded = encoded.replace(RGEFaddress1,         SCEFaddress1);
+			encoded = encoded.replace(RGEFaddress2,         SCEFaddress2);
+			encoded = encoded.replace(RGEFaddress3,         SCEFaddress3);
+			encoded = encoded.replace(RGEFcity,             SCEFcity);
+			encoded = encoded.replace(RGEFstate,            SCEFstate);
+			encoded = encoded.replace(RGEFprovince,         SCEFprovince);
+			encoded = encoded.replace(RGEFpostal_code,      SCEFpostal_code);
+			encoded = encoded.replace(RGEFcountry_code,     SCEFcountry_code);
+			encoded = encoded.replace(RGEFphone_code,       SCEFphone_code);
+			encoded = encoded.replace(RGEFphone_number,     SCEFphone_number);
+			encoded = encoded.replace(RGEFalt_phone,        SCEFalt_phone);
+			encoded = encoded.replace(RGEFemail,            SCEFemail);
+			encoded = encoded.replace(RGEFcomments,         SCEFcomments);
+			encoded = encoded.replace(RGEFdate_of_birth,    SCEFdate_of_birth);
+			encoded = encoded.replace(RGEFgender,           SCEFgender);
+			encoded = encoded.replace(RGEFpost_date,        SCEFpost_date);
+			encoded = encoded.replace(RGEFvendor_lead_code, SCEFvendor_lead_code);
+			encoded = encoded.replace(RGEFcustom1,          SCEFcustom1);
+			encoded = encoded.replace(RGEFcustom2,          SCEFcustom2);
+
 		}
 		decoded=encoded;
 		return false;
@@ -6144,7 +6362,32 @@ foreach ($forms as $form) {
     }
 }
 ?>
+		// Editable Fields
+		updateEFfld('title',null);
+		updateEFfld('first_name',null);
+		updateEFfld('middle_initial',null);
+		updateEFfld('last_name',null);
+		updateEFfld('address1',null);
+		updateEFfld('address2',null);
+		updateEFfld('address3',null);
+		updateEFfld('city',null);
+		updateEFfld('state',null);
+		updateEFfld('province',null);
+		updateEFfld('postal_code',null);
+		updateEFfld('country_code',null);
+		updateEFfld('phone_code',null);
+		updateEFfld('phone_number',null);
+		updateEFfld('alt_phone',null);
+		updateEFfld('email',null);
+		updateEFfld('comments',null);
+		updateEFfld('date_of_birth',null);
+		updateEFfld('gender',null);
+		updateEFfld('post_date',null);
+		updateEFfld('vendor_lead_code',null);
+		updateEFfld('custom1',null);
+		updateEFfld('custom2',null);
 	}
+
 
 	function previewFDDisplayTime() {
 		debug("<b>previewFDDisplayTime:</b>",3);
