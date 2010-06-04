@@ -169,7 +169,7 @@ sub _load_config {
 
 
 sub sql_connect {
-	my ($self, $dbh, $dbname, $dbserver, $dbport, $dbuser, $dbpass) = @_;
+	my ($self, $dbh, $dbname, $dbsrvr, $dbport, $dbuser, $dbpass) = @_;
 	$dbh = 'A' unless ($dbh);
 	unless ($dbname) {
 		$dbname = $self->{VARDB_database};
