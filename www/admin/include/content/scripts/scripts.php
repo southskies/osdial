@@ -275,6 +275,9 @@ foreach ($buttons as $button) {
     $script_text = eregi_replace('\{\{' . $button['script_button_id'] . '\}\}',$hbutton,$script_text);
 }
 
+$script_text = preg_replace('/\{\{DISPO:(\w+):(\w+)\}\}/i','<input type="button" value="$2" onclick="alert(\'Disposition as $1 and Hangup\');">',$script_text);
+$script_text = preg_replace('/\[\[(\w+)\]\]/i','<input type="text" value="$1" size="30">',$script_text);
+
 $script_text = eregi_replace("\n","",$script_text);
 
 	echo "<TABLE align=center><TR><TD>\n";
@@ -391,36 +394,35 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                      title : 'Editable Fields',
                      onselect : function(v) {
                         tinyMCE.activeEditor.focus();
-                        tinyMCE.activeEditor.selection.setContent('[[EF' + v + ']]');
+                        tinyMCE.activeEditor.selection.setContent('[[' + v + ']]');
                         tinyMCE.activeEditor.controlManager.get('myeditfields').set(-1);
                      }
                 });
 
                 // Add some values to the list box
-                mlbef.add('title', 'title');
-                mlbef.add('first_name', 'first_name');
-                mlbef.add('middle_initial', 'middle_initial');
-                mlbef.add('last_name', 'last_name');
-                mlbef.add('address1', 'address1');
-                mlbef.add('address2', 'address2');
-                mlbef.add('address3', 'address3');
-                mlbef.add('city', 'city');
-                mlbef.add('state', 'state');
-                mlbef.add('province', 'province');
-                mlbef.add('postal_code', 'postal_code');
-                mlbef.add('country_code',' country_code');
-                mlbef.add('email', 'email');
-                mlbef.add('phone_code', 'phone_code');
-                mlbef.add('phone_number', 'phone_number');
-                mlbef.add('alt_phone', 'alt_phone');
-                mlbef.add('comments', 'comments');
-                mlbef.add('date_of_birth', 'date_of_birth');
-                mlbef.add('gender', 'gender');
-                mlbef.add('post_date', 'post_date');
-                mlbef.add('vendor_lead_code', 'vendor_lead_code');
-                mlbef.add('custom1', 'custom1');
-                mlbef.add('custom2', 'custom2');
-
+                mlbef.add('title',            'EFtitle');
+                mlbef.add('first_name',       'EFfirst_name');
+                mlbef.add('middle_initial',   'EFmiddle_initial');
+                mlbef.add('last_name',        'EFlast_name');
+                mlbef.add('address1',         'EFaddress1');
+                mlbef.add('address2',         'EFaddress2');
+                mlbef.add('address3',         'EFaddress3');
+                mlbef.add('city',             'EFcity');
+                mlbef.add('state',            'EFstate');
+                mlbef.add('province',         'EFprovince');
+                mlbef.add('postal_code',      'EFpostal_code');
+                mlbef.add('country_code',     'EFcountry_code');
+                mlbef.add('email',            'EFemail');
+                mlbef.add('phone_code',       'EFphone_code');
+                mlbef.add('phone_number',     'EFphone_number');
+                mlbef.add('alt_phone',        'EFalt_phone');
+                mlbef.add('comments',         'EFcomments');
+                mlbef.add('date_of_birth',    'EFdate_of_birth');
+                mlbef.add('gender',           'EFgender');
+                mlbef.add('post_date',        'EFpost_date');
+                mlbef.add('vendor_lead_code', 'EFvendor_lead_code');
+                mlbef.add('custom1',          'EFcustom1');
+                mlbef.add('custom2',          'EFcustom2');
 
                 // Return the new listbox instance
                 return mlbef;
@@ -684,13 +686,19 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
             case 'previewb':
                 var previewb = cm.createButton('previewb', {
                     label: 'Preview',
-                    title: 'Preview',
-                     //image : '/tinymce/plugins/media/img/shockwave.gif',
-                     onclick : function() {
+                    onclick : function() {
                         window.open('/admin/admin.php?ADD=7111111&script_id=<?= $script_id?>','','width=1000,height=700,scrollbars=yes,menubar=yes,address=yes');
                      }
                 });
                 return previewb;
+
+            case 's0':
+                var s = cm.createButton('s0',{label: ' '});
+                return s;
+            case 's1':
+                var s = cm.createButton('s1',{label: ' '});
+                return s;
+
 
             case 'myfields':
                 var mlbf = cm.createListBox('myfields', {
@@ -701,8 +709,6 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                         tinyMCE.activeEditor.controlManager.get('myfields').set(-1);
                      }
                 });
-
-                // Add some values to the list box
                 mlbf.add('vendor_lead_code', 'vendor_lead_code');
                 mlbf.add('source_id', 'source_id');
                 mlbf.add('list_id', 'list_id');
@@ -741,8 +747,6 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                 mlbf.add('server_ip', 'server_ip');
                 mlbf.add('SIPexten', 'SIPexten');
                 mlbf.add('session_id', 'session_id');
-
-                // Return the new listbox instance
                 return mlbf;
 
             case 'myeditfields':
@@ -750,38 +754,33 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                      title : 'Editable Fields',
                      onselect : function(v) {
                         tinyMCE.activeEditor.focus();
-                        tinyMCE.activeEditor.selection.setContent('[[EF' + v + ']]');
+                        tinyMCE.activeEditor.selection.setContent('[[' + v + ']]');
                         tinyMCE.activeEditor.controlManager.get('myeditfields').set(-1);
                      }
                 });
-
-                // Add some values to the list box
-                mlbef.add('title', 'title');
-                mlbef.add('first_name', 'first_name');
-                mlbef.add('middle_initial', 'middle_initial');
-                mlbef.add('last_name', 'last_name');
-                mlbef.add('address1', 'address1');
-                mlbef.add('address2', 'address2');
-                mlbef.add('address3', 'address3');
-                mlbef.add('city', 'city');
-                mlbef.add('state', 'state');
-                mlbef.add('province', 'province');
-                mlbef.add('postal_code', 'postal_code');
-                mlbef.add('country_code',' country_code');
-                mlbef.add('email', 'email');
-                mlbef.add('phone_code', 'phone_code');
-                mlbef.add('phone_number', 'phone_number');
-                mlbef.add('alt_phone', 'alt_phone');
-                mlbef.add('comments', 'comments');
-                mlbef.add('date_of_birth', 'date_of_birth');
-                mlbef.add('gender', 'gender');
-                mlbef.add('post_date', 'post_date');
-                mlbef.add('vendor_lead_code', 'vendor_lead_code');
-                mlbef.add('custom1', 'custom1');
-                mlbef.add('custom2', 'custom2');
-
-
-                // Return the new listbox instance
+                mlbef.add('title',            'EFtitle');
+                mlbef.add('first_name',       'EFfirst_name');
+                mlbef.add('middle_initial',   'EFmiddle_initial');
+                mlbef.add('last_name',        'EFlast_name');
+                mlbef.add('address1',         'EFaddress1');
+                mlbef.add('address2',         'EFaddress2');
+                mlbef.add('address3',         'EFaddress3');
+                mlbef.add('city',             'EFcity');
+                mlbef.add('state',            'EFstate');
+                mlbef.add('province',         'EFprovince');
+                mlbef.add('postal_code',      'EFpostal_code');
+                mlbef.add('country_code',     'EFcountry_code');
+                mlbef.add('email',            'EFemail');
+                mlbef.add('phone_code',       'EFphone_code');
+                mlbef.add('phone_number',     'EFphone_number');
+                mlbef.add('alt_phone',        'EFalt_phone');
+                mlbef.add('comments',         'EFcomments');
+                mlbef.add('date_of_birth',    'EFdate_of_birth');
+                mlbef.add('gender',           'EFgender');
+                mlbef.add('post_date',        'EFpost_date');
+                mlbef.add('vendor_lead_code', 'EFvendor_lead_code');
+                mlbef.add('custom1',          'EFcustom1');
+                mlbef.add('custom2',          'EFcustom2');
                 return mlbef;
 
             case 'myaddtlfields':
@@ -794,8 +793,6 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                          //tinyMCE.activeEditor.windowManager.alert('Value selected:' + v);
                      }
                 });
-
-                // Add some values to the list box
 <?
     $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
     foreach ($forms as $form) {
@@ -808,31 +805,44 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
 		}
 	}
 ?>
-
-                // Return the new listbox instance
                 return mlbaf;
 
             case 'mybuttons':
                 var mlb = cm.createListBox('mybuttons', {
-                     title : 'Buttons',
+                     title : "Script Buttons<br>Objections / Rebuttals",
                      onselect : function(v) {
                         tinyMCE.activeEditor.focus();
-                        tinyMCE.activeEditor.selection.setContent('<b>{{' + v + '}}</b>');
+                        tinyMCE.activeEditor.selection.setContent('{{' + v + '}}');
                         tinyMCE.activeEditor.controlManager.get('mybuttons').set(-1);
                          //tinyMCE.activeEditor.windowManager.alert('Value selected:' + v);
                      }
                 });
-
-                // Add some values to the list box
 <?
     $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='$script_id'");
     foreach ($buttons as $button) {
         echo "      mlb.add('" . $button['script_button_id'] . ': ' . $button['script_button_label'] . "','" . $button['script_button_id'] . "');\n";
 	}
 ?>
-
-                // Return the new listbox instance
                 return mlb;
+
+            case 'mydispo':
+                var mldb = cm.createListBox('mydispo', {
+                     title : 'Dispo Buttons<br>Hangup and Disposition',
+                     onselect : function(v) {
+                        tinyMCE.activeEditor.focus();
+                        tinyMCE.activeEditor.selection.setContent('{{' + v + '}}');
+                        tinyMCE.activeEditor.controlManager.get('mydispo').set(-1);
+                         //tinyMCE.activeEditor.windowManager.alert('Value selected:' + v);
+                     }
+                });
+<?
+    $stmt = "SELECT status,status_name FROM (SELECT status,status_name FROM osdial_statuses WHERE selectable='Y' UNION SELECT status,status_name FROM osdial_campaign_statuses WHERE selectable='Y') AS stat GROUP BY status;";
+	$rslt=mysql_query($stmt, $link);
+    while ($row=mysql_fetch_row($rslt)) {
+        echo "      mldb.add('" . $row[0] . "  <!--  " . $row[1] . "  -->','DISPO:" . $row[0] . ":" . $row[1] . "',{title : '" . $row[1] . "'});\n";
+	}
+?>
+                return mldb;
 
         }
 
@@ -849,7 +859,7 @@ tinyMCE.init({
     mode : "textareas",
     theme : "advanced",
     theme_advanced_buttons1 : "separator,fontselect,fontsizeselect,forecolor,backcolor,separator,bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,hr,sub,sup,separator,cut,copy,paste,separator,undo,redo,separator",
-    theme_advanced_buttons2 : "separator,myfields,separator,myeditfields,separator,myaddtlfields,separator,mybuttons,separator,helpb,separator,previewb,separator",
+    theme_advanced_buttons2 : "separator,myfields,separator,separator,myeditfields,separator,separator,myaddtlfields,separator,s0,separator,mydispo,separator,separator,mybuttons,separator,s1,separator,previewb,separator,separator,helpb,separator",
     theme_advanced_buttons3 : "",
     theme_advanced_toolbar_location : "top",
     theme_advanced_toolbar_align : "center",
