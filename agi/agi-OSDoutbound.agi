@@ -59,12 +59,18 @@ if ($osd->AGI->{channel} =~ /Local/i) {
 	exit;
 }
 
-if ($osd->sql_query(sprintf("SELECT * FROM osdial_live_agents WHERE callerid='%s';",$osd->AGI->{accountcode}))) {
+$stmt = sprintf("SELECT count(*) AS count FROM osdial_live_agents WHERE callerid='%s';",$osd->AGI->{accountcode});
+$osd->agi_output("|$stmt|") if ($DB);
+my $dupchk = $osd->sql_query($stmt);
+if ($dupchk->{count} > 0) {
 	$osd->agi_output("+++++ VDAD START PSEUDO DUPLICATE: EXITING- " . $osd->AGI->{priority});
 	exit;
 }
 
-if ($osd->sql_query(sprintf("SELECT * FROM osdial_auto_calls WHERE callerid='%s' AND status IN('LIVE','XFER');",$osd->AGI->{accountcode}))) {
+$stmt = sprintf("SELECT count(*) AS count FROM osdial_auto_calls WHERE callerid='%s' AND status IN('LIVE','XFER');",$osd->AGI->{accountcode});
+$osd->agi_output("|$stmt|") if ($DB);
+my $dupchk = $osd->sql_query($stmt);
+if ($dupchk->{count} > 0) {
 	$osd->agi_output("+++++ VDAD START DIALPLAN DUPLICATE: EXITING- " . $osd->AGI->{priority});
 	exit;
 }
@@ -83,9 +89,11 @@ if ($osd->sql_execute($stmt)) {
 
 	### Grab campaign values from the database
 	$stmt = sprintf("SELECT drop_call_seconds,safe_harbor_message,safe_harbor_exten,concurrent_transfers,next_agent_call,voicemail_ext FROM osdial_campaigns WHERE campaign_id='%s';",$oac->{campaign_id});
+	$osd->agi_output("|$stmt|") if ($DB);
 	$campaign = $osd->sql_query($stmt);
 
-	$stmt = sprintf("SELECT * FROM osdial_hopper WHERE phone_number='%s';",$oac->{phone_number});
+	$stmt = sprintf("SELECT * FROM osdial_hopper WHERE lead_id='%s';",$oac->{lead_id});
+	$osd->agi_output("|$stmt|") if ($DB);
 	$hopper = $osd->sql_query($stmt);
 
 	$stmt = sprintf("INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,server_ip) VALUES ('%s','%s','%s','%s','%s','QUEUE','%s','%s','VDAD','N','%s');",$osd->AGI->{uniqueid},$CIDlead_id,$oac->{campaign_id},$SQLdate,$now_date_epoch,$oac->{phone_code},$oac->{phone_number},$osd->{VARserver_ip});
