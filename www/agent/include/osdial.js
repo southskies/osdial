@@ -2301,6 +2301,10 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
         $cnt++;
     }
 ?>
+							if ( (view_scripts == 1) && (campaign_script.length > 0) ) {
+								document.getElementById("ScriptContents").innerHTML = "<?=$t1?> Script Will Show Here";
+								scriptUpdateFields();
+							}
 
 							document.getElementById("MainStatuSSpan").innerHTML = " Lead skipped, go on to next lead";
 
@@ -3080,6 +3084,19 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
         $cnt++;
     }
 ?>
+							if ( (view_scripts == 1) && (CalL_ScripT_id.length > 0) ) {
+								// test code for scripts output
+								URLDecode(scriptnames[CalL_ScripT_id],'NO');
+								var textname = decoded;
+								URLDecode(scripttexts[CalL_ScripT_id],'YES');
+								var texttext = decoded;
+								var regWFplus = new RegExp("\\+","ig");
+								textname = textname.replace(regWFplus, ' ');
+								texttext = texttext.replace(regWFplus, ' ');
+								var testscript = "<br><center><B>" + textname + "</B></center>\n\n<BR><BR>\n\n" + texttext;
+								document.getElementById("ScriptContents").innerHTML = testscript;
+								scriptUpdateFields();
+							}
 
 							web_form_vars = 
 								"lead_id=" + document.osdial_form.lead_id.value + 
@@ -3954,8 +3971,14 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
         $cnt++;
     }
 ?>
+
 				VDCL_group_id = '';
 				fronter = '';
+
+				if ( (view_scripts == 1) && (campaign_script.length > 0) ) {
+					document.getElementById("ScriptContents").innerHTML = "<?=$t1?> Script Will Show Here";
+					scriptUpdateFields();
+				}
 
 				var rp_newid="NEW_ID";
 				if (manual_dial_in_progress==1) {
@@ -4478,7 +4501,7 @@ if ($useIE > 0) {
 						dialedcall_send_hangup('NO', 'YES', HKdispo_ary[0]);
 					}
 				} else {
-					HKdispo_display = 4;
+					HKdispo_display=4;
 					HKfinish=1;
 					document.getElementById("HotKeyDispo").innerHTML = HKdispo_ary[0] + " - " + HKdispo_ary[1] + " - " + HKdispo_ary[2];
 					showDiv('HotKeyActionBox');
