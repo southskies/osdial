@@ -1754,7 +1754,7 @@ else
             }
         }
 
-        $PMMscripttext = preg_replace('/\{\{DISPO:(\w+):(\w+)\}\}/i','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
+        $PMMscripttext = preg_replace('/\{\{DISPO:(\w+):(.*)\}\}/im','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
 
 		$MMscripttext[$e] = urlencode($PMMscripttext);
 		$MMscriptids = "$MMscriptids'$MMscriptid[$e]',";

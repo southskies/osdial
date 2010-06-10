@@ -275,7 +275,7 @@ foreach ($buttons as $button) {
     $script_text = eregi_replace('\{\{' . $button['script_button_id'] . '\}\}',$hbutton,$script_text);
 }
 
-$script_text = preg_replace('/\{\{DISPO:(\w+):(\w+)\}\}/i','<input type="button" value="$2" onclick="alert(\'Disposition as $1 and Hangup\');">',$script_text);
+$script_text = preg_replace('/\{\{DISPO:(\w+):(.*)\}\}/im','<input type="button" value="$2" onclick="alert(\'Disposition as $1 and Hangup\');">',$script_text);
 $script_text = preg_replace('/\[\[(\w+)\]\]/i','<input type="text" value="$1" size="30">',$script_text);
 
 $script_text = eregi_replace("\n","",$script_text);

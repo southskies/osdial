@@ -6521,6 +6521,7 @@ foreach ($forms as $form) {
 // ################################################################################
 // Log the button click in a script.
 	function ScriptButtonLog(sid,sbid) {
+		debug("<b>ScriptButtonLog:</b> sid=" + sid + " sbid=" + sbid,2);
 
 		var xmlhttp=false;
 		/*@cc_on @*/
