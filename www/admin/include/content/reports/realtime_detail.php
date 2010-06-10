@@ -65,12 +65,14 @@ function report_realtime_detail() {
 
 
     function HorizLine($Width) {
+        $HDLine='';
         for ($i = 1; $i <= $Width; $i++) {
             $HDLine.="&#x2550;";
         }
         return $HDLine;
     }
     function CenterLine($Width) {
+        $HDLine='';
         for ($i = 1; $i <= $Width; $i++) {
             $HDLine.="&#x2500;";
         }
