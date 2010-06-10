@@ -91,7 +91,7 @@ header ("Pragma: no-cache");                          // HTTP/1.0
 ##### START SYSTEM_SETTINGS LOOKUP #####
 $stmt = "SELECT use_non_latin FROM system_settings;";
 $rslt=mysql_query($stmt, $link);
-if ($DB) {echo "$stmt\n";}
+if ($format=='debug') {echo "<!-- $stmt -->\n";}
 $qm_conf_ct = mysql_num_rows($rslt);
 $i=0;
 while ($i < $qm_conf_ct)
@@ -129,7 +129,7 @@ $random = (rand(1000000, 9999999) + 10000000);
 
 
 $stmt="SELECT count(*) from osdial_users where user='$user' and pass='$pass' and user_level > 0;";
-if ($DB) {echo "|$stmt|\n";}
+if ($format=='debug') {echo "<!-- |$stmt| -->\n";}
 if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
 $rslt=mysql_query($stmt, $link);
 $row=mysql_fetch_row($rslt);
@@ -151,7 +151,7 @@ $auth=$row[0];
 	else
 		{
 		$stmt="SELECT count(*) from web_client_sessions where session_name='$session_name' and server_ip='$server_ip';";
-		if ($DB) {echo "|$stmt|\n";}
+		if ($format=='debug') {echo "<!--|$stmt|-->\n";}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		$SNauth=$row[0];
@@ -195,11 +195,12 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 		if ($client == 'vdc')
 			{
 			$Acount=0;
+			$Astatus='';
 			$AexternalDEAD=0;
 
 			### see if the agent has a record in the osdial_live_agents table
 			$stmt="SELECT count(*) from osdial_live_agents where user='$user' and server_ip='$server_ip';";
-			if ($DB) {echo "|$stmt|\n";}
+			if ($format=='debug') {echo "<!-- |$stmt| -->\n";}
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			$Acount=$row[0];
@@ -207,14 +208,14 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 			if ($Acount > 0)
 				{
 				$stmt="SELECT status from osdial_live_agents where user='$user' and server_ip='$server_ip';";
-				if ($DB) {echo "|$stmt|\n";}
+				if ($format=='debug') {echo "<!-- |$stmt| -->\n";}
 				$rslt=mysql_query($stmt, $link);
 				$row=mysql_fetch_row($rslt);
 				$Astatus=$row[0];
 				}
 		#	### find out if external table shows agent should be disabled
 		#	$stmt="SELECT count(*) from another_table where user='$user' and status='DEAD';";
-		#	if ($DB) {echo "|$stmt|\n";}
+		#	if ($format=='debug') {echo "<!-- |$stmt| -->\n";}
 		#	$rslt=mysql_query($stmt, $link);
 		#	$row=mysql_fetch_row($rslt);
 		#	$AexternalDEAD=$row[0];
@@ -230,7 +231,7 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 					{
 					### grab the status of this agent to display
 					$stmt="SELECT status,campaign_id,closer_campaigns from osdial_live_agents where user='$user' and server_ip='$server_ip';";
-					if ($DB) {echo "|$stmt|\n";}
+					if ($format=='debug') {echo "<!-- |$stmt| -->\n";}
 					$rslt=mysql_query($stmt, $link);
 					$row=mysql_fetch_row($rslt);
 					$Alogin=$row[0];
@@ -241,7 +242,7 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 
 					### grab the number of calls being placed from this server and campaign
 					$stmt="SELECT count(*) from osdial_auto_calls where status IN('LIVE') and ( (campaign_id='$Acampaign') or (campaign_id IN('$AccampSQL')) );";
-					if ($DB) {echo "|$stmt|\n";}
+					if ($format=='debug') {echo "<!-- |$stmt| -->\n";}
 					$rslt=mysql_query($stmt, $link);
 					$row=mysql_fetch_row($rslt);
 					$RingCalls=$row[0];
@@ -250,7 +251,7 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 
 					### grab the number of calls being placed from this server and campaign
 					$stmt="SELECT count(*) from osdial_auto_calls where status NOT IN('XFER') and ( (campaign_id='$Acampaign') or (campaign_id IN('$AccampSQL')) );";
-					if ($DB) {echo "|$stmt|\n";}
+					if ($format=='debug') {echo "<!-- |$stmt| -->\n";}
 					$rslt=mysql_query($stmt, $link);
 					$row=mysql_fetch_row($rslt);
 					$DiaLCalls=$row[0];
@@ -280,7 +281,7 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
             if (preg_match('/0$/',$StarTtime)) {
                 $web_epoch = date("U");
                 $stmt="select UNIX_TIMESTAMP(last_update),UNIX_TIMESTAMP(sql_time) from server_updater where server_ip='$server_ip';";
-                if ($DB) {echo "|$stmt|\n";}
+                if ($format=='debug') {echo "<!-- |$stmt| -->\n";}
                 $rslt=mysql_query($stmt, $link);
                 $row=mysql_fetch_row($rslt);
                 $dialer_epoch = $row[0];
