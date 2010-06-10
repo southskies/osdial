@@ -192,7 +192,7 @@ start() {
 	/usr/bin/setterm -powersave off
 	/usr/bin/setterm -powerdown
 	#/opt/osdial/bin/ADMIN_restart_roll_logs.pl > /dev/null 2>&1
-	/etc/cron.hourly/AST_ntp_update.sh > /dev/null 2>&1 &
+	/opt/osdial/bin/AST_ntp_update.sh > /dev/null 2>&1 &
 	/opt/osdial/bin/ADMIN_area_code_populate.pl > /dev/null 2>&1 &
 	/opt/osdial/bin/osdial_astgen.pl -q &
 	/opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1 &
