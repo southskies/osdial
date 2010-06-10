@@ -281,51 +281,59 @@ function report_lead_performance_campaign() {
         $head2 .= "|Calls|Contacts|Sales|Contact Closing%|Closing%|Total Cost|Average Cost|Cost Per Sale||Leads Entered|Contacts|Sales|Contact Closing%|Closing%|Total Cost|Average Cost|Cost Per Sale";
         $html .= "<input type=hidden name=\"row" . $CSVrow++ . "\" value=\"" . $head2 . "\">\n";
 
-        $stmt="SELECT $type(osdial_list.entry_date),sum(osdial_list.cost),count(*),sum(if(osdial_list.status IN ($SCcontacts,$SCsales),1,0)),sum(if(osdial_list.status IN ($SCsales),1,0)) FROM osdial_list,osdial_lists WHERE osdial_list.list_id=osdial_lists.list_id AND osdial_list.entry_date <= '$query_date_END' AND osdial_list.entry_date >= '$query_date_BEGIN' $group_olSQLand GROUP BY $type(osdial_list.entry_date);";
+        $dates = Array();
+
+        $stmt="SELECT $type(osdial_list.entry_date),count(*),sum(if(osdial_list.status IN ($SCcontacts,$SCsales),1,0)),sum(if(osdial_list.status IN ($SCsales),1,0)),sum(osdial_list.cost) FROM osdial_list,osdial_lists WHERE osdial_list.list_id=osdial_lists.list_id AND osdial_list.entry_date <= '$query_date_END' AND osdial_list.entry_date >= '$query_date_BEGIN' $group_olSQLand GROUP BY $type(osdial_list.entry_date);";
         $rslt=mysql_query($stmt, $link);
         if ($DB) $html .= "$stmt\n";
         $rows_to_print = mysql_num_rows($rslt);
+        $i=0;
+        while ($i < $rows_to_print) {
+            $row=mysql_fetch_row($rslt);
+            $dates[$row[0]]['newleads']    = $row[1];
+            $dates[$row[0]]['newcontacts'] = $row[2];
+            $dates[$row[0]]['newsales']    = $row[3];
+            $dates[$row[0]]['newcost']     = $row[4];
+            $i++;
+        }
+
+        $stmt = "SELECT $type(osdial_log.call_date),count(*),sum(if(osdial_log.status IN ($SCcontacts,$SCsales),1,0)),sum(if(osdial_log.status IN ($SCsales),1,0)),sum(osdial_list.cost) FROM osdial_log,osdial_list WHERE osdial_log.lead_id=osdial_list.lead_id AND osdial_log.call_date <= '$query_date_END' AND osdial_log.call_date >= '$query_date_BEGIN' $group_logSQLand GROUP BY $type(osdial_log.call_date);";
+        $rslt=mysql_query($stmt, $link);
+        if ($DB) $html .= "$stmt\n";
+        $rows_to_print = mysql_num_rows($rslt);
+        $i=0;
+        while ($i < $rows_to_print) {
+            $row=mysql_fetch_row($rslt);
+            $dates[$row[0]]['calls']    = $row[1];
+            $dates[$row[0]]['contacts'] = $row[2];
+            $dates[$row[0]]['sales']    = $row[3];
+            $dates[$row[0]]['cost']     = $row[4];
+            $i++;
+        }
+
+        ksort($dates);
 
         $TOTnewcost    = 0;
         $TOTnewleads   = 0;
         $TOTnewcontacts= 0;
         $TOTnewsales   = 0;
-        $i=0;
-        while ($i < $rows_to_print) {
-            $row=mysql_fetch_row($rslt);
+        $i = 0;
+        foreach ($dates as $period => $data) {
+            
+            $newleads    = $data['newleads'] * 1;
+            $newcontacts = $data['newcontacts'] * 1;
+            $newsales    = $data['newsales'] * 1;
+            $newcost     = $data['newcost'] * 1;
+            $calls       = $data['calls'] * 1;
+            $contacts    = $data['contacts'] * 1;
+            $sales       = $data['sales'] * 1;
+            $cost        = $data['cost'] * 1;
+
             if (eregi("1$|3$|5$|7$|9$", $i)) {
                 $bgcolor='bgcolor='.$oddrows;
             } else {
                 $bgcolor='bgcolor='.$evenrows;
             }
-
-
-            $period         = $row[0];
-            $newcost        = $row[1];
-            $newleads       = $row[2];
-            $newcontacts    = $row[3];
-            $newsales       = $row[4];
-
-
-            $cost = 0;
-            $calls = 0;
-            $contacts = 0;
-            $sales = 0;
-
-            $stmtB = "SELECT $type(osdial_log.call_date),count(*),sum(if(osdial_log.status IN ($SCcontacts,$SCsales),1,0)),sum(if(osdial_log.status IN ($SCsales),1,0)),sum(osdial_list.cost) FROM osdial_log,osdial_list WHERE osdial_log.lead_id=osdial_list.lead_id AND osdial_log.call_date <= '$query_date_END' AND osdial_log.call_date >= '$query_date_BEGIN' AND $type(osdial_log.call_date)='$period' $group_logSQLand GROUP BY $type(osdial_log.call_date);";
-            $rsltB=mysql_query($stmtB, $link);
-            if ($DB) $html .= "$stmtB\n";
-            $rowsB_to_print = mysql_num_rows($rsltB);
-            $j=0;
-            while ($j < $rowsB_to_print) {
-                $rowB=mysql_fetch_row($rsltB);
-                $calls = $rowB[1];
-                $contacts = $rowB[2];
-                $sales = $rowB[3];
-                $cost = $rowB[4];
-                $j++;
-            }
-
 
             $cnt_closing_pct = "0%";
             if ($contacts > 0) $cnt_closing_pct = sprintf('%3.2f',(($sales / $contacts) * 100)) . "%";
