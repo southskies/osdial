@@ -430,6 +430,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 	var PCSpause = 0;
 
+	var script_last_click = '';
+
 	var debugWindowOpened = 0;
 	var debugLevel = 0;
 	var debugWindow = 0;
@@ -6542,7 +6544,7 @@ foreach ($forms as $form) {
 			xmlhttp = new XMLHttpRequest();
 		}
 		if (xmlhttp) { 
-			sbl_data = "ACTION=ScriptButtonLog&format=text&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&script_id=" + sid + "&script_button_id=" + sbid;
+			sbl_data = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=ScriptButtonLog&format=text&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&script_id=" + sid + "&script_button_id=" + sbid;
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 			xmlhttp.send(sbl_data); 

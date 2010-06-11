@@ -1743,18 +1743,18 @@ else
 
             foreach ($buttons as $button) {
                 $PMMscripttext .= "<span style=\"display:none;\" id=\"SCRIPT_" . $button['script_button_id'] . "\">";
-                $PMMscripttext .= "<center><input type=\"button\" value=\"MAIN\" onclick=\"ScriptButtonLog('" . $row[0] ."','" . $button['script_button_id'] . "'); $hidebuttons document.getElementById('SCRIPT_MAIN').style.display='block';\"></center><br>";
+                $PMMscripttext .= "<center><input type=\"button\" value=\"MAIN\" onclick=\"ScriptButtonLog('" . $row[0] ."','" . $button['script_button_id'] . "'); script_last_click=''; $hidebuttons document.getElementById('SCRIPT_MAIN').style.display='block';\"></center><br>";
                 $PMMscripttext .= $button['script_button_text'];
                 $PMMscripttext .= "</span>";
             }
 
             foreach ($buttons as $button) {
-                $hbutton = "<input type=\"button\" value=\"" . $button['script_button_label'] . "\" onclick=\"ScriptButtonLog('" . $row[0] . "','" . $button['script_button_id'] . "'); $hidebuttons document.getElementById('SCRIPT_" . $button['script_button_id'] . "').style.display='block';\">";
+                $hbutton = "<input type=\"button\" value=\"" . $button['script_button_label'] . "\" onclick=\"ScriptButtonLog('" . $row[0] . "' + script_last_click,'" . $button['script_button_id'] . "'); script_last_click='_" . $button['script_button_id'] . "'; $hidebuttons document.getElementById('SCRIPT_" . $button['script_button_id'] . "').style.display='block';\">";
                 $PMMscripttext = eregi_replace('\{\{' . $button['script_button_id'] . '\}\}',$hbutton,$PMMscripttext);
             }
         }
 
-        $PMMscripttext = preg_replace('/\{\{DISPO:(\w+):(.*)\}\}/im','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
+        $PMMscripttext = preg_replace('/\{\{DISPO:(.*):(.*)\}\}/im','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
 
 		$MMscripttext[$e] = urlencode($PMMscripttext);
 		$MMscriptids = "$MMscriptids'$MMscriptid[$e]',";
