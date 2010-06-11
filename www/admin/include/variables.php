@@ -404,6 +404,7 @@ $OLDuser_group = get_variable("OLDuser_group");
 $omit_phone_code = get_variable("omit_phone_code");
 $onhold_prompt_filename = get_variable("onhold_prompt_filename");
 $orderby = get_variable("orderby");
+$orddir = get_variable("orddir");
 $osdial_agent_disable = get_variable("osdial_agent_disable");
 $osdial_balance_active = get_variable("osdial_balance_active");
 $OSDIAL_park_on_extension = get_variable("OSDIAL_park_on_extension");

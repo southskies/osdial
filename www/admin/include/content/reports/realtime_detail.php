@@ -246,6 +246,7 @@ function report_realtime_detail() {
     $html .= "<input type=hidden name=UGdisplay value=\"$UGdisplay\">\n";
     $html .= "<input type=hidden name=UidORname value=\"$UidORname\">\n";
     $html .= "<input type=hidden name=orderby value=\"$orderby\">\n";
+    $html .= "<input type=hidden name=orddir value=\"$orddir\">\n";
     $html .= "<input type=hidden name=SERVdisplay value=\"$SERVdisplay\">\n";
     $html .= "<input type=hidden name=CALLSdisplay value=\"$CALLSdisplay\">\n";
     $html .= "<input type=hidden name=VAdisplay value=\"$VAdisplay\">\n";
@@ -695,24 +696,28 @@ function report_realtime_detail() {
     if ($orderby=='extendown')    {$orderSQL='osdial_live_agents.extension desc';}
     if ($orderby=='callsup')      {$orderSQL='osdial_live_agents.calls_today';}
     if ($orderby=='callsdown')    {$orderSQL='osdial_live_agents.calls_today desc';}
-    if ($orderby=='confup')       {$orderSQL='osdial_live_agents.conf_exten,osdial_live_agents.server_ip';}
+    if ($orderby=='confup')       {$orderSQL='osdial_live_agents.conf_exten,osdial_live_agents.server_ip desc';}
     if ($orderby=='confdown')     {$orderSQL='osdial_live_agents.conf_exten desc,osdial_live_agents.server_ip desc';}
-    if ($orderby=='serverup')     {$orderSQL='osdial_live_agents.server_ip,osdial_live_agents.conf_exten';}
+    if ($orderby=='serverup')     {$orderSQL='osdial_live_agents.server_ip,osdial_live_agents.conf_exten desc';}
     if ($orderby=='serverdown')   {$orderSQL='osdial_live_agents.server_ip desc,osdial_live_agents.conf_exten desc';}
-    if ($orderby=='statusup')     {$orderSQL='osdial_live_agents.status,osdial_live_agents.server_ip,osdial_live_agents.conf_exten';}
-    if ($orderby=='statusdown')   {$orderSQL='osdial_live_agents.status desc,osdial_live_agents.server_ip desc,osdial_live_agents.conf_exten desc';}
+    if ($orderby=='statusup')     {$orderSQL='osdial_live_agents.status,osdial_live_agents.last_call_finish desc';}
+    if ($orderby=='statusdown')   {$orderSQL='osdial_live_agents.status desc,osdial_live_agents.last_call_finish desc';}
     if ($orderby=='timeup')       {$orderSQL='osdial_live_agents.last_call_time';}
     if ($orderby=='timedown')     {$orderSQL='osdial_live_agents.last_call_time desc';}
-    if ($orderby=='campaignup')   {$orderSQL='osdial_live_agents.campaign_id,osdial_live_agents.status,osdial_live_agents.last_call_time';}
-    if ($orderby=='campaigndown') {$orderSQL='osdial_live_agents.campaign_id desc,osdial_live_agents.status desc,osdial_live_agents.last_call_time desc';}
-    if ($orderby=='groupup')      {$orderSQL='osdial_users.user_group,osdial_live_agents.status,osdial_live_agents.last_call_time';}
-    if ($orderby=='groupdown')    {$orderSQL='osdial_users.user_group desc,osdial_live_agents.status desc,osdial_live_agents.last_call_time desc';}
     if ($UidORname > 0) {
-        if ($orderby=='userup')   {$orderSQL='osdial_users.full_name';}
-        if ($orderby=='userdown') {$orderSQL='osdial_users.full_name desc';}
+        if ($orderby=='userup')       {$orderSQL='osdial_users.full_name';}
+        if ($orderby=='userdown')     {$orderSQL='osdial_users.full_name desc';}
+        if ($orderby=='groupup')      {$orderSQL='osdial_users.user_group,osdial_live_agents.full_name desc';}
+        if ($orderby=='groupdown')    {$orderSQL='osdial_users.user_group desc,osdial_live_agents.full_name desc';}
+        if ($orderby=='campaignup')   {$orderSQL='osdial_live_agents.campaign_id,osdial_live_agents.full_name desc';}
+        if ($orderby=='campaigndown') {$orderSQL='osdial_live_agents.campaign_id desc,osdial_live_agents.full_name desc';}
     } else {
-        if ($orderby=='userup')   {$orderSQL='osdial_live_agents.user';}
-        if ($orderby=='userdown') {$orderSQL='osdial_live_agents.user desc';}
+        if ($orderby=='userup')       {$orderSQL='osdial_live_agents.user';}
+        if ($orderby=='userdown')     {$orderSQL='osdial_live_agents.user desc';}
+        if ($orderby=='groupup')      {$orderSQL='osdial_users.user_group,osdial_live_agents.user desc';}
+        if ($orderby=='groupdown')    {$orderSQL='osdial_users.user_group desc,osdial_live_agents.user desc';}
+        if ($orderby=='campaignup')   {$orderSQL='osdial_live_agents.campaign_id,osdial_live_agents.user desc';}
+        if ($orderby=='campaigndown') {$orderSQL='osdial_live_agents.campaign_id desc,osdial_live_agents.user desc';}
     }
 
     $agent_incall=0;
@@ -763,6 +768,7 @@ function report_realtime_detail() {
     }
     $HDstatus = HorizLine(10).$LNtopdown; //10
     $HTstatus = "  STATUS  ".$LNcenterbar;
+    $HTstatus = "  <a href=\"$PHP_SELF?ADD=$ADD&SUB=$SUB&group=$group&campaign_id=$campaign_id&RR=$RR&DB=$DB&adastats=$adastats&SIPmonitorLINK=$SIPmonitorLINK&IAXmonitorLINK=$IAXmonitorLINK&usergroup=$usergroup&UGdisplay=$UGdisplay&UidORname=$UidORname&orderby=status&orddir=$orddir&SERVdisplay=$SERVdisplay&CALLSdisplay=$CALLSdisplay&VAdisplay=$VAdisplay&cpuinfo=$cpuinfo\">STATUS</a>  ".$LNcenterbar;
     $HXstatus = CenterLine(10).$LNcentcross;
     $HBstatus = HorizLine(10).$LNbottomup;
     $HDpause = '';
