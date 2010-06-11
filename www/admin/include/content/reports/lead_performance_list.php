@@ -345,6 +345,7 @@ function report_lead_performance_list() {
             if ($calls > 0) $avg_cost = sprintf('%3.2f',$cost / $calls);
             $cost_sale = '0.00';
             if ($sales > 0) $cost_sale = sprintf('%3.2f',$cost / $sales);
+            $cost = sprintf('%3.2f',$cost);
 
             $newcnt_closing_pct = "0%";
             if ($newcontacts > 0) $newcnt_closing_pct = sprintf('%3.2f',(($newsales / $newcontacts) * 100)) . "%";
@@ -354,6 +355,7 @@ function report_lead_performance_list() {
             if ($newleads > 0) $newavg_cost = sprintf('%3.2f',$newcost / $newleads);
             $newcost_sale = '0.00';
             if ($newsales > 0) $newcost_sale = sprintf('%3.2f',$newcost / $newsales);
+            $newcost = sprintf('%3.2f',$newcost);
 
             $html .= "  <tr $bgcolor class=\"row font1\">\n";
             if ($type == "hour") {
@@ -407,6 +409,7 @@ function report_lead_performance_list() {
         if ($TOTcalls > 0) $TOTavg_cost = sprintf('%3.2f',$TOTcost / $TOTcalls);
         $TOTcost_sale = '0.00';
         if ($TOTsales > 0) $TOTcost_sale = sprintf('%3.2f',$TOTcost / $TOTsales);
+        $TOTcost = sprintf('%3.2f',$TOTcost);
 
         $TOTnewcnt_closing_pct = "0%";
         if ($TOTnewcontacts > 0) $TOTnewcnt_closing_pct = sprintf('%3.2f',(($TOTnewsales / $TOTnewcontacts) * 100)) . "%";
@@ -416,6 +419,7 @@ function report_lead_performance_list() {
         if ($TOTnewleads > 0) $TOTnewavg_cost = sprintf('%3.2f',$TOTnewcost / $TOTnewleads);
         $TOTnewcost_sale = '0.00';
         if ($TOTnewsales > 0) $TOTnewcost_sale = sprintf('%3.2f',$TOTnewcost / $TOTnewsales);
+        $TOTnewcost = sprintf('%3.2f',$TOTnewcost);
 
         $html .= "  <tr class=tabfooter>\n";
         $html .= "    <td>TOTAL</td>\n";
