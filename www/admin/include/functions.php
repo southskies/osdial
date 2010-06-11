@@ -88,6 +88,14 @@ function format_select_options($krh, $kkey, $kval, $ksel="!", $kdef="", $kcomp=f
         $option .= $kdef;
         $option .= "</option>\n";
     }
+    $klen='';
+    if ($kkey != $kval) {
+        foreach ($krh as $ele) {
+            $klent = strlen($ele[$kkey]);
+            if ($kcomp) $klent = strlen(mclabel($ele[$kkey]));
+            if ($klent > $klen) $klen=$klent;
+        }
+    }
     foreach ($krh as $ele) {
         $selopt = '';
         if (is_array($ksel)) {
@@ -97,14 +105,15 @@ function format_select_options($krh, $kkey, $kval, $ksel="!", $kdef="", $kcomp=f
         } else {
             if ($ksel == $ele[$kkey]) $selopt = " selected";
         }
-        $option .= '<option value="' . $ele[$kkey] . '"' . $selopt . '>';
-        if ($kcomp) {
-            $option .= mclabel($ele[$kkey]);
-        } else {
-            $option .= $ele[$kkey];
+        $optstyle = '';
+        $optlabel = sprintf('%-'.$klen.'s',$ele[$kkey]);
+        if ($kcomp) $optlabel = sprintf('%-'.$klen.'s',mclabel($ele[$kkey]));
+        if ($kkey != $kval) {
+                $optlabel .= '- ' . $ele[$kval];
+                $optstyle = ' style="font-family:monospace;"';
         }
-        if ($kkey != $kval) $option .= ' - ' . $ele[$kval];
-        $option .= '</option>';
+        $optlabel = preg_replace('/ /','&nbsp;',$optlabel);
+        $option .= '<option value="' . $ele[$kkey] . '"' . $optstyle . $selopt . '>' . $optlabel . '</option>' . "\n";
     }
     return $option;
 }
