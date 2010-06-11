@@ -678,25 +678,31 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			if (taskconfxfer == 'YES') {
 				var queryCID = "DCagcW" + epoch_sec + user_abb;
 				document.getElementById("HangupControl").innerHTML = "<a href=\"#\" onclick=\"bothcall_send_hangup();\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_hangupcustomer.gif\" border=0 alt=\"Hangup Customer\"></a>";
+				lead_cust1_cid = document.osdial_form.custom1.value;
+				lead_cust2_cid = document.osdial_form.custom2.value;
+				lead_cid = document.osdial_form.phone_number.value;
+				if (xfer_cid_mode == 'LEAD_CUSTOM1' && lead_cid != '') {
+					cid = lead_cust1_cid;
+					cid_name = lead_cust1_cid;
+				} else if (xfer_cid_mode == 'LEAD_CUSTOM2' && lead_cid != '') {
+					cid = lead_cust1_cid;
+					cid_name = lead_cust1_cid;
+				} else if (xfer_cid_mode == 'LEAD') {
+					cid = lead_cid;
+					cid_name = lead_cid;
+				} else if (xfer_cid_mode == 'PHONE') {
+					cid = phone_cid;
+					cid_name = phone_cid_name;
+				} else {
+					cid = campaign_cid;
+					cid_name = campaign_cid_name;
+				}
 			} else {
 				var queryCID = "DVagcW" + epoch_sec + user_abb;
-			}
-
-			lead_cust2_cid = document.osdial_form.custom2.value;
-			lead_cid = document.osdial_form.phone_number.value;
-			if (xfer_cid_mode == 'LEAD_CUSTOM2' && lead_cid != '') {
-				cid = lead_cust2_cid;
-				cid_name = lead_cust2_cid;
-			} else if (xfer_cid_mode == 'LEAD') {
-				cid = lead_cid;
-				cid_name = lead_cid;
-			} else if (xfer_cid_mode == 'PHONE') {
-				cid = phone_cid;
-				cid_name = phone_cid_name;
-			} else {
 				cid = campaign_cid;
 				cid_name = campaign_cid_name;
 			}
+
 			VMCoriginate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=Originate&format=text&channel=" + originatevalue + "&queryCID=" + queryCID + "&exten=" + orig_prefix + "" + dialnum + "&ext_context=" + ext_context + "&ext_priority=1&outbound_cid=" + cid + "&outbound_cid_name=" + cid_name;
 			cid = campaign_cid;
 			cid_name = campaign_cid_name;
