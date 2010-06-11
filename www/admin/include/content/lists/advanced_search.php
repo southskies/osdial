@@ -93,6 +93,7 @@ if ($ADD==1122) {
         $sources = get_variable("sources");
         $vendor_codes = get_variable("vendor_codes");
         $fields = get_variable("fields");
+        $affields = get_variable("affields");
 
         $numresults = get_variable("numresults");
         if ($numresults == "" or $numresults == 0)
@@ -160,10 +161,12 @@ if ($ADD==1122) {
         }
 
         $campaignIN = "";
-        foreach ($campaigns as $campaign) {
-            if ($campaign != "") {
-                $pageURL .= "&campaigns[]=$campaign";
-                $campaignIN .= "'" . mres($campaign) . "',";
+        if (is_array($campaigns)) {
+            foreach ($campaigns as $campaign) {
+                if ($campaign != "") {
+                    $pageURL .= "&campaigns[]=$campaign";
+                    $campaignIN .= "'" . mres($campaign) . "',";
+                }
             }
         }
         if ($campaignIN != "") {
@@ -180,10 +183,12 @@ if ($ADD==1122) {
 
         ### process lists group
         $listIN = "";
-        foreach ($lists as $list) {
-            if ($list != "") {
-                $pageURL .= "&lists[]=$list";
-                $listIN .= "'" . mres($list) . "',";
+        if (is_array($lists)) {
+            foreach ($lists as $list) {
+                if ($list != "") {
+                    $pageURL .= "&lists[]=$list";
+                    $listIN .= "'" . mres($list) . "',";
+                }
             }
         }
         if ($listIN != "") {
@@ -200,10 +205,12 @@ if ($ADD==1122) {
 
         ### process statuses group
         $statusIN = "";
-        foreach ($statuses as $status) {
-            if ($status != "") {
-                $pageURL .= "&statuses[]=$status";
-                $statusIN .= "'" . mres($status) . "',";
+        if (is_array($statuses)) {
+            foreach ($statuses as $status) {
+                if ($status != "") {
+                    $pageURL .= "&statuses[]=$status";
+                    $statusIN .= "'" . mres($status) . "',";
+                }
             }
         }
         if ($statusIN != "") {
@@ -220,10 +227,12 @@ if ($ADD==1122) {
 
         ### process agents group
         $agentIN = "";
-        foreach ($agents as $agent) {
-            if ($agent != "") {
-                $pageURL .= "&agents[]=$agent";
-                $agentIN .= "'" . mres($agent) . "',";
+        if (is_array($agents)) {
+            foreach ($agents as $agent) {
+                if ($agent != "") {
+                    $pageURL .= "&agents[]=$agent";
+                    $agentIN .= "'" . mres($agent) . "',";
+                }
             }
         }
         if ($agentIN != "") {
@@ -240,10 +249,12 @@ if ($ADD==1122) {
 
         ### process states group
         $stateIN = "";
-        foreach ($states as $state) {
-            if ($state != "") {
-                $pageURL .= "&states[]=$state";
-                $stateIN .= "'" . mres($state) . "',";
+        if (is_array($states)) {
+            foreach ($states as $state) {
+                if ($state != "") {
+                    $pageURL .= "&states[]=$state";
+                    $stateIN .= "'" . mres($state) . "',";
+                }
             }
         }
         if ($stateIN != "") {
@@ -254,10 +265,12 @@ if ($ADD==1122) {
 
         ### process sources group
         $sourceIN = "";
-        foreach ($sources as $source) {
-            if ($source != "") {
-                $pageURL .= "&sources[]=$source";
-                $sourceIN .= "'" . mres($source) . "',";
+        if (is_array($sources)) {
+            foreach ($sources as $source) {
+                if ($source != "") {
+                    $pageURL .= "&sources[]=$source";
+                    $sourceIN .= "'" . mres($source) . "',";
+                }
             }
         }
         if ($sourceIN != "") {
@@ -268,10 +281,12 @@ if ($ADD==1122) {
         
         ### process vendor_codes group
         $vendor_codeIN = "";
-        foreach ($vendor_codes as $vendor_code) {
-            if ($vendor_code != "") {
-                $pageURL .= "&vendor_codes[]=$vendor_code";
-                $vendor_codeIN .= "'" . mres($vendor_code) . "',";
+        if (is_array($vendor_codes)) {
+            foreach ($vendor_codes as $vendor_code) {
+                if ($vendor_code != "") {
+                    $pageURL .= "&vendor_codes[]=$vendor_code";
+                    $vendor_codeIN .= "'" . mres($vendor_code) . "',";
+                }
             }
         }
         if ($vendor_codeIN != "") {
@@ -295,14 +310,16 @@ if ($ADD==1122) {
         ### process timezones group
         $timezoneIN = "";
         $timezoneCNTIN = "";
-        foreach ($timezones as $timezone) {
-            if ($timezone != "") {
-                $pageURL .= "&timezones[]=$timezone";
-                $timezoneIN .= mres($timezone) . ",";
-	            $isdst = date("I");
-                $timezoneDST = $timezone;
-                if ($isdst) $timezoneDST += 1;
-                $timezoneCNTIN .= mres($timezoneDST) . ",";
+        if (is_array($timezones)) {
+            foreach ($timezones as $timezone) {
+                if ($timezone != "") {
+                    $pageURL .= "&timezones[]=$timezone";
+                    $timezoneIN .= mres($timezone) . ",";
+	                $isdst = date("I");
+                    $timezoneDST = $timezone;
+                    if ($isdst) $timezoneDST += 1;
+                    $timezoneCNTIN .= mres($timezoneDST) . ",";
+                }
             }
         }
         if ($timezoneIN != "") {
@@ -318,22 +335,24 @@ if ($ADD==1122) {
         $status_found = 0;
         $fieldJOIN = '';
 
-        foreach ($fields as $field) {
-            if ($field == "*") {
-                $field_all = 1;
-                $status_found++;
-            } elseif ($field == "status") {
-                $status_found++;
-            } elseif ($field == "campaign_id" or $field == "lead_id" or $field == "list_id" or $field == "user" or $field == "phone_number") {
-                if ($use_osdial_log) {
-                    $searchFLD .= "osdial_log." . $field . ",";
+        if (is_array($fields)) {
+            foreach ($fields as $field) {
+                if ($field == "*") {
+                    $field_all = 1;
+                    $status_found++;
+                } elseif ($field == "status") {
+                    $status_found++;
+                } elseif ($field == "campaign_id" or $field == "lead_id" or $field == "list_id" or $field == "user" or $field == "phone_number") {
+                    if ($use_osdial_log) {
+                        $searchFLD .= "osdial_log." . $field . ",";
+                    } else {
+                        $searchFLD .= "osdial_lists." . $field . ",";
+                    }
                 } else {
-                    $searchFLD .= "osdial_lists." . $field . ",";
+                    $searchFLD .= "osdial_list." . $field . ",";
                 }
-            } else {
-                $searchFLD .= "osdial_list." . $field . ",";
+                $field_cnt++;
             }
-            $field_cnt++;
         }
 
         if ($field_cnt == 0 or $field_all == 1) {
@@ -471,11 +490,9 @@ if ($ADD==1122) {
         echo "<form method=post name=advsearch_form action=\"$PHP_SELF\">\n";
         echo "<input type=hidden name=ADD value=1122>\n";
         echo "<input type=hidden name=DB value=\"$DB\">\n";
-        echo "<table width=$section_width cellspacing=0 bgcolor=$oddrows>\n";
+        echo "<table width=$section_width cellspacing=0 bgcolor=$oddrows class=tabinput>\n";
         echo "  <tr>\n";
-        echo "    <td colspan=4>\n";
-        echo "      <br><center><font color=$default_text>Enter any combination of the following</font></center><br>\n";
-        echo "    </td>\n";
+        echo "    <td colspan=4 class=tabheader>Enter any combination of the following</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td width=25% align=right><font size=2>Last Name</font></td>\n";
@@ -513,12 +530,12 @@ if ($ADD==1122) {
         echo "  </tr>\n";
 
         echo "  <tr>\n";
-        echo "    <td colspan=4><br></td>\n";
+        echo "    <td colspan=4><font size=1>&nbsp;</font></td>\n";
         echo "  </tr>\n";
 
         echo "  <tr>\n";
         echo "    <td align=right><font size=2>Entry Date</font></td>\n";
-        echo "    <td align=left colspan=2>\n";
+        echo "    <td align=left>\n";
         echo "      <script>\n";
         echo "        var cal1 = new CalendarPopup('caldiv1');\n";
         echo "        cal1.showNavigationDropdowns();\n";
@@ -542,28 +559,72 @@ if ($ADD==1122) {
         echo "      <img width=12 src=\"templates/default/images/calendar.png\" style=border:0px;></a>\n";
         echo "      </font></td>\n";
         $fieldOPTS="";
-        foreach ($field_label as $k => $v) {
-            $sel="";
-            foreach ($fields as $field) {
-                if ($k != "" and $k == $field) {
-                    $sel=" selected";
+        if (is_array($field_label)) {
+            foreach ($field_label as $k => $v) {
+                $sel="";
+                if (is_array($fields)) {
+                    foreach ($fields as $field) {
+                        if ($k != "" and $k == $field) {
+                            $sel=" selected";
+                        }
+                    }
+                }
+                if ($v == "") $v = $k;
+                if ($k != "") $fieldOPTS .= "        <option value=\"" . $k . "\"$sel>" . $v . "</option>\n";
+            }
+        }
+        echo "    <td align=center valign=top rowspan=5>\n";
+        if ($LOG['user_level'] > 8 && $LOG['export_leads'] > 0 && ($LOG['multicomp_user'] == 0 or $LOG['company']['export_leads'] > 0)) {
+            echo "     <table cellpadding=0 cellspacing=0 width=95%>\n";
+            echo "      <tr><td class=tabheader>CSV Export: Fields</td></tr>\n";
+            $sjs = "fld=document.getElementById('fields');afflds=document.getElementById('affields'); if (fld.selectedIndex==-1) { afflds.disabled=true; afflds.style.background='#CCCCCC'; for (var i=0;i<afflds.options.length;i++){afflds.options[i].selected=false;} } else { afflds.disabled=false; afflds.style.background='#FFFFFF'; }";
+            echo "      <tr><td><select name=fields[] id=fields size=6 multiple onchange=\"$sjs\" style=\"width:100%;\">\n";
+            echo $fieldOPTS;
+            echo "      </select></td></tr>\n";
+            echo "     </table>\n";
+        }
+        echo "    </td>\n";
+
+        $affield_label = Array();
+        echo "    <td align=center valign=top rowspan=5>\n";
+        if ($LOG['user_level'] > 8 && $LOG['export_leads'] > 0 && ($LOG['multicomp_user'] == 0 or $LOG['company']['export_leads'] > 0)) {
+            echo "     <table cellpadding=0 cellspacing=0 width=95%>\n";
+            echo "      <tr><td class=tabheader>CSV Export: Additional Fields</td></tr>\n";
+            $affdisable = "style=\"width:100%;border:1px solid #AAAAAA;background:#CCCCCC;\" disabled";
+            if (is_array($fields)) {
+                if (count($fields) > 0) { 
+                    $affdisable = "style=\"width:100%;border:1px solid #AAAAAA;background:#FFFFFF;\"";
                 }
             }
-            if ($v == "") $v = $k;
-            if ($k != "") $fieldOPTS .= "        <option value=\"" . $k . "\"$sel>" . $v . "</option>\n";
+            if (is_array($affields)) {
+                if (count($affields) > 0) { 
+                    $affdisable = "style=\"width:100%;border:1px solid #AAAAAA;background:#FFFFFF;\"";
+                }
+            }
+            echo "      <tr><td><select name=affields[] id=affields size=6 multiple $affdisable>\n";
+            $krh = get_krh($link, 'osdial_campaign_fields AS fld,osdial_campaign_forms AS frm', "fld.id AS fldid,concat(frm.name,'_',fld.name) AS ffname",'ffname','fld.form_id=frm.id');
+            if (is_array($krh)) {
+                foreach ($krh as $k) {
+                    if (is_array($affields)) {
+                        foreach ($affields as $affield) {
+                            if ($k['fldid'] != "" and $k['fldid'] == $affield) {
+                                $sel=" selected";
+                            }
+                        }
+                    }
+                    echo "        <option value=\"" . $k['fldid'] . "\"$sel>" . $k['ffname'] . "</option>\n";
+                    $affield_label[$k['fldid']] = $k['ffname'];
+                }
+            }
+            echo "      </select></td></tr>\n";
+            echo "     </table>\n";
         }
-        if ($LOG['user_level'] > 8 && $LOG['export_leads'] > 0 && ($LOG['multicomp_user'] == 0 or $LOG['company']['export_leads'] > 0)) {
-            echo "    <td align=center valign=top rowspan=4>\n";
-            echo "      <font size=2>CSV Export Fields</font><br>\n";
-            echo "      <select name=fields[] size=5 multiple>\n";
-            echo $fieldOPTS;
-            echo "      </select>\n";
-            echo "    </td>\n";
-        }
+        echo "    </td>\n";
         echo "  </tr>\n";
+
         echo "  <tr>\n";
         echo "    <td align=right><font size=2>Modified Date</font></td>\n";
-        echo "    <td align=left colspan=3>\n";
+        echo "    <td align=left>\n";
         echo "      <script>\n";
         echo "        var cal2 = new CalendarPopup('caldiv2');\n";
         echo "        cal2.showNavigationDropdowns();\n";
@@ -589,7 +650,7 @@ if ($ADD==1122) {
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=right><font size=2>Last Call Date</font></td>\n";
-        echo "    <td align=left colspan=3><font size=2>\n";
+        echo "    <td align=left><font size=2>\n";
         echo "      <script>\n";
         echo "        var cal3 = new CalendarPopup('caldiv3');\n";
         echo "        cal3.showNavigationDropdowns();\n";
@@ -618,50 +679,62 @@ if ($ADD==1122) {
         echo "  </tr>\n";
 
         echo "  <tr>\n";
-        echo "    <td>\n";
+        echo "    <td align=right><font size=2>Use Log Entries</font></td>\n";
         echo "    </td>\n";
-        echo "    <td colspan=3 align=left>\n";
-        echo "      <input type=checkbox name=use_osdial_log id=use_osdial_log value=1$check> <font size=1><label for=use_osdial_log>Output Outbound History</label></font><br>\n";
-        echo "      <input type=checkbox name=use_osdial_closer_log id=use_osdial_closer_log value=1$check2> <font size=1><label for=use_osdial_closer_log>Output Closer/Inbound History</label></font>\n";
-        echo "      <br><br>\n";
+        echo "    <td align=left>\n";
+        echo "      <input type=checkbox name=use_osdial_log id=use_osdial_log onchange=\"if (this.checked==true) use_osdial_closer_log.checked=false;\" value=1$check> <font size=1><label for=use_osdial_log>Outbound</label></font>&nbsp;&nbsp;&nbsp;\n";
+        echo "      <input type=checkbox name=use_osdial_closer_log id=use_osdial_closer_log onchange=\"if (this.checked==true) use_osdial_log.checked=false;\" value=1$check2> <font size=1><label for=use_osdial_closer_log>Closer/Inbound</label></font>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 
         echo "  <tr>\n";
+        echo "    <td colspan=2><font size=1>&nbsp;</font></td>\n";
+        echo "  </tr>\n";
+
+        echo "  <tr>\n";
         echo "    <td align=center>\n";
-        echo "      <font size=2>Campaigns</font><br>\n";
-        echo "      <select name=campaigns[] size=5 multiple>\n";
+        echo "     <table cellpadding=0 cellspacing=0 width=95%>\n";
+        echo "      <tr><td class=tabheader>Campaigns</td></tr>\n";
+        echo "      <tr><td><select name=campaigns[] size=8 multiple style=\"width:100%;\">\n";
         $krh = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name','',sprintf("campaign_id IN %s",$LOG['allowed_campaignsSQL']));
-        echo format_select_options($krh, 'campaign_id', 'campaign_id', $campaigns, "-- ALL --",$LOG['multicomp_user']);
-        echo "      </select>\n";
+        echo format_select_options($krh, 'campaign_id', 'campaign_name', $campaigns, "-- ALL --",$LOG['multicomp_user']);
+        echo "      </select></td></tr>\n";
+        echo "     </table>\n";
         echo "    </td>\n";
 
         echo "    <td align=center>\n";
-        echo "      <font size=2>Lists</font><br>\n";
-        echo "      <select name=lists[] size=5 multiple>\n";
+        echo "     <table cellpadding=0 cellspacing=0 width=95%>\n";
+        echo "      <tr><td class=tabheader>Lists</td></tr>\n";
+        echo "      <tr><td><select name=lists[] size=8 multiple style=\"width:100%;\">\n";
         $krh = get_krh($link, 'osdial_lists', 'list_id,list_name,campaign_id','',sprintf("campaign_id IN %s",$LOG['allowed_campaignsSQL']));
         echo format_select_options($krh, 'list_id', 'list_name', $lists, "-- ALL --");
-        echo "      </select>\n";
+        echo "      </select></td></tr>\n";
+        echo "     </table>\n";
         echo "    </td>\n";
 
         echo "    <td align=center>\n";
-        echo "      <font size=2>Statuses</font><br>\n";
-        echo "      <select name=statuses[] size=5 multiple>\n";
+        echo "     <table cellpadding=0 cellspacing=0 width=95%>\n";
+        echo "      <tr><td class=tabheader>Statuses</td></tr>\n";
+        echo "      <tr><td><select name=statuses[] size=8 multiple style=\"width:100%;\">\n";
         $krh = get_krh($link, 'osdial_statuses', 'status,status_name');
         $krh2 = get_krh($link, 'osdial_campaign_statuses', 'status,status_name');
         foreach ($krh2 as $k => $v) {
             $krh[$k] = $v;
         }
+        ksort($krh);
         echo format_select_options($krh, 'status', 'status_name', $statuses, "-- ALL --");
-        echo "      </select>\n";
+        echo "      </select></td></tr>\n";
+        echo "     </table>\n";
         echo "    </td>\n";
 
         echo "    <td align=center>\n";
-        echo "      <font size=2>Agents</font><br>\n";
-        echo "      <select name=agents[] size=5 multiple>\n";
+        echo "     <table cellpadding=0 cellspacing=0 width=95%>\n";
+        echo "      <tr><td class=tabheader>Agents</td></tr>\n";
+        echo "      <tr><td><select name=agents[] size=8 multiple style=\"width:100%;\">\n";
         $krh = get_krh($link, 'osdial_users', 'user,full_name','',sprintf("user_group IN %s",$LOG['allowed_usergroupsSQL']));
         echo format_select_options($krh, 'user', 'full_name', $agents, "-- ALL --",$LOG['multicomp_user']);
-        echo "      </select>\n";
+        echo "      </select></td></tr>\n";
+        echo "     </table>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
         $agents_label = Array();
@@ -670,61 +743,76 @@ if ($ADD==1122) {
         }
 
         echo "  <tr>\n";
-        echo "    <td colspan=4><br></td>\n";
+        echo "    <td colspan=4><font size=1>&nbsp;</font></td>\n";
         echo "  </tr>\n";
 
         echo "  <tr>\n";
 
         echo "    <td align=center>\n";
-        echo "      <font size=2>States</font><br>\n";
-        echo "      <select name=states[] size=5 multiple>\n";
+        echo "     <table cellpadding=0 cellspacing=0 width=95%>\n";
+        echo "      <tr><td class=tabheader>States</td></tr>\n";
+        echo "      <tr><td><select name=states[] size=8 multiple style=\"width:100%;\">\n";
         $krh = get_krh($link, 'osdial_report_groups', 'group_value,group_label', "", "group_type='states'");
         echo format_select_options($krh, 'group_value', 'group_value', $states, "-- ALL --");
-        echo "      </select>\n";
+        echo "      </select></td></tr>\n";
+        echo "     </table>\n";
         echo "    </td>\n";
 
         $timezoneOPTS="";
         $s=0;
-        foreach ($timezone_label as $k => $v) {
-            $sel="";
-            foreach ($timezones as $timezone) {
-                if ($k != "" and $v == $timezone) {
-                    $sel=" selected";
-                    $s++;
+        if (is_array($timezone_label)) {
+            foreach ($timezone_label as $k => $v) {
+                $sel="";
+                if (is_array($timezones)) {
+                    foreach ($timezones as $timezone) {
+                        if ($k != "" and $v == $timezone) {
+                            $sel=" selected";
+                            $s++;
+                        }
+                    }
                 }
+                if ($k != "") $timezoneOPTS .= "        <option value=\"" . $v . "\"$sel>" . $k . " (" . $v . ")</option>\n";
             }
-            if ($k != "") $timezoneOPTS .= "        <option value=\"" . $v . "\"$sel>" . $k . " (" . $v . ")</option>\n";
         }
         $sel="";
         if ($s==0) $sel=" selected";
         echo "    <td align=center>\n";
-        echo "      <font size=2>TimeZones</font><br>\n";
-        echo "      <select name=timezones[] size=5 multiple>\n";
+        echo "     <table cellpadding=0 cellspacing=0 width=95%>\n";
+        echo "      <tr><td class=tabheader>TimeZones</td></tr>\n";
+        echo "      <tr><td><select name=timezones[] size=8 multiple style=\"width:100%;\">\n";
         echo "        <option value=\"\"$sel>-- ALL --</option>\n";
         echo $timezoneOPTS;
-        echo "      </select>\n";
+        echo "      </select></td></tr>\n";
+        echo "     </table>\n";
         echo "    </td>\n";
 
         echo "    <td align=center>\n";
-        echo "      <font size=2>Sources</font><br>\n";
-        echo "      <select name=sources[] size=5 multiple>\n";
+        echo "     <table cellpadding=0 cellspacing=0 width=95%>\n";
+        echo "      <tr><td class=tabheader>Sources</td></tr>\n";
+        echo "      <tr><td><select name=sources[] size=8 multiple style=\"width:100%;\">\n";
         $krh = get_krh($link, 'osdial_report_groups', 'group_value,group_label', "", "group_type='lead_source_id'", "1000");
         echo format_select_options($krh, 'group_value', 'group_value', $sources, "-- ALL --");
-        echo "      </select>\n";
+        echo "      </select></td></tr>\n";
+        echo "     </table>\n";
         echo "    </td>\n";
 
         echo "    <td align=center>\n";
-        echo "      <font size=2>Vendor Codes</font><br>\n";
-        echo "      <select name=vendor_codes[] size=5 multiple>\n";
+        echo "     <table cellpadding=0 cellspacing=0 width=95%>\n";
+        echo "      <tr><td class=tabheader>Vendor Codes</td></tr>\n";
+        echo "      <tr><td><select name=vendor_codes[] size=8 multiple style=\"width:100%;\">\n";
         $krh = get_krh($link, 'osdial_report_groups', 'group_value,group_label', "", "group_type='lead_vendor_lead_code'", "1000");
         echo format_select_options($krh, 'group_value', 'group_value', $vendor_codes, "-- ALL --");
-        echo "      </select>\n";
+        echo "      </select></td></tr>\n";
+        echo "     </table>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 
+        echo "  <tr>\n";
+        echo "    <td colspan=4><font size=1>&nbsp;</font></td>\n";
+        echo "  </tr>\n";
 
         echo "  <tr>\n";
-        echo "    <td align=center colspan=4><br><font size=2>Results</font>";
+        echo "    <td align=center colspan=4><font size=2>Results</font>";
         echo "      <select name=numresults size=1>\n";
         foreach ($numresults_label as $k => $v) {
             $sel="";
@@ -750,8 +838,8 @@ if ($ADD==1122) {
         echo "    </td>\n";
         echo "  </tr>\n";
 
-        echo "  <tr>\n";
-        echo "    <th colspan=4><center><input type=submit name=submit value=SUBMIT></b></center><br></th>\n";
+        echo "  <tr class=tabfooter>\n";
+        echo "    <th colspan=4 class=tabbutton><input type=submit name=submit value=SUBMIT></th>\n";
         echo "  </tr>\n";
         echo "</table>\n";
         echo "</form>\n";
@@ -1029,6 +1117,11 @@ if ($ADD==1122) {
                 $o++;
             }
             $fld_names[] = "REC";
+            if (is_array($affields)) {
+                foreach ($affields as $affield) {
+                    $fld_names[] = $affield_label[$affield];
+                }
+            }
             fputcsv($fcsv, $fld_names);
             
             $o=0;
@@ -1038,6 +1131,13 @@ if ($ADD==1122) {
                     $rslt2=mysql_query(sprintf("SELECT location FROM recording_log WHERE lead_id='%s' ORDER BY recording_id DESC LIMIT 1;",$row[0]), $link);
                     $row2=mysql_fetch_row($rslt2);
                     $row[] = 'http://' . $_SERVER['SERVER_ADDR'] . $row2[0];
+                    if (is_array($affields)) {
+                        foreach ($affields as $affield) {
+                            $rslt2=mysql_query(sprintf("SELECT value FROM osdial_list_fields WHERE lead_id='%s' AND field_id='%s' LIMIT 1;",$row[0],$affield), $link);
+                            $row2=mysql_fetch_row($rslt2);
+                            $row[] = $row2[0];
+                        }
+                    }
                 }
                 fputcsv($fcsv, $row);
                 $o++;
