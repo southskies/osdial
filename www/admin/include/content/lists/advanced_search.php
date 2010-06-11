@@ -94,6 +94,7 @@ if ($ADD==1122) {
         $vendor_codes = get_variable("vendor_codes");
         $fields = get_variable("fields");
         $affields = get_variable("affields");
+        $scbuttons = get_variable("scbuttons");
 
         $numresults = get_variable("numresults");
         if ($numresults == "" or $numresults == 0)
@@ -573,23 +574,26 @@ if ($ADD==1122) {
                 if ($k != "") $fieldOPTS .= "        <option value=\"" . $k . "\"$sel>" . $v . "</option>\n";
             }
         }
-        echo "    <td align=center valign=top rowspan=5>\n";
+        echo "    <td align=center valign=top colspan=2 rowspan=5>\n";
         if ($LOG['user_level'] > 8 && $LOG['export_leads'] > 0 && ($LOG['multicomp_user'] == 0 or $LOG['company']['export_leads'] > 0)) {
-            echo "     <table cellpadding=0 cellspacing=0 width=95%>\n";
-            echo "      <tr><td class=tabheader>CSV Export: Fields</td></tr>\n";
-            $sjs = "fld=document.getElementById('fields');afflds=document.getElementById('affields'); if (fld.selectedIndex==-1) { afflds.disabled=true; afflds.style.background='#CCCCCC'; for (var i=0;i<afflds.options.length;i++){afflds.options[i].selected=false;} } else { afflds.disabled=false; afflds.style.background='#FFFFFF'; }";
-            echo "      <tr><td><select name=fields[] id=fields size=6 multiple onchange=\"$sjs\" style=\"width:100%;\">\n";
-            echo $fieldOPTS;
-            echo "      </select></td></tr>\n";
-            echo "     </table>\n";
-        }
-        echo "    </td>\n";
+            echo "     <table cellpadding=0 cellspacing=1 width=95%>\n";
+            echo "       <tr><td class=tabheader colspan=3>CSV Export</td></tr>\n";
+            echo "       <tr>\n";
 
-        $affield_label = Array();
-        echo "    <td align=center valign=top rowspan=5>\n";
-        if ($LOG['user_level'] > 8 && $LOG['export_leads'] > 0 && ($LOG['multicomp_user'] == 0 or $LOG['company']['export_leads'] > 0)) {
-            echo "     <table cellpadding=0 cellspacing=0 width=95%>\n";
-            echo "      <tr><td class=tabheader>CSV Export: Additional Fields</td></tr>\n";
+            echo "         <td align=center valign=top width=33%>\n";
+            echo "           <table cellpadding=0 cellspacing=0 width=95%>\n";
+            echo "             <tr><td class=tabheader>Fields</td></tr>\n";
+            $sjs = "fld=document.getElementById('fields');afflds=document.getElementById('affields'); scb=document.getElementById('scbuttons'); if (fld.selectedIndex==-1) { afflds.disabled=true; afflds.style.background='#CCCCCC'; for (var i=0;i<afflds.options.length;i++){afflds.options[i].selected=false;}; scb.disabled=true; scb.style.background='#CCCCCC'; for (var i=0;i<scb.options.length;i++){scb.options[i].selected=false;}; } else { afflds.disabled=false; afflds.style.background='#FFFFFF'; scb.disabled=false; scb.style.background='#FFFFFF'; }";
+            echo "             <tr><td><select name=fields[] id=fields size=6 multiple onchange=\"$sjs\" style=\"width:100%;\">\n";
+            echo $fieldOPTS;
+            echo "             </select></td></tr>\n";
+            echo "           </table>\n";
+            echo "         </td>\n";
+
+            $affield_label = Array();
+            echo "         <td align=center valign=top width=33%>\n";
+            echo "           <table cellpadding=0 cellspacing=0 width=95%>\n";
+            echo "             <tr><td class=tabheader>Additional Fields</td></tr>\n";
             $affdisable = "style=\"width:100%;border:1px solid #AAAAAA;background:#CCCCCC;\" disabled";
             if (is_array($fields)) {
                 if (count($fields) > 0) { 
@@ -601,7 +605,7 @@ if ($ADD==1122) {
                     $affdisable = "style=\"width:100%;border:1px solid #AAAAAA;background:#FFFFFF;\"";
                 }
             }
-            echo "      <tr><td><select name=affields[] id=affields size=6 multiple $affdisable>\n";
+            echo "             <tr><td><select name=affields[] id=affields size=6 multiple $affdisable>\n";
             $krh = get_krh($link, 'osdial_campaign_fields AS fld,osdial_campaign_forms AS frm', "fld.id AS fldid,concat(frm.name,'_',fld.name) AS ffname",'ffname','fld.form_id=frm.id');
             if (is_array($krh)) {
                 foreach ($krh as $k) {
@@ -616,7 +620,55 @@ if ($ADD==1122) {
                     $affield_label[$k['fldid']] = $k['ffname'];
                 }
             }
-            echo "      </select></td></tr>\n";
+            echo "             </select></td></tr>\n";
+            echo "           </table>\n";
+            echo "         </td>\n";
+
+            $scbutton_label = Array();
+            echo "         <td align=center valign=top width=33%>\n";
+            echo "           <table cellpadding=0 cellspacing=0 width=95%>\n";
+            echo "             <tr><td class=tabheader>Script Clicks</td></tr>\n";
+            $scbdisable = "style=\"width:100%;border:1px solid #AAAAAA;background:#CCCCCC;\" disabled";
+            if (is_array($fields)) {
+                if (count($fields) > 0) { 
+                    $scbdisable = "style=\"width:100%;border:1px solid #AAAAAA;background:#FFFFFF;\"";
+                }
+            }
+            if (is_array($scbuttons)) {
+                if (count($scbuttons) > 0) { 
+                    $scbdisable = "style=\"width:100%;border:1px solid #AAAAAA;background:#FFFFFF;\"";
+                }
+            }
+            echo "             <tr><td><select name=scbuttons[] id=scbuttons size=6 multiple $scbdisable>\n";
+            $sresults = get_krh($link, 'osdial_scripts', "script_id,script_name",'script_id','1=1');
+            if (is_array($sresults)) {
+                foreach ($sresults as $sres) {
+                    $scbutton_label[$sres['script_id']] = $sres['script_id'];
+
+                    $sbresults = get_krh($link, 'osdial_script_buttons', "script_button_id,script_id",'script_button_id',sprintf("script_id='%s'",$sres['script_id']));
+                    if (is_array($sbresults)) {
+                        foreach ($sbresults as $sbres) {
+                            $scbutton_label[$sres['script_id'] . '_' . $sbres['script_button_id']] = $sres['script_id'] . '_' . $sbres['script_button_id'];
+                        }
+                    }
+                }
+            }
+
+            foreach ($scbutton_label as $k) {
+                if (is_array($scbuttons)) {
+                    foreach ($scbuttons as $scbutton) {
+                        if ($k != "" and $k == $scbutton) {
+                            $sel=" selected";
+                        }
+                    }
+                }
+                echo "        <option value=\"" . $k . "\"$sel>" . $k . "</option>\n";
+            }
+            echo "             </select></td></tr>\n";
+            echo "           </table>\n";
+            echo "         </td>\n";
+
+            echo "       </tr>\n";
             echo "     </table>\n";
         }
         echo "    </td>\n";
@@ -689,6 +741,10 @@ if ($ADD==1122) {
 
         echo "  <tr>\n";
         echo "    <td colspan=2><font size=1>&nbsp;</font></td>\n";
+        echo "  </tr>\n";
+
+        echo "  <tr>\n";
+        echo "    <td colspan=4><font size=1>&nbsp;</font></td>\n";
         echo "  </tr>\n";
 
         echo "  <tr>\n";
@@ -1122,6 +1178,11 @@ if ($ADD==1122) {
                     $fld_names[] = $affield_label[$affield];
                 }
             }
+            if (is_array($scbuttons)) {
+                foreach ($scbuttons as $scbutton) {
+                    $fld_names[] = $scbutton_label[$scbutton];
+                }
+            }
             fputcsv($fcsv, $fld_names);
             
             $o=0;
@@ -1134,6 +1195,13 @@ if ($ADD==1122) {
                     if (is_array($affields)) {
                         foreach ($affields as $affield) {
                             $rslt2=mysql_query(sprintf("SELECT value FROM osdial_list_fields WHERE lead_id='%s' AND field_id='%s' LIMIT 1;",$row[0],$affield), $link);
+                            $row2=mysql_fetch_row($rslt2);
+                            $row[] = $row2[0];
+                        }
+                    }
+                    if (is_array($scbuttons)) {
+                        foreach ($scbuttons as $scbutton) {
+                            $rslt2=mysql_query(sprintf("SELECT script_button_id FROM osdial_script_button_log WHERE lead_id='%s' AND script_id='%s' ORDER BY event_time DESC LIMIT 1;",$row[0],$scbutton), $link);
                             $row2=mysql_fetch_row($rslt2);
                             $row[] = $row2[0];
                         }
