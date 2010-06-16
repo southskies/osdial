@@ -481,11 +481,14 @@ foreach(@campaign_id)
 		$Ds_to_print = (($#Dstatuses) + 0);
 		$STATUSsql[$i]='';
 		$o=0;
-		while ($Ds_to_print > $o) 
-			{
+		while ($Ds_to_print > $o) {
 			$o++;
-			$STATUSsql[$i] .= "'$Dstatuses[$o]',";
-			}
+                        if ($Dstatuses[$o] eq 'NEW' and $lead_order[$i] =~ / ... NEW$/) {
+                                print "lead_order has NEW, skipping NEW status" if ($DB);
+                        } else {
+                                $STATUSsql[$i] .= "'$Dstatuses[$o]',";
+                        }
+                }
 		if (length($STATUSsql[$i])<3) {$STATUSsql[$i]="''";}
 		else {chop($STATUSsql[$i]);}
 		}
