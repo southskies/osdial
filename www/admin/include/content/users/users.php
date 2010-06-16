@@ -284,6 +284,11 @@ if ($ADD=="4A") {
             $stmt="UPDATE osdial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass',delete_users='$delete_users',delete_user_groups='$delete_user_groups',delete_lists='$delete_lists',delete_campaigns='$delete_campaigns',delete_ingroups='$delete_ingroups',delete_remote_agents='$delete_remote_agents',load_leads='$load_leads',campaign_detail='$campaign_detail',ast_admin_access='$ast_admin_access',ast_delete_phones='$ast_delete_phones',delete_scripts='$delete_scripts',modify_leads='$modify_leads',hotkeys_active='$hotkeys_active',change_agent_campaign='$change_agent_campaign',agent_choose_ingroups='$agent_choose_ingroups',closer_campaigns='$groups_value',scheduled_callbacks='$scheduled_callbacks',agentonly_callbacks='$agentonly_callbacks',agentcall_manual='$agentcall_manual',osdial_recording='$osdial_recording',osdial_transfers='$osdial_transfers',delete_filters='$delete_filters',alter_agent_interface_options='$alter_agent_interface_options',closer_default_blended='$closer_default_blended',delete_call_times='$delete_call_times',modify_call_times='$modify_call_times',modify_users='$modify_users',modify_campaigns='$modify_campaigns',modify_lists='$modify_lists',modify_scripts='$modify_scripts',modify_filters='$modify_filters',modify_ingroups='$modify_ingroups',modify_usergroups='$modify_usergroups',modify_remoteagents='$modify_remoteagents',modify_servers='$modify_servers',view_reports='$view_reports',osdial_recording_override='$osdial_recording_override',alter_custdata_override='$alter_custdata_override',manual_dial_allow_skip='$manual_dial_allow_skip',export_leads='$export_leads',admin_api_access='$admin_api_access',agent_api_access='$agent_api_access',xfer_agent2agent='$xfer_agent2agent' where user='$user';";
             $rslt=mysql_query($stmt, $link);
 
+            if ($user_level==0) {
+                $stmt="UPDATE osdial_callbacks SET recipient='ANYONE' WHERE user='$user' AND status='LIVE';";
+                $rslt=mysql_query($stmt, $link);
+            }
+
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
                 $fp = fopen ("./admin_changes_log.txt", "a");
@@ -327,6 +332,11 @@ if ($ADD=="4B")
 		$stmt="UPDATE osdial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass',hotkeys_active='$hotkeys_active',agent_choose_ingroups='$agent_choose_ingroups',closer_campaigns='$groups_value',scheduled_callbacks='$scheduled_callbacks',agentonly_callbacks='$agentonly_callbacks',agentcall_manual='$agentcall_manual',osdial_recording='$osdial_recording',osdial_transfers='$osdial_transfers',closer_default_blended='$closer_default_blended',osdial_recording_override='$osdial_recording_override',alter_custdata_override='$alter_custdata_override',manual_dial_allow_skip='$manual_dial_allow_skip' where user='$user';";
 		$rslt=mysql_query($stmt, $link);
 
+        if ($user_level==0) {
+            $stmt="UPDATE osdial_callbacks SET recipient='ANYONE' WHERE user='$user' AND status='LIVE';";
+            $rslt=mysql_query($stmt, $link);
+        }
+
 		### LOG CHANGES TO LOG FILE ###
 		if ($WeBRooTWritablE > 0)
 			{
@@ -367,6 +377,11 @@ if ($ADD==4)
 
 		$stmt="UPDATE osdial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass' where user='$user';";
 		$rslt=mysql_query($stmt, $link);
+
+        if ($user_level==0) {
+            $stmt="UPDATE osdial_callbacks SET recipient='ANYONE' WHERE user='$user' AND status='LIVE';";
+            $rslt=mysql_query($stmt, $link);
+        }
 
 		### LOG CHANGES TO LOG FILE ###
 		if ($WeBRooTWritablE > 0)
@@ -431,6 +446,9 @@ if ($ADD==6)
 
 		$stmt="DELETE from osdial_inbound_group_agents where user='$user';";
 		$rslt=mysql_query($stmt, $link);
+
+        $stmt="UPDATE osdial_callbacks SET recipient='ANYONE' WHERE user='$user' AND status='LIVE';";
+        $rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
 		if ($WeBRooTWritablE > 0)
