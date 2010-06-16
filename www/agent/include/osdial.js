@@ -685,8 +685,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 					cid = lead_cust1_cid;
 					cid_name = lead_cust1_cid;
 				} else if (xfer_cid_mode == 'LEAD_CUSTOM2' && lead_cid != '') {
-					cid = lead_cust1_cid;
-					cid_name = lead_cust1_cid;
+					cid = lead_cust2_cid;
+					cid_name = lead_cust2_cid;
 				} else if (xfer_cid_mode == 'LEAD') {
 					cid = lead_cid;
 					cid_name = lead_cid;
@@ -1106,6 +1106,27 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		if (auto_dial_level == 0) {
 			RedirecTxFEr = 1;
 		}
+                var outbound_cid;
+                var outbound_cid_name;
+                lead_cust1_cid = document.osdial_form.custom1.value;
+                lead_cust2_cid = document.osdial_form.custom2.value;
+                lead_cid = document.osdial_form.phone_number.value;
+                if (xfer_cid_mode == 'LEAD_CUSTOM1' && lead_cid != '') {
+                    outbound_cid = lead_cust1_cid; 
+                    outbound_cid_name = lead_cust1_cid;
+                } else if (xfer_cid_mode == 'LEAD_CUSTOM2' && lead_cid != '') {
+                    outbound_cid = lead_cust2_cid;
+                    outbound_cid_name = lead_cust2_cid;
+                } else if (xfer_cid_mode == 'LEAD') {
+                    outbound_cid = lead_cid;
+                    outbound_cid_name = lead_cid;
+                } else if (xfer_cid_mode == 'PHONE') {
+                    outbound_cid = phone_cid;
+                    outbound_cid_name = phone_cid_name;
+                } else {
+                    outbound_cid = campaign_cid;
+                    outbound_cid_name = campaign_cid_name;
+                }
 		var xmlhttp=false;
 		/*@cc_on @*/
 		/*@if (@_jscript_version >= 5)
@@ -1164,7 +1185,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 					taskvar = 'NOTHING';
 					alert("Transfer number must have more than 1 digit:" + blindxferdialstring);
 				} else {
-					xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectVD&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&exten=" + blindxferdialstring + "&ext_context=" + ext_context + "&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + campaign + "&uniqueid=" + document.osdial_form.uniqueid.value + "&lead_id=" + document.osdial_form.lead_id.value + "&secondS=" + VD_live_call_secondS + "&session_id=" + session_id;
+					xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectVD&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&exten=" + blindxferdialstring + "&ext_context=" + ext_context + "&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + campaign + "&uniqueid=" + document.osdial_form.uniqueid.value + "&lead_id=" + document.osdial_form.lead_id.value + "&secondS=" + VD_live_call_secondS + "&session_id=" + session_id + "&outbound_cid=" + outbound_cid + "&outbound_cid_name=" + outbound_cid_name;
 				}
 			}
 			if (taskvar == 'XfeRINTERNAL') {
@@ -1185,7 +1206,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			if (taskvar == 'XfeR') {
 				var queryCID = "LRvdcW" + epoch_sec + user_abb;
 				var redirectdestination = document.osdial_form.extension_xfer.value;
-				xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectName&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&extenName=" + redirectdestination + "&ext_context=" + ext_context + "&ext_priority=1" + "&session_id=" + session_id;
+				xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectName&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&extenName=" + redirectdestination + "&ext_context=" + ext_context + "&ext_priority=1" + "&session_id=" + session_id + "&outbound_cid=" + outbound_cid + "&outbound_cid_name=" + outbound_cid_name;
 			}
 			if (taskvar == 'VMAIL') {
 				var queryCID = "LVvdcW" + epoch_sec + user_abb;
@@ -1218,7 +1239,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				DispO3wayCalLcamptail = '';
 
 
-				xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=" + redirecttype + "&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&exten=" + redirectdestination + "&ext_context=" + ext_context + "&ext_priority=1&extrachannel=" + redirectXTRAvalue + "&lead_id=" + document.osdial_form.lead_id.value + "&phone_code=" + document.osdial_form.phone_code.value + "&phone_number=" + document.osdial_form.phone_number.value+ "&filename=" + taskdebugnote + "&campaign=" + XfeRSelecT.value + "&session_id=" + session_id;
+				xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=" + redirecttype + "&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&exten=" + redirectdestination + "&ext_context=" + ext_context + "&ext_priority=1&extrachannel=" + redirectXTRAvalue + "&lead_id=" + document.osdial_form.lead_id.value + "&phone_code=" + document.osdial_form.phone_code.value + "&phone_number=" + document.osdial_form.phone_number.value+ "&filename=" + taskdebugnote + "&campaign=" + XfeRSelecT.value + "&session_id=" + session_id + "&outbound_cid=" + outbound_cid + "&outbound_cid_name=" + outbound_cid_name;
 
 				if (taskdebugnote == 'FIRST') {
 					document.getElementById("DispoSelectHAspan").innerHTML = "<a href=\"#\" onclick=\"DispoLeavE3wayAgaiN()\">Leave 3Way Call Again</a>";
@@ -1318,6 +1339,12 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			//alert(RedirecTxFEr + "|" + auto_dial_level);
                         if (taskvar == 'XfeRVMAIL') {
                                 document.osdial_form.DispoSelection.value = 'AM';
+                                dialedcall_send_hangup('NO');
+                              	alt_dial_active=0;
+                                reselect_alt_dial=0;
+                                DispoSelect_submit();
+                        } else if (taskvar == 'XfeRBLIND') {
+                                document.osdial_form.DispoSelection.value = 'XFER';
                                 dialedcall_send_hangup('NO');
                               	alt_dial_active=0;
                                 reselect_alt_dial=0;
@@ -4105,7 +4132,12 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		document.osdial_form.conf_dtmf.value = CalL_XC_a_Dtmf;
 		document.osdial_form.xfernumber.value = CalL_XC_a_NuMber;
 		//basic_originate_call(CalL_XC_a_NuMber,'NO','YES',session_id,'YES');
-		SendManualDial('YES');
+		var regAXFvars = new RegExp("AXFER","g");
+		if (CalL_XC_a_NuMber.match(regAXFvars)) {
+			mainxfer_send_redirect('XfeRBLIND',lastcustchannel,lastcustserverip);
+		} else {
+			SendManualDial('YES');
+		}
 	}
 
 	function DtMf_PreSet_b_DiaL() {
@@ -4114,7 +4146,12 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		document.osdial_form.conf_dtmf.value = CalL_XC_b_Dtmf;
 		document.osdial_form.xfernumber.value = CalL_XC_b_NuMber;
 		//basic_originate_call(CalL_XC_b_NuMber,'NO','YES',session_id,'YES');
-		SendManualDial('YES');
+		var regAXFvars = new RegExp("AXFER","g");
+		if (CalL_XC_a_NuMber.match(regAXFvars)) {
+			mainxfer_send_redirect('XfeRBLIND',lastcustchannel,lastcustserverip);
+		} else {
+			SendManualDial('YES');
+		}
 	}
 
 // ################################################################################

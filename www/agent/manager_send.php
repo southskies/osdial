@@ -1003,7 +1003,15 @@ if ($ACTION=="Redirect")
 		}
 		if ($channel_live==1)
 		{
-		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $channel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','CallerID: $queryCID','Account: $queryCID','','','','');";
+        if (strlen($outbound_cid)>1) {
+            $outCID = "\"$outbound_cid_name\" <$outbound_cid>";
+            $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Setvar','$queryCID','Channel: $channel','Variable: CALLERID(all)','Value: $outCID','Account: $queryCID','','','','','','');";
+                if ($format=='debug') {echo "\n<!-- $stmt -->";}
+            $rslt=mysql_query($stmt, $link);
+        } else {
+            $outCID = $queryCID;
+        }
+		$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $channel','Context: $ext_context','Exten: $exten','Priority: $ext_priority','CallerID: $outCID','Account: $queryCID','','','','');";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 
