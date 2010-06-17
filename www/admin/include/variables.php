@@ -522,6 +522,7 @@ $scheduled_callbacks = get_variable("scheduled_callbacks");
 $script_comments = get_variable("script_comments");
 $script_id = get_variable("script_id");
 $script_name = get_variable("script_name");
+$script_override = get_variable("script_override");
 $script_text = get_variable("script_text");
 $script_button_id = get_variable("script_button_id");
 $script_button_description = get_variable("script_button_description");

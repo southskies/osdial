@@ -201,6 +201,7 @@ if ($non_latin < 1)	{
 	### ALPHA-NUMERIC ONLY ###
 	$user_start = ereg_replace("[^0-9a-zA-Z]","",$user_start);
 	$script_id = ereg_replace("[^0-9a-zA-Z]","",$script_id);
+	$script_override = ereg_replace("[^0-9a-zA-Z]","",$script_override);
 	$script_button_id = ereg_replace("[^0-9a-zA-Z]","",$script_button_id);
 	$submit = ereg_replace("[^0-9a-zA-Z]","",$submit);
 	$campaign_cid = ereg_replace("[^0-9a-zA-Z]","",$campaign_cid);

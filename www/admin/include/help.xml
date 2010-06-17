@@ -211,6 +211,14 @@
         The option grants API access for Admin functions using this users credentials.
     </item>
 
+    <item pathId="xfer_agent2agent" title="Agent2Agent Transfers">
+      If enabled, this agent will be allowed to transfer calls to other agents that also have this option enabled.
+    </item>
+
+    <item pathId="script_override" title="Script Override">
+      This is the script ID that is forced on the agent.  The value in this field will override any script set in the campaign or list.
+    </item>
+
   </section>
 
 

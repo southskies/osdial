@@ -1001,6 +1001,16 @@ if ($ACTION == 'manDiaLnextCaLL')
                 if ($row[2] != "") $campaign_script = $row[2];
             }
 
+            # Get script override from user.
+            $stmt = "SELECT script_override FROM osdial_users WHERE user='$user';";
+            if ($DB) {echo "$stmt\n";}
+            $rslt=mysql_query($stmt, $link);
+            $user_cnt = mysql_num_rows($rslt);
+            if ($user_cnt > 0) {
+                $row=mysql_fetch_row($rslt);
+                if ($row[0] != "") $campaign_script = $row[0];
+            }
+
             $LeaD_InfO .=	$web_form_address . "\n";
             $LeaD_InfO .=	$web_form_address2 . "\n";
             $LeaD_InfO .=	$web_form_extwindow . "\n";
@@ -2104,6 +2114,16 @@ if ($ACTION == 'VDADcheckINCOMING')
                 if ($row[2] != "") $VDCL_campaign_script = $row[2];
             }
 
+            # Get script override from user.
+            $stmt = "SELECT script_override FROM osdial_users WHERE user='$user';";
+            if ($DB) {echo "$stmt\n";}
+            $rslt=mysql_query($stmt, $link);
+            $user_cnt = mysql_num_rows($rslt);
+            if ($user_cnt > 0) {
+                $row=mysql_fetch_row($rslt);
+                if ($row[0] != "") $VDCL_campaign_script = $row[0];
+            }
+
             echo "$VDCL_web_form_address|||||$VDCL_campaign_script|$VDCL_get_call_launch|$VDCL_xferconf_a_dtmf|$VDCL_xferconf_a_number|$VDCL_xferconf_b_dtmf|$VDCL_xferconf_b_number|$VDCL_default_xfer_group|$VDCL_allow_tab_switch|$VDCL_web_form_address2|$VDCL_web_form_extwin|$VDCL_web_form_extwin2|\n|\n";
 
             $stmt = "select phone_number,alt_dial from osdial_auto_calls where callerid = '$callerid' order by call_time desc limit 1;";
@@ -2236,6 +2256,16 @@ if ($ACTION == 'VDADcheckINCOMING')
                         if ($row[2] != "") $VDCL_ingroup_script = $row[2];
                     }
                 }
+
+            # Get script override from user.
+            $stmt = "SELECT script_override FROM osdial_users WHERE user='$user';";
+            if ($DB) {echo "$stmt\n";}
+            $rslt=mysql_query($stmt, $link);
+            $user_cnt = mysql_num_rows($rslt);
+            if ($user_cnt > 0) {
+                $row=mysql_fetch_row($rslt);
+                if ($row[0] != "") $VDCL_ingroup_script = $row[0];
+            }
 
             #### if web form is set then send on to osdial.php for override of WEB_FORM address
             #if ( (strlen($VDCL_group_web)>5) or (strlen($VDCL_group_name)>0) ) {echo "$VDCL_group_web|$VDCL_group_name|$VDCL_group_color|$VDCL_fronter_display|$VDADchannel_group|$VDCL_ingroup_script|$VDCL_get_call_launch|$VDCL_xferconf_a_dtmf|$VDCL_xferconf_a_number|$VDCL_xferconf_b_dtmf|$VDCL_xferconf_b_number|$VDCL_default_xfer_group|$VDCL_allow_tab_switch|$VDCL_group_web2|$VDCL_web_form_extwin|$VDCL_web_form_extwin2|\n";}

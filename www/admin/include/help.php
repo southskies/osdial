@@ -257,6 +257,16 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <B>Admin API Access -</B> The option grants API access for Admin functions using this users credentials.
 
+<BR>
+<A NAME="osdial_users-xfer_agent2agent">
+<BR>
+<B>Agent2Agent Transfers -</B> If enabled, this agent will be allowed to transfer calls to other agents that also have this option enabled.
+
+<BR>
+<A NAME="osdial_users-script_override">
+<BR>
+<B>Script Override -</B> This is the script ID that is forced on the agent.  The value in this field will override any script set in the campaign or list.
+
 
 
 
