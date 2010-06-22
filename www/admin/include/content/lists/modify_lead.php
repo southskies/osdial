@@ -454,6 +454,41 @@ if ($ADD==1121) {
 		        echo "  <br>\n";
 
 
+                $wfv['lead_id'] = $ld['lead_id'];
+                $wfv['vendor_id'] = $ld['vendor_lead_code'];
+                $wfv['list_id'] = $ld['list_id'];
+                $wfv['gmt_offset_now'] = $ld['gmt_offset_now'];
+                $wfv['phone_code'] = $ld['phone_code'];
+                $wfv['phone_number'] = $ld['phone_number'];
+                $wfv['title'] = $ld['title'];
+                $wfv['first_name'] = $ld['first_name'];
+                $wfv['middle_initial'] = $ld['middle_initial'];
+                $wfv['last_name'] = $ld['last_name'];
+                $wfv['address1'] = $ld['address1'];
+                $wfv['address2'] = $ld['address2'];
+                $wfv['address3'] = $ld['address3'];
+                $wfv['city'] = $ld['city'];
+                $wfv['state'] = $ld['state'];
+                $wfv['province'] = $ld['province'];
+                $wfv['post_code'] = $ld['postal_code'];
+                $wfv['country_code'] = $ld['country_code'];
+                $wfv['gender'] = $ld['gender'];
+                $wfv['date_of_birth'] = $ld['date_of_birth'];
+                $wfv['alt_phone'] = $ld['alt_phone'];
+                $wfv['email'] = $ld['email'];
+                $wfv['custom1'] = $ld['custom1'];
+                $wfv['custom2'] = $ld['custom2'];
+                $wfv['comments'] = $ld['comments'];
+                $wfv['user'] = $user;
+                $wfv['campaign'] = $campaign_id;
+                $wfv['fronter'] = $ld['user'];
+                $wfv['group'] = $campaign_id;
+                $wfv['phone'] = $ld['phone_number'];
+                $wfv['dispo'] = $ld['status'];
+                $wfv['dialed_number'] = $ld['phone_number'];
+                $wfv['source_id'] = $ld['source_id'];
+                $wfv['external_key'] = $ld['external_key'];
+                $wfv['post_date'] = $ld['post_date'];
 
                 $list = get_first_record($link, 'osdial_lists', '*', sprintf("list_id='%s'",$ld['list_id']));
                 $camp = $list['campaign_id'];
@@ -515,6 +550,7 @@ if ($ADD==1121) {
                                     echo "      <td align=center class=tabbutton1><input type=\"submit\" value=\"Save\"></td>\n";
                                     echo "    </tr>\n";
                                     echo "    </form>\n";
+                                    $wfv[$affrm['name'] . '_' . $affld['name']] = $alf['value'];
                                     $u++;
                                 }
                             }
@@ -685,6 +721,7 @@ if ($ADD==1121) {
 		            } else {
 			            $location = $locat;
 		            }
+                    if ($u==0) $wfv['recording_id'] = $rl['recording_id'];
 		            $u++;
 		            echo "      <tr $bgcolor class=\"row font1\">\n";
 		            echo "        <td>$u</td>\n";
@@ -717,6 +754,23 @@ if ($ADD==1121) {
                         echo "    </center>\n";
                         echo "</form>\n";
                     }
+                }
+                if (strlen($campaign_id)>0) {
+                    $camp = get_first_record($link, 'osdial_campaigns', '*', sprintf("campaign_id='%s'",mres($campaign_id)));
+                    $wvars = '';
+                    foreach ($wfv as $k => $v) {
+                        $wvars .= '&' . $k . '=' . $v;
+                    }
+                    function pwfa($wfv, $k) { return $wfv[$k]; };
+                    $wfa1 = $camp['web_form_address'] . '?1=1' . $wvars;
+                    if (preg_match('/\?/',$camp['web_form_address'])) {
+                        $wfa1 = preg_replace('/\[\[(.*)\]\]/ime', "pwfa(\$wfv,'\\1')", $camp['web_form_address']);
+                    }
+                    $wfa2 = $camp['web_form_address2'] . '?1=1' . $wvars;
+                    if (preg_match('/\?/',$camp['web_form_address2'])) {
+                        $wfa2 = preg_replace('/\[\[(.*)\]\]/ime', "pwfa(\$wfv,'\\1')", $camp['web_form_address2']);
+                    }
+                    echo "    <br><br><br><center><font size=3><a target=\"_new\" href=\"" . $wfa1 . "\">WEBFORM1</a>&nbsp;&nbsp;&nbsp;<a target=\"_new\" href=\"" . $wfa2 . "\">WEBFORM2</a></font></center>";
                 }
                 echo "    <br><br><br>\n";
             } else {
