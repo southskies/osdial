@@ -1348,6 +1348,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
                                 dialedcall_send_hangup('NO');
                               	alt_dial_active=0;
                                 reselect_alt_dial=0;
+				document.osdial_form.DispoSelectStop.checked=true;
                                 DispoSelect_submit();
                         } else {
                                 dialedcall_send_hangup();

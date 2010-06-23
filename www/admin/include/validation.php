@@ -307,6 +307,7 @@ if ($non_latin < 1)	{
 	
 	### ALPHA-NUMERIC and spaces
 	$lead_order = ereg_replace("[^ 0-9a-zA-Z]","",$lead_order);
+	$script_button_label = ereg_replace("[^0-9a-zA-Z]","",$script_button_label);
 	### ALPHA-NUMERIC and hash
 	$group_color = ereg_replace("[^\#0-9a-zA-Z]","",$group_color);
 	

@@ -1749,8 +1749,8 @@ else
             }
 
             foreach ($buttons as $button) {
-                $hbutton = "<input type=\"button\" value=\"" . $button['script_button_label'] . "\" onclick=\"ScriptButtonLog('" . $row[0] . "' &#43; script_last_click,'" . $button['script_button_id'] . "'); script_last_click='_" . $button['script_button_id'] . "'; $hidebuttons document.getElementById('SCRIPT_" . $button['script_button_id'] . "').style.display='block';\">";
-                $PMMscripttext = eregi_replace('\{\{' . $button['script_button_id'] . '\}\}',$hbutton,$PMMscripttext);
+                $PMMscripttext = preg_replace('/\{\{' . $button['script_button_id'] . '\}\}/im', '{{' . $button['script_button_id'] . ':' . $button['script_button_label'] . '}}',$PMMscripttext);
+                $PMMscripttext = preg_replace('/\{\{' . $button['script_button_id'] . ':(.*)\}\}/im', '<input type="button" value="$1" onclick="ScriptButtonLog(\'' . $row[0] . '\' &#43; script_last_click,\'' . $button['script_button_id'] . '\'); script_last_click=\'_' . $button['script_button_id'] . '\'; ' . $hidebuttons . ' document.getElementById(\'SCRIPT_' . $button['script_button_id'] . '\').style.display=\'block\';">',$PMMscripttext);
             }
         }
 
