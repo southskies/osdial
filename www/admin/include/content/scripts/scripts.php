@@ -271,12 +271,12 @@ $script_text = eregi_replace('\[\[EFcustom2\]\]',         $EFcustom2,$script_tex
 
 $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'");
 foreach ($buttons as $button) {
-    $script_text = preg_replace('/\{\{' . $button['script_button_id'] . '\}\}/im', '{{' . $button['script_button_id'] . ':' . $button['script_button_label'] . '}}',$script_text);
-    $script_text = preg_replace('/\{\{' . $button['script_button_id'] . ':(.*)\}\}/im', '<input type="button" value="$1" onclick="' . $hidebuttons . ' document.getElementById(\'SCRIPT_' . $button['script_button_id'] . '\').style.display=\'block\';">',$script_text);
+    $script_text = preg_replace('/\{\{' . $button['script_button_id'] . '\}\}/imU', '{{' . $button['script_button_id'] . ':' . $button['script_button_label'] . '}}',$script_text);
+    $script_text = preg_replace('/\{\{' . $button['script_button_id'] . ':(.*)\}\}/imU', '<input type="button" value="$1" onclick="' . $hidebuttons . ' document.getElementById(\'SCRIPT_' . $button['script_button_id'] . '\').style.display=\'block\';">',$script_text);
 }
 
-$script_text = preg_replace('/\{\{DISPO:(.*):(.*)\}\}/im','<input type="button" value="$2" onclick="alert(\'Disposition as $1 and Hangup\');">',$script_text);
-$script_text = preg_replace('/\[\[(\w+)\]\]/i','<input type="text" value="$1" size="30">',$script_text);
+$script_text = preg_replace('/\{\{DISPO:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="alert(\'Disposition as $1 and Hangup\');">',$script_text);
+$script_text = preg_replace('/\[\[(\w+)\]\]/imU','<input type="text" value="$1" size="30">',$script_text);
 
 $script_text = eregi_replace("\n","",$script_text);
 
