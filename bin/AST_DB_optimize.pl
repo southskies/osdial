@@ -318,6 +318,16 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 			if(!$Q){print STDERR "\n|$affected_rows osdial_campaign_agents call counts reset|\n";}
 			}
 
+	# update the osdial_report_groups table
+	$stmtA =  "INSERT IGNORE INTO osdial_report_groups";
+	$stmtA .= "  (SELECT 'states' AS group_type,state AS group_value,state AS group_label FROM osdial_postal_codes WHERE country_code='1' GROUP BY state)";
+        $stmtA .= "  UNION";
+        $stmtA .= "   (SELECT 'lead_source_id' AS group_type,source_id AS group_value,source_id AS group_label FROM osdial_list WHERE source_id!='' GROUP BY source_id)";
+        $stmtA .= "  UNION";
+        $stmtA .= "   (SELECT 'lead_vendor_lead_code' AS group_type,vendor_lead_code AS group_value,vendor_lead_code AS group_label FROM osdial_list WHERE vendor_lead_code!='' GROUP BY vendor_lead_code);";
+	if($DB){print STDERR "\n|$stmtA|\n";}
+	if (!$T) {	$affected_rows = $dbhA->do($stmtA);}
+	if (!$Q) {print " - osdial_report_groups refresh\n";}
 
 		$dbhA->disconnect();
 
