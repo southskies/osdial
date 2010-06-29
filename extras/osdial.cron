@@ -8,6 +8,9 @@
 28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f
 29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f
 
+### (sql) remove old csv exports more than 2 days old
+24 0 * * * /usr/bin/find /opt/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs rm -f
+
 ### (sql) Actual Scrub against external DNC
 * * * * * /opt/osdial/bin/osdial_external_dnc.pl
 
