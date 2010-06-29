@@ -264,6 +264,51 @@ function report_agent_stats() {
         $table .= "</table>\n";
         
 
+        $stmt=sprintf("SELECT user,event_time AS pause_start,DATE_ADD(event_time,INTERVAL pause_sec SECOND) AS pause_end,pause_sec,sub_status AS pause_code FROM osdial_agent_log WHERE osdial_agent_log.user_group IN %s AND osdial_agent_log.user='%s' AND event_time BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND sub_status IS NOT NULL AND sub_status != 'LOGIN' AND pause_sec>0 ORDER BY user,event_time;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date));
+        $rslt=mysql_query($stmt, $link);
+        $pauses_to_print = mysql_num_rows($rslt);
+        
+        $table .= "  <br>\n";
+        $table .= "  <center><font color=$default_text size=3><b>PAUSE CODE SUMMARY</b></font></center>\n";
+        $table .= "  <table align=center width=500 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $table .= "    <tr class=tabheader>\n";
+        $table .= "      <td>START</td>\n";
+        $table .= "      <td>END</td>\n";
+        $table .= "      <td>TIME</td>\n";
+        $table .= "      <td>CODE</td>\n";
+        $table .= "    </tr>\n";
+
+        $psecs=0;
+        $u=0;
+        while ($pauses_to_print > $u) {
+            $row=mysql_fetch_row($rslt);
+            if (eregi("1$|3$|5$|7$|9$", $u)) {
+                $bgcolor='bgcolor="' . $oddrows . '"';
+            } else {
+                $bgcolor='bgcolor="' . $evenrows . '"';
+            }
+
+            $table .= "  <tr $bgcolor class=\"row font1\">\n";
+            $table .= "    <td align=center>$row[1]</td>\n";
+            $table .= "    <td align=center>$row[2]</td>\n";
+            $table .= "    <td align=right>$row[3]</td>\n";
+            $table .= "    <td align=left>$row[4]</td>\n";
+            $table .= "  </tr>\n";
+            $psecs += $row[3];
+        
+            $u++;
+        }
+
+        $table .= "  <tr class=tabfooter>\n";
+        $table .= "    <td>TOTAL</td>";
+        $table .= "    <td></td>\n";
+        $table .= "    <td align=right>" . fmt_hms($psecs) . "</td>\n";
+        $table .= "    <td></td>\n";
+        $table .= "  </tr>\n";
+        $table .= "</table>\n";
+
+
+
         
         #$stmt="select * from osdial_log where user='" . mres($agent) . "' and call_date >= '" . mres($begin_date) . " 0:00:01'  and call_date <= '" . mres($end_date) . " 23:59:59' order by call_date desc limit 10000;";
         $stmt=sprintf("SELECT osdial_agent_log.event_time, osdial_agent_log.wait_sec, osdial_agent_log.talk_sec, osdial_agent_log.dispo_sec, osdial_agent_log.pause_sec, osdial_agent_log.status, osdial_list.phone_number, osdial_agent_log.user_group, osdial_agent_log.campaign_id, osdial_list.list_id, osdial_agent_log.lead_id FROM osdial_agent_log JOIN osdial_log ON (osdial_agent_log.lead_id=osdial_log.lead_id) JOIN osdial_list ON (osdial_agent_log.lead_id=osdial_list.lead_id) WHERE osdial_agent_log.user_group IN %s AND osdial_agent_log.user='%s' AND event_time BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND osdial_log.user='%s' AND call_date BETWEEN '%s 0:00:01' AND '%s 23:59:59' ORDER BY osdial_agent_log.event_time DESC LIMIT 10000;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date),$company_prefix . mres($agent),mres($begin_date),mres($end_date));

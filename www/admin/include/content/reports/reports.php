@@ -77,6 +77,7 @@ if ($LOGview_reports==1) {
             echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=20\"><font face=\"arial,helvetica\" size=2>Agent Timesheet</a></font>";
             echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=21\"><font face=\"arial,helvetica\" size=2>Agent Stats</a></font>";
             echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=22\"><font face=\"arial,helvetica\" size=2>Agent Status</a></font>";
+            echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=25\"><font face=\"arial,helvetica\" size=2>Agent Pause Summary</a></font>";
             echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=24\"><font face=\"arial,helvetica\" size=2>User-Group Hourly Status</a></font>";
             if ($LOG['multicomp_user'] == 0) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_server_performance.php\"><font face=\"arial,helvetica\" size=2>Server Performance</a></font>";
 
@@ -154,6 +155,9 @@ if ($LOGview_reports==1) {
             } elseif ($SUB==24) {
                 require($WeBServeRRooT . '/admin/include/content/reports/usergroup_hourly.php');
                 echo report_usergroup_hourly();
+            } elseif ($SUB==25) {
+                require($WeBServeRRooT . '/admin/include/content/reports/agent_pause_summary.php');
+                echo report_agent_pause_summary();
             }
         }
     }
