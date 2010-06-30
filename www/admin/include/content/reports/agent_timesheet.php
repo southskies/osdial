@@ -99,11 +99,12 @@ function report_agent_timesheet() {
     $form .= "</form>\n\n";
     $form .= "<div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;layer-background-color:white;\"></div>\n";
 
+    $query_date_BEGIN = "$query_date 00:00:00";   
+    $query_date_END = "$query_date 23:59:59";
+    $time_BEGIN = "00:00:00";   
+    $time_END = "23:59:59";
+
     if ($agent) {
-        $query_date_BEGIN = "$query_date 00:00:00";   
-        $query_date_END = "$query_date 23:59:59";
-        $time_BEGIN = "00:00:00";   
-        $time_END = "23:59:59";
 
         $plain .= "OSDIAL: Agent Time Sheet                             $NOW_TIME\n";
 
@@ -121,30 +122,16 @@ function report_agent_timesheet() {
         $firstlog = $row[0];
         $start = $row[1];
 
-        $stmt=sprintf("SELECT event_time,UNIX_TIMESTAMP(event_time) FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time DESC LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$company_prefix . mres($agent));
+        $stmt=sprintf("SELECT FROM_UNIXTIME(dispo_epoch),dispo_epoch FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time DESC LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$company_prefix . mres($agent));
         $rslt=mysql_query($stmt, $link);
-        if ($DB) {$rslt .= "$stmt\n";}
+        if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
 
         $plain .= "LAST LOG ACTIVITY:    $row[0]\n";
         $lastlog = $row[0];
         $end = $row[1];
 
-        $login_time = ($end - $start);
-        $LOGIN_TIME_H = ($login_time / 3600);
-        $LOGIN_TIME_H = round($LOGIN_TIME_H, 2);
-        $LOGIN_TIME_H_int = intval("$LOGIN_TIME_H");
-        $LOGIN_TIME_M = ($LOGIN_TIME_H - $LOGIN_TIME_H_int);
-        $LOGIN_TIME_M = ($LOGIN_TIME_M * 60);
-        $LOGIN_TIME_M = round($LOGIN_TIME_M, 2);
-        $LOGIN_TIME_M_int = intval("$LOGIN_TIME_M");
-        $LOGIN_TIME_S = ($LOGIN_TIME_M - $LOGIN_TIME_M_int);
-        $LOGIN_TIME_S = ($LOGIN_TIME_S * 60);
-        $LOGIN_TIME_S = round($LOGIN_TIME_S, 0);
-        if ($LOGIN_TIME_S < 10) {$LOGIN_TIME_S = "0$LOGIN_TIME_S";}
-        if ($LOGIN_TIME_M_int < 10) {$LOGIN_TIME_M_int = "0$LOGIN_TIME_M_int";}
-        $LOGIN_TIME_HMS = "$LOGIN_TIME_H_int:$LOGIN_TIME_M_int:$LOGIN_TIME_S";
-        $pfLOGIN_TIME_HMS =        sprintf("%8s", $LOGIN_TIME_HMS);
+        $pfLOGIN_TIME_HMS = fmt_hms($end - $start);
 
         $plain .= "-----------------------------------------\n";
         $plain .= "TOTAL LOGGED-IN TIME:    $pfLOGIN_TIME_HMS\n";
@@ -184,132 +171,19 @@ function report_agent_timesheet() {
         if ($DB) {$plain .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
 
-        $TOTAL_TIME = ($row[1] + $row[3] + $row[5] + $row[7]);
 
-        $TOTAL_TIME_H = ($TOTAL_TIME / 3600);
-        $TOTAL_TIME_H = round($TOTAL_TIME_H, 2);
-        $TOTAL_TIME_H_int = intval("$TOTAL_TIME_H");
-        $TOTAL_TIME_M = ($TOTAL_TIME_H - $TOTAL_TIME_H_int);
-        $TOTAL_TIME_M = ($TOTAL_TIME_M * 60);
-        $TOTAL_TIME_M = round($TOTAL_TIME_M, 2);
-        $TOTAL_TIME_M_int = intval("$TOTAL_TIME_M");
-        $TOTAL_TIME_S = ($TOTAL_TIME_M - $TOTAL_TIME_M_int);
-        $TOTAL_TIME_S = ($TOTAL_TIME_S * 60);
-        $TOTAL_TIME_S = round($TOTAL_TIME_S, 0);
-        if ($TOTAL_TIME_S < 10) {$TOTAL_TIME_S = "0$TOTAL_TIME_S";}
-        if ($TOTAL_TIME_M_int < 10) {$TOTAL_TIME_M_int = "0$TOTAL_TIME_M_int";}
-        $TOTAL_TIME_HMS = "$TOTAL_TIME_H_int:$TOTAL_TIME_M_int:$TOTAL_TIME_S";
-        $pfTOTAL_TIME_HMS =        sprintf("%8s", $TOTAL_TIME_HMS);
+        $pfTOTAL_TIME_HMS = fmt_hms($row[1] + $row[3] + $row[5] + $row[7]);
+        $pfTALK_TIME_HMS = fmt_hms($row[1]);
+        $pfPAUSE_TIME_HMS = fmt_hms($row[3]);
+        $pfWAIT_TIME_HMS = fmt_hms($row[5]);
+        $pfWRAPUP_TIME_HMS = fmt_hms($row[7]);
 
-        $TALK_TIME_H = ($row[1] / 3600);
-        $TALK_TIME_H = round($TALK_TIME_H, 2);
-        $TALK_TIME_H_int = intval("$TALK_TIME_H");
-        $TALK_TIME_M = ($TALK_TIME_H - $TALK_TIME_H_int);
-        $TALK_TIME_M = ($TALK_TIME_M * 60);
-        $TALK_TIME_M = round($TALK_TIME_M, 2);
-        $TALK_TIME_M_int = intval("$TALK_TIME_M");
-        $TALK_TIME_S = ($TALK_TIME_M - $TALK_TIME_M_int);
-        $TALK_TIME_S = ($TALK_TIME_S * 60);
-        $TALK_TIME_S = round($TALK_TIME_S, 0);
-        if ($TALK_TIME_S < 10) {$TALK_TIME_S = "0$TALK_TIME_S";}
-        if ($TALK_TIME_M_int < 10) {$TALK_TIME_M_int = "0$TALK_TIME_M_int";}
-        $TALK_TIME_HMS = "$TALK_TIME_H_int:$TALK_TIME_M_int:$TALK_TIME_S";
-        $pfTALK_TIME_HMS =        sprintf("%8s", $TALK_TIME_HMS);
+        $pfTOTAL_AVG_MS = fmt_ms($row[9]);
+        $pfTALK_AVG_MS = fmt_ms($row[2]);
+        $pfPAUSE_AVG_MS = fmt_ms($row[4]);
+        $pfWAIT_AVG_MS = fmt_ms($row[6]);
+        $pfWRAPUP_AVG_MS = fmt_ms($row[8]);
 
-        $PAUSE_TIME_H = ($row[3] / 3600);
-        $PAUSE_TIME_H = round($PAUSE_TIME_H, 2);
-        $PAUSE_TIME_H_int = intval("$PAUSE_TIME_H");
-        $PAUSE_TIME_M = ($PAUSE_TIME_H - $PAUSE_TIME_H_int);
-        $PAUSE_TIME_M = ($PAUSE_TIME_M * 60);
-        $PAUSE_TIME_M = round($PAUSE_TIME_M, 2);
-        $PAUSE_TIME_M_int = intval("$PAUSE_TIME_M");
-        $PAUSE_TIME_S = ($PAUSE_TIME_M - $PAUSE_TIME_M_int);
-        $PAUSE_TIME_S = ($PAUSE_TIME_S * 60);
-        $PAUSE_TIME_S = round($PAUSE_TIME_S, 0);
-        if ($PAUSE_TIME_S < 10) {$PAUSE_TIME_S = "0$PAUSE_TIME_S";}
-        if ($PAUSE_TIME_M_int < 10) {$PAUSE_TIME_M_int = "0$PAUSE_TIME_M_int";}
-        $PAUSE_TIME_HMS = "$PAUSE_TIME_H_int:$PAUSE_TIME_M_int:$PAUSE_TIME_S";
-        $pfPAUSE_TIME_HMS =        sprintf("%8s", $PAUSE_TIME_HMS);
-
-        $WAIT_TIME_H = ($row[5] / 3600);
-        $WAIT_TIME_H = round($WAIT_TIME_H, 2);
-        $WAIT_TIME_H_int = intval("$WAIT_TIME_H");
-        $WAIT_TIME_M = ($WAIT_TIME_H - $WAIT_TIME_H_int);
-        $WAIT_TIME_M = ($WAIT_TIME_M * 60);
-        $WAIT_TIME_M = round($WAIT_TIME_M, 2);
-        $WAIT_TIME_M_int = intval("$WAIT_TIME_M");
-        $WAIT_TIME_S = ($WAIT_TIME_M - $WAIT_TIME_M_int);
-        $WAIT_TIME_S = ($WAIT_TIME_S * 60);
-        $WAIT_TIME_S = round($WAIT_TIME_S, 0);
-        if ($WAIT_TIME_S < 10) {$WAIT_TIME_S = "0$WAIT_TIME_S";}
-        if ($WAIT_TIME_M_int < 10) {$WAIT_TIME_M_int = "0$WAIT_TIME_M_int";}
-        $WAIT_TIME_HMS = "$WAIT_TIME_H_int:$WAIT_TIME_M_int:$WAIT_TIME_S";
-        $pfWAIT_TIME_HMS =        sprintf("%8s", $WAIT_TIME_HMS);
-
-        $WRAPUP_TIME_H = ($row[7] / 3600);
-        $WRAPUP_TIME_H = round($WRAPUP_TIME_H, 2);
-        $WRAPUP_TIME_H_int = intval("$WRAPUP_TIME_H");
-        $WRAPUP_TIME_M = ($WRAPUP_TIME_H - $WRAPUP_TIME_H_int);
-        $WRAPUP_TIME_M = ($WRAPUP_TIME_M * 60);
-        $WRAPUP_TIME_M = round($WRAPUP_TIME_M, 2);
-        $WRAPUP_TIME_M_int = intval("$WRAPUP_TIME_M");
-        $WRAPUP_TIME_S = ($WRAPUP_TIME_M - $WRAPUP_TIME_M_int);
-        $WRAPUP_TIME_S = ($WRAPUP_TIME_S * 60);
-        $WRAPUP_TIME_S = round($WRAPUP_TIME_S, 0);
-        if ($WRAPUP_TIME_S < 10) {$WRAPUP_TIME_S = "0$WRAPUP_TIME_S";}
-        if ($WRAPUP_TIME_M_int < 10) {$WRAPUP_TIME_M_int = "0$WRAPUP_TIME_M_int";}
-        $WRAPUP_TIME_HMS = "$WRAPUP_TIME_H_int:$WRAPUP_TIME_M_int:$WRAPUP_TIME_S";
-        $pfWRAPUP_TIME_HMS =        sprintf("%8s", $WRAPUP_TIME_HMS);
-
-        $TALK_AVG_M = ($row[2] / 60);
-        $TALK_AVG_M = round($TALK_AVG_M, 2);
-        $TALK_AVG_M_int = intval("$TALK_AVG_M");
-        $TALK_AVG_S = ($TALK_AVG_M - $TALK_AVG_M_int);
-        $TALK_AVG_S = ($TALK_AVG_S * 60);
-        $TALK_AVG_S = round($TALK_AVG_S, 0);
-        if ($TALK_AVG_S < 10) {$TALK_AVG_S = "0$TALK_AVG_S";}
-        $TALK_AVG_MS = "$TALK_AVG_M_int:$TALK_AVG_S";
-        $pfTALK_AVG_MS =        sprintf("%6s", $TALK_AVG_MS);
-
-        $PAUSE_AVG_M = ($row[4] / 60);
-        $PAUSE_AVG_M = round($PAUSE_AVG_M, 2);
-        $PAUSE_AVG_M_int = intval("$PAUSE_AVG_M");
-        $PAUSE_AVG_S = ($PAUSE_AVG_M - $PAUSE_AVG_M_int);
-        $PAUSE_AVG_S = ($PAUSE_AVG_S * 60);
-        $PAUSE_AVG_S = round($PAUSE_AVG_S, 0);
-        if ($PAUSE_AVG_S < 10) {$PAUSE_AVG_S = "0$PAUSE_AVG_S";}
-        $PAUSE_AVG_MS = "$PAUSE_AVG_M_int:$PAUSE_AVG_S";
-        $pfPAUSE_AVG_MS =        sprintf("%6s", $PAUSE_AVG_MS);
-
-        $WAIT_AVG_M = ($row[6] / 60);
-        $WAIT_AVG_M = round($WAIT_AVG_M, 2);
-        $WAIT_AVG_M_int = intval("$WAIT_AVG_M");
-        $WAIT_AVG_S = ($WAIT_AVG_M - $WAIT_AVG_M_int);
-        $WAIT_AVG_S = ($WAIT_AVG_S * 60);
-        $WAIT_AVG_S = round($WAIT_AVG_S, 0);
-        if ($WAIT_AVG_S < 10) {$WAIT_AVG_S = "0$WAIT_AVG_S";}
-        $WAIT_AVG_MS = "$WAIT_AVG_M_int:$WAIT_AVG_S";
-        $pfWAIT_AVG_MS =        sprintf("%6s", $WAIT_AVG_MS);
-
-        $WRAPUP_AVG_M = ($row[8] / 60);
-        $WRAPUP_AVG_M = round($WRAPUP_AVG_M, 2);
-        $WRAPUP_AVG_M_int = intval("$WRAPUP_AVG_M");
-        $WRAPUP_AVG_S = ($WRAPUP_AVG_M - $WRAPUP_AVG_M_int);
-        $WRAPUP_AVG_S = ($WRAPUP_AVG_S * 60);
-        $WRAPUP_AVG_S = round($WRAPUP_AVG_S, 0);
-        if ($WRAPUP_AVG_S < 10) {$WRAPUP_AVG_S = "0$WRAPUP_AVG_S";}
-        $WRAPUP_AVG_MS = "$WRAPUP_AVG_M_int:$WRAPUP_AVG_S";
-        $pfWRAPUP_AVG_MS =        sprintf("%6s", $WRAPUP_AVG_MS);
-
-        $TOTAL_AVG_M = ($row[9] / 60);
-        $TOTAL_AVG_M = round($TOTAL_AVG_M, 2);
-        $TOTAL_AVG_M_int = intval("$TOTAL_AVG_M");
-        $TOTAL_AVG_S = ($TOTAL_AVG_M - $TOTAL_AVG_M_int);
-        $TOTAL_AVG_S = ($TOTAL_AVG_S * 60);
-        $TOTAL_AVG_S = round($TOTAL_AVG_S, 0);
-        if ($TOTAL_AVG_S < 10) {$TOTAL_AVG_S = "0$TOTAL_AVG_S";}
-        $TOTAL_AVG_MS = "$TOTAL_AVG_M_int:$TOTAL_AVG_S";
-        $pfTOTAL_AVG_MS =        sprintf("%6s", $TOTAL_AVG_MS);
 
         $plain .= "TOTAL CALLS TAKEN: $row[0]\n";
         $plain .= "PAUSE TIME:              $pfPAUSE_TIME_HMS     AVERAGE: $pfPAUSE_AVG_MS\n";
@@ -366,6 +240,102 @@ function report_agent_timesheet() {
         $table .= "  </tr>\n";
         $table .= "</table>\n";
 
+    } else {
+        # Call Summary
+        $stmt=sprintf("SELECT user,count(*) as calls,sum(talk_sec) as talk,avg(talk_sec),sum(pause_sec),avg(pause_sec),sum(wait_sec),avg(wait_sec),sum(dispo_sec),avg(dispo_sec),avg(talk_sec+pause_sec+wait_sec+dispo_sec) FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' AND event_time >= '%s' AND pause_sec<36000 AND wait_sec<36000 AND talk_sec<36000 AND dispo_sec<36000 AND status IS NOT NULL and status != '' group by user;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN));
+        $rslt=mysql_query($stmt, $link);
+        if ($DB) {$plain .= "$stmt\n";}
+
+        $table .= "<br>\n";
+        $table .= "<table align=center cellspacing=0 cellpadding=0>\n";
+        $table .= "  <tr><td align=center><font color=$default_text size=3>AGENT TIMES</font></td></tr>\n";
+        $table .= "  <tr>\n";
+        $table .= "    <td align=center>\n";
+        $table .= "      <table width=800 align=center cellspacing=1 bgcolor=grey>\n";
+        $table .= "        <tr class=tabheader>\n";
+        $table .= "          <td>AGENT</td>\n";
+        $table .= "          <td>FIRST LOGIN</td>\n";
+        $table .= "          <td>LAST ACTIVITY</td>\n";
+        $table .= "          <td>CALLS</td>\n";
+        $table .= "          <td>TOTAL TIME</td>\n";
+        $table .= "          <td>AVG TIME</td>\n";
+        $table .= "          <td>TOTAL PAUSE</td>\n";
+        $table .= "          <td>AVG PAUSE</td>\n";
+        $table .= "          <td>TOTAL WAIT</td>\n";
+        $table .= "          <td>AVG WAIT</td>\n";
+        $table .= "          <td>TOTAL TALK</td>\n";
+        $table .= "          <td>AVG TALK</td>\n";
+        $table .= "          <td>TOTAL DISPO</td>\n";
+        $table .= "          <td>AVG DISPO</td>\n";
+        $table .= "        </tr>\n";
+
+        $CSVrows=0;
+        $export = "<form target=\"_new\" method=\"POST\" action=\"/admin/tocsv.php\">";
+        $export .= "<input type=hidden name=\"name\" value=\"css\">";
+        $csvhead = "Agent|First Login|Last Activity|Calls|Total Time|Avg Time|Total Pause|Avg Pause|Total Wait|Avg Wait|Total Talk|Avg Talk|Total Dispo|Avg Dispo";
+        $export .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"" . $csvhead . "\">";
+        $CSVrows++;
+
+        $i=0;
+        while ($row=mysql_fetch_row($rslt)) {
+
+            $pfTOTAL_TIME_HMS = fmt_hms($row[2] + $row[4] + $row[6] + $row[8]);
+            $pfTALK_TIME_HMS = fmt_hms($row[2]);
+            $pfPAUSE_TIME_HMS = fmt_hms($row[4]);
+            $pfWAIT_TIME_HMS = fmt_hms($row[6]);
+            $pfWRAPUP_TIME_HMS = fmt_hms($row[8]);
+
+            $pfTOTAL_AVG_MS = fmt_ms($row[10]);
+            $pfTALK_AVG_MS = fmt_ms($row[3]);
+            $pfPAUSE_AVG_MS = fmt_ms($row[5]);
+            $pfWAIT_AVG_MS = fmt_ms($row[7]);
+            $pfWRAPUP_AVG_MS = fmt_ms($row[9]);
+
+            $stmt2=sprintf("SELECT event_time FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$row[0]);
+            $rslt2=mysql_query($stmt2, $link);
+            if ($DB) {$html .= "$stmt2\n";}
+            $row2=mysql_fetch_row($rslt2);
+            $firstlog = $row2[0];
+
+            $stmt2=sprintf("SELECT FROM_UNIXTIME(dispo_epoch) FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time DESC LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$row[0]);
+            $rslt2=mysql_query($stmt2, $link);
+            if ($DB) {$html .= "$stmt2\n";}
+            $row2=mysql_fetch_row($rslt2);
+            $lastlog = $row2[0];
+
+            $table .= "        <tr " . bgcolor($i) . " class=\"row font1\">\n";
+            $table .= "          <td align=left>$row[0]</td>\n";
+            $table .= "          <td align=right>$firstlog</td>\n";
+            $table .= "          <td align=right>$lastlog</td>\n";
+            $table .= "          <td align=right>$row[1]</td>\n";
+            $table .= "          <td align=right>$pfTOTAL_TIME_HMS</td>\n";
+            $table .= "          <td align=right>$pfTOTAL_AVG_MS</td>\n";
+            $table .= "          <td align=right>$pfPAUSE_TIME_HMS</td>\n";
+            $table .= "          <td align=right>$pfPAUSE_AVG_MS</td>\n";
+            $table .= "          <td align=right>$pfWAIT_TIME_HMS</td>\n";
+            $table .= "          <td align=right>$pfWAIT_AVG_MS</td>\n";
+            $table .= "          <td align=right>$pfTALK_TIME_HMS</td>\n";
+            $table .= "          <td align=right>$pfTALK_AVG_MS</td>\n";
+            $table .= "          <td align=right>$pfWRAPUP_TIME_HMS</td>\n";
+            $table .= "          <td align=right>$pfWRAPUP_AVG_MS</td>\n";
+            $table .= "        </tr>\n";
+
+            $line = $row[0] .'|'. $firstlog .'|'. $lastlog .'|'. $row[1] .'|\''. $pfTOTAL_TIME_HMS .'|\''. $pfTOTAL_AVG_MS .'|\''. $pfPAUSE_TIME_HMS .'|\''. $pfPAUSE_AVG_MS .'|\''. $pfWAIT_TIME_HMS .'|\''. $pfWAIT_AVG_MS .'|\''. $pfTALK_TIME_HMS .'|\''. $pfTALK_AVG_MS .'|\''. $pfWRAPUP_TIME_HMS .'|\''. $pfWRAPUP_AVG_MS;
+            $export .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"" . $line . "\">";
+            $CSVrows++;
+            $i++;
+        }
+
+        $table .= "      </table>\n";
+        $table .= "    </td>\n";
+        $table .= "  </tr>\n";
+        $table .= "</table>\n";
+
+        $export .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">";
+        $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
+        $export .= "</form>";
+
+        $table .= "<div class=noprint><center>$export</center></div>";
     }
 
     $html .= "<div class=noprint>$head</div>\n";
