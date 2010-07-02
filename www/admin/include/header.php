@@ -340,14 +340,14 @@ if (strlen($lists_hh) > 1) {
     echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=100\"> Show Lists </a> &nbsp; &nbsp; &nbsp;\n";
     echo "        <a href=\"$PHP_SELF?ADD=111\"> Add A New List </a> &nbsp; &nbsp; &nbsp;\n";
-    echo "        <a href=\"$PHP_SELF?ADD=112\"> Search For A Lead </a> &nbsp; &nbsp; &nbsp;\n";
-    echo "        <a href=\"$PHP_SELF?ADD=1122\"> Advanced Lead Search </a> &nbsp; &nbsp; &nbsp;\n";
+    #echo "        <a href=\"$PHP_SELF?ADD=112\"> Search For A Lead </a> &nbsp; &nbsp; &nbsp;\n";
+    echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=26\"> Lead Search </a> &nbsp; &nbsp; &nbsp;\n";
     echo "        <a href=\"$PHP_SELF?ADD=121\"> Add Number To DNC </a> &nbsp; &nbsp; &nbsp;\n";
     if ($LOG['user_level'] > 7 && $LOG['load_leads'] > 0) {
-        echo "        <a href=\"$PHP_SELF?ADD=122\"> Load New Leads </a> &nbsp; &nbsp; &nbsp;\n";
+        echo "        <a href=\"$PHP_SELF?ADD=122\"> Load Leads </a> &nbsp; &nbsp; &nbsp;\n";
     }
     if ($LOG['user_level'] > 8 && $LOG['export_leads'] > 0 && ($LOG['multicomp_user'] == 0 or $LOG['company']['export_leads'] > 0)) {
-        echo "        <a href=\"$PHP_SELF?ADD=131\"> Lead Export </a>\n";
+        echo "        <a href=\"$PHP_SELF?ADD=131\"> Export </a>\n";
     }
     echo "      </font>\n";
     echo "    </td>\n";

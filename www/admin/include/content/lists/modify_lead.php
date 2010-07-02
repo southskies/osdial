@@ -33,7 +33,7 @@ if ($ADD==1121) {
         echo "  <tr>\n";
         echo "    <td align='center'>\n";
         echo "      <font color=$default_text face=\"ARIAL,HELVETICA\" size='2'><center><br><font color=$default_text size=+1>LEAD MODIFICATION</font><br>\n";
-        echo "      <a target=\"_parent\" href=\"./admin.php?ADD=112\">[ Search Again ]</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a target=\"_parent\" href=\"./admin.php?ADD=1122\">[ Advanced Search ]</a><br><br>\n";
+        echo "      <a target=\"_parent\" href=\"./admin.php?ADD=999999&SUB=27\">[ Search Again ]</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a target=\"_parent\" href=\"./admin.php?ADD=999999&SUB=26\">[ Advanced Search ]</a><br><br>\n";
 			
         if ($end_call > 0) {
 	        ### update the lead record in the osdial_list table 

@@ -74,6 +74,8 @@ if ($LOGview_reports==1) {
             echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=16\"><font face=\"arial,helvetica\" size=2>List Cost by Entry Date</a></font>";
             echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=17\"><font face=\"arial,helvetica\" size=2>Lead Performance by Campaign</a></font>";
             echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=18\"><font face=\"arial,helvetica\" size=2>Lead Performance by List</a></font>";
+            echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=27\"><font face=\"arial,helvetica\" size=2>Lead Search - Basic</a></font>";
+            echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=26\"><font face=\"arial,helvetica\" size=2>Lead Search - Advanced</a></font>";
             echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=20\"><font face=\"arial,helvetica\" size=2>Agent Timesheet</a></font>";
             echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=21\"><font face=\"arial,helvetica\" size=2>Agent Stats</a></font>";
             echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=22\"><font face=\"arial,helvetica\" size=2>Agent Status</a></font>";
@@ -158,6 +160,16 @@ if ($LOGview_reports==1) {
             } elseif ($SUB==25) {
                 require($WeBServeRRooT . '/admin/include/content/reports/agent_pause_summary.php');
                 echo report_agent_pause_summary();
+            } elseif ($SUB==26) {
+                require($WeBServeRRooT . '/admin/include/content/reports/lead_search_advanced.php');
+                flush();
+                echo report_lead_search_advanced('form');
+                flush();
+                echo report_lead_search_advanced('data');
+                flush();
+            } elseif ($SUB==27) {
+                require($WeBServeRRooT . '/admin/include/content/reports/lead_search_basic.php');
+                echo report_lead_search_basic();
             }
         }
     }
