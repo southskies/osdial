@@ -1780,119 +1780,102 @@ $CTODAY = date("Y-m");
 $CTODAYmday = date("j");
 $CINC=0;
 
-$Cmonths = Array('January','February','March','April','May','June',
-				'July','August','September','October','November','December');
+$Cmonths = Array('January','February','March','April','May','June', 'July','August','September','October','November','December');
 $Cdays = Array('Sun','Mon','Tue','Wed','Thu','Fri','Sat');
 
-$CCAL_OUT = '';
+$CCAL_OUT = "\n";
+while ($CINC < 60) {
+    $cbguistyle = "display:block;";
+    if ($CINC > 0 and $CINC % 12 == 0) $cbguistyle .= "display:none;";
+    if ($CINC % 12 == 0) $CCAL_OUT .= "<span id=\"cbgui$CINC\" name=\"cbgui$CINC\" style=\"$cbguistyle\">\n";
+    if ($CINC % 12 == 0) $CCAL_OUT .= "  <table border=0 cellpadding=2 cellspacing=2>\n";
+    if ($CINC % 4 == 0) $CCAL_OUT .= "    <tr>\n";
+    $CCAL_OUT .= "      <td valign=top>\n";
 
-$CCAL_OUT .= "<table border=0 cellpadding=2 cellspacing=2>";
+    $CYyear = $Cyear;
+    $Cmonth = ($Cmon + $CINC);
+    if ($Cmonth > 12) {
+        $Cmonth = ($Cmonth - 12);
+        $CYyear++;
+    }
+    $Cstart= mktime(11,0,0,$Cmonth,1,$CYyear);
+    $CfirstdayARY = getdate($Cstart);
+    #echo "|$Cmon|$Cmonth|$CINC|\n";
+    $CPRNTDAY = date("Y-m", $Cstart);
 
-while ($CINC < 12)
-{
-if ( ($CINC == 0) || ($CINC == 4) ||($CINC == 8) )
-	{$CCAL_OUT .= "<tr>";}
+    $CCAL_OUT .= "        <table border=1 cellpadding=1 bordercolor=\"" . $cal_border1 . "\" cellspacing=\"0\" bgcolor=\"" . $cal_bg1 . "\">\n";
+    $CCAL_OUT .= "          <tr>\n";
+    $CCAL_OUT .= "            <td align=\"center\" colspan=7 bordercolor=\"" . $cal_border2 . "\" bgcolor=\"" . $cal_bg2 . "\">"
+                             . "<font color=\"" . $cal_fc . "\" face=\"Arial, Helvetica, sans-serif\" size=2><b>$CfirstdayARY[month] $CfirstdayARY[year]</b></font>"
+                           . "</td>\n";
+    $CCAL_OUT .= "          </tr>\n";
 
-$CCAL_OUT .= "<td valign=top>";
+    $CCAL_OUT .= "          <tr>\n";
+    foreach($Cdays as $Cday) {
+        $CDBDR=$cal_border2;
+        $CCAL_OUT .= "            <td align=\"center\" bordercolor=\"$CDBDR\"><font color=\"" . $cal_fc . "\" face=\"Arial, Helvetica, sans-serif\" size=1><b>$Cday</b></font></td>\n";
+    }
 
-$CYyear = $Cyear;
-$Cmonth=	($Cmon + $CINC);
-if ($Cmonth > 12)
-	{
-	$Cmonth = ($Cmonth - 12);
-	$CYyear++;
-	}
-$Cstart= mktime(11,0,0,$Cmonth,1,$CYyear);
-$CfirstdayARY = getdate($Cstart);
-#echo "|$Cmon|$Cmonth|$CINC|\n";
-$CPRNTDAY = date("Y-m", $Cstart);
+    $Crow=0;
+    for ($Ccount=0; $Ccount<(6*7); $Ccount++) {
+        $Cdayarray = getdate($Cstart);
+        if($Ccount % 7 == 0) {
+            if($Crow++ > 5 and $Cdayarray['mon'] != $CfirstdayARY['mon']) break;
+            $CCAL_OUT .= "          </tr>\n";
+            $CCAL_OUT .= "          <tr>\n";
+        }
+        $CDCLR=$cal_bg1;
+        $CDBDR=$cal_border2;
+        if ($Cmonth > 12) $Cmonth = ($Cmonth - 12);
+        if($Ccount < $CfirstdayARY['wday'] or $Cdayarray['mon'] != $Cmonth) {
+            $CBL = '&nbsp;';
+            $CBL .= "<!-- $Ccount $CfirstdayARY[wday] $Cdayarray[mon] $Cmonth -->";
+        } else {
+            $CPRNTmday = $Cdayarray['mday'];
+            if ($CPRNTmday < 10) $CPRNTmday = "0$CPRNTmday";
+            $CBL = "<a href=\"#\" onclick=\"CB_date_pick('$CPRNTDAY-$CPRNTmday');return false;\" ondblclick=\"if (document.osdial_form.CallBackDatESelectioN.value!=''){CallBackDatE_submit();};return false;\">" . $Cdayarray['mday'] . "</a>";
+            if($Cdayarray['mday'] == $CTODAYmday and $CPRNTDAY == $CTODAY) {
+                $CDCLR=$cal_bg3;
+                $CDBDR=$cal_border3;
+            } elseif ($Cdayarray['mday'] < $CTODAYmday and $CPRNTDAY == $CTODAY) {
+                $CDCLR=$cal_bg4;
+                $CBL = $Cdatarray['mday'];
+            }
+            $Cstart += ADAY;
+        }
+        $CCAL_OUT .= "            <td align=\"center\" bgcolor=\"$CDCLR\" bordercolor=\"$CDBDR\"><font face=\"Arial, Helvetica, sans-serif\" size=1><b>$CBL</b></font></td>\n";
+    }
+    $CCAL_OUT .= "          </tr>\n";
+    $CCAL_OUT .= "        </table>\n";
+    $CCAL_OUT .= "      </td>\n";
 
-$CCAL_OUT .= "<table border=1 cellpadding=1 bordercolor=\"" . $cal_border1 . "\" cellspacing=\"0\" bgcolor=\"" . $cal_bg1 . "\">";
-$CCAL_OUT .= "<tr>";
-$CCAL_OUT .= "<td colspan=7 bordercolor=\"" . $cal_border2 . "\" bgcolor=\"" . $cal_bg2 . "\">";
-$CCAL_OUT .= "<div align=center><font color=\"" . $cal_fc . "\"><b><font face=\"Arial, Helvetica, sans-serif\" size=2>";
-$CCAL_OUT .= "$CfirstdayARY[month] $CfirstdayARY[year]";
-$CCAL_OUT .= "</font></b></font></div>";
-$CCAL_OUT .= "</td>";
-$CCAL_OUT .= "</tr>";
+    $cbgb = Array();
+    $cbgb['C11']  = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+    $cbgb['C11'] .= "<a href=\"#\" onclick=\"document.getElementById('cbgui0').style.display='none';document.getElementById('cbgui12').style.display='block';\">NEXT -&gt;</a>";
 
-foreach($Cdays as $Cday)
-{
-	$CDCLR=$cal_border2;
-$CCAL_OUT .= "<td bordercolor=\"" . $CDCLR . "\">";
-$CCAL_OUT .= "<div align=center><font color=\"" . $cal_fc . "\"><b><font face=\"Arial, Helvetica, sans-serif\" size=1>";
-$CCAL_OUT .= "$Cday";
-$CCAL_OUT .= "</font></b></font></div>";
-$CCAL_OUT .= "</td>";
+    $cbgb['C23']  = "<a href=\"#\" onclick=\"document.getElementById('cbgui0').style.display='block';document.getElementById('cbgui12').style.display='none';\">&lt;- BACK</a>";
+    $cbgb['C23'] .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+    $cbgb['C23'] .= "<a href=\"#\" onclick=\"document.getElementById('cbgui12').style.display='none';document.getElementById('cbgui24').style.display='block';\">NEXT -&gt;</a>";
+
+    $cbgb['C35']  = "<a href=\"#\" onclick=\"document.getElementById('cbgui12').style.display='block';document.getElementById('cbgui24').style.display='none';\">&lt;- BACK</a>";
+    $cbgb['C35'] .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+    $cbgb['C35'] .= "<a href=\"#\" onclick=\"document.getElementById('cbgui24').style.display='none';document.getElementById('cbgui36').style.display='block';\">NEXT -&gt;</a>";
+
+    $cbgb['C47']  = "<a href=\"#\" onclick=\"document.getElementById('cbgui24').style.display='block';document.getElementById('cbgui36').style.display='none';\">&lt;- BACK</a>";
+    $cbgb['C47'] .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+    $cbgb['C47'] .= "<a href=\"#\" onclick=\"document.getElementById('cbgui36').style.display='none';document.getElementById('cbgui48').style.display='block';\">NEXT -&gt;</a>";
+
+    $cbgb['C59']  = "<a href=\"#\" onclick=\"document.getElementById('cbgui36').style.display='block';document.getElementById('cbgui48').style.display='none';\">&lt;- BACK</a>";
+    $cbgb['C59'] .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+
+    if ($CINC > 0 and ($CINC+1) % 4 == 0) $CCAL_OUT .= "    </tr>";
+    if ($CINC > 0 and ($CINC+1) % 12 == 0) $CCAL_OUT .= "  </table>\n";
+    if ($CINC > 0 and ($CINC+1) % 12 == 0) $CCAL_OUT .= "  <br><center><font color=\"" . $cal_fc . "\" face=\"Arial, Helvetica, sans-serif\" size=2><b>" . $cbgb['C' . $CINC] . "</b></font></center>\n";
+    if ($CINC > 0 and ($CINC+1) % 12 == 0) $CCAL_OUT .= "</span>\n";
+    $CINC++;
 }
-
-for( $Ccount=0;$Ccount<(6*7);$Ccount++)
-{
-	$Cdayarray = getdate($Cstart);
-	if((($Ccount) % 7) == 0)
-	{
-		if($Cdayarray['mon'] != $CfirstdayARY['mon'])
-			break;
-		$CCAL_OUT .= "</tr><tr>";
-	}
-	if($Ccount < $CfirstdayARY['wday'] || $Cdayarray['mon'] != $Cmonth)
-	{
-		$CCAL_OUT .= "<td bordercolor=\"" . $cal_border2 . "\"><font color=\"" . $cal_fc . "\"><b><font face=\"Arial, Helvetica, sans-serif\" size=\"1\">&nbsp;</font></b></font></td>";
-	}
-	else
-	{
-		if( ($Cdayarray['mday'] == $CTODAYmday) and ($CPRNTDAY == $CTODAY) )
-		{
-		$CPRNTmday = $Cdayarray['mday'];
-		if ($CPRNTmday < 10) {$CPRNTmday = "0$CPRNTmday";}
-		$CBL = "<a href=\"#\" onclick=\"CB_date_pick('$CPRNTDAY-$CPRNTmday');return false;\">";
-		$CEL = "</a>";
-
-		$CCAL_OUT .= "<td bgcolor=\"" . $cal_bg3 . "\" bordercolor=\"" . $cal_border3 . "\">";
-		$CCAL_OUT .= "<div align=center><font face=\"Arial, Helvetica, sans-serif\" size=1>";
-		$CCAL_OUT .= "$CBL$Cdayarray[mday]$CEL";
-		$CCAL_OUT .= "</font></div>";
-		$CCAL_OUT .= "</td>";
-			$Cstart += ADAY;
-		}
-		else
-		{
-	$CDCLR=$cal_bg1;
-	if ( ($Cdayarray['mday'] < $CTODAYmday) and ($CPRNTDAY == $CTODAY) )
-		{
-		$CDCLR=$cal_bg4;
-		$CBL = '';
-		$CEL = '';
-		}
-	else
-		{
-		$CPRNTmday = $Cdayarray['mday'];
-		if ($CPRNTmday < 10) {$CPRNTmday = "0$CPRNTmday";}
-		$CBL = "<a href=\"#\" onclick=\"CB_date_pick('$CPRNTDAY-$CPRNTmday');return false;\">";
-		$CEL = "</a>";
-		}
-
-	$CCAL_OUT .= "<td bgcolor=\"$CDCLR\" bordercolor=\"" . $cal_border2 . "\">";
-	$CCAL_OUT .= "<div align=center><font face=\"Arial, Helvetica, sans-serif\" size=1>";
-	$CCAL_OUT .= "$CBL$Cdayarray[mday]$CEL";
-	$CCAL_OUT .= "</font></div>";
-	$CCAL_OUT .= "</td>";
-		$Cstart += ADAY;
-		}
-	}
-}
-$CCAL_OUT .= "</tr>";
-$CCAL_OUT .= "</table>";
-$CCAL_OUT .= "</td>";
-
-if ( ($CINC == 3) || ($CINC == 7) ||($CINC == 11) )
-	{$CCAL_OUT .= "</tr>";}
-$CINC++;
-}
-
-$CCAL_OUT .= "</table>";
-
 #echo "$CCAL_OUT\n";
+
 ################################################################
 ### END - build the callback calendar (12 months)            ###
 ################################################################
@@ -2198,15 +2181,15 @@ foreach ($forms as $form) {
 						<td align=left><font class="body_text"><input type=checkbox name=LeadLookuP size=1 value="0">&nbsp; <font color=<?=$mandial_fc?>>(If checked will attempt to Find the phone number in the system before inserting it as a New Lead)</td>
 					</tr>
 					<tr>
-						<td colspan=2><br><!--hr width=50%></td>
-					</tr>
-					<tr>
-						<td align=left colspan=2><BR><font color=<?=$mandial_fc?>>If you want to dial a number and have it NOT be added as a new lead, enter in the exact dialstring that you want to call in the Dial Override field below. To hangup this call you will have to open the CALLS IN THIS SESSION link at the bottom of the screen and hang it up by clicking on its channel link there.<BR> &nbsp; </td>
-					</tr>
-					<tr>
-						<td align=right><font class="body_text"> <font color=<?=$mandial_fc?>>Dial Override: </td -->
-							<!--td align=left><font class="body_text" --><center><font color=<?=$mandial_fc?> size=-6>(Future use)</font><input disabled type=text size=1 maxlength=1 name=MDDiaLOverridE class="cust_form" value="">&nbsp; <font color=<?=$mandial_bg?>>(digits only please)</font></center>
-						</td>
+						<td align=center colspan=2>
+                            <!-- Manual Dial Override has been disabled because it causes too much trouble -->
+                            <span style="display:none;">
+                                <font class="body_text" color=<?=$mandial_fc?>>&nbsp;<br>
+                                    If you want to dial a number and have it NOT be added as a new lead, enter in the exact dialstring that you want to call in the Dial Override field below. To hangup this call you will have to open the CALLS IN THIS SESSION link at the bottom of the screen and hang it up by clicking on its channel link there.<br>&nbsp;<br>
+						            Dial Override: <input type=text size=1 maxlength=1 name=MDDiaLOverridE class="cust_form" value="">(digits only please)
+                                </font>
+                            </span>
+                        </td>
 					</tr>
 				</table>
 				
@@ -2718,12 +2701,11 @@ foreach ($forms as $form) {
 							-->
 							
 							<font color=<?=$form_fc?>>Recording File</font><BR>
-							<font class="body_tiny"><span id="RecorDingFilename"></span>&nbsp;</font>
+							<font class="body_tiny">&nbsp;<span id="RecorDingFilename"></span></font>
 						</center>
 						<BR>
-						<center><font color=<?=$form_fc?>>Recording ID:&nbsp;</font><font class="body_small"><span id="RecorDID"></span></font></center>
+						<center><font color=<?=$form_fc?>>Recording ID:&nbsp;</font><font class="body_small">&nbsp;<span id="RecorDID"></span></font></center>
 						<center>
-							<!-- <a href=\"#\" onclick=\"conf_send_recording('MonitorConf','" + head_conf + "','');return false;\">Record</a> -->
 							<span id="RecorDControl"><a href="#" onclick="conf_send_recording('MonitorConf','<?=$session_id ?>','');return false;"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_LB_startrecording.gif" border=0 alt="Start Recording"></a></span><BR>
 							
 							<span id="SpacerSpanA"><IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=16 border=0></span><BR>
