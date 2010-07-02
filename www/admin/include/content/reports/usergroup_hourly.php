@@ -48,6 +48,17 @@ function report_usergroup_hourly() {
     $date_no_hour = eregi_replace(" ([0-9]{2})",'',$date_no_hour);
     if ($status == "") {$status = 'SALE';}
 
+    $statcats = Array();
+    $stmt = "SELECT status,category FROM (SELECT status,category FROM osdial_statuses UNION SELECT status,category FROM osdial_campaign_statuses) AS stat GROUP BY status;";
+    $rslt=mysql_query($stmt, $link);
+    while ($row=mysql_fetch_row($rslt)) {
+        $statcats[$row[1]] .= "'" . $row[0] . "',";
+    }
+    foreach ($statcats as $k => $v) {
+        $statcats[$k] = rtrim($v,",");
+    }
+
+
     $html = '';
 
     $html .= "  <br><br>\n";
@@ -59,7 +70,7 @@ function report_usergroup_hourly() {
     $html .= "  <table width=600 align=center cellpadding=0 cellspacing=0>\n";
     $html .= "    <tr class=tabheader>\n";
     $html .= "      <td>Group</td>\n";
-    $html .= "      <td>Status</td>\n";
+    $html .= "      <td>Category</td>\n";
     $html .= "      <td>Date &amp; Hour</td>\n";
     $html .= "    </tr>\n";
     $html .= "    <tr class=tabfooter>\n";
@@ -74,15 +85,23 @@ function report_usergroup_hourly() {
     while ($groups_to_print > $o) {
         $rowx=mysql_fetch_row($rslt);
         $gsel = "";
-        if ($group == $rowx[0]) {
-            $gsel = "selected";
-        }
+        if ($group == $rowx[0]) $gsel = "selected";
         $html .= "          <option $gsel value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
         $o++;
     }
     $html .= "        </select>\n";
     $html .= "      </td>\n";
-    $html .= "      <td align=center><input type=text name=status size=10 maxlength=10 value=\"$status\"></td>\n";
+    $html .= "      <td align=center>\n";
+    $html .= "        <select size=1 name=status>\n";
+    ksort($statcats);
+    foreach ($statcats as $k => $v) {
+        $sel='';
+        if ($status==$k) $sel='selected';
+        $html .= "          <option $sel>$k</option>\n";
+    }
+    $html .= "        </select>\n";
+    $html .= "      </td>\n";
+    #$html .= "      <td align=center><input type=text name=status size=10 maxlength=10 value=\"$status\"></td>\n";
     $html .= "      <td align=center><input type=text name=date_with_hour size=14 maxlength=13 value=\"$date_with_hour\"></td>\n";
     $html .= "    </tr>\n";
     $html .= "    <tr class=tabfooter>\n";
@@ -97,7 +116,7 @@ function report_usergroup_hourly() {
     }
 
     if ( ($group) and ($status) and ($date_with_hour) ) {
-        $stmt="SELECT user,full_name from osdial_users where user_group = '" . mres($group) . "' order by full_name desc;";
+        $stmt=sprintf("SELECT user,full_name FROM osdial_users WHERE user_group='%s' ORDER BY full_name DESC;",mres($group));
         if ($DB) {$html .= "$stmt\n";}
         $rslt=mysql_query($stmt, $link);
         $tsrs_to_print = mysql_num_rows($rslt);
@@ -111,19 +130,19 @@ function report_usergroup_hourly() {
 
         $o=0;
         while($o < $tsrs_to_print) {
-            $stmt="select count(*) from osdial_log where call_date >= '" . mres($date_with_hour) . ":00:00' and  call_date <= '" . mres($date_with_hour) . ":59:59' and user='$VDuser[$o]';";
+            $stmt=sprintf("SELECT count(*) FROM osdial_log WHERE call_date>='%s:00:00' AND call_date<='%s:59:59' AND user='%s';",mres($date_with_hour),mres($date_with_hour),$VDuser[$o]);
             if ($DB) {$html .= "$stmt\n";}
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
             $VDtotal[$o] = "$row[0]";
 
-            $stmt="select count(*) from osdial_log where call_date >= '" . mres($date_no_hour) . " 00:00:00' and  call_date <= '" . mres($date_no_hour) . " 23:59:59' and user='$VDuser[$o]' and status='" . mres($status) . "';";
+            $stmt=sprintf("SELECT count(*) FROM osdial_log WHERE call_date>='%s 00:00:00' AND call_date<='%s 23:59:59' AND user='%s' AND status IN (%s);",mres($date_no_hour),mres($date_no_hour),$VDuser[$o],$statcats[$status]);
             if ($DB) {$html .= "$stmt\n";}
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
             $VDday[$o] = "$row[0]";
 
-            $stmt="select count(*) from osdial_log where call_date >= '" . mres($date_with_hour) . ":00:00' and  call_date <= '" . mres($date_with_hour) . ":59:59' and user='$VDuser[$o]' and status='" . mres($status) . "';";
+            $stmt=sprintf("SELECT count(*) FROM osdial_log WHERE call_date>='%s:00:00' AND call_date<='%s:59:59' AND user='%s' AND status IN (%s);",mres($date_with_hour),mres($date_with_hour),$VDuser[$o],$statcats[$status]);
             if ($DB) {$html .= "$stmt\n";}
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
