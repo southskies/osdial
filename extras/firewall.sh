@@ -25,6 +25,13 @@ if [ $imports -lt 1 ]; then
 	#Import out functions from the end of the file.
 	source $PWD/$0 --imports
 
+	# The location of iptables.
+	IPT='/sbin/iptables'
+
+	# The location of ifconfig.
+	IFC='/sbin/ifconfig'
+
+
 
 	#####################################################################
 	#
@@ -34,22 +41,65 @@ if [ $imports -lt 1 ]; then
 
 	# Looback interface.
 	LO_IF="lo"
-	LO_NET="127.0.0.0/8"
-	LO_IP1="127.0.0.1"
+	LO_NET="127.0.0.1/255.0.0.0"
+	LO_IP="127.0.0.1"
 
 	# Public interface.
 	WAN_IF="eth0"
-	WAN_NET="203.177.115.0/27"
-	WAN_IP1="203.177.115.4"
+	WAN_NET="auto"
+	WAN_IP1="auto"
+	WAN_IP2=""
+	WAN_IP3=""
+	WAN_IP4=""
+	WAN_IP5=""
 
-	# Local interface.
-	LAN_IF="eth1"
-	LAN_NET="10.124.0.0/16"
-	LAN_IP1="10.124.1.7"
+	# Local interface 1.
+	LAN1_IF="eth1"
+	LAN1_NET="auto"
+	LAN1_IP1="auto"
+	LAN1_IP2=""
+	LAN1_IP3=""
+	LAN1_IP4=""
+	LAN1_IP5=""
 
-	# VPN interface(s)
-	VPN_IF="tun+"
-	VPN_NET="10.0.0.0/8"
+	# Local interface 2.
+	LAN2_IF=""
+	LAN2_NET=""
+	LAN2_IP1=""
+	LAN2_IP2=""
+	LAN2_IP3=""
+	LAN2_IP4=""
+	LAN2_IP5=""
+
+	# VPN 1 interface(s)
+	VPN1_IF="tun+"
+	VPN1_NET1="10.99.0.0/255.255.0.0"
+	VPN1_NET2="10.100.0.0/255.255.0.0"
+	VPN1_NET3=""
+	VPN1_NET4=""
+	VPN1_NET5=""
+
+	# VPN 1 interface(s)
+	VPN2_IF=""
+	VPN2_NET1=""
+	VPN2_NET2=""
+	VPN2_NET3=""
+	VPN2_NET4=""
+	VPN2_NET5=""
+
+	# If WAN_IP1, WAN_NET, LAN1_IP1, LAN1_NET, LAN2_IP1, or LAN2_NET are set to auto, attempt to auto-detect.
+	if [ -n "$WAN_IF" ]; then
+		[ "$WAN_IP1"  = "auto" -o "$WAN_IP1"  = "AUTO" ] && WAN_IP1="`${IFC} ${WAN_IF} | grep inet | cut -d : -f 2 | cut -d \  -f 1`" || :
+		[ "$WAN_NET"  = "auto" -o "$WAN_NET"  = "AUTO" ] && WAN_NET="${WAN_IP1}/`${IFC} ${WAN_IF} | grep Mas | cut -d : -f 4`" || :
+	fi
+	if [ -n "$LAN1_IF" ]; then
+		[ "$LAN1_IP1" = "auto" -o "$LAN1_IP1" = "AUTO" ] && LAN1_IP1="`${IFC} ${LAN1_IF} | grep inet | cut -d : -f 2 | cut -d \  -f 1`" || :
+		[ "$LAN1_NET" = "auto" -o "$LAN1_NET" = "AUTO" ] && LAN1_NET="${LAN1_IP1}/`${IFC} ${LAN1_IF} | grep Mas | cut -d : -f 4`" || :
+	fi
+	if [ -n "$LAN2_IF" ]; then
+		[ "$LAN2_IP1" = "auto" -o "$LAN2_IP1" = "AUTO" ] && LAN2_IP1="`${IFC} ${LAN2_IF} | grep inet | cut -d : -f 2 | cut -d \  -f 1`" || :
+		[ "$LAN2_NET" = "auto" -o "$LAN2_NET" = "AUTO" ] && LAN2_NET="${LAN2_IP1}/`${IFC} ${LAN2_IF} | grep Mas | cut -d : -f 4`" || :
+	fi
 
 	# If ENABLE_GATEWAY is 1, your LAN stations will be able to route traffic out of this server
 	# as if it was a router.  If you will not be using this server as a gateway, you should leave
@@ -83,11 +133,6 @@ if [ $imports -lt 1 ]; then
 	LOGOPT="--limit 30/minute --limit-burst 10"
 
 
-	# The location of iptables.
-	IPT='/sbin/iptables'
-	#IPT='echo /sbin/iptables'
-
-
 	# Do not remove the following line.
 	FW_LoadTables
 
@@ -119,25 +164,18 @@ if [ $imports -lt 1 ]; then
 	######### Trusted (Local) Interfaces ################################
 	#FW_TrustInterface "LABEL" "INTERFACE"
 	FW_TrustInterface  "LO"    "$LO_IF"
-	FW_TrustInterface  "LAN"   "$LAN_IF"
-	FW_TrustInterface  "VPN"  "$VPN_IF"
+	FW_TrustInterface  "LAN1"  "$LAN1_IF"
+	FW_TrustInterface  "LAN2"  "$LAN2_IF"
+	FW_TrustInterface  "VPN1"  "$VPN1_IF"
+	FW_TrustInterface  "VPN2"  "$VPN2_IF"
 
 
 	######### Trusted (Public) IP Addresses, Networks, or Hostnames #####
 	#FW_TrustHost "LABEL"           "IP|NETWORK|HOSTNAME"
-	FW_TrustHost  "LO"              "$LO_NET"
-	FW_TrustHost  "LAN"             "$LAN_NET"
-	FW_TrustHost  "VPN"            "$VPN_NET"
-	FW_TrustHost  "CCSG 1"          "24.73.199.62"
-	FW_TrustHost  "CCSG 2"          "67.78.177.146"
-	FW_TrustHost  "AccelaSanSay 1"  "69.94.226.174"
-	FW_TrustHost  "AccelaSanSay 2"  "66.194.8.2"
-	FW_TrustHost  "Xcast 1"         "38.102.250.50"
-	FW_TrustHost  "Xcast 2"         "38.102.250.60"
-	FW_TrustHost  "Bandwidth 1"     "216.82.224.202"
-	FW_TrustHost  "Bandwidth 2"     "216.82.225.202"
-	FW_TrustHost  "Bandwidth 3"     "67.231.8.110"
-	FW_TrustHost  "Bandwidth 4"     "4.55.17.2"
+        FW_TrustHost  "CCSG 1"          "24.73.199.62"
+        FW_TrustHost  "CCSG 2"          "67.78.177.146"
+        FW_TrustHost  "XCast 1"         "38.102.250.50"
+        FW_TrustHost  "XCast 2"         "38.102.250.60"
 
 
 	# Do not remove the following line.
@@ -146,7 +184,7 @@ if [ $imports -lt 1 ]; then
 
 	######### Blocked Hosts - ALL Ports #################################
 	#FW_BlockHost  "LABEL"      "IP|NETWORK|HOSTNAME"  "DEST_NET"
-	FW_BlockHost   "BadGuy1"    "222.111.222.111"      "$WAN_NET"
+	#FW_BlockHost   "BadGuy1"    "222.111.222.111"      "$WAN_NET"
 
 
 	######### Blocked Ports - ALL Hosts #################################
@@ -169,7 +207,7 @@ if [ $imports -lt 1 ]; then
 
 	######### Blocked Ports on a Given Host   ###########################
 	#FW_BlockHostPort  "LABEL"          "IP|NETWORK|HOSTNAME"  "PORT"  "PROTOCOL"  "DEST_NET"
-	FW_BlockHostPort   "BadUser/NoWeb"  "222.111.222.111"      "80"    "tcp"       "$WAN_NET"
+	#FW_BlockHostPort   "BadUser/NoWeb"  "222.111.222.111"      "80"    "tcp"       "$WAN_NET"
 
 
 	######### Opened Ports - ANY Host ###################################
@@ -180,7 +218,7 @@ if [ $imports -lt 1 ]; then
 
 	######### Opened Ports to a Given Host    ###########################
 	#FW_OpenHostPort  "LABEL"          "IP|NETWORK|HOSTNAME"  "PORT"  "PROTOCOL"  "DEST_NET"
-	FW_OpenHostPort   "HomeSSH"        "67.1.2.43"            "22"    "tcp"       "$WAN_NET"
+	#FW_OpenHostPort   "HomeSSH"        "67.1.2.43"            "22"    "tcp"       "$WAN_NET"
 
 
 
@@ -253,12 +291,21 @@ if [ $imports -lt 1 ]; then
 	#
 	#####################################################################
 	#FW_FinishChains
+	IPTCOMMENT="N"
+	[ -e /lib/iptables/libipt_comment.so -o -e /lib64/iptables/libipt_comment.so ] && IPTCOMMENT="Y" || :
 	exit 0;
 fi
 
 
 
-
+IPT() {
+	rule=$1; comment=$2
+	if [ "$IPTCOMMENT" = "Y" -a -n "$comment" ]; then
+		$IPT $rule -m comment --comment "$comment"
+	else
+		$IPT $rule
+	fi
+}
 
 
 
@@ -272,12 +319,15 @@ fi
 #    INTERFACE: The interface device name.
 #
 #    Example:
-#      FW_TrustInterface  "LAN"  "$LAN_IF"
+#      FW_TrustInterface  "LAN"  "$LAN1_IF"
 #
 FW_TrustInterface() {
 	label=$1; int=$2
-	$IPT -A trust_in  -i $int -j ACCEPT -m comment --comment "Trusted Interface: $label"
-	$IPT -A trust_out -o $int -j ACCEPT -m comment --comment "Trusted Interface: $label"
+	[ -z "$label" ] && label=$int || :
+	if [ -n "$int" ]; then
+		IPT "-A trust_int_in  -i $int -j ACCEPT" "Trusted Interface: $label"
+		IPT "-A trust_int_out -o $int -j ACCEPT" "Trusted Interface: $label"
+	fi
 }
 
 
@@ -291,8 +341,11 @@ FW_TrustInterface() {
 #
 FW_TrustHost() {
 	label=$1; host=$2
-	$IPT -A trust_in -s $host -j ACCEPT -m comment --comment "Trusted Host: $label"
-	$IPT -A trust_out -d $host -j ACCEPT -m comment --comment "Trusted Host: $label"
+	[ -z "$label" ] && label=$host || :
+	if [ -n "$host" ]; then
+		IPT "-A trust_host_in -s $host -j ACCEPT" "Trusted Host: $label"
+		IPT "-A trust_host_out -d $host -j ACCEPT" "Trusted Host: $label"
+	fi
 }
 
 
@@ -307,9 +360,12 @@ FW_TrustHost() {
 #
 FW_BlockHost() {
 	label=$1; host=$2; dest_host=$3
-	[ -z "$dest_host" ] && dest_host=$WAN_NET || :
-	$IPT -A block_in -s $host -d $dest_host -j DROP -m comment --comment "Blocked host: $label"
-	$IPT -A block_out -d $host -s $dest_host -j DROP -m comment --comment "Blocked host: $label"
+	[ -z "$dest_host" -a -n "$WAN_IF" -a -n "$WAN_NET" ] && dest_host=$WAN_NET || :
+	[ -z "$label" ] && label="$host to $dest_host" || :
+	if [ -n "$host" -a -n "$dest_host" ]; then
+		IPT "-A block_in -s $host -d $dest_host -j DROP" "Blocked host: $label"
+		IPT "-A block_out -d $host -s $dest_host -j DROP" "Blocked host: $label"
+	fi
 }
 
 
@@ -342,19 +398,22 @@ FW_BlockPort() {
 #
 FW_BlockHostPort() {
 	label=$1; host=$2; port=$3; protocol=$4; dest_host=$5
-	[ -z "$host" ] && host="0/0" || :
-	[ -z "$dest_host" ] && dest_host=$WAN_NET || :
-	[ -z "$protocol" ] && protocol="all" || :
+	[ -z "$dest_host" -a -n "$WAN_IF" -a -n "$WAN_NET" ] && dest_host=$WAN_NET || :
+	[ -z "$host" ]      && host="0/0" || :
+	[ -z "$protocol" ]  && protocol="all" || :
+	[ -z "$label" ]     && label="($host <-> $dest_host):$port" || :
 	[ "$host" = "0/0" ] && btype="Port" || btype="Host/Port"
 	fn_comment="Blocked $btype: $label"
-	if [ "$protocol" = "all" ]; then
-		$IPT -A block_in  -p tcp -s $host -d $dest_host --dport $port -j DROP -m comment --comment "$fn_comment"
-		$IPT -A block_in  -p udp -s $host -d $dest_host --dport $port -j DROP -m comment --comment "$fn_comment"
-		$IPT -A block_out -p tcp -d $host -s $dest_host --sport $port -j DROP -m comment --comment "$fn_comment"
-		$IPT -A block_out -p udp -d $host -s $dest_host --sport $port -j DROP -m comment --comment "$fn_comment"
-	else
-		$IPT -A block_in  -p $protocol -s $host -d $dest_host --dport $port -j DROP -m comment --comment "$fn_comment"
-		$IPT -A block_out -p $protocol -d $host -s $dest_host --sport $port -j DROP -m comment --comment "$fn_comment"
+	if [ -n "$host" -a -n "$port" -a -n "$protocol" -a -n "$dest_host" ]; then
+		if [ "$protocol" = "all" ]; then
+			IPT "-A block_in  -p tcp -s $host -d $dest_host --dport $port -j DROP" "$fn_comment"
+			IPT "-A block_in  -p udp -s $host -d $dest_host --dport $port -j DROP" "$fn_comment"
+			IPT "-A block_out -p tcp -d $host -s $dest_host --sport $port -j DROP" "$fn_comment"
+			IPT "-A block_out -p udp -d $host -s $dest_host --sport $port -j DROP" "$fn_comment"
+		else
+			IPT "-A block_in  -p $protocol -s $host -d $dest_host --dport $port -j DROP" "$fn_comment"
+			IPT "-A block_out -p $protocol -d $host -s $dest_host --sport $port -j DROP" "$fn_comment"
+		fi
 	fi
 }
 
@@ -375,10 +434,12 @@ FW_BlockHostPort() {
 FW_PortForward() {
         label=$1; ext_host=$2; ext_port=$3; int_host=$4; int_port=$5; protocol=$6
 	[ -z "$protocol" ] && protocol="all" || :
-	fn_comment="($protocol) $ext_host.$ext_port -> $int_host.$int_port  : Port Forward: $label"
-        $IPT -A FORWARD -p $protocol -d $int_host --dport $int_port -j ACCEPT -m comment --comment "Input: Accept: $fn_comment"
-        $IPT -t nat -A PREROUTING -p $protocol -d $ext_host --dport $ext_port -j DNAT --to $int_host:$int_port \
-		-m comment --comment "Prerouting: DNAT: $fn_comment"
+	[ -z "$label" ]    && label="($protocol) $ext_host.$ext_port -> $int_host.$int_port" || :
+	fn_comment="Port Forward: $label"
+	if [ -n "$ext_host" -a -n "$ext_port" -a -n "$int_host" -a -n "$int_port" -a -n "$protocol" ]; then
+        	IPT "-A FORWARD -p $protocol -d $int_host --dport $int_port -j ACCEPT" "Input: Accept: $fn_comment"
+        	IPT "-t nat -A PREROUTING -p $protocol -d $ext_host --dport $ext_port -j DNAT --to $int_host:$int_port" "Prerouting: DNAT: $fn_comment"
+	fi
 }
 
 
@@ -410,30 +471,35 @@ FW_OpenPort() {
 #
 FW_OpenHostPort() {
 	label=$1; host=$2; port=$3; protocol=$4; dest_host=$5
-	[ -z "$host" ] && host="0/0" || :
-	[ -z "$dest_host" ] && dest_host=$WAN_NET || :
-	[ -z "$protocol" ] && protocol="all" || :
+	[ -z "$dest_host" -a -n "$WAN_IF" -a -n "$WAN_NET" ] && dest_host=$WAN_NET || :
+	[ -z "$host" ]      && host="0/0" || :
+	[ -z "$protocol" ]  && protocol="all" || :
 	[ "$host" = "0/0" ] && btype="Port" || btype="Host/Port"
+	[ -z "$label" ]     && label="($host <-> $dest_host):$port" || :
 	fn_comment="Open $btype: $label"
-	if [ "$protocol" = "all" ]; then
-		$IPT -A open_in  -p tcp -s $host -d $dest_host --dport $port -j ACCEPT -m comment --comment "$fn_comment"
-		$IPT -A open_in  -p udp -s $host -d $dest_host --dport $port -j ACCEPT -m comment --comment "$fn_comment"
-		$IPT -A open_out -p tcp -d $host -s $dest_host --sport $port -j ACCEPT -m comment --comment "$fn_comment"
-		$IPT -A open_out -p udp -d $host -s $dest_host --sport $port -j ACCEPT -m comment --comment "$fn_comment"
-	else
-		$IPT -A open_in  -p $protocol -s $host -d $dest_host --dport $port -j ACCEPT -m comment --comment "$fn_comment"
-		$IPT -A open_out -p $protocol -d $host -s $dest_host --sport $port -j ACCEPT -m comment --comment "$fn_comment"
+	if [ -n "$host" -a -n "$port" -a -n "$protocol" -a -n "$dest_host" ]; then
+		if [ "$protocol" = "all" ]; then
+			IPT "-A open_in  -p tcp -s $host -d $dest_host --dport $port -j ACCEPT" "$fn_comment"
+			IPT "-A open_in  -p udp -s $host -d $dest_host --dport $port -j ACCEPT" "$fn_comment"
+			IPT "-A open_out -p tcp -d $host -s $dest_host --sport $port -j ACCEPT" "$fn_comment"
+			IPT "-A open_out -p udp -d $host -s $dest_host --sport $port -j ACCEPT" "$fn_comment"
+		else
+			IPT "-A open_in  -p $protocol -s $host -d $dest_host --dport $port -j ACCEPT" "$fn_comment"
+			IPT "-A open_out -p $protocol -d $host -s $dest_host --sport $port -j ACCEPT" "$fn_comment"
+		fi
 	fi
 }
 
 
 FW_FinishChains() {
-	$IPT -A trust_in  -j RETURN
-	$IPT -A trust_out -j RETURN
-	$IPT -A block_in  -j RETURN
-	$IPT -A block_out -j RETURN
-	$IPT -A open_in   -j RETURN
-	$IPT -A open_out  -j RETURN
+	IPT "-A trust_int_in  -j RETURN"
+	IPT "-A trust_int_out -j RETURN"
+	IPT "-A trust_host_in  -j RETURN"
+	IPT "-A trust_host_out -j RETURN"
+	IPT "-A block_in  -j RETURN"
+	IPT "-A block_out -j RETURN"
+	IPT "-A open_in   -j RETURN"
+	IPT "-A open_out  -j RETURN"
 }
 
 
@@ -449,8 +515,10 @@ FW_FinishChains() {
 #
 FW_QOS() {
 	label=$1; protocol=$2; host=$3; port=$4; qosname=$5
-	[ -z "$host" ] && host=$WAN_NET || :
+	[ -z "$host" -a -n "$WAN_IF" -a -n "$WAN_NET" ] && host=$WAN_NET || :
+	[ -z "$protocol" ] && protocol="all" || :
 	[ -z "$qosname" ] && qosname='NORMAL' || :
+	[ -z "$label" ]   && label=$qosname || :
 
 	# Set bit defaults for dscp / tos.
 	if [ "$USE_DSCP" = "1" ]; then
@@ -479,14 +547,16 @@ FW_QOS() {
 	fi
 	fn_comment_src="$label src $port $QOSTYPE to $qosname $qos"
 	fn_comment_dst="$label drc $port $QOSTYPE to $qosname $qos"
-	$IPT -t mangle -A POSTROUTING -p $protocol $opt_src -j $QOSTYPE $QOSOPT $qos -m comment --comment "Set: $fn_comment_src"
-	$IPT -t mangle -A POSTROUTING -p $protocol $opt_dst -j $QOSTYPE $QOSOPT $qos -m comment --comment "Set: $fn_comment_dst"
-	$IPT -t mangle -A POSTROUTING -p $protocol $opt_src -j RETURN -m comment --comment "Return: $fn_comment_src"
-	$IPT -t mangle -A POSTROUTING -p $protocol $opt_dst -j RETURN -m comment --comment "Return: $fn_comment_dst"
-	$IPT -t mangle -A PREROUTING -p $protocol $opt_src -j $QOSTYPE $QOSOPT $qos -m comment --comment "Set: $fn_comment_src"
-	$IPT -t mangle -A PREROUTING -p $protocol $opt_dst -j $QOSTYPE $QOSOPT $qos -m comment --comment "Set: $fn_comment_dst"
-	$IPT -t mangle -A PREROUTING -p $protocol $opt_src -j RETURN -m comment --comment "Return: $fn_comment_src"
-	$IPT -t mangle -A PREROUTING -p $protocol $opt_dst -j RETURN -m comment --comment "Return: $fn_comment_dst"
+	if [ -n "$protocol" -a -n "$host" -a -n "$qosname" ]; then
+		IPT "-t mangle -A POSTROUTING -p $protocol $opt_src -j $QOSTYPE $QOSOPT $qos" "Set: $fn_comment_src"
+		IPT "-t mangle -A POSTROUTING -p $protocol $opt_dst -j $QOSTYPE $QOSOPT $qos" "Set: $fn_comment_dst"
+		IPT "-t mangle -A POSTROUTING -p $protocol $opt_src -j RETURN" "Return: $fn_comment_src"
+		IPT "-t mangle -A POSTROUTING -p $protocol $opt_dst -j RETURN" "Return: $fn_comment_dst"
+		IPT "-t mangle -A PREROUTING -p $protocol $opt_src -j $QOSTYPE $QOSOPT $qos" "Set: $fn_comment_src"
+		IPT "-t mangle -A PREROUTING -p $protocol $opt_dst -j $QOSTYPE $QOSOPT $qos" "Set: $fn_comment_dst"
+		IPT "-t mangle -A PREROUTING -p $protocol $opt_src -j RETURN" "Return: $fn_comment_src"
+		IPT "-t mangle -A PREROUTING -p $protocol $opt_dst -j RETURN" "Return: $fn_comment_dst"
+	fi
 }
 
 
@@ -494,12 +564,12 @@ FW_TrustNS() {
 	# Auto-Detect Nameservers
 	while read s1 s2 s3; do
 		if [ "$s1" = "nameserver" ]; then
-			$IPT -A dns_in  -p tcp ! --syn -s $s2 -j ACCEPT -m comment --comment "Auto-Detected Nameserver"
-			$IPT -A dns_out -p tcp ! --syn -d $s2 -j ACCEPT -m comment --comment "Auto-Detected Nameserver"
-			$IPT -A dns_in  -p udp -s $s2 -j ACCEPT -m comment --comment "Auto-Detected Nameserver"
-			$IPT -A dns_out -p udp -d $s2 -j ACCEPT -m comment --comment "Auto-Detected Nameserver"
-			$IPT -A dns_in  -p udp -s $s2 -j ACCEPT -m comment --comment "Auto-Detected Nameserver"
-			$IPT -A dns_out -p udp -d $s2 -j ACCEPT -m comment --comment "Auto-Detected Nameserver"
+			IPT "-A dns_in  -p tcp ! --syn -s $s2 -j ACCEPT" "Auto-Detected Nameserver"
+			IPT "-A dns_out -p tcp ! --syn -d $s2 -j ACCEPT" "Auto-Detected Nameserver"
+			IPT "-A dns_in  -p udp -s $s2 -j ACCEPT" "Auto-Detected Nameserver"
+			IPT "-A dns_out -p udp -d $s2 -j ACCEPT" "Auto-Detected Nameserver"
+			IPT "-A dns_in  -p udp -s $s2 -j ACCEPT" "Auto-Detected Nameserver"
+			IPT "-A dns_out -p udp -d $s2 -j ACCEPT" "Auto-Detected Nameserver"
 		fi
 	done < /etc/resolv.conf
 }
@@ -531,109 +601,186 @@ FW_LoadTables() {
 	$IPT -P OUTPUT ACCEPT > /dev/null 2>&1
 
 	# Create our required chains.
-	for i in firewall_in firewall_out tcp_checks syn_flood fragments bad_flags icmp_checks bogon_in bogon_out trust_in trust_out block_in block_out open_in open_out dns_in dns_out; do
-		$IPT -N $i
+	for i in firewall_in firewall_out tcp_checks syn_flood fragments bad_flags icmp_checks bogon_in bogon_out trust_int_in trust_int_out trust_host_in trust_host_out block_in block_out open_in open_out dns_in dns_out; do
+		$IPT -N $i > /dev/null 2>&1
 	done
 
 
-	$IPT -A tcp_checks -p tcp --sport 20 --dport 1023:65535 ! --syn -m state --state RELATED -j ACCEPT
-	$IPT -A tcp_checks -p tcp --sport 22 --dport 513:65535 ! --syn -m state --state RELATED -j ACCEPT
-	$IPT -A tcp_checks -p tcp -j bad_flags
-	$IPT -A tcp_checks -p tcp --syn -j syn_flood
-	$IPT -A tcp_checks -p tcp -f -j fragments
+	IPT "-A tcp_checks -p tcp --sport 20 --dport 1023:65535 ! --syn -m state --state RELATED -j ACCEPT"
+	IPT "-A tcp_checks -p tcp --sport 22 --dport 513:65535 ! --syn -m state --state RELATED -j ACCEPT"
+	IPT "-A tcp_checks -p tcp -j bad_flags"
+	IPT "-A tcp_checks -p tcp --syn -j syn_flood"
+	IPT "-A tcp_checks -p tcp -f -j fragments"
 
 	# Limit SYN packets to values in global $SYNOPT
-	$IPT -A syn_flood -p tcp --syn -m limit $SYNOPT -j RETURN
-	$IPT -A syn_flood -j LOG --log-prefix "SYNFLOODDROP:" -m limit $LOGOPT
-	$IPT -A syn_flood -j DROP
+	IPT "-A syn_flood -p tcp --syn -m limit $SYNOPT -j RETURN"
+	IPT "-A syn_flood -j LOG --log-prefix SYNFLOODDROP: -m limit $LOGOPT"
+	IPT "-A syn_flood -j DROP"
 
 	# Drop Excessive Fragmentation
-	$IPT -A fragments -p tcp -m limit --limit 5/minute -j RETURN
-	$IPT -A fragments -j LOG --log-prefix "FRAGDROP:" -m limit $LOGOPT
-	$IPT -A fragments -j DROP
+	IPT "-A fragments -p tcp -m limit --limit 5/minute -j RETURN"
+	IPT "-A fragments -j LOG --log-prefix FRAGDROP: -m limit $LOGOPT"
+	IPT "-A fragments -j DROP"
 
 	# Chain to detect and drop illegal TCP packets.
-	$IPT -A bad_flags -p tcp --tcp-flags ACK,FIN FIN -j DROP             -m comment --comment "Bad tcp-flags: ---|ack|FIN|---|---|---"
-	$IPT -A bad_flags -p tcp --tcp-flags ACK,PSH PSH -j DROP             -m comment --comment "Bad tcp-flags: ---|ack|---|---|---|PSH"
-	$IPT -A bad_flags -p tcp --tcp-flags ACK,URG URG  -j DROP            -m comment --comment "Bad tcp-flags: ---|ack|---|---|URG|---"
-	$IPT -A bad_flags -p tcp --tcp-flags FIN,RST FIN,RST -j DROP         -m comment --comment "Bad tcp-flags: ---|---|FIN|RST|---|---"
-	$IPT -A bad_flags -p tcp --tcp-flags SYN,FIN SYN,FIN  -j DROP        -m comment --comment "Bad tcp-flags: SYN|---|FIN|---|---|---"
-	$IPT -A bad_flags -p tcp --tcp-flags SYN,RST SYN,RST -j DROP         -m comment --comment "Bad tcp-flags: SYN|---|---|RST|---|---"
-	$IPT -A bad_flags -p tcp --tcp-flags ALL ALL -j DROP                 -m comment --comment "Bad tcp-flags: SYN|ACK|FIN|RST|URG|PSH"
-	$IPT -A bad_flags -p tcp --tcp-flags ALL NONE -j DROP                -m comment --comment "Bad tcp-flags: syn|ack|fin|rst|urg|psh"
-	$IPT -A bad_flags -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP         -m comment --comment "Bad tcp-flags: syn|ack|FIN|rst|URG|PSH"
-	$IPT -A bad_flags -p tcp --tcp-flags ALL SYN,ACK,FIN,RST,URG -j DROP -m comment --comment "Bad tcp-flags: SYN|ACK|FIN|RST|URG|psh"
+	IPT "-A bad_flags -p tcp --tcp-flags ACK,FIN FIN -j DROP            " "Bad tcp-flags: ---|ack|FIN|---|---|---"
+	IPT "-A bad_flags -p tcp --tcp-flags ACK,PSH PSH -j DROP            " "Bad tcp-flags: ---|ack|---|---|---|PSH"
+	IPT "-A bad_flags -p tcp --tcp-flags ACK,URG URG  -j DROP           " "Bad tcp-flags: ---|ack|---|---|URG|---"
+	IPT "-A bad_flags -p tcp --tcp-flags FIN,RST FIN,RST -j DROP        " "Bad tcp-flags: ---|---|FIN|RST|---|---"
+	IPT "-A bad_flags -p tcp --tcp-flags SYN,FIN SYN,FIN  -j DROP       " "Bad tcp-flags: SYN|---|FIN|---|---|---"
+	IPT "-A bad_flags -p tcp --tcp-flags SYN,RST SYN,RST -j DROP        " "Bad tcp-flags: SYN|---|---|RST|---|---"
+	IPT "-A bad_flags -p tcp --tcp-flags ALL ALL -j DROP                " "Bad tcp-flags: SYN|ACK|FIN|RST|URG|PSH"
+	IPT "-A bad_flags -p tcp --tcp-flags ALL NONE -j DROP               " "Bad tcp-flags: syn|ack|fin|rst|urg|psh"
+	IPT "-A bad_flags -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP        " "Bad tcp-flags: syn|ack|FIN|rst|URG|PSH"
+	IPT "-A bad_flags -p tcp --tcp-flags ALL SYN,ACK,FIN,RST,URG -j DROP" "Bad tcp-flags: SYN|ACK|FIN|RST|URG|psh"
 
 	# Chain to limit or deny ICMP responses.
-	$IPT -A icmp_checks -p icmp -d $WAN_NET -s $WAN_NET -j ACCEPT
-	$IPT -A icmp_checks -p icmp --icmp-type  0 -j ACCEPT -m comment --comment "Echo-Reply (0)"
-	$IPT -A icmp_checks -p icmp --icmp-type  3 -j ACCEPT -m comment --comment "Destination-Unreachable (3)"
-	$IPT -A icmp_checks -p icmp --icmp-type 11 -j ACCEPT -m comment --comment "Time-Exceeded (11)"
-	$IPT -A icmp_checks -p icmp --icmp-type  8 -m limit --limit 5/s -j ACCEPT -m comment --comment "Echo (8), Limit to 5/second"
-	$IPT -A icmp_checks -j DROP
+	[ -n "$WAN_IF" -a -n "$WAN_NET" ] && IPT "-A icmp_checks -p icmp -d $WAN_NET -s $WAN_NET -j ACCEPT" || :
+	IPT "-A icmp_checks -p icmp --icmp-type  0 -j ACCEPT" "Echo-Reply (0)"
+	IPT "-A icmp_checks -p icmp --icmp-type  3 -j ACCEPT" "Destination-Unreachable (3)"
+	IPT "-A icmp_checks -p icmp --icmp-type 11 -j ACCEPT" "Time-Exceeded (11)"
+	IPT "-A icmp_checks -p icmp --icmp-type  8 -m limit --limit 5/s -j ACCEPT" "Echo (8), Limit to 5/second"
+	IPT "-A icmp_checks -j DROP"
 
 	## Chains for BOGONS
 	for i in ${BOGONS[@]}; do
-		$IPT -A bogon_in -s $i -j DROP
-		$IPT -A bogon_out -d $i -j DROP
-		$IPT -t nat -A PREROUTING -i $WAN_IF -s $i -j DROP
-		$IPT -t nat -A POSTROUTING -o $WAN_IF -d $i -j DROP
+		IPT "-A bogon_in -s $i -j DROP"
+		IPT "-A bogon_out -d $i -j DROP"
+		if [ -n "$WAN_IF" ]; then
+			IPT "-t nat -A PREROUTING -i $WAN_IF -s $i -j DROP"
+			IPT "-t nat -A POSTROUTING -o $WAN_IF -d $i -j DROP"
+		fi
 	done
-	$IPT -t nat -A PREROUTING -i $WAN_IF -m addrtype --src-type MULTICAST -j DROP
-	$IPT -t nat -A PREROUTING -i $WAN_IF -m pkttype --pkt-type broadcast -j DROP
-	$IPT -t nat -A PREROUTING -i $WAN_IF -s $LAN_NET -j DROP
-	$IPT -t nat -A POSTROUTING -o $WAN_IF -m addrtype --dst-type MULTICAST -j DROP
-	$IPT -t nat -A POSTROUTING -o $WAN_IF -d $LAN_NET -j DROP
+	if [ -n "$WAN_IF" ]; then
+		IPT "-t nat -A PREROUTING -i $WAN_IF -m addrtype --src-type MULTICAST -j DROP"
+		IPT "-t nat -A PREROUTING -i $WAN_IF -m pkttype --pkt-type broadcast -j DROP"
+		[ -n "$LAN1_IF" -a -n "$LAN1_NET" ] && IPT "-t nat -A PREROUTING -i $WAN_IF -s $LAN1_NET -j DROP" || :
+		[ -n "$LAN2_IF" -a -n "$LAN2_NET" ] && IPT "-t nat -A PREROUTING -i $WAN_IF -s $LAN2_NET -j DROP" || :
+
+		IPT "-t nat -A POSTROUTING -o $WAN_IF -m addrtype --dst-type MULTICAST -j DROP"
+		[ -n "$LAN1_IF" -a -n "$LAN1_NET" ] && IPT "-t nat -A POSTROUTING -o $WAN_IF -d $LAN1_NET -j DROP" || :
+		[ -n "$LAN2_IF" -a -n "$LAN2_NET" ] && IPT "-t nat -A POSTROUTING -o $WAN_IF -d $LAN2_NET -j DROP" || :
 
 
-	# INPUT chain rules.
-	$IPT -A INPUT -i ! $WAN_IF -j trust_in
-	$IPT -A INPUT -i $WAN_IF   -j firewall_in
+		# INPUT chain rules.
+		IPT "-A INPUT -i ! $WAN_IF -j trust_int_in"
+		IPT "-A INPUT -i $WAN_IF   -j trust_host_in"
+		IPT "-A INPUT -i $WAN_IF   -j firewall_in"
 
-	#$IPT -A firewall_in -j trust_in
-	$IPT -A firewall_in -i $WAN_IF -m state --state RELATED -j ACCEPT
-	$IPT -A firewall_in -i $WAN_IF -m state --state ESTABLISHED -j ACCEPT
-	$IPT -A firewall_in -i $WAN_IF -m state --state INVALID -j DROP
-	$IPT -A firewall_in -i $WAN_IF -p icmp -j icmp_checks
-	$IPT -A firewall_in -i $WAN_IF -p tcp -j tcp_checks
-	$IPT -A firewall_in -i $WAN_IF -j dns_in
-	$IPT -A firewall_in -i $WAN_IF -j bogon_in
-	$IPT -A firewall_in -i $WAN_IF -j block_in
-	$IPT -A firewall_in -i $WAN_IF -j open_in
-
-
-
-	# OUTPUT chain rules.
-	$IPT -A OUTPUT -o ! $WAN_IF -j trust_out
-	$IPT -A OUTPUT -o $WAN_IF   -j firewall_out
-
-	$IPT -A firewall_out -o $WAN_IF -m state --state RELATED -j ACCEPT
-	$IPT -A firewall_out -o $WAN_IF -m state --state ESTABLISHED -j ACCEPT
-	$IPT -A firewall_out -o $WAN_IF -m state --state NEW -j ACCEPT
-	$IPT -A firewall_out -o $WAN_IF -m state --state INVALID -j DROP
-	$IPT -A firewall_out -o $WAN_IF -p icmp -j icmp_checks
-	$IPT -A firewall_out -o $WAN_IF -p tcp -j tcp_checks
-	$IPT -A firewall_out -o $WAN_IF -j dns_out
-	$IPT -A firewall_out -o $WAN_IF -j bogon_out
-	$IPT -A firewall_out -o $WAN_IF -j block_out
-	$IPT -A firewall_out -o $WAN_IF -j open_out
+		IPT "-A firewall_in -i $WAN_IF -m state --state RELATED -j ACCEPT"
+		IPT "-A firewall_in -i $WAN_IF -m state --state ESTABLISHED -j ACCEPT"
+		IPT "-A firewall_in -i $WAN_IF -m state --state INVALID -j DROP"
+		IPT "-A firewall_in -i $WAN_IF -p icmp -j icmp_checks"
+		IPT "-A firewall_in -i $WAN_IF -p tcp -j tcp_checks"
+		IPT "-A firewall_in -i $WAN_IF -j dns_in"
+		IPT "-A firewall_in -i $WAN_IF -j bogon_in"
+		IPT "-A firewall_in -i $WAN_IF -j block_in"
+		IPT "-A firewall_in -i $WAN_IF -j open_in"
 
 
+		# OUTPUT chain rules.
+		IPT "-A OUTPUT -o ! $WAN_IF -j trust_int_out"
+		IPT "-A OUTPUT -o $WAN_IF   -j trust_host_out"
+		IPT "-A OUTPUT -o $WAN_IF   -j firewall_out"
 
-	# FORWARD / POSTROUTING / SNAT
-	if [ "$ENABLE_GATEWAY" = "1" ]; then
-		# Setup forwards before masquerading.
-		$IPT -A FORWARD -d 0/0 -s $LAN_NET -o $WAN_IF -j ACCEPT -m comment --comment "Forward: Accept: (all) $LAN_NET -> 0/0 VIA [$WAN_IF]  : Forward before Masquerade"
-		$IPT -A FORWARD -d 0/0 -s $VPN_NET -o $WAN_IF -j ACCEPT -m comment --comment "Forward: Accept: (all) $VPN_NET -> 0/0 VIA [$WAN_IF]  : Forward before Masquerade"
-		$IPT -A FORWARD -d 0/0 -s $LAN_NET -o $VPN_IF -j ACCEPT -m comment --comment "Forward: Accept: (all) $LAN_NET -> 0/0 VIA [$VPN_IF]  : Forward before Masquerade"
-		$IPT -A FORWARD -d 0/0 -s $VPN_NET -o $LAN_IF -j ACCEPT -m comment --comment "Forward: Accept: (all) $VPN_NET -> 0/0 VIA [$LAN_IF]  : Forward before Masquerade"
-		$IPT -A FORWARD -d $LAN_NET -j ACCEPT -m comment --comment "Forward: Accept: (all) 0/0 -> $LAN_NET  : Forward before Masquerade"
-		$IPT -A FORWARD -d $VPN_NET -j ACCEPT -m comment --comment "Forward: Accept: (all) 0/0 -> $VPN_NET  : Forward before Masquerade"
+		IPT "-A firewall_out -o $WAN_IF -m state --state RELATED -j ACCEPT"
+		IPT "-A firewall_out -o $WAN_IF -m state --state ESTABLISHED -j ACCEPT"
+		IPT "-A firewall_out -o $WAN_IF -m state --state NEW -j ACCEPT"
+		IPT "-A firewall_out -o $WAN_IF -m state --state INVALID -j DROP"
+		IPT "-A firewall_out -o $WAN_IF -p icmp -j icmp_checks"
+		IPT "-A firewall_out -o $WAN_IF -p tcp -j tcp_checks"
+		IPT "-A firewall_out -o $WAN_IF -j dns_out"
+		IPT "-A firewall_out -o $WAN_IF -j bogon_out"
+		IPT "-A firewall_out -o $WAN_IF -j block_out"
+		IPT "-A firewall_out -o $WAN_IF -j open_out"
 
-		# Masquerade Outgoing Traffic
-		$IPT -t nat -A POSTROUTING -o $WAN_IF -j MASQUERADE -m comment --comment "Postrouting: Masquerade: (all) 0/0 -> 0/0 VIA [$WAN_IF]  : Masquerade Outgoing Traffic"
-		# Allow traffic from WAN_NET to go outbound
-		$IPT -t nat -A POSTROUTING -s $WAN_NET -d 0/0 -j ACCEPT -m comment --comment "Postrouting: Accept: (all) $WAN_NET -> 0/0  : Allow traffic from WAN_NET to go outbound"
+
+		# FORWARD / POSTROUTING / SNAT
+		if [ "$ENABLE_GATEWAY" = "1" ]; then
+			# Setup LAN1 forwards before masquerading.
+			if [ -n "$LAN1_IF" ]; then
+				[ -n "$LAN1_NET" ] && IPT "-A FORWARD -d 0/0 -s $LAN1_NET -o $WAN_IF -j ACCEPT" "Forward: Accept: (all) $LAN1_NET -> 0/0 VIA [$WAN_IF]  : Forward before Masquerade" || :
+				# Setup LAN1 <-> VPN1 forwards.
+				if [ -n "$VPN1_IF" ]; then
+					[ -n "$LAN1_NET" ]  && IPT "-A FORWARD -d 0/0 -s $LAN1_NET -o $VPN1_IF -j ACCEPT" "Forward: Accept: (all) $LAN1_NET -> 0/0 VIA [$VPN1_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN1_NET1" ] && IPT "-A FORWARD -d 0/0 -s $VPN1_NET1 -o $LAN1_IF -j ACCEPT" "Forward: Accept: (all) $VPN1_NET1 -> 0/0 VIA [$LAN1_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN1_NET2" ] && IPT "-A FORWARD -d 0/0 -s $VPN1_NET2 -o $LAN1_IF -j ACCEPT" "Forward: Accept: (all) $VPN1_NET2 -> 0/0 VIA [$LAN1_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN1_NET3" ] && IPT "-A FORWARD -d 0/0 -s $VPN1_NET3 -o $LAN1_IF -j ACCEPT" "Forward: Accept: (all) $VPN1_NET3 -> 0/0 VIA [$LAN1_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN1_NET4" ] && IPT "-A FORWARD -d 0/0 -s $VPN1_NET4 -o $LAN1_IF -j ACCEPT" "Forward: Accept: (all) $VPN1_NET4 -> 0/0 VIA [$LAN1_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN1_NET5" ] && IPT "-A FORWARD -d 0/0 -s $VPN1_NET5 -o $LAN1_IF -j ACCEPT" "Forward: Accept: (all) $VPN1_NET5 -> 0/0 VIA [$LAN1_IF]  : Forward before Masquerade" || :
+				fi
+				# Setup LAN1 <-> VPN2 forwards.
+				if [ -n "$VPN2_IF" ]; then
+					[ -n "$LAN1_NET" ]  && IPT "-A FORWARD -d 0/0 -s $LAN1_NET -o $VPN2_IF -j ACCEPT" "Forward: Accept: (all) $LAN1_NET -> 0/0 VIA [$VPN2_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN2_NET1" ] && IPT "-A FORWARD -d 0/0 -s $VPN2_NET1 -o $LAN1_IF -j ACCEPT" "Forward: Accept: (all) $VPN2_NET1 -> 0/0 VIA [$LAN1_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN2_NET2" ] && IPT "-A FORWARD -d 0/0 -s $VPN2_NET2 -o $LAN1_IF -j ACCEPT" "Forward: Accept: (all) $VPN2_NET2 -> 0/0 VIA [$LAN1_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN2_NET3" ] && IPT "-A FORWARD -d 0/0 -s $VPN2_NET3 -o $LAN1_IF -j ACCEPT" "Forward: Accept: (all) $VPN2_NET3 -> 0/0 VIA [$LAN1_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN2_NET4" ] && IPT "-A FORWARD -d 0/0 -s $VPN2_NET4 -o $LAN1_IF -j ACCEPT" "Forward: Accept: (all) $VPN2_NET4 -> 0/0 VIA [$LAN1_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN2_NET5" ] && IPT "-A FORWARD -d 0/0 -s $VPN2_NET5 -o $LAN1_IF -j ACCEPT" "Forward: Accept: (all) $VPN2_NET5 -> 0/0 VIA [$LAN1_IF]  : Forward before Masquerade" || :
+				fi
+				[ -n "$LAN1_NET" ] && IPT "-A FORWARD -d $LAN1_NET -j ACCEPT" "Forward: Accept: (all) 0/0 -> $LAN1_NET  : Forward before Masquerade" || :
+			fi
+
+			# Setup LAN2 forwards before masquerading.
+			if [ -n "$LAN2_IF" ]; then
+				[ -n "$LAN2_NET" ] && IPT "-A FORWARD -d 0/0 -s $LAN2_NET -o $WAN_IF -j ACCEPT" "Forward: Accept: (all) $LAN2_NET -> 0/0 VIA [$WAN_IF]  : Forward before Masquerade" || :
+				# Setup LAN2 <-> VPN1 forwards.
+				if [ -n "$VPN1_IF" ]; then
+					[ -n "$LAN2_NET" ]  && IPT "-A FORWARD -d 0/0 -s $LAN2_NET -o $VPN1_IF -j ACCEPT" "Forward: Accept: (all) $LAN2_NET -> 0/0 VIA [$VPN1_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN1_NET1" ] && IPT "-A FORWARD -d 0/0 -s $VPN1_NET1 -o $LAN2_IF -j ACCEPT" "Forward: Accept: (all) $VPN1_NET1 -> 0/0 VIA [$LAN2_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN1_NET2" ] && IPT "-A FORWARD -d 0/0 -s $VPN1_NET2 -o $LAN2_IF -j ACCEPT" "Forward: Accept: (all) $VPN1_NET2 -> 0/0 VIA [$LAN2_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN1_NET3" ] && IPT "-A FORWARD -d 0/0 -s $VPN1_NET3 -o $LAN2_IF -j ACCEPT" "Forward: Accept: (all) $VPN1_NET3 -> 0/0 VIA [$LAN2_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN1_NET4" ] && IPT "-A FORWARD -d 0/0 -s $VPN1_NET4 -o $LAN2_IF -j ACCEPT" "Forward: Accept: (all) $VPN1_NET4 -> 0/0 VIA [$LAN2_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN1_NET5" ] && IPT "-A FORWARD -d 0/0 -s $VPN1_NET5 -o $LAN2_IF -j ACCEPT" "Forward: Accept: (all) $VPN1_NET5 -> 0/0 VIA [$LAN2_IF]  : Forward before Masquerade" || :
+				fi
+				# Setup LAN2 <-> VPN2 forwards.
+				if [ -n "$VPN2_IF" ]; then
+					[ -n "$LAN2_NET" ]  && IPT "-A FORWARD -d 0/0 -s $LAN2_NET -o $VPN2_IF -j ACCEPT" "Forward: Accept: (all) $LAN2_NET -> 0/0 VIA [$VPN2_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN2_NET1" ] && IPT "-A FORWARD -d 0/0 -s $VPN2_NET1 -o $LAN2_IF -j ACCEPT" "Forward: Accept: (all) $VPN2_NET1 -> 0/0 VIA [$LAN2_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN2_NET2" ] && IPT "-A FORWARD -d 0/0 -s $VPN2_NET2 -o $LAN2_IF -j ACCEPT" "Forward: Accept: (all) $VPN2_NET2 -> 0/0 VIA [$LAN2_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN2_NET3" ] && IPT "-A FORWARD -d 0/0 -s $VPN2_NET3 -o $LAN2_IF -j ACCEPT" "Forward: Accept: (all) $VPN2_NET3 -> 0/0 VIA [$LAN2_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN2_NET4" ] && IPT "-A FORWARD -d 0/0 -s $VPN2_NET4 -o $LAN2_IF -j ACCEPT" "Forward: Accept: (all) $VPN2_NET4 -> 0/0 VIA [$LAN2_IF]  : Forward before Masquerade" || :
+					[ -n "$VPN2_NET5" ] && IPT "-A FORWARD -d 0/0 -s $VPN2_NET5 -o $LAN2_IF -j ACCEPT" "Forward: Accept: (all) $VPN2_NET5 -> 0/0 VIA [$LAN2_IF]  : Forward before Masquerade" || :
+				fi
+				[ -n "$LAN2_NET" ] && IPT "-A FORWARD -d $LAN2_NET -j ACCEPT" "Forward: Accept: (all) 0/0 -> $LAN2_NET  : Forward before Masquerade" || :
+			fi
+
+			# Setup VPN1 forwards before masquerading.
+			if [ -n "$VPN1_IF" ]; then 
+				[ -n "$VPN1_NET1" ] && IPT "-A FORWARD -d 0/0 -s $VPN1_NET1 -o $WAN_IF -j ACCEPT" "Forward: Accept: (all) $VPN1_NET1 -> 0/0 VIA [$WAN_IF]  : Forward before Masquerade" || :
+				[ -n "$VPN1_NET2" ] && IPT "-A FORWARD -d 0/0 -s $VPN1_NET2 -o $WAN_IF -j ACCEPT" "Forward: Accept: (all) $VPN1_NET2 -> 0/0 VIA [$WAN_IF]  : Forward before Masquerade" || :
+				[ -n "$VPN1_NET3" ] && IPT "-A FORWARD -d 0/0 -s $VPN1_NET3 -o $WAN_IF -j ACCEPT" "Forward: Accept: (all) $VPN1_NET3 -> 0/0 VIA [$WAN_IF]  : Forward before Masquerade" || :
+				[ -n "$VPN1_NET4" ] && IPT "-A FORWARD -d 0/0 -s $VPN1_NET4 -o $WAN_IF -j ACCEPT" "Forward: Accept: (all) $VPN1_NET4 -> 0/0 VIA [$WAN_IF]  : Forward before Masquerade" || :
+				[ -n "$VPN1_NET5" ] && IPT "-A FORWARD -d 0/0 -s $VPN1_NET5 -o $WAN_IF -j ACCEPT" "Forward: Accept: (all) $VPN1_NET5 -> 0/0 VIA [$WAN_IF]  : Forward before Masquerade" || :
+
+				[ -n "$VPN1_NET1" ] && IPT "-A FORWARD -d $VPN1_NET1 -j ACCEPT" "Forward: Accept: (all) 0/0 -> $VPN1_NET1  : Forward before Masquerade" || :
+				[ -n "$VPN1_NET2" ] && IPT "-A FORWARD -d $VPN1_NET2 -j ACCEPT" "Forward: Accept: (all) 0/0 -> $VPN1_NET2  : Forward before Masquerade" || :
+				[ -n "$VPN1_NET3" ] && IPT "-A FORWARD -d $VPN1_NET3 -j ACCEPT" "Forward: Accept: (all) 0/0 -> $VPN1_NET3  : Forward before Masquerade" || :
+				[ -n "$VPN1_NET4" ] && IPT "-A FORWARD -d $VPN1_NET4 -j ACCEPT" "Forward: Accept: (all) 0/0 -> $VPN1_NET4  : Forward before Masquerade" || :
+				[ -n "$VPN1_NET5" ] && IPT "-A FORWARD -d $VPN1_NET5 -j ACCEPT" "Forward: Accept: (all) 0/0 -> $VPN1_NET5  : Forward before Masquerade" || :
+			fi
+
+			# Setup VPN2 forwards before masquerading.
+			if [ -n "$VPN2_IF" ]; then 
+				[ -n "$VPN2_NET1" ] && IPT "-A FORWARD -d 0/0 -s $VPN2_NET1 -o $WAN_IF -j ACCEPT" "Forward: Accept: (all) $VPN2_NET1 -> 0/0 VIA [$WAN_IF]  : Forward before Masquerade" || :
+				[ -n "$VPN2_NET2" ] && IPT "-A FORWARD -d 0/0 -s $VPN2_NET2 -o $WAN_IF -j ACCEPT" "Forward: Accept: (all) $VPN2_NET2 -> 0/0 VIA [$WAN_IF]  : Forward before Masquerade" || :
+				[ -n "$VPN2_NET3" ] && IPT "-A FORWARD -d 0/0 -s $VPN2_NET3 -o $WAN_IF -j ACCEPT" "Forward: Accept: (all) $VPN2_NET3 -> 0/0 VIA [$WAN_IF]  : Forward before Masquerade" || :
+				[ -n "$VPN2_NET4" ] && IPT "-A FORWARD -d 0/0 -s $VPN2_NET4 -o $WAN_IF -j ACCEPT" "Forward: Accept: (all) $VPN2_NET4 -> 0/0 VIA [$WAN_IF]  : Forward before Masquerade" || :
+				[ -n "$VPN2_NET5" ] && IPT "-A FORWARD -d 0/0 -s $VPN2_NET5 -o $WAN_IF -j ACCEPT" "Forward: Accept: (all) $VPN2_NET5 -> 0/0 VIA [$WAN_IF]  : Forward before Masquerade" || :
+
+				[ -n "$VPN2_NET1" ] && IPT "-A FORWARD -d $VPN2_NET1 -j ACCEPT" "Forward: Accept: (all) 0/0 -> $VPN2_NET1  : Forward before Masquerade" || :
+				[ -n "$VPN2_NET2" ] && IPT "-A FORWARD -d $VPN2_NET2 -j ACCEPT" "Forward: Accept: (all) 0/0 -> $VPN2_NET2  : Forward before Masquerade" || :
+				[ -n "$VPN2_NET3" ] && IPT "-A FORWARD -d $VPN2_NET3 -j ACCEPT" "Forward: Accept: (all) 0/0 -> $VPN2_NET3  : Forward before Masquerade" || :
+				[ -n "$VPN2_NET4" ] && IPT "-A FORWARD -d $VPN2_NET4 -j ACCEPT" "Forward: Accept: (all) 0/0 -> $VPN2_NET4  : Forward before Masquerade" || :
+				[ -n "$VPN2_NET5" ] && IPT "-A FORWARD -d $VPN2_NET5 -j ACCEPT" "Forward: Accept: (all) 0/0 -> $VPN2_NET5  : Forward before Masquerade" || :
+			fi
+
+			# Masquerade Outgoing Traffic
+			IPT "-t nat -A POSTROUTING -o $WAN_IF -j MASQUERADE" "Postrouting: Masquerade: (all) 0/0 -> 0/0 VIA [$WAN_IF]  : Masquerade Outgoing Traffic"
+
+			# Allow traffic from WAN_NET to go outbound
+			[ -n "$WAN_NET" ] && IPT "-t nat -A POSTROUTING -s $WAN_NET -d 0/0 -j ACCEPT" "Postrouting: Accept: (all) $WAN_NET -> 0/0  : Allow traffic from WAN_NET to go outbound" || :
+		fi
 	fi
 }
 
