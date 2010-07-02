@@ -1461,6 +1461,7 @@ if ($ADD == "3keys") {
         echo "        <option value=\"MENU_EXIT\">Exit from Menu (no-diposition)</option>\n";
         echo "      </select>\n";
         echo "    </td>\n";
+        echo "    <td align=center></td>\n";
         echo "    <td align=center colspan=2 class=tabbutton1><input type=submit value=\"New\"></td>\n";
         echo "  </tr>\n";
         echo "  </form>\n";
