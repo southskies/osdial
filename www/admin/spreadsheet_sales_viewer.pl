@@ -38,8 +38,7 @@ open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
 close(conf);
 $i=0;
-foreach(@conf)
-	{
+foreach(@conf) {
 	$line = $conf[$i];
 	$line =~ s/ |>|\n|\r|\t|\#.*|;.*//gi;
 	if ( ($line =~ /^PATHhome/) && ($CLIhome < 1) )
@@ -67,7 +66,7 @@ foreach(@conf)
 	if ( ($line =~ /^VARDB_port/) && ($CLIDB_port < 1) )
 		{$VARDB_port = $line;   $VARDB_port =~ s/.*=//gi;}
 	$i++;
-	}
+}
 
 # Customized Variables
 $server_ip = $VARserver_ip;		# Asterisk server IP
@@ -170,6 +169,13 @@ $xlsheet->write("G2", "Total time in system", $rptheader);
 %fronters=();
 
 
+$stmtA = "SELECT status,category FROM (SELECT status,category FROM osdial_statuses WHERE category='SALE' UNION SELECT status,category FROM osdial_campaign_statuses WHERE category='SALE') AS stat GROUP BY status;";
+$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+while (@aryA=$sthA->fetchrow_array) {
+	push(@statSQL,$aryA[0]);
+}
+$sthA->finish();
 
 # Non-transfer
 $sales=0;
@@ -178,24 +184,23 @@ $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
 $rec_count=0;
-while ($sthArows > $rec_count)
-	{
+while ($sthArows > $rec_count) {
 	@aryA = $sthA->fetchrow_array;
-	if (length($sales_number)==0 || $sales<$sales_number) 
-		{
+	if (length($sales_number)==0 || $sales<$sales_number) {
 		$closers{"$aryA[1]"}[0]++;
 		$fronters{"$aryA[1]"}[0]++;
-		if ($aryA[0] eq "SALE") 
-			{
-			$sales++;
-			$closers{"$aryA[1]"}[1]++;
-			$fronters{"$aryA[1]"}[1]++;
+		foreach my $stat (@statSQL) {
+			if ($aryA[0] eq $stat) {
+				$sales++;
+				$closers{"$aryA[1]"}[1]++;
+				$fronters{"$aryA[1]"}[1]++;
 			}
 		}
+	}
 	$closers{"$aryA[1]"}[2]=$aryA[2];
 	$fronters{"$aryA[1]"}[2]=$aryA[2];
 	$rec_count++;
-	}
+}
 $sthA->finish();
 
 
@@ -208,18 +213,17 @@ if ($forc eq "F") {
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
 	$rec_count=0;
-	while ($sthArows > $rec_count)
-		{
+	while ($sthArows > $rec_count) {
 		@aryA = $sthA->fetchrow_array;
-		if (!$sales_number || $sales<$sales_number) 
-			{
+		if (!$sales_number || $sales<$sales_number) {
 			$closers{"$aryA[1]"}[0]++;
-			if ($aryA[0] eq "SALE") 
-				{
-				$sales++;
-				$closers{"$aryA[1]"}[1]++;
+			foreach my $stat (@statSQL) {
+				if ($aryA[0] eq $stat) {
+					$sales++;
+					$closers{"$aryA[1]"}[1]++;
 				}
 			}
+		}
 		$closers{"$aryA[1]"}[2]=$aryA[2];
 		$rec_count++;
 		}
@@ -229,24 +233,22 @@ if ($forc eq "F") {
 
 $x=3;
 $grand_total_time=0;
-foreach $closername (sort(keys(%closers))) 
-{
+foreach $closername (sort(keys(%closers))) {
 	$closers{$closername}[0]+=0;
 	$closers{$closername}[1]+=0;
 
-	$stmtA = "select sum(pause_sec+wait_sec+talk_sec), sec_to_time(sum(pause_sec+wait_sec+talk_sec)) from osdial_agent_log where user=".$closers{$closername}[2]." and event_time>='$timestamp' and event_time<='$now' and pause_sec<28800 and wait_sec<28800 and talk_sec<28800;";
+	$stmtA = "select sum(pause_sec+wait_sec+talk_sec), sec_to_time(sum(pause_sec+wait_sec+talk_sec)) from osdial_agent_log where user='".$closers{$closername}[2]."' and event_time>='$timestamp' and event_time<='$now' and pause_sec<28800 and wait_sec<28800 and talk_sec<28800;";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
 	$rec_count=0;
-	while ($sthArows > $rec_count)
-		{
+	while ($sthArows > $rec_count) {
 		@aryA = $sthA->fetchrow_array;
 		$hours=($aryA[0]/3600);
 		$grand_total_time+=$aryA[0];
 		$total_time=$aryA[1];
 		$rec_count++;
-		}
+	}
 	$sthA->finish();
 	$xlsheet->write("A$x", "$closername", $normcell);
 	$xlsheet->write("B$x", "=$closers{$closername}[0]+0", $intformat);
@@ -264,12 +266,11 @@ $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
 $rec_count=0;
-while ($sthArows > $rec_count)
-	{
+while ($sthArows > $rec_count) {
 	@aryA = $sthA->fetchrow_array;
 	$grand_total_time=$aryA[0];
 	$rec_count++;
-	}
+}
 $sthA->finish();
 
 
@@ -353,14 +354,13 @@ if ($forc eq "F") {
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
 		$rec_count=0;
-		while ($sthArows > $rec_count)
-			{
+		while ($sthArows > $rec_count) {
 			@aryA = $sthA->fetchrow_array;
 			$hours=($aryA[0]/3600);
 			$grand_total_time+=$aryA[0];
 			$total_time=$aryA[1];
 			$rec_count++;
-			}
+		}
 		$sthA->finish();
 
 		$xlsheet->write("A$x", "$tsrname", $normcell);
@@ -379,12 +379,11 @@ if ($forc eq "F") {
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
 	$rec_count=0;
-	while ($sthArows > $rec_count)
-		{
+	while ($sthArows > $rec_count) {
 		@aryA = $sthA->fetchrow_array;
 		$grand_total_time=$aryA[0];
 		$rec_count++;
-		}
+	}
 	$sthA->finish();
 
 	$y=($x+1);

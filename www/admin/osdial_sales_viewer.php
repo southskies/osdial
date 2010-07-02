@@ -184,13 +184,23 @@ if ($submit_report && $list_ids) {
 	}
 	echo "      <hr>\n";
 	echo "      <table border=0 cellpadding=5 cellspacing=1 bgcolor=grey align=center>\n";
+
 	$i=0;
+    $stmt = "SELECT status,category FROM (SELECT status,category FROM osdial_statuses WHERE category='SALE' UNION SELECT status,category FROM osdial_campaign_statuses WHERE category='SALE') AS stat GROUP BY status;";
+	$rslt=mysql_query($stmt, $link);
+    $statSQL='';
+	while ($row=mysql_fetch_row($rslt)) {
+        $statSQL .= "'" . $row[0] . "',";
+        $i++;
+    }
+    $statSQL = rtrim($statSQL,",");
+    if ($i == 0) $statSQL = "'SALE'";
 
 	$dfile=fopen("discover_stmts.txt", "w");
 	if ($forc=="C") {
-		$stmt="select v.first_name, v.last_name, v.phone_number, vl.call_date, v.lead_id, u.full_name from osdial_users u, osdial_list v, osdial_log vl where vl.call_date>='$timestamp' and vl.lead_id=v.lead_id and v.status='SALE' $list_id_clause and vl.user=u.user order by call_date desc $limit_clause";
+		$stmt="select v.first_name, v.last_name, v.phone_number, vl.call_date, v.lead_id, u.full_name, '', v.status from osdial_users u, osdial_list v, osdial_log vl where vl.call_date>='$timestamp' and vl.lead_id=v.lead_id and v.status IN ($statSQL) $list_id_clause and vl.user=u.user order by call_date desc $limit_clause";
 	} else {
-		$stmt="select v.first_name, v.last_name, v.phone_number, vl.call_date, v.lead_id, vl.user, vl.closer from osdial_list v, osdial_xfer_log vl where vl.call_date>='$timestamp' and vl.lead_id=v.lead_id and v.status='SALE' $list_id_clause order by call_date desc $limit_clause";
+		$stmt="select v.first_name, v.last_name, v.phone_number, vl.call_date, v.lead_id, vl.user, vl.closer, v.status from osdial_list v, osdial_xfer_log vl where vl.call_date>='$timestamp' and vl.lead_id=v.lead_id and v.status IN ($statSQL) $list_id_clause order by call_date desc $limit_clause";
 	}
 	fwrite($dfile, "$stmt\n");
 	$rslt=mysql_query($stmt, $link);
@@ -204,6 +214,7 @@ if ($submit_report && $list_ids) {
 	echo "          <td>Phone</td>\n";
 	echo "          <td>Recording ID</td>\n";
 	echo "          <td>Timestamp</td>\n";
+	echo "          <td>Status</td>\n";
 	echo "        </tr>\n";
     $i=0;
 	while ($row=mysql_fetch_row($rslt)) {
@@ -232,11 +243,13 @@ if ($submit_report && $list_ids) {
 		echo "          <td>$row[2]</td>\n";
 		echo "          <td>$rec_row[0]</td>\n";
 		echo "          <td>$row[3]</td>\n";
+		echo "          <td>$row[7]</td>\n";
 		echo "        </tr>\n";
 		flush();
         $i++;
 	}
 	echo "        <tr class=tabfooter>\n";
+	echo "          <td></td>\n";
 	echo "          <td></td>\n";
 	echo "          <td></td>\n";
 	echo "          <td></td>\n";
