@@ -646,6 +646,9 @@ if ($ADD==61)
 
             $stmt=sprintf("DELETE FROM osdial_ivr_options WHERE ivr_id='%s';",$ccivr['id']);
             $rslt=mysql_query($stmt, $link);
+
+            $stmt=sprintf("DELETE FROM osdial_users WHERE user LIKE 'va%s___';",mres($campaign_id));
+            $rslt=mysql_query($stmt, $link);
         }
 
         echo "<br><font color=$default_text>REMOVING LIST HOPPER LEADS FROM OLD CAMPAIGN HOPPER ($campaign_id)</font>\n";
