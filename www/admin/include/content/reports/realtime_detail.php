@@ -1170,7 +1170,7 @@ function report_realtime_detail() {
             $disp_agent = 1;
             if ($group == "XXXX-ALL-ACTIVE-XXXX" and $campaign_active<1) $disp_agent = 0;
 
-            if ($disp_agent) $Ahtml .= "$LNleft$G $extension $LNcenterbar <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$Luser\" target=\"_blank\">$G$user$EG</a> $LNcenterbar $UGD$sessionid$L$R $LNcenterbar $status $CM $LNcenterbar $pausecode$SVD$call_time_MS $LNcenterbar $campaign_id $LNcenterbar $calls_today $LNcenterbar $INGRP$EG$LNright\n";
+            if ($disp_agent) $Ahtml .= "$LNleft$G $extension $LNcenterbar <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$Luser&close_after_emergency_logout=Y\" target=\"_blank\">$G$user$EG</a> $LNcenterbar $UGD$sessionid$L$R $LNcenterbar $status $CM $LNcenterbar $pausecode$SVD$call_time_MS $LNcenterbar $campaign_id $LNcenterbar $calls_today $LNcenterbar $INGRP$EG$LNright\n";
 
             $j++;
         }

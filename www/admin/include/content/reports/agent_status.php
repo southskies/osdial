@@ -37,6 +37,7 @@ function report_agent_status() {
     $user = get_variable("user");
     $extension = get_variable("extension");
     $conf_exten = get_variable("conf_exten");
+    $close_after_emergency_logout = get_variable("close_after_emergency_logout");
     $server_ip = get_variable("server_ip");
     $group = get_variable("group");
     $stage = get_variable("stage");
@@ -194,6 +195,7 @@ function report_agent_status() {
 		            $table .= "  <input type=hidden name=extension value=\"$Aextension\">\n";
 		            $table .= "  <input type=hidden name=conf_exten value=\"$Asession_id\">\n";
 		            $table .= "  <input type=hidden name=server_ip value=\"$Aserver_ip\">\n";
+		            $table .= "  <input type=hidden name=close_after_emergency_logout value=\"$close_after_emergency_logout\">\n";
 		            $table .= "  <input type=hidden name=stage value=\"log_agent_out\">\n";
                     $table .= "  <table style=\"margin: 0px; padding: 0px;\" align=center width=50%>\n";
                     $table .= "    <tr class=font2 bgcolor=red>\n";
@@ -219,6 +221,12 @@ function report_agent_status() {
                 $rslt=mysql_query($stmt, $link);
 
                 $table .= "<center>Agent has been emergency logged out.<br>Please, make sure they close their web browser</center><br>\n";
+                if ($close_after_emergency_logout == "Y") {
+                    $table .= "\n\n<script language=\"javascript\">\n";
+                    $table .= "window.close();\n";
+                    $table .= "</script>\n\n";
+                    flush();
+                }
             } elseif ($agents_to_print < 1) {
                 $table .= "<center>Agent is not logged in.</center>\n";
             }
