@@ -50,6 +50,7 @@ $cal_bg1    ='#FFFFFF';
 $cal_bg2    ='#FFFFCC';
 $cal_bg3    ='#FFCCCC';
 $cal_bg4    ='#CCCCCC';
+$cal_bg5    ='#56CDA9';
 $cal_border1='#000000';
 $cal_border2='#FFFFFF';
 $cal_border3='#FFCCCC';

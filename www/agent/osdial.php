@@ -1778,17 +1778,25 @@ $Cmon = $CdayARY['mon'];
 $Cyear = $CdayARY['year'];
 $CTODAY = date("Y-m");
 $CTODAYmday = date("j");
-$CINC=0;
+$CINC = 0;
+if (!isset($cal_bg5)) $cal_bg5=$cal_bg3;
 
 $Cmonths = Array('January','February','March','April','May','June', 'July','August','September','October','November','December');
 $Cdays = Array('Sun','Mon','Tue','Wed','Thu','Fri','Sat');
 
+$Cmax_months = 60;
+while ($Cmax_months % 12 != 0) {
+    $Cmax_months++;
+}
+
 $CCAL_OUT = "\n";
-while ($CINC < 60) {
-    $cbguistyle = "display:block;";
-    if ($CINC > 0 and $CINC % 12 == 0) $cbguistyle .= "display:none;";
-    if ($CINC % 12 == 0) $CCAL_OUT .= "<span id=\"cbgui$CINC\" name=\"cbgui$CINC\" style=\"$cbguistyle\">\n";
-    if ($CINC % 12 == 0) $CCAL_OUT .= "  <table border=0 cellpadding=2 cellspacing=2>\n";
+while ($CINC < $Cmax_months) {
+    if ($CINC % 12 == 0) {
+        $CCALstyle = "display:block;";
+        if ($CINC > 0) $CCALstyle = "display:none;";
+        $CCAL_OUT .= sprintf('<span id="CCAL%s" name="CCAL%s" style="%s">',$CINC,$CINC,$CCALstyle) . "\n";
+        $CCAL_OUT .= "  <table border=0 cellpadding=2 cellspacing=2>\n";
+    }
     if ($CINC % 4 == 0) $CCAL_OUT .= "    <tr>\n";
     $CCAL_OUT .= "      <td valign=top>\n";
 
@@ -1798,84 +1806,92 @@ while ($CINC < 60) {
         $Cmonth = ($Cmonth - 12);
         $CYyear++;
     }
-    $Cstart= mktime(11,0,0,$Cmonth,1,$CYyear);
+    $Cstart = mktime(11,0,0,$Cmonth,1,$CYyear);
     $CfirstdayARY = getdate($Cstart);
-    #echo "|$Cmon|$Cmonth|$CINC|\n";
     $CPRNTDAY = date("Y-m", $Cstart);
 
-    $CCAL_OUT .= "        <table border=1 cellpadding=1 bordercolor=\"" . $cal_border1 . "\" cellspacing=\"0\" bgcolor=\"" . $cal_bg1 . "\">\n";
+    $CDC = sprintf('<font color="%s" face="Arial, Helvetica, sans-serif" size=2><b>%s %s</b></font>',$cal_fc,$CfirstdayARY['month'],$CfirstdayARY['year']);
+
+    $CCAL_OUT .= sprintf('        <table border=1 cellpadding=1 bordercolor="%s" cellspacing="0" bgcolor="%s">',$cal_border1,$cal_bg1) . "\n";
     $CCAL_OUT .= "          <tr>\n";
-    $CCAL_OUT .= "            <td align=\"center\" colspan=7 bordercolor=\"" . $cal_border2 . "\" bgcolor=\"" . $cal_bg2 . "\">"
-                             . "<font color=\"" . $cal_fc . "\" face=\"Arial, Helvetica, sans-serif\" size=2><b>$CfirstdayARY[month] $CfirstdayARY[year]</b></font>"
-                           . "</td>\n";
+    $CCAL_OUT .= sprintf('            <td align="center" colspan=7 bordercolor="%s" bgcolor="%s">%s</td>',$cal_border2,$cal_bg2,$CDC) . "\n";
     $CCAL_OUT .= "          </tr>\n";
 
     $CCAL_OUT .= "          <tr>\n";
     foreach($Cdays as $Cday) {
-        $CDBDR=$cal_border2;
-        $CCAL_OUT .= "            <td align=\"center\" bordercolor=\"$CDBDR\"><font color=\"" . $cal_fc . "\" face=\"Arial, Helvetica, sans-serif\" size=1><b>$Cday</b></font></td>\n";
+        $CCAL_OUT .= sprintf('            <td align="center" bordercolor="%s"><font color="%s" face="Arial, Helvetica, sans-serif" size=1><b>%s</b></font></td>',$cal_border2,$cal_fc,$Cday) . "\n";
     }
 
-    $Crow=0;
-    for ($Ccount=0; $Ccount<(6*7); $Ccount++) {
+    $Crow = 0;
+    for ($Ccount = 0; $Ccount < (6*7); $Ccount++) {
         $Cdayarray = getdate($Cstart);
         if($Ccount % 7 == 0) {
             if($Crow++ > 5 and $Cdayarray['mon'] != $CfirstdayARY['mon']) break;
             $CCAL_OUT .= "          </tr>\n";
             $CCAL_OUT .= "          <tr>\n";
         }
-        $CDCLR=$cal_bg1;
-        $CDBDR=$cal_border2;
+        $CDCLR = $cal_bg1;
+        $CDBDR = $cal_border2;
+        $CBLclick = '';
+        $CBLdblclick = '';
         if ($Cmonth > 12) $Cmonth = ($Cmonth - 12);
         if($Ccount < $CfirstdayARY['wday'] or $Cdayarray['mon'] != $Cmonth) {
-            $CBL = '&nbsp;';
-            $CBL .= "<!-- $Ccount $CfirstdayARY[wday] $Cdayarray[mon] $Cmonth -->";
+            $CBL = sprintf('&nbsp;<!-- %s %s %s %s -->',$Ccount,$CfirstdayARY['wday'],$Cdayarray['mon'],$Cmonth);
         } else {
-            $CPRNTmday = $Cdayarray['mday'];
-            if ($CPRNTmday < 10) $CPRNTmday = "0$CPRNTmday";
-            $CBL = "<a href=\"#\" onclick=\"CB_date_pick('$CPRNTDAY-$CPRNTmday');return false;\" ondblclick=\"if (document.osdial_form.CallBackDatESelectioN.value!=''){CallBackDatE_submit();};return false;\">" . $Cdayarray['mday'] . "</a>";
+            $CPRNTmday = sprintf('%02d',$Cdayarray['mday']);
+            $CBLclick = sprintf('onclick="if(CCALlast_pick){CCALlast_pick.style.backgroundColor=\'%s\';};this.style.backgroundColor=\'%s\';CB_date_pick(\'%s-%s\');CCALlast_pick=this;return false;"',$cal_bg1,$cal_bg5,$CPRNTDAY,$CPRNTmday);
+            $CBLdblclick = 'ondblclick="if (document.osdial_form.CallBackDatESelectioN.value!=\'\'){CallBackDatE_submit();};return false;"';
+            $CBL = $Cdayarray['mday'];
             if($Cdayarray['mday'] == $CTODAYmday and $CPRNTDAY == $CTODAY) {
-                $CDCLR=$cal_bg3;
-                $CDBDR=$cal_border3;
+                $CDCLR = $cal_bg3;
+                $CDBDR = $cal_border3;
             } elseif ($Cdayarray['mday'] < $CTODAYmday and $CPRNTDAY == $CTODAY) {
-                $CDCLR=$cal_bg4;
-                $CBL = $Cdatarray['mday'];
+                $CDCLR = $cal_bg4;
+                $CBLclick = '';
+                $CBLdblclick = '';
             }
             $Cstart += ADAY;
         }
-        $CCAL_OUT .= "            <td align=\"center\" bgcolor=\"$CDCLR\" bordercolor=\"$CDBDR\"><font face=\"Arial, Helvetica, sans-serif\" size=1><b>$CBL</b></font></td>\n";
+        $CCAL_OUT .= sprintf('            <td %s %s align="center" bgcolor="%s" bordercolor="%s"><font face="Arial, Helvetica, sans-serif" size=1><b>%s</b></font></td>',$CBLclick,$CBLdblclick,$CDCLR,$CDBDR,$CBL) . "\n";
     }
     $CCAL_OUT .= "          </tr>\n";
     $CCAL_OUT .= "        </table>\n";
     $CCAL_OUT .= "      </td>\n";
 
-    $cbgb = Array();
-    $cbgb['C11']  = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-    $cbgb['C11'] .= "<a href=\"#\" onclick=\"document.getElementById('cbgui0').style.display='none';document.getElementById('cbgui12').style.display='block';\">NEXT -&gt;</a>";
+    $CTINC = ($CINC+1);
+    $CCALnxtbtn = '';
+    $CCALbckbtn = '';
+    if ($CINC>0 and $CTINC % 12 == 0) {
+        if ($CTINC <= 12 and $Cmax_months <= 12) {
+            $CCALnxtbtn = '';
+            $CCALbckbtn = '';
+        } elseif ($CTINC > 12 and $CTINC % 12 == 0 and $CTINC != $Cmax_months) {
+            $CCALbckbtn  = sprintf('<a href="#" onclick="document.getElementById(\'CCAL%s\').style.display=\'block\';document.getElementById(\'CCAL%s\').style.display=\'none\';">[&lt;- BACK]</a>',($CTINC-24),($CTINC-12));
+            $CCALnxtbtn .= sprintf('<a href="#" onclick="document.getElementById(\'CCAL%s\').style.display=\'none\';document.getElementById(\'CCAL%s\').style.display=\'block\';">[NEXT -&gt;]</a>',($CTINC-12),$CTINC);
+        } elseif ($CTINC % 12 == 0 and $CTINC != $Cmax_months) {
+            $CCALnxtbtn .= sprintf('<a href="#" onclick="document.getElementById(\'CCAL%s\').style.display=\'none\';document.getElementById(\'CCAL%s\').style.display=\'block\';">[NEXT -&gt;]</a>',($CTINC-12),$CTINC);
+        } elseif ($CTINC > 12 or $CTINC == $Cmax_months) {
+            $CCALbckbtn  = sprintf('<a href="#" onclick="document.getElementById(\'CCAL%s\').style.display=\'block\';document.getElementById(\'CCAL%s\').style.display=\'none\';">[&lt;- BACK]</a>',($CTINC-24),($CTINC-12));
+        }
 
-    $cbgb['C23']  = "<a href=\"#\" onclick=\"document.getElementById('cbgui0').style.display='block';document.getElementById('cbgui12').style.display='none';\">&lt;- BACK</a>";
-    $cbgb['C23'] .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-    $cbgb['C23'] .= "<a href=\"#\" onclick=\"document.getElementById('cbgui12').style.display='none';document.getElementById('cbgui24').style.display='block';\">NEXT -&gt;</a>";
-
-    $cbgb['C35']  = "<a href=\"#\" onclick=\"document.getElementById('cbgui12').style.display='block';document.getElementById('cbgui24').style.display='none';\">&lt;- BACK</a>";
-    $cbgb['C35'] .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-    $cbgb['C35'] .= "<a href=\"#\" onclick=\"document.getElementById('cbgui24').style.display='none';document.getElementById('cbgui36').style.display='block';\">NEXT -&gt;</a>";
-
-    $cbgb['C47']  = "<a href=\"#\" onclick=\"document.getElementById('cbgui24').style.display='block';document.getElementById('cbgui36').style.display='none';\">&lt;- BACK</a>";
-    $cbgb['C47'] .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-    $cbgb['C47'] .= "<a href=\"#\" onclick=\"document.getElementById('cbgui36').style.display='none';document.getElementById('cbgui48').style.display='block';\">NEXT -&gt;</a>";
-
-    $cbgb['C59']  = "<a href=\"#\" onclick=\"document.getElementById('cbgui36').style.display='block';document.getElementById('cbgui48').style.display='none';\">&lt;- BACK</a>";
-    $cbgb['C59'] .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-
-    if ($CINC > 0 and ($CINC+1) % 4 == 0) $CCAL_OUT .= "    </tr>";
-    if ($CINC > 0 and ($CINC+1) % 12 == 0) $CCAL_OUT .= "  </table>\n";
-    if ($CINC > 0 and ($CINC+1) % 12 == 0) $CCAL_OUT .= "  <br><center><font color=\"" . $cal_fc . "\" face=\"Arial, Helvetica, sans-serif\" size=2><b>" . $cbgb['C' . $CINC] . "</b></font></center>\n";
-    if ($CINC > 0 and ($CINC+1) % 12 == 0) $CCAL_OUT .= "</span>\n";
+    }
+    if ($CTINC % 4 == 0) {
+        $CCAL_OUT .= "    </tr>";
+        if ($CTINC % 12 == 0) {
+            $CCAL_OUT .= "    <tr>";
+            $CCAL_OUT .= "      <td>&nbsp;</td>";
+            $CCAL_OUT .= sprintf('     <td align="center"><font color="%s" face="Arial, Helvetica, sans-serif" size=2><b>%s</b></font></td>',$cal_fc,$CCALbckbtn) . "\n";
+            $CCAL_OUT .= sprintf('     <td align="center"><font color="%s" face="Arial, Helvetica, sans-serif" size=2><b>%s</b></font></td>',$cal_fc,$CCALnxtbtn) . "\n";
+            $CCAL_OUT .= "      <td>&nbsp;</td>";
+            $CCAL_OUT .= "    </tr>";
+        }
+    }
+    if ($CTINC % 12 == 0 or $CTINC == $Cmax_months) {
+        $CCAL_OUT .= "  </table>\n";
+        $CCAL_OUT .= "</span>\n";
+    }
     $CINC++;
 }
-#echo "$CCAL_OUT\n";
-
 ################################################################
 ### END - build the callback calendar (12 months)            ###
 ################################################################

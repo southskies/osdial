@@ -432,6 +432,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 	var script_last_click = '';
 
+	var CCALlast_pick;
+
 	var debugWindowOpened = 0;
 	var debugLevel = 0;
 	var debugWindow = 0;
@@ -476,7 +478,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 					Nactiveext = null;
 					Nactiveext = xmlhttp.responseText;
-					alert(xmlhttp.responseText);
+					//alert(xmlhttp.responseText);
+					osdalert(xmlhttp.responseText);
 				}
 			}
 			delete xmlhttp;
@@ -599,7 +602,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			}
 			MD_ring_secondS=0;
 		} else {
-			 alert("You must enter a number.");
+			 osdalert("You must enter a number.");
 		}
 	}
 
@@ -869,7 +872,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							if (PausENotifYCounTer > 10) {
 								AutoDial_ReSume_PauSe('VDADpause','NEW_ID');
 								PausENotifYCounTer=0;
-								alert('Your session has been paused');
+								osdalert('Your session has been paused');
 							} else {
 								PausENotifYCounTer++;
 							}
@@ -1183,7 +1186,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				if (blindxferdialstring.length<'2') {
 					xferredirect_query='';
 					taskvar = 'NOTHING';
-					alert("Transfer number must have more than 1 digit:" + blindxferdialstring);
+					osdalert("Transfer number must have more than 1 digit:" + blindxferdialstring);
 				} else {
 					xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectVD&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&exten=" + blindxferdialstring + "&ext_context=" + ext_context + "&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + campaign + "&uniqueid=" + document.osdial_form.uniqueid.value + "&lead_id=" + document.osdial_form.lead_id.value + "&secondS=" + VD_live_call_secondS + "&session_id=" + session_id + "&outbound_cid=" + outbound_cid + "&outbound_cid_name=" + outbound_cid_name;
 				}
@@ -1510,7 +1513,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	function CalLBacKsLisTCheck() {
 		debug("<b>CalLBacKsLisTCheck:</b>",2);
 		if ( (VD_live_customer_call==1) || (alt_dial_active==1) ) {
-			alert("You must hangup and disposition your active call\nbefore you can place a call to a callback. ");
+			osdalert("You must hangup and disposition your active call before you can place a call to a callback. ");
 		} else {
 			if (AutoDialWaiting==1 && VD_live_customer_call==0 && alt_dial_active==0) {
 				AutoDial_ReSume_PauSe('VDADpause','NEW_ID');
@@ -1619,7 +1622,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		debug("<b>NeWManuaLDiaLCalL:</b> TVfast=" + TVfast,2);
 		dial_timedout=0;
 		if ( (VD_live_customer_call==1) || (alt_dial_active==1) ) {
-			alert("You must hangup and disposition your active call\nbefore you can place a call to a manually entered number. ");
+			osdalert("You must hangup and disposition your active call before you can place a call to a manually entered number. ");
 		} else {
 			if (AutoDialWaiting==1 && VD_live_customer_call==0 && alt_dial_active==0) {
 				AutoDial_ReSume_PauSe('VDADpause','NEW_ID');
@@ -1678,7 +1681,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		var MDPhonENumbeRform = document.osdial_form.phone_number.value;
 
 		if ( (MDDiaLCodEform.length < 1) || (MDPhonENumbeRform.length < 5) ) {
-			alert("You must enter a number in the \"Phone\" field fast dial. \nThe \"CountryCode\" will default to \"1\".");
+			osdalert("You must enter a number in the \"Phone\" field fast dial. The \"CountryCode\" will default to \"1\".");
 		} else {
 			var MDLookuPLeaD = 'new';
 			if (document.osdial_form.LeadLookuP.checked==true) {
@@ -1962,16 +1965,20 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						CalLBacKsCounTCheck();
 
 						if (MDnextCID.match(regMNCvar)) {
-							alert("No more leads in the hopper for campaign:\n" + campaign);   alert_displayed=1;
+							osdalert("No more leads in the hopper for campaign: " + campaign);
+							alert_displayed=1;
 						}
 						if (MDnextCID.match(regMDFvarDNC)) {
-							alert("This phone number is in the DNC list:\n" + mdnPhonENumbeR);   alert_displayed=1;
+							osdalert("This phone number is in the DNC list: " + mdnPhonENumbeR);
+							alert_displayed=1;
 						}
 						if (MDnextCID.match(regMDFvarCAMP)) {
-							alert("This phone number is not in the campaign lists:\n" + mdnPhonENumbeR);   alert_displayed=1;
+							osdalert("This phone number is not in the campaign lists: " + mdnPhonENumbeR);
+							alert_displayed=1;
 						}
 						if (alert_displayed==0) {
-							alert("Unspecified error:\n" + mdnPhonENumbeR + "|" + MDnextCID);   alert_displayed=1;
+							osdalert("Unspecified error: " + mdnPhonENumbeR + " | " + MDnextCID);
+							alert_displayed=1;
 						}
 
 						if (starting_dial_level == 0) {
@@ -2014,7 +2021,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						document.osdial_form.email.value				= MDnextResponse_array[24];
 						document.osdial_form.custom1.value	= MDnextResponse_array[25];
 						var REGcommentsNL = new RegExp("!N","g");
-						MDnextResponse_array[26] = MDnextResponse_array[26].replace(REGcommentsNL, "\n");
+						if (MDnextResponse_array[26]) MDnextResponse_array[26] = MDnextResponse_array[26].replace(REGcommentsNL, "\n");
 						document.osdial_form.comments.value			= MDnextResponse_array[26];
 						document.osdial_form.called_count.value		= MDnextResponse_array[27];
 						previous_called_count							= MDnextResponse_array[27];
@@ -2248,7 +2255,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		debug("<b>ManualDialSkip:</b>",2);
 		dial_timedout=0;
 		if (manual_dial_in_progress==1) {
-			alert('You cannot skip a Call-Back or a call placed to a manually entered number.');
+			osdalert('You cannot skip a Call-Back or a call placed to a manually entered number.');
 		} else {
 			if (previewFD_time > 0) {
 				clearTimeout(previewFD_timeout_id);
@@ -2296,7 +2303,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						var MDSnextResponse_array=MDSnextResponse.split("\n");
 						MDSnextCID = MDSnextResponse_array[0];
 						if (MDSnextCID == "LEAD NOT REVERTED") {
-							alert("Lead was not reverted, there was an error:\n" + MDSnextResponse);
+							osdalert("Lead was not reverted, there was an error: " + MDSnextResponse);
 						} else {
 							document.osdial_form.lead_id.value		='';
 							document.osdial_form.vendor_lead_code.value='';
@@ -2432,7 +2439,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 					var MDOnextResponse_array=MDOnextResponse.split("\n");
 					MDnextCID = MDOnextResponse_array[0];
 					if (MDnextCID == " CALL NOT PLACED") {
-						alert("call was not placed, there was an error:\n" + MDOnextResponse);
+						osdalert("call was not placed, there was an error:" + MDOnextResponse);
 					} else {
 						MD_channel_look=1;
 
@@ -3035,7 +3042,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			var curuniqueid = document.osdial_form.uniqueid.value;
 			var list_id = document.osdial_form.list_id.value;
 			if (dialed_number == oldphone) {
-				alert("Please enter a different phone number.");
+				osdalert("Please enter a different phone number.");
 				return;
 			}
 			var xmlhttprequestrepull=false;
@@ -3851,7 +3858,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	function PauseCodeSelectContent_create() {
 		debug("<b>PauseCodeSelectContent_create:</b>",2);
 		if ( (VD_live_customer_call==1) || (alt_dial_active==1) ) {
-			alert("You must hangup and disposition your call before clicking \"Pause\". ");
+			osdalert("You must hangup and disposition your call before clicking \"Pause\".");
 		} else {
 			if (AutoDialReady==1) {
 				AutoDial_ReSume_PauSe('VDADpause','NEW_ID');
@@ -3883,7 +3890,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		var DispoChoice = document.osdial_form.DispoSelection.value;
 
 		if (DispoChoice.length < 1) {
-			alert("You Must Select a Disposition");
+			osdalert("You Must Select a Disposition");
 		} else {
 			document.getElementById("CusTInfOSpaN").style.backgroundColor = panel_bgcolor;
 			document.getElementById("CusTInfOSpaN").innerHTML = "";
@@ -3913,7 +3920,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		var DispoChoice = document.osdial_form.DispoSelection.value;
 
 		if (DispoChoice.length < 1) {
-			alert("You Must Select a Disposition");
+			osdalert("You Must Select a Disposition");
 		} else {
 			document.getElementById("CusTInfOSpaN").innerHTML = "";
 			document.getElementById("CusTInfOSpaN").style.backgroundColor = panel_bgcolor;
@@ -4418,6 +4425,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	function BrowserCloseLogout() {
 		debug("<b>BrowseCloseLogout:</b>",2);
 		if (logout_stop_timeouts < 1) {
+			osdalert("PLEASE CLICK THE LOGOUT LINK TO LOG OUT NEXT TIME!");
 			LogouT('CLOSE');
 			alert("PLEASE CLICK THE LOGOUT LINK TO LOG OUT NEXT TIME!\n");
 		}
@@ -4433,7 +4441,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				document.osdial_form.DispoSelection.value = 'NA';
 				dialedcall_send_hangup('NO','YES');
 			} else {
-				alert("You cannot log out during a Manual Dial. \nPlease click \"Dial Lead\" or \"Skip Lead\" (if available).");
+				osdalert("You cannot log out during a Manual Dial. Please click \"Dial Lead\" or \"Skip Lead\" (if available).");
 				return;
 			}
 		} else if (alt_dial_menu==1) {
@@ -4441,7 +4449,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				document.osdial_form.DispoSelection.value = 'NA';
 				dialedcall_send_hangup('NO','YES');
 			} else {
-				alert("You cannot log out without reattempting or dispositioning this lead. \nYou may reattempt by selecting \"Main Phone\", \"Alt Phone\", or \"Address3\". \n To disposition the lead, click \"Finish Lead\".");
+				osdalert("You cannot log out without reattempting or dispositioning this lead. You may reattempt by selecting \"Main Phone\", \"Alt Phone\", or \"Address3\". To disposition the lead, click \"Finish Lead\".");
 				return;
 			}
 		} else if (MD_channel_look==1) {
@@ -4449,7 +4457,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				document.osdial_form.DispoSelection.value = 'NA';
 				dialedcall_send_hangup('NO','YES');
 			} else {
-				alert("You cannot log out during a Dial attempt. \nWait 50 seconds for the dial to fail out if it is not answered");
+				osdalert("You cannot log out during a Dial attempt. Wait 50 seconds for the dial to fail out if it is not answered");
 				return;
 			}
 		} else if (VD_live_customer_call==1) {
@@ -4457,7 +4465,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				document.osdial_form.DispoSelection.value = 'NA';
 				dialedcall_send_hangup('NO','YES');
 			} else {
-				alert("STILL A LIVE CALL! Hang it up then you can log out.\n" + VD_live_customer_call);
+				osdalert("STILL A LIVE CALL! Hang it up then you can log out. " + VD_live_customer_call);
 				return;
 			}
 		}
@@ -5547,7 +5555,7 @@ function utf8_decode(utftext) {
 		CallBackDatEForM = document.osdial_form.CallBackDatESelectioN.value;
 		CallBackCommenTs = document.osdial_form.CallBackCommenTsField.value;
 		if (CallBackDatEForM.length < 2) {
-			alert("You must choose a date");
+			osdalert("You must choose a date");
 		} else {
 
 <?
@@ -5632,7 +5640,7 @@ if ($useIE > 0) {
 		debug("<b>PostDatE_submit:</b>",2);
 		PostDatEForM = document.osdial_form.PostDatESelectioN.value;
 		if (PostDatEForM.length < 2) {
-			alert("You must choose a date");
+			osdalert("You must choose a date");
 		} else {
 			PostDatETimE = PostDatEForM + " " + "00:00:00";
 
@@ -6278,7 +6286,7 @@ if ($useIE > 0) {
 			}
 		} else {
 			if (showxfervar != 'OFF') {
-				alert('You do not have permissions to transfer calls.');
+				osdalert('You do not have permissions to transfer calls.');
 			}
 		}
 	}
@@ -6600,3 +6608,12 @@ foreach ($forms as $form) {
 			delete xmlhttp;
 		}
 	}
+
+// ################################################################################
+// alert replacement function
+	function osdalert(amess) {
+		document.getElementById("MainStatuSSpan").style.backgroundColor = '<?= $status_alert_color ?>';
+		document.getElementById("MainStatuSSpan").innerHTML = "ALERT: " + amess;
+	}
+
+
