@@ -652,12 +652,12 @@ FW_LoadTables() {
 		fi
 	done
 	if [ -n "$WAN_IF" ]; then
-		IPT "-t nat -A PREROUTING -i $WAN_IF -m addrtype --src-type MULTICAST -j DROP"
-		IPT "-t nat -A PREROUTING -i $WAN_IF -m pkttype --pkt-type broadcast -j DROP"
+		[ -e /lib/iptables/libipt_pkttype.so  -o -e /lib64/iptables/libipt_pkttype.so ]  && IPT "-t nat -A PREROUTING -i $WAN_IF -m pkttype --pkt-type broadcast -j DROP" || :
+		[ -e /lib/iptables/libipt_addrtype.so -o -e /lib64/iptables/libipt_addrtype.so ] && IPT "-t nat -A PREROUTING -i $WAN_IF -m addrtype --src-type MULTICAST -j DROP" || :
 		[ -n "$LAN1_IF" -a -n "$LAN1_NET" ] && IPT "-t nat -A PREROUTING -i $WAN_IF -s $LAN1_NET -j DROP" || :
 		[ -n "$LAN2_IF" -a -n "$LAN2_NET" ] && IPT "-t nat -A PREROUTING -i $WAN_IF -s $LAN2_NET -j DROP" || :
 
-		IPT "-t nat -A POSTROUTING -o $WAN_IF -m addrtype --dst-type MULTICAST -j DROP"
+		[ -e /lib/iptables/libipt_addrtype.so -o -e /lib64/iptables/libipt_addrtype.so ] && IPT "-t nat -A POSTROUTING -o $WAN_IF -m addrtype --dst-type MULTICAST -j DROP" || :
 		[ -n "$LAN1_IF" -a -n "$LAN1_NET" ] && IPT "-t nat -A POSTROUTING -o $WAN_IF -d $LAN1_NET -j DROP" || :
 		[ -n "$LAN2_IF" -a -n "$LAN2_NET" ] && IPT "-t nat -A POSTROUTING -o $WAN_IF -d $LAN2_NET -j DROP" || :
 
