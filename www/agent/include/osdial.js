@@ -434,6 +434,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 	var CCALlast_pick;
 
+	var osdalert_timer = 0;
+
 	var debugWindowOpened = 0;
 	var debugLevel = 0;
 	var debugWindow = 0;
@@ -478,7 +480,6 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 					Nactiveext = null;
 					Nactiveext = xmlhttp.responseText;
-					//alert(xmlhttp.responseText);
 					osdalert(xmlhttp.responseText);
 				}
 			}
@@ -522,7 +523,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 					Nactiveext = null;
 					Nactiveext = xmlhttp.responseText;
-					//alert(xmlhttp.responseText);
+					//osdalert(xmlhttp.responseText,30);
 				}
 			}
 			delete xmlhttp;
@@ -602,7 +603,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			}
 			MD_ring_secondS=0;
 		} else {
-			 osdalert("You must enter a number.");
+			 osdalert("You must enter a number.",5);
 		}
 	}
 
@@ -714,7 +715,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			xmlhttp.send(VMCoriginate_query); 
 			xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-					//alert(xmlhttp.responseText);
+					//osdalert(xmlhttp.responseText,30);
 
 					if ((taskdialvalue.length > 0) && (tasknowait != 'YES')) {
 						XDnextCID = queryCID;
@@ -763,7 +764,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			xmlhttp.send(VMCoriginate_query); 
 			xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-					//alert(xmlhttp.responseText);
+					//osdalert(xmlhttp.responseText,30);
 				}
 			}
 			delete xmlhttp;
@@ -819,8 +820,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						var check_conf = null;
 						var LMAforce = taskforce;
 						check_conf = xmlhttprequestcheckconf.responseText;
-						//alert(checkconf_query);
-						//alert(xmlhttprequestcheckconf.responseText);
+						//osdalert(checkconf_query,30);
+						//osdalert(xmlhttprequestcheckconf.responseText,30);
 						var check_ALL_array=check_conf.split("\n");
 						var check_time_array=check_ALL_array[0].split("|");
 						var Time_array = check_time_array[1].split("UnixTime: ");
@@ -872,7 +873,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 							if (PausENotifYCounTer > 10) {
 								AutoDial_ReSume_PauSe('VDADpause','NEW_ID');
 								PausENotifYCounTer=0;
-								osdalert('Your session has been paused');
+								osdalert('Your session has been paused',600);
 							} else {
 								PausENotifYCounTer++;
 							}
@@ -1078,7 +1079,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 					var RClookResponse = null;
 					//document.getElementById("busycallsdebug").innerHTML = confmonitor_query;
-					//alert(xmlhttp.responseText);
+					//osdalert(xmlhttp.responseText,30);
 					RClookResponse = xmlhttp.responseText;
 					var RClookResponse_array=RClookResponse.split("\n");
 					var RClookFILE = RClookResponse_array[1];
@@ -1186,7 +1187,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				if (blindxferdialstring.length<'2') {
 					xferredirect_query='';
 					taskvar = 'NOTHING';
-					osdalert("Transfer number must have more than 1 digit:" + blindxferdialstring);
+					osdalert("Transfer number must have more than 1 digit:" + blindxferdialstring,5);
 				} else {
 					xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectVD&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&exten=" + blindxferdialstring + "&ext_context=" + ext_context + "&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + campaign + "&uniqueid=" + document.osdial_form.uniqueid.value + "&lead_id=" + document.osdial_form.lead_id.value + "&secondS=" + VD_live_call_secondS + "&session_id=" + session_id + "&outbound_cid=" + outbound_cid + "&outbound_cid_name=" + outbound_cid_name;
 				}
@@ -1287,7 +1288,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 					Nactiveext = null;
 					Nactiveext = xmlhttp.responseText;
-					//alert(xmlhttp.responseText);
+					//osdalert(xmlhttp.responseText,30);
 				}
 			}
 			delete xmlhttp;
@@ -1322,7 +1323,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 					if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 						Nactiveext = null;
 						Nactiveext = xmlhttp.responseText;
-						//alert(RedirecTxFEr + "|" + xmlhttp.responseText);
+						//osdalert(RedirecTxFEr + "|" + xmlhttp.responseText,30);
 					}
 				}
 				delete xmlhttp;
@@ -1339,7 +1340,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			if( document.images ) {
 				document.images['livecall'].src = image_livecall_OFF.src;
 			}
-			//alert(RedirecTxFEr + "|" + auto_dial_level);
+			//osdalert(RedirecTxFEr + "|" + auto_dial_level,30);
                         if (taskvar == 'XfeRVMAIL') {
                                 document.osdial_form.DispoSelection.value = 'AM';
                                 dialedcall_send_hangup('NO');
@@ -1423,15 +1424,15 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 					var MDlogResponse = null;
-					//alert(xmlhttp.responseText);
+					//osdalert(xmlhttp.responseText,30);
 					MDlogResponse = xmlhttp.responseText;
 					var MDlogResponse_array=MDlogResponse.split("\n");
 					MDlogLINE = MDlogResponse_array[0];
 					if ( (MDlogLINE == "LOG NOT ENTERED") && (VDstop_rec_after_each_call != 1) ) {
-						//alert("error: log not entered\n");
+						//osdalert("error: log not entered\n",30);
 					} else {
 						MDlogEPOCH = MDlogResponse_array[1];
-						//alert("OSDIAL Call log entered:\n" + document.osdial_form.uniqueid.value);
+						//osdalert("OSDIAL Call log entered:\n" + document.osdial_form.uniqueid.value,30);
 						if ( (taskMDstage != "start") && (VDstop_rec_after_each_call == 1) ) {
 							var conf_rec_start_html = "<a href=\"#\" onclick=\"conf_send_recording('MonitorConf','" + session_id + "','');return false;\"><IMG SRC=\"templates/<?= $agent_template ?>/images/vdc_LB_startrecording.gif\" border=0 alt=\"Start Recording\"></a>";
 							if ( (campaign_recording == 'NEVER') || (campaign_recording == 'ALLFORCE') ) {
@@ -1491,7 +1492,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			xmlhttp.send(CBcount_query); 
 			xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-					//alert(xmlhttp.responseText);
+					//osdalert(xmlhttp.responseText,30);
 					var CBcounT = xmlhttp.responseText;
 					var CBstatusHTML = "<a href=\"#\" onclick=\"CalLBacKsLisTCheck();return false;\">";
 					if (CBcounT == 0) {
@@ -1513,7 +1514,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	function CalLBacKsLisTCheck() {
 		debug("<b>CalLBacKsLisTCheck:</b>",2);
 		if ( (VD_live_customer_call==1) || (alt_dial_active==1) ) {
-			osdalert("You must hangup and disposition your active call before you can place a call to a callback. ");
+			osdalert("You must hangup and disposition your active call before you can place a call to a callback.");
 		} else {
 			if (AutoDialWaiting==1 && VD_live_customer_call==0 && alt_dial_active==0) {
 				AutoDial_ReSume_PauSe('VDADpause','NEW_ID');
@@ -1546,7 +1547,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				xmlhttp.send(CBlist_query); 
 				xmlhttp.onreadystatechange = function() { 
 					if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-						//alert(xmlhttp.responseText);
+						//osdalert(xmlhttp.responseText,30);
 						var all_CBs = null;
 						all_CBs = xmlhttp.responseText;
 						var all_CBs_array=all_CBs.split("\n");
@@ -1622,7 +1623,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 		debug("<b>NeWManuaLDiaLCalL:</b> TVfast=" + TVfast,2);
 		dial_timedout=0;
 		if ( (VD_live_customer_call==1) || (alt_dial_active==1) ) {
-			osdalert("You must hangup and disposition your active call before you can place a call to a manually entered number. ");
+			osdalert("You must hangup and disposition your active call before you can place a call to a manually entered number.");
 		} else {
 			if (AutoDialWaiting==1 && VD_live_customer_call==0 && alt_dial_active==0) {
 				AutoDial_ReSume_PauSe('VDADpause','NEW_ID');
@@ -1735,7 +1736,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 					var MDlookResponse = null;
-					//alert(xmlhttp.responseText);
+					//osdalert(xmlhttp.responseText,30);
 					MDlookResponse = xmlhttp.responseText;
 					var MDlookResponse_array=MDlookResponse.split("\n");
 					var MDlookCID = MDlookResponse_array[0];
@@ -1747,7 +1748,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 
 							document.getElementById("MainStatuSSpan").style.backgroundColor = '<?=$status_bg?>';
 							document.getElementById("MainStatuSSpan").innerHTML = " Calling: " + status_display_number + "&nbsp;&nbsp;<font color=<?=$status_bg?>>UID: " + CIDcheck + "</font><font color=<?=$status_intense_color?> style='text-decoration:blink;'><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
-							//alert("channel not found yet:\n" + campaign);
+							//osdalert("channel not found yet:\n" + campaign,30);
 						}
 					} else {
 						var regMDL = new RegExp("^Local","ig");
@@ -1866,8 +1867,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			MD_channel_look=0;
 			MD_ring_secondS=0;
 			dial_timedout = 1;
-			//alert("Dial timed out, contact your system administrator\n");
-			//alert("Dial timed out, click Hangup and try again or dial next number.\n");
+			//osdalert("Dial timed out, contact your system administrator\n",30);
+			//osdalert("Dial timed out, click Hangup and try again or dial next number.\n",30);
 			var dispnum = lead_dial_number;
 			var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
 			document.getElementById("MainStatuSSpan").innerHTML = " Attempted: " + status_display_number + "&nbsp;&nbsp;<font color=<?=$status_alert_color?> style='text-decoration:blink;'><b>Dial timed out, click Hangup and try again or dial next number.<b></font>";
@@ -1948,7 +1949,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 					var MDnextResponse = null;
-					//alert(xmlhttp.responseText);
+					//osdalert(xmlhttp.responseText,30);
 					MDnextResponse = xmlhttp.responseText;
 
 					var MDnextResponse_array=MDnextResponse.split("\n");
@@ -1965,19 +1966,19 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 						CalLBacKsCounTCheck();
 
 						if (MDnextCID.match(regMNCvar)) {
-							osdalert("No more leads in the hopper for campaign: " + campaign);
+							osdalert("No more leads in the hopper for campaign: " + campaign,60);
 							alert_displayed=1;
 						}
 						if (MDnextCID.match(regMDFvarDNC)) {
-							osdalert("This phone number is in the DNC list: " + mdnPhonENumbeR);
+							osdalert("This phone number is in the DNC list: " + mdnPhonENumbeR,30);
 							alert_displayed=1;
 						}
 						if (MDnextCID.match(regMDFvarCAMP)) {
-							osdalert("This phone number is not in the campaign lists: " + mdnPhonENumbeR);
+							osdalert("This phone number is not in the campaign lists: " + mdnPhonENumbeR,30);
 							alert_displayed=1;
 						}
 						if (alert_displayed==0) {
-							osdalert("Unspecified error: " + mdnPhonENumbeR + " | " + MDnextCID);
+							osdalert("Unspecified error: " + mdnPhonENumbeR + " | " + MDnextCID,60);
 							alert_displayed=1;
 						}
 
@@ -2296,8 +2297,8 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				xmlhttp.onreadystatechange = function() { 
 					if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 						var MDSnextResponse = null;
-						//alert(manDiaLskip_query);
-						//alert(xmlhttp.responseText);
+						//osdalert(manDiaLskip_query,30);
+						//osdalert(xmlhttp.responseText,30);
 						MDSnextResponse = xmlhttp.responseText;
 
 						var MDSnextResponse_array=MDSnextResponse.split("\n");
@@ -2433,7 +2434,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 					var MDOnextResponse = null;
-					//alert(xmlhttp.responseText);
+					//osdalert(xmlhttp.responseText,30);
 					MDOnextResponse = xmlhttp.responseText;
 
 					var MDOnextResponse_array=MDOnextResponse.split("\n");
@@ -2608,14 +2609,14 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 					var recheck_incoming = null;
 					recheck_incoming = xmlhttp.responseText;
-					//alert(xmlhttp.responseText);
+					//osdalert(xmlhttp.responseText,30);
 					var recheck_VDIC_array=recheck_incoming.split("\n");
 					if (recheck_VDIC_array[0] == '1') {
 						var reVDIC_data_VDAC=recheck_VDIC_array[1].split("|");
 						if (reVDIC_data_VDAC[3] == lastcustchannel) {
 							// do nothing
 						} else {
-							//alert("Channel has changed from:\n" + lastcustchannel + '|' + lastcustserverip + "\nto:\n" + reVDIC_data_VDAC[3] + '|' + reVDIC_data_VDAC[4]);
+							//osdalert("Channel has changed from:\n" + lastcustchannel + '|' + lastcustserverip + "\nto:\n" + reVDIC_data_VDAC[3] + '|' + reVDIC_data_VDAC[4],30);
 							//document.osdial_form.callchannel.value	= reVDIC_data_VDAC[3];
 							document.getElementById("callchannel").innerHTML = reVDIC_data_VDAC[3];
 							lastcustchannel = reVDIC_data_VDAC[3];
@@ -2665,11 +2666,11 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 					if (xmlhttprequestcheckauto.readyState == 4 && xmlhttprequestcheckauto.status == 200) {
 						var check_incoming = null;
 						check_incoming = xmlhttprequestcheckauto.responseText;
-						//alert(checkVDAI_query);
-						//alert(xmlhttprequestcheckauto.responseText);
+						//osdalert(checkVDAI_query,30);
+						//osdalert(xmlhttprequestcheckauto.responseText,30);
 						var check_VDIC_array=check_incoming.split("\n");
 						if (check_VDIC_array[0] == '1') {
-							//alert(xmlhttprequestcheckauto.responseText);
+							//osdalert(xmlhttprequestcheckauto.responseText,30);
 							AutoDialWaiting = 0;
 
 							var VDIC_data_VDAC=check_VDIC_array[1].split("|");
@@ -3042,7 +3043,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			var curuniqueid = document.osdial_form.uniqueid.value;
 			var list_id = document.osdial_form.list_id.value;
 			if (dialed_number == oldphone) {
-				osdalert("Please enter a different phone number.");
+				osdalert("Please enter a different phone number.",5);
 				return;
 			}
 			var xmlhttprequestrepull=false;
@@ -3072,11 +3073,11 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 					if (xmlhttprequestrepull.readyState == 4 && xmlhttprequestrepull.status == 200) {
 						var check_incoming = null;
 						check_incoming = xmlhttprequestrepull.responseText;
-						//alert(checkRPLD_query);
-						//alert(xmlhttprequestrepull.responseText);
+						//osdalert(checkRPLD_query,30);
+						//osdalert(xmlhttprequestrepull.responseText,30);
 						var check_RPLD_array=check_incoming.split("\n");
 						if (check_RPLD_array[0] > 0) { //<>
-							//alert(xmlhttprequestrepull.responseText);
+							//osdalert(xmlhttprequestrepull.responseText,30);
 
 							if (VDIC_web_form_address == '') VDIC_web_form_address = OSDiaL_web_form_address;
 							if (VDIC_web_form_address2 == '') VDIC_web_form_address2 = OSDiaL_web_form_address2;
@@ -3470,7 +3471,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			if (xmlhttp) { 
 				var queryCID = "HLvdcW" + epoch_sec + user_abb;
 				var hangupvalue = customer_channel;
-				//alert(auto_dial_level + "|" + CalLCID + "|" + customer_server_ip + "|" + hangupvalue + "|" + VD_live_call_secondS);
+				//osdalert(auto_dial_level + "|" + CalLCID + "|" + customer_server_ip + "|" + hangupvalue + "|" + VD_live_call_secondS,30);
 				custhangup_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=Hangup&format=text&user=" + user + "&pass=" + pass + "&channel=" + hangupvalue + "&call_server_ip=" + customer_server_ip + "&queryCID=" + queryCID + "&auto_dial_level=" + auto_dial_level + "&CalLCID=" + CalLCID + "&secondS=" + VD_live_call_secondS + "&exten=" + session_id;
 				xmlhttp.open('POST', 'manager_send.php'); 
 				xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
@@ -3479,11 +3480,11 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 					if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 						Nactiveext = null;
 						Nactiveext = xmlhttp.responseText;
-						//alert(xmlhttp.responseText);
+						//osdalert(xmlhttp.responseText,30);
 						//var HU_debug = xmlhttp.responseText;
 						//var HU_debug_array=HU_debug.split(" ");
 						//if (HU_debug_array[0] == 'Call') {
-							//alert(xmlhttp.responseText);
+							//osdalert(xmlhttp.responseText,30);
 						//}
 					}
 				}
@@ -3670,7 +3671,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 					if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 						Nactiveext = null;
 						Nactiveext = xmlhttp.responseText;
-						//alert(xmlhttp.responseText);
+						//osdalert(xmlhttp.responseText,30);
 					}
 				}
 				process_post_hangup=1;
@@ -3709,7 +3710,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 	function DialTimeHangup() {
 		debug("<b>DialTimeHangup:</b>",2);
 		if (RedirecTxFEr < 1) {
-			//alert("RedirecTxFEr|" + RedirecTxFEr);
+			//osdalert("RedirecTxFEr|" + RedirecTxFEr,30);
 			MD_channel_look=0;
 			var xmlhttp=false;
 			/*@cc_on @*/
@@ -3739,7 +3740,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 					if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 						Nactiveext = null;
 						Nactiveext = xmlhttp.responseText;
-						//alert(xmlhttp.responseText);
+						//osdalert(xmlhttp.responseText,30);
 					}
 				}
 				delete xmlhttp;
@@ -3815,7 +3816,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			xmlhttp.send(VLupdate_query); 
 			xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-					//alert(xmlhttp.responseText);
+					//osdalert(xmlhttp.responseText,30);
 				}
 			}
 			delete xmlhttp;
@@ -3890,7 +3891,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		var DispoChoice = document.osdial_form.DispoSelection.value;
 
 		if (DispoChoice.length < 1) {
-			osdalert("You Must Select a Disposition");
+			osdalert("You Must Select a Disposition",5);
 		} else {
 			document.getElementById("CusTInfOSpaN").style.backgroundColor = panel_bgcolor;
 			document.getElementById("CusTInfOSpaN").innerHTML = "";
@@ -3920,7 +3921,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		var DispoChoice = document.osdial_form.DispoSelection.value;
 
 		if (DispoChoice.length < 1) {
-			osdalert("You Must Select a Disposition");
+			osdalert("You Must Select a Disposition",5);
 		} else {
 			document.getElementById("CusTInfOSpaN").innerHTML = "";
 			document.getElementById("CusTInfOSpaN").style.backgroundColor = panel_bgcolor;
@@ -4111,7 +4112,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			xmlhttp.send(VMCpausecode_query); 
 			xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-					//alert(xmlhttp.responseText);
+					//osdalert(xmlhttp.responseText,30);
 				}
 			}
 			delete xmlhttp;
@@ -4254,7 +4255,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			xmlhttp.send(VMCoriginate_query); 
 			xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-					//alert(xmlhttp.responseText);
+					//osdalert(xmlhttp.responseText,30);
 				}
 			}
 			delete xmlhttp;
@@ -4313,7 +4314,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			}
 		}
 
-		//alert(taskCSgrp+"|"+taskCSchange+"|"+CloserSelectListValue.length+"|"+CSCchange+"|"+CSCcolumn)
+		//osdalert(taskCSgrp+"|"+taskCSchange+"|"+CloserSelectListValue.length+"|"+CSCchange+"|"+CSCcolumn,30)
 
 		if (CSCchange==1) {
 			var loop_ct = 0;
@@ -4408,7 +4409,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			xmlhttp.send(CSCupdate_query); 
 			xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-					//alert(xmlhttp.responseText);
+					//osdalert(xmlhttp.responseText,30);
 				}
 			}
 			delete xmlhttp;
@@ -4457,7 +4458,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				document.osdial_form.DispoSelection.value = 'NA';
 				dialedcall_send_hangup('NO','YES');
 			} else {
-				osdalert("You cannot log out during a Dial attempt. Wait 50 seconds for the dial to fail out if it is not answered");
+				osdalert("You cannot log out during a Dial attempt. Wait 50 seconds for the dial to fail out if it is not answered.");
 				return;
 			}
 		} else if (VD_live_customer_call==1) {
@@ -4501,8 +4502,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			xmlhttp.send(VDlogout_query); 
 			xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-					//alert(VDlogout_query);
-					//alert(xmlhttp.responseText);
+					//osdalert(VDlogout_query,30);
+					//osdalert(xmlhttp.responseText,30);
 				}
 			}
 			delete xmlhttp;
@@ -4544,7 +4545,7 @@ if ($useIE > 0) {
 			}
 
 			var HKdispo = hotkeys[String.fromCharCode(key)];
-			//alert("|" + key + "|" + HKdispo + "|");
+			//osdalert("|" + key + "|" + HKdispo + "|",30);
 			if (HKdispo) {
 				//document.osdial_form.inert_button.focus();
 				//document.osdial_form.inert_button.blur();
@@ -4645,7 +4646,7 @@ if ($useIE > 0) {
 				//DispoSelect_submit();
 				//AutoDialWaiting = 1;
 				//AutoDial_ReSume_PauSe("VDADready");
-				//alert(HKdispo + " - " + HKdispo_ary[0] + " - " + HKdispo_ary[1]);
+				//osdalert(HKdispo + " - " + HKdispo_ary[0] + " - " + HKdispo_ary[1],30);
 			}
 		} else if ( (dtmf_keys_active==1) && ( (VD_live_customer_call==1) || (MD_ring_secondS>5) ) ) {
 			var e = evt? evt : window.event;
@@ -5555,7 +5556,7 @@ function utf8_decode(utftext) {
 		CallBackDatEForM = document.osdial_form.CallBackDatESelectioN.value;
 		CallBackCommenTs = document.osdial_form.CallBackCommenTsField.value;
 		if (CallBackDatEForM.length < 2) {
-			osdalert("You must choose a date");
+			osdalert("You must choose a date",5);
 		} else {
 
 <?
@@ -5617,7 +5618,7 @@ if ($useIE > 0) {
 			document.osdial_form.CallBackDatESelectioN.value = '';
 			document.osdial_form.CallBackCommenTsField.value = '';
 
-			//alert(CallBackDatETimE + "|" + CallBackCommenTs);
+			//osdalert(CallBackDatETimE + "|" + CallBackCommenTs,30);
 
 			document.osdial_form.DispoSelection.value = 'CBHOLD';
 			hideDiv('CallBackSelectBox');
@@ -5640,7 +5641,7 @@ if ($useIE > 0) {
 		debug("<b>PostDatE_submit:</b>",2);
 		PostDatEForM = document.osdial_form.PostDatESelectioN.value;
 		if (PostDatEForM.length < 2) {
-			osdalert("You must choose a date");
+			osdalert("You must choose a date",5);
 		} else {
 			PostDatETimE = PostDatEForM + " " + "00:00:00";
 
@@ -5682,7 +5683,8 @@ if ($useIE > 0) {
 			hideDiv('DispoSelectBox');
 			hideDiv('LogouTBox');
 			hideDiv('AgenTDisablEBoX');
-            		hideDiv('SysteMDisablEBoX');
+            hideDiv('SysteMDisablEBoX');
+            hideDiv('SysteMAlerTBoX');
 			hideDiv('CustomerGoneBox');
 			hideDiv('NoneInSessionBox');
 			hideDiv('WrapupBox');
@@ -5780,6 +5782,11 @@ if ($useIE > 0) {
 					}
 				}
 			}
+			if (osdalert_timer>=0) {
+		        document.getElementById("SysteMAlerTTimer").innerHTML = osdalert_timer;
+                if (osdalert_timer==0) hideDiv('SysteMAlerTBoX');
+                osdalert_timer--;
+            }
 			if (AgentDispoing==1) {
 				WaitingForNextStep=1;
 				check_for_conf_calls(session_id, '0');
@@ -6602,7 +6609,7 @@ foreach ($forms as $form) {
 			xmlhttp.send(sbl_data); 
 			xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-					//alert(xmlhttp.responseText);
+					//osdalert(xmlhttp.responseText,30);
 				}
 			}
 			delete xmlhttp;
@@ -6611,9 +6618,13 @@ foreach ($forms as $form) {
 
 // ################################################################################
 // alert replacement function
-	function osdalert(amess) {
-		document.getElementById("MainStatuSSpan").style.backgroundColor = '<?= $status_alert_color ?>';
-		document.getElementById("MainStatuSSpan").innerHTML = "ALERT: " + amess;
+	function osdalert(amess,atimer) {
+        osdalert_timer=10;
+        if (atimer>0) osdalert_timer=atimer;
+		document.getElementById("SysteMAlerTInfo").style.backgroundColor = '<?= $system_alert_bg2 ?>';
+		document.getElementById("SysteMAlerTInfo").innerHTML = "<font style='text-decoration:blink;' size=3 color='<?= $status_alert_color ?>'><b>ALERT:&nbsp;&nbsp;</b></font><font size=2>" + amess + "</font>";
+		document.getElementById("SysteMAlerTTimer").innerHTML = osdalert_timer;
+		showDiv('SysteMAlerTBoX');
 	}
 
 

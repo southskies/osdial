@@ -2447,7 +2447,7 @@ foreach ($forms as $form) {
 		</TABLE>
 	</span>
 	
-	<!-- Session Disabled -->
+	<!-- Agent Disabled -->
 	<span style="position:absolute;left:0px;top:0px;z-index:29;" id="AgenTDisablEBoX">
 		<table class=acrossagent border=0 width=<?=$CAwidth ?> height=564>
 			<TR>
@@ -2465,6 +2465,27 @@ foreach ($forms as $form) {
 				</TD>
 			</TR>
 		</TABLE>
+	</span>
+
+	<!-- System Alert -->
+	<span style="position:absolute;left:0px;top:300px;z-index:41;" id="SysteMAlerTBoX">
+		<table class=acrossagent border=1 width=<?= $CAwidth ?> height=300 cellspacing=20>
+			<tr>
+				<td align=center bgcolor="<?= $system_alert_bg2 ?>">
+                    <font color=<?=$login_fc?>><span id="SysteMAlerTInfo"></span><br><br><br>
+                        <font size=2>
+                            <a href="#" onclick="hideDiv('SysteMAlerTBoX');return false;"><font color=grey>[Go Back (<span id="SysteMAlerTTimer"></span>)]</font></a>
+                            &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+                            <a href="#" onclick="osdalert_timer=-1;return false;"><font color=grey>[Suspend]</font></a>
+                            &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+                            <a href="#" onclick="document.getElementById('SysteMAlerTBoX').style.top='0px';"><font color=grey>[Up]</font></a>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="#" onclick="document.getElementById('SysteMAlerTBoX').style.top='300px';"><font color=grey>[Down]</font></a>
+                        </font>
+                    </font>
+				</td>
+			</tr>
+		</table>
 	</span>
 	
 	<!-- Logout Link -->

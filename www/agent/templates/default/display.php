@@ -14,6 +14,10 @@ $status_intense_color='#FFFF00';
 $status_preview_color='#1C4754';
 $status_callback_bg  ='#D0E0E7';
 
+$system_alert_bg1    ='#FFCCCC';
+$system_alert_bg2    ='#FF9999';
+$system_alert_bg3    ='#FF3333';
+
 $preview_bg='#FFCCCC';
 $preview_fc='#D0E0E7';
 
