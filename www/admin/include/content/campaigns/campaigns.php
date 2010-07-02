@@ -308,6 +308,28 @@ if ($ADD==20)
             $stmtA="INSERT INTO osdial_pause_codes (pause_code,pause_code_name,billable,campaign_id) SELECT pause_code,pause_code_name,billable,\"$campaign_id\" from osdial_pause_codes where campaign_id='$source_campaign_id';";
             $rslt=mysql_query($stmtA, $link);
 
+            $ccivr = get_first_record($link, 'osdial_ivr', '*', sprintf("campaign_id LIKE '%s'",mres($source_campaign_id)));
+            if (is_array($ccivr)) {
+                $stmtA=sprintf("INSERT INTO osdial_ivr (campaign_id,name,announcement,repeat_loops,wait_loops,wait_timeout,answered_status,virtual_agents,status,timeout_action,reserve_agents,allow_inbound) VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');",$campaign_id,$ccivr['name'],$ccivr['announcement'],$ccivr['repeat_loops'],$ccivr['wait_loops'],$ccivr['wait_timeout'],$ccivr['answered_status'],$ccivr['virtual_agents'],$ccivr['status'],$ccivr['timeout_action'],$ccivr['reserve_agents'],$ccivr['allow_inbound']);
+                $rslt=mysql_query($stmtA, $link);
+                $new_ivr_id =  mysql_insert_id($link);
+
+                $ccivropts = get_krh($link, 'osdial_ivr_options', '*','parent_id ASC',sprintf("ivr_id='%s'",$ccivr['id']),'');
+                if (is_array($ccivropts)) {
+                    $ccidmap = Array();
+                    foreach ($ccivropts as $ccivropt) {
+                        $ccidmap[$ccivropt['id']] = 0;
+                        $ccivrad = explode('#:#',$ccivropt['action_data']);
+                        if ($ccivropt['action'] == 'MENU') $ccivrad[0] = $new_ivr_id;
+                        $new_cc_ad = implode('#:#',$ccivrad);
+                        $stmtA=sprintf("INSERT INTO osdial_ivr_options (ivr_id,parent_id,keypress,action,action_data) VALUES ('%s','%s','%s','%s','%s');",$new_ivr_id,$ccidmap[$ccivropt['parent_id']],$ccivropt['keypress'],$ccivropt['action'],$new_cc_ad);
+                        $rslt=mysql_query($stmtA, $link);
+                        $new_ivropt_id =  mysql_insert_id($link);
+                        if ($ccivropt['action'] == 'MENU') $ccidmap[$ccivropt['id']] = $new_ivropt_id;
+                    }
+                }
+            }
+
             echo "<!-- $stmt -->";
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0)
@@ -616,6 +638,15 @@ if ($ADD==61)
 
         $stmt="DELETE from osdial_campaigns_list_mix where campaign_id='$campaign_id';";
         $rslt=mysql_query($stmt, $link);
+
+        $ccivr = get_first_record($link, 'osdial_ivr', '*', sprintf("campaign_id LIKE '%s'",mres($campaign_id)));
+        if (is_array($ccivr)) {
+            $stmt=sprintf("DELETE FROM osdial_ivr WHERE id='%s';",$ccivr['id']);
+            $rslt=mysql_query($stmt, $link);
+
+            $stmt=sprintf("DELETE FROM osdial_ivr_options WHERE ivr_id='%s';",$ccivr['id']);
+            $rslt=mysql_query($stmt, $link);
+        }
 
         echo "<br><font color=$default_text>REMOVING LIST HOPPER LEADS FROM OLD CAMPAIGN HOPPER ($campaign_id)</font>\n";
         $stmt="DELETE from osdial_hopper WHERE campaign_id='$campaign_id' AND status!='API';";
