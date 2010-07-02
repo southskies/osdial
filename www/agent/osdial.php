@@ -459,7 +459,7 @@ if ($campaign_login_list > 0) {
 if ($LogiNAJAX > 0) {
 
 ?>
-	<script language="Javascript">
+	<script language="Javascript" type="text/javascript">
 
 		// ################################################################################
 		// Send Request for allowable campaigns to populate the campaigns pull-down
@@ -522,7 +522,7 @@ if ($relogin == 'YES') {
 	// echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 	echo "</head>\n";
 	
-	echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
+	echo "<BODY BGCOLOR=WHITE name=osdial>\n";
 	echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
 	echo "<!-- INTERNATIONALIZATION-LINKS-PLACEHOLDER-OSDIAL -->\n";
 	echo "</TR></TABLE>\n";
@@ -597,7 +597,7 @@ if ($user_login_first == 1) {
 		echo "<title>$t1 web client: Campaign Login</title>\n";
 		//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 		echo "</head>\n";
-		echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 NAME=osdial>\n";
+		echo "<BODY BGCOLOR=WHITE NAME=osdial>\n";
 		
 		echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
 		echo "<!-- INTERNATIONALIZATION-LINKS-PLACEHOLDER-OSDIAL -->\n";
@@ -667,7 +667,7 @@ if ($user_login_first == 1) {
 			echo "<title>$t1 web client: Login</title>\n";
 			//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 			echo "</head>\n";
-			echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
+			echo "<BODY BGCOLOR=WHITE name=osdial>\n";
 			echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
 			echo "<!-- INTERNATIONALIZATION-LINKS-PLACEHOLDER-OSDIAL -->\n";
 			echo "</TR></TABLE>\n";
@@ -707,7 +707,7 @@ if ( (strlen($phone_login)<2) or (strlen($phone_pass)<2) ) {
 	echo "<title>$t1 web client:  Phone Login</title>\n";
 	//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 	echo "</head>\n";
-	echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
+	echo "<BODY BGCOLOR=WHITE name=osdial>\n";
 	
 	echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
 	echo "<!-- INTERNATIONALIZATION-LINKS-PLACEHOLDER-OSDIAL -->\n";
@@ -817,7 +817,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 			echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
 			//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 			echo "</head>\n";
-			echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
+			echo "<BODY BGCOLOR=WHITE name=osdial>\n";
 			echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
 			echo "<!-- INTERNATIONALIZATION-LINKS-PLACEHOLDER-OSDIAL -->\n";
 			echo "</TR></TABLE>\n";
@@ -1122,7 +1122,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 	echo "<title>$t1 web client: Campaign Login</title>\n";
 	//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 	echo "</head>\n";
-	echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
+	echo "<BODY BGCOLOR=WHITE name=osdial>\n";
 	
 	echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
 	echo "<!-- INTERNATIONALIZATION-LINKS-PLACEHOLDER-OSDIAL -->\n";
@@ -1194,7 +1194,7 @@ if (!$authphone)
 	echo "<title>$t1 web client: Phone Login Error</title>\n";
 	//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 	echo "</head>\n";
-	echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
+	echo "<BODY BGCOLOR=WHITE name=osdial>\n";
 	echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
 	echo "<!-- INTERNATIONALIZATION-LINKS-PLACEHOLDER-OSDIAL -->\n";
 	echo "</TR></TABLE>\n";
@@ -1470,7 +1470,7 @@ else
 		    $row=mysql_fetch_row($rslt);
 		    echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
 		    echo "</head>\n";
-		    echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
+		    echo "<BODY BGCOLOR=WHITE name=osdial>\n";
 		    echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
 		    echo "<!-- INTERNATIONALIZATION-LINKS-PLACEHOLDER-OSDIAL -->\n";
 		    echo "</TR></TABLE>\n";
@@ -1640,7 +1640,7 @@ else
 		echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
 		//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 		echo "</head>\n";
-		echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
+		echo "<BODY BGCOLOR=WHITE name=osdial>\n";
 		echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
 		echo "<!-- INTERNATIONALIZATION-LINKS-PLACEHOLDER-OSDIAL -->\n";
 		echo "</TR></TABLE>\n";
@@ -1665,7 +1665,7 @@ else
 		echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
 		//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 		echo "</head>\n";
-		echo "<BODY BGCOLOR=WHITE MARGINHEIGHT=0 MARGINWIDTH=0 name=osdial>\n";
+		echo "<BODY BGCOLOR=WHITE name=osdial>\n";
 		echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
 		echo "<!-- INTERNATIONALIZATION-LINKS-PLACEHOLDER-OSDIAL -->\n";
 		echo "</TR></TABLE>\n";
@@ -1794,7 +1794,7 @@ while ($CINC < $Cmax_months) {
     if ($CINC % 12 == 0) {
         $CCALstyle = "display:block;";
         if ($CINC > 0) $CCALstyle = "display:none;";
-        $CCAL_OUT .= sprintf('<span id="CCAL%s" name="CCAL%s" style="%s">',$CINC,$CINC,$CCALstyle) . "\n";
+        $CCAL_OUT .= sprintf('<span id="CCAL%s" style="%s">',$CINC,$CCALstyle) . "\n";
         $CCAL_OUT .= "  <table border=0 cellpadding=2 cellspacing=2>\n";
     }
     if ($CINC % 4 == 0) $CCAL_OUT .= "    <tr>\n";
@@ -1812,14 +1812,14 @@ while ($CINC < $Cmax_months) {
 
     $CDC = sprintf('<font color="%s" face="Arial, Helvetica, sans-serif" size=2><b>%s %s</b></font>',$cal_fc,$CfirstdayARY['month'],$CfirstdayARY['year']);
 
-    $CCAL_OUT .= sprintf('        <table border=1 cellpadding=1 bordercolor="%s" cellspacing="0" bgcolor="%s">',$cal_border1,$cal_bg1) . "\n";
+    $CCAL_OUT .= sprintf('        <table border=1 cellpadding=1 style="border-color:%s;" cellspacing="0" bgcolor="%s">',$cal_border1,$cal_bg1) . "\n";
     $CCAL_OUT .= "          <tr>\n";
-    $CCAL_OUT .= sprintf('            <td align="center" colspan=7 bordercolor="%s" bgcolor="%s">%s</td>',$cal_border2,$cal_bg2,$CDC) . "\n";
+    $CCAL_OUT .= sprintf('            <td align="center" colspan=7 style="border-color:%s;" bgcolor="%s">%s</td>',$cal_border2,$cal_bg2,$CDC) . "\n";
     $CCAL_OUT .= "          </tr>\n";
 
     $CCAL_OUT .= "          <tr>\n";
     foreach($Cdays as $Cday) {
-        $CCAL_OUT .= sprintf('            <td align="center" bordercolor="%s"><font color="%s" face="Arial, Helvetica, sans-serif" size=1><b>%s</b></font></td>',$cal_border2,$cal_fc,$Cday) . "\n";
+        $CCAL_OUT .= sprintf('            <td align="center" style="border-color:%s;"><font color="%s" face="Arial, Helvetica, sans-serif" size=1><b>%s</b></font></td>',$cal_border2,$cal_fc,$Cday) . "\n";
     }
 
     $Crow = 0;
@@ -1852,7 +1852,7 @@ while ($CINC < $Cmax_months) {
             }
             $Cstart += ADAY;
         }
-        $CCAL_OUT .= sprintf('            <td %s %s align="center" bgcolor="%s" bordercolor="%s"><font face="Arial, Helvetica, sans-serif" size=1><b>%s</b></font></td>',$CBLclick,$CBLdblclick,$CDCLR,$CDBDR,$CBL) . "\n";
+        $CCAL_OUT .= sprintf('            <td %s %s align="center" bgcolor="%s" style="border-color:%s;"><font face="Arial, Helvetica, sans-serif" size=1><b>%s</b></font></td>',$CBLclick,$CBLdblclick,$CDCLR,$CDBDR,$CBL) . "\n";
     }
     $CCAL_OUT .= "          </tr>\n";
     $CCAL_OUT .= "        </table>\n";
@@ -1905,121 +1905,120 @@ $PDmon = $PDdayARY['mon'];
 $PDyear = $PDdayARY['year'];
 $PDTODAY = date("Y-m");
 $PDTODAYmday = date("j");
-$PDINC=0;
+$PDINC = 0;
+if (!isset($cal_bg5)) $cal_bg5=$cal_bg3;
 
-$PDmonths = Array('January','February','March','April','May','June',
-				'July','August','September','October','November','December');
+$PDmonths = Array('January','February','March','April','May','June', 'July','August','September','October','November','December');
 $PDdays = Array('Sun','Mon','Tue','Wed','Thu','Fri','Sat');
 
-$PDCAL_OUT = '';
-
-$PDCAL_OUT .= "<table border=0 cellpadding=2 cellspacing=2>";
-
-while ($PDINC < 12)
-{
-if ( ($PDINC == 0) || ($PDINC == 4) ||($PDINC == 8) )
-	{$PDCAL_OUT .= "<tr>";}
-
-$PDCAL_OUT .= "<td valign=top>";
-
-$PDYyear = $PDyear;
-$PDmonth=	($PDmon + $PDINC);
-if ($PDmonth > 12)
-	{
-	$PDmonth = ($PDmonth - 12);
-	$PDYyear++;
-	}
-$PDstart= mktime(11,0,0,$PDmonth,1,$PDYyear);
-$PDfirstdayARY = getdate($PDstart);
-#echo "|$PDmon|$PDmonth|$PDINC|\n";
-$PDPRNTDAY = date("Y-m", $PDstart);
-
-$PDCAL_OUT .= "<table border=1 cellpadding=1 bordercolor=\"" . $cal_border1 . "\" cellspacing=\"0\" bgcolor=\"" . $cal_bg1 . "\">";
-$PDCAL_OUT .= "<tr>";
-$PDCAL_OUT .= "<td colspan=7 bordercolor=\"" . $cal_border2 . "\" bgcolor=\"" . $cal_bg2 . "\">";
-$PDCAL_OUT .= "<div align=center><font color=\"" . $cal_fc . "\"><b><font face=\"Arial, Helvetica, sans-serif\" size=2>";
-$PDCAL_OUT .= "$PDfirstdayARY[month] $PDfirstdayARY[year]";
-$PDCAL_OUT .= "</font></b></font></div>";
-$PDCAL_OUT .= "</td>";
-$PDCAL_OUT .= "</tr>";
-
-foreach($PDdays as $PDday)
-{
-	$PDCLR=$cal_border2;
-$PDCAL_OUT .= "<td bordercolor=\"" . $PDCLR . "\">";
-$PDCAL_OUT .= "<div align=center><font color=\"" . $cal_fc . "\"><b><font face=\"Arial, Helvetica, sans-serif\" size=1>";
-$PDCAL_OUT .= "$PDday";
-$PDCAL_OUT .= "</font></b></font></div>";
-$PDCAL_OUT .= "</td>";
+$PDmax_months = 60;
+while ($PDmax_months % 12 != 0) {
+    $PDmax_months++;
 }
 
-for( $PDcount=0;$PDcount<(6*7);$PDcount++)
-{
-	$PDdayarray = getdate($PDstart);
-	if((($PDcount) % 7) == 0)
-	{
-		if($PDdayarray['mon'] != $PDfirstdayARY['mon'])
-			break;
-		$PDCAL_OUT .= "</tr><tr>";
-	}
-	if($PDcount < $PDfirstdayARY['wday'] || $PDdayarray['mon'] != $PDmonth)
-	{
-		$PDCAL_OUT .= "<td bordercolor=\"" . $cal_border2 . "\"><font color=\"" . $cal_fc . "\"><b><font face=\"Arial, Helvetica, sans-serif\" size=\"1\">&nbsp;</font></b></font></td>";
-	}
-	else
-	{
-		if( ($PDdayarray['mday'] == $PDTODAYmday) and ($PDPRNTDAY == $PDTODAY) )
-		{
-		$PDPRNTmday = $PDdayarray['mday'];
-		if ($PDPRNTmday < 10) {$PDPRNTmday = "0$PDPRNTmday";}
-		$PDL = "<a href=\"#\" onclick=\"PD_date_pick('$PDPRNTDAY-$PDPRNTmday');return false;\">";
-		$PDEL = "</a>";
+$PDCAL_OUT = "\n";
+while ($PDINC < $PDmax_months) {
+    if ($PDINC % 12 == 0) {
+        $PDCALstyle = "display:block;";
+        if ($PDINC > 0) $PDCALstyle = "display:none;";
+        $PDCAL_OUT .= sprintf('<span id="PDCAL%s" style="%s">',$PDINC,$PDCALstyle) . "\n";
+        $PDCAL_OUT .= "  <table border=0 cellpadding=2 cellspacing=2>\n";
+    }
+    if ($PDINC % 4 == 0) $PDCAL_OUT .= "    <tr>\n";
+    $PDCAL_OUT .= "      <td valign=top>\n";
 
-		$PDCAL_OUT .= "<td bgcolor=\"" . $cal_bg3 . "\" bordercolor=\"" . $cal_border3 . "\">";
-		$PDCAL_OUT .= "<div align=center><font face=\"Arial, Helvetica, sans-serif\" size=1>";
-		$PDCAL_OUT .= "$PDL$PDdayarray[mday]$PDEL";
-		$PDCAL_OUT .= "</font></div>";
-		$PDCAL_OUT .= "</td>";
-			$PDstart += ADAY;
-		}
-		else
-		{
-	$PDCLR=$cal_bg1;
-	if ( ($PDdayarray['mday'] < $PDTODAYmday) and ($PDPRNTDAY == $PDTODAY) )
-		{
-		$PDCLR=$cal_bg4;
-		$PDL = '';
-		$PDEL = '';
-		}
-	else
-		{
-		$PDPRNTmday = $PDdayarray['mday'];
-		if ($PDPRNTmday < 10) {$PDPRNTmday = "0$PDPRNTmday";}
-		$PDL = "<a href=\"#\" onclick=\"PD_date_pick('$PDPRNTDAY-$PDPRNTmday');return false;\">";
-		$PDEL = "</a>";
-		}
+    $PDYyear = $PDyear;
+    $PDmonth = ($PDmon + $PDINC);
+    if ($PDmonth > 12) {
+        $PDmonth = ($PDmonth - 12);
+        $PDYyear++;
+    }
+    $PDstart = mktime(11,0,0,$PDmonth,1,$PDYyear);
+    $PDfirstdayARY = getdate($PDstart);
+    $PDPRNTDAY = date("Y-m", $PDstart);
 
-	$PDCAL_OUT .= "<td bgcolor=\"$PDCLR\" bordercolor=\"" . $cal_border2 . "\">";
-	$PDCAL_OUT .= "<div align=center><font face=\"Arial, Helvetica, sans-serif\" size=1>";
-	$PDCAL_OUT .= "$PDL$PDdayarray[mday]$PDEL";
-	$PDCAL_OUT .= "</font></div>";
-	$PDCAL_OUT .= "</td>";
-		$PDstart += ADAY;
-		}
-	}
+    $PDDC = sprintf('<font color="%s" face="Arial, Helvetica, sans-serif" size=2><b>%s %s</b></font>',$cal_fc,$PDfirstdayARY['month'],$PDfirstdayARY['year']);
+
+    $PDCAL_OUT .= sprintf('        <table border=1 cellpadding=1 style="border-color:%s;" cellspacing="0" bgcolor="%s">',$cal_border1,$cal_bg1) . "\n";
+    $PDCAL_OUT .= "          <tr>\n";
+    $PDCAL_OUT .= sprintf('            <td align="center" colspan=7 style="border-color:%s;" bgcolor="%s">%s</td>',$cal_border2,$cal_bg2,$PDDC) . "\n";
+    $PDCAL_OUT .= "          </tr>\n";
+
+    $PDCAL_OUT .= "          <tr>\n";
+    foreach($PDdays as $PDday) {
+        $PDCAL_OUT .= sprintf('            <td align="center" style="border-color:%s;"><font color="%s" face="Arial, Helvetica, sans-serif" size=1><b>%s</b></font></td>',$cal_border2,$cal_fc,$PDday) . "\n";
+    }
+
+    $PDrow = 0;
+    for ($PDcount = 0; $PDcount < (6*7); $PDcount++) {
+        $PDdayarray = getdate($PDstart);
+        if($PDcount % 7 == 0) {
+            if($PDrow++ > 5 and $PDdayarray['mon'] != $PDfirstdayARY['mon']) break;
+            $PDCAL_OUT .= "          </tr>\n";
+            $PDCAL_OUT .= "          <tr>\n";
+        }
+        $PDDCLR = $cal_bg1;
+        $PDDBDR = $cal_border2;
+        $PDBLclick = '';
+        $PDBLdblclick = '';
+        if ($PDmonth > 12) $PDmonth = ($PDmonth - 12);
+        if($PDcount < $PDfirstdayARY['wday'] or $PDdayarray['mon'] != $PDmonth) {
+            $PDBL = sprintf('&nbsp;<!-- %s %s %s %s -->',$PDcount,$PDfirstdayARY['wday'],$PDdayarray['mon'],$PDmonth);
+        } else {
+            $PDPRNTmday = sprintf('%02d',$PDdayarray['mday']);
+            $PDBLclick = sprintf('onclick="if(PDCALlast_pick){PDCALlast_pick.style.backgroundColor=\'%s\';};this.style.backgroundColor=\'%s\';PD_date_pick(\'%s-%s\');PDCALlast_pick=this;return false;"',$cal_bg1,$cal_bg5,$PDPRNTDAY,$PDPRNTmday);
+            $PDBLdblclick = 'ondblclick="if (document.osdial_form.PostDatESelectioN.value!=\'\'){PostDatE_submit();};return false;"';
+            $PDBL = $PDdayarray['mday'];
+            if($PDdayarray['mday'] == $PDTODAYmday and $PDPRNTDAY == $PDTODAY) {
+                $PDDCLR = $cal_bg3;
+                $PDDBDR = $cal_border3;
+            } elseif ($PDdayarray['mday'] < $PDTODAYmday and $PDPRNTDAY == $PDTODAY) {
+                $PDDCLR = $cal_bg4;
+                $PDBLclick = '';
+                $PDBLdblclick = '';
+            }
+            $PDstart += ADAY;
+        }
+        $PDCAL_OUT .= sprintf('            <td %s %s align="center" bgcolor="%s" style="border-color:%s;"><font face="Arial, Helvetica, sans-serif" size=1><b>%s</b></font></td>',$PDBLclick,$PDBLdblclick,$PDDCLR,$PDDBDR,$PDBL) . "\n";
+    }
+    $PDCAL_OUT .= "          </tr>\n";
+    $PDCAL_OUT .= "        </table>\n";
+    $PDCAL_OUT .= "      </td>\n";
+
+    $PDTINC = ($PDINC+1);
+    $PDCALnxtbtn = '';
+    $PDCALbckbtn = '';
+    if ($PDINC>0 and $PDTINC % 12 == 0) {
+        if ($PDTINC <= 12 and $PDmax_months <= 12) {
+            $PDCALnxtbtn = '';
+            $PDCALbckbtn = '';
+        } elseif ($PDTINC > 12 and $PDTINC % 12 == 0 and $PDTINC != $PDmax_months) {
+            $PDCALbckbtn  = sprintf('<a href="#" onclick="document.getElementById(\'PDCAL%s\').style.display=\'block\';document.getElementById(\'PDCAL%s\').style.display=\'none\';">[&lt;- BACK]</a>',($PDTINC-24),($PDTINC-12));
+            $PDCALnxtbtn .= sprintf('<a href="#" onclick="document.getElementById(\'PDCAL%s\').style.display=\'none\';document.getElementById(\'PDCAL%s\').style.display=\'block\';">[NEXT -&gt;]</a>',($PDTINC-12),$PDTINC);
+        } elseif ($PDTINC % 12 == 0 and $PDTINC != $PDmax_months) {
+            $PDCALnxtbtn .= sprintf('<a href="#" onclick="document.getElementById(\'PDCAL%s\').style.display=\'none\';document.getElementById(\'PDCAL%s\').style.display=\'block\';">[NEXT -&gt;]</a>',($PDTINC-12),$PDTINC);
+        } elseif ($PDTINC > 12 or $PDTINC == $PDmax_months) {
+            $PDCALbckbtn  = sprintf('<a href="#" onclick="document.getElementById(\'PDCAL%s\').style.display=\'block\';document.getElementById(\'PDCAL%s\').style.display=\'none\';">[&lt;- BACK]</a>',($PDTINC-24),($PDTINC-12));
+        }
+
+    }
+    if ($PDTINC % 4 == 0) {
+        $PDCAL_OUT .= "    </tr>";
+        if ($PDTINC % 12 == 0) {
+            $PDCAL_OUT .= "    <tr>";
+            $PDCAL_OUT .= "      <td>&nbsp;</td>";
+            $PDCAL_OUT .= sprintf('     <td align="center"><font color="%s" face="Arial, Helvetica, sans-serif" size=2><b>%s</b></font></td>',$cal_fc,$PDCALbckbtn) . "\n";
+            $PDCAL_OUT .= sprintf('     <td align="center"><font color="%s" face="Arial, Helvetica, sans-serif" size=2><b>%s</b></font></td>',$cal_fc,$PDCALnxtbtn) . "\n";
+            $PDCAL_OUT .= "      <td>&nbsp;</td>";
+            $PDCAL_OUT .= "    </tr>";
+        }
+    }
+    if ($PDTINC % 12 == 0 or $PDTINC == $PDmax_months) {
+        $PDCAL_OUT .= "  </table>\n";
+        $PDCAL_OUT .= "</span>\n";
+    }
+    $PDINC++;
 }
-$PDCAL_OUT .= "</tr>";
-$PDCAL_OUT .= "</table>";
-$PDCAL_OUT .= "</td>";
-
-if ( ($PDINC == 3) || ($PDINC == 7) ||($PDINC == 11) )
-	{$PDCAL_OUT .= "</tr>";}
-$PDINC++;
-}
-
-$PDCAL_OUT .= "</table>";
-
-#echo "$PDCAL_OUT\n";
 ################################################################
 ### END - build the postdate calendar (12 months)            ###
 ################################################################
@@ -2040,7 +2039,7 @@ foreach ($forms as $form) {
 	}
 }
 
-    echo "<script language=\"Javascript\">\n";
+    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
 
     require('include/osdial.js');
 
@@ -2082,397 +2081,384 @@ foreach ($forms as $form) {
 
 <!-- ===================================================================================================================== -->
 
-<BODY onload="begin_all_refresh();"  onunload="BrowserCloseLogout();" name=osdial>
-<FORM name=osdial_form>
-
-	<span style="position:absolute;left:0px;top:0px;z-index:2;" id="Header">
-		
-		<!-- Desktop --><!-- 1st line, login info -->
-		<TABLE CELLPADDING=0 CELLSPACING=0 BGCOLOR=white WIDTH=<?=$MNwidth?> MARGINWIDTH=0 MARGINHEIGHT=0 LEFTMARGIN=0 TOPMARGIN=0 VALIGN=TOP border=0> 
-			<TR VALIGN=TOP ALIGN=LEFT>
-				<TD COLSPAN=3 VALIGN=TOP ALIGN=center>
-					<INPUT TYPE=HIDDEN NAME=extension>
-					<font class="body_text">
-	<? 
-					echo "<font color=" . $login_fc . ">&nbsp;&nbsp;Logged in as user <b>" . mclabel($VD_login) . "</b> on phone <b>" . mclabel($phone_login) . "</b> to campaign <b>" . mclabel($VD_campaign) . "</b>&nbsp;</font>\n"; ?>
-				</TD>
-				<TD COLSPAN=3 VALIGN=TOP ALIGN=RIGHT>
-				</TD>
-			</TR>
-		</TABLE>
-	</SPAN>
-	
-	<!-- 2nd line -->
-	<span style="position:absolute;left:0px;top:13px;z-index:1;" id="Tabs">
-		<table width=<?=$MNwidth-10 ?> height=30 border=0> 
-			<TR VALIGN=TOP ALIGN=LEFT>
-				<td colspan=2>
-					<img id="FormButtons" onclick="ChooseForm();" src="templates/<?= $agent_template ?>/images/vdc_tab_buttons1.gif" border="0" width="223" height="30"></td>
-				<TD WIDTH=<?=$HSwidth ?> VALIGN=MIDDLE ALIGN=center>
-					<font class="body_text" color=<?=$default_fc?>><b><span id=status>LIVE</span></b>
-				</td>
-				<td valign='middle' width=300>
-					<font  class="body_text" color=#FFFFFF>Session ID: <span id=sessionIDspan></span>
-				</td>
-				<td valign='middle' width=400> 
-					&nbsp;<font class="body_tiny" color=<?=$default_fc?>><span id=AgentStatusCalls></span>
-				</td>
-				<td valign='middle'>
-					&nbsp;<a href="#" onclick="LogouT('NORMAL');return false;"><font size=1 color='red'>LOGOUT</font></a>&nbsp;
-				</TD>
-				<TD WIDTH=110><font class="body_text"><IMG SRC="templates/<?= $agent_template ?>/images/agc_live_call_OFF.gif" NAME=livecall ALT="Live Call" WIDTH=109 HEIGHT=30 BORDER=0></TD>
-			</TR>
-		</TABLE>
-	</span>
-	
-	<!--  -->
-	<span style="position:absolute;left:0px;top:0px;z-index:3;" id="WelcomeBoxA">
-		<table border=0 bgcolor="#FFFFFF" width=<?=$CAwidth ?> height=<?=$HKwidth ?>>
-			<TR>
-				<TD align=center><BR><span id="WelcomeBoxAt"><font color=<?=$default_fc?>><?=$t1?></font></span></TD>
-			</TR>
-		</table>
-	</span>
-		
-	<!-- Manual Dial Link -->
-	<span style="position:absolute;left:300px;top:<?=$MBheight-20 ?>px;z-index:12;" id="ManuaLDiaLButtons"><font class="body_text">
-		<span id="MDstatusSpan"><a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a>
-		</span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a><BR></font>
-	</span>
-		
-	<!-- Call Back Link -->
-	<span style="position:absolute;left:490px;top:<?=$CBheight-3 ?>px;z-index:13;" id="CallbacksButtons"><font class="body_text">
-		<span id="CBstatusSpan">X ACTIVE CALLBACKS</span> <BR>	</font>
-	</span>
-		
-	<!-- Pause Code Link -->
-	<span style="position:absolute;left:650px;top:<?=$CBheight-3 ?>px;z-index:14;" id="PauseCodeButtons"><font class="body_text">
-		<span id="PauseCodeLinkSpan"></span> <BR></font>
-	</span>
+<body onload="begin_all_refresh();"  onunload="BrowserCloseLogout();" name=osdial>
+<form name=osdial_form>
+    <span style="position:absolute;left:0px;top:0px;z-index:2;" id="Header">
+        <!-- Desktop --><!-- 1st line, login info -->
+        <table cellpadding=0 cellspacing=0 bgcolor=white width=<?=$MNwidth?> border=0> 
+            <tr valign=top align=left>
+                <td colspan=3 valign=top align=center>
+                    <input type=hidden name=extension>
+                    <font class="body_text">
+                    <? echo "<font color=" . $login_fc . ">&nbsp;&nbsp;Logged in as user <b>" . mclabel($VD_login) . "</b> on phone <b>" . mclabel($phone_login) . "</b> to campaign <b>" . mclabel($VD_campaign) . "</b>&nbsp;</font>\n"; ?>
+                </td>
+                <td colspan=3 valign=top align=right></td>
+            </tr>
+        </table>
+    </span>
+    
+    <!-- 2nd line -->
+    <span style="position:absolute;left:0px;top:13px;z-index:1;" id="Tabs">
+        <table width=<?=$MNwidth-10 ?> height=30 border=0> 
+            <tr valign=top align=left>
+                <td colspan=2>
+                    <img id="FormButtons" onclick="ChooseForm();" src="templates/<?= $agent_template ?>/images/vdc_tab_buttons1.gif" border="0" width="223" height="30">
+                </td>
+                <td width=<?=$HSwidth ?> valign=middle align=center>
+                    <font class="body_text" color=<?=$default_fc?>><b><span id=status>LIVE</span></b></font>
+                </td>
+                <td valign='middle' width=300>
+                    <font class="body_text" color=#FFFFFF>Session ID: <span id=sessionIDspan></span></font>
+                </td>
+                <td valign='middle' width=400> 
+                    &nbsp;<font class="body_tiny" color=<?=$default_fc?>><span id=AgentStatusCalls></span></font>
+                </td>
+                <td valign='middle'>
+                    &nbsp;<a href="#" onclick="LogouT('NORMAL');return false;"><font size=1 color='red'>LOGOUT</font></a>&nbsp;
+                </td>
+                <td width=110>
+                    <font class="body_text"><img src="templates/<?= $agent_template ?>/images/agc_live_call_OFF.gif" name=livecall alt="Live Call" width=109 height=30 border=0></font>
+                </td>
+            </tr>
+        </table>
+    </span>
+    
+    <!--  -->
+    <span style="position:absolute;left:0px;top:0px;z-index:3;" id="WelcomeBoxA">
+        <table border=0 bgcolor="#FFFFFF" width=<?=$CAwidth ?> height=<?=$HKwidth ?>>
+            <tr>
+                <td align=center>
+                    <br><span id="WelcomeBoxAt"><font color=<?=$default_fc?>><?=$t1?></font></span>
+                </td>
+            </tr>
+        </table>
+    </span>
+        
+    <!-- Manual Dial Link -->
+    <span style="position:absolute;left:300px;top:<?=$MBheight-20 ?>px;z-index:12;" id="ManuaLDiaLButtons">
+        <font class="body_text">
+            <span id="MDstatusSpan"><a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a><br>
+        </font>
+    </span>
+        
+    <!-- Call Back Link -->
+    <span style="position:absolute;left:490px;top:<?=$CBheight-3 ?>px;z-index:13;" id="CallbacksButtons">
+        <font class="body_text">
+            <span id="CBstatusSpan">X ACTIVE CALLBACKS</span><br>
+        </font>
+    </span>
+        
+    <!-- Pause Code Link -->
+    <span style="position:absolute;left:650px;top:<?=$CBheight-3 ?>px;z-index:14;" id="PauseCodeButtons">
+        <font class="body_text">
+            <span id="PauseCodeLinkSpan"></span><br>
+        </font>
+    </span>
 
     <span id="PreviewFDTimeSpan" style="font-size:35pt; font-weight: bold; color: <?=$forcedial_fc?>; position:absolute;left:325px;top:400px;z-index:22;"></span>
-	
-	<!-- Choose From Available Call Backs -->
-	<span style="position:absolute;left:0px;top:18px;z-index:38;" id="CallBacKsLisTBox">
-		<table border=1 bgcolor="<?=$callback_bg?>" width=<?=$CAwidth+13 ?> height=460>
-			<TR>
-                <TD align=center VALIGN=top> Callbacks For Agent <?= $VD_login ?><br><br>Click on a callback below to call the customer back now.<br> (When you click on a record below to call it, it will be removed from the list.)<br>
-					<BR>
-					<div class="scroll_callback" id="CallBacKsLisT"></div>
-					<BR> &nbsp; 
-					<a href="#" onclick="CalLBacKsLisTCheck();return false;">Refresh</a>
-					&nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; 
-					<a href="#" onclick="if (PCSpause==1) {AutoDial_ReSume_PauSe('VDADready');} hideDiv('CallBacKsLisTBox');return false;">Go Back</a>
-				</TD>
-			</TR>
-		</TABLE>
-	</span>
-	
-	<!-- Manual Dial -->
-	<span style="position:absolute;left:0px;top:18px;z-index:39;" id="NeWManuaLDiaLBox">
-		<table border=1 bgcolor="<?= $mandial_bg ?>" width=<?= $CAwidth-10 ?> height=545>
-			<TR>
-				<TD align=center VALIGN=top><br><font color=<?= $mandial_fc ?>><b>New Manual Dial Lead For <font color=<?=$mandial_bfc?>><?= $VD_login ?><font color=<?=$mandial_fc?>> In Campaign <font color=<?=$mandial_bfc?>><?= $VD_campaign ?></b><font color=<?= $mandial_fc ?>><BR><BR>Enter information below for the new lead you wish to call.
-				<BR>
-				<? 
-				if (eregi("X",dial_prefix))
-					{
-					echo "Note: a dial prefix of $dial_prefix will be added to the beginning of this number<BR>\n";
-					}
-				?>
-				Note: all new manual dial leads will go into list <?= $manual_dial_list_id ?><BR><BR>
-				<table>
-					<tr>
-						<td align=right><font class="body_text"> <font color=<?=$mandial_fc?>>Country Code: </td>
-						<td align=left><font class="body_text"><input type=text size=7 maxlength=10 name=MDDiaLCodE class="cust_form" value="1">&nbsp; <font color=<?=$mandial_fc?>>(This is usually a 1 in the USA-Canada)</td>
-					</tr>
-					<tr>
-						<td align=right><font class="body_text"> <font color=<?=$mandial_fc?>>Phone Number: </td>
-						<td align=left><font class="body_text">
-							<input type=text size=14 maxlength=12 name=MDPhonENumbeR class="cust_form" value="">&nbsp; <font color=<?=$mandial_fc?>>(12 digits max - digits only)
-						</td>
-					</tr>
-					<tr>
-						<td align=right><font class="body_text"> <font color=<?=$mandial_fc?>>Search Existing Leads: </td>
-						<td align=left><font class="body_text"><input type=checkbox name=LeadLookuP size=1 value="0">&nbsp; <font color=<?=$mandial_fc?>>(If checked will attempt to Find the phone number in the system before inserting it as a New Lead)</td>
-					</tr>
-					<tr>
-						<td align=center colspan=2>
-                            <!-- Manual Dial Override has been disabled because it causes too much trouble -->
-                            <span style="display:none;">
-                                <font class="body_text" color=<?=$mandial_fc?>>&nbsp;<br>
-                                    If you want to dial a number and have it NOT be added as a new lead, enter in the exact dialstring that you want to call in the Dial Override field below. To hangup this call you will have to open the CALLS IN THIS SESSION link at the bottom of the screen and hang it up by clicking on its channel link there.<br>&nbsp;<br>
-						            Dial Override: <input type=text size=1 maxlength=1 name=MDDiaLOverridE class="cust_form" value="">(digits only please)
-                                </font>
-                            </span>
-                        </td>
-					</tr>
-				</table>
-				
-				<BR>
-				<a href="#" onclick="NeWManuaLDiaLCalLSubmiT();return false;"><b>Dial Now</a>
-				&nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; 
-				<a href="#" onclick="if (PCSpause==1) {AutoDial_ReSume_PauSe('VDADready');} hideDiv('NeWManuaLDiaLBox');return false;">Go Back</b></a>
-				</TD>
-			</TR>
-		</TABLE>
-	</span>
-	
-	
-	<!-- Debug -->
-	<span style="position:absolute;left:970px;top:<?=$DBheight ?>px;z-index:16;" id="DebugLink">
+    
+    <!-- Choose From Available Call Backs -->
+    <span style="position:absolute;left:0px;top:18px;z-index:38;" id="CallBacKsLisTBox">
+        <table border=1 bgcolor="<?=$callback_bg?>" width=<?=$CAwidth+13 ?> height=460>
+            <tr>
+                <td align=center valign=top>
+                    Callbacks For Agent <?= $VD_login ?>
+                    <br><br>
+                    Click on a callback below to call the customer back now.<br>
+                    (When you click on a record below to call it, it will be removed from the list.)<br>
+                    <br>
+                    <div class="scroll_callback" id="CallBacKsLisT"></div>
+                    <br> &nbsp; 
+                    <a href="#" onclick="CalLBacKsLisTCheck();return false;">Refresh</a>
+                    &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; 
+                    <a href="#" onclick="if (PCSpause==1) {AutoDial_ReSume_PauSe('VDADready');} hideDiv('CallBacKsLisTBox');return false;">Go Back</a>
+                </td>
+            </tr>
+        </table>
+    </span>
+    
+    <!-- Manual Dial -->
+    <span style="position:absolute;left:0px;top:18px;z-index:39;" id="NeWManuaLDiaLBox">
+        <table border=1 bgcolor="<?= $mandial_bg ?>" width=<?= $CAwidth-10 ?> height=545>
+            <tr>
+                <td align=center valign=top>
+                    <br><b><font color=<?= $mandial_fc ?>>New Manual Dial Lead For </font><font color=<?=$mandial_bfc?>><?= $VD_login ?></font><font color=<?=$mandial_fc?>> In Campaign </font><font color=<?=$mandial_bfc?>><?= $VD_campaign ?></font></b>
+                    <font color=<?= $mandial_fc ?>>
+                        <br><br>Enter information below for the new lead you wish to call.<br>
+                        <?  if (eregi("X",dial_prefix)) {
+                            echo "Note: a dial prefix of $dial_prefix will be added to the beginning of this number<br>\n";
+                        } ?>
+                        Note: all new manual dial leads will go into list <?= $manual_dial_list_id ?><br><br>
+                    </font>
+                    <table>
+                        <tr>
+                            <td align=right><font class="body_text"><font color=<?=$mandial_fc?>> Country Code: </font></font></td>
+                            <td align=left><font class="body_text"><input type=text size=7 maxlength=10 name=MDDiaLCodE class="cust_form" value="1">&nbsp; <font color=<?=$mandial_fc?>>(This is usually a 1 in the USA-Canada)</font></font></td>
+                        </tr>
+                        <tr>
+                            <td align=right><font class="body_text"><font color=<?=$mandial_fc?>> Phone Number: </font></font></td>
+                            <td align=left><font class="body_text"><input type=text size=14 maxlength=12 name=MDPhonENumbeR class="cust_form" value="">&nbsp; <font color=<?=$mandial_fc?>>(12 digits max - digits only)</font></font></td>
+                        </tr>
+                        <tr>
+                            <td align=right><font class="body_text"><font color=<?=$mandial_fc?>> Search Existing Leads: </font></font></td>
+                            <td align=left><font class="body_text"><input type=checkbox name=LeadLookuP size=1 value="0">&nbsp; <font color=<?=$mandial_fc?>>(If checked will attempt to Find the phone number in the system before inserting it as a New Lead)</font></font></td>
+                        </tr>
+                        <tr>
+                            <td align=center colspan=2>
+                                <!-- Manual Dial Override has been disabled because it causes too much trouble -->
+                                <span style="display:none;">
+                                    <font class="body_text" color=<?=$mandial_fc?>>&nbsp;<br>
+                                        If you want to dial a number and have it NOT be added as a new lead, enter in the exact dialstring that you want to call in the Dial Override field below. To hangup this call you will have to open the CALLS IN THIS SESSION link at the bottom of the screen and hang it up by clicking on its channel link there.<br>&nbsp;<br>
+                                        Dial Override: <input type=text size=1 maxlength=1 name=MDDiaLOverridE class="cust_form" value="">(digits only please)
+                                    </font>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                
+                    <br>
+                    <b><a href="#" onclick="NeWManuaLDiaLCalLSubmiT();return false;">Dial Now</a>
+                    &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; 
+                    <a href="#" onclick="if (PCSpause==1) {AutoDial_ReSume_PauSe('VDADready');} hideDiv('NeWManuaLDiaLBox');return false;">Go Back</a></b>
+                </td>
+            </tr>
+        </table>
+    </span>
+    
+    
+    <!-- Debug -->
+    <span style="position:absolute;left:970px;top:<?=$DBheight ?>px;z-index:16;" id="DebugLink">
         <font class="body_text"><a href="#" onclick="openDebugWindow();return false;">o</a></font>
-	</span>
+    </span>
 
-	<!-- Disposition Hot Keys Window -->
-	<span style="position:absolute;left:92px;top:<?=$HTheight+45 ?>px;z-index:24;" id="HotKeyEntriesBox">
-		<table frame=box bgcolor="<?=$hotkey_bg1?>" width=610 Oldwidth<?=$HCwidth ?> height=70>
-			<TR bgcolor="<?=$hotkey_bg2?>">
-				<TD width=200><font class="sh_text"> Disposition Hot Keys: </font></td>
-				<td colspan=2 width=410>
-					<font class="body_small">When active, simply press the keyboard key for the desired disposition for this call. The call will then be hungup and dispositioned automatically:</font>
-				</td>
-			</tr>
-			<tr>
-				<TD width=200>
-					<font class="sk_text">
-					<span id="HotKeyBoxA"><?= $HKboxA ?></span>
-					</font>
-				</TD>
-				<TD width=200><font class="sk_text">
-					<span id="HotKeyBoxB"><?= $HKboxB ?></span>
-					</font></TD>
-				<TD><font class="sk_text">
-					<span id="HotKeyBoxC"><?= $HKboxC ?></span>
-					</font>
-				</TD>
-			</TR>
-		</TABLE>
-	</span>
-	
+    <!-- Disposition Hot Keys Window -->
+    <span style="position:absolute;left:92px;top:<?=$HTheight+45 ?>px;z-index:24;" id="HotKeyEntriesBox">
+        <table frame=box bgcolor="<?=$hotkey_bg1?>" width=610 height=70>
+            <tr bgcolor="<?=$hotkey_bg2?>">
+                <td width=200><font class="sh_text"> Disposition Hot Keys: </font></td>
+                <td colspan=2 width=410>
+                    <font class="body_small">When active, simply press the keyboard key for the desired disposition for this call. The call will then be hungup and dispositioned automatically:</font>
+                </td>
+            </tr>
+            <tr>
+                <td width=200>
+                    <font class="sk_text">
+                        <span id="HotKeyBoxA"><?= $HKboxA ?></span>
+                    </font>
+                </td>
+                <td width=200>
+                    <font class="sk_text">
+                        <span id="HotKeyBoxB"><?= $HKboxB ?></span>
+                    </font>
+                </td>
+                <td>
+                    <font class="sk_text">
+                        <span id="HotKeyBoxC"><?= $HKboxC ?></span>
+                    </font>
+                </td>
+            </tr>
+        </table>
+    </span>
+    
 
-<? 	//-- Hot Key Button --
-	if ( ($HK_statuses_camp > 0) && ( ($user_level>=$HKuser_level) or ($VU_hotkeys_active > 0) ) ) { ?>
-		<span style="position:absolute;left:<?=$HKwidth+40 ?>px;top:<?=$HKheight +50 ?>px;z-index:16;" id="hotkeysdisplay"><a href="#" onMouseOver="HotKeys('ON')"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_hotkeysactive_OFF.gif" border=0 alt="HOT KEYS INACTIVE"></a>
-		</span>
-<? 	
-	} 
-?>
-		<!-- D1, D2, Mute Links -->
-	<span style="position:absolute;left:<?=$AMwidth-10 ?>px;top:<?=$AMheight+15 ?>px;z-index:22;" id="AgentMuteANDPreseTDiaL">
-		<font class="body_text">
-<?
-		if ($PreseT_DiaL_LinKs) {
-			echo "<a href=\"#\" onclick=\"DtMf_PreSet_a_DiaL();return false;\"><font class=\"body_tiny\">D1 - DIAL</font></a>\n";
-			echo "<BR>\n";
-			echo "<a href=\"#\" onclick=\"DtMf_PreSet_b_DiaL();return false;\"><font class=\"body_tiny\">D2 - DIAL</font></a>\n";
-			echo "<BR>\n";
-            echo "<span id=\"DialBlindVMail2\"><IMG SRC=\"templates/$agent_template/images/vdc_XB_ammessage_OFF.gif\" border=0 alt=\"Blind Transfer VMail Message\">\n";
-		} else {
-			echo "<BR>\n";
-		}
-?>
-		<BR><BR>
-		<span id="AgentMuteSpan"></span>
-		</font>
-	</span>
-	<font style="position:relative;left:480px;top:484px;z-index:22;" id="MutedWarning"></font>
-	
-	<!-- Volume Control Links -->
-	<span style="position:absolute;left:935px;top:<?=$CBheight+26 ?>px;z-index:19;" id="VolumeControlSpan">
-		<span id="VolumeUpSpan"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_volume_up_off.gif" BORDER=0></span>
-		<br>
-		<span id="VolumeDownSpan"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_volume_down_off.gif" BORDER=0></span>
-	</span>
-	
-	<!-- Agent Status In Progress -->
-	<span style="position:absolute;left:35px;top:<?=$CBheight ?>px;z-index:20;" id="AgentStatusSpan"><font class="body_text">
-		Your Status: 
-		<span id="AgentStatusStatus"></span> 
-		<BR>Calls Dialing: <span id="AgentStatusDiaLs"></span> 
-		</font>
-	</span>
-	
-	<!-- Transfer Link -->
-	<span style="position:absolute;left:185px;top:<?=$HTheight ?>px;z-index:21;" id="TransferMain">
-		<table bgcolor="<?=$xfer_bg1?>" frame=box width=<?=$XFwidth-255 ?>>
-			<tr>
-				<td align=left>
-					<div class="text_input" id="TransferMaindiv">
-						<font class="body_text">
-							<table width=100%>
-								<tr>
-									<td align=center colspan=5>
-										<font color=<?=$xfer_fc?>><b>Transfer & Conference Functions</b><BR>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<span id="XfeRGrouPLisT"><select size=1 name=XfeRGrouP class="cust_form"><option>-- SELECT A GROUP TO SEND YOUR CALL TO --</option></select>
-										</span>
-									</td>
-									<td align=center>
-										<span STYLE="background-color: <?=$xfer_bg2?>" id="LocalCloser"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_localcloser_OFF.gif" border=0 alt="LOCAL CLOSER">
-										</span> 
-									</td>
-									<td align=center>
-										<span STYLE="background-color: <?=$xfer_bg2?>" id="HangupXferLine"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_hangupxferline_OFF.gif" border=0 alt="Hangup Xfer Line">
-										</span>
-									</td>
-									<td align=center>
-										<span STYLE="background-color: <?=$xfer_bg2?>" id="HangupBothLines"><a href="#" onclick="bothcall_send_hangup();return false;"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_hangupbothlines.gif" border=0 alt="Hangup Both Lines"></a>
-										</span>
-									</td>
-									<td align=center>
-										<a href="#" onclick="DtMf_PreSet_a();return false;"><font class="body_tiny">D1</font></a>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<font size=1 color=<?=$xfer_fc?>>Number to call:&nbsp;<input type=text size=15 name=xfernumber maxlength=25 class="cust_form">
-										<input type=hidden name=xferuniqueid>
-									</td>
-									<td align=center>
-										<input type=checkbox name=xferoverride size=1 value="0"><font size=1 color=<?=$xfer_fc?>>Dial Override</font>
-									</td>
-									<td align=center>
-										<span STYLE="background-color: <?=$xfer_bg2?>" id="Leave3WayCall"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_leave3waycall_OFF.gif" border=0 alt="LEAVE 3-WAY CALL">
-										</span> 
-									</td>
-									<td align=center>
-										<span STYLE="background-color: <?=$xfer_bg2?>" id="DialBlindTransfer"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_blindtransfer_OFF.gif" border=0 alt="Dial Blind Transfer">
-										</span>
-									</td>
-									<td align=center>
-										<a href="#" onclick="DtMf_PreSet_b();return false;"><font class="body_tiny">D2</font></a>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<font size=1 color=<?=$xfer_fc?>>Seconds:<!-- IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_seconds.gif" border=0 alt="seconds" --> <input type=text size=2 name=xferlength maxlength=4 class="cust_form">
-									</td>
-									<td>
-										<font size=1 color=<?=$xfer_fc?>>Channel:&nbsp;<input type=text size=12 name=xferchannel maxlength=100 class="cust_form"> 
-									</td>
-									<td align=center>
-										<span STYLE="background-color: <?=$xfer_bg2?>" id="DialWithCustomer"><a href="#" onclick="SendManualDial('YES');return false;"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_dialwithcustomer.gif" border=0 alt="Dial With Customer"></a>
-										</span> 
-									</td>
-									<td align=center>
-										<span STYLE="background-color: <?=$xfer_bg2?>" id="ParkCustomerDial"><a href="#" onclick="xfer_park_dial();return false;"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_parkcustomerdial.gif" border=0 alt="Park Customer Dial"></a>
-										</span> 
-									</td>
-									<td align=center>
-										<span STYLE="background-color: <?=$xfer_bg2?>" id="DialBlindVMail"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_XB_ammessage_OFF.gif" border=0 alt="Blind Transfer VMail Message">
-										</span>
-									</td>
-								</tr>
-							</table>
-						</font>
-					</div>
-				</td>
-			</tr>
-		</table>
-	</span>
-	
-	<!-- Dispositioned -->
-	<span style="position:absolute;left:5px;top:<?=$HTheight+20 ?>px;z-index:23;" id="HotKeyActionBox">
-		<table border=0 bgcolor="<?=$hotkey_done_bg1?>" width=<?=$HCwidth ?> height=70>
-			<TR bgcolor="<?=$hotkey_done_bg1?>">
-				<TD height=70><font class="sh_text"> Lead Dispositioned As: </font><BR><BR>
-					<CENTER><font class="sd_text"><span id="HotKeyDispo"> - </span></font></CENTER>
-				</TD>
-			</TR>
-		</TABLE>
-	</span>
-	
-	<!-- Previous Callback Info -->
-	<span style="position:absolute;left:10px;top:<?=$HTheight+20 ?>px;z-index:25;" id="CBcommentsBox">
-		<table frame=box bgcolor="<?=$cbinfo_bg1?>" width=<?=$HCwidth ?> height=70>
-			<TR bgcolor="<?=$cbinfo_bg2?>">
-				<TD align=center><font class="sh_text" color=<?=$cbinfo_bfc?>>&nbsp;Previous Callback Information</font></td>
-				<TD align=right><font class="sk_text"> <a href="#" onclick="CBcommentsBoxhide();return false;"><b>CLOSE</b></a>&nbsp;&nbsp;</font></td>
-			</tr>
-			<tr>
-				<TD><font class="sk_text">
-					<span id="CBcommentsBoxA"></span><BR>
-					<span id="CBcommentsBoxB"></span><BR>
-					<span id="CBcommentsBoxC"></span><BR>
-					</font>
-				</TD>
-				<TD width=320><font class="sk_text">
-					<span id="CBcommentsBoxD"></span>
-					</font>
-				</TD>
-			</TR>
-		</TABLE>
-	</span>
-	
-	<!-- Phone Is Hungup -->
-	<span style="position:absolute;left:0px;top:18px;z-index:26;" id="NoneInSessionBox">
-		<table border=1 bgcolor="<?=$noone_bg?>" width=<?=$CAwidth ?> height=545>
-			<TR>
-				<TD align=center><b><font color=<?=$noone_fc?>>Your phone has either not been answered, or was hung up! <br><br><font color=<?=$noone_bg?>>(Session ID: <span id="NoneInSessionID"></span>)</font></b><BR><br>
-					<a href="#" onclick="NoneInSessionCalL();return false;" style='text-decoration: blink;color:<?=$noone_fc?>;'><u><b>Try Calling Your Phone Here</b></u></a>
-					<BR><BR><br>
-					<a href="#" onclick="NoneInSessionOK();return false;" style='color:<?=$noone_fc2?>;'>Go Back</a>
-				</TD>
-			</TR>
-		</TABLE>
-	</span>
-	
-	<!-- Customer Hungup -->
-	<span style="position:absolute;left:0px;top:0px;z-index:27;" id="CustomerGoneBox">
-		<table border=1 bgcolor="<?=$custgone_bg?>" width=<?=$CAwidth ?> height=500>
-			<TR>
-				<TD align=center> Customer has hung up: <span id="CustomerGoneChanneL"></span><BR>
-					<a href="#" onclick="CustomerGoneOK();return false;">Go Back</a>
-					<BR><BR>
-					<a href="#" onclick="CustomerGoneHangup();return false;">Finish and Disposition Call</a>
-				</TD>
-			</TR>
-		</TABLE>
-	</span>
-	
-	<!-- Call Wrapup -->
-	<span style="position:absolute;left:0px;top:0px;z-index:28;" id="WrapupBox">
-		<table border=1 bgcolor="<?=$wrapup_bg?>" width=<?=$CAwidth ?> height=550>
-			<TR>
-				<TD align=center> Call Wrapup: <span id="WrapupTimer"></span> seconds remaining in wrapup<BR><BR>
-					<span id="WrapupMessage"><?=$wrapup_message ?></span>
-					<BR><BR>
-					<a href="#" onclick="WrapupFinish();return false;">Finish Wrapup and Move On</a>
-				</TD>
-			</TR>
-		</TABLE>
-	</span>
-	
-	<!-- Agent Disabled -->
-	<span style="position:absolute;left:0px;top:0px;z-index:29;" id="AgenTDisablEBoX">
-		<table class=acrossagent border=0 width=<?=$CAwidth ?> height=564>
-			<TR>
-				<TD align=center><font color=<?=$login_fc?>>Your login session has been disabled, you need to logout.<br><BR><a href="#" onclick="LogouT('DISABLED');return false;"><font text-decoration=blink>LOGOUT</font></a><BR><BR><a href="#" onclick="hideDiv('AgenTDisablEBoX');return false;"><font color=grey>Go Back</font></a>
-				</TD>
-			</TR>
-		</TABLE>
-	</span>
+     <!-- Hot Key Button -->
+    <? if ($HK_statuses_camp > 0 and ($user_level >= $HKuser_level or $VU_hotkeys_active > 0)) { ?>
+        <span style="position:absolute;left:<?=$HKwidth+40 ?>px;top:<?=$HKheight +50 ?>px;z-index:16;" id="hotkeysdisplay"><a href="#" onMouseOver="HotKeys('ON')"><img src="templates/<?= $agent_template ?>/images/vdc_XB_hotkeysactive_OFF.gif" border=0 alt="HOT KEYS INACTIVE"></a></span>
+    <? } ?>
+    <!-- D1, D2, Mute Links -->
+    <span style="position:absolute;left:<?=$AMwidth-10 ?>px;top:<?=$AMheight+15 ?>px;z-index:22;" id="AgentMuteANDPreseTDiaL">
+        <font class="body_text">
+            <? if ($PreseT_DiaL_LinKs) {
+                echo "<a href=\"#\" onclick=\"DtMf_PreSet_a_DiaL();return false;\"><font class=\"body_tiny\">D1 - DIAL</font></a><br>\n";
+                echo "<a href=\"#\" onclick=\"DtMf_PreSet_b_DiaL();return false;\"><font class=\"body_tiny\">D2 - DIAL</font></a><br>\n";
+                echo "<span id=\"DialBlindVMail2\"><img src=\"templates/$agent_template/images/vdc_XB_ammessage_OFF.gif\" border=0 alt=\"Blind Transfer VMail Message\"></span>\n";
+            } else {
+                echo "<br><br>\n";
+            } ?>
+            <br><br>
+            <span id="AgentMuteSpan"></span>
+        </font>
+    </span>
+    <font style="position:relative;left:480px;top:484px;z-index:22;" id="MutedWarning"></font>
+    
+    <!-- Volume Control Links -->
+    <span style="position:absolute;left:935px;top:<?=$CBheight+26 ?>px;z-index:19;" id="VolumeControlSpan">
+        <span id="VolumeUpSpan"><img src="templates/<?= $agent_template ?>/images/vdc_volume_up_off.gif" border=0></span>
+        <br>
+        <span id="VolumeDownSpan"><img src="templates/<?= $agent_template ?>/images/vdc_volume_down_off.gif" border=0></span>
+    </span>
+    
+    <!-- Agent Status In Progress -->
+    <span style="position:absolute;left:35px;top:<?=$CBheight ?>px;z-index:20;" id="AgentStatusSpan">
+        <font class="body_text">
+            Your Status: 
+            <span id="AgentStatusStatus"></span> 
+            <br>Calls Dialing: <span id="AgentStatusDiaLs"></span> 
+        </font>
+    </span>
+    
+    <!-- Transfer Link -->
+    <span style="position:absolute;left:185px;top:<?=$HTheight ?>px;z-index:21;" id="TransferMain">
+        <table bgcolor="<?=$xfer_bg1?>" frame=box width=<?=$XFwidth-255 ?>>
+            <tr>
+                <td align=left>
+                    <div class="text_input" id="TransferMaindiv">
+                        <font class="body_text">
+                            <table width=100%>
+                                <tr>
+                                    <td align=center colspan=5><font color=<?=$xfer_fc?>><b>Transfer & Conference Functions</b><br></font></td>
+                                </tr>
+                                <tr>
+                                    <td><span id="XfeRGrouPLisT"><select size=1 name=XfeRGrouP class="cust_form"><option>-- SELECT A GROUP TO SEND YOUR CALL TO --</option></select></span></td>
+                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="LocalCloser"><img src="templates/<?= $agent_template ?>/images/vdc_XB_localcloser_OFF.gif" border=0 alt="LOCAL CLOSER"></span></td>
+                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="HangupXferLine"><img src="templates/<?= $agent_template ?>/images/vdc_XB_hangupxferline_OFF.gif" border=0 alt="Hangup Xfer Line"></span></td>
+                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="HangupBothLines"><a href="#" onclick="bothcall_send_hangup();return false;"><img src="templates/<?= $agent_template ?>/images/vdc_XB_hangupbothlines.gif" border=0 alt="Hangup Both Lines"></a></span></td>
+                                    <td align=center><a href="#" onclick="DtMf_PreSet_a();return false;"><font class="body_tiny">D1</font></a></td>
+                                </tr>
+                                <tr>
+                                    <td><font size=1 color=<?=$xfer_fc?>>Number to call:&nbsp;<input type=text size=15 name=xfernumber maxlength=25 class="cust_form"><input type=hidden name=xferuniqueid></font></td>
+                                    <td align=center><input type=checkbox name=xferoverride size=1 value="0"><font size=1 color=<?=$xfer_fc?>>Dial Override</font></td>
+                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="Leave3WayCall"><img src="templates/<?= $agent_template ?>/images/vdc_XB_leave3waycall_OFF.gif" border=0 alt="LEAVE 3-WAY CALL"></span></td>
+                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="DialBlindTransfer"><img src="templates/<?= $agent_template ?>/images/vdc_XB_blindtransfer_OFF.gif" border=0 alt="Dial Blind Transfer"></span></td>
+                                    <td align=center><a href="#" onclick="DtMf_PreSet_b();return false;"><font class="body_tiny">D2</font></a></td>
+                                </tr>
+                                <tr>
+                                    <td><font size=1 color=<?=$xfer_fc?>>Seconds:&nbsp;<input type=text size=2 name=xferlength maxlength=4 class="cust_form"></font></td>
+                                    <td><font size=1 color=<?=$xfer_fc?>>Channel:&nbsp;<input type=text size=12 name=xferchannel maxlength=100 class="cust_form"></font></td>
+                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="DialWithCustomer"><a href="#" onclick="SendManualDial('YES');return false;"><img src="templates/<?= $agent_template ?>/images/vdc_XB_dialwithcustomer.gif" border=0 alt="Dial With Customer"></a></span></td>
+                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="ParkCustomerDial"><a href="#" onclick="xfer_park_dial();return false;"><img src="templates/<?= $agent_template ?>/images/vdc_XB_parkcustomerdial.gif" border=0 alt="Park Customer Dial"></a></span></td>
+                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="DialBlindVMail"><img src="templates/<?= $agent_template ?>/images/vdc_XB_ammessage_OFF.gif" border=0 alt="Blind Transfer VMail Message"></span></td>
+                                </tr>
+                            </table>
+                        </font>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </span>
+    
+    <!-- Dispositioned -->
+    <span style="position:absolute;left:5px;top:<?=$HTheight+20 ?>px;z-index:23;" id="HotKeyActionBox">
+        <table border=0 bgcolor="<?=$hotkey_done_bg1?>" width=<?=$HCwidth ?> height=70>
+            <tr bgcolor="<?=$hotkey_done_bg1?>">
+                <td height=70>
+                    <font class="sh_text"> Lead Dispositioned As: </font>
+                    <br><br>
+                    <center><font class="sd_text"><span id="HotKeyDispo"> - </span></font></center>
+                </td>
+            </tr>
+        </table>
+    </span>
+    
+    <!-- Previous Callback Info -->
+    <span style="position:absolute;left:10px;top:<?=$HTheight+20 ?>px;z-index:25;" id="CBcommentsBox">
+        <table frame=box bgcolor="<?=$cbinfo_bg1?>" width=<?=$HCwidth ?> height=70>
+            <tr bgcolor="<?=$cbinfo_bg2?>">
+                <td align=center><font class="sh_text" color=<?=$cbinfo_bfc?>>&nbsp;Previous Callback Information</font></td>
+                <td align=right><font class="sk_text"> <a href="#" onclick="CBcommentsBoxhide();return false;"><b>CLOSE</b></a>&nbsp;&nbsp;</font></td>
+            </tr>
+            <tr>
+                <td>
+                    <font class="sk_text">
+                        <span id="CBcommentsBoxA"></span><br>
+                        <span id="CBcommentsBoxB"></span><br>
+                        <span id="CBcommentsBoxC"></span><br>
+                    </font>
+                </td>
+                <td width=320>
+                    <font class="sk_text">
+                        <span id="CBcommentsBoxD"></span>
+                    </font>
+                </td>
+            </tr>
+        </table>
+    </span>
+    
+    <!-- Phone Is Hungup -->
+    <span style="position:absolute;left:0px;top:18px;z-index:26;" id="NoneInSessionBox">
+        <table border=1 bgcolor="<?=$noone_bg?>" width=<?=$CAwidth ?> height=545>
+            <tr>
+                <td align=center>
+                    <b><font color=<?=$noone_fc?>>Your phone has either not been answered, or was hung up! <br><br><font color=<?=$noone_bg?>>(Session ID: <span id="NoneInSessionID"></span>)</font></font></b>
+                    <br><br>
+                    <a href="#" onclick="NoneInSessionCalL();return false;" style='text-decoration: blink;color:<?=$noone_fc?>;'><u><b>Try Calling Your Phone Here</b></u></a>
+                    <br><br><br>
+                    <a href="#" onclick="NoneInSessionOK();return false;" style='color:<?=$noone_fc2?>;'>Go Back</a>
+                </td>
+            </tr>
+        </table>
+    </span>
+    
+    <!-- Customer Hungup -->
+    <span style="position:absolute;left:0px;top:0px;z-index:27;" id="CustomerGoneBox">
+        <table border=1 bgcolor="<?=$custgone_bg?>" width=<?=$CAwidth ?> height=500>
+            <tr>
+                <td align=center>
+                    Customer has hung up: <span id="CustomerGoneChanneL"></span><br>
+                    <a href="#" onclick="CustomerGoneOK();return false;">Go Back</a>
+                    <br><br>
+                    <a href="#" onclick="CustomerGoneHangup();return false;">Finish and Disposition Call</a>
+                </td>
+            </tr>
+        </table>
+    </span>
+    
+    <!-- Call Wrapup -->
+    <span style="position:absolute;left:0px;top:0px;z-index:28;" id="WrapupBox">
+        <table border=1 bgcolor="<?=$wrapup_bg?>" width=<?=$CAwidth ?> height=550>
+            <tr>
+                <td align=center>
+                    Call Wrapup: <span id="WrapupTimer"></span> seconds remaining in wrapup
+                    <br><br>
+                    <span id="WrapupMessage"><?=$wrapup_message ?></span>
+                    <br><br>
+                    <a href="#" onclick="WrapupFinish();return false;">Finish Wrapup and Move On</a>
+                </td>
+            </tr>
+        </table>
+    </span>
+    
+    <!-- Agent Disabled -->
+    <span style="position:absolute;left:0px;top:0px;z-index:29;" id="AgenTDisablEBoX">
+        <table class=acrossagent border=0 width=<?=$CAwidth ?> height=564>
+            <tr>
+                <td align=center>
+                    <font color=<?=$login_fc?>>
+                        Your login session has been disabled, you need to logout.
+                        <br><br>
+                        <a href="#" onclick="LogouT('DISABLED');return false;"><font style="text-decoration:blink;">LOGOUT</font></a>
+                        <br><br>
+                        <a href="#" onclick="hideDiv('AgenTDisablEBoX');return false;"><font color=grey>Go Back</font></a>
+                    </font>
+                </td>
+            </tr>
+        </table>
+    </span>
 
-	<!-- System Disabled -->
-	<span style="position:absolute;left:0px;top:0px;z-index:29;" id="SysteMDisablEBoX">
-		<table class=acrossagent border=0 width=<?=$CAwidth ?> height=564>
-			<TR>
-				<TD align=center><font color=<?=$login_fc?>>There is a time synchronization problem with your system, please tell your system administrator.<BR><span id="SysteMDisablEInfo"></span><BR><BR><a href="#" onclick="hideDiv('SysteMDisablEBoX');return false;"><font color=grey>Go Back</font></a>
-				</TD>
-			</TR>
-		</TABLE>
-	</span>
+    <!-- System Disabled -->
+    <span style="position:absolute;left:0px;top:0px;z-index:29;" id="SysteMDisablEBoX">
+        <table class=acrossagent border=0 width=<?=$CAwidth ?> height=564>
+            <tr>
+                <td align=center>
+                    <font color=<?=$login_fc?>>
+                        There is a time synchronization problem with your system, please tell your system administrator.<br>
+                        <span id="SysteMDisablEInfo"></span>
+                        <br><br>
+                        <a href="#" onclick="hideDiv('SysteMDisablEBoX');return false;"><font color=grey>Go Back</font></a>
+                    </font>
+                </td>
+            </tr>
+        </table>
+    </span>
 
-	<!-- System Alert -->
-	<span style="position:absolute;left:0px;top:300px;z-index:41;" id="SysteMAlerTBoX">
-		<table class=acrossagent border=1 width=<?= $CAwidth ?> height=300 cellspacing=20>
-			<tr>
-				<td align=center bgcolor="<?= $system_alert_bg2 ?>">
-                    <font color=<?=$login_fc?>><span id="SysteMAlerTInfo"></span><br><br><br>
+    <!-- System Alert -->
+    <span style="position:absolute;left:0px;top:300px;z-index:41;" id="SysteMAlerTBoX">
+        <table class=acrossagent border=1 width=<?= $CAwidth ?> height=300 cellspacing=20>
+            <tr>
+                <td align=center bgcolor="<?= $system_alert_bg2 ?>">
+                    <font color=<?=$login_fc?>>
+                        <span id="SysteMAlerTInfo"></span>
+                        <br><br><br>
                         <font size=2>
                             <a href="#" onclick="hideDiv('SysteMAlerTBoX');return false;"><font color=grey>[Go Back (<span id="SysteMAlerTTimer"></span>)]</font></a>
                             &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
@@ -2483,654 +2469,570 @@ foreach ($forms as $form) {
                             <a href="#" onclick="document.getElementById('SysteMAlerTBoX').style.top='300px';"><font color=grey>[Down]</font></a>
                         </font>
                     </font>
-				</td>
-			</tr>
-		</table>
-	</span>
-	
-	<!-- Logout Link -->
-	<span style="position:absolute;left:1px;top:1px;z-index:30;background-image: URL('templates/<?= $agent_template ?>/images/loginagain-bg.png');background-repeat:none;" id="LogouTBox">
-		<table width=1001 Oldwidth<?=$CAwidth+20 ?> height=608 cellpadding=0 cellspacing=0>
-			<TR>
-				<TD align=center>
-					<BR><span id="LogouTBoxLink">LOGOUT</span>
-				</TD>
-			</TR>
-		</TABLE>
-	</span>
-	
-	<!-- Hide Disposition Button A -->
-	<span style="position:absolute;left:0px;top:70px;z-index:31;" id="DispoButtonHideA">
-		<table border=0 bgcolor="<?=$dispo_hide?>" width=165 height=22>
-			<TR>
-				<TD align=center VALIGN=top>
-				</TD>
-			</TR>
-		</TABLE>
-	</span>
-	
-	<!-- Hide Disposition Button B -->
-	<span style="position:absolute;left:0px;top:138px;z-index:32;" id="DispoButtonHideB">
-		<table border=0 bgcolor="<?=$dispo_hide?>" width=165 height=250>
-			<TR>
-				<TD align=center VALIGN=top>&nbsp;</TD>
-			</TR>
-		</TABLE>
-	</span>
-	
-	<!-- Hide Disposition Button C -->
-	<span style="position:absolute;left:0px;top:18px;z-index:33;" id="DispoButtonHideC">
-		<table border=0 bgcolor="<?=$dispo_hide?>" width=<?=$CAwidth ?> height=47>
-			<TR>
-				<TD align=center VALIGN=top>Any changes made to the customer information below at this time will not be comitted, You must change customer information before you Hangup the call.</TD>
-			</TR>
-		</TABLE>
-	</span>
-	
-	<!-- Disposition Window -->
-	<span style="position:absolute;left:0px;top:18px;z-index:34;" id="DispoSelectBox">
-		<table class=acrossagent width=<?=$CAwidth+5 ?> height=460>
-			<TR>
-				<TD align=center VALIGN=top><font color=<?=$dispo_fc?>><br> DISPOSITION CALL: <span id="DispoSelectPhonE"></span> &nbsp; &nbsp; &nbsp; <span id="DispoSelectHAspan"><a href="#" onclick="DispoHanguPAgaiN()">Hangup Again</a></span> &nbsp; &nbsp; &nbsp; <span id="DispoSelectMaxMin"><a href="#" onclick="DispoMinimize()">minimize</a></span><BR>
-					<span id="DispoSelectContent"> End-of-call Disposition Selection </span>
-					<input type=hidden name=DispoSelection><BR>
-					<input type=checkbox name=DispoSelectStop size=1 value="0"> <font color=<?=$dispo_fc?>>PAUSE <? echo (($inbound_man>0)?"INBOUND CALLS":"AGENT DIALING") ?> <BR>
-					<a href="#" onclick="DispoSelectContent_create('','ReSET');return false;">CLEAR FORM</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 
-					<a href="#" onclick="DispoSelect_submit();return false;"><b>SUBMIT</b></a>
-                    <?
-                    if ($submit_method < 1) {
-					    echo "<BR><BR>\n";
-					    echo "<a href=\"#\" onclick=\"WeBForMDispoSelect_submit();return false;\">WEB FORM SUBMIT</a>\n";
-                    }
-                    ?>
-					<BR><BR> &nbsp;
-				</TD>
-			</TR>
-		</TABLE>
-	</span>
-	
-	<!-- Pause Code Window -->
-	<span style="position:absolute;left:0px;top:18px;z-index:40;" id="PauseCodeSelectBox">
-		<table class=acrossagent frame=box width=<?=$CAwidth -10 ?> height=500>
-			<TR>
-				<TD align=center VALIGN=top><br><font color=<?=$pause_fc?>><b>Select A Pause Code</b><br><br>
-					<span id="PauseCodeSelectContent"> Pause Code Selection </span>
-					<input type=hidden name=PauseCodeSelection>
-					<BR><BR> &nbsp; 
-				</TD>
-			</TR>
-		</TABLE>
-	</span>
-	
-	<!-- Callback Window -->
-	<span style="position:absolute;left:0px;top:18px;z-index:35;" id="CallBackSelectBox">
-		<table border=1 bgcolor="<?=$callback_bg3?>" width=<?=$CAwidth ?> height=480>
-			<TR>
-				<TD align=center VALIGN=top><font color=<?=$callback_fc?>>Select a CallBack Date :<span id="CallBackDatE"></span><BR>
-					<input type=hidden name=CallBackDatESelectioN ID="CallBackDatESelectioN">
-					<input type=hidden name=CallBackTimESelectioN ID="CallBackTimESelectioN">
-					<span id="CallBackDatEPrinT">Select a Date Below</span> &nbsp;
-					<span id="CallBackTimEPrinT"></span> &nbsp; &nbsp;
-					Hour: 
-					<SELECT SIZE=1 NAME="CBT_hour" ID="CBT_hour">
-					<option>01</option>
-					<option>02</option>
-					<option>03</option>
-					<option>04</option>
-					<option>05</option>
-					<option>06</option>
-					<option>07</option>
-					<option>08</option>
-					<option>09</option>
-					<option>10</option>
-					<option>11</option>
-					<option>12</option>
-					</select> &nbsp;
-					Minutes: 
-					<SELECT SIZE=1 NAME="CBT_minute" ID="CBT_minute">
-					<option>00</option>
-					<option>05</option>
-					<option>10</option>
-					<option>15</option>
-					<option>20</option>
-					<option>25</option>
-					<option>30</option>
-					<option>35</option>
-					<option>40</option>
-					<option>45</option>
-					<option>50</option>
-					<option>55</option>
-					</select> &nbsp;
-				
-					<SELECT SIZE=1 NAME="CBT_ampm" ID="CBT_ampm">
-					<option>AM</option>
-					<option selected>PM</option>
-					</select> &nbsp;<BR>
-					<?
-					if ($agentonly_callbacks)
-						{echo "<input type=checkbox name=CallBackOnlyMe id=CallBackOnlyMe size=1 value=\"0\"> MY CALLBACK ONLY <BR>";}
-					?>
-					CB Comments: <input type=text name="CallBackCommenTsField" id="CallBackCommenTsField" size=50><BR><BR>
-				
-					<a href="#" onclick="CallBackDatE_submit();return false;">SUBMIT</a><BR><BR>
-					<span id="CallBackDateContent"><?echo"$CCAL_OUT"?></span>
-					<BR><BR> &nbsp; 
-				</TD>
-			</TR>
-		</TABLE>
-	</span>
+                </td>
+            </tr>
+        </table>
+    </span>
+    
+    <!-- Logout Link -->
+    <span style="position:absolute;left:1px;top:1px;z-index:30;background-image: URL('templates/<?= $agent_template ?>/images/loginagain-bg.png');background-repeat:none;" id="LogouTBox">
+        <table width=1001 height=608 cellpadding=0 cellspacing=0>
+            <tr>
+                <td align=center><br><span id="LogouTBoxLink">LOGOUT</span></td>
+            </tr>
+        </table>
+    </span>
+    
+    <!-- Hide Disposition Button A -->
+    <span style="position:absolute;left:0px;top:70px;z-index:31;" id="DispoButtonHideA">
+        <table border=0 bgcolor="<?=$dispo_hide?>" width=165 height=22>
+            <tr>
+                <td align=center valign=top></td>
+            </tr>
+        </table>
+    </span>
+    
+    <!-- Hide Disposition Button B -->
+    <span style="position:absolute;left:0px;top:138px;z-index:32;" id="DispoButtonHideB">
+        <table border=0 bgcolor="<?=$dispo_hide?>" width=165 height=250>
+            <tr>
+                <td align=center valign=top>&nbsp;</TD>
+            </tr>
+        </table>
+    </span>
+    
+    <!-- Hide Disposition Button C -->
+    <span style="position:absolute;left:0px;top:18px;z-index:33;" id="DispoButtonHideC">
+        <table border=0 bgcolor="<?=$dispo_hide?>" width=<?=$CAwidth ?> height=47>
+            <tr>
+                <td align=center valign=top>Any changes made to the customer information below at this time will not be comitted, You must change customer information before you Hangup the call.</td>
+            </tr>
+        </table>
+    </span>
+    
+    <!-- Disposition Window -->
+    <span style="position:absolute;left:0px;top:18px;z-index:34;" id="DispoSelectBox">
+        <table class=acrossagent width=<?=$CAwidth+5 ?> height=460>
+            <tr>
+                <td align=center valign=top>
+                    <font color=<?=$dispo_fc?>>
+                        <br> DISPOSITION CALL: <span id="DispoSelectPhonE"></span> &nbsp; &nbsp; &nbsp; <span id="DispoSelectHAspan"><a href="#" onclick="DispoHanguPAgaiN()">Hangup Again</a></span> &nbsp; &nbsp; &nbsp; <span id="DispoSelectMaxMin"><a href="#" onclick="DispoMinimize()">minimize</a></span><br>
+                        <span id="DispoSelectContent"> End-of-call Disposition Selection </span>
+                        <input type=hidden name=DispoSelection><br>
+                        <input type=checkbox name=DispoSelectStop size=1 value="0">
+                        PAUSE <? echo (($inbound_man>0)?"INBOUND CALLS":"AGENT DIALING") ?> <br>
+                        <a href="#" onclick="DispoSelectContent_create('','ReSET');return false;">CLEAR FORM</a>
+                        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 
+                        <a href="#" onclick="DispoSelect_submit();return false;"><b>SUBMIT</b></a>
+                        <? if ($submit_method < 1) {
+                            echo "<br><br>\n";
+                            echo "<a href=\"#\" onclick=\"WeBForMDispoSelect_submit();return false;\">WEB FORM SUBMIT</a>\n";
+                        } ?>
+                        <br><br> &nbsp;
+                    </font>
+                </td>
+            </tr>
+        </table>
+    </span>
+    
+    <!-- Pause Code Window -->
+    <span style="position:absolute;left:0px;top:18px;z-index:40;" id="PauseCodeSelectBox">
+        <table class=acrossagent frame=box width=<?=$CAwidth -10 ?> height=500>
+            <tr>
+                <td align=center valign=top>
+                    <font color=<?=$pause_fc?>>
+                        <br><b>Select A Pause Code</b>
+                        <br><br>
+                        <span id="PauseCodeSelectContent"> Pause Code Selection </span>
+                        <input type=hidden name=PauseCodeSelection>
+                        <br><br> &nbsp; 
+                    </font>
+                </td>
+            </tr>
+        </table>
+    </span>
+    
+    <!-- Callback Window -->
+    <span style="position:absolute;left:0px;top:18px;z-index:35;" id="CallBackSelectBox">
+        <table border=1 bgcolor="<?=$callback_bg3?>" width=<?=$CAwidth ?> height=480>
+            <tr>
+                <td align=center valign=top>
+                    <font color=<?=$callback_fc?>>
+                        Select a CallBack Date :<span id="CallBackDatE"></span><br>
+                        <input type=hidden name=CallBackDatESelectioN id="CallBackDatESelectioN">
+                        <input type=hidden name=CallBackTimESelectioN id="CallBackTimESelectioN">
+                        <span id="CallBackDatEPrinT">Select a Date Below</span> &nbsp;
+                        <span id="CallBackTimEPrinT"></span> &nbsp; &nbsp;
+                        Hour: 
+                        <select size=1 name="CBT_hour" id="CBT_hour">
+                            <option>01</option>
+                            <option>02</option>
+                            <option>03</option>
+                            <option>04</option>
+                            <option>05</option>
+                            <option>06</option>
+                            <option>07</option>
+                            <option>08</option>
+                            <option>09</option>
+                            <option>10</option>
+                            <option>11</option>
+                            <option>12</option>
+                        </select> &nbsp;
+                        Minutes: 
+                        <select size=1 name="CBT_minute" id="CBT_minute">
+                            <option>00</option>
+                            <option>05</option>
+                            <option>10</option>
+                            <option>15</option>
+                            <option>20</option>
+                            <option>25</option>
+                            <option>30</option>
+                            <option>35</option>
+                            <option>40</option>
+                            <option>45</option>
+                            <option>50</option>
+                            <option>55</option>
+                        </select> &nbsp;
+                
+                        <select size=1 name="CBT_ampm" id="CBT_ampm">
+                            <option>AM</option>
+                            <option selected>PM</option>
+                        </select> &nbsp;<br>
+                        <? if ($agentonly_callbacks) {
+                            echo "<input type=checkbox name=CallBackOnlyMe id=CallBackOnlyMe size=1 value=\"0\"> MY CALLBACK ONLY <br>";
+                        } ?>
+                        CB Comments: <input type=text name="CallBackCommenTsField" id="CallBackCommenTsField" size=50>
+                        <br><br>
+                        <a href="#" onclick="CallBackDatE_submit();return false;">SUBMIT</a>
+                        <br><br>
+                        <span id="CallBackDateContent"><?echo"$CCAL_OUT"?></span>
+                        <br><br> &nbsp; 
+                    </font>
+                </td>
+            </tr>
+        </table>
+    </span>
 
-	<!-- PostDate Window -->
-	<span style="position:absolute;left:0px;top:18px;z-index:35;" id="PostDateSelectBox">
-		<table border=1 bgcolor="<?=$callback_bg3?>" width=<?=$CAwidth ?> height=480>
-			<TR>
-				<TD align=center VALIGN=top><font color=<?=$callback_fc?>>Select a Post-Date :<span id="PostDatE"></span><BR>
-					<input type=hidden name=PostDatESelectioN ID="PostDatESelectioN">
-					<span id="PostDatEPrinT">Select a Date Below</span> &nbsp;
-					<BR>
-				
-					<a href="#" onclick="PostDatE_submit();return false;">SUBMIT</a><BR><BR>
-					<span id="PostDateContent"><?echo"$PDCAL_OUT"?></span>
-					<BR><BR> &nbsp; 
-				</TD>
-			</TR>
-		</TABLE>
-	</span>
-	
-	<!-- Closer Inbound Group Window -->
-	<span style="position:absolute;left:0px;top:0px;z-index:36;" id="CloserSelectBox">
-			<table class=acrossagent border=0 width=<?=$CAwidth ?> height=565>
-			<TR>
-				<TD align=center VALIGN=top><br><font size=+1 color=<?=$closer_fc2?>><b>Closer Inbound Group Selection</b></font><BR><br>
-					<span id="CloserSelectContent"> Closer Inbound Group Selection </span>
-					<input type=hidden name=CloserSelectList><BR>
-					<input type=checkbox name=CloserSelectBlended size=1 value="0">&nbsp;<font color=<?=$closer_fc2?>>BLENDED CALLING (outbound activated)</font><BR><br>
-					<a href="#" onclick="CloserSelectContent_create();return false;">RESET</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<a href="#" onclick="CloserSelect_submit();return false;"><b>SUBMIT</b></a>
-					<BR><BR><BR><BR> &nbsp; 
-				</TD>
-			</TR>
-		</TABLE>
-	</span>
-	
-	<!-- Preview hide -->
-	<span style="position:absolute;left:0px;top:0px;z-index:37;" id="NothingBox">
-		<BUTTON Type=button name="inert_button"><img src="templates/<?= $agent_template ?>/images/blank.gif"></BUTTON>
-		<span id="DiaLLeaDPrevieWHide">Channel</span>
-		<span id="DiaLDiaLAltPhonEHide">Channel</span>
-<?
-		if (!$agentonly_callbacks) {
-			echo "<input type=checkbox name=CallBackOnlyMe size=1 value=\"0\"> MY CALLBACK ONLY <BR>";
-		}
-?>
-	</span>
-	
-	<!-- Script window -->
-	<span style="position:absolute;left:190px;top:92px;z-index:17;" id="ScriptPanel">
-		<table border=0 bgcolor="<?= $script_bg ?>" width=<?=$SSwidth -40 ?> height=<?=$SSheight -30 ?>>
-			<TR>
-				<TD align=left valign=top><font class="sb_text"><div class="scroll_script" id="ScriptContents"><?=$t1?> Script Will Show Here</div></font>
-				</TD>
-			</TR>
-		</TABLE>
-	</span>
-	
-	<!-- Footer Links -->
-	<!--span style="position:absolute;left:0px;top:<?=$HKheight ?>px;z-index:15;" id="MaiNfooterspan" -->
-	<span style="position:absolute;left:2px;top: 480px;z-index:15;" id="MaiNfooterspan">
-		<table id="MaiNfooter" width=<?=$MNwidth+10 ?> class=bottom>
-			<tr height=15>
-				<td height=15><font face="Arial,Helvetica" size=1><?=$t1?> Agent version: <?= $version ?>&nbsp;&nbsp;Build: <?= $build ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;Server: <?= $server_ip ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><BR>
-					<font class="body_small"><span id="busycallsdisplay"><a href="#"  onclick="conf_channels_detail('SHOW');">Show conference call channel information</a><BR><BR>&nbsp;</span></font>
-				</td>
-				<td align=right height=0>
-				</td>
-			</tr>
-			<tr>
-				<td colspan=3><span id="outboundcallsspan"></span></td></tr>
-			<tr>
-				<td colspan=3>
-					<font class="body_small">
-					<span id="debugbottomspan"></span>
-					</font>
-				</td>
-			</tr>
-		</table>
-	</span>
-	
-	
-	<!-- =============================   Here is the main OSDIAL display panel  ============================= -->
-	
-	<span style="position:absolute;left:2px;top:46px;z-index:4;" id="MainPanel">
-		<!-- Column widths 205 + 505 + 270 = 980 -->
-		<TABLE id="MainTable" class=acrossagent cellpadding=0 cellspacing=0>
-			<TR>
-				<td width=22 colspan=2 class=curve2 style="vertical-align:bottom;"><img src="templates/<?= $agent_template ?>/images/AgentTopLeft.png" width=22 height=22 align=left>
-					<font class="body_text" color=<?= $status_fct ?>>&nbsp;&nbsp;STATUS:&nbsp;&nbsp;</font>
-					<font class="body_text" color=<?= $status_fc ?>><span id="MainStatuSSpan"></span></font>
-				</td>
-				<td width=22><img src="templates/<?= $agent_template ?>/images/AgentTopRight.png" width=22 height=22 align=right></td>
-				
-			</TR>
-			<tr>
-				<td colspan=3><span id="busycallsdebug"></span></td>
-			</tr>
-			<tr>		<!--  Column one, controls -->
-				<td width=205 height=330 align=left valign=top class=curve3>
-					<font class="body_text">
-						<center>
-							<span STYLE="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_LB_dialnextnumber_OFF.gif" border=0 alt="Dial Next Number"></a>
-							</span><BR>
-							<span id="DiaLLeaDPrevieW"><font class="preview_text"> <input type=checkbox name=LeadPreview size=1 value="0"> LEAD PREVIEW<BR></font>
-							</span>
-							<span id="DiaLDiaLAltPhonE"><font class="preview_text"> <input type=checkbox name=DiaLAltPhonE size=1 value="0"> ALT PHONE DIAL<BR></font>
-							</span>
-				
-							<!--
-	<?
-							if ( ($manual_dial_preview) and ($auto_dial_level==0) ) {
-								echo "<font class=\"preview_text\"> <input type=checkbox name=LeadPreview size=1 value=\"0\"> LEAD PREVIEW<BR></font>";
-							}
-							if ( ($alt_phone_dialing) and ($auto_dial_level==0) ) {
-								echo "<font class=\"preview_text\"> <input type=checkbox name=DiaLAltPhonE size=1 value=\"0\"> ALT PHONE DIAL<BR></font>";
-							}
-	?>
-							-->
-							
-							<font color=<?=$form_fc?>>Recording File</font><BR>
-							<font class="body_tiny">&nbsp;<span id="RecorDingFilename"></span></font>
-						</center>
-						<BR>
-						<center><font color=<?=$form_fc?>>Recording ID:&nbsp;</font><font class="body_small">&nbsp;<span id="RecorDID"></span></font></center>
-						<center>
-							<span id="RecorDControl"><a href="#" onclick="conf_send_recording('MonitorConf','<?=$session_id ?>','');return false;"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_LB_startrecording.gif" border=0 alt="Start Recording"></a></span><BR>
-							
-							<span id="SpacerSpanA"><IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=16 border=0></span><BR>
-							
-							<span id="WebFormSpan"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_LB_webform_OFF.gif" border=0 alt="Web Form"></span>
-							<span id="SpacerSpanB"><IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=2 border=0></span>
-							<span id="WebFormSpan2"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_LB_webform2_OFF.gif" border=0 alt="Web Form"></span><BR>
-							
-							<span id="SpacerSpanB1"><IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=16 border=0></span>
-							
-							<span id="ParkControl"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_LB_parkcall_OFF.gif" border=0 alt="Park Call"></span>
-							<span id="SpacerSpanB"><IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=2 border=0></span>
-							<span id="XferControl"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_LB_transferconf_OFF.gif" border=0 alt="Transfer - Conference"></span>
-							
-							<span id="SpacerSpanC"><IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=16 border=0></span>
-							
-							<span id="HangupControl"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_LB_hangupcustomer_OFF.gif" border=0 alt="Hangup Customer"></span>
-							
-							<span id="SpacerSpanD"><IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=16 border=0></span>
-
-                        <div class="text_input" id="DTMFDialPad" onMouseOver="DTMFKeys('ON');">
-                            <table cellspacing=1 cellpadding=1 border=0>
-                                <tr>
-                                    <td align=center>
-                                        <span id="DTMFDialPad1"><a href="#" alt="1"><img src="templates/<?= $agent_template ?>/images/dtmf_1_OFF.png" border=0></a></span>
-                                    </td>
-                                    <td align=center>
-                                        <span id="DTMFDialPad2"><a href="#" alt="2 - ABC"><img src="templates/<?= $agent_template ?>/images/dtmf_2_OFF.png" border=0></a></span>
-                                    </td>
-                                    <td align=center>
-                                        <span id="DTMFDialPad3"><a href="#" alt="3 - DEF"><img src="templates/<?= $agent_template ?>/images/dtmf_3_OFF.png" border=0></a></span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align=center>
-                                        <span id="DTMFDialPad4"><a href="#" alt="4 - GHI"><img src="templates/<?= $agent_template ?>/images/dtmf_4_OFF.png" border=0></a></span>
-                                    </td>
-                                    <td align=center>
-                                        <span id="DTMFDialPad5"><a href="#" alt="5 - JKL"><img src="templates/<?= $agent_template ?>/images/dtmf_5_OFF.png" border=0></a></span>
-                                    </td>
-                                    <td align=center>
-                                        <span id="DTMFDialPad6"><a href="#" alt="6 - MNO"><img src="templates/<?= $agent_template ?>/images/dtmf_6_OFF.png" border=0></a></span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align=center>
-                                        <span id="DTMFDialPad7"><a href="#" alt="7 - PQRS"><img src="templates/<?= $agent_template ?>/images/dtmf_7_OFF.png" border=0></a></span>
-                                    </td>
-                                    <td align=center>
-                                        <span id="DTMFDialPad8"><a href="#" alt="8 - TUV"><img src="templates/<?= $agent_template ?>/images/dtmf_8_OFF.png" border=0></a></span>
-                                    </td>
-                                    <td align=center>
-                                        <span id="DTMFDialPad9"><a href="#" alt="9 - WXYZ"><img src="templates/<?= $agent_template ?>/images/dtmf_9_OFF.png" border=0></a></span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td align=center>
-                                        <span id="DTMFDialPadStar"><a href="#" alt="*"><img src="templates/<?= $agent_template ?>/images/dtmf_star_OFF.png" border=0></a></span>
-                                    </td>
-                                    <td align=center>
-                                        <span id="DTMFDialPad0"><a href="#" alt="0"><img src="templates/<?= $agent_template ?>/images/dtmf_0_OFF.png" border=0></a></span>
-                                    </td>
-                                    <td align=center>
-                                        <span id="DTMFDialPadHash"><a href="#" alt="#"><img src="templates/<?= $agent_template ?>/images/dtmf_hash_OFF.png" border=0></a></span>
-                                    </td>
-                                </tr>
-                            </table>
+    <!-- PostDate Window -->
+    <span style="position:absolute;left:0px;top:18px;z-index:35;" id="PostDateSelectBox">
+        <table border=1 bgcolor="<?=$callback_bg3?>" width=<?=$CAwidth ?> height=480>
+            <tr>
+                <td align=center valign=top>
+                    <font color=<?=$callback_fc?>>
+                        Select a Post-Date :<span id="PostDatE"></span><br>
+                        <input type=hidden name=PostDatESelectioN ID="PostDatESelectioN">
+                        <span id="PostDatEPrinT">Select a Date Below</span> &nbsp;
+                        <br>
+                        <a href="#" onclick="PostDatE_submit();return false;">SUBMIT</a>
+                        <br><br>
+                        <span id="PostDateContent"><?echo"$PDCAL_OUT"?></span>
+                        <br><br> &nbsp; 
+                    </font>
+                </td>
+            </tr>
+        </table>
+    </span>
+    
+    <!-- Closer Inbound Group Window -->
+    <span style="position:absolute;left:0px;top:0px;z-index:36;" id="CloserSelectBox">
+        <table class=acrossagent border=0 width=<?=$CAwidth ?> height=565>
+            <tr>
+                <td align=center valign=top>
+                    <br><font size=+1 color=<?=$closer_fc2?>><b>Closer Inbound Group Selection</b></font>
+                    <br><br>
+                    <span id="CloserSelectContent"> Closer Inbound Group Selection </span>
+                    <input type=hidden name=CloserSelectList><br>
+                    <input type=checkbox name=CloserSelectBlended size=1 value="0">&nbsp;<font color=<?=$closer_fc2?>>BLENDED CALLING (outbound activated)</font>
+                    <br><br>
+                    <a href="#" onclick="CloserSelectContent_create();return false;">RESET</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="#" onclick="CloserSelect_submit();return false;"><b>SUBMIT</b></a>
+                    <br><br><br><br> &nbsp; 
+                </td>
+            </tr>
+        </table>
+    </span>
+    
+    <!-- Preview hide -->
+    <span style="position:absolute;left:0px;top:0px;z-index:37;" id="NothingBox">
+        <button type=button name="inert_button"><img src="templates/<?= $agent_template ?>/images/blank.gif"></button>
+        <span id="DiaLLeaDPrevieWHide">Channel</span>
+        <span id="DiaLDiaLAltPhonEHide">Channel</span>
+        <? if (!$agentonly_callbacks) {
+            echo "<input type=checkbox name=CallBackOnlyMe size=1 value=\"0\"> MY CALLBACK ONLY <br>";
+        } ?>
+    </span>
+    
+    <!-- Script window -->
+    <span style="position:absolute;left:190px;top:92px;z-index:17;" id="ScriptPanel">
+        <table border=0 bgcolor="<?= $script_bg ?>" width=<?=$SSwidth -40 ?> height=<?=$SSheight -30 ?>>
+            <tr>
+                <td align=left valign=top><font class="sb_text"><span class="scroll_script" id="ScriptContents"><?=$t1?> Script Will Show Here</span></font></td>
+            </tr>
+        </table>
+    </span>
+    
+    <!-- Footer Links -->
+    <!--span style="position:absolute;left:0px;top:<?=$HKheight ?>px;z-index:15;" id="MaiNfooterspan" -->
+    <span style="position:absolute;left:2px;top: 480px;z-index:15;" id="MaiNfooterspan">
+        <table id="MaiNfooter" width=<?=$MNwidth+10 ?> class=bottom>
+            <tr height=15>
+                <td height=15>
+                    <font face="Arial,Helvetica" size=1><?=$t1?> Agent version: <?= $version ?>&nbsp;&nbsp;Build: <?= $build ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;Server: <?= $server_ip ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><br>
+                    <font class="body_small"><span id="busycallsdisplay"><a href="#"  onclick="conf_channels_detail('SHOW');">Show conference call channel information</a><br><br>&nbsp;</span></font>
+                </td>
+                <td align=right height=0></td>
+            </tr>
+            <tr>
+                <td colspan=3><span id="outboundcallsspan"></span></td></tr>
+            <tr>
+                <td colspan=3>
+                    <font class="body_small">
+                        <span id="debugbottomspan"></span>
+                    </font>
+                </td>
+            </tr>
+        </table>
+    </span>
+    
+    
+    <!-- =============================   Here is the main OSDIAL display panel  ============================= -->
+    
+    <span style="position:absolute;left:2px;top:46px;z-index:4;" id="MainPanel">
+        <table class=acrossagent cellpadding=0 cellspacing=0>
+            <tr>
+                <td>
+                    <!-- Column widths 205 + 505 + 270 = 980 -->
+                    <table id="MainTable" class=acrossagent cellpadding=0 cellspacing=0>
+                        <tr>
+                            <td width=22 colspan=2 class=curve2 style="vertical-align:bottom;">
+                                <img src="templates/<?= $agent_template ?>/images/AgentTopLeft.png" width=22 height=22 align=left>
+                                <font class="body_text" color=<?= $status_fct ?>>&nbsp;&nbsp;STATUS:&nbsp;&nbsp;</font>
+                                <font class="body_text" color=<?= $status_fc ?>><span id="MainStatuSSpan"></span></font>
+                            </td>
+                            <td width=22><img src="templates/<?= $agent_template ?>/images/AgentTopRight.png" width=22 height=22 align=right></td>
+                        </tr>
+                        <tr>
+                            <td colspan=3><span id="busycallsdebug"></span></td>
+                        </tr>
+                        <tr>
+                            <td width=205 height=330 align=left valign=top class=curve3>
+                                <font class="body_text" style=\"white-space:nowrap;\">
+                                    <center>
+                                        <span style="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><img src="templates/<?= $agent_template ?>/images/vdc_LB_dialnextnumber_OFF.gif" border=0 alt="Dial Next Number"></a></span><br>
+                                        <span id="DiaLLeaDPrevieW"><font class="preview_text"><input type=checkbox name=LeadPreview id=LeadPreview size=1 value="0"><label for="LeadPreview"> LEAD PREVIEW</label><br></font></span>
+                                        <span id="DiaLDiaLAltPhonE"><font class="preview_text"><input type=checkbox name=DiaLAltPhonE id=DiaLAltPhonE size=1 value="0"><label for="DaiLAltPhonE"> ALT PHONE DIAL</label><br></font></span>
+                            
+                                        <font color=<?=$form_fc?>>Recording File</font><br>
+                                        <font class="body_tiny">&nbsp;<span id="RecorDingFilename"></span></font><br>
+                                        <font color=<?=$form_fc?>>Recording ID:&nbsp;</font><font class="body_small">&nbsp;<span id="RecorDID"></span></font>
+                                        <span id="RecorDControl"><a href="#" onclick="conf_send_recording('MonitorConf','<?=$session_id ?>','');return false;"><img src="templates/<?= $agent_template ?>/images/vdc_LB_startrecording.gif" border=0 alt="Start Recording"></a></span>
+                                        
+                                        <span id="SpacerSpanA"><img src="templates/<?= $agent_template ?>/images/blank.gif" style="width:145px;height:16px;border:0px;"></span><br>
+                                        <span id="WebFormSpan"><img src="templates/<?= $agent_template ?>/images/vdc_LB_webform_OFF.gif" border=0 alt="Web Form"></span>
+                                        <span id="SpacerSpanB"><img src="templates/<?= $agent_template ?>/images/blank.gif" style="width:145px;height:2px;border:0px;"></span><br>
+                                        <span id="WebFormSpan2"><img src="templates/<?= $agent_template ?>/images/vdc_LB_webform2_OFF.gif" border=0 alt="Web Form"></span>
+                                        <span id="SpacerSpanC"><img src="templates/<?= $agent_template ?>/images/blank.gif" style="width:145px;height:16px;border:0px;"></span><br>
+                                        <span id="ParkControl"><img src="templates/<?= $agent_template ?>/images/vdc_LB_parkcall_OFF.gif" border=0 alt="Park Call"></span>
+                                        <span id="SpacerSpanD"><img src="templates/<?= $agent_template ?>/images/blank.gif" style="width:145px;height:2px;border:0px;"></span><br>
+                                        <span id="XferControl"><img src="templates/<?= $agent_template ?>/images/vdc_LB_transferconf_OFF.gif" border=0 alt="Transfer - Conference"></span>
+                                        <span id="SpacerSpanE"><img src="templates/<?= $agent_template ?>/images/blank.gif" style="width:145px;height:16px;border:0px;"></span><br>
+                                        <span id="HangupControl"><img src="templates/<?= $agent_template ?>/images/vdc_LB_hangupcustomer_OFF.gif" border=0 alt="Hangup Customer"></span>
+                                        <span id="SpacerSpanF"><img src="templates/<?= $agent_template ?>/images/blank.gif" style="width:145px;height:16px;border:0px;"></span><br>
+            
+                                        <div class="text_input" id="DTMFDialPad" onMouseOver="DTMFKeys('ON');">
+                                            <table cellspacing=1 cellpadding=1 border=0>
+                                                <tr>
+                                                    <td align=center><span id="DTMFDialPad1"><a href="#" alt="1"><img src="templates/<?= $agent_template ?>/images/dtmf_1_OFF.png" border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad2"><a href="#" alt="2 - ABC"><img src="templates/<?= $agent_template ?>/images/dtmf_2_OFF.png" border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad3"><a href="#" alt="3 - DEF"><img src="templates/<?= $agent_template ?>/images/dtmf_3_OFF.png" border=0></a></span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td align=center><span id="DTMFDialPad4"><a href="#" alt="4 - GHI"><img src="templates/<?= $agent_template ?>/images/dtmf_4_OFF.png" border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad5"><a href="#" alt="5 - JKL"><img src="templates/<?= $agent_template ?>/images/dtmf_5_OFF.png" border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad6"><a href="#" alt="6 - MNO"><img src="templates/<?= $agent_template ?>/images/dtmf_6_OFF.png" border=0></a></span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td align=center><span id="DTMFDialPad7"><a href="#" alt="7 - PQRS"><img src="templates/<?= $agent_template ?>/images/dtmf_7_OFF.png" border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad8"><a href="#" alt="8 - TUV"><img src="templates/<?= $agent_template ?>/images/dtmf_8_OFF.png" border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad9"><a href="#" alt="9 - WXYZ"><img src="templates/<?= $agent_template ?>/images/dtmf_9_OFF.png" border=0></a></span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td align=center><span id="DTMFDialPadStar"><a href="#" alt="*"><img src="templates/<?= $agent_template ?>/images/dtmf_star_OFF.png" border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad0"><a href="#" alt="0"><img src="templates/<?= $agent_template ?>/images/dtmf_0_OFF.png" border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPadHash"><a href="#" alt="#"><img src="templates/<?= $agent_template ?>/images/dtmf_hash_OFF.png" border=0></a></span></td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        
+                                        <div class="text_input" id="SendDTMFdiv">
+                                            <span id="SendDTMF"><a href="#" onclick="SendConfDTMF('<?=$session_id ?>');return false;"><img src="templates/<?= $agent_template ?>/images/vdc_LB_senddtmf.gif" border=0 alt="Send DTMF" align=top></a> <input type=text size=6 name=conf_dtmf class="cust_form" value="" maxlength=50></span>
+                                        </div>
+                                        
+                                        <span id="RepullControl"></span>
+                                        <span id="SpacerSpanG"><img src="templates/<?= $agent_template ?>/images/blank.gif" style="width:145px;height:16px;border:0px;"></span><br>
+                                    </center>
+                                </font>
+                            </td>
+                            <td width=505 align=left valign=top>
+                                <input type=hidden name=lead_id value="">
+                                <input type=hidden name=list_id value="">
+                                <input type=hidden name=called_count value="">
+                                <input type=hidden name=gmt_offset_now value="">
+                                <input type=hidden name=country_code value="">
+                                <input type=hidden name=uniqueid value="">
+                                <input type=hidden name=callserverip value="">
+                            
+                                <!-- Customer Information -->
+                                <div class="text_input" id="MainPanelCustInfo">
+                                    <table cellpadding='0' cellspacing='2'>
+                                        <tr>
+                                            <td align=center colspan=3>
+                                                <table width=100% align=center border=0>
+                                                    <tr>
+                                                        <td width=30% align=left valign=top>
+                                                            <font class="body_text" color=<?=$form_fc?>>CallDuration:&nbsp;</font><font class="body_input"><input type=text size=4 name=SecondS class="cust_form" value=""></font>
+                                                        </td>
+                                                        <td width=25% align=center valign=middle><font class="body_text" color=#ABCBD4><span id=callchannel style="font-size:5pt;"></span></font></td>
+                                                        <td width=45% align=right valign=top>
+                                                            <font class="body_text" color=<?=$form_fc?>>Cust Time:</a>&nbsp;</font><font class="body_input"><input type=text size=19 maxlength=22 name=custdatetime class="cust_form" value=""></font>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>&nbsp;</td>
+                                            <td colspan=2 align=center valign=top><font color=<?=$form_fc?>><b>Customer Information</b></font><span id="CusTInfOSpaN"></span></td>
+                                        </tr>
+                                        <tr>
+                                            <td align=right>
+                                                <font class="body_text"><font color=<?=$form_fc?>> Title:&nbsp;</font>
+                                            </td>
+                                            <td align=left colspan=2>
+                                                <font class="body_input"><input type=text size=4 name=title id=title maxlength=4 class="cust_form" value=""></font>
+                                                <font class="body_text" color=<?=$form_fc?>>&nbsp;First: </font>
+                                                <font class="body_input"> <input type=text size=14 name=first_name id=first_name maxlength=30 class="cust_form" value=""></font>
+                                                <font class="body_text" color=<?=$form_fc?>>&nbsp;MI: </font>
+                                                <font class="body_input"><input type=text size=1 name=middle_initial id=middle_initial maxlength=1 class="cust_form" value=""></font>
+                                                <font class="body_text" color=<?=$form_fc?>>&nbsp;Last: </font>
+                                                <font class="body_input"><input type=text size=15 name=last_name id=last_name maxlength=30 class="cust_form" value=""></font>
+                                            </td>
+                                        </tr>
+                                        <!-- Hooks for company field
+                                        <tr>
+                                            <td align=right><font class="body_text" color=<?=$form_fc?>>Company:&nbsp;</font></td>
+                                            <td align=left colspan=2><font class="body_input"><input type=text size=58 name=company id=company maxlength=100 class="cust_form" value=""></font></td>
+                                        -->
+                                        <tr>
+                                            <td align=right><font class="body_text" color=<?=$form_fc?>>Address1:&nbsp;</font></td>
+                                            <td align=left colspan=2><font class="body_input"><input type=text size=58 name=address1 id=address1 maxlength=100 class="cust_form" value=""></font></td>
+                                        </tr>
+                                        <tr>
+                                            <td align=right><font class="body_text" color=<?=$form_fc?>>Address2:&nbsp;</font></td>
+                                            <td align=left><font class="body_input"><input type=text size=22 name=address2 id=address2 maxlength=100 class="cust_form" value=""></font></td>
+                                            <td align=right>
+                                                <font class="body_text" color=<?=$form_fc?>>Address3:&nbsp;</font>
+                                                <font class="body_input"><input type=text size=22 name=address3 id=address3 maxlength=100 class="cust_form" value=""></font>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align=right><font class="body_text" color=<?=$form_fc?>>City:&nbsp;</font></td>
+                                            <td align=left><font class="body_input"><input type=text size=22 name=city id=city maxlength=50 class="cust_form" value=""></font></td>
+                                            <td align=right> 
+                                                <font class="body_text" color=<?=$form_fc?>>State:&nbsp;</font>
+                                                <font class="body_input"><input type=text size=2 name=state id=state maxlength=2 class="cust_form" value=""></font>
+                                                <font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
+                                                <font class="body_text" color=<?=$form_fc?>>Zip:&nbsp;</font>
+                                                <font class="body_input"><input type=text size=9 name=postal_code id=postal_code maxlength=10 class="cust_form" value=""></font>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align=right><font class="body_text" color=<?=$form_fc?>>Province:&nbsp;</font></td>
+                                            <td align=left><font class="body_input"><input type=text size=22 name=province id=province maxlength=50 class="cust_form" value=""></font></td>
+                                            <td align=right>
+                                                <font class="body_text" color=<?=$form_fc?>>Email:&nbsp;</font>
+                                                <font class="body_input"><input type=text size=22 name=email id=email maxlength=70 class="cust_form" value=""></font>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align=right><font class="body_text" color=<?=$form_fc?>>Phone:&nbsp;</font></td>
+                                            <td colspan=2>
+                                                <table width=100%>
+                                                    <tr>
+                                                        <td align=left colspan=2><font class="body_input"><input type=text size=11 name=phone_number id=phone_number maxlength=12 class="cust_form" value=""></font></td>
+                                                        <td align=right><font class="body_text" color=<?=$form_fc?>>PhoneCode:&nbsp;</font><font class="body_input"><input type=text size=4 name=phone_code id=phone_code maxlength=10 class="cust_form" value=""></font></td>
+                                                        <td align=right><font class="body_text" color=<?=$form_fc?>>Alt. Phone:&nbsp;</font><font class="body_input"><input type=text size=12 name=alt_phone id=alt_phone maxlength=12 class="cust_form" value=""></font></td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align=right valign=top><font class="body_text" color=<?=$form_fc?>>Comments:&nbsp;</font></td>
+                                            <td align=left colspan=2>
+                                                <font class="body_tiny">
+                                                    <? if ($multi_line_comments) { ?>
+                                                        <textarea name=comments id=comments rows=2 cols=56 class="cust_form"></textarea>
+                                                    <? } else { ?>
+                                                        <input type=text size=56 name=comments id=comments maxlength=255 class="cust_form" value="">
+                                                    <? } ?>
+                                                </font>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align=right><font class="body_text"><font color=<?=$form_fc?>>Birth&nbsp;<br>Date:&nbsp;</font></td>
+                                            <td align=left><font class="body_input"><input type=text size=12 name=date_of_birth id=date_of_birth maxlength=10 class="cust_form" value=""></font></td>
+                                            <td align=right>
+                                                <font class="body_text" color=<?=$form_fc?>>Gender:&nbsp;</font>
+                                                <font class="body_input"><select name=gender id=gender class="cust_form"><option></option><option>M</option><option>F</option></select></font>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align=right><font class="body_text"><font color=<?=$form_fc?>>Post&nbsp;<br>Date:&nbsp;</font></td>
+                                            <td align=left><font class="body_input"><input type=text size=22 name=post_date id=post_date maxlength=20 class="cust_form" value=""></font></td>
+                                            <td align=right>
+                                                <font class="body_text" color=<?=$form_fc?>>Vendor&nbsp;Code:&nbsp;</font>
+                                                <font class="body_input"><input type=text size=15 name=vendor_lead_code id=vendor_lead_code maxlength=20 class="cust_form" value=""></font>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align=right><font class="body_text" color=<?=$form_fc?>>Custom1:&nbsp;</font></td>
+                                            <td align=left><font class="body_input"><input type=text size=22 name=custom1 id=custom1 maxlength=100 class="cust_form" value=""></font>&nbsp;</td>
+                                            <td align=right>
+                                                <font class="body_text" color=<?=$form_fc?>>Custom2:&nbsp;</font>
+                                                <font class="body_input"><input type=text size=22 name=custom2 id=custom2 maxlength=100 class="cust_form" value=""></font>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                            <td width=270 align=center valign=top class=borderright>
+                                <div class="AFHead">Additional Information</div>
+                                <? $cnt = 0;
+                                foreach ($forms as $form) {
+                                    $fcamps = split(',',$form['campaigns']);
+                                    foreach ($fcamps as $fcamp) {
+                                        if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
+                                            if ($cnt > 0) {
+                                                $cssvis = 'visibility:hidden;';
+                                            }
+                                            echo "  <div id=\"AddtlForms" . $form['name'] . "\" style=" . $cssvis . "position:absolute;left:710px;top:42px;z-index:6;>\n";
+                                            echo "  <table width=265><tr><td><table align=center>\n";
+                                            echo "      <tr>\n";
+                                            echo "          <td colspan=2 align=center>\n";
+                                            echo "              <font color=$form_fc class=body_text>" . $form['description'] . "<br />" . $form['description2'] . "</font>\n";
+                                            echo "          </td>\n";
+                                            echo "      </tr>\n";
+                                            $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
+                                            foreach ($fields as $field) {
+                                                echo "      <tr>\n";
+                                                echo "          <td align=right><font color=$form_fc class=body_text>" . $field['description'] . ":&nbsp;</font></td>\n";
+                                                echo "          <td>\n";
+                                                if ($field['options'] == '') {
+                                                    echo "          <input type=text size=" . $field['length'] . " maxlength=255 name=AF" . $field['id'] . " id=AF" . $field['id'];
+                                                    echo "            onchange=\"var afv=this;";
+                                                    echo "              var aflist=document.getElementsByName('" . $form['name'] . '_' . $field['name'] . "');";
+                                                    echo "              for(var afli=0;afli<aflist.length;afli++){";
+                                                    echo "                if(afv.value!=aflist[afli].value) aflist[afli].value=afv.value;";
+                                                    echo "              };\"";
+                                                    echo "            class=cust_form value=\"\">\n";
+                                                } else {
+                                                    echo "          <select name=AF" . $field['id'] . " id=AF" . $field['id'];
+                                                    echo "            onchange=\"var afv=this;";
+                                                    echo "              var aflist=document.getElementsByName('" . $form['name'] . '_' . $field['name'] . "');";
+                                                    echo "              for(var afli=0;afli<aflist.length;afli++){";
+                                                    echo "                if(afv.value!=aflist[afli].value) aflist[afli].value=afv.value;";
+                                                    echo "              };\"";
+                                                    echo "          >\n";
+                                                    $options = split(',',$field['options']);
+                                                    foreach ($options as $opt) {
+                                                        echo "              <option>" . $opt . "</option>\n";
+                                                    }
+                                                    echo "          </select>\n";
+                                                }
+                                                echo "          </td>\n";
+                                                echo "      </tr>\n";
+                                            }
+                                            echo "  </table></td></tr></table>\n";
+                                            echo "  </div>\n";
+                                            $cnt++;
+                                        }
+                                    }
+                                } ?>
+                            </td>
+                        </tr>
+                        <tr class=border>
+                            <td align=left colspan=3 height=<?=$BPheight ?>>&nbsp;</td>
+                        </tr>
+                        <tr class=border>
+                            <td align=left colspan=3>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td align=left colspan=3>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td align=left colspan=3>&nbsp;</td>
+                        </tr>
+                    </table>
+                </td>
+                <td align=left valign=top>
+                    <br>
+                    <div id="AddtlFormTab" style="position:absolute;left:980px;top:22px;z-index:9;" onclick="AddtlFormOver();">
+                        <img src="templates/<?= $agent_template ?>/images/agentsidetab_tab.png" width="10" height="46" border="0">
+                    </div>
+                    <div id="AddtlFormTabExpanded" style="visibility:hidden;position:absolute;left:840px;top:22px;z-index:9;">
+                        <table width=140 cellspacing=0 cellpadding=0>
+                            <tr background="templates/<?= $agent_template ?>/images/agentsidetab_top.png" height=15 onclick="AddtlFormSelect('Cancel');">
+                                <td></td>
+                            </tr>
+                            <? foreach ($forms as $form) {
+                                $fcamps = split(',',$form['campaigns']);
+                                foreach ($fcamps as $fcamp) {
+                                    if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
+                                        echo "  <tr id=AddtlFormBut" . $form['name'] . " style=\"background-image:url(templates/" . $agent_template . "/images/agentsidetab_extra.png);\" height=29 ";
+                                        echo "    onmouseover=\"AddtlFormButOver('" . $form['name'] . "');\" onmouseout=\"AddtlFormButOut('" . $form['name'] . "');\">\n";
+                                        echo "      <td align=center onclick=\"AddtlFormSelect('" . $form['name'] . "');\">\n";
+                                        echo "          <div class=AFMenu>" . $form['name'] . "</div>\n";
+                                        echo "      </td>\n";
+                                        echo "  </tr>\n";
+                                    }
+                                }
+                            } ?>
+                            <tr id="AddtlFormButSelect4" background="templates/<?= $agent_template ?>/images/agentsidetab_line.png" height=1>
+                                <td></td>
+                            </tr>
+                        </table>
+                        <div style="position:absolute;left:140px;top:0px;z-index:9;">
+                            <img src="templates/<?= $agent_template ?>/images/agentsidetab_cancel.png" width="10" height="46" border="0" onclick="AddtlFormSelect('Cancel');">
                         </div>
-							
-							<div class="text_input" id="SendDTMFdiv">
-								<span id="SendDTMF"><a href="#" onclick="SendConfDTMF('<?=$session_id ?>');return false;"><IMG SRC="templates/<?= $agent_template ?>/images/vdc_LB_senddtmf.gif" border=0 alt="Send DTMF" align=top></a> <input type=text size=6 name=conf_dtmf class="cust_form" value="" maxlength=50>
-								</span> <!-- Span and Div were reversed  -->
-							</div>
-							
-							<!-- div id=ShowCallbackInfo>
-								<IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=16 border=0>
-								<img src="templates/<?= $agent_template ?>/images/ShowCallbackInfo_OFF.gif" alt='Show Callback Info'>
-								<IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=16 border=0>
-							</div -->
-							
-							<BR>
-							<span id="RepullControl"></span><BR>
-							
-							<span id="SpacerSpanE"><IMG SRC="templates/<?= $agent_template ?>/images/blank.gif" width=145 height=16 border=0></span><BR>
-						</center>
-					</font>
-					
-				</td> <!-- ==== Column two, customer info==== -->
-				<td width=505 Oldwidth<?=$SDwidth ?> align=left valign=top>
-					<input type=hidden name=lead_id value="">
-					<input type=hidden name=list_id value="">
-					<input type=hidden name=called_count value="">
-					<input type=hidden name=gmt_offset_now value="">
-                    <!--
-					<input type=hidden name=gender value="">
-					<input type=hidden name=date_of_birth value="">
-                    -->
-					<input type=hidden name=country_code value="">
-					<input type=hidden name=uniqueid value="">
-					<input type=hidden name=callserverip value="">
-				
-					<!-- Customer Information -->
-					<div class="text_input" id="MainPanelCustInfo">
-						<table cellpadding='0' cellspacing='2'>
-							<tr>
-								<!-- Replaced by the next block 
-								<td align=right colspan=3><font class="body_text"><font color=<?=$form_fc?>>Seconds:</font> <div id="callchannel">
-								<font class="body_text"><input type=text size=3 name=SecondS class="cust_form" value="">&nbsp;&nbsp;&nbsp;<font color=<?=$form_fc?>>Channel: <input type=text size=9 name=callchannel class="cust_form" value="" >&nbsp;&nbsp;&nbsp;<font color=<?=$form_fc?>>Cust Time:</font> <input type=text size=20 name=custdatetime class="cust_form" value="">
-								</td> 
-								-->
-							
-								<td align=center colspan=3>
-									<table width=100% align=center border=0>
-										<tr>
-											<!-- td width=1>&nbsp;</td -->
-											<td width=30% align=left valign=top>
-												<font class="body_text" color=<?=$form_fc?>>CallDuration:</font>&nbsp;<font class="body_input"><input type=text size=4 name=SecondS class="cust_form" value=""></font>
-											</td>
-											<td width=25% align=center valign=middle><font class="body_text" color=#ABCBD4><div id=callchannel style="font-size:5pt;"></div></font></td>
-											<td width=45% align=right valign=top>
-												<font class="body_text" color=<?=$form_fc?>>Cust Time:</a></font>&nbsp;<font class="body_input"><input type=text size=19 maxlength=22 name=custdatetime class="cust_form" value=""></font>
-											</td>
-										</tr>
-									</table>
-								</td>
-							
-							</tr>
-							<tr>
-								<td>&nbsp;</td>
-								<td colspan=2 align=center valign=top><font color=<?=$form_fc?>><b>Customer Information</b></font><span id="CusTInfOSpaN"></span></td>
-							</tr>
-							<tr>
-								<td align=right>
-									<font class="body_text"> <font color=<?=$form_fc?>>Title:&nbsp;</font>
-								</td>
-								<td align=left colspan=2>
-									<font class="body_input"><input type=text size=4 name=title id=title maxlength=4 class="cust_form" value=""></font>&nbsp; 
-									<font class="body_text" color=<?=$form_fc?>>First:</font>
-									<font class="body_input"> <input type=text size=14 name=first_name id=first_name maxlength=30 class="cust_form" value=""></font>&nbsp; 
-									<font class="body_text" color=<?=$form_fc?>>MI:</font> 
-									<font class="body_input"><input type=text size=1 name=middle_initial id=middle_initial maxlength=1 class="cust_form" value=""></font>&nbsp; 
-									<font class="body_text" color=<?=$form_fc?>>Last:</font> <font class="body_input"><input type=text size=15 name=last_name id=last_name maxlength=30 class="cust_form" value=""></font>
-								</td>
-							</tr>
-							<!-- Hooks for company field
-							<tr>
-								<td align=right><font class="body_text" color=<?=$form_fc?>>Company:&nbsp;</font></td>
-								<td align=left colspan=2><font class="body_input"><input type=text size=58 name=company id=company maxlength=100 class="cust_form" value=""></font></td>
-							-->
-							<tr>
-								<td align=right><font class="body_text" color=<?=$form_fc?>>Address1:&nbsp;</font></td>
-								<td align=left colspan=2><font class="body_input"><input type=text size=58 name=address1 id=address1 maxlength=100 class="cust_form" value=""></font></td>
-							</tr>
-							<tr>
-								<td align=right><font class="body_text" color=<?=$form_fc?>>Address2:&nbsp;</font></td>
-								<td align=left><font class="body_input"><input type=text size=22 name=address2 id=address2 maxlength=100 class="cust_form" value=""></font></td>
-								<td align=right><font class="body_text" color=<?=$form_fc?>>Address3:&nbsp;</font><font class="body_input"><input type=text size=22 name=address3 id=address3 maxlength=100 class="cust_form" value=""></font></td>
-							</tr>
-							<tr>
-								<td align=right><font class="body_text" color=<?=$form_fc?>>City:&nbsp;</font></td>
-								<td align=left><font class="body_input"><input type=text size=22 name=city id=city maxlength=50 class="cust_form" value=""></font>&nbsp;</td>
-								<td align=right> 
-									<font class="body_text" color=<?=$form_fc?>>State:&nbsp;</font> <font class="body_input"><input type=text size=2 name=state id=state maxlength=2 class="cust_form" value=""></font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									<font class="body_text" color=<?=$form_fc?>>Zip:&nbsp;</font><font class="body_input"><input type=text size=9 name=postal_code id=postal_code maxlength=10 class="cust_form" value=""></font>
-								</td>
-							</tr>
-							<tr>
-								<td align=right><font class="body_text" color=<?=$form_fc?>>Province:&nbsp;</font></td>
-								<td align=left><font class="body_input"><input type=text size=22 name=province id=province maxlength=50 class="cust_form" value=""></font>&nbsp;</td>
-								<td align=right> <font class="body_text" color=<?=$form_fc?>>Email:&nbsp;</font><font class="body_input"><input type=text size=22 name=email id=email maxlength=70 class="cust_form" value=""></font></td>
-							</tr>
-							<tr>
-								<td align=right><font class="body_text" color=<?=$form_fc?>>Phone:&nbsp;</font></td>
-								<td colspan=2>
-									<table width=100%>
-										<tr>
-											<td align=left colspan=2><font class="body_input"><input type=text size=11 name=phone_number id=phone_number maxlength=12 class="cust_form" value=""></font></td>
-											<td align=right><font class="body_text" color=<?=$form_fc?>>PhoneCode:&nbsp;</font><font class="body_input"><input type=text size=4 name=phone_code id=phone_code maxlength=10 class="cust_form" value=""></font></td>
-											<td align=right><font class="body_text" color=<?=$form_fc?>>Alt. Phone:&nbsp;</font><font class="body_input"><input type=text size=12 name=alt_phone id=alt_phone maxlength=12 class="cust_form" value=""></font></td>
-										</tr>
-									</table>
-								</td>
-							</tr>
-						<tr>
-							<td align=right valign=top><font class="body_text" color=<?=$form_fc?>>Comments:&nbsp;</font></td>
-							<td align=left colspan=2>
-								<font class="body_tiny">
-	                            <? if ($multi_line_comments) { ?>
-                                    <textarea name=comments id=comments rows=2 cols=56 class="cust_form" value=""></textarea>
-								<? } else { ?>
-									<input type=text size=56 name=comments id=comments maxlength=255 class="cust_form" value="">
-                                <? } ?>
-								</font>
-							</td>
-							
-						</tr>
-                        <tr>
-                            <td align=right><font class="body_text"><font color=<?=$form_fc?>>Birth&nbsp;<br>Date:&nbsp;</font></td>
-                            <td align=left><font class="body_input"><input type=text size=12 name=date_of_birth id=date_of_birth maxlength=10 class="cust_form" value=""></font></td>
-                            <td align=right>&nbsp;<font class="body_text" color=<?=$form_fc?>>Gender:&nbsp;</font><font class="body_input"><select name=gender id=gender class="cust_form"><option></option><option>M</option><option>F</option></select></font></td>
-                        </tr>
-                        <tr>
-                            <td align=right><font class="body_text"><font color=<?=$form_fc?>>Post&nbsp;<br>Date:&nbsp;</font></td>
-                            <td align=left><font class="body_input"><input type=text size=22 name=post_date id=post_date maxlength=20 class="cust_form" value=""></font></td>
-                            <td align=right><font class="body_text" color=<?=$form_fc?>>Vendor&nbsp;Code:&nbsp;</font><font class="body_input"><input type=text size=15 name=vendor_lead_code id=vendor_lead_code maxlength=20 class="cust_form" value=""></font></td>
-                        </tr>
-
-						<tr>
-							<td align=right><font class="body_text" color=<?=$form_fc?>>Custom1:&nbsp;</font></td>
-							<td align=left><font class="body_input"><input type=text size=22 name=custom1 id=custom1 maxlength=100 class="cust_form" value=""></font>&nbsp;</td>
-							<td align=right><font class="body_text" color=<?=$form_fc?>>Custom2:&nbsp;</font><font class="body_input"><input type=text size=22 name=custom2 id=custom2 maxlength=100 class="cust_form" value=""></font></td>
-						</tr>
-						
-						
-						<!--	
-							<td align=right> <font class="body_text"><font color=<?=$form_fc?>>Custom4:&nbsp;</font><input type=text size=26 name=vendor_lead_code maxlength=20 class="cust_form" value=""></td>
-						</tr>
-						<tr>
-							<td align=right><font class="body_text"> <font color=<?=$form_fc?>>Custom5:&nbsp;</font></td>
-							<td align=left><font class="body_text"><input type=text size=26 name=custom1 maxlength=100 class="cust_form" value="">&nbsp;</td>
-							<td align=right> <font class="body_text"><font color=<?=$form_fc?>>Custom6:&nbsp;</font><input type=text size=26 name=vendor_lead_code maxlength=20 class="cust_form" value=""></td>
-						</tr>
-						-->
-						</table>
-			
-					</div>
-					</font> <!-- ? -->
-					
-				</td> <!-- ==== Column three, additional data ==== -->
-				<td width=270 align=center valign=top class=borderright><div class="AFHead">Additional Information</div>
-	
-					<?
-					$cnt = 0;
-					foreach ($forms as $form) {
-						$fcamps = split(',',$form['campaigns']);
-						foreach ($fcamps as $fcamp) {
-							if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
-								if ($cnt > 0) {
-									$cssvis = 'visibility:hidden;';
-								}
-								echo "  <div id=\"AddtlForms" . $form['name'] . "\" style=" . $cssvis . "position:absolute;left:710px;top:42px;z-index:6;>\n";
-								echo "  <table width=265><tr><td><table align=center>\n";
-								echo "      <tr>\n";
-								echo "          <td colspan=2 align=center>\n";
-								echo "              <font color=$form_fc class=body_text>" . $form['description'] . "<br />" . $form['description2'] . "</font>\n";
-								echo "          </td>\n";
-								echo "      </tr>\n";
-								$fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
-								foreach ($fields as $field) {
-									echo "      <tr>\n";
-									echo "          <td align=right><font color=$form_fc class=body_text>" . $field['description'] . ":&nbsp;</font></td>\n";
-									echo "          <td>\n";
-									if ($field['options'] == '') {
-									    echo "          <input type=text size=" . $field['length'] . " maxlength=255 name=AF" . $field['id'] . " id=AF" . $field['id'];
-                                        echo "            onchange=\"var afv=this;";
-                                        echo "              var aflist=document.getElementsByName('" . $form['name'] . '_' . $field['name'] . "');";
-                                        echo "              for(var afli=0;afli<aflist.length;afli++){";
-                                        echo "                if(afv.value!=aflist[afli].value) aflist[afli].value=afv.value;";
-                                        echo "              };\"";
-                                        echo "            class=cust_form value=\"\">\n";
-									} else {
-									    echo "          <select name=AF" . $field['id'] . " id=AF" . $field['id'];
-                                        echo "            onchange=\"var afv=this;";
-                                        echo "              var aflist=document.getElementsByName('" . $form['name'] . '_' . $field['name'] . "');";
-                                        echo "              for(var afli=0;afli<aflist.length;afli++){";
-                                        echo "                if(afv.value!=aflist[afli].value) aflist[afli].value=afv.value;";
-                                        echo "              };\"";
-                                        echo "          >\n";
-									    $options = split(',',$field['options']);
-									    foreach ($options as $opt) {
-										    echo "              <option>" . $opt . "</option>\n";
-									    }
-									    echo "          </select>\n";
-									}
-									echo "          </td>\n";
-									echo "      </tr>\n";
-								}
-								echo "  </table></td></tr></table>\n";
-								echo "  </div>\n";
-								$cnt++;
-							}
-						}
-					}
-					?>
-	
-				</td>
-			</tr>
-			<tr class=border>
-				<td align=left colspan=3 height=<?=$BPheight ?>>&nbsp;</td>
-			</tr>
-			<tr class=border>
-				<td align=left colspan=3>&nbsp;</td>
-			</tr>
-			<tr>
-				<td align=left colspan=3>&nbsp;</td>
-			</tr>
-			<tr>
-				<td align=left colspan=3>&nbsp;</td>
-			</tr>
-		</table> <!-- Moved up from just above </body>   -->
-	</td>
-	<td align=left valign=top>	<!-- The side form selection tab -->
-		<br>
-		<div id="AddtlFormTab" style="position:absolute;left:980px;top:22px;z-index:9;" onclick="AddtlFormOver();">
-			<img src="templates/<?= $agent_template ?>/images/agentsidetab_tab.png" width="10" height="46" border="0">
-		</div>
-		<div id="AddtlFormTabExpanded" style="visibility:hidden;position:absolute;left:840px;top:22px;z-index:9;" >
-			<table width=140 cellspacing=0 cellpadding=0 >
-      			<tr background="templates/<?= $agent_template ?>/images/agentsidetab_top.png" height=15 onclick="AddtlFormSelect('Cancel');">
-      				<td></td>
-      			</tr>
-
-<?
-					foreach ($forms as $form) {
-						$fcamps = split(',',$form['campaigns']);
-						foreach ($fcamps as $fcamp) {
-							if ($fcamp == 'ALL' or $fcamp == $VD_campaign) {
-								echo "  <tr id=AddtlFormBut" . $form['name'] . " style=\"background-image:url(templates/" . $agent_template . "/images/agentsidetab_extra.png);\" height=29 ";
-								echo "    onmouseover=\"AddtlFormButOver('" . $form['name'] . "');\" onmouseout=\"AddtlFormButOut('" . $form['name'] . "');\">\n";
-								echo "      <td align=center onclick=\"AddtlFormSelect('" . $form['name'] . "');\">\n";
-								echo "          <div class=AFMenu>" . $form['name'] . "</div>\n";
-								echo "      </td>\n";
-								echo "  </tr>\n";
-							}
-						}
-					}
-?>
-
-				<tr id="AddtlFormButSelect4" background="templates/<?= $agent_template ?>/images/agentsidetab_line.png" height=1><td></td></tr>
-					</table>
-					<div style="position:absolute;left:140px;top:0px;z-index:9;">
-						<img src="templates/<?= $agent_template ?>/images/agentsidetab_cancel.png" width="10" height="46" border="0" onclick="AddtlFormSelect('Cancel');">
-					</div>
-				</div>
-						
-					</td>
-				</tr>
-				</table>
-	</span>
-	
-</FORM> <!-- Moved up from just above </body>   -->
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </span>
+</form>
 <!-- END *********   The end of the main OSDial display panel -->
-	
-	
-<!-- My indentations after <body> are from:
-1. form
-2. span
-3. tr
-4. td
-5. tr
-6. td
-7. div
-
-		I think the "left overs" are from unterminated table(s) from up high 
-
-
-	</TD>
-</TR>
-	<tr><td>&nbsp;Where?</td>
-</tr>
-</TABLE>
-
--->
-
+    
 <!-- Inline webform here -->
 <span style="visibility:hidden; position:absolute;left:190px;top:92px;z-index:17;" name="WebFormPanel1" id="WebFormPanel1">
-<iframe src="/osdial/agent/blank.php" width="780" height="375" name="WebFormPF1" id="WebFormPF1" style="background-color: white;"></iframe>
+    <iframe src="/osdial/agent/blank.php" width="780" height="375" name="WebFormPF1" id="WebFormPF1" style="background-color: white;"></iframe>
 </span>
 <span style="visibility:hidden; position:absolute;left:190px;top:92px;z-index:18;" name="WebFormPanel2" id="WebFormPanel2">
-<iframe src="/osdial/agent/blank.php" width="780" height="375" name="WebFormPF2" id="WebFormPF2" style="background-color: white;"></iframe>
+    <iframe src="/osdial/agent/blank.php" width="780" height="375" name="WebFormPF2" id="WebFormPF2" style="background-color: white;"></iframe>
 </span>
 
 <?
-    echo "<script language=\"Javascript\">\n";
 
-    if (file_exists($WeBServeRRooT . '/agent/include/' . $VD_campaign . '_form_validation.js')) {
-        include($WeBServeRRooT . '/agent/include/' . $VD_campaign . '_form_validation.js');
-    }
+echo "<script language=\"Javascript\">\n";
+if (file_exists($WeBServeRRooT . '/agent/include/' . $VD_campaign . '_form_validation.js')) {
+    include($WeBServeRRooT . '/agent/include/' . $VD_campaign . '_form_validation.js');
+}
+echo "</script>\n";
 
-    echo "</script>\n";
-?>
+echo "</body>\n";
+echo "</html>\n";
 
-
-</body>
-</html>
-
-<?
-	
+    
 exit; 
 
 
