@@ -106,19 +106,159 @@ function report_agent_pause_summary() {
         $agentsql='';
         if ($agent) $agentsql = sprintf("AND osdial_agent_log.user='%s'", $company_prefix . mres($agent));
 
-        $stmt=sprintf("SELECT user,event_time AS pause_start,DATE_ADD(event_time,INTERVAL pause_sec SECOND) AS pause_end,pause_sec,sub_status AS pause_code FROM osdial_agent_log WHERE osdial_agent_log.user_group IN %s %s AND event_time BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND sub_status IS NOT NULL AND sub_status != 'LOGIN' AND pause_sec>0 ORDER BY user,event_time;",$LOG['allowed_usergroupsSQL'],$agentsql,mres($begin_date),mres($end_date));
+
+        $stmt=sprintf("SELECT sub_status AS pause_code,count(*),SUM(pause_sec) FROM osdial_agent_log WHERE osdial_agent_log.user_group IN %s %s AND event_time BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND pause_sec>0 GROUP BY pause_code;",$LOG['allowed_usergroupsSQL'],$agentsql,mres($begin_date),mres($end_date));
+        if ($DB) $html .= $stmt;
         $rslt=mysql_query($stmt, $link);
         $pauses_to_print = mysql_num_rows($rslt);
 
         $CSVrows=0;
         $export = "<form target=\"_new\" method=\"POST\" action=\"/admin/tocsv.php\">";
-        $export .= "<input type=hidden name=\"name\" value=\"css\">";
+        $export .= "<input type=hidden name=\"name\" value=\"apu\">";
+        $csvhead = "Code|Count|Time|Avg";
+        $export .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"" . $csvhead . "\">";
+        $CSVrows++;
+
+        $table .= "  <br>\n";
+        $table .= "  <center><font color=$default_text size=4>PAUSE CODE USAGE SUMMARY</font></center>\n";
+        $table .= "  <table align=center width=350 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $table .= "    <tr class=tabheader>\n";
+        $table .= "      <td>CODE</td>\n";
+        $table .= "      <td>COUNT</td>\n";
+        $table .= "      <td>TIME</td>\n";
+        $table .= "      <td>AVG</td>\n";
+        $table .= "    </tr>\n";
+
+        $psecs=0;
+        $pcnt=0;
+        $u=0;
+        while ($pauses_to_print > $u) {
+            $row=mysql_fetch_row($rslt);
+            if (eregi("1$|3$|5$|7$|9$", $u)) {
+                $bgcolor='bgcolor="' . $oddrows . '"';
+            } else {
+                $bgcolor='bgcolor="' . $evenrows . '"';
+            }
+
+            $avg = $row[2] / $row[1];
+            $table .= "  <tr $bgcolor class=\"row font1\">\n";
+            $table .= "    <td align=left>$row[0]</td>\n";
+            $table .= "    <td align=right>$row[1]</td>\n";
+            $table .= "    <td align=right>" . fmt_hms($row[2]) . "</td>\n";
+            $table .= "    <td align=right>" . fmt_hms($avg) . "</td>\n";
+            $table .= "  </tr>\n";
+            $psecs += $row[2];
+            $pcnt += $row[1];
+
+            $line = $row[0] . '|' . $row[1] . '|' . fmt_hms($row[2]) . '|' . fmt_hms($row[3]);
+            $export .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"" . $line . "\">";
+        
+            $CSVrows++;
+            $u++;
+        }
+
+        $table .= "  <tr class=tabfooter>\n";
+        $table .= "    <td>TOTAL</td>";
+        $table .= "    <td align=right>" . $pcnt . "</td>\n";
+        $table .= "    <td align=right>" . fmt_hms($psecs) . "</td>\n";
+        $table .= "    <td align=right>" . fmt_hms($psecs/$pcnt) . "</td>\n";
+        $table .= "  </tr>\n";
+        $table .= "</table>\n";
+
+        $export .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">";
+        if ($LOG['export_agent_pause_summary']) $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
+        $export .= "</form>";
+
+        $table .= "<div class=noprint><center>$export</center></div>";
+
+
+
+        #$stmt=sprintf("SELECT user,event_time AS pause_start,DATE_ADD(event_time,INTERVAL pause_sec SECOND) AS pause_end,pause_sec,sub_status AS pause_code FROM osdial_agent_log WHERE osdial_agent_log.user_group IN %s %s AND event_time BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND sub_status IS NOT NULL AND sub_status != 'LOGIN' AND pause_sec>0 ORDER BY user,event_time;",$LOG['allowed_usergroupsSQL'],$agentsql,mres($begin_date),mres($end_date));
+        $stmt=sprintf("SELECT user,sub_status AS pause_code,count(*),SUM(pause_sec) FROM osdial_agent_log WHERE osdial_agent_log.user_group IN %s %s AND event_time BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND pause_sec>0 GROUP BY user,pause_code;",$LOG['allowed_usergroupsSQL'],$agentsql,mres($begin_date),mres($end_date));
+        if ($DB) $html .= $stmt;
+        $rslt=mysql_query($stmt, $link);
+        $pauses_to_print = mysql_num_rows($rslt);
+
+        $CSVrows=0;
+        $export = "<form target=\"_new\" method=\"POST\" action=\"/admin/tocsv.php\">";
+        $export .= "<input type=hidden name=\"name\" value=\"aps\">";
+        $csvhead = "Agent|Code|Count|Time|Avg";
+        $export .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"" . $csvhead . "\">";
+        $CSVrows++;
+
+        $table .= "  <br>\n";
+        $table .= "  <center><font color=$default_text size=4>PAUSE CODE SUMMARY PER AGENT</font></center>\n";
+        $table .= "  <table align=center width=350 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
+        $table .= "    <tr class=tabheader>\n";
+        $table .= "      <td>AGENT</td>\n";
+        $table .= "      <td>CODE</td>\n";
+        $table .= "      <td>COUNT</td>\n";
+        $table .= "      <td>TIME</td>\n";
+        $table .= "      <td>AVG</td>\n";
+        $table .= "    </tr>\n";
+
+        $psecs=0;
+        $pcnt=0;
+        $u=0;
+        while ($pauses_to_print > $u) {
+            $row=mysql_fetch_row($rslt);
+            if (eregi("1$|3$|5$|7$|9$", $u)) {
+                $bgcolor='bgcolor="' . $oddrows . '"';
+            } else {
+                $bgcolor='bgcolor="' . $evenrows . '"';
+            }
+
+            $avg = $row[3] / $row[2];
+            $table .= "  <tr $bgcolor class=\"row font1\">\n";
+            $table .= "    <td align=left>$row[0]</td>\n";
+            $table .= "    <td align=left>$row[1]</td>\n";
+            $table .= "    <td align=right>$row[2]</td>\n";
+            $table .= "    <td align=right>" . fmt_hms($row[3]) . "</td>\n";
+            $table .= "    <td align=right>" . fmt_hms($avg) . "</td>\n";
+            $table .= "  </tr>\n";
+            $psecs += $row[3];
+            $pcnt += $row[2];
+
+            $line = $row[0] . '|' . $row[1] . '|' . $row[2] . '|' . fmt_hms($row[3]) . '|' . fmt_hms($row[4]);
+            $export .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"" . $line . "\">";
+        
+            $CSVrows++;
+            $u++;
+        }
+
+        $table .= "  <tr class=tabfooter>\n";
+        $table .= "    <td>TOTAL</td>";
+        $table .= "    <td></td>\n";
+        $table .= "    <td align=right>" . $pcnt . "</td>\n";
+        $table .= "    <td align=right>" . fmt_hms($psecs) . "</td>\n";
+        $table .= "    <td align=right>" . fmt_hms($psecs/$pcnt) . "</td>\n";
+        $table .= "  </tr>\n";
+        $table .= "</table>\n";
+
+        $export .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">";
+        if ($LOG['export_agent_pause_summary']) $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
+        $export .= "</form>";
+
+        $table .= "<div class=noprint><center>$export</center></div>";
+
+
+
+        #$stmt=sprintf("SELECT user,event_time AS pause_start,DATE_ADD(event_time,INTERVAL pause_sec SECOND) AS pause_end,pause_sec,sub_status AS pause_code FROM osdial_agent_log WHERE osdial_agent_log.user_group IN %s %s AND event_time BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND sub_status IS NOT NULL AND sub_status != 'LOGIN' AND pause_sec>0 ORDER BY user,event_time;",$LOG['allowed_usergroupsSQL'],$agentsql,mres($begin_date),mres($end_date));
+        $stmt=sprintf("SELECT user,event_time AS pause_start,DATE_ADD(event_time,INTERVAL pause_sec SECOND) AS pause_end,pause_sec,sub_status AS pause_code FROM osdial_agent_log WHERE osdial_agent_log.user_group IN %s %s AND event_time BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND pause_sec>0 ORDER BY user,event_time;",$LOG['allowed_usergroupsSQL'],$agentsql,mres($begin_date),mres($end_date));
+        if ($DB) $html .= $stmt;
+        $rslt=mysql_query($stmt, $link);
+        $pauses_to_print = mysql_num_rows($rslt);
+
+        $CSVrows=0;
+        $export = "<form target=\"_new\" method=\"POST\" action=\"/admin/tocsv.php\">";
+        $export .= "<input type=hidden name=\"name\" value=\"apd\">";
         $csvhead = "Agent|Start|End|Time|Code";
         $export .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"" . $csvhead . "\">";
         $CSVrows++;
 
         
         $table .= "  <br>\n";
+        $table .= "  <center><font color=$default_text size=4>PAUSE CODE DETAILS</font></center>\n";
         $table .= "  <table align=center width=500 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $table .= "    <tr class=tabheader>\n";
         $table .= "      <td>AGENT</td>\n";
@@ -142,12 +282,12 @@ function report_agent_pause_summary() {
             $table .= "    <td align=left>$row[0]</td>\n";
             $table .= "    <td align=center>$row[1]</td>\n";
             $table .= "    <td align=center>$row[2]</td>\n";
-            $table .= "    <td align=right>$row[3]</td>\n";
+            $table .= "    <td align=right>" . fmt_hms($row[3]) . "</td>\n";
             $table .= "    <td align=left>$row[4]</td>\n";
             $table .= "  </tr>\n";
             $psecs += $row[3];
 
-            $line = $row[0] . '|' . $row[1] . '|' . $row[2] . '|' . $row[3] . '|' . $row[4];
+            $line = $row[0] . '|' . $row[1] . '|' . $row[2] . '|' . fmt_hms($row[3]) . '|' . $row[4];
             $export .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"" . $line . "\">";
         
             $CSVrows++;
