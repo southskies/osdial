@@ -28,8 +28,9 @@ function report_lead_search_basic() {
     if ($LOGmodify_leads==1 and $LOGuser_level > 7) {
 
         $html .= "<center><br><font color=$default_text size=4>BASIC LEAD SEARCH</font></center>\n";
-        $html .= "<center><font color=$default_text size=2>[ Basic Search ]&nbsp;&nbsp;|&nbsp;&nbsp;<a target=\"_parent\" href=\"./admin.php?ADD=999999&SUB=26\">[ Advanced Search ]</a><br><br></font></center>\n";
-
+        $html .= "<center><font color=$default_text size=2>[ Basic Search ]\n";
+        if ($LOG['view_lead_search_advanced']) $html .= "&nbsp;&nbsp;|&nbsp;&nbsp;<a target=\"_parent\" href=\"./admin.php?ADD=999999&SUB=26\">[ Advanced Search ]</a>\n";
+        $html .= "<br><br></font></center>\n";
         if (!$vendor_id and !$custom1 and !$custom2 and !$phone and !$lead_id and !$last_name and !$first_name) {
             $html .= "<form method=POST name=search action=\"$PHP_SELF\">\n";
             $html .= "  <input type=hidden name=ADD value=\"$ADD\">\n";

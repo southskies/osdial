@@ -32,7 +32,9 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .= "<table align=center><tr><td>\n";
         $form .= "<font face=\"arial,helvetica\" color=$default_text size=2>";
         $form .= "<center><br><font color=$default_text size=+1>ADVANCED LEAD SEARCH</font><br>\n";
-        $form .= "<center><font color=$default_text size=2><a target=\"_parent\" href=\"./admin.php?ADD=999999&SUB=27\">[ Basic Search ]</a>&nbsp;&nbsp;|&nbsp;&nbsp;[ Advanced Search ]<br></font></center>\n";
+        $form .= "<center><font color=$default_text size=2>\n";
+        if ($LOG['view_lead_search']) $form .= "<a target=\"_parent\" href=\"./admin.php?ADD=999999&SUB=27\">[ Basic Search ]</a>&nbsp;&nbsp;|&nbsp;&nbsp;\n";
+        $form .= "[ Advanced Search ]<br></font></center>\n";
 
         $last_name = get_variable("last_name");
         $first_name = get_variable("first_name");
@@ -585,7 +587,7 @@ function report_lead_search_advanced($lsa_seg='form') {
             }
         }
         $form .= "    <td align=center valign=top colspan=2 rowspan=5>\n";
-        if ($LOG['user_level'] > 8 && $LOG['export_leads'] > 0 && ($LOG['multicomp_user'] == 0 or $LOG['company']['export_leads'] > 0)) {
+        if ($LOG['export_lead_search_advanced'] and $LOG['user_level'] > 8 and $LOG['export_leads'] > 0 and ($LOG['multicomp_user'] == 0 or $LOG['company']['export_leads'] > 0)) {
             $form .= "     <table cellpadding=0 cellspacing=1 width=95%>\n";
             $form .= "       <tr><td class=tabheader colspan=3>CSV Export</td></tr>\n";
             $form .= "       <tr>\n";

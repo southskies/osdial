@@ -163,6 +163,39 @@ if ($non_latin < 1)	{
 	$xfer_exten = ereg_replace("[^0-9]","",$xfer_exten);
 	$cpuinfo = ereg_replace("[^0-9]","",$cpuinfo);
 	$xfer_agent2agent = ereg_replace("[^0-9]","",$xfer_agent2agent);
+
+    $export_agent_pause_summary = ereg_replace("[^0-9]","",$export_agent_pause_summary);
+    $export_agent_performance_detail = ereg_replace("[^0-9]","",$export_agent_performance_detail);
+    $export_agent_timesheet = ereg_replace("[^0-9]","",$export_agent_timesheet);
+    $export_campaign_call_report = ereg_replace("[^0-9]","",$export_campaign_call_report);
+    $export_campaign_recent_outbound_sales = ereg_replace("[^0-9]","",$export_campaign_recent_outbound_sales);
+    $export_ingroup_call_report = ereg_replace("[^0-9]","",$export_ingroup_call_report);
+    $export_lead_performance_campaign = ereg_replace("[^0-9]","",$export_lead_performance_campaign);
+    $export_lead_performance_list = ereg_replace("[^0-9]","",$export_lead_performance_list);
+    $export_lead_search_advanced = ereg_replace("[^0-9]","",$export_lead_search_advanced);
+    $export_list_cost_entry = ereg_replace("[^0-9]","",$export_list_cost_entry);
+    $view_agent_pause_summary = ereg_replace("[^0-9]","",$view_agent_pause_summary);
+    $view_agent_performance_detail = ereg_replace("[^0-9]","",$view_agent_performance_detail);
+    $view_agent_realtime = ereg_replace("[^0-9]","",$view_agent_realtime);
+    $view_agent_realtime_iax_barge = ereg_replace("[^0-9]","",$view_agent_realtime_iax_barge);
+    $view_agent_realtime_iax_listen = ereg_replace("[^0-9]","",$view_agent_realtime_iax_listen);
+    $view_agent_realtime_sip_barge = ereg_replace("[^0-9]","",$view_agent_realtime_sip_barge);
+    $view_agent_realtime_sip_listen = ereg_replace("[^0-9]","",$view_agent_realtime_sip_listen);
+    $view_agent_realtime_summary = ereg_replace("[^0-9]","",$view_agent_realtime_summary);
+    $view_agent_stats = ereg_replace("[^0-9]","",$view_agent_stats);
+    $view_agent_status = ereg_replace("[^0-9]","",$view_agent_status);
+    $view_agent_timesheet = ereg_replace("[^0-9]","",$view_agent_timesheet);
+    $view_campaign_call_report = ereg_replace("[^0-9]","",$view_campaign_call_report);
+    $view_campaign_recent_outbound_sales = ereg_replace("[^0-9]","",$view_campaign_recent_outbound_sales);
+    $view_ingroup_call_report = ereg_replace("[^0-9]","",$view_ingroup_call_report);
+    $view_lead_performance_campaign = ereg_replace("[^0-9]","",$view_lead_performance_campaign);
+    $view_lead_performance_list = ereg_replace("[^0-9]","",$view_lead_performance_list);
+    $view_lead_search = ereg_replace("[^0-9]","",$view_lead_search);
+    $view_lead_search_advanced = ereg_replace("[^0-9]","",$view_lead_search_advanced);
+    $view_list_cost_entry = ereg_replace("[^0-9]","",$view_list_cost_entry);
+    $view_server_performance = ereg_replace("[^0-9]","",$view_server_performance);
+    $view_server_times = ereg_replace("[^0-9]","",$view_server_times);
+    $view_usergroup_hourly_stats = ereg_replace("[^0-9]","",$view_usergroup_hourly_stats);
 	
 	### DIGITS and DASHES
 	$group_rank = ereg_replace("[^-0-9]","",$group_rank);

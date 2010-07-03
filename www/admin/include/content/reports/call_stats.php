@@ -897,7 +897,7 @@ function report_call_stats() {
         $table .= "        </tr>\n";
     }
     $export .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">";
-    $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
+    if ($LOG['export_campaign_call_report']) $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
     $export .= "</form>";
 
     $table .= "      </table>\n";
@@ -1018,7 +1018,7 @@ function report_call_stats() {
     $table .= "  </tr>\n";
     $table .= "</table>\n";
     $export .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">";
-    $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
+    if ($LOG['export_campaign_call_report']) $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
     $export .= "</form>";
 
     $html .= "<div class=onlyprint><pre>\n\n$plain</pre></div>\n";
@@ -1294,7 +1294,7 @@ function report_call_stats() {
     $table .= "</table>\n";
 
     $export .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">";
-    $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
+    if ($LOG['export_campaign_call_report']) $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
     $export .= "</form>";
 
     $html .= "<div class=onlyprint><pre>\n\n$plain</pre></div>\n";

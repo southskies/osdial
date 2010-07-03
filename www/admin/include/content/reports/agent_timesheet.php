@@ -69,8 +69,9 @@ function report_agent_timesheet() {
 
         $head .= "<center><font color=$default_text size=3><b>$agent - $full_name</b></font></center>\n";
         $head .= "<center>\n";
-        $head .= "<span class=font2><a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$agent\">Agent Status</a>\n";
-        $head .= " - <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$agent&begin_date=$query_date&end_date=$query_date\">Agent Stats</a>\n";
+        $head .= "<span class=font2>\n";
+        if ($LOG['view_agent_status']) $head .= "<a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$agent\">Agent Status</a>\n";
+        if ($LOG['view_agent_stats']) $head .= " - <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$agent&begin_date=$query_date&end_date=$query_date\">Agent Stats</a>\n";
         $head .= " - <a href=\"$PHP_SELF?ADD=3&user=$agent\">Modify Agent</a></span>\n";
         $head .= "</center>\n";
     }
@@ -332,7 +333,7 @@ function report_agent_timesheet() {
         $table .= "</table>\n";
 
         $export .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">";
-        $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
+        if ($LOG['export_agent_timesheet']) $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
         $export .= "</form>";
 
         $table .= "<div class=noprint><center>$export</center></div>";

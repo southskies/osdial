@@ -904,7 +904,11 @@ if ($ADD==660) {
         echo "  <td>$row[3]</td>\n";
         echo "  <td>$row[4]</td>\n";
         echo "  <td>" . mclabel($row[5]) . "</td>\n";
-		echo "  <td align=center><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">MODIFY</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$row[1]\">STATS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$row[1]\">STATUS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$row[1]\">TIME</a></td>\n";
+		echo "  <td align=center><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">MODIFY</a>";
+        if ($LOG['view_agent_stats']) echo " | <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$row[1]\">STATS</a>";
+        if ($LOG['view_agent_status']) echo " | <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$row[1]\">STATUS</a>";
+        if ($LOG['view_agent_timesheet']) echo " | <a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$row[1]\">TIME</a>";
+        echo "</td>\n";
         echo "</tr>\n";
 		$o++;
 	}
@@ -1106,7 +1110,11 @@ echo "  </tr>\n";
                 echo "    <td align=center><a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$row[4]&group=$group&viewdisabled=$viewdisabled&let=$let\">$row[4]</a></td>\n";
                 echo "    <td><a href=\"$PHP_SELF?ADD=$ADD&stage=$stage&level=$level&group=$row[5]&viewdisabled=$viewdisabled&let=$let\">" . mclabel($row[5]) . "</a></td>\n";
             }
-		    echo "    <td align=center class=font1 nowrap><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">MODIFY</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$row[1]\">STATS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$row[1]\">STATUS</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$row[1]\">TIME</a></td>\n";
+		    echo "    <td align=center class=font1 nowrap><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">MODIFY</a>";
+            if ($LOG['view_agent_stats']) echo " | <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$row[1]\">STATS</a>";
+            if ($LOG['view_agent_status']) echo " | <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$row[1]\">STATUS</a>";
+            if ($LOG['view_agent_timesheet']) echo " | <a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$row[1]\">TIME</a>";
+            echo "</td>\n";
             echo "  </tr>\n";
         }
         echo "</form>\n";

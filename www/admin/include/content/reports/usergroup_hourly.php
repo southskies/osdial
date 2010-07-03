@@ -182,7 +182,9 @@ function report_usergroup_hourly() {
             $html .= "      <td align=right>$VDcount[$o]</td>\n";
             $html .= "      <td align=right>$VDtotal[$o]</td>\n";
             $html .= "      <td align=right>$VDday[$o]</td>\n";
-            $html .= "      <td align=center><a href=\"./admin.php?ADD=3&user=$VDuser[$o]\">MODIFY</a> | <a href=\"./admin.php?ADD=999999&SUB=21&agent=$VDuser[$o]\">STATS</a></td>\n";
+            $html .= "      <td align=center><a href=\"./admin.php?ADD=3&user=$VDuser[$o]\">MODIFY</a>";
+            if ($LOG['view_agent_stats']) $html .= " | <a href=\"./admin.php?ADD=999999&SUB=21&agent=$VDuser[$o]\">STATS</a>";
+            $html .= "</td>\n";
             $html .= "    </tr>\n";
             $total_calls = ($total_calls + $VDtotal[$o]);
             $hour_calls = ($hour_calls + $VDcount[$o]);

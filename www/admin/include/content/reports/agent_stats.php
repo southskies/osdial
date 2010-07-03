@@ -71,8 +71,8 @@ function report_agent_stats() {
         $head .= "<center><font color=$default_text size=3><b>$agent - $full_name</b></font></center>\n";
         $head .= "<center>\n";
         $head .= "<span class=font2>\n";
-        $head .= "  <a href=\"./admin.php?ADD=999999&SUB=20&agent=$agent&query_date=$begin_date\">Agent Timesheet</a>\n";
-        $head .= "  - <a href=\"./admin.php?ADD=999999&SUB=22&agent=$agent\">Agent Status</a>\n";
+        if ($LOG['view_agent_timesheet']) $head .= "  <a href=\"./admin.php?ADD=999999&SUB=20&agent=$agent&query_date=$begin_date\">Agent Timesheet</a>\n";
+        if ($LOG['view_agent_status']) $head .= "  - <a href=\"./admin.php?ADD=999999&SUB=22&agent=$agent\">Agent Status</a>\n";
         $head .= "  - <a href=\"./admin.php?ADD=3&user=$agent\">Modify Agent</a>\n";
         $head .= "</span>\n";
         $head .= "</center><br>\n";

@@ -446,7 +446,7 @@ function report_lead_performance_campaign() {
         $line = "TOTAL||$TOTcalls|$TOTcontacts|$TOTsales|$TOTclosing_pct|$TOTcost|$TOTavg_cost|$TOTcost_sale||$TOTnewleads|$TOTnewcontacts|$TOTnewsales|$TOTnewclosing_pct|$TOTnewcost|$TOTnewavg_cost|$TOTnewcost_sale";
         $html .= "<input type=hidden name=\"row" . $CSVrow++ . "\" value=\"" . $line . "\">\n";
         $html .= "<input type=hidden name=\"rows\" value=\"" . $CSVrow . "\">\n";
-        $html .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
+        if ($LOG['export_lead_performance_campaign']) $html .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
         $html .= "</form>";
 
         $report_end = date("U");

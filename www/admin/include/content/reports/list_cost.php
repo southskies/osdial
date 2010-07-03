@@ -277,7 +277,7 @@ function report_list_cost() {
         $line = "TOTAL||$leads|$avg_cost|$total_cost";
         $html .= "<input type=hidden name=\"row" . $CSVrow++ . "\" value=\"" . $line . "\">\n";
         $html .= "<input type=hidden name=\"rows\" value=\"" . $CSVrow . "\">\n";
-        $html .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
+        if ($LOG['export_list_cost_entry']) $html .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
         $html .= "</form>";
 
         $report_end = date("U");

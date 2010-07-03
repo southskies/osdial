@@ -696,7 +696,7 @@ function report_agent_performance_detail() {
         $table .= "  </tr>\n";
         $table .= "</table>\n";
         $export .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">\n";
-        $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
+        if ($LOG['export_agent_performance_detail']) $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
         $export .= "</form>\n";
 
         $html .= "<div class=onlyprint><font size=2><pre>\n$plain\n\n\n\n$plain_status</pre></font></div>\n";

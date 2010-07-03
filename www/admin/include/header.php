@@ -199,9 +199,9 @@ if (strlen($users_hh) > 1) {
     }
     if ($user != "" and $ADD!=550 and $ADD!=660) {
         echo "        | &nbsp; &nbsp;\n";
-        echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$user\"> Stats </a> &nbsp; &nbsp; &nbsp;\n";
-        echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$user\"> Status </a> &nbsp; &nbsp; &nbsp;\n";
-        echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$user\"> Time </a> &nbsp; &nbsp; &nbsp;\n";
+        if ($LOG['view_agent_stats']) echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$user\"> Stats </a> &nbsp; &nbsp; &nbsp;\n";
+        if ($LOG['view_agent_status']) echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$user\"> Status </a> &nbsp; &nbsp; &nbsp;\n";
+        if ($LOG['view_agent_timesheet']) echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$user\"> Time </a> &nbsp; &nbsp; &nbsp;\n";
         echo "        <a href=\"$PHP_SELF?ADD=8&agent=$user\"> Callbacks </a> \n";
     }
     echo "      </font>\n";
@@ -269,7 +269,7 @@ if (strlen($campaigns_hh) > 1) {
         echo "        <a href=\"$PHP_SELF?ADD=10\"> Show Campaigns </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=11\"> Add A New Campaign </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\n";
         echo "        <a href=\"$PHP_SELF?ADD=12\"> Copy Campaign </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\n";
-        echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=13\"> Real-Time Campaigns Summary </a>\n";
+        if ($LOG['view_agent_realtime_summary']) echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=13\"> Real-Time Campaigns Summary </a>\n";
         echo "      </font>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
@@ -319,7 +319,9 @@ if (strlen($campaigns_hh) > 1) {
             } else {
                 $cauth++;
             }
-            echo "          <td align=center bgcolor=$camp_real_color><a href=\"$PHP_SELF?ADD=999999&SUB=14&group=$campaign_id&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"arial,helvetica\">Real-Time</font></a></td>\n";
+            echo "          <td align=center bgcolor=$camp_real_color>";
+            if ($LOG['view_agent_realtime']) echo "<a href=\"$PHP_SELF?ADD=999999&SUB=14&group=$campaign_id&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"arial,helvetica\">Real-Time</font></a>";
+            echo "</td>\n";
             if ($cauth) {
                 echo "          <td colspan=$cauth align=center bgcolor=$camp_real_color><font size=2 color=$subcamp_font face=\"arial,helvetica\">&nbsp;</font></td>\n";
             }
@@ -340,8 +342,11 @@ if (strlen($lists_hh) > 1) {
     echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=100\"> Show Lists </a> &nbsp; &nbsp; &nbsp;\n";
     echo "        <a href=\"$PHP_SELF?ADD=111\"> Add A New List </a> &nbsp; &nbsp; &nbsp;\n";
-    #echo "        <a href=\"$PHP_SELF?ADD=112\"> Search For A Lead </a> &nbsp; &nbsp; &nbsp;\n";
-    echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=26\"> Lead Search </a> &nbsp; &nbsp; &nbsp;\n";
+    if ($LOG['view_lead_search_advanced']) {
+        echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=26\"> Lead Search </a> &nbsp; &nbsp; &nbsp;\n";
+    } elseif ($LOG['view_lead_search']) {
+        echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=27\"> Lead Search </a> &nbsp; &nbsp; &nbsp;\n";
+    }
     echo "        <a href=\"$PHP_SELF?ADD=121\"> Add Number To DNC </a> &nbsp; &nbsp; &nbsp;\n";
     if ($LOG['user_level'] > 7 && $LOG['load_leads'] > 0) {
         echo "        <a href=\"$PHP_SELF?ADD=122\"> Load Leads </a> &nbsp; &nbsp; &nbsp;\n";
@@ -420,7 +425,7 @@ if (strlen($usergroups_hh) > 1) {
     echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=100000\"> Show User Groups </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=111111\"> Add A New User Group </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
-    echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=24&group=$LOG[user_group]\"> Group Hourly Report </a>\n";
+    if ($LOG['view_usergroup_hourly_stats']) echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=24&group=$LOG[user_group]\"> Group Hourly Report </a>\n";
     echo "      </font>\n";
     echo "    </td>\n";
     echo "  </tr>\n";

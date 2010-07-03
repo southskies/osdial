@@ -230,7 +230,7 @@ function report_realtime_detail() {
     $html .= "<font size=2>";
 
     if (!preg_match('/^XXXX/',$group)) $html .= "&nbsp;-&nbsp;<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a>";
-    $html .= "&nbsp;-&nbsp;<a href=\"$PHP_SELF?ADD=$ADD&SUB=" . ($SUB - 1) . "&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats\">Summary</a>&nbsp;-&nbsp;\n";
+    if ($LOG['view_realtime_summary']) $html .= "&nbsp;-&nbsp;<a href=\"$PHP_SELF?ADD=$ADD&SUB=" . ($SUB - 1) . "&campaign_id=$campaign_id&group=$group&RR=$RR&DB=$DB&adastats=$adastats\">Summary</a>&nbsp;-&nbsp;\n";
     $html .= "<br></font>\n";
     $html .= "</font>";
 
@@ -1169,6 +1169,9 @@ function report_realtime_detail() {
 
             $disp_agent = 1;
             if ($group == "XXXX-ALL-ACTIVE-XXXX" and $campaign_active<1) $disp_agent = 0;
+
+            $userlink = "$user";
+            if ($LOG['view_agent_status']) $userlink = "<a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$Luser&close_after_emergency_logout=Y\" target=\"_blank\">$G$user$EG</a>";
 
             if ($disp_agent) $Ahtml .= "$LNleft$G $extension $LNcenterbar <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$Luser&close_after_emergency_logout=Y\" target=\"_blank\">$G$user$EG</a> $LNcenterbar $UGD$sessionid$L$R $LNcenterbar $status $CM $LNcenterbar $pausecode$SVD$call_time_MS $LNcenterbar $campaign_id $LNcenterbar $calls_today $LNcenterbar $INGRP$EG$LNright\n";
 

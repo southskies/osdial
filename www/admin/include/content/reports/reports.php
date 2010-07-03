@@ -62,120 +62,129 @@ if ($LOGview_reports==1) {
         echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">";
         echo "<title>$t1: Server Stats and Reports</title></head><body bgcolor=white>";
         echo "<font size=4 color=$default_text><br><center>SERVER STATS AND REPORTS</center></font><br><br>";
-        echo "<ul class=>";
-        echo "<li><font face=\"arial,helvetica\" size=2><a href=\"$PHP_SELF?ADD=999999&SUB=12\">Time On Dialer (per campaign)</a></font> &nbsp;  <font face=\"arial,helvetica\" size=1><a href=\"$PHP_SELF?ADD=999999&SUB=11\">(all campaigns SUMMARY)</a> &nbsp; &nbsp; SIP <a href=\"$PHP_SELF?ADD=999999&SUB=12&SIPmonitorLINK=1\">Listen</a> - <a href=\"$PHP_SELF?ADD=999999&SUB=12&SIPmonitorLINK=2\">Barge</a> &nbsp; &nbsp; IAX <a href=\"$PHP_SELF?ADD=999999&SUB=12&IAXmonitorLINK=1\">Listen</a> - <a href=\"$PHP_SELF?ADD=999999&SUB=12&IAXmonitorLINK=2\">Barge</a></font>";
-        if ($VARclient=='EBCC' and $LOG['user_group'] != 'ADMINS') {
-            echo "</ul>";
-        } else {
-            echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=15\"><font face=\"arial,helvetica\" size=2>Call Report</a></font>";
-            echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=23\"><font face=\"arial,helvetica\" size=2>Inbound / Closer Report</a></font>";
-            echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=19\"><font face=\"arial,helvetica\" size=2>Agent Performance Detail</a></font>";
-            echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=osdial_sales_viewer.php\"><font face=\"arial,helvetica\" size=2>Recent Outbound Sales</a></font>";
-            echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=16\"><font face=\"arial,helvetica\" size=2>List Cost by Entry Date</a></font>";
-            echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=17\"><font face=\"arial,helvetica\" size=2>Lead Performance by Campaign</a></font>";
-            echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=18\"><font face=\"arial,helvetica\" size=2>Lead Performance by List</a></font>";
-            echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=27\"><font face=\"arial,helvetica\" size=2>Lead Search - Basic</a></font>";
-            echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=26\"><font face=\"arial,helvetica\" size=2>Lead Search - Advanced</a></font>";
-            echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=20\"><font face=\"arial,helvetica\" size=2>Agent Timesheet</a></font>";
-            echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=21\"><font face=\"arial,helvetica\" size=2>Agent Stats</a></font>";
-            echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=22\"><font face=\"arial,helvetica\" size=2>Agent Status</a></font>";
-            echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=25\"><font face=\"arial,helvetica\" size=2>Agent Pause Summary</a></font>";
-            echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=24\"><font face=\"arial,helvetica\" size=2>User-Group Hourly Status</a></font>";
-            if ($LOG['multicomp_user'] == 0) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_server_performance.php\"><font face=\"arial,helvetica\" size=2>Server Performance</a></font>";
+        echo "<ul>";
+        if ($LOG['view_agent_realtime']) echo "<li><font face=\"arial,helvetica\" size=2><a href=\"$PHP_SELF?ADD=999999&SUB=12\">Agent Realtime (per campaign)</a></font>\n";
+        if ($LOG['view_agent_realtime_sip_listen']) echo "<li><font face=\"arial,helvetica\" size=2><a href=\"$PHP_SELF?ADD=999999&SUB=12&SIPmonitorLINK=1\">Agent Realtime w/SIP Listen</a></font>\n";
+        if ($LOG['view_agent_realtime_sip_barge']) echo "<li><font face=\"arial,helvetica\" size=2><a href=\"$PHP_SELF?ADD=999999&SUB=12&SIPmonitorLINK=2\">Agent Realtime w/SIP Barge</a></font>\n";
+        if ($LOG['view_agent_realtime_iax_listen']) echo "<li><font face=\"arial,helvetica\" size=2><a href=\"$PHP_SELF?ADD=999999&SUB=12&IAXmonitorLINK=1\">Agent Realtime w/IAX Listen</a></font>\n";
+        if ($LOG['view_agent_realtime_iax_barge']) echo "<li><font face=\"arial,helvetica\" size=2><a href=\"$PHP_SELF?ADD=999999&SUB=12&IAXmonitorLINK=2\">Agent Realtime w/IAX Barge</a></font>\n";
+        if ($LOG['view_agent_realtime_summary']) echo "<li><font face=\"arial,helvetica\" size=2><a href=\"$PHP_SELF?ADD=999999&SUB=11\">Agent Realtime Summary (all campaigns)</a></font>\n";
+        echo "</ul>";
+        echo "<ul>";
+        if ($LOG['view_agent_pause_summary']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=25\"><font face=\"arial,helvetica\" size=2>Agent Pause Summary</a></font>";
+        if ($LOG['view_agent_performance_detail']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=19\"><font face=\"arial,helvetica\" size=2>Agent Performance Detail</a></font>";
+        if ($LOG['view_agent_stats']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=22\"><font face=\"arial,helvetica\" size=2>Agent Status</a></font>";
+        if ($LOG['view_agent_status']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=21\"><font face=\"arial,helvetica\" size=2>Agent Stats</a></font>";
+        if ($LOG['view_agent_timesheet']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=20\"><font face=\"arial,helvetica\" size=2>Agent Timesheet</a></font>";
+        if ($LOG['view_usergroup_hourly_stats']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=24\"><font face=\"arial,helvetica\" size=2>UserGroup Hourly Stats</a></font>";
+        echo "</ul>";
+        echo "<ul>";
+        if ($LOG['view_ingroup_call_report']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=23\"><font face=\"arial,helvetica\" size=2>InGroup Call Report</a></font>";
+        echo "</ul>";
+        echo "<ul>";
+        if ($LOG['view_campaign_call_report']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=15\"><font face=\"arial,helvetica\" size=2>Campaign Call Report</a></font>";
+        if ($LOG['view_campaign_recent_outbound_sales']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=osdial_sales_viewer.php\"><font face=\"arial,helvetica\" size=2>Recent Outbound Sales</a></font>";
+        echo "</ul>";
+        echo "<ul>";
+        if ($LOG['view_lead_performance_campaign']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=17\"><font face=\"arial,helvetica\" size=2>Lead Performance by Campaign</a></font>";
+        if ($LOG['view_lead_performance_list']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=18\"><font face=\"arial,helvetica\" size=2>Lead Performance by List</a></font>";
+        if ($LOG['view_lead_search']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=27\"><font face=\"arial,helvetica\" size=2>Lead Search - Basic</a></font>";
+        if ($LOG['view_lead_search_advanced']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=26\"><font face=\"arial,helvetica\" size=2>Lead Search - Advanced</a></font>";
+        if ($LOG['view_list_cost_entry']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=16\"><font face=\"arial,helvetica\" size=2>List Cost by Entry Date</a></font>";
+        echo "</ul>";
+        echo "<ul>";
+        if ($LOG['multicomp_user'] == 0 and $LOG['view_server_performance']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_server_performance.php\"><font face=\"arial,helvetica\" size=2>Server Performance</a></font>";
 
-            if ($LOG['multicomp_user'] == 0 and $enable_queuemetrics_logging_LU > 0) {
-                echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=$queuemetrics_url_LU\"><font face=\"arial,helvetica\" size=2>QUEUEMETRICS REPORTS</a></font>\n";
-            }
+        if ($LOG['multicomp_user'] == 0 and $enable_queuemetrics_logging_LU > 0) {
+            echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=$queuemetrics_url_LU\"><font face=\"arial,helvetica\" size=2>QUEUEMETRICS REPORTS</a></font>\n";
+        }
+        echo "</ul>";
 
-            echo "</ul>";
-            if ($LOG['multicomp_user'] == 0) {
-                echo "<pre><table frame=box cellpadding=0 cellspacing=4>";
+        if ($LOG['multicomp_user'] == 0 and $LOG['view_server_times']) {
+            echo "<pre><table frame=box cellpadding=0 cellspacing=4>";
+            echo "<tr>";
+            echo "  <td align=center><font color=$default_text>&nbsp;Server&nbsp;&nbsp;</td>";
+            echo "  <td align=center><font color=$default_text>&nbsp;Description&nbsp;&nbsp;</td>";
+            echo "  <td align=center><font color=$default_text>&nbsp;IP Address&nbsp;&nbsp;</td>";
+            echo "  <td align=center><font color=$default_text>&nbsp;Active&nbsp;&nbsp;</td>";
+            echo "  <td align=center><font color=$default_text>&nbsp;Dialer Time&nbsp;&nbsp;</td>";
+            echo "  <td align=center><font color=$default_text>&nbsp;Park Time&nbsp;&nbsp;</td>";
+            echo "  <td align=center><font color=$default_text>&nbsp;Closer/Inbound Time&nbsp;</td>";
+            echo "  </tr>";
+
+            $o=0;
+            while ($servers_to_print > $o) {
                 echo "<tr>";
-                echo "  <td align=center><font color=$default_text>&nbsp;Server&nbsp;&nbsp;</td>";
-                echo "  <td align=center><font color=$default_text>&nbsp;Description&nbsp;&nbsp;</td>";
-                echo "  <td align=center><font color=$default_text>&nbsp;IP Address&nbsp;&nbsp;</td>";
-                echo "  <td align=center><font color=$default_text>&nbsp;Active&nbsp;&nbsp;</td>";
-                echo "  <td align=center><font color=$default_text>&nbsp;Dialer Time&nbsp;&nbsp;</td>";
-                echo "  <td align=center><font color=$default_text>&nbsp;Park Time&nbsp;&nbsp;</td>";
-                echo "  <td align=center><font color=$default_text>&nbsp;Closer/Inbound Time&nbsp;</td>";
-                echo "  </tr>";
-
-                $o=0;
-                while ($servers_to_print > $o) {
-                    echo "<tr>";
-                    echo "  <td align=center>$server_id[$o]</td>\n";
-                    echo "  <td align=center>$server_description[$o]</td>\n";
-                    echo "  <td align=center>$server_ip[$o]</td>\n";
-                    echo "  <td align=center>$active[$o]</td>\n";
-                    echo "  <td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonVDAD.php?server_ip=$server_ip[$o]\">LINK</a></td>\n";
-                    echo "  <td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonpark.php?server_ip=$server_ip[$o]\">LINK</a></td>\n";
-                    echo "  <td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonVDAD.php?server_ip=$server_ip[$o]%26closer_display=1\">LINK</a></td>\n";
-                    echo "</tr>";
-                    $o++;
-                }
-                echo "</table>\n";
+                echo "  <td align=center>$server_id[$o]</td>\n";
+                echo "  <td align=center>$server_description[$o]</td>\n";
+                echo "  <td align=center>$server_ip[$o]</td>\n";
+                echo "  <td align=center>$active[$o]</td>\n";
+                echo "  <td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonVDAD.php?server_ip=$server_ip[$o]\">LINK</a></td>\n";
+                echo "  <td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonpark.php?server_ip=$server_ip[$o]\">LINK</a></td>\n";
+                echo "  <td align=center><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_timeonVDAD.php?server_ip=$server_ip[$o]%26closer_display=1\">LINK</a></td>\n";
+                echo "</tr>";
+                $o++;
             }
+            echo "</table>\n";
         }
 
     } elseif ($ADD==999999) {
-        if ($SUB==11) {
+        if ($SUB==11 and $LOG['view_agent_realtime_summary']) {
             require($WeBServeRRooT . '/admin/include/content/reports/realtime_summary.php');
             echo report_realtime_summary();
-        } elseif ($SUB==12) {
+        } elseif ($SUB==12 and $LOG['view_agent_realtime']) {
             require($WeBServeRRooT . '/admin/include/content/reports/realtime_detail.php');
             echo report_realtime_detail();
         } else {
-            if ($VARclient=='EBCC' and $LOG['user_group'] != 'ADMINS') {
-                echo "";
-            } elseif ($SUB==15) {
+            if ($SUB==15 and $LOG['view_campaign_call_report']) {
                 require($WeBServeRRooT . '/admin/include/content/reports/call_stats.php');
                 echo report_call_stats();
-            } elseif ($SUB==16) {
+            } elseif ($SUB==16 and $LOG['view_list_cost_entry']) {
                 require($WeBServeRRooT . '/admin/include/content/reports/list_cost.php');
                 echo report_list_cost();
-            } elseif ($SUB==17) {
+            } elseif ($SUB==17 and $LOG['view_lead_performance_campaign']) {
                 require($WeBServeRRooT . '/admin/include/content/reports/lead_performance_campaign.php');
                 echo report_lead_performance_campaign();
-            } elseif ($SUB==18) {
+            } elseif ($SUB==18 and $LOG['view_lead_performance_list']) {
                 require($WeBServeRRooT . '/admin/include/content/reports/lead_performance_list.php');
                 echo report_lead_performance_list();
-            } elseif ($SUB==19) {
+            } elseif ($SUB==19 and $LOG['view_agent_performance_detail']) {
                 require($WeBServeRRooT . '/admin/include/content/reports/agent_performance_detail.php');
                 echo report_agent_performance_detail();
-            } elseif ($SUB==20) {
+            } elseif ($SUB==20 and $LOG['view_agent_timesheet']) {
                 require($WeBServeRRooT . '/admin/include/content/reports/agent_timesheet.php');
                 echo report_agent_timesheet();
-            } elseif ($SUB==21) {
+            } elseif ($SUB==21 and $LOG['view_agent_stats']) {
                 require($WeBServeRRooT . '/admin/include/content/reports/agent_stats.php');
                 echo report_agent_stats();
-            } elseif ($SUB==22) {
+            } elseif ($SUB==22 and $LOG['view_agent_status']) {
                 require($WeBServeRRooT . '/admin/include/content/reports/agent_status.php');
                 echo report_agent_status();
-            } elseif ($SUB==23) {
+            } elseif ($SUB==23 and $LOG['view_ingroup_call_report']) {
                 require($WeBServeRRooT . '/admin/include/content/reports/closer_stats.php');
                 echo report_closer_stats();
-            } elseif ($SUB==24) {
+            } elseif ($SUB==24 and $LOG['view_usergroup_hourly_stats']) {
                 require($WeBServeRRooT . '/admin/include/content/reports/usergroup_hourly.php');
                 echo report_usergroup_hourly();
-            } elseif ($SUB==25) {
+            } elseif ($SUB==25 and $LOG['view_agent_pause_summary']) {
                 require($WeBServeRRooT . '/admin/include/content/reports/agent_pause_summary.php');
                 echo report_agent_pause_summary();
-            } elseif ($SUB==26) {
+            } elseif ($SUB==26 and $LOG['view_lead_search_advanced']) {
                 require($WeBServeRRooT . '/admin/include/content/reports/lead_search_advanced.php');
                 flush();
                 echo report_lead_search_advanced('form');
                 flush();
                 echo report_lead_search_advanced('data');
                 flush();
-            } elseif ($SUB==27) {
+            } elseif ($SUB==27 and $LOG['view_lead_search']) {
                 require($WeBServeRRooT . '/admin/include/content/reports/lead_search_basic.php');
                 echo report_lead_search_basic();
+            } else {
+                echo "<font color=red>You do not have permission to view this page</font>\n";
             }
         }
     }
-    if ($VARclient=='EBCC' and $LOG['user_group'] != 'ADMINS') {
-        echo "";
-    } elseif (file_exists($WeBServeRRooT . '/admin/include/content/reports/custom.php')) {
+    if (file_exists($WeBServeRRooT . '/admin/include/content/reports/custom.php')) {
         include($WeBServeRRooT . '/admin/include/content/reports/custom.php');
     }
 } else {

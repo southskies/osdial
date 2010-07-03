@@ -98,6 +98,11 @@ if ($force_logout) {
 
         # Get the allowed campaigns.
         $ug = get_first_record($link, 'osdial_user_groups', '*', sprintf("user_group='%s'",mres($LOG['user_group'])) );
+        if (is_array($ug)) {
+            foreach ($ug as $k => $v) {
+                if (preg_match('/^view|^export/',$k)) $LOG[$k] = $v;
+            }
+        }
 
         $LOGac = $ug['allowed_campaigns'];
         if (strlen($LOGac)> 1) {

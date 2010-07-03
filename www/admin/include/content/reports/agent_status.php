@@ -76,8 +76,9 @@ function report_agent_status() {
 
         $head .= "<center><font color=$default_text size=3><b>$agent - $full_name</b></font></center>\n";
         $head .= "<center>\n";
-        $head .= "<span class=font2><a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$agent\">Agent Timesheet</a>\n";
-        $head .= " - <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$agent\">Agent Stats</a>\n";
+        $head .= "<span class=font2>\n";
+        if ($LOG['view_agent_timesheet']) $head .= "<a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$agent\">Agent Timesheet</a>\n";
+        if ($LOG['view_agent_stats']) $head .= " - <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$agent\">Agent Stats</a>\n";
         $head .= " - <a href=\"$PHP_SELF?ADD=3&user=$agent\">Modify Agent</a></span>\n";
         $head .= "</center>\n";
     }

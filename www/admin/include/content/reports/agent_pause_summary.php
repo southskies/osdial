@@ -164,7 +164,7 @@ function report_agent_pause_summary() {
         $table .= "</table>\n";
 
         $export .= "<input type=hidden name=\"rows\" value=\"" . $CSVrows . "\">";
-        $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
+        if ($LOG['export_agent_pause_summary']) $export .= "<input type=submit class=\"noprint\" name=\"export\" value=\"Export to CSV\">\n";
         $export .= "</form>";
 
         $table .= "<div class=noprint><center>$export</center></div>";

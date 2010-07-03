@@ -257,15 +257,17 @@ if ($submit_report && $list_ids) {
 	echo "          <td></td>\n";
 	echo "        </tr>\n";
 	echo "      </table>";
-	echo "<!-- $WeBServeRRooT/admin/spreadsheet_sales_viewer.pl $list_ids $sales_number $timestamp $forc $now $dcampaign -->\n";
-	passthru("$WeBServeRRooT/admin/spreadsheet_sales_viewer.pl $list_ids $sales_number $timestamp $forc $now $dcampaign");
-	flush();
-	echo "<table align=center border=0 cellpadding=3 cellspacing=5 width=700><tr bgcolor='$oddrows'>";
-	if ($forc=="F") {
-		echo "<th width='50%'><font size='2'><a href='osdial_fronter_report_$now.xls'>View complete Excel fronter report for this shift</a></font></th>";
-	}
-	echo "<th width='50%'><font size='2'<a href='osdial_closer_report_$now.xls'>View complete Excel sales report for this shift</a></font></th>";
-	echo "</tr></table>";
+    if ($LOG['export_campaign_recent_outbound_sales']) {
+	    echo "<!-- $WeBServeRRooT/admin/spreadsheet_sales_viewer.pl $list_ids $sales_number $timestamp $forc $now $dcampaign -->\n";
+	    passthru("$WeBServeRRooT/admin/spreadsheet_sales_viewer.pl $list_ids $sales_number $timestamp $forc $now $dcampaign");
+	    flush();
+	    echo "<table align=center border=0 cellpadding=3 cellspacing=5 width=700><tr bgcolor='$oddrows'>";
+	    if ($forc=="F") {
+		    echo "<th width='50%'><font size='2'><a href='osdial_fronter_report_$now.xls'>View complete Excel fronter report for this shift</a></font></th>";
+	    }
+	    echo "<th width='50%'><font size='2'<a href='osdial_closer_report_$now.xls'>View complete Excel sales report for this shift</a></font></th>";
+	    echo "</tr></table>";
+    }
 }
 echo "</body>\n";
 echo "</html>\n";

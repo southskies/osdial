@@ -92,7 +92,7 @@ if ($ADD=="21comp") {
             $rslt=mysql_query($uins, $link);
             echo "<font size=1 color=$default_text>SAMPLE USER CONFIGURATION ADDED</font><br>\n";
 
-            $ugins = "INSERT INTO osdial_user_groups VALUES ";
+            $ugins = "INSERT INTO osdial_user_groups (user_group,group_name,allowed_campaigns) VALUES ";
             $ugins .= sprintf("('%sADMIN','OSDIAL ADMINISTRATORS',' -ALL-CAMPAIGNS- - -'),('%sAGENTS','Agent User Group',' -ALL-CAMPAIGNS- - -');",$cmp,$cmp);
             $rslt=mysql_query($ugins, $link);
             echo "<font size=1 color=$default_text>SAMPLE USERGROUP CONFIGURATION ADDED</font><br>\n";
