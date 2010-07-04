@@ -52,12 +52,17 @@ echo "  <title>$t1 Administrator: $title</title>\n";
 echo "  <script language=\"Javascript\">\n";
 require('include/admin.js');
 require('include/CalendarPopup.js');
+require('include/EditableSelect.js');
 echo "  </script>\n";
 echo "</head>\n";
 
 echo "<body bgcolor=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 onload=\"updateClock(); setInterval('updateClock()', 1000 )\" onunload=\"stop()\">\n";
 
-echo "<script language=\"JavaScript\">document.write(getCalendarStyles());</script>\n";
+echo "<script language=\"JavaScript\">\n";
+echo "document.write(getCalendarStyles());\n";
+echo "document.write(getEditableSelectStyles());\n";
+echo "setEditableSelectImagePath('templates/default/images');\n";
+echo "</script>\n";
 
 
 ######################### HTML HEADER BEGIN #######################################

@@ -118,7 +118,7 @@ if ($ADD==11)
     echo "<tr bgcolor=$oddrows><td align=right>Web Form 2: </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255 value=\"/osdial/agent/webform_redirect.php\">$NWB#osdial_campaigns-web_form_address$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Allow Transfer and Closers: </td><td align=left><select size=1 name=allow_closers><option>Y</option><option>N</option></select>$NWB#osdial_campaigns-allow_closers$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Hopper Level: </td><td align=left><select size=1 name=hopper_level><option>1</option><option>5</option><option>10</option><option>20</option><option>50</option><option>100</option><option>200</option><option>500</option><option>1000</option><option>2000</option></select>$NWB#osdial_campaigns-hopper_level$NWE</td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=right>Auto Dial Level: </td><td align=left><select size=1 name=auto_dial_level><option selected>0</option><option>1</option><option>1.1</option><option>1.2</option><option>1.3</option><option>1.4</option><option>1.5</option><option>1.6</option><option>1.7</option><option>1.8</option><option>1.9</option><option>2.0</option><option>2.2</option><option>2.5</option><option>2.7</option><option>3.0</option><option>3.5</option><option>4.0</option></select>(0 = off)$NWB#osdial_campaigns-auto_dial_level$NWE</td></tr>\n";
+    echo "<tr bgcolor=$oddrows><td align=right>Auto Dial Level: </td><td align=left nowrap><input type=text name=auto_dial_level size=6 maxlength=6 value=\"0\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> (0 = off)$NWB#osdial_campaigns-auto_dial_level$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Next Agent Call: </td><td align=left><select size=1 name=next_agent_call><option >random</option><option>oldest_call_start</option><option>oldest_call_finish</option><option>overall_user_level</option><option>campaign_rank</option><option>fewest_calls</option></select>$NWB#osdial_campaigns-next_agent_call$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Campaign Operation Time: </td><td align=left><select size=1 name=campaign_call_time>";
     echo get_calltimes($link, '24hours');
@@ -134,6 +134,11 @@ if ($ADD==11)
     echo "<tr bgcolor=$oddrows><td align=right>Allow Tab Switch: </td><td align=left><select size=1 name=allow_tab_switch><option selected>Y</option><option>N</option></select>$NWB#osdial_campaigns-allow_tab_switch$NWE</td></tr>\n";
     echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=ADD></td></tr>\n";
     echo "</table></center>\n";
+    echo "</form>\n";
+
+    echo "<script type=\"text/javascript\">\n";
+    echo "createEditableSelect(document.forms[0].auto_dial_level);\n";
+    echo "</script>\n";
     }
     else
     {
@@ -1040,7 +1045,7 @@ if ($ADD==31) {
 
         echo "<tr bgcolor=$unusualrows><td align=right>Dial Method: </td><td align=left><select size=1 name=dial_method><option >MANUAL</option><option>RATIO</option><option>ADAPT_HARD_LIMIT</option><option>ADAPT_TAPERED</option><option>ADAPT_AVERAGE</option><option SELECTED>$dial_method</option></select>$NWB#osdial_campaigns-dial_method$NWE</td></tr>\n";
 
-        echo "<tr bgcolor=$unusualrows><td align=right>Auto Dial Level: </td><td align=left><select size=1 name=auto_dial_level><option >0</option><option>1</option><option>1.1</option><option>1.2</option><option>1.3</option><option>1.4</option><option>1.5</option><option>1.6</option><option>1.7</option><option>1.8</option><option>1.9</option><option>2.0</option><option>2.2</option><option>2.5</option><option>2.7</option><option>3.0</option><option>3.5</option><option>4.0</option><option SELECTED>$auto_dial_level</option></select>(0 = off)$NWB#osdial_campaigns-auto_dial_level$NWE &nbsp; &nbsp; &nbsp; <input type=checkbox name=dial_level_override value=\"1\">ADAPT OVERRIDE</td></tr>\n";
+        echo "<tr bgcolor=$unusualrows><td align=right>Auto Dial Level: </td><td align=left nowrap><input type=text name=auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> (0 = off)$NWB#osdial_campaigns-auto_dial_level$NWE &nbsp; &nbsp; &nbsp; <input type=checkbox name=dial_level_override value=\"1\">ADAPT OVERRIDE</td></tr>\n";
 
         echo "<tr bgcolor=$unusualrows><td align=right>Available Only Tally: </td><td align=left><select size=1 name=available_only_ratio_tally><option >Y</option><option>N</option><option SELECTED>$available_only_ratio_tally</option></select>$NWB#osdial_campaigns-available_only_ratio_tally$NWE</td></tr>\n";
 
@@ -1054,7 +1059,7 @@ if ($ADD==31) {
         }
         echo "</select>$NWB#osdial_campaigns-adaptive_dropped_percentage$NWE</td></tr>\n";
 
-        echo "<tr bgcolor=$unusualrows><td align=right>Maximum Adapt Dial Level: </td><td align=left><input type=text name=adaptive_maximum_level size=6 maxlength=6 value=\"$adaptive_maximum_level\"><i>number only</i> $NWB#osdial_campaigns-adaptive_maximum_level$NWE</td></tr>\n";
+        echo "<tr bgcolor=$unusualrows><td align=right>Maximum Adapt Dial Level: </td><td align=left nowrap><input type=text name=adaptive_maximum_level size=6 maxlength=6 value=\"$adaptive_maximum_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"><i>number only</i> $NWB#osdial_campaigns-adaptive_maximum_level$NWE</td></tr>\n";
 
         echo "<tr bgcolor=$unusualrows><td align=right>Latest Server Time: </td><td align=left><input type=text name=adaptive_latest_server_time size=6 maxlength=4 value=\"$adaptive_latest_server_time\"><i>4 digits only</i> $NWB#osdial_campaigns-adaptive_latest_server_time$NWE</td></tr>\n";
 
@@ -1278,6 +1283,11 @@ if ($ADD==31) {
 
         echo "</table></center>\n";
         echo "</FORM>\n";
+
+        echo "<script type=\"text/javascript\">\n";
+        echo "createEditableSelect(document.forms[0].auto_dial_level);\n";
+        echo "createEditableSelect(document.forms[0].adaptive_maximum_level);\n";
+        echo "</script>\n";
 
         $dispinact = get_variable('dispinact');
         $dispinactSQL = "AND active='Y'";
@@ -1869,7 +1879,7 @@ if ($ADD==34)
 
         echo "<tr bgcolor=$unusualrows><td align=right>Dial Method: </td><td align=left><select size=1 name=dial_method><option >MANUAL</option><option>RATIO</option><option>ADAPT_HARD_LIMIT</option><option>ADAPT_TAPERED</option><option>ADAPT_AVERAGE</option><option SELECTED>$dial_method</option></select>$NWB#osdial_campaigns-dial_method$NWE</td></tr>\n";
 
-        echo "<tr bgcolor=$unusualrows><td align=right>Auto Dial Level: </td><td align=left><select size=1 name=auto_dial_level><option >0</option><option>1</option><option>1.1</option><option>1.2</option><option>1.3</option><option>1.4</option><option>1.5</option><option>1.6</option><option>1.7</option><option>1.8</option><option>1.9</option><option>2.0</option><option>2.2</option><option>2.5</option><option>2.7</option><option>3.0</option><option>3.5</option><option>4.0</option><option SELECTED>$auto_dial_level</option></select>(0 = off)$NWB#osdial_campaigns-auto_dial_level$NWE</td></tr>\n";
+        echo "<tr bgcolor=$unusualrows><td align=right>Auto Dial Level: </td><td align=left nowrap><input type=text name=auto_dial_level size=6 maxlength=6 value=\"$auto_dial_level\" selectBoxOptions=\"0;1;1.1;1.2;1.3;1.4;1.5;1.6;1.7;1.8;1.9;2.0;2.2;2.5;3.0;4.0;4.5;5.0\"> (0 = off)$NWB#osdial_campaigns-auto_dial_level$NWE</td></tr>\n";
 
         echo "<tr bgcolor=$unusualrows><td align=right>Adapt Intensity Modifier: </td><td align=left><select size=1 name=adaptive_intensity>\n";
         $n=40;
@@ -1900,6 +1910,10 @@ if ($ADD==34)
 
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
         echo "</table></center></FORM>\n";
+
+        echo "<script type=\"text/javascript\">\n";
+        echo "createEditableSelect(document.forms[0].auto_dial_level);\n";
+        echo "</script>\n";
 
             $dispinact = get_variable('dispinact');
             $dispinactSQL = "AND active='Y'";
