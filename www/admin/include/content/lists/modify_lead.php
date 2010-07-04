@@ -33,7 +33,10 @@ if ($ADD==1121) {
         echo "  <tr>\n";
         echo "    <td align='center'>\n";
         echo "      <font color=$default_text face=\"ARIAL,HELVETICA\" size='2'><center><br><font color=$default_text size=+1>LEAD MODIFICATION</font><br>\n";
-        echo "      <a target=\"_parent\" href=\"./admin.php?ADD=999999&SUB=27\">[ Search Again ]</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a target=\"_parent\" href=\"./admin.php?ADD=999999&SUB=26\">[ Advanced Search ]</a><br><br>\n";
+        if ($LOG['view_lead_search']) echo "      <a target=\"_parent\" href=\"./admin.php?ADD=999999&SUB=27\">[ Basic Search ]</a>\n";
+        echo "      &nbsp;&nbsp;|&nbsp;&nbsp;\n";
+        if ($LOG['view_lead_search_advanced']) echo "      <a target=\"_parent\" href=\"./admin.php?ADD=999999&SUB=26\">[ Advanced Search ]</a>\n";
+        echo "<br><br>\n";
 			
         if ($end_call > 0) {
 	        ### update the lead record in the osdial_list table 
@@ -162,7 +165,11 @@ if ($ADD==1121) {
 			        $call_log .= "    <td>$row[4]</td>\n";
 			        $call_log .= "    <td align=left>$row[7]</td>\n";
 			        $call_log .= "    <td align=left>$row[8]</td>\n";
-			        $call_log .= "    <td align=left><a href=\"admin.php?ADD=999999&SUB=21&agent=$row[11]\" target=\"_blank\">$row[11]</a></td>\n";
+                    if ($LOG['view_agent_stats']) {
+			            $call_log .= "    <td align=left><a href=\"admin.php?ADD=999999&SUB=21&agent=$row[11]\" target=\"_blank\">$row[11]</a></td>\n";
+                    } else {
+			            $call_log .= "    <td align=left>$row[11]</td>\n";
+                    }
 			        $call_log .= "    <td align=right>$row[3]</td>\n";
 			        $call_log .= "    <td align=right>$row[2]</td>\n";
 			        $call_log .= "    <td align=right>$row[1]</td>\n";
@@ -193,7 +200,11 @@ if ($ADD==1121) {
 			        $agent_log .= "    <td>$y</td>\n";
 			        $agent_log .= "    <td>$row[3]</td>\n";
 			        $agent_log .= "    <td align=left>$row[5]</td>\n";
-			        $agent_log .= "    <td align=left><a href=\"admin.php?ADD=999999&SUB=21&agent=$row[11]\" target=\"_blank\">$row[1]</a></td>\n";
+                    if ($LOG['view_agent_stats']) {
+			            $agent_log .= "    <td align=left><a href=\"admin.php?ADD=999999&SUB=21&agent=$row[11]\" target=\"_blank\">$row[1]</a></td>\n";
+                    } else {
+			            $agent_log .= "    <td align=left>$row[1]</td>\n";
+                    }
 			        $agent_log .= "    <td align=right>$row[7]</td>\n";
 			        $agent_log .= "    <td align=right>$row[9]</td>\n";
 			        $agent_log .= "    <td align=right>$row[11]</td>\n";
@@ -228,7 +239,11 @@ if ($ADD==1121) {
 			        $closer_log .= "    <td>$row[4]</td>\n";
 			        $closer_log .= "    <td align=left>$row[7]</td>\n";
 			        $closer_log .= "    <td align=left>$row[8]</td>\n";
-			        $closer_log .= "    <td align=left><a href=\"admin.php?&ADD=999999&SUB=21&agent=$row[11]\" target=\"_blank\">$row[11]</a></td>\n";
+                    if ($LOG['view_agent_stats']) {
+			            $closer_log .= "    <td align=left><a href=\"admin.php?&ADD=999999&SUB=21&agent=$row[11]\" target=\"_blank\">$row[11]</a></td>\n";
+                    } else {
+			            $closer_log .= "    <td align=left>$row[11]</td>\n";
+                    }
 			        $closer_log .= "    <td align=right>$row[3]</td>\n";
 			        $closer_log .= "    <td align=right>$row[2]</td>\n";
 			        $closer_log .= "    <td align=right>$row[1]</td>\n";
@@ -273,7 +288,11 @@ if ($ADD==1121) {
                 echo "          <td width='50%'><font size=+1>List ID: $ld[list_id]</font></td>\n";
                 echo "        </tr>\n";
 		        echo "        <tr class=tabheader>\n";
-                echo "          <td width='50%'>Fronter:&nbsp;<a href=\"admin.php?&ADD=999999&SUB=21&agent=$ld[user]\">$ld[user]</a></td>\n";
+                if ($LOG['view_agent_stats']) {
+                    echo "          <td width='50%'>Fronter:&nbsp;<a href=\"admin.php?&ADD=999999&SUB=21&agent=$ld[user]\">$ld[user]</a></td>\n";
+                } else {
+                    echo "          <td width='50%'>Fronter:&nbsp;$ld[user]</td>\n";
+                }
                 echo "          <td width='50%'>Vendor ID: $ld[vendor_lead_code]</td>\n";
                 echo "        </tr>\n";
 		        echo "      </table>\n";
@@ -731,7 +750,11 @@ if ($ADD==1121) {
 		            echo "        <td align=left>" . $rl['recording_id'] . "</td>\n";
 		            echo "        <td align=center>" . $rl['filename'] . "</td>\n";
 		            echo "        <td align=left>$location</td>\n";
-		            echo "        <td align=left><a href=\"admin.php?ADD=999999&SUB=21&agent=" . $rl['user'] . "\" target=\"_blank\">" . $rl['user'] . "</a></td>\n";
+                    if ($LOG['view_agent_stats']) {
+		                echo "        <td align=left><a href=\"admin.php?ADD=999999&SUB=21&agent=" . $rl['user'] . "\" target=\"_blank\">" . $rl['user'] . "</a></td>\n";
+                    } else {
+		                echo "        <td align=left>" . $rl['user'] . "</td>\n";
+                    }
 		            echo "      </tr>\n";
 	            }
 		
