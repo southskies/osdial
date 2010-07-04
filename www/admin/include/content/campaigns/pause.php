@@ -27,40 +27,35 @@
 # ADD=27 adds the new campaign agent pause code entry to the system
 ######################
 
-if ($ADD==27)
-{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-	$stmt="SELECT count(*) from osdial_pause_codes where campaign_id='$campaign_id' and pause_code='$pause_code';";
-	$rslt=mysql_query($stmt, $link);
-	$row=mysql_fetch_row($rslt);
-	if ($row[0] > 0)
-		{echo "<br><font color=red>AGENT PAUSE CODE NOT ADDED - there is already an entry for this campaign with this pause code</font>\n";}
-	else
-		{
-		 if ( (strlen($campaign_id) < 2) or (strlen($pause_code) < 1) or (strlen($pause_code) > 6) or (strlen($pause_code_name) < 2) )
-			{
-			 echo "<br><font color=red>AGENT PAUSE CODE NOT ADDED - Please go back and look at the data you entered\n";
-			 echo "<br>pause code must be between 1 and 6 characters in length\n";
-			 echo "<br>pause code name must be between 2 and 30 characters in length</font><br>\n";
-			}
-		 else
-			{
-			echo "<br><B><font color=$default_text>AGENT PAUSE CODE ADDED: $campaign_id - $pause_code - $pause_code_name</font></B>\n";
+if ($ADD==27) {
+    echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
+    $stmt=sprintf("SELECT count(*) FROM osdial_pause_codes WHERE campaign_id='%s' AND pause_code='%s';",mres($campaign_id),mres($pause_code));
+    $rslt=mysql_query($stmt, $link);
+    $row=mysql_fetch_row($rslt);
+    if ($row[0] > 0) {
+        echo "<br><font color=red>AGENT PAUSE CODE NOT ADDED - there is already an entry for this campaign with this pause code</font>\n";
+    } else {
+         if (strlen($campaign_id < 2) or strlen($pause_code) < 1 or strlen($pause_code) > 6 or strlen($pause_code_name) < 2) {
+             echo "<br><font color=red>AGENT PAUSE CODE NOT ADDED - Please go back and look at the data you entered\n";
+             echo "<br>pause code must be between 1 and 6 characters in length\n";
+             echo "<br>pause code name must be between 2 and 30 characters in length</font><br>\n";
+        } else {
+            echo "<br><b><font color=$default_text>AGENT PAUSE CODE ADDED: $campaign_id - $pause_code - $pause_code_name</font></b>\n";
 
-			$stmt="INSERT INTO osdial_pause_codes(campaign_id,pause_code,pause_code_name,billable) values('$campaign_id','$pause_code','$pause_code_name','$billable');";
-			$rslt=mysql_query($stmt, $link);
+            $stmt=sprintf("INSERT INTO osdial_pause_codes (campaign_id,pause_code,pause_code_name,billable) VALUES ('%s','%s','%s','%s');",mres($campaign_id),mres($pause_code),mres($pause_code_name),mres($billable));
+            $rslt=mysql_query($stmt, $link);
 
-			### LOG CHANGES TO LOG FILE ###
-			if ($WeBRooTWritablE > 0)
-				{
-				$fp = fopen ("./admin_changes_log.txt", "a");
-				fwrite ($fp, "$date|ADD A NEW AGENT PAUSE CODE|$PHP_AUTH_USER|$ip|$stmt|\n");
-				fclose($fp);
-				}
-			}
-		}
-$SUB=27;
-$ADD=31;
+            ### LOG CHANGES TO LOG FILE ###
+            if ($WeBRooTWritablE > 0) {
+                $fp = fopen ("./admin_changes_log.txt", "a");
+                fwrite ($fp, "$date|ADD A NEW AGENT PAUSE CODE|$PHP_AUTH_USER|$ip|$stmt|\n");
+                fclose($fp);
+            }
+        }
+    }
+    echo "</font>\n";
+    $SUB=27;
+    $ADD=31;
 }
 
 
@@ -69,41 +64,33 @@ $ADD=31;
 # ADD=47 modify agent pause code in the system
 ######################
 
-if ($ADD==47)
-{
-	if ($LOGmodify_campaigns==1)
-	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+if ($ADD==47) {
+    if ($LOG['modify_campaigns'] == 1) {
+        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
 
-	 if ( (strlen($campaign_id) < 2) or (strlen($pause_code) < 1) or (strlen($pause_code) > 6) or (strlen($pause_code_name) < 2) )
-		{
-		 echo "<br><font color=red>AGENT PAUSE CODE NOT MODIFIED - Please go back and look at the data you entered\n";
-		 echo "<br>pause_code must be between 1 and 6 characters in length\n";
-		 echo "<br>pause_code name must be between 2 and 30 characters in length</font><br>\n";
-		}
-	 else
-		{
-		echo "<br><B><font color=$default_text>AGENT PAUSE CODE MODIFIED: $campaign_id - $pause_code - $pause_code_name</font></B>\n";
+        if (strlen($campaign_id) < 2 or strlen($pause_code) < 1 or strlen($pause_code) > 6 or strlen($pause_code_name) < 2) {
+            echo "<br><font color=red>AGENT PAUSE CODE NOT MODIFIED - Please go back and look at the data you entered\n";
+            echo "<br>pause_code must be between 1 and 6 characters in length\n";
+            echo "<br>pause_code name must be between 2 and 30 characters in length</font><br>\n";
+        } else {
+            echo "<br><b><font color=$default_text>AGENT PAUSE CODE MODIFIED: $campaign_id - $pause_code - $pause_code_name</font></b>\n";
 
-		$stmt="UPDATE osdial_pause_codes SET pause_code_name='$pause_code_name',billable='$billable' where campaign_id='$campaign_id' and pause_code='$pause_code';";
-		$rslt=mysql_query($stmt, $link);
+            $stmt=sprintf("UPDATE osdial_pause_codes SET pause_code_name='%s',billable='%s' WHERE campaign_id='%s' AND pause_code='%s';",mres($pause_code_name),mres($billable),mres($campaign_id),mres($pause_code));
+            $rslt=mysql_query($stmt, $link);
 
-		### LOG CHANGES TO LOG FILE ###
-		if ($WeBRooTWritablE > 0)
-			{
-			$fp = fopen ("./admin_changes_log.txt", "a");
-			fwrite ($fp, "$date|MODIFY AGENT PAUSECODE|$PHP_AUTH_USER|$ip|$stmt|\n");
-			fclose($fp);
-			}
-		}
-	}
-	else
-	{
-	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
-	}
-$SUB=27;
-$ADD=31;	# go to campaign modification form below
+            ### LOG CHANGES TO LOG FILE ###
+            if ($WeBRooTWritablE > 0) {
+                $fp = fopen ("./admin_changes_log.txt", "a");
+                fwrite ($fp, "$date|MODIFY AGENT PAUSECODE|$PHP_AUTH_USER|$ip|$stmt|\n");
+                fclose($fp);
+            }
+        }
+        echo "</font>\n";
+    } else {
+        echo "<font color=red>You do not have permission to view this page</font>\n";
+    }
+    $SUB=27;
+    $ADD=31;    # go to campaign modification form below
 }
 
 
@@ -112,40 +99,32 @@ $ADD=31;	# go to campaign modification form below
 # ADD=67 delete agent pause code in the system
 ######################
 
-if ($ADD==67)
-{
-	if ($LOGmodify_campaigns==1)
-	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+if ($ADD==67) {
+    if ($LOG['modify_campaigns'] == 1) {
+        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
 
-	 if ( (strlen($campaign_id) < 2) or (strlen($pause_code) < 1) )
-		{
-		 echo "<br><font color=red>CAMPAIGN PAUSE CODE NOT DELETED - Please go back and look at the data you entered\n";
-		 echo "<br>pause code must be between 1 and 6 characters in length</font><br>\n";
-		}
-	 else
-		{
-		echo "<br><B><font color=$default_text>CAMPAIGN PAUSE CODE DELETED: $campaign_id - $pause_code</font></B>\n";
+        if (strlen($campaign_id) < 2 or strlen($pause_code) < 1) {
+            echo "<br><font color=red>CAMPAIGN PAUSE CODE NOT DELETED - Please go back and look at the data you entered\n";
+            echo "<br>pause code must be between 1 and 6 characters in length</font><br>\n";
+        } else {
+            echo "<br><B><font color=$default_text>CAMPAIGN PAUSE CODE DELETED: $campaign_id - $pause_code</font></B>\n";
 
-		$stmt="DELETE FROM osdial_pause_codes where campaign_id='$campaign_id' and pause_code='$pause_code';";
-		$rslt=mysql_query($stmt, $link);
+            $stmt=sprintf("DELETE FROM osdial_pause_codes WHERE campaign_id='%s' AND pause_code='%s';",mres($campaign_id),mres($pause_code));
+            $rslt=mysql_query($stmt, $link);
 
-		### LOG CHANGES TO LOG FILE ###
-		if ($WeBRooTWritablE > 0)
-			{
-			$fp = fopen ("./admin_changes_log.txt", "a");
-			fwrite ($fp, "$date|DELETE AGENT PAUSECODE|$PHP_AUTH_USER|$ip|$stmt|\n");
-			fclose($fp);
-			}
-		}
-	}
-	else
-	{
-	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
-	}
-$SUB=27;
-$ADD=31;	# go to campaign modification form below
+            ### LOG CHANGES TO LOG FILE ###
+            if ($WeBRooTWritablE > 0) {
+                $fp = fopen ("./admin_changes_log.txt", "a");
+                fwrite ($fp, "$date|DELETE AGENT PAUSECODE|$PHP_AUTH_USER|$ip|$stmt|\n");
+                fclose($fp);
+            }
+        }
+        echo "</font>\n";
+    } else {
+        echo "<font color=red>You do not have permission to view this page</font>\n";
+    }
+    $SUB=27;
+    $ADD=31;    # go to campaign modification form below
 }
 
 
@@ -153,68 +132,66 @@ $ADD=31;	# go to campaign modification form below
 ######################
 # ADD=37 display all campaign agent pause codes
 ######################
-if ($ADD==37)
-{
-echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
+if ($ADD==37) {
+    echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
 
-echo "<center><br><font color=$default_text size=+1>CAMPAIGN AGENT PAUSE CODES</font><br><br>\n";
-echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
-echo "  <tr class=tabheader>\n";
-echo "    <td>CAMPAIGN</td>\n";
-echo "    <td>NAME</td>\n";
-echo "    <td>PAUSE CODES</td>\n";
-echo "    <td align=center>LINKS</td>\n";
-echo "  </tr>\n";
+    echo "<center>\n";
+    echo "  <br><font color=$default_text size=+1>CAMPAIGN AGENT PAUSE CODES</font><br><br>\n";
+    echo "  <table width=$section_width cellspacing=0 cellpadding=1>\n";
+    echo "    <tr class=tabheader>\n";
+    echo "      <td>CAMPAIGN</td>\n";
+    echo "      <td>NAME</td>\n";
+    echo "      <td>PAUSE CODES</td>\n";
+    echo "      <td align=center>LINKS</td>\n";
+    echo "    </tr>\n";
 
-	$stmt=sprintf("SELECT campaign_id,campaign_name from osdial_campaigns where campaign_id IN %s order by campaign_id", $LOG['allowed_campaignsSQL']);
-	$rslt=mysql_query($stmt, $link);
-	$campaigns_to_print = mysql_num_rows($rslt);
+    $stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE campaign_id IN %s ORDER BY campaign_id;", $LOG['allowed_campaignsSQL']);
+    $rslt=mysql_query($stmt, $link);
+    $campaigns_to_print = mysql_num_rows($rslt);
 
-	$o=0;
-	while ($campaigns_to_print > $o) 
-		{
-		$row=mysql_fetch_row($rslt);
-		$campaigns_id_list[$o] = $row[0];
-		$campaigns_name_list[$o] = $row[1];
-		$o++;
-		}
+    $o=0;
+    while ($campaigns_to_print > $o) {
+        $row=mysql_fetch_row($rslt);
+        $campaigns_id_list[$o] = $row[0];
+        $campaigns_name_list[$o] = $row[1];
+        $o++;
+    }
 
-	$o=0;
-	while ($campaigns_to_print > $o) 
-		{
-		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor='.$oddrows;} 
-		else
-			{$bgcolor='bgcolor='.$evenrows;}
-		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=31&SUB=27&campaign_id=$campaigns_id_list[$o]';\">\n";
-        echo "    <td><a href=\"$PHP_SELF?ADD=31&SUB=27&campaign_id=$campaigns_id_list[$o]\">" . mclabel($campaigns_id_list[$o]) . "</a></td>\n";
-		echo "    <td>$campaigns_name_list[$o]</td>\n";
-		echo "    <td>";
+    $o=0;
+    while ($campaigns_to_print > $o) {
+        if (eregi("1$|3$|5$|7$|9$", $o)) {
+            $bgcolor='bgcolor='.$oddrows;
+        } else {
+            $bgcolor='bgcolor='.$evenrows;
+        }
+        echo "    <tr $bgcolor class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=31&SUB=27&campaign_id=$campaigns_id_list[$o]';\">\n";
+        echo "      <td><a href=\"$PHP_SELF?ADD=31&SUB=27&campaign_id=$campaigns_id_list[$o]\">" . mclabel($campaigns_id_list[$o]) . "</a></td>\n";
+        echo "      <td>$campaigns_name_list[$o]</td>\n";
+        echo "      <td>";
 
-		$stmt="SELECT pause_code from osdial_pause_codes where campaign_id='$campaigns_id_list[$o]' order by pause_code;";
-		$rslt=mysql_query($stmt, $link);
-		$campstatus_to_print = mysql_num_rows($rslt);
-		$p=0;
-		while ( ($campstatus_to_print > $p) and ($p < 10) )
-			{
-			$row=mysql_fetch_row($rslt);
-			echo "$row[0] ";
-			$p++;
-			}
-		if ($p<1) 
-			{echo "<font color=grey><DEL>NONE</DEL></font>";}
-		echo "</td>\n";
-		echo "    <td align=center><a href=\"$PHP_SELF?ADD=31&SUB=27&campaign_id=$campaigns_id_list[$o]\">MODIFY PAUSE CODES</a></td>\n";
-        echo "  </tr>\n";
-		$o++;
-		}
+        $stmt=sprintf("SELECT pause_code FROM osdial_pause_codes WHERE campaign_id='%s' ORDER BY pause_code;",mres($campaigns_id_list[$o]));
+        $rslt=mysql_query($stmt, $link);
+        $campstatus_to_print = mysql_num_rows($rslt);
+        $p=0;
+        while ($campstatus_to_print > $p and $p < 10) {
+            $row=mysql_fetch_row($rslt);
+            echo "$row[0] ";
+            $p++;
+        }
+        if ($p<1) echo "        <font color=grey><DEL>NONE</DEL></font>";
+        echo "      </td>\n";
+        echo "      <td align=center><a href=\"$PHP_SELF?ADD=31&SUB=27&campaign_id=$campaigns_id_list[$o]\">MODIFY PAUSE CODES</a></td>\n";
+        echo "    </tr>\n";
+        $o++;
+    }
 
-echo "  <tr class=tabfooter>\n";
-echo "    <td colspan=4></td>\n";
-echo "  </tr>\n";
-echo "</table>\n";
-echo "</center>\n";
+    echo "    <tr class=tabfooter>\n";
+    echo "      <td colspan=4></td>\n";
+    echo "    </tr>\n";
+    echo "  </table>\n";
+    echo "</center>\n";
+
+    echo "</font>\n";
 }
 
 require("campaigns.php");
