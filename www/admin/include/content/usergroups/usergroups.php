@@ -119,6 +119,24 @@ if ($ADD==411111) {
             echo "<br>Group name and description must be at least 2 characters in length</font><br>\n";
         } else {
             if ($LOG['multicomp'] > 0) $user_group = (($company_id * 1) + 100) . $user_group;
+
+            if ($view_agent_realtime == 0) {
+                $view_agent_realtime_iax_barge = 0;
+                $view_agent_realtime_iax_listen = 0;
+                $view_agent_realtime_sip_barge = 0;
+                $view_agent_realtime_sip_listen = 0;
+            }
+            if ($view_agent_pause_summary == 0) $export_agent_pause_summary = 0;
+            if ($view_agent_performance_detail == 0) $export_agent_performance_detail = 0;
+            if ($view_agent_timesheet == 0) $export_agent_timesheet = 0;
+            if ($view_ingroup_call_report == 0) $export_ingroup_call_report = 0;
+            if ($view_campaign_call_report == 0) $export_campaign_call_report = 0;
+            if ($view_campaign_recent_outbound_sales == 0) $export_campaign_recent_outbound_sales = 0;
+            if ($view_lead_performance_campaign == 0) $export_lead_performance_campaign = 0;
+            if ($view_lead_performance_list == 0) $export_lead_performance_list = 0;
+            if ($view_lead_search_advanced == 0) $export_lead_search_advanced = 0;
+            if ($view_list_cost_entry == 0) $export_list_cost_entry = 0;
+
             $stmt  = "UPDATE osdial_user_groups SET user_group='%s',group_name='%s',allowed_campaigns='%s',";
             $stmt .= "view_agent_pause_summary='%s',export_agent_pause_summary='%s',view_agent_performance_detail='%s',export_agent_performance_detail='%s',";
             $stmt .= "view_agent_realtime='%s',view_agent_realtime_iax_barge='%s',view_agent_realtime_iax_listen='%s',view_agent_realtime_sip_barge='%s',view_agent_realtime_sip_listen='%s',view_agent_realtime_summary='%s',";
@@ -283,14 +301,44 @@ if ($ADD==311111)
     echo "\">";
     echo " (no spaces or punctuation)$NWB#osdial_user_groups-user_group$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Description: </td><td align=left><input type=text name=group_name size=40 maxlength=40 value=\"$group_name\"> (description of group)$NWB#osdial_user_groups-group_name$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Allowed Campaigns: </td><td align=left>\n";
-	echo "$campaigns_list";
-	echo "$NWB#osdial_user_groups-allowed_campaigns$NWE</td></tr>\n";
+	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+
+    $ugcamps = explode("<BR>",$campaigns_list);
 
 	echo "<tr bgcolor=$oddrows>\n";
     echo "  <td colspan=2 align=center>";
     echo "    <br>\n";
-    echo "    <table bgcolor=grey width=50%>\n";
+    echo "    <table bgcolor=grey width=50% cellspacing=1>\n";
+    echo "      <tr class=tabheader>\n";
+    echo "        <td align=center colspan=2>Allowed Campaigns</td>\n";
+    echo "      </tr>\n";
+    echo "      <tr class=tabheader>\n";
+    echo "        <td></td>\n";
+    echo "        <td align=left>Campaign</td>\n";
+    echo "      </tr>\n";
+    $i=0;
+    foreach ($ugcamps as $ugcamp) {
+        $ugcsplit = explode('<label',$ugcamp);
+	    echo "      <tr bgcolor=$oddrows class=\"row font1\">\n";
+        echo "        <td align=center class=tabinput>" . $ugcsplit[0] . "</td>\n";
+        echo "        <td align=left>\n";
+        if ($i==0) echo "          <b>\n";
+        echo "          <label" . $ugcsplit[1] . "\n";
+        if ($i==0) echo "          </b>\n";
+        echo "        </td>\n";
+        echo "      </tr>\n";
+        $i++;
+    }
+	echo "      <tr class=tabfooter><td align=center colspan=2 class=tabbutton nowrap><input type=submit name=SUBMIT value=SUBMIT>$NWB#osdial_user_groups-allowed_campaigns$NWE</td></tr>\n";
+    echo "    </table>\n";
+    echo "  </td>\n";
+    echo "</tr>\n";
+
+
+	echo "<tr bgcolor=$oddrows>\n";
+    echo "  <td colspan=2 align=center>";
+    echo "    <br>\n";
+    echo "    <table bgcolor=grey width=50% cellspacing=1>\n";
     echo "      <tr class=tabheader>\n";
     echo "        <td align=center colspan=4>Agent / UserGroup Reports</td>\n";
     echo "      </tr>\n";
@@ -302,76 +350,119 @@ if ($ADD==311111)
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"Realtime\">\n";
     echo "        <td align=left>Realtime</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_agent_realtime><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_realtime) . "</select></td>\n";
-    echo "        <td align=center class=tabinput></td>\n";
+    echo "        <td align=center><select size=1 name=view_agent_realtime><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_realtime) . "</select></td>\n";
+    echo "        <td align=center></td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_agent_realtime$NWE</td>\n";
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"Realtime - IAX Barge\">\n";
     echo "        <td align=left>Realtime - IAX Barge</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_agent_realtime_iax_barge><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_realtime_iax_barge) . "</select></td>\n";
-    echo "        <td align=center class=tabinput></td>\n";
+    echo "        <td align=center>\n";
+    if ($view_agent_realtime) {
+        echo "          <select size=1 name=view_agent_realtime_iax_barge><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_realtime_iax_barge) . "</select>\n";
+    } else {
+        echo "          <input type=hidden name=view_agent_realtime_iax_barge value=0>N\n";
+    }
+    echo "        </td>\n";
+    echo "        <td align=center></td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_agent_realtime_iax_barge$NWE</td>\n";
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"Realtime - IAX Listen\">\n";
     echo "        <td align=left>Realtime - IAX Listen</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_agent_realtime_iax_listen><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_realtime_iax_listen) . "</select></td>\n";
-    echo "        <td align=center class=tabinput></td>\n";
+    echo "        <td align=center>\n";
+    if ($view_agent_realtime) {
+        echo "          <select size=1 name=view_agent_realtime_iax_listen><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_realtime_iax_listen) . "</select>\n";
+    } else {
+        echo "          <input type=hidden name=view_agent_realtime_iax_listen value=0>N\n";
+    }
+    echo "        </td>\n";
+    echo "        <td align=center></td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_agent_realtime_iax_listen$NWE</td>\n";
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"Realtime - SIP Barge\">\n";
     echo "        <td align=left>Realtime - SIP Barge</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_agent_realtime_sip_barge><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_realtime_sip_barge) . "</select></td>\n";
-    echo "        <td align=center class=tabinput></td>\n";
+    echo "        <td align=center>\n";
+    if ($view_agent_realtime) {
+        echo "          <select size=1 name=view_agent_realtime_sip_barge><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_realtime_sip_barge) . "</select>\n";
+    } else {
+        echo "          <input type=hidden name=view_agent_realtime_sip_barge value=0>N\n";
+    }
+    echo "        </td>\n";
+    echo "        <td align=center></td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_agent_realtime_sip_barge$NWE</td>\n";
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"Realtime - SIP Listen\">\n";
     echo "        <td align=left>Realtime - SIP Listen</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_agent_realtime_sip_listen><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_realtime_sip_listen) . "</select></td>\n";
-    echo "        <td align=center class=tabinput></td>\n";
+    echo "        <td align=center>\n";
+    if ($view_agent_realtime) {
+        echo "          <select size=1 name=view_agent_realtime_sip_listen><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_realtime_sip_listen) . "</select>\n";
+    } else {
+        echo "          <input type=hidden name=view_agent_realtime_sip_listen value=0>N\n";
+    }
+    echo "        </td>\n";
+    echo "        <td align=center></td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_agent_realtime_sip_listen$NWE</td>\n";
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"Realtime Summary\">\n";
     echo "        <td align=left>Realtime Summary</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_agent_realtime_summary><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_realtime_summary) . "</select></td>\n";
-    echo "        <td align=center class=tabinput></td>\n";
+    echo "        <td align=center><select size=1 name=view_agent_realtime_summary><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_realtime_summary) . "</select></td>\n";
+    echo "        <td align=center></td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_agent_realtime_summary$NWE</td>\n";
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"Agent Pause Summary\">\n";
     echo "        <td align=left>Agent Pause Summary</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_agent_pause_summary><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_pause_summary) . "</select></td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=export_agent_pause_summary><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_agent_pause_summary) . "</select></td>\n";
+    echo "        <td align=center><select size=1 name=view_agent_pause_summary><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_pause_summary) . "</select></td>\n";
+    echo "        <td align=center>\n";
+    if ($view_agent_pause_summary) {
+        echo "          <select size=1 name=export_agent_pause_summary><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_agent_pause_summary) . "</select>\n";
+    } else {
+        echo "          <input type=hidden name=export_agent_pause_summary value=0>N\n";
+    }
+    echo "        </td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_agent_pause_summary$NWE</td>\n";
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"Agent Performance Detail\">\n";
     echo "        <td align=left>Agent Performance Detail</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_agent_performance_detail><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_performance_detail) . "</select></td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=export_agent_performance_detail><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_agent_performance_detail) . "</select></td>\n";
+    echo "        <td align=center><select size=1 name=view_agent_performance_detail><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_performance_detail) . "</select></td>\n";
+    echo "        <td align=center>\n";
+    if ($view_agent_performance_detail) {
+        echo "          <select size=1 name=export_agent_performance_detail><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_agent_performance_detail) . "</select>\n";
+    } else {
+        echo "          <input type=hidden name=export_agent_performance_detail value=0>N\n";
+    }
+    echo "        </td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_agent_performance_detail$NWE</td>\n";
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"Agent Stats\">\n";
     echo "        <td align=left>Agent Stats</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_agent_stats><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_stats) . "</select></td>\n";
-    echo "        <td align=center class=tabinput></td>\n";
+    echo "        <td align=center><select size=1 name=view_agent_stats><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_stats) . "</select></td>\n";
+    echo "        <td align=center></td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_agent_stats$NWE</td>\n";
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"Agent Status\">\n";
     echo "        <td align=left>Agent Status</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_agent_status><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_status) . "</select></td>\n";
-    echo "        <td align=center class=tabinput></td>\n";
+    echo "        <td align=center><select size=1 name=view_agent_status><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_status) . "</select></td>\n";
+    echo "        <td align=center></td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_agent_status$NWE</td>\n";
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"Agent Timesheet\">\n";
     echo "        <td align=left>Agent Timesheet</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_agent_timesheet><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_timesheet) . "</select></td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=export_agent_timesheet><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_agent_timesheet) . "</select></td>\n";
+    echo "        <td align=center><select size=1 name=view_agent_timesheet><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_agent_timesheet) . "</select></td>\n";
+    echo "        <td align=center>\n";
+    if ($view_agent_timesheet) {
+        echo "          <select size=1 name=export_agent_timesheet><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_agent_timesheet) . "</select>\n";
+    } else {
+        echo "          <input type=hidden name=export_agent_timesheet value=0>N\n";
+    }
+    echo "        </td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_agent_timesheet$NWE</td>\n";
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"UserGroup Hourly Stats\">\n";
     echo "        <td align=left>UserGroup Hourly Stats</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_usergroup_hourly_stats><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_usergroup_hourly_stats) . "</select></td>\n";
-    echo "        <td align=center class=tabinput></td>\n";
+    echo "        <td align=center><select size=1 name=view_usergroup_hourly_stats><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_usergroup_hourly_stats) . "</select></td>\n";
+    echo "        <td align=center></td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_usergroup_hourly_stats$NWE</td>\n";
     echo "      </tr>\n";
+	echo "      <tr class=tabfooter><td align=center colspan=4 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
     echo "    </table>\n";
     echo "  </td>\n";
     echo "</tr>\n";
@@ -379,7 +470,7 @@ if ($ADD==311111)
 	echo "<tr bgcolor=$oddrows>\n";
     echo "  <td colspan=2 align=center>";
     echo "    <br>\n";
-    echo "    <table bgcolor=grey width=50%>\n";
+    echo "    <table bgcolor=grey width=50% cellspacing=1>\n";
     echo "      <tr class=tabheader>\n";
     echo "        <td align=center colspan=4>InGroup / Closer Reports</td>\n";
     echo "      </tr>\n";
@@ -391,11 +482,18 @@ if ($ADD==311111)
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"InGroup Call Report\">\n";
     echo "        <td align=left>InGroup Call Report</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_ingroup_call_report><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_ingroup_call_report) . "</select></td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=export_ingroup_call_report><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_ingroup_call_report) . "</select></td>\n";
+    echo "        <td align=center><select size=1 name=view_ingroup_call_report><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_ingroup_call_report) . "</select></td>\n";
+    echo "        <td align=center>\n";
+    if ($view_ingroup_call_report) {
+        echo "          <select size=1 name=export_ingroup_call_report><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_ingroup_call_report) . "</select>\n";
+    } else {
+        echo "          <input type=hidden name=export_ingroup_call_report value=0>N\n";
+    }
+    echo "        </td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_ingroup_call_report$NWE</td>\n";
     echo "        </td>\n";
     echo "      </tr>\n";
+	echo "      <tr class=tabfooter><td align=center colspan=4 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
     echo "    </table>\n";
     echo "  </td>\n";
     echo "</tr>\n";
@@ -403,7 +501,7 @@ if ($ADD==311111)
 	echo "<tr bgcolor=$oddrows>\n";
     echo "  <td colspan=2 align=center>";
     echo "    <br>\n";
-    echo "    <table bgcolor=grey width=50%>\n";
+    echo "    <table bgcolor=grey width=50% cellspacing=1>\n";
     echo "      <tr class=tabheader>\n";
     echo "        <td align=center colspan=4>Campaign Reports</td>\n";
     echo "      </tr>\n";
@@ -415,16 +513,29 @@ if ($ADD==311111)
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"Campaign Call Report\">\n";
     echo "        <td align=left>Campaign Call Report</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_campaign_call_report><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_campaign_call_report) . "</select></td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=export_campaign_call_report><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_campaign_call_report) . "</select></td>\n";
+    echo "        <td align=center><select size=1 name=view_campaign_call_report><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_campaign_call_report) . "</select></td>\n";
+    echo "        <td align=center>\n";
+    if ($view_campaign_call_report) {
+        echo "          <select size=1 name=export_campaign_call_report><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_campaign_call_report) . "</select>\n";
+    } else {
+        echo "          <input type=hidden name=export_campaign_call_report value=0>N\n";
+    }
+    echo "        </td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_campaign_call_report$NWE</td>\n";
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"Campaign Recent Outbound Sales\">\n";
     echo "        <td align=left>Campaign Recent Outbound Sales</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_campaign_recent_outbound_sales><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_campaign_recent_outbound_sales) . "</select></td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=export_campaign_recent_outbound_sales><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_campaign_recent_outbound_sales) . "</select></td>\n";
+    echo "        <td align=center><select size=1 name=view_campaign_recent_outbound_sales><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_campaign_recent_outbound_sales) . "</select></td>\n";
+    echo "        <td align=center>\n";
+    if ($view_campaign_recent_outbound_sales) {
+        echo "          <select size=1 name=export_campaign_recent_outbound_sales><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_campaign_recent_outbound_sales) . "</select>\n";
+    } else {
+        echo "          <input type=hidden name=export_campaign_recent_outbound_sales value=0>N\n";
+    }
+    echo "        </td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_campaign_recent_outbound_sales$NWE</td>\n";
     echo "      </tr>\n";
+	echo "      <tr class=tabfooter><td align=center colspan=4 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
     echo "    </table>\n";
     echo "  </td>\n";
     echo "</tr>\n";
@@ -432,7 +543,7 @@ if ($ADD==311111)
 	echo "<tr bgcolor=$oddrows>\n";
     echo "  <td colspan=2 align=center>";
     echo "    <br>\n";
-    echo "    <table bgcolor=grey width=50%>\n";
+    echo "    <table bgcolor=grey width=50% cellspacing=1>\n";
     echo "      <tr class=tabheader>\n";
     echo "        <td align=center colspan=4>List / Lead Reports</td>\n";
     echo "      </tr>\n";
@@ -444,34 +555,59 @@ if ($ADD==311111)
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"Lead Performance by Campaign\">\n";
     echo "        <td align=left>Lead Performance by Campaign</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_lead_performance_campaign><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_lead_performance_campaign) . "</select></td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=export_lead_performance_campaign><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_lead_performance_campaign) . "</select></td>\n";
+    echo "        <td align=center><select size=1 name=view_lead_performance_campaign><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_lead_performance_campaign) . "</select></td>\n";
+    echo "        <td align=center>\n";
+    if ($view_lead_performance_campaign) {
+        echo "          <select size=1 name=export_lead_performance_campaign><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_lead_performance_campaign) . "</select>\n";
+    } else {
+        echo "          <input type=hidden name=export_lead_performance_campaign value=0>N\n";
+    }
+    echo "        </td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_lead_performance_campaign$NWE</td>\n";
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"Lead Performance by List\">\n";
     echo "        <td align=left>Lead Performance by List</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_lead_performance_list><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_lead_performance_list) . "</select></td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=export_lead_performance_list><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_lead_performance_list) . "</select></td>\n";
+    echo "        <td align=center><select size=1 name=view_lead_performance_list><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_lead_performance_list) . "</select></td>\n";
+    echo "        <td align=center>\n";
+    if ($view_lead_performance_list) {
+        echo "          <select size=1 name=export_lead_performance_list><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_lead_performance_list) . "</select>\n";
+    } else {
+        echo "          <input type=hidden name=export_lead_performance_list value=0>N\n";
+    }
+    echo "        </td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_lead_performance_list$NWE</td>\n";
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"Lead Search - Basic\">\n";
     echo "        <td align=left>Lead Search - Basic</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_lead_search><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_lead_search) . "</select></td>\n";
-    echo "        <td align=center class=tabinput></td>\n";
+    echo "        <td align=center><select size=1 name=view_lead_search><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_lead_search) . "</select></td>\n";
+    echo "        <td align=center></td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_lead_search$NWE</td>\n";
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"Lead Search - Advanced\">\n";
     echo "        <td align=left>Lead Search - Advanced</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_lead_search_advanced><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_lead_search_advanced) . "</select></td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=export_lead_search_advanced><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_lead_search_advanced) . "</select></td>\n";
+    echo "        <td align=center><select size=1 name=view_lead_search_advanced><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_lead_search_advanced) . "</select></td>\n";
+    echo "        <td align=center>\n";
+    if ($view_lead_search_advanced) {
+        echo "          <select size=1 name=export_lead_search_advanced><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_lead_search_advanced) . "</select>\n";
+    } else {
+        echo "          <input type=hidden name=export_lead_search_advanced value=0>N\n";
+    }
+    echo "        </td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_lead_search_advanced$NWE</td>\n";
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"List Cost by Entry Date\">\n";
     echo "        <td align=left>List Cost by Entry Date</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_list_cost_entry><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_list_cost_entry) . "</select></td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=export_list_cost_entry><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_list_cost_entry) . "</select></td>\n";
+    echo "        <td align=center><select size=1 name=view_list_cost_entry><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_list_cost_entry) . "</select></td>\n";
+    echo "        <td align=center>\n";
+    if ($view_list_cost_entry) {
+        echo "          <select size=1 name=export_list_cost_entry><option value=0>N</option><option value=1>Y</option>" . optnum2let($export_list_cost_entry) . "</select>\n";
+    } else {
+        echo "          <input type=hidden name=export_list_cost_entry value=0>N\n";
+    }
+    echo "        </td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_list_cost_entry$NWE</td>\n";
     echo "      </tr>\n";
+	echo "      <tr class=tabfooter><td align=center colspan=4 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
     echo "    </table>\n";
     echo "  </td>\n";
     echo "</tr>\n";
@@ -479,7 +615,7 @@ if ($ADD==311111)
 	echo "<tr bgcolor=$oddrows>\n";
     echo "  <td colspan=2 align=center>";
     echo "    <br>\n";
-    echo "    <table bgcolor=grey width=50%>\n";
+    echo "    <table bgcolor=grey width=50% cellspacing=1>\n";
     echo "      <tr class=tabheader>\n";
     echo "        <td align=center colspan=4>Server Reports</td>\n";
     echo "      </tr>\n";
@@ -491,22 +627,22 @@ if ($ADD==311111)
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"Server Performance\">\n";
     echo "        <td align=left>Server Performance</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_server_performance><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_server_performance) . "</select></td>\n";
-    echo "        <td align=center class=tabinput></td>\n";
+    echo "        <td align=center><select size=1 name=view_server_performance><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_server_performance) . "</select></td>\n";
+    echo "        <td align=center></td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_server_performance$NWE</td>\n";
     echo "      </tr>\n";
 	echo "      <tr bgcolor=$oddrows class=\"row font2\" title=\"Server Times\">\n";
     echo "        <td align=left>Server Times</td>\n";
-    echo "        <td align=center class=tabinput><select size=1 name=view_server_times><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_server_times) . "</select></td>\n";
-    echo "        <td align=center class=tabinput></td>\n";
+    echo "        <td align=center><select size=1 name=view_server_times><option value=0>N</option><option value=1>Y</option>" . optnum2let($view_server_times) . "</select></td>\n";
+    echo "        <td align=center></td>\n";
     echo "        <td align=center>$NWB#osdial_user_groups-view_server_times$NWE</td>\n";
     echo "      </tr>\n";
+	echo "      <tr class=tabfooter><td align=center colspan=4 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
     echo "    </table>\n";
     echo "    <br>\n";
     echo "  </td>\n";
     echo "</tr>\n";
 
-	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 
 
