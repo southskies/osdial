@@ -264,18 +264,18 @@ function report_agent_stats() {
         $table .= "</table>\n";
         
 
-        $stmt=sprintf("SELECT user,event_time AS pause_start,DATE_ADD(event_time,INTERVAL pause_sec SECOND) AS pause_end,pause_sec,sub_status AS pause_code FROM osdial_agent_log WHERE osdial_agent_log.user_group IN %s AND osdial_agent_log.user='%s' AND event_time BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND sub_status IS NOT NULL AND sub_status != 'LOGIN' AND pause_sec>0 ORDER BY user,event_time;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date));
+        $stmt=sprintf("SELECT sub_status AS pause_code,event_time AS pause_start,DATE_ADD(event_time,INTERVAL pause_sec SECOND) AS pause_end,pause_sec FROM osdial_agent_log WHERE osdial_agent_log.user_group IN %s AND osdial_agent_log.user='%s' AND event_time BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND pause_sec>0 ORDER BY event_time;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date));
         $rslt=mysql_query($stmt, $link);
         $pauses_to_print = mysql_num_rows($rslt);
         
         $table .= "  <br>\n";
-        $table .= "  <center><font color=$default_text size=3><b>PAUSE CODE SUMMARY</b></font></center>\n";
+        $table .= "  <center><font color=$default_text size=3><b>PAUSE DETAIL</b></font></center>\n";
         $table .= "  <table align=center width=500 cellspacing=1 cellpadding=1 bgcolor=grey>\n";
         $table .= "    <tr class=tabheader>\n";
+        $table .= "      <td>CODE</td>\n";
         $table .= "      <td>START</td>\n";
         $table .= "      <td>END</td>\n";
         $table .= "      <td>TIME</td>\n";
-        $table .= "      <td>CODE</td>\n";
         $table .= "    </tr>\n";
 
         $psecs=0;
@@ -289,10 +289,10 @@ function report_agent_stats() {
             }
 
             $table .= "  <tr $bgcolor class=\"row font1\">\n";
+            $table .= "    <td align=left>$row[0]</td>\n";
             $table .= "    <td align=center>$row[1]</td>\n";
             $table .= "    <td align=center>$row[2]</td>\n";
-            $table .= "    <td align=right>$row[3]</td>\n";
-            $table .= "    <td align=left>$row[4]</td>\n";
+            $table .= "    <td align=right>" . fmt_hms($row[3]) . "</td>\n";
             $table .= "  </tr>\n";
             $psecs += $row[3];
         
@@ -302,8 +302,8 @@ function report_agent_stats() {
         $table .= "  <tr class=tabfooter>\n";
         $table .= "    <td>TOTAL</td>";
         $table .= "    <td></td>\n";
-        $table .= "    <td align=right>" . fmt_hms($psecs) . "</td>\n";
         $table .= "    <td></td>\n";
+        $table .= "    <td align=right>" . fmt_hms($psecs) . "</td>\n";
         $table .= "  </tr>\n";
         $table .= "</table>\n";
 
