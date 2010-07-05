@@ -58,6 +58,10 @@
 	var CallBackCommenTs = '';
 	var scheduled_callbacks = '<? echo $scheduled_callbacks ?>';
 	var dispo_check_all_pause = '<? echo $dispo_check_all_pause ?>';
+	var use_cid_areacode_map = '<? echo $use_cid_areacode_map ?>';
+	var VARcid_areacodes = new Array(<? echo $VARcid_areacodes ?>);
+	var VARcid_areacode_numbers = new Array(<? echo $VARcid_areacode_numbers ?>);
+	var VARcid_areacode_names = new Array(<? echo $VARcid_areacode_names ?>);
 	var agent_pause_codes_active = '<? echo $agent_pause_codes_active ?>';
 	VARpause_codes = new Array(<? echo $VARpause_codes ?>);
 	VARpause_code_names = new Array(<? echo $VARpause_code_names ?>);
@@ -701,11 +705,27 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 				} else {
 					cid = campaign_cid;
 					cid_name = campaign_cid_name;
+					if (use_cid_areacode_map=='Y') {
+						for (var c=0; c<VARcid_areacodes.length; c++) {
+							if (VARcid_areacodes[c] == document.osdial_form.phone_number.value.substr(0,3)) {
+								cid = VARcid_areacode_numbers[c];
+								cid_name = VARcid_areacode_names[c];
+							}
+						}
+					}
 				}
 			} else {
 				var queryCID = "DVagcW" + epoch_sec + user_abb;
 				cid = campaign_cid;
 				cid_name = campaign_cid_name;
+				if (use_cid_areacode_map=='Y') {
+					for (var c=0; c<VARcid_areacodes.length; c++) {
+						if (VARcid_areacodes[c] == document.osdial_form.phone_number.value.substr(0,3)) {
+							cid = VARcid_areacode_numbers[c];
+							cid_name = VARcid_areacode_names[c];
+						}
+					}
+				}
 			}
 
 			VMCoriginate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=Originate&format=text&channel=" + originatevalue + "&queryCID=" + queryCID + "&exten=" + orig_prefix + "" + dialnum + "&ext_context=" + ext_context + "&ext_priority=1&outbound_cid=" + cid + "&outbound_cid_name=" + cid_name;
@@ -1131,6 +1151,15 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
                 } else {
                     outbound_cid = campaign_cid;
                     outbound_cid_name = campaign_cid_name;
+                    camap_number = document.osdial_form.xfernumber.value;
+                    if (use_cid_areacode_map=='Y' && camap_number.length==10) {
+                        for (var c=0; c<VARcid_areacodes.length; c++) {
+                            if (VARcid_areacodes[c] == camap_number.substr(0,3)) {
+				outbound_cid = VARcid_areacode_numbers[c];
+                                outbound_cid_name = VARcid_areacode_names[c];
+                            }
+                        }
+                    }
                 }
 		var xmlhttp=false;
 		/*@cc_on @*/
@@ -1937,6 +1966,14 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			lead_cust2_cid = document.osdial_form.custom2.value;
 			cid = campaign_cid;
 			cid_name = campaign_cid_name;
+			if (use_cid_areacode_map=='Y' && mdnPhonENumbeR.length==10) {
+				for (var c=0; c<VARcid_areacodes.length; c++) {
+					if (VARcid_areacodes[c] == mdnPhonENumbeR.substr(0,3)) {
+						cid = VARcid_areacode_numbers[c];
+						cid_name = VARcid_areacode_names[c];
+					}
+				}
+			}
 			if (use_custom2_callerid == 'Y' && lead_cust2_cid != '') {
 				cid = lead_cust2_cid;
 				cid_name = lead_cust2_cid;
@@ -2422,6 +2459,14 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			lead_cust2_cid = document.osdial_form.custom2.value;
 			cid = campaign_cid;
 			cid_name = campaign_cid_name;
+			if (use_cid_areacode_map=='Y' && manDiaLonly_num.length==10) {
+				for (var c=0; c<VARcid_areacodes.length; c++) {
+					if (VARcid_areacodes[c] == manDiaLonly_num.substr(0,3)) {
+						cid = VARcid_areacode_numbers[c];
+						cid_name = VARcid_areacode_names[c];
+					}
+				}
+			}
 			if (use_custom2_callerid == 'Y' && lead_cust2_cid != '') {
 				cid = lead_cust2_cid;
 				cid_name = lead_cust2_cid;
@@ -2429,6 +2474,7 @@ if ($enable_fast_refresh < 1) {echo "\tvar refresh_interval = 1000;\n";}
 			manDiaLonly_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLonly&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&phone_number=" + manDiaLonly_num + "&phone_code=" + document.osdial_form.phone_code.value + "&campaign=" + campaign + "&ext_context=" + ext_context + "&dial_timeout=" + dial_timeout + "&dial_prefix=" + dial_prefix + "&campaign_cid=" + cid + "&campaign_cid_name=" + cid_name + "&omit_phone_code=" + omit_phone_code;
 			cid = campaign_cid;
 			cid_name = campaign_cid_name;
+			debug("<b>ManualDialOnly:</b> vdc_db_query: manDiaLonly_query=" + manDiaLonly_query,3);
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 			xmlhttp.send(manDiaLonly_query); 
@@ -5685,13 +5731,12 @@ if ($useIE > 0) {
 			hideDiv('DispoSelectBox');
 			hideDiv('LogouTBox');
 			hideDiv('AgenTDisablEBoX');
-            hideDiv('SysteMDisablEBoX');
-            hideDiv('SysteMAlerTBoX');
+			hideDiv('SysteMDisablEBoX');
+			hideDiv('SysteMAlerTBoX');
 			hideDiv('CustomerGoneBox');
 			hideDiv('NoneInSessionBox');
 			hideDiv('WrapupBox');
 			hideDiv('TransferMain');
-			hideDiv('WelcomeBoxA');
 			hideDiv('CallBackSelectBox');
 			hideDiv('PostDateSelectBox');
 			hideDiv('DispoButtonHideA');
@@ -5702,17 +5747,25 @@ if ($useIE > 0) {
 			hideDiv('PauseCodeSelectBox');
 			if (agentonly_callbacks != '1') {
 				hideDiv('CallbacksButtons');
-			}
+			} else {
+				showDiv('CallbacksButtons');
+            		}
 			//if ( (agentcall_manual != '1') && (starting_dial_level > 0) )
 			if (agentcall_manual != '1') {
 				hideDiv('ManuaLDiaLButtons');
-			}
+			} else {
+				showDiv('ManuaLDiaLButtons');
+            		}
 			if (callholdstatus != '1') {
 				hideDiv('AgentStatusCalls');
-			}
+			} else {
+				showDiv('AgentStatusCalls');
+            		}
 			if (agentcallsstatus != '1') {
 				hideDiv('AgentStatusSpan');
-			}
+			} else {
+				showDiv('AgentStatusSpan');
+            		}
 			if ( ( (auto_dial_level > 0) && (inbound_man != 0) ) || (manual_dial_preview < 1) ) {
 				clearDiv('DiaLLeaDPrevieW');
 			}
@@ -5721,7 +5774,9 @@ if ($useIE > 0) {
 			}
 			if (volumecontrol_active != '1') {
 				hideDiv('VolumeControlSpan');
-			}
+			} else {
+				showDiv('VolumeControlSpan');
+            		}
 			document.osdial_form.LeadLookuP.checked=true;
 
 			if (agent_pause_codes_active=='Y') {
@@ -5735,6 +5790,7 @@ if ($useIE > 0) {
 				document.getElementById("RecorDControl").innerHTML = "<img src=\"templates/<?= $agent_template ?>/images/vdc_LB_startrecording_OFF.gif\" border=0 alt=\"Start Recording\">";
 			}
 			if (INgroupCOUNT > 0 && (dial_method != "MANUAL" || inbound_man > 0)) {
+			    hideDiv('WelcomeBoxA');
 				if (VU_closer_default_blended == 1) {
 					document.osdial_form.CloserSelectBlended.checked=true;
 				}
@@ -5752,6 +5808,7 @@ if ($useIE > 0) {
 					document.getElementById("DiaLControl").innerHTML = DiaLControl_manual_HTML;
 				}
 			}
+			hideDiv('WelcomeBoxA');
 			OSDiaL_closer_login_checked = 1;
 		} else {
 

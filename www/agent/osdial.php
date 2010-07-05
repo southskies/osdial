@@ -394,6 +394,26 @@ echo "<html>\n";
 echo "<head>\n";
 echo "<!-- VERSION: $version     BUILD: $build -->\n";
 
+$welcome_span  = "<!-- Welcome to OSDial! -->\n";
+$welcome_span .= "<span style=\"position:absolute;left:0px;top:0px;z-index:300;visibility:hidden;\" id=WelcomeBoxA>\n";
+$welcome_span .= "  <table class=acrossagent border=1 width=" . ($CAwidth + 30) . " height=550 cellspacing=50>\n";
+$welcome_span .= "    <tr>\n";
+$welcome_span .= "      <td align=center bgcolor=$panel_bg>\n";
+$welcome_span .= "        <span id=WelcomeBoxAt style=\"color:$default_fc;font-family:Arial,Helvetica;border:none;\">\n";
+$welcome_span .= "          <span id=WelcomeBoxTitle style=\"font-size:36px;\"><b>$t1</b></font>\n";
+$welcome_span .= "          <font size=3>\n";
+$welcome_span .= "            <br><br><br><br><br><br>One moment please.<br><br><br><br><br>\n";
+$welcome_span .= "            <font size=2>\n";
+$welcome_span .= "              <span id=WelcomeBoxStatus>Connecting...</span>\n";
+$welcome_span .= "            </font>\n";
+$welcome_span .= "            <br><br><br>\n";
+$welcome_span .= "          </font>\n";
+$welcome_span .= "        </span>\n";
+$welcome_span .= "      </td>\n";
+$welcome_span .= "    </tr>\n";
+$welcome_span .= "  </table>\n";
+$welcome_span .= "</span>\n";
+
 $company_prefix='';
 if ($multicomp > 0) {
     $company_prefix = substr($phone_login,0,3);
@@ -409,7 +429,7 @@ if ($multicomp > 0) {
 }
 
 if ($campaign_login_list > 0) {
-    $camp_form_code  = "<select style=\"font-size:8pt;\" size=1 name=VD_campaign id=VD_campaign onFocus=\"login_allowable_campaigns()\">\n";
+    $camp_form_code  = "<select size=1 name=VD_campaign id=VD_campaign onFocus=\"login_allowable_campaigns()\">\n";
     $camp_form_code .= "<option value=\"\"></option>\n";
 
     $LOGallowed_campaignsSQL='';
@@ -455,6 +475,42 @@ if ($campaign_login_list > 0) {
 } else {
     $camp_form_code = "<INPUT TYPE=TEXT NAME=VD_campaign SIZE=10 MAXLENGTH=20 VALUE=\"$VD_campaign\">\n";
 }
+
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+
+echo "<style type=\"text/css\">\n";
+echo "<!--\n";
+echo "input, textarea{color: black;font-family: \"dejavu sans\",Sans-serif;font-size: 1.0em;padding: 0px;}\n";
+echo "div.scroll_callback {height: 300px; width: 920px; overflow: scroll;}\n";
+echo "div.scroll_list {height: 400px; width: 140px; overflow: scroll;}\n";
+echo "div.scroll_script {height:". $SSheight ."px; width:" . $SDwidth . "px; background: #FFF5EC; overflow: scroll; font-size: 12px;  font-family: sans-serif;}\n";
+echo "div.text_input {overflow: auto; font-size: 10px;  font-family: sans-serif;}\n";
+echo ".body_text {font-size: 10px;  font-family: \"dejavu sans\",sans-serif;border:none;}\n";
+echo ".body_input {font-size: 10px;  font-family: \"dejavu sans\",sans-serif;overflow:auto}\n";
+echo ".queue_text_red {font-size: 12px;  font-family: sans-serif; font-weight: bold; color: red}\n";
+echo ".queue_text {font-size: 12px;  font-family: sans-serif; color: black}\n";
+echo ".preview_text {font-size: 13px;  font-family: sans-serif; background:$preview_fc}\n";
+echo ".preview_text_red {font-size: 13px;  font-family: sans-serif; background:$preview_bg}\n";
+echo ".body_small {font-size: 11px;  font-family: sans-serif;}\n";
+echo ".body_tiny {font-size: 9px;  font-family: \"dejavu sans\",sans-serif;padding: 0px;}\n";
+echo ".log_text {font-size: 11px;  font-family: monospace;}\n";
+echo ".log_text_red {font-size: 11px;  font-family: monospace; font-weight: bold; background: #FF3333}\n";
+echo ".log_title {font-size: 12px;  font-family: monospace; font-weight: bold;}\n";
+echo ".sd_text {font-size: 16px;  font-family: sans-serif; font-weight: bold;}\n";
+echo ".sh_text {font-size: 14px;  font-family: sans-serif; font-weight: bold;}\n";
+echo ".sb_text {font-size: 12px;  font-family: sans-serif;}\n";
+echo ".sk_text {font-size: 11px;  font-family: sans-serif;}\n";
+echo ".skb_text {font-size: 13px;  font-family: sans-serif; font-weight: bold;}\n";
+echo ".ON_conf {font-size: 11px;  font-family: monospace; color: black; background: #FFFF99}\n";
+echo ".OFF_conf {font-size: 11px;  font-family: monospace; color: black; background: #FFCC77}\n";
+echo ".cust_form {font-family: sans-serif; font-size: 10px; overflow: auto}\n";
+# The following css rule changes the input style on the login forms.
+echo ".containera input {color: black;font-family: Sans-serif;font-size: 12px;padding: 0px;}\n";
+echo ".containera select {color: black;font-family: Sans-serif;font-size: 10px;padding: 0px; overflow:auto;}\n";
+echo "-->\n";
+echo "</style>\n";
+
+
 
 if ($LogiNAJAX > 0) {
 
@@ -508,13 +564,18 @@ if ($LogiNAJAX > 0) {
             document.osdial_form.VD_campaign.onfocus=function(){login_allowable_campaigns();};
         }
 
+        function login_submit() {
+		    document.getElementById("WelcomeBoxStatus").innerHTML = 'Authenticating...';
+		    document.getElementById("WelcomeBoxA").style.visibility = 'visible';
+            document.osdial_form.submit();
+        }
+
 	</script>
 
 
 <?
 }
 
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
 
 //  Relogin
 if ($relogin == 'YES') {
@@ -523,6 +584,7 @@ if ($relogin == 'YES') {
 	echo "</head>\n";
 	
 	echo "<BODY BGCOLOR=WHITE name=osdial>\n";
+    echo $welcome_span;
 	echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
 	echo "<!-- INTERNATIONALIZATION-LINKS-PLACEHOLDER-OSDIAL -->\n";
 	echo "</TR></TABLE>\n";
@@ -579,7 +641,7 @@ if ($relogin == 'YES') {
 	echo "</tr>";
 	echo "<tr><td colspan=4 class=rborder>&nbsp;</td></tr>";
 	echo "<tr>";
-	echo "	<TD ALIGN=CENTER COLSPAN=4 class=rborder><INPUT TYPE=SUBMIT NAME=SUBMIT VALUE=SUBMIT></TD>";
+	echo "	<TD ALIGN=CENTER COLSPAN=4 class=rborder><INPUT TYPE=button onclick=\"login_submit(); return false;\" NAME=SUBMIT VALUE=SUBMIT></TD>";
 	echo "</tr>";
 	echo "<tr>";
 	echo "	<TD ALIGN=LEFT COLSPAN=4 class=rbborder><font size=1>&nbsp;Version: $version&nbsp;&nbsp;&nbsp;Build: $build</TD>";
@@ -593,7 +655,6 @@ if ($relogin == 'YES') {
 
 if ($user_login_first == 1) {
 	if ( (strlen($VD_login)<1) or (strlen($VD_pass)<1) or (strlen($VD_campaign)<1) ) {
-		//echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
 		echo "<title>$t1 web client: Campaign Login</title>\n";
 		//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 		echo "</head>\n";
@@ -663,11 +724,11 @@ if ($user_login_first == 1) {
 			$phone_login=$row[0];
 			$phone_pass=$row[1];
 	
-			echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
 			echo "<title>$t1 web client: Login</title>\n";
 			//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 			echo "</head>\n";
 			echo "<BODY BGCOLOR=WHITE name=osdial>\n";
+            echo $welcome_span;
 			echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
 			echo "<!-- INTERNATIONALIZATION-LINKS-PLACEHOLDER-OSDIAL -->\n";
 			echo "</TR></TABLE>\n";
@@ -689,7 +750,7 @@ if ($user_login_first == 1) {
 			echo "<TR><TD ALIGN=RIGHT><font color=white>Campaign:  </TD>";
 			echo "<TD ALIGN=LEFT><span id=\"LogiNCamPaigns\">$camp_form_code</span></TD></TR>\n";
 			echo "<tr><td colspan=2>&nbsp;</td></tr>";
-			echo "<TR><TD ALIGN=CENTER COLSPAN=2><INPUT TYPE=SUBMIT NAME=SUBMIT VALUE=SUBMIT> &nbsp; \n";
+			echo "<TR><TD ALIGN=CENTER COLSPAN=2><INPUT TYPE=button onclick=\"login_submit(); return false;\" NAME=SUBMIT VALUE=SUBMIT> &nbsp; \n";
 			echo "<span id=\"LogiNReseT\"></span></TD></TR>\n";
 			echo "<TR><TD ALIGN=LEFT COLSPAN=2><font size=1><BR>VERSION: $version &nbsp; &nbsp; &nbsp; BUILD: $build</TD></TR>\n";
 			echo "</TABLE>\n";
@@ -703,7 +764,6 @@ if ($user_login_first == 1) {
 
 // Phone Login from welcome scren
 if ( (strlen($phone_login)<2) or (strlen($phone_pass)<2) ) {
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
 	echo "<title>$t1 web client:  Phone Login</title>\n";
 	//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 	echo "</head>\n";
@@ -818,6 +878,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 			//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 			echo "</head>\n";
 			echo "<BODY BGCOLOR=WHITE name=osdial>\n";
+            echo $welcome_span;
 			echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
 			echo "<!-- INTERNATIONALIZATION-LINKS-PLACEHOLDER-OSDIAL -->\n";
 			echo "</TR></TABLE>\n";
@@ -829,7 +890,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 			echo "Login: <INPUT TYPE=TEXT NAME=VD_login SIZE=10 MAXLENGTH=20 VALUE=\"$VD_login\">\n<br>";
 			echo "Password: <INPUT TYPE=PASSWORD NAME=VD_pass SIZE=10 MAXLENGTH=20 VALUE=\"$VD_pass\"><br>\n";
 			echo "Campaign: <span id=\"LogiNCamPaigns\">$camp_form_code</span><br>\n";
-			echo "<INPUT TYPE=SUBMIT NAME=SUBMIT VALUE=SUBMIT> &nbsp; \n";
+			echo "<INPUT TYPE=button onclick=\"login_submit(); return false;\" NAME=SUBMIT VALUE=SUBMIT> &nbsp; \n";
 			echo "<span id=\"LogiNReseT\"></span>\n";
 			echo "</FORM>\n\n";
 			echo "</body>\n\n";
@@ -933,7 +994,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 			$HKxferextens = substr("$HKxferextens", 0, -1); 
 
 			##### grab the statuses to be dialed for your campaign as well as other campaign settings
-			$stmt="SELECT park_ext,park_file_name,web_form_address,allow_closers,auto_dial_level,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,agent_pause_codes_active,no_hopper_leads_logins,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,xfer_groups,web_form_address2,allow_tab_switch,preview_force_dial_time,manual_preview_default,web_form_extwindow,web_form2_extwindow,dial_method,submit_method,use_custom2_callerid,campaign_cid_name,xfer_cid_mode FROM osdial_campaigns where campaign_id = '$VD_campaign';";
+			$stmt="SELECT park_ext,park_file_name,web_form_address,allow_closers,auto_dial_level,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,agent_pause_codes_active,no_hopper_leads_logins,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,xfer_groups,web_form_address2,allow_tab_switch,preview_force_dial_time,manual_preview_default,web_form_extwindow,web_form2_extwindow,dial_method,submit_method,use_custom2_callerid,campaign_cid_name,xfer_cid_mode,use_cid_areacode_map FROM osdial_campaigns where campaign_id = '$VD_campaign';";
 			$rslt=mysql_query($stmt, $link);
 			if ($DB) {echo "$stmt\n";}
 			$row=mysql_fetch_row($rslt);
@@ -981,6 +1042,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 				$use_custom2_callerid = 	    $row[41];
 				$campaign_cid_name = 	    $row[42];
 				$xfer_cid_mode = 	    $row[43];
+				$use_cid_areacode_map = 	    $row[44];
                 if ($previewFD_time == "") {
                     $previewFD_time = "0";
                 }
@@ -1016,6 +1078,28 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
                 $submit_method=2;
             } else {
                 $submit_method=0;
+            }
+
+			if ($use_cid_areacode_map=='Y') {
+				$stmt="SELECT areacode,cid_number,cid_name FROM osdial_campaign_cid_areacodes WHERE campaign_id='$VD_campaign';";
+				$rslt=mysql_query($stmt, $link);
+				if ($DB) {echo "$stmt\n";}
+				$VD_cid_areacodes = mysql_num_rows($rslt);
+				$j=0;
+				while ($j < $VD_cid_areacodes) {
+					$row=mysql_fetch_row($rslt);
+					$cid_areacodes[$j] = $row[0];
+					$cid_areacode_numbers[$j] = $row[1];
+					$cid_areacode_names[$j] = $row[2];
+                    $VARcid_areacodes .= "'" . $row[0] . "',";
+                    $VARcid_areacode_numbers .= "'" . $row[1] . "',";
+                    $VARcid_areacode_names .= "'" . $row[2] . "',";
+                    $j++;
+                }
+                $VD_cid_areacodes_ct += $VD_cid_areacodes_ct;
+                $VARcid_areacodes = rtrim($VARcid_areacodes,',');
+                $VARcid_areacode_numbers = rtrim($VARcid_areacode_numbers,',');
+                $VARcid_areacode_names = rtrim($VARcid_areacode_names,',');
             }
 
 			if ($agent_pause_codes_active=='Y')
@@ -1118,11 +1202,11 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 	}
 	if ($VDloginDISPLAY)
 	{
-	echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
 	echo "<title>$t1 web client: Campaign Login</title>\n";
 	//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 	echo "</head>\n";
 	echo "<BODY BGCOLOR=WHITE name=osdial>\n";
+    echo $welcome_span;
 	
 	echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
 	echo "<!-- INTERNATIONALIZATION-LINKS-PLACEHOLDER-OSDIAL -->\n";
@@ -1170,7 +1254,7 @@ if ($WeBRooTWritablE > 0) {$fp = fopen ("./osdial_auth_entries.txt", "a");}
 	echo "<tr><td colspan=4 class=rborder>&nbsp;</td></tr>";
 	echo "<tr>";
 	echo "	<TD ALIGN=LEFT><font size=1>&nbsp;</TD>\n";
-	echo "	<td ALIGN=CENTER COLSPAN=2><INPUT TYPE=SUBMIT NAME=SUBMIT VALUE=SUBMIT>&nbsp;<span id=\"LogiNReseT\"></span></TD>\n";
+	echo "	<td ALIGN=CENTER COLSPAN=2><INPUT TYPE=button onclick=\"login_submit(); return false;\" NAME=SUBMIT VALUE=SUBMIT>&nbsp;<span id=\"LogiNReseT\"></span></TD>\n";
 	echo "	<TD ALIGN=LEFT class=rborder><font size=1>&nbsp;</TD>\n";
 	echo "</tr>";
 	echo "<TR>";
@@ -1471,6 +1555,7 @@ else
 		    echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
 		    echo "</head>\n";
 		    echo "<BODY BGCOLOR=WHITE name=osdial>\n";
+            echo $welcome_span;
 		    echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
 		    echo "<!-- INTERNATIONALIZATION-LINKS-PLACEHOLDER-OSDIAL -->\n";
 		    echo "</TR></TABLE>\n";
@@ -1490,7 +1575,7 @@ else
 		    echo "Password: <INPUT TYPE=PASSWORD NAME=VD_pass SIZE=10 MAXLENGTH=20 VALUE=\"$VD_pass\"><br>\n";
 		    echo "Campaign: <span id=\"LogiNCamPaigns\">$camp_form_code</span><br>\n";
 		    echo "&nbsp;";
-		    echo "<INPUT TYPE=SUBMIT NAME=SUBMIT VALUE=SUBMIT> &nbsp; \n";
+		    echo "<INPUT TYPE=button onclick=\"login_submit(); return false;\" NAME=SUBMIT VALUE=SUBMIT> &nbsp; \n";
 		    echo "<span id=\"LogiNReseT\"></span>\n";
 		    echo "</FORM>\n\n";
 		    echo "</body>\n\n";
@@ -1641,6 +1726,7 @@ else
 		//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 		echo "</head>\n";
 		echo "<BODY BGCOLOR=WHITE name=osdial>\n";
+        echo $welcome_span;
 		echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
 		echo "<!-- INTERNATIONALIZATION-LINKS-PLACEHOLDER-OSDIAL -->\n";
 		echo "</TR></TABLE>\n";
@@ -1653,7 +1739,7 @@ else
 		echo "Password: <INPUT TYPE=PASSWORD NAME=VD_pass SIZE=10 MAXLENGTH=20 VALUE=\"$VD_pass\"><br>\n";
 		echo "Campaign: <span id=\"LogiNCamPaigns\">$camp_form_code</span><br>\n";
 		echo "&nbsp;";
-		echo "<INPUT TYPE=SUBMIT NAME=SUBMIT VALUE=SUBMIT> &nbsp; \n";
+		echo "<INPUT TYPE=button onclick=\"login_submit(); return false;\" NAME=SUBMIT VALUE=SUBMIT> &nbsp; \n";
 		echo "<span id=\"LogiNReseT\"></span>\n";
 		echo "</FORM>\n\n";
 		echo "</body>\n\n";
@@ -1666,6 +1752,7 @@ else
 		//echo "<style>a:link {color: blue} a:visited {color: $default_text} a:active {color: $default_text}</style>";
 		echo "</head>\n";
 		echo "<BODY BGCOLOR=WHITE name=osdial>\n";
+        echo $welcome_span;
 		echo "<TABLE WIDTH=100%><TR><TD></TD>\n";
 		echo "<!-- INTERNATIONALIZATION-LINKS-PLACEHOLDER-OSDIAL -->\n";
 		echo "</TR></TABLE>\n";
@@ -1678,7 +1765,7 @@ else
 		echo "Password: <INPUT TYPE=PASSWORD NAME=VD_pass SIZE=10 MAXLENGTH=20 VALUE=\"$VD_pass\"><br>\n";
 		echo "Campaign: <span id=\"LogiNCamPaigns\">$camp_form_code</span><br>\n";
 		echo "&nbsp;";
-		echo "<INPUT TYPE=SUBMIT NAME=SUBMIT VALUE=SUBMIT> &nbsp; \n";
+		echo "<INPUT TYPE=button onclick=\"login_submit(); return false;\" NAME=SUBMIT VALUE=SUBMIT> &nbsp; \n";
 		echo "<span id=\"LogiNReseT\"></span>\n";
 		echo "</FORM>\n\n";
 		echo "</body>\n\n";
@@ -2039,49 +2126,22 @@ foreach ($forms as $form) {
 	}
 }
 
-    echo "<script language=\"Javascript\" type=\"text/javascript\">\n";
-
-    require('include/osdial.js');
-
-    echo "</script>\n";
-
-	
 ?>
-	<style type="text/css">
-	<!--
-	#inputArea{font-family: "dejavu sans",Sans-Serif;background-color: #d6e5f4;padding: 0px;}
-	input, textarea{color: black;font-family: "dejavu sans",Sans-serif;font-size: 1.0em;padding: 0px;}
-	div.scroll_callback {height: 300px; width: 920px; overflow: scroll;}
-	div.scroll_list {height: 400px; width: 140px; overflow: scroll;}
-	div.scroll_script {height: <?=$SSheight ?>px; width: <?=$SDwidth ?>px; background: #FFF5EC; overflow: scroll; font-size: 12px;  font-family: sans-serif;}
-	div.text_input {overflow: auto; font-size: 10px;  font-family: sans-serif;}
-	.body_text {font-size: 10px;  font-family: "dejavu sans",sans-serif;border:none;}
- 	.body_input {font-size: 10px;  font-family: "dejavu sans",sans-serif;overflow:auto}
-	.queue_text_red {font-size: 12px;  font-family: sans-serif; font-weight: bold; color: red}
-	.queue_text {font-size: 12px;  font-family: sans-serif; color: black}
-	.preview_text {font-size: 13px;  font-family: sans-serif; background: <?= $preview_fc ?>}
-	.preview_text_red {font-size: 13px;  font-family: sans-serif; background: <?= $preview_bg ?>}
-	.body_small {font-size: 11px;  font-family: sans-serif;}
-	.body_tiny {font-size: 9px;  font-family: "dejavu sans",sans-serif;padding: 0px;}
-	.log_text {font-size: 11px;  font-family: monospace;}
-	.log_text_red {font-size: 11px;  font-family: monospace; font-weight: bold; background: #FF3333}
-	.log_title {font-size: 12px;  font-family: monospace; font-weight: bold;}
-	.sd_text {font-size: 16px;  font-family: sans-serif; font-weight: bold;}
-	.sh_text {font-size: 14px;  font-family: sans-serif; font-weight: bold;}
-	.sb_text {font-size: 12px;  font-family: sans-serif;}
-	.sk_text {font-size: 11px;  font-family: sans-serif;}
-	.skb_text {font-size: 13px;  font-family: sans-serif; font-weight: bold;}
-	.ON_conf {font-size: 11px;  font-family: monospace; color: black; background: #FFFF99}
-	.OFF_conf {font-size: 11px;  font-family: monospace; color: black; background: #FFCC77}
-	.cust_form {font-family: sans-serif; font-size: 10px; overflow: auto}
-	-->
-	</style>
 	
 </head>
 
 <!-- ===================================================================================================================== -->
 
 <body onload="begin_all_refresh();"  onunload="BrowserCloseLogout();" name=osdial>
+<?= $welcome_span ?>
+
+<script language="javascript" type="text/javascript">
+<!--
+document.getElementById("WelcomeBoxA").style.visibility = 'visible';
+document.getElementById("WelcomeBoxStatus").innerHTML = 'Initializing...';
+-->
+</script>
+        
 <form name=osdial_form>
     <span style="position:absolute;left:0px;top:0px;z-index:2;" id="Header">
         <!-- Desktop --><!-- 1st line, login info -->
@@ -2123,33 +2183,22 @@ foreach ($forms as $form) {
         </table>
     </span>
     
-    <!--  -->
-    <span style="position:absolute;left:0px;top:0px;z-index:3;" id="WelcomeBoxA">
-        <table border=0 bgcolor="#FFFFFF" width=<?=$CAwidth ?> height=<?=$HKwidth ?>>
-            <tr>
-                <td align=center>
-                    <br><span id="WelcomeBoxAt"><font color=<?=$default_fc?>><?=$t1?></font></span>
-                </td>
-            </tr>
-        </table>
-    </span>
-        
     <!-- Manual Dial Link -->
-    <span style="position:absolute;left:300px;top:<?=$MBheight-20 ?>px;z-index:12;" id="ManuaLDiaLButtons">
+    <span style="position:absolute;left:300px;top:<?=$MBheight-20 ?>px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
         <font class="body_text">
             <span id="MDstatusSpan"><a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a><br>
         </font>
     </span>
         
     <!-- Call Back Link -->
-    <span style="position:absolute;left:490px;top:<?=$CBheight-3 ?>px;z-index:13;" id="CallbacksButtons">
+    <span style="position:absolute;left:490px;top:<?=$CBheight-3 ?>px;z-index:13;visibility:hidden;" id="CallbacksButtons">
         <font class="body_text">
             <span id="CBstatusSpan">X ACTIVE CALLBACKS</span><br>
         </font>
     </span>
         
     <!-- Pause Code Link -->
-    <span style="position:absolute;left:650px;top:<?=$CBheight-3 ?>px;z-index:14;" id="PauseCodeButtons">
+    <span style="position:absolute;left:650px;top:<?=$CBheight-3 ?>px;z-index:14;visibility:hidden;" id="PauseCodeButtons">
         <font class="body_text">
             <span id="PauseCodeLinkSpan"></span><br>
         </font>
@@ -2158,7 +2207,7 @@ foreach ($forms as $form) {
     <span id="PreviewFDTimeSpan" style="font-size:35pt; font-weight: bold; color: <?=$forcedial_fc?>; position:absolute;left:325px;top:400px;z-index:22;"></span>
     
     <!-- Choose From Available Call Backs -->
-    <span style="position:absolute;left:0px;top:18px;z-index:38;" id="CallBacKsLisTBox">
+    <span style="position:absolute;left:0px;top:18px;z-index:38;visibility:hidden;" id="CallBacKsLisTBox">
         <table border=1 bgcolor="<?=$callback_bg?>" width=<?=$CAwidth+13 ?> height=460>
             <tr>
                 <td align=center valign=top>
@@ -2178,7 +2227,7 @@ foreach ($forms as $form) {
     </span>
     
     <!-- Manual Dial -->
-    <span style="position:absolute;left:0px;top:18px;z-index:39;" id="NeWManuaLDiaLBox">
+    <span style="position:absolute;left:0px;top:18px;z-index:39;visibility:hidden;" id="NeWManuaLDiaLBox">
         <table border=1 bgcolor="<?= $mandial_bg ?>" width=<?= $CAwidth-10 ?> height=545>
             <tr>
                 <td align=center valign=top>
@@ -2232,7 +2281,7 @@ foreach ($forms as $form) {
     </span>
 
     <!-- Disposition Hot Keys Window -->
-    <span style="position:absolute;left:92px;top:<?=$HTheight+45 ?>px;z-index:24;" id="HotKeyEntriesBox">
+    <span style="position:absolute;left:92px;top:<?=$HTheight+45 ?>px;z-index:24;visibility:hidden;" id="HotKeyEntriesBox">
         <table frame=box bgcolor="<?=$hotkey_bg1?>" width=610 height=70>
             <tr bgcolor="<?=$hotkey_bg2?>">
                 <td width=200><font class="sh_text"> Disposition Hot Keys: </font></td>
@@ -2282,14 +2331,14 @@ foreach ($forms as $form) {
     <font style="position:relative;left:480px;top:484px;z-index:22;" id="MutedWarning"></font>
     
     <!-- Volume Control Links -->
-    <span style="position:absolute;left:935px;top:<?=$CBheight+26 ?>px;z-index:19;" id="VolumeControlSpan">
+    <span style="position:absolute;left:935px;top:<?=$CBheight+26 ?>px;z-index:19;visibility:hidden;" id="VolumeControlSpan">
         <span id="VolumeUpSpan"><img src="templates/<?= $agent_template ?>/images/vdc_volume_up_off.gif" border=0></span>
         <br>
         <span id="VolumeDownSpan"><img src="templates/<?= $agent_template ?>/images/vdc_volume_down_off.gif" border=0></span>
     </span>
     
     <!-- Agent Status In Progress -->
-    <span style="position:absolute;left:35px;top:<?=$CBheight ?>px;z-index:20;" id="AgentStatusSpan">
+    <span style="position:absolute;left:35px;top:<?=$CBheight ?>px;z-index:20;visibility:hidden;" id="AgentStatusSpan">
         <font class="body_text">
             Your Status: 
             <span id="AgentStatusStatus"></span> 
@@ -2298,7 +2347,7 @@ foreach ($forms as $form) {
     </span>
     
     <!-- Transfer Link -->
-    <span style="position:absolute;left:185px;top:<?=$HTheight ?>px;z-index:21;" id="TransferMain">
+    <span style="position:absolute;left:185px;top:<?=$HTheight ?>px;z-index:21;visibility:hidden;" id="TransferMain">
         <table bgcolor="<?=$xfer_bg1?>" frame=box width=<?=$XFwidth-255 ?>>
             <tr>
                 <td align=left>
@@ -2338,7 +2387,7 @@ foreach ($forms as $form) {
     </span>
     
     <!-- Dispositioned -->
-    <span style="position:absolute;left:5px;top:<?=$HTheight+20 ?>px;z-index:23;" id="HotKeyActionBox">
+    <span style="position:absolute;left:5px;top:<?=$HTheight+20 ?>px;z-index:23;visibility:hidden;" id="HotKeyActionBox">
         <table border=0 bgcolor="<?=$hotkey_done_bg1?>" width=<?=$HCwidth ?> height=70>
             <tr bgcolor="<?=$hotkey_done_bg1?>">
                 <td height=70>
@@ -2351,7 +2400,7 @@ foreach ($forms as $form) {
     </span>
     
     <!-- Previous Callback Info -->
-    <span style="position:absolute;left:10px;top:<?=$HTheight+20 ?>px;z-index:25;" id="CBcommentsBox">
+    <span style="position:absolute;left:10px;top:<?=$HTheight+20 ?>px;z-index:25;visibility:hidden;" id="CBcommentsBox">
         <table frame=box bgcolor="<?=$cbinfo_bg1?>" width=<?=$HCwidth ?> height=70>
             <tr bgcolor="<?=$cbinfo_bg2?>">
                 <td align=center><font class="sh_text" color=<?=$cbinfo_bfc?>>&nbsp;Previous Callback Information</font></td>
@@ -2375,7 +2424,7 @@ foreach ($forms as $form) {
     </span>
     
     <!-- Phone Is Hungup -->
-    <span style="position:absolute;left:0px;top:18px;z-index:26;" id="NoneInSessionBox">
+    <span style="position:absolute;left:0px;top:18px;z-index:26;visibility:hidden;" id="NoneInSessionBox">
         <table border=1 bgcolor="<?=$noone_bg?>" width=<?=$CAwidth ?> height=545>
             <tr>
                 <td align=center>
@@ -2390,7 +2439,7 @@ foreach ($forms as $form) {
     </span>
     
     <!-- Customer Hungup -->
-    <span style="position:absolute;left:0px;top:0px;z-index:27;" id="CustomerGoneBox">
+    <span style="position:absolute;left:0px;top:0px;z-index:27;visibility:hidden;" id="CustomerGoneBox">
         <table border=1 bgcolor="<?=$custgone_bg?>" width=<?=$CAwidth ?> height=500>
             <tr>
                 <td align=center>
@@ -2404,7 +2453,7 @@ foreach ($forms as $form) {
     </span>
     
     <!-- Call Wrapup -->
-    <span style="position:absolute;left:0px;top:0px;z-index:28;" id="WrapupBox">
+    <span style="position:absolute;left:0px;top:0px;z-index:28;visibility:hidden;" id="WrapupBox">
         <table border=1 bgcolor="<?=$wrapup_bg?>" width=<?=$CAwidth ?> height=550>
             <tr>
                 <td align=center>
@@ -2419,7 +2468,7 @@ foreach ($forms as $form) {
     </span>
     
     <!-- Agent Disabled -->
-    <span style="position:absolute;left:0px;top:0px;z-index:29;" id="AgenTDisablEBoX">
+    <span style="position:absolute;left:0px;top:0px;z-index:29;visibility:hidden;" id="AgenTDisablEBoX">
         <table class=acrossagent border=0 width=<?=$CAwidth ?> height=564>
             <tr>
                 <td align=center>
@@ -2436,7 +2485,7 @@ foreach ($forms as $form) {
     </span>
 
     <!-- System Disabled -->
-    <span style="position:absolute;left:0px;top:0px;z-index:29;" id="SysteMDisablEBoX">
+    <span style="position:absolute;left:0px;top:0px;z-index:29;visibility:hidden;" id="SysteMDisablEBoX">
         <table class=acrossagent border=0 width=<?=$CAwidth ?> height=564>
             <tr>
                 <td align=center>
@@ -2452,7 +2501,7 @@ foreach ($forms as $form) {
     </span>
 
     <!-- System Alert -->
-    <span style="position:absolute;left:0px;top:300px;z-index:41;" id="SysteMAlerTBoX">
+    <span style="position:absolute;left:0px;top:300px;z-index:41;visibility:hidden;" id="SysteMAlerTBoX">
         <table class=acrossagent border=1 width=<?= $CAwidth ?> height=300 cellspacing=20>
             <tr>
                 <td align=center bgcolor="<?= $system_alert_bg2 ?>">
@@ -2460,7 +2509,7 @@ foreach ($forms as $form) {
                         <span id="SysteMAlerTInfo"></span>
                         <br><br><br>
                         <font size=2>
-                            <a href="#" onclick="hideDiv('SysteMAlerTBoX');return false;"><font color=grey>[Go Back (<span id="SysteMAlerTTimer"></span>)]</font></a>
+                            <a href="#" onclick="hideDiv('SysteMAlerTBoX');return false;"><font color=grey>[Dismiss (<span id="SysteMAlerTTimer"></span>)]</font></a>
                             &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
                             <a href="#" onclick="osdalert_timer=-1;return false;"><font color=grey>[Suspend]</font></a>
                             &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
@@ -2475,7 +2524,7 @@ foreach ($forms as $form) {
     </span>
     
     <!-- Logout Link -->
-    <span style="position:absolute;left:1px;top:1px;z-index:30;background-image: URL('templates/<?= $agent_template ?>/images/loginagain-bg.png');background-repeat:none;" id="LogouTBox">
+    <span style="position:absolute;left:1px;top:1px;z-index:30;background-image: URL('templates/<?= $agent_template ?>/images/loginagain-bg.png');background-repeat:none;visibility:hidden;" id="LogouTBox">
         <table width=1001 height=608 cellpadding=0 cellspacing=0>
             <tr>
                 <td align=center><br><span id="LogouTBoxLink">LOGOUT</span></td>
@@ -2484,7 +2533,7 @@ foreach ($forms as $form) {
     </span>
     
     <!-- Hide Disposition Button A -->
-    <span style="position:absolute;left:0px;top:70px;z-index:31;" id="DispoButtonHideA">
+    <span style="position:absolute;left:0px;top:70px;z-index:31;visibility:hidden;" id="DispoButtonHideA">
         <table border=0 bgcolor="<?=$dispo_hide?>" width=165 height=22>
             <tr>
                 <td align=center valign=top></td>
@@ -2493,7 +2542,7 @@ foreach ($forms as $form) {
     </span>
     
     <!-- Hide Disposition Button B -->
-    <span style="position:absolute;left:0px;top:138px;z-index:32;" id="DispoButtonHideB">
+    <span style="position:absolute;left:0px;top:138px;z-index:32;visibility:hidden;" id="DispoButtonHideB">
         <table border=0 bgcolor="<?=$dispo_hide?>" width=165 height=250>
             <tr>
                 <td align=center valign=top>&nbsp;</TD>
@@ -2502,7 +2551,7 @@ foreach ($forms as $form) {
     </span>
     
     <!-- Hide Disposition Button C -->
-    <span style="position:absolute;left:0px;top:18px;z-index:33;" id="DispoButtonHideC">
+    <span style="position:absolute;left:0px;top:18px;z-index:33;visibility:hidden;" id="DispoButtonHideC">
         <table border=0 bgcolor="<?=$dispo_hide?>" width=<?=$CAwidth ?> height=47>
             <tr>
                 <td align=center valign=top>Any changes made to the customer information below at this time will not be comitted, You must change customer information before you Hangup the call.</td>
@@ -2511,7 +2560,7 @@ foreach ($forms as $form) {
     </span>
     
     <!-- Disposition Window -->
-    <span style="position:absolute;left:0px;top:18px;z-index:34;" id="DispoSelectBox">
+    <span style="position:absolute;left:0px;top:18px;z-index:34;visibility:hidden;" id="DispoSelectBox">
         <table class=acrossagent width=<?=$CAwidth+5 ?> height=460>
             <tr>
                 <td align=center valign=top>
@@ -2536,7 +2585,7 @@ foreach ($forms as $form) {
     </span>
     
     <!-- Pause Code Window -->
-    <span style="position:absolute;left:0px;top:18px;z-index:40;" id="PauseCodeSelectBox">
+    <span style="position:absolute;left:0px;top:18px;z-index:40;visibility:hidden;" id="PauseCodeSelectBox">
         <table class=acrossagent frame=box width=<?=$CAwidth -10 ?> height=500>
             <tr>
                 <td align=center valign=top>
@@ -2553,7 +2602,7 @@ foreach ($forms as $form) {
     </span>
     
     <!-- Callback Window -->
-    <span style="position:absolute;left:0px;top:18px;z-index:35;" id="CallBackSelectBox">
+    <span style="position:absolute;left:0px;top:18px;z-index:35;visibility:hidden;" id="CallBackSelectBox">
         <table border=1 bgcolor="<?=$callback_bg3?>" width=<?=$CAwidth ?> height=480>
             <tr>
                 <td align=center valign=top>
@@ -2614,7 +2663,7 @@ foreach ($forms as $form) {
     </span>
 
     <!-- PostDate Window -->
-    <span style="position:absolute;left:0px;top:18px;z-index:35;" id="PostDateSelectBox">
+    <span style="position:absolute;left:0px;top:18px;z-index:35;visibility:hidden;" id="PostDateSelectBox">
         <table border=1 bgcolor="<?=$callback_bg3?>" width=<?=$CAwidth ?> height=480>
             <tr>
                 <td align=center valign=top>
@@ -2634,7 +2683,7 @@ foreach ($forms as $form) {
     </span>
     
     <!-- Closer Inbound Group Window -->
-    <span style="position:absolute;left:0px;top:0px;z-index:36;" id="CloserSelectBox">
+    <span style="position:absolute;left:0px;top:0px;z-index:36;visibility:hidden;" id="CloserSelectBox">
         <table class=acrossagent border=0 width=<?=$CAwidth ?> height=565>
             <tr>
                 <td align=center valign=top>
@@ -2654,7 +2703,7 @@ foreach ($forms as $form) {
     </span>
     
     <!-- Preview hide -->
-    <span style="position:absolute;left:0px;top:0px;z-index:37;" id="NothingBox">
+    <span style="position:absolute;left:0px;top:0px;z-index:37;visibility:hidden;" id="NothingBox">
         <button type=button name="inert_button"><img src="templates/<?= $agent_template ?>/images/blank.gif"></button>
         <span id="DiaLLeaDPrevieWHide">Channel</span>
         <span id="DiaLDiaLAltPhonEHide">Channel</span>
@@ -2664,7 +2713,7 @@ foreach ($forms as $form) {
     </span>
     
     <!-- Script window -->
-    <span style="position:absolute;left:190px;top:92px;z-index:17;" id="ScriptPanel">
+    <span style="position:absolute;left:190px;top:92px;z-index:17;visibility:hidden;" id="ScriptPanel">
         <table border=0 bgcolor="<?= $script_bg ?>" width=<?=$SSwidth -40 ?> height=<?=$SSheight -30 ?>>
             <tr>
                 <td align=left valign=top><font class="sb_text"><span class="scroll_script" id="ScriptContents"><?=$t1?> Script Will Show Here</span></font></td>
@@ -2675,7 +2724,7 @@ foreach ($forms as $form) {
     <!-- Footer Links -->
     <!--span style="position:absolute;left:0px;top:<?=$HKheight ?>px;z-index:15;" id="MaiNfooterspan" -->
     <span style="position:absolute;left:2px;top: 480px;z-index:15;" id="MaiNfooterspan">
-        <table id="MaiNfooter" width=<?=$MNwidth+10 ?> class=bottom>
+        <table id="MaiNfooter" width=<?=$MNwidth+10 ?> class=bottom style="background-color:<?=$panel_bg?>;">
             <tr height=15>
                 <td height=15>
                     <font face="Arial,Helvetica" size=1><?=$t1?> Agent version: <?= $version ?>&nbsp;&nbsp;Build: <?= $build ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;Server: <?= $server_ip ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><br>
@@ -2703,7 +2752,7 @@ foreach ($forms as $form) {
             <tr>
                 <td>
                     <!-- Column widths 205 + 505 + 270 = 980 -->
-                    <table id="MainTable" class=acrossagent cellpadding=0 cellspacing=0>
+                    <table id="MainTable" class=acrossagent style="background-color:<?=$panel_bg?>;" cellpadding=0 cellspacing=0>
                         <tr>
                             <td width=22 colspan=2 class=curve2 style="vertical-align:bottom;">
                                 <img src="templates/<?= $agent_template ?>/images/AgentTopLeft.png" width=22 height=22 align=left>
@@ -3012,7 +3061,7 @@ foreach ($forms as $form) {
     </span>
 </form>
 <!-- END *********   The end of the main OSDial display panel -->
-    
+
 <!-- Inline webform here -->
 <span style="visibility:hidden; position:absolute;left:190px;top:92px;z-index:17;" name="WebFormPanel1" id="WebFormPanel1">
     <iframe src="/osdial/agent/blank.php" width="780" height="375" name="WebFormPF1" id="WebFormPF1" style="background-color: white;"></iframe>
@@ -3021,9 +3070,23 @@ foreach ($forms as $form) {
     <iframe src="/osdial/agent/blank.php" width="780" height="375" name="WebFormPF2" id="WebFormPF2" style="background-color: white;"></iframe>
 </span>
 
+
+
+<script language="javascript" type="text/javascript">
+<!--
+document.getElementById("WelcomeBoxA").style.visibility = 'visible';
+document.getElementById('WelcomeBoxStatus').innerHTML = 'Executing...';
+-->
+</script>
+    
+
 <?
 
-echo "<script language=\"Javascript\">\n";
+echo "<script language=\"javascript\" type=\"text/javascript\">\n";
+require('include/osdial.js');
+echo "</script>\n";
+
+echo "<script language=\"javascript\" type=\"text/javascript\">\n";
 if (file_exists($WeBServeRRooT . '/agent/include/' . $VD_campaign . '_form_validation.js')) {
     include($WeBServeRRooT . '/agent/include/' . $VD_campaign . '_form_validation.js');
 }

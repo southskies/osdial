@@ -79,6 +79,14 @@ if ($ADD==47)			{$hh='campaigns';	$sh='pause';	$title = "Modify Agent Pause Code
 if ($ADD==67)			{$hh='campaigns';	$sh='pause';	$title = "Delete Agent Pause Code";}
 if ($ADD==37)			{$hh='campaigns';	$sh='pause';	$title = "Campaign Agent Pause Codes";}
 
+# Campaigns - cid areacode mappings
+if ($ADD=="2ca")               {$hh='campaigns';   $sh='cid_areacode'; $title = "New CID Areacode Mapping";}
+if ($ADD=="4ca")               {$hh='campaigns';   $sh='cid_areacode'; $title = "Modify CID Areacode Mapping";}
+if ($ADD=="5ca")               {$hh='campaigns';   $sh='cid_areacode'; $title = "Configm Delete CID Areacode Mapping";}
+if ($ADD=="6ca")               {$hh='campaigns';   $sh='cid_areacode'; $title = "Delete CID Areacode Mapping";}
+if ($ADD=="3ca" and $SUB!=2)   {$hh='campaigns';   $sh='cid_areacode'; $title = "Campaign CID Areacode Mapping";}
+if ($ADD=="3ca" and $SUB==2)   {$hh='campaigns';   $sh='cid_areacode'; $title = "Modify Campaign - Detail - $campaign_id - CID Areacode Mappings";}
+
 # Campaigns - fields
 if ($ADD=="1form")	    {$hh='campaigns';	$sh='fields';	$title = "Add New Form";}
 if ($ADD=="2form")	    {$hh='campaigns';	$sh='fields';	$title = "New Additional Form";}

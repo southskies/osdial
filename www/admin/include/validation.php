@@ -34,6 +34,7 @@
 
 if ($non_latin < 1)	{
 	### DIGITS ONLY ###
+	$areacode = ereg_replace("[^0-9]","",$areacode);
 	$alt_phone = ereg_replace("[^0-9]","",$alt_phone);
 	$adaptive_dropped_percentage = ereg_replace("[^0-9]","",$adaptive_dropped_percentage);
 	$adaptive_latest_server_time = ereg_replace("[^0-9]","",$adaptive_latest_server_time);
@@ -127,7 +128,9 @@ if ($non_latin < 1)	{
 	$monitor_prefix = ereg_replace("[^0-9]","",$monitor_prefix);
 	$number_of_lines = ereg_replace("[^0-9]","",$number_of_lines);
 	$old_conf_exten = ereg_replace("[^0-9]","",$old_conf_exten);
+	$campaign_cid = ereg_replace("[^0-9]","",$campaign_cid);
 	$outbound_cid = ereg_replace("[^0-9]","",$outbound_cid);
+	$cid_number = ereg_replace("[^0-9]","",$cid_number);
 	$park_ext = ereg_replace("[^0-9]","",$park_ext);
 	$park_on_extension = ereg_replace("[^0-9]","",$park_on_extension);
 	$phone_number = ereg_replace("[^0-9]","",$phone_number);
@@ -230,6 +233,7 @@ if ($non_latin < 1)	{
 	$web_form_extwindow = ereg_replace("[^NY]","",$web_form_extwindow);
 	$web_form2_extwindow = ereg_replace("[^NY]","",$web_form2_extwindow);
 	$use_custom2_callerid = ereg_replace("[^NY]","",$use_custom2_callerid);
+	$use_cid_areacode_map = ereg_replace("[^NY]","",$use_cid_areacode_map);
 	
 	### ALPHA-NUMERIC ONLY ###
 	$user_start = ereg_replace("[^0-9a-zA-Z]","",$user_start);
@@ -237,7 +241,6 @@ if ($non_latin < 1)	{
 	$script_override = ereg_replace("[^0-9a-zA-Z]","",$script_override);
 	$script_button_id = ereg_replace("[^0-9a-zA-Z]","",$script_button_id);
 	$submit = ereg_replace("[^0-9a-zA-Z]","",$submit);
-	$campaign_cid = ereg_replace("[^0-9a-zA-Z]","",$campaign_cid);
 	$get_call_launch = ereg_replace("[^0-9a-zA-Z]","",$get_call_launch);
 	$campaign_recording = ereg_replace("[^0-9a-zA-Z]","",$campaign_recording);
 	$ADD = ereg_replace("[^0-9a-zA-Z]","",$ADD);
@@ -377,6 +380,7 @@ if ($non_latin < 1)	{
 	$vsc_description = ereg_replace("[^ \.\,-\_0-9a-zA-Z]","",$vsc_description);
 	$campaign_cid_name = ereg_replace("[^ \.\,-\_0-9a-zA-Z]","",$campaign_cid_name);
 	$outbound_cid_name = ereg_replace("[^ \.\,-\_0-9a-zA-Z]","",$outbound_cid_name);
+	$cid_name = ereg_replace("[^ \.\,-\_0-9a-zA-Z]","",$cid_name);
 	
 	### ALPHA-NUMERIC and underscore and dash and slash and at and dot
 	$call_out_number_group = ereg_replace("[^-\.\:\/\@\_0-9a-zA-Z]","",$call_out_number_group);
