@@ -35,7 +35,7 @@ if ($ADD==27) {
     if ($row[0] > 0) {
         echo "<br><font color=red>AGENT PAUSE CODE NOT ADDED - there is already an entry for this campaign with this pause code</font>\n";
     } else {
-         if (strlen($campaign_id < 2) or strlen($pause_code) < 1 or strlen($pause_code) > 6 or strlen($pause_code_name) < 2) {
+         if (strlen($campaign_id) < 2 or strlen($pause_code) < 1 or strlen($pause_code) > 6 or strlen($pause_code_name) < 2) {
              echo "<br><font color=red>AGENT PAUSE CODE NOT ADDED - Please go back and look at the data you entered\n";
              echo "<br>pause code must be between 1 and 6 characters in length\n";
              echo "<br>pause code name must be between 2 and 30 characters in length</font><br>\n";
