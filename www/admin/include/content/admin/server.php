@@ -413,16 +413,11 @@ if ($ADD==311111111111)
 			$rowx=mysql_fetch_row($rslt);
 			$o++;
 
-		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor='.$oddrows;} 
-		else
-			{$bgcolor='bgcolor='.$evenrows;}
-
         echo "  <form action=$PHP_SELF method=POST>\n";
 		echo "  <input type=hidden name=server_ip value=\"$server_ip\">\n";
 		echo "  <input type=hidden name=campaign_id value=\"$rowx[1]\">\n";
 		echo "  <input type=hidden name=ADD value=421111111111>\n";
-		echo "  <tr $bgcolor class=\"row font1\">\n";
+		echo "  <tr " . bgcolor($o) ." class=\"row font1\">\n";
 		echo "    <td align=center class=tabinput><input size=6 maxlength=4 name=dedicated_trunks value=\"$rowx[2]\"></td>\n";
         echo "    <td align=center>$rowx[1]</td>";
 		echo "    <td align=center class=tabinput><select size=1 name=trunk_restriction><option>MAXIMUM_LIMIT</option><option>OVERFLOW_ALLOWED</option><option SELECTED>$rowx[3]</option></select></td>\n";
@@ -470,12 +465,7 @@ if ($ADD==311111111111)
 		if (ereg("Y", $rowx[1])) {$active_phones++;   $camp_lists .= "'$rowx[0]',";}
 		if (ereg("N", $rowx[1])) {$inactive_phones++;}
 
-		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor='.$oddrows;} 
-		else
-			{$bgcolor='bgcolor='.$evenrows;}
-
-		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=31111111111&extension=$rowx[0]&server_ip=$row[2]');\">\n";
+		echo "  <tr " . bgcolor($o) ." class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=31111111111&extension=$rowx[0]&server_ip=$row[2]');\">\n";
         echo "    <td align=center><a href=\"$PHP_SELF?ADD=31111111111&extension=$rowx[0]&server_ip=$row[2]\">$rowx[0]</a></td>\n";
         echo "    <td align=center>$rowx[2]</td>\n";
         echo "    <td align=center>$rowx[1]</td>\n";
@@ -509,12 +499,7 @@ if ($ADD==311111111111)
 			$o++;
 			$active_confs++;
 
-		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor='.$oddrows;} 
-		else
-			{$bgcolor='bgcolor='.$evenrows;}
-
-		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=3111111111111&conf_exten=$rowx[0]&server_ip=$row[2]');\">\n";
+		echo "  <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=3111111111111&conf_exten=$rowx[0]&server_ip=$row[2]');\">\n";
         echo "    <td align=center><a href=\"$PHP_SELF?ADD=3111111111111&conf_exten=$rowx[0]&server_ip=$row[2]\">$rowx[0]</a></td>\n";
         echo "    <td align=center>$rowx[2]</td>\n";
         echo "  </tr>\n";
@@ -547,12 +532,7 @@ if ($ADD==311111111111)
 			$o++;
 			$active_vdconfs++;
 
-		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor='.$oddrows;} 
-		else
-			{$bgcolor='bgcolor='.$evenrows;}
-
-		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=31111111111111&conf_exten=$rowx[0]&server_ip=$row[2]');\">\n";
+		echo "  <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=31111111111111&conf_exten=$rowx[0]&server_ip=$row[2]');\">\n";
         echo "    <td align=center><a href=\"$PHP_SELF?ADD=31111111111111&conf_exten=$rowx[0]&server_ip=$row[2]\">$rowx[0]</a></td>\n";
         echo "    <td align=center>$rowx[2]</td>\n";
         echo "  </tr>\n";
@@ -611,11 +591,7 @@ echo "  </tr>\n";
 	$o=0;
 	while ($phones_to_print > $o) {
 		$row=mysql_fetch_row($rslt);
-		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor='.$oddrows;} 
-		else
-			{$bgcolor='bgcolor='.$evenrows;}
-		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=311111111111&server_id=$row[0]';\">\n";
+		echo "  <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=311111111111&server_id=$row[0]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=311111111111&server_id=$row[0]\">$row[0]</a></td>\n";
 		echo "    <td>$row[1]</td>\n";
 		echo "    <td>$row[2]</td>\n";
@@ -1002,13 +978,7 @@ if ($ADD=="399211111111111") {
 		while ($rows > $c) {
 			$row = mysql_fetch_row($rslt);
 
-			if (eregi("1$|3$|5$|7$|9$", $c)) 
-				{$bgcolor='bgcolor='.$oddrows;} 
-			else
-				{$bgcolor='bgcolor='.$evenrows;}
-			
-
-			echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=399211111111111&SUB=2&qc_server_id=$row[0]';\">\n";
+			echo "  <tr " . bgcolor($c) . " class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=399211111111111&SUB=2&qc_server_id=$row[0]';\">\n";
 			echo "    <td>$c</td>\n";
 			echo "    <td><a href=\"$PHP_SELF?ADD=399211111111111&SUB=2&qc_server_id=$row[0]\">$row[1]</a></td>\n";
 			echo "    <td>$row[2]</td>\n";
@@ -1108,13 +1078,7 @@ if ($ADD=="399211111111111") {
 			while ($rows > $c) {
 				$row = mysql_fetch_row($rslt);
 	
-				if (eregi("1$|3$|5$|7$|9$", $c)) 
-					{$bgcolor='bgcolor='.$oddrows;} 
-				else
-					{$bgcolor='bgcolor='.$evenrows;}
-				
-	
-				echo "  <tr $bgcolor class=\"row font1\">\n";
+				echo "  <tr " . bgcolor($c) . " class=\"row font1\">\n";
 				echo "    <td>$c</td>\n";
 				echo "    <td>$row[2]</td>\n";
 				echo "    <td align=center><a href=\"$PHP_SELF?ADD=399211111111111&SUB=4&qc_server_id=$qc_server_id&qc_server_rule_id=$row[0]\">MODIFY</a></td>\n";

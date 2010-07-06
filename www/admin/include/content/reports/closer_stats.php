@@ -601,9 +601,7 @@ function report_closer_stats() {
     
         $plain .= "| $reason | $REASONcount |\n";
 
-        $bgcolor='bgcolor='.$evenrows;
-        if (eregi("1$|3$|5$|7$|9$", $i)) $bgcolor='bgcolor='.$oddrows;
-        $table .= "        <tr $bgcolor class=\"row font1\">\n";
+        $table .= "        <tr " . bgcolor($i) . " class=\"row font1\">\n";
         $table .= "          <td align=left>$reason</td>\n";
         $table .= "          <td align=right>$REASONcount</td>\n";
         $table .= "        </tr>\n";
@@ -770,9 +768,7 @@ function report_closer_stats() {
         }
     
         $line = '';
-        $bgcolor='bgcolor='.$evenrows;
-        if (eregi("1$|3$|5$|7$|9$", $i)) $bgcolor='bgcolor='.$oddrows;
-        $table .= "        <tr $bgcolor class=\"row font1\">\n";
+        $table .= "        <tr " . bgcolor($i) . " class=\"row font1\">\n";
         $table .= "          <td align=left>$status</td>\n";
         $table .= "          <td align=left>$status_name</td>\n";
         $table .= "          <td align=left>$statcat</td>\n";
@@ -929,12 +925,10 @@ function report_closer_stats() {
             $TOTCATsale += $CATcount;
         }
         if ($CATcount > 0) {
-            $bgcolor='bgcolor='.$evenrows;
-            if (eregi("1$|3$|5$|7$|9$", $r2)) $bgcolor='bgcolor='.$oddrows;
             # Put "Undefined" on bottom.
             if ($vsc_id[$r] != 'UNDEFINED') {
                 $plain .= "| $category | $CATname | $CATcount |\n";
-                $table .= "        <tr $bgcolor class=\"row font1\">\n";
+                $table .= "        <tr " . bgcolor($r2) . " class=\"row font1\">\n";
                 $table .= "          <td>$category</td>\n";
                 $table .= "          <td>$CATname</td>\n";
                 $table .= "          <td align=right>$CATcount</td>\n";
@@ -954,10 +948,8 @@ function report_closer_stats() {
         $r++;
     }
     if ($found_undef > 0) {
-        $bgcolor='bgcolor='.$evenrows;
-        if (eregi("1$|3$|5$|7$|9$", $r2)) $bgcolor='bgcolor='.$oddrows;
         $plain .= $csgs_plain;
-        $table .= "        <tr $bgcolor class=\"row font1\">\n" . $ccgs_table;
+        $table .= "        <tr " . bgcolor($r2) . " class=\"row font1\">\n" . $ccgs_table;
     }
     
     $TOTCATcalls =    sprintf("%10s", $TOTCATcalls);
@@ -1062,9 +1054,7 @@ function report_closer_stats() {
         $line = "$user - $full_name | $USERcalls |   $USERtotTALK_MS | $USERavgTALK_MS";
         $export .= "<input type=hidden name=\"row" . $CSVrows . "\" value=\"$line\">";
         $plain .= "| $line |\n";
-        $bgcolor='bgcolor='.$evenrows;
-        if (eregi("1$|3$|5$|7$|9$", $i)) $bgcolor='bgcolor='.$oddrows;
-        $table .= "        <tr $bgcolor class=\"row font1\">\n";
+        $table .= "        <tr " . bgcolor($i) . " class=\"row font1\">\n";
         $table .= "          <td>$user - $full_name</td>\n";
         $table .= "          <td align=right>$USERcalls</td>\n";
         $table .= "          <td align=right>$USERtotTALK_MS</td>\n";
@@ -1278,9 +1268,6 @@ function report_closer_stats() {
     $no_lines_yet=1;
     
     while ($i <= 96) {
-        $bgcolor='bgcolor='.$evenrows;
-        if (eregi("1$|3$|5$|7$|9$", $i)) $bgcolor='bgcolor='.$oddrows;
-
         $char_counter=0;
         $time = '      ';
         if ($h >= 4) {
@@ -1300,7 +1287,7 @@ function report_closer_stats() {
             } else {
                 $hour_count[$i] =    sprintf("%-5s", $hour_count[$i]);
                 $plain .= "| $time|";
-                $table .= "        <tr $bgcolor class=\"row\" title=\"Time Period: $time to $etime\" style=\"font-weight: bold; font-family: monospace; font-size: 7pt;\">\n";
+                $table .= "        <tr " . bgcolor($i) . " class=\"row\" title=\"Time Period: $time to $etime\" style=\"font-weight: bold; font-family: monospace; font-size: 7pt;\">\n";
                 $table .= "          <td align=center>$time</td>\n";
                 $table .= "          <td align=center style=\"font-size: 6pt;\">|</td>\n";
                 $k=0;   while ($k <= 102) {$plain .= " ";  $table .= "          <td align=center>&nbsp;</td>\n"; $k++;}
@@ -1320,7 +1307,7 @@ function report_closer_stats() {
                 $hour_count[$i] =    sprintf("%-5s", $hour_count[$i]);
     
                 $plain .= "| $time|<SPAN class=\"green\">";
-                $table .= "        <tr $bgcolor class=\"row\" title=\"Time Period: $time to $etime\" style=\"font-weight: bold; font-family: monospace; font-size: 7pt;\">\n";
+                $table .= "        <tr " . bgcolor($i) . " class=\"row\" title=\"Time Period: $time to $etime\" style=\"font-weight: bold; font-family: monospace; font-size: 7pt;\">\n";
                 $table .= "          <td align=center>$time</td>\n";
                 $table .= "          <td align=center style=\"font-size: 6pt;\">|</td>\n";
                 $table .= "          <td align=center>&nbsp;</td>\n";
@@ -1347,7 +1334,7 @@ function report_closer_stats() {
                 $drop_count[$i] =    sprintf("%-5s", $drop_count[$i]);
     
                 $plain .= "| $time|<SPAN class=\"red\">";
-                $table .= "        <tr $bgcolor class=\"row\" title=\"Time Period: $time to $etime\" style=\"font-weight: bold; font-family: monospace; font-size: 7pt;\">\n";
+                $table .= "        <tr " . bgcolor($i) . " class=\"row\" title=\"Time Period: $time to $etime\" style=\"font-weight: bold; font-family: monospace; font-size: 7pt;\">\n";
                 $table .= "          <td align=center>$time</td>\n";
                 $table .= "          <td align=center style=\"font-size: 6pt;\">|</td>\n";
                 $table .= "          <td align=center>&nbsp;</td>\n";

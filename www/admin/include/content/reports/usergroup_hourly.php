@@ -171,12 +171,7 @@ function report_usergroup_hourly() {
         $total_calls=0;
         $o=0;
         while($o < $tsrs_to_print) {
-            if (eregi("1$|3$|5$|7$|9$", $o)) {
-                $bgcolor='bgcolor="' . $oddrows . '"';
-            } else {
-                $bgcolor='bgcolor="' . $evenrows . '"';
-            }
-            $html .= "    <tr $bgcolor class=\"row font1\">\n";
+            $html .= "    <tr " . bgcolor($o) . " class=\"row font1\">\n";
             $html .= "      <td>" . mclabel($VDuser[$o]) . "</td>";
             $html .= "      <td align=left>$VDname[$o]</td>\n";
             $html .= "      <td align=right>$VDcount[$o]</td>\n";

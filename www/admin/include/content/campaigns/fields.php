@@ -335,16 +335,11 @@ if ($ADD == "3fields" and $SUB != '2fields') {
 
     $cnt = 0;
     foreach ($forms as $form) {
-        if (eregi("1$|3$|5$|7$|9$",$cnt)) 
-         		{$bgcolor='bgcolor='.$oddrows;} 
-		else
-			{$bgcolor='bgcolor='.$evenrows;}
-        
         foreach ($LOG['allowed_campaigns'] as $acamp) {
             $allmatch = "";
             if ($LOG['multicomp'] == 0) $allmatch = '^ALL$|';
             if (preg_match('/' . $allmatch . '^' . $acamp . '$|^' . $acamp . ',|,' . $acamp . '$|,' . $acamp . ',/',$form['campaigns'])) {
-                echo "  <tr $bgcolor class=\"row font1\">\n";
+                echo "  <tr " . bgcolor($cnt) . " class=\"row font1\">\n";
                 echo "    <td><a href=\"$PHP_SELF?ADD=3fields&SUB=2fields&id=" . $form['id'] . "\">" . $form['name'] . "</a></td>\n";
                 echo "    <td>" . $form['description'] . "</td>\n";
                 echo "    <td align=center><a href=\"$PHP_SELF?ADD=3fields&SUB=2fields&id=" . $form['id'] . "\">MODIFY FORM</a></td></tr>\n";
@@ -441,16 +436,11 @@ if ($ADD == "3fields" and $SUB == '2fields') {
     $cnt = 0;
     $pri = 0;
     foreach ($fields as $field) {
-        if (eregi("1$|3$|5$|7$|9$",$cnt))
-			{$bgcolor='bgcolor='.$oddrows;} 
-		else
-			{$bgcolor='bgcolor='.$evenrows;}
-			
         echo '  <form action="' . $PHP_SELF . '" method="POST">';
         echo '  <input type="hidden" name="ADD" value="4fields">';
         echo '  <input type="hidden" name="form_id" value="' . $form['id'] . '">';
         echo '  <input type="hidden" name="field_id" value="' . $field['id'] . '">';
-        echo "  <tr $bgcolor class=\"row font1\">\n";
+        echo "  <tr " . bgcolor($cnt) . " class=\"row font1\">\n";
         echo "      <td align=center class=tabinput><input type=text name=field_name size=15 maxlength=15 value=\"" . $field['name'] . "\"></td>\n";
         echo "      <td align=center class=tabinput><input type=text name=field_description size=20 maxlength=50 value=\"" . $field['description'] . "\"></td>\n";
         echo "      <td align=center class=tabinput><input type=text name=field_options size=20 maxlength=255 value=\"" . $field['options'] . "\"></td>\n";

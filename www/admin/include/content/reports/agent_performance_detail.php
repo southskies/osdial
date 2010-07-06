@@ -479,10 +479,8 @@ function report_agent_performance_detail() {
             $plain .= "| $Sfull_name | $Suser | $Scalls | $pfUSERtime_MS | $pfUSERtotPAUSE_MS | $pfUSERavgPAUSE_MS | $pfUSERtotWAIT_MS | $pfUSERavgWAIT_MS | $pfUSERtotTALK_MS | $pfUSERavgTALK_MS | $pfUSERtotDISPO_MS | $pfUSERavgDISPO_MS |\n";
             $plain_status .= "| $Sfull_name | $Suser |$SstatusesHTML\n";
 
-            $bgcolor='bgcolor='.$evenrows;
-            if (eregi("1$|3$|5$|7$|9$", $m)) $bgcolor='bgcolor='.$oddrows;
             $tid = "$Tfull_name ($Tuser)";
-            $table .= "        <tr $bgcolor class=\"row\" style=\"font-size: 8pt;\">\n";
+            $table .= "        <tr " . bgcolor($m) . " class=\"row\" style=\"font-size: 8pt;\">\n";
             $table .= "          <td align=left title=\"$tid\" nowrap>$Tfull_name</td>\n";
             $table .= "          <td align=left title=\"$tid\">$Tuser</td>\n";
             $table .= "          <td align=right title=\"$tid Total Calls: $Tcalls\">$Tcalls</td>\n";

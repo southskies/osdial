@@ -129,17 +129,11 @@ function report_agent_stats() {
         $o=0;
         while ($statuses_to_print > $o) {
             $row=mysql_fetch_row($rslt);
-            if (eregi("1$|3$|5$|7$|9$", $o)) {
-                $bgcolor='bgcolor="' . $oddrows . '"';
-            } else {
-                $bgcolor='bgcolor="' . $evenrows . '"';
-            }
-        
             $total_calls += $row[0];
             $total_seconds += $row[2];
             $call_seconds = $row[2];
 
-            $table .= "  <tr $bgcolor class=\"row font1\">\n";
+            $table .= "  <tr " . bgcolor($o) . " class=\"row font1\">\n";
             $table .= "    <td>$row[1]</td>\n";
             $table .= "    <td align=right>$row[0]</td>\n";
             $table .= "    <td align=right>" . fmt_hms($call_seconds) . "</td>\n";
@@ -173,17 +167,11 @@ function report_agent_stats() {
         $o=0;
         while ($statuses_to_print > $o) {
             $row=mysql_fetch_row($rslt);
-            if (eregi("1$|3$|5$|7$|9$", $o)) {
-                $bgcolor='bgcolor="' . $oddrows . '"';
-            } else {
-                $bgcolor='bgcolor="' . $evenrows . '"';
-            }
-        
             $total_calls += $row[0];
             $total_seconds += $row[2];
             $call_seconds = $row[2];
 
-            $table .= "  <tr $bgcolor class=\"row font1\">\n";
+            $table .= "  <tr " . bgcolor($o) . " class=\"row font1\">\n";
             $table .= "    <td>$row[1]</td>\n";
             $table .= "    <td align=right>$row[0]</td>\n";
             $table .= "    <td align=right>" . fmt_hms($call_seconds) . "</td>\n";
@@ -229,11 +217,11 @@ function report_agent_stats() {
             $event_time = '';
         
             if (ereg("LOGIN", $event)) {
-                $bgcolor='bgcolor="' . $oddrows . '"';
+                $bgcolor=bgcolor(1);
                 $event_start_seconds = $event_epoch;
             }
             if (ereg("LOGOUT", $event)) {
-                $bgcolor='bgcolor="' . $evenrows . '"';
+                $bgcolor=bgcolor(0);
                 if ($event_start_seconds) {
                     $event_stop_seconds = $event_epoch;
                     $event_seconds = ($event_stop_seconds - $event_start_seconds);
@@ -282,13 +270,7 @@ function report_agent_stats() {
         $u=0;
         while ($pauses_to_print > $u) {
             $row=mysql_fetch_row($rslt);
-            if (eregi("1$|3$|5$|7$|9$", $u)) {
-                $bgcolor='bgcolor="' . $oddrows . '"';
-            } else {
-                $bgcolor='bgcolor="' . $evenrows . '"';
-            }
-
-            $table .= "  <tr $bgcolor class=\"row font1\">\n";
+            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\">\n";
             $table .= "    <td align=left>$row[0]</td>\n";
             $table .= "    <td align=center>$row[1]</td>\n";
             $table .= "    <td align=center>$row[2]</td>\n";
@@ -342,15 +324,9 @@ function report_agent_stats() {
         $u=0;
         while ($logs_to_print > $u) {
             $row=mysql_fetch_row($rslt);
-            if (eregi("1$|3$|5$|7$|9$", $u)) {
-                $bgcolor='bgcolor="' . $oddrows . '"';
-            } else {
-                $bgcolor='bgcolor="' . $evenrows . '"';
-            }
-        
             $u++;
             $event = str_replace(" ", "&nbsp;", $row[0]);
-            $table .= "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[10]');\">\n";
+            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[10]');\">\n";
             $table .= "    <td align=left title=\"Record #: $u\">$u</td>\n";
             $table .= "    <td align=center title=\"Date/Time: $event\">$event</td>\n";
             $table .= "    <td align=right title=\"Wait Time: $row[1] seconds\">$row[1]</td>\n";
@@ -406,15 +382,9 @@ function report_agent_stats() {
         $u=0;
         while ($logs_to_print > $u) {
             $row=mysql_fetch_row($rslt);
-            if (eregi("1$|3$|5$|7$|9$", $u)) {
-                $bgcolor='bgcolor="' . $oddrows . '"';
-            } else {
-                $bgcolor='bgcolor="' . $evenrows . '"';
-            }
-        
             $u++;
             $event = str_replace(" ", "&nbsp;", $row[0]);
-            $table .= "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[10]');\">\n";
+            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[10]');\">\n";
             $table .= "    <td align=left title=\"Record #: $u\">$u</td>\n";
             $table .= "    <td align=center title=\"Date/Time: $event\">$event</td>\n";
             $table .= "    <td align=right title=\"Wait Time: $row[1] seconds\">$row[1]</td>\n";
@@ -462,15 +432,9 @@ function report_agent_stats() {
         #$u=0;
         #while ($logs_to_print > $u) {
         #    $row=mysql_fetch_row($rslt);
-        #    if (eregi("1$|3$|5$|7$|9$", $u)) {
-        #        $bgcolor='bgcolor="' . $oddrows . '"';
-        #    } else {
-        #        $bgcolor='bgcolor="' . $evenrows . '"';
-        #    }
-        
         #    $u++;
         #    $row[4] = str_replace(" ", "&nbsp;", $row[4]);
-        #    $table .= "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[1]');\">\n";
+        #    $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[1]');\">\n";
         #    $table .= "    <td title=\"Record #: $u\">$u</td>\n";
         #    $table .= "    <td align=center title=\"Date/Time: $row[4]\">$row[4]</td>\n";
         #    $table .= "    <td align=right title=\"Call Length: $row[7] seconds\">$row[7]</td>\n";
@@ -514,12 +478,6 @@ function report_agent_stats() {
         $u=0;
         while ($logs_to_print > $u) {
             $row=mysql_fetch_row($rslt);
-            if (eregi("1$|3$|5$|7$|9$", $u)) {
-                $bgcolor='bgcolor="' . $oddrows . '"';
-            } else {
-                $bgcolor='bgcolor="' . $evenrows . '"';
-            }
-        
             $Slocation = eregi_replace("^//", "/", $row[11]);
             $location = $Slocation;
             $locshort = ellipse($location,30,true);
@@ -529,7 +487,7 @@ function report_agent_stats() {
         
             $u++;
             $row[4] = str_replace(" ", "&nbsp;", $row[4]);
-            $table .= "  <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$Slocation');\">\n";
+            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" ondblclick=\"openNewWindow('$Slocation');\">\n";
             $table .= "    <td title=\"Record #: $u\">$u</td>\n";
             $table .= "    <td align=left title=\"Lead #: $row[12]\"><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[12]\" target=\"_blank\">$row[12]</a></td>\n";
             $table .= "    <td align=center title=\"Date/Time: $row[4]\">$row[4]</td>\n";

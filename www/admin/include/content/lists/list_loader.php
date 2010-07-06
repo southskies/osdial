@@ -706,12 +706,7 @@ if ($ADD==122) {
 				
 				$row=fgetcsv($file, 1000, $delimiter);
 				for ($i=0; $i<mysql_num_fields($rslt); $i++) {
-		            if (eregi("1$|3$|5$|7$|9$", $i)) {
-                        $bgcolor='bgcolor='.$oddrows;
-                    } else {
-                        $bgcolor='bgcolor='.$evenrows;
-                    }
-					echo "  <tr class=\"row font1\" $bgcolor>\n";
+					echo "  <tr class=\"row font1\" " . bgcolor($i) . ">\n";
                     if (mysql_field_name($rslt, $i) == "phone_code") {
 					    echo "    <td align=center>PHONE (country) CODE:</td>\n";
                     } elseif (mysql_field_name($rslt, $i) == "country_code") {
@@ -750,12 +745,7 @@ if ($ADD==122) {
 			        echo "  </tr>\n";
                     $o=0;
                     foreach ($afmaps as $k => $v) {
-		                if (eregi("1$|3$|5$|7$|9$", $o)) {
-                            $bgcolor='bgcolor='.$oddrows;
-                        } else {
-                            $bgcolor='bgcolor='.$evenrows;
-                        }
-					    echo "  <tr class=\"row font1\" $bgcolor>\n";
+					    echo "  <tr class=\"row font1\" " . bgcolor($o) . ">\n";
 					    echo "    <td align=left>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".strtoupper(eregi_replace("_", " ", $v)).": </td>\n";
 					    echo "    <td align=center class=tabinput>\n";
                         echo "      <select name='$k'>\n";

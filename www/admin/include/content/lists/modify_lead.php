@@ -153,14 +153,8 @@ if ($ADD==1121) {
 		        while ($logs_to_print > $u) {
 			        $row=mysql_fetch_row($rslt);
 			        if (strlen($log_campaign)<1) $log_campaign = $row[3];
-			        if (eregi("1$|3$|5$|7$|9$", $u)) {
-				        $bgcolor='bgcolor=' . $oddrows; 
-			        } else {
-				        $bgcolor='bgcolor=' . $evenrows;
-                    }
-			
 			        $u++;
-			        $call_log .= "  <tr $bgcolor class=\"row font1\">\n";
+			        $call_log .= "  <tr " . bgcolor($u) . " class=\"row font1\">\n";
 			        $call_log .= "    <td>$u</td>\n";
 			        $call_log .= "    <td>$row[4]</td>\n";
 			        $call_log .= "    <td align=left>$row[7]</td>\n";
@@ -190,13 +184,8 @@ if ($ADD==1121) {
 		        while ($Alogs_to_print > $y) {
 			        $row=mysql_fetch_row($rslt);
 			        if (strlen($Alog_campaign)<1) $Alog_campaign = $row[5];
-			        if (eregi("1$|3$|5$|7$|9$", $y)) {
-				        $bgcolor='bgcolor=' . $oddrows; 
-			        } else {
-				        $bgcolor='bgcolor=' . $evenrows;
-                    }
 			        $y++;
-			        $agent_log .= "  <tr $bgcolor class=\"row font1\">\n";
+			        $agent_log .= "  <tr " . bgcolor($y) . " class=\"row font1\">\n";
 			        $agent_log .= "    <td>$y</td>\n";
 			        $agent_log .= "    <td>$row[3]</td>\n";
 			        $agent_log .= "    <td align=left>$row[5]</td>\n";
@@ -228,13 +217,8 @@ if ($ADD==1121) {
 		        while ($Clogs_to_print > $y) {
 			        $row=mysql_fetch_row($rslt);
 			        if (strlen($Clog_campaign)<1) $Clog_campaign = $row[3];
-			        if (eregi("1$|3$|5$|7$|9$", $y)) {
-				        $bgcolor='bgcolor=' . $oddrows; 
-			        } else {
-				        $bgcolor='bgcolor=' . $evenrows;
-                    }
 			        $y++;
-			        $closer_log .= "  <tr $bgcolor class=\"row font1\">\n";
+			        $closer_log .= "  <tr " . bgcolor($y) . " class=\"row font1\">\n";
 			        $closer_log .= "    <td>$y</td>\n";
 			        $closer_log .= "    <td>$row[4]</td>\n";
 			        $closer_log .= "    <td align=left>$row[7]</td>\n";
@@ -539,11 +523,7 @@ if ($ADD==1121) {
 	                        foreach ($afflds as $affld) {
                                 $afldel='';
                                 $skip_fld=0;
-		                        if (eregi("1$|3$|5$|7$|9$", $u)) {
-			                        $bgcolor='bgcolor=' . $oddrows; 
-		                        } else {
-			                        $bgcolor='bgcolor=' . $evenrows;
-                                }
+                                $bgcolor = bgcolor($u);
                                 $alf = get_first_record($link, 'osdial_list_fields', '*', sprintf("lead_id='%s' AND field_id='%s'",$ld['lead_id'],$affld['id']));
                                 if ($affrm['deleted'] > 0 or $affld['deleted'] > 0) {
                                     if (strlen($alf['value']) > 0) {
@@ -726,12 +706,6 @@ if ($ADD==1121) {
                 $rlogs = get_krh($link, 'recording_log', '*', 'recording_id DESC', sprintf("lead_id='%s'",mres($ld[lead_id])), '500');
 	            $u=0;
 	            foreach ($rlogs as $rl) {
-		            if (eregi("1$|3$|5$|7$|9$", $u)) {
-			            $bgcolor='bgcolor=' . $oddrows; 
-		            } else {
-			            $bgcolor='bgcolor=' . $evenrows;
-                    }
-			
 		            $location = $rl['location'];
 		            $locat = ellipse($location,27,true);
 		            if (eregi("http",$location) or eregi("^//", $location)) {
@@ -742,7 +716,7 @@ if ($ADD==1121) {
 		            }
                     if ($u==0) $wfv['recording_id'] = $rl['recording_id'];
 		            $u++;
-		            echo "      <tr $bgcolor class=\"row font1\">\n";
+		            echo "      <tr " . bgcolor($u) . " class=\"row font1\">\n";
 		            echo "        <td>$u</td>\n";
 		            echo "        <td align=left>" . $rl['lead_id'] . "</td>\n";
 		            echo "        <td align=left>" . $rl['starttime'] . "</td>\n";

@@ -76,12 +76,6 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
             $campaign_rank = $SELECT_campaign_rank;
         }
 
-        if (eregi("1$|3$|5$|7$|9$", $o)) {
-            $bgcolor='bgcolor="' . $oddrows . '"';
-        } else {
-            $bgcolor='bgcolor="' . $evenrows . '"';
-        }
-
         # disable non user-group allowable campaign ranks
         $stmt="SELECT user_group from osdial_users where user='$user';";
         $rslt=mysql_query($stmt, $link);
@@ -113,7 +107,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
             $CR_disabled = 'DISABLED';
         }
 
-        $RANKcampaigns_list .= "<tr class=row $bgcolor><td>";
+        $RANKcampaigns_list .= "<tr class=row " . bgcolor($o) . "><td>";
         $campaigns_list .= "<a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id_values[$o]\">" . mclabel($campaign_id_values[$o]) . "</a> - $campaign_name_values[$o] <BR>\n";
         $RANKcampaigns_list .= "<font size=1><a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id_values[$o]\">" . mclabel($campaign_id_values[$o]) . "</a> - $campaign_name_values[$o]</font></td>";
         $RANKcampaigns_list .= "<td align=center><select style=\"font-size: 8px;\" size=1 name=RANK_$campaign_id_values[$o] $CR_disabled>\n";
@@ -232,17 +226,11 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
             $group_rank = $SELECT_group_rank;
         }
 
-        if (eregi("1$|3$|5$|7$|9$", $o)) {
-            $bgcolor='bgcolor="' . $oddrows . '"';
-        } else {
-            $bgcolor='bgcolor="' . $evenrows . '"';
-        }
-
         $groups_list        .= "<input type=\"checkbox\" id=\"GL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
-        $groups_listTAB     .= "<tr $bgcolor title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"GL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
+        $groups_listTAB     .= "<tr " . bgcolor($o) . " title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"GL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
         $XFERgroups_list    .= "<input type=\"checkbox\" id=\"XGL$group_id_values[$o]\" name=\"XFERgroups[]\" value=\"$group_id_values[$o]\"";
-        $XFERgroups_listTAB .= "<tr $bgcolor title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"XGL$group_id_values[$o]\" name=\"XFERgroups[]\" value=\"$group_id_values[$o]\"";
-        $RANKgroups_list    .= "<tr $bgcolor title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"RGL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
+        $XFERgroups_listTAB .= "<tr " . bgcolor($o) . " title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"XGL$group_id_values[$o]\" name=\"XFERgroups[]\" value=\"$group_id_values[$o]\"";
+        $RANKgroups_list    .= "<tr " . bgcolor($o) . " title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"RGL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
         $p=0;
         $group_ct = count($groups);
         while ($p < $group_ct) {

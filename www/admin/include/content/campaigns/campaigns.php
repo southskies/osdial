@@ -1324,12 +1324,7 @@ if ($ADD==31) {
             if (ereg("Y", $rowx[1])) {$active_lists++;   $camp_lists .= "'$rowx[0]',";}
             if (ereg("N", $rowx[1])) {$inactive_lists++;}
 
-            if (eregi("1$|3$|5$|7$|9$", $o))
-                {$bgcolor='bgcolor='.$oddrows;} 
-            else
-                {$bgcolor='bgcolor='.$evenrows;}
-
-            echo "<tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=311&list_id=$rowx[0]');\"><td><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td>$rowx[2]</td><td align=center>$rowx[1]</td></tr>\n";
+            echo "<tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=311&list_id=$rowx[0]');\"><td><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td>$rowx[2]</td><td align=center>$rowx[1]</td></tr>\n";
             }
         echo "<tr class=tabfooter><td colspan=3></td></tr>\n";
         echo "</table></center><br>\n";
@@ -1403,18 +1398,12 @@ if ($ADD==31) {
                 $AScategory = $rowx[5];
                 $o++;
 
-                if (eregi("1$|3$|5$|7$|9$", $o)) {
-                    $bgcolor='bgcolor='.$oddrows;
-                } else {
-                    $bgcolor='bgcolor='.$evenrows;
-                }
-
                 echo "    <form action=$PHP_SELF method=POST>\n";
                 echo "    <input type=hidden name=ADD value=42>\n";
                 echo "    <input type=hidden name=stage value=modify>\n";
                 echo "    <input type=hidden name=status value=\"$rowx[0]\">\n";
                 echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
-                echo "    <tr $bgcolor class=\"row font1\">\n";
+                echo "    <tr " . bgcolor($o) . " class=\"row font1\">\n";
                 echo "      <td nowrap><font size=1>$rowx[0]</font></td>\n";
                 echo "      <td align=center class=tabinput nowrap><input type=text name=status_name size=20 maxlength=30 value=\"$rowx[1]\"></td>\n";
                 echo "      <td align=center class=tabinput nowrap><select size=1 name=selectable><option>Y</option><option>N</option><option selected>$rowx[2]</option></select></td>\n";
@@ -1461,13 +1450,7 @@ if ($ADD==31) {
                 $rowx=mysql_fetch_row($rslt);
                 $o++;
 
-                if (eregi("1$|3$|5$|7$|9$", $o)) {
-                    $bgcolor='bgcolor='.$oddrows;
-                } else {
-                    $bgcolor='bgcolor='.$evenrows;
-                }
-
-                echo "    <tr $bgcolor class=\"row font1\">\n";
+                echo "    <tr " . bgcolor($o) . " class=\"row font1\">\n";
                 echo "      <td align=center>$rowx[1]</td>\n";
                 echo "      <td>$rowx[0] - $rowx[2]</td>\n";
                 echo "      <td align=center>$rowx[5]</td>\n";
@@ -1525,18 +1508,12 @@ if ($ADD==31) {
                 $rowx=mysql_fetch_row($rslt);
                 $o++;
 
-                if (eregi("1$|3$|5$|7$|9$", $o)) {
-                    $bgcolor='bgcolor='.$oddrows;
-                } else {
-                    $bgcolor='bgcolor='.$evenrows;
-                }
-
                 echo "    <form action=$PHP_SELF method=POST>\n";
                 echo "    <input type=hidden name=status value=\"$rowx[2]\">\n";
                 echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
                 echo "    <input type=hidden name=SUB value=25>\n";
                 echo "    <input type=hidden name=ADD value=45>\n";
-                echo "    <tr $bgcolor class=\"row font1\">\n";
+                echo "    <tr " . bgcolor($o) . " class=\"row font1\">\n";
                 echo "      <td align=center>$rowx[2]</td>\n";
                 echo "      <td class=tabinput align=center><input type=text size=10 maxlength=10 name=attempt_delay value=\"$rowx[3]\"></td>\n";
                 echo "      <td class=tabinput align=center><input type=text size=5 maxlength=3 name=attempt_maximum value=\"$rowx[4]\"></td>\n";
@@ -1579,14 +1556,9 @@ if ($ADD==31) {
 
             $o=0;
             while ($AADs_to_print > $o) {
-                if (eregi("1$|3$|5$|7$|9$", $o)) {
-                    $bgcolor='bgcolor='.$oddrows;
-                } else {
-                    $bgcolor='bgcolor='.$evenrows;
-                }
                 $o++;
 
-                echo "    <tr $bgcolor class=\"row font1\">\n";
+                echo "    <tr " . bgcolor($o) . " class=\"row font1\">\n";
                 echo "      <td align=center>$AADstatuses[$o]</td>\n";
                 echo "      <td align=center><a href=\"$PHP_SELF?ADD=66&campaign_id=$campaign_id&status=$AADstatuses[$o]\">DELETE</a></td>\n";
                 echo "    </tr>\n";
@@ -1622,17 +1594,11 @@ if ($ADD==31) {
                 $rowx=mysql_fetch_row($rslt);
                 $o++;
 
-                if (eregi("1$|3$|5$|7$|9$", $o)) {
-                    $bgcolor='bgcolor='.$oddrows;
-                } else {
-                    $bgcolor='bgcolor='.$evenrows;
-                }
-
                 echo "    <form action=$PHP_SELF method=POST>\n";
                 echo "    <input type=hidden name=ADD value=47>\n";
                 echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
                 echo "    <input type=hidden name=pause_code value=\"$rowx[0]\"> &nbsp;\n";
-                echo "    <tr $bgcolor class=\"row font1\">\n";
+                echo "    <tr " . bgcolor($o) . " class=\"row font1\">\n";
                 echo "      <td align=center>$rowx[0]</td>\n";
                 echo "      <td align=center class=tabinput><input type=text size=20 maxlength=30 name=pause_code_name value=\"$rowx[1]\"></td>\n";
                 echo "      <td align=center class=tabinput><select size=1 name=billable><option>YES</option><option>NO</option><option>HALF</option><option SELECTED>$rowx[2]</option></select></td>\n";
@@ -1948,12 +1914,7 @@ if ($ADD==34)
             if (ereg("Y", $rowx[1])) {$active_lists++;   $camp_lists .= "'$rowx[0]',";}
             if (ereg("N", $rowx[1])) {$inactive_lists++;}
 
-            if (eregi("1$|3$|5$|7$|9$", $o))
-                {$bgcolor='bgcolor='.$oddrows;} 
-            else
-                {$bgcolor='bgcolor='.$evenrows;}
-
-            echo "<tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=311&list_id=$rowx[0]');\"><td><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td>$rowx[2]</td><td align=center>$rowx[1]</td></tr>\n";
+            echo "<tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=311&list_id=$rowx[0]');\"><td><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td>$rowx[2]</td><td align=center>$rowx[1]</td></tr>\n";
 
             }
 
@@ -2008,12 +1969,7 @@ if ($ADD==34)
                 $rowx=mysql_fetch_row($rsltx);
                 $o++;
 
-            if (eregi("1$|3$|5$|7$|9$", $o))
-            {$bgcolor='bgcolor='.$oddrows;} 
-        else
-            {$bgcolor='bgcolor='.$evenrows;}
-
-            echo "<tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=3&user=$rowx[0]');\"><td><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">" . mclabel($rowx[0]) . "</a></td><td align=right>$rowx[1]</td><td align=right>$rowx[2]</td></tr>\n";
+            echo "<tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=3&user=$rowx[0]');\"><td><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">" . mclabel($rowx[0]) . "</a></td><td align=right>$rowx[1]</td><td align=right>$rowx[2]</td></tr>\n";
             }
 
         echo "<tr class=tabfooter><td colspan=3></td></tr>\n";
@@ -2075,16 +2031,9 @@ if ( ($ADD==34) or ($ADD==31) ) {
             $vcl_id=$rowx[0];
             $o++;
 
-            if (eregi("1$|3$|5$|7$|9$", $o)) {
-                $tablecolor="bgcolor=$evenrows";
-                $bgcolor="bgcolor=$oddrows";
-            } else {
-                $tablecolor="bgcolor=$oddrows";
-                $bgcolor="bgcolor=$evenrows";
-            }
             echo " <tr>\n";
             echo "  <td>\n";
-            echo "<table width=$section_width cellspacing=1 $tablecolor class=row>\n";
+            echo "<table width=$section_width cellspacing=1 " . bgcolor($o+1) . " class=row>\n";
             echo "  <form action=\"$PHP_SELF#$vcl_id\" method=POST name=$vcl_id id=$vcl_id>\n";
             echo "  <input type=hidden name=ADD value=49>\n";
             echo "  <input type=hidden name=SUB value=29>\n";
@@ -2152,7 +2101,7 @@ if ( ($ADD==34) or ($ADD==31) ) {
                 }
                 $Dsql = preg_replace("/,$/","",$Dsql);
 
-                #echo "  <tr $bgcolor class=font2>\n";
+                #echo "  <tr " . bgcolor($o) . " class=font2>\n";
                 echo "  <tr class=font2>\n";
                 echo "    <td NOWRAP>\n";
                 echo "      <input type=hidden name=list_id$US$q$US$vcl_id id=list_id$US$q$US$vcl_id value=$MIXdetailsLIST>\n";
@@ -2380,11 +2329,7 @@ echo "  </tr>\n";
     $o=0;
     while ($people_to_print > $o) {
         $row=mysql_fetch_row($rslt);
-        if (eregi("1$|3$|5$|7$|9$", $o))
-            {$bgcolor='bgcolor='.$oddrows;} 
-        else
-            {$bgcolor='bgcolor='.$evenrows;}
-        echo "  <tr class=\"row font1\" $bgcolor ondblclick=\"window.location='$PHP_SELF?ADD=34&campaign_id=$row[0]';\">\n";
+        echo "  <tr class=\"row font1\" " . bgcolor($o) ." ondblclick=\"window.location='$PHP_SELF?ADD=34&campaign_id=$row[0]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=34&campaign_id=$row[0]\">" . mclabel($row[0]) . "</a></td>\n";
         echo "    <td>$row[1]</td>\n";
         echo "    <td align=center><font size=1>$row[2]</td>\n";

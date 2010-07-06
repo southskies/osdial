@@ -197,16 +197,10 @@ function report_agent_pause_summary() {
         $u=0;
         while ($pauses_to_print > $u) {
             $row=mysql_fetch_row($rslt);
-            if (eregi("1$|3$|5$|7$|9$", $u)) {
-                $bgcolor='bgcolor="' . $oddrows . '"';
-            } else {
-                $bgcolor='bgcolor="' . $evenrows . '"';
-            }
-
             $avg = $row[2] / $row[1];
             $pc = "(Not Used)";
             if ($row[0]) $pc = $row[0];
-            $table .= "  <tr $bgcolor class=\"row font1\" title=\"PAUSE CODE: $pc\">\n";
+            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" title=\"PAUSE CODE: $pc\">\n";
             $table .= "    <td align=left>$row[0]</td>\n";
             $table .= "    <td align=right>$row[1]</td>\n";
             $table .= "    <td align=right>" . fmt_hms($row[2]) . "</td>\n";
@@ -270,12 +264,6 @@ function report_agent_pause_summary() {
         $u=0;
         while ($pauses_to_print > $u) {
             $row=mysql_fetch_row($rslt);
-            if (eregi("1$|3$|5$|7$|9$", $u)) {
-                $bgcolor='bgcolor="' . $oddrows . '"';
-            } else {
-                $bgcolor='bgcolor="' . $evenrows . '"';
-            }
-
             if ($u>0 and $row[0] != $lastkey) {
                 $table .= "  <tr class=tabheader>\n";
                 $table .= "    <td colspan=5></td>\n";
@@ -284,7 +272,7 @@ function report_agent_pause_summary() {
             $lastkey=$row[0];
 
             $avg = $row[3] / $row[2];
-            $table .= "  <tr $bgcolor class=\"row font1\" title=\"CAMPAIGN: " . $row[0] . " (" . $group_map[$row[0]] . ")\">\n";
+            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" title=\"CAMPAIGN: " . $row[0] . " (" . $group_map[$row[0]] . ")\">\n";
             $table .= "    <td align=left>$row[0]</td>\n";
             $table .= "    <td align=left>$row[1]</td>\n";
             $table .= "    <td align=right>$row[2]</td>\n";
@@ -351,12 +339,6 @@ function report_agent_pause_summary() {
         $u=0;
         while ($pauses_to_print > $u) {
             $row=mysql_fetch_row($rslt);
-            if (eregi("1$|3$|5$|7$|9$", $u)) {
-                $bgcolor='bgcolor="' . $oddrows . '"';
-            } else {
-                $bgcolor='bgcolor="' . $evenrows . '"';
-            }
-
             if ($u>0 and $row[0] != $lastkey) {
                 $table .= "  <tr class=tabheader>\n";
                 $table .= "    <td colspan=6></td>\n";
@@ -375,7 +357,7 @@ function report_agent_pause_summary() {
             $lastkey2=$row[1];
 
             $avg = $row[4] / $row[3];
-            $table .= "  <tr $bgcolor class=\"row font1\" title=\"CAMPAIGN: " . $row[0] . " (" . $group_map[$row[0]] . ")     USER: " . $row[1] . " (" . $user_map[$row[1]] . ")\">\n";
+            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" title=\"CAMPAIGN: " . $row[0] . " (" . $group_map[$row[0]] . ")     USER: " . $row[1] . " (" . $user_map[$row[1]] . ")\">\n";
             $table .= "    <td align=left>$row[0]</td>\n";
             $table .= "    <td align=left>$row[1]</td>\n";
             $table .= "    <td align=left>$row[2]</td>\n";
@@ -445,12 +427,6 @@ function report_agent_pause_summary() {
         $u=0;
         while ($pauses_to_print > $u) {
             $row=mysql_fetch_row($rslt);
-            if (eregi("1$|3$|5$|7$|9$", $u)) {
-                $bgcolor='bgcolor="' . $oddrows . '"';
-            } else {
-                $bgcolor='bgcolor="' . $evenrows . '"';
-            }
-
             if ($u>0 and $row[0] != $lastkey) {
                 $table .= "  <tr class=tabheader>\n";
                 $table .= "    <td colspan=6></td>\n";
@@ -468,7 +444,7 @@ function report_agent_pause_summary() {
             }
             $lastkey2=$row[1];
 
-            $table .= "  <tr $bgcolor class=\"row font1\" title=\"CAMPAIGN: " . $row[0] . " (" . $group_map[$row[0]] . ")     USER: " . $row[1] . " (" . $user_map[$row[1]] . ")\">\n";
+            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" title=\"CAMPAIGN: " . $row[0] . " (" . $group_map[$row[0]] . ")     USER: " . $row[1] . " (" . $user_map[$row[1]] . ")\">\n";
             $table .= "    <td align=left>$row[0]</td>\n";
             $table .= "    <td align=left>$row[1]</td>\n";
             $table .= "    <td align=left>$row[2]</td>\n";

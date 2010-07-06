@@ -895,11 +895,7 @@ if ($ADD==660) {
 	$o=0;
 	while ($people_to_print > $o) {
 		$row=mysql_fetch_row($rslt);
-		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor='.$oddrows;} 
-		else
-			{$bgcolor='bgcolor='.$evenrows;}
-		echo "<tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=3&user=$row[1]');\">\n";
+		echo "<tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=3&user=$row[1]');\">\n";
         echo "  <td>$row[1]</td>\n";
         echo "  <td>$row[3]</td>\n";
         echo "  <td>$row[4]</td>\n";
@@ -1061,16 +1057,11 @@ echo "  </tr>\n";
 	$o=0;
 	while ($people_to_print > $o) {
 		$row=mysql_fetch_row($rslt);
-		if (eregi("1$|3$|5$|7$|9$", $o)) {
-            $bgcolor='bgcolor='.$oddrows;
-        } else {
-            $bgcolor='bgcolor='.$evenrows;
-        }
             echo "  <form action=$PHP_SELF method=POST>\n";
             echo "  <input type=hidden name=ADD value=$ADD>\n";
             echo "  <input type=hidden name=SUB value=1>\n";
         if ($row[5] != "VIRTUAL") {
-		    echo "  <tr class=\"row font1\" $bgcolor ondblclick=\"window.location='$PHP_SELF?ADD=3&user=$row[1]';\">\n";
+		    echo "  <tr class=\"row font1\" " . bgcolor($o) . " ondblclick=\"window.location='$PHP_SELF?ADD=3&user=$row[1]';\">\n";
             echo "    <td><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">";
             if (($LOG['multicomp'] > 0 and preg_match($LOG['companiesRE'],$row[1])) or $LOG['multcomp_user'] > 0) {
                 echo substr($row[1],0,3) . "&nbsp;" . substr($row[1],3);;

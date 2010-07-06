@@ -672,14 +672,7 @@ if ($ADD==311111) {
         while ($users_to_print > $o) {
             $rowx=mysql_fetch_row($rsltx);
             $o++;
-
-            if (eregi("1$|3$|5$|7$|9$", $o)) {
-                $bgcolor='bgcolor='.$oddrows;
-            } else {
-                $bgcolor='bgcolor='.$evenrows;
-            }
-
-            echo "    <tr $bgcolor class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=3&user=$rowx[0]');\">\n";
+            echo "    <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=3&user=$rowx[0]');\">\n";
             echo "      <td><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">" . mclabel($rowx[0]) . "</a></td>\n";
             echo "      <td>$rowx[1]</td>\n";
             echo "      <td>$rowx[2]</td>\n";
@@ -759,12 +752,7 @@ if ($ADD==100000) {
     $o=0;
     while ($people_to_print > $o) {
         $row=mysql_fetch_row($rslt);
-        if (eregi("1$|3$|5$|7$|9$", $o)) {
-            $bgcolor='bgcolor='.$oddrows;
-        } else {
-            $bgcolor='bgcolor='.$evenrows;
-        }
-        echo "    <tr $bgcolor class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=311111&user_group=$row[0]';\">\n";
+        echo "    <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=311111&user_group=$row[0]';\">\n";
         echo "      <td><a href=\"$PHP_SELF?ADD=311111&user_group=$row[0]\">" . mclabel($row[0]) . "</a></td>\n";
         echo "      <td>$row[1]</td>\n";
         echo "      <td align=center><a href=\"$PHP_SELF?ADD=311111&user_group=$row[0]\">MODIFY</a></td>\n";

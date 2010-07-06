@@ -331,12 +331,6 @@ function report_lead_performance_list() {
             $sales       = $data['sales'] * 1;
             $cost        = $data['cost'] * 1;
 
-            if (eregi("1$|3$|5$|7$|9$", $i)) {
-                $bgcolor='bgcolor='.$oddrows;
-            } else {
-                $bgcolor='bgcolor='.$evenrows;
-            }
-
             $cnt_closing_pct = "0%";
             if ($contacts > 0) $cnt_closing_pct = sprintf('%3.2f',(($sales / $contacts) * 100)) . "%";
             $closing_pct = "0%";
@@ -357,7 +351,7 @@ function report_lead_performance_list() {
             if ($newsales > 0) $newcost_sale = sprintf('%3.2f',$newcost / $newsales);
             $newcost = sprintf('%3.2f',$newcost);
 
-            $html .= "  <tr $bgcolor class=\"row font1\">\n";
+            $html .= "  <tr " . bgcolor($i) . " class=\"row font1\">\n";
             if ($type == "hour") {
                 $html .= "    <td align=right><a href=\"?ADD=$ADD&SUB=$SUB&type=date&start_date=$start_date$groupQS&submit=submit&DB=$DB\">$period</a></td>\n";
                 $html .= "    <td align=center bgcolor=$menubarcolor><font style=\"font-size:1px;\">&nbsp;</font></td>\n";

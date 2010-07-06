@@ -487,12 +487,6 @@ if ($ADD==311) {
         if ($lead_list['count'] > 0) {
             while (list($dispo,) = each($lead_list[$since_reset])) {
 
-                if (eregi("1$|3$|5$|7$|9$", $o)) {
-                    $bgcolor='bgcolor='.$oddrows;
-                } else {
-                    $bgcolor='bgcolor='.$evenrows;
-                }
-
                 if ($dispo == 'CBHOLD') {
                     $CLB="<a href=\"$PHP_SELF?ADD=811&list_id=$list_id\">";
                     $CLE="</a>";
@@ -501,7 +495,7 @@ if ($ADD==311) {
                     $CLE='';
                 }
 
-                echo "  <tr $bgcolor class=\"row font1\">\n";
+                echo "  <tr " . bgcolor($o) . " class=\"row font1\">\n";
                 echo "    <td>$CLB$dispo$CLE</td>\n";
                 echo "    <td>$statuses_list[$dispo]</td>\n";
                 echo "    <td align=right>".$lead_list['Y'][$dispo]."</td>\n";
@@ -574,13 +568,7 @@ if ($ADD==311) {
                 } else {
                     $DISPtzone = "$tzone";
                 }
-                if (eregi("1$|3$|5$|7$|9$", $o)) {
-                    $bgcolor='bgcolor='.$oddrows;
-                } else {
-                    $bgcolor='bgcolor='.$evenrows;
-                }
-
-                echo "  <tr $bgcolor class=\"row font1\">\n";
+                echo "  <tr " . bgcolor($o) . " class=\"row font1\">\n";
                 echo "    <td>".$DISPtzone." &nbsp; &nbsp; ($LOCALdate)</td>\n";
                 echo "    <td align=right>".$lead_list['Y'][$tzone]."</td>\n";
                 echo "    <td align=right>".$lead_list['N'][$tzone]."</td>\n";
@@ -669,14 +657,9 @@ if ($ADD==311) {
         $statuses_called_to_print = count($status);
         while ($statuses_called_to_print > $sts) {
             $Pstatus = $status[$sts];
-            if (eregi("1$|3$|5$|7$|9$", $sts)) {
-                $bgcolor="bgcolor=$evenrows";   $AB="bgcolor=$oddrows";
-            } else {
-                $bgcolor="bgcolor=$oddrows";   $AB="bgcolor=$evenrows";
-            }
             #	echo "$status[$sts]|$status_called_first[$sts]|$status_called_last[$sts]|$leads_in_sts[$sts]|\n";
             #	echo "$status[$sts]|";
-            echo "  <tr $bgcolor style=\"cursor:crosshair;\" class=\"row font1\">\n";
+            echo "  <tr " . bgcolor($sts) . " style=\"cursor:crosshair;\" class=\"row font1\">\n";
             echo "     <td style=\"cusrsor:crosshair;\" nowrap>$Pstatus</td>\n";
             echo "     <td style=\"cusrsor:crosshair;\" nowrap>$statuses_list[$Pstatus]</td>";
 
@@ -793,14 +776,9 @@ if ($ADD==311) {
         $statuses_called_to_print = count($status);
         while ($statuses_called_to_print > $sts) {
             $Pstatus = $status[$sts];
-            if (eregi("1$|3$|5$|7$|9$", $sts)) {
-                $bgcolor="bgcolor=$evenrows";   $AB="bgcolor=$oddrows";
-            } else {
-                $bgcolor="bgcolor=$oddrows";   $AB="bgcolor=$evenrows";
-            }
             #	echo "$status[$sts]|$status_called_first[$sts]|$status_called_last[$sts]|$leads_in_sts[$sts]|\n";
             #	echo "$status[$sts]|";
-            echo "  <tr $bgcolor style=\"cursor:crosshair;\" class=\"row font1\">\n";
+            echo "  <tr " . bgcolor($sts) . " style=\"cursor:crosshair;\" class=\"row font1\">\n";
             echo "     <td style=\"cusrsor:crosshair;\" nowrap>$Pstatus</td>\n";
             echo "     <td style=\"cusrsor:crosshair;\" nowrap>$statuses_list[$Pstatus]</td>";
 
@@ -928,11 +906,7 @@ if ($ADD==82) {
 	$o=0;
 	while ($cb_to_print > $o) {
 		$row=mysql_fetch_row($rslt);
-		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor='.$oddrows;} 
-		else
-			{$bgcolor='bgcolor='.$evenrows;}
-		echo "  <tr $bgcolor class=\"row font1\">\n";
+		echo "  <tr " . bgcolor($o) . " class=\"row font1\">\n";
 		echo "    <td><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[1]\" target=\"_blank\">$row[1]</a></td>\n";
 		echo "    <td><a href=\"$PHP_SELF?ADD=311&list_id=$row[2]\">$row[2]</a></td>\n";
 		echo "    <td><a href=\"$PHP_SELF?ADD=31&campaign_id=$row[3]\">$row[3]</a></td>\n";
@@ -1013,12 +987,7 @@ if ($ADD==100) {
     $o=0;
     while ($people_to_print > $o) {
         $row=mysql_fetch_row($rslt);
-        if (eregi("1$|3$|5$|7$|9$", $o)) {
-            $bgcolor='bgcolor='.$oddrows;
-        } else {
-            $bgcolor='bgcolor='.$evenrows;
-        }
-        echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=311&list_id=$row[0]';\">\n";
+        echo "  <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=311&list_id=$row[0]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">$row[0]</a></td>\n";
         echo "    <td>$row[1]</td>\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=100&camp=$row[2]&dispact=$dispact\">" . mclabel($row[2]) . "</a></td>\n";

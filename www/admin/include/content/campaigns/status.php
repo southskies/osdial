@@ -167,11 +167,7 @@ echo "</tr>\n";
 	$o=0;
 	while ($campaigns_to_print > $o) 
 		{
-		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor='.$oddrows;} 
-		else
-			{$bgcolor='bgcolor='.$evenrows;}
-		echo "  <tr class=\"row font1\" $bgcolor ondblclick=\"window.location='$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaigns_id_list[$o]';\">\n";
+		echo "  <tr class=\"row font1\" " . bgcolor($o) . " ondblclick=\"window.location='$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaigns_id_list[$o]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaigns_id_list[$o]\">" . mclabel($campaigns_id_list[$o]) . "</a></td>";
 		echo "    <td>$campaigns_name_list[$o]</td>";
 		echo "    <td align=center>";

@@ -832,17 +832,12 @@ if ($ADD == "3menu") {
     $cnt = 0;
     foreach ($oivr_opts as $opt) {
         $ad  = explode('#:#',$opt['action_data']);
-        if (eregi("1$|3$|5$|7$|9$",$cnt)) {
-            $bgcolor = 'bgcolor="' . $oddrows . '"';
-        } else {
-            $bgcolor = 'bgcolor="' . $evenrows . '"';
-        }
         echo '  <form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
         echo '  <input type="hidden" name="ADD" value="3keys">';
         echo '  <input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
         echo '  <input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
         echo '  <input type="hidden" name="oivr_opt_id" value="' . $opt['id'] . '">';
-        echo "  <tr $bgcolor class=\"row font1\">";
+        echo "  <tr " . bgcolor($cnt) . " class=\"row font1\">";
         echo "      <td align=center>" . $opt['keypress'] . "</td>";
         echo "      <td align=center>" . $opt['action'] . "</td>";
         if ($opt['action'] == 'MENU') {
@@ -1399,17 +1394,12 @@ if ($ADD == "3keys") {
         $cnt = 0;
         foreach ($oivr_opts as $opt) {
             $ad  = explode('#:#',$opt['action_data']);
-            if (eregi("1$|3$|5$|7$|9$",$cnt)) {
-                $bgcolor = 'bgcolor="' . $oddrows . '"';
-            } else {
-                $bgcolor = 'bgcolor="' . $evenrows . '"';
-            }
             echo '  <form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
             echo '  <input type="hidden" name="ADD" value="3keys">';
             echo '  <input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
             echo '  <input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
             echo '  <input type="hidden" name="oivr_opt_id" value="' . $opt['id'] . '">';
-            echo "  <tr $bgcolor class=\"row font1\">";
+            echo "  <tr " . bgcolor($cnt) . " class=\"row font1\">";
             echo "      <td align=center>" . $opt['keypress'] . "</td>";
             echo "      <td align=center>" . $opt['action'] . "</td>";
             echo "      <td align=center>" . $ad[1] . "</td>";

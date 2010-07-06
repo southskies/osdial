@@ -433,12 +433,7 @@ if ($ADD==10000000000) {
     $o=0;
     while ($phones_to_print > $o) {
         $row=mysql_fetch_row($rslt);
-        if (eregi("1$|3$|5$|7$|9$", $o)) {
-            $bgcolor='bgcolor='.$oddrows;
-        } else {
-            $bgcolor='bgcolor='.$evenrows;
-        }
-        echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]';\">\n";
+        echo "  <tr " . bgcolor($o) ." class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]\">";
         if ($LOG['multicomp'] and !preg_match('/\/|@/',$row[0]) and preg_match($LOG['campaignsRE'],$row[0])) {
             echo $row[12] . "&nbsp;" . substr($row[0],3);
@@ -491,14 +486,9 @@ if ($ADD==10000000000) {
                 //}
                 // Ensuring only vm entries show up
                 if ( substr($line,0,7) == "default" ) {
-                    if (eregi("1$|3$|5$|7$|9$", $o)) {
-                        $bgcolor='bgcolor='.$oddrows;
-                    } else {
-                        $bgcolor='bgcolor='.$evenrows;
-                    }
                     $line = rtrim($line);
                     $lary = preg_split("/\\s+/",$line);
-                    echo "  <tr $bgcolor class=\"row font1\">\n";
+                    echo "  <tr " . bgcolor($o) . " class=\"row font1\">\n";
                     echo "    <td>" . $lary[0] . "</td>\n";
                     echo "    <td>" . $lary[1] . "</td>\n";
                     $llast = count($lary) - 1;

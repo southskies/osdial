@@ -195,16 +195,11 @@ if ($ADD==321111111111111)
 		$AScategory = $rowx[4];
 		$o++;
 
-		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor='.$oddrows;} 
-		else
-			{$bgcolor='bgcolor='.$evenrows;}
-
         echo "  <form action=$PHP_SELF method=POST>\n";
 		echo "  <input type=hidden name=ADD value=421111111111111>\n";
 		echo "  <input type=hidden name=stage value=modify>\n";
 		echo "  <input type=hidden name=status value=\"$rowx[0]\">\n";
-		echo "  <tr $bgcolor class=\"row font1\">\n";
+		echo "  <tr " . bgcolor($o) . " class=\"row font1\">\n";
         echo "    <td><b>$rowx[0]</b></td>\n";
 		echo "    <td align=center class=tabinput><input type=text name=status_name size=20 maxlength=30 value=\"$rowx[1]\"></td>\n";
 		echo "    <td align=center class=tabinput><select size=1 name=selectable><option>Y</option><option>N</option><option selected>$rowx[2]</option></select></td>\n";
@@ -411,11 +406,6 @@ if ($ADD==331111111111111)
 		$p=0;
 		while ($o > $p)
 			{
-			if (eregi("1$|3$|5$|7$|9$", $p))
-				{$bgcolor='bgcolor='.$oddrows;} 
-			else
-				{$bgcolor='bgcolor='.$evenrows;}
-
 			$CATstatuses='';
 			$stmt="SELECT status from osdial_statuses where category='$Avsc_id[$p]' order by status;";
 			$rslt=mysql_query($stmt, $link);
@@ -442,7 +432,7 @@ if ($ADD==331111111111111)
 			echo "  <input type=hidden name=ADD value=431111111111111>\n";
 			echo "  <input type=hidden name=stage value=modify>\n";
 			echo "  <input type=hidden name=vsc_id value=\"$Avsc_id[$p]\">\n";
-			echo "  <tr $bgcolor class=\"row font1\" title=\"Statuses in Category: $CATstatuses\">\n";
+			echo "  <tr " . bgcolor($p) . " class=\"row font1\" title=\"Statuses in Category: $CATstatuses\">\n";
             echo "    <td><b>$Avsc_id[$p]</b></td>\n";
 			echo "    <td align=center class=tabinput><input type=text name=vsc_name size=20 maxlength=50 value=\"$Avsc_name[$p]\"></td>\n";
 			echo "    <td align=center class=tabinput><input type=text name=vsc_description size=40 maxlength=255 value=\"$Avsc_description[$p]\"></td>\n";

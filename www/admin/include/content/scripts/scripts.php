@@ -973,16 +973,11 @@ tinyMCE.init({
         $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'");
         $cnt = 0;
         foreach ($buttons as $button) {
-            if (eregi("1$|3$|5$|7$|9$",$cnt))
-                {$bgcolor='bgcolor='.$oddrows;}
-            else
-                {$bgcolor='bgcolor='.$evenrows;}
-    
             echo '  <form action="' . $PHP_SELF . '" method="POST">';
             echo '  <input type="hidden" name="ADD" value="' . $ADD . '">';
             echo '  <input type="hidden" name="SUB" value="' . $button['script_button_id'] . '">';
 	        echo "  <input type=hidden name=script_id value=\"$script_id\">\n";
-            echo "  <tr $bgcolor class=\"row font1\">\n";
+            echo "  <tr " . bgcolor($cnt) . " class=\"row font1\">\n";
             echo "      <td align=center>" . $button['script_button_id'] . "</td>\n";
             echo "      <td align=center>" . $button['script_button_label'] . "</td>\n";
             echo "      <td align=center>" . $button['script_button_description'] . "</td>\n";
@@ -1038,11 +1033,7 @@ echo "  </tr>\n";
 	$o=0;
 	while ($people_to_print > $o) {
 		$row=mysql_fetch_row($rslt);
-		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor='.$oddrows;} 
-		else
-			{$bgcolor='bgcolor='.$evenrows;}
-		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=3111111&script_id=$row[0]';\">\n";
+		echo "  <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=3111111&script_id=$row[0]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=3111111&script_id=$row[0]\">" . mclabel($row[0]) . "</a></td>\n";
 		echo "    <td>$row[1]</td>\n";
 		echo "    <td align=center><a href=\"$PHP_SELF?ADD=3111111&script_id=$row[0]\">MODIFY</a></td>\n";

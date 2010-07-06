@@ -185,11 +185,6 @@ function report_list_cost() {
         $i=0;
         while ($i < $rows_to_print) {
             $row=mysql_fetch_row($rslt);
-            if (eregi("1$|3$|5$|7$|9$", $i)) {
-                $bgcolor='bgcolor='.$oddrows;
-            } else {
-                $bgcolor='bgcolor='.$evenrows;
-            }
     
             if ($i > 0 and $last_date != $row[0]) {
                 if ($SUBleads > 0) {
@@ -230,7 +225,7 @@ function report_list_cost() {
             $avg_cost   = sprintf("%8.2f",  $avg_cost); 
             $total_cost = sprintf("%10.2f", $total_cost); 
 
-            $html .= "  <tr $bgcolor class=\"row font1\">\n";
+            $html .= "  <tr " . bgcolor($i) . " class=\"row font1\">\n";
             $html .= "    <td align=left>$date</td>\n";
             $html .= "    <td align=left>$name</td>\n";
             $html .= "    <td align=right>$leads</td>\n";

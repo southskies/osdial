@@ -260,11 +260,7 @@ echo "  </tr>\n";
 	$o=0;
 	while ($phones_to_print > $o) {
 		$row=mysql_fetch_row($rslt);
-		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor='.$oddrows;} 
-		else
-			{$bgcolor='bgcolor='.$evenrows;}
-		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=3111111111111&conf_exten=$row[0]&server_ip=$row[1]';\">\n";
+		echo "  <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=3111111111111&conf_exten=$row[0]&server_ip=$row[1]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=3111111111111&conf_exten=$row[0]&server_ip=$row[1]\">$row[0]</a></td>\n";
 		echo "    <td>$row[1]</td>\n";
 		echo "    <td>$row[2]</td>\n";
@@ -512,11 +508,7 @@ echo "  </tr>\n";
 	$o=0;
 	while ($phones_to_print > $o) {
 		$row=mysql_fetch_row($rslt);
-		if (eregi("1$|3$|5$|7$|9$", $o))
-			{$bgcolor='bgcolor='.$oddrows;} 
-		else
-			{$bgcolor='bgcolor='.$evenrows;}
-		echo "  <tr $bgcolor class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=31111111111111&conf_exten=$row[0]&server_ip=$row[1]';\">\n";
+		echo "  <tr " . bgcolor($o) ." class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=31111111111111&conf_exten=$row[0]&server_ip=$row[1]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=31111111111111&conf_exten=$row[0]&server_ip=$row[1]\">$row[0]</a></td>\n";
 		echo "    <td>$row[1]</td>\n";
 		echo "    <td>$row[2]</td>\n";

@@ -92,12 +92,6 @@ if ($ADD=="2ca") {
                     $cid_number = preg_replace('/[^0-9]/','',$csvrow[1]);
                     $cid_name = $csvrow[2];
 
-                    if (eregi("1$|3$|5$|7$|9$", $o)) {
-                        $bgcolor='bgcolor='.$oddrows;
-                    } else {
-                        $bgcolor='bgcolor='.$evenrows;
-                    }
-
                     $status='FAILED';
                     if (strlen($areacode) == 3 and strlen($cid_number) == 10) {
                         $stmt=sprintf("SELECT count(*) FROM osdial_campaign_cid_areacodes WHERE campaign_id='%s' AND areacode='%s';",mres($campaign_id),mres($areacode));
@@ -125,7 +119,7 @@ if ($ADD=="2ca") {
                     if ($status == 'UPDATED')  $resclr = "blue";
                     if ($status == 'ADDED')  $resclr = "black";
 
-                    $restab .= "  <tr $bgcolor class=\"row font1\">\n";
+                    $restab .= "  <tr " . bgcolor($o) . " class=\"row font1\">\n";
                     $restab .= "    <td align=right><font color=\"$resclr\">$o</font></td>\n";
                     $restab .= "    <td align=center><font color=\"$resclr\">$campaign_id</font></td>\n";
                     $restab .= "    <td align=center><font color=\"$resclr\">$areacode</font></td>\n";
@@ -337,12 +331,7 @@ if ($ADD == "3ca" and $SUB != 2) {
 
         $o=0;
         while ($campaigns_to_print > $o) {
-            if (eregi("1$|3$|5$|7$|9$", $o)) {
-                $bgcolor='bgcolor='.$oddrows;
-            } else {
-                $bgcolor='bgcolor='.$evenrows;
-            }
-            echo "    <tr $bgcolor class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=3ca&SUB=2&campaign_id=$campaigns_id_list[$o]';\">\n";
+            echo "    <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=3ca&SUB=2&campaign_id=$campaigns_id_list[$o]';\">\n";
             echo "      <td><a href=\"$PHP_SELF?ADD=3ca&SUB=2&campaign_id=$campaigns_id_list[$o]\">" . mclabel($campaigns_id_list[$o]) . "</a></td>\n";
             echo "      <td>$campaigns_name_list[$o]</td>\n";
             echo "      <td align=center><a href=\"$PHP_SELF?ADD=3ca&SUB=2&campaign_id=$campaigns_id_list[$o]\">CALLERID/AREACODES</a></td>\n";
@@ -386,17 +375,11 @@ if ($ADD == "3ca" and $SUB == 2) {
             $rowx=mysql_fetch_row($rslt);
             $o++;
 
-            if (eregi("1$|3$|5$|7$|9$", $o)) {
-                $bgcolor='bgcolor='.$oddrows;
-            } else {
-                $bgcolor='bgcolor='.$evenrows;
-            }
-
             echo "    <form action=$PHP_SELF method=POST>\n";
             echo "    <input type=hidden name=ADD value=4ca>\n";
             echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
             echo "    <input type=hidden name=oldareacode value=\"$rowx[1]\">\n";
-            echo "    <tr $bgcolor class=\"row font1\">\n";
+            echo "    <tr " . bgcolor($o) . " class=\"row font1\">\n";
             echo "      <td align=center><input type=text size=3 maxlength=4 name=areacode value=\"$rowx[1]\"></td>\n";
             echo "      <td align=center><input type=text size=10 maxlength=10 name=cid_number value=\"$rowx[2]\"></td>\n";
             echo "      <td align=center><input type=text size=20 maxlength=40 name=cid_name value=\"$rowx[3]\"></td>\n";
@@ -406,7 +389,7 @@ if ($ADD == "3ca" and $SUB == 2) {
             echo "    </form>\n";
         }
 
-        echo "    <tr $bgcolor class=\"row font1\">\n";
+        echo "    <tr " . bgcolor($o) . " class=\"row font1\">\n";
         echo "      <td colspan=5></td>\n";
         echo "    </tr>\n";
         echo "    <form action=$PHP_SELF method=POST>\n";
