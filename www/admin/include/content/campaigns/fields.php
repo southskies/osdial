@@ -36,7 +36,7 @@ if ($ADD == "1form") {
             $ADD = "2form"; # go to campaign modification form below
         } else {
             $form_id = 0;
-            $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "");
+            $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', '','');
             foreach ($forms as $form) {
                 if ($form['id'] > $form_id) {
                     $form_id = $form['id'];
@@ -79,7 +79,7 @@ if ($ADD == "2form") {
         echo "<center><br><font color=$default_text size=+1>ADDITIONAL FORM</font><br><br>\n";
 
         $pri = 0;
-        $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
+        $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'",'');
         foreach ($forms as $form) {
             if ($form['priority'] > $pri) {
                 $pri = $form['priority'];
@@ -117,7 +117,7 @@ if ($ADD == "2form") {
             }
             echo "      </td>";
             echo "  </tr>\n";
-            $campaigns = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name','',sprintf('campaign_id IN %s',$LOG['allowed_campaignsSQL']));
+            $campaigns = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name','',sprintf('campaign_id IN %s',$LOG['allowed_campaignsSQL']),'');
             foreach ($campaigns as $camp) {
                 echo "  <tr>\n";
                 echo "      <td bgcolor=$oddrows align=right>&nbsp;</td>\n";
@@ -331,7 +331,7 @@ if ($ADD == "3fields" and $SUB != '2fields') {
     echo "    <td align=center>LINKS</td>\n";
     echo "  </tr>\n";
 
-    $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
+    $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'",'');
 
     $cnt = 0;
     foreach ($forms as $form) {
@@ -398,7 +398,7 @@ if ($ADD == "3fields" and $SUB == '2fields') {
     }
     echo '</td>';
     echo "  </tr>\n";
-    $campaigns = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name','',sprintf('campaign_id IN %s',$LOG['allowed_campaignsSQL']));
+    $campaigns = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name','',sprintf('campaign_id IN %s',$LOG['allowed_campaignsSQL']),'');
     foreach ($campaigns as $camp) {
         echo "  <tr>\n";
         echo "      <td bgcolor=$oddrows align=right>&nbsp;</td>\n";
@@ -432,7 +432,7 @@ if ($ADD == "3fields" and $SUB == '2fields') {
     echo "      <td align=center>PRIORITY</td>\n";
     echo "      <td align=center colspan=2>ACTIONS</td>\n";
     echo "  </tr>\n";
-    $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "form_id='" . $form['id'] . "' AND deleted='0'");
+    $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "form_id='" . $form['id'] . "' AND deleted='0'",'');
     $cnt = 0;
     $pri = 0;
     foreach ($fields as $field) {

@@ -104,7 +104,7 @@ $script_name =		$row[1];
 $script_text =		$row[3];
 
 $script_text = "<span style=\"display:block;\" id=\"SCRIPT_MAIN\">" . $script_text . "</span>";
-$buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'");
+$buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'",'');
 $hidebuttons = "document.getElementById('SCRIPT_MAIN').style.display='none';";
 foreach ($buttons as $button) {
     $hidebuttons .= "document.getElementById('SCRIPT_" . $button['script_button_id'] . "').style.display='none';";
@@ -269,7 +269,7 @@ $script_text = eregi_replace('\[\[EFcustom1\]\]',         $EFcustom1,$script_tex
 $script_text = eregi_replace('\[\[custom2\]\]',           $custom2,$script_text);
 $script_text = eregi_replace('\[\[EFcustom2\]\]',         $EFcustom2,$script_text);
 
-$buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'");
+$buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'",'');
 foreach ($buttons as $button) {
     $script_text = preg_replace('/\{\{' . $button['script_button_id'] . '\}\}/imU', '{{' . $button['script_button_id'] . ':' . $button['script_button_label'] . '}}',$script_text);
     $script_text = preg_replace('/\{\{' . $button['script_button_id'] . ':(.*)\}\}/imU', '<input type="button" value="$1" onclick="' . $hidebuttons . ' document.getElementById(\'SCRIPT_' . $button['script_button_id'] . '\').style.display=\'block\';">',$script_text);
@@ -440,11 +440,11 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
 
                 // Add some values to the list box
 <?
-    $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
+    $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'",'');
     foreach ($forms as $form) {
 	    $fcamps = split(',',$form['campaigns']);
 	    foreach ($fcamps as $fcamp) {
-            $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
+            $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'",'');
             foreach ($fields as $field) {
                 echo "      mlbaf.add('" . $form['name'] . '_' . $field['name'] . "','" . $form['name'] . '_' . $field['name'] . "');\n";
 			}
@@ -794,11 +794,11 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                      }
                 });
 <?
-    $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
+    $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'",'');
     foreach ($forms as $form) {
 	    $fcamps = split(',',$form['campaigns']);
 	    foreach ($fcamps as $fcamp) {
-            $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
+            $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'",'');
             foreach ($fields as $field) {
                 echo "      mlbaf.add('" . $form['name'] . '_' . $field['name'] . "','" . $form['name'] . '_' . $field['name'] . "');\n";
 			}
@@ -818,7 +818,7 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                      }
                 });
 <?
-    $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='$script_id'");
+    $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='$script_id'",'');
     foreach ($buttons as $button) {
         echo "      mlb.add('" . $button['script_button_id'] . ': ' . $button['script_button_label'] . "','" . $button['script_button_id'] . "');\n";
 	}
@@ -970,7 +970,7 @@ tinyMCE.init({
         echo "      <td align=center>DESCRIPTION</td>\n";
         echo "      <td align=center>ACTION</td>\n";
         echo "  </tr>\n";
-        $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'");
+        $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $script_id . "'",'');
         $cnt = 0;
         foreach ($buttons as $button) {
             echo '  <form action="' . $PHP_SELF . '" method="POST">';

@@ -127,7 +127,7 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8 && $LOGexport_leads > 0) {
         echo "  <br />";
 
         if ($list_id == '') {
-            $lists = get_krh($link,'osdial_lists','*','',sprintf('campaign_id IN %s',$LOG['allowed_campaignsSQL']));
+            $lists = get_krh($link,'osdial_lists','*','',sprintf('campaign_id IN %s',$LOG['allowed_campaignsSQL']),'');
             echo "  <b>Select List ID</b>\n";
             echo "  <br />";
             echo "  <br />";
@@ -153,8 +153,8 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8 && $LOGexport_leads > 0) {
             echo "  <br />\n";
             echo "  <br />\n";
 
-            $sstats = get_krh($link,'osdial_statuses','*','','');
-            $cstats = get_krh($link,'osdial_campaign_statuses','*','',"campaign_id='" . $list['campaign_id'] . "'");
+            $sstats = get_krh($link,'osdial_statuses','*','','','');
+            $cstats = get_krh($link,'osdial_campaign_statuses','*','',"campaign_id='" . $list['campaign_id'] . "'",'');
             if (count($sstats) > 0) {
                 foreach ($sstats as $stat) {
                     $stats[$stat['status']] = $stat;

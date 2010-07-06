@@ -618,7 +618,7 @@ function report_lead_search_advanced($lsa_seg='form') {
                 }
             }
             $form .= "             <tr><td><select name=affields[] id=affields size=6 multiple $affdisable>\n";
-            $krh = get_krh($link, 'osdial_campaign_fields AS fld,osdial_campaign_forms AS frm', "fld.id AS fldid,concat(frm.name,'_',fld.name) AS ffname",'ffname','fld.form_id=frm.id');
+            $krh = get_krh($link, 'osdial_campaign_fields AS fld,osdial_campaign_forms AS frm', "fld.id AS fldid,concat(frm.name,'_',fld.name) AS ffname",'ffname','fld.form_id=frm.id','');
             if (is_array($krh)) {
                 foreach ($krh as $k) {
                     if (is_array($affields)) {
@@ -652,12 +652,12 @@ function report_lead_search_advanced($lsa_seg='form') {
                 }
             }
             $form .= "             <tr><td><select name=scbuttons[] id=scbuttons size=6 multiple $scbdisable>\n";
-            $sresults = get_krh($link, 'osdial_scripts', "script_id,script_name",'script_id','1=1');
+            $sresults = get_krh($link, 'osdial_scripts', "script_id,script_name",'script_id','1=1','');
             if (is_array($sresults)) {
                 foreach ($sresults as $sres) {
                     $scbutton_label[$sres['script_id']] = $sres['script_id'];
 
-                    $sbresults = get_krh($link, 'osdial_script_buttons', "script_button_id,script_id",'script_button_id',sprintf("script_id='%s'",$sres['script_id']));
+                    $sbresults = get_krh($link, 'osdial_script_buttons', "script_button_id,script_id",'script_button_id',sprintf("script_id='%s'",$sres['script_id']),'');
                     if (is_array($sbresults)) {
                         foreach ($sbresults as $sbres) {
                             $scbutton_label[$sres['script_id'] . '_' . $sbres['script_button_id']] = $sres['script_id'] . '_' . $sbres['script_button_id'];
@@ -764,7 +764,7 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .= "     <table cellpadding=0 cellspacing=0 width=95%>\n";
         $form .= "      <tr><td class=tabheader>Campaigns</td></tr>\n";
         $form .= "      <tr><td><select name=campaigns[] size=8 multiple style=\"width:100%;\">\n";
-        $krh = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name','',sprintf("campaign_id IN %s",$LOG['allowed_campaignsSQL']));
+        $krh = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name','',sprintf("campaign_id IN %s",$LOG['allowed_campaignsSQL']),'');
         $form .= format_select_options($krh, 'campaign_id', 'campaign_name', $campaigns, "-- ALL --",$LOG['multicomp_user']);
         $form .= "      </select></td></tr>\n";
         $form .= "     </table>\n";
@@ -774,7 +774,7 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .= "     <table cellpadding=0 cellspacing=0 width=95%>\n";
         $form .= "      <tr><td class=tabheader>Lists</td></tr>\n";
         $form .= "      <tr><td><select name=lists[] size=8 multiple style=\"width:100%;\">\n";
-        $krh = get_krh($link, 'osdial_lists', 'list_id,list_name,campaign_id','',sprintf("campaign_id IN %s",$LOG['allowed_campaignsSQL']));
+        $krh = get_krh($link, 'osdial_lists', 'list_id,list_name,campaign_id','',sprintf("campaign_id IN %s",$LOG['allowed_campaignsSQL']),'');
         $form .= format_select_options($krh, 'list_id', 'list_name', $lists, "-- ALL --");
         $form .= "      </select></td></tr>\n";
         $form .= "     </table>\n";
@@ -784,8 +784,8 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .= "     <table cellpadding=0 cellspacing=0 width=95%>\n";
         $form .= "      <tr><td class=tabheader>Statuses</td></tr>\n";
         $form .= "      <tr><td><select name=statuses[] size=8 multiple style=\"width:100%;\">\n";
-        $krh = get_krh($link, 'osdial_statuses', 'status,status_name');
-        $krh2 = get_krh($link, 'osdial_campaign_statuses', 'status,status_name');
+        $krh = get_krh($link, 'osdial_statuses', 'status,status_name','','','');
+        $krh2 = get_krh($link, 'osdial_campaign_statuses', 'status,status_name','','','');
         foreach ($krh2 as $k => $v) {
             $krh[$k] = $v;
         }
@@ -799,7 +799,7 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .= "     <table cellpadding=0 cellspacing=0 width=95%>\n";
         $form .= "      <tr><td class=tabheader>Agents</td></tr>\n";
         $form .= "      <tr><td><select name=agents[] size=8 multiple style=\"width:100%;\">\n";
-        $krh = get_krh($link, 'osdial_users', 'user,full_name','',sprintf("user_group IN %s",$LOG['allowed_usergroupsSQL']));
+        $krh = get_krh($link, 'osdial_users', 'user,full_name','',sprintf("user_group IN %s",$LOG['allowed_usergroupsSQL']),'');
         $form .= format_select_options($krh, 'user', 'full_name', $agents, "-- ALL --",$LOG['multicomp_user']);
         $form .= "      </select></td></tr>\n";
         $form .= "     </table>\n";
@@ -820,7 +820,7 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .= "     <table cellpadding=0 cellspacing=0 width=95%>\n";
         $form .= "      <tr><td class=tabheader>States</td></tr>\n";
         $form .= "      <tr><td><select name=states[] size=8 multiple style=\"width:100%;\">\n";
-        $krh = get_krh($link, 'osdial_report_groups', 'group_value,group_label', "", "group_type='states'");
+        $krh = get_krh($link, 'osdial_report_groups', 'group_value,group_label', "", "group_type='states'",'');
         $form .= format_select_options($krh, 'group_value', 'group_value', $states, "-- ALL --");
         $form .= "      </select></td></tr>\n";
         $form .= "     </table>\n";

@@ -121,7 +121,7 @@ function format_select_options($krh, $kkey, $kval, $ksel="!", $kdef="", $kcomp=f
 ##### get scripts listing for dynamic pulldown
 function get_scripts($link, $selected="") {
     global $LOG;
-    $krh = get_krh($link, 'osdial_scripts', 'script_id,script_name','',sprintf("script_id LIKE '%s__%%'",$LOG['company_prefix']));
+    $krh = get_krh($link, 'osdial_scripts', 'script_id,script_name','',sprintf("script_id LIKE '%s__%%'",$LOG['company_prefix']),'');
     return format_select_options($krh, 'script_id', 'script_name', $selected, "NONE", true);
 }
 
@@ -129,20 +129,20 @@ function get_scripts($link, $selected="") {
 ##### get filters listing for dynamic pulldown
 function get_filters($link, $selected="") {
     global $LOG;
-    $krh = get_krh($link, 'osdial_lead_filters', 'lead_filter_id,lead_filter_name','',sprintf("lead_filter_id LIKE '%s__%%'",$LOG['company_prefix']));
+    $krh = get_krh($link, 'osdial_lead_filters', 'lead_filter_id,lead_filter_name','',sprintf("lead_filter_id LIKE '%s__%%'",$LOG['company_prefix']),'');
     return format_select_options($krh, 'lead_filter_id', 'lead_filter_name', $selected, "NONE", true);
 }
 
 
 ##### get call_times listing for dynamic pulldown
 function get_calltimes($link, $selected="") {
-    $krh = get_krh($link, 'osdial_call_times', 'call_time_id,call_time_name');
+    $krh = get_krh($link, 'osdial_call_times', 'call_time_id,call_time_name','','','');
     return format_select_options($krh, 'call_time_id', 'call_time_name', $selected, "NONE", false);
 }
 
 ##### get server listing for dynamic pulldown
 function get_servers($link, $selected="") {
-    $krh = get_krh($link, 'servers', 'server_ip,server_description');
+    $krh = get_krh($link, 'servers', 'server_ip,server_description','','','');
     return format_select_options($krh, 'server_ip', 'server_description', $selected, "", false);
 }
 

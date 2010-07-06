@@ -200,7 +200,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'",'');
         foreach ($status as $stat) {
             if ($stat['status'] == 'VPLAY') {
                 $sel = ' selected';
@@ -232,7 +232,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'",'');
         foreach ($status as $stat) {
             if ($stat['status'] == 'VNI') {
                 $sel = ' selected';
@@ -289,7 +289,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'",'');
         foreach ($status as $stat) {
             if ($stat['status'] == 'VIXFER') {
                 $sel = ' selected';
@@ -334,7 +334,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=$oddrows align=right>In-Group to transfer to</td>\n";
         echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi5"><option value="">-NONE-</option>';
-        $ingroups = get_krh($link, 'osdial_inbound_groups', 'group_id,group_name','',"active='Y'");
+        $ingroups = get_krh($link, 'osdial_inbound_groups', 'group_id,group_name','',"active='Y'",'');
         foreach ($ingroups as $ing) {
             echo "<option value=\"" . $ing['group_id'] . "\">" . $ing['group_id'] . " : " . $ing['group_name'] . "</option>";
         }
@@ -386,7 +386,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'",'');
         foreach ($status as $stat) {
             if ($stat['status'] == 'VIXFER') {
                 $sel = ' selected';
@@ -399,7 +399,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=$oddrows align=right>In-Group to transfer to</td>\n";
         echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi3"><option value="">-NONE-</option>';
-        $ingroups = get_krh($link, 'osdial_inbound_groups', 'group_id,group_name','',"active='Y'");
+        $ingroups = get_krh($link, 'osdial_inbound_groups', 'group_id,group_name','',"active='Y'",'');
         foreach ($ingroups as $ing) {
             echo "<option value=\"" . $ing['group_id'] . "\">" . $ing['group_id'] . " : " . $ing['group_name'] . "</option>";
         }
@@ -441,7 +441,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'",'');
         foreach ($status as $stat) {
             $sel = '';
             if ($stat['status'] == 'VEXFER') {
@@ -478,7 +478,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'",'');
         foreach ($status as $stat) {
             $sel = '';
             if ($stat['status'] == 'VEXFER') {
@@ -556,7 +556,7 @@ if ($ADD == "4menu") {
             $svr = get_first_record($link, 'servers', 'server_ip',"");
             $server_ip = $svr['server_ip'];
             # Insert Virtual Agents.
-            $rma = get_krh($link, 'osdial_remote_agents', 'remote_agent_id,user_start','',"user_start LIKE 'va" . $campaign_id . "%'");
+            $rma = get_krh($link, 'osdial_remote_agents', 'remote_agent_id,user_start','',"user_start LIKE 'va" . $campaign_id . "%'",'');
             $rcnt = count($rma);
             if ($rcnt < ($oivr_virtual_agents + $oivr_reserve_agents)) {
                 $icnt = 0;
@@ -585,7 +585,7 @@ if ($ADD == "4menu") {
             }
 
             # Insert any needed user records.
-            $urecs = get_krh($link, 'osdial_users', 'user_id,user','',"user LIKE 'va$campaign_id%'");
+            $urecs = get_krh($link, 'osdial_users', 'user_id,user','',"user LIKE 'va$campaign_id%'",'');
             $ucnt = count($urecs);
             if ($ucnt < ($oivr_virtual_agents + $oivr_reserve_agents)) {
                 $icnt = 0;
@@ -752,7 +752,7 @@ if ($ADD == "3menu") {
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Answered Status:</td>\n";
     echo '      <td bgcolor="' . $oddrows . '"><select name="oivr_answered_status"><option value="">-NONE-</option>';
-    $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
+    $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'",'');
     foreach ($status as $stat) {
         $sel = '';
         if ($stat['status'] == $oivr['answered_status']) {
@@ -792,7 +792,7 @@ if ($ADD == "3menu") {
     echo '      <td bgcolor="' . $oddrows . '">';
     echo '         <select name="oivr_timeout_action">';
     echo "              <option value=\"\"> - NONE - </option>";
-    $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $oivr_opt_parent_id . "'");
+    $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $oivr_opt_parent_id . "'",'');
     $tkey = '';
     foreach ($keys as $key) {
         $tkey .= $key['keypress'];
@@ -828,7 +828,7 @@ if ($ADD == "3menu") {
     echo "      <td align=center>DISPOSITION</td>\n";
     echo "      <td align=center colspan=2>ACTIONS</td>\n";
     echo "  </tr>\n";
-    $oivr_opts = get_krh($link, 'osdial_ivr_options', '*', 'keypress', "ivr_id='" . $oivr['id'] . "' AND parent_id='0'");
+    $oivr_opts = get_krh($link, 'osdial_ivr_options', '*', 'keypress', "ivr_id='" . $oivr['id'] . "' AND parent_id='0'",'');
     $cnt = 0;
     foreach ($oivr_opts as $opt) {
         $ad  = explode('#:#',$opt['action_data']);
@@ -859,7 +859,7 @@ if ($ADD == "3menu") {
     echo "      <td align=center class=tabinput>\n";
     echo "        <select name=\"oivr_opt_keypress\">\n";
     echo "          <option value=\"\" selected> - SELECT DIGIT -</option>\n";
-    $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $oivr_opt_parent_id . "'");
+    $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $oivr_opt_parent_id . "'",'');
     $tkey = '';
     foreach ($keys as $key) {
         $tkey .= $key['keypress'];
@@ -927,7 +927,7 @@ if ($ADD == "3keys") {
     echo "      <td bgcolor=$oddrows align=left>";
     echo '<select name="oivr_opt_keypress">';
     echo ' <option value="' . $opt['keypress'] . '" selected> - ' . $opt['keypress'] . ' -</option>';
-    $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $opt['parent_id'] . "'");
+    $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $opt['parent_id'] . "'",'');
     $tkey = '';
     foreach ($keys as $key) {
         $tkey .= $key['keypress'];
@@ -981,7 +981,7 @@ if ($ADD == "3keys") {
         echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'",'');
         foreach ($status as $stat) {
             $sel = '';
             if ($stat['status'] == $ad[1]) {
@@ -1017,7 +1017,7 @@ if ($ADD == "3keys") {
         echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'",'');
         foreach ($status as $stat) {
             $sel = '';
             if ($stat['status'] == $ad[1]) {
@@ -1066,7 +1066,7 @@ if ($ADD == "3keys") {
         echo "  <tr>\n";
         echo "      <td bgcolor=$oddrows align=right>Answered Status:</td>\n";
         echo '      <td bgcolor="' . $oddrows . '"><select name="oi7"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'",'');
         foreach ($status as $stat) {
             $sel = '';
             if ($stat['status'] == $ad[6]) {
@@ -1081,7 +1081,7 @@ if ($ADD == "3keys") {
         echo '      <td bgcolor="' . $oddrows . '">';
         echo '         <select name="oi8">';
     	echo "              <option value=\"\"> - NONE - </option>";
-        $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr['id'] . "' AND parent_id='" . $oivr_opt_id . "'");
+        $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr['id'] . "' AND parent_id='" . $oivr_opt_id . "'",'');
         $tkey = '';
         foreach ($keys as $key) {
             $tkey .= $key['keypress'];
@@ -1114,7 +1114,7 @@ if ($ADD == "3keys") {
         echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'",'');
         foreach ($status as $stat) {
             $sel='';
             if ($stat['status'] == $ad[1]) {
@@ -1166,7 +1166,7 @@ if ($ADD == "3keys") {
         echo "      <td bgcolor=$oddrows align=right>In-Group to transfer to</td>\n";
         echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi5"><option value="">-NONE-</option>';
-        $ingroups = get_krh($link, 'osdial_inbound_groups', 'group_id,group_name','',"active='Y'");
+        $ingroups = get_krh($link, 'osdial_inbound_groups', 'group_id,group_name','',"active='Y'",'');
         foreach ($ingroups as $ing) {
             $sel='';
             if ($ing['group_id'] == $ad[4]) {
@@ -1225,7 +1225,7 @@ if ($ADD == "3keys") {
         echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'",'');
         foreach ($status as $stat) {
             $sel='';
             if ($stat['status'] == $ad[1]) {
@@ -1238,7 +1238,7 @@ if ($ADD == "3keys") {
         echo "      <td bgcolor=$oddrows align=right>In-Group to transfer to</td>\n";
         echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi3"><option value="">-NONE-</option>';
-        $ingroups = get_krh($link, 'osdial_inbound_groups', 'group_id,group_name','',"active='Y'");
+        $ingroups = get_krh($link, 'osdial_inbound_groups', 'group_id,group_name','',"active='Y'",'');
         foreach ($ingroups as $ing) {
             $sel='';
             if ($ing['group_id'] == $ad[2]) {
@@ -1297,7 +1297,7 @@ if ($ADD == "3keys") {
         echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'",'');
         foreach ($status as $stat) {
             $sel = '';
             if ($stat['status'] == $ad[1]) {
@@ -1337,7 +1337,7 @@ if ($ADD == "3keys") {
         echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
         echo '      <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'");
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'",'');
         foreach ($status as $stat) {
             $sel = '';
             if ($stat['status'] == $ad[1]) {
@@ -1390,7 +1390,7 @@ if ($ADD == "3keys") {
         echo "      <td align=center>DISPOSITION</td>\n";
         echo "      <td align=center colspan=2>ACTIONS</td>\n";
         echo "  </tr>\n";
-        $oivr_opts = get_krh($link, 'osdial_ivr_options', '*', 'keypress', "ivr_id='" . $oivr['id'] . "' AND parent_id='$oivr_opt_id'");
+        $oivr_opts = get_krh($link, 'osdial_ivr_options', '*', 'keypress', "ivr_id='" . $oivr['id'] . "' AND parent_id='$oivr_opt_id'",'');
         $cnt = 0;
         foreach ($oivr_opts as $opt) {
             $ad  = explode('#:#',$opt['action_data']);
@@ -1418,7 +1418,7 @@ if ($ADD == "3keys") {
         echo "      <td align=center class=tabinput>\n";
         echo "        <select name=\"oivr_opt_keypress\">\n";
         echo "          <option value=\"\" selected> - SELECT DIGIT -</option>\n";
-        $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr['id'] . "' AND parent_id='" . $oivr_opt_id . "'");
+        $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr['id'] . "' AND parent_id='" . $oivr_opt_id . "'",'');
         $tkey = '';
         foreach ($keys as $key) {
             $tkey .= $key['keypress'];

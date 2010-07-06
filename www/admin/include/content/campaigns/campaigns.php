@@ -1230,7 +1230,7 @@ if ($ADD==31) {
         echo "  <select name=manual_dial_list_id size=1>\n";
 
         $sel = '';
-        $krh = get_krh($link, 'osdial_lists', 'list_id,list_name','',sprintf("campaign_id LIKE '%s__%%'",$LOG['company_prefix']));
+        $krh = get_krh($link, 'osdial_lists', 'list_id,list_name','',sprintf("campaign_id LIKE '%s__%%'",$LOG['company_prefix']),'');
         echo format_select_options($krh, 'list_id', 'list_name', $manual_dial_list_id, '', false);
         if (preg_match('/|^$|^0$/',$manual_dial_list_id)) $sel='';
         echo "<option value='0'>- NO LIST SELECTED -</option>\n";
