@@ -316,6 +316,7 @@ while($one_day_interval > 0)
 		@DBIPserver_trunks_allowed=@MT;
 		@DBIPdial_method=@MT;
 		@DBIPuse_custom2_callerid=@MT;
+		@DBIPusecidareacodemap=@MT;
 
 		$active_line_counter=0;
 		$user_counter=0;
@@ -472,7 +473,7 @@ while($one_day_interval > 0)
 
 			### grab the dial_level and multiply by active agents to get your goalcalls
 			$DBIPadlevel[$user_CIPct]=0;
-			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound,answers_per_hour_limit,campaign_call_time,dial_method,use_custom2_callerid,campaign_cid_name FROM osdial_campaigns where campaign_id='$DBIPcampaign[$user_CIPct]'";
+			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound,answers_per_hour_limit,campaign_call_time,dial_method,use_custom2_callerid,campaign_cid_name,use_cid_areacode_map FROM osdial_campaigns where campaign_id='$DBIPcampaign[$user_CIPct]'";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -505,6 +506,7 @@ while($one_day_interval > 0)
 					$DBIPdial_method[$user_CIPct] =	$aryA[14];
 					$DBIPuse_custom2_callerid[$user_CIPct] =	$aryA[15];
 					$DBIPcampaigncidname[$user_CIPct] =	"$aryA[16]";
+					$DBIPusecidareacodemap[$user_CIPct] =	"$aryA[17]";
 				$rec_count++;
 				}
 			$sthA->finish();
@@ -949,7 +951,21 @@ while($one_day_interval > 0)
 								$CCID = "$DBIPcampaigncid[$user_CIPct]";
 								$CCID_NAME = "$DBIPcampaigncidname[$user_CIPct]";
 								$CCID_on++;
+
 							}
+
+							if ($DBIPusecidareacodemap[$user_CIPct] eq 'Y') {
+								$stmtA = "SELECT areacode,cid_number,cid_name FROM osdial_campaign_cid_areacodes WHERE campaign_id='$DBIPcampaign[$user_CIPct]' AND areacode='" . substr($phone_number,0,3) . "';";
+								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+								while (@aryA = $sthA->fetchrow_array) {
+									$CCID = $aryA[1];
+									$CCID_NAME = $aryA[2];
+									$CCID_on++;
+								}
+								$sthA->finish();
+							}
+
 							if ($DBIPuse_custom2_callerid[$user_CIPct] eq "Y") {
 								$tcustom2 = $custom2;
 								$tcustom2 =~ s/[^0-9]//g;

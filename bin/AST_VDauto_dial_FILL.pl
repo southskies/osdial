@@ -241,6 +241,8 @@ while($one_day_interval > 0)
 		@DBIPserver_trunks_limit=@MT;
 		@DBIPserver_trunks_other=@MT;
 		@DBIPserver_trunks_allowed=@MT;
+		@DBIPuse_custom2_callerid=@MT;
+		@DBIPusecidareacodemap=@MT;
 
 		$active_line_counter=0;
 		$camp_counter=0;
@@ -302,7 +304,7 @@ while($one_day_interval > 0)
 
 				### grab the dial_level and multiply by active agents to get your goalcalls
 				$DBIPadlevel[$camp_CIPct]=0;
-				$stmtA = "SELECT dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,omit_phone_code,campaign_cid_name FROM osdial_campaigns where campaign_id='$DBfill_campaign[$camp_CIPct]'";
+				$stmtA = "SELECT dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,omit_phone_code,campaign_cid_name,use_custom2_callerid,use_cid_areacode_map FROM osdial_campaigns where campaign_id='$DBfill_campaign[$camp_CIPct]'";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -320,6 +322,8 @@ while($one_day_interval > 0)
 							if ($omit_phone_code =~ /Y/) {$DBIPomitcode[$camp_CIPct] = 1;}
 							else {$DBIPomitcode[$camp_CIPct] = 0;}
 						$DBIPcampaigncidname[$camp_CIPct] =	"$aryA[6]";
+						$DBIPuse_custom2_callerid[$camp_CIPct] =	"$aryA[7]";
+						$DBIPusecidareacodemap[$camp_CIPct] =	"$aryA[8]";
 					$rec_count++;
 					}
 				$sthA->finish();
@@ -681,6 +685,26 @@ while($one_day_interval > 0)
 												$CCID_NAME = "$DBIPcampaigncidname[$camp_CIPct]";
 												$CCID_on++;
 												}
+											if ($DBIPusecidareacodemap[$user_CIPct] eq 'Y') {
+												$stmtA = "SELECT areacode,cid_number,cid_name FROM osdial_campaign_cid_areacodes WHERE campaign_id='$DBIPcampaign[$user_CIPct]' AND areacode='" . substr($phone_number,0,3) . "';";
+												$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+												$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+												while (@aryA = $sthA->fetchrow_array) {
+													$CCID = $aryA[1];
+													$CCID_NAME = $aryA[2];
+													$CCID_on++;
+												}
+												$sthA->finish();
+											}
+
+											if ($DBIPuse_custom2_callerid[$user_CIPct] eq "Y") {
+												$tcustom2 = $custom2;
+												$tcustom2 =~ s/[^0-9]//g;
+												if (length($tcustom2) > 6) {
+													$CCID = $tcustom2;
+													$CCID_on++;
+												}
+											}
 											   if ($DBIPdialprefix[$camp_CIPct] =~ /x/i) {$Local_out_prefix = '';}
 
 												if ($RECcount)
