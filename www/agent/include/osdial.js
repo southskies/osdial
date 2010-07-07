@@ -2115,9 +2115,9 @@
 						}
 <?
     $cnt = 0;
-    foreach ($jfields as $jfield) {
+    foreach ($AFnames as $AFname) {
         $rcnt = $cnt + 43;
-        echo '          document.osdial_form.' . $ffields[$cnt] . ".value = MDnextResponse_array[" . $rcnt . "];\n";
+        echo '          document.osdial_form.' . $AFids[$cnt] . ".value = MDnextResponse_array[" . $rcnt . "];\n";
         $cnt++;
     }
 ?>
@@ -2184,8 +2184,8 @@
 							"&post_date=" + document.osdial_form.post_date.value + 
 <?
     $cnt = 0;
-    foreach ($jfields as $jfield) {
-        echo '          "&' . $jfield . '=" + document.osdial_form.' . $ffields[$cnt] . ".value +\n";
+    foreach ($AFnames as $AFname) {
+        echo '          "&' . $AFname . '=" + document.osdial_form.' . $AFids[$cnt] . ".value +\n";
         $cnt++;
     }
 ?>
@@ -2399,8 +2399,8 @@
 							custchannellive=1;
 <?
     $cnt = 0;
-    foreach ($jfields as $jfield) {
-        echo '          document.osdial_form.' . $ffields[$cnt] . ".value = '';\n";
+    foreach ($AFnames as $AFname) {
+        echo '          document.osdial_form.' . $AFids[$cnt] . ".value = '';\n";
         $cnt++;
     }
 ?>
@@ -2856,9 +2856,9 @@
 							document.osdial_form.post_date.value	= check_VDIC_array[41];
 <?
     $cnt = 0;
-    foreach ($jfields as $jfield) {
+    foreach ($AFnames as $AFname) {
         $rcnt = $cnt + 42;
-        echo '          document.osdial_form.' . $ffields[$cnt] . ".value = check_VDIC_array[" . $rcnt . "];\n";
+        echo '          document.osdial_form.' . $AFids[$cnt] . ".value = check_VDIC_array[" . $rcnt . "];\n";
         $cnt++;
     }
 ?>
@@ -2991,8 +2991,8 @@
 								"&post_date=" + document.osdial_form.post_date.value + 
 <?
     $cnt = 0;
-    foreach ($jfields as $jfield) {
-        echo '          "&' . $jfield . '=" + document.osdial_form.' . $ffields[$cnt] . ".value +\n";
+    foreach ($AFnames as $AFname) {
+        echo '          "&' . $AFname . '=" + document.osdial_form.' . $AFids[$cnt] . ".value +\n";
         $cnt++;
     }
 ?>
@@ -3190,9 +3190,9 @@
 
 <?
     $cnt = 0;
-    foreach ($jfields as $jfield) {
+    foreach ($AFnames as $AFname) {
         $rcnt = $cnt + 28;
-        echo '          document.osdial_form.' . $ffields[$cnt] . ".value = check_RPLD_array[" . $rcnt . "];\n";
+        echo '          document.osdial_form.' . $AFids[$cnt] . ".value = check_RPLD_array[" . $rcnt . "];\n";
         $cnt++;
     }
 ?>
@@ -3263,8 +3263,8 @@
 								"&post_date=" + document.osdial_form.post_date.value + '' +
 <?
     $cnt = 0;
-    foreach ($jfields as $jfield) {
-        echo '          "&' . $jfield . '=" + document.osdial_form.' . $ffields[$cnt] . ".value +\n";
+    foreach ($AFnames as $AFname) {
+        echo '          "&' . $AFname . '=" + document.osdial_form.' . $AFids[$cnt] . ".value +\n";
         $cnt++;
     }
 ?>
@@ -3384,8 +3384,8 @@
 			"&post_date=" + document.osdial_form.post_date.value + 
 <?
     $cnt = 0;
-    foreach ($jfields as $jfield) {
-        echo '          "&' . $jfield . '=" + document.osdial_form.' . $ffields[$cnt] . ".value +\n";
+    foreach ($AFnames as $AFname) {
+        echo '          "&' . $AFname . '=" + document.osdial_form.' . $AFids[$cnt] . ".value +\n";
         $cnt++;
     }
 ?>
@@ -3873,8 +3873,8 @@
 				"&post_date=" + document.osdial_form.post_date.value + 
 <?
     $cnt = 0;
-    foreach ($jfields as $jfield) {
-        echo '      "&' . $ffields[$cnt] . '=" + document.osdial_form.' . $ffields[$cnt] . ".value +\n";
+    foreach ($AFnames as $AFname) {
+        echo '      "&' . $AFids[$cnt] . '=" + document.osdial_form.' . $AFids[$cnt] . ".value +\n";
         $cnt++;
     }
 ?>
@@ -4078,8 +4078,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				document.osdial_form.post_date.value	='';
 <?
     $cnt = 0;
-    foreach ($jfields as $jfield) {
-        echo '          document.osdial_form.' . $ffields[$cnt] . ".value = '';\n";
+    foreach ($AFnames as $AFname) {
+        echo '          document.osdial_form.' . $AFids[$cnt] . ".value = '';\n";
         $cnt++;
     }
 ?>
