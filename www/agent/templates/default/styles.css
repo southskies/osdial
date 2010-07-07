@@ -1,5 +1,5 @@
 body {
-	font-family: 'dejavu sans',sans;
+	font-family: 'dejavu sans',verdana,sans-serif;
 }
 
 .container {
@@ -73,7 +73,7 @@ body {
 	background-image: URL(images/down140.png);
 	background-repeat:repeat-x;
 	width: 870px;
-	margin-left: auto; 
+	margin-left: auto;
 	margin-right: auto;	
 	Xborder-right: solid 1px red;
 }
@@ -82,7 +82,7 @@ body {
 	background-image: URL(images/down200.png);
 	background-repeat:repeat-x;
 	width: 450px;
-	margin-left: auto; 
+	margin-left: auto;
 	margin-right: auto;	
 	Xborder-right: solid 1px red;
 }
@@ -91,7 +91,7 @@ body {
 	background-image: URL(images/down240.png);
 	background-repeat:repeat-x;
 	width: 500px;
-	margin-left: auto; 
+	margin-left: auto;
 	margin-right: auto;	
 	Xborder-right: solid 1px red;
 }
@@ -100,7 +100,7 @@ body {
 	background-image: URL(images/down550.png);
 	background-repeat:repeat-x;
 	width: 980px;
-	margin-left: auto; 
+	margin-left: auto;
 	margin-right: auto;	
 	Xborder-right: solid 1px red;
 }
@@ -154,16 +154,16 @@ a:visited {
 }
 
 .topinfoline {
-	font-family: verdana,arial,sans-serif;
+	font-family: 'dejavu sans',verdana,sans-serif;
 	font-size: 8pt;
 	color: #66CCFF;
 }
 
 #clock { 
-	Xfont-family: Arial, Helvetica, sans-serif; 
-	Xfont-size: 0.8em; 
-	color: white; 
-	padding: 4px; 
+	Xfont-family: Arial, Helvetica, sans-serif;
+	Xfont-size: 0.8em;
+	color: white;
+	padding: 4px;
 }
 
 .no-ul a {
@@ -185,6 +185,226 @@ a:visited {
 	background-color: #E9E8D9;
 }
 
-.footer {
-	
+.cal {
+	font-weight: bold;
+	font-size: 7pt;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	text-align: center;
+	border-color: #000000;
+	background-color: #FFFFFF;
 }
+
+.calhead1 {
+	font-weight: bold;
+	font-size: 9pt;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	text-align: center;
+	border-color: #FFFFFF;
+	background-color: #FFFFCC;
+	color: #000066;
+}
+.calhead2 {
+	font-weight: bold;
+	font-size: 9pt;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	text-align: center;
+	border-color: #FFFFFF;
+	background-color: #FFFFFF;
+	color: #000066;
+}
+.calday {
+	font-weight: bold;
+	font-size: 7pt;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	text-align: center;
+	border-color: #FFFFFF;
+	background-color: #FFFFFF;
+	color: #000066;
+}
+.caldaysel {
+	font-weight: bold;
+	font-size: 7pt;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	text-align: center;
+	border-color: #FFCCCC;
+	background-color: #FFCCCC;
+	color: #000066;
+}
+.caldayold {
+	font-weight: bold;
+	font-size: 7pt;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	text-align: center;
+	border-color: #FFFFFF;
+	background-color: #CCCCCC;
+	color: #000066;
+}
+
+.footer {
+
+}
+
+input, textarea {
+	color: black;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	Xfont-size: 1.0em;
+	font-size: 12px;
+	padding: 0px;
+}
+
+div.scroll_callback {
+	height: 300px;
+	width: 920px;
+	overflow: scroll;
+}
+
+div.scroll_list {
+	height: 400px;
+	width: 140px;
+	overflow: scroll;
+}
+
+div.text_input {
+	overflow: auto;
+	font-size: 10px;
+	font-family: 'dejavu sans',verdana,sans-serif;
+}
+
+.body_text {
+	font-size: 10px;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	border: none;
+}
+
+.body_input {
+	font-size: 10px;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	overflow: auto;
+}
+
+.queue_text_red {
+	font-size: 12px;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	font-weight: bold;
+	color: red;
+}
+
+.queue_text {
+	font-size: 12px;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	color: black;
+}
+
+.body_small {
+	font-size: 11px;
+	font-family: 'dejavu sans',verdana,sans-serif;
+}
+
+.body_tiny {
+	font-size: 9px;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	padding: 0px;
+}
+
+.log_text {
+	font-size: 11px;
+	font-family: monospace;
+}
+
+.log_text_red {
+	font-size: 11px;
+	font-family: monospace;
+	font-weight: bold;
+	background: #FF3333;
+}
+
+.log_title {
+	font-size: 12px;
+	font-family: monospace;
+	font-weight: bold;
+}
+
+.sd_text {
+	font-size: 16px;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	font-weight: bold;
+}
+
+.sh_text {
+	font-size: 14px;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	font-weight: bold;
+}
+
+.sb_text {
+	font-size: 12px;
+	font-family: 'dejavu sans',verdana,sans-serif;
+}
+
+.sk_text {
+	font-size: 11px;
+	font-family: 'dejavu sans',verdana,sans-serif;
+}
+
+.skb_text {
+	font-size: 13px;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	font-weight: bold;
+}
+
+.ON_conf {
+	font-size: 11px;
+	font-family: monospace;
+	color: black;
+	background: #FFFF99;
+}
+
+.OFF_conf {
+	font-size: 11px;
+	font-family: monospace;
+	color: black;
+	background: #FFCC77;
+}
+
+.cust_form {
+	font-family: 'dejavu sans',verdana,sans-serif;
+	font-size: 10px;
+	overflow: auto;
+}
+
+.containera input {
+	color: black;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	font-size: 12px;
+	padding: 0px;
+}
+
+.containera select {
+	color: black;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	font-size: 10px;
+	padding: 0px;
+	overflow: auto;
+}
+
+.preview_text {
+	font-size: 13px;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	background: #D0E0E7;
+}
+
+.preview_text_red {
+	font-size: 13px;
+	font-family: 'dejavu sans',verdana,sans-serif;
+	background: #FFCCCC;
+}
+
+div.scroll_script {
+	height:306px;
+	width:514px;
+	background: #FFF5EC;
+	overflow: scroll;
+	font-size: 12px;
+	font-family: 'dejavu sans',verdana,sans-serif;
+}
+

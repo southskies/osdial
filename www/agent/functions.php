@@ -77,4 +77,144 @@ function mres($val) {
     return mysql_real_escape_string($val);
 }
 
+function load_status($smes) {
+    echo "<script type=\"text/javascript\">\n";
+    echo "document.getElementById('WelcomeBoxA').style.visibility = 'visible';\n";
+    echo "document.getElementById('WelcomeBoxStatus').innerHTML = '$smes';\n";
+    echo "</script>\n";
+    flush();
+}
+
+function generate_calendar($prefix,$months) {
+    # Bring all globals into this scope.
+    foreach ($GLOBALS as $key => $val) { global $$key; }
+
+    define ('ADAY', (60*60*24));
+    $CdayARY = getdate();
+    $Cmon = $CdayARY['mon'];
+    $Cyear = $CdayARY['year'];
+    $CTODAY = date("Y-m");
+    $CTODAYmday = date("j");
+    $CINC = 0;
+    if (!isset($cal_bg5)) $cal_bg5=$cal_bg3;
+    
+    $Cmonths = Array('January','February','March','April','May','June', 'July','August','September','October','November','December');
+    $Cdays = Array('Sun','Mon','Tue','Wed','Thu','Fri','Sat');
+    
+    if ($months==0) $months=60;
+    $Cmax_months = 0;
+    while (($months + $Cmax_months) % 12 != 0) {
+        $Cmax_months++;
+    }
+    
+    $CCAL_OUT = "\n";
+    while ($CINC < ($months + $Cmax_months)) {
+        if ($CINC % 12 == 0) {
+            $CCALstyle = "display:block;";
+            if ($CINC > 0) $CCALstyle = "display:none;";
+            $CCAL_OUT .= sprintf('<span id="%sCAL%s" style="%s">',$prefix,$CINC,$CCALstyle) . "\n";
+            $CCAL_OUT .= "<table border=0 cellpadding=2 cellspacing=2>\n";
+        }
+        if ($CINC % 4 == 0) $CCAL_OUT .= "<tr>\n";
+        $CCAL_OUT .= "<td valign=top>\n";
+    
+        $CYyear = $Cyear;
+        $Cmonth = ($Cmon + $CINC);
+        if ($Cmonth > 12) {
+            $Cmonth = ($Cmonth - 12);
+            $CYyear++;
+        }
+        $Cstart = mktime(11,0,0,$Cmonth,1,$CYyear);
+        $CfirstdayARY = getdate($Cstart);
+        $CPRNTDAY = date("Y-m", $Cstart);
+    
+        $CDC='';
+    
+        $CCAL_OUT .= "<table class=cal border=1 cellpadding=1 cellspacing=0>\n";
+        $CCAL_OUT .= "<tr>\n";
+        $CCAL_OUT .= sprintf('<td colspan=7 class=cal_head1>%s %s</td>',$CfirstdayARY['month'],$CfirstdayARY['year']) . "\n";
+        $CCAL_OUT .= "</tr>\n\n";
+    
+        $CCAL_OUT .= "<tr>\n";
+        foreach($Cdays as $Cday) {
+            $CCAL_OUT .= sprintf('<td class=cal_head2>%s</td>',$Cday) . "\n";
+        }
+    
+        $Crow = 0;
+        for ($Ccount = 0; $Ccount < (6*7); $Ccount++) {
+            $Cdayarray = getdate($Cstart);
+            if($Ccount % 7 == 0) {
+                if($Crow++ > 5 and $Cdayarray['mon'] != $CfirstdayARY['mon']) break;
+                $CCAL_OUT .= "</tr>\n\n";
+                $CCAL_OUT .= "<tr>\n";
+            }
+            $CDdayclass = 'calday';
+            $CBLclick = '';
+            $CBLdblclick = '';
+            if ($Cmonth > 12) $Cmonth = ($Cmonth - 12);
+            if ($CINC > $months and ($Ccount < $CfirstdayARY['wday'] or $Cdayarray['mon'] != $Cmonth)) {
+                $CDdayclass = 'caldayold';
+                $CBL = '&nbsp;';
+            } elseif ($Ccount < $CfirstdayARY['wday'] or $Cdayarray['mon'] != $Cmonth) {
+                $CBL = '&nbsp;';
+                #$CBL = sprintf('<!-- %s %s %s %s -->',$Ccount,$CfirstdayARY['wday'],$Cdayarray['mon'],$Cmonth);
+            } else {
+                $CPRNTmday = sprintf('%02d',$Cdayarray['mday']);
+                $CBLclick = sprintf('onclick="%s_date_pick(\'%s-%s\',this);"',$prefix,$CPRNTDAY,$CPRNTmday);
+                $CBLdblclick = sprintf('ondblclick="%ssel();"',$prefix);
+                $CBL = $Cdayarray['mday'];
+                if($Cdayarray['mday'] == $CTODAYmday and $CPRNTDAY == $CTODAY) {
+                    $CDdayclass = 'caldaysel';
+                } elseif ($Cdayarray['mday'] < $CTODAYmday and $CPRNTDAY == $CTODAY) {
+                    $CDdayclass = 'caldayold';
+                    $CBLclick = '';
+                    $CBLdblclick = '';
+                }
+                $Cstart += ADAY;
+            }
+            $CCAL_OUT .= sprintf('<td %s %s class=%s>%s</td>',$CBLclick,$CBLdblclick,$CDdayclass,$CBL) . "\n";
+        }
+        $CCAL_OUT .= "</tr>\n";
+        $CCAL_OUT .= "</table>\n\n";
+        $CCAL_OUT .= "</td>\n";
+    
+        $CTINC = ($CINC+1);
+        $CCALnxtbtn = '';
+        $CCALbckbtn = '';
+        if ($CINC>0 and $CTINC % 12 == 0) {
+            if ($CTINC <= 12 and $Cmax_months <= 12) {
+                $CCALnxtbtn = '';
+                $CCALbckbtn = '';
+            } elseif ($CTINC > 12 and $CTINC % 12 == 0 and $CTINC != $Cmax_months) {
+                $CCALbckbtn  = sprintf('<a href="#" onclick="document.getElementById(\'%sCAL%s\').style.display=\'block\';document.getElementById(\'%sCAL%s\').style.display=\'none\';">[&lt;- BACK]</a>',$prefix,($CTINC-24),$prefix,($CTINC-12));
+                $CCALnxtbtn .= sprintf('<a href="#" onclick="document.getElementById(\'%sCAL%s\').style.display=\'none\';document.getElementById(\'%sCAL%s\').style.display=\'block\';">[NEXT -&gt;]</a>',$prefix,($CTINC-12),$prefix,$CTINC);
+            } elseif ($CTINC % 12 == 0 and $CTINC != $Cmax_months) {
+                $CCALnxtbtn .= sprintf('<a href="#" onclick="document.getElementById(\'%sCAL%s\').style.display=\'none\';document.getElementById(\'%sCAL%s\').style.display=\'block\';">[NEXT -&gt;]</a>',$prefix,($CTINC-12),$prefix,$CTINC);
+            } elseif ($CTINC > 12 or $CTINC == $Cmax_months) {
+                $CCALbckbtn  = sprintf('<a href="#" onclick="document.getElementById(\'%sCAL%s\').style.display=\'block\';document.getElementById(\'%sCAL%s\').style.display=\'none\';">[&lt;- BACK]</a>',$prefix,($CTINC-24),$prefix,($CTINC-12));
+            }
+    
+        }
+        if ($CTINC % 4 == 0) {
+            $CCAL_OUT .= "</tr>\n\n";
+            if ($CTINC % 12 == 0) {
+                $CCAL_OUT .= "<tr>\n";
+                $CCAL_OUT .= "<td></td>\n";
+                $CCAL_OUT .= sprintf('<td align=center style="font-size:9pt;color:%s;">%s</td>',$cal_fc,$CCALbckbtn) . "\n";
+                $CCAL_OUT .= sprintf('<td align=center style="font-size:9pt;color:%s;">%s</td>',$cal_fc,$CCALnxtbtn) . "\n";
+                $CCAL_OUT .= "<td></td>";
+                $CCAL_OUT .= "</tr>\n\n";
+            }
+        }
+        if ($CTINC % 12 == 0 or $CTINC == $Cmax_months) {
+            $CCAL_OUT .= "</table>\n";
+            $CCAL_OUT .= "</span>\n\n";
+        }
+        $CINC++;
+    }
+
+    return $CCAL_OUT;
+}
+
+
 ?>

@@ -197,6 +197,7 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 			$Acount=0;
 			$Astatus='';
 			$AexternalDEAD=0;
+		    $DiaLCalls='N';
 
 			### see if the agent has a record in the osdial_live_agents table
 			$stmt="SELECT count(*) from osdial_live_agents where user='$user' and server_ip='$server_ip';";
