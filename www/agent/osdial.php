@@ -2709,6 +2709,13 @@ flush();
                                             $cnt++;
                                         }
                                     }
+                                }
+                                if ($cnt==0) {
+                                    echo "  <div id=\"AddtlFormsNONE\" style=position:absolute;left:710px;top:42px;z-index:6;height:325px;overflow-x:hidden;overflow-y:auto;border-width:1px;border-style:solid;border-color:$form_fc;border-top-color:#CDEEE3;border-left-color:#CDEEE3;>\n";
+                                    echo "    <table width=265><tr><td><table align=center><tr><td>\n";
+                                    echo "      <font color=$form_fc class=body_text style=\"font-size:12px\"><b>No Additional Fields Available<b></font>\n";
+                                    echo "    </td></tr></table></td></tr></table>\n";
+                                    echo "  </div>\n";
                                 } ?>
                             </td>
                         </tr>
