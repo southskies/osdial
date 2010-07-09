@@ -975,7 +975,7 @@ if ($ADD==31) {
 
     if ($SUB < 1)
         {
-        echo "<center><br><font color=$default_text size=+1>MODIFY CAMPAIGN</font><form action=$PHP_SELF method=POST></center>\n";
+        echo "<center><br><font color=$default_text size=+1>MODIFY CAMPAIGN</font></center>\n";
         echo "<form action=$PHP_SELF method=POST>\n";
         echo "<input type=hidden name=ADD value=41>\n";
         echo "<input type=hidden name=campaign_id value=\"$campaign_id\">\n";
@@ -1778,7 +1778,7 @@ if ($ADD==34)
         {
         echo "<table align=center><tr><td>\n";
         echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-        echo "<center><br><font color=$default_text size=+1>MODIFY CAMPAIGN</font><form action=$PHP_SELF method=POST></center>\n";
+        echo "<center><br><font color=$default_text size=+1>MODIFY CAMPAIGN</font></center>\n";
         echo "<form action=$PHP_SELF method=POST>\n";
         echo "<input type=hidden name=ADD value=44>\n";
         echo "<input type=hidden name=campaign_id value=\"$campaign_id\">\n";
