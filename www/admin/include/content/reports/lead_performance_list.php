@@ -283,7 +283,7 @@ function report_lead_performance_list() {
 
         $dates = Array();
 
-        $stmt="SELECT $type(osdial_list.entry_date),count(*),sum(if(osdial_list.status IN ($SCcontacts,$SCsales),1,0)),sum(if(osdial_list.status IN ($SCsales),1,0)),sum(osdial_list.cost) FROM osdial_list,osdial_lists WHERE osdial_list.list_id=osdial_lists.list_id AND osdial_list.entry_date <= '$query_date_END' AND osdial_list.entry_date >= '$query_date_BEGIN' $group_olSQLand GROUP BY $type(osdial_list.entry_date);";
+        $stmt="SELECT $type(osdial_list.entry_date),count(*),sum(if(osdial_list.status IN ($SCcontacts,$SCsales),1,0)),sum(if(osdial_list.status IN ($SCsales),1,0)),sum(osdial_list.cost) FROM osdial_list LEFT JOIN osdial_lists ON (osdial_list.list_id=osdial_lists.list_id) WHERE osdial_list.entry_date <= '$query_date_END' AND osdial_list.entry_date >= '$query_date_BEGIN' $group_olSQLand GROUP BY $type(osdial_list.entry_date);";
         $rslt=mysql_query($stmt, $link);
         if ($DB) $html .= "$stmt\n";
         $rows_to_print = mysql_num_rows($rslt);
@@ -299,7 +299,7 @@ function report_lead_performance_list() {
 
 
 
-        $stmt = "SELECT $type(osdial_log.call_date),count(*),sum(if(osdial_log.status IN ($SCcontacts,$SCsales),1,0)),sum(if(osdial_log.status IN ($SCsales),1,0)),sum(osdial_list.cost) FROM osdial_log,osdial_list WHERE osdial_log.lead_id=osdial_list.lead_id AND osdial_log.call_date <= '$query_date_END' AND osdial_log.call_date >= '$query_date_BEGIN' $group_logSQLand GROUP BY $type(osdial_log.call_date);";
+        $stmt = "SELECT $type(osdial_log.call_date),count(*),sum(if(osdial_log.status IN ($SCcontacts,$SCsales),1,0)),sum(if(osdial_log.status IN ($SCsales),1,0)),sum(osdial_list.cost) FROM osdial_log LEFT JOIN osdial_list ON (osdial_log.lead_id=osdial_list.lead_id) WHERE osdial_log.call_date <= '$query_date_END' AND osdial_log.call_date >= '$query_date_BEGIN' $group_logSQLand GROUP BY $type(osdial_log.call_date);";
         $rslt=mysql_query($stmt, $link);
         if ($DB) $html .= "$stmt\n";
         $rows_to_print = mysql_num_rows($rslt);
