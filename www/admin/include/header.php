@@ -452,72 +452,79 @@ if (strlen($reports_hh) > 1) {
 
 ### Admin/Setup menu.
 if (strlen($admin_hh) > 1) { 
-    if ($sh=='times') {$times_sh="bgcolor=\"$times_color\""; $times_fc="$times_font";} # hard teal
-        else {$times_sh=''; $times_fc=$menu_h2_color;}
-    if ($sh=='phones') {$phones_sh="bgcolor=\"$server_color\""; $phones_fc="$phones_font";} # pink
-        else {$phones_sh=''; $phones_fc=$menu_h2_color;}
-    if ($sh=='server') {$server_sh="bgcolor=\"$server_color\""; $server_fc="$server_font";} # pink
-        else {$server_sh=''; $server_fc=$menu_h2_color;}
-    if ($sh=='company') {$company_sh="bgcolor=\"$server_color\""; $company_fc="$server_font";} # pink
-        else {$company_sh=''; $company_fc=$menu_h2_color;}
-    if ($sh=='conference') {$conference_sh="bgcolor=\"$server_color\""; $conference_fc="$server_font";} # pink
-        else {$conference_sh=''; $conference_fc=$menu_h2_color;}
     if ($sh=='settings') {$settings_sh="bgcolor=\"$settings_color\""; $settings_fc="$settings_font";} # pink
         else {$settings_sh=''; $settings_fc=$menu_h2_color;}
+    if ($sh=='carriers') {$carriers_sh="bgcolor=\"$server_color\""; $carriers_fc="$carriers_font";} # pink
+        else {$carriers_sh=''; $carriers_fc=$menu_h2_color;}
+    if ($sh=='server') {$server_sh="bgcolor=\"$server_color\""; $server_fc="$server_font";} # pink
+        else {$server_sh=''; $server_fc=$menu_h2_color;}
+    if ($sh=='phones') {$phones_sh="bgcolor=\"$server_color\""; $phones_fc="$phones_font";} # pink
+        else {$phones_sh=''; $phones_fc=$menu_h2_color;}
+    if ($sh=='conference') {$conference_sh="bgcolor=\"$server_color\""; $conference_fc="$server_font";} # pink
+        else {$conference_sh=''; $conference_fc=$menu_h2_color;}
+    if ($sh=='times') {$times_sh="bgcolor=\"$times_color\""; $times_fc="$times_font";} # hard teal
+        else {$times_sh=''; $times_fc=$menu_h2_color;}
+    if ($sh=='company') {$company_sh="bgcolor=\"$server_color\""; $company_fc="$server_font";} # pink
+        else {$company_sh=''; $company_fc=$menu_h2_color;}
     if ($sh=='status') {$status_sh="bgcolor=\"$status_color\""; $status_fc="$status_font";} # pink
         else {$status_sh=''; $status_fc=$menu_h2_color;}
 
     $amenu = '';
     $acnt = 0;
 
-    if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_calltimes'] == 1) {
-        $amenu .= "    <td height=20 align=center $times_sh colspan=2><a href=\"$PHP_SELF?ADD=100000000\"><font face=\"arial,helvetica\" color=$times_fc size=$header_font_size> Call Times </font></a></td>\n";
+    if ($LOG['multicomp_user'] == 0) {
+        $amenu .= "    <td height=20 align=center $settings_sh colspan=2><a href=\"$PHP_SELF?ADD=311111111111111\"><font face=\"arial,helvetica\" color=$settings_fc size=$header_font_size> System Settings </font></a></td>\n";
     } else {
         $acnt += 2;
     }
 
-    if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_phones'] == 1) {
-        $amenu .= "    <td align=center $phones_sh colspan=2><a href=\"$PHP_SELF?ADD=10000000000\"><font face=\"arial,helvetica\" color=$phones_fc size=$header_font_size> Phones </font></a></td>\n";
-    } else {
-        $acnt += 2;
-    }
-
-    if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_conferences'] == 1) {
-        $amenu .= "    <td align=center $conference_sh colspan=1><a href=\"$PHP_SELF?ADD=1000000000000\"><font face=\"arial,helvetica\" color=$conference_fc size=$header_font_size> Conferences </font></a></td>\n";
+    if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_carriers'] == 1) {
+        $amenu .= "    <td height=20 align=center $carriers_sh colspan=1><a href=\"$PHP_SELF?ADD=3carrier\"><font face=\"arial,helvetica\" color=$carriers_fc size=$header_font_size> Carriers </font></a></td>\n";
     } else {
         $acnt += 1;
     }
 
-
     if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_servers'] == 1) {
-        $amenu .= "    <td align=center $server_sh colspan=1><a href=\"$PHP_SELF?ADD=100000000000\"><font face=\"arial,helvetica\" color=$server_fc size=$header_font_size> Servers </font></a></td>\n";
+        $amenu .= "    <td height=20 align=center $server_sh colspan=1><a href=\"$PHP_SELF?ADD=100000000000\"><font face=\"arial,helvetica\" color=$server_fc size=$header_font_size> Servers </font></a></td>\n";
+    } else {
+        $acnt += 1;
+    }
+
+    if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_phones'] == 1) {
+        $amenu .= "    <td height=20 align=center $phones_sh colspan=1><a href=\"$PHP_SELF?ADD=10000000000\"><font face=\"arial,helvetica\" color=$phones_fc size=$header_font_size> Phones </font></a></td>\n";
+    } else {
+        $acnt += 1;
+    }
+
+    if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_conferences'] == 1) {
+        $amenu .= "    <td height=20 align=center $conference_sh colspan=1><a href=\"$PHP_SELF?ADD=1000000000000\"><font face=\"arial,helvetica\" color=$conference_fc size=$header_font_size> Conferences </font></a></td>\n";
     } else {
         $acnt += 1;
     }
 
     if ($LOG["multicomp_admin"] > 0) {
-        $amenu .= "    <td align=center $company_sh colspan=1><a href=\"$PHP_SELF?ADD=10comp\"><font face=\"arial,helvetica\" color=$company_fc size=$header_font_size> Companies </font></a></td>\n";
+        $amenu .= "    <td height=20 align=center $company_sh colspan=1><a href=\"$PHP_SELF?ADD=10comp\"><font face=\"arial,helvetica\" color=$company_fc size=$header_font_size> Companies </font></a></td>\n";
     } else {
         $acnt += 1;
     }
 
-    if ($LOG['multicomp_user'] == 0) {
-        $amenu .= "    <td align=center $settings_sh colspan=1><a href=\"$PHP_SELF?ADD=311111111111111\"><font face=\"arial,helvetica\" color=$settings_fc size=$header_font_size> System Settings </font></a></td>\n";
+    if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_calltimes'] == 1) {
+        $amenu .= "    <td height=20 align=center $times_sh colspan=1><a href=\"$PHP_SELF?ADD=100000000\"><font face=\"arial,helvetica\" color=$times_fc size=$header_font_size> Call Times </font></a></td>\n";
     } else {
         $acnt += 1;
     }
 
     if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_statuses'] == 1) {
-        $amenu .= "    <td align=center $status_sh colspan=2><a href=\"$PHP_SELF?ADD=321111111111111\"><font face=\"arial,helvetica\" color=$status_fc size=$header_font_size> System Statuses </font></a></td>\n";
+        $amenu .= "    <td height=20 align=center $status_sh colspan=2><a href=\"$PHP_SELF?ADD=321111111111111\"><font face=\"arial,helvetica\" color=$status_fc size=$header_font_size> System Statuses </font></a></td>\n";
     } else {
         $acnt += 2;
     }
 
     if ($acnt) {
         if ($acnt > 1) {
-            $amenu = "    <td colspan=" . ($acnt - round($acnt/2)) . " align=center>&nbsp;</td>\n" . $amenu;
+            $amenu = "    <td height=20 colspan=" . ($acnt - round($acnt/2)) . " align=center><font size=$header_font_size>&nbsp;</font></td>\n" . $amenu;
         }
-        $amenu .= "    <td colspan=" . (round($acnt/2)) . " align=center>&nbsp;</td>\n";
+        $amenu .= "    <td height=20 colspan=" . (round($acnt/2)) . " align=center><font size=$header_font_size>&nbsp;</font></td>\n";
     }
 
     echo "  <tr class='no-ul' bgcolor=$admin_color>\n";
@@ -525,45 +532,13 @@ if (strlen($admin_hh) > 1) {
     echo "  </tr>\n";
 
 
-    ### Call-times Sub-Menu.
-    if (strlen($times_sh) > 1) { 
-        echo "  <tr class='no-ul' bgcolor=$times_color>\n";
-        echo "    <td height=20 align=left colspan=10>&nbsp;\n";
+
+    ### Settings Sub-Menu.
+    if (strlen($settings_sh) > 1) { 
+        echo "  <tr class='no-ul' bgcolor=$settings_color>\n";
+        echo "    <td height=20 align=left colspan=10>\n";
         echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
-        echo "        <a href=\"$PHP_SELF?ADD=100000000\"> Show Call Times </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
-        echo "        <a href=\"$PHP_SELF?ADD=111111111\"> Add A New Call Time </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
-        echo "        <a href=\"$PHP_SELF?ADD=1000000000\"> Show State Call Times </a> &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; \n";
-        echo "        <a href=\"$PHP_SELF?ADD=1111111111\"> Add A New State Call Time </a> &nbsp; \n";
-        echo "      </font>\n";
-        echo "    </td>\n";
-        echo "  </tr>\n";
-    } 
-
-
-
-    ### Phones Sub-Menu.
-    if (strlen($phones_sh) > 1) { 
-        echo "  <tr class='no-ul' bgcolor=$phones_color>\n";
-        echo "    <td height=20 align=left colspan=10>&nbsp;\n";
-        echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
-        echo "        <a href=\"$PHP_SELF?ADD=10000000000\"> Show Phones </a> &nbsp; &nbsp; &nbsp; \n";
-        echo "        <a href=\"$PHP_SELF?ADD=11111111111\"> Add A New Phone </a>\n";
-        echo "      </font>\n";
-        echo "    </td>\n";
-        echo "  </tr>\n";
-    }
-
-
-
-    ### Conferences Sub-Menu.
-    if (strlen($conference_sh) > 1) { 
-        echo "  <tr class='no-ul' bgcolor=$conference_color>\n";
-        echo "    <td height=20 align=left colspan=10> &nbsp;\n";
-        echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
-        echo "        <a href=\"$PHP_SELF?ADD=1000000000000\"> Show Conferences </a> &nbsp; &nbsp; &nbsp; \n";
-        echo "        <a href=\"$PHP_SELF?ADD=1111111111111\"> Add A New Conference </a> &nbsp; &nbsp; &nbsp; \n";
-        echo "        <a href=\"$PHP_SELF?ADD=10000000000000\"> Show $t1 Conferences </a> &nbsp; &nbsp; &nbsp; \n";
-        echo "        <a href=\"$PHP_SELF?ADD=11111111111111\"> Add A New $t1 Conference </a>\n";
+        echo "        <a href=\"$PHP_SELF?ADD=311111111111111\"> System Settings </a>\n";
         echo "      </font>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
@@ -574,7 +549,7 @@ if (strlen($admin_hh) > 1) {
     ### Server Sub-Menu.
     if (strlen($server_sh) > 1) { 
         echo "  <tr class='no-ul' bgcolor=$server_color>\n";
-        echo "    <td height=20 align=left colspan=10> &nbsp;\n";
+        echo "    <td height=20 align=left colspan=10>\n";
         echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=100000000000\"> Show Servers </a> &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=111111111111\"> Add A New Server </a> &nbsp; &nbsp; \n";
@@ -588,10 +563,65 @@ if (strlen($admin_hh) > 1) {
 
 
 
+    ### Carriers Sub-Menu.
+    if (strlen($carriers_sh)>0) { 
+        echo "  <tr class='no-ul' bgcolor=$carriers_color>\n";
+        echo "    <td height=20 align=left colspan=10>\n";
+        echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
+        echo "        <a href=\"$PHP_SELF?ADD=3carrier&SUB=1\"> Show Carriers </a> &nbsp; &nbsp; &nbsp; \n";
+        if ($SUB==4) {
+            echo "        <a href=\"$PHP_SELF?ADD=3carrier&SUB=2&carrier_id=$carrier_id\"> Back to Carrier </a> &nbsp; &nbsp; &nbsp; \n";
+            echo "        <a href=\"$PHP_SELF?ADD=1carrier&SUB=4&carrier_id=$carrier_id\"> Add New DID </a> &nbsp; &nbsp; &nbsp; \n";
+        } elseif ($SUB==3) {
+            echo "        <a href=\"$PHP_SELF?ADD=3carrier&SUB=2&carrier_id=$carrier_id\"> Back to Carrier </a> &nbsp; &nbsp; &nbsp; \n";
+        } elseif ($SUB==2) {
+            if ($carrier_id>0) echo "        <a href=\"$PHP_SELF?ADD=1carrier&SUB=2\"> Add New Carrier </a> &nbsp; &nbsp; &nbsp; \n";
+            if ($carrier_id>0) echo "        <a href=\"$PHP_SELF?ADD=1carrier&SUB=4&carrier_id=$carrier_id\"> Add New DID </a> &nbsp; &nbsp; &nbsp; \n";
+        } else {
+            echo "        <a href=\"$PHP_SELF?ADD=1carrier&SUB=2\"> Add New Carrier </a>\n";
+        }
+        echo "      </font>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+    }
+
+
+    ### Phones Sub-Menu.
+    if (strlen($phones_sh) > 1) { 
+        echo "  <tr class='no-ul' bgcolor=$phones_color>\n";
+        echo "    <td height=20 align=left colspan=10>\n";
+        echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
+        echo "        <a href=\"$PHP_SELF?ADD=10000000000\"> Show Phones </a> &nbsp; &nbsp; &nbsp; \n";
+        echo "        <a href=\"$PHP_SELF?ADD=11111111111\"> Add A New Phone </a>\n";
+        echo "      </font>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+    }
+
+
+
+    ### Conferences Sub-Menu.
+    if (strlen($conference_sh) > 1) { 
+        echo "  <tr class='no-ul' bgcolor=$conference_color>\n";
+        echo "    <td height=20 align=left colspan=10>\n";
+        echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
+        echo "        <a href=\"$PHP_SELF?ADD=1000000000000\"> Show Conferences </a> &nbsp; &nbsp; &nbsp; \n";
+        echo "        <a href=\"$PHP_SELF?ADD=1111111111111\"> Add A New Conference </a> &nbsp; &nbsp; &nbsp; \n";
+        echo "        <a href=\"$PHP_SELF?ADD=10000000000000\"> Show $t1 Conferences </a> &nbsp; &nbsp; &nbsp; \n";
+        echo "        <a href=\"$PHP_SELF?ADD=11111111111111\"> Add A New $t1 Conference </a>\n";
+        echo "      </font>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+    }
+
+
+
+
+
     ### Company Sub-Menu.
     if (strlen($company_sh) > 1) { 
         echo "  <tr class='no-ul' bgcolor=$server_color>\n";
-        echo "    <td height=20 align=left colspan=10>&nbsp;\n";
+        echo "    <td height=20 align=left colspan=10>\n";
         echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=10comp\"> Show Companies </a> &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=11comp\"> Add A New Company </a>\n";
@@ -602,23 +632,27 @@ if (strlen($admin_hh) > 1) {
 
 
 
-    ### Settings Sub-Menu.
-    if (strlen($settings_sh) > 1) { 
-        echo "  <tr class='no-ul' bgcolor=$settings_color>\n";
-        echo "    <td height=20 align=left colspan=10> &nbsp;\n";
+
+    ### Call-times Sub-Menu.
+    if (strlen($times_sh) > 1) { 
+        echo "  <tr class='no-ul' bgcolor=$times_color>\n";
+        echo "    <td height=20 align=left colspan=10>\n";
         echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
-        echo "        <a href=\"$PHP_SELF?ADD=311111111111111\"> System Settings </a>\n";
+        echo "        <a href=\"$PHP_SELF?ADD=100000000\"> Show Call Times </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
+        echo "        <a href=\"$PHP_SELF?ADD=111111111\"> Add A New Call Time </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
+        echo "        <a href=\"$PHP_SELF?ADD=1000000000\"> Show State Call Times </a> &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; \n";
+        echo "        <a href=\"$PHP_SELF?ADD=1111111111\"> Add A New State Call Time </a> &nbsp; \n";
         echo "      </font>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
-    }
+    } 
 
 
 
     ### Statuses Sub-Menu.
     if (strlen($status_sh) > 1) { 
         echo "  <tr class='no-ul' bgcolor=$status_color>\n";
-        echo "    <td height=20 align=left colspan=10> &nbsp;\n";
+        echo "    <td height=20 align=left colspan=10>\n";
         echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size>\n";
         echo "        <a href=\"$PHP_SELF?ADD=321111111111111\"> System Statuses </a> &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=331111111111111\"> Status Categories </a>\n";

@@ -220,19 +220,16 @@
 			var donothing=1;
 		} else {
 			if (document.osdial_form.xferoverride.checked==false) {
-				if (manual_string.length=='10') {
+				if (manual_string.length==10) {
 					manual_string = '1' + manual_string;
-				}
-				if (manual_string.length=='7' || manual_string.length >= 10) {
-					manual_string = dial_prefix + manual_string;
 				}
 			}
 		}
 		if (manual_string != '') {
 			if (taskFromConf == 'YES') {
-				basic_originate_call(manual_string,'NO','YES',dial_conf_exten,'NO',taskFromConf);
+				basic_originate_call(manual_string,'YES','YES',dial_conf_exten,'NO',taskFromConf);
 			} else {
-				basic_originate_call(manual_string,'NO','NO');
+				basic_originate_call(manual_string,'YES','NO');
 			}
 			MD_ring_secondS=0;
 		} else {
@@ -244,31 +241,30 @@
 // Send Originate command to manager to place a phone call
 	function basic_originate_call(tasknum,taskprefix,taskreverse,taskdialvalue,tasknowait,taskconfxfer) {
 		debug("<b>basic_originate_call:</b> tasknum=" + tasknum + " taskprefix=" + taskprefix + " taskreverse=" + taskreverse + " taskdialvalue=" + taskdialvalue+ " tasknowait=" + tasknowait + " taskconfxfer=" + taskconfxfer,2);
+
+		var cxmatch = 0;
+
 		var regCXFvars = new RegExp("CXFER","g");
 		var tasknum_string = tasknum.toString();
 		if (tasknum_string.match(regCXFvars)) {
 			var Ctasknum = tasknum_string.replace(regCXFvars, '');
-			if (Ctasknum.length < 2) {
-				Ctasknum = '990009';
-			}
+			if (Ctasknum.length < 2) Ctasknum = '990009';
 			var XfeRSelecT = document.getElementById("XfeRGrouP");
 			tasknum = Ctasknum + "*" + XfeRSelecT.value + '*CXFER*' + document.osdial_form.lead_id.value + '**' + document.osdial_form.phone_number.value + '*' + user + '*';
 			CustomerData_update();
+			cxmatch++;
 		}
+
 		var regAXFvars = new RegExp("AXFER","g");
 		if (tasknum_string.match(regAXFvars)) {
 			var Ctasknum = tasknum_string.replace(regAXFvars, '');
-			if (Ctasknum.length < 2) {
-				Ctasknum = '83009';
-			}
+			if (Ctasknum.length < 2) Ctasknum = '83009';
 			var closerxfercamptail = '_L';
-			if (closerxfercamptail.length < 3) {
-				closerxfercamptail = 'IVR';
-			}
+			if (closerxfercamptail.length < 3) closerxfercamptail = 'IVR';
 			tasknum = Ctasknum + '*' + document.osdial_form.phone_number.value + '*' + document.osdial_form.lead_id.value + '*' + campaign + '*' + closerxfercamptail + '*' + user + '*';
 			CustomerData_update();
+			cxmatch++;
 		}
-
 
 		var xmlhttp=false;
 		/*@cc_on @*/
@@ -289,28 +285,43 @@
 			xmlhttp = new XMLHttpRequest();
 		}
 		if (xmlhttp) {
-			if (taskprefix == 'NO') {
-				var orig_prefix = '';
-			} else {
-				var orig_prefix = agc_dial_prefix;
+			var channel_context = ext_context;
+			var channel_value = '';
+			var extension_context = dial_context;
+			var extension_value = '';
+			var destination = tasknum;
+
+			if (taskprefix == 'YES') {
+				if (document.osdial_form.xferoverride.checked==false) {
+					if (cxmatch == 0) destination = dial_prefix + "" + tasknum;
+				}
 			}
 			if (taskreverse == 'YES') {
+				channel_context = dial_context;
+				extension_context = ext_context;
 				if (taskdialvalue.length < 2) {
-					var dialnum = dialplan_number;
+					extension_value = dialplan_number;
 				} else {
-					var dialnum = taskdialvalue;
+					extension_value = taskdialvalue;
 				}
-				var originatevalue = "Local/" + tasknum + "@" + ext_context;
+				channel_value = "Local/" + destination + "@" + channel_context;
 			} else {
-				var dialnum = tasknum;
+				extension_value = destination;
+				var protochan = protocol;
+				var extenchan = extension;
 				if ( (protocol == 'EXTERNAL') || (protocol == 'Local') )  {
-					var protodial = 'Local';
-					var extendial = extension + "@" + ext_context;
-				} else {
-					var protodial = protocol;
-					var extendial = extension;
+					protochan = 'Local';
+					extenchan = extension + "@" + channel_context;
 				}
-				var originatevalue = protodial + "/" + extendial;
+				channel_value = protochan + "/" + extenchan;
+			}
+			var dest_areacode = '';
+			if (destination.length == 12) {
+				dest_areacode = destination.substr(2,3);
+			} else if (destination.length == 11) {
+				dest_areacode = destination.substr(1,3);
+			} else if (destination.length == 10) {
+				dest_areacode = destination.substr(0,3);
 			}
 			if (taskconfxfer == 'YES') {
 				var queryCID = "DCagcW" + epoch_sec + user_abb;
@@ -335,7 +346,7 @@
 					cid_name = campaign_cid_name;
 					if (use_cid_areacode_map=='Y') {
 						for (var c=0; c<VARcid_areacodes.length; c++) {
-							if (VARcid_areacodes[c] == document.osdial_form.phone_number.value.substr(0,3)) {
+							if (VARcid_areacodes[c] == dest_areacode) {
 								cid = VARcid_areacode_numbers[c];
 								cid_name = VARcid_areacode_names[c];
 							}
@@ -348,7 +359,7 @@
 				cid_name = campaign_cid_name;
 				if (use_cid_areacode_map=='Y') {
 					for (var c=0; c<VARcid_areacodes.length; c++) {
-						if (VARcid_areacodes[c] == document.osdial_form.phone_number.value.substr(0,3)) {
+						if (VARcid_areacodes[c] == dest_areacode) {
 							cid = VARcid_areacode_numbers[c];
 							cid_name = VARcid_areacode_names[c];
 						}
@@ -356,7 +367,7 @@
 				}
 			}
 
-			VMCoriginate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=Originate&format=text&channel=" + originatevalue + "&queryCID=" + queryCID + "&exten=" + orig_prefix + "" + dialnum + "&ext_context=" + ext_context + "&ext_priority=1&outbound_cid=" + cid + "&outbound_cid_name=" + cid_name;
+			VMCoriginate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=Originate&format=text&channel=" + channel_value + "&queryCID=" + queryCID + "&exten=" + extension_value + "&ext_context=" + extension_context + "&ext_priority=1&outbound_cid=" + cid + "&outbound_cid_name=" + cid_name;
 			cid = campaign_cid;
 			cid_name = campaign_cid_name;
 			xmlhttp.open('POST', 'manager_send.php'); 
@@ -811,50 +822,47 @@
 			if (redirectvalue.length < 2) {
 				redirectvalue = lastcustchannel
 			}
-			if ( (taskvar == 'XfeRBLIND') || (taskvar == 'XfeRVMAIL') ) {
+			var closerxferinternal = '9';
+			if (taskvar == 'XfeRINTERNAL') {
+				closerxferinternal = '';
+				taskvar = 'XfeRLOCAL';
+			}
+			if (taskvar == 'XfeRBLIND' || taskvar == 'XfeRVMAIL') {
 				var queryCID = "XBvdcW" + epoch_sec + user_abb;
 				var blindxferdialstring = document.osdial_form.xfernumber.value;
-				var regXFvars = new RegExp("XFER","g");
-				if (blindxferdialstring.match(regXFvars)) {
-					var regAXFvars = new RegExp("AXFER","g");
-					if (blindxferdialstring.match(regAXFvars)) {
-						var Ctasknum = blindxferdialstring.replace(regAXFvars, '');
-						if (Ctasknum.length < 2) {
-							Ctasknum = '83009';
-						}
-						var closerxfercamptail = '_L';
-						if (closerxfercamptail.length < 3) {
-							closerxfercamptail = 'IVR';
-						}
-						blindxferdialstring = Ctasknum + '*' + document.osdial_form.phone_number.value + '*' + document.osdial_form.lead_id.value + '*' + campaign + '*' + closerxfercamptail + '*' + user + '*';
-					}
-				} else if (document.osdial_form.xferoverride.checked==false) {
-					if (blindxferdialstring.length=='11') {
-						blindxferdialstring = dial_prefix + "" + blindxferdialstring;
-					} else if (blindxferdialstring.length=='10') {
-						blindxferdialstring = dial_prefix + "1" + blindxferdialstring;
-					} else if (blindxferdialstring.length=='7') {
-						blindxferdialstring = dial_prefix + ""  + blindxferdialstring;
-					}
-				}
+				var blindxfercontext = ext_context;
 				if (taskvar == 'XfeRVMAIL') {
-					var blindxferdialstring = campaign_am_message_exten;
+					blindxferdialstring = campaign_am_message_exten;
+					blindxfercontext = ext_context;
+				} else {
+					var regXFvars = new RegExp("XFER","g");
+					if (blindxferdialstring.match(regXFvars)) {
+						var regAXFvars = new RegExp("AXFER","g");
+						if (blindxferdialstring.match(regAXFvars)) {
+							var Ctasknum = blindxferdialstring.replace(regAXFvars, '');
+							if (Ctasknum.length < 2) Ctasknum = '83009';
+
+							var closerxfercamptail = '_L';
+							if (closerxfercamptail.length < 3) closerxfercamptail = 'IVR';
+
+							blindxferdialstring = Ctasknum + '*' + document.osdial_form.phone_number.value + '*' + document.osdial_form.lead_id.value + '*' + campaign + '*' + closerxfercamptail + '*' + user + '*';
+						}
+					} else if (document.osdial_form.xferoverride.checked==false) {
+						if (blindxferdialstring.length == 10) blindxferdialstring = "1" + blindxferdialstring;
+						if (blindxferdialstring.length == 7 || blindxferdialstring.length >= 11) {
+							blindxferdialstring = dial_prefix + "" + blindxferdialstring;
+							blindxfercontext = dial_context;
+						}
+					}
 				}
-				if (blindxferdialstring.length<'2') {
+				if (blindxferdialstring.length < 2) {
 					xferredirect_query='';
 					taskvar = 'NOTHING';
 					osdalert("Transfer number must have more than 1 digit:" + blindxferdialstring,5);
 				} else {
-					xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectVD&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&exten=" + blindxferdialstring + "&ext_context=" + ext_context + "&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + campaign + "&uniqueid=" + document.osdial_form.uniqueid.value + "&lead_id=" + document.osdial_form.lead_id.value + "&secondS=" + VD_live_call_secondS + "&session_id=" + session_id + "&outbound_cid=" + outbound_cid + "&outbound_cid_name=" + outbound_cid_name;
+					xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectVD&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&exten=" + blindxferdialstring + "&ext_context=" + blindxfercontext + "&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + campaign + "&uniqueid=" + document.osdial_form.uniqueid.value + "&lead_id=" + document.osdial_form.lead_id.value + "&secondS=" + VD_live_call_secondS + "&session_id=" + session_id + "&outbound_cid=" + outbound_cid + "&outbound_cid_name=" + outbound_cid_name;
 				}
-			}
-			if (taskvar == 'XfeRINTERNAL') {
-				var closerxferinternal = '';
-				taskvar = 'XfeRLOCAL';
-			} else {
-				var closerxferinternal = '9';
-			}
-			if (taskvar == 'XfeRLOCAL') {
+			} else if (taskvar == 'XfeRLOCAL') {
 				CustomerData_update();
 				var XfeRSelecT = document.getElementById("XfeRGrouP");
 				var queryCID = "XLvdcW" + epoch_sec + user_abb;
@@ -862,23 +870,7 @@
 				var redirectdestination = closerxferinternal + '90009*' + XfeRSelecT.value + '**' + document.osdial_form.lead_id.value + '**' + document.osdial_form.phone_number.value + '*' + user + '*';
 
 				xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectVD&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&exten=" + redirectdestination + "&ext_context=" + ext_context + "&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + campaign + "&uniqueid=" + document.osdial_form.uniqueid.value + "&lead_id=" + document.osdial_form.lead_id.value + "&secondS=" + VD_live_call_secondS + "&session_id=" + session_id;
-			}
-			if (taskvar == 'XfeR') {
-				var queryCID = "LRvdcW" + epoch_sec + user_abb;
-				var redirectdestination = document.osdial_form.extension_xfer.value;
-				xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectName&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&extenName=" + redirectdestination + "&ext_context=" + ext_context + "&ext_priority=1" + "&session_id=" + session_id + "&outbound_cid=" + outbound_cid + "&outbound_cid_name=" + outbound_cid_name;
-			}
-			if (taskvar == 'VMAIL') {
-				var queryCID = "LVvdcW" + epoch_sec + user_abb;
-				var redirectdestination = document.osdial_form.extension_xfer.value;
-				xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectNameVmail&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&exten=" + voicemail_dump_exten + "&extenName=" + redirectdestination + "&ext_context=" + ext_context + "&ext_priority=1" + "&session_id=" + session_id;
-			}
-			if (taskvar == 'ENTRY') {
-				var queryCID = "LEvdcW" + epoch_sec + user_abb;
-				var redirectdestination = document.osdial_form.extension_xfer_entry.value;
-				xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=Redirect&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&exten=" + redirectdestination + "&ext_context=" + ext_context + "&ext_priority=1" + "&session_id=" + session_id;
-			}
-			if (taskvar == '3WAY') {
+			} else if (taskvar == '3WAY') {
 				xferredirect_query='';
 
 				var queryCID = "VXvdcW" + epoch_sec + user_abb;
@@ -887,10 +879,9 @@
 				var redirecttype_test = document.osdial_form.xfernumber.value;
 				var XfeRSelecT = document.getElementById("XfeRGrouP");
 				var regRXFvars = new RegExp("CXFER","g");
-				if ( (redirecttype_test.match(regRXFvars)) && (local_consult_xfers > 0) ) {
-					var redirecttype = 'RedirectXtraCX';
-				} else {
-					var redirecttype = 'RedirectXtra';
+				var redirecttype = 'RedirectXtra';
+				if (redirecttype_test.match(regRXFvars) && local_consult_xfers > 0) {
+					redirecttype = 'RedirectXtraCX';
 				}
 				DispO3waychannel = redirectvalue;
 				DispO3wayXtrAchannel = redirectXTRAvalue;
@@ -904,8 +895,7 @@
 				if (taskdebugnote == 'FIRST') {
 					document.getElementById("DispoSelectHAspan").innerHTML = "<a href=\"#\" onclick=\"DispoLeavE3wayAgaiN()\">Leave 3Way Call Again</a>";
 				}
-			}
-			if (taskvar == 'ParK') {
+			} else if (taskvar == 'ParK') {
 				var queryCID = "LPvdcW" + epoch_sec + user_abb;
 				var redirectdestination = taskxferconf;
 				var redirectdestserverip = taskserverip;
@@ -914,20 +904,14 @@
 
 				document.getElementById("ParkControl").innerHTML ="<a href=\"#\" onclick=\"mainxfer_send_redirect('FROMParK','" + redirectdestination + "','" + redirectdestserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_grabparkedcall.gif\" border=0 alt=\"Grab Parked Call\"></a>";
 				customerparked=1;
-			}
-			if (taskvar == 'FROMParK') {
+			} else if (taskvar == 'FROMParK') {
 				var queryCID = "FPvdcW" + epoch_sec + user_abb;
 				var redirectdestination = taskxferconf;
 				var redirectdestserverip = taskserverip;
+				var dest_dialstring = session_id;
 
-				if( (server_ip == taskserverip) && (taskserverip.length > 6) ) {
-					var dest_dialstring = session_id;
-				} else {
-					if(taskserverip.length > 6) {
-						var dest_dialstring = server_ip_dialstring + "" + session_id;
-					} else {
-						var dest_dialstring = session_id;
-					}
+				if (server_ip != taskserverip && taskserverip.length > 6) {
+					dest_dialstring = server_ip_dialstring + "" + session_id;
 				}
 
 				xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectFromPark&format=text&channel=" + redirectdestination + "&call_server_ip=" + redirectdestserverip + "&queryCID=" + queryCID + "&exten=" + dest_dialstring + "&ext_context=" + ext_context + "&ext_priority=1" + "&session_id=" + session_id;
@@ -986,7 +970,7 @@
 			}
 		}
 
-		if ( (taskvar == 'XfeRLOCAL') || (taskvar == 'XfeRBLIND') || (taskvar == 'XfeRVMAIL') ) {
+		if (taskvar == 'XfeRLOCAL' || taskvar == 'XfeRBLIND' || taskvar == 'XfeRVMAIL') {
 			if (auto_dial_level == 0) {
 				RedirecTxFEr = 1;
 			}
@@ -1309,7 +1293,7 @@
 		}
 
 		if (MDDiaLOverridEform.length > 0) {
-			basic_originate_call(session_id,'NO','YES',MDDiaLOverridEform,'YES');
+			basic_originate_call(session_id,'YES','YES',MDDiaLCodEform + "" + MDDiaLOverridEform,'YES');
 		} else {
 			alt_phone_dialing=1;
 			auto_dial_level=0;
@@ -1600,7 +1584,7 @@
 				cid = lead_cust2_cid;
 				cid_name = lead_cust2_cid;
 			}
-			manDiaLonly_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLonly&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&phone_number=" + manDiaLonly_num + "&phone_code=" + document.osdial_form.phone_code.value + "&campaign=" + campaign + "&ext_context=" + ext_context + "&dial_timeout=" + dial_timeout + "&dial_prefix=" + dial_prefix + "&campaign_cid=" + cid + "&campaign_cid_name=" + cid_name + "&omit_phone_code=" + omit_phone_code;
+			manDiaLonly_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLonly&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&phone_number=" + manDiaLonly_num + "&phone_code=" + document.osdial_form.phone_code.value + "&campaign=" + campaign + "&ext_context=" + ext_context + "&dial_context=" + dial_context + "&dial_timeout=" + dial_timeout + "&dial_prefix=" + dial_prefix + "&campaign_cid=" + cid + "&campaign_cid_name=" + cid_name + "&omit_phone_code=" + omit_phone_code;
 			cid = campaign_cid;
 			cid_name = campaign_cid_name;
 			debug("<b>ManualDialOnly:</b> vdc_db_query: manDiaLonly_query=" + manDiaLonly_query,3);
@@ -3899,7 +3883,7 @@ function utf8_decode(utftext) {
 				cid = lead_cust2_cid;
 				cid_name = lead_cust2_cid;
 			}
-			manDiaLnext_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLnextCaLL&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&ext_context=" + ext_context + "&dial_timeout=" + dial_timeout + "&dial_prefix=" + dial_prefix + "&campaign_cid=" + cid + "&campaign_cid_name=" + cid_name + "&preview=" + man_preview + "&agent_log_id=" + agent_log_id + "&callback_id=" + mdnCBid + "&lead_id=" + mdnBDleadid + "&phone_code=" + mdnDiaLCodE + "&phone_number=" + mdnPhonENumbeR + "&list_id=" + mdnLisT_id + "&stage=" + mdnStagE  + "&use_internal_dnc=" + use_internal_dnc + "&omit_phone_code=" + omit_phone_code;
+			manDiaLnext_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLnextCaLL&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&ext_context=" + ext_context + "&dial_context=" + dial_context + "&dial_timeout=" + dial_timeout + "&dial_prefix=" + dial_prefix + "&campaign_cid=" + cid + "&campaign_cid_name=" + cid_name + "&preview=" + man_preview + "&agent_log_id=" + agent_log_id + "&callback_id=" + mdnCBid + "&lead_id=" + mdnBDleadid + "&phone_code=" + mdnDiaLCodE + "&phone_number=" + mdnPhonENumbeR + "&list_id=" + mdnLisT_id + "&stage=" + mdnStagE  + "&use_internal_dnc=" + use_internal_dnc + "&omit_phone_code=" + omit_phone_code;
 			debug("ManualDialNext: manDiaLnext_query: " + manDiaLnext_query,4);
 			cid = campaign_cid;
 			cid_name = campaign_cid_name;

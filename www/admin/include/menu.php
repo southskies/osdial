@@ -209,6 +209,25 @@ if ($ADD==51111111)		{$hh='filters';		$title = "Delete Filter";}
 if ($ADD==61111111)		{$hh='filters';		$title = "Delete Filter";}
 if ($ADD==31111111)		{$hh='filters';		$title = "Modify Filter";}
 
+# Admin - carrier
+if (preg_match('/carrier$/',$ADD)) {
+    $hh='admin';
+    $sh='carriers';
+    $ttype='CARRIER';
+    if ($SUB==2) $ttype='CARRIER';
+    if ($SUB==3) $ttype='CARRIER SERVER OPTIONS';
+    if ($SUB==4) $ttype='CARRIER DIDS';
+
+    if ($ADD=="1carrier") $title = "ADD NEW $ttype";
+    if ($ADD=="2carrier") $title = "ADDING NEW $ttype";
+    if ($ADD=="4carrier") $title = "MODIFIED $ttype";
+    if ($ADD=="5carrier") $title = "DELETE $ttype";
+    if ($ADD=="6carrier") $title = "DELETE $ttype";
+    if ($ADD=="3carrier") $title = "MODIFY $ttype";
+    if ($ADD=="3carrier" and $SUB<=1) $title = "CARRIER LIST";
+}
+
+
 # Admin - times
 if ($ADD==100000000)		{$hh='admin';	$sh='times';	$title = "Call Times";}
 if ($ADD==111111111)		{$hh='admin';	$sh='times';	$title = "Add New Call Time";}

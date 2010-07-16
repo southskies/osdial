@@ -194,7 +194,7 @@ sub sql_disconnect {
 	$self->{_sql}{$dbh} = {'connected'=>0} if (!defined $self->{_sql}{$dbh});
 	if ($self->{_sql}{$dbh}{connected}>0) {
 		$self->debug(5,'sql_disconnect',"Disconnecting from dbh %s.",$dbh);
-		$self->{_sql}{$dbh}{dbh}->disconnect();
+		$self->{_sql}{$dbh}{dbh}->disconnect() if ($self->{_sql}{$dbh}{dbh});
 		$self->{_sql}{$dbh}{connected} = 0;
 	}
 }

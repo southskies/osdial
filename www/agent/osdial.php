@@ -875,7 +875,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 $HKxferextens = substr("$HKxferextens", 0, -1); 
 
                 ##### grab the statuses to be dialed for your campaign as well as other campaign settings
-                $stmt="SELECT park_ext,park_file_name,web_form_address,allow_closers,auto_dial_level,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,agent_pause_codes_active,no_hopper_leads_logins,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,xfer_groups,web_form_address2,allow_tab_switch,preview_force_dial_time,manual_preview_default,web_form_extwindow,web_form2_extwindow,dial_method,submit_method,use_custom2_callerid,campaign_cid_name,xfer_cid_mode,use_cid_areacode_map FROM osdial_campaigns where campaign_id = '$VD_campaign';";
+                $stmt="SELECT park_ext,park_file_name,web_form_address,allow_closers,auto_dial_level,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,agent_pause_codes_active,no_hopper_leads_logins,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,xfer_groups,web_form_address2,allow_tab_switch,preview_force_dial_time,manual_preview_default,web_form_extwindow,web_form2_extwindow,dial_method,submit_method,use_custom2_callerid,campaign_cid_name,xfer_cid_mode,use_cid_areacode_map,carrier_id FROM osdial_campaigns where campaign_id = '$VD_campaign';";
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $row=mysql_fetch_row($rslt);
@@ -925,6 +925,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 $campaign_cid_name =         $row[42];
                 $xfer_cid_mode =         $row[43];
                 $use_cid_areacode_map =         $row[44];
+                $carrier_id =         $row[45];
 
                 if ($previewFD_time == "") $previewFD_time = "0";
                 if ($use_custom2_callerid != "Y") $use_custom2_callerid = "N";
@@ -952,6 +953,18 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                     $submit_method=2;
                 } else {
                     $submit_method=0;
+                }
+
+                $dial_context=$ext_context;
+                if ($carrier_id>0) {
+                    $stmt="SELECT name FROM osdial_carriers WHERE id='$carrier_id' AND active='Y' LIMIT 1;";
+                    $rslt=mysql_query($stmt, $link);
+                    if ($DB) echo "$stmt\n";
+                    $carriers = mysql_num_rows($rslt);
+                    if ($carriers > 0) {
+                        $row=mysql_fetch_row($rslt);
+                        $dial_context = "OOUT" . $row[0];
+                    }
                 }
 
                 if ($use_cid_areacode_map=='Y') {

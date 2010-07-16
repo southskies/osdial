@@ -32,7 +32,7 @@
 
 
 use strict;
-use DBI;
+use OSDial;
 use Getopt::Long;
 use IO::Interface::Simple;
 $|++;
@@ -40,15 +40,14 @@ $|++;
 # Identify myself.
 my $prog = 'osdial_astgen.pl';
 
-# Get OSD configuration directives.
-my $config = getOSDconfig('/etc/osdial.conf');
-
-# Auto-creation header.
-my $achead = ";\n; WARNING: AUTO-CREATED FILE.\n; Any changes you make will be overwritten!\n;\n";
-
 # Declare command-line options.
 my($DB, $CLOhelp, $CLOtest, $CLOshowip, $CLOquiet, $CLOg729);
 my(%reloads);
+
+my $osdial = OSDial->new('DB'=>$DB);
+
+# Auto-creation header.
+my $achead = ";\n; WARNING: AUTO-CREATED FILE.\n; Any changes you make will be overwritten!\n;\n";
 
 # Read in command-line options.
 if (scalar @ARGV) {
@@ -89,14 +88,8 @@ my $codec = "ulaw";
 $codec = "g729" if ($CLOg729);
 
 
-# Connect to database.
-my $dbhA = DBI->connect("DBI:mysql:" . $config->{VARDB_database} . ":" . $config->{VARDB_server} . ":" . $config->{VARDB_port}, $config->{VARDB_user}, $config->{VARDB_pass} )
-  or die "Couldn't connect to database: " . DBI->errstr;
-print "    Connected to Database:  " . $config->{VARDB_server} . "|" . $config->{VARDB_database} . "\n" if ($DB);
-
-
 # Get all of the IPs on this machines interfaces.
-my $interfaces = get_myips($dbhA);
+my $interfaces = get_myips();
 my @myips = (values %{$interfaces});
 if ($CLOshowip) {
 	print "\n  Found these interfaces / IPs\n";
@@ -115,9 +108,9 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 	chomp $asterisk_version;
 	$asterisk_version =~ s/Asterisk //;
 	if ($asterisk_version ne "") {
-		my $stmtA = "update servers set asterisk_version='$asterisk_version' where server_ip='" . $config->{VARserver_ip} . "';";
-		print STDERR "\n|$stmtA|\n" if ($DB);
-		my $sthA = $dbhA->do($stmtA) if (!$CLOtest);
+		my $stmt = sprintf("UPDATE servers SET asterisk_version='\%s' WHERE server_ip='\%s';",$asterisk_version,$osdial->{VARserver_ip});
+		$osdial->sql_execute($stmt) if (!$CLOtest);
+		print STDERR "\n|$stmt|\n" if ($DB);
 	}
 
 	#Fix some version related config differences
@@ -157,21 +150,26 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 	# TODO: Fix calc_password to not be so aggressive.
 	#my $pass = calc_password();
 	my $pass = '6l5a4i3d2s1o0o1s2d3i4a5l6';
+
 	# Generate intra-server extensions and iax communication.
 	# (osdial_extensions_servers.conf osdial_iax_servers.conf)
-	gen_servers($dbhA,$pass);
+	my($ssreg,$isreg) = gen_servers($pass);
+
+	# Generate carrier configurations
+	my($screg,$icreg) = gen_carriers();
 
 	# Generate SIP/IAX registrations
 	# (osdial_iax_registrations.conf osdial_sip_registrations.conf)
-	gen_registrations($dbhA,$pass);
+	gen_registrations($ssreg.$screg, $isreg.$icreg);
 
 	# Generate meetme conferences and extensions.
 	# (osdial_extensions_conferences.conf osdial_meetme.conf)
-	gen_conferences($dbhA);
+	gen_conferences();
 
 	# Generate agent extensions, and sip/iax agent phones.
 	# (osdial_extensions_phones.conf osdial_sip_phones.conf osdial_iax_phones.conf)
-	gen_phones($dbhA);
+	gen_phones();
+
 
 	foreach my $reload (keys %reloads) {
 		print "    Executing " . $reload . "...\n" unless ($CLOquiet);
@@ -190,12 +188,10 @@ exit 0;
 # calculate a unique password that will remain constant across servers.
 #   (total of user ids + total of phone extensions) * number of users
 sub calc_password {
-	my $stmtA = "select (sum(user) + sum(extension)) * count(user) from osdial_users,phones;";
-	print $stmtA . "\n" if ($DB);
-	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
-	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-	my @aryA = $sthA->fetchrow_array;
-	my $calc = $aryA[0];
+	my $stmt = "SELECT ((sum(user) + sum(extension)) * count(user)) AS calc FROM osdial_users,phones;";
+	print $stmt . "\n" if ($DB);
+	my $sret = $osdial->sql_query($stmt);
+	my $calc = $sret->{calc};
 	my $pass;
 	my @pad = split(//,'osdialosdialosdialosdialosdial');
 	foreach my $c (split(//, $calc)) {
@@ -208,26 +204,25 @@ sub calc_password {
 # Generate SIP/IAX registrations
 # (osdial_iax_registrations.conf osdial_sip_registrations.conf)
 sub gen_registrations {
-	my ($dbhA,$pass) = @_;
+	my ($sip_registrations,$iax_registrations) = @_;
 
-	my $ireg = $achead;
-	my $sreg = $achead;
+	my $sreg = $achead . $sip_registrations;
+	my $ireg = $achead . $iax_registrations;
 
-	$ireg .= "register => ASTloop:$pass\@127.0.0.1:40569\n";
-	$ireg .= "register => ASTblind:$pass\@127.0.0.1:41569\n";
-
-	write_reload($ireg,'osdial_iax_registrations','iax2 reload');
 	write_reload($sreg,'osdial_sip_registrations','sip reload');
+	write_reload($ireg,'osdial_iax_registrations','iax2 reload');
 }
 
 
 # Generate intra-server extensions and iax communication.
 # (osdial_extensions_servers.conf osdial_iax_servers.conf)
 sub gen_servers {
-	my ($dbhA,$pass) = @_;
+	my ($pass) = @_;
 
 	my $esvr = $achead;
 	my $isvr = $achead;
+	my $sreg='';
+	my $ireg='';
 
 	$isvr .= ";\n; IAX loopback for testing\n";
 	$isvr .= "[ASTloop]\n";
@@ -257,27 +252,32 @@ sub gen_servers {
 	$isvr .= "requirecalltoken=no\n";
 	$isvr .= "qualify=no\n";
 
+	$esvr .= "; Local blind monitoring\n";
+	$esvr .= "exten => _08600XXX,1,Dial(\${TRUNKblind}/6\${EXTEN:1},55,To)\n";
+
+	$ireg .= "register => ASTloop:$pass\@127.0.0.1:40569\n";
+	$ireg .= "register => ASTblind:$pass\@127.0.0.1:41569\n";
+
+
 	# Get my server
-	my $stmtA = "SELECT server_id,server_ip FROM servers WHERE";
+	my $stmt = "SELECT server_id,server_ip FROM servers WHERE";
 	foreach my $ip (@myips) {
-		$stmtA .= " server_ip=\'" . $ip . "\' OR";
+		$stmt .= " server_ip=\'" . $ip . "\' OR";
 	}
-	chop $stmtA; chop $stmtA; chop $stmtA;
-	$stmtA .= ';';
-	print $stmtA . "\n" if ($DB);
-	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
-	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+	chop $stmt; chop $stmt; chop $stmt;
+	$stmt .= ';';
+	print $stmt . "\n" if ($DB);
 	my $iname;
-	while (my @aryA = $sthA->fetchrow_array) {
-		my @sip = split /\./, $aryA[1];
+	while (my $sret = $osdial->sql_query($stmt)) {
+		my @sip = split /\./, $sret->{server_ip};
 		my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
 		my $fsip2 = sprintf('%.3d%.3d%.3d%.3d',@sip);
-		$iname = $aryA[0];
-		$esvr .= ";\n;" . $aryA[0] . ' - ' . $aryA[1] . "\n";
+		$iname = $sret->{server_id};
+		$esvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
 		$esvr .= "exten => _" . $fsip . "*.,1,Goto(osdial,\${EXTEN:16},1)\n";
 		$esvr .= "exten => _" . $fsip2 . ".,1,Goto(osdial,\${EXTEN:12},1)\n";
-		$isvr .= ";\n;" . $aryA[0] . ' - ' . $aryA[1] . "\n";
-		$isvr .= "[" . $aryA[0] . "]\n";
+		$isvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
+		$isvr .= "[" . $sret->{server_id} . "]\n";
 		$isvr .= "type=user\n";
 		$isvr .= "trunk=yes\n";
 		$isvr .= "tos=0x18\n";
@@ -292,25 +292,23 @@ sub gen_servers {
 	}
 
 	# Get other servers 
-	my $stmtA = "SELECT server_id,server_ip FROM servers WHERE";
+	my $stmt = "SELECT server_id,server_ip FROM servers WHERE";
 	foreach my $ip (@myips) {
-		$stmtA .= " server_ip!=\'" . $ip . "\' AND";
+		$stmt .= " server_ip!=\'" . $ip . "\' AND";
 	}
-	chop $stmtA; chop $stmtA; chop $stmtA; chop $stmtA;
-	$stmtA .= ';';
-	print $stmtA . "\n" if ($DB);
-	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
-	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-	while (my @aryA = $sthA->fetchrow_array) {
-		my @sip = split /\./, $aryA[1];
+	chop $stmt; chop $stmt; chop $stmt; chop $stmt;
+	$stmt .= ';';
+	print $stmt . "\n" if ($DB);
+	while (my $sret = $osdial->sql_query($stmt)) {
+		my @sip = split /\./, $sret->{server_ip};
 		my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
-		$esvr .= ";\n;" . $aryA[0] . ' - ' . $aryA[1] . "\n";
-		$esvr .= "exten => _" . $fsip . "*.,1,Dial(IAX2/" . $aryA[0] . ':' . $pass . '@' . $aryA[1] . "/\${EXTEN},,o)\n";
-		$isvr .= ";\n;" . $aryA[0] . ' - ' . $aryA[1] . "\n";
-		$isvr .= "[" . $aryA[0] . "]\n";
+		$esvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
+		$esvr .= "exten => _" . $fsip . "*.,1,Dial(IAX2/" . $sret->{server_id} . ':' . $pass . '@' . $sret->{server_ip} . "/\${EXTEN},,o)\n";
+		$isvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
+		$isvr .= "[" . $sret->{server_id} . "]\n";
 		$isvr .= "type=peer\n";
-		$isvr .= "username=" . $aryA[0] . "\n";
-		$isvr .= "host=" . $aryA[1] . "\n";
+		$isvr .= "username=" . $sret->{server_id} . "\n";
+		$isvr .= "host=" . $sret->{server_ip} . "\n";
 		$isvr .= "trunk=yes\n";
 		$isvr .= "tos=0x18\n";
 		$isvr .= "qualify=5000\n";
@@ -330,13 +328,13 @@ sub gen_servers {
 	write_reload($esvr,'osdial_extensions_servers',$extreload);
 	write_reload($isvr,'osdial_iax_servers','iax2 reload');
 	
+	return ($sreg, $ireg);
 }
 
 
 # Generate meetme conferences and extensions.
 # (osdial_extensions_conferences.conf osdial_meetme.conf)
 sub gen_conferences {
-	my ($dbhA) = @_;
 	my $cnf = $achead;
 	my $mtm = $achead;
 	$mtm .= "conf => 8600\nconf => 8601,1234\n";
@@ -352,9 +350,9 @@ sub gen_conferences {
 	$cnf .= "exten => _5555860XXXX,1,MeetMeAdmin(\${EXTEN:4},K)\n";
 	$cnf .= "exten => _5555860XXXX,2,Hangup\n";
 
-	my $stmtA = "SELECT conf_exten,server_ip FROM conferences where";
+	my $stmt = "SELECT conf_exten,server_ip FROM conferences where";
 	foreach my $ip (@myips) {
-		$stmtA .= " server_ip=\'" . $ip . "\' OR";
+		$stmt .= " server_ip=\'" . $ip . "\' OR";
 	}
 
 	if ($asterisk_version =~ /^1\.6/) {
@@ -367,21 +365,19 @@ sub gen_conferences {
 		$cnf .= "exten => _8612XXX,2,Hangup\n";
 	}
 
-	chop $stmtA; chop $stmtA; chop $stmtA;
-	print $stmtA . "\n" if ($DB);
-	$stmtA .= ';';
-	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
-	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+	chop $stmt; chop $stmt; chop $stmt;
+	print $stmt . "\n" if ($DB);
+	$stmt .= ';';
 	my ($cnf2,$mtm2,$cf,$cl);
-	while (my @aryA = $sthA->fetchrow_array) {
-		$cf = $aryA[0] unless ($cf);
-		$cl = $aryA[0];
+	while (my $sret = $osdial->sql_query($stmt)) {
+		$cf = $sret->{conf_exten} unless ($cf);
+		$cl = $sret->{conf_exten};
 		if ($asterisk_version =~ /^1\.6/) {
-			$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme(\${EXTEN},q)\n";
+			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN},q)\n";
 		} else {
-			$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme,\${EXTEN}|q\n";
+			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN}|q\n";
 		}
-		$mtm2 .= "conf => " . $aryA[0] . "\n";
+		$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
 	}
 
 	$cnf .= ";\n; OSDial Conferences $cf - $cl\n";
@@ -389,35 +385,33 @@ sub gen_conferences {
 	$mtm .= ";\n; OSDial Conferences $cf - $cl\n";
 	$mtm .= $mtm2;
 
-	my $stmtA = "SELECT conf_exten,server_ip FROM osdial_conferences where";
+	my $stmt = "SELECT conf_exten,server_ip FROM osdial_conferences where";
         foreach my $ip (@myips) {
-                $stmtA .= " server_ip=\'" . $ip . "\' OR";
+                $stmt .= " server_ip=\'" . $ip . "\' OR";
         }
-        chop $stmtA; chop $stmtA; chop $stmtA;
-        $stmtA .= ";";
-        print $stmtA . "\n" if ($DB);
-        my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
-        $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+        chop $stmt; chop $stmt; chop $stmt;
+        $stmt .= ";";
+        print $stmt . "\n" if ($DB);
         my ($cnf2,$mtm2,$cf,$cl);
-        while (my @aryA = $sthA->fetchrow_array) {
-                $cf = $aryA[0] unless ($cf);
-                $cl = $aryA[0];
+	while (my $sret = $osdial->sql_query($stmt)) {
+                $cf = $sret->{conf_exten} unless ($cf);
+                $cl = $sret->{conf_exten};
 		if ($asterisk_version =~ /^1\.6/) {
-			$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme(\${EXTEN},F)\n";
-			$cnf2 .= "exten => _" . $aryA[0] . ",2,Hangup\n";
-			$cnf2 .= "exten => _7" . $aryA[0] . ",1,Meetme(\${EXTEN:1},Fq)\n";
-			$cnf2 .= "exten => _7" . $aryA[0] . ",2,Hangup\n";
-			$cnf2 .= "exten => _6" . $aryA[0] . ",1,Meetme(\${EXTEN:1},Flq)\n";
-			$cnf2 .= "exten => _6" . $aryA[0] . ",2,Hangup\n";
+			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN},F)\n";
+			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",2,Hangup\n";
+			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
+			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Hangup\n";
+			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
+			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Hangup\n";
 		} else {
-			$cnf2 .= "exten => _" . $aryA[0] . ",1,Meetme,\${EXTEN}|F\n";
-			$cnf2 .= "exten => _" . $aryA[0] . ",2,Hangup\n";
-			$cnf2 .= "exten => _7" . $aryA[0] . ",1,Meetme,\${EXTEN:1}|Fq\n";
-			$cnf2 .= "exten => _7" . $aryA[0] . ",2,Hangup\n";
-			$cnf2 .= "exten => _6" . $aryA[0] . ",1,Meetme,\${EXTEN:1}|Fmq\n";
-			$cnf2 .= "exten => _6" . $aryA[0] . ",2,Hangup\n";
+			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN}|F\n";
+			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",2,Hangup\n";
+			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
+			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Hangup\n";
+			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
+			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Hangup\n";
 		}
-		$mtm2 .= "conf => " . $aryA[0] . "\n";
+		$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
         }
 	$cnf .= ";\n; OSDIAL Agent Conferences $cf - $cl\n";
 	$cnf .= "; quiet entry and leaving conferences for OSDIAL $cf - $cl\n";
@@ -426,39 +420,37 @@ sub gen_conferences {
 	$mtm .= ";\n; OSDIAL Agent Conferences $cf - $cl\n";
 	$mtm .= $mtm2;
 
-	my $stmtA = "SELECT conf_exten FROM osdial_remote_agents WHERE user_start LIKE 'va\%'";
-        my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
-	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+	my $stmt = "SELECT conf_exten FROM osdial_remote_agents WHERE user_start LIKE 'va\%';";
         my ($cnf2,$mtm2,$cf,$cl);
-	while (my @aryA = $sthA->fetchrow_array) {
+	while (my $sret = $osdial->sql_query($stmt)) {
 		if ($asterisk_version =~ /^1\.6/) {
-			$cnf2 .= "exten => _" . $aryA[0] .  ",1,Playback(sip-silence)\n";
-			$cnf2 .= "exten => _" . $aryA[0] .  ",2,Meetme(\${EXTEN},Fq)\n";
-			$cnf2 .= "exten => _" . $aryA[0] .  ",3,Hangup\n";
-			$cnf2 .= "exten => _6" . $aryA[0] . ",1,Playback(sip-silence)\n";
-			$cnf2 .= "exten => _6" . $aryA[0] . ",2,Meetme(\${EXTEN:1},Flq)\n";
-			$cnf2 .= "exten => _6" . $aryA[0] . ",3,Hangup\n";
-			$cnf2 .= "exten => _7" . $aryA[0] . ",1,Playback(sip-silence)\n";
-			$cnf2 .= "exten => _7" . $aryA[0] . ",2,Meetme(\${EXTEN:1},Fq)\n";
-			$cnf2 .= "exten => _7" . $aryA[0] . ",3,Hangup\n";
-			$cnf2 .= "exten => _8" . $aryA[0] . ",1,Playback(sip-silence)\n";
-			$cnf2 .= "exten => _8" . $aryA[0] . ",2,Meetme(\${EXTEN:1},Fq)\n";
-			$cnf2 .= "exten => _8" . $aryA[0] . ",3,Hangup\n";
+			$cnf2 .= "exten => _" . $sret->{conf_exten} .  ",1,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _" . $sret->{conf_exten} .  ",2,Meetme(\${EXTEN},Fq)\n";
+			$cnf2 .= "exten => _" . $sret->{conf_exten} .  ",3,Hangup\n";
+			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Meetme(\${EXTEN:1},Flq)\n";
+			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",3,Hangup\n";
+			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Meetme(\${EXTEN:1},Fq)\n";
+			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",3,Hangup\n";
+			$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",1,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",2,Meetme(\${EXTEN:1},Fq)\n";
+			$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",3,Hangup\n";
 		} else {
-			$cnf2 .= "exten => _" . $aryA[0] .  ",1,Playback(sip-silence)\n";
-			$cnf2 .= "exten => _" . $aryA[0] .  ",2,Meetme,\${EXTEN}|Fq\n";
-			$cnf2 .= "exten => _" . $aryA[0] .  ",3,Hangup\n";
-			$cnf2 .= "exten => _6" . $aryA[0] . ",1,Playback(sip-silence)\n";
-			$cnf2 .= "exten => _6" . $aryA[0] . ",2,Meetme,\${EXTEN:1}|Fmq\n";
-			$cnf2 .= "exten => _6" . $aryA[0] . ",3,Hangup\n";
-			$cnf2 .= "exten => _7" . $aryA[0] . ",1,Playback(sip-silence)\n";
-			$cnf2 .= "exten => _7" . $aryA[0] . ",2,Meetme,\${EXTEN:1}|Fq\n";
-			$cnf2 .= "exten => _7" . $aryA[0] . ",3,Hangup\n";
-			$cnf2 .= "exten => _8" . $aryA[0] . ",1,Playback(sip-silence)\n";
-			$cnf2 .= "exten => _8" . $aryA[0] . ",2,Meetme,\${EXTEN:1}|Fq\n";
-			$cnf2 .= "exten => _8" . $aryA[0] . ",3,Hangup\n";
+			$cnf2 .= "exten => _" . $sret->{conf_exten} .  ",1,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _" . $sret->{conf_exten} .  ",2,Meetme,\${EXTEN}|Fq\n";
+			$cnf2 .= "exten => _" . $sret->{conf_exten} .  ",3,Hangup\n";
+			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Meetme,\${EXTEN:1}|Fmq\n";
+			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",3,Hangup\n";
+			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Meetme,\${EXTEN:1}|Fq\n";
+			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",3,Hangup\n";
+			$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",1,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",2,Meetme,\${EXTEN:1}|Fq\n";
+			$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",3,Hangup\n";
 		}
-		$mtm2 .= "conf => " . $aryA[0] . "\n";
+		$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
 	}
 	$cnf2 .= "exten => 487487,1,Playback(sip-silence)\n";
 	$cnf2 .= "exten => 487487,n,AGI(agi-OSDivr.agi,\${EXTEN})\n";
@@ -481,30 +473,27 @@ sub gen_conferences {
 # Generate agent extensions, and sip/iax agent phones.
 # (osdial_extensions_phones.conf osdial_sip_phones.conf osdial_iax_phones.conf)
 sub gen_phones {
-	my($dbhA) = @_;
 	my $sphn = $achead;
 	my $iphn = $achead;
 	my $ephn = $achead;
 
-	my $stmtA = "SELECT extension,dialplan_number,phone_ip,pass,protocol,phone_type,voicemail_id,ext_context FROM phones WHERE protocol IN ('SIP','IAX2','Zap','DAHDI','EXTERNAL') AND active='Y' AND (";
+	my $stmt = "SELECT * FROM phones WHERE protocol IN ('SIP','IAX2','Zap','DAHDI','EXTERNAL') AND active='Y' AND (";
 	foreach my $ip (@myips) {
-		$stmtA .= " server_ip=\'" . $ip . "\' OR";
+		$stmt .= " server_ip=\'" . $ip . "\' OR";
 	}
-	chop $stmtA; chop $stmtA; chop $stmtA;
-	$stmtA .= ');';
-	print $stmtA . "\n" if ($DB);
-	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
-	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-	while (my @aryA = $sthA->fetchrow_array) {
-		$aryA[6] = '9999' if ($aryA[6] eq "");
-		$aryA[7] = 'osdial' if ($aryA[7] eq "");
-		if ($aryA[4] eq "SIP" and $aryA[0] !~ /\@/) {
-			$sphn .= ";\n[". $aryA[0] ."]\n";
+	chop $stmt; chop $stmt; chop $stmt;
+	$stmt .= ');';
+	print $stmt . "\n" if ($DB);
+	while (my $sret = $osdial->sql_query($stmt)) {
+		$sret->{voicemail_id} = '9999' if ($sret->{voicemail_id} eq "");
+		$sret->{ext_context} = 'osdial' if ($sret->{ext_context} eq "");
+		if ($sret->{protocol} eq "SIP" and $sret->{extension} !~ /\@/) {
+			$sphn .= ";\n[". $sret->{extension} ."]\n";
 			$sphn .= "type=friend\n";
-			$sphn .= "username=" . $aryA[0] . "\n";
-			$sphn .= "secret=" . $aryA[3] . "\n";
-			if ($aryA[2]) {
-				$sphn .= "host=" . $aryA[2] . "\n";
+			$sphn .= "username=" . $sret->{extension} . "\n";
+			$sphn .= "secret=" . $sret->{pass} . "\n";
+			if ($sret->{phone_ip}) {
+				$sphn .= "host=" . $sret->{phone_ip} . "\n";
 			} else {
 				$sphn .= "host=dynamic\n";
 			}
@@ -512,7 +501,7 @@ sub gen_phones {
 			$sphn .= "relaxdtmf=yes\n";
 			$sphn .= "disallow=all\n";
 			$sphn .= "allow=$codec\n";
-			#if ($aryA[5] =~ /Grandstream/i) {
+			#if ($sret->{phone_type} =~ /Grandstream/i) {
 			#	$sphn .= "dtmfmode=rfc2833\n";
 			#	$sphn .= "relaxdtmf=yes\n";
 			#	$sphn .= "disallow=all\n";
@@ -524,15 +513,15 @@ sub gen_phones {
 			#}
 			$sphn .= "qualify=5000\n";
 			$sphn .= "nat=yes\n";
-			$sphn .= "context=" . $aryA[7] . "\n";
-			$sphn .= "mailbox=" . $aryA[6] . "\@default\n";
-		} elsif ($aryA[4] eq "IAX2" and $aryA[0] !~ /\@|\//) {
-			$iphn .= ";\n[". $aryA[0] ."]\n";
+			$sphn .= "context=" . $sret->{ext_context} . "\n";
+			$sphn .= "mailbox=" . $sret->{voicemail_id} . "\@default\n";
+		} elsif ($sret->{protocol} eq "IAX2" and $sret->{extension} !~ /\@|\//) {
+			$iphn .= ";\n[". $sret->{extension} ."]\n";
 			$iphn .= "type=friend\n";
-			$iphn .= "username=" . $aryA[0] . "\n";
-			$iphn .= "secret=" . $aryA[3] . "\n";
-			if ($aryA[2]) {
-				$iphn .= "host=" . $aryA[2] . "\n";
+			$iphn .= "username=" . $sret->{extension} . "\n";
+			$iphn .= "secret=" . $sret->{pass} . "\n";
+			if ($sret->{phone_ip}) {
+				$iphn .= "host=" . $sret->{phone_ip} . "\n";
 			} else {
 				$iphn .= "host=dynamic\n";
 			}
@@ -541,32 +530,36 @@ sub gen_phones {
 			$iphn .= "qualify=5000\n";
 			$iphn .= "requirecalltoken=no\n";
 			$iphn .= "nat=yes\n";
-			$iphn .= "context=" . $aryA[7] . "\n";
-			$iphn .= "mailbox=" . $aryA[6] . "\@default\n";
+			$iphn .= "context=" . $sret->{ext_context} . "\n";
+			$iphn .= "mailbox=" . $sret->{voicemail_id} . "\@default\n";
 		}
-		my $dext = $aryA[4] . "/" . $aryA[0];
-		if ($aryA[4] =~ /SIP|IAX2/ and $aryA[0] =~ /\@/) {
-			my($sext,$ssrv) = split /\@/,$aryA[0];
-			$dext = $aryA[4] . "/" . $ssrv . "/" . $sext;
-		} elsif ($aryA[4] =~ /DAHDI|Zap/) {
-			$dext = $aryA[4] . "/" . $aryA[0];
-		} elsif ($aryA[4] =~ /EXTERNAL/ and $aryA[5] =~ /DAHDI|Zap/i) {
+		my $dext = $sret->{protocol} . "/" . $sret->{extension};
+		if ($sret->{protocol} =~ /SIP|IAX2/ and $sret->{extension} =~ /\@/) {
+			my($sext,$ssrv) = split /\@/,$sret->{extension};
+			$dext = $sret->{protocol} . "/" . $ssrv . "/" . $sext;
+		} elsif ($sret->{protocol} =~ /DAHDI|Zap/) {
+			$dext = $sret->{protocol} . "/" . $sret->{extension};
+		} elsif ($sret->{protocol} =~ /EXTERNAL/ and $sret->{phone_type} =~ /DAHDI|Zap/i) {
 			$dext = "";
 			my $proto = "";
-			$proto = "Zap" if ($aryA[5] =~ /Zap/i);
-			$proto = "DAHDI" if ($aryA[5] =~ /DAHDI/i);
-			if ($aryA[2] >= 1 and $aryA[2] <= 999) {
-				$dext = $proto . "/" . $aryA[2];
-			} elsif (length($aryA[0]) == 3 or length($aryA[0]) == 4) {
-				$dext = $proto . "/" . substr($aryA[0],1);
-			} elsif (length($aryA[0]) == 5) {
-				$dext = $proto . "/" . substr($aryA[0],2);
+			$proto = "Zap" if ($sret->{phone_type} =~ /Zap/i);
+			$proto = "DAHDI" if ($sret->{phone_type} =~ /DAHDI/i);
+			if ($sret->{phone_ip} >= 1 and $sret->{phone_ip} <= 999) {
+				$dext = $proto . "/" . $sret->{phone_ip};
+			} elsif (length($sret->{extension}) == 3 or length($sret->{extension}) == 4) {
+				$dext = $proto . "/" . substr($sret->{extension},1);
+			} elsif (length($sret->{extension}) == 5) {
+				$dext = $proto . "/" . substr($sret->{extension},2);
 			}
-		} elsif ($aryA[4] =~ /EXTERNAL/) {
+		} elsif ($sret->{protocol} =~ /EXTERNAL/) {
 			$dext = "";
 		}
 
-		$ephn .= "exten => _" . $aryA[1] . ",1,Dial(" . $dext . ",55,o)\n" if ($dext ne "");
+		if ($dext ne "") {
+			$ephn .= "exten => _" . $sret->{dialplan_number} . ",1,Dial(" . $dext . ",55,o)\n";
+			$ephn .= "exten => _" . $sret->{dialplan_number} . ",n,Voicemail(" . $sret->{voicemail_id} . ")\n" if ($sret->{voicemail_id} ne "");
+			$ephn .= "exten => _" . $sret->{dialplan_number} . ",n,Hangup()\n\n";
+		}
 	}
 
 	my $extreload = "extensions reload";
@@ -576,6 +569,123 @@ sub gen_phones {
 	write_reload($sphn,'osdial_sip_phones','sip reload');
 	write_reload($iphn,'osdial_iax_phones','iax2 reload');
 	write_reload($ephn,'osdial_extensions_phones',$extreload);
+}
+
+
+sub gen_carriers {
+	my $sip_config=$achead;
+	my $iax_config=$achead;
+	my $sip_registrations='';
+	my $iax_registrations='';
+	my $dialplan=$achead;
+
+	my $carriers = {};
+	my $stmt = "SELECT * FROM osdial_carriers WHERE active='Y';";
+	while (my $carrier = $osdial->sql_query($stmt)) {
+		$carriers->{$carrier->{id}} = $carrier;
+	}
+	foreach my $carrier (sort keys %{$carriers}) {
+		# Override server with server specific options if set.
+		my $stmt = sprintf("SELECT * FROM osdial_carrier_servers WHERE carrier_id='\%s' AND server_ip='\%s';",$carrier,$osdial->{VARserver_ip});
+		while (my $carrier_server = $osdial->sql_query($stmt)) {
+			$carriers->{$carrier}{protocol_config} = $carrier_server->{protocol_config} if ($carrier_server->{protocol_config} ne '');
+			$carriers->{$carrier}{registrations} =   $carrier_server->{registrations}   if ($carrier_server->{registrations} ne '');
+			$carriers->{$carrier}{dialplan} =        $carrier_server->{dialplan}        if ($carrier_server->{dialplan} ne '');
+		}
+
+		my $context = 'OIN' . $carriers->{$carrier}{name};
+
+		# Add contexts to protocol_config.
+		$carriers->{$carrier}{protocol_config} =~ s/\]\$/]\ncontext=$context/mg;
+
+		# Do the variable substitutions.
+		$carriers->{$carrier}{dialplan} =~ s/<NAME>/$carriers->{$carrier}{name}/mg;
+		$carriers->{$carrier}{dialplan} =~ s/<PROTOCOL>/$carriers->{$carrier}{protocol}/mg;
+		$carriers->{$carrier}{dialplan} =~ s/<STRIP_MSD>/$carriers->{$carrier}{strip_msd}/mg;
+		$carriers->{$carrier}{dialplan} =~ s/<ALLOW_INTERNATIONAL>/$carriers->{$carrier}{allow_international}/mg;
+		$carriers->{$carrier}{dialplan} =~ s/<DEFAULT_CALLERID>/$carriers->{$carrier}{default_callerid}/mg;
+		$carriers->{$carrier}{dialplan} =~ s/<DEFAULT_AREACODE>/$carriers->{$carrier}{default_areacode}/mg;
+		$carriers->{$carrier}{dialplan} =~ s/<DEFAULT_PREFIX>/$carriers->{$carrier}{default_prefix}/mg;
+
+		my $failover = '';
+		if (!$carriers->{$carrier}{failover_id}>0) {
+			$failover .= "exten => _failover.,1,Hangup()\n\n";
+		} else {
+			my $stmt = sprintf("SELECT * FROM osdial_carriers WHERE id='\%s';",$carriers->{$carrier}{failover_id});
+			my $failover_carrier = $osdial->sql_query($stmt);
+			if ($carriers->{$carrier}{failover_confition} eq 'CHANUNAVAIL') {
+				$failover .= "exten => _failover.,1,GotoIf(\$[\"\${DIALSTATUS}\" = \"CHANUNAVAIL\"]?3)\n";
+				$failover .= "exten => _failover.,2,Goto(5)\n";
+				$failover .= "exten => _failover.,3,AGI(agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME})\n";
+				$failover .= "exten => _failover.,4,Goto(OOUT" . $failover_carrier->{name} . ",\${EXTEN:8},1)\n";
+				$failover .= "exten => _failover.,5,Hangup()\n\n";
+			} elsif ($carriers->{$carrier}{failover_confition} eq 'CONGESTION') {
+				$failover .= "exten => _failover.,1,GotoIf(\$[\"\${DIALSTATUS}\" = \"CONGESTION\"]?3)\n";
+				$failover .= "exten => _failover.,2,Goto(5)\n";
+				$failover .= "exten => _failover.,3,AGI(agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME})\n";
+				$failover .= "exten => _failover.,4,Goto(OOUT" . $failover_carrier->{name} . ",\${EXTEN:8},1)\n";
+				$failover .= "exten => _failover.,5,Hangup()\n\n";
+			} elsif ($carriers->{$carrier}{failover_confition} eq 'BOTH') {
+				$failover .= "exten => _failover.,1,GotoIf(\$[\"\${DIALSTATUS}\" = \"CHANUNAVAIL\"]?4)\n";
+				$failover .= "exten => _failover.,2,GotoIf(\$[\"\${DIALSTATUS}\" = \"CONGESTION\"]?4)\n";
+				$failover .= "exten => _failover.,3,Goto(6)\n";
+				$failover .= "exten => _failover.,4,AGI(agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME})\n";
+				$failover .= "exten => _failover.,5,Goto(OOUT" . $failover_carrier->{name} . ",\${EXTEN:8},1)\n";
+				$failover .= "exten => _failover.,6,Hangup()\n\n";
+			}
+		}
+
+		my $hangup = "exten => h,1,AGI(agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME})\n\n";
+
+		$dialplan .= "[OOUT" . $carriers->{$carrier}{name} . "]\n" . $hangup . $failover . $carriers->{$carrier}{dialplan} . "\n\n";
+		if ($carriers->{$carrier}{protocol} eq "SIP") {
+			$sip_config .= $carriers->{$carrier}{protocol_config} . "\n\n";
+			$sip_registrations .= $carriers->{$carrier}{registrations} . "\n\n";
+		} elsif ($carriers->{$carrier}{protocol} eq "SIP") {
+			$iax_config .= $carriers->{$carrier}{protocol_config} . "\n\n";
+			$iax_registrations .= $carriers->{$carrier}{registrations} . "\n\n";
+		}
+
+		# Process DIDs.
+		$dialplan .= "[" . $context . "]\n";
+		my $dids = {};
+		my $stmt = sprintf("SELECT * FROM osdial_carrier_dids WHERE carrier_id='\%s';",$carrier);
+		while (my $did = $osdial->sql_query($stmt)) {
+			$dids->{$did->{extension}} = $did;
+		}
+		foreach my $did (sort keys %{$dids}) {
+			$dialplan .= "exten => _" . $dids->{$did}{did} . ",1,Answer\n";
+			$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,AGI(agi://127.0.0.1:4577/call_log)\n";
+			$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,Ringing\n";
+			$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,Wait(3)\n";
+			if ($dids->{$did}{did_action} eq 'INGROUP') {
+				$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,AGI(agi-VDAD_ALL_inbound.agi," . $dids->{$did}{lookup_method} . "-----" . $dids->{$did}{server_allocation} . "-----" . $dids->{$did}{ingroup};
+				$dialplan .= "-----\${EXTEN}-----\${CALLERID(number)}-----" . $dids->{$did}{park_file} . "-----" . $dids->{$did}{initial_status} . "-----" . $dids->{$did}{default_list_id} . "-----";
+				$dialplan .= $dids->{$did}{default_phone_code} . "-----" . $dids->{$did}{search_campaign} . ")\n";
+			} elsif ($dids->{$did}{did_action} eq 'PHONE') {
+				my $stmt = sprintf("SELECT * FROM phones WHERE extension='\%s' LIMIT 1;",$dids->{$did}{phone});
+				while (my $phone = $osdial->sql_query($stmt)) {
+					my @sip = split /\./, $phone->{server_ip};
+					my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
+					$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,Goto(osdial," . $fsip . '*' . $phone->{dialplan_number} . ",1)\n";
+				}
+			} elsif ($dids->{$did}{did_action} eq 'EXTENSION') {
+				$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,Goto(" . $dids->{$did}{extension_context} . "," . $dids->{$did}{extension} . ",1)\n";
+			} elsif ($dids->{$did}{did_action} eq 'VOICEMAIL') {
+				$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,Voicemail(" . $dids->{$did}{voicemail} . ")\n";
+			}
+			$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,Hangup()\n\n";
+		}
+	}
+	$dialplan =~ s/\r\n/\n/gm;
+	$sip_config =~ s/\r\n/\n/gm;
+	$iax_config =~ s/\r\n/\n/gm;
+	$sip_registrations =~ s/\r\n/\n/gm;
+	$iax_registrations =~ s/\r\n/\n/gm;
+	write_reload($sip_config,'osdial_sip_carriers','sip reload');
+	write_reload($iax_config,'osdial_iax_carriers','iax2 reload');
+	write_reload($dialplan,'osdial_extensions_carriers','extensions reload');
+	return ($sip_registrations, $iax_registrations);
 }
 
 
@@ -606,7 +716,6 @@ sub write_reload {
 
 
 sub get_myips {
-	my ($dbhA) = @_;
         my %IPs;
         my @ints = IO::Interface::Simple->interfaces;
         foreach my $int (@ints) {
@@ -615,35 +724,11 @@ sub get_myips {
         }
 
 	# Delete loopback interface if more than 1 active server.
-	my $stmtA = "SELECT count(*) FROM servers WHERE active='Y';";
-	print $stmtA . "\n" if ($DB);
-	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
-	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-	my @aryA = $sthA->fetchrow_array;
-	delete $IPs{'lo'} if ($aryA[0] > 1);
+	my $stmt = "SELECT count(*) AS count FROM servers WHERE active='Y';";
+	print $stmt . "\n" if ($DB);
+	my $sret = $osdial->sql_query($stmt);
+	delete $IPs{'lo'} if ($sret->{count} > 1);
 
         return \%IPs;
-}
-
-
-
-
-###############################################################
-sub getOSDconfig {
-	my($AGCpath) = @_;
-	my %config;
-	$config{PATHconf} = $AGCpath;
-	open(CONF, $config{PATHconf}) || die "can't open " . $config{PATHconf} . ": " . $! . "\n";
-	while (my $line = <CONF>) {
-		$line =~ s/ |>|"|'|\n|\r|\t|\#.*|;.*//gi;
-		if ($line =~ /=|:/) {
-			my($key,$val) = split /=|:/, $line;
-			$config{$key} = $val;
-		}
-	}
-	$config{VARDB_port} = '3306' unless ($config{VARDB_port});
-	$config{VARFTP_port} = '21' unless ($config{VARFTP_port});
-	$config{VARREPORT_port} = '21' unless ($config{VARREPORT_port});
-	return \%config;
 }
 

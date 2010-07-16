@@ -28,7 +28,14 @@ if ($ADD==411111111111111) {
         echo "</font>\n";
 
         # Prepare with sprintf and filer ALL values wih mres as seen.
-        $stmt = sprintf("UPDATE system_settings set use_non_latin='%s',webroot_writable='%s',enable_queuemetrics_logging='%s',queuemetrics_server_ip='%s',queuemetrics_dbname='%s',queuemetrics_login='%s',queuemetrics_pass='%s',queuemetrics_url='%s',queuemetrics_log_id='%s',queuemetrics_eq_prepend='%s',osdial_agent_disable='%s',allow_sipsak_messages='%s',admin_home_url='%s',enable_agc_xfer_log='%s',company_name='%s',admin_template='%s',agent_template='%s',enable_lead_allocation='%s',enable_external_agents='%s',enable_filters='%s',enable_multicompany='%s',multicompany_admin='%s';",mres($use_non_latin),mres($webroot_writable),mres($enable_queuemetrics_logging),mres($queuemetrics_server_ip),mres($queuemetrics_dbname),mres($queuemetrics_login),mres($queuemetrics_pass),mres($queuemetrics_url),mres($queuemetrics_log_id),mres($queuemetrics_eq_prepend),mres($osdial_agent_disable),mres($allow_sipsak_messages),mres($admin_home_url),mres($enable_agc_xfer_log),mres($company_name),mres($admin_template),mres($agent_template),mres($enable_lead_allocation),mres($enable_external_agents),mres($enable_filters),mres($enable_multicompany),mres($multicompany_admin));
+        $stmt = sprintf("UPDATE system_settings SET use_non_latin='%s',webroot_writable='%s',enable_queuemetrics_logging='%s',queuemetrics_server_ip='%s',queuemetrics_dbname='%s'," .
+            "queuemetrics_login='%s',queuemetrics_pass='%s',queuemetrics_url='%s',queuemetrics_log_id='%s',queuemetrics_eq_prepend='%s',osdial_agent_disable='%s',allow_sipsak_messages='%s'," .
+            "admin_home_url='%s',enable_agc_xfer_log='%s',company_name='%s',admin_template='%s',agent_template='%s',enable_lead_allocation='%s',enable_external_agents='%s',enable_filters='%s'," .
+            "enable_multicompany='%s',multicompany_admin='%s',default_carrier_id='%s';",
+            mres($use_non_latin),mres($webroot_writable),mres($enable_queuemetrics_logging),mres($queuemetrics_server_ip),mres($queuemetrics_dbname),
+            mres($queuemetrics_login),mres($queuemetrics_pass),mres($queuemetrics_url),mres($queuemetrics_log_id),mres($queuemetrics_eq_prepend),mres($osdial_agent_disable),mres($allow_sipsak_messages),
+            mres($admin_home_url),mres($enable_agc_xfer_log),mres($company_name),mres($admin_template),mres($agent_template),mres($enable_lead_allocation),mres($enable_external_agents),mres($enable_filters),
+            mres($enable_multicompany),mres($multicompany_admin),mres($carrier_id));
         $rslt=mysql_query($stmt, $link);
 
         ### LOG CHANGES TO LOG FILE ###
@@ -52,6 +59,7 @@ if ($ADD==411111111111111) {
 # The System modification form
 if ($ADD==311111111111111) {
     if ($LOGmodify_servers==1) {
+        $system_settings = get_first_record($link, 'system_settings', '*', '');
         # The Main System Settings Form.
         echo "<table width=$section_width cellspacing=0 cellpadding=0 align=center>\n";
         echo "  <tr>\n";
@@ -89,6 +97,15 @@ if ($ADD==311111111111111) {
         echo "        <tr bgcolor=$oddrows>\n";
         echo "          <td align=right>Admin Home URL:</td>\n";
         echo "          <td align=left><input type=text name=admin_home_url size=40 maxlength=255 value=\"$system_settings[admin_home_url]\">$NWB#settings-admin_home_url$NWE</td>\n";
+        echo "        </tr>\n";
+        echo "        <tr bgcolor=$oddrows>\n";
+        echo "          <td align=right>Default Carrier:</td>\n";
+        echo "          <td align=left>\n";
+        echo "            <select name=carrier_id>\n";
+        $krh = get_krh($link, 'osdial_carriers', '*','',"active='Y' AND selectable='Y'",'');
+        echo format_select_options($krh, 'id', 'name', $system_settings['default_carrier_id'], "** USE MANUAL CONFIGURATION **",'');
+        echo "            </select>\n";
+        echo "          </td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
         echo "          <td align=right>Use Non-Latin:</td>\n";
@@ -232,6 +249,8 @@ if ($ADD==311111111111111) {
 
         echo "        <tr class=tabheader><td colspan=2>Queuemetrics</td></tr>\n";
 
+        $qstyle = 'visibility:collapse;';
+        if ($system_settings['enable_queuemetrics_logging']>0) $qstyle = 'visibility:visible;';
         echo "        <tr bgcolor=$oddrows>\n";
         echo "          <td align=right>Enable QueueMetrics Logging:</td>\n";
         echo "          <td align=left>\n";
@@ -243,31 +262,31 @@ if ($ADD==311111111111111) {
         echo "            $NWB#settings-enable_queuemetrics_logging$NWE\n";
         echo "          </td>\n";
         echo "        </tr>\n";
-        echo "        <tr bgcolor=$oddrows>\n";
+        echo "        <tr bgcolor=$oddrows style=\"$qstyle\">\n";
         echo "          <td align=right>QueueMetrics Server IP:</td>\n";
         echo "          <td align=left><input type=text name=queuemetrics_server_ip size=18 maxlength=15 value=\"$system_settings[queuemetrics_server_ip]\">$NWB#settings-queuemetrics_server_ip$NWE</td>\n";
         echo "        </tr>\n";
-        echo "        <tr bgcolor=$oddrows>\n";
+        echo "        <tr bgcolor=$oddrows style=\"$qstyle\">\n";
         echo "          <td align=right>QueueMetrics DB Name:</td>\n";
         echo "          <td align=left><input type=text name=queuemetrics_dbname size=18 maxlength=50 value=\"$system_settings[queuemetrics_dbname]\">$NWB#settings-queuemetrics_dbname$NWE</td>\n";
         echo "        </tr>\n";
-        echo "        <tr bgcolor=$oddrows>\n";
+        echo "        <tr bgcolor=$oddrows style=\"$qstyle\">\n";
         echo "          <td align=right>QueueMetrics DB Login:</td>\n";
         echo "          <td align=left><input type=text name=queuemetrics_login size=18 maxlength=50 value=\"$queuemetrics_login\">$NWB#settings-queuemetrics_login$NWE</td>\n";
         echo "        </tr>\n";
-        echo "        <tr bgcolor=$oddrows>\n";
+        echo "        <tr bgcolor=$oddrows style=\"$qstyle\">\n";
         echo "          <td align=right>QueueMetrics DB Password:</td>\n";
         echo "          <td align=left><input type=text name=queuemetrics_pass size=18 maxlength=50 value=\"$queuemetrics_pass\">$NWB#settings-queuemetrics_pass$NWE</td>\n";
         echo "        </tr>\n";
-        echo "        <tr bgcolor=$oddrows>\n";
+        echo "        <tr bgcolor=$oddrows style=\"$qstyle\">\n";
         echo "          <td align=right>QueueMetrics URL:</td>\n";
         echo "          <td align=left><input type=text name=queuemetrics_url size=40 maxlength=255 value=\"$queuemetrics_url\">$NWB#settings-queuemetrics_url$NWE</td>\n";
         echo "        </tr>\n";
-        echo "        <tr bgcolor=$oddrows>\n";
+        echo "        <tr bgcolor=$oddrows style=\"$qstyle\">\n";
         echo "          <td align=right>QueueMetrics Log ID:</td>\n";
         echo "          <td align=left><input type=text name=queuemetrics_log_id size=12 maxlength=10 value=\"$queuemetrics_log_id\">$NWB#settings-queuemetrics_log_id$NWE</td>\n";
         echo "        </tr>\n";
-        echo "        <tr bgcolor=$oddrows>\n";
+        echo "        <tr bgcolor=$oddrows style=\"$qstyle\">\n";
         echo "          <td align=right>QueueMetrics EnterQueue Prepend:</td>\n";
         echo "          <td align=left>\n";
         echo "            <select size=1 name=queuemetrics_eq_prepend>\n";

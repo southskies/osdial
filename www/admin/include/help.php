@@ -1785,6 +1785,10 @@ Through the use of system status categories, you can group together statuses to 
 <br><b>Enable System CallTimes -</b> This enables admin menu access to the Global System CallTimes configuration. (Default: OFF)
 <br>
 
+<a name="companies-enable_system_carriers">
+<br><b>Enable System Carriers -</b> This enables admin menu access to the System Carriers configuration. (Default: OFF)
+<br>
+
 <a name="companies-enable_system_phones">
 <br><b>Enable System Phones -</b> This enables admin menu access to the System Phones configuration. (Default: ON)
 <br>

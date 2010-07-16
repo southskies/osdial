@@ -1425,6 +1425,10 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
     This enables admin menu access to the Global System CallTimes configuration. (Default: OFF)
     </item>
 
+    <item pathId="enable_system_carriers" title="Enable System Carriers">
+    This enables admin menu access to the System Carriers configuration. (Default: OFF)
+    </item>
+
     <item pathId="enable_system_phones" title="Enable System Phones">
     This enables admin menu access to the System Phones configuration. (Default: ON)
     </item>
