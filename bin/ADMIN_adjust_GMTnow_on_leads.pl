@@ -435,7 +435,7 @@ foreach (@phone_codes)
 						}
 					else
 						{
-						$stmtA = "update osdial_list set gmt_offset_now='$area_GMT' where phone_code='$match_code_ORIG' $AC_match and (gmt_offset_now != '$area_GMT' or gmt_offset_now IS NULL) $XlistSQL;";
+						$stmtA = "update osdial_list set gmt_offset_now='$area_GMT',modify_date=modify_date where phone_code='$match_code_ORIG' $AC_match and (gmt_offset_now != '$area_GMT' or gmt_offset_now IS NULL) $XlistSQL;";
 						if($DBX){print STDERR "\n|$stmtA|\n";}
 						if (!$T) 
 							{
@@ -596,7 +596,7 @@ foreach (@phone_codes)
 							}
 						else
 							{
-							$stmtA = "update osdial_list set gmt_offset_now='$area_GMT' where phone_code='$match_code_ORIG' $AC_match and (gmt_offset_now != '$area_GMT' or gmt_offset_now IS NULL) $XlistSQL;";
+							$stmtA = "update osdial_list set gmt_offset_now='$area_GMT',modify_date=modify_date where phone_code='$match_code_ORIG' $AC_match and (gmt_offset_now != '$area_GMT' or gmt_offset_now IS NULL) $XlistSQL;";
 							if($DBX){print STDERR "\n|$stmtA|\n";}
 							if (!$T) 
 								{
