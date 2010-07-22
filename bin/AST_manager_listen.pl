@@ -327,6 +327,14 @@ while($one_day_interval > 0)
 				}
 
 
+				# Clear conference when meetme ends.
+				if ($ame{'event'} =~ /MeetmeEnd/i) {
+					$conference = $ame{'meetme'};
+					$stmtA = "UPDATE conferences SET extension='' WHERE server_ip='$server_ip' AND conf_exten='$conference';";
+					my $affected_rows = $dbhA->do($stmtA);
+					if($DB){print "|$affected_rows Conference cleared|$stmtA\n|";}
+				}
+
 				##### look for special osdial conference call event #####
 				if ( ($ame{'event'} =~ /Dial/i || $ame{'state'} =~ /Up/i) && ($ame{'accountcode'} =~ /DCagcW/) ) {
 					if ($ame{'event'} =~ /Dial/i) {
