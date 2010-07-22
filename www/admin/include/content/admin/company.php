@@ -180,13 +180,13 @@ if ($ADD=="51comp") {
 if ($ADD=="61comp") {
     if ($LOG['multicomp_admin']>0) {
         echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>";
-        $stmt="DELETE from osdial_companies where company_id='$company_id' limit 1;";
+        $stmt="DELETE from osdial_companies where id='$company_id' limit 1;";
         $rslt=mysql_query($stmt, $link);
 
         ### LOG CHANGES TO LOG FILE ###
         if ($WeBRooTWritablE > 0) {
             $fp = fopen ("./admin_changes_log.txt", "a");
-            fwrite ($fp, "$date|!!!DELETING COMPANY!!!|$PHP_AUTH_USER|$ip|company_id='$company_id'||\n");
+            fwrite ($fp, "$date|!!!DELETING COMPANY!!!|$PHP_AUTH_USER|$ip|id='$company_id'||\n");
             fclose($fp);
         }
         echo "<br><B><font color=$default_text>COMPANY DELETION COMPLETED: $company_id</font></B>\n";
