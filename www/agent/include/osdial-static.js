@@ -3555,8 +3555,8 @@ function utf8_decode(utftext) {
 
 	function MainPanelToFront(resumevar) {
 		debug("<b>MainPanelToFront:</b> resumevar=" + resumevar,2);
-		document.getElementById("MainTable").style.backgroundColor=panel_bg;
-		document.getElementById("MaiNfooter").style.backgroundColor=panel_bg;
+		//document.getElementById("MainTable").style.backgroundColor=panel_bg;
+		//document.getElementById("MaiNfooter").style.backgroundColor=panel_bg;
 		hideDiv('ScriptPanel');
 		showDiv('MainPanel');
 		if (resumevar != 'NO') {
@@ -3595,8 +3595,8 @@ function utf8_decode(utftext) {
 	function ScriptPanelToFront() {
 		debug("<b>ScriptPanelToFront:</b>",2);
 		showDiv('ScriptPanel');
-		document.getElementById("MainTable").style.backgroundColor=script_bg;
-		document.getElementById("MaiNfooter").style.backgroundColor=script_bg;
+		//document.getElementById("MainTable").style.backgroundColor=script_bg;
+		//document.getElementById("MaiNfooter").style.backgroundColor=script_bg;
 		panel_bgcolor=panel_bg;
 		//document.getElementById("MainStatuSSpan").style.backgroundColor= panel_bgcolor;
 		document.getElementById("FormButtons").src = "templates/" + agent_template + "/images/vdc_tab_buttons2.gif";
