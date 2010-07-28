@@ -105,6 +105,8 @@ if ($force_logout) {
         }
 
         $LOGac = $ug['allowed_campaigns'];
+        $LOGas = $ug['allowed_scripts'];
+        $LOGae = $ug['allowed_email_templates'];
         if (strlen($LOGac)> 1) {
             if (preg_match('/\-ALL\-CAMPAIGNS\-/',$LOGac)) {
                 $LOG['allowed_campaignsALL'] = 1;
@@ -129,6 +131,36 @@ if ($force_logout) {
                     if (strlen(rtrim($c,'-')) > 0) $LOGacA[] = $c;
                 }
             }
+            if (strlen($LOGas)> 1) {
+                if (preg_match('/\-ALL\-SCRIPTS\-/',$LOGas)) {
+                    $LOG['allowed_scriptsALL'] = 1;
+                    # Pack all the valid Scripts
+                    $oss = get_krh($link, 'osdial_scripts', 'script_id','','','');
+                    foreach ($oss as $os) {
+                        $LOGasA[] = $os['script_id'];
+                    }
+                } else {
+                    $LOG['allowed_scriptsALL'] = 0;
+                    foreach (explode(' ',$LOGas) as $s) {
+                        if (strlen(rtrim($s,'-')) > 0) $LOGasA[] = $s;
+                    }
+                }
+            }
+            if (strlen($LOGae)> 1) {
+                if (preg_match('/\-ALL\-EMAIL\-TEMPLATES\-/',$LOGae)) {
+                    $LOG['allowed_email_templatesALL'] = 1;
+                    # Pack all the valid Scripts
+                    $oss = get_krh($link, 'osdial_email_templates', 'et_id','','','');
+                    foreach ($oets as $oet) {
+                        $LOGaeA[] = $oet['et_id'];
+                    }
+                } else {
+                    $LOG['allowed_email_templatesALL'] = 0;
+                    foreach (explode(' ',$LOGae) as $e) {
+                        if (strlen(rtrim($s,'-')) > 0) $LOGaeA[] = $e;
+                    }
+                }
+            }
             $ingrps = get_krh($link, 'osdial_inbound_groups', 'group_id','',sprintf("group_id LIKE '%s__%%'",$LOG['company_prefix']),'');
             if (is_array($ingrps)) {
                 foreach ($ingrps as $ingrp) {
@@ -136,34 +168,54 @@ if ($force_logout) {
                 }
             }
 
+            # Allowed Campaigns SQL
             foreach ($LOGacA as $c) {
                 $LOGacSQL .= "'" . mres($c) . "',";
             }
             $LOGacSQL = '(' . rtrim($LOGacSQL, ',') . ')';
+            # Allowed Usergroup SQL
             foreach ($LOGagA as $g) {
                 $LOGagSQL .= "'" . mres($g) . "',";
             }
             $LOGagSQL = '(' . rtrim($LOGagSQL, ',') . ')';
+            # Allowed InGroups SQL
             foreach ($LOGaiA as $i) {
                 $LOGaiSQL .= "'" . mres($i) . "',";
             }
             $LOGaiSQL = '(' . rtrim($LOGaiSQL, ',') . ')';
+            # Allowed Scripts SQL
+            foreach ($LOGasA as $s) {
+                $LOGasSQL .= "'" . mres($s) . "',";
+            }
+            $LOGasSQL = '(' . rtrim($LOGasSQL, ',') . ')';
+            # Allowed Email Templates SQL
+            foreach ($LOGaeA as $e) {
+                $LOGaeSQL .= "'" . mres($e) . "',";
+            }
+            $LOGaeSQL = '(' . rtrim($LOGaeSQL, ',') . ')';
+        }
         }
 
         # Array of allowed campaigns for user.
         $LOG['allowed_campaigns'] = $LOGacA;
         $LOG['allowed_usergroups'] = $LOGagA;
         $LOG['allowed_ingroups'] = $LOGaiA;
+        $LOG['allowed_scripts'] = $LOGasA;
+        $LOG['allowed_email_templates'] = $LOGaeA;
 
         # Joined string (:) of allowed campaigns for user.
         $LOG['allowed_campaignsSTR'] = ":" . implode(":",$LOGacA) . ":";
         $LOG['allowed_usergroupsSTR'] = ":" . implode(":",$LOGagA) . ":";
         $LOG['allowed_ingroupsSTR'] = ":" . implode(":",$LOGaiA) . ":";
+        $LOG['allowed_scriptsSTR'] = ":" . implode(":",$LOGasA) . ":";
+        $LOG['allowed_email_templatesSTR'] = ":" . implode(":",$LOGaeA) . ":";
 
         # A SQL format you might use with an IN.  ie "('C1','C2','...')"
         $LOG['allowed_campaignsSQL'] = $LOGacSQL;
         $LOG['allowed_usergroupsSQL'] = $LOGagSQL;
         $LOG['allowed_ingroupsSQL'] = $LOGaiSQL;
+        $LOG['allowed_scriptsSQL'] = $LOGasSQL;
+        $LOG['allowed_email_templatesSQL'] = $LOGaeSQL;
 
 
 
