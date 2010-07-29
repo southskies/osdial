@@ -194,7 +194,6 @@ if ($force_logout) {
             }
             $LOGaeSQL = '(' . rtrim($LOGaeSQL, ',') . ')';
         }
-        }
 
         # Array of allowed campaigns for user.
         $LOG['allowed_campaigns'] = $LOGacA;

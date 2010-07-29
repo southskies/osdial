@@ -1,10 +1,10 @@
 # 07/22/2010
 
 
-ALTER TABLE osdial_user_groups ADD allowed_scripts text default '';##|##
+ALTER TABLE osdial_user_groups ADD allowed_scripts text default ' -ALL-SCRIPTS- -';##|##
  ##    Updates to osdial_user_groups for allowed_scripts.;
 
-ALTER TABLE osdial_user_groups ADD allowed_email_templates text default '';##|##
+ALTER TABLE osdial_user_groups ADD allowed_email_templates text default ' -ALL-EMAIL-TEMPLATES- -';##|##
  ##    Updates to osdial_user_groups for allowed_email_templates.;
 
 CREATE TABLE osdial_email_templates (
@@ -23,6 +23,9 @@ CREATE TABLE osdial_email_templates (
   PRIMARY KEY (et_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;##|##
  ##     Create email templates table.;
+
+ALTER TABLE osdial_campaigns ADD email_template_id VARCHAR(20) default '';##|##
+ ##    Updates to osdial_campaigns for email_templates.;
 
 
 UPDATE system_settings SET version='2.2.1.066',last_update_check=DATE_SUB(NOW(), INTERVAL 1 DAY);##|##

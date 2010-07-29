@@ -121,10 +121,16 @@ function format_select_options($krh, $kkey, $kval, $ksel="!", $kdef="", $kcomp=f
 ##### get scripts listing for dynamic pulldown
 function get_scripts($link, $selected="") {
     global $LOG;
-    $krh = get_krh($link, 'osdial_scripts', 'script_id,script_name','',sprintf("script_id LIKE '%s__%%'",$LOG['company_prefix']),'');
+    $krh = get_krh($link, 'osdial_scripts', 'script_id,script_name','',sprintf("script_id LIKE '%s__%%' AND script_id IN %s",$LOG['company_prefix'],$LOG['allowed_scriptsSQL']),'');
     return format_select_options($krh, 'script_id', 'script_name', $selected, "NONE", true);
 }
 
+##### get email_templates listing for dynamic pulldown
+function get_email_templates($link, $selected="") {
+    global $LOG;
+    $krh = get_krh($link, 'osdial_email_templates', 'et_id,et_name','',sprintf("et_id LIKE '%s__%%' AND et_id IN %s",$LOG['company_prefix'],$LOG['allowed_email_templatesSQL']),'');
+    return format_select_options($krh, 'et_id', 'et_name', $selected, "NONE", true);
+}
 
 ##### get filters listing for dynamic pulldown
 function get_filters($link, $selected="") {

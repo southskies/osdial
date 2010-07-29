@@ -308,6 +308,7 @@ $dtmf_send_extension = get_variable("dtmf_send_extension");
 $dupcheck = get_variable("dupcheck");
 
 
+$et_id = get_variable("et_id");
 $email = get_variable("email");
 $end_call = get_variable("end_call");
 $email_field = get_variable("email_field");
