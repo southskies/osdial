@@ -360,11 +360,17 @@ $t1="OSDial"; if (preg_match('/^Sli/',$agent_template)) $t1=$agent_template;;
 $agcPAGE = $HTTPprotocol . $server_name . $server_port .$script_name;
 $agcDIR = preg_replace('/osdial.php/','',$agcPAGE);
 
-header ("Content-type: text/html; charset=utf-8");
-header ("Cache-Control: no-cache, must-revalidate");    // HTTP/1.1
-header ("Pragma: no-cache");                            // HTTP/1.0
 echo "<html>\n";
 echo "<head>\n";
+echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n";
+echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
+echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
+echo "<meta http-equiv=\"Expires\" content=\"0\">\n";
+echo "<meta name=\"Copyright\" content=\"&copy; 2009-2010 Call Center Service Group, LC\">\n";
+echo "<meta name=\"Copyright\" content=\"&copy; 2009-2010 Lott Caskey\">\n";
+echo "<meta name=\"Copyright\" content=\"&copy; 2009-2010 Steve Szmidt\">\n";
+echo "<meta name=\"Robots\" content=\"none\">\n";
+echo "<meta name=\"Version\" content=\"$version/$build\">\n";
 echo "<!-- VERSION: $version     BUILD: $build -->\n";
 
 $welcome_span  = "<span style='position:absolute;left:0px;top:0px;z-index:300;visibility:hidden;' id=WelcomeBoxA>\n";
