@@ -881,7 +881,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 $HKxferextens = substr("$HKxferextens", 0, -1); 
 
                 ##### grab the statuses to be dialed for your campaign as well as other campaign settings
-                $stmt="SELECT park_ext,park_file_name,web_form_address,allow_closers,auto_dial_level,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,agent_pause_codes_active,no_hopper_leads_logins,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,xfer_groups,web_form_address2,allow_tab_switch,preview_force_dial_time,manual_preview_default,web_form_extwindow,web_form2_extwindow,dial_method,submit_method,use_custom2_callerid,campaign_cid_name,xfer_cid_mode,use_cid_areacode_map,carrier_id FROM osdial_campaigns where campaign_id = '$VD_campaign';";
+                $stmt="SELECT park_ext,park_file_name,web_form_address,allow_closers,auto_dial_level,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,agent_pause_codes_active,no_hopper_leads_logins,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,xfer_groups,web_form_address2,allow_tab_switch,preview_force_dial_time,manual_preview_default,web_form_extwindow,web_form2_extwindow,dial_method,submit_method,use_custom2_callerid,campaign_cid_name,xfer_cid_mode,use_cid_areacode_map,carrier_id,email_templates FROM osdial_campaigns where campaign_id = '$VD_campaign';";
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $row=mysql_fetch_row($rslt);
@@ -932,6 +932,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 $xfer_cid_mode =         $row[43];
                 $use_cid_areacode_map =         $row[44];
                 $carrier_id =         $row[45];
+                $email_templates =         $row[46];
 
                 if ($previewFD_time == "") $previewFD_time = "0";
                 if ($use_custom2_callerid != "Y") $use_custom2_callerid = "N";
@@ -2015,7 +2016,33 @@ flush();
             <br>Calls Dialing: <span id="AgentStatusDiaLs"></span> 
         </font>
     </span>
+
     
+    <? load_status('Initializing GUI...<br>EmailTemplates<br>&nbsp;'); ?>
+    <!-- Email Templates -->
+    <span style="position:absolute;left:225px;top:<?=$HTheight-60 ?>px;z-index:21;visibility:hidden;" id="EmailTemplates">
+        <table bgcolor="<?=$xfer_bg1?>" frame=box width="500px">
+            <tr>
+                <td align=center>
+                    <div class="text_input" id="EmailTemplatesdiv">
+                        <font class="body_text" color=<?=$form_fc?>>
+                            Email Templates<br /><hr />
+                            <?
+                            $ets = explode(',',$email_templates);
+                            foreach ($ets as $eto) {
+                                $et = get_first_record($link, 'osdial_email_templates', '*', "et_id='" . $eto . "'");
+                                echo "<input type=button value=\"$et[et_id] - $et[et_name]\" onclick=\"hideDiv('EmailTemplates');osdalert('Sending Email...',30);CustomerData_update();sendEmail('$et[et_id]');\"><br \>\n";
+                            }
+                            ?>
+                            <hr />
+                            <input type=button value="-- CLOSE TEMPLATES --" onclick="hideDiv('EmailTemplates');">
+                        </font>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </span>
+
 
     <? load_status('Initializing GUI...<br>TransferMain<br>&nbsp;'); ?>
     <!-- Transfer Link -->
@@ -2613,10 +2640,19 @@ flush();
                                         </tr>
                                         <tr>
                                             <td align=right><font class="body_text" color=<?=$form_fc?>>Province:&nbsp;</font></td>
-                                            <td align=left><font class="body_input"><input type=text size=22 name=province id=province maxlength=50 class="cust_form" value=""></font></td>
-                                            <td align=right>
-                                                <font class="body_text" color=<?=$form_fc?>>Email:&nbsp;</font>
-                                                <font class="body_input"><input type=text size=22 name=email id=email maxlength=70 class="cust_form" value=""></font>
+                                            <td align=left colspan=2>
+                                                <font class="body_input">
+                                                    <input type=text size=22 name=province id=province maxlength=50 class="cust_form" value="">
+                                                </font>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td align=right><font class="body_text" color=<?=$form_fc?>>Email:&nbsp;</font></td>
+                                            <td align=left colspan=2>
+                                                <font class="body_input">
+                                                    <input type=text size=40 name=email id=email maxlength=70 class="cust_form" value="">
+                                                    <input type=button value="Templates" onclick="showDiv('EmailTemplates');">
+                                                </font>
                                             </td>
                                         </tr>
                                         <tr>

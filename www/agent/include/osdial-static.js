@@ -6027,3 +6027,45 @@ function utf8_decode(utftext) {
 	}
 
 
+	function sendEmail(et_id) {
+
+	    if (document.osdial_form.lead_id.value.length>0) {
+	      if (document.osdial_form.email.value.length>0) {
+		var xmlhttp=false;
+		/*@cc_on @*/
+		/*@if (@_jscript_version >= 5)
+		// JScript gives us Conditional compilation, we can cope with old IE versions.
+		// and security blocked creation of the objects.
+		 try {
+		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+		 } catch (e) {
+		  try {
+		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		  } catch (E) {
+		   xmlhttp = false;
+		  }
+		 }
+		@end @*/
+		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
+			xmlhttp = new XMLHttpRequest();
+		}
+		if (xmlhttp) { 
+			sbl_data = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=Email&format=text&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&et_id=" + et_id;
+			xmlhttp.open('POST', 'vdc_db_query.php'); 
+			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+			xmlhttp.send(sbl_data); 
+			xmlhttp.onreadystatechange = function() { 
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+					osdalert('Email Sent',3);
+					//osdalert(xmlhttp.responseText,30);
+				}
+			}
+			delete xmlhttp;
+		}
+	      } else {
+		osdalert('You must first enter a valid email address!',3);
+              }
+	    } else {
+		osdalert('No lead!',3);
+	    }
+	}

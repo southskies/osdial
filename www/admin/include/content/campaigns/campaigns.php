@@ -94,6 +94,7 @@ if ($ADD==11)
     echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
     echo "<center><br><font color=$default_text size=+1>ADD A NEW CAMPAIGN</font><form action=$PHP_SELF method=POST><br><br>\n";
+    echo "<input type=hidden name=DB value=$DB>\n";
     echo "<input type=hidden name=ADD value=21>\n";
     echo "<table width=$section_width cellspacing=3>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Campaign ID: </td><td align=left>";
@@ -127,9 +128,9 @@ if ($ADD==11)
     echo get_calltimes($link, '9am-9pm');
     echo "</select>$NWB#osdial_campaigns-local_call_time$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Voicemail: </td><td align=left><input type=text name=voicemail_ext size=10 maxlength=10 value=\"$voicemail_ext\">$NWB#osdial_campaigns-voicemail_ext$NWE</td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=right>Email Template: </td><td align=left><select size=1 name=et_id>\n";
+    echo "<tr bgcolor=$oddrows><td align=right valign=top>Email Templates: </td><td align=left><select size=4 multiple name=\"email_templates[]\">\n";
     echo get_email_templates($link, '');
-    echo "</select>$NWB#osdial_campaigns-email_template_id$NWE</td></tr>\n";
+    echo "</select>$NWB#osdial_campaigns-email_templates$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Script: </td><td align=left><select size=1 name=script_id>\n";
     echo get_scripts($link, '');
     echo "</select>$NWB#osdial_campaigns-campaign_script$NWE</td></tr>\n";
@@ -162,6 +163,7 @@ if ($ADD==12)
     echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
     echo "<center><br><font color=$default_text size=+1>COPY A CAMPAIGN</font><form action=$PHP_SELF method=POST><br><br>\n";
+    echo "<input type=hidden name=DB value=$DB>\n";
     echo "<input type=hidden name=ADD value=20>\n";
     echo "<table width=$section_width cellspacing=3>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Campaign ID: </td><td align=left>";
@@ -246,7 +248,8 @@ if ($ADD==21)
                 $LOG['allowed_campaignsSQL'] .= ",'$campaign_id')";
                 $LOG['allowed_campaignsSTR'] .= "$campaign_id:";
                 $carrier_id = $system_settings['default_carrier_id'];
-                $stmt="INSERT INTO osdial_campaigns (campaign_id,campaign_name,campaign_description,active,dial_status_a,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,campaign_script,get_call_launch,campaign_changedate,campaign_stats_refresh,list_order_mix,web_form_address2,allow_tab_switch,campaign_call_time,carrier_id,email_template_id) values('$campaign_id','$campaign_name','$campaign_description','$active','NEW','DOWN','$park_ext','$park_file_name','" . mysql_real_escape_string($web_form_address) . "','$allow_closers','$hopper_level','$auto_dial_level','$next_agent_call','$local_call_time','$voicemail_ext','$script_id','$get_call_launch','$SQLdate','Y','DISABLED','" . mysql_real_escape_string($web_form_address2) . "','$allow_tab_switch','$campaign_call_time','$carrier_id','$et_id');";
+                $ets = implode(',',$email_templates);
+                $stmt="INSERT INTO osdial_campaigns (campaign_id,campaign_name,campaign_description,active,dial_status_a,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,campaign_script,get_call_launch,campaign_changedate,campaign_stats_refresh,list_order_mix,web_form_address2,allow_tab_switch,campaign_call_time,carrier_id,email_templates) values('$campaign_id','$campaign_name','$campaign_description','$active','NEW','DOWN','$park_ext','$park_file_name','" . mysql_real_escape_string($web_form_address) . "','$allow_closers','$hopper_level','$auto_dial_level','$next_agent_call','$local_call_time','$voicemail_ext','$script_id','$get_call_launch','$SQLdate','Y','DISABLED','" . mysql_real_escape_string($web_form_address2) . "','$allow_tab_switch','$campaign_call_time','$carrier_id','$ets');";
                 $rslt=mysql_query($stmt, $link);
 
                 $stmt="INSERT INTO osdial_campaign_stats (campaign_id) values('$campaign_id');";
@@ -425,8 +428,10 @@ if ($ADD==41)
         if ( (!ereg("DISABLED",$list_order_mix)) and ($hopper_level < 100) )
             {$hopper_level='100';}
 
+        $ets = implode(',',$email_templates);
         $stmtA="UPDATE osdial_campaigns set campaign_name='$campaign_name',active='$active',dial_status_a='$dial_status_a',dial_status_b='$dial_status_b',dial_status_c='$dial_status_c',dial_status_d='$dial_status_d',dial_status_e='$dial_status_e',lead_order='$lead_order',";
-        $stmtA.="allow_closers='$allow_closers',hopper_level='$hopper_level', $adlSQL next_agent_call='$next_agent_call', local_call_time='$local_call_time', voicemail_ext='$voicemail_ext', dial_timeout='$dial_timeout', dial_prefix='$dial_prefix', campaign_cid='$campaign_cid', campaign_vdad_exten='$campaign_vdad_exten', web_form_address='" . mysql_real_escape_string($web_form_address) . "', park_ext='$park_ext', park_file_name='$park_file_name', campaign_rec_exten='$campaign_rec_exten', campaign_recording='$campaign_recording', campaign_rec_filename='$campaign_rec_filename', campaign_script='$script_id', get_call_launch='$get_call_launch', am_message_exten='$am_message_exten', amd_send_to_vmx='$amd_send_to_vmx', xferconf_a_dtmf='$xferconf_a_dtmf',xferconf_a_number='$xferconf_a_number', xferconf_b_dtmf='$xferconf_b_dtmf',xferconf_b_number='$xferconf_b_number',lead_filter_id='$lead_filter_id',alt_number_dialing='$alt_number_dialing',scheduled_callbacks='$scheduled_callbacks',safe_harbor_message='$safe_harbor_message',drop_call_seconds='$drop_call_seconds',safe_harbor_exten='$safe_harbor_exten',wrapup_seconds='$wrapup_seconds',wrapup_message='$wrapup_message',closer_campaigns='$groups_value',use_internal_dnc='$use_internal_dnc',allcalls_delay='$allcalls_delay',omit_phone_code='$omit_phone_code',dial_method='$dial_method',available_only_ratio_tally='$available_only_ratio_tally',adaptive_dropped_percentage='$adaptive_dropped_percentage',adaptive_maximum_level='$adaptive_maximum_level',adaptive_latest_server_time='$adaptive_latest_server_time',adaptive_intensity='$adaptive_intensity',adaptive_dl_diff_target='$adaptive_dl_diff_target',concurrent_transfers='$concurrent_transfers',auto_alt_dial='$auto_alt_dial',agent_pause_codes_active='$agent_pause_codes_active',campaign_description='$campaign_description',campaign_changedate='$SQLdate',campaign_stats_refresh='$campaign_stats_refresh',disable_alter_custdata='$disable_alter_custdata',no_hopper_leads_logins='$no_hopper_leads_logins',list_order_mix='$list_order_mix',campaign_allow_inbound='$campaign_allow_inbound',manual_dial_list_id='$manual_dial_list_id',default_xfer_group='$default_xfer_group',xfer_groups='$XFERgroups_value', web_form_address2='" . mysql_real_escape_string($web_form_address2) . "',allow_tab_switch='$allow_tab_switch',answers_per_hour_limit='" . mysql_real_escape_string($answers_per_hour_limit) . "',campaign_call_time='$campaign_call_time',preview_force_dial_time='$preview_force_dial_time',manual_preview_default='$manual_preview_default',web_form_extwindow='$web_form_extwindow',web_form2_extwindow='$web_form2_extwindow',submit_method='$submit_method',use_custom2_callerid='$use_custom2_callerid',campaign_cid_name='$campaign_cid_name',xfer_cid_mode='$xfer_cid_mode',use_cid_areacode_map='$use_cid_areacode_map',carrier_id='$carrier_id',email_template_id='$et_id' where campaign_id='$campaign_id';";
+        $stmtA.="allow_closers='$allow_closers',hopper_level='$hopper_level', $adlSQL next_agent_call='$next_agent_call', local_call_time='$local_call_time', voicemail_ext='$voicemail_ext', dial_timeout='$dial_timeout', dial_prefix='$dial_prefix', campaign_cid='$campaign_cid', campaign_vdad_exten='$campaign_vdad_exten', web_form_address='" . mysql_real_escape_string($web_form_address) . "', park_ext='$park_ext', park_file_name='$park_file_name', campaign_rec_exten='$campaign_rec_exten', campaign_recording='$campaign_recording', campaign_rec_filename='$campaign_rec_filename', campaign_script='$script_id', get_call_launch='$get_call_launch', am_message_exten='$am_message_exten', amd_send_to_vmx='$amd_send_to_vmx', xferconf_a_dtmf='$xferconf_a_dtmf',xferconf_a_number='$xferconf_a_number', xferconf_b_dtmf='$xferconf_b_dtmf',xferconf_b_number='$xferconf_b_number',lead_filter_id='$lead_filter_id',alt_number_dialing='$alt_number_dialing',scheduled_callbacks='$scheduled_callbacks',safe_harbor_message='$safe_harbor_message',drop_call_seconds='$drop_call_seconds',safe_harbor_exten='$safe_harbor_exten',wrapup_seconds='$wrapup_seconds',wrapup_message='$wrapup_message',closer_campaigns='$groups_value',use_internal_dnc='$use_internal_dnc',allcalls_delay='$allcalls_delay',omit_phone_code='$omit_phone_code',dial_method='$dial_method',available_only_ratio_tally='$available_only_ratio_tally',adaptive_dropped_percentage='$adaptive_dropped_percentage',adaptive_maximum_level='$adaptive_maximum_level',adaptive_latest_server_time='$adaptive_latest_server_time',adaptive_intensity='$adaptive_intensity',adaptive_dl_diff_target='$adaptive_dl_diff_target',concurrent_transfers='$concurrent_transfers',auto_alt_dial='$auto_alt_dial',agent_pause_codes_active='$agent_pause_codes_active',campaign_description='$campaign_description',campaign_changedate='$SQLdate',campaign_stats_refresh='$campaign_stats_refresh',disable_alter_custdata='$disable_alter_custdata',no_hopper_leads_logins='$no_hopper_leads_logins',list_order_mix='$list_order_mix',campaign_allow_inbound='$campaign_allow_inbound',manual_dial_list_id='$manual_dial_list_id',default_xfer_group='$default_xfer_group',xfer_groups='$XFERgroups_value', web_form_address2='" . mysql_real_escape_string($web_form_address2) . "',allow_tab_switch='$allow_tab_switch',answers_per_hour_limit='" . mysql_real_escape_string($answers_per_hour_limit) . "',campaign_call_time='$campaign_call_time',preview_force_dial_time='$preview_force_dial_time',manual_preview_default='$manual_preview_default',web_form_extwindow='$web_form_extwindow',web_form2_extwindow='$web_form2_extwindow',submit_method='$submit_method',use_custom2_callerid='$use_custom2_callerid',campaign_cid_name='$campaign_cid_name',xfer_cid_mode='$xfer_cid_mode',use_cid_areacode_map='$use_cid_areacode_map',carrier_id='$carrier_id',email_templates='$ets' where campaign_id='$campaign_id';";
+        if ($DB) echo $stmtA;
         $rslt=mysql_query($stmtA, $link);
 
         if ($reset_hopper == 'Y')
@@ -892,7 +897,7 @@ if ($ADD==31) {
         $xfer_cid_mode = $row[81];
         $use_cid_areacode_map = $row[82];
         $carrier_id = $row[83];
-        $email_template_id = $row[84];
+        $email_templates = $row[84];
 
         if (ereg("DISABLED",$list_order_mix)) {
             $DEFlistDISABLE = '';
@@ -1001,6 +1006,7 @@ if ($ADD==31) {
         {
         echo "<center><br><font color=$default_text size=+1>MODIFY CAMPAIGN</font></center>\n";
         echo "<form action=$PHP_SELF method=POST>\n";
+        echo "<input type=hidden name=DB value=$DB>\n";
         echo "<input type=hidden name=ADD value=41>\n";
         echo "<input type=hidden name=campaign_id value=\"$campaign_id\">\n";
         echo "<table width=$section_width cellspacing=3>\n";
@@ -1203,9 +1209,9 @@ if ($ADD==31) {
 
         echo "<tr bgcolor=$oddrows><td align=right>Recording Delay: </td><td align=left><input type=text name=allcalls_delay size=3 maxlength=3 value=\"$allcalls_delay\"> <i>in seconds</i>$NWB#osdial_campaigns-allcalls_delay$NWE</td></tr>\n";
 
-        echo "<tr bgcolor=$oddrows><td align=right>Email Template: </td><td align=left><select size=1 name=email_template_id>\n";
-        echo get_email_templates($link, $email_template_id);
-        echo "</select>$NWB#osdial_campaigns-email_template_id$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right valign=top>Email Templates: </td><td align=left><select size=4 multiple name=\"email_templates[]\">\n";
+        echo get_email_templates($link, $email_templates);
+        echo "</select>$NWB#osdial_campaigns-email_templates$NWE</td></tr>\n";
 
         echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=3111111&script_id=$script_id\">Script</a>: </td><td align=left><select size=1 name=script_id>\n";
         echo get_scripts($link, $script_id);
@@ -1436,6 +1442,7 @@ if ($ADD==31) {
                 $o++;
 
                 echo "    <form action=$PHP_SELF method=POST>\n";
+                echo "    <input type=hidden name=DB value=$DB>\n";
                 echo "    <input type=hidden name=ADD value=42>\n";
                 echo "    <input type=hidden name=stage value=modify>\n";
                 echo "    <input type=hidden name=status value=\"$rowx[0]\">\n";
@@ -1453,6 +1460,7 @@ if ($ADD==31) {
             }
 
             echo "    <form action=$PHP_SELF method=POST><br>\n";
+            echo "    <input type=hidden name=DB value=$DB>\n";
             echo "    <input type=hidden name=ADD value=22>\n";
             echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
             echo "    <tr class=tabfooter>\n";
@@ -1496,6 +1504,7 @@ if ($ADD==31) {
             }
 
             echo "    <form action=$PHP_SELF method=POST>\n";
+            echo "    <input type=hidden name=DB value=$DB>\n";
             echo "    <input type=hidden name=ADD value=23>\n";
             echo "    <input type=hidden name=selectable value=Y>\n";
             echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
@@ -1546,6 +1555,7 @@ if ($ADD==31) {
                 $o++;
 
                 echo "    <form action=$PHP_SELF method=POST>\n";
+                echo "    <input type=hidden name=DB value=$DB>\n";
                 echo "    <input type=hidden name=status value=\"$rowx[2]\">\n";
                 echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
                 echo "    <input type=hidden name=SUB value=25>\n";
@@ -1562,6 +1572,7 @@ if ($ADD==31) {
             }
 
             echo "    <form action=$PHP_SELF method=POST>\n";
+            echo "    <input type=hidden name=DB value=$DB>\n";
             echo "    <input type=hidden name=SUB value=25>\n";
             echo "    <input type=hidden name=ADD value=25>\n";
             echo "    <input type=hidden name=active value=\"N\">\n";
@@ -1602,6 +1613,7 @@ if ($ADD==31) {
             }
 
             echo "    <form action=$PHP_SELF method=POST><br>\n";
+            echo "    <input type=hidden name=DB value=$DB>\n";
             echo "    <input type=hidden name=ADD value=26>\n";
             echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
             echo "    <tr class=tabfooter>\n";
@@ -1632,6 +1644,7 @@ if ($ADD==31) {
                 $o++;
 
                 echo "    <form action=$PHP_SELF method=POST>\n";
+                echo "    <input type=hidden name=DB value=$DB>\n";
                 echo "    <input type=hidden name=ADD value=47>\n";
                 echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
                 echo "    <input type=hidden name=pause_code value=\"$rowx[0]\"> &nbsp;\n";
@@ -1646,6 +1659,7 @@ if ($ADD==31) {
             }
 
             echo "    <form action=$PHP_SELF method=POST><br>\n";
+            echo "    <input type=hidden name=DB value=$DB>\n";
             echo "    <input type=hidden name=ADD value=27>\n";
             echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
             echo "    <tr class=tabfooter>\n";
@@ -1817,6 +1831,7 @@ if ($ADD==34)
         echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         echo "<center><br><font color=$default_text size=+1>MODIFY CAMPAIGN</font></center>\n";
         echo "<form action=$PHP_SELF method=POST>\n";
+        echo "<input type=hidden name=DB value=$DB>\n";
         echo "<input type=hidden name=ADD value=44>\n";
         echo "<input type=hidden name=campaign_id value=\"$campaign_id\">\n";
         echo "<table width=$section_width cellspacing=3>\n";
@@ -2072,6 +2087,7 @@ if ( ($ADD==34) or ($ADD==31) ) {
             echo "  <td>\n";
             echo "<table width=$section_width cellspacing=1 " . bgcolor($o+1) . " class=row>\n";
             echo "  <form action=\"$PHP_SELF#$vcl_id\" method=POST name=$vcl_id id=$vcl_id>\n";
+            echo "  <input type=hidden name=DB value=$DB>\n";
             echo "  <input type=hidden name=ADD value=49>\n";
             echo "  <input type=hidden name=SUB value=29>\n";
             echo "  <input type=hidden name=stage value=\"MODIFY\">\n";
@@ -2202,6 +2218,7 @@ if ( ($ADD==34) or ($ADD==31) ) {
 
 
             echo "  <form action=\"$PHP_SELF#$vcl_id\" method=POST name=$vcl_id id=$vcl_id>\n";
+            echo "  <input type=hidden name=DB value=$DB>\n";
             echo "  <input type=hidden name=ADD value=49>\n";
             echo "  <input type=hidden name=SUB value=29>\n";
             echo "  <input type=hidden name=stage value=\"ADD\">\n";
@@ -2235,6 +2252,7 @@ if ( ($ADD==34) or ($ADD==31) ) {
         echo "<br><b><font color=$default_text>ADD NEW LIST MIX</font></b><br>\n";
         #echo "<form action=$PHP_SELF method=POST>\n";
         echo "<form action=\"$PHP_SELF#$vcl_id\" method=POST>\n";
+        echo " <input type=hidden name=DB value=$DB>\n";
         echo " <input type=hidden name=ADD value=49>\n";
         echo " <input type=hidden name=SUB value=29>\n";
         echo " <input type=hidden name=stage value=\"NEWMIX\">\n";

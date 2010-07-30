@@ -328,6 +328,8 @@ if (isset($_GET["script_id"]))						{$script_id=$_GET["script_id"];}
     elseif (isset($_POST["script_id"]))			{$script_id=$_POST["script_id"];}
 if (isset($_GET["script_button_id"]))						{$script_button_id=$_GET["script_button_id"];}
     elseif (isset($_POST["script_button_id"]))			{$script_button_id=$_POST["script_button_id"];}
+if (isset($_GET["et_id"]))						{$et_id=$_GET["et_id"];}
+    elseif (isset($_POST["et_id"]))			{$et_id=$_POST["et_id"];}
 
 
 header ("Content-type: text/html; charset=utf-8");
@@ -3363,6 +3365,31 @@ if ($ACTION == 'ScriptButtonLog') {
 }
 
 
+################################################################################
+### Send Email to lead based on given template
+################################################################################
+if ($ACTION == 'Email') {
+    $et = get_first_record($link, 'osdial_email_templates', '*', "et_id='" . $et_id . "'");
+    $lead = get_first_record($link, 'osdial_list', '*', "lead_id='" . $lead_id . "'");
+
+    $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
+    foreach ($forms as $form) {
+        $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
+        foreach ($fields as $field) {
+            $vdlf = get_first_record($link, 'osdial_list_fields', '*', "lead_id='" . $lead_id . "' AND field_id='" . $field['id'] . "'");
+            if ($vdlf['value'] != '') $lead[$form['name'] . '_' . $field['name']] = $vdlf['value'];
+        }
+    }
+
+    foreach ($lead as $k => $v) {
+        $et['et_body_html'] = preg_replace('/\[\[' . $k . '\]\]/imU', $v, $et['et_body_html']);
+        $et['et_body_text'] = preg_replace('/\[\[' . $k . '\]\]/imU', $v, $et['et_body_text']);
+    }
+
+    send_email($et['et_host'], $et['et_port'], $et['et_user'], $et['et_pass'], $lead['email'], $et['et_from'], $et['et_subject'], $et['et_body_html'], $et['et_body_text']);
+
+    echo "DONE.  send_email($et[et_host], $et[et_port], $et[et_user], $et[et_pass], $lead[email], $et[et_from], $et[et_subject], $et[et_body_html], $et[et_body_text]);";
+}
 
 
 if ($format=='debug') {

@@ -217,4 +217,31 @@ function generate_calendar($prefix,$months) {
 }
 
 
+# Function to send emails
+function send_email($host, $port, $user, $pass, $to, $from, $subject, $html, $text) {
+    include('Mail.php');
+    include('Mail/mime.php');
+
+    if ($port=='') $port='25';
+    $params["host"] = $host . ':' . $port;
+    if ($user) {
+        $params["auth"] = true;
+        $params["username"] = $user;
+        $params["password"] = $password;
+    }
+
+    $headers["To"] = $to;
+    $headers["From"] = $from;
+    $headers["Subject"] = $subject;
+
+    $mime = new Mail_mime("\n");
+    if ($html) $mime->setHTMLBody($html);
+    if ($text) $mime->setTXTBody($text);
+    $message = $mime->get();
+    $headers = $mime->headers($headers);
+
+    $mail =& Mail::factory('smtp', $params);
+    $mail->send($to, $headers, $message);
+}
+
 ?>

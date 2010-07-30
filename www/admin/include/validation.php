@@ -282,6 +282,7 @@ if ($non_latin < 1)	{
 	$ASTmgrUSERNAMEsend = ereg_replace("[^-\_0-9a-zA-Z]","",$ASTmgrUSERNAMEsend);
 	$ASTmgrUSERNAMEupdate = ereg_replace("[^-\_0-9a-zA-Z]","",$ASTmgrUSERNAMEupdate);
 	$call_time_id = ereg_replace("[^-\_0-9a-zA-Z]","",$call_time_id);
+	$et_id = ereg_replace("[^-\_0-9a-zA-Z]","",strtoupper($et_id));
 	$campaign_id = ereg_replace("[^-\_0-9a-zA-Z]","",$campaign_id);
 	$CoNfIrM = ereg_replace("[^-\_0-9a-zA-Z]","",$CoNfIrM);
 	$DBX_database = ereg_replace("[^-\_0-9a-zA-Z]","",$DBX_database);

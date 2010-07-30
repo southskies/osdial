@@ -482,10 +482,16 @@ if ($ADD=="4email") {
             echo "<br><font color=red>TEMPLATE NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>Template name, description and text must be at least 2 characters in length</font><br>\n";
         } else {
+            if ($et_port=='') $et_port='25';
             $stmt=sprintf("UPDATE osdial_email_templates SET et_name='%s',et_comments='%s',et_host='%s',et_port='%s',et_user='%s',et_pass='%s',et_from='%s',et_subject='%s',et_body_html='%s',et_body_text='%s',active='%s' WHERE et_id='%s';",mres($et_name),mres($et_comments),mres($et_host),mres($et_port),mres($et_user),mres($et_pass),mres($et_from),mres($et_subject),mres($et_body_html),mres($et_body_text),mres($active),mres($et_id));
             $rslt=mysql_query($stmt, $link);
 
             echo "<br><b><font color=$default_text>TEMPLATE MODIFIED</font></b>\n";
+
+            if ($email) {
+                send_email($et_host, $et_port, $et_user, $et_pass, $email, $et_from, $et_subject, $et_body_html, $et_body_text);
+                echo "<br><b><font color=$default_text>TEST EMAIL TEMPLATE SENT</font></b>\n";
+            }
 
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -790,6 +796,14 @@ tinyMCE.init({
         echo "  </tr>\n";
 
         echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
+
+        echo "<tr><td align=center colspan=2>&nbsp;</td></tr>\n";
+        echo "  <tr class=tabfooter align=center>\n";
+        echo "    <td colspan=2>\n";
+        echo "      <input type=text name=email size=50 maxlength=255>\n";
+        echo "      <input type=submit name=SUBMIT value=\"Send Test Email\">\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
         echo "</table>\n";
         echo "</form>\n";
         echo "</center>\n";
@@ -815,7 +829,7 @@ if ($ADD=="0email") {
     echo "<table align=center><tr><td>\n";
     echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
 
-    $stmt=sprintf("SELECT * FROM osdial_email_templates WHERE et_id LIKE '%s__%%' ORDER BY et_id;",$LOG['company_prefix']);
+    $stmt=sprintf("SELECT * FROM osdial_email_templates WHERE et_id LIKE '%s__%%' AND (et_id IN %s OR et_id='%s') ORDER BY et_id;",$LOG['company_prefix'],$LOG['allowed_email_templatesSQL'],mres($et_id));
     $rslt=mysql_query($stmt, $link);
     $people_to_print = mysql_num_rows($rslt);
 

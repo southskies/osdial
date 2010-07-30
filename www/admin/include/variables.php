@@ -319,6 +319,7 @@ $et_from = get_variable("et_from");
 $et_subject = get_variable("et_subject");
 $et_body_html = get_variable("et_body_html");
 $et_body_text = get_variable("et_body_text");
+$email_templates = get_variable("email_templates");
 $email = get_variable("email");
 $end_call = get_variable("end_call");
 $email_field = get_variable("email_field");

@@ -131,7 +131,7 @@ function get_scripts($link, $selected="") {
 function get_email_templates($link, $selected="") {
     global $LOG;
     $krh = get_krh($link, 'osdial_email_templates', 'et_id,et_name','',sprintf("et_id LIKE '%s__%%' AND et_id IN %s",$LOG['company_prefix'],$LOG['allowed_email_templatesSQL']),'');
-    return format_select_options($krh, 'et_id', 'et_name', $selected, "NONE", true);
+    return format_select_options($krh, 'et_id', 'et_name', explode(',',$selected), "", true);
 }
 
 ##### get filters listing for dynamic pulldown
@@ -1263,6 +1263,34 @@ function fmt_ms($seconds) {
     $mins = intval($seconds / 60);
     $secs = intval(($seconds - ($mins * 60)));
     return sprintf('%d:%02d',$mins,$secs);
+}
+
+
+# Function to send emails
+function send_email($host, $port, $user, $pass, $to, $from, $subject, $html, $text) {
+    include('Mail.php');
+    include('Mail/mime.php');
+
+    if ($port=='') $port='25';
+    $params["host"] = $host . ':' . $port;
+    if ($user) {
+        $params["auth"] = true;
+        $params["username"] = $user;
+        $params["password"] = $password;
+    }
+
+    $headers["To"] = $to;
+    $headers["From"] = $from;
+    $headers["Subject"] = $subject;
+
+    $mime = new Mail_mime("\n");
+    if ($html) $mime->setHTMLBody($html);
+    if ($text) $mime->setTXTBody($text);
+    $message = $mime->get();
+    $headers = $mime->headers($headers);
+
+    $mail =& Mail::factory('smtp', $params);
+    $mail->send($to, $headers, $message);
 }
 
 ?>
