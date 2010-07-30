@@ -200,6 +200,17 @@ if ($ADD==6111111)		{$hh='scripts';		$title = "Delete Script";}
 if ($ADD==7111111)		{$hh='scripts';		$title = "Preview Script";}
 if ($ADD==3111111)		{$hh='scripts';		$title = "Modify Script";}
 
+
+# Email Templates
+if ($ADD=="0email")		{$hh='scripts';		$title = "Email Templates";}
+if ($ADD=="1email")		{$hh='scripts';		$title = "Add New Email Template";}
+if ($ADD=="2email")		{$hh='scripts';		$title = "New Email Template Addition";}
+if ($ADD=="4email")		{$hh='scripts';		$title = "Modify Email Template";}
+if ($ADD=="5email")		{$hh='scripts';		$title = "Delete Email Template";}
+if ($ADD=="6email")		{$hh='scripts';		$title = "Delete Email Template";}
+if ($ADD=="7email")		{$hh='scripts';		$title = "Preview Email Template";}
+if ($ADD=="3email")		{$hh='scripts';		$title = "Modify Email Template";}
+
 # Filters
 if ($ADD==10000000)		{$hh='filters';		$title = "Filters";}
 if ($ADD==11111111)		{$hh='filters';		$title = "Add New Filter";}

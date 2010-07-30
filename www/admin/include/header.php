@@ -373,7 +373,9 @@ if (strlen($scripts_hh) > 1) {
     echo "    <td height=20 align=left colspan=10>\n";
     echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=1000000\"> Show Scripts </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
-    echo "        <a href=\"$PHP_SELF?ADD=1111111\"> Add A New Script </a>\n";
+    echo "        <a href=\"$PHP_SELF?ADD=1111111\"> Add A New Script</a> &nbsp; &nbsp; | &nbsp; &nbsp; \n";
+    echo "        <a href=\"$PHP_SELF?ADD=0email\"> Show Email Templates </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
+    echo "        <a href=\"$PHP_SELF?ADD=1email\"> Add A New Email Template </a>\n";
     echo "      </font>\n";
     echo "    </td>\n";
     echo "  </tr>\n";
