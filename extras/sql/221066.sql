@@ -1,13 +1,13 @@
 # 07/22/2010
 
 
-ALTER TABLE osdial_user_groups ADD allowed_scripts text default ' -ALL-SCRIPTS- -';##|##
+ALTER TABLE osdial_user_groups ADD allowed_scripts text;##|##
  ##    Updates to osdial_user_groups for allowed_scripts.;
 
 UPDATE osdial_user_groups SET allowed_scripts=' -ALL-SCRIPTS- -';##|##
  ##      Add default values.;
 
-ALTER TABLE osdial_user_groups ADD allowed_email_templates text default ' -ALL-EMAIL-TEMPLATES- -';##|##
+ALTER TABLE osdial_user_groups ADD allowed_email_templates text;##|##
  ##    Updates to osdial_user_groups for allowed_email_templates.;
 
 UPDATE osdial_user_groups SET allowed_email_templates=' -ALL-EMAIL-TEMPLATES- -';##|##
