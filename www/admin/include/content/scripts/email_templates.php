@@ -309,6 +309,7 @@ tinymce.PluginManager.add('example', tinymce.plugins.ExamplePlugin);
 tinyMCE.init({
     plugins : '-example', // - tells TinyMCE to skip the loading of the plugin
     mode : "specific_textareas",
+    editor_selector : "mceEditor",
     theme : "advanced",
     theme_advanced_buttons1 : "separator,fontselect,fontsizeselect,forecolor,backcolor,separator,bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,hr,sub,sup,separator,cut,copy,paste,separator,undo,redo,separator",
     theme_advanced_buttons2 : "separator,myfields,separator,myaddtlfields,separator,helpb,separator",
@@ -345,7 +346,7 @@ tinyMCE.init({
         echo "  </tr>\n";
         echo "  <tr bgcolor=$oddrows>\n";
 
-        echo "    <td align=right>Template Name:</td>\n";
+        echo "    <td align=right>Name:</td>\n";
         echo "    <td align=left>\n";
         echo "      <input type=text name=et_name size=40 maxlength=50> (title of the template)\n";
         echo "      $NWB#osdial_email_templates-et_name$NWE\n";
@@ -370,7 +371,7 @@ tinyMCE.init({
         echo "  </tr>\n";
 
         echo "  <tr bgcolor=$oddrows>\n";
-        echo "    <td align=right>Host / Port:</td>\n";
+        echo "    <td align=right>SMTP Host / Port:</td>\n";
         echo "    <td align=left>\n";
         echo "      <input type=text name=et_host size=40 maxlength=255 value=\"localhost\"> / <input type=text name=et_port size=5 maxlength=5 value=\"25\">\n";
         echo "      $NWB#osdial_email_templates-et_host$NWE\n";
@@ -378,7 +379,7 @@ tinyMCE.init({
         echo "  </tr>\n";
 
         echo "  <tr bgcolor=$oddrows>\n";
-        echo "    <td align=right>User / Pass:</td>\n";
+        echo "    <td align=right>SMTP User / Pass:</td>\n";
         echo "    <td align=left>\n";
         echo "      <input type=text name=et_user size=20 maxlength=255> / <input type=text name=et_pass size=20 maxlength=255>\n";
         echo "      $NWB#osdial_email_templates-et_user$NWE\n";
@@ -388,7 +389,7 @@ tinyMCE.init({
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right>From:</td>\n";
         echo "    <td align=left>\n";
-        echo "      <input type=text name=et_from size=50 maxlength=255>\n";
+        echo "      <input type=text name=et_from size=50 maxlength=255 value='\"John Doe\" <johndoe@gmail.com>'>\n";
         echo "      $NWB#osdial_email_templates-et_from$NWE\n";
         echo "    </td>\n";
         echo "  </tr>\n";
@@ -403,12 +404,14 @@ tinyMCE.init({
 
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=center colspan=2>\n";
-        echo "      <textarea name=et_body_html mce_editable=true rows=20 cols=120></textarea>\n";
+        echo "      <br>HTML Body:<br>";
+        echo "      <textarea name=et_body_html class=mceEditor rows=20 cols=120></textarea>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=center colspan=2>\n";
+        echo "      <br>Text Body:<br>";
         echo "      <textarea name=et_body_text rows=20 cols=70></textarea>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
@@ -683,6 +686,7 @@ tinymce.PluginManager.add('example', tinymce.plugins.ExamplePlugin);
 tinyMCE.init({
     plugins : '-example', // - tells TinyMCE to skip the loading of the plugin
     mode : "specific_textareas",
+    editor_selector : "mceEditor",
     theme : "advanced",
     theme_advanced_buttons1 : "separator,fontselect,fontsizeselect,forecolor,backcolor,separator,bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,hr,sub,sup,separator,cut,copy,paste,separator,undo,redo,separator,code,separator",
     theme_advanced_buttons2 : "separator,myfields,separator,separator,separator,myaddtlfields,separator,s0,separator,separator,s1,separator,previewb,separator,separator,helpb,separator",
@@ -740,7 +744,7 @@ tinyMCE.init({
         echo "  </tr>\n";
 
         echo "  <tr bgcolor=$oddrows>\n";
-        echo "    <td align=right>Host / Port:</td>\n";
+        echo "    <td align=right>SMTP Host / Port:</td>\n";
         echo "    <td align=left>\n";
         echo "      <input type=text name=et_host size=40 maxlength=255 value=\"$et[et_host]\"> / <input type=text name=et_port size=5 maxlength=5 value=\"$et[et_port]\">\n";
         echo "      $NWB#osdial_email_templates-et_host$NWE\n";
@@ -748,7 +752,7 @@ tinyMCE.init({
         echo "  </tr>\n";
 
         echo "  <tr bgcolor=$oddrows>\n";
-        echo "    <td align=right>User / Pass:</td>\n";
+        echo "    <td align=right>SMTP User / Pass:</td>\n";
         echo "    <td align=left>\n";
         echo "      <input type=text name=et_user size=20 maxlength=255 value=\"$et[et_user]\"> / <input type=text name=et_pass size=20 maxlength=255 value=\"$et[et_pass]\">\n";
         echo "      $NWB#osdial_email_templates-et_user$NWE\n";
@@ -758,7 +762,7 @@ tinyMCE.init({
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right>From:</td>\n";
         echo "    <td align=left>\n";
-        echo "      <input type=text name=et_from size=50 maxlength=255 value=\"$et[et_from]\">\n";
+        echo "      <input type=text name=et_from size=50 maxlength=255 value='$et[et_from]'>\n";
         echo "      $NWB#osdial_email_templates-et_from$NWE\n";
         echo "    </td>\n";
         echo "  </tr>\n";
@@ -773,12 +777,14 @@ tinyMCE.init({
 
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=center colspan=2>\n";
-        echo "      <textarea name=et_body_html mce_editable=true rows=20 cols=120>$et[et_bodY_html]</textarea>\n";
+        echo "      <br>HTML Body:<br>\n";
+        echo "      <textarea name=et_body_html class=mceEditor rows=20 cols=120>$et[et_body_html]</textarea>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=center colspan=2>\n";
+        echo "      <br>Text Body:<br>\n";
         echo "      <textarea name=et_body_text rows=20 cols=70>$et[et_body_text]</textarea>\n";
         echo "    </td>\n";
         echo "  </tr>\n";

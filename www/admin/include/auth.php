@@ -150,7 +150,7 @@ if ($force_logout) {
                 if (preg_match('/\-ALL\-EMAIL\-TEMPLATES\-/',$LOGae)) {
                     $LOG['allowed_email_templatesALL'] = 1;
                     # Pack all the valid Scripts
-                    $oss = get_krh($link, 'osdial_email_templates', 'et_id','','','');
+                    $oets = get_krh($link, 'osdial_email_templates', 'et_id','','','');
                     foreach ($oets as $oet) {
                         $LOGaeA[] = $oet['et_id'];
                     }

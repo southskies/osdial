@@ -309,6 +309,16 @@ $dupcheck = get_variable("dupcheck");
 
 
 $et_id = get_variable("et_id");
+$et_name = get_variable("et_name");
+$et_comments = get_variable("et_comments");
+$et_host = get_variable("et_host");
+$et_port = get_variable("et_port");
+$et_user = get_variable("et_user");
+$et_pass = get_variable("et_pass");
+$et_from = get_variable("et_from");
+$et_subject = get_variable("et_subject");
+$et_body_html = get_variable("et_body_html");
+$et_body_text = get_variable("et_body_text");
 $email = get_variable("email");
 $end_call = get_variable("end_call");
 $email_field = get_variable("email_field");

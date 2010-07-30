@@ -1203,7 +1203,7 @@ if ($ADD==31) {
 
         echo "<tr bgcolor=$oddrows><td align=right>Recording Delay: </td><td align=left><input type=text name=allcalls_delay size=3 maxlength=3 value=\"$allcalls_delay\"> <i>in seconds</i>$NWB#osdial_campaigns-allcalls_delay$NWE</td></tr>\n";
 
-        echo "<tr bgcolor=$oddrows><td align=right>Email Template: </td><td align=left><select size=1 name=et_id>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Email Template: </td><td align=left><select size=1 name=email_template_id>\n";
         echo get_email_templates($link, $email_template_id);
         echo "</select>$NWB#osdial_campaigns-email_template_id$NWE</td></tr>\n";
 

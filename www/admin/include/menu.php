@@ -202,14 +202,14 @@ if ($ADD==3111111)		{$hh='scripts';		$title = "Modify Script";}
 
 
 # Email Templates
-if ($ADD=="0email")		{$hh='scripts';		$title = "Email Templates";}
-if ($ADD=="1email")		{$hh='scripts';		$title = "Add New Email Template";}
-if ($ADD=="2email")		{$hh='scripts';		$title = "New Email Template Addition";}
-if ($ADD=="4email")		{$hh='scripts';		$title = "Modify Email Template";}
-if ($ADD=="5email")		{$hh='scripts';		$title = "Delete Email Template";}
-if ($ADD=="6email")		{$hh='scripts';		$title = "Delete Email Template";}
-if ($ADD=="7email")		{$hh='scripts';		$title = "Preview Email Template";}
-if ($ADD=="3email")		{$hh='scripts';		$title = "Modify Email Template";}
+if ($ADD=="0email")		{$hh='scripts';		$sh='email_templates';    $title = "Email Templates";}
+if ($ADD=="1email")		{$hh='scripts';		$sh='email_templates';    $title = "Add New Email Template";}
+if ($ADD=="2email")		{$hh='scripts';		$sh='email_templates';    $title = "New Email Template Addition";}
+if ($ADD=="4email")		{$hh='scripts';		$sh='email_templates';    $title = "Modify Email Template";}
+if ($ADD=="5email")		{$hh='scripts';		$sh='email_templates';    $title = "Delete Email Template";}
+if ($ADD=="6email")		{$hh='scripts';		$sh='email_templates';    $title = "Delete Email Template";}
+if ($ADD=="7email")		{$hh='scripts';		$sh='email_templates';    $title = "Preview Email Template";}
+if ($ADD=="3email")		{$hh='scripts';		$sh='email_templates';    $title = "Modify Email Template";}
 
 # Filters
 if ($ADD==10000000)		{$hh='filters';		$title = "Filters";}
