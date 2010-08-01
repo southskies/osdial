@@ -421,64 +421,7 @@ $AGI->stream_file('sip-silence');
 
 &enter_pin_number if ($call_handle_method =~ /DIGITID$/);
 
-if ($call_handle_method =~ /LOOKUP/) {
-	$listSQL = '';
-	if ($call_handle_method =~ /LOOKUPRL$/) {
-		$listSQL = "and list_id='$list_id'";
-	} elsif ($call_handle_method =~ /LOOKUPRC$/) {
-		### Grab all lists associated with Scampaign_id
-		$cbc=0;
-		$SlistsSQL='';
-		$stmtA = "SELECT list_id FROM osdial_lists where campaign_id='$Scampaign_id' limit 100;";
-		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-		$sthArows=$sthA->rows;
-		while ($sthArows > $cbc) {
-			@aryA = $sthA->fetchrow_array;	
-			$SlistsSQL	.= "'$aryA[0]',";
-			$cbc++;
-		}
-		$sthA->finish();
-		chop($SlistsSQL);
-
-		$listSQL = "and list_id IN($SlistsSQL)" if (length($SlistsSQL)>3);
-	}
-
-	$cbc=0;
-	$stmtA= "SELECT lead_id from osdial_list where phone_number='$phone_number' $listSQL order by last_local_call_time limit 1;";
-	if ($AGILOG) {$agi_string = "VDAD osdial_list search |$phone_number|$stmtA|";   &agi_output;}
-	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-	$sthArows=$sthA->rows;
-	if ($sthArows > 0) {
-		$rec_countCUSTDATA=0;	
-		while ($sthArows > $cbc) {
-			@aryA = $sthA->fetchrow_array;
-			$insert_lead_id = "$aryA[0]";
-			$cbc++;	
-		} 
-		$sthA->finish();
-
-		if ($AGILOG) {$agi_string = "VDAD osdial_list found |$insert_lead_id|$stmtA|";   &agi_output;}
-	} else {
-		### insert a record into the osdial_list table 
-		$stmtA = "INSERT INTO osdial_list (entry_date,modify_date,status,user,vendor_lead_code,source_id,list_id,called_since_last_reset,phone_code,phone_number,custom1,called_count,gmt_offset_now,comments) values('$SQLdate','$tsSQLdate','INBND','$fronter','$inbound_number','VDCL','$list_id','Y','$phone_code','$phone_number','$channel_group','1','-5.00','$VLcomments');";
-		$affected_rows = $dbhA->do($stmtA);
-		$cbc=0;
-		$stmtB = "select LAST_INSERT_ID() LIMIT 1;";
-		$sthA = $dbhA->prepare($stmtB) or die "preparing: ",$dbhA->errstr;
-		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-		$sthArows=$sthA->rows;
-		while ($sthArows > $cbc) {
-			@aryA = $sthA->fetchrow_array;
-			$insert_lead_id = "$aryA[0]";
-			$cbc++; 
-		}
-		$sthA->finish();
-
-		if ($AGILOG) {$agi_string = "VDAD osdial_list insert |$insert_lead_id|$stmtA|";   &agi_output;}
-	}
-} elsif ($call_handle_method =~ /CLOSER/) {
+if ($call_handle_method =~ /CLOSER/) {
 	### Grab call lead parameters from osdial_list table
 	$cbc=0;
 	$stmtA = "SELECT phone_number,phone_code,user FROM osdial_list where lead_id='$CIDlead_id' limit 1;";
@@ -496,20 +439,91 @@ if ($call_handle_method =~ /LOOKUP/) {
 	}
 	$sthA->finish();
 } else {
-	### insert a record into the osdial_list table if no record was found above
-	$stmtA = "INSERT INTO osdial_list (entry_date,modify_date,status,user,vendor_lead_code,source_id,list_id,called_since_last_reset,phone_code,phone_number,custom1,called_count,gmt_offset_now,comments) values('$SQLdate','$tsSQLdate','INBND','$fronter','$inbound_number','VDCL','$list_id','Y','$phone_code','$phone_number','$channel_group','1','-5.00','$VLcomments');";
-	$affected_rows = $dbhA->do($stmtA);
-	$cbc=0;
-	$stmtA = "select LAST_INSERT_ID() LIMIT 1;";
+	# Create list if it doesn't exist.
+	$stmtA= "SELECT count(*) FROM osdial_lists WHERE list_id='$list_id';";
+	if ($AGILOG) {$agi_string = "VDAD osdial_lists entry missing, adding |$list_id|";   &agi_output;}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-	$sthArows=$sthA->rows;
-	while ($sthArows > $cbc) {
-		@aryA = $sthA->fetchrow_array;
-		$insert_lead_id = "$aryA[0]";
-		$cbc++; 
-	}
+	@aryA = $sthA->fetchrow_array;	
 	$sthA->finish();
+	if ($aryA[0] == 0) {
+		$stmtA = "INSERT INTO osdial_lists SET list_id='$list_id',list_name='AutoLeads Inbound $list_id',list_description='AutoLeads Created From Ingroup, should not be active.',campaign_id='TEST',active='N';";
+		$affected_rows = $dbhA->do($stmtA);
+	}
+
+	if ($call_handle_method =~ /LOOKUP/) {
+		$listSQL = '';
+		if ($call_handle_method =~ /LOOKUPRL$/) {
+			$listSQL = "and list_id='$list_id'";
+		} elsif ($call_handle_method =~ /LOOKUPRC$/) {
+			### Grab all lists associated with Scampaign_id
+			$cbc=0;
+			$SlistsSQL='';
+			$stmtA = "SELECT list_id FROM osdial_lists where campaign_id='$Scampaign_id' limit 100;";
+			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+			$sthArows=$sthA->rows;
+			while ($sthArows > $cbc) {
+				@aryA = $sthA->fetchrow_array;	
+				$SlistsSQL	.= "'$aryA[0]',";
+				$cbc++;
+			}
+			$sthA->finish();
+			chop($SlistsSQL);
+
+			$listSQL = "and list_id IN($SlistsSQL)" if (length($SlistsSQL)>3);
+		}
+
+		$cbc=0;
+		$stmtA= "SELECT lead_id from osdial_list where phone_number='$phone_number' $listSQL order by last_local_call_time limit 1;";
+		if ($AGILOG) {$agi_string = "VDAD osdial_list search |$phone_number|$stmtA|";   &agi_output;}
+		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		$sthArows=$sthA->rows;
+		if ($sthArows > 0) {
+			$rec_countCUSTDATA=0;	
+			while ($sthArows > $cbc) {
+				@aryA = $sthA->fetchrow_array;
+				$insert_lead_id = "$aryA[0]";
+				$cbc++;	
+			} 
+			$sthA->finish();
+
+			if ($AGILOG) {$agi_string = "VDAD osdial_list found |$insert_lead_id|$stmtA|";   &agi_output;}
+		} else {
+			### insert a record into the osdial_list table 
+			$stmtA = "INSERT INTO osdial_list (entry_date,modify_date,status,user,vendor_lead_code,source_id,list_id,called_since_last_reset,phone_code,phone_number,custom1,called_count,gmt_offset_now,comments) values('$SQLdate','$tsSQLdate','INBND','$fronter','$inbound_number','VDCL','$list_id','Y','$phone_code','$phone_number','$channel_group','1','-5.00','$VLcomments');";
+			$affected_rows = $dbhA->do($stmtA);
+			$cbc=0;
+			$stmtB = "select LAST_INSERT_ID() LIMIT 1;";
+			$sthA = $dbhA->prepare($stmtB) or die "preparing: ",$dbhA->errstr;
+			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+			$sthArows=$sthA->rows;
+			while ($sthArows > $cbc) {
+				@aryA = $sthA->fetchrow_array;
+				$insert_lead_id = "$aryA[0]";
+				$cbc++; 
+			}
+			$sthA->finish();
+
+			if ($AGILOG) {$agi_string = "VDAD osdial_list insert |$insert_lead_id|$stmtA|";   &agi_output;}
+		}
+	} else {
+		### insert a record into the osdial_list table if no record was found above
+		$stmtA = "INSERT INTO osdial_list (entry_date,modify_date,status,user,vendor_lead_code,source_id,list_id,called_since_last_reset,phone_code,phone_number,custom1,called_count,gmt_offset_now,comments) values('$SQLdate','$tsSQLdate','INBND','$fronter','$inbound_number','VDCL','$list_id','Y','$phone_code','$phone_number','$channel_group','1','-5.00','$VLcomments');";
+		$affected_rows = $dbhA->do($stmtA);
+		$cbc=0;
+		$stmtA = "select LAST_INSERT_ID() LIMIT 1;";
+		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		$sthArows=$sthA->rows;
+		while ($sthArows > $cbc) {
+			@aryA = $sthA->fetchrow_array;
+			$insert_lead_id = "$aryA[0]";
+			$cbc++; 
+		}
+		$sthA->finish();
+	}
 }
 
 
