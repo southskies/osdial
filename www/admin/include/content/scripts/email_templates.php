@@ -446,7 +446,7 @@ if ($ADD=="2email") {
         } else {
             if (strlen($et_id) < 2 or strlen($et_name) < 2 or strlen($et_body_html) < 2) {
                 echo "<br><font color=red>TEMPLATE NOT ADDED - Please go back and look at the data you entered\n";
-                echo "<br>Template name, description and text must be at least 2 characters in length</font><br>\n";
+                echo "<br>Template name and HTML body must be at least 2 characters in length</font><br>\n";
             } else {
                 if ($LOG['multicomp'] > 0) $et_id = (($company_id * 1) + 100) . $et_id;
                 $stmt=sprintf("INSERT INTO osdial_email_templates SET et_id='%s',et_name='%s',et_comments='%s',et_host='%s',et_port='%s',et_user='%s',et_pass='%s',et_from='%s',et_subject='%s',et_body_html='%s',et_body_text='%s',active='%s';",mres($et_id),mres($et_name),mres($et_comments),mres($et_host),mres($et_port),mres($et_user),mres($et_pass),mres($et_from),mres($et_subject),mres($et_body_html),mres($et_body_text),mres($active));
@@ -480,7 +480,7 @@ if ($ADD=="4email") {
 
         if (strlen($et_id) < 2 or strlen($et_name) < 2 or strlen($et_body_html) < 2) {
             echo "<br><font color=red>TEMPLATE NOT MODIFIED - Please go back and look at the data you entered\n";
-            echo "<br>Template name, description and text must be at least 2 characters in length</font><br>\n";
+            echo "<br>Template name and HTML body must be at least 2 characters in length</font><br>\n";
         } else {
             if ($et_port=='') $et_port='25';
             $stmt=sprintf("UPDATE osdial_email_templates SET et_name='%s',et_comments='%s',et_host='%s',et_port='%s',et_user='%s',et_pass='%s',et_from='%s',et_subject='%s',et_body_html='%s',et_body_text='%s',active='%s' WHERE et_id='%s';",mres($et_name),mres($et_comments),mres($et_host),mres($et_port),mres($et_user),mres($et_pass),mres($et_from),mres($et_subject),mres($et_body_html),mres($et_body_text),mres($active),mres($et_id));
