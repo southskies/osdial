@@ -547,12 +547,12 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <BR>
 <A NAME="osdial_campaigns-am_message_exten">
 <BR>
-<B>Answering Machine Message -</B> This field is for entering in an extension to blind transfer calls to when the agent gets an answering machine and clicks on the Answering Machine Message button in the transfer conference frame. You must set this exten up in the dial plan - extensions.conf - and make sure it plays an audio file then hangs up. 
+<B>Answering Message Extension -</B> This field is for entering in an extension to blind transfer calls to when the agent gets an answering machine and clicks on the Answering Machine Message button in the transfer conference frame. This can be any extension or 8-digit recording ID created using extension 8167 (pin 4321).  You can have the system wait for silence before playing the recording by prefixing the 8-digit recording ID with 8320.
 
 <BR>
 <A NAME="osdial_campaigns-amd_send_to_vmx">
 <BR>
-<B>AMD send to vm exten -</B> This menu allows you to define whether a message is left on an answering machine when it is detected. the call will be immediately forwarded to the Answering-Machine-Message extension if AMD is active and it is determined that the call is an answering machine.
+<B>AMD Send to AM Exten -</B> This menu allows you to define whether a message is left on an answering machine when it is detected. the call will be immediately forwarded to the Answering-Machine-Message extension if AMD is active and it is determined that the call is an answering machine.
 
 <BR>
 <A NAME="osdial_campaigns-xferconf_a_dtmf">

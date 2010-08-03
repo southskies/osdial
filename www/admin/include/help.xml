@@ -441,11 +441,11 @@
   This menu allows you to choose whether you want to allow users to be able to switch between FORM and SCRIPT tabs.
     </item>
 
-    <item pathId="am_message_exten" title="Answering Machine Message">
-  This field is for entering in an extension to blind transfer calls to when the agent gets an answering machine and clicks on the Answering Machine Message button in the transfer conference frame. You must set this exten up in the dial plan - extensions.conf - and make sure it plays an audio file then hangs up. 
+    <item pathId="am_message_exten" title="Answering Message Extension">
+  This field is for entering in an extension to blind transfer calls to when the agent gets an answering machine and clicks on the Answering Machine Message button in the transfer conference frame. This can be any extension or 8-digit recording ID created using extension 8167 (pin 4321).  You can have the system wait for silence before playing the recording by prefixing the 8-digit recording ID with 8320.
     </item>
 
-    <item pathId="amd_send_to_vmx" title="AMD send to vm exten">
+    <item pathId="amd_send_to_vmx" title="AMD Send to AM Exten">
   This menu allows you to define whether a message is left on an answering machine when it is detected. the call will be immediately forwarded to the Answering-Machine-Message extension if AMD is active and it is determined that the call is an answering machine.
     </item>
 
