@@ -479,11 +479,12 @@ if ($ADD==3111)
 	echo "<table bgcolor=grey width=400 cellspacing=1>\n";
 	echo "  <tr class=tabheader>\n";
     echo "    <td align=center>USER</td>\n";
+    echo "    <td align=center>FULL NAME</td>\n";
     echo "    <td align=center>RANK</td>\n";
     echo "    <td align=center>CALLS TODAY</td>\n";
     echo "  </tr>\n";
 
-		$stmt="SELECT user,group_rank,calls_today from osdial_inbound_group_agents where group_id='$group_id'";
+		$stmt="SELECT osdial_users.user,full_name,group_rank,calls_today FROM osdial_inbound_group_agents JOIN osdial_users ON (osdial_inbound_group_agents.user=osdial_users.user) WHERE group_id='$group_id' AND closer_campaigns LIKE '% $group_id %'";
 		$rsltx=mysql_query($stmt, $link);
 		$users_to_print = mysql_num_rows($rsltx);
 
@@ -494,15 +495,16 @@ if ($ADD==3111)
 
 		echo "  <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=3&user=$rowx[0]');\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">$rowx[0]</a></td>\n";
-        echo "    <td align=right>$rowx[1]</td>\n";
+        echo "    <td align=left>$rowx[1]</td>\n";
         echo "    <td align=right>$rowx[2]</td>\n";
+        echo "    <td align=right>$rowx[3]</td>\n";
         echo "  </tr>\n";
 		}
 
 	//echo "</table><br>\n";
 
     echo "  <tr class=tabfooter>";
-    echo "    <td colspan=3></td>";
+    echo "    <td colspan=4></td>";
     echo "  </tr>";
 	echo "</table><br><br>\n";
 
