@@ -1110,7 +1110,88 @@ sub process_request {
 									}
 								}
 								if ($VD_addr3_dnc_count < 1) {
-									$stmtA = "INSERT INTO osdial_hopper SET lead_id='$VD_lead_id',campaign_id='$VD_campaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ADDR3',user='',priority='20';";
+									$stmtA = "INSERT INTO osdial_hopper SET lead_id='$VD_lead_id',campaign_id='$VD_campaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ADDR3',user='',priority='25';";
+									$affected_rows = $dbhA->do($stmtA);
+									if ($AGILOG) {$agi_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &agi_output;}
+								}
+							}
+						}
+						if ($VD_auto_alt_dial =~ /(ALT_AND_ADDR3_AND_AFFAP)/ && $VD_alt_dial =~ /ADDR3|AFFAP/) {
+							$aff_number = '';
+							$cur_aff = 1;
+							if ($VD_alt_dial ne 'ADDR3') {
+								$cur_aff = (substr($VD_alt_dial,5) * 1) + 1;
+							}
+							$stmtA="SELECT value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='AFFAP$cur_aff') AND lead_id='$VD_lead_id';";
+							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+							$sthArows=$sthA->rows;
+							if ($sthArows > 0) {
+								@aryA = $sthA->fetchrow_array;
+								$aff_number = $aryA[0];
+								$aff_number =~ s/\D//gi;
+							}
+							$sthA->finish();
+
+							if (length($aff_number)>5) {
+								$stmtA="SELECT gmt_offset_now,state,list_id FROM osdial_list where lead_id='$VD_lead_id';";
+									if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+								$sthArows=$sthA->rows;
+						 		$epc_countCAMPDATA=0;
+								while ($sthArows > $epc_countCAMPDATA) {
+									@aryA = $sthA->fetchrow_array;
+									$VD_gmt_offset_now = $aryA[0];
+									$VD_state = $aryA[1];
+									$VD_list_id = $aryA[2];
+							 		$epc_countCAMPDATA++;
+								}
+								$sthA->finish();
+
+								$VD_aff_dnc_count=0;
+								if ($VD_use_internal_dnc =~ /Y/) {
+									$dncsskip=0;
+									if ($enable_multicompany > 0) {
+										$comp_id=0;
+										$dnc_method='';
+										$stmtA="SELECT comp_id,dnc_method FROM osdial_companies WHERE company_id='" . ((substr($VD_campaign_id,0,3) * 1) - 100) . "';";
+										if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+										$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+										$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+										if (@aryA = $sthA->fetchrow_array) {
+											$comp_id = $aryA[0];
+											$dnc_method = $aryA[1];
+										}
+										$sthA->finish();
+										if ($dnc_method =~ /COMPANY|BOTH/) {
+											$stmtA="SELECT count(*) FROM osdial_dnc_company WHERE company_id='$comp_id' AND phone_number='$aff_number';";
+											if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+											if (@aryA = $sthA->fetchrow_array) {
+												$VD_aff_dnc_count += $aryA[0];
+											}
+											$sthA->finish();
+										}
+										if ($dnc_method =~ /COMPANY/) {
+											$dncsskip++;
+										}
+									}
+									if ($dncsskip==0) {
+										$stmtA="SELECT count(*) FROM osdial_dnc WHERE phone_number='$aff_number';";
+										if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+										$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+										$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+										if (@aryA = $sthA->fetchrow_array) {
+											$VD_aff_dnc_count += $aryA[0];
+										}
+										$sthA->finish();
+									}
+								}
+
+								if ($VD_aff_dnc_count < 1) {
+									$stmtA = "INSERT INTO osdial_hopper SET lead_id='$VD_lead_id',campaign_id='$VD_campaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='AFFAP$cur_aff',user='',priority='25';";
 									$affected_rows = $dbhA->do($stmtA);
 									if ($AGILOG) {$agi_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &agi_output;}
 								}
