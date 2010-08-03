@@ -356,7 +356,7 @@ $sthA->finish();
 $cbc=0;
 $groupidSQL = "group_id='$channel_group'";
 $groupidSQL = "group_id LIKE '___$channel_group'" if ($multicomp and $channel_group =~ /^IN_/);
-$stmtA = "SELECT call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,drop_call_seconds,drop_message,drop_exten,next_agent_call,voicemail_ext,group_id FROM osdial_inbound_groups where $groupidSQL;";
+$stmtA = "SELECT call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,drop_call_seconds,drop_message,drop_exten,next_agent_call,voicemail_ext,group_id,active FROM osdial_inbound_groups WHERE $groupidSQL;";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -382,9 +382,12 @@ while ($sthArows > $cbc) {
 	$VDADvoicemail_ext =			"$aryA[15]";
 	$VDADvoicemail_ext =~ s/\D//gi;
 	$channel_group =			"$aryA[16]";
+	$group_active =			"$aryA[17]";
 	$cbc++;
 }
 $sthA->finish();
+
+exit 0 if ($group_active eq 'N');
 
 if ($agent_alert_exten =~ /^$|^X$|^8304$/) {
 	$agent_alert_exten = '8304';
