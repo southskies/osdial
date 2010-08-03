@@ -1381,7 +1381,7 @@ while($one_day_interval > 0)
 										}
 									}
 								}
-								if ($VD_auto_alt_dial =~ /(ALT_AND_ADDR3_AND_AFFAP)/ && $CLalt_dial =~ /ADDR3|AFFAP/) {
+								if ($VD_auto_alt_dial =~ /(ALT_ADDR3_AND_AFFAP)/ && $CLalt_dial =~ /ADDR3|AFFAP/) {
 									$aff_number = '';
 									$cur_aff = 1;
 									if ($CLalt_dial ne 'ADDR3') {

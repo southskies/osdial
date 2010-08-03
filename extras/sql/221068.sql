@@ -1,8 +1,14 @@
 # 07/30/2010
 
 
-ALTER TABLE osdial_campaigns MODIFY auto_alt_dial ENUM('NONE','ALT_ONLY','ADDR3_ONLY','ALT_AND_ADDR3','ALT_AND_ADDR3_AND_AFFAP') default 'NONE';##|##
+ALTER TABLE osdial_campaigns MODIFY auto_alt_dial ENUM('NONE','ALT_ONLY','ADDR3_ONLY','ALT_AND_ADDR3','ALT_ADDR3_AND_AFFAP') default 'NONE';##|##
  ##    Updates to osdial_campaigns for AFF alt_phone numbers.;
+
+ALTER TABLE osdial_hopper ADD alt_dial ENUM('NONE','ALT','ADDR3','AFFAP1','AFFAP2','AFFAP3','AFFAP4','AFFAP5','AFFAP6','AFFAP7','AFFAP8','AFFAP9') default 'NONE';##|##
+ ##    Updates to osdial_hopper for AFF alt_phone numbers.;
+
+ALTER TABLE osdial_auto_calls ADD alt_dial ENUM('NONE','MAIN','ALT','ADDR3','AFFAP1','AFFAP2','AFFAP3','AFFAP4','AFFAP5','AFFAP6','AFFAP7','AFFAP8','AFFAP9') default 'NONE';##|##
+ ##    Updates to osdial_auto_calls for AFF alt_phone numbers.;
 
 INSERT INTO osdial_campaign_forms SET campaigns='ALL',name='AFFAP',description='Alternate Phone Numbers',description2='',priority='999',deleted='0';##|##
  ##    Add AFF Alternate Phone form.;

@@ -1116,7 +1116,7 @@ sub process_request {
 								}
 							}
 						}
-						if ($VD_auto_alt_dial =~ /(ALT_AND_ADDR3_AND_AFFAP)/ && $VD_alt_dial =~ /ADDR3|AFFAP/) {
+						if ($VD_auto_alt_dial =~ /(ALT_ADDR3_AND_AFFAP)/ && $VD_alt_dial =~ /ADDR3|AFFAP/) {
 							$aff_number = '';
 							$cur_aff = 1;
 							if ($VD_alt_dial ne 'ADDR3') {
