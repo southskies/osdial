@@ -2010,9 +2010,14 @@ if ($ADD==34)
         echo "<center>\n";
         echo "<br><b><font color=$default_text>AGENT RANKS FOR THIS CAMPAIGN:</font></b><br>\n";
         echo "<table bgcolor=grey width=400 cellspacing=1>\n";
-        echo "<tr class=tabheader><td align=center>USER</td><td align=center>RANK</td><td align=center>CALLS</td></tr>\n";
+        echo "  <tr class=tabheader>\n";
+        echo "    <td align=center>USER</td>\n";
+        echo "    <td align=center>FULL NAME</td>\n";
+        echo "    <td align=center>RANK</td>\n";
+        echo "    <td align=center>CALLS</td>\n";
+        echo "  </tr>\n";
 
-            $stmt="SELECT user,campaign_rank,calls_today from osdial_campaign_agents where campaign_id='$campaign_id'";
+            $stmt="SELECT osdial_users.user,full_name,campaign_rank,calls_today FROM osdial_campaign_agents JOIN osdial_users ON (osdial_campaign_agents.user=osdial_users.user) WHERE campaign_id='$campaign_id'";
             $rsltx=mysql_query($stmt, $link);
             $users_to_print = mysql_num_rows($rsltx);
 
@@ -2021,11 +2026,17 @@ if ($ADD==34)
                 $rowx=mysql_fetch_row($rsltx);
                 $o++;
 
-            echo "<tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=3&user=$rowx[0]');\"><td><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">" . mclabel($rowx[0]) . "</a></td><td align=right>$rowx[1]</td><td align=right>$rowx[2]</td></tr>\n";
+            echo "  <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=3&user=$rowx[0]');\">\n";
+            echo "    <td><a href=\"$PHP_SELF?ADD=3&user=$rowx[0]\">" . mclabel($rowx[0]) . "</a></td>\n";
+            echo "    <td align=left>$rowx[1]</td>\n";
+            echo "    <td align=right>$rowx[2]</td>\n";
+            echo "    <td align=right>$rowx[3]</td>\n";
+            echo "  </tr>\n";
             }
 
-        echo "<tr class=tabfooter><td colspan=3></td></tr>\n";
-        echo "</table></center><br>\n";
+        echo "  <tr class=tabfooter><td colspan=4></td></tr>\n";
+        echo "</table>\n";
+        echo "</center><br>\n";
 
 
         echo "<a href=\"$PHP_SELF?ADD=52&campaign_id=$campaign_id\">LOG ALL AGENTS OUT OF THIS CAMPAIGN</a><br><br>\n";
