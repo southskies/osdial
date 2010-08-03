@@ -484,7 +484,7 @@ if ($ADD==3111)
     echo "    <td align=center>CALLS TODAY</td>\n";
     echo "  </tr>\n";
 
-		$stmt="SELECT osdial_users.user,full_name,group_rank,calls_today FROM osdial_inbound_group_agents JOIN osdial_users ON (osdial_inbound_group_agents.user=osdial_users.user) WHERE group_id='$group_id' AND closer_campaigns LIKE '% $group_id %'";
+		$stmt="SELECT osdial_users.user,full_name,group_rank,calls_today FROM osdial_inbound_group_agents JOIN osdial_users ON (osdial_inbound_group_agents.user=osdial_users.user) WHERE group_id='$group_id' AND closer_campaigns LIKE '% $group_id %' ORDER BY osdial_users.user;";
 		$rsltx=mysql_query($stmt, $link);
 		$users_to_print = mysql_num_rows($rsltx);
 

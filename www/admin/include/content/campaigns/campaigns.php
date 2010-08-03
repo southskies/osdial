@@ -2017,7 +2017,7 @@ if ($ADD==34)
         echo "    <td align=center>CALLS</td>\n";
         echo "  </tr>\n";
 
-            $stmt="SELECT osdial_users.user,full_name,campaign_rank,calls_today FROM osdial_campaign_agents JOIN osdial_users ON (osdial_campaign_agents.user=osdial_users.user) WHERE campaign_id='$campaign_id'";
+            $stmt="SELECT osdial_users.user,full_name,campaign_rank,calls_today FROM osdial_campaign_agents JOIN osdial_users ON (osdial_campaign_agents.user=osdial_users.user) WHERE campaign_id='$campaign_id' ORDER BY osdial_users.user;";
             $rsltx=mysql_query($stmt, $link);
             $users_to_print = mysql_num_rows($rsltx);
 
