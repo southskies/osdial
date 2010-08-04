@@ -711,6 +711,10 @@ if ($ADD==122) {
 					    echo "    <td align=center>PHONE (country) CODE:</td>\n";
                     } elseif (mysql_field_name($rslt, $i) == "country_code") {
 					    echo "    <td align=center>COUNTRY (abbreviation):</td>\n";
+                    } elseif (mysql_field_name($rslt, $i) == "alt_phone") {
+					    echo "    <td align=center>ALT PHONE (phone number 2):</td>\n";
+                    } elseif (mysql_field_name($rslt, $i) == "address3") {
+					    echo "    <td align=center>ADDRESS3 (phone number 3):</td>\n";
                     } else {
 					    echo "    <td align=center>".strtoupper(eregi_replace("_", " ", mysql_field_name($rslt, $i))).": </td>\n";
                     }
