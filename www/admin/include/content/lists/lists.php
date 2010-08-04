@@ -638,9 +638,9 @@ if ($ADD==311) {
         echo "<center>\n";
         echo "<br><font color=$default_text size=4>CALLED COUNTS WITHIN THIS LIST</font></b><br>\n";
         echo "<table style=\"cursor:crosshair;\" bgcolor=grey width=500 cellspacing=1>\n";
-        echo "  <tr style=\"cusrsor:crosshair;\" class=tabheader>\n";
-        echo "    <td style=\"cusrsor:crosshair;\" align=left>STATUS</td>\n";
-        echo "    <td style=\"cusrsor:crosshair;\" align=left>STATUS&nbsp;NAME</td>";
+        echo "  <tr style=\"cursor:crosshair;\" class=tabheader>\n";
+        echo "    <td style=\"cursor:crosshair;\" align=left>STATUS</td>\n";
+        echo "    <td style=\"cursor:crosshair;\" align=left>STATUS&nbsp;NAME</td>";
         $first = $all_called_first;
         while ($first <= $all_called_last) {
             $flabel = $first;
@@ -648,10 +648,10 @@ if ($ADD==311) {
             if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $flabel;
             if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $flabel;
             if (strlen($flabel) == 3) $flabel = '&nbsp;' . $flabel;
-            echo "    <td style=\"cusrsor:crosshair;\" align=right>$flabel</td>";
+            echo "    <td style=\"cursor:crosshair;\" align=right>$flabel</td>";
             $first++;
         }
-        echo "    <td style=\"cusrsor:crosshair;\" align=right>&nbsp;&nbsp;SUB</td>\n";
+        echo "    <td style=\"cursor:crosshair;\" align=right>&nbsp;&nbsp;SUB</td>\n";
         echo "  </tr>\n";
         $sts=0;
         $statuses_called_to_print = count($status);
@@ -660,8 +660,8 @@ if ($ADD==311) {
             #	echo "$status[$sts]|$status_called_first[$sts]|$status_called_last[$sts]|$leads_in_sts[$sts]|\n";
             #	echo "$status[$sts]|";
             echo "  <tr " . bgcolor($sts) . " style=\"cursor:crosshair;\" class=\"row font1\">\n";
-            echo "     <td style=\"cusrsor:crosshair;\" nowrap>$Pstatus</td>\n";
-            echo "     <td style=\"cusrsor:crosshair;\" nowrap>$statuses_list[$Pstatus]</td>";
+            echo "     <td style=\"cursor:crosshair;\" nowrap>$Pstatus</td>\n";
+            echo "     <td style=\"cursor:crosshair;\" nowrap>$statuses_list[$Pstatus]</td>";
 
             $first = $all_called_first;
             while ($first <= $all_called_last) {
@@ -691,8 +691,8 @@ if ($ADD==311) {
             $sts++;
         }
 
-        echo "  <tr style=\"cusrsor:crosshair;\" class=tabfooter>";
-        echo "    <td style=\"cusrsor:crosshair;\" align=left colspan=2>TOTAL</td>";
+        echo "  <tr style=\"cursor:crosshair;\" class=tabfooter>";
+        echo "    <td style=\"cursor:crosshair;\" align=left colspan=2>TOTAL</td>";
         $first = $all_called_first;
         while ($first <= $all_called_last) {
             if ($all_called_count[$first] == 0 or $all_called_count[$first] == '') $all_called_count[$first] = '0';
@@ -700,10 +700,10 @@ if ($ADD==311) {
             if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $all_called_count[$first];
             if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $all_called_count[$first];
             if (strlen($flabel) == 3) $flabel = '&nbsp;' . $all_called_count[$first];
-            echo "    <td style=\"cusrsor:crosshair;\" align=right class=right title=\"$first Lead Count Total: $all_called_count[$first] Leads\">$flabel</td>";
+            echo "    <td style=\"cursor:crosshair;\" align=right class=right title=\"$first Lead Count Total: $all_called_count[$first] Leads\">$flabel</td>";
             $first++;
         }
-        echo "    <td style=\"cusrsor:crosshair;\" align=right title=\"Total: $leads_in_list Leads\">$leads_in_list</td>\n";
+        echo "    <td style=\"cursor:crosshair;\" align=right title=\"Total: $leads_in_list Leads\">$leads_in_list</td>\n";
         echo "  </tr>\n";
         echo "</table></center><br>\n";
 
@@ -756,9 +756,9 @@ if ($ADD==311) {
         echo "<center>\n";
         echo "<br><font color=$default_text size=4>PER-LEAD DISPOSITION COUNTS FROM LOG</font></b><br>\n";
         echo "<table style=\"cursor:crosshair;\" bgcolor=grey width=500 cellspacing=1>\n";
-        echo "  <tr style=\"cusrsor:crosshair;\" class=tabheader>\n";
-        echo "    <td style=\"cusrsor:crosshair;\" align=left>STATUS</td>\n";
-        echo "    <td style=\"cusrsor:crosshair;\" align=left>STATUS&nbsp;NAME</td>";
+        echo "  <tr style=\"cursor:crosshair;\" class=tabheader>\n";
+        echo "    <td style=\"cursor:crosshair;\" align=left>STATUS</td>\n";
+        echo "    <td style=\"cursor:crosshair;\" align=left>STATUS&nbsp;NAME</td>";
         $first = $all_called_first;
         while ($first <= $all_called_last) {
             $flabel = $first;
@@ -766,10 +766,10 @@ if ($ADD==311) {
             if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $flabel;
             if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $flabel;
             if (strlen($flabel) == 3) $flabel = '&nbsp;' . $flabel;
-            echo "    <td style=\"cusrsor:crosshair;\" align=right>$flabel</td>";
+            echo "    <td style=\"cursor:crosshair;\" align=right>$flabel</td>";
             $first++;
         }
-        echo "    <td style=\"cusrsor:crosshair;\" align=right>&nbsp;&nbsp;SUB</td>\n";
+        echo "    <td style=\"cursor:crosshair;\" align=right>&nbsp;&nbsp;SUB</td>\n";
         echo "  </tr>\n";
 
         $sts=0;
@@ -779,8 +779,8 @@ if ($ADD==311) {
             #	echo "$status[$sts]|$status_called_first[$sts]|$status_called_last[$sts]|$leads_in_sts[$sts]|\n";
             #	echo "$status[$sts]|";
             echo "  <tr " . bgcolor($sts) . " style=\"cursor:crosshair;\" class=\"row font1\">\n";
-            echo "     <td style=\"cusrsor:crosshair;\" nowrap>$Pstatus</td>\n";
-            echo "     <td style=\"cusrsor:crosshair;\" nowrap>$statuses_list[$Pstatus]</td>";
+            echo "     <td style=\"cursor:crosshair;\" nowrap>$Pstatus</td>\n";
+            echo "     <td style=\"cursor:crosshair;\" nowrap>$statuses_list[$Pstatus]</td>";
 
             $first = $all_called_first;
             while ($first <= $all_called_last) {
@@ -809,8 +809,8 @@ if ($ADD==311) {
             $sts++;
         }
 
-        echo "  <tr style=\"cusrsor:crosshair;\" class=tabfooter>";
-        echo "    <td style=\"cusrsor:crosshair;\" align=left colspan=2>TOTAL</td>";
+        echo "  <tr style=\"cursor:crosshair;\" class=tabfooter>";
+        echo "    <td style=\"cursor:crosshair;\" align=left colspan=2>TOTAL</td>";
         $first = $all_called_first;
         while ($first <= $all_called_last) {
             if ($all_called_count[$first] == 0 or $all_called_count[$first] == '') $all_called_count[$first] = '0';
@@ -818,10 +818,10 @@ if ($ADD==311) {
             if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $all_called_count[$first];
             if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $all_called_count[$first];
             if (strlen($flabel) == 3) $flabel = '&nbsp;' . $all_called_count[$first];
-            echo "    <td style=\"cusrsor:crosshair;\" align=right class=right title=\"$first Attempt Total: $all_called_count[$first] Calls\">$flabel</td>";
+            echo "    <td style=\"cursor:crosshair;\" align=right class=right title=\"$first Attempt Total: $all_called_count[$first] Calls\">$flabel</td>";
             $first++;
         }
-        echo "    <td style=\"cusrsor:crosshair;\" align=right title=\"Total: $leads_in_list Calls\">$leads_in_list</td>\n";
+        echo "    <td style=\"cursor:crosshair;\" align=right title=\"Total: $leads_in_list Calls\">$leads_in_list</td>\n";
         echo "  </tr>\n";
 
         echo "</table></center><br>\n";

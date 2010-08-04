@@ -40,7 +40,6 @@
 		width: 970px;
 		margin-left: auto; 
 		margin-right: auto;	
-		Xborder-right: solid 1px red;
 	}
 
 	.acrosslogin {
@@ -49,7 +48,6 @@
 		width: 400px;
 		margin-left: auto; 
 		margin-right: auto;	
-		Xborder-right: solid 1px red;
 	}
 
 	.centered {
@@ -69,8 +67,6 @@
 	}
 
 	#clock { 
-		Xfont-family: Arial, Helvetica, sans-serif; 
-		Xfont-size: 0.8em; 
 		padding: 4px; 
 	}
 
@@ -92,8 +88,7 @@
 		text-decoration: underline;
 	}
 	a:visited {
-		Xcolor: #1C4754;
-		text-decoration: italic;
+		text-decoration: none;
 	}
 
 	.awhite a {
@@ -115,7 +110,7 @@
 	}
 	.awhite a:visited {
 		color: white;
-		text-decoration: italic;
+		text-decoration: none;
 	}
 
 	.no-ul a {
@@ -139,9 +134,9 @@
 	.purple {color: white; background-color: purple;}
 
 	.maintable {
-		Xbackground-image: URL(images/across140.png);
-		Xbackground-repeat:repeat-y;
+
 	}
+
 	table.row:hover {background-color: #B4CCD6;}
 	tr.row:hover {background-color: #B4CCD6;}
 	td.hover:hover {background-color: #A4DCE6; font-weight:bold;}

@@ -105,7 +105,7 @@ function report_agent_stats() {
     $head .= "  </tr>\n";
     $head .= "</table>\n";
     $head .= "</form>\n";
-    $head .= "<div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;layer-background-color:white;\"></div>\n";
+    $head .= "<div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;\"></div>\n";
     
     if (!$LOGview_reports) {
         $table .= "<center><font color=red>You do not have permission to view this page</font></center>\n";

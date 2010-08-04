@@ -136,7 +136,7 @@ function report_list_cost() {
     $html .= "  <tr class=tabfooter></tr>\n";
     $html .= "</table>\n";
     $html .= "</form>\n\n";
-    $html .= "<div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;layer-background-color:white;\"></div>\n";
+    $html .= "<div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;\"></div>\n";
     $html .= "</div>\n\n";
 
     $html .= "<pre><font size=2>";

@@ -190,7 +190,7 @@ function report_call_stats() {
     $html .= "        </tr>\n";
     $html .= "      </table>\n";
     $html .= "      </form>\n";
-    $html .= "      <div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;layer-background-color:white;\"></div>\n";
+    $html .= "      <div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;\"></div>\n";
 
     $html .= "      </div>\n\n";
     

@@ -211,7 +211,7 @@ function report_lead_performance_campaign() {
     $html .= "  <tr class=tabfooter></tr>\n";
     $html .= "</table>\n";
     $html .= "</form>\n";
-    $html .= "<div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;layer-background-color:white;\"></div>\n";
+    $html .= "<div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;\"></div>\n";
     $html .= "</div>\n";
 
     $html .= "<font size=2><pre>";

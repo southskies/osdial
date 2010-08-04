@@ -849,7 +849,7 @@ if ($ADD == "3carrier") {
             echo "<table width=$section_width cellspacing=3>\n";
             echo "  <tr>\n";
             echo "    <td align=center colspan=2>\n";
-            echo "      <select name=cpt style=\"border-size:1px;font-size:10px;\" onchange=\"selcarrier(this);return false;\">\n";
+            echo "      <select name=cpt style=\"font-size:10px;\" onchange=\"selcarrier(this);return false;\">\n";
             echo "        <option selcted> -- Sample Carrier Configuration Templates -- </option>\n";
             echo "      </select>\n";
             echo "    </td>\n";

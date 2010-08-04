@@ -492,12 +492,14 @@ function report_lead_search_advanced($lsa_seg='form') {
 
 
 
-        $form .= "<style type=text/css> content {vertical-align:center}</style>\n";
+        $form .= "<style type=text/css>\n";
+        $form .= "content {vertical-align:middle;}\n";
+        $form .= "</style>\n";
         $form .= "<br><br><center>\n";
 
-        $form .= "<div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;layer-background-color:white;\"></div>\n";
-        $form .= "<div id=\"caldiv2\" style=\"position:absolute;visibility:hidden;background-color:white;layer-background-color:white;\"></div>\n";
-        $form .= "<div id=\"caldiv3\" style=\"position:absolute;visibility:hidden;background-color:white;layer-background-color:white;\"></div>\n";
+        $form .= "<div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;\"></div>\n";
+        $form .= "<div id=\"caldiv2\" style=\"position:absolute;visibility:hidden;background-color:white;\"></div>\n";
+        $form .= "<div id=\"caldiv3\" style=\"position:absolute;visibility:hidden;background-color:white;\"></div>\n";
 
         $form .= "<form method=post name=advsearch_form action=\"$PHP_SELF\">\n";
         $form .= "<input type=hidden name=ADD value=\"$ADD\">\n";

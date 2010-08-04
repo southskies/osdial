@@ -98,7 +98,7 @@ function report_agent_timesheet() {
     $form .= "    </tr>\n";
     $form .= "  </table>\n";
     $form .= "</form>\n\n";
-    $form .= "<div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;layer-background-color:white;\"></div>\n";
+    $form .= "<div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;\"></div>\n";
 
     $query_date_BEGIN = "$query_date 00:00:00";   
     $query_date_END = "$query_date 23:59:59";
