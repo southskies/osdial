@@ -759,13 +759,13 @@ if ($ADD==1121) {
                         $wvars .= '&' . $k . '=' . $v;
                     }
                     function pwfa($wfv, $k) { return $wfv[$k]; };
-                    $wfa1 = $camp['web_form_address'] . '?1=1' . $wvars;
+                    #$wfa1 = $camp['web_form_address'] . '?1=1' . $wvars;
                     if (preg_match('/../',$camp['web_form_address'])) {
-                        $wfa1 = preg_replace('/\[\[(.*)\]\]/ime', "pwfa(\$wfv,'\\1')", $camp['web_form_address']);
+                        $wfa1 = preg_replace('/\[\[(.*)\]\]/ime', "pwfa(\$wfv,'\\1')", $camp['web_form_address'] . '?1=1' . $wvars);
                     }
-                    $wfa2 = $camp['web_form_address2'] . '?1=1' . $wvars;
+                    #$wfa2 = $camp['web_form_address2'] . '?1=1' . $wvars;
                     if (preg_match('/../',$camp['web_form_address2'])) {
-                        $wfa2 = preg_replace('/\[\[(.*)\]\]/ime', "pwfa(\$wfv,'\\1')", $camp['web_form_address2']);
+                        $wfa2 = preg_replace('/\[\[(.*)\]\]/ime', "pwfa(\$wfv,'\\1')", $camp['web_form_address2'] . '?1=1' . $wvars);
                     }
                     echo "    <br><br><br><center><font size=3><a target=\"_new\" href=\"" . $wfa1 . "\">WEBFORM1</a>&nbsp;&nbsp;&nbsp;<a target=\"_new\" href=\"" . $wfa2 . "\">WEBFORM2</a></font></center>";
                 }
