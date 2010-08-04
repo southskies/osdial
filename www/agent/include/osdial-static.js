@@ -5826,27 +5826,29 @@ function utf8_decode(utftext) {
 
 
 			for (var i=0; i<AFids.length; i++) {
-				var SCt;
-				if (AFoptions[i] == '') {
-					SCt += "<input type=text size="+AFlengths[i]+" maxlength=255 name="+AFnames[i]+' id='+AFnames[i];
-					SCt += " onfocus=\"this.value=document.getElementById('" + AFids[i] + "').value;\"";
-					SCt += " onchange=\"var afv=this; document.getElementById('" + AFids[i] + "').value=afv.value;";
-					SCt += " var aflist=document.getElementsByName('" + AFnames[i] + "');";
-					SCt += " for(var afli=0;afli<aflist.length;afli&#43;&#43;)";
-					SCt += " {if(afv.value!=aflist[afli].value) aflist[afli].value=afv.value;};\"";
-					SCt += ' class=cust_form value=\"\">';
-				} else {
+				var SCt='';
+				if (AFoptions[i] && AFoptions[i] != '') {
 					SCt += "<select name=" + AFnames[i] + ' id=' + AFnames[i];
 					SCt += " onfocus=\"this.value=document.getElementById('" + AFids[i] + "').value;\"";
 					SCt += " onchange=\"var afv=this; document.getElementById('" + AFids[i] + "').value=afv.value;";
 					SCt += " var aflist=document.getElementsByName('" + AFnames[i] + "');";
-					SCt += " for(var afli=0;afli<aflist.length;afli&#43;&#43;)";
+					//SCt += " for(var afli=0;afli<aflist.length;afli%2B%2B)";
+					SCt += " for(var afli=0;afli<aflist.length;afli++)";
 					SCt += " {if(afv.value!=aflist[afli].value) aflist[afli].value=afv.value;};\">";
 					for (var option in AFoptions[i].split(',')) {
 						SCt += "<option>" + option + "</option>";
 					}
 					SCt += "</select>";
+				} else {
+					SCt += "<input type=text size="+AFlengths[i]+" maxlength=255 name="+AFnames[i]+' id='+AFnames[i];
+					SCt += " onfocus=\"this.value=document.getElementById('" + AFids[i] + "').value;\"";
+					SCt += " onchange=\"var afv=this; document.getElementById('" + AFids[i] + "').value=afv.value;";
+					SCt += " var aflist=document.getElementsByName('" + AFnames[i] + "');";
+					SCt += " for(var afli=0;afli<aflist.length;afli++)";
+					SCt += " {if(afv.value!=aflist[afli].value) aflist[afli].value=afv.value;};\"";
+					SCt += ' class=cust_form value=\"\">';
 				}
+
 				if (encoded.match(RGiframe)) {
                     			SCt = SCt.replace(RGplus,'+');
 				}
@@ -5857,7 +5859,6 @@ function utf8_decode(utftext) {
 
 		}
 		decoded=encoded;
-		return false;
 	}
 
 
