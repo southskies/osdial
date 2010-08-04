@@ -40,7 +40,7 @@ if ($ADD==1121) {
 			
         if ($end_call > 0) {
 	        ### update the lead record in the osdial_list table 
-	        $stmt = sprintf("UPDATE osdial_list SET status='%s',source_id='%s',title='%s',first_name='%s',middle_initial='%s',last_name='%s',address1='%s',address2='%s',address3='%s',city='%s',state='%s',province='%s',postal_code='%s',country_code='%s',alt_phone='%s',phone_code='%s',phone_number='%s',email='%s',custom1='%s',custom2='%s',external_key='%s',comments='%s',date_of_birth='%s',post_date='%s',cost='%s' WHERE lead_id='%s';", mres($status), mres($source_id), mres($title), mres($first_name), mres($middle_initial), mres($last_name), mres($address1), mres($address2), mres($address3), mres($city), mres($state), mres($province), mres($postal_code), mres($country_code), mres($alt_phone), mres($phone_code), mres($phone_number), mres($email), mres($custom1), mres($custom2), mres($external_key), mres($comments), mres($date_of_birth), mres($post_date), mres($cost), mres($lead_id));
+	        $stmt = sprintf("UPDATE osdial_list SET status='%s',source_id='%s',title='%s',first_name='%s',middle_initial='%s',last_name='%s',address1='%s',address2='%s',address3='%s',city='%s',state='%s',province='%s',postal_code='%s',country_code='%s',alt_phone='%s',phone_code='%s',phone_number='%s',email='%s',custom1='%s',custom2='%s',external_key='%s',comments='%s',date_of_birth='%s',post_date='%s',cost='%s' WHERE lead_id='%s';", mres($status), mres($source_id), mres($title_field), mres($first_name), mres($middle_initial), mres($last_name), mres($address1), mres($address2), mres($address3), mres($city), mres($state), mres($province), mres($postal_code), mres($country_code), mres($alt_phone), mres($phone_code), mres($phone_number), mres($email), mres($custom1), mres($custom2), mres($external_key), mres($comments), mres($date_of_birth), mres($post_date), mres($cost), mres($lead_id));
 	        if ($DB) echo "|$stmt|\n";
 	        $rslt=mysql_query($stmt, $link);
 			
@@ -283,7 +283,7 @@ if ($ADD==1121) {
 					
 		        echo "      <table cellspacing=3 width=600>\n";
 		        echo "        <tr bgcolor=$oddrows>\n";
-                echo "          <td align=center colspan=2>Title:&nbsp;<input type=text name=title size=4 maxlength=4 value=\"$ld[title]\"> &nbsp; First:&nbsp;<input type=text name=first_name size=15 maxlength=30 value=\"$ld[first_name]\"> &nbsp; M.I.&nbsp;<input type=text name=middle_initial size=2 maxlength=1 value=\"$ld[middle_initial]\"> &nbsp; Last:&nbsp;<input type=text name=last_name size=15 maxlength=30 value=\"$ld[last_name]\"></td>\n";
+                echo "          <td align=center colspan=2>Title:&nbsp;<input type=text name=title_field size=4 maxlength=4 value=\"$ld[title]\"> &nbsp; First:&nbsp;<input type=text name=first_name size=15 maxlength=30 value=\"$ld[first_name]\"> &nbsp; M.I.&nbsp;<input type=text name=middle_initial size=2 maxlength=1 value=\"$ld[middle_initial]\"> &nbsp; Last:&nbsp;<input type=text name=last_name size=15 maxlength=30 value=\"$ld[last_name]\"></td>\n";
                 echo "        </tr>\n";
 		        echo "        <tr class=tabheader>\n";
                 echo "          <td colspan=2></td>\n";
