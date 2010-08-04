@@ -77,6 +77,9 @@
 # 090420-1342 - Merge in term_reason/uniqueid from 2.0.5
 
 $script = 'agi-VDAD_ALL_inbound.agi';
+$DB=0;
+
+$start_epoch = time();
 
 $DROP_TIME = 360;	### default number of seconds to wait until you drop a waiting call
 $start_moh=1;
@@ -163,7 +166,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
     or die "Couldn't connect to database: " . DBI->errstr;
 
 ### Grab Server values from the database
-$stmtA = "SELECT agi_output FROM servers where server_ip = '$VARserver_ip';";
+$stmtA = "SELECT agi_output FROM servers WHERE server_ip='$VARserver_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -303,8 +306,8 @@ if ($channel =~ /Local/i) {
 		if ($AGILOG) {$agi_string = "+++++ VDAD START LOCAL CHANNEL: CXFER OVERRIDE- $priority";   &agi_output;}
 		if ($call_handle_method =~ /^CLOSER/) {
 			sleep(1);
-			$stmtA = "SELECT count(*) FROM osdial_auto_calls where lead_id='$CIDlead_id' and call_type='IN' and campaign_id='$channel_group' and channel NOT LIKE \"Local%\";";
-			if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+			$stmtA = "SELECT count(*) FROM osdial_auto_calls WHERE lead_id='$CIDlead_id' AND call_type='IN' AND campaign_id='$channel_group' AND channel NOT LIKE 'Local%';";
+			if ($AGILOG and $DB>1) {$agi_string = "|$stmtA|";   &agi_output;}
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -329,7 +332,7 @@ if ($channel =~ /Local/i) {
 
 ### Grab Server values from the database
 $cbc=0;
-$stmtA = "SELECT voicemail_dump_exten,ext_context,answer_transfer_agent,local_gmt,asterisk_version,max_osdial_trunks FROM servers where server_ip = '$VARserver_ip';";
+$stmtA = "SELECT voicemail_dump_exten,ext_context,answer_transfer_agent,local_gmt,asterisk_version,max_osdial_trunks FROM servers WHERE server_ip='$VARserver_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -356,7 +359,7 @@ $sthA->finish();
 $cbc=0;
 $groupidSQL = "group_id='$channel_group'";
 $groupidSQL = "group_id LIKE '___$channel_group'" if ($multicomp and $channel_group =~ /^IN_/);
-$stmtA = "SELECT call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,drop_call_seconds,drop_message,drop_exten,next_agent_call,voicemail_ext,group_id,active FROM osdial_inbound_groups WHERE $groupidSQL;";
+$stmtA = "SELECT call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,drop_call_seconds,drop_message,drop_exten,next_agent_call,voicemail_ext,group_id,active,drop_trigger FROM osdial_inbound_groups WHERE $groupidSQL;";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -383,6 +386,7 @@ while ($sthArows > $cbc) {
 	$VDADvoicemail_ext =~ s/\D//gi;
 	$channel_group =			"$aryA[16]";
 	$group_active =			"$aryA[17]";
+	$drop_trigger =			"$aryA[18]";
 	$cbc++;
 }
 $sthA->finish();
@@ -403,7 +407,7 @@ if ($wday==5) {$daySQL=',ct_friday_start,ct_friday_stop';}
 if ($wday==6) {$daySQL=',ct_saturday_start,ct_saturday_stop';}
 
 ### Grab call_times values from the database
-$stmtA = "SELECT ct_default_start,ct_default_stop $daySQL FROM osdial_call_times where call_time_id = '$call_time_id';";
+$stmtA = "SELECT ct_default_start,ct_default_stop $daySQL FROM osdial_call_times WHERE call_time_id='$call_time_id';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -427,7 +431,7 @@ $AGI->stream_file('sip-silence');
 if ($call_handle_method =~ /CLOSER/) {
 	### Grab call lead parameters from osdial_list table
 	$cbc=0;
-	$stmtA = "SELECT phone_number,phone_code,user FROM osdial_list where lead_id='$CIDlead_id' limit 1;";
+	$stmtA = "SELECT phone_number,phone_code,user FROM osdial_list WHERE lead_id='$CIDlead_id' LIMIT 1;";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -457,12 +461,12 @@ if ($call_handle_method =~ /CLOSER/) {
 	if ($call_handle_method =~ /LOOKUP/) {
 		$listSQL = '';
 		if ($call_handle_method =~ /LOOKUPRL$/) {
-			$listSQL = "and list_id='$list_id'";
+			$listSQL = "AND list_id='$list_id'";
 		} elsif ($call_handle_method =~ /LOOKUPRC$/) {
 			### Grab all lists associated with Scampaign_id
 			$cbc=0;
 			$SlistsSQL='';
-			$stmtA = "SELECT list_id FROM osdial_lists where campaign_id='$Scampaign_id' limit 100;";
+			$stmtA = "SELECT list_id FROM osdial_lists WHERE campaign_id='$Scampaign_id' LIMIT 100;";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -474,12 +478,12 @@ if ($call_handle_method =~ /CLOSER/) {
 			$sthA->finish();
 			chop($SlistsSQL);
 
-			$listSQL = "and list_id IN($SlistsSQL)" if (length($SlistsSQL)>3);
+			$listSQL = "AND list_id IN ($SlistsSQL)" if (length($SlistsSQL)>3);
 		}
 
 		$cbc=0;
-		$stmtA= "SELECT lead_id from osdial_list where phone_number='$phone_number' $listSQL order by last_local_call_time limit 1;";
-		if ($AGILOG) {$agi_string = "VDAD osdial_list search |$phone_number|$stmtA|";   &agi_output;}
+		$stmtA= "SELECT lead_id FROM osdial_list WHERE phone_number='$phone_number' $listSQL ORDER BY last_local_call_time LIMIT 1;";
+		if ($AGILOG) {$agi_string = "VDAD osdial_list search |$phone_number";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -492,10 +496,10 @@ if ($call_handle_method =~ /CLOSER/) {
 			} 
 			$sthA->finish();
 
-			if ($AGILOG) {$agi_string = "VDAD osdial_list found |$insert_lead_id|$stmtA|";   &agi_output;}
+			if ($AGILOG) {$agi_string = "VDAD osdial_list found |$insert_lead_id";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 		} else {
 			### insert a record into the osdial_list table 
-			$stmtA = "INSERT INTO osdial_list (entry_date,modify_date,status,user,vendor_lead_code,source_id,list_id,called_since_last_reset,phone_code,phone_number,custom1,called_count,gmt_offset_now,comments) values('$SQLdate','$tsSQLdate','INBND','$fronter','$inbound_number','VDCL','$list_id','Y','$phone_code','$phone_number','$channel_group','1','-5.00','$VLcomments');";
+			$stmtA = "INSERT INTO osdial_list (entry_date,modify_date,status,user,vendor_lead_code,source_id,list_id,called_since_last_reset,phone_code,phone_number,custom1,called_count,gmt_offset_now,comments) VALUES ('$SQLdate','$tsSQLdate','INBND','$fronter','$inbound_number','VDCL','$list_id','Y','$phone_code','$phone_number','$channel_group','1','-5.00','$VLcomments');";
 			$affected_rows = $dbhA->do($stmtA);
 			$cbc=0;
 			$stmtB = "select LAST_INSERT_ID() LIMIT 1;";
@@ -509,14 +513,14 @@ if ($call_handle_method =~ /CLOSER/) {
 			}
 			$sthA->finish();
 
-			if ($AGILOG) {$agi_string = "VDAD osdial_list insert |$insert_lead_id|$stmtA|";   &agi_output;}
+			if ($AGILOG) {$agi_string = "VDAD osdial_list insert |$insert_lead_id";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 		}
 	} else {
 		### insert a record into the osdial_list table if no record was found above
-		$stmtA = "INSERT INTO osdial_list (entry_date,modify_date,status,user,vendor_lead_code,source_id,list_id,called_since_last_reset,phone_code,phone_number,custom1,called_count,gmt_offset_now,comments) values('$SQLdate','$tsSQLdate','INBND','$fronter','$inbound_number','VDCL','$list_id','Y','$phone_code','$phone_number','$channel_group','1','-5.00','$VLcomments');";
+		$stmtA = "INSERT INTO osdial_list (entry_date,modify_date,status,user,vendor_lead_code,source_id,list_id,called_since_last_reset,phone_code,phone_number,custom1,called_count,gmt_offset_now,comments) VALUES ('$SQLdate','$tsSQLdate','INBND','$fronter','$inbound_number','VDCL','$list_id','Y','$phone_code','$phone_number','$channel_group','1','-5.00','$VLcomments');";
 		$affected_rows = $dbhA->do($stmtA);
 		$cbc=0;
-		$stmtA = "select LAST_INSERT_ID() LIMIT 1;";
+		$stmtA = "SELECT LAST_INSERT_ID() LIMIT 1;";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -551,21 +555,21 @@ if ( ($hm < $ct_default_start) || ($hm > $ct_default_stop) ) {
 			checkresult();
 		}
 	}
-	$stmtA = "DELETE FROM osdial_auto_calls where callerid='$accountcode' and server_ip='$VARserver_ip' order by call_time desc limit 1;";
+	$stmtA = "DELETE FROM osdial_auto_calls WHERE callerid='$accountcode' AND server_ip='$VARserver_ip' ORDER BY call_time DESC LIMIT 1;";
 	$affected_rows = $dbhA->do($stmtA);
 	if ($AGILOG) {$agi_string = "--    VDCL vac record deleted: |$affected_rows| $VDADcampaign|";   &agi_output;}
 
-	$stmtA = "INSERT INTO osdial_closer_log set status='DROP',start_epoch='$now_date_epoch',end_epoch='$now_date_epoch',length_in_sec='1',queue_seconds='0',lead_id = '$insert_lead_id',campaign_id='$channel_group',user='VDCL',list_id='$list_id',call_date='$now_date',phone_code='$phone_code',phone_number='$phone_number',comments='AFTER HOURS DROP',term_reason='AFTERHOURS',uniqueid='$uniqueid',callerid='$accountcode';";
+	$stmtA = "INSERT INTO osdial_closer_log SET status='DROP',start_epoch='$now_date_epoch',end_epoch='$now_date_epoch',length_in_sec='1',queue_seconds='0',lead_id='$insert_lead_id',campaign_id='$channel_group',user='VDCL',list_id='$list_id',call_date='$now_date',phone_code='$phone_code',phone_number='$phone_number',comments='AFTER HOURS DROP',term_reason='AFTERHOURS',uniqueid='$uniqueid',callerid='$accountcode';";
 	$affected_rows = $dbhA->do($stmtA);
-	if ($AGILOG) {$agi_string = "--    VDCL vcl insert: |$affected_rows|$insert_lead_id|\n|$stmtA|";   &agi_output;}
+	if ($AGILOG) {$agi_string = "--    VDCL vcl insert: |$affected_rows|$insert_lead_id";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 
-	$stmtA = "UPDATE osdial_list set status='DROP' where lead_id = '$insert_lead_id';";
+	$stmtA = "UPDATE osdial_list SET status='DROP' WHERE lead_id='$insert_lead_id';";
 	$affected_rows = $dbhA->do($stmtA);
-	if ($AGILOG) {$agi_string = "--    VDCL vl update: |$affected_rows|$insert_lead_id|\n|$stmtA|";   &agi_output;}
+	if ($AGILOG) {$agi_string = "--    VDCL vl update: |$affected_rows|$insert_lead_id";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 
 	if ($after_hours_action =~ /HANGUP/) {
 		### insert a NEW record to the osdial_manager table to hangup the channel
-		$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Hangup','$VHqueryCID','Channel: $channel','','','','','','','','','')";
+		$stmtA = "INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Hangup','$VHqueryCID','Channel: $channel','','','','','','','','','');";
 		$affected_rows = $dbhA->do($stmtA);  
 		if ($AGILOG) {$agi_string = "--    VDCL call_hungup after hours: |$VHqueryCID|$VDADconf_exten|$channel|insert to osdial_manager";   &agi_output;}
 	} elsif ($after_hours_action =~ /MESSAGE/) {
@@ -573,7 +577,7 @@ if ( ($hm < $ct_default_start) || ($hm > $ct_default_stop) ) {
 		$AGI->stream_file("$after_hours_message_filename");
 		#sleep(1);
 		### insert a NEW record to the osdial_manager table to hangup the channel
-		$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Hangup','$VHqueryCID','Channel: $channel','','','','','','','','','')";
+		$stmtA = "INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Hangup','$VHqueryCID','Channel: $channel','','','','','','','','','');";
 		$affected_rows = $dbhA->do($stmtA);  
 		if ($AGILOG) {$agi_string = "--    VDCL call_hungup after hours: |$VHqueryCID|$VDADconf_exten|$channel|insert to osdial_manager";   &agi_output;}
 	}
@@ -590,7 +594,7 @@ $AGI->stream_file("$welcome_message_filename") if ($welcome_message_filename !~ 
 
 $vci=0;
 $INBOUNDcampsSQL='';
-$stmtA = "SELECT campaign_id FROM osdial_campaigns where active='Y' and campaign_allow_inbound='Y';";
+$stmtA = "SELECT campaign_id FROM osdial_campaigns WHERE active='Y' AND campaign_allow_inbound='Y';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -605,7 +609,7 @@ while ($sthArows > $vci) {
 }
 $sthA->finish();
 
-if ($AGILOG) {$agi_string = "|$stmtA|$insert_lead_id|";   &agi_output;}
+if ($AGILOG and $DB>1) {$agi_string = "|$stmtA|$insert_lead_id|";   &agi_output;}
 
 $PADlead_id = sprintf("%09s", $insert_lead_id);	while (length($PADlead_id) > 9) {chop($PADlead_id);}
 # YmmddhhmmssLLLLLLLLL
@@ -617,25 +621,25 @@ checkresult();
 if ($AGILOG) {$agi_string = "AccountCode changed: $YqueryCID";   &agi_output;}
 
 if ($call_handle_method =~ /DIGITID$/) {
-		$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,server_ip) values('$uniqueid','$insert_lead_id','$channel_group','$SQLdate','$now_date_epoch','XFER','$phone_code','$phone_number','$fronter','N','$VARserver_ip')";
-		if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+		$stmtA = "INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,server_ip) VALUES ('$uniqueid','$insert_lead_id','$channel_group','$SQLdate','$now_date_epoch','XFER','$phone_code','$phone_number','$fronter','N','$VARserver_ip');";
+		if ($AGILOG and $DB>1) {$agi_string = "|$stmtA|";   &agi_output;}
 		$affected_rows = $dbhA->do($stmtA);
 		if ($AGILOG) {$agi_string = "--    VDAD : |$insert_lead_id|$fronter|insert to osdial_log: $uniqueid";   &agi_output;}
 }
 if ($call_handle_method =~ /CLOSER|DIGITID$/) {
-		$stmtA = "INSERT INTO osdial_xfer_log (lead_id,campaign_id,call_date,phone_code,phone_number,user,closer,uniqueid) values('$insert_lead_id','$channel_group','$SQLdate','$phone_code','$phone_number','$fronter','VDXL','$uniqueid')";
+		$stmtA = "INSERT INTO osdial_xfer_log (lead_id,campaign_id,call_date,phone_code,phone_number,user,closer,uniqueid) VALUES ('$insert_lead_id','$channel_group','$SQLdate','$phone_code','$phone_number','$fronter','VDXL','$uniqueid');";
 		if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 		$affected_rows = $dbhA->do($stmtA);
 		if ($AGILOG) {$agi_string = "--    VDXL : |$insert_lead_id|insert to osdial_xfer_log";   &agi_output;}
 }
 
 ### insert a LIVE record to the osdial_auto_calls table 
-$stmtA = "INSERT INTO osdial_auto_calls (server_ip,campaign_id,status,lead_id,uniqueid,callerid,channel,phone_code,phone_number,call_time,call_type,stage) values('$VARserver_ip','$channel_group','LIVE','$insert_lead_id','$uniqueid','$accountcode','$channel','$phone_code','$phone_number','$SQLdate','IN','LIVE-0')";
-if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+$stmtA = "INSERT INTO osdial_auto_calls (server_ip,campaign_id,status,lead_id,uniqueid,callerid,channel,phone_code,phone_number,call_time,call_type,stage) VALUES ('$VARserver_ip','$channel_group','LIVE','$insert_lead_id','$uniqueid','$accountcode','$channel','$phone_code','$phone_number','$SQLdate','IN','LIVE-0');";
+if ($AGILOG and $DB>1) {$agi_string = "|$stmtA|";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
 
-$stmtA = "INSERT INTO osdial_closer_log (lead_id,list_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,uniqueid,callerid) values('$insert_lead_id','$list_id','$channel_group','$SQLdate','$now_date_epoch','QUEUE','$phone_code','$phone_number','VDCL','N','$uniqueid','$accountcode')";
-if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+$stmtA = "INSERT INTO osdial_closer_log (lead_id,list_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,uniqueid,callerid) VALUES ('$insert_lead_id','$list_id','$channel_group','$SQLdate','$now_date_epoch','QUEUE','$phone_code','$phone_number','VDCL','N','$uniqueid','$accountcode');";
+if ($AGILOG and $DB>1) {$agi_string = "|$stmtA|";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
 if ($AGILOG) {$agi_string = "--    VDCL : |$insert_lead_id|insert to osdial_closer_log";   &agi_output;}
 
@@ -643,6 +647,38 @@ $drop_timer=0;
 $drop_seconds=0;
 $hold_message_counter=($prompt_interval - 10);
 $hold_tone_counter=0;
+
+
+$term_reason = 'QUEUETIMEOUT';
+
+if ($drop_trigger eq 'NO_AGENTS_AVAILABLE') {
+	$soSQL = "AND server_ip='$VARserver_ip'" if ($agent_search_method =~ /^SO/);
+	$stmtA = "SELECT count(*) FROM osdial_live_agents WHERE status IN ('CLOSER','READY') AND closer_campaigns LIKE '% $channel_group %' $soSQL;";
+	if ($AGILOG and $DB>1) {$agi_string = "|$stmtA|";   &agi_output;}
+	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+	@aryA = $sthA->fetchrow_array;
+	$agent_count = $aryA[0];
+	$sthA->finish();
+	if ($agent_count==0) {
+		$drop_timer = $DROP_TIME + 1;
+		$term_reason = 'NOAGENTSAVAILABLE';
+	}
+
+} elsif ($drop_trigger eq 'NO_AGENTS_CONNECTED') {
+	$soSQL = "AND server_ip='$VARserver_ip'" if ($agent_search_method =~ /^SO/);
+	$stmtA = "SELECT count(*) FROM osdial_live_agents WHERE closer_campaigns LIKE '% $channel_group %' $soSQL;";
+	if ($AGILOG and $DB>1) {$agi_string = "|$stmtA|";   &agi_output;}
+	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+	@aryA = $sthA->fetchrow_array;
+	$agent_count = $aryA[0];
+	$sthA->finish();
+	if ($agent_count==0) {
+		$drop_timer = $DROP_TIME + 1;
+		$term_reason = 'NOAGENTS';
+	}
+}
 
 while ($drop_timer <= $DROP_TIME) {
 	$channel_status = $AGI->channel_status("$channel");
@@ -664,20 +700,20 @@ while ($drop_timer <= $DROP_TIME) {
 	$rec_countWAIT=0;
 	$cbc=0;
 	$aco_sub=0;
-	$agent_call_order='order by last_call_finish';
-	if ($CAMP_callorder =~ /overall_user_level/i)	{$agent_call_order = 'order by user_level desc,last_call_finish';}
-	if ($CAMP_callorder =~ /oldest_call_start/i)	{$agent_call_order = 'order by last_call_time';}
-	if ($CAMP_callorder =~ /oldest_call_finish/i)	{$agent_call_order = 'order by last_call_finish';}
-	if ($CAMP_callorder =~ /random/i)				{$agent_call_order = 'order by random_id';}
-	if ($CAMP_callorder =~ /campaign_rank/i)		{$agent_call_order = 'order by campaign_weight desc,last_call_finish';}
-	if ($CAMP_callorder =~ /fewest_calls_campaign/i) {$agent_call_order = 'order by osdial_live_agents.calls_today,osdial_live_agents.last_call_finish';}
-	if ($CAMP_callorder =~ /inbound_group_rank/i)	{$aco_sub=1;	$agent_call_order = 'order by group_weight desc';}
-	if ($CAMP_callorder =~ /fewest_calls/i)			{$aco_sub=1;	$agent_call_order = 'order by osdial_live_inbound_agents.calls_today,osdial_live_inbound_agents.last_call_finish';}
+	$agent_call_order='ORDER BY last_call_finish';
+	if ($CAMP_callorder =~ /overall_user_level/i)	{$agent_call_order = 'ORDER BY user_level desc,last_call_finish';}
+	if ($CAMP_callorder =~ /oldest_call_start/i)	{$agent_call_order = 'ORDER BY last_call_time';}
+	if ($CAMP_callorder =~ /oldest_call_finish/i)	{$agent_call_order = 'ORDER BY last_call_finish';}
+	if ($CAMP_callorder =~ /random/i)				{$agent_call_order = 'ORDER BY random_id';}
+	if ($CAMP_callorder =~ /campaign_rank/i)		{$agent_call_order = 'ORDER BY campaign_weight desc,last_call_finish';}
+	if ($CAMP_callorder =~ /fewest_calls_campaign/i) {$agent_call_order = 'ORDER BY osdial_live_agents.calls_today,osdial_live_agents.last_call_finish';}
+	if ($CAMP_callorder =~ /inbound_group_rank/i)	{$aco_sub=1;	$agent_call_order = 'ORDER BY group_weight desc';}
+	if ($CAMP_callorder =~ /fewest_calls/i)			{$aco_sub=1;	$agent_call_order = 'ORDER BY osdial_live_inbound_agents.calls_today,osdial_live_inbound_agents.last_call_finish';}
 
 
 	$vci=0;
 	$INBOUNDcampsSQL='';
-	$stmtA = "SELECT campaign_id FROM osdial_campaigns where active='Y' and campaign_allow_inbound='Y';";
+	$stmtA = "SELECT campaign_id FROM osdial_campaigns WHERE active='Y' AND campaign_allow_inbound='Y';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -695,8 +731,8 @@ while ($drop_timer <= $DROP_TIME) {
 	################################################################
 	##### Attempt to send call to an agent on this server only #####
 	if ($agent_search_method =~ /^SO|^LO/) {
-		$stmtA = "SELECT count(*) FROM osdial_auto_calls where status = 'LIVE' and server_ip='$VARserver_ip' and campaign_id = '$channel_group' and call_time < \"$SQLdateBEGIN\" and lead_id != '$insert_lead_id';";
-		if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+		$stmtA = "SELECT count(*) FROM osdial_auto_calls WHERE status='LIVE' AND server_ip='$VARserver_ip' AND campaign_id='$channel_group' AND call_time<'$SQLdateBEGIN' AND lead_id!='$insert_lead_id';";
+		if ($AGILOG and $DB>1) {$agi_string = "|$stmtA|";   &agi_output;}
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -713,8 +749,8 @@ while ($drop_timer <= $DROP_TIME) {
 				$stmtA = "LOCK TABLES osdial_live_agents WRITE, osdial_live_inbound_agents WRITE;";
 				my $LOCKaffected_rows = $dbhA->do($stmtA);
 
-				$stmtA = "SELECT osdial_live_agents.conf_exten,osdial_live_agents.user,osdial_live_agents.extension from osdial_live_agents JOIN osdial_live_inbound_agents ON osdial_live_agents.user=osdial_live_inbound_agents.user WHERE status IN('CLOSER','READY') and server_ip='$VARserver_ip' and osdial_live_inbound_agents.group_id='$channel_group' and last_update_time > '$BDtsSQLdate' $agent_call_order limit 1;";
-				if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+				$stmtA = "SELECT osdial_live_agents.conf_exten,osdial_live_agents.user,osdial_live_agents.extension FROM osdial_live_agents JOIN osdial_live_inbound_agents ON osdial_live_agents.user=osdial_live_inbound_agents.user WHERE status IN ('CLOSER','READY') AND server_ip='$VARserver_ip' AND osdial_live_inbound_agents.group_id='$channel_group' AND last_update_time>'$BDtsSQLdate' $agent_call_order LIMIT 1;";
+				if ($AGILOG and $DB>1) {$agi_string = "|$stmtA|";   &agi_output;}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -729,7 +765,7 @@ while ($drop_timer <= $DROP_TIME) {
 
 				if ($sthArows > 0) {
 					my $random = int( rand(9999999)) + 10000000;
-					$stmtA = "UPDATE osdial_live_agents set status='QUEUE',lead_id='$insert_lead_id',random_id='$random',uniqueid='$unique_id', channel='$channel', callerid='$accountcode' where user='$VDADuser';";
+					$stmtA = "UPDATE osdial_live_agents SET status='QUEUE',lead_id='$insert_lead_id',random_id='$random',uniqueid='$unique_id',channel='$channel',callerid='$accountcode' WHERE user='$VDADuser';";
 					my $affected_rows = $dbhA->do($stmtA);
 					$found_agents=$affected_rows;
 				} else {
@@ -740,16 +776,16 @@ while ($drop_timer <= $DROP_TIME) {
 				my $LOCKaffected_rows = $dbhA->do($stmtA);
 			} else {
 				my $random = int( rand(9999999)) + 10000000;
-				$stmtA = "UPDATE osdial_live_agents set status='QUEUE',random_id='$random',lead_id='$insert_lead_id',uniqueid='$unique_id', channel='$channel', callerid='$accountcode' where status IN('CLOSER','READY') and server_ip='$VARserver_ip' and campaign_id IN($INBOUNDcampsSQL) and closer_campaigns LIKE \"% $channel_group %\" and last_update_time > '$BDtsSQLdate' $agent_call_order limit 1;";
+				$stmtA = "UPDATE osdial_live_agents SET status='QUEUE',random_id='$random',lead_id='$insert_lead_id',uniqueid='$unique_id',channel='$channel',callerid='$accountcode' WHERE status IN ('CLOSER','READY') AND server_ip='$VARserver_ip' AND campaign_id IN ($INBOUNDcampsSQL) AND closer_campaigns LIKE '% $channel_group %' AND last_update_time>'$BDtsSQLdate' $agent_call_order LIMIT 1;";
 				my $affected_rows = $dbhA->do($stmtA);
 				$found_agents=$affected_rows;
 			}
-			if ($AGILOG) {$agi_string = "--    VDAD get agent: |$affected_rows|$channel_group|$stmtA|";   &agi_output;}
+			if ($AGILOG) {$agi_string = "--    VDAD get agent: |$affected_rows|$channel_group";  $agi_string .= "\n|$stmtA|" if ($DB>1); &agi_output;}
 			if ($found_agents > 0) {
 				if ($aco_sub<1) {
 					$cbc=0;	
-					$stmtA = "SELECT conf_exten,user,extension FROM osdial_live_agents where status = 'QUEUE' and server_ip='$VARserver_ip' and campaign_id IN($INBOUNDcampsSQL) and callerid='$accountcode' and channel='$channel' order by last_call_time limit 1;";
-					if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+					$stmtA = "SELECT conf_exten,user,extension FROM osdial_live_agents WHERE status='QUEUE' AND server_ip='$VARserver_ip' AND campaign_id IN ($INBOUNDcampsSQL) AND callerid='$accountcode' AND channel='$channel' ORDER BY last_call_time LIMIT 1;";
+					if ($AGILOG and $DB>1) {$agi_string = "|$stmtA|";   &agi_output;}
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
@@ -766,31 +802,31 @@ while ($drop_timer <= $DROP_TIME) {
 					$sthA->finish();
 				}
 
-				$stmtA = "UPDATE osdial_auto_calls set status='CLOSER', stage='CLOSER-$drop_timer' where callerid='$accountcode';";
+				$stmtA = "UPDATE osdial_auto_calls SET status='CLOSER',stage='CLOSER-$drop_timer' WHERE callerid='$accountcode';";
 				$affected_rows = $dbhA->do($stmtA);
-				if ($AGILOG) {$agi_string = "--    VDCL XFER : |$affected_rows|$accountcode\n|$stmtA|";   &agi_output;}
+				if ($AGILOG) {$agi_string = "--    VDCL XFER : |$affected_rows|$accountcode";   $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 				if ($affected_rows < 1) {
-					$stmtA = "INSERT INTO osdial_auto_calls (server_ip,campaign_id,status,lead_id,uniqueid,callerid,channel,phone_code,phone_number,call_time,call_type,stage)  values('$VARserver_ip','$channel_group','CLOSER','$insert_lead_id','$uniqueid','$accountcode','$channel','$phone_code','$phone_number','$SQLdate','IN','CLOSER-$drop_timer')";
+					$stmtA = "INSERT INTO osdial_auto_calls (server_ip,campaign_id,status,lead_id,uniqueid,callerid,channel,phone_code,phone_number,call_time,call_type,stage) VALUES ('$VARserver_ip','$channel_group','CLOSER','$insert_lead_id','$uniqueid','$accountcode','$channel','$phone_code','$phone_number','$SQLdate','IN','CLOSER-$drop_timer');";
 					$affected_rows = $dbhA->do($stmtA);
-					if ($AGILOG) {$agi_string = "$affected_rows|VDAC-reinsert|$stmtA|";   &agi_output;}
+					if ($AGILOG) {$agi_string = "$affected_rows|VDAC-reinsert";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 				}
 
 				if ($call_handle_method =~ /CLOSER|DIGITID$/) {
 					$stmtA = "UPDATE osdial_xfer_log set closer='$VDADuser' where lead_id = '$insert_lead_id' order by call_date desc limit 1;";
 					$affected_rows = $dbhA->do($stmtA);
-					if ($AGILOG) {$agi_string = "--    VDXL XFER osdial_xfer_log update: |$affected_rows|$insert_lead_id|$VDADuser\n|$stmtA|";   &agi_output;}
+					if ($AGILOG) {$agi_string = "--    VDXL XFER osdial_xfer_log update: |$affected_rows|$insert_lead_id|$VDADuser";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 				}
 
-				$stmtA = "UPDATE osdial_closer_log set user='$VDADuser' where lead_id='$insert_lead_id' order by call_date desc limit 1;";
+				$stmtA = "UPDATE osdial_closer_log SET user='$VDADuser' WHERE lead_id='$insert_lead_id' ORDER BY call_date DESC LIMIT 1;";
 				$affected_rows = $dbhA->do($stmtA);
-				if ($AGILOG) {$agi_string = "--    closer log : |$affected_rows|$insert_lead_id\n|$stmtA|";   &agi_output;}
+				if ($AGILOG) {$agi_string = "--    closer log : |$affected_rows|$insert_lead_id";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 
 				### if agent alert exten is not disabled, then trigger the alert and wait
 				if ($agent_alert_exten !~ /X/i) {
 					$VHqueryCID = "VH$CIDdate$VDADconf_exten";
 
 					### insert a NEW record to the osdial_manager table to play the alert message to the agent
-					$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$VHqueryCID','Exten: $agent_alert_exten','Context: $ext_context','Channel: Local/7$VDADconf_exten$at$ext_context','Priority: 1','Callerid: $VHqueryCID','Timeout: 10','Account: $VHqueryCID','','','')";
+					$stmtA = "INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$VHqueryCID','Exten: $agent_alert_exten','Context: $ext_context','Channel: Local/7$VDADconf_exten$at$ext_context','Priority: 1','Callerid: $VHqueryCID','Timeout: 10','Account: $VHqueryCID','','','');";
 					$affected_rows = $dbhA->do($stmtA);  
 					if ($AGILOG) {$agi_string = "--    VDCL agent alert: |$VHqueryCID|7$VDADconf_exten|$channel|insert to osdial_manager";   &agi_output;}
 
@@ -802,8 +838,8 @@ while ($drop_timer <= $DROP_TIME) {
 				$AGI->stream_file('sip-silence'); # stop music-on-hold process
 
 				### update calls_today for osdial_live_inbound_agents ###
-				$stmtA = "SELECT calls_today from osdial_inbound_group_agents WHERE user='$VDADuser' and group_id='$channel_group';";
-				if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+				$stmtA = "SELECT calls_today FROM osdial_inbound_group_agents WHERE user='$VDADuser' AND group_id='$channel_group';";
+				if ($AGILOG and $DB>1) {$agi_string = "|$stmtA|";   &agi_output;}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -815,17 +851,17 @@ while ($drop_timer <= $DROP_TIME) {
 				$sthA->finish();
 
 				if ($sthArows > 0) {
-					$stmtA = "UPDATE osdial_live_inbound_agents set calls_today='$calls_today' WHERE user='$VDADuser' and group_id='$channel_group';";
+					$stmtA = "UPDATE osdial_live_inbound_agents SET calls_today='$calls_today' WHERE user='$VDADuser' AND group_id='$channel_group';";
 					my $affected_rows = $dbhA->do($stmtA);
-					$stmtA = "UPDATE osdial_inbound_group_agents set calls_today='$calls_today' WHERE user='$VDADuser' and group_id='$channel_group';";
+					$stmtA = "UPDATE osdial_inbound_group_agents SET calls_today='$calls_today' WHERE user='$VDADuser' AND group_id='$channel_group';";
 					my $affected_rows = $dbhA->do($stmtA);
 					if ($AGILOG) {$agi_string = "--    VDLIA agent calls: |$calls_today|$VDADuser|$channel_group|";   &agi_output;}
 				}
 
 				if ($VDADconf_exten =~ /^87......$|^687......$|^787......$/) {
-					$stmtA="INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$accountcode','Channel: Local/$VDADconf_exten\@$ext_context','Context: $ext_context','Exten: 487487','Priority: 1','Account: $accountcode','','','','','');";
+					$stmtA="INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$accountcode','Channel: Local/$VDADconf_exten\@$ext_context','Context: $ext_context','Exten: 487487','Priority: 1','Account: $accountcode','','','','','');";
 					$affected_rows = $dbhA->do($stmtA);
-					if ($AGILOG) {$agi_string = "$affected_rows|$stmtA";   &agi_output;}
+					if ($AGILOG and $DB>1) {$agi_string = "$affected_rows|$stmtA";   &agi_output;}
 				}
 
 				usleep(1*500*1000);
@@ -846,9 +882,9 @@ while ($drop_timer <= $DROP_TIME) {
 				if ($min < 10) {$min = "0$min";}
 				if ($sec < 10) {$sec = "0$sec";}
 
-				$stmtA = "UPDATE osdial_closer_log set queue_seconds='$drop_timer' where lead_id = '$insert_lead_id' and call_date='$SQLdate';";
+				$stmtA = "UPDATE osdial_closer_log SET queue_seconds='$drop_timer' WHERE lead_id='$insert_lead_id' AND call_date='$SQLdate';";
 				$affected_rows = $dbhA->do($stmtA);
-				if ($AGILOG) {$agi_string = "--    VDCL vcl update: |$affected_rows|$insert_lead_id|\n|$stmtA|";   &agi_output;}
+				if ($AGILOG) {$agi_string = "--    VDCL vcl update: |$affected_rows|$insert_lead_id";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 
 				$dbhA->disconnect();
 
@@ -863,8 +899,8 @@ while ($drop_timer <= $DROP_TIME) {
 		} else {
 			### For Debugging purposes display the call ahead of this call
 			if ( ($rec_countWAIT == '1') && ($drop_timer > 3) && ($AGILOG) ) {
-				$stmtA = "SELECT call_time,campaign_id,last_update_time,callerid,status,channel FROM osdial_auto_calls where status = 'LIVE' and server_ip='$VARserver_ip' and campaign_id = '$channel_group' and call_time < \"$SQLdateBEGIN\" and lead_id != '$insert_lead_id';";
-				if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+				$stmtA = "SELECT call_time,campaign_id,last_update_time,callerid,status,channel FROM osdial_auto_calls WHERE status='LIVE' AND server_ip='$VARserver_ip' AND campaign_id='$channel_group' AND call_time<'$SQLdateBEGIN' AND lead_id!='$insert_lead_id';";
+				if ($AGILOG and $DB>1) {$agi_string = "|$stmtA|";   &agi_output;}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -888,8 +924,8 @@ while ($drop_timer <= $DROP_TIME) {
 	##### Attempt to send call to an agent on any server #####
 		$cbc=0;
 		$rec_countWAITrem=0;
-		$stmtA = "SELECT count(*) FROM osdial_auto_calls where status = 'LIVE' and campaign_id = '$channel_group' and call_time < \"$SQLdateBEGIN\" and lead_id != '$insert_lead_id';";
-		if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+		$stmtA = "SELECT count(*) FROM osdial_auto_calls WHERE status='LIVE' AND campaign_id='$channel_group' AND call_time<'$SQLdateBEGIN' AND lead_id!='$insert_lead_id';";
+		if ($AGILOG and $DB>1) {$agi_string = "|$stmtA|";   &agi_output;}
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -905,8 +941,8 @@ while ($drop_timer <= $DROP_TIME) {
 				$stmtA = "LOCK TABLES osdial_live_agents WRITE, osdial_live_inbound_agents WRITE;";
 				my $LOCKaffected_rows = $dbhA->do($stmtA);
 
-				$stmtA = "SELECT osdial_live_agents.conf_exten,osdial_live_agents.user,osdial_live_agents.extension,osdial_live_agents.server_ip from osdial_live_agents JOIN osdial_live_inbound_agents ON osdial_live_agents.user=osdial_live_inbound_agents.user WHERE status IN('CLOSER','READY') and osdial_live_inbound_agents.group_id='$channel_group' and last_update_time > '$BDtsSQLdate' $agent_call_order limit 1;";
-				if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+				$stmtA = "SELECT osdial_live_agents.conf_exten,osdial_live_agents.user,osdial_live_agents.extension,osdial_live_agents.server_ip from osdial_live_agents JOIN osdial_live_inbound_agents ON osdial_live_agents.user=osdial_live_inbound_agents.user WHERE status IN ('CLOSER','READY') AND osdial_live_inbound_agents.group_id='$channel_group' AND last_update_time>'$BDtsSQLdate' $agent_call_order LIMIT 1;";
+				if ($AGILOG and $DB>1) {$agi_string = "|$stmtA|";   &agi_output;}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -923,7 +959,7 @@ while ($drop_timer <= $DROP_TIME) {
 
 				if ($sthArows > 0) {
 					my $random = int( rand(9999999)) + 10000000;
-					$stmtA = "UPDATE osdial_live_agents set status='QUEUE',random_id='$random',lead_id='$insert_lead_id',uniqueid='$unique_id', channel='$channel', callerid='$accountcode', call_server_ip='$VARserver_ip' where user='$VDADuser';";
+					$stmtA = "UPDATE osdial_live_agents SET status='QUEUE',random_id='$random',lead_id='$insert_lead_id',uniqueid='$unique_id',channel='$channel',callerid='$accountcode',call_server_ip='$VARserver_ip' WHERE user='$VDADuser';";
 					my $affected_rows = $dbhA->do($stmtA);
 					$found_agents=$affected_rows;
 				} else {
@@ -934,16 +970,16 @@ while ($drop_timer <= $DROP_TIME) {
 				my $LOCKaffected_rows = $dbhA->do($stmtA);
 			} else {
 				my $random = int( rand(9999999)) + 10000000;
-				$stmtA = "UPDATE osdial_live_agents set status='QUEUE',random_id='$random',lead_id='$insert_lead_id',uniqueid='$unique_id', channel='$channel', callerid='$accountcode', call_server_ip='$VARserver_ip' where status IN('CLOSER','READY') and campaign_id IN($INBOUNDcampsSQL) and closer_campaigns LIKE \"% $channel_group %\" and last_update_time > '$BDtsSQLdate' $agent_call_order limit 1;";
+				$stmtA = "UPDATE osdial_live_agents SET status='QUEUE',random_id='$random',lead_id='$insert_lead_id',uniqueid='$unique_id',channel='$channel',callerid='$accountcode',call_server_ip='$VARserver_ip' WHERE status IN('CLOSER','READY') AND campaign_id IN ($INBOUNDcampsSQL) AND closer_campaigns LIKE '% $channel_group %' AND last_update_time>'$BDtsSQLdate' $agent_call_order LIMIT 1;";
 				my $affected_rows = $dbhA->do($stmtA);
 				$found_agents=$affected_rows;
 			}
-			if ($AGILOG) {$agi_string = "--    VDAD get agent: |$DROP_TIME|$drop_timer|$affected_rows|$found_agents|update of vla table: $channel_group|\n|$stmtA|";   &agi_output;}
+			if ($AGILOG) {$agi_string = "--    VDAD get agent: |$DROP_TIME|$drop_timer|$affected_rows|$found_agents|update of vla table: $channel_group";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 			if ($found_agents > 0) {
 				if ($aco_sub<1) {
 					$cbc=0;	
-					$stmtA = "SELECT conf_exten,user,extension,server_ip FROM osdial_live_agents where status = 'QUEUE' and campaign_id IN($INBOUNDcampsSQL) and callerid='$accountcode' and channel='$channel' order by last_call_time limit 1;";
-					if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+					$stmtA = "SELECT conf_exten,user,extension,server_ip FROM osdial_live_agents where status='QUEUE' AND campaign_id IN ($INBOUNDcampsSQL) AND callerid='$accountcode' AND channel='$channel' ORDER BY last_call_time LIMIT 1;";
+					if ($AGILOG and $DB>1) {$agi_string = "|$stmtA|";   &agi_output;}
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
@@ -958,22 +994,22 @@ while ($drop_timer <= $DROP_TIME) {
 					}
 					$sthA->finish();
 				}
-				$stmtA = "UPDATE osdial_auto_calls set status='CLOSER', stage='CLOSER-$drop_timer' where callerid='$accountcode';";
+				$stmtA = "UPDATE osdial_auto_calls SET status='CLOSER',stage='CLOSER-$drop_timer' WHERE callerid='$accountcode';";
 				my $affected_rows = $dbhA->do($stmtA);
-				if ($AGILOG) {$agi_string = "--    VDCL XFER REMOTE: |$affected_rows|update of vac table: $accountcode\n|$stmtA|";   &agi_output;}
+				if ($AGILOG) {$agi_string = "--    VDCL XFER REMOTE: |$affected_rows|update of vac table: $accountcode";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 				if ($affected_rows < 1) {
-					$stmtA = "INSERT INTO osdial_auto_calls (server_ip,campaign_id,status,lead_id,uniqueid,callerid,channel,phone_code,phone_number,call_time,call_type,stage)  values('$VARserver_ip','$channel_group','CLOSER','$insert_lead_id','$uniqueid','$accountcode','$channel','$phone_code','$phone_number','$SQLdate','IN','CLOSER-$drop_timer')";
+					$stmtA = "INSERT INTO osdial_auto_calls (server_ip,campaign_id,status,lead_id,uniqueid,callerid,channel,phone_code,phone_number,call_time,call_type,stage) VALUES ('$VARserver_ip','$channel_group','CLOSER','$insert_lead_id','$uniqueid','$accountcode','$channel','$phone_code','$phone_number','$SQLdate','IN','CLOSER-$drop_timer');";
 					$affected_rows = $dbhA->do($stmtA);
-					if ($AGILOG) {$agi_string = "$affected_rows|VDAC-reinsert|$stmtA|";   &agi_output;}
+					if ($AGILOG) {$agi_string = "$affected_rows|VDAC-reinsert";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 				}
 
-				$stmtA = "UPDATE osdial_xfer_log set closer='$VDADuser' where lead_id = '$insert_lead_id' order by call_date desc limit 1;";
+				$stmtA = "UPDATE osdial_xfer_log SET closer='$VDADuser' WHERE lead_id='$insert_lead_id' ORDER BY call_date DESC LIMIT 1;";
 				my $affected_rows = $dbhA->do($stmtA);
-				if ($AGILOG) {$agi_string = "--    VDXL osdial_xfer_log update: |$affected_rows|$insert_lead_id|$VDADuser\n|$stmtA|";   &agi_output;}
+				if ($AGILOG) {$agi_string = "--    VDXL osdial_xfer_log update: |$affected_rows|$insert_lead_id|$VDADuser";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 
-				$stmtA = "UPDATE osdial_closer_log set user='$VDADuser' where lead_id='$insert_lead_id' order by call_date desc limit 1;";
+				$stmtA = "UPDATE osdial_closer_log SET user='$VDADuser' WHERE lead_id='$insert_lead_id' ORDER BY call_date DESC LIMIT 1;";
 				my $affected_rows = $dbhA->do($stmtA);
-				if ($AGILOG) {$agi_string = "--    closer log : |$affected_rows|update of vcl table: $insert_lead_id\n|$stmtA|";   &agi_output;}
+				if ($AGILOG) {$agi_string = "--    closer log : |$affected_rows|update of vcl table: $insert_lead_id";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 
 				### format the remote server dialstring to get the call to the overflow agent meetme room
 				$S='*';
@@ -993,7 +1029,7 @@ while ($drop_timer <= $DROP_TIME) {
 					$VHqueryCID = "VH$CIDdate$VDADconf_exten";
 
 					### insert a NEW record to the osdial_manager table to play the alert message to the agent
-					$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$VHqueryCID','Exten: $agent_alert_exten','Context: $ext_context','Channel: Local/$alertVDADremDIALstr$at$ext_context','Priority: 1','Callerid: $VHqueryCID','Timeout: 10','Account: $VHqueryCID','','','')";
+					$stmtA = "INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$VHqueryCID','Exten: $agent_alert_exten','Context: $ext_context','Channel: Local/$alertVDADremDIALstr$at$ext_context','Priority: 1','Callerid: $VHqueryCID','Timeout: 10','Account: $VHqueryCID','','','');";
 					$affected_rows = $dbhA->do($stmtA);  
 					if ($AGILOG) {$agi_string = "--    VDCL agent alert: |$VHqueryCID|$alertVDADremDIALstr|$channel|insert to osdial_manager";   &agi_output;}
 
@@ -1006,8 +1042,8 @@ while ($drop_timer <= $DROP_TIME) {
 				$AGI->stream_file('sip-silence'); # stop music-on-hold process
 
 				### update calls_today for osdial_live_inbound_agents ###
-				$stmtA = "SELECT calls_today from osdial_inbound_group_agents WHERE user='$VDADuser' and group_id='$channel_group';";
-				if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+				$stmtA = "SELECT calls_today FROM osdial_inbound_group_agents WHERE user='$VDADuser' AND group_id='$channel_group';";
+				if ($AGILOG and $DB>1) {$agi_string = "|$stmtA|";   &agi_output;}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -1019,17 +1055,17 @@ while ($drop_timer <= $DROP_TIME) {
 				$sthA->finish();
 
 				if ($sthArows > 0) {
-					$stmtA = "UPDATE osdial_live_inbound_agents set calls_today='$calls_today' WHERE user='$VDADuser' and group_id='$channel_group';";
+					$stmtA = "UPDATE osdial_live_inbound_agents SET calls_today='$calls_today' WHERE user='$VDADuser' AND group_id='$channel_group';";
 					my $affected_rows = $dbhA->do($stmtA);
-					$stmtA = "UPDATE osdial_inbound_group_agents set calls_today='$calls_today' WHERE user='$VDADuser' and group_id='$channel_group';";
+					$stmtA = "UPDATE osdial_inbound_group_agents SET calls_today='$calls_today' WHERE user='$VDADuser' AND group_id='$channel_group';";
 					my $affected_rows = $dbhA->do($stmtA);
 					if ($AGILOG) {$agi_string = "--    VDLIA agent calls: |$calls_today|$VDADuser|$channel_group|";   &agi_output;}
 				}
 
 				if ($VDADconf_exten =~ /^87......$|^687......$|^767......$/) {
-					$stmtA="INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$accountcode','Channel: Local/$VDADremDIALstr\@$ext_context','Context: $ext_context','Exten: 487487','Priority: 1','Account: $accountcode','','','','','');";
+					$stmtA="INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$accountcode','Channel: Local/$VDADremDIALstr\@$ext_context','Context: $ext_context','Exten: 487487','Priority: 1','Account: $accountcode','','','','','');";
 					$affected_rows = $dbhA->do($stmtA);
-					if ($AGILOG) {$agi_string = "$affected_rows|$stmtA";   &agi_output;}
+					if ($AGILOG and $DB>1) {$agi_string = "$affected_rows|$stmtA";   &agi_output;}
 				}
 				usleep(1*500*1000);
 
@@ -1049,9 +1085,9 @@ while ($drop_timer <= $DROP_TIME) {
 				if ($min < 10) {$min = "0$min";}
 				if ($sec < 10) {$sec = "0$sec";}
 
-				$stmtA = "UPDATE osdial_closer_log set queue_seconds='$drop_timer' where lead_id = '$insert_lead_id' and call_date='$SQLdate';";
+				$stmtA = "UPDATE osdial_closer_log SET queue_seconds='$drop_timer' WHERE lead_id='$insert_lead_id' AND call_date='$SQLdate';";
 				$affected_rows = $dbhA->do($stmtA);
-				if ($AGILOG) {$agi_string = "--    VDCL vcl update: |$affected_rows|$insert_lead_id|\n|$stmtA|";   &agi_output;}
+				if ($AGILOG) {$agi_string = "--    VDCL vcl update: |$affected_rows|$insert_lead_id";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 
 				$dbhA->disconnect();
 
@@ -1065,8 +1101,8 @@ while ($drop_timer <= $DROP_TIME) {
 			}
 		} else {
 			if ( ($rec_countWAITrem == '1') && ($drop_timer > 3) && ($AGILOG) ) {
-				$stmtA = "SELECT call_time,campaign_id,last_update_time,callerid,status,channel FROM osdial_auto_calls where status = 'LIVE' and campaign_id = '$channel_group' and call_time < \"$SQLdateBEGIN\" and lead_id != '$insert_lead_id';";
-				if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+				$stmtA = "SELECT call_time,campaign_id,last_update_time,callerid,status,channel FROM osdial_auto_calls WHERE status='LIVE' AND campaign_id='$channel_group' AND call_time<'$SQLdateBEGIN' AND lead_id!='$insert_lead_id';";
+				if ($AGILOG and $DB>1) {$agi_string = "|$stmtA|";   &agi_output;}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -1120,14 +1156,14 @@ while ($drop_timer <= $DROP_TIME) {
 		$drop_timer++;
 	}
 
-	$stmtA = "UPDATE osdial_auto_calls set stage='LIVE-$drop_timer' where callerid='$accountcode';";
+	$stmtA = "UPDATE osdial_auto_calls SET stage='LIVE-$drop_timer' WHERE callerid='$accountcode';";
 	$affected_rows = $dbhA->do($stmtA);
 	if ($affected_rows < 1) {
-		$stmtA = "INSERT INTO osdial_auto_calls (server_ip,campaign_id,status,lead_id,uniqueid,callerid,channel,phone_code,phone_number,call_time,call_type,stage)  values('$VARserver_ip','$channel_group','CLOSER','$insert_lead_id','$uniqueid','$accountcode','$channel','$phone_code','$phone_number','$SQLdate','IN','CLOSER-$drop_timer')";
+		$stmtA = "INSERT INTO osdial_auto_calls (server_ip,campaign_id,status,lead_id,uniqueid,callerid,channel,phone_code,phone_number,call_time,call_type,stage) VALUES ('$VARserver_ip','$channel_group','CLOSER','$insert_lead_id','$uniqueid','$accountcode','$channel','$phone_code','$phone_number','$SQLdate','IN','CLOSER-$drop_timer');";
 		$affected_rows = $dbhA->do($stmtA);
-		if ($AGILOG) {$agi_string = "$affected_rows|VDAC-reinsert|$stmtA|";   &agi_output;}
+		if ($AGILOG and $DB>1) {$agi_string = "$affected_rows|VDAC-reinsert|$stmtA|";   &agi_output;}
 	}
-	#if ($AGILOG) {$agi_string = "--    VDAD : |$affected_rows|update of vac table: $accountcode\n|$stmtA|";   &agi_output;}
+	#if ($AGILOG) {$agi_string = "--    VDAD : |$affected_rows|update of vac table: $accountcode";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 
 }
 
@@ -1160,14 +1196,13 @@ if ($drop_timer > $DROP_TIME) {
 	$SQLdate = "$year-$mon-$mday $hour:$min:$sec";
 	#$VDADvoicemail_ext = '';
 
+	$drop_seconds = time() - $start_epoch;
+
 	$DROPexten = '';
-	if ($drop_seconds < 1) {
-		$drop_seconds = $DROP_TIME;
-		if ($drop_message =~ /Y/) {
-			$DROPexten = "$drop_exten";
-		} else {
-			$DROPexten = "$voicemail_dump_exten$VDADvoicemail_ext" if (length($VDADvoicemail_ext)>0);
-		}
+	if ($drop_message =~ /Y/) {
+		$DROPexten = "$drop_exten";
+	} else {
+		$DROPexten = "$voicemail_dump_exten$VDADvoicemail_ext" if (length($VDADvoicemail_ext)>0);
 	}
 
 
@@ -1179,7 +1214,7 @@ if ($drop_timer > $DROP_TIME) {
 		$AGI->stream_file('sip-silence'); # stop music-on-hold process
 		#sleep(1);
 
-		if ($AGILOG) {$agi_string = "exiting the VDAD app, transferring call to $DROPexten";   &agi_output;}
+		if ($AGILOG) {$agi_string = "exiting the VDAD app, transferring call to $DROPexten | $term_reason";   &agi_output;}
 		print "SET CONTEXT $ext_context\n";
 		checkresult();
 		print "SET EXTENSION $DROPexten\n";
@@ -1188,22 +1223,22 @@ if ($drop_timer > $DROP_TIME) {
 		checkresult();
 	} else {
 		### insert a NEW record to the osdial_manager table to be processed
-		$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Hangup','$VHqueryCID','Channel: $channel','','','','','','','','','')";
+		$stmtA = "INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Hangup','$VHqueryCID','Channel: $channel','','','','','','','','','')";
 		$affected_rows = $dbhA->do($stmtA);  
 		if ($AGILOG) {$agi_string = "--    VDCL call_hungup timout: |$VHqueryCID|$VDADconf_exten|$channel|insert to osdial_manager";   &agi_output;}
 	}
 
-	$stmtA = "DELETE FROM osdial_auto_calls where callerid='$accountcode' and server_ip='$VARserver_ip' order by call_time desc limit 1;";
+	$stmtA = "DELETE FROM osdial_auto_calls WHERE callerid='$accountcode' AND server_ip='$VARserver_ip' ORDER BY call_time DESC LIMIT 1;";
 	$affected_rows = $dbhA->do($stmtA);
 	if ($AGILOG) {$agi_string = "--    VDCL vac record deleted: |$affected_rows| $VDADcampaign|";   &agi_output;}
 
-	$stmtA = "UPDATE osdial_closer_log set status='DROP',end_epoch='$now_date_epoch',length_in_sec='$drop_seconds',queue_seconds='$drop_seconds',term_reason='QUEUETIMEOUT' where lead_id = '$insert_lead_id' order by start_epoch desc limit 1;";
+	$stmtA = "UPDATE osdial_closer_log SET status='DROP',end_epoch='$now_date_epoch',length_in_sec='$drop_seconds',queue_seconds='$drop_seconds',term_reason='$term_reason' WHERE lead_id='$insert_lead_id' ORDER BY start_epoch DESC LIMIT 1;";
 	$affected_rows = $dbhA->do($stmtA);
-	if ($AGILOG) {$agi_string = "--    VDCL vcl update: |$affected_rows|$insert_lead_id|\n|$stmtA|";   &agi_output;}
+	if ($AGILOG) {$agi_string = "--    VDCL vcl update: |$affected_rows|$insert_lead_id";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 
-	$stmtA = "UPDATE osdial_list set status='XDROP' where lead_id = '$insert_lead_id';";
+	$stmtA = "UPDATE osdial_list SET status='XDROP' WHERE lead_id='$insert_lead_id';";
 	$affected_rows = $dbhA->do($stmtA);
-	if ($AGILOG) {$agi_string = "--    VDCL vl update: |$affected_rows|$insert_lead_id|\n|$stmtA|";   &agi_output;}
+	if ($AGILOG) {$agi_string = "--    VDCL vl update: |$affected_rows|$insert_lead_id";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 }
 
 $dbhA->disconnect();

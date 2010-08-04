@@ -304,6 +304,7 @@ $disable_alter_custdata = get_variable("disable_alter_custdata");
 $drop_call_seconds = get_variable("drop_call_seconds");
 $drop_exten = get_variable("drop_exten");
 $drop_message = get_variable("drop_message");
+$drop_trigger = get_variable("drop_trigger");
 $dtmf_send_extension = get_variable("dtmf_send_extension");
 $dupcheck = get_variable("dupcheck");
 

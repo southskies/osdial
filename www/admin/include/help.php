@@ -798,24 +798,29 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <B>Xfer-Conf DTMF -</B> These four fields allow for you to have two sets of Transfer Conference and DTMF presets. When the call or campaign is loaded, the agent.php script will show two buttons on the transfer-conference frame and auto-populate the number-to-dial and the send-dtmf fields when pressed. If you want to allow Consultative Transfers, a fronter to a closer, you can place CXFER as one of the number-to-dial presets and the proper dial string will be sent to do a Local Consultative Transfer, then the agent can just LEAVE-3WAY-CALL and move on to their next call. If you want to allow Blind transfers of customers to a <?=$t1?> AGI script for logging or an IVR, then place AXFER in the number-to-dial field. You can also specify an custom extension after the AXFER or CXFER, for instance if you want to do Internal Consultative transfers instead of Local you would put CXFER90009 in the number-to-dial field.
 
 <BR>
+<A NAME="osdial_inbound_groups-drop_trigger">
+<BR>
+<B>Drop Trigger -</B> The event that will trigger the call to drop.  CALL_SECONDS_TIMEOUT will wait until the Drop Call Seconds time elapses.  NO_AGENTS_CONNECTED will drop the call immediately if no agents are logged-in and able to take calls for this InGroup.  NO_AGENTS_AVAILABLE will drop the call immediately if their are agents logged in, but none are currently available.
+
+<BR>
 <A NAME="osdial_inbound_groups-drop_call_seconds">
 <BR>
 <B>Drop Call Seconds -</B> The number of seconds from the time the customer line is picked up until the call is considered a DROP, only applies to outbound calls.
 
 <BR>
-<A NAME="osdial_inbound_groups-voicemail_ext">
-<BR>
-<B>Voicemail -</B> If defined, calls that would normally DROP would instead be directed to this voicemail box to hear and leave a message.
-
-<BR>
 <A NAME="osdial_inbound_groups-drop_message">
 <BR>
-<B>Drop Message -</B> If set to Y will play a message to customer after the Drop Call Seconds timeout is reached without being transferred to an agent. This setting will override sending to a voicemail box if this is set to Y.
+<B>Drop Action -</B> If the Drop Trigger event occurs, EXTENSION (Y) will transfer to the Drop Extension, VOICEMAIL (N) will transfer to the Drop Voicemail box.
+
+<BR>
+<A NAME="osdial_inbound_groups-voicemail_ext">
+<BR>
+<B>Drop Voicemail -</B> If defined, calls that would normally DROP would instead be directed to this voicemail box to hear and leave a message.
 
 <BR>
 <A NAME="osdial_inbound_groups-drop_exten">
 <BR>
-<B>Drop Exten -</B> This is the dial plan extension that the desired Dropped call audio file is located at on your server.
+<B>Drop Extension -</B> This is the dial plan extension that the desired Dropped call audio file is located at on your server.
 
 <BR>
 <A NAME="osdial_inbound_groups-call_time_id">

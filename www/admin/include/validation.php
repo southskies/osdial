@@ -297,6 +297,7 @@ if ($non_latin < 1)	{
 	$dial_status_c = ereg_replace("[^-\_0-9a-zA-Z]","",$dial_status_c);
 	$dial_status_d = ereg_replace("[^-\_0-9a-zA-Z]","",$dial_status_d);
 	$dial_status_e = ereg_replace("[^-\_0-9a-zA-Z]","",$dial_status_e);
+	$drop_trigger = ereg_replace("[^-\_0-9a-zA-Z]","",$drop_trigger);
 	$ext_context = ereg_replace("[^-\_0-9a-zA-Z]","",$ext_context);
 	$group_id = ereg_replace("[^-\_0-9a-zA-Z]","",$group_id);
 	$lead_filter_id = ereg_replace("[^-\_0-9a-zA-Z]","",$lead_filter_id);

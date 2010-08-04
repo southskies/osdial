@@ -656,19 +656,23 @@
   These four fields allow for you to have two sets of Transfer Conference and DTMF presets. When the call or campaign is loaded, the agent.php script will show two buttons on the transfer-conference frame and auto-populate the number-to-dial and the send-dtmf fields when pressed. If you want to allow Consultative Transfers, a fronter to a closer, you can place CXFER as one of the number-to-dial presets and the proper dial string will be sent to do a Local Consultative Transfer, then the agent can just LEAVE-3WAY-CALL and move on to their next call. If you want to allow Blind transfers of customers to a OSDial AGI script for logging or an IVR, then place AXFER in the number-to-dial field. You can also specify an custom extension after the AXFER or CXFER, for instance if you want to do Internal Consultative transfers instead of Local you would put CXFER90009 in the number-to-dial field.
     </item>
 
+    <item pathId="drop_trigger" title="Drop Trigger">
+  The event that will trigger the call to drop.  CALL_SECONDS_TIMEOUT will wait until the Drop Call Seconds time elapses.  NO_AGENTS_CONNECTED will drop the call immediately if no agents are logged-in and able to take calls for this InGroup.  NO_AGENTS_AVAILABLE will drop the call immediately if their are agents logged in, but none are currently available.
+    </item>
+
     <item pathId="drop_call_seconds" title="Drop Call Seconds">
   The number of seconds from the time the customer line is picked up until the call is considered a DROP, only applies to outbound calls.
     </item>
 
-    <item pathId="voicemail_ext" title="Voicemail">
+    <item pathId="drop_message" title="Drop Action">
+  If the Drop Trigger event occurs, EXTENSION (Y) will transfer to the Drop Extension, VOICEMAIL (N) will transfer to the Drop Voicemail box.
+    </item>
+
+    <item pathId="voicemail_ext" title="Drop Voicemail">
   If defined, calls that would normally DROP would instead be directed to this voicemail box to hear and leave a message.
     </item>
 
-    <item pathId="drop_message" title="Drop Message">
-  If set to Y will play a message to customer after the Drop Call Seconds timeout is reached without being transferred to an agent. This setting will override sending to a voicemail box if this is set to Y.
-    </item>
-
-    <item pathId="drop_exten" title="Drop Exten">
+    <item pathId="drop_exten" title="Drop Extension">
   This is the dial plan extension that the desired Dropped call audio file is located at on your server.
     </item>
 
