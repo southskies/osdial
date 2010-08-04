@@ -2698,6 +2698,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 		if (tempreason=='CLOSE') return;
 
+		if (conf_channels_xtra_display==1) conf_channels_detail('HIDE');
 		hideDiv('MainPanel');
 		hideDiv('SysteMAlerTBoX');
 		showDiv('LogouTBox');
@@ -2740,36 +2741,6 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 
 // ################################################################################
-// Builds JS for Editable Field elements.
-	function EFjs(elename) {
-		var eled;
-                eled = " onfocus=\"this.value=document.getElementById('" + elename + "').value;\"";
-                eled += " onchange=\"document.getElementById('" + elename + "').value=this.value; updateEFfld('" + elename + "',this);\" ";
-		return eled;
-	}
-
-	function updateEFfld(elename,eleobj) {
-		try {
-                	var efv;
-			if (eleobj) {
-				efv=eleobj;
-			} else {
-				efv=document.getElementById(elename);
-				efv.setAttribute("onchange","updateEFfld('" + elename + "',this);");
-			}
-                	var eflist=document.getElementsByName('EF' + elename);
-			for (var efli=0; efli<eflist.length; efli++) {
-				if(efv.value!=eflist[efli].value)
-					eflist[efli].value=efv.value;
-			}
-		} catch(error) {
-			var a=1;
-		}
-	}
-
-
-
-// ################################################################################
 // Taken form php.net Angelos
 function utf8_decode(utftext) {
 	debug("<b>utf8_decode:</b> utftext=" + utftext,5);
@@ -2804,7 +2775,7 @@ function utf8_decode(utftext) {
 		showDiv('DispoButtonHideA');
 		showDiv('DispoButtonHideB');
 		showDiv('DispoButtonHideC');
-		document.getElementById("DispoSelectBox").style.top = 340;
+		document.getElementById("DispoSelectBox").style.top = '340px';
 		document.getElementById("DispoSelectMaxMin").innerHTML = "<a href=\"#\" onclick=\"DispoMaximize()\">maximize</a>";
 	}
 
@@ -2813,7 +2784,7 @@ function utf8_decode(utftext) {
 // Move the Dispo frame to the top and change the link to minimize
 	function DispoMaximize() {
 		debug("<b>DispoMaximize:</b>",2);
-		document.getElementById("DispoSelectBox").style.top = 1;
+		document.getElementById("DispoSelectBox").style.top = '0px';
 		document.getElementById("DispoSelectMaxMin").innerHTML = "<a href=\"#\" onclick=\"DispoMinimize()\">minimize</a>";
 		hideDiv('DispoButtonHideA');
 		hideDiv('DispoButtonHideB');
@@ -3004,8 +2975,8 @@ function utf8_decode(utftext) {
 					document.getElementById("DiaLControl").innerHTML = DiaLControl_manual_HTML;
 				}
 			}
-			emailTemplatesDisable(true);
 			hideDiv('WelcomeBoxA');
+			document.getElementById('AddtlFormTab').style.visibility='visible';
 			OSDiaL_closer_login_checked = 1;
 		} else {
 
@@ -3014,6 +2985,8 @@ function utf8_decode(utftext) {
 				WaitingForNextStep=1;
 			}
 			if (open_dispo_screen==1) {
+				document.getElementById('AddtlFormTab').style.visibility='hidden';
+				document.getElementById('AddtlFormTabExpanded').style.visibility='hidden';
 				wrapup_counter=0;
 				if (wrapup_seconds > 0)	{
 					showDiv('WrapupBox');
@@ -3131,6 +3104,8 @@ function utf8_decode(utftext) {
 					if ( (wrapup_counter > wrapup_seconds) && (document.getElementById("WrapupBox").style.visibility == 'visible') ) {
 						wrapup_waiting=0;
 						hideDiv('WrapupBox');
+						document.getElementById('AddtlFormTab').style.visibility='visible';
+						document.getElementById('AddtlFormTabExpanded').style.visibility='hidden';
 						if (document.osdial_form.DispoSelectStop.checked==true) {
 							if (auto_dial_level != '0') {
 								AutoDialWaiting = 0;
@@ -3637,22 +3612,6 @@ function utf8_decode(utftext) {
 		document.getElementById(buttonID).src = img1;
 	}
 
-	function AddtlFormOver() {
-		debug("<b>AddtlFormOver:</b>",2);
-		document.getElementById('AddtlFormTab').style.visibility='hidden'; 
-		document.getElementById('AddtlFormTabExpanded').style.visibility='visible'; 
-	}
-
-	function AddtlFormButOver(AFform) {
-		debug("<b>AddtlFormButOver:</b> AFform=" + AFform,2);
-		document.getElementById('AddtlFormBut' + AFform).style.background='url(templates/' + agent_template + '/images/agentsidetab_select.png)'; 
-	}
-
-	function AddtlFormButOut(AFform) {
-		debug("<b>AddtlFormButOut:</b> AFform=" + AFform,2);
-		document.getElementById('AddtlFormBut' + AFform).style.background='url(templates/' + agent_template + '/images/agentsidetab_extra.png)'; 
-	}
-
 
 
 
@@ -3978,9 +3937,9 @@ function utf8_decode(utftext) {
 						CBcomments										= MDnextResponse_array[31];
 						dialed_number									= MDnextResponse_array[32];
 						dialed_label									= MDnextResponse_array[33];
-						source_id										= MDnextResponse_array[34];
+						document.osdial_form.source_id.value										= MDnextResponse_array[34];
 						document.osdial_form.custom2.value	= MDnextResponse_array[35];
-						external_key										= MDnextResponse_array[36];
+						document.osdial_form.external_key.value										= MDnextResponse_array[36];
 						document.osdial_form.post_date.value	= MDnextResponse_array[37];
 						VDIC_web_form_address = MDnextResponse_array[38];
 						VDIC_web_form_address2 = MDnextResponse_array[39];
@@ -4007,7 +3966,7 @@ function utf8_decode(utftext) {
 							pos++;
 						}
 						
-						emailTemplatesDisable(false);
+						emailTemplatesDisable();
 
 						lead_dial_number = document.osdial_form.phone_number.value;
 						var dispnum = document.osdial_form.phone_number.value;
@@ -4066,8 +4025,8 @@ function utf8_decode(utftext) {
 							"&dispo=" + LeaDDispO + '' +
 							"&dialed_number=" + dialed_number + '' +
 							"&dialed_label=" + dialed_label + '' +
-							"&source_id=" + source_id + '' +
-							"&external_key=" + external_key + '' +
+							"&source_id=" + document.osdial_form.source_id.value + '' +
+							"&external_key=" + document.osdial_form.external_key.value + '' +
 							"&post_date=" + document.osdial_form.post_date.value + 
 							"&recording_id=" + recording_id + 
 							webform_session;
@@ -4249,49 +4208,11 @@ function utf8_decode(utftext) {
 						if (MDSnextCID == "LEAD NOT REVERTED") {
 							osdalert("Lead was not reverted, there was an error: " + MDSnextResponse);
 						} else {
-							document.osdial_form.lead_id.value		='';
-							document.osdial_form.vendor_lead_code.value='';
-							document.osdial_form.list_id.value		='';
-							document.osdial_form.gmt_offset_now.value	='';
-							document.osdial_form.phone_code.value		='';
-							document.osdial_form.phone_number.value	='';
-							document.osdial_form.title.value			='';
-							document.osdial_form.first_name.value		='';
-							document.osdial_form.middle_initial.value	='';
-							document.osdial_form.last_name.value		='';
-							document.osdial_form.address1.value		='';
-							document.osdial_form.address2.value		='';
-							document.osdial_form.address3.value		='';
-							document.osdial_form.city.value			='';
-							document.osdial_form.state.value			='';
-							document.osdial_form.province.value		='';
-							document.osdial_form.postal_code.value	='';
-							document.osdial_form.country_code.value	='';
-							document.osdial_form.gender.value			='';
-							document.osdial_form.date_of_birth.value	='';
-							document.osdial_form.alt_phone.value		='';
-							document.osdial_form.email.value			='';
-							document.osdial_form.custom1.value='';
-							document.osdial_form.custom2.value='';
-							document.osdial_form.comments.value		='';
-							document.osdial_form.called_count.value	='';
-							document.osdial_form.post_date.value='';
-							VDCL_group_id = '';
-							fronter = '';
 							previous_called_count = '';
 							previous_dispo = '';
 							custchannellive=1;
 
-							for (var i=0; i<AFids.length; i++) {
-								document.getElementById(AFids[i]).value = '';
-							}
-
-							emailTemplatesDisable(true);
-
-							if ( (view_scripts == 1) && (campaign_script.length > 0) ) {
-								document.getElementById("ScriptContents").innerHTML = t1 + " Script Will Show Here";
-								scriptUpdateFields();
-							}
+							afterCallClearing();
 
 							document.getElementById("MainStatuSSpan").innerHTML = " Lead skipped, go on to next lead";
 
@@ -4459,9 +4380,9 @@ function utf8_decode(utftext) {
 							CBcomments										= check_VDIC_array[35];
 							dialed_number									= check_VDIC_array[36];
 							dialed_label									= check_VDIC_array[37];
-							source_id										= check_VDIC_array[38];
+							document.osdial_form.source_id.value										= check_VDIC_array[38];
 							document.osdial_form.custom2.value	= check_VDIC_array[39];
-							external_key										= check_VDIC_array[40];
+							document.osdial_form.external_key.value										= check_VDIC_array[40];
 							document.osdial_form.post_date.value	= check_VDIC_array[41];
 
 							var pos = 42;
@@ -4470,7 +4391,7 @@ function utf8_decode(utftext) {
 								pos++;
 							}
 
-							emailTemplatesDisable(false);
+							emailTemplatesDisable();
 
 							lead_dial_number = document.osdial_form.phone_number.value;
 							var dispnum = document.osdial_form.phone_number.value;
@@ -4595,8 +4516,8 @@ function utf8_decode(utftext) {
 								"&dispo=" + LeaDDispO + '' +
 								"&dialed_number=" + dialed_number + '' +
 								"&dialed_label=" + dialed_label + '' +
-								"&source_id=" + source_id + '' +
-								"&external_key=" + external_key + '' +
+								"&source_id=" + document.osdial_form.source_id.value + '' +
+								"&external_key=" + document.osdial_form.external_key.value + '' +
 								"&post_date=" + document.osdial_form.post_date.value + 
 								"&recording_id=" + recording_id + 
 								webform_session;
@@ -4774,13 +4695,13 @@ function utf8_decode(utftext) {
 
 							document.osdial_form.called_count.value	= check_RPLD_array[24];
 							document.osdial_form.custom2.value	= check_RPLD_array[25];
-							external_key	= check_RPLD_array[26];
+							document.osdial_form.external_key.value	= check_RPLD_array[26];
 							document.osdial_form.post_date.value	= check_RPLD_array[27];
 
 							if ( (dialed_label.length < 3) || (dialed_label=='NONE') )
 								dialed_label='MAIN';
 							dialed_number = oldphone;
-							source_id = oldlead;
+							document.osdial_form.source_id.value = oldlead;
 
 							var pos = 28;
 							for (var i=0; i<AFids.length; i++) {
@@ -4788,7 +4709,7 @@ function utf8_decode(utftext) {
 								pos++;
 							}
 
-							emailTemplatesDisable(false);
+							emailTemplatesDisable();
 
 							if ( (view_scripts == 1) && (CalL_ScripT_id.length > 0) ) {
 								// test code for scripts output
@@ -4852,8 +4773,8 @@ function utf8_decode(utftext) {
 								"&dispo=" + LeaDDispO + '' +
 								"&dialed_number=" + dialed_number + '' +
 								"&dialed_label=" + dialed_label + '' +
-								"&source_id=" + source_id + '' +
-								"&external_key=" + external_key + '' +
+								"&source_id=" + document.osdial_form.source_id.value + '' +
+								"&external_key=" + document.osdial_form.external_key.value + '' +
 								"&post_date=" + document.osdial_form.post_date.value + '' +
 								"&recording_id=" + recording_id + 
 								webform_session;
@@ -4973,8 +4894,8 @@ function utf8_decode(utftext) {
 			"&dispo=" + LeaDDispO + '' +
 			"&dialed_number=" + dialed_number + '' +
 			"&dialed_label=" + dialed_label + '' +
-			"&source_id=" + source_id + '' +
-			"&external_key=" + external_key + '' +
+			"&source_id=" + document.osdial_form.source_id.value + '' +
+			"&external_key=" + document.osdial_form.external_key.value + '' +
 			"&post_date=" + document.osdial_form.post_date.value +
 			"&recording_id=" + recording_id + 
 			webform_session;
@@ -5186,48 +5107,8 @@ function utf8_decode(utftext) {
 					//}
 					delete xmlhttp;
 				}
-				// CLEAR ALL FORM VARIABLES
-				document.osdial_form.lead_id.value		='';
-				document.osdial_form.vendor_lead_code.value='';
-				document.osdial_form.list_id.value		='';
-				document.osdial_form.gmt_offset_now.value	='';
-				document.osdial_form.phone_code.value		='';
-				document.osdial_form.phone_number.value	='';
-				document.osdial_form.title.value			='';
-				document.osdial_form.first_name.value		='';
-				document.osdial_form.middle_initial.value	='';
-				document.osdial_form.last_name.value		='';
-				document.osdial_form.address1.value		='';
-				document.osdial_form.address2.value		='';
-				document.osdial_form.address3.value		='';
-				document.osdial_form.city.value			='';
-				document.osdial_form.state.value			='';
-				document.osdial_form.province.value		='';
-				document.osdial_form.postal_code.value	='';
-				document.osdial_form.country_code.value	='';
-				document.osdial_form.gender.value			='';
-				document.osdial_form.date_of_birth.value	='';
-				document.osdial_form.alt_phone.value		='';
-				document.osdial_form.email.value			='';
-				document.osdial_form.custom1.value='';
-				document.osdial_form.custom2.value='';
-				document.osdial_form.comments.value		='';
-				document.osdial_form.called_count.value	='';
-				document.osdial_form.post_date.value	='';
 
-				for (var i=0; i<AFids.length; i++) {
-					document.getElementById(AFids[i]).value = '';
-				}
-
-				emailTemplatesDisable(true);
-
-				VDCL_group_id = '';
-				fronter = '';
-
-				if ( (view_scripts == 1) && (campaign_script.length > 0) ) {
-					document.getElementById("ScriptContents").innerHTML = t1 + " Script Will Show Here";
-					scriptUpdateFields();
-				}
+				afterCallClearing();
 
 				var rp_newid="NEW_ID";
 				if (manual_dial_in_progress==1) {
@@ -5238,7 +5119,7 @@ function utf8_decode(utftext) {
 				hideDiv('DispoButtonHideA');
 				hideDiv('DispoButtonHideB');
 				hideDiv('DispoButtonHideC');
-				document.getElementById("DispoSelectBox").style.top = 1;
+				document.getElementById("DispoSelectBox").style.top = '0px';
 				document.getElementById("DispoSelectMaxMin").innerHTML = "<a href=\"#\" onclick=\"DispoMinimize()\">minimize</a>";
 				document.getElementById("DispoSelectHAspan").innerHTML = "<a href=\"#\" onclick=\"DispoHanguPAgaiN()\">Hangup Again</a>";
 
@@ -5256,6 +5137,8 @@ function utf8_decode(utftext) {
 				AgentDispoing = 0;
 
 				if (wrapup_waiting == 0) {
+					document.getElementById('AddtlFormTab').style.visibility='visible';
+					document.getElementById('AddtlFormTabExpanded').style.visibility='hidden';
 					if (document.osdial_form.DispoSelectStop.checked==true) {
 						if (auto_dial_level != '0') {
 							AutoDialWaiting = 0;
@@ -5292,7 +5175,7 @@ function utf8_decode(utftext) {
 		debug("<b>webform_rewrite:</b> wf_encoded=" + wf_encoded,2);
 
 		var SCvendor_lead_code = encodeURIComponent2(document.osdial_form.vendor_lead_code.value);
-		var SCsource_id = encodeURIComponent2(source_id);
+		var SCsource_id = encodeURIComponent2(document.osdial_form.source_id.value);
 		var SClist_id = encodeURIComponent2(document.osdial_form.list_id.value);
 		var SCgmt_offset_now = encodeURIComponent2(document.osdial_form.gmt_offset_now.value);
 		var SCcalled_since_last_reset = encodeURIComponent2("");
@@ -5341,7 +5224,7 @@ function utf8_decode(utftext) {
 		var SCdispo = encodeURIComponent2(LeaDDispO);
 		var SCdisposition = encodeURIComponent2(LeaDDispO);
 		var SCstatus = encodeURIComponent2(LeaDDispO);
-		var SCexternal_key = encodeURIComponent2(external_key);
+		var SCexternal_key = encodeURIComponent2(document.osdial_form.external_key.value);
 		var SCpost_date = encodeURIComponent2(document.osdial_form.post_date.value);
 		var SCrecording_id = encodeURIComponent2(recording_id);
 		//var SCwebform_session = encodeURIComponent2(webform_session);
@@ -5542,7 +5425,7 @@ function utf8_decode(utftext) {
 		encoded=utf8_decode(xtest);
 
 		if (scriptformat == 'YES') {
-			var SCsource_id = source_id;
+			var SCsource_id = document.osdial_form.source_id.value;
 			var SClist_id = document.osdial_form.list_id.value;
 			var SCgmt_offset_now = document.osdial_form.gmt_offset_now.value;
 			var SCcalled_since_last_reset = "";
@@ -5612,34 +5495,34 @@ function utf8_decode(utftext) {
 			var SCEFVcustom1 =          document.osdial_form.custom1.value;
 			var SCEFVcustom2 =          document.osdial_form.custom2.value;
 
-			var SCEFtitle =            '<input type=text size=4 maxlength=4 name=EFtitle id=EFtitle class=cust_form ' + EFjs('title') + ' >';
-			var SCEFfirst_name =       '<input type=text size=14 maxlength=30 name=EFfirst_name id=EFfirst_name class=cust_form ' + EFjs('first_name') + ' >';
-			var SCEFmiddle_initial =   '<input type=text size=1 maxlength=1 name=EFmiddle_initial id=EFmiddle_initial class=cust_form ' + EFjs('middle_initial') + ' >';
-			var SCEFlast_name =        '<input type=text size=15 maxlength=30 name=EFlast_name id=EFlast_name class=cust_form ' + EFjs('last_name') + ' >';
-			var SCEFaddress1 =         '<input type=text size=58 maxlength=100 name=EFaddress1 id=EFaddress1 class=cust_form ' + EFjs('address1') + ' >';
-			var SCEFaddress2 =         '<input type=text size=22 maxlength=100 name=EFaddress2 id=EFaddress2 class=cust_form ' + EFjs('address2') + ' >';
-			var SCEFaddress3 =         '<input type=text size=22 maxlength=100 name=EFaddress3 id=EFaddress3 class=cust_form ' + EFjs('address3') + ' >';
-			var SCEFcity =             '<input type=text size=22 maxlength=50 name=EFcity id=EFcity class=cust_form ' + EFjs('city') + ' >';
-			var SCEFstate =            '<input type=text size=2 maxlength=2 name=EFstate id=EFstate class=cust_form ' + EFjs('state') + ' >';
-			var SCEFpostal_code =      '<input type=text size=9 maxlength=10 name=EFpostal_code id=EFpostal_code class=cust_form ' + EFjs('postal_code') + ' >';
-			var SCEFprovince =         '<input type=text size=22 maxlength=50 name=EFprovince id=EFprovince class=cust_form ' + EFjs('province') + ' >';
-			var SCEFcountry_code =     '<input type=text size=5 maxlength=5 name=EFcountry_code id=EFcountry_code class=cust_form ' + EFjs('country_code') + ' >';
-			var SCEFemail =            '<input type=text size=22 maxlength=70 name=EFemail id=EFemail class=cust_form ' + EFjs('email') + ' >';
-			var SCEFphone_code =       '<input type=text size=4 maxlength=10 name=EFphone_code id=EFphone_code class=cust_form ' + EFjs('phone_code') + ' >';
-			var SCEFphone_number =     '<input type=text size=11 maxlength=12 name=EFphone_number id=EFphone_number class=cust_form ' + EFjs('phone_number') + ' >';
-			var SCEFalt_phone =        '<input type=text size=12 maxlength=12 name=EFalt_phone id=EFalt_phone class=cust_form ' + EFjs('alt_phone') + ' >';
+			var SCEFtitle =            '<input type=text size=4 maxlength=4 name=EFtitle id=EFtitle class=cust_form ' + scriptEFCreateJS('title') + ' >';
+			var SCEFfirst_name =       '<input type=text size=14 maxlength=30 name=EFfirst_name id=EFfirst_name class=cust_form ' + scriptEFCreateJS('first_name') + ' >';
+			var SCEFmiddle_initial =   '<input type=text size=1 maxlength=1 name=EFmiddle_initial id=EFmiddle_initial class=cust_form ' + scriptEFCreateJS('middle_initial') + ' >';
+			var SCEFlast_name =        '<input type=text size=15 maxlength=30 name=EFlast_name id=EFlast_name class=cust_form ' + scriptEFCreateJS('last_name') + ' >';
+			var SCEFaddress1 =         '<input type=text size=58 maxlength=100 name=EFaddress1 id=EFaddress1 class=cust_form ' + scriptEFCreateJS('address1') + ' >';
+			var SCEFaddress2 =         '<input type=text size=22 maxlength=100 name=EFaddress2 id=EFaddress2 class=cust_form ' + scriptEFCreateJS('address2') + ' >';
+			var SCEFaddress3 =         '<input type=text size=22 maxlength=100 name=EFaddress3 id=EFaddress3 class=cust_form ' + scriptEFCreateJS('address3') + ' >';
+			var SCEFcity =             '<input type=text size=22 maxlength=50 name=EFcity id=EFcity class=cust_form ' + scriptEFCreateJS('city') + ' >';
+			var SCEFstate =            '<input type=text size=2 maxlength=2 name=EFstate id=EFstate class=cust_form ' + scriptEFCreateJS('state') + ' >';
+			var SCEFpostal_code =      '<input type=text size=9 maxlength=10 name=EFpostal_code id=EFpostal_code class=cust_form ' + scriptEFCreateJS('postal_code') + ' >';
+			var SCEFprovince =         '<input type=text size=22 maxlength=50 name=EFprovince id=EFprovince class=cust_form ' + scriptEFCreateJS('province') + ' >';
+			var SCEFcountry_code =     '<input type=text size=5 maxlength=5 name=EFcountry_code id=EFcountry_code class=cust_form ' + scriptEFCreateJS('country_code') + ' >';
+			var SCEFemail =            '<input type=text size=22 maxlength=70 name=EFemail id=EFemail class=cust_form ' + scriptEFCreateJS('email') + ' >';
+			var SCEFphone_code =       '<input type=text size=4 maxlength=10 name=EFphone_code id=EFphone_code class=cust_form ' + scriptEFCreateJS('phone_code') + ' >';
+			var SCEFphone_number =     '<input type=text size=11 maxlength=12 name=EFphone_number id=EFphone_number class=cust_form ' + scriptEFCreateJS('phone_number') + ' >';
+			var SCEFalt_phone =        '<input type=text size=12 maxlength=12 name=EFalt_phone id=EFalt_phone class=cust_form ' + scriptEFCreateJS('alt_phone') + ' >';
 			var SCEFcomments =         '';
 			if (multi_line_comments) {
-				SCEFcomments =         '<textarea rows=2 cols=56 name=EFcomments id=EFcomments class=cust_form ' + EFjs('comments') + ' ></textarea>';
+				SCEFcomments =         '<textarea rows=2 cols=56 name=EFcomments id=EFcomments class=cust_form ' + scriptEFCreateJS('comments') + ' ></textarea>';
 			} else {
-				SCEFcomments =         '<input type=text size=56 maxlength=255 name=EFcomments id=EFcomments class=cust_form ' + EFjs('comments') + ' >';
+				SCEFcomments =         '<input type=text size=56 maxlength=255 name=EFcomments id=EFcomments class=cust_form ' + scriptEFCreateJS('comments') + ' >';
 			}
-			var SCEFdate_of_birth =    '<input type=text size=12 maxlength=10 name=EFdate_of_birth id=EFdate_of_birth class=cust_form ' + EFjs('date_of_birth') + ' >';
-			var SCEFgender =           '<select name=EFgender id=EFgender class=cust_form ' + EFjs('gender') + ' ><option></option><option>M</option><option>F</option></select>';
-			var SCEFpost_date =        '<input type=text size=12 maxlength=10 name=EFpost_date id=EFpost_date class=cust_form ' + EFjs('post_date') + ' >';
-			var SCEFvendor_lead_code = '<input type=text size=15 maxlength=20 name=EFvendor_lead_code id=EFvendor_lead_code class=cust_form ' + EFjs('vendor_lead_code') + ' >';
-			var SCEFcustom1 =          '<input type=text size=22 maxlength=100 name=EFcustom1 id=EFcustom1 class=cust_form ' + EFjs('custom1') + ' >';
-			var SCEFcustom2 =          '<input type=text size=22 maxlength=100 name=EFcustom2 id=EFcustom2 class=cust_form ' + EFjs('custom2') + ' >';
+			var SCEFdate_of_birth =    '<input type=text size=12 maxlength=10 name=EFdate_of_birth id=EFdate_of_birth class=cust_form ' + scriptEFCreateJS('date_of_birth') + ' >';
+			var SCEFgender =           '<select name=EFgender id=EFgender class=cust_form ' + scriptEFCreateJS('gender') + ' ><option></option><option>M</option><option>F</option></select>';
+			var SCEFpost_date =        '<input type=text size=12 maxlength=10 name=EFpost_date id=EFpost_date class=cust_form ' + scriptEFCreateJS('post_date') + ' >';
+			var SCEFvendor_lead_code = '<input type=text size=15 maxlength=20 name=EFvendor_lead_code id=EFvendor_lead_code class=cust_form ' + scriptEFCreateJS('vendor_lead_code') + ' >';
+			var SCEFcustom1 =          '<input type=text size=22 maxlength=100 name=EFcustom1 id=EFcustom1 class=cust_form ' + scriptEFCreateJS('custom1') + ' >';
+			var SCEFcustom2 =          '<input type=text size=22 maxlength=100 name=EFcustom2 id=EFcustom2 class=cust_form ' + scriptEFCreateJS('custom2') + ' >';
 
 
 
@@ -5980,6 +5863,36 @@ function utf8_decode(utftext) {
 
 
 
+// ###################################################################################################################################################
+// AddtlFormOver() - On mouseover, hide Form tab and show form buttons.
+	function AddtlFormOver() {
+		debug("<b>AddtlFormOver:</b>",2);
+		document.getElementById('AddtlFormTab').style.visibility='hidden';
+		document.getElementById('AddtlFormTabExpanded').style.visibility='visible';
+	}
+
+
+
+// ###################################################################################################################################################
+// AddtlFormButOver(AFform) - Change to the selected image of AFform on mouseover.
+	function AddtlFormButOver(AFform) {
+		debug("<b>AddtlFormButOver:</b> AFform=" + AFform,2);
+		document.getElementById('AddtlFormBut' + AFform).style.background='url(templates/' + agent_template + '/images/agentsidetab_select.png)'; 
+	}
+
+
+
+// ###################################################################################################################################################
+// AddtlFormButOut(AFform) - Change to the deselected image of AFform on mouseout.
+	function AddtlFormButOut(AFform) {
+		debug("<b>AddtlFormButOut:</b> AFform=" + AFform,2);
+		document.getElementById('AddtlFormBut' + AFform).style.background='url(templates/' + agent_template + '/images/agentsidetab_extra.png)'; 
+	}
+
+
+
+// ###################################################################################################################################################
+// AddtlFormSelect(AFform) - Hide all Additional Forms and display the selected AFform.
 	function AddtlFormSelect(AFform) {
 		debug("<b>AddtlFormSelect:</b> AFform=" + AFform,2);
 		if (AFform != 'Cancel') {
@@ -5991,13 +5904,52 @@ function utf8_decode(utftext) {
 			document.getElementById('AddtlForms' + AFform).style.visibility='visible'; 
 			document.getElementById('AddtlFormBut' + AFform).style.background='url(templates/' + agent_template + '/images/agentsidetab_extra.png)'; 
 		}
-		document.getElementById('AddtlFormTabExpanded').style.visibility='hidden'; 
-		document.getElementById('AddtlFormTab').style.visibility='visible'; 
+		document.getElementById('AddtlFormTabExpanded').style.visibility='hidden';
+		document.getElementById('AddtlFormTab').style.visibility='visible';
 	}
 
 
 
+// ###################################################################################################################################################
+// scriptEFCreateJS(elename) - Creates javascript for Editable Field elements that retrieves the Form Field data on focus and updates it on change.
+	function scriptEFCreateJS(elename) {
+		var eled;
+                eled = " onfocus=\"this.value=document.getElementById('" + elename + "').value;\"";
+                eled += " onchange=\"document.getElementById('" + elename + "').value=this.value; scriptEFUpdateData('" + elename + "',this);\" ";
+		return eled;
+	}
 
+
+
+// ###################################################################################################################################################
+// scriptEFUpdateData(elename,eleobj) - If eleobj is an Editable Field and is not identical to other elename Editable Fields,
+//                                      update those fields with the contents of this Editable Field.
+//                                      If eleobj is null (the elename Form Field), update all the elename Editable Fields
+//                                      with its contents, and add the appropriate javascript to the Form Field.
+	function scriptEFUpdateData(elename,eleobj) {
+		try {
+                	var efv;
+			if (eleobj) {
+				efv=eleobj;
+			} else {
+				efv=document.getElementById(elename);
+				efv.setAttribute("onchange","scriptEFUpdateData('" + elename + "',this);");
+			}
+                	var eflist=document.getElementsByName('EF' + elename);
+			for (var efli=0; efli<eflist.length; efli++) {
+				if(efv.value!=eflist[efli].value)
+					eflist[efli].value=efv.value;
+			}
+		} catch(error) {
+			var a=1;
+		}
+	}
+
+
+
+// ###################################################################################################################################################
+// scriptUpdateFields() - Assign the Form Field contents to all the Additional Fields and Editable Fields while add appropriate
+//                        javascript to update the Form Field if one of the Editable Fields is updated.
 	function scriptUpdateFields() {
 		debug("<b>scriptUpdateFields:</b>",2);
 
@@ -6015,42 +5967,54 @@ function utf8_decode(utftext) {
 		}
 
 		// Editable Fields
-		updateEFfld('title',null);
-		updateEFfld('first_name',null);
-		updateEFfld('middle_initial',null);
-		updateEFfld('last_name',null);
-		updateEFfld('address1',null);
-		updateEFfld('address2',null);
-		updateEFfld('address3',null);
-		updateEFfld('city',null);
-		updateEFfld('state',null);
-		updateEFfld('province',null);
-		updateEFfld('postal_code',null);
-		updateEFfld('country_code',null);
-		updateEFfld('phone_code',null);
-		updateEFfld('phone_number',null);
-		updateEFfld('alt_phone',null);
-		updateEFfld('email',null);
-		updateEFfld('comments',null);
-		updateEFfld('date_of_birth',null);
-		updateEFfld('gender',null);
-		updateEFfld('post_date',null);
-		updateEFfld('vendor_lead_code',null);
-		updateEFfld('custom1',null);
-		updateEFfld('custom2',null);
+		scriptEFUpdateData('title',null);
+		scriptEFUpdateData('first_name',null);
+		scriptEFUpdateData('middle_initial',null);
+		scriptEFUpdateData('last_name',null);
+		scriptEFUpdateData('address1',null);
+		scriptEFUpdateData('address2',null);
+		scriptEFUpdateData('address3',null);
+		scriptEFUpdateData('city',null);
+		scriptEFUpdateData('state',null);
+		scriptEFUpdateData('province',null);
+		scriptEFUpdateData('postal_code',null);
+		scriptEFUpdateData('country_code',null);
+		scriptEFUpdateData('phone_code',null);
+		scriptEFUpdateData('phone_number',null);
+		scriptEFUpdateData('alt_phone',null);
+		scriptEFUpdateData('email',null);
+		scriptEFUpdateData('comments',null);
+		scriptEFUpdateData('date_of_birth',null);
+		scriptEFUpdateData('gender',null);
+		scriptEFUpdateData('post_date',null);
+		scriptEFUpdateData('vendor_lead_code',null);
+		scriptEFUpdateData('custom1',null);
+		scriptEFUpdateData('custom2',null);
 	}
 
+
+
+// ###################################################################################################################################################
+// emailTemplatesDisable(etact) - If ecact is true, prevent the Email Templates from being checked.
 	function emailTemplatesDisable(etact) {
-		if (document.osdial_form.ETids) {
+		if (document.getElementsByName('ETids')) {
+			var et_ids = document.getElementsByName('ETids');
 			var disableET=false;
 			if (etact==true) disableET=true;
-			for (var i=0; i<document.osdial_form.ETids.length; i++) {
-				document.osdial_form.ETids[i].checked=false;
-				document.osdial_form.ETids[i].disabled=disableET;
+			for (var i=0; i<et_ids.length; i++) {
+				et_ids[i].onclick = function (){var et=1;};
+				if (disableET) {
+					et_ids[i].onclick = function (){this.checked=false;};
+				}
+				et_ids[i].checked=false;
 			}
 		}
 	}
 
+
+
+// ###################################################################################################################################################
+// emailTemplatesSend() - Cycle through each checked templated and call sendEmail for its template.
 	function emailTemplatesSend() {
 		if (document.osdial_form.ETids) {
 			for (var i=0; i<document.osdial_form.ETids.length; i++) {
@@ -6061,8 +6025,11 @@ function utf8_decode(utftext) {
 		}
 	}
 
-	function sendEmail(et_id) {
 
+
+// ###################################################################################################################################################
+// sendEmail(et_id) - Initiate the sending of an email to the given email template.
+	function sendEmail(et_id) {
 	    if (document.osdial_form.lead_id.value.length>0) {
 	      if (document.osdial_form.email.value.length>0) {
 		osdalert('Sending ' + et_id + ' Email...',60);
@@ -6104,3 +6071,54 @@ function utf8_decode(utftext) {
 		osdalert('No lead!',3);
 	    }
 	}
+
+
+
+// ###################################################################################################################################################
+// afterCallClearing() - Clears all form fields, scripts, script fields and  additional form fields after each call.
+	function afterCallClearing() {
+		VDCL_group_id='';
+		fronter='';
+
+		document.osdial_form.lead_id.value='';
+		document.osdial_form.vendor_lead_code.value='';
+		document.osdial_form.list_id.value='';
+		document.osdial_form.gmt_offset_now.value='';
+		document.osdial_form.phone_code.value='';
+		document.osdial_form.phone_number.value='';
+		document.osdial_form.title.value='';
+		document.osdial_form.first_name.value='';
+		document.osdial_form.middle_initial.value='';
+		document.osdial_form.last_name.value='';
+		document.osdial_form.address1.value='';
+		document.osdial_form.address2.value='';
+		document.osdial_form.address3.value='';
+		document.osdial_form.city.value='';
+		document.osdial_form.state.value='';
+		document.osdial_form.province.value='';
+		document.osdial_form.postal_code.value='';
+		document.osdial_form.country_code.value='';
+		document.osdial_form.gender.value='';
+		document.osdial_form.date_of_birth.value='';
+		document.osdial_form.alt_phone.value='';
+		document.osdial_form.email.value='';
+		document.osdial_form.custom1.value='';
+		document.osdial_form.custom2.value='';
+		document.osdial_form.comments.value='';
+		document.osdial_form.called_count.value='';
+		document.osdial_form.post_date.value='';
+		document.osdial_form.source_id.value='';
+		document.osdial_form.external_key.value='';
+
+		for (var i=0; i<AFids.length; i++) {
+			document.getElementById(AFids[i]).value='';
+		}
+
+		if ( (view_scripts == 1) && (campaign_script.length > 0) ) {
+			document.getElementById("ScriptContents").innerHTML = t1 + " Script Will Show Here";
+			scriptUpdateFields();
+		}
+
+		emailTemplatesDisable(true);
+	}
+

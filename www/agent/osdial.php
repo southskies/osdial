@@ -321,18 +321,18 @@ $MNwidth = ($MASTERwidth + 330);        # 760 - main frame
 $XFwidth = ($MASTERwidth + 320);        # 750 - transfer/conference
 $HCwidth = ($MASTERwidth + 310);        # 740 - hotkeys and callbacks
 $AMwidth = ($MASTERwidth + 270);        # 700 - agent mute and preset-dial links
-$SSwidth = ($MASTERwidth + 176 - 286);  # 606 - scroll script
-$SDwidth = ($MASTERwidth + 170 - 296);  # 600 - scroll script, customer data and calls-in-session
-$HKwidth = ($MASTERwidth + 70);         # 500 - Hotkeys button
-$HSwidth = ($MASTERwidth + 1);          # 431 - Header spacer
+$SSwidth = ($MASTERwidth - 120);        # 606 - scroll script
+$SDwidth = ($MASTERwidth - 126);        # 600 - scroll script, customer data and calls-in-session
+$HKwidth = ($MASTERwidth +  70);        # 500 - Hotkeys button
+$HSwidth = ($MASTERwidth +   1);        # 431 - Header spacer
 
 $DBheight = ($MASTERheight + 230);      # Debug
-$HKheight = ($MASTERheight + 105 + 10); # 405 - HotKey active Button
+$HKheight = ($MASTERheight + 115);      # 405 - HotKey active Button
 $AMheight = ($MASTERheight + 110);      # 400 - Agent mute and preset dial links
-$MBheight = ($MASTERheight + 65 +92);   # 365 - Manual Dial Buttons
+$MBheight = ($MASTERheight + 157);      # 365 - Manual Dial Buttons
 $CBheight = ($MASTERheight + 140);      # 350 - Agent Callback, pause code, volume control Buttons and agent status
-$SSheight = ($MASTERheight + 31 -25);   # 331 - script content
-$HTheight = ($MASTERheight + 10);       # 310 - transfer frame, callback comments and hotkey
+$SSheight = ($MASTERheight +  20);      # 331 - script content
+$HTheight = ($MASTERheight +  10);      # 310 - transfer frame, callback comments and hotkey
 $BPheight = ($MASTERheight - 275);      # 50  - bottom buffer
 
 
@@ -1841,7 +1841,7 @@ flush();
     
 
     <!-- Logout Link -->
-    <span style="position:absolute;left:1px;top:1px;z-index:30;background-image: URL('templates/<?= $agent_template ?>/images/loginagain-bg.png');background-repeat:none;visibility:hidden;" id="LogouTBox">
+    <span style="position:absolute;left:1px;top:1px;z-index:30;background-image: URL('templates/<?= $agent_template ?>/images/loginagain-bg.png');background-repeat:no-repeat;visibility:hidden;" id="LogouTBox">
         <table width=1001 height=608 cellpadding=0 cellspacing=0>
             <tr>
                 <td align=center><br><span id="LogouTBoxLink">LOGOUT</span></td>
@@ -1900,7 +1900,7 @@ flush();
 
 
     <!-- Preview Force-Dial Timout -->
-    <font id="PreviewFDTimeSpan" style="font-size:35pt; font-weight: bold; color: <?=$forcedial_fc?>; position:absolute;left:325px;top:400px;z-index:22;"></font>
+    <font id="PreviewFDTimeSpan" style="font-size:35pt; font-weight: bold; color: <?=$forcedial_fc?>; position:absolute;left:325px;top:380px;z-index:22;"></font>
     
 
     <? load_status('Initializing GUI...<br>CallBacKsLisTBox<br>&nbsp;'); ?>
@@ -2146,7 +2146,7 @@ flush();
     <? load_status('Initializing GUI...<br>WrapupBox<br>&nbsp;'); ?>
     <!-- Call Wrapup -->
     <span style="position:absolute;left:0px;top:0px;z-index:28;visibility:hidden;" id="WrapupBox">
-        <table border=1 bgcolor="<?=$wrapup_bg?>" width=<?=$CAwidth ?> height=550>
+        <table border=1 bgcolor="<?=$wrapup_bg?>" width=<?= $CAwidth ?> height=550>
             <tr>
                 <td align=center>
                     Call Wrapup: <span id="WrapupTimer"></span> seconds remaining in wrapup
@@ -2224,8 +2224,8 @@ flush();
     
     <? load_status('Initializing GUI...<br>DispoSelectBox<br>&nbsp;'); ?>
     <!-- Disposition Window -->
-    <span style="position:absolute;left:0px;top:18px;z-index:34;visibility:hidden;" id="DispoSelectBox">
-        <table class=acrossagent width=<?=$CAwidth+5 ?> height=460>
+    <span style="position:absolute;left:0px;top:0px;z-index:34;visibility:hidden;" id="DispoSelectBox">
+        <table border=1 bgcolor="<?=$dispo_bg?>"  width=<?= $CAwidth + 15 ?> height=550 class=acrossagent>
             <tr>
                 <td align=center valign=top>
                     <font color=<?=$dispo_fc?>>
@@ -2255,7 +2255,7 @@ flush();
                             echo "<br><br>\n";
                             echo "<a href=\"#\" onclick=\"WeBForMDispoSelect_submit();return false;\">WEB FORM SUBMIT</a>\n";
                         } ?>
-                        <br><br> &nbsp;
+                        <br> &nbsp;
                     </font>
                 </td>
             </tr>
@@ -2427,8 +2427,8 @@ flush();
     
     <? load_status('Initializing GUI...<br>ScriptPanel<br>&nbsp;'); ?>
     <!-- Script window -->
-    <span style="position:absolute;left:190px;top:92px;z-index:17;width:<?= $SSwidth - 20 ?>;height:<?= $SSheight - 10 ?>;overflow-x:hidden;overflow-y:scroll;visibility:hidden;" id="ScriptPanel">
-        <table border=0 bgcolor="<?= $script_bg ?>" width=<?=$SSwidth -20 ?> height=<?=$SSheight -10 ?>>
+    <span style="position:absolute;left:190px;top:95px;z-index:17;width:<?= $SSwidth ?>;height:<?= $SSheight ?>;overflow-x:hidden;overflow-y:scroll;visibility:hidden;" id="ScriptPanel">
+        <table border=0 bgcolor="<?= $script_bg ?>" width=<?= $SSwidth ?> height=<?= $SSheight ?>>
             <tr>
                 <td align=left valign=top><font class="sb_text"><span class="scroll_script" id="ScriptContents"><?=$t1?> Script Will Show Here</span></font></td>
             </tr>
@@ -2488,7 +2488,7 @@ flush();
 
                             <? load_status('Initializing GUI...<br>MainPanel<br>AgentActions'); ?>
                             <td width=205 height=330 align=left valign=top class=curve3>
-                                <font class="body_text" style=\"white-space:nowrap;\">
+                                <font class="body_text" style="">
                                     <center>
                                         <span style="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><img src="templates/<?= $agent_template ?>/images/vdc_LB_dialnextnumber_OFF.gif" border=0 alt="Dial Next Number"></a></span><br>
                                         <span id="DiaLLeaDPrevieW"><font class="preview_text"><input type=checkbox name=LeadPreview id=LeadPreview size=1 value="0"><label for="LeadPreview"> LEAD PREVIEW</label><br></font></span>
@@ -2549,7 +2549,6 @@ flush();
 
                             <? load_status('Initializing GUI...<br>MainPanel<br>CustomerInformation'); ?>
                             <td width=505 align=left valign=top>
-                                <input type=hidden name=lead_id value="">
                                 <input type=hidden name=list_id value="">
                                 <input type=hidden name=called_count value="">
                                 <input type=hidden name=gmt_offset_now value="">
@@ -2559,17 +2558,19 @@ flush();
                             
                                 <!-- Customer Information -->
                                 <div class="text_input" id="MainPanelCustInfo">
-                                    <table cellpadding='0' cellspacing='2'>
-                                        <tr>
+                                    <table cellpadding=0 cellspacing=2>
+                                        <tr valign=top>
                                             <td align=center colspan=3>
                                                 <table width=100% align=center border=0>
-                                                    <tr>
-                                                        <td width=30% align=left valign=top>
-                                                            <font class="body_text" color=<?=$form_fc?>>CallDuration:&nbsp;</font><font class="body_input"><input type=text size=4 name=SecondS class="cust_form" value=""></font>
+                                                    <tr valign=top>
+                                                        <td width=40% align=right>
+                                                            <font class="body_text" color=<?=$form_fc?>><label for=SecondS>CallDuration:&nbsp;</label></font>
+                                                            <font class="body_input"><input type=text size=4 name=SecondS id=SecondS class="cust_form" value="" readonly></font>
                                                         </td>
-                                                        <td width=25% align=center valign=middle><font class="body_text" color=#ABCBD4><span id=callchannel style="font-size:5pt;"></span></font></td>
-                                                        <td width=45% align=right valign=top>
-                                                            <font class="body_text" color=<?=$form_fc?>>Cust Time:</a>&nbsp;</font><font class="body_input"><input type=text size=19 maxlength=22 name=custdatetime class="cust_form" value=""></font>
+                                                        <td width=10% align=center><font class="body_text" color=#ABCBD4><span id=callchannel style="font-size:5pt;overflow:hidden;"></span></font></td>
+                                                        <td width=50% align=left>
+                                                            <font class="body_text" color=<?=$form_fc?>><label for=custdatetime>Cust Time:&nbsp;</label></font>
+                                                            <font class="body_input"><input type=text size=19 maxlength=22 name=custdatetime id=custdatetime class="cust_form" value="" readonly></font>
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -2580,77 +2581,89 @@ flush();
                                             <td colspan=2 align=center valign=top><font color=<?=$form_fc?>><b>Customer Information</b></font><span id="CusTInfOSpaN"></span></td>
                                         </tr>
                                         <tr>
+                                            <td align=right><font class="body_text" color=<?=$form_fc?>><label for=lead_id>LeadID:&nbsp;</label></font></td>
+                                            <td align=left colspan=2>
+                                                <font class="body_input"><input type=text size=11 name=lead_id id=lead_id maxlength=11 class="cust_form" value="" readonly></font>
+                                                <font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
+                                                <font class="body_text" color=<?=$form_fc?>><label for=source_id>SourceID:&nbsp;</label></font>
+                                                <font class="body_input"><input type=text size=6 name=source_id id=source_id maxlength=6 class="cust_form" value="" readonly></font>
+                                                <font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
+                                                <font class="body_text" color=<?=$form_fc?>><label for=external_key>ExternalKey:&nbsp;</label></font>
+                                                <font class="body_input"><input type=text size=11 name=external_key id=external_key maxlength=100 class="cust_form" value="" readonly></font>
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td align=right>
-                                                <font class="body_text"><font color=<?=$form_fc?>> Title:&nbsp;</font>
+                                                <font class="body_text"><font color=<?=$form_fc?>><label for=title>Title:&nbsp;</label></font>
                                             </td>
                                             <td align=left colspan=2>
                                                 <font class="body_input"><input type=text size=4 name=title id=title maxlength=4 class="cust_form" value=""></font>
-                                                <font class="body_text" color=<?=$form_fc?>>&nbsp;First: </font>
+                                                <font class="body_text" color=<?=$form_fc?>><label for=first_name>&nbsp;First:&nbsp;</label></font>
                                                 <font class="body_input"> <input type=text size=14 name=first_name id=first_name maxlength=30 class="cust_form" value=""></font>
-                                                <font class="body_text" color=<?=$form_fc?>>&nbsp;MI: </font>
+                                                <font class="body_text" color=<?=$form_fc?>><label for=middle_initial>&nbsp;MI:&nbsp;</label></font>
                                                 <font class="body_input"><input type=text size=1 name=middle_initial id=middle_initial maxlength=1 class="cust_form" value=""></font>
-                                                <font class="body_text" color=<?=$form_fc?>>&nbsp;Last: </font>
+                                                <font class="body_text" color=<?=$form_fc?>><label for=last_name>&nbsp;Last:&nbsp;</label></font>
                                                 <font class="body_input"><input type=text size=15 name=last_name id=last_name maxlength=30 class="cust_form" value=""></font>
                                             </td>
                                         </tr>
                                         <!-- Hooks for company field
                                         <tr>
-                                            <td align=right><font class="body_text" color=<?=$form_fc?>>Company:&nbsp;</font></td>
+                                            <td align=right><font class="body_text" color=<?=$form_fc?>><label for=company>Company:&nbsp;</label></font></td>
                                             <td align=left colspan=2><font class="body_input"><input type=text size=58 name=company id=company maxlength=100 class="cust_form" value=""></font></td>
                                         -->
                                         <tr>
-                                            <td align=right><font class="body_text" color=<?=$form_fc?>>Address1:&nbsp;</font></td>
+                                            <td align=right><font class="body_text" color=<?=$form_fc?>><label for=address1>Address1:&nbsp;</label></font></td>
                                             <td align=left colspan=2><font class="body_input"><input type=text size=58 name=address1 id=address1 maxlength=100 class="cust_form" value=""></font></td>
                                         </tr>
                                         <tr>
-                                            <td align=right><font class="body_text" color=<?=$form_fc?>>Address2:&nbsp;</font></td>
+                                            <td align=right><font class="body_text" color=<?=$form_fc?>><label for=address2>Address2:&nbsp;</label></font></td>
                                             <td align=left><font class="body_input"><input type=text size=22 name=address2 id=address2 maxlength=100 class="cust_form" value=""></font></td>
                                             <td align=right>
-                                                <font class="body_text" color=<?=$form_fc?>>Address3:&nbsp;</font>
-                                                <font class="body_input"><input type=text size=22 name=address3 id=address3 maxlength=100 class="cust_form" value=""></font>
+                                                <font class="body_text" color=<?=$form_fc?>><label for=address3>Address3&nbsp;/&nbsp;Phone3:&nbsp;</label></font>
+                                                <font class="body_input"><input type=text size=15 name=address3 id=address3 maxlength=100 class="cust_form" value=""></font>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td align=right><font class="body_text" color=<?=$form_fc?>>City:&nbsp;</font></td>
+                                            <td align=right><font class="body_text" color=<?=$form_fc?>><label for=city>City:&nbsp;</label></font></td>
                                             <td align=left><font class="body_input"><input type=text size=22 name=city id=city maxlength=50 class="cust_form" value=""></font></td>
                                             <td align=right> 
-                                                <font class="body_text" color=<?=$form_fc?>>State:&nbsp;</font>
+                                                <font class="body_text" color=<?=$form_fc?>><label for=state>State:&nbsp;</label></font>
                                                 <font class="body_input"><input type=text size=2 name=state id=state maxlength=2 class="cust_form" value=""></font>
                                                 <font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
-                                                <font class="body_text" color=<?=$form_fc?>>Zip:&nbsp;</font>
+                                                <font class="body_text" color=<?=$form_fc?>><label for=postal_code>Zip:&nbsp;</label></font>
                                                 <font class="body_input"><input type=text size=9 name=postal_code id=postal_code maxlength=10 class="cust_form" value=""></font>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td align=right><font class="body_text" color=<?=$form_fc?>>Province:&nbsp;</font></td>
+                                            <td align=right><font class="body_text" color=<?=$form_fc?>><label for=province>Province:&nbsp;</label></font></td>
                                             <td align=left>
                                                 <font class="body_input">
                                                     <input type=text size=22 name=province id=province maxlength=50 class="cust_form" value="">
                                                 </font>
                                             </td>
                                             <td align=right>
-                                                <font class="body_text" color=<?=$form_fc?>>Email:&nbsp;</font>
+                                                <font class="body_text" color=<?=$form_fc?>><label for=email>Email:&nbsp;</label></font>
                                                 <font class="body_input"><input type=text size=30 name=email id=email maxlength=70 class="cust_form" value=""></font>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td align=right><font class="body_text" color=<?=$form_fc?>>Phone:&nbsp;</font></td>
-                                            <td colspan=2>
-                                                <table width=100%>
-                                                    <tr>
-                                                        <td align=left colspan=2><font class="body_input"><input type=text size=11 name=phone_number id=phone_number maxlength=12 class="cust_form" value=""></font></td>
-                                                        <td align=right><font class="body_text" color=<?=$form_fc?>>PhoneCode:&nbsp;</font><font class="body_input"><input type=text size=4 name=phone_code id=phone_code maxlength=10 class="cust_form" value=""></font></td>
-                                                        <td align=right><font class="body_text" color=<?=$form_fc?>>Alt. Phone:&nbsp;</font><font class="body_input"><input type=text size=12 name=alt_phone id=alt_phone maxlength=12 class="cust_form" value=""></font></td>
-                                                    </tr>
-                                                </table>
+                                            <td align=right><font class="body_text" color=<?=$form_fc?>><label for=phone_number>Phone:&nbsp;</label></font></td>
+                                            <td align=left colspan=2>
+                                                <font class="body_input"><input type=text size=11 name=phone_number id=phone_number maxlength=12 class="cust_form" value=""></font>
+                                                <font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
+                                                <font class="body_text" color=<?=$form_fc?>><label for=phone_code>PhoneCode:&nbsp;</label></font>
+                                                <font class="body_input"><input type=text size=4 name=phone_code id=phone_code maxlength=10 class="cust_form" value=""></font>
+                                                <font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
+                                                <font class="body_text" color=<?=$form_fc?>><label for=alt_phone>Phone2:&nbsp;</label></font>
+                                                <font class="body_input"><input type=text size=12 name=alt_phone id=alt_phone maxlength=12 class="cust_form" value=""></font>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td align=right valign=top><font class="body_text" color=<?=$form_fc?>>Comments:&nbsp;</font></td>
+                                            <td align=right valign=top><font class="body_text" color=<?=$form_fc?>><label for=comments>Comments:&nbsp;</label></font></td>
                                             <td align=left colspan=2>
                                                 <font class="body_tiny">
                                                     <? if ($multi_line_comments) { ?>
-                                                        <textarea name=comments id=comments rows=2 cols=56 class="cust_form"></textarea>
+                                                        <textarea name=comments id=comments rows=3 cols=56 class="cust_form" style="height:45px;"></textarea>
                                                     <? } else { ?>
                                                         <input type=text size=56 name=comments id=comments maxlength=255 class="cust_form" value="">
                                                     <? } ?>
@@ -2658,26 +2671,26 @@ flush();
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td align=right><font class="body_text"><font color=<?=$form_fc?>>Birth&nbsp;<br>Date:&nbsp;</font></td>
+                                            <td align=right><font class="body_text"><font color=<?=$form_fc?>><label for=date_of_birth>Birth&nbsp;Date:&nbsp;</label></font></td>
                                             <td align=left><font class="body_input"><input type=text size=12 name=date_of_birth id=date_of_birth maxlength=10 class="cust_form" value=""></font></td>
                                             <td align=right>
-                                                <font class="body_text" color=<?=$form_fc?>>Gender:&nbsp;</font>
+                                                <font class="body_text" color=<?=$form_fc?>><label for=gender>Gender:&nbsp;</label></font>
                                                 <font class="body_input"><select name=gender id=gender class="cust_form"><option></option><option>M</option><option>F</option></select></font>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td align=right><font class="body_text"><font color=<?=$form_fc?>>Post&nbsp;<br>Date:&nbsp;</font></td>
+                                            <td align=right><font class="body_text"><font color=<?=$form_fc?>><label for=post_date>Post&nbsp;Date:&nbsp;</label></font></td>
                                             <td align=left><font class="body_input"><input type=text size=22 name=post_date id=post_date maxlength=20 class="cust_form" value=""></font></td>
                                             <td align=right>
-                                                <font class="body_text" color=<?=$form_fc?>>Vendor&nbsp;Code:&nbsp;</font>
+                                                <font class="body_text" color=<?=$form_fc?>><label for=vendor_lead_code>Vendor&nbsp;Code:&nbsp;</label></font>
                                                 <font class="body_input"><input type=text size=15 name=vendor_lead_code id=vendor_lead_code maxlength=20 class="cust_form" value=""></font>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td align=right><font class="body_text" color=<?=$form_fc?>>Custom1:&nbsp;</font></td>
-                                            <td align=left><font class="body_input"><input type=text size=22 name=custom1 id=custom1 maxlength=100 class="cust_form" value=""></font>&nbsp;</td>
+                                            <td align=right><font class="body_text" color=<?=$form_fc?>><label for=custom1>Custom1:&nbsp;</label></font></td>
+                                            <td align=left><font class="body_input"><input type=text size=22 name=custom1 id=custom1 maxlength=100 class="cust_form" value=""></font></td>
                                             <td align=right>
-                                                <font class="body_text" color=<?=$form_fc?>>Custom2:&nbsp;</font>
+                                                <font class="body_text" color=<?=$form_fc?>><label for=custom2>Custom2:&nbsp;</label></font>
                                                 <font class="body_input"><input type=text size=22 name=custom2 id=custom2 maxlength=100 class="cust_form" value=""></font>
                                             </td>
                                         </tr>
@@ -2798,7 +2811,7 @@ flush();
                 </td>
                 <td align=left valign=top>
                     <br>
-                    <div id="AddtlFormTab" style="position:absolute;left:980px;top:22px;z-index:9;" onclick="AddtlFormOver();">
+                    <div id="AddtlFormTab" style="visibility:hidden;position:absolute;left:980px;top:22px;z-index:9;" onclick="AddtlFormOver();">
                         <img src="templates/<?= $agent_template ?>/images/agentsidetab_tab.png" width="10" height="46" border="0">
                     </div>
                     <div id="AddtlFormTabExpanded" style="visibility:hidden;position:absolute;left:840px;top:22px;z-index:9;">
@@ -2863,6 +2876,7 @@ load_status('Initializing dynamic functions...<br>&nbsp;<br>&nbsp;');
 echo "<script type=\"text/javascript\">\n";
 require('include/osdial-dynamic.js');
 echo "initTextWidths()\n";
+echo "emailTemplatesDisable(true);\n";
 echo "</script>\n";
 
 
