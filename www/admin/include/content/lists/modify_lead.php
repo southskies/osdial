@@ -140,7 +140,7 @@ if ($ADD==1121) {
 			
             $ld = get_first_record($link, 'osdial_list', '*', sprintf("lead_id='%s'",mres($lead_id)));
 			
-	        if ($ld[lead_id] > 0) {
+	        if ($ld['lead_id'] > 0) {
 			
 		        ##### grab osdial_log records #####
 		        $stmt="select * from osdial_log where lead_id='" . mres($lead_id) . "' order by uniqueid desc limit 500;";
@@ -395,7 +395,7 @@ if ($ADD==1121) {
 		        $DS=0;
 		        while ($statuses_to_print > $o) {
 			        $rowx=mysql_fetch_row($rslt);
-			        if (strlen($ld[status]) == strlen($rowx[0]) and eregi($ld[status],$rowx[0])) {
+			        if (strlen($ld['status']) == strlen($rowx[0]) and eregi($ld['status'],$rowx[0])) {
                         $statuses_list .= "          <option SELECTED value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
                         $DS++;
                     } else {
@@ -412,7 +412,7 @@ if ($ADD==1121) {
 		            $o=0;
 		            while ($CAMPstatuses_to_print > $o) {
 			            $rowx=mysql_fetch_row($rslt);
-			            if (strlen($ld[status]) ==  strlen($rowx[0]) and eregi($ld[status],$rowx[0]) ) {
+			            if (strlen($ld['status']) ==  strlen($rowx[0]) and eregi($ld['status'],$rowx[0]) ) {
                             $statuses_list .= "          <option SELECTED value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
                             $DS++;
                         } else {
@@ -539,9 +539,9 @@ if ($ADD==1121) {
 		                            echo '<input type="hidden" name="ADD" value="' . $ADD . '">';
 		                            echo '<input type="hidden" name="SUB" value="' . $SUB . '">';
 		                            echo '<input type="hidden" name="save_aff" value=1>';
-		                            echo '<input type="hidden" name="lead_id" value="' . $ld[lead_id] . '">';
-		                            echo '<input type="hidden" name="alf_id" value="' . $alf[id] . '">';
-		                            echo '<input type="hidden" name="alf_fld_id" value="' . $affld[id] . '">';
+		                            echo '<input type="hidden" name="lead_id" value="' . $ld['lead_id'] . '">';
+		                            echo '<input type="hidden" name="alf_id" value="' . $alf['id'] . '">';
+		                            echo '<input type="hidden" name="alf_fld_id" value="' . $affld['id'] . '">';
 		                            echo "    <tr $bgcolor class=\"row font1\">\n";
                                     echo "      <td align=center><font $afldel><b>$affrm[name]</b></font></td>\n";
                                     echo "      <td align=center><font $afldel><b>$affld[name]</b></font></td>\n";
@@ -566,9 +566,9 @@ if ($ADD==1121) {
 
 
 			
-		        if ($ld[status] == 'CALLBK' or $ld[status] == 'CBHOLD') {
+		        if ($ld['status'] == 'CALLBK' or $ld['status'] == 'CBHOLD') {
 			        ### find any osdial_callback records for this lead 
-			        $stmt="select * from osdial_callbacks where lead_id='" . mres($ld[lead_id]) . "' and status IN('ACTIVE','LIVE') order by callback_id desc LIMIT 1;";
+			        $stmt="select * from osdial_callbacks where lead_id='" . mres($ld['lead_id']) . "' and status IN('ACTIVE','LIVE') order by callback_id desc LIMIT 1;";
 			        if ($DB) echo "|$stmt|\n";
 			        $rslt=mysql_query($stmt, $link);
 			        $CB_to_print = mysql_num_rows($rslt);
@@ -703,7 +703,7 @@ if ($ADD==1121) {
                 echo "        <td>TSR</td>\n";
                 echo "      </tr>\n";
 			
-                $rlogs = get_krh($link, 'recording_log', '*', 'recording_id DESC', sprintf("lead_id='%s'",mres($ld[lead_id])), '500');
+                $rlogs = get_krh($link, 'recording_log', '*', 'recording_id DESC', sprintf("lead_id='%s'",mres($ld['lead_id'])), '500');
 	            $u=0;
 	            foreach ($rlogs as $rl) {
 		            $location = $rl['location'];
@@ -760,11 +760,11 @@ if ($ADD==1121) {
                     }
                     function pwfa($wfv, $k) { return $wfv[$k]; };
                     $wfa1 = $camp['web_form_address'] . '?1=1' . $wvars;
-                    if (preg_match('/\?/',$camp['web_form_address'])) {
+                    if (preg_match('/../',$camp['web_form_address'])) {
                         $wfa1 = preg_replace('/\[\[(.*)\]\]/ime', "pwfa(\$wfv,'\\1')", $camp['web_form_address']);
                     }
                     $wfa2 = $camp['web_form_address2'] . '?1=1' . $wvars;
-                    if (preg_match('/\?/',$camp['web_form_address2'])) {
+                    if (preg_match('/../',$camp['web_form_address2'])) {
                         $wfa2 = preg_replace('/\[\[(.*)\]\]/ime', "pwfa(\$wfv,'\\1')", $camp['web_form_address2']);
                     }
                     echo "    <br><br><br><center><font size=3><a target=\"_new\" href=\"" . $wfa1 . "\">WEBFORM1</a>&nbsp;&nbsp;&nbsp;<a target=\"_new\" href=\"" . $wfa2 . "\">WEBFORM2</a></font></center>";
