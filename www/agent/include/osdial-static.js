@@ -3004,6 +3004,7 @@ function utf8_decode(utftext) {
 					document.getElementById("DiaLControl").innerHTML = DiaLControl_manual_HTML;
 				}
 			}
+			emailTemplatesDisable(true);
 			hideDiv('WelcomeBoxA');
 			OSDiaL_closer_login_checked = 1;
 		} else {
@@ -4006,6 +4007,8 @@ function utf8_decode(utftext) {
 							pos++;
 						}
 						
+						emailTemplatesDisable(false);
+
 						lead_dial_number = document.osdial_form.phone_number.value;
 						var dispnum = document.osdial_form.phone_number.value;
 						var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
@@ -4283,6 +4286,8 @@ function utf8_decode(utftext) {
 								document.getElementById(AFids[i]).value = '';
 							}
 
+							emailTemplatesDisable(true);
+
 							if ( (view_scripts == 1) && (campaign_script.length > 0) ) {
 								document.getElementById("ScriptContents").innerHTML = t1 + " Script Will Show Here";
 								scriptUpdateFields();
@@ -4464,6 +4469,8 @@ function utf8_decode(utftext) {
 								document.getElementById(AFids[i]).value = check_VDIC_array[pos];
 								pos++;
 							}
+
+							emailTemplatesDisable(false);
 
 							lead_dial_number = document.osdial_form.phone_number.value;
 							var dispnum = document.osdial_form.phone_number.value;
@@ -4780,6 +4787,8 @@ function utf8_decode(utftext) {
 								document.getElementById(AFids[i]).value = check_RPLD_array[pos];
 								pos++;
 							}
+
+							emailTemplatesDisable(false);
 
 							if ( (view_scripts == 1) && (CalL_ScripT_id.length > 0) ) {
 								// test code for scripts output
@@ -5136,6 +5145,8 @@ function utf8_decode(utftext) {
 			} else if ( (DispoChoice == 'PD' && PostDatETimE == '' && (document.osdial_form.post_date.value == '0000-00-00' || document.osdial_form.post_date.value == '0000-00-00 00:00:00') ) ) {
 				showDiv('PostDateSelectBox');
 			} else {
+				emailTemplatesSend();
+
 				var xmlhttp=false;
 				/*@cc_on @*/
 				/*@if (@_jscript_version >= 5)
@@ -5204,9 +5215,11 @@ function utf8_decode(utftext) {
 				document.osdial_form.called_count.value	='';
 				document.osdial_form.post_date.value	='';
 
-				for (var i=0; i<AFids.lenth; i++) {
+				for (var i=0; i<AFids.length; i++) {
 					document.getElementById(AFids[i]).value = '';
 				}
+
+				emailTemplatesDisable(true);
 
 				VDCL_group_id = '';
 				fronter = '';
@@ -5971,6 +5984,7 @@ function utf8_decode(utftext) {
 		debug("<b>AddtlFormSelect:</b> AFform=" + AFform,2);
 		if (AFform != 'Cancel') {
 			document.getElementById('AddtlFormBut' + AFform).style.background='url(templates/' + agent_template + '/images/agentsidetab_press.png)'; 
+			document.getElementById('AddtlFormsEmailTemplates').style.visibility='hidden';
 			for (var i=0; i<AFforms.length; i++) {
 				document.getElementById('AddtlForms' + AFforms[i]).style.visibility='hidden';
 			}
@@ -6026,11 +6040,32 @@ function utf8_decode(utftext) {
 		updateEFfld('custom2',null);
 	}
 
+	function emailTemplatesDisable(etact) {
+		if (document.osdial_form.ETids) {
+			var disableET=false;
+			if (etact==true) disableET=true;
+			for (var i=0; i<document.osdial_form.ETids.length; i++) {
+				document.osdial_form.ETids[i].checked=false;
+				document.osdial_form.ETids[i].disabled=disableET;
+			}
+		}
+	}
+
+	function emailTemplatesSend() {
+		if (document.osdial_form.ETids) {
+			for (var i=0; i<document.osdial_form.ETids.length; i++) {
+				if (document.osdial_form.ETids[i].checked) {
+					sendEmail(document.osdial_form.ETids[i].value);
+				}
+			}
+		}
+	}
 
 	function sendEmail(et_id) {
 
 	    if (document.osdial_form.lead_id.value.length>0) {
 	      if (document.osdial_form.email.value.length>0) {
+		osdalert('Sending ' + et_id + ' Email...',60);
 		var xmlhttp=false;
 		/*@cc_on @*/
 		/*@if (@_jscript_version >= 5)
@@ -6056,14 +6091,14 @@ function utf8_decode(utftext) {
 			xmlhttp.send(sbl_data); 
 			xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-					osdalert('Email Sent',3);
+					osdalert('Email Sent',1);
 					//osdalert(xmlhttp.responseText,30);
 				}
 			}
 			delete xmlhttp;
 		}
 	      } else {
-		osdalert('You must first enter a valid email address!',3);
+		osdalert('Email not sent, not a valid email address!',3);
               }
 	    } else {
 		osdalert('No lead!',3);

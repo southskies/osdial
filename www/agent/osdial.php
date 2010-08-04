@@ -933,6 +933,15 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 $use_cid_areacode_map =         $row[44];
                 $carrier_id =         $row[45];
                 $email_templates =         $row[46];
+                if ($email_templates) {
+                    $ets = explode(',',$email_templates);
+                    $email_templates='';
+                    foreach ($ets as $eto) {
+                        $et = get_first_record($link, 'osdial_email_templates', '*', "et_id='" . $eto . "' AND active='Y'");
+                        $email_templates.=$et['et_id'] . ',';
+                    }
+                    $email_templates = rtrim($email_templates,',');
+                }
 
                 if ($previewFD_time == "") $previewFD_time = "0";
                 if ($use_custom2_callerid != "Y") $use_custom2_callerid = "N";
@@ -2018,32 +2027,6 @@ flush();
     </span>
 
     
-    <? load_status('Initializing GUI...<br>EmailTemplates<br>&nbsp;'); ?>
-    <!-- Email Templates -->
-    <span style="position:absolute;left:225px;top:<?=$HTheight-60 ?>px;z-index:21;visibility:hidden;" id="EmailTemplates">
-        <table bgcolor="<?=$xfer_bg1?>" frame=box width="500px">
-            <tr>
-                <td align=center>
-                    <div class="text_input" id="EmailTemplatesdiv">
-                        <font class="body_text" color=<?=$form_fc?>>
-                            Email Templates<br /><hr />
-                            <?
-                            $ets = explode(',',$email_templates);
-                            foreach ($ets as $eto) {
-                                $et = get_first_record($link, 'osdial_email_templates', '*', "et_id='" . $eto . "'");
-                                echo "<input type=button value=\"$et[et_id] - $et[et_name]\" onclick=\"hideDiv('EmailTemplates');osdalert('Sending Email...',30);CustomerData_update();sendEmail('$et[et_id]');\"><br \>\n";
-                            }
-                            ?>
-                            <hr />
-                            <input type=button value="-- CLOSE TEMPLATES --" onclick="hideDiv('EmailTemplates');">
-                        </font>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </span>
-
-
     <? load_status('Initializing GUI...<br>TransferMain<br>&nbsp;'); ?>
     <!-- Transfer Link -->
     <span style="position:absolute;left:185px;top:<?=$HTheight ?>px;z-index:21;visibility:hidden;" id="TransferMain">
@@ -2640,19 +2623,14 @@ flush();
                                         </tr>
                                         <tr>
                                             <td align=right><font class="body_text" color=<?=$form_fc?>>Province:&nbsp;</font></td>
-                                            <td align=left colspan=2>
+                                            <td align=left>
                                                 <font class="body_input">
                                                     <input type=text size=22 name=province id=province maxlength=50 class="cust_form" value="">
                                                 </font>
                                             </td>
-                                        </tr>
-                                        <tr>
-                                            <td align=right><font class="body_text" color=<?=$form_fc?>>Email:&nbsp;</font></td>
-                                            <td align=left colspan=2>
-                                                <font class="body_input">
-                                                    <input type=text size=40 name=email id=email maxlength=70 class="cust_form" value="">
-                                                    <input type=button value="Templates" onclick="showDiv('EmailTemplates');">
-                                                </font>
+                                            <td align=right>
+                                                <font class="body_text" color=<?=$form_fc?>>Email:&nbsp;</font>
+                                                <font class="body_input"><input type=text size=30 name=email id=email maxlength=70 class="cust_form" value=""></font>
                                             </td>
                                         </tr>
                                         <tr>
@@ -2712,7 +2690,37 @@ flush();
                             <? load_status('Initializing GUI...<br>MainPanel<br>AdditionalFormFields'); ?>
                             <td width=270 align=center valign=top class=borderright>
                                 <div class="AFHead">Additional Information</div>
-                                <? $cnt = 0;
+                                <?
+                                $cnt = 0;
+
+                                if ($email_templates) {
+                                    echo "  <div id=\"AddtlFormsEmailTemplates\" style=" . $cssvis . "position:absolute;left:710px;top:42px;z-index:6;height:325px;overflow-x:hidden;overflow-y:auto;border-width:1px;border-style:solid;border-color:$form_fc;border-top-color:#CDEEE3;border-left-color:#CDEEE3;>\n";
+                                    echo "  <table width=265><tr><td><table align=center>\n";
+                                    echo "      <tr>\n";
+                                    echo "          <td colspan=3 align=center>\n";
+                                    echo "              <font color=$form_fc class=body_text style=\"font-size:12px\"><b>Email Templates<br />Select Emails to Send After Call<b></font>\n";
+                                    echo "          </td>\n";
+                                    echo "      </tr>\n";
+
+                                    $ets = explode(',',$email_templates);
+                                    foreach ($ets as $eto) {
+                                        $et = get_first_record($link, 'osdial_email_templates', '*', "et_id='" . $eto . "' AND active='Y'");
+                                        echo "      <tr title=\"$desc\">\n";
+                                        echo "        <td width=95 align=left colspan=2>\n";
+                                        echo "          <div style=\"width:90px;overflow:hidden;white-space:nowrap;\">\n";
+                                        echo "            <input type=checkbox style=\"font-size:10px;\" name=ETids id=ET" . $et['et_id'] . " value=" . $et['et_id'] . " class=cust_form>\n";
+                                        echo "            <font color=$form_fc class=body_text style=\"font-size:10px;\"><label for=ET" . $et['et_id'] . ">&nbsp;" . $et['et_name'] . "</label></font>\n";
+                                        echo "          </div>\n";
+                                        echo "        </td>\n";
+                                        echo "        <td><span style=\"font-size:9px;\">&nbsp;</span></td>\n";
+                                        echo "      </tr>\n";
+                                    }
+
+                                    echo "  </table></td></tr></table>\n";
+                                    echo "  </div>\n";
+                                    $cnt++;
+                                }
+
                                 foreach ($forms as $form) {
                                     foreach (split(',',$form['campaigns']) as $fcamp) {
                                         if ($fcamp == 'ALL' or strtoupper($fcamp) == strtoupper($VD_campaign)) {
@@ -2799,6 +2807,14 @@ flush();
                                 <td></td>
                             </tr>
                             <?
+                            if ($email_templates) {
+                                echo "  <tr id=AddtlFormButEmailTemplates style=\"background-image:url(templates/" . $agent_template . "/images/agentsidetab_extra.png);\" height=29 ";
+                                echo "    onmouseover=\"AddtlFormButOver('EmailTemplates');\" onmouseout=\"AddtlFormButOut('EmailTemplates');\">\n";
+                                echo "      <td align=center onclick=\"AddtlFormSelect('EmailTemplates');\">\n";
+                                echo "          <div class=AFMenu>EmailTemplates</div>\n";
+                                echo "      </td>\n";
+                                echo "  </tr>\n";
+                            }
                             foreach ($forms as $form) {
                                 foreach (split(',',$form['campaigns']) as $fcamp) {
                                     if ($fcamp == 'ALL' or strtoupper($fcamp) == strtoupper($VD_campaign)) {
