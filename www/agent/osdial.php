@@ -807,30 +807,29 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 $VARstatuses='';
                 $VARstatusnames='';
                 $DISPstatus = Array();
-                $statremove = "'NEW'";
+                $PSstatuses = Array();
+                $statuses = Array();
+                $status_names = Array();
+                $statremove = "'NEW',";
                 ##### grab the campaign-specific statuses that can be used for dispositioning by an agent
-                $stmt="SELECT status,status_name,IF(selectable='Y',1,0) FROM osdial_campaign_statuses WHERE $selectableSQL status NOT IN ($statremove) and campaign_id='$VD_campaign' order by status limit 50;";
+                $stmt="SELECT status,status_name,IF(selectable='Y',1,0) FROM osdial_campaign_statuses WHERE $selectableSQL status NOT IN (" . rtrim($statremove, ',') . ") and campaign_id='$VD_campaign' order by status;";
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $VD_statuses_camp = mysql_num_rows($rslt);
-                $i=0;
                 $j=0;
                 while ($j < $VD_statuses_camp) {
                     $row=mysql_fetch_row($rslt);
                     $DISPstatus[$row[0]] = $row[2];
                     if ($row[2] > 0) {
-                        $statuses[$i] =$row[0];
-                        $status_names[$i] =$row[1];
-                        $VARstatuses = "$VARstatuses'$statuses[$i]',";
-                        $VARstatusnames = "$VARstatusnames'$status_names[$i]',";
-                        $statremove .= ",'$statuses[$i]'";
-                        $i++;
+                        $PSstatuses[$row[0]] = $row[1];
+                        $statremove .= "'$row[0]',";
                     }
                     $j++;
                 }
+                $statremove = rtrim($statremove, ',');
 
                 ##### grab the statuses that can be used for dispositioning by an agent
-                $stmt="SELECT status,status_name,IF(selectable='Y',1,0) FROM osdial_statuses WHERE $selectableSQL status NOT IN ($statremove) order by status limit 50;";
+                $stmt="SELECT status,status_name,IF(selectable='Y',1,0) FROM osdial_statuses WHERE $selectableSQL status NOT IN ($statremove) order by status;";
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $VD_statuses_ct = mysql_num_rows($rslt);
@@ -838,18 +837,23 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 while ($j < $VD_statuses_ct) {
                     $row=mysql_fetch_row($rslt);
                     if ($row[2] > 0 and preg_match('/^$|^1$/',$DISPstatus[$row[0]])) {
-                        $statuses[$i] =$row[0];
-                        $status_names[$i] =$row[1];
-                        $VARstatuses = "$VARstatuses'$statuses[$i]',";
-                        $VARstatusnames = "$VARstatusnames'$status_names[$i]',";
-                        $i++;
+                        $PSstatuses[$row[0]] = $row[1];
                     }
                     $j++;
                 }
 
-                $VD_statuses_ct = $i;
-                $VARstatuses = substr("$VARstatuses", 0, -1); 
-                $VARstatusnames = substr("$VARstatusnames", 0, -1); 
+                ksort($PSstatuses);
+                $VD_statuses_ct=0;
+                foreach ($PSstatuses as $Pstatus => $Pstatusname) {
+                        $statuses[$VD_statuses_ct]=$Pstatus;
+                        $status_names[$VD_statuses_ct]=$Pstatusname;
+                        $VARstatuses .= "'$Pstatus',";
+                        $VARstatusnames .= "'$Pstatusname',";
+                        $VD_statuses_ct++;
+                }
+                $VARstatuses = rtrim($VARstatuses, ','); 
+                $VARstatusnames = rtrim($VARstatusnames, ','); 
+
 
                 ##### grab the campaign-specific HotKey statuses that can be used for dispositioning by an agent
                 $stmt="SELECT hotkey,status,status_name,xfer_exten FROM osdial_campaign_hotkeys WHERE selectable='Y' and status != 'NEW' and campaign_id='$VD_campaign' order by hotkey limit 9;";
@@ -866,19 +870,19 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                     $HKstatus[$w] =$row[1];
                     $HKstatus_name[$w] =$row[2];
                     $HKxfer_exten[$w] =$row[3];
-                    $HKhotkeys = "$HKhotkeys'$HKhotkey[$w]',";
-                    $HKstatuses = "$HKstatuses'$HKstatus[$w]',";
-                    $HKstatusnames = "$HKstatusnames'$HKstatus_name[$w]',";
-                    $HKxferextens = "$HKxferextens'$HKxfer_exten[$w]',";
-                    if ($w < 3) $HKboxA = "$HKboxA <font class=\"skb_text\">$HKhotkey[$w]</font> - $HKstatus[$w] - $HKstatus_name[$w]<br>";
-                    if ($w >= 3 and $w < 6) $HKboxB = "$HKboxB <font class=\"skb_text\">$HKhotkey[$w]</font> - $HKstatus[$w] - $HKstatus_name[$w]<br>";
-                    if ($w >= 6) $HKboxC = "$HKboxC <font class=\"skb_text\">$HKhotkey[$w]</font> - $HKstatus[$w] - $HKstatus_name[$w]<br>";
+                    $HKhotkeys .= "'$HKhotkey[$w]',";
+                    $HKstatuses .= "'$HKstatus[$w]',";
+                    $HKstatusnames .= "'$HKstatus_name[$w]',";
+                    $HKxferextens .= "'$HKxfer_exten[$w]',";
+                    if ($w < 3) $HKboxA .= " <font class=\"skb_text\">$HKhotkey[$w]</font> - $HKstatus[$w] - $HKstatus_name[$w]<br>";
+                    if ($w >= 3 and $w < 6) $HKboxB .= " <font class=\"skb_text\">$HKhotkey[$w]</font> - $HKstatus[$w] - $HKstatus_name[$w]<br>";
+                    if ($w >= 6) $HKboxC .= " <font class=\"skb_text\">$HKhotkey[$w]</font> - $HKstatus[$w] - $HKstatus_name[$w]<br>";
                     $w++;
                 }
-                $HKhotkeys = substr("$HKhotkeys", 0, -1); 
-                $HKstatuses = substr("$HKstatuses", 0, -1); 
-                $HKstatusnames = substr("$HKstatusnames", 0, -1); 
-                $HKxferextens = substr("$HKxferextens", 0, -1); 
+                $HKhotkeys = rtrim($HKhotkeys, ','); 
+                $HKstatuses = rtrim($HKstatuses, ','); 
+                $HKstatusnames = rtrim($HKstatusnames, ','); 
+                $HKxferextens = rtrim($HKxferextens, ','); 
 
                 ##### grab the statuses to be dialed for your campaign as well as other campaign settings
                 $stmt="SELECT park_ext,park_file_name,web_form_address,allow_closers,auto_dial_level,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,campaign_script,get_call_launch,am_message_exten,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,agent_pause_codes_active,no_hopper_leads_logins,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,xfer_groups,web_form_address2,allow_tab_switch,preview_force_dial_time,manual_preview_default,web_form_extwindow,web_form2_extwindow,dial_method,submit_method,use_custom2_callerid,campaign_cid_name,xfer_cid_mode,use_cid_areacode_map,carrier_id,email_templates FROM osdial_campaigns where campaign_id = '$VD_campaign';";
@@ -1014,16 +1018,15 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                     $j=0;
                     while ($j < $VD_pause_codes) {
                         $row=mysql_fetch_row($rslt);
-                        $pause_codes[$i] =$row[0];
-                        $pause_code_names[$i] =$row[1];
-                        $VARpause_codes = "$VARpause_codes'$pause_codes[$i]',";
-                        $VARpause_code_names = "$VARpause_code_names'$pause_code_names[$i]',";
-                        $i++;
+                        $pause_codes[$j] =$row[0];
+                        $pause_code_names[$j] =$row[1];
+                        $VARpause_codes .= "'$pause_codes[$j]',";
+                        $VARpause_code_names .= "'$pause_code_names[$j]',";
                         $j++;
                     }
-                    $VD_pause_codes_ct = ($VD_pause_codes_ct+$VD_pause_codes);
-                    $VARpause_codes = substr("$VARpause_codes", 0, -1); 
-                    $VARpause_code_names = substr("$VARpause_code_names", 0, -1); 
+                    $VD_pause_codes_ct += $VD_pause_codes;
+                    $VARpause_codes = rtrim($VARpause_codes, ',');
+                    $VARpause_code_names = rtrim($VARpause_code_names, ',');
                 }
 
                 ##### grab the inbound groups to choose from if campaign contains CLOSER
@@ -1042,10 +1045,10 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                         $closer_groups[$INgrpCT] =$row[0];
                         $ingroup_script = $row[1];
                         if ($ingroup_script!='') $myscripts[$ingroup_script] = 1;
-                        $VARingroups = "$VARingroups'$closer_groups[$INgrpCT]',";
+                        $VARingroups .= "'$closer_groups[$INgrpCT]',";
                         $INgrpCT++;
                     }
-                    $VARingroups = substr("$VARingroups", 0, -1); 
+                    $VARingroups = rtrim($VARingroups, ','); 
                 }
 
                 ##### grab the allowable inbound groups to choose from for transfer options
@@ -1064,13 +1067,13 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                     $XFgrpCT=0;
                     while ($XFgrpCT < $xfer_ct) {
                         $row=mysql_fetch_row($rslt);
-                        $VARxfergroups = "$VARxfergroups'$row[0]',";
-                        $VARxfergroupsnames = "$VARxfergroupsnames'$row[1]',";
+                        $VARxfergroups .= "'$row[0]',";
+                        $VARxfergroupsnames .= "'$row[1]',";
                         if ($row[0] == "$default_xfer_group") {$default_xfer_group_name = $row[1];}
                         $XFgrpCT++;
                     }
-                    $VARxfergroups = substr("$VARxfergroups", 0, -1); 
-                    $VARxfergroupsnames = substr("$VARxfergroupsnames", 0, -1); 
+                    $VARxfergroups = rtrim($VARxfergroups, ','); 
+                    $VARxfergroupsnames = rtrim($VARxfergroupsnames, ','); 
                 }
 
                 ##### grab the number of leads in the hopper for this campaign
@@ -1691,15 +1694,15 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
         $PMMscripttext = preg_replace('/\{\{DISPO:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
 
         $MMscripttext[$e] = urlencode($PMMscripttext);
-        $MMscriptids = "$MMscriptids'$MMscriptid[$e]',";
-        $MMscriptnames = "$MMscriptnames'$MMscriptname[$e]',";
-        $MMscripttexts = "$MMscripttexts'$MMscripttext[$e]',";
+        $MMscriptids .= "'$MMscriptid[$e]',";
+        $MMscriptnames .= "'$MMscriptname[$e]',";
+        $MMscripttexts .= "'$MMscripttext[$e]',";
         $e++;
     }
 
-    $MMscriptids = substr("$MMscriptids", 0, -1); 
-    $MMscriptnames = substr("$MMscriptnames", 0, -1); 
-    $MMscripttexts = substr("$MMscripttexts", 0, -1); 
+    $MMscriptids = rtrim($MMscriptids, ','); 
+    $MMscriptnames = rtrim($MMscriptnames, ','); 
+    $MMscripttexts = rtrim($MMscripttexts, ','); 
     }
 }
 
