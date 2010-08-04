@@ -26,30 +26,25 @@ body {
 }
 
 .curve2 {
-	Xbackground-image: URL(images/curve2.png);
 	background-repeat:no-repeat;
 	background-position:left;
 }
 
 .curve3 {
-	Xbackground-image: URL(images/curve3.png);
 	background-repeat:no-repeat;
 	background-position:left;
 }
 
 .borderright {
-	Xbackground-image: URL(images/border.png);
 	background-repeat:repeat-y;
 	background-position:right;
 }
 
 .border {
-	Xbackground-image: URL(images/borderacross.png);
 	background-repeat:repeat-y;
 }
 
 .bottom {
-	Xbackground-image: URL(images/bottom.png);
 	background-repeat:no-repeat;
 }
 
@@ -58,7 +53,6 @@ body {
 	background-repeat:repeat-x;
 	background-position:center;
 	width: 870px;
-	Xborder-right: ridge;
 }
 
 .across-bottom {
@@ -75,7 +69,6 @@ body {
 	width: 870px;
 	margin-left: auto;
 	margin-right: auto;	
-	Xborder-right: solid 1px red;
 }
 
 .acrosslogin {
@@ -84,7 +77,6 @@ body {
 	width: 450px;
 	margin-left: auto;
 	margin-right: auto;	
-	Xborder-right: solid 1px red;
 }
 
 .acrosslogin2 {
@@ -93,7 +85,6 @@ body {
 	width: 500px;
 	margin-left: auto;
 	margin-right: auto;	
-	Xborder-right: solid 1px red;
 }
 
 .acrossagent {
@@ -102,7 +93,6 @@ body {
 	width: 980px;
 	margin-left: auto;
 	margin-right: auto;	
-	Xborder-right: solid 1px red;
 }
 
 .acrossagent a {
@@ -128,8 +118,8 @@ a:hover {
 	text-decoration: underline;
 }
 a:visited {
-	Xcolor: #1C4754;
-	Xtext-decoration: italic;
+	color: #1C4754;
+	text-decoration: none;
 }
 
 .rborder {
@@ -160,8 +150,6 @@ a:visited {
 }
 
 #clock { 
-	Xfont-family: Arial, Helvetica, sans-serif;
-	Xfont-size: 0.8em;
 	color: white;
 	padding: 4px;
 }
@@ -247,7 +235,6 @@ a:visited {
 input, textarea {
 	color: black;
 	font-family: 'dejavu sans',verdana,sans-serif;
-	Xfont-size: 1.0em;
 	font-size: 12px;
 	height: 20px;
 	padding: 0px;
