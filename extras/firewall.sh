@@ -118,7 +118,7 @@ if [ $imports -lt 1 ]; then
 	#Since they are not officially allocated, we will not accept any packets from them.
 	BOGONS=(  0.0.0.0/8   5.0.0.0/8   10.0.0.0/8     14.0.0.0/8    23.0.0.0/8      31.0.0.0/8     36.0.0.0/7  39.0.0.0/8  42.0.0.0/8
 	         49.0.0.0/8 100.0.0.0/6  104.0.0.0/7    106.0.0.0/8   127.0.0.0/8  169.254.0.0/16  172.16.0.0/12 176.0.0.0/7 179.0.0.0/8
-                181.0.0.0/8 185.0.0.0/8 192.0.2.0/24 192.168.0.0/16 198.18.0.0/15 198.51.100.0/24 203.0.103.0/24 223.0.0.0/8 )
+                181.0.0.0/8 185.0.0.0/8 192.0.2.0/24 192.168.0.0/16 198.18.0.0/15 198.51.100.0/24 203.0.103.0/24 )
 
 	# TTL is the maximum hops to allow a packet to travel.
 	TTL="128"
@@ -653,11 +653,11 @@ FW_LoadTables() {
 	done
 	if [ -n "$WAN_IF" ]; then
 		[ -e /lib/iptables/libipt_pkttype.so  -o -e /lib64/iptables/libipt_pkttype.so ]  && IPT "-t nat -A PREROUTING -i $WAN_IF -m pkttype --pkt-type broadcast -j DROP" || :
-		[ -e /lib/iptables/libipt_addrtype.so -o -e /lib64/iptables/libipt_addrtype.so ] && IPT "-t nat -A PREROUTING -i $WAN_IF -m addrtype --src-type MULTICAST -j DROP" || :
+		#[ -e /lib/iptables/libipt_addrtype.so -o -e /lib64/iptables/libipt_addrtype.so ] && IPT "-t nat -A PREROUTING -i $WAN_IF -m addrtype --src-type MULTICAST -j DROP" || :
 		[ -n "$LAN1_IF" -a -n "$LAN1_NET" ] && IPT "-t nat -A PREROUTING -i $WAN_IF -s $LAN1_NET -j DROP" || :
 		[ -n "$LAN2_IF" -a -n "$LAN2_NET" ] && IPT "-t nat -A PREROUTING -i $WAN_IF -s $LAN2_NET -j DROP" || :
 
-		[ -e /lib/iptables/libipt_addrtype.so -o -e /lib64/iptables/libipt_addrtype.so ] && IPT "-t nat -A POSTROUTING -o $WAN_IF -m addrtype --dst-type MULTICAST -j DROP" || :
+		#[ -e /lib/iptables/libipt_addrtype.so -o -e /lib64/iptables/libipt_addrtype.so ] && IPT "-t nat -A POSTROUTING -o $WAN_IF -m addrtype --dst-type MULTICAST -j DROP" || :
 		[ -n "$LAN1_IF" -a -n "$LAN1_NET" ] && IPT "-t nat -A POSTROUTING -o $WAN_IF -d $LAN1_NET -j DROP" || :
 		[ -n "$LAN2_IF" -a -n "$LAN2_NET" ] && IPT "-t nat -A POSTROUTING -o $WAN_IF -d $LAN2_NET -j DROP" || :
 
