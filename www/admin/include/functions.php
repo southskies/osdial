@@ -112,7 +112,9 @@ function format_select_options($krh, $kkey, $kval, $ksel="!", $kdef="", $kcomp=f
         if ($kcomp) $optlabel = sprintf('%-'.$klen.'s',mclabel($ele[$kkey]));
         if ($kkey != $kval) {
                 $optlabel .= '- ' . $ele[$kval];
-                $optstyle = ' style="font-family:monospace;"';
+                $optstyle = ' style="font-family:monospace;';
+                if ($ele['active']=='N') $optstyle .= 'color:#800000;';
+                $optstyle .= '"';
         }
         $optlabel = preg_replace('/ /','&nbsp;',$optlabel);
         $option .= '<option value="' . $ele[$kkey] . '"' . $optstyle . $selopt . '>' . $optlabel . '</option>' . "\n";
@@ -123,14 +125,14 @@ function format_select_options($krh, $kkey, $kval, $ksel="!", $kdef="", $kcomp=f
 ##### get scripts listing for dynamic pulldown
 function get_scripts($link, $selected="") {
     global $LOG;
-    $krh = get_krh($link, 'osdial_scripts', 'script_id,script_name','',sprintf("script_id LIKE '%s__%%' AND script_id IN %s",$LOG['company_prefix'],$LOG['allowed_scriptsSQL']),'');
+    $krh = get_krh($link, 'osdial_scripts', 'script_id,script_name,active','',sprintf("script_id LIKE '%s__%%' AND script_id IN %s",$LOG['company_prefix'],$LOG['allowed_scriptsSQL']),'');
     return format_select_options($krh, 'script_id', 'script_name', $selected, "NONE", true);
 }
 
 ##### get email_templates listing for dynamic pulldown
 function get_email_templates($link, $selected="") {
     global $LOG;
-    $krh = get_krh($link, 'osdial_email_templates', 'et_id,et_name','',sprintf("et_id LIKE '%s__%%' AND et_id IN %s",$LOG['company_prefix'],$LOG['allowed_email_templatesSQL']),'');
+    $krh = get_krh($link, 'osdial_email_templates', 'et_id,et_name,active','',sprintf("et_id LIKE '%s__%%' AND et_id IN %s",$LOG['company_prefix'],$LOG['allowed_email_templatesSQL']),'');
     return format_select_options($krh, 'et_id', 'et_name', explode(',',$selected), "", true);
 }
 
@@ -150,7 +152,7 @@ function get_calltimes($link, $selected="") {
 
 ##### get server listing for dynamic pulldown
 function get_servers($link, $selected="") {
-    $krh = get_krh($link, 'servers', 'server_ip,server_description','','','');
+    $krh = get_krh($link, 'servers', 'server_ip,server_description,active','','','');
     return format_select_options($krh, 'server_ip', 'server_description', $selected, "", false);
 }
 
@@ -1276,7 +1278,7 @@ function send_email($host, $port, $user, $pass, $to, $from, $subject, $html, $te
     if ($user) {
         $params["auth"] = true;
         $params["username"] = $user;
-        $params["password"] = $password;
+        $params["password"] = $pass;
     }
 
     $headers["To"] = $to;
