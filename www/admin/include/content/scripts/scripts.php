@@ -276,6 +276,9 @@ foreach ($buttons as $button) {
 }
 
 $script_text = preg_replace('/\{\{DISPO:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="alert(\'Disposition as $1 and Hangup\');">',$script_text);
+$script_text = preg_replace('/\{\{DISPO_NORMAL:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="alert(\'Disposition as $1 and Hangup, No WebForms.\');">',$script_text);
+$script_text = preg_replace('/\{\{DISPO_WEBFORM1:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="alert(\'Disposition as $1 and Hangup, Open WebForm1.\');">',$script_text);
+$script_text = preg_replace('/\{\{DISPO_WEBFORM2:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="alert(\'Disposition as $1 and Hangup, Open WebForm2.\');">',$script_text);
 $script_text = preg_replace('/\[\[(\w+)\]\]/imU','<input type="text" value="$1" size="30">',$script_text);
 
 $script_text = eregi_replace("\n","",$script_text);
@@ -836,11 +839,23 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                      }
                 });
 <?
+    $DBdispo = Array();
     $stmt = "SELECT status,status_name FROM (SELECT status,status_name FROM osdial_statuses WHERE selectable='Y' UNION SELECT status,status_name FROM osdial_campaign_statuses WHERE selectable='Y') AS stat GROUP BY status;";
 	$rslt=mysql_query($stmt, $link);
     while ($row=mysql_fetch_row($rslt)) {
-        echo "      mldb.add('" . $row[0] . "  <!--  " . $row[1] . "  -->','DISPO:" . $row[0] . ":" . $row[1] . "',{title : '" . $row[1] . "'});\n";
+        $DBdispo[$row[0]] = $row[1];
 	}
+    $DBdefault='';
+    $DBnormal='';
+    $DBwebform1='';
+    $DBwebform2='';
+    foreach ($DBdispo as $DBcode => $DBdesc) {
+        $DBdefault .= "      mldb.add('" . $DBcode . " <!-- \"" . $DBdesc . "\" (Use Campaign/InGroup submit method) -->','DISPO:" . $DBcode . ":" . $DBdesc . "',{title : '" . $DBdesc . "'});\n";
+        $DBnormal .= "      mldb.add('NORMAL:" . $DBcode . " <!-- \"" . $DBdesc . "\" (NORMAL submit method, no webforms) -->','DISPO_NORMAL:" . $DBcode . ":" . $DBdesc . "',{title : '" . $DBdesc . "'});\n";
+        $DBwebform1 .= "      mldb.add('WEBFORM1:" . $DBcode . " <!-- \"" . $DBdesc . "\" (WEBFORM1 submit method) -->','DISPO_WEBFORM1:" . $DBcode . ":" . $DBdesc . "',{title : '" . $DBdesc . "'});\n";
+        $DBwebform2 .= "      mldb.add('WEBFORM2:" . $DBcode . " <!-- \"" . $DBdesc . "\" (WEBFORM2 submit method) -->','DISPO_WEBFORM2:" . $DBcode . ":" . $DBdesc . "',{title : '" . $DBdesc . "'});\n";
+	}
+    echo $DBdefault . $DBwebform1 . $DBwebform2 . $DBnormal;
 ?>
                 return mldb;
 

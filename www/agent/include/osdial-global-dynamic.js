@@ -165,6 +165,7 @@ var status_bg='<?=$status_bg?>';
 var status_intense_color='<?=$status_intense_color?>';
 var status_preview_color='<?=$status_preview_color?>';
 var submit_method='<?=$submit_method?>';
+var submit_method_tmp='<?=$submit_method?>';
 var system_alert_bg2='<?=$system_alert_bg2?>';
 var t1='<?=$t1?>';
 var UnixTime='<?=$StarTtimE?>';

@@ -2260,6 +2260,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			} else {
 				window.open(wf_enc_address, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
 			}
+			submit_method = submit_method_tmp;
 
 			DispoSelect_submit();
 		}
@@ -5060,6 +5061,7 @@ function utf8_decode(utftext) {
 					window.open(wf_enc_address, 'webform', 'toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=640,height=450');
 				}
 			}
+			submit_method = submit_method_tmp;
 
 			if ( (DispoChoice == 'CALLBK') && (scheduled_callbacks > 0) ) {
 				showDiv('CallBackSelectBox');
