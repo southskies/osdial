@@ -227,7 +227,7 @@ function send_email($host, $port, $user, $pass, $to, $from, $subject, $html, $te
     if ($user) {
         $params["auth"] = true;
         $params["username"] = $user;
-        $params["password"] = $password;
+        $params["password"] = $pass;
     }
 
     $headers["To"] = $to;
