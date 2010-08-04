@@ -356,7 +356,7 @@ if ($ADD==311111) {
         echo "  </table>\n";
 
         ### Allowed scripts ###
-        $scripts = get_krh($link, 'osdial_scripts', '*','',"active='Y'",'');
+        $scripts = get_krh($link, 'osdial_scripts', '*','',"",'');
         echo "  <br>\n";
         echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
@@ -377,14 +377,15 @@ if ($ADD==311111) {
             if (preg_match('/ ' . $script['script_id'] . ' /',$allowed_scripts)) $sel='checked';
             echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
             echo "      <td align=center class=tabinput><input type=checkbox name=scripts_values[] id=scripts_values" . $script['script_id'] . " value=\"" . $script['script_id'] . "\" $sel></td>\n";
-            echo "      <td align=left><label for=scripts_values" . $script['script_id'] . ">" . $script['script_id'] . ' - ' . $script['script_name'] . "</label></td>\n";
+            $scstyle=''; if ($script['active']=='N') $scstyle=' style="color:#800000;"';
+            echo "      <td align=left $scstyle><label for=scripts_values" . $script['script_id'] . ">" . $script['script_id'] . ' - ' . $script['script_name'] . "</label></td>\n";
             echo "    </tr>\n";
         }
         echo "    <tr class=tabfooter><td align=center colspan=2 class=tabbutton nowrap><input type=submit name=SUBMIT value=SUBMIT>$NWB#osdial_user_groups-allowed_campaigns$NWE</td></tr>\n";
         echo "  </table>\n";
 
         ### Allowed Email Templates ###
-        $emails = get_krh($link, 'osdial_email_templates', '*','',"active='Y'",'');
+        $emails = get_krh($link, 'osdial_email_templates', '*','',"",'');
         echo "  <br>\n";
         echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
         echo "    <tr class=tabheader>\n";
@@ -405,7 +406,8 @@ if ($ADD==311111) {
             if (preg_match('/ ' . $email['et_id'] . ' /',$allowed_email_templates)) $sel='checked';
             echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
             echo "      <td align=center class=tabinput><input type=checkbox name=emails_values[] id=emails_values" . $email['et_id'] . " value=\"" . $email['et_name'] . "\" $sel></td>\n";
-            echo "      <td align=left><label for=emails_values" . $email['et_id'] . ">" . $email['et_id'] . ' - ' . $email['et_name'] . "</label></td>\n";
+            $etstyle=''; if ($email['active']=='N') $etstyle=' style="color:#800000;"';
+            echo "      <td align=left $etstyle><label for=emails_values" . $email['et_id'] . ">" . $email['et_id'] . ' - ' . $email['et_name'] . "</label></td>\n";
             echo "    </tr>\n";
         }
 
