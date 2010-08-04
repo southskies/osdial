@@ -634,7 +634,7 @@ $stmtA = "INSERT INTO osdial_auto_calls (server_ip,campaign_id,status,lead_id,un
 if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
 
-$stmtA = "INSERT INTO osdial_closer_log (lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,uniqueid,callerid) values('$insert_lead_id','$channel_group','$SQLdate','$now_date_epoch','QUEUE','$phone_code','$phone_number','VDCL','N','$uniqueid','$accountcode')";
+$stmtA = "INSERT INTO osdial_closer_log (lead_id,list_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,uniqueid,callerid) values('$insert_lead_id','$list_id','$channel_group','$SQLdate','$now_date_epoch','QUEUE','$phone_code','$phone_number','VDCL','N','$uniqueid','$accountcode')";
 if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $affected_rows = $dbhA->do($stmtA);
 if ($AGILOG) {$agi_string = "--    VDCL : |$insert_lead_id|insert to osdial_closer_log";   &agi_output;}
