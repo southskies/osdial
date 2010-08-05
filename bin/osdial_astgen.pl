@@ -153,7 +153,7 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 	my($ssreg,$isreg) = gen_servers($pass);
 
 	# Generate carrier configurations
-	my($screg,$icreg) = gen_carriers();
+	my($screg,$icreg,$dcc,$dccdp) = gen_carriers();
 
 	# Generate SIP/IAX registrations
 	# (osdial_iax_registrations.conf osdial_sip_registrations.conf)
@@ -165,7 +165,7 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 
 	# Generate agent extensions, and sip/iax agent phones.
 	# (osdial_extensions_phones.conf osdial_sip_phones.conf osdial_iax_phones.conf)
-	gen_phones();
+	gen_phones($dcc,$dccdp);
 
 
 	foreach my $reload (keys %reloads) {
@@ -536,9 +536,24 @@ sub gen_conferences {
 # Generate agent extensions, and sip/iax agent phones.
 # (osdial_extensions_phones.conf osdial_sip_phones.conf osdial_iax_phones.conf)
 sub gen_phones {
+	my ($dcc,$dccdp) = @_;
 	my $sphn = $achead;
 	my $iphn = $achead;
 	my $ephn = $achead;
+
+	if ($dcc) {
+		$ephn .= "\n\n; The $dcc carrier was selected as the system default.\n";
+		$ephn .= "; In order to override the extensions in osdial_extensions_outbound.conf, we must add them into this file.\n";
+		$ephn .= ";\n";
+		$ephn .= sprintf("exten => _011.,1,Goto(%s,%s\${EXTEN},1)\n",$dcc,$dccdp);
+		$ephn .= sprintf("exten => _X011.,1,Goto(%s,\${EXTEN},1)\n",$dcc);
+		$ephn .= sprintf("exten => _NXXNXXXXXX,1,Goto(%s,%s1\${EXTEN},1)\n",$dcc,$dccdp);
+		$ephn .= sprintf("exten => _1NXXNXXXXXX,1,Goto(%s,%s\${EXTEN},1)\n",$dcc,$dccdp);
+		$ephn .= sprintf("exten => _NNXXNXXXXXX,1,Goto(%s,\${EXTEN:0:1}1\${EXTEN:1},1)\n",$dcc);
+		$ephn .= sprintf("exten => _X1NXXNXXXXXX,1,Goto(%s,\${EXTEN},1)\n",$dcc);
+		$ephn .= ";\n";
+		$ephn .= ";\n";
+	}
 
 	my $stmt = "SELECT * FROM phones WHERE protocol IN ('SIP','IAX2','Zap','DAHDI','EXTERNAL') AND active='Y' AND (";
 	foreach my $ip (@myips) {
@@ -548,7 +563,6 @@ sub gen_phones {
 	$stmt .= ');';
 	print $stmt . "\n" if ($DB);
 	while (my $sret = $osdial->sql_query($stmt)) {
-		$sret->{voicemail_id} = '9999' if ($sret->{voicemail_id} eq "");
 		$sret->{ext_context} = 'osdial' if ($sret->{ext_context} eq "");
 		$sret->{outbound_cid} = $sret->{dialplan_number} if ($sret->{outbound_cid} eq "");
 		$sret->{outbound_cid} =~ s/[^0-9]//g;
@@ -576,7 +590,7 @@ sub gen_phones {
 			$sphn .= "qualify=5000\n";
 			$sphn .= "nat=yes\n";
 			$sphn .= "context=" . $sret->{ext_context} . "\n";
-			$sphn .= "mailbox=" . $sret->{voicemail_id} . "\@default\n";
+			$sphn .= "mailbox=" . $sret->{voicemail_id} . "\@default\n" if ($sret->{voicemail_id});
 		} elsif ($sret->{protocol} eq "IAX2" and $sret->{extension} !~ /\@|\//) {
 			$iphn .= ";\n[". $sret->{extension} ."]\n";
 			$iphn .= "type=friend\n";
@@ -596,7 +610,7 @@ sub gen_phones {
 			$iphn .= "requirecalltoken=no\n";
 			$iphn .= "nat=yes\n";
 			$iphn .= "context=" . $sret->{ext_context} . "\n";
-			$iphn .= "mailbox=" . $sret->{voicemail_id} . "\@default\n";
+			$iphn .= "mailbox=" . $sret->{voicemail_id} . "\@default\n" if ($sret->{voicemail_id});
 		}
 		my $dext = $sret->{protocol} . "/" . $sret->{extension};
 		if ($sret->{protocol} =~ /SIP|IAX2/ and $sret->{extension} =~ /\@/) {
@@ -621,9 +635,15 @@ sub gen_phones {
 		}
 
 		if ($dext ne "") {
-			$ephn .= "exten => _" . $sret->{dialplan_number} . ",1,Dial(" . $dext . ",55,o)\n";
-			$ephn .= "exten => _" . $sret->{dialplan_number} . ",n,Voicemail(" . $sret->{voicemail_id} . ")\n" if ($sret->{voicemail_id} ne "");
-			$ephn .= "exten => _" . $sret->{dialplan_number} . ",n,Hangup()\n\n";
+			if ($sret->{voicemail_id} ne "") {
+				$ephn .= "exten => _" . $sret->{dialplan_number} . ",1,Dial(" . $dext . ",30,o)\n";
+				$ephn .= "exten => _" . $sret->{dialplan_number} . ",2,GotoIf(\$[\"\${DIALSTATUS}\" = \"NOANSWER\"|\"\${DIALSTATUS}\" = \"BUSY\"|\"\${DIALSTATUS}\" = \"CONGESTED\"|\"\${DIALSTATUS}\" = \"CHANUNAVAIL\"]?3:4)\n";
+				$ephn .= "exten => _" . $sret->{dialplan_number} . ",3,Voicemail(" . $sret->{voicemail_id} . ")\n";
+				$ephn .= "exten => _" . $sret->{dialplan_number} . ",4,Hangup()\n\n";
+			} else {
+				$ephn .= "exten => _" . $sret->{dialplan_number} . ",1,Dial(" . $dext . ",60,o)\n";
+				$ephn .= "exten => _" . $sret->{dialplan_number} . ",n,Hangup()\n\n";
+			}
 		}
 	}
 
@@ -644,12 +664,16 @@ sub gen_carriers {
 	my $iax_registrations='';
 	my $dialplan=$achead;
 
+	my $default_carrier_context;
+	my $default_carrier_prefix;
 	my $carriers = {};
 	my $stmt = "SELECT * FROM osdial_carriers WHERE active='Y';";
 	while (my $carrier = $osdial->sql_query($stmt)) {
 		$carriers->{$carrier->{id}} = $carrier;
 	}
 	foreach my $carrier (sort keys %{$carriers}) {
+		$default_carrier_context = 'OOUT' . $carriers->{$carrier}{name} if ($osdial->{settings}{default_carrier_id}==$carrier);
+		$default_carrier_prefix = $carriers->{$carrier}{default_prefix} if ($osdial->{settings}{default_carrier_id}==$carrier);
 		# Override server with server specific options if set.
 		my $stmt = sprintf("SELECT * FROM osdial_carrier_servers WHERE carrier_id='\%s' AND server_ip='\%s';",$carrier,$osdial->{VARserver_ip});
 		while (my $carrier_server = $osdial->sql_query($stmt)) {
@@ -657,11 +681,14 @@ sub gen_carriers {
 			$carriers->{$carrier}{registrations} =   $carrier_server->{registrations}   if ($carrier_server->{registrations} ne '');
 			$carriers->{$carrier}{dialplan} =        $carrier_server->{dialplan}        if ($carrier_server->{dialplan} ne '');
 		}
+		$carriers->{$carrier}{protocol_config} =~ s/\r\n/\n/gm;
+		$carriers->{$carrier}{registrations} =~ s/\r\n/\n/gm;
+		$carriers->{$carrier}{dialplan} =~ s/\r\n/\n/gm;
 
 		my $context = 'OIN' . $carriers->{$carrier}{name};
 
 		# Add contexts to protocol_config.
-		$carriers->{$carrier}{protocol_config} =~ s/\]\$/]\ncontext=$context/mg;
+		$carriers->{$carrier}{protocol_config} =~ s/^\[(.*)\]$/\[$1\]\ncontext=$context/mg;
 
 		# Do the variable substitutions.
 		$carriers->{$carrier}{dialplan} =~ s/<NAME>/$carriers->{$carrier}{name}/mg;
@@ -716,7 +743,7 @@ sub gen_carriers {
 		my $dids = {};
 		my $stmt = sprintf("SELECT * FROM osdial_carrier_dids WHERE carrier_id='\%s';",$carrier);
 		while (my $did = $osdial->sql_query($stmt)) {
-			$dids->{$did->{extension}} = $did;
+			$dids->{$did->{did}} = $did;
 		}
 		foreach my $did (sort keys %{$dids}) {
 			$dialplan .= "exten => _" . $dids->{$did}{did} . ",1,Answer\n";
@@ -742,15 +769,10 @@ sub gen_carriers {
 			$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,Hangup()\n\n";
 		}
 	}
-	$dialplan =~ s/\r\n/\n/gm;
-	$sip_config =~ s/\r\n/\n/gm;
-	$iax_config =~ s/\r\n/\n/gm;
-	$sip_registrations =~ s/\r\n/\n/gm;
-	$iax_registrations =~ s/\r\n/\n/gm;
 	write_reload($sip_config,'osdial_sip_carriers','sip reload');
 	write_reload($iax_config,'osdial_iax_carriers','iax2 reload');
 	write_reload($dialplan,'osdial_extensions_carriers','extensions reload');
-	return ($sip_registrations, $iax_registrations);
+	return ($sip_registrations, $iax_registrations, $default_carrier_context, $default_carrier_prefix);
 }
 
 
