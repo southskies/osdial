@@ -167,6 +167,8 @@ if (isset($_GET["allow_sipsak_messages"]))				{$allow_sipsak_messages=$_GET["all
 	elseif (isset($_POST["allow_sipsak_messages"]))		{$allow_sipsak_messages=$_POST["allow_sipsak_messages"];}
 if (isset($_GET["session_id"]))				{$session_id=$_GET["session_id"];}
 	elseif (isset($_POST["session_id"]))		{$session_id=$_POST["session_id"];}
+if (isset($_GET["server_dialstring"]))				{$server_dialstring=$_GET["server_dialstring"];}
+	elseif (isset($_POST["server_dialstring"]))		{$server_dialstring=$_POST["server_dialstring"];}
 
 header ("Content-type: text/html; charset=utf-8");
 header ("Cache-Control: no-cache, must-revalidate");  // HTTP/1.1
@@ -174,7 +176,7 @@ header ("Pragma: no-cache");                          // HTTP/1.0
 
 #############################################
 ##### START SYSTEM_SETTINGS LOOKUP #####
-$stmt = "SELECT use_non_latin FROM system_settings;";
+$stmt = "SELECT use_non_latin,intra_server_protocol FROM system_settings;";
 $rslt=mysql_query($stmt, $link);
 if ($DB) {echo "$stmt\n";}
 $qm_conf_ct = mysql_num_rows($rslt);
@@ -183,6 +185,8 @@ while ($i < $qm_conf_ct)
 	{
 	$row=mysql_fetch_row($rslt);
 	$non_latin =					$row[0];
+    $isp='*';
+	if ($row[1]=='IAX2') $isp='#';
 	$i++;
 	}
 ##### END SETTINGS LOOKUP #####
@@ -581,6 +585,7 @@ if ($ACTION=="RedirectToPark")
 
 if ($ACTION=="RedirectFromPark")
 {
+    if (strlen($server_dialstring)>0) $exten = $server_dialstring . $isp . $exten;
 	if ( (strlen($channel)<3) or (strlen($queryCID)<15) or (strlen($exten)<1) or (strlen($ext_context)<1) or (strlen($ext_priority)<1) )
 	{
 		$channel_live=0;
@@ -757,7 +762,7 @@ if ($ACTION=="RedirectXtraCX")
 				if (strlen($D_s_ip[2])<3) {$D_s_ip[2] = "0$D_s_ip[2]";}
 				if (strlen($D_s_ip[3])<2) {$D_s_ip[3] = "0$D_s_ip[3]";}
 				if (strlen($D_s_ip[3])<3) {$D_s_ip[3] = "0$D_s_ip[3]";}
-				$dest_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]$S$dest_session_id$S$lead_id$S$dest_user$S$phone_code$S$phone_number$S$campaign$S";
+				$dest_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]$isp$dest_session_id$S$lead_id$S$dest_user$S$phone_code$S$phone_number$S$campaign$S";
 
 				$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$call_server_ip','','Redirect','$queryCID','Channel: $channel','Context: $ext_context','Exten: $dest_dialstring','Priority: $ext_priority','CallerID: $queryCID','Account: $queryCID','','','','');";
 					if ($format=='debug') {echo "\n<!-- $stmt -->";}
@@ -906,7 +911,7 @@ if ($ACTION=="RedirectXtra")
 					if (strlen($D_s_ip[2])<3) {$D_s_ip[2] = "0$D_s_ip[2]";}
 					if (strlen($D_s_ip[3])<2) {$D_s_ip[3] = "0$D_s_ip[3]";}
 					if (strlen($D_s_ip[3])<3) {$D_s_ip[3] = "0$D_s_ip[3]";}
-					$dest_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]$S$exten";
+					$dest_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]$isp$exten";
 
 					$stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$call_server_ip','','Redirect','$queryCID','Channel: $channel','Context: $ext_context','Exten: $dest_dialstring','Priority: $ext_priority','CallerID: $queryCID','Account: $queryCID','','','','');";
 						if ($format=='debug') {echo "\n<!-- $stmt -->";}

@@ -909,12 +909,13 @@
 				var redirectdestination = taskxferconf;
 				var redirectdestserverip = taskserverip;
 				var dest_dialstring = session_id;
+				var server_dialstring = '';
 
 				if (server_ip != taskserverip && taskserverip.length > 6) {
-					dest_dialstring = server_ip_dialstring + "" + session_id;
+					server_dialstring = server_ip_dialstring;
 				}
 
-				xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectFromPark&format=text&channel=" + redirectdestination + "&call_server_ip=" + redirectdestserverip + "&queryCID=" + queryCID + "&exten=" + dest_dialstring + "&ext_context=" + ext_context + "&ext_priority=1" + "&session_id=" + session_id;
+				xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectFromPark&format=text&channel=" + redirectdestination + "&call_server_ip=" + redirectdestserverip + "&queryCID=" + queryCID + "&exten=" + dest_dialstring + "&server_dialstring=" + server_dialstring + "&ext_context=" + ext_context + "&ext_priority=1" + "&session_id=" + session_id;
 
 				document.getElementById("ParkControl").innerHTML ="<a href=\"#\" onclick=\"mainxfer_send_redirect('ParK','" + redirectdestination + "','" + redirectdestserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_parkcall.gif\" border=0 alt=\"Park Call\"></a>";
 				customerparked=0;

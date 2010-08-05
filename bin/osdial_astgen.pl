@@ -41,7 +41,7 @@ $|++;
 my $prog = 'osdial_astgen.pl';
 
 # Declare command-line options.
-my($DB, $CLOhelp, $CLOtest, $CLOshowip, $CLOquiet, $CLOg729);
+my($DB, $CLOhelp, $CLOtest, $CLOshowip, $CLOquiet);
 my(%reloads);
 
 my $osdial = OSDial->new('DB'=>$DB);
@@ -56,8 +56,7 @@ if (scalar @ARGV) {
                 'debug!' => \$DB,
                 'test!' => \$CLOtest,
                 'quiet!' => \$CLOquiet,
-                'showip!' => \$CLOshowip,
-                'g729!' => \$CLOg729
+                'showip!' => \$CLOshowip
         );
         if ($DB) {
                 print "----- DEBUGGING -----\n";
@@ -67,7 +66,6 @@ if (scalar @ARGV) {
                 print "CLOshowip-   $CLOshowip\n";
                 print "CLOquiet-    $CLOquiet\n";
                 print "CLOtest-     $CLOtest\n";
-                print "CLOg729-     $CLOg729\n";
                 print "\n";
         }
         if ($CLOhelp) {
@@ -77,15 +75,11 @@ if (scalar @ARGV) {
                 print "  [--debug]        = debug\n";
                 print "  [-t|--test]      = test only\n";
                 print "  [-q|--quiet]     = Quiet output\n";
-                print "  [--g729]         = Use g729 codecs\n";
                 print "  [-s|--showip]    = Show Interface IPs\n\n";
                 exit 0;
         }
 }
 
-
-my $codec = "ulaw";
-$codec = "g729" if ($CLOg729);
 
 
 # Get all of the IPs on this machines interfaces.
@@ -100,6 +94,8 @@ if ($CLOshowip) {
 	exit 0;
 }
 
+
+my $pass = calc_password();
 
 my $asterisk_version;
 if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
@@ -127,6 +123,9 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 	}
 	close(MOD);
 	my $oereload;
+	$oedata =~ s/\r\n/\n/gm;
+	$oedata =~ s/^TRUNKloop.*40569/TRUNKloop = IAX2\/ASTloop:$pass\@127.0.0.1:40569/gm;
+	$oedata =~ s/^TRUNKblind.*41569/TRUNKblind = IAX2\/ASTblind:$pass\@127.0.0.1:41569/gm;
 	if ($asterisk_version =~ /^1\.6/) {
 		$oereload = "dialplan reload";
 		$oedata =~ s/^exten => h,1,DeadAGI/exten => h,1,AGI/gm;
@@ -146,10 +145,6 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 	}
 	write_reload($oedata,'osdial_extensions',$oereload);
 	write_reload($moddata,'modules','reload');
-
-	# TODO: Fix calc_password to not be so aggressive.
-	#my $pass = calc_password();
-	my $pass = '6l5a4i3d2s1o0o1s2d3i4a5l6';
 
 	# Generate intra-server extensions and iax communication.
 	# (osdial_extensions_servers.conf osdial_iax_servers.conf)
@@ -188,15 +183,10 @@ exit 0;
 # calculate a unique password that will remain constant across servers.
 #   (total of user ids + total of phone extensions) * number of users
 sub calc_password {
-	my $stmt = "SELECT ((sum(user) + sum(extension)) * count(user)) AS calc FROM osdial_users,phones;";
-	print $stmt . "\n" if ($DB);
+	my $stmt = "SELECT MD5(CONCAT((SELECT company_name FROM system_settings LIMIT 1),SUM(INET_ATON(server_ip)))) AS calc FROM servers;";
 	my $sret = $osdial->sql_query($stmt);
-	my $calc = $sret->{calc};
-	my $pass;
-	my @pad = split(//,'osdialosdialosdialosdialosdial');
-	foreach my $c (split(//, $calc)) {
-		$pass .= $c . shift(@pad);
-	}
+	my $pass = $sret->{calc};
+	$pass = '6l5a4i3d2s1o0o1s2d3i4a5l6' if ($pass eq '');;
 	return $pass;
 }
 
@@ -221,6 +211,7 @@ sub gen_servers {
 
 	my $esvr = $achead;
 	my $isvr = $achead;
+	my $ssvr = $achead;
 	my $sreg='';
 	my $ireg='';
 
@@ -231,12 +222,13 @@ sub gen_servers {
 	$isvr .= "context=osdial\n";
 	$isvr .= "auth=md5\n";
 	$isvr .= "host=dynamic\n";
-	$isvr .= "permit=0.0.0.0/0.0.0.0\n";
+	$isvr .= "deny=0.0.0.0/0.0.0.0\n";
+	$isvr .= "permit=127.0.0.1/255.255.255.255\n";
 	$isvr .= "secret=$pass\n";
 	$isvr .= "disallow=all\n";
-	$isvr .= "allow=$codec\n";
+	$isvr .= "allow=ulaw\n";
 	$isvr .= "requirecalltoken=no\n";
-	$isvr .= "qualify=no\n";
+	$isvr .= "qualify=5000\n";
 
 	$isvr .= ";\n; IAX loopback for blind monitoring\n";
 	$isvr .= "[ASTblind]\n";
@@ -245,18 +237,26 @@ sub gen_servers {
 	$isvr .= "context=osdial\n";
 	$isvr .= "auth=md5\n";
 	$isvr .= "host=dynamic\n";
-	$isvr .= "permit=0.0.0.0/0.0.0.0\n";
+	$isvr .= "deny=0.0.0.0/0.0.0.0\n";
+	$isvr .= "permit=127.0.0.1/255.255.255.255\n";
 	$isvr .= "secret=$pass\n";
 	$isvr .= "disallow=all\n";
-	$isvr .= "allow=$codec\n";
+	$isvr .= "allow=ulaw\n";
 	$isvr .= "requirecalltoken=no\n";
-	$isvr .= "qualify=no\n";
+	$isvr .= "qualify=5000\n";
 
 	$esvr .= "; Local blind monitoring\n";
 	$esvr .= "exten => _08600XXX,1,Dial(\${TRUNKblind}/6\${EXTEN:1},55,To)\n";
 
 	$ireg .= "register => ASTloop:$pass\@127.0.0.1:40569\n";
 	$ireg .= "register => ASTblind:$pass\@127.0.0.1:41569\n";
+
+	my $pmmask="deny=0.0.0.0/0.0.0.0\n";
+	$pmmask.="permit=127.0.0.1/255.255.255.255\n";
+	my $stmt = "SELECT * FROM servers ORDER BY server_ip;";
+	while (my $sret = $osdial->sql_query($stmt)) {
+		$pmmask.="permit=" . $sret->{server_ip} . "/255.255.255.255\n";
+	}
 
 
 	# Get my server
@@ -267,28 +267,57 @@ sub gen_servers {
 	chop $stmt; chop $stmt; chop $stmt;
 	$stmt .= ';';
 	print $stmt . "\n" if ($DB);
-	my $iname;
 	while (my $sret = $osdial->sql_query($stmt)) {
+		$sret->{server_id} =~ s/-|\./_/g;
 		my @sip = split /\./, $sret->{server_ip};
 		my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
 		my $fsip2 = sprintf('%.3d%.3d%.3d%.3d',@sip);
-		$iname = $sret->{server_id};
 		$esvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
 		$esvr .= "exten => _" . $fsip . "*.,1,Goto(osdial,\${EXTEN:16},1)\n";
+		$esvr .= "exten => _" . $fsip . "#.,1,Goto(osdial,\${EXTEN:16},1)\n";
 		$esvr .= "exten => _" . $fsip2 . ".,1,Goto(osdial,\${EXTEN:12},1)\n";
+
 		$isvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
 		$isvr .= "[" . $sret->{server_id} . "]\n";
-		$isvr .= "type=user\n";
+		$isvr .= "type=friend\n";
+		$isvr .= "username=" . $sret->{server_id} . "\n";
+		$isvr .= "host=" . $sret->{server_ip} . "\n";
+		$isvr .= $pmmask;
 		$isvr .= "trunk=yes\n";
 		$isvr .= "tos=0x18\n";
+		$isvr .= "qualify=5000\n";
 		$isvr .= "auth=md5\n";
 		$isvr .= "secret=$pass\n";
 		$isvr .= "disallow=all\n";
-		$isvr .= "allow=$codec\n";
+		$isvr .= "allow=ulaw\n";
+		$isvr .= "allow=gsm\n";
+		$isvr .= "allow=g729\n";
 		$isvr .= "context=osdial\n";
 		$isvr .= "requirecalltoken=no\n";
 		$isvr .= "nat=no\n";
 
+		$ssvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
+		$ssvr .= "[" . $sret->{server_id} . "]\n";
+		$ssvr .= "type=friend\n";
+		$ssvr .= "username=" . $sret->{server_id} . "\n";
+		$ssvr .= "host=" . $sret->{server_ip} . "\n";
+		$ssvr .= $pmmask;
+		$ssvr .= "trunk=yes\n";
+		$ssvr .= "tos=0x18\n";
+		$ssvr .= "qualify=5000\n";
+		$ssvr .= "secret=$pass\n";
+		$ssvr .= "disallow=all\n";
+		$ssvr .= "allow=ulaw\n";
+		$ssvr .= "allow=gsm\n";
+		$ssvr .= "allow=g729\n";
+		$ssvr .= "dtmfmode=auto\n";
+		$ssvr .= "relaxdtmf=yes\n";
+		$ssvr .= "context=osdial\n";
+		$ssvr .= "insecure=invite,port\n";
+		$ssvr .= "sendrpid=yes\n";
+		$ssvr .= "trustrpid=yes\n";
+		$ssvr .= "canreinvite=yes\n";
+		$ssvr .= "nat=no\n";
 	}
 
 	# Get other servers 
@@ -300,25 +329,54 @@ sub gen_servers {
 	$stmt .= ';';
 	print $stmt . "\n" if ($DB);
 	while (my $sret = $osdial->sql_query($stmt)) {
+		$sret->{server_id} =~ s/-|\./_/g;
 		my @sip = split /\./, $sret->{server_ip};
 		my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
 		$esvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
-		$esvr .= "exten => _" . $fsip . "*.,1,Dial(IAX2/" . $sret->{server_id} . ':' . $pass . '@' . $sret->{server_ip} . "/\${EXTEN},,o)\n";
+		$esvr .= "exten => _" . $fsip . "*.,1,Dial(SIP/" . $sret->{server_id} . "/\${EXTEN},60,o)\n";
+		$esvr .= "exten => _" . $fsip . "#.,1,Dial(IAX2/" . $sret->{server_id} . "/\${EXTEN},60,o)\n";
+
 		$isvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
 		$isvr .= "[" . $sret->{server_id} . "]\n";
-		$isvr .= "type=peer\n";
+		$isvr .= "type=friend\n";
 		$isvr .= "username=" . $sret->{server_id} . "\n";
 		$isvr .= "host=" . $sret->{server_ip} . "\n";
+		$isvr .= $pmmask;
 		$isvr .= "trunk=yes\n";
 		$isvr .= "tos=0x18\n";
 		$isvr .= "qualify=5000\n";
 		$isvr .= "auth=md5\n";
 		$isvr .= "secret=$pass\n";
 		$isvr .= "disallow=all\n";
-		$isvr .= "allow=$codec\n";
-		$isvr .= "peercontext=osdial\n";
+		$isvr .= "allow=ulaw\n";
+		$isvr .= "allow=gsm\n";
+		$isvr .= "allow=g729\n";
+		$isvr .= "context=osdial\n";
 		$isvr .= "requirecalltoken=no\n";
 		$isvr .= "nat=no\n";
+
+		$ssvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
+		$ssvr .= "[" . $sret->{server_id} . "]\n";
+		$ssvr .= "type=friend\n";
+		$ssvr .= "username=" . $sret->{server_id} . "\n";
+		$ssvr .= "host=" . $sret->{server_ip} . "\n";
+		$ssvr .= $pmmask;
+		$ssvr .= "trunk=yes\n";
+		$ssvr .= "tos=0x18\n";
+		$ssvr .= "qualify=5000\n";
+		$ssvr .= "secret=$pass\n";
+		$ssvr .= "disallow=all\n";
+		$ssvr .= "allow=ulaw\n";
+		$ssvr .= "allow=gsm\n";
+		$ssvr .= "allow=g729\n";
+		$ssvr .= "dtmfmode=auto\n";
+		$ssvr .= "relaxdtmf=yes\n";
+		$ssvr .= "context=osdial\n";
+		$ssvr .= "insecure=invite,port\n";
+		$ssvr .= "sendrpid=yes\n";
+		$ssvr .= "trustrpid=yes\n";
+		$ssvr .= "canreinvite=yes\n";
+		$ssvr .= "nat=no\n";
 	}
 
 	my $extreload = "extensions reload";
@@ -327,6 +385,7 @@ sub gen_servers {
 	}
 	write_reload($esvr,'osdial_extensions_servers',$extreload);
 	write_reload($isvr,'osdial_iax_servers','iax2 reload');
+	write_reload($ssvr,'osdial_sip_servers','sip reload');
 	
 	return ($sreg, $ireg);
 }
@@ -487,11 +546,18 @@ sub gen_phones {
 	while (my $sret = $osdial->sql_query($stmt)) {
 		$sret->{voicemail_id} = '9999' if ($sret->{voicemail_id} eq "");
 		$sret->{ext_context} = 'osdial' if ($sret->{ext_context} eq "");
+		$sret->{outbound_cid} = $sret->{dialplan_number} if ($sret->{outbound_cid} eq "");
+		$sret->{outbound_cid} =~ s/[^0-9]//g;
+		$sret->{outbound_cid} = "0000000000" if ($sret->{outbound_cid} eq "");
+		$sret->{outbound_cid_name} = $sret->{fullname} if ($sret->{outbound_cid_name} eq "");
+		$sret->{outbound_cid_name} =~ s/[^0-9a-zA-Z\ \.\-\_]//g;
+		$sret->{outbound_cid_name} = "Unknown" if ($sret->{outbound_cid_name} eq "");
 		if ($sret->{protocol} eq "SIP" and $sret->{extension} !~ /\@/) {
 			$sphn .= ";\n[". $sret->{extension} ."]\n";
 			$sphn .= "type=friend\n";
 			$sphn .= "username=" . $sret->{extension} . "\n";
 			$sphn .= "secret=" . $sret->{pass} . "\n";
+			$sphn .= "callerid=\"" . $sret->{outbound_cid_name} . "\" <" . $sret->{outbound_cid} . ">\n";
 			if ($sret->{phone_ip}) {
 				$sphn .= "host=" . $sret->{phone_ip} . "\n";
 			} else {
@@ -500,17 +566,9 @@ sub gen_phones {
 			$sphn .= "dtmfmode=auto\n";
 			$sphn .= "relaxdtmf=yes\n";
 			$sphn .= "disallow=all\n";
-			$sphn .= "allow=$codec\n";
-			#if ($sret->{phone_type} =~ /Grandstream/i) {
-			#	$sphn .= "dtmfmode=rfc2833\n";
-			#	$sphn .= "relaxdtmf=yes\n";
-			#	$sphn .= "disallow=all\n";
-			#	$sphn .= "allow=$codec\n";
-			#} else {
-			#	$sphn .= "dtmfmode=inband\n";
-			#	$sphn .= "disallow=all\n";
-			#	$sphn .= "allow=$codec\n";
-			#}
+			$sphn .= "allow=ulaw\n";
+			$sphn .= "allow=gsm\n";
+			$sphn .= "allow=g729\n";
 			$sphn .= "qualify=5000\n";
 			$sphn .= "nat=yes\n";
 			$sphn .= "context=" . $sret->{ext_context} . "\n";
@@ -520,13 +578,16 @@ sub gen_phones {
 			$iphn .= "type=friend\n";
 			$iphn .= "username=" . $sret->{extension} . "\n";
 			$iphn .= "secret=" . $sret->{pass} . "\n";
+			$iphn .= "callerid=\"" . $sret->{outbound_cid_name} . "\" <" . $sret->{outbound_cid} . ">\n";
 			if ($sret->{phone_ip}) {
 				$iphn .= "host=" . $sret->{phone_ip} . "\n";
 			} else {
 				$iphn .= "host=dynamic\n";
 			}
 			$iphn .= "disallow=all\n";
-			$iphn .= "allow=$codec\n";
+			$iphn .= "allow=ulaw\n";
+			$iphn .= "allow=gsm\n";
+			$iphn .= "allow=g729\n";
 			$iphn .= "qualify=5000\n";
 			$iphn .= "requirecalltoken=no\n";
 			$iphn .= "nat=yes\n";

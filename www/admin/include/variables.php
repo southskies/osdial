@@ -397,6 +397,7 @@ $id = get_variable('id');
 $iframe = get_variable('iframe');
 $IAXmonitorLINK = get_variable("IAXmonitorLINK");
 $install_directory = get_variable("install_directory");
+$intra_server_protocol = get_variable("intra_server_protocol");
 
 $last_name = get_variable("last_name");
 $last_name_field = get_variable("last_name_field");

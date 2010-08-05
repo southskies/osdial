@@ -228,7 +228,12 @@ while ($drop_timer <= $campaign->{drop_call_seconds}) {
 			### format the remote server dialstring to get the call to the overflow agent meetme room
 			my $remDIALstr;
 			if($server_ip =~ m/(\S+)\.(\S+)\.(\S+)\.(\S+)/ and $server_ip ne $osd->{VARserver_ip}) {
-				$remDIALstr = sprintf('%.3d*%.3d*%.3d*%.3d*',$1,$2,$3,$4);
+				$remDIALstr = sprintf('%.3d*%.3d*%.3d*%.3d',$1,$2,$3,$4);
+				if ($osd->{settings}{intra_server_protocol} eq 'IAX2') {
+					$remDIALstr .= '#';
+				} else {
+					$remDIALstr .= '*';
+				}
 			}
 			$remDIALstr .= $conf_exten;
 

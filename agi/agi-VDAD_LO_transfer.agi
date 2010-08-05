@@ -125,6 +125,14 @@ $AGI = new Asterisk::AGI;
 $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
     or die "Couldn't connect to database: " . DBI->errstr;
 
+$stmtA = "SELECT intra_server_protocol FROM system_settings;";
+$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+@aryA = $sthA->fetchrow_array;
+$isp='*';
+$isp='#' if ($aryA[0] eq 'IAX2');
+$sthA->finish();
+
 ### Grab Server values from the database
 $stmtA = "SELECT voicemail_dump_exten,ext_context,answer_transfer_agent,local_gmt,asterisk_version,max_osdial_trunks,agi_output FROM servers where server_ip = '$VARserver_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -747,7 +755,7 @@ if ($rec_countWAITrem < $concurrent_transfers)
 			$b = leading_zero($2); 
 			$c = leading_zero($3); 
 			$d = leading_zero($4);
-			$VDADremDIALstr = "$a$S$b$S$c$S$d$S";
+			$VDADremDIALstr = "$a$S$b$S$c$S$d$isp";
 			}
 		$VDADremDIALstr .= "$VDADconf_exten";
 

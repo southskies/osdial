@@ -255,6 +255,7 @@ if ($non_latin < 1)	{
 	$after_hours_action = ereg_replace("[^0-9a-zA-Z]","",$after_hours_action);
 	$after_hours_exten = ereg_replace("[^0-9a-zA-Z]","",$after_hours_exten);
 	$after_hours_voicemail = ereg_replace("[^0-9a-zA-Z]","",$after_hours_voicemail);
+	$intra_server_protocol = ereg_replace("[^0-9a-zA-Z]","",$intra_server_protocol);
 	
 	### DIGITS and Dots
 	$server_ip = ereg_replace("[^\.0-9]","",$server_ip);

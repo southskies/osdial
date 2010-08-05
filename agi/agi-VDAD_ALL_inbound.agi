@@ -182,11 +182,13 @@ while ($sthArows > $rec_count) {
 }
 $sthA->finish();
 
-$stmtA = "SELECT enable_multicompany FROM system_settings;";
+$stmtA = "SELECT enable_multicompany,intra_server_protocol FROM system_settings;";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 @aryA = $sthA->fetchrow_array;
 $multicomp=$aryA[0];
+$isp='*';
+$isp='#' if ($aryA[1] eq 'IAX2');
 
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1) {
@@ -1018,7 +1020,7 @@ while ($drop_timer <= $DROP_TIME) {
 					$b = leading_zero($2); 
 					$c = leading_zero($3); 
 					$d = leading_zero($4);
-					$VDADremDIALstr = "$a$S$b$S$c$S$d$S";
+					$VDADremDIALstr = "$a$S$b$S$c$S$d$isp";
 				}
 				$alertVDADremDIALstr = "$VDADremDIALstr";
 				$alertVDADremDIALstr .= "7$VDADconf_exten";

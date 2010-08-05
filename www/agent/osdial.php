@@ -263,7 +263,7 @@ $multicomp=0;
 
 #############################################
 ##### START SYSTEM_SETTINGS LOOKUP #####
-$stmt = "SELECT use_non_latin,agent_template,enable_multicompany FROM system_settings;";
+$stmt = "SELECT use_non_latin,agent_template,enable_multicompany,intra_server_protocol FROM system_settings;";
 $rslt=mysql_query($stmt, $link);
 if ($DB) echo "$stmt\n";
 $qm_conf_ct = mysql_num_rows($rslt);
@@ -273,6 +273,8 @@ while ($i < $qm_conf_ct) {
     $non_latin =        $row[0];
     $agent_template =   $row[1];
     $multicomp =        $row[2];
+    $isp='*';
+	if ($row[3]=='IAX2') $isp='#';
     $i++;
 }
 ##### END SETTINGS LOOKUP #####
@@ -1650,7 +1652,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
     if (strlen($D_s_ip[2])<3) $D_s_ip[2] = "0$D_s_ip[2]";
     if (strlen($D_s_ip[3])<2) $D_s_ip[3] = "0$D_s_ip[3]";
     if (strlen($D_s_ip[3])<3) $D_s_ip[3] = "0$D_s_ip[3]";
-    $server_ip_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]$S";
+    $server_ip_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]";
 
     $scriptSQL = '';
     foreach ($myscripts as $k => $v) {
