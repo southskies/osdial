@@ -126,7 +126,7 @@ if ($ADD==21111111111) {
         if ($row[0] > 0) {
             echo "<br><font color=red>PHONE NOT ADDED - there is already a Phone in the system with this extension/server</font>\n";
         } else {
-            if ( (strlen($extension) < 1) or (strlen($server_ip) < 7) or (strlen($dialplan_number) < 1) or (strlen($voicemail_id) < 1) or (strlen($login) < 1)  or (strlen($pass) < 1)) {
+            if ( (strlen($extension) < 1) or (strlen($server_ip) < 7) or (strlen($dialplan_number) < 1) or (strlen($login) < 1)  or (strlen($pass) < 1)) {
                 echo "<br><font color=red>PHONE NOT ADDED - Please go back and look at the data you entered</font>\n";
             } else {
                 echo "<br><font color=$default_text>PHONE ADDED</font>\n";
@@ -134,7 +134,7 @@ if ($ADD==21111111111) {
                 if ($LOG['multicomp'] > 0) {
                     if (!preg_match('/\/|@/',$extension)) $extension = (($company * 1) + 0) . $extension;
                     if ((preg_match('/SIP|IAX/',$protocol) and substr($dialplan_number,0,3) != $company)) $dialplan_number = (($company * 1) + 0) . $dialplan_number;
-                    $voicemail_id = (($company * 1) + 0) . $voicemail_id;
+                    if (strlen($voicemail_id)>0) $voicemail_id = (($company * 1) + 0) . $voicemail_id;
                     $login = (($company * 1) + 0) . $login;
                 }
                 $stmt="INSERT INTO phones (extension,dialplan_number,voicemail_id,phone_ip,computer_ip,server_ip,login,pass,status,active,phone_type,fullname,company,picture,protocol,local_gmt,outbound_cid,outbound_cid_name,ext_context) values('$extension','$dialplan_number','$voicemail_id','$phone_ip','$computer_ip','$server_ip','$login','$pass','$status','$active','$phone_type','$fullname','$company','$picture','$protocol','$local_gmt','$outbound_cid','$outbound_cid_name','$ext_context');";
@@ -166,7 +166,7 @@ if ($ADD==41111111111) {
         if ( ($row[0] > 0) && ( ($preextension != $old_extension) or ($server_ip != $old_server_ip) ) ) {
             echo "<br><font color=red>PHONE NOT MODIFIED - there is already a Phone in the system with this extension/server</font>\n";
         } else {
-            if ( (strlen($extension) < 1) or (strlen($server_ip) < 7) or (strlen($dialplan_number) < 1) or (strlen($voicemail_id) < 1) or (strlen($login) < 1)  or (strlen($pass) < 1)) {
+            if ( (strlen($extension) < 1) or (strlen($server_ip) < 7) or (strlen($dialplan_number) < 1) or (strlen($login) < 1)  or (strlen($pass) < 1)) {
                 echo "<br><font color=$default_text>PHONE NOT MODIFIED - Please go back and look at the data you entered</font>\n";
             } else {
                 echo "<br><font color=$default_text>PHONE MODIFIED: $extension</font>\n";
@@ -174,7 +174,7 @@ if ($ADD==41111111111) {
                 if ($LOG['multicomp'] > 0) {
                     if (!preg_match('/\/|@/',$extension)) $extension = (($company * 1) + 0) . $extension;
                     if ((preg_match('/SIP|IAX/',$protocol) and substr($dialplan_number,0,3) != $company)) $dialplan_number = (($company * 1) + 0) . $dialplan_number;
-                    $voicemail_id = (($company * 1) + 0) . $voicemail_id;
+                    if (strlen($voicemail_id)>0) $voicemail_id = (($company * 1) + 0) . $voicemail_id;
                     $login = (($company * 1) + 0) . $login;
                 }
                 $stmt="UPDATE phones set extension='$extension', dialplan_number='$dialplan_number', voicemail_id='$voicemail_id', phone_ip='$phone_ip', computer_ip='$computer_ip', server_ip='$server_ip', login='$login', pass='$pass', status='$status', active='$active', phone_type='$phone_type', fullname='$fullname', company='$company', picture='$picture', protocol='$protocol', local_gmt='$local_gmt', ASTmgrUSERNAME='$ASTmgrUSERNAME', ASTmgrSECRET='$ASTmgrSECRET', login_user='$login_user', login_pass='$login_pass', login_campaign='$login_campaign', park_on_extension='$park_on_extension', conf_on_extension='$conf_on_extension', OSDIAL_park_on_extension='$OSDIAL_park_on_extension', OSDIAL_park_on_filename='$OSDIAL_park_on_filename', monitor_prefix='$monitor_prefix', recording_exten='$recording_exten', voicemail_exten='$voicemail_exten', voicemail_dump_exten='$voicemail_dump_exten', ext_context='$ext_context', dtmf_send_extension='$dtmf_send_extension', call_out_number_group='$call_out_number_group', client_browser='$client_browser', install_directory='$install_directory', local_web_callerID_URL='" . mysql_real_escape_string($local_web_callerID_URL) . "', OSDIAL_web_URL='" . mysql_real_escape_string($OSDIAL_web_URL) . "', AGI_call_logging_enabled='$AGI_call_logging_enabled', user_switching_enabled='$user_switching_enabled', conferencing_enabled='$conferencing_enabled', admin_hangup_enabled='$admin_hangup_enabled', admin_hijack_enabled='$admin_hijack_enabled', admin_monitor_enabled='$admin_monitor_enabled', call_parking_enabled='$call_parking_enabled', updater_check_enabled='$updater_check_enabled', AFLogging_enabled='$AFLogging_enabled', QUEUE_ACTION_enabled='$QUEUE_ACTION_enabled', CallerID_popup_enabled='$CallerID_popup_enabled', voicemail_button_enabled='$voicemail_button_enabled', enable_fast_refresh='$enable_fast_refresh', fast_refresh_rate='$fast_refresh_rate', enable_persistant_mysql='$enable_persistant_mysql', auto_dial_next_number='$auto_dial_next_number', VDstop_rec_after_each_call='$VDstop_rec_after_each_call', DBX_server='$DBX_server', DBX_database='$DBX_database', DBX_user='$DBX_user', DBX_pass='$DBX_pass', DBX_port='$DBX_port', DBY_server='$DBY_server', DBY_database='$DBY_database', DBY_user='$DBY_user', DBY_pass='$DBY_pass', DBY_port='$DBY_port', outbound_cid='$outbound_cid', outbound_cid_name='$outbound_cid_name', enable_sipsak_messages='$enable_sipsak_messages' where extension='$old_extension' and server_ip='$old_server_ip';";
