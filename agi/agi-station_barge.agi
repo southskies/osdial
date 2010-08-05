@@ -59,6 +59,7 @@ foreach(@conf)
 
 if (!$VARDB_port) {$VARDB_port='3306';}
 
+$|=1;
 use Asterisk::AGI;
 $AGI = new Asterisk::AGI;
 use DBI;
@@ -67,8 +68,15 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
     or die "Couldn't connect to database: " . DBI->errstr;
 
 
+$stmtA = "SELECT intra_server_protocol FROM system_settings;";
+$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+@aryA = $sthA->fetchrow_array;
+$sthA->finish();
+my $isp = '*';
+$isp='#' if ($aryA[0] eq 'IAX2');
 
-$|=1;
+
 while(<STDIN>) 
 {
 	chomp;
@@ -108,10 +116,11 @@ if ($aryA[0] eq "") {
 	$AGI->stream_file('check-number-dial-again');
 } else {
 	$AGI->stream_file('connected');
-	if ($aryA[1] eq $VARserver_ip) {
-		$AGI->exec("Dial",'Local/' . $aryA[0] . '@default');
-	} else {
-		$AGI->exec("Dial",'IAX2/' . $aryA[2] . '/' . $aryA[0]);
+	my $remDIALstr='';
+	if($aryA[1] =~ m/(\S+)\.(\S+)\.(\S+)\.(\S+)/ and $aryA[1] ne $VARserver_ip) {
+		$remDIALstr = sprintf('%.3d*%.3d*%.3d*%.3d',$1,$2,$3,$4) . $isp;
 	}
+	$remDIALstr .= '07' . $aryA[0];
+	$AGI->exec("Dial",'Local/' . $remDIALstr . '@osdial');
 }
 $AGI->hangup;
