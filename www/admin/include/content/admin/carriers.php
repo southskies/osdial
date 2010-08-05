@@ -61,7 +61,7 @@ if ($ADD=="1carrier") {
             echo "    </td>\n";
             echo "  </tr>\n";
 
-            echo "  <tr bgcolor=$oddrows name=PHONE style=\"visibility:visible;\">\n";
+            echo "  <tr bgcolor=$oddrows name=PHONE style=\"visibility:collapse;\">\n";
             echo "    <td align=right>Phone:</td>\n";
             echo "    <td align=left>\n";
             echo "      <select name=did_phone>\n";
