@@ -124,8 +124,10 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 	close(MOD);
 	my $oereload;
 	$oedata =~ s/\r\n/\n/gm;
-	$oedata =~ s/^TRUNKloop.*40569/TRUNKloop = IAX2\/ASTloop:$pass\@127.0.0.1:40569/gm;
-	$oedata =~ s/^TRUNKblind.*41569/TRUNKblind = IAX2\/ASTblind:$pass\@127.0.0.1:41569/gm;
+	$oedata =~ s/^TRUNKloop.*$/TRUNKloop = IAX2\/ASTloop:$pass\@127.0.0.1:40569/m;
+	$oedata =~ s/^TRUNKblind.*$/TRUNKblind = IAX2\/ASTblind:$pass\@127.0.0.1:41569/m;
+	$oedata = "TRUNKblind = IAX2\/ASTblind:$pass\@127.0.0.1:41569\n" . $oedata unless ($oedata =~ /^TRUNKblind.*$/m);
+	$oedata = "TRUNKloop = IAX2\/ASTloop:$pass\@127.0.0.1:40569\n"   . $oedata unless ($oedata =~ /^TRUNKloop.*$/m);
 	if ($asterisk_version =~ /^1\.6/) {
 		$oereload = "dialplan reload";
 		$oedata =~ s/^exten => h,1,DeadAGI/exten => h,1,AGI/gm;
@@ -215,6 +217,13 @@ sub gen_servers {
 	my $sreg='';
 	my $ireg='';
 
+	my $pmmask="deny=0.0.0.0/0.0.0.0\n";
+	$pmmask.="permit=127.0.0.1/255.255.255.255\n";
+	my $stmt = "SELECT * FROM servers ORDER BY server_ip;";
+	while (my $sret = $osdial->sql_query($stmt)) {
+		$pmmask.="permit=" . $sret->{server_ip} . "/255.255.255.255\n";
+	}
+
 	$isvr .= ";\n; IAX loopback for testing\n";
 	$isvr .= "[ASTloop]\n";
 	$isvr .= "type=friend\n";
@@ -222,8 +231,7 @@ sub gen_servers {
 	$isvr .= "context=osdial\n";
 	$isvr .= "auth=md5\n";
 	$isvr .= "host=dynamic\n";
-	$isvr .= "deny=0.0.0.0/0.0.0.0\n";
-	$isvr .= "permit=127.0.0.1/255.255.255.255\n";
+	$isvr .= $pmmask;
 	$isvr .= "secret=$pass\n";
 	$isvr .= "disallow=all\n";
 	$isvr .= "allow=ulaw\n";
@@ -237,8 +245,7 @@ sub gen_servers {
 	$isvr .= "context=osdial\n";
 	$isvr .= "auth=md5\n";
 	$isvr .= "host=dynamic\n";
-	$isvr .= "deny=0.0.0.0/0.0.0.0\n";
-	$isvr .= "permit=127.0.0.1/255.255.255.255\n";
+	$isvr .= $pmmask;
 	$isvr .= "secret=$pass\n";
 	$isvr .= "disallow=all\n";
 	$isvr .= "allow=ulaw\n";
@@ -246,17 +253,14 @@ sub gen_servers {
 	$isvr .= "qualify=5000\n";
 
 	$esvr .= "; Local blind monitoring\n";
-	$esvr .= "exten => _08600XXX,1,Dial(\${TRUNKblind}/6\${EXTEN:1},55,To)\n";
+	$esvr .= "exten => _0860XXXX,1,Dial(\${TRUNKblind}/6\${EXTEN:1},55,To)\n";
+	$esvr .= "exten => _06860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:1},55,To)\n";
+	$esvr .= "exten => _07860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:1},55,To)\n";
+	$esvr .= "exten => _08860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:2},55,To)\n";
 
 	$ireg .= "register => ASTloop:$pass\@127.0.0.1:40569\n";
 	$ireg .= "register => ASTblind:$pass\@127.0.0.1:41569\n";
 
-	my $pmmask="deny=0.0.0.0/0.0.0.0\n";
-	$pmmask.="permit=127.0.0.1/255.255.255.255\n";
-	my $stmt = "SELECT * FROM servers ORDER BY server_ip;";
-	while (my $sret = $osdial->sql_query($stmt)) {
-		$pmmask.="permit=" . $sret->{server_ip} . "/255.255.255.255\n";
-	}
 
 
 	# Get my server
