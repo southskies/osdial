@@ -217,6 +217,7 @@ if ($ADD=="1carrier") {
 # ADD=2carrier SUB=2  adds the new carrier to the system
 ######################
 
+$ANC=0;
 if ($ADD=="2carrier") {
     if ($LOG['ast_admin_access'] == 1) {
         echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
@@ -290,6 +291,7 @@ if ($ADD=="2carrier") {
                     $carrier_id=mysql_insert_id($link);
                     echo "<br><b><font color=$default_text>CARRIER ADDED: $carrier_id - $carrier_name</font></b><br>\n";
                     $aclog='CARRIER';
+                    $ANC=1;
                     $SUB=2;
                 }
             }
@@ -1110,6 +1112,14 @@ if ($ADD == "3carrier") {
 
         echo "<script type=\"text/javascript\">\n";
         include "carriers.js";
+        if ($ANC==1) {
+            if ($carrier_protocol == 'SIP') {
+                echo "document.osdial_form.carrier_protocol_config.value=carriers[2].replace(new RegExp('genericSIP','g'),'$carrier_name');\n";
+            } elseif ($carrier_protocol == 'IAX2') {
+                echo "document.osdial_form.carrier_protocol_config.value=carriers[7].replace(new RegExp('genericIAX','g'),'$carrier_name');\n";
+            }
+            echo "document.osdial_form.carrier_dialplan.value=dialplan;\n";
+        }
         echo "</script>\n";
 
         echo "</font>\n";
