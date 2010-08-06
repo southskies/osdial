@@ -29,7 +29,7 @@ var dialplan =
 	"exten => _X1NXXNXXXXXX,1,GotoIf($[\"<STRIP_MSD>\" = \"Y\"]?setcid${EXTEN:0:1}${EXTEN:2},1:setcid${EXTEN},1)\n"+
 	"\n"+
 	"; Dial an international number (if allowed).\n"+
-	"exten => _X011.,1,GotoIf($[\"<ALLOW_INTERNATIONAL>\" = \"Y\"]?setcid${EXTEN},1:h,1)\n"+
+	"exten => _X011.,1,GotoIf($[\"<ALLOW_INTERNATIONAL>\" = \"Y\"]?setcid${EXTEN},1)\n"+
 	"\n"+
 	"\n"+
 	"; Make sure callerid is set.\n"+
@@ -41,8 +41,7 @@ var dialplan =
 	"; This section is the 'prefix' dialed.\n"+
 	"exten => _dial9.,1,AGI(agi://127.0.0.1:4577/call_log)\n"+
 	"exten => _dial9.,n,Dial(<PROTOCOL>/<NAME>/${EXTEN:5},60,o)\n"+
-	"exten => _dial9.,n,Goto(failover${EXTEN:5},1)\n"+
-	"exten => _dial9.,n,Hangup()\n";
+	"exten => _dial9.,n,Goto(failover${EXTEN:5},1)\n";
 
 
 var carriers = Array(
