@@ -335,16 +335,18 @@ if ($ADD == "3fields" and $SUB != '2fields') {
 
     $cnt = 0;
     foreach ($forms as $form) {
+        $matched=0;
         foreach ($LOG['allowed_campaigns'] as $acamp) {
-            $allmatch = "";
-            if ($LOG['multicomp'] == 0) $allmatch = '^ALL$|';
-            if (preg_match('/' . $allmatch . '^' . $acamp . '$|^' . $acamp . ',|,' . $acamp . '$|,' . $acamp . ',/',$form['campaigns'])) {
-                echo "  <tr " . bgcolor($cnt) . " class=\"row font1\">\n";
-                echo "    <td><a href=\"$PHP_SELF?ADD=3fields&SUB=2fields&id=" . $form['id'] . "\">" . $form['name'] . "</a></td>\n";
-                echo "    <td>" . $form['description'] . "</td>\n";
-                echo "    <td align=center><a href=\"$PHP_SELF?ADD=3fields&SUB=2fields&id=" . $form['id'] . "\">MODIFY FORM</a></td></tr>\n";
-                $cnt++;
+            if (preg_match('/^ALL$|^' . $acamp . '$|^' . $acamp . ',|,' . $acamp . '$|,' . $acamp . ',/',$form['campaigns'])) {
+                $matched++;
             }
+        }
+        if ($matched) {
+            echo "  <tr " . bgcolor($cnt) . " class=\"row font1\">\n";
+            echo "    <td><a href=\"$PHP_SELF?ADD=3fields&SUB=2fields&id=" . $form['id'] . "\">" . $form['name'] . "</a></td>\n";
+            echo "    <td>" . $form['description'] . "</td>\n";
+            echo "    <td align=center><a href=\"$PHP_SELF?ADD=3fields&SUB=2fields&id=" . $form['id'] . "\">MODIFY FORM</a></td></tr>\n";
+            $cnt++;
         }
     }
     echo "  <tr class=tabfooter>\n";
@@ -390,7 +392,7 @@ if ($ADD == "3fields" and $SUB == '2fields') {
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Campaigns:</td>\n";
     echo '      <td bgcolor=' . $oddrows . '>' . "\n";
-    if ($LOG['multicomp'] == 0) {
+    if ($LOG['multicomp'] == 0 OR $LOG['multicomp_admin'] == 1) {
         if ($form['campaigns'] == 'ALL') {
             $ac = 'checked';
         }
