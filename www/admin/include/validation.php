@@ -225,6 +225,7 @@ if ($non_latin < 1)	{
 	$agent_pause_codes_active = ereg_replace("[^NY]","",$agent_pause_codes_active);
 	$campaign_stats_refresh = ereg_replace("[^NY]","",$campaign_stats_refresh);
 	$disable_alter_custdata = ereg_replace("[^NY]","",$disable_alter_custdata);
+	$disable_manual_dial = ereg_replace("[^NY]","",$disable_manual_dial);
 	$no_hopper_leads_logins = ereg_replace("[^NY]","",$no_hopper_leads_logins);
 	$human_answered = ereg_replace("[^NY]","",$human_answered);
 	$tovdad_display = ereg_replace("[^NY]","",$tovdad_display);

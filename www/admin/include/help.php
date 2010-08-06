@@ -620,6 +620,11 @@ echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 <B>Disable Alter Customer Data -</B> If set to Y, does not change any of the customer data record when an agent dispositions the call. Default is N.
 
 <BR>
+<A NAME="osdial_campaigns-disable_manual_dial">
+<BR>
+<B>Disable Manual Dial -</B> If set to Y, Manual and Fast Dial (ie Agent entered phone numbers) will be disabled for all agents in this Campaign. Default is N, using whatever the Agent's profile allows for.
+
+<BR>
 <A NAME="osdial_campaigns-no_hopper_leads_logins">
 <BR>
 <B>Allow No-Hopper-Leads Logins -</B> If set to Y, allows agents to login to the campaign even if there are no leads loaded into the hopper for that campaign. This function is not needed in CLOSER-type campaigns. Default is N.

@@ -501,6 +501,10 @@
   If set to Y, does not change any of the customer data record when an agent dispositions the call. Default is N.
     </item>
 
+    <item pathId="disable_manual_dial" title="Disable Manual Dial">
+  If set to Y, Manual and Fast Dial (ie Agent entered phone numbers) will be disabled for all agents in this Campaign. Default is N, using whatever the Agent's profile allows for.
+    </item>
+
     <item pathId="no_hopper_leads_logins" title="Allow No-Hopper-Leads Logins">
   If set to Y, allows agents to login to the campaign even if there are no leads loaded into the hopper for that campaign. This function is not needed in CLOSER-type campaigns. Default is N.
     </item>

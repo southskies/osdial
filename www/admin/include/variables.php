@@ -301,6 +301,7 @@ $dial_status_e = get_variable("dial_status_e");
 $dial_timeout = get_variable("dial_timeout");
 $dialplan_number = get_variable("dialplan_number");
 $disable_alter_custdata = get_variable("disable_alter_custdata");
+$disable_manual_dial = get_variable("disable_manual_dial");
 $drop_call_seconds = get_variable("drop_call_seconds");
 $drop_exten = get_variable("drop_exten");
 $drop_message = get_variable("drop_message");
