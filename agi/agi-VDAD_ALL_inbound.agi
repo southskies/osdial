@@ -75,6 +75,7 @@
 # 80402-0142 - added code for manual dial transfer duplicate check
 #
 # 090420-1342 - Merge in term_reason/uniqueid from 2.0.5
+$|++;
 
 $script = 'agi-VDAD_ALL_inbound.agi';
 $DB=0;
@@ -162,6 +163,10 @@ use Time::HiRes ('gettimeofday','usleep','sleep');  # necessary to have perl sle
 use Asterisk::AGI;
 $AGI = new Asterisk::AGI;
 
+$AGI->answer();
+$AGI->exec('Ringing','');
+$AGI->exec('Wait','3');
+
 $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
     or die "Couldn't connect to database: " . DBI->errstr;
 
@@ -215,7 +220,6 @@ if (length($ARGV[0])>1) {
 	$Scampaign_id = 	$ARGV_vars[9];
 }
 
-$|=1;
 while(<STDIN>) {
 	chomp;
 	last unless length($_);
