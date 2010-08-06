@@ -1002,6 +1002,7 @@ if ($ADD == "3carrier") {
             echo "    </tr>\n";
             $servers = get_krh($link, 'servers', '*','',"active='Y'",'');
             if (is_array($servers)) {
+                $c=0;
                 foreach ($servers as $server) {
                     $ocs = get_first_record($link, 'osdial_carrier_servers','*',sprintf("server_ip='%s' AND carrier_id='%s'",mres($server[server_ip]),mres($carrier_id)));
                     $pact = 'N';
@@ -1018,7 +1019,7 @@ if ($ADD == "3carrier") {
                     echo "      <td align=center title=\"Protocol Configuration\">$pact</td>\n";
                     echo "      <td align=center title=\"Registrations\">$ract</td>\n";
                     echo "      <td align=center title=\"Dialplan\">$dact</td>\n";
-                    echo "      <td align=center><a href=\"$PHP_SELF?ADD=3carrier&SUB=3&carrier_server_ip=$server[server_ip]&campaign_id=$carrier_id\">MODIFY</a></td>\n";
+                    echo "      <td align=center><a href=\"$PHP_SELF?ADD=3carrier&SUB=3&carrier_server_ip=$server[server_ip]&carrier_id=$carrier_id\">MODIFY</a></td>\n";
                     echo "    </tr>\n";
                     $c++;
                 }
@@ -1042,6 +1043,7 @@ if ($ADD == "3carrier") {
             echo "    </tr>\n";
             $dids = get_krh($link, 'osdial_carrier_dids', '*','did ASC',sprintf("carrier_id='%s'",mres($carrier_id)),'');
             if (is_array($dids)) {
+                $c=0;
                 foreach ($dids as $did) {
                     $dest = '';
                     if ($did['did_action']=='INGROUP') $dest=$did['ingroup'];
@@ -1052,7 +1054,7 @@ if ($ADD == "3carrier") {
                     echo "      <td align=center><a href=\"$PHP_SELF?ADD=3carrier&SUB=4&did_id=$did[id]&did=$did[did]&carrier_id=$carrier_id\">$did[did]</a></td>\n";
                     echo "      <td align=center>$did[did_action]</td>\n";
                     echo "      <td align=center>$dest</td>\n";
-                    echo "      <td align=center><a href=\"$PHP_SELF?ADD=3carrier&SUB=4&did_id=$did[id]&did=$did[did]&campaign_id=$carrier_id\">MODIFY</a></td>\n";
+                    echo "      <td align=center><a href=\"$PHP_SELF?ADD=3carrier&SUB=4&did_id=$did[id]&did=$did[did]&carrier_id=$carrier_id\">MODIFY</a></td>\n";
                     echo "    </tr>\n";
                     $c++;
                 }
@@ -1089,7 +1091,7 @@ if ($ADD == "3carrier") {
                     echo "      <td align=center>$carrier[protocol]</td>\n";
                     echo "      <td align=center>$carrier[active]</td>\n";
                     echo "      <td align=center>$carrier[selectable]</td>\n";
-                    echo "      <td align=center><a href=\"$PHP_SELF?ADD=3carrier&SUB=2&campaign_id=$carrier[id]\">MODIFY</a></td>\n";
+                    echo "      <td align=center><a href=\"$PHP_SELF?ADD=3carrier&SUB=2&carrier_id=$carrier[id]\">MODIFY</a></td>\n";
                     echo "    </tr>\n";
                     $c++;
                 }
