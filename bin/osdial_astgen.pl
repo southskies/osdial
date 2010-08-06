@@ -687,7 +687,7 @@ sub gen_carriers {
 
 		my $context = 'OIN' . $carriers->{$carrier}{name};
 
-		# Add contexts to protocol_config.
+		# Add contexts to protocol_config for inbound calls.
 		$carriers->{$carrier}{protocol_config} =~ s/^\[(.*)\]$/\[$1\]\ncontext=$context/mg;
 
 		# Do the variable substitutions.
@@ -699,46 +699,44 @@ sub gen_carriers {
 		$carriers->{$carrier}{dialplan} =~ s/<DEFAULT_AREACODE>/$carriers->{$carrier}{default_areacode}/mg;
 		$carriers->{$carrier}{dialplan} =~ s/<DEFAULT_PREFIX>/$carriers->{$carrier}{default_prefix}/mg;
 
-		my $failover = '';
-		if (!$carriers->{$carrier}{failover_id}>0) {
-			$failover .= "exten => _failover.,1,Hangup()\n\n";
-		} else {
-			my $stmt = sprintf("SELECT * FROM osdial_carriers WHERE id='\%s';",$carriers->{$carrier}{failover_id});
-			my $failover_carrier = $osdial->sql_query($stmt);
-			if ($carriers->{$carrier}{failover_confition} eq 'CHANUNAVAIL') {
-				$failover .= "exten => _failover.,1,GotoIf(\$[\"\${DIALSTATUS}\" = \"CHANUNAVAIL\"]?3)\n";
-				$failover .= "exten => _failover.,2,Goto(5)\n";
-				$failover .= "exten => _failover.,3,AGI(agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME})\n";
-				$failover .= "exten => _failover.,4,Goto(OOUT" . $failover_carrier->{name} . ",\${EXTEN:8},1)\n";
-				$failover .= "exten => _failover.,5,Hangup()\n\n";
-			} elsif ($carriers->{$carrier}{failover_confition} eq 'CONGESTION') {
-				$failover .= "exten => _failover.,1,GotoIf(\$[\"\${DIALSTATUS}\" = \"CONGESTION\"]?3)\n";
-				$failover .= "exten => _failover.,2,Goto(5)\n";
-				$failover .= "exten => _failover.,3,AGI(agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME})\n";
-				$failover .= "exten => _failover.,4,Goto(OOUT" . $failover_carrier->{name} . ",\${EXTEN:8},1)\n";
-				$failover .= "exten => _failover.,5,Hangup()\n\n";
-			} elsif ($carriers->{$carrier}{failover_confition} eq 'BOTH') {
-				$failover .= "exten => _failover.,1,GotoIf(\$[\"\${DIALSTATUS}\" = \"CHANUNAVAIL\"]?4)\n";
-				$failover .= "exten => _failover.,2,GotoIf(\$[\"\${DIALSTATUS}\" = \"CONGESTION\"]?4)\n";
-				$failover .= "exten => _failover.,3,Goto(6)\n";
-				$failover .= "exten => _failover.,4,AGI(agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME})\n";
-				$failover .= "exten => _failover.,5,Goto(OOUT" . $failover_carrier->{name} . ",\${EXTEN:8},1)\n";
-				$failover .= "exten => _failover.,6,Hangup()\n\n";
-			}
-		}
-
-		my $hangup = "exten => h,1,AGI(agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME})\n\n";
-
-		$dialplan .= "[OOUT" . $carriers->{$carrier}{name} . "]\n" . $hangup . $failover . $carriers->{$carrier}{dialplan} . "\n\n";
+		# Separate the configuration based on the protocol.
 		if ($carriers->{$carrier}{protocol} eq "SIP") {
 			$sip_config .= $carriers->{$carrier}{protocol_config} . "\n\n";
 			$sip_registrations .= $carriers->{$carrier}{registrations} . "\n\n";
-		} elsif ($carriers->{$carrier}{protocol} eq "SIP") {
+		} elsif ($carriers->{$carrier}{protocol} eq "IAX2") {
 			$iax_config .= $carriers->{$carrier}{protocol_config} . "\n\n";
 			$iax_registrations .= $carriers->{$carrier}{registrations} . "\n\n";
 		}
 
-		# Process DIDs.
+		# Create failover dialplan, which will attempt another carrier based on the DIALSTATUS.
+		my $failover = '';
+		if (!$carriers->{$carrier}{failover_id}>0) {
+			$failover .= "exten => _failover.,1,Hangup\n\n";
+		} else {
+			my $stmt = sprintf("SELECT * FROM osdial_carriers WHERE id='\%s';",$carriers->{$carrier}{failover_id});
+			my $failover_carrier = $osdial->sql_query($stmt);
+			if ($carriers->{$carrier}{failover_condition} eq 'CHANUNAVAIL') {
+				$failover .= "exten => _failover.,1,GotoIf(\$[\"\${DIALSTATUS}\" = \"CHANUNAVAIL\"]?2:4)\n";
+			} elsif ($carriers->{$carrier}{failover_condition} eq 'CONGESTION') {
+				$failover .= "exten => _failover.,1,GotoIf(\$[\"\${DIALSTATUS}\" = \"CONGESTION\"]?2:4)\n";
+			} elsif ($carriers->{$carrier}{failover_condition} eq 'BOTH') {
+				$failover .= "exten => _failover.,1,GotoIf(\$[\"\${DIALSTATUS}\" = \"CHANUNAVAIL\"|\"\${DIALSTATUS}\" = \"CONGESTION\"]?2:4)\n";
+			}
+			$failover .= "exten => _failover.,2,AGI(agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME})\n";
+			$failover .= "exten => _failover.,3,Goto(OOUT" . $failover_carrier->{name} . ",\${EXTEN:8},1)\n";
+			$failover .= "exten => _failover.,4,Hangup\n\n";
+		}
+
+		# Hangup extension (needs to be in every dialplan context.
+		my $hangup = "exten => h,1,AGI(agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME})\n";
+
+		# Create Outbound dialplan for the carrier.
+		$dialplan .= "[OOUT" . $carriers->{$carrier}{name} . "]\n";
+		$dialplan .= $failover;
+		$dialplan .= $carriers->{$carrier}{dialplan} . "\n";
+		$dialplan .= $hangup . "\n\n";
+
+		# Create Inbound dialplan for the carrier, ie DIDs..
 		$dialplan .= "[" . $context . "]\n";
 		my $dids = {};
 		my $stmt = sprintf("SELECT * FROM osdial_carrier_dids WHERE carrier_id='\%s';",$carrier);
@@ -746,10 +744,7 @@ sub gen_carriers {
 			$dids->{$did->{did}} = $did;
 		}
 		foreach my $did (sort keys %{$dids}) {
-			$dialplan .= "exten => _" . $dids->{$did}{did} . ",1,Answer\n";
-			$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,AGI(agi://127.0.0.1:4577/call_log)\n";
-			$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,Ringing\n";
-			$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,Wait(3)\n";
+			$dialplan .= "exten => _" . $dids->{$did}{did} . ",1,AGI(agi://127.0.0.1:4577/call_log)\n";
 			if ($dids->{$did}{did_action} eq 'INGROUP') {
 				$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,AGI(agi-VDAD_ALL_inbound.agi," . $dids->{$did}{lookup_method} . "-----" . $dids->{$did}{server_allocation} . "-----" . $dids->{$did}{ingroup};
 				$dialplan .= "-----\${EXTEN}-----\${CALLERID(number)}-----" . $dids->{$did}{park_file} . "-----" . $dids->{$did}{initial_status} . "-----" . $dids->{$did}{default_list_id} . "-----";
@@ -759,15 +754,23 @@ sub gen_carriers {
 				while (my $phone = $osdial->sql_query($stmt)) {
 					my @sip = split /\./, $phone->{server_ip};
 					my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
-					$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,Goto(osdial," . $fsip . '*' . $phone->{dialplan_number} . ",1)\n";
+					my $isp='*';
+					$isp='#' if ($osdial->{settings}{intra_server_protocol} eq 'IAX2');
+					$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,Goto(osdial," . $fsip . $isp . $phone->{dialplan_number} . ",1)\n";
 				}
 			} elsif ($dids->{$did}{did_action} eq 'EXTENSION') {
 				$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,Goto(" . $dids->{$did}{extension_context} . "," . $dids->{$did}{extension} . ",1)\n";
 			} elsif ($dids->{$did}{did_action} eq 'VOICEMAIL') {
 				$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,Voicemail(" . $dids->{$did}{voicemail} . ")\n";
 			}
-			$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,Hangup()\n\n";
+			$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,Hangup\n\n";
 		}
+		# Display an alert about any unhandled DIDs.
+		#$dialplan .= "exten => _X.,1,AGI(agi://127.0.0.1:4577/call_log)\n";
+		$dialplan .= "exten => _X.,1,NoOp(***ALERT***  Unconfigured DID:\${EXTEN} from Carrier:".$carriers->{$carrier}{name}.")\n";
+		$dialplan .= "exten => _X.,n,Hangup(17)\n\n";
+		$dialplan .= $hangup . "\n\n";
+
 	}
 	write_reload($sip_config,'osdial_sip_carriers','sip reload');
 	write_reload($iax_config,'osdial_iax_carriers','iax2 reload');
