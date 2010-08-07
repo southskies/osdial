@@ -100,6 +100,7 @@ if ($hh=='reports')
 
 
 echo "<div class=container>";
+
 echo "<div class=header>";
 echo "<table width=900 Oldwidth$page_width bgcolor=$maintable_color cellpadding=0 cellspacing=0 align=center class=across>\n";
 echo "  <tr>\n";
@@ -453,7 +454,7 @@ if (strlen($reports_hh) > 1) {
 
 
 ### Admin/Setup menu.
-if (strlen($admin_hh) > 1) { 
+if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) { 
     if ($sh=='settings') {$settings_sh="bgcolor=\"$settings_color\""; $settings_fc="$settings_font";} # pink
         else {$settings_sh=''; $settings_fc=$menu_h2_color;}
     if ($sh=='carriers') {$carriers_sh="bgcolor=\"$server_color\""; $carriers_fc="$carriers_font";} # pink
@@ -664,13 +665,14 @@ if (strlen($admin_hh) > 1) {
     }
 
 
-
+} elseif (strlen($admin_hh) > 1 and $LOG['ast_admin_access']<1) { 
     ### Do nothing if admin has no permissions
-    if ($LOGast_admin_access < 1) {
-        $ADD='99999999999999999999';
-        echo "</table></center>\n";
-        echo "<font color=red>You are not authorized to view this page. Please go back.</font>\n";
-    }
+    $ADD='99999999999999999999';
+    echo "  <tr class='no-ul' bgcolor=$settings_color>\n";
+    echo "    <td height=20 align=left colspan=10>\n";
+    echo "      <font color=red>You are not authorized to view this page.</font>\n";
+    echo "    </td>\n";
+    echo "  </tr>\n";
 } 
 
 
@@ -681,10 +683,6 @@ echo "    <td align=left colspan=10 HEIGHT=1 bgcolor=#666666></td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>";
-echo "<div class=content>";
-echo "<table width=100% class=maintable bgcolor=$maintable_color cellpadding=0 cellspacing=0 align=center>\n";
-echo "  <tr>\n";
-echo "    <td align=left colspan=10>\n";
 ######################### HTML HEADER END #######################################
 
 
