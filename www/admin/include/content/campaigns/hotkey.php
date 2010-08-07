@@ -32,7 +32,6 @@ if ($ADD==23)
 	$status = $HKstatus_data[0];
 	$status_name = $HKstatus_data[1];
 
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_campaign_hotkeys where campaign_id='$campaign_id' and hotkey='$hotkey';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -74,8 +73,6 @@ if ($ADD==43)
 {
 	if ($LOGmodify_campaigns==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) or (strlen($hotkey) < 1) )
 		{
 		 echo "<br><font color=red>CAMPAIGN HOT KEY NOT MODIFIED - Please go back and look at the data you entered\n";
@@ -98,14 +95,13 @@ if ($ADD==43)
 			fclose($fp);
 			}
 		}
+    $SUB=23;
+    $ADD=31;	# go to campaign modification form below
 	}
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
-$SUB=23;
-$ADD=31;	# go to campaign modification form below
 }
 
 
@@ -114,8 +110,6 @@ $ADD=31;	# go to campaign modification form below
 ######################
 if ($ADD==33)
 {
-echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 echo "<center><br><font color=$default_text size=+1>CAMPAIGN HOTKEYS</font><br><br>\n";
 echo "<TABLE width=$section_width cellspacing=0 cellpadding=1>\n";

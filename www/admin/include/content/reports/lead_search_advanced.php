@@ -30,7 +30,7 @@ function report_lead_search_advanced($lsa_seg='form') {
     if ($LOGmodify_lists==1 and $LOGuser_level > 7) {
         $form = '';
         $form .= "<table align=center><tr><td>\n";
-        $form .= "<font face=\"arial,helvetica\" color=$default_text size=2>";
+        $form .= "<font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=2>";
         $form .= "<center><br><font color=$default_text size=+1>ADVANCED LEAD SEARCH</font><br>\n";
         $form .= "<center><font color=$default_text size=2>\n";
         if ($LOG['view_lead_search']) $form .= "<a target=\"_parent\" href=\"./admin.php?ADD=999999&SUB=27\">[ Basic Search ]</a>&nbsp;&nbsp;|&nbsp;&nbsp;\n";
@@ -1252,24 +1252,24 @@ function report_lead_search_advanced($lsa_seg='form') {
                     if ($row[35] == '0000-00-00 00:00:00') $row[35] = "";
                     if (strlen($row[11]) == 10) $row[11] = substr($row[11],0,3) . "-" . substr($row[11],3,3) . "-" . substr($row[11],6,4);
                     $data .= "  <tr " . bgcolor($o) . " class=row ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[0]');\">\n";
-                    $data .= "    <td nowrap align=left><font face=\"arial,helvetica\" size=1>" . ($o + (($page - 1) * $numresults)) . "</font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"$row[0]\"><font face=\"arial,helvetica\" size=1><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[0]\" target=\"_blank\">$row[0]</a></font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"$row[7]\"><font face=\"arial,helvetica\" size=1><a href=\"" . $pageURL . "&lists[]=$row[7]&sort=$sort&direction=$direction#advsearch\">$row[7]</a></font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"$row[3]\"><font face=\"arial,helvetica\" size=1>$row[3]</font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"$row[11]\"><font face=\"arial,helvetica\" size=1>$row[11]</font></td>\n";
-                    $data .= "    <td nowrap align=left title=\"$row[15], $row[13]\"><font face=\"arial,helvetica\" size=1>" . ellipse($row[15] . ", " . $row[13], 10, true) . "</font></td>\n";
-                    $data .= "    <td nowrap align=left title=\"$row[19]\"><font face=\"arial,helvetica\" size=1>" . ellipse($row[19],10,true) . "</font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"" . strtoupper($row[20]) ."\"><font face=\"arial,helvetica\" size=1>" . strtoupper($row[20]) . "</font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"$row[22]\"><font face=\"arial,helvetica\" size=1>$row[22]</font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"" . $row[4] . " (" . $agents_label[$row[4]] . ")\"><font face=\"arial,helvetica\" size=1>$row[4]</font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"$row[4]\"><font face=\"arial,helvetica\" size=1>$row[5]</font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"$row[28]\"><font face=\"arial,helvetica\" size=1>" . ellipse($row[28],10,true) . "</font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"" . $tz_revlabel[($row[8] - date("I"))] . " (" . $row[8]. ")\"><font face=\"arial,helvetica\" size=1>" . $tz_revlabel[($row[8] - date("I"))] . "</font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"$row[30]\"><font face=\"arial,helvetica\" size=1>$row[30]</font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"$row[1]\"><font face=\"arial,helvetica\" size=1>&nbsp;" . ellipse($row[1],10,false) . "&nbsp;</font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"$row[2]\"><font face=\"arial,helvetica\" size=1>&nbsp;$row[2]&nbsp;</font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"$row[35]\"><font face=\"arial,helvetica\" size=1>" . ellipse($row[35],10,false) . "</font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"$recloc\"><font face=\"arial,helvetica\" size=1>";
+                    $data .= "    <td nowrap align=left><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ($o + (($page - 1) * $numresults)) . "</font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"$row[0]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[0]\" target=\"_blank\">$row[0]</a></font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"$row[7]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1><a href=\"" . $pageURL . "&lists[]=$row[7]&sort=$sort&direction=$direction#advsearch\">$row[7]</a></font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"$row[3]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[3]</font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"$row[11]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[11]</font></td>\n";
+                    $data .= "    <td nowrap align=left title=\"$row[15], $row[13]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ellipse($row[15] . ", " . $row[13], 10, true) . "</font></td>\n";
+                    $data .= "    <td nowrap align=left title=\"$row[19]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ellipse($row[19],10,true) . "</font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"" . strtoupper($row[20]) ."\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . strtoupper($row[20]) . "</font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"$row[22]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[22]</font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"" . $row[4] . " (" . $agents_label[$row[4]] . ")\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[4]</font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"$row[4]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[5]</font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"$row[28]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ellipse($row[28],10,true) . "</font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"" . $tz_revlabel[($row[8] - date("I"))] . " (" . $row[8]. ")\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . $tz_revlabel[($row[8] - date("I"))] . "</font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"$row[30]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[30]</font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"$row[1]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>&nbsp;" . ellipse($row[1],10,false) . "&nbsp;</font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"$row[2]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>&nbsp;$row[2]&nbsp;</font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"$row[35]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ellipse($row[35],10,false) . "</font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"$recloc\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>";
                     if ($recloc != "") {
                         $data .= "<a target=\"_new\" href=\"http://" . $_SERVER['SERVER_ADDR'] . "$recloc\">[rec]</a>";
                     }

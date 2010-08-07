@@ -31,14 +31,10 @@ if ($ADD==11111111111) {
         $sel = '';
         if ($LOG['multicomp_user'] > 0) $sel = $LOG['company']['default_server_ip'];
         $servers_list = get_servers($link, $sel);
-        echo "<TABLE align=center><TR><TD>\n";
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
         echo "<center><br><font color=$default_text size=+1>ADD A NEW PHONE</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=21111111111>\n";
         echo "<TABLE width=$section_width cellspacing=3>\n";
 
-        echo "<center><TABLE width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Phone extension: </td><td align=left><input type=text name=extension size=20 maxlength=100 value=\"\">$NWB#phones-extension$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Dial Plan Number: </td><td align=left><input type=text name=dialplan_number size=15 maxlength=20 value=\"$row[1]\"> (digits only)$NWB#phones-dialplan_number$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Voicemail Box: </td><td align=left><input type=text name=voicemail_id size=10 maxlength=10 value=\"$row[2]\"> (digits only)$NWB#phones-voicemail_id$NWE</td></tr>\n";
@@ -109,8 +105,6 @@ if ($ADD==11111111111) {
 
 if ($ADD==21111111111) {
     if ($LOGast_admin_access==1) {
-        echo "<TABLE><TR><TD>\n";
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         $preextension = $extension;
         $ext_context='osdial';
         if ($LOG['multicomp'] > 0) {
@@ -156,8 +150,6 @@ if ($ADD==21111111111) {
 
 if ($ADD==41111111111) {
     if ($LOGast_admin_access==1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
         $preextension = $extension;
         if ($LOG['multicomp'] > 0 and !preg_match('/\/|@/',$extension)) $preextension = (($company * 1) + 0) . $extension;
         $stmt="SELECT count(*) from phones where extension='$preextension' and server_ip='$server_ip';";
@@ -196,7 +188,6 @@ if ($ADD==41111111111) {
 
 if ($ADD==51111111111) {
     if ($LOGast_admin_access==1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         if ( (strlen($extension) < 2) or (strlen($server_ip) < 7) or ($LOGast_delete_phones < 1) ) {
             echo "<br><font color=red>PHONE NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>Extension be at least 2 characters in length\n";
@@ -219,8 +210,6 @@ if ($ADD==51111111111) {
 
 if ($ADD==61111111111) {
     if ($LOGast_admin_access==1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
         if ( (strlen($extension) < 2) or (strlen($server_ip) < 7) or ($CoNfIrM != 'YES') or ($LOGast_delete_phones < 1) ) {
             echo "<br><font color=red>PHONE NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>Extension be at least 2 characters in length\n";
@@ -252,9 +241,6 @@ if ($ADD==61111111111) {
 
 if ($ADD==31111111111) {
     if ($LOGast_admin_access==1) {
-        echo "<TABLE align=center><TR><TD>\n";
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
         $stmt="SELECT * from phones where extension='$extension' and server_ip='$server_ip';";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
@@ -421,9 +407,6 @@ if ($ADD==31111111111) {
 # ADD=10000000000 display all phones
 ######################
 if ($ADD==10000000000) {
-    echo "<TABLE align=center><TR><TD>\n";
-    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
     $EXTENlink='stage=EXTENDOWN';
     $PROTOlink='stage=PROTODOWN';
     $SERVERlink='stage=SERVERDOWN';

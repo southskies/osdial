@@ -36,8 +36,6 @@ if ($ADD==49)
 	##### MODIFY a list mix container entry #####
 		if ($stage=='MODIFY')
 		{
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 		$Flist_mix_container = "list_mix_container_$vcl_id";
 		$Fmix_method = "mix_method_$vcl_id";
 		$Fstatus = "status_$vcl_id";
@@ -79,8 +77,6 @@ if ($ADD==49)
 	##### ADD a list mix container entry #####
 		if ($stage=='ADD')
 		{
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 		 if ( (strlen($campaign_id) < 2) or (strlen($vcl_id) < 1) or (strlen($list_id) < 1) )
 			{
 			 echo "<br><font color=red>LIST MIX NOT MODIFIED - Please go back and look at the data you entered\n";
@@ -113,8 +109,6 @@ if ($ADD==49)
 	##### REMOVE a list mix container entry #####
 		if ($stage=='REMOVE')
 		{
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 		 if ( (strlen($campaign_id) < 2) or (strlen($vcl_id) < 1) or (strlen($list_id) < 1) )
 			{
 			 echo "<br><font color=red>LIST MIX NOT MODIFIED - Please go back and look at the data you entered\n";
@@ -187,8 +181,6 @@ if ($ADD==49)
 	##### ADD a NEW list mix #####
 		if ($stage=='NEWMIX')
 		{
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 		 if ( (strlen($campaign_id) < 2) or (strlen($vcl_id) < 1) or (strlen($vcl_name) < 2) )
 			{
 			 echo "<br><font color=red>LIST MIX NOT ADDED - Please go back and look at the data you entered\n";
@@ -225,8 +217,6 @@ if ($ADD==49)
 	##### DELETE an existing list mix #####
 		if ($stage=='DELMIX')
 		{
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 		 if ( (strlen($campaign_id) < 2) or (strlen($vcl_id) < 1) )
 			{
 			 echo "<br><font color=red>LIST MIX NOT DELETED - Please go back and look at the data you entered\n";
@@ -252,8 +242,6 @@ if ($ADD==49)
 	##### Set list mix entry to active #####
 		if ($stage=='SETACTIVE')
 		{
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 		 if ( (strlen($campaign_id) < 2) or (strlen($vcl_id) < 1) )
 			{
 			 echo "<br><font color=red>LIST MIX NOT ACTIVATED - Please go back and look at the data you entered\n";
@@ -278,14 +266,13 @@ if ($ADD==49)
 			echo "<br><B><font color=$default_text>LIST MIX ACTIVATED: $campaign_id - $vcl_id - $vcl_name</font></B>\n";
 			}
 		}
+    $SUB=29;
+    $ADD=31;	# go to campaign modification form below
 	}
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
-$SUB=29;
-$ADD=31;	# go to campaign modification form below
 }
 
 
@@ -294,9 +281,6 @@ $ADD=31;	# go to campaign modification form below
 ######################
 if ($ADD==39)
 {
-echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 echo "<center><br><font color=$default_text size=+1>CAMPAIGN LIST MIXES</font><br><br>\n";
 echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "  <tr class=tabheader>\n";

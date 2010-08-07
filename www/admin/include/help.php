@@ -47,9 +47,9 @@ echo "</head>\n";
 echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";
 echo "<CENTER>\n";
 echo "<TABLE frame=box WIDTH=98% BGCOLOR=#AFCFD7 cellpadding=2 cellspacing=0>";
-echo "<TR><TD ALIGN=center><font FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=4><B>$t1 Help</B></FONT></td>";
+echo "<TR><TD ALIGN=center><font FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=4><B>$t1 Help</B></FONT></td>";
 echo "</tr>";
-echo "<tr><td><FONT FACE=\"ARIAL,HELVETICA\" COLOR=1C4754 SIZE=2><BR><BR>\n";
+echo "<tr><td><FONT FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=2><BR><BR>\n";
 
 ?>
 <B><FONT SIZE=3><?=$t1?>_Users Table</FONT></B><BR><BR>

@@ -138,7 +138,7 @@ function report_call_stats() {
     $html .= "      <table align=center bgcolor=$oddrows cellspacing=3>\n";
     $html .= "        <tr>\n";
     $html .= "          <td colspan=3 align=center>\n";
-    $html .= "            <font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
+    $html .= "            <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=2>\n";
     if (strlen($group[0]) > 1) {
         $html .= "              <a href=\"./admin.php?ADD=34&campaign_id=$group[0]\">MODIFY</a> | \n";
     } else {

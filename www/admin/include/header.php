@@ -113,14 +113,14 @@ echo "          <td class='across-top' width='15'><img src='templates/$system_se
 echo "        </tr>\n";
 echo "        <tr valign='top'>\n";
 echo "          <td align=left width=33%>\n";
-echo "              <font face=\"arial,helvetica\" color=white size=2>&nbsp;&nbsp;</font><B><a href=\"$admin_home_url_LU\"><font face=\"arial,helvetica\" color=$home_color size=1>HOME</font></a><font face=\"arial,helvetica\" color=$default_text size=2>&nbsp;|&nbsp;</font><a href=\"$PHP_SELF?force_logout=1\"><font face=\"arial,helvetica\" color=$logout_color size=1>Logout</font></a>\n";
+echo "              <font face=\"dejavu sans,verdana,sans-serif\" color=white size=2>&nbsp;&nbsp;</font><B><a href=\"$admin_home_url_LU\"><font face=\"dejavu sans,verdana,sans-serif\" color=$home_color size=1>HOME</font></a><font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=2>&nbsp;|&nbsp;</font><a href=\"$PHP_SELF?force_logout=1\"><font face=\"dejavu sans,verdana,sans-serif\" color=$logout_color size=1>Logout</font></a>\n";
 echo "          </td>\n";
 echo "          <td class='user-company' align=center width=33%>\n";
 echo "              <font color=$company_color>$user_company</font><br />\n";
 echo "              <font color=$header_color size=2><b><br>$t1 Administrator</b><br><br><br></font>\n";
 echo "          </td>\n";
 echo "          <td align=right width=33%>";
-echo "              <font face=\"arial,helvetica\" color=$clock_color size=2>" . date("l F j, Y") . "&nbsp;&nbsp;<br>";
+echo "              <font face=\"dejavu sans,verdana,sans-serif\" color=$clock_color size=2>" . date("l F j, Y") . "&nbsp;&nbsp;<br>";
 echo "              <div style=\"width: 10em; text-align: right; margin: 5px;\"><div id=\"clock\" style=\"color: $clock_color\"></div></div>";
 echo "          </td>\n";
 echo "        </tr>\n";
@@ -133,44 +133,44 @@ echo "  </tr>\n";
 # BEGIN main menu.
 $cauth=0;
 $mmenu = '';
-$mmenu .= "    <td height=25 align=center $users_hh><a href=\"$PHP_SELF?ADD=0\"><font face=\"arial,helvetica\" color=$menu_h1_color size=$header_font_size> Agents </font></a></td>\n";
-$mmenu .= "    <td height=25 align=center $campaigns_hh><a href=\"$PHP_SELF?ADD=10\"><font face=\"arial,helvetica\" color=$menu_h1_color size=$header_font_size> Campaigns </font></a></td>\n";
-$mmenu .= "    <td height=25 align=center $lists_hh><a href=\"$PHP_SELF?ADD=100\"><font face=\"arial,helvetica\" color=$menu_h1_color size=$header_font_size> Lists </font></a></td>\n";
+$mmenu .= "    <td height=25 align=center $users_hh><a href=\"$PHP_SELF?ADD=0\"><font face=\"dejavu sans,verdana,sans-serif\" color=$menu_h1_color size=$header_font_size> Agents </font></a></td>\n";
+$mmenu .= "    <td height=25 align=center $campaigns_hh><a href=\"$PHP_SELF?ADD=10\"><font face=\"dejavu sans,verdana,sans-serif\" color=$menu_h1_color size=$header_font_size> Campaigns </font></a></td>\n";
+$mmenu .= "    <td height=25 align=center $lists_hh><a href=\"$PHP_SELF?ADD=100\"><font face=\"dejavu sans,verdana,sans-serif\" color=$menu_h1_color size=$header_font_size> Lists </font></a></td>\n";
 
 if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_scripts'] == 1) {
-    $mmenu .= "    <td height=25 align=center $scripts_hh><a href=\"$PHP_SELF?ADD=1000000\"><font face=\"arial,helvetica\" color=$menu_h1_color size=$header_font_size> Scripts </font></a></td>\n";
+    $mmenu .= "    <td height=25 align=center $scripts_hh><a href=\"$PHP_SELF?ADD=1000000\"><font face=\"dejavu sans,verdana,sans-serif\" color=$menu_h1_color size=$header_font_size> Scripts </font></a></td>\n";
 } else {
     $cauth++;
 }
 
 if (($system_settings['enable_filters'] > 0) and ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_filters'] == 1)) {
-    $mmenu .= "    <td height=25 align=center $filters_hh><a href=\"$PHP_SELF?ADD=10000000\"><font face=\"arial,helvetica\" color=$menu_h1_color size=$header_font_size> Filters </font></a></td>\n";
+    $mmenu .= "    <td height=25 align=center $filters_hh><a href=\"$PHP_SELF?ADD=10000000\"><font face=\"dejavu sans,verdana,sans-serif\" color=$menu_h1_color size=$header_font_size> Filters </font></a></td>\n";
 } else {
     $cauth++;
 }
 
 if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_ingroups'] == 1) {
-    $mmenu .= "    <td height=25 align=center $ingroups_hh><a href=\"$PHP_SELF?ADD=1000\"><font face=\"arial,helvetica\" color=$menu_h1_color size=$header_font_size> In-Groups </font></a></td>\n";
+    $mmenu .= "    <td height=25 align=center $ingroups_hh><a href=\"$PHP_SELF?ADD=1000\"><font face=\"dejavu sans,verdana,sans-serif\" color=$menu_h1_color size=$header_font_size> In-Groups </font></a></td>\n";
 } else {
     $cauth++;
 }
 
-$mmenu .= "    <td height=25 align=center $usergroups_hh><a href=\"$PHP_SELF?ADD=100000\"><font face=\"arial,helvetica\" color=$menu_h1_color size=$header_font_size> User Groups </font></a></td>\n";
+$mmenu .= "    <td height=25 align=center $usergroups_hh><a href=\"$PHP_SELF?ADD=100000\"><font face=\"dejavu sans,verdana,sans-serif\" color=$menu_h1_color size=$header_font_size> User Groups </font></a></td>\n";
 
 if (($system_settings['enable_external_agents'] > 0) and ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_external_agents'] == 1)) {
-    $mmenu .= "    <td height=25 align=center $remoteagent_hh><a href=\"$PHP_SELF?ADD=10000\"><font face=\"arial,helvetica\" color=$menu_h1_color size=$header_font_size> External Agents </font></a></td>\n";
+    $mmenu .= "    <td height=25 align=center $remoteagent_hh><a href=\"$PHP_SELF?ADD=10000\"><font face=\"dejavu sans,verdana,sans-serif\" color=$menu_h1_color size=$header_font_size> External Agents </font></a></td>\n";
 } else {
     $cauth++;
 }
 
 if ($LOG['view_reports'] > 0) {
-    $mmenu .= "    <td height=25 align=center $reports_hh><a href=\"$PHP_SELF?ADD=999999\"><font face=\"arial,helvetica\" color=$menu_h1_color size=$header_font_size> Reports </font></a></td>\n";
+    $mmenu .= "    <td height=25 align=center $reports_hh><a href=\"$PHP_SELF?ADD=999999\"><font face=\"dejavu sans,verdana,sans-serif\" color=$menu_h1_color size=$header_font_size> Reports </font></a></td>\n";
 } else {
     $cauth++;
 }
 
 if ($LOG['user_level'] > 8 and ($LOG['multicomp_user'] == 0 or ($LOG['company']['enable_system_calltimes'] + $LOG['company']['enable_system_phones'] + $LOG['company']['enable_system_conferences'] + $LOG['company']['enable_system_servers'] + $LOG['company']['enable_system_statuses']) != 0)) {
-    $mmenu .= "    <td height=25 align=center $admin_hh><a href=\"$PHP_SELF?ADD=10000000000\"><font face=\"arial,helvetica\" color=$menu_h1_color size=$header_font_size> Setup </font></a></td>\n";
+    $mmenu .= "    <td height=25 align=center $admin_hh><a href=\"$PHP_SELF?ADD=10000000000\"><font face=\"dejavu sans,verdana,sans-serif\" color=$menu_h1_color size=$header_font_size> Setup </font></a></td>\n";
 } else {
     $cauth++;
 }
@@ -193,7 +193,7 @@ echo "  </tr>\n";
 if (strlen($users_hh) > 1) { 
     echo "  <tr class='no-ul' bgcolor=$users_color>\n";
     echo "    <td align=left colspan=10 height=20>\n";
-    echo "      <font face=\"arial,helvetica\" color=$menu_h2_color size=$subheader_font_size> &nbsp;\n";
+    echo "      <font face=\"dejavu sans,verdana,sans-serif\" color=$menu_h2_color size=$subheader_font_size> &nbsp;\n";
     echo "        <a href=\"$PHP_SELF\"> Show Agents </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\n";
     echo "        <a href=\"$PHP_SELF?ADD=1\"> Add A New Agent </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\n";
     echo "        <a href=\"$PHP_SELF?ADD=1A\"> Copy Agent </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\n";
@@ -252,27 +252,27 @@ if (strlen($campaigns_hh) > 1) {
 
     $cauth=0;
     echo "  <tr class='no-ul' bgcolor=$campaigns_color>\n";
-    echo "    <td height=20 align=center $list_sh colspan=2><a href=\"$PHP_SELF?ADD=10\"><font face=\"arial,helvetica\" color=$list_fc size=$subcamp_font_size> Campaigns Main </font></a></td>\n";
-    echo "    <td align=center $status_sh colspan=1><a href=\"$PHP_SELF?ADD=32\"><font face=\"arial,helvetica\" color=$status_fc size=$subcamp_font_size> Statuses </font></a></td>\n";
-    echo "    <td align=center $hotkey_sh colspan=1><a href=\"$PHP_SELF?ADD=33\"><font face=\"arial,helvetica\" color=$hotkey_fc size=$subcamp_font_size> HotKeys </font></a></td>\n";
-    echo "    <td align=center $recycle_sh colspan=1><a href=\"$PHP_SELF?ADD=35\"><font face=\"arial,helvetica\" color=$recycle_fc size=$subcamp_font_size> Lead Recycle </font></a></td>\n";
+    echo "    <td height=20 align=center $list_sh colspan=2><a href=\"$PHP_SELF?ADD=10\"><font face=\"dejavu sans,verdana,sans-serif\" color=$list_fc size=$subcamp_font_size> Campaigns Main </font></a></td>\n";
+    echo "    <td align=center $status_sh colspan=1><a href=\"$PHP_SELF?ADD=32\"><font face=\"dejavu sans,verdana,sans-serif\" color=$status_fc size=$subcamp_font_size> Statuses </font></a></td>\n";
+    echo "    <td align=center $hotkey_sh colspan=1><a href=\"$PHP_SELF?ADD=33\"><font face=\"dejavu sans,verdana,sans-serif\" color=$hotkey_fc size=$subcamp_font_size> HotKeys </font></a></td>\n";
+    echo "    <td align=center $recycle_sh colspan=1><a href=\"$PHP_SELF?ADD=35\"><font face=\"dejavu sans,verdana,sans-serif\" color=$recycle_fc size=$subcamp_font_size> Lead Recycle </font></a></td>\n";
     if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_campaign_listmix'] == 1) {
-        echo "    <td align=center $listmix_sh colspan=1><a href=\"$PHP_SELF?ADD=39\"><font face=\"arial,helvetica\" color=$listmix_fc size=$subcamp_font_size> List Mix </font></a></td>\n";
+        echo "    <td align=center $listmix_sh colspan=1><a href=\"$PHP_SELF?ADD=39\"><font face=\"dejavu sans,verdana,sans-serif\" color=$listmix_fc size=$subcamp_font_size> List Mix </font></a></td>\n";
     } else {
         $cauth++;
     }
-    echo "    <td align=center $autoalt_sh colspan=1><a href=\"$PHP_SELF?ADD=36\"><font face=\"arial,helvetica\" color=$autoalt_fc size=$subcamp_font_size> Auto-Alt Dial </font></a></td>\n";
-    echo "    <td align=center $pause_sh colspan=1><a href=\"$PHP_SELF?ADD=37\"><font face=\"arial,helvetica\" color=$pause_fc size=$subcamp_font_size> Pause Codes </font></a></td>\n";
-    echo "    <td align=center $fields_sh colspan=2><a href=\"$PHP_SELF?ADD=3fields\"><font face=\"arial,helvetica\" color=$fields_fc size=$subcamp_font_size> Additional Fields </font></a></td>\n";
+    echo "    <td align=center $autoalt_sh colspan=1><a href=\"$PHP_SELF?ADD=36\"><font face=\"dejavu sans,verdana,sans-serif\" color=$autoalt_fc size=$subcamp_font_size> Auto-Alt Dial </font></a></td>\n";
+    echo "    <td align=center $pause_sh colspan=1><a href=\"$PHP_SELF?ADD=37\"><font face=\"dejavu sans,verdana,sans-serif\" color=$pause_fc size=$subcamp_font_size> Pause Codes </font></a></td>\n";
+    echo "    <td align=center $fields_sh colspan=2><a href=\"$PHP_SELF?ADD=3fields\"><font face=\"dejavu sans,verdana,sans-serif\" color=$fields_fc size=$subcamp_font_size> Additional Fields </font></a></td>\n";
     if ($cauth) {
-        echo "      <td colspan=$cauth align=center><font size=2 color=$subcamp_font_size face=\"arial,helvetica\">&nbsp;</font></td>\n";
+        echo "      <td colspan=$cauth align=center><font size=2 color=$subcamp_font_size face=\"dejavu sans,verdana,sans-serif\">&nbsp;</font></td>\n";
     }
     echo "  </tr>\n";
 
     if (strlen($list_sh) > 1) { 
         echo "  <tr class='no-ul' bgcolor=$subcamp_color>\n";
         echo "    <td height=20 align=left colspan=10>\n";
-        echo "      <font face=\"arial,helvetica\" color=$default_text size=$subcamp_font_size> &nbsp; \n";
+        echo "      <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=$subcamp_font_size> &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=10\"> Show Campaigns </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=11\"> Add A New Campaign </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\n";
         echo "        <a href=\"$PHP_SELF?ADD=12\"> Copy Campaign </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\n";
@@ -309,28 +309,28 @@ if (strlen($campaigns_hh) > 1) {
             echo "    <td height=18 align=left colspan=10>\n";
             echo "      <table width=$page_width cellpadding=2 cellspacing=0>\n";
             echo "        <tr class='no-ul' bgcolor=$campaigns_color>\n";
-            echo "          <td align=center bgcolor=$camp_basic_color><a href=\"$PHP_SELF?ADD=34&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"arial,helvetica\">Basic</font></a></td>\n";
-            echo "          <td align=center bgcolor=$camp_detail_color><a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"arial,helvetica\">Detail</font></a></td>\n";
-            echo "          <td align=center bgcolor=$camp_statuses_color><a href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"arial,helvetica\">Statuses</font></a></td>\n";
-            echo "          <td align=center bgcolor=$camp_hotkeys_color><a href=\"$PHP_SELF?ADD=31&SUB=23&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"arial,helvetica\">HotKeys</font></a></td>\n";
-            echo "          <td align=center bgcolor=$camp_recycle_color><a href=\"$PHP_SELF?ADD=31&SUB=25&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"arial,helvetica\">Lead Recycling</font></a></td>\n";
+            echo "          <td align=center bgcolor=$camp_basic_color><a href=\"$PHP_SELF?ADD=34&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"dejavu sans,verdana,sans-serif\">Basic</font></a></td>\n";
+            echo "          <td align=center bgcolor=$camp_detail_color><a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"dejavu sans,verdana,sans-serif\">Detail</font></a></td>\n";
+            echo "          <td align=center bgcolor=$camp_statuses_color><a href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"dejavu sans,verdana,sans-serif\">Statuses</font></a></td>\n";
+            echo "          <td align=center bgcolor=$camp_hotkeys_color><a href=\"$PHP_SELF?ADD=31&SUB=23&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"dejavu sans,verdana,sans-serif\">HotKeys</font></a></td>\n";
+            echo "          <td align=center bgcolor=$camp_recycle_color><a href=\"$PHP_SELF?ADD=31&SUB=25&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"dejavu sans,verdana,sans-serif\">Lead Recycling</font></a></td>\n";
             if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_campaign_listmix'] == 1) {
-                echo "          <td align=center bgcolor=$camp_listmix_color><a href=\"$PHP_SELF?ADD=31&SUB=29&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"arial,helvetica\">List Mix</font></a></td>\n";
+                echo "          <td align=center bgcolor=$camp_listmix_color><a href=\"$PHP_SELF?ADD=31&SUB=29&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"dejavu sans,verdana,sans-serif\">List Mix</font></a></td>\n";
             } else {
                 $cauth++;
             }
-            echo "          <td align=center bgcolor=$camp_autoalt_color><a href=\"$PHP_SELF?ADD=31&SUB=26&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"arial,helvetica\">Auto Alt Dial</font></a></td>\n";
-            echo "          <td align=center bgcolor=$camp_pause_color><a href=\"$PHP_SELF?ADD=31&SUB=27&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"arial,helvetica\">Pause Codes</font></a></td>\n";
+            echo "          <td align=center bgcolor=$camp_autoalt_color><a href=\"$PHP_SELF?ADD=31&SUB=26&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"dejavu sans,verdana,sans-serif\">Auto Alt Dial</font></a></td>\n";
+            echo "          <td align=center bgcolor=$camp_pause_color><a href=\"$PHP_SELF?ADD=31&SUB=27&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"dejavu sans,verdana,sans-serif\">Pause Codes</font></a></td>\n";
             if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_campaign_ivr'] == 1) {
-                echo "          <td align=center bgcolor=$camp_oivr_color><a href=\"$PHP_SELF?ADD=3menu&SUB=2keys&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"arial,helvetica\">In/Out IVR</font></a></td>\n";
+                echo "          <td align=center bgcolor=$camp_oivr_color><a href=\"$PHP_SELF?ADD=3menu&SUB=2keys&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"dejavu sans,verdana,sans-serif\">In/Out IVR</font></a></td>\n";
             } else {
                 $cauth++;
             }
             echo "          <td align=center bgcolor=$camp_real_color>";
-            if ($LOG['view_agent_realtime']) echo "<a href=\"$PHP_SELF?ADD=999999&SUB=14&group=$campaign_id&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"arial,helvetica\">Real-Time</font></a>";
+            if ($LOG['view_agent_realtime']) echo "<a href=\"$PHP_SELF?ADD=999999&SUB=14&group=$campaign_id&campaign_id=$campaign_id\"><font size=2 color=$subcamp_font face=\"dejavu sans,verdana,sans-serif\">Real-Time</font></a>";
             echo "</td>\n";
             if ($cauth) {
-                echo "          <td colspan=$cauth align=center bgcolor=$camp_real_color><font size=2 color=$subcamp_font face=\"arial,helvetica\">&nbsp;</font></td>\n";
+                echo "          <td colspan=$cauth align=center bgcolor=$camp_real_color><font size=2 color=$subcamp_font face=\"dejavu sans,verdana,sans-serif\">&nbsp;</font></td>\n";
             }
             echo "        </tr>\n";
             echo "      </table>\n";
@@ -346,7 +346,7 @@ if (strlen($campaigns_hh) > 1) {
 if (strlen($lists_hh) > 1) { 
     echo "  <tr class='no-ul' bgcolor=$lists_color>\n";
     echo "    <td height=20 align=left colspan=10>\n";
-    echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
+    echo "      <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=$subheader_font_size> &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=100\"> Show Lists </a> &nbsp; &nbsp; &nbsp;\n";
     echo "        <a href=\"$PHP_SELF?ADD=111\"> Add A New List </a> &nbsp; &nbsp; &nbsp;\n";
     if ($LOG['view_lead_search_advanced']) {
@@ -372,7 +372,7 @@ if (strlen($lists_hh) > 1) {
 if (strlen($scripts_hh) > 1) { 
     echo "  <tr class='no-ul' bgcolor=$scripts_color>\n";
     echo "    <td height=20 align=left colspan=10>\n";
-    echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
+    echo "      <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=$subheader_font_size> &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=1000000\"> Show Scripts </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=1111111\"> Add A New Script</a> &nbsp; &nbsp; | &nbsp; &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=0email\"> Show Email Templates </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
@@ -388,7 +388,7 @@ if (strlen($scripts_hh) > 1) {
 if (strlen($filters_hh) > 1) { 
     echo "  <tr class='no-ul' bgcolor=$filters_color>\n";
     echo "    <td height=20 align=left colspan=10>\n";
-    echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
+    echo "      <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=$subheader_font_size> &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=10000000\"> Show Filters </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=11111111\"> Add A New Filter </a>\n";
     echo "      </font>\n";
@@ -402,7 +402,7 @@ if (strlen($filters_hh) > 1) {
 if (strlen($ingroups_hh) > 1) { 
     echo "  <tr class='no-ul' bgcolor=$ingroups_color>\n";
     echo "    <td height=20 align=left colspan=10>\n";
-    echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
+    echo "      <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=$subheader_font_size> &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=1000\"> Show In-Groups </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=1111\"> Add A New In-Group </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=1211\"> Copy In-Group </a>\n";
@@ -417,7 +417,7 @@ if (strlen($ingroups_hh) > 1) {
 if (strlen($remoteagent_hh) > 1) { 
     echo "  <tr class='no-ul' bgcolor=$remoteagent_color>\n";
     echo "    <td height=20 align=left colspan=10>\n";
-    echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
+    echo "      <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=$subheader_font_size> &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=10000\"> Show External Agents </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=11111\"> Add New External Agents </a>\n";
     echo "      </font>\n";
@@ -431,7 +431,7 @@ if (strlen($remoteagent_hh) > 1) {
 if (strlen($usergroups_hh) > 1) { 
     echo "  <tr class='no-ul' bgcolor=$usergroups_color>\n";
     echo "    <td height=20 align=left colspan=10>\n";
-    echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
+    echo "      <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=$subheader_font_size> &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=100000\"> Show User Groups </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=111111\"> Add A New User Group </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
     if ($LOG['view_usergroup_hourly_stats']) echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=24&group=$LOG[user_group]\"> Group Hourly Report </a>\n";
@@ -446,7 +446,7 @@ if (strlen($usergroups_hh) > 1) {
 if (strlen($reports_hh) > 1) { 
     echo "  <tr bgcolor=$reports_color>\n";
     echo "    <td height=20 align=left colspan=10>\n";
-    echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size>&nbsp;</font>\n";
+    echo "      <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=$subheader_font_size>&nbsp;</font>\n";
     echo "    </td>\n";
     echo "  </tr>\n";
 }
@@ -476,49 +476,49 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     $acnt = 0;
 
     if ($LOG['multicomp_user'] == 0) {
-        $amenu .= "    <td height=20 align=center $settings_sh colspan=2><a href=\"$PHP_SELF?ADD=311111111111111\"><font face=\"arial,helvetica\" color=$settings_fc size=$header_font_size> System Settings </font></a></td>\n";
+        $amenu .= "    <td height=20 align=center $settings_sh colspan=2><a href=\"$PHP_SELF?ADD=311111111111111\"><font face=\"dejavu sans,verdana,sans-serif\" color=$settings_fc size=$header_font_size> System Settings </font></a></td>\n";
     } else {
         $acnt += 2;
     }
 
     if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_carriers'] == 1) {
-        $amenu .= "    <td height=20 align=center $carriers_sh colspan=1><a href=\"$PHP_SELF?ADD=3carrier\"><font face=\"arial,helvetica\" color=$carriers_fc size=$header_font_size> Carriers </font></a></td>\n";
+        $amenu .= "    <td height=20 align=center $carriers_sh colspan=1><a href=\"$PHP_SELF?ADD=3carrier\"><font face=\"dejavu sans,verdana,sans-serif\" color=$carriers_fc size=$header_font_size> Carriers </font></a></td>\n";
     } else {
         $acnt += 1;
     }
 
     if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_servers'] == 1) {
-        $amenu .= "    <td height=20 align=center $server_sh colspan=1><a href=\"$PHP_SELF?ADD=100000000000\"><font face=\"arial,helvetica\" color=$server_fc size=$header_font_size> Servers </font></a></td>\n";
+        $amenu .= "    <td height=20 align=center $server_sh colspan=1><a href=\"$PHP_SELF?ADD=100000000000\"><font face=\"dejavu sans,verdana,sans-serif\" color=$server_fc size=$header_font_size> Servers </font></a></td>\n";
     } else {
         $acnt += 1;
     }
 
     if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_phones'] == 1) {
-        $amenu .= "    <td height=20 align=center $phones_sh colspan=1><a href=\"$PHP_SELF?ADD=10000000000\"><font face=\"arial,helvetica\" color=$phones_fc size=$header_font_size> Phones </font></a></td>\n";
+        $amenu .= "    <td height=20 align=center $phones_sh colspan=1><a href=\"$PHP_SELF?ADD=10000000000\"><font face=\"dejavu sans,verdana,sans-serif\" color=$phones_fc size=$header_font_size> Phones </font></a></td>\n";
     } else {
         $acnt += 1;
     }
 
     if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_conferences'] == 1) {
-        $amenu .= "    <td height=20 align=center $conference_sh colspan=1><a href=\"$PHP_SELF?ADD=1000000000000\"><font face=\"arial,helvetica\" color=$conference_fc size=$header_font_size> Conferences </font></a></td>\n";
+        $amenu .= "    <td height=20 align=center $conference_sh colspan=1><a href=\"$PHP_SELF?ADD=1000000000000\"><font face=\"dejavu sans,verdana,sans-serif\" color=$conference_fc size=$header_font_size> Conferences </font></a></td>\n";
     } else {
         $acnt += 1;
     }
 
     if ($LOG["multicomp_admin"] > 0) {
-        $amenu .= "    <td height=20 align=center $company_sh colspan=1><a href=\"$PHP_SELF?ADD=10comp\"><font face=\"arial,helvetica\" color=$company_fc size=$header_font_size> Companies </font></a></td>\n";
+        $amenu .= "    <td height=20 align=center $company_sh colspan=1><a href=\"$PHP_SELF?ADD=10comp\"><font face=\"dejavu sans,verdana,sans-serif\" color=$company_fc size=$header_font_size> Companies </font></a></td>\n";
     } else {
         $acnt += 1;
     }
 
     if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_calltimes'] == 1) {
-        $amenu .= "    <td height=20 align=center $times_sh colspan=1><a href=\"$PHP_SELF?ADD=100000000\"><font face=\"arial,helvetica\" color=$times_fc size=$header_font_size> Call Times </font></a></td>\n";
+        $amenu .= "    <td height=20 align=center $times_sh colspan=1><a href=\"$PHP_SELF?ADD=100000000\"><font face=\"dejavu sans,verdana,sans-serif\" color=$times_fc size=$header_font_size> Call Times </font></a></td>\n";
     } else {
         $acnt += 1;
     }
 
     if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_statuses'] == 1) {
-        $amenu .= "    <td height=20 align=center $status_sh colspan=2><a href=\"$PHP_SELF?ADD=321111111111111\"><font face=\"arial,helvetica\" color=$status_fc size=$header_font_size> System Statuses </font></a></td>\n";
+        $amenu .= "    <td height=20 align=center $status_sh colspan=2><a href=\"$PHP_SELF?ADD=321111111111111\"><font face=\"dejavu sans,verdana,sans-serif\" color=$status_fc size=$header_font_size> System Statuses </font></a></td>\n";
     } else {
         $acnt += 2;
     }
@@ -540,7 +540,7 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     if (strlen($settings_sh) > 1) { 
         echo "  <tr class='no-ul' bgcolor=$settings_color>\n";
         echo "    <td height=20 align=left colspan=10>\n";
-        echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
+        echo "      <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=$subheader_font_size> &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=311111111111111\"> System Settings </a>\n";
         echo "      </font>\n";
         echo "    </td>\n";
@@ -553,7 +553,7 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     if (strlen($server_sh) > 1) { 
         echo "  <tr class='no-ul' bgcolor=$server_color>\n";
         echo "    <td height=20 align=left colspan=10>\n";
-        echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
+        echo "      <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=$subheader_font_size> &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=100000000000\"> Show Servers </a> &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=111111111111\"> Add A New Server </a> &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=399111111111111\"> Archive Server </a> &nbsp; &nbsp; \n";
@@ -570,7 +570,7 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     if (strlen($carriers_sh)>0) { 
         echo "  <tr class='no-ul' bgcolor=$carriers_color>\n";
         echo "    <td height=20 align=left colspan=10>\n";
-        echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
+        echo "      <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=$subheader_font_size> &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=3carrier&SUB=1\"> Show Carriers </a> &nbsp; &nbsp; &nbsp; \n";
         if ($SUB==4) {
             echo "        <a href=\"$PHP_SELF?ADD=3carrier&SUB=2&carrier_id=$carrier_id\"> Back to Carrier </a> &nbsp; &nbsp; &nbsp; \n";
@@ -593,7 +593,7 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     if (strlen($phones_sh) > 1) { 
         echo "  <tr class='no-ul' bgcolor=$phones_color>\n";
         echo "    <td height=20 align=left colspan=10>\n";
-        echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
+        echo "      <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=$subheader_font_size> &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=10000000000\"> Show Phones </a> &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=11111111111\"> Add A New Phone </a>\n";
         echo "      </font>\n";
@@ -607,7 +607,7 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     if (strlen($conference_sh) > 1) { 
         echo "  <tr class='no-ul' bgcolor=$conference_color>\n";
         echo "    <td height=20 align=left colspan=10>\n";
-        echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
+        echo "      <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=$subheader_font_size> &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=1000000000000\"> Show Conferences </a> &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=1111111111111\"> Add A New Conference </a> &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=10000000000000\"> Show $t1 Conferences </a> &nbsp; &nbsp; &nbsp; \n";
@@ -625,7 +625,7 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     if (strlen($company_sh) > 1) { 
         echo "  <tr class='no-ul' bgcolor=$server_color>\n";
         echo "    <td height=20 align=left colspan=10>\n";
-        echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
+        echo "      <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=$subheader_font_size> &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=10comp\"> Show Companies </a> &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=11comp\"> Add A New Company </a>\n";
         echo "      </font>\n";
@@ -640,7 +640,7 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     if (strlen($times_sh) > 1) { 
         echo "  <tr class='no-ul' bgcolor=$times_color>\n";
         echo "    <td height=20 align=left colspan=10>\n";
-        echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size> &nbsp; \n";
+        echo "      <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=$subheader_font_size> &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=100000000\"> Show Call Times </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=111111111\"> Add A New Call Time </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=1000000000\"> Show State Call Times </a> &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; \n";
@@ -656,7 +656,7 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     if (strlen($status_sh) > 1) { 
         echo "  <tr class='no-ul' bgcolor=$status_color>\n";
         echo "    <td height=20 align=left colspan=10>\n";
-        echo "      <font face=\"arial,helvetica\" color=$default_text size=$subheader_font_size>\n";
+        echo "      <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=$subheader_font_size>\n";
         echo "        <a href=\"$PHP_SELF?ADD=321111111111111\"> System Statuses </a> &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=331111111111111\"> Status Categories </a>\n";
         echo "      </font>\n";

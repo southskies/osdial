@@ -28,8 +28,9 @@
 
 if ($ADD==25)
 {
+	if ($LOGmodify_campaigns==1)
+	{
 	$status = eregi_replace("-----.*",'',$status);
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_lead_recycle where campaign_id='$campaign_id' and status='$status';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -60,8 +61,13 @@ if ($ADD==25)
 				}
 			}
 		}
-$SUB=25;
-$ADD=31;
+    $SUB=25;
+    $ADD=31;
+	}
+	else
+	{
+	echo "<font color=red>You do not have permission to view this page</font>\n";
+	}
 }
 
 
@@ -74,8 +80,6 @@ if ($ADD==45)
 {
 	if ($LOGmodify_campaigns==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) or ($attempt_delay < 120)  or ($attempt_maximum < 1) or ($attempt_maximum > 999) )
 		{
 		 echo "<br><font color=red>CAMPAIGN LEAD RECYCLE NOT MODIFIED - Please go back and look at the data you entered\n";
@@ -98,14 +102,13 @@ if ($ADD==45)
 			fclose($fp);
 			}
 		}
+    $SUB=25;
+    $ADD=31;	# go to campaign modification form below
 	}
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
-$SUB=25;
-$ADD=31;	# go to campaign modification form below
 }
 
 
@@ -117,8 +120,6 @@ if ($ADD==65)
 {
 	if ($LOGmodify_campaigns==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) )
 		{
 		 echo "<br><font color=red>CAMPAIGN LEAD RECYCLE NOT DELETED - Please go back and look at the data you entered\n";
@@ -141,14 +142,13 @@ if ($ADD==65)
 			fclose($fp);
 			}
 		}
+    $SUB=25;
+    $ADD=31;	# go to campaign modification form below
 	}
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
-$SUB=25;
-$ADD=31;	# go to campaign modification form below
 }
 
 
@@ -157,9 +157,6 @@ $ADD=31;	# go to campaign modification form below
 ######################
 if ($ADD==35)
 {
-echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 echo "<center><br><font color=$default_text size=+1>CAMPAIGN LEAD RECYCLES</font><br><br>\n";
 echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "  <tr class=tabheader>\n";

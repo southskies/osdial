@@ -29,10 +29,7 @@ if ($ADD==1121) {
 
         if (strlen($phone_number)<6) $phone_number=$old_phone;
 
-        echo "<table width=$section_width cellpadding='0' cellspacing='0' align='center'>\n";
-        echo "  <tr>\n";
-        echo "    <td align='center'>\n";
-        echo "      <font color=$default_text face=\"ARIAL,HELVETICA\" size='2'><center><br><font color=$default_text size=+1>LEAD MODIFICATION</font><br>\n";
+        echo "<center><br><font color=$default_text size=+1>LEAD MODIFICATION</font><br>\n";
         if ($LOG['view_lead_search']) echo "      <a target=\"_parent\" href=\"./admin.php?ADD=999999&SUB=27\">[ Basic Search ]</a>\n";
         echo "      &nbsp;&nbsp;|&nbsp;&nbsp;\n";
         if ($LOG['view_lead_search_advanced']) echo "      <a target=\"_parent\" href=\"./admin.php?ADD=999999&SUB=26\">[ Advanced Search ]</a>\n";
@@ -780,10 +777,6 @@ if ($ADD==1121) {
         $RUNtime = ($ENDtime - $STARTtime);
         echo "      <br>\n<br>\n<br>\n";
         echo "      <font size=0>\n<br>\n<br>\n<br>\nscript runtime: $RUNtime seconds</font>";
-        echo "    </font>\n";
-        echo "   </td>\n";
-        echo " </tr>\n";
-        echo "</table>\n";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }

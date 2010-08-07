@@ -113,8 +113,6 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8 && $LOGexport_leads > 0) {
 
 } elseif ($ADD==131 && $LOGuser_level > 8 && $LOGexport_leads > 0) {
 
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	echo "<center><br><font color=$default_text size=+1>LEAD EXPORT</font><br><br>\n";
 
 	if ($LOGmodify_lists==1) {

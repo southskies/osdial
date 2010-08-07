@@ -21,9 +21,6 @@
 #
  ?>
 
-<table align="center" width="100%">
-    <tr>
-        <td>
             <br />
             <br />
             <br />

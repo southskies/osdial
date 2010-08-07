@@ -27,9 +27,6 @@
 
 if ($ADD=="2ca") {
     if ($LOG['modify_campaigns'] == 1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
-        
         $cidfile_name='';
         if (isset($_FILES["cidfile"])) {
             $cidfile_name=$_FILES["cidfile"]['name'];
@@ -187,7 +184,6 @@ if ($ADD=="2ca") {
                     }
                 }
             }
-            echo "</font>\n";
             $SUB=2;
             $ADD="3ca";
         }
@@ -204,8 +200,6 @@ if ($ADD=="2ca") {
 
 if ($ADD=="4ca") {
     if ($LOG['modify_campaigns'] == 1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
         if (strlen($campaign_id) < 2 or strlen($areacode) != 3 or strlen($cid_number) != 10) {
             echo "<br><font color=red>CALLERID/AREACODE NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>areacode must be 3 characters in length: $areacode\n";
@@ -231,7 +225,6 @@ if ($ADD=="4ca") {
                 }
             }
         }
-        echo "</font>\n";
         $SUB=2;
         $ADD="3ca";    # go to campaign modification form below
     } else {
@@ -246,8 +239,6 @@ if ($ADD=="4ca") {
 
 if ($ADD == "5ca") {
     if ($LOG['modify_campaigns'] == 1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
         if (strlen($campaign_id) < 2) {
             echo "<br><font color=red>CALLERID/AREACODES NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>Campaign_id be at least 2 characters in length</font><br<\n";
@@ -255,7 +246,6 @@ if ($ADD == "5ca") {
             echo "<br><b><font color=$default_text>CALLERID/AREACODE DELETION CONFIRMATION: $campaign_id - $areacode</b>\n";
             echo "<br><br><a href=\"$PHP_SELF?ADD=6ca&campaign_id=$campaign_id&areacode=000&CoNfIrM=YES\">Click here to delete ALL CallerID/Areacode Mappings for $campaign_id</a></font><br><br><br>\n";
         }
-        echo "</font>\n";
         $SUB=2;
         $ADD="3ca";        # go to campaign modification below
     } else {
@@ -271,8 +261,6 @@ if ($ADD == "5ca") {
 
 if ($ADD=="6ca") {
     if ($LOG['modify_campaigns'] == 1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
         if (strlen($campaign_id) < 2 or strlen($areacode) < 1) {
             echo "<br><font color=red>CALLERID/AREACODE NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>areacode must be between 1 and 4 characters in length</font><br>\n";
@@ -306,8 +294,6 @@ if ($ADD=="6ca") {
 ######################
 if ($ADD == "3ca" and $SUB != 2) {
     if ($LOG['modify_campaigns'] == 1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
         echo "<center>\n";
         echo "  <br><font color=$default_text size=+1>CALLERID/AREACODES CAMPAIGNS</font><br><br>\n";
         echo "  <table width=$section_width cellspacing=0 cellpadding=1>\n";
@@ -344,8 +330,6 @@ if ($ADD == "3ca" and $SUB != 2) {
         echo "    </tr>\n";
         echo "  </table>\n";
         echo "</center>\n";
-
-        echo "</font>\n";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }
@@ -354,8 +338,6 @@ if ($ADD == "3ca" and $SUB != 2) {
 ##### CAMPAIGN CALLERID/AREACODES #####
 if ($ADD == "3ca" and $SUB == 2) {
     if ($LOG['modify_campaigns'] == 1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
         echo "<center>\n";
         echo "  <br><font color=$default_text size=+1>CALLERID/AREACODES FOR THIS CAMPAIGN</font><br>\n";
         #echo " &nbsp; $NWB#osdial_campaign_cid_areacodes$NWE</font><br>\n";
@@ -432,8 +414,6 @@ if ($ADD == "3ca" and $SUB == 2) {
         echo "</center>\n";
 
         echo "<br><br><a href=\"$PHP_SELF?ADD=5ca&campaign_id=$campaign_id\">DELETE ALL CALLERID/AREACODES FOR THIS CAMPAIGN</a>\n";
-
-        echo "</font>\n";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }

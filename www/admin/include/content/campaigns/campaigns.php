@@ -35,7 +35,6 @@
 
 if ($ADD==73) {
     if ($LOG['modify_campaigns']==1) {
-
         $stmt="SELECT dial_statuses,local_call_time,lead_filter_id from osdial_campaigns where campaign_id='$campaign_id';";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
@@ -90,9 +89,6 @@ if ($ADD==11)
 {
     if ($LOGmodify_campaigns==1)
     {
-    echo "<table align=center><tr><td>\n";
-    echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
     echo "<center><br><font color=$default_text size=+1>ADD A NEW CAMPAIGN</font><form action=$PHP_SELF method=POST><br><br>\n";
     echo "<input type=hidden name=DB value=$DB>\n";
     echo "<input type=hidden name=ADD value=21>\n";
@@ -159,9 +155,6 @@ if ($ADD==12)
 {
     if ($LOGmodify_campaigns==1)
     {
-    echo "<table align=center><tr><td>\n";
-    echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
     echo "<center><br><font color=$default_text size=+1>COPY A CAMPAIGN</font><form action=$PHP_SELF method=POST><br><br>\n";
     echo "<input type=hidden name=DB value=$DB>\n";
     echo "<input type=hidden name=ADD value=20>\n";
@@ -214,8 +207,6 @@ if ($ADD==12)
 
 if ($ADD==21)
 {
-
-    echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
     $precampaign_id = $campaign_id;
     if ($LOG['multicomp'] > 0) $precampaign_id = (($company_id * 1) + 100) . $campaign_id;
     $stmt="SELECT count(*) from osdial_campaigns where campaign_id='$precampaign_id';";
@@ -276,8 +267,6 @@ $ADD=31;
 
 if ($ADD==20)
 {
-
-    echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
     $precampaign_id = $campaign_id;
     if ($LOG['multicomp'] > 0) $precampaign_id = (($company_id * 1) + 100) . $campaign_id;
     $stmt="SELECT count(*) from osdial_campaigns where campaign_id='$precampaign_id';";
@@ -384,8 +373,6 @@ if ($ADD==41)
 {
     if ($LOGmodify_campaigns==1)
     {
-    echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
      if ( (strlen($campaign_name) < 6) or (strlen($active) < 1) )
         {
          echo "<br><font color=red>CAMPAIGN NOT MODIFIED - Please go back and look at the data you entered\n";
@@ -475,8 +462,6 @@ if ($ADD==44)
 {
     if ($LOGmodify_campaigns==1)
     {
-    echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
      if ( (strlen($campaign_name) < 6) or (strlen($active) < 1) )
         {
          echo "<br><font color=red>CAMPAIGN NOT MODIFIED - Please go back and look at the data you entered\n";
@@ -554,8 +539,6 @@ if ($ADD==44)
 
 if ($ADD==51)
 {
-    echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
      if ( (strlen($campaign_id) < 2) or ($LOGdelete_campaigns < 1) )
         {
          echo "<br><font color=red>CAMPAIGN NOT DELETED - Please go back and look at the data you entered\n";
@@ -576,8 +559,6 @@ $ADD='31';        # go to campaign modification below
 
 if ($ADD==52)
 {
-    echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
      if (strlen($campaign_id) < 2)
         {
          echo "<br><font color=red>AGENTS NOT LOGGED OUT OF CAMPAIGN - Please go back and look at the data you entered\n";
@@ -600,7 +581,6 @@ if ($ADD==53)
 {
     if (eregi('IN',$stage))
         {$group_id=$campaign_id;}
-    echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
      if (strlen($campaign_id) < 2)
         {
@@ -627,8 +607,6 @@ else
 
 if ($ADD==61)
 {
-    echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
      if ( ( strlen($campaign_id) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_campaigns < 1) )
         {
          echo "<br><font color=red>CAMPAIGN NOT DELETED - Please go back and look at the data you entered\n";
@@ -710,8 +688,6 @@ if ($ADD==62)
 {
     if ($LOGmodify_campaigns==1)
     {
-    echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
      if (strlen($campaign_id) < 2)
         {
          echo "<br><font color=red>AGENTS NOT LOGGED OUT OF CAMPAIGN - Please go back and look at the data you entered\n";
@@ -751,7 +727,6 @@ if ($ADD==63)
     {
     if (eregi('IN',$stage))
         {$group_id=$campaign_id;}
-    echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
      if (strlen($campaign_id) < 2)
         {
@@ -997,9 +972,6 @@ if ($ADD==31) {
         } else {
             $Xgroups_menu .= "<option value=\"---NONE---\">---NONE---</option>\n";
         }
-
-        echo "<table align=center><tr><td>\n";
-        echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
         echo "<center>\n";
 
@@ -1830,8 +1802,6 @@ if ($ADD==34)
 
     if ($SUB < 1)
         {
-        echo "<table align=center><tr><td>\n";
-        echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         echo "<center><br><font color=$default_text size=+1>MODIFY CAMPAIGN</font></center>\n";
         echo "<form action=$PHP_SELF method=POST>\n";
         echo "<input type=hidden name=DB value=$DB>\n";
@@ -2307,8 +2277,6 @@ if ( ($ADD==34) or ($ADD==31) ) {
 # ADD=30 campaign not allowed
 ######################
 if ($ADD==30) {
-    echo "<table><tr><td>\n";
-    echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
     echo "<font color=red>You do not have permission to view campaign $campaign_id</font>\n";
 }
 
@@ -2334,8 +2302,6 @@ if ($ADD==81) {
     }
     $CBinactiveLINK = "<br><a href=\"$PHP_SELF?ADD=81&SUB=89&campaign_id=$campaign_id\"><font color=$default_text>Remove LIVE Callbacks older than one month for this campaign</font></a><br><a href=\"$PHP_SELF?ADD=81&SUB=899&campaign_id=$campaign_id\"><font color=$default_text>Remove LIVE Callbacks older than one week for this campaign</font></a><br>";
 
-    echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
     $CBquerySQLwhere = "and campaign_id='$campaign_id'";
 
     echo "<br><br><center><font color=$default_text size=4>CAMPAIGN CALLBACK HOLD LISTINGS: $campaign_id</font></center>\n";
@@ -2349,8 +2315,6 @@ if ($ADD==81) {
 ######################
 if ($ADD==10)
 {
-echo "<table align=center><tr><td>\n";
-    echo "<font face=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 $let = get_variable('let');
 $letSQL = '';

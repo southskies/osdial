@@ -27,7 +27,6 @@
 ######################
 if ($ADD == "1form") {
     if ($LOGmodify_campaigns == 1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         if (($form_id != 'NEW') or (strlen($form_name) < 1) or (strlen($form_description) < 1) or ($form_priority < 1) or (eregi('[^a-z0-9]',$form_name))) {
             echo "<br><font color=red>FORM NOT CREATED - Please go back and look at the data you entered\n";
             echo "<br>name must be between 1 and 15 characters in length, A-Z, no spaces.\n";
@@ -74,8 +73,6 @@ if ($ADD == "1form") {
 ######################
 if ($ADD == "2form") {
     if ($LOGmodify_campaigns == 1) {
-        echo "<TABLE align=center><TR><TD>\n";
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         echo "<center><br><font color=$default_text size=+1>ADDITIONAL FORM</font><br><br>\n";
 
         $pri = 0;
@@ -132,6 +129,7 @@ if ($ADD == "2form") {
         echo "</table>\n";
 
         echo "</form>";
+        echo "</center>";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }
@@ -144,7 +142,6 @@ if ($ADD == "2form") {
 ######################
 if ($ADD == "2fields") {
     if ($LOGmodify_campaigns == 1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         if ((strlen($field_name) < 1) or (strlen($field_description) < 1) or ($field_length > 22) or ($field_priority < 1) or (eregi('[^a-z0-9]',$field_name))) {
             echo "<br><font color=red>FIELD NOT ADDED - Please go back and look at the data you entered\n";
             echo "<br>name must be between 1 and 15 characters in length, A-Z, no spaces.\n";
@@ -177,7 +174,6 @@ if ($ADD == "2fields") {
 ######################
 if ($ADD == "4form") {
     if ($LOGmodify_campaigns == 1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         $frm = get_first_record($link, 'osdial_campaign_forms', '*', sprintf('id=%s', mres($form_id)));
         if ($LOG['allowed_campaignsALL'] < 1 and $frm['campaigns'] != $LOG['user_group']) {
             echo "<br><font color=red>FORM NOT MODIFIED - These Forms / Fields belong to ALL campaigns.\n";
@@ -216,7 +212,6 @@ if ($ADD == "4form") {
 ######################
 if ($ADD == "4fields") {
     if ($LOGmodify_campaigns == 1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         $fld = get_first_record($link, 'osdial_campaign_fields', '*', sprintf('id=%s', mres($field_id)));
         $frm = get_first_record($link, 'osdial_campaign_forms', '*', sprintf('id=%s', mres($fld['form_id'])));
         if ($LOG['allowed_campaignsALL'] < 1 and $frm['campaigns'] != $LOG['user_group']) {
@@ -255,7 +250,6 @@ if ($ADD == "4fields") {
 if ($ADD == "6form") {
     if ($LOGmodify_campaigns == 1) {
         $SUB = "";
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         $frm = get_first_record($link, 'osdial_campaign_forms', '*', sprintf('id=%s', mres($form_id)));
         if ($LOG['allowed_campaignsALL'] < 1 and $frm['campaigns'] != $LOG['user_group']) {
             echo "<br><font color=red>FORM NOT DELETE - These Forms / Fields belong to ALL campaigns.\n";
@@ -288,7 +282,6 @@ if ($ADD == "6form") {
 ######################
 if ($ADD == "6fields") {
     if ($LOGmodify_campaigns == 1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         $fld = get_first_record($link, 'osdial_campaign_fields', '*', sprintf('id=%s', mres($field_id)));
         $frm = get_first_record($link, 'osdial_campaign_forms', '*', sprintf('id=%s', mres($fld['form_id'])));
         if ($LOG['allowed_campaignsALL'] < 1 and $frm['campaigns'] != $LOG['user_group']) {
@@ -320,8 +313,6 @@ if ($ADD == "6fields") {
 # ADD=35 display all campaign forms
 ######################
 if ($ADD == "3fields" and $SUB != '2fields') {
-    echo "<TABLE align=center><TR><TD>\n";
-    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
     echo "<center><br><font color=$default_text size=+1>ADDITIONAL FORMS & FIELDS</font><br><br>\n";
 
     echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
@@ -362,8 +353,6 @@ if ($ADD == "3fields" and $SUB != '2fields') {
 # ADD=35 display all campaign form & fields
 ######################
 if ($ADD == "3fields" and $SUB == '2fields') {
-    echo "<TABLE align=center><TR><TD>\n";
-    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
     echo "<center><br><font color=$default_text size=+1>ADDITIONAL FORM</font><br><br>\n";
 
     $form = get_first_record($link, 'osdial_campaign_forms', '*', 'id=' . $id);

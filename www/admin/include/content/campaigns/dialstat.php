@@ -29,7 +29,6 @@
 if ($ADD==28)
 {
 	$status = eregi_replace("-----.*",'',$status);
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id' and dial_statuses LIKE \"% $status %\";";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -78,7 +77,6 @@ if ($ADD==68)
 {
 	if ($LOGmodify_campaigns==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id' and dial_statuses LIKE \"% $status %\";";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -112,14 +110,13 @@ if ($ADD==68)
 				}
 			}
 		}
+    #$SUB=28;
+    $ADD=31;	# go to campaign modification form below
 	}
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
-#$SUB=28;
-$ADD=31;	# go to campaign modification form below
 }
 
 

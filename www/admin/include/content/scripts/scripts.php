@@ -283,10 +283,6 @@ $script_text = preg_replace('/\[\[(\w+)\]\]/imU','<input type="text" value="$1" 
 
 $script_text = eregi_replace("\n","",$script_text);
 
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 echo "Preview Script: $script_id<BR>\n";
 echo "<center>";
@@ -316,8 +312,6 @@ if ($ADD==1111111)
 {
 	if ($LOGmodify_scripts==1)
 	{
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 ?>
 
 <script type="text/javascript" src="/tiny_mce/tiny_mce.js"></script>
@@ -511,7 +505,6 @@ tinyMCE.init({
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 
@@ -522,7 +515,6 @@ tinyMCE.init({
 
 if ($ADD==2111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
     $prescript_id = $script_id;
     if ($LOG['multicomp'] > 0) $prescript_id = (($company_id * 1) + 100) . $script_id;
 	$stmt="SELECT count(*) from osdial_scripts where script_id='$prescript_id';";
@@ -564,8 +556,6 @@ $ADD=1000000;
 
 if ($ADD==4111111) {
 	if ($LOGmodify_scripts==1) {
-	    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
         if ( (strlen($script_id) < 2) or (strlen($script_name) < 2) or (strlen($script_text) < 2) ) {
             echo "<br><font color=red>SCRIPT NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>Script name, description and text must be at least 2 characters in length</font><br>\n";
@@ -590,11 +580,10 @@ if ($ADD==4111111) {
 			    fclose($fp);
 		    }
 	    }
+    $ADD=3111111;	# go to script modification form below
     } else {
 	    echo "<font color=red>You do not have permission to view this page</font>\n";
-	    exit;
     }
-    $ADD=3111111;	# go to script modification form below
 }
 
 
@@ -604,8 +593,6 @@ if ($ADD==4111111) {
 ######################
 
 if ($ADD==5111111) {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($script_id) < 2) or ($LOGdelete_scripts < 1) ) {
 		 echo "<br><font color=red>SCRIPT NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Script_id must be at least 2 characters in length</font>\n";
@@ -628,8 +615,6 @@ if ($ADD==5111111) {
 ######################
 
 if ($ADD==6111111) {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
     $ADD='1000000';		# go to script list
 	 if ( (strlen($script_id) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_scripts < 1) ) {
 		 echo "<br><font color=red>SCRIPT NOT DELETED - Please go back and look at the data you entered\n";
@@ -883,8 +868,6 @@ tinyMCE.init({
 </script>
 
 <?
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
     if ($SUB == "--NEW--") {
         $stmt="SELECT count(*) from osdial_script_buttons where script_id='$script_id' and script_button_id='$script_button_id';";
@@ -942,8 +925,6 @@ tinyMCE.init({
     }
 
     $script_text = eregi_replace("\n","",$script_text);
-
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 	echo "<center><br><font color=$default_text size=+1>MODIFY A $stypec</font><form name=scriptForm action=$PHP_SELF method=POST><br>\n";
 	echo "<input type=hidden name=ADD value=4111111>\n";
@@ -1020,7 +1001,6 @@ tinyMCE.init({
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 
@@ -1030,9 +1010,6 @@ tinyMCE.init({
 ######################
 if ($ADD==1000000)
 {
-echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$stmt=sprintf("SELECT * FROM osdial_scripts WHERE script_id LIKE '%s__%%' AND script_id IN %s ORDER BY script_id;",$LOG['company_prefix'],$LOG['allowed_scriptsSQL']);
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);

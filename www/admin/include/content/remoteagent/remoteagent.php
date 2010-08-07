@@ -32,9 +32,6 @@ if ($ADD==11111)
 	if ($LOGmodify_remoteagents==1)
 	{
     $servers_list = get_servers($link, $server_ip);
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	echo "<center><br><font color=$default_text size=+1>ADD NEW EXTERNAL AGENTS</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -58,7 +55,6 @@ if ($ADD==11111)
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 
@@ -69,7 +65,6 @@ if ($ADD==11111)
 
 if ($ADD==21111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_remote_agents where server_ip='$server_ip' and user_start='$user_start';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -110,8 +105,6 @@ if ($ADD==41111)
 {
 	if ($LOGmodify_remoteagents==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($server_ip) < 2) or (strlen($user_start) < 2)  or (strlen($campaign_id) < 2) or (strlen($conf_exten) < 2) )
 		{
 		 echo "<br><font color=red>REMOTE AGENTS NOT MODIFIED - Please go back and look at the data you entered\n";
@@ -132,13 +125,12 @@ if ($ADD==41111)
 			fclose($fp);
 			}
 		}
+    $ADD=31111;	# go to remote agents modification form below
 	}
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
-$ADD=31111;	# go to remote agents modification form below
 }
 
 
@@ -148,8 +140,6 @@ $ADD=31111;	# go to remote agents modification form below
 
 if ($ADD==51111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($remote_agent_id) < 1) or ($LOGdelete_remote_agents < 1) )
 		{
 		 echo "<br><font color=red>REMOTE AGENT NOT DELETED - Please go back and look at the data you entered\n";
@@ -171,8 +161,6 @@ $ADD='31111';		# go to remote agent modification below
 
 if ($ADD==61111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($remote_agent_id) < 1) or ($CoNfIrM != 'YES') or ($LOGdelete_remote_agents < 1) )
 		{
 		 echo "<br><font color=red>REMOTE AGENT NOT DELETED - Please go back and look at the data you entered\n";
@@ -206,9 +194,6 @@ if ($ADD==31111)
 {
 	if ($LOGmodify_remoteagents==1)
 	{
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$stmt="SELECT * from osdial_remote_agents where remote_agent_id='$remote_agent_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -256,7 +241,6 @@ if ($ADD==31111)
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 
@@ -266,9 +250,6 @@ if ($ADD==31111)
 ######################
 if ($ADD==10000)
 {
-echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$stmt="SELECT * from osdial_remote_agents order by server_ip,campaign_id,user_start";
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);

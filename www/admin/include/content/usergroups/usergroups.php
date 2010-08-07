@@ -27,8 +27,6 @@
 
 if ($ADD==111111) {
     if ($LOG['modify_usergroups'] == 1 and $LOG['allowed_campaignsALL'] > 0) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
         echo "<center>\n";
         echo "  <br><font color=$default_text size=+1>ADD NEW AGENTS GROUP</font><br><br>\n";
         echo "  <form action=$PHP_SELF method=POST>\n";
@@ -58,8 +56,6 @@ if ($ADD==111111) {
         echo "  </table>\n";
         echo "  </form>\n";
         echo "</center>\n";
-
-        echo "</font>\n";
     } elseif ($LOG['allowed_campaignsALL'] < 1) {
         echo "<br><font color=red>USER GROUP NOT MODIFIED - You may only view your User Group resources.</font><br>\n";
     } else {
@@ -73,8 +69,6 @@ if ($ADD==111111) {
 ######################
 
 if ($ADD==211111) {
-    echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
     $preuser_group = $user_group;
     if ($LOG['multicomp'] > 0) $preuser_group = (($company_id * 1) + 100) . $user_group;
     $stmt="SELECT count(*) FROM osdial_user_groups WHERE user_group='$preuser_group';";
@@ -104,8 +98,6 @@ if ($ADD==211111) {
             }
         }
     }
-
-    echo "</font>\n";
     $ADD=100000;
 }
 
@@ -116,8 +108,6 @@ if ($ADD==211111) {
 
 if ($ADD==411111) {
     if ($LOG['modify_usergroups'] == 1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
         $preuser_group = $user_group;
         if ($LOG['multicomp'] > 0) $preuser_group = (($company_id * 1) + 100) . $user_group;
 
@@ -184,7 +174,6 @@ if ($ADD==411111) {
                 fclose($fp);
             }
         }
-        echo "</font>\n";
         $ADD=311111;    # go to user group modification form below
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
@@ -196,8 +185,6 @@ if ($ADD==411111) {
 ######################
 
 if ($ADD==511111) {
-    echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
     if ($LOG['allowed_campaignsALL'] < 1) {
         echo "<br><font color=red>USER GROUP NOT DELETED - You may only view your User Group resources.</font><br>\n";
     } elseif ( (strlen($user_group) < 2) or ($LOGdelete_user_groups < 1) ) {
@@ -207,8 +194,6 @@ if ($ADD==511111) {
         echo "<br><b><font color=$default_text>USER GROUP DELETION CONFIRMATION: $user_group</b>\n";
         echo "<br><br><a href=\"$PHP_SELF?ADD=611111&user_group=$user_group&CoNfIrM=YES\">Click here to delete user group $user_group</a></font><br><br><br>\n";
     }
-
-    echo "</font>\n";
     $ADD='311111';        # go to user group modification below
 }
 
@@ -217,8 +202,6 @@ if ($ADD==511111) {
 ######################
 
 if ($ADD==611111) {
-    echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
     if ($LOG['allowed_campaignsALL'] < 1) {
         echo "<br><font color=red>USER GROUP NOT DELETED - You may only view your User Group resources.</font><br>\n";
     } elseif ( (strlen($user_group) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_user_groups < 1) ) {
@@ -237,8 +220,6 @@ if ($ADD==611111) {
         echo "<br><b><font color=$default_text>USER GROUP DELETION COMPLETED: $user_group</font></b>\n";
         echo "<br><br>\n";
     }
-
-    echo "</font>\n";
     $ADD='100000';        # go to user group list
 }
 
@@ -248,7 +229,6 @@ if ($ADD==611111) {
 
 if ($ADD==311111) {
     if ($LOG['modify_usergroups'] == 1) {
-
         $stmt = sprintf("SELECT * FROM osdial_user_groups WHERE user_group IN %s AND user_group='%s';",$LOG['allowed_usergroupsSQL'],$user_group);
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
@@ -289,7 +269,6 @@ if ($ADD==311111) {
         $allowed_scripts = $row[35];
         $allowed_email_templates = $row[36];
 
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
         echo "<center>\n";
         echo "  <br><font color=$default_text size=+1>MODIFY A USER GROUP</font><br><br>\n";
         echo "  <form action=$PHP_SELF method=POST>\n";
@@ -762,8 +741,6 @@ if ($ADD==311111) {
             echo "<br><br><br><br>\n";
             echo "<a href=\"$PHP_SELF?ADD=511111&user_group=$user_group\">DELETE THIS USER GROUP</a>\n";
         }
-
-        echo "</font>\n";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }
@@ -773,7 +750,6 @@ if ($ADD==311111) {
 # ADD=8111 find all callbacks on hold within a user group
 ######################
 if ($ADD==8111) {
-    echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>";
     if ($LOG['modify_usergroups'] == 1) {
         if ($SUB == 89) {
             $stmt="UPDATE osdial_callbacks SET status='INACTIVE' WHERE user_group='$user_group' AND status='LIVE' AND callback_time<'$past_month_date';";
@@ -792,8 +768,6 @@ if ($ADD==8111) {
     $CBquerySQLwhere = "AND user_group='$user_group'";
 
     echo "<br>USER GROUP CALLBACK HOLD LISTINGS: $list_id\n";
-
-    echo "</font>\n";
     $oldADD = "ADD=8111&user_group=$user_group";
     $ADD='82';
 }
@@ -802,8 +776,6 @@ if ($ADD==8111) {
 # ADD=100000 display all user groups
 ######################
 if ($ADD==100000) {
-    echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
     $stmt=sprintf("SELECT * FROM osdial_user_groups WHERE user_group IN %s ORDER BY user_group", $LOG['allowed_usergroupsSQL']);
     $rslt=mysql_query($stmt, $link);
     $people_to_print = mysql_num_rows($rslt);
@@ -833,8 +805,6 @@ if ($ADD==100000) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</center>\n";
-
-    echo "</font>\n";
 }
 
 

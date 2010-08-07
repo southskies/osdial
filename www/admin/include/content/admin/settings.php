@@ -23,9 +23,7 @@
 if ($ADD==411111111111111) {
     if ($LOGmodify_servers==1) {
         # Header
-        echo "<font face=\"arial,helvetica\" color=$default_text size=2><br>\n";
         echo "  <font color=$default_text>SYSTEM SETTINGS MODIFIED</font>\n";
-        echo "</font>\n";
 
         # Prepare with sprintf and filer ALL values wih mres as seen.
         $stmt = sprintf("UPDATE system_settings SET use_non_latin='%s',webroot_writable='%s',enable_queuemetrics_logging='%s',queuemetrics_server_ip='%s',queuemetrics_dbname='%s'," .
@@ -61,10 +59,7 @@ if ($ADD==311111111111111) {
     if ($LOGmodify_servers==1) {
         $system_settings = get_first_record($link, 'system_settings', '*', '');
         # The Main System Settings Form.
-        echo "<table width=$section_width cellspacing=0 cellpadding=0 align=center>\n";
-        echo "  <tr>\n";
-        echo "    <td>\n";
-        echo "      <font face=\"arial,helvetica\" color=$default_text size=2><center><br>\n";
+        echo "      <center><br>\n";
         echo "      <font color=$default_text size=+1>MODIFY SYSTEM SETTINGS</font>\n";
         echo "      <form action=$PHP_SELF method=POST><br>\n";
         echo "      <input type=hidden name=ADD value=411111111111111>\n";
@@ -322,10 +317,6 @@ if ($ADD==311111111111111) {
         echo "      </table>\n";
         echo "      </form>\n";
         echo "      </center>\n";
-        echo "      </font>\n";
-        echo "    </td>\n";
-        echo "  </tr>\n";
-        echo "</table>\n";
 
     } else {
         echo "<center><font color=red>You do not have permission to view this page</font></center>\n";

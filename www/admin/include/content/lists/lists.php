@@ -70,9 +70,6 @@ if ($ADD==111) {
 
 if ($ADD==121) {
 	if ($LOGmodify_lists==1)	{
-        echo "<TABLE align=center><TR><TD align=center>\n";
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
         if (strlen($phone_number) > 2) {
             $dncs=0;
             $dncc=0;
@@ -142,7 +139,6 @@ if ($ADD==121) {
 ######################
 if ($ADD==125) {
 	if ($LOGmodify_lists==1)	{
-		echo "<TABLE align=center><TR><TD>\n";
 		echo "<center><br><font color=$default_text size='2'>GENERATE TEST LEADS</font><br>(ONLY works with TEST list 998.)<form action=$PHP_SELF method=POST><br><br>\n";
 		echo "<input type=hidden name=ADD value=126>\n";
 		echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -186,7 +182,6 @@ if ($ADD==126) {
 
 if ($ADD==211) {
 	if ($LOGmodify_lists==1)	{
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         $stmt="SELECT count(*) from osdial_lists where list_id='$list_id';";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
@@ -227,8 +222,6 @@ if ($ADD==211) {
 
 if ($ADD==411) {
     if ($LOGmodify_lists==1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
         if ( (strlen($list_name) < 2) or (strlen($campaign_id) < 2) ) {
             echo "<br><font color=red>LIST NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>list name must be at least 2 characters in length</font><br>\n";
@@ -276,8 +269,6 @@ if ($ADD==411) {
 
 if ($ADD==511) {
     if ($LOGmodify_lists==1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>";
-
         if ( (strlen($list_id) < 2) or ($LOGdelete_lists < 1) ) {
             echo "<br><font color=red>LIST NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>List_id be at least 2 characters in length</font>\n";
@@ -302,8 +293,6 @@ if ($ADD==511) {
 
 if ($ADD==611) {
     if ($LOGmodify_lists==1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text SIZE=2>";
-
         if ( ( strlen($list_id) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_lists < 1) ) {
             echo "<br><font color=red>LIST NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>List_id be at least 2 characters in length</font><br>\n";
@@ -342,9 +331,6 @@ if ($ADD==611) {
 
 if ($ADD==311) {
     if ($LOGmodify_lists==1) {
-        echo "<TABLE align=center><TR><TD>\n";
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
         $stmt="SELECT * from osdial_lists where list_id='$list_id';";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
@@ -862,8 +848,6 @@ if ($ADD==811) {
 	}
     $CBinactiveLINK = "<BR><a href=\"$PHP_SELF?ADD=811&SUB=89&list_id=$list_id\"><font color=$default_text>Remove LIVE Callbacks older than one month for this list</font></a><BR><a href=\"$PHP_SELF?ADD=811&SUB=899&list_id=$list_id\"><font color=$default_text>Remove LIVE Callbacks older than one week for this list</font></a><BR>";
 
-    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$CBquerySQLwhere = "and list_id='$list_id'";
 
     echo "<center><br><br><font size=4 color=$default_text>LIST CALLBACK HOLD LISTINGS: $list_id<br><br></font></center>\n";
@@ -934,9 +918,6 @@ if ($ADD==82) {
 # ADD=100 display all lists
 ######################
 if ($ADD==100) {
-    echo "<TABLE align=center><TR><TD>\n";
-    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
     $camp = get_variable('camp');
     $campSQL = '';
     if ($camp != '') $campSQL = "AND campaign_id='$camp'";

@@ -38,7 +38,6 @@ if ($campaign_id != '') {
 ######################
 if ($ADD == "1menu") {
     if ($LOGmodify_campaigns == 1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         $oivr_id = 0;
         $oivr = get_first_record($link, 'osdial_ivr', '*', "campaign_id='" . $campaign_id . "'");
         if ($oivr['campaign_id'] != "") {
@@ -62,7 +61,6 @@ if ($ADD == "1menu") {
         }
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
-        exit;
     }
 }
 
@@ -114,7 +112,6 @@ if ($ADD == "1keys" or $ADD == '4keys') {
 ######################
 if ($ADD == "1keys") {
     if ($LOGmodify_campaigns == 1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         if (($oivr_id == 0) or (strlen($oivr_opt_keypress) < 1) or (strlen($oivr_opt_action) < 1) or (strlen($oivr_opt_action_data) < 1)) {
             echo "<br><font color=red>KEY NOT CREATED - Please go back and look at the data you entered\n";
             $ADD = "2keys";
@@ -134,7 +131,6 @@ if ($ADD == "1keys") {
         }
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
-        exit;
     }
 }
 
@@ -143,14 +139,11 @@ if ($ADD == "1keys") {
 # ADD=2keys add a new key
 ######################
 if ($ADD == "2keys" and ($oivr_opt_keypress == '' or $oivr_opt_action == '')) {
-    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
     echo "<center><br><font color=$default_text size=+1>YOU MUST SELECT A KEYPRESS AND AN ACTION</font><br><br>\n";
     $ADD = '3menu';
     $SUB = '2keys';
 }
 if ($ADD == "2keys") {
-    echo "<TABLE align=center><TR><TD>\n";
-    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
     echo "<center><br><font color=$default_text size=+1>NEW KEYPRESS ACTION</font><br><br>\n";
 
     echo '<form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
@@ -520,7 +513,6 @@ if ($ADD == "2keys") {
 ######################
 if ($ADD == "4menu") {
     if ($LOGmodify_campaigns == 1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         if (($oivr_id < 1) or ($oivr_repeat_loops < 1) or ($oivr_wait_loops < 1) or ($oivr_wait_timeout < 1)) {
             echo "<br><font color=red>IVR NOT MODIFIED - Please go back and look at the data you entered\n";
         } else {
@@ -627,13 +619,12 @@ if ($ADD == "4menu") {
                 fclose($fp);
             }
         }
+        $id = $form_id;
+        $SUB = "2keys";
+        $ADD = "3menu"; # go to campaign modification form below
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
-        exit;
     }
-    $id = $form_id;
-    $SUB = "2keys";
-    $ADD = "3menu"; # go to campaign modification form below
 }
 
 ######################
@@ -641,7 +632,6 @@ if ($ADD == "4menu") {
 ######################
 if ($ADD == "4keys") {
     if ($LOGmodify_campaigns == 1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         if (($oivr_opt_id == 0) or (strlen($oivr_opt_keypress) < 1)) {
             echo $oivr_opt_id . '/' . $oivr_opt_keypress;
             echo "<br><font color=red>KEY NOT MODIFIED - Please go back and look at the data you entered\n";
@@ -657,14 +647,13 @@ if ($ADD == "4keys") {
                 fclose($fp);
             }
         }
+        $id = $form_id;
+        #$SUB = "2fields";
+        #$ADD = "3menu";
+        $ADD = "3keys";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
-        exit;
     }
-    $id = $form_id;
-    #$SUB = "2fields";
-    #$ADD = "3menu";
-    $ADD = "3keys";
 }
 
 
@@ -673,7 +662,6 @@ if ($ADD == "4keys") {
 ######################
 if ($ADD == "6keys") {
     if ($LOGmodify_campaigns == 1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
         if ($oivr_opt_id < 1) {
             echo "<br><font color=red>KEYPRESS NOT DELETED - Could not find field id!\n";
         } else {
@@ -687,13 +675,12 @@ if ($ADD == "6keys") {
                 fclose($fp);
             }
         }
+        $id = $form_id;
+        $SUB = "2keys";
+        $ADD = "3menu"; # go to campaign modification form below
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
-        exit;
     }
-    $id = $form_id;
-    $SUB = "2keys";
-    $ADD = "3menu"; # go to campaign modification form below
 }
 
 
@@ -701,8 +688,6 @@ if ($ADD == "6keys") {
 # ADD=35 display campaign ivr menu & keys
 ######################
 if ($ADD == "3menu") {
-    echo "<TABLE align=center><TR><TD>\n";
-    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
     echo "<center><br><font color=$default_text size=+1>INBOUND/OUTBOUND IVR</font><br><br>\n";
 
     $oivr = get_first_record($link, 'osdial_ivr', '*', "campaign_id='" . $campaign_id . "'");
@@ -905,8 +890,6 @@ if ($ADD == "3menu") {
 ######################
 if ($ADD == "3keys") {
     $opt = get_first_record($link, 'osdial_ivr_options', '*', "id='" . $oivr_opt_id . "'");
-    echo "<TABLE align=center><TR><TD>\n";
-    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
     echo "<center><br><font color=$default_text size=+1>MODIFY KEYPRESS ACTION</font><br><br>\n";
 
     echo '<form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';

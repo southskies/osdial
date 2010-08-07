@@ -161,7 +161,6 @@ if ($ADD=="7email") {
     $et_text = eregi_replace("\n","",$et_text);
 
     echo "<table align=center><tr><td>\n";
-    echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
 
     echo "Preview Email: $et[et_id]<br>\n";
     echo "<center>\n";
@@ -179,7 +178,6 @@ if ($ADD=="7email") {
     echo "</table>\n";
     echo "</center>\n";
 
-    echo "</font>\n";
     echo "</td></tr></table>\n";
 
 }
@@ -192,8 +190,6 @@ if ($ADD=="7email") {
 
 if ($ADD=="1email") {
     if ($LOG['modify_scripts']==1) {
-        echo "<table align=center><tr><td>\n";
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
 ?>
 
 <script type="text/javascript" src="/tiny_mce/tiny_mce.js"></script>
@@ -421,9 +417,6 @@ tinyMCE.init({
         echo "</table>\n";
         echo "</form>\n";
         echo "</center>\n";
-
-        echo "</font>\n";
-        echo "</table>\n";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }
@@ -436,7 +429,6 @@ tinyMCE.init({
 
 if ($ADD=="2email") {
     if ($LOG['modify_scripts']==1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
         $preet_id = $et_id;
         if ($LOG['multicomp'] > 0) $preet_id = (($company_id * 1) + 100) . $et_id;
         $stmt="SELECT count(*) from osdial_email_templates where et_id='$preet_id';";
@@ -463,7 +455,6 @@ if ($ADD=="2email") {
                 }
             }
         }
-        echo "</font>\n";
         $ADD="0email";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
@@ -477,7 +468,6 @@ if ($ADD=="2email") {
 
 if ($ADD=="4email") {
     if ($LOG['modify_scripts']==1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
 
         if (strlen($et_id) < 2 or strlen($et_name) < 2 or strlen($et_body_html) < 2) {
             echo "<br><font color=red>TEMPLATE NOT MODIFIED - Please go back and look at the data you entered\n";
@@ -629,7 +619,6 @@ if ($ADD=="4email") {
                 fclose($fp);
             }
         }
-        echo "</font>\n";
         $ADD="3email";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
@@ -644,7 +633,6 @@ if ($ADD=="4email") {
 
 if ($ADD=="5email") {
     if ($LOG['delete_scripts']==1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
 
         if (strlen($et_id) < 2) {
             echo "<br><font color=red>TEMPLATE NOT DELETED - Please go back and look at the data you entered\n";
@@ -653,7 +641,6 @@ if ($ADD=="5email") {
             echo "<br><b><font color=$default_text>TEMPLATE DELETION CONFIRMATION: $et_id</b>\n";
             echo "<br><br><a href=\"$PHP_SELF?ADD=6email&et_id=$et_id&CoNfIrM=YES\">Click here to delete template $et_id</a></font><br><br><br>\n";
         }
-        echo "</font>\n";
         $ADD="3email";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
@@ -668,7 +655,6 @@ if ($ADD=="5email") {
 
 if ($ADD=="6email") {
     if ($LOG['delete_scripts']==1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
 
         if (strlen($et_id) < 2 or $CoNfIrM != 'YES') {
             echo "<br><font color=red>TEMPLATE NOT DELETED - Please go back and look at the data you entered\n";
@@ -685,7 +671,6 @@ if ($ADD=="6email") {
             }
             echo "<br><b><font color=$default_text>TEMPLATE DELETION COMPLETED: $et_id</font></b><br><br>\n";
         }
-        echo "</font>\n";
         $ADD="0email";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
@@ -833,9 +818,6 @@ tinyMCE.init({
 </script>
 
 <?
-        echo "<table align=center><tr><td>\n";
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
         $et = get_first_record($link, 'osdial_email_templates', '*', sprintf("et_id='%s'",mres($et_id)) );
         $rslt=mysql_query($stmt, $link);
 
@@ -943,9 +925,6 @@ tinyMCE.init({
             echo "\">DELETE THIS TEMPLATE</a></center>\n";
         }
 
-        echo "</font>\n";
-        echo "</table>\n";
-
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }
@@ -956,9 +935,6 @@ tinyMCE.init({
 # ADD=0email display all email templates
 ######################
 if ($ADD=="0email") {
-    echo "<table align=center><tr><td>\n";
-    echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
     $stmt=sprintf("SELECT * FROM osdial_email_templates WHERE et_id LIKE '%s__%%' AND (et_id IN %s OR et_id='%s') ORDER BY et_id;",$LOG['company_prefix'],$LOG['allowed_email_templatesSQL'],mres($et_id));
     $rslt=mysql_query($stmt, $link);
     $people_to_print = mysql_num_rows($rslt);
@@ -987,9 +963,6 @@ if ($ADD=="0email") {
     echo "  </tr>\n";
     echo "</table>\n";
     echo "</center>\n";
-
-    echo "</font>\n";
-    echo "</table>\n";
 }
 
 ?>

@@ -25,9 +25,6 @@ if ($ADD==122) {
     @apache_setenv('no-gzip', 1);
     @ini_set('zlib.output_compression', 0);
 	
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-	
 	echo "<center><br><font color=$default_text size=+1>LOAD NEW LEADS</font><br><hr><br>\n";
 	
 	$leadfile=$_FILES["leadfile"];
@@ -75,12 +72,12 @@ if ($ADD==122) {
         if ($phone_code_override == "") $phone_code_override = "1";
         echo "	        <table align=center width=\"700\" border=0 cellpadding=5 cellspacing=0 bgcolor=$oddrows>\n";
         echo "              <tr>\n";
-        echo "                  <td align=right width=\"35%\"><B><font face=\"arial, helvetica\" size=2>Load leads from this file:</font></B></td>\n";
+        echo "                  <td align=right width=\"35%\"><B><font face=\"dejavu sans,verdana,sans-serif\" size=2>Load leads from this file:</font></B></td>\n";
         echo "                  <td align=left width=\"65%\"><input type=file name=\"leadfile\" value=\"$leadfile\">$NWB#osdial_list_loader$NWE</td>\n";
         echo "              </tr>\n";
         echo "              <tr>\n";
-        echo "                  <td align=right width=\"25%\"><font face=\"arial, helvetica\" size=2>List ID: </font></td>\n";
-        echo "                  <td align=left width=\"75%\"><font face=\"arial, helvetica\" size=1>\n";
+        echo "                  <td align=right width=\"25%\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>List ID: </font></td>\n";
+        echo "                  <td align=left width=\"75%\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>\n";
         echo "                      <select size=1 name=list_id_override>\n";
         
         $stmt=sprintf("SELECT list_id,list_name FROM osdial_lists WHERE campaign_id IN %s;",$LOG['allowed_campaignsSQL']);
@@ -104,20 +101,20 @@ if ($ADD==122) {
         echo "                    </td>\n";
         echo "                  </tr>\n";
         echo "                  <tr>\n";
-        echo "                      <td align=right width=\"25%\"><font face=\"arial, helvetica\" size=2>Phone (Country) Code: </font></td>\n";
-        echo "                      <td align=left width=\"75%\"><font face=\"arial, helvetica\" size=1>\n";
+        echo "                      <td align=right width=\"25%\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Phone (Country) Code: </font></td>\n";
+        echo "                      <td align=left width=\"75%\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>\n";
         echo "                          <input type=text value=\"$phone_code_override\" name='phone_code_override' size=8 maxlength=6> (numbers only or leave blank for values in the file)\n";
         echo "                      </td>\n";
         echo "                  </tr>\n";
         echo "                  <tr>\n";
-        echo "                      <td align=right><B><font face=\"arial, helvetica\" size=2>File layout to use:</font></B></td>\n";
-        echo "                      <td align=left><font face=\"arial, helvetica\" size=2>\n";
+        echo "                      <td align=right><B><font face=\"dejavu sans,verdana,sans-serif\" size=2>File layout to use:</font></B></td>\n";
+        echo "                      <td align=left><font face=\"dejavu sans,verdana,sans-serif\" size=2>\n";
         echo "                          <input type=radio name=\"file_layout\" value=\"custom\" checked>Custom Layout&nbsp;&nbsp;&nbsp;&nbsp;<input type=radio name=\"file_layout\" value=\"standard\">Predefined Layout\n";
         echo "                      </td>\n";
         echo "                  </tr>\n";
         echo "                  <tr>\n";
-        echo "                      <td align=right width=\"25%\"><font face=\"arial, helvetica\" size=2>Lead Duplicate Check: </font></td>\n";
-        echo "                      <td align=left width=\"75%\"><font face=\"arial, helvetica\" size=1>\n";
+        echo "                      <td align=right width=\"25%\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Lead Duplicate Check: </font></td>\n";
+        echo "                      <td align=left width=\"75%\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>\n";
         echo "                          <select size=1 name=dupcheck>\n";
         echo "                              <option value=\"NONE\">NO DUPLICATE CHECK</option>\n";
         echo "                              <option selected value=\"DUPLIST\">CHECK FOR DUPLICATES BY PHONE IN LIST ID</option>\n";
@@ -129,8 +126,8 @@ if ($ADD==122) {
         echo "                      </td>\n";
         echo "                  </tr>\n";
         echo "                  <tr>\n";
-        echo "                      <td align=right width=\"25%\"><font face=\"arial, helvetica\" size=2>Lead Time Zone Lookup: </font></td>\n";
-        echo "                      <td align=left width=\"75%\"><font face=\"arial, helvetica\" size=1>\n";
+        echo "                      <td align=right width=\"25%\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Lead Time Zone Lookup: </font></td>\n";
+        echo "                      <td align=left width=\"75%\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>\n";
         echo "                          <select size=1 name=postalgmt>\n";
         echo "                              <option selected value=\"AREA\">COUNTRY CODE AND AREA CODE ONLY</option>\n";
         echo "                              <option value=\"POSTAL\">POSTAL CODE FIRST</option>\n";

@@ -30,9 +30,6 @@ if ($ADD==111111111111)
 {
 	if ($LOGmodify_servers==1)
 	{
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	echo "<center><br><font color=$default_text size=+1>ADD A NEW SERVER</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=211111111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -47,7 +44,6 @@ if ($ADD==111111111111)
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 
@@ -59,8 +55,6 @@ if ($ADD==111111111111)
 
 if ($ADD==211111111111)
 {
-echo "<TABLE><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from servers where server_id='$server_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -89,7 +83,6 @@ $ADD=311111111111;
 
 if ($ADD==221111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT max_osdial_trunks from servers where server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$rowx=mysql_fetch_row($rslt);
@@ -150,8 +143,6 @@ if ($ADD==411111111111)
 {
 	if ($LOGmodify_servers==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$stmt="SELECT count(*) from servers where server_id='$server_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -177,13 +168,12 @@ if ($ADD==411111111111)
 				}
 			}
 		}
+    $ADD=311111111111;	# go to server modification form below
 	}
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
-$ADD=311111111111;	# go to server modification form below
 }
 
 
@@ -195,7 +185,6 @@ if ($ADD==421111111111)
 {
 	if ($LOGmodify_servers==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT max_osdial_trunks from servers where server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$rowx=mysql_fetch_row($rslt);
@@ -235,13 +224,12 @@ if ($ADD==421111111111)
 				}
 			}
 		}
+    $ADD=311111111111;	# go to server modification form below
 	}
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
-$ADD=311111111111;	# go to server modification form below
 }
 
 
@@ -253,8 +241,6 @@ $ADD=311111111111;	# go to server modification form below
 
 if ($ADD==511111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($server_id) < 2) or (strlen($server_ip) < 7) or ($LOGast_delete_phones < 1) )
 		{
 		 echo "<br><font color=red>SERVER NOT DELETED - Please go back and look at the data you entered\n";
@@ -278,8 +264,6 @@ $ADD='311111111111';		# go to server modification below
 
 if ($ADD==611111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($server_id) < 2) or (strlen($server_ip) < 7) or ($CoNfIrM != 'YES') or ($LOGast_delete_phones < 1) )
 		{
 		 echo "<br><font color=red>SERVER NOT DELETED - Please go back and look at the data you entered\n";
@@ -313,8 +297,6 @@ if ($ADD==621111111111)
 {
 	if ($LOGmodify_servers==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($campaign_id) < 2) or (strlen($server_ip) < 7) )
 		{
 		 echo "<br><font color=red>$t1 SERVER TRUNK RECORD NOT DELETED - Please go back and look at the data you entered\n";
@@ -336,13 +318,12 @@ if ($ADD==621111111111)
 			fclose($fp);
 			}
 		}
+    $ADD=311111111111;	# go to server modification form below
 	}
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
-$ADD=311111111111;	# go to server modification form below
 }
 
 
@@ -355,9 +336,6 @@ if ($ADD==311111111111)
 {
 	if ($LOGmodify_servers==1)
 	{
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$stmt="SELECT * from servers where server_id='$server_id' or server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -559,7 +537,6 @@ if ($ADD==311111111111)
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 
@@ -570,9 +547,6 @@ if ($ADD==311111111111)
 ######################
 if ($ADD==100000000000)
 {
-echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$stmt="SELECT * from servers order by server_id";
 	$rslt=mysql_query($stmt, $link);
 	$phones_to_print = mysql_num_rows($rslt);
@@ -618,8 +592,6 @@ echo "</TABLE></center>\n";
 
 if ($ADD==499111111111111) {
 	if ($LOGmodify_servers==1) {
-
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 		echo "<br>$t1 ARCHIVE SERVER MODIFIED\n";
 
 		if ($archive_transfer_method == "FTP" and $archive_port == "") {
@@ -663,11 +635,10 @@ if ($ADD==499111111111111) {
 			fwrite ($fp, "$date|MODIFY ARCHIVE SERVER|$PHP_AUTH_USER|$ip|$stmt8|\n");
 			fclose($fp);
 		}
+	    $ADD=399111111111111;	# go to osdial system settings form below
 	} else {
 		echo "<font color=red>You do not have permission to view this page</font>\n";
-		exit;
 	}
-	$ADD=399111111111111;	# go to osdial system settings form below
 }
 
 ######################
@@ -676,9 +647,6 @@ if ($ADD==499111111111111) {
 
 if ($ADD=="399111111111111") {
 	if ($LOGmodify_servers==1) {
-		echo "<TABLE align=center><TR><TD>\n";
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 		$stmt="SELECT name,data FROM configuration WHERE name LIKE 'Archive%';";
 		$rslt = mysql_query($stmt, $link);
 		$rows = mysql_num_rows($rslt);
@@ -732,7 +700,6 @@ if ($ADD=="399111111111111") {
 		echo "</form>\n";
 	} else {
 		echo "You do not have permission to view this page\n";
-		exit;
 	}
 }
 
@@ -744,8 +711,6 @@ if ($ADD=="399111111111111") {
 
 if ($ADD==499911111111111) {
 	if ($LOGmodify_servers==1) {
-
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 		echo "<br>$t1 EXTERNAL DNC DATABASE MODIFIED\n";
 
 		$stmt1 = "UPDATE configuration SET data='" . mysql_real_escape_string($external_dnc_active) . "' WHERE name='External_DNC_Active';";
@@ -773,11 +738,10 @@ if ($ADD==499911111111111) {
 			fwrite ($fp, "$date|MODIFY EXTERNAL DNC|$PHP_AUTH_USER|$ip|$stmt6|\n");
 			fclose($fp);
 		}
+	    $ADD=399911111111111;	# go to osdial dnc database settings form below
 	} else {
 		echo "<font color=red>You do not have permission to view this page</font>\n";
-		exit;
 	}
-	$ADD=399911111111111;	# go to osdial dnc database settings form below
 }
 
 ######################
@@ -786,9 +750,6 @@ if ($ADD==499911111111111) {
 
 if ($ADD=="399911111111111") {
 	if ($LOGmodify_servers==1) {
-		echo "<TABLE align=center><TR><TD>\n";
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 		$stmt="SELECT name,data FROM configuration WHERE name LIKE 'External_DNC%';";
 		$rslt = mysql_query($stmt, $link);
 		$rows = mysql_num_rows($rslt);
@@ -829,7 +790,6 @@ if ($ADD=="399911111111111") {
 		echo "</form>\n";
 	} else {
 		echo "You do not have permission to view this page\n";
-		exit;
 	}
 }
 
@@ -850,7 +810,6 @@ if ($ADD==499211111111111) {
 		if ($qc_server_transfer_type == "IMMEDIATE" or $qc_server_transfer_type == "BATCH") $qc_server_archive="NONE";
 		if ($qc_server_transfer_type == "IMMEDIATE") $qc_server_batch_time="0";
 
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 		if ($SUB==1) {
 			$qcact = "ADD";
 			echo "<br>$t1 QC SERVER ADDED\n";
@@ -870,13 +829,11 @@ if ($ADD==499211111111111) {
 
 		} elseif ($SUB==3) {
 			$qcact = "ADD RULE";
-			echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 			echo "<br>$t1 QC SERVER RULE MODIFIED\n";
 
 			$stmt = "INSERT INTO qc_server_rules (qc_server_id,query) VALUES ('$qc_server_id','" . mysql_real_escape_string($qc_server_rule_query) . "');";
 		} elseif ($SUB==4) {
 			$qcact = "MODIFIED RULE";
-			echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 			echo "<br>$t1 QC SERVER RULE MODIFIED\n";
 
 			$stmt = "UPDATE qc_server_rules SET query='" . mysql_real_escape_string($qc_server_rule_query) ."' WHERE id='$qc_server_rule_id';";
@@ -898,11 +855,10 @@ if ($ADD==499211111111111) {
 			fwrite ($fp, "$date|$qcact QC SERVER|$PHP_AUTH_USER|$ip|$stmt|\n");
 			fclose($fp);
 		}
+	    $ADD=399211111111111;	# go to osdial system settings form below
 	} else {
 		echo "<font color=red>You do not have permission to view this page</font>\n";
-		exit;
 	}
-	$ADD=399211111111111;	# go to osdial system settings form below
 }
 
 
@@ -911,7 +867,6 @@ if ($ADD==499211111111111) {
 ######################
 
 if ($ADD==699211111111111){
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	if ($SUB==2) {
 		# Delete rule entries
 		$stmt="DELETE from qc_server_rules where qc_server_id='$qc_server_id';";
@@ -953,9 +908,6 @@ if ($ADD==699211111111111){
 
 if ($ADD=="399211111111111") {
 	if ($LOGmodify_servers==1) {
-		echo "<TABLE align=center><TR><TD>\n";
-		echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 		$stmt="SELECT id,name,description,host,transfer_method,transfer_type FROM qc_servers;";
 		$rslt = mysql_query($stmt, $link);
 		$rows = mysql_num_rows($rslt);
@@ -1117,7 +1069,6 @@ if ($ADD=="399211111111111") {
 
 	} else {
 		echo "<font color=red>You do not have permission to view this page</font>\n";
-		exit;
 	}
 }
 

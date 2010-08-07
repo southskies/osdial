@@ -28,7 +28,6 @@
 if ($ADD==26)
 {
 	$status = eregi_replace("-----.*",'',$status);
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id' and auto_alt_dial_statuses LIKE \"% $status %\";";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -75,7 +74,6 @@ if ($ADD==66)
 {
 	if ($LOGmodify_campaigns==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id' and auto_alt_dial_statuses LIKE \"% $status %\";";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -109,14 +107,13 @@ if ($ADD==66)
 				}
 			}
 		}
+    $SUB=26;
+    $ADD=31;	# go to campaign modification form below
 	}
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
-$SUB=26;
-$ADD=31;	# go to campaign modification form below
 }
 
 
@@ -125,9 +122,6 @@ $ADD=31;	# go to campaign modification form below
 ######################
 if ($ADD==36)
 {
-echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 echo "<center><br><font color=$default_text size=+1>CAMPAIGN LEAD AUTO-ALT DIALS</font><br><br>\n";
 echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
 echo "  <tr class=tabheader>\n";

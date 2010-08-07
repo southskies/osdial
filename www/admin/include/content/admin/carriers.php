@@ -26,8 +26,6 @@
 ######################
 if ($ADD=="1carrier") {
     if ($LOG['ast_admin_access'] == 1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
         ### SUB=4  New DID
         if ($SUB==4) {
             $gfr = get_first_record($link, 'osdial_carriers', '*', sprintf("id='%s'",mres($carrier_id)));
@@ -205,8 +203,6 @@ if ($ADD=="1carrier") {
         } else {
             echo "<font color=red>Error, carrier function not specified.</font>\n";
         }
-
-        echo "</font>\n";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }
@@ -220,7 +216,6 @@ if ($ADD=="1carrier") {
 $ANC=0;
 if ($ADD=="2carrier") {
     if ($LOG['ast_admin_access'] == 1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
         $stmt='';
         $aclog='';
 
@@ -308,8 +303,6 @@ if ($ADD=="2carrier") {
             fwrite ($fp, "$date|ADD A NEW $aclog|$PHP_AUTH_USER|$ip|$stmt|\n");
             fclose($fp);
         }
-
-        echo "</font>\n";
         $ADD="3carrier";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
@@ -326,7 +319,6 @@ if ($ADD=="2carrier") {
 
 if ($ADD=="4carrier") {
     if ($LOG['ast_admin_access'] == 1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
         $stmt='';
         $aclog='';
 
@@ -446,8 +438,6 @@ if ($ADD=="4carrier") {
             fwrite ($fp, "$date|MODIFY $aclog|$PHP_AUTH_USER|$ip|$stmt|\n");
             fclose($fp);
         }
-
-        echo "</font>\n";
         $ADD="3carrier";    # go to campaign modification form below
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
@@ -463,8 +453,6 @@ if ($ADD=="4carrier") {
 
 if ($ADD == "5carrier") {
     if ($LOG['ast_admin_access'] == 1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
         ### SUB=4  Confirm DID Deletion
         if ($SUB==4) {
             if ($carrier_id < 1 or $did_id < 1 or strlen($did) < 3) {
@@ -503,8 +491,6 @@ if ($ADD == "5carrier") {
         } else {
             echo "<font color=red>Error, carrier function not specified.</font>\n";
         }
-
-        echo "</font>\n";
         $ADD="3carrier";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
@@ -521,7 +507,6 @@ if ($ADD == "5carrier") {
 
 if ($ADD=="6carrier") {
     if ($LOG['ast_admin_access'] == 1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
         $stmt='';
         $aclog='';
 
@@ -603,8 +588,6 @@ if ($ADD=="6carrier") {
 ######################
 if ($ADD == "3carrier") {
     if ($LOG['ast_admin_access'] == 1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
         ### SUB=4  DID Form
         if ($SUB==4) {
             $gfr = get_first_record($link, 'osdial_carriers', '*', sprintf("id='%s'",mres($carrier_id)));
@@ -1121,8 +1104,6 @@ if ($ADD == "3carrier") {
             echo "document.osdial_form.carrier_dialplan.value=dialplan;\n";
         }
         echo "</script>\n";
-
-        echo "</font>\n";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }

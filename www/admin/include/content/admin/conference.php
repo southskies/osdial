@@ -35,9 +35,6 @@ if ($ADD==1111111111111)
 	if ($LOGast_admin_access==1)
 	{
     $servers_list = get_servers($link, $server_ip);
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	echo "<center><br><font color=$default_text size=+1>ADD A NEW CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111111111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -53,7 +50,6 @@ if ($ADD==1111111111111)
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 
@@ -65,8 +61,6 @@ if ($ADD==1111111111111)
 
 if ($ADD==2111111111111)
 {
-echo "<TABLE><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -98,8 +92,6 @@ if ($ADD==4111111111111)
 {
 	if ($LOGast_admin_access==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$stmt="SELECT count(*) from conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -117,13 +109,12 @@ if ($ADD==4111111111111)
 			$rslt=mysql_query($stmt, $link);
 			}
 		}
+    $ADD=3111111111111;	# go to conference modification form below
 	}
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
-$ADD=3111111111111;	# go to conference modification form below
 }
 
 
@@ -135,8 +126,6 @@ $ADD=3111111111111;	# go to conference modification form below
 
 if ($ADD==5111111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($conf_exten) < 2) or (strlen($server_ip) < 7) or ($LOGast_delete_phones < 1) )
 		{
 		 echo "<br><font color=red>CONFERENCE NOT DELETED - Please go back and look at the data you entered\n";
@@ -159,8 +148,6 @@ $ADD='3111111111111';		# go to conference modification below
 
 if ($ADD==6111111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($conf_exten) < 2) or (strlen($server_ip) < 7) or ($CoNfIrM != 'YES') or ($LOGast_delete_phones < 1) )
 		{
 		 echo "<br><font color=red>CONFERENCE NOT DELETED - Please go back and look at the data you entered\n";
@@ -196,9 +183,6 @@ if ($ADD==3111111111111)
 {
 	if ($LOGast_admin_access==1)
 	{
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$stmt="SELECT * from conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -230,7 +214,6 @@ if ($ADD==3111111111111)
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 
@@ -241,9 +224,6 @@ if ($ADD==3111111111111)
 ######################
 if ($ADD==1000000000000)
 {
-echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$stmt="SELECT * from conferences order by conf_exten";
 	$rslt=mysql_query($stmt, $link);
 	$phones_to_print = mysql_num_rows($rslt);
@@ -289,9 +269,6 @@ if ($ADD==11111111111111)
 	if ($LOGast_admin_access==1)
 	{
     $servers_list = get_servers($link, $server_ip);
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	echo "<center><br><font color=$default_text size=+1>ADD A NEW $t1 CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21111111111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -307,7 +284,6 @@ if ($ADD==11111111111111)
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 
@@ -318,8 +294,6 @@ if ($ADD==11111111111111)
 
 if ($ADD==21111111111111)
 {
-echo "<TABLE><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -349,8 +323,6 @@ if ($ADD==41111111111111)
 {
 	if ($LOGast_admin_access==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$stmt="SELECT count(*) from osdial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -369,13 +341,12 @@ if ($ADD==41111111111111)
 
 			}
 		}
+    $ADD=31111111111111;	# go to osdial conference modification form below
 	}
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
-$ADD=31111111111111;	# go to osdial conference modification form below
 }
 
 
@@ -386,8 +357,6 @@ $ADD=31111111111111;	# go to osdial conference modification form below
 
 if ($ADD==51111111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($conf_exten) < 2) or (strlen($server_ip) < 7) or ($LOGast_delete_phones < 1) )
 		{
 		 echo "<br><font color=red>$t1 CONFERENCE NOT DELETED - Please go back and look at the data you entered\n";
@@ -410,8 +379,6 @@ $ADD='31111111111111';		# go to osdial conference modification below
 
 if ($ADD==61111111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($conf_exten) < 2) or (strlen($server_ip) < 7) or ($CoNfIrM != 'YES') or ($LOGast_delete_phones < 1) )
 		{
 		 echo "<br><font color=red>$t1 CONFERENCE NOT DELETED - Please go back and look at the data you entered\n";
@@ -445,9 +412,6 @@ if ($ADD==31111111111111)
 {
 	if ($LOGast_admin_access==1)
 	{
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$stmt="SELECT * from osdial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -479,7 +443,6 @@ if ($ADD==31111111111111)
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 
@@ -489,9 +452,6 @@ if ($ADD==31111111111111)
 ######################
 if ($ADD==10000000000000)
 {
-echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$stmt="SELECT * from osdial_conferences order by conf_exten";
 	$rslt=mysql_query($stmt, $link);
 	$phones_to_print = mysql_num_rows($rslt);

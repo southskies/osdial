@@ -28,9 +28,6 @@
 
 if ($ADD=="1") {
     if ($LOGmodify_users==1) {
-        echo "<TABLE align=center><TR><TD>\n";
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
         echo "<center><br><font color=$default_text size=+1>ADD A NEW AGENT<form action=$PHP_SELF method=POST></font><br><br>\n";
         echo "<input type=hidden name=ADD value=2>\n";
         echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -116,9 +113,6 @@ if ($ADD=="1A")
 {
 	if ($LOGmodify_users==1)
 	{
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	echo "<center><br><font color=$default_text size=+1>COPY AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2A>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -164,7 +158,6 @@ if ($ADD=="1A")
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 
@@ -174,7 +167,6 @@ if ($ADD=="1A")
 
 if ($ADD=="2")
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
     $preuser = $user;
     if ($LOG['multicomp'] > 0) $preuser = (($company_id * 1) + 100) . $user;
 	$stmt="SELECT count(*) from osdial_users where user='$preuser';";
@@ -217,7 +209,6 @@ $ADD=3;
 
 if ($ADD=="2A")
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
     $preuser = $user;
     if ($LOG['multicomp'] > 0) $preuser = (($company_id * 1) + 100) . $user;
 	$stmt="SELECT count(*) from osdial_users where user='$preuser';";
@@ -266,8 +257,6 @@ if ($ADD=="2A")
 
 if ($ADD=="4A") {
     if ($LOGmodify_users==1) {
-        echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
         if ( (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user_level) < 1) ) {
             echo "<br><font color=red>AGENT NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>Password and Full Name each need ot be at least 2 characters in length</font><br>\n";
@@ -318,8 +307,6 @@ if ($ADD=="4B")
 {
 	if ($LOGmodify_users==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user_level) < 1) )
 		{
 		 echo "<br><font color=red>AGENT NOT MODIFIED - Please go back and look at the data you entered\n";
@@ -345,13 +332,12 @@ if ($ADD=="4B")
 			fclose($fp);
 			}
 		}
+$ADD=3;		# go to user modification below
 	}
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
-$ADD=3;		# go to user modification below
 }
 
 
@@ -364,8 +350,6 @@ if ($ADD==4)
 {
 	if ($LOGmodify_users==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user_level) < 1) )
 		{
 		 echo "<br><font color=red>AGENT NOT MODIFIED - Please go back and look at the data you entered\n";
@@ -391,13 +375,12 @@ if ($ADD==4)
 			fclose($fp);
 			}
 		}
+$ADD=3;		# go to user modification below
 	}
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
-$ADD=3;		# go to user modification below
 }
 
 
@@ -407,8 +390,6 @@ $ADD=3;		# go to user modification below
 
 if ($ADD==5)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($user) < 2) or ($LOGdelete_users < 1) )
 		{
 		 echo "<br><font color=red>AGENT NOT DELETED - Please go back and look at the data you entered\n";
@@ -429,8 +410,6 @@ $ADD='3';		# go to user modification below
 
 if ($ADD==6)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( ( strlen($user) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_users < 1) )
 		{
 		 echo "<br><font color=red>AGENT NOT DELETED - Please go back and look at the data you entered\n";
@@ -472,9 +451,6 @@ if ($ADD==3)
 {
 	if ($LOGmodify_users==1)
 	{
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$stmt="SELECT * from osdial_users where user='$user';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -757,7 +733,6 @@ if ($ADD==3)
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 
@@ -766,9 +741,6 @@ if ($ADD==3)
 ######################
 
 if ($ADD==550) {
-    echo "<TABLE align=center><TR><TD>\n";
-    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
     echo "<center><br><font color=$default_text size=+1>SEARCH FOR AN AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
     echo "<input type=hidden name=ADD value=660>\n";
     echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -839,9 +811,6 @@ if ($ADD==550) {
 ######################
 
 if ($ADD==660) {
-    echo "<table align=center><tr><td>\n";
-	echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>";
-
 	if ($LOGuser_level==9) {
         $levelMAX=$LOGuser_level;
     } else {
@@ -933,9 +902,6 @@ if ($ADD==8) {
 		}
 	}
     $CBinactiveLINK = "<BR><a href=\"$PHP_SELF?ADD=8&SUB=89&user=$user\"><font color=$default_text>Remove LIVE Callbacks older than one month for this user</font></a><BR><a href=\"$PHP_SELF?ADD=8&SUB=899&user=$user\"><font color=$default_text>Remove LIVE Callbacks older than one week for this user</font></a><BR>";
-
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$CBquerySQLwhere = "and user='$user'";
 
 echo "<br><br><center><font color=$default_text size=4>AGENT CALLBACK HOLD LISTINGS: $user</font></center>\n";
@@ -950,9 +916,6 @@ include($WeBServeRRooT . '/admin/include/content/lists/lists.php');
 ######################
 if ($ADD==0 or $ADD==9)
 {
-echo "<TABLE align=center><TR><TD>\n";
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 $let = get_variable('let');
 $letSQL = '';
 if ($let != '') $letSQL = sprintf("AND (user LIKE '%s%s%%' OR full_name LIKE '%s%%' OR full_name LIKE '%% %s%%')",$LOG['company_prefix'],mres($let),mres($let),mres($let));

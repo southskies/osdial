@@ -30,9 +30,6 @@ if ($ADD==111111111)
 {
 	if ($LOGmodify_call_times==1)
 	{
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	echo "<center><br><font color=$default_text size=+1>ADD NEW CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=211111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -47,7 +44,6 @@ if ($ADD==111111111)
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 
@@ -58,7 +54,6 @@ if ($ADD==111111111)
 
 if ($ADD==211111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_call_times where call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -100,8 +95,6 @@ if ($ADD==411111111)
 {
 	if ($LOGmodify_call_times==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($call_time_id) < 2) or (strlen($call_time_name) < 2) )
 		{
 		 echo "<br><font color=red>CALL TIME NOT MODIFIED - Please go back and look at the data you entered\n";
@@ -138,13 +131,12 @@ if ($ADD==411111111)
 			fclose($fp);
 			}
 		}
+    $ADD=311111111;	# go to call time modification form below
 	}
 	else
 	{
 	echo "<font color=$default_text>You do not have permission to view this page</font>\n";
-	exit;
 	}
-$ADD=311111111;	# go to call time modification form below
 }
 
 
@@ -154,8 +146,6 @@ $ADD=311111111;	# go to call time modification form below
 
 if ($ADD==511111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($call_time_id) < 2) or ($LOGdelete_call_times < 1) )
 		{
 		 echo "<br><font color=red>CALL TIME NOT DELETED - Please go back and look at the data you entered\n";
@@ -177,8 +167,6 @@ $ADD='311111111';		# go to call time modification below
 
 if ($ADD==611111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($call_time_id) < 2) or ($LOGdelete_call_times < 1) )
 		{
 		 echo "<br><font color=red>CALL TIME NOT DELETED - Please go back and look at the data you entered\n";
@@ -261,9 +249,6 @@ if ($ADD==311111111)
 
 if ($LOGmodify_call_times==1)
 {
-echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$stmt="SELECT * from osdial_call_times where call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -287,8 +272,6 @@ echo "<TABLE align=center><TR><TD>\n";
 	$ct_saturday_stop =		$row[18];
 	$ct_state_call_times =	$row[19];
 	$use_recycle_gap =	    $row[20];
-
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 echo "<center><br><font color=$default_text size=+1>MODIFY A CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 echo "<input type=hidden name=ADD value=411111111>\n";
@@ -442,10 +425,6 @@ echo "<font color=red>You are not authorized to view this page. Please go back.<
 ######################
 if ($ADD==100000000)
 {
-echo "<TABLE align=center><TR><TD>\n";
-
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$stmt="SELECT * from osdial_call_times order by call_time_id";
 	$rslt=mysql_query($stmt, $link);
 	$filters_to_print = mysql_num_rows($rslt);
@@ -492,9 +471,6 @@ if ($ADD==1111111111)
 {
 	if ($LOGmodify_call_times==1)
 	{
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	echo "<center><br><font color=$default_text size=+1>ADD NEW STATE CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -510,7 +486,6 @@ if ($ADD==1111111111)
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 
@@ -522,7 +497,6 @@ if ($ADD==1111111111)
 
 if ($ADD==2111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_state_call_times where state_call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -564,8 +538,6 @@ if ($ADD==4111111111)
 {
 	if ($LOGmodify_call_times==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($call_time_id) < 2) or (strlen($call_time_name) < 2) or (strlen($state_call_time_state) < 2) )
 		{
 		 echo "<br><font color=red>STATE CALL TIME NOT MODIFIED - Please go back and look at the data you entered\n";
@@ -602,13 +574,12 @@ if ($ADD==4111111111)
 			fclose($fp);
 			}
 		}
+    $ADD=3111111111;	# go to state call time modification form below
 	}
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
-$ADD=3111111111;	# go to state call time modification form below
 }
 
 
@@ -618,8 +589,6 @@ $ADD=3111111111;	# go to state call time modification form below
 
 if ($ADD==5111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($call_time_id) < 2) or ($LOGdelete_call_times < 1) )
 		{
 		 echo "<br><font color=red>STATE CALL TIME NOT DELETED - Please go back and look at the data you entered\n";
@@ -642,8 +611,6 @@ $ADD='3111111111';		# go to state call time modification below
 
 if ($ADD==6111111111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($call_time_id) < 2) or ($LOGdelete_call_times < 1) )
 		{
 		 echo "<br><font color=red>STATE CALL TIME NOT DELETED - Please go back and look at the data you entered\n";
@@ -702,9 +669,6 @@ if ($ADD==3111111111)
 
 if ($LOGmodify_call_times==1)
 {
-echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$stmt="SELECT * from osdial_state_call_times where state_call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -727,8 +691,6 @@ echo "<TABLE align=center><TR><TD>\n";
 	$ct_friday_stop =		$row[17];
 	$ct_saturday_start =	$row[18];
 	$ct_saturday_stop =		$row[19];
-
-echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 
 echo "<center><br><font color=$default_text size=+1>MODIFY A STATE CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 echo "<input type=hidden name=ADD value=4111111111>\n";
@@ -795,10 +757,6 @@ echo "<font color=red>You are not authorized to view this page. Please go back.<
 ######################
 if ($ADD==1000000000)
 {
-echo "<TABLE align=center><TR><TD>\n";
-
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$stmt="SELECT * from osdial_state_call_times order by state_call_time_id";
 	$rslt=mysql_query($stmt, $link);
 	$filters_to_print = mysql_num_rows($rslt);

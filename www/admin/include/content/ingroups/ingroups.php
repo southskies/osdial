@@ -32,9 +32,6 @@ if ($ADD==1111)
 {
 	if ($LOGmodify_ingroups==1)
 	{
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	echo "<center><br><font color=$default_text size=+1>ADD A NEW INBOUND GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -71,7 +68,6 @@ if ($ADD==1111)
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 
@@ -84,9 +80,6 @@ if ($ADD==1211)
 {
 	if ($LOGmodify_ingroups==1)
 	{
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	echo "<center><br><font color=$default_text size=+1>COPY INBOUND GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2011>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -127,7 +120,6 @@ if ($ADD==1211)
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 
@@ -139,7 +131,6 @@ if ($ADD==1211)
 
 if ($ADD==2111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
     $pregroup_id = $group_id;
     if ($LOG['multicomp'] > 0) $pregroup_id = (($company_id * 1) + 100) . $group_id;
 	$stmt="SELECT count(*) from osdial_inbound_groups where group_id='$pregroup_id';";
@@ -190,7 +181,6 @@ $ADD=3111;
 
 if ($ADD==2011)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
     $pregroup_id = $group_id;
     if ($LOG['multicomp'] > 0) $pregroup_id = (($company_id * 1) + 100) . $group_id;
 	$stmt="SELECT count(*) from osdial_inbound_groups where group_id='$pregroup_id';";
@@ -234,8 +224,6 @@ if ($ADD==4111)
 {
 	if ($LOGmodify_ingroups==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($group_name) < 2) or (strlen($group_color) < 2) )
 		{
 		 echo "<br><font color=red>GROUP NOT MODIFIED - Please go back and look at the data you entered\n";
@@ -256,13 +244,12 @@ if ($ADD==4111)
 			fclose($fp);
 			}
 		}
+    $ADD=3111;	# go to in-group modification form below
 	}
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
-$ADD=3111;	# go to in-group modification form below
 }
 
 
@@ -272,8 +259,6 @@ $ADD=3111;	# go to in-group modification form below
 
 if ($ADD==5111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($group_id) < 2) or ($LOGdelete_ingroups < 1) )
 		{
 		 echo "<br><font color=red>IN-GROUP NOT DELETED - Please go back and look at the data you entered\n";
@@ -295,8 +280,6 @@ $ADD='3111';		# go to in-group modification below
 
 if ($ADD==6111)
 {
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($group_id) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_ingroups < 1) )
 		{
 		 echo "<br><font color=red>IN-GROUP NOT DELETED - Please go back and look at the data you entered\n";
@@ -336,9 +319,6 @@ if ($ADD==3111)
 {
 	if ($LOGmodify_ingroups==1)
 	{
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$stmt="SELECT * from osdial_inbound_groups where group_id='$group_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -575,7 +555,6 @@ if ($ADD==3111)
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 
@@ -586,9 +565,6 @@ if ($ADD==3111)
 ######################
 if ($ADD==1000)
 {
-echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	$stmt=sprintf("SELECT * FROM osdial_inbound_groups WHERE group_id IN %s AND group_id NOT LIKE 'A2A_%%' ORDER BY group_id",$LOG['allowed_ingroupsSQL']);
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);

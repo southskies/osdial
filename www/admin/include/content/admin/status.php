@@ -32,8 +32,6 @@
 
 if ($ADD==221111111111111)
 {
-
-    echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
     $stmt="SELECT count(*) from osdial_campaign_statuses where status='$status';";
     $rslt=mysql_query($stmt, $link);
     $row=mysql_fetch_row($rslt);
@@ -83,8 +81,6 @@ if ($ADD==421111111111111)
 {
 	if ($LOGmodify_servers==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	if (ereg('delete',$stage))
 		{
 		if ( (strlen($status) < 1) or (preg_match("/^B$|^NA$|^DNC$|^NA$|^DROP$|^INCALL$|^QUEUE$|^NEW$/i",$status)) )
@@ -136,13 +132,12 @@ if ($ADD==421111111111111)
 				}
 			}
 		}
+    $ADD=321111111111111;	# go to system settings modification form below
 	}
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
-$ADD=321111111111111;	# go to system settings modification form below
 }
 
 
@@ -154,9 +149,6 @@ if ($ADD==321111111111111)
 {
 	if ($LOGmodify_servers==1)
 	{
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	echo "<br><center>\n";
 	echo "<font color=$default_text size=4>$t1 SYSTEM-WIDE STATUSES &nbsp; $NWB#osdial_statuses$NWE</font><br><br>\n";
 	echo "<table width=800 cellspacing=1 bgcolor=grey>\n";
@@ -240,7 +232,6 @@ if ($ADD==321111111111111)
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 
@@ -254,8 +245,6 @@ if ($ADD==321111111111111)
 
 if ($ADD==231111111111111)
 {
-
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
 	$stmt="SELECT count(*) from osdial_status_categories where vsc_id='$vsc_id';";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -306,8 +295,6 @@ if ($ADD==431111111111111)
 {
 	if ($LOGmodify_servers==1)
 	{
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	 if ( (strlen($vsc_id) < 2)  or (preg_match("/^UNDEFINED$/i",$vsc_id)) )
 		{
 		 echo "<br><font color=red>STATUS CATEGORY NOT MODIFIED - Please go back and look at the data you entered\n";
@@ -356,13 +343,12 @@ if ($ADD==431111111111111)
 				}
 			}
 		}
+    $ADD=331111111111111;	# go to system settings modification form below
 	}
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
-$ADD=331111111111111;	# go to system settings modification form below
 }
 
 
@@ -374,9 +360,6 @@ if ($ADD==331111111111111)
 {
 	if ($LOGmodify_servers==1)
 	{
-	echo "<TABLE align=center><TR><TD>\n";
-	echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=$default_text SIZE=2>";
-
 	echo "<br>\n";
 	echo "<center><font size=4 color=$default_text>$t1 STATUS CATEGORIES &nbsp; $NWB#osdial_status_categories$NWE</font></center><br>\n";
 	echo "<table width=800 cellspacing=1 bgcolor=grey>\n";
@@ -461,7 +444,6 @@ if ($ADD==331111111111111)
 	else
 	{
 	echo "<font color=red>You do not have permission to view this page</font>\n";
-	exit;
 	}
 }
 

@@ -28,34 +28,36 @@
 ######################
 
 if ($ADD==27) {
-    echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-    $stmt=sprintf("SELECT count(*) FROM osdial_pause_codes WHERE campaign_id='%s' AND pause_code='%s';",mres($campaign_id),mres($pause_code));
-    $rslt=mysql_query($stmt, $link);
-    $row=mysql_fetch_row($rslt);
-    if ($row[0] > 0) {
-        echo "<br><font color=red>AGENT PAUSE CODE NOT ADDED - there is already an entry for this campaign with this pause code</font>\n";
-    } else {
-         if (strlen($campaign_id) < 2 or strlen($pause_code) < 1 or strlen($pause_code) > 6 or strlen($pause_code_name) < 2) {
-             echo "<br><font color=red>AGENT PAUSE CODE NOT ADDED - Please go back and look at the data you entered\n";
-             echo "<br>pause code must be between 1 and 6 characters in length\n";
-             echo "<br>pause code name must be between 2 and 30 characters in length</font><br>\n";
+    if ($LOG['modify_campaigns'] == 1) {
+        $stmt=sprintf("SELECT count(*) FROM osdial_pause_codes WHERE campaign_id='%s' AND pause_code='%s';",mres($campaign_id),mres($pause_code));
+        $rslt=mysql_query($stmt, $link);
+        $row=mysql_fetch_row($rslt);
+        if ($row[0] > 0) {
+            echo "<br><font color=red>AGENT PAUSE CODE NOT ADDED - there is already an entry for this campaign with this pause code</font>\n";
         } else {
-            echo "<br><b><font color=$default_text>AGENT PAUSE CODE ADDED: $campaign_id - $pause_code - $pause_code_name</font></b>\n";
+            if (strlen($campaign_id) < 2 or strlen($pause_code) < 1 or strlen($pause_code) > 6 or strlen($pause_code_name) < 2) {
+                echo "<br><font color=red>AGENT PAUSE CODE NOT ADDED - Please go back and look at the data you entered\n";
+                echo "<br>pause code must be between 1 and 6 characters in length\n";
+                echo "<br>pause code name must be between 2 and 30 characters in length</font><br>\n";
+            } else {
+                echo "<br><b><font color=$default_text>AGENT PAUSE CODE ADDED: $campaign_id - $pause_code - $pause_code_name</font></b>\n";
+    
+                $stmt=sprintf("INSERT INTO osdial_pause_codes (campaign_id,pause_code,pause_code_name,billable) VALUES ('%s','%s','%s','%s');",mres($campaign_id),mres($pause_code),mres($pause_code_name),mres($billable));
+                $rslt=mysql_query($stmt, $link);
 
-            $stmt=sprintf("INSERT INTO osdial_pause_codes (campaign_id,pause_code,pause_code_name,billable) VALUES ('%s','%s','%s','%s');",mres($campaign_id),mres($pause_code),mres($pause_code_name),mres($billable));
-            $rslt=mysql_query($stmt, $link);
-
-            ### LOG CHANGES TO LOG FILE ###
-            if ($WeBRooTWritablE > 0) {
-                $fp = fopen ("./admin_changes_log.txt", "a");
-                fwrite ($fp, "$date|ADD A NEW AGENT PAUSE CODE|$PHP_AUTH_USER|$ip|$stmt|\n");
-                fclose($fp);
+                ### LOG CHANGES TO LOG FILE ###
+                if ($WeBRooTWritablE > 0) {
+                    $fp = fopen ("./admin_changes_log.txt", "a");
+                    fwrite ($fp, "$date|ADD A NEW AGENT PAUSE CODE|$PHP_AUTH_USER|$ip|$stmt|\n");
+                    fclose($fp);
+                }
             }
         }
+        $SUB=27;
+        $ADD=31;
+    } else {
+        echo "<font color=red>You do not have permission to view this page</font>\n";
     }
-    echo "</font>\n";
-    $SUB=27;
-    $ADD=31;
 }
 
 
@@ -66,8 +68,6 @@ if ($ADD==27) {
 
 if ($ADD==47) {
     if ($LOG['modify_campaigns'] == 1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
         if (strlen($campaign_id) < 2 or strlen($pause_code) < 1 or strlen($pause_code) > 6 or strlen($pause_code_name) < 2) {
             echo "<br><font color=red>AGENT PAUSE CODE NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>pause_code must be between 1 and 6 characters in length\n";
@@ -85,12 +85,11 @@ if ($ADD==47) {
                 fclose($fp);
             }
         }
-        echo "</font>\n";
+        $SUB=27;
+        $ADD=31;    # go to campaign modification form below
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }
-    $SUB=27;
-    $ADD=31;    # go to campaign modification form below
 }
 
 
@@ -101,8 +100,6 @@ if ($ADD==47) {
 
 if ($ADD==67) {
     if ($LOG['modify_campaigns'] == 1) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
         if (strlen($campaign_id) < 2 or strlen($pause_code) < 1) {
             echo "<br><font color=red>CAMPAIGN PAUSE CODE NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>pause code must be between 1 and 6 characters in length</font><br>\n";
@@ -119,12 +116,11 @@ if ($ADD==67) {
                 fclose($fp);
             }
         }
-        echo "</font>\n";
+        $SUB=27;
+        $ADD=31;    # go to campaign modification form below
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }
-    $SUB=27;
-    $ADD=31;    # go to campaign modification form below
 }
 
 
@@ -133,8 +129,6 @@ if ($ADD==67) {
 # ADD=37 display all campaign agent pause codes
 ######################
 if ($ADD==37) {
-    echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>\n";
-
     echo "<center>\n";
     echo "  <br><font color=$default_text size=+1>CAMPAIGN AGENT PAUSE CODES</font><br><br>\n";
     echo "  <table width=$section_width cellspacing=0 cellpadding=1>\n";
@@ -185,8 +179,6 @@ if ($ADD==37) {
     echo "    </tr>\n";
     echo "  </table>\n";
     echo "</center>\n";
-
-    echo "</font>\n";
 }
 
 require("campaigns.php");

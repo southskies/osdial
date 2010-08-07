@@ -28,11 +28,11 @@ if ($LOGview_reports==1) {
     if ($ADD==999999 and $SUB=='') {
         echo "<font size=4 color=$default_text><br><center>CUSTOM REPORTS</center></font><br>";
         echo "<ul class=>";
-        echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=1001\"><font face=\"arial,helvetica\" size=2>Report 1</a></font>";
-        echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=1002\"><font face=\"arial,helvetica\" size=2>Report 2</a></font>";
-        echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=1003\"><font face=\"arial,helvetica\" size=2>Report 3</a></font>";
-        echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=1004\"><font face=\"arial,helvetica\" size=2>Report 4</a></font>";
-        echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=1005\"><font face=\"arial,helvetica\" size=2>Report 5</a></font>";
+        echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=1001\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Report 1</a></font>";
+        echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=1002\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Report 2</a></font>";
+        echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=1003\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Report 3</a></font>";
+        echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=1004\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Report 4</a></font>";
+        echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=1005\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Report 5</a></font>";
         echo "</ul>";
 
     } elseif ($ADD==999999) {

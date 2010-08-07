@@ -26,9 +26,6 @@
 
 if ($ADD=="11comp") {
     if ($LOG['multicomp_admin'] > 0) {
-        echo "<table align=center><tr><td>\n";
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>";
-
         echo "<center><br><font color=$default_text size=+1>ADD A NEW COMPANY</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=21comp>\n";
 
@@ -63,8 +60,6 @@ if ($ADD=="11comp") {
 
 if ($ADD=="21comp") {
     if ($LOG['multicomp_admin'] > 0) {
-        echo "<table><tr><td>\n";
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>";
         if (strlen($company_name) < 3) {
             echo "<br><font color=red>COMPANY NOT ADDED - Please go back and look at the data you entered</font>\n";
         } else {
@@ -139,8 +134,6 @@ if ($ADD=="21comp") {
 ######################
 if ($ADD=="41comp") {
     if ($LOG['multicomp_admin']>0) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>";
-
         if (strlen($company_name) < 3) {
             echo "<br><font color=$default_text>COMPANY NOT MODIFIED - Please go back and look at the data you entered</font>\n";
         } else {
@@ -163,7 +156,6 @@ if ($ADD=="41comp") {
 ######################
 if ($ADD=="51comp") {
     if ($LOG['multicomp_admin']>0) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>";
         echo "<br><B><font color=$default_text>COMPANY DELETION CONFIRMATION: $extension - $server_ip</B>\n";
         echo "<br><br><a href=\"$PHP_SELF?ADD=61comp&company_id=$company_id&CoNfIrM=YES\">Click here to delete company $company_id</a></font><br><br><br>\n";
         $ADD='31comp';		# go to company modification below
@@ -179,7 +171,6 @@ if ($ADD=="51comp") {
 ######################
 if ($ADD=="61comp") {
     if ($LOG['multicomp_admin']>0) {
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>";
         $stmt="DELETE from osdial_companies where id='$company_id' limit 1;";
         $rslt=mysql_query($stmt, $link);
 
@@ -204,9 +195,6 @@ if ($ADD=="61comp") {
 ######################
 if ($ADD=="31comp") {
     if ($LOG['multicomp_admin']>0) {
-        echo "<table align=center><tr><td>\n";
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>";
-
         $comp = get_first_record($link, 'osdial_companies', '*', sprintf("id='%s'",mres($company_id)) );
 
         echo "<center><br><font color=$default_text size=+1>MODIFY A COMPANY</font><form action=$PHP_SELF method=POST><br><br>\n";
@@ -265,9 +253,6 @@ if ($ADD=="31comp") {
 ######################
 if ($ADD=="10comp") {
     if ($LOG["multicomp_admin"] > 0) {
-        echo "<table align=center><tr><td>\n";
-        echo "<font face=\"Arial,Helvetica\" color=$default_text size=2>";
-
         echo "<center><br><font color=$default_text size=+1>COMPANIES<br><br>\n";
         echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
         echo "  <tr class=tabheader>";
