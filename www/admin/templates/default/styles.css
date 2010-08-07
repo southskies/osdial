@@ -137,11 +137,11 @@
 	.purple {color: white; background-color: purple;}
 
 	.maintable {
-	}
-	.maintable table {
-		font-size: 10pt;
+		font-size: 9pt;
 		font-family: 'dejavu sans',verdana,sans-serif;
 		color: #000080;
+	}
+	.maintable table {
 	}
 
 	table.row:hover {background-color: #B4CCD6;}
@@ -168,13 +168,30 @@
 	.tabbutton1 input { text-transform:uppercase; font-family: 'dejavu sans',verdana,sans-serif; font-size: 7pt; width: 100%; }
 	.tabbutton input { text-transform:uppercase; font-family: 'dejavu sans',verdana,sans-serif; font-size: 10pt; width: 100%; }
 
-	.font1 { font-size: 8pt; }
-	.font2 { font-size: 10pt; }
-	.font3 { font-size: 12pt; }
-	.font4 { font-size: 14pt; }
-	.font5 { font-size: 18pt; }
-	.font6 { font-size: 24pt; }
-	.font7 { font-size: 36pt; }
+	.font1 { font-family: 'dejavu sans',verdana,sans-serif; font-size: 7pt; }
+	.font2 { font-family: 'dejavu sans',verdana,sans-serif; font-size: 9pt; }
+	.font3 { font-family: 'dejavu sans',verdana,sans-serif; font-size: 11pt; }
+	.font4 { font-family: 'dejavu sans',verdana,sans-serif; font-size: 13pt; }
+	.font5 { font-family: 'dejavu sans',verdana,sans-serif; font-size: 17pt; }
+	.font6 { font-family: 'dejavu sans',verdana,sans-serif; font-size: 23pt; }
+	.font7 { font-family: 'dejavu sans',verdana,sans-serif; font-size: 35pt; }
+
+	.fgdefault { color: #000080; }
+    .fgcompany { color: #1C4754; }
+    .fgclock { color: white; }
+    .fghome { color: white; }
+    .fglogout { color: yellow; }
+    .fgfooter { color: #A3C1C9; }
+    .fgheader { color: #1C4754; }
+
+	.fgred { color: red; }
+	.fgnavy { color: navy; }
+	.fgblack { color: black; }
+	.fgwhite { color: white; }
+	.bgmain { background-color: #c6cda3; }
+	.bgsub { background-color: #a1b9a4; }
+
+
 
 	.printable { display: inline; }
 	.noprint { display: inline; }
