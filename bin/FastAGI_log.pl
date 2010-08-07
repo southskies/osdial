@@ -393,11 +393,54 @@ sub process_request {
 		if ($stage =~ /START/)
 			{
 			$channel_group='';
+			$number_dialed='';
+			$orig_extension = $extension;
+			$extension =~ s/^dial.//g;
 
 			if ($AGILOG) {$agi_string = "+++++ CALL LOG START : $now_date";   &agi_output;}
 
-			if ($channel =~ /^SIP/) {$channel =~ s/-.*//gi;}
-			if ($channel =~ /^IAX2/) {$channel =~ s/\/\d+$//gi;}
+			if ($channel =~ /^SIP/) {
+				$channel_line = $channel;
+				$channel_line =~ s/^SIP\/|\-.*//gi;
+
+				$stmtA = "SELECT count(*) FROM phones where server_ip='$VARserver_ip' and extension='$channel_line' and protocol='SIP';";
+				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+				$sthArows=$sthA->rows;
+				@aryA = $sthA->fetchrow_array;
+				$is_client_phone	 = "$aryA[0]";
+				$sthA->finish();
+
+				if ($is_client_phone<1) {
+					$channel_group = 'SIP Trunk';
+				} else {
+					$channel_group = 'SIP Phone';
+					$number_dialed = $extension;
+					$extension = $channel_line;
+				}
+				if ($AGILOG) {$agi_string = $channel_group . ": $aryA[0]|$channel_line|";   &agi_output;}
+			}
+			if ($channel =~ /^IAX2/) {
+				$channel_line = $channel;
+				$channel_line =~ s/^IAX2\/|\-.*//gi;
+
+				$stmtA = "SELECT count(*) FROM phones where server_ip='$VARserver_ip' and extension='$channel_line' and protocol='IAX2';";
+				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+				$sthArows=$sthA->rows;
+				@aryA = $sthA->fetchrow_array;
+				$is_client_phone	 = "$aryA[0]";
+				$sthA->finish();
+
+				if ($is_client_phone<1) {
+					$channel_group = 'IAX2 Trunk';
+				} else {
+					$channel_group = 'IAX2 Phone';
+					$number_dialed = $extension;
+					$extension = $channel_line;
+				}
+				if ($AGILOG) {$agi_string = $channel_group . ": $aryA[0]|$channel_line|";   &agi_output;}
+			}
 			if ($channel =~ /^$ZorD\//)
 				{
 				$channel_line = $channel;
@@ -411,15 +454,13 @@ sub process_request {
 				$is_client_phone	 = "$aryA[0]";
 				$sthA->finish();
 
-				if ($is_client_phone < 1)
-					{
-					$channel_group = $ZorD . ' Trunk Line';
+				if ($is_client_phone<1) {
+					$channel_group = $ZorD . ' Trunk';
+				} else {
+					$channel_group = $ZorD . ' Phone';
 					$number_dialed = $extension;
-					}
-				else
-					{
-					$channel_group = $ZorD . ' Client Phone';
-					}
+					$extension = $channel_line;
+				}
 				if ($AGILOG) {$agi_string = $channel_group . ": $aryA[0]|$channel_line|";   &agi_output;}
 				}
 			if ($channel =~ /^Local\//)
@@ -427,71 +468,89 @@ sub process_request {
 				$channel_line = $channel;
 				$channel_line =~ s/^Local\/|\@.*//gi;
 			
-				$stmtA = "SELECT count(*) FROM phones where server_ip='$VARserver_ip' and dialplan_number='$channel_line' and protocol='EXTERNAL';";
+				$stmtA = "SELECT count(*),extension FROM phones where server_ip='$VARserver_ip' and dialplan_number='$channel_line' and protocol='EXTERNAL' LIMIT 1;";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
 				@aryA = $sthA->fetchrow_array;
 				$is_client_phone         = "$aryA[0]";
+				$phone_ext = $aryA[1];
 				$sthA->finish();
 			
-				if ($is_client_phone < 1)
-					{
-					$channel_group = 'Local Channel Line';
-					$number_dialed = $extension;
-					}
-				else
-					{
-					$channel_group = 'EXTERNAL Client Phone';
-					}
+				if ($is_client_phone<1) {
+					$channel_group = 'Local Channel';
+				} else {
+					$channel_group = 'EXTERNAL Phone';
+					$number_dialed = $channel_line;
+					$extension = $phone_ext;
+				}
 				if ($AGILOG) {$agi_string = $channel_group . ": $aryA[0]|$channel_line|";   &agi_output;}
                                 }
-			### This section breaks the outbound dialed number down(or builds it up) to a 10 digit number and gives it a description
-			if ( ($channel =~ /^SIP|^IAX2/) || ( ($is_client_phone > 0) && (length($channel_group) < 1) ) )
-				{
-				if ( ($extension =~ /^901144/) && (length($extension)==16) )  #test 207 608 6400 
-					{$extension =~ s/^9//gi;	$channel_group = 'Outbound Intl UK';}
-				if ( ($extension =~ /^901161/) && (length($extension)==15) )  #test  39 417 2011
-					{$extension =~ s/^9//gi;	$channel_group = 'Outbound Intl AUS';}
-				if ( ($extension =~ /^91800|^91888|^91877|^91866/) && (length($extension)==12) )
-					{$extension =~ s/^91//gi;	$channel_group = 'Outbound Local 800';}
-				if ( ($extension =~ /^9/) && (length($extension)==8) )
-					{$extension =~ s/^9/727/gi;	$channel_group = 'Outbound Local';}
-				if ( ($extension =~ /^9/) && (length($extension)==11) )
-					{$extension =~ s/^9//gi;	$channel_group = 'Outbound Local';}
-				if ( ($extension =~ /^91/) && (length($extension)==12) )
-					{$extension =~ s/^91//gi;	$channel_group = 'Outbound Long Distance';}
-				if ($is_client_phone > 0)
-					{$channel_group = 'Client Phone';}
-				
-				$SIP_ext = $channel;	$SIP_ext =~ s/SIP\/|IAX2\/|$ZorD\/|Local\///gi;
 
-				$number_dialed = $extension;
-				$extension = $SIP_ext;
-				}
-
-			if ( ($accountcode =~ /^V|^M/) && ($accountcode =~ /\d\d\d\d\d\d\d\d\d/) && (length($number_dialed)<1) )
+			if ( ($accountcode =~ /^V|^M|^DC/) && ($accountcode =~ /\d\d\d\d\d\d\d\d\d/) && (length($number_dialed)<1) )
 				{
 				$stmtA = "SELECT cmd_line_b,cmd_line_d FROM osdial_manager where callerid='$accountcode' limit 1;";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
 				$rec_count=0;
-				if ($sthArows > 0)
-					{
+				if ($sthArows > 0) {
 					@aryA = $sthA->fetchrow_array;
 					$cmd_line_b	=	"$aryA[0]";
 					$cmd_line_d	=	"$aryA[1]";
+					if ($accountcode =~ /^DC/) {
+						$cmd_line_d =~ s/Exten: //gi;
+						$cmd_line_b =~ s/Channel: Local\/|\@.*//gi;
+						$extension=$cmd_line_d;
+						$number_dialed=$cmd_line_b;
+					} else {
 						$cmd_line_b =~ s/Exten: //gi;
-						$cmd_line_d =~ s/Channel: Local\/|@.*//gi;
-					$rec_count++;
+						$cmd_line_d =~ s/Channel: Local\/|\@.*//gi;
+						if ($accountcode =~ /^V/) {$extension=$cmd_line_b; $number_dialed=$cmd_line_d;}
+						if ($accountcode =~ /^M/) {$extension=$cmd_line_d; $number_dialed=$cmd_line_b;}
+						$rec_count++;
 					}
+				}
 				$sthA->finish();
-				if ($accountcode =~ /^V/) {$number_dialed = "$cmd_line_d";}
-				if ($accountcode =~ /^M/) {$number_dialed = "$cmd_line_b";}
+				$extension =~ s/\D//gi;
 				$number_dialed =~ s/\D//gi;
 				if (length($number_dialed)<1) {$number_dialed=$extension;}
 				}
+			if ( ($accountcode =~ /^Y/) && ($accountcode =~ /\d\d\d\d\d\d\d\d\d/) && (length($number_dialed)<1) )
+				{
+				$number_dialed = $callerid;
+				if (length($number_dialed)<1) {$number_dialed='';}
+				}
+
+			if ( ($accountcode =~ /^Y/) ) {
+				$channel_group = 'Inbound';
+				if ( ($extension =~ /^800|^888|^877|^866/) && (length($number_dialed)==10) )
+					{$channel_group = 'Inbound 800';}
+			} else {
+			### This section breaks the outbound dialed number down(or builds it up) to a 10 digit number and gives it a description
+				if ( ($number_dialed =~ /^.01144/) && (length($number_dialed)==16) )  #test 207 608 6400 
+					{$number_dialed =~ s/^.//;	$channel_group = 'Outbound Intl UK';}
+				if ( ($number_dialed =~ /^01144/) && (length($number_dialed)==15) )  #test 207 608 6400 
+					{                           	$channel_group = 'Outbound Intl UK';}
+				if ( ($number_dialed =~ /^.01161/) && (length($number_dialed)==15) )  #test  39 417 2011
+					{$number_dialed =~ s/^.//;	$channel_group = 'Outbound Intl AUS';}
+				if ( ($number_dialed =~ /^01161/) && (length($number_dialed)==14) )  #test  39 417 2011
+					{                           	$channel_group = 'Outbound Intl AUS';}
+				if ( ($number_dialed =~ /^.1800|^.1888|^.1877|^.1866/) && (length($number_dialed)==12) )
+					{$number_dialed =~ s/^.1//;	$channel_group = 'Outbound 800';}
+				if ( ($number_dialed =~ /^1800|^1888|^1877|^1866/) && (length($number_dialed)==11) )
+					{$number_dialed =~ s/^1//;	$channel_group = 'Outbound 800';}
+				if ( ($number_dialed =~ /^800|^888|^877|^866/) && (length($number_dialed)==10) )
+					{                           	$channel_group = 'Outbound 800';}
+				if ( ($number_dialed =~ /^.1/) && (length($number_dialed)==12) )
+					{$number_dialed =~ s/^.1//;	$channel_group = 'Outbound';}
+				if ( ($number_dialed =~ /^1/) && (length($number_dialed)==11) )
+					{$number_dialed =~ s/^1//;	$channel_group = 'Outbound';}
+				if (                             (length($number_dialed)==10) )
+					{                           	$channel_group = 'Outbound';}
+				
+			}
+
 			$stmtA = "INSERT INTO call_log (uniqueid,channel,channel_group,type,server_ip,extension,number_dialed,start_time,start_epoch,end_time,end_epoch,length_in_sec,length_in_min,caller_code) values('$unique_id','$channel','$channel_group','$type','$VARserver_ip','$extension','$number_dialed','$now_date','$now_date_epoch','','','','','$accountcode')";
 
 			if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
