@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: osdial
+Disallow: index.php
+Disallow: agent
+Disallow: admin
+Disallow: ivr
+Disallow: reports
+Disallow: recordings
+Disallow: completed

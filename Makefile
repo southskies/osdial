@@ -177,6 +177,8 @@ install-docs: .osdial.config
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/templates/default
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/templates/default/images
 	@install -p -m 644 ./www/*.php $(DESTDIR)$(PATHweb)
+	@install -p -m 644 ./www/*.txt $(DESTDIR)$(PATHweb)
+	@install -p -m 644 ./www/*.ico $(DESTDIR)$(PATHweb)
 	@install -p -m 644 ./www/agent/*.php $(DESTDIR)$(PATHweb)/agent
 	@install -p -m 666 ./www/agent/*.txt $(DESTDIR)$(PATHweb)/agent
 	@install -p -m 644 ./www/agent/include/* $(DESTDIR)$(PATHweb)/agent/include
