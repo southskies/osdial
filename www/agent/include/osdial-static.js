@@ -23,6 +23,31 @@
  */
 
 
+	var getXmlHttp = function () {
+		var xmlhttp=false;
+		try {
+			xmlhttp = new XMLHttpRequest();
+			if (xmlhttp) getXmlHttp = function() { return new XMLHttpRequest(); };
+		} catch(e) {
+			var msxml = ['MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP'];
+			for (var i=0, len = msxml.length; i < len; ++i) {
+				try {
+					xmlhttp = new ActiveXObject(msxml[i]);
+					if (xmlhttp) {
+						if (i==0) {
+							getXmlHttp = function() { return new ActiveXObject('MSXML2.XMLHTTP.3.0'); };
+						} else if (i==1) {
+							getXmlHttp = function() { return new ActiveXObject('MSXML2.XMLHTTP'); };
+						} else if (i==2) {
+							getXmlHttp = function() { return new ActiveXObject('Microsoft.XMLHTTP'); };
+						}
+					}
+					break;
+				} catch(e) {}
+			}
+		}
+		return xmlhttp;
+	}
 
 
 
@@ -119,6 +144,8 @@
 			delete xmlhttp;
 		}
 	}
+
+
 
 	// ################################################################################
 	// Send volume control command for meetme participant
@@ -451,25 +478,7 @@
 				var campagentstdisp = 'NO';
 			}
 
-			xmlhttprequestcheckconf=false;
-			/*@cc_on @*/
-			/*@if (@_jscript_version >= 5)
-			// JScript gives us Conditional compilation, we can cope with old IE versions.
-			// and security blocked creation of the objects.
-			 try {
-			  xmlhttprequestcheckconf = new ActiveXObject("Msxml2.XMLHTTP");
-			 } catch (e) {
-			  try {
-			   xmlhttprequestcheckconf = new ActiveXObject("Microsoft.XMLHTTP");
-			  } catch (E) {
-			   xmlhttprequestcheckconf = false;
-			  }
-			 }
-			@end @*/
-			//alert ("1");
-			if (!xmlhttprequestcheckconf && typeof XMLHttpRequest!='undefined') {
-				xmlhttprequestcheckconf = new XMLHttpRequest();
-			}
+			xmlhttprequestcheckconf=getXmlHttp();
 			if (xmlhttprequestcheckconf) { 
 				checkconf_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&client=vdc&conf_exten=" + taskconfnum + "&auto_dial_level=" + auto_dial_level + "&campagentstdisp=" + campagentstdisp;
 				xmlhttprequestcheckconf.open('POST', 'conf_exten_check.php'); 
