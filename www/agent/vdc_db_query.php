@@ -165,8 +165,15 @@
 # 090410-1744 - Added allow_tab_switch
 # 090428-0936 - Added external_key
 
-$version = '2.0.4-69';
-$build = '80424-0442';
+# The version/build variables get set to the SVN revision automatically in release package.
+# Do not change.
+$version = 'SVN_Version';
+$build = 'SVN_Build';
+
+header('Cache-Control: public, no-cache, max-age=0, must-revalidate');
+header('Expires: '.gmdate('D, d M Y H:i:s', (time() - 60)).' GMT');
+header('Pragma: no-cache');
+header('Content-Type: text/html; charset=utf-8');
 
 $DB = 0;
 $length_in_sec = 0;
@@ -331,10 +338,6 @@ if (isset($_GET["script_button_id"]))						{$script_button_id=$_GET["script_butt
 if (isset($_GET["et_id"]))						{$et_id=$_GET["et_id"];}
     elseif (isset($_POST["et_id"]))			{$et_id=$_POST["et_id"];}
 
-
-header ("Content-type: text/html; charset=utf-8");
-header ("Cache-Control: no-cache, must-revalidate");  // HTTP/1.1
-header ("Pragma: no-cache");                          // HTTP/1.0
 
 #############################################
 ##### START SYSTEM_SETTINGS LOOKUP #####

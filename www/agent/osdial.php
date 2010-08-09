@@ -212,6 +212,11 @@
 $version = 'SVN_Version';
 $build = 'SVN_Build';
 
+header('Cache-Control: public, no-cache, max-age=0, must-revalidate');
+header('Expires: '.gmdate('D, d M Y H:i:s', (time() - 60)).' GMT');
+header('Pragma: no-cache');
+header('Content-Type: text/html; charset=utf-8');
+
 require("dbconnect.php");
 require('functions.php');
 
@@ -364,10 +369,6 @@ $agcDIR = preg_replace('/osdial.php/','',$agcPAGE);
 
 echo "<html>\n";
 echo "<head>\n";
-echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n";
-echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
-echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
-echo "<meta http-equiv=\"Expires\" content=\"0\">\n";
 echo "<meta name=\"Copyright\" content=\"&copy; 2009-2010 Call Center Service Group, LC\">\n";
 echo "<meta name=\"Copyright\" content=\"&copy; 2009-2010 Lott Caskey\">\n";
 echo "<meta name=\"Copyright\" content=\"&copy; 2009-2010 Steve Szmidt\">\n";
@@ -399,7 +400,7 @@ $wsc .= "<table class=acrossagent border=1 width=" . ($CAwidth + 30) . " height=
 $wsc .= "<tr>";
 $wsc .= "<td align=center bgcolor=$panel_bg>";
 $wsc .= "<span id=WelcomeBoxAt style=color:$default_fc;font-family:Arial,Helvetica;border:none;>";
-$wsc .= "<span id=WelcomeBoxTitle style=font-size:36px;><b>$t1</b></font>";
+$wsc .= "<span id=WelcomeBoxTitle style=font-size:36px;><b>$t1</b></span>";
 $wsc .= "<font size=3>";
 $wsc .= "<br><br><br><br><br><br>One moment please.<br><br><br><br><br>";
 $wsc .= "<font size=2>";
@@ -412,6 +413,7 @@ $wsc .= "</td>";
 $wsc .= "</tr>";
 $wsc .= "</table>";
 $wsc .= "</span>";
+
 
 $company_prefix='';
 if ($multicomp > 0) {
@@ -475,14 +477,12 @@ if ($campaign_login_list > 0) {
     $camp_form_code = "<input type=text name=VD_campaign size=10 maxlength=20 value=\"$VD_campaign\">\n";
 }
 
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
-
-echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
-
 
 //  Relogin
 if ($relogin == 'YES') {
     echo "<title>$t1 web client: Re-Login</title>\n";
+    echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+    echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
     echo "</head>\n";
 
     echo "<body bgcolor=white name=osdial>\n";
@@ -501,7 +501,7 @@ if ($relogin == 'YES') {
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=left>&nbsp;</td>\n";
-    echo "    <td align=center colspan=2><font color=" . $login_fc . "><b>Agent Login</b></td>\n";
+    echo "    <td align=center colspan=2><font color=" . $login_fc . "><b>Agent Login</b></font></td>\n";
     echo "    <td align=left class=rborder>&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
@@ -509,31 +509,31 @@ if ($relogin == 'YES') {
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=left></td>\n";
-    echo "    <td align=right><font color=" . $login_fc . ">Phone&nbsp;Login:&nbsp;</td>\n";
+    echo "    <td align=right><font color=" . $login_fc . ">Phone&nbsp;Login:&nbsp;</font></td>\n";
     echo "    <td align=left><input type=text name=phone_login size=10 maxlength=20 value=\"$phone_login\"></td>\n";
     echo "    <td align=left class=rborder>&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=left></td>\n";
-    echo "    <td align=right><font color=" . $login_fc . ">Phone&nbsp;Password:&nbsp;</td>\n";
+    echo "    <td align=right><font color=" . $login_fc . ">Phone&nbsp;Password:&nbsp;</font></td>\n";
     echo "    <td align=left><input type=password name=phone_pass size=10 maxlength=20 value=\"$phone_pass\"></td>\n";
     echo "    <td align=right class=rborder>&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=left></td>\n";
-    echo "    <td align=right><font color=" . $login_fc . ">User&nbsp;Login:&nbsp;</td>\n";
+    echo "    <td align=right><font color=" . $login_fc . ">User&nbsp;Login:&nbsp;</font></td>\n";
     echo "    <td align=left><input type=text name=VD_login size=10 maxlength=20 value=\"$VD_login\"></td>\n";
     echo "    <td align=left class=rborder>&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=left></td>\n";
-    echo "    <td align=right><font color=" . $login_fc . ">User&nbsp;Password:&nbsp;</td>\n";
+    echo "    <td align=right><font color=" . $login_fc . ">User&nbsp;Password:&nbsp;</font></td>\n";
     echo "    <td align=left><input type=password name=VD_pass size=10 maxlength=20 value=\"$VD_pass\"></td>\n";
     echo "    <td align=left class=rborder>&nbsp;</td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=left></td>\n";
-    echo "    <td align=right><font color=" . $login_fc . ">Campaign:&nbsp;</td>\n";
+    echo "    <td align=right><font color=" . $login_fc . ">Campaign:&nbsp;</font></td>\n";
     echo "    <td align=left>$camp_form_code</td>\n";
     echo "    <td align=left class=rborder>&nbsp;</td>\n";
     echo "  </tr>\n";
@@ -542,7 +542,7 @@ if ($relogin == 'YES') {
     echo "    <td align=center colspan=4 class=rborder><input type=button onclick=\"login_submit(); return false;\" name=SUBMIT value=SUBMIT></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td align=left colspan=4 class=rbborder><font size=1>&nbsp;Version: $version&nbsp;&nbsp;&nbsp;Build: $build</td>\n";
+    echo "    <td align=left colspan=4 class=rbborder><font size=1>&nbsp;Version: $version&nbsp;&nbsp;&nbsp;Build: $build</font></td>\n";
     echo "  </tr>\n";
     echo "</table>\n";
     echo "</div>\n";
@@ -555,6 +555,8 @@ if ($relogin == 'YES') {
 if ($user_login_first == 1) {
     if (strlen($VD_login)<1 or strlen($VD_pass)<1 or strlen($VD_campaign)<1) {
         echo "<title>$t1 web client: Campaign Login</title>\n";
+        echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+        echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
         echo "</head>\n";
         echo "<body bgcolor=white name=osdial>\n";
         
@@ -570,7 +572,7 @@ if ($user_login_first == 1) {
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left>&nbsp;</td>\n";
-        echo "    <td align=center colspan=2><font color=" . $login_fc . "><b>Agent Login</b></td>\n";
+        echo "    <td align=center colspan=2><font color=" . $login_fc . "><b>Agent Login</b></font></td>\n";
         echo "    <td align=left class=rborder>&nbsp;</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
@@ -578,19 +580,19 @@ if ($user_login_first == 1) {
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left></td>\n";
-        echo "    <td align=right><font color=" . $login_fc . ">User&nbsp;Login:&nbsp;</td>\n";
+        echo "    <td align=right><font color=" . $login_fc . ">User&nbsp;Login:&nbsp;</font></td>\n";
         echo "    <td align=left><input type=text name=VD_login size=10 maxlength=20 value=\"$VD_login\"></td>\n";
         echo "    <td align=left class=rborder>&nbsp;</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left></td>\n";
-        echo "    <td align=right><font color=" . $login_fc . ">User&nbsp;Password:&nbsp;</td>\n";
+        echo "    <td align=right><font color=" . $login_fc . ">User&nbsp;Password:&nbsp;</font></td>\n";
         echo "    <td align=left><input type=password name=VD_pass size=10 maxlength=20 value=\"$VD_pass\"></td>\n";
         echo "    <td align=left class=rborder>&nbsp;</td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left></td>\n";
-        echo "    <td align=right><font color=" . $login_fc . ">Campaign:&nbsp;</td>\n";
+        echo "    <td align=right><font color=" . $login_fc . ">Campaign:&nbsp;</font></td>\n";
         echo "    <td align=left>$camp_form_code</td>\n";
         echo "    <td align=left class=rborder>&nbsp;</td>\n";
         echo "  </tr>\n";
@@ -599,7 +601,7 @@ if ($user_login_first == 1) {
         echo "     <td align=center colspan=4 class=rborder><input type=submit name=SUBMIT value=SUBMIT></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
-        echo "    <td align=left colspan=4 class=rbborder><font size=1>&nbsp;Version: $version&nbsp;&nbsp;&nbsp;Build: $build</td>\n";
+        echo "    <td align=left colspan=4 class=rbborder><font size=1>&nbsp;Version: $version&nbsp;&nbsp;&nbsp;Build: $build</font></td>\n";
         echo "  </tr>\n";
         echo "</table>\n";
         echo "</div>\n";
@@ -618,6 +620,8 @@ if ($user_login_first == 1) {
             $phone_pass=$row[1];
     
             echo "<title>$t1 web client: Login</title>\n";
+            echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+            echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
             echo "</head>\n";
             echo "<body bgcolor=white name=osdial>\n";
             echo $welcome_span;
@@ -669,6 +673,8 @@ if ($user_login_first == 1) {
 // Phone Login from welcome scren
 if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
     echo "<title>$t1 web client:  Phone Login</title>\n";
+    echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+    echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
     echo "</head>\n";
     echo "<body bgcolor=white name=osdial>\n";
     
@@ -683,7 +689,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
     echo "    <td width='22'><img src='templates/" . $agent_template . "/images/AgentTopRightS.png' width='22' height='22' align='right'></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "    <td align=left><font size=1>&nbsp;</td>\n";
+    echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
     echo "    <td align=center colspan=2><font color=" . $login_fc . "><b>Login To Your Phone</font></td>\n";
     echo "    <td align=left class=rborder><font size=1>&nbsp;</font></td>\n";
     echo "  </tr>\n";
@@ -775,6 +781,8 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
             if (!preg_match("/ $VD_campaign /i",$LOGallowed_campaigns) and !preg_match("/ALL-CAMPAIGNS/",$LOGallowed_campaigns)) {
                 echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+                echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
                 echo "</head>\n";
                 echo "<body bgcolor=white name=osdial>\n";
                 echo $welcome_span;
@@ -1105,6 +1113,8 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
     if ($VDloginDISPLAY) {
         echo "<title>$t1 web client: Campaign Login</title>\n";
+        echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+        echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
         echo "</head>\n";
         echo "<body bgcolor=white name=osdial>\n";
         echo $welcome_span;
@@ -1172,6 +1182,8 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
     $authphone=$row[0];
     if (!$authphone) {
         echo "<title>$t1 web client: Phone Login Error</title>\n";
+        echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+        echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
         echo "</head>\n";
         echo "<body bgcolor=white name=osdial>\n";
     
@@ -1187,7 +1199,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
-        echo "    <td align=center colspan=2><font color=" . $login_fc . "><b><font color='red'>Invalid Login, please try again!</font></td>\n";
+        echo "    <td align=center colspan=2><font color='red'>Invalid Login, please try again!</font></td>\n";
         echo "    <td align=left class=rborder><font size=1>&nbsp;</font></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
@@ -1422,6 +1434,8 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             if ($ola_user_ct) {
                 $row=mysql_fetch_row($rslt);
                 echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
+                echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+                echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
                 echo "</head>\n";
                 echo "<body bgcolor=white name=osdial>\n";
                 echo $welcome_span;
@@ -1586,6 +1600,8 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
         } else {
             echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
+            echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+            echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
             echo "</head>\n";
             echo "<body bgcolor=white name=osdial>\n";
             echo $welcome_span;
@@ -1607,6 +1623,8 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
     if (strlen($session_id) < 1) {
         echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
+        echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+        echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
         echo "</head>\n";
         echo "<body bgcolor=white name=osdial>\n";
         echo $welcome_span;
@@ -1761,13 +1779,7 @@ $AFoptions_js = rtrim($AFoptions_js,',');
 $AFlengths_js = rtrim($AFlengths_js,',');
 
 
-
-
-echo "<script type=\"text/javascript\">\n";
-echo "document.write('$wsc');\n";
-echo "</script>\n";
-
-load_status('Initializing global namespace...<br>&nbsp;<br>&nbsp;');
+#load_status('Initializing global namespace...<br>&nbsp;<br>&nbsp;');
 echo "<script type=\"text/javascript\">\n";
 require('include/osdial-global-dynamic.js');
 echo "var scriptnames=new Array();\n";
@@ -1780,11 +1792,24 @@ while ($MM_scripts > $h) {
 }
 echo "</script>\n";
 
+
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+
+
+
 echo "<script type=\"text/javascript\" src=\"include/osdial-global.js\"></script>\n";
-
-load_status('Initializing static functions...<br>&nbsp;<br>&nbsp;');
-
+#load_status('Initializing static functions...<br>&nbsp;<br>&nbsp;');
 echo "<script type=\"text/javascript\" src=\"include/osdial-static.js\"></script>\n";
+
+#echo "<script type=\"text/javascript\">\n";
+#echo "document.write('$wsc');\n";
+#echo "</script>\n";
+
+
+
+
+
+
 
 echo "</head>\n";
 flush();
@@ -1887,7 +1912,7 @@ flush();
     <!-- Hot Key Button -->
     <? if ($HK_statuses_camp > 0 and ($user_level >= $HKuser_level or $VU_hotkeys_active > 0)) { ?>
         <span style="position:absolute;left:<?=$HKwidth+40 ?>px;top:<?=$HKheight +50 ?>px;z-index:16;" id="hotkeysdisplay">
-            <a href="#" onMouseOver="HotKeys('ON')"><img src="templates/<?= $agent_template ?>/images/vdc_XB_hotkeysactive_OFF.gif" border=0 alt="HOT KEYS INACTIVE"></a>
+            <a href="#" onMouseOver="HotKeys('ON')"><img src="templates/<?= $agent_template ?>/images/vdc_XB_hotkeysactive_OFF.gif" width=137 height=32 border=0 alt="HOT KEYS INACTIVE"></a>
         </span>
     <? } ?>
 
@@ -1898,7 +1923,7 @@ flush();
             <? if ($PreseT_DiaL_LinKs) {
                 echo "<a href=\"#\" onclick=\"DtMf_PreSet_a_DiaL();return false;\"><font class=\"body_tiny\">D1 - DIAL</font></a><br>\n";
                 echo "<a href=\"#\" onclick=\"DtMf_PreSet_b_DiaL();return false;\"><font class=\"body_tiny\">D2 - DIAL</font></a><br>\n";
-                echo "<span id=\"DialBlindVMail2\"><img src=\"templates/$agent_template/images/vdc_XB_ammessage_OFF.gif\" border=0 alt=\"Blind Transfer VMail Message\"></span>\n";
+                echo "<span id=\"DialBlindVMail2\"><img src=\"templates/$agent_template/images/vdc_XB_ammessage_OFF.gif\" width=36 height=13 border=0 alt=\"Blind Transfer VMail Message\"></span>\n";
             } else {
                 echo "<br><br>\n";
             } ?>
@@ -2020,9 +2045,9 @@ flush();
     <? load_status('Initializing GUI...<br>VolumeControlSpan<br>&nbsp;'); ?>
     <!-- Volume Control Links -->
     <span style="position:absolute;left:935px;top:<?=$CBheight+26 ?>px;z-index:19;visibility:hidden;" id="VolumeControlSpan">
-        <span id="VolumeUpSpan"><img src="templates/<?= $agent_template ?>/images/vdc_volume_up_off.gif" border=0></span>
+        <span id="VolumeUpSpan"><img src="templates/<?= $agent_template ?>/images/vdc_volume_up_off.gif" width=28 height=15 border=0></span>
         <br>
-        <span id="VolumeDownSpan"><img src="templates/<?= $agent_template ?>/images/vdc_volume_down_off.gif" border=0></span>
+        <span id="VolumeDownSpan"><img src="templates/<?= $agent_template ?>/images/vdc_volume_down_off.gif" width=28 height=15 border=0></span>
     </span>
 
     
@@ -2051,24 +2076,24 @@ flush();
                                 </tr>
                                 <tr>
                                     <td><span id="XfeRGrouPLisT"><select size=1 name=XfeRGrouP class="cust_form"><option>-- SELECT A GROUP TO SEND YOUR CALL TO --</option></select></span></td>
-                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="LocalCloser"><img src="templates/<?= $agent_template ?>/images/vdc_XB_localcloser_OFF.gif" border=0 alt="LOCAL CLOSER"></span></td>
-                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="HangupXferLine"><img src="templates/<?= $agent_template ?>/images/vdc_XB_hangupxferline_OFF.gif" border=0 alt="Hangup Xfer Line"></span></td>
-                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="HangupBothLines"><a href="#" onclick="bothcall_send_hangup();return false;"><img src="templates/<?= $agent_template ?>/images/vdc_XB_hangupbothlines.gif" border=0 alt="Hangup Both Lines"></a></span></td>
+                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="LocalCloser"><img src="templates/<?= $agent_template ?>/images/vdc_XB_localcloser_OFF.gif" width=107 height=16 border=0 alt="LOCAL CLOSER"></span></td>
+                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="HangupXferLine"><img src="templates/<?= $agent_template ?>/images/vdc_XB_hangupxferline_OFF.gif" width=145 height=16 border=0 alt="Hangup Xfer Line"></span></td>
+                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="HangupBothLines"><a href="#" onclick="bothcall_send_hangup();return false;"><img src="templates/<?= $agent_template ?>/images/vdc_XB_hangupbothlines.gif" width=145 height=16 border=0 alt="Hangup Both Lines"></a></span></td>
                                     <td align=center><a href="#" onclick="DtMf_PreSet_a();return false;"><font class="body_tiny">D1</font></a></td>
                                 </tr>
                                 <tr>
                                     <td><font size=1 color=<?=$xfer_fc?>>Number to call:&nbsp;<input type=text size=15 name=xfernumber maxlength=25 class="cust_form"><input type=hidden name=xferuniqueid></font></td>
                                     <td align=center><input type=checkbox name=xferoverride size=1 value="0"><font size=1 color=<?=$xfer_fc?>>Dial Override</font></td>
-                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="Leave3WayCall"><img src="templates/<?= $agent_template ?>/images/vdc_XB_leave3waycall_OFF.gif" border=0 alt="LEAVE 3-WAY CALL"></span></td>
-                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="DialBlindTransfer"><img src="templates/<?= $agent_template ?>/images/vdc_XB_blindtransfer_OFF.gif" border=0 alt="Dial Blind Transfer"></span></td>
+                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="Leave3WayCall"><img src="templates/<?= $agent_template ?>/images/vdc_XB_leave3waycall_OFF.gif" width=137 height=16 border=0 alt="LEAVE 3-WAY CALL"></span></td>
+                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="DialBlindTransfer"><img src="templates/<?= $agent_template ?>/images/vdc_XB_blindtransfer_OFF.gif" width=137 height=16 border=0 alt="Dial Blind Transfer"></span></td>
                                     <td align=center><a href="#" onclick="DtMf_PreSet_b();return false;"><font class="body_tiny">D2</font></a></td>
                                 </tr>
                                 <tr>
                                     <td><font size=1 color=<?=$xfer_fc?>>Seconds:&nbsp;<input type=text size=2 name=xferlength maxlength=4 class="cust_form"></font></td>
                                     <td><font size=1 color=<?=$xfer_fc?>>Channel:&nbsp;<input type=text size=12 name=xferchannel maxlength=100 class="cust_form"></font></td>
-                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="DialWithCustomer"><a href="#" onclick="SendManualDial('YES');return false;"><img src="templates/<?= $agent_template ?>/images/vdc_XB_dialwithcustomer.gif" border=0 alt="Dial With Customer"></a></span></td>
-                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="ParkCustomerDial"><a href="#" onclick="xfer_park_dial();return false;"><img src="templates/<?= $agent_template ?>/images/vdc_XB_parkcustomerdial.gif" border=0 alt="Park Customer Dial"></a></span></td>
-                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="DialBlindVMail"><img src="templates/<?= $agent_template ?>/images/vdc_XB_ammessage_OFF.gif" border=0 alt="Blind Transfer VMail Message"></span></td>
+                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="DialWithCustomer"><a href="#" onclick="SendManualDial('YES');return false;"><img src="templates/<?= $agent_template ?>/images/vdc_XB_dialwithcustomer.gif" width=144 height=16 border=0 alt="Dial With Customer"></a></span></td>
+                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="ParkCustomerDial"><a href="#" onclick="xfer_park_dial();return false;"><img src="templates/<?= $agent_template ?>/images/vdc_XB_parkcustomerdial.gif" width=147 height=16 border=0 alt="Park Customer Dial"></a></span></td>
+                                    <td align=center><span style="background-color: <?=$xfer_bg2?>" id="DialBlindVMail"><img src="templates/<?= $agent_template ?>/images/vdc_XB_ammessage_OFF.gif" width=36 height=16 border=0 alt="Blind Transfer VMail Message"></span></td>
                                 </tr>
                             </table>
                         </font>
@@ -2426,7 +2451,7 @@ flush();
     <? load_status('Initializing GUI...<br>NothingBox<br>&nbsp;'); ?>
     <!-- Preview hide -->
     <span style="position:absolute;left:0px;top:0px;z-index:37;visibility:hidden;" id="NothingBox">
-        <button type=button name="inert_button"><img src="templates/<?= $agent_template ?>/images/blank.gif"></button>
+        <button type=button name="inert_button"><img src="templates/<?= $agent_template ?>/images/blank.gif" width=1 height=1></button>
         <span id="DiaLLeaDPrevieWHide">Channel</span>
         <span id="DiaLDiaLAltPhonEHide">Channel</span>
         <? if (!$agentonly_callbacks) {
@@ -2500,58 +2525,58 @@ flush();
                             <td width=205 height=330 align=left valign=top class=curve3>
                                 <font class="body_text" style="">
                                     <center>
-                                        <span style="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><img src="templates/<?= $agent_template ?>/images/vdc_LB_dialnextnumber_OFF.gif" border=0 alt="Dial Next Number"></a></span><br>
+                                        <span style="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><img src="templates/<?= $agent_template ?>/images/vdc_LB_dialnextnumber_OFF.gif" width=145 height=16 border=0 alt="Dial Next Number"></a></span><br>
                                         <span id="DiaLLeaDPrevieW"><font class="preview_text"><input type=checkbox name=LeadPreview id=LeadPreview size=1 value="0"><label for="LeadPreview"> LEAD PREVIEW</label><br></font></span>
                                         <span id="DiaLDiaLAltPhonE"><font class="preview_text"><input type=checkbox name=DiaLAltPhonE id=DiaLAltPhonE size=1 value="0"><label for="DaiLAltPhonE"> ALT PHONE DIAL</label><br></font></span>
                             
                                         <font color=<?=$form_fc?>>Recording File</font><br>
                                         <font class="body_tiny">&nbsp;<span id="RecorDingFilename"></span></font><br>
                                         <font color=<?=$form_fc?>>Recording ID:&nbsp;</font><font class="body_small">&nbsp;<span id="RecorDID"></span></font>
-                                        <span id="RecorDControl"><a href="#" onclick="conf_send_recording('MonitorConf','<?=$session_id ?>','');return false;"><img src="templates/<?= $agent_template ?>/images/vdc_LB_startrecording.gif" border=0 alt="Start Recording"></a></span>
+                                        <span id="RecorDControl"><a href="#" onclick="conf_send_recording('MonitorConf','<?=$session_id ?>','');return false;"><img src="templates/<?= $agent_template ?>/images/vdc_LB_startrecording.gif" width=145 height=16 border=0 alt="Start Recording"></a></span>
                                         
-                                        <span id="SpacerSpanA"><img src="templates/<?= $agent_template ?>/images/blank.gif" style="width:145px;height:16px;border:0px;"></span><br>
-                                        <span id="WebFormSpan"><img src="templates/<?= $agent_template ?>/images/vdc_LB_webform_OFF.gif" border=0 alt="Web Form"></span>
-                                        <span id="SpacerSpanB"><img src="templates/<?= $agent_template ?>/images/blank.gif" style="width:145px;height:2px;border:0px;"></span><br>
-                                        <span id="WebFormSpan2"><img src="templates/<?= $agent_template ?>/images/vdc_LB_webform2_OFF.gif" border=0 alt="Web Form"></span>
-                                        <span id="SpacerSpanC"><img src="templates/<?= $agent_template ?>/images/blank.gif" style="width:145px;height:16px;border:0px;"></span><br>
-                                        <span id="ParkControl"><img src="templates/<?= $agent_template ?>/images/vdc_LB_parkcall_OFF.gif" border=0 alt="Park Call"></span>
-                                        <span id="SpacerSpanD"><img src="templates/<?= $agent_template ?>/images/blank.gif" style="width:145px;height:2px;border:0px;"></span><br>
-                                        <span id="XferControl"><img src="templates/<?= $agent_template ?>/images/vdc_LB_transferconf_OFF.gif" border=0 alt="Transfer - Conference"></span>
-                                        <span id="SpacerSpanE"><img src="templates/<?= $agent_template ?>/images/blank.gif" style="width:145px;height:16px;border:0px;"></span><br>
-                                        <span id="HangupControl"><img src="templates/<?= $agent_template ?>/images/vdc_LB_hangupcustomer_OFF.gif" border=0 alt="Hangup Customer"></span>
-                                        <span id="SpacerSpanF"><img src="templates/<?= $agent_template ?>/images/blank.gif" style="width:145px;height:16px;border:0px;"></span><br>
+                                        <span id="SpacerSpanA"><img src="templates/<?= $agent_template ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
+                                        <span id="WebFormSpan"><img src="templates/<?= $agent_template ?>/images/vdc_LB_webform_OFF.gif" width=145 height=16 border=0 alt="Web Form"></span>
+                                        <span id="SpacerSpanB"><img src="templates/<?= $agent_template ?>/images/blank.gif" width=1 height=1 style="width:145px;height:2px;border:0px;"></span><br>
+                                        <span id="WebFormSpan2"><img src="templates/<?= $agent_template ?>/images/vdc_LB_webform2_OFF.gif" width=145 height=16 border=0 alt="Web Form"></span>
+                                        <span id="SpacerSpanC"><img src="templates/<?= $agent_template ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
+                                        <span id="ParkControl"><img src="templates/<?= $agent_template ?>/images/vdc_LB_parkcall_OFF.gif" width=145 height=16 border=0 alt="Park Call"></span>
+                                        <span id="SpacerSpanD"><img src="templates/<?= $agent_template ?>/images/blank.gif" width=1 height=1 style="width:145px;height:2px;border:0px;"></span><br>
+                                        <span id="XferControl"><img src="templates/<?= $agent_template ?>/images/vdc_LB_transferconf_OFF.gif" width=145 height=16 border=0 alt="Transfer - Conference"></span>
+                                        <span id="SpacerSpanE"><img src="templates/<?= $agent_template ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
+                                        <span id="HangupControl"><img src="templates/<?= $agent_template ?>/images/vdc_LB_hangupcustomer_OFF.gif" width=145 height=16 border=0 alt="Hangup Customer"></span>
+                                        <span id="SpacerSpanF"><img src="templates/<?= $agent_template ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
             
                                         <div class="text_input" id="DTMFDialPad" onMouseOver="DTMFKeys('ON');">
                                             <table cellspacing=1 cellpadding=1 border=0>
                                                 <tr>
-                                                    <td align=center><span id="DTMFDialPad1"><a href="#" alt="1"><img src="templates/<?= $agent_template ?>/images/dtmf_1_OFF.png" border=0></a></span></td>
-                                                    <td align=center><span id="DTMFDialPad2"><a href="#" alt="2 - ABC"><img src="templates/<?= $agent_template ?>/images/dtmf_2_OFF.png" border=0></a></span></td>
-                                                    <td align=center><span id="DTMFDialPad3"><a href="#" alt="3 - DEF"><img src="templates/<?= $agent_template ?>/images/dtmf_3_OFF.png" border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad1"><a href="#" alt="1"><img src="templates/<?= $agent_template ?>/images/dtmf_1_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad2"><a href="#" alt="2 - ABC"><img src="templates/<?= $agent_template ?>/images/dtmf_2_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad3"><a href="#" alt="3 - DEF"><img src="templates/<?= $agent_template ?>/images/dtmf_3_OFF.png" width=26 height=19 border=0></a></span></td>
                                                 </tr>
                                                 <tr>
-                                                    <td align=center><span id="DTMFDialPad4"><a href="#" alt="4 - GHI"><img src="templates/<?= $agent_template ?>/images/dtmf_4_OFF.png" border=0></a></span></td>
-                                                    <td align=center><span id="DTMFDialPad5"><a href="#" alt="5 - JKL"><img src="templates/<?= $agent_template ?>/images/dtmf_5_OFF.png" border=0></a></span></td>
-                                                    <td align=center><span id="DTMFDialPad6"><a href="#" alt="6 - MNO"><img src="templates/<?= $agent_template ?>/images/dtmf_6_OFF.png" border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad4"><a href="#" alt="4 - GHI"><img src="templates/<?= $agent_template ?>/images/dtmf_4_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad5"><a href="#" alt="5 - JKL"><img src="templates/<?= $agent_template ?>/images/dtmf_5_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad6"><a href="#" alt="6 - MNO"><img src="templates/<?= $agent_template ?>/images/dtmf_6_OFF.png" width=26 height=19 border=0></a></span></td>
                                                 </tr>
                                                 <tr>
-                                                    <td align=center><span id="DTMFDialPad7"><a href="#" alt="7 - PQRS"><img src="templates/<?= $agent_template ?>/images/dtmf_7_OFF.png" border=0></a></span></td>
-                                                    <td align=center><span id="DTMFDialPad8"><a href="#" alt="8 - TUV"><img src="templates/<?= $agent_template ?>/images/dtmf_8_OFF.png" border=0></a></span></td>
-                                                    <td align=center><span id="DTMFDialPad9"><a href="#" alt="9 - WXYZ"><img src="templates/<?= $agent_template ?>/images/dtmf_9_OFF.png" border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad7"><a href="#" alt="7 - PQRS"><img src="templates/<?= $agent_template ?>/images/dtmf_7_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad8"><a href="#" alt="8 - TUV"><img src="templates/<?= $agent_template ?>/images/dtmf_8_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad9"><a href="#" alt="9 - WXYZ"><img src="templates/<?= $agent_template ?>/images/dtmf_9_OFF.png" width=26 height=19 border=0></a></span></td>
                                                 </tr>
                                                 <tr>
-                                                    <td align=center><span id="DTMFDialPadStar"><a href="#" alt="*"><img src="templates/<?= $agent_template ?>/images/dtmf_star_OFF.png" border=0></a></span></td>
-                                                    <td align=center><span id="DTMFDialPad0"><a href="#" alt="0"><img src="templates/<?= $agent_template ?>/images/dtmf_0_OFF.png" border=0></a></span></td>
-                                                    <td align=center><span id="DTMFDialPadHash"><a href="#" alt="#"><img src="templates/<?= $agent_template ?>/images/dtmf_hash_OFF.png" border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPadStar"><a href="#" alt="*"><img src="templates/<?= $agent_template ?>/images/dtmf_star_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad0"><a href="#" alt="0"><img src="templates/<?= $agent_template ?>/images/dtmf_0_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPadHash"><a href="#" alt="#"><img src="templates/<?= $agent_template ?>/images/dtmf_hash_OFF.png" width=26 height=19 border=0></a></span></td>
                                                 </tr>
                                             </table>
                                         </div>
                                         
                                         <div class="text_input" id="SendDTMFdiv">
-                                            <span id="SendDTMF"><a href="#" onclick="SendConfDTMF('<?=$session_id ?>');return false;"><img src="templates/<?= $agent_template ?>/images/vdc_LB_senddtmf.gif" border=0 alt="Send DTMF" align=top></a> <input type=text size=6 name=conf_dtmf class="cust_form" value="" maxlength=50></span>
+                                            <span id="SendDTMF"><a href="#" onclick="SendConfDTMF('<?=$session_id ?>');return false;"><img src="templates/<?= $agent_template ?>/images/vdc_LB_senddtmf.gif" height=19 width=93 border=0 alt="Send DTMF" align=top></a> <input type=text size=6 name=conf_dtmf class="cust_form" value="" maxlength=50></span>
                                         </div>
                                         
                                         <span id="RepullControl"></span>
-                                        <span id="SpacerSpanG"><img src="templates/<?= $agent_template ?>/images/blank.gif" style="width:145px;height:16px;border:0px;"></span><br>
+                                        <span id="SpacerSpanG"><img src="templates/<?= $agent_template ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
                                     </center>
                                 </font>
                             </td>
@@ -2721,7 +2746,7 @@ flush();
                                     echo "  <table width=265><tr><td><table align=center>\n";
                                     echo "      <tr>\n";
                                     echo "          <td colspan=3 align=center>\n";
-                                    echo "              <font color=$form_fc class=body_text style=\"font-size:12px\"><b>Email Templates<br />Select Emails to Send After Call<b></font>\n";
+                                    echo "              <font color=$form_fc class=body_text style=\"font-size:12px\"><b>Email Templates<br />Select Emails to Send After Call</b></font>\n";
                                     echo "          </td>\n";
                                     echo "      </tr>\n";
 
@@ -2862,7 +2887,6 @@ flush();
             </tr>
         </table>
     </span>
-</form>
 <!-- END *********   The end of the main OSDial display panel -->
 
 
@@ -2898,6 +2922,7 @@ if (file_exists($WeBServeRRooT . '/agent/include/' . $VD_campaign . '_form_valid
 }
 
 load_status('Complete...<br>&nbsp;<br>&nbsp;');
+echo "</form>\n";
 echo "</body>\n";
 echo "</html>\n";
 

@@ -1,4 +1,9 @@
-<?php ?>
+<?php
+header('Cache-Control: public, no-cache, max-age=0, must-revalidate');
+header('Expires: '.gmdate('D, d M Y H:i:s', (time() - 60)).' GMT');
+header('Pragma: no-cache');
+header('Content-Type: text/html; charset=utf-8');
+?>
 <html>
 <head><title>Lead #<?=$_GET['lead_id'] ?></title></head>
 <body>

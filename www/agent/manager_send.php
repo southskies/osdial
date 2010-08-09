@@ -91,8 +91,15 @@
 # 80424-0442 - Added non_latin lookup from system_settings
 #
 
-$version = '2.0.4-31';
-$build = '80424-0442';
+# The version/build variables get set to the SVN revision automatically in release package.
+# Do not change.
+$version = 'SVN_Version';
+$build = 'SVN_Build';
+
+header('Cache-Control: public, no-cache, max-age=0, must-revalidate');
+header('Expires: '.gmdate('D, d M Y H:i:s', (time() - 60)).' GMT');
+header('Pragma: no-cache');
+header('Content-Type: text/html; charset=utf-8');
 
 require("dbconnect.php");
 
@@ -169,10 +176,6 @@ if (isset($_GET["session_id"]))				{$session_id=$_GET["session_id"];}
 	elseif (isset($_POST["session_id"]))		{$session_id=$_POST["session_id"];}
 if (isset($_GET["server_dialstring"]))				{$server_dialstring=$_GET["server_dialstring"];}
 	elseif (isset($_POST["server_dialstring"]))		{$server_dialstring=$_POST["server_dialstring"];}
-
-header ("Content-type: text/html; charset=utf-8");
-header ("Cache-Control: no-cache, must-revalidate");  // HTTP/1.1
-header ("Pragma: no-cache");                          // HTTP/1.0
 
 #############################################
 ##### START SYSTEM_SETTINGS LOOKUP #####

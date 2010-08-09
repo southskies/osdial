@@ -44,6 +44,10 @@
 #   Which might result in something like this being passed:
 #     http://www.osdial.com/webform_test.php?id=3483&lead=120&list=1000&number=4075551212
 #  
+header('Cache-Control: public, no-cache, max-age=0, must-revalidate');
+header('Expires: '.gmdate('D, d M Y H:i:s', (time() - 60)).' GMT');
+header('Pragma: no-cache');
+header('Content-Type: text/html; charset=utf-8');
 
 include("../admin/include/functions.php");
 include("../admin/include/variables.php");

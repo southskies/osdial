@@ -163,11 +163,11 @@
 		}
 		if (taskagentmute=='AgenT') {
 			if (taskdirection=='MUTING') {
-				document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('UNMUTE','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_UNMUTE.gif\" BORDER=0></a>";
-				document.getElementById("MutedWarning").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('UNMUTE','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/muted.gif\" BORDER=0></a>";
+				document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('UNMUTE','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_UNMUTE.gif\" width=28 height=28 BORDER=0></a>";
+				document.getElementById("MutedWarning").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('UNMUTE','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/muted.gif\" width=148 height=35 BORDER=0></a>";
 			} else {
-				document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('MUTING','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_MUTE.gif\" BORDER=0></a>";
-				document.getElementById("MutedWarning").innerHTML = "<img src=\"templates/" + agent_template + "/images/mutedoff.gif\" border=0></a>";
+				document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('MUTING','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_MUTE.gif\" width=28 height=28 BORDER=0></a>";
+				document.getElementById("MutedWarning").innerHTML = "<img src=\"templates/" + agent_template + "/images/mutedoff.gif\" width=148 height=35 border=0></a>";
 			}
 		}
 	}
@@ -325,7 +325,7 @@
 			}
 			if (taskconfxfer == 'YES') {
 				var queryCID = "DCagcW" + epoch_sec + user_abb;
-				document.getElementById("HangupControl").innerHTML = "<a href=\"#\" onclick=\"bothcall_send_hangup();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_hangupcustomer.gif\" border=0 alt=\"Hangup Customer\"></a>";
+				document.getElementById("HangupControl").innerHTML = "<a href=\"#\" onclick=\"bothcall_send_hangup();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_hangupcustomer.gif\" width=145 height=16 border=0 alt=\"Hangup Customer\"></a>";
 				lead_cust1_cid = document.osdial_form.custom1.value;
 				lead_cust2_cid = document.osdial_form.custom2.value;
 				lead_cid = document.osdial_form.phone_number.value;
@@ -382,7 +382,7 @@
 						MD_channel_look=1;
 						XDcheck = 'YES';
 
-				//		document.getElementById("HangupXferLine").innerHTML ="<a href=\"#\" onclick=\"xfercall_send_hangup();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hangupxferline.gif\" border=0 alt=\"Hangup Xfer Line\"></a>";
+				//		document.getElementById("HangupXferLine").innerHTML ="<a href=\"#\" onclick=\"xfercall_send_hangup();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hangupxferline.gif\" width=145 height=16 border=0 alt=\"Hangup Xfer Line\"></a>";
 					}
 				}
 			}
@@ -579,7 +579,7 @@
 									} else if (volumecontrol_active!=1) {
 										live_conf_HTML = live_conf_HTML + "<tr bgcolor=\"" + row_color + "\"><td><font class=\"log_text\">" + loop_ct + "</td><td><font class=\"" + chan_name_color + "\">" + channelfieldA + "</td><td><font class=\"log_text\"><a href=\"#\" onclick=\"livehangup_send_hangup('" + channelfieldA + "');return false;\">HANGUP</a></td><td></td></tr>";
 									} else {
-										live_conf_HTML = live_conf_HTML + "<tr bgcolor=\"" + row_color + "\"><td><font class=\"log_text\">" + loop_ct + "</td><td><font class=\"" + chan_name_color + "\">" + channelfieldA + "</td><td><font class=\"log_text\"><a href=\"#\" onclick=\"livehangup_send_hangup('" + channelfieldA + "');return false;\">HANGUP</a></td><td><a href=\"#\" onclick=\"volume_control('UP','" + channelfieldA + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_up.gif\" BORDER=0></a> &nbsp; <a href=\"#\" onclick=\"volume_control('DOWN','" + channelfieldA + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_down.gif\" BORDER=0></a> &nbsp; &nbsp; &nbsp; <a href=\"#\" onclick=\"volume_control('MUTING','" + channelfieldA + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_MUTE.gif\" BORDER=0></a> &nbsp; <a href=\"#\" onclick=\"volume_control('UNMUTE','" + channelfieldA + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_UNMUTE.gif\" BORDER=0></a></td></tr>";
+										live_conf_HTML = live_conf_HTML + "<tr bgcolor=\"" + row_color + "\"><td><font class=\"log_text\">" + loop_ct + "</td><td><font class=\"" + chan_name_color + "\">" + channelfieldA + "</td><td><font class=\"log_text\"><a href=\"#\" onclick=\"livehangup_send_hangup('" + channelfieldA + "');return false;\">HANGUP</a></td><td><a href=\"#\" onclick=\"volume_control('UP','" + channelfieldA + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_up.gif\" width=28 height=15 BORDER=0></a> &nbsp; <a href=\"#\" onclick=\"volume_control('DOWN','" + channelfieldA + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_down.gif\" width=28 height=15 BORDER=0></a> &nbsp; &nbsp; &nbsp; <a href=\"#\" onclick=\"volume_control('MUTING','" + channelfieldA + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_MUTE.gif\" width=28 height=28 BORDER=0></a> &nbsp; <a href=\"#\" onclick=\"volume_control('UNMUTE','" + channelfieldA + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_UNMUTE.gif\" width=28 height=28 BORDER=0></a></td></tr>";
 									}
 									//var debugspan = document.getElementById("debugbottomspan").innerHTML;
 
@@ -603,13 +603,13 @@
 											if  ( (channelfieldA.match(regAGNTchan)) && (agentchannel != channelfieldA) ) {
 												agentchannel = channelfieldA;
 
-												document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('MUTING','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_MUTE.gif\" BORDER=0></a>";
+												document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('MUTING','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_MUTE.gif\" width=28 height=28 BORDER=0></a>";
 											}
 										} else {
 											if (agentchannel.length < 3) {
 												agentchannel = channelfieldA;
 
-												document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('MUTING','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_MUTE.gif\" BORDER=0></a>";
+												document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('MUTING','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_MUTE.gif\" width=28 height=28 BORDER=0></a>";
 											}
 										}
 									}
@@ -710,10 +710,10 @@
 				//filename = filedate + "_" + user_abb;
 				var query_recording_exten = recording_exten;
 				var channelrec = "Local/" + conf_silent_prefix + '' + taskconfrec + "@" + ext_context;
-				var conf_rec_start_html = "<a href=\"#\" onclick=\"conf_send_recording('StopMonitorConf','" + taskconfrec + "','" + filename + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_stoprecording.gif\" border=0 alt=\"Stop Recording\"></a>";
+				var conf_rec_start_html = "<a href=\"#\" onclick=\"conf_send_recording('StopMonitorConf','" + taskconfrec + "','" + filename + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_stoprecording.gif\" width=145 height=16 border=0 alt=\"Stop Recording\"></a>";
 
 				if (campaign_recording == 'ALLFORCE') {
-					document.getElementById("RecorDControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording_OFF.gif\" border=0 alt=\"Start Recording\">";
+					document.getElementById("RecorDControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording_OFF.gif\" width=145 height=16 border=0 alt=\"Start Recording\">";
 				} else {
 					document.getElementById("RecorDControl").innerHTML = conf_rec_start_html;
 				}
@@ -722,9 +722,9 @@
 				filename = taskconffile;
 				var query_recording_exten = session_id;
 				var channelrec = "Local/" + conf_silent_prefix + '' + taskconfrec + "@" + ext_context;
-				var conf_rec_start_html = "<a href=\"#\" onclick=\"conf_send_recording('MonitorConf','" + taskconfrec + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording.gif\" border=0 alt=\"Start Recording\"></a>";
+				var conf_rec_start_html = "<a href=\"#\" onclick=\"conf_send_recording('MonitorConf','" + taskconfrec + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording.gif\" width=145 height=16 border=0 alt=\"Start Recording\"></a>";
 				if (campaign_recording == 'ALLFORCE') {
-					document.getElementById("RecorDControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording_OFF.gif\" border=0 alt=\"Start Recording\">";
+					document.getElementById("RecorDControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording_OFF.gif\" width=145 height=16 border=0 alt=\"Start Recording\">";
 				} else {
 					document.getElementById("RecorDControl").innerHTML = conf_rec_start_html;
 				}
@@ -902,7 +902,7 @@
 				var parkedby = protocol + "/" + extension;
 				xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectToPark&format=text&channel=" + redirectdestination + "&call_server_ip=" + redirectdestserverip + "&queryCID=" + queryCID + "&exten=" + park_on_extension + "&ext_context=" + ext_context + "&ext_priority=1&extenName=park&parkedby=" + parkedby + "&session_id=" + session_id;
 
-				document.getElementById("ParkControl").innerHTML ="<a href=\"#\" onclick=\"mainxfer_send_redirect('FROMParK','" + redirectdestination + "','" + redirectdestserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_grabparkedcall.gif\" border=0 alt=\"Grab Parked Call\"></a>";
+				document.getElementById("ParkControl").innerHTML ="<a href=\"#\" onclick=\"mainxfer_send_redirect('FROMParK','" + redirectdestination + "','" + redirectdestserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_grabparkedcall.gif\" width=145 height=16 border=0 alt=\"Grab Parked Call\"></a>";
 				customerparked=1;
 			} else if (taskvar == 'FROMParK') {
 				var queryCID = "FPvdcW" + epoch_sec + user_abb;
@@ -917,7 +917,7 @@
 
 				xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectFromPark&format=text&channel=" + redirectdestination + "&call_server_ip=" + redirectdestserverip + "&queryCID=" + queryCID + "&exten=" + dest_dialstring + "&server_dialstring=" + server_dialstring + "&ext_context=" + ext_context + "&ext_priority=1" + "&session_id=" + session_id;
 
-				document.getElementById("ParkControl").innerHTML ="<a href=\"#\" onclick=\"mainxfer_send_redirect('ParK','" + redirectdestination + "','" + redirectdestserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_parkcall.gif\" border=0 alt=\"Park Call\"></a>";
+				document.getElementById("ParkControl").innerHTML ="<a href=\"#\" onclick=\"mainxfer_send_redirect('ParK','" + redirectdestination + "','" + redirectdestserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_parkcall.gif\" width=145 height=16 border=0 alt=\"Park Call\"></a>";
 				customerparked=0;
 			}
 
@@ -1075,9 +1075,9 @@
 						MDlogEPOCH = MDlogResponse_array[1];
 						//osdalert("OSDIAL Call log entered:\n" + document.osdial_form.uniqueid.value,30);
 						if ( (taskMDstage != "start") && (VDstop_rec_after_each_call == 1) ) {
-							var conf_rec_start_html = "<a href=\"#\" onclick=\"conf_send_recording('MonitorConf','" + session_id + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording.gif\" border=0 alt=\"Start Recording\"></a>";
+							var conf_rec_start_html = "<a href=\"#\" onclick=\"conf_send_recording('MonitorConf','" + session_id + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording.gif\" width=145 height=16 border=0 alt=\"Start Recording\"></a>";
 							if ( (campaign_recording == 'NEVER') || (campaign_recording == 'ALLFORCE') ) {
-								document.getElementById("RecorDControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording_OFF.gif\" border=0 alt=\"Start Recording\">";
+								document.getElementById("RecorDControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording_OFF.gif\" width=145 height=16 border=0 alt=\"Start Recording\">";
 							} else {
 								document.getElementById("RecorDControl").innerHTML = conf_rec_start_html;
 							}
@@ -1416,15 +1416,15 @@
 								document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 								document.getElementById("MainStatuSSpan").innerHTML = " Called 3rd party: " + document.osdial_form.xfernumber.value + "&nbsp;&nbsp;<font color=" + status_bg + ">UID: " + CIDcheck;
 
-								document.getElementById("Leave3WayCall").innerHTML ="<a href=\"#\" onclick=\"leave_3way_call('FIRST');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_leave3waycall.gif\" border=0 alt=\"LEAVE 3-WAY CALL\"></a>";
+								document.getElementById("Leave3WayCall").innerHTML ="<a href=\"#\" onclick=\"leave_3way_call('FIRST');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_leave3waycall.gif\" width=137 height=16 border=0 alt=\"LEAVE 3-WAY CALL\"></a>";
 
-								document.getElementById("DialWithCustomer").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_dialwithcustomer_OFF.gif\" border=0 alt=\"Dial With Customer\">";
+								document.getElementById("DialWithCustomer").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_dialwithcustomer_OFF.gif\" width=144 height=16 border=0 alt=\"Dial With Customer\">";
 
-								document.getElementById("ParkCustomerDial").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_parkcustomerdial_OFF.gif\" border=0 alt=\"Park Customer Dial\">";
+								document.getElementById("ParkCustomerDial").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_parkcustomerdial_OFF.gif\" width=147 height=16 border=0 alt=\"Park Customer Dial\">";
 
-								document.getElementById("HangupXferLine").innerHTML ="<a href=\"#\" onclick=\"xfercall_send_hangup();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hangupxferline.gif\" border=0 alt=\"Hangup Xfer Line\"></a>";
+								document.getElementById("HangupXferLine").innerHTML ="<a href=\"#\" onclick=\"xfercall_send_hangup();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hangupxferline.gif\" width=145 height=16 border=0 alt=\"Hangup Xfer Line\"></a>";
 
-								document.getElementById("HangupBothLines").innerHTML ="<a href=\"#\" onclick=\"bothcall_send_hangup();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hangupbothlines.gif\" border=0 alt=\"Hangup Both Lines\"></a>";
+								document.getElementById("HangupBothLines").innerHTML ="<a href=\"#\" onclick=\"bothcall_send_hangup();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hangupbothlines.gif\" width=145 height=16 border=0 alt=\"Hangup Both Lines\"></a>";
 
 								xferchannellive=1;
 								XDcheck = '';
@@ -1462,34 +1462,34 @@
 
 								document.getElementById("MainStatuSSpan").innerHTML = " Called " + status_display_number + "&nbsp;&nbsp;&nbsp;&nbsp;<font color=" + status_bg + ">UID: " + CIDcheck + " &nbsp;</font>"; 
 
-								document.getElementById("ParkControl").innerHTML ="<a href=\"#\" onclick=\"mainxfer_send_redirect('ParK','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_parkcall.gif\" border=0 alt=\"Park Call\"></a>";
+								document.getElementById("ParkControl").innerHTML ="<a href=\"#\" onclick=\"mainxfer_send_redirect('ParK','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_parkcall.gif\" width=145 height=16 border=0 alt=\"Park Call\"></a>";
 
-								document.getElementById("HangupControl").innerHTML = "<a href=\"#\" onclick=\"dialedcall_send_hangup();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_hangupcustomer.gif\" border=0 alt=\"Hangup Customer\"></a>";
+								document.getElementById("HangupControl").innerHTML = "<a href=\"#\" onclick=\"dialedcall_send_hangup();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_hangupcustomer.gif\" width=145 height=16 border=0 alt=\"Hangup Customer\"></a>";
 
-								document.getElementById("XferControl").innerHTML = "<a href=\"#\" onclick=\"ShoWTransferMain('ON');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_transferconf.gif\" border=0 alt=\"Transfer - Conference\"></a>";
+								document.getElementById("XferControl").innerHTML = "<a href=\"#\" onclick=\"ShoWTransferMain('ON');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_transferconf.gif\" width=145 height=16 border=0 alt=\"Transfer - Conference\"></a>";
 
-								document.getElementById("LocalCloser").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRLOCAL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_localcloser.gif\" border=0 alt=\"LOCAL CLOSER\"></a>";
+								document.getElementById("LocalCloser").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRLOCAL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_localcloser.gif\" width=107 height=16 border=0 alt=\"LOCAL CLOSER\"></a>";
 
-								document.getElementById("DialBlindTransfer").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRBLIND','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_blindtransfer.gif\" border=0 alt=\"Dial Blind Transfer\"></a>";
+								document.getElementById("DialBlindTransfer").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRBLIND','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_blindtransfer.gif\" width=137 height=16 border=0 alt=\"Dial Blind Transfer\"></a>";
 
-								document.getElementById("DialBlindVMail").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" border=0 alt=\"Blind Transfer VMail Message\"></a>";
-								document.getElementById("DialBlindVMail2").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" border=0 alt=\"Blind Transfer VMail Message\"></a>";
+								document.getElementById("DialBlindVMail").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\"></a>";
+								document.getElementById("DialBlindVMail2").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\"></a>";
 
-								document.getElementById("VolumeUpSpan").innerHTML = "<a href=\"#\" onclick=\"volume_control('UP','" + MDchannel + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_up.gif\" BORDER=0></a>";
-								document.getElementById("VolumeDownSpan").innerHTML = "<a href=\"#\" onclick=\"volume_control('DOWN','" + MDchannel + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_down.gif\" BORDER=0></a>";
+								document.getElementById("VolumeUpSpan").innerHTML = "<a href=\"#\" onclick=\"volume_control('UP','" + MDchannel + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_up.gif\" width=28 height=15 BORDER=0></a>";
+								document.getElementById("VolumeDownSpan").innerHTML = "<a href=\"#\" onclick=\"volume_control('DOWN','" + MDchannel + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_down.gif\" width=28 height=15 BORDER=0></a>";
 
-								document.getElementById("DTMFDialPad0").innerHTML = "<a href=\"#\" alt=\"0\" onclick=\"document.osdial_form.conf_dtmf.value='0'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_0.png\" border=0></a>";
-								document.getElementById("DTMFDialPad1").innerHTML = "<a href=\"#\" alt=\"1\" onclick=\"document.osdial_form.conf_dtmf.value='1'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_1.png\" border=0></a>";
-								document.getElementById("DTMFDialPad2").innerHTML = "<a href=\"#\" alt=\"2 - ABC\" onclick=\"document.osdial_form.conf_dtmf.value='2'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_2.png\" border=0></a>";
-								document.getElementById("DTMFDialPad3").innerHTML = "<a href=\"#\" alt=\"3 - DEF\" onclick=\"document.osdial_form.conf_dtmf.value='3'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_3.png\" border=0></a>";
-								document.getElementById("DTMFDialPad4").innerHTML = "<a href=\"#\" alt=\"4 - GHI\" onclick=\"document.osdial_form.conf_dtmf.value='4'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_4.png\" border=0></a>";
-								document.getElementById("DTMFDialPad5").innerHTML = "<a href=\"#\" alt=\"5 - JKL\" onclick=\"document.osdial_form.conf_dtmf.value='5'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_5.png\" border=0></a>";
-								document.getElementById("DTMFDialPad6").innerHTML = "<a href=\"#\" alt=\"6 - MNO\" onclick=\"document.osdial_form.conf_dtmf.value='6'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_6.png\" border=0></a>";
-								document.getElementById("DTMFDialPad7").innerHTML = "<a href=\"#\" alt=\"7 - PQRS\" onclick=\"document.osdial_form.conf_dtmf.value='7'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_7.png\" border=0></a>";
-								document.getElementById("DTMFDialPad8").innerHTML = "<a href=\"#\" alt=\"8 - TUV\" onclick=\"document.osdial_form.conf_dtmf.value='8'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_8.png\" border=0></a>";
-								document.getElementById("DTMFDialPad9").innerHTML = "<a href=\"#\" alt=\"9 - WXYZ\" onclick=\"document.osdial_form.conf_dtmf.value='9'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_9.png\" border=0></a>";
-								document.getElementById("DTMFDialPadStar").innerHTML = "<a href=\"#\" alt=\"*\" onclick=\"document.osdial_form.conf_dtmf.value='*'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_star.png\" border=0></a>";
-								document.getElementById("DTMFDialPadHash").innerHTML = "<a href=\"#\" alt=\"#\" onclick=\"document.osdial_form.conf_dtmf.value='#'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_hash.png\" border=0></a>";
+								document.getElementById("DTMFDialPad0").innerHTML = "<a href=\"#\" alt=\"0\" onclick=\"document.osdial_form.conf_dtmf.value='0'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_0.png\" width=26 height=19 border=0></a>";
+								document.getElementById("DTMFDialPad1").innerHTML = "<a href=\"#\" alt=\"1\" onclick=\"document.osdial_form.conf_dtmf.value='1'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_1.png\" width=26 height=19 border=0></a>";
+								document.getElementById("DTMFDialPad2").innerHTML = "<a href=\"#\" alt=\"2 - ABC\" onclick=\"document.osdial_form.conf_dtmf.value='2'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_2.png\" width=26 height=19 border=0></a>";
+								document.getElementById("DTMFDialPad3").innerHTML = "<a href=\"#\" alt=\"3 - DEF\" onclick=\"document.osdial_form.conf_dtmf.value='3'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_3.png\" width=26 height=19 border=0></a>";
+								document.getElementById("DTMFDialPad4").innerHTML = "<a href=\"#\" alt=\"4 - GHI\" onclick=\"document.osdial_form.conf_dtmf.value='4'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_4.png\" width=26 height=19 border=0></a>";
+								document.getElementById("DTMFDialPad5").innerHTML = "<a href=\"#\" alt=\"5 - JKL\" onclick=\"document.osdial_form.conf_dtmf.value='5'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_5.png\" width=26 height=19 border=0></a>";
+								document.getElementById("DTMFDialPad6").innerHTML = "<a href=\"#\" alt=\"6 - MNO\" onclick=\"document.osdial_form.conf_dtmf.value='6'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_6.png\" width=26 height=19 border=0></a>";
+								document.getElementById("DTMFDialPad7").innerHTML = "<a href=\"#\" alt=\"7 - PQRS\" onclick=\"document.osdial_form.conf_dtmf.value='7'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_7.png\" width=26 height=19 border=0></a>";
+								document.getElementById("DTMFDialPad8").innerHTML = "<a href=\"#\" alt=\"8 - TUV\" onclick=\"document.osdial_form.conf_dtmf.value='8'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_8.png\" width=26 height=19 border=0></a>";
+								document.getElementById("DTMFDialPad9").innerHTML = "<a href=\"#\" alt=\"9 - WXYZ\" onclick=\"document.osdial_form.conf_dtmf.value='9'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_9.png\" width=26 height=19 border=0></a>";
+								document.getElementById("DTMFDialPadStar").innerHTML = "<a href=\"#\" alt=\"*\" onclick=\"document.osdial_form.conf_dtmf.value='*'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_star.png\" width=26 height=19 border=0></a>";
+								document.getElementById("DTMFDialPadHash").innerHTML = "<a href=\"#\" alt=\"#\" onclick=\"document.osdial_form.conf_dtmf.value='#'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_hash.png\" width=26 height=19 border=0></a>";
 
 
 								// INSERT OSDIAL_LOG ENTRY FOR THIS CALL PROCESS
@@ -1611,7 +1611,7 @@
 						document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 						document.getElementById("MainStatuSSpan").innerHTML = " Calling: " + status_display_number + "&nbsp;&nbsp;<font color=" + status_bg + ">UID: " + MDnextCID + "</font> Waiting for Ring...";
 
-						document.getElementById("HangupControl").innerHTML = "<a href=\"#\" onclick=\"dialedcall_send_hangup();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_hangupcustomer.gif\" border=0 alt=\"Hangup Customer\"></a>";
+						document.getElementById("HangupControl").innerHTML = "<a href=\"#\" onclick=\"dialedcall_send_hangup();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_hangupcustomer.gif\" width=145 height=16 border=0 alt=\"Hangup Customer\"></a>";
 
 						if ( (campaign_recording == 'ALLCALLS') || (campaign_recording == 'ALLFORCE') ) {
 							all_record = 'YES';
@@ -1679,7 +1679,7 @@
 			PCSpause=0;
 			if (inbound_man > 0) {
 				auto_dial_level=starting_dial_level;
-				document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADpause','NEW_ID');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_pause.gif\" border=0 alt=\" Pause \"></a><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" border=0 alt=\"Resume\"></a><BR><a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber.gif\" border=0 alt=\"Dial Next Number\"></a>";
+				document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADpause','NEW_ID');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_pause.gif\" width=70 height=18 border=0 alt=\" Pause \"></a><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"></a><BR><a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\"></a>";
 			} else {
 				document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_ready;
 			}
@@ -1691,7 +1691,7 @@
 			alt_dial_menu=0;
 			if (inbound_man > 0) {
 				auto_dial_level=starting_dial_level;
-				document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume.gif\" border=0 alt=\"Resume\"></a><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" border=0 alt=\"Dial Next Number\">";
+				document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume.gif\" width=70 height=18 border=0 alt=\"Resume\"></a><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
 			} else {
 				document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML;
 			}
@@ -1964,31 +1964,31 @@
 			lastcustserverip='';
 
 			if( document.images ) { document.images['livecall'].src = image_livecall_OFF.src;}
-			document.getElementById("WebFormSpan").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_webform_OFF.gif\" border=0 alt=\"Web Form\">";
-			document.getElementById("WebFormSpan2").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_webform_OFF.gif\" border=0 alt=\"Web Form\">";
-			document.getElementById("ParkControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_parkcall_OFF.gif\" border=0 alt=\"Park Call\">";
-			document.getElementById("HangupControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_hangupcustomer_OFF.gif\" border=0 alt=\"Hangup Customer\">";
-			document.getElementById("XferControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_transferconf_OFF.gif\" border=0 alt=\"Transfer - Conference\">";
-			document.getElementById("LocalCloser").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_XB_localcloser_OFF.gif\" border=0 alt=\"LOCAL CLOSER\">";
-			document.getElementById("DialBlindTransfer").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_XB_blindtransfer_OFF.gif\" border=0 alt=\"Dial Blind Transfer\">";
-			document.getElementById("DialBlindVMail").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage_OFF.gif\" border=0 alt=\"Blind Transfer VMail Message\">";
-			document.getElementById("DialBlindVMail2").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage_OFF.gif\" border=0 alt=\"Blind Transfer VMail Message\">";
-			document.getElementById("VolumeUpSpan").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_volume_up_off.gif\" BORDER=0>";
-			document.getElementById("VolumeDownSpan").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_volume_down_off.gif\" BORDER=0>";
+			document.getElementById("WebFormSpan").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_webform_OFF.gif\" width=145 height=16 border=0 alt=\"Web Form\">";
+			document.getElementById("WebFormSpan2").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_webform_OFF.gif\" width=145 height=16 border=0 alt=\"Web Form\">";
+			document.getElementById("ParkControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_parkcall_OFF.gif\" width=145 height=16 border=0 alt=\"Park Call\">";
+			document.getElementById("HangupControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_hangupcustomer_OFF.gif\" width=145 height=16 border=0 alt=\"Hangup Customer\">";
+			document.getElementById("XferControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_transferconf_OFF.gif\" width=145 height=16 border=0 alt=\"Transfer - Conference\">";
+			document.getElementById("LocalCloser").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_XB_localcloser_OFF.gif\" width=107 height=16 border=0 alt=\"LOCAL CLOSER\">";
+			document.getElementById("DialBlindTransfer").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_XB_blindtransfer_OFF.gif\" width=137 height=16 border=0 alt=\"Dial Blind Transfer\">";
+			document.getElementById("DialBlindVMail").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage_OFF.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\">";
+			document.getElementById("DialBlindVMail2").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage_OFF.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\">";
+			document.getElementById("VolumeUpSpan").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_volume_up_off.gif\" width=28 height=15 BORDER=0>";
+			document.getElementById("VolumeDownSpan").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_volume_down_off.gif\" width=28 height=15 BORDER=0>";
 			document.getElementById("RepullControl").innerHTML = "";
 
-			document.getElementById("DTMFDialPad0").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_0_OFF.png\" border=0>";
-			document.getElementById("DTMFDialPad1").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_1_OFF.png\" border=0>";
-			document.getElementById("DTMFDialPad2").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_2_OFF.png\" border=0>";
-			document.getElementById("DTMFDialPad3").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_3_OFF.png\" border=0>";
-			document.getElementById("DTMFDialPad4").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_4_OFF.png\" border=0>";
-			document.getElementById("DTMFDialPad5").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_5_OFF.png\" border=0>";
-			document.getElementById("DTMFDialPad6").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_6_OFF.png\" border=0>";
-			document.getElementById("DTMFDialPad7").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_7_OFF.png\" border=0>";
-			document.getElementById("DTMFDialPad8").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_8_OFF.png\" border=0>";
-			document.getElementById("DTMFDialPad9").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_9_OFF.png\" border=0>";
-			document.getElementById("DTMFDialPadStar").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_star_OFF.png\" border=0>";
-			document.getElementById("DTMFDialPadHash").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_hash_OFF.png\" border=0>";
+			document.getElementById("DTMFDialPad0").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_0_OFF.png\" width=26 height=19 border=0>";
+			document.getElementById("DTMFDialPad1").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_1_OFF.png\" width=26 height=19 border=0>";
+			document.getElementById("DTMFDialPad2").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_2_OFF.png\" width=26 height=19 border=0>";
+			document.getElementById("DTMFDialPad3").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_3_OFF.png\" width=26 height=19 border=0>";
+			document.getElementById("DTMFDialPad4").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_4_OFF.png\" width=26 height=19 border=0>";
+			document.getElementById("DTMFDialPad5").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_5_OFF.png\" width=26 height=19 border=0>";
+			document.getElementById("DTMFDialPad6").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_6_OFF.png\" width=26 height=19 border=0>";
+			document.getElementById("DTMFDialPad7").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_7_OFF.png\" width=26 height=19 border=0>";
+			document.getElementById("DTMFDialPad8").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_8_OFF.png\" width=26 height=19 border=0>";
+			document.getElementById("DTMFDialPad9").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_9_OFF.png\" width=26 height=19 border=0>";
+			document.getElementById("DTMFDialPadStar").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_star_OFF.png\" width=26 height=19 border=0>";
+			document.getElementById("DTMFDialPadHash").innerHTML = "<img src=\"templates/" + agent_template + "/images/dtmf_hash_OFF.png\" width=26 height=19 border=0>";
 
 			document.osdial_form.custdatetime.value		= '';
 
@@ -2015,7 +2015,7 @@
 						alt_dial_active = 0;
 						alt_dial_menu = 0;
 					} else {
-						document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber.gif\" border=0 alt=\"Dial Next Number\"></a>";
+						document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\"></a>";
 					}
 					reselect_alt_dial = 0;
 				}
@@ -2035,7 +2035,7 @@
 								document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 								document.getElementById("MainStatuSSpan").innerHTML = '';
 								if (inbound_man > 0) {
-									document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" border=0 alt=\"Dial Next Number\">";
+									document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
 								} else {
 									document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_OFF;
 								}
@@ -2047,7 +2047,7 @@
 					document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 					document.getElementById("MainStatuSSpan").innerHTML = '';
 					if (inbound_man > 0) {
-						document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" border=0 alt=\"Dial Next Number\">";
+						document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
 					} else {
 						document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_OFF;
 					}
@@ -2122,15 +2122,15 @@
 			document.osdial_form.xferchannel.value = "";
 			lastxferchannel='';
 
-			document.getElementById("Leave3WayCall").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_leave3waycall_OFF.gif\" border=0 alt=\"LEAVE 3-WAY CALL\">";
+			document.getElementById("Leave3WayCall").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_leave3waycall_OFF.gif\" width=137 height=16 border=0 alt=\"LEAVE 3-WAY CALL\">";
 
-			document.getElementById("DialWithCustomer").innerHTML ="<a href=\"#\" onclick=\"SendManualDial('YES');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_dialwithcustomer.gif\" border=0 alt=\"Dial With Customer\"></a>";
+			document.getElementById("DialWithCustomer").innerHTML ="<a href=\"#\" onclick=\"SendManualDial('YES');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_dialwithcustomer.gif\" width=144 height=16 border=0 alt=\"Dial With Customer\"></a>";
 
-			document.getElementById("ParkCustomerDial").innerHTML ="<a href=\"#\" onclick=\"xfer_park_dial();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_parkcustomerdial.gif\" border=0 alt=\"Park Customer Dial\"></a>";
+			document.getElementById("ParkCustomerDial").innerHTML ="<a href=\"#\" onclick=\"xfer_park_dial();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_parkcustomerdial.gif\" width=147 height=16 border=0 alt=\"Park Customer Dial\"></a>";
 
-			document.getElementById("HangupXferLine").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_hangupxferline_OFF.gif\" border=0 alt=\"Hangup Xfer Line\">";
+			document.getElementById("HangupXferLine").innerHTML ="<img src=\"templates/" + agent_template + "/images/vdc_XB_hangupxferline_OFF.gif\" width=145 height=16 border=0 alt=\"Hangup Xfer Line\">";
 
-			document.getElementById("HangupBothLines").innerHTML ="<a href=\"#\" onclick=\"bothcall_send_hangup();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hangupbothlines.gif\" border=0 alt=\"Hangup Both Lines\"></a>";
+			document.getElementById("HangupBothLines").innerHTML ="<a href=\"#\" onclick=\"bothcall_send_hangup();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hangupbothlines.gif\" width=145 height=16 border=0 alt=\"Hangup Both Lines\"></a>";
 		}
 	}
 
@@ -2459,7 +2459,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	function CloserSelectContent_create() {
 		debug("<b>CloserSelectContent_create:</b>",2);
 		if (VU_agent_choose_ingroups == '1') {
-			var live_CSC_HTML = "<table class=acrossagent cellpadding=5 cellspacing=5 width=500><tr><td align=center><B><font color=" + closer_fc + ">Groups Not Selected</font></B></td><td align=center><B><font color=" + closer_fc + ">Selected Groups</font></B></td></tr><tr><td bgcolor=\"" + closer_bg + "\" height=300 width=240 valign=top><font class=\"log_text\"><span id=CloserSelectAdd>";
+			var live_CSC_HTML = "<table class=acrossagent cellpadding=5 cellspacing=5 width=500><tr><td align=center><b><font color=" + closer_fc + ">Groups Not Selected</font></b></td><td align=center><b><font color=" + closer_fc + ">Selected Groups</font></b></td></tr><tr><td bgcolor=\"" + closer_bg + "\" height=300 width=240 valign=top><font class=\"log_text\"><span id=CloserSelectAdd>";
 			var loop_ct = 0;
 			while (loop_ct < INgroupCOUNT) {
 				if (VARingroups[loop_ct].substr(0,4) != "A2A_") {
@@ -2479,7 +2479,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			document.getElementById("CloserSelectContent").innerHTML = live_CSC_HTML;
 		} else {
 			VU_agent_choose_ingroups_DV = "MGRLOCK";
-			var live_CSC_HTML = "<br><br><br><table frame=box><tr bgcolor=" + closer_bg + "><td><font color=" + closer_fc2 + ">&nbsp;Manager has selected groups for you!&nbsp;</td></tr></table><br>";
+			var live_CSC_HTML = "<br><br><br><table frame=box><tr bgcolor=" + closer_bg + "><td><font color=" + closer_fc2 + ">&nbsp;Manager has selected groups for you!&nbsp;</font></td></tr></table><br>";
 			document.osdial_form.CloserSelectList.value = '';
 			document.getElementById("CloserSelectContent").innerHTML = live_CSC_HTML;
 		}
@@ -2956,7 +2956,7 @@ function utf8_decode(utftext) {
 			}
 			document.getElementById("sessionIDspan").innerHTML = session_id;
 			if ( (campaign_recording == 'NEVER') || (campaign_recording == 'ALLFORCE') ) {
-				document.getElementById("RecorDControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording_OFF.gif\" border=0 alt=\"Start Recording\">";
+				document.getElementById("RecorDControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording_OFF.gif\" width=145 height=16 border=0 alt=\"Start Recording\">";
 			}
 			if (INgroupCOUNT > 0 && (dial_method != "MANUAL" || inbound_man > 0)) {
 			    hideDiv('WelcomeBoxA');
@@ -3005,7 +3005,7 @@ function utf8_decode(utftext) {
 				if (auto_dial_level == 0) {
 					if (document.osdial_form.DiaLAltPhonE.checked==true) {
 						reselect_alt_dial = 1;
-						document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber.gif\" border=0 alt=\"Dial Next Number\"></a>";
+						document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\"></a>";
 
 						document.getElementById("MainStatuSSpan").innerHTML = "Dial Next Call";
 					} else {
@@ -3458,11 +3458,11 @@ function utf8_decode(utftext) {
 		if ( (HKstate == 'ON') && (HKbutton_allowed == 1) ) {
 			showDiv('HotKeyEntriesBox');
 			hot_keys_active = 1;
-			document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOut=\"HotKeys('OFF')\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hotkeysactive.gif\" border=0 alt=\"HOT KEYS ACTIVE\"></a>";
+			document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOut=\"HotKeys('OFF')\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hotkeysactive.gif\" width=137 height=32 border=0 alt=\"HOT KEYS ACTIVE\"></a>";
 		} else {
 			hideDiv('HotKeyEntriesBox');
 			hot_keys_active = 0;
-			document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOver=\"HotKeys('ON')\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hotkeysactive_OFF.gif\" border=0 alt=\"HOT KEYS INACTIVE\"></a>";
+			document.getElementById("hotkeysdisplay").innerHTML = "<a href=\"#\" onMouseOver=\"HotKeys('ON')\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hotkeysactive_OFF.gif\" width=137 height=32 border=0 alt=\"HOT KEYS INACTIVE\"></a>";
 		}
 	}
 
@@ -3491,7 +3491,7 @@ function utf8_decode(utftext) {
 				document.getElementById("TransferMain").style.top = xfer_height;
 				HKbutton_allowed = 0;
 				showDiv('TransferMain');
-				document.getElementById("XferControl").innerHTML = "<a href=\"#\" onclick=\"ShoWTransferMain('OFF','YES');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_transferconf.gif\" border=0 alt=\"Transfer - Conference\"></a>";
+				document.getElementById("XferControl").innerHTML = "<a href=\"#\" onclick=\"ShoWTransferMain('OFF','YES');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_transferconf.gif\" width=145 height=16 border=0 alt=\"Transfer - Conference\"></a>";
 				var loop_ct = 0;
 				var live_XfeR_HTML = '';
 				var XfeR_SelecT = '';
@@ -3521,7 +3521,7 @@ function utf8_decode(utftext) {
 				HKbutton_allowed = 1;
 				hideDiv('TransferMain');
 				if (showoffvar == 'YES') {
-					document.getElementById("XferControl").innerHTML = "<a href=\"#\" onclick=\"ShoWTransferMain('ON');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_transferconf.gif\" border=0 alt=\"Transfer - Conference\"></a>";
+					document.getElementById("XferControl").innerHTML = "<a href=\"#\" onclick=\"ShoWTransferMain('ON');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_transferconf.gif\" width=145 height=16 border=0 alt=\"Transfer - Conference\"></a>";
 				}
 			}
 		} else {
@@ -3555,7 +3555,7 @@ function utf8_decode(utftext) {
 				}
 			} else {
 				if (inbound_man > 0) {
-					document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume.gif\" border=0 alt=\"Resume\"></a><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" border=0 alt=\"Dial Next Number\">";
+					document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume.gif\" width=70 height=18 border=0 alt=\"Resume\"></a><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
 					if (manual_dial_preview == 1) {
 						buildDiv('DiaLLeaDPrevieW');
 					}
@@ -3792,9 +3792,9 @@ function utf8_decode(utftext) {
 
 			AutoDial_ReSume_PauSe('VDADpause','NEW_ID');
 
-			document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" border=0 alt=\"Dial Next Number\">";
+			document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
 		} else {
-			document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" border=0 alt=\"Dial Next Number\">";
+			document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
 		}
 		if (document.osdial_form.LeadPreview.checked==true) {
 			reselect_preview_dial = 1;
@@ -3889,11 +3889,11 @@ function utf8_decode(utftext) {
 						}
 
 						if (starting_dial_level == 0) {
-							document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber.gif\" border=0 alt=\"Dial Next Number\"></a>";
+							document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','','0');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\"></a>";
 						} else {
 							if (inbound_man > 0) {
 								auto_dial_level=starting_dial_level;
-								document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume.gif\" border=0 alt=\"Resume\"></a><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" border=0 alt=\"Dial Next Number\">";
+								document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><a href=\"#\" onclick=\"AutoDial_ReSume_PauSe('VDADready');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume.gif\" width=70 height=18 border=0 alt=\"Resume\"></a><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
 							} else {
 								document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML;
 							}
@@ -4079,15 +4079,15 @@ function utf8_decode(utftext) {
 						if (wf2_enc_address == VDIC_web_form_address2) wf2_enc_address += web_form_vars2;
 
 						if (web_form_extwindow == 1) {
-							document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + wf_enc_address + "\" target=\"webform\" onMouseOver=\"WebFormRefresH();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+							document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + wf_enc_address + "\" target=\"webform\" onMouseOver=\"WebFormRefresH();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" width=145 height=16 border=0 alt=\"Web Form\"></a>";
 						} else {
-							document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + wf_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+							document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + wf_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" width=145 height=16 border=0 alt=\"Web Form\"></a>";
 						}
 							
 						if (web_form2_extwindow == 1) {
-							document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + wf2_enc_address + "\" target=\"webform2\" onMouseOver=\"WebFormRefresH();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+							document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + wf2_enc_address + "\" target=\"webform2\" onMouseOver=\"WebFormRefresH();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" width=145 height=16 border=0 alt=\"Web Form2\"></a>";
 						} else {
-							document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + wf2_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+							document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + wf2_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" width=145 height=16 border=0 alt=\"Web Form2\"></a>";
 						}
 
 						if (previewFD_time > 0 && document.osdial_form.LeadPreview.checked==true) {
@@ -4103,7 +4103,7 @@ function utf8_decode(utftext) {
 								MD_channel_look=1;
 								custchannellive=1;
 
-								document.getElementById("HangupControl").innerHTML = "<a href=\"#\" onclick=\"dialedcall_send_hangup();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_hangupcustomer.gif\" border=0 alt=\"Hangup Customer\"></a>";
+								document.getElementById("HangupControl").innerHTML = "<a href=\"#\" onclick=\"dialedcall_send_hangup();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_hangupcustomer.gif\" width=145 height=16 border=0 alt=\"Hangup Customer\"></a>";
 
 								if ( (campaign_recording == 'ALLCALLS') || (campaign_recording == 'ALLFORCE') ) {
 									all_record = 'YES';
@@ -4170,9 +4170,9 @@ function utf8_decode(utftext) {
 
 			if (inbound_man > 0) {
 				auto_dial_level=starting_dial_level;
-				document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" border=0 alt=\"Dial Next Number\">";
+				document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
 			} else {
-				document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" border=0 alt=\"Dial Next Number\">";
+				document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
 			}
 
 			var xmlhttp=false;
@@ -4221,7 +4221,7 @@ function utf8_decode(utftext) {
 							if (inbound_man > 0) {
 								AutoDial_ReSume_PauSe('VDADready');
 							} else {
-								document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber.gif\" border=0 alt=\"Dial Next Number\"></a>";
+								document.getElementById("DiaLControl").innerHTML = "<a href=\"#\" onclick=\"ManualDialNext('','','','','');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\"></a>";
 							}
 						}
 					}
@@ -4402,7 +4402,7 @@ function utf8_decode(utftext) {
 							document.getElementById("MainStatuSSpan").style.backgroundColor = '';
 							document.getElementById("MainStatuSSpan").innerHTML = " Outgoing: " + status_display_number + "&nbsp;&nbsp;<font color=" + status_bg + ">UID: " + CIDcheck + "</font> &nbsp; " + VDIC_fronter; 
 
-							document.getElementById("RepullControl").innerHTML = "<a href=\"#\" onclick=\"RepullLeadData('all');\"><img src=\"templates/" + agent_template + "/images/vdc_RPLD_on.gif\" border=0 alt=\"Repull Lead Data\"></a>";
+							document.getElementById("RepullControl").innerHTML = "<a href=\"#\" onclick=\"RepullLeadData('all');\"><img src=\"templates/" + agent_template + "/images/vdc_RPLD_on.gif\" width=145 height=16 border=0 alt=\"Repull Lead Data\"></a>";
 
 							if (LeaDPreVDispO == 'CALLBK') {
 								document.getElementById("CusTInfOSpaN").innerHTML = "&nbsp;<B>PREVIOUS CALLBACK</B>";
@@ -4424,39 +4424,39 @@ function utf8_decode(utftext) {
 								document.getElementById("MainStatuSSpan").innerHTML = " Incoming: " + status_display_number + " Group- " + VDIC_data_VDIG[1] + " &nbsp; " + VDIC_fronter; 
 							}
 
-							document.getElementById("ParkControl").innerHTML ="<a href=\"#\" onclick=\"mainxfer_send_redirect('ParK','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_parkcall.gif\" border=0 alt=\"Park Call\"></a>";
+							document.getElementById("ParkControl").innerHTML ="<a href=\"#\" onclick=\"mainxfer_send_redirect('ParK','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_parkcall.gif\" width=145 height=16 border=0 alt=\"Park Call\"></a>";
 
-							document.getElementById("HangupControl").innerHTML = "<a href=\"#\" onclick=\"dialedcall_send_hangup();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_hangupcustomer.gif\" border=0 alt=\"Hangup Customer\"></a>";
+							document.getElementById("HangupControl").innerHTML = "<a href=\"#\" onclick=\"dialedcall_send_hangup();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_hangupcustomer.gif\" width=145 height=16 border=0 alt=\"Hangup Customer\"></a>";
 
-							document.getElementById("XferControl").innerHTML = "<a href=\"#\" onclick=\"ShoWTransferMain('ON');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_transferconf.gif\" border=0 alt=\"Transfer - Conference\"></a>";
+							document.getElementById("XferControl").innerHTML = "<a href=\"#\" onclick=\"ShoWTransferMain('ON');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_transferconf.gif\" width=145 height=16 border=0 alt=\"Transfer - Conference\"></a>";
 
-							document.getElementById("LocalCloser").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRLOCAL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_localcloser.gif\" border=0 alt=\"LOCAL CLOSER\"></a>";
+							document.getElementById("LocalCloser").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRLOCAL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_localcloser.gif\" width=107 height=16 border=0 alt=\"LOCAL CLOSER\"></a>";
 
-							document.getElementById("DialBlindTransfer").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRBLIND','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_blindtransfer.gif\" border=0 alt=\"Dial Blind Transfer\"></a>";
+							document.getElementById("DialBlindTransfer").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRBLIND','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_blindtransfer.gif\" width=137 height=16 border=0 alt=\"Dial Blind Transfer\"></a>";
 
-							document.getElementById("DialBlindVMail").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" border=0 alt=\"Blind Transfer VMail Message\"></a>";
-							document.getElementById("DialBlindVMail2").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" border=0 alt=\"Blind Transfer VMail Message\"></a>";
+							document.getElementById("DialBlindVMail").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\"></a>";
+							document.getElementById("DialBlindVMail2").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\"></a>";
 
-							document.getElementById("DTMFDialPad0").innerHTML = "<a href=\"#\" alt=\"0\" onclick=\"document.osdial_form.conf_dtmf.value='0'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_0.png\" border=0></a>";
-							document.getElementById("DTMFDialPad1").innerHTML = "<a href=\"#\" alt=\"1\" onclick=\"document.osdial_form.conf_dtmf.value='1'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_1.png\" border=0></a>";
-							document.getElementById("DTMFDialPad2").innerHTML = "<a href=\"#\" alt=\"2 - ABC\" onclick=\"document.osdial_form.conf_dtmf.value='2'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_2.png\" border=0></a>";
-							document.getElementById("DTMFDialPad3").innerHTML = "<a href=\"#\" alt=\"3 - DEF\" onclick=\"document.osdial_form.conf_dtmf.value='3'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_3.png\" border=0></a>";
-							document.getElementById("DTMFDialPad4").innerHTML = "<a href=\"#\" alt=\"4 - GHI\" onclick=\"document.osdial_form.conf_dtmf.value='4'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_4.png\" border=0></a>";
-							document.getElementById("DTMFDialPad5").innerHTML = "<a href=\"#\" alt=\"5 - JKL\" onclick=\"document.osdial_form.conf_dtmf.value='5'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_5.png\" border=0></a>";
-							document.getElementById("DTMFDialPad6").innerHTML = "<a href=\"#\" alt=\"6 - MNO\" onclick=\"document.osdial_form.conf_dtmf.value='6'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_6.png\" border=0></a>";
-							document.getElementById("DTMFDialPad7").innerHTML = "<a href=\"#\" alt=\"7 - PQRS\" onclick=\"document.osdial_form.conf_dtmf.value='7'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_7.png\" border=0></a>";
-							document.getElementById("DTMFDialPad8").innerHTML = "<a href=\"#\" alt=\"8 - TUV\" onclick=\"document.osdial_form.conf_dtmf.value='8'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_8.png\" border=0></a>";
-							document.getElementById("DTMFDialPad9").innerHTML = "<a href=\"#\" alt=\"9 - WXYZ\" onclick=\"document.osdial_form.conf_dtmf.value='9'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_9.png\" border=0></a>";
-							document.getElementById("DTMFDialPadStar").innerHTML = "<a href=\"#\" alt=\"*\" onclick=\"document.osdial_form.conf_dtmf.value='*'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_star.png\" border=0></a>";
-							document.getElementById("DTMFDialPadHash").innerHTML = "<a href=\"#\" alt=\"#\" onclick=\"document.osdial_form.conf_dtmf.value='#'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_hash.png\" border=0></a>";
+							document.getElementById("DTMFDialPad0").innerHTML = "<a href=\"#\" alt=\"0\" onclick=\"document.osdial_form.conf_dtmf.value='0'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_0.png\" width=26 height=19 border=0></a>";
+							document.getElementById("DTMFDialPad1").innerHTML = "<a href=\"#\" alt=\"1\" onclick=\"document.osdial_form.conf_dtmf.value='1'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_1.png\" width=26 height=19 border=0></a>";
+							document.getElementById("DTMFDialPad2").innerHTML = "<a href=\"#\" alt=\"2 - ABC\" onclick=\"document.osdial_form.conf_dtmf.value='2'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_2.png\" width=26 height=19 border=0></a>";
+							document.getElementById("DTMFDialPad3").innerHTML = "<a href=\"#\" alt=\"3 - DEF\" onclick=\"document.osdial_form.conf_dtmf.value='3'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_3.png\" width=26 height=19 border=0></a>";
+							document.getElementById("DTMFDialPad4").innerHTML = "<a href=\"#\" alt=\"4 - GHI\" onclick=\"document.osdial_form.conf_dtmf.value='4'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_4.png\" width=26 height=19 border=0></a>";
+							document.getElementById("DTMFDialPad5").innerHTML = "<a href=\"#\" alt=\"5 - JKL\" onclick=\"document.osdial_form.conf_dtmf.value='5'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_5.png\" width=26 height=19 border=0></a>";
+							document.getElementById("DTMFDialPad6").innerHTML = "<a href=\"#\" alt=\"6 - MNO\" onclick=\"document.osdial_form.conf_dtmf.value='6'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_6.png\" width=26 height=19 border=0></a>";
+							document.getElementById("DTMFDialPad7").innerHTML = "<a href=\"#\" alt=\"7 - PQRS\" onclick=\"document.osdial_form.conf_dtmf.value='7'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_7.png\" width=26 height=19 border=0></a>";
+							document.getElementById("DTMFDialPad8").innerHTML = "<a href=\"#\" alt=\"8 - TUV\" onclick=\"document.osdial_form.conf_dtmf.value='8'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_8.png\" width=26 height=19 border=0></a>";
+							document.getElementById("DTMFDialPad9").innerHTML = "<a href=\"#\" alt=\"9 - WXYZ\" onclick=\"document.osdial_form.conf_dtmf.value='9'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_9.png\" width=26 height=19 border=0></a>";
+							document.getElementById("DTMFDialPadStar").innerHTML = "<a href=\"#\" alt=\"*\" onclick=\"document.osdial_form.conf_dtmf.value='*'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_star.png\" width=26 height=19 border=0></a>";
+							document.getElementById("DTMFDialPadHash").innerHTML = "<a href=\"#\" alt=\"#\" onclick=\"document.osdial_form.conf_dtmf.value='#'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_hash.png\" width=26 height=19 border=0></a>";
 	
 							if (lastcustserverip == server_ip) {
-								document.getElementById("VolumeUpSpan").innerHTML = "<a href=\"#\" onclick=\"volume_control('UP','" + lastcustchannel + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_up.gif\" BORDER=0></a>";
-								document.getElementById("VolumeDownSpan").innerHTML = "<a href=\"#\" onclick=\"volume_control('DOWN','" + lastcustchannel + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_down.gif\" BORDER=0></a>";
+								document.getElementById("VolumeUpSpan").innerHTML = "<a href=\"#\" onclick=\"volume_control('UP','" + lastcustchannel + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_up.gif\" width=28 height=15 BORDER=0></a>";
+								document.getElementById("VolumeDownSpan").innerHTML = "<a href=\"#\" onclick=\"volume_control('DOWN','" + lastcustchannel + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_down.gif\" width=28 height=15 BORDER=0></a>";
 							}
 
 							if (inbound_man > 0) {
-								document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" border=0 alt=\"Dial Next Number\">";
+								document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
 							} else {
 								document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_OFF;
 							}
@@ -4556,15 +4556,15 @@ function utf8_decode(utftext) {
 							if (wf2_enc_address == VDIC_web_form_address2) wf2_enc_address += web_form_vars2;
 
 							if (web_form_extwindow == 1) {
-								document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + wf_enc_address + "\" target=\"webform\" onMouseOver=\"WebFormRefresH();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+								document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + wf_enc_address + "\" target=\"webform\" onMouseOver=\"WebFormRefresH();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" width=145 height=16 border=0 alt=\"Web Form\"></a>";
 							} else {
-								document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + wf_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+								document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + wf_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" width=145 height=16 border=0 alt=\"Web Form\"></a>";
 							}
 
 							if (web_form2_extwindow == 1) {
-								document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + wf2_enc_address + "\" target=\"webform2\" onMouseOver=\"WebFormRefresH();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+								document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + wf2_enc_address + "\" target=\"webform2\" onMouseOver=\"WebFormRefresH();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" width=145 height=16 border=0 alt=\"Web Form2\"></a>";
 							} else {
-								document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + wf2_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+								document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + wf2_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" width=145 height=16 border=0 alt=\"Web Form2\"></a>";
 							}
 
 							if ( (campaign_recording == 'ALLCALLS') || (campaign_recording == 'ALLFORCE') ) {
@@ -4813,15 +4813,15 @@ function utf8_decode(utftext) {
 							if (wf2_enc_address == VDIC_web_form_address2) wf2_enc_address += web_form_vars2;
 
 							if (web_form_extwindow == 1) {
-								document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + wf_enc_address + "\" target=\"webform\" onMouseOver=\"WebFormRefresH();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+								document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + wf_enc_address + "\" target=\"webform\" onMouseOver=\"WebFormRefresH();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" width=145 height=16 border=0 alt=\"Web Form\"></a>";
 							} else {
-								document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + wf_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+								document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + wf_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" width=145 height=16 border=0 alt=\"Web Form\"></a>";
 							}
 
 							if (web_form2_extwindow == 1) {
-								document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + wf2_enc_address + "\" target=\"webform2\" onMouseOver=\"WebFormRefresH();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+								document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + wf2_enc_address + "\" target=\"webform2\" onMouseOver=\"WebFormRefresH();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" width=145 height=16 border=0 alt=\"Web Form2\"></a>";
 							} else {
-								document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + wf2_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+								document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + wf2_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" width=145 height=16 border=0 alt=\"Web Form2\"></a>";
 							}
 
 						}
@@ -4936,27 +4936,27 @@ function utf8_decode(utftext) {
 
 		if (taskrefresh == 'OUT') {
 			if (web_form_extwindow == 1) {
-				document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + wf_enc_address + "\" target=\"webform\" onMouseOver=\"WebFormRefresH('IN');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+				document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + wf_enc_address + "\" target=\"webform\" onMouseOver=\"WebFormRefresH('IN');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" width=145 height=16 border=0 alt=\"Web Form\"></a>";
 			} else {
-				document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + wf_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+				document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + wf_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" width=145 height=16 border=0 alt=\"Web Form\"></a>";
 			}
 
 			if (web_form2_extwindow == 1) {
-				document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + wf2_enc_address + "\" target=\"webform2\" onMouseOver=\"WebFormRefresH('IN');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+				document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + wf2_enc_address + "\" target=\"webform2\" onMouseOver=\"WebFormRefresH('IN');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" width=145 height=16 border=0 alt=\"Web Form2\"></a>";
 			} else {
-				document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + wf2_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+				document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + wf2_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" width=145 height=16 border=0 alt=\"Web Form2\"></a>";
 			}
 		} else {
 			if (web_form_extwindow == 1) {
-				document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + wf_enc_address + "\" target=\"webform\" onMouseOut=\"WebFormRefresH('OUT');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+				document.getElementById("WebFormSpan").innerHTML = "<a href=\"" + wf_enc_address + "\" target=\"webform\" onMouseOut=\"WebFormRefresH('OUT');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" width=145 height=16 border=0 alt=\"Web Form\"></a>";
 			} else {
-				document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + wf_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" border=0 alt=\"Web Form\"></a>";
+				document.getElementById("WebFormSpan").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay('" + wf_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform.gif\" width=145 height=16 border=0 alt=\"Web Form\"></a>";
 			}
 
 			if (web_form2_extwindow == 1) {
-				document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + wf2_enc_address + "\" target=\"webform2\" onMouseOut=\"WebFormRefresH('OUT');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+				document.getElementById("WebFormSpan2").innerHTML = "<a href=\"" + wf2_enc_address + "\" target=\"webform2\" onMouseOut=\"WebFormRefresH('OUT');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" width=145 height=16 border=0 alt=\"Web Form2\"></a>";
 			} else {
-				document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + wf2_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" border=0 alt=\"Web Form2\"></a>";
+				document.getElementById("WebFormSpan2").innerHTML = "<a href='#' onclick=\"WebFormPanelDisplay2('" + wf2_enc_address + "');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_webform2.gif\" width=145 height=16 border=0 alt=\"Web Form2\"></a>";
 			}
 		}
 	}

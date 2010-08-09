@@ -49,14 +49,14 @@ body {
 }
 
 .across-top {
-	background-image: URL(images/top16.png);
+	background-image: URL(images/blank.gif);
 	background-repeat:repeat-x;
 	background-position:center;
 	width: 870px;
 }
 
 .across-bottom {
-	background-image: URL(images/top16.png);
+	background-image: URL(images/blank.gif);
 	background-repeat:repeat-x;
 	background-position:center;
 	width: 800px;

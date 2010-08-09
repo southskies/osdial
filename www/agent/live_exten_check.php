@@ -49,6 +49,16 @@
 # 60825-1029 - Fixed translation variable issue ChannelA
 #
 
+# The version/build variables get set to the SVN revision automatically in release package.
+# Do not change.
+$version = 'SVN_Version';
+$build = 'SVN_Build';
+
+header('Cache-Control: public, no-cache, max-age=0, must-revalidate');
+header('Expires: '.gmdate('D, d M Y H:i:s', (time() - 60)).' GMT');
+header('Pragma: no-cache');
+header('Content-Type: text/html; charset=utf-8');
+
 require("dbconnect.php");
 
 ### If you have globals turned off uncomment these lines
@@ -77,8 +87,8 @@ $pass=ereg_replace("[^0-9a-zA-Z]","",$pass);
 # default optional vars if not set
 if (!isset($format))   {$format="text";}
 
-$version = '2.0.1';
-$build = '60825-1029';
+$version = 'SVN_Version';
+$build = 'SVN_Build';
 $StarTtime = date("U");
 $NOW_DATE = date("Y-m-d");
 $NOW_TIME = date("Y-m-d H:i:s");

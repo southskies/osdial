@@ -56,6 +56,16 @@
 # 80519-1425 - Added calls-in-queue tally
 #
 
+# The version/build variables get set to the SVN revision automatically in release package.
+# Do not change.
+$version = 'SVN_Version';
+$build = 'SVN_Build';
+
+header('Cache-Control: public, no-cache, max-age=0, must-revalidate');
+header('Expires: '.gmdate('D, d M Y H:i:s', (time() - 60)).' GMT');
+header('Pragma: no-cache');
+header('Content-Type: text/html; charset=utf-8');
+
 require("dbconnect.php");
 
 ### If you have globals turned off uncomment these lines
@@ -81,10 +91,6 @@ if (isset($_GET["auto_dial_level"]))			{$auto_dial_level=$_GET["auto_dial_level"
 	elseif (isset($_POST["auto_dial_level"]))	{$auto_dial_level=$_POST["auto_dial_level"];}
 if (isset($_GET["campagentstdisp"]))			{$campagentstdisp=$_GET["campagentstdisp"];}
 	elseif (isset($_POST["campagentstdisp"]))	{$campagentstdisp=$_POST["campagentstdisp"];}
-
-header ("Content-type: text/html; charset=utf-8");
-header ("Cache-Control: no-cache, must-revalidate");  // HTTP/1.1
-header ("Pragma: no-cache");                          // HTTP/1.0
 
 
 #############################################
