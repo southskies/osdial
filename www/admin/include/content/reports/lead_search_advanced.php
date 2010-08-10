@@ -1214,6 +1214,7 @@ function report_lead_search_advanced($lsa_seg='form') {
                             foreach ($affields as $affield) {
                                 $rslt2=mysql_query(sprintf("SELECT value FROM osdial_list_fields WHERE lead_id='%s' AND field_id='%s' LIMIT 1;",$row[0],$affield), $link);
                                 $row2=mysql_fetch_row($rslt2);
+                                if (is_numeric(substr($row2[0],0,1)) and (!preg_match('/[a-z]/i',$row2[0]))) $row2[0] = "'" . $row2[0];
                                 $row[] = $row2[0];
                             }
                         }
