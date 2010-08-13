@@ -54,6 +54,7 @@ function report_lead_search_advanced($lsa_seg='form') {
         $lastcall_date_start = get_variable("lastcall_date_start");
         $lastcall_date_end = get_variable("lastcall_date_end");
         $use_osdial_log = get_variable("use_osdial_log");
+        $use_osdial_agent_log = get_variable("use_osdial_agent_log");
         $use_osdial_closer_log = get_variable("use_osdial_closer_log");
 
         $orig_entry_date_start = "";
@@ -151,6 +152,8 @@ function report_lead_search_advanced($lsa_seg='form') {
                 $searchWHR .= " AND osdial_log.lead_id='" . mres($lead_id) . "'";
             } elseif ($use_osdial_closer_log) {
                 $searchWHR .= " AND osdial_closer_log.lead_id='" . mres($lead_id) . "'";
+            } elseif ($use_osdial_agent_log) {
+                $searchWHR .= " AND osdial_agent_log.lead_id='" . mres($lead_id) . "'";
             } else {
                 $searchWHR .= " AND osdial_list.lead_id='" . mres($lead_id) . "'";
             }
@@ -160,6 +163,8 @@ function report_lead_search_advanced($lsa_seg='form') {
                 $searchWHR .= " AND osdial_log.call_date BETWEEN '" . mres($lastcall_date_start) . "' AND '" . mres($lastcall_date_end) . "'";
             } elseif ($use_osdial_closer_log) {
                 $searchWHR .= " AND osdial_closer_log.call_date BETWEEN '" . mres($lastcall_date_start) . "' AND '" . mres($lastcall_date_end) . "'";
+            } elseif ($use_osdial_agent_log) {
+                $searchWHR .= " AND osdial_agent_log.event_time BETWEEN '" . mres($lastcall_date_start) . "' AND '" . mres($lastcall_date_end) . "'";
             } else {
                 $searchWHR .= " AND osdial_list.last_local_call_time BETWEEN '" . mres($lastcall_date_start) . "' AND '" . mres($lastcall_date_end) . "'";
             }
@@ -168,6 +173,8 @@ function report_lead_search_advanced($lsa_seg='form') {
         ### process campaigns group
         if ($use_osdial_log) {
             $searchWHR .= sprintf(" AND osdial_log.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
+        } elseif ($use_osdial_agent_log) {
+            $searchWHR .= sprintf(" AND osdial_agent_log.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
         } else {
             $searchWHR .= sprintf(" AND osdial_lists.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
         }
@@ -187,6 +194,8 @@ function report_lead_search_advanced($lsa_seg='form') {
                 $searchWHR .= " AND osdial_log.campaign_id IN ($campaignIN)";
             } elseif ($use_osdial_closer_log) {
                 $searchWHR .= " AND osdial_closer_log.campaign_id IN ($campaignIN)";
+            } elseif ($use_osdial_agent_log) {
+                $searchWHR .= " AND osdial_agent_log.campaign_id IN ($campaignIN)";
             } else {
                 $searchWHR .= " AND osdial_lists.campaign_id IN ($campaignIN)";
             }
@@ -231,6 +240,8 @@ function report_lead_search_advanced($lsa_seg='form') {
                 $searchWHR .= " AND osdial_log.status IN ($statusIN)";
             } elseif ($use_osdial_closer_log) {
                 $searchWHR .= " AND osdial_closer_log.status IN ($statusIN)";
+            } elseif ($use_osdial_agent_log) {
+                $searchWHR .= " AND osdial_agent_log.status IN ($statusIN)";
             } else {
                 $searchWHR .= " AND osdial_list.status IN ($statusIN)";
             }
@@ -253,6 +264,8 @@ function report_lead_search_advanced($lsa_seg='form') {
                 $searchWHR .= " AND osdial_log.user IN ($agentIN)";
             } elseif ($use_osdial_closer_log) {
                 $searchWHR .= " AND osdial_closer_log.user IN ($agentIN)";
+            } elseif ($use_osdial_agent_log) {
+                $searchWHR .= " AND osdial_agent_log.user IN ($agentIN)";
             } else {
                 $searchWHR .= " AND osdial_list.user IN ($agentIN)";
             }
@@ -357,6 +370,10 @@ function report_lead_search_advanced($lsa_seg='form') {
                 } elseif ($field == "campaign_id" or $field == "lead_id" or $field == "list_id" or $field == "user" or $field == "phone_number") {
                     if ($use_osdial_log) {
                         $searchFLD .= "osdial_log." . $field . ",";
+                    } elseif ($use_osdial_agent_log) {
+                        if ($field == "campaign_id" or $field == "lead_id" or $field == "user") {
+                            $searchFLD .= "osdial_agent_log." . $field . ",";
+                        }
                     } else {
                         $searchFLD .= "osdial_lists." . $field . ",";
                     }
@@ -370,11 +387,13 @@ function report_lead_search_advanced($lsa_seg='form') {
         if ($field_cnt == 0 or $field_all == 1) {
             $searchFLD = "osdial_list.*,";
             if ($use_osdial_log) {
-                $searchFLD .= "osdial_log.*,";
+                $searchFLD .= "osdial_log.*,osdial_log.status AS status,";
             } elseif ($use_osdial_closer_log) {
-                $searchFLD .= "osdial_closer_log.*,";
+                $searchFLD .= "osdial_closer_log.*,osdial_closer_log.status AS status,";
+            } elseif ($use_osdial_agent_log) {
+                $searchFLD .= "osdial_agent_log.*,osdial_agent_log.status AS status,";
             } else {
-                $searchFLD .= "osdial_lists.campaign_id,";
+                $searchFLD .= "osdial_lists.campaign_id,osdial_list.status AS status,";
             }
         } elseif ($use_osdial_log and $field_cnt > 0) {
             $searchFLD .= "osdial_log.call_date,osdial_closer_log.length_in_sec,";
@@ -389,6 +408,9 @@ function report_lead_search_advanced($lsa_seg='form') {
             } elseif ($use_osdial_closer_log) {
                     $fieldJOIN = " LEFT JOIN osdial_statuses ON (osdial_closer_log.status=osdial_statuses.status) ";
                     $searchFLD .= "osdial_closer_log.status,";
+            } elseif ($use_osdial_agent_log) {
+                    $fieldJOIN = " LEFT JOIN osdial_statuses ON (osdial_agent_log.status=osdial_statuses.status) ";
+                    $searchFLD .= "osdial_agent_log.status,";
             } else {
                     $fieldJOIN = " LEFT JOIN osdial_statuses ON (osdial_list.status=osdial_statuses.status) ";
                     $searchFLD .= "osdial_list.status,";
@@ -505,7 +527,7 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .= "<input type=hidden name=ADD value=\"$ADD\">\n";
         $form .= "<input type=hidden name=SUB value=\"$SUB\">\n";
         $form .= "<input type=hidden name=DB value=\"$DB\">\n";
-        $form .= "<table width=$section_width cellspacing=0 bgcolor=$oddrows class=tabinput>\n";
+        $form .= "<table width=$section_width cellspacing=0 bgcolor=$oddrows class=tabinput style=\"white-space:nowrap;\">\n";
         $form .= "  <tr>\n";
         $form .= "    <td colspan=4 class=tabheader>Enter any combination of the following</td>\n";
         $form .= "  </tr>\n";
@@ -620,9 +642,12 @@ function report_lead_search_advanced($lsa_seg='form') {
                 }
             }
             $form .= "             <tr><td><select name=affields[] id=affields size=6 multiple $affdisable>\n";
-            $krh = get_krh($link, 'osdial_campaign_fields AS fld,osdial_campaign_forms AS frm', "fld.id AS fldid,concat(frm.name,'_',fld.name) AS ffname",'ffname','fld.form_id=frm.id','');
+            $krh = get_krh($link, 'osdial_campaign_fields AS fld,osdial_campaign_forms AS frm', "fld.id AS fldid,concat(frm.name,'_',fld.name) AS ffname,fld.deleted AS flddel,frm.deleted AS frmdel",'ffname','fld.form_id=frm.id','');
             if (is_array($krh)) {
                 foreach ($krh as $k) {
+                    $affstyle = '';
+                    if ($k['frmdel']>0) $affstyle = 'style="color:#800000;"';
+                    if ($k['flddel']>0) $affstyle = 'style="color:#800000;"';
                     if (is_array($affields)) {
                         foreach ($affields as $affield) {
                             if ($k['fldid'] != "" and $k['fldid'] == $affield) {
@@ -630,7 +655,7 @@ function report_lead_search_advanced($lsa_seg='form') {
                             }
                         }
                     }
-                    $form .= "        <option value=\"" . $k['fldid'] . "\"$sel>" . $k['ffname'] . "</option>\n";
+                    $form .= "        <option $affstyle value=\"" . $k['fldid'] . "\"$sel>" . $k['ffname'] . "</option>\n";
                     $affield_label[$k['fldid']] = $k['ffname'];
                 }
             }
@@ -715,7 +740,7 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .= "      </font></td>\n";
         $form .= "  </tr>\n";
         $form .= "  <tr>\n";
-        $form .= "    <td align=right><font size=2>Last Call Date</font></td>\n";
+        $form .= "    <td align=right><font size=2>LastCall/Log Date</font></td>\n";
         $form .= "    <td align=left><font size=2>\n";
         $form .= "      <script>\n";
         $form .= "        var cal3 = new CalendarPopup('caldiv3');\n";
@@ -739,8 +764,9 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .=          "\" name=LCDacal2 id=LCDacal2>\n";
         $form .= "      <img width=12 src=\"templates/default/images/calendar.png\" style=border:0px;></a>\n";
         $form .= "    </font>\n";
-        if ($use_osdial_log == 1) $check = " checked";
-        if ($use_osdial_closer_log == 1) $check2 = " checked";
+        $check='';if ($use_osdial_log == 1) $check = " checked";
+        $check2='';if ($use_osdial_closer_log == 1) $check2 = " checked";
+        $check3='';if ($use_osdial_agent_log == 1) $check3 = " checked";
         $form .= "  </td>\n";
         $form .= "  </tr>\n";
 
@@ -748,8 +774,9 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .= "    <td align=right><font size=2>Use Log Entries</font></td>\n";
         $form .= "    </td>\n";
         $form .= "    <td align=left>\n";
-        $form .= "      <input type=checkbox name=use_osdial_log id=use_osdial_log onchange=\"if (this.checked==true) use_osdial_closer_log.checked=false;\" value=1$check> <font size=1><label for=use_osdial_log>Outbound</label></font>&nbsp;&nbsp;&nbsp;\n";
-        $form .= "      <input type=checkbox name=use_osdial_closer_log id=use_osdial_closer_log onchange=\"if (this.checked==true) use_osdial_log.checked=false;\" value=1$check2> <font size=1><label for=use_osdial_closer_log>Closer/Inbound</label></font>\n";
+        $form .= "      <input type=checkbox name=use_osdial_agent_log id=use_osdial_agent_log onchange=\"if (this.checked==true) use_osdial_closer_log.checked=false; use_osdial_log.checked=false;\" value=1$check3><font size=1><label for=use_osdial_agent_log>Agent</label></font>&nbsp;&nbsp;&nbsp;";
+        $form .= "<input type=checkbox name=use_osdial_log id=use_osdial_log onchange=\"if (this.checked==true) use_osdial_agent_log.checked=false; use_osdial_closer_log.checked=false;\" value=1$check><font size=1><label for=use_osdial_log>Outbound</label></font>&nbsp;&nbsp;&nbsp;";
+        $form .= "<input type=checkbox name=use_osdial_closer_log id=use_osdial_closer_log onchange=\"if (this.checked==true) use_osdial_agent_log.checked=false; use_osdial_log.checked=false;\" value=1$check2><font size=1><label for=use_osdial_closer_log>Closer/Inbound</label></font>\n";
         $form .= "    </td>\n";
         $form .= "  </tr>\n";
 
@@ -925,6 +952,8 @@ function report_lead_search_advanced($lsa_seg='form') {
                 $mainTBL = "osdial_log JOIN osdial_list ON (osdial_log.lead_id=osdial_list.lead_id)";
             } elseif ($use_osdial_closer_log) {
                 $mainTBL = "osdial_closer_log JOIN osdial_list ON (osdial_closer_log.lead_id=osdial_list.lead_id)";
+            } elseif ($use_osdial_agent_log) {
+                $mainTBL = "osdial_agent_log JOIN osdial_list ON (osdial_agent_log.lead_id=osdial_list.lead_id)";
             } else {
                 $mainTBL = "osdial_list";
             }
@@ -1240,7 +1269,7 @@ function report_lead_search_advanced($lsa_seg='form') {
             } else {
                 $o=0;
                 while ($results_to_print > $o) {
-                    $row=mysql_fetch_row($rslt);
+                    $row=mysql_fetch_array($rslt, MYSQL_BOTH);
                     $recloc = '';
                     if ($row[0] > 0) {
                         $rslt2=mysql_query(sprintf("SELECT location FROM recording_log WHERE lead_id='%s' ORDER BY recording_id DESC LIMIT 1;",$row[0]), $link);
@@ -1256,7 +1285,7 @@ function report_lead_search_advanced($lsa_seg='form') {
                     $data .= "    <td nowrap align=left><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ($o + (($page - 1) * $numresults)) . "</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[0]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[0]\" target=\"_blank\">$row[0]</a></font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[7]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1><a href=\"" . $pageURL . "&lists[]=$row[7]&sort=$sort&direction=$direction#advsearch\">$row[7]</a></font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"$row[3]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[3]</font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"$row[status]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[status]</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[11]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[11]</font></td>\n";
                     $data .= "    <td nowrap align=left title=\"$row[15], $row[13]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ellipse($row[15] . ", " . $row[13], 10, true) . "</font></td>\n";
                     $data .= "    <td nowrap align=left title=\"$row[19]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ellipse($row[19],10,true) . "</font></td>\n";
@@ -1279,7 +1308,7 @@ function report_lead_search_advanced($lsa_seg='form') {
                 }
             }
             $data .= "  <tr class=tabfooter>\n";
-            $data .= "    <td colspan=17></td>\n";
+            $data .= "    <td colspan=18></td>\n";
             $data .= "  </tr>\n";
             $data .= "</table>\n";
     
