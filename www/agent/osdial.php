@@ -2592,7 +2592,7 @@ flush();
                                 <input type=hidden name=callserverip value="">
                             
                                 <!-- Customer Information -->
-                                <div class="text_input" id="MainPanelCustInfo">
+                                <div class="text_input" style="white-space:nowrap;overflow:hidden;" id="MainPanelCustInfo">
                                     <table cellpadding=0 cellspacing=2>
                                         <tr valign=top>
                                             <td align=center colspan=3>
@@ -2617,29 +2617,13 @@ flush();
                                         </tr>
                                         <tr>
                                             <td align=right><font class="body_text" color=<?=$form_fc?>><label for=lead_id>LeadID:&nbsp;</label></font></td>
-                                            <td align=left colspan=2>
-                                                <font class="body_input"><input type=text size=11 name=lead_id id=lead_id maxlength=11 class="cust_form" value="" readonly></font>
-                                                <font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
-                                                <font class="body_text" color=<?=$form_fc?>><label for=source_id>SourceID:&nbsp;</label></font>
-                                                <font class="body_input"><input type=text size=6 name=source_id id=source_id maxlength=6 class="cust_form" value="" readonly></font>
-                                                <font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
-                                                <font class="body_text" color=<?=$form_fc?>><label for=external_key>ExternalKey:&nbsp;</label></font>
-                                                <font class="body_input"><input type=text size=11 name=external_key id=external_key maxlength=100 class="cust_form" value="" readonly></font>
-                                            </td>
+                                            <td align=left colspan=2><font class="body_input"><input type=text size=11 name=lead_id id=lead_id maxlength=11 class="cust_form" value="" readonly></font><font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font class="body_text" color=<?=$form_fc?>><label for=source_id>SourceID:&nbsp;</label></font><font class="body_input"><input type=text size=6 name=source_id id=source_id maxlength=6 class="cust_form" value="" readonly></font><font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font class="body_text" color=<?=$form_fc?>><label for=external_key>ExternalKey:&nbsp;</label></font><font class="body_input"><input type=text size=6 name=external_key id=external_key maxlength=100 class="cust_form" value="" readonly></font></td>
                                         </tr>
                                         <tr>
                                             <td align=right>
                                                 <font class="body_text"><font color=<?=$form_fc?>><label for=title>Title:&nbsp;</label></font>
                                             </td>
-                                            <td align=left colspan=2>
-                                                <font class="body_input"><input type=text size=4 name=title id=title maxlength=4 class="cust_form" value=""></font>
-                                                <font class="body_text" color=<?=$form_fc?>><label for=first_name>&nbsp;First:&nbsp;</label></font>
-                                                <font class="body_input"> <input type=text size=14 name=first_name id=first_name maxlength=30 class="cust_form" value=""></font>
-                                                <font class="body_text" color=<?=$form_fc?>><label for=middle_initial>&nbsp;MI:&nbsp;</label></font>
-                                                <font class="body_input"><input type=text size=1 name=middle_initial id=middle_initial maxlength=1 class="cust_form" value=""></font>
-                                                <font class="body_text" color=<?=$form_fc?>><label for=last_name>&nbsp;Last:&nbsp;</label></font>
-                                                <font class="body_input"><input type=text size=15 name=last_name id=last_name maxlength=30 class="cust_form" value=""></font>
-                                            </td>
+                                            <td align=left colspan=2><font class="body_input"><input type=text size=4 name=title id=title maxlength=4 class="cust_form" value=""></font><font class="body_text" color=<?=$form_fc?>><label for=first_name>&nbsp;First:&nbsp;</label></font><font class="body_input"> <input type=text size=13 name=first_name id=first_name maxlength=30 class="cust_form" value=""></font><font class="body_text" color=<?=$form_fc?>><label for=middle_initial>&nbsp;MI:&nbsp;</label></font><font class="body_input"><input type=text size=1 name=middle_initial id=middle_initial maxlength=1 class="cust_form" value=""></font><font class="body_text" color=<?=$form_fc?>><label for=last_name>&nbsp;Last:&nbsp;</label></font><font class="body_input"><input type=text size=13 name=last_name id=last_name maxlength=30 class="cust_form" value=""></font></td>
                                         </tr>
                                         <!-- Hooks for company field
                                         <tr>
@@ -2683,15 +2667,7 @@ flush();
                                         </tr>
                                         <tr>
                                             <td align=right><font class="body_text" color=<?=$form_fc?>><label for=phone_number>Phone:&nbsp;</label></font></td>
-                                            <td align=left colspan=2>
-                                                <font class="body_input"><input type=text size=11 name=phone_number id=phone_number maxlength=12 class="cust_form" value=""></font>
-                                                <font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
-                                                <font class="body_text" color=<?=$form_fc?>><label for=phone_code>PhoneCode:&nbsp;</label></font>
-                                                <font class="body_input"><input type=text size=4 name=phone_code id=phone_code maxlength=10 class="cust_form" value=""></font>
-                                                <font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font>
-                                                <font class="body_text" color=<?=$form_fc?>><label for=alt_phone>Phone2:&nbsp;</label></font>
-                                                <font class="body_input"><input type=text size=12 name=alt_phone id=alt_phone maxlength=12 class="cust_form" value=""></font>
-                                            </td>
+                                            <td align=left colspan=2><font class="body_input"><input type=text size=11 name=phone_number id=phone_number maxlength=12 class="cust_form" value=""></font><font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font class="body_text" color=<?=$form_fc?>><label for=phone_code>PhoneCode:&nbsp;</label></font><font class="body_input"><input type=text size=4 name=phone_code id=phone_code maxlength=10 class="cust_form" value=""></font><font class="body_text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><font class="body_text" color=<?=$form_fc?>><label for=alt_phone>Phone2:&nbsp;</label></font><font class="body_input"><input type=text size=11 name=alt_phone id=alt_phone maxlength=12 class="cust_form" value=""></font></td>
                                         </tr>
                                         <tr>
                                             <td align=right valign=top><font class="body_text" color=<?=$form_fc?>><label for=comments>Comments:&nbsp;</label></font></td>
