@@ -83,7 +83,7 @@ function report_agent_performance_detail() {
     $html .= "  <input type=hidden name=ADD value=\"$ADD\">\n";
     $html .= "  <input type=hidden name=SUB value=\"$SUB\">\n";
     $html .= "  <input type=hidden name=DB value=\"$DB\">\n";
-    $html .= "  <table width=650 align=center cellpadding=0 cellspacing=0>\n";
+    $html .= "  <table width=750 align=center cellpadding=0 cellspacing=0>\n";
     $html .= "    <tr>\n";
     $html .= "      <td align=center colspan=5>\n";
     $html .= "        <font color=$default_text size=4>AGENT PERFORMANCE REPORT</font>\n";
