@@ -99,7 +99,7 @@ sub initsocks {
 	my %IPs;
 	my @ints = IO::Interface::Simple->interfaces;
 	foreach my $int (@ints) {
-		if ($int =~ /^e/) {
+		if ($int =~ /^e|^b/) {
 			my $ip = IO::Interface::Simple->new($int);
 			$IPs{$int} = $ip->address if ($ip->address);
 		}
