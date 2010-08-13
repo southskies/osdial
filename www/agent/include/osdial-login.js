@@ -24,30 +24,40 @@
 
 
 
+// ################################################################################
+// getXHR() - Returns an xmlhttprequest or MS equiv.
+	var getXHR = function () {
+		var xmlhttp=false;
+		try {
+			xmlhttp = new XMLHttpRequest();
+			if (xmlhttp) getXHR = function() { return new XMLHttpRequest(); };
+		} catch(e) {
+			var msxml = ['MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP'];
+			for (var i=0, len = msxml.length; i < len; ++i) {
+				try {
+					xmlhttp = new ActiveXObject(msxml[i]);
+					if (xmlhttp) {
+						if (i==0) {
+							getXHR = function() { return new ActiveXObject('MSXML2.XMLHTTP.3.0'); };
+						} else if (i==1) {
+							getXHR = function() { return new ActiveXObject('MSXML2.XMLHTTP'); };
+						} else if (i==2) {
+							getXHR = function() { return new ActiveXObject('Microsoft.XMLHTTP'); };
+						}
+					}
+					break;
+				} catch(e) {}
+			}
+		}
+		return xmlhttp;
+	}
 
 
 
 // ################################################################################
 // Send Request for allowable campaigns to populate the campaigns pull-down
     function login_allowable_campaigns() {
-        var xmlhttp=false;
-        /*@cc_on @*/
-        /*@if (@_jscript_version >= 5)
-        // JScript gives us Conditional compilation, we can cope with old IE versions.
-        // and security blocked creation of the objects.
-        try {
-        xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-        } catch (e) {
-        try {
-        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-        } catch (E) {
-        xmlhttp = false;
-        }
-        }
-        @end @*/
-        if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-            xmlhttp = new XMLHttpRequest();
-        }
+        var xmlhttp=getXHR();
         if (xmlhttp) { 
             logincampaign_query = "&user=" + document.osdial_form.VD_login.value + "&pass=" + document.osdial_form.VD_pass.value + "&ACTION=LogiNCamPaigns&format=html";
             xmlhttp.open('POST', 'vdc_db_query.php'); 

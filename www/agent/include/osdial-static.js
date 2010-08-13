@@ -23,11 +23,13 @@
  */
 
 
-	var getXmlHttp = function () {
+// ################################################################################
+// getXHR() - Returns an xmlhttprequest or MS equiv.
+	var getXHR = function () {
 		var xmlhttp=false;
 		try {
 			xmlhttp = new XMLHttpRequest();
-			if (xmlhttp) getXmlHttp = function() { return new XMLHttpRequest(); };
+			if (xmlhttp) getXHR = function() { return new XMLHttpRequest(); };
 		} catch(e) {
 			var msxml = ['MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP'];
 			for (var i=0, len = msxml.length; i < len; ++i) {
@@ -35,11 +37,11 @@
 					xmlhttp = new ActiveXObject(msxml[i]);
 					if (xmlhttp) {
 						if (i==0) {
-							getXmlHttp = function() { return new ActiveXObject('MSXML2.XMLHTTP.3.0'); };
+							getXHR = function() { return new ActiveXObject('MSXML2.XMLHTTP.3.0'); };
 						} else if (i==1) {
-							getXmlHttp = function() { return new ActiveXObject('MSXML2.XMLHTTP'); };
+							getXHR = function() { return new ActiveXObject('MSXML2.XMLHTTP'); };
 						} else if (i==2) {
-							getXmlHttp = function() { return new ActiveXObject('Microsoft.XMLHTTP'); };
+							getXHR = function() { return new ActiveXObject('Microsoft.XMLHTTP'); };
 						}
 					}
 					break;
@@ -55,24 +57,7 @@
 // ################################################################################
 // Send Request for allowable campaigns to populate the campaigns pull-down
     function login_allowable_campaigns() {
-        var xmlhttp=false;
-        /*@cc_on @*/
-        /*@if (@_jscript_version >= 5)
-        // JScript gives us Conditional compilation, we can cope with old IE versions.
-        // and security blocked creation of the objects.
-        try {
-        xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-        } catch (e) {
-        try {
-        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-        } catch (E) {
-        xmlhttp = false;
-        }
-        }
-        @end @*/
-        if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-            xmlhttp = new XMLHttpRequest();
-        }
+        var xmlhttp=getXHR();
         if (xmlhttp) { 
             logincampaign_query = "&user=" + document.osdial_form.VD_login.value + "&pass=" + document.osdial_form.VD_pass.value + "&ACTION=LogiNCamPaigns&format=html";
             xmlhttp.open('POST', 'vdc_db_query.php'); 
@@ -109,24 +94,7 @@
 // Send Hangup command for Live call connected to phone now to Manager
 	function livehangup_send_hangup(taskvar) {
 		debug("<b>livehangup_send_hangup:</b> taskvar=" + taskvar,2);
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			var queryCID = "HLagcW" + epoch_sec + user_abb;
 			var hangupvalue = taskvar;
@@ -154,24 +122,7 @@
 		if (taskagentmute=='AgenT') {
 			taskvolchannel = agentchannel;
 		}
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			var queryCID = "VCagcW" + epoch_sec + user_abb;
 			var volchanvalue = taskvolchannel;
@@ -293,24 +244,7 @@
 			cxmatch++;
 		}
 
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) {
 			var channel_context = ext_context;
 			var channel_value = '';
@@ -425,24 +359,7 @@
 		var dtmf_string = dtmf_number.toString();
 		var conf_dtmf_room = taskconfdtmf;
 
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			var queryCID = dtmf_string;
 			VMCoriginate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass  + "&ACTION=SysCIDOriginate&format=text&channel=" + dtmf_send_extension + "&queryCID=" + queryCID + "&exten=" + conf_silent_prefix + '' + conf_dtmf_room + "&ext_context=" + ext_context + "&ext_priority=1";
@@ -478,10 +395,10 @@
 				var campagentstdisp = 'NO';
 			}
 
-			xmlhttprequestcheckconf=getXmlHttp();
+			xmlhttprequestcheckconf=getXHR();
 			if (xmlhttprequestcheckconf) { 
 				checkconf_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&client=vdc&conf_exten=" + taskconfnum + "&auto_dial_level=" + auto_dial_level + "&campagentstdisp=" + campagentstdisp;
-				xmlhttprequestcheckconf.open('POST', 'conf_exten_check.php'); 
+				xmlhttprequestcheckconf.open('POST', 'conf_exten_check.php');
 				xmlhttprequestcheckconf.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 				xmlhttprequestcheckconf.send(checkconf_query); 
 				xmlhttprequestcheckconf.onreadystatechange = function() { 
@@ -682,24 +599,7 @@
 // Send MonitorConf/StopMonitorConf command for recording of conferences
 	function conf_send_recording(taskconfrectype,taskconfrec,taskconffile) {
 		debug("<b>check_send_recording:</b> taskconfrectype=" + taskconfrectype + " taskconfrec=" + taskconfrec + " taskconffile=" + taskconffile,2);
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			if (taskconfrectype == 'MonitorConf') {
 				//CAMPAIGN CUSTPHONE FULLDATE TINYDATE EPOCH AGENT
@@ -807,24 +707,7 @@
                         }
                     }
                 }
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			var redirectvalue = MDchannel;
 			var redirectserverip = lastcustserverip;
@@ -947,24 +830,7 @@
 		// used to send second Redirect  for manual dial calls
 		if (auto_dial_level == 0) {
 			RedirecTxFEr = 1;
-			var xmlhttp=false;
-			/*@cc_on @*/
-			/*@if (@_jscript_version >= 5)
-			// JScript gives us Conditional compilation, we can cope with old IE versions.
-			// and security blocked creation of the objects.
-			 try {
-			  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-			 } catch (e) {
-			  try {
-			   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-			  } catch (E) {
-			   xmlhttp = false;
-			  }
-			 }
-			@end @*/
-			if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-				xmlhttp = new XMLHttpRequest();
-			}
+			var xmlhttp=getXHR();
 			if (xmlhttp) { 
 				xmlhttp.open('POST', 'manager_send.php'); 
 				xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
@@ -1041,24 +907,7 @@
 				document.getElementById("MainStatuSSpan").innerHTML = man_status;
 			}
 		}
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			manDiaLlog_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLlogCaLL&stage=" + taskMDstage + "&uniqueid=" + document.osdial_form.uniqueid.value + 
 			"&user=" + user + "&pass=" + pass + "&campaign=" + campaign + 
@@ -1117,24 +966,7 @@
 // Request number of USERONLY callbacks for this agent
 	function CalLBacKsCounTCheck() {
 		debug("<b>CalLBacKsCounTCheck:</b>",4);
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			CBcount_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=CalLBacKCounT&campaign=" + campaign + "&format=text";
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
@@ -1172,24 +1004,7 @@
 			}
 			showDiv('CallBacKsLisTBox');
 
-			var xmlhttp=false;
-			/*@cc_on @*/
-			/*@if (@_jscript_version >= 5)
-			// JScript gives us Conditional compilation, we can cope with old IE versions.
-			// and security blocked creation of the objects.
-			 try {
-			  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-			 } catch (e) {
-			  try {
-			   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-			  } catch (E) {
-			   xmlhttp = false;
-			  }
-			 }
-			@end @*/
-			if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-				xmlhttp = new XMLHttpRequest();
-			}
+			var xmlhttp=getXHR();
 			if (xmlhttp) { 
 				var CBlist_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=CalLBacKLisT&campaign=" + campaign + "&format=text";
 				xmlhttp.open('POST', 'vdc_db_query.php'); 
@@ -1360,24 +1175,7 @@
 		} else {
 			var CIDcheck = MDnextCID;
 		}
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			manDiaLlook_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLlookCaLL&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&MDnextCID=" + CIDcheck + "&agent_log_id=" + agent_log_id + "&lead_id=" + document.osdial_form.lead_id.value;
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
@@ -1560,24 +1358,7 @@
 				WebFormRefresH('');
 			}
 		}
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			lead_cust2_cid = document.osdial_form.custom2.value;
 			cid = campaign_cid;
@@ -1706,24 +1487,7 @@
 			}
 		}
 
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			autoDiaLready_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=" + taskaction + "&user=" + user + "&pass=" + pass + "&stage=" + VDRP_stage + "&agent_log_id=" + agent_log_id + "&agent_log=" + taskagentlog + "&wrapup=" + taskwrapup + "&campaign=" + campaign;
 			debug("<b>AutoDial_ReSume_PauSe called:</b> vdc_db_query.php?" + autoDiaLready_query,4);
@@ -1752,24 +1516,7 @@
 // Check to see if there is a call being sent from the auto-dialer to agent conf
 	function ReChecKCustoMerChaN() {
 		debug("<b>ReChecKCustoMerChaN:</b>",2);
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			recheckVDAI_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&ACTION=VDADREcheckINCOMING" + "&agent_log_id=" + agent_log_id + "&lead_id=" + document.osdial_form.lead_id.value;
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
@@ -1888,24 +1635,7 @@
 			DialTimeHangup();
 		}
 		if (form_cust_channel.length > 3) {
-			var xmlhttp=false;
-			/*@cc_on @*/
-			/*@if (@_jscript_version >= 5)
-			// JScript gives us Conditional compilation, we can cope with old IE versions.
-			// and security blocked creation of the objects.
-			 try {
-			  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-			 } catch (e) {
-			  try {
-			   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-			  } catch (E) {
-			   xmlhttp = false;
-			  }
-			 }
-			@end @*/
-			if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-				xmlhttp = new XMLHttpRequest();
-			}
+			var xmlhttp=getXHR();
 			if (xmlhttp) { 
 				var queryCID = "HLvdcW" + epoch_sec + user_abb;
 				var hangupvalue = customer_channel;
@@ -2080,24 +1810,7 @@
 			DialTimeHangup();
 		}
 		if (xferchannel.length > 3) {
-			var xmlhttp=false;
-			/*@cc_on @*/
-			/*@if (@_jscript_version >= 5)
-			// JScript gives us Conditional compilation, we can cope with old IE versions.
-			// and security blocked creation of the objects.
-			 try {
-			  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-			 } catch (e) {
-			  try {
-			   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-			  } catch (E) {
-			   xmlhttp = false;
-			  }
-			 }
-			@end @*/
-			if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-				xmlhttp = new XMLHttpRequest();
-			}
+			var xmlhttp=getXHR();
 			if (xmlhttp) { 
 				var queryCID = "HXvdcW" + epoch_sec + user_abb;
 				var hangupvalue = xfer_channel;
@@ -2150,24 +1863,7 @@
 		if (RedirecTxFEr < 1) {
 			//osdalert("RedirecTxFEr|" + RedirecTxFEr,30);
 			MD_channel_look=0;
-			var xmlhttp=false;
-			/*@cc_on @*/
-			/*@if (@_jscript_version >= 5)
-			// JScript gives us Conditional compilation, we can cope with old IE versions.
-			// and security blocked creation of the objects.
-		 	try {
-		  	xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 	} catch (e) {
-		  	try {
-		   	xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  	} catch (E) {
-		   	xmlhttp = false;
-		  	}
-		 	}
-			@end @*/
-			if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-				xmlhttp = new XMLHttpRequest();
-			}
+			var xmlhttp=getXHR();
 			if (xmlhttp) { 
 				var queryCID = "HTvdcW" + epoch_sec + user_abb;
 				custhangup_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=HangupConfDial&format=text&user=" + user + "&pass=" + pass + "&exten=" + session_id + "&ext_context=" + ext_context + "&queryCID=" + queryCID;
@@ -2284,24 +1980,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		hideDiv('PauseCodeSelectBox');
 		WaitingForNextStep=0;
 
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			VMCpausecode_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass  + "&ACTION=PauseCodeSubmit&format=text&status=" + newpausecode + "&agent_log_id=" + agent_log_id + "&campaign=" + campaign + "&extension=" + extension + "&protocol=" + protocol + "&phone_ip=" + phone_ip + "&enable_sipsak_messages=" + enable_sipsak_messages;
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
@@ -2427,24 +2106,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		var originatevalue = protodial + "/" + extendial;
 		var queryCID = "ACagcW" + epoch_sec + user_abb;
 
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			VMCoriginate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass  + "&ACTION=OriginateVDRelogin&format=text&channel=" + originatevalue + "&queryCID=" + queryCID + "&exten=" + session_id + "&ext_context=" + ext_context + "&ext_priority=1" + "&extension=" + extension + "&protocol=" + protocol + "&phone_ip=" + phone_ip + "&enable_sipsak_messages=" + enable_sipsak_messages + "&allow_sipsak_messages=" + allow_sipsak_messages + "&campaign=" + campaign;
 			xmlhttp.open('POST', 'manager_send.php'); 
@@ -2581,24 +2243,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			CloserSelectChoices = "MGRLOCK";
 		}
 
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			CSCupdate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=regCLOSER&format=text&user=" + user + "&pass=" + pass + "&comments=" + VU_agent_choose_ingroups_DV + "&closer_choice=" + CloserSelectChoices + "-";
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
@@ -2673,24 +2318,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			document.getElementById("PreviewFDTimeSpan").innerHTML = "";
 		}
 
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			VDlogout_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=userLOGout&format=text&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&conf_exten=" + session_id + "&extension=" + extension + "&protocol=" + protocol + "&agent_log_id=" + agent_log_id + "&no_delete_sessions=" + no_delete_sessions + "&phone_ip=" + phone_ip + "&enable_sipsak_messages=" + enable_sipsak_messages + "&LogouTKicKAlL=" + LogouTKicKAlL + "&ext_context=" + ext_context;
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
@@ -3737,24 +3365,7 @@ function utf8_decode(utftext) {
 	function ScriptButtonLog(sid,sbid) {
 		debug("<b>ScriptButtonLog:</b> sid=" + sid + " sbid=" + sbid,2);
 
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			sbl_data = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=ScriptButtonLog&format=text&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&script_id=" + sid + "&script_button_id=" + sbid;
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
@@ -3820,24 +3431,7 @@ function utf8_decode(utftext) {
 			var man_status = " Waiting for Ring..."; 
 		}
 
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			lead_cust2_cid = document.osdial_form.custom2.value;
 			cid = campaign_cid;
@@ -4184,24 +3778,7 @@ function utf8_decode(utftext) {
 				document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
 			}
 
-			var xmlhttp=false;
-			/*@cc_on @*/
-			/*@if (@_jscript_version >= 5)
-			// JScript gives us Conditional compilation, we can cope with old IE versions.
-			// and security blocked creation of the objects.
-			 try {
-			  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-			 } catch (e) {
-			  try {
-			   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-			  } catch (E) {
-			   xmlhttp = false;
-			  }
-			 }
-			@end @*/
-			if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-				xmlhttp = new XMLHttpRequest();
-			}
+			var xmlhttp=getXHR();
 			if (xmlhttp) { 
 				manDiaLskip_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLskip&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&stage=" + previous_dispo + "&called_count=" + previous_called_count;
 				xmlhttp.open('POST', 'vdc_db_query.php'); 
@@ -4248,24 +3825,7 @@ function utf8_decode(utftext) {
 			all_record = 'NO';
 			all_record_count=0;
 			document.osdial_form.lead_id.value = '';
-			var xmlhttprequestcheckauto=false;
-			/*@cc_on @*/
-			/*@if (@_jscript_version >= 5)
-			// JScript gives us Conditional compilation, we can cope with old IE versions.
-			// and security blocked creation of the objects.
-			 try {
-			  xmlhttprequestcheckauto = new ActiveXObject("Msxml2.XMLHTTP");
-			 } catch (e) {
-			  try {
-			   xmlhttprequestcheckauto = new ActiveXObject("Microsoft.XMLHTTP");
-			  } catch (E) {
-			   xmlhttprequestcheckauto = false;
-			  }
-			 }
-			@end @*/
-			if (!xmlhttprequestcheckauto && typeof XMLHttpRequest!='undefined') {
-				xmlhttprequestcheckauto = new XMLHttpRequest();
-			}
+			var xmlhttprequestcheckauto=getXHR();
 			if (xmlhttprequestcheckauto) { 
 				checkVDAI_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&ACTION=VDADcheckINCOMING" + "&agent_log_id=" + agent_log_id;
 				xmlhttprequestcheckauto.open('POST', 'vdc_db_query.php'); 
@@ -4640,24 +4200,7 @@ function utf8_decode(utftext) {
 				osdalert("Please enter a different phone number.",5);
 				return;
 			}
-			var xmlhttprequestrepull=false;
-			/*@cc_on @*/
-			/*@if (@_jscript_version >= 5) //<>
-			// JScript gives us Conditional compilation, we can cope with old IE versions.
-			// and security blocked creation of the objects.
-			 try {
-			  xmlhttprequestrepull = new ActiveXObject("Msxml2.XMLHTTP");
-			 } catch (e) {
-			  try {
-			   xmlhttprequestrepull = new ActiveXObject("Microsoft.XMLHTTP");
-			  } catch (E) {
-			   xmlhttprequestrepull = false;
-			  }
-			 }
-			@end @*/
-			if (!xmlhttprequestrepull && typeof XMLHttpRequest!='undefined') {
-				xmlhttprequestrepull = new XMLHttpRequest();
-			}
+			var xmlhttprequestrepull=getXHR();
 			if (xmlhttprequestrepull) {
 				checkRPLD_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&ACTION=RepullLeadData" + "&agent_log_id=" + agent_log_id + "&oldphone=" + oldphone + "&oldlead=" + oldlead + "&uniqueid=" + curuniqueid + "&lookup=" + lookup + "&list_id=" + list_id;
 				xmlhttprequestrepull.open('POST', 'vdc_db_query.php'); 
@@ -4983,24 +4526,7 @@ function utf8_decode(utftext) {
 		REGcommentsRESULT = REGcommentsRESULT.replace(REGcommentsQUES, "--QUES--");
 		REGcommentsRESULT = REGcommentsRESULT.replace(REGcommentsPOUND, "--POUND--");
 
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			VLupdate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&campaign=" + campaign +  "&ACTION=updateLEAD&format=text&user=" + user + "&pass=" + pass + 
 				"&lead_id=" + document.osdial_form.lead_id.value + 
@@ -5080,24 +4606,7 @@ function utf8_decode(utftext) {
 			} else {
 				emailTemplatesSend();
 
-				var xmlhttp=false;
-				/*@cc_on @*/
-				/*@if (@_jscript_version >= 5)
-				// JScript gives us Conditional compilation, we can cope with old IE versions.
-				// and security blocked creation of the objects.
-				 try {
-				  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-				 } catch (e) {
-				  try {
-				   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-				  } catch (E) {
-				   xmlhttp = false;
-				  }
-				 }
-				@end @*/
-				if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-					xmlhttp = new XMLHttpRequest();
-				}
+				var xmlhttp=getXHR();
 				if (xmlhttp) { 
 					DSupdate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=updateDISPO&format=text&user=" + user + "&pass=" + pass + "&dispo_choice=" + DispoChoice + "&lead_id=" + document.osdial_form.lead_id.value + "&campaign=" + campaign + "&auto_dial_level=" + auto_dial_level + "&agent_log_id=" + agent_log_id + "&PostDatETimE=" + PostDatETimE + "&CallBackDatETimE=" + CallBackDatETimE + "&list_id=" + document.osdial_form.list_id.value + "&recipient=" + CallBackrecipient + "&use_internal_dnc=" + use_internal_dnc + "&MDnextCID=" + LasTCID + "&stage=" + group + "&comments=" + CallBackCommenTs;
 					debug("<b>updateDISPO called:</b> vdc_db_query.php?" + DSupdate_query,4);
@@ -6046,24 +5555,7 @@ function utf8_decode(utftext) {
 	    if (document.osdial_form.lead_id.value.length>0) {
 	      if (document.osdial_form.email.value.length>0) {
 		osdalert('Sending ' + et_id + ' Email...',60);
-		var xmlhttp=false;
-		/*@cc_on @*/
-		/*@if (@_jscript_version >= 5)
-		// JScript gives us Conditional compilation, we can cope with old IE versions.
-		// and security blocked creation of the objects.
-		 try {
-		  xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
-		 } catch (e) {
-		  try {
-		   xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		  } catch (E) {
-		   xmlhttp = false;
-		  }
-		 }
-		@end @*/
-		if (!xmlhttp && typeof XMLHttpRequest!='undefined') {
-			xmlhttp = new XMLHttpRequest();
-		}
+		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			sbl_data = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=Email&format=text&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&et_id=" + et_id;
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
