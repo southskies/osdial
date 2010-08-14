@@ -2885,22 +2885,26 @@ if ($ACTION == 'updateLEAD') {
             $stmt="UPDATE osdial_list set vendor_lead_code='" . mysql_real_escape_string($vendor_lead_code) . "', title='" . mysql_real_escape_string($title) . "', first_name='" . mysql_real_escape_string($first_name) . "', middle_initial='" . mysql_real_escape_string($middle_initial) . "', last_name='" . mysql_real_escape_string($last_name) . "', address1='" . mysql_real_escape_string($address1) . "', address2='" . mysql_real_escape_string($address2) . "', address3='" . mysql_real_escape_string($address3) . "', city='" . mysql_real_escape_string($city) . "', state='" . mysql_real_escape_string($state) . "', province='" . mysql_real_escape_string($province) . "', postal_code='" . mysql_real_escape_string($postal_code) . "', country_code='" . mysql_real_escape_string($country_code) . "', gender='" . mysql_real_escape_string($gender) . "', date_of_birth='" . mysql_real_escape_string($date_of_birth) . "', alt_phone='" . mysql_real_escape_string($alt_phone) . "', email='" . mysql_real_escape_string($email) . "', custom1='" . mysql_real_escape_string($custom1) . "', custom2='" . mysql_real_escape_string($custom2) ."', comments='" . mysql_real_escape_string($comments) . "' where lead_id='$lead_id';";
             if ($format=='debug') {echo "\n<!-- $stmt -->";}
             $rslt=mysql_query($stmt, $link);
+        }
 
-            $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
-            $cnt = 0;
-            foreach ($forms as $form) {
-                $fcamps = split(',',$form['campaigns']);
-                foreach ($fcamps as $fcamp) {
-                    if ($fcamp == 'ALL' or strtoupper($fcamp) == strtoupper($campaign)) {
-                        $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
-                        foreach ($fields as $field) {
-                            $afvar = get_variable('AF' . $field['id']);
-                            if ($afvar != '') {
-                                $stmt="INSERT INTO osdial_list_fields (lead_id,field_id,value) VALUES ('" . mysql_real_escape_string($lead_id) . "','" . mysql_real_escape_string($field['id']) . "','" . mysql_real_escape_string($afvar) . "') ON DUPLICATE KEY UPDATE value='" . mysql_real_escape_string($afvar) . "';";
-                                $rslt=mysql_query($stmt, $link);
-                            }
-                            $cnt++;
+        $stmt="UPDATE osdial_list SET email='" . mysql_real_escape_string($email) . "' where lead_id='$lead_id';";
+        if ($format=='debug') {echo "\n<!-- $stmt -->";}
+        $rslt=mysql_query($stmt, $link);
+
+        $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
+        $cnt = 0;
+        foreach ($forms as $form) {
+            $fcamps = split(',',$form['campaigns']);
+            foreach ($fcamps as $fcamp) {
+                if ($fcamp == 'ALL' or strtoupper($fcamp) == strtoupper($campaign)) {
+                    $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
+                    foreach ($fields as $field) {
+                        $afvar = get_variable('AF' . $field['id']);
+                        if ($afvar != '') {
+                            $stmt="INSERT INTO osdial_list_fields (lead_id,field_id,value) VALUES ('" . mysql_real_escape_string($lead_id) . "','" . mysql_real_escape_string($field['id']) . "','" . mysql_real_escape_string($afvar) . "') ON DUPLICATE KEY UPDATE value='" . mysql_real_escape_string($afvar) . "';";
+                            $rslt=mysql_query($stmt, $link);
                         }
+                        $cnt++;
                     }
                 }
             }
