@@ -325,7 +325,7 @@ sub gen_servers {
 	}
 
 	# Get other servers 
-	my $stmt = "SELECT server_id,server_ip FROM servers WHERE";
+	my $stmt = "SELECT server_id,server_ip FROM servers WHERE active='Y' AND";
 	foreach my $ip (@myips) {
 		$stmt .= " server_ip!=\'" . $ip . "\' AND";
 	}
