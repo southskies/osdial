@@ -375,7 +375,7 @@ if (strlen($scripts_hh) > 1) {
     echo "      <span class=\"font2 fgdefault\"> &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=1000000\"> Show Scripts </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=1111111\"> Add A New Script</a>\n";
-    if (!file_exists($WeBServeRRooT . '/admin/include/content/scripts/email_templates.php')) {
+    if (file_exists($WeBServeRRooT . '/admin/include/content/scripts/email_templates.php')) {
         echo "         &nbsp; &nbsp; | &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=0email\"> Show Email Templates </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=1email\"> Add A New Email Template </a>\n";

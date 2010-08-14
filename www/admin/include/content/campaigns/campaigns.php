@@ -124,7 +124,7 @@ if ($ADD==11)
     echo get_calltimes($link, '9am-9pm');
     echo "</select>$NWB#osdial_campaigns-local_call_time$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Voicemail: </td><td align=left><input type=text name=voicemail_ext size=10 maxlength=10 value=\"$voicemail_ext\">$NWB#osdial_campaigns-voicemail_ext$NWE</td></tr>\n";
-    if (!file_exists($WeBServeRRooT . '/admin/include/content/scripts/email_templates.php')) {
+    if (file_exists($WeBServeRRooT . '/admin/include/content/scripts/email_templates.php')) {
         echo "<tr bgcolor=$oddrows><td align=right valign=top>Email Templates: </td><td align=left><select size=4 multiple name=\"email_templates[]\">\n";
         echo get_email_templates($link, '');
         echo "</select>$NWB#osdial_campaigns-email_templates$NWE</td></tr>\n";
@@ -1184,7 +1184,7 @@ if ($ADD==31) {
 
         echo "<tr bgcolor=$oddrows><td align=right>Recording Delay: </td><td align=left><input type=text name=allcalls_delay size=3 maxlength=3 value=\"$allcalls_delay\"> <i>in seconds</i>$NWB#osdial_campaigns-allcalls_delay$NWE</td></tr>\n";
 
-        if (!file_exists($WeBServeRRooT . '/admin/include/content/scripts/email_templates.php')) {
+        if (file_exists($WeBServeRRooT . '/admin/include/content/scripts/email_templates.php')) {
             echo "<tr bgcolor=$oddrows><td align=right valign=top>Email Templates: </td><td align=left><select size=4 multiple name=\"email_templates[]\">\n";
             echo get_email_templates($link, $email_templates);
             echo "</select>$NWB#osdial_campaigns-email_templates$NWE</td></tr>\n";
