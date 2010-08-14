@@ -2762,7 +2762,7 @@ flush();
                                             foreach ($fields as $field) {
                                                 $desc = preg_replace('/"/','',$field['description']);
                                                 echo "      <tr title=\"$desc\">\n";
-                                                echo "          <td width=95 align=right><div style=\"width:90px;overflow:hidden;white-space:nowrap;\"><font color=$form_fc class=body_text style=\"font-size:10px;\">" . $field['description'] . ":&nbsp;</font></div></td>\n";
+                                                echo "          <td width=95 align=right><div style=\"overflow:hidden;white-space:nowrap;\"><font color=$form_fc class=body_text style=\"font-size:10px;\">" . $field['description'] . ":&nbsp;</font></div></td>\n";
                                                 echo "          <td align=left>\n";
                                                 if ($field['options'] == '') {
                                                     echo "          <input type=text style=\"font-size:10px;\" size=" . $field['length'] . " maxlength=255 name=AF" . $field['id'] . " id=AF" . $field['id'];

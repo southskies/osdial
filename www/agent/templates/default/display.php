@@ -22,7 +22,8 @@ $preview_bg='#FFCCCC';
 $preview_fc='#D0E0E7';
 
 #$script_bg='#7297A1';
-$script_bg='#DAE1CF';
+#$script_bg='#DAE1CF';
+$script_bg='#FFFFFF';
 $script_fc='#1C4754';
 
 $callback_bg ='#AECED7';
