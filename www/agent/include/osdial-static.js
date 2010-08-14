@@ -5538,16 +5538,11 @@ function utf8_decode(utftext) {
 // ###################################################################################################################################################
 // emailTemplatesSend() - Cycle through each checked templated and call sendEmail for its template.
 	function emailTemplatesSend() {
-		if (document.osdial_form.ETids) {
-			if (document.osdial_form.ETids instanceOf Array) {
-				for (var i=0; i<document.osdial_form.ETids.length; i++) {
-					if (document.osdial_form.ETids[i].checked) {
-						sendEmail(document.osdial_form.ETids[i].value);
-					}
-				}
-			} else {
-				if (document.osdial_form.ETids.checked) {
-					sendEmail(document.osdial_form.ETids.value);
+		if (document.getElementsByName('ETids')) {
+			var et_ids = document.getElementsByName('ETids');
+			for (var i=0; i<et_ids.length; i++) {
+				if (et_ids[i].checked) {
+					sendEmail(et_ids[i].value);
 				}
 			}
 		}
