@@ -1042,7 +1042,7 @@ if ( ($ACTION=="Monitor") || ($ACTION=="StopMonitor") )
 
 	$row='';   $rowx='';
 	$channel_live=1;
-	if ( (strlen($channel)<3) or (strlen($queryCID)<15) or (strlen($filename)<15) )
+	if ( (strlen($channel)<3) or (strlen($queryCID)<15) or (strlen($filename)<2) )
 	{
 		$channel_live=0;
 		echo "Channel $channel is not valid or queryCID $queryCID is not valid or filename: $filename is not valid, $ACTION command not inserted\n";
