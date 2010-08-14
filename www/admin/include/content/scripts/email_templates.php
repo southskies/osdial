@@ -399,19 +399,19 @@ tinyMCE.init({
         echo "    </td>\n";
         echo "  </tr>\n";
 
-        echo "  <tr bgcolor=$oddrows>\n";
-        echo "    <td align=center colspan=2>\n";
-        echo "      <br>HTML Body:<br>";
-        echo "      <textarea name=et_body_html class=mceEditor rows=20 cols=120></textarea>\n";
-        echo "    </td>\n";
-        echo "  </tr>\n";
+        #echo "  <tr bgcolor=$oddrows>\n";
+        #echo "    <td align=center colspan=2>\n";
+        #echo "      <br>HTML Body:<br>";
+        #echo "      <textarea name=et_body_html class=mceEditor rows=20 cols=120></textarea>\n";
+        #echo "    </td>\n";
+        #echo "  </tr>\n";
 
-        echo "  <tr bgcolor=$oddrows>\n";
-        echo "    <td align=center colspan=2>\n";
-        echo "      <br>Text Body:<br>";
-        echo "      <textarea name=et_body_text rows=20 cols=70></textarea>\n";
-        echo "    </td>\n";
-        echo "  </tr>\n";
+        #echo "  <tr bgcolor=$oddrows>\n";
+        #echo "    <td align=center colspan=2>\n";
+        #echo "      <br>Text Body:<br>";
+        #echo "      <textarea name=et_body_text rows=20 cols=70></textarea>\n";
+        #echo "    </td>\n";
+        #echo "  </tr>\n";
 
         echo "  <tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
         echo "</table>\n";
@@ -437,7 +437,7 @@ if ($ADD=="2email") {
         if ($row[0] > 0) {
             echo "<br><font color=red>TEMPLATE NOT ADDED - there is already an email template with this name</font>\n";
         } else {
-            if (strlen($et_id) < 2 or strlen($et_name) < 2 or strlen($et_body_html) < 2) {
+            if (strlen($et_id) < 2 or strlen($et_name) < 2) {
                 echo "<br><font color=red>TEMPLATE NOT ADDED - Please go back and look at the data you entered\n";
                 echo "<br>Template name and HTML body must be at least 2 characters in length</font><br>\n";
             } else {
@@ -515,7 +515,7 @@ if ($ADD=="4email") {
                 $phone_code = '1';
                 $phone_number = '7275551212';
                 $alt_phone = '3125551212';
-                $email = 'test@test.com';
+                $email_to = 'test@test.com';
                 $date_of_birth = '1970-01-01';
                 $gender = 'M';
                 $post_date = date("Y-m-d");
@@ -880,6 +880,7 @@ tinyMCE.init({
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right>From:</td>\n";
         echo "    <td align=left>\n";
+        $et['et_from'] = preg_replace("/'/",'&#39;',$et['et_from']);
         echo "      <input type=text name=et_from size=50 maxlength=255 value='$et[et_from]'>\n";
         echo "      $NWB#osdial_email_templates-et_from$NWE\n";
         echo "    </td>\n";
