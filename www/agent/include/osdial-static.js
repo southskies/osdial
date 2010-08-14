@@ -5539,9 +5539,15 @@ function utf8_decode(utftext) {
 // emailTemplatesSend() - Cycle through each checked templated and call sendEmail for its template.
 	function emailTemplatesSend() {
 		if (document.osdial_form.ETids) {
-			for (var i=0; i<document.osdial_form.ETids.length; i++) {
-				if (document.osdial_form.ETids[i].checked) {
-					sendEmail(document.osdial_form.ETids[i].value);
+			if (document.osdial_form.ETids instanceOf Array) {
+				for (var i=0; i<document.osdial_form.ETids.length; i++) {
+					if (document.osdial_form.ETids[i].checked) {
+						sendEmail(document.osdial_form.ETids[i].value);
+					}
+				}
+			} else {
+				if (document.osdial_form.ETids.checked) {
+					sendEmail(document.osdial_form.ETids.value);
 				}
 			}
 		}
@@ -5558,15 +5564,15 @@ function utf8_decode(utftext) {
 		var xmlhttp=getXHR();
 		if (xmlhttp) { 
 			sbl_data = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=Email&format=text&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&et_id=" + et_id;
-			xmlhttp.open('POST', 'vdc_db_query.php'); 
+			xmlhttp.open('POST', 'vdc_db_query.php', false); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 			xmlhttp.send(sbl_data); 
-			xmlhttp.onreadystatechange = function() { 
+			//xmlhttp.onreadystatechange = function() { 
 				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
 					osdalert('Email Sent',1);
 					//osdalert(xmlhttp.responseText,30);
 				}
-			}
+			//}
 			delete xmlhttp;
 		}
 	      } else {
