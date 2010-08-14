@@ -385,23 +385,27 @@ if ($ADD == "3fields" and $SUB == '2fields') {
         if ($form['campaigns'] == 'ALL') {
             $ac = 'checked';
         }
-        echo '<input type="checkbox" name="campaigns[]" value="-ALL-" ' . $ac . '> <b>ALL - FORM IN ALL CAMPAIGNS</b>';
+        if ($LOG['allowed_campaignsALL']>0) {
+            echo '<input type="checkbox" name="campaigns[]" id=campaigns value="-ALL-" ' . $ac . " onclick=\"var ctmp=this.checked; for(var i=0;i<document.getElementsByName('campaigns[]').length;i++) { document.getElementsByName('campaigns[]')[i].checked=false; }; this.checked=ctmp;\"" . '><label for=campaigns> <b>ALL - FORM IN ALL CAMPAIGNS</b></label>';
+        }
     }
     echo '</td>';
     echo "  </tr>\n";
-    $campaigns = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name','',sprintf('campaign_id IN %s',$LOG['allowed_campaignsSQL']),'');
-    foreach ($campaigns as $camp) {
-        echo "  <tr>\n";
-        echo "      <td bgcolor=$oddrows align=right>&nbsp;</td>\n";
-        $cc = '';
-        $fcamps = split(',',$form['campaigns']);
-        foreach ($fcamps as $fcamp) {
-            if ($camp['campaign_id'] == $fcamp) {
-                $cc = 'checked';
+    if (($LOG['allowed_campaignsALL']<1 and $form['campaigns'] != 'ALL') or $LOG['allowed_campaignsALL']>0) {
+        $campaigns = get_krh($link, 'osdial_campaigns', 'campaign_id,campaign_name','',sprintf('campaign_id IN %s',$LOG['allowed_campaignsSQL']),'');
+        foreach ($campaigns as $camp) {
+            echo "  <tr>\n";
+            echo "      <td bgcolor=$oddrows align=right>&nbsp;</td>\n";
+            $cc = '';
+            $fcamps = split(',',$form['campaigns']);
+            foreach ($fcamps as $fcamp) {
+                if ($camp['campaign_id'] == $fcamp) {
+                    $cc = 'checked';
+                }
             }
+            echo '      <td bgcolor=' . $oddrows . '><input type="checkbox" name="campaigns[]" id=campaigns' . $camp['campaign_id'] . ' value="' . $camp['campaign_id'] . '" ' . $cc . ' onclick="document.getElementById(\'campaigns\').checked=false;"><label for=campaigns' . $camp['campaign_id'] . '> ' . mclabel($camp['campaign_id']) . ' - ' . $camp['campaign_name'] . '</label></td>';
+            echo "  </tr>\n";
         }
-        echo '      <td bgcolor=' . $oddrows . '><input type="checkbox" name="campaigns[]" value="' . $camp['campaign_id'] . '" ' . $cc . '> ' . mclabel($camp['campaign_id']) . ' - ' . $camp['campaign_name'] . '</td>';
-        echo "  </tr>\n";
     }
     echo "  <tr><td colspan=2 bgcolor=$evenrows>&nbsp;</td></tr>\n";
     echo "  <tr class=tabfooter>\n";
