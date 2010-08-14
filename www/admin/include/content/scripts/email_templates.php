@@ -442,6 +442,16 @@ if ($ADD=="2email") {
                 echo "<br>Template name and HTML body must be at least 2 characters in length</font><br>\n";
             } else {
                 if ($LOG['multicomp'] > 0) $et_id = (($company_id * 1) + 100) . $et_id;
+
+                $LOG['allowed_email_templatesSQL'] = rtrim($LOG['allowed_email_templatesSQL'], ')');
+                $LOG['allowed_email_templatesSQL'] .= ",'$et_id')";
+                $LOG['allowed_email_templatesSTR'] .= "$et_id:";
+                $LOG['allowed_email_templates'][] = $et_id;
+                if ($LOG['allowed_email_templatesALL']<1) {
+                    $stmt="UPDATE osdial_user_groups SET allowed_email_templates=' " . implode(" ",$LOG['allowed_email_templates']) . " -' WHERE user_group='$LOG[user_group]';";  
+                    $rslt=mysql_query($stmt, $link);
+                }
+
                 $stmt=sprintf("INSERT INTO osdial_email_templates SET et_id='%s',et_name='%s',et_comments='%s',et_host='%s',et_port='%s',et_user='%s',et_pass='%s',et_from='%s',et_subject='%s',et_body_html='%s',et_body_text='%s',active='%s';",mres($et_id),mres($et_name),mres($et_comments),mres($et_host),mres($et_port),mres($et_user),mres($et_pass),mres($et_from),mres($et_subject),mres($et_body_html),mres($et_body_text),mres($active));
                 $rslt=mysql_query($stmt, $link);
 
