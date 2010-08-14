@@ -240,6 +240,11 @@ if ($ADD==21)
                 $LOG['allowed_campaignsSQL'] = rtrim($LOG['allowed_campaignsSQL'], ')');
                 $LOG['allowed_campaignsSQL'] .= ",'$campaign_id')";
                 $LOG['allowed_campaignsSTR'] .= "$campaign_id:";
+                $LOG['allowed_campaigns'][] .= $campaign_id;
+                if ($LOG['allowed_campaignsALL']<1) {
+                    $stmt="UPDATE osdial_user_groups SET allowed_campaigns=' " . implode(" ",$LOG['allowed_campaigns']) . " -' WHERE user_group='$LOG[user_group]';";  
+                    $rslt=mysql_query($stmt, $link);
+                }
                 $carrier_id = $system_settings['default_carrier_id'];
                 $ets = implode(',',$email_templates);
                 $stmt="INSERT INTO osdial_campaigns (campaign_id,campaign_name,campaign_description,active,dial_status_a,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,campaign_script,get_call_launch,campaign_changedate,campaign_stats_refresh,list_order_mix,web_form_address2,allow_tab_switch,campaign_call_time,carrier_id,email_templates) values('$campaign_id','$campaign_name','$campaign_description','$active','NEW','DOWN','$park_ext','$park_file_name','" . mysql_real_escape_string($web_form_address) . "','$allow_closers','$hopper_level','$auto_dial_level','$next_agent_call','$local_call_time','$voicemail_ext','$script_id','$get_call_launch','$SQLdate','Y','DISABLED','" . mysql_real_escape_string($web_form_address2) . "','$allow_tab_switch','$campaign_call_time','$carrier_id','$ets');";
