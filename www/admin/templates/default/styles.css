@@ -1,3 +1,10 @@
+	@font-face {
+		font-family: 'dejavu sans';
+		font-style: normal;
+		font-weight: normal;
+		src: local('dejavu sans'), url('DejaVuSans.ttf') format('truetype');
+	}
+
 	body {
 		font-family: 'dejavu sans',verdana,sans-serif;
 	}
