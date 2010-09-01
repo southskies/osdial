@@ -1231,7 +1231,7 @@ if ( ($ACTION=="MonitorConf") || ($ACTION=="StopMonitorConf") )
 {
 	$row='';   $rowx='';
 	$channel_live=1;
-	if ( (strlen($exten)<3) or (strlen($channel)<4) or (strlen($filename)<15) )
+	if ( (strlen($exten)<3) or (strlen($channel)<4) or (strlen($filename)<5) )
 	{
 		$channel_live=0;
 		echo "Channel $channel is not valid or exten $exten is not valid or filename: $filename is not valid, $ACTION command not inserted\n";
