@@ -333,6 +333,9 @@ while($one_day_interval > 0)
 					$stmtA = "UPDATE conferences SET extension='' WHERE server_ip='$server_ip' AND conf_exten='$conference';";
 					my $affected_rows = $dbhA->do($stmtA);
 					if($DB){print "|$affected_rows Conference cleared|$stmtA\n|";}
+					$stmtA = "UPDATE osdial_conferences SET extension='' WHERE server_ip='$server_ip' AND conf_exten='$conference' AND extension LIKE '3WAY%';";
+					my $affected_rows = $dbhA->do($stmtA);
+					if($DB){print "|$affected_rows Conference cleared|$stmtA\n|";}
 				}
 
 				##### look for special osdial conference call event #####
