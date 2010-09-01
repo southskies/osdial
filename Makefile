@@ -183,6 +183,7 @@ install-docs: .osdial.config
 	@install -p -m 666 ./www/agent/*.txt $(DESTDIR)$(PATHweb)/agent
 	@install -p -m 644 ./www/agent/include/* $(DESTDIR)$(PATHweb)/agent/include
 	@install -p -m 644 ./www/agent/templates/default/*.css $(DESTDIR)$(PATHweb)/agent/templates/default
+	@install -p -m 644 ./www/agent/templates/default/*.ttf $(DESTDIR)$(PATHweb)/agent/templates/default
 	@install -p -m 644 ./www/agent/templates/default/*.php $(DESTDIR)$(PATHweb)/agent/templates/default
 	@install -p -m 644 ./www/agent/templates/default/images/* $(DESTDIR)$(PATHweb)/agent/templates/default/images
 	@install -p -m 666 ./www/admin/*.txt $(DESTDIR)$(PATHweb)/admin
@@ -191,6 +192,7 @@ install-docs: .osdial.config
 	@install -p -m 644 ./www/admin/*.gif $(DESTDIR)$(PATHweb)/admin
 	@install -p -m 644 ./www/admin/*.css $(DESTDIR)$(PATHweb)/admin
 	@install -p -m 644 ./www/admin/templates/default/*.css $(DESTDIR)$(PATHweb)/admin/templates/default
+	@install -p -m 644 ./www/admin/templates/default/*.ttf $(DESTDIR)$(PATHweb)/admin/templates/default
 	@install -p -m 644 ./www/admin/templates/default/*.php $(DESTDIR)$(PATHweb)/admin/templates/default
 	@install -p -m 644 ./www/admin/templates/default/images/* $(DESTDIR)$(PATHweb)/admin/templates/default/images
 	@install -p -m 644 ./www/admin/include/*.js $(DESTDIR)$(PATHweb)/admin/include
