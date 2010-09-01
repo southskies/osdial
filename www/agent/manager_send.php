@@ -703,15 +703,15 @@ if ($ACTION=="RedirectXtraCX")
 
         if (ereg("NEXTAVAILABLE",$exten))
             {
-            $stmtA="UPDATE osdial_conferences SET extension='$protocol/$extension$NOWnum',leave_3way='0' WHERE server_ip='$server_ip' AND (extension='' OR extension IS NULL) AND conf_exten!='$session_id' LIMIT 1;";
-                if ($format=='debug') {echo "\n<!-- $stmtA -->";}
-            $rslt=mysql_query($stmtA, $link);
+            $stmt="UPDATE osdial_conferences SET extension='$protocol/$extension$NOWnum',leave_3way='0' WHERE server_ip='$server_ip' AND (extension='' OR extension IS NULL) AND conf_exten!='$session_id' LIMIT 1;";
+                if ($format=='debug') {echo "\n<!-- $stmt -->";}
+            $rslt=mysql_query($stmt, $link);
             $affected_rows = mysql_affected_rows($link);
             if ($affected_rows > 0)
                 {
-                $stmtC="SELECT conf_exten FROM osdial_conferences WHERE server_ip='$server_ip' AND extension='$protocol/$extension$NOWnum' AND conf_exten!='$session_id';";
-                    if ($format=='debug') {echo "\n<!-- $stmtC -->";}
-                $rslt=mysql_query($stmtC, $link);
+                $stmt="SELECT conf_exten FROM osdial_conferences WHERE server_ip='$server_ip' AND extension='$protocol/$extension$NOWnum' AND conf_exten!='$session_id';";
+                    if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
                 $row=mysql_fetch_row($rslt);
                 $exten = $row[0];
 
@@ -720,33 +720,32 @@ if ($ACTION=="RedirectXtraCX")
                     $extension = "$extension$user";
                     }
 
-                $stmtD="UPDATE osdial_conferences SET extension='$protocol/$extension' WHERE server_ip='$server_ip' AND conf_exten='$exten' LIMIT 1;";
-                if ($format=='debug') {echo "\n<!-- $stmtD -->";}
-                $rslt=mysql_query($stmtD, $link);
+                $stmt="UPDATE osdial_conferences SET extension='$protocol/$extension' WHERE server_ip='$server_ip' AND conf_exten='$exten' LIMIT 1;";
+                if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
 
-                $stmtE="UPDATE osdial_conferences SET leave_3way='1',leave_3way_datetime='$NOW_TIME',extension='3WAY_$user' WHERE server_ip='$server_ip' AND conf_exten='$session_id';";
-                if ($format=='debug') {echo "\n<!-- $stmtE -->";}
-                $rslt=mysql_query($stmtE, $link);
-
+                $stmt="UPDATE osdial_conferences SET leave_3way='1',leave_3way_datetime='$NOW_TIME',extension='3WAY_$user' WHERE server_ip='$server_ip' AND conf_exten='$session_id';";
+                if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
 
                 $queryCID = "CXAR24$NOWnum";
-                $stmtF="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $agentchannel','Context: $ext_context','Exten: $exten','Priority: 1','CallerID: $queryCID','Account: $queryCID','','','','');";
-                    if ($format=='debug') {echo "\n<!-- $stmtF -->";}
-                $rslt=mysql_query($stmtF, $link);
+                $stmtB="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $agentchannel','Context: $ext_context','Exten: $exten','Priority: 1','CallerID: $queryCID','Account: $queryCID','','','','');";
+                    if ($format=='debug') {echo "\n<!-- $stmtB -->";}
+                $rslt=mysql_query($stmtB, $link);
 
-                $stmtG="UPDATE osdial_live_agents SET conf_exten='$exten' WHERE server_ip='$server_ip' AND user='$user';";
-                    if ($format=='debug') {echo "\n<!-- $stmtG -->";}
-                $rslt=mysql_query($stmtG, $link);
+                $stmt="UPDATE osdial_live_agents SET conf_exten='$exten' WHERE server_ip='$server_ip' AND user='$user';";
+                    if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
 
                 if ($auto_dial_level < 1)
                     {
-                    $stmtH = "DELETE FROM osdial_auto_calls WHERE lead_id='$lead_id' AND callerid LIKE 'M%';";
-                        if ($format=='debug') {echo "\n<!-- $stmtH -->";}
-                    $rslt=mysql_query($stmtH, $link);
+                    $stmt = "DELETE FROM osdial_auto_calls WHERE lead_id='$lead_id' AND callerid LIKE 'M%';";
+                        if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                    $rslt=mysql_query($stmt, $link);
                     }
 
                 echo "NeWSessioN|$exten|\n";
-                echo "|$stmtG|\n";
+                echo "|$stmtB|\n";
 
                 if ($WeBRooTWritablE > 0)
                 {
@@ -908,40 +907,40 @@ if ($ACTION=="RedirectXtra")
 		{
         if (ereg("NEXTAVAILABLE",$exten))
             {
-            $stmtA="UPDATE osdial_conferences SET extension='$protocol/$extension$NOWnum',leave_3way='0' WHERE server_ip='$server_ip' AND (extension='' OR extension IS NULL) AND conf_exten!='$session_id' LIMIT 1;";
-                if ($format=='debug') {echo "\n<!-- $stmtA -->";}
-            $rslt=mysql_query($stmtA, $link);
+            $stmt="UPDATE osdial_conferences SET extension='$protocol/$extension$NOWnum',leave_3way='0' WHERE server_ip='$server_ip' AND (extension='' OR extension IS NULL) AND conf_exten!='$session_id' LIMIT 1;";
+                if ($format=='debug') {echo "\n<!-- $stmt -->";}
+            $rslt=mysql_query($stmt, $link);
             $affected_rows = mysql_affected_rows($link);
             if ($affected_rows > 0)
                 {
-                $stmtC="SELECT conf_exten FROM osdial_conferences WHERE server_ip='$server_ip' AND extension='$protocol/$extension$NOWnum' AND conf_exten!='$session_id';";
-                    if ($format=='debug') {echo "\n<!-- $stmtC -->";}
-                $rslt=mysql_query($stmtC, $link);
+                $stmt="SELECT conf_exten FROM osdial_conferences WHERE server_ip='$server_ip' AND extension='$protocol/$extension$NOWnum' AND conf_exten!='$session_id';";
+                    if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
                 $row=mysql_fetch_row($rslt);
                 $exten = $row[0];
 
-                $stmtD="UPDATE osdial_conferences SET extension='$protocol/$extension' WHERE server_ip='$server_ip' AND conf_exten='$exten' LIMIT 1;";
-                if ($format=='debug') {echo "\n<!-- $stmtD -->";}
-                $rslt=mysql_query($stmtD, $link);
+                $stmt="UPDATE osdial_conferences SET extension='$protocol/$extension' WHERE server_ip='$server_ip' AND conf_exten='$exten' LIMIT 1;";
+                if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
 
-                $stmtE="UPDATE osdial_conferences SET leave_3way='1',leave_3way_datetime='$NOW_TIME',extension='3WAY_$user' WHERE server_ip='$server_ip' AND conf_exten='$session_id';";
-                if ($format=='debug') {echo "\n<!-- $stmtE -->";}
-                $rslt=mysql_query($stmtE, $link);
+                $stmt="UPDATE osdial_conferences SET leave_3way='1',leave_3way_datetime='$NOW_TIME',extension='3WAY_$user' WHERE server_ip='$server_ip' AND conf_exten='$session_id';";
+                if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
 
                 $queryCID = "CXAR23$NOWnum";
-                $stmtF="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $agentchannel','Context: $ext_context','Exten: $exten','Priority: 1','CallerID: $queryCID','Account: $queryCID','','','','');";
-                    if ($format=='debug') {echo "\n<!-- $stmtF -->";}
-                $rslt=mysql_query($stmtF, $link);
+                $stmtB="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $agentchannel','Context: $ext_context','Exten: $exten','Priority: 1','CallerID: $queryCID','Account: $queryCID','','','','');";
+                    if ($format=='debug') {echo "\n<!-- $stmtB -->";}
+                $rslt=mysql_query($stmtB, $link);
 
-                $stmtG="UPDATE osdial_live_agents SET conf_exten='$exten' WHERE server_ip='$server_ip' AND user='$user';";
-                    if ($format=='debug') {echo "\n<!-- $stmtG -->";}
-                $rslt=mysql_query($stmtG, $link);
+                $stmt="UPDATE osdial_live_agents SET conf_exten='$exten' WHERE server_ip='$server_ip' AND user='$user';";
+                    if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
 
                 if ($auto_dial_level < 1)
                     {
-                    $stmtH = "DELETE FROM osdial_auto_calls WHERE lead_id='$lead_id' AND callerid LIKE 'M%';";
-                        if ($format=='debug') {echo "\n<!-- $stmtH -->";}
-                    $rslt=mysql_query($stmtH, $link);
+                    $stmt = "DELETE FROM osdial_auto_calls WHERE lead_id='$lead_id' AND callerid LIKE 'M%';";
+                        if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                    $rslt=mysql_query($stmt, $link);
                     }
 
                 echo "NeWSessioN|$exten|\n";
