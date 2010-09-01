@@ -168,6 +168,10 @@
 		leaving_threeway=1;
 		mainxfer_send_redirect('3WAY','','',tempvarattempt);
 
+		if (customerparked > 0) {
+			mainxfer_send_redirect('FROMParK',lastcustchannel,lastcustserverip);
+		}
+
 		//document.getElementById("callchannel").innerHTML = '';
 		//document.osdial_form.callserverip.value = '';
 		//dialedcall_send_hangup();
@@ -2681,13 +2685,14 @@ function utf8_decode(utftext) {
 				}
 			}
 			if (osdalert_timer>=0) {
-		        document.getElementById("SysteMAlerTTimer").innerHTML = osdalert_timer;
-                if (osdalert_timer==0) hideDiv('SysteMAlerTBoX');
-                osdalert_timer--;
-            }
-			if (AgentDispoing==1) {
+				document.getElementById("SysteMAlerTTimer").innerHTML = osdalert_timer;
+				if (osdalert_timer==0) hideDiv('SysteMAlerTBoX');
+				osdalert_timer--;
+			}
+			if (AgentDispoing>0) {
 				WaitingForNextStep=1;
 				check_for_conf_calls(session_id, '0');
+				AgentDispoing++;
 			}
 			if (logout_stop_timeouts==1) {
 				WaitingForNextStep=1;
