@@ -1976,9 +1976,9 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		document.getElementById("callchannel").innerHTML = '';
 		document.osdial_form.callserverip.value = '';
 		document.osdial_form.xferchannel.value = '';
-		document.getElementById("DialWithCustomer").innerHTML ="<a href=\"#\" onclick=\"SendManualDial('YES');return false;\"><img src=\"templates/" + agent_templates + "/images/vdc_XB_dialwithcustomer.gif\" border=0 alt=\"Dial With Customer\"></a>";
-		document.getElementById("ParkCustomerDial").innerHTML ="<a href=\"#\" onclick=\"xfer_park_dial();return false;\"><img src=\"templates/" + agent_templates + "/images/vdc_XB_parkcustomerdial.gif\" border=0 alt=\"Park Customer Dial\"></a>";
-		document.getElementById("HangupBothLines").innerHTML ="<a href=\"#\" onclick=\"bothcall_send_hangup();return false;\"><img src=\"templates/" + agent_templates + "/images/vdc_XB_hangupbothlines.gif\" border=0 alt=\"Hangup Both Lines\"></a>";
+		document.getElementById("DialWithCustomer").innerHTML ="<a href=\"#\" onclick=\"SendManualDial('YES');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_dialwithcustomer.gif\" border=0 alt=\"Dial With Customer\"></a>";
+		document.getElementById("ParkCustomerDial").innerHTML ="<a href=\"#\" onclick=\"xfer_park_dial();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_parkcustomerdial.gif\" border=0 alt=\"Park Customer Dial\"></a>";
+		document.getElementById("HangupBothLines").innerHTML ="<a href=\"#\" onclick=\"bothcall_send_hangup();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hangupbothlines.gif\" border=0 alt=\"Hangup Both Lines\"></a>";
 
 		var DispoChoice = document.osdial_form.DispoSelection.value;
 
@@ -4614,9 +4614,9 @@ function utf8_decode(utftext) {
 		document.getElementById("callchannel").innerHTML = '';
 		document.osdial_form.callserverip.value = '';
 		document.osdial_form.xferchannel.value = '';
-		document.getElementById("DialWithCustomer").innerHTML ="<a href=\"#\" onclick=\"SendManualDial('YES');return false;\"><img src=\"templates/" + agent_templates + "/images/vdc_XB_dialwithcustomer.gif\" border=0 alt=\"Dial With Customer\"></a>";
-		document.getElementById("ParkCustomerDial").innerHTML ="<a href=\"#\" onclick=\"xfer_park_dial();return false;\"><img src=\"templates/" + agent_templates + "/images/vdc_XB_parkcustomerdial.gif\" border=0 alt=\"Park Customer Dial\"></a>";
-		document.getElementById("HangupBothLines").innerHTML ="<a href=\"#\" onclick=\"bothcall_send_hangup();return false;\"><img src=\"templates/" + agent_templates + "/images/vdc_XB_hangupbothlines.gif\" border=0 alt=\"Hangup Both Lines\"></a>";
+		document.getElementById("DialWithCustomer").innerHTML ="<a href=\"#\" onclick=\"SendManualDial('YES');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_dialwithcustomer.gif\" border=0 alt=\"Dial With Customer\"></a>";
+		document.getElementById("ParkCustomerDial").innerHTML ="<a href=\"#\" onclick=\"xfer_park_dial();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_parkcustomerdial.gif\" border=0 alt=\"Park Customer Dial\"></a>";
+		document.getElementById("HangupBothLines").innerHTML ="<a href=\"#\" onclick=\"bothcall_send_hangup();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_hangupbothlines.gif\" border=0 alt=\"Hangup Both Lines\"></a>";
 
 		var DispoChoice = document.osdial_form.DispoSelection.value;
 
