@@ -337,6 +337,18 @@ if (isset($_GET["script_button_id"]))						{$script_button_id=$_GET["script_butt
     elseif (isset($_POST["script_button_id"]))			{$script_button_id=$_POST["script_button_id"];}
 if (isset($_GET["et_id"]))						{$et_id=$_GET["et_id"];}
     elseif (isset($_POST["et_id"]))			{$et_id=$_POST["et_id"];}
+if (isset($_GET["alt_dial"]))                   {$alt_dial=$_GET["alt_dial"];}
+    elseif (isset($_POST["alt_dial"]))          {$alt_dial=$_POST["alt_dial"];}
+if (isset($_GET["agentchannel"]))               {$agentchannel=$_GET["agentchannel"];}
+    elseif (isset($_POST["agentchannel"]))      {$agentchannel=$_POST["agentchannel"];}
+if (isset($_GET["conf_dialed"]))                {$conf_dialed=$_GET["conf_dialed"];}
+    elseif (isset($_POST["conf_dialed"]))       {$conf_dialed=$_POST["conf_dialed"];}
+if (isset($_GET["leaving_threeway"]))           {$leaving_threeway=$_GET["leaving_threeway"];}
+    elseif (isset($_POST["leaving_threeway"]))  {$leaving_threeway=$_POST["leaving_threeway"];}
+if (isset($_GET["hangup_all_non_reserved"]))            {$hangup_all_non_reserved=$_GET["hangup_all_non_reserved"];}
+    elseif (isset($_POST["hangup_all_non_reserved"]))   {$hangup_all_non_reserved=$_POST["hangup_all_non_reserved"];}
+if (isset($_GET["blind_transfer"]))             {$blind_transfer=$_GET["blind_transfer"];}
+    elseif (isset($_POST["blind_transfer"]))    {$blind_transfer=$_POST["blind_transfer"];}
 
 
 #############################################
@@ -1759,6 +1771,7 @@ if ($stage == "end")
         $local_DEF = 'Local/';
         $local_AMP = '@';
         $total_rec=0;
+        $total_hangup=0;
         $loop_count=0;
         $stmt="SELECT channel FROM live_sip_channels where server_ip = '$server_ip' and extension = '$conf_exten' order by channel desc;";
             if ($format=='debug') {echo "\n<!-- $stmt -->";}
@@ -1772,9 +1785,70 @@ if ($stage == "end")
                 $rec_channels[$total_rec] = "$row[0]";
                 $total_rec++;
                 }
+                else
+                {
+                if ( ($agentchannel == "$row[0]") or (ereg('ASTblind',$row[0])) )
+                    {
+                    $donothing=1;
+                    }
+                else
+                    {
+                    $hangup_channels[$total_hangup] = "$row[0]";
+                    $total_hangup++;
+                    }
+                }
             if ($format=='debug') {echo "\n<!-- $row[0] -->";}
             $loop_count++; 
             }
+
+        $loop_count=0;
+        $stmt="SELECT channel FROM live_channels where server_ip = '$server_ip' and extension = '$conf_exten' order by channel desc;";
+            if ($format=='debug') {echo "\n<!-- $stmt -->";}
+        $rslt=mysql_query($stmt, $link);
+            if ($mel > 0) {mysql_error_logging($NOW_TIME,$link,$mel,$stmt,'00184',$user,$server_ip,$session_name,$one_mysql_log);}
+        if ($rslt) {$rec_list = mysql_num_rows($rslt);}
+            while ($rec_list>$loop_count)
+            {
+            $row=mysql_fetch_row($rslt);
+            if (preg_match("/Local\/$conf_silent_prefix$conf_exten\@/i",$row[0]))
+                {
+                $rec_channels[$total_rec] = "$row[0]";
+                $total_rec++;
+                }
+            else
+                {
+        #       if (preg_match("/$agentchannel/i",$row[0]))
+                if ( ($agentchannel == "$row[0]") or (ereg('ASTblind',$row[0])) )
+                    {
+                    $donothing=1;
+                    }
+                else
+                    {
+                    $hangup_channels[$total_hangup] = "$row[0]";
+                    $total_hangup++;
+                    }
+                }
+            if ($format=='debug') {echo "\n<!-- $row[0] -->";}
+            $loop_count++;
+            }
+
+
+        ### if a conference call or 3way call was attempted, then hangup all channels except for the agentchannel
+        if ( ( ($conf_dialed > 0) or ($hangup_all_non_reserved > 0) ) and ($leaving_threeway < 1) and ($blind_transfer < 1) )
+            {
+            $loop_count=0;
+            while($loop_count < $total_hangup)
+                {
+                if (strlen($hangup_channels[$loop_count])>5)
+                    {
+                    $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Hangup','CH12346$StarTtime$loop_count','Channel: $hangup_channels[$loop_count]','','','','','','','','','');";
+                        if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                    $rslt=mysql_query($stmt, $link);
+                    }
+                $loop_count++;
+                }
+            }
+
 
         $total_recFN=0;
         $loop_count=0;

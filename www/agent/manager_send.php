@@ -122,6 +122,8 @@ if (isset($_GET["format"]))					{$format=$_GET["format"];}
 	elseif (isset($_POST["format"]))		{$format=$_POST["format"];}
 if (isset($_GET["channel"]))				{$channel=$_GET["channel"];}
 	elseif (isset($_POST["channel"]))		{$channel=$_POST["channel"];}
+if (isset($_GET["agentchannel"]))				{$agentchannel=$_GET["agentchannel"];}
+	elseif (isset($_POST["agentchannel"]))		{$agentchannel=$_POST["agentchannel"];}
 if (isset($_GET["exten"]))					{$exten=$_GET["exten"];}
 	elseif (isset($_POST["exten"]))			{$exten=$_POST["exten"];}
 if (isset($_GET["ext_context"]))			{$ext_context=$_GET["ext_context"];}
@@ -210,6 +212,7 @@ if (!isset($ext_priority))   {$ext_priority="1";}
 $StarTtime = date("U");
 $NOW_DATE = date("Y-m-d");
 $NOW_TIME = date("Y-m-d H:i:s");
+$NOWnum = date("YmdHis");
 if (!isset($query_date)) {$query_date = $NOW_DATE;}
 
 $stmt="SELECT count(*) from osdial_users where user='$user' and pass='$pass' and user_level > 0;";
@@ -673,7 +676,7 @@ if ($ACTION=="RedirectXtraCX")
 	$row='';   $rowx='';
 	$channel_liveX=1;
 	$channel_liveY=1;
-	if ( (strlen($channel)<3) or (strlen($queryCID)<15) or (strlen($exten)<1) or (strlen($ext_context)<1) or (strlen($ext_priority)<1) or (strlen($extrachannel)<3) )
+	if ((strlen($channel)<3 or strlen($queryCID)<15 or strlen($exten)<1 or strlen($ext_context)<1 or strlen($ext_priority)<1 or strlen($extrachannel)<3) and !ereg("NEXTAVAILABLE",$exten))
 	{
 		$channel_liveX=0;
 		$channel_liveY=0;
@@ -697,6 +700,75 @@ if ($ACTION=="RedirectXtraCX")
 	}
 	else
 	{
+
+        if (ereg("NEXTAVAILABLE",$exten))
+            {
+            $stmtA="UPDATE osdial_conferences SET extension='$protocol/$extension$NOWnum',leave_3way='0' WHERE server_ip='$server_ip' AND (extension='' OR extension IS NULL) AND conf_exten!='$session_id' LIMIT 1;";
+                if ($format=='debug') {echo "\n<!-- $stmtA -->";}
+            $rslt=mysql_query($stmtA, $link);
+            $affected_rows = mysql_affected_rows($link);
+            if ($affected_rows > 0)
+                {
+                $stmtC="SELECT conf_exten FROM osdial_conferences WHERE server_ip='$server_ip' AND extension='$protocol/$extension$NOWnum' AND conf_exten!='$session_id';";
+                    if ($format=='debug') {echo "\n<!-- $stmtC -->";}
+                $rslt=mysql_query($stmtC, $link);
+                $row=mysql_fetch_row($rslt);
+                $exten = $row[0];
+
+                if ( (ereg("^8300",$extension)) and ($protocol == 'Local') )
+                    {
+                    $extension = "$extension$user";
+                    }
+
+                $stmtD="UPDATE osdial_conferences SET extension='$protocol/$extension' WHERE server_ip='$server_ip' AND conf_exten='$exten' LIMIT 1;";
+                if ($format=='debug') {echo "\n<!-- $stmtD -->";}
+                $rslt=mysql_query($stmtD, $link);
+
+                $stmtE="UPDATE osdial_conferences SET leave_3way='1',leave_3way_datetime='$NOW_TIME',extension='3WAY_$user' WHERE server_ip='$server_ip' AND conf_exten='$session_id';";
+                if ($format=='debug') {echo "\n<!-- $stmtE -->";}
+                $rslt=mysql_query($stmtE, $link);
+
+
+                $queryCID = "CXAR24$NOWnum";
+                $stmtF="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $agentchannel','Context: $ext_context','Exten: $exten','Priority: 1','CallerID: $queryCID','Account: $queryCID','','','','');";
+                    if ($format=='debug') {echo "\n<!-- $stmtF -->";}
+                $rslt=mysql_query($stmtF, $link);
+
+                $stmtG="UPDATE osdial_live_agents SET conf_exten='$exten' WHERE server_ip='$server_ip' AND user='$user';";
+                    if ($format=='debug') {echo "\n<!-- $stmtG -->";}
+                $rslt=mysql_query($stmtG, $link);
+
+                if ($auto_dial_level < 1)
+                    {
+                    $stmtH = "DELETE FROM osdial_auto_calls WHERE lead_id='$lead_id' AND callerid LIKE 'M%';";
+                        if ($format=='debug') {echo "\n<!-- $stmtH -->";}
+                    $rslt=mysql_query($stmtH, $link);
+                    }
+
+                echo "NeWSessioN|$exten|\n";
+                echo "|$stmtG|\n";
+
+                if ($WeBRooTWritablE > 0)
+                {
+                    $fp = fopen ("./osdial_debug.txt", "a");
+                    fwrite ($fp, "$NOW_TIME|RDCXCNA|$filename|$user-$NOWnum|$campaign|$agentchannel|$exten|\n");
+                    fclose($fp);
+                }
+                exit;
+
+
+                }
+            else
+                {
+                $channel_liveX=0;
+                echo "Cannot find empty conference on $server_ip, Redirect command not inserted\n|$stmt|";
+                if (ereg("SECOND|FIRST|DEBUG",$filename)) {$DBout .= "Cannot find empty conference on $server_ip";}
+                }
+
+            }
+
+
+
 		if (strlen($call_server_ip)<7) {$call_server_ip = $server_ip;}
 
 		$stmt="SELECT count(*) FROM live_channels where server_ip = '$call_server_ip' and channel='$channel';";
@@ -810,7 +882,7 @@ if ($ACTION=="RedirectXtra")
 		$row='';   $rowx='';
 		$channel_liveX=1;
 		$channel_liveY=1;
-		if ( (strlen($channel)<3) or (strlen($queryCID)<15) or (strlen($exten)<1) or (strlen($ext_context)<1) or (strlen($ext_priority)<1) or (strlen($extrachannel)<3) )
+        if ((strlen($channel)<3 or strlen($queryCID)<15 or strlen($exten)<1 or strlen($ext_context)<1 or strlen($ext_priority)<1 or strlen($extrachannel)<3) and !ereg("NEXTAVAILABLE",$exten))
 		{
 			$channel_liveX=0;
 			$channel_liveY=0;
@@ -834,26 +906,65 @@ if ($ACTION=="RedirectXtra")
 		}
 		else
 		{
-			if ($exten == "NEXTAVAILABLE")
-			{
-			$stmt="SELECT conf_exten FROM conferences where server_ip='$server_ip' and ((extension='') or (extension is null)) limit 1;";
-				if ($format=='debug') {echo "\n<!-- $stmt -->";}
-			$rslt=mysql_query($stmt, $link);
-			$row=mysql_fetch_row($rslt);
-				if (strlen($row[0]) > 3)
-				{
-				$stmt="UPDATE conferences set extension='$user' where server_ip='$server_ip' and conf_exten='$row[0]';";
-					if ($format=='debug') {echo "\n<!-- $stmt -->";}
-				$rslt=mysql_query($stmt, $link);
-				$exten = $row[0];
-				}
-				else
-				{
-				$channel_liveX=0;
-				echo "Cannot find empty conference on $server_ip, Redirect command not inserted\n";
-				if (ereg("SECOND|FIRST|DEBUG",$filename)) {$DBout .= "Cannot find empty conference on $server_ip";}
-				}
-			}
+        if (ereg("NEXTAVAILABLE",$exten))
+            {
+            $stmtA="UPDATE osdial_conferences SET extension='$protocol/$extension$NOWnum',leave_3way='0' WHERE server_ip='$server_ip' AND (extension='' OR extension IS NULL) AND conf_exten!='$session_id' LIMIT 1;";
+                if ($format=='debug') {echo "\n<!-- $stmtA -->";}
+            $rslt=mysql_query($stmtA, $link);
+            $affected_rows = mysql_affected_rows($link);
+            if ($affected_rows > 0)
+                {
+                $stmtC="SELECT conf_exten FROM osdial_conferences WHERE server_ip='$server_ip' AND extension='$protocol/$extension$NOWnum' AND conf_exten!='$session_id';";
+                    if ($format=='debug') {echo "\n<!-- $stmtC -->";}
+                $rslt=mysql_query($stmtC, $link);
+                $row=mysql_fetch_row($rslt);
+                $exten = $row[0];
+
+                $stmtD="UPDATE osdial_conferences SET extension='$protocol/$extension' WHERE server_ip='$server_ip' AND conf_exten='$exten' LIMIT 1;";
+                if ($format=='debug') {echo "\n<!-- $stmtD -->";}
+                $rslt=mysql_query($stmtD, $link);
+
+                $stmtE="UPDATE osdial_conferences SET leave_3way='1',leave_3way_datetime='$NOW_TIME',extension='3WAY_$user' WHERE server_ip='$server_ip' AND conf_exten='$session_id';";
+                if ($format=='debug') {echo "\n<!-- $stmtE -->";}
+                $rslt=mysql_query($stmtE, $link);
+
+                $queryCID = "CXAR23$NOWnum";
+                $stmtF="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $agentchannel','Context: $ext_context','Exten: $exten','Priority: 1','CallerID: $queryCID','Account: $queryCID','','','','');";
+                    if ($format=='debug') {echo "\n<!-- $stmtF -->";}
+                $rslt=mysql_query($stmtF, $link);
+
+                $stmtG="UPDATE osdial_live_agents SET conf_exten='$exten' WHERE server_ip='$server_ip' AND user='$user';";
+                    if ($format=='debug') {echo "\n<!-- $stmtG -->";}
+                $rslt=mysql_query($stmtG, $link);
+
+                if ($auto_dial_level < 1)
+                    {
+                    $stmtH = "DELETE FROM osdial_auto_calls WHERE lead_id='$lead_id' AND callerid LIKE 'M%';";
+                        if ($format=='debug') {echo "\n<!-- $stmtH -->";}
+                    $rslt=mysql_query($stmtH, $link);
+                    }
+
+                echo "NeWSessioN|$exten|\n";
+                echo "|$stmtB|\n";
+
+                if ($WeBRooTWritablE > 0)
+                {
+                    $fp = fopen ("./osdial_debug.txt", "a");
+                    fwrite ($fp, "$NOW_TIME|RDXNA|$filename|$user-$NOWnum|$campaign|$agentchannel|$exten|\n");
+                    fclose($fp);
+                }
+                exit;
+
+
+                }
+            else
+                {
+                $channel_liveX=0;
+                echo "Cannot find empty conference on $server_ip, Redirect command not inserted\n|$stmt|";
+                if (ereg("SECOND|FIRST|DEBUG",$filename)) {$DBout .= "Cannot find empty conference on $server_ip";}
+                }
+            }
+
 
 		if (strlen($call_server_ip)<7) {$call_server_ip = $server_ip;}
 

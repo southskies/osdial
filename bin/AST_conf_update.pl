@@ -175,8 +175,195 @@ if ($sthArows > 0)
 	}
  $sthA->finish(); 
 
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
+$year = ($year + 1900);
+$mon++;
+if ($mon < 10) {$mon = "0$mon";}
+if ($mday < 10) {$mday = "0$mday";}
+if ($hour < 10) {$hour = "0$hour";}
+if ($min < 10) {$min = "0$min";}
+if ($sec < 10) {$sec = "0$sec";}
+
+$now_date_epoch = time();
+$now_date = "$year-$mon-$mday $hour:$min:$sec";
+
+##### Find date-time one hour in the past
+$secX = time();
+$TDtarget = ($secX - 3600);
+($Tsec,$Tmin,$Thour,$Tmday,$Tmon,$Tyear,$Twday,$Tyday,$Tisdst) = localtime($TDtarget);
+$Tyear = ($Tyear + 1900);
+$Tmon++;
+if ($Tmon < 10) {$Tmon = "0$Tmon";}
+if ($Tmday < 10) {$Tmday = "0$Tmday";}
+if ($Thour < 10) {$Thour = "0$Thour";}
+if ($Tmin < 10) {$Tmin = "0$Tmin";}
+if ($Tsec < 10) {$Tsec = "0$Tsec";}
+	$TDSQLdate = "$Tyear-$Tmon-$Tmday $Thour:$Tmin:$Tsec";
+	$TDnum = "$Tyear$Tmon$Tmday$Thour$Tmin$Tsec";
+
+######################################################################
+##### CLEAR osdial_conferences ENTRIES IN LEAVE-3WAY FOR MORE THAN ONE HOUR
+######################################################################
+@PTextensions=@MT; @PT_conf_extens=@MT; @PTmessages=@MT; @PTold_messages=@MT; @NEW_messages=@MT; @OLD_messages=@MT;
+$stmtA = "SELECT conf_exten from osdial_conferences where server_ip='$server_ip' and leave_3way='1' and leave_3way_datetime < \"$TDSQLdate\";";
+if ($DB) {print "|$stmtA|\n";}
+$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+$sthArows=$sthA->rows;
+$rec_count=0;
+while ($sthArows > $rec_count)
+	{
+	@aryA = $sthA->fetchrow_array;
+	$PT_conf_extens[$rec_count] =	 "$aryA[0]";
+		if ($DB) {print "|$PT_conf_extens[$rec_count]|$PTextensions[$rec_count]|\n";}
+	$rec_count++;
+	}
+$sthA->finish();
+$k=0;
+while ($k < $rec_count)
+	{
+	$local_DEF = 'Local/5555';
+	$local_AMP = '@';
+	$kick_local_channel = "$local_DEF$PT_conf_extens[$k]$local_AMP$ext_context";
+	$queryCID = "ULGC35$TDnum";
+
+	$stmtA="INSERT INTO osdial_manager values('','','$now_date','NEW','N','$server_ip','','Originate','$queryCID','Channel: $kick_local_channel','Context: $ext_context','Exten: 8300','Priority: 1','Callerid: $queryCID','Account: $queryCID','','','','');";
+		$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
+
+	$stmtA = "UPDATE osdial_conferences set extension='',leave_3way='0' where server_ip='$server_ip' and conf_exten='$PT_conf_extens[$k]';";
+		if($DB){print STDERR "\n|$stmtA|\n";}
+	$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
+
+	$k++;
+	}
 
 
+
+
+######################################################################
+##### CHECK osdial_conferences TABLE #####
+######################################################################
+@PTextensions=@MT; @PT_conf_extens=@MT; @PTmessages=@MT; @PTold_messages=@MT; @NEW_messages=@MT; @OLD_messages=@MT;
+$stmtA = "SELECT extension,conf_exten from osdial_conferences where server_ip='$server_ip' and leave_3way='1';";
+if ($DB) {print "|$stmtA|\n";}
+$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+$sthArows=$sthA->rows;
+$rec_count=0;
+while ($sthArows > $rec_count)
+    {
+	   @aryA = $sthA->fetchrow_array;
+		$PTextensions[$rec_count] =		 "$aryA[0]";
+		$PT_conf_extens[$rec_count] =	 "$aryA[1]";
+			if ($DB) {print "|$PT_conf_extens[$rec_count]|$PTextensions[$rec_count]|\n";}
+		$rec_count++;
+   }
+   $sthA->finish(); 
+
+if (!$telnet_port) {$telnet_port = '5038';}
+
+### connect to asterisk manager through telnet
+$t = new Net::Telnet (Port => $telnet_port,
+					  Prompt => '/.*[\$%#>] $/',
+					  Output_record_separator => '',);
+#$fh = $t->dump_log("$telnetlog");  # uncomment for telnet log
+	if (length($ASTmgrUSERNAMEsend) > 3) {$telnet_login = $ASTmgrUSERNAMEsend;}
+	else {$telnet_login = $ASTmgrUSERNAME;}
+
+$t->open("$telnet_host"); 
+if ($DBasterisk_version =~ /^1\.6/) {
+	$t->waitfor('/1\n$/');			# print login
+	$t->print("Action: Login\nActionID: 1\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
+} else {
+	$t->waitfor('/0\n$/');			# print login
+	$t->print("Action: Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
+}
+$t->waitfor('/Authentication accepted/');		# waitfor auth accepted
+
+
+$i=0;
+foreach(@PTextensions)
+	{
+	@list_channels=@MT;
+	$t->buffer_empty;
+	$COMMAND = "Action: Command\nCommand: Meetme list $PT_conf_extens[$i]\n\nAction: Ping\n\n";
+	if ($DB) {print "|$PT_conf_extens[$i]|$COMMAND|\n";}
+	@list_channels = $t->cmd(String => "$COMMAND", Prompt => '/Response: Pong.*/'); 
+
+
+	$j=0;
+	$conf_empty[$i]=0;
+	$conf_users[$i]='';
+	foreach(@list_channels)
+		{
+		if($DB){print "|$list_channels[$j]|\n";}
+		### mark all empty conferences and conferences with only one channel as empty
+		if ($list_channels[$j] =~ /No active conferences|No such conference/i)
+			{$conf_empty[$i]++;}
+		if ($list_channels[$j] =~ /1 users in that conference/i)
+			{$conf_empty[$i]++;}
+		$j++;
+		}
+
+	if($DB){print "Meetme list $PT_conf_extens[$i]-  Exten:|$PTextensions[$i]| Empty:|$conf_empty[$i]|    ";}
+	if (!$conf_empty[$i])
+		{
+		if($DB){print "CONFERENCE STILL HAS PARTICIPANTS, DOING NOTHING FOR THIS CONFERENCE\n";}
+		if ($PTextensions[$i] =~ /Xtimeout\d$/i) 
+			{
+			$PTextensions[$i] =~ s/Xtimeout\d$//gi;
+			$stmtA = "UPDATE osdial_conferences set extension='$PTextensions[$i]' where server_ip='$server_ip' and conf_exten='$PT_conf_extens[$i]';";
+				if($DB){print STDERR "\n|$stmtA|\n";}
+			$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
+			}
+		}
+	else
+		{
+		$NEWexten[$i] = $PTextensions[$i];
+		$leave_3waySQL='1';
+		if ($PTextensions[$i] =~ /Xtimeout3$/i) {$NEWexten[$i] =~ s/Xtimeout3$/Xtimeout2/gi;}
+		if ($PTextensions[$i] =~ /Xtimeout2$/i) {$NEWexten[$i] =~ s/Xtimeout2$/Xtimeout1/gi;}
+		if ($PTextensions[$i] =~ /Xtimeout1$/i) {$NEWexten[$i] = ''; $leave_3waySQL='0';}
+		if ( ($PTextensions[$i] !~ /Xtimeout\d$/i) and (length($PTextensions[$i])> 0) ) {$NEWexten[$i] .= 'Xtimeout3';}
+
+		if ($NEWexten[$i] =~ /Xtimeout1$/i)
+			{
+			### Kick all participants if there are any left in the conference so it can be reused
+			$local_DEF = 'Local/5555';
+			$local_AMP = '@';
+			$kick_local_channel = "$local_DEF$PT_conf_extens[$i]$local_AMP$ext_context";
+			$queryCID = "ULGC36$TDnum";
+
+			$stmtA="INSERT INTO osdial_manager values('','','$now_date','NEW','N','$server_ip','','Originate','$queryCID','Channel: $kick_local_channel','Context: $ext_context','Exten: 8300','Priority: 1','Callerid: $queryCID','Account: $queryCID','','','','');";
+				$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
+			if($DB){print STDERR "\n|$affected_rows|$stmtA|\n";}
+			}
+
+		$stmtA = "UPDATE osdial_conferences set extension='$NEWexten[$i]',leave_3way='$leave_3waySQL' where server_ip='$server_ip' and conf_exten='$PT_conf_extens[$i]';";
+			if($DB){print STDERR "\n|$stmtA|\n";}
+		$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
+		}
+
+	$i++;
+		### sleep for 10 hundredths of a second
+		usleep(1*100*1000);
+	}
+
+$t->buffer_empty;
+@hangup = $t->cmd(String => "Action: Logoff\n\n", Prompt => "/.*/"); 
+$t->buffer_empty;
+$ok = $t->close;
+
+
+sleep(5);
+
+
+
+
+
+######################################################################
+##### CHECK conferences TABLE #####
+######################################################################
 @PTextensions=@MT; @PT_conf_extens=@MT; @PTmessages=@MT; @PTold_messages=@MT; @NEW_messages=@MT; @OLD_messages=@MT;
 $stmtA = "SELECT extension,conf_exten from conferences where server_ip='$server_ip' and extension is NOT NULL and extension != '';";
 if ($DB) {print "|$stmtA|\n";}
