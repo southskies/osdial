@@ -481,10 +481,7 @@ if ($campaign_login_list > 0) {
 //  Relogin
 if ($relogin == 'YES') {
     echo "<title>$t1 web client: Re-Login</title>\n";
-    #echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
-    echo "<script type=\"text/css\">\n";
-    require("templates/" . $agent_template . "/styles.css");
-    echo "</script>\n";
+    echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
     #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
     echo "<script type=\"text/javascript\">\n";
     require('include/osdial-login.js');
@@ -561,10 +558,7 @@ if ($relogin == 'YES') {
 if ($user_login_first == 1) {
     if (strlen($VD_login)<1 or strlen($VD_pass)<1 or strlen($VD_campaign)<1) {
         echo "<title>$t1 web client: Campaign Login</title>\n";
-        #echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
-        echo "<script type=\"text/css\">\n";
-        require("templates/" . $agent_template . "/styles.css");
-        echo "</script>\n";
+        echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
         #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
         echo "<script type=\"text/javascript\">\n";
         require('include/osdial-login.js');
@@ -632,10 +626,7 @@ if ($user_login_first == 1) {
             $phone_pass=$row[1];
     
             echo "<title>$t1 web client: Login</title>\n";
-            #echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
-            echo "<script type=\"text/css\">\n";
-            require("templates/" . $agent_template . "/styles.css");
-            echo "</script>\n";
+            echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
             #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
             echo "<script type=\"text/javascript\">\n";
             require('include/osdial-login.js');
@@ -691,10 +682,7 @@ if ($user_login_first == 1) {
 // Phone Login from welcome scren
 if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
     echo "<title>$t1 web client:  Phone Login</title>\n";
-    #echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
-    echo "<script type=\"text/css\">\n";
-    require("templates/" . $agent_template . "/styles.css");
-    echo "</script>\n";
+    echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
     #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
     echo "<script type=\"text/javascript\">\n";
     require('include/osdial-login.js');
@@ -805,10 +793,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
             if (!preg_match("/ $VD_campaign /i",$LOGallowed_campaigns) and !preg_match("/ALL-CAMPAIGNS/",$LOGallowed_campaigns)) {
                 echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
-                #echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
-                echo "<script type=\"text/css\">\n";
-                require("templates/" . $agent_template . "/styles.css");
-                echo "</script>\n";
+                echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
                 #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
                 echo "<script type=\"text/javascript\">\n";
                 require('include/osdial-login.js');
@@ -1143,10 +1128,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
     if ($VDloginDISPLAY) {
         echo "<title>$t1 web client: Campaign Login</title>\n";
-        #echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
-        echo "<script type=\"text/css\">\n";
-        require("templates/" . $agent_template . "/styles.css");
-        echo "</script>\n";
+        echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
         #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
         echo "<script type=\"text/javascript\">\n";
         require('include/osdial-login.js');
@@ -1218,10 +1200,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
     $authphone=$row[0];
     if (!$authphone) {
         echo "<title>$t1 web client: Phone Login Error</title>\n";
-        #echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
-        echo "<script type=\"text/css\">\n";
-        require("templates/" . $agent_template . "/styles.css");
-        echo "</script>\n";
+        echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
         #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
         echo "<script type=\"text/javascript\">\n";
         require('include/osdial-login.js');
@@ -1476,10 +1455,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             if ($ola_user_ct) {
                 $row=mysql_fetch_row($rslt);
                 echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
-                #echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
-                echo "<script type=\"text/css\">\n";
-                require("templates/" . $agent_template . "/styles.css");
-                echo "</script>\n";
+                echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
                 #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
                 echo "<script type=\"text/javascript\">\n";
                 require('include/osdial-login.js');
@@ -1648,10 +1624,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
         } else {
             echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
-            #echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
-            echo "<script type=\"text/css\">\n";
-            require("templates/" . $agent_template . "/styles.css");
-            echo "</script>\n";
+            echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
             #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
             echo "<script type=\"text/javascript\">\n";
             require('include/osdial-login.js');
@@ -1677,10 +1650,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
     if (strlen($session_id) < 1) {
         echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
-        #echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
-        echo "<script type=\"text/css\">\n";
-        require("templates/" . $agent_template . "/styles.css");
-        echo "</script>\n";
+        echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
         #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
         echo "<script type=\"text/javascript\">\n";
         require('include/osdial-login.js');
@@ -1853,10 +1823,7 @@ while ($MM_scripts > $h) {
 echo "</script>\n";
 
 
-#echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
-echo "<script type=\"text/css\">\n";
-require("templates/" . $agent_template . "/styles.css");
-echo "</script>\n";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
 
 
 
