@@ -454,7 +454,8 @@ if (!$telnet_port) {$telnet_port = '5038';}
 	push @list_channels, "Privilege: Command\r\n";
 	#$stmtD = "SELECT if(substr(c.callerid_name,1,7)='OSDial#' AND (c.accountcode LIKE 'S___________________' OR c.accountcode LIKE 'ACagcW______________'),substr(c.callerid_name,8),c.channel),c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.flags,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto)";
 	#$stmtD = "SELECT if(substr(c.callerid_name,1,7)='OSDial#' AND (c.accountcode LIKE 'S___________________' OR c.accountcode LIKE 'ACagcW______________'),substring_index(c.channel,';',1),c.channel),c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.flags,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto)";
-	$stmtD = "SELECT if(substr(c.callerid_name,1,7)='OSDial#' AND (c.accountcode LIKE 'S___________________' OR c.accountcode LIKE 'ACagcW______________'),c.channel,c.channel),c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.flags,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto)";
+	#$stmtD = "SELECT if(substr(c.callerid_name,1,7)='OSDial#' AND (c.accountcode LIKE 'S___________________' OR c.accountcode LIKE 'ACagcW______________'),c.channel,c.channel),c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.flags,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto)";
+	$stmtD = "SELECT if(substr(c.callerid_name,1,7)='OSDial#' AND (c.accountcode LIKE 'S___________________' OR c.accountcode LIKE 'ACagcW______________'),substr(c.callerid_name,8),c.channel),c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.channel,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto)";
 	if($DB){print STDERR "|$stmtD|\n";}
 	$sthD = $dbhD->prepare($stmtD) or die "preparing: ",$dbhD->errstr;
 	$sthD->execute or die "executing: $stmtD ", $dbhD->errstr;
@@ -820,7 +821,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 						}
 					if ($DBX) {print "EXcount: $EXcount\n";}
 					if (length($list_chan_12[6])<2) {$list_chan_12[6] = 'SIP/ring';}
-					$list_channels[$c] = "$list_chan_12[0]     $list_chan_12[6]";
+					$list_channels[$c] = "$list_chan_12[0]     $list_chan_12[6]     $list_chan_12[9]";
 					}
 				$list_SIP[$c] = $list_channels[$c];
 					if( ($DB) or ($UD_bad_grab) ){print "+|$c|$list_channels[$c]|\n\n";}
@@ -828,11 +829,12 @@ if (!$telnet_port) {$telnet_port = '5038';}
 		########## PARSE EACH LINE TO DETERMINE WHETHER IT IS TRUNK OR CLIENT AND PUT IN APPROPRIATE TABLE
 			if ($list_channels[$c] =~ /^$ZorD|^IAX2|^SIP|^Local/)
 				{
-				if ($list_channels[$c] =~ /^(\S+)\s+.+\s+(\S+)$/)
+				if ($list_channels[$c] =~ /^(\S+)\s+.+\s+(\S+)\s+.+\s+(\S+)$/)
 					{
 					$line_type = '';
 					$channel = $1;
 					$extension = $2;
+					$channel_group = $3;
 					$channel_data = $extension;
 					if ($show_channels_format)
 						{
@@ -962,7 +964,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 
 						if ( (!$sipchan_in_DB) && (length($QRYchannel)>3) )
 							{
-							$stmtA = "INSERT INTO $live_sip_channels (channel,server_ip,extension,channel_data) values('$channel','$server_ip','$extension','$channel_data')";
+							$stmtA = "INSERT INTO $live_sip_channels (channel,server_ip,extension,channel_data,channel_group) values('$channel','$server_ip','$extension','$channel_data','$channel_group')";
 								if( ($DB) or ($UD_bad_grab) ){print STDERR "\n|$stmtA|\n";}
 							$affected_rows = $dbhA->do($stmtA) or die  "Couldn't execute query: |$stmtA|\n";
 							}

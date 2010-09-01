@@ -715,6 +715,12 @@ if ($ACTION=="RedirectXtraCX")
                 $row=mysql_fetch_row($rslt);
                 $exten = $row[0];
 
+                $stmt="SELECT channel_group FROM live_sip_channels WHERE server_ip='$server_ip' AND channel='$agentchannel';";
+                    if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
+                $row=mysql_fetch_row($rslt);
+                if ($row[0] != '') $agentchannel = $row[0];
+
                 if ( (ereg("^8300",$extension)) and ($protocol == 'Local') )
                     {
                     $extension = "$extension$user";
@@ -918,6 +924,12 @@ if ($ACTION=="RedirectXtra")
                 $rslt=mysql_query($stmt, $link);
                 $row=mysql_fetch_row($rslt);
                 $exten = $row[0];
+
+                $stmt="SELECT channel_group FROM live_sip_channels WHERE server_ip='$server_ip' AND channel='$agentchannel';";
+                    if ($format=='debug') {echo "\n<!-- $stmt -->";}
+                $rslt=mysql_query($stmt, $link);
+                $row=mysql_fetch_row($rslt);
+                if ($row[0] != '') $agentchannel = $row[0];
 
                 $stmt="UPDATE osdial_conferences SET extension='$protocol/$extension' WHERE server_ip='$server_ip' AND conf_exten='$exten' LIMIT 1;";
                 if ($format=='debug') {echo "\n<!-- $stmt -->";}
