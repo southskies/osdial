@@ -151,7 +151,7 @@ while ($one_day_interval > 0) {
 		 	while (my $vdm = $sthA->fetchrow_hashref) {
 
 				print STDERR $vdm->{man_id} . "|" . $vdm->{uniqueid} . "|" . $vdm->{channel} . "|" .
-					$vdm->{action} . "|" . $vdm->{callid} . "\n" if ($DB);
+					$vdm->{action} . "|" . $vdm->{callerid} . "\n" if ($DB);
 
 				my $originate_command = "Action: ". $vdm->{action} . "\n";
 				$originate_command .= $vdm->{cmd_line_b} . "\n" if ($vdm->{cmd_line_b});
@@ -169,15 +169,15 @@ while ($one_day_interval > 0) {
 				my $SENDNOW=1;
 				if ($originate_command =~ /Action: Hangup|Action: Redirect/) {
 					$SENDNOW=0;
-					print STDERR "\n|checking for dead call before executing|" . $vdm->{callid} . "|" . $vdm->{uniqueid} . "|\n" if ($DB);
-					my $stmtB = "SELECT count(*) FROM osdial_manager where server_ip = '" . $conf{VARserver_ip} . "' and callerid='" . $vdm->{callid} . "' and status = 'DEAD'";
+					print STDERR "\n|checking for dead call before executing|" . $vdm->{callerid} . "|" . $vdm->{uniqueid} . "|\n" if ($DB);
+					my $stmtB = "SELECT count(*) FROM osdial_manager where server_ip = '" . $conf{VARserver_ip} . "' and callerid='" . $vdm->{callerid} . "' and status = 'DEAD'";
 					my $sthB = $dbhA->prepare($stmtB) or die "preparing: ",$dbhA->errstr;
 					$sthB->execute or die "executing: $stmtA ", $dbhA->errstr;
 					my $dead_count = ($sthB->fetchrow_array)[0];
 					$sthB->finish();
 		   
 					if ($dead_count) {
-						print STDERR "\n|not sending command line is dead|" . $vdm->{callid} . "|" . $vdm->{uniqueid} . "|\n" if ($DB);
+						print STDERR "\n|not sending command line is dead|" . $vdm->{callerid} . "|" . $vdm->{uniqueid} . "|\n" if ($DB);
 					} else {
 						$SENDNOW=1;
 					}
@@ -209,6 +209,7 @@ while ($one_day_interval > 0) {
 					$launch .= " --ASTmgrSECRET=" . $servConf->{ASTmgrSECRET};
 					$launch .= " --ASTmgrUSERNAMEsend=" . $servConf->{ASTmgrUSERNAMEsend};
 					$launch .= " --asterisk_version=" . $DBasterisk_version;
+					$launch .= " --man_id=" . $vdm->{man_id};
 					$launch .= " --action=" . $vdm->{action};
 					$launch .= " --cmd_line_b=" . $vdm->{cmd_line_b} if ($vdm->{cmd_line_b});
 					$launch .= " --cmd_line_c=" . $vdm->{cmd_line_c} if ($vdm->{cmd_line_c});
@@ -221,13 +222,13 @@ while ($one_day_interval > 0) {
 					$launch .= " --cmd_line_j=" . $vdm->{cmd_line_j} if ($vdm->{cmd_line_j});
 					$launch .= " --cmd_line_k=" . $vdm->{cmd_line_k} if ($vdm->{cmd_line_k});
 					eventLogger($conf{'PATHlogs'}, 'launch', $launch . "  " .
-						$vdm->{callid} . " " . $vdm->{uniqueid} . " " . $vdm->{channel});
+						$vdm->{callerid} . " " . $vdm->{uniqueid} . " " . $vdm->{channel});
 
 
 					$launch .= " >> " . $conf{PATHlogs} . "/action_send." . logDate() if ($SYSLOG);
 					system($launch . ' &');
 
-			#		$launch = "SENT " . $vdm->{man_id} . "  " . $vdm->{callid} . ' ' . $vdm->{uniqueid} . ' ' . $vdm->{channel};
+			#		$launch = "SENT " . $vdm->{man_id} . "  " . $vdm->{callerid} . ' ' . $vdm->{uniqueid} . ' ' . $vdm->{channel};
 			#		eventLogger($conf{'PATHlogs'}, 'launch', $launch);;
 
 					my $stmtA = "UPDATE osdial_manager set status='SENT' where man_id='" . $vdm->{man_id} . "'";
