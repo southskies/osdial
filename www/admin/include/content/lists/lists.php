@@ -74,6 +74,7 @@ if ($ADD==121) {
             $dncs=0;
             $dncc=0;
             $dncsskip=0;
+            if (strlen($phone_number)==3) $phone_number .= 'XXXXXXX';
 
             if ($LOG['multicomp_user'] > 0) {
                 if (preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
