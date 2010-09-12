@@ -1193,6 +1193,7 @@ if ($ADD==31) {
             echo "<tr bgcolor=$oddrows><td align=right valign=top>Email Templates: </td><td align=left><select size=4 multiple name=\"email_templates[]\">\n";
             echo get_email_templates($link, $email_templates);
             echo "</select>$NWB#osdial_campaigns-email_templates$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Email Blacklist: </td><td align=left><input type=button name=email_blacklist value=\"EDIT BLACKLIST\" onclick=\"window.location='$PHP_SELF?ADD=3eb&SUB=2&campaign_id=$campaign_id';\"></td></tr>\n";
         }
 
         echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=3111111&script_id=$script_id\">Script</a>: </td><td align=left><select size=1 name=script_id>\n";

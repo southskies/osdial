@@ -87,6 +87,14 @@ if ($ADD=="6ca")               {$hh='campaigns';   $sh='cid_areacode'; $title = 
 if ($ADD=="3ca" and $SUB!=2)   {$hh='campaigns';   $sh='cid_areacode'; $title = "Campaign CID Areacode Mapping";}
 if ($ADD=="3ca" and $SUB==2)   {$hh='campaigns';   $sh='cid_areacode'; $title = "Modify Campaign - Detail - $campaign_id - CID Areacode Mappings";}
 
+# Campaigns - email blacklist
+if ($ADD=="2eb")               {$hh='campaigns';   $sh='email_blacklist'; $title = "New Email Blacklist";}
+if ($ADD=="4eb")               {$hh='campaigns';   $sh='email_blacklist'; $title = "Modify Email Blacklist";}
+if ($ADD=="5eb")               {$hh='campaigns';   $sh='email_blacklist'; $title = "Configm Delete Email Blacklist";}
+if ($ADD=="6eb")               {$hh='campaigns';   $sh='email_blacklist'; $title = "Delete Email Blacklist";}
+if ($ADD=="3eb" and $SUB!=2)   {$hh='campaigns';   $sh='email_blacklist'; $title = "Campaign Email Blacklist";}
+if ($ADD=="3eb" and $SUB==2)   {$hh='campaigns';   $sh='email_blacklist'; $title = "Modify Campaign - Detail - $campaign_id - Email Blacklist";}
+
 # Campaigns - fields
 if ($ADD=="1form")	    {$hh='campaigns';	$sh='fields';	$title = "Add New Form";}
 if ($ADD=="2form")	    {$hh='campaigns';	$sh='fields';	$title = "New Additional Form";}

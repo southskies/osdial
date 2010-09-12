@@ -226,6 +226,7 @@ if (strlen($campaigns_hh) > 1) {
     if ($sh=='realtime') $sh='list';
     if ($sh=='ivr') $sh='list';
     if ($sh=='cid_areacode') $sh='list';
+    if ($sh=='email_blacklist') $sh='list';
     if ($sh=='status'  and $ADD != 32) $sh='list';
     if ($sh=='hotkey'  and $ADD != 33) $sh='list';
     if ($sh=='recycle' and $ADD != 35) $sh='list';
