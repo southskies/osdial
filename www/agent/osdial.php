@@ -1959,8 +1959,12 @@ flush();
     <span style="position:absolute;left:<?=$AMwidth-10 ?>px;top:<?=$AMheight+15 ?>px;z-index:22;" id="AgentMuteANDPreseTDiaL">
         <font class="body_text">
             <? if ($PreseT_DiaL_LinKs) {
-                echo "<a href=\"#\" onclick=\"DtMf_PreSet_a_DiaL();return false;\"><font class=\"body_tiny\">D1 - DIAL</font></a><br>\n";
-                echo "<a href=\"#\" onclick=\"DtMf_PreSet_b_DiaL();return false;\"><font class=\"body_tiny\">D2 - DIAL</font></a><br>\n";
+                if (strlen($xferconf_a_number)) { 
+                    echo "<a href=\"#\" onclick=\"DtMf_PreSet_a_DiaL();return false;\"><font class=\"body_tiny\">D1 - DIAL</font></a><br>\n";
+                }
+                if (strlen($xferconf_b_number)) { 
+                    echo "<a href=\"#\" onclick=\"DtMf_PreSet_b_DiaL();return false;\"><font class=\"body_tiny\">D2 - DIAL</font></a><br>\n";
+                }
                 echo "<span id=\"DialBlindVMail2\"><img src=\"templates/$agent_template/images/vdc_XB_ammessage_OFF.gif\" width=36 height=13 border=0 alt=\"Blind Transfer VMail Message\"></span>\n";
             } else {
                 echo "<br><br>\n";
@@ -2117,14 +2121,14 @@ flush();
                                     <td align=center><span style="background-color: <?=$xfer_bg2?>" id="LocalCloser"><img src="templates/<?= $agent_template ?>/images/vdc_XB_localcloser_OFF.gif" width=107 height=16 border=0 alt="LOCAL CLOSER"></span></td>
                                     <td align=center><span style="background-color: <?=$xfer_bg2?>" id="HangupXferLine"><img src="templates/<?= $agent_template ?>/images/vdc_XB_hangupxferline_OFF.gif" width=145 height=16 border=0 alt="Hangup Xfer Line"></span></td>
                                     <td align=center><span style="background-color: <?=$xfer_bg2?>" id="HangupBothLines"><a href="#" onclick="bothcall_send_hangup();return false;"><img src="templates/<?= $agent_template ?>/images/vdc_XB_hangupbothlines.gif" width=145 height=16 border=0 alt="Hangup Both Lines"></a></span></td>
-                                    <td align=center><a href="#" onclick="DtMf_PreSet_a();return false;"><font class="body_tiny">D1</font></a></td>
+                                    <td align=center><? if (strlen($xferconf_a_number)) { ?><a href="#" onclick="DtMf_PreSet_a();return false;"><font class="body_tiny">D1</font></a><? } ?></td>
                                 </tr>
                                 <tr>
                                     <td><font size=1 color=<?=$xfer_fc?>>Number to call:&nbsp;<input type=text size=15 name=xfernumber maxlength=25 class="cust_form"><input type=hidden name=xferuniqueid></font></td>
                                     <td align=center><input type=checkbox name=xferoverride size=1 value="0"><font size=1 color=<?=$xfer_fc?>>Dial Override</font></td>
                                     <td align=center><span style="background-color: <?=$xfer_bg2?>" id="Leave3WayCall"><img src="templates/<?= $agent_template ?>/images/vdc_XB_leave3waycall_OFF.gif" width=137 height=16 border=0 alt="LEAVE 3-WAY CALL"></span></td>
                                     <td align=center><span style="background-color: <?=$xfer_bg2?>" id="DialBlindTransfer"><img src="templates/<?= $agent_template ?>/images/vdc_XB_blindtransfer_OFF.gif" width=137 height=16 border=0 alt="Dial Blind Transfer"></span></td>
-                                    <td align=center><a href="#" onclick="DtMf_PreSet_b();return false;"><font class="body_tiny">D2</font></a></td>
+                                    <td align=center><? if (strlen($xferconf_b_number)) { ?><a href="#" onclick="DtMf_PreSet_b();return false;"><font class="body_tiny">D2</font></a><? } ?></td>
                                 </tr>
                                 <tr>
                                     <td><font size=1 color=<?=$xfer_fc?>>Seconds:&nbsp;<input type=text size=2 name=xferlength maxlength=4 class="cust_form"></font></td>
