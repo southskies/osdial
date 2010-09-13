@@ -2142,7 +2142,7 @@ flush();
                                     <td align=center><? if (strlen($xferconf_a_number)) { ?><a href="#" onclick="DtMf_PreSet_a();return false;"><font class="<?=$diallink_class?>">D1</font></a><? } ?></td>
                                 </tr>
                                 <tr>
-                                    <td><font size=1 color=<?=$xfer_fc?>>Number to call:&nbsp;<input type=text size=15 name=xfernumber maxlength=25 class="cust_form"><input type=hidden name=xferuniqueid></font></td>
+                                    <td><font size=1 color=<?=$xfer_fc?>>Number to call:&nbsp;<input type=text size=15 name=xfernumber maxlength=25 class="cust_form" value="<?=$xferconf_a_number?>"><input type=hidden name=xferuniqueid></font></td>
                                     <td align=center><span style="visibility:<?=$hide_xfer_dial_override?>;" id="XferOverride"><input type=checkbox name=xferoverride size=1 value="0"><font size=1 color=<?=$xfer_fc?>>Dial Override</font></span></td>
                                     <td align=center><span style="visibility:<?=$hide_xfer_leave_3way?>;background-color:<?=$xfer_bg2?>;" id="Leave3WayCall"><img src="templates/<?= $agent_template ?>/images/vdc_XB_leave3waycall_OFF.gif" width=137 height=16 border=0 alt="LEAVE 3-WAY CALL"></span></td>
                                     <td align=center><span style="visibility:<?=$hide_xfer_blind_xfer?>;background-color:<?=$xfer_bg2?>;" id="DialBlindTransfer"><img src="templates/<?= $agent_template ?>/images/vdc_XB_blindtransfer_OFF.gif" width=137 height=16 border=0 alt="Dial Blind Transfer"></span></td>
