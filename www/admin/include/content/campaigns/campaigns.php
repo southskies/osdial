@@ -1313,7 +1313,7 @@ if ($ADD==31) {
         echo "$NWB#osdial_campaigns-manual_dial_list_id$NWE</td></tr>\n";
 
         echo "<tr bgcolor=$oddrows>\n";
-        echo "  <td align=right>XFER Hide - Local Closer:</td>\n";
+        echo "  <td align=right>Local Closer - XFER Hide:</td>\n";
         echo "  <td align=left>\n";
         echo select_yesno('hide_xfer_local_closer',$hide_xfer_local_closer);
         echo "    </select>\n";
@@ -1322,7 +1322,7 @@ if ($ADD==31) {
         echo "</tr>\n";
 
         echo "<tr bgcolor=$oddrows>\n";
-        echo "  <td align=right>XFER Hide - Dial Override:</td>\n";
+        echo "  <td align=right>Dial Override - XFER Hide:</td>\n";
         echo "  <td align=left>\n";
         echo select_yesno('hide_xfer_dial_override',$hide_xfer_dial_override);
         echo "    </select>\n";
@@ -1331,7 +1331,7 @@ if ($ADD==31) {
         echo "</tr>\n";
 
         echo "<tr bgcolor=$oddrows>\n";
-        echo "  <td align=right>XFER Hide - Hangup Xfer Line:</td>\n";
+        echo "  <td align=right>Hangup Xfer Line - XFER Hide:</td>\n";
         echo "  <td align=left>\n";
         echo select_yesno('hide_xfer_hangup_xfer',$hide_xfer_hangup_xfer);
         echo "    </select>\n";
@@ -1340,7 +1340,7 @@ if ($ADD==31) {
         echo "</tr>\n";
 
         echo "<tr bgcolor=$oddrows>\n";
-        echo "  <td align=right>XFER Hide - Leave 3Way Call:</td>\n";
+        echo "  <td align=right>Leave 3Way Call - XFER Hide:</td>\n";
         echo "  <td align=left>\n";
         echo select_yesno('hide_xfer_leave_3way',$hide_xfer_leave_3way);
         echo "    </select>\n";
@@ -1349,7 +1349,7 @@ if ($ADD==31) {
         echo "</tr>\n";
 
         echo "<tr bgcolor=$oddrows>\n";
-        echo "  <td align=right>XFER Hide - Dial With Customer:</td>\n";
+        echo "  <td align=right>Dial With Customer - XFER Hide:</td>\n";
         echo "  <td align=left>\n";
         echo select_yesno('hide_xfer_dial_with',$hide_xfer_dial_with);
         echo "    </select>\n";
@@ -1358,7 +1358,7 @@ if ($ADD==31) {
         echo "</tr>\n";
 
         echo "<tr bgcolor=$oddrows>\n";
-        echo "  <td align=right>XFER Hide - Hangup Both Lines:</td>\n";
+        echo "  <td align=right>Hangup Both Lines - XFER Hide:</td>\n";
         echo "  <td align=left>\n";
         echo select_yesno('hide_xfer_hangup_both',$hide_xfer_hangup_both);
         echo "    </select>\n";
@@ -1367,7 +1367,7 @@ if ($ADD==31) {
         echo "</tr>\n";
 
         echo "<tr bgcolor=$oddrows>\n";
-        echo "  <td align=right>XFER Hide - Blind Transfer:</td>\n";
+        echo "  <td align=right>Blind Transfer - XFER Hide:</td>\n";
         echo "  <td align=left>\n";
         echo select_yesno('hide_xfer_blind_xfer',$hide_xfer_blind_xfer);
         echo "    </select>\n";
@@ -1376,7 +1376,7 @@ if ($ADD==31) {
         echo "</tr>\n";
 
         echo "<tr bgcolor=$oddrows>\n";
-        echo "  <td align=right>XFER Hide - Park Customer Dial:</td>\n";
+        echo "  <td align=right>Park Customer Dial - XFER Hide:</td>\n";
         echo "  <td align=left>\n";
         echo select_yesno('hide_xfer_park_dial',$hide_xfer_park_dial);
         echo "    </select>\n";
@@ -1385,7 +1385,7 @@ if ($ADD==31) {
         echo "</tr>\n";
 
         echo "<tr bgcolor=$oddrows>\n";
-        echo "  <td align=right>XFER Hide - Blind VMail:</td>\n";
+        echo "  <td align=right>Blind VMail - XFER Hide:</td>\n";
         echo "  <td align=left>\n";
         echo select_yesno('hide_xfer_blind_vmail',$hide_xfer_blind_vmail);
         echo "    </select>\n";

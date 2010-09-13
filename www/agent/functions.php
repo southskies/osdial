@@ -245,7 +245,7 @@ function send_email($host, $port, $user, $pass, $to, $from, $subject, $html, $te
 }
 
 function hide_element($yesno) {
-    $elstyle = 'visible';
+    $elstyle = 'inherit';
     if ($yesno=='Y') $elstyle = 'hidden';
     return $elstyle;
 }

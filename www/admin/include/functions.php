@@ -1122,7 +1122,7 @@ function select_yesno($selname, $selval) {
     if ($selval=="Y") {
         $Ysel=" selected";
         $Yval='Y';
-        $Nval='Y';
+        $Nval='N';
     } elseif ($selval=="N") {
         $Nsel=" selected";
         $Yval='Y';
