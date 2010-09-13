@@ -244,4 +244,10 @@ function send_email($host, $port, $user, $pass, $to, $from, $subject, $html, $te
     $mail->send($to, $headers, $message);
 }
 
+function hide_element($yesno) {
+    $elstyle = 'visible';
+    if ($yesno=='Y') $elstyle = 'hidden';
+    return $elstyle;
+}
+
 ?>

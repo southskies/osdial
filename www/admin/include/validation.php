@@ -228,6 +228,15 @@ if ($non_latin < 1)	{
 	$disable_manual_dial = ereg_replace("[^NY]","",$disable_manual_dial);
 	$no_hopper_leads_logins = ereg_replace("[^NY]","",$no_hopper_leads_logins);
 	$human_answered = ereg_replace("[^NY]","",$human_answered);
+	$hide_xfer_local_closer = ereg_replace("[^NY]","",$hide_xfer_local_closer);
+	$hide_xfer_dial_override = ereg_replace("[^NY]","",$hide_xfer_dial_override);
+	$hide_xfer_hangup_xfer = ereg_replace("[^NY]","",$hide_xfer_hangup_xfer);
+	$hide_xfer_leave_3way = ereg_replace("[^NY]","",$hide_xfer_leave_3way);
+	$hide_xfer_dial_with = ereg_replace("[^NY]","",$hide_xfer_dial_with);
+	$hide_xfer_hangup_both = ereg_replace("[^NY]","",$hide_xfer_hangup_both);
+	$hide_xfer_blind_xfer = ereg_replace("[^NY]","",$hide_xfer_blind_xfer);
+	$hide_xfer_park_dial = ereg_replace("[^NY]","",$hide_xfer_park_dial);
+	$hide_xfer_blind_vmail = ereg_replace("[^NY]","",$hide_xfer_blind_vmail);
 	$tovdad_display = ereg_replace("[^NY]","",$tovdad_display);
 	$campaign_allow_inbound = ereg_replace("[^NY]","",$campaign_allow_inbound);
 	$allow_tab_switch = ereg_replace("[^NY]","",$allow_tab_switch);

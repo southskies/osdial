@@ -1113,6 +1113,36 @@ function optnum2let($val=0) {
     return $ret;
 }
 
+# Returns a Yes/No select element.
+function select_yesno($selname, $selval) {
+    $Ysel='';
+    $Yval='';
+    $Nsel='';
+    $Nval='';
+    if ($selval=="Y") {
+        $Ysel=" selected";
+        $Yval='Y';
+        $Nval='Y';
+    } elseif ($selval=="N") {
+        $Nsel=" selected";
+        $Yval='Y';
+        $Nval='N';
+    } elseif ($selval==1) {
+        $Ysel=" selected";
+        $Yval='1';
+        $Nval='0';
+    } else {
+        $Nsel=" selected";
+        $Yval='1';
+        $Nval='0';
+    }
+    $ret  = "    <select size=1 name=\"" . $selname . "\">\n";
+    $ret .= "      <option value=\"" . $Yval . "\"" . $Ysel . ">Y</option>\n";
+    $ret .= "      <option value=\"" . $Nval . "\"" . $Nsel . ">N</option>\n";
+    $ret .= "    </select>\n";
+    return $ret;
+}
+
 # Simple shorthand for mysql_real_escape_string.
 function mres($val) {
     return mysql_real_escape_string($val);

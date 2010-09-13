@@ -423,8 +423,38 @@ if ($ADD==41)
             {$hopper_level='100';}
 
         $ets = implode(',',$email_templates);
-        $stmtA="UPDATE osdial_campaigns set campaign_name='$campaign_name',active='$active',dial_status_a='$dial_status_a',dial_status_b='$dial_status_b',dial_status_c='$dial_status_c',dial_status_d='$dial_status_d',dial_status_e='$dial_status_e',lead_order='$lead_order',";
-        $stmtA.="allow_closers='$allow_closers',hopper_level='$hopper_level', $adlSQL next_agent_call='$next_agent_call', local_call_time='$local_call_time', voicemail_ext='$voicemail_ext', dial_timeout='$dial_timeout', dial_prefix='$dial_prefix', campaign_cid='$campaign_cid', campaign_vdad_exten='$campaign_vdad_exten', web_form_address='" . mysql_real_escape_string($web_form_address) . "', park_ext='$park_ext', park_file_name='$park_file_name', campaign_rec_exten='$campaign_rec_exten', campaign_recording='$campaign_recording', campaign_rec_filename='$campaign_rec_filename', campaign_script='$script_id', get_call_launch='$get_call_launch', am_message_exten='$am_message_exten', amd_send_to_vmx='$amd_send_to_vmx', xferconf_a_dtmf='$xferconf_a_dtmf',xferconf_a_number='$xferconf_a_number', xferconf_b_dtmf='$xferconf_b_dtmf',xferconf_b_number='$xferconf_b_number',lead_filter_id='$lead_filter_id',alt_number_dialing='$alt_number_dialing',scheduled_callbacks='$scheduled_callbacks',safe_harbor_message='$safe_harbor_message',drop_call_seconds='$drop_call_seconds',safe_harbor_exten='$safe_harbor_exten',wrapup_seconds='$wrapup_seconds',wrapup_message='$wrapup_message',closer_campaigns='$groups_value',use_internal_dnc='$use_internal_dnc',allcalls_delay='$allcalls_delay',omit_phone_code='$omit_phone_code',dial_method='$dial_method',available_only_ratio_tally='$available_only_ratio_tally',adaptive_dropped_percentage='$adaptive_dropped_percentage',adaptive_maximum_level='$adaptive_maximum_level',adaptive_latest_server_time='$adaptive_latest_server_time',adaptive_intensity='$adaptive_intensity',adaptive_dl_diff_target='$adaptive_dl_diff_target',concurrent_transfers='$concurrent_transfers',auto_alt_dial='$auto_alt_dial',agent_pause_codes_active='$agent_pause_codes_active',campaign_description='$campaign_description',campaign_changedate='$SQLdate',campaign_stats_refresh='$campaign_stats_refresh',disable_alter_custdata='$disable_alter_custdata',no_hopper_leads_logins='$no_hopper_leads_logins',list_order_mix='$list_order_mix',campaign_allow_inbound='$campaign_allow_inbound',manual_dial_list_id='$manual_dial_list_id',default_xfer_group='$default_xfer_group',xfer_groups='$XFERgroups_value', web_form_address2='" . mysql_real_escape_string($web_form_address2) . "',allow_tab_switch='$allow_tab_switch',answers_per_hour_limit='" . mysql_real_escape_string($answers_per_hour_limit) . "',campaign_call_time='$campaign_call_time',preview_force_dial_time='$preview_force_dial_time',manual_preview_default='$manual_preview_default',web_form_extwindow='$web_form_extwindow',web_form2_extwindow='$web_form2_extwindow',submit_method='$submit_method',use_custom2_callerid='$use_custom2_callerid',campaign_cid_name='$campaign_cid_name',xfer_cid_mode='$xfer_cid_mode',use_cid_areacode_map='$use_cid_areacode_map',carrier_id='$carrier_id',email_templates='$ets',disable_manual_dial='$disable_manual_dial' where campaign_id='$campaign_id';";
+        $stmtA=sprintf("UPDATE osdial_campaigns SET %s campaign_name='%s',active='%s',dial_status_a='%s',dial_status_b='%s',dial_status_c='%s',dial_status_d='%s',"
+            ."dial_status_e='%s',lead_order='%s',allow_closers='%s',hopper_level='%s',next_agent_call='%s',local_call_time='%s',voicemail_ext='%s',"
+            ."dial_timeout='%s',dial_prefix='%s',campaign_cid='%s',campaign_vdad_exten='%s',web_form_address='%s',park_ext='%s',park_file_name='%s',"
+            ."campaign_rec_exten='%s',campaign_recording='%s',campaign_rec_filename='%s',campaign_script='%s',get_call_launch='%s',am_message_exten='%s',"
+            ."amd_send_to_vmx='%s',xferconf_a_dtmf='%s',xferconf_a_number='%s',xferconf_b_dtmf='%s',xferconf_b_number='%s',lead_filter_id='%s',"
+            ."alt_number_dialing='%s',scheduled_callbacks='%s',safe_harbor_message='%s',drop_call_seconds='%s',safe_harbor_exten='%s',wrapup_seconds='%s',"
+            ."wrapup_message='%s',closer_campaigns='%s',use_internal_dnc='%s',allcalls_delay='%s',omit_phone_code='%s',dial_method='%s',available_only_ratio_tally='%s',"
+            ."adaptive_dropped_percentage='%s',adaptive_maximum_level='%s',adaptive_latest_server_time='%s',adaptive_intensity='%s',adaptive_dl_diff_target='%s',"
+            ."concurrent_transfers='%s',auto_alt_dial='%s',agent_pause_codes_active='%s',campaign_description='%s',campaign_changedate='%s',campaign_stats_refresh='%s',"
+            ."disable_alter_custdata='%s',no_hopper_leads_logins='%s',list_order_mix='%s',campaign_allow_inbound='%s',manual_dial_list_id='%s',"
+            ."default_xfer_group='%s',xfer_groups='%s',web_form_address2='%s',allow_tab_switch='%s',answers_per_hour_limit='%s',campaign_call_time='%s',"
+            ."preview_force_dial_time='%s',manual_preview_default='%s',web_form_extwindow='%s',web_form2_extwindow='%s',submit_method='%s',use_custom2_callerid='%s',"
+            ."campaign_cid_name='%s',xfer_cid_mode='%s',use_cid_areacode_map='%s',carrier_id='%s',email_templates='%s',disable_manual_dial='%s',"
+            ."hide_xfer_local_closer='%s',hide_xfer_dial_override='%s',hide_xfer_hangup_xfer='%s',hide_xfer_leave_3way='%s',hide_xfer_dial_with='%s',"
+            ."hide_xfer_hangup_both='%s',hide_xfer_blind_xfer='%s',hide_xfer_park_dial='%s',hide_xfer_blind_vmail='%s' "
+            ."WHERE campaign_id='%s';",
+            $adlSQL,mres($campaign_name),mres($active),mres($dial_status_a),mres($dial_status_b),mres($dial_status_c),mres($dial_status_d),
+            mres($dial_status_e),mres($lead_order),mres($allow_closers),mres($hopper_level),mres($next_agent_call),mres($local_call_time),mres($voicemail_ext),
+            mres($dial_timeout),mres($dial_prefix),mres($campaign_cid),mres($campaign_vdad_exten),mres($web_form_address),mres($park_ext),mres($park_file_name),
+            mres($campaign_rec_exten),mres($campaign_recording),mres($campaign_rec_filename),mres($script_id),mres($get_call_launch),mres($am_message_exten),
+            mres($amd_send_to_vmx),mres($xferconf_a_dtmf),mres($xferconf_a_number),mres($xferconf_b_dtmf),mres($xferconf_b_number),mres($lead_filter_id),
+            mres($alt_number_dialing),mres($scheduled_callbacks),mres($safe_harbor_message),mres($drop_call_seconds),mres($safe_harbor_exten),mres($wrapup_seconds),
+            mres($wrapup_message),mres($groups_value),mres($use_internal_dnc),mres($allcalls_delay),mres($omit_phone_code),mres($dial_method),mres($available_only_ratio_tally),
+            mres($adaptive_dropped_percentage),mres($adaptive_maximum_level),mres($adaptive_latest_server_time),mres($adaptive_intensity),mres($adaptive_dl_diff_target),
+            mres($concurrent_transfers),mres($auto_alt_dial),mres($agent_pause_codes_active),mres($campaign_description),mres($SQLdate),mres($campaign_stats_refresh),
+            mres($disable_alter_custdata),mres($no_hopper_leads_logins),mres($list_order_mix),mres($campaign_allow_inbound),mres($manual_dial_list_id),
+            mres($default_xfer_group),mres($XFERgroups_value),mres($web_form_address2),mres($allow_tab_switch),mres($answers_per_hour_limit),mres($campaign_call_time),
+            mres($preview_force_dial_time),mres($manual_preview_default),mres($web_form_extwindow),mres($web_form2_extwindow),mres($submit_method),mres($use_custom2_callerid),
+            mres($campaign_cid_name),mres($xfer_cid_mode),mres($use_cid_areacode_map),mres($carrier_id),mres($ets),mres($disable_manual_dial),
+            mres($hide_xfer_local_closer),mres($hide_xfer_dial_override),mres($hide_xfer_hangup_xfer),mres($hide_xfer_leave_3way),mres($hide_xfer_dial_with),
+            mres($hide_xfer_hangup_both),mres($hide_xfer_blind_xfer),mres($hide_xfer_park_dial),mres($hide_xfer_blind_vmail),
+            mres($campaign_id));
         if ($DB) echo $stmtA;
         $rslt=mysql_query($stmtA, $link);
 
@@ -503,7 +533,14 @@ if ($ADD==44)
         if ( (!ereg("DISABLED",$list_order_mix)) and ($hopper_level < 100) )
             {$hopper_level='100';}
 
-        $stmtA="UPDATE osdial_campaigns set campaign_name='$campaign_name',active='$active',dial_status_a='$dial_status_a',dial_status_b='$dial_status_b',dial_status_c='$dial_status_c',dial_status_d='$dial_status_d',dial_status_e='$dial_status_e',lead_order='$lead_order',hopper_level='$hopper_level', $adlSQL lead_filter_id='$lead_filter_id',dial_method='$dial_method',adaptive_intensity='$adaptive_intensity',campaign_changedate='$SQLdate',list_order_mix='$list_order_mix',answers_per_hour_limit='$answers_per_hour_limit' where campaign_id='$campaign_id';";
+        $stmtA=sprintf("UPDATE osdial_campaigns SET %s campaign_name='%s',active='%s',dial_status_a='%s',dial_status_b='%s',dial_status_c='%s',dial_status_d='%s',"
+            ."dial_status_e='%s',lead_order='%s',hopper_level='%s',lead_filter_id='%s',dial_method='%s',adaptive_intensity='%s',campaign_changedate='%s',"
+            ."list_order_mix='%s',answers_per_hour_limit='%s' "
+            ."WHERE campaign_id='%s';",
+            $adlSQL,mres($campaign_name),mres($active),mres($dial_status_a),mres($dial_status_b),mres($dial_status_c),mres($dial_status_d),
+            mres($dial_status_e),mres($lead_order),mres($hopper_level),mres($lead_filter_id),mres($dial_method),mres($adaptive_intensity),mres($SQLdate),
+            mres($list_order_mix),mres($answers_per_hour_limit),
+            mres($campaign_id));
         $rslt=mysql_query($stmtA, $link);
 
         if ($reset_hopper == 'Y')
@@ -881,6 +918,15 @@ if ($ADD==31) {
         $carrier_id = $row[83];
         $email_templates = $row[84];
         $disable_manual_dial = $row[85];
+        $hide_xfer_local_closer = $row[86];
+        $hide_xfer_dial_override = $row[87];
+        $hide_xfer_hangup_xfer = $row[88];
+        $hide_xfer_leave_3way = $row[89];
+        $hide_xfer_dial_with = $row[90];
+        $hide_xfer_hangup_both = $row[91];
+        $hide_xfer_blind_xfer = $row[92];
+        $hide_xfer_park_dial = $row[93];
+        $hide_xfer_blind_vmail = $row[94];
 
         if (ereg("DISABLED",$list_order_mix)) {
             $DEFlistDISABLE = '';
@@ -1265,6 +1311,87 @@ if ($ADD==31) {
 
         echo " $manual_dial_list_id\">\n";
         echo "$NWB#osdial_campaigns-manual_dial_list_id$NWE</td></tr>\n";
+
+        echo "<tr bgcolor=$oddrows>\n";
+        echo "  <td align=right>XFER Hide - Local Closer:</td>\n";
+        echo "  <td align=left>\n";
+        echo select_yesno('hide_xfer_local_closer',$hide_xfer_local_closer);
+        echo "    </select>\n";
+        echo "    $NWB#osdial_campaigns-hide_xfer_local_closer$NWE\n";
+        echo "  </td>\n";
+        echo "</tr>\n";
+
+        echo "<tr bgcolor=$oddrows>\n";
+        echo "  <td align=right>XFER Hide - Dial Override:</td>\n";
+        echo "  <td align=left>\n";
+        echo select_yesno('hide_xfer_dial_override',$hide_xfer_dial_override);
+        echo "    </select>\n";
+        echo "    $NWB#osdial_campaigns-hide_xfer_dial_override$NWE\n";
+        echo "  </td>\n";
+        echo "</tr>\n";
+
+        echo "<tr bgcolor=$oddrows>\n";
+        echo "  <td align=right>XFER Hide - Hangup Xfer Line:</td>\n";
+        echo "  <td align=left>\n";
+        echo select_yesno('hide_xfer_hangup_xfer',$hide_xfer_hangup_xfer);
+        echo "    </select>\n";
+        echo "    $NWB#osdial_campaigns-hide_xfer_hangup_xfer$NWE\n";
+        echo "  </td>\n";
+        echo "</tr>\n";
+
+        echo "<tr bgcolor=$oddrows>\n";
+        echo "  <td align=right>XFER Hide - Leave 3Way Call:</td>\n";
+        echo "  <td align=left>\n";
+        echo select_yesno('hide_xfer_leave_3way',$hide_xfer_leave_3way);
+        echo "    </select>\n";
+        echo "    $NWB#osdial_campaigns-hide_xfer_leave_3way$NWE\n";
+        echo "  </td>\n";
+        echo "</tr>\n";
+
+        echo "<tr bgcolor=$oddrows>\n";
+        echo "  <td align=right>XFER Hide - Dial With Customer:</td>\n";
+        echo "  <td align=left>\n";
+        echo select_yesno('hide_xfer_dial_with',$hide_xfer_dial_with);
+        echo "    </select>\n";
+        echo "    $NWB#osdial_campaigns-hide_xfer_dial_with$NWE\n";
+        echo "  </td>\n";
+        echo "</tr>\n";
+
+        echo "<tr bgcolor=$oddrows>\n";
+        echo "  <td align=right>XFER Hide - Hangup Both Lines:</td>\n";
+        echo "  <td align=left>\n";
+        echo select_yesno('hide_xfer_hangup_both',$hide_xfer_hangup_both);
+        echo "    </select>\n";
+        echo "    $NWB#osdial_campaigns-hide_xfer_hangup_both$NWE\n";
+        echo "  </td>\n";
+        echo "</tr>\n";
+
+        echo "<tr bgcolor=$oddrows>\n";
+        echo "  <td align=right>XFER Hide - Blind Transfer:</td>\n";
+        echo "  <td align=left>\n";
+        echo select_yesno('hide_xfer_blind_xfer',$hide_xfer_blind_xfer);
+        echo "    </select>\n";
+        echo "    $NWB#osdial_campaigns-hide_xfer_blind_xfer$NWE\n";
+        echo "  </td>\n";
+        echo "</tr>\n";
+
+        echo "<tr bgcolor=$oddrows>\n";
+        echo "  <td align=right>XFER Hide - Park Customer Dial:</td>\n";
+        echo "  <td align=left>\n";
+        echo select_yesno('hide_xfer_park_dial',$hide_xfer_park_dial);
+        echo "    </select>\n";
+        echo "    $NWB#osdial_campaigns-hide_xfer_park_dial$NWE\n";
+        echo "  </td>\n";
+        echo "</tr>\n";
+
+        echo "<tr bgcolor=$oddrows>\n";
+        echo "  <td align=right>XFER Hide - Blind VMail:</td>\n";
+        echo "  <td align=left>\n";
+        echo select_yesno('hide_xfer_blind_vmail',$hide_xfer_blind_vmail);
+        echo "    </select>\n";
+        echo "    $NWB#osdial_campaigns-hide_xfer_blind_vmail$NWE\n";
+        echo "  </td>\n";
+        echo "</tr>\n";
 
         echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 
@@ -1828,8 +1955,8 @@ if ($ADD==34)
 
         echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$row[2]</option></select>$NWB#osdial_campaigns-active$NWE</td></tr>\n";
         echo "<tr style=\"visibility:collapse;\" bgcolor=$oddrows><td align=right>Park Extension: </td><td align=left>$row[9] - $row[10]$NWB#osdial_campaigns-park_ext$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left>$row[11]$NWB#osdial_campaigns-web_form_address$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Web Form 2: </td><td align=left>$row[69]$NWB#osdial_campaigns-web_form_address$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left>" . ellipse($row[11],50,true) . "$NWB#osdial_campaigns-web_form_address$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Web Form 2: </td><td align=left>" . ellipse($row[69],50,true) . "$NWB#osdial_campaigns-web_form_address$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Allow Transfer and Closers: </td><td align=left>$row[12] $NWB#osdial_campaigns-allow_closers$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Default Transfer Group: </td><td align=left>$default_xfer_group $NWB#osdial_campaigns-default_xfer_group$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Allow Inbound and Blended: </td><td align=left>$campaign_allow_inbound $NWB#osdial_campaigns-campaign_allow_inbound$NWE</td></tr>\n";

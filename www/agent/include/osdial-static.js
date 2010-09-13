@@ -2624,7 +2624,18 @@ function utf8_decode(utftext) {
 			}
 			if (OSDiaL_allow_closers < 1) {
 				document.getElementById("LocalCloser").style.visibility = 'hidden';
+			} else {
+				document.getElementById("LocalCloser").style.visibility = hide_xfer_local_closer;
 			}
+			document.getElementById("XferOverride").style.visibility = hide_xfer_dial_override;
+			document.getElementById("HangupXferLine").style.visibility = hide_xfer_hangup_xfer;
+			document.getElementById("Leave3WayCall").style.visibility = hide_xfer_leave_3way;
+			document.getElementById("DialWithCustomer").style.visibility = hide_xfer_dial_with;
+			document.getElementById("HangupBothLines").style.visibility = hide_xfer_hangup_both;
+			document.getElementById("DialBlindTransfer").style.visibility = hide_xfer_blind_xfer;
+			document.getElementById("ParkCustomerDial").style.visibility = hide_xfer_park_dial;
+			document.getElementById("DialBlindVMail").style.visibility = hide_xfer_blind_vmail;
+
 			document.getElementById("sessionIDspan").innerHTML = session_id;
 			if ( (campaign_recording == 'NEVER') || (campaign_recording == 'ALLFORCE') ) {
 				document.getElementById("RecorDControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording_OFF.gif\" width=145 height=16 border=0 alt=\"Start Recording\">";

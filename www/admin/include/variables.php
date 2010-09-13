@@ -388,6 +388,15 @@ $group_name = get_variable("group_name");
 $group_rank = get_variable("group_rank");
 $groups = get_variable("groups");
 
+$hide_xfer_local_closer = get_variable("hide_xfer_local_closer");
+$hide_xfer_dial_override = get_variable("hide_xfer_dial_override");
+$hide_xfer_hangup_xfer = get_variable("hide_xfer_hangup_xfer");
+$hide_xfer_leave_3way = get_variable("hide_xfer_leave_3way");
+$hide_xfer_dial_with = get_variable("hide_xfer_dial_with");
+$hide_xfer_hangup_both = get_variable("hide_xfer_hangup_both");
+$hide_xfer_blind_xfer = get_variable("hide_xfer_blind_xfer");
+$hide_xfer_park_dial = get_variable("hide_xfer_park_dial");
+$hide_xfer_blind_vmail = get_variable("hide_xfer_blind_vmail");
 $HKstatus = get_variable("HKstatus");
 $hopper_level = get_variable("hopper_level");
 $hotkey = get_variable("hotkey");
