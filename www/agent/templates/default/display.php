@@ -88,4 +88,6 @@ $wrapup_bg='#7297A1';
 
 $form_fc ='#1C4754';
 
+$diallink_class='body_tiny';
+
 ?>
