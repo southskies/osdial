@@ -2799,7 +2799,11 @@ flush();
                                         echo "            <font color=$form_fc class=body_text style=\"font-size:10px;\"><label for=ET" . $et['et_id'] . ">&nbsp;" . $et['et_name'] . "</label></font>\n";
                                         echo "          </div>\n";
                                         echo "        </td>\n";
-                                        echo "        <td><span style=\"font-size:9px;\">&nbsp;</span></td>\n";
+                                        echo "        <td align=center>\n";
+                                        echo "          <a href=\"#\" onclick=\"CustomerData_update(); window.open('print_email_template.php?user=' + user + '&pass=' + pass + '&lead_id=' + document.osdial_form.lead_id.value + '&et_id=" . $et['et_id'] . "', 'osdetprint', 'dependent=1,toolbar=1,scrollbars=1,location=1,statusbar=1,menubar=1,resizable=1,width=800,height=300');\">\n";
+                                        echo "            <span style=\"font-size:7px;\">[print]</span>\n";
+                                        echo "          </a>\n";
+                                        echo "        </td>\n";
                                         echo "      </tr>\n";
                                     }
 

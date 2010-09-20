@@ -5635,8 +5635,8 @@ function utf8_decode(utftext) {
 			//}
 			delete xmlhttp;
 		}
-	      } else {
-		osdalert('Email not sent, not a valid email address!',3);
+	      //} else {
+		//osdalert('Email not sent, not a valid email address!',3);
               }
 	    } else {
 		osdalert('No lead!',3);
