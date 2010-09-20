@@ -5623,7 +5623,7 @@ function utf8_decode(utftext) {
 		osdalert('Sending ' + et_id + ' Email...',60);
 		var xmlhttp=getXHR();
 		if (xmlhttp) { 
-			sbl_data = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=Email&format=text&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&et_id=" + et_id;
+			sbl_data = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=Email&format=text&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&lead_id=" + document.osdial_form.lead_id.value + "&et_id=" + et_id;
 			xmlhttp.open('POST', 'vdc_db_query.php', false); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 			xmlhttp.send(sbl_data); 
@@ -5641,6 +5641,36 @@ function utf8_decode(utftext) {
 	    } else {
 		osdalert('No lead!',3);
 	    }
+	}
+
+
+
+// ###################################################################################################################################################
+// checkEmailBlacklist() - Check if email address is in the blacklist.
+	function checkEmailBlacklist() {
+		if (document.osdial_form.email.value.length>0) {
+			var xmlhttp=getXHR();
+			if (xmlhttp) { 
+				sbl_data = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=EmailCheckBlacklist&format=text&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&email=" + document.osdial_form.email.value;
+				xmlhttp.open('POST', 'vdc_db_query.php'); 
+				xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+				xmlhttp.send(sbl_data); 
+				xmlhttp.onreadystatechange = function() { 
+					if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+						//osdalert(xmlhttp.responseText,30);
+						var EBcheck = xmlhttp.responseText.split("\n");
+						debug("<b>checkEmailBlacklist return:</b> " + EBcheck[0] + "|",3);
+						if (EBcheck[0] == 'BLACKLISTED') {
+							osdalert('Email Address on Blacklist',5);
+							document.osdial_form.email.style.backgroundColor=system_alert_bg2;
+						} else {
+							document.osdial_form.email.style.backgroundColor='#FFFFFF';
+						}
+					}
+				}
+				delete xmlhttp;
+			}
+		}
 	}
 
 

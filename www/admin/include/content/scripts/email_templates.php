@@ -873,7 +873,7 @@ tinyMCE.init({
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right>Send Action:</td>\n";
         echo "    <td align=left>\n";
-        echo "      <select size=1 name=active>\n";
+        echo "      <select size=1 name=et_send_action>\n";
         echo "        <option>ONDEMAND</option>\n";
         echo "        <option>ALL</option>\n";
         echo "        <option>ALLFORCE</option>\n";

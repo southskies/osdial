@@ -2725,7 +2725,7 @@ flush();
                                             </td>
                                             <td align=right>
                                                 <font class="body_text" color=<?=$form_fc?>><label for=email>Email:&nbsp;</label></font>
-                                                <font class="body_input"><input type=text size=30 name=email id=email maxlength=70 class="cust_form" value=""></font>
+                                                <font class="body_input"><input type=text size=30 name=email id=email maxlength=70 class="cust_form" value="" onchange="checkEmailBlacklist();" onkeyup="checkEmailBlacklist();"></font>
                                             </td>
                                         </tr>
                                         <tr>

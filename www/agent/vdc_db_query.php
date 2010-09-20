@@ -3467,7 +3467,7 @@ if ($ACTION == 'Email') {
         $et['et_body_text'] = preg_replace('/\[\[' . $k . '\]\]/imU', $v, $et['et_body_text']);
     }
 
-    $eb = get_first_record($link, 'osdial_campaign_email_blacklist', 'count(*) AS count', "email='" . $lead['email'] . "'");
+    $eb = get_first_record($link, 'osdial_campaign_email_blacklist', 'count(*) AS count', "campaign_id='" . $campaign . "' AND email='" . $lead['email'] . "'");
     if ($eb['count'] > 0) {
         echo "BLACKLISTED\n";
         echo $lead['email'] . "\n";
@@ -3476,6 +3476,20 @@ if ($ACTION == 'Email') {
         echo "DONE.\nsend_email($et[et_host], $et[et_port], $et[et_user], $et[et_pass], $lead[email], $et[et_from], $et[et_subject], $et[et_body_html], $et[et_body_text]);";
     }
 }
+
+
+
+################################################################################
+### Check if email is in blacklist.
+################################################################################
+if ($ACTION == 'EmailCheckBlacklist') {
+    $eb = get_first_record($link, 'osdial_campaign_email_blacklist', 'count(*) AS count', "campaign_id='" . $campaign . "' AND email='" . $email . "'");
+    if ($eb['count'] > 0) {
+        echo "BLACKLISTED\n";
+        echo $email . "\n";
+    }
+}
+
 
 
 if ($format=='debug') {
