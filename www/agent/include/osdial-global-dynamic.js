@@ -88,6 +88,7 @@ var dispo_bg='<?=$dispo_bg?>';
 var dispo_check_all_pause='<?=$dispo_check_all_pause?>';
 var dispo_fc='<?=$dispo_fc?>';
 var dtmf_send_extension='<?=$dtmf_send_extension?>';
+var email_template_actions=new Array(<?=$email_template_actions?>);
 var enable_fast_refresh=<?=$enable_fast_refresh?>;
 var enable_sipsak_messages='<?=$enable_sipsak_messages?>';
 var epoch_sec=<?=$StarTtimE?>;

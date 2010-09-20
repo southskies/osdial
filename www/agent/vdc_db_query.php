@@ -3467,9 +3467,14 @@ if ($ACTION == 'Email') {
         $et['et_body_text'] = preg_replace('/\[\[' . $k . '\]\]/imU', $v, $et['et_body_text']);
     }
 
-    send_email($et['et_host'], $et['et_port'], $et['et_user'], $et['et_pass'], $lead['email'], $et['et_from'], $et['et_subject'], $et['et_body_html'], $et['et_body_text']);
-
-    echo "DONE.  send_email($et[et_host], $et[et_port], $et[et_user], $et[et_pass], $lead[email], $et[et_from], $et[et_subject], $et[et_body_html], $et[et_body_text]);";
+    $eb = get_first_record($link, 'osdial_campaign_email_blacklist', 'count(*) AS count', "email='" . $lead['email'] . "'");
+    if ($eb['count'] > 0) {
+        echo "BLACKLISTED\n";
+        echo $lead['email'] . "\n";
+    } else {
+        send_email($et['et_host'], $et['et_port'], $et['et_user'], $et['et_pass'], $lead['email'], $et['et_from'], $et['et_subject'], $et['et_body_html'], $et['et_body_text']);
+        echo "DONE.\nsend_email($et[et_host], $et[et_port], $et[et_user], $et[et_pass], $lead[email], $et[et_from], $et[et_subject], $et[et_body_html], $et[et_body_text]);";
+    }
 }
 
 

@@ -5579,10 +5579,21 @@ function utf8_decode(utftext) {
 			if (etact==true) disableET=true;
 			for (var i=0; i<et_ids.length; i++) {
 				et_ids[i].onclick = function (){var et=1;};
-				if (disableET) {
-					et_ids[i].onclick = function (){this.checked=false;};
+				var allcheck=false;
+				if (email_template_actions[i] == 'ALL') {
+					allcheck=true;
+				} else if (email_template_actions[i] == 'ALLFORCE') {
+					allcheck=true;
+					disableET=true;
 				}
-				et_ids[i].checked=false;
+				if (disableET) {
+					if (allcheck) {
+						et_ids[i].onclick = function (){this.checked=true;};
+					} else {
+						et_ids[i].onclick = function (){this.checked=false;};
+					}
+				}
+				et_ids[i].checked=allcheck;
 			}
 		}
 	}

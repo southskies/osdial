@@ -312,6 +312,7 @@ $dupcheck = get_variable("dupcheck");
 
 $et_id = get_variable("et_id");
 $et_name = get_variable("et_name");
+$et_send_action = get_variable("et_send_action");
 $et_comments = get_variable("et_comments");
 $et_host = get_variable("et_host");
 $et_port = get_variable("et_port");

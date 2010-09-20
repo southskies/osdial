@@ -982,14 +982,17 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 $hide_xfer_blind_vmail   = hide_element($row[56]);
 
                 if ($disable_manual_dial=='Y') $agentcall_manual=0;
+                $email_template_actions='';
                 if ($email_templates) {
                     $ets = explode(',',$email_templates);
                     $email_templates='';
                     foreach ($ets as $eto) {
                         $et = get_first_record($link, 'osdial_email_templates', '*', "et_id='" . $eto . "' AND active='Y'");
                         $email_templates.=$et['et_id'] . ',';
+                        $email_template_actions.="'".$et['et_send_action']."',";
                     }
                     $email_templates = rtrim($email_templates,',');
+                    $email_template_actions = rtrim($email_template_actions,',');
                 }
 
                 if ($previewFD_time == "") $previewFD_time = "0";

@@ -452,7 +452,7 @@ if ($ADD=="2email") {
                     $rslt=mysql_query($stmt, $link);
                 }
 
-                $stmt=sprintf("INSERT INTO osdial_email_templates SET et_id='%s',et_name='%s',et_comments='%s',et_host='%s',et_port='%s',et_user='%s',et_pass='%s',et_from='%s',et_subject='%s',et_body_html='%s',et_body_text='%s',active='%s';",mres($et_id),mres($et_name),mres($et_comments),mres($et_host),mres($et_port),mres($et_user),mres($et_pass),mres($et_from),mres($et_subject),mres($et_body_html),mres($et_body_text),mres($active));
+                $stmt=sprintf("INSERT INTO osdial_email_templates SET et_id='%s',et_name='%s',et_comments='%s',et_host='%s',et_port='%s',et_user='%s',et_pass='%s',et_from='%s',et_subject='%s',et_body_html='%s',et_body_text='%s',active='%s',et_send_action='ONDEMAND';",mres($et_id),mres($et_name),mres($et_comments),mres($et_host),mres($et_port),mres($et_user),mres($et_pass),mres($et_from),mres($et_subject),mres($et_body_html),mres($et_body_text),mres($active));
                 $rslt=mysql_query($stmt, $link);
 
                 echo "<br><b><font color=$default_text>TEMPLATE ADDED: $et_id</font></b>\n";
@@ -484,7 +484,7 @@ if ($ADD=="4email") {
             echo "<br>Template name and HTML body must be at least 2 characters in length</font><br>\n";
         } else {
             if ($et_port=='') $et_port='25';
-            $stmt=sprintf("UPDATE osdial_email_templates SET et_name='%s',et_comments='%s',et_host='%s',et_port='%s',et_user='%s',et_pass='%s',et_from='%s',et_subject='%s',et_body_html='%s',et_body_text='%s',active='%s' WHERE et_id='%s';",mres($et_name),mres($et_comments),mres($et_host),mres($et_port),mres($et_user),mres($et_pass),mres($et_from),mres($et_subject),mres($et_body_html),mres($et_body_text),mres($active),mres($et_id));
+            $stmt=sprintf("UPDATE osdial_email_templates SET et_name='%s',et_comments='%s',et_host='%s',et_port='%s',et_user='%s',et_pass='%s',et_from='%s',et_subject='%s',et_body_html='%s',et_body_text='%s',active='%s',et_send_action='%s' WHERE et_id='%s';",mres($et_name),mres($et_comments),mres($et_host),mres($et_port),mres($et_user),mres($et_pass),mres($et_from),mres($et_subject),mres($et_body_html),mres($et_body_text),mres($active),mres($et_send_action),mres($et_id));
             $rslt=mysql_query($stmt, $link);
 
             echo "<br><b><font color=$default_text>TEMPLATE MODIFIED</font></b>\n";
@@ -868,6 +868,18 @@ tinyMCE.init({
         echo "        <option selected>$et[active]</option>\n";
         echo "      </select>\n";
         echo "      $NWB#osdial_email_templates-active$NWE\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+        echo "  <tr bgcolor=$oddrows>\n";
+        echo "    <td align=right>Send Action:</td>\n";
+        echo "    <td align=left>\n";
+        echo "      <select size=1 name=active>\n";
+        echo "        <option>ONDEMAND</option>\n";
+        echo "        <option>ALL</option>\n";
+        echo "        <option>ALLFORCE</option>\n";
+        echo "        <option selected>$et[et_send_action]</option>\n";
+        echo "      </select>\n";
+        echo "      $NWB#osdial_email_templates-et_send_action$NWE\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 
