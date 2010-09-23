@@ -1729,7 +1729,7 @@ foreach(@campaign_id)
 							}
 							$sthA->finish();
 							if ($dnc_method =~ /COMPANY|BOTH/) {
-								$stmtA="SELECT count(*) FROM osdial_dnc_company WHERE company_id='$comp_id' AND phone_number='$phone_to_hopper[$h]';";
+								$stmtA="SELECT count(*) FROM osdial_dnc_company WHERE company_id='$comp_id' AND (phone_number='$phone_to_hopper[$h]' OR phone_number='" . substr($phone_to_hopper[$h],0,3) . "XXXXXXX');";
 								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 								@aryA = $sthA->fetchrow_array;
@@ -1742,7 +1742,7 @@ foreach(@campaign_id)
 						}
 
 						if ($dncsskip==0) {
-							$stmtA = "SELECT count(*) from osdial_dnc where phone_number='$phone_to_hopper[$h]';";
+							$stmtA="SELECT count(*) FROM osdial_dnc WHERE (phone_number='$phone_to_hopper[$h]' OR phone_number='" . substr($phone_to_hopper[$h],0,3) . "XXXXXXX');";
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 							@aryA = $sthA->fetchrow_array;

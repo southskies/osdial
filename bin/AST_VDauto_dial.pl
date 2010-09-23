@@ -89,6 +89,11 @@
 # 090520-1619 - Rewrote INBOUND_MAN so it doesn't need a different dial method.
 
 
+$|++;
+
+$AGILOG=1;
+
+
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1)
 {
@@ -922,7 +927,7 @@ while($one_day_interval > 0)
 									if ( ($alt_dial =~ /AFFAP/) && ($DBIPautoaltdial[$user_CIPct] =~ /AFFAP/) )
 										{
 										$aff_number='';
-										$stmtA="SELECT value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='" . $DBIPautoaltdial[$user_CIPct] . "') AND lead_id='$lead_id';";
+										$stmtA="SELECT value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='" . $alt_dial . "') AND lead_id='$lead_id';";
 										$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 										$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 										$sthArows=$sthA->rows;
@@ -1263,7 +1268,7 @@ while($one_day_interval > 0)
 							$VD_auto_alt_dial = 'NONE';
 							$VD_auto_alt_dial_statuses='';
 							$stmtA="SELECT auto_alt_dial,auto_alt_dial_statuses,use_internal_dnc FROM osdial_campaigns where campaign_id='$CLcampaign_id';";
-								if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+								if ($AGILOG) {$event_string = "|$stmtA|";   &event_logger;}
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 							$sthArows=$sthA->rows;
@@ -1277,11 +1282,12 @@ while($one_day_interval > 0)
 							 	$epc_countCAMPDATA++;
 								}
 							$sthA->finish();
+							$event_string = "VD_auto_alt_dial: $VD_auto_alt_dial  CLalt_dial: $CLalt_dial  VD_auto_alt_dial_statuses: $VD_auto_alt_dial_statuses  CLnew_status: $CLnew_status  CLlead_id: $CLlead_id"; &event_logger;
 							if ( ($VD_auto_alt_dial_statuses =~ / $CLnew_status /) && ($CLlead_id > 0) ) {
-								if ( ($VD_auto_alt_dial =~ /(ALT_ONLY|ALT_AND_ADDR3)/) && ($CLalt_dial =~ /NONE|MAIN/) ) {
+								if ( ($VD_auto_alt_dial =~ /ALT_ONLY|ALT_AND_ADDR3|ALT_ADDR3_AND_AFFAP/) && ($CLalt_dial =~ /NONE|MAIN/) ) {
 									$VD_alt_phone='';
 									$stmtA="SELECT alt_phone,gmt_offset_now,state,list_id FROM osdial_list where lead_id='$CLlead_id';";
-										if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+										if ($AGILOG) {$event_string = "|$stmtA|";   &event_logger;}
 									$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 									$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 									$sthArows=$sthA->rows;
@@ -1296,15 +1302,15 @@ while($one_day_interval > 0)
 									 	$epc_countCAMPDATA++;
 									}
 									$sthA->finish();
+									$VD_alt_dnc_count=0;
 									if (length($VD_alt_phone)>5) {
-										$VD_alt_dnc_count=0;
 										if ($VD_use_internal_dnc =~ /Y/) {
 											$dncsskip=0;
 											if ($enable_multicompany > 0) {
 												$comp_id=0;
 												$dnc_method='';
 												$stmtA="SELECT comp_id,dnc_method FROM osdial_companies WHERE company_id='" . ((substr($CLcampaign_id,0,3) * 1) - 100) . "';";
-												if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+												if ($AGILOG) {$event_string = "|$stmtA|";   &event_logger;}
 												$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 												$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 												if (@aryA = $sthA->fetchrow_array) {
@@ -1313,8 +1319,8 @@ while($one_day_interval > 0)
 												}
 												$sthA->finish();
 												if ($dnc_method =~ /COMPANY|BOTH/) {
-													$stmtA="SELECT count(*) FROM osdial_dnc_company WHERE company_id='$comp_id' AND phone_number='$VD_alt_phone';";
-													if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+													$stmtA="SELECT count(*) FROM osdial_dnc_company WHERE company_id='$comp_id' AND (phone_number='$VD_alt_phone' OR phone_number='" . substr($VD_alt_phone,0,3) . "XXXXXXX');";
+													if ($AGILOG) {$event_string = "|$stmtA|";   &event_logger;}
 													$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 													$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 													if (@aryA = $sthA->fetchrow_array) {
@@ -1327,8 +1333,8 @@ while($one_day_interval > 0)
 												}
 											}
 											if ($dncsskip==0) {
-												$stmtA="SELECT count(*) FROM osdial_dnc WHERE phone_number='$VD_alt_phone';";
-												if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+												$stmtA="SELECT count(*) FROM osdial_dnc WHERE (phone_number='$VD_alt_phone' OR phone_number='" . substr($VD_alt_phone,0,3) . "XXXXXXX');";
+												if ($AGILOG) {$event_string = "|$stmtA|";   &event_logger;}
 												$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 												$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 												if (@aryA = $sthA->fetchrow_array) {
@@ -1340,14 +1346,17 @@ while($one_day_interval > 0)
 										if ($VD_alt_dnc_count < 1) {
 											$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='$CLcampaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ALT',user='',priority='25';";
 											$affected_rows = $dbhA->do($stmtA);
-											if ($AGILOG) {$agi_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &agi_output;}
+											if ($AGILOG) {$event_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &event_logger;}
 										}
 									}
+									if ($VD_alt_dnc_count>0 or length($VD_alt_phone)<=5) {
+										$CLalt_dial='ALT';
+									}
 								}
-								if ( ( ($VD_auto_alt_dial =~ /(ADDR3_ONLY)/) && ($CLalt_dial =~ /NONE|MAIN/) ) || ( ($VD_auto_alt_dial =~ /(ALT_AND_ADDR3)/) && ($CLalt_dial =~ /ALT/) ) ) {
+								if ( ( ($VD_auto_alt_dial =~ /ADDR3_ONLY/) && ($CLalt_dial =~ /NONE|MAIN/) ) || ( ($VD_auto_alt_dial =~ /ALT_AND_ADDR3|ALT_ADDR3_AND_AFFAP/) && ($CLalt_dial =~ /ALT/) ) ) {
 									$VD_address3='';
 									$stmtA="SELECT address3,gmt_offset_now,state,list_id FROM osdial_list where lead_id='$CLlead_id';";
-										if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+										if ($AGILOG) {$event_string = "|$stmtA|";   &event_logger;}
 									$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 									$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 									$sthArows=$sthA->rows;
@@ -1362,11 +1371,11 @@ while($one_day_interval > 0)
 									 	$epc_countCAMPDATA++;
 									}
 									$sthA->finish();
+									$VD_addr3_dnc_count=0;
 									if (length($VD_address3)>5) {
-										$VD_addr3_dnc_count=0;
 										if ($VD_use_internal_dnc =~ /Y/) {
-											$stmtA="SELECT count(*) FROM osdial_dnc where phone_number='$VD_address3';";
-											if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+											$stmtA="SELECT count(*) FROM osdial_dnc WHERE (phone_number='$VD_address3' OR phone_number='" . substr($VD_address3,0,3) . "XXXXXXX');";
+											if ($AGILOG) {$event_string = "|$stmtA|";   &event_logger;}
 											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 											if (@aryA = $sthA->fetchrow_array) {
@@ -1377,58 +1386,67 @@ while($one_day_interval > 0)
 										if ($VD_addr3_dnc_count < 1) {
 											$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='$CLcampaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ADDR3',user='',priority='20';";
 											$affected_rows = $dbhA->do($stmtA);
-											if ($AGILOG) {$agi_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &agi_output;}
+											if ($AGILOG) {$event_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &event_logger;}
 										}
 									}
+									if ($VD_addr3_dnc_count>0 or length($VD_address3)<=5) {
+										$CLalt_dial='ADDR3';
+									}
 								}
-								if ($VD_auto_alt_dial =~ /(ALT_ADDR3_AND_AFFAP)/ && $CLalt_dial =~ /ADDR3|AFFAP/) {
+								if ($VD_auto_alt_dial =~ /ALT_ADDR3_AND_AFFAP/ && $CLalt_dial =~ /ADDR3|AFFAP/) {
 									$aff_number = '';
 									$cur_aff = 1;
 									if ($CLalt_dial ne 'ADDR3') {
 										$cur_aff = (substr($CLalt_dial,5) * 1) + 1;
 									}
-									$stmtA="SELECT value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='AFFAP$cur_aff') AND lead_id='$CLlead_id';";
-									$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-									$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-									$sthArows=$sthA->rows;
-									if ($sthArows > 0) {
-										@aryA = $sthA->fetchrow_array;
-										$aff_number = $aryA[0];
-										$aff_number =~ s/\D//gi;
-									}
-									$sthA->finish();
-
-									if (length($aff_number)>5) {
-										$stmtA="SELECT gmt_offset_now,state,list_id FROM osdial_list where lead_id='$CLlead_id';";
-											if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+									while ($cur_aff < 10) {
+										$stmtA="SELECT value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='AFFAP$cur_aff') AND lead_id='$CLlead_id';";
 										$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 										$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 										$sthArows=$sthA->rows;
-								 		$epc_countCAMPDATA=0;
-										while ($sthArows > $epc_countCAMPDATA) {
+										if ($sthArows > 0) {
 											@aryA = $sthA->fetchrow_array;
-											$VD_gmt_offset_now = $aryA[0];
-											$VD_state = $aryA[1];
-											$VD_list_id = $aryA[2];
-									 		$epc_countCAMPDATA++;
+											$aff_number = $aryA[0];
+											$aff_number =~ s/\D//gi;
 										}
 										$sthA->finish();
 
 										$VD_aff_dnc_count=0;
-										if ($VD_use_internal_dnc =~ /Y/) {
-											$stmtA="SELECT count(*) FROM osdial_dnc where phone_number='$aff_number';";
-											if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
+										if (length($aff_number)>5) {
+											$stmtA="SELECT gmt_offset_now,state,list_id FROM osdial_list where lead_id='$CLlead_id';";
+												if ($AGILOG) {$event_string = "|$stmtA|";   &event_logger;}
 											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-											if (@aryA = $sthA->fetchrow_array) {
-												$VD_aff_dnc_count = $aryA[0];
+											$sthArows=$sthA->rows;
+								 			$epc_countCAMPDATA=0;
+											while ($sthArows > $epc_countCAMPDATA) {
+												@aryA = $sthA->fetchrow_array;
+												$VD_gmt_offset_now = $aryA[0];
+												$VD_state = $aryA[1];
+												$VD_list_id = $aryA[2];
+									 			$epc_countCAMPDATA++;
 											}
 											$sthA->finish();
+
+											if ($VD_use_internal_dnc =~ /Y/) {
+												$stmtA="SELECT count(*) FROM osdial_dnc WHERE (phone_number='$aff_number' OR phone_number='" . substr($aff_number,0,3) . "XXXXXXX');";
+												if ($AGILOG) {$event_string = "|$stmtA|";   &event_logger;}
+												$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+												$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+												if (@aryA = $sthA->fetchrow_array) {
+													$VD_aff_dnc_count = $aryA[0];
+												}
+												$sthA->finish();
+											}
+											if ($VD_aff_dnc_count < 1) {
+												$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='$CLcampaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='AFFAP$cur_aff',user='',priority='20';";
+												$affected_rows = $dbhA->do($stmtA);
+												if ($AGILOG) {$event_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &event_logger;}
+												$cur_aff=10;
+											}
 										}
-										if ($VD_aff_dnc_count < 1) {
-											$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CLlead_id',campaign_id='$CLcampaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='AFFAP$cur_aff',user='',priority='20';";
-											$affected_rows = $dbhA->do($stmtA);
-											if ($AGILOG) {$agi_string = "--    VDH record inserted: |$affected_rows|   |$stmtA|";   &agi_output;}
+										if ($VD_aff_dnc_count>0 or length($aff_number)<=5) {
+											$cur_aff++;
 										}
 									}
 								}
