@@ -5474,7 +5474,7 @@ function utf8_decode(utftext) {
 		debug("<b>AddtlFormSelect:</b> AFform=" + AFform,2);
 		if (AFform != 'Cancel') {
 			document.getElementById('AddtlFormBut' + AFform).style.background='url(templates/' + agent_template + '/images/agentsidetab_press.png)'; 
-			document.getElementById('AddtlFormsEmailTemplates').style.visibility='hidden';
+			if (document.getElementById('AddtlFormsEmailTemplates')) document.getElementById('AddtlFormsEmailTemplates').style.visibility='hidden';
 			for (var i=0; i<AFforms.length; i++) {
 				document.getElementById('AddtlForms' + AFforms[i]).style.visibility='hidden';
 			}

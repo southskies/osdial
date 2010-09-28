@@ -2781,7 +2781,7 @@ flush();
                                 $cnt = 0;
 
                                 if ($email_templates) {
-                                    echo "  <div id=\"AddtlFormsEmailTemplates\" style=" . $cssvis . "position:absolute;left:710px;top:42px;z-index:6;height:325px;overflow-x:hidden;overflow-y:auto;border-width:1px;border-style:solid;border-color:$form_fc;border-top-color:#CDEEE3;border-left-color:#CDEEE3;>\n";
+                                    echo "  <div id=\"AddtlFormsEmailTemplates\" style=" . $cssvis . "position:absolute;left:710px;top:42px;z-index:6;width:265px;height:325px;overflow-x:hidden;overflow-y:auto;border-width:1px;border-style:solid;border-color:$form_fc;border-top-color:#CDEEE3;border-left-color:#CDEEE3;>\n";
                                     echo "  <table width=265><tr><td><table align=center>\n";
                                     echo "      <tr>\n";
                                     echo "          <td colspan=3 align=center>\n";
@@ -2818,7 +2818,7 @@ flush();
                                             if ($cnt > 0) {
                                                 $cssvis = 'visibility:hidden;';
                                             }
-                                            echo "  <div id=\"AddtlForms" . $form['name'] . "\" style=" . $cssvis . "position:absolute;left:710px;top:42px;z-index:6;height:325px;overflow-x:hidden;overflow-y:auto;border-width:1px;border-style:solid;border-color:$form_fc;border-top-color:#CDEEE3;border-left-color:#CDEEE3;>\n";
+                                            echo "  <div id=\"AddtlForms" . $form['name'] . "\" style=" . $cssvis . "position:absolute;left:710px;top:42px;z-index:6;width:265px;height:325px;overflow-x:hidden;overflow-y:auto;border-width:1px;border-style:solid;border-color:$form_fc;border-top-color:#CDEEE3;border-left-color:#CDEEE3;>\n";
                                             echo "  <table width=265><tr><td><table align=center>\n";
                                             echo "      <tr>\n";
                                             echo "          <td colspan=3 align=center>\n";
@@ -2865,7 +2865,7 @@ flush();
                                     }
                                 }
                                 if ($cnt==0) {
-                                    echo "  <div id=\"AddtlFormsNONE\" style=position:absolute;left:710px;top:42px;z-index:6;height:325px;overflow-x:hidden;overflow-y:auto;border-width:1px;border-style:solid;border-color:$form_fc;border-top-color:#CDEEE3;border-left-color:#CDEEE3;>\n";
+                                    echo "  <div id=\"AddtlFormsNONE\" style=position:absolute;left:710px;top:42px;z-index:6;width:265px;height:325px;overflow-x:hidden;overflow-y:auto;border-width:1px;border-style:solid;border-color:$form_fc;border-top-color:#CDEEE3;border-left-color:#CDEEE3;>\n";
                                     echo "    <table width=265><tr><td><table align=center><tr><td>\n";
                                     echo "      <font color=$form_fc class=body_text style=\"font-size:12px\"><b>No Additional Fields Available<b></font>\n";
                                     echo "    </td></tr></table></td></tr></table>\n";
@@ -2936,13 +2936,13 @@ flush();
 <? load_status('Initializing GUI...<br>WebFormPanel1<br>&nbsp;'); ?>
 <!-- Inline webform here -->
 <span style="visibility:hidden; position:absolute;left:190px;top:92px;z-index:17;" name="WebFormPanel1" id="WebFormPanel1">
-    <iframe src="/osdial/agent/blank.php" width="780" height="375" name="WebFormPF1" id="WebFormPF1" style="background-color: white;"></iframe>
+    <iframe src="/osdial/agent/blank.php" width="785" height="325" name="WebFormPF1" id="WebFormPF1" style="background-color: white;"></iframe>
 </span>
 
 
 <? load_status('Initializing GUI...<br>WebFormPanel2<br>&nbsp;'); ?>
 <span style="visibility:hidden; position:absolute;left:190px;top:92px;z-index:18;" name="WebFormPanel2" id="WebFormPanel2">
-    <iframe src="/osdial/agent/blank.php" width="780" height="375" name="WebFormPF2" id="WebFormPF2" style="background-color: white;"></iframe>
+    <iframe src="/osdial/agent/blank.php" width="785" height="325" name="WebFormPF2" id="WebFormPF2" style="background-color: white;"></iframe>
 </span>
 
 
