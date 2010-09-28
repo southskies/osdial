@@ -1458,6 +1458,7 @@ if ($stage == "end")
                         $state =			$row[2];
                         }
                     else {$alt_phone = '';}
+#TODO: Check DNC here.
                     if (strlen($alt_phone)>5)
                         {
                         ### insert record into osdial_hopper for alt_phone call attempt
@@ -1481,6 +1482,7 @@ if ($stage == "end")
                         $state =			$row[2];
                         }
                     else {$address3 = '';}
+#TODO: Check DNC here.
                     if (strlen($address3)>5)
                         {
                         ### insert record into osdial_hopper for address3 call attempt
@@ -1490,6 +1492,8 @@ if ($stage == "end")
                         }
                     }
                 }
+
+#TODO: Add support for ALT_ADDR3_AND_AFFAP dialing.
 
             if ($enable_queuemetrics_logging > 0)
                 {
@@ -2956,7 +2960,7 @@ if ($ACTION == 'updateLEAD') {
             $comments = eregi_replace("--QUES--",'?',$comments);
             $comments = eregi_replace("--POUND--",'#',$comments);
 
-            $stmt="UPDATE osdial_list set vendor_lead_code='" . mysql_real_escape_string($vendor_lead_code) . "', title='" . mysql_real_escape_string($title) . "', first_name='" . mysql_real_escape_string($first_name) . "', middle_initial='" . mysql_real_escape_string($middle_initial) . "', last_name='" . mysql_real_escape_string($last_name) . "', address1='" . mysql_real_escape_string($address1) . "', address2='" . mysql_real_escape_string($address2) . "', address3='" . mysql_real_escape_string($address3) . "', city='" . mysql_real_escape_string($city) . "', state='" . mysql_real_escape_string($state) . "', province='" . mysql_real_escape_string($province) . "', postal_code='" . mysql_real_escape_string($postal_code) . "', country_code='" . mysql_real_escape_string($country_code) . "', gender='" . mysql_real_escape_string($gender) . "', date_of_birth='" . mysql_real_escape_string($date_of_birth) . "', alt_phone='" . mysql_real_escape_string($alt_phone) . "', email='" . mysql_real_escape_string($email) . "', custom1='" . mysql_real_escape_string($custom1) . "', custom2='" . mysql_real_escape_string($custom2) ."', comments='" . mysql_real_escape_string($comments) . "' where lead_id='$lead_id';";
+            $stmt="UPDATE osdial_list set vendor_lead_code='" . mysql_real_escape_string($vendor_lead_code) . "', title='" . mysql_real_escape_string($title) . "', first_name='" . mysql_real_escape_string($first_name) . "', middle_initial='" . mysql_real_escape_string($middle_initial) . "', last_name='" . mysql_real_escape_string($last_name) . "', address1='" . mysql_real_escape_string($address1) . "', address2='" . mysql_real_escape_string($address2) . "', address3='" . mysql_real_escape_string($address3) . "', city='" . mysql_real_escape_string($city) . "', state='" . mysql_real_escape_string($state) . "', province='" . mysql_real_escape_string($province) . "', postal_code='" . mysql_real_escape_string($postal_code) . "', country_code='" . mysql_real_escape_string($country_code) . "', gender='" . mysql_real_escape_string($gender) . "', date_of_birth='" . mysql_real_escape_string($date_of_birth) . "', alt_phone='" . mysql_real_escape_string($alt_phone) . "', email='" . mysql_real_escape_string($email) . "', custom1='" . mysql_real_escape_string($custom1) . "', custom2='" . mysql_real_escape_string($custom2) ."', comments='" . mysql_real_escape_string($comments) . "', phone_number='" . mysql_real_escape_string($phone_number) . "', phone_code='" . mysql_real_escape_string($phone_code) . "' where lead_id='$lead_id';";
             if ($format=='debug') {echo "\n<!-- $stmt -->";}
             $rslt=mysql_query($stmt, $link);
         }

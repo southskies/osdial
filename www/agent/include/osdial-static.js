@@ -4577,6 +4577,7 @@ function utf8_decode(utftext) {
 			VLupdate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&campaign=" + campaign +  "&ACTION=updateLEAD&format=text&user=" + user + "&pass=" + pass + 
 				"&lead_id=" + document.osdial_form.lead_id.value + 
 				"&vendor_lead_code=" + document.osdial_form.vendor_lead_code.value + 
+				"&phone_code=" + document.osdial_form.phone_code.value + 
 				"&phone_number=" + document.osdial_form.phone_number.value + 
 				"&title=" + document.osdial_form.title.value + 
 				"&first_name=" + document.osdial_form.first_name.value + 
@@ -4599,7 +4600,7 @@ function utf8_decode(utftext) {
 				"&post_date=" + document.osdial_form.post_date.value;
 
 				for (var i=0; i<AFids.length; i++) {
-					VLupdate_query += '&' + AFids[i] + '=' + document.getElementById(AFids[i]).value;
+					VLupdate_query += '&' + AFids[i] + '=' + encodeURIComponent2(document.getElementById(AFids[i]).value);
 				}
 
 				VLupdate_query += "&comments=" + REGcommentsRESULT;
