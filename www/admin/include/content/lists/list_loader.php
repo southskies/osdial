@@ -725,7 +725,22 @@ if ($ADD==122) {
 					    echo "        <option value='-1'>(none)</option>\n";
 					    for ($j=0; $j<count($row); $j++) {
 						    eregi_replace("\"", "", $row[$j]);
-						    echo "        <option value='$j'>\"$row[$j]\"</option>\n";
+                            $fsel='';
+                            if ($VARclient=='CFGA') {
+                                if (strtoupper(mysql_field_name($rslt, $i))=='PHONE_NUMBER' and strtoupper($row[$j])=='PHONENUMBER') $fsel='selected';
+                                if (strtoupper(mysql_field_name($rslt, $i))=='FIRST_NAME'   and strtoupper($row[$j])=='FIRSTNAME')   $fsel='selected';
+                                if (strtoupper(mysql_field_name($rslt, $i))=='LAST_NAME'    and strtoupper($row[$j])=='LASTNAME')    $fsel='selected';
+                                if (strtoupper(mysql_field_name($rslt, $i))=='ADDRESS1'     and strtoupper($row[$j])=='ACCOUNTID')   $fsel='selected';
+                                if (strtoupper(mysql_field_name($rslt, $i))=='ADDRESS2'     and strtoupper($row[$j])=='ISSUER')      $fsel='selected';
+                                if (strtoupper(mysql_field_name($rslt, $i))=='ADDRESS3'     and strtoupper($row[$j])=='PHONE3')      $fsel='selected';
+                                if (strtoupper(mysql_field_name($rslt, $i))=='CITY'         and strtoupper($row[$j])=='SSN')         $fsel='selected';
+                                if (strtoupper(mysql_field_name($rslt, $i))=='POSTAL_CODE'  and strtoupper($row[$j])=='BALANCE')     $fsel='selected';
+                                if (strtoupper(mysql_field_name($rslt, $i))=='ALT_PHONE'    and strtoupper($row[$j])=='PHONE2')      $fsel='selected';
+                                if (strtoupper(mysql_field_name($rslt, $i))=='EXTERNAL_KEY' and strtoupper($row[$j])=='ACCOUNTID')   $fsel='selected';
+                            } else {
+                                if (strtoupper(mysql_field_name($rslt, $i))==strtoupper($row[$j])) $fsel='selected';
+                            }
+						    echo "        <option value='$j' $fsel>\"$row[$j]\"</option>\n";
 					    }
 					    echo "      </select>\n";
                     }
@@ -747,13 +762,45 @@ if ($ADD==122) {
                     $o=0;
                     foreach ($afmaps as $k => $v) {
 					    echo "  <tr class=\"row font1\" " . bgcolor($o) . ">\n";
-					    echo "    <td align=left>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".strtoupper(eregi_replace("_", " ", $v)).": </td>\n";
+					    echo "    <td align=left>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                        echo strtoupper(eregi_replace("_", " ", $v));
+                        if ($v=='AFFAP_AFFAP1') {
+                            echo " (phone number 4)";
+                        } elseif ($v=='AFFAP_AFFAP2') {
+                            echo " (phone number 5)";
+                        } elseif ($v=='AFFAP_AFFAP3') {
+                            echo " (phone number 6)";
+                        } elseif ($v=='AFFAP_AFFAP4') {
+                            echo " (phone number 7)";
+                        } elseif ($v=='AFFAP_AFFAP5') {
+                            echo " (phone number 8)";
+                        } elseif ($v=='AFFAP_AFFAP6') {
+                            echo " (phone number 9)";
+                        } elseif ($v=='AFFAP_AFFAP7') {
+                            echo " (phone number 10)";
+                        } elseif ($v=='AFFAP_AFFAP8') {
+                            echo " (phone number 11)";
+                        } elseif ($v=='AFFAP_AFFAP9') {
+                            echo " (phone number 12)";
+                        }
+                        echo ": ";
+                        echo "</td>\n";
 					    echo "    <td align=center class=tabinput>\n";
                         echo "      <select name='$k'>\n";
 					    echo "        <option value='-1'>(none)</option>\n";
 					    for ($j=0; $j<count($row); $j++) {
 					        eregi_replace("\"", "", $row[$j]);
-					        echo "        <option value='$j'>\"$row[$j]\"</option>\n";
+                            $fsel='';
+                            if ($VARclient=='CFGA') {
+                                if (strtoupper($v)=='AFFAP_AFFAP1' and strtoupper($row[$j])=='PHONE4') $fsel='selected';
+                                if (strtoupper($v)=='AFFAP_AFFAP2' and strtoupper($row[$j])=='PHONE5') $fsel='selected';
+                                if (strtoupper($v)=='AFFAP_AFFAP3' and strtoupper($row[$j])=='PHONE6') $fsel='selected';
+                                if (strtoupper($v)=='AFFAP_AFFAP4' and strtoupper($row[$j])=='PHONE7') $fsel='selected';
+                                if (strtoupper($v)=='AFFAP_AFFAP5' and strtoupper($row[$j])=='PHONE8') $fsel='selected';
+                            } else {
+                                if (strtoupper($v)==strtoupper($row[$j])) $fsel='selected';
+                            }
+					        echo "        <option value='$j' $fsel>\"$row[$j]\"</option>\n";
 					    }
 					    echo "      </select>\n";
                         echo "    </td>\n";
