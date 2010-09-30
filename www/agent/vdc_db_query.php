@@ -3467,6 +3467,7 @@ if ($ACTION == 'Email') {
     }
 
     foreach ($lead as $k => $v) {
+        $et['et_subject'] = preg_replace('/\[\[' . $k . '\]\]/imU', $v, $et['et_subject']);
         $et['et_body_html'] = preg_replace('/\[\[' . $k . '\]\]/imU', $v, $et['et_body_html']);
         $et['et_body_text'] = preg_replace('/\[\[' . $k . '\]\]/imU', $v, $et['et_body_text']);
     }
