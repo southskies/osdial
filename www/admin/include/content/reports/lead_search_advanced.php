@@ -128,7 +128,7 @@ function report_lead_search_advanced($lsa_seg='form') {
 
         $pageURL ="?ADD=$ADD&SUB=$SUB&last_name=$last_name&first_name=$first_name&phone_number=$phone_number&phone_search_alt=$phone_search_alt&lead_id=$lead_id&city=$city&postal_code=$postal_code&email=$email";
         $pageURL.="&entry_date_start=$orig_entry_date_start&entry_date_end=$orig_entry_date_end&modify_date_start=$orig_modify_date_start&modify_date_end=$orig_modify_date_end";
-        $pageURL.="&lastcall_date_start=$orig_lastcall_date_start&lastcall_date_end=$orig_lastcall_date_end&use_osdial_closer_log=$use_osdial_closer_log";
+        $pageURL.="&lastcall_date_start=$orig_lastcall_date_start&lastcall_date_end=$orig_lastcall_date_end&use_osdial_log=$use_osdial_log&use_osdial_closer_log=$use_osdial_closer_log&use_osdial_agent_log=$use_osdial_agent_log";
         $pageURL.="&custom1=$custom1&custom2=$custom2&external_key=$external_key&numresults=$numresults";
 
 
