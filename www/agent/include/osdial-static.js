@@ -611,6 +611,7 @@
 				var REGrecCAMPAIGN = new RegExp("CAMPAIGN","g");
 				var REGrecCUSTPHONE = new RegExp("CUSTPHONE","g");
 				var REGrecFULLDATE = new RegExp("FULLDATE","g");
+				var REGrecISODATE = new RegExp("ISODATE","g");
 				var REGrecTINYDATE = new RegExp("TINYDATE","g");
 				var REGrecEPOCH = new RegExp("EPOCH","g");
 				var REGrecAGENT = new RegExp("AGENT","g");
@@ -618,7 +619,7 @@
 				filename = filename.replace(REGrecCAMPAIGN, campaign);
 				filename = filename.replace(REGrecCUSTPHONE, lead_dial_number);
 				filename = filename.replace(REGrecFULLDATE, filedate);
-				filename = filename.replace(REGrecTINYDATE, tinydate);
+				filename = filename.replace(REGrecISODATE, isodate);
 				filename = filename.replace(REGrecEPOCH, epoch_sec);
 				filename = filename.replace(REGrecAGENT, user);
 				//filename = filedate + "_" + user_abb;
@@ -2847,6 +2848,7 @@ function utf8_decode(utftext) {
 		}
 		var Tyear = (year-2000);
 		filedate = year + "" + month + "" + daym + "-" + hours + "" + min + "" + sec;
+		isodate = year + "-" + month + "-" + daym;
 		tinydate = Tyear + "" + month + "" + daym + "" + hours + "" + min + "" + sec;
 		SQLdate = year + "-" + month + "-" + daym + " " + hours + ":" + min + ":" + sec;
 		document.getElementById("status").innerHTML = year + "-" + month + "-" + daym + " " + hours + ":" + min + ":" + sec  + display_message;

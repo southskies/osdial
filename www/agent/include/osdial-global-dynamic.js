@@ -99,6 +99,7 @@ var extension_xfer='<?=$extension?>';
 var extvalue=extension;
 var fast_refresh_rate='<?=$fast_refresh_rate?>';
 var filedate='<?=$FILE_TIME?>';
+var isodate='<?=$FILE_TIME?>';
 var flag_channels='<?=$flag_channels?>';
 var flag_string='<?=$flag_string?>';
 var get_call_launch='<?=$get_call_launch?>';
