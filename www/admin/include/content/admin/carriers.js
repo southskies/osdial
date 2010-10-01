@@ -23,6 +23,7 @@ var dialplan =
 	"\n"+
 	"; Format international number (add default prefix).\n"+
 	"exten => _011.,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)\n"+
+	"exten => _00.,1,Goto(<DEFAULT_PREFIX>011${EXTEN:2},1)\n"+
 	"\n"+
 	"\n"+
 	"; Dial long distance number (format correct).\n"+
@@ -30,6 +31,7 @@ var dialplan =
 	"\n"+
 	"; Dial an international number (if allowed).\n"+
 	"exten => _X011.,1,GotoIf($[\"<ALLOW_INTERNATIONAL>\" = \"Y\"]?setcid${EXTEN},1)\n"+
+	"exten => _X00.,1,Goto(${EXTEN:0:1}011${EXTEN:3},1)\n"+
 	"\n"+
 	"\n"+
 	"; Make sure callerid is set.\n"+
