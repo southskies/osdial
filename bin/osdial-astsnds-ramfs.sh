@@ -29,6 +29,16 @@ ASTDIR=/var/lib/asterisk
 
 RAMMNT=`mount | grep "${RAMDIR}"`
 
+if [ -d "${ASTDIR}/sounds.ramfs" -a -d "${ASTDIR}/sounds" -a ! -L "${ASTDIR}/sounds"]; then
+	# Update our sound files on the harddisk and remove sounds directory..
+	[ $DB -gt 0 ] && echo -e "\nMerge duplicate sounds directories." || :
+	if [ -L "${ASTDIR}/sounds/sounds"]; then
+		rm -f ${ASTDIR}/sounds/sounds
+	fi
+	cp -rf ${ASTDIR}/sounds/* ${ASTDIR}/sounds.ramfs
+	rm -rf ${ASTDIR}/sounds
+fi
+
 # RAMDIR is NOT mounted...we better put everything back.
 if [ -z "$RAMMNT" ]; then
 	if [ -d "${ASTDIR}/sounds.ramfs" ]; then
