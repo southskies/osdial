@@ -187,6 +187,11 @@ if [ $imports -lt 1 ]; then
 	#FW_BlockHost   "BadGuy1"    "222.111.222.111"      "$WAN_NET"
 
 
+	######### Blocked IPs from the VoIP Blacklist Project (voipabuse) ###
+	######### http://www.infiltrated.net/voipabuse ######################
+	FW_voipabuse
+
+
 	######### Blocked Ports - ALL Hosts #################################
 	#FW_BlockPort  "LABEL"  "PORTS"     "PROTCOL"  "DEST_NET"
 	FW_BlockPort   "NETBIOS"  "137:139"   "all"      "$WAN_NET"
@@ -496,6 +501,7 @@ FW_FinishChains() {
 	IPT "-A trust_int_out -j RETURN"
 	IPT "-A trust_host_in  -j RETURN"
 	IPT "-A trust_host_out -j RETURN"
+	IPT "-A voipabuse_in  -j RETURN"
 	IPT "-A block_in  -j RETURN"
 	IPT "-A block_out -j RETURN"
 	IPT "-A open_in   -j RETURN"
@@ -575,6 +581,12 @@ FW_TrustNS() {
 }
 
 
+FW_voipabuse() {
+	# The VoIP Blacklist Project (voipabuse) http://www.infiltrated.net/voipabuse/
+	for host in `wget -qO - http://www.infiltrated.net/voipabuse/addresses.txt`; do
+		IPT "-A voipabuse_in -s $host -j DROP" "Block voipabuse: $label"
+	done
+}
 
 
 # FUNCTIONS
@@ -601,7 +613,7 @@ FW_LoadTables() {
 	$IPT -P OUTPUT ACCEPT > /dev/null 2>&1
 
 	# Create our required chains.
-	for i in firewall_in firewall_out tcp_checks syn_flood fragments bad_flags icmp_checks bogon_in bogon_out trust_int_in trust_int_out trust_host_in trust_host_out block_in block_out open_in open_out dns_in dns_out; do
+	for i in firewall_in firewall_out tcp_checks syn_flood fragments bad_flags icmp_checks bogon_in bogon_out trust_int_in trust_int_out trust_host_in trust_host_out voipabuse_in block_in block_out open_in open_out dns_in dns_out; do
 		$IPT -N $i > /dev/null 2>&1
 	done
 
@@ -674,6 +686,7 @@ FW_LoadTables() {
 		IPT "-A firewall_in -i $WAN_IF -p tcp -j tcp_checks"
 		IPT "-A firewall_in -i $WAN_IF -j dns_in"
 		IPT "-A firewall_in -i $WAN_IF -j bogon_in"
+		IPT "-A firewall_in -i $WAN_IF -j voipabuse_in"
 		IPT "-A firewall_in -i $WAN_IF -j block_in"
 		IPT "-A firewall_in -i $WAN_IF -j open_in"
 
