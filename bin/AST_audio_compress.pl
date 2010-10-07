@@ -237,7 +237,7 @@ foreach(@FILES) {
 		} else {
 			$size_checks = 1;
 			if ($FILES[$i] =~ /\.wav$/i) {
-				my $lsof_ret = `/usr/sbin/lsof '$dir1/$FILES[$i]'`;
+				my $lsof_ret = `/usr/sbin/lsof -Xt '$dir1/$FILES[$i]'`;
 				$size_checks = 0 unless ($lsof_ret);
 				#if ($DBX) {print "$dir1/$FILES[$i] $size_checks\n";}
 			}

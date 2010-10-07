@@ -102,7 +102,7 @@ foreach my $file (@files) {
 			}
 		} else {
 			$size_checks = 1;
-			my $lsof_ret = `/usr/sbin/lsof '$rdir/$file'`;
+			my $lsof_ret = `/usr/sbin/lsof -Xt '$rdir/$file'`;
 			$size_checks = 0 unless ($lsof_ret);
 		}
 

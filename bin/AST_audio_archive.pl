@@ -238,22 +238,26 @@ foreach(@FILES)
 		{
 
 		my $size_checks = 10;
-		if ($use_size_checks) {
-			foreach (1..$size_checks) {
-				$size1 = (-s "$dir2/$FILES[$i]");
-				if ($DBX) {print "$FILES[$i] $size1\n";}
-				usleep(1000000/$cps);
-				#sleep(1/$cps);
-				$size2 = (-s "$dir2/$FILES[$i]");
-				if ($DBX) {print "$FILES[$i] $size2\n\n";}
-				if (($size1 eq $size2)) {
-					$size_checks--;
-				}
-			}
+		if ( -e "/var/spool/asterisk/record_cache" ) {
+			$size_checks = 0;
 		} else {
-			$size_checks = 1;
-			my $lsof_ret = `/usr/sbin/lsof '$dir2/$FILES[$i]'`;
-			$size_checks = 0 unless ($lsof_ret);
+			if ($use_size_checks) {
+				foreach (1..$size_checks) {
+					$size1 = (-s "$dir2/$FILES[$i]");
+					if ($DBX) {print "$FILES[$i] $size1\n";}
+					usleep(1000000/$cps);
+					#sleep(1/$cps);
+					$size2 = (-s "$dir2/$FILES[$i]");
+					if ($DBX) {print "$FILES[$i] $size2\n\n";}
+					if (($size1 eq $size2)) {
+						$size_checks--;
+					}
+				}
+			} else {
+				$size_checks = 1;
+				my $lsof_ret = `/usr/sbin/lsof -Xt '$dir2/$FILES[$i]'`;
+				$size_checks = 0 unless ($lsof_ret);
+			}
 		}
 
 		if ( ($size_checks == 0) )
