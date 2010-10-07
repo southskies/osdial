@@ -165,30 +165,31 @@ start() {
 
 			# Mount tmpfs...
 			mkdir -p ${OSDIAL_TMPFS_PATH} > /dev/null 2>&1
-			mount -t tmpfs -o size=${OSDIAL_TMPFS_SIZE},mode=777 tmpfs ${OSDIAL_TMPFS_PATH}
+			mount -t tmpfs -o size=${OSDIAL_TMPFS_SIZE},mode=777 tmpfs ${OSDIAL_TMPFS_PATH} > /dev/null 2>&1
 			mkdir -p ${OSDIAL_TMPFS_PATH}/VDmonitor > /dev/null 2>&1
 			mkdir -p ${OSDIAL_TMPFS_PATH}/record_cache > /dev/null 2>&1
-			chown -R asterisk:asterisk ${OSDIAL_TMPFS_PATH}
 			if [ ! -L "/var/spool/asterisk/VDmonitor" ]; then
 				if [ -d "/var/spool/asterisk/VDmonitor" ]; then
 					monls=`ls /var/spool/asterisk/VDmonitor | wc -l`
 					if [ ${monls} -gt 0 ]; then
-						mv /var/spool/asterisk/VDmonitor/* ${OSDIAL_TMPFS_PATH}/VDmonitor
+						mv /var/spool/asterisk/VDmonitor/* ${OSDIAL_TMPFS_PATH}/VDmonitor > /dev/null 2>&1
 					fi
-					rm -rf /var/spool/asterisk/VDmonitor
+					rm -rf /var/spool/asterisk/VDmonitor > /dev/null 2>&1
 				fi
-				ln -s ${OSDIAL_TMPFS_PATH} /var/spool/asterisk/VDmonitor
+				ln -s ${OSDIAL_TMPFS_PATH}/VDmonitor /var/spool/asterisk/VDmonitor > /dev/null 2>&1
 			fi
 			if [ ! -L "/var/spool/asterisk/record_cache" ]; then
 				if [ -d "/var/spool/asterisk/record_cache" ]; then
 					monls=`ls /var/spool/asterisk/record_cache | wc -l`
 					if [ ${monls} -gt 0 ]; then
-						mv /var/spool/asterisk/record_cache/* ${OSDIAL_TMPFS_PATH}/record_cache
+						mv /var/spool/asterisk/record_cache/* ${OSDIAL_TMPFS_PATH}/record_cache > /dev/null 2>&1
 					fi
-					rm -rf /var/spool/asterisk/record_cache
+					rm -rf /var/spool/asterisk/record_cache > /dev/null 2>&1
 				fi
-				ln -s ${OSDIAL_TMPFS_PATH} /var/spool/asterisk/record_cache
+				ln -s ${OSDIAL_TMPFS_PATH}/record_cache /var/spool/asterisk/record_cache > /dev/null 2>&1
 			fi
+			chown -R asterisk:asterisk ${OSDIAL_TMPFS_PATH} > /dev/null 2>&1
+			chown -R asterisk:asterisk /var/spool/asterisk > /dev/null 2>&1
 		fi
 	fi
 
@@ -209,9 +210,9 @@ start() {
 	fi
 
 	# Processes to run before services start
-	/usr/bin/setterm -blank
-	/usr/bin/setterm -powersave off
-	/usr/bin/setterm -powerdown
+	/usr/bin/setterm -blank > /dev/null 2>&1
+	/usr/bin/setterm -powersave off > /dev/null 2>&1
+	/usr/bin/setterm -powerdown > /dev/null 2>&1
 	#/opt/osdial/bin/ADMIN_restart_roll_logs.pl > /dev/null 2>&1
 	/opt/osdial/bin/AST_ntp_update.sh > /dev/null 2>&1 &
 	/opt/osdial/bin/ADMIN_area_code_populate.pl > /dev/null 2>&1 &
@@ -223,33 +224,21 @@ start() {
 }
 
 stop() {
-	if [ -L "/var/spool/asterisk/VDmonitor" ]; then
-		rm -f /var/spool/asterisk/VDmonitor > /dev/null 2>&1
-	fi
-	if [ ! -d "/var/spool/asterisk/VDmonitor" ]; then
-		mkdir -p /var/spool/asterisk/VDmonitor > /dev/null 2>&1
-	fi
+	if [ -L "/var/spool/asterisk/VDmonitor" ]; then rm -f /var/spool/asterisk/VDmonitor > /dev/null 2>&1; fi
+	if [ ! -d "/var/spool/asterisk/VDmonitor" ]; then mkdir -p /var/spool/asterisk/VDmonitor > /dev/null 2>&1; fi
 	if [ -d "/mnt/ramdisk/VDmonitor" ]; then
 		monls=`ls /mnt/ramdisk/VDmonitor | wc -l`
-		if [ ${monls} -gt 0 ]; then
-			mv /mnt/ramdisk/VDmonitor/* /var/spool/asterisk/VDmonitor > /dev/null 2>&1
-		fi
+		if [ ${monls} -gt 0 ]; then mv /mnt/ramdisk/VDmonitor/* /var/spool/asterisk/VDmonitor > /dev/null 2>&1; fi
 	fi
-	chown -R asterisk:asterisk /var/spool/asterisk/VDmonitor > /dev/null 2>&1
 
-	if [ -L "/var/spool/asterisk/record_cache" ]; then
-		rm -f /var/spool/asterisk/record_cache > /dev/null 2>&1
-	fi
-	if [ ! -d "/var/spool/asterisk/record_cache" ]; then
-		mkdir -p /var/spool/asterisk/record_cache > /dev/null 2>&1
-	fi
+	if [ -L "/var/spool/asterisk/record_cache" ]; then rm -f /var/spool/asterisk/record_cache > /dev/null 2>&1; fi
+	if [ ! -d "/var/spool/asterisk/record_cache" ]; then mkdir -p /var/spool/asterisk/record_cache > /dev/null 2>&1; fi
 	if [ -d "/mnt/ramdisk/record_cache" ]; then
 		monls=`ls /mnt/ramdisk/record_cache | wc -l`
-		if [ ${monls} -gt 0 ]; then
-			mv /mnt/ramdisk/record_cache/* /var/spool/asterisk/record_cache > /dev/null 2>&1
-		fi
+		if [ ${monls} -gt 0 ]; then mv /mnt/ramdisk/record_cache/* /var/spool/asterisk/record_cache > /dev/null 2>&1; fi
 	fi
-	chown -R asterisk:asterisk /var/spool/asterisk/record_cache > /dev/null 2>&1
+	chown -R asterisk:asterisk /mnt/ramdisk > /dev/null 2>&1
+	chown -R asterisk:asterisk /var/spool/asterisk > /dev/null 2>&1
 
 	/opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1 &
 	echo
