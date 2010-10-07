@@ -165,7 +165,8 @@ start() {
 
 			# Mount tmpfs...
 			mkdir -p ${OSDIAL_TMPFS_PATH} > /dev/null 2>&1
-			mount -t tmpfs -o size=${OSDIAL_TMPFS_SIZE},mode=777 tmpfs ${OSDIAL_TMPFS_PATH} > /dev/null 2>&1
+			mocnt=`mount | grep "tmpfs on ${OSDIAL_TMPFS_PATH} type tmpfs" | wc -l`
+			if [ ${mocnt} -eq 0 ]; then mount -t tmpfs -o size=${OSDIAL_TMPFS_SIZE},mode=777 tmpfs ${OSDIAL_TMPFS_PATH} > /dev/null 2>&1; fi
 			mkdir -p ${OSDIAL_TMPFS_PATH}/VDmonitor > /dev/null 2>&1
 			mkdir -p ${OSDIAL_TMPFS_PATH}/record_cache > /dev/null 2>&1
 			if [ ! -L "/var/spool/asterisk/VDmonitor" ]; then
