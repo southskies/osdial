@@ -461,6 +461,8 @@ if ($call_handle_method =~ /CLOSER/) {
 	$sthA->finish();
 	if ($aryA[0] == 0) {
 		if ($AGILOG) {$agi_string = "VDAD osdial_lists entry missing, adding |$list_id|";   &agi_output;}
+		$incamp = 'TEST';
+		$incamp = '101TEST' if ($multicomp);
 		$stmtA = "INSERT INTO osdial_lists SET list_id='$list_id',list_name='AutoLeads Inbound $list_id',list_description='AutoLeads Created From Ingroup, should not be active.',campaign_id='TEST',active='N';";
 		$affected_rows = $dbhA->do($stmtA);
 	}
