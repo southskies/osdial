@@ -418,7 +418,7 @@ while($one_day_interval > 0)
 							$callid = $ame{'callerid'};
 							$callid = $ame{'accountcode'} if ($ame{'accountcode'} ne "");
 							$uniqueid = $ame{'uniqueid'};
-							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid' LIMIT 1;";
 							my $affected_rows = $dbhA->do($stmtA);
 							if($DB){print "|$affected_rows RINGINGs updated|$stmtA|\n";}
 						}
