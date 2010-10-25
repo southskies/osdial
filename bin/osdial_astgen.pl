@@ -110,14 +110,20 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 	}
 
 	#Fix some version related config differences
+	my $modfile = "/etc/asterisk/modules.conf";
+	$modfile = $osdial->{PATHdocs} . "/conf_examples/modules.conf" if (-s $modfile < 250);
+
+	my $oefile = "/etc/asterisk/osdial_extensions.conf";
+	$oefile = $osdial->{PATHdocs} . "/conf_examples/osdial_extensions.conf" if (-s $oefile < 250);
+
 	my($oedata);
-	open(OE, "/etc/asterisk/osdial_extensions.conf");
+	open(OE, $oefile);
 	while (my $oeline = <OE>) {
 		$oedata .= $oeline;
 	}
 	close(OE);
 	my($moddata);
-	open(MOD, "/etc/asterisk/modules.conf");
+	open(MOD, $modfile);
 	while (my $modline = <MOD>) {
 		$moddata .= $modline;
 	}
