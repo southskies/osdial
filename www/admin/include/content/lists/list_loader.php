@@ -120,6 +120,7 @@ if ($ADD==122) {
         echo "                              <option selected value=\"DUPLIST\">CHECK FOR DUPLICATES BY PHONE IN LIST ID</option>\n";
         echo "                              <option value=\"DUPCAMP\">CHECK FOR DUPLICATES BY PHONE IN ALL CAMPAIGN LISTS</option>\n";
         echo "                              <option value=\"DUPCAMPACT\">CHECK FOR DUPLICATES BY PHONE IN ONLY ACTIVE CAMPAIGN LISTS</option>\n";
+        echo "                              <option value=\"DUPCAMPEXTKEY\">CHECK EXTERNAL KEY DUPS IN CAMPAIGN, ADD UNIQUE PHONES TO DUPS</option>\n";
         echo "                              <option value=\"DUPSYS\">CHECK FOR DUPLICATES BY PHONE IN ALL LISTS ON SYSTEM</option>\n";
         echo "                              <option value=\"DUPSYSACT\">CHECK FOR DUPLICATES BY PHONE IN ONLY ACTIVE LISTS ON SYSTEM</option>\n";
         echo "                          </select>\n";
@@ -208,6 +209,14 @@ if ($ADD==122) {
             ob_flush();
             flush();
 
+            $affap4 = get_first_record($link, 'osdial_campaign_forms', '*', "name='AFFAP4'");
+            $affap5 = get_first_record($link, 'osdial_campaign_forms', '*', "name='AFFAP5'");
+            $affap6 = get_first_record($link, 'osdial_campaign_forms', '*', "name='AFFAP6'");
+            $affap7 = get_first_record($link, 'osdial_campaign_forms', '*', "name='AFFAP7'");
+            $affap8 = get_first_record($link, 'osdial_campaign_forms', '*', "name='AFFAP8'");
+            $affap9 = get_first_record($link, 'osdial_campaign_forms', '*', "name='AFFAP9'");
+            $affap10 = get_first_record($link, 'osdial_campaign_forms', '*', "name='AFFAP10'");
+
 			while($row=fgetcsv($file, 1000, $delimiter)) {
 				$pulldate=date("Y-m-d H:i:s");
 				$entry_date =			"$pulldate";
@@ -267,6 +276,12 @@ if ($ADD==122) {
                     $dup_syslist = '';
                     $dup_syslist_active = '';
 
+                    $tmpdupcheck=0;
+                    if (preg_match('/^DUPCAMPEXTKEY$/i',$dupcheck) and $external_key=='') {
+                        $dupcheck='DUPCAMP';
+                        $tmpdupcheck++;
+                    }
+
                     if (preg_match('/^DUPCAMP/i',$dupcheck)) {
                         $camp_lists = get_krh($link, 'osdial_lists', 'list_id,active', '', sprintf("campaign_id='%s'",mres($list_camp['campaign_id'])), '');
                         foreach ($camp_lists as $clist) {
@@ -305,12 +320,158 @@ if ($ADD==122) {
                         $dup_where = sprintf("phone_number='%s' AND list_id='%s'",mres($phone_number),mres($list_id));
                     }
 
+                    # Check for a duplicate external key, if found add new phone number to list.
+                    if (preg_match('/^DUPCAMPEXTKEY$/i',$dupcheck)) {
+                        $ext_where = sprintf("external_key='%s' AND list_id IN (%s)",mres($external_key),$dup_list);
+                        $ext = get_first_record($link, 'osdial_list', 'lead_id,list_id,phone_number,alt_phone,address3', $ext_where);
+                        if ($ext['lead_id'] > 0) {
+                            $dup_lead++;
+                            $noap4=0;
+                            $noap5=0;
+                            $noap6=0;
+                            $noap7=0;
+                            $noap8=0;
+                            $noap9=0;
+                            $noap10=0;
+                            $ap4 = get_first_record($link, 'osdial_list_fields', '*', sprintf("lead_id='%s' AND field_id='%s'",mres($ext['lead_id']),mres($affap4['id'])));
+                            if (!is_array($ap4)) {
+                                $ap4['value'] = '';
+                                $noap4=1;
+                            }
+                            $ap5 = get_first_record($link, 'osdial_list_fields', '*', sprintf("lead_id='%s' AND field_id='%s'",mres($ext['lead_id']),mres($affap5['id'])));
+                            if (!is_array($ap5)) {
+                                $ap5['value'] = '';
+                                $noap5=1;
+                            }
+                            $ap6 = get_first_record($link, 'osdial_list_fields', '*', sprintf("lead_id='%s' AND field_id='%s'",mres($ext['lead_id']),mres($affap6['id'])));
+                            if (!is_array($ap6)) {
+                                $ap6['value'] = '';
+                                $noap6=1;
+                            }
+                            $ap7 = get_first_record($link, 'osdial_list_fields', '*', sprintf("lead_id='%s' AND field_id='%s'",mres($ext['lead_id']),mres($affap7['id'])));
+                            if (!is_array($ap7)) {
+                                $ap7['value'] = '';
+                                $noap7=1;
+                            }
+                            $ap8 = get_first_record($link, 'osdial_list_fields', '*', sprintf("lead_id='%s' AND field_id='%s'",mres($ext['lead_id']),mres($affap8['id'])));
+                            if (!is_array($ap8)) {
+                                $ap8['value'] = '';
+                                $noap8=1;
+                            }
+                            $ap9 = get_first_record($link, 'osdial_list_fields', '*', sprintf("lead_id='%s' AND field_id='%s'",mres($ext['lead_id']),mres($affap9['id'])));
+                            if (!is_array($ap9)) {
+                                $ap9['value'] = '';
+                                $noap9=1;
+                            }
+                            $ap10= get_first_record($link, 'osdial_list_fields', '*', sprintf("lead_id='%s' AND field_id='%s'",mres($ext['lead_id']),mres($affap10['id'])));
+                            if (!is_array($ap10)) {
+                                $ap10['value'] = '';
+                                $noap10=1;
+                            }
+                    
+                            if ($phone_number == $ext['phone_number']) {
+                                $dup++;
+                            } elseif ($phone_number == $ext['alt_phone']) {
+                                $dup++;
+                            } elseif ($phone_number == $ext['address3']) {
+                                $dup++;
+                            } elseif ($phone_number == $ap4['value']) {
+                                $dup++;
+                            } elseif ($phone_number == $ap5['value']) {
+                                $dup++;
+                            } elseif ($phone_number == $ap6['value']) {
+                                $dup++;
+                            } elseif ($phone_number == $ap7['value']) {
+                                $dup++;
+                            } elseif ($phone_number == $ap8['value']) {
+                                $dup++;
+                            } elseif ($phone_number == $ap9['value']) {
+                                $dup++;
+                            } elseif ($phone_number == $ap10['value']) {
+                                $dup++;
+                            } else {
+                                $good++;
+                                $affcnt++;
+                                if ($ext['alt_phone'] == "") {
+                                    $stmt = sprintf("UPDATE osdial_list SET alt_phone='%s' WHERE lead_id='%s';", mres($phone_number), mres($ext['lead_id']));
+						            $rslt=mysql_query($stmt, $link);
+                                } elseif ($ext['address3'] == "") {
+                                    $stmt = sprintf("UPDATE osdial_list SET address3='%s' WHERE lead_id='%s';", mres($phone_number), mres($ext['lead_id']));
+						            $rslt=mysql_query($stmt, $link);
+                                } elseif ($ap4['value'] == "") {
+                                    if ($noap4) {
+                                        $stmt = sprintf("INSERT INTO osdial_list_fields SET lead_id='%s',field_id='%s',value='%s';",mres($ext['lead_id']),mres($affap4['id']),mres($phone_number));
+						                $rslt=mysql_query($stmt, $link);
+                                    } else {
+                                        $stmt = sprintf("UPDATE osdial_list_fields SET value='%s' WHERE lead_id='%s' AND field_id='%s';",mres($phone_number),mres($ext['lead_id']),mres($affap4['id']));
+						                $rslt=mysql_query($stmt, $link);
+                                    }
+                                } elseif ($ap5['value'] == "") {
+                                    if ($noap5) {
+                                        $stmt = sprintf("INSERT INTO osdial_list_fields SET lead_id='%s',field_id='%s',value='%s';",mres($ext['lead_id']),mres($affap5['id']),mres($phone_number));
+						                $rslt=mysql_query($stmt, $link);
+                                    } else {
+                                        $stmt = sprintf("UPDATE osdial_list_fields SET value='%s' WHERE lead_id='%s' AND field_id='%s';",mres($phone_number),mres($ext['lead_id']),mres($affap5['id']));
+						                $rslt=mysql_query($stmt, $link);
+                                    }
+                                } elseif ($ap6['value'] == "") {
+                                    if ($noap6) {
+                                        $stmt = sprintf("INSERT INTO osdial_list_fields SET lead_id='%s',field_id='%s',value='%s';",mres($ext['lead_id']),mres($affap6['id']),mres($phone_number));
+						                $rslt=mysql_query($stmt, $link);
+                                    } else {
+                                        $stmt = sprintf("UPDATE osdial_list_fields SET value='%s' WHERE lead_id='%s' AND field_id='%s';",mres($phone_number),mres($ext['lead_id']),mres($affap6['id']));
+						                $rslt=mysql_query($stmt, $link);
+                                    }
+                                } elseif ($ap7['value'] == "") {
+                                    if ($noap7) {
+                                        $stmt = sprintf("INSERT INTO osdial_list_fields SET lead_id='%s',field_id='%s',value='%s';",mres($ext['lead_id']),mres($affap7['id']),mres($phone_number));
+						                $rslt=mysql_query($stmt, $link);
+                                    } else {
+                                        $stmt = sprintf("UPDATE osdial_list_fields SET value='%s' WHERE lead_id='%s' AND field_id='%s';",mres($phone_number),mres($ext['lead_id']),mres($affap7['id']));
+						                $rslt=mysql_query($stmt, $link);
+                                    }
+                                } elseif ($ap8['value'] == "") {
+                                    if ($noap8) {
+                                        $stmt = sprintf("INSERT INTO osdial_list_fields SET lead_id='%s',field_id='%s',value='%s';",mres($ext['lead_id']),mres($affap8['id']),mres($phone_number));
+						                $rslt=mysql_query($stmt, $link);
+                                    } else {
+                                        $stmt = sprintf("UPDATE osdial_list_fields SET value='%s' WHERE lead_id='%s' AND field_id='%s';",mres($phone_number),mres($ext['lead_id']),mres($affap8['id']));
+						                $rslt=mysql_query($stmt, $link);
+                                    }
+                                } elseif ($ap9['value'] == "") {
+                                    if ($noap9) {
+                                        $stmt = sprintf("INSERT INTO osdial_list_fields SET lead_id='%s',field_id='%s',value='%s';",mres($ext['lead_id']),mres($affap9['id']),mres($phone_number));
+						                $rslt=mysql_query($stmt, $link);
+                                    } else {
+                                        $stmt = sprintf("UPDATE osdial_list_fields SET value='%s' WHERE lead_id='%s' AND field_id='%s';",mres($phone_number),mres($ext['lead_id']),mres($affap9['id']));
+						                $rslt=mysql_query($stmt, $link);
+                                    }
+                                } elseif ($ap10['value'] == "") {
+                                    if ($noap10) {
+                                        $stmt = sprintf("INSERT INTO osdial_list_fields SET lead_id='%s',field_id='%s',value='%s';",mres($ext['lead_id']),mres($affap10['id']),mres($phone_number));
+						                $rslt=mysql_query($stmt, $link);
+                                    } else {
+                                        $stmt = sprintf("UPDATE osdial_list_fields SET value='%s' WHERE lead_id='%s' AND field_id='%s';",mres($phone_number),mres($ext['lead_id']),mres($affap10['id']));
+						                $rslt=mysql_query($stmt, $link);
+                                    }
+                                } else {
+                                    $bad++;
+                                    $good--;
+                                    $affcnt--;
+                                }
+                            }
+                        }
+
                     # Check for the duplicate.
-                    $gfr_dup = get_first_record($link, 'osdial_list', 'lead_id,list_id', $dup_where);
-                    if ($gfr_dup['lead_id'] > 0) {
-                        $dup_lead++;
-                        $dup++;
+                    } else {
+                        $gfr_dup = get_first_record($link, 'osdial_list', 'lead_id,list_id', $dup_where);
+                        if ($gfr_dup['lead_id'] > 0) {
+                            $dup_lead++;
+                            $dup++;
+                        }
                     }
+
+                    if ($tmpdupcheck) $dupcheck='DUPCAMPEXTKEY';
                 }
 
 
@@ -705,15 +866,15 @@ if ($ADD==122) {
 				for ($i=0; $i<mysql_num_fields($rslt); $i++) {
 					echo "  <tr class=\"row font1\" " . bgcolor($i) . ">\n";
                     if (mysql_field_name($rslt, $i) == "phone_code") {
-					    echo "    <td align=center>PHONE (country) CODE:</td>\n";
+					    echo "    <td align=center>PHONE&nbsp;(country)&nbsp;CODE:</td>\n";
                     } elseif (mysql_field_name($rslt, $i) == "country_code") {
-					    echo "    <td align=center>COUNTRY (abbreviation):</td>\n";
+					    echo "    <td align=center>COUNTRY&nbsp;(abbreviation):</td>\n";
                     } elseif (mysql_field_name($rslt, $i) == "alt_phone") {
-					    echo "    <td align=center>ALT PHONE (phone number 2):</td>\n";
+					    echo "    <td align=center>ALT PHONE&nbsp;(phone&nbsp;number&nbsp;2):</td>\n";
                     } elseif (mysql_field_name($rslt, $i) == "address3") {
-					    echo "    <td align=center>ADDRESS3 (phone number 3):</td>\n";
+					    echo "    <td align=center>ADDRESS3&nbsp;(phone&nbsp;number&nbsp;3):</td>\n";
                     } else {
-					    echo "    <td align=center>".strtoupper(eregi_replace("_", " ", mysql_field_name($rslt, $i))).": </td>\n";
+					    echo "    <td align=center>".eregi_replace("_", "&nbsp;", strtoupper(mysql_field_name($rslt, $i))).": </td>\n";
                     }
 					echo "    <td align=center class=tabinput>\n";
 					if (mysql_field_name($rslt, $i) == "list_id" and $list_id_override != "") {
@@ -763,25 +924,25 @@ if ($ADD==122) {
                     foreach ($afmaps as $k => $v) {
 					    echo "  <tr class=\"row font1\" " . bgcolor($o) . ">\n";
 					    echo "    <td align=left>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-                        echo strtoupper(eregi_replace("_", " ", $v));
+                        echo eregi_replace("_", "&nbsp;", strtoupper($v));
                         if ($v=='AFFAP_AFFAP1') {
-                            echo " (phone number 4)";
+                            echo "&nbsp;(phone&nbsp;number&nbsp;4)";
                         } elseif ($v=='AFFAP_AFFAP2') {
-                            echo " (phone number 5)";
+                            echo "&nbsp;(phone&nbsp;number&nbsp;5)";
                         } elseif ($v=='AFFAP_AFFAP3') {
-                            echo " (phone number 6)";
+                            echo "&nbsp;(phone&nbsp;number&nbsp;6)";
                         } elseif ($v=='AFFAP_AFFAP4') {
-                            echo " (phone number 7)";
+                            echo "&nbsp;(phone&nbsp;number&nbsp;7)";
                         } elseif ($v=='AFFAP_AFFAP5') {
-                            echo " (phone number 8)";
+                            echo "&nbsp;(phone&nbsp;number&nbsp;8)";
                         } elseif ($v=='AFFAP_AFFAP6') {
-                            echo " (phone number 9)";
+                            echo "&nbsp;(phone&nbsp;number&nbsp;9)";
                         } elseif ($v=='AFFAP_AFFAP7') {
-                            echo " (phone number 10)";
+                            echo "&nbsp;(phone&nbsp;number&nbsp;10)";
                         } elseif ($v=='AFFAP_AFFAP8') {
-                            echo " (phone number 11)";
+                            echo "&nbsp;(phone&nbsp;number&nbsp;11)";
                         } elseif ($v=='AFFAP_AFFAP9') {
-                            echo " (phone number 12)";
+                            echo "&nbsp;(phone&nbsp;number&nbsp;12)";
                         }
                         echo ": ";
                         echo "</td>\n";
