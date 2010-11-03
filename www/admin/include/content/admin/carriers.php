@@ -257,7 +257,7 @@ if ($ADD=="2carrier") {
                     $stmt=sprintf("INSERT INTO osdial_carrier_dids SET carrier_id='%s',did='%s',did_action='%s',phone='%s',extension='%s',extension_context='%s',voicemail='%s',ingroup='%s'," .
                         "server_allocation='%s',park_file='%s',lookup_method='%s',initial_status='%s',default_list_id='%s',default_phone_code='%s',search_campaign='%s';",
                         mres($carrier_id),mres($did),mres($did_action),mres($did_phone),mres($did_extension),mres($did_extension_context),mres($did_voicemail),mres($did_ingroup),mres($did_server_allocation),
-                        mres($did_park_file),mres($did_lookup_method),mres($did_initial_status),mres($did_default_list_id),mres($did_default_phone_code),mres($did_search_campagin));
+                        mres($did_park_file),mres($did_lookup_method),mres($did_initial_status),mres($did_default_list_id),mres($did_default_phone_code),mres($did_search_campaign));
                     $rslt=mysql_query($stmt, $link);
                     $did_id=mysql_insert_id($link);
                     echo "<br><b><font color=$default_text>DID ADDED: $carrier_id - $did_id - $did</font></b>\n";
@@ -357,7 +357,7 @@ if ($ADD=="4carrier") {
                         "default_phone_code='%s',search_campaign='%s' WHERE id='%s' AND carrier_id='%s';",
                         mres($did),mres($did_action),mres($did_phone),mres($did_extension),mres($did_extension_context),mres($did_voicemail),mres($did_ingroup),mres($did_server_allocation),
                         mres($did_park_file),mres($did_lookup_method),mres($did_initial_status),mres($did_default_list_id),
-                        mres($did_default_phone_code),mres($did_search_campagin),mres($did_id),mres($carrier_id));
+                        mres($did_default_phone_code),mres($did_search_campaign),mres($did_id),mres($carrier_id));
                     $rslt=mysql_query($stmt, $link);
                     $aclog='DID';
                 }
