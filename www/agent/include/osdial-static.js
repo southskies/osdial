@@ -615,6 +615,12 @@
 				var REGrecTINYDATE = new RegExp("TINYDATE","g");
 				var REGrecEPOCH = new RegExp("EPOCH","g");
 				var REGrecAGENT = new RegExp("AGENT","g");
+				var REGrecLASTNAME = new RegExp("LASTNAME","g");
+				var REGrecFIRSTNAME = new RegExp("FIRSTNAME","g");
+				var reclastname = document.osdial_form.last_name.value;
+				if (reclastname=='') reclastname='Unknown';
+				var recfirstname = document.osdial_form.first_name.value;
+				if (recfirstname=='') recfirstname='Unknown';
 				filename = campaign_rec_filename;
 				filename = filename.replace(REGrecCAMPAIGN, campaign);
 				filename = filename.replace(REGrecCUSTPHONE, lead_dial_number);
@@ -622,6 +628,8 @@
 				filename = filename.replace(REGrecISODATE, isodate);
 				filename = filename.replace(REGrecEPOCH, epoch_sec);
 				filename = filename.replace(REGrecAGENT, user);
+				filename = filename.replace(REGrecLASTNAME, reclastname);
+				filename = filename.replace(REGrecFIRSTNAME, recfirstname);
 				//filename = filedate + "_" + user_abb;
 				var query_recording_exten = recording_exten;
 				var channelrec = "Local/" + conf_silent_prefix + '' + taskconfrec + "@" + ext_context;

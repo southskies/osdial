@@ -522,7 +522,7 @@ echo "<tr><td><FONT FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=2>
 <BR>
 <A NAME="osdial_campaigns-campaign_rec_filename">
 <BR>
-<B>Campaign Rec Filename -</B> This field allows you to customize the name of the recording when Campaign recording is ONDEMAND or ALLCALLS. The allowed variables are CAMPAIGN CUSTPHONE FULLDATE ISODATE TINYDATE EPOCH AGENT. The default is FULLDATE_AGENT and would look like this 20051020-103108_6666. Another example is CAMPAIGN_TINYDATE_CUSTPHONE which would look like this TESTCAMP_51020103108_3125551212. 50 char max.
+<B>Campaign Rec Filename -</B> This field allows you to customize the name of the recording when Campaign recording is ONDEMAND or ALLCALLS. The allowed variables are CAMPAIGN CUSTPHONE FULLDATE ISODATE TINYDATE EPOCH AGENT FIRSTNAME LASTNAME. The default is FULLDATE_AGENT and would look like this 20051020-103108_6666. Another example is CAMPAIGN_TINYDATE_CUSTPHONE which would look like this TESTCAMP_51020103108_3125551212. 50 char max.
 
 <BR>
 <A NAME="osdial_campaigns-allcalls_delay">
