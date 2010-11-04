@@ -57,6 +57,7 @@ $osd->agi_output("+++++ VDAD START : |$CIDlead_id|$now_date|" . $osd->AGI->{prio
 
 if ($osd->AGI->{channel} =~ /Local/i) {
 	$osd->agi_output("+++++ VDAD START LOCAL CHANNEL: EXITING- " . $osd->AGI->{priority});
+	$osd->AGI->stream_file("sip-silence");
 	sleep(1) if ($osd->AGI->{priority} > 2);
 	exit;
 }
