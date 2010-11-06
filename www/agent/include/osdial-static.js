@@ -1223,8 +1223,7 @@
 					if (MDlookCID == "NO") {
 						if (dial_timedout == 0) {
 							MD_ring_secondS++;
-							var dispnum = lead_dial_number;
-							var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
+							var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
 
 							document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 							document.getElementById("MainStatuSSpan").innerHTML = " Calling: " + status_display_number + "&nbsp;&nbsp;<font color=" + status_bg + ">UID: " + CIDcheck + "</font><font color=" + status_intense_color + " style='text-decoration:blink;'><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
@@ -1238,8 +1237,7 @@
 							if ( (XDchannel.match(regMDL)) && (asterisk_version != '1.0.8') && (asterisk_version != '1.0.9') && (MD_ring_secondS < 10) ) {
 								// bad grab of Local channel, try again
 								MD_ring_secondS++;
-								var dispnum = lead_dial_number;
-								var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
+								var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
 								document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 								document.getElementById("MainStatuSSpan").innerHTML = " Calling: " + status_display_number + "&nbsp;&nbsp;<font color=" + status_bg + ">UID: " + CIDcheck + "</font><font color=" + status_intense_color + " style='text-decoration:blink;'><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
 							} else {
@@ -1274,8 +1272,7 @@
 							if ( (MDchannel.match(regMDL)) && (asterisk_version != '1.0.8') && (asterisk_version != '1.0.9') ) {
 								// bad grab of Local channel, try again
 								MD_ring_secondS++;
-								var dispnum = lead_dial_number;
-								var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
+								var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
 
 								document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 								document.getElementById("MainStatuSSpan").innerHTML = " Calling: " + status_display_number + "&nbsp;&nbsp;<font color=" + status_bg + ">UID: " + CIDcheck + "</font><font color=" + status_intense_color + " style='text-decoration:blink;'><b>Waiting for Ring... " + MD_ring_secondS + " seconds<b></font>";
@@ -1295,8 +1292,10 @@
 								VD_live_call_secondS = 0;
 
 								MD_channel_look=0;
-								var dispnum = lead_dial_number;
-								var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
+								//var dispnum = lead_dial_number;
+								var dispnum = dialed_number;
+								var status_display_number = dispnum;
+								if (dispnum.length==10) status_display_number = '('+dispnum.substring(0,3)+')'+dispnum.substring(3,6)+'-'+dispnum.substring(6,10);
 								document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 
 								document.getElementById("MainStatuSSpan").innerHTML = " Called " + status_display_number + "&nbsp;&nbsp;&nbsp;&nbsp;<font color=" + status_bg + ">UID: " + CIDcheck + " &nbsp;</font>"; 
@@ -1349,8 +1348,10 @@
 			dial_timedout = 1;
 			//osdalert("Dial timed out, contact your system administrator\n",30);
 			//osdalert("Dial timed out, click Hangup and try again or dial next number.\n",30);
-			var dispnum = lead_dial_number;
-			var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
+			//var dispnum = lead_dial_number;
+			var dispnum = dialed_number;
+			var status_display_number = dispnum;
+			if (dispnum.length==10) status_display_number = '('+dispnum.substring(0,3)+')'+dispnum.substring(3,6)+'-'+dispnum.substring(6,10);
 			document.getElementById("MainStatuSSpan").innerHTML = " Attempted: " + status_display_number + "&nbsp;&nbsp;<font color=" + status_alert_color + " style='text-decoration:blink;'><b>Dial timed out, click Hangup and try again or dial next number.<b></font>";
 		}
 	}
@@ -1427,8 +1428,7 @@
 					} else {
 						MD_channel_look=1;
 
-						var dispnum = manDiaLonly_num;
-						var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
+						var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
 
 						document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 						document.getElementById("MainStatuSSpan").innerHTML = " Calling: " + status_display_number + "&nbsp;&nbsp;<font color=" + status_bg + ">UID: " + MDnextCID + "</font> Waiting for Ring...";
@@ -3629,9 +3629,8 @@ function utf8_decode(utftext) {
 						
 						emailTemplatesDisable();
 
-						lead_dial_number = document.osdial_form.phone_number.value;
-						var dispnum = document.osdial_form.phone_number.value;
-						var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
+						lead_dial_number = dialed_number;
+						var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
 
 						document.getElementById("MainStatuSSpan").style.backgroundColor = status_bg;
 						document.getElementById("MainStatuSSpan").innerHTML = " Calling: " + status_display_number + "&nbsp;&nbsp;<font color=" + status_bg+ ">UID: " + MDnextCID + "</font> &nbsp; " + man_status;
@@ -4020,12 +4019,11 @@ function utf8_decode(utftext) {
 
 							emailTemplatesDisable();
 
-							lead_dial_number = document.osdial_form.phone_number.value;
-							var dispnum = document.osdial_form.phone_number.value;
-							var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
+							lead_dial_number = dialed_number;
+							var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
 
 							document.getElementById("MainStatuSSpan").style.backgroundColor = '';
-							document.getElementById("MainStatuSSpan").innerHTML = " Outgoing: " + status_display_number + "&nbsp;&nbsp;<font color=" + status_bg + ">UID: " + CIDcheck + "</font> &nbsp; " + VDIC_fronter; 
+							document.getElementById("MainStatuSSpan").innerHTML = " Calling: " + status_display_number + "&nbsp;&nbsp;<font color=" + status_bg + ">UID: " + CIDcheck + "</font> &nbsp; " + VDIC_fronter; 
 
 							document.getElementById("RepullControl").innerHTML = "<a href=\"#\" onclick=\"RepullLeadData('all');\"><img src=\"templates/" + agent_template + "/images/vdc_RPLD_on.gif\" width=145 height=16 border=0 alt=\"Repull Lead Data\"></a>";
 
@@ -4043,8 +4041,7 @@ function utf8_decode(utftext) {
 								if (VDIC_data_VDIG[2].length > 2) {
 									document.getElementById("MainStatuSSpan").style.backgroundColor = VDIC_data_VDIG[2];
 								}
-								var dispnum = document.osdial_form.phone_number.value;
-								var status_display_number = '(' + dispnum.substring(0,3) + ')' + dispnum.substring(3,6) + '-' + dispnum.substring(6,10);
+								var status_display_number = formatPhone(document.osdial_form.phone_code.value,document.osdial_form.phone_number.value);
 
 								document.getElementById("MainStatuSSpan").innerHTML = " Incoming: " + status_display_number + " Group- " + VDIC_data_VDIG[1] + " &nbsp; " + VDIC_fronter; 
 							}
@@ -5739,3 +5736,60 @@ function utf8_decode(utftext) {
 		emailTemplatesDisable(true);
 	}
 
+
+// ###################################################################################################################################################
+// formatPhone() - Format the given number for locale (phone_code).
+	function formatPhone(phcode, phnum) {
+		var resnum=phnum;
+
+		// Strip off intl prefix
+		if (phcode.substring(0,4)=='0011' && phcode.length>4) phcode=phcode.substring(4);
+		if (phcode.substring(0,3)=='001' && phcode.length>3) phcode=phcode.substring(3);
+		if (phcode.substring(0,3)=='010' && phcode.length>3) phcode=phcode.substring(3);
+		if (phcode.substring(0,3)=='011' && phcode.length>3) phcode=phcode.substring(3);
+		if (phcode.substring(0,2)=='00') phcode=phcode.substring(2);
+
+		//Assume NorthAmerica if phcode is blank and phnum is 10 digits.
+		if (phcode=='' && phnum.length==10) phcode='1';
+
+		// North America
+		if (phcode=='1') {
+			// (xxx)xxx-xxxx
+			if (phnum.length==10) resnum = '('+phnum.substring(0,3)+')'+phnum.substring(3,6)+'-'+phnum.substring(6,10);
+
+		// UK
+		} else if (phcode=='44') {
+			// +(44)(xxx) xxxx xxx
+			if (phnum.length==10) resnum = '+('+phcode+')('+phnum.substring(0,3)+') '+phnum.substring(3,7)+' '+phnum.substring(7,10);
+
+		// Hong Kong
+		} else if (phcode=='852') {
+			// +(852)(xxx) xxxx xxxx
+			resnum = '+('+phcode+')('+phnum.substring(0,3)+') '+phnum.substring(3,7)+' '+phnum.substring(7);
+	
+		// Macau
+		} else if (phcode=='853') {
+			// +(853) xxxxxxxx
+			resnum = '+('+phcode+') '+phnum;
+
+		// China
+		} else if (phcode=='86') {
+			// +(86) xxx-xxxx-xxxx
+			resnum = '+('+phcode+') '+phnum.substring(0,3)+'-'+phnum.substring(3,7)+'-'+phnum.substring(7);
+
+		// Australia
+		} else if (phcode=='61') {
+			// Geographic (xx) xxxx xxxx
+			resnum = '('+phnum.substring(0,2)+') '+phnum.substring(2,6)+' '+phnum.substring(6);
+			// Mobile x4xx xxx xxx
+			if (phnum.substring(1,1)=='4') resnum = phnum.substring(0,4)+' '+phnum.substring(4,7)+' '+phnum.substring(7);
+
+		// New Zealand
+		} else if (phcode=='64') {
+			// (xx) xxx-xxxx
+			resnum = '('+phnum.substring(0,2)+') '+phnum.substring(2,5)+'-'+phnum.substring(5);
+
+		}
+
+		return resnum;
+	}
