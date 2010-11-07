@@ -27,28 +27,45 @@ $name = get_variable("name");
 $rows = get_variable("rows");
 $glob = get_variable("glob");
 
-header("Content-type: text/csv; charset=utf-8");
-header("Content-Disposition: inline; filename=\"" . $name . "_" . date("Ymd-His") . ".csv\"");
 
+if ($name!='' and ($rows!='' or $glob!='')) {
+    header("Content-type: text/csv; charset=utf-8");
+    header("Content-Disposition: inline; filename=\"" . $name . "_" . date("Ymd-His") . ".csv\"");
 
-$dncdata=array();
-$postsize=0;
-if ($glob!='') {
-    $rows=0;
-    $postsize = strlen($glob);
-    foreach (explode("\n",preg_replace('/\r/','',$glob)) as $gline) {
-	    $dncdata[]=explode('|',$gline);
-        $rows++;
+    $dncdata=array();
+    $postsize=0;
+    if ($glob!='') {
+        $rows=0;
+        $postsize = strlen($glob);
+        foreach (explode("\n",preg_replace('/\r/','',$glob)) as $gline) {
+	        $dncdata[]=explode('|',$gline);
+            $rows++;
+        }
+    } else {
+        $currow = -1;
+        while ($currow++ < $rows-1) {
+	        $postrow = get_variable("row" . $currow);
+            $postsize += strlen($postrow);
+	        $dncdata[]=explode('|',$postrow);
+        }
     }
+    outputCSV($dncdata);
+
 } else {
-    $currow = -1;
-    while ($currow++ < $rows-1) {
-	    $postrow = get_variable("row" . $currow);
-        $postsize += strlen($postrow);
-	    $dncdata[]=explode('|',$postrow);
-    }
+    echo "<html>\n";
+    echo "<head>\n";
+    echo "<title>tocsv.php</title>\n";
+    echo "</head>\n";
+    echo "<body>\n";
+    echo "Error, Missing Variables: 'name' is required and also either 'rows' or 'glob'.\n";
+    echo "</body>\n";
+    echo "</html>\n";
 }
-outputCSV($dncdata);
+
+
+
+
+
 
 function outputCSV($data) {
     $outstream = fopen("php://output", 'w');
