@@ -267,6 +267,21 @@ echo "<tr><td><FONT FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=2>
 <BR>
 <B>Script Override -</B> This is the script ID that is forced on the agent.  The value in this field will override any script set in the campaign or list.
 
+<BR>
+<A NAME="osdial_users-load_dnc">
+<BR>
+<B>Load DNC Records -</B> If set to 'Y' and the user's level is 9, this option will allow the user to load DNC records from a CSV file.  It is recommend that this option only be enabled for the system adminitrator for maintenance purposes.  Default: 'N'
+
+<BR>
+<A NAME="osdial_users-export_dnc">
+<BR>
+<B>Export DNC Records -</B> If set to 'Y' and the user's level is 9, this option will allow the user to export DNC records to a CSV file.  It is recommend that this option only be enabled for the system adminitrator for maintenance purposes.  Default: 'N'
+
+<BR>
+<A NAME="osdial_users-delete_dnc">
+<BR>
+<B>Delete DNC Records -</B> If set to 'Y' and the user's level is 9, this option will enable the user to remove DNC records.  It is recommend that this option only be enabled for the system adminitrator for maintenance purposes.  Default: 'N'
+
 
 
 

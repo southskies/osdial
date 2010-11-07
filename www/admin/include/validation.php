@@ -91,6 +91,7 @@ if ($non_latin < 1)	{
 	$dedicated_trunks = ereg_replace("[^0-9]","",$dedicated_trunks);
 	$delete_call_times = ereg_replace("[^0-9]","",$delete_call_times);
 	$delete_campaigns = ereg_replace("[^0-9]","",$delete_campaigns);
+	$delete_dnc = ereg_replace("[^0-9]","",$delete_dnc);
 	$delete_filters = ereg_replace("[^0-9]","",$delete_filters);
 	$delete_ingroups = ereg_replace("[^0-9]","",$delete_ingroups);
 	$delete_lists = ereg_replace("[^0-9]","",$delete_lists);
@@ -111,6 +112,7 @@ if ($non_latin < 1)	{
 	$hotkeys_active = ereg_replace("[^0-9]","",$hotkeys_active);
 	$list_id = ereg_replace("[^0-9]","",$list_id);
 	$list_id_override = ereg_replace("[^0-9]","",$list_id_override);
+	$load_dnc = ereg_replace("[^0-9]","",$load_dnc);
 	$load_leads = ereg_replace("[^0-9]","",$load_leads);
 	$max_osdial_trunks = ereg_replace("[^0-9]","",$max_osdial_trunks);
 	$modify_call_times = ereg_replace("[^0-9]","",$modify_call_times);
@@ -172,6 +174,7 @@ if ($non_latin < 1)	{
     $export_agent_timesheet = ereg_replace("[^0-9]","",$export_agent_timesheet);
     $export_campaign_call_report = ereg_replace("[^0-9]","",$export_campaign_call_report);
     $export_campaign_recent_outbound_sales = ereg_replace("[^0-9]","",$export_campaign_recent_outbound_sales);
+    $export_dnc = ereg_replace("[^0-9]","",$export_dnc);
     $export_ingroup_call_report = ereg_replace("[^0-9]","",$export_ingroup_call_report);
     $export_lead_performance_campaign = ereg_replace("[^0-9]","",$export_lead_performance_campaign);
     $export_lead_performance_list = ereg_replace("[^0-9]","",$export_lead_performance_list);
@@ -203,6 +206,11 @@ if ($non_latin < 1)	{
 	### DIGITS and DASHES
 	$group_rank = ereg_replace("[^-0-9]","",$group_rank);
 	$campaign_rank = ereg_replace("[^-0-9]","",$campaign_rank);
+
+    ### DIGITS, X's, *'s.
+	$dnc_search_phone = ereg_replace("[^0-9Xx\*]","",$dnc_search_phone);
+	$dnc_add_phone = ereg_replace("[^0-9Xx\*]","",$dnc_add_phone);
+	$dnc_delete_phone = ereg_replace("[^0-9Xx\*]","",$dnc_delete_phone);
 	
 	### Y or N ONLY ###
 	$active = ereg_replace("[^NY]","",$active);

@@ -219,6 +219,18 @@
       This is the script ID that is forced on the agent.  The value in this field will override any script set in the campaign or list.
     </item>
 
+    <item pathId="load_dnc" title="Load DNC Records">
+      If set to 'Y' and the user's level is 9, this option will allow the user to load DNC records from a CSV file.  It is recommend that this option only be enabled for the system adminitrator for maintenance purposes.  Default: 'N'
+    </item>
+
+    <item pathId="export_dnc" title="Export DNC Records">
+      If set to 'Y' and the user's level is 9, this option will allow the user to export DNC records to a CSV file.  It is recommend that this option only be enabled for the system adminitrator for maintenance purposes.  Default: 'N'
+    </item>
+
+    <item pathId="delete_dnc" title="Delete DNC Records">
+      If set to 'Y' and the user's level is 9, this option will enable the user to remove DNC records.  It is recommend that this option only be enabled for the system adminitrator for maintenance purposes.  Default: 'N'
+    </item>
+
   </section>
 
 

@@ -355,7 +355,7 @@ if (strlen($lists_hh) > 1) {
     } elseif ($LOG['view_lead_search']) {
         echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=27\"> Lead Search </a> &nbsp; &nbsp; &nbsp;\n";
     }
-    echo "        <a href=\"$PHP_SELF?ADD=121\"> Add Number To DNC </a> &nbsp; &nbsp; &nbsp;\n";
+    echo "        <a href=\"$PHP_SELF?ADD=121\"> Do-Not-Call </a> &nbsp; &nbsp; &nbsp;\n";
     if ($LOG['user_level'] > 7 && $LOG['load_leads'] > 0) {
         echo "        <a href=\"$PHP_SELF?ADD=122\"> Load Leads </a> &nbsp; &nbsp; &nbsp;\n";
     }

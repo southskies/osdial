@@ -70,64 +70,319 @@ if ($ADD==111) {
 
 if ($ADD==121) {
 	if ($LOGmodify_lists==1)	{
-        if (strlen($phone_number) > 2) {
-            $dncs=0;
-            $dncc=0;
-            $dncsskip=0;
-            if (strlen($phone_number)==3) $phone_number .= 'XXXXXXX';
+        $dncs=0;
+        $dncc=0;
+        $searchres='';
+        if ($SUB==1) {
+            if (strlen($dnc_search_phone) < 3) {
+                echo "<br><font color=red>DNC SEARCH FAILED - The phone number should be at least 3 digits.</font>\n";
+            } else {
+                $mcsearch='';
+                if ($LOG['multicomp'] > 0) {
+                    if (preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
+                        $stmt = sprintf("SELECT company_id,phone_number,creation_date FROM osdial_dnc_company WHERE company_id='%s' AND phone_number LIKE '%%%s%%';", mres($LOG['company_id']),mres($dnc_search_phone));
+                        if ($LOG['multicomp_admin'] > 0) {
+                            $stmt = sprintf("SELECT company_id,phone_number,creation_date FROM osdial_dnc_company WHERE phone_number LIKE '%%%s%%';", mres($dnc_search_phone));
+                        }
+                        $rslt=mysql_query($stmt, $link);
+                        $dncc = mysql_num_rows($rslt);
+                        if ($dncc>0) {
+                            $mcsearch.="<table bgcolor=$oddrows align=center cellspacing=1 width=400>\n";
+                            $mcsearch.="  <tr class=tabheader>\n";
+                            $mcsearch.="    <td>Company</td><td>Phone</td><td>Created</td>\n";
+                            $mcsearch.="  </tr>\n";
+                            $o=0;
+                            while ($dncc > $o) {
+                                $rowx=mysql_fetch_row($rslt);
+                                $mcsearch.="  <tr class=font2><td align=center>$rowx[0]</td><td align=center>$rowx[1]</td><td align=center>$rowx[2]</td></tr>\n";
+                                $o++;
+                            }
+                        }
+                    }
+                }
 
-            if ($LOG['multicomp_user'] > 0) {
-                if (preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
-                    $stmt = sprintf("SELECT count(*) FROM osdial_dnc_company WHERE company_id='%s' AND phone_number='%s';", mres($LOG['company_id']),mres($phone_number));
+                $syssearch='';
+                $stmt = "SELECT phone_number,creation_date FROM osdial_dnc WHERE 1=2;";
+                if ($LOG['multicomp_user'] > 0) {
+                    if (preg_match('/SYSTEM|BOTH/',$LOG['company']['dnc_method'])) {
+                        $stmt = sprintf("SELECT phone_number,creation_date FROM osdial_dnc WHERE phone_number LIKE '%%%s%%';", mres($dnc_search_phone));
+                    }
+                } else {
+                    $stmt = sprintf("SELECT phone_number,creation_date FROM osdial_dnc WHERE phone_number LIKE '%%%s%%';", mres($dnc_search_phone));
+                }
+                $rslt=mysql_query($stmt, $link);
+                $dncs = mysql_num_rows($rslt);
+                if ($mcsearch=="") {
+                    if ($dncs>0) {
+                        $syssearch.="<table bgcolor=$oddrows align=center cellspacing=1 width=400>\n";
+                        $syssearch.="  <tr class=tabheader>\n";
+                        $syssearch.="    <td>Phone</td><td>Created</td>\n";
+                        $syssearch.="  </tr>\n";
+                        $o=0;
+                        while ($dncs > $o) {
+                            $rowx=mysql_fetch_row($rslt);
+                            $syssearch.="  <tr class=font2><td align=center>$rowx[0]</td><td align=center>$rowx[1]</td></tr>\n";
+                            $o++;
+                        }
+                        $syssearch.="  <tr class=tabfooter><td colspan=2></td></tr>\n";
+                        $syssearch.="</table>\n";
+                        $searchres=$syssearch;
+                    }
+                } else {
+                    if ($dncs>0) {
+                        $o=0;
+                        while ($dncs > $o) {
+                            $rowx=mysql_fetch_row($rslt);
+                            $mcsearch.="  <tr class=font2><td>&nbsp;</td><td align=center>$rowx[0]</td><td align=center>$rowx[1]</td></tr>\n";
+                            $o++;
+                        }
+                    }
+                    $mcsearch.="  <tr class=tabfooter><td colspan=3></td></tr>\n";
+                    $mcsearch.="</table>\n";
+                    $searchres=$mcsearch;
+                }
+            }
+        } elseif ($SUB==2) {
+            if (strlen($dnc_add_phone) < 3) {
+                echo "<br><font color=red>DNC RECORD NOT ADDED - The phone number should be at least 3 digits.</font>\n";
+            } else {
+                $dncsskip=0;
+                if (strlen($dnc_add_phone)==3) $dnc_add_phone .= 'XXXXXXX';
+
+                if ($LOG['multicomp_user'] > 0) {
+                    if (preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
+                        $stmt = sprintf("SELECT count(*) FROM osdial_dnc_company WHERE company_id='%s' AND phone_number='%s';", mres($LOG['company_id']),mres($dnc_add_phone));
+                        $rslt=mysql_query($stmt, $link);
+                        $row=mysql_fetch_row($rslt);
+                        $dncc=$row[0];
+                    }
+                    if (preg_match('/COMPANY/',$LOG['company']['dnc_method'])) $dncsskip++;
+                }
+
+                if ($dncsskip==0) {
+                    $stmt = sprintf("SELECT count(*) from osdial_dnc where phone_number='%s';", mres($dnc_add_phone));
                     $rslt=mysql_query($stmt, $link);
                     $row=mysql_fetch_row($rslt);
-                    $dncc=$row[0];
+                    $dncs=$row[0];
                 }
-                if (preg_match('/COMPANY/',$LOG['company']['dnc_method'])) $dncsskip++;
-            }
 
-            if ($dncsskip==0) {
-                $stmt = sprintf("SELECT count(*) from osdial_dnc where phone_number='%s';", mres($phone_number));
-                $rslt=mysql_query($stmt, $link);
-                $row=mysql_fetch_row($rslt);
-                $dncs=$row[0];
-            }
-
-            if ($dncs > 0 or $dncc > 0) {
-                echo "<br>DNC NOT ADDED - This phone number is already in the ";
-                if ($dncs > 0 and $dncc > 0) {
-                    echo "System and Company";
-                } elseif ($dncs > 0) {
-                    echo "System";
-                } elseif ($dncc > 0) {
-                    echo "Company";
-                }
-                echo " Do Not Call List: $phone_number<BR><BR>\n";
-            } else {
-                if ($LOG['multicomp_user'] > 0 and preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
-                    $stmt = sprintf("INSERT INTO osdial_dnc_company (company_id,phone_number) values('%s','%s');", mres($LOG['company_id']),mres($phone_number));
+                if ($dncs > 0 or $dncc > 0) {
+                    echo "<br>DNC NOT ADDED - This phone number is already in the ";
+                    if ($dncs > 0 and $dncc > 0) {
+                        echo "System and Company";
+                    } elseif ($dncs > 0) {
+                        echo "System";
+                    } elseif ($dncc > 0) {
+                        echo "Company";
+                    }
+                    echo " Do Not Call List: $dnc_add_phone<BR><BR>\n";
                 } else {
-                    $stmt = sprintf("INSERT INTO osdial_dnc (phone_number) values('%s');", mres($phone_number));
-                }
-                $rslt=mysql_query($stmt, $link);
+                    if ($LOG['multicomp_user'] > 0 and preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
+                        $stmt = sprintf("INSERT INTO osdial_dnc_company (company_id,phone_number) values('%s','%s');", mres($LOG['company_id']),mres($dnc_add_phone));
+                    } else {
+                        $stmt = sprintf("INSERT INTO osdial_dnc (phone_number) values('%s');", mres($dnc_add_phone));
+                    }
+                    $rslt=mysql_query($stmt, $link);
 
-                echo "<br><B>DNC ADDED: $phone_number</B><BR><BR>\n";
+                    echo "<br><B>DNC ADDED SUCCESSFULLY: $dnc_add_phone</B><BR><BR>\n";
 
-                ### LOG INSERTION TO LOG FILE ###
-                if ($WeBRooTWritablE > 0) {
-                    $fp = fopen ("./admin_changes_log.txt", "a");
-                    fwrite ($fp, "$date|ADD A NEW DNC NUMBER|$PHP_AUTH_USER|$ip|'$phone_number'|\n");
-                    fclose($fp);
+                    ### LOG INSERTION TO LOG FILE ###
+                    if ($WeBRooTWritablE > 0) {
+                        $fp = fopen ("./admin_changes_log.txt", "a");
+                        fwrite ($fp, "$date|ADD A NEW DNC NUMBER|$PHP_AUTH_USER|$ip|'$dnc_add_phone'|\n");
+                        fclose($fp);
+                    }
                 }
             }
         }
 
-        echo "<br><font color=$default_text size=+1>ADD A NUMBER TO THE DNC LIST</font><form action=$PHP_SELF method=POST><br><br>\n";
-        echo "<input type=hidden name=ADD value=121>\n";
-        echo "<TABLE width=$section_width bgcolor=$oddrows cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right width=50%>Phone Number: </td><td align=left width=50%><input type=text name=phone_number size=14 maxlength=12> (digits only)$NWB#osdial_list-dnc$NWE</td></tr>\n";
-        echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
-        echo "</TABLE></center>\n";
+        echo "<center><br><font color=$default_text size=4>DO-NOT-CALL MAINTENANCE</font></center><br><br>\n";
+
+	    if ($LOG['user_level']==9 and $LOG['delete_dnc']==1 and $SUB>=3 and $SUB<=5) {
+            if (strlen($dnc_delete_phone) < 6) {
+                echo "<br><font color=red>DNC DELETION FAILED - The phone number should be at least 6 digits.</font>\n";
+                $SUB='';
+            }
+        }
+
+	    if ($LOG['user_level']==9 and $LOG['delete_dnc']==1 and $SUB>=3 and $SUB<=5) {
+            if ($SUB==3) {
+                echo "<hr width=80%><br>";
+                echo "<form action=$PHP_SELF method=POST>\n";
+                echo "<input type=hidden name=ADD value=121>\n";
+                echo "<input type=hidden name=SUB id=SUB value=4>\n";
+                echo "<input type=hidden name=dnc_delete_phone id=DDP value=\"$dnc_delete_phone\">\n";
+		        echo "<table width=500 bgcolor=$oddrows align=center cellspacing=1>\n";
+                echo "  <tr bgcolor=$oddrows>\n";
+                echo "    <td align=center colspan=2 class=font2>Do you want to delete \"$dnc_delete_phone\"?</td>\n";
+                echo "  </tr>\n";
+                echo "  <tr class=tabfooter>\n";
+                echo "    <td align=center class=tabbutton bgcolor=red width=50%>\n";
+                echo "      <input type=button name=cancel1 value=\"NO\" onclick=\"document.getElementById('SUB').value='';document.getElementById('DDP').value='';submit();\">\n";
+                echo "    </td>\n";
+                echo "    <td align=center class=tabbutton bgcolor=red width=50%>\n";
+                echo "      <input type=submit name=SUBMIT value=\"YES\">\n";
+                echo "    </td>\n";
+                echo "  </tr>\n";
+                echo "</table>\n";
+                echo "</form>\n";
+            } elseif ($SUB==4) {
+                echo "<hr width=80%><br>";
+                echo "<form action=$PHP_SELF method=POST>\n";
+                echo "<input type=hidden name=ADD value=121>\n";
+                echo "<input type=hidden name=SUB id=SUB value=5>\n";
+                echo "<input type=hidden name=dnc_delete_phone id=DDP value=\"$dnc_delete_phone\">\n";
+		        echo "<table width=500 bgcolor=$oddrows align=center cellspacing=1>\n";
+                echo "  <tr bgcolor=$oddrows>\n";
+                echo "    <td align=center colspan=2 class=font2>Do you want to cancel and keep \"$dnc_delete_phone\" on your Do-Not-Call list?</td>\n";
+                echo "  </tr>\n";
+                echo "  <tr class=tabfooter>\n";
+                echo "    <td align=center class=tabbutton bgcolor=red width=50%>\n";
+                echo "      <input type=button name=cancel1 value=\"YES\" onclick=\"document.getElementById('SUB').value='';document.getElementById('DDP').value='';submit();\">\n";
+                echo "    </td>\n";
+                echo "    <td align=center class=tabbutton bgcolor=red width=50%>\n";
+                echo "      <input type=submit name=SUBMIT value=\"NO\">\n";
+                echo "    </td>\n";
+                echo "  </tr>\n";
+                echo "</table>\n";
+                echo "</form>\n";
+            } elseif ($SUB==5) {
+                echo "<hr width=80%><br>";
+                echo "<form action=$PHP_SELF method=POST>\n";
+                echo "<input type=hidden name=ADD value=121>\n";
+                echo "<input type=hidden name=SUB id=SUB value=6>\n";
+                echo "<input type=hidden name=dnc_delete_phone id=DDP value=\"$dnc_delete_phone\">\n";
+		        echo "<table width=500 bgcolor=$oddrows align=center cellspacing=1>\n";
+                echo "  <tr bgcolor=$oddrows>\n";
+                echo "    <td align=center colspan=2 class=font2>If you click DELETE, \"$dnc_delete_phone\" will be removed from your Do-Not-Call list.  There is no recovery process for DNC deletion.  You may be subject to fines from both State and Federal governments if you make a mistake.  If you are absolutely certain, click DELETE and you will be able to once again call this number.</td>\n";
+                echo "  </tr>\n";
+                echo "  <tr class=tabfooter>\n";
+                echo "    <td align=center class=tabbutton bgcolor=red width=50%>\n";
+                echo "      <input type=submit name=SUBMIT value=\"DELETE\">\n";
+                echo "    </td>\n";
+                echo "    <td align=center class=tabbutton bgcolor=red width=50%>\n";
+                echo "      <input type=button name=cancel1 value=\"CANCEL\" onclick=\"document.getElementById('SUB').value='';document.getElementById('DDP').value='';submit();\">\n";
+                echo "    </td>\n";
+                echo "  </tr>\n";
+                echo "</table>\n";
+                echo "</form>\n";
+            }
+        } else {
+
+            echo "<hr width=80%><br>";
+            echo "<form action=$PHP_SELF method=POST>\n";
+            echo "<center><font color=$default_text size=3>Search DNC List</font></center>\n";
+            echo "<input type=hidden name=ADD value=121>\n";
+            echo "<input type=hidden name=SUB value=1>\n";
+		    echo "<table width=500 bgcolor=$oddrows align=center cellspacing=1>\n";
+            if ($dncc>0 or $dncs>0) {
+                echo "  <tr bgcolor=$oddrows>\n";
+                echo "    <td>" . $searchres . "</td>\n";
+                echo "  </tr>\n";
+            }
+            echo "  <tr bgcolor=$oddrows>\n";
+            echo "    <td align=center>Phone Number:&nbsp;<input type=text name=dnc_search_phone size=16 maxlength=15 value=\"$dnc_search_phone\">$NWB#osdial_list-dnc$NWE</td>\n";
+            echo "  </tr>\n";
+            echo "  <tr class=tabfooter>\n";
+            echo "    <td align=center class=tabbutton><input type=submit name=SUBMIT value=\"SEARCH\"></td>\n";
+            echo "  </tr>\n";
+            echo "</table>\n";
+            echo "</form>\n";
+
+            echo "<br><hr width=80%><br>";
+            echo "<center><font color=$default_text size=3>Add Number to DNC List</font></center>\n";
+            echo "<form action=$PHP_SELF method=POST>\n";
+            echo "<input type=hidden name=ADD value=121>\n";
+            echo "<input type=hidden name=SUB value=2>\n";
+		    echo "<table width=500 bgcolor=$oddrows align=center cellspacing=1>\n";
+            echo "  <tr bgcolor=$oddrows>\n";
+            echo "    <td align=center>Phone Number:&nbsp;<input type=text name=dnc_add_phone size=16 maxlength=15 value=\"$dnc_add_phone\">$NWB#osdial_list-dnc$NWE</td>\n";
+            echo "  </tr>\n";
+            echo "  <tr class=tabfooter>\n";
+            echo "    <td align=center class=tabbutton colspan=2 bgcolor=purple><input type=submit name=SUBMIT value=\"ADD\"></td>\n";
+            echo "  </tr>\n";
+            echo "</table>\n";
+            echo "</form>\n";
+
+	        if ($LOG['user_level']==9 and $LOG['delete_dnc']==1){
+                $delstatus='';
+                $dncs=0;
+                $dncc=0;
+	            if ($SUB==6) {
+                    if (strlen($dnc_delete_phone) < 6) {
+                        echo "<br><font color=red>DNC DELETION FAILED - The phone number should be at least 6 digits.</font>\n";
+                    } else {
+                        if ($LOG['multicomp_user'] > 0) {
+                            if (preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
+                                $stmt = sprintf("SELECT * FROM osdial_dnc_company WHERE company_id='%s' AND phone_number='%s';", mres($LOG['company_id']),mres($dnc_delete_phone));
+                                $rslt=mysql_query($stmt, $link);
+                                $dncc = mysql_num_rows($rslt);
+                            }
+                            if ($dncc==0) {
+                                $stmt = sprintf("SELECT count(*) FROM osdial_dnc WHERE phone_number='%s';", mres($dnc_delete_phone));
+                                $rslt=mysql_query($stmt, $link);
+                                $dncs=mysql_fetch_row($rslt);
+                                if ($dncs>0 and preg_match('/SYSTEM|BOTH/',$LOG['company']['dnc_method'])) {
+                                    $delstatus="<tr bgcolor=$oddrows class=font2><td align=center>\"$dnc_delete_phone\" was NOT FOUND in the Do-Not-Call list for company ".$LOG['company_id'].", however, it is in the System-wide Do-Not-Call list.  If you need this number removed, you should contact the system administrator.</td></tr>\n";
+                                } else {
+                                    $delstatus="<tr bgcolor=$oddrows class=font2><td align=center>\"$dnc_delete_phone\" was NOT FOUND in the Do-Not-Call list for company ".$LOG['company_id'].".</td></tr>\n";
+                                }
+                            } else {
+                                $stmt = sprintf("DELETE FROM osdial_dnc_company WHERE company_id='%s' AND phone_number='%s';", mres($LOG['company_id']),mres($dnc_delete_phone));
+                                $rslt=mysql_query($stmt, $link);
+
+                                $delstatus="<tr bgcolor=$oddrows class=font2><td align=center>\"$dnc_delete_phone\" was SUCCESSFULLY deleted from the Do-Not-Call list for company ".$LOG['company_id'].".</td></tr>\n";
+
+                                ### LOG INSERTION TO LOG FILE ###
+                                if ($WeBRooTWritablE > 0) {
+                                    $fp = fopen ("./admin_changes_log.txt", "a");
+                                    fwrite ($fp, "$date|DELETE A DNC NUMBER|$PHP_AUTH_USER|$ip|'$dnc_delete_phone'|\n");
+                                    fclose($fp);
+                                }
+                            }
+                        } else {
+                            $stmt = sprintf("SELECT * FROM osdial_dnc WHERE phone_number='%s';",mres($dnc_delete_phone));
+                            $rslt=mysql_query($stmt, $link);
+                            $dncs = mysql_num_rows($rslt);
+                            if ($dncs==0) {
+                                $delstatus="<tr bgcolor=$oddrows class=font2><td align=center>\"$dnc_delete_phone\" was NOT FOUND in the Do-Not-Call list.</td></tr>\n";
+                            } else {
+                                $stmt = sprintf("DELETE FROM osdial_dnc WHERE phone_number='%s';",mres($dnc_delete_phone));
+                                $rslt=mysql_query($stmt, $link);
+
+                                $delstatus="<tr bgcolor=$oddrows class=font2><td align=center>\"$dnc_delete_phone\" was SUCCESSFULLY deleted from the Do-Not-Call list.</td></tr>\n";
+
+                                ### LOG INSERTION TO LOG FILE ###
+                                if ($WeBRooTWritablE > 0) {
+                                    $fp = fopen ("./admin_changes_log.txt", "a");
+                                    fwrite ($fp, "$date|DELETE A DNC NUMBER|$PHP_AUTH_USER|$ip|'$dnc_delete_phone'|\n");
+                                    fclose($fp);
+                                }
+                            }
+                        }
+                        $dnc_delete_phone='';
+                    }
+                }
+
+                echo "<br><hr width=80%><br>";
+                echo "<center><font color=$default_text size=3>Delete Number from DNC List</font></center>\n";
+                echo "<form action=$PHP_SELF method=POST>\n";
+                echo "<input type=hidden name=ADD value=121>\n";
+                echo "<input type=hidden name=SUB value=3>\n";
+		        echo "<table width=500 bgcolor=$oddrows align=center cellspacing=1>\n";
+                echo $delstatus;
+                echo "  <tr bgcolor=$oddrows>\n";
+                echo "    <td align=center>Phone Number:&nbsp;<input type=text name=dnc_delete_phone size=16 maxlength=15 value=\"$dnc_delete_phone\">$NWB#osdial_list-dnc$NWE</td>\n";
+                echo "  </tr>\n";
+                echo "  <tr class=tabfooter>\n";
+                echo "    <td align=center class=tabbutton bgcolor=red><input type=submit name=SUBMIT value=\"DELETE\"></td>\n";
+                echo "  </tr>\n";
+                echo "</table>\n";
+                echo "</form>\n";
+            }
+
+        }
+
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }

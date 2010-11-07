@@ -590,7 +590,7 @@ sub hangup_and_dispo {
 	my $call_length = $tepoch - $vars->{start_time};
 
 	if ($status eq 'DNC' or $status eq 'VDNC') {
-		my $stmtA = "INSERT INTO osdial_dnc VALUES ((SELECT phone_number FROM osdial_list WHERE lead_id='" . $vars->{CIDlead_id} ."'));";
+		my $stmtA = "INSERT INTO osdial_dnc (phone_number) VALUES ((SELECT phone_number FROM osdial_list WHERE lead_id='" . $vars->{CIDlead_id} ."'));";
 		agi_output("|$stmtA|") if ($vars->{DB} > 1);
 		my $affected_rows = $dbhA->do($stmtA);
 		agi_output("--    ODOI osdial_dnc insert: |$affected_rows");
