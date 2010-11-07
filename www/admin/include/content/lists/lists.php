@@ -148,6 +148,7 @@ if ($ADD==121) {
             } else {
                 $dncsskip=0;
                 if (strlen($dnc_add_phone)==3) $dnc_add_phone .= 'XXXXXXX';
+                $dnc_add_phone = preg_replace('/x/','X',$dnc_add_phone);
 
                 if ($LOG['multicomp_user'] > 0) {
                     if (preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
@@ -205,6 +206,8 @@ if ($ADD==121) {
             }
         }
 
+        $dnc_prepare_export=get_variable('dnc_prepare_export');
+
 	    if ($LOG['user_level']==9 and $LOG['delete_dnc']==1 and $SUB>=3 and $SUB<=5) {
             if ($SUB==3) {
                 echo "<hr width=80%><br>";
@@ -212,7 +215,7 @@ if ($ADD==121) {
                 echo "<input type=hidden name=ADD value=121>\n";
                 echo "<input type=hidden name=SUB id=SUB value=4>\n";
                 echo "<input type=hidden name=dnc_delete_phone id=DDP value=\"$dnc_delete_phone\">\n";
-		        echo "<table width=500 bgcolor=$oddrows align=center cellspacing=1>\n";
+		        echo "<table width=500 bgcolor=grey align=center cellspacing=1>\n";
                 echo "  <tr bgcolor=$oddrows>\n";
                 echo "    <td align=center colspan=2 class=font2>Do you want to delete \"$dnc_delete_phone\"?</td>\n";
                 echo "  </tr>\n";
@@ -232,7 +235,7 @@ if ($ADD==121) {
                 echo "<input type=hidden name=ADD value=121>\n";
                 echo "<input type=hidden name=SUB id=SUB value=5>\n";
                 echo "<input type=hidden name=dnc_delete_phone id=DDP value=\"$dnc_delete_phone\">\n";
-		        echo "<table width=500 bgcolor=$oddrows align=center cellspacing=1>\n";
+		        echo "<table width=500 bgcolor=grey align=center cellspacing=1>\n";
                 echo "  <tr bgcolor=$oddrows>\n";
                 echo "    <td align=center colspan=2 class=font2>Do you want to cancel and keep \"$dnc_delete_phone\" on your Do-Not-Call list?</td>\n";
                 echo "  </tr>\n";
@@ -252,7 +255,7 @@ if ($ADD==121) {
                 echo "<input type=hidden name=ADD value=121>\n";
                 echo "<input type=hidden name=SUB id=SUB value=6>\n";
                 echo "<input type=hidden name=dnc_delete_phone id=DDP value=\"$dnc_delete_phone\">\n";
-		        echo "<table width=500 bgcolor=$oddrows align=center cellspacing=1>\n";
+		        echo "<table width=500 bgcolor=grey align=center cellspacing=1>\n";
                 echo "  <tr bgcolor=$oddrows>\n";
                 echo "    <td align=center colspan=2 class=font2>If you click DELETE, \"$dnc_delete_phone\" will be removed from your Do-Not-Call list.  There is no recovery process for DNC deletion.  You may be subject to fines from both State and Federal governments if you make a mistake.  If you are absolutely certain, click DELETE and you will be able to once again call this number.</td>\n";
                 echo "  </tr>\n";
@@ -267,6 +270,155 @@ if ($ADD==121) {
                 echo "</table>\n";
                 echo "</form>\n";
             }
+
+	    } elseif ($LOG['user_level']==9 and $LOG['export_dnc']==1 and $dnc_prepare_export=='1') {
+            echo "<hr width=80%><br>";
+            echo "<form action=\"tocsv.php\" method=POST id=\"tocsvform\" enctype=\"multipart/form-data\">\n";
+            echo "<center><font color=$default_text size=3>Preparing DNC Download</font></center>\n";
+            echo "<input type=hidden name=ADD value=121>\n";
+		    echo "<table width=500 bgcolor=grey align=center cellspacing=1>\n";
+            echo "  <tr bgcolor=$oddrows>\n";
+            echo "    <td align=center class=font2>Please be patient, your download will begin shortly.</td>\n";
+            echo "  </tr>\n";
+            echo "  <tr bgcolor=$oddrows>\n";
+            echo "    <td align=center class=font2>\n";
+            echo "      <input type=hidden name=name value=\"OSDial_DNC_Export-".$LOG['user']."\">\n";
+            echo "      <textarea name=\"glob\" id=\"glob\" style=\"visibility:hidden;white-space:nowrap;font-size:5pt;\" wrap=off cols=100 rows=2></textarea>\n";
+            echo "    </td>\n";
+            echo "  </tr>\n";
+            echo "  <tr class=tabfooter>\n";
+            echo "    <td align=center class=tabbutton>\n";
+            echo "      <input type=submit name=SUBMIT id=\"dlbutton\" value=\"DOWNLOAD\">\n";
+            echo "    </td>\n";
+            echo "  </tr>\n";
+            echo "</table>\n";
+            echo "</form>\n";
+            echo "<center><iframe name=\"downloadframe\" id=\"downloadframe\" height=\"100px\" width=\"500px\" scrolling=\"no\" frameborder=\"0\"></iframe></center>\n";
+            echo "<script type=\"text/javascript\">\n";
+            echo "var iframe = document.getElementById('downloadframe');\n";
+            echo "var form = document.getElementById('tocsvform');\n";
+            echo "var g = document.getElementById('glob');\n";
+            echo "form.target = iframe.id;\n";
+            echo "document.getElementById('dlbutton').disabled=true;\n";
+            echo "document.getElementById('dlbutton').value='GATHERING DNC DATA';\n";
+            echo "</script>\n";
+            flush();
+            ob_flush();
+            echo "<script type=\"text/javascript\">\n";
+
+            $rows=0;
+            $odcrows=0;
+            $odrows=0;
+
+            if ($LOG['multicomp_user'] > 0) {
+                echo "g.value+=\"Phone|Company|Created\\n\";\n";
+                $rows++;
+                if (preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
+                    $stmt = sprintf("SELECT phone_number,(company_id+100) AS cid,creation_date FROM osdial_dnc_company WHERE company_id='%s';",mres($LOG['company_id']));
+                    $rslt=mysql_query($stmt, $link);
+                    $dncc = mysql_num_rows($rslt);
+                    $o=0;
+                    while ($dncc > $o) {
+                        $rowx=mysql_fetch_row($rslt);
+                        echo "g.value+=\"".$rowx['0'].'|'.$rowx['1'].'|'.$rowx['2']."\\n\";\n";
+                        $rows++;
+                        $odcrows++;
+                        if ($o % 500 == 0) {
+                            echo "document.getElementById('dlbutton').value+='.';\n";
+                            flush();
+                            ob_flush();
+                        }
+                        $o++;
+                    }
+                }
+                if (preg_match('/SYSTEM|BOTH/',$LOG['company']['dnc_method'])) {
+                    $stmt = "SELECT phone_number,'',creation_date FROM osdial_dnc;";
+                    $rslt=mysql_query($stmt, $link);
+                    $dncs = mysql_num_rows($rslt);
+                    $o=0;
+                    while ($dncs > $o) {
+                        $rowx=mysql_fetch_row($rslt);
+                        echo "g.value+=\"".$rowx['0'].'|'.$rowx['1'].'|'.$rowx['2']."\\n\";\n";
+                        $rows++;
+                        $odrows++;
+                        if ($o % 500 == 0) {
+                            echo "document.getElementById('dlbutton').value+='.';\n";
+                            flush();
+                            ob_flush();
+                        }
+                        $o++;
+                    }
+                }
+            } elseif ($LOG['multicomp_admin'] > 0) {
+                echo "g.value+=\"Phone|Company|Created\\n\";\n";
+                $rows++;
+                $stmt = "SELECT phone_number,(company_id+100) AS cid,creation_date FROM osdial_dnc_company ORDER BY cid;";
+                $rslt=mysql_query($stmt, $link);
+                $dncc = mysql_num_rows($rslt);
+                $o=0;
+                while ($dncc > $o) {
+                    $rowx=mysql_fetch_row($rslt);
+                    echo "g.value+=\"".$rowx['0'].'|'.$rowx['1'].'|'.$rowx['2']."\\n\";\n";
+                    $rows++;
+                    $odcrows++;
+                    if ($o % 500 == 0) {
+                        echo "document.getElementById('dlbutton').value+='.';\n";
+                        flush();
+                        ob_flush();
+                    }
+                    $o++;
+                }
+
+                $stmt = "SELECT phone_number,'',creation_date FROM osdial_dnc;";
+                $rslt=mysql_query($stmt, $link);
+                $dncs = mysql_num_rows($rslt);
+                $o=0;
+                while ($dncs > $o) {
+                    $rowx=mysql_fetch_row($rslt);
+                    echo "g.value+=\"".$rowx['0'].'|'.$rowx['1'].'|'.$rowx['2']."\\n\";\n";
+                    $rows++;
+                    $odrows++;
+                    if ($o % 500 == 0) {
+                        echo "document.getElementById('dlbutton').value+='.';\n";
+                        flush();
+                        ob_flush();
+                    }
+                    $o++;
+                }
+            } else {
+                echo "g.value+=\"Phone|Created\\n\";\n";
+                $rows++;
+                $stmt = "SELECT phone_number,creation_date FROM osdial_dnc;";
+                $rslt=mysql_query($stmt, $link);
+                $dncs = mysql_num_rows($rslt);
+                $o=0;
+                while ($dncs > $o) {
+                    $rowx=mysql_fetch_row($rslt);
+                    echo "g.value+=\"".$rowx['0'].'|'.$rowx['1']."\\n\";\n";
+                    $rows++;
+                    $odrows++;
+                    if ($o % 500 == 0) {
+                        echo "document.getElementById('dlbutton').value+='.';\n";
+                        flush();
+                        ob_flush();
+                    }
+                    $o++;
+                }
+            }
+            echo "</script>\n";
+            flush();
+            ob_flush();
+            echo "<script type=\"text/javascript\">\n";
+            echo "document.getElementById('dlbutton').value='FORMATTING DNC FILE';\n";
+            echo "form.submit();\n";
+            echo "</script>\n";
+            flush();
+            ob_flush();
+            echo "<script type=\"text/javascript\">\n";
+            echo "document.getElementById('dlbutton').value='DOWNLOAD WILL START SOON';\n";
+            echo "</script>\n";
+            flush();
+            ob_flush();
         } else {
 
             echo "<hr width=80%><br>";
@@ -274,13 +426,13 @@ if ($ADD==121) {
             echo "<center><font color=$default_text size=3>Search DNC List</font></center>\n";
             echo "<input type=hidden name=ADD value=121>\n";
             echo "<input type=hidden name=SUB value=1>\n";
-		    echo "<table width=500 bgcolor=$oddrows align=center cellspacing=1>\n";
+		    echo "<table width=500 bgcolor=grey align=center cellspacing=1>\n";
             if ($dncc>0 or $dncs>0) {
                 echo "  <tr bgcolor=$oddrows>\n";
                 echo "    <td>" . $searchres . "</td>\n";
                 echo "  </tr>\n";
             }
-            echo "  <tr bgcolor=$oddrows>\n";
+            echo "  <tr bgcolor=$oddrows class=font2>\n";
             echo "    <td align=center>Phone Number:&nbsp;<input type=text name=dnc_search_phone size=16 maxlength=15 value=\"$dnc_search_phone\">$NWB#osdial_list-dnc$NWE</td>\n";
             echo "  </tr>\n";
             echo "  <tr class=tabfooter>\n";
@@ -294,12 +446,12 @@ if ($ADD==121) {
             echo "<form action=$PHP_SELF method=POST>\n";
             echo "<input type=hidden name=ADD value=121>\n";
             echo "<input type=hidden name=SUB value=2>\n";
-		    echo "<table width=500 bgcolor=$oddrows align=center cellspacing=1>\n";
-            echo "  <tr bgcolor=$oddrows>\n";
+		    echo "<table width=500 bgcolor=grey align=center cellspacing=1>\n";
+            echo "  <tr bgcolor=$oddrows class=font2>\n";
             echo "    <td align=center>Phone Number:&nbsp;<input type=text name=dnc_add_phone size=16 maxlength=15 value=\"$dnc_add_phone\">$NWB#osdial_list-dnc$NWE</td>\n";
             echo "  </tr>\n";
             echo "  <tr class=tabfooter>\n";
-            echo "    <td align=center class=tabbutton colspan=2 bgcolor=purple><input type=submit name=SUBMIT value=\"ADD\"></td>\n";
+            echo "    <td align=center class=tabbutton bgcolor=purple><input type=submit name=SUBMIT value=\"ADD\"></td>\n";
             echo "  </tr>\n";
             echo "</table>\n";
             echo "</form>\n";
@@ -312,6 +464,7 @@ if ($ADD==121) {
                     if (strlen($dnc_delete_phone) < 6) {
                         echo "<br><font color=red>DNC DELETION FAILED - The phone number should be at least 6 digits.</font>\n";
                     } else {
+                        $dnc_delete_phone = preg_replace('/x/','X',$dnc_delete_phone);
                         if ($LOG['multicomp_user'] > 0) {
                             if (preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
                                 $stmt = sprintf("SELECT * FROM osdial_dnc_company WHERE company_id='%s' AND phone_number='%s';", mres($LOG['company_id']),mres($dnc_delete_phone));
@@ -369,9 +522,9 @@ if ($ADD==121) {
                 echo "<form action=$PHP_SELF method=POST>\n";
                 echo "<input type=hidden name=ADD value=121>\n";
                 echo "<input type=hidden name=SUB value=3>\n";
-		        echo "<table width=500 bgcolor=$oddrows align=center cellspacing=1>\n";
+		        echo "<table width=500 bgcolor=grey align=center cellspacing=1>\n";
                 echo $delstatus;
-                echo "  <tr bgcolor=$oddrows>\n";
+                echo "  <tr bgcolor=$oddrows class=font2>\n";
                 echo "    <td align=center>Phone Number:&nbsp;<input type=text name=dnc_delete_phone size=16 maxlength=15 value=\"$dnc_delete_phone\">$NWB#osdial_list-dnc$NWE</td>\n";
                 echo "  </tr>\n";
                 echo "  <tr class=tabfooter>\n";
@@ -381,6 +534,176 @@ if ($ADD==121) {
                 echo "</form>\n";
             }
 
+	        if ($LOG['user_level']==9 and $LOG['load_dnc']==1) {
+                $loaderr='';
+                $dncfile_name='';
+                if (isset($_FILES["dncfile"])) {
+                    $dncfile_name=$_FILES["dncfile"]['name'];
+                    $dncfile_path=$_FILES['dncfile']['tmp_name'];
+                }
+
+                # Process file if sent.
+                if ($dncfile_name!='') {
+                    if (preg_match('/\.txt$|\.csv$|\.psv$|\.tsv$|\.tab$/i', $dncfile_name)) {
+                        $dncfile='';
+                        if ($WeBRooTWritablE > 0) {
+                            copy($dncfile_path, "$WeBServeRRooT/admin/osdial_temp_file.csv");
+                            $dncfile = "$WeBServeRRooT/admin/osdial_temp_file.csv";
+                        } else {
+                            copy($dncfile_path, "/tmp/osdial_temp_file.csv");
+                            $dncfile = "/tmp/osdial_temp_file.csv";
+                        }
+
+                        $file=fopen($dncfile, "r");
+
+                        $buffer=fgets($file, 4096);
+                        $comma_count=substr_count($buffer, ",");
+                        $tab_count=substr_count($buffer, "\t");
+                        $pipe_count=substr_count($buffer, "|");
+
+                        if ($tab_count > $comma_count and $tab_count > $pipe_count) {
+                            $delimiter="\t";  $delim_name="TSV (tab-separated values)";
+                        } elseif ($pipe_count > $tab_count and $pipe_count > $comma_count) {
+                            $delimiter="|";  $delim_name="PSV (pipe-separated values)";
+                        } else {
+                            $delimiter=",";  $delim_name="CSV (comma-separated values)";
+                        }
+
+                        flush();
+                        $file=fopen($dncfile, "r");
+
+                        echo "<hr width=80%><br><br><center><font size=3 color='$default_text'><b>Processing $delim_name file...</b></font></center><br>\n";
+                        ob_flush();
+                        flush();
+
+                        $restab =  "<center><font color=$default_text size=3>FILE UPLOAD RESULTS</font></center>\n";
+                        $restab .= "<table border=0 cellspacing=1 width=400 align=center bgcolor=grey>\n";
+                        $restab .= "  <tr class=tabheader>\n";
+                        $restab .= "    <td>#</td>\n";
+                        $restab .= "    <td>NUMBER</td>\n";
+                        $restab .= "    <td>";
+                        if ($LOG['multicomp']) $restab .= "COMPANY";
+                        $restab .= "</td>\n";
+                        $restab .= "    <td>STATUS</td>\n";
+                        $restab .= "  </tr>\n";
+
+                        echo $restab; $restab='';
+
+                        $dnc_fail=0;
+                        $dnc_skip=0;
+                        $dnc_add=0;
+                        $o=0;
+                        while($csvrow=fgetcsv($file, 1000, $delimiter)) {
+                            $o++;
+                            $dnc_number = preg_replace('/x/','X',preg_replace('/[^0-9Xx\*]/','',$csvrow[0]));
+                            $dnc_compid='';
+                            if ($LOG['multicomp_user']>0 and preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) $dnc_compid = $LOG['company_id'];
+                            if ($LOG['multicomp_admin']>0) $dnc_compid = (preg_replace('/[^0-9]/','',$csvrow[1]) - 100);
+                            if ($dnc_compid < 1) $dnc_compid = '';
+
+                            $status='FAILED';
+                            if (strlen($dnc_number) >= 6) {
+                                if ($dnc_compid=='') {
+                                    $stmt=sprintf("SELECT count(*) FROM osdial_dnc WHERE phone_number='%s';",mres($dnc_number));
+                                } else {
+                                    $stmt=sprintf("SELECT count(*) FROM osdial_dnc_company WHERE phone_number='%s' AND company_id='%s';",mres($dnc_number),mres($dnc_compid));
+                                }
+                                $rslt=mysql_query($stmt, $link);
+                                $row=mysql_fetch_row($rslt);
+
+                                if ($row[0] > 0) {
+                                    # Existing record found, skipping.
+                                    $status='SKIPPED';
+
+                                } else {
+                                    # No existing record found, adding.
+                                    if ($dnc_compid=='') {
+                                        $stmt=sprintf("INSERT INTO osdial_dnc (phone_number) VALUES ('%s');",mres($dnc_number));
+                                    } else {
+                                        $stmt=sprintf("INSERT INTO osdial_dnc_company (phone_number,company_id) VALUES ('%s','%s');",mres($dnc_number),mres($dnc_compid));
+                                    }
+                                    $rslt=mysql_query($stmt, $link);
+                                    $ar = mysql_affected_rows($link);
+                                    if ($ar>0) $status='ADDED';
+                                }
+                            }
+                            if ($status == 'FAILED') $resclr = "red";
+                            if ($status == 'SKIPPED')  $resclr = "orange";
+                            if ($status == 'ADDED')  $resclr = "black";
+
+                            $restab .= "  <tr " . bgcolor($o) . " class=\"row font1\">\n";
+                            $restab .= "    <td align=right><font color=\"$resclr\">$o</font></td>\n";
+                            $restab .= "    <td align=center><font color=\"$resclr\">$dnc_number</font></td>\n";
+                            $restab .= "    <td align=center><font color=\"$resclr\">";
+                            if ($dnc_compid>0) $restab .= ($dnc_compid+100);
+                            $restab .= "</font></td>\n";
+                            $restab .= "    <td align=center><font color=\"$resclr\">$status</font></td>\n";
+                            $restab .= "  </tr>\n";
+                            if ($status == 'FAILED') $dnc_fail++;
+                            if ($status == 'SKIPPED') $dnc_skip++;
+                            if ($status == 'ADDED') $dnc_add++;
+                            echo $restab; $restab='';
+                        }
+                        $restab .= "  <tr class=tabheader>\n";
+                        $restab .= "    <td>FAILED</td>\n";
+                        $restab .= "    <td>SKIPPED</td>\n";
+                        $restab .= "    <td>ADDED</td>\n";
+                        $restab .= "    <td>TOTAL</td>\n";
+                        $restab .= "  </tr>\n";
+                        $restab .= "  <tr bgcolor=$oddrows class=\"row font2\">\n";
+                        $restab .= "    <td align=right>$dnc_fail</td>\n";
+                        $restab .= "    <td align=right>$dnc_skip</td>\n";
+                        $restab .= "    <td align=right>$dnc_add</td>\n";
+                        $restab .= "    <td align=right><b>$o</b></td>\n";
+                        $restab .= "  </tr>\n";
+                        $restab .= "  <tr class=tabfooter>\n";
+                        $restab .= "    <td colspan=4></td>\n";
+                        $restab .= "  </tr>\n";
+                        $restab .= "</table>\n";
+                        echo $restab; $restab='';
+
+
+                    } else {
+                        $loaderr = "<tr bgcolor=$oddrows><td align=center><font color=red>DNC UPLOAD ERROR - File must be in CSV, PSV or TAB format.</font></td></tr>\n";
+                        $dncfile_name='';
+                    }
+                }
+
+                # Display form.
+                if ($dncfile_name=='') {
+                    echo "<br><hr width=80%><br>";
+                    echo "<center><font color=$default_text size=3>Upload DNC List</font></center>\n";
+                    echo "<form action=$PHP_SELF method=POST enctype=\"multipart/form-data\">\n";
+                    echo "<input type=hidden name=ADD value=121>\n";
+		            echo "<table width=500 bgcolor=grey align=center cellspacing=1>\n";
+                    echo $loaderr;
+                    echo "  <tr bgcolor=$oddrows class=font2>\n";
+                    echo "    <td align=center>CSV/PSV/TSV File:&nbsp;<input type=file name=\"dncfile\" value=\"\">$NWB#osdial_list-dnc$NWE</td>\n";
+                    echo "  </tr>\n";
+                    echo "  <tr class=tabfooter>\n";
+                    echo "    <td align=center class=tabbutton><input type=submit name=SUBMIT value=\"UPLOAD\"></td>\n";
+                    echo "  </tr>\n";
+                    echo "</table>\n";
+                    echo "</form>\n";
+                }
+            }
+
+	        if ($LOG['user_level']==9 and $LOG['export_dnc']==1) {
+                echo "<br><hr width=80%><br>";
+                echo "<center><font color=$default_text size=3>Export DNC List</font></center>\n";
+                echo "<form action=$PHP_SELF method=POST>\n";
+                echo "<input type=hidden name=ADD value=121>\n";
+                echo "<input type=hidden name=dnc_prepare_export value=1>\n";
+		        echo "<table width=500 bgcolor=grey align=center cellspacing=1>\n";
+                echo "  <tr bgcolor=$oddrows class=font2>\n";
+                echo "    <td align=center>Click EXPORT to begin downloading DNC. $NWB#osdial_list-dnc$NWE</td>\n";
+                echo "  </tr>\n";
+                echo "  <tr class=tabfooter>\n";
+                echo "    <td align=center class=tabbutton><input type=submit name=SUBMIT value=\"EXPORT\"></td>\n";
+                echo "  </tr>\n";
+                echo "</table>\n";
+                echo "</form>\n";
+            }
         }
 
     } else {

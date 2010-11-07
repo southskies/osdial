@@ -20,21 +20,43 @@
 #
 #
 #
-
 # Includes
 require("include/functions.php");
 
 $name = get_variable("name");
 $rows = get_variable("rows");
+$glob = get_variable("glob");
 
 header("Content-type: text/csv; charset=utf-8");
-header("Content-Disposition: inline; filename=" . $name . "_" . date("Ymd-His") . ".csv");
+header("Content-Disposition: inline; filename=\"" . $name . "_" . date("Ymd-His") . ".csv\"");
 
-$currow = -1;
-while ($currow++ < $rows-1) {
-	$row = get_variable("row" . $currow);
-	$items = explode('|',$row);
-	echo '"' . implode('","',$items) . "\"\r\n";
+
+$dncdata=array();
+$postsize=0;
+if ($glob!='') {
+    $rows=0;
+    $postsize = strlen($glob);
+    foreach (explode("\n",preg_replace('/\r/','',$glob)) as $gline) {
+	    $dncdata[]=explode('|',$gline);
+        $rows++;
+    }
+} else {
+    $currow = -1;
+    while ($currow++ < $rows-1) {
+	    $postrow = get_variable("row" . $currow);
+        $postsize += strlen($postrow);
+	    $dncdata[]=explode('|',$postrow);
+    }
+}
+outputCSV($dncdata);
+
+function outputCSV($data) {
+    $outstream = fopen("php://output", 'w');
+    function __outputCSV(&$vals, $key, $filehandler) {
+        fputcsv($filehandler, $vals, ',', '"');
+    }
+    array_walk($data, '__outputCSV', $outstream);
+    fclose($outstream);
 }
 
 ?>
