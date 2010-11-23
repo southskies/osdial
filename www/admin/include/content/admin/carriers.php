@@ -949,8 +949,8 @@ if ($ADD == "3carrier") {
             echo "    <td align=right>Failover Carrier:</td>\n";
             echo "    <td align=left>\n";
             echo "      <select name=carrier_failover_id>\n";
-            $krh = get_krh($link, 'osdial_carriers', '*','',sprintf('carrier_id!=%s',$carrier_id),'');
-            echo format_select_options($krh, 'carrier_id', 'carrier_name', $gfr['failover_id'], "-- NONE --",'');
+            $krh = get_krh($link, 'osdial_carriers', '*','',sprintf("id!='%s'",$carrier_id),'');
+            echo format_select_options($krh, 'id', 'name', $gfr['failover_id'], "-- NONE --",'');
             echo "      </select>\n";
             echo "      $NWB#carriers-failover$NWE\n";
             echo "    </td>\n";
