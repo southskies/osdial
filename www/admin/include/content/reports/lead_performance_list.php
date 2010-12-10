@@ -84,12 +84,12 @@ function report_lead_performance_list() {
     } else {
         $group_SQL = eregi_replace(",$",'',$group_SQL);
 
-        $group_logSQLand = sprintf("AND osdial_log.campaign_id IN %s AND osdial_log.list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
+        $group_logSQLand = sprintf("AND osdial_log.campaign_id IN %s AND osdial_lists.list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
         $group_olSQLand = sprintf("AND osdial_lists.campaign_id IN %s AND osdial_lists.list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
         $group_ocSQLand = sprintf("AND osdial_campaigns.campaign_id IN %s AND osdial_campaigns.list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
         $group_SQLand = sprintf("AND campaign_id IN %s AND list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
 
-        $group_logSQL = sprintf("WHERE osdial_log.campaign_id IN %s AND osdial_log.list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
+        $group_logSQL = sprintf("WHERE osdial_log.campaign_id IN %s AND osdial_list.list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
         $group_olSQL = sprintf("WHERE osdial_lists.campaign_id IN %s AND osdial_lists.list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
         $group_ocSQL = sprintf("WHERE osdial_campaigns.campaign_id IN %s AND osdial_campaigns.list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
         $group_SQL = sprintf("WHERE campaign_id IN %s AND list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
@@ -355,11 +355,13 @@ function report_lead_performance_list() {
             if ($type == "hour") {
                 $html .= "    <td align=right><a href=\"?ADD=$ADD&SUB=$SUB&type=date&start_date=$start_date$groupQS&submit=submit&DB=$DB\">$period</a></td>\n";
                 $html .= "    <td align=center bgcolor=$menubarcolor><font style=\"font-size:1px;\">&nbsp;</font></td>\n";
-                $html .= "    <td align=right><a href=\"?ADD=999999&SUB=15&query_date=$start_date&time_begin=$period:00$&end_date=$start_date&time_end=$period:59&use_agent_log=1$groupQS&SUBMIT=SUBMIT&DB=$DB\">$calls</a></td>\n";
+                #$html .= "    <td align=right><a href=\"?ADD=999999&SUB=15&query_date=$start_date&time_begin=$period:00&end_date=$start_date&time_end=$period:59&use_agent_log=1$groupQS&SUBMIT=SUBMIT&DB=$DB\">$calls</a></td>\n";
+                $html .= "    <td align=right>$calls</td>\n";
             } else {
                 $html .= "    <td align=right><a href=\"?ADD=$ADD&SUB=$SUB&type=hour&start_date=$period$groupQS&submit=submit&DB=$DB\">$period</a></td>\n";
                 $html .= "    <td align=center bgcolor=$menubarcolor><font style=\"font-size:1px;\">&nbsp;</font></td>\n";
-                $html .= "    <td align=right><a href=\"?ADD=999999&SUB=15&query_date=$period&time_begin=00:00$&end_date=$period&time_end=23:59&use_agent_log=1$groupQS&SUBMIT=SUBMIT&DB=$DB\">$calls</a></td>\n";
+                #$html .= "    <td align=right><a href=\"?ADD=999999&SUB=15&query_date=$period&time_begin=00:00&end_date=$period&time_end=23:59&use_agent_log=1$groupQS&SUBMIT=SUBMIT&DB=$DB\">$calls</a></td>\n";
+                $html .= "    <td align=right>$calls</td>\n";
             }
             $html .= "    <td align=right>$contacts</td>\n";
             $html .= "    <td align=right>$sales</td>\n";
