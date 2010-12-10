@@ -521,6 +521,14 @@ if ($ADD==311) {
         $first_row=1;
         $all_called_first=1000;
         $all_called_last=0;
+        $count_statuses = array();
+        $count_called = array();
+        $count_count = array();
+        $all_called_count = array();
+        $status_called_first = array();
+        $status_called_last = array();
+        $leads_in_sts = array();
+        $status = array();
         while ($status_called_to_print > $o) {
             $rowx=mysql_fetch_row($rslt);
             $leads_in_list = ($leads_in_list + $rowx[2]);
@@ -637,6 +645,14 @@ if ($ADD==311) {
         $first_row=1;
         $all_called_first=1000;
         $all_called_last=0;
+        $count_statuses = array();
+        $count_called = array();
+        $count_count = array();
+        $all_called_count = array();
+        $status_called_first = array();
+        $status_called_last = array();
+        $leads_in_sts = array();
+        $status = array();
         while ($status_called_to_print > $o) {
             $rowx=mysql_fetch_row($rslt);
             $leads_in_list = ($leads_in_list + $rowx[2]);
