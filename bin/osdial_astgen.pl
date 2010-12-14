@@ -160,8 +160,8 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 			my $pr = `cp /etc/asterisk/chan_dahdi.conf /etc/asterisk/zapata.conf`;
 		}
 	}
-	if ($vmdata =! /^\[osdial\]$/) {
-		$vmdata =~ s/^\[default\]$/[osdial]\n#include osdial_voicemail.conf\n\n[default]\n/gm;
+	unless ($vmdata =~ /^\[osdial\]$/m) {
+		$vmdata =~ s/^\[default\]$/[osdial]\n#include osdial_voicemail.conf\n\n[default]/gm;
 	}
 	write_reload($oedata,'osdial_extensions',$oereload);
 	write_reload($moddata,'modules','reload');
@@ -632,7 +632,7 @@ sub gen_phones {
 			$iphn .= "context=" . $sret->{ext_context} . "\n";
 			$iphn .= "mailbox=" . $sret->{voicemail_id} . "\@osdial\n" if ($sret->{voicemail_id});
 		}
-		$vphn .= $sret->{voicemail_id} . ' => ' . $sret->{voicemail_password} . ',' . $sret->{fullname} . ',' . $sret->{voicemail_email} . ',,';
+		$vphn .= $sret->{voicemail_id} . ' => ' . $sret->{voicemail_password} . ',' . $sret->{fullname} . ',' . $sret->{voicemail_email} . ',,' . "\n";
 		my $dext = $sret->{protocol} . "/" . $sret->{extension};
 		if ($sret->{protocol} =~ /SIP|IAX2/ and $sret->{extension} =~ /\@/) {
 			my($sext,$ssrv) = split /\@/,$sret->{extension};
@@ -659,7 +659,7 @@ sub gen_phones {
 			if ($sret->{voicemail_id} ne "") {
 				$ephn .= "exten => _" . $sret->{dialplan_number} . ",1,Dial(" . $dext . ",30,o)\n";
 				$ephn .= "exten => _" . $sret->{dialplan_number} . ",2,GotoIf(\$[\"\${DIALSTATUS}\" = \"NOANSWER\"|\"\${DIALSTATUS}\" = \"BUSY\"|\"\${DIALSTATUS}\" = \"CONGESTED\"|\"\${DIALSTATUS}\" = \"CHANUNAVAIL\"]?3:4)\n";
-				$ephn .= "exten => _" . $sret->{dialplan_number} . ",3,Voicemail(" . $sret->{voicemail_id} . ")\n";
+				$ephn .= "exten => _" . $sret->{dialplan_number} . ",3,Voicemail(" . $sret->{voicemail_id} . "\@osdial)\n";
 				$ephn .= "exten => _" . $sret->{dialplan_number} . ",4,Hangup()\n\n";
 			} else {
 				$ephn .= "exten => _" . $sret->{dialplan_number} . ",1,Dial(" . $dext . ",60,o)\n";
