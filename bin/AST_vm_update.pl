@@ -188,7 +188,7 @@ while ($sthArows > $rec_count)
     {
 	   @aryA = $sthA->fetchrow_array;
 		$PTextensions[$rec_count] =		 "$aryA[0]";
-		$PTvoicemail_ids[$rec_count] =	 "$aryA[1]";
+		$PTvoicemail_ids[$rec_count] =	 "$aryA[1]\@osdial";
 		$PTmessages[$rec_count] =		 "$aryA[2]";
 		$PTold_messages[$rec_count] =	 "$aryA[3]";
 		$rec_count++;
@@ -220,17 +220,20 @@ foreach(@PTextensions)
 	{
 	@list_channels=@MT;
 	$t->buffer_empty;
-	@list_channels = $t->cmd(String => "Action: MailboxCount\nMailbox: $PTvoicemail_ids[$i]\n\nAction: Ping\n\n", Prompt => '/Response: Pong.*/'); 
+	@list_channels = $t->cmd(String => "Action: MailboxCount\nMailbox: $PTvoicemail_ids[$i]\n\nAction: Ping\n\n", Prompt => '/Ping: Pong.*/'); 
 
 	$j=0;
 	foreach(@list_channels)
 		{
 		if ($list_channels[$j] =~ /Mailbox: $PTvoicemail_ids[$i]/)
 			{
-			$NEW_messages[$i] = "$list_channels[$j+1]";
-			$NEW_messages[$i] =~ s/NewMessages: |\n//gi;
-			$OLD_messages[$i] = "$list_channels[$j+2]";
-			$OLD_messages[$i] =~ s/OldMessages: |\n//gi;
+			$URG_messages[$i] = "$list_channels[$j+1]";
+			$URG_messages[$i] =~ s/UrgMessages: (.*)\n/$1/gim;
+			$NEW_messages[$i] = "$list_channels[$j+2]";
+			$NEW_messages[$i] =~ s/NewMessages: (.*)\n/$1/gim;
+			$NEW_messages[$i] += $URG_messages[$i];
+			$OLD_messages[$i] = "$list_channels[$j+3]";
+			$OLD_messages[$i] =~ s/OldMessages: (.*)\n/$1/gim;
 			}
 
 		$j++;
