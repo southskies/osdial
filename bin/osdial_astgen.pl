@@ -116,6 +116,9 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 	my $oefile = "/etc/asterisk/osdial_extensions.conf";
 	$oefile = $osdial->{PATHdocs} . "/conf_examples/osdial_extensions.conf" if (-s $oefile < 250);
 
+	my $vmfile = "/etc/asterisk/voicemail.conf";
+	$vmfile = $osdial->{PATHdocs} . "/conf_examples/voicemail.conf" if (-s $vmfile < 250);
+
 	my($oedata);
 	open(OE, $oefile);
 	while (my $oeline = <OE>) {
@@ -128,6 +131,12 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 		$moddata .= $modline;
 	}
 	close(MOD);
+	my($vmdata);
+	open(VM, $vmfile);
+	while (my $vmline = <VM>) {
+		$vmdata .= $vmline;
+	}
+	close(VM);
 	my $oereload;
 	$oedata =~ s/\r\n/\n/gm;
 	$oedata =~ s/^TRUNKloop.*$/TRUNKloop = IAX2\/ASTloop:$pass\@127.0.0.1:40569/m;
@@ -151,8 +160,12 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 			my $pr = `cp /etc/asterisk/chan_dahdi.conf /etc/asterisk/zapata.conf`;
 		}
 	}
+	if ($vmdata =! /^\[osdial\]$/) {
+		$vmdata =~ s/^\[default\]$/[osdial]\n#include osdial_voicemail.conf\n\n[default]\n/gm;
+	}
 	write_reload($oedata,'osdial_extensions',$oereload);
 	write_reload($moddata,'modules','reload');
+	write_reload($vmdata,'voicemail','voicemail reload');
 
 	# Generate intra-server extensions and iax communication.
 	# (osdial_extensions_servers.conf osdial_iax_servers.conf)
@@ -546,6 +559,7 @@ sub gen_phones {
 	my $sphn = $achead;
 	my $iphn = $achead;
 	my $ephn = $achead;
+	my $vphn = $achead;
 
 	if ($dcc) {
 		$ephn .= "\n\n; The $dcc carrier was selected as the system default.\n";
@@ -596,7 +610,7 @@ sub gen_phones {
 			$sphn .= "qualify=5000\n";
 			$sphn .= "nat=yes\n";
 			$sphn .= "context=" . $sret->{ext_context} . "\n";
-			$sphn .= "mailbox=" . $sret->{voicemail_id} . "\@default\n" if ($sret->{voicemail_id});
+			$sphn .= "mailbox=" . $sret->{voicemail_id} . "\@osdial\n" if ($sret->{voicemail_id});
 		} elsif ($sret->{protocol} eq "IAX2" and $sret->{extension} !~ /\@|\//) {
 			$iphn .= ";\n[". $sret->{extension} ."]\n";
 			$iphn .= "type=friend\n";
@@ -616,8 +630,9 @@ sub gen_phones {
 			$iphn .= "requirecalltoken=no\n";
 			$iphn .= "nat=yes\n";
 			$iphn .= "context=" . $sret->{ext_context} . "\n";
-			$iphn .= "mailbox=" . $sret->{voicemail_id} . "\@default\n" if ($sret->{voicemail_id});
+			$iphn .= "mailbox=" . $sret->{voicemail_id} . "\@osdial\n" if ($sret->{voicemail_id});
 		}
+		$vphn .= $sret->{voicemail_id} . ' => ' . $sret->{voicemail_password} . ',' . $sret->{fullname} . ',' . $sret->{voicemail_email} . ',,';
 		my $dext = $sret->{protocol} . "/" . $sret->{extension};
 		if ($sret->{protocol} =~ /SIP|IAX2/ and $sret->{extension} =~ /\@/) {
 			my($sext,$ssrv) = split /\@/,$sret->{extension};
@@ -660,6 +675,7 @@ sub gen_phones {
 	write_reload($sphn,'osdial_sip_phones','sip reload');
 	write_reload($iphn,'osdial_iax_phones','iax2 reload');
 	write_reload($ephn,'osdial_extensions_phones',$extreload);
+	write_reload($vphn,'osdial_voicemail','voicemail reload');
 }
 
 

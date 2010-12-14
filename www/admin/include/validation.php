@@ -155,6 +155,7 @@ if ($non_latin < 1)	{
 	$voicemail_ext = ereg_replace("[^0-9]","",$voicemail_ext);
 	$voicemail_exten = ereg_replace("[^0-9]","",$voicemail_exten);
 	$voicemail_id = ereg_replace("[^0-9]","",$voicemail_id);
+	$voicemail_password = ereg_replace("[^0-9]","",$voicemail_password);
 	$wrapup_seconds = ereg_replace("[^0-9]","",$wrapup_seconds);
 	$use_non_latin = ereg_replace("[^0-9]","",$use_non_latin);
 	$webroot_writable = ereg_replace("[^0-9]","",$webroot_writable);
@@ -419,6 +420,7 @@ if ($non_latin < 1)	{
 	$after_hours_message_filename = ereg_replace("[^-\.\:\/\@\_0-9a-zA-Z]","",$after_hours_message_filename);
 	$welcome_message_filename = ereg_replace("[^-\.\:\/\@\_0-9a-zA-Z]","",$welcome_message_filename);
 	$onhold_prompt_filename = ereg_replace("[^-\.\:\/\@\_0-9a-zA-Z]","",$onhold_prompt_filename);
+	$voicemail_email = ereg_replace("[^-\.\:\/\@\_0-9a-zA-Z]","",$voicemail_email);
 
     # Others
 	$company_name = ereg_replace("[^ \.\!\,\&\@0-9a-zA-Z]","",$company_name);

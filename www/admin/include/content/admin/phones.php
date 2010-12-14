@@ -169,7 +169,7 @@ if ($ADD==41111111111) {
                     if (strlen($voicemail_id)>0) $voicemail_id = (($company * 1) + 0) . $voicemail_id;
                     $login = (($company * 1) + 0) . $login;
                 }
-                $stmt="UPDATE phones set extension='$extension', dialplan_number='$dialplan_number', voicemail_id='$voicemail_id', phone_ip='$phone_ip', computer_ip='$computer_ip', server_ip='$server_ip', login='$login', pass='$pass', status='$status', active='$active', phone_type='$phone_type', fullname='$fullname', company='$company', picture='$picture', protocol='$protocol', local_gmt='$local_gmt', ASTmgrUSERNAME='$ASTmgrUSERNAME', ASTmgrSECRET='$ASTmgrSECRET', login_user='$login_user', login_pass='$login_pass', login_campaign='$login_campaign', park_on_extension='$park_on_extension', conf_on_extension='$conf_on_extension', OSDIAL_park_on_extension='$OSDIAL_park_on_extension', OSDIAL_park_on_filename='$OSDIAL_park_on_filename', monitor_prefix='$monitor_prefix', recording_exten='$recording_exten', voicemail_exten='$voicemail_exten', voicemail_dump_exten='$voicemail_dump_exten', ext_context='$ext_context', dtmf_send_extension='$dtmf_send_extension', call_out_number_group='$call_out_number_group', client_browser='$client_browser', install_directory='$install_directory', local_web_callerID_URL='" . mysql_real_escape_string($local_web_callerID_URL) . "', OSDIAL_web_URL='" . mysql_real_escape_string($OSDIAL_web_URL) . "', AGI_call_logging_enabled='$AGI_call_logging_enabled', user_switching_enabled='$user_switching_enabled', conferencing_enabled='$conferencing_enabled', admin_hangup_enabled='$admin_hangup_enabled', admin_hijack_enabled='$admin_hijack_enabled', admin_monitor_enabled='$admin_monitor_enabled', call_parking_enabled='$call_parking_enabled', updater_check_enabled='$updater_check_enabled', AFLogging_enabled='$AFLogging_enabled', QUEUE_ACTION_enabled='$QUEUE_ACTION_enabled', CallerID_popup_enabled='$CallerID_popup_enabled', voicemail_button_enabled='$voicemail_button_enabled', enable_fast_refresh='$enable_fast_refresh', fast_refresh_rate='$fast_refresh_rate', enable_persistant_mysql='$enable_persistant_mysql', auto_dial_next_number='$auto_dial_next_number', VDstop_rec_after_each_call='$VDstop_rec_after_each_call', DBX_server='$DBX_server', DBX_database='$DBX_database', DBX_user='$DBX_user', DBX_pass='$DBX_pass', DBX_port='$DBX_port', DBY_server='$DBY_server', DBY_database='$DBY_database', DBY_user='$DBY_user', DBY_pass='$DBY_pass', DBY_port='$DBY_port', outbound_cid='$outbound_cid', outbound_cid_name='$outbound_cid_name', enable_sipsak_messages='$enable_sipsak_messages' where extension='$old_extension' and server_ip='$old_server_ip';";
+                $stmt="UPDATE phones set extension='$extension', dialplan_number='$dialplan_number', voicemail_id='$voicemail_id', phone_ip='$phone_ip', computer_ip='$computer_ip', server_ip='$server_ip', login='$login', pass='$pass', status='$status', active='$active', phone_type='$phone_type', fullname='$fullname', company='$company', picture='$picture', protocol='$protocol', local_gmt='$local_gmt', ASTmgrUSERNAME='$ASTmgrUSERNAME', ASTmgrSECRET='$ASTmgrSECRET', login_user='$login_user', login_pass='$login_pass', login_campaign='$login_campaign', park_on_extension='$park_on_extension', conf_on_extension='$conf_on_extension', OSDIAL_park_on_extension='$OSDIAL_park_on_extension', OSDIAL_park_on_filename='$OSDIAL_park_on_filename', monitor_prefix='$monitor_prefix', recording_exten='$recording_exten', voicemail_exten='$voicemail_exten', voicemail_dump_exten='$voicemail_dump_exten', ext_context='$ext_context', dtmf_send_extension='$dtmf_send_extension', call_out_number_group='$call_out_number_group', client_browser='$client_browser', install_directory='$install_directory', local_web_callerID_URL='" . mysql_real_escape_string($local_web_callerID_URL) . "', OSDIAL_web_URL='" . mysql_real_escape_string($OSDIAL_web_URL) . "', AGI_call_logging_enabled='$AGI_call_logging_enabled', user_switching_enabled='$user_switching_enabled', conferencing_enabled='$conferencing_enabled', admin_hangup_enabled='$admin_hangup_enabled', admin_hijack_enabled='$admin_hijack_enabled', admin_monitor_enabled='$admin_monitor_enabled', call_parking_enabled='$call_parking_enabled', updater_check_enabled='$updater_check_enabled', AFLogging_enabled='$AFLogging_enabled', QUEUE_ACTION_enabled='$QUEUE_ACTION_enabled', CallerID_popup_enabled='$CallerID_popup_enabled', voicemail_button_enabled='$voicemail_button_enabled', enable_fast_refresh='$enable_fast_refresh', fast_refresh_rate='$fast_refresh_rate', enable_persistant_mysql='$enable_persistant_mysql', auto_dial_next_number='$auto_dial_next_number', VDstop_rec_after_each_call='$VDstop_rec_after_each_call', DBX_server='$DBX_server', DBX_database='$DBX_database', DBX_user='$DBX_user', DBX_pass='$DBX_pass', DBX_port='$DBX_port', DBY_server='$DBY_server', DBY_database='$DBY_database', DBY_user='$DBY_user', DBY_pass='$DBY_pass', DBY_port='$DBY_port', outbound_cid='$outbound_cid', outbound_cid_name='$outbound_cid_name', enable_sipsak_messages='$enable_sipsak_messages',voicemail_password='$voicemail_password',voicemail_email='$voicemail_email' where extension='$old_extension' and server_ip='$old_server_ip';";
                 $rslt=mysql_query($stmt, $link);
             }
         }
@@ -270,23 +270,6 @@ if ($ADD==31111111111) {
         }
         echo "<input type=text name=dialplan_number size=15 maxlength=20 value=\"$dpn\">";
         echo " (digits only)$NWB#phones-dialplan_number$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Voicemail Box: </td><td align=left>";
-        $vmb = $row[2];
-        if ($LOG['multicomp'] > 0 and preg_match($LOG['companiesRE'],$row[2])) {
-            echo "<font color=$default_text>" . $row[12] . "</font>";
-            if ($row[12] == substr($row[2],0,3)) $vmb = substr($row[2],3);
-        }
-        echo "<input type=text name=voicemail_id size=10 maxlength=10 value=\"$vmb\">";
-        echo " (digits only)$NWB#phones-voicemail_id$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Outbound CallerID Name: </td><td align=left><input type=text name=outbound_cid_name size=20 maxlength=40 value=\"$row[67]\">$NWB#phones-outbound_cid_name$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Outbound CallerID: </td><td align=left><input type=text name=outbound_cid size=10 maxlength=20 value=\"$row[65]\"> (digits only)$NWB#phones-outbound_cid$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Phone IP address: </td><td align=left><input type=text name=phone_ip size=20 maxlength=15 value=\"$row[3]\"> (optional)$NWB#phones-phone_ip$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Computer IP address: </td><td align=left><input type=text name=computer_ip size=20 maxlength=15 value=\"$row[4]\"> (optional)$NWB#phones-computer_ip$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=311111111111&server_ip=$row[5]\">Server IP</a>: </td><td align=left><select size=1 name=server_ip>\n";
-
-        echo "$servers_list";
-        #echo "<option SELECTED>$row[5]</option>\n";
-        echo "</select>$NWB#phones-server_ip$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Login: </td><td align=left>";
         $plog = $row[6];
         if ($LOG['multicomp'] > 0 and preg_match($LOG['companiesRE'],$row[6])) {
@@ -296,6 +279,25 @@ if ($ADD==31111111111) {
         echo "<input type=text name=login size=10 maxlength=10 value=\"" . $plog . "\">";
         echo "$NWB#phones-login$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=pass size=10 maxlength=10 value=\"$row[7]\">$NWB#phones-pass$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Voicemail Box: </td><td align=left>";
+        $vmb = $row[2];
+        if ($LOG['multicomp'] > 0 and preg_match($LOG['companiesRE'],$row[2])) {
+            echo "<font color=$default_text>" . $row[12] . "</font>";
+            if ($row[12] == substr($row[2],0,3)) $vmb = substr($row[2],3);
+        }
+        echo "<input type=text name=voicemail_id size=10 maxlength=10 value=\"$vmb\">";
+        echo " (digits only)$NWB#phones-voicemail_id$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Voicemail Password: </td><td align=left><input type=text name=voicemail_password size=10 maxlength=10 value=\"$row[69]\">$NWB#phones-voicemail_password$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Voicemail Email: </td><td align=left><input type=text name=voicemail_email size=50 maxlength=255 value=\"$row[70]\">$NWB#phones-voicemail_email$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Outbound CallerID Name: </td><td align=left><input type=text name=outbound_cid_name size=20 maxlength=40 value=\"$row[67]\">$NWB#phones-outbound_cid_name$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Outbound CallerID: </td><td align=left><input type=text name=outbound_cid size=10 maxlength=20 value=\"$row[65]\"> (digits only)$NWB#phones-outbound_cid$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Phone IP address: </td><td align=left><input type=text name=phone_ip size=20 maxlength=15 value=\"$row[3]\"> (optional)$NWB#phones-phone_ip$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Computer IP address: </td><td align=left><input type=text name=computer_ip size=20 maxlength=15 value=\"$row[4]\"> (optional)$NWB#phones-computer_ip$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=311111111111&server_ip=$row[5]\">Server IP</a>: </td><td align=left><select size=1 name=server_ip>\n";
+
+        echo "$servers_list";
+        #echo "<option SELECTED>$row[5]</option>\n";
+        echo "</select>$NWB#phones-server_ip$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select size=1 name=status><option>ACTIVE</option><option>SUSPENDED</option><option>CLOSED</option><option>PENDING</option><option>ADMIN</option><option selected>$row[8]</option></select>$NWB#phones-status$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Active Account: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option selected>$row[9]</option></select>$NWB#phones-active$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Phone Type: </td><td align=left><input type=text name=phone_type size=20 maxlength=50 value=\"$row[10]\">$NWB#phones-phone_type$NWE</td></tr>\n";
@@ -351,6 +353,11 @@ if ($ADD==31111111111) {
         echo "<tr bgcolor=$oddrows><td align=right>Enable SIPSAK Messages: </td><td align=left><select size=1 name=enable_sipsak_messages><option>1</option><option>0</option><option selected>$row[66]</option></select>$NWB#phones-enable_sipsak_messages$NWE</td></tr>\n";
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</TABLE></center>\n";
+        if ($row[6]==$row[7]) {
+            echo "<script type=\"text/javascript\">\n";
+            echo "alert('WARNING: Password is very insecure, it should not be the same as the login');\n";
+            echo "</script>\n";
+        }
 
         echo "<input type=hidden name=ASTmgrUSERNAME value=\"$row[18]\">\n";
         echo "<input type=hidden name=ASTmgrSECRET value=\"$row[19]\">\n";
