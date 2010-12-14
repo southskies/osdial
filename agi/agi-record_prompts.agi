@@ -313,6 +313,8 @@ else
 	{
 	if ($pin == '1')
 		{
+		`mkdir -p /var/lib/asterisk/OSDprompts`;
+		`cp /var/lib/asterisk/sounds/$REC_id /var/lib/asterisk/OSDprompts`;
 		$AGI->stream_file('auth-thankyou');   
 		$AGI->say_digits("$REC_id");
 		$AGI->stream_file('beep');   

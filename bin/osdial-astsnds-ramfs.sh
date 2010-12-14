@@ -35,8 +35,16 @@ if [ -d "${ASTDIR}/sounds.ramfs" -a -d "${ASTDIR}/sounds" -a ! -L "${ASTDIR}/sou
 	if [ -L "${ASTDIR}/sounds/sounds"]; then
 		rm -f ${ASTDIR}/sounds/sounds
 	fi
+	if [ -d "${RAMDIR}/sounds" ]; then
+		cp -rf ${RAMDIR}/sounds/* ${ASTDIR}/sounds.ramfs
+		rm -rf ${RAMDIR}/sounds
+	fi
 	cp -rf ${ASTDIR}/sounds/* ${ASTDIR}/sounds.ramfs
 	rm -rf ${ASTDIR}/sounds
+	mv ${ASTDIR}/sounds.ramfs ${ASTDIR}/sounds
+	if [ -d "${ASTDIR}/OSDprompts" ]; then
+		cp ${ASTDIR}/OSDprompts/* ${ASTDIR}/sounds
+	fi
 fi
 
 # RAMDIR is NOT mounted...we better put everything back.
@@ -53,6 +61,9 @@ if [ -z "$RAMMNT" ]; then
 		# If sounds does not exist, move sounds.ramfs over it.
 		elif [ ! -e "${ASTDIR}/sounds" ]; then
 			mv ${ASTDIR}/sounds.ramfs ${ASTDIR}/sounds
+		fi
+		if [ -d "${ASTDIR}/OSDprompts" ]; then
+			cp ${ASTDIR}/OSDprompts/* ${ASTDIR}/sounds
 		fi
 	fi
 
@@ -77,15 +88,24 @@ elif [ -n "$RAMMNT" ]; then
 		[ $DB -gt 0 ] && echo -e "\nMoving sound files to RAMFS." || :
 		mv ${ASTDIR}/sounds ${ASTDIR}/sounds.ramfs
 		mkdir -p ${RAMDIR}/sounds
+		if [ -d "${ASTDIR}/OSDprompts" ]; then
+			cp ${ASTDIR}/OSDprompts/* ${ASTDIR}/sounds.ramdir
+		fi
 		cp -rf ${ASTDIR}/sounds.ramfs/* ${RAMDIR}/sounds
 	elif [ -d "${ASTDIR}/sounds.ramfs" -a -d "${RAMDIR}/sounds" ]; then
 		# Update our sound files on the harddisk.
 		[ $DB -gt 0 ] && echo -e "\nUpdate sound files on HD." || :
+		if [ -d "${ASTDIR}/OSDprompts" ]; then
+			cp ${ASTDIR}/OSDprompts/* ${RAMDIR}/sounds
+		fi
 		cp -rf ${RAMDIR}/sounds/* ${ASTDIR}/sounds.ramfs
 	elif [ -d "${ASTDIR}/sounds.ramfs" -a ! -d "${RAMDIR}/sounds" ]; then
 		# Recover RAMFS sound files.
 		[ $DB -gt 0 ] && echo -e "\nUpdate sound files on RAMFS." || :
 		mkdir -p ${RAMDIR}/sounds
+		if [ -d "${ASTDIR}/OSDprompts" ]; then
+			cp ${ASTDIR}/OSDprompts/* ${ASTDIR}/sounds.ramfs
+		fi
 		cp -rf ${ASTDIR}/sounds.ramfs/* ${RAMDIR}/sounds
 	fi
 fi
