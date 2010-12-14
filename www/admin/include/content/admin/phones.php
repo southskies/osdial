@@ -287,8 +287,8 @@ if ($ADD==31111111111) {
         }
         echo "<input type=text name=voicemail_id size=10 maxlength=10 value=\"$vmb\">";
         echo " (digits only)$NWB#phones-voicemail_id$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Voicemail Password: </td><td align=left><input type=text name=voicemail_password size=10 maxlength=10 value=\"$row[69]\">$NWB#phones-voicemail_password$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Voicemail Email: </td><td align=left><input type=text name=voicemail_email size=50 maxlength=255 value=\"$row[70]\">$NWB#phones-voicemail_email$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Voicemail Password: </td><td align=left><input type=text name=voicemail_password size=10 maxlength=10 value=\"$row[68]\">$NWB#phones-voicemail_password$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Voicemail Email: </td><td align=left><input type=text name=voicemail_email size=50 maxlength=255 value=\"$row[69]\">$NWB#phones-voicemail_email$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Outbound CallerID Name: </td><td align=left><input type=text name=outbound_cid_name size=20 maxlength=40 value=\"$row[67]\">$NWB#phones-outbound_cid_name$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Outbound CallerID: </td><td align=left><input type=text name=outbound_cid size=10 maxlength=20 value=\"$row[65]\"> (digits only)$NWB#phones-outbound_cid$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Phone IP address: </td><td align=left><input type=text name=phone_ip size=20 maxlength=15 value=\"$row[3]\"> (optional)$NWB#phones-phone_ip$NWE</td></tr>\n";
