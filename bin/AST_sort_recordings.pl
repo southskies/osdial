@@ -98,8 +98,7 @@ if (-e $lock_file) {
 
 
 my $webpath = $osdial->{VARHTTP_path};
-my $sret = $osdial->sql_query("SELECT data FROM configuration WHERE name='ArchiveWebPath';");
-$webpath = $sret->{data} if ($sret->{data} ne "");
+$webpath = $osdial->{configuration}{ArchiveWebPath} if ($osdial->{configuration}{ArchiveWebPath} ne "");
 	
 
 ### directory where -all recordings are

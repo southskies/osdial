@@ -166,16 +166,16 @@ if (-e $lock_file) {
 
 
 my $sret = $osdial->sql_query("SELECT data FROM configuration WHERE name='ArchiveMixFormat';");
-if ($sret->{data} ne "") {
+if ($osdial->{configuration}{ArchiveMixFormat} ne "") {
 	$MP3=0;
 	$OGG=0;
 	$GSM=0;
 	$WAV=0;
-	$MP3=1 if ($sret->{data} eq "MP3");
-	$OGG=1 if ($sret->{data} eq "OGG");
-	$GSM=1 if ($sret->{data} eq "GSM");
-	$WAV=1 if ($sret->{data} eq "WAV");
-	print "Overriding Mix Format with " . $sret->{data} . ".\n" if ($DB);
+	$MP3=1 if ($osdial->{configuration}{ArchiveMixFormat} eq "MP3");
+	$OGG=1 if ($osdial->{configuration}{ArchiveMixFormat} eq "OGG");
+	$GSM=1 if ($osdial->{configuration}{ArchiveMixFormat} eq "GSM");
+	$WAV=1 if ($osdial->{configuration}{ArchiveMixFormat} eq "WAV");
+	print "Overriding Mix Format with " . $osdial->{configuration}{ArchiveMixFormat} . ".\n" if ($DB);
 }
 
 

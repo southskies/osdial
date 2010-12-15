@@ -54,6 +54,7 @@ SetDefaults ()
 	PATHarchive_unmixed="processing/unmixed"
 	PATHarchive_mixed="processing/mixed"
 	PATHarchive_sorted="completed"
+	PATHarchive_backup="/opt/osdial/backups/recordings"
 	# the IP address of this machine.  default to best guess:
 	VARserver_ip=`/sbin/ifconfig eth0 | grep 'inet addr' | awk -F: '{ print $2 }' | awk '{ print $1 }'`
 	# default database server variables:
@@ -747,6 +748,7 @@ SaveConfig ()
 	echo "PATHarchive_unmixed => $PATHarchive_unmixed" >> $PATHconf
 	echo "PATHarchive_mixed => $PATHarchive_mixed" >> $PATHconf
 	echo "PATHarchive_sorted => $PATHarchive_sorted" >> $PATHconf
+	echo "PATHarchive_backup => $PATHarchive_backup" >> $PATHconf
 	echo "" >> $PATHconf
 	echo "# The IP address of this machine" >> $PATHconf
 	echo "VARserver_ip => $VARserver_ip" >> $PATHconf

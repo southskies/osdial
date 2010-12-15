@@ -12,6 +12,18 @@ INSERT INTO configuration (name,data) values('ArchiveReportPath','');##|##
 UPDATE configuration SET data='' WHERE name LIKE 'Archive%';##|##
  ##    Clear Archive configuration.;
 
+ALTER IGNORE TABLE configuration DROP KEY fk_id;##|##
+ ##    Drop non-unique key fk_id in configuration.;
+
+SET old_alter_table=1;##|##
+ ##    Turn old_alter_table on.;
+
+ALTER IGNORE TABLE configuration ADD UNIQUE KEY fk_id (fk_id,name);##|##
+ ##    Add a unique key to configuration.;
+
+SET old_alter_table=0;##|##
+ ##    Turn old_alter_table off.;
+
 CREATE TABLE server_stats (
   server_ip VARCHAR(15) NOT NULL,
   server_timestamp DATETIME NOT NULL,

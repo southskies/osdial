@@ -163,19 +163,13 @@ my $archive_pass = $osdial->{VARFTP_pass};
 my $archive_path = $osdial->{VARFTP_dir};
 my $archive_web_path = $osdial->{VARHTTP_path};
 
-my $sret = $osdial->sql_query("SELECT data FROM configuration WHERE name='ArchiveHostname';");
-if ($sret->{data} ne "") {
-	$archive_host = $sret->{data};
-	my $sret = $osdial->sql_query("SELECT data FROM configuration WHERE name='ArchivePort';");
-	$archive_port = $sret->{data};
-	my $sret = $osdial->sql_query("SELECT data FROM configuration WHERE name='ArchiveUsername';");
-	$archive_user = $sret->{data};
-	my $sret = $osdial->sql_query("SELECT data FROM configuration WHERE name='ArchivePassword';");
-	$archive_pass = $sret->{data};
-	my $sret = $osdial->sql_query("SELECT data FROM configuration WHERE name='ArchivePath';");
-	$archive_path = $sret->{data};
-	my $sret = $osdial->sql_query("SELECT data FROM configuration WHERE name='ArchiveWebPath';");
-	$archive_web_path = $sret->{data};
+if ($osdial->{configuration}{ArchiveHostname} ne "") {
+	$archive_host = $osdial->{configuration}{ArchiveHostname};
+	$archive_port = $osdial->{configuration}{ArchivePort};
+	$archive_user = $osdial->{configuration}{ArchiveUsername};
+	$archive_pass = $osdial->{configuration}{ArchivePassword};
+	$archive_path = $osdial->{configuration}{ArchivePath};
+	$archive_web_path = $osdial->{configuration}{ArchiveWebPath};
 }
 
 my $dir2 = $osdial->{PATHmonitor};

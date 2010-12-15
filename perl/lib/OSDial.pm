@@ -46,7 +46,7 @@ my %vars = (
 	'PATHarchive_unmixed'  => 'processing/unmixed',
 	'PATHarchive_mixed'    => 'processing/mixed',
 	'PATHarchive_sorted'   => 'completed',
-	'VARarchive_backup'    => '/opt/osdial/backups/recordings',
+	'PATHarchive_backup'    => '/opt/osdial/backups/recordings',
 
         'VARserver_ip'         => '127.0.0.1',
         'VARactive_keepalives' => 'X',
@@ -109,6 +109,13 @@ sub new {
         $self->{server} = $self->sql_query(sprintf("SELECT * FROM servers WHERE server_ip='%s';", $self->{VARserver_ip}));
 	foreach my $st (keys %{$self->{server}}) {
 		$self->debug(4,'new','    %-30s => %-30s.',$st,$self->{server}{$st});	
+	}
+        while (my $sret = $self->sql_query(sprintf("SELECT name,data FROM configuration WHERE fk_id='';"))) {
+		my $sch;
+		$self->{configuration}{$sret->{name}} = $sret->{data};
+	}
+	foreach my $st (keys %{$self->{configuration}}) {
+		$self->debug(4,'new','    %-30s => %-30s.',$st,$self->{configuration}{$st});	
 	}
         return $self;
 }

@@ -732,7 +732,7 @@ if ($ADD=="399111111111111") {
         echo "<tr bgcolor=$oddrows><td align=right>Recording Path: </td><td align=left><input type=text name=archive_path size=40 maxlength=255 value=\"$archive_path\">$NWB#settings-archive_path$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Report Path: </td><td align=left><input type=text name=archive_report_path size=40 maxlength=255 value=\"$archive_report_path\">$NWB#settings-archive_report_path$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Web Path: </td><td align=left><input type=text name=archive_web_path size=40 maxlength=255 value=\"$archive_web_path\">$NWB#settings-archive_web_path$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Mix Format: </td><td align=left><select size=1 name=archive_mix_format><option>MP3</option><option>WAV</option><option>GSM</option><option>OGG</option><option selected>$archive_mix_format</option></select>$NWB#settings-archive_mix_format$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Mix Format: </td><td align=left><select size=1 name=archive_mix_format><option value=\"\"> -[ DEFAULT ]- </option><option>MP3</option><option>WAV</option><option>GSM</option><option>OGG</option><option selected>$archive_mix_format</option></select>$NWB#settings-archive_mix_format$NWE</td></tr>\n";
 
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</TABLE></center>\n";
