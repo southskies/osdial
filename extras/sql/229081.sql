@@ -6,7 +6,7 @@ ALTER TABLE servers ADD server_profile ENUM('AIO','CONTROL','SQL','WEB','DIALER'
 UPDATE servers SET server_profile='DIALER';##|##
  ##    Sets default server profile.;
 
-INSERT INTO configuration (name,data) values('ArchiveReportFormat','');##|##
+INSERT INTO configuration (name,data) values('ArchiveReportPath','');##|##
  ##    Add ArchiveReportPath to configuration.;
 
 UPDATE configuration SET data='' WHERE name LIKE 'Archive%';##|##
