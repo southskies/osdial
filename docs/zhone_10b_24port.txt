@@ -1,0 +1,1547 @@
+# Configures channel-bank for 24 port FXS -> TDM xconn -> T1
+# 1. Run set2default on channel-bank.
+# 2. Change IP Address on line 760 (ip-interface-record).
+# 3. Upload configuration.
+
+create if-translate  1/1/2/0/18
+set ifindex = 2
+set shelf = 1
+set slot = 1
+set port = 2
+set subport = 0
+set type = ds1
+set adminstatus = down
+commit if-translate  1/1/2/0/18
+
+create if-translate  1/1/1/0/6
+set ifindex = 27
+set shelf = 1
+set slot = 1
+set port = 1
+set subport = 0
+set type = ethernetcsmacd
+set adminstatus = up
+commit if-translate  1/1/1/0/6
+
+create if-translate  1/1/1/0/126
+set ifindex = 33
+set shelf = 1
+set slot = 1
+set port = 1
+set subport = 0
+set type = ip
+set adminstatus = up
+commit if-translate  1/1/1/0/126
+
+create if-translate  1/1/1/0/18
+set ifindex = 1
+set shelf = 1
+set slot = 1
+set port = 1
+set subport = 0
+set type = ds1
+set adminstatus = up
+commit if-translate  1/1/1/0/18
+
+create if-translate  1/1/1/0/102
+set ifindex = 3
+set shelf = 1
+set slot = 1
+set port = 1
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/1/0/102
+
+create if-translate  1/1/2/0/102
+set ifindex = 4
+set shelf = 1
+set slot = 1
+set port = 2
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/2/0/102
+
+create if-translate  1/1/3/0/102
+set ifindex = 5
+set shelf = 1
+set slot = 1
+set port = 3
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/3/0/102
+
+create if-translate  1/1/4/0/102
+set ifindex = 6
+set shelf = 1
+set slot = 1
+set port = 4
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/4/0/102
+
+create if-translate  1/1/5/0/102
+set ifindex = 7
+set shelf = 1
+set slot = 1
+set port = 5
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/5/0/102
+
+create if-translate  1/1/6/0/102
+set ifindex = 8
+set shelf = 1
+set slot = 1
+set port = 6
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/6/0/102
+
+create if-translate  1/1/7/0/102
+set ifindex = 9
+set shelf = 1
+set slot = 1
+set port = 7
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/7/0/102
+
+create if-translate  1/1/8/0/102
+set ifindex = 10
+set shelf = 1
+set slot = 1
+set port = 8
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/8/0/102
+
+create if-translate  1/1/9/0/102
+set ifindex = 11
+set shelf = 1
+set slot = 1
+set port = 9
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/9/0/102
+
+create if-translate  1/1/10/0/102
+set ifindex = 12
+set shelf = 1
+set slot = 1
+set port = 10
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/10/0/102
+
+create if-translate  1/1/11/0/102
+set ifindex = 13
+set shelf = 1
+set slot = 1
+set port = 11
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/11/0/102
+
+create if-translate  1/1/12/0/102
+set ifindex = 14
+set shelf = 1
+set slot = 1
+set port = 12
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/12/0/102
+
+create if-translate  1/1/13/0/102
+set ifindex = 15
+set shelf = 1
+set slot = 1
+set port = 13
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/13/0/102
+
+create if-translate  1/1/14/0/102
+set ifindex = 16
+set shelf = 1
+set slot = 1
+set port = 14
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/14/0/102
+
+create if-translate  1/1/15/0/102
+set ifindex = 17
+set shelf = 1
+set slot = 1
+set port = 15
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/15/0/102
+
+create if-translate  1/1/16/0/102
+set ifindex = 18
+set shelf = 1
+set slot = 1
+set port = 16
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/16/0/102
+
+create if-translate  1/1/17/0/102
+set ifindex = 19
+set shelf = 1
+set slot = 1
+set port = 17
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/17/0/102
+
+create if-translate  1/1/18/0/102
+set ifindex = 20
+set shelf = 1
+set slot = 1
+set port = 18
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/18/0/102
+
+create if-translate  1/1/19/0/102
+set ifindex = 21
+set shelf = 1
+set slot = 1
+set port = 19
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/19/0/102
+
+create if-translate  1/1/20/0/102
+set ifindex = 22
+set shelf = 1
+set slot = 1
+set port = 20
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/20/0/102
+
+create if-translate  1/1/21/0/102
+set ifindex = 23
+set shelf = 1
+set slot = 1
+set port = 21
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/21/0/102
+
+create if-translate  1/1/22/0/102
+set ifindex = 24
+set shelf = 1
+set slot = 1
+set port = 22
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/22/0/102
+
+create if-translate  1/1/23/0/102
+set ifindex = 25
+set shelf = 1
+set slot = 1
+set port = 23
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/23/0/102
+
+create if-translate  1/1/24/0/102
+set ifindex = 26
+set shelf = 1
+set slot = 1
+set port = 24
+set subport = 0
+set type = voicefxs
+set adminstatus = up
+commit if-translate  1/1/24/0/102
+
+create analog-fxs-cfg-profile  1/1/1/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/1/0/102
+
+create analog-fxs-cfg-profile  1/1/2/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/2/0/102
+
+create analog-fxs-cfg-profile  1/1/3/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/3/0/102
+
+create analog-fxs-cfg-profile  1/1/4/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/4/0/102
+
+create analog-fxs-cfg-profile  1/1/5/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/5/0/102
+
+create analog-fxs-cfg-profile  1/1/6/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/6/0/102
+
+create analog-fxs-cfg-profile  1/1/7/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/7/0/102
+
+create analog-fxs-cfg-profile  1/1/8/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/8/0/102
+
+create analog-fxs-cfg-profile  1/1/9/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/9/0/102
+
+create analog-fxs-cfg-profile  1/1/10/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/10/0/102
+
+create analog-fxs-cfg-profile  1/1/11/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/11/0/102
+
+create analog-fxs-cfg-profile  1/1/12/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/12/0/102
+
+create analog-fxs-cfg-profile  1/1/13/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/13/0/102
+
+create analog-fxs-cfg-profile  1/1/14/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/14/0/102
+
+create analog-fxs-cfg-profile  1/1/15/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/15/0/102
+
+create analog-fxs-cfg-profile  1/1/16/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/16/0/102
+
+create analog-fxs-cfg-profile  1/1/17/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/17/0/102
+
+create analog-fxs-cfg-profile  1/1/18/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/18/0/102
+
+create analog-fxs-cfg-profile  1/1/19/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/19/0/102
+
+create analog-fxs-cfg-profile  1/1/20/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/20/0/102
+
+create analog-fxs-cfg-profile  1/1/21/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/21/0/102
+
+create analog-fxs-cfg-profile  1/1/22/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/22/0/102
+
+create analog-fxs-cfg-profile  1/1/23/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/23/0/102
+
+create analog-fxs-cfg-profile  1/1/24/0/102
+set signal-type = fxsloopstart
+set ring-frequency = ringfrequency20
+set ring-back = off
+commit analog-fxs-cfg-profile  1/1/24/0/102
+
+create analog-if-cfg-profile  1/1/1/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/1/0/102
+
+create analog-if-cfg-profile  1/1/2/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/2/0/102
+
+create analog-if-cfg-profile  1/1/3/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/3/0/102
+
+create analog-if-cfg-profile  1/1/4/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/4/0/102
+
+create analog-if-cfg-profile  1/1/5/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/5/0/102
+
+create analog-if-cfg-profile  1/1/6/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/6/0/102
+
+create analog-if-cfg-profile  1/1/7/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/7/0/102
+
+create analog-if-cfg-profile  1/1/8/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/8/0/102
+
+create analog-if-cfg-profile  1/1/9/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/9/0/102
+
+create analog-if-cfg-profile  1/1/10/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/10/0/102
+
+create analog-if-cfg-profile  1/1/11/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/11/0/102
+
+create analog-if-cfg-profile  1/1/12/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/12/0/102
+
+create analog-if-cfg-profile  1/1/13/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/13/0/102
+
+create analog-if-cfg-profile  1/1/14/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/14/0/102
+
+create analog-if-cfg-profile  1/1/15/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/15/0/102
+
+create analog-if-cfg-profile  1/1/16/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/16/0/102
+
+create analog-if-cfg-profile  1/1/17/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/17/0/102
+
+create analog-if-cfg-profile  1/1/18/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/18/0/102
+
+create analog-if-cfg-profile  1/1/19/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/19/0/102
+
+create analog-if-cfg-profile  1/1/20/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/20/0/102
+
+create analog-if-cfg-profile  1/1/21/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/21/0/102
+
+create analog-if-cfg-profile  1/1/22/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/22/0/102
+
+create analog-if-cfg-profile  1/1/23/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/23/0/102
+
+create analog-if-cfg-profile  1/1/24/0/102
+set if-cfg-impedence = ohms600real
+set if-cfg-receive-tlp = fxsrtlp0db
+set if-cfg-transmit-tlp = fxsttlp0db
+set if-cfg-trunk-conditioning = idle
+set if-maintenance-mode = off
+set if-cfg-pcm-encoding = mulaw
+commit analog-if-cfg-profile  1/1/24/0/102
+
+create ds1  1/1/2/0/18
+set line-type = esf
+set line-code = b8zs
+set send-code = sendnocode
+set circuit-id = ds1
+set loopback-config = noloop
+set signal-mode = none
+set transmit-clock-source = looptiming
+set fdl = fdlnone
+set dsx-line-length = dsx0
+set line-status-change-trap-enable = disabled
+set channelization = disabled
+set ds1-mode = csu
+set csu-line-length = csu00
+set clock-source-eligible = noteligible
+commit ds1  1/1/2/0/18
+
+create ds1  1/1/1/0/18
+set line-type = esf
+set line-code = b8zs
+set send-code = sendnocode
+set circuit-id = ds1
+set loopback-config = noloop
+set signal-mode = none
+set transmit-clock-source = looptiming
+set fdl = fdlnone
+set dsx-line-length = dsx0
+set line-status-change-trap-enable = disabled
+set channelization = disabled
+set ds1-mode = csu
+set csu-line-length = csu00
+set clock-source-eligible = eligible
+commit ds1  1/1/1/0/18
+
+create ether  27
+set autonegstatus = enabled
+set mauType = mau100basetxfd
+set restart = norestart
+set ifType = mau100basetxfd
+set autonegcap = b100baseTFD
+set remotefault = noerror
+commit ether  27
+
+create if-default  0/126/6
+set cardtype = 0
+set upperiftype = ip
+set loweriftype = ethernetcsmacd
+set numunits = 1
+set adminStatus = up
+commit if-default  0/126/6
+
+create if-default  0/6/0
+set cardtype = 0
+set upperiftype = ethernetcsmacd
+set loweriftype = NONE(0)
+set numunits = 1
+set adminStatus = up
+commit if-default  0/6/0
+
+create if-default  0/126/159
+set cardtype = 0
+set upperiftype = ip
+set loweriftype = rfc1483
+set numunits = 1
+set adminStatus = up
+commit if-default  0/126/159
+
+create if-default  0/159/49
+set cardtype = 0
+set upperiftype = rfc1483
+set loweriftype = aal5
+set numunits = 1
+set adminStatus = up
+commit if-default  0/159/49
+
+create if-default  0/49/168
+set cardtype = 0
+set upperiftype = aal5
+set loweriftype = hdsl2
+set numunits = 1
+set adminStatus = up
+commit if-default  0/49/168
+
+create if-default  0/168/0
+set cardtype = 0
+set upperiftype = hdsl2
+set loweriftype = NONE(0)
+set numunits = 1
+set adminStatus = up
+commit if-default  0/168/0
+
+create if-default  0/37/0
+set cardtype = 0
+set upperiftype = atm
+set loweriftype = NONE(0)
+set numunits = 1
+set adminStatus = up
+commit if-default  0/37/0
+
+create if-next-index  1/1/1/0/18
+set nextifindex = 39
+commit if-next-index  1/1/1/0/18
+
+create if-stack  33/27
+set upperlayer = 33
+set lowerlayer = 27
+commit if-stack  33/27
+
+create ip-interface-record  1/1/1/0/126
+set lgid = 0
+set vpi = 0
+set vci = 0
+set rdindex = 0
+set dhcp = none
+set addr = 10.10.5.60
+set netmask = 255.255.0.0
+set bcastaddr = 10.10.5.255
+set destaddr = 0.0.0.0
+set farendaddr = 0.0.0.0
+set mru = 0
+set reasmmaxsize = 0
+set ingressfiltername = ""
+set egressfiltername = ""
+set pointtopoint = no
+set mcastenabled = yes
+set ipfwdenabled = yes
+set mcastfwdenabled = yes
+set natenabled = no
+set bcastenabled = yes
+commit ip-interface-record  1/1/1/0/126
+
+create line-group  2
+set group-id = 2
+set group-name = ""
+set primary-name = 2
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = down
+commit line-group  2
+
+create line-group  3
+set group-id = 3
+set group-name = ""
+set primary-name = 3
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  3
+
+create line-group  4
+set group-id = 4
+set group-name = ""
+set primary-name = 4
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  4
+
+create line-group  5
+set group-id = 5
+set group-name = ""
+set primary-name = 5
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  5
+
+create line-group  6
+set group-id = 6
+set group-name = ""
+set primary-name = 6
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  6
+
+create line-group  7
+set group-id = 7
+set group-name = ""
+set primary-name = 7
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  7
+
+create line-group  8
+set group-id = 8
+set group-name = ""
+set primary-name = 8
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  8
+
+create line-group  9
+set group-id = 9
+set group-name = ""
+set primary-name = 9
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  9
+
+create line-group  10
+set group-id = 10
+set group-name = ""
+set primary-name = 10
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  10
+
+create line-group  11
+set group-id = 11
+set group-name = ""
+set primary-name = 11
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  11
+
+create line-group  12
+set group-id = 12
+set group-name = ""
+set primary-name = 12
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  12
+
+create line-group  13
+set group-id = 13
+set group-name = ""
+set primary-name = 13
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  13
+
+create line-group  14
+set group-id = 14
+set group-name = ""
+set primary-name = 14
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  14
+
+create line-group  15
+set group-id = 15
+set group-name = ""
+set primary-name = 15
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  15
+
+create line-group  16
+set group-id = 16
+set group-name = ""
+set primary-name = 16
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  16
+
+create line-group  17
+set group-id = 17
+set group-name = ""
+set primary-name = 17
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  17
+
+create line-group  18
+set group-id = 18
+set group-name = ""
+set primary-name = 18
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  18
+
+create line-group  19
+set group-id = 19
+set group-name = ""
+set primary-name = 19
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  19
+
+create line-group  20
+set group-id = 20
+set group-name = ""
+set primary-name = 20
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  20
+
+create line-group  21
+set group-id = 21
+set group-name = ""
+set primary-name = 21
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  21
+
+create line-group  22
+set group-id = 22
+set group-name = ""
+set primary-name = 22
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  22
+
+create line-group  23
+set group-id = 23
+set group-name = ""
+set primary-name = 23
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  23
+
+create line-group  24
+set group-id = 24
+set group-name = ""
+set primary-name = 24
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  24
+
+create line-group  25
+set group-id = 25
+set group-name = ""
+set primary-name = 25
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  25
+
+create line-group  26
+set group-id = 26
+set group-name = ""
+set primary-name = 26
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  26
+
+create line-group  27
+set group-id = 27
+set group-name = ""
+set primary-name = 27
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  27
+
+create line-group  1
+set group-id = 1
+set group-name = ""
+set primary-name = 1
+set primary-weight = 0
+set secondary-name = 0
+set secondary-weight = 0
+set admin-state = up
+commit line-group  1
+
+create line-profile  1/1/1/0/18
+set profile-name = "Ds1 default line profile"
+set shelf = 1
+set slot = 1
+set port = 1
+set subPort = 0
+set line-group-name = 1
+commit line-profile  1/1/1/0/18
+
+create line-profile  1/1/2/0/18
+set profile-name = "Ds1 default line profile"
+set shelf = 1
+set slot = 1
+set port = 2
+set subPort = 0
+set line-group-name = 2
+commit line-profile  1/1/2/0/18
+
+create line-profile  1/1/1/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 1
+set subPort = 0
+set line-group-name = 3
+commit line-profile  1/1/1/0/102
+
+create line-profile  1/1/2/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 2
+set subPort = 0
+set line-group-name = 4
+commit line-profile  1/1/2/0/102
+
+create line-profile  1/1/3/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 3
+set subPort = 0
+set line-group-name = 5
+commit line-profile  1/1/3/0/102
+
+create line-profile  1/1/4/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 4
+set subPort = 0
+set line-group-name = 6
+commit line-profile  1/1/4/0/102
+
+create line-profile  1/1/5/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 5
+set subPort = 0
+set line-group-name = 7
+commit line-profile  1/1/5/0/102
+
+create line-profile  1/1/6/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 6
+set subPort = 0
+set line-group-name = 8
+commit line-profile  1/1/6/0/102
+
+create line-profile  1/1/7/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 7
+set subPort = 0
+set line-group-name = 9
+commit line-profile  1/1/7/0/102
+
+create line-profile  1/1/8/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 8
+set subPort = 0
+set line-group-name = 10
+commit line-profile  1/1/8/0/102
+
+create line-profile  1/1/9/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 9
+set subPort = 0
+set line-group-name = 11
+commit line-profile  1/1/9/0/102
+
+create line-profile  1/1/10/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 10
+set subPort = 0
+set line-group-name = 12
+commit line-profile  1/1/10/0/102
+
+create line-profile  1/1/11/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 11
+set subPort = 0
+set line-group-name = 13
+commit line-profile  1/1/11/0/102
+
+create line-profile  1/1/12/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 12
+set subPort = 0
+set line-group-name = 14
+commit line-profile  1/1/12/0/102
+
+create line-profile  1/1/13/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 13
+set subPort = 0
+set line-group-name = 15
+commit line-profile  1/1/13/0/102
+
+create line-profile  1/1/14/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 14
+set subPort = 0
+set line-group-name = 16
+commit line-profile  1/1/14/0/102
+
+create line-profile  1/1/15/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 15
+set subPort = 0
+set line-group-name = 17
+commit line-profile  1/1/15/0/102
+
+create line-profile  1/1/16/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 16
+set subPort = 0
+set line-group-name = 18
+commit line-profile  1/1/16/0/102
+
+create line-profile  1/1/17/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 17
+set subPort = 0
+set line-group-name = 19
+commit line-profile  1/1/17/0/102
+
+create line-profile  1/1/18/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 18
+set subPort = 0
+set line-group-name = 20
+commit line-profile  1/1/18/0/102
+
+create line-profile  1/1/19/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 19
+set subPort = 0
+set line-group-name = 21
+commit line-profile  1/1/19/0/102
+
+create line-profile  1/1/20/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 20
+set subPort = 0
+set line-group-name = 22
+commit line-profile  1/1/20/0/102
+
+create line-profile  1/1/21/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 21
+set subPort = 0
+set line-group-name = 23
+commit line-profile  1/1/21/0/102
+
+create line-profile  1/1/22/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 22
+set subPort = 0
+set line-group-name = 24
+commit line-profile  1/1/22/0/102
+
+create line-profile  1/1/23/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 23
+set subPort = 0
+set line-group-name = 25
+commit line-profile  1/1/23/0/102
+
+create line-profile  1/1/24/0/102
+set profile-name = "default line profile               "
+set shelf = 1
+set slot = 1
+set port = 24
+set subPort = 0
+set line-group-name = 26
+commit line-profile  1/1/24/0/102
+
+create line-profile  1/1/1/0/6
+set profile-name = "default line profile"
+set shelf = 1
+set slot = 1
+set port = 1
+set subPort = 0
+set line-group-name = 27
+commit line-profile  1/1/1/0/6
+
+create physical-to-ifindex  1/1/1/0
+set ifindex = 27
+commit physical-to-ifindex  1/1/1/0
+
+create rip-if-config  0/10/10/5/60
+set auth-type = none
+set auth-key = ""
+set send-type = donotsend
+set receive-type = donotreceive
+set default-metric = 0
+set src-address = 168428860
+set sroute-advertise = none
+set poison = disabled
+commit rip-if-config  0/10/10/5/60
+
+create system  0
+set syscontact = ""
+set sysname = ""
+set syslocation = ""
+set enableauthtraps = NONE(0)
+set setserialno = 0
+set zmsexists = false
+set zmsconnectionstatus = inactive
+set zmsipaddress = 0.0.0.0
+set configsyncexists = NONE(0)
+set configsyncoverflow = NONE(0)
+set configsyncpriority = low
+set configsyncaction = NONE(0)
+set configsyncfilename = ""
+set configsyncstatus = NONE(0)
+set configsyncuser = ""
+set configsyncpasswd = ""
+set numshelves = 0
+set shelvesarray = ""
+set numcards = 0
+set ipaddress = 0.0.0.0
+set alternateipaddress = 0.0.0.0
+commit system  0
+
+create tdm-xcon  1/1
+set xcon-type = voice
+set xcon-to-port-group-id = 3
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/1
+
+create tdm-xcon  1/2
+set xcon-type = voice
+set xcon-to-port-group-id = 4
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/2
+
+create tdm-xcon  1/3
+set xcon-type = voice
+set xcon-to-port-group-id = 5
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/3
+
+create tdm-xcon  1/4
+set xcon-type = voice
+set xcon-to-port-group-id = 6
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/4
+
+create tdm-xcon  1/5
+set xcon-type = voice
+set xcon-to-port-group-id = 7
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/5
+
+create tdm-xcon  1/6
+set xcon-type = voice
+set xcon-to-port-group-id = 8
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/6
+
+create tdm-xcon  1/7
+set xcon-type = voice
+set xcon-to-port-group-id = 9
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/7
+
+create tdm-xcon  1/8
+set xcon-type = voice
+set xcon-to-port-group-id = 10
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/8
+
+create tdm-xcon  1/9
+set xcon-type = voice
+set xcon-to-port-group-id = 11
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/9
+
+create tdm-xcon  1/10
+set xcon-type = voice
+set xcon-to-port-group-id = 12
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/10
+
+create tdm-xcon  1/11
+set xcon-type = voice
+set xcon-to-port-group-id = 13
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/11
+
+create tdm-xcon  1/12
+set xcon-type = voice
+set xcon-to-port-group-id = 14
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/12
+
+create tdm-xcon  1/13
+set xcon-type = voice
+set xcon-to-port-group-id = 15
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/13
+
+create tdm-xcon  1/14
+set xcon-type = voice
+set xcon-to-port-group-id = 16
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/14
+
+create tdm-xcon  1/15
+set xcon-type = voice
+set xcon-to-port-group-id = 17
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/15
+
+create tdm-xcon  1/16
+set xcon-type = voice
+set xcon-to-port-group-id = 18
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/16
+
+create tdm-xcon  1/17
+set xcon-type = voice
+set xcon-to-port-group-id = 19
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/17
+
+create tdm-xcon  1/18
+set xcon-type = voice
+set xcon-to-port-group-id = 20
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/18
+
+create tdm-xcon  1/19
+set xcon-type = voice
+set xcon-to-port-group-id = 21
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/19
+
+create tdm-xcon  1/20
+set xcon-type = voice
+set xcon-to-port-group-id = 22
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/20
+
+create tdm-xcon  1/21
+set xcon-type = voice
+set xcon-to-port-group-id = 23
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/21
+
+create tdm-xcon  1/22
+set xcon-type = voice
+set xcon-to-port-group-id = 24
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/22
+
+create tdm-xcon  1/23
+set xcon-type = voice
+set xcon-to-port-group-id = 25
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/23
+
+create tdm-xcon  1/24
+set xcon-type = voice
+set xcon-to-port-group-id = 26
+set xcon-to-TS = 0
+set xcon-highway = na
+commit tdm-xcon  1/24
+
+create user-profile  0
+set user-id = 0
+set user-name = USER_SEED_REC
+set user-pass = NOT_A_USER
+set user-prompt = 10
+set admin-access = 0
+set debug-access = 0
+set voice-access = 0
+set data-access = 0
+set manuf-access = 0
+set database-access = 0
+set system-access = 0
+set tools-access = 0
+set user-admin-access = 0
+set zhone-access = 0
+commit user-profile  0
+
+create user-profile  1
+set user-id = 1
+set user-name = zhonedevel
+set user-pass = zeebbSdSd
+set user-prompt = zSH>
+set admin-access = 1
+set debug-access = 1
+set voice-access = 1
+set data-access = 1
+set manuf-access = 1
+set database-access = 1
+set system-access = 1
+set tools-access = 1
+set user-admin-access = 1
+set zhone-access = 1
+commit user-profile  1
+
+create user-profile  2
+set user-id = 2
+set user-name = admin
+set user-pass = Sedyzybceb
+set user-prompt = zSH>
+set admin-access = 1
+set debug-access = 0
+set voice-access = 1
+set data-access = 1
+set manuf-access = 1
+set database-access = 1
+set system-access = 1
+set tools-access = 1
+set user-admin-access = 1
+set zhone-access = 0
+commit user-profile  2
+
