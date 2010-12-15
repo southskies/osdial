@@ -76,8 +76,8 @@ while (1) {
 				my $send = `$cmd`;
 			}
 		}
+		sleep(5);
 	}
-	sleep 5;
 }
 
 sub output_html {

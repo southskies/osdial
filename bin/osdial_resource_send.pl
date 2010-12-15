@@ -76,7 +76,7 @@ while (1) {
 
 		my $timestamp = `date +\%Y\%m\%d\%H\%M\%S`;
 		chomp $timestamp;
-		my $timestampSQL = `date +\%Y-\%m-\%d \%H:\%M:\%S`;
+		my $timestampSQL = `date "+\%Y-\%m-\%d \%H:\%M:\%S"`;
 		chomp $timestampSQL;
 
 		my %kvh;
@@ -100,8 +100,8 @@ while (1) {
 			if ($use_multicast) {
 				push @kvary, $k . '=' . $kvh{$k};
 			} else {
-				$ke = $k;
-				$ke = 'server_' . $k if ($k=='ip' or $k='timestamp');
+				my $ke = $k;
+				$ke = 'server_' . $k if ($k eq 'ip' or $k eq 'timestamp');
 				push @kvary, $ke . "='" . $kvh{$k} . "'";
 			}
 		}
@@ -116,7 +116,7 @@ while (1) {
 	if ($use_multicast) {
 		($IPs, $interfaces) = initinterfaces() if ($error);
 	} else {
-		sleep(10);
+		sleep(5);
 	}
 }
 
@@ -138,10 +138,10 @@ sub initinterfaces {
 			$interfaces{$int}->mcast_if($int);
 		} else {
 			if ($cnt==0) {
-				$interfaces{$int} = OSDial->new('DB'=>$DB)
-				my $sret = $interfaces{$int}->sql_query("SELECT count(*) AS fndsvr FROM server_stats WHERE server_ip='" . $int . "';");
+				$interfaces{$int} = OSDial->new('DB'=>$DB);
+				my $sret = $interfaces{$int}->sql_query("SELECT count(*) AS fndsvr FROM server_stats WHERE server_ip='" . $IPs{$int} . "';");
 				if ($sret->{fndsvr} == 0) {
-					$interfaces{$int}->sql_execute("INSERT INTO server_stats SET server_ip='" . $int . "';");
+					$interfaces{$int}->sql_execute("INSERT INTO server_stats SET server_ip='" . $IPs{$int} . "';");
 				}
 			}
 			$cnt++;
