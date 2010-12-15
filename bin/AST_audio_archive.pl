@@ -175,7 +175,6 @@ if ($osdial->{configuration}{ArchiveHostname} ne "") {
 my $dir2 = $osdial->{PATHmonitor};
 
 opendir(FILE, "$dir2/");
-my @files = readdir(FILE);
 
 my $i=0;
 foreach my $file (readdir(FILE)) {
