@@ -46,6 +46,7 @@ my %vars = (
 	'PATHarchive_unmixed'  => 'processing/unmixed',
 	'PATHarchive_mixed'    => 'processing/mixed',
 	'PATHarchive_sorted'   => 'completed',
+	'VARarchive_backup'    => '/opt/osdial/backups/recordings',
 
         'VARserver_ip'         => '127.0.0.1',
         'VARactive_keepalives' => 'X',

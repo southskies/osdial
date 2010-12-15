@@ -107,6 +107,19 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 		my $stmt = sprintf("UPDATE servers SET asterisk_version='\%s' WHERE server_ip='\%s';",$asterisk_version,$osdial->{VARserver_ip});
 		$osdial->sql_execute($stmt) if (!$CLOtest);
 		print STDERR "\n|$stmt|\n" if ($DB);
+
+		$sret = $osdial->sql_query("SELECT count(*) AS fndarchive FROM configuration WHERE name='ArchiveHostname' AND data='';");
+		if ($sret->{fndarchive}) {
+			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->{VARFTP_host} . "' WHERE name='ArchiveHostname';");
+			$osdial->sql_execute("UPDATE configuration SET data='FTP' WHERE name='ArchiveTransferMethod';");
+			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->{VARFTP_port} . "' WHERE name='ArchivePort';");
+			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->{VARFTP_user} . "' WHERE name='ArchiveUsername';");
+			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->{VARFTP_pass} . "' WHERE name='ArchivePassword';");
+			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->{VARFTP_dir} . "' WHERE name='ArchivePath';");
+			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->{VARHTTP_path} . "' WHERE name='ArchiveWebPath';");
+			$osdial->sql_execute("UPDATE configuration SET data='MP3' WHERE name='ArchiveMixFormat';");
+			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->{VARREPORT_dir} . "' WHERE name='ArchiveReportPath';");
+		}
 	}
 
 	#Fix some version related config differences

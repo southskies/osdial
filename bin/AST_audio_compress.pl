@@ -20,324 +20,297 @@
 ##
 #
 #
-# AST_CRON_audio_2_compress.pl
+# AST_audio_compress.pl
 #
 # This is a STEP-2 program in the audio archival process
 #
-# runs every 3 minutes and compresses the -all recording files to GSM format
+# runs every minute and compresses the recording files to MP3/GSM/WAV/OGG format
 # 
-# put an entry into the cron of of your asterisk machine to run this script 
-# every 3 minutes or however often you desire
-#
-# ### recording mixing/compressing/ftping scripts
-##0,3,6,9,12,15,18,21,24,27,30,33,36,39,42,45,48,51,54,57 * * * * /opt/osdial/bin/AST_CRON_audio_1_move_mix.pl
-# 0,3,6,9,12,15,18,21,24,27,30,33,36,39,42,45,48,51,54,57 * * * * /opt/osdial/bin/AST_CRON_audio_1_move_VDonly.pl
-# 1,4,7,10,13,16,19,22,25,28,31,34,37,40,43,46,49,52,55,58 * * * * /opt/osdial/bin/AST_CRON_audio_2_compress.pl --GSM
-# 2,5,8,11,14,17,20,23,26,29,32,35,38,41,44,47,50,53,56,59 * * * * /opt/osdial/bin/AST_CRON_audio_3_ftp.pl --GSM
+# * * * * * /opt/osdial/bin/AST_audio_compress.pl --MP3
 #
 # FLAGS FOR COMPRESSION CODECS
 # --GSM = GSM 6.10 codec
 # --MP3 = MPEG Layer3 codec
 # --OGG = OGG Vorbis codec
 #
-# make sure that the following directories exist:
-# /var/spool/asterisk/monitorDONE	# where the mixed -all files are put
-# 
 # This program assumes that recordings are saved by Asterisk as .wav
-# 
-# 80302-1958 - First Build
-#
 
+use strict;
 use Time::HiRes ('gettimeofday','usleep','sleep');
+use OSDial;
+use Getopt::Long;
 
-$GSM=0;   $MP3=0;   $OGG=0;   $WAV=0;
-my $use_size_checks = 0;
+$|++;
+$SIG{INT} = 'exit_now';
 
-### begin parsing run-time options ###
-if (length($ARGV[0])>1) {
-	$i=0;
-	while ($#ARGV >= $i) {
-		$args = "$args $ARGV[$i]";
-		$i++;
+
+my $DB=0;
+my $DBX=0;
+my $VERBOSE=0;
+my $TEST=0;
+my $HELP=0;
+
+my $GSM=0;
+my $MP3=0;
+my $OGG=0;
+my $WAV=0;
+
+my $CPS=2;
+my $use_size_checks=0;
+my $clear_lock=0;
+
+my $lock_file = "/tmp/.osdial_audio_compress.lock";
+
+
+if (scalar @ARGV) {
+	GetOptions(
+		'help!' => \$HELP,
+		'debug!' => \$DB,
+		'debugX!' => \$DBX,
+		'verbose!' => \$VERBOSE,
+		'test!' => \$TEST,
+		'size_checks!' => \$use_size_checks,
+		'clear_lock!' => \$clear_lock,
+		'CPS=i' => \$CPS,
+		'GSM!' => \$GSM,
+		'MP3!' => \$MP3,
+		'OGG!' => \$OGG,
+		'WAV!' => \$WAV
+	);
+	$DB=1 if ($VERBOSE);
+	$DBX=1 if ($VERBOSE>1);
+	$DB=1 if ($DBX);
+	$DB=1 if ($TEST);
+	if ($MP3) {
+		$GSM=0;
+		$OGG=0;
+		$WAV=0;
+	} elsif ($GSM) {
+		$MP3=0;
+		$OGG=0;
+		$WAV=0;
+	} elsif ($OGG) {
+		$GSM=0;
+		$MP3=0;
+		$WAV=0;
+	} elsif ($WAV) {
+		$GSM=0;
+		$OGG=0;
+		$MP3=0;
+	} else {
+		$MP3=1;
 	}
-
-	if ($args =~ /--help/i) {
-		print "allowed run time options:\n  [--debug] = debug\n  [--debugX] = super debug\n  [-t] = test\n  [--GSM] = compress into GSM codec\n  [--MP3] = compress into MPEG-Layer-3 codec\n  [--OGG] = compress into OGG Vorbis codec\n\n";
+	if ($DB) {
+		print "----- DEBUGGING -----\n";
+		print "----- Testing Mode -----\n" if ($TEST);
+		print "VARS-\n";
+		print "help-        $HELP\n";
+		print "debug-       $DB\n";
+		print "debugX-      $DBX\n";
+		print "verbose-     $VERBOSE\n";
+		print "test-        $TEST\n";
+		print "clear_lock-  $clear_lock\n";
+		print "size_checks- $use_size_checks\n";
+		print "CPS-         $CPS\n";
+		print "GSM-         $GSM\n";
+		print "MP3-         $MP3\n";
+		print "OGG-         $OGG\n";
+		print "WAV-         $WAV\n";
+		print "\n";
+	}
+	if ($HELP) {
+		print "AST_audio_compress.pl: Allowed run time options:\n";
+		print "  [--help] = This screen.\n";
+		print "  [--debug] = debug\n";
+		print "  [--debugX] = super debug\n";
+		print "  [-v|--verbose] = verbose (debug)\n";
+		print "  [-t|--test] = Run in test mode.\n";
+		print "  [--clear_lock] = Remove lock file.\n";
+		print "  [--size_checks] = Use file-size check instead of open-file check.\n";
+		print "  [--CPS] = Size checks per second.\n";
+		print "  [--GSM] = compress into GSM codec\n";
+		print "  [--MP3] = compress into MPEG-Layer-3 codec\n";
+		print "  [--OGG] = compress into OGG Vorbis codec\n\n";
+		print "  [--WAV] = compress into WAV\n\n";
 		exit;
+	}
+} else {
+	$MP3=1;
+}
+
+my $osdial = OSDial->new('DB'=>$DB);
+
+if ($clear_lock) {
+	if (-e $lock_file) {
+		print "Clearing lock file.\n\n";
+		open(LOCK, $lock_file);
+		while (my $pid = <LOCK>) {
+			kill 9, $pid if ($pid > 0);
+		}
+		close(LOCK);
+		unlink($lock_file);
+		exit 0;
 	} else {
-		if ($args =~ /--debug/i) {
-			$DB=1;
-			print "\n----- DEBUG -----\n\n";
-		}
-		if ($args =~ /--debugX/i) {
-			$DBX=1;
-			print "\n----- SUPER DEBUG -----\n\n";
-		}
-		if ($args =~ /-t/i) {
-			$T=1;   $TEST=1;
-			print "\n-----TESTING -----\n\n";
-		}
-		if ($args =~ /--GSM/i) {
-			$GSM=1;
-			if ($DB) {print "GSM compression\n";}
-		} elsif ($args =~ /--MP3/i) {
-			$MP3=1;
-			if ($DB) {print "MP3 compression\n";}
-		} elsif ($args =~ /--OGG/i) {
-			$OGG=1;
-			if ($DB) {print "OGG compression\n";}
-		} elsif ($args =~ /--WAV/i) {
-			$WAV=1;
-			if ($DB) {print "WAV compression\n";}
-		}
+		print "No lock file found.\n";
 	}
 }
-else
-{
-#print "no command line options set\n";
-$MP3=1;
+
+if (-e $lock_file) {
+	print STDERR "ERROR: lock file found.  Run with --clear_lock to remove.\n\n";
+	exit 1;
+} else {
+	open(LOCK, '>' . $lock_file);
+	print LOCK $$;
+	close(LOCK);
 }
 
 
-# default path to osdial.configuration file:
-$PATHconf =		'/etc/osdial.conf';
-
-open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
-@conf = <conf>;
-close(conf);
-$i=0;
-foreach(@conf)
-	{
-	$line = $conf[$i];
-	$line =~ s/ |>|\n|\r|\t|\#.*|;.*//gi;
-	if ( ($line =~ /^PATHhome/) && ($CLIhome < 1) )
-		{$PATHhome = $line;   $PATHhome =~ s/.*=//gi;}
-	if ( ($line =~ /^PATHlogs/) && ($CLIlogs < 1) )
-		{$PATHlogs = $line;   $PATHlogs =~ s/.*=//gi;}
-	if ( ($line =~ /^PATHagi/) && ($CLIagi < 1) )
-		{$PATHagi = $line;   $PATHagi =~ s/.*=//gi;}
-	if ( ($line =~ /^PATHweb/) && ($CLIweb < 1) )
-		{$PATHweb = $line;   $PATHweb =~ s/.*=//gi;}
-	if ( ($line =~ /^PATHsounds/) && ($CLIsounds < 1) )
-		{$PATHsounds = $line;   $PATHsounds =~ s/.*=//gi;}
-	if ( ($line =~ /^PATHmonitor/) && ($CLImonitor < 1) )
-		{$PATHmonitor = $line;   $PATHmonitor =~ s/.*=//gi;}
-	if ( ($line =~ /PATHDONEmonitor/) && ($CLIDONEmonitor < 1) )
-		{$PATHDONEmonitor = $line;   $PATHDONEmonitor =~ s/.*=//gi;}
-	if ( ($line =~ /^VARserver_ip/) && ($CLIserver_ip < 1) )
-		{$VARserver_ip = $line;   $VARserver_ip =~ s/.*=//gi;}
-	if ( ($line =~ /^VARDB_server/) && ($CLIDB_server < 1) )
-		{$VARDB_server = $line;   $VARDB_server =~ s/.*=//gi;}
-	if ( ($line =~ /^VARDB_database/) && ($CLIDB_database < 1) )
-		{$VARDB_database = $line;   $VARDB_database =~ s/.*=//gi;}
-	if ( ($line =~ /^VARDB_user/) && ($CLIDB_user < 1) )
-		{$VARDB_user = $line;   $VARDB_user =~ s/.*=//gi;}
-	if ( ($line =~ /^VARDB_pass/) && ($CLIDB_pass < 1) )
-		{$VARDB_pass = $line;   $VARDB_pass =~ s/.*=//gi;}
-	if ( ($line =~ /^VARDB_port/) && ($CLIDB_port < 1) )
-		{$VARDB_port = $line;   $VARDB_port =~ s/.*=//gi;}
-	if ( ($line =~ /^VARFTP_host/) && ($CLIFTP_host < 1) )
-		{$VARFTP_host = $line;   $VARFTP_host =~ s/.*=//gi;}
-	if ( ($line =~ /^VARFTP_user/) && ($CLIFTP_user < 1) )
-		{$VARFTP_user = $line;   $VARFTP_user =~ s/.*=//gi;}
-	if ( ($line =~ /^VARFTP_pass/) && ($CLIFTP_pass < 1) )
-		{$VARFTP_pass = $line;   $VARFTP_pass =~ s/.*=//gi;}
-	if ( ($line =~ /^VARFTP_port/) && ($CLIFTP_port < 1) )
-		{$VARFTP_port = $line;   $VARFTP_port =~ s/.*=//gi;}
-	if ( ($line =~ /^VARFTP_dir/) && ($CLIFTP_dir < 1) )
-		{$VARFTP_dir = $line;   $VARFTP_dir =~ s/.*=//gi;}
-	if ( ($line =~ /^VARHTTP_path/) && ($CLIHTTP_path < 1) )
-		{$VARHTTP_path = $line;   $VARHTTP_path =~ s/.*=//gi;}
-	if ( ($line =~ /^PATHarchive_home/) && ($CLIPATHarchive_home < 1) )
-		{$PATHarchive_home = $line;   $PATHarchive_home =~ s/.*=//gi;}
-	if ( ($line =~ /^PATHarchive_unmixed/) && ($CLIPATHarchive_unmixed < 1) )
-		{$PATHarchive_unmixed = $line;   $PATHarchive_unmixed =~ s/.*=//gi;}
-	if ( ($line =~ /^PATHarchive_mixed/) && ($CLIPATHarchive_mixed < 1) )
-		{$PATHarchive_mixed = $line;   $PATHarchive_mixed =~ s/.*=//gi;}
-	$i++;
-	}
-
-# Customized Variables
-$server_ip = $VARserver_ip;		# Asterisk server IP
-if (!$VARDB_port) {$VARDB_port='3306';}
-
-use DBI;	  
-
-$dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
- or die "Couldn't connect to database: " . DBI->errstr;
+my $sret = $osdial->sql_query("SELECT data FROM configuration WHERE name='ArchiveMixFormat';");
+if ($sret->{data} ne "") {
+	$MP3=0;
+	$OGG=0;
+	$GSM=0;
+	$WAV=0;
+	$MP3=1 if ($sret->{data} eq "MP3");
+	$OGG=1 if ($sret->{data} eq "OGG");
+	$GSM=1 if ($sret->{data} eq "GSM");
+	$WAV=1 if ($sret->{data} eq "WAV");
+	print "Overriding Mix Format with " . $sret->{data} . ".\n" if ($DB);
+}
 
 
-if ( ($GSM > 0) || ($OGG > 0) || ($WAV >0))
-	{
-	### find sox binary to do the compression
-	$soxbin = '';
-	if ( -e ('/usr/bin/sox')) {$soxbin = '/usr/bin/sox';}
-	else 
-		{
-		if ( -e ('/usr/local/bin/sox')) {$soxbin = '/usr/local/bin/sox';}
-		else
-			{
-			print "Can't find sox binary! Exiting...\n";
-			exit
-			}
-		}
-	}
+my $soxbin = '';
+if ( -e '/usr/bin/sox') {
+	$soxbin = '/usr/bin/sox';
+} elsif ( -e '/usr/local/bin/sox') {
+	$soxbin = '/usr/local/bin/sox';
+}
 
-if ($MP3 > 0) {
-	### find lame mp3 encoder binary to do the compression
-	$lamebin = '';
-	$lameopts = '';
-	if (-e '/usr/bin/toolame' and -e '/usr/bin/sox') {
-		$lamebin = '/usr/bin/toolame';
-		$lameopts = '-s 16 -b 16 -m j';
-		$soxbin = '/usr/bin/sox';
-	} elsif (-e '/usr/bin/lame') {
-	#if (-e '/usr/bin/lame') {
-		$lamebin = '/usr/bin/lame';
-		$lameopts = '-b 16 -m m --silent';
-	} elsif (-e '/usr/local/bin/lame') {
-		$lamebin = '/usr/local/bin/lame';
-		$lameopts = '-b 16 -m m --silent';
-	} else {
+my $lamebin = '';
+my $lameopts = '';
+if (-e '/usr/bin/toolame') {
+	$lamebin = '/usr/bin/toolame';
+	$lameopts = '-s 16 -b 16 -m j';
+} elsif (-e '/usr/local/bin/toolame') {
+	$lamebin = '/usr/local/bin/toolame';
+	$lameopts = '-s 16 -b 16 -m j';
+} elsif (-e '/usr/bin/lame') {
+	$lamebin = '/usr/bin/lame';
+	$lameopts = '-b 16 -m m --silent';
+} elsif (-e '/usr/local/bin/lame') {
+	$lamebin = '/usr/local/bin/lame';
+	$lameopts = '-b 16 -m m --silent';
+}
+
+if ($MP3) {
+	### Exit if lamebin not found and GSM/OGG/WAV
+	if ($lamebin eq '') {
 		print "Can't find lame binary! Exiting...\n";
-		exit
+		exit 2;
+	}
+} else {
+	### Exit if soxbin not found and GSM/OGG/WAV
+	if ($soxbin eq '') {
+		print "Can't find sox binary! Exiting...\n";
+		exit 2;
 	}
 }
 
 
 
-### directory where -all recordings are
-$dir1 = $PATHarchive_home . '/' . $PATHarchive_unmixed;
-$dir2 = $PATHarchive_home . '/' . $PATHarchive_mixed . '/..';
+my $dir1 = $osdial->{PATHarchive_home} . '/' . $osdial->{PATHarchive_unmixed};
+my $dir2 = $osdial->{PATHarchive_home} . '/' . $osdial->{PATHarchive_mixed} . '/..';
 
- opendir(FILE, "$dir1/");
- @FILES = readdir(FILE);
+opendir(FILE, "$dir1/");
 
-$cps=2;
-$i=0;
-foreach(@FILES) {
-	$size1 = 0;
-	$size2 = 0;
+my $i = 0;
+foreach my $file (readdir(FILE)) {
+	my $size1 = 0;
+	my $size2 = 0;
 
-	if ( (length($FILES[$i]) > 4) && ($FILES[$i] !~ /out\.|in\.|lost\+found/i) && (!-d $FILES[$i]) ) {
-
+	if (length($file) > 4 and $file !~ /out\.|in\.|lost\+found/i and not -d $file) {
 		my $size_checks = 10;
 		if ($use_size_checks) {
 			foreach (1..$size_checks) {
-				$size1 = (-s "$dir1/$FILES[$i]");
-				if ($DBX) {print "$FILES[$i] $size1\n";}
-				usleep(1000000/$cps);
-				#sleep(1/$cps);
-				$size2 = (-s "$dir1/$FILES[$i]");
-				if ($DBX) {print "$FILES[$i] $size2\n\n";}
-				if (($size1 eq $size2)) {
-					$size_checks--;
-				}
+				$size1 = (-s "$dir1/$file");
+				print "$file $size1\n" if ($DBX);
+				usleep(1000000/$CPS);
+				$size2 = (-s "$dir1/$file");
+				print "$file $size2\n\n" if ($DBX);
+				$size_checks-- if ($size1 eq $size2);
 			}
 		} else {
 			$size_checks = 1;
-			if ($FILES[$i] =~ /\.wav$/i) {
-				my $lsof_ret = `/usr/sbin/lsof -Xt '$dir1/$FILES[$i]'`;
+			if ($file =~ /\.wav$/i) {
+				my $lsof_ret = `/usr/sbin/lsof -Xt '$dir1/$file'`;
 				$size_checks = 0 unless ($lsof_ret);
-				#if ($DBX) {print "$dir1/$FILES[$i] $size_checks\n";}
+				print "$dir1/$file $size_checks\n" if ($DBX);
 			}
 		}
 
-		if ( ($size_checks == 0) ) {
-			$recording_id='';
-			$ALLfile = $FILES[$i];
-			$SQLFILE = $FILES[$i];
-			$SQLFILE =~ s/-all\.wav|-all\.gsm//gi;
+		if ($size_checks == 0) {
+			my $recording_id;
+			my $SQLfile = $file;
+			$SQLfile =~ s/-all\.wav|-all\.gsm//gi;
 
-			$stmtA = "select recording_id from recording_log where filename='$SQLFILE' order by recording_id desc LIMIT 1;";
-			if($DBX){print STDERR "\n|$stmtA|\n";}
-			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-			$sthArows=$sthA->rows;
-			if ($sthArows > 0) {
-				@aryA = $sthA->fetchrow_array;
-				$recording_id =	"$aryA[0]";
-			}
-			$sthA->finish();
+			my $stmt = "SELECT recording_id FROM recording_log WHERE filename='$SQLfile' ORDER BY recording_id DESC LIMIT 1;";
+			print STDERR "\n|$stmt|\n" if ($DBX);
+			my $sret = $osdial->sql_query($stmt);
+			$recording_id =	$sret->{recording_id};
 
+			my $location;
+			my $CNVfile = $file;
 
-			if (-s "$dir1/$FILES[$i]" == 0) {
-				`rm -f '$dir1/$FILES[$i]'`;
-				$stmtA = "UPDATE recording_log set location='' where recording_id='$recording_id';";
-					if($DBX){print STDERR "\n|$stmtA|\n";}
-				$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
-			} elsif ($GSM > 0) {
-				$GSMfile = $FILES[$i];
-				$GSMfile =~ s/-all\.wav/-all.gsm/gi;
+			if ($TEST) {
+				print "|$recording_id|$file|$CNVfile|     |$SQLfile|\n";
 
-				if ($DB) {print "|$recording_id|$ALLfile|$GSMfile|     |$SQLfile|\n";}
+			} elsif (-s "$dir1/$file" == 0) {
+				unlink("$dir1/$file");
+				$osdial->event_logger('audio_compress',"Removed empty file: $dir1/$file   |$recording_id|$SQLfile||");
 
-				`$soxbin '$dir1/$ALLfile' '$dir2/mixed/$GSMfile'`;
-				if (-e "$dir2/mixed/$GSMfile") {
-					`rm -f '$dir1/$ALLfile'`;
-				}
+			} elsif ($GSM or $OGG or $WAV) {
+				$CNVfile =~ s/-all\.wav/-all.gsm/gi if ($GSM);
+				$CNVfile =~ s/-all\.wav/-all.ogg/gi if ($OGG);
+				$CNVfile =~ s/-all\.wav/-all.wav/gi if ($WAV);
+				print "|$recording_id|$file|$CNVfile|     |$SQLfile|\n" if ($DB);
+				`$soxbin '$dir1/$file' '$dir2/mixed/$CNVfile'`;
+				unlink("$dir1/$file") if (-e "$dir2/mixed/$CNVfile");
+				$location = "http://" . $osdial->{VARserver_ip} . "/" . $osdial->{PATHarchive_mixed} . "/../mixed/" . $CNVfile;
 
-				$stmtA = "UPDATE recording_log set location='http://$server_ip/$PATHarchive_mixed/../mixed/$GSMfile' where recording_id='$recording_id';";
-					if($DBX){print STDERR "\n|$stmtA|\n";}
-				$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
-			} elsif ($OGG > 0) {
-				$OGGfile = $FILES[$i];
-				$OGGfile =~ s/-all\.wav/-all.ogg/gi;
-
-				if ($DB) {print "|$recording_id|$ALLfile|$OGGfile|     |$SQLfile|\n";}
-
-				`$soxbin '$dir1/$ALLfile' '$dir2/mixed/$OGGfile'`;
-				if (-e "$dir2/mixed/$OGGfile") {
-					`rm -f '$dir1/$ALLfile'`;
-				}
-
-				$stmtA = "UPDATE recording_log set location='http://$server_ip/$PATHarchive_mixed/../mixed/$OGGfile' where recording_id='$recording_id';";
-					if($DBX){print STDERR "\n|$stmtA|\n";}
-				$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
 			} elsif ($MP3 > 0) {
-				$MP3file = $FILES[$i];
-				$MP3file =~ s/-all\.wav/-all.mp3/gi;
-
-				if ($DB) {print "|$recording_id|$ALLfile|$MP3file|     |$SQLfile|\n";}
+				$CNVfile =~ s/-all\.wav/-all.mp3/gi;
+				print "|$recording_id|$file|$CNVfile|     |$SQLfile|\n" if ($DB);
 
 				# WAV must be 16k to convert using toolame
 				if ($lamebin =~ /toolame/) {
-					my $junk = `mv '$dir1/$ALLfile' /tmp`;
-					$junk = `$soxbin '/tmp/$ALLfile' -r 16000 -c 1 '$dir1/$ALLfile' resample -ql`;
-					$junk = `rm -f '/tmp/$ALLfile'`;
+					my $junk = `mv '$dir1/$file' /tmp`;
+					$junk = `$soxbin '/tmp/$file' -r 16000 -c 1 '$dir1/$file' resample -ql`;
+					$junk = unlink("/tmp/$file");
 				}
 
-				my $junk = `$lamebin $lameopts '$dir1/$ALLfile' '$dir2/mixed/$MP3file'`;
-				if (-e "$dir2/mixed/$MP3file") {
-					`rm -f '$dir1/$ALLfile'`;
-				}
+				my $junk = `$lamebin $lameopts '$dir1/$file' '$dir2/mixed/$CNVfile'`;
+				unlink("$dir1/$file") if (-e "$dir2/mixed/$CNVfile");
+				$location = "http://" . $osdial->{VARserver_ip} . "/" . $osdial->{PATHarchive_mixed} . "/../mixed/" . $CNVfile;
 
-				$stmtA = "UPDATE recording_log set location='http://$server_ip/$PATHarchive_mixed/../mixed/$MP3file' where recording_id='$recording_id';";
-					if($DBX){print STDERR "\n|$stmtA|\n";}
-				$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
-			} elsif ($WAV > 0) {
-				$WAVfile = $FILES[$i];
-				$WAVfile =~ s/-all\.wav/-all.wav/gi;
-
-				if ($DB) {print "|$recording_id|$ALLfile|$WAVfile|     |$SQLfile|\n";}
-
-				`$soxbin '$dir1/$ALLfile' '$dir2/mixed/$WAVfile'`;
-				if (-e "$dir2/mixed/$WAVfile") {
-					`rm -f '$dir1/$ALLfile'`;
-				}
-
-				$stmtA = "UPDATE recording_log set location='http://$server_ip/$PATHarchive_mixed/../mixed/$WAVfile' where recording_id='$recording_id';";
-					if($DBX){print STDERR "\n|$stmtA|\n";}
-				$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
+			}
+			if (!$TEST) {
+				my $stmt = "UPDATE recording_log SET location='" . $location . "' WHERE recording_id='" . $recording_id . "';";
+				print STDERR "\n|$stmt|\n" if ($DBX);
+				$osdial->sql_execute($stmt);
+				$osdial->event_logger('audio_compress',"Compressed: $file   to   $CNVfile   |$recording_id|$SQLfile|$location|");
 			}
 		}
 	}
 	$i++;
 }
 
-if ($DB) {print "DONE... EXITING\n\n";}
+print "DONE... EXITING\n\n" if ($DB);
+unlink($lock_file);
 
-$dbhA->disconnect();
 
+exit 0;
 
-exit;
+sub exit_now {
+	print "Killed: Clearing lock file.\n\n";
+	unlink($lock_file);
+}

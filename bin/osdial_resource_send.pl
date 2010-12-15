@@ -6,13 +6,21 @@
 # to correctly identify where to point the browser.
 
 use strict;
+use OSDial;
+use Getopt::Long;
 use IO::Interface::Simple;
 use IO::Socket::Multicast;
-
 $|++;
-my $dest = '226.1.1.2:2001'; 
+
+my $use_multicast=0;
+my $mcast_dest='226.1.1.2:2001'; 
+
+my $DB=0;
+
+GetOptions('multicast!' => \$use_multicast, 'debug!' => \$DB);
+
 my $IPs;
-my $socks;
+my $interfaces;
 
 # Get hostname / domain / label
 my $hostname = `hostname -s`;
@@ -31,11 +39,11 @@ while (my $inp = <CPU>) {
 close(CPU);
 
 
-($IPs, $socks) = initsocks();
+($IPs, $interfaces) = initinterfaces();
 
 while (1) {
 	my $error = 0;
-	foreach my $int (keys %{$socks}) {
+	foreach my $int (keys %{$interfaces}) {
 		# Get loadavg info;
 		my $load1 = 0;
 		my $load5 = 0;
@@ -68,6 +76,8 @@ while (1) {
 
 		my $timestamp = `date +\%Y\%m\%d\%H\%M\%S`;
 		chomp $timestamp;
+		my $timestampSQL = `date +\%Y-\%m-\%d \%H:\%M:\%S`;
+		chomp $timestampSQL;
 
 		my %kvh;
 		$kvh{ip} = $IPs->{$int};
@@ -87,15 +97,30 @@ while (1) {
 		$kvh{swap_used} = $swpused;
 		my @kvary;
 		foreach my $k (sort keys %kvh) {
-			push @kvary, $k . '=' . $kvh{$k};
+			if ($use_multicast) {
+				push @kvary, $k . '=' . $kvh{$k};
+			} else {
+				$ke = $k;
+				$ke = 'server_' . $k if ($k=='ip' or $k='timestamp');
+				push @kvary, $ke . "='" . $kvh{$k} . "'";
+			}
 		}
-		my $mess = join('&',@kvary);
-		$socks->{$int}->send($mess) || $error++;
+		if ($use_multicast) {
+			my $mess = join('&',@kvary);
+			$interfaces->{$int}->send($mess) || $error++;
+		} else {
+			my $sql = 'UPDATE server_stats SET ' . join(',',@kvary) . " WHERE server_ip='" . $IPs->{$int} . "';";
+			$interfaces->{$int}->sql_execute($sql);
+		}
 	}
-	($IPs, $socks) = initsocks() if ($error);
+	if ($use_multicast) {
+		($IPs, $interfaces) = initinterfaces() if ($error);
+	} else {
+		sleep(10);
+	}
 }
 
-sub initsocks {
+sub initinterfaces {
 	my %IPs;
 	my @ints = IO::Interface::Simple->interfaces;
 	foreach my $int (@ints) {
@@ -105,12 +130,24 @@ sub initsocks {
 		}
 	}
 
-	my %socks;
+	my %interfaces;
+	my $cnt=0;
 	foreach my $int (keys %IPs) {
-		$socks{$int} = IO::Socket::Multicast->new(Proto=>'udp',PeerAddr=>$dest);
-		$socks{$int}->mcast_if($int);
+		if ($use_multicast) {
+			$interfaces{$int} = IO::Socket::Multicast->new(Proto=>'udp',PeerAddr=>$mcast_dest);
+			$interfaces{$int}->mcast_if($int);
+		} else {
+			if ($cnt==0) {
+				$interfaces{$int} = OSDial->new('DB'=>$DB)
+				my $sret = $interfaces{$int}->sql_query("SELECT count(*) AS fndsvr FROM server_stats WHERE server_ip='" . $int . "';");
+				if ($sret->{fndsvr} == 0) {
+					$interfaces{$int}->sql_execute("INSERT INTO server_stats SET server_ip='" . $int . "';");
+				}
+			}
+			$cnt++;
+		}
 	}
 
-	print STDERR "osdial_resource_send: (Re)Init called...SUCCESS.\n";
-	return (\%IPs, \%socks);
+	print STDERR "osdial_resource_send: (Re)Init called...SUCCESS.\n" if ($use_multicast);
+	return (\%IPs, \%interfaces);
 }

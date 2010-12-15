@@ -5,56 +5,74 @@
 # and exits.
 
 use strict;
-use IO::Socket::Multicast;
+use OSDial;
+use Getopt::Long;
 use Number::Format;
-
+use IO::Socket::Multicast;
 $|++;
+
+my $use_multicast=0;
 
 my $DB = 0;
 $DB = 1 if ($ARGV[0] eq '-v');
 
+GetOptions('multicast!' => \$use_multicast, 'debug!' => \$DB);
+
 my $nf = new Number::Format;
 
-# Get OSD configuration directives.
-my $config = getOSDconfig('/etc/osdial.conf');
-my $webroot = $config->{PATHweb};
-$webroot = "/opt/osdial/html";
-my $sreg = $config->{WEBserver_stats_regex};
-my $shost = $config->{WEBserver_stats_remote_scp_host};
-my $spath = $config->{WEBserver_stats_remote_scp_path};
-
-my $sock;
+my $interface;
 my %hosts;
+
+my $osdial;
+$osdial = OSDial->new('DB'=>$DB) if ($use_multicast);
 
 while (1) {
 	my $count=0;
-	while ($sock = initsocks($sock)) {
+	while ($interface = initinterfaces($interface)) {
 		my $data;
-		next unless $sock->recv($data,1024);
-		if ($data) {
-			my %kvh;
-			my @kva = split(/&/,$data);
-			foreach my $kv (@kva) {
-				my($k,$v) = split(/=/,$kv);
-				$kvh{$k} = $v;
+		if ($use_multicast) {
+			next unless $interface->recv($data,1024);
+			if ($data) {
+				my %kvh;
+				my @kva = split(/&/,$data);
+				foreach my $kv (@kva) {
+					my($k,$v) = split(/=/,$kv);
+					$kvh{$k} = $v;
+				}
+				if ($kvh{ip} =~ /$osdial->{WEBserver_stats_regex}/ or $kvh{host} =~ /$osdial->{WEBserver_stats_regex}/) {
+					$hosts{$kvh{ip}} = \%kvh;
+					$count++;
+				}
 			}
-			
-			if ($kvh{ip} =~ /$sreg/ or $kvh{host} =~ /$sreg/) {
-				$hosts{$kvh{ip}} = \%kvh;
-				open(HTML, ">" . $webroot . "/admin/resources.txt");
-				print HTML output_html(%hosts);
-				close(HTML);
-				open(HTML, ">" . $webroot . "/admin/resources-xtd.txt");
-				print HTML output_html_extended(%hosts);
-				close(HTML);
-				$count++;
+		} else {
+			$osdial = $interface;
+			$count=0;
+			while (my $sret = $interface->sql_query("SELECT * FROM server_stats WHERE update_time>NOW()-1000;")) {
+				my %kvh;
+				foreach my $key (keys %{$sret}) {
+					$kvh{$key} = $sret->{$key};
+				}
+				$kvh{ip} = $kvh{server_ip};
+				$kvh{timestamp} = $kvh{server_timestamp};
+				if ($kvh{ip} =~ /$osdial->{WEBserver_stats_regex}/ or $kvh{host} =~ /$osdial->{WEBserver_stats_regex}/) {
+					$hosts{$kvh{ip}} = \%kvh;
+					$count++;
+				}
 			}
+		}
+		if ($count>0) {
+			open(HTML, ">" . $osdial->{PATHweb} . "/admin/resources.txt");
+			print HTML output_html(%hosts);
+			close(HTML);
+			open(HTML, ">" . $osdial->{PATHweb} . "/admin/resources-xtd.txt");
+			print HTML output_html_extended(%hosts);
+			close(HTML);
 		}
 		if ($count>9) {
 			$count=0;
 			# Send to remote server every 10 grabs.
-			if ($shost ne "" and $spath ne "") {
-				my $cmd = "/usr/bin/scp " . $webroot . "/admin/resources*.txt " . $shost . ":" . $spath . '> /dev/null 2>&1';
+			if ($osdial->{WEBserver_stats_remote_scp_host} ne "" and $osdial->{WEBserver_stats_remote_scp_path} ne "") {
+				my $cmd = "/usr/bin/scp " . $osdial->{PATHweb} . "/admin/resources*.txt " . $osdial->{WEBserver_stats_remote_scp_host} . ":" . $osdial->{WEBserver_stats_remote_scp_path} . '> /dev/null 2>&1';
 				my $send = `$cmd`;
 			}
 		}
@@ -163,40 +181,25 @@ sub output_html_extended {
 	return $html;
 }
 
-sub initsocks {
-	my ($sock) = @_;
-	unless ($sock) {
-		my $group = '226.1.1.2';
-		my $port = '2001';
-		print STDERR "osdial_resource_listen: (Re)Init called...";
-		$sock = IO::Socket::Multicast->new(Proto=>'udp',LocalPort=>$port);
-		if ($sock) {
-			if ($sock->mcast_add($group)) {
-				print STDERR "SUCCESS.\n";	
-			} else {
-				$sock = undef;
+sub initinterfaces {
+	my ($int) = @_;
+	unless ($int) {
+		if ($use_multicast) {
+			my $group = '226.1.1.2';
+			my $port = '2001';
+			print STDERR "osdial_resource_listen: (Re)Init called...";
+			$int = IO::Socket::Multicast->new(Proto=>'udp',LocalPort=>$port);
+			if ($int) {
+				if ($int->mcast_add($group)) {
+					print STDERR "SUCCESS.\n";	
+				} else {
+					$int = undef;
+				}
 			}
-		}
-		print STDERR "FAILED.\n" unless ($sock);
-	}
-	return $sock;
-}
-
-sub getOSDconfig {
-	my($AGCpath) = @_;
-	my %config;
-	$config{PATHconf} = $AGCpath;
-	open(CONF, $config{PATHconf}) || die "can't open " . $config{PATHconf} . ": " . $! . "\n";
-	while (my $line = <CONF>) {
-		$line =~ s/ |>|"|'|\n|\r|\t|\#.*|;.*//gi;
-		if ($line =~ /=|:/) {
-			my($key,$val) = split /=|:/, $line;
-			$config{$key} = $val;
+			print STDERR "FAILED.\n" unless ($int);
+		} else {
+			$int = OSDial->new('DB'=>$DB);
 		}
 	}
-	$config{VARDB_port} = '3306' unless ($config{VARDB_port});
-	$config{VARFTP_port} = '21' unless ($config{VARFTP_port});
-	$config{VARREPORT_port} = '21' unless ($config{VARREPORT_port});
-	return \%config;
+	return $int;
 }
-

@@ -54,246 +54,192 @@
 # 80317-2349 - Added FTP debug if debugX
 #
 
-use Time::HiRes ('gettimeofday','usleep','sleep');
-
-$GSM=0;   $MP3=0;   $OGG=0;   $WAV=0;   $NODATEDIR=1;
-my $use_size_checks = 0;
-
-# Default variables for FTP
-$VARFTP_host = '10.0.0.4';
-$VARFTP_user = 'cron';
-$VARFTP_pass = 'test';
-$VARFTP_port = '21';
-$VARFTP_dir  = 'RECORDINGS';
-$VARHTTP_path = 'http://10.0.0.4';
-
-
-### begin parsing run-time options ###
-if (length($ARGV[0])>1)
-{
-	$i=0;
-	while ($#ARGV >= $i)
-	{
-	$args = "$args $ARGV[$i]";
-	$i++;
-	}
-
-	if ($args =~ /--help/i)
-	{
-	print "allowed run time options:\n  [--debug] = debug\n  [--debugX] = super debug\n  [-t] = test\n  [--GSM] = copy GSM files\n  [--MP3] = copy MPEG-Layer-3 files\n  [--OGG] = copy OGG Vorbis files\n  [--WAV] = copy WAV files\n  [--NODATEDIR] = do not put into dated directories\n\n";
-	exit;
-	}
-	else
-	{
-		if ($args =~ /--debug/i)
-		{
-		$DB=1;
-		print "\n----- DEBUG -----\n\n";
-		}
-		if ($args =~ /--debugX/i)
-		{
-		$DBX=1;
-		print "\n----- SUPER DEBUG -----\n\n";
-		}
-		if ($args =~ /-t/i)
-		{
-		$T=1;   $TEST=1;
-		print "\n----- TESTING -----\n\n";
-		}
-		if ($args =~ /-nodatedir/i)
-		{
-		$NODATEDIR=1;
-		print "\n----- NO DATE DIRECTORIES -----\n\n";
-		}
-		if ($args =~ /--GSM/i)
-		{
-		$GSM=1;
-		if ($DB) {print "GSM audio files\n";}
-		}
-		else
-		{
-			if ($args =~ /--MP3/i)
-			{
-			$MP3=1;
-			if ($DB) {print "MP3 audio files\n";}
-			}
-			else
-			{
-				if ($args =~ /--OGG/i)
-				{
-				$OGG=1;
-				if ($DB) {print "OGG audio files\n";}
-				}
-				else
-				{
-					if ($args =~ /--WAV/i)
-					{
-					$WAV=1;
-					if ($DB) {print "WAV audio files\n";}
-					}
-				}
-			}
-		}
-	}
-}
-else
-{
-#print "no command line options set\n";
-$WAV=1;
-}
-
-
-# default path to osdial.configuration file:
-$PATHconf =		'/etc/osdial.conf';
-
-open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
-@conf = <conf>;
-close(conf);
-$i=0;
-foreach(@conf)
-	{
-	$line = $conf[$i];
-	$line =~ s/ |>|\n|\r|\t|\#.*|;.*//gi;
-	if ( ($line =~ /^PATHhome/) && ($CLIhome < 1) )
-		{$PATHhome = $line;   $PATHhome =~ s/.*=//gi;}
-	if ( ($line =~ /^PATHlogs/) && ($CLIlogs < 1) )
-		{$PATHlogs = $line;   $PATHlogs =~ s/.*=//gi;}
-	if ( ($line =~ /^PATHagi/) && ($CLIagi < 1) )
-		{$PATHagi = $line;   $PATHagi =~ s/.*=//gi;}
-	if ( ($line =~ /^PATHweb/) && ($CLIweb < 1) )
-		{$PATHweb = $line;   $PATHweb =~ s/.*=//gi;}
-	if ( ($line =~ /^PATHsounds/) && ($CLIsounds < 1) )
-		{$PATHsounds = $line;   $PATHsounds =~ s/.*=//gi;}
-	if ( ($line =~ /^PATHmonitor/) && ($CLImonitor < 1) )
-		{$PATHmonitor = $line;   $PATHmonitor =~ s/.*=//gi;}
-	if ( ($line =~ /PATHDONEmonitor/) && ($CLIDONEmonitor < 1) )
-		{$PATHDONEmonitor = $line;   $PATHDONEmonitor =~ s/.*=//gi;}
-	if ( ($line =~ /PATHarchive_home/) && ($CLIarchive_home < 1) )
-		{$PATHarchive_home = $line;   $PATHarchive_home =~ s/.*=//gi;}
-	if ( ($line =~ /PATHarchive_unmixed/) && ($CLIarchive_unmixed < 1) )
-		{$PATHarchive_unmixed = $line;   $PATHarchive_unmixed =~ s/.*=//gi;}
-	if ( ($line =~ /PATHarchive_backup/) && ($CLIarchive_backup < 1) )
-		{$PATHarchive_backup = $line;   $PATHarchive_backup =~ s/.*=//gi;}
-	if ( ($line =~ /^VARserver_ip/) && ($CLIserver_ip < 1) )
-		{$VARserver_ip = $line;   $VARserver_ip =~ s/.*=//gi;}
-	if ( ($line =~ /^VARDB_server/) && ($CLIDB_server < 1) )
-		{$VARDB_server = $line;   $VARDB_server =~ s/.*=//gi;}
-	if ( ($line =~ /^VARDB_database/) && ($CLIDB_database < 1) )
-		{$VARDB_database = $line;   $VARDB_database =~ s/.*=//gi;}
-	if ( ($line =~ /^VARDB_user/) && ($CLIDB_user < 1) )
-		{$VARDB_user = $line;   $VARDB_user =~ s/.*=//gi;}
-	if ( ($line =~ /^VARDB_pass/) && ($CLIDB_pass < 1) )
-		{$VARDB_pass = $line;   $VARDB_pass =~ s/.*=//gi;}
-	if ( ($line =~ /^VARDB_port/) && ($CLIDB_port < 1) )
-		{$VARDB_port = $line;   $VARDB_port =~ s/.*=//gi;}
-	if ( ($line =~ /^VARFTP_host/) && ($CLIFTP_host < 1) )
-		{$VARFTP_host = $line;   $VARFTP_host =~ s/.*=//gi;}
-	if ( ($line =~ /^VARFTP_user/) && ($CLIFTP_user < 1) )
-		{$VARFTP_user = $line;   $VARFTP_user =~ s/.*=//gi;}
-	if ( ($line =~ /^VARFTP_pass/) && ($CLIFTP_pass < 1) )
-		{$VARFTP_pass = $line;   $VARFTP_pass =~ s/.*=//gi;}
-	if ( ($line =~ /^VARFTP_port/) && ($CLIFTP_port < 1) )
-		{$VARFTP_port = $line;   $VARFTP_port =~ s/.*=//gi;}
-	if ( ($line =~ /^VARFTP_dir/) && ($CLIFTP_dir < 1) )
-		{$VARFTP_dir = $line;   $VARFTP_dir =~ s/.*=//gi;}
-	if ( ($line =~ /^VARHTTP_path/) && ($CLIHTTP_path < 1) )
-		{$VARHTTP_path = $line;   $VARHTTP_path =~ s/.*=//gi;}
-	$i++;
-	}
-
-# Customized Variables
-$server_ip = $VARserver_ip;		# Asterisk server IP
-if (!$VARDB_port) {$VARDB_port='3306';}
-
-if ($VARachive_backup eq "") {$VARarchive_backup='/opt/osdial/backups/recordings';}
-
-$recordingsdir = $VARFTP_dir;
-
-use DBI;	  
-
-$dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
- or die "Couldn't connect to database: " . DBI->errstr;
-
+use strict;
+use OSDial;
+use Getopt::Long;
 use Net::Ping;
 use Net::FTP;
+use Time::HiRes ('gettimeofday','usleep','sleep');
 
-### directory where -all recordings are
-$dir2 = "$PATHmonitor";
-if ($WAV > 0) {$dir2 = "$PATHmonitor";}
-if ($MP3 > 0) {$dir2 = "$PATHDONEmonitor/MP3";}
-if ($GSM > 0) {$dir2 = "$PATHDONEmonitor/GSM";}
-if ($OGG > 0) {$dir2 = "$PATHDONEmonitor/OGG";}
+$|++;
+$SIG{INT} = 'exit_now';
 
- opendir(FILE, "$dir2/");
- @FILES = readdir(FILE);
+my $DB=0;
+my $DBX=0;
+my $VERBOSE=0;
+my $TEST=0;
+my $HELP=0;
 
-$cps=2;
-$i=0;
-foreach(@FILES)
-   {
-	$size1 = 0;
-	$size2 = 0;
+my $CPS=2;
+my $NODATEDIR=1;
 
-	if ( (length($FILES[$i]) > 4) && ($FILES[$i] !~ /-all\.wav|-out\.wav|archive.lock|lost\+found/i) && (!-d $FILES[$i]) )
-		{
+my $use_size_checks = 0;
+my $clear_lock=0;
+
+my $lock_file = "/tmp/.osdial_audio_archive.lock";
+
+
+if (scalar @ARGV) {
+	GetOptions(
+		'help!' => \$HELP,
+		'debug!' => \$DB,
+		'debugX!' => \$DBX,
+		'verbose!' => \$VERBOSE,
+		'test!' => \$TEST,
+		'size_checks!' => \$use_size_checks,
+		'clear_lock!' => \$clear_lock,
+		'nodatedir!' => \$NODATEDIR,
+		'CPS=i' => \$CPS
+	);
+	$DB=1 if ($VERBOSE);
+	$DBX=1 if ($VERBOSE>1);
+	$DB=1 if ($DBX);
+	$DB=1 if ($TEST);
+	if ($DB) {
+		print "----- DEBUGGING -----\n";
+		print "----- Testing Mode -----\n" if ($TEST);
+		print "VARS-\n";
+		print "help-        $HELP\n";
+		print "debug-       $DB\n";
+		print "debugX-      $DBX\n";
+		print "verbose-     $VERBOSE\n";
+		print "test-        $TEST\n";
+		print "clear_lock-  $clear_lock\n";
+		print "size_checks- $use_size_checks\n";
+		print "nodatedir    $NODATEDIR\n";
+		print "CPS-         $CPS\n";
+		print "\n";
+	}
+	if ($HELP) {
+		print "AST_audio_compress.pl: Allowed run time options:\n";
+		print "  [--help] = This screen.\n";
+		print "  [--debug] = debug\n";
+		print "  [--debugX] = super debug\n";
+		print "  [-v|--verbose] = verbose (debug)\n";
+		print "  [-t|--test] = Run in test mode.\n";
+		print "  [--nodatedir] = Do not create date sub-directory on FTP site (default).\n";
+		print "  [--clear_lock] = Remove lock file.\n";
+		print "  [--size_checks] = Use file-size check instead of open-file check.\n";
+		print "  [--CPS] = Size checks per second.\n";
+		exit;
+	}
+}
+
+my $osdial = OSDial->new('DB'=>$DB);
+
+if ($clear_lock) {
+	if (-e $lock_file) {
+		print "Clearing lock file.\n\n";
+		open(LOCK, $lock_file);
+		while (my $pid = <LOCK>) {
+			kill 9, $pid if ($pid > 0);
+		}
+		close(LOCK);
+		unlink($lock_file);
+		exit 0;
+	} else {
+		print "No lock file found.\n";
+	}
+}
+
+if (-e $lock_file) {
+	print STDERR "ERROR: lock file found.  Run with --clear_lock to remove.\n\n";
+	exit 1;
+} else {
+	open(LOCK, '>' . $lock_file);
+	print LOCK $$;
+	close(LOCK);
+}
+
+
+
+
+
+
+my $archive_host = $osdial->{VARFTP_host};
+my $archive_port = $osdial->{VARFTP_port};
+my $archive_user = $osdial->{VARFTP_user};
+my $archive_pass = $osdial->{VARFTP_pass};
+my $archive_path = $osdial->{VARFTP_dir};
+my $archive_web_path = $osdial->{VARHTTP_path};
+
+my $sret = $osdial->sql_query("SELECT data FROM configuration WHERE name='ArchiveHostname';");
+if ($sret->{data} ne "") {
+	$archive_host = $sret->{data};
+	my $sret = $osdial->sql_query("SELECT data FROM configuration WHERE name='ArchivePort';");
+	$archive_port = $sret->{data};
+	my $sret = $osdial->sql_query("SELECT data FROM configuration WHERE name='ArchiveUsername';");
+	$archive_user = $sret->{data};
+	my $sret = $osdial->sql_query("SELECT data FROM configuration WHERE name='ArchivePassword';");
+	$archive_pass = $sret->{data};
+	my $sret = $osdial->sql_query("SELECT data FROM configuration WHERE name='ArchivePath';");
+	$archive_path = $sret->{data};
+	my $sret = $osdial->sql_query("SELECT data FROM configuration WHERE name='ArchiveWebPath';");
+	$archive_web_path = $sret->{data};
+}
+
+my $dir2 = $osdial->{PATHmonitor};
+
+opendir(FILE, "$dir2/");
+my @files = readdir(FILE);
+
+my $i=0;
+foreach my $file (readdir(FILE)) {
+	my $size1 = 0;
+	my $size2 = 0;
+
+	if (length($file) > 4 and $file !~ /-all\.wav|-out\.wav|archive.lock|lost\+found/i and not -d $file) {
 
 		my $size_checks = 10;
-		if ( -e "/var/spool/asterisk/record_cache" ) {
+		if (-e "/var/spool/asterisk/record_cache") {
 			$size_checks = 0;
 		} else {
 			if ($use_size_checks) {
 				foreach (1..$size_checks) {
-					$size1 = (-s "$dir2/$FILES[$i]");
-					if ($DBX) {print "$FILES[$i] $size1\n";}
-					usleep(1000000/$cps);
-					#sleep(1/$cps);
-					$size2 = (-s "$dir2/$FILES[$i]");
-					if ($DBX) {print "$FILES[$i] $size2\n\n";}
-					if (($size1 eq $size2)) {
-						$size_checks--;
-					}
+					$size1 = (-s "$dir2/$file");
+					print "$file $size1\n" if ($DBX);
+					usleep(1000000/$CPS);
+					$size2 = (-s "$dir2/$file");
+					print "$file $size2\n\n" if ($DBX);
+					$size_checks-- if ($size1 eq $size2);
 				}
 			} else {
 				$size_checks = 1;
-				my $lsof_ret = `/usr/sbin/lsof -Xt '$dir2/$FILES[$i]'`;
+				my $lsof_ret = `/usr/sbin/lsof -Xt '$dir2/$file'`;
 				$size_checks = 0 unless ($lsof_ret);
 			}
 		}
 
-		if ( ($size_checks == 0) )
-			{
-			$recording_id='';
-			$SQLFILE = $FILES[$i];
-			$SQLFILE =~ s/-in\.wav|-all\.wav//gi;
-			$ALLfile = $SQLFILE . "-all.wav";
-			$INfile = $SQLFILE . "-in.wav";
-			$OUTfile = $SQLFILE . "-out.wav";
+		if ($size_checks==0) {
+			my $recording_id;
+			my $SQLfile = $file;
+			$SQLfile =~ s/-in\.wav|-all\.wav//gi;
+			my $ALLfile = $SQLfile . "-all.wav";
+			my $INfile = $SQLfile . "-in.wav";
+			my $OUTfile = $SQLfile . "-out.wav";
 
 			if (-e $dir2 . "/" . $INfile) {
 				`mv -f '$dir2/$INfile' '$dir2/$ALLfile'`;
 				`rm -f '$dir2/$OUTfile'`;
 			}
 			
-			if ($SQLFILE =~ /^PBX-IN|^PBX-OUT/) {
-				my($pcmp,$pdat,$puid,$pext,$pcnl) = split(/_/,$SQLFILE);
-				$stmtA = "select * from call_log where server_ip='$VARserver_ip' AND uniqueid='$puid' LIMIT 1;";
-				if($DBX){print STDERR "\n|$stmtA|\n";}
-				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-				$sthArows=$sthA->rows;
-				if ($sthArows > 0) {
-					@aryA = $sthA->fetchrow_array;
-					$sthA->finish();
-					my($clstart) = $aryA[8];
-					my($clstart_epoch) = $aryA[9];
-					my($clend) = $aryA[10];
-					my($clend_epoch) = $aryA[11];
-					my($cllensec) = $aryA[12];
-					my($cllenmin) = $aryA[13];
+			if ($SQLfile =~ /^PBX-IN|^PBX-OUT/) {
+				my($pcmp,$pdat,$puid,$pext,$pcnl) = split(/_/,$SQLfile);
+				my $stmt = "SELECT * FROM call_log WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND uniqueid='$puid' LIMIT 1;";
+				print STDERR "\n|$stmt|\n" if ($DBX);
+				my $sret = $osdial->sql_query($stmt);
+				if ($sret->{uniqueid} > 0) {
+					my $clstart = $sret->{start_time};
+					my $clstart_epoch = $sret->{start_epoch};
+					my $clend = $sret->{end_time};
+					my $clend_epoch = $sret->{end_epoch};
+					my $cllensec = $sret->{length_in_sec};
+					my $cllenmin = $sret->{length_in_min};
 					my $psid;
 					my $plist;
 					my $plead;
-					if ($SQLFILE =~ /^PBX-IN/) {
+					my $pcom;
+					if ($SQLfile =~ /^PBX-IN/) {
 						$psid = 'PBXIN';
 						$plist = '10';
 						$pcom = "PBX/External Inbound Call, from $pcnl to $pext.";
@@ -305,91 +251,86 @@ foreach(@FILES)
 					$pext = '0000000000' if ($pext eq "");
 					$pcnl = '0000000000' if ($pcnl eq "");
 
-					my($ins) = "INSERT INTO osdial_list SET entry_date='$clstart',modify_date='$clend',status='$pcmp',user='$pcmp',vendor_lead_code='$pext',custom1='$pext',custom2='$pext',external_key='$VARserver_ip:$puid',source_id='$psid',phone_code='1',phone_number='$pcnl',list_id='$plist',comments='$pcom';";
-					$affected_rows = $dbhA->do($ins);
+					my $ins = "INSERT INTO osdial_list SET entry_date='$clstart',modify_date='$clend',status='$pcmp',user='$pcmp',vendor_lead_code='$pext',custom1='$pext',custom2='$pext',external_key='" . $osdial->{VARserver_ip} . ":$puid',source_id='$psid',phone_code='1',phone_number='$pcnl',list_id='$plist',comments='$pcom';";
+					$osdial->sql_execute($ins);
 
-					$stmtA = "select lead_id from osdial_list where external_key='$VARserver_ip:$puid' LIMIT 1;";
-					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-					$sthArows=$sthA->rows;
-					if ($sthArows > 0) {
-						@aryA = $sthA->fetchrow_array;
-						$plead=$aryA[0];
-					}
-					$sthA->finish();
+					my $stmt = "SELECT lead_id FROM osdial_list WHERE external_key='" . $osdial->{VARserver_ip} . ":$puid' LIMIT 1;";
+					print STDERR "\n|$stmt|\n" if ($DBX);
+					my $sret = $osdial->sql_query($stmt);
+					$plead = $sret->{lead_id} if ($sret->{lead_id} > 0);
 
-					my($ins) = "INSERT INTO recording_log SET channel='$pcnl',server_ip='$VARserver_ip',extension='$pext',start_time='$clstart',start_epoch='$clstart_epoch',end_time='$clend',end_epoch='$clend_epoch',length_in_sec='$cllensec',length_in_min='$cllenmin',filename='$SQLFILE',lead_id='$plead',user='$pcmp',uniqueid='$puid';";
-					$affected_rows = $dbhA->do($ins);
-				} else {
-					$sthA->finish();
+					my $ins = "INSERT INTO recording_log SET channel='$pcnl',server_ip='" . $osdial->{VARserver_ip} . "',extension='$pext',start_time='$clstart',start_epoch='$clstart_epoch',end_time='$clend',end_epoch='$clend_epoch',length_in_sec='$cllensec',length_in_min='$cllenmin',filename='$SQLfile',lead_id='$plead',user='$pcmp',uniqueid='$puid';";
+					$osdial->sql_execute($ins);
 				}
 			}
 
 
-			$dnt = 1;
-			$stmtA = "select recording_id,start_time from recording_log where filename='$SQLFILE' order by recording_id desc LIMIT 1;";
-			if($DBX){print STDERR "\n|$stmtA|\n";}
-			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-			$sthArows=$sthA->rows;
-			if ($sthArows > 0) {
-				@aryA = $sthA->fetchrow_array;
-				$recording_id =	"$aryA[0]";
-				$start_date =	"$aryA[1]";
+			my $start_date;
+			my $dnt = 1;
+			my $stmt = "SELECT recording_id,start_time FROM recording_log WHERE filename='$SQLfile' ORDER BY recording_id DESC LIMIT 1;";
+			print STDERR "\n|$stmt|\n" if ($DBX);
+			my $sret = $osdial->sql_query($stmt);
+			if ($sret->{recording_id} > 0) {
+				$recording_id =	$sret->{recording_id};
+				$start_date = $sret->{start_time};
 				$start_date =~ s/ .*//gi;
 				$dnt = 1;
 			} else {
 				$dnt = 0;
 				$start_date = "NOTFOUND";
 			}
-			$sthA->finish();
+			print "|$recording_id|$start_date|$ALLfile|     |$SQLfile|$dnt|\n" if ($DB);
 
 
-			if ($DB) {print "|$recording_id|$start_date|$ALLfile|     |$SQLFILE|$dnt|\n";}
 
-	### BEGIN Remote file transfer
-			$p = Net::Ping->new();
-			$ping_good = $p->ping("$VARFTP_host");
+			### BEGIN Remote file transfer
+			my $p = Net::Ping->new();
+			my $ping_good = $p->ping($archive_host);
 
 			if ($ping_good) {
-				$start_date_PATH='';
-				$FTPdb=0;
-				$sts=0;
-				`cp -f '$dir2/$ALLfile' '$PATHarchive_backup'`;
-				if ($VARFTP_host eq "127.0.0.1") {
-						`mv '$dir2/$ALLfile' '$PATHarchive_home/$PATHarchive_unmixed'`;
+				my $start_date_PATH='';
+				my $FTPdb=0;
+				my $sts=0;
+				`cp -f '$dir2/$ALLfile' '$osdial->{PATHarchive_backup}'`;
+				if ($archive_host eq "127.0.0.1") {
+						`mv '$dir2/$ALLfile' '$osdial->{PATHarchive_home}/$osdial->{PATHarchive_unmixed}'`;
 				} else {
-					if ($DBX>0) {$FTPdb=1;}
-					$ftp = Net::FTP->new("$VARFTP_host", Port => $VARFTP_port, Debug => $FTPdb);
-					if ($ftp->login("$VARFTP_user","$VARFTP_pass")) {
-						$ftp->cwd("$VARFTP_dir");
+					$FTPdb=1 if ($DBX);
+					my $ftp = Net::FTP->new($archive_host, Port => $archive_port, Debug => $FTPdb);
+					if ($ftp->login($archive_user,$archive_pass)) {
+						$ftp->cwd($archive_path);
 						if ($NODATEDIR < 1) {
-							$ftp->mkdir("$start_date");
-							$ftp->cwd("$start_date");
+							$ftp->mkdir($start_date);
+							$ftp->cwd($start_date);
 							$start_date_PATH = "$start_date/";
 						}
 						$ftp->binary();
-						$ftp->put("$dir2/$ALLfile", "$ALLfile");
+						$ftp->put("$dir2/$ALLfile", $ALLfile);
 						$ftp->quit;
 
 						`rm -f '$dir2/$ALLfile'`;
 					}
 				}
 
-				$stmtA = "UPDATE recording_log set location='$VARHTTP_path/$recordingsdir/$start_date_PATH$ALLfile' where recording_id='$recording_id';" if ($dnt);
-					if($DB){print STDERR "\n|$stmtA|\n";}
-				$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
+				my $stmt = "UPDATE recording_log SET location='" . $archive_web_path . "/" . $archive_path . "/$start_date_PATH$ALLfile' WHERE recording_id='$recording_id';" if ($dnt);
+				print STDERR "\n|$stmt|\n" if ($DB);
+				$osdial->sql_execute($stmt);
+				$osdial->event_logger('audio_archive', "Recording: $recording_id  File: $ALLfile  Sent to: $archive_user\@$archive_host:$archive_web_path/$archive_path/$start_date_PATH");
 			}
-	### END Remote file transfer
-			}
+			### END Remote file transfer
 		}
-	$i++;
 	}
+	$i++;
+}
 
-if ($DB) {print "DONE... EXITING\n\n";}
+print "DONE... EXITING\n\n" if ($DB);
+unlink($lock_file);
 
-$dbhA->disconnect();
+exit 0;
 
 
-exit;
+sub exit_now {
+	print "Killed: Clearing lock file.\n\n";
+	unlink($lock_file);
+}
 
