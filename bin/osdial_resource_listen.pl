@@ -8,6 +8,7 @@ use strict;
 use OSDial;
 use Getopt::Long;
 use Number::Format;
+use Net::IP;
 use IO::Socket::Multicast;
 $|++;
 
@@ -40,7 +41,8 @@ while (1) {
 					$kvh{$k} = $v;
 				}
 				if ($kvh{ip} =~ /$osdial->{WEBserver_stats_regex}/ or $kvh{host} =~ /$osdial->{WEBserver_stats_regex}/) {
-					$hosts{$kvh{ip}} = \%kvh;
+					my $ip = new Net::IP($kvh{ip});
+					$hosts{$ip->intip()} = \%kvh;
 					$count++;
 				}
 			}
@@ -55,7 +57,8 @@ while (1) {
 				$kvh{ip} = $kvh{server_ip};
 				$kvh{timestamp} = $kvh{server_timestamp};
 				if ($kvh{ip} =~ /$osdial->{WEBserver_stats_regex}/ or $kvh{host} =~ /$osdial->{WEBserver_stats_regex}/) {
-					$hosts{$kvh{ip}} = \%kvh;
+					my $ip = new Net::IP($kvh{ip});
+					$hosts{$ip->intip()} = \%kvh;
 					$count++;
 				}
 			}
