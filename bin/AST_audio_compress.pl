@@ -38,6 +38,7 @@
 use strict;
 use Time::HiRes ('gettimeofday','usleep','sleep');
 use OSDial;
+use Proc::Exists ('pexists');
 use Getopt::Long;
 
 $|++;
@@ -67,7 +68,7 @@ if (scalar @ARGV) {
 		'help!' => \$HELP,
 		'debug!' => \$DB,
 		'debugX!' => \$DBX,
-		'verbose!' => \$VERBOSE,
+		'verbose+' => \$VERBOSE,
 		'test!' => \$TEST,
 		'size_checks!' => \$use_size_checks,
 		'clear_lock!' => \$clear_lock,
@@ -140,13 +141,13 @@ if (scalar @ARGV) {
 
 my $osdial = OSDial->new('DB'=>$DB);
 
+
 if ($clear_lock) {
 	if (-e $lock_file) {
 		print "Clearing lock file.\n\n";
 		open(LOCK, $lock_file);
-		while (my $pid = <LOCK>) {
-			kill 9, $pid if ($pid > 0);
-		}
+		my $pid = <LOCK>;
+		kill 9, $pid if ($pid>0 and pexists($pid));
 		close(LOCK);
 		unlink($lock_file);
 		exit 0;
@@ -156,9 +157,18 @@ if ($clear_lock) {
 }
 
 if (-e $lock_file) {
-	print STDERR "ERROR: lock file found.  Run with --clear_lock to remove.\n\n";
-	exit 1;
-} else {
+	open(LOCK, $lock_file);
+	my $pid = <LOCK>;
+	close(LOCK);
+	if ($pid>0 and pexists($pid)) {
+		print STDERR "ERROR: lock file found and process running.  If hung, run with --clear_lock to remove.\n\n";
+		exit 1;
+	} else {
+		print STDERR "ERROR: lock file found and process NOT running, clearing file.\n\n";
+		unlink($lock_file);
+	}
+}
+if (! -e $lock_file) {
 	open(LOCK, '>' . $lock_file);
 	print LOCK $$;
 	close(LOCK);

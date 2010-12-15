@@ -24,11 +24,23 @@
 # DESCRIPTION:
 # Sorts recordings and adds initial qc_transfer_log record.
 #
-# 80906-1905 - Initial build.
+#
+# AST_sort_recordings.pl
+#
+# This is a STEP-3 program in the audio archival process
+#
+# runs every minute and moves the recordings into their permanent home.
+# 
+# * * * * * /opt/osdial/bin/AST_sort_recordings.pl
+#
+#
+# This program assumes that recordings are saved by Asterisk as .wav
+# 
 
 use strict;
 use OSDial;
 use Getopt::Long;
+use Proc::Exists ('pexists');
 use Time::HiRes ('gettimeofday','usleep','sleep');
 
 $|++;
@@ -39,21 +51,28 @@ my $prog = "AST_sort_recordings.pl";
 my $use_size_checks = 0;
 
 
-my($CLOhelp,$verbose,$CLOtest,$clear_lock);
+my($CLOhelp,$verbose,$CLOtest,$clear_lock,$DB,$DBX);
 my $lock_file = "/tmp/.osdial_sort_recordings.lock";
 
 if (scalar @ARGV) {
 	GetOptions(
 		'help!' => \$CLOhelp,
+		'debug!' => \$DB,
+		'debugX!' => \$DBX,
 		'verbose+' => \$verbose,
 		'test!' => \$CLOtest,
 		'clear_lock!' => \$clear_lock
 	);
+	$DB++ if ($DBX);
+	$verbose++ if ($DBX);
+	$verbose++ if ($DB);
 	if ($CLOhelp) {
 		print "\n\n" . $prog . "\n";
 		print "allowed run-time options:\n";
 		print "  [--help]         = This screen\n";
 		print "  [--clear_lock]   = Clear the lock file.\n";
+		print "  [--debug]        = 1x verbose\n";
+		print "  [--debugX]       = 2x verbose\n";
 		print "  [-v|--verbose]   = verbose\n";
 		print "  [-t|--test]      = test only\n\n";
 		exit 0;
@@ -76,21 +95,29 @@ if ($clear_lock) {
 	if (-e $lock_file) {
 		print "Clearing lock file.\n\n";
 		open(LOCK, $lock_file);
-		while (my $pid = <LOCK>) {
-		kill 9, $pid if ($pid > 0);
-	}
-	close(LOCK);
-	unlink($lock_file);
-	exit 0;
-} else {
-	print "No lock file found.\n";
+		my $pid = <LOCK>;
+		kill 9, $pid if ($pid>0 and pexists($pid));
+		close(LOCK);
+		unlink($lock_file);
+		exit 0;
+	} else {
+		print "No lock file found.\n";
 	}
 }
 
 if (-e $lock_file) {
-	print STDERR "ERROR: lock file found.  Run with --clear_lock to remove.\n\n";
-	exit 1;
-} else {
+	open(LOCK, $lock_file);
+	my $pid = <LOCK>;
+	close(LOCK);
+	if ($pid>0 and pexists($pid)) {
+		print STDERR "ERROR: lock file found and process running.  If hung, run with --clear_lock to remove.\n\n";
+		exit 1;
+	} else {
+		print STDERR "ERROR: lock file found and process NOT running, clearing file.\n\n";
+		unlink($lock_file);
+	}
+}
+if (! -e $lock_file) {
 	open(LOCK, '>' . $lock_file);
 	print LOCK $$;
 	close(LOCK);

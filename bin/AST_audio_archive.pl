@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# AST_CRON_audio_3_ftp.pl
+# AST_audio_archive.pl
 #
 ## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
 ## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
@@ -22,24 +22,13 @@
 ##
 #
 #
-# This is a STEP-3 program in the audio archival process
+# AST_audio_archive.pl
 #
-# runs every 3 minutes and copies the recording files to an FTP server
+# This is a STEP-1 program in the audio archival process
+#
+# runs every minute and copies the recording files to the recording directory or FTP server
 # 
-# put an entry into the cron of of your asterisk machine to run this script 
-# every 3 minutes or however often you desire
-#
-# ### recording mixing/compressing/ftping scripts
-##0,3,6,9,12,15,18,21,24,27,30,33,36,39,42,45,48,51,54,57 * * * * /opt/osdial/bin/AST_CRON_audio_1_move_mix.pl
-# 0,3,6,9,12,15,18,21,24,27,30,33,36,39,42,45,48,51,54,57 * * * * /opt/osdial/bin/AST_CRON_audio_1_move_VDonly.pl
-# 1,4,7,10,13,16,19,22,25,28,31,34,37,40,43,46,49,52,55,58 * * * * /opt/osdial/bin/AST_CRON_audio_2_compress.pl --GSM
-# 2,5,8,11,14,17,20,23,26,29,32,35,38,41,44,47,50,53,56,59 * * * * /opt/osdial/bin/AST_CRON_audio_3_ftp.pl --GSM
-#
-# FLAGS FOR COMPRESSION FILES TO TRANSFER
-# --GSM = GSM 6.10 files
-# --MP3 = MPEG Layer3 files
-# --OGG = OGG Vorbis files
-# --WAV = WAV files
+# * * * * * /opt/osdial/bin/AST_audio_archive.pl
 #
 # FLAG FOR NO DATE DIRECTORY ON FTP
 # --NODATEDIR
@@ -49,16 +38,13 @@
 # 
 # This program assumes that recordings are saved by Asterisk as .wav
 # 
-# 
-# 80302-1958 - First Build
-# 80317-2349 - Added FTP debug if debugX
-#
 
 use strict;
 use OSDial;
 use Getopt::Long;
 use Net::Ping;
 use Net::FTP;
+use Proc::Exists ('pexists');
 use Time::HiRes ('gettimeofday','usleep','sleep');
 
 $|++;
@@ -84,7 +70,7 @@ if (scalar @ARGV) {
 		'help!' => \$HELP,
 		'debug!' => \$DB,
 		'debugX!' => \$DBX,
-		'verbose!' => \$VERBOSE,
+		'verbose+' => \$VERBOSE,
 		'test!' => \$TEST,
 		'size_checks!' => \$use_size_checks,
 		'clear_lock!' => \$clear_lock,
@@ -131,9 +117,8 @@ if ($clear_lock) {
 	if (-e $lock_file) {
 		print "Clearing lock file.\n\n";
 		open(LOCK, $lock_file);
-		while (my $pid = <LOCK>) {
-			kill 9, $pid if ($pid > 0);
-		}
+		my $pid = <LOCK>;
+		kill 9, $pid if ($pid>0 and pexists($pid));
 		close(LOCK);
 		unlink($lock_file);
 		exit 0;
@@ -143,9 +128,18 @@ if ($clear_lock) {
 }
 
 if (-e $lock_file) {
-	print STDERR "ERROR: lock file found.  Run with --clear_lock to remove.\n\n";
-	exit 1;
-} else {
+	open(LOCK, $lock_file);
+	my $pid = <LOCK>;
+	close(LOCK);
+	if ($pid>0 and pexists($pid)) {
+		print STDERR "ERROR: lock file found and process running.  If hung, run with --clear_lock to remove.\n\n";
+		exit 1;
+	} else {
+		print STDERR "ERROR: lock file found and process NOT running, clearing file.\n\n";
+		unlink($lock_file);
+	}
+}
+if (! -e $lock_file) {
 	open(LOCK, '>' . $lock_file);
 	print LOCK $$;
 	close(LOCK);
