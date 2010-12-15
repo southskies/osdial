@@ -58,9 +58,19 @@ if ($ADD==211111111111) {
             if (strlen($server_id) < 1 or strlen($server_ip) < 7) {
                 echo "<br><font color=red>SERVER NOT ADDED - Please go back and look at the data you entered</font>\n";
             } else {
+                $asterisk_version='1.6.14';
+                $max_osdial_trunks='96';
+                $osdial_balance_active='Y';
+                if (preg_match('/CONTROL|SQL|WEB|ARCHIVE|OTHER/',$server_profile)) {
+                    $asterisk_version='';
+                    $max_osdial_trunks='0';
+                    $osdial_balance_active='N';
+                }
+                
                 echo "<br><font color=$default_text>SERVER ADDED</font>\n";
-                $stmt=sprintf("INSERT INTO servers (server_id,server_description,server_ip,server_profile,active) values('%s','%s','%s','%s','%s');",
-                    mres($server_id),mres($server_description),mres($server_ip),mres($server_profile),mres($active));
+                $stmt=sprintf("INSERT INTO servers (server_id,server_description,server_ip,server_profile,active,asterisk_version,max_osdial_trunks,osdial_balance_active) ".
+                    "VALUES ('%s','%s','%s','%s','%s','%s','%s','%s');",
+                    mres($server_id),mres($server_description),mres($server_ip),mres($server_profile),mres($active),mres($asterisk_version),mres($max_osdial_trunks),mres($osdial_balance_active));
                 $rslt=mysql_query($stmt, $link);
             }
         }
@@ -145,6 +155,11 @@ if ($ADD==411111111111) {
                 if (strlen($server_id) < 1 or strlen($server_ip) < 7) {
                     echo "<br><font color=red>SERVER NOT MODIFIED - Please go back and look at the data you entered</font>\n";
                 } else {
+                    if (preg_match('/CONTROL|SQL|WEB|ARCHIVE|OTHER/',$server_profile)) {
+                        $asterisk_version='';
+                        $max_osdial_trunks='0';
+                        $osdial_balance_active='N';
+                    }
                     echo "<br><font color=$default_text>SERVER MODIFIED: $server_ip</font>\n";
                     $stmt = sprintf("UPDATE servers SET server_id='%s',server_description='%s',server_ip='%s',active='%s',asterisk_version='%s',max_osdial_trunks='%s',telnet_host='%s',".
                         "telnet_port='%s',ASTmgrUSERNAME='%s',ASTmgrSECRET='%s',ASTmgrUSERNAMEupdate='%s',ASTmgrUSERNAMElisten='%s',ASTmgrUSERNAMEsend='%s',local_gmt='%s',".
@@ -347,24 +362,42 @@ if ($ADD==311111111111) {
         echo "<tr bgcolor=$oddrows><td align=right>Server IP Address: </td><td align=left><input type=text name=server_ip size=20 maxlength=15 value=\"$row[2]\">$NWB#servers-server_ip$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Server Profile: </td><td align=left><select size=1 name=server_profile><option>AIO</option><option>CONTROL</option><option>SQL</option><option>WEB</option><option>DIALER</option><option>ARCHIVE</option><option>OTHER</option><option selected>$row[22]</option></select>$NWB#servers-server_profile$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option selected>$row[3]</option></select>$NWB#servers-active$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Asterisk Version: </td><td align=left><input type=text name=asterisk_version size=20 maxlength=20 value=\"$row[4]\">$NWB#servers-asterisk_version$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Max $t1 Trunks: </td><td align=left><input type=text name=max_osdial_trunks size=5 maxlength=4 value=\"$row[5]\">$NWB#servers-max_osdial_trunks$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>$t1 Balance Dialing: </td><td align=left><select size=1 name=osdial_balance_active><option>Y</option><option>N</option><option selected>$row[20]</option></select>$NWB#servers-osdial_balance_active$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>$t1 Balance Offlimits: </td><td align=left><input type=text name=balance_trunks_offlimits size=5 maxlength=4 value=\"$row[21]\">$NWB#servers-balance_trunks_offlimits$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Telnet Host: </td><td align=left><input type=text name=telnet_host size=20 maxlength=20 value=\"$row[6]\">$NWB#servers-telnet_host$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Telnet Port: </td><td align=left><input type=text name=telnet_port size=6 maxlength=5 value=\"$row[7]\">$NWB#servers-telnet_port$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Manager User: </td><td align=left><input type=text name=ASTmgrUSERNAME size=20 maxlength=20 value=\"$row[8]\">$NWB#servers-ASTmgrUSERNAME$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Manager Secret: </td><td align=left><input type=text name=ASTmgrSECRET size=20 maxlength=20 value=\"$row[9]\">$NWB#servers-ASTmgrSECRET$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Manager Update User: </td><td align=left><input type=text name=ASTmgrUSERNAMEupdate size=20 maxlength=20 value=\"$row[10]\">$NWB#servers-ASTmgrUSERNAMEupdate$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Manager Listen User: </td><td align=left><input type=text name=ASTmgrUSERNAMElisten size=20 maxlength=20 value=\"$row[11]\">$NWB#servers-ASTmgrUSERNAMElisten$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Manager Send User: </td><td align=left><input type=text name=ASTmgrUSERNAMEsend size=20 maxlength=20 value=\"$row[12]\">$NWB#servers-ASTmgrUSERNAMEsend$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Local GMT: </td><td align=left><select size=1 name=local_gmt><option>12.75</option><option>12.00</option><option>11.00</option><option>10.00</option><option>9.50</option><option>9.00</option><option>8.00</option><option>7.00</option><option>6.50</option><option>6.00</option><option>5.75</option><option>5.50</option><option>5.00</option><option>4.50</option><option>4.00</option><option>3.50</option><option>3.00</option><option>2.00</option><option>1.00</option><option>0.00</option><option>-1.00</option><option>-2.00</option><option>-3.00</option><option>-3.50</option><option>-4.00</option><option>-5.00</option><option>-6.00</option><option>-7.00</option><option>-8.00</option><option>-9.00</option><option>-10.00</option><option>-11.00</option><option>-12.00</option><option selected>$row[13]</option></select> (Do NOT Adjust for DST)$NWB#servers-local_gmt$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>VMail Dump Exten: </td><td align=left><input type=text name=voicemail_dump_exten size=20 maxlength=20 value=\"$row[14]\">$NWB#servers-voicemail_dump_exten$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>$t1 AD extension: </td><td align=left><input type=text name=answer_transfer_agent size=20 maxlength=20 value=\"$row[15]\">$NWB#servers-answer_transfer_agent$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Default Context: </td><td align=left><input type=text name=ext_context size=20 maxlength=20 value=\"$row[16]\">$NWB#servers-ext_context$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>System Performance: </td><td align=left><select size=1 name=sys_perf_log><option>Y</option><option>N</option><option selected>$row[17]</option></select>$NWB#servers-sys_perf_log$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Server Logs: </td><td align=left><select size=1 name=vd_server_logs><option>Y</option><option>N</option><option selected>$row[18]</option></select>$NWB#servers-vd_server_logs$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>AGI Output: </td><td align=left><select size=1 name=agi_output><option>NONE</option><option>STDERR</option><option>FILE</option><option>BOTH</option><option selected>$row[19]</option></select>$NWB#servers-agi_output$NWE</td></tr>\n";
+        if (preg_match('/CONTROL|SQL|WEB|ARCHIVE|OTHER/',$row[22])) {
+            echo "<input type=hidden name=asterisk_version value=\"$row[4]\">\n";
+            echo "<input type=hidden name=max_osdial_trunks value=\"$row[5]\">\n";
+            echo "<input type=hidden name=osdial_balance_active value=\"$row[20]\">\n";
+            echo "<input type=hidden name=balance_trunks_offlimits value=\"$row[21]\">\n";
+            echo "<input type=hidden name=agi_output value=\"$row[19]\">\n";
+            echo "<input type=hidden name=ext_context value=\"$row[16]\">\n";
+            echo "<input type=hidden name=telnet_host value=\"$row[6]\">\n";
+            echo "<input type=hidden name=telnet_port value=\"$row[7]\">\n";
+            echo "<input type=hidden name=ASTmgrUSERNAME value=\"$row[8]\">\n";
+            echo "<input type=hidden name=ASTmgrSECRET value=\"$row[9]\">\n";
+            echo "<input type=hidden name=ASTmgrUSERNAMEupdate value=\"$row[10]\">\n";
+            echo "<input type=hidden name=ASTmgrUSERNAMElisten value=\"$row[11]\">\n";
+            echo "<input type=hidden name=ASTmgrUSERNAMEsend value=\"$row[12]\">\n";
+            echo "<input type=hidden name=voicemail_dump_exten value=\"$row[14]\">\n";
+            echo "<input type=hidden name=answer_transfer_agent value=\"$row[15]\">\n";
+        } else {
+            echo "<tr bgcolor=$oddrows><td align=right>Asterisk Version: </td><td align=left><input type=text name=asterisk_version size=20 maxlength=20 value=\"$row[4]\">$NWB#servers-asterisk_version$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Max $t1 Trunks: </td><td align=left><input type=text name=max_osdial_trunks size=5 maxlength=4 value=\"$row[5]\">$NWB#servers-max_osdial_trunks$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>$t1 Balance Dialing: </td><td align=left><select size=1 name=osdial_balance_active><option>Y</option><option>N</option><option selected>$row[20]</option></select>$NWB#servers-osdial_balance_active$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>$t1 Balance Offlimits: </td><td align=left><input type=text name=balance_trunks_offlimits size=5 maxlength=4 value=\"$row[21]\">$NWB#servers-balance_trunks_offlimits$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>AGI Log Output: </td><td align=left><select size=1 name=agi_output><option>NONE</option><option>STDERR</option><option>FILE</option><option>BOTH</option><option selected>$row[19]</option></select>$NWB#servers-agi_output$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Default Context: </td><td align=left><input type=text name=ext_context size=20 maxlength=20 value=\"$row[16]\">$NWB#servers-ext_context$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Telnet Host: </td><td align=left><input type=text name=telnet_host size=20 maxlength=20 value=\"$row[6]\">$NWB#servers-telnet_host$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Telnet Port: </td><td align=left><input type=text name=telnet_port size=6 maxlength=5 value=\"$row[7]\">$NWB#servers-telnet_port$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Manager User: </td><td align=left><input type=text name=ASTmgrUSERNAME size=20 maxlength=20 value=\"$row[8]\">$NWB#servers-ASTmgrUSERNAME$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Manager Secret: </td><td align=left><input type=text name=ASTmgrSECRET size=20 maxlength=20 value=\"$row[9]\">$NWB#servers-ASTmgrSECRET$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Manager Update User: </td><td align=left><input type=text name=ASTmgrUSERNAMEupdate size=20 maxlength=20 value=\"$row[10]\">$NWB#servers-ASTmgrUSERNAMEupdate$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Manager Listen User: </td><td align=left><input type=text name=ASTmgrUSERNAMElisten size=20 maxlength=20 value=\"$row[11]\">$NWB#servers-ASTmgrUSERNAMElisten$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Manager Send User: </td><td align=left><input type=text name=ASTmgrUSERNAMEsend size=20 maxlength=20 value=\"$row[12]\">$NWB#servers-ASTmgrUSERNAMEsend$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>VMail Dump Exten: </td><td align=left><input type=text name=voicemail_dump_exten size=20 maxlength=20 value=\"$row[14]\">$NWB#servers-voicemail_dump_exten$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>$t1 AD extension: </td><td align=left><input type=text name=answer_transfer_agent size=20 maxlength=20 value=\"$row[15]\">$NWB#servers-answer_transfer_agent$NWE</td></tr>\n";
+        }
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</TABLE></center></form>\n";
 
@@ -548,7 +581,7 @@ if ($ADD==311111111111) {
 # ADD=100000000000 display all servers
 ######################
 if ($ADD==100000000000) {
-    $stmti = "SELECT * FROM servers ORDER BY server_id;";
+    $stmt = "SELECT * FROM servers ORDER BY server_id;";
     $rslt=mysql_query($stmt, $link);
     $phones_to_print = mysql_num_rows($rslt);
 
