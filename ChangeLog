@@ -1,5 +1,174 @@
+2010-12-16  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1135] bin/osdial_astgen.pl: Allow multiple registrations per
+	  carrier.
+	* [r1134] extras/firewall.sh: Update bogons in firewall script.
+
+2010-12-15  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1133] bin/AST_audio_archive.pl, bin/AST_audio_compress.pl,
+	  bin/AST_sort_recordings.pl: Added Proc::Exists for better PID
+	  file locking.
+	* [r1132] bin/AST_audio_archive.pl: Bug fix.
+	* [r1131] bin/AST_audio_archive.pl, bin/AST_audio_compress.pl,
+	  bin/AST_sort_recordings.pl, bin/OSDconfig, extras/sql/229081.sql,
+	  perl/lib/OSDial.pm, www/admin/include/content/admin/server.php:
+	  Added function to load the configuration table on OSDial PM
+	  startup. Add unique index to configuration.
+	* [r1130] bin/osdial_resource_listen.pl: Added perl-Net-IP
+	  dependenancy. Sort hosts by integer-based IP.
+	* [r1129] docs/zhone_10b_24port.txt: Added configuration file for
+	  Zhone 10b 24port FXS.
+	* [r1128] extras/sql/229081.sql: Mislabeled field name.
+	* [r1127] www/admin/include/content/admin/server.php: Bug fixes.
+	* [r1126] bin/osdial_astgen.pl: Fix missing declaration.
+	* [r1125] bin/osdial_resource_listen.pl,
+	  bin/osdial_resource_send.pl: Fix missing declarations and logic.
+	* [r1124] bin/AST_audio_archive.pl, bin/AST_audio_compress.pl,
+	  bin/AST_sort_recordings.pl, bin/osdial_astgen.pl,
+	  bin/osdial_resource_listen.pl, bin/osdial_resource_send.pl,
+	  extras/sql/229081.sql, extras/sql/upgrade_sql.map,
+	  perl/lib/OSDial.pm, version,
+	  www/admin/include/content/admin/server.php,
+	  www/admin/include/variables.php: Reformatted server.php. Added
+	  server_stats table. Added server_profile to servers tables. Added
+	  ArchiveReportPath to configuration. Added server_profile
+	  selection to server.php. Added ArchiveReportPath option to the
+	  Archive Server panel. Modified osdial_resource_listen and
+	  osdial_resource_send to write to database instead of multicast
+	  and left multicast code as an option (--multicast). Added routine
+	  to osdial_astgen to update Archive Server properties if blank.
+	  Rewrote AST_audio_archive.pl AST_audio_compress.pl, and
+	  AST_sort_recordins.pl ro use Archive Server properties.
+
+2010-12-14  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1123] bin/AST_vm_update.pl: Fix VM message polling.
+	* [r1122] docs/conf_examples/osdial_extensions.conf,
+	  extras/sql/229080.sql: Set defaults, use @osdial for voicemail.
+	* [r1121] www/admin/include/content/admin/phones.php: Fix field.
+	* [r1120] bin/osdial_astgen.pl: VM generation fixes.
+	* [r1119] bin/osdial_astgen.pl, extras/sql/229080.sql,
+	  extras/sql/upgrade_sql.map, version,
+	  www/admin/include/content/admin/phones.php,
+	  www/admin/include/validation.php,
+	  www/admin/include/variables.php: Additions for voicemail password
+	  and email.
+	* [r1118] agi/agi-record_prompts.agi, bin/osdial-astsnds-ramfs.sh:
+	  Adjustments to sound/recording processing.
+
+2010-12-10  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1117]
+	  www/admin/include/content/reports/lead_performance_list.php: Fix
+	  to accountfor automated statuses.
+	* [r1116] www/admin/include/content/lists/lists.php: Fix totals in
+	  per-lead disposition counts.
+
+2010-11-23  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1115] www/admin/include/content/admin/carriers.php: Fix
+	  failover
+
+2010-11-07  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1114] www/admin/include/content/lists/dnc.php,
+	  www/admin/include/content/lists/lists.php,
+	  www/admin/include/menu.php, www/admin/tocsv.php: Moved all of the
+	  new DNC features into their own file.
+	* [r1113] www/admin/include/content/lists/lists.php,
+	  www/admin/tocsv.php: Added ability to load and export DNC
+	  records.
+	* [r1112] agi/agi-OSDivr.agi, agi/agi-OSDoutboundIVR.agi,
+	  extras/sql/229079.sql, extras/sql/upgrade_sql.map, version,
+	  www/admin/include/content/lists/lists.php,
+	  www/admin/include/content/users/users.php,
+	  www/admin/include/header.php, www/admin/include/help.php,
+	  www/admin/include/help.xml, www/admin/include/menu.php,
+	  www/admin/include/validation.php,
+	  www/admin/include/variables.php: Added support for DNC
+	  maintenance. Searching, adding, and deleting.
+
+2010-11-06  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1111] www/agent/include/osdial-static.js: Added formatPhone
+	  function. Modified the agent status bar to use dialed_number
+	  instead of phone_number.
+
+2010-11-05  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1110] extras/openvpn/osdial.conf, extras/openvpn/osdial2.conf:
+	  Update to use /var/log/osdial for logfiles.
+	* [r1109] www/robots.txt: Fix to allow Wget to scan the ivr
+	  directory.
+
+2010-11-04  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1108] www/admin/include/help.php, www/admin/include/help.xml,
+	  www/agent/include/osdial-static.js: Added FIRSTNAME and LASTNAME
+	  to recording filename options.
+	* [r1107] agi/agi-VDAD_ALL_inbound.agi: Peroform lookup for phone
+	  in AFF.
+	* [r1106] agi/agi-OSDoutbound.agi: Play sip-silence at each
+	  priority pass.
+
+2010-11-03  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1105] www/admin/include/content/admin/carriers.php: Typo
+
+2010-10-29  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1104] bin/osdial_astgen.pl: Fix register sting
+
+2010-10-25  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1103] extras/sql/229078.sql, extras/sql/upgrade_sql.map,
+	  version, www/admin/include/content/lists/list_loader.php: Add
+	  DUPCAMPEXTKEY option to list_loader.
+	* [r1102] bin/osdial_astgen.pl: Fix to grab modules.conf or
+	  osdial_extensions.conf from PATHdocs if size < 250 bytes.
+
+2010-10-20  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1101] bin/AST_manager_listen.pl: Fix race condition for IVR.
+
+2010-10-11  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1100] agi/agi-VDAD_ALL_inbound.agi: Insert 101 in MC list
+	  creation
+
+2010-10-07  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1099] extras/osdial.init: Dont remount /mnt/ramdisk if it is
+	  already mounted.
+	* [r1098] docs/conf_examples/osdial_extensions.conf: Start
+	  recordings in cache directory, move to VDmonitor on completion.
+	* [r1097] extras/osdial.init: Missing full path for
+	  VDmonitor/record_cache soft-link. Misc cleanup.
+	* [r1096] extras/osdial.init: On startup, move all recordings on
+	  disk to ramdisk, remove
+	  /var/spool/asterisk/(VDmonitor|record_cache) and symlink to
+	  /mnt/ramdisk/(VDmonitor|record_cache). On shutdown, remove
+	  symlinks, create /var/spool/asterisk/(VDmonitor|record_cache)
+	  directories and copy any recordings on ramdisk to disk.
+	* [r1095] bin/AST_audio_archive.pl, bin/AST_audio_compress.pl,
+	  bin/AST_sort_recordings.pl: Add -Xt options to lsof call to
+	  reduce load. -X disables tcp/udp lookups. -t is terse output.
+	  Added a check to see if /var/spool/asterisk/record_cache exists,
+	  if it does, skip lsof/sizechecks.
+
+2010-10-06  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1094] extras/firewall.sh: Added the VoIP Blacklist Project
+	  (voipabuse - http://www.infiltrated.net/voipabuse) to the
+	  firewall block list.
+
 2010-10-01  Lott Caskey <lottcaskey@gmail.com>
 
+	* [r1093] version: Pre-release version oops.
+	* [r1092] version: Pre-release version oops.
+	* [r1091] ChangeLog, extras/osdial.spec, extras/sql/229077.sql,
+	  extras/sql/upgrade_sql.map, version: OSDial 2.3 Pre-release.
 	* [r1090] www/admin/include/content/admin/settings.php: Fix
 	  Queuemetrics Variables - Thanks to Christian Gutierrez for
 	  finding the errors.

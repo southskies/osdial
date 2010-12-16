@@ -30,7 +30,7 @@
 %define zaptel12_version 1.2.27-11
 %define dahdi_version 2.2.0.2-999917
 %define dahdi_tools_version 2.2.0-999917
-%define wanpipe_version 3.4.7-12
+%define wanpipe_version 3.5.17-20
 
 
 Summary:	The OSDial predictive dialing suite.
@@ -389,9 +389,11 @@ Requires:	perl-Spreadsheet-ParseExcel
 Requires:	perl-Spreadsheet-WriteExcel
 Requires:	perl-Net-Telnet
 Requires:	perl-Net-Server
+Requires:	perl-Net-IP
 Requires:	perl-Number-Format
 Requires:	perl-version
 Requires:	perl-Parse-RecDescent
+Requires:	perl-Proc-Exists
 Requires:	readline
 Requires:	sox
 Requires:	lame
@@ -481,7 +483,7 @@ PreReq:       osdial-dialer = %{version}-%{release}
 Requires:	asterisk12-system
 Requires:       libpri12 >= %{libpri12_version}
 Requires:       zaptel12 >= %{zaptel12_version}
-Requires:       wanpipe-util12 >= %{wanpipe_version}
+Requires:       wanpipe12 >= %{wanpipe_version}
 Requires:       asterisk12 >= %{asterisk12_version}
 Requires:       asterisk12-addons >= %{asterisk12_version}
 Requires:       asterisk12-sounds >= %{asterisk12_version}
@@ -535,7 +537,7 @@ Requires:	asterisk16-system
 Requires:       libpri14 >= %{libpri14_version}
 Requires:       dahdi >= %{dahdi_version}
 Requires:	dahdi-tools >= %{dahdi_tools_version}
-Requires:       wanpipe-util16 >= %{wanpipe_version}
+Requires:       wanpipe16 >= %{wanpipe_version}
 Requires:       asterisk16 >= %{asterisk16_version}
 Requires:       asterisk16-addons >= %{asterisk16_version}
 Requires:       asterisk16-sounds-en-gsm >= %{asterisk16_version}
@@ -671,6 +673,8 @@ install -dp %{buildroot}
 #cp %{SOURCE1} %{buildroot}/../osdial-%{version}/.osdial.config
 
 %install
+mkdir -p %{buildroot}/usr/lib/debug
+mkdir -p %{buildroot}/usr/src/debug
 %{__make} DESTDIR=%{buildroot} HTTPDUSER=asterisk install
 cd perl
 %{__perl} Makefile.PL PREFIX="%{buildroot}%{_prefix}" INSTALLDIRS="vendor"
@@ -866,6 +870,7 @@ echo -n
 
 
 %post common
+/sbin/chkconfig --add osdial > /dev/null 2>&1
 INTY=$1
 if [ "$INTY" -eq 1 ]; then
         /sbin/chkconfig --add osdial_resource_send > /dev/null 2>&1
@@ -958,6 +963,7 @@ fi
 %{__perl} -pi -e 's|^PATHdocs =>.*|PATHdocs => /usr/share/doc/osdial-%{version}|' /etc/osdial.conf
 [ -z "`grep PATHarchive_backup /etc/osdial.conf`" ] && %{__perl} -pi -e 's|^PATHarchive_home =>.*|PATHarchive_home => /opt/osdial/recordings\nPATHarchive_backup => /opt/osdial/backups/recordings|' /etc/osdial.conf || :
 
+%{__perl} -pi -e 's|stacks|stack|' /etc/security/limits.conf
 if [ -z "`grep OSDial /etc/security/limits.conf`" ]; then
 	echo "" >> /etc/security/limits.conf
 	echo "# OSDial modifications" >> /etc/security/limits.conf
@@ -1265,10 +1271,28 @@ fi
 # Set some performance options in asterisk...
 if [ -f "/etc/asterisk/asterisk.conf" ]; then
         	%{__perl} -pi -e 's|^;timestamp = yes|timestamp = yes|' /etc/asterisk/asterisk.conf
+        	%{__perl} -pi -e 's|^timestamp = no|timestamp = yes|' /etc/asterisk/asterisk.conf
+
         	%{__perl} -pi -e 's|^;highpriority = yes|highpriority = yes|' /etc/asterisk/asterisk.conf
+        	%{__perl} -pi -e 's|^highpriority = no|highpriority = yes|' /etc/asterisk/asterisk.conf
+
         	%{__perl} -pi -e 's|^;internal_timing = yes|internal_timing = yes|' /etc/asterisk/asterisk.conf
-        	%{__perl} -pi -e 's|^;transmit_silence = yes|transmit_silence = yes|' /etc/asterisk/asterisk.conf
+        	%{__perl} -pi -e 's|^internal_timing = no|internal_timing = yes|' /etc/asterisk/asterisk.conf
+
+        	%{__perl} -pi -e 's|^;transmit_silence = yes|transmit_silence = no|' /etc/asterisk/asterisk.conf
+        	%{__perl} -pi -e 's|^transmit_silence = yes|transmit_silence = no|' /etc/asterisk/asterisk.conf
+
+        	%{__perl} -pi -e 's|^;transmit_silence_during_record = yes|transmit_silence_during_record = yes|' /etc/asterisk/asterisk.conf
+        	%{__perl} -pi -e 's|^transmit_silence_during_record = no|transmit_silence_during_record = yes|' /etc/asterisk/asterisk.conf
+
         	%{__perl} -pi -e 's|^;transcode_via_sln = yes|transcode_via_sln = no|' /etc/asterisk/asterisk.conf
+        	%{__perl} -pi -e 's|^transcode_via_sln = yes|transcode_via_sln = no|' /etc/asterisk/asterisk.conf
+
+        	%{__perl} -pi -e 's|^;cache_record_files = yes|cache_record_files = yes|' /etc/asterisk/asterisk.conf
+        	%{__perl} -pi -e 's|^cache_record_files = no|cache_record_files = yes|' /etc/asterisk/asterisk.conf
+
+        	%{__perl} -pi -e 's|^;record_cache_dir = /tmp|record_cache_dir = /var/spool/asterisk/record_cache|' /etc/asterisk/asterisk.conf
+        	%{__perl} -pi -e 's|^record_cache_dir = .*$|record_cache_dir = /var/spool/asterisk/record_cache|' /etc/asterisk/asterisk.conf
 fi
 # Remove bad chan-dahdi.conf, bad filename.
 if [ -f "/etc/asterisk/chan-dahdi.conf" ]; then
@@ -1451,7 +1475,7 @@ if [ "$INTY" -eq 2 ]; then
 		if [ -z "`grep ADMIN_adjust_GMTnow_on_leads $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (sql) adjust the GMT offset for the leads in the osdial_list table" >> $CTB
-			echo -e "1 1,7 * * * /opt/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl --debug --postal-code-gmt" >> $CTB
+			echo -e "1 1,7 * * * /opt/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl" >> $CTB
 		fi
 
 		if [ -z "`grep AST_DB_optimize $CTB`" ]; then
@@ -1718,7 +1742,7 @@ echo -n
 %files common
 %defattr(644,asterisk,asterisk,755)
 %dir %attr(0755,asterisk,asterisk) %{_var}/log/osdial
-%attr(0644,asterisk,asterisk) %{_sysconfdir}/httpd/conf.d/osdial-archive.conf
+%attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/httpd/conf.d/osdial-archive.conf
 %attr(0644,asterisk,asterisk) %config(noreplace) %{_sysconfdir}/osdial.conf
 %attr(0755,root,root) %{_sysconfdir}/profile.d/osdial.sh
 %attr(0755,root,root) %{_sysconfdir}/init.d/osdial
@@ -1808,6 +1832,25 @@ echo -n
 %attr(0644,root,root) /usr/share/doc/osdial-%{version}/INBOUND-CLOSER_PROCESS.txt
 %attr(0644,root,root) /usr/share/doc/osdial-%{version}/LOAD_BALANCING.txt
 %attr(0644,root,root) /usr/share/doc/osdial-%{version}/OUTBOUND_IVR.txt
+%attr(0644,root,root) /usr/share/doc/osdial-%{version}/zhone_10b_24port.txt
+%attr(0644,root,root) /usr/share/doc/osdial-%{version}/copyright
+%attr(0644,root,root) /usr/share/doc/osdial-%{version}/firewall.sh
+%attr(0644,root,root) /usr/share/doc/osdial-%{version}/osdial-template-example.tgz
+%attr(0644,root,root) /usr/share/doc/osdial-%{version}/httpd-osdial.conf
+%attr(0644,root,root) /usr/share/doc/osdial-%{version}/httpd-osdial-archive.conf
+%attr(0644,root,root) /usr/share/doc/osdial-%{version}/my.cnf
+%attr(0644,root,root) /usr/share/doc/osdial-%{version}/php.ini
+%attr(0644,root,root) /usr/share/doc/osdial-%{version}/osdial.conf
+%attr(0644,root,root) /usr/share/doc/osdial-%{version}/osdial.cron
+%attr(0644,root,root) /usr/share/doc/osdial-%{version}/AUTHORS
+%attr(0644,root,root) /usr/share/doc/osdial-%{version}/ChangeLog
+%attr(0644,root,root) /usr/share/doc/osdial-%{version}/COPYING
+%attr(0644,root,root) /usr/share/doc/osdial-%{version}/NEWS
+%attr(0644,root,root) /usr/share/doc/osdial-%{version}/README
+%attr(0644,root,root) /usr/share/doc/osdial-%{version}/TODO
+%attr(0644,root,root) /usr/share/doc/osdial-%{version}/api/api-admin-add_lead.xml
+%attr(0644,root,root) /usr/share/doc/osdial-%{version}/api/api.txt
+%attr(0644,root,root) /usr/share/doc/osdial-%{version}/api/api-version.xml
 %attr(0644,root,root) /usr/share/doc/osdial-%{version}/conf_examples/amd.conf
 %attr(0644,root,root) /usr/share/doc/osdial-%{version}/conf_examples/cdr.conf
 %attr(0644,root,root) /usr/share/doc/osdial-%{version}/conf_examples/dnsmgr.conf
@@ -2052,6 +2095,7 @@ echo -n
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/lists/iframe.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/lists/list_loader.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/lists/lists.php
+%attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/lists/dnc.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/lists/modify_lead.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/reports/agent_pause_summary.php
 %attr(0664,apache,asterisk) %{_opt}/osdial/html/admin/include/content/reports/agent_stats.php
