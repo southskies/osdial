@@ -737,10 +737,14 @@ sub gen_carriers {
 		# Separate the configuration based on the protocol.
 		if ($carriers->{$carrier}{protocol} eq "SIP") {
 			$sip_config .= $carriers->{$carrier}{protocol_config} . "\n\n";
-			$sip_registrations .= 'register => ' . $carriers->{$carrier}{registrations} . "\n\n";
+			foreach my $regstr (split/\n/,$carriers->{$carrier}{registrations}) {
+				$sip_registrations .= 'register => ' . $regstr . "\n\n" if ($regstr ne '');
+			}
 		} elsif ($carriers->{$carrier}{protocol} eq "IAX2") {
 			$iax_config .= $carriers->{$carrier}{protocol_config} . "\n\n";
-			$iax_registrations .= 'register => ' . $carriers->{$carrier}{registrations} . "\n\n";
+			foreach my $regstr (split/\n/,$carriers->{$carrier}{registrations}) {
+				$iax_registrations .= 'register => ' . $regstr . "\n\n" if ($regstr ne '');
+			}
 		}
 
 		# Create failover dialplan, which will attempt another carrier based on the DIALSTATUS.
