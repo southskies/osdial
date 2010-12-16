@@ -1,50 +1,47 @@
-### (ALL) Get load average.
-* * * * * cat /proc/loadavg | cut -d" " -f1 > /opt/osdial/html/admin/Loadavg.txt
-
 ### (ALL) keepalive script for osdial processes
-* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl
+* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1
 
 ### (ALL) remove old osdial logs and asterisk logs more than 2 days old
-28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f
-29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f
+28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1
+29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1
 
 ### (sql) remove old csv exports more than 2 days old
-24 0 * * * /usr/bin/find /opt/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs rm -f
+24 0 * * * /usr/bin/find /opt/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1
 
 ### (sql) Actual Scrub against external DNC
-* * * * * /opt/osdial/bin/osdial_external_dnc.pl
+* * * * * /opt/osdial/bin/osdial_external_dnc.pl > /dev/null 2>&1
 
 ### (sql) Schedule ALL to scrub against external DNC
-0 1 * * * /opt/osdial/bin/osdial_external_dnc.pl --sched=ALL
+0 1 * * * /opt/osdial/bin/osdial_external_dnc.pl --sched=ALL > /dev/null 2>&1
 
 ### (sql) Clean out auto-calls regularly
-* * * * * /opt/osdial/bin/AST_CLEAR_auto_calls.pl
+* * * * * /opt/osdial/bin/AST_CLEAR_auto_calls.pl > /dev/null 2>&1
 
 ### (sql) flush queue DB table every hour for entries older than 1 hour
-11,41 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q
+11,41 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q > /dev/null 2>&1
 
 ### (sql) fix the osdial_agent_log once every hour
-33 * * * * /opt/osdial/bin/AST_cleanup_agent_log.pl
+33 * * * * /opt/osdial/bin/AST_cleanup_agent_log.pl > /dev/null 2>&1
 
 ### (sql) updater for OSDial hopper
-* * * * * /opt/osdial/bin/AST_VDhopper.pl -q
+* * * * * /opt/osdial/bin/AST_VDhopper.pl -q > /dev/null 2>&1
 
 ### (sql) adjust the GMT offset for the leads in the osdial_list table
-1 1,7 * * * /opt/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl --debug --postal-code-gmt
+1 1,7 * * * /opt/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl > /dev/null 2>&1
 
 ### (sql) optimize the database tables within the asterisk database
-3 1 * * * /opt/osdial/bin/AST_DB_optimize.pl
+3 1 * * * /opt/osdial/bin/AST_DB_optimize.pl > /dev/null 2>&1
 
 ### (sql) OSDial campaign export scripts (OPTIONAL)
-#32 0 * * * /opt/osdial/bin/AST_VDsales_export.pl
-#42 0 * * * /opt/osdial/bin/AST_sourceID_summary_export.pl
+#32 0 * * * /opt/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1
+#42 0 * * * /opt/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1
 
 ### (sql) OSDial agent time log weekly and daily summary report generation
-#2 0 * * 0 /opt/osdial/bin/AST_agent_week.pl
-#22 0 * * * /opt/osdial/bin/AST_agent_day.pl
+#2 0 * * 0 /opt/osdial/bin/AST_agent_week.pl > /dev/null 2>&1
+#22 0 * * * /opt/osdial/bin/AST_agent_day.pl > /dev/null 2>&1
 
 ### (dialer) Generate asterisk config files and reload modules
-* * * * * /opt/osdial/bin/osdial_astgen.pl -q
+* * * * * /opt/osdial/bin/osdial_astgen.pl -q > /dev/null 2>&1
 
 ### (dialer) Syncronize IVR recordings, arg is web server
 * * * * * /opt/osdial/bin/osdial_ivr_sync.sh 127.0.0.1 > /dev/null 2>&1
@@ -53,34 +50,34 @@
 * * * * * /usr/sbin/asterisk -rx "show voicemail users" > /opt/osdial/html/admin/VMnow.txt
 
 ### (dialer) kill Hangup script for Asterisk updaters
-* * * * * /opt/osdial/bin/AST_manager_kill_hung_congested.pl
+* * * * * /opt/osdial/bin/AST_manager_kill_hung_congested.pl > /dev/null 2>&1
 
 ### (dialer) updater for voicemail
-* * * * * /opt/osdial/bin/AST_vm_update.pl
+* * * * * /opt/osdial/bin/AST_vm_update.pl > /dev/null 2>&1
 
 ### (dialer) updater for conference validator
-* * * * * /opt/osdial/bin/AST_conf_update.pl
+* * * * * /opt/osdial/bin/AST_conf_update.pl > /dev/null 2>&1
 
 ### (dialer) reset several temporary-info tables in the database
-2 1 * * * /opt/osdial/bin/AST_reset_mysql_vars.pl
+2 1 * * * /opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1
 
 ### (dialer) remove old recordings more than 7 days old
-24 0 * * * /usr/bin/find /var/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs rm -f
+24 0 * * * /usr/bin/find /var/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs rm -f > /dev/null 2>&1
 
 ### (dialer) remove old recording backups
-24 0 * * * /usr/bin/find /opt/osdial/backups/recordings -maxdepth 2 -type f -mtime +7 -print | xargs rm -f
+24 0 * * * /usr/bin/find /opt/osdial/backups/recordings -maxdepth 2 -type f -mtime +7 -print | xargs rm -f > /dev/null 2>&1
 
 ### (dialer) Send Recordings to archive server
-* * * * * /opt/osdial/bin/AST_audio_archive.pl
+* * * * * /opt/osdial/bin/AST_audio_archive.pl > /dev/null 2>&1
 
 ### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS.
-*/15 * * * * /opt/osdial/bin/osdial-astsnds-ramfs.sh
+*/15 * * * * /opt/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1
 
 ### (archive) Compress wav files to mp3
-* * * * * /opt/osdial/bin/AST_audio_compress.pl --MP3
+* * * * * /opt/osdial/bin/AST_audio_compress.pl > /dev/null 2>&1
 
 ### (archive) Sort MP3s into campaign_id/date directory structure
-* * * * * /opt/osdial/bin/AST_sort_recordings.pl
+* * * * * /opt/osdial/bin/AST_sort_recordings.pl > /dev/null 2>&1
 
 ### (archive) Send select MP3s to a third-party quality-control or offste archive server.
-*/15 * * * * /opt/osdial/bin/AST_qc_transfer.pl
+*/15 * * * * /opt/osdial/bin/AST_qc_transfer.pl > /dev/null 2>&1

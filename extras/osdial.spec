@@ -1401,107 +1401,102 @@ INTY=$1
 if [ "$INTY" -eq 2 ]; then
 	CTB="/var/spool/cron/asterisk"
 	if [ -f "$CTB" ]; then
-		if [ -z "`grep AST_ntp_update $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) Force update of time servers. Now run from /etc/cron.hourly" >> $CTB
-			echo -e "#0 * * * * /opt/osdial/bin/AST_ntp_update.sh > /dev/null 2>&1" >> $CTB
-		fi
-
-		if [ -z "`grep Loadavg $CTB`" ]; then
-			echo -e "" >> $CTB
-			echo -e "### (ALL) Get load average." >> $CTB
-			echo -e "* * * * * cat /proc/loadavg | cut -d" " -f1 > /opt/osdial/html/admin/Loadavg.txt" >> $CTB
-		fi
 
 		if [ -z "`grep 'remove old osdial logs' $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (ALL) remove old osdial logs and asterisk logs more than 2 days old" >> $CTB
-			echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f" >> $CTB
-			echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f" >> $CTB
+			echo -e "28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+			echo -e "29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep 'remove old recording backups' $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (ALL) remove old recording backups" >> $CTB
-			echo -e "28 0 * * * /usr/bin/find /opt/osdial/backups/recordings -maxdepth 1 -type f -mtime +7 -print | xargs rm -f" >> $CTB
+			echo -e "28 0 * * * /usr/bin/find /opt/osdial/backups/recordings -maxdepth 1 -type f -mtime +7 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep ADMIN_keepalive_ALL $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (ALL) keepalive script for osdial processes" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/ADMIN_keepalive_ALL.pl > /dev/null 2>&1" >> $CTB
 		fi
 
+
+		if [ -z "`grep 'remove old csv exports more than 2 days old' $CTB`" ]; then
+			echo -e "" >> $CTB
+			echo -e "### (sql) remove old csv exports more than 2 days old" >> $CTB
+			echo -e "24 0 * * * /usr/bin/find /opt/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
+		fi
 
 		if [ -z "`grep osdial_external_dnc $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo "### (sql) Actual Scrub against external DNC" >> $CTB
-			echo "* * * * * /opt/osdial/bin/osdial_external_dnc.pl" >> $CTB
+			echo "* * * * * /opt/osdial/bin/osdial_external_dnc.pl > /dev/null 2>&1" >> $CTB
 			echo -e "" >> $CTB
 			echo "### (sql) Schedule ALL to scrub against external DNC" >> $CTB
-			echo "0 1 * * * /opt/osdial/bin/osdial_external_dnc.pl --sched=ALL" >> $CTB
+			echo "0 1 * * * /opt/osdial/bin/osdial_external_dnc.pl --sched=ALL > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep AST_CLEAR_auto_calls $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (sql) Clean out auto-calls regularly" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_CLEAR_auto_calls.pl" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/AST_CLEAR_auto_calls.pl > /dev/null 2>&1" >> $CTB
 		fi
 
 
 		if [ -z "`grep AST_flush_DBqueue $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (sql) flush queue DB table every hour for entries older than 1 hour" >> $CTB
-			echo -e "11,41 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q" >> $CTB
+			echo -e "11,41 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q > /dev/null 2>&1" >> $CTB
 		fi
 		if [ -z "`grep OSB_remove_old_recordings $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (sql) flush queue DB table every hour for entries older than 1 hour" >> $CTB
-			echo -e "11,41 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q" >> $CTB
+			echo -e "11,41 * * * * /opt/osdial/bin/AST_flush_DBqueue.pl -q > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep AST_cleanup_agent_log $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (sql) fix the osdial_agent_log once every hour" >> $CTB
-			echo -e "33 * * * * /opt/osdial/bin/AST_cleanup_agent_log.pl" >> $CTB
+			echo -e "33 * * * * /opt/osdial/bin/AST_cleanup_agent_log.pl > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep AST_VDhopper $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (sql) updater for OSDial hopper" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_VDhopper.pl -q" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/AST_VDhopper.pl -q > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep ADMIN_adjust_GMTnow_on_leads $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (sql) adjust the GMT offset for the leads in the osdial_list table" >> $CTB
-			echo -e "1 1,7 * * * /opt/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl" >> $CTB
+			echo -e "1 1,7 * * * /opt/osdial/bin/ADMIN_adjust_GMTnow_on_leads.pl > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep AST_DB_optimize $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (sql) optimize the database tables within the asterisk database" >> $CTB
-			echo -e "3 1 * * * /opt/osdial/bin/AST_DB_optimize.pl" >> $CTB
+			echo -e "3 1 * * * /opt/osdial/bin/AST_DB_optimize.pl > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep AST_agent_week $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (sql) OSDial agent time log weekly and daily summary report generation" >> $CTB
-			echo -e "#2 0 * * 0 /opt/osdial/bin/AST_agent_week.pl" >> $CTB
-			echo -e "#22 0 * * * /opt/osdial/bin/AST_agent_day.pl" >> $CTB
+			echo -e "#2 0 * * 0 /opt/osdial/bin/AST_agent_week.pl > /dev/null 2>&1" >> $CTB
+			echo -e "#22 0 * * * /opt/osdial/bin/AST_agent_day.pl > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep AST_VDsales_export $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (sql) OSDial campaign export scripts (OPTIONAL)" >> $CTB
-			echo -e "#32 0 * * * /opt/osdial/bin/AST_VDsales_export.pl" >> $CTB
-			echo -e "#42 0 * * * /opt/osdial/bin/AST_sourceID_summary_export.pl" >> $CTB
+			echo -e "#32 0 * * * /opt/osdial/bin/AST_VDsales_export.pl > /dev/null 2>&1" >> $CTB
+			echo -e "#42 0 * * * /opt/osdial/bin/AST_sourceID_summary_export.pl > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep osdial_astgen $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (dialer) Generate asterisk config files and reload modules" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/osdial_astgen.pl -q" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/osdial_astgen.pl -q > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep osdial_ivr_sync $CTB`" ]; then
@@ -1519,61 +1514,61 @@ if [ "$INTY" -eq 2 ]; then
 		if [ -z "`grep AST_manager_kill_hung_congested $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (dialer) kill Hangup script for Asterisk updaters" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_manager_kill_hung_congested.pl" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/AST_manager_kill_hung_congested.pl > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep AST_vm_update $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (dialer) updater for voicemail" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_vm_update.pl" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/AST_vm_update.pl > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep AST_conf_update $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (dialer) updater for conference validator" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_conf_update.pl" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/AST_conf_update.pl > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep AST_reset_mysql_vars $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (dialer) reset several temporary-info tables in the database" >> $CTB
-			echo -e "2 1 * * * /opt/osdial/bin/AST_reset_mysql_vars.pl" >> $CTB
+			echo -e "2 1 * * * /opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep monitor $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (dialer) remove old recordings more than 7 days old" >> $CTB
-			echo -e "24 0 * * * /usr/bin/find /var/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs rm -f" >> $CTB
+			echo -e "24 0 * * * /usr/bin/find /var/spool/asterisk/monitor -maxdepth 2 -type f -mtime +7 -print | xargs rm -f > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep AST_audio_archive $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (dialer) Send Recordings to archive server" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_audio_archive.pl" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/AST_audio_archive.pl > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep AST_audio_compress $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (archive) Compress wav files to mp3" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_audio_compress.pl --MP3" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/AST_audio_compress.pl > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep AST_sort_recordings $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (archive) Sort MP3s into campaign_id/date directory structure" >> $CTB
-			echo -e "* * * * * /opt/osdial/bin/AST_sort_recordings.pl" >> $CTB
+			echo -e "* * * * * /opt/osdial/bin/AST_sort_recordings.pl > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep AST_qc_transfer $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (archive) Send select MP3s to a third-party quality-control or offste archive server." >> $CTB
-			echo -e "*/15 * * * * /opt/osdial/bin/AST_qc_transfer.pl" >> $CTB
+			echo -e "*/15 * * * * /opt/osdial/bin/AST_qc_transfer.pl > /dev/null 2>&1" >> $CTB
 		fi
 
 		if [ -z "`grep osdial-astsnds-ramfs.sh $CTB`" ]; then
 			echo -e "" >> $CTB
 			echo -e "### (dialer) Process to increase Asterisk performance by placing sounds on RAMFS." >> $CTB
-			echo -e "*/15 * * * * /opt/osdial/bin/osdial-astsnds-ramfs.sh" >> $CTB
+			echo -e "*/15 * * * * /opt/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1" >> $CTB
 		fi
 
 		kill -1 `ps -ef | grep crond | head -1 | awk '{ print $2 }'` > /dev/null 2>&1
