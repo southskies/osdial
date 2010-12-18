@@ -328,6 +328,19 @@ while($one_day_interval > 0)
 
 
 				# Clear conference when meetme ends.
+				if ($ame{'event'} =~ /VMChangePassword/i) {
+					my $mailbox = $ame{'mailbox'};
+					if ($mailbox =~ /\@osdial$/) {
+						$mailbox =~ s/\@osdial$//;
+						my $newpassword = $ame{'newpassword'};
+
+						$stmtA = "UPDATE phones SET voicemail_password='$newpassword' WHERE voicemail_id='$mailbox';";
+						my $affected_rows = $dbhA->do($stmtA);
+						if($DB){print "|$affected_rows Updated VM Password|$stmtA\n|";}
+					}
+				}
+
+				# Clear conference when meetme ends.
 				if ($ame{'event'} =~ /MeetmeEnd/i) {
 					$conference = $ame{'meetme'};
 					$stmtA = "UPDATE conferences SET extension='' WHERE server_ip='$server_ip' AND conf_exten='$conference';";
