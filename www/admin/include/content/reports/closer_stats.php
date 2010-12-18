@@ -88,10 +88,18 @@ function report_closer_stats() {
         if ($i != $group_ct - 1) $group_list .= ", ";
         $i++;
     }
-    if ( (ereg("--ALL--",$group_string) ) or ($group_ct < 1) ) {
+    if ( (preg_match("/--ALL--|--ALLA2A--/",$group_string) ) or ($group_ct < 1) ) {
         $group_list = "--ALL--";
-        $group_SQLand = sprintf("AND campaign_id IN %s",$LOG['allowed_ingroupsSQL']);
-        $group_SQL = sprintf("WHERE campaign_id IN %s",$LOG['allowed_ingroupsSQL']);
+        if (!preg_match("/--ALL--/",$group_string)) {
+            $group_SQLand = sprintf("AND campaign_id IN %s AND campaign_id LIKE 'A2a%%'",$LOG['allowed_ingroupsSQL']);
+            $group_SQL = sprintf("WHERE campaign_id IN %s AND campaign_id LIKE 'A2a%%'",$LOG['allowed_ingroupsSQL']);
+        } elseif (!preg_match("/--ALLA2A--/",$group_string)) {
+            $group_SQLand = sprintf("AND campaign_id IN %s AND campaign_id NOT LIKE 'A2a%%'",$LOG['allowed_ingroupsSQL']);
+            $group_SQL = sprintf("WHERE campaign_id IN %s AND campaign_id NOT LIKE 'A2a%%'",$LOG['allowed_ingroupsSQL']);
+        } else {
+            $group_SQLand = sprintf("AND campaign_id IN %s",$LOG['allowed_ingroupsSQL']);
+            $group_SQL = sprintf("WHERE campaign_id IN %s",$LOG['allowed_ingroupsSQL']);
+        }
     } else {
         $group_SQL = eregi_replace(",$",'',$group_SQL);
         $group_SQLand = sprintf("AND campaign_id IN %s AND campaign_id IN(%s)",$LOG['allowed_ingroupsSQL'],$group_SQL);
@@ -134,7 +142,7 @@ function report_closer_stats() {
     $html .= "      <input type=hidden name=DB value=\"$DB\">\n";
     $html .= "      <table align=center bgcolor=$oddrows cellspacing=3>\n";
     $html .= "        <tr>\n";
-    $html .= "          <td colspan=3 align=center>\n";
+    $html .= "          <td colspan=4 align=center>\n";
     $html .= "            <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=2>\n";
     if (strlen($group[0]) > 1) {
         $html .= "              <a href=\"./admin.php?ADD=3111&group_id=$group[0]\">MODIFY</a> | \n";
@@ -164,16 +172,32 @@ function report_closer_stats() {
     $html .= "              <option value=\"--ALL--\" $gsel>-- ALL INGROUPS --</option>\n";
     $o=0;
     while ($campaigns_to_print > $o) {
-        $gsel=''; if (eregi("$groups[$o]\|",$group_string)) $gsel = "selected";
-        $html .= "              <option value=\"$groups[$o]\" $gsel>" . mclabel($groups[$o]) . "</option>\n";
+        if (!preg_match('/^A2A_/',$groups[$o])) {
+            $gsel=''; if (eregi("$groups[$o]\|",$group_string)) $gsel = "selected";
+            $html .= "              <option value=\"$groups[$o]\" $gsel>" . mclabel($groups[$o]) . "</option>\n";
+        }
+        $o++;
+    }
+    $html .= "            </select>\n";
+    $html .= "          </td>\n";
+    $html .= "          <td> Agent2Agent-Groups:<br>\n";
+    $html .= "            <select size=5 name=group[] multiple>\n";
+    $gsel=''; if  (eregi("--ALLA2A--",$group_string)) $gsel = "selected";
+    $html .= "              <option value=\"--ALLA2A--\" $gsel>-- ALL A2A GROUPS --</option>\n";
+    $o=0;
+    while ($campaigns_to_print > $o) {
+        if (preg_match('/^A2A_/',$groups[$o])) {
+            $gsel=''; if (eregi("$groups[$o]\|",$group_string)) $gsel = "selected";
+            $html .= "              <option value=\"$groups[$o]\" $gsel>" . mclabel($groups[$o]) . "</option>\n";
+        }
         $o++;
     }
     $html .= "            </select>\n";
     $html .= "          </td>\n";
     $html .= "        </tr>\n";
-    $html .= "        <tr><td colspan=3>&nbsp;</td></tr>\n";
+    $html .= "        <tr><td colspan=4>&nbsp;</td></tr>\n";
     $html .= "        <tr class=tabfooter>\n";
-    $html .= "          <td colspan=3 align=center class=tabbutton>\n";
+    $html .= "          <td colspan=4 align=center class=tabbutton>\n";
     $html .= "            <input type=submit name=submit value=submit>\n";
     $html .= "          </td>\n";
     $html .= "        </tr>\n";
