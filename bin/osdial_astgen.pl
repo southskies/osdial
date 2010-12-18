@@ -251,7 +251,7 @@ sub gen_servers {
 
 	my $pmmask="deny=0.0.0.0/0.0.0.0\n";
 	$pmmask.="permit=127.0.0.1/255.255.255.255\n";
-	my $stmt = "SELECT * FROM servers ORDER BY server_ip;";
+	my $stmt = "SELECT * FROM servers WHERE active='Y' AND server_profile IN ('AIO','DIALER') ORDER BY server_ip;";
 	while (my $sret = $osdial->sql_query($stmt)) {
 		$pmmask.="permit=" . $sret->{server_ip} . "/255.255.255.255\n";
 	}
@@ -296,12 +296,12 @@ sub gen_servers {
 
 
 	# Get my server
-	my $stmt = "SELECT server_id,server_ip FROM servers WHERE";
+	my $stmt = "SELECT server_id,server_ip FROM servers WHERE (";
 	foreach my $ip (@myips) {
 		$stmt .= " server_ip=\'" . $ip . "\' OR";
 	}
 	chop $stmt; chop $stmt; chop $stmt;
-	$stmt .= ';';
+	$stmt .= ") AND server_profile IN ('AIO','DIALER');";
 	print $stmt . "\n" if ($DB);
 	while (my $sret = $osdial->sql_query($stmt)) {
 		$sret->{server_id} =~ s/-|\./_/g;
@@ -357,7 +357,7 @@ sub gen_servers {
 	}
 
 	# Get other servers 
-	my $stmt = "SELECT server_id,server_ip FROM servers WHERE active='Y' AND";
+	my $stmt = "SELECT server_id,server_ip FROM servers WHERE active='Y' AND server_profile IN ('AIO','DIALER') AND";
 	foreach my $ip (@myips) {
 		$stmt .= " server_ip!=\'" . $ip . "\' AND";
 	}
