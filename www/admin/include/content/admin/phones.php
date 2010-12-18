@@ -454,7 +454,7 @@ if ($ADD==10000000000) {
         $row=mysql_fetch_row($rslt);
         echo "  <tr " . bgcolor($o) ." class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]\">";
-        if ($LOG['multicomp'] and !preg_match('/\/|@/',$row[0]) and preg_match($LOG['campaignsRE'],$row[0])) {
+        if ($LOG['multicomp'] and !preg_match('/\/|@/',$row[0]) and preg_match($LOG['companiesRE'],$row[0])) {
             echo $row[12] . "&nbsp;" . substr($row[0],3);
         } else {
             echo $row[0];
