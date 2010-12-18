@@ -67,12 +67,8 @@
         This menu is where you select the OSDial agents group that this user will belong to. This does not have any restrictions at this time, this is just to subdivide users and allow for future features based upon it.
     </item>
 
-    <item pathId="phone_login" title="Phone Login">
-        Here is where you can set a default phone login value for when the user logs into agent.php. This value will populate the phone_login automatically when the user logs in with their user-pass-campaign in the agent.php login screen.
-    </item>
-
-    <item pathId="phone_pass" title="Phone Pass">
-        Here is where you can set a default phone pass value for when the user logs into agent.php. This value will populate the phone_pass automatically when the user logs in with their user-pass-campaign in the agent.php login screen.
+    <item pathId="phone_login" title="Default Phone / Voicemail">
+        You can select the agent's default phone to use here.  Under the phone setup is where you can define the voicemail options.
     </item>
 
     <item pathId="hotkeys_active" title="Hot Keys Active">
@@ -213,6 +209,22 @@
 
     <item pathId="xfer_agent2agent" title="Agent2Agent Transfers">
       If enabled, this agent will be allowed to transfer calls to other agents that also have this option enabled.
+    </item>
+
+    <item pathId="xfer_agent2agent_wait" title="Agent2Agent Timeout">
+      Determines wait will happen if the Agent is current unavailable.  ALWAYS_WAIT: If agent is unavailable or logged off, timeout and run timeout action.  WHEN_LOGGED_IN: If agent is unavailable and logged in, timeout and run timeout action.  NEVER_WAIT: If agent is unavailable or logged off, immediately run timeout action.
+    </item>
+
+    <item pathId="xfer_agent2agent_wait_seconds" title="Agent2Agent Timeout Seconds">
+      How long to wait for agent to become avaialble before running the timeout action.
+    </item>
+
+    <item pathId="xfer_agent2agent_wait_action" title="Agent2Agent Timeout Action">
+      Send the call to the agents VOICEMAIL or to the timeout EXTENSION.
+    </item>
+
+    <item pathId="xfer_agent2agent_wait_extension" title="Agent2Agent Timeout Extension">
+      The extension to send the call too.
     </item>
 
     <item pathId="script_override" title="Script Override">

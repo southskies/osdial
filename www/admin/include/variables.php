@@ -718,6 +718,10 @@ $xfer_cid_mode = get_variable("xfer_cid_mode");
 $xfer_exten = get_variable("xfer_exten");
 $XFERgroups = get_variable("XFERgroups");
 $xfer_agent2agent = get_variable("xfer_agent2agent");
+$xfer_agent2agent_wait = get_variable("xfer_agent2agent_wait");
+$xfer_agent2agent_wait_seconds = get_variable("xfer_agent2agent_wait_seconds");
+$xfer_agent2agent_wait_action = get_variable("xfer_agent2agent_wait_action");
+$xfer_agent2agent_wait_extension = get_variable("xfer_agent2agent_wait_extension");
 
 
 

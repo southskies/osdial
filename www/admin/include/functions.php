@@ -1276,7 +1276,7 @@ function bgcolor($cnt) {
 function mclabel($strdat) {
     global $LOG;
     if ($LOG['multicomp_user'] > 0) $strdat = substr($strdat,3);
-    if ($LOG['multicomp_admin'] > 0 and preg_match($LOG['companiesRE'],$strdat)) $strdat = substr($strdat,0,3) . '&nbsp;' . substr($strdat,3);
+    if ($LOG['multicomp_admin'] > 0 and preg_match($LOG['companiesRE'],$strdat)) $strdat = substr($strdat,0,3) . ' ' . substr($strdat,3);
     return $strdat;
 }
 

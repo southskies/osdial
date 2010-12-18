@@ -80,12 +80,7 @@ echo "<tr><td><FONT FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=2>
 <BR>
 <A NAME="osdial_users-phone_login">
 <BR>
-<B>Phone Login -</B> Here is where you can set a default phone login value for when the user logs into agent.php. This value will populate the phone_login automatically when the user logs in with their user-pass-campaign in the agent.php login screen.
-
-<BR>
-<A NAME="osdial_users-phone_pass">
-<BR>
-<B>Phone Pass -</B> Here is where you can set a default phone pass value for when the user logs into agent.php. This value will populate the phone_pass automatically when the user logs in with their user-pass-campaign in the agent.php login screen.
+<B>Phone Login -</B> You can select the agent's default phone to use here.  Under the phone setup is where you can define the voicemail options.
 
 <BR>
 <A NAME="osdial_users-hotkeys_active">
@@ -261,6 +256,26 @@ echo "<tr><td><FONT FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=2>
 <A NAME="osdial_users-xfer_agent2agent">
 <BR>
 <B>Agent2Agent Transfers -</B> If enabled, this agent will be allowed to transfer calls to other agents that also have this option enabled.
+
+<BR>
+<A NAME="osdial_users-xfer_agent2agent_wait">
+<BR>
+<B>Agent2Agent Timeout -</B> Determines wait will happen if the Agent is current unavailable.  ALWAYS_WAIT: If agent is unavailable or logged off, timeout and run timeout action.  WHEN_LOGGED_IN: If agent is unavailable and logged in, timeout and run timeout action.  NEVER_WAIT: If agent is unavailable or logged off, immediately run timeout action.
+
+<BR>
+<A NAME="osdial_users-xfer_agent2agent_wait_seconds">
+<BR>
+<B>Agent2Agent Timeout Seconds -</B> How long to wait for agent to become avaialble before running the timeout action.
+
+<BR>
+<A NAME="osdial_users-xfer_agent2agent_wait_action">
+<BR>
+<B>Agent2Agent Timeout Action -</B> Send the call to the agents VOICEMAIL or to the timeout EXTENSION.
+
+<BR>
+<A NAME="osdial_users-xfer_agent2agent_wait_extension">
+<BR>
+<B>Agent2Agent Timeout Extension -</B> The extension to send the call too.
 
 <BR>
 <A NAME="osdial_users-script_override">

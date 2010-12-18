@@ -169,6 +169,7 @@ if ($non_latin < 1)	{
 	$xfer_exten = ereg_replace("[^0-9]","",$xfer_exten);
 	$cpuinfo = ereg_replace("[^0-9]","",$cpuinfo);
 	$xfer_agent2agent = ereg_replace("[^0-9]","",$xfer_agent2agent);
+	$xfer_agent2agent_wait_seconds = ereg_replace("[^0-9]","",$xfer_agent2agent_wait_seconds);
 
     $export_agent_pause_summary = ereg_replace("[^0-9]","",$export_agent_pause_summary);
     $export_agent_performance_detail = ereg_replace("[^0-9]","",$export_agent_performance_detail);
