@@ -518,6 +518,7 @@ $oi20 = get_variable("oi20");
 $oivr_id = get_variable("oivr_id");
 $oivr_campaign_id = get_variable("oivr_campaign_id");
 $oivr_name = get_variable("oivr_name");
+$oivr_allow_agent_extensions = get_variable("oivr_allow_agent_extensions");
 $oivr_allow_inbound = get_variable("oivr_allow_inbound");
 $oivr_announcement = get_variable("oivr_announcement");
 $oivr_repeat_loops = get_variable("oivr_repeat_loops");

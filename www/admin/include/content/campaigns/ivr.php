@@ -44,8 +44,9 @@ if ($ADD == "1menu") {
             $SUB = "2keys";
             $ADD = "3menu"; # go to campaign modification form below
         } else {
+            $gfr = get_first_record($link, 'osdial_campaigns', '*', "campaign_id='" . $campaign_id . "'");
             echo "<br><B><font color=$default_text>IVR CREATED</font></B>\n";
-            $stmt = "INSERT INTO osdial_ivr (campaign_id) VALUES ('$campaign_id');";
+            $stmt = "INSERT INTO osdial_ivr (campaign_id,name) VALUES ('$campaign_id','$gfr->[campaign_name]');";
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -97,8 +98,6 @@ if ($ADD == "1keys" or $ADD == '4keys') {
 		$d_ary = array($oi1,$oi2,$oi3,$oi4);
 	} elseif ($oivr_opt_action == 'XFER_INGROUP') {
 		$d_ary = array($oi1,$oi2,$oi3,$oi4,$oi5);
-	} elseif ($oivr_opt_action == 'MENU') {
-		$d_ary = array($oi1,$oi2,$oi3,$oi4,$oi5,$oi6,$oi7,$oi8);
 	} elseif ($oivr_opt_action == 'TVC_LOOKUP') {
 		$d_ary = array($oi1,$oi2,$oi3,$oi4,$oi5,$oi6,$oi7,$oi8,$oi9,$oi10,$oi11);
 	} else {
@@ -273,6 +272,11 @@ if ($ADD == "2keys") {
         echo '<input type="hidden" name="oi1" value="1">';
     } elseif ($o == 'MENU_EXIT') { 
         echo '<input type="hidden" name="oi1" value="1">';
+    } elseif ($o == 'AGENT_EXTENSIONS') { 
+        echo '<input type="hidden" name="oi1" value="1">';
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows colspan=2 align=center>Note: Agents must have the Agent2Agent option enabled under their user profile in order to receive calls from the IVR.</td>\n";
+        echo "  </tr>\n";
     } elseif ($o == 'TVC_LOOKUP') { 
         echo "  <tr>\n";
         echo "      <td bgcolor=$oddrows align=right>Description</td>\n";
@@ -541,9 +545,16 @@ if ($ADD == "4menu") {
                 $oivr_allow_inbound = 'Y';
             }
 
+            if ($oivr_allow_agent_extensions == '') {
+                $oivr_allow_agent_extensions = 'N';
+                $stmt = "INSERT INTO osdial_ivr_options (ivr_id,parent_id,keypress,action,action_data) VALUES ('$oivr_id','0','A','AGENT_EXTENSIONS','Agent Extensions');";
+                $rslt = mysql_query($stmt, $link);
+            }
+
             echo "<br><B><font color=$default_text>IVR MODIFIED: $oivr_id - $campaign_id - $oivr_name</font></B>\n";
-            $stmt = "UPDATE osdial_ivr SET name='$oivr_name',announcement='$oivr_announcement',repeat_loops='$oivr_repeat_loops',wait_loops='$oivr_wait_loops',wait_timeout='$oivr_wait_timeout',answered_status='$oivr_answered_status',virtual_agents='$oivr_virtual_agents',status='$oivr_status',timeout_action='$oivr_timeout_action',reserve_agents='$oivr_reserve_agents',allow_inbound='$oivr_allow_inbound' where id='$oivr_id';";
+            $stmt = "UPDATE osdial_ivr SET name='$oivr_name',announcement='$oivr_announcement',repeat_loops='$oivr_repeat_loops',wait_loops='$oivr_wait_loops',wait_timeout='$oivr_wait_timeout',answered_status='$oivr_answered_status',virtual_agents='$oivr_virtual_agents',status='$oivr_status',timeout_action='$oivr_timeout_action',reserve_agents='$oivr_reserve_agents',allow_inbound='$oivr_allow_inbound',allow_agent_extensions='$oivr_allow_agent_extensions' where id='$oivr_id';";
             $rslt = mysql_query($stmt, $link);
+
 
             $svr = get_first_record($link, 'servers', 'server_ip',"");
             $server_ip = $svr['server_ip'];
@@ -794,8 +805,13 @@ if ($ADD == "3menu") {
     if ( preg_match('/9/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '9') $sel=' selected'; echo ' <option value="9"' . $sel . '> - 9 -</option>'; }
     if ( preg_match('/\#/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '#') $sel=' selected'; echo ' <option value="#"' . $sel . '> - # -</option>'; }
     if ( preg_match('/\*/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '*') $sel=' selected'; echo ' <option value="*"' . $sel . '> - * -</option>'; }
+    if ( preg_match('/i/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == 'i') $sel=' selected'; echo ' <option value="i"' . $sel . '> - Invalid -</option>'; }
     echo '         </select>';
     echo '      </td>';
+    echo "  </tr>\n";
+    echo "  <tr>\n";
+    echo "      <td bgcolor=$oddrows align=right>Allow Agent Extensions</td>\n";
+    echo '      <td bgcolor="' . $oddrows . '"><select name="oivr_allow_agent_extensions"><option>Y</option><option>N</option><option selected>' . $oivr['allow_agent_extensions'] . '</option></select></td>';
     echo "  </tr>\n";
     echo "  <tr class=tabfooter>\n";
     echo "      <td colspan=2 class=tabbutton align=center><input type=submit value=\"Save Form\"></td>\n";
@@ -861,6 +877,7 @@ if ($ADD == "3menu") {
     if ( ! preg_match('/9/', $tkey) ) { echo ' <option value="9"> - 9 -</option>'; }
     if ( ! preg_match('/\#/', $tkey) ) { echo ' <option value="#"> - # -</option>'; }
     if ( ! preg_match('/\*/', $tkey) ) { echo ' <option value="*"> - * -</option>'; }
+    if ( ! preg_match('/i/', $tkey) ) { echo ' <option value="i"> - Invalid -</option>'; }
     echo "      </select>\n";
     echo "    </td>\n";
     echo "    <td align=center class=tabinput>\n";
@@ -927,6 +944,7 @@ if ($ADD == "3keys") {
     if ( ! preg_match('/9/', $tkey) ) { echo ' <option value="9"> - 9 -</option>'; }
     if ( ! preg_match('/\#/', $tkey) ) { echo ' <option value="#"> - # -</option>'; }
     if ( ! preg_match('/\*/', $tkey) ) { echo ' <option value="*"> - * -</option>'; }
+    if ( ! preg_match('/i/', $tkey) ) { echo ' <option value="i"> - Invalid -</option>'; }
     echo "</select>\n";
     echo "</td>\n";
     echo "  </tr>\n";
@@ -1081,13 +1099,23 @@ if ($ADD == "3keys") {
         if ( preg_match('/9/', $tkey) ) { $sel=''; if ($ad[7] == '9') $sel=' selected'; echo ' <option value="9"' . $sel . '> - 9 -</option>'; }
         if ( preg_match('/\#/', $tkey) ) { $sel=''; if ($ad[7] == '#') $sel=' selected'; echo ' <option value="#"' . $sel . '> - # -</option>'; }
         if ( preg_match('/\*/', $tkey) ) { $sel=''; if ($ad[7] == '*') $sel=' selected'; echo ' <option value="*"' . $sel . '> - * -</option>'; }
+        if ( preg_match('/i/', $tkey) ) { $sel=''; if ($ad[7] == 'i') $sel=' selected'; echo ' <option value="i"' . $sel . '> - Invalid -</option>'; }
         echo '         </select>';
         echo '      </td>';
+        echo "  </tr>\n";
         echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows align=right>Allow Agent Extensions</td>\n";
+        echo '      <td bgcolor="' . $oddrows . '"><select name="oi9"><option>Y</option><option>N</option><option selected>' . $oivr['allow_agent_extensions'] . '</option></select></td>';
+        echo "  </tr>\n";
     } elseif ($o == 'MENU_REPEAT') { 
         echo '<input type="hidden" name="oi1" value="1">';
     } elseif ($o == 'MENU_EXIT') { 
         echo '<input type="hidden" name="oi1" value="1">';
+    } elseif ($o == 'AGENT_EXTENSIONS') { 
+        echo '<input type="hidden" name="oi1" value="1">';
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows colspan=2 align=center>Note: Agents must have the Agent2Agent option enabled under their user profile in order to receive calls from the IVR.</td>\n";
+        echo "  </tr>\n";
     } elseif ($o == 'TVC_LOOKUP') { 
         echo "  <tr>\n";
         echo "      <td bgcolor=$oddrows align=right>Description:</td>\n";
@@ -1418,6 +1446,7 @@ if ($ADD == "3keys") {
         if ( ! preg_match('/9/', $tkey) ) { echo ' <option value="9"> - 9 -</option>'; }
         if ( ! preg_match('/\#/', $tkey) ) { echo ' <option value="#"> - # -</option>'; }
         if ( ! preg_match('/\*/', $tkey) ) { echo ' <option value="*"> - * -</option>'; }
+        if ( ! preg_match('/i/', $tkey) ) { echo ' <option value="i"> - Invalid -</option>'; }
         echo "      </select>\n";
         echo "    </td>\n";
         echo "    <td align=center class=tabinput>\n";
