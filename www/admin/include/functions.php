@@ -90,6 +90,7 @@ function format_select_options($krh, $kkey, $kval, $ksel="!", $kdef="", $kcomp=f
         $option .= $kdef;
         $option .= "</option>\n";
     }
+    if (!is_array($krh)) return $option;
     $klen='';
     if ($kkey != $kval) {
         foreach ($krh as $ele) {
