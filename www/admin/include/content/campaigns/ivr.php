@@ -46,7 +46,7 @@ if ($ADD == "1menu") {
         } else {
             $gfr = get_first_record($link, 'osdial_campaigns', '*', "campaign_id='" . $campaign_id . "'");
             echo "<br><B><font color=$default_text>IVR CREATED</font></B>\n";
-            $stmt = "INSERT INTO osdial_ivr (campaign_id,name) VALUES ('$campaign_id','$gfr->[campaign_name]');";
+            $stmt = "INSERT INTO osdial_ivr (campaign_id,name) VALUES ('$campaign_id','$gfr[campaign_name]');";
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -88,6 +88,16 @@ if ($ADD == "1keys" or $ADD == '4keys') {
 	}
 	if ($oivr_opt_action == 'MENU_REPEAT' or $oivr_opt_action == 'MENU_EXIT') {
 		$d_ary = array($oi1);
+	} elseif ($oivr_opt_action == 'AGENT_EXTENSIONS') {
+        $oivr_opt_keypress='A';
+        $chks = get_variable('chks');
+        $oi3='';
+        foreach ($chks as $chk) {
+            $ext = get_variable('ext'.$chk);
+            $oi3.=$chk.':'.$ext.'|';
+        }
+        $oi3=rtrim($oi3,'|');
+		$d_ary = array($oi1,$oi2,$oi3);
 	} elseif ($oivr_opt_action == 'HANGUP') {
 		$d_ary = array($oi1,$oi2);
 	} elseif ($oivr_opt_action == 'PLAYFILE' or $oivr_opt_action == 'XFER_EXTERNAL') {
@@ -273,9 +283,56 @@ if ($ADD == "2keys") {
     } elseif ($o == 'MENU_EXIT') { 
         echo '<input type="hidden" name="oi1" value="1">';
     } elseif ($o == 'AGENT_EXTENSIONS') { 
-        echo '<input type="hidden" name="oi1" value="1">';
         echo "  <tr>\n";
-        echo "      <td bgcolor=$oddrows colspan=2 align=center>Note: Agents must have the Agent2Agent option enabled under their user profile in order to receive calls from the IVR.</td>\n";
+        echo "    <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
+        echo '    <td bgcolor="' . $oddrows . '">';
+        echo '      <input type="hidden" name="oi1" value="' . $oivr_id . '">';
+        echo '      <select name="oi2"><option value="">-NONE-</option>';
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'",'');
+        foreach ($status as $stat) {
+            if ($stat['status'] == 'VIXFER') {
+                $sel = ' selected';
+            }
+            echo "        <option value=\"" . $stat['status'] . "\"" . $sel . ">" . $stat['status'] . " : " . $stat['status_name'] . "</option>";
+        }
+        echo "      </select>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "      <td bgcolor=$oddrows colspan=2 align=center><i>Note: Agents must have the Agent2Agent option enabled under their user profile in order to receive calls from the IVR.</i></td>\n";
+        echo "  </tr>\n";
+
+        $asel = array();
+        foreach (explode('|',$ad[2]) as $apck) {
+            $a1 = explode(':',$apck);
+            if ($a1[0]!='') {
+                $asel[$a1[0]]=$a1[1];
+            }
+        }
+        echo "  <tr>\n";
+        echo "    <td bgcolor=$oddrows colspan=2 align=center>\n";
+        echo "      <table bgcolor=grey cellpadding=0 cellspacing=1>\n";
+        echo "        <tr class=tabheader>\n";
+        echo "          <td>&nbsp</td>\n";
+        echo "          <td>AGENT</td>\n";
+        echo "          <td>EXTENSION</td>\n";
+        echo "        </tr>\n";
+        $camppre=''; if ($LOG['multicomp']) $camppre = substr($campaign_id,0,3);
+        $agents = get_krh($link, 'osdial_users', 'user,full_name','',sprintf("user_level>3 AND xfer_agent2agent='1' AND user LIKE '%s%%'",$camppre),'');
+        foreach ($agents as $agent) {
+            echo "        <tr>\n";
+            $achk=''; if (isset($asel[$agent['user']])) $achk='checked';
+            echo '          <td bgcolor=' . $oddrows . '><input type=checkbox name=chks[] ' . $achk . ' value="' . $agent['user'] . '"></td>' . "\n";
+            echo '          <td bgcolor=' . $oddrows . '><span class=font2>' . $agent['user'] . ': ' . $agent['full_name'] . '</span></td>' . "\n";
+            if (!isset($asel[$agent['user']])) $asel[$agent['user']] = $agent['user'];
+            echo '          <td bgcolor=' . $oddrows . '><input type=text name="ext' . $agent['user'] . '" size=10 value="' . $asel[$agent['user']] . '"></td>' . "\n";
+            echo "        </tr>\n";
+        }
+        echo "        <tr class=tabfooter>\n";
+        echo "          <td colspan=3></td>\n";
+        echo "        </tr>\n";
+        echo "      </table>\n";
+        echo "    </td>\n";
         echo "  </tr>\n";
     } elseif ($o == 'TVC_LOOKUP') { 
         echo "  <tr>\n";
@@ -545,10 +602,23 @@ if ($ADD == "4menu") {
                 $oivr_allow_inbound = 'Y';
             }
 
-            if ($oivr_allow_agent_extensions == '') {
-                $oivr_allow_agent_extensions = 'N';
-                $stmt = "INSERT INTO osdial_ivr_options (ivr_id,parent_id,keypress,action,action_data) VALUES ('$oivr_id','0','A','AGENT_EXTENSIONS','Agent Extensions');";
-                $rslt = mysql_query($stmt, $link);
+            if ($oivr_name == '') {
+                $gfr = get_first_record($link, 'osdial_campaigns', 'campaign_name',sprintf("campaign_id='%s'",$campaign_id));
+                $oivr_name = $gfr['campaign_name'];
+            }
+
+            if ($oivr_allow_agent_extensions == '') $oivr_allow_agent_extensions = 'N';
+            $gfr = get_first_record($link, 'osdial_ivr_options', 'count(*) AS count',sprintf("ivr_id='%s' AND parent_id='0' AND keypress='A'",$oivr_id));
+            if ($oivr_allow_agent_extensions == 'Y') {
+                if ($gfr['count']==0) {
+                    $stmt = "INSERT INTO osdial_ivr_options (ivr_id,parent_id,keypress,action,action_data) VALUES ('$oivr_id','0','A','AGENT_EXTENSIONS','Agent Extensions#:#VIXFER');";
+                    $rslt = mysql_query($stmt, $link);
+                }
+            } else {
+                if ($gfr['count']>0) {
+                    $stmt = "DELETE FROM osdial_ivr_options WHERE ivr_id='$oivr_id' AND parent_id='0' AND keypress='A';";
+                    $rslt = mysql_query($stmt, $link);
+                }
             }
 
             echo "<br><B><font color=$default_text>IVR MODIFIED: $oivr_id - $campaign_id - $oivr_name</font></B>\n";
@@ -556,8 +626,7 @@ if ($ADD == "4menu") {
             $rslt = mysql_query($stmt, $link);
 
 
-            $svr = get_first_record($link, 'servers', 'server_ip',"");
-            $server_ip = $svr['server_ip'];
+            $svrs = get_krh($link, 'servers', 'server_ip','',"server_profile IN ('AIO','DIALER') AND active='Y'",'');
             # Insert Virtual Agents.
             $rma = get_krh($link, 'osdial_remote_agents', 'remote_agent_id,user_start','',"user_start LIKE 'va" . $campaign_id . "%'",'');
             $rcnt = count($rma);
@@ -574,6 +643,7 @@ if ($ADD == "4menu") {
                         }
                     }
                     if ($ufnd == 0) {
+                        $server_ip = $svrs[array_rand($svrs)]['server_ip'];
                         $stmt = "INSERT INTO osdial_remote_agents (user_start,conf_exten,server_ip,campaign_id) VALUES ";
                         $conf = '87' . sprintf('%03d',$oivr_id) . sprintf('%03d',$unum);
                         $stmt .= "('$usr','$conf','$server_ip','$campaign_id');";
@@ -790,8 +860,10 @@ if ($ADD == "3menu") {
     echo "              <option value=\"\"> - NONE - </option>";
     $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $oivr_opt_parent_id . "'",'');
     $tkey = '';
-    foreach ($keys as $key) {
-        $tkey .= $key['keypress'];
+    if (is_array($keys)) {
+        foreach ($keys as $key) {
+            $tkey .= $key['keypress'];
+        }
     }
     if ( preg_match('/0/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '0') $sel=' selected'; echo ' <option value="0"' . $sel . '> - 0 -</option>'; }
     if ( preg_match('/1/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '1') $sel=' selected'; echo ' <option value="1"' . $sel . '> - 1 -</option>'; }
@@ -831,26 +903,34 @@ if ($ADD == "3menu") {
     echo "  </tr>\n";
     $oivr_opts = get_krh($link, 'osdial_ivr_options', '*', 'keypress', "ivr_id='" . $oivr['id'] . "' AND parent_id='0'",'');
     $cnt = 0;
-    foreach ($oivr_opts as $opt) {
-        $ad  = explode('#:#',$opt['action_data']);
-        echo '  <form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
-        echo '  <input type="hidden" name="ADD" value="3keys">';
-        echo '  <input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
-        echo '  <input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
-        echo '  <input type="hidden" name="oivr_opt_id" value="' . $opt['id'] . '">';
-        echo "  <tr " . bgcolor($cnt) . " class=\"row font1\">";
-        echo "      <td align=center>" . $opt['keypress'] . "</td>";
-        echo "      <td align=center>" . $opt['action'] . "</td>";
-        if ($opt['action'] == 'MENU') {
-            echo "      <td align=center>" . $ad[6] . "</td>";
-        } else {
-            echo "      <td align=center>" . $ad[1] . "</td>";
+    if (is_array($oivr_opts)) {
+        foreach ($oivr_opts as $opt) {
+            $ad  = explode('#:#',$opt['action_data']);
+            echo '  <form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
+            echo '  <input type="hidden" name="ADD" value="3keys">';
+            echo '  <input type="hidden" name="oivr_id" value="' . $oivr['id'] . '">';
+            echo '  <input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
+            echo '  <input type="hidden" name="oivr_opt_id" value="' . $opt['id'] . '">';
+            echo "  <tr " . bgcolor($cnt) . " class=\"row font1\">";
+            $kplabel = $opt['keypress'];
+            if ($kplabel=='A') $kplabel='----';
+            echo "      <td align=center>" . $kplabel . "</td>";
+            echo "      <td align=center>" . $opt['action'] . "</td>";
+            if ($opt['action'] == 'MENU') {
+                echo "      <td align=center>" . $ad[6] . "</td>";
+            } else {
+                echo "      <td align=center>" . $ad[1] . "</td>";
+            }
+            if (preg_match('/A/',$opt['keypress'])) {
+                echo "      <td align=center colspan=2 class=tabbutton1><input type=submit value=\"Edit\"></td>\n";
+            } else {
+                echo "      <td align=center><a href=$PHP_SELF?ADD=6keys&campaign_id=" . $campaign_id . "&oivr_id=" . $oivr['id'] . "&oivr_opt_id=" . $opt['id'] . ">DELETE</a></td>\n";
+                echo "      <td align=center class=tabbutton1><input type=submit value=\"Edit\"></td>\n";
+            }
+            echo "  </tr>";
+            echo "  </form>";
+            $cnt++;
         }
-        echo "      <td align=center><a href=$PHP_SELF?ADD=6keys&campaign_id=" . $campaign_id . "&oivr_id=" . $oivr['id'] . "&oivr_opt_id=" . $opt['id'] . ">DELETE</a></td>\n";
-        echo "      <td align=center class=tabbutton1><input type=submit value=\"Edit\"></td>\n";
-        echo "  </tr>";
-        echo "  </form>";
-        $cnt++;
     }
     echo '  <form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
     echo '  <input type="hidden" name="ADD" value="2keys">';
@@ -862,8 +942,10 @@ if ($ADD == "3menu") {
     echo "          <option value=\"\" selected> - SELECT DIGIT -</option>\n";
     $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $oivr_opt_parent_id . "'",'');
     $tkey = '';
-    foreach ($keys as $key) {
-        $tkey .= $key['keypress'];
+    if (is_array($keys)) {
+        foreach ($keys as $key) {
+            $tkey .= $key['keypress'];
+        }
     }
     if ( ! preg_match('/0/', $tkey) ) { echo ' <option value="0"> - 0 -</option>'; }
     if ( ! preg_match('/1/', $tkey) ) { echo ' <option value="1"> - 1 -</option>'; }
@@ -923,30 +1005,31 @@ if ($ADD == "3keys") {
     echo '      <td bgcolor="' . $oddrows . '">' . $campaign_id . '/' . $oivr_id .'</td>';
     echo "  </tr>\n";
     echo "  <tr>\n";
-    echo "      <td bgcolor=$oddrows align=right>Key:</td>\n";
-    echo "      <td bgcolor=$oddrows align=left>";
-    echo '<select name="oivr_opt_keypress">';
-    echo ' <option value="' . $opt['keypress'] . '" selected> - ' . $opt['keypress'] . ' -</option>';
+    echo "    <td bgcolor=$oddrows align=right>Key:</td>\n";
+    echo "    <td bgcolor=$oddrows align=left>";
+    $kpdis=''; if (preg_match('/A|i/',$opt['keypress'])) $kpdis='disabled';
+    echo '      <select ' . $kpdis . ' name="oivr_opt_keypress">';
+    echo '        <option value="' . $opt['keypress'] . '" selected> - ' . $opt['keypress'] . ' -</option>';
     $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $opt['parent_id'] . "'",'');
     $tkey = '';
     foreach ($keys as $key) {
         $tkey .= $key['keypress'];
     }
-    if ( ! preg_match('/0/', $tkey) ) { echo ' <option value="0"> - 0 -</option>'; }
-    if ( ! preg_match('/1/', $tkey) ) { echo ' <option value="1"> - 1 -</option>'; }
-    if ( ! preg_match('/2/', $tkey) ) { echo ' <option value="2"> - 2 -</option>'; }
-    if ( ! preg_match('/3/', $tkey) ) { echo ' <option value="3"> - 3 -</option>'; }
-    if ( ! preg_match('/4/', $tkey) ) { echo ' <option value="4"> - 4 -</option>'; }
-    if ( ! preg_match('/5/', $tkey) ) { echo ' <option value="5"> - 5 -</option>'; }
-    if ( ! preg_match('/6/', $tkey) ) { echo ' <option value="6"> - 6 -</option>'; }
-    if ( ! preg_match('/7/', $tkey) ) { echo ' <option value="7"> - 7 -</option>'; }
-    if ( ! preg_match('/8/', $tkey) ) { echo ' <option value="8"> - 8 -</option>'; }
-    if ( ! preg_match('/9/', $tkey) ) { echo ' <option value="9"> - 9 -</option>'; }
-    if ( ! preg_match('/\#/', $tkey) ) { echo ' <option value="#"> - # -</option>'; }
-    if ( ! preg_match('/\*/', $tkey) ) { echo ' <option value="*"> - * -</option>'; }
-    if ( ! preg_match('/i/', $tkey) ) { echo ' <option value="i"> - Invalid -</option>'; }
-    echo "</select>\n";
-    echo "</td>\n";
+    if ( ! preg_match('/0/', $tkey) ) { echo '        <option value="0"> - 0 -</option>'; }
+    if ( ! preg_match('/1/', $tkey) ) { echo '        <option value="1"> - 1 -</option>'; }
+    if ( ! preg_match('/2/', $tkey) ) { echo '        <option value="2"> - 2 -</option>'; }
+    if ( ! preg_match('/3/', $tkey) ) { echo '        <option value="3"> - 3 -</option>'; }
+    if ( ! preg_match('/4/', $tkey) ) { echo '        <option value="4"> - 4 -</option>'; }
+    if ( ! preg_match('/5/', $tkey) ) { echo '        <option value="5"> - 5 -</option>'; }
+    if ( ! preg_match('/6/', $tkey) ) { echo '        <option value="6"> - 6 -</option>'; }
+    if ( ! preg_match('/7/', $tkey) ) { echo '        <option value="7"> - 7 -</option>'; }
+    if ( ! preg_match('/8/', $tkey) ) { echo '        <option value="8"> - 8 -</option>'; }
+    if ( ! preg_match('/9/', $tkey) ) { echo '        <option value="9"> - 9 -</option>'; }
+    if ( ! preg_match('/\#/', $tkey) ) { echo '        <option value="#"> - # -</option>'; }
+    if ( ! preg_match('/\*/', $tkey) ) { echo '        <option value="*"> - * -</option>'; }
+    if ( ! preg_match('/i/', $tkey) ) { echo '        <option value="i"> - Invalid -</option>'; }
+    echo "      </select>\n";
+    echo "    </td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Action:</td>\n";
@@ -1112,9 +1195,57 @@ if ($ADD == "3keys") {
     } elseif ($o == 'MENU_EXIT') { 
         echo '<input type="hidden" name="oi1" value="1">';
     } elseif ($o == 'AGENT_EXTENSIONS') { 
-        echo '<input type="hidden" name="oi1" value="1">';
         echo "  <tr>\n";
-        echo "      <td bgcolor=$oddrows colspan=2 align=center>Note: Agents must have the Agent2Agent option enabled under their user profile in order to receive calls from the IVR.</td>\n";
+        echo "    <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
+        echo '    <td bgcolor="' . $oddrows . '">';
+        echo '      <input type="hidden" name="oi1" value="' . $ad[0] . '">';
+        echo '      <select name="oi2"><option value="">-NONE-</option>';
+        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'",'');
+        foreach ($status as $stat) {
+            $sel='';
+            if ($stat['status'] == $ad[1]) {
+                $sel = ' selected';
+            }
+            echo "        <option value=\"" . $stat['status'] . "\"" . $sel . ">" . $stat['status'] . " : " . $stat['status_name'] . "</option>";
+        }
+        echo "      </select>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+        echo "  <tr>\n";
+        echo "    <td bgcolor=$oddrows colspan=2 align=center><i>Note: Agents must have the Agent2Agent option enabled<br>in their user profile in order to receive calls from the IVR.</i></td>\n";
+        echo "  </tr>\n";
+
+        $asel = array();
+        foreach (explode('|',$ad[2]) as $apck) {
+            $a1 = explode(':',$apck);
+            if ($a1[0]!='') {
+                $asel[$a1[0]]=$a1[1];
+            }
+        }
+        echo "  <tr>\n";
+        echo "    <td bgcolor=$oddrows colspan=2 align=center>\n";
+        echo "      <table bgcolor=grey cellpadding=0 cellspacing=1>\n";
+        echo "        <tr class=tabheader>\n";
+        echo "          <td>&nbsp</td>\n";
+        echo "          <td>AGENT</td>\n";
+        echo "          <td>EXTENSION</td>\n";
+        echo "        </tr>\n";
+        $camppre=''; if ($LOG['multicomp']) $camppre = substr($campaign_id,0,3);
+        $agents = get_krh($link, 'osdial_users', 'user,full_name','',sprintf("user_level>3 AND xfer_agent2agent='1' AND user LIKE '%s%%'",$camppre),'');
+        foreach ($agents as $agent) {
+            echo "        <tr>\n";
+            $achk=''; if (isset($asel[$agent['user']])) $achk='checked';
+            echo '          <td bgcolor=' . $oddrows . '><input type=checkbox name=chks[] ' . $achk . ' value="' . $agent['user'] . '"></td>' . "\n";
+            echo '          <td bgcolor=' . $oddrows . '><span class=font2>' . $agent['user'] . ': ' . $agent['full_name'] . '</span></td>' . "\n";
+            if (!isset($asel[$agent['user']])) $asel[$agent['user']] = $agent['user'];
+            echo '          <td bgcolor=' . $oddrows . '><input type=text name="ext' . $agent['user'] . '" size=10 value="' . $asel[$agent['user']] . '"></td>' . "\n";
+            echo "        </tr>\n";
+        }
+        echo "        <tr class=tabheader>\n";
+        echo "          <td colspan=3></td>\n";
+        echo "        </tr>\n";
+        echo "      </table>\n";
+        echo "    </td>\n";
         echo "  </tr>\n";
     } elseif ($o == 'TVC_LOOKUP') { 
         echo "  <tr>\n";
@@ -1411,11 +1542,17 @@ if ($ADD == "3keys") {
             echo '  <input type="hidden" name="campaign_id" value="' . $campaign_id . '">';
             echo '  <input type="hidden" name="oivr_opt_id" value="' . $opt['id'] . '">';
             echo "  <tr " . bgcolor($cnt) . " class=\"row font1\">";
-            echo "      <td align=center>" . $opt['keypress'] . "</td>";
+            $kplabel = $opt['keypress'];
+            if ($kplabel=='A') $kplabel='----';
+            echo "      <td align=center>" . $kplabel . "</td>";
             echo "      <td align=center>" . $opt['action'] . "</td>";
             echo "      <td align=center>" . $ad[1] . "</td>";
-            echo "      <td align=center><a href=$PHP_SELF?ADD=6keys&campaign_id=" . $campaign_id . "&oivr_id=" . $oivr['id'] . "&oivr_opt_id=" . $opt['id'] . ">DELETE</a></td>\n";
-            echo "      <td align=center class=tabbutton1><input type=submit value=\"Edit\"></td>\n";
+            if (preg_match('/A/',$opt['keypress'])) {
+                echo "      <td align=center class=tabbutton1 colspan=2><input type=submit value=\"Edit\"></td>\n";
+            } else {
+                echo "      <td align=center><a href=$PHP_SELF?ADD=6keys&campaign_id=" . $campaign_id . "&oivr_id=" . $oivr['id'] . "&oivr_opt_id=" . $opt['id'] . ">DELETE</a></td>\n";
+                echo "      <td align=center class=tabbutton1><input type=submit value=\"Edit\"></td>\n";
+            }
             echo "  </tr>";
             echo "  </form>";
             $cnt++;
