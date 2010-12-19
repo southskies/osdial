@@ -236,6 +236,8 @@ if ($action) {
 	$originate_command .= $cmd_line_k . "\n" if ($cmd_line_k);
 	$originate_command .= "\n";
 
+	my @list_channels = $tn->cmd(String => $originate_command,
+		Prompt => '/.*/'); 
 
 	print nowDate() . "|$SYSLOG|\n$originate_command";
 	my $event_string = "0|" . $SYSLOG . "|";
@@ -243,10 +245,8 @@ if ($action) {
 
 	eventLogger($PATHlogs,'full',$event_string) if ($FULL_LOG and $SYSLOG);
 
-	my @list_channels = $tn->cmd(String => $originate_command,
-		Prompt => '/.*/'); 
 
-	sleep(3);
+	sleep(1);
 	
 	my $data1;  # ? Useless ?
 	if ($FULL_LOG and $SYSLOG) {
@@ -263,7 +263,7 @@ if ($action) {
 	$tn->buffer_empty;
 	#@hangup = $tn->cmd(String => "Action: Logoff\n\n", Prompt => "/.*/"); 
 	$tn->cmd(String => "Action: Logoff\n\n", Prompt => "/.*/"); 
-	sleep(2);
+	sleep(1);
 
 	if ($FULL_LOG and $SYSLOG) {
 		my $event_string = "2|" . $data1 . "|";
