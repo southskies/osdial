@@ -410,6 +410,7 @@ while($one_day_interval > 0)
 	###### first grab all of the ACTIVE remote agents information from the database
 	###############################################################################
 		$stmtA = "SELECT * FROM osdial_remote_agents where status IN('ACTIVE') and server_ip='$server_ip' order by user_start;";
+		if ($DBX) {print STDERR "Find all ACTIVE agents|$stmtA|\n";}
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -500,6 +501,7 @@ while($one_day_interval > 0)
 		$h=0;
 		foreach(@DBremote_user) 
 			{
+			if ($DBX) {print STDERR "osdial_live_agent check $DBremote_user[$h]|\n";}
 			if (length($DBremote_user[$h])>1) 
 				{
 				### check to see if the record exists and only needs random number update
