@@ -252,8 +252,8 @@ while ($one_day_interval > 0) {
 			### sleep for 1 hundredth of a second
 			usleep(1*10*1000);
 		} else {
-			### sleep for 10 hundredths of a second
-			usleep(1*100*1000);
+			### sleep for 5 hundredths of a second
+			usleep(5*10*1000);
 		}
 
 		$endless_loop--;
@@ -273,26 +273,10 @@ while ($one_day_interval > 0) {
 			$servConf = getServerConfig($dbhA, $conf{VARserver_ip});
 
 			print "checking to see if listener is dead |$sendonlyone|$running_listen|\n" if($COUNTER_OUTPUT or $DB);
-			#my @psoutput = `/bin/ps -f --no-headers -A`;
-			my @psoutput = `/bin/ps -o "%p %a" --no-headers -A`;
-			foreach my $line (@psoutput) {
-				chomp($line);
-				print "|$line|     \n" if ($DBX);
-				my @psline = split(/\/usr\/bin\/perl /,$line);
-				if ($psline[1] =~ /AST_manager_li/) {
-					$running_listen++;
-					print "SEND RUNNING: |$psline[1]|\n" if ($DB);
-				}
-			}
-
-			unless ($running_listen) {
-				$sendonlyone++;
-				print "LISTENER DEAD STOPPING PROGRAM... ATTEMPTING TO START keepalive SCRIPT\n" if ($COUNTER_OUTPUT or $DB);
-				$event_string = 'LISTENER DEAD STOPPING PROGRAM... ATTEMPTING TO START keepalive SCRIPT|';
-				eventLogger($conf{'PATHlogs'}, 'process', $event_string);
-			#	`/usr/bin/at now < $PATHhome/ADMIN_keepalive_send_listen.at 2>/dev/null 1>&2`;
-				my $screencmd = "/usr/bin/screen -d -m " . $conf{PATHhome} . "/ADMIN_keepalive_AST_send_listen.pl 2>/dev/null 1>&2";
-				`$screencmd`;
+			my $psoutput = `/usr/bin/pgrep AST_manager_li`;
+			if ($psoutput) {
+				$running_listen++;
+				print "SEND RUNNING: |$psoutput]|\n" if ($DB);
 			}
 		}
 
