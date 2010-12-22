@@ -222,10 +222,10 @@ if ($ADD=="2carrier") {
         ### SUB=4  Added DID
         if ($SUB==4) {
             $SUB=2;
-            if (strlen($did) < 4 or $carrier_id < 1) {
+            if (strlen($did) < 2 or $carrier_id < 1) {
                 echo "<br><font color=red>DID NOT ADDED - Please go back and look at the data you entered\n";
                 echo "<br>carrier_id not set.\n";
-                echo "<br>did must be at least 4 characters.</font><br>\n";
+                echo "<br>did must be at least 1 characters.</font><br>\n";
             } else {
                 $stmt=sprintf("SELECT count(*) FROM osdial_carrier_dids WHERE did='%s' AND carrier_id='%s';",mres($did),mres($carrier_id));
                 $rslt=mysql_query($stmt, $link);
@@ -327,11 +327,11 @@ if ($ADD=="4carrier") {
         ### SUB=4  Modify DID 
         if ($SUB==4) {
             $SUB=1;
-            if ($did_id < 1 or strlen($did) < 4 or $carrier_id < 1) {
+            if ($did_id < 1 or strlen($did) < 2 or $carrier_id < 1) {
                 echo "<br><font color=red>DID NOT MODIFIED - Please go back and look at the data you entered\n";
                 echo "<br>did_id not set..\n";
                 echo "<br>carrier_id not set.\n";
-                echo "<br>did must be at least 4 characters.</font><br>\n";
+                echo "<br>did must be at least 1 characters.</font><br>\n";
             } else {
                 $SUB=4;
                 $stmt=sprintf("SELECT count(*) FROM osdial_carrier_dids WHERE did='%s' AND carrier_id='%s' AND id!='%s';",mres($did),mres($carrier_id),mres($did_id));
@@ -455,11 +455,11 @@ if ($ADD == "5carrier") {
     if ($LOG['ast_admin_access'] == 1) {
         ### SUB=4  Confirm DID Deletion
         if ($SUB==4) {
-            if ($carrier_id < 1 or $did_id < 1 or strlen($did) < 3) {
+            if ($carrier_id < 1 or $did_id < 1 or strlen($did) < 2) {
                 echo "<br><font color=red>DID NOT DELETED - Please go back and look at the data you entered\n";
                 echo "<br>carrier_id not set.\n";
                 echo "<br>did_id not set.\n";
-                echo "<br>did must be at least 2 characters.</font><br>\n";
+                echo "<br>did must be at least 1 characters.</font><br>\n";
             } else {
                 echo "<br><b><font color=$default_text>DID DELETION CONFIRMATION: $did_id - $did</b>\n";
                 echo "<br><a href=\"$PHP_SELF?ADD=6carrier&SUB=$SUB&carrier_id=$carrier_id&did_id=$did_id&did=$did&CoNfIrM=YES\">Click here to delete this DID</a></font><br>\n";
@@ -512,11 +512,11 @@ if ($ADD=="6carrier") {
 
         ### SUB=4  DID Deletion
         if ($SUB==4) {
-            if ($carrier_id < 1 or $did_id < 1 or strlen($did) < 3) {
+            if ($carrier_id < 1 or $did_id < 1 or strlen($did) < 2) {
                 echo "<br><font color=red>DID NOT DELETED - Please go back and look at the data you entered\n";
                 echo "<br>carrier_id not set.\n";
                 echo "<br>did_id not set.\n";
-                echo "<br>did must be at least 2 characters.</font><br>\n";
+                echo "<br>did must be at least 1 characters.</font><br>\n";
             } else {
                 echo "<br><b><font color=$default_text>DID DELETED: $did_id - $did</font></b><br>\n";
                 $stmt=sprintf("DELETE FROM osdial_carrier_dids WHERE carrier_id='%s' AND id='%s';",mres($carrier_id),mres($did_id));
