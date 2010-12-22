@@ -226,10 +226,14 @@
 		debug("<b>basic_originate_call:</b> tasknum=" + tasknum + " taskprefix=" + taskprefix + " taskreverse=" + taskreverse + " taskdialvalue=" + taskdialvalue+ " tasknowait=" + tasknowait + " taskconfxfer=" + taskconfxfer,2);
 
 		var cxmatch = 0;
+		var ext_context2 = ext_context;
+		var dial_context2 = dial_context;
 
 		var regCXFvars = new RegExp("CXFER","g");
 		var tasknum_string = tasknum.toString();
 		if (tasknum_string.match(regCXFvars)) {
+			ext_context2 = 'osdial';
+			dial_context2 = 'osdial';
 			var Ctasknum = tasknum_string.replace(regCXFvars, '');
 			if (Ctasknum.length < 2) Ctasknum = '990009';
 			var XfeRSelecT = document.getElementById("XfeRGrouP");
@@ -240,6 +244,8 @@
 
 		var regAXFvars = new RegExp("AXFER","g");
 		if (tasknum_string.match(regAXFvars)) {
+			ext_context2 = 'osdial';
+			dial_context2 = 'osdial';
 			var Ctasknum = tasknum_string.replace(regAXFvars, '');
 			if (Ctasknum.length < 2) Ctasknum = '83009';
 			var closerxfercamptail = '_L';
@@ -251,9 +257,9 @@
 
 		var xmlhttp=getXHR();
 		if (xmlhttp) {
-			var channel_context = ext_context;
+			var channel_context = ext_context2;
 			var channel_value = '';
-			var extension_context = dial_context;
+			var extension_context = dial_context2;
 			var extension_value = '';
 			var destination = tasknum;
 
@@ -263,8 +269,8 @@
 				}
 			}
 			if (taskreverse == 'YES') {
-				channel_context = dial_context;
-				extension_context = ext_context;
+				channel_context = dial_context2;
+				extension_context = ext_context2;
 				if (taskdialvalue.length < 2) {
 					extension_value = dialplan_number;
 				} else {
