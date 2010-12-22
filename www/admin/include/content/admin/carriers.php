@@ -222,7 +222,7 @@ if ($ADD=="2carrier") {
         ### SUB=4  Added DID
         if ($SUB==4) {
             $SUB=2;
-            if (strlen($did) < 2 or $carrier_id < 1) {
+            if (strlen($did) < 1 or $carrier_id < 1) {
                 echo "<br><font color=red>DID NOT ADDED - Please go back and look at the data you entered\n";
                 echo "<br>carrier_id not set.\n";
                 echo "<br>did must be at least 1 characters.</font><br>\n";
@@ -327,7 +327,7 @@ if ($ADD=="4carrier") {
         ### SUB=4  Modify DID 
         if ($SUB==4) {
             $SUB=1;
-            if ($did_id < 1 or strlen($did) < 2 or $carrier_id < 1) {
+            if ($did_id < 1 or strlen($did) < 1 or $carrier_id < 1) {
                 echo "<br><font color=red>DID NOT MODIFIED - Please go back and look at the data you entered\n";
                 echo "<br>did_id not set..\n";
                 echo "<br>carrier_id not set.\n";
@@ -455,7 +455,7 @@ if ($ADD == "5carrier") {
     if ($LOG['ast_admin_access'] == 1) {
         ### SUB=4  Confirm DID Deletion
         if ($SUB==4) {
-            if ($carrier_id < 1 or $did_id < 1 or strlen($did) < 2) {
+            if ($carrier_id < 1 or $did_id < 1 or strlen($did) < 1) {
                 echo "<br><font color=red>DID NOT DELETED - Please go back and look at the data you entered\n";
                 echo "<br>carrier_id not set.\n";
                 echo "<br>did_id not set.\n";
@@ -512,7 +512,7 @@ if ($ADD=="6carrier") {
 
         ### SUB=4  DID Deletion
         if ($SUB==4) {
-            if ($carrier_id < 1 or $did_id < 1 or strlen($did) < 2) {
+            if ($carrier_id < 1 or $did_id < 1 or strlen($did) < 1) {
                 echo "<br><font color=red>DID NOT DELETED - Please go back and look at the data you entered\n";
                 echo "<br>carrier_id not set.\n";
                 echo "<br>did_id not set.\n";
