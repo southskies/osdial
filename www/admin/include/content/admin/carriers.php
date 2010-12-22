@@ -1026,7 +1026,7 @@ if ($ADD == "3carrier") {
             echo "      <td>Destination</td>\n";
             echo "      <td align=center>LINKS</td>\n";
             echo "    </tr>\n";
-            $dids = get_krh($link, 'osdial_carrier_dids', '*','did ASC',sprintf("carrier_id='%s'",mres($carrier_id)),'');
+            $dids = get_krh($link, 'osdial_carrier_dids', '*','id ASC',sprintf("carrier_id='%s'",mres($carrier_id)),'');
             if (is_array($dids)) {
                 $c=0;
                 foreach ($dids as $did) {
