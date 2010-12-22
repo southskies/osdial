@@ -777,38 +777,48 @@ sub gen_carriers {
 
 		# Create Inbound dialplan for the carrier, ie DIDs..
 		$dialplan .= "[" . $context . "]\n";
+		my %didchk;
 		my $dids = {};
 		my $stmt = sprintf("SELECT * FROM osdial_carrier_dids WHERE carrier_id='\%s';",$carrier);
 		while (my $did = $osdial->sql_query($stmt)) {
 			$dids->{$did->{did}} = $did;
 		}
 		foreach my $did (sort keys %{$dids}) {
-			$dialplan .= "exten => _" . $dids->{$did}{did} . ",1,AGI(agi://127.0.0.1:4577/call_log)\n";
-			if ($dids->{$did}{did_action} eq 'INGROUP') {
-				$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,AGI(agi-VDAD_ALL_inbound.agi," . $dids->{$did}{lookup_method} . "-----" . $dids->{$did}{server_allocation} . "-----" . $dids->{$did}{ingroup};
-				$dialplan .= "-----\${EXTEN}-----\${CALLERID(number)}-----" . $dids->{$did}{park_file} . "-----" . $dids->{$did}{initial_status} . "-----" . $dids->{$did}{default_list_id} . "-----";
-				$dialplan .= $dids->{$did}{default_phone_code} . "-----" . $dids->{$did}{search_campaign} . ")\n";
-			} elsif ($dids->{$did}{did_action} eq 'PHONE') {
-				my $stmt = sprintf("SELECT * FROM phones WHERE extension='\%s' LIMIT 1;",$dids->{$did}{phone});
-				while (my $phone = $osdial->sql_query($stmt)) {
-					my @sip = split /\./, $phone->{server_ip};
-					my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
-					my $isp='*';
-					$isp='#' if ($osdial->{settings}{intra_server_protocol} eq 'IAX2');
-					$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,Goto(osdial," . $fsip . $isp . $phone->{dialplan_number} . ",1)\n";
+			my $didmatch = '';
+			$didmatch = '_' if ($dids->{$did}{did} =~ /X|Z|N|\[|\]|\.|\!/);
+			if (!defined $didchk{$didmatch.$dids->{$did}{did}}) {
+				$didchk{$didmatch.$dids->{$did}{did}} = 1;
+				$dialplan .= "exten => " . $didmatch . $dids->{$did}{did} . ",1,AGI(agi://127.0.0.1:4577/call_log)\n";
+				if ($dids->{$did}{did_action} eq 'INGROUP') {
+					$dialplan .= "exten => " . $didmatch . $dids->{$did}{did} . ",n,AGI(agi-VDAD_ALL_inbound.agi," . $dids->{$did}{lookup_method} . "-----" . $dids->{$did}{server_allocation} . "-----" . $dids->{$did}{ingroup};
+					$dialplan .= "-----\${EXTEN}-----\${CALLERID(number)}-----" . $dids->{$did}{park_file} . "-----" . $dids->{$did}{initial_status} . "-----" . $dids->{$did}{default_list_id} . "-----";
+					$dialplan .= $dids->{$did}{default_phone_code} . "-----" . $dids->{$did}{search_campaign} . ")\n";
+				} elsif ($dids->{$did}{did_action} eq 'PHONE') {
+					my $stmt = sprintf("SELECT * FROM phones WHERE extension='\%s' LIMIT 1;",$dids->{$did}{phone});
+					while (my $phone = $osdial->sql_query($stmt)) {
+						my @sip = split /\./, $phone->{server_ip};
+						my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
+						my $isp='*';
+						$isp='#' if ($osdial->{settings}{intra_server_protocol} eq 'IAX2');
+						$dialplan .= "exten => " . $didmatch . $dids->{$did}{did} . ",n,Goto(osdial," . $fsip . $isp . $phone->{dialplan_number} . ",1)\n";
+					}
+				} elsif ($dids->{$did}{did_action} eq 'EXTENSION') {
+					$dialplan .= "exten => " . $didmatch . $dids->{$did}{did} . ",n,Goto(" . $dids->{$did}{extension_context} . "," . $dids->{$did}{extension} . ",1)\n";
+				} elsif ($dids->{$did}{did_action} eq 'VOICEMAIL') {
+					$dialplan .= "exten => " . $didmatch . $dids->{$did}{did} . ",n,Voicemail(" . $dids->{$did}{voicemail} . ")\n";
 				}
-			} elsif ($dids->{$did}{did_action} eq 'EXTENSION') {
-				$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,Goto(" . $dids->{$did}{extension_context} . "," . $dids->{$did}{extension} . ",1)\n";
-			} elsif ($dids->{$did}{did_action} eq 'VOICEMAIL') {
-				$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,Voicemail(" . $dids->{$did}{voicemail} . ")\n";
+				$dialplan .= "exten => " . $didmatch . $dids->{$did}{did} . ",n,Hangup\n\n";
 			}
-			$dialplan .= "exten => _" . $dids->{$did}{did} . ",n,Hangup\n\n";
 		}
 		# Display an alert about any unhandled DIDs.
-		#$dialplan .= "exten => _X.,1,AGI(agi://127.0.0.1:4577/call_log)\n";
-		$dialplan .= "exten => _X.,1,NoOp(***ALERT***  Unconfigured DID:\${EXTEN} from Carrier:".$carriers->{$carrier}{name}.")\n";
-		$dialplan .= "exten => _X.,n,Hangup(17)\n\n";
-		$dialplan .= $hangup . "\n\n";
+		if (!defined $didchk{'_X.'}) {
+			#$dialplan .= "exten => _X.,1,AGI(agi://127.0.0.1:4577/call_log)\n";
+			$dialplan .= "exten => _X.,1,NoOp(***ALERT***  Unconfigured DID:\${EXTEN} from Carrier:".$carriers->{$carrier}{name}.")\n";
+			$dialplan .= "exten => _X.,n,Hangup(17)\n\n";
+		}
+		if (!defined $didchk{'h'}) {
+			$dialplan .= $hangup . "\n\n";
+		}
 
 	}
 	write_reload($sip_config,'osdial_sip_carriers','sip reload');
