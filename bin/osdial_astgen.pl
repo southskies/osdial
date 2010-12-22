@@ -785,7 +785,7 @@ sub gen_carriers {
 		}
 		foreach my $did (sort keys %{$dids}) {
 			my $didmatch = '';
-			$didmatch = '_' if ($dids->{$did}{did} =~ /X|Z|N|\[|\]|\.|\!/);
+			$didmatch = '_' if ($dids->{$did}{did} =~ /X|Z|N|\[|\]|\.|\!/ and $dids->{$did}{did} !~ /^_/);
 			if (!defined $didchk{$didmatch.$dids->{$did}{did}}) {
 				$didchk{$didmatch.$dids->{$did}{did}} = 1;
 				$dialplan .= "exten => " . $didmatch . $dids->{$did}{did} . ",1,AGI(agi://127.0.0.1:4577/call_log)\n";
