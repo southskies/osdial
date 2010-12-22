@@ -145,7 +145,7 @@ if [ $imports -lt 1 ]; then
 
 	######### QoS / Prioritizing Packets (DSCP / TOS) ###################
 	#FW_QOS "LABEL"      "PROTOCOL" "NETWORK"  "PORTS"       "PRIORITY"
-	FW_QOS  "IAX2"       "udp"      "$WAN_NET" "4679"        "CRITICAL"
+	FW_QOS  "IAX2"       "udp"      "$WAN_NET" "4569"        "CRITICAL"
 	FW_QOS  "RTP-media"  "udp"      "$WAN_NET" "10000:20000" "CRITICAL"
 	FW_QOS  "SIP"        "udp"      "$WAN_NET" "5060:5070"   "HIGH"
 	FW_QOS  "HTTP"       "tcp"      "$WAN_NET" "80"          "MIDHIGH"
@@ -189,7 +189,7 @@ if [ $imports -lt 1 ]; then
 
 	######### Blocked IPs from the VoIP Blacklist Project (voipabuse) ###
 	######### http://www.infiltrated.net/voipabuse ######################
-	FW_voipabuse
+	#FW_voipabuse
 
 
 	######### Blocked Ports - ALL Hosts #################################
