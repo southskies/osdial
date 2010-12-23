@@ -27,18 +27,12 @@ for i in `ls *.wav 2>/dev/null`; do
 	fileNE=`echo $i | awk '{ sub(/.wav$/, ""); print }'`
 	if [ ! -f "$IVRDIR/$i" ]; then
 		cp -f "$i" $IVRDIR > /dev/null 2>&1
-		/usr/sbin/asterisk -rx "file convert $IVRDIR/$i $IVRDIR/$fileNE.sln16" > /dev/null 2>&1
-		/usr/sbin/asterisk -rx "file convert $IVRDIR/$i $IVRDIR/$fileNE.ulaw" > /dev/null 2>&1
-		/usr/sbin/asterisk -rx "file convert $IVRDIR/$i $IVRDIR/$fileNE.gsm" > /dev/null 2>&1
 	fi
 done
 for i in `ls *.gsm 2>/dev/null`; do
 	fileNE=`echo $i | awk '{ sub(/.gsm$/, ""); print }'`
 	if [ ! -f "$IVRDIR/$i" ]; then
 		cp -f "$i" $IVRDIR > /dev/null 2>&1
-		/usr/sbin/asterisk -rx "file convert $IVRDIR/$i $IVRDIR/$fileNE.sln16" > /dev/null 2>&1
-		/usr/sbin/asterisk -rx "file convert $IVRDIR/$i $IVRDIR/$fileNE.ulaw" > /dev/null 2>&1
-		/usr/sbin/asterisk -rx "file convert $IVRDIR/$i $IVRDIR/$fileNE.wav" > /dev/null 2>&1
 	fi
 done
 for i in `ls *.mp3 2>/dev/null`; do
