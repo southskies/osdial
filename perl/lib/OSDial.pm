@@ -863,7 +863,7 @@ sub media_add_file {
 	unless ($mimetype) {
 		my $mime = $filename;
 		$mime =~ s/.*\.//;
-		$mimetype = $self->{'_mimetype'}{lc($mime)};
+		$mimetype = $self->{'_mimemap'}{lc($mime)};
 	}
 	$description = $filename unless ($description);
 	unless ($extension) {
@@ -960,6 +960,11 @@ sub media_save_file {
 	my ($self,$dir,$filename,$overwrite) = @_;
 	$dir = '.' unless ($dir);
 	$overwrite = 0 unless ($overwrite);
+	unless (-e $dir) {
+		mkdir($dir,oct('0755'));
+		my ($login,$pass,$uid,$gid) = getpwnam('asterisk');
+		chown($uid,$gid,$dir);
+	}
 
 	my $file = $dir.'/'.$filename;
 	$self->debug(3,'media_save_file',"  Adding File:%s  Dir:%s  Name:%s  Overwrite:%s", $file, $dir, $filename, $overwrite);
