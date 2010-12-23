@@ -5,6 +5,9 @@
 28 0 * * * /usr/bin/find /var/log/osdial -maxdepth 1 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1
 29 0 * * * /usr/bin/find /var/log/asterisk -maxdepth 3 -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1
 
+### (ALL) Syncronize media files with osdial_media_sync.
+*/15 * * * * /opt/osdial/bin/osdial_media_sync.pl > /dev/null 2>&1
+
 ### (sql) remove old csv exports more than 2 days old
 24 0 * * * /usr/bin/find /opt/osdial/html/admin -name 'advsearch*' -type f -mtime +2 -print | xargs rm -f > /dev/null 2>&1
 
