@@ -1326,4 +1326,161 @@ function send_email($host, $port, $user, $pass, $to, $from, $subject, $html, $te
     $mail->send($to, $headers, $message);
 }
 
+
+# Quick and dirty file extension to mimetype conversion.
+function mimemap($file) {
+    $mimetype = 'application/octet-stream';
+    if (isset($file) and $file!='') {
+        $ext = strtolower(preg_replace('/.*\/|.*\./','',$file));
+        if ($ext=='g722')    $mimetype = 'audio/G722';
+        if ($ext=='g729')    $mimetype = 'audio/G729';
+        if ($ext=='gsm')     $mimetype = 'audio/GSM';
+        if ($ext=='ogg')     $mimetype = 'audio/ogg';
+        if ($ext=='ulaw')    $mimetype = 'audio/PCMU';
+        if ($ext=='alaw')    $mimetype = 'audio/PCMA';
+        if ($ext=='siren7')  $mimetype = 'audio/siren7';
+        if ($ext=='siren14') $mimetype = 'audio/siren14';
+        if ($ext=='sln')     $mimetype = 'audio/sln';
+        if ($ext=='sln16')   $mimetype = 'audio/sln-16';
+        if ($ext=='mp3')     $mimetype = 'audio/mpeg';
+        if ($ext=='wav')     $mimetype = 'audio/x-wav';
+    }
+    return $mimetype;
+}
+
+
+
+function media_add_files($link, $directory, $pattern, $update_data) {
+    if (!isset($directory) or $directory=='') $directory = '.';
+    if (!isset($pattern) or $pattern=='') $pattern = '.*';
+    if (!isset($update_data) or $update_data=='') $update_data = 0;
+
+    $files = array();
+    if (file_exists($directory)) {
+        $handle = opendir($directory);
+        while (false !== ($filename = readdir($handle))) {
+            if ($filename!='.' and $filename!='..' and preg_match('/'.$pattern.'/',$filename)) {
+                $filepath=$directory.'/'.$filename;
+                $mimetype = mimemap($filename);
+                $extension = preg_replace('/.*\/|\..*/','',$filename);
+                if (!preg_match('/^\d+$/',$extension)) $extension = "";
+                $files[] = media_add_file($link, $filepath, $mimetype, $filename, $extension, $updata_data);
+            }
+        }
+        closedir($handle);
+        return $files;
+    }
+}
+
+
+
+function media_add_file($link, $filepath, $mimetype, $description, $extension, $update_data) {
+    $filename=preg_replace('/.*\//','',$filepath);
+    if (!isset($mimetype) or $mimetype=='') $mimetype = mimemap($filename);
+    if (!isset($description)) $description = $filename;
+    if (isset($extension)) {
+        $extension = preg_replace('/.*\/|\..*/','',$filename);
+        if (!preg_match('/^\d+$/',$extension)) $extension = "";
+    }
+    if (!isset($update_data) or $update_data=='') $update_data = 0;
+
+    if (!file_exists($filepath)) return '!'.$filename;
+
+    $mcnt = get_first_record($link, 'osdial_media', 'count(*) AS cnt', sprintf("filename='%s'", mres($filename)));
+    if ($mcnt['cnt']==0) {
+        $stmt = sprintf("INSERT INTO osdial_media SET filename='%s',mimetype='%s',description='%s',extension='%s';",mres($filename),mres($mimetype),mres($description),mres($extension));
+        $rslt = mysql_query($stmt, $link);
+    } else {
+        $mdcnt = get_first_record($link, 'osdial_media_data', 'count(*) AS cnt', sprintf("filename='%s'", mres($filename)));
+        if ($mdcnt['cnt']>0) {
+            if ($update_data>0) {
+                media_delete_filedata($link, $filename);
+            } else {
+                return '*'.$filename;
+            }
+        }
+    }
+
+    $rslt = mysql_query("SHOW variables LIKE 'max_allowed_packet';",$link);
+    $row = mysql_fetch_row($rslt);
+    $max_packet = $row[1];
+
+    $handle = fopen($filepath,'r');
+    while (!feof($handle)) {
+        $filedata=fread($handle,$max_packet);
+        $stmt = sprintf("INSERT INTO osdial_media_data SET filename='%s',filedata='%s';",mres($filename),mres($filedata));
+        $rslt = mysql_query($stmt, $link);
+    }
+    fclose($handle);
+
+    if ($update_data) return '='.$filename;
+    return '+'.$filename;
+}
+
+
+
+function media_delete_filedata($link, $filename) {
+    if (isset($filename) and $filename!='') {
+        $stmt = sprintf("DELETE from osdial_media_data WHERE filename='%s';",mres($filename));
+        $rslt = mysql_query($stmt, $link);
+    }
+}
+
+
+
+function media_get_filedata($link, $filename) {
+    if (isset($filename) and $filename!='') {
+        $rslt = mysql_query(sprintf("SELECT filedata FROM osdial_media_data WHERE filename='%s';",mres($filename)));
+        $filedata="";
+        while ($row = mysql_fetch_row($rslt)) {
+            $filedata.=$row[0];
+        }
+        if ($filedata!='') return $filedata;
+    }
+}
+
+
+
+function media_save_file($link, $directory, $filename, $overwrite) {
+    if (!isset($directory) or $directory=='') $directory = '.';
+    if (!isset($overwrite) or $overwrite=='') $overwrite = 0;
+    if (!file_exists($directory)) mkdir($directory, 0777);
+    chmod($directory, 0777);
+
+    $filepath = $directory.'/'.$filename;
+    if (file_exists($filepath) and $overwrite==0) return '*'.$filename;
+
+    $filedata = media_get_filedata($link, $filename);
+    if (!isset($filedata) or $filedata=='') return '!'.$filename;
+
+    $handle = fopen($filepath, "w");
+    fwrite($handle, $filedata);
+    fclose($handle);
+    chmod($filepath, 0666);
+
+    if ($overwrite) return '='.$filename;
+    return '+'.$filename;
+}
+
+
+        
+function media_save_files($link, $directory, $pattern, $overwrite) {
+    if (!isset($directory) or $directory=='') $directory = '.';
+    if (!isset($pattern) or $pattern=='') $pattern = '.*';
+    if (!isset($overwrite) or $overwrite=='') $overwrite = 0;
+    if (!file_exists($directory)) mkdir($directory, 0777);
+    chmod($directory, 0777);
+
+    $files = array();
+    $mkrh = get_krh($link, 'osdial_media', '*','','','');
+    if (is_array($mkrh)) {
+        foreach ($mkrh as $om) {
+            if (preg_match('/'.$pattern.'/',$om['filename'])) $files[] = media_save_file($link, $directory, $om['filename'], $overwrite);
+        }
+    }
+    return $files;
+}
+
+
+
 ?>
