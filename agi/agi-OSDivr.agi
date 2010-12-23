@@ -99,6 +99,8 @@ unless ($ivr) {
 	exit;
 }
 
+$AGI->answer();
+
 $ivr->{ivrid} = $ivr->{id};
 $ivr->{parid} = 0;
 ivr_menu($ivr);
@@ -170,21 +172,24 @@ sub ivr_menu {
 	
 		my $dkey = 'key';
 		my $invalid = 0;
-		if (defined $menu{$dkey.$dtmf}) {
-			$dkey .= $dtmf;
-		} elsif (defined $menu{$dkey.'i'}) {
-			$dkey .= 'i';
+		if ($dtmf ne '') {
+			if (defined $menu{$dkey.$dtmf}) {
+				$dkey .= $dtmf;
+			} elsif (defined $menu{$dkey.'i'}) {
+				$dkey .= 'i';
+			} else {
+				$invalid++;
+			}
 		} else {
-			$invalid++;
+			my $sres = $osdial->sql_query("SELECT count(*) AS cnt FROM live_sip_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension LIKE '%" . $cinfo->{conf_exten} . "%' ORDER BY channel DESC;");
+			$ivrloop = 0 if ($sres->{cnt} == 0);
+			my $sres = $osdial->sql_query("SELECT count(*) AS cnt FROM live_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension='" . $cinfo->{conf_exten} . "' ORDER BY channel DESC;");
+			$ivrloop = 0 if ($sres->{cnt} == 0);
 		}
 
 		if ($invalid) {
 			$ivrloop = playfile('invalid','VTO',1);
 			$ivrloop = 0 if ($totloop >= $menu{repeat_loops});
-			my $sres = $osdial->sql_query("SELECT count(*) AS cnt FROM live_sip_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension LIKE '%" . $cinfo->{conf_exten} . "%' ORDER BY channel DESC;");
-			$ivrloop = 0 if ($sres->{cnt} == 0);
-			my $sres = $osdial->sql_query("SELECT count(*) AS cnt FROM live_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension='" . $cinfo->{conf_exten} . "' ORDER BY channel DESC;");
-			$ivrloop = 0 if ($sres->{cnt} == 0);
 		} else {
 			my @aparams = split(/#:#/,$menu{$dkey}{action_data});
 	
@@ -220,9 +225,9 @@ sub ivr_menu {
 			} elsif ($menu{$dkey}{action} eq "MENU_REPEAT") {
 				$ivrloop = 1;
 			} elsif ($menu{$dkey}{action} eq "MENU_EXIT") {
-				$ivrloop = 0;
+				$ivrloop = playfile('goodbye','VTO',0);
 			} else {
-				$ivrloop = 0;
+				$ivrloop = playfile('goodbye','VTO',0);
 			}
 		}
 		$totloop++;
@@ -269,7 +274,7 @@ sub playfile {
 	my ($stream, $status, $rtnmain) = @_;
 
 	update_status($status);
-	$stream =~ s/\....$//;
+	$stream =~ s/\..*$//;
 	$osdial->agi_output("ODOI: playing file $stream|");
 	$AGI->stream_file($stream);
 
@@ -279,7 +284,7 @@ sub playfile {
 sub xfer_to_external {
 	my ($stream, $status, $number) = @_;
 
-	$stream =~ s/\....$//;
+	$stream =~ s/\..*$//;
 	$stream = 'pls-wait-connect-call' unless ($stream);
 	$AGI->stream_file($stream) if ($stream);
 
@@ -356,7 +361,7 @@ sub xfer_to_agent {
 sub xfer_to_ingroup {
 	my ($stream, $status, $ingroup, $failover_method, $failover_number) = @_;
 
-	$stream =~ s/\....$//;
+	$stream =~ s/\..*$//;
 	$stream = 'pls-wait-connect-call' unless ($stream);
 	$AGI->stream_file($stream) if ($stream);
 
@@ -412,12 +417,19 @@ sub xfer_to_ingroup {
 sub hangup_and_dispo {
 	my ($stream, $status) = @_;;
 
-	$stream =~ s/\....$//;
+	$stream =~ s/\..*$//;
 	$AGI->stream_file($stream) if ($stream);
 
 	my $tepoch = time();
 	my $tdate = $osdial->get_datetime($tepoch);
 	my $call_length = $tepoch - $cinfo->{start_time};
+
+	my $affected_rows = $osdial->sql_execute("UPDATE osdial_log SET end_epoch='$tepoch' WHERE uniqueid='" . $AGI->{uniqueid} . "';");
+	$osdial->agi_output("--    ODOI osdial_log update: $affected_rows");
+
+	my $affected_rows = $osdial->sql_execute("UPDATE osdial_log SET length_in_sec=end_epoch-start_epoch WHERE uniqueid='".$AGI->{uniqueid}."';");
+	$osdial->agi_output("--    ODOI osdial_log update: $affected_rows");
+
 
 	if ($status eq 'DNC' or $status eq 'VDNC') {
 		my $affected_rows = $osdial->sql_execute("INSERT INTO osdial_dnc (phone_number) VALUES ((SELECT phone_number FROM osdial_list WHERE lead_id='" . $cinfo->{CIDlead_id} ."'));");
@@ -433,24 +445,26 @@ sub hangup_and_dispo {
 	while (my $sres = $osdial->sql_query("SELECT channel FROM live_sip_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND channel LIKE '%" . $cinfo->{conf_exten} . "%' ORDER BY channel DESC;")) {
 		push @huchan, $sres->{channel};
 	}
-
 	# Get outbound channels attached to those conferences.
 	while (my $sres = $osdial->sql_query("SELECT channel FROM live_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension='" . $cinfo->{conf_exten} . "' ORDER BY channel DESC;")) {
 		push @huchan, $sres->{channel};
 	}
+
 	# Send hangups to all conferences and outbound channels.
 	foreach my $huc (@huchan) {
-		#my $affected_rows = $osdial->sql_execute("INSERT INTO osdial_manager values('','','$tdate','NEW','N','" . $osdial->{VARserver_ip} . "','','Hangup','$VHqueryCID','Channel: " . $huc . "','','','','','','','','','')");
-		#$osdial->agi_output("--     ODOI Hangup: $affected_rows") if ($DB > 1);
 		$AGI->hangup($huc);
 		$osdial->agi_output("--     ODOI Hangup: $huc") if ($DB > 1);
 	}
-
-	my $affected_rows = $osdial->sql_execute("UPDATE osdial_log SET end_epoch='$tepoch' WHERE uniqueid='" . $AGI->{uniqueid} . "';");
-	$osdial->agi_output("--    ODOI osdial_log update: $affected_rows");
-
-	my $affected_rows = $osdial->sql_execute("UPDATE osdial_log SET length_in_sec=end_epoch-start_epoch WHERE uniqueid='".$AGI->{uniqueid}."';");
-	$osdial->agi_output("--    ODOI osdial_log update: $affected_rows");
+	sleep(1);
+	# Go back through and do a SoftHangup on anything still up.
+	foreach my $huc (@huchan) {
+		my $sres = $osdial->sql_query("SELECT count(*) AS hucnt FROM live_sip_channels WHERE channel='" . $huc . "';");
+		my $sres2 = $osdial->sql_query("SELECT count(*) AS hucnt FROM live_channels WHERE channel='" . $huc . "';");
+		if (($sres->{hucnt} + $sres2->{hucnt}) > 0) {
+			$AGI->exec("SoftHangup",$huc);
+			$osdial->agi_output("--     ODOI SoftHangup: $huc") if ($DB > 1);
+		}
+	}
 
 	$AGI->hangup();
 
@@ -545,7 +559,7 @@ sub stream_and_get_dtmf {
 		update_status();
 
 		$total_digits = '';
-		$stream =~ s/\....$//;
+		$stream =~ s/\..*$//;
 		my $interrupt_digit = $AGI->stream_file($stream,'0123456789#*');
 		if ($interrupt_digit) {
 			my $int_digit=chr($interrupt_digit);
@@ -560,7 +574,7 @@ sub stream_and_get_dtmf {
 		my $loop = 0;
 		while (length($total_digits) < $dcount and $loop < $waitloops) {
 			my $digit = $AGI->wait_for_digit($waittimeout);
-			if ($digit) {
+			if ($digit>0) {
 				$digit = chr($digit);
 				$digit =~ s/$valid_pat//g;
 				if ($digit ne '') {

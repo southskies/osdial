@@ -913,7 +913,8 @@ if ($ADD == "3menu") {
             echo '  <input type="hidden" name="oivr_opt_id" value="' . $opt['id'] . '">';
             echo "  <tr " . bgcolor($cnt) . " class=\"row font1\">";
             $kplabel = $opt['keypress'];
-            if ($kplabel=='A') $kplabel='----';
+            if ($kplabel=='A') $kplabel='-Extensions-';
+            if ($kplabel=='i') $kplabel='-Invalid-';
             echo "      <td align=center>" . $kplabel . "</td>";
             echo "      <td align=center>" . $opt['action'] . "</td>";
             if ($opt['action'] == 'MENU') {
@@ -1007,9 +1008,13 @@ if ($ADD == "3keys") {
     echo "  <tr>\n";
     echo "    <td bgcolor=$oddrows align=right>Key:</td>\n";
     echo "    <td bgcolor=$oddrows align=left>";
-    $kpdis=''; if (preg_match('/A|i/',$opt['keypress'])) $kpdis='disabled';
+    $kpdis=''; if ($opt['keypress'] == 'A') $kpdis='disabled';
     echo '      <select ' . $kpdis . ' name="oivr_opt_keypress">';
-    echo '        <option value="' . $opt['keypress'] . '" selected> - ' . $opt['keypress'] . ' -</option>';
+    if ($opt['keypress'] == 'i') {
+        echo '        <option value="' . $opt['keypress'] . '" selected> - Invalid -</option>';
+    } else {
+        echo '        <option value="' . $opt['keypress'] . '" selected> - ' . $opt['keypress'] . ' -</option>';
+    }
     $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $opt['parent_id'] . "'",'');
     $tkey = '';
     foreach ($keys as $key) {
@@ -1543,7 +1548,8 @@ if ($ADD == "3keys") {
             echo '  <input type="hidden" name="oivr_opt_id" value="' . $opt['id'] . '">';
             echo "  <tr " . bgcolor($cnt) . " class=\"row font1\">";
             $kplabel = $opt['keypress'];
-            if ($kplabel=='A') $kplabel='----';
+            if ($kplabel=='A') $kplabel='-Extensions-';
+            if ($kplabel=='i') $kplabel='-Invalid-';
             echo "      <td align=center>" . $kplabel . "</td>";
             echo "      <td align=center>" . $opt['action'] . "</td>";
             echo "      <td align=center>" . $ad[1] . "</td>";
