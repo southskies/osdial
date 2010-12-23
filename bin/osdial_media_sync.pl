@@ -24,21 +24,22 @@ if (scalar @ARGV) {
 my $osd = OSDial->new('DB'=>$DB);
 
 my @addfiles;
-my @savefiles;
-
 push @addfiles, $osd->media_add_files('/var/lib/asterisk/sounds','8510.*');
 push @addfiles, $osd->media_add_files('/var/lib/asterisk/sounds.ramfs','8510.*');
-push @addfiles, $osd->media_add_files('/mnt/ramdisk/sounds','8510.*');
-push @addfiles, $osd->media_add_files('/opt/osdial/html/ivr');
 push @addfiles, $osd->media_add_files('/var/lib/asterisk/OSDprompts');
+push @addfiles, $osd->media_add_files('/var/lib/asterisk/sounds/osdial');
+push @addfiles, $osd->media_add_files('/mnt/ramdisk/sounds','8510.*');
+push @addfiles, $osd->media_add_files('/mnt/ramdisk/sounds/osdial');
+push @addfiles, $osd->media_add_files('/opt/osdial/html/ivr');
 push @addfiles, $osd->media_add_files('/opt/osdial/media');
-
-push @savefiles, $osd->media_save_files('/opt/osdial/media');
-
 foreach my $file (@addfiles) {
 	$osd->debug(1,'osdial_media_sync.pl','  Adding file:%s',$file);
 }
 
+my @savefiles;
+push @savefiles, $osd->media_save_files('/opt/osdial/media');
+push @savefiles, $osd->media_save_files('/var/lib/asterisk/sounds/osdial') if (-e "/var/lib/asterisk/sounds");
+push @savefiles, $osd->media_save_files('/mnt/ramdisk/sounds/osdial') if (-e "/mnt/ramdisk/sounds");
 foreach my $file (@savefiles) {
 	$osd->debug(1,'osdial_media_sync.pl','  Saving file:%s',$file);
 }
