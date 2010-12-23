@@ -674,6 +674,8 @@ within single-quotes.
    $test = $osdial->sql_quote("Here's a test.");
    # Result: $test = "'Here\'s a test.'";
 
+Aliases for B<sql_quote( $string )> include B<quote( $string )> and B<mres( $string )>.
+
 =back
 
 =cut
@@ -814,6 +816,13 @@ sub get_date {
 
 =item B<media_add_files( $directory, [$pattern], [$update_data] )>
 
+All files in I<$directory> are scaned and loaded into the databsae if they do not already exist in it.
+
+The I<$pattern> variable allows for a regex expression to be applied against the filename.  The default I<$patter> is C<.*>.
+
+If the file exists in the database and I<$update_data> is true, the data is updated.  The default action
+is to skip files which are already present.
+
 =back
 
 =cut
@@ -850,7 +859,33 @@ sub media_add_files {
 
 =over 4
 
-=item B<media_add_file( $file, [$mimetype], [$description], [$extension], [$update_data] )>
+=item B<media_add_file( $filepath, [$mimetype], [$description], [$extension], [$update_data] )>
+
+This function opens the media file I<$filepath> and splits the binary data into segments which are
+small enough to be sent to the SQL server without exceeding the C<max_allowed_packet> size.
+
+If I<$mimetype> is not given, it will be guessed using the extension of I<$filepath>.
+
+   g722    => 'audio/G722'
+   g729    => 'audio/G729'
+   gsm     => 'audio/GSM'
+   ogg     => 'audio/ogg'
+   ulaw    => 'audio/PCMU'
+   alaw    => 'audio/PCMA'
+   siren7  => 'audio/siren7'
+   siren14 => 'audio/siren14'
+   sln     => 'audio/sln'
+   sln16   => 'audio/sln-16'
+   mp3     => 'audio/mpeg'
+   wav     => 'audio/x-wav'
+
+If I<$description> is not given, the filename is stripped off of I<$filepath> and used.
+
+If I<$extension> is not given and the filename is not numeric, it is left blank.  If the filename will
+be used if it is numeric.
+
+If the file exists in the database and I<$update_data> is true, the data is updated.  The default action
+is to skip files which are already present.
 
 =back
 
@@ -914,6 +949,8 @@ sub media_add_file {
 
 =item B<media_delete_filedata( $filename )>
 
+Removes all entries in the C<osdial_media_data> table associated with I<$filename>.
+
 =back
 
 =cut
@@ -930,6 +967,8 @@ sub media_delete_filedata {
 =over 4
 
 =item B<media_get_filedata( $filename )>
+
+Combines all of the entries in the C<osdial_media_data> table associated with I<$filename> and returns the binary data.
 
 =back
 
@@ -952,6 +991,9 @@ sub media_get_filedata {
 
 =item B<media_save_file( $directory, $filename, [$overwrite] )>
 
+Export entry matching I<$filename> and save into the given I<$directory>.
+File is skipped and is not overwitten unless I<$overwrite> is true.
+
 =back
 
 =cut
@@ -961,10 +1003,11 @@ sub media_save_file {
 	$dir = '.' unless ($dir);
 	$overwrite = 0 unless ($overwrite);
 	unless (-e $dir) {
-		mkdir($dir,oct('0755'));
+		mkdir($dir,oct('0777'));
 		my ($login,$pass,$uid,$gid) = getpwnam('asterisk');
 		chown($uid,$gid,$dir);
 	}
+	chmod(oct(0777),$dir);
 
 	my $file = $dir.'/'.$filename;
 	$self->debug(3,'media_save_file',"  Adding File:%s  Dir:%s  Name:%s  Overwrite:%s", $file, $dir, $filename, $overwrite);
@@ -979,7 +1022,7 @@ sub media_save_file {
 	close(MSF);
 	my ($login,$pass,$uid,$gid) = getpwnam('asterisk');
 	chown($uid,$gid,$file);
-	chmod(oct('0644'),$file);
+	chmod(oct('0666'),$file);
 
 	return '='.$filename if ($overwrite);
 	return '+'.$filename;
@@ -990,6 +1033,9 @@ sub media_save_file {
 =over 4
 
 =item B<media_save_files( $directory, [$pattern], [$overwrite] )>
+
+All files matching the regex I<$patten> are exported and saved into the given I<$directory>.
+The default I<$pattern> is C<.*>.  Files are skipped and not overwitten unless I<$overwrite> is true.
 
 =back
 
@@ -1002,10 +1048,11 @@ sub media_save_files {
 	$pattern = '.*' unless ($pattern);
 	$self->debug(3,'media_save_files',"Adding Files:%s  Pattern:%s  Overwrite:%s", $dir, $pattern, $overwrite);
 	unless (-e $dir) {
-		mkdir($dir,oct('0755'));
+		mkdir($dir,oct('0777'));
 		my ($login,$pass,$uid,$gid) = getpwnam('asterisk');
 		chown($uid,$gid,$dir);
 	}
+	chmod(oct(0777),$dir);
 
 	my @files;
 	while (my $sret = $self->sql_query("SELECT * FROM osdial_media;", "MSF")) {
