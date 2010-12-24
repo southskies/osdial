@@ -31,6 +31,8 @@ if ($campaign_id != '') {
     }
 }
 
+#$ivrpath = $WeBServeRRooT . "/ivr";
+$ivrpath = "/opt/osdial/media";
 
 
 ######################
@@ -78,6 +80,7 @@ if ($ADD == "1keys" or $ADD == '4keys') {
             $recfilename = preg_replace('/\.gsm$/i','.gsm',$recfilename);
             $recfilename = preg_replace('/\.mp3$/i','.mp3',$recfilename);
             if ($recfilename != '') {
+                media_add_file($link, $recfiletmp, mimemap($recfilename), "IVR: $campaign_id - $oivr_opt_action",'',1);
                 copy($recfiletmp, $WeBServeRRooT . "/ivr/" . $recfilename);
                 if ($oivr_opt_action == 'MENU') {
                     $oi3 = $recfilename;
@@ -186,11 +189,11 @@ if ($ADD == "2keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = $WeBServeRRooT . "/ivr";
-    	$dir = @opendir($path);
+    	$dir = @opendir($ivrpath);
     	while ($file = readdir($dir)) {
         	$sel = '';
 		if ($file != '.' and $file != '..') {
+                $file = preg_replace('/\..*$/','',$file);
         		echo "              <option $sel>$file</option>";
 		}
     	}
@@ -218,11 +221,11 @@ if ($ADD == "2keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = $WeBServeRRooT . "/ivr";
-    	$dir = @opendir($path);
+    	$dir = @opendir($ivrpath);
     	while ($file = readdir($dir)) {
         	$sel = '';
 		if ($file != '.' and $file != '..') {
+                $file = preg_replace('/\..*$/','',$file);
         		echo "              <option $sel>$file</option>";
 		}
     	}
@@ -251,14 +254,14 @@ if ($ADD == "2keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi3">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = $WeBServeRRooT . "/ivr";
-    	$dir = @opendir($path);
+    	$dir = @opendir($ivrpath);
     	while ($file = readdir($dir)) {
         	$sel = '';
         	if ($file == $ad[2]) {
             	$sel = ' selected';
         	}
 		if ($file != '.' and $file != '..') {
+                $file = preg_replace('/\..*$/','',$file);
         		echo "              <option $sel>$file</option>";
 		}
     	}
@@ -357,11 +360,11 @@ if ($ADD == "2keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi3">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = $WeBServeRRooT . "/ivr";
-    	$dir = @opendir($path);
+    	$dir = @opendir($ivrpath);
     	while ($file = readdir($dir)) {
         	$sel = '';
 		if ($file != '.' and $file != '..') {
+                $file = preg_replace('/\..*$/','',$file);
         		echo "              <option $sel>$file</option>";
 		}
     	}
@@ -373,11 +376,11 @@ if ($ADD == "2keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi4">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = $WeBServeRRooT . "/ivr";
-    	$dir = @opendir($path);
+    	$dir = @opendir($ivrpath);
     	while ($file = readdir($dir)) {
         	$sel = '';
 		if ($file != '.' and $file != '..') {
+                $file = preg_replace('/\..*$/','',$file);
         		echo "              <option $sel>$file</option>";
 		}
     	}
@@ -424,11 +427,11 @@ if ($ADD == "2keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = $WeBServeRRooT . "/ivr";
-    	$dir = @opendir($path);
+    	$dir = @opendir($ivrpath);
     	while ($file = readdir($dir)) {
         	$sel = '';
 		if ($file != '.' and $file != '..') {
+                $file = preg_replace('/\..*$/','',$file);
         		echo "              <option $sel>$file</option>";
 		}
     	}
@@ -479,11 +482,11 @@ if ($ADD == "2keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = $WeBServeRRooT . "/ivr";
-    	$dir = @opendir($path);
+    	$dir = @opendir($ivrpath);
     	while ($file = readdir($dir)) {
         	$sel = '';
 		if ($file != '.' and $file != '..') {
+                $file = preg_replace('/\..*$/','',$file);
         		echo "              <option $sel>$file</option>";
 		}
     	}
@@ -516,11 +519,11 @@ if ($ADD == "2keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = $WeBServeRRooT . "/ivr";
-    	$dir = @opendir($path);
+    	$dir = @opendir($ivrpath);
     	while ($file = readdir($dir)) {
         	$sel = '';
 		if ($file != '.' and $file != '..') {
+                $file = preg_replace('/\..*$/','',$file);
         		echo "              <option $sel>$file</option>";
 		}
     	}
@@ -587,6 +590,7 @@ if ($ADD == "4menu") {
             $recfilename = preg_replace('/\.gsm$/i','.gsm',$recfilename);
             $recfilename = preg_replace('/\.mp3$/i','.mp3',$recfilename);
             if ($recfilename != '') {
+                media_add_file($link, $recfiletmp, mimemap($recfilename), "IVR: $campaign_id - MAIN_MENU",'',1);
                 copy($recfiletmp, $WeBServeRRooT . "/ivr/" . $recfilename);
                 $oivr_announcement = $recfilename;
             }
@@ -788,14 +792,14 @@ if ($ADD == "3menu") {
     echo '      <td bgcolor="' . $oddrows . '">';
     echo '          <select name="oivr_announcement">';
     echo "              <option value=\"\"> - NONE - </option>";
-    $path = $WeBServeRRooT . "/ivr";
-    $dir = @opendir($path);
+    $dir = @opendir($ivrpath);
     while ($file = readdir($dir)) {
         $sel = '';
         if ($file == $oivr['announcement']) {
             $sel = ' selected';
         }
 	if ($file != '.' and $file != '..') {
+                $file = preg_replace('/\..*$/','',$file);
         	echo "              <option $sel>$file</option>";
 	}
     }
@@ -1051,14 +1055,14 @@ if ($ADD == "3keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = $WeBServeRRooT . "/ivr";
-    	$dir = @opendir($path);
+    	$dir = @opendir($ivrpath);
     	while ($file = readdir($dir)) {
         	$sel = '';
         	if ($file == $ad[0]) {
             	$sel = ' selected';
         	}
 		if ($file != '.' and $file != '..') {
+                $file = preg_replace('/\..*$/','',$file);
         		echo "              <option $sel>$file</option>";
 		}
     	}
@@ -1087,14 +1091,14 @@ if ($ADD == "3keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = $WeBServeRRooT . "/ivr";
-    	$dir = @opendir($path);
+    	$dir = @opendir($ivrpath);
     	while ($file = readdir($dir)) {
         	$sel = '';
         	if ($file == $ad[0]) {
             	$sel = ' selected';
         	}
 		if ($file != '.' and $file != '..') {
+                $file = preg_replace('/\..*$/','',$file);
         		echo "              <option $sel>$file</option>";
 		}
     	}
@@ -1125,14 +1129,14 @@ if ($ADD == "3keys") {
 	#echo '<input type="text" size="30" maxlength="255" name="oi3" value="' . $ad[2] . '"><br />';
     	echo '          <select name="oi3">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = $WeBServeRRooT . "/ivr";
-    	$dir = @opendir($path);
+    	$dir = @opendir($ivrpath);
     	while ($file = readdir($dir)) {
         	$sel = '';
         	if ($file == $ad[2]) {
             	$sel = ' selected';
         	}
 		if ($file != '.' and $file != '..') {
+                $file = preg_replace('/\..*$/','',$file);
         		echo "              <option $sel>$file</option>";
 		}
     	}
@@ -1276,14 +1280,14 @@ if ($ADD == "3keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi3">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = $WeBServeRRooT . "/ivr";
-    	$dir = @opendir($path);
+    	$dir = @opendir($ivrpath);
     	while ($file = readdir($dir)) {
         	$sel = '';
         	if ($file == $ad[2]) {
             	$sel = ' selected';
         	}
 		if ($file != '.' and $file != '..') {
+                $file = preg_replace('/\..*$/','',$file);
         		echo "              <option $sel>$file</option>";
 		}
     	}
@@ -1295,14 +1299,14 @@ if ($ADD == "3keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi4">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = $WeBServeRRooT . "/ivr";
-    	$dir = @opendir($path);
+    	$dir = @opendir($ivrpath);
     	while ($file = readdir($dir)) {
         	$sel = '';
         	if ($file == $ad[3]) {
             	$sel = ' selected';
         	}
 		if ($file != '.' and $file != '..') {
+                $file = preg_replace('/\..*$/','',$file);
         		echo "              <option $sel>$file</option>";
 		}
     	}
@@ -1353,14 +1357,14 @@ if ($ADD == "3keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = $WeBServeRRooT . "/ivr";
-    	$dir = @opendir($path);
+    	$dir = @opendir($ivrpath);
     	while ($file = readdir($dir)) {
         	$sel = '';
         	if ($file == $ad[0]) {
             	$sel = ' selected';
         	}
 		if ($file != '.' and $file != '..') {
+                $file = preg_replace('/\..*$/','',$file);
         		echo "              <option $sel>$file</option>";
 		}
     	}
@@ -1425,14 +1429,14 @@ if ($ADD == "3keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = $WeBServeRRooT . "/ivr";
-    	$dir = @opendir($path);
+    	$dir = @opendir($ivrpath);
     	while ($file = readdir($dir)) {
         	$sel = '';
         	if ($file == $ad[0]) {
             	$sel = ' selected';
         	}
 		if ($file != '.' and $file != '..') {
+                $file = preg_replace('/\..*$/','',$file);
         		echo "              <option $sel>$file</option>";
 		}
     	}
@@ -1465,14 +1469,14 @@ if ($ADD == "3keys") {
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
     	echo "              <option value=\"\"> - NONE - </option>";
-    	$path = $WeBServeRRooT . "/ivr";
-    	$dir = @opendir($path);
+    	$dir = @opendir($ivrpath);
     	while ($file = readdir($dir)) {
         	$sel = '';
         	if ($file == $ad[0]) {
             	$sel = ' selected';
         	}
 		if ($file != '.' and $file != '..') {
+                $file = preg_replace('/\..*$/','',$file);
         		echo "              <option $sel>$file</option>";
 		}
     	}

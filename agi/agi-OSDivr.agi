@@ -157,7 +157,7 @@ sub ivr_menu {
 				$valid_digits .= $ivrref->{keypress};
 				if ($menu{$dkey}{'action'} =~ /PLAYFILE|XFER_INGROUP|XFER_EXTERNAL|HANGUP/) {
 					my @aparams = split(/#:#/,$menu{$dkey}{action_data});
-					$aparams[0] = 'ivr/' . $aparams[0] if ($aparams[0] ne '');
+					$aparams[0] = $aparams[0] if ($aparams[0] ne '');
 					$menu{$dkey}{'action_data'} = join('#:#',@aparams);
 				}
 			}
@@ -167,7 +167,7 @@ sub ivr_menu {
 	
 		my $exitdigit='';
 		$exitdigit='#' unless (defined $menu{'key#'});
-		my $dtmf = stream_and_get_dtmf("ivr/" . $menu{announcement},$maxlen,$menu{repeat_loops},$menu{wait_loops},$menu{wait_timeout},$menu{timeout_action},$valid_digits,1,$exitdigit);
+		my $dtmf = stream_and_get_dtmf($menu{announcement},$maxlen,$menu{repeat_loops},$menu{wait_loops},$menu{wait_timeout},$menu{timeout_action},$valid_digits,1,$exitdigit);
 		$osdial->agi_output("+++++ ODOI STATUS : pressed $dtmf");
 	
 		my $dkey = 'key';
@@ -494,12 +494,12 @@ sub tvc_lookup_xfer {
 	}
 
 	$osdial->agi_output("|tvclookup|playback on $stream1|") if ($DB);
-	my $s1res = stream_and_get_dtmf("ivr/" . $stream1, 10, 3, 10, 1000, 'BAD', '1234567890', 10, '');
+	my $s1res = stream_and_get_dtmf($stream1, 10, 3, 10, 1000, 'BAD', '1234567890', 10, '');
 	$osdial->agi_output("|tvclookup|got $s1res|") if ($DB);
 	return 0 if ($s1res eq "BAD");
 
 	$osdial->agi_output("|tvclookup|playback on $stream2|") if ($DB);
-	my $s2res = stream_and_get_dtmf("ivr/" . $stream2, 6, 3, 10, 1000, 'BAD', '01234567890', 2, '#');
+	my $s2res = stream_and_get_dtmf($stream2, 6, 3, 10, 1000, 'BAD', '01234567890', 2, '#');
 	$osdial->agi_output("|tvclookup|got $s2res|") if ($DB);
 	return 0 if ($s2res eq "BAD");
 
