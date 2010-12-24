@@ -1475,7 +1475,10 @@ function media_save_files($link, $directory, $pattern, $overwrite) {
     $mkrh = get_krh($link, 'osdial_media', '*','','','');
     if (is_array($mkrh)) {
         foreach ($mkrh as $om) {
-            if (preg_match('/'.$pattern.'/',$om['filename'])) $files[] = media_save_file($link, $directory, $om['filename'], $overwrite);
+            if (preg_match('/'.$pattern.'/',$om['filename'])) {
+                $files[] = media_save_file($link, $directory, $om['filename'], $overwrite);
+                chmod($directory.'/'.$om['filename'], 0666);
+            }
         }
     }
     return $files;
