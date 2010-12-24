@@ -188,15 +188,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=$oddrows align=right>File to Play</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
-    	echo "              <option value=\"\"> - NONE - </option>";
-    	$dir = @opendir($ivrpath);
-    	while ($file = readdir($dir)) {
-        	$sel = '';
-		if ($file != '.' and $file != '..') {
-                $file = preg_replace('/\..*$/','',$file);
-        		echo "              <option $sel>$file</option>";
-		}
-    	}
+        echo media_file_select_options($link);
     	echo "          </select><br>";
     	echo '          <input type="file" name="recfile">';
     	echo '      </td>';
@@ -220,15 +212,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=$oddrows align=right>File to Play Before Hangup (Optional)</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
-    	echo "              <option value=\"\"> - NONE - </option>";
-    	$dir = @opendir($ivrpath);
-    	while ($file = readdir($dir)) {
-        	$sel = '';
-		if ($file != '.' and $file != '..') {
-                $file = preg_replace('/\..*$/','',$file);
-        		echo "              <option $sel>$file</option>";
-		}
-    	}
+        echo media_file_select_options($link);
     	echo "          </select><br>";
     	echo '          <input type="file" name="recfile">';
     	echo '      </td>';
@@ -253,18 +237,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=$oddrows align=right>Announcement Recording</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi3">';
-    	echo "              <option value=\"\"> - NONE - </option>";
-    	$dir = @opendir($ivrpath);
-    	while ($file = readdir($dir)) {
-        	$sel = '';
-        	if ($file == $ad[2]) {
-            	$sel = ' selected';
-        	}
-		if ($file != '.' and $file != '..') {
-                $file = preg_replace('/\..*$/','',$file);
-        		echo "              <option $sel>$file</option>";
-		}
-    	}
+        echo media_file_select_options($link);
     	echo "          </select><br>";
     	echo '          <input type="file" name="recfile">';
     	echo '      </td>';
@@ -359,15 +332,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=$oddrows align=right>Phone# Prompt File</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi3">';
-    	echo "              <option value=\"\"> - NONE - </option>";
-    	$dir = @opendir($ivrpath);
-    	while ($file = readdir($dir)) {
-        	$sel = '';
-		if ($file != '.' and $file != '..') {
-                $file = preg_replace('/\..*$/','',$file);
-        		echo "              <option $sel>$file</option>";
-		}
-    	}
+        echo media_file_select_options($link);
     	echo "          </select>";
     	echo '      </td>';
         echo "  </tr>\n";
@@ -375,15 +340,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=$oddrows align=right>Agent# Prompt File</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi4">';
-    	echo "              <option value=\"\"> - NONE - </option>";
-    	$dir = @opendir($ivrpath);
-    	while ($file = readdir($dir)) {
-        	$sel = '';
-		if ($file != '.' and $file != '..') {
-                $file = preg_replace('/\..*$/','',$file);
-        		echo "              <option $sel>$file</option>";
-		}
-    	}
+        echo media_file_select_options($link);
     	echo "          </select>";
     	echo '      </td>';
         echo "  </tr>\n";
@@ -426,15 +383,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
-    	echo "              <option value=\"\"> - NONE - </option>";
-    	$dir = @opendir($ivrpath);
-    	while ($file = readdir($dir)) {
-        	$sel = '';
-		if ($file != '.' and $file != '..') {
-                $file = preg_replace('/\..*$/','',$file);
-        		echo "              <option $sel>$file</option>";
-		}
-    	}
+        echo media_file_select_options($link);
     	echo "          </select><br>";
     	echo '          <input type="file" name="recfile">';
     	echo '      </td>';
@@ -481,15 +430,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
-    	echo "              <option value=\"\"> - NONE - </option>";
-    	$dir = @opendir($ivrpath);
-    	while ($file = readdir($dir)) {
-        	$sel = '';
-		if ($file != '.' and $file != '..') {
-                $file = preg_replace('/\..*$/','',$file);
-        		echo "              <option $sel>$file</option>";
-		}
-    	}
+        echo media_file_select_options($link);
     	echo "          </select><br>";
     	echo '          <input type="file" name="recfile">';
     	echo '      </td>';
@@ -518,15 +459,7 @@ if ($ADD == "2keys") {
         echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
-    	echo "              <option value=\"\"> - NONE - </option>";
-    	$dir = @opendir($ivrpath);
-    	while ($file = readdir($dir)) {
-        	$sel = '';
-		if ($file != '.' and $file != '..') {
-                $file = preg_replace('/\..*$/','',$file);
-        		echo "              <option $sel>$file</option>";
-		}
-    	}
+        echo media_file_select_options($link);
     	echo "          </select><br>";
     	echo '          <input type="file" name="recfile">';
     	echo '      </td>';
@@ -791,18 +724,7 @@ if ($ADD == "3menu") {
     echo "      <td bgcolor=$oddrows align=right>Announcement File</td>\n";
     echo '      <td bgcolor="' . $oddrows . '">';
     echo '          <select name="oivr_announcement">';
-    echo "              <option value=\"\"> - NONE - </option>";
-    $dir = @opendir($ivrpath);
-    while ($file = readdir($dir)) {
-        $sel = '';
-        if ($file == $oivr['announcement']) {
-            $sel = ' selected';
-        }
-	if ($file != '.' and $file != '..') {
-                $file = preg_replace('/\..*$/','',$file);
-        	echo "              <option $sel>$file</option>";
-	}
-    }
+    echo media_file_select_options($link,$oivr['announcement']);
     echo "          </select><br>";
     echo '          <input type="file" name="recfile">';
     echo '      </td>';
@@ -1054,18 +976,7 @@ if ($ADD == "3keys") {
         echo "      <td bgcolor=$oddrows align=right>File to Play</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
-    	echo "              <option value=\"\"> - NONE - </option>";
-    	$dir = @opendir($ivrpath);
-    	while ($file = readdir($dir)) {
-        	$sel = '';
-        	if ($file == $ad[0]) {
-            	$sel = ' selected';
-        	}
-		if ($file != '.' and $file != '..') {
-                $file = preg_replace('/\..*$/','',$file);
-        		echo "              <option $sel>$file</option>";
-		}
-    	}
+        echo media_file_select_options($link,$ad[0]);
     	echo "          </select><br>";
     	echo '          <input type="file" name="recfile">';
     	echo '      </td>';
@@ -1090,18 +1001,7 @@ if ($ADD == "3keys") {
         echo "      <td bgcolor=$oddrows align=right>File to Play Before Hangup (Optional)</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
-    	echo "              <option value=\"\"> - NONE - </option>";
-    	$dir = @opendir($ivrpath);
-    	while ($file = readdir($dir)) {
-        	$sel = '';
-        	if ($file == $ad[0]) {
-            	$sel = ' selected';
-        	}
-		if ($file != '.' and $file != '..') {
-                $file = preg_replace('/\..*$/','',$file);
-        		echo "              <option $sel>$file</option>";
-		}
-    	}
+        echo media_file_select_options($link,$ad[0]);
     	echo "          </select><br>";
     	echo '          <input type="file" name="recfile">';
     	echo '      </td>';
@@ -1128,18 +1028,7 @@ if ($ADD == "3keys") {
         echo '      <td bgcolor="' . $oddrows . '">';
 	#echo '<input type="text" size="30" maxlength="255" name="oi3" value="' . $ad[2] . '"><br />';
     	echo '          <select name="oi3">';
-    	echo "              <option value=\"\"> - NONE - </option>";
-    	$dir = @opendir($ivrpath);
-    	while ($file = readdir($dir)) {
-        	$sel = '';
-        	if ($file == $ad[2]) {
-            	$sel = ' selected';
-        	}
-		if ($file != '.' and $file != '..') {
-                $file = preg_replace('/\..*$/','',$file);
-        		echo "              <option $sel>$file</option>";
-		}
-    	}
+        echo media_file_select_options($link,$ad[2]);
     	echo "          </select><br>";
     	echo '          <input type="file" name="recfile">';
     	echo '      </td>';
@@ -1279,18 +1168,7 @@ if ($ADD == "3keys") {
         echo "      <td bgcolor=$oddrows align=right>Phone# Playback File:</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi3">';
-    	echo "              <option value=\"\"> - NONE - </option>";
-    	$dir = @opendir($ivrpath);
-    	while ($file = readdir($dir)) {
-        	$sel = '';
-        	if ($file == $ad[2]) {
-            	$sel = ' selected';
-        	}
-		if ($file != '.' and $file != '..') {
-                $file = preg_replace('/\..*$/','',$file);
-        		echo "              <option $sel>$file</option>";
-		}
-    	}
+        echo media_file_select_options($link,$ad[2]);
     	echo "          </select>";
     	echo '      </td>';
         echo "  </tr>\n";
@@ -1298,18 +1176,7 @@ if ($ADD == "3keys") {
         echo "      <td bgcolor=$oddrows align=right>Agent# Playback File:</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi4">';
-    	echo "              <option value=\"\"> - NONE - </option>";
-    	$dir = @opendir($ivrpath);
-    	while ($file = readdir($dir)) {
-        	$sel = '';
-        	if ($file == $ad[3]) {
-            	$sel = ' selected';
-        	}
-		if ($file != '.' and $file != '..') {
-                $file = preg_replace('/\..*$/','',$file);
-        		echo "              <option $sel>$file</option>";
-		}
-    	}
+        echo media_file_select_options($link,$ad[3]);
     	echo "          </select>";
     	echo '      </td>';
         echo "  </tr>\n";
@@ -1356,18 +1223,7 @@ if ($ADD == "3keys") {
         echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
-    	echo "              <option value=\"\"> - NONE - </option>";
-    	$dir = @opendir($ivrpath);
-    	while ($file = readdir($dir)) {
-        	$sel = '';
-        	if ($file == $ad[0]) {
-            	$sel = ' selected';
-        	}
-		if ($file != '.' and $file != '..') {
-                $file = preg_replace('/\..*$/','',$file);
-        		echo "              <option $sel>$file</option>";
-		}
-    	}
+        echo media_file_select_options($link,$ad[0]);
     	echo "          </select><br>";
     	echo '          <input type="file" name="recfile">';
     	echo '      </td>';
@@ -1428,18 +1284,7 @@ if ($ADD == "3keys") {
         echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
-    	echo "              <option value=\"\"> - NONE - </option>";
-    	$dir = @opendir($ivrpath);
-    	while ($file = readdir($dir)) {
-        	$sel = '';
-        	if ($file == $ad[0]) {
-            	$sel = ' selected';
-        	}
-		if ($file != '.' and $file != '..') {
-                $file = preg_replace('/\..*$/','',$file);
-        		echo "              <option $sel>$file</option>";
-		}
-    	}
+        echo media_file_select_options($link,$ad[0]);
     	echo "          </select><br>";
     	echo '          <input type="file" name="recfile">';
     	echo '      </td>';
@@ -1468,18 +1313,7 @@ if ($ADD == "3keys") {
         echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
     	echo '          <select name="oi1">';
-    	echo "              <option value=\"\"> - NONE - </option>";
-    	$dir = @opendir($ivrpath);
-    	while ($file = readdir($dir)) {
-        	$sel = '';
-        	if ($file == $ad[0]) {
-            	$sel = ' selected';
-        	}
-		if ($file != '.' and $file != '..') {
-                $file = preg_replace('/\..*$/','',$file);
-        		echo "              <option $sel>$file</option>";
-		}
-    	}
+        echo media_file_select_options($link,$ad[0]);
     	echo "          </select><br>";
     	echo '          <input type="file" name="recfile">';
     	echo '      </td>';

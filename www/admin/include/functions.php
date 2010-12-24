@@ -1486,4 +1486,37 @@ function media_save_files($link, $directory, $pattern, $overwrite) {
 
 
 
+function media_file_label_list($link) {
+    $mlist = array();
+    $mkrh = get_krh($link, 'osdial_media', '*','filename ASC','','');
+    if (is_array($mkrh)) {
+        $mkeys = array();
+        foreach ($mkrh as $om) {
+            $mkeys[preg_replace('/.*\/|\..*/','',$om['filename'])] = 1;
+        }
+        if (is_array($mkeys)) {
+            foreach ($mkeys as $mk => $mv) {
+                $mlist[] = $mk;
+            }
+        }
+    }
+    return $mlist;
+}
+
+function media_file_select_options($link,$msel) {
+    $msel = preg_replace('/.*\/|\..*|---NONE---/','',$msel);
+    $mlist = media_file_label_list($link);
+    $mopts = "<option value=\"\"> - NONE - </option>\n";
+    if (is_array($mlist)) {
+        foreach ($mlist as $ml) {
+            $optsel = '';
+            if ($ml==$msel) $optsel = 'selected';
+            $mopts .= "<option value=\"$ml\" $optsel>$ml</option>\n";
+        }
+    }
+    return $mopts;
+}
+
+
+
 ?>

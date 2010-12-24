@@ -453,17 +453,32 @@ if ($ADD==3111)
 
 	echo "<tr bgcolor=$oddrows><td align=right>After Hours Action: </td><td align=left><select size=1 name=after_hours_action><option>HANGUP</option><option>MESSAGE</option><option>EXTENSION</option><option>VOICEMAIL</option><option SELECTED>$after_hours_action</option></select>$NWB#osdial_inbound_groups-after_hours_action$NWE</td></tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=right>After Hours Message Filename: </td><td align=left><input type=text name=after_hours_message_filename size=20 maxlength=50 value=\"$after_hours_message_filename\">$NWB#osdial_inbound_groups-after_hours_message_filename$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>After Hours Message Filename: </td>\n";
+    echo "  <td align=left>\n";
+    echo "    <select name=after_hours_message_filename>\n";
+    echo media_file_select_options($link, $after_hours_message_filename);
+    echo "    </select>\n";
+    echo "$NWB#osdial_inbound_groups-after_hours_message_filename$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>After Hours Extension: </td><td align=left><input type=text name=after_hours_exten size=10 maxlength=20 value=\"$after_hours_exten\">$NWB#osdial_inbound_groups-after_hours_exten$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>After Hours Voicemail: </td><td align=left><input type=text name=after_hours_voicemail size=10 maxlength=20 value=\"$after_hours_voicemail\">$NWB#osdial_inbound_groups-after_hours_voicemail$NWE</td></tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=right>Welcome Message Filename: </td><td align=left><input type=text name=welcome_message_filename size=20 maxlength=50 value=\"$welcome_message_filename\">$NWB#osdial_inbound_groups-welcome_message_filename$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Welcome Message Filename: </td>\n";
+    echo "  <td align=left>\n";
+    echo "    <select name=welcome_message_filename>\n";
+    echo media_file_select_options($link, $welcome_message_filename);
+    echo "    </select>\n";
+    echo "$NWB#osdial_inbound_groups-welcome_message_filename$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>Music On Hold Context: </td><td align=left><input type=text name=moh_context size=10 maxlength=20 value=\"$moh_context\">$NWB#osdial_inbound_groups-moh_context$NWE</td></tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=right>On Hold Prompt Filename: </td><td align=left><input type=text name=onhold_prompt_filename size=20 maxlength=50 value=\"$onhold_prompt_filename\">$NWB#osdial_inbound_groups-onhold_prompt_filename$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>On Hold Prompt Filename: </td>\n";
+    echo "  <td align=left>\n";
+    echo "    <select name=onhold_prompt_filename>\n";
+    echo media_file_select_options($link, $onhold_prompt_filename);
+    echo "    </select>\n";
+    echo "$NWB#osdial_inbound_groups-onhold_prompt_filename$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>On Hold Prompt Interval: </td><td align=left><input type=text name=prompt_interval size=5 maxlength=5 value=\"$prompt_interval\">$NWB#osdial_inbound_groups-prompt_interval$NWE</td></tr>\n";
 
