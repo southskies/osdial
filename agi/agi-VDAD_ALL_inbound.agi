@@ -631,7 +631,7 @@ if ( ($hm < $ct_default_start) || ($hm > $ct_default_stop) ) {
 
 
 ##### PLAY WELCOME MESSAGE #####
-$AGI->stream_file("$welcome_message_filename") if ($welcome_message_filename !~ /---NONE---/);
+$AGI->stream_file("$welcome_message_filename") unless ($welcome_message_filename =~ /---NONE---/ or $welcome_message_filename eq '');
 
 
 $vci=0;
