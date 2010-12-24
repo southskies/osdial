@@ -1007,7 +1007,7 @@ sub media_save_file {
 		my ($login,$pass,$uid,$gid) = getpwnam('asterisk');
 		chown($uid,$gid,$dir);
 	}
-	chmod(oct(0777),$dir);
+	chmod(oct('0777'),$dir);
 
 	my $file = $dir.'/'.$filename;
 	$self->debug(3,'media_save_file',"  Adding File:%s  Dir:%s  Name:%s  Overwrite:%s", $file, $dir, $filename, $overwrite);
@@ -1052,11 +1052,14 @@ sub media_save_files {
 		my ($login,$pass,$uid,$gid) = getpwnam('asterisk');
 		chown($uid,$gid,$dir);
 	}
-	chmod(oct(0777),$dir);
+	chmod(oct('0777'),$dir);
 
 	my @files;
 	while (my $sret = $self->sql_query("SELECT * FROM osdial_media;", "MSF")) {
-		push @files, $self->media_save_file($dir, $sret->{filename}, $overwrite) if ($sret->{filename} =~ /$pattern/);
+		if ($sret->{filename} =~ /$pattern/) {
+			push @files, $self->media_save_file($dir, $sret->{filename}, $overwrite);
+			chmod(oct('0666'),$dir.'/'.$sret->{filename});
+		}
 	}
 	$self->sql_disconnect('MSF');
 	return @files;
