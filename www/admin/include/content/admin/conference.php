@@ -34,7 +34,7 @@ if ($ADD==1111111111111)
 {
 	if ($LOGast_admin_access==1)
 	{
-    $servers_list = get_servers($link, $server_ip);
+    $servers_list = get_servers($link, $server_ip, 'AIO|DIALER');
 	echo "<center><br><font color=$default_text size=+1>ADD A NEW CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111111111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -189,7 +189,7 @@ if ($ADD==3111111111111)
 	$conf_exten = $row[0];
 	$server_ip = $row[1];
 
-    $servers_list = get_servers($link, $row[1]);
+    $servers_list = get_servers($link, $row[1], 'AIO|DIALER');
 
 	echo "<center><br><font color=$default_text size=+1>MODIFY A CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=4111111111111>\n";
@@ -268,7 +268,7 @@ if ($ADD==11111111111111)
 {
 	if ($LOGast_admin_access==1)
 	{
-    $servers_list = get_servers($link, $server_ip);
+    $servers_list = get_servers($link, $server_ip, 'AIO|DIALER');
 	echo "<center><br><font color=$default_text size=+1>ADD A NEW $t1 CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21111111111111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -418,7 +418,7 @@ if ($ADD==31111111111111)
 	$conf_exten = $row[0];
 	$server_ip = $row[1];
 
-    $servers_list = get_servers($link, $row[1]);
+    $servers_list = get_servers($link, $row[1], 'AIO|DIALER');
 
 	echo "<center><br><font color=$default_text size=+1>MODIFY A $t1 CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=41111111111111>\n";

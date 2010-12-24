@@ -109,8 +109,14 @@ if ($ADD==11)
     echo "<tr bgcolor=$oddrows><td align=right>Campaign Name: </td><td align=left><input type=text name=campaign_name size=30 maxlength=30>$NWB#osdial_campaigns-campaign_name$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Campaign Description: </td><td align=left><input type=text name=campaign_description size=30 maxlength=255>$NWB#osdial_campaigns-campaign_description$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option></select>$NWB#osdial_campaigns-active$NWE</td></tr>\n";
-    echo "<tr style=\"visibility:collapse;\" bgcolor=$oddrows><td align=right>Park Extension: </td><td align=left><input type=text name=park_ext size=10 maxlength=10 value=\"8301\">$NWB#osdial_campaigns-park_ext$NWE</td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=right>Park Filename: </td><td align=left><input type=text name=park_file_name size=10 maxlength=10 value=\"park\">$NWB#osdial_campaigns-park_file_name$NWE</td></tr>\n";
+    echo "<tr style=\"visibility:collapse;\" bgcolor=$oddrows><td align=right>Park Extension: </td><td align=left>\n";
+    #echo "<input type=text name=park_ext size=10 maxlength=10 value=\"8301\">\n";
+    echo media_extension_text_options($link, 'park_ext', '8301', 10, 10);
+    echo "$NWB#osdial_campaigns-park_ext$NWE</td></tr>\n";
+    echo "<tr bgcolor=$oddrows><td align=right>Park Filename: </td><td align=left>\n";
+    #echo "<input type=text name=park_file_name size=10 maxlength=10 value=\"park\">\n";
+    echo media_file_text_options($link, 'park_file_name', 'park', 10, 10);
+    echo "$NWB#osdial_campaigns-park_file_name$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"/osdial/agent/webform_redirect.php\">$NWB#osdial_campaigns-web_form_address$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Web Form 2: </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255 value=\"/osdial/agent/webform_redirect.php\">$NWB#osdial_campaigns-web_form_address$NWE</td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>Allow Transfer and Closers: </td><td align=left><select size=1 name=allow_closers><option>Y</option><option>N</option></select>$NWB#osdial_campaigns-allow_closers$NWE</td></tr>\n";
@@ -123,7 +129,10 @@ if ($ADD==11)
     echo "<tr bgcolor=$oddrows><td align=right>Local Timzone Call Time: </td><td align=left><select size=1 name=local_call_time>";
     echo get_calltimes($link, '9am-9pm');
     echo "</select>$NWB#osdial_campaigns-local_call_time$NWE</td></tr>\n";
-    echo "<tr bgcolor=$oddrows><td align=right>Voicemail: </td><td align=left><input type=text name=voicemail_ext size=10 maxlength=10 value=\"$voicemail_ext\">$NWB#osdial_campaigns-voicemail_ext$NWE</td></tr>\n";
+    echo "<tr bgcolor=$oddrows><td align=right>Voicemail: </td><td align=left>\n";
+    #echo "<input type=text name=voicemail_ext size=10 maxlength=10 value=\"$voicemail_ext\">\n";
+    echo phone_voicemail_text_options($link, 'voicemail_ext', $voicemail_ext, 10, 10);
+    echo "$NWB#osdial_campaigns-voicemail_ext$NWE</td></tr>\n";
     if (file_exists($WeBServeRRooT . '/admin/include/content/scripts/email_templates.php')) {
         echo "<tr bgcolor=$oddrows><td align=right valign=top>Email Templates: </td><td align=left><select size=4 multiple name=\"email_templates[]\">\n";
         echo get_email_templates($link, '');
@@ -1044,7 +1053,13 @@ if ($ADD==31) {
         echo "<tr bgcolor=$oddrows><td align=right>Campaign Change Date: </td><td align=left>$campaign_changedate &nbsp; $NWB#osdial_campaigns-campaign_changedate$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Campaign Login Date: </td><td align=left>$campaign_logindate &nbsp; $NWB#osdial_campaigns-campaign_logindate$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$row[2]</option></select>$NWB#osdial_campaigns-active$NWE</td></tr>\n";
-        echo "<tr style=\"visibility:collapse;\" bgcolor=$oddrows><td align=right>Park Extension: </td><td align=left><input type=text name=park_ext size=10 maxlength=10 value=\"$row[9]\"> - Filename: <input type=text name=park_file_name size=10 maxlength=10 value=\"$row[10]\">$NWB#osdial_campaigns-park_ext$NWE</td></tr>\n";
+        echo "<tr style=\"visibility:collapse;\" bgcolor=$oddrows><td align=right>Park Extension: </td><td align=left>\n";
+        #echo "<input type=text name=park_ext size=10 maxlength=10 value=\"$row[9]\">\n";
+        echo media_extension_text_options($link, 'park_ext', $row[9], 10, 10);
+        echo " - Filename: \n";
+        #echo "<input type=text name=park_file_name size=10 maxlength=10 value=\"$row[10]\">\n";
+        echo media_file_text_options($link, 'park_file', $row[10], 10, 10);
+        echo "$NWB#osdial_campaigns-park_ext$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"$web_form_address\">$NWB#osdial_campaigns-web_form_address$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Web Form 1 External: </td><td align=left><select size=1 name=web_form_extwindow><option>Y</option><option>N</option><option SELECTED>$web_form_extwindow</option></select><font size=1><i>'Y' to open in new window, 'N' to open in an $t1 frame.</i></font>$NWB#osdial_campaigns-web_form_extwindow$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Web Form 2: </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255 value=\"$web_form_address2\">$NWB#osdial_campaigns-web_form_address$NWE</td></tr>\n";
@@ -1252,7 +1267,10 @@ if ($ADD==31) {
 
         echo "<tr bgcolor=$oddrows><td align=right>Answers Per Hour Limit: </td><td align=left><input type=text name=answers_per_hour_limit size=10 maxlength=10 value=\"$answers_per_hour_limit\">$NWB#osdial_campaigns-answers_per_hour_limit$NWE</td></tr>\n";
 
-        echo "<tr bgcolor=$oddrows><td align=right>Answering Message Extension: </td><td align=left><input type=text name=am_message_exten size=10 maxlength=20 value=\"$am_message_exten\">$NWB#osdial_campaigns-am_message_exten$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Answering Message Extension: </td><td align=left>\n";
+        #echo "<input type=text name=am_message_exten size=10 maxlength=20 value=\"$am_message_exten\">\n";
+        echo media_extension_text_options($link, 'am_message_exten', $am_message_exten, 10, 20);
+        echo "$NWB#osdial_campaigns-am_message_exten$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Send AMD to AM Extension: </td><td align=left><select size=1 name=amd_send_to_vmx><option>Y</option><option>N</option><option SELECTED>$amd_send_to_vmx</option></select>$NWB#osdial_campaigns-amd_send_to_vmx$NWE</td></tr>\n";
 
         echo "<tr bgcolor=$oddrows><td align=right>Drop Call Handling (Safe Harbor): </td><td align=left>\n";
@@ -1267,8 +1285,14 @@ if ($ADD==31) {
         echo "  <option value=\"Y\" $sel1>Message/Extension</option>\n";
         echo "  <option value=\"N\" $sel2>Voicemail</option>\n";
         echo "</select>$NWB#osdial_campaigns-safe_harbor_message$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Drop Message/Extension: </td><td align=left><input type=text name=safe_harbor_exten size=10 maxlength=20 value=\"$safe_harbor_exten\">$NWB#osdial_campaigns-safe_harbor_exten$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Drop Voicemail: </td><td align=left><input type=text name=voicemail_ext size=10 maxlength=10 value=\"$voicemail_ext\">$NWB#osdial_campaigns-voicemail_ext$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Drop Message/Extension: </td><td align=left>\n";
+        #echo "<input type=text name=safe_harbor_exten size=10 maxlength=20 value=\"$safe_harbor_exten\">\n";
+        echo media_extension_text_options($link, 'safe_harbor_exten', $safe_harbor_exten, 10, 20);
+        echo "$NWB#osdial_campaigns-safe_harbor_exten$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Drop Voicemail: </td><td align=left>\n";
+        #echo "<input type=text name=voicemail_ext size=10 maxlength=10 value=\"$voicemail_ext\">\n";
+        echo phone_voicemail_text_options($link, 'voicemail_ext', $voicemail_ext, 10, 10);
+        echo "$NWB#osdial_campaigns-voicemail_ext$NWE</td></tr>\n";
 
         echo "<tr bgcolor=$oddrows><td align=right>Transfer-Conf DTMF 1: </td><td align=left><input type=text name=xferconf_a_dtmf size=20 maxlength=50 value=\"$xferconf_a_dtmf\">$NWB#osdial_campaigns-xferconf_a_dtmf$NWE</td></tr>\n";
 

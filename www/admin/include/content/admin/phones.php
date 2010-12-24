@@ -30,7 +30,7 @@ if ($ADD==11111111111) {
     if ($LOGast_admin_access==1) {
         $sel = '';
         if ($LOG['multicomp_user'] > 0) $sel = $LOG['company']['default_server_ip'];
-        $servers_list = get_servers($link, $sel);
+        $servers_list = get_servers($link, $sel,'AIO|DIALER');
         echo "<center><br><font color=$default_text size=+1>ADD A NEW PHONE</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=21111111111>\n";
         echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -244,7 +244,7 @@ if ($ADD==31111111111) {
         $stmt="SELECT * from phones where extension='$extension' and server_ip='$server_ip';";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
-        $servers_list = get_servers($link, $row[5]);
+        $servers_list = get_servers($link, $row[5], 'AIO|DIALER');
 
         echo "<center><br><font color=$default_text size=+1>MODIFY A PHONE</font><form action=$PHP_SELF method=POST><br><br>\n";
         echo "<input type=hidden name=ADD value=41111111111>\n";

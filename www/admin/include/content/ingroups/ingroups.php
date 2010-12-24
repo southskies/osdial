@@ -53,7 +53,10 @@ if ($ADD==1111)
 	echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option SELECTED>Y</option><option>N</option></select>$NWB#osdial_inbound_groups-active$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Web Form 1: </td><td align=left><input type=text name=web_form_address size=50 maxlength=255 value=\"$web_form_address\">$NWB#osdial_inbound_groups-web_form_address$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Web Form 2: </td><td align=left><input type=text name=web_form_address2 size=50 maxlength=255 value=\"$web_form_address2\">$NWB#osdial_inbound_groups-web_form_address$NWE</td></tr>\n";
-	echo "<tr bgcolor=$oddrows><td align=right>Voicemail: </td><td align=left><input type=text name=voicemail_ext size=10 maxlength=10 value=\"$voicemail_ext\">$NWB#osdial_inbound_groups-voicemail_ext$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Voicemail: </td><td align=left>\n";
+    #echo "<input type=text name=voicemail_ext size=10 maxlength=10 value=\"$voicemail_ext\">\n";
+    echo phone_voicemail_text_options($link, 'voicemail_ext', $voicemail_ext, 10, 10);
+    echo "$NWB#osdial_inbound_groups-voicemail_ext$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Next Agent Call: </td><td align=left><select size=1 name=next_agent_call><option >random</option><option>oldest_call_start</option><option>oldest_call_finish</option><option>overall_user_level</option><option>inbound_group_rank</option><option>campaign_rank</option><option>fewest_calls</option><option>fewest_calls_campaign</option></select>$NWB#osdial_inbound_groups-next_agent_call$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Fronter Display: </td><td align=left><select size=1 name=fronter_display><option SELECTED>Y</option><option>N</option></select>$NWB#osdial_inbound_groups-fronter_display$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Script: </td><td align=left><select size=1 name=script_id>\n";
@@ -441,9 +444,15 @@ if ($ADD==3111)
     echo "  </td>\n";
     echo "</tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=right>Drop Extension: </td><td align=left><input type=text name=drop_exten size=10 maxlength=20 value=\"$drop_exten\">$NWB#osdial_inbound_groups-drop_exten$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Drop Extension: </td><td align=left>\n";
+    #echo "<input type=text name=drop_exten size=10 maxlength=20 value=\"$drop_exten\">\n";
+    echo media_extension_text_options($link, 'drop_exten', $drop_exten, 15, 50);
+    echo "$NWB#osdial_inbound_groups-drop_exten$NWE</td></tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=right>Drop Voicemail: </td><td align=left><input type=text name=voicemail_ext size=10 maxlength=10 value=\"$voicemail_ext\">$NWB#osdial_inbound_groups-voicemail_ext$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Drop Voicemail: </td><td align=left>\n";
+    #echo "<input type=text name=voicemail_ext size=10 maxlength=10 value=\"$voicemail_ext\">\n";
+    echo phone_voicemail_text_options($link, 'voicemail_ext', $voicemail_ext, 10, 10);
+    echo "$NWB#osdial_inbound_groups-voicemail_ext$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=311111111&call_time_id=$call_time_id\">Call Time: </a></td><td align=left><select size=1 name=call_time_id>\n";
     echo get_calltimes($link, $call_time_id);
@@ -455,34 +464,46 @@ if ($ADD==3111)
 
 	echo "<tr bgcolor=$oddrows><td align=right>After Hours Message Filename: </td>\n";
     echo "  <td align=left>\n";
-    echo "    <select name=after_hours_message_filename>\n";
-    echo media_file_select_options($link, $after_hours_message_filename);
-    echo "    </select>\n";
+    #echo "    <select name=after_hours_message_filename>\n";
+    #echo media_file_select_options($link, $after_hours_message_filename);
+    #echo "    </select>\n";
+    echo media_file_text_options($link, 'after_hours_message_filename', $after_hours_message_filename, 15, 50);
     echo "$NWB#osdial_inbound_groups-after_hours_message_filename$NWE</td></tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=right>After Hours Extension: </td><td align=left><input type=text name=after_hours_exten size=10 maxlength=20 value=\"$after_hours_exten\">$NWB#osdial_inbound_groups-after_hours_exten$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>After Hours Extension: </td><td align=left>\n";
+    #echo "<input type=text name=after_hours_exten size=10 maxlength=20 value=\"$after_hours_exten\">\n";
+    echo media_extension_text_options($link, 'after_hours_exten', $after_hours_exten, 15, 50);
+    echo "$NWB#osdial_inbound_groups-after_hours_exten$NWE</td></tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=right>After Hours Voicemail: </td><td align=left><input type=text name=after_hours_voicemail size=10 maxlength=20 value=\"$after_hours_voicemail\">$NWB#osdial_inbound_groups-after_hours_voicemail$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>After Hours Voicemail: </td><td align=left>\n";
+    #echo "<input type=text name=after_hours_voicemail size=10 maxlength=20 value=\"$after_hours_voicemail\">\n";
+    echo phone_voicemail_text_options($link, 'after_hours_voicemail', $after_hours_voicemail, 10, 20);
+    echo "$NWB#osdial_inbound_groups-after_hours_voicemail$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>Welcome Message Filename: </td>\n";
     echo "  <td align=left>\n";
-    echo "    <select name=welcome_message_filename>\n";
-    echo media_file_select_options($link, $welcome_message_filename);
-    echo "    </select>\n";
+    #echo "    <select name=welcome_message_filename>\n";
+    #echo media_file_select_options($link, $welcome_message_filename);
+    #echo "    </select>\n";
+    echo media_file_text_options($link, 'welcome_message_filename', $welcome_message_filename, 15, 50);
     echo "$NWB#osdial_inbound_groups-welcome_message_filename$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>Music On Hold Context: </td><td align=left><input type=text name=moh_context size=10 maxlength=20 value=\"$moh_context\">$NWB#osdial_inbound_groups-moh_context$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>On Hold Prompt Filename: </td>\n";
     echo "  <td align=left>\n";
-    echo "    <select name=onhold_prompt_filename>\n";
-    echo media_file_select_options($link, $onhold_prompt_filename);
-    echo "    </select>\n";
+    #echo "    <select name=onhold_prompt_filename>\n";
+    #echo media_file_select_options($link, $onhold_prompt_filename);
+    #echo "    </select>\n";
+    echo media_file_text_options($link, 'onhold_prompt_filename', $onhold_prompt_filename, 15, 50);
     echo "$NWB#osdial_inbound_groups-onhold_prompt_filename$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>On Hold Prompt Interval: </td><td align=left><input type=text name=prompt_interval size=5 maxlength=5 value=\"$prompt_interval\">$NWB#osdial_inbound_groups-prompt_interval$NWE</td></tr>\n";
 
-	echo "<tr bgcolor=$oddrows><td align=right>Agent Alert Extension: </td><td align=left><input type=text name=agent_alert_exten size=10 maxlength=20 value=\"$agent_alert_exten\">$NWB#osdial_inbound_groups-agent_alert_exten$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Agent Alert Extension: </td><td align=left>\n";
+    #echo "<input type=text name=agent_alert_exten size=10 maxlength=20 value=\"$agent_alert_exten\">\n";
+    echo media_extension_text_options($link, 'agent_alert_exten', $agent_alert_exten, 15, 50);
+    echo "$NWB#osdial_inbound_groups-agent_alert_exten$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>Agent Alert Delay: </td><td align=left><input type=text name=agent_alert_delay size=6 maxlength=6 value=\"$agent_alert_delay\">$NWB#osdial_inbound_groups-agent_alert_delay$NWE</td></tr>\n";
 

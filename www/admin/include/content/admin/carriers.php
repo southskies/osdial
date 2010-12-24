@@ -73,19 +73,24 @@ if ($ADD=="1carrier") {
             echo "  <tr bgcolor=$oddrows name=EXTENSION style=\"visibility:collapse;\">\n";
             echo "    <td align=right>Context:</td>\n";
             echo "    <td align=left>\n";
-            echo "      <input type=text name=did_extension_context size=20 maxlength=50 value=\"\">$NWB#carrier_dids-extension_context$NWE\n";
+            echo "      <input type=text name=did_extension_context size=20 maxlength=50 value=\"osdial\">$NWB#carrier_dids-extension_context$NWE\n";
             echo "    </td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=EXTENSION style=\"visibility:collapse;\">\n";
             echo "    <td align=right>Extension:</td>\n";
             echo "    <td align=left>\n";
-            echo "      <input type=text name=did_extension size=20 maxlength=50 value=\"\">$NWB#carrier_dids-extension$NWE\n";
+            #echo "      <input type=text name=did_extension size=20 maxlength=50 value=\"\">\n";
+            echo phone_extension_text_options($link, 'did_extension', '', 20, 50);
+            echo "$NWB#carrier_dids-extension$NWE\n";
             echo "    </td>\n";
             echo "  </tr>\n";
 
             echo "  <tr bgcolor=$oddrows name=VOICEMAIL style=\"visibility:collapse;\">\n";
             echo "    <td align=right>Voicemail:</td>\n";
-            echo "    <td align=left><input type=text name=did_voicemail size=20 maxlength=20 value=\"\">$NWB#carrier_dids-voicemail$NWE</td>\n";
+            echo "    <td align=left>\n";
+            #echo "<input type=text name=did_voicemail size=20 maxlength=20 value=\"\">\n";
+            echo phone_voicemail_text_options($link, 'did_voicemail', '', 20, 20);
+            echo "$NWB#carrier_dids-voicemail$NWE</td>\n";
             echo "  </tr>\n";
 
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"visibility:visible;\">\n";
@@ -111,7 +116,10 @@ if ($ADD=="1carrier") {
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"visibility:visible;\">\n";
             echo "    <td align=right>Park File:</td>\n";
-            echo "    <td align=left><input type=text name=did_park_file size=20 maxlength=100 value=\"park\">$NWB#carrier_dids-park_file$NWE</td>\n";
+            echo "    <td align=left>\n";
+            #echo "<input type=text name=did_park_file size=20 maxlength=100 value=\"park\">\n";
+            echo media_file_text_options($link, 'did_park_file', 'park', 20, 100);
+            echo "$NWB#carrier_dids-park_file$NWE</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"visibility:visible;\">\n";
             echo "    <td align=right>Lookup Method:</td>\n";
@@ -136,7 +144,10 @@ if ($ADD=="1carrier") {
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"visibility:visible;\">\n";
             echo "    <td align=right>Default List ID:</td>\n";
-            echo "    <td align=left><input type=text name=did_default_list_id size=15 maxlength=15 value=\"998\">$NWB#carrier_dids-default_list_id$NWE</td>\n";
+            echo "    <td align=left>\n";
+            #echo "<input type=text name=did_default_list_id size=15 maxlength=15 value=\"998\">\n";
+            echo list_id_text_options($link, 'did_default_list_id', '998', 15, 15);
+            echo "$NWB#carrier_dids-default_list_id$NWE</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"visibility:visible;\">\n";
             echo "    <td align=right>Default Phone (country) Code:</td>\n";
@@ -668,13 +679,18 @@ if ($ADD == "3carrier") {
             echo "  <tr bgcolor=$oddrows name=EXTENSION style=\"$estyle\">\n";
             echo "    <td align=right>Extension:</td>\n";
             echo "    <td align=left>\n";
-            echo "      <input type=text name=did_extension size=20 maxlength=50 value=\"$gfr[extension]\">$NWB#carrier_dids-extension$NWE\n";
+            echo phone_extension_text_options($link, 'did_extension', $gfr['extension'], 20, 50);
+            #echo "      <input type=text name=did_extension size=20 maxlength=50 value=\"$gfr[extension]\">\n";
+            echo "$NWB#carrier_dids-extension$NWE\n";
             echo "    </td>\n";
             echo "  </tr>\n";
 
             echo "  <tr bgcolor=$oddrows name=VOICEMAIL style=\"$vstyle\">\n";
             echo "    <td align=right>Voicemail:</td>\n";
-            echo "    <td align=left><input type=text name=did_voicemail size=20 maxlength=20 value=\"$gfr[voicemail]\">$NWB#carrier_dids-voicemail$NWE</td>\n";
+            echo "    <td align=left>\n";
+            #echo "<input type=text name=did_voicemail size=20 maxlength=20 value=\"$gfr[voicemail]\">\n";
+            echo phone_voicemail_text_options($link, 'did_voicemail', $gfr['voicemail'], 20, 20);
+            echo "$NWB#carrier_dids-voicemail$NWE</td>\n";
             echo "  </tr>\n";
 
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"$istyle\">\n";
@@ -701,7 +717,10 @@ if ($ADD == "3carrier") {
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"$istyle\">\n";
             echo "    <td align=right>Park File:</td>\n";
-            echo "    <td align=left><input type=text name=did_park_file size=20 maxlength=100 value=\"$gfr[park_file]\">$NWB#carrier_dids-park_file$NWE</td>\n";
+            echo "    <td align=left>\n";
+            #echo "<input type=text name=did_park_file size=20 maxlength=100 value=\"$gfr[park_file]\">\n";
+            echo media_file_text_options($link, 'did_park_file', $gfr['park_file'], 20, 100);
+            echo "$NWB#carrier_dids-park_file$NWE</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"$istyle\">\n";
             echo "    <td align=right>Initial Status:</td>\n";
@@ -737,7 +756,10 @@ if ($ADD == "3carrier") {
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"$istyle\">\n";
             echo "    <td align=right>Default List ID:</td>\n";
-            echo "    <td align=left><input type=text name=did_default_list_id size=15 maxlength=15 value=\"$gfr[default_list_id]\">$NWB#carrier_dids-default_list_id$NWE</td>\n";
+            echo "    <td align=left>\n";
+            #echo "<input type=text name=did_default_list_id size=15 maxlength=15 value=\"$gfr[default_list_id]\">\n";
+            echo list_id_text_options($link, 'did_default_list_id', $gfr['default_list_id'], 15, 15);
+            echo "$NWB#carrier_dids-default_list_id$NWE</td>\n";
             echo "  </tr>\n";
             echo "  <tr bgcolor=$oddrows name=INGROUP style=\"$istyle\">\n";
             echo "    <td align=right>Default Phone (country) Code:</td>\n";

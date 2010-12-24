@@ -31,7 +31,7 @@ if ($ADD==11111)
 {
 	if ($LOGmodify_remoteagents==1)
 	{
-    $servers_list = get_servers($link, $server_ip);
+    $servers_list = get_servers($link, $server_ip, 'AIO|DIALER');
 	echo "<center><br><font color=$default_text size=+1>ADD NEW EXTERNAL AGENTS</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21111>\n";
 	echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -205,7 +205,7 @@ if ($ADD==31111)
 	$status =			$row[5];
 	$campaign_id =		$row[6];
 
-    $servers_list = get_servers($link, $row[3]);
+    $servers_list = get_servers($link, $row[3], 'AIO|DIALER');
 
 	echo "<center><br><font color=$default_text size=+1>MODIFY A REMOTE AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=41111>\n";
