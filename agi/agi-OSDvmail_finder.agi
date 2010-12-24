@@ -1,0 +1,66 @@
+#!/usr/bin/perl
+#
+# agi-OSDvmail_finder.agi
+#
+# Copyright (C) 2010  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+#
+#     This file is part of OSDial.
+#
+#     OSDial is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as
+#     published by the Free Software Foundation, either version 3 of
+#     the License, or (at your option) any later version.
+#
+#     OSDial is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public
+#     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+#
+#
+#
+#  # This application requires two parameters:
+#  #   1: voicemail box number
+#  #   2: Destination voicemail application extension.  
+#  exten => _85026666666666.,1,AGI(agi-OSDvmail_finder.agi,${EXTEN:14},85027777777777)
+#  exten => _85027777777777.,1,Voicemail(${EXTEN:14}@osdial)
+#
+#
+
+use strict;
+use OSDial;
+$|++;
+
+my $prog = 'agi-OSDvmail_finder.agi';
+my $osdial = OSDial->new('DB'=>1);
+$osdial->AGI($prog);
+
+my $vmail = $ARGV[0];
+my $vmapp = $ARGV[1];
+
+my $exten = '';
+if ($vmail ne '' and $vmapp ne '') {
+	$osdial->debug(1,$prog,'Checking if this server (%s) hosts the phone for voicemail box %s.',$osdial->{VARserver_ip},$vmail);
+	my $sret = $osdial->sql_query("SELECT count(*) AS cnt FROM phones WHERE voicemail_id='$vmail' AND server_ip='".$osdial->{VARserver_ip}."';");
+	if ($sret->{cnt}==0) {
+		$osdial->debug(1,$prog,'Phone/Voicemail (%s) record not found, checking other servers.',$vmail);
+		if (my $sret2 = $osdial->sql_query("SELECT extension,server_ip FROM phones WHERE voicemail_id='$vmail' ORDER BY server_ip ASC;") ) {
+			$osdial->debug(1,$prog,'Phone/Voicemail (%s) Found on Server %s on Phone %s.',$vmail,$sret2->{server_ip},$sret2->{extension});
+			$exten .= sprintf('%03d*%03d*%03d*%03d*', $sret2->{server_ip} =~ m/(\d+)/g);
+		}
+	}
+	$exten .= $vmapp.$vmail; 
+} elsif ($vmail eq '') {
+	$osdial->debug(1,$prog,'ERROR: Missing voicemail number.  Exiting to hangup extension.');
+	$exten = '8307';
+} else {
+	$osdial->debug(1,$prog,'ERROR: Missing destination voicemail extension.  Exiting to hangup extension.');
+	$exten = '8307';
+}
+$osdial->debug(1,$prog,'Transferring to voicemail at extension: %s',$exten);
+$osdial->AGI->set_context('osdial');
+$osdial->AGI->set_extension($exten);
+$osdial->AGI->set_priority(1);
+exit 0;
