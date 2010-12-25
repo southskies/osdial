@@ -131,7 +131,7 @@ if ($useIE > 0) {
 // MSIE-only hotkeypress function to bind hotkeys defined in the campaign to dispositions
 	function hotkeypress(evt) {
 		debug("<b>hotkeypress:</b> evt=" + evt,5);
-		enter_disable();
+		enter_disable(evt);
 		if ( (hot_keys_active==1) && ((VD_live_customer_call==1) || (MD_ring_secondS>5) ) ) {
 			var e = evt? evt : window.event;
 			if(!e) return;
@@ -201,7 +201,7 @@ if ($useIE > 0) {
 // W3C-compliant hotkeypress function to bind hotkeys defined in the campaign to dispositions
 	function hotkeypress(evt) {
 		debug("<b>hotkeypress:</b> evt=" + evt,5);
-		enter_disable();
+		enter_disable(evt);
 		if ( (hot_keys_active==1) && ( (VD_live_customer_call==1) || (MD_ring_secondS>5) ) ) {
 			var e = evt? evt : window.event;
 			if(!e) return;

@@ -2406,7 +2406,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // ################################################################################
 // disable enter/return keys to not clear out vars on customer info
 	function enter_disable(evt) {
-		debug("<b>enter_disable:</b> evt=" + evt,5);
+		debug("<b>enter_disable:</b> evt=" + evt,1);
 		var e = evt? evt : window.event;
 		if(!e) return;
 		var key = 0;
@@ -2415,6 +2415,24 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			key = e.keyCode;
 		} else if (typeof(e.which)!= 'undefined') {
 			key = e.which;
+		}
+		if (key == 13 && document.activeElement) {
+			var cur = document.activeElement;
+			if (cur.tagName == "INPUT" || cur.tagName == "SELECT") {
+				var next;
+				var titleField=0;
+				for (var c=0; c<cur.form.length; c++) {
+					if (cur.form[c].id=='title') titleField=c;
+					if (cur.id == cur.form[c].id) {
+						next = c+1;
+						if (next==cur.form.length) next=titleField;
+						if ((cur.form[next].tagName=='SELECT' || cur.form[next].readOnly==false) && cur.form[next].disabled==false && cur.form[next].type!='hidden') break;
+					}
+				}
+				cur.form[next].focus();
+			} else if (cur.tagName == "TEXTAREA") {
+				return;
+			}
 		}
 		return key != 13;
 	}
@@ -2563,6 +2581,8 @@ function utf8_decode(utftext) {
 		debug("<b>begin_all_refresh:</b>",2);
 		if (HK_statuses_camp>0 && (user_level>=HKuser_level || VU_hotkeys_active>0)) {
 			document.onkeypress = hotkeypress;
+		} else {
+			document.onkeypress = enter_disable;
 		}
 		all_refresh();
 	}
