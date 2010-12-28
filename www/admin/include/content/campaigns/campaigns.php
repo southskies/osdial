@@ -1269,7 +1269,7 @@ if ($ADD==31) {
 
         echo "<tr bgcolor=$oddrows><td align=right>Answering Message Extension: </td><td align=left>\n";
         #echo "<input type=text name=am_message_exten size=10 maxlength=20 value=\"$am_message_exten\">\n";
-        echo media_extension_text_options($link, 'am_message_exten', $am_message_exten, 10, 20);
+        echo extension_text_options($link, 'am_message_exten', $am_message_exten, 10, 20);
         echo "$NWB#osdial_campaigns-am_message_exten$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Send AMD to AM Extension: </td><td align=left><select size=1 name=amd_send_to_vmx><option>Y</option><option>N</option><option SELECTED>$amd_send_to_vmx</option></select>$NWB#osdial_campaigns-amd_send_to_vmx$NWE</td></tr>\n";
 
@@ -1287,7 +1287,7 @@ if ($ADD==31) {
         echo "</select>$NWB#osdial_campaigns-safe_harbor_message$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Drop Message/Extension: </td><td align=left>\n";
         #echo "<input type=text name=safe_harbor_exten size=10 maxlength=20 value=\"$safe_harbor_exten\">\n";
-        echo media_extension_text_options($link, 'safe_harbor_exten', $safe_harbor_exten, 10, 20);
+        echo extension_text_options($link, 'safe_harbor_exten', $safe_harbor_exten, 10, 20);
         echo "$NWB#osdial_campaigns-safe_harbor_exten$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Drop Voicemail: </td><td align=left>\n";
         #echo "<input type=text name=voicemail_ext size=10 maxlength=10 value=\"$voicemail_ext\">\n";
@@ -1325,15 +1325,15 @@ if ($ADD==31) {
         echo "<tr bgcolor=$oddrows><td align=right>Allow No-Hopper-Leads Logins: </td><td align=left><select size=1 name=no_hopper_leads_logins><option>Y</option><option>N</option><option SELECTED>$no_hopper_leads_logins</option></select>$NWB#osdial_campaigns-no_hopper_leads_logins$NWE</td></tr>\n";
 
         echo "<tr bgcolor=$oddrows><td align=right>Add Manual Dialed Calls to List: </td><td align=left>\n";
-        echo "  <select name=manual_dial_list_id size=1>\n";
+        echo list_id_text_options($link, 'manual_dial_list_id', $manual_dial_list_id, 20, 20);
+        #echo "  <select name=manual_dial_list_id size=1>\n";
+        #$sel = '';
+        #$krh = get_krh($link, 'osdial_lists', 'list_id,list_name','',sprintf("campaign_id LIKE '%s__%%'",$LOG['company_prefix']),'');
+        #echo format_select_options($krh, 'list_id', 'list_name', $manual_dial_list_id, '', false);
+        #if (preg_match('/|^$|^0$/',$manual_dial_list_id)) $sel='';
+        #echo "<option value='0'>- NO LIST SELECTED -</option>\n";
+        #echo " $manual_dial_list_id\">\n";
 
-        $sel = '';
-        $krh = get_krh($link, 'osdial_lists', 'list_id,list_name','',sprintf("campaign_id LIKE '%s__%%'",$LOG['company_prefix']),'');
-        echo format_select_options($krh, 'list_id', 'list_name', $manual_dial_list_id, '', false);
-        if (preg_match('/|^$|^0$/',$manual_dial_list_id)) $sel='';
-        echo "<option value='0'>- NO LIST SELECTED -</option>\n";
-
-        echo " $manual_dial_list_id\">\n";
         echo "$NWB#osdial_campaigns-manual_dial_list_id$NWE</td></tr>\n";
 
         echo "<tr bgcolor=$oddrows>\n";

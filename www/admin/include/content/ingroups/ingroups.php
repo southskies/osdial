@@ -446,7 +446,7 @@ if ($ADD==3111)
 
 	echo "<tr bgcolor=$oddrows><td align=right>Drop Extension: </td><td align=left>\n";
     #echo "<input type=text name=drop_exten size=10 maxlength=20 value=\"$drop_exten\">\n";
-    echo media_extension_text_options($link, 'drop_exten', $drop_exten, 15, 50);
+    echo extension_text_options($link, 'drop_exten', $drop_exten, 15, 50);
     echo "$NWB#osdial_inbound_groups-drop_exten$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>Drop Voicemail: </td><td align=left>\n";
@@ -472,7 +472,7 @@ if ($ADD==3111)
 
 	echo "<tr bgcolor=$oddrows><td align=right>After Hours Extension: </td><td align=left>\n";
     #echo "<input type=text name=after_hours_exten size=10 maxlength=20 value=\"$after_hours_exten\">\n";
-    echo media_extension_text_options($link, 'after_hours_exten', $after_hours_exten, 15, 50);
+    echo extension_text_options($link, 'after_hours_exten', $after_hours_exten, 15, 50);
     echo "$NWB#osdial_inbound_groups-after_hours_exten$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>After Hours Voicemail: </td><td align=left>\n";
@@ -495,14 +495,14 @@ if ($ADD==3111)
     #echo "    <select name=onhold_prompt_filename>\n";
     #echo media_file_select_options($link, $onhold_prompt_filename);
     #echo "    </select>\n";
-    echo media_file_text_options($link, 'onhold_prompt_filename', $onhold_prompt_filename, 15, 50);
+    echo media_file_text_options($link, 'onhold_prompt_filename', $onhold_prompt_filename, 30, 50);
     echo "$NWB#osdial_inbound_groups-onhold_prompt_filename$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>On Hold Prompt Interval: </td><td align=left><input type=text name=prompt_interval size=5 maxlength=5 value=\"$prompt_interval\">$NWB#osdial_inbound_groups-prompt_interval$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>Agent Alert Extension: </td><td align=left>\n";
     #echo "<input type=text name=agent_alert_exten size=10 maxlength=20 value=\"$agent_alert_exten\">\n";
-    echo media_extension_text_options($link, 'agent_alert_exten', $agent_alert_exten, 15, 50);
+    echo extension_text_options($link, 'agent_alert_exten', $agent_alert_exten, 15, 50);
     echo "$NWB#osdial_inbound_groups-agent_alert_exten$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>Agent Alert Delay: </td><td align=left><input type=text name=agent_alert_delay size=6 maxlength=6 value=\"$agent_alert_delay\">$NWB#osdial_inbound_groups-agent_alert_delay$NWE</td></tr>\n";

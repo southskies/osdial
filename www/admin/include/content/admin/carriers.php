@@ -80,7 +80,7 @@ if ($ADD=="1carrier") {
             echo "    <td align=right>Extension:</td>\n";
             echo "    <td align=left>\n";
             #echo "      <input type=text name=did_extension size=20 maxlength=50 value=\"\">\n";
-            echo phone_extension_text_options($link, 'did_extension', '', 20, 50);
+            echo extension_text_options($link, 'did_extension', '', 20, 50);
             echo "$NWB#carrier_dids-extension$NWE\n";
             echo "    </td>\n";
             echo "  </tr>\n";
@@ -679,7 +679,7 @@ if ($ADD == "3carrier") {
             echo "  <tr bgcolor=$oddrows name=EXTENSION style=\"$estyle\">\n";
             echo "    <td align=right>Extension:</td>\n";
             echo "    <td align=left>\n";
-            echo phone_extension_text_options($link, 'did_extension', $gfr['extension'], 20, 50);
+            echo extension_text_options($link, 'did_extension', $gfr['extension'], 20, 50);
             #echo "      <input type=text name=did_extension size=20 maxlength=50 value=\"$gfr[extension]\">\n";
             echo "$NWB#carrier_dids-extension$NWE\n";
             echo "    </td>\n";
