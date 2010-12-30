@@ -81,6 +81,7 @@
 		result += ".selectBoxAnOption { z-index:1002; cursor:default; margin:1px; overflow:hidden; white-space:nowrap; }\n";
 		result += ".selectBoxAnOptionLeft {float: left; font-family:\"dejavu sans\"; font-size:12px; cursor:default; overflow:hidden; white-space:nowrap; }\n";
 		result += ".selectBoxAnOptionRight {float: right; font-family:\"dejavu sans\"; font-size:12px; cursor:default; overflow:hidden; white-space:nowrap; }\n";
+		result += ".selectBoxAnOptionType {float: right; font-family:\"dejavu sans\"; font-size:8px; cursor:default; overflow:hidden; white-space:nowrap; }\n";
 		result += ".selectBoxIframe { position:absolute; background-color:" + bgColor + "; border:0px; z-index:999; }\n";
 		result += "</style>\n";
 		return result;
@@ -197,6 +198,8 @@
 		var options = dest.getAttribute('selectBoxOptions').split(';');
 		var labels = new Array();
 		if (dest.getAttribute('selectBoxLabels')) labels = dest.getAttribute('selectBoxLabels').split(';');
+		var types = new Array();
+		if (dest.getAttribute('selectBoxTypes')) types = dest.getAttribute('selectBoxTypes').split(';');
 
 		// Calculate the longest option and adjust the input size.
 		var newsize=0;
@@ -206,6 +209,10 @@
 				if (labels[no] == undefined) labels[no]='';
 				if (labels[no] != '') tmp+='  -  ';
 				tmp+=labels[no];
+			}
+			if (options.length==types.length) {
+				if (types[no] == undefined) types[no]='';
+				if (types[no] != '') tmp+='  -  ';
 			}
 			tmp+=options[no];
 			if (tmp.length>newsize) newsize=tmp.length;
@@ -384,6 +391,14 @@
 					anOption2.innerHTML = labels[no];
 					anOption2.id = selectBoxIds + 'optionLabel' + no;
 					anOption.appendChild(anOption2);
+				}
+
+				if (options.length==types.length) {
+					var anOptionT = document.createElement('DIV');
+					anOptionT.className='selectBoxAnOptionType';
+					anOptionT.innerHTML = types[no];
+					anOptionT.id = selectBoxIds + 'optionType' + no;
+					anOption.appendChild(anOptionT);
 				}
 
 				optionDiv.appendChild(anOption);

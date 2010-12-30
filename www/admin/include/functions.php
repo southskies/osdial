@@ -1499,7 +1499,7 @@ function media_file_label_list($link) {
     if (is_array($mkrh)) {
         $mkeys = array();
         foreach ($mkrh as $om) {
-            $mkeys[preg_replace('/.*\/|\..*/','',$om['filename'])] = 'MEDIA';
+            $mkeys[preg_replace('/.*\/|\..*/','',$om['filename'])] = array($om['description'],'MEDIA');
         }
         if (is_array($mkeys)) {
             foreach ($mkeys as $mk => $mv) {
@@ -1544,7 +1544,7 @@ function media_extension_label_list($link) {
     if (is_array($mkrh)) {
         $mkeys = array();
         foreach ($mkrh as $om) {
-            $mkeys[$om['extension']] = 'MEDIA';
+            $mkeys[$om['extension']] = array($om['description'],'MEDIA');
         }
         if (is_array($mkeys)) {
             foreach ($mkeys as $mk => $mv) {
@@ -1563,7 +1563,7 @@ function phone_voicemail_list($link) {
     if (is_array($pkrh)) {
         $pkeys = array();
         foreach ($pkrh as $op) {
-            $pkeys[$op['voicemail_id']] = 'PHONE';
+            $pkeys[$op['voicemail_id']] = array($op['extension'],'PHONE');
         }
         if (is_array($pkeys)) {
             foreach ($pkeys as $pk => $pv) {
@@ -1582,7 +1582,7 @@ function phone_extension_list($link) {
     if (is_array($pkrh)) {
         $pkeys = array();
         foreach ($pkrh as $op) {
-            $pkeys[$op['dialplan_number']] = 'PHONE';
+            $pkeys[$op['dialplan_number']] = array($op['extension'],'PHONE');
         }
         if (is_array($pkeys)) {
             foreach ($pkeys as $pk => $pv) {
@@ -1612,17 +1612,13 @@ function list_id_list($link) {
     $lkrh = get_krh($link, 'osdial_lists', '*','list_id ASC',"list_id>='20'",'');
     if (is_array($lkrh)) {
         $lkeys = array();
-        $llen=0;
         foreach ($lkrh as $ol) {
-            $lkeys[$ol['list_id']] = $ol['list_name'];
-            if (strlen($ol['list_name'])>$llen) $llen = strlen($ol['list_name']);
+            $lkeys[$ol['list_id']] = array($ol['list_name'],'LIST');
         }
-        if (is_assoc($lkeys)) {
+        if (is_array($lkeys)) {
             foreach ($lkeys as $lk => $lv) {
                 $llist[$lk] = $lv;
             }
-        } elseif (is_array($lkeys)) {
-            $llist = ksort($lkeys);
         }
     }
     return $llist;
@@ -1654,12 +1650,19 @@ function editableSelectBox($options, $name, $val, $size, $maxsize) {
     if (is_assoc($options)) {
         $esboptsO =' selectBoxOptions="';
         $esboptsL =' selectBoxLabels="';
+        $esboptsT =' selectBoxTypes="';
         foreach ($options as $k => $v) {
             $esboptsO .= preg_replace('/;/','',$k).';';
-            $esboptsL .= preg_replace('/;/','',$v).';';
+            if (is_array($v)) {
+                $esboptsL .= preg_replace('/;/','',$v[0]).';';
+                if (isset($v[1])) $esboptsT .= preg_replace('/;/','',$v[1]).';';
+            } else {
+                $esboptsL .= preg_replace('/;/','',$v).';';
+            }
         }
         $esboptsO = rtrim($esboptsO,';') . "\"";
         $esboptsL = rtrim($esboptsL,';') . "\"";
+        $esboptsT = rtrim($esboptsT,';') . "\"";
     } elseif (is_array($options)) {
         $esboptsO =' selectBoxOptions="';
         foreach ($options as $opt) {
@@ -1668,7 +1671,7 @@ function editableSelectBox($options, $name, $val, $size, $maxsize) {
         $esboptsO = rtrim($esboptsO,';') . "\"";
     }
     $esbopts = "<input type=\"text\" name=\"$name\" size=\"$size\" maxlength=\"$maxsize\" value=\"$val\"";
-    $esbopts .= $esboptsO . $esboptsL;
+    $esbopts .= $esboptsO . $esboptsL . $esboptsT;
     $esbopts .= ">\n";
     $esbopts .= "<script type=\"text/javascript\">\n";
     $esbopts .= "createEditableSelect(document.forms[0].$name);\n";
