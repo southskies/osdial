@@ -93,7 +93,7 @@ if ($ADD==11)
     echo "<input type=hidden name=DB value=$DB>\n";
     echo "<input type=hidden name=ADD value=21>\n";
     echo "<table width=$section_width cellspacing=3>\n";
-    echo "<tr bgcolor=$oddrows><td align=right>Campaign ID: </td><td align=left>";
+    echo "<tr bgcolor=$oddrows><td align=right width=40%>Campaign ID: </td><td align=left width=60%>";
     if ($LOG['multicomp_admin'] > 0) {
         $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
         echo "<select name=company_id>\n";
@@ -170,7 +170,7 @@ if ($ADD==12)
     echo "<input type=hidden name=DB value=$DB>\n";
     echo "<input type=hidden name=ADD value=20>\n";
     echo "<table width=$section_width cellspacing=3>\n";
-    echo "<tr bgcolor=$oddrows><td align=right>Campaign ID: </td><td align=left>";
+    echo "<tr bgcolor=$oddrows><td align=right width=40%>Campaign ID: </td><td align=left width=60%>";
     if ($LOG['multicomp_admin'] > 0) {
         $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
         echo "<select name=company_id>\n";
@@ -430,6 +430,8 @@ if ($ADD==41)
             }
         if ( (!ereg("DISABLED",$list_order_mix)) and ($hopper_level < 100) )
             {$hopper_level='100';}
+
+        if (preg_match('/^8510/',$am_message_exten)) $am_message_exten = '8320'.$am_message_exten;
 
         $ets = implode(',',$email_templates);
         $stmtA=sprintf("UPDATE osdial_campaigns SET %s campaign_name='%s',active='%s',dial_status_a='%s',dial_status_b='%s',dial_status_c='%s',dial_status_d='%s',"
@@ -867,7 +869,7 @@ if ($ADD==31) {
         $campaign_rec_filename = $row[24];
         $script_id = $row[25];
         $get_call_launch = $row[26];
-        $am_message_exten = $row[27];
+        $am_message_exten = preg_replace('/^8320/','',$row[27]);
         $amd_send_to_vmx = $row[28];
         $xferconf_a_dtmf = $row[29];
         $xferconf_a_number = $row[30];
@@ -1045,7 +1047,7 @@ if ($ADD==31) {
         echo "<input type=hidden name=ADD value=41>\n";
         echo "<input type=hidden name=campaign_id value=\"$campaign_id\">\n";
         echo "<table width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Campaign ID: </td><td align=left>";
+        echo "<tr bgcolor=$oddrows><td align=right width=40%>Campaign ID: </td><td align=left width=60%>";
         echo "<b>" . mclabel($row[0]) . "</b>";
         echo "$NWB#osdial_campaigns-campaign_id$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Campaign Name: </td><td align=left><input type=text name=campaign_name size=40 maxlength=40 value=\"$campaign_name\">$NWB#osdial_campaigns-campaign_name$NWE</td></tr>\n";
@@ -1969,7 +1971,7 @@ if ($ADD==34)
         echo "<input type=hidden name=ADD value=44>\n";
         echo "<input type=hidden name=campaign_id value=\"$campaign_id\">\n";
         echo "<table width=$section_width cellspacing=3>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Campaign ID: </td><td align=left>";
+        echo "<tr bgcolor=$oddrows><td align=right width=40%>Campaign ID: </td><td align=left width=60%>";
         echo "<b>" . mclabel($row[0]) . "</b>";
         echo "$NWB#osdial_campaigns-campaign_id$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Campaign Name: </td><td align=left><input type=text name=campaign_name size=40 maxlength=40 value=\"$row[1]\">$NWB#osdial_campaigns-campaign_name$NWE</td></tr>\n";
