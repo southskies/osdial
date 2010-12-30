@@ -475,6 +475,8 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         else {$company_sh=''; $company_fc='fgnavy';}
     if ($sh=='status') {$status_sh="bgcolor=\"$status_color\""; $status_fc="fgblack";} # pink
         else {$status_sh=''; $status_fc='fgnavy';}
+    if ($sh=='media') {$media_sh="bgcolor=\"$server_color\""; $media_fc="fgblack";}
+        else {$media_sh=''; $media_fc='fgnavy';}
 
     $amenu = '';
     $acnt = 0;
@@ -521,10 +523,16 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         $acnt += 1;
     }
 
-    if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_statuses'] == 1) {
-        $amenu .= "    <td height=20 align=center $status_sh colspan=2><a href=\"$PHP_SELF?ADD=321111111111111\"><span class=\"font2 $status_fc\"> System Statuses </span></a></td>\n";
+    if ($LOG['multicomp_user'] == 0) {
+        $amenu .= "    <td height=20 align=center $media_sh colspan=1><a href=\"$PHP_SELF?ADD=10media\"><span class=\"font2 $media_fc\"> Media </span></a></td>\n";
     } else {
-        $acnt += 2;
+        $acnt += 1;
+    }
+
+    if ($LOG['multicomp_user'] == 0 or $LOG['company']['enable_system_statuses'] == 1) {
+        $amenu .= "    <td height=20 align=center $status_sh colspan=1><a href=\"$PHP_SELF?ADD=321111111111111\"><span class=\"font2 $status_fc\"> System Statuses </span></a></td>\n";
+    } else {
+        $acnt += 1;
     }
 
     if ($acnt) {
@@ -606,6 +614,19 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     }
 
 
+    ### Media Sub-Menu.
+    if (strlen($media_sh) > 1) { 
+        echo "  <tr class='no-ul' bgcolor=$server_color>\n";
+        echo "    <td height=20 align=left colspan=10>\n";
+        echo "      <span class=\"font2 fgdefault\"> &nbsp \n";
+        echo "        <a href=\"$PHP_SELF?ADD=10media\"> Show Media Files </a> &nbsp; &nbsp; &nbsp; \n";
+        echo "        <a href=\"$PHP_SELF?ADD=11media\"> Add Media File </a> &nbsp; &nbsp; &nbsp; \n";
+        #echo "        <a href=\"$PHP_SELF?ADD=10tts\"> Show TTS Scripts </a> &nbsp; &nbsp; &nbsp; \n";
+        #echo "        <a href=\"$PHP_SELF?ADD=11tts\"> Add TTS Script </a>\n";
+        echo "      </span>\n";
+        echo "    </td>\n";
+        echo "  </tr>\n";
+    }
 
     ### Conferences Sub-Menu.
     if (strlen($conference_sh) > 1) { 
