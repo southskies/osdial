@@ -588,6 +588,15 @@ sub gen_phones {
 		$ephn .= ";\n";
 	}
 
+	# Get custom build media file extensions.
+	my $stmt = "SELECT * FROM osdial_media WHERE extension!='' AND extension NOT LIKE '8510____';";
+	while (my $sret = $osdial->sql_query($stmt)) {
+		$sret->{filename} =~ s/\..*$//;
+		$ephn .= "; Media Extension\n";
+		$ephn .= sprintf("exten => %s,1,Playback(%s)\n",$sret->{extension},$sret->{filename});
+		$ephn .= ";\n";
+	}
+
 	my $stmt = "SELECT * FROM phones WHERE protocol IN ('SIP','IAX2','Zap','DAHDI','EXTERNAL') AND active='Y' AND (";
 	foreach my $ip (@myips) {
 		$stmt .= " server_ip=\'" . $ip . "\' OR";
