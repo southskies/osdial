@@ -58,11 +58,8 @@ if ($add_file) {
 	push @addfiles, $osd->media_add_files('/var/lib/asterisk/sounds','8510.*');
 	push @addfiles, $osd->media_add_files('/var/lib/asterisk/sounds.ramfs','8510.*');
 	push @addfiles, $osd->media_add_files('/var/lib/asterisk/OSDprompts');
-	push @addfiles, $osd->media_add_files('/var/lib/asterisk/sounds/osdial');
 	push @addfiles, $osd->media_add_files('/mnt/ramdisk/sounds','8510.*');
-	push @addfiles, $osd->media_add_files('/mnt/ramdisk/sounds/osdial');
 	push @addfiles, $osd->media_add_files('/opt/osdial/html/ivr');
-	push @addfiles, $osd->media_add_files('/opt/osdial/media');
 	foreach my $file (@addfiles) {
 		$osd->debug(1,'osdial_media_sync.pl','  Adding file:%s',$file);
 	}
