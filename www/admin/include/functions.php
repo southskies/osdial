@@ -1366,7 +1366,7 @@ function media_add_files($link, $directory, $pattern, $update_data) {
     if (file_exists($directory)) {
         $handle = opendir($directory);
         while (false !== ($filename = readdir($handle))) {
-            if ($filename!='.' and $filename!='..' and preg_match('/'.$pattern.'/',$filename)) {
+            if ($filename!='.' and $filename!='..' and preg_match('/'.$pattern.'/',$filename) and ! is_dir($filename)) {
                 $filepath=$directory.'/'.$filename;
                 $mimetype = mimemap($filename);
                 $extension = preg_replace('/.*\/|\..*/','',$filename);

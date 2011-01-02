@@ -837,7 +837,7 @@ sub media_add_files {
 	my @files;
 	opendir(MAFDIR,$dir);
 	foreach my $filename (readdir(MAFDIR)) {
-		if ($filename ne '.' and $filename ne '..' and $filename =~ /$pattern/) {
+		if ($filename ne '.' and $filename ne '..' and $filename =~ /$pattern/ and not -d $filename) {
 			my $file = $dir.'/'.$filename;
 
 			my $mime = $filename;
