@@ -180,7 +180,7 @@ if ($ADD=="31media") {
 ######################
 if ($ADD=="10media") {
     if ($LOG['modify_servers']>0) {
-        echo "<center><br><font color=$default_text size=+1>MEDIA<br><br>\n";
+        echo "<center><br><font color=$default_text size=+1>MEDIA</font><br><br>\n";
         echo "<table width=$section_width cellspacing=0 cellpadding=1>\n";
         echo "  <tr class=tabheader>";
         echo "    <td>ID</td>\n";
@@ -215,6 +215,8 @@ if ($ADD=="10media") {
         echo "    <td colspan=10></td>\n";
         echo "  </tr>\n";
         echo "</table></center>\n";
+
+        echo "<center>You may upload or dial extension 8167 (pin 4321).</center>\n";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }
