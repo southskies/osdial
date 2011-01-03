@@ -27,6 +27,7 @@ use warnings;
 
 use DBI;
 use Asterisk::AGI;
+use Digest::MD5 qw(md5_hex); 
 
 our $VERSION = 'SVN_Version';
 
@@ -369,6 +370,55 @@ sub agi_output {
 	}
 }
 
+sub agi_tts_sayphrase {
+	my ($self,$phrase,$voice) = @_;
+	if (defined $self->{_agi}) {
+		$voice = 'voice_nitech_us_rms_arctic_hts' unless ($voice);
+		my $hash = md5_hex($voice.':'.$phrase);
+		my $cachedir = "/opt/osdial/tts";
+		my $sdir1 = "/mnt/ramdisk/sounds";
+		my $sdir2 = "/var/lib/asterisk/sounds";
+		my $base = 'tts-'.$hash; 
+
+		if (! -f $cachedir.'/'.$base.'.wav') {
+			open(TXT, '>'.$cachedir.'/'.$base.'.txt');
+			print TXT $phrase;
+			close(TXT);
+			my $cmd = '/usr/bin/text2wave '.$cachedir.'/'.$base.'.txt -F 8000 -o '.$cachedir.'/'.$base.'.wav -eval "(' . $voice . ')"';
+			$self->debug(1,'agi_tts_sayphrase','Running %s.',$cmd);
+			system($cmd);
+			unlink($cachedir.'/'.$base.'.txt');
+		} else {
+			$self->debug(1,'agi_tts_sayphrase','%s/%s.wav already exists.',$cachedir,$base);
+		}
+
+		if(-f $cachedir.'/'.$base.'.wav') {
+			if (-d $sdir1) {
+				if (! -d $sdir1.'/tts') {
+					$self->debug(1,'agi_tts_sayphrase','Making directory %s/tts.',$sdir1);
+					mkdir($sdir1.'/tts',oct('0777'));
+				}
+				if (! -f $sdir1.'/tts/'.$base.'.wav') {
+					$self->debug(1,'agi_tts_sayphrase','Copying %s/%s.wav to %s/tts.',$cachedir,$base,$sdir1);
+					system('/bin/cp -au '.$cachedir.'/'.$base.'.wav '.$sdir1.'/tts') unless (-f $sdir1.'/tts/'.$base.'.wav');
+				}
+			}
+			if (-d $sdir2) {
+				if (! -d $sdir2.'/tts') {
+					$self->debug(1,'agi_tts_sayphrase','Making directory %s/tts.',$sdir2);
+					mkdir($sdir2.'/tts',oct('0777'));
+				}
+				if (! -f $sdir2.'/tts/'.$base.'.wav') {
+					$self->debug(1,'agi_tts_sayphrase','Copying %s/%s.wav to %s/tts.',$cachedir,$base,$sdir2);
+					system('/bin/cp -au '.$cachedir.'/'.$base.'.wav '.$sdir2.'/tts') unless (-f $sdir2.'/tts/'.$base.'.wav');
+				}
+			}
+
+			$self->debug(1,'agi_tts_sayphrase','Playing tts/%s.',$base);
+			$self->AGI->stream_file('tts/'.$base);
+		}
+	}
+}
 
 =head1 METHODS - SQL
 
