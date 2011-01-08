@@ -220,6 +220,7 @@ start() {
 	/opt/osdial/bin/osdial_astgen.pl -q &
 	/opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1 &
 	/opt/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1 &
+	/opt/osdial/bin/sql/upgrade_sql.pl --info
 
 	return 0
 }
