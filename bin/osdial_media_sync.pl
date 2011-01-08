@@ -55,6 +55,8 @@ if ($add_file) {
 	}
 } else {
 	my @addfiles;
+	push @addfiles, $osd->media_add_files('/var/lib/asterisk/sounds','generic-hold.*');
+	push @addfiles, $osd->media_add_files('/var/lib/asterisk/sounds/en','vm-goodbye.*');
 	push @addfiles, $osd->media_add_files('/var/lib/asterisk/sounds','8510.*');
 	push @addfiles, $osd->media_add_files('/var/lib/asterisk/sounds.ramfs','8510.*');
 	push @addfiles, $osd->media_add_files('/var/lib/asterisk/OSDprompts');
