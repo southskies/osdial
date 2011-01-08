@@ -98,21 +98,21 @@ if ($ADD==221111111111) {
         $SUMosdial_trunks = ($rowx[0] + $dedicated_trunks);
 
         if ($SUMosdial_trunks > $MAXosdial_trunks) {
-            echo "<br><font color=red>$t1 SERVER TRUNK RECORD NOT ADDED - the number of osdial trunks is too high: $SUMosdial_trunks / $MAXosdial_trunks</font>\n";
+            echo "<br><font color=red>SERVER TRUNK RECORD NOT ADDED - the number of osdial trunks is too high: $SUMosdial_trunks / $MAXosdial_trunks</font>\n";
         } else {
             $stmt = sprintf("SELECT count(*) FROM osdial_server_trunks WHERE campaign_id='%s' AND server_ip='%s';",mres($campaign_id),mres($server_ip));
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
             if ($row[0] > 0) {
-                echo "<br><font color=red>$t1 SERVER TRUNK RECORD NOT ADDED - there is already a server-trunk record for this campaign</font>\n";
+                echo "<br><font color=red>SERVER TRUNK RECORD NOT ADDED - there is already a server-trunk record for this campaign</font>\n";
             } else {
                 if (strlen($campaign_id) < 2 or strlen($server_ip) < 7 or strlen($dedicated_trunks) < 1 or strlen($trunk_restriction) < 1) {
-                    echo "<br>$t1 SERVER TRUNK RECORD NOT ADDED - Please go back and look at the data you entered\n";
+                    echo "<br>SERVER TRUNK RECORD NOT ADDED - Please go back and look at the data you entered\n";
                     echo "<br>campaign must be between 3 and 8 characters in length\n";
                     echo "<br>server_ip delay must be at least 7 characters\n";
                     echo "<br>trunks must be a digit from 0 to 9999<br>\n";
                 } else {
-                    echo "<br><B><font color=$default_text>$t1 SERVER TRUNK RECORD ADDED: $campaign_id - $server_ip - $dedicated_trunks - $trunk_restriction</font></B>\n";
+                    echo "<br><B><font color=$default_text>SERVER TRUNK RECORD ADDED: $campaign_id - $server_ip - $dedicated_trunks - $trunk_restriction</font></B>\n";
 
                     $stmt=sprintf("INSERT INTO osdial_server_trunks (server_ip,campaign_id,dedicated_trunks,trunk_restriction) VALUES ('%s','%s','%s','%s');",
                         mres($server_ip),mres($campaign_id),mres($dedicated_trunks),mres($trunk_restriction));
@@ -121,7 +121,7 @@ if ($ADD==221111111111) {
                     ### LOG CHANGES TO LOG FILE ###
                     if ($WeBRooTWritablE > 0) {
                         $fp = fopen ("./admin_changes_log.txt", "a");
-                        fwrite ($fp, "$date|ADD A NEW $t1 TRUNK  |$PHP_AUTH_USER|$ip|$stmt|\n");
+                        fwrite ($fp, "$date|ADD A NEW TRUNK  |$PHP_AUTH_USER|$ip|$stmt|\n");
                         fclose($fp);
                     }
                 }
@@ -231,15 +231,15 @@ if ($ADD==421111111111) {
         $SUMosdial_trunks = ($rowx[0] + $dedicated_trunks);
 
         if ($SUMosdial_trunks > $MAXosdial_trunks) {
-            echo "<br><font color=red>$t1 SERVER TRUNK RECORD NOT ADDED - the number of $t1 trunks is too high: $SUMosdial_trunks / $MAXosdial_trunks</font>\n";
+            echo "<br><font color=red>SERVER TRUNK RECORD NOT ADDED - the number of trunks is too high: $SUMosdial_trunks / $MAXosdial_trunks</font>\n";
         } else {
             if (strlen($campaign_id) < 2 or strlen($server_ip) < 7 or strlen($dedicated_trunks) < 1 or strlen($trunk_restriction) < 1) {
-                echo "<br><font color=red>$t1 SERVER TRUNK RECORD NOT MODIFIED - Please go back and look at the data you entered\n";
+                echo "<br><font color=red>SERVER TRUNK RECORD NOT MODIFIED - Please go back and look at the data you entered\n";
                 echo "<br>campaign must be between 3 and 8 characters in length\n";
                 echo "<br>server_ip delay must be at least 7 characters\n";
                 echo "<br>trunks must be a digit from 0 to 9999</font><br>\n";
             } else {
-                echo "<br><B><font color=$default_text>$t1 SERVER TRUNK RECORD MODIFIED: $campaign_id - $server_ip - $dedicated_trunks - $trunk_restriction</font></B>\n";
+                echo "<br><B><font color=$default_text>SERVER TRUNK RECORD MODIFIED: $campaign_id - $server_ip - $dedicated_trunks - $trunk_restriction</font></B>\n";
                 $stmt = sprintf("UPDATE osdial_server_trunks SET dedicated_trunks='%s',trunk_restriction='%s' WHERE campaign_id='%s' AND server_ip='%s';",
                     mres($dedicated_trunks),mres($trunk_restriction),mres($campaign_id),mres($server_ip));
                 $rslt=mysql_query($stmt, $link);
@@ -317,11 +317,11 @@ if ($ADD==611111111111) {
 if ($ADD==621111111111) {
     if ($LOG['modify_servers']==1) {
         if (strlen($campaign_id) < 2 or strlen($server_ip) < 7) {
-            echo "<br><font color=red>$t1 SERVER TRUNK RECORD NOT DELETED - Please go back and look at the data you entered\n";
+            echo "<br><font color=red>SERVER TRUNK RECORD NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>campaign must be between 3 and 8 characters in length\n";
             echo "<br>server_ip delay must be at least 7 characters</font><br>\n";
         } else {
-            echo "<br><B><font color=$default_text>$t1 SERVER TRUNK RECORD DELETED: $campaign_id - $server_ip</font></B>\n";
+            echo "<br><B><font color=$default_text>SERVER TRUNK RECORD DELETED: $campaign_id - $server_ip</font></B>\n";
 
             $stmt="DELETE FROM osdial_server_trunks WHERE campaign_id='$campaign_id' AND server_ip='$server_ip';";
             $rslt=mysql_query($stmt, $link);
@@ -383,9 +383,9 @@ if ($ADD==311111111111) {
             echo "<input type=hidden name=answer_transfer_agent value=\"$row[15]\">\n";
         } else {
             echo "<tr bgcolor=$oddrows><td align=right>Asterisk Version: </td><td align=left><input type=text name=asterisk_version size=20 maxlength=20 value=\"$row[4]\">$NWB#servers-asterisk_version$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>Max $t1 Trunks: </td><td align=left><input type=text name=max_osdial_trunks size=5 maxlength=4 value=\"$row[5]\">$NWB#servers-max_osdial_trunks$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>$t1 Balance Dialing: </td><td align=left><select size=1 name=osdial_balance_active><option>Y</option><option>N</option><option selected>$row[20]</option></select>$NWB#servers-osdial_balance_active$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>$t1 Balance Offlimits: </td><td align=left><input type=text name=balance_trunks_offlimits size=5 maxlength=4 value=\"$row[21]\">$NWB#servers-balance_trunks_offlimits$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Max Trunks: </td><td align=left><input type=text name=max_osdial_trunks size=5 maxlength=4 value=\"$row[5]\">$NWB#servers-max_osdial_trunks$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Balance Dialing: </td><td align=left><select size=1 name=osdial_balance_active><option>Y</option><option>N</option><option selected>$row[20]</option></select>$NWB#servers-osdial_balance_active$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>Balance Offlimits: </td><td align=left><input type=text name=balance_trunks_offlimits size=5 maxlength=4 value=\"$row[21]\">$NWB#servers-balance_trunks_offlimits$NWE</td></tr>\n";
             echo "<tr bgcolor=$oddrows><td align=right>AGI Log Output: </td><td align=left><select size=1 name=agi_output><option>NONE</option><option>STDERR</option><option>FILE</option><option>BOTH</option><option selected>$row[19]</option></select>$NWB#servers-agi_output$NWE</td></tr>\n";
             echo "<tr bgcolor=$oddrows><td align=right>Default Context: </td><td align=left><input type=text name=ext_context size=20 maxlength=20 value=\"$row[16]\">$NWB#servers-ext_context$NWE</td></tr>\n";
             echo "<tr bgcolor=$oddrows><td align=right>Telnet Host: </td><td align=left><input type=text name=telnet_host size=20 maxlength=20 value=\"$row[6]\">$NWB#servers-telnet_host$NWE</td></tr>\n";
@@ -396,7 +396,7 @@ if ($ADD==311111111111) {
             echo "<tr bgcolor=$oddrows><td align=right>Manager Listen User: </td><td align=left><input type=text name=ASTmgrUSERNAMElisten size=20 maxlength=20 value=\"$row[11]\">$NWB#servers-ASTmgrUSERNAMElisten$NWE</td></tr>\n";
             echo "<tr bgcolor=$oddrows><td align=right>Manager Send User: </td><td align=left><input type=text name=ASTmgrUSERNAMEsend size=20 maxlength=20 value=\"$row[12]\">$NWB#servers-ASTmgrUSERNAMEsend$NWE</td></tr>\n";
             echo "<tr bgcolor=$oddrows><td align=right>VMail Dump Exten: </td><td align=left><input type=text name=voicemail_dump_exten size=20 maxlength=20 value=\"$row[14]\">$NWB#servers-voicemail_dump_exten$NWE</td></tr>\n";
-            echo "<tr bgcolor=$oddrows><td align=right>$t1 AD extension: </td><td align=left><input type=text name=answer_transfer_agent size=20 maxlength=20 value=\"$row[15]\">$NWB#servers-answer_transfer_agent$NWE</td></tr>\n";
+            echo "<tr bgcolor=$oddrows><td align=right>AD extension: </td><td align=left><input type=text name=answer_transfer_agent size=20 maxlength=20 value=\"$row[15]\">$NWB#servers-answer_transfer_agent$NWE</td></tr>\n";
         }
         echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
         echo "</TABLE></center></form>\n";
@@ -404,7 +404,7 @@ if ($ADD==311111111111) {
 
         if ($row[22] == 'AIO' or $row[22] == 'DIALER') {
             ### osdial server trunk records for this server
-            echo "<br><br><center><font color=$default_text size=+1>$t1 TRUNKS FOR THIS SERVER &nbsp;</font> $NWB#osdial_server_trunks$NWE<br>\n";
+            echo "<br><br><center><font color=$default_text size=+1>TRUNKS FOR THIS SERVER &nbsp;</font> $NWB#osdial_server_trunks$NWE<br>\n";
             echo "<table width=600 cellspacing=1 bgcolor=grey>\n";
             echo "  <tr class=tabheader>\n";
             echo "    <td align=center>TRUNKS</td>\n";
@@ -625,7 +625,7 @@ if ($ADD==100000000000) {
 ######################
 if ($ADD==499111111111111) {
     if ($LOG['modify_servers']==1) {
-        echo "<br>$t1 ARCHIVE SERVER MODIFIED\n";
+        echo "<br>ARCHIVE SERVER MODIFIED\n";
 
         if ($archive_transfer_method == "FTP" and $archive_port == "") {
             $archive_port = "21";
@@ -749,7 +749,7 @@ if ($ADD=="399111111111111") {
 ######################
 if ($ADD==499911111111111) {
     if ($LOG['modify_servers']==1) {
-        echo "<br>$t1 EXTERNAL DNC DATABASE MODIFIED\n";
+        echo "<br>EXTERNAL DNC DATABASE MODIFIED\n";
 
         $stmt1 = sprintf("UPDATE configuration SET data='%s' WHERE name='External_DNC_Active';",mres($external_dnc_active));
         $stmt2 = sprintf("UPDATE configuration SET data='%s' WHERE name='External_DNC_Address';",mres($external_dnc_address));
@@ -849,7 +849,7 @@ if ($ADD==499211111111111) {
 
         if ($SUB==1) {
             $qcact = "ADD";
-            echo "<br>$t1 QC SERVER ADDED\n";
+            echo "<br>QC SERVER ADDED\n";
             $stmt = sprintf("INSERT INTO qc_servers (name,description,transfer_method,host,transfer_type,batch_time,".
                 "username,password,home_path,location_template,archive,active) ".
                 "VALUES ('%s','%s','%s','%s','%s','%s',".
@@ -859,7 +859,7 @@ if ($ADD==499211111111111) {
 
         } elseif ($SUB==2) {
             $qcact = "MODIFIED";
-            echo "<br>$t1 QC SERVER MODIFIED\n";
+            echo "<br>QC SERVER MODIFIED\n";
             $stmt = sprintf("UPDATE qc_servers SET name='%s',description='%s',transfer_method='%s',host='%s',transfer_type='%s',batch_time='%s',".
                 "username='%s',password='%s',home_path='%s',location_template='%s',archive='%s',active='%s' ".
                 "WHERE id='%s';",
@@ -869,12 +869,12 @@ if ($ADD==499211111111111) {
 
         } elseif ($SUB==3) {
             $qcact = "ADD RULE";
-            echo "<br>$t1 QC SERVER RULE MODIFIED\n";
+            echo "<br>QC SERVER RULE MODIFIED\n";
             $stmt = sprintf("INSERT INTO qc_server_rules (qc_server_id,query) VALUES ('%s','%s');",mres($qc_server_id),mres($qc_server_rule_query));
 
         } elseif ($SUB==4) {
             $qcact = "MODIFIED RULE";
-            echo "<br>$t1 QC SERVER RULE MODIFIED\n";
+            echo "<br>QC SERVER RULE MODIFIED\n";
             $stmt = sprintf("UPDATE qc_server_rules SET query='%s' WHERE id='%s';",mres($qc_server_rule_query),mres($qc_server_rule_id));
             $qc_server_rule_query = "";
             $SUB=2;
@@ -935,7 +935,7 @@ if ($ADD==699211111111111){
             fwrite ($fp, "$date|!!!DELETING QC!!!!|$PHP_AUTH_USER|$ip|SUB=$SUB|qc_server_id='$qc_server_id'|qc_server_rule_id='$qc_server_rule_id'|\n");
             fclose($fp);
         }
-        echo "<br><B>$t1 QC DELETION COMPLETED: $qc_server_id - $qc_server_rule_id</B>\n";
+        echo "<br><B>QC DELETION COMPLETED: $qc_server_id - $qc_server_rule_id</B>\n";
         echo "<br><br>\n";
 
         $SUB=$nSUB;
