@@ -4,7 +4,7 @@
 #
 # Author:	Lott Caskey <lottcaskey@gmail.com>
 #
-# chkconfig:	345 86 14
+# chkconfig:	345 99 14
 #
 # description:	Broadcasts the current servers stats using
 #		multicast within the subnet for client discovery.
