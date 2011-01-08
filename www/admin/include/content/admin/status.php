@@ -150,7 +150,7 @@ if ($ADD==321111111111111)
 	if ($LOGmodify_servers==1)
 	{
 	echo "<br><center>\n";
-	echo "<font color=$default_text size=4>$t1 SYSTEM-WIDE STATUSES &nbsp; $NWB#osdial_statuses$NWE</font><br><br>\n";
+	echo "<font color=$default_text size=4>SYSTEM-WIDE STATUSES &nbsp; $NWB#osdial_statuses$NWE</font><br><br>\n";
 	echo "<table width=800 cellspacing=1 bgcolor=grey>\n";
 	echo "  <tr class=tabheader>\n";
     echo "    <td align=center>STATUS</td>\n";
@@ -268,7 +268,7 @@ if ($ADD==231111111111111)
 			if ( ($row[0] > 3) and (ereg('Y',$tovdad_display)) )
 				{
 				$tovdad_display = 'N';
-				echo "<br><B><font color=red>ERROR: There are already 4 Status Categories set to Time On $t1 Display</font></B>\n";
+				echo "<br><B><font color=red>ERROR: There are already 4 Status Categories set to display on the Real-Time report.</font></B>\n";
 				}
 
 			$stmt="INSERT INTO osdial_status_categories (vsc_id,vsc_name,vsc_description,tovdad_display) values('$vsc_id','$vsc_name','$vsc_description','$tovdad_display');";
@@ -328,7 +328,7 @@ if ($ADD==431111111111111)
 			if ( ($row[0] > 3) and (ereg('Y',$tovdad_display)) )
 				{
 				$tovdad_display = 'N';
-				echo "<br><B><font color=red>ERROR: There are already 4 Status Categories set to Time On $t1 Display</font></B>\n";
+				echo "<br><B><font color=red>ERROR: There are already 4 Status Categories set to display on the Real-Time report.</font></B>\n";
 				}
 
 			$stmt="UPDATE osdial_status_categories SET vsc_name='$vsc_name',vsc_description='$vsc_description',tovdad_display='$tovdad_display' where vsc_id='$vsc_id';";
@@ -361,7 +361,8 @@ if ($ADD==331111111111111)
 	if ($LOGmodify_servers==1)
 	{
 	echo "<br>\n";
-	echo "<center><font size=4 color=$default_text>$t1 STATUS CATEGORIES &nbsp; $NWB#osdial_status_categories$NWE</font></center><br>\n";
+	echo "<center><font size=4 color=$default_text>STATUS CATEGORIES &nbsp; $NWB#osdial_status_categories$NWE</font></center><br>\n";
+    echo "<center>\n";
 	echo "<table width=800 cellspacing=1 bgcolor=grey>\n";
 	echo "  <tr class=tabheader>\n";
     echo "    <td align=center>CATEGORY</td>\n";
@@ -439,6 +440,7 @@ if ($ADD==331111111111111)
     echo "  </tr>\n";
     echo "  </form>\n";
 	echo "</table>\n";
+    echo "</center>\n";
 
 	}
 	else
