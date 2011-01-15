@@ -1,5 +1,206 @@
+2011-01-08  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1197] extras/osdial.init: Run update process on startup.
+	* [r1196] www/admin/include/content/admin/phones.php,
+	  www/admin/include/content/admin/server.php: Remote label
+	* [r1195] www/admin/include/content/admin/status.php: center
+	  categories.
+	* [r1194] bin/osdial_media_sync.pl: Add generic-hold/vm-goodbye on
+	  run.
+	* [r1193] extras/osdial_resource_listen.init,
+	  extras/osdial_resource_send.init: Adjust osdial_resource
+	  processes to run after osdial.
+	* [r1192] extras/osdial_resource_listen.init,
+	  extras/osdial_resource_send.init: Start resource monitoring after
+	  MySQL/Apache start.
+
+2011-01-03  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1191] www/admin/include/content/admin/media.php: Add
+	  instructions for 8167.
+	* [r1190] perl/lib/OSDial.pm: Add agi_tts_sayphrase module.
+	* [r1189] agi/agi-OSDtts.agi: TTS agi script.
+
+2011-01-02  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1188] perl/lib/OSDial.pm, www/admin/include/functions.php: Do
+	  not add if it is a directory.
+
+2010-12-30  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1187] bin/osdial_media_sync.pl: Do not scan destinations for
+	  reimport.
+	* [r1186] bin/osdial_astgen.pl: Build extensions to play media
+	  files.
+	* [r1185] www/admin/getmedia.php,
+	  www/admin/include/content/admin/media.php,
+	  www/admin/include/header.php, www/admin/include/menu.php,
+	  www/admin/include/variables.php: Added media management component
+	  to Admin section. Added getmedia.php a playback/download script.
+	* [r1184] www/admin/include/EditableSelect.js,
+	  www/admin/include/functions.php: Added EditableSelect types.
+	* [r1183] www/admin/include/content/campaigns/campaigns.php: Adjust
+	  width of field columns. Add 8320 to AM Message Exten.
+
+2010-12-28  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1182] www/admin/include/content/admin/carriers.php,
+	  www/admin/include/content/campaigns/campaigns.php,
+	  www/admin/include/content/ingroups/ingroups.php: Change to
+	  extension_list_options.
+	* [r1181] www/admin/include/functions.php: Add is_assoc function.
+	  Cleanup of editableSelect function. Add extension_test_options
+	  function. Change list functions to use type.
+	* [r1180] www/admin/include/EditableSelect.js: Modifications for
+	  adding a label to selection. Auto resizing and rewidth of
+	  internal div elements. Major restructuring...
+
+2010-12-25  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1179] www/agent/include/osdial-dynamic.js,
+	  www/agent/include/osdial-static.js: Modify enter_disable to
+	  advance the focus to the next form element if enter is pressed.
+
+2010-12-24  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1178] www/admin/include/content/admin/carriers.php,
+	  www/admin/include/content/admin/conference.php,
+	  www/admin/include/content/admin/phones.php,
+	  www/admin/include/content/campaigns/campaigns.php,
+	  www/admin/include/content/campaigns/ivr.php,
+	  www/admin/include/content/ingroups/ingroups.php,
+	  www/admin/include/content/remoteagent/remoteagent.php,
+	  www/admin/include/functions.php: Add server_profile, type,
+	  selection to get_servers(). Updated corresponding scripts. Added
+	  an editableSelectBox() function and supporting methods. Updated
+	  Ingroup to use the editableSelectBox() on Filenames, Extensions,
+	  and Voicemail boxes.
+	* [r1177] agi/agi-OSDvmail_finder.agi,
+	  docs/conf_examples/osdial_extensions.conf: Added an AGI script to
+	  find the home server for a given voicemail box and delegate to
+	  it.
+	* [r1176] agi/agi-VDAD_ALL_inbound.agi: Allow welcome_message_file
+	  to be blank.
+	* [r1175] www/admin/include/content/campaigns/ivr.php,
+	  www/admin/include/content/ingroups/ingroups.php,
+	  www/admin/include/functions.php: Added media_file_label_list()
+	  and media_file_select_options() functions. Replaced select
+	  options in IVR and InGroups.
+	* [r1174] bin/osdial_media_sync.pl: Added --file and --dir options
+	  for loading specific files/directories.
+	* [r1173] agi/agi-OSDivr.agi,
+	  www/admin/include/content/campaigns/ivr.php: Modify IVR to use
+	  the new osdial_media table.
+	* [r1172] perl/lib/OSDial.pm: chmod on pattern match. Fix oct()
+	  typos.
+	* [r1171] www/admin/include/functions.php: chmod on pattern match.
+
+2010-12-23  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1170] www/admin/include/functions.php: Added osdial_media and
+	  osdial_media_data functions which are identical to perl module.
+	* [r1169] perl/lib/OSDial.pm: Update permissions for web access to
+	  media files.
+	* [r1168] docs/conf_examples/osdial_extensions.conf: Patched
+	  Asterisk to prefix 'osdial/' as a last-ditch effort to find sound
+	  files.
+	* [r1167] docs/conf_examples/osdial_extensions.conf: Change
+	  851XXXXX extensions to play recording from osdial directory.
+	* [r1166] bin/osdial_media_sync.pl: Add some locations to scan/save
+	  too.
+	* [r1165] perl/lib/OSDial.pm: Type on _mimemap. In media_save_file,
+	  mkdir if it doesnt exist.
+	* [r1164] agi/agi-record_prompts.agi,
+	  docs/conf_examples/osdial_extensions.conf: Rewrote
+	  agi-record_prompts.agi to use OSDial perl module. AGI script now
+	  writes the recording to database. Change extension parameters
+	  from -----.
+	* [r1163] bin/osdial_media_sync.pl, extras/httpd-osdial.conf,
+	  extras/osdial.cron, extras/sql/229083.sql,
+	  extras/sql/upgrade_sql.map, perl/lib/OSDial.pm, version: Add
+	  osdial_media and osdial_media_data tables. Create media_* methods
+	  in perl-OSDial. Add documentation to perl-OSDial. Create
+	  osdial_media_sync.pl. Add osdial_media_sync.pl to cron. Add media
+	  mimetypes to httpd-osdial.conf.
+	* [r1162] agi/agi-record_prompts.agi: Fix missing file glob.
+	* [r1161] agi/agi-OSDivr.agi,
+	  www/admin/include/content/campaigns/ivr.php: Add
+	  AGENT_EXTENSIONS, invalid extension. Refine hangup to force a
+	  softhangup if channel still active after hangup.
+	* [r1160] bin/osdial_ivr_sync.sh: Don't do conversions.
+
+2010-12-22  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1159] extras/firewall.sh: Typo on ISX port. Disable voip-abuse
+	  by default.
+	* [r1158] www/agent/include/osdial-static.js: Fix CXFER/AXFER with
+	  carrier configuration.
+	* [r1157] www/admin/include/content/admin/carriers.php: Sort dids
+	  by entry.
+	* [r1156] bin/osdial_astgen.pl: Modify osdial_asten to allow patern
+	  matching in DID actions.
+	* [r1155] www/admin/include/content/admin/carriers.php: Change
+	  minimum DID length to 1 char.
+	* [r1154] bin/osdial_astgen.pl: Modify osdial_asten to allow patern
+	  matching in DID actions.
+	* [r1153] www/admin/include/content/admin/carriers.php: Change
+	  minimum DID length to 1 char.
+
+2010-12-21  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1152] bin/osdial-astsnds-ramfs.sh: Drop sounds.ramfs and have
+	  asterisk find the appropriate directories.
+
+2010-12-20  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1151] extras/sql/999999.sql: Fix example configuration.
+	* [r1150] agi/agi-OSDivr.agi: Cleanup hangup routines. Check line
+	  status while in menus. Clear live_agent record when call is
+	  finished.
+
+2010-12-19  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1149] agi/agi-OSDivr.agi,
+	  www/admin/include/content/campaigns/ivr.php: Added
+	  AGENT_EXTENSIONS for transferring directly to agents from IVR.
+	  Cleanup of agi-OSDivr...
+	* [r1148] bin/AST_send_action_child.pl: Reduce sleep time per
+	  request.
+	* [r1147] bin/AST_VDremote_agents.pl: Add debug.
+	* [r1146] bin/AST_manager_send.pl: Reduce loop time wait. Change
+	  process detection.
+	* [r1145] agi/agi-VDAD_ALL_inbound.agi: Do not sleep on IVR xfer.
+	* [r1144] www/admin/include/functions.php: Test for array.
+
+2010-12-18  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1143] www/admin/include/content/admin/phones.php: Fix typo.
+	* [r1142] bin/osdial_astgen.pl: Do not generate SIP/IAX2 profiles
+	  for servers that are not AIO or DIALER.
+	* [r1141] agi/agi-OSDivr.agi, extras/sql/229082.sql,
+	  extras/sql/upgrade_sql.map, version,
+	  www/admin/include/content/campaigns/ivr.php,
+	  www/admin/include/variables.php: Added Agent Extensions option to
+	  IVR.
+	* [r1140] www/admin/include/content/reports/closer_stats.php:
+	  Separate a2a groups.
+	* [r1139] www/admin/include/content/users/users.php,
+	  www/admin/include/functions.php, www/admin/include/help.php,
+	  www/admin/include/help.xml, www/admin/include/validation.php,
+	  www/admin/include/variables.php: Reorganize agent admin options.
+	  Add default phone/voicemail select to agent. Added timeout
+	  controls for agent2agent transfers.
+	* [r1138] bin/AST_manager_listen.pl: Added AMI event to update VM
+	  password in the phone record.
+
 2010-12-16  Lott Caskey <lottcaskey@gmail.com>
 
+	* [r1137] extras/osdial.cron, extras/osdial.spec: Update the cron
+	  entries and spec file.
+	* [r1136] ChangeLog, Makefile, extras/osdial.spec: Add the
+	  installation of some missing documentation, various examples and
+	  daemon configurations to the Makefile. Update the osdial.spec.
+	  Update ChangeLog.
 	* [r1135] bin/osdial_astgen.pl: Allow multiple registrations per
 	  carrier.
 	* [r1134] extras/firewall.sh: Update bogons in firewall script.
