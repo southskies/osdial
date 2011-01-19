@@ -279,7 +279,7 @@ foreach my $file (readdir(FILE)) {
 				my $FTPdb=0;
 				my $sts=0;
 				`cp -f '$dir2/$ALLfile' '$osdial->{PATHarchive_backup}'`;
-				if ($archive_host eq "127.0.0.1") {
+				if ($archive_host eq "127.0.0.1" or $archive_host eq 'localhost') {
 						`mv '$dir2/$ALLfile' '$osdial->{PATHarchive_home}/$osdial->{PATHarchive_unmixed}'`;
 				} else {
 					$FTPdb=1 if ($DBX);
