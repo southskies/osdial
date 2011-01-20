@@ -728,7 +728,7 @@ if ($ADD=="399111111111111") {
 
         echo "<tr bgcolor=$oddrows><td align=right>Port: </td><td align=left><input type=text name=archive_port size=6 maxlength=5 value=\"$archive_port\">$NWB#settings-archive_port$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Username: </td><td align=left><input type=text name=archive_username size=20 maxlength=20 value=\"$archive_username\">$NWB#settings-archive_username$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=archive_password size=20 maxlength=20 value=\"$archive_password\">$NWB#settings-archive_password$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=archive_password size=20 maxlength=200 value=\"$archive_password\">$NWB#settings-archive_password$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Recording Path: </td><td align=left><input type=text name=archive_path size=40 maxlength=255 value=\"$archive_path\">$NWB#settings-archive_path$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Report Path: </td><td align=left><input type=text name=archive_report_path size=40 maxlength=255 value=\"$archive_report_path\">$NWB#settings-archive_report_path$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Web Path: </td><td align=left><input type=text name=archive_web_path size=40 maxlength=255 value=\"$archive_web_path\">$NWB#settings-archive_web_path$NWE</td></tr>\n";
@@ -820,7 +820,7 @@ if ($ADD=="399911111111111") {
         echo "<tr bgcolor=$oddrows><td align=right>DNC MySQL Address: </td><td align=left><input type=text name=external_dnc_address size=30 maxlength=30 value=\"$external_dnc_address\">$NWB#settings-external_dnc_address$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Database Name: </td><td align=left><input type=text name=external_dnc_database size=20 maxlength=20 value=\"$external_dnc_database\">$NWB#settings-external_dnc_database$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Username: </td><td align=left><input type=text name=external_dnc_username size=20 maxlength=20 value=\"$external_dnc_username\">$NWB#settings-external_dnc_username$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=external_dnc_password size=20 maxlength=20 value=\"$external_dnc_password\">$NWB#settings-external_dnc_password$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=external_dnc_password size=20 maxlength=200 value=\"$external_dnc_password\">$NWB#settings-external_dnc_password$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>SQL: </td><td align=left><input type=text name=external_dnc_sql size=40 maxlength=255 value=\"$external_dnc_sql\">$NWB#settings-external_dnc_sql$NWE</td></tr>\n";
 
 
