@@ -210,6 +210,7 @@ if (length($ARGV[0])>1) {
 	$inbound_number = 	$ARGV_vars[3];
 	$parked_by = 		$ARGV_vars[4];
 	$park_extension = 	$ARGV_vars[5];
+	$park_extension="8301" if ($park_extension=="");
 	$status = 		$ARGV_vars[6];
 	$list_id = 		$ARGV_vars[7];
 	$phone_code = 		$ARGV_vars[8];
@@ -245,6 +246,7 @@ if ($call_handle_method =~ /^CLOSER/) {
 		$inbound_number =	$EXT_vars[2];	# extension to send call to after parsing
 		$parked_by =		$EXT_vars[3];	# leadID
 		$park_extension =	$EXT_vars[4];	# filename of the on-hold music file
+		$park_extension="8301" if ($park_extension=="");
 		$comment_d =		$EXT_vars[5];	# N/A
 		$comment_e =		$EXT_vars[6];	# N/A
 
