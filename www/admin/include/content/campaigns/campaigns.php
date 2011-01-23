@@ -1090,7 +1090,7 @@ if ($ADD==31) {
                 }
             }
 
-        echo "<tr bgcolor=$oddrows><td align=right>Add A Dial Status: </td><td align=left><select size=1 name=dial_status $DEFlistDISABLE>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Add A Dial Status: </td><td align=left><select size=1 style=\"width:300px;\" name=dial_status $DEFlistDISABLE>\n";
         echo "<option value=\"\"> - NONE - </option>\n";
 
         echo "$dial_statuses_list";
@@ -2006,7 +2006,7 @@ if ($ADD==34)
                 }
             }
 
-        echo "<tr bgcolor=$oddrows><td align=right>Add A Dial Status: </td><td align=left><select size=1 name=dial_status $DEFlistDISABLE>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Add A Dial Status: </td><td align=left><select size=1 style=\"width:300px;\" name=dial_status $DEFlistDISABLE>\n";
         echo "<option value=\"\"> - NONE - </option>\n";
 
         echo "$dial_statuses_list";
