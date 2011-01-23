@@ -83,7 +83,7 @@ if ($ADD==421111111111111)
 	{
 	if (ereg('delete',$stage))
 		{
-		if ( (strlen($status) < 1) or (preg_match("/^B$|^NA$|^DNC$|^NA$|^DROP$|^INCALL$|^QUEUE$|^NEW$/i",$status)) )
+		if ( (strlen($status) < 1) or (preg_match("/^B$|^DNC$|^NA$|^DROP$|^INCALL$|^QUEUE$|^NEW$/i",$status)) )
 			{
 			 echo "<br><font color=red>SYSTEM STATUS NOT DELETED - Please go back and look at the data you entered\n";
 			 echo "<br>the system status cannot be a reserved status: B,NA,DNC,NA,DROP,INCALL,QUEUE,NEW\n";
@@ -199,7 +199,7 @@ if ($ADD==321111111111111)
 		echo "    <td align=center class=tabinput><select size=1 name=category>$cats_list<option selected value=\"$AScategory\">$AScategory - $catsname_list[$AScategory]</option></select></td>\n";
 		echo "    <td align=center nowrap>\n";
 		
-		if (preg_match("/^B$|^NA$|^DNC$|^NA$|^DROP$|^INCALL$|^QUEUE$|^NEW$/i",$rowx[0])) {
+		if (preg_match("/^AA$|^AL$|^AM$|^B$|^CALLBK$|^CBHOLD$|^CRC$|^CRF$|^CRO$|^CRR$|^DC$|^DNCE$|^DNCL$|^DNC$|^NA$|^DROP$|^INCALL$|^QUEUE$|^NEW$|^XFER$|^XDROP$/i",$rowx[0])) {
 			echo "      <del>DELETE</del>\n";
 		} else {
 			echo "      <a href=\"$PHP_SELF?ADD=421111111111111&status=$rowx[0]&stage=delete\">DELETE</a>\n";
