@@ -1146,6 +1146,12 @@ if ($ACTION=="Redirect")
 		$rslt=mysql_query($stmt, $link);
 
 		echo "Redirect command sent for Channel $channel on $server_ip\n";
+		if ($WeBRooTWritablE > 0)
+			{
+			$fp = fopen ("./osdial_debug.txt", "a");
+			fwrite ($fp, "$NOW_TIME|RD|$queryCID|$channel|$exten|$ext_context|$outCID|\n");
+			fclose($fp);
+			}
 		}
 	}
 }
