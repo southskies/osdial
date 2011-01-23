@@ -3,7 +3,7 @@
 LOCK TABLES server_performance WRITE;##|##
  ##    Lock Tables.;
 
-ALTER TABLE server_performance DROP PRIMARY KEY;##|##
+#ALTER TABLE server_performance DROP PRIMARY KEY;##|##
  ##    Drop primary key if it is there.;
 
 DELETE FROM server_performance;##|##

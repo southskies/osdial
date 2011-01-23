@@ -1,6 +1,6 @@
 # 02/28/2010
 
-LOCK TABLES osdial_campaign_server_stats WRITE, osdial_campaign_agents WRITE, osdial_campaign_hotkeys WRITE, osdial_campaign_statuses WRITE, osdial_pause_codes WRITE, phones WRITE, web_client_sessions WRITE, server_updater WRITE, parked_channels WRITE, osdial_campaigns WRITE, osdial_campaigns_list_mix WRITE, osdial_hopper WRITE, osdial_lead_recycle WRITE, osdial_lists WRITE, osdial_live_agents WRITE, osdial_remote_agents WRITE, servers WRITE, conferences WRITE, osdial_conferences WRITE;##|##
+LOCK TABLES osdial_campaign_server_stats WRITE, osdial_campaign_agents WRITE, osdial_callbacks WRITE, osdial_campaign_hotkeys WRITE, osdial_campaign_statuses WRITE, osdial_pause_codes WRITE, phones WRITE, web_client_sessions WRITE, server_updater WRITE, parked_channels WRITE, osdial_campaigns WRITE, osdial_campaigns_list_mix WRITE, osdial_hopper WRITE, osdial_lead_recycle WRITE, osdial_lists WRITE, osdial_live_agents WRITE, osdial_remote_agents WRITE, servers WRITE, conferences WRITE, osdial_conferences WRITE;##|##
  ##    Lock Tables.;
 
 ALTER TABLE osdial_campaign_server_stats DROP INDEX campaign_id, DROP INDEX server_ip, DROP INDEX camp_serv;##|##
@@ -17,9 +17,9 @@ ALTER TABLE phones DROP INDEX server_ip;##|##
  ##    Bad index.;
 ALTER TABLE web_client_sessions DROP INDEX session_name;##|##
  ##    Bad index.;
-ALTER TABLE server_updater DROP PRIMARY KEY;##|##
+#ALTER TABLE server_updater DROP PRIMARY KEY;##|##
  ##    Drop primary key.;
-ALTER TABLE parked_channels DROP PRIMARY KEY;##|##
+#ALTER TABLE parked_channels DROP PRIMARY KEY;##|##
  ##    Drop primary key.;
 
 ALTER TABLE osdial_campaign_agents MODIFY campaign_id VARCHAR(20) NOT NULL, MODIFY user VARCHAR(20) NOT NULL;##|##
