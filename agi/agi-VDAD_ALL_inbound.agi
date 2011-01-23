@@ -855,20 +855,32 @@ while ($drop_timer <= $DROP_TIME) {
 				$stmtA = "UPDATE osdial_closer_log SET user='$VDADuser' WHERE lead_id='$insert_lead_id' ORDER BY call_date DESC LIMIT 1;";
 				$affected_rows = $dbhA->do($stmtA);
 				if ($AGILOG) {$agi_string = "--    closer log : |$affected_rows|$insert_lead_id";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
+				### format the remote server dialstring to get the call to the overflow agent meetme room
+				$S='*';
+				if( $VARserver_ip =~ m/(\S+)\.(\S+)\.(\S+)\.(\S+)/ ) {
+					$a = leading_zero($1); 
+					$b = leading_zero($2); 
+					$c = leading_zero($3); 
+					$d = leading_zero($4);
+					$VDADremDIALstr = "$a$S$b$S$c$S$d$isp";
+				}
+				$alertVDADremDIALstr = "$VDADremDIALstr";
+				$alertVDADremDIALstr .= "7$VDADconf_exten";
+				$VDADremDIALstr .= "7$VDADconf_exten";
 
 				### if agent alert exten is not disabled, then trigger the alert and wait
 				if ($agent_alert_exten !~ /X/i) {
 					$VHqueryCID = "VH$CIDdate$VDADconf_exten";
 
 					### insert a NEW record to the osdial_manager table to play the alert message to the agent
-					$stmtA = "INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$VHqueryCID','Exten: $agent_alert_exten','Context: $ext_context','Channel: Local/7$VDADconf_exten$at$ext_context','Priority: 1','Callerid: $VHqueryCID','Timeout: 10','Account: $VHqueryCID','','','');";
+					$stmtA = "INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$VHqueryCID','Exten: $agent_alert_exten','Context: $ext_context','Channel: Local/$VDADremDIALstr$at$ext_context','Priority: 1','Callerid: $VHqueryCID','Timeout: 10','Account: $VHqueryCID','','','');";
 					$affected_rows = $dbhA->do($stmtA);  
-					if ($AGILOG) {$agi_string = "--    VDCL agent alert: |$VHqueryCID|7$VDADconf_exten|$channel|insert to osdial_manager";   &agi_output;}
+					if ($AGILOG) {$agi_string = "--    VDCL agent alert: |$VHqueryCID|$VDADremDIALstr|$channel|insert to osdial_manager";   &agi_output;}
 
 					usleep(1 * $agent_alert_delay * 1000);
 				}
 
-				if ($AGILOG) {$agi_string = "exiting VDAD app, transferring call to $VDADconf_exten";   &agi_output;}
+				if ($AGILOG) {$agi_string = "exiting VDAD app, transferring call to $VDADremDIALstr";   &agi_output;}
 
 				$AGI->stream_file('sip-silence'); # stop music-on-hold process
 
@@ -894,7 +906,7 @@ while ($drop_timer <= $DROP_TIME) {
 				}
 
 				if ($VDADconf_exten =~ /^87......$|^687......$|^787......$/) {
-					$stmtA="INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$accountcode','Channel: Local/$VDADconf_exten\@$ext_context','Context: $ext_context','Exten: 487487','Priority: 1','Account: $accountcode','','','','','');";
+					$stmtA="INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$accountcode','Channel: Local/$VDADremDIALstr\@$ext_context','Context: $ext_context','Exten: 487487','Priority: 1','Account: $accountcode','','','','','');";
 					$affected_rows = $dbhA->do($stmtA);
 					if ($AGILOG and $DB>1) {$agi_string = "$affected_rows|$stmtA";   &agi_output;}
 				} else {
@@ -903,7 +915,7 @@ while ($drop_timer <= $DROP_TIME) {
 
 				print "SET CONTEXT $ext_context\n";
 				checkresult();
-				print "SET EXTENSION 7$VDADconf_exten\n";
+				print "SET EXTENSION $VDADremDIALstr\n";
 				checkresult();
 				print "SET PRIORITY 1\n";
 				checkresult();

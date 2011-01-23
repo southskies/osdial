@@ -285,10 +285,10 @@ sub gen_servers {
 	$isvr .= "qualify=5000\n";
 
 	$esvr .= "; Local blind monitoring\n";
-	$esvr .= "exten => _0860XXXX,1,Dial(\${TRUNKblind}/6\${EXTEN:1},55,To)\n";
-	$esvr .= "exten => _06860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:1},55,To)\n";
-	$esvr .= "exten => _07860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:1},55,To)\n";
-	$esvr .= "exten => _08860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:2},55,To)\n";
+	$esvr .= "exten => _0860XXXX,1,Dial(\${TRUNKblind}/6\${EXTEN:1},55,o)\n";
+	$esvr .= "exten => _06860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:1},55,o)\n";
+	$esvr .= "exten => _07860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:1},55,o)\n";
+	$esvr .= "exten => _08860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:2},55,o)\n";
 
 	$ireg .= "register => ASTloop:$pass\@127.0.0.1:40569\n";
 	$ireg .= "register => ASTblind:$pass\@127.0.0.1:41569\n";
@@ -309,9 +309,12 @@ sub gen_servers {
 		my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
 		my $fsip2 = sprintf('%.3d%.3d%.3d%.3d',@sip);
 		$esvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
-		$esvr .= "exten => _" . $fsip . "*.,1,Goto(osdial,\${EXTEN:16},1)\n";
-		$esvr .= "exten => _" . $fsip . "#.,1,Goto(osdial,\${EXTEN:16},1)\n";
-		$esvr .= "exten => _" . $fsip2 . ".,1,Goto(osdial,\${EXTEN:12},1)\n";
+		$esvr .= ";exten => _" . $fsip . "*.,1,Goto(osdial,\${EXTEN:16},1)\n";
+		$esvr .= ";exten => _" . $fsip . "#.,1,Goto(osdial,\${EXTEN:16},1)\n";
+		$esvr .= ";exten => _" . $fsip2 . ".,1,Goto(osdial,\${EXTEN:12},1)\n";
+		$esvr .= "exten => _" . $fsip . "*.,1,Dial(Local/\${EXTEN:16}\@osdial/n,,o)\n";
+		$esvr .= "exten => _" . $fsip . "#.,1,Dial(Local/\${EXTEN:16}\@osdial/n,,o)\n";
+		$esvr .= "exten => _" . $fsip2 . ".,1,Dial(Local/\${EXTEN:12}\@osdial/n,,o)\n";
 
 		$isvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
 		$isvr .= "[" . $sret->{server_id} . "]\n";
