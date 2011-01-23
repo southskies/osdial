@@ -923,7 +923,9 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 if ($DB) echo "$stmt\n";
                 $row=mysql_fetch_row($rslt);
                 $park_ext =                $row[0];
+                if ($park_ext=="") $park_ext="8301";
                 $park_file_name =            $row[1];
+                if ($park_file_name=="") $park_file_name="park";
                 $web_form_address =            $row[2];
                 $allow_closers =            $row[3];
                 $auto_dial_level =            $row[4];
@@ -1305,9 +1307,13 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
         $login_pass=$row[21];
         $login_campaign=$row[22];
         $park_on_extension=$row[23];
+        if ($park_on_extension=="") $park_on_extension="8301";
         $conf_on_extension=$row[24];
+        if ($conf_on_extension=="") $conf_on_extension="8302";
         $OSDiaL_park_on_extension=$row[25];
+        if ($OSDiaL_park_on_extension=="") $OSDiaL_park_on_extension="8301";
         $OSDiaL_park_on_filename=$row[26];
+        if ($OSDiaL_park_on_filename=="") $OSDiaL_park_on_filename="park";
         $monitor_prefix=$row[27];
         $recording_exten=$row[28];
         $voicemail_exten=$row[29];
