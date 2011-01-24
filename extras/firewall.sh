@@ -100,6 +100,16 @@ if [ $imports -lt 1 ]; then
 		[ "$LAN2_IP1" = "auto" -o "$LAN2_IP1" = "AUTO" ] && LAN2_IP1="`${IFC} ${LAN2_IF} | grep inet | cut -d : -f 2 | cut -d \  -f 1`" || :
 		[ "$LAN2_NET" = "auto" -o "$LAN2_NET" = "AUTO" ] && LAN2_NET="${LAN2_IP1}/`${IFC} ${LAN2_IF} | grep Mas | cut -d : -f 4`" || :
 	fi
+	if [ -z "$LAN1_IF" ]; then
+		LAN1_IF=$WAN_IF
+		LAN1_NET=$WAN_NET
+		LAN1_IP1=$WAN_IP1
+	fi
+	if [ -z "$WAN_IF" ]; then
+		WAN_IF=$LAN1_IF
+		WAN_NET=$LAN1_NET
+		WAN_IP1=$LAN1_IP1
+	fi
 
 	# If ENABLE_GATEWAY is 1, your LAN stations will be able to route traffic out of this server
 	# as if it was a router.  If you will not be using this server as a gateway, you should leave
@@ -164,14 +174,19 @@ if [ $imports -lt 1 ]; then
 	######### Trusted (Local) Interfaces ################################
 	#FW_TrustInterface "LABEL" "INTERFACE"
 	FW_TrustInterface  "LO"    "$LO_IF"
-	FW_TrustInterface  "LAN1"  "$LAN1_IF"
-	FW_TrustInterface  "LAN2"  "$LAN2_IF"
+	if [ "$WAN_IF" != "$LAN1_IF" ]; then
+		FW_TrustInterface  "LAN1"  "$LAN1_IF"
+		FW_TrustInterface  "LAN2"  "$LAN2_IF"
+	fi
 	FW_TrustInterface  "VPN1"  "$VPN1_IF"
 	FW_TrustInterface  "VPN2"  "$VPN2_IF"
 
 
 	######### Trusted (Public) IP Addresses, Networks, or Hostnames #####
 	#FW_TrustHost "LABEL"           "IP|NETWORK|HOSTNAME"
+	if [ "$WAN_IF" = "$LAN1_IF" ]; then
+        	FW_TrustHost  "LAN"             "$LAN1_NET"
+	fi
         FW_TrustHost  "CCSG 1"          "24.73.199.62"
         FW_TrustHost  "CCSG 2"          "67.78.177.146"
         FW_TrustHost  "XCast 1"         "38.102.250.50"
@@ -658,20 +673,22 @@ FW_LoadTables() {
 	for i in ${BOGONS[@]}; do
 		IPT "-A bogon_in -s $i -j DROP"
 		IPT "-A bogon_out -d $i -j DROP"
-		if [ -n "$WAN_IF" ]; then
+		if [ -n "$WAN_IF" -a "$WAN_IF" != "$LAN1_IF" ]; then
 			IPT "-t nat -A PREROUTING -i $WAN_IF -s $i -j DROP"
 			IPT "-t nat -A POSTROUTING -o $WAN_IF -d $i -j DROP"
 		fi
 	done
 	if [ -n "$WAN_IF" ]; then
-		[ -e /lib/iptables/libipt_pkttype.so  -o -e /lib64/iptables/libipt_pkttype.so ]  && IPT "-t nat -A PREROUTING -i $WAN_IF -m pkttype --pkt-type broadcast -j DROP" || :
-		#[ -e /lib/iptables/libipt_addrtype.so -o -e /lib64/iptables/libipt_addrtype.so ] && IPT "-t nat -A PREROUTING -i $WAN_IF -m addrtype --src-type MULTICAST -j DROP" || :
-		[ -n "$LAN1_IF" -a -n "$LAN1_NET" ] && IPT "-t nat -A PREROUTING -i $WAN_IF -s $LAN1_NET -j DROP" || :
-		[ -n "$LAN2_IF" -a -n "$LAN2_NET" ] && IPT "-t nat -A PREROUTING -i $WAN_IF -s $LAN2_NET -j DROP" || :
+		if [ "$WAN_IF" != "$LAN1_IF" ]; then
+			[ -e /lib/iptables/libipt_pkttype.so  -o -e /lib64/iptables/libipt_pkttype.so ]  && IPT "-t nat -A PREROUTING -i $WAN_IF -m pkttype --pkt-type broadcast -j DROP" || :
+			#[ -e /lib/iptables/libipt_addrtype.so -o -e /lib64/iptables/libipt_addrtype.so ] && IPT "-t nat -A PREROUTING -i $WAN_IF -m addrtype --src-type MULTICAST -j DROP" || :
+			[ -n "$LAN1_IF" -a -n "$LAN1_NET" ] && IPT "-t nat -A PREROUTING -i $WAN_IF -s $LAN1_NET -j DROP" || :
+			[ -n "$LAN2_IF" -a -n "$LAN2_NET" ] && IPT "-t nat -A PREROUTING -i $WAN_IF -s $LAN2_NET -j DROP" || :
 
-		#[ -e /lib/iptables/libipt_addrtype.so -o -e /lib64/iptables/libipt_addrtype.so ] && IPT "-t nat -A POSTROUTING -o $WAN_IF -m addrtype --dst-type MULTICAST -j DROP" || :
-		[ -n "$LAN1_IF" -a -n "$LAN1_NET" ] && IPT "-t nat -A POSTROUTING -o $WAN_IF -d $LAN1_NET -j DROP" || :
-		[ -n "$LAN2_IF" -a -n "$LAN2_NET" ] && IPT "-t nat -A POSTROUTING -o $WAN_IF -d $LAN2_NET -j DROP" || :
+			#[ -e /lib/iptables/libipt_addrtype.so -o -e /lib64/iptables/libipt_addrtype.so ] && IPT "-t nat -A POSTROUTING -o $WAN_IF -m addrtype --dst-type MULTICAST -j DROP" || :
+			[ -n "$LAN1_IF" -a -n "$LAN1_NET" ] && IPT "-t nat -A POSTROUTING -o $WAN_IF -d $LAN1_NET -j DROP" || :
+			[ -n "$LAN2_IF" -a -n "$LAN2_NET" ] && IPT "-t nat -A POSTROUTING -o $WAN_IF -d $LAN2_NET -j DROP" || :
+		fi
 
 
 		# INPUT chain rules.
@@ -709,7 +726,7 @@ FW_LoadTables() {
 
 
 		# FORWARD / POSTROUTING / SNAT
-		if [ "$ENABLE_GATEWAY" = "1" ]; then
+		if [ "$ENABLE_GATEWAY" = "1" -a "$WAN_IF" != "$LAN1_IF" ]; then
 			# Setup LAN1 forwards before masquerading.
 			if [ -n "$LAN1_IF" ]; then
 				[ -n "$LAN1_NET" ] && IPT "-A FORWARD -d 0/0 -s $LAN1_NET -o $WAN_IF -j ACCEPT" "Forward: Accept: (all) $LAN1_NET -> 0/0 VIA [$WAN_IF]  : Forward before Masquerade" || :
