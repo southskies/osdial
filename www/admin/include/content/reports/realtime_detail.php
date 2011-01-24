@@ -293,13 +293,13 @@ function report_realtime_detail() {
     if ($group) {
         $stmt="SELECT avg(auto_dial_level),min(dial_status_a),min(dial_status_b),min(dial_status_c),min(dial_status_d),min(dial_status_e),min(lead_order),min(lead_filter_id),sum(hopper_level),min(dial_method),avg(adaptive_maximum_level),avg(adaptive_dropped_percentage),avg(adaptive_dl_diff_target),avg(adaptive_intensity),min(available_only_ratio_tally),min(adaptive_latest_server_time),min(local_call_time),avg(dial_timeout),min(dial_statuses),active FROM osdial_campaigns";
         if ($group=='XXXX-ALL-ACTIVE-XXXX') {
-            $stmt=sprintf("%s WHERE campaign_id IN %s;",$stmt,$LOG['allowed_campaignsSQL']);
+            $stmt=sprintf("%s WHERE campaign_id IN %s GROUP BY campaign_id;",$stmt,$LOG['allowed_campaignsSQL']);
         } elseif ($group=='XXXX-OUTBOUND-XXXX') {
-            $stmt=sprintf("%s WHERE length(closer_campaigns)<6 AND campaign_id IN %s;",$stmt,$LOG['allowed_campaignsSQL']);
+            $stmt=sprintf("%s WHERE length(closer_campaigns)<6 AND campaign_id IN %s GROUP BY campaign_id;",$stmt,$LOG['allowed_campaignsSQL']);
         } elseif ($group=='XXXX-INBOUND-XXXX') {
-            $stmt=sprintf("%s WHERE length(closer_campaigns)>5 AND campaign_id IN %s;",$stmt,$LOG['allowed_campaignsSQL']);
+            $stmt=sprintf("%s WHERE length(closer_campaigns)>5 AND campaign_id IN %s GROUP BY campaign_id;",$stmt,$LOG['allowed_campaignsSQL']);
         } else {
-            $stmt=sprintf("%s WHERE campaign_id IN %s AND campaign_id='%s';",$stmt,$LOG['allowed_campaignsSQL'],mres($group));
+            $stmt=sprintf("%s WHERE campaign_id IN %s AND campaign_id='%s' GROUP BY campaign_id;",$stmt,$LOG['allowed_campaignsSQL'],mres($group));
         }
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
@@ -405,7 +405,7 @@ function report_realtime_detail() {
         $html .= "<font class=indented color=#1C4754 size=2><b>$group - $group_name</b></font>";
         if (ereg("^XXXX",$group)) {
             $html .= '';
-        } elseif ($campaign_active>0) {
+        } elseif ($active=="Y") {
             $html .="<font color='green' size='-1'>&nbsp;&nbsp;(Active)</font>";
         } else {
             $html .="<font color='red'>&nbsp;&nbsp;(In-Active)</font>";
