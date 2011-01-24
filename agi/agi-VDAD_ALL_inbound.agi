@@ -493,7 +493,7 @@ if ($call_handle_method =~ /CLOSER/) {
 		}
 
 		$cbc=0;
-		$stmtA= "SELECT lead_id FROM osdial_list WHERE phone_number='$phone_number' OR alt_phone='$phone_number' OR address3='$phone_number' $listSQL ORDER BY last_local_call_time LIMIT 1;";
+		$stmtA= "SELECT lead_id FROM osdial_list FORCE INDEX (list_id) WHERE phone_number='$phone_number' OR alt_phone='$phone_number' OR address3='$phone_number' $listSQL ORDER BY last_local_call_time LIMIT 1;";
 		if ($AGILOG) {$agi_string = "VDAD osdial_list search |$phone_number";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
