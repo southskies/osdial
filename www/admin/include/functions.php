@@ -457,7 +457,7 @@ function dialable_leads($DB, $link, $local_call_time, $dial_statuses, $camp_list
                     $Dsql.= "'$Dstatuses[$o]',";
                 }
                 $Dsql = preg_replace("/,$/", "", $Dsql);
-                $stmt = "SELECT count(*) FROM osdial_list where called_since_last_reset='N' and status IN($Dsql) and list_id IN($camp_lists) and ($all_gmtSQL) $fSQL";
+                $stmt = "SELECT count(*) FROM osdial_list FORCE INDEX (list_status) where called_since_last_reset='N' and status IN($Dsql) and list_id IN($camp_lists) and ($all_gmtSQL) $fSQL";
                 if ($DB) {
                     echo "$stmt\n";
                 }
