@@ -507,47 +507,51 @@ if ($ADD==1121) {
 
                     $u=0;
                     $lastfrm='';
-	                foreach ($affrms as $affrm) {
-                        if ($lastfrm!='' and $lastfrm != $affrm['id']) {
-		                    echo "        <tr class=tabheader>\n";
-                            echo "          <td colspan=4></td>\n";
-                            echo "        </tr>\n";
-                        }
-                        $lastfrm = $affrm['id'];
-        
-                        $afflds = get_krh($link, 'osdial_campaign_fields', '*', 'priority ASC', sprintf("form_id='%s'",mres($affrm['id'])), '');
-                        if (count($afflds) > 0) {
-	                        foreach ($afflds as $affld) {
-                                $afldel='';
-                                $skip_fld=0;
-                                $bgcolor = bgcolor($u);
-                                $alf = get_first_record($link, 'osdial_list_fields', '*', sprintf("lead_id='%s' AND field_id='%s'",$ld['lead_id'],$affld['id']));
-                                if ($affrm['deleted'] > 0 or $affld['deleted'] > 0) {
-                                    if (strlen($alf['value']) > 0) {
-                                        $afldel = "color=red";
-                                        $bgcolor = 'bgcolor=#FFA07A title="This field has been deleted from the system, however, this lead still has data for it."';
-                                    } else {
-                                        $skip_fld=1;
+                    if (is_array($affrms)) {
+	                    foreach ($affrms as $affrm) {
+                            if ($lastfrm!='' and $lastfrm != $affrm['id']) {
+		                        echo "        <tr class=tabheader>\n";
+                                echo "          <td colspan=4></td>\n";
+                                echo "        </tr>\n";
+                            }
+                            $lastfrm = $affrm['id'];
+            
+                            $afflds = get_krh($link, 'osdial_campaign_fields', '*', 'priority ASC', sprintf("form_id='%s'",mres($affrm['id'])), '');
+                            if (count($afflds) > 0) {
+                                if (is_array($afflds)) {
+	                                foreach ($afflds as $affld) {
+                                        $afldel='';
+                                        $skip_fld=0;
+                                        $bgcolor = bgcolor($u);
+                                        $alf = get_first_record($link, 'osdial_list_fields', '*', sprintf("lead_id='%s' AND field_id='%s'",$ld['lead_id'],$affld['id']));
+                                        if ($affrm['deleted'] > 0 or $affld['deleted'] > 0) {
+                                            if (strlen($alf['value']) > 0) {
+                                                $afldel = "color=red";
+                                                $bgcolor = 'bgcolor=#FFA07A title="This field has been deleted from the system, however, this lead still has data for it."';
+                                            } else {
+                                                $skip_fld=1;
+                                            }
+                                        }
+                                        if ($skip_fld < 1) {
+                                            echo '<form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
+		                                    echo '<input type="hidden" name="DB" value="' . $DB . '">';
+		                                    echo '<input type="hidden" name="ADD" value="' . $ADD . '">';
+		                                    echo '<input type="hidden" name="SUB" value="' . $SUB . '">';
+		                                    echo '<input type="hidden" name="save_aff" value=1>';
+		                                    echo '<input type="hidden" name="lead_id" value="' . $ld['lead_id'] . '">';
+		                                    echo '<input type="hidden" name="alf_id" value="' . $alf['id'] . '">';
+		                                    echo '<input type="hidden" name="alf_fld_id" value="' . $affld['id'] . '">';
+		                                    echo "    <tr $bgcolor class=\"row font1\">\n";
+                                            echo "      <td align=center><font $afldel><b>$affrm[name]</b></font></td>\n";
+                                            echo "      <td align=center><font $afldel><b>$affld[name]</b></font></td>\n";
+                                            echo "      <td align=center class=tabinput><input type=\"text\" name=\"alf_val\" size=\"30\" maxlength=\"255\" value=\"$alf[value]\"></td>\n";
+                                            echo "      <td align=center class=tabbutton1><input type=\"submit\" value=\"Save\"></td>\n";
+                                            echo "    </tr>\n";
+                                            echo "    </form>\n";
+                                            $wfv[$affrm['name'] . '_' . $affld['name']] = $alf['value'];
+                                            $u++;
+                                        }
                                     }
-                                }
-                                if ($skip_fld < 1) {
-                                    echo '<form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
-		                            echo '<input type="hidden" name="DB" value="' . $DB . '">';
-		                            echo '<input type="hidden" name="ADD" value="' . $ADD . '">';
-		                            echo '<input type="hidden" name="SUB" value="' . $SUB . '">';
-		                            echo '<input type="hidden" name="save_aff" value=1>';
-		                            echo '<input type="hidden" name="lead_id" value="' . $ld['lead_id'] . '">';
-		                            echo '<input type="hidden" name="alf_id" value="' . $alf['id'] . '">';
-		                            echo '<input type="hidden" name="alf_fld_id" value="' . $affld['id'] . '">';
-		                            echo "    <tr $bgcolor class=\"row font1\">\n";
-                                    echo "      <td align=center><font $afldel><b>$affrm[name]</b></font></td>\n";
-                                    echo "      <td align=center><font $afldel><b>$affld[name]</b></font></td>\n";
-                                    echo "      <td align=center class=tabinput><input type=\"text\" name=\"alf_val\" size=\"30\" maxlength=\"255\" value=\"$alf[value]\"></td>\n";
-                                    echo "      <td align=center class=tabbutton1><input type=\"submit\" value=\"Save\"></td>\n";
-                                    echo "    </tr>\n";
-                                    echo "    </form>\n";
-                                    $wfv[$affrm['name'] . '_' . $affld['name']] = $alf['value'];
-                                    $u++;
                                 }
                             }
                         }
@@ -702,31 +706,33 @@ if ($ADD==1121) {
 			
                 $rlogs = get_krh($link, 'recording_log', '*', 'recording_id DESC', sprintf("lead_id='%s'",mres($ld['lead_id'])), '500');
 	            $u=0;
-	            foreach ($rlogs as $rl) {
-		            $location = $rl['location'];
-		            $locat = ellipse($location,27,true);
-		            if (eregi("http",$location) or eregi("^//", $location)) {
-			            $location = eregi_replace("^//","/",$location);
-			            $location = "<a href=\"$location\">$locat</a>";
-		            } else {
-			            $location = $locat;
-		            }
-                    if ($u==0) $wfv['recording_id'] = $rl['recording_id'];
-		            $u++;
-		            echo "      <tr " . bgcolor($u) . " class=\"row font1\">\n";
-		            echo "        <td>$u</td>\n";
-		            echo "        <td align=left>" . $rl['lead_id'] . "</td>\n";
-		            echo "        <td align=left>" . $rl['starttime'] . "</td>\n";
-		            echo "        <td align=left>" . $rl['length_in_sec'] . "</td>\n";
-		            echo "        <td align=left>" . $rl['recording_id'] . "</td>\n";
-		            echo "        <td align=center>" . $rl['filename'] . "</td>\n";
-		            echo "        <td align=left>$location</td>\n";
-                    if ($LOG['view_agent_stats']) {
-		                echo "        <td align=left><a href=\"admin.php?ADD=999999&SUB=21&agent=" . $rl['user'] . "\" target=\"_blank\">" . $rl['user'] . "</a></td>\n";
-                    } else {
-		                echo "        <td align=left>" . $rl['user'] . "</td>\n";
+                if (is_array($rlogs)) {
+	                foreach ($rlogs as $rl) {
+		                $location = $rl['location'];
+		                $locat = ellipse($location,27,true);
+		                if (eregi("http",$location) or eregi("^//", $location)) {
+			                $location = eregi_replace("^//","/",$location);
+			                $location = "<a href=\"$location\">$locat</a>";
+		                } else {
+			                $location = $locat;
+		                }
+                        if ($u==0) $wfv['recording_id'] = $rl['recording_id'];
+		                $u++;
+		                echo "      <tr " . bgcolor($u) . " class=\"row font1\">\n";
+		                echo "        <td>$u</td>\n";
+		                echo "        <td align=left>" . $rl['lead_id'] . "</td>\n";
+		                echo "        <td align=left>" . $rl['starttime'] . "</td>\n";
+		                echo "        <td align=left>" . $rl['length_in_sec'] . "</td>\n";
+		                echo "        <td align=left>" . $rl['recording_id'] . "</td>\n";
+		                echo "        <td align=center>" . $rl['filename'] . "</td>\n";
+		                echo "        <td align=left>$location</td>\n";
+                        if ($LOG['view_agent_stats']) {
+		                    echo "        <td align=left><a href=\"admin.php?ADD=999999&SUB=21&agent=" . $rl['user'] . "\" target=\"_blank\">" . $rl['user'] . "</a></td>\n";
+                        } else {
+		                    echo "        <td align=left>" . $rl['user'] . "</td>\n";
+                        }
+		                echo "      </tr>\n";
                     }
-		            echo "      </tr>\n";
 	            }
 		
                 echo "      <tr class=tabfooter>\n";
@@ -752,8 +758,10 @@ if ($ADD==1121) {
                 if (strlen($campaign_id)>0) {
                     $camp = get_first_record($link, 'osdial_campaigns', '*', sprintf("campaign_id='%s'",mres($campaign_id)));
                     $wvars = '';
-                    foreach ($wfv as $k => $v) {
-                        $wvars .= '&' . $k . '=' . $v;
+                    if (is_array($wfv)) {
+                        foreach ($wfv as $k => $v) {
+                            $wvars .= '&' . $k . '=' . $v;
+                        }
                     }
                     function pwfa($wfv, $k) { return $wfv[$k]; };
                     #$wfa1 = $camp['web_form_address'] . '?1=1' . $wvars;
