@@ -405,7 +405,7 @@ function report_realtime_detail() {
         $html .= "<font class=indented color=#1C4754 size=2><b>$group - $group_name</b></font>";
         if (ereg("^XXXX",$group)) {
             $html .= '';
-        } elseif ($active=='Y') {
+        } elseif ($campaign_active>0) {
             $html .="<font color='green' size='-1'>&nbsp;&nbsp;(Active)</font>";
         } else {
             $html .="<font color='red'>&nbsp;&nbsp;(In-Active)</font>";
