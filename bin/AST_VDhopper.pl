@@ -1247,7 +1247,7 @@ foreach(@campaign_id)
 		# Get total recycles.
 		$recycle_total[$i] = 0;
 		if ($recycle_notimeSQL[$i] ne "") {
-			$stmtA = "SELECT count(*) FROM osdial_list where $recycle_notimeSQL[$i] AND list_id IN ($camp_lists[$i]);";
+			$stmtA = "SELECT count(*) FROM osdial_list USE INDEX (list_id) where $recycle_notimeSQL[$i] AND list_id IN ($camp_lists[$i]);";
 				if ($DBX) {print "     |$stmtA|\n";}
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1263,7 +1263,7 @@ foreach(@campaign_id)
 		# Get scheduled recycles.
 		$recycle_sched[$i] = 0;
 		if ($recycle_SQL[$i] ne "") {
-			$stmtA = "SELECT count(*) FROM osdial_list where $recycle_SQL[$i] AND list_id IN ($camp_lists[$i]);";
+			$stmtA = "SELECT count(*) FROM osdial_list USE INDEX (list_id) where $recycle_SQL[$i] AND list_id IN ($camp_lists[$i]);";
 				if ($DBX) {print "     |$stmtA|\n";}
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1287,7 +1287,7 @@ foreach(@campaign_id)
 		} else {
 			$lom = "status IN($STATUSsql[$i]) and list_id IN($camp_lists[$i])";
 		}
-		$stmtA = "SELECT count(*) FROM osdial_list where $cclr and $lom and ($all_gmtSQL[$i]) $lead_filter_sql[$i];";
+		$stmtA = "SELECT count(*) FROM osdial_list USE INDEX (list_status) where $cclr and $lom and ($all_gmtSQL[$i]) $lead_filter_sql[$i];";
 			if ($DBX) {print "     |$stmtA|\n";}
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1305,7 +1305,7 @@ foreach(@campaign_id)
 
 		if ( ($lead_order[$i] =~ / ... NEW$/) && ($list_order_mix[$i] =~ /DISABLED/) )
 			{
-			$stmtA = "SELECT count(*) FROM osdial_list where called_since_last_reset='N' and status IN('NEW') and list_id IN($camp_lists[$i]) and ($all_gmtSQL[$i]) $lead_filter_sql[$i];";
+			$stmtA = "SELECT count(*) FROM osdial_list USE INDEX (list_status) where called_since_last_reset='N' and status IN('NEW') and list_id IN($camp_lists[$i]) and ($all_gmtSQL[$i]) $lead_filter_sql[$i];";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -1405,7 +1405,7 @@ foreach(@campaign_id)
 				{
 				if ($DB) {print "     looking for RECYCLE leads, maximum of $hopper_level[$i]\n";}
 
-				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list where $recycle_SQL[$i] and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] limit $hopper_level[$i];";
+				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list USE INDEX (list_id) where $recycle_SQL[$i] and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] limit $hopper_level[$i];";
 				if ($DBX) {print "     |$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1462,7 +1462,7 @@ foreach(@campaign_id)
 			#	$order_stmt = 'order by called_count, lead_id asc';
 				if ($DB) {print "     looking for $NEW_level NEW leads mixed in with $OTHER_level other leads\n";}
 
-				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list where called_since_last_reset='N' and status IN('NEW') and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $NEW_level;";
+				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list USE INDEX (list_status) where called_since_last_reset='N' and status IN('NEW') and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $NEW_level;";
 				if ($DBX) {print "     |$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1515,7 +1515,7 @@ foreach(@campaign_id)
 
 				if ($list_order_mix[$i] =~ /DISABLED/)
 					{
-					$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list where $cclr and status IN($STATUSsql[$i]) and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $OTHER_level;";
+					$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list USE INDEX (list_status) where $cclr and status IN($STATUSsql[$i]) and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $OTHER_level;";
 					if ($DBX) {print "     |$stmtA|\n";}
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1605,7 +1605,7 @@ foreach(@campaign_id)
 						if ($DBX) {print "  LM $x |$list_mix_stepARY[0]|$list_mix_stepARY[2]|$LM_step_goal[$x]|$list_mix_stepARY[3]|\n";}
 						$list_mix_dialableSQL = "(list_id='$list_mix_stepARY[0]' and status IN($list_mix_stepARY[3]))";
 
-						$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list where $cclr and $list_mix_dialableSQL and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $LM_step_goal[$x];";
+						$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list USE INDEX (list_status) where $cclr and $list_mix_dialableSQL and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $LM_step_goal[$x];";
 						if ($DBX) {print "     |$stmtA|\n";}
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
