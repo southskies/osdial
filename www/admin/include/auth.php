@@ -92,8 +92,10 @@ if ($force_logout) {
             }
             $LOG['companies'] = get_krh($link, 'osdial_companies', '*','','','');
             $LOG['companiesRE'] = '/';
-            foreach ($LOG['companies'] as $comp) {
-                $LOG['companiesRE'] .= '^' . (($comp['id'] * 1) + 100) . '|';
+            if (is_array($LOG['companies'])) {
+                foreach ($LOG['companies'] as $comp) {
+                    $LOG['companiesRE'] .= '^' . (($comp['id'] * 1) + 100) . '|';
+                }
             }
             $LOG['companiesRE'] = rtrim($LOG['companiesRE'],'|') . '/';
 
@@ -116,13 +118,17 @@ if ($force_logout) {
                 $LOG['allowed_campaignsALL'] = 1;
                 # Pack all the valid UGs
                 $ugs = get_krh($link, 'osdial_user_groups', 'user_group','',sprintf("user_group LIKE '%s__%%'",$LOG['company_prefix']),'');
-                foreach ($ugs as $ugg) {
-                    $LOGagA[] = $ugg['user_group'];
+                if (is_array($ugs)) {
+                    foreach ($ugs as $ugg) {
+                        $LOGagA[] = $ugg['user_group'];
+                    }
                 }
                 # Now go and get all campaigns...
                 $camps = get_krh($link, 'osdial_campaigns', 'campaign_id','',sprintf("campaign_id LIKE '%s__%%'",$LOG['company_prefix']),'');
-                foreach ($camps as $camp) {
-                    $LOGacA[] = $camp['campaign_id'];
+                if (is_array($camps)) {
+                    foreach ($camps as $camp) {
+                        $LOGacA[] = $camp['campaign_id'];
+                    }
                 }
                 if ($LOG['user_level'] > 8 and $LOG['multicomp'] == 0) {
                     $LOGacA[] = 'PBX-IN';
@@ -131,8 +137,11 @@ if ($force_logout) {
             } else {
                 $LOG['allowed_campaignsALL'] = 0;
                 $LOGagA[] = $LOG['user_group'];
-                foreach (explode(' ',$LOGac) as $c) {
-                    if (strlen(rtrim($c,'-')) > 0) $LOGacA[] = $c;
+                $tmpacs = explode(' ',$LOGac);
+                if (is_array($tmpacs)) {
+                    foreach ($tmpacs as $c) {
+                        if (strlen(rtrim($c,'-')) > 0) $LOGacA[] = $c;
+                    }
                 }
             }
             if (strlen($LOGas)> 1) {
@@ -140,13 +149,18 @@ if ($force_logout) {
                     $LOG['allowed_scriptsALL'] = 1;
                     # Pack all the valid Scripts
                     $oss = get_krh($link, 'osdial_scripts', 'script_id','','','');
-                    foreach ($oss as $os) {
-                        $LOGasA[] = $os['script_id'];
+                    if (is_array($oss)) {
+                        foreach ($oss as $os) {
+                            $LOGasA[] = $os['script_id'];
+                        }
                     }
                 } else {
                     $LOG['allowed_scriptsALL'] = 0;
-                    foreach (explode(' ',$LOGas) as $s) {
-                        if (strlen(rtrim($s,'-')) > 0) $LOGasA[] = $s;
+                    $tmpass = explode(' ',$LOGas);
+                    if (is_array($tmpass)) {
+                        foreach ($tmpass as $s) {
+                            if (strlen(rtrim($s,'-')) > 0) $LOGasA[] = $s;
+                        }
                     }
                 }
             }
@@ -155,13 +169,18 @@ if ($force_logout) {
                     $LOG['allowed_email_templatesALL'] = 1;
                     # Pack all the valid Scripts
                     $oets = get_krh($link, 'osdial_email_templates', 'et_id','','','');
-                    foreach ($oets as $oet) {
-                        $LOGaeA[] = $oet['et_id'];
+                    if (is_array($oets)) {
+                        foreach ($oets as $oet) {
+                            $LOGaeA[] = $oet['et_id'];
+                        }
                     }
                 } else {
                     $LOG['allowed_email_templatesALL'] = 0;
-                    foreach (explode(' ',$LOGae) as $e) {
-                        if (strlen(rtrim($s,'-')) > 0) $LOGaeA[] = $e;
+                    $tmpaes = explode(' ',$LOGae);
+                    if (is_array($tmpaes)) {
+                        foreach ($tmpaes as $e) {
+                            if (strlen(rtrim($e,'-')) > 0) $LOGaeA[] = $e;
+                        }
                     }
                 }
             }
@@ -173,28 +192,38 @@ if ($force_logout) {
             }
 
             # Allowed Campaigns SQL
-            foreach ($LOGacA as $c) {
-                $LOGacSQL .= "'" . mres($c) . "',";
+            if (is_array($LOGacA)) {
+                foreach ($LOGacA as $c) {
+                    $LOGacSQL .= "'" . mres($c) . "',";
+                }
             }
             $LOGacSQL = '(' . rtrim($LOGacSQL, ',') . ')';
             # Allowed Usergroup SQL
-            foreach ($LOGagA as $g) {
-                $LOGagSQL .= "'" . mres($g) . "',";
+            if (is_array($LOGagA)) {
+                foreach ($LOGagA as $g) {
+                    $LOGagSQL .= "'" . mres($g) . "',";
+                }
             }
             $LOGagSQL = '(' . rtrim($LOGagSQL, ',') . ')';
             # Allowed InGroups SQL
-            foreach ($LOGaiA as $i) {
-                $LOGaiSQL .= "'" . mres($i) . "',";
+            if (is_array($LOGaiA)) {
+                foreach ($LOGaiA as $i) {
+                    $LOGaiSQL .= "'" . mres($i) . "',";
+                }
             }
             $LOGaiSQL = '(' . rtrim($LOGaiSQL, ',') . ')';
             # Allowed Scripts SQL
-            foreach ($LOGasA as $s) {
-                $LOGasSQL .= "'" . mres($s) . "',";
+            if (is_array($LOGasA)) {
+                foreach ($LOGasA as $s) {
+                    $LOGasSQL .= "'" . mres($s) . "',";
+                }
             }
             $LOGasSQL = '(' . rtrim($LOGasSQL, ',') . ')';
             # Allowed Email Templates SQL
-            foreach ($LOGaeA as $e) {
-                $LOGaeSQL .= "'" . mres($e) . "',";
+            if (is_array($LOGaeA)) {
+                foreach ($LOGaeA as $e) {
+                    $LOGaeSQL .= "'" . mres($e) . "',";
+                }
             }
             $LOGaeSQL = '(' . rtrim($LOGaeSQL, ',') . ')';
         }
@@ -223,8 +252,10 @@ if ($force_logout) {
 
 
         # Finally for historical and compaitibility reasons, we will map them out to straight vars, ie $LOGuser_level instead of $LOG['user_level']
-        foreach ($LOG as $k => $v ) {
-            if ($k != "") eval("\$LOG" . $k . " = \$LOG['" . $k . "'];");
+        if (is_array($LOG)) {
+            foreach ($LOG as $k => $v ) {
+                if ($k != "") eval("\$LOG" . $k . " = \$LOG['" . $k . "'];");
+            }
         }
         $LOGallowed_campaigns = $LOG['allowed_campaignsSTR'];
 
