@@ -448,7 +448,7 @@ sub gen_conferences {
 	$cnf .= "exten => _5555860XXXX,1,MeetMeAdmin(\${EXTEN:4},K)\n";
 	$cnf .= "exten => _5555860XXXX,2,Hangup\n";
 
-	my $stmt = "SELECT conf_exten,server_ip FROM conferences where";
+	my $stmt = "SELECT conf_exten,server_ip FROM conferences WHERE";
 	foreach my $ip (@myips) {
 		$stmt .= " server_ip=\'" . $ip . "\' OR";
 	}
@@ -483,7 +483,7 @@ sub gen_conferences {
 	$mtm .= ";\n; OSDial Conferences $cf - $cl\n";
 	$mtm .= $mtm2;
 
-	my $stmt = "SELECT conf_exten,server_ip FROM osdial_conferences where";
+	my $stmt = "SELECT conf_exten,server_ip FROM osdial_conferences WHERE";
         foreach my $ip (@myips) {
                 $stmt .= " server_ip=\'" . $ip . "\' OR";
         }

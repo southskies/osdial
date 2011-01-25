@@ -170,7 +170,7 @@ foreach my $list_id (keys %lists) {
 	$stats =~ s/,'-$//;
 
 	# Scan main phone number
-	my $stmtA = "SELECT lead_id,phone_number FROM osdial_list WHERE list_id='$list_id' and status IN ($stats);";
+	my $stmtA = "SELECT lead_id,phone_number FROM osdial_list WHERE list_id='$list_id' and status IN($stats);";
 	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	my $tot_row = $sthA->rows();
@@ -211,7 +211,7 @@ foreach my $list_id (keys %lists) {
 	$sthA->finish();
 
 	# Scan alt phone number
-	my $stmtA = "SELECT lead_id,alt_phone FROM osdial_list WHERE list_id='$list_id' and alt_phone!='';";
+	my $stmtA = "SELECT lead_id,alt_phone FROM osdial_list WHERE list_id='$list_id' AND alt_phone!='';";
 	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	my $tot_row = $sthA->rows();
@@ -244,7 +244,7 @@ foreach my $list_id (keys %lists) {
 	$sthA->finish();
 
 	# Scan addr3 phone number
-	my $stmtA = "SELECT lead_id,address3 FROM osdial_list WHERE list_id='$list_id' and address3!='';";
+	my $stmtA = "SELECT SQL_NO_CACHE lead_id,address3 FROM osdial_list WHERE list_id='$list_id' AND address3!='';";
 	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	my $tot_row = $sthA->rows();

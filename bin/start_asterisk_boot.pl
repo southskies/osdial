@@ -63,7 +63,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
  or die "Couldn't connect to database: " . DBI->errstr;
 
 ### Grab Server values from the database
-	$stmtA = "SELECT vd_server_logs FROM servers where server_ip = '$VARserver_ip';";
+	$stmtA = "SELECT vd_server_logs FROM servers WHERE server_ip='$VARserver_ip';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;

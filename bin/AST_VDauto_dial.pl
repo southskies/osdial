@@ -209,7 +209,7 @@ use DBI;
     or die "Couldn't connect to database: " . DBI->errstr;
 
 ### Grab Server values from the database
-$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,vd_server_logs FROM servers where server_ip = '$server_ip';";
+$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,vd_server_logs FROM servers WHERE server_ip='$server_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -338,7 +338,7 @@ while($one_day_interval > 0)
 
 		##### Get a listing of the users that are active and ready to take calls
 		##### Also get a listing of the campaigns and campaigns/serverIP that will be used
-		$stmtA = "SELECT user,server_ip,campaign_id,conf_exten,status FROM osdial_live_agents WHERE status IN($active_agents) AND server_ip='$server_ip' AND last_update_time > '$BDtsSQLdate' ORDER BY last_call_time;";
+		$stmtA = "SELECT SQL_NO_CACHE user,server_ip,campaign_id,conf_exten,status FROM osdial_live_agents WHERE status IN($active_agents) AND server_ip='$server_ip' AND last_update_time>'$BDtsSQLdate' ORDER BY last_call_time;";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -374,7 +374,7 @@ while($one_day_interval > 0)
 		chop($user_campaignsSQL);
 
 		### see how many total VDAD calls are going on right now for max limiter
-		$stmtA = "SELECT count(*) FROM osdial_auto_calls where server_ip='$server_ip' and status IN('SENT','RINGING','LIVE','XFER','CLOSER');";
+		$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE server_ip='$server_ip' AND status IN('SENT','RINGING','LIVE','XFER','CLOSER');";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -424,7 +424,7 @@ while($one_day_interval > 0)
 				}
 
 			### check for osdial_campaign_server_stats record, if non present then create it
-			$stmtA = "SELECT local_trunk_shortage FROM osdial_campaign_server_stats where campaign_id='$DBIPcampaign[$user_CIPct]' and server_ip='$server_ip';";
+			$stmtA = "SELECT SQL_NO_CACHE local_trunk_shortage FROM osdial_campaign_server_stats WHERE campaign_id='$DBIPcampaign[$user_CIPct]' AND server_ip='$server_ip';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -437,7 +437,7 @@ while($one_day_interval > 0)
 				}
 			if ($rec_count < 1)
 				{
-				$stmtA = "INSERT INTO osdial_campaign_server_stats SET local_trunk_shortage='0', server_ip='$server_ip',campaign_id='$DBIPcampaign[$user_CIPct]';";
+				$stmtA = "INSERT INTO osdial_campaign_server_stats SET local_trunk_shortage='0',server_ip='$server_ip',campaign_id='$DBIPcampaign[$user_CIPct]';";
 				$affected_rows = $dbhA->do($stmtA);
 
 				$DBIPold_trunk_shortage[$user_CIPct]=0;
@@ -450,7 +450,7 @@ while($one_day_interval > 0)
 			$DBIPserver_trunks_other[$user_CIPct] = 0;
 			$DBIPserver_trunks_allowed[$user_CIPct] = $max_osdial_trunks;
 			### check for osdial_server_trunks record
-			$stmtA = "SELECT dedicated_trunks FROM osdial_server_trunks where campaign_id='$DBIPcampaign[$user_CIPct]' and server_ip='$server_ip' and trunk_restriction='MAXIMUM_LIMIT';";
+			$stmtA = "SELECT dedicated_trunks FROM osdial_server_trunks WHERE campaign_id='$DBIPcampaign[$user_CIPct]' AND server_ip='$server_ip' AND trunk_restriction='MAXIMUM_LIMIT';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -461,7 +461,7 @@ while($one_day_interval > 0)
 					$DBIPserver_trunks_limit[$user_CIPct] =		"$aryA[0]";
 				$rec_count++;
 				}
-			$stmtA = "SELECT sum(dedicated_trunks) FROM osdial_server_trunks where campaign_id NOT IN('$DBIPcampaign[$user_CIPct]') and server_ip='$server_ip';";
+			$stmtA = "SELECT SUM(dedicated_trunks) FROM osdial_server_trunks WHERE campaign_id NOT IN('$DBIPcampaign[$user_CIPct]') AND server_ip='$server_ip';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -478,7 +478,7 @@ while($one_day_interval > 0)
 
 			### grab the dial_level and multiply by active agents to get your goalcalls
 			$DBIPadlevel[$user_CIPct]=0;
-			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound,answers_per_hour_limit,campaign_call_time,dial_method,use_custom2_callerid,campaign_cid_name,use_cid_areacode_map FROM osdial_campaigns where campaign_id='$DBIPcampaign[$user_CIPct]'";
+			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound,answers_per_hour_limit,campaign_call_time,dial_method,use_custom2_callerid,campaign_cid_name,use_cid_areacode_map FROM osdial_campaigns WHERE campaign_id='$DBIPcampaign[$user_CIPct]';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -530,7 +530,7 @@ while($one_day_interval > 0)
 
 			# Adjust the goalcalls to 0 if answers per hour is met.
 			$answers_hour = 0;
-			$stmtA = "SELECT answers_hour FROM osdial_campaign_stats where campaign_id='$DBIPcampaign[$user_CIPct]';";
+			$stmtA = "SELECT SQL_NO_CACHE answers_hour FROM osdial_campaign_stats WHERE campaign_id='$DBIPcampaign[$user_CIPct]';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -546,7 +546,7 @@ while($one_day_interval > 0)
 
 			# Adjust goalcalls to 0 if campaign_call_time is out of current time-range.
 			$cct = {};
-			$stmtA = "SELECT * FROM osdial_call_times where call_time_id='$DBIPcampaign_call_time[$user_CIPct]';";
+			$stmtA = "SELECT * FROM osdial_call_times WHERE call_time_id='$DBIPcampaign_call_time[$user_CIPct]';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -585,7 +585,7 @@ while($one_day_interval > 0)
 				{
 				$tally_xfer_line_counter=0;
 				### see how many VDAD calls are live as XFERs to agents
-				$stmtA = "SELECT count(*) FROM osdial_auto_calls where server_ip='$DBIPaddress[$user_CIPct]' and campaign_id='$DBIPcampaign[$user_CIPct]' and status IN('XFER','CLOSER');";
+				$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE server_ip='$DBIPaddress[$user_CIPct]' AND campaign_id='$DBIPcampaign[$user_CIPct]' AND status IN('XFER','CLOSER');";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -620,10 +620,10 @@ while($one_day_interval > 0)
 				   }
 				  else {$DBIPclosercamp[$user_CIPct]="''";}
 				
-				$campaign_query = "( (call_type='IN' and campaign_id IN($DBIPclosercamp[$user_CIPct])) or (campaign_id='$DBIPcampaign[$user_CIPct]' and call_type IN('OUT','OUTBALANCE')) )";
+				$campaign_query = "( (call_type='IN' AND campaign_id IN($DBIPclosercamp[$user_CIPct])) OR (campaign_id='$DBIPcampaign[$user_CIPct]' AND call_type IN('OUT','OUTBALANCE')) )";
 				}
-			else {$campaign_query = "(campaign_id='$DBIPcampaign[$user_CIPct]' and call_type IN('OUT','OUTBALANCE'))";}
-			$stmtA = "SELECT count(*) FROM osdial_auto_calls where $campaign_query and server_ip='$DBIPaddress[$user_CIPct]' and status IN('SENT','RINGING','LIVE','XFER','CLOSER');";
+			else {$campaign_query = "(campaign_id='$DBIPcampaign[$user_CIPct]' AND call_type IN('OUT','OUTBALANCE'))";}
+			$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE $campaign_query AND server_ip='$DBIPaddress[$user_CIPct]' AND status IN('SENT','RINGING','LIVE','XFER','CLOSER');";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -694,7 +694,7 @@ while($one_day_interval > 0)
 			$paused_agents=0;
 			$waiting_calls=0;
 
-			$stmtA = "SELECT count(*),status FROM osdial_live_agents WHERE campaign_id='$DBIPcampaign[$user_CIPct]' AND last_update_time > '$halfminSQLdate' GROUP BY status;";
+			$stmtA = "SELECT SQL_NO_CACHE count(*),status FROM osdial_live_agents WHERE campaign_id='$DBIPcampaign[$user_CIPct]' AND last_update_time>'$halfminSQLdate' GROUP BY status;";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -711,7 +711,7 @@ while($one_day_interval > 0)
 				}
 			$sthA->finish();
 
-			$stmtA = "SELECT count(*) FROM osdial_auto_calls where $campaign_query and status IN('LIVE');";
+			$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE $campaign_query AND status IN('LIVE');";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -816,7 +816,7 @@ while($one_day_interval > 0)
 				my $UDaffected_rows=0;
 				if ($call_CMPIPct < $DBIPmakecalls[$user_CIPct])
 					{
-					$stmtA = "UPDATE osdial_hopper SET status='QUEUE', user='VDAD_$server_ip' WHERE campaign_id='$DBIPcampaign[$user_CIPct]' AND status IN ('API','READY') ORDER BY status DESC,priority DESC,hopper_id LIMIT $DBIPmakecalls[$user_CIPct];";
+					$stmtA = "UPDATE osdial_hopper SET status='QUEUE',user='VDAD_$server_ip' WHERE campaign_id='$DBIPcampaign[$user_CIPct]' AND status IN('API','READY') ORDER BY status DESC,priority DESC,hopper_id LIMIT $DBIPmakecalls[$user_CIPct];";
 					print "|$stmtA|\n";
 					$UDaffected_rows = $dbhA->do($stmtA);
 					print "hopper rows updated to QUEUE: |$UDaffected_rows|\n";
@@ -826,7 +826,7 @@ while($one_day_interval > 0)
 						$lead_id=''; $phone_code=''; $phone_number=''; $called_count=''; $custom2='';
 						while ($call_CMPIPct < $UDaffected_rows)
 							{
-							$stmtA = "SELECT lead_id,alt_dial FROM osdial_hopper WHERE campaign_id='$DBIPcampaign[$user_CIPct]' AND status='QUEUE' AND user='VDAD_$server_ip' ORDER BY priority DESC,hopper_id LIMIT 1";
+							$stmtA = "SELECT SQL_NO_CACHE lead_id,alt_dial FROM osdial_hopper WHERE campaign_id='$DBIPcampaign[$user_CIPct]' AND status='QUEUE' AND user='VDAD_$server_ip' ORDER BY priority DESC,hopper_id LIMIT 1";
 							print "|$stmtA|\n";
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -927,7 +927,7 @@ while($one_day_interval > 0)
 									if ( ($alt_dial =~ /AFFAP/) && ($DBIPautoaltdial[$user_CIPct] =~ /AFFAP/) )
 										{
 										$aff_number='';
-										$stmtA="SELECT value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='" . $alt_dial . "') AND lead_id='$lead_id';";
+										$stmtA="SELECT SQL_NO_CACHE value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='" . $alt_dial . "') AND lead_id='$lead_id';";
 										$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 										$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 										$sthArows=$sthA->rows;
@@ -939,11 +939,11 @@ while($one_day_interval > 0)
 										$sthA->finish();
 										$phone_number = $aff_number;
 										}
-									$stmtA = "UPDATE osdial_list set called_since_last_reset='$CSLR',user='VDAD',last_local_call_time='$LLCT_DATE' where lead_id='$lead_id'";
+									$stmtA = "UPDATE osdial_list SET called_since_last_reset='$CSLR',user='VDAD',last_local_call_time='$LLCT_DATE' WHERE lead_id='$lead_id';";
 									}
 								else
 									{
-									$stmtA = "UPDATE osdial_list set called_since_last_reset='$CSLR', called_count='$called_count',user='VDAD',last_local_call_time='$LLCT_DATE' where lead_id='$lead_id'";
+									$stmtA = "UPDATE osdial_list SET called_since_last_reset='$CSLR',called_count='$called_count',user='VDAD',last_local_call_time='$LLCT_DATE' WHERE lead_id='$lead_id';";
 									}
 								$affected_rows = $dbhA->do($stmtA);
 
@@ -975,7 +975,7 @@ while($one_day_interval > 0)
 							}
 
 							if ($DBIPusecidareacodemap[$user_CIPct] eq 'Y') {
-								$stmtA = "SELECT areacode,cid_number,cid_name FROM osdial_campaign_cid_areacodes WHERE campaign_id='$DBIPcampaign[$user_CIPct]' AND areacode='" . substr($phone_number,0,3) . "';";
+								$stmtA = "SELECT SQL_NO_CACHE areacode,cid_number,cid_name FROM osdial_campaign_cid_areacodes WHERE campaign_id='$DBIPcampaign[$user_CIPct]' AND areacode='" . substr($phone_number,0,3) . "';";
 								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 								while (@aryA = $sthA->fetchrow_array) {
@@ -1062,7 +1062,7 @@ while($one_day_interval > 0)
 		@KLchannel = @MT;
 		$kill_vac=0;
 
-		$stmtA = "SELECT callerid,server_ip,channel,uniqueid,status FROM osdial_auto_calls where server_ip='$server_ip' order by call_time;";
+		$stmtA = "SELECT SQL_NO_CACHE callerid,server_ip,channel,uniqueid,status FROM osdial_auto_calls WHERE server_ip='$server_ip' ORDER BY call_time;";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -1093,7 +1093,7 @@ while($one_day_interval > 0)
 
 				if ( (length($KLcalleridCHECK[$kill_vac]) > 17) && ($KLcalleridCHECK[$kill_vac] =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) )
 					{
-					$stmtA = "SELECT end_epoch,uniqueid,start_epoch FROM call_log where caller_code='$KLcallerid[$kill_vac]' and server_ip='$KLserver_ip[$kill_vac]' order by end_epoch, start_time desc limit 1;";
+					$stmtA = "SELECT SQL_NO_CACHE end_epoch,uniqueid,start_epoch FROM call_log WHERE caller_code='$KLcallerid[$kill_vac]' AND server_ip='$KLserver_ip[$kill_vac]' ORDER BY end_epoch,start_time DESC LIMIT 1;";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
@@ -1112,7 +1112,7 @@ while($one_day_interval > 0)
 
 				if ( (length($KLuniqueid[$kill_vac]) > 11) && (length($CLuniqueid) < 12) )
 					{
-					$stmtA = "SELECT end_epoch,uniqueid,start_epoch FROM call_log where uniqueid='$KLuniqueid[$kill_vac]' and server_ip='$KLserver_ip[$kill_vac]' order by end_epoch, start_time desc limit 1;";
+					$stmtA = "SELECT SQL_NO_CACHE end_epoch,uniqueid,start_epoch FROM call_log WHERE uniqueid='$KLuniqueid[$kill_vac]' AND server_ip='$KLserver_ip[$kill_vac]' ORDER BY end_epoch,start_time DESC LIMIT 1;";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
@@ -1131,7 +1131,7 @@ while($one_day_interval > 0)
 
 				$CLlead_id=''; $auto_call_id=''; $CLstatus=''; $CLcampaign_id=''; $CLphone_number=''; $CLphone_code='';
 
-				$stmtA = "SELECT auto_call_id,lead_id,phone_number,status,campaign_id,phone_code,alt_dial,stage,call_type,UNIX_TIMESTAMP(last_update_time) FROM osdial_auto_calls where callerid='$KLcallerid[$kill_vac]'";
+				$stmtA = "SELECT SQL_NO_CACHE auto_call_id,lead_id,phone_number,status,campaign_id,phone_code,alt_dial,stage,call_type,UNIX_TIMESTAMP(last_update_time) FROM osdial_auto_calls WHERE callerid='$KLcallerid[$kill_vac]';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -1156,12 +1156,12 @@ while($one_day_interval > 0)
 
 				if ($CLcall_type =~ /IN/)
 					{
-					$stmtA = "SELECT drop_call_seconds FROM osdial_inbound_groups where group_id='$CLcampaign_id';";
+					$stmtA = "SELECT drop_call_seconds FROM osdial_inbound_groups WHERE group_id='$CLcampaign_id';";
 					$timeout_leeway = 30;
 					}
 				else
 					{
-					$stmtA = "SELECT dial_timeout,drop_call_seconds FROM osdial_campaigns where campaign_id='$CLcampaign_id';";
+					$stmtA = "SELECT dial_timeout,drop_call_seconds FROM osdial_campaigns WHERE campaign_id='$CLcampaign_id';";
 					$timeout_leeway = 7;
 					}
 
@@ -1189,7 +1189,7 @@ while($one_day_interval > 0)
 						{
 						if ($CLstatus !~ /XFER|CLOSER/) 
 							{
-							$stmtA = "DELETE from osdial_auto_calls where auto_call_id='$auto_call_id'";
+							$stmtA = "DELETE FROM osdial_auto_calls WHERE auto_call_id='$auto_call_id';";
 							$affected_rows = $dbhA->do($stmtA);
 	
 							if ($affected_rows > 0) {
@@ -1233,7 +1233,7 @@ while($one_day_interval > 0)
 	
 							if ($CLlead_id > 0)
 								{
-								$stmtA = "UPDATE osdial_list set status='$CLnew_status' where lead_id='$CLlead_id'";
+								$stmtA = "UPDATE osdial_list SET status='$CLnew_status' WHERE lead_id='$CLlead_id'";
 								$affected_rows = $dbhA->do($stmtA);
 	
 								if ($affected_rows > 0) {
@@ -1242,7 +1242,7 @@ while($one_day_interval > 0)
 									}
 								}
 	
-							$stmtA = "UPDATE osdial_live_agents set status='PAUSED',random_id='10' where  callerid='$KLcallerid[$kill_vac]';";
+							$stmtA = "UPDATE SQL_NO_CACHE osdial_live_agents SET status='PAUSED',random_id='10' WHERE callerid='$KLcallerid[$kill_vac]';";
 							$affected_rows = $dbhA->do($stmtA);
 	
 							if ($affected_rows > 0) {
@@ -1267,7 +1267,7 @@ while($one_day_interval > 0)
 							### check to see if campaign has alt_dial enabled
 							$VD_auto_alt_dial = 'NONE';
 							$VD_auto_alt_dial_statuses='';
-							$stmtA="SELECT auto_alt_dial,auto_alt_dial_statuses,use_internal_dnc FROM osdial_campaigns where campaign_id='$CLcampaign_id';";
+							$stmtA="SELECT auto_alt_dial,auto_alt_dial_statuses,use_internal_dnc FROM osdial_campaigns WHERE campaign_id='$CLcampaign_id';";
 								if ($AGILOG) {$event_string = "|$stmtA|";   &event_logger;}
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1286,7 +1286,7 @@ while($one_day_interval > 0)
 							if ( ($VD_auto_alt_dial_statuses =~ / $CLnew_status /) && ($CLlead_id > 0) ) {
 								if ( ($VD_auto_alt_dial =~ /ALT_ONLY|ALT_AND_ADDR3|ALT_ADDR3_AND_AFFAP/) && ($CLalt_dial =~ /NONE|MAIN/) ) {
 									$VD_alt_phone='';
-									$stmtA="SELECT alt_phone,gmt_offset_now,state,list_id FROM osdial_list where lead_id='$CLlead_id';";
+									$stmtA="SELECT SQL_NO_CACHE alt_phone,gmt_offset_now,state,list_id FROM osdial_list WHERE lead_id='$CLlead_id';";
 										if ($AGILOG) {$event_string = "|$stmtA|";   &event_logger;}
 									$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 									$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1319,7 +1319,7 @@ while($one_day_interval > 0)
 												}
 												$sthA->finish();
 												if ($dnc_method =~ /COMPANY|BOTH/) {
-													$stmtA="SELECT count(*) FROM osdial_dnc_company WHERE company_id='$comp_id' AND (phone_number='$VD_alt_phone' OR phone_number='" . substr($VD_alt_phone,0,3) . "XXXXXXX');";
+													$stmtA="SELECT SQL_NO_CACHE count(*) FROM osdial_dnc_company WHERE company_id='$comp_id' AND (phone_number='$VD_alt_phone' OR phone_number='" . substr($VD_alt_phone,0,3) . "XXXXXXX');";
 													if ($AGILOG) {$event_string = "|$stmtA|";   &event_logger;}
 													$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 													$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1333,7 +1333,7 @@ while($one_day_interval > 0)
 												}
 											}
 											if ($dncsskip==0) {
-												$stmtA="SELECT count(*) FROM osdial_dnc WHERE (phone_number='$VD_alt_phone' OR phone_number='" . substr($VD_alt_phone,0,3) . "XXXXXXX');";
+												$stmtA="SELECT SQL_NO_CACHE count(*) FROM osdial_dnc WHERE (phone_number='$VD_alt_phone' OR phone_number='" . substr($VD_alt_phone,0,3) . "XXXXXXX');";
 												if ($AGILOG) {$event_string = "|$stmtA|";   &event_logger;}
 												$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 												$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1355,7 +1355,7 @@ while($one_day_interval > 0)
 								}
 								if ( ( ($VD_auto_alt_dial =~ /ADDR3_ONLY/) && ($CLalt_dial =~ /NONE|MAIN/) ) || ( ($VD_auto_alt_dial =~ /ALT_AND_ADDR3|ALT_ADDR3_AND_AFFAP/) && ($CLalt_dial =~ /ALT/) ) ) {
 									$VD_address3='';
-									$stmtA="SELECT address3,gmt_offset_now,state,list_id FROM osdial_list where lead_id='$CLlead_id';";
+									$stmtA="SELECT SQL_NO_CACHE address3,gmt_offset_now,state,list_id FROM osdial_list WHERE lead_id='$CLlead_id';";
 										if ($AGILOG) {$event_string = "|$stmtA|";   &event_logger;}
 									$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 									$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1374,7 +1374,7 @@ while($one_day_interval > 0)
 									$VD_addr3_dnc_count=0;
 									if (length($VD_address3)>5) {
 										if ($VD_use_internal_dnc =~ /Y/) {
-											$stmtA="SELECT count(*) FROM osdial_dnc WHERE (phone_number='$VD_address3' OR phone_number='" . substr($VD_address3,0,3) . "XXXXXXX');";
+											$stmtA="SELECT SQL_NO_CACHE count(*) FROM osdial_dnc WHERE (phone_number='$VD_address3' OR phone_number='" . substr($VD_address3,0,3) . "XXXXXXX');";
 											if ($AGILOG) {$event_string = "|$stmtA|";   &event_logger;}
 											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1400,7 +1400,7 @@ while($one_day_interval > 0)
 										$cur_aff = (substr($CLalt_dial,5) * 1) + 1;
 									}
 									while ($cur_aff < 10) {
-										$stmtA="SELECT value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='AFFAP$cur_aff') AND lead_id='$CLlead_id';";
+										$stmtA="SELECT SQL_NO_CACHE value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='AFFAP$cur_aff') AND lead_id='$CLlead_id';";
 										$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 										$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 										$sthArows=$sthA->rows;
@@ -1413,7 +1413,7 @@ while($one_day_interval > 0)
 
 										$VD_aff_dnc_count=0;
 										if (length($aff_number)>5) {
-											$stmtA="SELECT gmt_offset_now,state,list_id FROM osdial_list where lead_id='$CLlead_id';";
+											$stmtA="SELECT SQL_NO_CACHE gmt_offset_now,state,list_id FROM osdial_list WHERE lead_id='$CLlead_id';";
 												if ($AGILOG) {$event_string = "|$stmtA|";   &event_logger;}
 											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1429,7 +1429,7 @@ while($one_day_interval > 0)
 											$sthA->finish();
 
 											if ($VD_use_internal_dnc =~ /Y/) {
-												$stmtA="SELECT count(*) FROM osdial_dnc WHERE (phone_number='$aff_number' OR phone_number='" . substr($aff_number,0,3) . "XXXXXXX');";
+												$stmtA="SELECT SQL_NO_CACHE count(*) FROM osdial_dnc WHERE (phone_number='$aff_number' OR phone_number='" . substr($aff_number,0,3) . "XXXXXXX');";
 												if ($AGILOG) {$event_string = "|$stmtA|";   &event_logger;}
 												$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 												$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1461,7 +1461,7 @@ while($one_day_interval > 0)
 							{
 							if ( ($KLcallerid[$kill_vac] =~ /^M\d\d\d\d\d\d\d\d\d\d/) && ($CLlast_update_time < $TDtarget) )
 								{
-								$stmtA = "DELETE from osdial_auto_calls where auto_call_id='$auto_call_id'";
+								$stmtA = "DELETE FROM osdial_auto_calls WHERE auto_call_id='$auto_call_id'";
 								$affected_rows = $dbhA->do($stmtA);
 								if ($affected_rows > 0) {
 									$event_string = "|   M dead call vac DELETED|$auto_call_id|$CLlead_id|$KLcallerid[$kill_vac]|$end_epoch|$affected_rows|$KLchannel[$kill_vac]|$CLcall_type|$CLlast_update_time < $XDtarget|";
@@ -1489,7 +1489,7 @@ while($one_day_interval > 0)
 
 
 		### pause agents that have disconnected or closed their apps over 30 seconds ago
-		$stmtA = "UPDATE osdial_live_agents set status='PAUSED',random_id='10' where server_ip='$server_ip' and last_update_time < '$PDtsSQLdate' and status NOT IN('PAUSED') and extension NOT LIKE 'R/%'";
+		$stmtA = "UPDATE osdial_live_agents SET status='PAUSED',random_id='10' WHERE server_ip='$server_ip' AND last_update_time<'$PDtsSQLdate' AND status NOT IN('PAUSED') AND extension NOT LIKE 'R/%';";
 		$affected_rows = $dbhA->do($stmtA);
 
 		if ($affected_rows > 0) {
@@ -1501,7 +1501,7 @@ while($one_day_interval > 0)
 			{
 			@VALOuser=@MT; @VALOcampaign=@MT; @VALOtimelog=@MT; @VALOextension=@MT;
 			$logcount=0;
-			$stmtA = "SELECT user,campaign_id,last_update_time,extension FROM osdial_live_agents where server_ip='$server_ip' and status = 'PAUSED' and random_id='10' order by last_update_time desc limit $affected_rows";
+			$stmtA = "SELECT SQL_NO_CACHE user,campaign_id,last_update_time,extension FROM osdial_live_agents WHERE server_ip='$server_ip' AND status='PAUSED' AND random_id='10' ORDER BY last_update_time DESC LIMIT $affected_rows";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -1522,7 +1522,7 @@ while($one_day_interval > 0)
 			foreach(@VALOuser)
 				{
 					$VALOuser_group='';
-					$stmtA = "SELECT user_group FROM osdial_users where user='$VALOuser[$logrun]';";
+					$stmtA = "SELECT user_group FROM osdial_users WHERE user='$VALOuser[$logrun]';";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
@@ -1534,7 +1534,7 @@ while($one_day_interval > 0)
 						$UGrec_count++;
 						}
 					$sthA->finish();
-				$stmtA = "INSERT INTO osdial_user_log (user,event,campaign_id,event_date,event_epoch,user_group) values('$VALOuser[$logrun]','LOGOUT','$VALOcampaign[$logrun]','$SQLdate','$now_date_epoch','$VALOuser_group');";
+				$stmtA = "INSERT INTO osdial_user_log (user,event,campaign_id,event_date,event_epoch,user_group) VALUES('$VALOuser[$logrun]','LOGOUT','$VALOcampaign[$logrun]','$SQLdate','$now_date_epoch','$VALOuser_group');";
 				$affected_rows = $dbhA->do($stmtA);
 
 				$event_string = "|          lagged agent LOGOUT entry inserted $VALOuser[$logrun]|$VALOcampaign[$logrun]|$VALOextension[$logcount]|";
@@ -1547,7 +1547,7 @@ while($one_day_interval > 0)
 
 
 		### delete call records that are SENT for over 2 minutes
-		$stmtA = "DELETE FROM osdial_auto_calls where server_ip='$server_ip' and call_time < '$XDSQLdate' and status NOT IN('XFER','CLOSER','LIVE')";
+		$stmtA = "DELETE FROM osdial_auto_calls WHERE server_ip='$server_ip' AND call_time<'$XDSQLdate' AND status NOT IN('XFER','CLOSER','LIVE');";
 		$affected_rows = $dbhA->do($stmtA);
 
 		if ($affected_rows > 0) {
@@ -1559,7 +1559,7 @@ while($one_day_interval > 0)
 		### For debugging purposes, try to grab Jammed calls and log them to jam logfile
 		if ($useJAMdebugFILE)
 			{
-			$stmtA = "SELECT * FROM osdial_auto_calls where server_ip='$server_ip' and last_update_time < '$BDtsSQLdate' and status IN('LIVE')";
+			$stmtA = "SELECT SQL_NO_CACHE * FROM osdial_auto_calls WHERE server_ip='$server_ip' AND last_update_time<'$BDtsSQLdate' AND status IN('LIVE');";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -1575,7 +1575,7 @@ while($one_day_interval > 0)
 			}
 
 		### find call records that are LIVE and not updated for over 10 seconds
-		$stmtA = "SELECT auto_call_id,lead_id,phone_number,status,campaign_id,phone_code,alt_dial,stage,callerid,uniqueid from osdial_auto_calls where server_ip='$server_ip' and last_update_time < '$BDtsSQLdate' and status IN('LIVE');";
+		$stmtA = "SELECT SQL_NO_CACHE auto_call_id,lead_id,phone_number,status,campaign_id,phone_code,alt_dial,stage,callerid,uniqueid FROM osdial_auto_calls WHERE server_ip='$server_ip' AND last_update_time<'$BDtsSQLdate' AND status IN('LIVE');";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -1601,7 +1601,7 @@ while($one_day_interval > 0)
 		$rec_count=0;
 		while ($sthArows > $rec_count)
 			{
-			$stmtA = "DELETE from osdial_auto_calls where auto_call_id='$auto_call_id'";
+			$stmtA = "DELETE FROM osdial_auto_calls WHERE auto_call_id='$auto_call_id';";
 			$affected_rows = $dbhA->do($stmtA);
 
 			if ($affected_rows > 0) {
@@ -1649,7 +1649,7 @@ while($one_day_interval > 0)
 		if ($LUcount > 0)
 			{
 			chop($lists_update);
-			$stmtA = "UPDATE osdial_lists SET list_lastcalldate='$SQLdate' where list_id IN($lists_update);";
+			$stmtA = "UPDATE osdial_lists SET list_lastcalldate='$SQLdate' WHERE list_id IN($lists_update);";
 			$affected_rows = $dbhA->do($stmtA);
 			$event_string = "|     lastcalldate UPDATED $affected_rows|$lists_update|";
 			 &event_logger;
@@ -1658,7 +1658,7 @@ while($one_day_interval > 0)
 		if ($CPcount > 0)
 			{
 			chop($campaigns_update);
-			$stmtA = "UPDATE osdial_campaigns SET campaign_logindate='$SQLdate' where campaign_id IN($campaigns_update);";
+			$stmtA = "UPDATE osdial_campaigns SET campaign_logindate='$SQLdate' WHERE campaign_id IN($campaigns_update);";
 			$affected_rows = $dbhA->do($stmtA);
 			$event_string = "|     logindate UPDATED $affected_rows|$campaigns_update|";
 			 &event_logger;
@@ -1686,7 +1686,7 @@ while($one_day_interval > 0)
 		if ($endless_loop =~ /0$/)	# run every ten cycles (about 25 seconds)
 			{
 			### Grab Server values from the database
-				$stmtA = "SELECT vd_server_logs FROM servers where server_ip = '$VARserver_ip';";
+				$stmtA = "SELECT vd_server_logs FROM servers WHERE server_ip='$VARserver_ip';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -1725,7 +1725,7 @@ while($one_day_interval > 0)
 			###########################################
 
 			### delete call records that are LIVE/XFER for over 100 minutes
-			$stmtA = "DELETE FROM osdial_auto_calls where server_ip='$server_ip' and call_time < '$TDSQLdate' and status NOT IN('XFER','CLOSER')";
+			$stmtA = "DELETE FROM osdial_auto_calls WHERE server_ip='$server_ip' AND call_time<'$TDSQLdate' AND status NOT IN('XFER','CLOSER');";
 			$affected_rows = $dbhA->do($stmtA);
 
 			if ($affected_rows > 0) {
@@ -1734,7 +1734,7 @@ while($one_day_interval > 0)
 			}
 
 			### Grab Server values from the database in case they've changed
-			$stmtA = "SELECT max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context FROM servers where server_ip = '$server_ip';";
+			$stmtA = "SELECT max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context FROM servers WHERE server_ip='$server_ip';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;

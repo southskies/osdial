@@ -244,7 +244,7 @@ my $dbhD;
 	&event_logger;
 
 ### Grab Server values from the database
-$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,asterisk_version,sys_perf_log,vd_server_logs FROM servers where server_ip = '$server_ip';";
+$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,asterisk_version,sys_perf_log,vd_server_logs FROM servers WHERE server_ip='$server_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -299,7 +299,7 @@ $sthA->finish();
 	print STDERR "LOOKING FOR $ZorD clients assigned to this server:\n";
 	$ZorD_client_count=0;
 	$ZorD_client_list='|';
-	$stmtA = "SELECT extension FROM phones where protocol = '$ZorD' and server_ip='$server_ip'";
+	$stmtA = "SELECT extension FROM phones WHERE protocol='$ZorD' AND server_ip='$server_ip';";
 	if($DB){print STDERR "|$stmtA|\n";}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -319,7 +319,7 @@ $sthA->finish();
 	print STDERR "LOOKING FOR IAX2 clients assigned to this server:\n";
 	$IAX2_client_count=0;
 	$IAX2_client_list='|';
-	$stmtA = "SELECT extension FROM phones where protocol = 'IAX2' and server_ip='$server_ip'";
+	$stmtA = "SELECT extension FROM phones WHERE protocol='IAX2' AND server_ip='$server_ip';";
 	if($DB){print STDERR "|$stmtA|\n";}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -348,7 +348,7 @@ $sthA->finish();
 	print STDERR "LOOKING FOR SIP clients assigned to this server:\n";
 	$SIP_client_count=0;
 	$SIP_client_list='|';
-	$stmtA = "SELECT extension FROM phones where protocol = 'SIP' and server_ip='$server_ip'";
+	$stmtA = "SELECT extension FROM phones WHERE protocol='SIP' AND server_ip='$server_ip';";
 	if($DB){print STDERR "|$stmtA|\n";}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -455,7 +455,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 	#$stmtD = "SELECT if(substr(c.callerid_name,1,7)='OSDial#' AND (c.accountcode LIKE 'S___________________' OR c.accountcode LIKE 'ACagcW______________'),substr(c.callerid_name,8),c.channel),c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.flags,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto)";
 	#$stmtD = "SELECT if(substr(c.callerid_name,1,7)='OSDial#' AND (c.accountcode LIKE 'S___________________' OR c.accountcode LIKE 'ACagcW______________'),substring_index(c.channel,';',1),c.channel),c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.flags,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto)";
 	#$stmtD = "SELECT if(substr(c.callerid_name,1,7)='OSDial#' AND (c.accountcode LIKE 'S___________________' OR c.accountcode LIKE 'ACagcW______________'),c.channel,c.channel),c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.flags,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto)";
-	$stmtD = "SELECT if(substr(c.callerid_name,1,7)='OSDial#' AND (c.accountcode LIKE 'S___________________' OR c.accountcode LIKE 'ACagcW______________'),substr(c.callerid_name,8),c.channel),c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.channel,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto)";
+	$stmtD = "SELECT SQL_NO_CACHE if(substr(c.callerid_name,1,7)='OSDial#' AND (c.accountcode LIKE 'S___________________' OR c.accountcode LIKE 'ACagcW______________'),substr(c.callerid_name,8),c.channel),c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.channel,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto);";
 	if($DB){print STDERR "|$stmtD|\n";}
 	$sthD = $dbhD->prepare($stmtD) or die "preparing: ",$dbhD->errstr;
 	$sthD->execute or die "executing: $stmtD ", $dbhD->errstr;
@@ -677,7 +677,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 				print STDERR "LOOKING FOR $ZorD clients assigned to this server:\n";
 				$ZorD_client_count=0;
 				$ZorD_client_list='|';
-				$stmtA = "SELECT extension FROM phones where protocol = '$ZorD' and server_ip='$server_ip'";
+				$stmtA = "SELECT extension FROM phones WHERE protocol='$ZorD' AND server_ip='$server_ip';";
 				if($DB){print STDERR "|$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -697,7 +697,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 				print STDERR "LOOKING FOR IAX2 clients assigned to this server:\n";
 				$IAX2_client_count=0;
 				$IAX2_client_list='|';
-				$stmtA = "SELECT extension FROM phones where protocol = 'IAX2' and server_ip='$server_ip'";
+				$stmtA = "SELECT extension FROM phones WHERE protocol='IAX2' AND server_ip='$server_ip';";
 				if($DB){print STDERR "|$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -726,7 +726,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 				print STDERR "LOOKING FOR SIP clients assigned to this server:\n";
 				$SIP_client_count=0;
 				$SIP_client_list='|';
-				$stmtA = "SELECT extension FROM phones where protocol = 'SIP' and server_ip='$server_ip'";
+				$stmtA = "SELECT extension FROM phones WHERE protocol='SIP' AND server_ip='$server_ip';";
 				if($DB){print STDERR "|$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -754,7 +754,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 				print STDERR "IAX2 Clients: $IAX2_client_list\n";
 				print STDERR "SIP Clients:  $SIP_client_list\n";
 			### Grab Server values from the database
-				$stmtA = "SELECT sys_perf_log,vd_server_logs FROM servers where server_ip = '$server_ip';";
+				$stmtA = "SELECT sys_perf_log,vd_server_logs FROM servers WHERE server_ip='$server_ip';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -1133,9 +1133,9 @@ $iax_client_counter=0;
 $local_client_counter=0;
 $sip_client_counter=0;
 
-	if($DB){print STDERR "\n|SELECT channel,extension FROM $live_channels where server_ip = '$server_ip'|\n";}
+	if($DB){print STDERR "\n|SELECT SQL_NO_CACHE channel,extension FROM $live_channels WHERE server_ip='$server_ip'|\n";}
 
-$stmtA = "SELECT channel,extension FROM $live_channels where server_ip = '$server_ip';";
+$stmtA = "SELECT SQL_NO_CACHE channel,extension FROM $live_channels WHERE server_ip='$server_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -1150,7 +1150,7 @@ while ($sthArows > $rec_count)
 	}
 $sthA->finish();
 
-$stmtA = "SELECT channel,extension FROM $live_sip_channels where server_ip = '$server_ip';";
+$stmtA = "SELECT SQL_NO_CACHE channel,extension FROM $live_sip_channels WHERE server_ip='$server_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -1172,7 +1172,7 @@ $sthA->finish();
 
 	&get_time_now;
 
-$stmtU = "INSERT INTO $server_updater (server_ip,last_update) VALUES ('$server_ip','$now_date') ON DUPLICATE KEY UPDATE last_update=VALUES(last_update);";
+$stmtU = "INSERT INTO $server_updater (server_ip,last_update) VALUES('$server_ip','$now_date') ON DUPLICATE KEY UPDATE last_update=VALUES(last_update);";
 	if($DB){print STDERR "\n|$stmtU|\n";}
 $affected_rows = $dbhA->do($stmtU);
 
@@ -1199,7 +1199,7 @@ if (!$run_validate_parked_channels_now)
 	{
 	$parked_counter=0;
 	@ARchannel=@MT;   @ARextension=@MT;   @ARparked_time=@MT;   @ARparked_time_UNIX=@MT;   
-	$stmtA = "SELECT channel,extension,parked_time,UNIX_TIMESTAMP(parked_time) FROM $parked_channels where server_ip = '$server_ip' order by channel desc, parked_time desc;";
+	$stmtA = "SELECT SQL_NO_CACHE channel,extension,parked_time,UNIX_TIMESTAMP(parked_time) FROM $parked_channels WHERE server_ip='$server_ip' ORDER BY channel DESC,parked_time DESC;";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -1225,7 +1225,7 @@ if (!$run_validate_parked_channels_now)
 				if (@ARparked_time_UNIX[$AR] > $PQparked_time_UNIX)
 					{
 						if($DBX){print "Duplicate parked channel delete: |$PQchannel|$PQparked_time|\n";}
-					$stmtPQ = "DELETE FROM $parked_channels where server_ip='$server_ip' and channel='$PQchannel' and extension='$PQextension' and parked_time='$PQparked_time' limit 1";
+					$stmtPQ = "DELETE FROM $parked_channels WHERE server_ip='$server_ip' AND channel='$PQchannel' AND extension='$PQextension' AND parked_time='$PQparked_time' LIMIT 1;";
 							if($DB){print STDERR "\n|$stmtPQ|$$DEL_chan_park_counter|$DEL_chan_park_counter|\n\n";}
 						$affected_rows = $dbhC->do($stmtPQ);
 						
@@ -1256,7 +1256,7 @@ if (!$run_validate_parked_channels_now)
 			$event_string='LOGGED INTO MYSQL SERVER ON 2 CONNECTIONS TO VALIDATE PARKED CALLS|';
 			&event_logger;
 
-			$stmtB = "SELECT count(*) FROM $live_channels where server_ip='$server_ip' and channel='$PQchannel' and extension='$PQextension';";
+			$stmtB = "SELECT SQL_NO_CACHE count(*) FROM $live_channels WHERE server_ip='$server_ip' AND channel='$PQchannel' AND extension='$PQextension';";
 			$sthB = $dbhB->prepare($stmtB) or die "preparing: ",$dbhB->errstr;
 			$sthB->execute or die "executing: $stmtB ", $dbhB->errstr;
 			$sthBrows=$sthB->rows;
@@ -1281,7 +1281,7 @@ if (!$run_validate_parked_channels_now)
 				if ($$DEL_chan_park_counter > 5)
 					{
 				if($DBX){print "          parked channel delete: |$PQchannel|$PQparked_time|\n";}
-					$stmtPQ = "DELETE FROM $parked_channels where server_ip='$server_ip' and channel='$PQchannel' and extension='$PQextension' limit 1";
+					$stmtPQ = "DELETE FROM $parked_channels WHERE server_ip='$server_ip' AND channel='$PQchannel' AND extension='$PQextension' LIMIT 1;";
 						if($DB){print STDERR "\n|$stmtPQ|$$DEL_chan_park_counter|$DEL_chan_park_counter|\n\n";}
 					$affected_rows = $dbhC->do($stmtPQ);
 

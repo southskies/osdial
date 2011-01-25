@@ -140,7 +140,7 @@ use Net::Telnet ();
  or die "Couldn't connect to database: " . DBI->errstr;
  
 ### Grab Server values from the database
-$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,asterisk_version FROM servers where server_ip = '$server_ip';";
+$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,asterisk_version FROM servers WHERE server_ip='$server_ip';";
 
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 if ($DB) {print "|$stmtA|\n";}
@@ -178,7 +178,7 @@ if ($sthArows > 0)
 	
 
 @PTextensions=@MT; @PTvoicemail_ids=@MT; @PTmessages=@MT; @PTold_messages=@MT; @NEW_messages=@MT; @OLD_messages=@MT;
-$stmtA = "SELECT extension,voicemail_id,messages,old_messages from phones where server_ip='$server_ip'";
+$stmtA = "SELECT extension,voicemail_id,messages,old_messages FROM phones WHERE server_ip='$server_ip';";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;

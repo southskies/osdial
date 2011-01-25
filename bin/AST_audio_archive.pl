@@ -212,7 +212,7 @@ foreach my $file (readdir(FILE)) {
 			
 			if ($SQLfile =~ /^PBX-IN|^PBX-OUT/) {
 				my($pcmp,$pdat,$puid,$pext,$pcnl) = split(/_/,$SQLfile);
-				my $stmt = "SELECT * FROM call_log WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND uniqueid='$puid' LIMIT 1;";
+				my $stmt = "SELECT SQL_NO_CACHE * FROM call_log WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND uniqueid='$puid' LIMIT 1;";
 				print STDERR "\n|$stmt|\n" if ($DBX);
 				my $sret = $osdial->sql_query($stmt);
 				if ($sret->{uniqueid} > 0) {
@@ -241,7 +241,7 @@ foreach my $file (readdir(FILE)) {
 					my $ins = "INSERT INTO osdial_list SET entry_date='$clstart',modify_date='$clend',status='$pcmp',user='$pcmp',vendor_lead_code='$pext',custom1='$pext',custom2='$pext',external_key='" . $osdial->{VARserver_ip} . ":$puid',source_id='$psid',phone_code='1',phone_number='$pcnl',list_id='$plist',comments='$pcom';";
 					$osdial->sql_execute($ins);
 
-					my $stmt = "SELECT lead_id FROM osdial_list WHERE external_key='" . $osdial->{VARserver_ip} . ":$puid' LIMIT 1;";
+					my $stmt = "SELECT SQL_NO_CACHE lead_id FROM osdial_list WHERE external_key='" . $osdial->{VARserver_ip} . ":$puid' LIMIT 1;";
 					print STDERR "\n|$stmt|\n" if ($DBX);
 					my $sret = $osdial->sql_query($stmt);
 					$plead = $sret->{lead_id} if ($sret->{lead_id} > 0);
@@ -254,7 +254,7 @@ foreach my $file (readdir(FILE)) {
 
 			my $start_date;
 			my $dnt = 1;
-			my $stmt = "SELECT recording_id,start_time FROM recording_log WHERE filename='$SQLfile' ORDER BY recording_id DESC LIMIT 1;";
+			my $stmt = "SELECT SQL_NO_CACHE recording_id,start_time FROM recording_log WHERE filename='$SQLfile' ORDER BY recording_id DESC LIMIT 1;";
 			print STDERR "\n|$stmt|\n" if ($DBX);
 			my $sret = $osdial->sql_query($stmt);
 			if ($sret->{recording_id} > 0) {

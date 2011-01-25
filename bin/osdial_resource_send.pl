@@ -139,7 +139,7 @@ sub initinterfaces {
 		} else {
 			if ($cnt==0) {
 				$interfaces{$int} = OSDial->new('DB'=>$DB);
-				my $sret = $interfaces{$int}->sql_query("SELECT count(*) AS fndsvr FROM server_stats WHERE server_ip='" . $IPs{$int} . "';");
+				my $sret = $interfaces{$int}->sql_query("SELECT SQL_NO_CACHE count(*) AS fndsvr FROM server_stats WHERE server_ip='" . $IPs{$int} . "';");
 				if ($sret->{fndsvr} == 0) {
 					$interfaces{$int}->sql_execute("INSERT INTO server_stats SET server_ip='" . $IPs{$int} . "';");
 				}

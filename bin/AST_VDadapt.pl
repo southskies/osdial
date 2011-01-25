@@ -198,9 +198,9 @@ while ( $master_loop < $CLOloops ) {
 	if ($CLOcampaign) {
 		$swhere = "campaign_id='$CLOcampaign'";
 	} else {
-		$swhere = "( (active='Y') or (campaign_stats_refresh='Y') )";
+		$swhere = "(active='Y' OR campaign_stats_refresh='Y')";
 	}
-	$stmtA = "SELECT campaign_id,auto_dial_level,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,campaign_allow_inbound from osdial_campaigns where " . $swhere;
+	$stmtA = "SELECT campaign_id,auto_dial_level,dial_method,available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,campaign_allow_inbound FROM osdial_campaigns WHERE " . $swhere;
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows  = $sthA->rows;
@@ -240,7 +240,7 @@ while ( $master_loop < $CLOloops ) {
 			
 		### Find out how many leads are in the hopper from a specific campaign
 		my $hopper_ready_count = 0;
-		$stmtA = "SELECT status,count(*) FROM osdial_hopper WHERE campaign_id='$campaign_id[$i]' AND status IN ('API','READY') GROUP BY status;";
+		$stmtA = "SELECT SQL_NO_CACHE status,count(*) FROM osdial_hopper WHERE campaign_id='$campaign_id[$i]' AND status IN('API','READY') GROUP BY status;";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows  = $sthA->rows;
@@ -260,7 +260,7 @@ while ( $master_loop < $CLOloops ) {
 		##### IF THERE ARE NO LEADS IN THE HOPPER FOR THE CAMPAIGN WE DO NOT WANT TO ADJUST THE DIAL_LEVEL
 		if ( $hopper_ready_count > 0 ) {
 			### BEGIN - GATHER STATS FOR THE osdial_campaign_stats TABLE ###
-			$stmtA = "SELECT count(*),status from osdial_live_agents where campaign_id='$campaign_id[$i]' and last_update_time > '$VDL_one' group by status;";
+			$stmtA = "SELECT SQL_NO_CACHE count(*),status FROM osdial_live_agents WHERE campaign_id='$campaign_id[$i]' AND last_update_time>'$VDL_one' GROUP BY status;";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows  = $sthA->rows;
@@ -279,7 +279,7 @@ while ( $master_loop < $CLOloops ) {
 			$sthA->finish();
 
 			my $ivr_reserve_agents = 0;
-			$stmtA = "SELECT status,reserve_agents FROM osdial_ivr where campaign_id='$campaign_id[$i]'";
+			$stmtA = "SELECT status,reserve_agents FROM osdial_ivr WHERE campaign_id='$campaign_id[$i]';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			while (my @aryA = $sthA->fetchrow_array) {
@@ -296,7 +296,7 @@ while ( $master_loop < $CLOloops ) {
 			$VCSagents_active = $VCSINCALL + $VCSREADY + $VCSCLOSER - $ivr_reserve_agents;
 
 		
-			$stmtA = "SELECT count(*) FROM osdial_auto_calls where campaign_id='$campaign_id[$i]' and status IN('LIVE','CLOSER');";
+			$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE campaign_id='$campaign_id[$i]' AND status IN('LIVE','CLOSER');";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows  = $sthA->rows;
@@ -346,7 +346,7 @@ while ( $master_loop < $CLOloops ) {
 					$RESETdiff_ratio_updater++;
 
 					# GET AVERAGES FROM THIS CAMPAIGN
-					$stmtA = "SELECT calls_today,answers_today,drops_today,drops_today_pct,drops_answers_today_pct,calls_hour,answers_hour,drops_hour,drops_hour_pct,calls_halfhour,answers_halfhour,drops_halfhour,drops_halfhour_pct,calls_fivemin,answers_fivemin,drops_fivemin,drops_fivemin_pct,calls_onemin,answers_onemin,drops_onemin,drops_onemin_pct from osdial_campaign_stats where campaign_id='$campaign_id[$i]';";
+					$stmtA = "SELECT SQL_NO_CACHE calls_today,answers_today,drops_today,drops_today_pct,drops_answers_today_pct,calls_hour,answers_hour,drops_hour,drops_hour_pct,calls_halfhour,answers_halfhour,drops_halfhour,drops_halfhour_pct,calls_fivemin,answers_fivemin,drops_fivemin,drops_fivemin_pct,calls_onemin,answers_onemin,drops_onemin,drops_onemin_pct FROM osdial_campaign_stats WHERE campaign_id='$campaign_id[$i]';";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows  = $sthA->rows;
@@ -599,7 +599,7 @@ sub getAGCconfig {
 #    hashref with conents of table entry.
 sub getServerConfig {
 	my ($dbhA, $serverip) = @_;
-	my $stmtA = "SELECT * FROM servers where server_ip = '" . $serverip ."';";
+	my $stmtA = "SELECT * FROM servers WHERE server_ip='" . $serverip ."';";
 	my $sthA = $dbhA->prepare($stmtA) or die "preparing: " . $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA " . $dbhA->errstr;
 	my $servConf = $sthA->fetchrow_hashref;

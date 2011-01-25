@@ -278,7 +278,7 @@ $TOTAL_SALES=0;
 ###########################################################################
 ########### CURRENT DAY SALES GATHERING outbound-only: osdial_log  ######
 ###########################################################################
-$stmtA = "select osdial_log.user,first_name,last_name,address1,address2,city,state,postal_code,osdial_list.phone_number,email,custom1,osdial_list.comments,call_date,osdial_list.lead_id,osdial_users.full_name,osdial_log.status,osdial_list.vendor_lead_code,osdial_list.source_id,osdial_log.list_id from osdial_list,osdial_log,osdial_users where campaign_id='$campaign' $sale_statusesSQL and call_date > '$shipdate 00:00:01' and call_date < '$shipdate 23:59:59' and osdial_log.lead_id=osdial_list.lead_id and osdial_users.user=osdial_log.user;";
+$stmtA = "SELECT SQL_NO_CACHE osdial_log.user,first_name,last_name,address1,address2,city,state,postal_code,osdial_list.phone_number,email,custom1,osdial_list.comments,call_date,osdial_list.lead_id,osdial_users.full_name,osdial_log.status,osdial_list.vendor_lead_code,osdial_list.source_id,osdial_log.list_id FROM osdial_list,osdial_log,osdial_users WHERE campaign_id='$campaign' $sale_statusesSQL AND call_date>'$shipdate 00:00:01' AND call_date<'$shipdate 23:59:59' AND osdial_log.lead_id=osdial_list.lead_id AND osdial_users.user=osdial_log.user;";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -318,7 +318,7 @@ if (length($with_inboundSQL)>3)
 	###########################################################################
 	########### CURRENT DAY SALES GATHERING inbound-only: osdial_closer_log  ######
 	###########################################################################
-	$stmtA = "select osdial_closer_log.user,first_name,last_name,address1,address2,city,state,postal_code,osdial_list.phone_number,email,custom1,osdial_list.comments,call_date,osdial_list.lead_id,osdial_users.full_name,osdial_closer_log.status,osdial_list.vendor_lead_code,osdial_list.source_id,osdial_closer_log.list_id,campaign_id from osdial_list,osdial_closer_log,osdial_users where campaign_id IN($with_inboundSQL) $close_statusesSQL and call_date > '$shipdate 00:00:01' and call_date < '$shipdate 23:59:59' and osdial_closer_log.lead_id=osdial_list.lead_id and osdial_users.user=osdial_closer_log.user;";
+	$stmtA = "SELECT SQL_NO_CACHE osdial_closer_log.user,first_name,last_name,address1,address2,city,state,postal_code,osdial_list.phone_number,email,custom1,osdial_list.comments,call_date,osdial_list.lead_id,osdial_users.full_name,osdial_closer_log.status,osdial_list.vendor_lead_code,osdial_list.source_id,osdial_closer_log.list_id,campaign_id FROM osdial_list,osdial_closer_log,osdial_users WHERE campaign_id IN($with_inboundSQL) $close_statusesSQL AND call_date>'$shipdate 00:00:01' AND call_date<'$shipdate 23:59:59' AND osdial_closer_log.lead_id=osdial_list.lead_id AND osdial_users.user=osdial_closer_log.user;";
 	if ($DB) {print "|$stmtA|\n";}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -351,7 +351,7 @@ if (length($with_inboundSQL)>3)
 		$user = '';
 		$agent_name='';
 
-		$stmtB = "select osdial_xfer_log.user,full_name from osdial_xfer_log,osdial_users where lead_id='$lead_id' and closer='$closer' and call_date > '$shipdate 00:00:01' and call_date < '$shipdate 23:59:59' and osdial_users.user=osdial_xfer_log.user order by call_date desc limit 1;";
+		$stmtB = "SELECT SQL_NO_CACHE osdial_xfer_log.user,full_name FROM osdial_xfer_log,osdial_users WHERE lead_id='$lead_id' AND closer='$closer' AND call_date>'$shipdate 00:00:01' AND call_date<'$shipdate 23:59:59' AND osdial_users.user=osdial_xfer_log.user ORDER BY call_date DESC LIMIT 1;";
 		$sthB = $dbhB->prepare($stmtB) or die "preparing: ",$dbhB->errstr;
 		$sthB->execute or die "executing: $stmtB ", $dbhB->errstr;
 		$sthBrows=$sthB->rows;
@@ -421,7 +421,7 @@ $ivr_id = '0';
 $ivr_filename = '';
 
 
-$stmtB = "select recording_id,filename,location from recording_log where lead_id='$lead_id' and start_time > '$shipdate 00:00:01' and start_time < '$shipdate 23:59:59' order by length_in_sec desc limit 1;";
+$stmtB = "SELECT SQL_NO_CACHE recording_id,filename,location FROM recording_log WHERE lead_id='$lead_id' AND start_time>'$shipdate 00:00:01' AND start_time<'$shipdate 23:59:59' ORDER BY length_in_sec DESC LIMIT 1;";
 $sthB = $dbhB->prepare($stmtB) or die "preparing: ",$dbhB->errstr;
 $sthB->execute or die "executing: $stmtB ", $dbhB->errstr;
 $sthBrows=$sthB->rows;
@@ -438,7 +438,7 @@ $sthB->finish();
 
 if (length($ivr_id)<3) 
 	{
-	$stmtB = "select recording_id,filename from recording_log where lead_id='$lead_id' order by length_in_sec desc limit 1;";
+	$stmtB = "SELECT SQL_NO_CACHE recording_id,filename FROM recording_log WHERE lead_id='$lead_id' ORDER BY length_in_sec DESC LIMIT 1;";
 	$sthB = $dbhB->prepare($stmtB) or die "preparing: ",$dbhB->errstr;
 	$sthB->execute or die "executing: $stmtB ", $dbhB->errstr;
 	$sthBrows=$sthB->rows;
@@ -454,7 +454,7 @@ if (length($ivr_id)<3)
 
 	if (length($ivr_id)<3) 
 		{
-		$stmtB = "select recording_id,filename from recording_log where filename LIKE \"%$phone_number%\" order by length_in_sec desc limit 1;";
+		$stmtB = "SELECT SQL_NO_CACHE recording_id,filename FROM recording_log WHERE filename LIKE '%$phone_number%' ORDER BY length_in_sec DESC LIMIT 1;";
 		$sthB = $dbhB->prepare($stmtB) or die "preparing: ",$dbhB->errstr;
 		$sthB->execute or die "executing: $stmtB ", $dbhB->errstr;
 		$sthBrows=$sthB->rows;

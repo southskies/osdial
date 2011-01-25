@@ -256,7 +256,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 
 
 ### Grab Server values from the database
-	$stmtA = "SELECT vd_server_logs,local_gmt FROM servers where server_ip = '$VARserver_ip';";
+	$stmtA = "SELECT vd_server_logs,local_gmt FROM servers WHERE server_ip='$VARserver_ip';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -327,7 +327,7 @@ $stmtA = "UPDATE osdial_list SET list_id='1' WHERE list_id='0' OR list_id='' OR 
 $affected_rows = $dbhA->do($stmtA);
 
 ### Delete leads from inactive lists if there are any
-$stmtA = "SELECT * FROM osdial_lists where active='N';";
+$stmtA = "SELECT * FROM osdial_lists WHERE active='N';";
 if ($DB) {print $stmtA;}
 $inactive_lists='';
 $inactive_lists_count=0;
@@ -355,7 +355,7 @@ if ($inactive_lists_count > 0)
 	}
 
 ### BEGIN Change CBHOLD status leads to CALLBK if their osdial_callbacks time has passed
-$stmtA = "SELECT count(*) FROM osdial_callbacks where callback_time <= '$now_date' and status='ACTIVE';";
+$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_callbacks where callback_time <= '$now_date' and status='ACTIVE';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 @aryA = $sthA->fetchrow_array;
@@ -368,7 +368,7 @@ if ($CBHOLD_count > 0)
 	$update_leads='';
 	$cbc=0;
 	$cba=0;
-	$stmtA = "SELECT osdial_callbacks.lead_id,recipient,campaign_id,osdial_callbacks.list_id,gmt_offset_now,state FROM osdial_callbacks,osdial_list where callback_time <= '$now_date' and osdial_callbacks.status='ACTIVE' and osdial_callbacks.lead_id=osdial_list.lead_id;";
+	$stmtA = "SELECT SQL_NO_CACHE osdial_callbacks.lead_id,recipient,campaign_id,osdial_callbacks.list_id,gmt_offset_now,state FROM osdial_callbacks,osdial_list where callback_time <= '$now_date' and osdial_callbacks.status='ACTIVE' and osdial_callbacks.lead_id=osdial_list.lead_id;";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -430,11 +430,11 @@ if ($CBHOLD_count > 0)
 
 if ($CLIcampaign)
 	{
-	$stmtA = "SELECT * from osdial_campaigns where campaign_id='$CLIcampaign'";
+	$stmtA = "SELECT * FROM osdial_campaigns WHERE campaign_id='$CLIcampaign';";
 	}
 else
 	{
-	$stmtA = "SELECT * from osdial_campaigns where active='Y'";
+	$stmtA = "SELECT * FROM osdial_campaigns WHERE active='Y';";
 	}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -497,7 +497,7 @@ foreach(@campaign_id)
 		$list_order[$i] =~ s/ ... NEW$//;
 		}
 
-	$stmtA = "SELECT dialable_leads from osdial_campaign_stats where campaign_id='$campaign_id[$i]';";
+	$stmtA = "SELECT dialable_leads FROM osdial_campaign_stats WHERE campaign_id='$campaign_id[$i]';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -533,7 +533,7 @@ foreach(@campaign_id)
 		}
 		if ($DBX) {print "\n";}
 
-	$stmtA = "SELECT * FROM osdial_call_times where call_time_id='$local_call_time[$i]';";
+	$stmtA = "SELECT * FROM osdial_call_times WHERE call_time_id='$local_call_time[$i]';";
 		if ($DBX) {print "   |$stmtA|\n";}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -697,7 +697,7 @@ foreach(@campaign_id)
 		{
 		if (length($state_rules[$b])>1)
 			{
-			$stmtA = "SELECT * from osdial_state_call_times where state_call_time_id='$state_rules[$b]';";
+			$stmtA = "SELECT * FROM osdial_state_call_times WHERE state_call_time_id='$state_rules[$b]';";
 				if ($DBX) {print "   |$stmtA|\n";}
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1012,7 +1012,7 @@ foreach(@campaign_id)
 
 	##### BEGIN lead recycling parsing and prep ###
 
-	$stmtA = "SELECT * from osdial_lead_recycle where campaign_id='$campaign_id[$i]' and active='Y';";
+	$stmtA = "SELECT * FROM osdial_lead_recycle WHERE campaign_id='$campaign_id[$i]' AND active='Y';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -1136,7 +1136,7 @@ foreach(@campaign_id)
 
  	### Find out how many leads are in the hopper from a specific campaign
 	$hopper_ready_count=0;
-	$stmtA = "SELECT status,count(*) FROM osdial_hopper WHERE campaign_id='$campaign_id[$i]' AND status IN ('API','READY') GROUP BY status;";
+	$stmtA = "SELECT SQL_NO_CACHE status,count(*) FROM osdial_hopper WHERE campaign_id='$campaign_id[$i]' AND status IN ('API','READY') GROUP BY status;";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -1160,7 +1160,7 @@ foreach(@campaign_id)
 		if ($DB) {print "     hopper too low ($hopper_ready_count|$hopper_level[$i]) starting hopper dump\n";}
 
 		### Get list of the lists in the campaign ###
-		$stmtA = "SELECT list_id FROM osdial_lists where campaign_id='$campaign_id[$i]' and active='Y';";
+		$stmtA = "SELECT list_id FROM osdial_lists WHERE campaign_id='$campaign_id[$i]' AND active='Y';";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -1181,7 +1181,7 @@ foreach(@campaign_id)
 
 		if ($list_order_mix[$i] !~ /DISABLED/)
 			{
-			$stmtA = "SELECT vcl_id,vcl_name,list_mix_container,mix_method FROM osdial_campaigns_list_mix where campaign_id='$campaign_id[$i]' and status='ACTIVE';";
+			$stmtA = "SELECT vcl_id,vcl_name,list_mix_container,mix_method FROM osdial_campaigns_list_mix WHERE campaign_id='$campaign_id[$i]' AND status='ACTIVE';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -1219,7 +1219,7 @@ foreach(@campaign_id)
 		if ( ($lead_filter_id[$i] !~ /NONE/) && (length($lead_filter_id[$i])>0) )
 			{
 			### Get SQL of lead filter for the campaign ###
-			$stmtA = "SELECT lead_filter_sql FROM osdial_lead_filters where lead_filter_id='$lead_filter_id[$i]';";
+			$stmtA = "SELECT lead_filter_sql FROM osdial_lead_filters WHERE lead_filter_id='$lead_filter_id[$i]';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -1247,7 +1247,7 @@ foreach(@campaign_id)
 		# Get total recycles.
 		$recycle_total[$i] = 0;
 		if ($recycle_notimeSQL[$i] ne "") {
-			$stmtA = "SELECT count(*) FROM osdial_list FORCE INDEX (list_id) where $recycle_notimeSQL[$i] AND list_id IN ($camp_lists[$i]);";
+			$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_list FORCE INDEX (list_id) WHERE $recycle_notimeSQL[$i] AND list_id IN ($camp_lists[$i]);";
 				if ($DBX) {print "     |$stmtA|\n";}
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1263,7 +1263,7 @@ foreach(@campaign_id)
 		# Get scheduled recycles.
 		$recycle_sched[$i] = 0;
 		if ($recycle_SQL[$i] ne "") {
-			$stmtA = "SELECT count(*) FROM osdial_list FORCE INDEX (list_id) where $recycle_SQL[$i] AND list_id IN ($camp_lists[$i]);";
+			$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_list FORCE INDEX (list_id) WHERE $recycle_SQL[$i] AND list_id IN ($camp_lists[$i]);";
 				if ($DBX) {print "     |$stmtA|\n";}
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1287,7 +1287,7 @@ foreach(@campaign_id)
 		} else {
 			$lom = "status IN($STATUSsql[$i]) and list_id IN($camp_lists[$i])";
 		}
-		$stmtA = "SELECT count(*) FROM osdial_list FORCE INDEX (list_status) where $cclr and $lom and ($all_gmtSQL[$i]) $lead_filter_sql[$i];";
+		$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_list FORCE INDEX (list_status) WHERE $cclr AND $lom AND ($all_gmtSQL[$i]) $lead_filter_sql[$i];";
 			if ($DBX) {print "     |$stmtA|\n";}
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1305,7 +1305,7 @@ foreach(@campaign_id)
 
 		if ( ($lead_order[$i] =~ / ... NEW$/) && ($list_order_mix[$i] =~ /DISABLED/) )
 			{
-			$stmtA = "SELECT count(*) FROM osdial_list FORCE INDEX (list_status) where called_since_last_reset='N' and status IN('NEW') and list_id IN($camp_lists[$i]) and ($all_gmtSQL[$i]) $lead_filter_sql[$i];";
+			$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_list FORCE INDEX (list_status) WHERE called_since_last_reset='N' AND status IN('NEW') AND list_id IN($camp_lists[$i]) AND ($all_gmtSQL[$i]) $lead_filter_sql[$i];";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -1405,7 +1405,7 @@ foreach(@campaign_id)
 				{
 				if ($DB) {print "     looking for RECYCLE leads, maximum of $hopper_level[$i]\n";}
 
-				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list FORCE INDEX (list_id) where $recycle_SQL[$i] and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] limit $hopper_level[$i];";
+				$stmtA = "SELECT SQL_NO_CACHE lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list FORCE INDEX (list_id) WHERE $recycle_SQL[$i] AND list_id IN($camp_lists[$i]) AND lead_id NOT IN($lead_id_lists) AND ($all_gmtSQL[$i]) $lead_filter_sql[$i] LIMIT $hopper_level[$i];";
 				if ($DBX) {print "     |$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1462,7 +1462,7 @@ foreach(@campaign_id)
 			#	$order_stmt = 'order by called_count, lead_id asc';
 				if ($DB) {print "     looking for $NEW_level NEW leads mixed in with $OTHER_level other leads\n";}
 
-				$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list FORCE INDEX (list_status) where called_since_last_reset='N' and status IN('NEW') and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $NEW_level;";
+				$stmtA = "SELECT SQL_NO_CACHE lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list FORCE INDEX (list_status) WHERE called_since_last_reset='N' AND status IN('NEW') AND list_id IN($camp_lists[$i]) AND lead_id NOT IN($lead_id_lists) AND ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt LIMIT $NEW_level;";
 				if ($DBX) {print "     |$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1515,7 +1515,7 @@ foreach(@campaign_id)
 
 				if ($list_order_mix[$i] =~ /DISABLED/)
 					{
-					$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list FORCE INDEX (list_status) where $cclr and status IN($STATUSsql[$i]) and list_id IN($camp_lists[$i]) and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $OTHER_level;";
+					$stmtA = "SELECT SQL_NO_CACHE lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list FORCE INDEX (list_status) WHERE $cclr AND status IN($STATUSsql[$i]) AND list_id IN($camp_lists[$i]) AND lead_id NOT IN($lead_id_lists) AND ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt LIMIT $OTHER_level;";
 					if ($DBX) {print "     |$stmtA|\n";}
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1603,9 +1603,9 @@ foreach(@campaign_id)
 						$list_mix_stepARY[3] =~ s/ /','/gi;
 						$list_mix_stepARY[3] =~ s/^',|,'-//gi;
 						if ($DBX) {print "  LM $x |$list_mix_stepARY[0]|$list_mix_stepARY[2]|$LM_step_goal[$x]|$list_mix_stepARY[3]|\n";}
-						$list_mix_dialableSQL = "(list_id='$list_mix_stepARY[0]' and status IN($list_mix_stepARY[3]))";
+						$list_mix_dialableSQL = "(list_id='$list_mix_stepARY[0]' AND status IN($list_mix_stepARY[3]))";
 
-						$stmtA = "SELECT lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list FORCE INDEX (list_status) where $cclr and $list_mix_dialableSQL and lead_id NOT IN($lead_id_lists) and ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt limit $LM_step_goal[$x];";
+						$stmtA = "SELECT SQL_NO_CACHE lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list FORCE INDEX (list_status) WHERE $cclr AND $list_mix_dialableSQL AND lead_id NOT IN($lead_id_lists) AND ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt LIMIT $LM_step_goal[$x];";
 						if ($DBX) {print "     |$stmtA|\n";}
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1729,7 +1729,7 @@ foreach(@campaign_id)
 							}
 							$sthA->finish();
 							if ($dnc_method =~ /COMPANY|BOTH/) {
-								$stmtA="SELECT count(*) FROM osdial_dnc_company WHERE company_id='$comp_id' AND (phone_number='$phone_to_hopper[$h]' OR phone_number='" . substr($phone_to_hopper[$h],0,3) . "XXXXXXX');";
+								$stmtA="SELECT SQL_NO_CACHE count(*) FROM osdial_dnc_company WHERE company_id='$comp_id' AND (phone_number='$phone_to_hopper[$h]' OR phone_number='" . substr($phone_to_hopper[$h],0,3) . "XXXXXXX');";
 								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 								@aryA = $sthA->fetchrow_array;
@@ -1742,7 +1742,7 @@ foreach(@campaign_id)
 						}
 
 						if ($dncsskip==0) {
-							$stmtA="SELECT count(*) FROM osdial_dnc WHERE (phone_number='$phone_to_hopper[$h]' OR phone_number='" . substr($phone_to_hopper[$h],0,3) . "XXXXXXX');";
+							$stmtA="SELECT SQL_NO_CACHE count(*) FROM osdial_dnc WHERE (phone_number='$phone_to_hopper[$h]' OR phone_number='" . substr($phone_to_hopper[$h],0,3) . "XXXXXXX');";
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 							@aryA = $sthA->fetchrow_array;

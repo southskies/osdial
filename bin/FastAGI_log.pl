@@ -134,7 +134,7 @@ $dbhB = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 	or die "Couldn't connect to database: " . DBI->errstr;
 
 ### Grab Server values from the database
-$stmtB = "SELECT vd_server_logs FROM servers where server_ip = '$VARserver_ip';";
+$stmtB = "SELECT vd_server_logs FROM servers WHERE server_ip='$VARserver_ip';";
 $sthB = $dbhB->prepare($stmtB) or die "preparing: ",$dbhB->errstr;
 $sthB->execute or die "executing: $stmtB ", $dbhB->errstr;
 $sthBrows=$sthB->rows;
@@ -228,7 +228,7 @@ sub process_request {
 		or die "Couldn't connect to database: " . DBI->errstr;
 
 	### Grab Server values from the database
-	$stmtA = "SELECT agi_output,asterisk_version FROM servers where server_ip = '$VARserver_ip';";
+	$stmtA = "SELECT agi_output,asterisk_version FROM servers WHERE server_ip='$VARserver_ip';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -403,7 +403,7 @@ sub process_request {
 				$channel_line = $channel;
 				$channel_line =~ s/^SIP\/|\-.*//gi;
 
-				$stmtA = "SELECT count(*) FROM phones where server_ip='$VARserver_ip' and extension='$channel_line' and protocol='SIP';";
+				$stmtA = "SELECT count(*) FROM phones WHERE server_ip='$VARserver_ip' AND extension='$channel_line' AND protocol='SIP';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -424,7 +424,7 @@ sub process_request {
 				$channel_line = $channel;
 				$channel_line =~ s/^IAX2\/|\-.*//gi;
 
-				$stmtA = "SELECT count(*) FROM phones where server_ip='$VARserver_ip' and extension='$channel_line' and protocol='IAX2';";
+				$stmtA = "SELECT count(*) FROM phones WHERE server_ip='$VARserver_ip' AND extension='$channel_line' AND protocol='IAX2';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -446,7 +446,7 @@ sub process_request {
 				$channel_line = $channel;
 				$channel_line =~ s/^$ZorD\///gi;
 
-				$stmtA = "SELECT count(*) FROM phones where server_ip='$VARserver_ip' and extension='$channel_line' and protocol='$ZorD';";
+				$stmtA = "SELECT count(*) FROM phones WHERE server_ip='$VARserver_ip' AND extension='$channel_line' AND protocol='$ZorD';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -468,7 +468,7 @@ sub process_request {
 				$channel_line = $channel;
 				$channel_line =~ s/^Local\/|\@.*//gi;
 			
-				$stmtA = "SELECT count(*),extension FROM phones where server_ip='$VARserver_ip' and dialplan_number='$channel_line' and protocol='EXTERNAL' LIMIT 1;";
+				$stmtA = "SELECT count(*),extension FROM phones WHERE server_ip='$VARserver_ip' AND dialplan_number='$channel_line' AND protocol='EXTERNAL' LIMIT 1;";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -489,7 +489,7 @@ sub process_request {
 
 			if ( ($accountcode =~ /^V|^M|^DC/) && ($accountcode =~ /\d\d\d\d\d\d\d\d\d/) && (length($number_dialed)<1) )
 				{
-				$stmtA = "SELECT cmd_line_b,cmd_line_d FROM osdial_manager where callerid='$accountcode' limit 1;";
+				$stmtA = "SELECT SQL_NO_CACHE cmd_line_b,cmd_line_d FROM osdial_manager WHERE callerid='$accountcode' LIMIT 1;";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -551,7 +551,7 @@ sub process_request {
 				
 			}
 
-			$stmtA = "INSERT INTO call_log (uniqueid,channel,channel_group,type,server_ip,extension,number_dialed,start_time,start_epoch,end_time,end_epoch,length_in_sec,length_in_min,caller_code) values('$unique_id','$channel','$channel_group','$type','$VARserver_ip','$extension','$number_dialed','$now_date','$now_date_epoch','','','','','$accountcode')";
+			$stmtA = "INSERT INTO call_log (uniqueid,channel,channel_group,type,server_ip,extension,number_dialed,start_time,start_epoch,end_time,end_epoch,length_in_sec,length_in_min,caller_code) VALUES('$unique_id','$channel','$channel_group','$type','$VARserver_ip','$extension','$number_dialed','$now_date','$now_date_epoch','','','','','$accountcode')";
 
 			if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 			$affected_rows = $dbhA->do($stmtA);
@@ -580,7 +580,7 @@ sub process_request {
 				}
 
 			### get uniqueid and start_epoch from the call_log table
-			$stmtA = "SELECT uniqueid,start_epoch FROM call_log where uniqueid='$unique_id';";
+			$stmtA = "SELECT SQL_NO_CACHE uniqueid,start_epoch FROM call_log WHERE uniqueid='$unique_id';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -602,18 +602,18 @@ sub process_request {
 
 				if ($AGILOG) {$agi_string = "QUERY done: start time = $start_time | sec: $length_in_sec | min: $length_in_min |";   &agi_output;}
 
-				$stmtA = "UPDATE call_log set end_time='$now_date',end_epoch='$now_date_epoch',length_in_sec=$length_in_sec,length_in_min='$length_in_min',channel='$channel',isup_result='$hangup_cause' where uniqueid='$unique_id'";
+				$stmtA = "UPDATE call_log SET end_time='$now_date',end_epoch='$now_date_epoch',length_in_sec=$length_in_sec,length_in_min='$length_in_min',channel='$channel',isup_result='$hangup_cause' WHERE uniqueid='$unique_id';";
 
 				if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 				$affected_rows = $dbhA->do($stmtA);
 				}
 
-			$stmtA = "DELETE from live_inbound where uniqueid='$unique_id' and server_ip='$VARserver_ip'";
+			$stmtA = "DELETE FROM live_inbound WHERE uniqueid='$unique_id' AND server_ip='$VARserver_ip';";
 			if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 			$affected_rows = $dbhA->do($stmtA);
 
 		##### BEGIN Park Log entry check and update #####
-			$stmtA = "SELECT UNIX_TIMESTAMP(parked_time),UNIX_TIMESTAMP(grab_time) FROM park_log where uniqueid='$unique_id' and server_ip='$VARserver_ip' LIMIT 1;";
+			$stmtA = "SELECT SQL_NO_CACHE UNIX_TIMESTAMP(parked_time),UNIX_TIMESTAMP(grab_time) FROM park_log WHERE uniqueid='$unique_id' AND server_ip='$VARserver_ip' LIMIT 1;";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -642,7 +642,7 @@ sub process_request {
 				$parked_sec=($grab_time - $parked_time);
 				 }
 
-				$stmtA = "UPDATE park_log set status='HUNGUP',hangup_time='$now_date',parked_sec='$parked_sec',talked_sec='$talked_sec' where uniqueid='$unique_id' and server_ip='$VARserver_ip'";
+				$stmtA = "UPDATE park_log SET status='HUNGUP',hangup_time='$now_date',parked_sec='$parked_sec',talked_sec='$talked_sec' WHERE uniqueid='$unique_id' AND server_ip='$VARserver_ip';";
 				$affected_rows = $dbhA->do($stmtA);
 			   }
 		##### END Park Log entry check and update #####
@@ -702,12 +702,12 @@ sub process_request {
 						$VDL_status = 'CRC'; $VDAC_status = 'BUSY';
 					}
 
-					$stmtA = "UPDATE osdial_list set status='$VDL_status' where lead_id = '$CIDlead_id';";
+					$stmtA = "UPDATE osdial_list SET status='$VDL_status' WHERE lead_id='$CIDlead_id';";
 						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 					$VDADaffected_rows = $dbhA->do($stmtA);
 					if ($AGILOG) {$agi_string = "--    VDAD osdial_list update: |$VDADaffected_rows|$CIDlead_id";   &agi_output;}
 
-					$stmtA = "UPDATE osdial_auto_calls set status='$VDAC_status' where callerid = '$accountcode';";
+					$stmtA = "UPDATE osdial_auto_calls SET status='$VDAC_status' WHERE callerid='$accountcode';";
 						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 					$VDACaffected_rows = $dbhA->do($stmtA);
 					if ($AGILOG) {$agi_string = "--    VDAC update: |$VDACaffected_rows|$CIDlead_id";   &agi_output;}
@@ -715,7 +715,7 @@ sub process_request {
 					#$stmtA = "UPDATE osdial_log set status='$VDL_status' where uniqueid = '$uniqueid';";
 						$Euniqueid=$uniqueid;
 						$Euniqueid =~ s/\.\d+$//gi;
-					$stmtA = "UPDATE osdial_log FORCE INDEX(lead_id) set status='$VDL_status' where lead_id = '$CIDlead_id' and uniqueid LIKE '$Euniqueid%';";
+					$stmtA = "UPDATE osdial_log FORCE INDEX(lead_id) SET status='$VDL_status' WHERE lead_id='$CIDlead_id' AND uniqueid LIKE '$Euniqueid%';";
 						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 					$VDLaffected_rows = $dbhA->do($stmtA);
 					if ($AGILOG) {$agi_string = "--    VDAD osdial_log update: |$VDLaffected_rows|$uniqueid|$VDACuniqueid|";   &agi_output;}
@@ -737,7 +737,7 @@ sub process_request {
 
 				########## FIND AND DELETE osdial_auto_calls ##########
 				$VD_alt_dial = 'NONE';
-				$stmtA = "SELECT lead_id,callerid,campaign_id,alt_dial,stage,UNIX_TIMESTAMP(call_time),uniqueid,status FROM osdial_auto_calls where uniqueid = '$uniqueid' or callerid = '$accountcode' limit 1;";
+				$stmtA = "SELECT SQL_NO_CACHE lead_id,callerid,campaign_id,alt_dial,stage,UNIX_TIMESTAMP(call_time),uniqueid,status FROM osdial_auto_calls WHERE uniqueid='$uniqueid' OR callerid='$accountcode' LIMIT 1;";
 					if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -765,7 +765,7 @@ sub process_request {
 				else
 					{
 
-					$stmtA = "SELECT user,extension FROM osdial_live_agents WHERE uniqueid = '$uniqueid' AND (extension LIKE 'R/va\%' OR extension LIKE 'R/tmp\%') limit 1;";
+					$stmtA = "SELECT SQL_NO_CACHE user,extension FROM osdial_live_agents WHERE uniqueid='$uniqueid' AND (extension LIKE 'R/va\%' OR extension LIKE 'R/tmp\%') LIMIT 1;";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
@@ -775,12 +775,12 @@ sub process_request {
 						$OLAext = $aryA[1];
 						$talksec = ($now_date_epoch - $VD_start_epoch);
 						if ( ($OLAext =~ /^R\/tmp/) && ($OLAuser =~ /^tmp/) ) {
-							$stmtA = "DELETE FROM osdial_users WHERE user='$OLAuser' limit 1;";
+							$stmtA = "DELETE FROM osdial_users WHERE user='$OLAuser' LIMIT 1;";
                                                 	my $affected_rows = $dbhA->do($stmtA);
-							$stmtA = "DELETE FROM osdial_live_agents WHERE uniqueid='$uniqueid' limit 1;";
+							$stmtA = "DELETE FROM osdial_live_agents WHERE uniqueid='$uniqueid' LIMIT 1;";
 							my $affected_rows = $dbhA->do($stmtA);
 						}
-						$stmtA = "SELECT status,comments FROM osdial_list WHERE lead_id = '$VD_lead_id';";
+						$stmtA = "SELECT status,comments FROM osdial_list WHERE lead_id='$VD_lead_id';";
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 						$sthArows=$sthA->rows;
@@ -794,7 +794,7 @@ sub process_request {
 						}
 					}
 
-					$stmtA = "DELETE FROM osdial_auto_calls where uniqueid='$uniqueid' order by call_time desc limit 1;";
+					$stmtA = "DELETE FROM osdial_auto_calls WHERE uniqueid='$uniqueid' ORDER BY call_time DESC LIMIT 1;";
 					$affected_rows = $dbhA->do($stmtA);
 					if ($AGILOG) {$agi_string = "--    VDAC record deleted: |$affected_rows|   |$VD_lead_id|$uniqueid|$VD_uniqueid|$VD_callerid|$VARserver_ip|$VD_status|";   &agi_output;}
 
@@ -833,7 +833,7 @@ sub process_request {
 
 						if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
 
-						$stmtB = "SELECT agent from queue_log where call_id='$VD_callerid' and verb='CONNECT';";
+						$stmtB = "SELECT agent FROM queue_log WHERE call_id='$VD_callerid' AND verb='CONNECT';";
 						$sthB = $dbhB->prepare($stmtB) or die "preparing: ",$dbhB->errstr;
 						$sthB->execute or die "executing: $stmtB ", $dbhB->errstr;
 						$sthBrows=$sthB->rows;
@@ -870,7 +870,7 @@ sub process_request {
 					if ($accountcode !~ /^Y\d\d\d\d/)
 						{	
 						########## FIND AND UPDATE osdial_log ##########
-						$stmtA = "SELECT start_epoch,status,user,term_reason,comments FROM osdial_log FORCE INDEX(lead_id) where lead_id = '$VD_lead_id' and uniqueid LIKE \"$Euniqueid%\" limit 1;";
+						$stmtA = "SELECT SQL_NO_CACHE start_epoch,status,user,term_reason,comments FROM osdial_log FORCE INDEX(lead_id) WHERE lead_id='$VD_lead_id' AND uniqueid LIKE \"$Euniqueid%\" LIMIT 1;";
 							if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -906,7 +906,7 @@ sub process_request {
 							$RSQLdate = "$Ryear-$Rmon-$Rmday $Rhour:$Rmin:$Rsec";
 
 						#$stmtA = "SELECT start_epoch,status,closecallid,user,term_reason,length_in_sec,queue_seconds,comments FROM osdial_closer_log where lead_id = '$VD_lead_id' and call_date > \"$RSQLdate\" order by call_date desc limit 1;";
-						$stmtA = "SELECT start_epoch,status,closecallid,user,term_reason,length_in_sec,queue_seconds,comments FROM osdial_closer_log where lead_id = '$VD_lead_id' and call_date > \"$RSQLdate\" and end_epoch IS NULL order by call_date asc limit 1;";
+						$stmtA = "SELECT SQL_NO_CACHE start_epoch,status,closecallid,user,term_reason,length_in_sec,queue_seconds,comments FROM osdial_closer_log WHERE lead_id='$VD_lead_id' AND call_date>\"$RSQLdate\" AND end_epoch IS NULL ORDER BY call_date ASC LIMIT 1;";
 
 							if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -953,7 +953,7 @@ sub process_request {
 
 
 							########## FIND AND UPDATE osdial_list ##########
-							$stmtA = "UPDATE osdial_list set status='DROP' where lead_id = '$VD_lead_id';";
+							$stmtA = "UPDATE osdial_list set status='DROP' WHERE lead_id='$VD_lead_id';";
 								if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 							$affected_rows = $dbhA->do($stmtA);
 							if ($AGILOG) {$agi_string = "--    VDAD osdial_list update: |$affected_rows|$VD_lead_id";   &agi_output;}
@@ -966,7 +966,7 @@ sub process_request {
 						if ($accountcode !~ /^Y\d\d\d\d/)
 							{
 							$VDL_update=1;
-							$stmtA = "UPDATE osdial_log FORCE INDEX(lead_id) set $SQL_status end_epoch='$now_date_epoch',length_in_sec='$VD_seconds' where lead_id = '$VD_lead_id' and uniqueid LIKE \"$Euniqueid%\";";
+							$stmtA = "UPDATE osdial_log FORCE INDEX(lead_id) SET $SQL_status end_epoch='$now_date_epoch',length_in_sec='$VD_seconds' WHERE lead_id='$VD_lead_id' AND uniqueid LIKE \"$Euniqueid%\";";
 								if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 							$VLaffected_rows = $dbhA->do($stmtA);
 							if ($AGILOG) {$agi_string = "--    VDAD osdial_log update: |$VLaffected_rows|$uniqueid|$VD_status|";   &agi_output;}
@@ -1010,7 +1010,7 @@ sub process_request {
 
 
 							$VD_seconds = ($now_date_epoch - $VD_start_epoch);
-							$stmtA = "UPDATE osdial_closer_log set $VDCLSQL_update end_epoch='$now_date_epoch',length_in_sec='$VD_seconds' where closecallid = '$VD_closecallid';";
+							$stmtA = "UPDATE osdial_closer_log SET $VDCLSQL_update end_epoch='$now_date_epoch',length_in_sec='$VD_seconds' WHERE closecallid='$VD_closecallid';";
 								if ($AGILOG) {$agi_string = "|$VDCLSQL_update|$VD_status|$VD_length_in_sec|$VD_term_reason|$VD_queue_seconds|\n|$stmtA|";   &agi_output;}
 							$affected_rows = $dbhA->do($stmtA);
 							if ($AGILOG) {$agi_string = "--    VDCL update: |$affected_rows|$uniqueid|$VD_closecallid|";   &agi_output;}
@@ -1022,7 +1022,7 @@ sub process_request {
 					### check to see if campaign has alt_dial enabled
 					$VD_auto_alt_dial = 'NONE';
 					$VD_auto_alt_dial_statuses='';
-					$stmtA="SELECT auto_alt_dial,auto_alt_dial_statuses,use_internal_dnc FROM osdial_campaigns where campaign_id='$VD_campaign_id';";
+					$stmtA="SELECT auto_alt_dial,auto_alt_dial_statuses,use_internal_dnc FROM osdial_campaigns WHERE campaign_id='$VD_campaign_id';";
 						if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1042,7 +1042,7 @@ sub process_request {
 						if ( ($VD_auto_alt_dial =~ /ALT_ONLY|ALT_AND_ADDR3|ALT_ADDR3_AND_AFFAP/) && ($VD_alt_dial =~ /NONE|MAIN/) )
 							{
 							$VD_alt_phone='';
-							$stmtA="SELECT alt_phone,gmt_offset_now,state,list_id FROM osdial_list where lead_id='$VD_lead_id';";
+							$stmtA="SELECT alt_phone,gmt_offset_now,state,list_id FROM osdial_list WHERE lead_id='$VD_lead_id';";
 								if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1076,7 +1076,7 @@ sub process_request {
 										}
 										$sthA->finish();
 										if ($dnc_method =~ /COMPANY|BOTH/) {
-											$stmtA="SELECT count(*) FROM osdial_dnc_company WHERE company_id='$comp_id' AND (phone_number='$VD_alt_phone' OR phone_number='" . substr($VD_alt_phone,0,3) . "XXXXXXX');";
+											$stmtA="SELECT SQL_NO_CACHE count(*) FROM osdial_dnc_company WHERE company_id='$comp_id' AND (phone_number='$VD_alt_phone' OR phone_number='" . substr($VD_alt_phone,0,3) . "XXXXXXX');";
 											if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1090,7 +1090,7 @@ sub process_request {
 										}
 									}
 									if ($dncsskip==0) {
-										$stmtA="SELECT count(*) FROM osdial_dnc WHERE (phone_number='$VD_alt_phone' OR phone_number='" . substr($VD_alt_phone,0,3) . "XXXXXXX');";
+										$stmtA="SELECT SQL_NO_CACHE count(*) FROM osdial_dnc WHERE (phone_number='$VD_alt_phone' OR phone_number='" . substr($VD_alt_phone,0,3) . "XXXXXXX');";
 										if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 										$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 										$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1113,7 +1113,7 @@ sub process_request {
 						if ( ( ($VD_auto_alt_dial =~ /(ADDR3_ONLY)/) && ($VD_alt_dial =~ /NONE|MAIN/) ) || ( ($VD_auto_alt_dial =~ /ALT_AND_ADDR3|ALT_ADDR3_AND_AFFAP/) && ($VD_alt_dial =~ /ALT/) ) )
 							{
 							$VD_address3='';
-							$stmtA="SELECT address3,gmt_offset_now,state,list_id FROM osdial_list where lead_id='$VD_lead_id';";
+							$stmtA="SELECT address3,gmt_offset_now,state,list_id FROM osdial_list WHERE lead_id='$VD_lead_id';";
 								if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1147,7 +1147,7 @@ sub process_request {
 										}
 										$sthA->finish();
 										if ($dnc_method =~ /COMPANY|BOTH/) {
-											$stmtA="SELECT count(*) FROM osdial_dnc_company WHERE company_id='$comp_id' AND (phone_number='$VD_address3' OR phone_number='" . substr($VD_address3,0,3) . "XXXXXXX');";
+											$stmtA="SELECT SQL_NO_CACHE count(*) FROM osdial_dnc_company WHERE company_id='$comp_id' AND (phone_number='$VD_address3' OR phone_number='" . substr($VD_address3,0,3) . "XXXXXXX');";
 											if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1161,7 +1161,7 @@ sub process_request {
 										}
 									}
 									if ($dncsskip==0) {
-										$stmtA="SELECT count(*) FROM osdial_dnc WHERE (phone_number='$VD_address3' OR phone_number='" . substr($VD_address3,0,3) . "XXXXXXX');";
+										$stmtA="SELECT SQL_NO_CACHE count(*) FROM osdial_dnc WHERE (phone_number='$VD_address3' OR phone_number='" . substr($VD_address3,0,3) . "XXXXXXX');";
 										if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 										$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 										$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1188,7 +1188,7 @@ sub process_request {
 								$cur_aff = (substr($VD_alt_dial,5) * 1) + 1;
 							}
 							while ($cur_aff < 10) {
-								$stmtA="SELECT value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='AFFAP$cur_aff') AND lead_id='$VD_lead_id';";
+								$stmtA="SELECT SQL_NO_CACHE value FROM osdial_list_fields WHERE field_id=(SELECT id FROM osdial_campaign_fields WHERE name='AFFAP$cur_aff') AND lead_id='$VD_lead_id';";
 								$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 								$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 								$sthArows=$sthA->rows;
@@ -1201,7 +1201,7 @@ sub process_request {
 
 								$VD_aff_dnc_count=0;
 								if (length($aff_number)>5) {
-									$stmtA="SELECT gmt_offset_now,state,list_id FROM osdial_list where lead_id='$VD_lead_id';";
+									$stmtA="SELECT gmt_offset_now,state,list_id FROM osdial_list WHERE lead_id='$VD_lead_id';";
 										if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 									$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 									$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1231,7 +1231,7 @@ sub process_request {
 											}
 											$sthA->finish();
 											if ($dnc_method =~ /COMPANY|BOTH/) {
-												$stmtA="SELECT count(*) FROM osdial_dnc_company WHERE company_id='$comp_id' AND (phone_number='$aff_number' OR phone_number='" . substr($aff_number,0,3) . "XXXXXXX');";
+												$stmtA="SELECT SQL_NO_CACHE count(*) FROM osdial_dnc_company WHERE company_id='$comp_id' AND (phone_number='$aff_number' OR phone_number='" . substr($aff_number,0,3) . "XXXXXXX');";
 												if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 												$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 												$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1245,7 +1245,7 @@ sub process_request {
 											}
 										}
 										if ($dncsskip==0) {
-											$stmtA="SELECT count(*) FROM osdial_dnc WHERE (phone_number='$aff_number' OR phone_number='" . substr($aff_number,0,3) . "XXXXXXX');";
+											$stmtA="SELECT SQL_NO_CACHE count(*) FROM osdial_dnc WHERE (phone_number='$aff_number' OR phone_number='" . substr($aff_number,0,3) . "XXXXXXX');";
 											if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;

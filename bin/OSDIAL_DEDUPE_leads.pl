@@ -216,7 +216,7 @@ $where='WHERE';
 $and='and';
 if (length($campdup)>0)
 	{
-	$stmtA = "select list_id from osdial_lists where campaign_id='$campdup';";
+	$stmtA = "SELECT list_id FROM osdial_lists WHERE campaign_id='$campdup';";
 	if($DBX){print STDERR "\n|$stmtA|\n";}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -233,7 +233,7 @@ if (length($campdup)>0)
 	$campSQL="list_id IN($dup_lists)";
 	if (length($ignorelist)>0)
 		{
-		$listSQL=" and list_id NOT IN('$ignorelist')";
+		$listSQL="AND list_id NOT IN('$ignorelist')";
 		}
 
 	}
@@ -250,7 +250,7 @@ else
 		}
 	}
 
-$stmtA = "select count(*) as tally, phone_number from osdial_list $where $campSQL $listSQL group by phone_number order by tally desc;";
+$stmtA = "SELECT SQL_NO_CACHE count(*) AS tally,phone_number FROM osdial_list $where $campSQL $listSQL GROUP BY phone_number ORDER BY tally DESC;";
 if($DBX){print STDERR "\n|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -277,7 +277,7 @@ $b=0;
 foreach(@dup_list)
 	{
 	$dup_limit = ($dup_count[$b] - 1);
-	$stmtA = "select lead_id,list_id,entry_date from osdial_list where phone_number='$dup_list[$b]' $and $campSQL $listSQL order by entry_date;";
+	$stmtA = "SELECT SQL_NO_CACHE lead_id,list_id,entry_date FROM osdial_list WHERE phone_number='$dup_list[$b]' $and $campSQL $listSQL ORDER BY entry_date;";
 		if($DBX){print STDERR "\n|$stmtA|\n";}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;

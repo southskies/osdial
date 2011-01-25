@@ -153,7 +153,7 @@ use DBI;
     or die "Couldn't connect to database: " . DBI->errstr;
 
 ### Grab Server values from the database
-$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,vd_server_logs FROM servers where server_ip = '$server_ip';";
+$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,vd_server_logs FROM servers WHERE server_ip='$server_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -251,7 +251,7 @@ while($one_day_interval > 0)
 		$lists_update = '';
 		$LUcount=0;
 
-		$stmtA = "SELECT count(*) FROM servers where osdial_balance_active = 'Y';";
+		$stmtA = "SELECT count(*) FROM servers WHERE osdial_balance_active='Y';";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -265,7 +265,7 @@ while($one_day_interval > 0)
 		$sthA->finish();
 
 		##### Get a listing of the campaigns that have shortages of trunks
-		$stmtA = "SELECT campaign_id,sum(local_trunk_shortage) FROM osdial_campaign_server_stats where update_time > '$XDSQLdate' and local_trunk_shortage > 0 group by campaign_id;";
+		$stmtA = "SELECT SQL_NO_CACHE campaign_id,sum(local_trunk_shortage) FROM osdial_campaign_server_stats WHERE update_time>'$XDSQLdate' AND local_trunk_shortage>0 GROUP BY campaign_id;";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -304,7 +304,7 @@ while($one_day_interval > 0)
 
 				### grab the dial_level and multiply by active agents to get your goalcalls
 				$DBIPadlevel[$camp_CIPct]=0;
-				$stmtA = "SELECT dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,omit_phone_code,campaign_cid_name,use_custom2_callerid,use_cid_areacode_map FROM osdial_campaigns where campaign_id='$DBfill_campaign[$camp_CIPct]'";
+				$stmtA = "SELECT dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,omit_phone_code,campaign_cid_name,use_custom2_callerid,use_cid_areacode_map FROM osdial_campaigns WHERE campaign_id='$DBfill_campaign[$camp_CIPct]';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -328,7 +328,7 @@ while($one_day_interval > 0)
 					}
 				$sthA->finish();
 
-				$stmtA = "SELECT balance_trunk_fill FROM osdial_campaign_stats where campaign_id='$DBfill_campaign[$camp_CIPct]'";
+				$stmtA = "SELECT SQL_NO_CACHE balance_trunk_fill FROM osdial_campaign_stats WHERE campaign_id='$DBfill_campaign[$camp_CIPct]';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -341,7 +341,7 @@ while($one_day_interval > 0)
 					}
 				$sthA->finish();
 
-				$stmtA = "SELECT count(*) FROM osdial_auto_calls where campaign_id='$DBfill_campaign[$camp_CIPct]' and call_type='OUTBALANCE';";
+				$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE campaign_id='$DBfill_campaign[$camp_CIPct]' AND call_type='OUTBALANCE';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -365,7 +365,7 @@ while($one_day_interval > 0)
 				##### Get a listing of the servers in the campaign that have shortages of trunks
 				$full_servers='|';
 				$full_serversSQL='';
-				$stmtA = "SELECT server_ip FROM osdial_campaign_server_stats where update_time > '$XDSQLdate' and local_trunk_shortage > 0 and campaign_id='$DBfill_campaign[$camp_CIPct]'";
+				$stmtA = "SELECT SQL_NO_CACHE server_ip FROM osdial_campaign_server_stats WHERE update_time>'$XDSQLdate' AND local_trunk_shortage>0 AND campaign_id='$DBfill_campaign[$camp_CIPct]';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -384,7 +384,7 @@ while($one_day_interval > 0)
 				&event_logger;
 
 				##### Check if there are any balance-enabled servers outside of the ones with trunk shortage
-				$stmtA = "SELECT count(*) FROM servers where osdial_balance_active = 'Y' and server_ip NOT IN($full_serversSQL);";
+				$stmtA = "SELECT count(*) FROM servers WHERE osdial_balance_active='Y' AND server_ip NOT IN($full_serversSQL);";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -415,7 +415,7 @@ while($one_day_interval > 0)
 					@DB_camp_server_available=@MT;
 					@DB_camp_server_trunks_to_dial=@MT;
 					##### Get the trunk settings for the campaign across all servers
-					$stmtA = "SELECT server_ip,max_osdial_trunks,balance_trunks_offlimits FROM servers where osdial_balance_active = 'Y' and server_ip NOT IN($full_serversSQL) order by server_ip;";
+					$stmtA = "SELECT server_ip,max_osdial_trunks,balance_trunks_offlimits FROM servers WHERE osdial_balance_active='Y' AND server_ip NOT IN($full_serversSQL) ORDER BY server_ip;";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
@@ -442,7 +442,7 @@ while($one_day_interval > 0)
 						$DB_camp_server_trunk_restriction[$server_CIPct]=0;
 						$DB_NONcamp_server_dedicated_trunks[$server_CIPct]=0;
 						##### Get the campaign-specific trunk settings for the campaign on this server
-						$stmtA = "SELECT dedicated_trunks,trunk_restriction FROM osdial_server_trunks where server_ip='$DB_camp_server_server_ip[$server_CIPct]' and campaign_id='$DBfill_campaign[$camp_CIPct]';";
+						$stmtA = "SELECT dedicated_trunks,trunk_restriction FROM osdial_server_trunks WHERE server_ip='$DB_camp_server_server_ip[$server_CIPct]' AND campaign_id='$DBfill_campaign[$camp_CIPct]';";
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 						$sthArows=$sthA->rows;
@@ -457,7 +457,7 @@ while($one_day_interval > 0)
 						$sthA->finish();
 
 						##### Get the campaign-specific dedicated trunks count for other campaigns on this server
-						$stmtA = "SELECT sum(dedicated_trunks) FROM osdial_server_trunks where server_ip='$DB_camp_server_server_ip[$server_CIPct]' and campaign_id NOT IN('$DBfill_campaign[$camp_CIPct]');";
+						$stmtA = "SELECT SUM(dedicated_trunks) FROM osdial_server_trunks WHERE server_ip='$DB_camp_server_server_ip[$server_CIPct]' AND campaign_id NOT IN('$DBfill_campaign[$camp_CIPct]');";
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 						$sthArows=$sthA->rows;
@@ -473,7 +473,7 @@ while($one_day_interval > 0)
 						$VAC_server_camp=0;
 						$VAC_server_NONcamp=0;
 
-						$stmtA = "SELECT count(*) FROM osdial_auto_calls where server_ip='$DB_camp_server_server_ip[$server_CIPct]' and campaign_id='$DBfill_campaign[$camp_CIPct]' and call_type='OUTBALANCE';";
+						$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE server_ip='$DB_camp_server_server_ip[$server_CIPct]' AND campaign_id='$DBfill_campaign[$camp_CIPct]' AND call_type='OUTBALANCE';";
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 						$sthArows=$sthA->rows;
@@ -486,7 +486,7 @@ while($one_day_interval > 0)
 							}
 						$sthA->finish();
 
-						$stmtA = "SELECT count(*) FROM osdial_auto_calls where server_ip='$DB_camp_server_server_ip[$server_CIPct]' and campaign_id='$DBfill_campaign[$camp_CIPct]';";
+						$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE server_ip='$DB_camp_server_server_ip[$server_CIPct]' AND campaign_id='$DBfill_campaign[$camp_CIPct]';";
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 						$sthArows=$sthA->rows;
@@ -499,7 +499,7 @@ while($one_day_interval > 0)
 							}
 						$sthA->finish();
 
-						$stmtA = "SELECT count(*) FROM osdial_auto_calls where server_ip='$DB_camp_server_server_ip[$server_CIPct]' and campaign_id!='$DBfill_campaign[$camp_CIPct]';";
+						$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE server_ip='$DB_camp_server_server_ip[$server_CIPct]' AND campaign_id!='$DBfill_campaign[$camp_CIPct]';";
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 						$sthArows=$sthA->rows;
@@ -544,7 +544,7 @@ while($one_day_interval > 0)
 						&event_logger;
 
 
-						$stmtA = "SELECT count(*) FROM osdial_live_agents where campaign_id='$DBfill_campaign[$camp_CIPct]' and status NOT IN('PAUSED');";
+						$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_live_agents WHERE campaign_id='$DBfill_campaign[$camp_CIPct]' AND status NOT IN('PAUSED');";
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 						$sthArows=$sthA->rows;
@@ -579,7 +579,7 @@ while($one_day_interval > 0)
 									$lead_id=''; $phone_code=''; $phone_number=''; $called_count='';
 										while ($call_CMPIPct < $UDaffected_rows)
 										{
-										$stmtA = "SELECT lead_id FROM osdial_hopper WHERE campaign_id='$DBfill_campaign[$camp_CIPct]' AND status='QUEUE' AND user='VDAD_$DB_camp_server_server_ip[$server_CIPct]' ORDER BY priority DESC,hopper_id LIMIT 1;";
+										$stmtA = "SELECT SQL_NO_CACHE lead_id FROM osdial_hopper WHERE campaign_id='$DBfill_campaign[$camp_CIPct]' AND status='QUEUE' AND user='VDAD_$DB_camp_server_server_ip[$server_CIPct]' ORDER BY priority DESC,hopper_id LIMIT 1;";
 										print "|$stmtA|\n";
 											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -612,7 +612,7 @@ while($one_day_interval > 0)
 											$UQaffected_rows = $dbhA->do($stmtA);
 											print "hopper row updated to INCALL: |$UQaffected_rows|$lead_id|\n";
 
-											$stmtA = "SELECT * FROM osdial_list where lead_id='$lead_id';";
+											$stmtA = "SELECT * FROM osdial_list WHERE lead_id='$lead_id';";
 											$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 											$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 											$sthArows=$sthA->rows;
@@ -686,7 +686,7 @@ while($one_day_interval > 0)
 												$CCID_on++;
 												}
 											if ($DBIPusecidareacodemap[$user_CIPct] eq 'Y') {
-												$stmtA = "SELECT areacode,cid_number,cid_name FROM osdial_campaign_cid_areacodes WHERE campaign_id='$DBIPcampaign[$user_CIPct]' AND areacode='" . substr($phone_number,0,3) . "';";
+												$stmtA = "SELECT SQL_NO_CACHE areacode,cid_number,cid_name FROM osdial_campaign_cid_areacodes WHERE campaign_id='$DBIPcampaign[$user_CIPct]' AND areacode='" . substr($phone_number,0,3) . "';";
 												$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 												$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 												while (@aryA = $sthA->fetchrow_array) {
@@ -835,7 +835,7 @@ while($one_day_interval > 0)
 		if ($endless_loop =~ /0$/)	# run every ten cycles (about 25 seconds)
 			{
 			### Grab Server values from the database
-				$stmtA = "SELECT vd_server_logs FROM servers where server_ip = '$VARserver_ip';";
+				$stmtA = "SELECT vd_server_logs FROM servers WHERE server_ip='$VARserver_ip';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -851,7 +851,7 @@ while($one_day_interval > 0)
 				$sthA->finish();
 
 			### Grab Server values from the database in case they've changed
-			$stmtA = "SELECT max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context FROM servers where server_ip = '$server_ip';";
+			$stmtA = "SELECT max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context FROM servers WHERE server_ip='$server_ip';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;

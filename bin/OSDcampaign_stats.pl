@@ -258,7 +258,7 @@ sub get_campaign_stats {
 
 
 	# Start campaign stat data collection
-	while (my $res = $osdial->sql_query("SELECT osdial_log.* FROM osdial_log JOIN osdial_campaigns ON (osdial_log.campaign_id=osdial_campaigns.campaign_id) where call_date >= '$today';")) {
+	while (my $res = $osdial->sql_query("SELECT SQL_NO_CACHE osdial_log.* FROM osdial_log JOIN osdial_campaigns ON (osdial_log.campaign_id=osdial_campaigns.campaign_id) where call_date >= '$today';")) {
 		if ($res->{campaign_id} ne "") {
 			my $agent    = $res->{user};
 			my $campaign = uc($res->{campaign_id});

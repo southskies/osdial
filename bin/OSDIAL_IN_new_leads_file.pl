@@ -290,7 +290,7 @@ foreach(@FILES)
 
 
 ### Grab Server values from the database
-$stmtA = "SELECT local_gmt FROM servers where server_ip = '$server_ip';";
+$stmtA = "SELECT local_gmt FROM servers WHERE server_ip='$server_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 @aryA = $sthA->fetchrow_array;

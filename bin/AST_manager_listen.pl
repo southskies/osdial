@@ -159,7 +159,7 @@ use Net::Telnet ();
     or die "Couldn't connect to database: " . DBI->errstr;
 
 ### Grab Server values from the database
-$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,vd_server_logs,asterisk_version FROM servers where server_ip = '$server_ip';";
+$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,vd_server_logs,asterisk_version FROM servers WHERE server_ip='$server_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -358,7 +358,7 @@ while($one_day_interval > 0)
 							$channel = $ame{'destination'};
 							$callid = $ame{'accountcode'};
 							$uniqueid = $ame{'srcuniqueid'};
-							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+							$stmtA = "UPDATE osdial_manager SET status='UPDATED',channel='$channel',uniqueid='$uniqueid' WHERE server_ip='$server_ip' AND callerid='$callid';";
 							if ($channel !~ /local/i) {
 								my $affected_rows = $dbhA->do($stmtA);
 								if($DB){print "|$affected_rows Conference DIALs updated|$stmtA\n|";}
@@ -370,7 +370,7 @@ while($one_day_interval > 0)
 							$channel = $ame{'channel'};
 							$callid = $ame{'accountcode'};
 							$uniqueid = $ame{'srcuniqueid'};
-							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid' and status='SENT';";
+							$stmtA = "UPDATE osdial_manager SET status='UPDATED',channel='$channel',uniqueid='$uniqueid' WHERE server_ip='$server_ip' AND callerid='$callid' AND status='SENT';";
 							my $affected_rows = $dbhA->do($stmtA);
 							if($DB){print "|$affected_rows Conference DIALs updated|$stmtA|\n";}
 						}
@@ -391,7 +391,7 @@ while($one_day_interval > 0)
 						if ( ($ame{'channel'} ne "") && ($ame{'uniqueid'} ne "") ) {
 							$channel = $ame{'channel'};
 							$uniqueid = $ame{'uniqueid'};
-							$stmtA = "UPDATE osdial_manager set status='DEAD', channel='$channel' where server_ip = '$server_ip' and uniqueid = '$uniqueid' and callerid NOT LIKE \"DCagcW%\";";
+							$stmtA = "UPDATE osdial_manager SET status='DEAD',channel='$channel' WHERE server_ip='$server_ip' AND uniqueid='$uniqueid' AND callerid NOT LIKE \"DCagcW%\";";
 
 							my $affected_rows = $dbhA->do($stmtA);
 						   
@@ -405,7 +405,7 @@ while($one_day_interval > 0)
 							$callid = $ame{'callerid'};
 							$callid = $ame{'accountcode'} if ($ame{'accountcode'} ne "");
 							$uniqueid = $ame{'uniqueid'};
-							$stmtA = "UPDATE osdial_manager set status='SENT', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+							$stmtA = "UPDATE osdial_manager SET status='SENT',channel='$channel',uniqueid='$uniqueid' WHERE server_ip='$server_ip' AND callerid='$callid';";
 							my $affected_rows = $dbhA->do($stmtA);
 							
 							if($DB){print "|$affected_rows DIALINGs updated|$stmtA|\n";}
@@ -417,7 +417,7 @@ while($one_day_interval > 0)
 							$callid = $ame{'callerid'};
 							$callid = $ame{'accountcode'} if ($ame{'accountcode'} ne "");
 							$uniqueid = $ame{'uniqueid'};
-							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid'";
+							$stmtA = "UPDATE osdial_manager SET status='UPDATED',channel='$channel',uniqueid='$uniqueid' WHERE server_ip='$server_ip' AND callerid='$callid';";
 							if ($channel !~ /local/i) {
 								my $affected_rows = $dbhA->do($stmtA);
 								if($DB){print "|$affected_rows RINGINGs updated|$stmtA|\n";}
@@ -431,7 +431,7 @@ while($one_day_interval > 0)
 							$callid = $ame{'callerid'};
 							$callid = $ame{'accountcode'} if ($ame{'accountcode'} ne "");
 							$uniqueid = $ame{'uniqueid'};
-							$stmtA = "UPDATE osdial_manager set status='UPDATED', channel='$channel', uniqueid = '$uniqueid' where server_ip = '$server_ip' and callerid = '$callid' LIMIT 1;";
+							$stmtA = "UPDATE osdial_manager SET status='UPDATED',channel='$channel',uniqueid='$uniqueid' WHERE server_ip='$server_ip' AND callerid='$callid' LIMIT 1;";
 							my $affected_rows = $dbhA->do($stmtA);
 							if($DB){print "|$affected_rows RINGINGs updated|$stmtA|\n";}
 						}
@@ -463,7 +463,7 @@ while($one_day_interval > 0)
 				&get_time_now;
 
 			### Grab Server values from the database
-				$stmtA = "SELECT vd_server_logs FROM servers where server_ip = '$VARserver_ip';";
+				$stmtA = "SELECT vd_server_logs FROM servers WHERE server_ip='$VARserver_ip';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -479,7 +479,7 @@ while($one_day_interval > 0)
 				$sthA->finish();
 
 			### Grab Server values to keep DB connection alive
-			$stmtA = "SELECT last_update FROM server_updater where server_ip = '$server_ip';";
+			$stmtA = "SELECT SQL_NO_CACHE last_update FROM server_updater WHERE server_ip='$server_ip';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			@aryA = $sthA->fetchrow_array;

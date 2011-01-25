@@ -117,7 +117,7 @@ use Net::Telnet ();
  or die "Couldn't connect to database: " . DBI->errstr;
  
 ### Grab Server values from the database
-$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,asterisk_version FROM servers where server_ip = '$server_ip';";
+$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,asterisk_version FROM servers where server_ip='$server_ip';";
 
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 if ($DB) {print "|$stmtA|\n";}
@@ -159,7 +159,7 @@ if($DB){print "\n\nSIP EXTENSIONS:\n";}
 
 
 @PTextensions=@MT; @PTphone_ips=@MT;
-$stmtA = "SELECT extension,phone_ip from phones where server_ip='$server_ip' and protocol='SIP'";
+$stmtA = "SELECT extension,phone_ip FROM phones WHERE server_ip='$server_ip' AND protocol='SIP';";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -251,7 +251,7 @@ $ok = $t->close;
 if($DB){print "\n\niax2 EXTENSIONS:\n";}
 
 @PTextensions=@MT; @PTphone_ips=@MT;
-$stmtA = "SELECT extension,phone_ip from phones where server_ip='$server_ip' and protocol='IAX2'";
+$stmtA = "SELECT extension,phone_ip FROM phones WHERE server_ip='$server_ip' AND protocol='IAX2';";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;

@@ -114,7 +114,7 @@ $SYSLOG = 1 if ($servConf->{vd_server_logs} =~ /Y/);
 my $event_string='LOGGED INTO MYSQL SERVER ON 1 CONNECTION|';
 eventLogger($conf{PATHlogs}, 'process', $event_string);
 
-my $stmtA = "SELECT asterisk_version from servers where server_ip='" . $conf{VARserver_ip} . "';";
+my $stmtA = "SELECT asterisk_version FROM servers WHERE server_ip='" . $conf{VARserver_ip} . "';";
 my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 my $DBasterisk_version = ($sthA->fetchrow_array)[0];
@@ -126,7 +126,7 @@ while ($one_day_interval > 0) {
 	my $affected_rows;
 	my $NEW_actions;
 	while ($endless_loop > 0) {
-		my $stmtA = "SELECT count(*) from osdial_manager where server_ip = '" . $conf{VARserver_ip} . "' and status = 'NEW'";
+		my $stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_manager WHERE server_ip='" . $conf{VARserver_ip} . "' AND status='NEW';";
 	    	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	 	my $NEW_actions = ($sthA->fetchrow_array)[0];
@@ -134,7 +134,7 @@ while ($one_day_interval > 0) {
 	    	$sthA->finish();
 
 		if ($NEW_actions) {
-			my $stmtA = "UPDATE osdial_manager set status='QUEUE' where server_ip = '" . $conf{VARserver_ip} . "' and status = 'NEW' order by entry_date limit 1";
+			my $stmtA = "UPDATE osdial_manager SET status='QUEUE' WHERE server_ip='" . $conf{VARserver_ip} . "' AND status='NEW' ORDER BY entry_date LIMIT 1;";
 			$affected_rows = $dbhA->do($stmtA);
 			print STDERR "rows updated to QUEUE: |$affected_rows|\n" if ($DB);
 		} else {
@@ -142,7 +142,7 @@ while ($one_day_interval > 0) {
 		}
 
 		if ($affected_rows) {
-			my $stmtA = "SELECT * FROM osdial_manager where server_ip = '" . $conf{VARserver_ip} . "' and status = 'QUEUE' order by entry_date desc limit 1";
+			my $stmtA = "SELECT SQL_NO_CACHE * FROM osdial_manager WHERE server_ip='" . $conf{VARserver_ip} . "' AND status='QUEUE' ORDER BY entry_date DESC LIMIT 1;";
 			eventLogger($conf{'PATHlogs'}, 'process', "SQL_QUERY|" . $stmtA . "|");
 
 			my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -170,7 +170,7 @@ while ($one_day_interval > 0) {
 				if ($originate_command =~ /Action: Hangup|Action: Redirect/) {
 					$SENDNOW=0;
 					print STDERR "\n|checking for dead call before executing|" . $vdm->{callerid} . "|" . $vdm->{uniqueid} . "|\n" if ($DB);
-					my $stmtB = "SELECT count(*) FROM osdial_manager where server_ip = '" . $conf{VARserver_ip} . "' and callerid='" . $vdm->{callerid} . "' and status = 'DEAD'";
+					my $stmtB = "SELECT SQL_NO_CACHE count(*) FROM osdial_manager WHERE server_ip='" . $conf{VARserver_ip} . "' AND callerid='" . $vdm->{callerid} . "' AND status='DEAD';";
 					my $sthB = $dbhA->prepare($stmtB) or die "preparing: ",$dbhA->errstr;
 					$sthB->execute or die "executing: $stmtA ", $dbhA->errstr;
 					my $dead_count = ($sthB->fetchrow_array)[0];
@@ -308,7 +308,7 @@ exit 0;
 #    hashref with conents of table entry.
 sub getServerConfig {
 	my ($dbhA, $serverip) = @_;
-	my $stmtA = "SELECT * FROM servers where server_ip = '" . $serverip ."';";
+	my $stmtA = "SELECT * FROM servers WHERE server_ip='" . $serverip ."';";
 	my $sthA = $dbhA->prepare($stmtA) or die "preparing: " . $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA " . $dbhA->errstr;
 	my $servConf = $sthA->fetchrow_hashref;

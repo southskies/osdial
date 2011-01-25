@@ -253,7 +253,7 @@ $w=0;
 ###########################################################################
 ########### SALES TOTAL IN SYSTEM BY SOURCE_ID osdial_list         ######
 ###########################################################################
-$stmtA = "select source_id,count(*) from osdial_list where status IN($sale_statusesSQL) and list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
+$stmtA = "SELECT SQL_NO_CACHE source_id,count(*) FROM osdial_list WHERE status IN($sale_statusesSQL) AND list_id NOT IN($ignore_listsSQL) GROUP BY source_id ORDER BY source_id;";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -275,7 +275,7 @@ $sthA->finish();
 ###########################################################################
 ########### NI TOTAL IN SYSTEM BY SOURCE_ID osdial_list            ######
 ###########################################################################
-$stmtA = "select source_id,count(*) from osdial_list where status IN($ni_statusesSQL) and list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
+$stmtA = "SELECT SQL_NO_CACHE source_id,count(*) FROM osdial_list WHERE status IN($ni_statusesSQL) AND list_id NOT IN($ignore_listsSQL) GROUP BY source_id ORDER BY source_id;";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -297,7 +297,7 @@ $sthA->finish();
 ###########################################################################
 ########### NP TOTAL IN SYSTEM BY SOURCE_ID osdial_list            ######
 ###########################################################################
-$stmtA = "select source_id,count(*) from osdial_list where status IN($np_statusesSQL) and list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
+$stmtA = "SELECT SQL_NO_CACHE source_id,count(*) FROM osdial_list WHERE status IN($np_statusesSQL) AND list_id NOT IN($ignore_listsSQL) GROUP BY source_id ORDER BY source_id;";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -319,7 +319,7 @@ $sthA->finish();
 ###########################################################################
 ########### ALL TOTAL IN SYSTEM BY SOURCE_ID osdial_list           ######
 ###########################################################################
-$stmtA = "select source_id,count(*) from osdial_list where list_id NOT IN($ignore_listsSQL) group by source_id order by source_id;";
+$stmtA = "SELECT SQL_NO_CACHE source_id,count(*) FROM osdial_list WHERE list_id NOT IN($ignore_listsSQL) GROUP BY source_id ORDER BY source_id;";
 if ($DB) {print "|$stmtA|\n";}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;

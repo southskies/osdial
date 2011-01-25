@@ -263,7 +263,7 @@ foreach my $file (readdir(FILE)) {
 			my $SQLfile = $file;
 			$SQLfile =~ s/-all\.wav|-all\.gsm//gi;
 
-			my $stmt = "SELECT recording_id FROM recording_log WHERE filename='$SQLfile' ORDER BY recording_id DESC LIMIT 1;";
+			my $stmt = "SELECT SQL_NO_CACHE recording_id FROM recording_log WHERE filename='$SQLfile' ORDER BY recording_id DESC LIMIT 1;";
 			print STDERR "\n|$stmt|\n" if ($DBX);
 			my $sret = $osdial->sql_query($stmt);
 			$recording_id =	$sret->{recording_id};

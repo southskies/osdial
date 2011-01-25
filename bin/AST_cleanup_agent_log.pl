@@ -131,7 +131,7 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 
 	if ($DB) {print " - cleaning up pause time\n";}
 	### Grab any pause time record greater than 43999
-	$stmtA = "SELECT agent_log_id,pause_epoch,wait_epoch from osdial_agent_log where pause_sec>43999;";
+	$stmtA = "SELECT SQL_NO_CACHE agent_log_id,pause_epoch,wait_epoch FROM osdial_agent_log WHERE pause_sec>43999;";
 		if ($DBX) {print "$stmtA\n";}
 	#$dbhA->query("$stmtA");
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -175,7 +175,7 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 	if ($DBX) {print "\n\n";}
 	if ($DB) {print " - cleaning up wait time\n";}
 	### Grab any pause time record greater than 43999
-	$stmtA = "SELECT agent_log_id,wait_epoch,talk_epoch from osdial_agent_log where wait_sec>43999;";
+	$stmtA = "SELECT SQL_NO_CACHE agent_log_id,wait_epoch,talk_epoch FROM osdial_agent_log WHERE wait_sec>43999;";
 		if ($DBX) {print "$stmtA\n";}
 	
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -218,7 +218,7 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 	if ($DBX) {print "\n\n";}
 	if ($DB) {print " - cleaning up talk time\n";}
 	### Grab any pause time record greater than 43999
-	$stmtA = "SELECT agent_log_id,talk_epoch,dispo_epoch from osdial_agent_log where talk_sec>43999;";
+	$stmtA = "SELECT SQL_NO_CACHE agent_log_id,talk_epoch,dispo_epoch FROM osdial_agent_log WHERE talk_sec>43999;";
 		if ($DBX) {print "$stmtA\n";}
 
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;

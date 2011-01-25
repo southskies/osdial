@@ -128,7 +128,7 @@ $dir1 = "$PATHmonitor";
 
 
 ##### Get the lead_ids of all recordings that are not DELETED or NULL #####
-$stmtA = "SELECT lead_id,recording_id,start_time,filename,location FROM recording_log where start_time < '$TDSQLdate' and start_time > '$FDSQLdate' and location IS NOT NULL and location NOT IN('','NOT_FOUND','NOT_FOUND_2','DELETED') LIMIT 5000;";
+$stmtA = "SELECT SQL_NO_CACHE lead_id,recording_id,start_time,filename,location FROM recording_log WHERE start_time<'$TDSQLdate' AND start_time>'$FDSQLdate' AND location IS NOT NULL AND location NOT IN('','NOT_FOUND','NOT_FOUND_2','DELETED') LIMIT 5000;";
 	print "$stmtA\n";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -151,7 +151,7 @@ $i=0;
 foreach(@lead_ids)
 	{
 	### Grab status of the lead in the osdial_list table
-	$stmtA = "SELECT status FROM osdial_list where lead_id='$lead_ids[$i]';";
+	$stmtA = "SELECT status FROM osdial_list WHERE lead_id='$lead_ids[$i]';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;

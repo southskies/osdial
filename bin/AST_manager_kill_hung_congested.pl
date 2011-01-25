@@ -143,7 +143,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
  or die "Couldn't connect to database: " . DBI->errstr;
 
 ### Grab Server values from the database
-	$stmtA = "SELECT vd_server_logs FROM servers where server_ip = '$VARserver_ip';";
+	$stmtA = "SELECT vd_server_logs FROM servers WHERE server_ip='$VARserver_ip';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -158,7 +158,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 		}
 	$sthA->finish();
 
-$stmtA = "SELECT channel FROM live_sip_channels where server_ip = '$server_ip' and extension = 'CONGEST' and channel LIKE \"Local%\" limit 99";
+$stmtA = "SELECT SQL_NO_CACHE channel FROM live_sip_channels WHERE server_ip='$server_ip' AND extension='CONGEST' AND channel LIKE 'Local%' LIMIT 99;";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -207,7 +207,7 @@ sleep(14);
 
 
 
-$stmtA = "SELECT channel FROM live_sip_channels where server_ip = '$server_ip' and extension = 'CONGEST' and channel LIKE \"Local%\" limit 99";
+$stmtA = "SELECT SQL_NO_CACHE channel FROM live_sip_channels WHERE server_ip='$server_ip' AND extension='CONGEST' AND channel LIKE 'Local%' LIMIT 99;";
 #			$event_string="SQL_QUERY|$stmtA|";
 #		&event_logger;
 
@@ -257,7 +257,7 @@ sleep(15);
 
 
 
-$stmtA = "SELECT channel FROM live_sip_channels where server_ip = '$server_ip' and extension = 'CONGEST' and channel LIKE \"Local%\" limit 99";
+$stmtA = "SELECT SQL_NO_CACHE channel FROM live_sip_channels WHERE server_ip='$server_ip' AND extension='CONGEST' AND channel LIKE 'Local%' LIMIT 99;";
 #			$event_string="SQL_QUERY|$stmtA|";
 #		&event_logger;
 
@@ -308,7 +308,7 @@ sleep(15);
 
 
 
-$stmtA = "SELECT channel FROM live_sip_channels where server_ip = '$server_ip' and extension = 'CONGEST' and channel LIKE \"Local%\" limit 99";
+$stmtA = "SELECT SQL_NO_CACHE channel FROM live_sip_channels WHERE server_ip='$server_ip' AND extension='CONGEST' AND channel LIKE 'Local%' LIMIT 99;";
 #			$event_string="SQL_QUERY|$stmtA|";
 #		&event_logger;
 

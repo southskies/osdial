@@ -73,7 +73,7 @@ $dbhA = DBI->connect('DBI:mysql:' .
 
 # Cycle through each server
 my @qc_servers;
-$stmtA = "SELECT *,DATE(batch_lastrun) AS batch_lastrun_date,HOUR(NOW()) AS hour,DATE(NOW()) AS date FROM qc_servers WHERE active='Y';";
+$stmtA = "SELECT SQL_NO_CACHE *,DATE(batch_lastrun) AS batch_lastrun_date,HOUR(NOW()) AS hour,DATE(NOW()) AS date FROM qc_servers WHERE active='Y';";
 print "$stmtA|\n" if($verbose > 2);
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -155,7 +155,7 @@ sub gatherEntries {
 	
 	print "gatherEntries|\n" if ($verbose);
 	
-	$stmtA = "SELECT query FROM qc_server_rules WHERE qc_server_id='" . $qcs->{id} . "';";
+	$stmtA = "SELECT SQL_NO_CACHE query FROM qc_server_rules WHERE qc_server_id='" . $qcs->{id} . "';";
 	print "$stmtA|\n" if($verbose > 2);
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -177,7 +177,7 @@ sub gatherEntries {
 
 	# Find recordings which match criteria and insert into the osdial_transfers table.
 	$insert = "INSERT IGNORE INTO qc_transfers (qc_server_id,qc_recording_id) ";
-	$insert .= "SELECT " . $qcs->{id} . " AS qc_server_id,qc_recordings.id AS qc_recording_id ";
+	$insert .= "SELECT SQL_NO_CACHE " . $qcs->{id} . " AS qc_server_id,qc_recordings.id AS qc_recording_id ";
 	$insert .= "FROM qc_recordings,recording_log,osdial_list,osdial_lists ";
 	$insert .=  "WHERE " . $where . $swhere . ";";
 
@@ -187,7 +187,7 @@ sub gatherEntries {
 	$rlfld = "recording_log.recording_id,recording_log.channel,recording_log.server_ip,recording_log.extension,recording_log.start_time,recording_log.start_epoch,";
 	$rlfld .= "recording_log.end_time,recording_log.end_epoch,recording_log.length_in_sec,recording_log.length_in_min,recording_log.lead_id,recording_log.user";
 
-	$query = "SELECT DISTINCT qc_transfers.*,qc_transfers.id AS qctid,qc_recordings.*,DATE(recording_log.start_time) AS date," . $rlfld . ",osdial_list.*,osdial_lists.* ";
+	$query = "SELECT SQL_NO_CACHE DISTINCT qc_transfers.*,qc_transfers.id AS qctid,qc_recordings.*,DATE(recording_log.start_time) AS date," . $rlfld . ",osdial_list.*,osdial_lists.* ";
 	$query .= "FROM qc_transfers,qc_recordings,recording_log,osdial_list,osdial_lists ";
 	$query .=  "WHERE (qc_transfers.qc_recording_id=qc_recordings.id) AND " . $where . $swhere . " AND (qc_transfers.status!='NOTFOUND' AND qc_transfers.status!='SUCCESS') ";
 	$query .=  "AND qc_transfers.qc_server_id='" . $qcs->{id} . "';";
@@ -430,7 +430,7 @@ sub getAGCconfig {
 #    hashref with conents of table entry.
 sub getServerConfig {
 	my ($dbhA, $serverip) = @_;
-	my $stmtA = "SELECT * FROM servers where server_ip = '" . $serverip ."';";
+	my $stmtA = "SELECT * FROM servers where server_ip='" . $serverip ."';";
 	my $sthA = $dbhA->prepare($stmtA) or die "preparing: " . $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA " . $dbhA->errstr;
 	my $servConf = $sthA->fetchrow_hashref;
