@@ -115,7 +115,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
     or die "Couldn't connect to database: " . DBI->errstr;
 
 ### Grab Server values from the database
-$stmtA = "SELECT agi_output FROM servers where server_ip = '$VARserver_ip';";
+$stmtA = "SELECT agi_output FROM servers WHERE server_ip='$VARserver_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -274,7 +274,7 @@ else
 
 
 ########## FIND ext_context from the servers table ##########
-$stmtA = "SELECT ext_context FROM servers where server_ip = '$VARserver_ip';";
+$stmtA = "SELECT ext_context FROM servers WHERE server_ip='$VARserver_ip';";
 	if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -291,7 +291,7 @@ $sthA->finish();
 
 
 ########## FIND osdial_auto_calls record ##########
-$stmtA = "SELECT campaign_id,phone_code,phone_number FROM osdial_auto_calls where callerid='$accountcode' order by auto_call_id desc limit 1;";
+$stmtA = "SELECT SQL_NO_CACHE campaign_id,phone_code,phone_number FROM osdial_auto_calls WHERE callerid='$accountcode' ORDER BY auto_call_id DESC LIMIT 1;";
 	if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -320,7 +320,7 @@ $stmtA = "DELETE FROM osdial_auto_calls where callerid='$accountcode' order by a
 if ($AGILOG) {$agi_string = "--    VDAC record deleted: |$affected_rows|   |$VD_lead_id|$uniqueid|$VD_callerid";   &agi_output;}
 
 ########## FIND AND UPDATE osdial_log ##########
-$stmtA = "SELECT start_epoch FROM osdial_log where uniqueid='$uniqueid' and  lead_id='$VD_lead_id' order by call_date desc limit 1;";
+$stmtA = "SELECT SQL_NO_CACHE start_epoch FROM osdial_log WHERE uniqueid='$uniqueid' AND lead_id='$VD_lead_id' ORDER BY call_date DESC LIMIT 1;";
 	if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -353,7 +353,7 @@ else
 
 
 ### Grab vmail forward message values from the database
-$stmtA = "SELECT am_message_exten,amd_send_to_vmx FROM osdial_campaigns where campaign_id = '$VD_campaign_id';";
+$stmtA = "SELECT am_message_exten,amd_send_to_vmx FROM osdial_campaigns WHERE campaign_id='$VD_campaign_id';";
 	if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;

@@ -53,7 +53,7 @@ $AGI->{orig_uniqueid} = $AGI->{uniqueid};
 
 my $latry = 5;
 while ($latry > 0) {
-	my $sret = $osdial->sql_query("SELECT * FROM osdial_live_agents WHERE callerid='" . $AGI->{accountcode} . "' LIMIT 1;");
+	my $sret = $osdial->sql_query("SELECT SQL_NO_CACHE * FROM osdial_live_agents WHERE callerid='" . $AGI->{accountcode} . "' LIMIT 1;");
 	if ($sret->{live_agent_id} > 0) {
 		$live_agents = $sret;
 		$latry=0;
@@ -84,10 +84,10 @@ $osdial->sql_execute("UPDATE osdial_auto_calls SET channel='" . $AGI->{orig_chan
 $cinfo->{CIDlead_id} = (substr($AGI->{accountcode}, 11, 9) + 0);
 
 ### Grab call parameters from osdial_auto_calls table
-$auto_calls = $osdial->sql_query("SELECT * FROM osdial_auto_calls WHERE callerid='" . $AGI->{accountcode} . "' ORDER BY call_time DESC limit 1;");
+$auto_calls = $osdial->sql_query("SELECT SQL_NO_CACHE * FROM osdial_auto_calls WHERE callerid='" . $AGI->{accountcode} . "' ORDER BY call_time DESC LIMIT 1;");
 
 ### Grab campaign values from the database
-$campaign = $osdial->sql_query("SELECT * FROM osdial_campaigns WHERE campaign_id = '" . $cinfo->{campaign_id} . "';");
+$campaign = $osdial->sql_query("SELECT * FROM osdial_campaigns WHERE campaign_id='" . $cinfo->{campaign_id} . "';");
 
 update_status('VPU',$ivr->{announcement});
 
@@ -181,9 +181,9 @@ sub ivr_menu {
 				$invalid++;
 			}
 		} else {
-			my $sres = $osdial->sql_query("SELECT count(*) AS cnt FROM live_sip_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension LIKE '%" . $cinfo->{conf_exten} . "%' ORDER BY channel DESC;");
+			my $sres = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM live_sip_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension LIKE '%" . $cinfo->{conf_exten} . "%' ORDER BY channel DESC;");
 			$ivrloop = 0 if ($sres->{cnt} == 0);
-			my $sres = $osdial->sql_query("SELECT count(*) AS cnt FROM live_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension='" . $cinfo->{conf_exten} . "' ORDER BY channel DESC;");
+			my $sres = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM live_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension='" . $cinfo->{conf_exten} . "' ORDER BY channel DESC;");
 			$ivrloop = 0 if ($sres->{cnt} == 0);
 		}
 
@@ -303,11 +303,11 @@ sub xfer_to_external {
 	my $xfer = $osdial->sql_execute("INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $osdial->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $cinfo->{conf_server} . "*8" . $cinfo->{conf_exten} . "\@" . $osdial->{server}{ext_context} . "','Context: " . $osdial->{server}{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"" . $campaign->{campaign_cid_name} . "\" <" . $campaign->{campaign_cid} . ">','Account: $XqueryCID','','','','');");
 	while ($xfer) {
 		sleep(1);
-		my $sret = $osdial->sql_query("SELECT count(*) AS cnt FROM osdial_manager WHERE (callerid='$XqueryCID' OR callerid='$IqueryCID') AND status='DEAD';");
+		my $sret = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM osdial_manager WHERE (callerid='$XqueryCID' OR callerid='$IqueryCID') AND status='DEAD';");
 		$xfer=0 if ($sret->{cnt} == 1);
-		my $sret = $osdial->sql_query("SELECT count(*) AS cnt FROM live_sip_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension='" . $cinfo->{conf_exten} . "' ORDER BY channel DESC;");
+		my $sret = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM live_sip_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension='" . $cinfo->{conf_exten} . "' ORDER BY channel DESC;");
 		$xfer=0 if ($sret->{cnt} == 0);
-		my $sres = $osdial->sql_query("SELECT count(*) AS cnt FROM live_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension='" . $cinfo->{conf_exten} . "' ORDER BY channel DESC;");
+		my $sres = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM live_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension='" . $cinfo->{conf_exten} . "' ORDER BY channel DESC;");
 		$xfer = 0 if ($sres->{cnt} == 0);
 		my $xepoch = time();
 		my $xdate = $osdial->get_datetime($xepoch);
@@ -373,13 +373,13 @@ sub xfer_to_ingroup {
 
     	my $number = '';;
     	if ($failover_method eq 'EXT_NA') {
-		my $sres = $osdial->sql_query("SELECT count(*) AS cnt FROM osdial_live_agents WHERE closer_campaigns LIKE '% $ingroup %';");
+		my $sres = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM osdial_live_agents WHERE closer_campaigns LIKE '% $ingroup %';");
         	if ($sres->{cnt} < 1) {
             	# no agents logged in, send to failover_number
             	$number = $failover_number;
         	}
     	} elsif ($failover_method eq 'EXT_UA') {
-        	my $sres = $osdial->sql_query("SELECT count(*) AS cnt FROM osdial_live_agents WHERE closer_campaigns LIKE '% $ingroup %' AND uniqueid<'1';");
+        	my $sres = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM osdial_live_agents WHERE closer_campaigns LIKE '% $ingroup %' AND uniqueid<'1';");
         	if ($sres->{cnt} < 1) {
             	# no agents logged in or they are unavailable, send to failover_number
             	$number = $failover_number;
@@ -396,11 +396,11 @@ sub xfer_to_ingroup {
 	my $xfer = $osdial->sql_execute("INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $osdial->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $cinfo->{conf_server} . "*8" . $cinfo->{conf_exten} . "\@" . $osdial->{server}{ext_context} . "','Context: " . $osdial->{server}{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"" . $campaign->{campaign_cid_name} . "\" <" . $campaign->{campaign_cid} . ">','Account: $XqueryCID','','','','');");
 	while ($xfer) {
 		sleep(1);
-		my $sres = $osdial->sql_query("SELECT count(*) AS cnt FROM osdial_manager WHERE callerid='$XqueryCID' AND status='DEAD';");
+		my $sres = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM osdial_manager WHERE callerid='$XqueryCID' AND status='DEAD';");
 		$xfer=0 if ($sres->{cnt} == 1);
-		my $sres = $osdial->sql_query("SELECT count(*) AS cnt FROM live_sip_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension LIKE '%" . $cinfo->{conf_exten} . "%' ORDER BY channel DESC;");
+		my $sres = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM live_sip_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension LIKE '%" . $cinfo->{conf_exten} . "%' ORDER BY channel DESC;");
 		$xfer = 0 if ($sres->{cnt} == 0);
-		my $sres = $osdial->sql_query("SELECT count(*) AS cnt FROM live_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension='" . $cinfo->{conf_exten} . "' ORDER BY channel DESC;");
+		my $sres = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM live_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension='" . $cinfo->{conf_exten} . "' ORDER BY channel DESC;");
 		$xfer = 0 if ($sres->{cnt} == 0);
 		my $xepoch = time();
 		my $xdate = $osdial->get_datetime($xepoch);
@@ -432,7 +432,7 @@ sub hangup_and_dispo {
 
 
 	if ($status eq 'DNC' or $status eq 'VDNC') {
-		my $affected_rows = $osdial->sql_execute("INSERT INTO osdial_dnc (phone_number) VALUES ((SELECT phone_number FROM osdial_list WHERE lead_id='" . $cinfo->{CIDlead_id} ."'));");
+		my $affected_rows = $osdial->sql_execute("INSERT INTO osdial_dnc (phone_number) VALUES ((SELECT SQL_NO_CACHE phone_number FROM osdial_list WHERE lead_id='" . $cinfo->{CIDlead_id} ."'));");
 		$osdial->agi_output("--    ODOI osdial_dnc insert: |$affected_rows");
 	}
 
@@ -442,11 +442,11 @@ sub hangup_and_dispo {
 	my $VHqueryCID = $AGI->{orig_accountcode};
 	my @huchan;
 	# Get local channels (conferences)
-	while (my $sres = $osdial->sql_query("SELECT channel FROM live_sip_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND channel LIKE '%" . $cinfo->{conf_exten} . "%' ORDER BY channel DESC;")) {
+	while (my $sres = $osdial->sql_query("SELECT SQL_NO_CACHE channel FROM live_sip_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND channel LIKE '%" . $cinfo->{conf_exten} . "%' ORDER BY channel DESC;")) {
 		push @huchan, $sres->{channel};
 	}
 	# Get outbound channels attached to those conferences.
-	while (my $sres = $osdial->sql_query("SELECT channel FROM live_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension='" . $cinfo->{conf_exten} . "' ORDER BY channel DESC;")) {
+	while (my $sres = $osdial->sql_query("SELECT SQL_NO_CACHE channel FROM live_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension='" . $cinfo->{conf_exten} . "' ORDER BY channel DESC;")) {
 		push @huchan, $sres->{channel};
 	}
 
@@ -458,8 +458,8 @@ sub hangup_and_dispo {
 	sleep(1);
 	# Go back through and do a SoftHangup on anything still up.
 	foreach my $huc (@huchan) {
-		my $sres = $osdial->sql_query("SELECT count(*) AS hucnt FROM live_sip_channels WHERE channel='" . $huc . "';");
-		my $sres2 = $osdial->sql_query("SELECT count(*) AS hucnt FROM live_channels WHERE channel='" . $huc . "';");
+		my $sres = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS hucnt FROM live_sip_channels WHERE channel='" . $huc . "';");
+		my $sres2 = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS hucnt FROM live_channels WHERE channel='" . $huc . "';");
 		if (($sres->{hucnt} + $sres2->{hucnt}) > 0) {
 			$AGI->exec("SoftHangup",$huc);
 			$osdial->agi_output("--     ODOI SoftHangup: $huc") if ($DB > 1);
@@ -505,7 +505,7 @@ sub tvc_lookup_xfer {
 
 	$osdial->sql_connect('C',$tdbdatabase,$tdbserver,'3306',$tdbuser,$tdbpass);
 
-	my $qhr = $osdial->sql_query("SELECT " . join(',', @tflds) . " FROM $tdbtable WHERE " . $tmaps{'phone_number'} . "='" . $s1res . "' LIMIT 1;",'C');
+	my $qhr = $osdial->sql_query("SELECT SQL_NO_CACHE " . join(',', @tflds) . " FROM $tdbtable WHERE " . $tmaps{'phone_number'} . "='" . $s1res . "' LIMIT 1;",'C');
 
 	foreach my $fld ( keys %{$qhr} ) {
 		$qhr->{$fld} =~ s/'"//g;

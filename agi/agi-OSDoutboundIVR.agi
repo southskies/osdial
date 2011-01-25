@@ -58,7 +58,7 @@ my $dbhA = DBI->connect("DBI:mysql:" . $vars->{VARDB_database} . ":" . $vars->{V
   or die "Couldn't connect to database: " . DBI->errstr;
 
 ### Grab Server values from the database
-my $stmtA = "SELECT * FROM servers where server_ip = '" . $vars->{VARserver_ip} . "';";
+my $stmtA = "SELECT * FROM servers WHERE server_ip='" . $vars->{VARserver_ip} . "';";
 my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $server = $sthA->fetchrow_hashref;
@@ -116,7 +116,7 @@ if ( ($AGI->{channel} =~ /Local/i) && ($server->{asterisk_version} !~ /^1\.0\.8|
 }
 
 
-my $stmtA = "SELECT count(*) FROM osdial_live_agents where callerid='" . $AGI->{callerid} . "';";
+my $stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_live_agents WHERE callerid='" . $AGI->{callerid} . "';";
 agi_output("|$stmtA|") if ($vars->{DB} > 1);
 my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -126,7 +126,7 @@ if ($sthA->fetchrow_array) {
 }
 $sthA->finish();
 
-my $stmtA = "SELECT count(*) FROM osdial_auto_calls where callerid='" . $AGI->{callerid} . "' and status IN('LIVE','XFER');";
+my $stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE callerid='" . $AGI->{callerid} . "' AND status IN('LIVE','XFER');";
 agi_output("|$stmtA|") if ($vars->{DB} > 1);
 my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -145,7 +145,7 @@ agi_output("|$stmtA|") if ($vars->{DB} > 1);
 $affected_rows = $dbhA->do($stmtA);
 agi_output("--    ODOI : |$affected_rows|update of vac table");
 if ($affected_rows > 0) {
-	$stmtA = "SELECT * FROM osdial_auto_calls where callerid='" . $AGI->{callerid} . "' order by call_time desc limit 1;";
+	$stmtA = "SELECT SQL_NO_CACHE * FROM osdial_auto_calls WHERE callerid='" . $AGI->{callerid} . "' ORDER BY call_time DESC LIMIT 1;";
 	agi_output("|$stmtA|") if ($vars->{DB} > 1);
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -153,7 +153,7 @@ if ($affected_rows > 0) {
 	$sthA->finish();
 
 	### Grab campaign values from the database
-	$stmtA = "SELECT * FROM osdial_campaigns where campaign_id = '" . $auto_calls->{campaign_id} . "';";
+	$stmtA = "SELECT * FROM osdial_campaigns WHERE campaign_id='" . $auto_calls->{campaign_id} . "';";
 	agi_output("|$stmtA|") if ($vars->{DB} > 1);
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -421,7 +421,7 @@ sub xfer_to_agent {
 		$agent_call_order = 'order by campaign_weight desc,last_call_finish' if ($campaign->{next_agent_call} =~ /campaign_rank/i);
 		$agent_call_order = 'order by calls_today,last_call_finish'          if ($campaign->{next_agent_call} =~ /fewest_calls/i);
 
-		$stmtA = "SELECT count(*) FROM osdial_auto_calls where status = 'LIVE' and server_ip='" . $vars->{VARserver_ip} . "' and campaign_id='" . $auto_calls->{campaign_id} . "' and call_time<\"" . $auto_calls->{call_time} . "\" and lead_id!='" . $auto_calls->{lead_id} . "';";
+		$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE status='LIVE' AND server_ip='" . $vars->{VARserver_ip} . "' AND campaign_id='" . $auto_calls->{campaign_id} . "' AND call_time<'" . $auto_calls->{call_time} . "' AND lead_id!='" . $auto_calls->{lead_id} . "';";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		my($rec_countWAIT) = $sthA->fetchrow_array;
@@ -429,7 +429,7 @@ sub xfer_to_agent {
 
 		if ($campaign->{concurrent_transfers} =~ /AUTO/) {
 			my $active_agents=1;
-			$stmtA = "SELECT count(*) FROM osdial_live_agents where server_ip='" . $vars->{VARserver_ip} . "' and campaign_id = '" . $auto_calls->{campaign_id} . "' and last_update_time > '" . sql_date($vars->{start_epoch} - 5) . "' and extension NOT LIKE 'R/\%';";
+			$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_live_agents WHERE server_ip='" . $vars->{VARserver_ip} . "' AND campaign_id='" . $auto_calls->{campaign_id} . "' AND last_update_time>'" . sql_date($vars->{start_epoch} - 5) . "' AND extension NOT LIKE 'R/\%';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			($active_agents) = $sthA->fetchrow_array;
@@ -454,8 +454,8 @@ sub xfer_to_agent {
 				my $r=0;
 				my $user;
 				while ( (length($user)<1) && ($r<3) ) {
-					$stmtA =  "SELECT conf_exten,user,extension FROM osdial_live_agents where status IN('QUEUE','INCALL') and server_ip='" . $vars->{VARserver_ip} . "' and ";
-					$stmtA .= "campaign_id='" . $auto_calls->{campaign_id} . "' and callerid='" . $AGI->{callerid} . "' and channel='" . $AGI->{channel} . "' order by last_call_time limit 1;";
+					$stmtA =  "SELECT SQL_NO_CACHE conf_exten,user,extension FROM osdial_live_agents WHERE status IN('QUEUE','INCALL') AND server_ip='" . $vars->{VARserver_ip} . "' AND ";
+					$stmtA .= "campaign_id='" . $auto_calls->{campaign_id} . "' AND callerid='" . $AGI->{callerid} . "' AND channel='" . $AGI->{channel} . "' ORDER BY last_call_time LIMIT 1;";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					my @aryA = $sthA->fetchrow_array;
@@ -471,7 +471,7 @@ sub xfer_to_agent {
 						$drop_timer = ($drop_timer + 0.25);
 					}
 					if ($r > 2) {
-						$stmtA = "SELECT conf_exten,user,extension FROM osdial_live_agents where callerid='" . $AGI->{callerid} . "' order by last_call_time limit 1;";
+						$stmtA = "SELECT SQL_NO_CACHE conf_exten,user,extension FROM osdial_live_agents WHERE callerid='" . $AGI->{callerid} . "' ORDER BY last_call_time LIMIT 1;";
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 						my @aryA = $sthA->fetchrow_array;
@@ -590,7 +590,7 @@ sub hangup_and_dispo {
 	my $call_length = $tepoch - $vars->{start_time};
 
 	if ($status eq 'DNC' or $status eq 'VDNC') {
-		my $stmtA = "INSERT INTO osdial_dnc (phone_number) VALUES ((SELECT phone_number FROM osdial_list WHERE lead_id='" . $vars->{CIDlead_id} ."'));";
+		my $stmtA = "INSERT INTO osdial_dnc (phone_number) VALUES ((SELECT SQL_NO_CACHE phone_number FROM osdial_list WHERE lead_id='" . $vars->{CIDlead_id} ."'));";
 		agi_output("|$stmtA|") if ($vars->{DB} > 1);
 		my $affected_rows = $dbhA->do($stmtA);
 		agi_output("--    ODOI osdial_dnc insert: |$affected_rows");
@@ -599,8 +599,8 @@ sub hangup_and_dispo {
 	update_status($status);
 
 	### insert a NEW Hangup record to the osdial_manager table to be processed
-	$stmtA =  "SELECT conf_exten FROM osdial_live_agents where status IN('QUEUE','INCALL') and server_ip='" . $vars->{VARserver_ip} . "' and ";
-	$stmtA .= "campaign_id='" . $auto_calls->{campaign_id} . "' and callerid='" . $AGI->{callerid} . "' and channel='" . $AGI->{channel} . "' order by last_call_time limit 1;";
+	$stmtA =  "SELECT SQL_NO_CACHE conf_exten FROM osdial_live_agents WHERE status IN('QUEUE','INCALL') AND server_ip='" . $vars->{VARserver_ip} . "' AND ";
+	$stmtA .= "campaign_id='" . $auto_calls->{campaign_id} . "' AND callerid='" . $AGI->{callerid} . "' AND channel='" . $AGI->{channel} . "' ORDER BY last_call_time LIMIT 1;";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	my ($conf_exten) = $sthA->fetchrow_array;

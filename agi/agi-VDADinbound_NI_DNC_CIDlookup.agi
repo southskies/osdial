@@ -115,7 +115,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
     or die "Couldn't connect to database: " . DBI->errstr;
 
 ### Grab Server values from the database
-$stmtA = "SELECT agi_output FROM servers where server_ip = '$VARserver_ip';";
+$stmtA = "SELECT agi_output FROM servers WHERE server_ip='$VARserver_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -270,7 +270,7 @@ if ( (length($pin)<1) || ($pin =~ /9/) )
 if ($pin =~ /2/)	# set the phone_number to NI
 	{
 	### Check to see if the number is in the system ###
-	$stmtA= "SELECT count(*) from osdial_list where phone_number='$phone_number';";
+	$stmtA= "SELECT SQL_NO_CACHE count(*) FROM osdial_list WHERE phone_number='$phone_number';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -291,7 +291,7 @@ if ($pin =~ /2/)	# set the phone_number to NI
 if ($pin =~ /3/)	# set the phone_number to DNC
 	{
 	### Check to see if the number is in the system ###
-	$stmtA= "SELECT count(*) from osdial_list where phone_number='$phone_number';";
+	$stmtA= "SELECT SQL_NO_CACHE count(*) FROM osdial_list WHERE phone_number='$phone_number';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;

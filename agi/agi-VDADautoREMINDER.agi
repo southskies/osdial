@@ -137,7 +137,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
     or die "Couldn't connect to database: " . DBI->errstr;
 
 ### Grab Server values from the database
-$stmtA = "SELECT agi_output FROM servers where server_ip = '$VARserver_ip';";
+$stmtA = "SELECT agi_output FROM servers WHERE server_ip='$VARserver_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -277,7 +277,7 @@ $AGI->stream_file('beep');
 
 
 ### Grab Server values from the database
-$stmtA = "SELECT voicemail_dump_exten,ext_context,answer_transfer_agent,local_gmt,asterisk_version,max_osdial_trunks FROM servers where server_ip = '$VARserver_ip';";
+$stmtA = "SELECT voicemail_dump_exten,ext_context,answer_transfer_agent,local_gmt,asterisk_version,max_osdial_trunks FROM servers WHERE server_ip='$VARserver_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -307,7 +307,7 @@ $affected_rows = $dbhA->do($stmtA);
 if ($AGILOG) {$agi_string = "--    VDAD : |$affected_rows|update of vac table: $callerid\n|$stmtA|";   &agi_output;}
 if ($affected_rows > 0)
 	{
-	$stmtA = "SELECT campaign_id,phone_number,phone_code,lead_id,call_time FROM osdial_auto_calls where callerid='$callerid' order by call_time desc limit 1;";
+	$stmtA = "SELECT SQL_NO_CACHE campaign_id,phone_number,phone_code,lead_id,call_time FROM osdial_auto_calls WHERE callerid='$callerid' ORDER BY call_time DESC LIMIT 1;";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -416,7 +416,7 @@ if ($pin == "1")	### send call to voicemail
 
 	$VMAIL_box=0;
 	### Grab Server values from the database
-	$stmtA = "SELECT custom1 FROM osdial_list where lead_id = '$CIDlead_id';";
+	$stmtA = "SELECT custom1 FROM osdial_list WHERE lead_id='$CIDlead_id';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;

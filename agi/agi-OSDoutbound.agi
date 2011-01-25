@@ -62,7 +62,7 @@ if ($osd->AGI->{channel} =~ /Local/i) {
 	exit;
 }
 
-$stmt = sprintf("SELECT count(*) AS count FROM osdial_live_agents WHERE callerid='%s';",$osd->AGI->{accountcode});
+$stmt = sprintf("SELECT SQL_NO_CACHE count(*) AS count FROM osdial_live_agents WHERE callerid='%s';",$osd->AGI->{accountcode});
 $osd->agi_output("|$stmt|") if ($DB);
 my $dupchk = $osd->sql_query($stmt);
 if ($dupchk->{count} > 0) {
@@ -70,7 +70,7 @@ if ($dupchk->{count} > 0) {
 	exit;
 }
 
-$stmt = sprintf("SELECT count(*) AS count FROM osdial_auto_calls WHERE callerid='%s' AND status IN('LIVE','XFER');",$osd->AGI->{accountcode});
+$stmt = sprintf("SELECT SQL_NO_CACHE count(*) AS count FROM osdial_auto_calls WHERE callerid='%s' AND status IN('LIVE','XFER');",$osd->AGI->{accountcode});
 $osd->agi_output("|$stmt|") if ($DB);
 my $dupchk = $osd->sql_query($stmt);
 if ($dupchk->{count} > 0) {
@@ -86,16 +86,16 @@ $osd->agi_output("|$stmt|") if ($DB);
 if ($osd->sql_execute($stmt)) {
 	$osd->agi_output("--    VDAD : |update of vac table: " . $osd->AGI->{accountcode});
 
-	$stmt = sprintf("SELECT campaign_id,phone_number,phone_code,lead_id,call_time FROM osdial_auto_calls WHERE callerid='%s' ORDER BY call_time DESC LIMIT 1;",$osd->AGI->{accountcode});
+	$stmt = sprintf("SELECT SQL_NO_CACHE campaign_id,phone_number,phone_code,lead_id,call_time FROM osdial_auto_calls WHERE callerid='%s' ORDER BY call_time DESC LIMIT 1;",$osd->AGI->{accountcode});
 	$osd->agi_output("|$stmt|") if ($DB);
 	$oac = $osd->sql_query($stmt);
 
 	### Grab campaign values from the database
-	$stmt = sprintf("SELECT drop_call_seconds,safe_harbor_message,safe_harbor_exten,concurrent_transfers,next_agent_call,voicemail_ext FROM osdial_campaigns WHERE campaign_id='%s';",$oac->{campaign_id});
+	$stmt = sprintf("SELECT * FROM osdial_campaigns WHERE campaign_id='%s';",$oac->{campaign_id});
 	$osd->agi_output("|$stmt|") if ($DB);
 	$campaign = $osd->sql_query($stmt);
 
-	$stmt = sprintf("SELECT * FROM osdial_hopper WHERE lead_id='%s';",$oac->{lead_id});
+	$stmt = sprintf("SELECT SQL_NO_CACHE * FROM osdial_hopper WHERE lead_id='%s';",$oac->{lead_id});
 	$osd->agi_output("|$stmt|") if ($DB);
 	$hopper = $osd->sql_query($stmt);
 
@@ -109,7 +109,7 @@ if ($osd->sql_execute($stmt)) {
 	if ($osd->{settings}{enable_queuemetrics_logging} > 0) {
 		my $data2;
 		if (length($osd->{settings}{queuemetrics_eq_prepend}) > 0 and $osd->{settings}{queuemetrics_eq_prepend} ne 'NONE') {
-			$stmt = sprintf("SELECT %s AS QMprepend FROM osdial_list where lead_id='%s';",$osd->{settings}{queuemetrics_eq_prepend},$CIDlead_id);
+			$stmt = sprintf("SELECT SQL_NO_CACHE %s AS QMprepend FROM osdial_list where lead_id='%s';",$osd->{settings}{queuemetrics_eq_prepend},$CIDlead_id);
 			if (my $res = $osd->sql_query($stmt)) {
 				$data2 = $res->{QMprepend} . '-';
 			}
@@ -152,14 +152,14 @@ while ($drop_timer <= $campaign->{drop_call_seconds}) {
 	}
 
 
-	$stmt = sprintf("SELECT count(*) AS count FROM osdial_auto_calls WHERE status='LIVE' AND campaign_id='%s' AND call_time<'%s' AND lead_id!='%s';",$oac->{campaign_id},$oac->{call_time},$oac->{lead_id});
+	$stmt = sprintf("SELECT SQL_NO_CACHE count(*) AS count FROM osdial_auto_calls WHERE status='LIVE' AND campaign_id='%s' AND call_time<'%s' AND lead_id!='%s';",$oac->{campaign_id},$oac->{call_time},$oac->{lead_id});
 	my $acres = $osd->sql_query($stmt);
 	my $rec_countWAIT = $acres->{count};
 	$osd->agi_output("|$stmt|") if ($DB);
 
 	if ($campaign->{concurrent_transfers} =~ /AUTO/) {
 		my $active_agents=1;
-		$stmt = sprintf("SELECT count(*) AS count FROM osdial_live_agents WHERE campaign_id='%s' AND last_update_time>'%s';",$oac->{campaign_id},$BDtsSQLdate);
+		$stmt = sprintf("SELECT SQL_NO_CACHE count(*) AS count FROM osdial_live_agents WHERE campaign_id='%s' AND last_update_time>'%s';",$oac->{campaign_id},$BDtsSQLdate);
 		my $lares = $osd->sql_query($stmt);
 		$active_agents = $lares->{count};
 	
@@ -194,7 +194,7 @@ while ($drop_timer <= $campaign->{drop_call_seconds}) {
 			my $r=0;
 			my ($conf_exten,$user,$server_ip);
 			while (length($user)<1 and $r<3) {
-				$stmt = sprintf("SELECT conf_exten,user,server_ip FROM osdial_live_agents WHERE status IN ('QUEUE','INCALL') AND campaign_id='%s' AND callerid='%s' AND channel='%s' ORDER BY last_call_time LIMIT 1;",$oac->{campaign_id},$osd->AGI->{accountcode},$osd->AGI->{channel});
+				$stmt = sprintf("SELECT SQL_NO_CACHE conf_exten,user,server_ip FROM osdial_live_agents WHERE status IN ('QUEUE','INCALL') AND campaign_id='%s' AND callerid='%s' AND channel='%s' ORDER BY last_call_time LIMIT 1;",$oac->{campaign_id},$osd->AGI->{accountcode},$osd->AGI->{channel});
 				my $lares = $osd->sql_query($stmt);
 				$conf_exten = $lares->{conf_exten};
 				$user = $lares->{user};
@@ -208,7 +208,7 @@ while ($drop_timer <= $campaign->{drop_call_seconds}) {
 					$drop_timer += 0.25;
 				}
 				if ($r > 2) {
-					$stmt = sprintf("SELECT conf_exten,user,server_ip FROM osdial_live_agents WHERE callerid='%s' ORDER BY last_call_time LIMIT 1;",$osd->AGI->{accountcode});
+					$stmt = sprintf("SELECT SQL_NO_CACHE conf_exten,user,server_ip FROM osdial_live_agents WHERE callerid='%s' ORDER BY last_call_time LIMIT 1;",$osd->AGI->{accountcode});
 					my $lares = $osd->sql_query($stmt);
 					$conf_exten = $lares->{conf_exten};
 					$user = $lares->{user};

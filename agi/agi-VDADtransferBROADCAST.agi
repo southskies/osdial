@@ -114,7 +114,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
     or die "Couldn't connect to database: " . DBI->errstr;
 
 ### Grab Server values from the database
-$stmtA = "SELECT voicemail_dump_exten,ext_context,answer_transfer_agent,local_gmt,asterisk_version,max_osdial_trunks,agi_output FROM servers where server_ip = '$VARserver_ip';";
+$stmtA = "SELECT voicemail_dump_exten,ext_context,answer_transfer_agent,local_gmt,asterisk_version,max_osdial_trunks,agi_output FROM servers WHERE server_ip='$VARserver_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -288,7 +288,7 @@ if ($affected_rows > 0)
 	$affected_rows = $dbhA->do($stmtA);
 	if ($AGILOG) {$agi_string = "--    VDAD osdial_list PU update: |$affected_rows|$uniqueid|";   &agi_output;}
 
-	$stmtA = "SELECT campaign_id,phone_number,phone_code,lead_id,call_time FROM osdial_auto_calls where callerid='$callerid' order by call_time desc limit 1;";
+	$stmtA = "SELECT SQL_NO_CACHE campaign_id,phone_number,phone_code,lead_id,call_time FROM osdial_auto_calls WHERE callerid='$callerid' ORDER BY call_time DESC LIMIT 1;";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -306,7 +306,7 @@ if ($affected_rows > 0)
 	$sthA->finish();
 
 	### Grab campaign values from the database
-	$stmtA = "SELECT drop_call_seconds,safe_harbor_message,safe_harbor_exten,concurrent_transfers FROM osdial_campaigns where campaign_id = '$VDADcampaign';";
+	$stmtA = "SELECT drop_call_seconds,safe_harbor_message,safe_harbor_exten,concurrent_transfers FROM osdial_campaigns WHERE campaign_id='$VDADcampaign';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -355,7 +355,7 @@ if ($channel_status < 1)
 		$drop_timer = ($drop_timer + $DROP_TIME);
 		}
 	}
-$stmtA = "SELECT next_agent_call FROM osdial_campaigns where campaign_id='$VDADcampaign';";
+$stmtA = "SELECT next_agent_call FROM osdial_campaigns WHERE campaign_id='$VDADcampaign';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -377,7 +377,7 @@ if ($CAMP_callorder =~ /campaign_rank/i) {$agent_call_order = 'order by campaign
 if ($CAMP_callorder =~ /fewest_calls/i) {$agent_call_order = 'order by calls_today,last_call_finish';}
 
 	 $rec_countWAIT=0;
-$stmtA = "SELECT count(*) FROM osdial_auto_calls where status = 'LIVE' and server_ip='$VARserver_ip' and campaign_id = '$VDADcampaign' and call_time < \"$VDADcall_time\" and lead_id != '$VDADlead_id';";
+$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE status='LIVE' AND server_ip='$VARserver_ip' AND campaign_id='$VDADcampaign' AND call_time<'$VDADcall_time' and lead_id!='$VDADlead_id';";
 	if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -393,7 +393,7 @@ $sthA->finish();
 if ($DBconcurrent_transfers =~ /AUTO/)
 	{
 	$active_agents=1;
-	$stmtA = "SELECT count(*) FROM osdial_live_agents where server_ip='$VARserver_ip' and campaign_id = '$VDADcampaign' and last_update_time > '$BDtsSQLdate';";
+	$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_live_agents WHERE server_ip='$VARserver_ip' AND campaign_id='$VDADcampaign' AND last_update_time>'$BDtsSQLdate';";
 		if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -419,7 +419,7 @@ if ($rec_countWAIT < $DBconcurrent_transfers)
 	if ($AGILOG) {$agi_string = "--    VDAD get agent: |$affected_rows|update of vla table: $VDADcampaign|$VARserver_ip\n|$stmtA|";   &agi_output;}
 	if ($affected_rows > 0)
 		{
-		$stmtA = "SELECT conf_exten,user,extension FROM osdial_live_agents where status = 'QUEUE' and server_ip='$VARserver_ip' and campaign_id='$VDADcampaign' and callerid='$callerid' and channel='$channel' order by last_call_time limit 1;";
+		$stmtA = "SELECT SQL_NO_CACHE conf_exten,user,extension FROM osdial_live_agents WHERE status='QUEUE' AND server_ip='$VARserver_ip' AND campaign_id='$VDADcampaign' AND callerid='$callerid' AND channel='$channel' ORDER BY last_call_time LIMIT 1;";
 			if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -525,7 +525,7 @@ if ($drop_seconds < 1)
 		}
 	else
 		{
-		$stmtA = "SELECT voicemail_ext FROM osdial_campaigns where campaign_id = '$VDADcampaign' limit 1;";
+		$stmtA = "SELECT voicemail_ext FROM osdial_campaigns WHERE campaign_id='$VDADcampaign' LIMIT 1;";
 			if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;

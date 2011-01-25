@@ -1089,7 +1089,7 @@ foreach(@campaign_id)
 
 				if ($dgA > 0) {$recycle_SQL[$i] .= " or ";}
 
-				$recycle_SQL[$i] .= "( (gmt_offset_now='$default_gmt_ARY[$dgA]') and (last_local_call_time < \"$RSQLdate[$rc]\") )";
+				$recycle_SQL[$i] .= "(gmt_offset_now='$default_gmt_ARY[$dgA]' and last_local_call_time<'$RSQLdate[$rc]')";
 
 				$dgA++;
 				}

@@ -52,7 +52,7 @@ my $dbhA = DBI->connect("DBI:mysql:" . $vars->{VARDB_database} . ":" . $vars->{V
   or die "Couldn't connect to database: " . DBI->errstr;
 
 ### Grab Server values from the database
-my $stmtA = "SELECT * FROM servers where server_ip = '" . $vars->{VARserver_ip} . "';";
+my $stmtA = "SELECT * FROM servers WHERE server_ip='" . $vars->{VARserver_ip} . "';";
 my $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $server = $sthA->fetchrow_hashref;

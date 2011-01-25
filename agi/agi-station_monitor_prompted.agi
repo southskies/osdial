@@ -118,7 +118,7 @@ while ($camp_loop) {
 				}
 				$phone_exten = stream_and_get_dtmf('please-enter-the-extension-2-b-monitored', 8, 3, 10, 1000, 'BAD', '1234567890', 3, '#');
 				if ($phone_exten ne 'BAD') {
-					$stmtA = "SELECT count(*) FROM phones WHERE (extension='$phone_exten' OR dialplan_number='$phone_exten');";
+					$stmtA = "SELECT count(*) FROM phones WHERE extension='$phone_exten' OR dialplan_number='$phone_exten';";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					@aryA = $sthA->fetchrow_array;
@@ -126,7 +126,7 @@ while ($camp_loop) {
 					if ($aryA[0]<1) {
 						$AGI->stream_file('invalid-extension');
 					} else {
-						$stmtA = "SELECT ola.conf_exten,s.server_ip,s.server_id FROM osdial_live_agents AS ola,servers AS s,phones where ((phones.extension='$phone_exten' OR phones.dialplan_number='$phone_exten') AND (ola.extension LIKE concat(phones.protocol,'/',phones.extension,'\%') OR ola.extension LIKE concat('\%/',phones.login,'\@\%') OR ola.extension LIKE concat('Local/',phones.dialplan_number,'%'))) AND s.server_ip=ola.server_ip AND phones.server_ip=s.server_ip LIMIT 1;";
+						$stmtA = "SELECT SQL_NO_CACHE ola.conf_exten,s.server_ip,s.server_id FROM osdial_live_agents AS ola,servers AS s,phones WHERE ((phones.extension='$phone_exten' OR phones.dialplan_number='$phone_exten') AND (ola.extension LIKE concat(phones.protocol,'/',phones.extension,'\%') OR ola.extension LIKE concat('\%/',phones.login,'\@\%') OR ola.extension LIKE concat('Local/',phones.dialplan_number,'%'))) AND s.server_ip=ola.server_ip AND phones.server_ip=s.server_ip LIMIT 1;";
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 						@aryA = $sthA->fetchrow_array;

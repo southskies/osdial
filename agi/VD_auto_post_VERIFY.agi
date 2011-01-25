@@ -117,7 +117,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
     or die "Couldn't connect to database: " . DBI->errstr;
 
 ### Grab Server values from the database
-$stmtA = "SELECT agi_output FROM servers where server_ip = '$VARserver_ip';";
+$stmtA = "SELECT agi_output FROM servers WHERE server_ip='$VARserver_ip';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;
@@ -285,7 +285,7 @@ $affected_rows = $dbhA->do($stmtA);
 if ($AGILOG) {$agi_string = "--    VDAD osdial_list PU update: |$affected_rows|$uniqueid|";   &agi_output;}
 
 ### Check to see if the number is in the system ###
-$stmtA= "SELECT custom1,comments from osdial_list where lead_id='$VD_lead_id';";
+$stmtA= "SELECT SQL_NO_CACHE custom1,comments FROM osdial_list WHERE lead_id='$VD_lead_id';";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 $sthArows=$sthA->rows;

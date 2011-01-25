@@ -101,7 +101,7 @@ while(<STDIN>)
 $lu = substr($extension, 1);
 
 ### Grab Server values from the database
-$stmtA = "SELECT ola.conf_exten,s.server_ip,s.server_id FROM osdial_live_agents AS ola,servers AS s,phones where (phones.login='$lu' AND (ola.extension LIKE concat(phones.protocol,'/',phones.extension,'\%') OR ola.extension LIKE concat('\%/',phones.login,'\@\%') OR ola.extension LIKE concat('Local/',phones.dialplan_number,'%'))) AND s.server_ip=ola.server_ip AND phones.server_ip=s.server_ip;";
+$stmtA = "SELECT SQL_NO_CACHE ola.conf_exten,s.server_ip,s.server_id FROM osdial_live_agents AS ola,servers AS s,phones WHERE (phones.login='$lu' AND (ola.extension LIKE concat(phones.protocol,'/',phones.extension,'\%') OR ola.extension LIKE concat('\%/',phones.login,'\@\%') OR ola.extension LIKE concat('Local/',phones.dialplan_number,'%'))) AND s.server_ip=ola.server_ip AND phones.server_ip=s.server_ip;";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 @aryA = $sthA->fetchrow_array;

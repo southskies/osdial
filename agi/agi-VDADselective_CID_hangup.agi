@@ -157,7 +157,7 @@ $CIDlead_id = $accountcode;
 $CIDlead_id = substr($CIDlead_id, 11, 9);
 $CIDlead_id = ($CIDlead_id + 0);
 
-$stmtA = "SELECT phone_number FROM osdial_list where lead_id = '$CIDlead_id' limit 1;";
+$stmtA = "SELECT SQL_NO_CACHE phone_number FROM osdial_list WHERE lead_id='$CIDlead_id' LIMIT 1;";
 	if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
