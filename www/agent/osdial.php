@@ -435,26 +435,26 @@ if ($campaign_login_list > 0) {
 
     $LOGallowed_campaignsSQL='';
     if ($relogin == 'YES') {
-        $stmt="SELECT user_group from osdial_users where user='$VD_login' and pass='$VD_pass'";
+        $stmt="SELECT user_group FROM osdial_users WHERE user='$VD_login' AND pass='$VD_pass';";
         if ($non_latin > 0) $rslt=mysql_query("SET NAMES 'UTF8'");
 
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         $VU_user_group=$row[0];
 
-        $stmt="SELECT allowed_campaigns from osdial_user_groups where user_group='$VU_user_group';";
+        $stmt="SELECT allowed_campaigns FROM osdial_user_groups WHERE user_group='$VU_user_group';";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         if (!preg_match("/ALL-CAMPAIGNS/",$row[0])) {
             $LOGallowed_campaignsSQL = preg_replace('/ -/','',$row[0]);
             $LOGallowed_campaignsSQL = preg_replace('/ /',"','",$LOGallowed_campaignsSQL);
-            $LOGallowed_campaignsSQL = "and campaign_id IN('$LOGallowed_campaignsSQL')";
+            $LOGallowed_campaignsSQL = "AND campaign_id IN('$LOGallowed_campaignsSQL')";
         }
     }
 
-    if ($multicomp) $LOGallowed_campaignsSQL .= " and campaign_id LIKE '" . $company_prefix . "%'";
+    if ($multicomp) $LOGallowed_campaignsSQL .= " AND campaign_id LIKE '" . $company_prefix . "%'";
 
-    $stmt="SELECT campaign_id,campaign_name from osdial_campaigns where active='Y' $LOGallowed_campaignsSQL order by campaign_id";
+    $stmt="SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE active='Y' $LOGallowed_campaignsSQL ORDER BY campaign_id;";
     if ($non_latin > 0) $rslt=mysql_query("SET NAMES 'UTF8'");
     $rslt=mysql_query($stmt, $link);
     $camps_to_print = mysql_num_rows($rslt);
@@ -617,7 +617,7 @@ if ($user_login_first == 1) {
         exit;
     } else {
         if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
-            $stmt="SELECT phone_login,phone_pass from osdial_users where user='$VD_login' and pass='$VD_pass' and user_level > 0;";
+            $stmt="SELECT phone_login,phone_pass FROM osdial_users WHERE user='$VD_login' AND pass='$VD_pass' AND user_level>0;";
             if ($DB) echo "|$stmt|\n";
             
             $rslt=mysql_query($stmt, $link);
@@ -743,7 +743,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
     if (strlen($VD_login)<2 or strlen($VD_pass)<2 or strlen($VD_campaign)<2) {
         $VDloginDISPLAY=1;
     } else {
-        $stmt="SELECT count(*) from osdial_users where user='$VD_login' and pass='$VD_pass' and user_level > 0;";
+        $stmt="SELECT count(*) FROM osdial_users WHERE user='$VD_login' AND pass='$VD_pass' AND user_level>0;";
         if ($DB) echo "|$stmt|\n";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
@@ -755,7 +755,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             $login=strtoupper($VD_login);
             $password=strtoupper($VD_pass);
             ##### grab the full name of the agent
-            $stmt="SELECT full_name,user_level,hotkeys_active,agent_choose_ingroups,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,closer_default_blended,user_group,osdial_recording_override,manual_dial_allow_skip,xfer_agent2agent,script_override from osdial_users where user='$VD_login' and pass='$VD_pass'";
+            $stmt="SELECT full_name,user_level,hotkeys_active,agent_choose_ingroups,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,closer_default_blended,user_group,osdial_recording_override,manual_dial_allow_skip,xfer_agent2agent,script_override FROM osdial_users WHERE user='$VD_login' AND pass='$VD_pass';";
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
             $LOGfullname=$row[0];
@@ -786,7 +786,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 $forever_stop++;
             }
 
-            $stmt="SELECT allowed_campaigns from osdial_user_groups where user_group='$VU_user_group';";
+            $stmt="SELECT allowed_campaigns FROM osdial_user_groups WHERE user_group='$VU_user_group';";
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
             $LOGallowed_campaigns = $row[0];
@@ -818,7 +818,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             }
 
             ##### check to see that the campaign is active
-            $stmt="SELECT count(*) FROM osdial_campaigns where campaign_id='$VD_campaign' and active='Y';";
+            $stmt="SELECT count(*) FROM osdial_campaigns WHERE campaign_id='$VD_campaign' AND active='Y';";
             if ($DB) echo "|$stmt|\n";
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
@@ -827,7 +827,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 if ($TEST_all_statuses > 0) {
                     $selectableSQL = '';
                 } else {
-                    $selectableSQL = "1=1 and";
+                    $selectableSQL = "1=1 AND";
                 }
                 $VARstatuses='';
                 $VARstatusnames='';
@@ -837,7 +837,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 $status_names = Array();
                 $statremove = "'NEW',";
                 ##### grab the campaign-specific statuses that can be used for dispositioning by an agent
-                $stmt="SELECT status,status_name,IF(selectable='Y',1,0) FROM osdial_campaign_statuses WHERE $selectableSQL status NOT IN (" . rtrim($statremove, ',') . ") and campaign_id='$VD_campaign' order by status;";
+                $stmt="SELECT status,status_name,IF(selectable='Y',1,0) FROM osdial_campaign_statuses WHERE $selectableSQL status NOT IN(" . rtrim($statremove, ',') . ") AND campaign_id='$VD_campaign' ORDER BY status;";
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $VD_statuses_camp = mysql_num_rows($rslt);
@@ -854,7 +854,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 $statremove = rtrim($statremove, ',');
 
                 ##### grab the statuses that can be used for dispositioning by an agent
-                $stmt="SELECT status,status_name,IF(selectable='Y',1,0) FROM osdial_statuses WHERE $selectableSQL status NOT IN ($statremove) order by status;";
+                $stmt="SELECT status,status_name,IF(selectable='Y',1,0) FROM osdial_statuses WHERE $selectableSQL status NOT IN($statremove) ORDER BY status;";
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $VD_statuses_ct = mysql_num_rows($rslt);
@@ -881,7 +881,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
 
                 ##### grab the campaign-specific HotKey statuses that can be used for dispositioning by an agent
-                $stmt="SELECT hotkey,status,status_name,xfer_exten FROM osdial_campaign_hotkeys WHERE selectable='Y' and status != 'NEW' and campaign_id='$VD_campaign' order by hotkey limit 9;";
+                $stmt="SELECT hotkey,status,status_name,xfer_exten FROM osdial_campaign_hotkeys WHERE selectable='Y' AND status!='NEW' AND campaign_id='$VD_campaign' ORDER BY hotkey LIMIT 9;";
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $HK_statuses_camp = mysql_num_rows($rslt);
@@ -1061,7 +1061,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
                 if ($agent_pause_codes_active=='Y') {
                     ##### grab the pause codes for this campaign
-                    $stmt="SELECT pause_code,pause_code_name FROM osdial_pause_codes WHERE campaign_id='$VD_campaign' order by pause_code limit 50;";
+                    $stmt="SELECT pause_code,pause_code_name FROM osdial_pause_codes WHERE campaign_id='$VD_campaign' ORDER BY pause_code LIMIT 50;";
                     $rslt=mysql_query($stmt, $link);
                     if ($DB) echo "$stmt\n";
                     $VD_pause_codes = mysql_num_rows($rslt);
@@ -1084,8 +1084,8 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 if ($campaign_allow_inbound > 0) {
                     $VARingroups='';
                     $closerSQL = "group_id IN($closer_campaigns)";
-                    if ($LOGxfer_agent2agent > 0) $closerSQL = "($closerSQL OR group_id = 'A2A_$VD_login')";
-                    $stmt="select group_id,ingroup_script from osdial_inbound_groups where active = 'Y' and $closerSQL order by group_id limit 60;";
+                    if ($LOGxfer_agent2agent > 0) $closerSQL = "($closerSQL OR group_id='A2A_$VD_login')";
+                    $stmt="SELECT group_id,ingroup_script FROM osdial_inbound_groups WHERE active='Y' AND $closerSQL ORDER BY group_id LIMIT 60;";
                     $rslt=mysql_query($stmt, $link);
                     if ($DB) echo "$stmt\n";
                     $closer_ct = mysql_num_rows($rslt);
@@ -1110,7 +1110,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                     $VARxfergroups='';
                     $xferSQL = "group_id IN($xfer_groups)";
                     if ($LOGxfer_agent2agent > 0) $xferSQL = "($xferSQL OR group_id LIKE 'A2A_$company_prefix%') AND group_id != 'A2A_$VD_login'";
-                    $stmt="select group_id,group_name from osdial_inbound_groups where active = 'Y' and $xferSQL order by group_id limit 60;";
+                    $stmt="SELECT group_id,group_name FROM osdial_inbound_groups WHERE active='Y' AND $xferSQL ORDER BY group_id LIMIT 60;";
                     $rslt=mysql_query($stmt, $link);
                     if ($DB) echo "$stmt\n";
                     $xfer_ct = mysql_num_rows($rslt);
@@ -1127,7 +1127,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 }
 
                 ##### grab the number of leads in the hopper for this campaign
-                $stmt="SELECT count(*) FROM osdial_hopper WHERE campaign_id = '$VD_campaign' AND status IN ('API','READY');";
+                $stmt="SELECT SQL_NO_CACHE count(*) FROM osdial_hopper WHERE campaign_id='$VD_campaign' AND status IN('API','READY');";
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $row=mysql_fetch_row($rslt);
@@ -1216,7 +1216,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
     }
 
     $authphone=0;
-    $stmt="SELECT count(*) from phones where login='$phone_login' and pass='$phone_pass' and active = 'Y';";
+    $stmt="SELECT SQL_NO_CACHE count(*) FROM phones WHERE login='$phone_login' AND pass='$phone_pass' AND active='Y';";
     if ($DB) echo "|$stmt|\n";
     $rslt=mysql_query($stmt, $link);
     $row=mysql_fetch_row($rslt);
@@ -1279,7 +1279,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
     } else {
         echo "<title>$t1 web client</title>\n";
-        $stmt="SELECT * from phones where login='$phone_login' and pass='$phone_pass' and active = 'Y';";
+        $stmt="SELECT * FROM phones WHERE login='$phone_login' AND pass='$phone_pass' AND active='Y';";
         if ($DB) echo "|$stmt|\n";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
@@ -1360,7 +1360,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
         $SIP_user = "$protocol/$extension";
         $SIP_user_DiaL = "$protocol/$extension";
 
-        $stmt="SELECT asterisk_version from servers where server_ip='$server_ip';";
+        $stmt="SELECT asterisk_version FROM servers WHERE server_ip='$server_ip';";
         if ($DB) echo "|$stmt|\n";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
@@ -1432,7 +1432,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             $rslt=mysql_query($stmt, $link);
 
             ##### check to see if the user has a conf extension already, this happens if they previously exited uncleanly
-            $stmt="SELECT conf_exten FROM osdial_conferences WHERE extension='$SIP_user' AND server_ip='$server_ip' LIMIT 1;";
+            $stmt="SELECT SQL_NO_CACHE conf_exten FROM osdial_conferences WHERE extension='$SIP_user' AND server_ip='$server_ip' LIMIT 1;";
             $rslt=mysql_query($stmt, $link);
             if ($DB) echo "$stmt\n";
             $prev_conf_ct = mysql_num_rows($rslt);
@@ -1455,7 +1455,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 echo "<!-- old QUEUE and INCALL reverted hopper: |$affected_rows| -->\n";
             } else {
                 # Lets get a new one...
-                $stmt="SELECT count(*) FROM osdial_conferences WHERE server_ip='$server_ip' AND (extension='' OR extension is null);";
+                $stmt="SELECT SQL_NO_CACHE count(*) FROM osdial_conferences WHERE server_ip='$server_ip' AND (extension='' OR extension IS NULL);";
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $row=mysql_fetch_row($rslt);
@@ -1464,7 +1464,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                     $stmt="UPDATE osdial_conferences SET extension='$SIP_user' WHERE server_ip='$server_ip' AND (extension='' OR extension is null) LIMIT 1;";
                     $rslt=mysql_query($stmt, $link);
 
-                    $stmt="SELECT conf_exten FROM osdial_conferences WHERE extension='$SIP_user' AND server_ip='$server_ip';";
+                    $stmt="SELECT SQL_NO_CACHE conf_exten FROM osdial_conferences WHERE extension='$SIP_user' AND server_ip='$server_ip';";
                     $rslt=mysql_query($stmt, $link);
                     $row=mysql_fetch_row($rslt);
                     $session_id=$row[0];
@@ -1474,7 +1474,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             }
 
             # User is logged in elsewhere
-            $stmt="SELECT user,extension,server_ip,conf_exten FROM osdial_live_agents WHERE user='$VD_login' LIMIT 1;";
+            $stmt="SELECT SQL_NO_CACHE user,extension,server_ip,conf_exten FROM osdial_live_agents WHERE user='$VD_login' LIMIT 1;";
             $rslt=mysql_query($stmt, $link);
             if ($DB) echo "$stmt\n";
             $ola_user_ct = mysql_num_rows($rslt);
@@ -1572,7 +1572,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 print "<!-- campaign is set to auto_dial_level: $auto_dial_level -->\n";
 
                 ##### grab the campaign_weight and number of calls today on that campaign for the agent
-                $stmt="SELECT campaign_weight,calls_today FROM osdial_campaign_agents where user='$VD_login' and campaign_id = '$VD_campaign';";
+                $stmt="SELECT campaign_weight,calls_today FROM osdial_campaign_agents WHERE user='$VD_login' AND campaign_id='$VD_campaign';";
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $vca_ct = mysql_num_rows($rslt);
@@ -1737,7 +1737,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
     }
     $scriptSQL = rtrim($scriptSQL,',');
     ##### grab the datails of all active scripts in the system
-    $stmt="SELECT script_id,script_name,script_text FROM osdial_scripts WHERE active='Y' AND script_id IN ($scriptSQL) order by script_id limit 100;";
+    $stmt="SELECT script_id,script_name,script_text FROM osdial_scripts WHERE active='Y' AND script_id IN ($scriptSQL) ORDER BY script_id LIMIT 100;";
     $rslt=mysql_query($stmt, $link);
     if ($DB) echo "$stmt\n";
     $MM_scripts = mysql_num_rows($rslt);
@@ -2893,48 +2893,45 @@ flush();
                         </tr>
                     </table>
                 </td>
-                <td align=left valign=top>
-                    <br>
-                    <div id="AddtlFormTab" style="visibility:hidden;position:absolute;left:980px;top:22px;z-index:9;" onclick="AddtlFormOver();">
-                        <img src="templates/<?= $agent_template ?>/images/agentsidetab_tab.png" width="10" height="46" border="0">
-                    </div>
-                    <div id="AddtlFormTabExpanded" style="visibility:hidden;position:absolute;left:840px;top:22px;z-index:9;">
-                        <table width=140 cellspacing=0 cellpadding=0>
-                            <tr background="templates/<?= $agent_template ?>/images/agentsidetab_top.png" height=15 onclick="AddtlFormSelect('Cancel');">
-                                <td></td>
-                            </tr>
-                            <?
-                            if ($email_templates) {
-                                echo "  <tr id=AddtlFormButEmailTemplates style=\"background-image:url(templates/" . $agent_template . "/images/agentsidetab_extra.png);\" height=29 ";
-                                echo "    onmouseover=\"AddtlFormButOver('EmailTemplates');\" onmouseout=\"AddtlFormButOut('EmailTemplates');\">\n";
-                                echo "      <td align=center onclick=\"AddtlFormSelect('EmailTemplates');\">\n";
-                                echo "          <div class=AFMenu>EmailTemplates</div>\n";
-                                echo "      </td>\n";
-                                echo "  </tr>\n";
-                            }
-                            foreach ($forms as $form) {
-                                foreach (split(',',$form['campaigns']) as $fcamp) {
-                                    if ($fcamp == 'ALL' or strtoupper($fcamp) == strtoupper($VD_campaign)) {
-                                        echo "  <tr id=AddtlFormBut" . $form['name'] . " style=\"background-image:url(templates/" . $agent_template . "/images/agentsidetab_extra.png);\" height=29 ";
-                                        echo "    onmouseover=\"AddtlFormButOver('" . $form['name'] . "');\" onmouseout=\"AddtlFormButOut('" . $form['name'] . "');\">\n";
-                                        echo "      <td align=center onclick=\"AddtlFormSelect('" . $form['name'] . "');\">\n";
-                                        echo "          <div class=AFMenu>" . $form['name'] . "</div>\n";
-                                        echo "      </td>\n";
-                                        echo "  </tr>\n";
-                                    }
-                                }
-                            } ?>
-                            <tr id="AddtlFormButSelect4" background="templates/<?= $agent_template ?>/images/agentsidetab_line.png" height=1>
-                                <td></td>
-                            </tr>
-                        </table>
-                        <div style="position:absolute;left:140px;top:0px;z-index:9;">
-                            <img src="templates/<?= $agent_template ?>/images/agentsidetab_cancel.png" width="10" height="46" border="0" onclick="AddtlFormSelect('Cancel');">
-                        </div>
-                    </div>
-                </td>
             </tr>
         </table>
+        <div id="AddtlFormTab" style="visibility:hidden;position:absolute;left:980px;top:22px;z-index:9;" onclick="AddtlFormOver();">
+            <img src="templates/<?= $agent_template ?>/images/agentsidetab_tab.png" width="10" height="46" border="0">
+        </div>
+        <div id="AddtlFormTabExpanded" style="visibility:hidden;position:absolute;left:840px;top:22px;z-index:9;">
+            <table width=140 cellspacing=0 cellpadding=0>
+                <tr background="templates/<?= $agent_template ?>/images/agentsidetab_top.png" height=15 onclick="AddtlFormSelect('Cancel');">
+                    <td></td>
+                </tr>
+                <?
+                if ($email_templates) {
+                    echo "  <tr id=AddtlFormButEmailTemplates style=\"background-image:url(templates/" . $agent_template . "/images/agentsidetab_extra.png);\" height=29 ";
+                    echo "    onmouseover=\"AddtlFormButOver('EmailTemplates');\" onmouseout=\"AddtlFormButOut('EmailTemplates');\">\n";
+                    echo "      <td align=center onclick=\"AddtlFormSelect('EmailTemplates');\">\n";
+                    echo "          <div class=AFMenu>EmailTemplates</div>\n";
+                    echo "      </td>\n";
+                    echo "  </tr>\n";
+                }
+                foreach ($forms as $form) {
+                    foreach (split(',',$form['campaigns']) as $fcamp) {
+                        if ($fcamp == 'ALL' or strtoupper($fcamp) == strtoupper($VD_campaign)) {
+                            echo "  <tr id=AddtlFormBut" . $form['name'] . " style=\"background-image:url(templates/" . $agent_template . "/images/agentsidetab_extra.png);\" height=29 ";
+                            echo "    onmouseover=\"AddtlFormButOver('" . $form['name'] . "');\" onmouseout=\"AddtlFormButOut('" . $form['name'] . "');\">\n";
+                            echo "      <td align=center onclick=\"AddtlFormSelect('" . $form['name'] . "');\">\n";
+                            echo "          <div class=AFMenu>" . $form['name'] . "</div>\n";
+                            echo "      </td>\n";
+                            echo "  </tr>\n";
+                        }
+                    }
+                } ?>
+                <tr id="AddtlFormButSelect4" background="templates/<?= $agent_template ?>/images/agentsidetab_line.png" height=1>
+                    <td></td>
+                </tr>
+            </table>
+            <div style="position:absolute;left:139px;top:0px;z-index:9;">
+                <img src="templates/<?= $agent_template ?>/images/agentsidetab_cancel.png" width="10" height="46" border="0" onclick="AddtlFormSelect('Cancel');">
+            </div>
+        </div>
     </span>
 <!-- END *********   The end of the main OSDial display panel -->
 

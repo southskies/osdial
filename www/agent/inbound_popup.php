@@ -95,7 +95,7 @@ if (!isset($query_date)) {$query_date = $NOW_DATE;}
 $DO = '-1';
 if ( (eregi("^Zap",$channel)) and (!eregi("-",$channel)) ) {$channel = "$channel$DO";}
 
-	$stmt="SELECT count(*) from osdial_users where user='$user' and pass='$pass' and user_level > 0;";
+	$stmt="SELECT count(*) FROM osdial_users WHERE user='$user' AND pass='$pass' AND user_level>0;";
 	if ($DB) {echo "|$stmt|\n";}
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -116,7 +116,7 @@ if ( (eregi("^Zap",$channel)) and (!eregi("-",$channel)) ) {$channel = "$channel
 		}
 	else
 		{
-		$stmt="SELECT count(*) from web_client_sessions where session_name='$session_name' and server_ip='$server_ip';";
+		$stmt="SELECT count(*) FROM web_client_sessions WHERE session_name='$session_name' AND server_ip='$server_ip';";
 		if ($DB) {echo "|$stmt|\n";}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
@@ -288,7 +288,7 @@ echo "<B>$NOW_TIME</B><BR><BR>\n";
 	}
 	else
 	{
-	$stmt="SELECT * FROM live_inbound where server_ip = '$server_ip' and uniqueid = '$uniqueid';";
+	$stmt="SELECT SQL_NO_CACHE * FROM live_inbound WHERE server_ip='$server_ip' AND uniqueid='$uniqueid';";
 		if ($format=='debug') {echo "\n<!-- $stmt -->";}
 	$rslt=mysql_query($stmt, $link);
 	$channels_list = mysql_num_rows($rslt);

@@ -59,7 +59,7 @@ function get_first_record($link, $tbl, $flds="*", $whr="") {
     if ($whr != '') {
         $whr = ' WHERE ' . $whr;
     }
-    $gfrstmt="SELECT " . $flds . " FROM " . $tbl . $whr . ' LIMIT 1';
+    $gfrstmt="SELECT SQL_NO_CACHE " . $flds . " FROM " . $tbl . $whr . ' LIMIT 1';
     $gfrrslt=mysql_query($gfrstmt, $link);
     $gfrrow = mysql_fetch_array($gfrrslt, MYSQL_BOTH);
     return $gfrrow;

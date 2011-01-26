@@ -215,7 +215,7 @@ $NOW_TIME = date("Y-m-d H:i:s");
 $NOWnum = date("YmdHis");
 if (!isset($query_date)) {$query_date = $NOW_DATE;}
 
-$stmt="SELECT count(*) from osdial_users where user='$user' and pass='$pass' and user_level > 0;";
+$stmt="SELECT count(*) FROM osdial_users WHERE user='$user' AND pass='$pass' AND user_level>0;";
 if ($DB) {echo "|$stmt|\n";}
 if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
 $rslt=mysql_query($stmt, $link);
@@ -237,7 +237,7 @@ $auth=$row[0];
 		}
 	else
 		{
-		$stmt="SELECT count(*) from web_client_sessions where session_name='$session_name' and server_ip='$server_ip';";
+		$stmt="SELECT count(*) FROM web_client_sessions WHERE session_name='$session_name' AND server_ip='$server_ip';";
 		if ($DB) {echo "|$stmt|\n";}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
@@ -313,7 +313,7 @@ if ($ACTION=="OriginateName")
 	}
 	else
 	{
-		$stmt="SELECT dialplan_number FROM phones where server_ip = '$server_ip' and extension='$extenName';";
+		$stmt="SELECT SQL_NO_CACHE dialplan_number FROM phones WHERE server_ip='$server_ip' AND extension='$extenName';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 		$name_count = mysql_num_rows($rslt);
@@ -342,7 +342,7 @@ if ($ACTION=="OriginateNameVmail")
 	}
 	else
 	{
-		$stmt="SELECT voicemail_id FROM phones where server_ip = '$server_ip' and extension='$extenName';";
+		$stmt="SELECT voicemail_id FROM phones WHERE server_ip='$server_ip' AND extension='$extenName';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 		$name_count = mysql_num_rows($rslt);
@@ -413,12 +413,12 @@ if ($ACTION=="HangupConfDial") {
         $local_AMP = '@';
         $hangup_channel_prefix = "$local_DEF$exten$local_AMP$ext_context";
 
-        $stmt="SELECT count(*) FROM live_sip_channels WHERE server_ip='$server_ip' AND channel LIKE '$hangup_channel_prefix%';";
+        $stmt="SELECT SQL_NO_CACHE count(*) FROM live_sip_channels WHERE server_ip='$server_ip' AND channel LIKE '$hangup_channel_prefix%';";
         if ($format=='debug') echo "\n<!-- $stmt -->";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         if ($row > 0) {
-            $stmt="SELECT channel FROM live_sip_channels WHERE server_ip='$server_ip' AND channel LIKE '$hangup_channel_prefix%';";
+            $stmt="SELECT SQL_NO_CACHE channel FROM live_sip_channels WHERE server_ip='$server_ip' AND channel LIKE '$hangup_channel_prefix%';";
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
             $rowx=mysql_fetch_row($rslt);
@@ -449,7 +449,7 @@ if ($ACTION=="Hangup") {
         } elseif ($auto_dial_level>0) {
             $dbout = "$NOW_TIME|ADCHU|$user|$channel|$call_server_ip|$exten|$secondS|$CalLCID|";
             if (strlen($CalLCID)>2 and strlen($exten)>2 and $secondS>0) {
-                $stmt="SELECT count(*) FROM osdial_auto_calls where channel='$channel' and callerid='$CalLCID';";
+                $stmt="SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE channel='$channel' AND callerid='$CalLCID';";
                 if ($format=='debug') echo "\n<!-- $stmt -->";
                 $rslt=mysql_query($stmt, $link);
                 $rowx=mysql_fetch_row($rslt);
@@ -457,7 +457,7 @@ if ($ACTION=="Hangup") {
                 if ($rowx[0]==0) {
                     echo "Call $CalLCID $channel is not live on $call_server_ip, Checking Live Channel...\n";
 
-                    $stmt="SELECT count(*) FROM live_channels WHERE server_ip='$call_server_ip' AND channel='$channel' AND extension LIKE '%$exten';";
+                    $stmt="SELECT SQL_NO_CACHE count(*) FROM live_channels WHERE server_ip='$call_server_ip' AND channel='$channel' AND extension LIKE '%$exten';";
                     if ($format=='debug') echo "\n<!-- $stmt -->";
                     $rslt=mysql_query($stmt, $link);
                     $row=mysql_fetch_row($rslt);
@@ -465,7 +465,7 @@ if ($ACTION=="Hangup") {
                     if ($row[0]==0) {
                         $channel_live=0;
                         echo "Channel $channel is not live on $call_server_ip, Hangup command not inserted $rowx[0]\n$stmt\n";
-                        $stmt="SELECT count(*) FROM live_channels WHERE channel='$channel' AND extension LIKE '%$exten';";
+                        $stmt="SELECT SQL_NO_CACHE count(*) FROM live_channels WHERE channel='$channel' AND extension LIKE '%$exten';";
                         $rslt=mysql_query($stmt, $link);
                         $row=mysql_fetch_row($rslt);
                         $dbout .= "LC:$row[0]|";
@@ -479,7 +479,7 @@ if ($ACTION=="Hangup") {
         } else {
             $dbout = "$NOW_TIME|MDCHU|$user|$channel|$call_server_ip|$exten|$stage|";
             if (strlen($stage)>2 and strlen($channel)>2 and strlen($exten)>2) {
-                $stmt="SELECT count(*) FROM live_channels WHERE server_ip='$call_server_ip' AND channel='$channel' AND extension NOT LIKE '%$exten%';";
+                $stmt="SELECT SQL_NO_CACHE count(*) FROM live_channels WHERE server_ip='$call_server_ip' AND channel='$channel' AND extension NOT LIKE '%$exten%';";
                 if ($format=='debug') echo "\n<!-- $stmt -->";
                 $rslt=mysql_query($stmt, $link);
                 $row=mysql_fetch_row($rslt);
@@ -628,7 +628,7 @@ if ($ACTION=="RedirectName")
 	}
 	else
 	{
-		$stmt="SELECT dialplan_number FROM phones where server_ip = '$server_ip' and extension='$extenName';";
+		$stmt="SELECT SQL_NO_CACHE dialplan_number FROM phones WHERE server_ip='$server_ip' AND extension='$extenName';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 		$name_count = mysql_num_rows($rslt);
@@ -657,7 +657,7 @@ if ($ACTION=="RedirectNameVmail")
 	}
 	else
 	{
-		$stmt="SELECT voicemail_id FROM phones where server_ip = '$server_ip' and extension='$extenName';";
+		$stmt="SELECT voicemail_id FROM phones WHERE server_ip='$server_ip' AND extension='$extenName';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 		$name_count = mysql_num_rows($rslt);
@@ -709,13 +709,13 @@ if ($ACTION=="RedirectXtraCX")
             $affected_rows = mysql_affected_rows($link);
             if ($affected_rows > 0)
                 {
-                $stmt="SELECT conf_exten FROM osdial_conferences WHERE server_ip='$server_ip' AND extension='$protocol/$extension$NOWnum' AND conf_exten!='$session_id';";
+                $stmt="SELECT SQL_NO_CACHE conf_exten FROM osdial_conferences WHERE server_ip='$server_ip' AND extension='$protocol/$extension$NOWnum' AND conf_exten!='$session_id';";
                     if ($format=='debug') {echo "\n<!-- $stmt -->";}
                 $rslt=mysql_query($stmt, $link);
                 $row=mysql_fetch_row($rslt);
                 $exten = $row[0];
 
-                $stmt="SELECT channel_group FROM live_sip_channels WHERE server_ip='$server_ip' AND channel='$agentchannel';";
+                $stmt="SELECT SQL_NO_CACHE channel_group FROM live_sip_channels WHERE server_ip='$server_ip' AND channel='$agentchannel';";
                     if ($format=='debug') {echo "\n<!-- $stmt -->";}
                 $rslt=mysql_query($stmt, $link);
                 $row=mysql_fetch_row($rslt);
@@ -776,13 +776,13 @@ if ($ACTION=="RedirectXtraCX")
 
 		if (strlen($call_server_ip)<7) {$call_server_ip = $server_ip;}
 
-		$stmt="SELECT count(*) FROM live_channels where server_ip = '$call_server_ip' and channel='$channel';";
+		$stmt="SELECT SQL_NO_CACHE count(*) FROM live_channels WHERE server_ip='$call_server_ip' AND channel='$channel';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		if ($row[0]==0)
 		{
-			$stmt="SELECT count(*) FROM live_sip_channels where server_ip = '$call_server_ip' and channel='$channel';";
+			$stmt="SELECT SQL_NO_CACHE count(*) FROM live_sip_channels WHERE server_ip='$call_server_ip' AND channel='$channel';";
 				if ($format=='debug') {echo "\n<!-- $stmt -->";}
 			$rslt=mysql_query($stmt, $link);
 			$rowx=mysql_fetch_row($rslt);
@@ -793,13 +793,13 @@ if ($ACTION=="RedirectXtraCX")
 				if (ereg("SECOND|FIRST|DEBUG",$filename)) {$DBout .= "$channel is not live on $call_server_ip";}
 			}	
 		}
-		$stmt="SELECT count(*) FROM live_channels where server_ip = '$server_ip' and channel='$extrachannel';";
+		$stmt="SELECT SQL_NO_CACHE count(*) FROM live_channels WHERE server_ip='$server_ip' AND channel='$extrachannel';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		if ($row[0]==0)
 		{
-			$stmt="SELECT count(*) FROM live_sip_channels where server_ip = '$server_ip' and channel='$extrachannel';";
+			$stmt="SELECT SQL_NO_CACHE count(*) FROM live_sip_channels WHERE server_ip='$server_ip' and channel='$extrachannel';";
 				if ($format=='debug') {echo "\n<!-- $stmt -->";}
 			$rslt=mysql_query($stmt, $link);
 			$rowx=mysql_fetch_row($rslt);
@@ -812,7 +812,7 @@ if ($ACTION=="RedirectXtraCX")
 		}
 		if ( ($channel_liveX==1) && ($channel_liveY==1) )
 		{
-			$stmt="SELECT count(*) FROM osdial_live_agents where lead_id='$lead_id' and user!='$user';";
+			$stmt="SELECT SQL_NO_CACHE count(*) FROM osdial_live_agents WHERE lead_id='$lead_id' AND user!='$user';";
 				if ($format=='debug') {echo "\n<!-- $stmt -->";}
 			$rslt=mysql_query($stmt, $link);
 			$rowx=mysql_fetch_row($rslt);
@@ -824,7 +824,7 @@ if ($ACTION=="RedirectXtraCX")
 			}	
 			else
 			{
-				$stmt="SELECT server_ip,conf_exten,user FROM osdial_live_agents where lead_id='$lead_id' and user!='$user';";
+				$stmt="SELECT SQL_NO_CACHE server_ip,conf_exten,user FROM osdial_live_agents WHERE lead_id='$lead_id' AND user!='$user';";
 					if ($format=='debug') {echo "\n<!-- $stmt -->";}
 				$rslt=mysql_query($stmt, $link);
 				$rowx=mysql_fetch_row($rslt);
@@ -919,13 +919,13 @@ if ($ACTION=="RedirectXtra")
             $affected_rows = mysql_affected_rows($link);
             if ($affected_rows > 0)
                 {
-                $stmt="SELECT conf_exten FROM osdial_conferences WHERE server_ip='$server_ip' AND extension='$protocol/$extension$NOWnum' AND conf_exten!='$session_id';";
+                $stmt="SELECT SQL_NO_CACHE conf_exten FROM osdial_conferences WHERE server_ip='$server_ip' AND extension='$protocol/$extension$NOWnum' AND conf_exten!='$session_id';";
                     if ($format=='debug') {echo "\n<!-- $stmt -->";}
                 $rslt=mysql_query($stmt, $link);
                 $row=mysql_fetch_row($rslt);
                 $exten = $row[0];
 
-                $stmt="SELECT channel_group FROM live_sip_channels WHERE server_ip='$server_ip' AND channel='$agentchannel';";
+                $stmt="SELECT SQL_NO_CACHE channel_group FROM live_sip_channels WHERE server_ip='$server_ip' AND channel='$agentchannel';";
                     if ($format=='debug') {echo "\n<!-- $stmt -->";}
                 $rslt=mysql_query($stmt, $link);
                 $row=mysql_fetch_row($rslt);
@@ -979,13 +979,13 @@ if ($ACTION=="RedirectXtra")
 
 		if (strlen($call_server_ip)<7) {$call_server_ip = $server_ip;}
 
-			$stmt="SELECT count(*) FROM live_channels where server_ip = '$call_server_ip' and channel='$channel';";
+			$stmt="SELECT SQL_NO_CACHE count(*) FROM live_channels WHERE server_ip='$call_server_ip' AND channel='$channel';";
 				if ($format=='debug') {echo "\n<!-- $stmt -->";}
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			if ( ($row[0]==0) && (!ereg("SECOND",$filename)) )
 			{
-				$stmt="SELECT count(*) FROM live_sip_channels where server_ip = '$call_server_ip' and channel='$channel';";
+				$stmt="SELECT SQL_NO_CACHE count(*) FROM live_sip_channels WHERE server_ip='$call_server_ip' AND channel='$channel';";
 					if ($format=='debug') {echo "\n<!-- $stmt -->";}
 				$rslt=mysql_query($stmt, $link);
 				$rowx=mysql_fetch_row($rslt);
@@ -996,13 +996,13 @@ if ($ACTION=="RedirectXtra")
 					if (ereg("SECOND|FIRST|DEBUG",$filename)) {$DBout .= "$channel is not live on $call_server_ip";}
 				}	
 			}
-			$stmt="SELECT count(*) FROM live_channels where server_ip = '$server_ip' and channel='$extrachannel';";
+			$stmt="SELECT SQL_NO_CACHE count(*) FROM live_channels WHERE server_ip='$server_ip' AND channel='$extrachannel';";
 				if ($format=='debug') {echo "\n<!-- $stmt -->";}
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 			if ( ($row[0]==0) && (!ereg("SECOND",$filename)) )
 			{
-				$stmt="SELECT count(*) FROM live_sip_channels where server_ip = '$server_ip' and channel='$extrachannel';";
+				$stmt="SELECT SQL_NO_CACHE count(*) FROM live_sip_channels WHERE server_ip='$server_ip' AND channel='$extrachannel';";
 					if ($format=='debug') {echo "\n<!-- $stmt -->";}
 				$rslt=mysql_query($stmt, $link);
 				$rowx=mysql_fetch_row($rslt);
@@ -1083,13 +1083,13 @@ if ($ACTION=="Redirect")
 		$local_AMP = '@';
 		$hangup_channel_prefix = "$local_DEF$session_id$local_AMP$ext_context";
 
-		$stmt="SELECT count(*) FROM live_sip_channels where server_ip = '$server_ip' and channel LIKE \"$hangup_channel_prefix%\";";
+		$stmt="SELECT SQL_NO_CACHE count(*) FROM live_sip_channels WHERE server_ip='$server_ip' AND channel LIKE '$hangup_channel_prefix%';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		if ($row > 0)
 		{
-			$stmt="SELECT channel FROM live_sip_channels where server_ip = '$server_ip' and channel LIKE \"$hangup_channel_prefix%\";";
+			$stmt="SELECT SQL_NO_CACHE channel FROM live_sip_channels WHERE server_ip='$server_ip' AND channel LIKE '$hangup_channel_prefix%';";
 				if ($format=='debug') {echo "\n<!-- $stmt -->";}
 			$rslt=mysql_query($stmt, $link);
 			$rowx=mysql_fetch_row($rslt);
@@ -1115,13 +1115,13 @@ if ($ACTION=="Redirect")
 	else
 	{
 		if (strlen($call_server_ip)>6) {$server_ip = $call_server_ip;}
-		$stmt="SELECT count(*) FROM live_channels where server_ip = '$server_ip' and channel='$channel';";
+		$stmt="SELECT SQL_NO_CACHE count(*) FROM live_channels WHERE server_ip='$server_ip' AND channel='$channel';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		if ($row[0]==0)
 		{
-			$stmt="SELECT count(*) FROM live_sip_channels where server_ip = '$server_ip' and channel='$channel';";
+			$stmt="SELECT SQL_NO_CACHE count(*) FROM live_sip_channels WHERE server_ip='$server_ip' AND channel='$channel';";
 				if ($format=='debug') {echo "\n<!-- $stmt -->";}
 			$rslt=mysql_query($stmt, $link);
 			$rowx=mysql_fetch_row($rslt);
@@ -1177,13 +1177,13 @@ if ( ($ACTION=="Monitor") || ($ACTION=="StopMonitor") )
 	}
 	else
 	{
-		$stmt="SELECT count(*) FROM live_channels where server_ip = '$server_ip' and channel='$channel';";
+		$stmt="SELECT SQL_NO_CACHE count(*) FROM live_channels WHERE server_ip='$server_ip' AND channel='$channel';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		if ($row[0]==0)
 		{
-			$stmt="SELECT count(*) FROM live_sip_channels where server_ip = '$server_ip' and channel='$channel';";
+			$stmt="SELECT SQL_NO_CACHE count(*) FROM live_sip_channels WHERE server_ip='$server_ip' AND channel='$channel';";
 				if ($format=='debug') {echo "\n<!-- $stmt -->";}
 			$rslt=mysql_query($stmt, $link);
 			$rowx=mysql_fetch_row($rslt);
@@ -1205,7 +1205,7 @@ if ( ($ACTION=="Monitor") || ($ACTION=="StopMonitor") )
 				if ($format=='debug') {echo "\n<!-- $stmt -->";}
 			$rslt=mysql_query($stmt, $link);
 
-			$stmt="SELECT recording_id FROM recording_log where filename='$filename'";
+			$stmt="SELECT SQL_NO_CACHE recording_id FROM recording_log WHERE filename='$filename';";
 			$rslt=mysql_query($stmt, $link);
 			if ($DB) {echo "$stmt\n";}
 			$row=mysql_fetch_row($rslt);
@@ -1213,7 +1213,7 @@ if ( ($ACTION=="Monitor") || ($ACTION=="StopMonitor") )
 			}
 		else
 			{
-			$stmt="SELECT recording_id,start_epoch FROM recording_log where filename='$filename'";
+			$stmt="SELECT SQL_NO_CACHE recording_id,start_epoch FROM recording_log WHERE filename='$filename';";
 			$rslt=mysql_query($stmt, $link);
 			if ($DB) {echo "$stmt\n";}
 			$rec_count = mysql_num_rows($rslt);
@@ -1267,7 +1267,7 @@ if ( ($ACTION=="MonitorConf") || ($ACTION=="StopMonitorConf") )
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 
-		$stmt="SELECT recording_id FROM recording_log where filename='$filename'";
+		$stmt="SELECT SQL_NO_CACHE recording_id FROM recording_log WHERE filename='$filename'";
 		$rslt=mysql_query($stmt, $link);
 		if ($DB) {echo "$stmt\n";}
 		$row=mysql_fetch_row($rslt);
@@ -1275,7 +1275,7 @@ if ( ($ACTION=="MonitorConf") || ($ACTION=="StopMonitorConf") )
 		}
 	else
 		{
-		$stmt="SELECT recording_id,start_epoch FROM recording_log where filename='$filename'";
+		$stmt="SELECT SQL_NO_CACHE recording_id,start_epoch FROM recording_log WHERE filename='$filename'";
 		$rslt=mysql_query($stmt, $link);
 		if ($DB) {echo "$stmt\n";}
 		$rec_count = mysql_num_rows($rslt);
@@ -1294,7 +1294,7 @@ if ( ($ACTION=="MonitorConf") || ($ACTION=="StopMonitorConf") )
 			}
 
 		# find and hang up all recordings going on in this conference # and extension = '$exten' 
-		$stmt="SELECT channel FROM live_sip_channels where server_ip = '$server_ip' and channel LIKE \"$channel%\" and channel LIKE \"%,1\";";
+		$stmt="SELECT SQL_NO_CACHE channel FROM live_sip_channels WHERE server_ip='$server_ip' AND channel LIKE '$channel%' AND channel LIKE '%,1';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 	#	$rec_count = intval(mysql_num_rows($rslt) / 2);

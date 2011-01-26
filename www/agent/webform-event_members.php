@@ -85,7 +85,7 @@ echo "<body bgcolor=#759ba3 style=\"font-family: 'dejavu sans',sans;\"marginheig
 
 
 # Authenticate
-$stmt="SELECT count(*) from osdial_users where user='$user' and pass='$pass' and user_level > 0;";
+$stmt="SELECT count(*) FROM osdial_users WHERE user='$user' AND pass='$pass' AND user_level>0;";
 $rslt=mysql_query($stmt, $link);
 $row=mysql_fetch_row($rslt);
 $auth=$row[0];

@@ -134,7 +134,7 @@ if (!isset($query_date)) {$query_date = $NOW_DATE;}
 $random = (rand(1000000, 9999999) + 10000000);
 
 
-$stmt="SELECT count(*) from osdial_users where user='$user' and pass='$pass' and user_level > 0;";
+$stmt="SELECT count(*) FROM osdial_users WHERE user='$user' AND pass='$pass' AND user_level>0;";
 if ($format=='debug') {echo "<!-- |$stmt| -->\n";}
 if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
 $rslt=mysql_query($stmt, $link);
@@ -156,7 +156,7 @@ $auth=$row[0];
 		}
 	else
 		{
-		$stmt="SELECT count(*) from web_client_sessions where session_name='$session_name' and server_ip='$server_ip';";
+		$stmt="SELECT count(*) FROM web_client_sessions WHERE session_name='$session_name' AND server_ip='$server_ip';";
 		if ($format=='debug') {echo "<!--|$stmt|-->\n";}
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
@@ -206,7 +206,7 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 		    $DiaLCalls='N';
 
 			### see if the agent has a record in the osdial_live_agents table
-			$stmt="SELECT count(*) from osdial_live_agents where user='$user' and server_ip='$server_ip';";
+			$stmt="SELECT SQL_NO_CACHE count(*) FROM osdial_live_agents WHERE user='$user' AND server_ip='$server_ip';";
 			if ($format=='debug') {echo "<!-- |$stmt| -->\n";}
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
@@ -214,14 +214,14 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 
 			if ($Acount > 0)
 				{
-				$stmt="SELECT status from osdial_live_agents where user='$user' and server_ip='$server_ip';";
+				$stmt="SELECT SQL_NO_CACHE status FROM osdial_live_agents WHERE user='$user' AND server_ip='$server_ip';";
 				if ($format=='debug') {echo "<!-- |$stmt| -->\n";}
 				$rslt=mysql_query($stmt, $link);
 				$row=mysql_fetch_row($rslt);
 				$Astatus=$row[0];
 				}
 		#	### find out if external table shows agent should be disabled
-		#	$stmt="SELECT count(*) from another_table where user='$user' and status='DEAD';";
+		#	$stmt="SELECT count(*) FROM another_table WHERE user='$user' AND status='DEAD';";
 		#	if ($format=='debug') {echo "<!-- |$stmt| -->\n";}
 		#	$rslt=mysql_query($stmt, $link);
 		#	$row=mysql_fetch_row($rslt);
@@ -230,14 +230,14 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 			if ($auto_dial_level > 0)
 				{
 				### update the osdial_live_agents every second with a new random number so it is shown to be alive
-				$stmt="UPDATE osdial_live_agents set random_id='$random' where user='$user' and server_ip='$server_ip';";
+				$stmt="UPDATE osdial_live_agents SET random_id='$random' WHERE user='$user' AND server_ip='$server_ip';";
 					if ($format=='debug') {echo "\n<!-- $stmt -->";}
 				$rslt=mysql_query($stmt, $link);
 
 				if ($campagentstdisp == 'YES')
 					{
 					### grab the status of this agent to display
-					$stmt="SELECT status,campaign_id,closer_campaigns from osdial_live_agents where user='$user' and server_ip='$server_ip';";
+					$stmt="SELECT SQL_NO_CACHE status,campaign_id,closer_campaigns FROM osdial_live_agents WHERE user='$user' AND server_ip='$server_ip';";
 					if ($format=='debug') {echo "<!-- |$stmt| -->\n";}
 					$rslt=mysql_query($stmt, $link);
 					$row=mysql_fetch_row($rslt);
@@ -248,7 +248,7 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 					$AccampSQL = ereg_replace(' ',"','", $AccampSQL);
 
 					### grab the number of calls being placed from this server and campaign
-					$stmt="SELECT count(*) from osdial_auto_calls where status IN('LIVE') and ( (campaign_id='$Acampaign') or (campaign_id IN('$AccampSQL')) );";
+					$stmt="SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE status IN('LIVE') AND (campaign_id='$Acampaign' OR campaign_id IN('$AccampSQL'));";
 					if ($format=='debug') {echo "<!-- |$stmt| -->\n";}
 					$rslt=mysql_query($stmt, $link);
 					$row=mysql_fetch_row($rslt);
@@ -257,7 +257,7 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 					else {$RingCalls = "<font class=\"queue_text\">Calls in Queue: $RingCalls</font>";}
 
 					### grab the number of calls being placed from this server and campaign
-					$stmt="SELECT count(*) from osdial_auto_calls where status NOT IN('XFER') and ( (campaign_id='$Acampaign') or (campaign_id IN('$AccampSQL')) );";
+					$stmt="SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE status NOT IN('XFER') AND (campaign_id='$Acampaign' OR campaign_id IN('$AccampSQL'));";
 					if ($format=='debug') {echo "<!-- |$stmt| -->\n";}
 					$rslt=mysql_query($stmt, $link);
 					$row=mysql_fetch_row($rslt);
@@ -278,7 +278,7 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 				$DiaLCalls='N';
 
 				### update the osdial_live_agents every second with a new random number so it is shown to be alive
-				$stmt="UPDATE osdial_live_agents set random_id='$random' where user='$user' and server_ip='$server_ip';";
+				$stmt="UPDATE osdial_live_agents SET random_id='$random' WHERE user='$user' AND server_ip='$server_ip';";
 					if ($format=='debug') {echo "\n<!-- $stmt -->";}
 				$rslt=mysql_query($stmt, $link);
 
@@ -287,7 +287,7 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
             $time_diff = 0; $sql_diff = 0; $dialer_diff = 0;
             if (preg_match('/0$/',$StarTtime)) {
                 $web_epoch = date("U");
-                $stmt="select UNIX_TIMESTAMP(last_update),UNIX_TIMESTAMP(sql_time) from server_updater where server_ip='$server_ip';";
+                $stmt="SELECT SQL_NO_CACHE UNIX_TIMESTAMP(last_update),UNIX_TIMESTAMP(sql_time) FROM server_updater WHERE server_ip='$server_ip';";
                 if ($format=='debug') {echo "<!-- |$stmt| -->\n";}
                 $rslt=mysql_query($stmt, $link);
                 $row=mysql_fetch_row($rslt);
@@ -309,9 +309,9 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 
 			}
 		$total_conf=0;
-		$stmt="SELECT channel FROM live_sip_channels where server_ip = '$server_ip' and extension = '$conf_exten';";
+		$stmt="SELECT channel FROM live_sip_channels WHERE server_ip='$server_ip' AND extension='$conf_exten';";
         # Hide monitoring channels
-		#$stmt="SELECT channel FROM live_sip_channels where server_ip = '$server_ip' and extension = '$conf_exten' AND channel NOT LIKE 'Local/686_____@%' AND channel NOT LIKE 'Local/786_____@%';";
+		#$stmt="SELECT channel FROM live_sip_channels WHERE server_ip='$server_ip' AND extension='$conf_exten' AND channel NOT LIKE 'Local/686_____@%' AND channel NOT LIKE 'Local/786_____@%';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 		if ($rslt) {$sip_list = mysql_num_rows($rslt);}
@@ -324,7 +324,7 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 			$ChannelA[$total_conf] = "$row[0]";
 			if ($format=='debug') {echo "\n<!-- $row[0] -->";}
 			}
-		$stmt="SELECT channel FROM live_channels where server_ip = '$server_ip' and extension = '$conf_exten';";
+		$stmt="SELECT channel FROM live_channels WHERE server_ip='$server_ip' AND extension='$conf_exten';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 		if ($rslt) {$channels_list = mysql_num_rows($rslt);}
@@ -366,7 +366,7 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 		}
 		else
 		{
-		$stmt="UPDATE conferences set extension='$exten' where server_ip = '$server_ip' and conf_exten = '$conf_exten';";
+		$stmt="UPDATE conferences SET extension='$exten' WHERE server_ip='$server_ip' AND conf_exten='$conf_exten';";
 			if ($format=='debug') {echo "\n<!-- $stmt -->";}
 		$rslt=mysql_query($stmt, $link);
 		}

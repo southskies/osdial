@@ -42,7 +42,7 @@ $lead_id = get_variable('lead_id');
 $user=ereg_replace("[^0-9a-zA-Z]","",$user);
 $pass=ereg_replace("[^0-9a-zA-Z]","",$pass);
 
-$stmt="SELECT count(*) from osdial_users where user='$user' and pass='$pass' and user_level > 0;";
+$stmt="SELECT count(*) FROM osdial_users WHERE user='$user' AND pass='$pass' AND user_level>0;";
 $auth = get_first_record($link, 'osdial_users', 'count(*) AS count', sprintf("user='%s' AND pass='%s'",mres($user),mres($pass)));
 if ($auth['count'] == 0) {
     echo "Invalid Username/Password: |$user|$pass|\n";
