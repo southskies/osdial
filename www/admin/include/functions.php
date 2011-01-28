@@ -351,7 +351,7 @@ function dialable_leads($DB, $link, $local_call_time, $dial_statuses, $camp_list
                     $b++;
                 }
                 if (strlen($ct_states) > 2) {
-                    $ct_states = eregi_replace(",$", '', $ct_states);
+                    $ct_states = preg_replace("/,$/", '', $ct_states);
                     $ct_statesSQL = "and state NOT IN($ct_states)";
                 } else {
                     $ct_statesSQL = "";
@@ -487,7 +487,7 @@ function lookup_gmt($phone_code,$USarea,$state,$LOCAL_GMT_OFF_STD,$Shour,$Smin,$
 require("dbconnect.php");
 
 $postalgmt_found=0;
-if ( (eregi("POSTAL",$postalgmt)) && (strlen($postal_code)>4) )
+if ( (preg_match("/POSTAL/",$postalgmt)) && (strlen($postal_code)>4) )
 	{
 	if (preg_match('/^1$/', $phone_code))
 		{
@@ -497,7 +497,7 @@ if ( (eregi("POSTAL",$postalgmt)) && (strlen($postal_code)>4) )
 		if ($pc_recs > 0)
 			{
 			$row=mysql_fetch_row($rslt);
-			$gmt_offset =	$row[2];	 $gmt_offset = eregi_replace("\+","",$gmt_offset);
+			$gmt_offset =	$row[2];	 $gmt_offset = preg_replace("/\+/","",$gmt_offset);
 			$dst =			$row[3];
 			$dst_range =	$row[4];
 			$PC_processed++;
@@ -517,7 +517,7 @@ if ($postalgmt_found < 1)
 		if ($pc_recs > 0)
 			{
 			$row=mysql_fetch_row($rslt);
-			$gmt_offset =	$row[4];	 $gmt_offset = eregi_replace("\+","",$gmt_offset);
+			$gmt_offset =	$row[4];	 $gmt_offset = preg_replace("/\+/","",$gmt_offset);
 			$dst =			$row[5];
 			$dst_range =	$row[6];
 			$PC_processed++;
@@ -532,7 +532,7 @@ if ($postalgmt_found < 1)
 		if ($pc_recs > 0)
 			{
 			$row=mysql_fetch_row($rslt);
-			$gmt_offset =	$row[4];	 $gmt_offset = eregi_replace("\+","",$gmt_offset);
+			$gmt_offset =	$row[4];	 $gmt_offset = preg_replace("/\+/","",$gmt_offset);
 			$dst =			$row[5];
 			$dst_range =	$row[6];
 			$PC_processed++;
@@ -547,7 +547,7 @@ if ($postalgmt_found < 1)
 		if ($pc_recs > 0)
 			{
 			$row=mysql_fetch_row($rslt);
-			$gmt_offset =	$row[4];	 $gmt_offset = eregi_replace("\+","",$gmt_offset);
+			$gmt_offset =	$row[4];	 $gmt_offset = preg_replace("/\+/","",$gmt_offset);
 			$dst =			$row[5];
 			$dst_range =	$row[6];
 			$PC_processed++;
@@ -563,7 +563,7 @@ if ($postalgmt_found < 1)
 		if ($pc_recs > 0)
 			{
 			$row=mysql_fetch_row($rslt);
-			$gmt_offset =	$row[4];	 $gmt_offset = eregi_replace("\+","",$gmt_offset);
+			$gmt_offset =	$row[4];	 $gmt_offset = preg_replace("/\+/","",$gmt_offset);
 			$dst =			$row[5];
 			$dst_range =	$row[6];
 			$PC_processed++;
@@ -1270,7 +1270,7 @@ function bgcolor($cnt) {
     global $oddrows;
     global $evenrows;
     $bgc = 'bgcolor="';
-    if (eregi("1$|3$|5$|7$|9$", $cnt)) {
+    if (preg_match("/1$|3$|5$|7$|9$/", $cnt)) {
         $bgc .= $oddrows;
     } else {
         $bgc .= $evenrows;

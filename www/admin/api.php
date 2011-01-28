@@ -47,7 +47,7 @@ if ($server['local_gmt'] != "") {
     if ($isdst) $server_gmt++;
 } else {
     $server_gmt = date("O");
-    $server_gmt = eregi_replace("\+","",$server_gmt);
+    $server_gmt = preg_replace("/\+/","",$server_gmt);
     $server_gmt = (($server_gmt + 0) / 100);
 }
 $local_gmt = $server_gmt;

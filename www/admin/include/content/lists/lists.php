@@ -810,9 +810,9 @@ if ($ADD==82) {
     $GROUPlink='stage=GROUPDOWN';
     $ENDATElink='stage=ENDATEDOWN';
     $SQLorder='order by ';
-    if (eregi("USERIDDOWN",$stage)) {$SQLorder='order by user desc,';   $USERlink='stage=USERIDUP';}
-    if (eregi("GROUPDOWN",$stage)) {$SQLorder='order by user_group desc,';   $NAMElink='stage=NAMEUP';}
-    if (eregi("ENDATEDOWN",$stage)) {$SQLorder='order by entry_time desc,';   $LEVELlink='stage=LEVELUP';}
+    if (preg_match("/USERIDDOWN/",$stage)) {$SQLorder='order by user desc,';   $USERlink='stage=USERIDUP';}
+    if (preg_match("/GROUPDOWN/",$stage)) {$SQLorder='order by user_group desc,';   $NAMElink='stage=NAMEUP';}
+    if (preg_match("/ENDATEDOWN/",$stage)) {$SQLorder='order by entry_time desc,';   $LEVELlink='stage=LEVELUP';}
 
     $stmt="SELECT * from osdial_callbacks where status IN('ACTIVE','LIVE') $CBquerySQLwhere $SQLorder recipient,status desc,callback_time";
     $rslt=mysql_query($stmt, $link);

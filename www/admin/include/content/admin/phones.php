@@ -419,14 +419,14 @@ if ($ADD==10000000000) {
     $SERVERlink='stage=SERVERDOWN';
     $STATUSlink='stage=STATUSDOWN';
     $SQLorder='order by extension,server_ip';
-    if (eregi("EXTENUP",$stage)) {$SQLorder='order by extension asc';   $EXTENlink='stage=EXTENDOWN';}
-    if (eregi("EXTENDOWN",$stage)) {$SQLorder='order by extension desc';   $EXTENlink='stage=EXTENUP';}
-    if (eregi("PROTOUP",$stage)) {$SQLorder='order by protocol asc';   $PROTOlink='stage=PROTODOWN';}
-    if (eregi("PROTODOWN",$stage)) {$SQLorder='order by protocol desc';   $PROTOlink='stage=PROTOUP';}
-    if (eregi("SERVERUP",$stage)) {$SQLorder='order by server_ip asc';   $SERVERlink='stage=SERVERDOWN';}
-    if (eregi("SERVERDOWN",$stage)) {$SQLorder='order by server_ip desc';   $SERVERlink='stage=SERVERUP';}
-    if (eregi("STATUSUP",$stage)) {$SQLorder='order by status asc';   $STATUSlink='stage=STATUSDOWN';}
-    if (eregi("STATUSDOWN",$stage)) {$SQLorder='order by status desc';   $STATUSlink='stage=STATUSUP';}
+    if (preg_match("/EXTENUP/",$stage)) {$SQLorder='order by extension asc';   $EXTENlink='stage=EXTENDOWN';}
+    if (preg_match("/EXTENDOWN/",$stage)) {$SQLorder='order by extension desc';   $EXTENlink='stage=EXTENUP';}
+    if (preg_match("/PROTOUP/",$stage)) {$SQLorder='order by protocol asc';   $PROTOlink='stage=PROTODOWN';}
+    if (preg_match("/PROTODOWN/",$stage)) {$SQLorder='order by protocol desc';   $PROTOlink='stage=PROTOUP';}
+    if (preg_match("/SERVERUP/",$stage)) {$SQLorder='order by server_ip asc';   $SERVERlink='stage=SERVERDOWN';}
+    if (preg_match("/SERVERDOWN/",$stage)) {$SQLorder='order by server_ip desc';   $SERVERlink='stage=SERVERUP';}
+    if (preg_match("/STATUSUP/",$stage)) {$SQLorder='order by status asc';   $STATUSlink='stage=STATUSDOWN';}
+    if (preg_match("/STATUSDOWN/",$stage)) {$SQLorder='order by status desc';   $STATUSlink='stage=STATUSUP';}
 
     if ($LOG['multicomp_user'] > 0) {
         $stmt=sprintf("SELECT * FROM phones WHERE company='%s' %s;",$LOG['company_prefix'],$SQLorder);

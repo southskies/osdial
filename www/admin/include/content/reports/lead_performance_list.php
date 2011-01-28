@@ -71,7 +71,7 @@ function report_lead_performance_list() {
         $groupQS .= "&group[]=$group[$i]";
         $i++;
     }
-    if ( (ereg("--ALL--",$group_string) ) or ($group_ct < 1) ) {
+    if ( (preg_match("/--ALL--/",$group_string) ) or ($group_ct < 1) ) {
         $group_logSQLand = sprintf("AND osdial_log.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
         $group_olSQLand = sprintf("AND osdial_lists.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
         $group_ocSQLand = sprintf("AND osdial_campaigns.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
@@ -82,7 +82,7 @@ function report_lead_performance_list() {
         $group_ocSQL = sprintf("WHERE osdial_campaigns.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
         $group_SQL = sprintf("WHERE campaign_id IN %s",$LOG['allowed_campaignsSQL']);
     } else {
-        $group_SQL = eregi_replace(",$",'',$group_SQL);
+        $group_SQL = preg_replace("/,$/",'',$group_SQL);
 
         $group_logSQLand = sprintf("AND osdial_log.campaign_id IN %s AND osdial_lists.list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
         $group_olSQLand = sprintf("AND osdial_lists.campaign_id IN %s AND osdial_lists.list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
@@ -137,7 +137,7 @@ function report_lead_performance_list() {
         $SCcontacts .= "'" . mysql_real_escape_string($CSCcontacts[$i]) . "',";
         $i++;
     }
-    $SCcontacts = eregi_replace(",$",'',$SCcontacts);
+    $SCcontacts = preg_replace("/,$/",'',$SCcontacts);
 
     $csc_ct = count($CSCsales);
     $i=0;
@@ -145,7 +145,7 @@ function report_lead_performance_list() {
         $SCsales .= "'" . mysql_real_escape_string($CSCsales[$i]) . "',";
         $i++;
     }
-    $SCsales = eregi_replace(",$",'',$SCsales);
+    $SCsales = preg_replace("/,$/",'',$SCsales);
     if ($csc_ct < 2) {
         $SCsales = "'SALE','XFER'";
     }
@@ -177,14 +177,14 @@ function report_lead_performance_list() {
     $html .= "  <tr class=tabfooter>\n";
     $html .= "    <td rowspan=3>\n";
     $html .= "      <select size=5 name=group[] multiple>\n";
-    if  (eregi("--ALL--",$group_string)) {
+    if  (preg_match("/--ALL--/",$group_string)) {
         $html .= "        <option value=\"--ALL--\" selected>-- ALL LISTS --</option>\n";
     } else {
         $html .= "        <option value=\"--ALL--\">-- ALL LISTS --</option>\n";
     }
     $o=0;
     while ($lists_to_print > $o) {
-        if (eregi("$groups[$o]\|",$group_string)) {
+        if (preg_match("/$groups[$o]\|/",$group_string)) {
             $html .= "        <option selected value=\"$groups[$o]\">$groups[$o]: $group_names[$o]</option>\n";
         } else {
             $html .= "        <option value=\"$groups[$o]\">$groups[$o]: $group_names[$o]</option>\n";

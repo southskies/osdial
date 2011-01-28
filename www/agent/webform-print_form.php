@@ -49,7 +49,7 @@ if (!isset($fields['template']) or $fields['template'] == "" or !file_exists($fi
 	if ($v == "") {
 		$v = "&nbsp;";
 	}
-        $html = ereg_replace('\[\[' . $k . '\]\]',$v,$html);
+        $html = preg_replace('/\[\[' . $k . '\]\]/',$v,$html);
     }
     $html = preg_replace('/\[\[[a-z0-9](.*)\]\]/iU','&nbsp;',$html);
     #$html = preg_replace('/\[\[\S(.*)\]\]/i','&nbsp;',$html);
@@ -65,7 +65,7 @@ if ($print) {
 #$script .= "window.close();\n";
 $script .= "</script>\n\n";
 $script .= "</body>\n";
-$html = eregi_replace('\<\/body\>',$script,$html);
+$html = preg_replace('/\<\/body\>/',$script,$html);
 
 
 

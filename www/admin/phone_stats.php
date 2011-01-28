@@ -54,8 +54,8 @@ if (isset($_GET["submit"]))				{$submit=$_GET["submit"];}
 if (isset($_GET["SUBMIT"]))				{$SUBMIT=$_GET["SUBMIT"];}
 	elseif (isset($_POST["SUBMIT"]))		{$SUBMIT=$_POST["SUBMIT"];}
 
-$PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);
-$PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
+$PHP_AUTH_USER = preg_replace("/[^0-9a-zA-Z]/","",$PHP_AUTH_USER);
+$PHP_AUTH_PW = preg_replace("/[^0-9a-zA-Z]/","",$PHP_AUTH_PW);
 
 $STARTtime = date("U");
 $TODAY = date("Y-m-d");
@@ -156,7 +156,7 @@ echo "<tr><td><font size=2>CHANNEL GROUP </td><td align=right><font size=2>COUNT
 	$o=0;
 	while ($statuses_to_print > $o) {
 		$row=mysql_fetch_row($rslt);
-		if (eregi("1$|3$|5$|7$|9$", $o))
+		if (preg_match("/1$|3$|5$|7$|9$/", $o))
 			{$bgcolor='bgcolor="#B9CBFD"';} 
 		else
 			{$bgcolor='bgcolor="#9BB9FB"';}
@@ -214,7 +214,7 @@ echo "<tr><td><font size=2>NUMBER </td><td><font size=2>CHANNEL GROUP </td><td a
 	$event_stop_seconds='';
 	while ($events_to_print > $o) {
 		$row=mysql_fetch_row($rslt);
-		if (eregi("1$|3$|5$|7$|9$", $o))
+		if (preg_match("/1$|3$|5$|7$|9$/", $o))
 			{$bgcolor='bgcolor="#B9CBFD"';} 
 		else
 			{$bgcolor='bgcolor="#9BB9FB"';}

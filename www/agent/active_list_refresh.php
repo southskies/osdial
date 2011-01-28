@@ -99,22 +99,22 @@ if (isset($_GET["field_name"]))				{$field_name=$_GET["field_name"];}
 	elseif (isset($_POST["field_name"]))	{$field_name=$_POST["field_name"];}
 
 ### security strip all non-alphanumeric characters out of the variables ###
-	$user=ereg_replace("[^0-9a-zA-Z]","",$user);
-	$pass=ereg_replace("[^0-9a-zA-Z]","",$pass);
-	$ADD=ereg_replace("[^0-9]","",$ADD);
-	$order=ereg_replace("[^0-9a-zA-Z]","",$order);
-	$format=ereg_replace("[^0-9a-zA-Z]","",$format);
-	$bgcolor=ereg_replace("[^\#0-9a-zA-Z]","",$bgcolor);
-	$txtcolor=ereg_replace("[^\#0-9a-zA-Z]","",$txtcolor);
-	$txtsize=ereg_replace("[^0-9a-zA-Z]","",$txtsize);
-	$selectsize=ereg_replace("[^0-9a-zA-Z]","",$selectsize);
-	$selectfontsize=ereg_replace("[^0-9a-zA-Z]","",$selectfontsize);
-	$selectedext=ereg_replace("[^ \#\*\:\/\@\.\-\_0-9a-zA-Z]","",$selectedext);
-	$selectedtrunk=ereg_replace("[^ \#\*\:\/\@\.\-\_0-9a-zA-Z]","",$selectedtrunk);
-	$selectedlocal=ereg_replace("[^ \#\*\:\/\@\.\-\_0-9a-zA-Z]","",$selectedlocal);
-	$textareaheight=ereg_replace("[^0-9a-zA-Z]","",$textareaheight);
-	$textareawidth=ereg_replace("[^0-9a-zA-Z]","",$textareawidth);
-	$field_name=ereg_replace("[^ \#\*\:\/\@\.\-\_0-9a-zA-Z]","",$field_name);
+	$user=preg_replace("/[^0-9a-zA-Z]/","",$user);
+	$pass=preg_replace("/[^0-9a-zA-Z]/","",$pass);
+	$ADD=preg_replace("/[^0-9]/","",$ADD);
+	$order=preg_replace("/[^0-9a-zA-Z]/","",$order);
+	$format=preg_replace("/[^0-9a-zA-Z]/","",$format);
+	$bgcolor=preg_replace("/[^\#0-9a-zA-Z]/","",$bgcolor);
+	$txtcolor=preg_replace("/[^\#0-9a-zA-Z]/","",$txtcolor);
+	$txtsize=preg_replace("/[^0-9a-zA-Z]/","",$txtsize);
+	$selectsize=preg_replace("/[^0-9a-zA-Z]/","",$selectsize);
+	$selectfontsize=preg_replace("/[^0-9a-zA-Z]/","",$selectfontsize);
+	$selectedext=preg_replace("/[^ \#\*\:\/\@\.\-\_0-9a-zA-Z]/","",$selectedext);
+	$selectedtrunk=preg_replace("/[^ \#\*\:\/\@\.\-\_0-9a-zA-Z]/","",$selectedtrunk);
+	$selectedlocal=preg_replace("/[^ \#\*\:\/\@\.\-\_0-9a-zA-Z]/","",$selectedlocal);
+	$textareaheight=preg_replace("/[^0-9a-zA-Z]/","",$textareaheight);
+	$textareawidth=preg_replace("/[^0-9a-zA-Z]/","",$textareawidth);
+	$field_name=preg_replace("/[^ \#\*\:\/\@\.\-\_0-9a-zA-Z]/","",$field_name);
 
 # default optional vars if not set
 if (!isset($ADD))				{$ADD="1";}

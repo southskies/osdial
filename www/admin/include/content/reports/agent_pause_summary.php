@@ -138,7 +138,7 @@ function report_agent_pause_summary() {
     $head .= "    <td><input type=text name=agent value=\"$agent\" size=10 maxsize=10></td>\n";
     $head .= "    <td rowspan=2>\n";
     $head .= "      <select size=5 name=group[] multiple>\n";
-    if  (eregi("--ALL--",$group_string)) {
+    if  (preg_match("/--ALL--/",$group_string)) {
         $head .= "        <option value=\"--ALL--\" selected>-- ALL CAMPAIGNS --</option>\n";
     } else {
         $head .= "        <option value=\"--ALL--\">-- ALL CAMPAIGNS --</option>\n";
@@ -146,7 +146,7 @@ function report_agent_pause_summary() {
     $o=0;
     while ($camps_to_print > $o) {
         $gsel='';
-        if (eregi("$groups[$o]\|",$group_string)) {
+        if (preg_match("/$groups[$o]\|/",$group_string)) {
             $gsel='selected';
         }
         $head .= "        <option $gsel value=\"$groups[$o]\">" . mclabel($groups[$o]) . ": $group_names[$o]</option>\n";

@@ -533,7 +533,7 @@ if ($ADD==3)
         $levelMAX=($LOGuser_level-1);
     }
 
-	if ( ($user_level > $levelMAX) and ($LOGuser_level < 9) and (!eregi(':' . $user_group . ':', $LOG['allowed_usergroupsSTR'])) )
+	if ( ($user_level > $levelMAX) and ($LOGuser_level < 9) and (!preg_match('/:/' . $user_group . ':', $LOG['allowed_usergroupsSTR'])) )
 		{
 		echo "<br><font color=red>You do not have permissions to modify this user: $row[1]</font>\n";
 		}
@@ -1072,14 +1072,14 @@ $NAMElink='stage=NAMEDOWN';
 $LEVELlink='stage=LEVELDOWN';
 $GROUPlink='stage=GROUPDOWN';
 $SQLorder='order by full_name';
-if (eregi("USERIDUP",$stage)) {$SQLorder='order by user asc';   $USERlink='stage=USERIDDOWN';}
-if (eregi("USERIDDOWN",$stage)) {$SQLorder='order by user desc';   $USERlink='stage=USERIDUP';}
-if (eregi("NAMEUP",$stage)) {$SQLorder='order by full_name asc';   $NAMElink='stage=NAMEDOWN';}
-if (eregi("NAMEDOWN",$stage)) {$SQLorder='order by full_name desc';   $NAMElink='stage=NAMEUP';}
-if (eregi("LEVELUP",$stage)) {$SQLorder='order by user_level asc';   $LEVELlink='stage=LEVELDOWN';}
-if (eregi("LEVELDOWN",$stage)) {$SQLorder='order by user_level desc';   $LEVELlink='stage=LEVELUP';}
-if (eregi("GROUPUP",$stage)) {$SQLorder='order by user_group asc';   $GROUPlink='stage=GROUPDOWN';}
-if (eregi("GROUPDOWN",$stage)) {$SQLorder='order by user_group desc';   $GROUPlink='stage=GROUPUP';}
+if (preg_match("/USERIDUP/",$stage)) {$SQLorder='order by user asc';   $USERlink='stage=USERIDDOWN';}
+if (preg_match("/USERIDDOWN/",$stage)) {$SQLorder='order by user desc';   $USERlink='stage=USERIDUP';}
+if (preg_match("/NAMEUP/",$stage)) {$SQLorder='order by full_name asc';   $NAMElink='stage=NAMEDOWN';}
+if (preg_match("/NAMEDOWN/",$stage)) {$SQLorder='order by full_name desc';   $NAMElink='stage=NAMEUP';}
+if (preg_match("/LEVELUP/",$stage)) {$SQLorder='order by user_level asc';   $LEVELlink='stage=LEVELDOWN';}
+if (preg_match("/LEVELDOWN/",$stage)) {$SQLorder='order by user_level desc';   $LEVELlink='stage=LEVELUP';}
+if (preg_match("/GROUPUP/",$stage)) {$SQLorder='order by user_group asc';   $GROUPlink='stage=GROUPDOWN';}
+if (preg_match("/GROUPDOWN/",$stage)) {$SQLorder='order by user_group desc';   $GROUPlink='stage=GROUPUP';}
     if ($LOG['multicomp'] > 0) {
 	    $stmt = sprintf("SELECT * from osdial_users WHERE user LIKE '%s__%%' AND user_group IN %s AND user NOT IN ('PBX-IN','PBX-OUT') %s %s %s %s %s %s", $LOG['company_prefix'],$LOG['allowed_usergroupsSQL'],$letSQL,$numSQL,$levelSQL,$groupSQL,$viewdisabledSQL,$SQLorder);
     } else {

@@ -27,7 +27,7 @@
 
 if ($ADD==26)
 {
-	$status = eregi_replace("-----.*",'',$status);
+	$status = preg_replace("/-----.*/",'',$status);
 	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id' and auto_alt_dial_statuses LIKE \"% $status %\";";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -94,7 +94,7 @@ if ($ADD==66)
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 
-			$auto_alt_dial_statuses = eregi_replace(" $status "," ",$row[0]);
+			$auto_alt_dial_statuses = preg_replace("/ $status /"," ",$row[0]);
 			$stmt="UPDATE osdial_campaigns set auto_alt_dial_statuses='$auto_alt_dial_statuses' where campaign_id='$campaign_id';";
 			$rslt=mysql_query($stmt, $link);
 

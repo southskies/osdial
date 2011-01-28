@@ -106,8 +106,8 @@ if ($ADD == "1keys" or $ADD == '4keys') {
 	} elseif ($oivr_opt_action == 'PLAYFILE' or $oivr_opt_action == 'XFER_EXTERNAL') {
 		$d_ary = array($oi1,$oi2,$oi3);
 	} elseif ($oivr_opt_action == 'XFER_EXTERNAL_MULTI') {
-		$oi4 = ereg_replace("\r","",$oi4);
-		$oi4 = ereg_replace("\n","#:#",$oi4);
+		$oi4 = preg_replace("/\r/","",$oi4);
+		$oi4 = preg_replace("/\n/","#:#",$oi4);
 		$d_ary = array($oi1,$oi2,$oi3,$oi4);
 	} elseif ($oivr_opt_action == 'XFER_INGROUP') {
 		$d_ary = array($oi1,$oi2,$oi3,$oi4,$oi5);

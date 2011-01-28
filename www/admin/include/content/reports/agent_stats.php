@@ -216,11 +216,11 @@ function report_agent_stats() {
             $user_group = $row[4];
             $event_time = '';
         
-            if (ereg("LOGIN", $event)) {
+            if (preg_match("/LOGIN/", $event)) {
                 $bgcolor=bgcolor(1);
                 $event_start_seconds = $event_epoch;
             }
-            if (ereg("LOGOUT", $event)) {
+            if (preg_match("/LOGOUT/", $event)) {
                 $bgcolor=bgcolor(0);
                 if ($event_start_seconds) {
                     $event_stop_seconds = $event_epoch;
@@ -478,10 +478,10 @@ function report_agent_stats() {
         $u=0;
         while ($logs_to_print > $u) {
             $row=mysql_fetch_row($rslt);
-            $Slocation = eregi_replace("^//", "/", $row[11]);
+            $Slocation = preg_replace("/^\/\//", "/", $row[11]);
             $location = $Slocation;
             $locshort = ellipse($location,30,true);
-            if (eregi("http",$location) or eregi("^/",$location)) {
+            if (preg_match("/http/",$location) or preg_match("/^\//",$location)) {
                 $location = "<a target=\"_new\" title=\"$location\" href=\"$location\">$locshort</a>";
             }
         

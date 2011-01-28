@@ -169,7 +169,7 @@ if ($submit_report && $list_ids) {
 	$list_id_clause.=")";
 
 	if ($sales_number && $sales_number>0) {
-		$sales_number=eregi_replace("[^0-9]", "", $sales_number);
+		$sales_number=preg_replace("/[^0-9]/", "", $sales_number);
 		$limit_clause="limit $sales_number";
 	} else {
 		$sales_number=0;

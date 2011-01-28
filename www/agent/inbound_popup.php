@@ -80,8 +80,8 @@ if (isset($_GET["local_web_callerID_URL_enc"]))			{$local_web_callerID_URL_enc=$
 if (isset($_GET["local_web_callerID_URL_enc"]))			{$local_web_callerID_URL = rawurldecode($local_web_callerID_URL_enc);}
 	else {$local_web_callerID_URL = '';}
 
-$user=ereg_replace("[^0-9a-zA-Z]","",$user);
-$pass=ereg_replace("[^0-9a-zA-Z]","",$pass);
+$user=preg_replace("/[^0-9a-zA-Z]/","",$user);
+$pass=preg_replace("/[^0-9a-zA-Z]/","",$pass);
 
 # default optional vars if not set
 if (!isset($format))   {$format="text";}
@@ -93,7 +93,7 @@ $NOW_DATE = date("Y-m-d");
 $NOW_TIME = date("Y-m-d H:i:s");
 if (!isset($query_date)) {$query_date = $NOW_DATE;}
 $DO = '-1';
-if ( (eregi("^Zap",$channel)) and (!eregi("-",$channel)) ) {$channel = "$channel$DO";}
+if ( (preg_match("/^Zap/",$channel)) and (!preg_match("/-/",$channel)) ) {$channel = "$channel$DO";}
 
 	$stmt="SELECT count(*) FROM osdial_users WHERE user='$user' AND pass='$pass' AND user_level>0;";
 	if ($DB) {echo "|$stmt|\n";}
@@ -138,7 +138,7 @@ if ($format=='debug')
 $forever_stop=0;
 $user_abb = "$user$user$user$user";
 while ( (strlen($user_abb) > 4) and ($forever_stop < 200) )
-	{$user_abb = eregi_replace("^.","",$user_abb);   $forever_stop++;}
+	{$user_abb = preg_replace("/^./","",$user_abb);   $forever_stop++;}
 
 echo "<html>\n";
 echo "<head>\n";
@@ -303,8 +303,8 @@ echo "<B>$NOW_TIME</B><BR><BR>\n";
 		echo "<tr bgcolor=\"#DDDDFF\"><td>CallerID: </td><td align=left>$row[3]</td></tr>\n";
 		echo "<tr bgcolor=\"#DDDDFF\"><td colspan=2 align=center>\n";
 
-		$phone = eregi_replace(".*\<","",$row[3]);
-		$phone = eregi_replace("\>.*","",$phone);
+		$phone = preg_replace("/.*\</","",$row[3]);
+		$phone = preg_replace("/\>.*/","",$phone);
 		$NPA = substr($phone, 0, 3);
 		$NXX = substr($phone, 3, 3);
 		$XXXX = substr($phone, 6, 4);

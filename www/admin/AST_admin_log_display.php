@@ -35,9 +35,9 @@ if (isset($_GET["submit"]))				{$submit=$_GET["submit"];}
 if (isset($_GET["SUBMIT"]))				{$SUBMIT=$_GET["SUBMIT"];}
 	elseif (isset($_POST["SUBMIT"]))		{$SUBMIT=$_POST["SUBMIT"];}
 
-$PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);
-$PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
-$query_date = ereg_replace("[^ \.\,-\_0-9a-zA-Z]","",$query_date);
+$PHP_AUTH_USER = preg_replace("/[^0-9a-zA-Z]/","",$PHP_AUTH_USER);
+$PHP_AUTH_PW = preg_replace("/[^0-9a-zA-Z]/","",$PHP_AUTH_PW);
+$query_date = preg_replace("/[^ \.\,-\_0-9a-zA-Z]/","",$query_date);
 
 # AST GUI database administration
 # AST_admin_log_display.php
@@ -114,7 +114,7 @@ $NOW_TIME = date("Y-m-d H:i:s");
 $STARTtime = date("U");
 if (!$query_date) {$query_date = $GREP_DATE;}
 
-$Gquery_date = eregi_replace(" ",'\ ',$query_date);
+$Gquery_date = preg_replace("/ /",'\ ',$query_date);
 echo "<!-- |$query_date|$Gquery_date| -->\n";
 
 echo "<FORM ACTION=\"$PHP_SELF\" METHOD=GET>\n";

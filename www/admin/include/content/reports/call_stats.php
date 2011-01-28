@@ -91,12 +91,12 @@ function report_call_stats() {
         if ($i != $group_ct - 1) $group_list .= ", ";
         $i++;
     }
-    if ( (ereg("--ALL--",$group_string) ) or ($group_ct < 1) ) {
+    if ( (preg_match("/--ALL--/",$group_string) ) or ($group_ct < 1) ) {
         $group_SQLand = sprintf("AND campaign_id IN %s",$LOG['allowed_campaignsSQL']);
         $group_SQL = sprintf("WHERE campaign_id IN %s",$LOG['allowed_campaignsSQL']);
         $group_list = "--ALL--";
     } else {
-        $group_SQL = eregi_replace(",$",'',$group_SQL);
+        $group_SQL = preg_replace("/,$/",'',$group_SQL);
         $group_SQLand = sprintf("AND campaign_id IN %s AND campaign_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
         $group_SQL = sprintf("WHERE campaign_id IN %s AND campaign_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
     }
@@ -163,11 +163,11 @@ function report_call_stats() {
     $html .= "          </td>\n";
     $html .= "          <td> Campaigns:<br>\n";
     $html .= "            <select size=5 name=group[] multiple>\n";
-    $gsel=''; if  (eregi("--ALL--",$group_string)) $gsel = "selected";
+    $gsel=''; if  (preg_match("/--ALL--/",$group_string)) $gsel = "selected";
     $html .= "              <option value=\"--ALL--\" $gsel>-- ALL CAMPAIGNS --</option>\n";
     $o=0;
     while ($campaigns_to_print > $o) {
-        $gsel=''; if (eregi("$groups[$o]\|",$group_string)) $gsel = "selected";
+        $gsel=''; if (preg_match("/$groups[$o]\|/",$group_string)) $gsel = "selected";
         $html .= "              <option value=\"$groups[$o]\" $gsel>" . mclabel($groups[$o]) . "</option>\n";
         $o++;
     }
@@ -226,7 +226,7 @@ function report_call_stats() {
         $closer_campaignsSQL .= "'$closer_campaigns',";
         $c++;
     }
-    $closer_campaignsSQL = eregi_replace(",$",'',$closer_campaignsSQL);
+    $closer_campaignsSQL = preg_replace("/,$/",'',$closer_campaignsSQL);
     $closer_SQLand = "and campaign_id IN($closer_campaignsSQL)";
 
     if ($use_closer_log) {
@@ -319,7 +319,7 @@ function report_call_stats() {
         $q++;
         $p++;
     }
-    $camp_ANS_STAT_SQL = eregi_replace(",$",'',$camp_ANS_STAT_SQL);
+    $camp_ANS_STAT_SQL = preg_replace("/,$/",'',$camp_ANS_STAT_SQL);
 
     
     if ($use_closer_log) {
@@ -540,8 +540,8 @@ function report_call_stats() {
         while(strlen($reason)>20) {
             $reason = substr("$reason", 0, -1);
         }
-        if (ereg("NONE",$reason))    {$reason = 'NO CONTACT          ';}
-        if (ereg("CALLER",$reason)) {$reason = 'CUSTOMER            ';}
+        if (preg_match("/NONE/",$reason))    {$reason = 'NO CONTACT          ';}
+        if (preg_match("/CALLER/",$reason)) {$reason = 'CUSTOMER            ';}
     
         $plain .= "| $reason | $REASONcount |\n";
 
@@ -679,7 +679,7 @@ function report_call_stats() {
 
         $STATUScount =    $row[0];
         $RAWstatus =    $row[1];
-        $RAWcomment =    eregi_replace("\.wav$|\.mp3$|\.gsm$","",$row[3]);
+        $RAWcomment =    preg_replace("/\.wav$|\.mp3$|\.gsm$/","",$row[3]);
         $r=0;
         while ($r < $statcats_to_print) {
             if ($statcat_list[$RAWstatus] == "$vsc_id[$r]") {

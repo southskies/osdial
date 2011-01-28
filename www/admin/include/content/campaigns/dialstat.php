@@ -28,7 +28,7 @@
 
 if ($ADD==28)
 {
-	$status = eregi_replace("-----.*",'',$status);
+	$status = preg_replace("/-----.*/",'',$status);
 	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id' and dial_statuses LIKE \"% $status %\";";
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
@@ -97,7 +97,7 @@ if ($ADD==68)
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 
-			$dial_statuses = eregi_replace(" $status "," ",$row[0]);
+			$dial_statuses = preg_replace("/ $status /"," ",$row[0]);
 			$stmt="UPDATE osdial_campaigns set dial_statuses='$dial_statuses' where campaign_id='$campaign_id';";
 			$rslt=mysql_query($stmt, $link);
 

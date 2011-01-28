@@ -85,7 +85,7 @@ if ($ADD==42)
 		}
 	 else
 		{
-		if (ereg('delete',$stage))
+		if (preg_match('/delete/',$stage))
 			{
 			echo "<br><B><font color=$default_text>CUSTOM CAMPAIGN STATUS DELETED: $campaign_id - $status</font></B>\n";
 
@@ -104,7 +104,7 @@ if ($ADD==42)
 				fclose($fp);
 				}
 			}
-		if (ereg('modify',$stage))
+		if (preg_match('/modify/',$stage))
 			{
 			echo "<br><B><font color=$default_text>CUSTOM CAMPAIGN STATUS MODIFIED: $campaign_id - $status</font></B>\n";
 

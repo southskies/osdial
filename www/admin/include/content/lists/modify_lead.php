@@ -392,7 +392,7 @@ if ($ADD==1121) {
 		        $DS=0;
 		        while ($statuses_to_print > $o) {
 			        $rowx=mysql_fetch_row($rslt);
-			        if (strlen($ld['status']) == strlen($rowx[0]) and eregi($ld['status'],$rowx[0])) {
+			        if (strlen($ld['status']) == strlen($rowx[0]) and preg_match('/'.$ld['status'].'/',$rowx[0])) {
                         $statuses_list .= "          <option SELECTED value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
                         $DS++;
                     } else {
@@ -409,7 +409,7 @@ if ($ADD==1121) {
 		            $o=0;
 		            while ($CAMPstatuses_to_print > $o) {
 			            $rowx=mysql_fetch_row($rslt);
-			            if (strlen($ld['status']) ==  strlen($rowx[0]) and eregi($ld['status'],$rowx[0]) ) {
+			            if (strlen($ld['status']) ==  strlen($rowx[0]) and preg_match('/'.$ld['status'].'/',$rowx[0]) ) {
                             $statuses_list .= "          <option SELECTED value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
                             $DS++;
                         } else {
@@ -710,8 +710,8 @@ if ($ADD==1121) {
 	                foreach ($rlogs as $rl) {
 		                $location = $rl['location'];
 		                $locat = ellipse($location,27,true);
-		                if (eregi("http",$location) or eregi("^//", $location)) {
-			                $location = eregi_replace("^//","/",$location);
+		                if (preg_match("/http/",$location) or preg_match("/^\/\//", $location)) {
+			                $location = preg_replace("/^\/\//","/",$location);
 			                $location = "<a href=\"$location\">$locat</a>";
 		                } else {
 			                $location = $locat;

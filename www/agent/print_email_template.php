@@ -39,8 +39,8 @@ $pass = get_variable('pass');
 $et_id = get_variable('et_id');
 $lead_id = get_variable('lead_id');
 
-$user=ereg_replace("[^0-9a-zA-Z]","",$user);
-$pass=ereg_replace("[^0-9a-zA-Z]","",$pass);
+$user=preg_replace("/[^0-9a-zA-Z]/","",$user);
+$pass=preg_replace("/[^0-9a-zA-Z]/","",$pass);
 
 $stmt="SELECT count(*) FROM osdial_users WHERE user='$user' AND pass='$pass' AND user_level>0;";
 $auth = get_first_record($link, 'osdial_users', 'count(*) AS count', sprintf("user='%s' AND pass='%s'",mres($user),mres($pass)));

@@ -93,7 +93,7 @@ function report_lead_search_advanced($lsa_seg='form') {
             $orig_lastcall_date_end = $tmp2[0];
         }
 
-        $phone_number = ereg_replace("[^0-9]","",$phone_number);
+        $phone_number = preg_replace("/[^0-9]/","",$phone_number);
 
         # groups
         $campaigns = get_variable("campaigns");

@@ -81,8 +81,8 @@ if (isset($_GET["favorites_count"]))				{$favorites_count=$_GET["favorites_count
 if (isset($_GET["favorites_list"]))				{$favorites_list=$_GET["favorites_list"];}
 	elseif (isset($_POST["favorites_list"]))		{$favorites_list=$_POST["favorites_list"];}
 
-$user=ereg_replace("[^0-9a-zA-Z]","",$user);
-$pass=ereg_replace("[^0-9a-zA-Z]","",$pass);
+$user=preg_replace("/[^0-9a-zA-Z]/","",$user);
+$pass=preg_replace("/[^0-9a-zA-Z]/","",$pass);
 
 # default optional vars if not set
 if (!isset($format))   {$format="text";}

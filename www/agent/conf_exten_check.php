@@ -111,8 +111,8 @@ while ($i < $qm_conf_ct)
 
 if ($non_latin < 1)
 {
-$user=ereg_replace("[^0-9a-zA-Z]","",$user);
-$pass=ereg_replace("[^0-9a-zA-Z]","",$pass);
+$user=preg_replace("/[^0-9a-zA-Z]/","",$user);
+$pass=preg_replace("/[^0-9a-zA-Z]/","",$pass);
 }
 
 # default optional vars if not set
@@ -244,8 +244,8 @@ echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 					$Alogin=$row[0];
 					$Acampaign=$row[1];
 					$AccampSQL=$row[2];
-					$AccampSQL = ereg_replace(' -','', $AccampSQL);
-					$AccampSQL = ereg_replace(' ',"','", $AccampSQL);
+					$AccampSQL = preg_replace('/ -/','', $AccampSQL);
+					$AccampSQL = preg_replace('/ /',"','", $AccampSQL);
 
 					### grab the number of calls being placed from this server and campaign
 					$stmt="SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE status IN('LIVE') AND (campaign_id='$Acampaign' OR campaign_id IN('$AccampSQL'));";

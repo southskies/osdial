@@ -231,7 +231,7 @@ function report_agent_performance_detail() {
             $dispo_sec[$i] =    $row[6];
             $status[$i] =        $row[7];
             $new_calls[$i] =    $row[8];
-            if ( (!eregi("--$status[$i]--", $statuses)) and (strlen($status[$i])>0) ) {
+            if ( (!preg_match("/--$status[$i]--/", $statuses)) and (strlen($status[$i])>0) ) {
                 $statusesTXT = sprintf("%8s", $status[$i]);
                 $statusesHEAD .= "----------+";
                 $statusesHTML .= " $statusesTXT |";
@@ -239,7 +239,7 @@ function report_agent_performance_detail() {
                 $statusesARY[$j] = $status[$i];
                 $j++;
             }
-            if (!eregi("--$user[$i]--", $users)) {
+            if (!preg_match("/--$user[$i]--/", $users)) {
                 $users .= "$user[$i]--";
                 $usersARY[$k] = $user[$i];
                 $user_namesARY[$k] = $full_name[$i];

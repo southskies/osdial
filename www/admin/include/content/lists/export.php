@@ -89,7 +89,7 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8 && $LOGexport_leads > 0) {
     while ($row = mysql_fetch_array($rslt, MYSQL_BOTH)) {
         $output = '';
         foreach ($ffield as $field) {
-            $output .= '"' . eregi_replace("\n","",strtr($row[$field],'"','')) . '",';
+            $output .= '"' . preg_replace("/\n/","",strtr($row[$field],'"','')) . '",';
         }
         # Export the AFF values
         if ($aff_export > 0) {
@@ -100,7 +100,7 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8 && $LOGexport_leads > 0) {
                     if (count($afflds) > 0) {
                         foreach ($afflds as $affld) {
                             $alf = get_first_record($link, 'osdial_list_fields', '*', sprintf("lead_id='%s' AND field_id='%s'",$row['lead_id'],$affld['id']));
-                            $output .= '"' . eregi_replace("\n","",strtr($alf['value'],'"','')) . '",';
+                            $output .= '"' . preg_replace("/\n/","",strtr($alf['value'],'"','')) . '",';
                         }
                     }
                 }

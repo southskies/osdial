@@ -131,8 +131,8 @@ if (isset($_GET["submit"]))				{$submit=$_GET["submit"];}
 if (isset($_GET["SUBMIT"]))				{$SUBMIT=$_GET["SUBMIT"];}
 	elseif (isset($_POST["SUBMIT"]))		{$SUBMIT=$_POST["SUBMIT"];}
 
-#$PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);
-#$PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
+#$PHP_AUTH_USER = preg_replace("/[^0-9a-zA-Z]/","",$PHP_AUTH_USER);
+#$PHP_AUTH_PW = preg_replace("/[^0-9a-zA-Z]/","",$PHP_AUTH_PW);
 
 #$DB = '1';	# DEBUG override
 $US = '_';
@@ -179,7 +179,7 @@ $parked_time = $STARTtime;
 #		fwrite ($fp, "VD_CLOSER|GOOD|$date|$user|$pass|$ip|$browser|$LOGfullname|\n");
 #		fclose($fp);
 #		
-#		if ( (strlen($customer_zap_channel)>2) and (eregi('zap',$customer_zap_channel)) )
+#		if ( (strlen($customer_zap_channel)>2) and (preg_match('/zap/i',$customer_zap_channel)) )
 #			{
 #			echo "\n<!-- zap channel: $customer_zap_channel -->\n";
 #			echo "\n<!-- session_id: $session_id -->\n";

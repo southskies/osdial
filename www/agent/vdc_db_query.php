@@ -370,11 +370,11 @@ while ($i < $qm_conf_ct)
 
 if ($non_latin < 1)
 {
-$user=ereg_replace("[^0-9a-zA-Z]","",$user);
-$pass=ereg_replace("[^0-9a-zA-Z]","",$pass);
-$length_in_sec = ereg_replace("[^0-9]","",$length_in_sec);
-$phone_code = ereg_replace("[^0-9]","",$phone_code);
-$phone_number = ereg_replace("[^0-9]","",$phone_number);
+$user=preg_replace("/[^0-9a-zA-Z]/","",$user);
+$pass=preg_replace("/[^0-9a-zA-Z]/","",$pass);
+$length_in_sec = preg_replace("/[^0-9]/","",$length_in_sec);
+$phone_code = preg_replace("/[^0-9]/","",$phone_code);
+$phone_number = preg_replace("/[^0-9]/","",$phone_number);
 }
 
 # default optional vars if not set
@@ -476,10 +476,10 @@ if ($ACTION == 'LogiNCamPaigns')
     $stmt="SELECT allowed_campaigns FROM osdial_user_groups WHERE user_group='$VU_user_group';";
     $rslt=mysql_query($stmt, $link);
     $row=mysql_fetch_row($rslt);
-    if ( (!eregi("ALL-CAMPAIGNS",$row[0])) )
+    if ( (!preg_match("/ALL-CAMPAIGNS/",$row[0])) )
         {
-        $LOGallowed_campaignsSQL = eregi_replace(' -','',$row[0]);
-        $LOGallowed_campaignsSQL = eregi_replace(' ',"','",$LOGallowed_campaignsSQL);
+        $LOGallowed_campaignsSQL = preg_replace('/ -/','',$row[0]);
+        $LOGallowed_campaignsSQL = preg_replace('/ /',"','",$LOGallowed_campaignsSQL);
         $LOGallowed_campaignsSQL = "AND campaign_id IN('$LOGallowed_campaignsSQL')";
         }
 
@@ -827,7 +827,7 @@ if ($ACTION == 'manDiaLnextCaLL')
             $CBcallback_time =	'';
             $CBuser =			'';
             $CBcomments =		'';
-            if (ereg("CALLBK",$dispo))
+            if (preg_match("/CALLBK/",$dispo))
                 {
                 $stmt="SELECT SQL_NO_CACHE entry_time,callback_time,user,comments FROM osdial_callbacks WHERE lead_id='$lead_id' ORDER BY callback_id DESC LIMIT 1;";
                 $rslt=mysql_query($stmt, $link);
@@ -844,7 +844,7 @@ if ($ACTION == 'manDiaLnextCaLL')
                 }
 
             if ($hopper_leadID_ct > 0) {
-                if (ereg("NEW",$dispo)) {
+                if (preg_match("/NEW/",$dispo)) {
                     $stmt = "UPDATE osdial_campaign_agent_stats SET manual_dial_new_today=manual_dial_new_today+1 WHERE user='$user' AND campaign_id='$campaign';";
                     if ($DB) {echo "$stmt\n";}
                     $rslt=mysql_query($stmt, $link);
@@ -863,9 +863,9 @@ if ($ACTION == 'manDiaLnextCaLL')
             $LLCT_DATE_offset = ($local_gmt - $gmt_offset_now);
             $LLCT_DATE = date("Y-m-d H:i:s", mktime(date("H")-$LLCT_DATE_offset,date("i"),date("s"),date("m"),date("d"),date("Y")));
 
-            if (ereg('Y',$called_since_last_reset))
+            if (preg_match('/Y/',$called_since_last_reset))
                 {
-                $called_since_last_reset = ereg_replace('Y','',$called_since_last_reset);
+                $called_since_last_reset = preg_replace('/Y/','',$called_since_last_reset);
                 if (strlen($called_since_last_reset) < 1) {$called_since_last_reset = 0;}
                 $called_since_last_reset++;
                 $called_since_last_reset = "Y$called_since_last_reset";
@@ -909,7 +909,7 @@ if ($ACTION == 'manDiaLnextCaLL')
                     $CCID_NAME = "$campaign_cid_name";
                     $CCID_on++;
                 }
-                if (eregi("x",$dial_prefix)) {$Local_out_prefix = '';}
+                if (preg_match("/x/i",$dial_prefix)) {$Local_out_prefix = '';}
 
                 $PADlead_id = sprintf("%09s", $lead_id);
                     while (strlen($PADlead_id) > 9) {$PADlead_id = substr("$PADlead_id", 0, -1);}
@@ -920,7 +920,7 @@ if ($ACTION == 'manDiaLnextCaLL')
                 else {$CIDstring = "\"\" <0000000000>";}
 
                 ### whether to omit phone_code or not
-                if (eregi('Y',$omit_phone_code)) 
+                if (preg_match('/Y/i',$omit_phone_code)) 
                     {$Ndialstring = "$Local_out_prefix$phone_number";}
                 else
                     {$Ndialstring = "$Local_out_prefix$phone_code$phone_number";}
@@ -946,8 +946,8 @@ if ($ACTION == 'manDiaLnextCaLL')
                 $rslt=mysql_query($stmt, $link);
                 }
 
-            $comments = eregi_replace("\r",'',$comments);
-            $comments = eregi_replace("\n",'!N',$comments);
+            $comments = preg_replace("/\r/",'',$comments);
+            $comments = preg_replace("/\n/",'!N',$comments);
 
             $LeaD_InfO =	$MqueryCID . "\n";
             $LeaD_InfO .=	$lead_id . "\n";
@@ -1144,7 +1144,7 @@ if ($ACTION == 'manDiaLonly')
             $CCID_NAME = "$campaign_cid_name";
             $CCID_on++;
         }
-        if (eregi("x",$dial_prefix)) {$Local_out_prefix = '';}
+        if (preg_match("/x/i",$dial_prefix)) {$Local_out_prefix = '';}
 
         $PADlead_id = sprintf("%09s", $lead_id);
             while (strlen($PADlead_id) > 9) {$PADlead_id = substr("$PADlead_id", 0, -1);}
@@ -1155,7 +1155,7 @@ if ($ACTION == 'manDiaLonly')
         else {$CIDstring = "\"\" <0000000000>";}
 
         ### whether to omit phone_code or not
-        if (eregi('Y',$omit_phone_code)) 
+        if (preg_match('/Y/i',$omit_phone_code)) 
             {$Ndialstring = "$Local_out_prefix$phone_number";}
         else
             {$Ndialstring = "$Local_out_prefix$phone_code$phone_number";}
@@ -1429,7 +1429,7 @@ if ($stage == "end")
                 $auto_alt_dial =$row[0];
                 }
             else {$auto_alt_dial = 'NONE';}
-            if (eregi("(ALT_ONLY|ADDR3_ONLY|ALT_AND_ADDR3)",$auto_alt_dial))
+            if (preg_match("/(ALT_ONLY|ADDR3_ONLY|ALT_AND_ADDR3)/",$auto_alt_dial))
                 {
                 ### check to see if lead should be alt_dialed
                 $stmt="SELECT SQL_NO_CACHE alt_dial FROM osdial_auto_calls WHERE lead_id='$lead_id';";
@@ -1443,7 +1443,7 @@ if ($stage == "end")
                     }
                 else {$alt_dial = 'NONE';}
 
-                if ( (eregi("(NONE|MAIN)",$alt_dial)) and (eregi("(ALT_ONLY|ALT_AND_ADDR3)",$auto_alt_dial)) )
+                if ( (preg_match("/(NONE|MAIN)/",$alt_dial)) and (preg_match("/(ALT_ONLY|ALT_AND_ADDR3)/",$auto_alt_dial)) )
                     {
                     $stmt="SELECT alt_phone,gmt_offset_now,state FROM osdial_list WHERE lead_id='$lead_id';";
                     $rslt=mysql_query($stmt, $link);
@@ -1453,7 +1453,7 @@ if ($stage == "end")
                         {
                         $row=mysql_fetch_row($rslt);
                         $alt_phone =		$row[0];
-                        $alt_phone = eregi_replace("[^0-9]","",$alt_phone);
+                        $alt_phone = preg_replace("/[^0-9]/","",$alt_phone);
                         $gmt_offset_now =	$row[1];
                         $state =			$row[2];
                         }
@@ -1467,7 +1467,7 @@ if ($stage == "end")
                         $rslt=mysql_query($stmt, $link);
                         }
                     }
-                if ( ( (eregi("(ALT)",$alt_dial)) and (eregi("ALT_AND_ADDR3",$auto_alt_dial)) ) or ( (eregi("(NONE|MAIN)",$alt_dial)) and (eregi("ADDR3_ONLY",$auto_alt_dial)) ) )
+                if ( ( (preg_match("/(ALT)/",$alt_dial)) and (preg_match("/ALT_AND_ADDR3/",$auto_alt_dial)) ) or ( (preg_match("/(NONE|MAIN)/",$alt_dial)) and (preg_match("/ADDR3_ONLY/",$auto_alt_dial)) ) )
                     {
                     $stmt="SELECT address3,gmt_offset_now,state FROM osdial_list WHERE lead_id='$lead_id';";
                     $rslt=mysql_query($stmt, $link);
@@ -1477,7 +1477,7 @@ if ($stage == "end")
                         {
                         $row=mysql_fetch_row($rslt);
                         $address3 =			$row[0];
-                        $address3 = eregi_replace("[^0-9]","",$address3);
+                        $address3 = preg_replace("/[^0-9]/","",$address3);
                         $gmt_offset_now =	$row[1];
                         $state =			$row[2];
                         }
@@ -1638,7 +1638,7 @@ if ($stage == "end")
             {
             $SQLterm = "term_reason='$term_reason',";
 
-            if ( (ereg("NONE",$term_reason)) or (ereg("NONE",$Lterm_reason)) or (strlen($Lterm_reason) < 1) )
+            if ( (preg_match("/NONE/",$term_reason)) or (preg_match("/NONE/",$Lterm_reason)) or (strlen($Lterm_reason) < 1) )
                 {
                 ### check to see if lead should be alt_dialed
                 $stmt="SELECT SQL_NO_CACHE term_reason,uniqueid from osdial_log WHERE uniqueid='$uniqueid' AND lead_id='$lead_id' ORDER BY call_date DESC LIMIT 1;";
@@ -1650,7 +1650,7 @@ if ($stage == "end")
                     $Lterm_reason  = $row[0];
                     $Luniqueid  = $row[1];
                     }
-                if (ereg("CALLER",$Lterm_reason))
+                if (preg_match("/CALLER/",$Lterm_reason))
                     {
                     $SQLterm = "";
                     }
@@ -1708,7 +1708,7 @@ if ($stage == "end")
             $SQLterm = "term_reason='$term_reason'";
             $QL_term='';
 
-            if ( (ereg("NONE",$term_reason)) or (ereg("NONE",$Lterm_reason)) or (strlen($Lterm_reason) < 1) )
+            if ( (preg_match("/NONE/",$term_reason)) or (preg_match("/NONE/",$Lterm_reason)) or (strlen($Lterm_reason) < 1) )
                 {
                 ### check to see if lead should be alt_dialed
                 $stmt="SELECT SQL_NO_CACHE term_reason,closecallid FROM osdial_closer_log WHERE lead_id='$lead_id' AND call_date>'$four_hours_ago' ORDER BY call_date DESC LIMIT 1;";
@@ -1720,7 +1720,7 @@ if ($stage == "end")
                     $Lterm_reason  = $row[0];
                     $Luniqueid  = $row[1];
                     }
-                if (ereg("CALLER",$Lterm_reason))
+                if (preg_match("/CALLER/",$Lterm_reason))
                     {
                     $SQLterm = "";
                     }
@@ -1791,7 +1791,7 @@ if ($stage == "end")
                 }
                 else
                 {
-                if ( ($agentchannel == "$row[0]") or (ereg('ASTblind',$row[0])) )
+                if ( ($agentchannel == "$row[0]") or (preg_match('/ASTblind/',$row[0])) )
                     {
                     $donothing=1;
                     }
@@ -1822,7 +1822,7 @@ if ($stage == "end")
             else
                 {
         #       if (preg_match("/$agentchannel/i",$row[0]))
-                if ( ($agentchannel == "$row[0]") or (ereg('ASTblind',$row[0])) )
+                if ( ($agentchannel == "$row[0]") or (preg_match('/ASTblind/',$row[0])) )
                     {
                     $donothing=1;
                     }
@@ -1922,7 +1922,7 @@ if ($stage == "end")
     $VDpr_ct = mysql_num_rows($rslt);
     if ($VDpr_ct > 0) {
         $row=mysql_fetch_row($rslt);
-        if ( (eregi("NULL",$row[0])) or ($row[0] < 1000) ) {
+        if ( (preg_match("/NULL/",$row[0])) or ($row[0] < 1000) ) {
             $talk_epochSQL=",talk_epoch='$StarTtime'";
             $row[0]=$row[2];
         }
@@ -2084,7 +2084,7 @@ if ($ACTION == 'VDADcheckINCOMING')
         $CBcallback_time =	'';
         $CBuser =			'';
         $CBcomments =		'';
-        if (ereg("CALLBK",$dispo))
+        if (preg_match("/CALLBK/",$dispo))
             {
             $stmt="SELECT entry_time,callback_time,user,comments FROM osdial_callbacks WHERE lead_id='$lead_id' ORDER BY callback_id DESC LIMIT 1;";
             $rslt=mysql_query($stmt, $link);
@@ -2285,7 +2285,7 @@ if ($ACTION == 'VDADcheckINCOMING')
                 if ($VDIG_cidOR_ct > 0)
                     {
                     $row=mysql_fetch_row($rslt);
-                    if ( ( (ereg('NONE',$VDCL_ingroup_script)) and (strlen($VDCL_ingroup_script) < 5) ) or (strlen($VDCL_ingroup_script) < 1) )
+                    if ( ( (preg_match('/NONE/',$VDCL_ingroup_script)) and (strlen($VDCL_ingroup_script) < 5) ) or (strlen($VDCL_ingroup_script) < 1) )
                         {$VDCL_ingroup_script =     $row[0];}
                     if (strlen($VDCL_xferconf_a_dtmf) < 1)
                         {$VDCL_xferconf_a_dtmf =    $row[1];}
@@ -2370,8 +2370,8 @@ if ($ACTION == 'VDADcheckINCOMING')
             else {echo '|' . $tsr . "\n";}
             }
 
-        $comments = eregi_replace("\r",'',$comments);
-        $comments = eregi_replace("\n",'!N',$comments);
+        $comments = preg_replace("/\r/",'',$comments);
+        $comments = preg_replace("/\n/",'!N',$comments);
 
         $LeaD_InfO =    $callerid . "\n";
         $LeaD_InfO .=   $lead_id . "\n";
@@ -2449,7 +2449,7 @@ if ($ACTION == 'VDADcheckINCOMING')
         $rslt=mysql_query($stmt, $link);
 
         ### If CALLBK, change osdial_callback record to INACTIVE
-        if (eregi("CALLBK|CBHOLD", $dispo))
+        if (preg_match("/CALLBK|CBHOLD/", $dispo))
             {
             $stmt="UPDATE osdial_callbacks set status='INACTIVE' where lead_id='$lead_id' and status NOT IN('INACTIVE','DEAD','ARCHIVE');";
                 if ($format=='debug') {echo "\n<!-- $stmt -->";}
@@ -2618,7 +2618,7 @@ if ($ACTION == 'userLOGout') {
             }
             ##### END QUEUEMETRICS LOGGING LOOKUP #####
             ###########################################
-            if ( ($enable_sipsak_messages > 0) and ($allow_sipsak_messages > 0) and (eregi("SIP",$protocol)) ) {
+            if ( ($enable_sipsak_messages > 0) and ($allow_sipsak_messages > 0) and (preg_match("/SIP/",$protocol)) ) {
                 $SIPSAK_message = 'LOGGED OUT';
                 passthru("/usr/local/bin/sipsak -M -O desktop -B \"$SIPSAK_message\" -r 5060 -s sip:$extension@$phone_ip > /dev/null");
             }
@@ -2759,7 +2759,7 @@ if ($ACTION == 'updateDISPO') {
             $wait_sec    = $row[5];
             $pause_epoch = $row[6];
             $pause_sec   = $row[7];
-            #if ( (eregi("NULL",$dispo_epoch)) or ($dispo_epoch < 1000) ) {
+            #if ( (preg_match("/NULL/",$dispo_epoch)) or ($dispo_epoch < 1000) ) {
             #    $dispo_epochSQL=",dispo_epoch='$StarTtime'";
             #    $dispo_epoch=$talk_epoch;
             #}
@@ -2799,7 +2799,7 @@ if ($ACTION == 'updateDISPO') {
 
 
     #    if ($auto_dial_level < 1) {
-    #        if ( (eregi("NULL",$wait_epoch)) or ($wait_epoch < 1000) ) {
+    #        if ( (preg_match("/NULL/",$wait_epoch)) or ($wait_epoch < 1000) ) {
     #            $wait_epoch = $StarTtime;
     #            $pause_sec = ($wait_epoch - $pause_epoch);
     #            $stmt="UPDATE osdial_agent_log set pause_sec='$pause_sec',wait_epoch='$wait_epoch' where agent_log_id='$agent_log_id';";
@@ -2811,7 +2811,7 @@ if ($ACTION == 'updateDISPO') {
     #            if ($format=='debug') {echo "\n<!-- $stmt -->";}
     #            $rslt=mysql_query($stmt, $link);
     #        }
-    #        if ( (eregi("NULL",$talk_epoch)) or ($talk_epoch < 1000) ) {
+    #        if ( (preg_match("/NULL/",$talk_epoch)) or ($talk_epoch < 1000) ) {
     #            $talk_epoch = $StarTtime;
     #            $wait_sec = ($talk_epoch - $wait_epoch);
     #            $stmt="UPDATE osdial_agent_log set wait_sec='$wait_sec',talk_epoch='$talk_epoch' where agent_log_id='$agent_log_id';";
@@ -2823,7 +2823,7 @@ if ($ACTION == 'updateDISPO') {
     #            if ($format=='debug') {echo "\n<!-- $stmt -->";}
     #            $rslt=mysql_query($stmt, $link);
     #        }
-    #        if ( (eregi("NULL",$dispo_epoch)) or ($dispo_epoch < 1000) ) {
+    #        if ( (preg_match("/NULL/",$dispo_epoch)) or ($dispo_epoch < 1000) ) {
     #            $dispo_epoch = $StarTtime;
     #            $talk_sec = ($dispo_epoch - $talk_epoch);
     #            $stmt="UPDATE osdial_agent_log set talk_sec='$talk_sec',dispo_epoch='$dispo_epoch' where agent_log_id='$agent_log_id';";
@@ -2859,7 +2859,7 @@ if ($ACTION == 'updateDISPO') {
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
 
-        if ( ($auto_dial_level > 0) and (ereg(" $dispo_choice ",$row[0])) ) {
+        if ( ($auto_dial_level > 0) and (preg_match("/ $dispo_choice /",$row[0])) ) {
             $stmt = "SELECT count(*) FROM osdial_hopper WHERE lead_id='$lead_id' AND status='HOLD';";
             if ($format=='debug') {echo "\n<!-- $stmt -->";}
             $rslt=mysql_query($stmt, $link);
@@ -2934,7 +2934,7 @@ if ($ACTION == 'updateLEAD') {
             $disable_alter_custdata = $row[0];
             $i++;
         }
-        if (ereg('Y',$disable_alter_custdata)) {
+        if (preg_match('/Y/',$disable_alter_custdata)) {
             $DO_NOT_UPDATE=1;
             $DO_NOT_UPDATE_text=' NOT';
             $stmt = "SELECT alter_custdata_override FROM osdial_users WHERE user='$user'";
@@ -2947,18 +2947,18 @@ if ($ACTION == 'updateLEAD') {
                 $alter_custdata_override = $row[0];
                 $i++;
             }
-            if (ereg('ALLOW_ALTER',$alter_custdata_override)) {
+            if (preg_match('/ALLOW_ALTER/',$alter_custdata_override)) {
                 $DO_NOT_UPDATE=0;
                 $DO_NOT_UPDATE_text='';
             }
         }
 
         if ($DO_NOT_UPDATE < 1) {
-            $comments = eregi_replace("\r",'',$comments);
-            $comments = eregi_replace("\n",'!N',$comments);
-            $comments = eregi_replace("--AMP--",'&',$comments);
-            $comments = eregi_replace("--QUES--",'?',$comments);
-            $comments = eregi_replace("--POUND--",'#',$comments);
+            $comments = preg_replace("/\r/",'',$comments);
+            $comments = preg_replace("/\n/",'!N',$comments);
+            $comments = preg_replace("/--AMP--/",'&',$comments);
+            $comments = preg_replace("/--QUES--/",'?',$comments);
+            $comments = preg_replace("/--POUND--/",'#',$comments);
 
             $stmt="UPDATE osdial_list set vendor_lead_code='" . mysql_real_escape_string($vendor_lead_code) . "', title='" . mysql_real_escape_string($title) . "', first_name='" . mysql_real_escape_string($first_name) . "', middle_initial='" . mysql_real_escape_string($middle_initial) . "', last_name='" . mysql_real_escape_string($last_name) . "', address1='" . mysql_real_escape_string($address1) . "', address2='" . mysql_real_escape_string($address2) . "', address3='" . mysql_real_escape_string($address3) . "', city='" . mysql_real_escape_string($city) . "', state='" . mysql_real_escape_string($state) . "', province='" . mysql_real_escape_string($province) . "', postal_code='" . mysql_real_escape_string($postal_code) . "', country_code='" . mysql_real_escape_string($country_code) . "', gender='" . mysql_real_escape_string($gender) . "', date_of_birth='" . mysql_real_escape_string($date_of_birth) . "', alt_phone='" . mysql_real_escape_string($alt_phone) . "', email='" . mysql_real_escape_string($email) . "', custom1='" . mysql_real_escape_string($custom1) . "', custom2='" . mysql_real_escape_string($custom2) ."', comments='" . mysql_real_escape_string($comments) . "', phone_number='" . mysql_real_escape_string($phone_number) . "', phone_code='" . mysql_real_escape_string($phone_code) . "' where lead_id='$lead_id';";
             if ($format=='debug') {echo "\n<!-- $stmt -->";}
@@ -3036,8 +3036,8 @@ if ( ($ACTION == 'VDADpause') || ($ACTION == 'VDADready') ) {
             ##### END QUEUEMETRICS LOGGING LOOKUP #####
             ###########################################
             if ($enable_queuemetrics_logging > 0) {
-                if (ereg('READY',$stage)) {$QMstatus='UNPAUSEALL';}
-                if (ereg('PAUSE',$stage)) {$QMstatus='PAUSEALL';}
+                if (preg_match('/READY/',$stage)) {$QMstatus='UNPAUSEALL';}
+                if (preg_match('/PAUSE/',$stage)) {$QMstatus='PAUSEALL';}
                 $linkB=mysql_connect("$queuemetrics_server_ip", "$queuemetrics_login", "$queuemetrics_pass");
                 mysql_select_db("$queuemetrics_dbname", $linkB);
 
@@ -3067,7 +3067,7 @@ if ( ($ACTION == 'VDADpause') || ($ACTION == 'VDADready') ) {
         }
 
         if ($ACTION == 'VDADready') {
-            if ( (eregi("NULL",$dispo_epoch)) or ($dispo_epoch < 1000) ) {
+            if ( (preg_match("/NULL/",$dispo_epoch)) or ($dispo_epoch < 1000) ) {
                 $pause_sec = $StarTtime - $pause_epoch;
                 if ($pause_sec<0) $pause_sec=0;
                 $stmt="UPDATE osdial_agent_log set pause_sec='$pause_sec',wait_epoch='$StarTtime' where agent_log_id='$agent_log_id';";
@@ -3075,7 +3075,7 @@ if ( ($ACTION == 'VDADpause') || ($ACTION == 'VDADready') ) {
                 $rslt=mysql_query($stmt, $link);
             }
         } elseif ($ACTION == 'VDADpause') {
-            if ( (eregi("NULL",$dispo_epoch)) or ($dispo_epoch < 1000) ) {
+            if ( (preg_match("/NULL/",$dispo_epoch)) or ($dispo_epoch < 1000) ) {
                 $pause_sec = ($wait_epoch - $pause_sec);
                 if ($pause_sec<0) $pause_sec=0;
                 $wait_sec=0;
@@ -3088,7 +3088,7 @@ if ( ($ACTION == 'VDADpause') || ($ACTION == 'VDADready') ) {
         }
 
         if ($wrapup == 'WRAPUP') {
-            if ( (eregi("NULL",$dispo_epoch)) or ($dispo_epoch < 1000) ) {
+            if ( (preg_match("/NULL/",$dispo_epoch)) or ($dispo_epoch < 1000) ) {
                 $stmt="UPDATE osdial_agent_log set dispo_epoch='$StarTtime', dispo_sec='0' where agent_log_id='$agent_log_id';";
             } else {
                 $dispo_sec = ($StarTtime - $dispo_epoch);
@@ -3130,7 +3130,7 @@ if ( ($ACTION == 'VDADpause') || ($ACTION == 'VDADready') ) {
             if ($format=='debug') {echo "\n<!-- $stmt -->";}
             $rslt=mysql_query($stmt, $link);
 
-            #if ( (eregi("NULL",$wait_epoch)) or ($wait_epoch < 1000) ) {
+            #if ( (preg_match("/NULL/",$wait_epoch)) or ($wait_epoch < 1000) ) {
             #    $wait_epoch = $StarTtime;
             #    $pause_sec = ($wait_epoch - $pause_epoch);
             #    $stmt="UPDATE osdial_agent_log set pause_sec='$pause_sec',wait_epoch='$wait_epoch' where agent_log_id='$agent_log_id';";
@@ -3142,7 +3142,7 @@ if ( ($ACTION == 'VDADpause') || ($ACTION == 'VDADready') ) {
             #    if ($format=='debug') {echo "\n<!-- $stmt -->";}
             #    $rslt=mysql_query($stmt, $link);
             #}
-            #if ( (eregi("NULL",$talk_epoch)) or ($talk_epoch < 1000) ) {
+            #if ( (preg_match("/NULL/",$talk_epoch)) or ($talk_epoch < 1000) ) {
             #    $talk_epoch = $StarTtime;
             #    $wait_sec = ($talk_epoch - $wait_epoch);
             #    $stmt="UPDATE osdial_agent_log set wait_sec='$wait_sec',talk_epoch='$talk_epoch' where agent_log_id='$agent_log_id';";
@@ -3154,7 +3154,7 @@ if ( ($ACTION == 'VDADpause') || ($ACTION == 'VDADready') ) {
             #    if ($format=='debug') {echo "\n<!-- $stmt -->";}
             #    $rslt=mysql_query($stmt, $link);
             #}
-            #if ( (eregi("NULL",$dispo_epoch)) or ($dispo_epoch < 1000) ) {
+            #if ( (preg_match("/NULL/",$dispo_epoch)) or ($dispo_epoch < 1000) ) {
             #    $dispo_epoch = $StarTtime;
             #    $talk_sec = ($dispo_epoch - $talk_epoch);
             #    $stmt="UPDATE osdial_agent_log set talk_sec='$talk_sec',dispo_epoch='$dispo_epoch' where agent_log_id='$agent_log_id';";
@@ -3218,7 +3218,7 @@ if ($ACTION == 'PauseCodeSubmit') {
             }
             ##### END QUEUEMETRICS LOGGING LOOKUP #####
             ###########################################
-            if ( ($enable_sipsak_messages > 0) and ($allow_sipsak_messages > 0) and (eregi("SIP",$protocol)) ) {
+            if ( ($enable_sipsak_messages > 0) and ($allow_sipsak_messages > 0) and (preg_match("/SIP/",$protocol)) ) {
                 $SIPSAK_prefix = 'BK-';
                 passthru("/usr/local/bin/sipsak -M -O desktop -B \"$SIPSAK_prefix$status\" -r 5060 -s sip:$extension@$phone_ip > /dev/null");
             }
@@ -3387,8 +3387,8 @@ if ($ACTION == 'RepullLeadData')
         $rslt=mysql_query($stmt, $link);
     }
 
-    $comments = eregi_replace("\r",'',$comments);
-    $comments = eregi_replace("\n",'!N',$comments);
+    $comments = preg_replace("/\r/",'',$comments);
+    $comments = preg_replace("/\n/",'!N',$comments);
 
     $LeaD_InfO =    $lead_id . "\n";
     $LeaD_InfO .=   $vendor_id . "\n";

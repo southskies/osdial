@@ -55,7 +55,7 @@ if ($ADD==73) {
         while ($lists_to_print > $o) {
             $rowx=mysql_fetch_row($rslt);
             $o++;
-            if (ereg("Y", $rowx[1])) $camp_lists .= "'$rowx[0]',";
+            if (preg_match("/Y/", $rowx[1])) $camp_lists .= "'$rowx[0]',";
         }
         $camp_lists = preg_replace('/,$/','',$camp_lists);
 
@@ -428,7 +428,7 @@ if ($ADD==41)
                     }
                 }
             }
-        if ( (!ereg("DISABLED",$list_order_mix)) and ($hopper_level < 100) )
+        if ( (!preg_match("/DISABLED/",$list_order_mix)) and ($hopper_level < 100) )
             {$hopper_level='100';}
 
         if (preg_match('/^8510/',$am_message_exten)) $am_message_exten = '8320'.$am_message_exten;
@@ -541,7 +541,7 @@ if ($ADD==44)
                     }
                 }
             }
-        if ( (!ereg("DISABLED",$list_order_mix)) and ($hopper_level < 100) )
+        if ( (!preg_match("/DISABLED/",$list_order_mix)) and ($hopper_level < 100) )
             {$hopper_level='100';}
 
         $stmtA=sprintf("UPDATE osdial_campaigns SET %s campaign_name='%s',active='%s',dial_status_a='%s',dial_status_b='%s',dial_status_c='%s',dial_status_d='%s',"
@@ -634,7 +634,7 @@ $ADD='31';        # go to campaign modification below
 
 if ($ADD==53)
 {
-    if (eregi('IN',$stage))
+    if (preg_match('/IN/',$stage))
         {$group_id=$campaign_id;}
 
      if (strlen($campaign_id) < 2)
@@ -649,7 +649,7 @@ if ($ADD==53)
         }
 
 # go to campaign modification below
-if (eregi('IN',$stage))
+if (preg_match('/IN/',$stage))
     {$ADD='3111';}
 else
     {$ADD='31';}    
@@ -780,7 +780,7 @@ if ($ADD==63)
 {
     if ($LOGmodify_campaigns==1)
     {
-    if (eregi('IN',$stage))
+    if (preg_match('/IN/',$stage))
         {$group_id=$campaign_id;}
 
      if (strlen($campaign_id) < 2)
@@ -804,7 +804,7 @@ if ($ADD==63)
         echo "<br><br>\n";
         }
         # go to campaign modification below
-        if (eregi('IN',$stage)) {$ADD='3111';} else {$ADD='31';}    
+        if (preg_match('/IN/',$stage)) {$ADD='3111';} else {$ADD='31';}    
     }
     else
     {
@@ -824,7 +824,7 @@ if ( ($LOGcampaign_detail < 1) and ($ADD==31) ) {
 }
 
 # send to not allowed screen if not in osdial_user_groups allowed_campaigns list
-if ( ($ADD==31) and (!eregi(':' . $campaign_id . ':',$LOG['allowed_campaignsSTR'])) ) {
+if ( ($ADD==31) and (!preg_match('/:/' . $campaign_id . ':',$LOG['allowed_campaignsSTR'])) ) {
     $ADD=30;
 }
 
@@ -939,7 +939,7 @@ if ($ADD==31) {
         $hide_xfer_park_dial = $row[93];
         $hide_xfer_blind_vmail = $row[94];
 
-        if (ereg("DISABLED",$list_order_mix)) {
+        if (preg_match("/DISABLED/",$list_order_mix)) {
             $DEFlistDISABLE = '';
             $DEFstatusDISABLED=0;
         } else {
@@ -985,7 +985,7 @@ if ($ADD==31) {
             }
             $statname_list["$rowx[0]"] = "$rowx[1]";
             $LRstatuses_list .= "<option value=\"$rowx[0]-----$rowx[1]\">$rowx[0] - $rowx[1]</option>\n";
-            if (eregi("Y",$rowx[2])) {
+            if (preg_match("/Y/",$rowx[2])) {
                 $HKstatuses_list .= "<option value=\"$rowx[0]-----$rowx[1]\">$rowx[0] - $rowx[1]</option>\n";
             }
             $o++;
@@ -1004,7 +1004,7 @@ if ($ADD==31) {
             }
             $statname_list["$rowx[0]"] = "$rowx[1]";
             $LRstatuses_list .= "<option value=\"$rowx[0]-----$rowx[1]\">$rowx[0] - $rowx[1]</option>\n";
-            if (eregi("Y",$rowx[2])) {
+            if (preg_match("/Y/",$rowx[2])) {
                 $HKstatuses_list .= "<option value=\"$rowx[0]-----$rowx[1]\">$rowx[0] - $rowx[1]</option>\n";
             }
             $o++;
@@ -1102,7 +1102,7 @@ if ($ADD==31) {
 
         echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=31&SUB=29&campaign_id=$campaign_id&vcl_id=$list_order_mix\">List Mix</a>: </td><td align=left><select size=1 name=list_order_mix>\n";
         echo "$mixes_list";
-        if (ereg("DISABLED",$list_order_mix))
+        if (preg_match("/DISABLED/",$list_order_mix))
             {echo "<option selected value=\"$list_order_mix\">$list_order_mix - $mixname_list[$list_order_mix]</option>\n";}
         else
             {echo "<option selected value=\"ACTIVE\">ACTIVE ($mixname_list[ACTIVE])</option>\n";}
@@ -1502,8 +1502,8 @@ if ($ADD==31) {
             {
                 $rowx=mysql_fetch_row($rslt);
                 $o++;
-            if (ereg("Y", $rowx[1])) {$active_lists++;   $camp_lists .= "'$rowx[0]',";}
-            if (ereg("N", $rowx[1])) {$inactive_lists++;}
+            if (preg_match("/Y/", $rowx[1])) {$active_lists++;   $camp_lists .= "'$rowx[0]',";}
+            if (preg_match("/N/", $rowx[1])) {$inactive_lists++;}
 
             echo "<tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=311&list_id=$rowx[0]');\"><td><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td>$rowx[2]</td><td align=center>$rowx[1]</td></tr>\n";
             }
@@ -1833,7 +1833,7 @@ if ($ADD==31) {
 ######################
 
 # send to not allowed screen if not in osdial_user_groups allowed_campaigns list
-if ( ($ADD==34) and (!eregi(':' . $campaign_id . ':',$LOG['allowed_campaignsSTR'])) ) {
+if ( ($ADD==34) and (!preg_match('/:/' . $campaign_id . ':',$LOG['allowed_campaignsSTR'])) ) {
     $ADD=30;
 }
 
@@ -1893,7 +1893,7 @@ if ($ADD==34)
         $manual_preview_default = $row[74];
         $use_custom2_callerid = $row[78];
 
-    if (ereg("DISABLED",$list_order_mix))
+    if (preg_match("/DISABLED/",$list_order_mix))
         {$DEFlistDISABLE = '';    $DEFstatusDISABLED=0;}
     else
         {$DEFlistDISABLE = 'disabled';    $DEFstatusDISABLED=1;}
@@ -1911,7 +1911,7 @@ if ($ADD==34)
             if ($rowx[0] != 'CBHOLD') {$dial_statuses_list .= "<option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";}
             $statname_list["$rowx[0]"] = "$rowx[1]";
             $LRstatuses_list .= "<option value=\"$rowx[0]-----$rowx[1]\">$rowx[0] - $rowx[1]</option>\n";
-            if (eregi("Y",$rowx[2]))
+            if (preg_match("/Y/",$rowx[2]))
                 {$HKstatuses_list .= "<option value=\"$rowx[0]-----$rowx[1]\">$rowx[0] - $rowx[1]</option>\n";}
             $o++;
             }
@@ -1928,7 +1928,7 @@ if ($ADD==34)
             if ($rowx[0] != 'CBHOLD') {$dial_statuses_list .= "<option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";}
             $statname_list["$rowx[0]"] = "$rowx[1]";
             $LRstatuses_list .= "<option value=\"$rowx[0]-----$rowx[1]\">$rowx[0] - $rowx[1]</option>\n";
-            if (eregi("Y",$rowx[2]))
+            if (preg_match("/Y/",$rowx[2]))
                 {$HKstatuses_list .= "<option value=\"$rowx[0]-----$rowx[1]\">$rowx[0] - $rowx[1]</option>\n";}
             $o++;
             }
@@ -2018,7 +2018,7 @@ if ($ADD==34)
 
         echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=31&SUB=29&campaign_id=$campaign_id&vcl_id=$list_order_mix\">List Mix</a>: </td><td align=left><select size=1 name=list_order_mix>\n";
         echo "$mixes_list";
-        if (ereg("DISABLED",$list_order_mix))
+        if (preg_match("/DISABLED/",$list_order_mix))
             {echo "<option selected value=\"$list_order_mix\">$list_order_mix - $mixname_list[$list_order_mix]</option>\n";}
         else
             {echo "<option selected value=\"ACTIVE\">ACTIVE ($mixname_list[ACTIVE])</option>\n";}
@@ -2099,8 +2099,8 @@ if ($ADD==34)
             while ($lists_to_print > $o) {
                 $rowx=mysql_fetch_row($rslt);
                 $o++;
-            if (ereg("Y", $rowx[1])) {$active_lists++;   $camp_lists .= "'$rowx[0]',";}
-            if (ereg("N", $rowx[1])) {$inactive_lists++;}
+            if (preg_match("/Y/", $rowx[1])) {$active_lists++;   $camp_lists .= "'$rowx[0]',";}
+            if (preg_match("/N/", $rowx[1])) {$inactive_lists++;}
 
             echo "<tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=311&list_id=$rowx[0]');\"><td><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td>$rowx[2]</td><td align=center>$rowx[1]</td></tr>\n";
 
@@ -2195,7 +2195,7 @@ if ($ADD==34)
 # ADD=31 or 34 and SUB=29 for list mixes
 ######################
 # send to not allowed screen if not in osdial_user_groups allowed_campaigns list
-if ( ( ($ADD==34) or ($ADD==31) ) and (!eregi(':' . $campaign_id . ':',$LOG['allowed_campaignsSTR'])) ) {
+if ( ( ($ADD==34) or ($ADD==31) ) and (!preg_match('/:/' . $campaign_id . ':',$LOG['allowed_campaignsSTR'])) ) {
     $ADD=30;
 }
 

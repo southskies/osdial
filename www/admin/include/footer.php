@@ -31,7 +31,7 @@ echo "<div class=\"footer\">";
 echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "  <tr><td align=\"left\" colspan=\"4\" height=\"1\" bgcolor=\"#999999\"></td></tr>\n";
 echo "  <tr bgcolor=\"$footer_color\">\n";
-if (ereg("^Sli",$system_settings['admin_template'])) {
+if (preg_match("/^Sli/",$system_settings['admin_template'])) {
     echo "    <td width=\"33%\">&nbsp;</td>\n";
     echo "    <td width=\"33%\">&nbsp;</td>\n";
 } else {

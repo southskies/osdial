@@ -150,7 +150,7 @@ if ($ADD==2111)
 			{echo "<br><font color=red>GROUP NOT ADDED - there is already a campaign in the system with this ID</font>\n";}
 		else
 			{
-			 if ( (strlen($group_id) < 2) or (strlen($group_name) < 2)  or (strlen($group_color) < 2) or (strlen($group_id) > 20) or (eregi(' ',$group_id)) or (eregi("\-",$group_id)) or (eregi("\+",$group_id)) )
+			 if ( (strlen($group_id) < 2) or (strlen($group_name) < 2)  or (strlen($group_color) < 2) or (strlen($group_id) > 20) or (preg_match('/ /',$group_id)) or (preg_match("/\-/",$group_id)) or (preg_match("/\+/",$group_id)) )
 				{
 				 echo "<br><font color=$default_text>GROUP NOT ADDED - Please go back and look at the data you entered\n";
 				 echo "<br>Group ID must be between 2 and 20 characters in length and contain no ' -+'.\n";
@@ -193,7 +193,7 @@ if ($ADD==2011)
 		{echo "<br><font color=red>GROUP NOT ADDED - there is already a group in the system with this ID</font>\n";}
 	else
 		{
-		 if ( (strlen($group_id) < 2) or (strlen($group_name) < 2) or (strlen($group_id) > 20) or (eregi(' ',$group_id)) or (eregi("\-",$group_id)) or (eregi("\+",$group_id)) )
+		 if ( (strlen($group_id) < 2) or (strlen($group_name) < 2) or (strlen($group_id) > 20) or (preg_match('/ /',$group_id)) or (preg_match("/\-/",$group_id)) or (preg_match("/\+/",$group_id)) )
 			{
 			 echo "<br><font color=red>GROUP NOT ADDED - Please go back and look at the data you entered\n";
 			 echo "<br>Group ID must be between 2 and 20 characters in length and contain no ' -+'.\n";

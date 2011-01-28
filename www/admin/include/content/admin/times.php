@@ -209,7 +209,7 @@ if ( ($stage=="ADD") and (strlen($state_rule)>0) )
 	$row=mysql_fetch_row($rslt);
 	$ct_state_call_times = $row[0];
 
-	if (eregi("\|$",$ct_state_call_times))
+	if (preg_match("/\|$/",$ct_state_call_times))
 		{$ct_state_call_times = "$ct_state_call_times$state_rule\|";}
 	else
 		{$ct_state_call_times = "$ct_state_call_times\|$state_rule\|";}
@@ -224,7 +224,7 @@ if ( ($stage=="REMOVE") and (strlen($state_rule)>0) )
 	$row=mysql_fetch_row($rslt);
 	$ct_state_call_times = $row[0];
 
-	$ct_state_call_times = eregi_replace("\|$state_rule\|",'|',$ct_state_call_times);
+	$ct_state_call_times = preg_replace("/\|$state_rule\|/",'|',$ct_state_call_times);
 	$stmt="UPDATE osdial_call_times set ct_state_call_times='$ct_state_call_times' where call_time_id='$call_time_id';";
 	$rslt=mysql_query($stmt, $link);
 	echo "State Rule Removed: $state_rule<BR>\n";
@@ -636,7 +636,7 @@ if ($ADD==6111111111)
 		$o=0;
 
 		while ($sct_to_print > $o) {
-			$sct_states[$o] = eregi_replace("\|$call_time_id\|",'|',$sct_states[$o]);
+			$sct_states[$o] = preg_replace("/\|$call_time_id\|/",'|',$sct_states[$o]);
 			$stmt="UPDATE osdial_call_times set ct_state_call_times='$sct_states[$o]' where call_time_id='$sct_ids[$o]';";
 			$rslt=mysql_query($stmt, $link);
 			echo "$stmt\n";

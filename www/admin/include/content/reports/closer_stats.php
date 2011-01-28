@@ -101,7 +101,7 @@ function report_closer_stats() {
             $group_SQL = sprintf("WHERE campaign_id IN %s",$LOG['allowed_ingroupsSQL']);
         }
     } else {
-        $group_SQL = eregi_replace(",$",'',$group_SQL);
+        $group_SQL = preg_replace("/,$/",'',$group_SQL);
         $group_SQLand = sprintf("AND campaign_id IN %s AND campaign_id IN(%s)",$LOG['allowed_ingroupsSQL'],$group_SQL);
         $group_SQL = sprintf("WHERE campaign_id IN %s AND campaign_id IN(%s)",$LOG['allowed_ingroupsSQL'],$group_SQL);
     }
@@ -168,12 +168,12 @@ function report_closer_stats() {
     $html .= "          </td>\n";
     $html .= "          <td> In-Groups:<br>\n";
     $html .= "            <select size=5 name=group[] multiple>\n";
-    $gsel=''; if  (eregi("--ALL--",$group_string)) $gsel = "selected";
+    $gsel=''; if  (preg_match("/--ALL--/",$group_string)) $gsel = "selected";
     $html .= "              <option value=\"--ALL--\" $gsel>-- ALL INGROUPS --</option>\n";
     $o=0;
     while ($campaigns_to_print > $o) {
         if (!preg_match('/^A2A_/',$groups[$o])) {
-            $gsel=''; if (eregi("$groups[$o]\|",$group_string)) $gsel = "selected";
+            $gsel=''; if (preg_match("/$groups[$o]\|/",$group_string)) $gsel = "selected";
             $html .= "              <option value=\"$groups[$o]\" $gsel>" . mclabel($groups[$o]) . "</option>\n";
         }
         $o++;
@@ -182,12 +182,12 @@ function report_closer_stats() {
     $html .= "          </td>\n";
     $html .= "          <td> Agent2Agent-Groups:<br>\n";
     $html .= "            <select size=5 name=group[] multiple>\n";
-    $gsel=''; if  (eregi("--ALLA2A--",$group_string)) $gsel = "selected";
+    $gsel=''; if  (preg_match("/--ALLA2A--/",$group_string)) $gsel = "selected";
     $html .= "              <option value=\"--ALLA2A--\" $gsel>-- ALL A2A GROUPS --</option>\n";
     $o=0;
     while ($campaigns_to_print > $o) {
         if (preg_match('/^A2A_/',$groups[$o])) {
-            $gsel=''; if (eregi("$groups[$o]\|",$group_string)) $gsel = "selected";
+            $gsel=''; if (preg_match("/$groups[$o]\|/",$group_string)) $gsel = "selected";
             $html .= "              <option value=\"$groups[$o]\" $gsel>" . mclabel($groups[$o]) . "</option>\n";
         }
         $o++;
@@ -301,7 +301,7 @@ function report_closer_stats() {
         $q++;
         $p++;
     }
-    $camp_ANS_STAT_SQL = eregi_replace(",$",'',$camp_ANS_STAT_SQL);
+    $camp_ANS_STAT_SQL = preg_replace("/,$/",'',$camp_ANS_STAT_SQL);
 
     
     $stmt="SELECT count(*) FROM osdial_closer_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' and status IN($camp_ANS_STAT_SQL) $group_SQLand;";
@@ -620,8 +620,8 @@ function report_closer_stats() {
         while(strlen($reason)>20) {
             $reason = substr("$reason", 0, -1);
         }
-        if (ereg("NONE",$reason))    {$reason = 'NO CONTACT          ';}
-        if (ereg("CALLER",$reason)) {$reason = 'CUSTOMER            ';}
+        if (preg_match("/NONE/",$reason))    {$reason = 'NO CONTACT          ';}
+        if (preg_match("/CALLER/",$reason)) {$reason = 'CUSTOMER            ';}
     
         $plain .= "| $reason | $REASONcount |\n";
 
@@ -717,7 +717,7 @@ function report_closer_stats() {
     
         $STATUScount =    $row[0];
         $RAWstatus =    $row[1];
-        $RAWcomment =    eregi_replace("\.wav$|\.mp3$|\.gsm$","",$row[3]);
+        $RAWcomment =    preg_replace("/\.wav$|\.mp3$|\.gsm$/","",$row[3]);
         $r=0;
         while ($r < $statcats_to_print) {
             if ($statcat_list[$RAWstatus] == "$vsc_id[$r]") {

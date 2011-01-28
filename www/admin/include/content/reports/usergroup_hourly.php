@@ -45,7 +45,7 @@ function report_usergroup_hourly() {
 
     if ($date_with_hour == "") {$date_with_hour = $date_with_hour_default;}
     $date_no_hour = $date_with_hour;
-    $date_no_hour = eregi_replace(" ([0-9]{2})",'',$date_no_hour);
+    $date_no_hour = preg_replace("/ ([0-9]{2})/",'',$date_no_hour);
     if ($status == "") {$status = 'SALE';}
 
     $statcats = Array();

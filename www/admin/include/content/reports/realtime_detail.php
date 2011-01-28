@@ -399,7 +399,7 @@ function report_realtime_detail() {
 
         $html .= "</td></tr><tr><td align=left>";
         $html .= "<font class=indented color=#1C4754 size=2><b>$group - $group_name</b></font>";
-        if (ereg("^XXXX",$group)) {
+        if (preg_match("/^XXXX/",$group)) {
             $html .= '';
         } elseif ($active=="Y") {
             $html .="<font color='green' size='-1'>&nbsp;&nbsp;(Active)</font>";
@@ -460,29 +460,29 @@ function report_realtime_detail() {
         $html .= "&nbsp;&nbsp;</td>";
         $html .= "<td align=right><font size=2 color=$default_text><b>Order:</b></td><td align=left><font size=2>&nbsp; $DIALorder&nbsp;&nbsp;</td>";
         $html .= "</tr><tr>";
-        if ( (!eregi('NULL',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
+        if ( (!preg_match('NULL/',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
             $html .= "<td align=right><font size=2 color=$default_text><b>$VSCcat1:</b></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1tally&nbsp;&nbsp;</td>\n";
         }
-        if ( (!eregi('NULL',$VSCcat2)) and (strlen($VSCcat2)>0) ) {
+        if ( (!preg_match('/NULL/',$VSCcat2)) and (strlen($VSCcat2)>0) ) {
             $html .= "<td align=right><font size=2 color=$default_text><b>$VSCcat2:</b></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2tally&nbsp;&nbsp;</td>\n";
         }
-        if ( (!eregi('NULL',$VSCcat3)) and (strlen($VSCcat3)>0) ) {
+        if ( (!preg_match('/NULL/',$VSCcat3)) and (strlen($VSCcat3)>0) ) {
             $html .= "<td align=right><font size=2 color=$default_text><b>$VSCcat3:</b></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3tally&nbsp;&nbsp;</td>\n";
         }
-        if ( (!eregi('NULL',$VSCcat4)) and (strlen($VSCcat4)>0) ) {
+        if ( (!preg_match('/NULL/',$VSCcat4)) and (strlen($VSCcat4)>0) ) {
             $html .= "<td align=right><font size=2 color=$default_text><b>$VSCcat4:</b></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4tally&nbsp;&nbsp;</td>\n";
         }
         $html .= "</tr><tr>";
-        if ( (!eregi('NULL',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
+        if ( (!preg_match('/NULL/',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
             $html .= "<td align=right><font size=2 color=$default_text><b>$VSCcat1/hr:</b></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1hourtally&nbsp;&nbsp;</td>\n";
         }
-        if ( (!eregi('NULL',$VSCcat2)) and (strlen($VSCcat2)>0) ) {
+        if ( (!preg_match('/NULL/',$VSCcat2)) and (strlen($VSCcat2)>0) ) {
             $html .= "<td align=right><font size=2 color=$default_text><b>$VSCcat2/hr:</b></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2hourtally&nbsp;&nbsp;</td>\n";
         }
-        if ( (!eregi('NULL',$VSCcat3)) and (strlen($VSCcat3)>0) ) {
+        if ( (!preg_match('/NULL/',$VSCcat3)) and (strlen($VSCcat3)>0) ) {
             $html .= "<td align=right><font size=2 color=$default_text><b>$VSCcat3/hr:</b></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3hourtally&nbsp;&nbsp;</td>\n";
         }
-        if ( (!eregi('NULL',$VSCcat4)) and (strlen($VSCcat4)>0) ) {
+        if ( (!preg_match('/NULL/',$VSCcat4)) and (strlen($VSCcat4)>0) ) {
             $html .= "<td align=right><font size=2 color=$default_text><b>$VSCcat4/hr:</b></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4hourtally&nbsp;&nbsp;</td>\n";
         }
         $html .= "</tr>";
@@ -873,27 +873,27 @@ function report_realtime_detail() {
 
         $i=0;
         while ($i < $talking_to_print) {
-            if (eregi('SIP/',$Aextension[$i])) {
+            if (preg_match('/SIP\//',$Aextension[$i])) {
                 $protocol = 'SIP';
                 $dialplan = preg_replace('/^SIP\/|-.*$/i',"",$Aextension[$i]);
                 $exten = sprintf("extension='%s'",mres($dialplan));
-            } elseif (eregi('IAX2/',$Aextension[$i])) {
+            } elseif (preg_match('/IAX2\//',$Aextension[$i])) {
                 $protocol = 'IAX2';
                 $dialplan = preg_replace('/^IAX2\/|-.*$/i',"",$Aextension[$i]);
                 $exten = sprintf("extension='%s'",mres($dialplan));
-            } elseif (eregi("Local/",$Aextension[$i])) {
+            } elseif (preg_match("/Local\//",$Aextension[$i])) {
                 $protocol = 'EXTERNAL';
                 $dialplan = preg_replace('/^Local\/|\@.*$/i',"",$Aextension[$i]);
                 $exten = sprintf("dialplan_number='%s'",mres($dialplan));
-            } elseif (eregi('DAHDI/',$Aextension[$i])) {
+            } elseif (preg_match('/DAHDI\//',$Aextension[$i])) {
                 $protocol = 'DAHDI';
                 $dialplan = preg_replace('/^DAHDI\//i',"",$Aextension[$i]);
                 $exten = sprintf("extension='%s'",mres($dialplan));
-            } elseif (eregi('Zap/',$Aextension[$i])) {
+            } elseif (preg_match('/Zap\//',$Aextension[$i])) {
                 $protocol = 'Zap';
                 $dialplan = preg_replace('/^Zap\//i',"",$Aextension[$i]);
                 $exten = sprintf("extension='%s'",mres($dialplan));
-            } elseif (eregi("R/",$Aextension[$i])) {
+            } elseif (preg_match("/R\//",$Aextension[$i])) {
                 $protocol = 'EXTERNAL';
                 $dialplan = preg_replace('/^R\/|\@.*$/i',"",$Aextension[$i]);
                 $exten = sprintf("dialplan_number='%s'",mres($dialplan));

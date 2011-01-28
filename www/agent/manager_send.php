@@ -199,9 +199,9 @@ while ($i < $qm_conf_ct)
 
 if ($non_latin < 1)
 {
-$user=ereg_replace("[^0-9a-zA-Z]","",$user);
-$pass=ereg_replace("[^0-9a-zA-Z]","",$pass);
-$secondS = ereg_replace("[^0-9]","",$secondS);
+$user=preg_replace("/[^0-9a-zA-Z]/","",$user);
+$pass=preg_replace("/[^0-9a-zA-Z]/","",$pass);
+$secondS = preg_replace("/[^0-9]/","",$secondS);
 }
 
 # default optional vars if not set
@@ -357,7 +357,7 @@ if ($ACTION=="OriginateNameVmail")
 
 if ($ACTION=="OriginateVDRelogin")
 {
-	if ( ($enable_sipsak_messages > 0) and ($allow_sipsak_messages > 0) and (eregi("SIP",$protocol)) )
+	if ( ($enable_sipsak_messages > 0) and ($allow_sipsak_messages > 0) and (preg_match("/SIP/",$protocol)) )
 	{
 	$CIDdate = date("ymdHis");
 	$DS='-';
@@ -425,7 +425,7 @@ if ($ACTION=="HangupConfDial") {
             $channel=$rowx[0];
             $local_hangup=1;
             $ACTION="Hangup";
-            $queryCID = eregi_replace("^.","G",$queryCID);
+            $queryCID = preg_replace("/^./","G",$queryCID);
         }
     }
 }

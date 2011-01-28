@@ -81,7 +81,7 @@ if ($ADD==421111111111111)
 {
 	if ($LOGmodify_servers==1)
 	{
-	if (ereg('delete',$stage))
+	if (preg_match('/delete/',$stage))
 		{
 		if ( (strlen($status) < 1) or (preg_match("/^B$|^DNC$|^NA$|^DROP$|^INCALL$|^QUEUE$|^NEW$/i",$status)) )
 			{
@@ -108,7 +108,7 @@ if ($ADD==421111111111111)
 				}
 			}
 		}
-	if (ereg('modify',$stage))
+	if (preg_match('/modify/',$stage))
 		{
 		if ( (strlen($status) < 1) or (strlen($status_name) < 2) )
 			{
@@ -265,7 +265,7 @@ if ($ADD==231111111111111)
 			$stmt="SELECT count(*) from osdial_status_categories where tovdad_display='Y' and vsc_id NOT IN('$vsc_id');";
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
-			if ( ($row[0] > 3) and (ereg('Y',$tovdad_display)) )
+			if ( ($row[0] > 3) and (preg_match('/Y/',$tovdad_display)) )
 				{
 				$tovdad_display = 'N';
 				echo "<br><B><font color=red>ERROR: There are already 4 Status Categories set to display on the Real-Time report.</font></B>\n";
@@ -303,7 +303,7 @@ if ($ADD==431111111111111)
 		}
 	 else
 		{
-		if (ereg('delete',$stage))
+		if (preg_match('/delete/',$stage))
 			{
 			echo "<br><B><font color=$default_text>STATUS CATEGORY DELETED: $vsc_id</font></B>\n";
 
@@ -318,14 +318,14 @@ if ($ADD==431111111111111)
 				fclose($fp);
 				}
 			}
-		if (ereg('modify',$stage))
+		if (preg_match('/modify/',$stage))
 			{
 			echo "<br><B><font color=$default_text>STATUS CATEGORY MODIFIED: $vsc_id</font></B>\n";
 
 			$stmt="SELECT count(*) from osdial_status_categories where tovdad_display='Y' and vsc_id NOT IN('$vsc_id');";
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
-			if ( ($row[0] > 3) and (ereg('Y',$tovdad_display)) )
+			if ( ($row[0] > 3) and (preg_match('/Y/',$tovdad_display)) )
 				{
 				$tovdad_display = 'N';
 				echo "<br><B><font color=red>ERROR: There are already 4 Status Categories set to display on the Real-Time report.</font></B>\n";

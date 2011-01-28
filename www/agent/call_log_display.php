@@ -66,8 +66,8 @@ if (isset($_GET["exten"]))				{$exten=$_GET["exten"];}
 if (isset($_GET["protocol"]))				{$protocol=$_GET["protocol"];}
 	elseif (isset($_POST["protocol"]))		{$protocol=$_POST["protocol"];}
 
-$user=ereg_replace("[^0-9a-zA-Z]","",$user);
-$pass=ereg_replace("[^0-9a-zA-Z]","",$pass);
+$user=preg_replace("/[^0-9a-zA-Z]/","",$user);
+$pass=preg_replace("/[^0-9a-zA-Z]/","",$pass);
 
 # default optional vars if not set
 if (!isset($format))   {$format="text";}

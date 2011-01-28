@@ -92,7 +92,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
         $p=0;
         $RANK_camp_active=0;
         $CR_disabled = '';
-        if (eregi('-ALL-CAMPAIGNS-',$allowed_campaigns)) {
+        if (preg_match('/-ALL-CAMPAIGNS-/',$allowed_campaigns)) {
             $RANK_camp_active++;
         } else {
             $UGcampaign_ct = count($UGcampaigns);
@@ -299,7 +299,7 @@ if ( ($ADD==211111) or ($ADD==311111) or ($ADD==411111) or ($ADD==511111) or ($A
     $campaigns_list='<B><input type="checkbox" id="GLxxALLxx" name="campaigns[]" value="-ALL-CAMPAIGNS-"';
     $p=0;
     while ($p<100) {
-        if (eregi('ALL-CAMPAIGNS',$campaigns[$p])) {
+        if (preg_match('/ALL-CAMPAIGNS/',$campaigns[$p])) {
             $campaigns_list.=" CHECKED";
             $campaigns_value .= " -ALL-CAMPAIGNS- -";
         }

@@ -59,8 +59,8 @@ if (isset($_GET["format"]))					{$format=$_GET["format"];}
 if (isset($_GET["vmail_box"]))				{$vmail_box=$_GET["vmail_box"];}
 	elseif (isset($_POST["vmail_box"]))		{$vmail_box=$_POST["vmail_box"];}
 
-$user=ereg_replace("[^0-9a-zA-Z]","",$user);
-$pass=ereg_replace("[^0-9a-zA-Z]","",$pass);
+$user=preg_replace("/[^0-9a-zA-Z]/","",$user);
+$pass=preg_replace("/[^0-9a-zA-Z]/","",$pass);
 
 # default optional vars if not set
 if (!isset($format))   {$format="text";}

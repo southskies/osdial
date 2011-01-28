@@ -130,7 +130,7 @@ function report_realtime_summary() {
 		$DIALtimeout =	$row[17];
 		$DIALstatuses =	$row[18];
 		$DIALstatuses = (preg_replace("/ -$|^ /","",$DIALstatuses));
-		$DIALstatuses = (ereg_replace(' ',', ',$DIALstatuses));
+		$DIALstatuses = (preg_replace('/ /',', ',$DIALstatuses));
 		
 		$stmt=sprintf("SELECT count(*) FROM osdial_hopper WHERE campaign_id IN %s AND campaign_id='%s';",$LOG['allowed_campaignsSQL'],mres($group));
 		$rslt=mysql_query($stmt, $link);
@@ -230,29 +230,29 @@ function report_realtime_summary() {
 		
 		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>ORDER:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALorder &nbsp; &nbsp; </TD>";
 		$html .= "</tr><tr>";
-		if ( (!eregi('NULL',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
+		if ( (!preg_match('/NULL/',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
 			$html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat1:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1tally&nbsp;&nbsp;&nbsp;</td>\n";
 		}
-		if ( (!eregi('NULL',$VSCcat2)) and (strlen($VSCcat2)>0) ) {
+		if ( (!preg_match('/NULL/',$VSCcat2)) and (strlen($VSCcat2)>0) ) {
 			$html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat2:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2tally&nbsp;&nbsp;&nbsp;</td>\n";
 		}
-		if ( (!eregi('NULL',$VSCcat3)) and (strlen($VSCcat3)>0) ) { 
+		if ( (!preg_match('/NULL/',$VSCcat3)) and (strlen($VSCcat3)>0) ) { 
 			$html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat3:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3tally&nbsp;&nbsp;&nbsp;</td>\n";
 		}
-		if ( (!eregi('NULL',$VSCcat4)) and (strlen($VSCcat4)>0) ) {
+		if ( (!preg_match('/NULL/',$VSCcat4)) and (strlen($VSCcat4)>0) ) {
 			$html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat4:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4tally&nbsp;&nbsp;&nbsp;</td>\n";
 		}
 		$html .= "</tr><tr>";
-		if ( (!eregi('NULL',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
+		if ( (!preg_match('/NULL/',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
 			$html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat1/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1hourtally&nbsp;&nbsp;&nbsp;</td>\n";
 		}
-		if ( (!eregi('NULL',$VSCcat2)) and (strlen($VSCcat2)>0) ) {
+		if ( (!preg_match('/NULL/',$VSCcat2)) and (strlen($VSCcat2)>0) ) {
 			$html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat2/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2hourtally&nbsp;&nbsp;&nbsp;</td>\n";
 		}
-		if ( (!eregi('NULL',$VSCcat3)) and (strlen($VSCcat3)>0) ) { 
+		if ( (!preg_match('/NULL/',$VSCcat3)) and (strlen($VSCcat3)>0) ) { 
 			$html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat3/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3hourtally&nbsp;&nbsp;&nbsp;</td>\n";
 		}
-		if ( (!eregi('NULL',$VSCcat4)) and (strlen($VSCcat4)>0) ) {
+		if ( (!preg_match('/NULL/',$VSCcat4)) and (strlen($VSCcat4)>0) ) {
 			$html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat4/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4hourtally&nbsp;&nbsp;&nbsp;</td>\n";
 		}
 		
@@ -311,10 +311,10 @@ function report_realtime_summary() {
 			while ($i < $parked_to_print) {
 				$row=mysql_fetch_row($rslt);
 		
-				if (eregi("LIVE",$row[0])) {
+				if (preg_match("/LIVE/",$row[0])) {
 					$out_live++;
 				} else {
-					if (eregi("CLOSER",$row[0])) {
+					if (preg_match("/CLOSER/",$row[0])) {
 						$nothing=1;
 					} else {
 						$out_ring++;
@@ -362,12 +362,12 @@ function report_realtime_summary() {
 			$agentcount=0;
 			while ($i < $talking_to_print) {
 				$row=mysql_fetch_row($rslt);
-				if (eregi("READY|PAUSED",$row[3]))	{
+				if (preg_match("/READY|PAUSED/",$row[3]))	{
 					$row[5]=$row[6];
 				}
 				$Lstatus =			$row[3];
 				$status =			sprintf("%-6s", $row[3]);
-				if (!eregi("INCALL|QUEUE",$row[3])) {
+				if (!preg_match("/INCALL|QUEUE/",$row[3])) {
 					$call_time_S = ($STARTtime - $row[6]);
 				} else {
 					$call_time_S = ($STARTtime - $row[5]);
@@ -383,7 +383,7 @@ function report_realtime_summary() {
 				$call_time_MS = "$call_time_M_int:$call_time_SEC";
 				$call_time_MS =		sprintf("%7s", $call_time_MS);
 				$G = '';		$EG = '';
-				if (eregi("PAUSED",$row[3])) {
+				if (preg_match("/PAUSED/",$row[3])) {
 					if ($call_time_M_int >= 30) {
 						$i++; continue;
 					} else {
@@ -391,8 +391,8 @@ function report_realtime_summary() {
 					}
 				}
 		
-				if ( (eregi("INCALL",$status)) or (eregi("QUEUE",$status)) ) {$agent_incall++;  $agent_total++;}
-				if ( (eregi("READY",$status)) or (eregi("CLOSER",$status)) ) {$agent_ready++;  $agent_total++;}
+				if ( (preg_match("/INCALL/",$status)) or (preg_match("/QUEUE/",$status)) ) {$agent_incall++;  $agent_total++;}
+				if ( (preg_match("/READY/",$status)) or (preg_match("/CLOSER/",$status)) ) {$agent_ready++;  $agent_total++;}
 				$agentcount++;
 		
 		

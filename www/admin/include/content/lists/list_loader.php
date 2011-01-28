@@ -60,7 +60,7 @@ if ($ADD==122) {
         if ($isdst) $server_gmt++;
 	} else {
         $server_gmt = date("O");
-        $server_gmt = eregi_replace("\+","",$server_gmt);
+        $server_gmt = preg_replace("/\+/","",$server_gmt);
         $server_gmt = (($server_gmt + 0) / 100);
 	}
 	$local_gmt = $server_gmt;
@@ -153,7 +153,7 @@ if ($ADD==122) {
 		$total=0; $good=0; $bad=0; $dup=0; $post=0;
 
         # Process an Excel 
-		if (eregi(".xls$", $leadfile_name)) {
+		if (preg_match("/.xls$/", $leadfile_name)) {
 			# copy($leadfile, "./osdial_temp_file.xls");
 			$file=fopen("$lead_file", "r");
 		
@@ -169,10 +169,10 @@ if ($ADD==122) {
             flush();
 
 			$dupcheckCLI=''; $postalgmtCLI='';
-			if (eregi("DUPLIST",$dupcheck)) {$dupcheckCLI='--duplicate-check';}
-			if (eregi("DUPCAMP",$dupcheck)) {$dupcheckCLI='--duplicate-campaign-check';}
-			if (eregi("DUPSYS",$dupcheck)) {$dupcheckCLI='--duplicate-system-check';}
-			if (eregi("POSTAL",$postalgmt)) {$postalgmtCLI='--postal-code-gmt';}
+			if (preg_match("/DUPLIST/",$dupcheck)) {$dupcheckCLI='--duplicate-check';}
+			if (preg_match("/DUPCAMP/",$dupcheck)) {$dupcheckCLI='--duplicate-campaign-check';}
+			if (preg_match("/DUPSYS/",$dupcheck)) {$dupcheckCLI='--duplicate-system-check';}
+			if (preg_match("/POSTAL/",$postalgmt)) {$postalgmtCLI='--postal-code-gmt';}
 			passthru("$WeBServeRRooT/admin/listloader_super.pl $vendor_lead_code_field,$source_id_field,$list_id_field,$phone_code_field,$phone_number_field,$title_field,$first_name_field,$middle_initial_field,$last_name_field,$address1_field,$address2_field,$address3_field,$city_field,$state_field,$province_field,$postal_code_field,$country_code_field,$gender_field,$date_of_birth_field,$alt_phone_field,$email_field,$custom1_field,$comments_field, --forcelistid=$list_id_override --forcephonecode=$phone_code_override --lead-file=$lead_file $postalgmtCLI $dupcheckCLI");
 
         # Process a CSV/PSV/TSV
@@ -229,8 +229,8 @@ if ($ADD==122) {
 				$list_id =				$row[$list_id_field];
 				$gmt_offset =			'0';
 				$called_since_last_reset='N';
-				$phone_code =			eregi_replace("[^0-9]", "", $row[$phone_code_field]);
-				$phone_number =			eregi_replace("[^0-9]", "", $row[$phone_number_field]);
+				$phone_code =			preg_replace("/[^0-9]/", "", $row[$phone_code_field]);
+				$phone_number =			preg_replace("/[^0-9]/", "", $row[$phone_number_field]);
 				$USarea = 			    substr($phone_number, 0, 3);
 				$title =				$row[$title_field];
 				$first_name =			$row[$first_name_field];
@@ -246,7 +246,7 @@ if ($ADD==122) {
 				$country_code =			$row[$country_code_field];
 				$gender =				$row[$gender_field];
 				$date_of_birth =		$row[$date_of_birth_field];
-				$alt_phone =			eregi_replace("[^0-9]", "", $row[$alt_phone_field]);
+				$alt_phone =			preg_replace("/[^0-9]/", "", $row[$alt_phone_field]);
 				$email =				$row[$email_field];
 				$custom1 =		        $row[$custom1_field];
 				$comments =				trim($row[$comments_field]);
@@ -563,7 +563,7 @@ if ($ADD==122) {
 			flush();
 		
             # Process the "standard" style Excel file.
-		    if (eregi(".xls$", $leadfile_name)) {
+		    if (preg_match("/.xls$/", $leadfile_name)) {
 			    if ($WeBRooTWritablE > 0) {
 				    copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.xls");
 				    $lead_file = "$WeBServeRRooT/admin/osdial_temp_file.xls";
@@ -575,10 +575,10 @@ if ($ADD==122) {
 		
 			    $dupcheckCLI='';
                 $postalgmtCLI='';
-			    if (eregi("DUPLIST",$dupcheck)) $dupcheckCLI='--duplicate-check';
-			    if (eregi("DUPCAMP",$dupcheck)) $dupcheckCLI='--duplicate-campaign-check';
-			    if (eregi("DUPSYS",$dupcheck)) $dupcheckCLI='--duplicate-system-check';
-			    if (eregi("POSTAL",$postalgmt)) $postalgmtCLI='--postal-code-gmt';
+			    if (preg_match("/DUPLIST/",$dupcheck)) $dupcheckCLI='--duplicate-check';
+			    if (preg_match("/DUPCAMP/",$dupcheck)) $dupcheckCLI='--duplicate-campaign-check';
+			    if (preg_match("/DUPSYS/",$dupcheck)) $dupcheckCLI='--duplicate-system-check';
+			    if (preg_match("/POSTAL/",$postalgmt)) $postalgmtCLI='--postal-code-gmt';
 			    passthru("$WeBServeRRooT/admin/listloader.pl --forcelistid=$list_id_override --forcephonecode=$phone_code_override --lead-file=$lead_file  $postalgmtCLI $dupcheckCLI");
 			
             # Process "standard" CSV/TSV/PSV
@@ -629,8 +629,8 @@ if ($ADD==122) {
 		    		$list_id =				$row[2];
 		    		$gmt_offset =			'0';
 		    		$called_since_last_reset='N';
-		    		$phone_code =			eregi_replace("[^0-9]", "", $row[3]);
-		    		$phone_number =			eregi_replace("[^0-9]", "", $row[4]);
+		    		$phone_code =			preg_replace("/[^0-9]/", "", $row[3]);
+		    		$phone_number =			preg_replace("/[^0-9]/", "", $row[4]);
 		    		$USarea = 			substr($phone_number, 0, 3);
 		    		$title =				$row[5];
 		    		$first_name =			$row[6];
@@ -646,7 +646,7 @@ if ($ADD==122) {
 		    		$country_code =			$row[16];
 		    		$gender =				$row[17];
 		    		$date_of_birth =		$row[18];
-		    		$alt_phone =			eregi_replace("[^0-9]", "", $row[19]);
+		    		$alt_phone =			preg_replace("/[^0-9]/", "", $row[19]);
 		    		$email =				$row[20];
 		    		$custom1 =		$row[21];
 		    		$comments =				trim($row[22]);
@@ -815,7 +815,7 @@ if ($ADD==122) {
 			
 	
             # Process Excel file for field selection.
-			if (eregi(".xls$", $leadfile_name)) {
+			if (preg_match("/.xls$/", $leadfile_name)) {
 				if ($WeBRooTWritablE > 0) {
 					copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.xls");
 					$lead_file = "$WeBServeRRooT/admin/osdial_temp_file.xls";
@@ -825,10 +825,10 @@ if ($ADD==122) {
 				}
 	
 				$dupcheckCLI=''; $postalgmtCLI='';
-				if (eregi("DUPLIST",$dupcheck)) {$dupcheckCLI='--duplicate-check';}
-				if (eregi("DUPCAMP",$dupcheck)) {$dupcheckCLI='--duplicate-campaign-check';}
-				if (eregi("DUPSYS",$dupcheck)) {$dupcheckCLI='--duplicate-system-check';}
-				if (eregi("POSTAL",$postalgmt)) {$postalgmtCLI='--postal-code-gmt';}
+				if (preg_match("/DUPLIST/",$dupcheck)) {$dupcheckCLI='--duplicate-check';}
+				if (preg_match("/DUPCAMP/",$dupcheck)) {$dupcheckCLI='--duplicate-campaign-check';}
+				if (preg_match("/DUPSYS/",$dupcheck)) {$dupcheckCLI='--duplicate-system-check';}
+				if (preg_match("/POSTAL/",$postalgmt)) {$postalgmtCLI='--postal-code-gmt';}
 				passthru("$WeBServeRRooT/admin/listloader_rowdisplay.pl --lead-file=$lead_file $postalgmtCLI $dupcheckCLI");
 
             # Process CSV/PSV/TSV file for field selection.
@@ -874,7 +874,7 @@ if ($ADD==122) {
                     } elseif (mysql_field_name($rslt, $i) == "address3") {
 					    echo "    <td align=center>ADDRESS3&nbsp;(phone&nbsp;number&nbsp;3):</td>\n";
                     } else {
-					    echo "    <td align=center>".eregi_replace("_", "&nbsp;", strtoupper(mysql_field_name($rslt, $i))).": </td>\n";
+					    echo "    <td align=center>".preg_replace("/_/", "&nbsp;", strtoupper(mysql_field_name($rslt, $i))).": </td>\n";
                     }
 					echo "    <td align=center class=tabinput>\n";
 					if (mysql_field_name($rslt, $i) == "list_id" and $list_id_override != "") {
@@ -885,7 +885,7 @@ if ($ADD==122) {
                         echo "      <select name='".mysql_field_name($rslt, $i)."_field'>\n";
 					    echo "        <option value='-1'>(none)</option>\n";
 					    for ($j=0; $j<count($row); $j++) {
-						    eregi_replace("\"", "", $row[$j]);
+						    preg_replace("/\"/", "", $row[$j]);
                             $fsel='';
                             if ($VARclient=='CFGA') {
                                 if (strtoupper(mysql_field_name($rslt, $i))=='PHONE_NUMBER' and strtoupper($row[$j])=='PHONENUMBER') $fsel='selected';
@@ -924,7 +924,7 @@ if ($ADD==122) {
                     foreach ($afmaps as $k => $v) {
 					    echo "  <tr class=\"row font1\" " . bgcolor($o) . ">\n";
 					    echo "    <td align=left>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-                        echo eregi_replace("_", "&nbsp;", strtoupper($v));
+                        echo preg_replace("/_/", "&nbsp;", strtoupper($v));
                         if ($v=='AFFAP_AFFAP1') {
                             echo "&nbsp;(phone&nbsp;number&nbsp;4)";
                         } elseif ($v=='AFFAP_AFFAP2') {
@@ -950,7 +950,7 @@ if ($ADD==122) {
                         echo "      <select name='$k'>\n";
 					    echo "        <option value='-1'>(none)</option>\n";
 					    for ($j=0; $j<count($row); $j++) {
-					        eregi_replace("\"", "", $row[$j]);
+					        preg_replace("/\"/", "", $row[$j]);
                             $fsel='';
                             if ($VARclient=='CFGA') {
                                 if (strtoupper($v)=='AFFAP_AFFAP1' and strtoupper($row[$j])=='PHONE4') $fsel='selected';

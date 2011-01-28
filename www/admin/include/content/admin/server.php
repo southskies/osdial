@@ -470,11 +470,11 @@ if ($ADD==311111111111) {
             while ($lists_to_print > $o) {
                 $rowx=mysql_fetch_row($rsltx);
                 $o++;
-                if (ereg("Y", $rowx[1])) {
+                if (preg_match("/Y/", $rowx[1])) {
                     $active_phones++;
                     $camp_lists .= "'$rowx[0]',";
                 }
-                if (ereg("N", $rowx[1])) {
+                if (preg_match("/N/", $rowx[1])) {
                     $inactive_phones++;
                 }
 
@@ -559,7 +559,7 @@ if ($ADD==311111111111) {
 
             echo "<center><b>\n";
 
-            $camp_lists = eregi_replace(".$","",$camp_lists);
+            $camp_lists = preg_replace("/.$/","",$camp_lists);
             echo "<font size=2 color=$default_text>This server has $active_phones active phones and $inactive_phones inactive phones<br><br>\n";
             echo "This server has $active_confs active conferences<br><br>\n";
             echo "This server has $active_vdconfs active $t1 conferences</font><br><br>\n";

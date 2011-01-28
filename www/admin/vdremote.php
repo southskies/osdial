@@ -82,8 +82,8 @@ if ($force_logout)
     exit;
 }
 
-$PHP_AUTH_USER = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_USER);
-$PHP_AUTH_PW = ereg_replace("[^0-9a-zA-Z]","",$PHP_AUTH_PW);
+$PHP_AUTH_USER = preg_replace("/[^0-9a-zA-Z]/","",$PHP_AUTH_USER);
+$PHP_AUTH_PW = preg_replace("/[^0-9a-zA-Z]/","",$PHP_AUTH_PW);
 
 
 $popup_page = './closer_popup.php';
@@ -409,7 +409,7 @@ if ($ADD==61111)
 				{
 				$leadlink=0;
 				$row=mysql_fetch_row($rslt);
-					if (eregi("READY|PAUSED",$row[4]))
+					if (preg_match("/READY|PAUSED/",$row[4]))
 					{
 					$row[3]='';
 					$row[5]=' - WAITING - ';
@@ -422,14 +422,14 @@ if ($ADD==61111)
 					{
 					$leadidLINK=$row[2];
 					$leadlink++;
-					if ( eregi("QUEUE",$row[4]) ) {$row[6]=$STARTtime;}
+					if ( preg_match("/QUEUE/",$row[4]) ) {$row[6]=$STARTtime;}
 					$leadid = "<a href=\"./remote_dispo.php?lead_id=$row[2]&call_began=$row[6]\" target=\"_blank\">$leadid</a>";
 					}
 				$channel =			sprintf("%-10s", $row[3]);
 					$cc=0;
 				while ( (strlen($channel) > 10) and ($cc < 100) )
 					{
-					$channel = eregi_replace(".$","",$channel);   
+					$channel = preg_replace("/.$/","",$channel);   
 					$cc++;
 					if (strlen($channel) <= 10) {$cc=101;}
 					}
