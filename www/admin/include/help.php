@@ -28,8 +28,8 @@
 # 090520-1916 - Removed unneeded INBOUND_MAN help.
 
 
-$NWB = " &nbsp; <a href=\"javascript:openNewWindow('$PHP_SELF?ADD=99999";
-$NWE = "')\"><IMG SRC=\"help.gif\" WIDTH=20 HEIGHT=20 BORDER=0 ALT=\"HELP\" ALIGN=TOP></A>";
+$NWB = " &nbsp; <span onmouseover=\"this.style.cursor='help';\" onmouseout=\"this.style.cursor='auto';\" onclick=\"openNewWindow('$PHP_SELF?ADD=99999'+this.getAttribute('helpitem'));\" helpitem=\"";
+$NWE = "\"><img src=\"help.gif\" width=20 height=20 border=0 alt=\"Help\" align=top></span>";
 
 ######################
 # ADD=99999 display the HELP SCREENS
