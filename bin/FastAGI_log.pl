@@ -118,11 +118,11 @@ foreach(@conf)
 ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
 $year = ($year + 1900);
 $mon++;
-if ($mon < 10) {$mon = "0$mon";}
-if ($mday < 10) {$mday = "0$mday";}
-if ($hour < 10) {$Fhour = "0$hour";}
-if ($min < 10) {$min = "0$min";}
-if ($sec < 10) {$sec = "0$sec";}
+if ($mon < 10) {$mon = '0'.$mon;}
+if ($mday < 10) {$mday = '0'.$mday;}
+if ($hour < 10) {$Fhour = '0'.$hour;}
+if ($min < 10) {$min = '0'.$min;}
+if ($sec < 10) {$sec = '0'.$sec;}
 
 if (!$VARDB_port) {$VARDB_port='3306';}
 
@@ -142,7 +142,7 @@ $rec_count=0;
 while ($sthBrows > $rec_count)
     {
     @aryB = $sthB->fetchrow_array;
-        $SERVERLOG = "$aryB[0]";
+        $SERVERLOG = $aryB[0];
     $rec_count++;
     }
 $sthB->finish();
@@ -150,8 +150,8 @@ $dbhB->disconnect();
 
 if ($SERVERLOG =~ /Y/)
     {
-    $childLOGfile = "$PATHlogs/FastAGIchildLOG.$year-$mon-$mday";
-    $log_level = "4";
+    $childLOGfile = $PATHlogs.'/FastAGIchildLOG.'.$year.'-'.$mon.'-'.$mday;
+    $log_level = '4';
     print "SERVER LOGGING ON: LEVEL-$log_level FILE-$childLOGfile\n";
     }
 
@@ -173,11 +173,11 @@ sub process_request {
     ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
     $year = ($year + 1900);
     $mon++;
-    if ($mon < 10) {$mon = "0$mon";}
-    if ($mday < 10) {$mday = "0$mday";}
-    if ($hour < 10) {$Fhour = "0$hour";}
-    if ($min < 10) {$min = "0$min";}
-    if ($sec < 10) {$sec = "0$sec";}
+    if ($mon < 10) {$mon = '0'.$mon;}
+    if ($mday < 10) {$mday = '0'.$mday;}
+    if ($hour < 10) {$Fhour = '0'.$hour;}
+    if ($min < 10) {$min = '0'.$min;}
+    if ($sec < 10) {$sec = '0'.$sec;}
 
     $now_date_epoch = time();
     $now_date = "$year-$mon-$mday $hour:$min:$sec";
@@ -222,7 +222,7 @@ sub process_request {
         }
 
     if (!$VARDB_port) {$VARDB_port='3306';}
-    if (!$AGILOGfile) {$AGILOGfile = "$PATHlogs/FASTagiout.$year-$mon-$mday";}
+    if (!$AGILOGfile) {$AGILOGfile = $PATHlogs.'/FASTagiout.'.$year.'-'.$mon.'-'.$mday;}
 
     $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
         or die "Couldn't connect to database: " . DBI->errstr;
@@ -237,8 +237,8 @@ sub process_request {
         {
         $AGILOG = '0';
         @aryA = $sthA->fetchrow_array;
-            $DBagi_output = "$aryA[0]";
-            $DBasterisk_version = "$aryA[1]";
+            $DBagi_output = $aryA[0];
+            $DBasterisk_version = $aryA[1];
             if ($DBagi_output =~ /STDERR/) {$AGILOG = '1';}
             if ($DBagi_output =~ /FILE/) {$AGILOG = '2';}
             if ($DBagi_output =~ /BOTH/) {$AGILOG = '3';}
@@ -253,7 +253,7 @@ sub process_request {
 
     if ($AGILOG)
         {
-        $agi_string = "+++++++++++++++++ FastAGI Start ++++++++++++++++++++++++++++++++++++++++";
+        $agi_string = '+++++++++++++++++ FastAGI Start ++++++++++++++++++++++++++++++++++++++++';
         &agi_output;
         }
 
@@ -264,16 +264,16 @@ sub process_request {
     {
         if ($AGILOG)
             {
-            $agi_string = "Perl Environment Dump:";
+            $agi_string = 'Perl Environment Dump:';
             &agi_output;
             }
         $i=0;
         while ($#ARGV >= $i)
         {
-            $args = "$args $ARGV[$i]";
+            $args .= ' '.$ARGV[$i];
             if ($AGILOG)
                 {
-                $agi_string = "$i|$ARGV[$i]";
+                $agi_string = $i.'|'.$ARGV[$i];
                 &agi_output;
                 }
             $i++;
@@ -408,7 +408,7 @@ sub process_request {
                 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
                 $sthArows=$sthA->rows;
                 @aryA = $sthA->fetchrow_array;
-                $is_client_phone = "$aryA[0]";
+                $is_client_phone = $aryA[0];
                 $sthA->finish();
 
                 if ($is_client_phone<1) {
@@ -429,7 +429,7 @@ sub process_request {
                 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
                 $sthArows=$sthA->rows;
                 @aryA = $sthA->fetchrow_array;
-                $is_client_phone = "$aryA[0]";
+                $is_client_phone = $aryA[0];
                 $sthA->finish();
 
                 if ($is_client_phone<1) {
@@ -451,7 +451,7 @@ sub process_request {
                 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
                 $sthArows=$sthA->rows;
                 @aryA = $sthA->fetchrow_array;
-                $is_client_phone = "$aryA[0]";
+                $is_client_phone = $aryA[0];
                 $sthA->finish();
 
                 if ($is_client_phone<1) {
@@ -473,7 +473,7 @@ sub process_request {
                 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
                 $sthArows=$sthA->rows;
                 @aryA = $sthA->fetchrow_array;
-                $is_client_phone         = "$aryA[0]";
+                $is_client_phone = $aryA[0];
                 $phone_ext = $aryA[1];
                 $sthA->finish();
             
@@ -496,8 +496,8 @@ sub process_request {
                 $rec_count=0;
                 if ($sthArows > 0) {
                     @aryA = $sthA->fetchrow_array;
-                    $cmd_line_b = "$aryA[0]";
-                    $cmd_line_d = "$aryA[1]";
+                    $cmd_line_b = $aryA[0];
+                    $cmd_line_d = $aryA[1];
                     if ($accountcode =~ /^DC/) {
                         $cmd_line_d =~ s/Exten: //gi;
                         $cmd_line_b =~ s/Channel: Local\/|\@.*//gi;
@@ -588,7 +588,7 @@ sub process_request {
             while ($sthArows > $rec_count)
                 {
                 @aryA = $sthA->fetchrow_array;
-                $start_time = "$aryA[1]";
+                $start_time = $aryA[1];
                 if ($AGILOG) {$agi_string = "|$aryA[0]|$aryA[1]|";   &agi_output;}
                 $rec_count++;
                 }
@@ -621,8 +621,8 @@ sub process_request {
             if ($sthArows > 0)
                 {
                 @aryA = $sthA->fetchrow_array;
-                $parked_time = "$aryA[0]";
-                $grab_time = "$aryA[1]";
+                $parked_time = $aryA[0];
+                $grab_time = $aryA[1];
                 if ($AGILOG) {$agi_string = "|$aryA[0]|$aryA[1]|";   &agi_output;}
                 $rec_count++;
                 }
@@ -746,14 +746,14 @@ sub process_request {
                 if ($sthArows > 0)
                     {
                     @aryA = $sthA->fetchrow_array;
-                    $VD_lead_id = "$aryA[0]";
-                    $VD_callerid = "$aryA[1]";
-                    $VD_campaign_id = "$aryA[2]";
-                    $VD_alt_dial = "$aryA[3]";
-                    $VD_stage = "$aryA[4]";
-                    $VD_start_epoch = "$aryA[5]";
-                    $VD_uniqueid = "$aryA[6]";
-                    $VD_status = "$aryA[7]";
+                    $VD_lead_id = $aryA[0];
+                    $VD_callerid = $aryA[1];
+                    $VD_campaign_id = $aryA[2];
+                    $VD_alt_dial = $aryA[3];
+                    $VD_stage = $aryA[4];
+                    $VD_start_epoch = $aryA[5];
+                    $VD_uniqueid = $aryA[6];
+                    $VD_status = $aryA[7];
                     $rec_countCUSTDATA++;
                     }
                 $sthA->finish();
@@ -808,12 +808,12 @@ sub process_request {
                     while ($sthArows > $rec_count)
                         {
                         @aryA = $sthA->fetchrow_array;
-                            $enable_queuemetrics_logging = "$aryA[0]";
-                            $queuemetrics_server_ip = "$aryA[1]";
-                            $queuemetrics_dbname = "$aryA[2]";
-                            $queuemetrics_login= "$aryA[3]";
-                            $queuemetrics_pass = "$aryA[4]";
-                            $queuemetrics_log_id = "$aryA[5]";
+                            $enable_queuemetrics_logging = $aryA[0];
+                            $queuemetrics_server_ip = $aryA[1];
+                            $queuemetrics_dbname = $aryA[2];
+                            $queuemetrics_login= $aryA[3];
+                            $queuemetrics_pass = $aryA[4];
+                            $queuemetrics_log_id = $aryA[5];
                             $enable_multicompany = $aryA[6];
                         $rec_count++;
                         }
@@ -841,7 +841,7 @@ sub process_request {
                         while ($sthBrows > $rec_count)
                             {
                             @aryB = $sthB->fetchrow_array;
-                            $VD_agent = "$aryB[0]";
+                            $VD_agent = $aryB[0];
                             $rec_count++;
                             }
                         $sthB->finish();
@@ -878,11 +878,11 @@ sub process_request {
                         if ($sthArows > 0)
                             {
                             @aryA = $sthA->fetchrow_array;
-                            $VD_start_epoch =       "$aryA[0]";
-                            $VD_status =            "$aryA[1]";
-                            $VD_user =                      "$aryA[2]";
-                            $VD_term_reason =       "$aryA[3]";
-                            $VD_comments =          "$aryA[4]";
+                            $VD_start_epoch = $aryA[0];
+                            $VD_status = $aryA[1];
+                            $VD_user = $aryA[2];
+                            $VD_term_reason = $aryA[3];
+                            $VD_comments = $aryA[4];
                             $epc_countCUSTDATA++;
 
                             }
@@ -916,14 +916,14 @@ sub process_request {
                         if ($sthArows > 0)
                             {
                             @aryA = $sthA->fetchrow_array;
-                            $VD_start_epoch = "$aryA[0]";
-                            $VD_status = "$aryA[1]";
-                            $VD_closecallid = "$aryA[2]";
-                            $VD_user = "$aryA[3]";
-                            $VD_term_reason = "$aryA[4]";
-                            $VD_length_in_sec = "$aryA[5]";
-                            $VD_queue_seconds = "$aryA[6]";
-                            $VD_comments = "$aryA[7]";
+                            $VD_start_epoch = $aryA[0];
+                            $VD_status = $aryA[1];
+                            $VD_closecallid = $aryA[2];
+                            $VD_user = $aryA[3];
+                            $VD_term_reason = $aryA[4];
+                            $VD_length_in_sec = $aryA[5];
+                            $VD_queue_seconds = $aryA[6];
+                            $VD_comments = $aryA[7];
                             $epc_countCUSTDATA++;
                             }
                         $sthA->finish();
@@ -1004,7 +1004,7 @@ sub process_request {
                                     $VDCLSQL_queue_seconds = '';
                                     }
 
-                                $VDCLSQL_update = "$VDCLSQL_status$VDCLSQL_term_reason$VDCLSQL_queue_seconds";
+                                $VDCLSQL_update = $VDCLSQL_status.$VDCLSQL_term_reason.$VDCLSQL_queue_seconds;
                                 }
 
 
@@ -1030,9 +1030,9 @@ sub process_request {
                     while ($sthArows > $epc_countCAMPDATA)
                         {
                         @aryA = $sthA->fetchrow_array;
-                        $VD_auto_alt_dial = "$aryA[0]";
-                        $VD_auto_alt_dial_statuses = "$aryA[1]";
-                        $VD_use_internal_dnc = "$aryA[2]";
+                        $VD_auto_alt_dial = $aryA[0];
+                        $VD_auto_alt_dial_statuses = $aryA[1];
+                        $VD_use_internal_dnc = $aryA[2];
                         $epc_countCAMPDATA++;
                         }
                     $sthA->finish();
@@ -1050,11 +1050,11 @@ sub process_request {
                             while ($sthArows > $epc_countCAMPDATA)
                                 {
                                 @aryA = $sthA->fetchrow_array;
-                                $VD_alt_phone = "$aryA[0]";
+                                $VD_alt_phone = $aryA[0];
                                 $VD_alt_phone =~ s/\D//gi;
-                                $VD_gmt_offset_now = "$aryA[1]";
-                                $VD_state = "$aryA[2]";
-                                $VD_list_id = "$aryA[3]";
+                                $VD_gmt_offset_now = $aryA[1];
+                                $VD_state = $aryA[2];
+                                $VD_list_id = $aryA[3];
                                 $epc_countCAMPDATA++;
                                 }
                             $sthA->finish();
@@ -1121,11 +1121,11 @@ sub process_request {
                             while ($sthArows > $epc_countCAMPDATA)
                                 {
                                 @aryA = $sthA->fetchrow_array;
-                                $VD_address3 = "$aryA[0]";
+                                $VD_address3 = $aryA[0];
                                 $VD_address3 =~ s/\D//gi;
-                                $VD_gmt_offset_now = "$aryA[1]";
-                                $VD_state = "$aryA[2]";
-                                $VD_list_id = "$aryA[3]";
+                                $VD_gmt_offset_now = $aryA[1];
+                                $VD_state = $aryA[2];
+                                $VD_list_id = $aryA[3];
                                 $epc_countCAMPDATA++;
                                 }
                             $sthA->finish();
