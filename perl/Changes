@@ -1,6 +1,80 @@
-Revision history for Perl extension OSDial.
+2011-02-04 05:43  Lott Caskey <lottcaskey@gmail.com>
 
-0.01  Wed Feb 10 23:26:32 2010
-	- original version; created by h2xs 1.23 with options
-		-AXc -n OSDial
+	* [r1226] lib/OSDial.pm: Update of tts-hashing and cache file
+	  creation.
+
+2011-01-03 02:48  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1190] lib/OSDial.pm: Add agi_tts_sayphrase module.
+
+2011-01-02 01:25  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1188] lib/OSDial.pm: Do not add if it is a directory.
+
+2010-12-24 00:07  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1172] lib/OSDial.pm: chmod on pattern match. Fix oct() typos.
+
+2010-12-23 23:36  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1169] lib/OSDial.pm: Update permissions for web access to media
+	  files.
+
+2010-12-23 13:40  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1165] lib/OSDial.pm: Type on _mimemap. In media_save_file,
+	  mkdir if it doesnt exist.
+
+2010-12-23 09:45  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1163] lib/OSDial.pm: Add osdial_media and osdial_media_data
+	  tables. Create media_* methods in perl-OSDial. Add documentation
+	  to perl-OSDial. Create osdial_media_sync.pl. Add
+	  osdial_media_sync.pl to cron. Add media mimetypes to
+	  httpd-osdial.conf.
+
+2010-12-15 11:22  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1131] lib/OSDial.pm: Added function to load the configuration
+	  table on OSDial PM startup. Add unique index to configuration.
+
+2010-12-15 08:30  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r1124] lib/OSDial.pm: Reformatted server.php. Added server_stats
+	  table. Added server_profile to servers tables. Added
+	  ArchiveReportPath to configuration. Added server_profile
+	  selection to server.php. Added ArchiveReportPath option to the
+	  Archive Server panel. Modified osdial_resource_listen and
+	  osdial_resource_send to write to database instead of multicast
+	  and left multicast code as an option (--multicast). Added routine
+	  to osdial_astgen to update Archive Server properties if blank.
+	  Rewrote AST_audio_archive.pl AST_audio_compress.pl, and
+	  AST_sort_recordins.pl ro use Archive Server properties.
+
+2010-07-16 23:57  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r959] lib/OSDial.pm: GUI-based carrier configuration.
+
+2010-06-04 13:35  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r885] lib/OSDial.pm: Variable typo.
+
+2010-05-31 18:16  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r861] lib/OSDial.pm: Modufy sql_connect to allow the
+	  specification of the DB to connect too.
+
+2010-04-16 13:27  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r795] lib/OSDial.pm: Added AGI support to perl-OSDial.
+
+2010-04-16 13:26  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r794] Makefile.PL: Make perl-OSDial default to vendors
+	  Installation.
+
+2010-04-07 10:12  Lott Caskey <lottcaskey@gmail.com>
+
+	* [r786] ., Changes, MANIFEST, Makefile.PL, README, lib,
+	  lib/OSDial.pm, t, t/OSDial.t: OSDial Perl module.
 
