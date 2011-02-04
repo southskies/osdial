@@ -300,7 +300,20 @@ sub xfer_to_external {
 	$XqueryCID =~ s/^V/X/;
 	my $IqueryCID = $VqueryCID;
 	$IqueryCID =~ s/^V/I/;
-	my $xfer = $osdial->sql_execute("INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $osdial->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $cinfo->{conf_server} . "*8" . $cinfo->{conf_exten} . "\@" . $osdial->{server}{ext_context} . "','Context: " . $osdial->{server}{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"" . $campaign->{campaign_cid_name} . "\" <" . $campaign->{campaign_cid} . ">','Account: $XqueryCID','','','','');");
+	my $lead = $osdial->sql_query(sprintf("SELECT * FROM osdial_list WHERE lead_id='%s';",$cinfo->{CIDlead_id}));
+	my $cidname=$campaign->{campaign_cid_name};
+	my $cidnum=$campaign->{campaign_cid};
+	if ($campaign->{xfer_cid_mode} eq "LEAD_CUSTOM1") {
+		$cidname=$lead->{custom1};
+		$cidnum=$lead->{custom1};
+	} elsif ($campaign->{xfer_cid_mode} eq "LEAD_CUSTOM2") {
+		$cidname=$lead->{custom2};
+		$cidnum=$lead->{custom2};
+	} elsif ($campaign->{xfer_cid_mode} eq "LEAD") {
+		$cidname=$lead->{phone_number};
+		$cidnum=$lead->{phone_number};
+	}
+	my $xfer = $osdial->sql_execute("INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $osdial->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $cinfo->{conf_server} . "*8" . $cinfo->{conf_exten} . "\@" . $osdial->{server}{ext_context} . "','Context: " . $osdial->{server}{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"" . $cidname . "\" <" . $cidnum . ">','Account: $XqueryCID','','','','');");
 	while ($xfer) {
 		sleep(1);
 		my $sret = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM osdial_manager WHERE (callerid='$XqueryCID' OR callerid='$IqueryCID') AND status='DEAD';");
@@ -393,7 +406,20 @@ sub xfer_to_ingroup {
 	my $VqueryCID = $AGI->{accountcode};
 	my $XqueryCID = $VqueryCID;
 	$XqueryCID =~ s/^V/I/;
-	my $xfer = $osdial->sql_execute("INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $osdial->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $cinfo->{conf_server} . "*8" . $cinfo->{conf_exten} . "\@" . $osdial->{server}{ext_context} . "','Context: " . $osdial->{server}{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"" . $campaign->{campaign_cid_name} . "\" <" . $campaign->{campaign_cid} . ">','Account: $XqueryCID','','','','');");
+	my $lead = $osdial->sql_query(sprintf("SELECT * FROM osdial_list WHERE lead_id='%s';",$cinfo->{CIDlead_id}));
+	my $cidname=$campaign->{campaign_cid_name};
+	my $cidnum=$campaign->{campaign_cid};
+	if ($campaign->{xfer_cid_mode} eq "LEAD_CUSTOM1") {
+		$cidname=$lead->{custom1};
+		$cidnum=$lead->{custom1};
+	} elsif ($campaign->{xfer_cid_mode} eq "LEAD_CUSTOM2") {
+		$cidname=$lead->{custom2};
+		$cidnum=$lead->{custom2};
+	} elsif ($campaign->{xfer_cid_mode} eq "LEAD") {
+		$cidname=$lead->{phone_number};
+		$cidnum=$lead->{phone_number};
+	}
+	my $xfer = $osdial->sql_execute("INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $osdial->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $cinfo->{conf_server} . "*8" . $cinfo->{conf_exten} . "\@" . $osdial->{server}{ext_context} . "','Context: " . $osdial->{server}{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"" . $cidname . "\" <" . $cidnum . ">','Account: $XqueryCID','','','','');");
 	while ($xfer) {
 		sleep(1);
 		my $sres = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM osdial_manager WHERE callerid='$XqueryCID' AND status='DEAD';");
