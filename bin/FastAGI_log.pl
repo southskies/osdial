@@ -1318,6 +1318,6 @@ if ($AGILOG >=2)
 	close(Lout);
 	}
 	### send to STDERR writing ###
-	print STDERR "$now_date|$script|$process|$agi_string\n" if ($AGILOG == '1' or $AGILOG == '3');
+	print STDERR "$now_date|$script|$process|$agi_string\n" if ($AGILOG eq '1' or $AGILOG eq '3');
 $agi_string='';
 }
