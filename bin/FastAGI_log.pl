@@ -118,13 +118,13 @@ foreach(@conf)
 ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
 $year = ($year + 1900);
 $mon++;
-if ($mon < 10) {$mon = '0'.$mon;}
-if ($mday < 10) {$mday = '0'.$mday;}
-if ($hour < 10) {$Fhour = '0'.$hour;}
-if ($min < 10) {$min = '0'.$min;}
-if ($sec < 10) {$sec = '0'.$sec;}
+$mon = '0'.$mon if ($mon < 10);
+$mday = '0'.$mday if ($mday < 10);
+$hour = '0'.$hour if ($hour < 10);
+$min = '0'.$min if ($min < 10);
+$sec = '0'.$sec if ($sec < 10);
 
-if (!$VARDB_port) {$VARDB_port='3306';}
+$VARDB_port='3306' unless ($VARDB_port);
 
 $SERVERLOG = 'N';
 $log_level = '0';
@@ -173,11 +173,11 @@ sub process_request {
 	($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
 	$year = ($year + 1900);
 	$mon++;
-	if ($mon < 10) {$mon = '0'.$mon;}
-	if ($mday < 10) {$mday = '0'.$mday;}
-	if ($hour < 10) {$Fhour = '0'.$hour;}
-	if ($min < 10) {$min = '0'.$min;}
-	if ($sec < 10) {$sec = '0'.$sec;}
+	$mon = '0'.$mon if ($mon < 10);
+	$mday = '0'.$mday if ($mday < 10);
+	$hour = '0'.$hour if ($hour < 10);
+	$min = '0'.$min if ($min < 10);
+	$sec = '0'.$sec if ($sec < 10);
 
 	$now_date_epoch = time();
 	$now_date = "$year-$mon-$mday $hour:$min:$sec";
@@ -221,8 +221,8 @@ sub process_request {
 		$i++;
 		}
 
-	if (!$VARDB_port) {$VARDB_port='3306';}
-	if (!$AGILOGfile) {$AGILOGfile = $PATHlogs.'/FASTagiout.'.$year.'-'.$mon.'-'.$mday;}
+	$VARDB_port='3306' unless ($VARDB_port);
+	$AGILOGfile = $PATHlogs.'/FASTagiout.'.$year.'-'.$mon.'-'.$mday unless ($AGILOGfile);
 
 	$dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
 		or die "Couldn't connect to database: " . DBI->errstr;
@@ -239,9 +239,9 @@ sub process_request {
 		@aryA = $sthA->fetchrow_array;
 			$DBagi_output = $aryA[0];
 			$DBasterisk_version = $aryA[1];
-			if ($DBagi_output =~ /STDERR/) {$AGILOG = '1';}
-			if ($DBagi_output =~ /FILE/) {$AGILOG = '2';}
-			if ($DBagi_output =~ /BOTH/) {$AGILOG = '3';}
+			$AGILOG = '1' if ($DBagi_output =~ /STDERR/);
+			$AGILOG = '2' if ($DBagi_output =~ /FILE/);
+			$AGILOG = '3' if ($DBagi_output =~ /BOTH/);
 			$ZorD = 'Zap';
 			$ZorD = 'DAHDI' if ($DBasterisk_version =~ /^1\.6/);
 		$rec_count++;
@@ -288,21 +288,15 @@ sub process_request {
 	while(<STDIN>) {
 		chomp;
 		last unless length($_);
-		if ($AGILOG)
-		{
-			if (/^agi_(\w+)\:\s+(.*)$/)
-			{
-				$AGI{$1} = $2;
-			}
-		}
+		$AGI{$1} = $2 if ($AGILOG and /^agi_(\w+)\:\s+(.*)$/);
 
-		if (/^agi_uniqueid\:\s+(.*)$/) {$unique_id = $1; $uniqueid = $unique_id;}
-		if (/^agi_priority\:\s+(.*)$/) {$priority = $1;}
-		if (/^agi_channel\:\s+(.*)$/) {$channel = $1;}
-		if (/^agi_extension\:\s+(.*)$/) {$extension = $1;}
-		if (/^agi_type\:\s+(.*)$/) {$type = $1;}
-		if (/^agi_request\:\s+(.*)$/) {$request = $1;}
-		if (/^agi_accountcode\:\s+(.*)$/) {$accountcode = $1;}
+		$uniqueid = $1 if (/^agi_uniqueid\:\s+(.*)$/);
+		$priority = $1 if (/^agi_priority\:\s+(.*)$/);
+		$channel = $1 if (/^agi_channel\:\s+(.*)$/);
+		$extension = $1 if (/^agi_extension\:\s+(.*)$/);
+		$type = $1 if (/^agi_type\:\s+(.*)$/);
+		$request = $1 if (/^agi_request\:\s+(.*)$/);
+		$accountcode = $1 if (/^agi_accountcode\:\s+(.*)$/);
 		if ( ($request =~ /--fullCID--/i) && (!$fullCID) )
 			{
 			$fullCID=1;
@@ -328,13 +322,10 @@ sub process_request {
 			}
 		if (!$fullCID) # if no fullCID sent
 			{
-			if (/^agi_callerid\:\s+(.*)$/) {$callerid = $1;}
-			if (/^agi_calleridname\:\s+(.*)$/) {$calleridname = $1;}
-			if ( $calleridname =~ /\"/)  {$calleridname =~ s/\"//gi;}
-		if ( (
-		(length($calleridname)>5) && ( (!$callerid) or ($callerid =~ /unknown|private|00000000/i) or ($callerid =~ /5551212/) )
-		) or ( (length($calleridname)>17) && ($calleridname =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) ) )
-			{$callerid = $calleridname;}
+			$callerid = $1 if (/^agi_callerid\:\s+(.*)$/);
+			$calleridname = $1 if (/^agi_calleridname\:\s+(.*)$/);
+			$calleridname =~ s/\"//gi if ( $calleridname =~ /\"/);
+			$callerid = $calleridname if (((length($calleridname)>5) and (!$callerid or $callerid =~ /unknown|private|00000000/i or $callerid =~ /5551212/ )) or (length($calleridname)>17 and $calleridname =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/));
 
 			### allow for ANI being sent with the DNIS "*3125551212*9999*"
 			if ($extension =~ /^\*\d\d\d\d\d\d\d\d\d\d\*/)
@@ -367,7 +358,7 @@ sub process_request {
 
 	if ($AGILOG)
 		{
-		$agi_string = "AGI Variables: |$unique_id|$channel|$extension|$type|$callerid|$accountcode|";
+		$agi_string = "AGI Variables: |$uniqueid|$channel|$extension|$type|$callerid|$accountcode|";
 		&agi_output;
 		}
 
@@ -514,12 +505,12 @@ sub process_request {
 				$sthA->finish();
 				$extension =~ s/\D//gi;
 				$number_dialed =~ s/\D//gi;
-				if (length($number_dialed)<1) {$number_dialed=$extension;}
+				$number_dialed=$extension if (length($number_dialed)<1);
 				}
 			if ( ($accountcode =~ /^Y/) && ($accountcode =~ /\d\d\d\d\d\d\d\d\d/) && (length($number_dialed)<1) )
 				{
 				$number_dialed = $callerid;
-				if (length($number_dialed)<1) {$number_dialed='';}
+				$number_dialed='' if (length($number_dialed)<1);
 				}
 
 			if ( ($accountcode =~ /^Y/) ) {
@@ -551,7 +542,7 @@ sub process_request {
 				
 			}
 
-			$stmtA = "INSERT INTO call_log (uniqueid,channel,channel_group,type,server_ip,extension,number_dialed,start_time,start_epoch,end_time,end_epoch,length_in_sec,length_in_min,caller_code) VALUES('$unique_id','$channel','$channel_group','$type','$VARserver_ip','$extension','$number_dialed','$now_date','$now_date_epoch','','','','','$accountcode')";
+			$stmtA = "INSERT INTO call_log (uniqueid,channel,channel_group,type,server_ip,extension,number_dialed,start_time,start_epoch,end_time,end_epoch,length_in_sec,length_in_min,caller_code) VALUES('$uniqueid','$channel','$channel_group','$type','$VARserver_ip','$extension','$number_dialed','$now_date','$now_date_epoch','','','','','$accountcode')";
 
 			if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 			$affected_rows = $dbhA->do($stmtA);
@@ -580,7 +571,7 @@ sub process_request {
 				}
 
 			### get uniqueid and start_epoch from the call_log table
-			$stmtA = "SELECT SQL_NO_CACHE uniqueid,start_epoch FROM call_log WHERE uniqueid='$unique_id';";
+			$stmtA = "SELECT SQL_NO_CACHE uniqueid,start_epoch FROM call_log WHERE uniqueid='$uniqueid';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -602,18 +593,18 @@ sub process_request {
 
 				if ($AGILOG) {$agi_string = "QUERY done: start time = $start_time | sec: $length_in_sec | min: $length_in_min |";   &agi_output;}
 
-				$stmtA = "UPDATE call_log SET end_time='$now_date',end_epoch='$now_date_epoch',length_in_sec=$length_in_sec,length_in_min='$length_in_min',channel='$channel',isup_result='$hangup_cause' WHERE uniqueid='$unique_id';";
+				$stmtA = "UPDATE call_log SET end_time='$now_date',end_epoch='$now_date_epoch',length_in_sec=$length_in_sec,length_in_min='$length_in_min',channel='$channel',isup_result='$hangup_cause' WHERE uniqueid='$uniqueid';";
 
 				if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 				$affected_rows = $dbhA->do($stmtA);
 				}
 
-			$stmtA = "DELETE FROM live_inbound WHERE uniqueid='$unique_id' AND server_ip='$VARserver_ip';";
+			$stmtA = "DELETE FROM live_inbound WHERE uniqueid='$uniqueid' AND server_ip='$VARserver_ip';";
 			if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 			$affected_rows = $dbhA->do($stmtA);
 
 		##### BEGIN Park Log entry check and update #####
-			$stmtA = "SELECT SQL_NO_CACHE UNIX_TIMESTAMP(parked_time),UNIX_TIMESTAMP(grab_time) FROM park_log WHERE uniqueid='$unique_id' AND server_ip='$VARserver_ip' LIMIT 1;";
+			$stmtA = "SELECT SQL_NO_CACHE UNIX_TIMESTAMP(parked_time),UNIX_TIMESTAMP(grab_time) FROM park_log WHERE uniqueid='$uniqueid' AND server_ip='$VARserver_ip' LIMIT 1;";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -630,7 +621,7 @@ sub process_request {
 
 			if ($rec_count)
 			{
-			if ($AGILOG) {$agi_string = "*****Entry found for $unique_id-$VARserver_ip in park_log: $parked_time|$grab_time";   &agi_output;}
+			if ($AGILOG) {$agi_string = "*****Entry found for $uniqueid-$VARserver_ip in park_log: $parked_time|$grab_time";   &agi_output;}
 				if ($parked_time > $grab_time)
 				{
 				$parked_sec=($now_date_epoch - $parked_time);
@@ -642,14 +633,14 @@ sub process_request {
 				$parked_sec=($grab_time - $parked_time);
 				}
 
-				$stmtA = "UPDATE park_log SET status='HUNGUP',hangup_time='$now_date',parked_sec='$parked_sec',talked_sec='$talked_sec' WHERE uniqueid='$unique_id' AND server_ip='$VARserver_ip';";
+				$stmtA = "UPDATE park_log SET status='HUNGUP',hangup_time='$now_date',parked_sec='$parked_sec',talked_sec='$talked_sec' WHERE uniqueid='$uniqueid' AND server_ip='$VARserver_ip';";
 				$affected_rows = $dbhA->do($stmtA);
 			}
 		##### END Park Log entry check and update #####
 
 		# $dbhA->disconnect();
 
-			if ($AGILOG) {$agi_string = "+++++ CALL LOG HUNGUP: |$unique_id|$channel|$extension|$now_date|min: $length_in_min|";   &agi_output;}
+			if ($AGILOG) {$agi_string = "+++++ CALL LOG HUNGUP: |$uniqueid|$channel|$extension|$now_date|min: $length_in_min|";   &agi_output;}
 
 
 		##### BEGIN former VD_hangup section functions #####
@@ -664,7 +655,7 @@ sub process_request {
 				open(out, ">>$PATHlogs/HANGUP_cause-output.txt")
 						|| die "Can't open $PATHlogs/HANGUP_cause-output.txt: $!\n";
 
-				print out "$now_date|$hangup_cause|$dialstatus|$dial_time|$ring_time|$unique_id|$channel|$extension|$type|$accountcode|$priority|\n";
+				print out "$now_date|$hangup_cause|$dialstatus|$dial_time|$ring_time|$uniqueid|$channel|$extension|$type|$accountcode|$priority|\n";
 
 				close(out);
 			}
@@ -730,7 +721,7 @@ sub process_request {
 				}
 
 				if ($AGILOG) {$agi_string = "+++++ VDAD START LOCAL CHANNEL: EXITING- $priority";   &agi_output;}
-				if ($priority > 2) {sleep(1);}
+				sleep(1) if ($priority > 2);
 			}
 			else
 			{
@@ -826,12 +817,12 @@ sub process_request {
 						$secX = time();
 						$VD_call_length = ($secX - $VD_start_epoch);
 						$VD_stage =~ s/.*-//gi;
-						if ($VD_stage < 0.25) {$VD_stage=0;}
+						$VD_stage=0 if ($VD_stage < 0.25);
 
 						$dbhB = DBI->connect("DBI:mysql:$queuemetrics_dbname:$queuemetrics_server_ip:3306", "$queuemetrics_login", "$queuemetrics_pass")
 						or die "Couldn't connect to database: " . DBI->errstr;
 
-						if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
+						print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n" if ($DBX);
 
 						$stmtB = "SELECT agent FROM queue_log WHERE call_id='$VD_callerid' AND verb='CONNECT';";
 						$sthB = $dbhB->prepare($stmtB) or die "preparing: ",$dbhB->errstr;
@@ -898,12 +889,12 @@ sub process_request {
 						($Rsec,$Rmin,$Rhour,$Rmday,$Rmon,$Ryear,$Rwday,$Ryday,$Risdst) = localtime($Rtarget);
 						$Ryear = ($Ryear + 1900);
 						$Rmon++;
-						if ($Rmon < 10) {$Rmon = "0$Rmon";}
-						if ($Rmday < 10) {$Rmday = "0$Rmday";}
-						if ($Rhour < 10) {$Rhour = "0$Rhour";}
-						if ($Rmin < 10) {$Rmin = "0$Rmin";}
-						if ($Rsec < 10) {$Rsec = "0$Rsec";}
-							$RSQLdate = "$Ryear-$Rmon-$Rmday $Rhour:$Rmin:$Rsec";
+						$Rmon = '0'.$Rmon if ($Rmon < 10);
+						$Rmday = '0'.$Rmday if ($Rmday < 10);
+						$Rhour = '0'.$Rhour if ($Rhour < 10);
+						$Rmin = '0'.$Rmin if ($Rmin < 10);
+						$Rsec = '0'.$Rsec if ($Rsec < 10);
+						$RSQLdate = $Ryear.'-'.$Rmon.'-'.$Rmday.' '.$Rhour.':'.$Rmin.':'.$Rsec;
 
 						$stmtA = "SELECT SQL_NO_CACHE start_epoch,status,closecallid,user,term_reason,length_in_sec,queue_seconds,comments FROM osdial_closer_log WHERE lead_id='$VD_lead_id' AND call_date>'$RSQLdate' AND end_epoch IS NULL ORDER BY call_date ASC LIMIT 1;";
 
@@ -1262,8 +1253,7 @@ sub process_request {
 										$cur_aff=10;
 									}
 								}
-								if ($VD_aff_dnc_count>0 or length($aff_number)<=5) {
-									$cur_aff++;
+								$cur_aff++ if ($VD_aff_dnc_count>0 or length($aff_number)<=5);
 								}
 							}
 						}
@@ -1288,10 +1278,7 @@ sub process_request {
 	###################################################################
 	##### START VD_hangup process #####################################
 	###################################################################
-	if ($process =~ /^VD_hangup/)
-	{
-	$nothing=0;
-	}
+	$nothing=0 if ($process =~ /^VD_hangup/);
 	###################################################################
 	##### END VD_hangup process #######################################
 	###################################################################
@@ -1331,9 +1318,6 @@ if ($AGILOG >=2)
 	close(Lout);
 	}
 	### send to STDERR writing ###
-if ( ($AGILOG == '1') || ($AGILOG == '3') )
-	{
-	print STDERR "$now_date|$script|$process|$agi_string\n";
-	}
+	print STDERR "$now_date|$script|$process|$agi_string\n" if ($AGILOG == '1' or $AGILOG == '3');
 $agi_string='';
 }
