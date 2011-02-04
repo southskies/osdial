@@ -21,7 +21,7 @@
 ##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 ##
 #
-# 
+#
 # Experimental Deamon using perl Net::Server that runs as FastAGI to reduce load
 # replaces the following AGI scripts:
 # - call_log.agi
@@ -29,21 +29,21 @@
 # - VD_hangup.agi
 #
 # This script needs to be running all of the time for AGI requests to work
-# 
+#
 # You need to put lines similar to those below in your extensions.conf file:
-# 
+#
 # ;outbound dialing:
-# exten => _91NXXNXXXXXX,1,AGI(agi://127.0.0.1:4577/call_log) 
+# exten => _91NXXNXXXXXX,1,AGI(agi://127.0.0.1:4577/call_log)
 #
 # ;inbound calls:
 # exten => 101,1,AGI(agi://127.0.0.1:4577/call_log)
 #   or
 # exten => 101,1,AGI(agi://127.0.0.1:4577/call_log--fullCID--${EXTEN}-----${CALLERID}-----${CALLERIDNUM}-----${CALLERIDNAME})
 #
-# 
+#
 # ;all hangups:
 # exten => h,1,DeadAGI(agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----${HANGUPCAUSE}-----${DIALSTATUS}-----${DIALEDTIME}-----${ANSWEREDTIME})
-# 
+#
 #
 # CHANGELOG:
 # 61010-1007 - First test build
@@ -65,16 +65,16 @@
 
 
 # defaults for PreFork
-$VARfastagi_log_min_servers =	'3';
-$VARfastagi_log_max_servers =	'16';
+$VARfastagi_log_min_servers = '3';
+$VARfastagi_log_max_servers = '16';
 $VARfastagi_log_min_spare_servers = '2';
 $VARfastagi_log_max_spare_servers = '8';
-$VARfastagi_log_max_requests =	'1000';
-$VARfastagi_log_checkfordead =	'30';
-$VARfastagi_log_checkforwait =	'60';
+$VARfastagi_log_max_requests = '1000';
+$VARfastagi_log_checkfordead = '30';
+$VARfastagi_log_checkforwait = '60';
 
 # default path to osdial.configuration file:
-$PATHconf =		'/etc/osdial.conf';
+$PATHconf = '/etc/osdial.conf';
 
 open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 @conf = <conf>;
@@ -141,14 +141,14 @@ $sthBrows=$sthB->rows;
 $rec_count=0;
 while ($sthBrows > $rec_count)
 	{
-	 @aryB = $sthB->fetchrow_array;
-		$SERVERLOG =	"$aryB[0]";
-	 $rec_count++;
+	@aryB = $sthB->fetchrow_array;
+		$SERVERLOG = "$aryB[0]";
+	$rec_count++;
 	}
 $sthB->finish();
 $dbhB->disconnect();
 
-if ($SERVERLOG =~ /Y/) 
+if ($SERVERLOG =~ /Y/)
 	{
 	$childLOGfile = "$PATHlogs/FastAGIchildLOG.$year-$mon-$mday";
 	$log_level = "4";
@@ -184,7 +184,7 @@ sub process_request {
 
 
 	# default path to osdial.configuration file:
-	$PATHconf =		'/etc/osdial.conf';
+	$PATHconf = '/etc/osdial.conf';
 
 	open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
 	@conf = <conf>;
@@ -236,24 +236,24 @@ sub process_request {
 	while ($sthArows > $rec_count)
 		{
 		$AGILOG = '0';
-		 @aryA = $sthA->fetchrow_array;
-			$DBagi_output =			"$aryA[0]";
-			$DBasterisk_version =		"$aryA[1]";
-			if ($DBagi_output =~ /STDERR/)	{$AGILOG = '1';}
-			if ($DBagi_output =~ /FILE/)	{$AGILOG = '2';}
-			if ($DBagi_output =~ /BOTH/)	{$AGILOG = '3';}
+		@aryA = $sthA->fetchrow_array;
+			$DBagi_output = "$aryA[0]";
+			$DBasterisk_version = "$aryA[1]";
+			if ($DBagi_output =~ /STDERR/) {$AGILOG = '1';}
+			if ($DBagi_output =~ /FILE/) {$AGILOG = '2';}
+			if ($DBagi_output =~ /BOTH/) {$AGILOG = '3';}
 			$ZorD = 'Zap';
 			$ZorD = 'DAHDI' if ($DBasterisk_version =~ /^1\.6/);
-		 $rec_count++;
+		$rec_count++;
 		}
 	$sthA->finish();
 
 
 
 
-	if ($AGILOG) 
+	if ($AGILOG)
 		{
-		$agi_string = "+++++++++++++++++ FastAGI Start ++++++++++++++++++++++++++++++++++++++++"; 
+		$agi_string = "+++++++++++++++++ FastAGI Start ++++++++++++++++++++++++++++++++++++++++";
 		&agi_output;
 		}
 
@@ -262,18 +262,18 @@ sub process_request {
 	### begin parsing run-time options ###
 	if (length($ARGV[0])>1)
 	{
-		if ($AGILOG) 
+		if ($AGILOG)
 			{
-			$agi_string = "Perl Environment Dump:"; 
+			$agi_string = "Perl Environment Dump:";
 			&agi_output;
 			}
 		$i=0;
 		while ($#ARGV >= $i)
 		{
 			$args = "$args $ARGV[$i]";
-			if ($AGILOG) 
+			if ($AGILOG)
 				{
-				$agi_string = "$i|$ARGV[$i]";   
+				$agi_string = "$i|$ARGV[$i]";
 				&agi_output;
 				}
 			$i++;
@@ -296,20 +296,20 @@ sub process_request {
 			}
 		}
 
-		if (/^agi_uniqueid\:\s+(.*)$/)		{$unique_id = $1; $uniqueid = $unique_id;}
-		if (/^agi_priority\:\s+(.*)$/)		{$priority = $1;}
-		if (/^agi_channel\:\s+(.*)$/)		{$channel = $1;}
-		if (/^agi_extension\:\s+(.*)$/)		{$extension = $1;}
-		if (/^agi_type\:\s+(.*)$/)			{$type = $1;}
-		if (/^agi_request\:\s+(.*)$/)		{$request = $1;}
-		if (/^agi_accountcode\:\s+(.*)$/)		{$accountcode = $1;}
+		if (/^agi_uniqueid\:\s+(.*)$/) {$unique_id = $1; $uniqueid = $unique_id;}
+		if (/^agi_priority\:\s+(.*)$/) {$priority = $1;}
+		if (/^agi_channel\:\s+(.*)$/) {$channel = $1;}
+		if (/^agi_extension\:\s+(.*)$/) {$extension = $1;}
+		if (/^agi_type\:\s+(.*)$/) {$type = $1;}
+		if (/^agi_request\:\s+(.*)$/) {$request = $1;}
+		if (/^agi_accountcode\:\s+(.*)$/) {$accountcode = $1;}
 		if ( ($request =~ /--fullCID--/i) && (!$fullCID) )
 			{
 			$fullCID=1;
 			@CID = split(/-----/, $request);
-			$callerid =	$CID[2];
-			$calleridname =	$CID[3];
-			$agi_string = "URL fullCID: |$callerid|$calleridname|$request|";   
+			$callerid = $CID[2];
+			$calleridname = $CID[3];
+			$agi_string = "URL fullCID: |$callerid|$calleridname|$request|";
 			&agi_output;
 			}
 		if ( ($request =~ /--HVcauses--/i) && (!$HVcauses) )
@@ -323,15 +323,15 @@ sub process_request {
 			$dialstatus = $ARGV_vars[3];
 			$dial_time = $ARGV_vars[4];
 			$ring_time = $ARGV_vars[5];
-			$agi_string = "URL HVcauses: |$PRI|$DEBUG|$hangup_cause|$dialstatus|$dial_time|$ring_time|";   
+			$agi_string = "URL HVcauses: |$PRI|$DEBUG|$hangup_cause|$dialstatus|$dial_time|$ring_time|";
 			&agi_output;
 			}
-		if (!$fullCID)	# if no fullCID sent
+		if (!$fullCID) # if no fullCID sent
 			{
-			if (/^agi_callerid\:\s+(.*)$/)		{$callerid = $1;}
-			if (/^agi_calleridname\:\s+(.*)$/)	{$calleridname = $1;}
+			if (/^agi_callerid\:\s+(.*)$/) {$callerid = $1;}
+			if (/^agi_calleridname\:\s+(.*)$/) {$calleridname = $1;}
 			if ( $calleridname =~ /\"/)  {$calleridname =~ s/\"//gi;}
-		if ( ( 
+		if ( (
 		(length($calleridname)>5) && ( (!$callerid) or ($callerid =~ /unknown|private|00000000/i) or ($callerid =~ /5551212/) )
 		) or ( (length($calleridname)>17) && ($calleridname =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) ) )
 			{$callerid = $calleridname;}
@@ -349,25 +349,25 @@ sub process_request {
 			}
 	}
 
-	if ($AGILOG) 
+	if ($AGILOG)
 		{
-		$agi_string = "AGI Environment Dump:";   
+		$agi_string = "AGI Environment Dump:";
 		&agi_output;
 		}
 
-	foreach $i (sort keys %AGI) 
+	foreach $i (sort keys %AGI)
 	{
-		if ($AGILOG) 
+		if ($AGILOG)
 			{
-			$agi_string = " -- $i = $AGI{$i}";   
+			$agi_string = " -- $i = $AGI{$i}";
 			&agi_output;
 			}
 	}
 
 
-	if ($AGILOG) 
+	if ($AGILOG)
 		{
-		$agi_string = "AGI Variables: |$unique_id|$channel|$extension|$type|$callerid|$accountcode|";   
+		$agi_string = "AGI Variables: |$unique_id|$channel|$extension|$type|$callerid|$accountcode|";
 		&agi_output;
 		}
 
@@ -377,9 +377,9 @@ sub process_request {
 	$process = $request;
 	$process =~ s/agi:\/\///gi;
 	$process =~ s/.*\/|--.*//gi;
-	if ($AGILOG) 
+	if ($AGILOG)
 		{
-		$agi_string = "Process to run: |$request|$process|$stage|";   
+		$agi_string = "Process to run: |$request|$process|$stage|";
 		&agi_output;
 		}
 
@@ -408,7 +408,7 @@ sub process_request {
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
 				@aryA = $sthA->fetchrow_array;
-				$is_client_phone	 = "$aryA[0]";
+				$is_client_phone = "$aryA[0]";
 				$sthA->finish();
 
 				if ($is_client_phone<1) {
@@ -429,7 +429,7 @@ sub process_request {
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
 				@aryA = $sthA->fetchrow_array;
-				$is_client_phone	 = "$aryA[0]";
+				$is_client_phone = "$aryA[0]";
 				$sthA->finish();
 
 				if ($is_client_phone<1) {
@@ -451,7 +451,7 @@ sub process_request {
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
 				@aryA = $sthA->fetchrow_array;
-				$is_client_phone	 = "$aryA[0]";
+				$is_client_phone = "$aryA[0]";
 				$sthA->finish();
 
 				if ($is_client_phone<1) {
@@ -496,8 +496,8 @@ sub process_request {
 				$rec_count=0;
 				if ($sthArows > 0) {
 					@aryA = $sthA->fetchrow_array;
-					$cmd_line_b	=	"$aryA[0]";
-					$cmd_line_d	=	"$aryA[1]";
+					$cmd_line_b = "$aryA[0]";
+					$cmd_line_d = "$aryA[1]";
 					if ($accountcode =~ /^DC/) {
 						$cmd_line_d =~ s/Exten: //gi;
 						$cmd_line_b =~ s/Channel: Local\/|\@.*//gi;
@@ -528,26 +528,26 @@ sub process_request {
 					{$channel_group = 'Inbound 800';}
 			} else {
 			### This section breaks the outbound dialed number down(or builds it up) to a 10 digit number and gives it a description
-				if ( ($number_dialed =~ /^.01144/) && (length($number_dialed)==16) )  #test 207 608 6400 
-					{$number_dialed =~ s/^.//;	$channel_group = 'Outbound Intl UK';}
-				if ( ($number_dialed =~ /^01144/) && (length($number_dialed)==15) )  #test 207 608 6400 
-					{                           	$channel_group = 'Outbound Intl UK';}
+				if ( ($number_dialed =~ /^.01144/) && (length($number_dialed)==16) )  #test 207 608 6400
+					{$number_dialed =~ s/^.//; $channel_group = 'Outbound Intl UK';}
+				if ( ($number_dialed =~ /^01144/) && (length($number_dialed)==15) )  #test 207 608 6400
+					{                            $channel_group = 'Outbound Intl UK';}
 				if ( ($number_dialed =~ /^.01161/) && (length($number_dialed)==15) )  #test  39 417 2011
-					{$number_dialed =~ s/^.//;	$channel_group = 'Outbound Intl AUS';}
+					{$number_dialed =~ s/^.//; $channel_group = 'Outbound Intl AUS';}
 				if ( ($number_dialed =~ /^01161/) && (length($number_dialed)==14) )  #test  39 417 2011
-					{                           	$channel_group = 'Outbound Intl AUS';}
+					{                            $channel_group = 'Outbound Intl AUS';}
 				if ( ($number_dialed =~ /^.1800|^.1888|^.1877|^.1866/) && (length($number_dialed)==12) )
-					{$number_dialed =~ s/^.1//;	$channel_group = 'Outbound 800';}
+					{$number_dialed =~ s/^.1//; $channel_group = 'Outbound 800';}
 				if ( ($number_dialed =~ /^1800|^1888|^1877|^1866/) && (length($number_dialed)==11) )
-					{$number_dialed =~ s/^1//;	$channel_group = 'Outbound 800';}
+					{$number_dialed =~ s/^1//; $channel_group = 'Outbound 800';}
 				if ( ($number_dialed =~ /^800|^888|^877|^866/) && (length($number_dialed)==10) )
-					{                           	$channel_group = 'Outbound 800';}
+					{                            $channel_group = 'Outbound 800';}
 				if ( ($number_dialed =~ /^.1/) && (length($number_dialed)==12) )
-					{$number_dialed =~ s/^.1//;	$channel_group = 'Outbound';}
+					{$number_dialed =~ s/^.1//; $channel_group = 'Outbound';}
 				if ( ($number_dialed =~ /^1/) && (length($number_dialed)==11) )
-					{$number_dialed =~ s/^1//;	$channel_group = 'Outbound';}
+					{$number_dialed =~ s/^1//; $channel_group = 'Outbound';}
 				if (                             (length($number_dialed)==10) )
-					{                           	$channel_group = 'Outbound';}
+					{                            $channel_group = 'Outbound';}
 				
 			}
 
@@ -561,7 +561,7 @@ sub process_request {
 
 
 		### call end stage
-		else		 
+		else
 			{
 			if ($AGILOG) {$agi_string = "|CALL HUNG UP|";   &agi_output;}
 			if ($request =~ /--HVcauses--/i)
@@ -575,7 +575,7 @@ sub process_request {
 				$dialstatus = $ARGV_vars[3];
 				$dial_time = $ARGV_vars[4];
 				$ring_time = $ARGV_vars[5];
-				$agi_string = "URL HVcauses: |$PRI|$DEBUG|$hangup_cause|$dialstatus|$dial_time|$ring_time|";   
+				$agi_string = "URL HVcauses: |$PRI|$DEBUG|$hangup_cause|$dialstatus|$dial_time|$ring_time|";
 				&agi_output;
 				}
 
@@ -588,7 +588,7 @@ sub process_request {
 			while ($sthArows > $rec_count)
 				{
 				@aryA = $sthA->fetchrow_array;
-				$start_time	=			"$aryA[1]";
+				$start_time = "$aryA[1]";
 				if ($AGILOG) {$agi_string = "|$aryA[0]|$aryA[1]|";   &agi_output;}
 				$rec_count++;
 				}
@@ -621,33 +621,33 @@ sub process_request {
 			if ($sthArows > 0)
 				{
 				@aryA = $sthA->fetchrow_array;
-				$parked_time	=			"$aryA[0]";
-				$grab_time	=			"$aryA[1]";
+				$parked_time = "$aryA[0]";
+				$grab_time = "$aryA[1]";
 				if ($AGILOG) {$agi_string = "|$aryA[0]|$aryA[1]|";   &agi_output;}
 				$rec_count++;
 				}
 			$sthA->finish();
 
-			  if ($rec_count)
-			  {
+			if ($rec_count)
+			{
 			if ($AGILOG) {$agi_string = "*****Entry found for $unique_id-$VARserver_ip in park_log: $parked_time|$grab_time";   &agi_output;}
-				 if ($parked_time > $grab_time)
-				 {
+				if ($parked_time > $grab_time)
+				{
 				$parked_sec=($now_date_epoch - $parked_time);
 				$talked_sec=0;
-				 }
-				 else
-				 {
+				}
+				else
+				{
 				$talked_sec=($now_date_epoch - $parked_time);
 				$parked_sec=($grab_time - $parked_time);
-				 }
+				}
 
 				$stmtA = "UPDATE park_log SET status='HUNGUP',hangup_time='$now_date',parked_sec='$parked_sec',talked_sec='$talked_sec' WHERE uniqueid='$unique_id' AND server_ip='$VARserver_ip';";
 				$affected_rows = $dbhA->do($stmtA);
-			   }
+			}
 		##### END Park Log entry check and update #####
 
-		#	$dbhA->disconnect();
+		# $dbhA->disconnect();
 
 			if ($AGILOG) {$agi_string = "+++++ CALL LOG HUNGUP: |$unique_id|$channel|$extension|$now_date|min: $length_in_min|";   &agi_output;}
 
@@ -668,7 +668,7 @@ sub process_request {
 
 				close(out);
 			}
-			else 
+			else
 			{
 			if ($AGILOG) {$agi_string = "DEBUG: $DEBUG";   &agi_output;}
 			}
@@ -742,19 +742,19 @@ sub process_request {
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
-				 $rec_countCUSTDATA=0;
+				$rec_countCUSTDATA=0;
 				if ($sthArows > 0)
 					{
 					@aryA = $sthA->fetchrow_array;
-					$VD_lead_id	=		"$aryA[0]";
-					$VD_callerid	=	"$aryA[1]";
-					$VD_campaign_id	=	"$aryA[2]";
-					$VD_alt_dial	=	"$aryA[3]";
-					$VD_stage =			"$aryA[4]";
-					$VD_start_epoch =	"$aryA[5]";
-					$VD_uniqueid 	=	"$aryA[6]";
-					$VD_status 	=	"$aryA[7]";
-					 $rec_countCUSTDATA++;
+					$VD_lead_id = "$aryA[0]";
+					$VD_callerid = "$aryA[1]";
+					$VD_campaign_id = "$aryA[2]";
+					$VD_alt_dial = "$aryA[3]";
+					$VD_stage = "$aryA[4]";
+					$VD_start_epoch = "$aryA[5]";
+					$VD_uniqueid = "$aryA[6]";
+					$VD_status = "$aryA[7]";
+					$rec_countCUSTDATA++;
 					}
 				$sthA->finish();
 
@@ -776,7 +776,7 @@ sub process_request {
 						$talksec = ($now_date_epoch - $VD_start_epoch);
 						if ( ($OLAext =~ /^R\/tmp/) && ($OLAuser =~ /^tmp/) ) {
 							$stmtA = "DELETE FROM osdial_users WHERE user='$OLAuser' LIMIT 1;";
-                                                	my $affected_rows = $dbhA->do($stmtA);
+							my $affected_rows = $dbhA->do($stmtA);
 							$stmtA = "DELETE FROM osdial_live_agents WHERE uniqueid='$uniqueid' LIMIT 1;";
 							my $affected_rows = $dbhA->do($stmtA);
 						}
@@ -807,15 +807,15 @@ sub process_request {
 					$rec_count=0;
 					while ($sthArows > $rec_count)
 						{
-						 @aryA = $sthA->fetchrow_array;
-							$enable_queuemetrics_logging =	"$aryA[0]";
-							$queuemetrics_server_ip	=		"$aryA[1]";
-							$queuemetrics_dbname =			"$aryA[2]";
-							$queuemetrics_login=			"$aryA[3]";
-							$queuemetrics_pass =			"$aryA[4]";
-							$queuemetrics_log_id =			"$aryA[5]";
-							$enable_multicompany =			$aryA[6];
-						 $rec_count++;
+						@aryA = $sthA->fetchrow_array;
+							$enable_queuemetrics_logging = "$aryA[0]";
+							$queuemetrics_server_ip = "$aryA[1]";
+							$queuemetrics_dbname = "$aryA[2]";
+							$queuemetrics_login= "$aryA[3]";
+							$queuemetrics_pass = "$aryA[4]";
+							$queuemetrics_log_id = "$aryA[5]";
+							$enable_multicompany = $aryA[6];
+						$rec_count++;
 						}
 					$sthA->finish();
 					##### END QUEUEMETRICS LOGGING LOOKUP #####
@@ -829,7 +829,7 @@ sub process_request {
 						if ($VD_stage < 0.25) {$VD_stage=0;}
 
 						$dbhB = DBI->connect("DBI:mysql:$queuemetrics_dbname:$queuemetrics_server_ip:3306", "$queuemetrics_login", "$queuemetrics_pass")
-						 or die "Couldn't connect to database: " . DBI->errstr;
+						or die "Couldn't connect to database: " . DBI->errstr;
 
 						if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
 
@@ -841,7 +841,7 @@ sub process_request {
 						while ($sthBrows > $rec_count)
 							{
 							@aryB = $sthB->fetchrow_array;
-							$VD_agent =	"$aryB[0]";
+							$VD_agent = "$aryB[0]";
 							$rec_count++;
 							}
 						$sthB->finish();
@@ -868,7 +868,7 @@ sub process_request {
 					$Euniqueid =~ s/\.\d+$//gi;
 
 					if ($accountcode !~ /^Y\d\d\d\d/)
-						{	
+						{
 						########## FIND AND UPDATE osdial_log ##########
 						$stmtA = "SELECT SQL_NO_CACHE start_epoch,status,user,term_reason,comments FROM osdial_log FORCE INDEX(lead_id) WHERE lead_id='$VD_lead_id' AND uniqueid LIKE \"$Euniqueid%\" LIMIT 1;";
 							if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
@@ -894,7 +894,7 @@ sub process_request {
 						if ($AGILOG) {$agi_string = "no VDL record found: $uniqueid $accountcode $VD_lead_id $uniqueid $VD_uniqueid";   &agi_output;}
 
 						$secX = time();
-						$Rtarget = ($secX - 21600);	# look for VDCL entry within last 6 hours
+						$Rtarget = ($secX - 21600); # look for VDCL entry within last 6 hours
 						($Rsec,$Rmin,$Rhour,$Rmday,$Rmon,$Ryear,$Rwday,$Ryday,$Risdst) = localtime($Rtarget);
 						$Ryear = ($Ryear + 1900);
 						$Rmon++;
@@ -911,20 +911,20 @@ sub process_request {
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 						$sthArows=$sthA->rows;
-						 $epc_countCUSTDATA=0;
-						 $VD_closecallid='';
+						$epc_countCUSTDATA=0;
+						$VD_closecallid='';
 						if ($sthArows > 0)
 							{
 							@aryA = $sthA->fetchrow_array;
-							$VD_start_epoch	= "$aryA[0]";
-							$VD_status	= "$aryA[1]";
-							$VD_closecallid	= "$aryA[2]";
-							$VD_user =                      "$aryA[3]";
-							$VD_term_reason =       "$aryA[4]";
-							$VD_length_in_sec =     "$aryA[5]";
-							$VD_queue_seconds =     "$aryA[6]";
-							$VD_comments =          "$aryA[7]";
-							 $epc_countCUSTDATA++;
+							$VD_start_epoch = "$aryA[0]";
+							$VD_status = "$aryA[1]";
+							$VD_closecallid = "$aryA[2]";
+							$VD_user = "$aryA[3]";
+							$VD_term_reason = "$aryA[4]";
+							$VD_length_in_sec = "$aryA[5]";
+							$VD_queue_seconds = "$aryA[6]";
+							$VD_comments = "$aryA[7]";
+							$epc_countCUSTDATA++;
 							}
 						$sthA->finish();
 						}
@@ -969,7 +969,7 @@ sub process_request {
 								if ($AGILOG) {$agi_string = "|$stmtA|";   &agi_output;}
 							$VLaffected_rows = $dbhA->do($stmtA);
 							if ($AGILOG) {$agi_string = "--    VDAD osdial_log update: |$VLaffected_rows|$uniqueid|$VD_status|";   &agi_output;}
-							}						
+							}
 
 
 
@@ -1026,14 +1026,14 @@ sub process_request {
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
-					 $epc_countCAMPDATA=0;
+					$epc_countCAMPDATA=0;
 					while ($sthArows > $epc_countCAMPDATA)
 						{
 						@aryA = $sthA->fetchrow_array;
-						$VD_auto_alt_dial	=			"$aryA[0]";
-						$VD_auto_alt_dial_statuses	=	"$aryA[1]";
-						$VD_use_internal_dnc	=	"$aryA[2]";
-						 $epc_countCAMPDATA++;
+						$VD_auto_alt_dial = "$aryA[0]";
+						$VD_auto_alt_dial_statuses = "$aryA[1]";
+						$VD_use_internal_dnc = "$aryA[2]";
+						$epc_countCAMPDATA++;
 						}
 					$sthA->finish();
 					if ($VD_auto_alt_dial_statuses =~ / $VD_status | $VDL_status /)
@@ -1046,16 +1046,16 @@ sub process_request {
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 							$sthArows=$sthA->rows;
-							 $epc_countCAMPDATA=0;
+							$epc_countCAMPDATA=0;
 							while ($sthArows > $epc_countCAMPDATA)
 								{
 								@aryA = $sthA->fetchrow_array;
-								$VD_alt_phone =			"$aryA[0]";
+								$VD_alt_phone = "$aryA[0]";
 								$VD_alt_phone =~ s/\D//gi;
-								$VD_gmt_offset_now =	"$aryA[1]";
-								$VD_state =				"$aryA[2]";
-								$VD_list_id =			"$aryA[3]";
-								 $epc_countCAMPDATA++;
+								$VD_gmt_offset_now = "$aryA[1]";
+								$VD_state = "$aryA[2]";
+								$VD_list_id = "$aryA[3]";
+								$epc_countCAMPDATA++;
 								}
 							$sthA->finish();
 							$VD_alt_dnc_count=0;
@@ -1117,16 +1117,16 @@ sub process_request {
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 							$sthArows=$sthA->rows;
-							 $epc_countCAMPDATA=0;
+							$epc_countCAMPDATA=0;
 							while ($sthArows > $epc_countCAMPDATA)
 								{
 								@aryA = $sthA->fetchrow_array;
-								$VD_address3 =			"$aryA[0]";
+								$VD_address3 = "$aryA[0]";
 								$VD_address3 =~ s/\D//gi;
-								$VD_gmt_offset_now =	"$aryA[1]";
-								$VD_state =				"$aryA[2]";
-								$VD_list_id =			"$aryA[3]";
-								 $epc_countCAMPDATA++;
+								$VD_gmt_offset_now = "$aryA[1]";
+								$VD_state = "$aryA[2]";
+								$VD_list_id = "$aryA[3]";
+								$epc_countCAMPDATA++;
 								}
 							$sthA->finish();
 							$VD_addr3_dnc_count=0;
@@ -1205,13 +1205,13 @@ sub process_request {
 									$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 									$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 									$sthArows=$sthA->rows;
-						 			$epc_countCAMPDATA=0;
+									$epc_countCAMPDATA=0;
 									while ($sthArows > $epc_countCAMPDATA) {
 										@aryA = $sthA->fetchrow_array;
 										$VD_gmt_offset_now = $aryA[0];
 										$VD_state = $aryA[1];
 										$VD_list_id = $aryA[2];
-							 			$epc_countCAMPDATA++;
+										$epc_countCAMPDATA++;
 									}
 									$sthA->finish();
 
