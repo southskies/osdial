@@ -824,7 +824,7 @@ if ( ($LOGcampaign_detail < 1) and ($ADD==31) ) {
 }
 
 # send to not allowed screen if not in osdial_user_groups allowed_campaigns list
-if ( ($ADD==31) and (!preg_match('/:/' . $campaign_id . ':',$LOG['allowed_campaignsSTR'])) ) {
+if ( ($ADD==31) and (!preg_match('/:' . $campaign_id . ':/',$LOG['allowed_campaignsSTR'])) ) {
     $ADD=30;
 }
 
@@ -1833,7 +1833,7 @@ if ($ADD==31) {
 ######################
 
 # send to not allowed screen if not in osdial_user_groups allowed_campaigns list
-if ( ($ADD==34) and (!preg_match('/:/' . $campaign_id . ':',$LOG['allowed_campaignsSTR'])) ) {
+if ( ($ADD==34) and (!preg_match('/:' . $campaign_id . ':/',$LOG['allowed_campaignsSTR'])) ) {
     $ADD=30;
 }
 
@@ -2195,7 +2195,7 @@ if ($ADD==34)
 # ADD=31 or 34 and SUB=29 for list mixes
 ######################
 # send to not allowed screen if not in osdial_user_groups allowed_campaigns list
-if ( ( ($ADD==34) or ($ADD==31) ) and (!preg_match('/:/' . $campaign_id . ':',$LOG['allowed_campaignsSTR'])) ) {
+if ( ( ($ADD==34) or ($ADD==31) ) and (!preg_match('/:' . $campaign_id . ':/',$LOG['allowed_campaignsSTR'])) ) {
     $ADD=30;
 }
 
