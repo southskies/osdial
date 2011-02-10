@@ -1,7 +1,7 @@
 #
 # OSDial.pm
 #
-## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+## Copyright (C) 2010-2011  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
 ##
 ##     This file is part of OSDial.
 ##
@@ -1155,6 +1155,14 @@ __END__
 
 =head1 SEE ALSO
 
+Official OSDial support is available through Call Center Service Group: L<http://www.callcentersg.com/>
+
+OSDial website: L<http://www.osdial.org/>
+OSDial at SourceForce: L<http://sourceforge.net/projects/osdial/>
+
+RPMs available through the Fugitol RPM Repository: L<http://rpm.fugitol.com/>
+
+
 The definitive AGI Module: L<Asterisk::AGI>  Website: L<http://asterisk.gnuinter.net/>
 
 DBI Module: L<DBI>  Website: L<http://dbi.perl.org/>
@@ -1168,7 +1176,7 @@ Lott Caskey, <lottcaskey@gmail.com>
 
 =head1 COPYRIGHT
 
-Copyright (c) 2009-2010  Lott Caskey <lottcaskey@gmail.com>
+Copyright (c) 2010-2011  Lott Caskey <lottcaskey@gmail.com>
 
 =head1 LICENSE
 
