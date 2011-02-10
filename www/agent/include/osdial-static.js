@@ -522,6 +522,8 @@
 
 									if (channelfieldA == lastcustchannel) {
 										custchannellive++;
+									} else if (lastcustchannel.match(/Local\/8870.....@/)) {
+										custchannellive++;
 									} else {
 										if(customerparked == 1) {
 											custchannellive++;
