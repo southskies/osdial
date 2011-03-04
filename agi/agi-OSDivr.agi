@@ -195,6 +195,10 @@ sub ivr_menu {
 	
 			if ($menu{$dkey}{action} eq "PLAYFILE") {
 				$ivrloop = playfile(@aparams);
+			} elsif ($menu{$dkey}{action} eq "PLAYFILE_CUSTOM1") {
+				$ivrloop = playfile_field(@aparams);
+			} elsif ($menu{$dkey}{action} eq "PLAYFILE_CUSTOM2") {
+				$ivrloop = playfile_field(@aparams);
 			} elsif ($menu{$dkey}{action} eq "XFER_EXTERNAL") {
 				$ivrloop = xfer_to_external(@aparams);
 			} elsif ($menu{$dkey}{action} eq "XFER_EXTERNAL_MULTI") {
@@ -279,6 +283,20 @@ sub playfile {
 	$AGI->stream_file($stream);
 
 	return $rtnmain;
+}
+
+sub playfile_field {
+	my ($field, $status, $hangup_after) = @_;
+
+	my $lead = $osdial->sql_query(sprintf("SELECT * FROM osdial_list WHERE lead_id='%s';",$cinfo->{CIDlead_id}));
+	my $stream = $lead->{$field};
+	if ($hangup_after eq 'Y') {
+		hangup_and_dispo($stream,$status);
+	} else {
+		playfile($stream,$status);
+	}
+		
+	return 0;
 }
 
 sub xfer_to_external {
