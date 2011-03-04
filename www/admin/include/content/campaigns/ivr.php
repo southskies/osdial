@@ -209,34 +209,19 @@ if ($ADD == "2keys") {
         echo "  </select></td>\n";
         echo "  </tr>\n";
         echo '<input type="hidden" name="oi3" value="1">';
-    } elseif ($o == 'PLAYFILE_CUSTOM1') { 
-        echo '<input type="hidden" name="oi1" value="custom1">';
-        echo '<input type="hidden" name="oi2" value="1">';
+    } elseif ($o == 'PLAYFILE_FIELD') { 
         echo "  <tr>\n";
-        echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
-        echo '      <td bgcolor="' . $oddrows . '">';
-        echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'",'');
-        foreach ($status as $stat) {
-            if ($stat['status'] == 'VPLAY') {
-                $sel = ' selected';
-            }
-            echo "<option value=\"" . $stat['status'] . "\"" . $sel . ">" . $stat['status'] . " : " . $stat['status_name'] . "</option>";
-        }
-        echo "  </select></td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "    <td bgcolor=$oddrows align=right>Hangup After?</td>\n";
+        echo "    <td bgcolor=$oddrows align=right>Field to Use</td>\n";
         echo '    <td bgcolor="' . $oddrows . '">';
-        echo "      <input type=\"checkbox\" name=\"oi3\" value=\"Y\">\n";
+        echo '      <select name="oi1">';
+        echo '        <option value="custom1">custom1</option>';
+        echo '        <option value="custom2">custom2</option>';
+        echo "      </select>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
-    } elseif ($o == 'PLAYFILE_CUSTOM2') { 
-        echo '<input type="hidden" name="oi1" value="custom2">';
-        echo '<input type="hidden" name="oi2" value="1">';
         echo "  <tr>\n";
-        echo "      <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
-        echo '      <td bgcolor="' . $oddrows . '">';
+        echo "    <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
+        echo '    <td bgcolor="' . $oddrows . '">';
         echo '      <select name="oi2"><option value="">-NONE-</option>';
         $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'",'');
         foreach ($status as $stat) {
@@ -957,8 +942,7 @@ if ($ADD == "3menu") {
     echo "      <select name=\"oivr_opt_action\">\n";
     echo "        <option value=\"\"> - Select an Action - </option>\n";
     echo "        <option value=\"PLAYFILE\">Play an Audio File</option>\n";
-    echo "        <option value=\"PLAYFILE_CUSTOM1\">Play Audio File Given in Field custom1</option>\n";
-    echo "        <option value=\"PLAYFILE_CUSTOM2\">Play Audio File Given in Field custom2</option>\n";
+    echo "        <option value=\"PLAYFILE_FIELD\">Play Audio File from Given Field</option>\n";
     echo "        <option value=\"XFER_EXTERNAL\">Transfer to an Extension/Number</option>\n";
     echo "        <option value=\"XFER_EXTERNAL_MULTI\">Transfer to One of Multiple Extensions/Numbers</option>\n";
     echo "        <option value=\"XFER_INGROUP\">Transfer to an In-Group</option>\n";
@@ -1064,31 +1048,18 @@ if ($ADD == "3keys") {
         echo "  </select></td>\n";
         echo "  </tr>\n";
         echo '<input type="hidden" name="oi3" value="' . $ad[2] . '">';
-    } elseif ($o == 'PLAYFILE_CUSTOM1') { 
-        echo '<input type="hidden" name="oi1" value="custom1">';
+    } elseif ($o == 'PLAYFILE_FIELD') { 
         echo "  <tr>\n";
-        echo "    <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
+        echo "    <td bgcolor=$oddrows align=right>Field to Use</td>\n";
         echo '    <td bgcolor="' . $oddrows . '">';
-        echo '      <select name="oi2"><option value="">-NONE-</option>';
-        $status = get_krh($link, 'osdial_statuses', 'status,status_name','',"status LIKE 'V%'",'');
-        foreach ($status as $stat) {
-            $sel = '';
-            if ($stat['status'] == $ad[1]) {
-                $sel = ' selected';
-            }
-            echo "<option value=\"" . $stat['status'] . "\"" . $sel . ">" . $stat['status'] . " : " . $stat['status_name'] . "</option>";
-        }
-        echo "  </select></td>\n";
-        echo "  </tr>\n";
-        echo "  <tr>\n";
-        echo "    <td bgcolor=$oddrows align=right>Hangup After?</td>\n";
-        echo '    <td bgcolor="' . $oddrows . '">';
-        $pcchk = ""; if ($ad[2] == 'Y') $pcchk = "checked";
-        echo "      <input type=\"checkbox\" name=\"oi3\" value=\"Y\" $pcchk>\n";
+        echo '      <select name="oi1">';
+        $fldsel=''; if ($ad[0]=='custom1') $fldsel="selected";
+        echo '        <option value="custom1" '.$fldsel.'>custom1</option>';
+        $fldsel=''; if ($ad[0]=='custom2') $fldsel="selected";
+        echo '        <option value="custom2" '.$fldsel.'>custom2</option>';
+        echo "      </select>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
-    } elseif ($o == 'PLAYFILE_CUSTOM2') { 
-        echo '<input type="hidden" name="oi1" value="custom2">';
         echo "  <tr>\n";
         echo "    <td bgcolor=$oddrows align=right>Status to Disposition as</td>\n";
         echo '    <td bgcolor="' . $oddrows . '">';
@@ -1563,8 +1534,7 @@ if ($ADD == "3keys") {
         echo "      <select name=\"oivr_opt_action\">\n";
         echo "        <option value=\"\"> - Select an Action - </option>\n";
         echo "        <option value=\"PLAYFILE\">Play an Audio File</option>\n";
-        echo "        <option value=\"PLAYFILE_CUSTOM1\">Play Audio File Given in Field custom1</option>\n";
-        echo "        <option value=\"PLAYFILE_CUSTOM2\">Play Audio File Given in Field custom2</option>\n";
+        echo "        <option value=\"PLAYFILE_FIELD\">Play Audio File from Given Field</option>\n";
         echo "        <option value=\"XFER_EXTERNAL\">Transfer to an Extension/Number</option>\n";
         echo "        <option value=\"XFER_EXTERNAL_MULTI\">Transfer to One of Multiple Extensions/Numbers</option>\n";
         echo "        <option value=\"XFER_INGROUP\">Transfer to an In-Group</option>\n";

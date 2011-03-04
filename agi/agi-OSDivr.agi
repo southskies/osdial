@@ -195,9 +195,7 @@ sub ivr_menu {
 	
 			if ($menu{$dkey}{action} eq "PLAYFILE") {
 				$ivrloop = playfile(@aparams);
-			} elsif ($menu{$dkey}{action} eq "PLAYFILE_CUSTOM1") {
-				$ivrloop = playfile_field(@aparams);
-			} elsif ($menu{$dkey}{action} eq "PLAYFILE_CUSTOM2") {
+			} elsif ($menu{$dkey}{action} eq "PLAYFILE_FIELD") {
 				$ivrloop = playfile_field(@aparams);
 			} elsif ($menu{$dkey}{action} eq "XFER_EXTERNAL") {
 				$ivrloop = xfer_to_external(@aparams);
@@ -287,6 +285,7 @@ sub playfile {
 
 sub playfile_field {
 	my ($field, $status, $hangup_after) = @_;
+	$field = 'custom1' if ($field eq '');
 
 	my $lead = $osdial->sql_query(sprintf("SELECT * FROM osdial_list WHERE lead_id='%s';",$cinfo->{CIDlead_id}));
 	my $stream = $lead->{$field};
