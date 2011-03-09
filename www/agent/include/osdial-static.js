@@ -192,6 +192,8 @@
                         if (document.osdial_form.xfernumber.value == '' && CalL_XC_a_NuMber.match(regXFvars)) {
                                 document.osdial_form.xfernumber.value = CalL_XC_a_NuMber;
                         }
+			var manual_dialcode = ''+document.osdial_form.phone_code.value;
+			if (manual_dialcode.length==0) manual_dialcode='1';
 			var manual_number = document.osdial_form.xfernumber.value;
 			var manual_string = manual_number.toString();
 			var dial_conf_exten = session_id;
@@ -203,9 +205,8 @@
 			var donothing=1;
 		} else {
 			if (document.osdial_form.xferoverride.checked==false) {
-				if (manual_string.length==10) {
-					manual_string = '1' + manual_string;
-				}
+				if (manual_dialcode!='1' && manual_dialcode.substring(0,1)!='0') manual_dialcode = '011' + manual_dialcode;
+				manual_string = manual_dialcode + manual_string;
 			}
 		}
 		if (manual_string != '') {
@@ -805,7 +806,9 @@
 				DispO3wayCalLcamptail = '';
 
 
-				xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=" + redirecttype + "&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&exten=" + redirectdestination + "&ext_context=" + ext_context + "&ext_priority=1&extrachannel=" + redirectXTRAvalue + "&lead_id=" + document.osdial_form.lead_id.value + "&phone_code=" + document.osdial_form.phone_code.value + "&phone_number=" + document.osdial_form.phone_number.value+ "&filename=" + taskdebugnote + "&campaign=" + XfeRSelecT.value + "&session_id=" + session_id + "&agentchannel=" + agentchannel + "&protocol=" + protocol + "&extension=" + extension + "&auto_dial_level=" + auto_dial_level + "&outbound_cid=" + outbound_cid + "&outbound_cid_name=" + outbound_cid_name;
+				var manual_dialcode = ''+document.osdial_form.phone_code.value;
+				if (manual_dialcode!='1' && manual_dialcode.substring(0,1)!='0') manual_dialcode = '011' + manual_dialcode;
+				xferredirect_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=" + redirecttype + "&format=text&channel=" + redirectvalue + "&call_server_ip=" + redirectserverip + "&queryCID=" + queryCID + "&exten=" + redirectdestination + "&ext_context=" + ext_context + "&ext_priority=1&extrachannel=" + redirectXTRAvalue + "&lead_id=" + document.osdial_form.lead_id.value + "&phone_code=" + manual_dialcode + "&phone_number=" + document.osdial_form.phone_number.value+ "&filename=" + taskdebugnote + "&campaign=" + XfeRSelecT.value + "&session_id=" + session_id + "&agentchannel=" + agentchannel + "&protocol=" + protocol + "&extension=" + extension + "&auto_dial_level=" + auto_dial_level + "&outbound_cid=" + outbound_cid + "&outbound_cid_name=" + outbound_cid_name;
 
 				if (taskdebugnote == 'FIRST') {
 					document.getElementById("DispoSelectHAspan").innerHTML = "<a href=\"#\" onclick=\"DispoLeavE3wayAgaiN()\">Leave 3Way Call Again</a>";
@@ -948,11 +951,13 @@
 		}
 		var xmlhttp=getXHR();
 		if (xmlhttp) { 
+			var manual_dialcode = ''+document.osdial_form.phone_code.value;
+			if (manual_dialcode!='1' && manual_dialcode.substring(0,1)!='0') manual_dialcode = '011' + manual_dialcode;
 			manDiaLlog_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLlogCaLL&stage=" + taskMDstage + "&uniqueid=" + document.osdial_form.uniqueid.value + 
 			"&user=" + user + "&pass=" + pass + "&campaign=" + campaign + 
 			"&lead_id=" + document.osdial_form.lead_id.value + 
 			"&list_id=" + document.osdial_form.list_id.value + 
-			"&length_in_sec=0&phone_code=" + document.osdial_form.phone_code.value + 
+			"&length_in_sec=0&phone_code=" + manual_dialcode + 
 			"&phone_number=" + lead_dial_number + 
 			"&exten=" + extension + "&channel=" + lastcustchannel + "&start_epoch=" + MDlogEPOCH + "&auto_dial_level=" + auto_dial_level + "&VDstop_rec_after_each_call=" + VDstop_rec_after_each_call + "&conf_silent_prefix=" + conf_silent_prefix + "&protocol=" + protocol + "&extension=" + extension + "&ext_context=" + ext_context + "&conf_exten=" + session_id + "&user_abb=" + user_abb + "&agent_log_id=" + agent_log_id + "&MDnextCID=" + LasTCID + "&alt_dial=" + dialed_label + "&DB=0" + "&agentchannel=" + agentchannel + "&conf_dialed=" + conf_dialed + "&leaving_threeway=" + leaving_threeway + "&hangup_all_non_reserved=" + hangup_all_non_reserved + "&blind_transfer=" + blind_transfer;;
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
@@ -1181,12 +1186,13 @@
 		debug("<b>NeWManuaLDiaLCalLSubmiTfast:</b>",2);
 		dial_timedout=0;
 		if ( document.osdial_form.phone_code.value.length < 1  ) {
-			document.osdial_form.phone_code.value = "1";
+			document.osdial_form.phone_code.value = '1';
 		}
-		var MDDiaLCodEform = document.osdial_form.phone_code.value;
+		var manual_dialcode = ''+document.osdial_form.phone_code.value;
+		if (manual_dialcode!='1' && manual_dialcode.substring(0,1)!='0') manual_dialcode = '011' + manual_dialcode;
 		var MDPhonENumbeRform = document.osdial_form.phone_number.value;
 
-		if ( (MDDiaLCodEform.length < 1) || (MDPhonENumbeRform.length < 5) ) {
+		if ( (manual_dialcode.length < 1) || (MDPhonENumbeRform.length < 5) ) {
 			osdalert("You must enter a number in the \"Phone\" field fast dial. The \"CountryCode\" will default to \"1\".");
 		} else {
 			var MDLookuPLeaD = 'new';
@@ -1202,7 +1208,7 @@
 			buildDiv('DiaLDiaLAltPhonE');
 			document.osdial_form.LeadPreview.checked=false;
 			document.osdial_form.DiaLAltPhonE.checked=true;
-			ManualDialNext("","",MDDiaLCodEform,MDPhonENumbeRform,MDLookuPLeaD);
+			ManualDialNext("","",manual_dialcode,MDPhonENumbeRform,MDLookuPLeaD);
 		}
 	}
 
@@ -1416,7 +1422,9 @@
 				cid = lead_cust2_cid;
 				cid_name = lead_cust2_cid;
 			}
-			manDiaLonly_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLonly&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&phone_number=" + manDiaLonly_num + "&phone_code=" + document.osdial_form.phone_code.value + "&campaign=" + campaign + "&ext_context=" + ext_context + "&dial_context=" + dial_context + "&dial_timeout=" + dial_timeout + "&dial_prefix=" + dial_prefix + "&campaign_cid=" + cid + "&campaign_cid_name=" + cid_name + "&omit_phone_code=" + omit_phone_code;
+			var manual_dialcode = ''+document.osdial_form.phone_code.value;
+			if (manual_dialcode!='1' && manual_dialcode.substring(0,1)!='0') manual_dialcode = '011' + manual_dialcode;
+			manDiaLonly_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLonly&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&phone_number=" + manDiaLonly_num + "&phone_code=" + manual_dialcode + "&campaign=" + campaign + "&ext_context=" + ext_context + "&dial_context=" + dial_context + "&dial_timeout=" + dial_timeout + "&dial_prefix=" + dial_prefix + "&campaign_cid=" + cid + "&campaign_cid_name=" + cid_name + "&omit_phone_code=" + omit_phone_code;
 			cid = campaign_cid;
 			cid_name = campaign_cid_name;
 			debug("<b>ManualDialOnly:</b> vdc_db_query: manDiaLonly_query=" + manDiaLonly_query,3);
