@@ -884,6 +884,7 @@ while($one_day_interval > 0)
 								}
 							$sthA->finish();
 
+							$phone_code =~ s/^011|^010|^00//;
 							$phone_code = '011' . $phone_code if ($phone_code ne '1' and substr($phone_code,0,1) ne '0');
 
 							if ($rec_countCUSTDATA)
@@ -1156,6 +1157,7 @@ while($one_day_interval > 0)
 					}
 				$sthA->finish();
 
+				$CLphone_code =~ s/^011|^010|^00//;
 				$CLphone_code = '011' . $CLphone_code if ($CLphone_code ne '1' and substr($CLphone_code,0,1) ne '0');
 
 				if ($CLcall_type =~ /IN/)
@@ -1601,6 +1603,7 @@ while($one_day_interval > 0)
 			}
 		$sthA->finish();
 
+		$CLphone_code =~ s/^011|^010|^00//;
 		$CLphone_code = '011' . $CLphone_code if ($CLphone_code ne '1' and substr($CLphone_code,0,1) ne '0');
 
 		### delete call records that are LIVE and not updated for over 10 seconds
