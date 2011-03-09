@@ -919,11 +919,14 @@ if ($ACTION == 'manDiaLnextCaLL')
                 if ($CCID_on) {$CIDstring = "\"$CCID_NAME\" <$CCID>";}
                 else {$CIDstring = "\"\" <0000000000>";}
 
+                $int_prefix = '';
+                if ($phone_code != '1' and !preg_match('/^0/',$phone_code)) $int_prefix='011';
+                
                 ### whether to omit phone_code or not
                 if (preg_match('/Y/i',$omit_phone_code)) 
                     {$Ndialstring = "$Local_out_prefix$phone_number";}
                 else
-                    {$Ndialstring = "$Local_out_prefix$phone_code$phone_number";}
+                    {$Ndialstring = "$Local_out_prefix$int_prefix$phone_code$phone_number";}
                 ### insert the call action into the osdial_manager table to initiate the call
                 #	$stmt = "INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$MqueryCID','Exten: $conf_exten','Context: $ext_context','Channel: $local_DEF$Local_out_prefix$phone_code$phone_number$local_AMP$ext_context','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','','','','');";
                 $stmt = "INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$MqueryCID','Exten: $Ndialstring','Context: $dial_context','Channel: $local_DEF$conf_exten$local_AMP$ext_context$Local_persist','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','Account: $MqueryCID','','','');";
@@ -948,6 +951,8 @@ if ($ACTION == 'manDiaLnextCaLL')
 
             $comments = preg_replace("/\r/",'',$comments);
             $comments = preg_replace("/\n/",'!N',$comments);
+
+            $phone_code = preg_replace('/^011|^010|^00/', '', $phone_code);
 
             $LeaD_InfO =	$MqueryCID . "\n";
             $LeaD_InfO .=	$lead_id . "\n";
@@ -1154,11 +1159,14 @@ if ($ACTION == 'manDiaLonly')
         if ($CCID_on) {$CIDstring = "\"$CCID_NAME\" <$CCID>";}
         else {$CIDstring = "\"\" <0000000000>";}
 
+        $int_prefix = '';
+        if ($phone_code != '1' and !preg_match('/^0/',$phone_code)) $int_prefix='011';
+
         ### whether to omit phone_code or not
         if (preg_match('/Y/i',$omit_phone_code)) 
             {$Ndialstring = "$Local_out_prefix$phone_number";}
         else
-            {$Ndialstring = "$Local_out_prefix$phone_code$phone_number";}
+            {$Ndialstring = "$Local_out_prefix$int_prefix$phone_code$phone_number";}
         ### insert the call action into the osdial_manager table to initiate the call
         #	$stmt = "INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$MqueryCID','Exten: $conf_exten','Context: $ext_context','Channel: $local_DEF$Local_out_prefix$phone_code$phone_number$local_AMP$ext_context','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','','','','');";
         $stmt = "INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$MqueryCID','Exten: $Ndialstring','Context: $dial_context','Channel: $local_DEF$conf_exten$local_AMP$ext_context$Local_persist','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','Account: $MqueryCID','','','');";
@@ -2373,6 +2381,8 @@ if ($ACTION == 'VDADcheckINCOMING')
         $comments = preg_replace("/\r/",'',$comments);
         $comments = preg_replace("/\n/",'!N',$comments);
 
+        $phone_code = preg_replace('/^011|^010|^00/', '', $phone_code);
+
         $LeaD_InfO =    $callerid . "\n";
         $LeaD_InfO .=   $lead_id . "\n";
         $LeaD_InfO .=   $dispo . "\n";
@@ -3389,6 +3399,8 @@ if ($ACTION == 'RepullLeadData')
 
     $comments = preg_replace("/\r/",'',$comments);
     $comments = preg_replace("/\n/",'!N',$comments);
+
+    $phone_code = preg_replace('/^011|^010|^00/', '', $phone_code);
 
     $LeaD_InfO =    $lead_id . "\n";
     $LeaD_InfO .=   $vendor_id . "\n";
