@@ -884,6 +884,8 @@ while($one_day_interval > 0)
 								}
 							$sthA->finish();
 
+							$phone_code = '011' . $phone_code if ($phone_code ne '1' and substr($phone_code,0,1) ne '0');
+
 							if ($rec_countCUSTDATA)
 								{
 								### update called_count
@@ -1009,7 +1011,7 @@ while($one_day_interval > 0)
 
 								### whether to omit phone_code or not
 								if ($DBIPomitcode[$user_CIPct] > 0) 
-									{$Ndialstring = "$Local_out_prefix$phone_number";}
+									{$Ndialstrin = "$Local_out_prefix$phone_number";}
 								else
 									{$Ndialstring = "$Local_out_prefix$phone_code$phone_number";}
 
@@ -1153,6 +1155,8 @@ while($one_day_interval > 0)
 					$rec_count++;
 					}
 				$sthA->finish();
+
+				$CLphone_code = '011' . $CLphone_code if ($CLphone_code ne '1' and substr($CLphone_code,0,1) ne '0');
 
 				if ($CLcall_type =~ /IN/)
 					{
@@ -1596,6 +1600,8 @@ while($one_day_interval > 0)
 			$rec_count++;
 			}
 		$sthA->finish();
+
+		$CLphone_code = '011' . $CLphone_code if ($CLphone_code ne '1' and substr($CLphone_code,0,1) ne '0');
 
 		### delete call records that are LIVE and not updated for over 10 seconds
 		$rec_count=0;
