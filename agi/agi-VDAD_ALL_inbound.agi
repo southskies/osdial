@@ -183,13 +183,21 @@ while ($sthArows > $rec_count) {
 }
 $sthA->finish();
 
-$stmtA = "SELECT enable_multicompany,intra_server_protocol FROM system_settings;";
+$stmtA = "SELECT enable_multicompany,intra_server_protocol,enable_queuemetrics_logging,queuemetrics_server_ip,queuemetrics_dbname,queuemetrics_login,queuemetrics_pass,queuemetrics_log_id,queuemetrics_eq_prepend FROM system_settings;";
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 @aryA = $sthA->fetchrow_array;
 $multicomp=$aryA[0];
 $isp='*';
 $isp='#' if ($aryA[1] eq 'IAX2');
+$enable_queuemetrics_logging =	$aryA[2];
+$queuemetrics_server_ip	=	$aryA[3];
+$queuemetrics_dbname =		$aryA[4];
+$queuemetrics_login=		$aryA[5];
+$queuemetrics_pass =		$aryA[6];
+$queuemetrics_log_id =		$aryA[7];
+$queuemetrics_eq_prepend =	$aryA[8];
+
 
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1) {
@@ -668,6 +676,49 @@ if ($call_handle_method =~ /CLOSER|DIGITID$/) {
 		if ($AGILOG) {$agi_string = "--    VDXL : |$insert_lead_id|insert to osdial_xfer_log";   &agi_output;}
 }
 
+
+if ($enable_queuemetrics_logging > 0) {
+	$stmtA = "SELECT SQL_NO_CACHE phone_number FROM osdial_auto_calls WHERE lead_id='$CIDlead_id';";
+	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+	$sthArows=$sthA->rows;
+	$rec_count=0;
+	while ($sthArows > $rec_count) {
+		 @aryA = $sthA->fetchrow_array;
+		 $phone_number =	"$aryA[0]";
+		 $data2 = "$phone_number";
+		 $rec_count++;
+	}
+	$sthA->finish();
+
+	if ( (length($queuemetrics_eq_prepend) > 0) && ($queuemetrics_eq_prepend !~ /NONE/) ) {
+		$stmtA = "SELECT SQL_NO_CACHE $queuemetrics_eq_prepend FROM osdial_list WHERE lead_id='$CIDlead_id';";
+		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		$sthArows=$sthA->rows;
+		$rec_count=0;
+		while ($sthArows > $rec_count) {
+			 $DASH='-';
+			 @aryA = $sthA->fetchrow_array;
+			 $QMprepend =	"$aryA[0]";
+			 $rec_count++;
+			 $data2 = "$QMprepend$DASH$phone_number";
+		}
+		$sthA->finish();
+	}
+
+	$dbhB = DBI->connect("DBI:mysql:$queuemetrics_dbname:$queuemetrics_server_ip:3306", "$queuemetrics_login", "$queuemetrics_pass")
+	 or die "Couldn't connect to database: " . DBI->errstr;
+
+	if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
+
+	$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$now_data_epoch',call_id='$YqueryCID',queue='$channel_group',agent='NONE',verb='ENTERQUEUE',data2='$data2',serverid='$queuemetrics_log_id';";
+	$Baffected_rows = $dbhB->do($stmtB);
+
+	$dbhB->disconnect();
+}
+
+
 ### insert a LIVE record to the osdial_auto_calls table 
 $stmtA = "INSERT INTO osdial_auto_calls (server_ip,campaign_id,status,lead_id,uniqueid,callerid,channel,phone_code,phone_number,call_time,call_type,stage) VALUES ('$VARserver_ip','$channel_group','LIVE','$insert_lead_id','$uniqueid','$accountcode','$channel','$phone_code','$phone_number','$SQLdate','IN','LIVE-0');";
 if ($AGILOG and $DB>1) {$agi_string = "|$stmtA|";   &agi_output;}
@@ -844,6 +895,19 @@ while ($drop_timer <= $DROP_TIME) {
 					$stmtA = "INSERT INTO osdial_auto_calls (server_ip,campaign_id,status,lead_id,uniqueid,callerid,channel,phone_code,phone_number,call_time,call_type,stage) VALUES ('$VARserver_ip','$channel_group','CLOSER','$insert_lead_id','$uniqueid','$accountcode','$channel','$phone_code','$phone_number','$SQLdate','IN','CLOSER-$drop_timer');";
 					$affected_rows = $dbhA->do($stmtA);
 					if ($AGILOG) {$agi_string = "$affected_rows|VDAC-reinsert";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
+				}
+
+				if ($enable_queuemetrics_logging > 0) {
+					$dbhB = DBI->connect("DBI:mysql:$queuemetrics_dbname:$queuemetrics_server_ip:3306", "$queuemetrics_login", "$queuemetrics_pass")
+					 or die "Couldn't connect to database: " . DBI->errstr;
+
+					if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
+					$now_data_epoch = time();
+
+					$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$now_data_epoch',call_id='$YqueryCID',queue='$channel_group',agent='Agent/$VDADuser',verb='CONNECT',data1='$drop_timer',serverid='$queuemetrics_log_id';";
+					$Baffected_rows = $dbhB->do($stmtB);
+
+					$dbhB->disconnect();
 				}
 
 				if ($call_handle_method =~ /CLOSER|DIGITID$/) {
@@ -1050,6 +1114,19 @@ while ($drop_timer <= $DROP_TIME) {
 					if ($AGILOG) {$agi_string = "$affected_rows|VDAC-reinsert";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 				}
 
+				if ($enable_queuemetrics_logging > 0) {
+					$dbhB = DBI->connect("DBI:mysql:$queuemetrics_dbname:$queuemetrics_server_ip:3306", "$queuemetrics_login", "$queuemetrics_pass")
+					 or die "Couldn't connect to database: " . DBI->errstr;
+
+					if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
+					$now_data_epoch = time();
+
+					$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$now_data_epoch',call_id='$YqueryCID',queue='$channel_group',agent='Agent/$VDADuser',verb='CONNECT',data1='$drop_timer',serverid='$queuemetrics_log_id';";
+					$Baffected_rows = $dbhB->do($stmtB);
+
+					$dbhB->disconnect();
+				}
+
 				$stmtA = "UPDATE osdial_xfer_log SET closer='$VDADuser' WHERE lead_id='$insert_lead_id' ORDER BY call_date DESC LIMIT 1;";
 				my $affected_rows = $dbhA->do($stmtA);
 				if ($AGILOG) {$agi_string = "--    VDXL osdial_xfer_log update: |$affected_rows|$insert_lead_id|$VDADuser";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
@@ -1245,6 +1322,28 @@ if ($drop_timer > $DROP_TIME) {
 	#$VDADvoicemail_ext = '';
 
 	$drop_seconds = time() - $start_epoch;
+
+
+	if ($enable_queuemetrics_logging > 0) {
+		$dbhB = DBI->connect("DBI:mysql:$queuemetrics_dbname:$queuemetrics_server_ip:3306", "$queuemetrics_login", "$queuemetrics_pass")
+		 or die "Couldn't connect to database: " . DBI->errstr;
+
+		if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
+
+        	$place=0;
+        	if ($rec_countWAIT > 0) {$place = $rec_countWAIT;}
+        	if ($rec_countWAITrem > 0) {$place = $rec_countWAITrem;}
+        	$place++;
+
+		$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$now_data_epoch',call_id='$YqueryCID',queue='$channel_group',agent='NONE',verb='EXITWITHTIMEOUT',data1='$place',serverid='$queuemetrics_log_id';";
+		$Baffected_rows = $dbhB->do($stmtB);
+
+		$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$now_data_epoch',call_id='$YqueryCID',queue='$channel_group',agent='NONE',verb='CALLSTATUS',data1='DROP',serverid='$queuemetrics_log_id';";
+		$Baffected_rows = $dbhB->do($stmtB);
+
+		$dbhB->disconnect();
+	}
+
 
 	$DROPexten = '';
 	if ($drop_message =~ /Y/) {
