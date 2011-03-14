@@ -434,7 +434,7 @@ if ($CLIcampaign)
 	}
 else
 	{
-	$stmtA = "SELECT * FROM osdial_campaigns WHERE active='Y';";
+	$stmtA = "SELECT * FROM osdial_campaigns WHERE active='Y' AND local_call_time IS NOT NULL AND local_call_time NOT IN ('','NONE');";
 	}
 $sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 $sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
