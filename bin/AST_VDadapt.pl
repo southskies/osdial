@@ -158,7 +158,7 @@ if ( $enable_queuemetrics_logging > 0 ) {
 
 	print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n" if ($DBX);
 
-	$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secT',call_id='NONE',queue='NONE',agent='NONE',verb='QUEUESTART',serverid='$queuemetrics_log_id';";
+	$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secT',call_id='NONE',queue='NONE',agent='NONE',verb='QUEUESTART',serverid='$queuemetrics_log_id';";
 	if ($CLOtest) {
 		print $stmtB;
 	} else {

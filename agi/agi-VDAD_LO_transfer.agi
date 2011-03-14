@@ -426,7 +426,7 @@ if ($affected_rows > 0)
 
 		if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
 
-		$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secX',call_id='$accountcode',queue='$VDADcampaign',agent='NONE',verb='ENTERQUEUE',data2='$data2',serverid='$queuemetrics_log_id';";
+		$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='$accountcode',queue='$VDADcampaign',agent='NONE',verb='ENTERQUEUE',data2='$data2',serverid='$queuemetrics_log_id';";
 		$Baffected_rows = $dbhB->do($stmtB);
 
 		$dbhB->disconnect();
@@ -583,7 +583,7 @@ if ($rec_countWAIT < $concurrent_transfers)
 
 			if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
 
-			$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secX',call_id='$accountcode',queue='$VDADcampaign',agent='Agent/$VDADuser',verb='CONNECT',data1='$drop_timer',serverid='$queuemetrics_log_id';";
+			$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='$accountcode',queue='$VDADcampaign',agent='Agent/$VDADuser',verb='CONNECT',data1='$drop_timer',serverid='$queuemetrics_log_id';";
 			$Baffected_rows = $dbhB->do($stmtB);
 
 			$dbhB->disconnect();
@@ -741,7 +741,7 @@ if ($rec_countWAITrem < $concurrent_transfers)
 
 			if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
 
-			$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secX',call_id='$accountcode',queue='$VDADcampaign',agent='Agent/$VDADuser',verb='CONNECT',data1='$drop_timer',serverid='$queuemetrics_log_id';";
+			$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='$accountcode',queue='$VDADcampaign',agent='Agent/$VDADuser',verb='CONNECT',data1='$drop_timer',serverid='$queuemetrics_log_id';";
 			$Baffected_rows = $dbhB->do($stmtB);
 
 			$dbhB->disconnect();
@@ -852,7 +852,7 @@ if ($drop_seconds < 1)
 
 		if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
 
-		$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secX',call_id='$accountcode',queue='$VDADcampaign',agent='NONE',verb='EXITWITHTIMEOUT',data1='1',serverid='$queuemetrics_log_id';";
+		$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='$accountcode',queue='$VDADcampaign',agent='NONE',verb='EXITWITHTIMEOUT',data1='1',serverid='$queuemetrics_log_id';";
 		$Baffected_rows = $dbhB->do($stmtB);
 
 		$dbhB->disconnect();

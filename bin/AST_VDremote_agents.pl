@@ -553,7 +553,7 @@ while($one_day_interval > 0)
 
 			#					if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
 
-			#					$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secX',call_id='NONE',queue='$DBremote_campaign[$h]',agent='Agent/$DBremote_user[$h]',verb='UNPAUSE',serverid='1';";
+			#					$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='$DBremote_campaign[$h]',agent='Agent/$DBremote_user[$h]',verb='UNPAUSE',serverid='1';";
 			#					$Baffected_rows = $dbhB->do($stmtB);
 
 			#					$dbhB->disconnect();
@@ -613,10 +613,10 @@ while($one_day_interval > 0)
 
 								if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
 
-								$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secX',call_id='NONE',queue='$DBremote_campaign[$h]',agent='Agent/$DBremote_user[$h]',verb='AGENTLOGIN',data1='$DBremote_user[$h]$agents',serverid='$queuemetrics_log_id';";
+								$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='$DBremote_campaign[$h]',agent='Agent/$DBremote_user[$h]',verb='AGENTLOGIN',data1='$DBremote_user[$h]$agents',serverid='$queuemetrics_log_id';";
 								$Baffected_rows = $dbhB->do($stmtB);
 
-								$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secX',call_id='NONE',queue='$DBremote_campaign[$h]',agent='Agent/$DBremote_user[$h]',verb='UNPAUSE',serverid='$queuemetrics_log_id';";
+								$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='$DBremote_campaign[$h]',agent='Agent/$DBremote_user[$h]',verb='UNPAUSE',serverid='$queuemetrics_log_id';";
 								$Baffected_rows = $dbhB->do($stmtB);
 
 								$dbhB->disconnect();
@@ -700,7 +700,7 @@ while($one_day_interval > 0)
 
 							if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
 
-							$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secX',call_id='NONE',queue='NONE',agent='Agent/$VD_user[$z]',verb='PAUSEALL',serverid='$queuemetrics_log_id';";
+							$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='NONE',agent='Agent/$VD_user[$z]',verb='PAUSEALL',serverid='$queuemetrics_log_id';";
 							$Baffected_rows = $dbhB->do($stmtB);
 
 							$stmtB = "SELECT time_id FROM queue_log WHERE agent='Agent/$VD_user[$z]' AND verb='AGENTLOGIN' ORDER BY time_id DESC LIMIT 1;";
@@ -720,7 +720,7 @@ while($one_day_interval > 0)
 							$time_logged_in = ($secX - $logintime);
 							if ($time_logged_in > 1000000) {$time_logged_in=1;}
 
-							$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secX',call_id='NONE',queue='$VD_campaign_id[$z]',agent='Agent/$VD_user[$z]',verb='AGENTLOGOFF',data1='$VD_user[$z]$agents',data2='$time_logged_in',serverid='$queuemetrics_log_id';";
+							$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='$VD_campaign_id[$z]',agent='Agent/$VD_user[$z]',verb='AGENTLOGOFF',data1='$VD_user[$z]$agents',data2='$time_logged_in',serverid='$queuemetrics_log_id';";
 							$Baffected_rows = $dbhB->do($stmtB);
 
 							$dbhB->disconnect();
@@ -798,10 +798,10 @@ while($one_day_interval > 0)
 	
 								if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
 	
-								$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secX',call_id='NONE',queue='NONE',agent='Agent/$VD_user[$z]',verb='PAUSEALL',serverid='$queuemetrics_log_id';";
+								$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='NONE',agent='Agent/$VD_user[$z]',verb='PAUSEALL',serverid='$queuemetrics_log_id';";
 								$Baffected_rows = $dbhB->do($stmtB);
 	
-								$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secX',call_id='NONE',queue='NONE',agent='Agent/$VD_user[$z]',verb='UNPAUSEALL',serverid='$queuemetrics_log_id';";
+								$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='NONE',agent='Agent/$VD_user[$z]',verb='UNPAUSEALL',serverid='$queuemetrics_log_id';";
 								$Baffected_rows = $dbhB->do($stmtB);
 	
 								$dbhB->disconnect();

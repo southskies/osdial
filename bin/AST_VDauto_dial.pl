@@ -1263,7 +1263,7 @@ while($one_day_interval > 0)
 	
 								if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
 	
-								$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secX',call_id='$KLcallerid[$kill_vac]',queue='$CLcampaign_id',agent='NONE',verb='ABANDON',data1='1',data2='1',data3='$CLstage',serverid='$queuemetrics_log_id';";
+								$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='$KLcallerid[$kill_vac]',queue='$CLcampaign_id',agent='NONE',verb='ABANDON',data1='1',data2='1',data3='$CLstage',serverid='$queuemetrics_log_id';";
 								$Baffected_rows = $dbhB->do($stmtB);
 	
 								$dbhB->disconnect();
@@ -1641,7 +1641,7 @@ while($one_day_interval > 0)
 
 					if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
 
-					$stmtB = "INSERT INTO queue_log SET partition='P01',time_id='$secX',call_id='$CLcallerid',queue='$CLcampaign_id',agent='NONE',verb='ABANDON',data1='1',data2='1',data3='$CLstage',serverid='$queuemetrics_log_id';";
+					$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='$CLcallerid',queue='$CLcampaign_id',agent='NONE',verb='ABANDON',data1='1',data2='1',data3='$CLstage',serverid='$queuemetrics_log_id';";
 					$Baffected_rows = $dbhB->do($stmtB);
 
 					$dbhB->disconnect();

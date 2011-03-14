@@ -1601,13 +1601,13 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                     $linkB=mysql_connect("$queuemetrics_server_ip", "$queuemetrics_login", "$queuemetrics_pass");
                     mysql_select_db("$queuemetrics_dbname", $linkB);
 
-                    $stmt = "INSERT INTO queue_log SET partition='P01',time_id='$StarTtimE',call_id='NONE',queue='$VD_campaign',agent='Agent/$VD_login',verb='AGENTLOGIN',data1='$VD_login@agents',serverid='$queuemetrics_log_id';";
+                    $stmt = "INSERT INTO queue_log SET partition='P001',time_id='$StarTtimE',call_id='NONE',queue='$VD_campaign',agent='Agent/$VD_login',verb='AGENTLOGIN',data1='$VD_login@agents',serverid='$queuemetrics_log_id';";
                     if ($DB) echo "$stmt\n";
                     $rslt=mysql_query($stmt, $linkB);
                     $affected_rows = mysql_affected_rows($linkB);
                     print "<!-- queue_log AGENTLOGIN entry added: $VD_login|$affected_rows -->\n";
 
-                    $stmt = "INSERT INTO queue_log SET partition='P01',time_id='$StarTtimE',call_id='NONE',queue='NONE',agent='Agent/$VD_login',verb='PAUSEALL',serverid='$queuemetrics_log_id';";
+                    $stmt = "INSERT INTO queue_log SET partition='P001',time_id='$StarTtimE',call_id='NONE',queue='NONE',agent='Agent/$VD_login',verb='PAUSEALL',serverid='$queuemetrics_log_id';";
                     if ($DB) echo "$stmt\n";
                     $rslt=mysql_query($stmt, $linkB);
                     $affected_rows = mysql_affected_rows($linkB);
@@ -1632,13 +1632,13 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                     $linkB=mysql_connect("$queuemetrics_server_ip", "$queuemetrics_login", "$queuemetrics_pass");
                     mysql_select_db("$queuemetrics_dbname", $linkB);
 
-                    $stmt = "INSERT INTO queue_log SET partition='P01',time_id='$StarTtimE',call_id='NONE',queue='$VD_campaign',agent='Agent/$VD_login',verb='AGENTLOGIN',data1='$VD_login@agents',serverid='$queuemetrics_log_id';";
+                    $stmt = "INSERT INTO queue_log SET partition='P001',time_id='$StarTtimE',call_id='NONE',queue='$VD_campaign',agent='Agent/$VD_login',verb='AGENTLOGIN',data1='$VD_login@agents',serverid='$queuemetrics_log_id';";
                     if ($DB) echo "$stmt\n";
                     $rslt=mysql_query($stmt, $linkB);
                     $affected_rows = mysql_affected_rows($linkB);
                     print "<!-- queue_log AGENTLOGIN entry added: $VD_login|$affected_rows -->\n";
 
-                    $stmt = "INSERT INTO queue_log SET partition='P01',time_id='$StarTtimE',call_id='NONE',queue='NONE',agent='Agent/$VD_login',verb='PAUSEALL',serverid='$queuemetrics_log_id';";
+                    $stmt = "INSERT INTO queue_log SET partition='P001',time_id='$StarTtimE',call_id='NONE',queue='NONE',agent='Agent/$VD_login',verb='PAUSEALL',serverid='$queuemetrics_log_id';";
                     if ($DB) echo "$stmt\n";
                     $rslt=mysql_query($stmt, $linkB);
                     $affected_rows = mysql_affected_rows($linkB);
