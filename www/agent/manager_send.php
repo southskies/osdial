@@ -576,10 +576,11 @@ if ($ACTION=="RedirectNameVmail") {
 
 if ($ACTION=="RedirectXtraCX") {
     $DBout='';
-    $row='';   $rowx='';
+    $row='';
+    $rowx='';
     $channel_liveX=1;
     $channel_liveY=1;
-    if ((strlen($channel)<3 or strlen($queryCID)<15 or strlen($exten)<1 or strlen($ext_context)<1 or strlen($ext_priority)<1 or strlen($extrachannel)<3) and !ereg("NEXTAVAILABLE",$exten)) {
+    if ((strlen($channel)<3 or strlen($queryCID)<15 or strlen($exten)<1 or strlen($ext_context)<1 or strlen($ext_priority)<1 or strlen($extrachannel)<3) and !preg_match("/NEXTAVAILABLE/",$exten)) {
         $channel_liveX=0;
         $channel_liveY=0;
         echo "One of these variables is not valid:\n";
@@ -590,7 +591,7 @@ if ($ACTION=="RedirectXtraCX") {
         echo "ext_context $ext_context must be set\n";
         echo "ext_priority $ext_priority must be set\n";
         echo "\nRedirect Action not sent\n";
-        if (ereg("SECOND|FIRST|DEBUG",$filename)) {
+        if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) {
             if ($WeBRooTWritablE > 0) {
                 $fp = fopen ("./osdial_debug.txt", "a");
                 fwrite ($fp, "$NOW_TIME|RDCXC|$filename|$user|$campaign|$channel|$extrachannel|$queryCID|$exten|$ext_context|ext_priority|\n");
@@ -598,7 +599,7 @@ if ($ACTION=="RedirectXtraCX") {
             }
         }
     } else {
-        if (ereg("NEXTAVAILABLE",$exten)) {
+        if (preg_match("/NEXTAVAILABLE/",$exten)) {
             $stmt="UPDATE osdial_conferences SET extension='$protocol/$extension$NOWnum',leave_3way='0' WHERE server_ip='$server_ip' AND (extension='' OR extension IS NULL) AND conf_exten!='$session_id' LIMIT 1;";
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
@@ -616,7 +617,7 @@ if ($ACTION=="RedirectXtraCX") {
                 $row=mysql_fetch_row($rslt);
                 if ($row[0] != '') $agentchannel = $row[0];
 
-                if ( (ereg("^8300",$extension)) and ($protocol == 'Local') ) $extension = "$extension$user";
+                if ( (preg_match("/^8300/",$extension)) and ($protocol == 'Local') ) $extension = "$extension$user";
 
                 $stmt="UPDATE osdial_conferences SET extension='$protocol/$extension' WHERE server_ip='$server_ip' AND conf_exten='$exten' LIMIT 1;";
                 if ($format=='debug') echo "\n<!-- $stmt -->";
@@ -654,7 +655,7 @@ if ($ACTION=="RedirectXtraCX") {
             } else {
                 $channel_liveX=0;
                 echo "Cannot find empty conference on $server_ip, Redirect command not inserted\n|$stmt|";
-                if (ereg("SECOND|FIRST|DEBUG",$filename)) $DBout .= "Cannot find empty conference on $server_ip";
+                if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "Cannot find empty conference on $server_ip";
             }
 
         }
@@ -673,7 +674,7 @@ if ($ACTION=="RedirectXtraCX") {
             if ($rowx[0]==0) {
                 $channel_liveX=0;
                 echo "Channel $channel is not live on $call_server_ip, Redirect command not inserted\n";
-                if (ereg("SECOND|FIRST|DEBUG",$filename)) $DBout .= "$channel is not live on $call_server_ip";
+                if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "$channel is not live on $call_server_ip";
             }    
         }
         $stmt="SELECT SQL_NO_CACHE count(*) FROM live_channels WHERE server_ip='$server_ip' AND channel='$extrachannel';";
@@ -688,7 +689,7 @@ if ($ACTION=="RedirectXtraCX") {
             if ($rowx[0]==0) {
                 $channel_liveY=0;
                 echo "Channel $channel is not live on $server_ip, Redirect command not inserted\n";
-                if (ereg("SECOND|FIRST|DEBUG",$filename)) $DBout .= "$channel is not live on $server_ip";
+                if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "$channel is not live on $server_ip";
             }    
         }
         if ( ($channel_liveX==1) && ($channel_liveY==1) ) {
@@ -699,7 +700,7 @@ if ($ACTION=="RedirectXtraCX") {
             if ($rowx[0] < 1) {
                 $channel_liveY=0;
                 echo "No Local agent to send call to, Redirect command not inserted\n";
-                if (ereg("SECOND|FIRST|DEBUG",$filename)) $DBout .= "No Local agent to send call to";
+                if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "No Local agent to send call to";
             } else {
                 $stmt="SELECT SQL_NO_CACHE server_ip,conf_exten,user FROM osdial_live_agents WHERE lead_id='$lead_id' AND user!='$user';";
                 if ($format=='debug') echo "\n<!-- $stmt -->";
@@ -730,7 +731,7 @@ if ($ACTION=="RedirectXtraCX") {
                 $rslt=mysql_query($stmt, $link);
 
                 echo "RedirectXtraCX command sent for Channel $channel on $call_server_ip and \nHungup $extrachannel on $server_ip\n";
-                if (ereg("SECOND|FIRST|DEBUG",$filename)) $DBout .= "$channel on $call_server_ip, Hungup $extrachannel on $server_ip";
+                if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "$channel on $call_server_ip, Hungup $extrachannel on $server_ip";
             }
         } else {
             if ($channel_liveX==1) {
@@ -741,10 +742,10 @@ if ($ACTION=="RedirectXtraCX") {
                 $ACTION="Redirect";
                 $channel = $extrachannel;
             }
-            if (ereg("SECOND|FIRST|DEBUG",$filename)) $DBout .= "Changed to Redirect: $channel on $server_ip";
+            if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "Changed to Redirect: $channel on $server_ip";
         }
 
-        if (ereg("SECOND|FIRST|DEBUG",$filename)) {
+        if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) {
             if ($WeBRooTWritablE > 0) {
                 $fp = fopen ("./osdial_debug.txt", "a");
                 fwrite ($fp, "$NOW_TIME|RDCXC|$filename|$user|$campaign|$DBout|\n");
@@ -762,7 +763,7 @@ if ($ACTION=="RedirectXtra") {
         $rowx='';
         $channel_liveX=1;
         $channel_liveY=1;
-        if ((strlen($channel)<3 or strlen($queryCID)<15 or strlen($exten)<1 or strlen($ext_context)<1 or strlen($ext_priority)<1 or strlen($extrachannel)<3) and !ereg("NEXTAVAILABLE",$exten)) {
+        if ((strlen($channel)<3 or strlen($queryCID)<15 or strlen($exten)<1 or strlen($ext_context)<1 or strlen($ext_priority)<1 or strlen($extrachannel)<3) and !preg_match("/NEXTAVAILABLE/",$exten)) {
             $channel_liveX=0;
             $channel_liveY=0;
             echo "One of these variables is not valid:\n";
@@ -773,7 +774,7 @@ if ($ACTION=="RedirectXtra") {
             echo "ext_context $ext_context must be set\n";
             echo "ext_priority $ext_priority must be set\n";
             echo "\nRedirect Action not sent\n";
-            if (ereg("SECOND|FIRST|DEBUG",$filename)) {
+            if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) {
                 if ($WeBRooTWritablE > 0) {
                     $fp = fopen ("./osdial_debug.txt", "a");
                     fwrite ($fp, "$NOW_TIME|RDX|$filename|$user|$campaign|$$channel|$extrachannel|$queryCID|$exten|$ext_context|ext_priority|\n");
@@ -781,7 +782,7 @@ if ($ACTION=="RedirectXtra") {
                 }
             }
         } else {
-            if (ereg("NEXTAVAILABLE",$exten)) {
+            if (preg_match("/NEXTAVAILABLE/",$exten)) {
                 $stmt="UPDATE osdial_conferences SET extension='$protocol/$extension$NOWnum',leave_3way='0' WHERE server_ip='$server_ip' AND (extension='' OR extension IS NULL) AND conf_exten!='$session_id' LIMIT 1;";
                 if ($format=='debug') echo "\n<!-- $stmt -->";
                 $rslt=mysql_query($stmt, $link);
@@ -835,7 +836,7 @@ if ($ACTION=="RedirectXtra") {
                 } else {
                     $channel_liveX=0;
                     echo "Cannot find empty conference on $server_ip, Redirect command not inserted\n|$stmt|";
-                    if (ereg("SECOND|FIRST|DEBUG",$filename)) $DBout .= "Cannot find empty conference on $server_ip";
+                    if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "Cannot find empty conference on $server_ip";
                 }
             }
 
@@ -845,7 +846,7 @@ if ($ACTION=="RedirectXtra") {
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
-            if ( ($row[0]==0) && (!ereg("SECOND",$filename)) ) {
+            if ( ($row[0]==0) && (!preg_match("/SECOND/",$filename)) ) {
                 $stmt="SELECT SQL_NO_CACHE count(*) FROM live_sip_channels WHERE server_ip='$call_server_ip' AND channel='$channel';";
                 if ($format=='debug') echo "\n<!-- $stmt -->";
                 $rslt=mysql_query($stmt, $link);
@@ -853,14 +854,14 @@ if ($ACTION=="RedirectXtra") {
                 if ($rowx[0]==0) {
                     $channel_liveX=0;
                     echo "Channel $channel is not live on $call_server_ip, Redirect command not inserted\n";
-                    if (ereg("SECOND|FIRST|DEBUG",$filename)) $DBout .= "$channel is not live on $call_server_ip";
+                    if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "$channel is not live on $call_server_ip";
                 }    
             }
             $stmt="SELECT SQL_NO_CACHE count(*) FROM live_channels WHERE server_ip='$server_ip' AND channel='$extrachannel';";
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
-            if ( ($row[0]==0) && (!ereg("SECOND",$filename)) ) {
+            if ( ($row[0]==0) && (!preg_match("/SECOND/",$filename)) ) {
                 $stmt="SELECT SQL_NO_CACHE count(*) FROM live_sip_channels WHERE server_ip='$server_ip' AND channel='$extrachannel';";
                 if ($format=='debug') echo "\n<!-- $stmt -->";
                 $rslt=mysql_query($stmt, $link);
@@ -868,7 +869,7 @@ if ($ACTION=="RedirectXtra") {
                 if ($rowx[0]==0) {
                     $channel_liveY=0;
                     echo "Channel $channel is not live on $server_ip, Redirect command not inserted\n";
-                    if (ereg("SECOND|FIRST|DEBUG",$filename)) $DBout .= "$channel is not live on $server_ip";
+                    if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "$channel is not live on $server_ip";
                 }    
             }
             if ( ($channel_liveX==1) && ($channel_liveY==1) ) {
@@ -878,7 +879,7 @@ if ($ACTION=="RedirectXtra") {
                     $rslt=mysql_query($stmt, $link);
 
                     echo "RedirectXtra command sent for Channel $channel and \nExtraChannel $extrachannel\n to $exten on $server_ip\n";
-                    if (ereg("SECOND|FIRST|DEBUG",$filename)) $DBout .= "$channel and $extrachannel to $exten on $server_ip";
+                    if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "$channel and $extrachannel to $exten on $server_ip";
                 } else {
                     $S='*';
                     $D_s_ip = explode('.', $server_ip);
@@ -901,7 +902,7 @@ if ($ACTION=="RedirectXtra") {
                     $rslt=mysql_query($stmt, $link);
 
                     echo "RedirectXtra command sent for Channel $channel on $call_server_ip and \nExtraChannel $extrachannel\n to $exten on $server_ip\n";
-                    if (ereg("SECOND|FIRST|DEBUG",$filename)) $DBout .= "$channel/$call_server_ip and $extrachannel/$server_ip to $exten";
+                    if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "$channel/$call_server_ip and $extrachannel/$server_ip to $exten";
                 }
             } else {
                 if ($channel_liveX==1) {
@@ -914,7 +915,7 @@ if ($ACTION=="RedirectXtra") {
                 }
             }
 
-            if (ereg("SECOND|FIRST|DEBUG",$filename)) {
+            if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) {
                 if ($WeBRooTWritablE > 0) {
                     $fp = fopen ("./osdial_debug.txt", "a");
                     fwrite ($fp, "$NOW_TIME|RDX|$filename|$user|$campaign|$DBout|\n");
@@ -942,8 +943,8 @@ if ($ACTION=="Redirect") {
             $rslt=mysql_query($stmt, $link);
             $rowx=mysql_fetch_row($rslt);
             $channel=$rowx[0];
-            $channel = eregi_replace("1$","2",$channel);
-            $queryCID = eregi_replace("^.","Q",$queryCID);
+            $channel = preg_replace("/1$/","2",$channel);
+            $queryCID = preg_replace("/^./","Q",$queryCID);
         }
     }
 
@@ -1149,10 +1150,10 @@ if ($ACTION=="VolumeControl") {
         echo "Conference $exten, Stage $stage is not valid or queryCID $queryCID is not valid, Originate command not inserted\n";
     } else {
         $participant_number='XXYYXXYYXXYYXX';
-        if (eregi('UP',$stage)) $vol_prefix='4';
-        if (eregi('DOWN',$stage)) $vol_prefix='3';
-        if (eregi('UNMUTE',$stage)) $vol_prefix='2';
-        if (eregi('MUTING',$stage)) $vol_prefix='1';
+        if (preg_match('/UP/',$stage)) $vol_prefix='4';
+        if (preg_match('/DOWN/',$stage)) $vol_prefix='3';
+        if (preg_match('/UNMUTE/',$stage)) $vol_prefix='2';
+        if (preg_match('/MUTING/',$stage)) $vol_prefix='1';
         $local_DEF = 'Local/';
         $local_AMP = '@';
         $volume_local_channel = "$local_DEF$participant_number$vol_prefix$exten$local_AMP$ext_context";
