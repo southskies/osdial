@@ -233,8 +233,8 @@ if ($phone_pass=='') $phone_pass=get_variable("pp");
 if ($VD_campaign!='') $VD_campaign = preg_replace('/ /','',strtoupper($VD_campaign));
 
 if ($flag_channels=='') {
-		$flag_channels=0;
-		$flag_string='';
+    $flag_channels=0;
+    $flag_string='';
 }
 
 ### security strip all non-alphanumeric characters out of the variables ###
@@ -279,7 +279,7 @@ while ($i < $qm_conf_ct) {
     $agent_template =   $row[1];
     $multicomp =        $row[2];
     $isp='*';
-	if ($row[3]=='IAX2') $isp='#';
+    if ($row[3]=='IAX2') $isp='#';
     $i++;
 }
 ##### END SETTINGS LOOKUP #####
@@ -311,17 +311,17 @@ $LogiNAJAX              = '1';  # set to 1 to do lookups
 $HidEMonitoRSessionS    = '1';  # set to 1 to hide remote monitoring channels from "session calls"
 $LogouTKicKAlL          = '1';  # set to 1 to hangup all calls in session upon agent logout
 
-$TEST_all_statuses		= '0';	# TEST variable allows all statuses in dispo screen
+$TEST_all_statuses      = '0';  # TEST variable allows all statuses in dispo screen
 
 $BROWSER_HEIGHT         = 500;  # set to the minimum browser height, default=500
 $BROWSER_WIDTH          = 980;  # set to the minimum browser width, default=770
 
 ### SCREEN WIDTH AND HEIGHT CALCULATIONS ###
 
-$MASTERwidth=($BROWSER_WIDTH - 340);
-$MASTERheight=($BROWSER_HEIGHT - 200);
-if ($MASTERwidth < 430) {$MASTERwidth = '430';} 
-if ($MASTERheight < 300) {$MASTERheight = '300';} 
+$MASTERwidth  = ($BROWSER_WIDTH - 340);
+$MASTERheight = ($BROWSER_HEIGHT - 200);
+if ($MASTERwidth < 430) $MASTERwidth = '430';
+if ($MASTERheight < 300) $MASTERheight = '300';
 
 $CAwidth = ($MASTERwidth + 340);        # 770 - cover all (none-in-session, customer hunngup, etc...)
 $MNwidth = ($MASTERwidth + 330);        # 760 - main frame
@@ -359,7 +359,7 @@ if (preg_match('/443/',$server_port)) {
     $HTTPprotocol = 'http://';
 }
 if ($server_port == '80' or $server_port == '443') {
-	$server_port='';
+    $server_port='';
 } else {
     $server_port = ":" . $server_port;
 }
@@ -737,7 +737,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
     exit;
 
 } else {
-    if ($WeBRooTWritablE > 0) $fp = fopen ("./osdial_auth_entries.txt", "a");
+    if ($WeBRooTWritablE > 0) $fp = fopen("./osdial_auth_entries.txt", "a");
     $VDloginDISPLAY=0;
 
     if (strlen($VD_login)<2 or strlen($VD_pass)<2 or strlen($VD_campaign)<2) {
@@ -1368,8 +1368,8 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
         # If a park extension is not set, use the default one
         if (strlen($park_ext)>0 and strlen($park_file_name)>0) {
-            $OSDiaL_park_on_extension = "$park_ext";
-            $OSDiaL_park_on_filename = "$park_file_name";
+            $OSDiaL_park_on_extension = $park_ext;
+            $OSDiaL_park_on_filename = $park_file_name;
             print "<!-- CAMPAIGN CUSTOM PARKING:  |$OSDiaL_park_on_extension|$OSDiaL_park_on_filename| -->\n";
         }
         print "<!-- CAMPAIGN DEFAULT PARKING: |$OSDiaL_park_on_extension|$OSDiaL_park_on_filename| -->\n";
@@ -1541,14 +1541,14 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             $i=0;
             while ($i < $qm_conf_ct) {
                 $row=mysql_fetch_row($rslt);
-                $enable_queuemetrics_logging =    $row[0];
-                $queuemetrics_server_ip    =        $row[1];
-                $queuemetrics_dbname =            $row[2];
-                $queuemetrics_login    =            $row[3];
-                $queuemetrics_pass =            $row[4];
-                $queuemetrics_log_id =            $row[5];
-                $osdial_agent_disable =        $row[6];
-                $allow_sipsak_messages =        $row[7];
+                $enable_queuemetrics_logging = $row[0];
+                $queuemetrics_server_ip = $row[1];
+                $queuemetrics_dbname = $row[2];
+                $queuemetrics_login = $row[3];
+                $queuemetrics_pass = $row[4];
+                $queuemetrics_log_id = $row[5];
+                $osdial_agent_disable = $row[6];
+                $allow_sipsak_messages = $row[7];
                 $i++;
             }
             ##### END QUEUEMETRICS LOGGING LOOKUP #####
@@ -1578,12 +1578,12 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 $vca_ct = mysql_num_rows($rslt);
                 if ($vca_ct > 0) {
                     $row=mysql_fetch_row($rslt);
-                    $campaign_weight =    $row[0];
-                    $calls_today =        $row[1];
+                    $campaign_weight = $row[0];
+                    $calls_today = $row[1];
                     $i++;
                 } else {
-                    $campaign_weight =    '0';
-                    $calls_today =        '0';
+                    $campaign_weight = '0';
+                    $calls_today = '0';
                     $stmt="INSERT INTO osdial_campaign_agents (user,campaign_id,campaign_rank,campaign_weight,calls_today) values('$VD_login','$VD_campaign','0','0','$calls_today');";
                     if ($DB) echo "$stmt\n";
                     $rslt=mysql_query($stmt, $link);
@@ -1598,8 +1598,8 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 print "<!-- new osdial_live_agents record inserted: |$affected_rows| -->\n";
 
                 if ($enable_queuemetrics_logging > 0) {
-                    $linkB=mysql_connect("$queuemetrics_server_ip", "$queuemetrics_login", "$queuemetrics_pass");
-                    mysql_select_db("$queuemetrics_dbname", $linkB);
+                    $linkB=mysql_connect($queuemetrics_server_ip, $queuemetrics_login, $queuemetrics_pass);
+                    mysql_select_db($queuemetrics_dbname, $linkB);
 
                     $stmt = "INSERT INTO queue_log SET partition='P001',time_id='$StarTtimE',call_id='NONE',queue='$VD_campaign',agent='Agent/$VD_login',verb='AGENTLOGIN',data1='$VD_login@agents',serverid='$queuemetrics_log_id';";
                     if ($DB) echo "$stmt\n";
@@ -1629,8 +1629,8 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 print "<!-- new osdial_live_agents record inserted: |$affected_rows| -->\n";
 
                 if ($enable_queuemetrics_logging > 0) {
-                    $linkB=mysql_connect("$queuemetrics_server_ip", "$queuemetrics_login", "$queuemetrics_pass");
-                    mysql_select_db("$queuemetrics_dbname", $linkB);
+                    $linkB=mysql_connect($queuemetrics_server_ip, $queuemetrics_login, $queuemetrics_pass);
+                    mysql_select_db($queuemetrics_dbname, $linkB);
 
                     $stmt = "INSERT INTO queue_log SET partition='P001',time_id='$StarTtimE',call_id='NONE',queue='$VD_campaign',agent='Agent/$VD_login',verb='AGENTLOGIN',data1='$VD_login@agents',serverid='$queuemetrics_log_id';";
                     if ($DB) echo "$stmt\n";
@@ -1645,7 +1645,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                     print "<!-- queue_log PAUSE entry added: $VD_login|$affected_rows -->\n";
 
                     mysql_close($linkB);
-                    mysql_select_db("$VARDB_database", $link);
+                    mysql_select_db($VARDB_database, $link);
                 }
             }
 
@@ -1675,116 +1675,116 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             exit;
         }
 
-    if (strlen($session_id) < 1) {
-        echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
-        echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
-        #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
-        echo "<script type=\"text/javascript\">\n";
-        require('include/osdial-login.js');
-        echo "</script>\n";
-        echo "</head>\n";
-        echo "<body bgcolor=white name=osdial>\n";
-        echo $welcome_span;
-        echo "<b>Sorry, there are no available sessions</b>\n";
-        echo "<form action=\"$PHP_SELF\" method=post>\n";
-        echo "<input type=hidden name=DB value=\"$DB\">\n";
-        echo "<input type=hidden name=phone_login value=\"$phone_login\">\n";
-        echo "<input type=hidden name=phone_pass value=\"$phone_pass\">\n";
-        echo "Login: <input type=text name=VD_login size=10 maxlength=20 value=\"$VD_login\">\n<br>";
-        echo "Password: <input type=password name=VD_pass size=10 maxlength=20 value=\"$VD_pass\"><br>\n";
-        echo "Campaign: <span id=\"LogiNCamPaigns\">$camp_form_code</span><br>\n";
-        echo "<input type=button onclick=\"login_submit(); return false;\" name=SUBMIT value=SUBMIT> &nbsp; \n";
-        echo "<span id=\"LogiNReseT\"></span>\n";
-        echo "</form>\n";
-        echo "</body>\n";
-        echo "</html>\n";
-        exit;
-    }
-
-    if (preg_match('/MSIE/',$browser)) {
-        $useIE=1;
-        print "<!-- client web browser used: MSIE |$browser|$useIE| -->\n";
-    } else {
-        $useIE=0;
-        print "<!-- client web browser used: W3C-Compliant |$browser|$useIE| -->\n";
-    }
-
-    $StarTtimE = date("U");
-    $NOW_TIME = date("Y-m-d H:i:s");
-    ##### Agent is going to log in so insert the osdial_agent_log entry now
-    $stmt="INSERT INTO osdial_agent_log (user,server_ip,event_time,campaign_id,pause_epoch,pause_sec,wait_epoch,user_group,sub_status) values('$VD_login','$server_ip','$NOW_TIME','$VD_campaign','$StarTtimE','0','$StarTtimE','$VU_user_group','LOGIN');";
-    if ($DB) echo "$stmt\n";
-    $rslt=mysql_query($stmt, $link);
-    $affected_rows = mysql_affected_rows($link);
-    $agent_log_id = mysql_insert_id($link);
-    print "<!-- osdial_agent_log record inserted: |$affected_rows|$agent_log_id| -->\n";
-
-    $S='*';
-    $D_s_ip = explode('.', $server_ip);
-    if (strlen($D_s_ip[0])<2) $D_s_ip[0] = "0$D_s_ip[0]";
-    if (strlen($D_s_ip[0])<3) $D_s_ip[0] = "0$D_s_ip[0]";
-    if (strlen($D_s_ip[1])<2) $D_s_ip[1] = "0$D_s_ip[1]";
-    if (strlen($D_s_ip[1])<3) $D_s_ip[1] = "0$D_s_ip[1]";
-    if (strlen($D_s_ip[2])<2) $D_s_ip[2] = "0$D_s_ip[2]";
-    if (strlen($D_s_ip[2])<3) $D_s_ip[2] = "0$D_s_ip[2]";
-    if (strlen($D_s_ip[3])<2) $D_s_ip[3] = "0$D_s_ip[3]";
-    if (strlen($D_s_ip[3])<3) $D_s_ip[3] = "0$D_s_ip[3]";
-    $server_ip_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]";
-
-    $scriptSQL = '';
-    foreach ($myscripts as $k => $v) {
-        $scriptSQL .= "'" . $k . "',";
-    }
-    $scriptSQL = rtrim($scriptSQL,',');
-    ##### grab the datails of all active scripts in the system
-    $stmt="SELECT script_id,script_name,script_text FROM osdial_scripts WHERE active='Y' AND script_id IN ($scriptSQL) ORDER BY script_id LIMIT 100;";
-    $rslt=mysql_query($stmt, $link);
-    if ($DB) echo "$stmt\n";
-    $MM_scripts = mysql_num_rows($rslt);
-    $e=0;
-    while ($e < $MM_scripts) {
-        $row=mysql_fetch_row($rslt);
-        $MMscriptid[$e] =$row[0];
-        $MMscriptname[$e] = urlencode($row[1]);
-
-        $PMMscripttext = "<span style=\"display:block;\" id=\"SCRIPT_MAIN\">" . $row[2] . "</span>";
-
-        $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $row[0] . "'");
-        $hidebuttons = "document.getElementById('SCRIPT_MAIN').style.display='none';";
-
-        if (is_array($buttons)) {
-            foreach ($buttons as $button) {
-                $hidebuttons .= "document.getElementById('SCRIPT_" . $button['script_button_id'] . "').style.display='none';";
-            }
-
-            foreach ($buttons as $button) {
-                $PMMscripttext .= "<span style=\"display:none;\" id=\"SCRIPT_" . $button['script_button_id'] . "\">";
-                $PMMscripttext .= "<center><input type=\"button\" value=\"MAIN\" onclick=\"ScriptButtonLog('" . $row[0] ."','" . $button['script_button_id'] . "'); script_last_click=''; $hidebuttons document.getElementById('SCRIPT_MAIN').style.display='block';\"></center><br>";
-                $PMMscripttext .= $button['script_button_text'];
-                $PMMscripttext .= "</span>";
-            }
-
-            foreach ($buttons as $button) {
-                $PMMscripttext = preg_replace('/\{\{' . $button['script_button_id'] . '\}\}/imU', '{{' . $button['script_button_id'] . ':' . $button['script_button_label'] . '}}',$PMMscripttext);
-                $PMMscripttext = preg_replace('/\{\{' . $button['script_button_id'] . ':(.*)\}\}/imU', '<input type="button" value="$1" onclick="ScriptButtonLog(\'' . $row[0] . '\' &#43; script_last_click,\'' . $button['script_button_id'] . '\'); script_last_click=\'_' . $button['script_button_id'] . '\'; ' . $hidebuttons . ' document.getElementById(\'SCRIPT_' . $button['script_button_id'] . '\').style.display=\'block\';">',$PMMscripttext);
-            }
+        if (strlen($session_id) < 1) {
+            echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
+            echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+            #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
+            echo "<script type=\"text/javascript\">\n";
+            require('include/osdial-login.js');
+            echo "</script>\n";
+            echo "</head>\n";
+            echo "<body bgcolor=white name=osdial>\n";
+            echo $welcome_span;
+            echo "<b>Sorry, there are no available sessions</b>\n";
+            echo "<form action=\"$PHP_SELF\" method=post>\n";
+            echo "<input type=hidden name=DB value=\"$DB\">\n";
+            echo "<input type=hidden name=phone_login value=\"$phone_login\">\n";
+            echo "<input type=hidden name=phone_pass value=\"$phone_pass\">\n";
+            echo "Login: <input type=text name=VD_login size=10 maxlength=20 value=\"$VD_login\">\n<br>";
+            echo "Password: <input type=password name=VD_pass size=10 maxlength=20 value=\"$VD_pass\"><br>\n";
+            echo "Campaign: <span id=\"LogiNCamPaigns\">$camp_form_code</span><br>\n";
+            echo "<input type=button onclick=\"login_submit(); return false;\" name=SUBMIT value=SUBMIT> &nbsp; \n";
+            echo "<span id=\"LogiNReseT\"></span>\n";
+            echo "</form>\n";
+            echo "</body>\n";
+            echo "</html>\n";
+            exit;
         }
 
-        $PMMscripttext = preg_replace('/\{\{DISPO:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
-        $PMMscripttext = preg_replace('/\{\{DISPO_NORMAL:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();submit_method_tmp=submit_method;submit_method=0;HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
-        $PMMscripttext = preg_replace('/\{\{DISPO_WEBFORM1:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();submit_method_tmp=submit_method;submit_method=1;HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
-        $PMMscripttext = preg_replace('/\{\{DISPO_WEBFORM2:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();submit_method_tmp=submit_method;submit_method=2;HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
+        if (preg_match('/MSIE/',$browser)) {
+            $useIE=1;
+            print "<!-- client web browser used: MSIE |$browser|$useIE| -->\n";
+        } else {
+            $useIE=0;
+            print "<!-- client web browser used: W3C-Compliant |$browser|$useIE| -->\n";
+        }
 
-        $MMscripttext[$e] = urlencode($PMMscripttext);
-        $MMscriptids .= "'$MMscriptid[$e]',";
-        $MMscriptnames .= "'$MMscriptname[$e]',";
-        $MMscripttexts .= "'$MMscripttext[$e]',";
-        $e++;
-    }
+        $StarTtimE = date("U");
+        $NOW_TIME = date("Y-m-d H:i:s");
+        ##### Agent is going to log in so insert the osdial_agent_log entry now
+        $stmt="INSERT INTO osdial_agent_log (user,server_ip,event_time,campaign_id,pause_epoch,pause_sec,wait_epoch,user_group,sub_status) values('$VD_login','$server_ip','$NOW_TIME','$VD_campaign','$StarTtimE','0','$StarTtimE','$VU_user_group','LOGIN');";
+        if ($DB) echo "$stmt\n";
+        $rslt=mysql_query($stmt, $link);
+        $affected_rows = mysql_affected_rows($link);
+        $agent_log_id = mysql_insert_id($link);
+        print "<!-- osdial_agent_log record inserted: |$affected_rows|$agent_log_id| -->\n";
 
-    $MMscriptids = rtrim($MMscriptids, ','); 
-    $MMscriptnames = rtrim($MMscriptnames, ','); 
-    $MMscripttexts = rtrim($MMscripttexts, ','); 
+        $S='*';
+        $D_s_ip = explode('.', $server_ip);
+        if (strlen($D_s_ip[0])<2) $D_s_ip[0] = "0$D_s_ip[0]";
+        if (strlen($D_s_ip[0])<3) $D_s_ip[0] = "0$D_s_ip[0]";
+        if (strlen($D_s_ip[1])<2) $D_s_ip[1] = "0$D_s_ip[1]";
+        if (strlen($D_s_ip[1])<3) $D_s_ip[1] = "0$D_s_ip[1]";
+        if (strlen($D_s_ip[2])<2) $D_s_ip[2] = "0$D_s_ip[2]";
+        if (strlen($D_s_ip[2])<3) $D_s_ip[2] = "0$D_s_ip[2]";
+        if (strlen($D_s_ip[3])<2) $D_s_ip[3] = "0$D_s_ip[3]";
+        if (strlen($D_s_ip[3])<3) $D_s_ip[3] = "0$D_s_ip[3]";
+        $server_ip_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]";
+
+        $scriptSQL = '';
+        foreach ($myscripts as $k => $v) {
+            $scriptSQL .= "'" . $k . "',";
+        }
+        $scriptSQL = rtrim($scriptSQL,',');
+        ##### grab the datails of all active scripts in the system
+        $stmt="SELECT script_id,script_name,script_text FROM osdial_scripts WHERE active='Y' AND script_id IN ($scriptSQL) ORDER BY script_id LIMIT 100;";
+        $rslt=mysql_query($stmt, $link);
+        if ($DB) echo "$stmt\n";
+        $MM_scripts = mysql_num_rows($rslt);
+        $e=0;
+        while ($e < $MM_scripts) {
+            $row=mysql_fetch_row($rslt);
+            $MMscriptid[$e] =$row[0];
+            $MMscriptname[$e] = urlencode($row[1]);
+
+            $PMMscripttext = "<span style=\"display:block;\" id=\"SCRIPT_MAIN\">" . $row[2] . "</span>";
+
+            $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $row[0] . "'");
+            $hidebuttons = "document.getElementById('SCRIPT_MAIN').style.display='none';";
+
+            if (is_array($buttons)) {
+                foreach ($buttons as $button) {
+                    $hidebuttons .= "document.getElementById('SCRIPT_" . $button['script_button_id'] . "').style.display='none';";
+                }
+
+                foreach ($buttons as $button) {
+                    $PMMscripttext .= "<span style=\"display:none;\" id=\"SCRIPT_" . $button['script_button_id'] . "\">";
+                    $PMMscripttext .= "<center><input type=\"button\" value=\"MAIN\" onclick=\"ScriptButtonLog('" . $row[0] ."','" . $button['script_button_id'] . "'); script_last_click=''; $hidebuttons document.getElementById('SCRIPT_MAIN').style.display='block';\"></center><br>";
+                    $PMMscripttext .= $button['script_button_text'];
+                    $PMMscripttext .= "</span>";
+                }
+
+                foreach ($buttons as $button) {
+                    $PMMscripttext = preg_replace('/\{\{' . $button['script_button_id'] . '\}\}/imU', '{{' . $button['script_button_id'] . ':' . $button['script_button_label'] . '}}',$PMMscripttext);
+                    $PMMscripttext = preg_replace('/\{\{' . $button['script_button_id'] . ':(.*)\}\}/imU', '<input type="button" value="$1" onclick="ScriptButtonLog(\'' . $row[0] . '\' &#43; script_last_click,\'' . $button['script_button_id'] . '\'); script_last_click=\'_' . $button['script_button_id'] . '\'; ' . $hidebuttons . ' document.getElementById(\'SCRIPT_' . $button['script_button_id'] . '\').style.display=\'block\';">',$PMMscripttext);
+                }
+            }
+
+            $PMMscripttext = preg_replace('/\{\{DISPO:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
+            $PMMscripttext = preg_replace('/\{\{DISPO_NORMAL:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();submit_method_tmp=submit_method;submit_method=0;HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
+            $PMMscripttext = preg_replace('/\{\{DISPO_WEBFORM1:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();submit_method_tmp=submit_method;submit_method=1;HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
+            $PMMscripttext = preg_replace('/\{\{DISPO_WEBFORM2:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();submit_method_tmp=submit_method;submit_method=2;HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
+
+            $MMscripttext[$e] = urlencode($PMMscripttext);
+            $MMscriptids .= "'$MMscriptid[$e]',";
+            $MMscriptnames .= "'$MMscriptname[$e]',";
+            $MMscripttexts .= "'$MMscripttext[$e]',";
+            $e++;
+        }
+
+        $MMscriptids = rtrim($MMscriptids, ','); 
+        $MMscriptnames = rtrim($MMscriptnames, ','); 
+        $MMscripttexts = rtrim($MMscripttexts, ','); 
     }
 }
 
