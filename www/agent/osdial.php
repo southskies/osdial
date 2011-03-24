@@ -1736,11 +1736,14 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             $scriptSQL .= "'" . $k . "',";
         }
         $scriptSQL = rtrim($scriptSQL,',');
-        ##### grab the datails of all active scripts in the system
-        $stmt="SELECT script_id,script_name,script_text FROM osdial_scripts WHERE active='Y' AND script_id IN ($scriptSQL) ORDER BY script_id LIMIT 100;";
-        $rslt=mysql_query($stmt, $link);
-        if ($DB) echo "$stmt\n";
-        $MM_scripts = mysql_num_rows($rslt);
+        $MM_scripts = 0;
+        if ($scriptSQL != '') {
+            ##### grab the datails of all active scripts in the system
+            $stmt="SELECT script_id,script_name,script_text FROM osdial_scripts WHERE active='Y' AND script_id IN ($scriptSQL) ORDER BY script_id LIMIT 100;";
+            $rslt=mysql_query($stmt, $link);
+            if ($DB) echo "$stmt\n";
+            $MM_scripts = mysql_num_rows($rslt);
+        }
         $e=0;
         while ($e < $MM_scripts) {
             $row=mysql_fetch_row($rslt);
