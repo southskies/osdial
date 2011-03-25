@@ -1,0 +1,67 @@
+#!/usr/bin/perl
+#
+# agi-OSDamd_post.agi
+#
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+## Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+# NOTE: This script is only needed with app_amd enabled systems
+# 
+# runs after a call goes through AMD in extensions.conf to send the call on to
+# it's proper destination
+#
+# ; this is used for playing a message to an answering machine forwarded from AMD in osdial
+# ;    replace conf with the message file you want to leave
+# exten => 8320,1,WaitForSilence(2000,2) ; AMD got machine.  leave message after recording
+# exten => 8320,2,Playback(conf)
+# exten => 8320,3,AGI(VD_amd_post.agi,${EXTEN})
+# exten => 8320,4,Hangup
+# 
+
+$|++;
+
+use strict;
+use OSDial;
+
+my $prog = 'agi-OSDamd_post.agi';
+my $DB=1;
+
+my $osdial = OSDial->new('DB'=>$DB);
+$osdial->AGI($prog);
+
+my $AGI = $osdial->AGI();
+
+my $CIDlead_id = $AGI->{'accountcode'};
+$CIDlead_id = substr($CIDlead_id, 11, 9);
+$CIDlead_id = ($CIDlead_id + 0);
+
+$osdial->agi_output("+++++ VD amd START: |$CIDlead_id|");
+
+
+# AMD says it's a machine so modify statuses and hangup call something will go here later for leaving a message on AMs.
+
+my $affected_rows = $osdial->sql_execute("UPDATE osdial_log SET status='AL',end_epoch=NOW(),length_in_sec=NOW()-start_epoch WHERE lead_id='$CIDlead_id' ORDER BY call_date DESC LIMIT 1;");
+$osdial->agi_output("--    VDAD osdial_log AL update: |$affected_rows|");
+
+my $affected_rows = $osdial->sql_execute("UPDATE osdial_list set status='AL' where lead_id='$CIDlead_id';");
+$osdial->agi_output("--    VDAD osdial_list AL update: |$affected_rows|");
+
+
+exit 0;
