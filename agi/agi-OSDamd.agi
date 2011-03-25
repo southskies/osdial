@@ -1,0 +1,131 @@
+#!/usr/bin/perl
+#
+# agi-OSDamd.agi
+#
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+## Copyright (C) 2009  Steve Szmidt <techs@callcentersg.com>  LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+# NOTE: This script is only needed with app_amd enabled systems
+# 
+# runs after a call goes through AMD in extensions.conf to send the call on to
+# it's proper destination
+#
+# You need to put lines similar to those below in your extensions.conf file:
+# 
+# ; osdial_auto_dialer transfer script AMD with Load Balanced:
+# exten => 8369,1,AGI(call_log.agi,${EXTEN})
+# exten => 8369,2,(AMD),AMD
+# exten => 8369,3,AGI(VD_amd.agi,${EXTEN})
+# exten => 8369,4,AGI(agi-VDAD_LB_transfer.agi,${EXTEN})
+# exten => 8369,5,AGI(agi-VDAD_LB_transfer.agi,${EXTEN})
+# exten => 8369,6,AGI(agi-VDAD_LB_transfer.agi,${EXTEN})
+# exten => 8369,7,Hangup
+# 
+
+$|++;
+
+use strict;
+use OSDial;
+
+my $prog = 'agi-OSDamd.agi';
+my $DB=1;
+
+my $osdial = OSDial->new('DB'=>$DB);
+$osdial->AGI($prog);
+
+my $AGI = $osdial->AGI();
+
+my $CIDlead_id = $AGI->{'accountcode'};
+$CIDlead_id = substr($CIDlead_id, 11, 9);
+$CIDlead_id = ($CIDlead_id + 0);
+my $VD_lead_id = $CIDlead_id;
+
+$osdial->agi_output("+++++ OSD amd START : |$CIDlead_id|",1);
+
+my $AMDSTATUS = $AGI->get_variable('AMDSTATUS');
+my $AMDCAUSE = $AGI->get_variable('AMDCAUSE');
+
+$osdial->agi_output("AAAAA AMD results: |$AMDSTATUS|$AMDCAUSE|");
+$osdial->event_logger("AMD_log", "$VD_lead_id|$AMDSTATUS|$AMDCAUSE|" . $AGI->{'accountcode'} . "|");
+
+
+##################################################################################
+########## AMD says it's a person so exit and go on to transfer scripts ##########
+if ($AMDSTATUS =~ /PERSON|HUMAN|NOTSURE|HANGUP/) {
+	$osdial->agi_output("      AMD exiting");
+
+
+################################################################################
+########## AMD says it's a machine so modify statuses and hangup call ##########
+########## something will go here later for leaving a message on AMs  ##########
+} else {
+
+
+	########## FIND osdial_auto_calls record ##########
+	my $sret = $osdial->sql_query("SELECT SQL_NO_CACHE campaign_id,phone_code,phone_number FROM osdial_auto_calls WHERE callerid='" . $AGI->{'accountcode'} . "' ORDER BY auto_call_id DESC LIMIT 1;");
+	my $VD_campaign_id = $sret->{'campaign_id'};
+	my $VD_phone_code = $sret->{'phone_code'};
+	my $VD_phone_number = $sret->{'phone_number'};
+
+
+	########## UPDATE osdial_list ##########
+	my $affected_rows = $osdial->sql_execute("UPDATE osdial_list SET status='AA' WHERE lead_id='$VD_lead_id';");
+	$osdial->agi_output("--    VDAD osdial_list update: |$affected_rows|$VD_lead_id");
+
+	########## DELETE osdial_auto_calls entry ##########
+	my $affected_rows = $osdial->sql_execute("DELETE FROM osdial_auto_calls WHERE callerid='" . $AGI->{'accountcode'} . "' ORDER BY auto_call_id DESC LIMIT 1;");
+	$osdial->agi_output("--    VDAC record deleted: |$affected_rows|$VD_lead_id|");
+
+	########## FIND AND UPDATE osdial_log ##########
+	if (my $sret = $osdial->sql_query("SELECT SQL_NO_CACHE * FROM osdial_log WHERE uniqueid='" . $AGI->{'uniqueid'} . "' AND lead_id='$VD_lead_id' ORDER BY call_date DESC LIMIT 1;")) {
+		$osdial->agi_output("no VDL record found: $VD_lead_id");
+		$osdial->sql_execute("INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,length_in_sec,end_epoch,server_ip) values('" . $AGI->{'uniqueid'} . "','$VD_lead_id','$VD_campaign_id',NOW(),NOW(),'AA','$VD_phone_code','$VD_phone_number','VDAD','N','3',NOW()+3,'" . $osdial->{'VARserver_ip'} . "')");
+	} else {
+		$osdial->sql_execute("UPDATE osdial_log set status='AA',end_epoch=NOW(),length_in_sec=NOW()-start_epoch where uniqueid='" . $AGI->{'uniqueid'} . "' AND lead_id='$VD_lead_id' ORDER BY call_date DESC LIMIT 1;");
+	}
+
+
+	### Grab vmail forward message values from the database
+	my $DB_am_message_exten='';
+	my $DB_amd_send_to_vmx='';
+	my $sret = $osdial->sql_query("SELECT am_message_exten,amd_send_to_vmx FROM osdial_campaigns WHERE campaign_id='$VD_campaign_id' LIMIT 1;");
+	$DB_am_message_exten = $sret->{'am_message_exten'};
+	$DB_amd_send_to_vmx = $sret->{'amd_send_to_vmx'};
+	$osdial->agi_output("--    AMD campaign values: |$VD_campaign_id|$DB_am_message_exten|$DB_amd_send_to_vmx|");
+
+	if ($DB_amd_send_to_vmx =~ /Y/ and length($DB_am_message_exten)>0) {
+		my $affected_rows = $osdial->sql_execute("UPDATE osdial_log SET status='AM' WHERE uniqueid='" . $AGI->{'uniqueid'} . "' AND lead_id='$VD_lead_id' ORDER BY call_date DESC LIMIT 1;");
+		$osdial->agi_output("--    VDAD osdial_log AM update: |$affected_rows|");
+
+		my $affected_rows = $osdial->sql_execute("UPDATE osdial_list SET status='AM' WHERE lead_id='$VD_lead_id';");
+		$osdial->agi_output("--    VDAD osdial_list AM update: |$affected_rows|");
+
+		$osdial->agi_output("exiting the AMD app, transferring call to $DB_am_message_exten");
+		sleep 2;
+		$AGI->set_context($osdial->{'server'}{'ext_context'});
+		$AGI->set_extension($DB_am_message_exten);
+		$AGI->set_priority(1);
+	} else {
+		$AGI->hangup($AGI->{'channel'});
+	}
+}
+
+
+exit 0;
