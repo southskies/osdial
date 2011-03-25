@@ -27,7 +27,7 @@
 ######################
 if ($ADD == "1form") {
     if ($LOGmodify_campaigns == 1) {
-        if (($form_id != 'NEW') or (strlen($form_name) < 1) or (strlen($form_description) < 1) or ($form_priority < 1) or (preg_match('/[^a-z0-9]/',$form_name))) {
+        if (($form_id != 'NEW') or (strlen($form_name) < 1) or (strlen($form_description) < 1) or ($form_priority < 1) or (preg_match('/[^a-zA-Z0-9]/',$form_name))) {
             echo "<br><font color=red>FORM NOT CREATED - Please go back and look at the data you entered\n";
             echo "<br>name must be between 1 and 15 characters in length, A-Z, no spaces.\n";
             echo "<br>description must be between 1 and 50 characters\n";
@@ -142,7 +142,7 @@ if ($ADD == "2form") {
 ######################
 if ($ADD == "2fields") {
     if ($LOGmodify_campaigns == 1) {
-        if ((strlen($field_name) < 1) or (strlen($field_description) < 1) or ($field_length > 22) or ($field_priority < 1) or (preg_match('/[^a-z0-9]/',$field_name))) {
+        if ((strlen($field_name) < 1) or (strlen($field_description) < 1) or ($field_length > 22) or ($field_priority < 1) or (preg_match('/[^a-zA-Z0-9]/',$field_name))) {
             echo "<br><font color=red>FIELD NOT ADDED - Please go back and look at the data you entered\n";
             echo "<br>name must be between 1 and 15 characters in length, A-Z, no spaces.\n";
             echo "<br>description must be between 1 and 50 characters in length\n";
@@ -178,7 +178,7 @@ if ($ADD == "4form") {
         if ($LOG['allowed_campaignsALL'] < 1 and $frm['campaigns'] != $LOG['user_group']) {
             echo "<br><font color=red>FORM NOT MODIFIED - These Forms / Fields belong to ALL campaigns.\n";
             echo "<br>In order to modify Forms and Fields, the Form must be assigned to a specific Campaign in your User Group.</font><br>\n";
-        } else if (($form_id < 1) or (strlen($form_name) < 1) or (strlen($form_description) < 1) or ($form_priority < 1) or (preg_match('/[^a-z0-9]/',$form_name))) {
+        } else if (($form_id < 1) or (strlen($form_name) < 1) or (strlen($form_description) < 1) or ($form_priority < 1) or (preg_match('/[^a-zA-Z0-9]/',$form_name))) {
             echo "<br><font color=red>FORM NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>name must be between 1 and 15 characters in length, A-Z, no spaces.\n";
             echo "<br>description must be between 1 and 50 characters in length\n";
@@ -217,7 +217,7 @@ if ($ADD == "4fields") {
         if ($LOG['allowed_campaignsALL'] < 1 and $frm['campaigns'] != $LOG['user_group']) {
             echo "<br><font color=red>FIELD NOT MODIFIED - These Forms / Fields belong to ALL campaigns.\n";
             echo "<br>In order to modify Forms and Fields, the Form must be assigned to a specific Campaign in your User Group.</font><br>\n";
-        } elseif (($field_id < 1) or (strlen($field_name) < 1) or (strlen($field_description) < 1) or ($field_length > 22) or ($field_priority < 1) or (preg_match('/[^a-z0-9]/',$field_name))) {
+        } elseif (($field_id < 1) or (strlen($field_name) < 1) or (strlen($field_description) < 1) or ($field_length > 22) or ($field_priority < 1) or (preg_match('/[^a-zA-Z0-9]/',$field_name))) {
             echo "<br><font color=red>FIELD NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>name must be between 1 and 15 characters in length, A-Z, no spaces.\n";
             echo "<br>description must be between 1 and 50 characters in length\n";
