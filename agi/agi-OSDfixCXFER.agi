@@ -1,0 +1,81 @@
+#!/usr/bin/perl
+#
+# agi-OSDfixCXFER.agi
+#
+## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+# 
+# Runs when a Consultative transfer is released by the osdial fronter as the
+# call arrives on another channel so that the osdial_live_agents record is
+# updated to be accurate.
+#
+# You need to put lines similar to those below in your extensions.conf file:
+# 
+# ;osdial Consultative Xfer fix script:
+# exten => _8600XXX*.,1,AGI(agi-VDADfixCXFER.agi)
+# exten => _010*010*010*015*8600XXX*.,1,AGI(agi-VDADfixCXFER.agi)
+# 
+# Rewrite from agi-VDADfixCXFER.agi.
+#
+
+$|++;
+
+use strict;
+use OSDial;
+
+my $prog = 'agi-OSDfixCXFER.agi';
+
+my $DB=1;
+
+my $osdial = OSDial->new('DB'=>$DB);
+$osdial->AGI($prog);
+
+my $AGI = $osdial->AGI();
+
+my $extension = $AGI->{'extension'};
+$extension =~ s/^\d\d\d\*\d\d\d\*\d\d\d\*\d\d\d\*//gi;
+
+my ($conf_exten, $lead_id, $user, $phone_code, $phone_number, $campaign_id) = split(/\*/, $extension);
+
+$osdial->agi_output("CXFERfix : $lead_id $user " . $AGI->{'channel'} . " " . $AGI->{'uniqueid'});
+
+my $CIDlead = sprintf("%010s", $lead_id);
+$CIDlead = "C123412345$CIDlead";
+
+$AGI->set_variable("CDR(accountcode)", $CIDlead);
+$osdial->agi_output("callerID changed: $CIDlead");
+
+########## FIND AND UPDATE osdial_live_agents ##########
+my $random = int( rand(9999999)) + 10000000;
+my $affected_rows = $osdial->sql_execute("UPDATE osdial_live_agents SET channel='" . $AGI->{'channel'} . "',random_id='$random',call_server_ip='" . $osdial->{'VARserver_ip'} . "',uniqueid='" . $AGI->{'uniqueid'} . "' WHERE user='$user' AND lead_id='$lead_id';");
+$osdial->agi_output("--    VDAD osdial_live_agents update: |$affected_rows|$lead_id|");
+
+########## INSERT NEW osdial_auto_calls record ##########
+my $affected_rows = $osdial->sql_execute("INSERT INTO osdial_auto_calls SET channel='" . $AGI->{'channel'} . "',server_ip='" . $osdial->{'VARserver_ip'} . "',uniqueid='" . $AGI->{'uniqueid'} . "',campaign_id='$campaign_id',status='CLOSER',lead_id='$lead_id',phone_code='$phone_code',phone_number='$phone_number',call_time=NOW(),call_type='IN',callerid='$CIDlead';");
+$osdial->agi_output("--    VDAD osdial_auto_calls insert: |$affected_rows|$lead_id|");
+
+
+$osdial->agi_output("exiting the CXFERfix app, transferring call to $conf_exten");
+#$osdial->set_context($ext_context);
+$AGI->set_context('osdial');
+$AGI->set_extension($conf_exten);
+$AGI->set_priority(1);
+
+
+exit 0;
