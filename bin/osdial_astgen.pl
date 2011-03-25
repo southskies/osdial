@@ -312,9 +312,9 @@ sub gen_servers {
 		$esvr .= ";exten => _" . $fsip . "*.,1,Goto(osdial,\${EXTEN:16},1)\n";
 		$esvr .= ";exten => _" . $fsip . "#.,1,Goto(osdial,\${EXTEN:16},1)\n";
 		$esvr .= ";exten => _" . $fsip2 . ".,1,Goto(osdial,\${EXTEN:12},1)\n";
-		$esvr .= "exten => _" . $fsip . "*.,1,Dial(Local/\${EXTEN:16}\@osdial/n,,o)\n";
-		$esvr .= "exten => _" . $fsip . "#.,1,Dial(Local/\${EXTEN:16}\@osdial/n,,o)\n";
-		$esvr .= "exten => _" . $fsip2 . ".,1,Dial(Local/\${EXTEN:12}\@osdial/n,,o)\n";
+		$esvr .= "exten => _" . $fsip . "*.,1,Dial(Local/\${EXTEN:16}\@osdial,,o)\n";
+		$esvr .= "exten => _" . $fsip . "#.,1,Dial(Local/\${EXTEN:16}\@osdial,,o)\n";
+		$esvr .= "exten => _" . $fsip2 . ".,1,Dial(Local/\${EXTEN:12}\@osdial,,o)\n";
 
 		$isvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
 		$isvr .= "[" . $sret->{server_id} . "]\n";
