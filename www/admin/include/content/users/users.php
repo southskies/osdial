@@ -230,7 +230,7 @@ if ($ADD=="2A")
 			$stmt="INSERT INTO osdial_users (user,pass,full_name,user_level,user_group,phone_login,phone_pass,delete_users,delete_user_groups,delete_lists,delete_campaigns,delete_ingroups,delete_remote_agents,load_leads,campaign_detail,ast_admin_access,ast_delete_phones,delete_scripts,modify_leads,hotkeys_active,change_agent_campaign,agent_choose_ingroups,closer_campaigns,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,delete_filters,alter_agent_interface_options,closer_default_blended,delete_call_times,modify_call_times,modify_users,modify_campaigns,modify_lists,modify_scripts,modify_filters,modify_ingroups,modify_usergroups,modify_remoteagents,modify_servers,view_reports,osdial_recording_override,alter_custdata_override,manual_dial_allow_skip,export_leads,admin_api_access,agent_api_access,xfer_agent2agent,script_override,load_dnc,export_dnc,delete_dnc) SELECT \"$user\",\"$pass\",\"$full_name\",user_level,user_group,phone_login,phone_pass,delete_users,delete_user_groups,delete_lists,delete_campaigns,delete_ingroups,delete_remote_agents,load_leads,campaign_detail,ast_admin_access,ast_delete_phones,delete_scripts,modify_leads,hotkeys_active,change_agent_campaign,agent_choose_ingroups,closer_campaigns,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,delete_filters,alter_agent_interface_options,closer_default_blended,delete_call_times,modify_call_times,modify_users,modify_campaigns,modify_lists,modify_scripts,modify_filters,modify_ingroups,modify_usergroups,modify_remoteagents,modify_servers,view_reports,osdial_recording_override,alter_custdata_override,manual_dial_allow_skip,export_leads,admin_api_access,agent_api_access,xfer_agent2agent,script_override,load_dnc,export_dnc,delete_dnc from osdial_users where user=\"$source_user_id\";";
 			$rslt=mysql_query($stmt, $link);
 
-			$stmtA="INSERT INTO osdial_inbound_group_agents (user,group_id,group_rank,group_weight,calls_today) SELECT \"$user\",group_id,group_rank,group_weight,\"0\" from osdial_inbound_group_agents where user=\"$source_user_id\";";
+			$stmtA="INSERT INTO osdial_inbound_group_agents (user,group_id,group_rank,group_weight,calls_today,allow_multicall) SELECT \"$user\",group_id,group_rank,group_weight,\"0\",\"Y\" from osdial_inbound_group_agents where user=\"$source_user_id\";";
 			$rslt=mysql_query($stmtA, $link);
 
 			$stmtA="INSERT INTO osdial_campaign_agents (user,campaign_id,campaign_rank,campaign_weight,calls_today) SELECT \"$user\",campaign_id,campaign_rank,campaign_weight,\"0\" from osdial_campaign_agents where user=\"$source_user_id\";";
@@ -304,9 +304,9 @@ if ($ADD=="4A") {
 	            $row=mysql_fetch_row($rslt);
 
                 if ($row[0]==0) {
-                    $stmt="INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,drop_message,voicemail_ext,drop_exten,next_agent_call,fronter_display,drop_call_seconds,agent_alert_exten) values('A2A_$user','Agent2Agent $user','pink','Y','$use_exten','$voicemail_id','$dialplan_number','oldest_call_finish','Y','600','X');";
+                    $stmt="INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,drop_message,voicemail_ext,drop_exten,next_agent_call,fronter_display,drop_call_seconds,agent_alert_exten,allow_multicall) values('A2A_$user','Agent2Agent $user','pink','Y','$use_exten','$voicemail_id','$dialplan_number','oldest_call_finish','Y','600','X','Y');";
                 } else {
-                    $stmt="UPDATE osdial_inbound_groups SET drop_message='$xfer_agent2agent_wait_action',drop_exten='$xfer_agent2agent_wait_extension',drop_trigger='$xfer_agent2agent_wait',drop_call_seconds='$xfer_agent2agent_wait_seconds',voicemail_ext='$voicemail_id' WHERE group_id='A2A_$user';";
+                    $stmt="UPDATE osdial_inbound_groups SET drop_message='$xfer_agent2agent_wait_action',drop_exten='$xfer_agent2agent_wait_extension',drop_trigger='$xfer_agent2agent_wait',drop_call_seconds='$xfer_agent2agent_wait_seconds',voicemail_ext='$voicemail_id',allow_multicall='$allow_multicall' WHERE group_id='A2A_$user';";
                 }
 
             } else {
@@ -649,13 +649,14 @@ if ($ADD==3)
             echo "  $NWB#osdial_users-xfer_agent2agent$NWE</td>\n";
             echo "</tr>\n";
             if ($xfer_agent2agent > 0) {
-		        $stmt = sprintf("SELECT drop_trigger,drop_call_seconds,drop_message,drop_exten FROM osdial_inbound_groups WHERE group_id='A2A_%s';",$user);
+		        $stmt = sprintf("SELECT drop_trigger,drop_call_seconds,drop_message,drop_exten,allow_multicall FROM osdial_inbound_groups WHERE group_id='A2A_%s';",$user);
 		        $rslt=mysql_query($stmt, $link);
 			    $rowx=mysql_fetch_row($rslt);
                 $xfer_agent2agent_wait = $rowx[0];
                 $xfer_agent2agent_wait_seconds = $rowx[1];
                 $xfer_agent2agent_wait_action = $rowx[2];
                 $xfer_agent2agent_wait_extension = $rowx[3];
+                $xfer_agent2agent_allow_multicall = $rowx[3];
 			    echo "<tr bgcolor=$oddrows>\n";
                 echo "  <td align=right>Agent2Agent Timeout: </td>\n";
                 echo "  <td align=left>\n";
@@ -691,6 +692,15 @@ if ($ADD==3)
                 } else {
 			        echo "<input type=hidden name=xfer_agent2agent_wait_extension value=\"$xfer_agent2agent_wait_extension\">\n";
                 }
+                echo "  <td align=left>\n";
+                echo "    <select size=1 name=xfer_agent2agent_allow_multicall>\n";
+                $wsel=''; if ($xfer_agent2agent_allow_multicall=='N') $wsel='selected';
+                echo "      <option $wsel value=N>N</option>\n";
+                $wsel=''; if ($xfer_agent2agent_allow_multicall=='Y') $wsel='selected';
+                echo "      <option $wsel value=Y>Y</option>\n";
+                echo "    </select>\n";
+                echo "  $NWB#osdial_users-xfer_agent2agent_allow_multicall$NWE</td>\n";
+                echo "</tr>\n";
             }
 
 			echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";

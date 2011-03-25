@@ -917,6 +917,10 @@ echo "<tr><td><FONT FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=2>
 <BR>
 <B>Default Transfer Group -</B> This field is the default In-Group that will be automatically selected when the agent goes to the transfer-conference frame in their agent interface.
 
+<BR>
+<A NAME="osdial_inbound_groups-allow_multicall">
+<BR>
+<B>Allow Multicall -</B> This allows the agents in this ingroup to handle more than one call at a time.
 
 
 <BR><BR><BR><BR>

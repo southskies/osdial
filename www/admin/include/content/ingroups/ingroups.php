@@ -65,6 +65,7 @@ if ($ADD==1111)
 	echo "</select>$NWB#osdial_inbound_groups-ingroup_script$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Get Call Launch: </td><td align=left><select size=1 name=get_call_launch><option selected>NONE</option><option>SCRIPT</option><option>WEBFORM</option></select>$NWB#osdial_inbound_groups-get_call_launch$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Allow Tab Switch: </td><td align=left><select size=1 name=allow_tab_switch><option selected>Y</option><option>N</option></select>$NWB#osdial_inbound_groups-allow_tab_switch$NWE</td></tr>\n";
+	echo "<tr bgcolor=$oddrows><td align=right>Allow Multicall: </td><td align=left><select size=1 name=allow_multicall><option selected>Y</option><option>N</option></select>$NWB#osdial_inbound_groups-allow_multicall$NWE</td></tr>\n";
 	echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 	}
@@ -159,7 +160,7 @@ if ($ADD==2111)
 			 else
 				{
                 if ($LOG['multicomp'] > 0) $group_id = (($company_id * 1) + 100) . $group_id;
-				$stmt="INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,web_form_address2,allow_tab_switch) values('$group_id','$group_name','$group_color','$active','" . mysql_real_escape_string($web_form_address) . "','$voicemail_ext','$next_agent_call','$fronter_display','$script_id','$get_call_launch','" . mysql_real_escape_string($web_form_address2) . "','$allow_tab_switch');";
+				$stmt="INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,web_form_address2,allow_tab_switch,allow_multicall) values('$group_id','$group_name','$group_color','$active','" . mysql_real_escape_string($web_form_address) . "','$voicemail_ext','$next_agent_call','$fronter_display','$script_id','$get_call_launch','" . mysql_real_escape_string($web_form_address2) . "','$allow_tab_switch','$allow_multicall');";
 				$rslt=mysql_query($stmt, $link);
 
 				echo "<br><B><font color=$default_text>GROUP ADDED: $group_id</font></B>\n";
@@ -202,7 +203,7 @@ if ($ADD==2011)
 		 else
 			{
             if ($LOG['multicomp'] > 0) $group_id = (($company_id * 1) + 100) . $group_id;
-			$stmt="INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_message,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow,drop_trigger) SELECT \"$group_id\",\"$group_name\",group_color,\"N\",web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_message,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow,drop_trigger from osdial_inbound_groups where group_id=\"$source_group_id\";";
+			$stmt="INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_message,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow,drop_trigger,allow_multicall) SELECT \"$group_id\",\"$group_name\",group_color,\"N\",web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_message,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow,drop_trigger,allow_multicall from osdial_inbound_groups where group_id=\"$source_group_id\";";
 			$rslt=mysql_query($stmt, $link);
 
 			echo "<br><B><font color=$default_text>GROUP ADDED: $group_id</font></B>\n";
@@ -236,7 +237,7 @@ if ($ADD==4111)
 		{
 		echo "<br><B><font color=$default_text>GROUP MODIFIED: $group_id</font></B>\n";
 
-		$stmt="UPDATE osdial_inbound_groups set group_name='$group_name', group_color='$group_color', active='$active', web_form_address='" . mysql_real_escape_string($web_form_address) . "', voicemail_ext='$voicemail_ext', next_agent_call='$next_agent_call', fronter_display='$fronter_display', ingroup_script='$script_id', get_call_launch='$get_call_launch', xferconf_a_dtmf='$xferconf_a_dtmf',xferconf_a_number='$xferconf_a_number', xferconf_b_dtmf='$xferconf_b_dtmf',xferconf_b_number='$xferconf_b_number',drop_message='$drop_message',drop_call_seconds='$drop_call_seconds',drop_exten='$drop_exten',call_time_id='$call_time_id',after_hours_action='$after_hours_action',after_hours_message_filename='$after_hours_message_filename',after_hours_exten='$after_hours_exten',after_hours_voicemail='$after_hours_voicemail',welcome_message_filename='$welcome_message_filename',moh_context='$moh_context',onhold_prompt_filename='$onhold_prompt_filename',prompt_interval='$prompt_interval',agent_alert_exten='$agent_alert_exten',agent_alert_delay='$agent_alert_delay',default_xfer_group='$default_xfer_group', web_form_address2='" . mysql_real_escape_string($web_form_address2) . "', allow_tab_switch='$allow_tab_switch', web_form_extwindow='$web_form_extwindow',web_form2_extwindow='$web_form2_extwindow',drop_trigger='$drop_trigger' where group_id='$group_id';";
+		$stmt="UPDATE osdial_inbound_groups set group_name='$group_name', group_color='$group_color', active='$active', web_form_address='" . mysql_real_escape_string($web_form_address) . "', voicemail_ext='$voicemail_ext', next_agent_call='$next_agent_call', fronter_display='$fronter_display', ingroup_script='$script_id', get_call_launch='$get_call_launch', xferconf_a_dtmf='$xferconf_a_dtmf',xferconf_a_number='$xferconf_a_number', xferconf_b_dtmf='$xferconf_b_dtmf',xferconf_b_number='$xferconf_b_number',drop_message='$drop_message',drop_call_seconds='$drop_call_seconds',drop_exten='$drop_exten',call_time_id='$call_time_id',after_hours_action='$after_hours_action',after_hours_message_filename='$after_hours_message_filename',after_hours_exten='$after_hours_exten',after_hours_voicemail='$after_hours_voicemail',welcome_message_filename='$welcome_message_filename',moh_context='$moh_context',onhold_prompt_filename='$onhold_prompt_filename',prompt_interval='$prompt_interval',agent_alert_exten='$agent_alert_exten',agent_alert_delay='$agent_alert_delay',default_xfer_group='$default_xfer_group', web_form_address2='" . mysql_real_escape_string($web_form_address2) . "', allow_tab_switch='$allow_tab_switch', web_form_extwindow='$web_form_extwindow',web_form2_extwindow='$web_form2_extwindow',drop_trigger='$drop_trigger',allow_multicall='$allow_multicall' where group_id='$group_id';";
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -358,6 +359,7 @@ if ($ADD==3111)
 	$web_form_extwindow =		$row[31];
 	$web_form2_extwindow =		$row[32];
 	$drop_trigger =		        $row[33];
+	$allow_multicall =	        $row[34];
 
 	##### get in-groups listings for dynamic pulldown
 	$stmt="SELECT group_id,group_name from osdial_inbound_groups order by group_id";
@@ -506,6 +508,8 @@ if ($ADD==3111)
     echo "$NWB#osdial_inbound_groups-agent_alert_exten$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>Agent Alert Delay: </td><td align=left><input type=text name=agent_alert_delay size=6 maxlength=6 value=\"$agent_alert_delay\">$NWB#osdial_inbound_groups-agent_alert_delay$NWE</td></tr>\n";
+
+	echo "<tr bgcolor=$oddrows><td align=right>Allow Multicall: </td><td align=left><select size=1 name=allow_multicall><option>Y</option><option>N</option><option selected>$allow_multicall</option></select>$NWB#osdial_inbound_groups-allow_multicall$NWE</td></tr>\n";
 
 	echo "<tr bgcolor=$oddrows><td align=right>Default Transfer Group: </td><td align=left><select size=1 name=default_xfer_group>";
 	echo "$Xgroups_menu";

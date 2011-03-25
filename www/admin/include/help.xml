@@ -751,6 +751,10 @@
     <item pathId="default_xfer_group" title="Default Transfer Group">
   This field is the default In-Group that will be automatically selected when the agent goes to the transfer-conference frame in their agent interface.
     </item>
+
+    <item pathId="allow_multicall" title="Allow Multicall">
+  This option allows agents to handle more than one call in this ingroup.
+    </item>
   </section>
 
 
