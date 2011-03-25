@@ -920,14 +920,14 @@ while ($drop_timer <= $DROP_TIME) {
 				$affected_rows = $dbhA->do($stmtA);
 				if ($AGILOG) {$agi_string = "--    closer log : |$affected_rows|$insert_lead_id";  $agi_string .= "\n|$stmtA|" if ($DB>1);  &agi_output;}
 				### format the remote server dialstring to get the call to the overflow agent meetme room
-				$S='*';
-				if( $VARserver_ip =~ m/(\S+)\.(\S+)\.(\S+)\.(\S+)/ ) {
-					$a = leading_zero($1); 
-					$b = leading_zero($2); 
-					$c = leading_zero($3); 
-					$d = leading_zero($4);
-					$VDADremDIALstr = "$a$S$b$S$c$S$d$isp";
-				}
+				#$S='*';
+				#if( $VARserver_ip =~ m/(\S+)\.(\S+)\.(\S+)\.(\S+)/ ) {
+				#	$a = leading_zero($1); 
+				#	$b = leading_zero($2); 
+				#	$c = leading_zero($3); 
+				#	$d = leading_zero($4);
+				#	$VDADremDIALstr = "$a$S$b$S$c$S$d$isp" if ($VDADserver_ip ne $VARserver_ip);
+				#}
 				$alertVDADremDIALstr = "$VDADremDIALstr";
 				$alertVDADremDIALstr .= "7$VDADconf_exten";
 				$VDADremDIALstr .= "7$VDADconf_exten";
@@ -1142,7 +1142,7 @@ while ($drop_timer <= $DROP_TIME) {
 					$b = leading_zero($2); 
 					$c = leading_zero($3); 
 					$d = leading_zero($4);
-					$VDADremDIALstr = "$a$S$b$S$c$S$d$isp";
+					$VDADremDIALstr = "$a$S$b$S$c$S$d$isp" if ($VDADserver_ip ne $VARserver_ip);
 				}
 				$alertVDADremDIALstr = "$VDADremDIALstr";
 				$alertVDADremDIALstr .= "7$VDADconf_exten";
