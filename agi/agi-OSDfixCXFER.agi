@@ -72,8 +72,7 @@ $osdial->agi_output("--    VDAD osdial_auto_calls insert: |$affected_rows|$lead_
 
 
 $osdial->agi_output("exiting the CXFERfix app, transferring call to $conf_exten");
-#$osdial->set_context($ext_context);
-$AGI->set_context('osdial');
+$AGI->set_context($osdial->{'server'}{'ext_context'});
 $AGI->set_extension($conf_exten);
 $AGI->set_priority(1);
 
