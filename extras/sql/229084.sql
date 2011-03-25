@@ -3,7 +3,7 @@
 ALTER TABLE osdial_inbound_groups ADD allow_multicall ENUM('Y','N') default 'N';##|##
  ## Add multicall capabilities.;
 
-UPDATE osdial_inbound_groups SET allow_mutlicall='Y' WHERE group_id LIKE 'A2A%';##|##
+UPDATE osdial_inbound_groups SET allow_multicall='Y' WHERE group_id LIKE 'A2A%';##|##
  ## Turn multicall on by default for A2A.;
 
 UPDATE system_settings SET version='2.2.9.084',last_update_check=DATE_SUB(NOW(), INTERVAL 1 DAY);##|##
