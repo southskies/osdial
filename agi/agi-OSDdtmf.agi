@@ -1,0 +1,54 @@
+#!/usr/bin/perl
+#
+# agi-OSDdtmf.agi - Parse in callerid and play dtmf files.
+#
+# Copyright (C) 2010  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+#
+#     This file is part of OSDial.
+#
+#     OSDial is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU Affero General Public License as
+#     published by the Free Software Foundation, either version 3 of
+#     the License, or (at your option) any later version.
+#
+#     OSDial is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU Affero General Public License for more details.
+#
+#     You should have received a copy of the GNU Affero General Public
+#     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+$|++;
+
+use strict;
+use OSDial;
+use Time::HiRes qw(usleep);
+
+my $prog='agi-OSDdtmf.agi';
+
+my $DB=1;
+
+my $osdial = OSDial->new('DB'=>$DB);
+$osdial->AGI($prog);
+
+my $AGI = $osdial->AGI();
+
+my @digits = split(//, $AGI->{callerid});
+@digits = split(//, $AGI->{calleridname}) if ($AGI->{callerid} =~ /unknown/i);
+
+# Send out DTMF for each digit recieved in callerid.
+foreach my $dtmf (@digits) {
+	$dtmf = "hash" if ($dtmf =~ /\#/);
+	$dtmf = "star" if ($dtmf =~ /\*/);
+	if ($dtmf eq ',') {
+		sleep(1);
+	} else {
+		$AGI->stream_file("dtmf-" . $dtmf);
+	}
+        $osdial->agi_output("DTMF: " . $dtmf);
+	usleep(1*100*1000);
+}
+
+exit 0;
