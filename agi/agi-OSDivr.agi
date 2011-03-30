@@ -439,12 +439,16 @@ sub xfer_to_ingroup {
 	my $xfer = $osdial->sql_execute("INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $osdial->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $cinfo->{conf_server} . "*8" . $cinfo->{conf_exten} . "\@" . $osdial->{server}{ext_context} . "','Context: " . $osdial->{server}{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"" . $cidname . "\" <" . $cidnum . ">','Account: $XqueryCID','','','','');");
 	while ($xfer) {
 		sleep(1);
+		my $xfer1=1;
+		my $xfer2=1;
+		my $xfer3=1;
 		my $sres = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM osdial_manager WHERE callerid='$XqueryCID' AND status='DEAD';");
-		$xfer=0 if ($sres->{cnt} == 1);
+		$xfer1=0 if ($sres->{cnt} == 1);
 		my $sres = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM live_sip_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension LIKE '%" . $cinfo->{conf_exten} . "%' ORDER BY channel DESC;");
-		$xfer = 0 if ($sres->{cnt} == 0);
+		$xfer2 = 0 if ($sres->{cnt} == 0);
 		my $sres = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM live_channels WHERE server_ip='" . $osdial->{VARserver_ip} . "' AND extension='" . $cinfo->{conf_exten} . "' ORDER BY channel DESC;");
-		$xfer = 0 if ($sres->{cnt} == 0);
+		$xfer3 = 0 if ($sres->{cnt} == 0);
+		$xfer=$xfer1+$xfer2+$xfer3;
 		my $xepoch = time();
 		my $xdate = $osdial->get_datetime($xepoch);
 		$osdial->sql_execute("UPDATE osdial_auto_calls SET last_update_time='$xdate' WHERE channel LIKE '%" . $cinfo->{conf_exten} . "%';");
