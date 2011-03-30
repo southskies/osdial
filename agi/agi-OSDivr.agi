@@ -247,7 +247,7 @@ sub update_status {
 
 	my $upsql;
 	$upsql = "status='$status'" if ($status ne '');
-	$upsql = "comment='$comment'" if ($comment ne '');
+	$upsql = "comments='$comment'" if ($comment ne '');
 	$upsql = "status='$status',comments='$comment'" if ($status ne '' and $comment ne '');
 
 	if ($status or $comment) {
