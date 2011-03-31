@@ -75,7 +75,7 @@ $cinfo->{campaign_id} = $live_agents->{campaign_id};
 $cinfo->{conf_exten} = $live_agents->{conf_exten};
 my @scsip = split(/\./,$live_agents->{server_ip});
 my $csip = sprintf('%3.3d*%3.3d*%3.3d*%3.3d', @scsip);
-$cinfo->{conf_server} = $csip;
+$cinfo->{conf_server} = $csip if ($osdial->{'VARserver_ip'} ne $live_agents->{server_ip});
 
 my $random = int( rand(9999999)) + 10000000;
 $osdial->sql_execute("UPDATE osdial_live_agents SET channel='" . $AGI->{orig_channel} . "',status='INCALL',random_id='" . $random . "',last_call_time='" . $cinfo->{start_date} . "' WHERE callerid='" . $AGI->{accountcode} . "' LIMIT 1;");
@@ -330,7 +330,7 @@ sub xfer_to_external {
 		$cidname=$lead->{phone_number};
 		$cidnum=$lead->{phone_number};
 	}
-	my $xfer = $osdial->sql_execute("INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $osdial->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $cinfo->{conf_server} . "*8" . $cinfo->{conf_exten} . "\@" . $osdial->{server}{ext_context} . "','Context: " . $osdial->{server}{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"" . $cidname . "\" <" . $cidnum . ">','Account: $XqueryCID','','','','');");
+	my $xfer = $osdial->sql_execute("INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $osdial->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $cinfo->{conf_server} . "8" . $cinfo->{conf_exten} . "\@" . $osdial->{server}{ext_context} . "','Context: " . $osdial->{server}{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"" . $cidname . "\" <" . $cidnum . ">','Account: $XqueryCID','','','','');");
 	while ($xfer) {
 		sleep(1);
 		my $sret = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM osdial_manager WHERE (callerid='$XqueryCID' OR callerid='$IqueryCID') AND status='DEAD';");
@@ -436,7 +436,7 @@ sub xfer_to_ingroup {
 		$cidname=$lead->{phone_number};
 		$cidnum=$lead->{phone_number};
 	}
-	my $xfer = $osdial->sql_execute("INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $osdial->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $cinfo->{conf_server} . "*8" . $cinfo->{conf_exten} . "\@" . $osdial->{server}{ext_context} . "','Context: " . $osdial->{server}{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"" . $cidname . "\" <" . $cidnum . ">','Account: $XqueryCID','','','','');");
+	my $xfer = $osdial->sql_execute("INSERT INTO osdial_manager values('','','$xdate','NEW','N','" . $osdial->{VARserver_ip} . "','','Originate','$XqueryCID','Channel: Local/" . $cinfo->{conf_server} . "8" . $cinfo->{conf_exten} . "\@" . $osdial->{server}{ext_context} . "','Context: " . $osdial->{server}{ext_context} . "','Exten: $number','Priority: 1','Callerid: \"" . $cidname . "\" <" . $cidnum . ">','Account: $XqueryCID','','','','');");
 	while ($xfer) {
 		sleep(1);
 		my $xfer1=1;
