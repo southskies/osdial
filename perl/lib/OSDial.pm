@@ -1003,7 +1003,7 @@ sub media_add_file {
 
 
 	my $data="";
-	my $max_packet = $self->sql_max_packet() - 100_000;
+	my $max_packet = $self->sql_max_packet() - 120_000;
 	open(MAF, '<'.$file);
 	binmode(MAF);
 	while (read(MAF, $data, $max_packet ) ) {
