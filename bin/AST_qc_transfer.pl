@@ -187,7 +187,8 @@ sub gatherEntries {
 	$rlfld = "recording_log.recording_id,recording_log.channel,recording_log.server_ip,recording_log.extension,recording_log.start_time,recording_log.start_epoch,";
 	$rlfld .= "recording_log.end_time,recording_log.end_epoch,recording_log.length_in_sec,recording_log.length_in_min,recording_log.lead_id,recording_log.user";
 
-	$query = "SELECT SQL_NO_CACHE DISTINCT qc_transfers.*,qc_transfers.id AS qctid,qc_recordings.*,DATE(recording_log.start_time) AS date," . $rlfld . ",osdial_list.*,osdial_lists.* ";
+	$query = "SELECT SQL_NO_CACHE DISTINCT qc_transfers.*,qc_transfers.id AS qctid,qc_recordings.*,DATE(recording_log.start_time) AS date," . $rlfld . ",osdial_list.*,osdial_lists.*,";
+	$query .= "DATE_FORMAT(recording_log.start_time,'\%Y') AS dateYYYY,DATE_FORMAT(recording_log.start_time,'\%m') AS dateMM,DATE_FORMAT(recording_log.start_time,'\%d') AS dateDD ";
 	$query .= "FROM qc_transfers,qc_recordings,recording_log,osdial_list,osdial_lists ";
 	$query .=  "WHERE (qc_transfers.qc_recording_id=qc_recordings.id) AND " . $where . $swhere . " AND (qc_transfers.status!='NOTFOUND' AND qc_transfers.status!='SUCCESS') ";
 	$query .=  "AND qc_transfers.qc_server_id='" . $qcs->{id} . "';";
