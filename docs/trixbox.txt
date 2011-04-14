@@ -1,0 +1,256 @@
+
+Trixbox / OSDial Integration:
+
+
+On OSDial:
+  Setup->Carriers->Add New Carrier:
+    Name: pbx2osdial
+    Active: Y
+    Selectable: Y
+    Protocol: SIP
+    Protocol Configuration:
+[pbx2osdial]
+username=pbx2osdial
+host=192.168.29.120
+insecure=port,invite
+type=friend
+canreinvite=no
+nat=no
+qualify=yes
+trunk=yes
+  Dialplan Configuration:
+exten => s,1,NoOp(For Registration Only)
+exten => _9XXXX,1,Dial(SIP/pbx2osdial/${EXTEN:1},60,o)
+exten => _XXXX,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+; Format long distance number (add default prefix).
+exten => _1NXXNXXXXXX,1,Goto(<DEFAULT_PREFIX>${EXTEN:1},1)
+; Format long distance number (prefix dialed, 1 missing)
+exten => _NNXXNXXXXXX,1,Goto(${EXTEN:0:1}1${EXTEN:1},1)
+; Format long distance number (add default prefix, add 1).
+exten => _NXXNXXXXXX,1,Goto(<DEFAULT_PREFIX>1${EXTEN},1)
+; Format local number (add 1, add default areacode)
+exten => _XNXXXXXX,1,Goto(${EXTEN:0:1}1<DEFAULT_AREACODE>${EXTEN:1},1)
+; Format local number (add default prefix, add 1, add default areacode).
+exten => _NXXXXXX,1,Goto(<DEFAULT_PREFIX>1<DEFAULT_AREACODE>${EXTEN},1)
+; Format international number (add default prefix).
+exten => _011.,1,Goto(<DEFAULT_PREFIX>${EXTEN},1)
+exten => _00.,1,Goto(<DEFAULT_PREFIX>011${EXTEN:2},1)
+; Dial long distance number (format correct).
+exten => _X1NXXNXXXXXX,1,GotoIf($["<STRIP_MSD>" = "Y"]?setcid${EXTEN:0:1}${EXTEN:2},1:setcid${EXTEN},1)
+; Dial an international number (if allowed).
+exten => _X011.,1,GotoIf($["<ALLOW_INTERNATIONAL>" = "Y"]?setcid${EXTEN},1)
+exten => _X00.,1,Goto(${EXTEN:0:1}011${EXTEN:3},1)
+; Make sure callerid is set.
+exten => _setcid.,1,GotoIf($["${LEN(${CALLERID(number)})}" = "${LEN(<DEFAULT_CALLERID>)}"]?dial${EXTEN:6},1)
+exten => _setcid.,n,Set(CALLERID(number)=<DEFAULT_CALLERID>)
+exten => _setcid.,n,Goto(dial${EXTEN:6},1)
+; This section is the 'prefix' dialed.
+exten => _dial9.,1,AGI(agi://127.0.0.1:4577/call_log)
+exten => _dial9.,n,Dial(<PROTOCOL>/<NAME>/${EXTEN:5},60,o)
+exten => _dial9.,n,Goto(failover${EXTEN:5},1)
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: NXXNXXXXXX
+    DID Action: EXTENSION
+    Context: incoming
+    Extension: ${EXTEN}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 1NXXNXXXXXX
+    DID Action: EXTENSION
+    Context: incoming
+    Extension: ${EXTEN:1}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: +1NXXNXXXXXX
+    DID Action: EXTENSION
+    Context: incoming
+    Extension: ${EXTEN:2}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 6000
+    DID Action: EXTENSION
+    Context: osdial
+    Extension: ${EXTEN}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 8500
+    DID Action: EXTENSION
+    Context: osdial
+    Extension: ${EXTEN}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 6000
+    DID Action: EXTENSION
+    Context: osdial
+    Extension: ${EXTEN}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 8167
+    DID Action: EXTENSION
+    Context: osdial
+    Extension: ${EXTEN}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 8168
+    DID Action: EXTENSION
+    Context: osdial
+    Extension: ${EXTEN}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 8169
+    DID Action: EXTENSION
+    Context: osdial
+    Extension: ${EXTEN}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 9998
+    DID Action: EXTENSION
+    Context: osdial
+    Extension: ${EXTEN}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 9999
+    DID Action: EXTENSION
+    Context: osdial
+    Extension: ${EXTEN}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 6XXXX
+    DID Action: EXTENSION
+    Context: osdial
+    Extension: ${EXTEN}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 7XXXX
+    DID Action: EXTENSION
+    Context: osdial
+    Extension: ${EXTEN}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 851XXXXX
+    DID Action: EXTENSION
+    Context: osdial
+    Extension: ${EXTEN}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 860XXXX
+    DID Action: EXTENSION
+    Context: osdial
+    Extension: ${EXTEN}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 6860XXXX
+    DID Action: EXTENSION
+    Context: osdial
+    Extension: ${EXTEN}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 7860XXXX
+    DID Action: EXTENSION
+    Context: osdial
+    Extension: ${EXTEN}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 8860XXXX
+    DID Action: EXTENSION
+    Context: osdial
+    Extension: ${EXTEN}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 0860XXXX
+    DID Action: EXTENSION
+    Context: osdial
+    Extension: ${EXTEN}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 06860XXXX
+    DID Action: EXTENSION
+    Context: osdial
+    Extension: ${EXTEN}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 07860XXXX
+    DID Action: EXTENSION
+    Context: osdial
+    Extension: ${EXTEN}
+  Setup->Carriers->pbx2osdial->Add New DID:
+    DID: 08860XXXX
+    DID Action: EXTENSION
+    Context: osdial
+    Extension: ${EXTEN}
+
+
+On Trixbox:
+  Add following to /etc/asterisk/extensions_custom.conf:
+[ext-did-catchall-custom]
+; The following intensionally overwrites priority 3&4.  The purpose of
+; this is to; catch all of the calls received whose DIDs are unconfigured
+; and forward them to OSDial.
+exten => _.,3,Noop(Sending call from ${CALLERID(number)} to the OSDial at ${EXTEN})
+exten => _.,4,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+[from-internal-custom]
+; A call can be locally transferred or delivered to OSDial using
+; extenion 99.  When this is done, the originally destination, ${FROM_DID},
+; is used as the destination on OSDial.
+exten => 99,1,Dial(SIP/pbx2osdial/${FROM_DID},60,o)
+; A call can be locally transferred or delivered to OSDial using
+; extenion 99+10-digits.  When this is done, the given 10-digits
+; is used as the destination on OSDial.
+exten => _99XXXXXXXXXX,1,Dial(SIP/pbx2osdial/${EXTEN:2},60,o)
+exten => _991XXXXXXXXXX,1,Dial(SIP/pbx2osdial/${EXTEN:2},60,o)
+; OSDial Agent Monitoring
+exten => 6000,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+; OSDial Voicemail
+exten => 8500,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+; OSDial Create Recorings
+exten => 8167,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+exten => 8168,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+exten => 8169,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+; OSDial Echo Test
+exten => 9998,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+; OSDial Hold Forever
+exten => 9999,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+; OSDial Direct Agent Monitor
+exten => _6XXXX,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+; OSDial Direct Agent Barge
+exten => _7XXXX,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+; OSDial Play Recorings
+exten => _851XXXXX,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+; OSDial Direct Conference Access
+exten => _860XXXX,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+exten => _6860XXXX,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+exten => _7860XXXX,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+exten => _8860XXXX,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+; OSDial Blind Conference Access
+exten => _0860XXXX,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+exten => _06860XXXX,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+exten => _07860XXXX,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+exten => _08860XXXX,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+; OSDial Outbound Stress Test Numbers.
+exten => _999NXXNXXXX,1,Dial(SIP/pbx2osdial/${EXTEN},60,o)
+  Setup->Trunks->Add SIP Trunks:
+    Type: SIP
+    Trunk Name: pbx2osdial
+    PEER Details:
+host=192.168.29.119
+username=pbx2osdial
+type=friend
+context=from-internal
+canreinvite=no
+nat=no
+qualify=yes
+insecure=invite,port
+    USER context: (blank)
+    USER Details: (blank)
+  Setup->Tools->Custom Destinations->Add Custom Destination:
+    Custom Destination: from-internal-custom,99,1
+    Description: Route to OSDial
+    Notes: Routes the call to the OSDial server, using the original DID as the destination on OSDial.
+  Setup->Tools->Custom Destinations->Add Custom Destination:
+    Custom Destination: from-internal-custom,993215551212,1
+    Description: Route to OSDial as 3215551212
+    Notes: Routes the call to the OSDial server, using 3215551212 as the destination DID on OSDial.
+  Setup->Tools->Custom Extensions->Add Custom Extension:
+    Custom Extension: 99
+    Description: Route to OSDial
+    Notes: Routes the call to the OSDial server, using the original DID as the destination on OSDial.
+  Setup->Tools->Custom Extensions->Add Custom Extension:
+    Custom Extension: 6000
+    Description: OSDial Agent Monitoring
+    Notes: Provides a method for monitoring agents in OSDial.  6+AgentExtension can also be used to get agent directly.
+  Setup->Tools->Custom Extensions->Add Custom Extension:
+    Custom Extension: 8500
+    Description: OSDial Voicemail
+    Notes: Access to voicemail on OSDial system.
+  Setup->Tools->Custom Extensions->Add Custom Extension:
+    Custom Extension: 8167
+    Description: OSDial Create Recordings
+    Notes: Creates audio files and extensions which can be used/accessed from OSDial.  If prompted, the PIN is 4321.  Recording will be created as an extension in the format of 851+5-digits.
+  Setup->Tools->Custom Extensions->Add Custom Extension:
+    Custom Extension: 9998
+    Description: OSDial Echo Test
+    Notes: Tests the echo latency in OSDial.
+  Setup->Tools->Custom Extensions->Add Custom Extension:
+    Custom Extension: 9999
+    Description: OSDial Hold Forever
+    Notes: Plays conference hold music in OSDial
