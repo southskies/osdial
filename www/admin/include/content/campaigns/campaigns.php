@@ -1273,7 +1273,7 @@ if ($ADD==31) {
         #echo "<input type=text name=am_message_exten size=10 maxlength=20 value=\"$am_message_exten\">\n";
         echo extension_text_options($link, 'am_message_exten', $am_message_exten, 10, 20);
         echo "$NWB#osdial_campaigns-am_message_exten$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Send AMD to AM Extension: </td><td align=left><select size=1 name=amd_send_to_vmx><option>Y</option><option>N</option><option SELECTED>$amd_send_to_vmx</option></select>$NWB#osdial_campaigns-amd_send_to_vmx$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Send AMD to AM Extension: </td><td align=left><select size=1 name=amd_send_to_vmx><option>Y</option><option>N</option><option>CUSTOM1</option><option>CUSTOM2</option><option SELECTED>$amd_send_to_vmx</option></select>$NWB#osdial_campaigns-amd_send_to_vmx$NWE</td></tr>\n";
 
         echo "<tr bgcolor=$oddrows><td align=right>Drop Call Handling (Safe Harbor): </td><td align=left>\n";
         echo "<select size=1 name=safe_harbor_message>\n";

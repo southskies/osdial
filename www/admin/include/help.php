@@ -582,7 +582,8 @@ echo "<tr><td><FONT FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=2>
 <BR>
 <A NAME="osdial_campaigns-amd_send_to_vmx">
 <BR>
-<B>AMD Send to AM Exten -</B> This menu allows you to define whether a message is left on an answering machine when it is detected. the call will be immediately forwarded to the Answering-Machine-Message extension if AMD is active and it is determined that the call is an answering machine.
+<B>AMD Send to AM Exten -</B> This menu allows you to define whether a message is left on an answering machine when it is detected. the call will be immediately forwarded to the Answering-Machine-Message extension if AMD is active and it is determined that the call is an answering machine.  If set to CUSTOM1 or CUSTOM2, the filename given in that field will be used for the message.
+
 
 <BR>
 <A NAME="osdial_campaigns-xferconf_a_dtmf">

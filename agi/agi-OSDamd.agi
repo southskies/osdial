@@ -110,18 +110,24 @@ if ($AMDSTATUS =~ /PERSON|HUMAN|NOTSURE|HANGUP/) {
 	$DB_amd_send_to_vmx = $sret->{'amd_send_to_vmx'};
 	$osdial->agi_output("--    AMD campaign values: |$VD_campaign_id|$DB_am_message_exten|$DB_amd_send_to_vmx|");
 
-	if ($DB_amd_send_to_vmx =~ /Y/ and length($DB_am_message_exten)>0) {
+	if (($DB_amd_send_to_vmx =~ /Y/ and length($DB_am_message_exten)>0) or ($DB_amd_send_to_vmx =~ /CUSTOM1|CUSTOM2/)) {
 		my $affected_rows = $osdial->sql_execute("UPDATE osdial_log SET status='AM' WHERE uniqueid='" . $AGI->{'uniqueid'} . "' AND lead_id='$VD_lead_id' ORDER BY call_date DESC LIMIT 1;");
 		$osdial->agi_output("--    VDAD osdial_log AM update: |$affected_rows|");
 
 		my $affected_rows = $osdial->sql_execute("UPDATE osdial_list SET status='AM' WHERE lead_id='$VD_lead_id';");
 		$osdial->agi_output("--    VDAD osdial_list AM update: |$affected_rows|");
 
-		$osdial->agi_output("exiting the AMD app, transferring call to $DB_am_message_exten");
-		sleep 2;
-		$AGI->set_context($osdial->{'server'}{'ext_context'});
-		$AGI->set_extension($DB_am_message_exten);
-		$AGI->set_priority(1);
+		if ($DB_amd_send_to_vmx =~ /Y/) {
+			$osdial->agi_output("exiting the AMD app, transferring call to $DB_am_message_exten");
+			$AGI->set_context($osdial->{'server'}{'ext_context'});
+			$AGI->set_extension($DB_am_message_exten);
+			$AGI->set_priority(1);
+		} else {
+			my $lead = $osdial->sql_query("SELECT * FROM osdial_list WHERE lead_id='$VD_lead_id';");
+			$osdial->agi_output("exiting the AMD app, playing file " . $lead->{lc($DB_amd_send_to_vmx)});
+			$AGI->stream_file($lead->{lc($DB_amd_send_to_vmx)});
+			$AGI->hangup($AGI->{'channel'});
+		}
 	} else {
 		$AGI->hangup($AGI->{'channel'});
 	}

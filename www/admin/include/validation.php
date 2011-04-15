@@ -218,7 +218,6 @@ if ($non_latin < 1)	{
 	$active = preg_replace("/[^NY]/","",$active);
 	$allow_closers = preg_replace("/[^NY]/","",$allow_closers);
 	$reset_hopper = preg_replace("/[^NY]/","",$reset_hopper);
-	$amd_send_to_vmx = preg_replace("/[^NY]/","",$amd_send_to_vmx);
 	$alt_number_dialing = preg_replace("/[^NY]/","",$alt_number_dialing);
 	$safe_harbor_message = preg_replace("/[^NY]/","",$safe_harbor_message);
 	$selectable = preg_replace("/[^NY]/","",$selectable);

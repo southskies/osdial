@@ -470,7 +470,7 @@
     </item>
 
     <item pathId="amd_send_to_vmx" title="AMD Send to AM Exten">
-  This menu allows you to define whether a message is left on an answering machine when it is detected. the call will be immediately forwarded to the Answering-Machine-Message extension if AMD is active and it is determined that the call is an answering machine.
+  This menu allows you to define whether a message is left on an answering machine when it is detected. the call will be immediately forwarded to the Answering-Machine-Message extension if AMD is active and it is determined that the call is an answering machine.  If set to CUSTOM1 or CUSTOM2, the filename given in that field will be used for the message.
     </item>
 
     <item pathId="xferconf_a_dtmf" title="Xfer-Conf DTMF">
