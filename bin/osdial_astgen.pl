@@ -289,6 +289,7 @@ sub gen_servers {
 	$esvr .= "exten => _06860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:1},55,o)\n";
 	$esvr .= "exten => _07860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:1},55,o)\n";
 	$esvr .= "exten => _08860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:2},55,o)\n";
+	$esvr .= "exten => _09860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:1},55,o)\n";
 
 	$ireg .= "register => ASTloop:$pass\@127.0.0.1:40569\n";
 	$ireg .= "register => ASTblind:$pass\@127.0.0.1:41569\n";

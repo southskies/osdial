@@ -1,0 +1,69 @@
+#!/usr/bin/perl
+#
+# agi-OSDstation_spy.agi
+#
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+
+use strict;
+use OSDial;
+
+my $prog = "agi-OSDstation_spy.agi";
+my $DB = 0;
+
+my $osdial = OSDial->new('DB'=>$DB);
+$osdial->AGI($prog);
+
+my $AGI = $osdial->AGI();
+
+my $isp = '*';
+$isp='#' if ($osdial->{'settings'}{'intra_server_protocol'} eq 'IAX2');
+
+# The mode is ultimately determined by the conference extensions.
+# 6 = monitoring
+# 7 = barge
+# 9 = whisper
+my $spy_mode = substr($AGI->{'extension'}, 0, 1);
+
+# Override as monitoring spy_mode is not 6|7|9.
+$spy_mode = '6' unless ($spy_mode =~ /6|7|9/);
+
+my $phone_login = substr($AGI->{'extension'}, 1);
+
+### Grab Server values from the database
+my $sret = $osdial->sql_query("SELECT ola.conf_exten,s.server_ip,s.server_id,s.ext_context FROM osdial_live_agents AS ola,servers AS s,phones WHERE (phones.login='$phone_login' AND (ola.extension LIKE concat(phones.protocol,'/',phones.extension,'\%') OR ola.extension LIKE concat('\%/',phones.login,'\@\%') OR ola.extension LIKE concat('Local/',phones.dialplan_number,'%'))) AND s.server_ip=ola.server_ip AND phones.server_ip=s.server_ip LIMIT 1;");
+
+$AGI->answer();
+if ($sret->{'conf_exten'} eq "") {
+	$AGI->stream_file('extension');
+	$AGI->say_digits($phone_login);
+	$AGI->stream_file('not-yet-connected');
+	$AGI->stream_file('check-number-dial-again');
+} else {
+	$AGI->stream_file('connected');
+	my $remDIALstr='';
+	if($sret->{'server_ip'} =~ m/(\S+)\.(\S+)\.(\S+)\.(\S+)/ and $sret->{'server_ip'} ne $osdial->{'VARserver_ip'}) {
+		$remDIALstr = sprintf('%.3d*%.3d*%.3d*%.3d',$1,$2,$3,$4) . $isp;
+	}
+	$remDIALstr .= '0' . $spy_mode . $sret->{'conf_exten'};
+	$AGI->exec("Dial",'Local/' . $remDIALstr . '@' . $sret->{'ext_context'});
+}
+$AGI->hangup();
+
+exit 0;

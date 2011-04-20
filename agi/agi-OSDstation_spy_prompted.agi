@@ -1,0 +1,165 @@
+#!/usr/bin/perl
+#
+# agi-OSDstation_spy_prompted.agi
+#
+## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
+##
+##     This file is part of OSDial.
+##
+##     OSDial is free software: you can redistribute it and/or modify
+##     it under the terms of the GNU Affero General Public License as
+##     published by the Free Software Foundation, either version 3 of
+##     the License, or (at your option) any later version.
+##
+##     OSDial is distributed in the hope that it will be useful,
+##     but WITHOUT ANY WARRANTY; without even the implied warranty of
+##     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##     GNU Affero General Public License for more details.
+##
+##     You should have received a copy of the GNU Affero General Public
+##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
+##
+#
+
+use strict;
+use OSDial;
+
+my $prog = 'agi-OSDstation_spy_prompted.agi';
+my $DB = 0;
+
+my $osdial = OSDial->new('DB'=>$DB);
+$osdial->AGI($prog);
+
+my $AGI = $osdial->AGI();
+
+my $isp = '*';
+$isp='#' if ($osdial->{'settings'}{'intra_server_protocol'} eq 'IAX2');
+
+# The mode is ultimately determined by the conference extensions.
+# 6 = monitoring
+# 7 = barge
+# 9 = whisper
+my $spy_mode = substr($AGI->{'extension'}, 0, 1);
+
+# Override as monitoring spy_mode is not 6|7|9.
+$spy_mode = '6' unless ($spy_mode =~ /6|7|9/);
+
+my $campaign_id='';
+my $phone_exten='';
+$AGI->answer();
+
+my $camp_loop=1;
+while ($camp_loop) {
+	$camp_loop++;
+	exit 1 if ($camp_loop>4);
+	$campaign_id = stream_and_get_dtmf('please-enter-the-room-number-you-wish-to-join', 8, 3, 10, 1000, 'BAD', '1234567890', 3, '#');
+	if ($campaign_id ne 'BAD') {
+		my $sret = $osdial->sql_query("SELECT count(*) AS count FROM osdial_campaigns WHERE (campaign_id='$campaign_id' OR ('1234'='$campaign_id' AND campaign_id LIKE '%TEST%'));");
+		if ($sret->{'count'}<1) {
+			$AGI->stream_file('invalid-room');
+		} else {
+			$camp_loop=0;
+			my $exten_loop=1;
+			while ($exten_loop) {
+				$exten_loop++;
+				if ($exten_loop>3) {
+					$camp_loop=1;
+					$exten_loop=0;
+				}
+				$phone_exten = stream_and_get_dtmf('please-enter-the-extension-2-b-monitored', 8, 3, 10, 1000, 'BAD', '1234567890', 3, '#');
+				if ($phone_exten ne 'BAD') {
+					my $sret = $osdial->sql_query("SELECT count(*) AS count FROM phones WHERE extension='$phone_exten' OR dialplan_number='$phone_exten';");
+					if ($sret->{'count'}<1) {
+						$AGI->stream_file('invalid-extension');
+					} else {
+						my $sret = $osdial->sql_query("SELECT SQL_NO_CACHE ola.conf_exten,s.server_ip,s.server_id,s.ext_context FROM osdial_live_agents AS ola,servers AS s,phones WHERE ((phones.extension='$phone_exten' OR phones.dialplan_number='$phone_exten') AND (ola.extension LIKE concat(phones.protocol,'/',phones.extension,'\%') OR ola.extension LIKE concat('\%/',phones.login,'\@\%') OR ola.extension LIKE concat('Local/',phones.dialplan_number,'%'))) AND s.server_ip=ola.server_ip AND phones.server_ip=s.server_ip LIMIT 1;");
+						if ($sret->{'conf_exten'} eq "") {
+							$AGI->stream_file('extension');
+							$AGI->say_digits($phone_exten);
+							$AGI->stream_file('not-yet-connected');
+							$AGI->stream_file('check-number-dial-again');
+						} else {
+							$exten_loop=0;
+							$AGI->stream_file('connected');
+							my $remDIALstr='';
+							if($sret->{'server_ip'} =~ m/(\S+)\.(\S+)\.(\S+)\.(\S+)/ and $sret->{'server_ip'} ne $osdial->{'VARserver_ip'}) {
+								$remDIALstr = sprintf('%.3d*%.3d*%.3d*%.3d',$1,$2,$3,$4) . $isp;
+							}
+							$remDIALstr .= '0' . $spy_mode . $sret->{'conf_exten'};
+							$AGI->exec("Dial",'Local/' . $remDIALstr . '@' . $sret->{'ext_context'});
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+$AGI->hangup();
+exit 0;
+
+sub stream_and_get_dtmf {
+	my ($stream, $dcount, $rptloops, $waitloops, $waittimeout, $timeout_action, $valid_digits, $min_digits, $exit_digit) = @_;
+	return -1 unless ($stream);
+	$dcount = 1 unless ($dcount);
+	$rptloops = 3 unless ($rptloops);
+	$waitloops = 5 unless ($waitloops);
+	$waittimeout = 500 unless ($waittimeout);
+	$valid_digits = '0123456789#*' unless ($valid_digits);
+	$valid_digits .= $exit_digit if ($exit_digit ne '');
+	$valid_digits = ''  if ($valid_digits == -1);
+	$min_digits = $dcount if ($min_digits eq '');
+
+	my $orig_dcount = $dcount;
+	my $rpt = 0;
+	my $total_digits;
+	$valid_digits =~ s/\*/\\*/g;
+	$valid_digits =~ s/\#/\\#/g;
+	my $valid_pat = '[^' . $valid_digits . ']';
+
+	while (length($total_digits) < $dcount and $rpt < $rptloops) {
+		$total_digits = '';
+		$stream =~ s/\....$//;
+		my $interrupt_digit = $AGI->stream_file($stream,$valid_digits);
+		if ($interrupt_digit) {
+			$total_digits=chr($interrupt_digit);
+		}
+
+		my $loop = 0;
+		while (length($total_digits) < $dcount and $loop < $waitloops) {
+			my $digit = $AGI->wait_for_digit($waittimeout);
+			if ($digit) {
+				$digit = chr($digit);
+				$digit =~ s/$valid_pat//g;
+				if ($digit ne '') {
+					if ($exit_digit ne '' and $exit_digit eq $digit) {
+						$dcount = length($total_digits);
+						$orig_dcount = length($total_digits);
+					} else {
+						$total_digits .= $digit;
+					}
+				}
+				$loop=0;
+			} else {
+				$loop++;
+			}
+			$loop = $waitloops if (length($total_digits) >= $dcount);
+		}
+
+		if (length($total_digits) >= $dcount) {
+			$rpt = $rptloops;
+		} elsif ($rpt >= $rptloops) {
+			$dcount = length($total_digits);
+		} else {
+			$rpt++;
+		}
+	}
+
+	if (length($total_digits) != $orig_dcount or length($total_digits) < $min_digits) {
+		return $timeout_action;
+	} else {
+		return $total_digits;
+	}
+}
+
+
