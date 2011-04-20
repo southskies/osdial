@@ -167,9 +167,9 @@ if ($non_latin < 1) {
 }
 
 # default optional vars if not set
-if (!isset($ACTION)) $ACTION="Originate";
-if (!isset($format)) $format="alert";
-if (!isset($ext_priority)) $ext_priority="1";
+if ($ACTION=='') $ACTION="Originate";
+if ($format=='') $format="alert";
+if ($ext_priority=='') $ext_priority="1";
 
 $StarTtime = date("U");
 $NOW_DATE = date("Y-m-d");
@@ -188,7 +188,7 @@ if( (strlen($user)<2) or (strlen($pass)<2) or ($auth==0)) {
     echo "Invalid Username/Password: |$user|$pass|\n";
     exit;
 } else {
-    if( (strlen($server_ip)<6) or (!isset($server_ip)) or ( (strlen($session_name)<12) or (!isset($session_name)) ) ) {
+    if( (strlen($server_ip)<6) or ($server_ip=='') or ( (strlen($session_name)<12) or ($session_name=='') ) ) {
         echo "Invalid server_ip: |$server_ip|  or  Invalid session_name: |$session_name|\n";
         exit;
     } else {
