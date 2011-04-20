@@ -2176,7 +2176,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 		var xmlhttp=getXHR();
 		if (xmlhttp) { 
-			VMCoriginate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass  + "&ACTION=OriginateVDRelogin&format=text&channel=" + originatevalue + "&queryCID=" + queryCID + "&exten=" + session_id + "&ext_context=" + ext_context + "&ext_priority=1" + "&extension=" + extension + "&protocol=" + protocol + "&phone_ip=" + phone_ip + "&enable_sipsak_messages=" + enable_sipsak_messages + "&allow_sipsak_messages=" + allow_sipsak_messages + "&campaign=" + campaign;
+			VMCoriginate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass  + "&ACTION=OriginateVDRelogin&format=text&channel=" + originatevalue + "&queryCID=" + queryCID + "&exten=2" + session_id + "&ext_context=" + ext_context + "&ext_priority=1" + "&extension=" + extension + "&protocol=" + protocol + "&phone_ip=" + phone_ip + "&enable_sipsak_messages=" + enable_sipsak_messages + "&allow_sipsak_messages=" + allow_sipsak_messages + "&campaign=" + campaign;
 			xmlhttp.open('POST', 'manager_send.php'); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 			xmlhttp.send(VMCoriginate_query); 
@@ -6006,6 +6006,13 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 						document.getElementById('MultiCallAlerTBoX').style.visibility='visible';
 						multicall_vmdrop_timer = MCsplit[16];
 						document.getElementById("MulticallAlerTTimer").innerHTML = multicall_vmdrop_timer;
+
+						// Whisper a ding to the agent.
+						var dingCID = "MCalrt" + epoch_sec + user_abb;
+						var dingoriginate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=Originate&format=text&channel=Local/9" + session_id + "@" + ext_context + "&queryCID=" + dingCID + "&exten=8304&ext_context=" + ext_context + "&ext_priority=1";
+						xmlhttp.open('POST', 'manager_send.php', false); 
+						xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+						xmlhttp.send(dingoriginate_query); 
 					} else {
 						multicall_alert=0;
 						multicall_vmdrop_timer = -1;

@@ -1562,7 +1562,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             }
 
             ### insert a NEW record to the osdial_manager table to be processed
-            $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$SIqueryCID','Channel: $SIP_user_DiaL','Context: $ext_context','Exten: $session_id','Priority: 1','Callerid: \"OSDial#$SIP_user\" <$campaign_cid>','Account: $SIqueryCID','','','','');";
+            $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$SIqueryCID','Channel: $SIP_user_DiaL','Context: $ext_context','Exten: 2$session_id','Priority: 1','Callerid: \"OSDial#$SIP_user\" <$campaign_cid>','Account: $SIqueryCID','','','','');";
             if ($DB) echo "$stmt\n";
             $rslt=mysql_query($stmt, $link);
             $affected_rows = mysql_affected_rows($link);

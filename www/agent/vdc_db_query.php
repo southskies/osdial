@@ -280,7 +280,7 @@ $vendor_lead_code = get_variable("vendor_lead_code");
 
 #############################################
 ##### START SYSTEM_SETTINGS LOOKUP #####
-$stmt = "SELECT use_non_latin,enable_multicompany FROM system_settings;";
+$stmt = "SELECT use_non_latin,enable_multicompany,intra_server_protocol FROM system_settings;";
 $rslt=mysql_query($stmt, $link);
 if ($DB) echo "$stmt\n";
 $qm_conf_ct = mysql_num_rows($rslt);
@@ -289,6 +289,8 @@ while ($i < $qm_conf_ct) {
     $row=mysql_fetch_row($rslt);
     $non_latin = $row[0];
     $multicomp = $row[1];
+    $isp='*';
+    if ($row[2]=='IAX2') $isp='#';
     $i++;
 }
 ##### END SETTINGS LOOKUP #####
@@ -2258,7 +2260,21 @@ if ($ACTION == 'multicallQueueSwap') {
             $mccallerid = $row[3];
             $mccalltime = $row[4];
 
-            $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$multicall_serverip','','Redirect','$mccallerid','Channel: $multicall_channel','Context: osdial','Exten: $conf_exten','Priority: 1','CallerID: $mccallerid','Account: $mccallerid','','','','');";
+            $dest_dialstring = $conf_exten;
+            if ($multicall_serverip!=$agentserver_ip) {
+                $S='*';
+                $D_s_ip = explode('.', $agentserver_ip);
+                if (strlen($D_s_ip[0])<2) {$D_s_ip[0] = "0$D_s_ip[0]";}
+                if (strlen($D_s_ip[0])<3) {$D_s_ip[0] = "0$D_s_ip[0]";}
+                if (strlen($D_s_ip[1])<2) {$D_s_ip[1] = "0$D_s_ip[1]";}
+                if (strlen($D_s_ip[1])<3) {$D_s_ip[1] = "0$D_s_ip[1]";}
+                if (strlen($D_s_ip[2])<2) {$D_s_ip[2] = "0$D_s_ip[2]";}
+                if (strlen($D_s_ip[2])<3) {$D_s_ip[2] = "0$D_s_ip[2]";}
+                if (strlen($D_s_ip[3])<2) {$D_s_ip[3] = "0$D_s_ip[3]";}
+                if (strlen($D_s_ip[3])<3) {$D_s_ip[3] = "0$D_s_ip[3]";}
+                $dest_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]$isp$conf_exten";
+            }
+            $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$multicall_serverip','','Redirect','$mccallerid','Channel: $multicall_channel','Context: osdial','Exten: $dest_dialstring','Priority: 1','CallerID: $mccallerid','Account: $mccallerid','','','','');";
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
 
