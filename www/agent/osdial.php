@@ -2304,6 +2304,33 @@ flush();
     </span>
 
 
+    <? load_status('Initializing GUI...<br>MultiCallAlerTBoX<br>&nbsp;'); ?>
+    <!-- Multicall Alert -->
+    <span style="position:absolute;left:0px;top:50px;z-index:41;visibility:hidden;" id="MultiCallAlerTBoX">
+        <table class=acrossagent border=1 height=500 cellspacing=20>
+            <tr>
+                <td align=center bgcolor="<?= $system_alert_bg2 ?>">
+                    <font color=<?=$login_fc?>>
+                        Alert - Inbound Call<br/>
+                        <br/>
+                        <span id="MultiCallAlerTInfo">
+                            Caller ID Number: ....<br/>
+                            Caller ID Name: ...<br/>
+                            Has Lead? y/n<br/>
+                            Lead Information...<br/>
+                        </span>
+                        <br/><br/><br/>
+                        <font size=2>
+                            <a href="#" onclick="multicall_send2voicemail();return false;"><font color=grey>[Send to Voicemail (<span id="MulticallAlerTTimer"></span>)]</font></a>
+                            &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+                            <a href="#" onclick="multicall_answer();return false;"><font color=grey>[Answer]</font></a>
+                        </font>
+                    </font>
+                </td>
+            </tr>
+        </table>
+    </span>
+
     <? load_status('Initializing GUI...<br>SysteMAlerTBoX<br>&nbsp;'); ?>
     <!-- System Alert -->
     <span style="position:absolute;left:0px;top:300px;z-index:41;visibility:hidden;" id="SysteMAlerTBoX">
