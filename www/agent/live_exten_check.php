@@ -76,7 +76,7 @@ $user=preg_replace("/[^0-9a-zA-Z]/","",$user);
 $pass=preg_replace("/[^0-9a-zA-Z]/","",$pass);
 
 # default optional vars if not set
-if (!isset($format)) $format="text";
+if ($format=='') $format="text";
 
 $version = 'SVN_Version';
 $build = 'SVN_Build';
@@ -99,7 +99,7 @@ if( (strlen($user)<2) or (strlen($pass)<2) or ($auth==0)) {
     echo "Invalid Username/Password: |$user|$pass|\n";
     exit;
 } else {
-    if( (strlen($server_ip)<6) or (!isset($server_ip)) or ( (strlen($session_name)<12) or (!isset($session_name)) ) ) {
+    if( (strlen($server_ip)<6) or ($server_ip=='') or ( (strlen($session_name)<12) or ($session_name=='') ) ) {
         echo "Invalid server_ip: |$server_ip|  or  Invalid session_name: |$session_name|\n";
         exit;
     } else {
