@@ -306,7 +306,7 @@ if ($ADD=="4A") {
                 if ($row[0]==0) {
                     $stmt="INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,drop_message,voicemail_ext,drop_exten,next_agent_call,fronter_display,drop_call_seconds,agent_alert_exten,allow_multicall) values('A2A_$user','Agent2Agent $user','pink','Y','$use_exten','$voicemail_id','$dialplan_number','oldest_call_finish','Y','600','X','Y');";
                 } else {
-                    $stmt="UPDATE osdial_inbound_groups SET drop_message='$xfer_agent2agent_wait_action',drop_exten='$xfer_agent2agent_wait_extension',drop_trigger='$xfer_agent2agent_wait',drop_call_seconds='$xfer_agent2agent_wait_seconds',voicemail_ext='$voicemail_id',allow_multicall='$allow_multicall' WHERE group_id='A2A_$user';";
+                    $stmt="UPDATE osdial_inbound_groups SET drop_message='$xfer_agent2agent_wait_action',drop_exten='$xfer_agent2agent_wait_extension',drop_trigger='$xfer_agent2agent_wait',drop_call_seconds='$xfer_agent2agent_wait_seconds',voicemail_ext='$voicemail_id',allow_multicall='$xfer_agent2agent_allow_multicall' WHERE group_id='A2A_$user';";
                 }
 
             } else {
@@ -656,7 +656,7 @@ if ($ADD==3)
                 $xfer_agent2agent_wait_seconds = $rowx[1];
                 $xfer_agent2agent_wait_action = $rowx[2];
                 $xfer_agent2agent_wait_extension = $rowx[3];
-                $xfer_agent2agent_allow_multicall = $rowx[3];
+                $xfer_agent2agent_allow_multicall = $rowx[4];
 			    echo "<tr bgcolor=$oddrows>\n";
                 echo "  <td align=right>Agent2Agent Timeout: </td>\n";
                 echo "  <td align=left>\n";
@@ -692,6 +692,8 @@ if ($ADD==3)
                 } else {
 			        echo "<input type=hidden name=xfer_agent2agent_wait_extension value=\"$xfer_agent2agent_wait_extension\">\n";
                 }
+	            echo "<tr bgcolor=$oddrows>\n";
+                echo "  <td align=right>Agent2Agent Allow Multicall: </td>\n";
                 echo "  <td align=left>\n";
                 echo "    <select size=1 name=xfer_agent2agent_allow_multicall>\n";
                 $wsel=''; if ($xfer_agent2agent_allow_multicall=='N') $wsel='selected';
