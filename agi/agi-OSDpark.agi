@@ -25,7 +25,7 @@ $|++;
 use strict;
 use OSDial;
 
-my $prog = 'park_CID.agi';
+my $prog = 'agi-OSDpark.agi';
 
 my $DB = 1;
 
@@ -39,5 +39,8 @@ $osdial->agi_output("CALL BEING PARKED");
 my $affected_rows = $osdial->sql_execute("UPDATE parked_channels SET channel_group='" . $AGI->{'accountcode'} . "' WHERE server_ip='" . $osdial->{'VARserver_ip'} . "' AND channel='" . $AGI->{'channel'} . "';");
 $osdial->agi_output("--    Park record updated: |$affected_rows|   |".$osdial->{'accountcode'}."|".$osdial->{'channel'}."|".$osdial->{'VARserver_ip'});
 
+my $parked = $osdial->sql_query("SELECT * FROM parked_channels WHERE channel='" . $AGI->{'channel'} . "';");
+
+$AGI->stream_file($parked->{'extension'});
 
 exit 0;
