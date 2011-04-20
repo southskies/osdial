@@ -418,6 +418,7 @@
 						var check_conf = null;
 						var LMAforce = taskforce;
 						check_conf = xmlhttprequestcheckconf.responseText;
+						debug("<b>check_for_conf_calls:</b> checkconf_query=" + checkconf_query,3);
 						//osdalert(checkconf_query,30);
 						//osdalert(xmlhttprequestcheckconf.responseText,30);
 						var check_ALL_array=check_conf.split("\n");
@@ -432,12 +433,20 @@
 							var AGLogiN = Alogin_array[1];
 							var CamPCalLs_array = check_time_array[3].split("CampCalls: ");
 							var CamPCalLs = CamPCalLs_array[1];
-							var DiaLCalLs_array = check_time_array[5].split("DiaLCalls: ");
+							var CallQueueIn_array = check_time_array[4].split("CallQueueIn: ");
+							var CallQueueOut_array = check_time_array[5].split("CallQueueOut: ");
+							var CallQueueInMC_array = check_time_array[6].split("CallQueueInMC: ");
+							var ParkCalls_array = check_time_array[7].split("ParkCalls: ");
+							var DiaLCalLs_array = check_time_array[9].split("DiaLCalls: ");
 							var DiaLCalLs = DiaLCalLs_array[1];
-							var TimeSync_array = check_time_array[6].split("TimeSync: ");
+							var TimeSync_array = check_time_array[10].split("TimeSync: ");
 							var TimeSyncInfo = TimeSync_array[1];
 							if (AGLogiN != 'N') {
 								document.getElementById("AgentStatusStatus").innerHTML = AGLogiN;
+								call_queue_in = CallQueueIn_array[1];
+								call_queue_out = CallQueueOut_array[1];
+								call_queue_in_mc = CallQueueInMC_array[1];
+								park_count = ParkCalls_array[1];
 							}
 							if (CamPCalLs != 'N') {
 								document.getElementById("AgentStatusCalls").innerHTML = CamPCalLs;
@@ -465,7 +474,7 @@
 								showDiv('SysteMDisablEBoX');
 							}
 						}
-						var VLAStatuS_array = check_time_array[4].split("Status: ");
+						var VLAStatuS_array = check_time_array[8].split("Status: ");
 						var VLAStatuS = VLAStatuS_array[1];
 						if ( (VLAStatuS == 'PAUSED') && (AutoDialWaiting == 1) ) {
 							if (PausENotifYCounTer > 10) {
@@ -2376,6 +2385,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			clearInterval(previewFD_display_id);
 			document.getElementById("PreviewFDTimeSpan").innerHTML = "";
 		}
+		document.getElementById('MultiCallAlerTBoX').style.visibility='hidden';
 
 		var xmlhttp=getXHR();
 		if (xmlhttp) { 
@@ -2458,30 +2468,30 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 // ################################################################################
 // Taken form php.net Angelos
-function utf8_decode(utftext) {
-	debug("<b>utf8_decode:</b> utftext=" + utftext,5);
-        var string = "";
-        var i = 0;
-        var c = c1 = c2 = 0;
+	function utf8_decode(utftext) {
+		debug("<b>utf8_decode:</b> utftext=" + utftext,5);
+		var string = "";
+		var i = 0;
+		var c = c1 = c2 = 0;
 
-        while ( i < utftext.length ) {
-            c = utftext.charCodeAt(i);
-            if (c < 128) {
-                string += String.fromCharCode(c);
-                i++;
-            } else if((c > 191) && (c < 224)) {
-                c2 = utftext.charCodeAt(i+1);
-                string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-                i += 2;
-            } else {
-                c2 = utftext.charCodeAt(i+1);
-                c3 = utftext.charCodeAt(i+2);
-                string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-                i += 3;
-            }
-        }
-        return string;
-    }
+		while ( i < utftext.length ) {
+			c = utftext.charCodeAt(i);
+			if (c < 128) {
+				string += String.fromCharCode(c);
+				i++;
+			} else if((c > 191) && (c < 224)) {
+				c2 = utftext.charCodeAt(i+1);
+				string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
+				i += 2;
+			} else {
+				c2 = utftext.charCodeAt(i+1);
+				c3 = utftext.charCodeAt(i+2);
+				string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
+				i += 3;
+			}
+		}
+		return string;
+	}
 
 
 // ################################################################################
@@ -2745,6 +2755,20 @@ function utf8_decode(utftext) {
 				if (osdalert_timer==0) hideDiv('SysteMAlerTBoX');
 				osdalert_timer--;
 			}
+
+			// If the voicemail drop timer is set, start counting.  Xfer to voicemail when we hit 0.
+			if (multicall_vmdrop_timer>=0) {
+				document.getElementById("MulticallAlerTTimer").innerHTML = multicall_vmdrop_timer;
+				if (multicall_vmdrop_timer==0) {
+					multicall_send2voicemail();
+					multicall_alert=0;
+					document.getElementById('MultiCallAlerTBoX').style.visibility='hidden';
+					multicall_waitchannel = multicall_waitserverip = multicall_waitcallerid = multicall_waituniqueid = "";
+					multicall_waitleadid = multicall_waitingroup = multicall_waitvoicemail = "";
+				}
+				multicall_vmdrop_timer--;
+			}
+
 			if (AgentDispoing>0) {
 				WaitingForNextStep=1;
 				check_for_conf_calls(session_id, '0');
@@ -2772,6 +2796,37 @@ function utf8_decode(utftext) {
 				if (AutoDialWaiting == 1) {
 					check_for_auto_incoming();
 				}
+
+				//check for multicall incoming, but only if the check_for_auto_incoming did not hit.
+				if (!(VD_live_customer_call==1 && VD_live_call_secondS==0)) {
+					// multicall waiting, pick it up.
+					if (call_queue_in_mc>0) {
+						check_multicall_incoming();
+					// multicall disappeared, clear any open alerts.
+					} else if (multicall_alert>0) {
+						multicall_alert=0;
+						document.getElementById('MultiCallAlerTBoX').style.visibility='hidden';
+						multicall_waitchannel = multicall_waitserverip = multicall_waitcallerid = multicall_waituniqueid = "";
+						multicall_waitleadid = multicall_waitingroup = multicall_waitvoicemail = "";
+						multicall_vmdrop_timer=-1;
+					}
+				}
+
+				// If we have 2 call going, progressively change the button to flash faster over time.
+				if (multicall_channel!='' && multicall_lastchannel!='') {
+					var multicall_swapcalls_delay=1000;
+					if (++multicall_liveseconds>180) {
+						multicall_swapcalls_delay=200;
+					} else if (multicall_liveseconds>60) {
+						multicall_swapcalls_delay=400;
+					} else if (multicall_liveseconds>30) {
+						multicall_swapcalls_delay=600;
+					} else if (multicall_liveseconds>15) {
+						multicall_swapcalls_delay=800;
+					}
+					document.getElementById("ParkControl").innerHTML ="<a href=\"#\" onclick=\"multicall_queue_swap();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_swapcalls" + multicall_swapcalls_delay + ".gif\" width=145 height=16 border=0 alt=\"Swap Calls\"></a>";
+				}
+
 				// look for a channel name for the manually dialed call
 				if (MD_channel_look==1) {
 					ManualDialCheckChanneL(XDcheck);
@@ -2832,6 +2887,18 @@ function utf8_decode(utftext) {
 					document.getElementById("WrapupTimer").innerHTML = (wrapup_seconds - wrapup_counter);
 					wrapup_counter++;
 					if ( (wrapup_counter > wrapup_seconds) && (document.getElementById("WrapupBox").style.visibility == 'visible') ) {
+						// Calls are gone (and wrapped), clean up all the multicall states.
+						multicall_active = multicall_alert = multicall_liveseconds = 0;
+						multicall_channel = multicall_serverip = multicall_callerid = multicall_ingroup = "";
+						multicall_voicemail = multicall_uniqueid = multicall_leadid = "";
+						multicall_lastchannel = multicall_lastserverip = multicall_lastcallerid = multicall_lastingroup = "";
+						multicall_lastvoicemail = multicall_lastuniqueid = multicall_lastleadid = "";
+						multicall_waitchannel = multicall_waitserverip = multicall_waitcallerid = multicall_waitingroup = "";
+						multicall_waitvoicemail = multicall_waituniqueid = multicall_waitleadid = "";
+						multicall_tmpchannel = multicall_tmpserverip = multicall_tmpcallerid = multicall_tmpingroup = "";
+						multicall_tmpvoicemail = multicall_tmpuniqueid = multicall_tmpleadid = "";
+						multicall_vmdrop_timer = -1;
+
 						wrapup_waiting=0;
 						hideDiv('WrapupBox');
 						document.getElementById('AddtlFormTab').style.visibility='visible';
@@ -3919,6 +3986,7 @@ function utf8_decode(utftext) {
 			var xmlhttprequestcheckauto=getXHR();
 			if (xmlhttprequestcheckauto) { 
 				checkVDAI_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&ACTION=VDADcheckINCOMING" + "&agent_log_id=" + agent_log_id;
+				debug("<b>check_for_auto_incoming:</b> checkVDAI_query: " + checkVDAI_query,5);
 				xmlhttprequestcheckauto.open('POST', 'vdc_db_query.php'); 
 				xmlhttprequestcheckauto.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 				xmlhttprequestcheckauto.send(checkVDAI_query); 
@@ -4755,29 +4823,54 @@ function utf8_decode(utftext) {
 
 				AgentDispoing = 0;
 
-				if (wrapup_waiting == 0) {
-					document.getElementById('AddtlFormTab').style.visibility='visible';
-					document.getElementById('AddtlFormTabExpanded').style.visibility='hidden';
-					if (document.osdial_form.DispoSelectStop.checked==true) {
-						if (auto_dial_level != '0') {
-							AutoDialWaiting = 0;
-							AutoDial_ReSume_PauSe("VDADpause",rp_newid);
-							//document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML;
-						}
-						OSDiaL_pause_calling = 1;
-						if (dispo_check_all_pause != '1') {
-							document.osdial_form.DispoSelectStop.checked=false;
-						}
-					} else {
-						if (auto_dial_level != '0') {
-							AutoDialWaiting = 1;
-							AutoDial_ReSume_PauSe("VDADready",rp_newid);
-							//document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_ready;
+				// We just hungup the active multicall, so clear its associated variabled.
+				if (multicall_active>0) {
+					multicall_lastchannel = multicall_lastserverip = multicall_lastcallerid = multicall_lastingroup = "";
+					multicall_lastvoicemail = multicall_lastuniqueid = multicall_lastleadid = "";
+					// If there both multicall sets are empty flag the multicall as inactive.
+					if (multicall_channel=='' && multicall_lastchannel=='') multicall_active=0;
+				}
+
+				// If the multicall is active, swap after hangup to grab the other channel.
+				if (multicall_active>0) {
+					multicall_queue_swap();
+				} else {
+					if (wrapup_waiting == 0) {
+						//We are all done with the call, clean up all the multicall states.
+						multicall_active = multicall_alert = multicall_liveseconds = 0;
+						multicall_channel = multicall_serverip = multicall_callerid = multicall_ingroup = "";
+						multicall_voicemail = multicall_uniqueid = multicall_leadid = "";
+						multicall_lastchannel = multicall_lastserverip = multicall_lastcallerid = multicall_lastingroup = "";
+						multicall_lastvoicemail = multicall_lastuniqueid = multicall_lastleadid = "";
+						multicall_waitchannel = multicall_waitserverip = multicall_waitcallerid = multicall_waitingroup = "";
+						multicall_waitvoicemail = multicall_waituniqueid = multicall_waitleadid = "";
+						multicall_tmpchannel = multicall_tmpserverip = multicall_tmpcallerid = multicall_tmpingroup = "";
+						multicall_tmpvoicemail = multicall_tmpuniqueid = multicall_tmpleadid = "";
+						multicall_vmdrop_timer = -1;
+
+						document.getElementById('AddtlFormTab').style.visibility='visible';
+						document.getElementById('AddtlFormTabExpanded').style.visibility='hidden';
+						if (document.osdial_form.DispoSelectStop.checked==true) {
+							if (auto_dial_level != '0') {
+								AutoDialWaiting = 0;
+								AutoDial_ReSume_PauSe("VDADpause",rp_newid);
+								//document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML;
+							}
+							OSDiaL_pause_calling = 1;
+							if (dispo_check_all_pause != '1') {
+								document.osdial_form.DispoSelectStop.checked=false;
+							}
 						} else {
-							// trigger HotKeys manual dial automatically go to next lead
-							if (manual_auto_hotkey == '1') {
-								manual_auto_hotkey = 0;
-								ManualDialNext('','','','','');
+							if (auto_dial_level != '0') {
+								AutoDialWaiting = 1;
+								AutoDial_ReSume_PauSe("VDADready",rp_newid);
+								//document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_ready;
+							} else {
+								// trigger HotKeys manual dial automatically go to next lead
+								if (manual_auto_hotkey == '1') {
+									manual_auto_hotkey = 0;
+									ManualDialNext('','','','','');
+								}
 							}
 						}
 					}
@@ -5829,3 +5922,375 @@ function utf8_decode(utftext) {
 
 		return resnum;
 	}
+
+
+
+// ###################################################################################################################################################
+// multicall_answer() - Answer the new incoming multicall.
+	function multicall_answer() {
+		if (alt_dial_active==0 && multicall_waitchannel!='' && multicall_channel=='') multicall_queue_swap();
+	}
+
+
+
+// ###################################################################################################################################################
+// multicall_send2voicemail() - Send the new incoming multicall to voicemail.
+	function multicall_send2voicemail() {
+		if (multicall_waitchannel!='') {
+			var xmlhttp=getXHR();
+			if (xmlhttp) { 
+				xferredirect_query = "server_ip=" + multicall_waitserverip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=RedirectVD&format=text&channel=" + multicall_waitchannel + "&queryCID=" + multicall_waitcallerid + "&exten=85026666666666" + multicall_waitvoicemail + "&ext_context=osdial&ext_priority=1&auto_dial_level=" + auto_dial_level + "&campaign=" + multicall_waitingroup + "&lead_id=" + multicall_waitleadid + "&uniqueid=" + multicall_waituniqueid;
+				xmlhttp.open('POST', 'manager_send.php', false); 
+				xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+				debug('<b>multicall_send2voicemail:</b> ' + xferredirect_query,3);
+				xmlhttp.send(xferredirect_query); 
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+					multicall_waitchannel = multicall_waitserverip = multicall_waitcallerid = multicall_waitingroup = "";
+					multicall_waitvoicemail = multicall_waituniqueid = multicall_waitleadid = "";
+					multicall_vmdrop_timer = -1;
+				}
+				delete xmlhttp;
+			}
+		}
+		document.getElementById('MultiCallAlerTBoX').style.visibility='hidden';
+		multicall_alert=0;
+	}
+
+
+
+// ###################################################################################################################################################
+// check_multicall_incoming() - If a multicall is waiting/queued, read in the state variables and display the alert window.  If there is an active
+//                            - non-multicall (outbound or inbound), copy the channel/lead information into the multicall stucture.
+	function check_multicall_incoming() {
+		if (call_queue_in_mc > 0 && multicall_alert==0 && multicall_channel=='' && multicall_waitchannel=='') {
+			var xmlhttp=getXHR();
+			if (xmlhttp) { 
+				var mcgc_data = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=MulticallGetChannel&format=text&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&lead_id=" + document.osdial_form.lead_id.value;
+				xmlhttp.open('POST', 'vdc_db_query.php', false); 
+				xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+				xmlhttp.send(mcgc_data); 
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+					debug('<b>check_multicall_incoming:</b> mcgc_data: ' + mcgc_data,3);
+					var MCsplit = xmlhttp.responseText.split("\n");
+					if (MCsplit[0]!='') {
+						multicall_waitchannel = MCsplit[0];
+						multicall_waitserverip = MCsplit[1];
+						multicall_waitcallerid = MCsplit[2];
+						multicall_waitingroup = MCsplit[3];
+						multicall_waitvoicemail = MCsplit[4];
+						multicall_waituniqueid = MCsplit[5];
+						multicall_waitleadid = MCsplit[6];
+						if (VD_live_customer_call==1 && multicall_lastchannel=='') {
+							multicall_lastchannel = lastcustchannel;
+							multicall_lastserverip = lastcustserverip;
+							multicall_lastcallerid = "LPvdcW" + epoch_sec + user_abb;
+							multicall_lastuniqueid = document.osdial_form.uniqueid.value;
+							multicall_lastleadid = document.osdial_form.lead_id.value;
+							multicall_lastingroup = campaign;
+							multicall_lastvoicemail = '8307';
+						}
+						var catab = '<table>';
+						document.getElementById("MultiCallAlerTInfo").innerHTML = '<table>';
+						if (MCsplit[8] != '') catab += "<tr><td><font size=2>CallerID Number: </font></td><td><font size=2>" + formatPhone(MCsplit[7],MCsplit[8]) + "</font></td></tr>";
+						if (MCsplit[9] != '') catab += "<tr><td><font size=2>CallerID Name: </font></td><td><font size=2>" + MCsplit[9] + "</font></td></tr>";
+						if (MCsplit[6] != '') catab += "<tr><td><font size=2>Lead ID: </font></td><td><font size=2>" + MCsplit[6] + "</font></td></tr>";
+						if (MCsplit[10] != '') catab += "<tr><td><font size=2>First Name: </font></td><td><font size=2>" + MCsplit[10] + "</font></td></tr>";
+						if (MCsplit[11] != '') catab += "<tr><td><font size=2>Last Name: </font></td><td><font size=2>" + MCsplit[11] + "</font></td></tr>";
+						if (MCsplit[12] != '') catab += "<tr><td><font size=2>Address: </font></td><td><font size=2>" + MCsplit[12] + "</font></td></tr>";
+						if (MCsplit[13] != '') catab += "<tr><td><font size=2>City: </font></td><td><font size=2>" + MCsplit[13] + "</font></td></tr>";
+						if (MCsplit[14] != '') catab += "<tr><td><font size=2>State: </font></td><td><font size=2>" + MCsplit[14] + "</font></td></tr>";
+						if (MCsplit[15] != '') catab += "<tr><td><font size=2>Postal Code: </font></td><td><font size=2>" + MCsplit[15] + "</font></td></tr>";
+						catab += '</table>';
+						document.getElementById("MultiCallAlerTInfo").innerHTML = catab;
+						multicall_alert++;
+						document.getElementById('MultiCallAlerTBoX').style.visibility='visible';
+						multicall_vmdrop_timer = MCsplit[16];
+						document.getElementById("MulticallAlerTTimer").innerHTML = multicall_vmdrop_timer;
+					} else {
+						multicall_alert=0;
+						multicall_vmdrop_timer = -1;
+						document.getElementById('MultiCallAlerTBoX').style.visibility='hidden';
+					}
+					debug('<b>check_multicall_incoming:</b> multicall_waitchannel:' + multicall_waitchannel + " multicall_waitserverip: " + multicall_waitserverip + " multicall_waitvoicemail: " + multicall_waitvoicemail,3);
+				}
+				delete xmlhttp;
+			}
+		}
+	}
+
+
+
+// ###################################################################################################################################################
+// multicall_queue_swap() - Check if a call is waiting in an inbound group for this agent.  If the ingroup allows multicall handling, 
+//                        - park call A, answer call B, and load lead data for call B.  If there is already two active mutlicalls,
+//                        - park call A, unpark call B, load lead data for call B.
+	function multicall_queue_swap() {
+		debug("<b>multicall_queue_swap:</b>",3);
+		all_record = 'NO';
+		all_record_count=0;
+		// If we have a multicall queued/waiting, juggle the states so that we don't loose anything.
+		if (multicall_waitchannel!='') {
+			if (multicall_channel=='' && multicall_lastchannel=='') {
+				multicall_channel = multicall_waitchannel;
+				multicall_serverip = multicall_waitserverip;
+				multicall_callerid = multicall_waitcallerid;
+				multicall_uniqueid = multicall_waituniqueid;
+				multicall_leadid = multicall_waitleadid;
+				multicall_ingroup = multicall_waitingroup;
+				multicall_voicemail = multicall_waitvoicemail;
+			} else if (multicall_channel=='' && multicall_lastchannel!='') {
+				multicall_channel = multicall_waitchannel;
+				multicall_serverip = multicall_waitserverip;
+				multicall_callerid = multicall_waitcallerid;
+				multicall_uniqueid = multicall_waituniqueid;
+				multicall_leadid = multicall_waitleadid;
+				multicall_ingroup = multicall_waitingroup;
+				multicall_voicemail = multicall_waitvoicemail;
+			} else if (multicall_channel!='' && multicall_lastchannel=='') {
+				multicall_lastchannel = multicall_channel;
+				multicall_lastserverip = multicall_serverip;
+				multicall_lastcallerid = multicall_callerid;
+				multicall_lastuniqueid = multicall_uniqueid;
+				multicall_lastleadid = multicall_leadid;
+				multicall_lastingroup = multicall_ingroup;
+				multicall_lastvoicemail = multicall_voicemail;
+
+				multicall_channel = multicall_waitchannel;
+				multicall_serverip = multicall_waitserverip;
+				multicall_callerid = multicall_waitcallerid;
+				multicall_uniqueid = multicall_waituniqueid;
+				multicall_leadid = multicall_waitleadid;
+				multicall_ingroup = multicall_waitingroup;
+				multicall_voicemail = multicall_waitvoicemail;
+			}
+			// Clear the queued/waiting state variables.
+			multicall_waitchannel = multicall_waitserverip = multicall_waitcallerid = multicall_waituniqueid = "";
+			multicall_waitleadid = multicall_waitingroup = multicall_waitvoicemail = "";
+			multicall_vmdrop_timer = -1;
+		}
+		var xmlhttpqs=getXHR();
+		if (xmlhttpqs) { 
+			if (lastcustserverip == '') lastcustserverip=server_ip;
+			checkMCIN_query = "server_ip=" + lastcustserverip + "&channel=" + lastcustchannel + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&ACTION=multicallQueueSwap" + "&agent_log_id=" + agent_log_id + "&agentchannel=" + agentchannel + "&agentserver_ip=" + server_ip + "&multicall_channel=" + multicall_channel + "&multicall_serverip=" + multicall_serverip + "&multicall_leadid=" + multicall_leadid + "&multicall_callerid=" + multicall_callerid + "&multicall_uniqueid=" + multicall_uniqueid + "&multicall_liveseconds=" + multicall_liveseconds + "&conf_exten=" + session_id + "&user_abb=" + user_abb + "&park_on_extension=" + park_on_extension;
+			xmlhttpqs.open('POST', 'vdc_db_query.php', false); 
+			xmlhttpqs.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+			xmlhttpqs.send(checkMCIN_query); 
+			debug('multicall_queue_swap: checkMCIN_query: ' + checkMCIN_query,3);
+			if (xmlhttpqs.readyState == 4 && xmlhttpqs.status == 200) {
+				var queue_swap = xmlhttpqs.responseText;
+				//osdalert(queue_swap,30);
+				//osdalert(xmlhttprequestqs.responseText,30);
+				var check_MCIC_array=queue_swap.split("\n");
+				debug('multicall_queue_swap: check_MCIC_array[0]: ' + check_MCIC_array[0],4);
+				// Array segment 0 value is 1 if the channel is still live, 2 if the remote party has hungup.
+				// This allows us to reload the lead data for the dead call.
+				if (check_MCIC_array[0] == '1' || check_MCIC_array[0] == '2') {
+					// Swap the two multicall states.  Copy current live channel (call B) into tmp.
+					multicall_tmpchannel = multicall_channel;
+					multicall_tmpserverip = multicall_serverip;
+					multicall_tmpcallerid = multicall_callerid;
+					multicall_tmpuniqueid = multicall_uniqueid;
+					multicall_tmpleadid = multicall_leadid;
+					multicall_tmpingroup = multicall_ingroup;
+					multicall_tmpvoicemail = multicall_voicemail;
+					// Copy old channel (call A) into the parked/held channel.
+					multicall_channel = multicall_lastchannel;
+					multicall_serverip = multicall_lastserverip;
+					multicall_callerid = multicall_lastcallerid;
+					multicall_uniqueid = multicall_lastuniqueid;
+					multicall_leadid = multicall_lastleadid;
+					multicall_ingroup = multicall_lastingroup;
+					multicall_voicemail = multicall_lastvoicemail;
+					// Copy tmp into the current live channel (call B).
+					multicall_lastchannel = multicall_tmpchannel;
+					multicall_lastserverip = multicall_tmpserverip;
+					multicall_lastcallerid = multicall_tmpcallerid;
+					multicall_lastuniqueid = multicall_tmpuniqueid;
+					multicall_lastleadid = multicall_tmpleadid;
+					multicall_lastingroup = multicall_tmpingroup;
+					multicall_lastvoicemail = multicall_tmpvoicemail;
+
+					document.images['livecall'].src = image_livecall_ON.src;
+					VD_live_customer_call=1;
+
+					document.getElementById('MultiCallAlerTBoX').style.visibility='hidden';
+					multicall_liveseconds = multicall_alert = 0;
+					multicall_active = 1;
+
+					debug('multicall_queue_swap:' + " multicall_alert:"+multicall_alert+" multicall_active:"+multicall_active+" multicall_channel:"+multicall_channel+" multicall_lastchannel:"+multicall_lastchannel+" multicall_waitchannel:"+multicall_waitchannel,3);
+
+					CustomerData_update();
+					afterCallClearing();
+
+					// Parse in lead data and setup interface.
+					debug('multicall_queue_swap: check_MCIC_array[1]: ' + check_MCIC_array[1],4);
+					var VDIC_data_MCAC=check_MCIC_array[1].split("|");
+					var VDIC_fronter='';
+
+					debug('multicall_queue_swap: check_MCIC_array[2]: ' + check_MCIC_array[2],4);
+					var VDIC_data_MCIG=check_MCIC_array[2].split("|");
+					if (VDIC_data_MCIG[0].length > 5) VDIC_web_form_address = VDIC_data_MCIG[0];
+					var VDCL_group_name		= VDIC_data_MCIG[1];
+					var VDCL_group_color		= VDIC_data_MCIG[2];
+					var VDCL_fronter_display	= VDIC_data_MCIG[3];
+					VDCL_group_id			= VDIC_data_MCIG[4];
+					CalL_ScripT_id			= VDIC_data_MCIG[5];
+					CalL_AutO_LauncH		= VDIC_data_MCIG[6];
+					CalL_XC_a_Dtmf			= VDIC_data_MCIG[7];
+					CalL_XC_a_NuMber		= VDIC_data_MCIG[8];
+					CalL_XC_b_Dtmf			= VDIC_data_MCIG[9];
+					CalL_XC_b_NuMber		= VDIC_data_MCIG[10];
+					LIVE_default_xfer_group = default_xfer_group;
+					if (VDIC_data_MCIG[11].length > 0) LIVE_default_xfer_group = VDIC_data_MCIG[11];
+					CalL_allow_tab		 	= VDIC_data_MCIG[12];
+					if (VDIC_data_MCIG[13].length > 5) VDIC_web_form_address2 = VDIC_data_MCIG[13];
+					if (VDIC_web_form_address == '') VDIC_web_form_address = OSDiaL_web_form_address;
+					if (VDIC_web_form_address2 == '') VDIC_web_form_address2 = OSDiaL_web_form_address2;
+					web_form_extwindow = 0;
+					if (VDIC_data_MCIG[14] == "Y") web_form_extwindow = 1;
+					web_form2_extwindow = 0;
+					if (VDIC_data_MCIG[15] == "Y") web_form2_extwindow = 1;
+					wf_enc_address = webform_rewrite(VDIC_web_form_address);
+					if (wf_enc_address == VDIC_web_form_address) wf_enc_address += web_form_vars;
+					wf2_enc_address = webform_rewrite(VDIC_web_form_address2);
+					if (wf2_enc_address == VDIC_web_form_address2) wf2_enc_address += web_form_vars2;
+
+					var VDIC_data_MCFR=check_MCIC_array[3].split("|");
+					if (VDIC_data_MCFR[1].length > 1 && VDCL_fronter_display == 'Y') VDIC_fronter = "  Fronter: " + VDIC_data_MCFR[0] + " - " + VDIC_data_MCFR[1];
+
+					document.osdial_form.lead_id.value						= VDIC_data_MCAC[0];
+					document.osdial_form.uniqueid.value						= VDIC_data_MCAC[1];
+					CIDcheck 						= CalLCID 		= VDIC_data_MCAC[2];
+					document.getElementById("callchannel").innerHTML	= lastcustchannel 	= VDIC_data_MCAC[3];
+					document.osdial_form.callserverip.value 		= lastcustserverip 	= VDIC_data_MCAC[4];
+					document.osdial_form.SecondS.value 			= VD_live_call_secondS 	= (VDIC_data_MCAC[5]*1).toFixed(0);
+
+
+					LasTCID						= check_MCIC_array[4];
+					LeaDPreVDispO					= check_MCIC_array[6];
+					fronter						= check_MCIC_array[7];
+					document.osdial_form.vendor_lead_code.value	= check_MCIC_array[8];
+					document.osdial_form.list_id.value		= check_MCIC_array[9];
+					document.osdial_form.gmt_offset_now.value	= check_MCIC_array[10];
+					document.osdial_form.phone_code.value		= check_MCIC_array[11];
+					document.osdial_form.phone_number.value		= check_MCIC_array[12];
+					document.osdial_form.title.value		= check_MCIC_array[13];
+					document.osdial_form.first_name.value		= check_MCIC_array[14];
+					document.osdial_form.middle_initial.value	= check_MCIC_array[15];
+					document.osdial_form.last_name.value		= check_MCIC_array[16];
+					document.osdial_form.address1.value		= check_MCIC_array[17];
+					document.osdial_form.address2.value		= check_MCIC_array[18];
+					document.osdial_form.address3.value		= check_MCIC_array[19];
+					document.osdial_form.city.value			= check_MCIC_array[20];
+					document.osdial_form.state.value		= check_MCIC_array[21];
+					document.osdial_form.province.value		= check_MCIC_array[22];
+					document.osdial_form.postal_code.value		= check_MCIC_array[23];
+					document.osdial_form.country_code.value		= check_MCIC_array[24];
+					document.osdial_form.gender.value		= check_MCIC_array[25];
+					document.osdial_form.date_of_birth.value	= check_MCIC_array[26];
+					document.osdial_form.alt_phone.value		= check_MCIC_array[27];
+					document.osdial_form.email.value		= check_MCIC_array[28];
+					document.osdial_form.custom1.value		= check_MCIC_array[29];
+					var REGcommentsNL = new RegExp("!N","g");
+					check_MCIC_array[30] = check_MCIC_array[30].replace(REGcommentsNL, "\n");
+					document.osdial_form.comments.value		= check_MCIC_array[30];
+					document.osdial_form.called_count.value		= check_MCIC_array[31];
+					CBentry_time					= check_MCIC_array[32];
+					CBcallback_time					= check_MCIC_array[33];
+					CBuser						= check_MCIC_array[34];
+					CBcomments					= check_MCIC_array[35];
+					dialed_number					= check_MCIC_array[36];
+					dialed_label					= check_MCIC_array[37];
+					document.osdial_form.source_id.value		= check_MCIC_array[38];
+					document.osdial_form.custom2.value		= check_MCIC_array[39];
+					document.osdial_form.external_key.value		= check_MCIC_array[40];
+					document.osdial_form.post_date.value		= check_MCIC_array[41];
+					var pos = 42;
+					for (var i=0; i<AFids.length; i++) {
+						document.getElementById(AFids[i]).value = check_MCIC_array[pos];
+						pos++;
+					}
+
+					emailTemplatesDisable();
+
+					lead_dial_number = dialed_number;
+					var status_display_number = formatPhone(document.osdial_form.phone_code.value,dialed_number);
+
+					document.getElementById("MainStatuSSpan").style.backgroundColor = '';
+					document.getElementById("MainStatuSSpan").innerHTML = " Calling: " + status_display_number + "&nbsp;&nbsp;<font color=" + status_bg + ">UID: " + CIDcheck + "</font> &nbsp; " + VDIC_fronter; 
+					document.getElementById("RepullControl").innerHTML = "<a href=\"#\" onclick=\"RepullLeadData('all');\"><img src=\"templates/" + agent_template + "/images/vdc_RPLD_on.gif\" width=145 height=16 border=0 alt=\"Repull Lead Data\"></a>";
+
+					if (LeaDPreVDispO == 'CALLBK') {
+						document.getElementById("CusTInfOSpaN").innerHTML = "&nbsp;<B>PREVIOUS CALLBACK</B>";
+						document.getElementById("CusTInfOSpaN").style.backgroundColor = CusTCB_bgcolor;
+						document.getElementById("CBcommentsBoxA").innerHTML = "<b>Last Call: </b>" + CBentry_time;
+						document.getElementById("CBcommentsBoxB").innerHTML = "<b>CallBack: </b>" + CBcallback_time;
+						document.getElementById("CBcommentsBoxC").innerHTML = "<b>Agent: </b>" + CBuser;
+						document.getElementById("CBcommentsBoxD").innerHTML = "<b>Comments: </b><br>" + CBcomments;
+						showDiv('CBcommentsBox');
+					}
+
+					if (VDIC_data_MCIG[1].length > 0) {
+						if (VDIC_data_MCIG[2].length > 2) document.getElementById("MainStatuSSpan").style.backgroundColor = VDIC_data_MCIG[2];
+						var status_display_number = formatPhone(document.osdial_form.phone_code.value,document.osdial_form.phone_number.value);
+						document.getElementById("MainStatuSSpan").innerHTML = " Incoming: " + status_display_number + " Group- " + VDIC_data_MCIG[1] + " &nbsp; " + VDIC_fronter; 
+					}
+
+					// If we only have one active multicall state, only display the Park Call button, otherwise, display the Swap Calls button.
+					if (multicall_channel=='' || multicall_lastchannel=='') {
+						document.getElementById("ParkControl").innerHTML ="<a href=\"#\" onclick=\"mainxfer_send_redirect('ParK','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_parkcall.gif\" width=145 height=16 border=0 alt=\"Park Call\"></a>";
+					} else {
+						document.getElementById("ParkControl").innerHTML ="<a href=\"#\" onclick=\"multicall_queue_swap();return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_swapcalls1000.gif\" width=145 height=16 border=0 alt=\"Swap Calls\"></a>";
+					}
+
+					document.getElementById("HangupControl").innerHTML = "<a href=\"#\" onclick=\"dialedcall_send_hangup();\"><img src=\"templates/" + agent_template + "/images/vdc_LB_hangupcustomer.gif\" width=145 height=16 border=0 alt=\"Hangup Customer\"></a>";
+					document.getElementById("XferControl").innerHTML = "<a href=\"#\" onclick=\"ShoWTransferMain('ON');\"><img src=\"templates/" + agent_template + "/images/vdc_LB_transferconf.gif\" width=145 height=16 border=0 alt=\"Transfer - Conference\"></a>";
+					document.getElementById("LocalCloser").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRLOCAL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_localcloser.gif\" width=107 height=16 border=0 alt=\"LOCAL CLOSER\"></a>";
+					document.getElementById("DialBlindTransfer").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRBLIND','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_blindtransfer.gif\" width=137 height=16 border=0 alt=\"Dial Blind Transfer\"></a>";
+					document.getElementById("DialBlindVMail").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\"></a>";
+					document.getElementById("DialBlindVMail2").innerHTML = "<a href=\"#\" onclick=\"mainxfer_send_redirect('XfeRVMAIL','" + lastcustchannel + "','" + lastcustserverip + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_XB_ammessage.gif\" width=36 height=16 border=0 alt=\"Blind Transfer VMail Message\"></a>";
+					document.getElementById("DTMFDialPad0").innerHTML = "<a href=\"#\" alt=\"0\" onclick=\"document.osdial_form.conf_dtmf.value='0'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_0.png\" width=26 height=19 border=0></a>";
+					document.getElementById("DTMFDialPad1").innerHTML = "<a href=\"#\" alt=\"1\" onclick=\"document.osdial_form.conf_dtmf.value='1'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_1.png\" width=26 height=19 border=0></a>";
+					document.getElementById("DTMFDialPad2").innerHTML = "<a href=\"#\" alt=\"2 - ABC\" onclick=\"document.osdial_form.conf_dtmf.value='2'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_2.png\" width=26 height=19 border=0></a>";
+					document.getElementById("DTMFDialPad3").innerHTML = "<a href=\"#\" alt=\"3 - DEF\" onclick=\"document.osdial_form.conf_dtmf.value='3'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_3.png\" width=26 height=19 border=0></a>";
+					document.getElementById("DTMFDialPad4").innerHTML = "<a href=\"#\" alt=\"4 - GHI\" onclick=\"document.osdial_form.conf_dtmf.value='4'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_4.png\" width=26 height=19 border=0></a>";
+					document.getElementById("DTMFDialPad5").innerHTML = "<a href=\"#\" alt=\"5 - JKL\" onclick=\"document.osdial_form.conf_dtmf.value='5'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_5.png\" width=26 height=19 border=0></a>";
+					document.getElementById("DTMFDialPad6").innerHTML = "<a href=\"#\" alt=\"6 - MNO\" onclick=\"document.osdial_form.conf_dtmf.value='6'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_6.png\" width=26 height=19 border=0></a>";
+					document.getElementById("DTMFDialPad7").innerHTML = "<a href=\"#\" alt=\"7 - PQRS\" onclick=\"document.osdial_form.conf_dtmf.value='7'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_7.png\" width=26 height=19 border=0></a>";
+					document.getElementById("DTMFDialPad8").innerHTML = "<a href=\"#\" alt=\"8 - TUV\" onclick=\"document.osdial_form.conf_dtmf.value='8'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_8.png\" width=26 height=19 border=0></a>";
+					document.getElementById("DTMFDialPad9").innerHTML = "<a href=\"#\" alt=\"9 - WXYZ\" onclick=\"document.osdial_form.conf_dtmf.value='9'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_9.png\" width=26 height=19 border=0></a>";
+					document.getElementById("DTMFDialPadStar").innerHTML = "<a href=\"#\" alt=\"*\" onclick=\"document.osdial_form.conf_dtmf.value='*'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_star.png\" width=26 height=19 border=0></a>";
+					document.getElementById("DTMFDialPadHash").innerHTML = "<a href=\"#\" alt=\"#\" onclick=\"document.osdial_form.conf_dtmf.value='#'; SendConfDTMF('" + session_id + "');return false;\"><img src=\"templates/" + agent_template + "/images/dtmf_hash.png\" width=26 height=19 border=0></a>";
+
+					if (lastcustserverip == server_ip) {
+						document.getElementById("VolumeUpSpan").innerHTML = "<a href=\"#\" onclick=\"volume_control('UP','" + lastcustchannel + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_up.gif\" width=28 height=15 BORDER=0></a>";
+						document.getElementById("VolumeDownSpan").innerHTML = "<a href=\"#\" onclick=\"volume_control('DOWN','" + lastcustchannel + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_down.gif\" width=28 height=15 BORDER=0></a>";
+					}
+
+					document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_OFF;
+					if (inbound_man > 0) document.getElementById("DiaLControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_pause_OFF.gif\" width=70 height=18 border=0 alt=\" Pause \"><img src=\"templates/" + agent_template + "/images/vdc_LB_resume_OFF.gif\" width=70 height=18 border=0 alt=\"Resume\"><BR><img src=\"templates/" + agent_template + "/images/vdc_LB_dialnextnumber_OFF.gif\" width=145 height=16 border=0 alt=\"Dial Next Number\">";
+					WebFormRefresH();
+					if (campaign_recording == 'ALLCALLS' || campaign_recording == 'ALLFORCE') all_record = 'YES';
+					if (view_scripts == 1 && CalL_ScripT_id.length > 0) {
+						// test code for scripts output
+						URLDecode(scriptnames[CalL_ScripT_id],'NO');
+						var textname = decoded;
+						URLDecode(scripttexts[CalL_ScripT_id],'YES');
+						var texttext = decoded;
+						var regWFplus = new RegExp("\\+","ig");
+						textname = textname.replace(regWFplus, ' ');
+						texttext = texttext.replace(regWFplus, ' ');
+						var testscript = "<br><center><B>" + textname + "</B></center>\n\n<BR><BR>\n\n" + texttext;
+						document.getElementById("ScriptContents").innerHTML = testscript;
+						scriptUpdateFields();
+					}
+
+				}
+				xmlhttpqs = undefined;
+				delete xmlhttpqs;
+			}
+		}
+	}
+
+
+
