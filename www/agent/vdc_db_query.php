@@ -194,6 +194,7 @@ $address3 = get_variable("address3");
 $agent_log = get_variable("agent_log");
 $agent_log_id = get_variable("agent_log_id");
 $agentchannel = get_variable("agentchannel");
+$agentserver_ip = get_variable("agentserver_ip");
 $alt_dial = get_variable("alt_dial");
 $alt_phone = get_variable("alt_phone");
 $auto_dial_level = get_variable("auto_dial_level");
@@ -240,9 +241,16 @@ $LogouTKicKAlL = get_variable("LogouTKicKAlL");
 $lookup = get_variable("lookup");
 $MDnextCID = get_variable("MDnextCID");
 $middle_initial = get_variable("middle_initial");
+$multicall_channel = get_variable("multicall_channel");
+$multicall_serverip = get_variable("multicall_serverip");
+$multicall_uniqueid = get_variable("multicall_uniqueid");
+$multicall_callerid = get_variable("multicall_callerid");
+$multicall_leadid = get_variable("multicall_leadid");
+$multicall_liveseconds = get_variable("multicall_liveseconds");
 $oldlead = get_variable("oldlead");
 $oldphone = get_variable("oldphone");
 $omit_phone_code = get_variable("omit_phone_code");
+$park_on_extension = get_variable("park_on_extension");
 $pass = get_variable("pass");
 $phone_code = get_variable("phone_code");
 $phone_ip = get_variable("phone_ip");
@@ -295,9 +303,9 @@ if ($non_latin < 1) {
 }
 
 # default optional vars if not set
-if (!isset($format)) $format="text";
+if ($format=='') $format="text";
 if ($format == 'debug') $DB=1;
-if (!isset($ACTION)) $ACTION="refresh";
+if ($ACTION=='') $ACTION="refresh";
 
 $StarTtime = date("U");
 $NOW_DATE = date("Y-m-d");
@@ -322,7 +330,7 @@ if ($ACTION == 'LogiNCamPaigns') {
         echo "Invalid Username/Password: |$user|$pass|\n";
         exit;
     } else {
-        if( (strlen($server_ip)<6) or (!isset($server_ip)) or ( (strlen($session_name)<12) or (!isset($session_name)) ) ) {
+        if( (strlen($server_ip)<6) or ($server_ip=='') or ( (strlen($session_name)<12) or ($session_name=='') ) ) {
             echo "Invalid server_ip: |$server_ip|  or  Invalid session_name: |$session_name|\n";
             exit;
         } else {
@@ -2207,6 +2215,520 @@ if ($ACTION == 'VDADcheckINCOMING') {
 
 
 ################################################################################
+### multicallQueueSwap - for auto-dial OSDiaL dialing this will check for calls
+###                     in the osdial_live_agents table in QUEUE status, then
+###                     lookup the lead info and pass it back to osdial.php
+################################################################################
+if ($ACTION == 'multicallQueueSwap') {
+    $Ctype = 'A';
+    $MT[0]='';
+    $row='';   $rowx='';
+    $channel_live=1;
+    if ( (strlen($campaign)<1) || (strlen($server_ip)<1) ) {
+        $channel_live=0;
+        echo "0\n";
+        echo "Campaign $campaign is not valid\n";
+        exit;
+    } else {
+
+        if ($channel != '') {
+            if ($park_on_extension=='') $park_on_extension='8301';
+            $queryCID = "LPvdcW$StarTtime$user_abb";
+            $stmt = "INSERT INTO parked_channels values('$channel','$server_ip','','park','$agentchannel','$NOW_TIME');";
+            if ($DB) echo "$stmt\n";
+            $rslt=mysql_query($stmt, $link);
+
+            $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $channel','Context: osdial','Exten: $park_on_extension','Priority: 1','CallerID: $queryCID','Account: $queryCID','','','','');";
+            if ($DB) echo "$stmt\n";
+            $rslt=mysql_query($stmt, $link);
+
+        }
+
+        $stmt = "SELECT lead_id,campaign_id,uniqueid,callerid,NOW()-call_time AS seconds FROM osdial_auto_calls WHERE server_ip='$multicall_serverip' AND channel='$multicall_channel';";
+        if ($DB) echo "$stmt\n";
+        $rslt=mysql_query($stmt, $link);
+        $auto_call_ct = mysql_num_rows($rslt);
+
+        $mccalltime=0;
+        if ($auto_call_ct > 0) {
+            $row=mysql_fetch_row($rslt);
+            $mcleadid = $row[0];
+            $mcingroup = $row[1];
+            $mcuniqueid = $row[2];
+            $mccallerid = $row[3];
+            $mccalltime = $row[4];
+
+            $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$multicall_serverip','','Redirect','$mccallerid','Channel: $multicall_channel','Context: osdial','Exten: $conf_exten','Priority: 1','CallerID: $mccallerid','Account: $mccallerid','','','','');";
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+
+            $stmt = "UPDATE osdial_auto_calls SET status='CLOSER',stage='CLOSER-0' WHERE server_ip='$multicall_serverip' AND channel='$multicall_channel';";
+            if ($DB) echo "$stmt\n";
+            $rslt=mysql_query($stmt, $link);
+
+            $stmt = "UPDATE osdial_live_agents SET lead_id='$mcleadid',uniqueid='$mcuniqueid',callerid='$mccallerid',call_server_ip='$multicall_serverip',channel='$multicall_channel',status='QUEUE' WHERE user='$user' AND server_ip='$agentserver_ip';";
+            if ($DB) echo "$stmt\n";
+            $rslt=mysql_query($stmt, $link);
+        }
+
+        ### grab the call and lead info from the osdial_live_agents table
+        $stmt = "SELECT SQL_NO_CACHE lead_id,uniqueid,callerid,channel,call_server_ip,campaign_id FROM osdial_live_agents WHERE server_ip='$server_ip' AND user='$user' AND status='QUEUE';";
+        if ($DB) echo "$stmt\n";
+        $rslt=mysql_query($stmt, $link);
+        $queue_leadID_ct = mysql_num_rows($rslt);
+
+        if ($queue_leadID_ct > 0) {
+            $row=mysql_fetch_row($rslt);
+            $lead_id	=$row[0];
+            $uniqueid	=$row[1];
+            $callerid	=$row[2];
+            $channel	=$row[3];
+            $call_server_ip	=$row[4];
+            if (strlen($call_server_ip)<7) $call_server_ip = $server_ip;
+            $campaign	=$row[5];
+            echo "1\n" . $lead_id . '|' . $uniqueid . '|' . $callerid . '|' . $channel . '|' . $call_server_ip . '|' . $mccalltime . "|\n";
+        } else {
+            $lead_id	=$multicall_leadid;
+            $uniqueid	=$multicall_uniqueid;
+            $callerid	=$multicall_callerid;
+            $channel	=$multicall_channel;
+            $call_server_ip	=$multicall_serverip;
+            $campaign	=$campaign;
+            echo "2\n" . $lead_id . '|' . $uniqueid . '|' . $callerid . '|' . $channel . '|' . $call_server_ip . '|' . $mccalltime . "|\n";
+        }
+
+        if ($lead_id!='') {
+            ##### grab number of calls today in this campaign and increment
+            $stmt="SELECT SQL_NO_CACHE calls_today FROM osdial_live_agents WHERE user='$user' AND campaign_id='$campaign';";
+            $rslt=mysql_query($stmt, $link);
+            if ($DB) echo "$stmt\n";
+            $vla_cc_ct = mysql_num_rows($rslt);
+            if ($vla_cc_ct > 0) {
+                $row=mysql_fetch_row($rslt);
+                $calls_today =$row[0];
+            } else {
+                $calls_today ='0';
+            }
+            $calls_today++;
+
+            ### update the agent status to INCALL in osdial_live_agents
+            $random = (rand(1000000, 9999999) + 10000000);
+            $stmt = "UPDATE osdial_live_agents set status='INCALL',last_call_time='$NOW_TIME',comments='AUTO',calls_today='$calls_today',random_id='$random' where user='$user' and server_ip='$server_ip';";
+            if ($DB) echo "$stmt\n";
+            $rslt=mysql_query($stmt, $link);
+
+            $stmt = "UPDATE osdial_campaign_agents set calls_today='$calls_today' where user='$user' and campaign_id='$campaign';";
+            if ($DB) echo "$stmt\n";
+            $rslt=mysql_query($stmt, $link);
+
+            ##### grab the data from osdial_list for the lead_id
+            $stmt="SELECT * FROM osdial_list WHERE lead_id='$lead_id' LIMIT 1;";
+            $rslt=mysql_query($stmt, $link);
+            if ($DB) echo "$stmt\n";
+            $list_lead_ct = mysql_num_rows($rslt);
+            if ($list_lead_ct > 0) {
+                $row=mysql_fetch_row($rslt);
+                #$lead_id		= trim($row[0]);
+                $dispo			= trim($row[3]);
+                $tsr			= trim($row[4]);
+                $vendor_id		= trim($row[5]);
+                $source_id		= trim($row[6]);
+                $list_id		= trim($row[7]);
+                $gmt_offset_now	= trim($row[8]);
+                $phone_code		= trim($row[10]);
+                $phone_number	= trim($row[11]);
+                $title			= trim($row[12]);
+                $first_name		= trim($row[13]);
+                $middle_initial	= trim($row[14]);
+                $last_name		= trim($row[15]);
+                $address1		= trim($row[16]);
+                $address2		= trim($row[17]);
+                $address3		= trim($row[18]);
+                $city			= trim($row[19]);
+                $state			= trim($row[20]);
+                $province		= trim($row[21]);
+                $postal_code	= trim($row[22]);
+                $country_code	= trim($row[23]);
+                $gender			= trim($row[24]);
+                $date_of_birth	= trim($row[25]);
+                $alt_phone		= trim($row[26]);
+                $email			= trim($row[27]);
+                $custom1		= trim($row[28]);
+                $comments		= stripslashes(trim($row[29]));
+                $called_count	= trim($row[30]);
+                $custom2		= trim($row[31]);
+                $external_key	= trim($row[32]);
+                $post_date  	= trim($row[35]);
+            }
+
+            ##### if lead is a callback, grab the callback comments
+            $CBentry_time =		'';
+            $CBcallback_time =	'';
+            $CBuser =			'';
+            $CBcomments =		'';
+            if (preg_match("/CALLBK/",$dispo)) {
+                $stmt="SELECT entry_time,callback_time,user,comments FROM osdial_callbacks WHERE lead_id='$lead_id' ORDER BY callback_id DESC LIMIT 1;";
+                $rslt=mysql_query($stmt, $link);
+                if ($DB) echo "$stmt\n";
+                $cb_record_ct = mysql_num_rows($rslt);
+                if ($cb_record_ct > 0) {
+                    $row=mysql_fetch_row($rslt);
+                    $CBentry_time =		trim($row[0]);
+                    $CBcallback_time =	trim($row[1]);
+                    $CBuser =			trim($row[2]);
+                    $CBcomments =		trim($row[3]);
+                }
+            }
+
+            ### update the lead status to INCALL
+            $stmt = "UPDATE osdial_list set status='INCALL', user='$user' where lead_id='$lead_id';";
+            if ($DB) echo "$stmt\n";
+            $rslt=mysql_query($stmt, $link);
+
+            ### update the log status to INCALL
+            $user_group='';
+            $stmt="SELECT user_group FROM osdial_users WHERE user='$user' LIMIT 1;";
+            $rslt=mysql_query($stmt, $link);
+            if ($DB) echo "$stmt\n";
+            $ug_record_ct = mysql_num_rows($rslt);
+            if ($ug_record_ct > 0) {
+                $row=mysql_fetch_row($rslt);
+                $user_group =		trim($row[0]);
+            }
+
+            $stmt = "SELECT SQL_NO_CACHE campaign_id,phone_number,alt_dial,call_type FROM osdial_auto_calls WHERE callerid='$callerid' ORDER BY call_time DESC LIMIT 1;";
+            if ($DB) echo "$stmt\n";
+            $rslt=mysql_query($stmt, $link);
+            $VDAC_cid_ct = mysql_num_rows($rslt);
+            if ($VDAC_cid_ct > 0) {
+                $row=mysql_fetch_row($rslt);
+                $VDADchannel_group	=$row[0];
+                $dialed_number		=$row[1];
+                $dialed_label		=$row[2];
+                $call_type			=$row[3];
+            } else {
+                $dialed_number = $phone_number;
+                $dialed_label = 'MAIN';
+                if (preg_match('/^M|^V/',$callerid)) {
+                    $call_type = 'OUT';
+                    $VDADchannel_group = $campaign;
+                } else {
+                    $call_type = 'IN';
+                    $stmt = "SELECT SQL_NO_CACHE campaign_id FROM osdial_closer_log WHERE lead_id='$lead_id' ORDER BY call_date DESC LIMIT 1;";
+                    if ($DB) echo "$stmt\n";
+                    $rslt=mysql_query($stmt, $link);
+                    $VDCL_mvac_ct = mysql_num_rows($rslt);
+                    if ($VDCL_mvac_ct > 0) {
+                        $row=mysql_fetch_row($rslt);
+                        $VDADchannel_group  =$row[0];
+                    }
+                }
+
+                if ($WeBRooTWritablE > 0) {
+                    $fp = fopen ("./osdial_debug.txt", "a");
+                    fwrite ($fp, "$NOW_TIME|INBND|$callerid|$user|$user_group|$list_id|$lead_id|$phone_number|$uniqueid|\n");
+                    fclose($fp);
+                }
+            }
+
+            if ( ($call_type=='OUT') or ($call_type=='OUTBALANCE') ) {
+                $stmt = "UPDATE osdial_log set user='$user', comments='AUTO', list_id='$list_id', status='INCALL', user_group='$user_group' where lead_id='$lead_id' and uniqueid='$uniqueid';";
+                if ($DB) echo "$stmt\n";
+                $rslt=mysql_query($stmt, $link);
+
+                $stmt = "SELECT web_form_address,campaign_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,default_xfer_group,allow_tab_switch,web_form_address2,web_form_extwindow,web_form2_extwindow FROM osdial_campaigns WHERE campaign_id='$campaign';";
+                if ($DB) echo "$stmt\n";
+                $rslt=mysql_query($stmt, $link);
+                $VDIG_cid_ct = mysql_num_rows($rslt);
+                if ($VDIG_cid_ct > 0) {
+                    $row=mysql_fetch_row($rslt);
+                    $VDCL_web_form_address      = $row[0];
+                    $VDCL_campaign_script       = $row[1];
+                    $VDCL_get_call_launch       = $row[2];
+                    $VDCL_xferconf_a_dtmf       = $row[3];
+                    $VDCL_xferconf_a_number     = $row[4];
+                    $VDCL_xferconf_b_dtmf       = $row[5];
+                    $VDCL_xferconf_b_number     = $row[6];
+                    $VDCL_default_xfer_group    = $row[7];
+                    $VDCL_allow_tab_switch      = $row[8];
+                    $VDCL_web_form_address2     = $row[9];
+                    $VDCL_web_form_extwin       = $row[10];
+                    $VDCL_web_form_extwin2      = $row[11];
+                }
+
+                $stmt = "SELECT web_form_address,web_form_address2,list_script FROM osdial_lists WHERE list_id='$list_id';";
+                if ($DB) echo "$stmt\n";
+                $rslt=mysql_query($stmt, $link);
+                $list_cnt = mysql_num_rows($rslt);
+                if ($list_cnt > 0) {
+                    $row=mysql_fetch_row($rslt);
+                    if ($row[0] != "") $VDCL_web_form_address = $row[0];
+                    if ($row[1] != "") $VDCL_web_form_address2 = $row[1];
+                    if ($row[2] != "") $VDCL_campaign_script = $row[2];
+                }
+
+                # Get script override from user.
+                $stmt = "SELECT script_override FROM osdial_users WHERE user='$user';";
+                if ($DB) echo "$stmt\n";
+                $rslt=mysql_query($stmt, $link);
+                $user_cnt = mysql_num_rows($rslt);
+                if ($user_cnt > 0) {
+                    $row=mysql_fetch_row($rslt);
+                    if ($row[0] != "") $VDCL_campaign_script = $row[0];
+                }
+
+                echo "$VDCL_web_form_address|||||$VDCL_campaign_script|$VDCL_get_call_launch|$VDCL_xferconf_a_dtmf|$VDCL_xferconf_a_number|$VDCL_xferconf_b_dtmf|$VDCL_xferconf_b_number|$VDCL_default_xfer_group|$VDCL_allow_tab_switch|$VDCL_web_form_address2|$VDCL_web_form_extwin|$VDCL_web_form_extwin2|\n|\n";
+
+                $stmt = "SELECT SQL_NO_CACHE phone_number,alt_dial FROM osdial_auto_calls WHERE callerid='$callerid' ORDER BY call_time DESC LIMIT 1;";
+                if ($DB) echo "$stmt\n";
+                $rslt=mysql_query($stmt, $link);
+                $VDAC_cid_ct = mysql_num_rows($rslt);
+                if ($VDAC_cid_ct > 0) {
+                    $row=mysql_fetch_row($rslt);
+                    $dialed_number  =$row[0];
+                    $dialed_label   =$row[1];
+                } else {
+                    $dialed_number = $phone_number;
+                    $dialed_label = 'MAIN';
+                }
+            } else {
+                ### update the osdial_closer_log user to INCALL
+                $stmt = "UPDATE osdial_closer_log set user='$user', comments='AUTO', list_id='$list_id', status='INCALL', user_group='$user_group' where lead_id='$lead_id' order by closecallid desc limit 1;";
+                if ($DB) echo "$stmt\n";
+                $rslt=mysql_query($stmt, $link);
+
+                $stmt = "SELECT SQL_NO_CACHE count(*) FROM osdial_log WHERE lead_id='$lead_id' AND uniqueid='$uniqueid';";
+                if ($DB) echo "$stmt\n";
+                $rslt=mysql_query($stmt, $link);
+                $VDL_cid_ct = mysql_num_rows($rslt);
+                if ($VDL_cid_ct > 0) {
+                    $row=mysql_fetch_row($rslt);
+                    $VDCL_front_VDlog = $row[0];
+                }
+
+                $stmt = "SELECT * FROM osdial_inbound_groups WHERE group_id='$VDADchannel_group';";
+                if ($DB) echo "$stmt\n";
+                $rslt=mysql_query($stmt, $link);
+                $VDIG_cid_ct = mysql_num_rows($rslt);
+                if ($VDIG_cid_ct > 0) {
+                    $row=mysql_fetch_row($rslt);
+                    $VDCL_group_name        = $row[1];
+                    $VDCL_group_color       = $row[2];
+                    $VDCL_group_web         = $row[4];
+                    $VDCL_fronter_display   = $row[7];
+                    $VDCL_ingroup_script    = $row[8];
+                    $VDCL_get_call_launch   = $row[9];
+                    $VDCL_xferconf_a_dtmf   = $row[10];
+                    $VDCL_xferconf_a_number = $row[11];
+                    $VDCL_xferconf_b_dtmf   = $row[12];
+                    $VDCL_xferconf_b_number = $row[13];
+                    $VDCL_default_xfer_group= $row[28];
+                    $VDCL_group_web2        = $row[29];
+                    $VDCL_allow_tab_switch  = $row[30];
+                    $VDCL_web_form_extwin   = $row[31];
+                    $VDCL_web_form_extwin2  = $row[32];
+
+                    $stmt = "SELECT web_form_address,web_form_address2,list_script FROM osdial_lists WHERE list_id='$list_id';";
+                    if ($DB) echo "$stmt\n";
+                    $rslt=mysql_query($stmt, $link);
+                    $list_cnt = mysql_num_rows($rslt);
+                    if ($list_cnt > 0) {
+                        $row=mysql_fetch_row($rslt);
+                        if ($row[0] != "") $VDCL_group_web = $row[0];
+                        if ($row[1] != "") $VDCL_group_web2 = $row[1];
+                        if ($row[2] != "") $VDCL_ingroup_script = $row[2];
+                    }
+
+                    $stmt = "SELECT campaign_script,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,web_form_address,web_form_address2 FROM osdial_campaigns WHERE campaign_id='$campaign';";
+                    if ($DB) echo "$stmt\n";
+                    $rslt=mysql_query($stmt, $link);
+                    $VDIG_cidOR_ct = mysql_num_rows($rslt);
+                    if ($VDIG_cidOR_ct > 0) {
+                        $row=mysql_fetch_row($rslt);
+                        if ( ( (preg_match('/NONE/',$VDCL_ingroup_script)) and (strlen($VDCL_ingroup_script) < 5) ) or (strlen($VDCL_ingroup_script) < 1) ) $VDCL_ingroup_script = $row[0];
+                        if (strlen($VDCL_xferconf_a_dtmf) < 1) $VDCL_xferconf_a_dtmf =    $row[1];
+                        if (strlen($VDCL_xferconf_a_number) < 1) $VDCL_xferconf_a_number =  $row[2];
+                        if (strlen($VDCL_xferconf_b_dtmf) < 1) $VDCL_xferconf_b_dtmf =    $row[3];
+                        if (strlen($VDCL_xferconf_b_number) < 1) $VDCL_xferconf_b_number =  $row[4];
+                        if (strlen($VDCL_group_web) < 1) $VDCL_group_web =  $row[5];
+                        if (strlen($VDCL_group_web2) < 1) $VDCL_group_web2 =  $row[6];
+                    }
+
+
+                    ### update the comments in osdial_live_agents record
+                    $random = (rand(1000000, 9999999) + 10000000);
+                    $stmt = "UPDATE osdial_live_agents set comments='INBOUND',random_id='$random' where user='$user' and server_ip='$server_ip';";
+                    if ($DB) echo "$stmt\n";
+                    $rslt=mysql_query($stmt, $link);
+
+                    $Ctype = 'I';
+                } else {
+                    $stmt = "SELECT campaign_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,allow_tab_switch,web_form_address,web_form_address2 FROM osdial_campaigns WHERE campaign_id='$VDADchannel_group';";
+                    if ($DB) echo "$stmt\n";
+                    $rslt=mysql_query($stmt, $link);
+                    $VDIG_cid_ct = mysql_num_rows($rslt);
+                    if ($VDIG_cid_ct > 0) {
+                        $row=mysql_fetch_row($rslt);
+                        $VDCL_ingroup_script    = $row[0];
+                        $VDCL_get_call_launch   = $row[1];
+                        $VDCL_xferconf_a_dtmf   = $row[2];
+                        $VDCL_xferconf_a_number = $row[3];
+                        $VDCL_xferconf_b_dtmf   = $row[4];
+                        $VDCL_xferconf_b_number = $row[5];
+                        $VDCL_allow_tab_switch  = $row[6];
+                        $VDCL_group_web         = $row[7];
+                        $VDCL_group_web2        = $row[8];
+                    }
+
+                    $stmt = "SELECT web_form_address,web_form_address2,list_script FROM osdial_lists WHERE list_id='$list_id';";
+                    if ($DB) echo "$stmt\n";
+                    $rslt=mysql_query($stmt, $link);
+                    $list_cnt = mysql_num_rows($rslt);
+                    if ($list_cnt > 0) {
+                        $row=mysql_fetch_row($rslt);
+                        if ($row[0] != "") $VDCL_group_web = $row[0];
+                        if ($row[1] != "") $VDCL_group_web2 = $row[1];
+                        if ($row[2] != "") $VDCL_ingroup_script = $row[2];
+                    }
+                }
+
+                # Get script override from user.
+                $stmt = "SELECT script_override FROM osdial_users WHERE user='$user';";
+                if ($DB) echo "$stmt\n";
+                $rslt=mysql_query($stmt, $link);
+                $user_cnt = mysql_num_rows($rslt);
+                if ($user_cnt > 0) {
+                    $row=mysql_fetch_row($rslt);
+                    if ($row[0] != "") $VDCL_ingroup_script = $row[0];
+                }
+
+                #### if web form is set then send on to osdial.php for override of WEB_FORM address
+                echo "$VDCL_group_web|$VDCL_group_name|$VDCL_group_color|$VDCL_fronter_display|$VDADchannel_group|$VDCL_ingroup_script|$VDCL_get_call_launch|$VDCL_xferconf_a_dtmf|$VDCL_xferconf_a_number|$VDCL_xferconf_b_dtmf|$VDCL_xferconf_b_number|$VDCL_default_xfer_group|$VDCL_allow_tab_switch|$VDCL_group_web2|$VDCL_web_form_extwin|$VDCL_web_form_extwin2|\n";
+
+                $stmt = "SELECT full_name FROM osdial_users WHERE user='$tsr';";
+                if ($DB) echo "$stmt\n";
+                $rslt=mysql_query($stmt, $link);
+                $VDU_cid_ct = mysql_num_rows($rslt);
+                if ($VDU_cid_ct > 0) {
+                    $row=mysql_fetch_row($rslt);
+                    $fronter_full_name  = $row[0];
+                    echo $fronter_full_name . '|' . $tsr . "\n";
+                } else {
+                    echo '|' . $tsr . "\n";
+                }
+            }
+
+            $comments = preg_replace("/\r/",'',$comments);
+            $comments = preg_replace("/\n/",'!N',$comments);
+
+            $phone_code = preg_replace('/^011|^010|^00/', '', $phone_code);
+
+            $LeaD_InfO =    $callerid . "\n";
+            $LeaD_InfO .=   $lead_id . "\n";
+            $LeaD_InfO .=   $dispo . "\n";
+            $LeaD_InfO .=   $tsr . "\n";
+            $LeaD_InfO .=   $vendor_id . "\n";
+            $LeaD_InfO .=   $list_id . "\n";
+            $LeaD_InfO .=   $gmt_offset_now . "\n";
+            $LeaD_InfO .=   $phone_code . "\n";
+            $LeaD_InfO .=   $phone_number . "\n";
+            $LeaD_InfO .=   $title . "\n";
+            $LeaD_InfO .=   $first_name . "\n";
+            $LeaD_InfO .=   $middle_initial . "\n";
+            $LeaD_InfO .=   $last_name . "\n";
+            $LeaD_InfO .=   $address1 . "\n";
+            $LeaD_InfO .=   $address2 . "\n";
+            $LeaD_InfO .=   $address3 . "\n";
+            $LeaD_InfO .=   $city . "\n";
+            $LeaD_InfO .=   $state . "\n";
+            $LeaD_InfO .=   $province . "\n";
+            $LeaD_InfO .=   $postal_code . "\n";
+            $LeaD_InfO .=   $country_code . "\n";
+            $LeaD_InfO .=   $gender . "\n";
+            $LeaD_InfO .=   $date_of_birth . "\n";
+            $LeaD_InfO .=   $alt_phone . "\n";
+            $LeaD_InfO .=   $email . "\n";
+            $LeaD_InfO .=   $custom1 . "\n";
+            $LeaD_InfO .=   $comments . "\n";
+            $LeaD_InfO .=   $called_count . "\n";
+            $LeaD_InfO .=   $CBentry_time . "\n";
+            $LeaD_InfO .=   $CBcallback_time . "\n";
+            $LeaD_InfO .=   $CBuser . "\n";
+            $LeaD_InfO .=   $CBcomments . "\n";
+            $LeaD_InfO .=   $dialed_number . "\n";
+            $LeaD_InfO .=   $dialed_label . "\n";
+            $LeaD_InfO .=   $source_id . "\n";
+            $LeaD_InfO .=   $custom2 . "\n";
+            $LeaD_InfO .=   $external_key . "\n";
+            $LeaD_InfO .=   $post_date . "\n";
+
+            $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
+            $cnt = 0;
+            foreach ($forms as $form) {
+                $fcamps = split(',',$form['campaigns']);
+                foreach ($fcamps as $fcamp) {
+                    if ($fcamp == 'ALL' or strtoupper($fcamp) == strtoupper($campaign)) {
+                        $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
+                        foreach ($fields as $field) {
+                            $vdlf = get_first_record($link, 'osdial_list_fields', '*', "lead_id='" . $lead_id . "' AND field_id='" . $field['id'] . "'");
+                            $LeaD_InfO .= $vdlf['value'] . "\n";
+                            $cnt++;
+                        }
+                    }
+                }
+            }
+            echo $LeaD_InfO;
+
+            $wait_sec=0;
+            $StarTtime = date("U");
+            $stmt = "SELECT SQL_NO_CACHE wait_epoch,wait_sec FROM osdial_agent_log WHERE agent_log_id='$agent_log_id';";
+            if ($DB) echo "$stmt\n";
+            $rslt=mysql_query($stmt, $link);
+            $VDpr_ct = mysql_num_rows($rslt);
+            if ($VDpr_ct > 0) {
+                $row=mysql_fetch_row($rslt);
+                $wait_sec = (($StarTtime - $row[0]) + $row[1]);
+                if ($wait_sec<0) $wait_sec=0;
+            }
+            $stmt="UPDATE osdial_agent_log set wait_sec='$wait_sec',talk_epoch='$StarTtime',lead_id='$lead_id',uniqueid='$uniqueid',prev_status='$dispo',lead_called_count='$called_count' where agent_log_id='$agent_log_id';";
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+
+            ### If CALLBK, change osdial_callback record to INACTIVE
+            if (preg_match("/CALLBK|CBHOLD/", $dispo)) {
+                $stmt="UPDATE osdial_callbacks set status='INACTIVE' where lead_id='$lead_id' and status NOT IN('INACTIVE','DEAD','ARCHIVE');";
+                if ($format=='debug') echo "\n<!-- $stmt -->";
+                $rslt=mysql_query($stmt, $link);
+            }
+
+            ##### check if system is set to generate logfile for transfers
+            $stmt="SELECT enable_agc_xfer_log FROM system_settings;";
+            $rslt=mysql_query($stmt, $link);
+            if ($DB) echo "$stmt\n";
+            $enable_agc_xfer_log_ct = mysql_num_rows($rslt);
+            if ($enable_agc_xfer_log_ct > 0) {
+                $row=mysql_fetch_row($rslt);
+                $enable_agc_xfer_log =$row[0];
+            }
+
+            if ( ($WeBRooTWritablE > 0) and ($enable_agc_xfer_log > 0) ) {
+                #	DATETIME|campaign|lead_id|phone_number|user|type
+                #	2007-08-22 11:11:11|TESTCAMP|65432|3125551212|1234|A
+                $fp = fopen ("./xfer_log.txt", "a");
+                fwrite ($fp, "$NOW_TIME|$campaign|$lead_id|$phone_number|$user|$Ctype\n");
+                fclose($fp);
+            }
+
+        } else {
+            echo "0\n";
+            #echo "No calls in QUEUE for $user on $server_ip\n";
+            exit;
+        }
+    }
+}
+
+
+################################################################################
 ### userLOGout - Logs the user out of OSDiaL client, deleting db records and 
 ###              inserting into osdial_user_log
 ################################################################################
@@ -3216,6 +3738,50 @@ if ($ACTION == 'EmailCheckBlacklist') {
     }
 }
 
+if ($ACTION == 'MulticallGetChannel') {
+    $stmt="SELECT status,campaign_id,closer_campaigns FROM osdial_live_agents WHERE user='$user' AND server_ip='$server_ip';";
+    if ($format=='debug') echo "<!-- |$stmt| -->\n";
+    $rslt=mysql_query($stmt, $link);
+    $row=mysql_fetch_row($rslt);
+    $Alogin=$row[0];
+    $Acampaign=$row[1];
+    $AccampSQL=$row[2];
+    $AccampSQL = preg_replace('/ -/','', $AccampSQL);
+    $AccampSQL = preg_replace('/ /',"','", $AccampSQL);
+
+    $stmt="SELECT channel,server_ip,callerid,group_id,voicemail_ext,uniqueid,lead_id,drop_call_seconds FROM osdial_auto_calls JOIN osdial_inbound_groups ON (campaign_id=group_id) WHERE status IN('LIVE') AND campaign_id IN('$AccampSQL') AND allow_multicall='Y' LIMIT 1;";
+    if ($format=='debug') echo "<!-- |$stmt| -->\n";
+    $rslt=mysql_query($stmt, $link);
+    $row=mysql_fetch_row($rslt);
+    $MCChannel=$row[0];
+    $MCServerIP=$row[1];
+    $MCCID=$row[2];
+    $MCIG=$row[3];
+    $MCvoicemail=$row[4];
+    $MCuniqueid=$row[5];
+    $MCleadid=$row[6];
+    $MCvmdrop=$row[7]-3;
+
+    $lead = get_first_record($link, 'osdial_list', '*', "lead_id='" . $MCleadid . "'");
+
+    echo $MCChannel . "\n";
+    echo $MCServerIP . "\n";
+    echo $MCCID . "\n";
+    echo $MCIG . "\n";
+    echo $MCvoicemail . "\n";
+    echo $MCuniqueid . "\n";
+    echo $MCleadid . "\n";
+    echo $lead['phone_code'] . "\n";
+    echo $lead['phone_number'] . "\n";
+    echo $lead['comments'] . "\n";
+    echo $lead['first_name'] . "\n";
+    echo $lead['last_name'] . "\n";
+    echo $lead['address1'] . "\n";
+    echo $lead['city'] . "\n";
+    echo $lead['state'] . "\n";
+    echo $lead['postal_code'] . "\n";
+    echo $MCvmdrop . "\n";
+}
 
 
 if ($format=='debug') {
