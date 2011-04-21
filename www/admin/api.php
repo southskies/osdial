@@ -123,6 +123,10 @@ if ($xml['vdcompat'] > 0) {
     if ($xml['user'] == "" ) $xml['user'] = get_variable("user");
     if ($xml['pass'] == "" ) $xml['pass'] = get_variable("pass");
 
+    # Added for vmail_check
+    if ($xml->params->server_ip == "" ) $xml->params->server_ip = get_variable("server_ip");
+    if ($xml->params->vmail_box == "" ) $xml->params->vmail_box = get_variable("vmail_box");
+
     if ($xml->params->dnc_check == "" ) $xml->params->dnc_check = get_variable("dnc_check");
     if ($xml->params->duplicate_check == "" ) $xml->params->duplicate_check = get_variable("dnc_check");
     if ($xml->params->gmt_lookup_method == "" ) $xml->params->gmt_lookup_method = get_variable("gmt_lookup_method");
@@ -207,6 +211,39 @@ if ($xml['function'] == "version") {
     $result->result->record[0]->build = $build;
     $vdstatus = "VERSION";
     $vdreason = $admin_version . "|BUILD: " . $build . "|DATE: " . $start . "|EPOCH: " . $start_epoch;
+
+
+# Function to get vmail message counts.
+} else if ($xml['function'] == "vmail_check") {
+    # Authenticate connection first.
+    $auth = get_first_record($link, 'osdial_users', 'user_level', sprintf("user='%s' AND pass='%s'",mres($xml['user']),mres($xml['pass'])) );
+    if ($auth['user_level'] < 1) {
+        $status = "ERROR";
+        $reason = "Access Denied.";
+        $vdreason = "vmail_check USER DOES NOT HAVE PERMISSION TO CHECK VMAIL.";
+    } else {
+        if ($xml['debug'] > 0)
+            $debug .= sprintf("AUTH: Success. user=%s, pass=%s, user_level=%s\n", $xml['user'], $xml['pass'], $auth['user_level']);
+    }
+
+    if ($status != "ERROR") {
+        $phones = get_first_record($link, 'phones', '*', sprintf("server_ip='%s' AND voicemail_id='%s'",mres($xml->params->server_ip),mres($xml->params->vmail_box)) );
+        if ($phones['extension']!='') {
+            $result->result['records'] = '1';
+            $result->result->addChild("record");
+            $result->result->record[0]['id'] = '0';
+            $result->result->record[0]->vmail_box = (string)$xml->params->vmail_box;
+            $result->result->record[0]->messages = $phones['messages'];
+            $result->result->record[0]->old_messages = $phones['old_messages'];
+            $vdstatus = "VMAIL_BOX";
+            $vdreason = $xml->params->vmail_box . "|NEW: " . $phones['messages'] . "|OLD: " . $phones['old_messages'] . "|EPOCH: " . $start_epoch;
+        } else {
+            $status = "ERROR";
+            $reason = "Could not locate given vmail_box/server_ip pair..";
+            $vdstatus = "ERROR";
+            $vdreason = "vmail_check VMAIL_BOX DOES NOT EXIST ON SERVER..";
+        }
+    }
 
 
 # Function to add a new lead.
