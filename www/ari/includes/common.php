@@ -311,7 +311,8 @@ function handleBlock() {
 
   // add logout link
   if ($logout != '') { 
-    $nav_menu .= "<small><small><a href='" . $_SESSION['ARI_ROOT'] . "?logout=1'>" . _("Logout") . "</a></small></small>";
+    #$nav_menu .= "<small><small><a href='" . $_SESSION['ARI_ROOT'] . "?logout=1'>" . _("Logout") . "</a></small></small>";
+    $nav_menu .= "<small><a href='#' onclick='parent.voicemail_ariclose();'>" . _("Close") . "</a></small>";
   } 
 
   // error message if no content

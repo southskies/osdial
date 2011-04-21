@@ -2386,6 +2386,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			document.getElementById("PreviewFDTimeSpan").innerHTML = "";
 		}
 		document.getElementById('MultiCallAlerTBoX').style.visibility='hidden';
+		voicemail_ariclose();
 
 		var xmlhttp=getXHR();
 		if (xmlhttp) { 
@@ -2844,6 +2845,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				if (VD_live_customer_call==1) {
 					VD_live_call_secondS++;
 					document.osdial_form.SecondS.value		= VD_live_call_secondS;
+					document.getElementById("voicemailbutton").innerHTML = "<a href=\"#\" onclick=\"voicemail_ariopen();\"><img src=\"templates/" + agent_template + "/images/agc_check_voicemail_OFF.gif\" width=170 height=30 border=0 alt=\"VOICEMAIL\"></a>";
 				}
 				if (XD_live_customer_call==1) {
 					XD_live_call_secondS++;
@@ -2926,6 +2928,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 								//document.getElementById("DiaLControl").innerHTML = DiaLControl_auto_HTML_ready;
 							}
 						}
+						check_voicemail();
 					}
 				}
 			}
@@ -3337,6 +3340,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		debug("<b>MainPanelToFront:</b> resumevar=" + resumevar,2);
 		//document.getElementById("MainTable").style.backgroundColor=panel_bg;
 		//document.getElementById("MaiNfooter").style.backgroundColor=panel_bg;
+		voicemail_ariclose();
 		hideDiv('ScriptPanel');
 		showDiv('MainPanel');
 		if (resumevar != 'NO') {
@@ -3374,6 +3378,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 	function ScriptPanelToFront() {
 		debug("<b>ScriptPanelToFront:</b>",2);
+		voicemail_ariclose();
 		showDiv('ScriptPanel');
 		//document.getElementById("MainTable").style.backgroundColor=script_bg;
 		//document.getElementById("MaiNfooter").style.backgroundColor=script_bg;
@@ -3479,14 +3484,14 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				document.getElementById('WebFormPanel1').style.visibility = 'hidden';
 			}
 			web_form_frame_open1 = 0;
-			document.getElementById('WebFormPF1').src = '/osdial/agent/blank.php';
+			document.getElementById('WebFormPF1').src = '/agent/blank.php';
 		}
 		if (web_form2_extwindow == 0) {
 			if (web_form_frame_open2 > 0) {
 				document.getElementById('WebFormPanel2').style.visibility = 'hidden';
 			}
 			web_form_frame_open2 = 0;
-			document.getElementById('WebFormPF2').src = '/osdial/agent/blank.php';
+			document.getElementById('WebFormPF2').src = '/agent/blank.php';
 		}
 	}
 
@@ -4006,6 +4011,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 						if (check_VDIC_array[0] == '1') {
 							//osdalert(xmlhttprequestcheckauto.responseText,30);
 							AutoDialWaiting = 0;
+
+							voicemail_ariclose();
 
 							var VDIC_data_VDAC=check_VDIC_array[1].split("|");
 							var VDIC_fronter='';
@@ -4873,6 +4880,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 								}
 							}
 						}
+						check_voicemail();
 					}
 				}
 			}
@@ -5928,6 +5936,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 // ###################################################################################################################################################
 // multicall_answer() - Answer the new incoming multicall.
 	function multicall_answer() {
+		voicemail_ariclose();
 		if (alt_dial_active==0 && multicall_waitchannel!='' && multicall_channel=='') multicall_queue_swap();
 	}
 
@@ -6352,8 +6361,25 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					xmlRes = xmlhttp.responseXML;
 					vmail_messages = xmlRes.getElementsByTagName("messages")[0].textContent;
 					vmail_old_messages = xmlRes.getElementsByTagName("old_messages")[0].textContent;
+                    if ((vmail_messages + vmail_old_messages) > 0) {
+					    document.getElementById("voicemailbutton").innerHTML = "<a href=\"#\" onclick=\"voicemail_ariopen();\"><img src=\"templates/" + agent_template + "/images/agc_check_voicemail_ON.gif\" width=170 height=30 border=0 alt=\"VOICEMAIL\"></a>";
+                    } else {
+					    document.getElementById("voicemailbutton").innerHTML = "<a href=\"#\" onclick=\"voicemail_ariopen();\"><img src=\"templates/" + agent_template + "/images/agc_check_voicemail_OFF.gif\" width=170 height=30 border=0 alt=\"VOICEMAIL\"></a>";
+                    }
 				}
 			}
 			delete xmlhttp;
 		}
+	}
+
+	function voicemail_ariopen() {
+		if (VD_live_customer_call==0 && (vmail_messages + vmail_old_messages)>0) {
+			document.getElementById('ARIPanel').style.visibility='visible';
+			document.getElementById('ARIFrame').src = '/voicemail/' + server_ip + '/ari/index.php?username='+voicemail_id+'&password='+voicemail_password+'&sessionid='+session_id;
+		}
+	}
+
+	function voicemail_ariclose() {
+		document.getElementById('ARIPanel').style.visibility='hidden';
+		document.getElementById('ARIFrame').src = '/agent/blank.php';
 	}

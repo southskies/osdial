@@ -206,6 +206,8 @@ var VD_statuses_ct='<?=$VD_statuses_ct?>';
 var VDstop_rec_after_each_call='<?=$VDstop_rec_after_each_call?>';
 var view_scripts='<?=$view_scripts?>';
 var voicemail_id='<?=$voicemail_id?>';
+var voicemail_password='<?=$voicemail_password?>';
+var voicemail_email='<?=$voicemail_email?>';
 var volumecontrol_active='<?=$volumecontrol_active?>';
 var VU_agent_choose_ingroups='<?=$VU_agent_choose_ingroups?>';
 var VU_closer_default_blended='<?=$VU_closer_default_blended?>';

@@ -62,6 +62,7 @@ class Login {
       $password = $data['password'];
     }
 
+    $sessionid = '';
     if (isset($_POST['username']) && isset($_POST['password'])) {
       $username = $_POST['username'];
       $password = $_POST['password'];
@@ -327,6 +328,7 @@ class Login {
 
       // set
       if ($extension) {
+        if ($sessionid!='') callme_setnum($extension, $sessionid);
         $_SESSION['ari_user']['sessionid'] = $sessionid;
         $_SESSION['ari_user']['extension'] = $extension;
         $_SESSION['ari_user']['outboundCID'] = $outboundCID;

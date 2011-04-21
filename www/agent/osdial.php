@@ -1351,6 +1351,8 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
         $phone_cid=$row[65];
         $enable_sipsak_messages=$row[66];
         $phone_cid_name=$row[67];
+        $voicemail_password=$row[68];
+        $voicemail_email=$row[69];
 
         if ($clientDST) $local_gmt = ($local_gmt + $isdst);
         if ($protocol == 'EXTERNAL') {
@@ -1978,7 +1980,7 @@ flush();
 
     <!-- Voicmeail Button -->
     <span style="position:absolute;left:<?=$HKwidth+22 ?>px;top:<?=$HKheight+10 ?>px;z-index:16;" id="voicemailbutton">
-        <a href="#" onclick="alert(vmail_messages);"><img src="templates/<?= $agent_template ?>/images/agc_check_voicemail_OFF.gif" width=170 height=30 border=0 alt="VOICEMAIL"></a>
+        <a href="#" onclick="voicemail_ariopen();"><img src="templates/<?= $agent_template ?>/images/agc_check_voicemail_OFF.gif" width=170 height=30 border=0 alt="VOICEMAIL"></a>
     </span>
 
     <!-- Hot Key Button -->
@@ -2305,6 +2307,13 @@ flush();
                 </td>
             </tr>
         </table>
+    </span>
+
+
+    <? load_status('Initializing GUI...<br>ARIPanel<br>&nbsp;'); ?>
+    <!-- ARIPanel -->
+    <span style="visibility:hidden;position:absolute;left:3px;top:40px;z-index:40;padding:15;background-color:<?=$wrapup_bg?>;" name="ARIPanel" id="ARIPanel">
+        <iframe src="/agent/blank.php" width="<?=$CAwidth?>" height="500" name="ARIFrame" id="ARIFrame" style="background-color: white;"></iframe>
     </span>
 
 
@@ -2973,13 +2982,13 @@ flush();
 <? load_status('Initializing GUI...<br>WebFormPanel1<br>&nbsp;'); ?>
 <!-- Inline webform here -->
 <span style="visibility:hidden; position:absolute;left:190px;top:92px;z-index:17;" name="WebFormPanel1" id="WebFormPanel1">
-    <iframe src="/osdial/agent/blank.php" width="785" height="325" name="WebFormPF1" id="WebFormPF1" style="background-color: white;"></iframe>
+    <iframe src="/agent/blank.php" width="785" height="325" name="WebFormPF1" id="WebFormPF1" style="background-color: white;"></iframe>
 </span>
 
 
 <? load_status('Initializing GUI...<br>WebFormPanel2<br>&nbsp;'); ?>
 <span style="visibility:hidden; position:absolute;left:190px;top:92px;z-index:18;" name="WebFormPanel2" id="WebFormPanel2">
-    <iframe src="/osdial/agent/blank.php" width="785" height="325" name="WebFormPF2" id="WebFormPF2" style="background-color: white;"></iframe>
+    <iframe src="/agent/blank.php" width="785" height="325" name="WebFormPF2" id="WebFormPF2" style="background-color: white;"></iframe>
 </span>
 
 
