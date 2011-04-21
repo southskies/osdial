@@ -21,6 +21,8 @@
 ##
 #
 
+$|++;
+
 use strict;
 use OSDial;
 

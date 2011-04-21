@@ -21,6 +21,8 @@
 ##
 #
 
+$|++;
+
 use strict;
 use OSDial;
 
@@ -35,16 +37,20 @@ my $AGI = $osdial->AGI();
 my $isp = '*';
 $isp='#' if ($osdial->{'settings'}{'intra_server_protocol'} eq 'IAX2');
 
+$osdial->agi_output("Starting Station Spy");
 # The mode is ultimately determined by the conference extensions.
 # 6 = monitoring
 # 7 = barge
 # 9 = whisper
-my $spy_mode = substr($AGI->{'extension'}, 0, 1);
-
 # Override as monitoring spy_mode is not 6|7|9.
+my $spy_mode = substr($AGI->{'extension'}, 0, 1);
 $spy_mode = '6' unless ($spy_mode =~ /6|7|9/);
-
 my $phone_login = substr($AGI->{'extension'}, 1);
+
+my $spyname = 'Monitor';
+$spyname = 'Barge' if ($spy_mode =~ /7/);
+$spyname = 'Whisper' if ($spy_mode =~ /9/);
+$osdial->agi_output("Looking up $phone_login for $spyname");
 
 ### Grab Server values from the database
 my $sret = $osdial->sql_query("SELECT ola.conf_exten,s.server_ip,s.server_id,s.ext_context FROM osdial_live_agents AS ola,servers AS s,phones WHERE (phones.login='$phone_login' AND (ola.extension LIKE concat(phones.protocol,'/',phones.extension,'\%') OR ola.extension LIKE concat('\%/',phones.login,'\@\%') OR ola.extension LIKE concat('Local/',phones.dialplan_number,'%'))) AND s.server_ip=ola.server_ip AND phones.server_ip=s.server_ip LIMIT 1;");
@@ -55,6 +61,7 @@ if ($sret->{'conf_exten'} eq "") {
 	$AGI->say_digits($phone_login);
 	$AGI->stream_file('not-yet-connected');
 	$AGI->stream_file('check-number-dial-again');
+	$osdial->agi_output("$phone_login is not connected, try again.");
 } else {
 	$AGI->stream_file('connected');
 	my $remDIALstr='';
@@ -62,6 +69,7 @@ if ($sret->{'conf_exten'} eq "") {
 		$remDIALstr = sprintf('%.3d*%.3d*%.3d*%.3d',$1,$2,$3,$4) . $isp;
 	}
 	$remDIALstr .= '0' . $spy_mode . $sret->{'conf_exten'};
+	$osdial->agi_output("Connecting $phone_login to $remDIALstr.");
 	$AGI->exec("Dial",'Local/' . $remDIALstr . '@' . $sret->{'ext_context'});
 }
 $AGI->hangup();
