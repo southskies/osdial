@@ -208,7 +208,7 @@ if (strlen($users_hh) > 1) {
         if ($LOG['view_agent_stats']) echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$user\"> Stats </a> &nbsp; &nbsp; &nbsp;\n";
         if ($LOG['view_agent_status']) echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$user\"> Status </a> &nbsp; &nbsp; &nbsp;\n";
         if ($LOG['view_agent_timesheet']) echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=20&agent=$user\"> Time </a> &nbsp; &nbsp; &nbsp;\n";
-        echo "        <a href=\"$PHP_SELF?ADD=8&agent=$user\"> Callbacks </a> \n";
+        echo "        <a href=\"$PHP_SELF?ADD=8&user=$user\"> Callbacks </a> \n";
     }
     echo "      </span>\n";
     echo "    </td>\n";
