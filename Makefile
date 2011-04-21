@@ -241,6 +241,7 @@ install-asterisk-sample-config:
 	@install -p -m 644 ./extras/osdial-template-example.tgz $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./extras/httpd-osdial.conf $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./extras/httpd-osdial-archive.conf $(DESTDIR)$(PATHdocs)
+	@install -p -m 644 ./extras/httpd-osdial-ari.conf $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./extras/my.cnf $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./extras/osdial.conf $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./extras/osdial.cron $(DESTDIR)$(PATHdocs)
