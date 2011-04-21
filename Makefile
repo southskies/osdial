@@ -207,6 +207,19 @@ install-docs: .osdial.config
 	@install -p -m 644 ./www/admin/include/content/scripts/* $(DESTDIR)$(PATHweb)/admin/include/content/scripts
 	@install -p -m 644 ./www/admin/include/content/usergroups/* $(DESTDIR)$(PATHweb)/admin/include/content/usergroups
 	@install -p -m 644 ./www/admin/include/content/users/* $(DESTDIR)$(PATHweb)/admin/include/content/users
+	@install -p -m 644 ./www/ari/*.txt $(DESTDIR)$(PATHweb)/ari
+	@install -p -m 644 ./www/ari/*.log $(DESTDIR)$(PATHweb)/ari
+	@install -p -m 644 ./www/ari/*.php $(DESTDIR)$(PATHweb)/ari
+	@install -p -m 4750 ./www/ari/bin/* $(DESTDIR)$(PATHweb)/ari/bin
+	@chown asterisk:apache $(DESTDIR)$(PATHweb)/ari/bin/*
+	@install -p -m 644 ./www/ari/includes/*.php $(DESTDIR)$(PATHweb)/ari/includes
+	@install -p -m 644 ./www/ari/misc/*.php $(DESTDIR)$(PATHweb)/ari/misc
+	@install -p -m 644 ./www/ari/modules/*.module $(DESTDIR)$(PATHweb)/ari/modules
+	@install -p -m 644 ./www/ari/theme/*.css $(DESTDIR)$(PATHweb)/ari/theme
+	@install -p -m 644 ./www/ari/theme/*.php $(DESTDIR)$(PATHweb)/ari/theme
+	@install -p -m 644 ./www/ari/theme/*.gif $(DESTDIR)$(PATHweb)/ari/theme
+	@install -p -m 644 ./www/ari/theme/images/*.gif $(DESTDIR)$(PATHweb)/ari/theme/images
+	@install -p -m 644 ./www/ari/theme/images/*.png $(DESTDIR)$(PATHweb)/ari/theme/images
 
 install-asterisk-sample-configs: install-asterisk-sample-config
 
