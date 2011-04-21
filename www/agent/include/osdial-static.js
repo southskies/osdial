@@ -2769,6 +2769,12 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				multicall_vmdrop_timer--;
 			}
 
+			// voicemail polling timer.
+			if (vmail_check_timer--<=0) {
+				check_voicemail();
+				vmail_check_timer=30;
+			}
+
 			if (AgentDispoing>0) {
 				WaitingForNextStep=1;
 				check_for_conf_calls(session_id, '0');
@@ -4676,45 +4682,39 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	function CustomerData_update() {
 		debug("<b>CustomerData_update:</b>",2);
 
-		var REGcommentsAMP = new RegExp('&',"g");
-		var REGcommentsQUES = new RegExp("\\?","g");
-		var REGcommentsPOUND = new RegExp("\\#","g");
-		var REGcommentsRESULT = document.osdial_form.comments.value.replace(REGcommentsAMP, "--AMP--");
-		REGcommentsRESULT = REGcommentsRESULT.replace(REGcommentsQUES, "--QUES--");
-		REGcommentsRESULT = REGcommentsRESULT.replace(REGcommentsPOUND, "--POUND--");
-
 		var xmlhttp=getXHR();
 		if (xmlhttp) { 
-			VLupdate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&campaign=" + campaign +  "&ACTION=updateLEAD&format=text&user=" + user + "&pass=" + pass + 
-				"&lead_id=" + document.osdial_form.lead_id.value + 
-				"&vendor_lead_code=" + document.osdial_form.vendor_lead_code.value + 
-				"&phone_code=" + document.osdial_form.phone_code.value + 
-				"&phone_number=" + document.osdial_form.phone_number.value + 
-				"&title=" + document.osdial_form.title.value + 
-				"&first_name=" + document.osdial_form.first_name.value + 
-				"&middle_initial=" + document.osdial_form.middle_initial.value + 
-				"&last_name=" + document.osdial_form.last_name.value + 
-				"&address1=" + document.osdial_form.address1.value + 
-				"&address2=" + document.osdial_form.address2.value + 
-				"&address3=" + document.osdial_form.address3.value + 
-				"&city=" + document.osdial_form.city.value + 
-				"&state=" + document.osdial_form.state.value + 
-				"&province=" + document.osdial_form.province.value + 
-				"&postal_code=" + document.osdial_form.postal_code.value + 
-				"&country_code=" + document.osdial_form.country_code.value + 
-				"&gender=" + document.osdial_form.gender.value + 
-				"&date_of_birth=" + document.osdial_form.date_of_birth.value + 
-				"&alt_phone=" + document.osdial_form.alt_phone.value + 
-				"&email=" + document.osdial_form.email.value + 
-				"&custom1=" + document.osdial_form.custom1.value + 
-				"&custom2=" + document.osdial_form.custom2.value + 
-				"&post_date=" + document.osdial_form.post_date.value;
+			VLupdate_query = "server_ip=" + server_ip + "&session_name=" + session_name +
+				"&campaign=" + campaign +  "&ACTION=updateLEAD&format=text&user=" + user + "&pass=" + pass + 
+				"&lead_id=" + encodeURIComponent2(document.osdial_form.lead_id.value) + 
+				"&vendor_lead_code=" + encodeURIComponent2(document.osdial_form.vendor_lead_code.value) + 
+				"&phone_code=" + encodeURIComponent2(document.osdial_form.phone_code.value) + 
+				"&phone_number=" + encodeURIComponent2(document.osdial_form.phone_number.value) + 
+				"&title=" + encodeURIComponent2(document.osdial_form.title.value) + 
+				"&first_name=" + encodeURIComponent2(document.osdial_form.first_name.value) + 
+				"&middle_initial=" + encodeURIComponent2(document.osdial_form.middle_initial.value) + 
+				"&last_name=" + encodeURIComponent2(document.osdial_form.last_name.value) + 
+				"&address1=" + encodeURIComponent2(document.osdial_form.address1.value) + 
+				"&address2=" + encodeURIComponent2(document.osdial_form.address2.value) + 
+				"&address3=" + encodeURIComponent2(document.osdial_form.address3.value) + 
+				"&city=" + encodeURIComponent2(document.osdial_form.city.value) + 
+				"&state=" + encodeURIComponent2(document.osdial_form.state.value) + 
+				"&province=" + encodeURIComponent2(document.osdial_form.province.value) + 
+				"&postal_code=" + encodeURIComponent2(document.osdial_form.postal_code.value) + 
+				"&country_code=" + encodeURIComponent2(document.osdial_form.country_code.value) + 
+				"&gender=" + encodeURIComponent2(document.osdial_form.gender.value) + 
+				"&date_of_birth=" + encodeURIComponent2(document.osdial_form.date_of_birth.value) + 
+				"&alt_phone=" + encodeURIComponent2(document.osdial_form.alt_phone.value) + 
+				"&email=" + encodeURIComponent2(document.osdial_form.email.value) + 
+				"&custom1=" + encodeURIComponent2(document.osdial_form.custom1.value) + 
+				"&custom2=" + encodeURIComponent2(document.osdial_form.custom2.value) + 
+				"&post_date=" + encodeURIComponent2(document.osdial_form.post_date.value);
 
-				for (var i=0; i<AFids.length; i++) {
-					VLupdate_query += '&' + AFids[i] + '=' + encodeURIComponent2(document.getElementById(AFids[i]).value);
-				}
+			for (var i=0; i<AFids.length; i++) {
+				VLupdate_query += '&' + AFids[i] + '=' + encodeURIComponent2(document.getElementById(AFids[i]).value);
+			}
 
-				VLupdate_query += "&comments=" + REGcommentsRESULT;
+			VLupdate_query += "&comments=" + encodeURIComponent2(document.osdial_form.comments.value);
 
 			xmlhttp.open('POST', 'vdc_db_query.php'); 
 			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
@@ -6301,3 +6301,59 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 
 
+	function apixml(xmlfunc, xmlmode, xmlvdcompat, xmldebug, xmltest) {
+		if (typeof(xmlfunc)=='undefined') xmlfunc='version';
+		if (typeof(xmlmode)=='undefined') xmlmode='agent';
+		if (typeof(xmlvdcompat)=='undefined') xmlvdcompat='0';
+		if (typeof(xmldebug)=='undefined') xmldebug='0';
+		if (typeof(xmltest)=='undefined') xmltest='0';
+		var xmltext = '<api><params></params></api>';
+		var parser = new DOMParser();
+		var xmlDoc = parser.parseFromString(xmltext, "text/xml");
+
+		var apinode = xmlDoc.getElementsByTagName('api')[0];
+		apinode.setAttribute('user',user);
+		apinode.setAttribute('pass',pass);
+		apinode.setAttribute('function',xmlfunc);
+		apinode.setAttribute('mode',xmlmode);
+		apinode.setAttribute('vdcompat',xmlvdcompat);
+		apinode.setAttribute('debug',xmldebug);
+		apinode.setAttribute('test',xmltest);
+
+		return xmlDoc;
+	}
+
+	function apixmlparams(xmlDoc, xmlname, xmlvalue) {
+		if (typeof(xmlvalue)=='undefined') xmlvalue='';
+		var newnode = xmlDoc.createElement(xmlname);
+		newnode.appendChild(xmlDoc.createTextNode(xmlvalue));
+		var paramsnode = xmlDoc.getElementsByTagName('params')[0];
+		paramsnode.appendChild(newnode);
+	}
+
+	function xmltostring(xmlDoc) {
+		var xmlString = (new XMLSerializer()).serializeToString(xmlDoc);
+		return xmlString;
+	}
+
+	function check_voicemail() {
+		var xmlhttp=getXHR();
+		if (xmlhttp) { 
+			var xmlDoc = apixml('vmail_check');
+			apixmlparams(xmlDoc, 'vmail_box', voicemail_id);
+			apixmlparams(xmlDoc, 'server_ip', server_ip);
+			api_query = 'xml=' + encodeURIComponent2(xmltostring(xmlDoc));
+			xmlhttp.open('POST', '../admin/api.php'); 
+			xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+			debug('<b>check_voicemail:</b> ' + api_query,3);
+			xmlhttp.send(api_query); 
+			xmlhttp.onreadystatechange = function() { 
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+					xmlRes = xmlhttp.responseXML;
+					vmail_messages = xmlRes.getElementsByTagName("messages")[0].textContent;
+					vmail_old_messages = xmlRes.getElementsByTagName("old_messages")[0].textContent;
+				}
+			}
+			delete xmlhttp;
+		}
+	}

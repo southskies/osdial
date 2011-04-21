@@ -1976,6 +1976,10 @@ flush();
         </font>
     </span>
 
+    <!-- Voicmeail Button -->
+    <span style="position:absolute;left:<?=$HKwidth+22 ?>px;top:<?=$HKheight+10 ?>px;z-index:16;" id="voicemailbutton">
+        <a href="#" onclick="alert(vmail_messages);"><img src="templates/<?= $agent_template ?>/images/agc_check_voicemail_OFF.gif" width=170 height=30 border=0 alt="VOICEMAIL"></a>
+    </span>
 
     <!-- Hot Key Button -->
     <? if ($HK_statuses_camp > 0 and ($user_level >= $HKuser_level or $VU_hotkeys_active > 0)) { ?>
