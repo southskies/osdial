@@ -176,6 +176,13 @@ install-docs: .osdial.config
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/templates
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/templates/default
 	@install -d -m 755 $(DESTDIR)$(PATHweb)/admin/templates/default/images
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/ari
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/ari/bin
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/ari/includes
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/ari/misc
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/ari/modules
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/ari/theme
+	@install -d -m 755 $(DESTDIR)$(PATHweb)/ari/theme/images
 	@install -p -m 644 ./www/*.php $(DESTDIR)$(PATHweb)
 	@install -p -m 644 ./www/*.txt $(DESTDIR)$(PATHweb)
 	@install -p -m 644 ./www/*.ico $(DESTDIR)$(PATHweb)
