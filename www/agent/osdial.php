@@ -1979,20 +1979,20 @@ flush();
     </span>
 
     <!-- Voicmeail Button -->
-    <span style="position:absolute;left:<?=$HKwidth+22 ?>px;top:<?=$HKheight+10 ?>px;z-index:16;" id="voicemailbutton">
+    <span style="position:absolute;left:708px;top:425px;z-index:16;" id="voicemailbutton">
         <a href="#" onclick="voicemail_ariopen();"><img src="templates/<?= $agent_template ?>/images/agc_check_voicemail_OFF.gif" width=170 height=30 border=0 alt="VOICEMAIL"></a>
     </span>
 
     <!-- Hot Key Button -->
     <? if ($HK_statuses_camp > 0 and ($user_level >= $HKuser_level or $VU_hotkeys_active > 0)) { ?>
-        <span style="position:absolute;left:<?=$HKwidth+40 ?>px;top:<?=$HKheight +50 ?>px;z-index:16;" id="hotkeysdisplay">
+        <span style="position:absolute;left:480px;top:488px;z-index:16;" id="hotkeysdisplay">
             <a href="#" onMouseOver="HotKeys('ON')"><img src="templates/<?= $agent_template ?>/images/vdc_XB_hotkeysactive_OFF.gif" width=137 height=32 border=0 alt="HOT KEYS INACTIVE"></a>
         </span>
     <? } ?>
 
 
     <!-- D1, D2, Mute Links -->
-    <span style="position:absolute;left:<?=$AMwidth-10 ?>px;top:<?=$AMheight+15 ?>px;z-index:22;" id="AgentMuteANDPreseTDiaL">
+    <span style="position:absolute;left:881px;top:432px;z-index:22;" id="AgentMuteANDPreseTDiaL">
         <font class="body_text">
             <? if ($PreseT_DiaL_LinKs) {
                 if (strlen($xferconf_a_number)) { 
@@ -2001,15 +2001,14 @@ flush();
                 if (strlen($xferconf_b_number)) { 
                     echo "<a href=\"#\" onclick=\"DtMf_PreSet_b_DiaL();return false;\"><font class=\"$diallink_class\">D2 - DIAL</font></a><br>\n";
                 }
-                echo "<span id=\"DialBlindVMail2\"><img src=\"templates/$agent_template/images/vdc_XB_ammessage_OFF.gif\" width=36 height=13 border=0 alt=\"Blind Transfer VMail Message\"></span>\n";
+                echo "<span id=\"DialBlindVMail2\"><img src=\"templates/$agent_template/images/vdc_XB_ammessage_OFF.gif\" width=36 height=17 border=0 alt=\"Blind Transfer VMail Message\"></span>\n";
             } else {
                 echo "<br><br>\n";
             } ?>
-            <br><br>
-            <span id="AgentMuteSpan"></span>
+            <span id="AgentMuteSpan" style="position:absolute;top:0px;left:54px;"></span>
         </font>
     </span>
-    <span style="position:relative;left:480px;top:484px;z-index:22;" id="MutedWarning"></span>
+    <span style="position:relative;left:721px;top:460px;z-index:22;" id="MutedWarning"></span>
 
 
     <!-- Preview Force-Dial Timout -->
@@ -2091,30 +2090,31 @@ flush();
     
     <? load_status('Initializing GUI...<br>HotKeyEntriesBox<br>&nbsp;'); ?>
     <!-- Disposition Hot Keys Window -->
-    <span style="position:absolute;left:92px;top:<?=$HTheight+45 ?>px;z-index:24;visibility:hidden;" id="HotKeyEntriesBox">
-        <table frame=box bgcolor="<?=$hotkey_bg1?>" width=610 height=70>
+    <span style="position:absolute;left:0;top:540px;z-index:24;width:964px;visibility:hidden;" id="HotKeyEntriesBox">
+        <table frame=box bgcolor="<?=$hotkey_bg1?>" height=70 align=center>
             <tr bgcolor="<?=$hotkey_bg2?>">
-                <td width=200><font class="sh_text"> Disposition Hot Keys: </font></td>
-                <td colspan=2 width=410>
-                    <font class="body_small">When active, simply press the keyboard key for the desired disposition for this call. The call will then be hungup and dispositioned automatically:</font>
-                </td>
+                <td colspan=7><font class="sh_text"> Disposition Hot Keys: </font><font class="body_small">Press number for automatic disposition and hangup.</font></td>
             </tr>
             <tr>
-                <td width=200>
+                <td width="5">&nbsp;</td>
+                <td>
                     <font class="sk_text">
                         <span id="HotKeyBoxA"><?= $HKboxA ?></span>
                     </font>
                 </td>
-                <td width=200>
+                <td width="10">&nbsp;</td>
+                <td>
                     <font class="sk_text">
                         <span id="HotKeyBoxB"><?= $HKboxB ?></span>
                     </font>
                 </td>
+                <td width="10">&nbsp;</td>
                 <td>
                     <font class="sk_text">
                         <span id="HotKeyBoxC"><?= $HKboxC ?></span>
                     </font>
                 </td>
+                <td width="5">&nbsp;</td>
             </tr>
         </table>
     </span>
@@ -2123,9 +2123,8 @@ flush();
     <? load_status('Initializing GUI...<br>VolumeControlSpan<br>&nbsp;'); ?>
     <!-- Volume Control Links -->
     <span style="position:absolute;left:935px;top:<?=$CBheight+26 ?>px;z-index:19;visibility:hidden;" id="VolumeControlSpan">
-        <span id="VolumeUpSpan"><img src="templates/<?= $agent_template ?>/images/vdc_volume_up_off.gif" width=28 height=15 border=0></span>
-        <br>
-        <span id="VolumeDownSpan"><img src="templates/<?= $agent_template ?>/images/vdc_volume_down_off.gif" width=28 height=15 border=0></span>
+        <span id="VolumeUpSpan" style="left:0px;top:0px;"><img src="templates/<?= $agent_template ?>/images/vdc_volume_up_off.gif" width=28 height=15 border=0></span>
+        <span id="VolumeDownSpan" style="left:0px;top:16px;float:left;"><img src="templates/<?= $agent_template ?>/images/vdc_volume_down_off.gif" width=28 height=15 border=0></span>
     </span>
 
     

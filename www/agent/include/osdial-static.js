@@ -141,10 +141,10 @@
 		}
 		if (taskagentmute=='AgenT') {
 			if (taskdirection=='MUTING') {
-				document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('UNMUTE','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_UNMUTE.gif\" width=28 height=28 BORDER=0></a>";
+				document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('UNMUTE','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_UNMUTE.gif\" width=28 height=29 BORDER=0></a>";
 				document.getElementById("MutedWarning").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('UNMUTE','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/muted.gif\" width=148 height=35 BORDER=0></a>";
 			} else {
-				document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('MUTING','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_MUTE.gif\" width=28 height=28 BORDER=0></a>";
+				document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('MUTING','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_MUTE.gif\" width=28 height=29 BORDER=0></a>";
 				document.getElementById("MutedWarning").innerHTML = "<img src=\"templates/" + agent_template + "/images/mutedoff.gif\" width=148 height=35 border=0></a>";
 			}
 		}
@@ -552,13 +552,13 @@
 											if  ( (channelfieldA.match(regAGNTchan)) && (agentchannel != channelfieldA) ) {
 												agentchannel = channelfieldA;
 
-												document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('MUTING','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_MUTE.gif\" width=28 height=28 BORDER=0></a>";
+												document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('MUTING','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_MUTE.gif\" width=28 height=29 BORDER=0></a>";
 											}
 										} else {
 											if (agentchannel.length < 3) {
 												agentchannel = channelfieldA;
 
-												document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('MUTING','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_MUTE.gif\" width=28 height=28 BORDER=0></a>";
+												document.getElementById("AgentMuteSpan").innerHTML = "<a href=\"#CHAN-" + agentchannel + "\" onclick=\"volume_control('MUTING','" + agentchannel + "','AgenT');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_MUTE.gif\" width=28 height=29 BORDER=0></a>";
 											}
 										}
 									}
@@ -4841,6 +4841,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 				// If the multicall is active, swap after hangup to grab the other channel.
 				if (multicall_active>0) {
 					multicall_queue_swap();
+					document.getElementById('AddtlFormTab').style.visibility='visible';
+					document.getElementById('AddtlFormTabExpanded').style.visibility='hidden';
 				} else {
 					if (wrapup_waiting == 0) {
 						//We are all done with the call, clean up all the multicall states.
