@@ -70,7 +70,7 @@ function callme_setnum($exten, $callme_num)
 function callme_startcall($to, $from, $new_path)
 {
 	global $astman;
-	$channel	= "Local/$to@osdial/n";
+	$channel	= "Local/9$to@osdial/n";
 	$context	= "osdial_arivmcall";
 	$extension	= "s";
 	$priority	= "1";
