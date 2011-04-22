@@ -202,6 +202,7 @@ if (!$VDADLOGfile) {$VDADLOGfile = "$PATHlogs/vdautodial.$year-$mon-$mday";}
 if (!$JAMdebugFILE) {$JAMdebugFILE = "$PATHlogs/vdad-JAM.$year-$mon-$mday";}
 
 use Time::HiRes ('gettimeofday','usleep','sleep');  # necessary to have perl sleep command of less than one second
+use Proc::ProcessTable;
 use DBI;
 	
 	### connect to MySQL database defined in the conf file
@@ -1768,22 +1769,16 @@ while($one_day_interval > 0)
 
 				&get_time_now;
 
-			#@psoutput = `/bin/ps -f --no-headers -A`;
-			@psoutput = `/bin/ps -o "%p %a" --no-headers -A`;
-
 			$running_listen = 0;
 
-			$i=0;
-			foreach (@psoutput)
-				{
-					chomp($psoutput[$i]);
-
-				@psline = split(/\/usr\/bin\/perl /,$psoutput[$i]);
-
-				if ($psline[1] =~ /AST_manager_li/) {$running_listen++;}
-
-				$i++;
-				}
+                        my $proctab = new Proc::ProcessTable;
+                        foreach my $proc (@{$proctab->table}) {
+                                if ($proc->cmndline =~ /perl.*manager_listen/) {
+                                        $running_listen++;
+                                        print "LISTEN RUNNING: |" . $proc->pid . "]|\n" if ($DB);
+                                        last;
+                                }
+                        }
 
 			if (!$running_listen) 
 				{

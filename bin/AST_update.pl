@@ -92,37 +92,6 @@ $cpuIDLEprev=0;
 
 # find proper locations of bin utils
 
-# cat
-$bincat = "/usr/bin/cat";
-if (-e "/usr/local/bin/cat")
-	{$bincat = "/usr/local/bin/cat";}
-else
-	{
-	if (-e "/bin/cat")
-		{$bincat = "/bin/cat";}
-	}
-
-# free
-$binfree = "/usr/bin/free";
-if (-e "/usr/local/bin/free")
-	{$binfree = "/usr/local/bin/free";}
-else
-	{
-	if (-e "/bin/free")
-		{$binfree = "/bin/free";}
-	}
-
-# ps
-$binps = "/bin/ps";
-if (-e "/usr/local/bin/ps")
-	{$binps = "/usr/local/bin/ps";}
-else
-	{
-	if (-e "/usr/bin/ps")
-		{$binps = "/usr/bin/ps";}
-	}
-
-
 # DB table variables for testing
 	$parked_channels =		'parked_channels';
 	$live_channels =		'live_channels';
@@ -234,6 +203,7 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 use Time::HiRes ('gettimeofday','usleep','sleep');  # necessary to have perl sleep command of less than one second
 use Net::Telnet ();
 use DBI;	  
+use Proc::ProcessTable;
 
 $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
  or die "Couldn't connect to database: " . DBI->errstr;
@@ -622,42 +592,48 @@ if (!$telnet_port) {$telnet_port = '5038';}
 				$cpuUSERcent=0; $cpuSYSTcent=0; $cpuIDLEcent=0;
 				### get processor usage seconds ###
 				# cpu  924841 211725 270473 6961811
-				@cpuUSE = `$bincat /proc/stat`;
-					if ($cpuUSE[0] =~ /cpu\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/)
-					{
-					$cpuUSER  = ($1 + $2);
-					$cpuSYST  = $3;
-					$cpuIDLE  = $4;
-					$cpuUSERdiff  = ($cpuUSER - $cpuUSERprev);
-					$cpuSYSTdiff  = ($cpuSYST - $cpuSYSTprev);
-					$cpuIDLEdiff  = ($cpuIDLE - $cpuIDLEprev);
-					$cpuIDLEdiffTOTAL = (($cpuUSERdiff + $cpuSYSTdiff) + $cpuIDLEdiff);
-					if ($cpuIDLEdiffTOTAL > 0) 
-						{
-						$cpuUSERcent  = sprintf("%.0f", (($cpuUSERdiff / $cpuIDLEdiffTOTAL) * 100));
-						$cpuSYSTcent  = sprintf("%.0f", (($cpuSYSTdiff / $cpuIDLEdiffTOTAL) * 100));
-						$cpuIDLEcent  = sprintf("%.0f", (($cpuIDLEdiff / $cpuIDLEdiffTOTAL) * 100));
+				open(STAT, "/proc/stat");
+				while (my $stat = <STAT>) {
+        				if ($stat =~ /cpu\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/) {
+						$cpuUSER  = ($1 + $2);
+						$cpuSYST  = $3;
+						$cpuIDLE  = $4;
+						$cpuUSERdiff  = ($cpuUSER - $cpuUSERprev);
+						$cpuSYSTdiff  = ($cpuSYST - $cpuSYSTprev);
+						$cpuIDLEdiff  = ($cpuIDLE - $cpuIDLEprev);
+						$cpuIDLEdiffTOTAL = (($cpuUSERdiff + $cpuSYSTdiff) + $cpuIDLEdiff);
+						if ($cpuIDLEdiffTOTAL > 0) {
+							$cpuUSERcent  = sprintf("%.0f", (($cpuUSERdiff / $cpuIDLEdiffTOTAL) * 100));
+							$cpuSYSTcent  = sprintf("%.0f", (($cpuSYSTdiff / $cpuIDLEdiffTOTAL) * 100));
+							$cpuIDLEcent  = sprintf("%.0f", (($cpuIDLEdiff / $cpuIDLEdiffTOTAL) * 100));
 						}
-					$cpuUSERprev=$cpuUSER;
-					$cpuSYSTprev=$cpuSYST;
-					$cpuIDLEprev=$cpuIDLE;
+						$cpuUSERprev=$cpuUSER;
+						$cpuSYSTprev=$cpuSYST;
+						$cpuIDLEprev=$cpuIDLE;
+						last;
 					}
+				}
+				close(STAT);
 
 				### get system load ###
-				$serverLOAD = `$bincat /proc/loadavg`;
-				$serverLOAD =~ s/ .*//gi;
-				$serverLOAD =~ s/\D//gi;
+				open(LOADAVG, "/proc/loadavg");
+				my @loadavg = split(/\s+/, <LOADAVG>);
+				close(LOADAVG);
+				$serverLOAD = $loadavg[0];
 
 				### get memory usage ###
-				@GRABserverMEMORY = `$binfree -m -t`;
-					if ($GRABserverMEMORY[1] =~ /Mem:\s+(\d+)\s+(\d+)\s+(\d+)\s+/)
-					{
-					$MEMused  = $2;
-					$MEMfree  = $3;
-					}
+				my %meminfo;
+				open(MEMINFO, "/proc/meminfo");
+				while (my $memline = <MEMINFO>) {
+					$memline =~ /(.*):\s+(\d+)\s+kB/ and $meminfo{$1} = $2;
+				}
+				close(MEMINFO);
+				$MEMused  = int(($meminfo{'MemTotal'} - $meminfo{'MemFree'}) / 1024);
+				$MEMfree  = int($meminfo{'MemFree'} / 1024);
+
 				### get number of system processes ###
-				@GRABserverPROCESSES = `$binps -A --no-heading`;
-				$serverPROCESSES = $#GRABserverPROCESSES;
+				my $pt = new Proc::ProcessTable;
+				$serverPROCESSES = scalar(@{$pt->table});
 
 				if ($SYSPERF_rec) {$recording_count = ($test_local_count / 2)}
 				 else {$recording_count=0;}

@@ -167,6 +167,7 @@ if (!$VDRLOGfile) {$VDRLOGfile = "$PATHlogs/remoteagent.$year-$mon-$mday";}
 if (!$VARDB_port) {$VARDB_port='3306';}
 
 use Time::HiRes ('gettimeofday','usleep','sleep');  # necessary to have perl sleep command of less than one second
+use Proc::ProcessTable;
 use DBI;	  
 
 $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
@@ -339,22 +340,15 @@ while($one_day_interval > 0)
 			$w++;
 			}
 
-		#@psoutput = `/bin/ps -f --no-headers -A`;
-		@psoutput = `/bin/ps -o "%p %a" --no-headers -A`;
-
 		$running_listen = 0;
-
-		$i=0;
-		foreach (@psoutput)
-		{
-			chomp($psoutput[$i]);
-
-		@psline = split(/\/usr\/bin\/perl /,$psoutput[$i]);
-
-		if ($psline[1] =~ /AST_manager_li/) {$running_listen++;}
-
-		$i++;
-		}
+                my $proctab = new Proc::ProcessTable;
+                foreach my $proc (@{$proctab->table}) {
+                        if ($proc->cmndline =~ /perl.*manager_listen/) {
+                                $running_listen++;
+                                print "LISTEN  RUNNING: |" . $proc->pid . "]|\n" if ($DB);
+                                last;
+                        }
+                }
 
 		if (!$running_listen) 
 			{

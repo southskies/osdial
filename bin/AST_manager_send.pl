@@ -52,6 +52,7 @@ use strict;
 use DBI;
 use Getopt::Long;
 use Time::HiRes ('gettimeofday','usleep','sleep');  # necessary to have perl sleep command of less than one second
+use Proc::ProcessTable;
 
 # constants and globals
 my $servConf;
@@ -273,10 +274,13 @@ while ($one_day_interval > 0) {
 			$servConf = getServerConfig($dbhA, $conf{VARserver_ip});
 
 			print "checking to see if listener is dead |$sendonlyone|$running_listen|\n" if($COUNTER_OUTPUT or $DB);
-			my $psoutput = `/usr/bin/pgrep AST_manager_li`;
-			if ($psoutput) {
-				$running_listen++;
-				print "SEND RUNNING: |$psoutput]|\n" if ($DB);
+			my $proctab = new Proc::ProcessTable;
+			foreach my $proc (@{$proctab->table}) {
+				if ($proc->cmndline =~ /perl.*manager_listen/) {
+					$running_listen++;
+					print "LISTEN RUNNING: |" . $proc->pid . "]|\n" if ($DB);
+					last;
+				}
 			}
 		}
 
