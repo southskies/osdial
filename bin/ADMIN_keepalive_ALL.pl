@@ -1,8 +1,7 @@
 #!/usr/bin/perl
 #
-# ADMIN_keepalive_ALL.pl   version  2.0.4.1
+# ADMIN_keepalive_ALL.pl
 #
-## Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
 ## Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
 ##
 ##     This file is part of OSDial.
@@ -21,77 +20,54 @@
 ##     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 ##
 #
-# Designed to keep the OSDIAL processes alive and check every minute
-# Replaces all other ADMIN_keepalive scripts
-# Uses /etc/osdial.conf file to know which processes to keepalive
-#
-#
-# 61011-1348 - first build
-# 61120-2011 - added option 7 for AST_VDauto_dial_FILL.pl
-# 80330-0811 - added option 8 for ip_relay
-# 80906-0056 - added option 9 for AST_VDcampaign_stats.pl, lc
-#
 
-$DB=0; # Debug flag
-@MT=();
-@psline=@MT;
+$|++;
+use strict;
+use OSDial;
+use Getopt::Long;
+use Proc::ProcessTable;
 
-### begin parsing run-time options ###
-if (length($ARGV[0])>1)
-{
-	$i=0;
-	while ($#ARGV >= $i)
-	{
-	$args = "$args $ARGV[$i]";
-	$i++;
+my $DB=0;
+my $DBX=0;
+my $VERBOSE=0;
+my $TEST=0;
+my $HELP=0;
+
+if (scalar @ARGV) {
+	GetOptions(
+		'help!' => \$HELP,
+		'debug!' => \$DB,
+		'debugX!' => \$DBX,
+		'verbose+' => \$VERBOSE,
+		'test!' => \$TEST
+	);
+	$DB=$VERBOSE if ($VERBOSE);
+	$DBX=$VERBOSE if ($VERBOSE>1);
+	$DB=$VERBOSE if ($DBX);
+	$DB=$VERBOSE=1 if ($TEST and $DB==0);
+	if ($DB) {
+		print "----- DEBUGGING -----\n";
+		print "----- Testing Mode -----\n" if ($TEST);
+		print "VARS-\n";
+		print "help-        $HELP\n";
+		print "debug-       $DB\n";
+		print "debugX-      $DBX\n";
+		print "verbose-     $VERBOSE\n";
+		print "test-        $TEST\n";
+		print "\n";
 	}
-
-	if ($args =~ /--help/i)
-	{
-	print "allowed run time options:\n  [-t] = test\n  [-debug] = verbose debug messages\n[-debugX] = Extra-verbose debug messages\n\n";
-	}
-	else
-	{
-		if ($args =~ /-debug/i)
-		{
-		$DB=1; # Debug flag
-		}
-		if ($args =~ /--debugX/i)
-		{
-		$DBX=1;
-		print "\n----- SUPER-DUPER DEBUGGING -----\n\n";
-		}
-		if ($args =~ /-t/i)
-		{
-		$TEST=1;
-		$T=1;
-		}
+	if ($HELP) {
+		print "ADMIN_keepalive_ALL.pl: Allowed run time options:\n";
+		print "  [--help] = This screen.\n";
+		print "  [--debug] = debug\n";
+		print "  [--debugX] = super debug\n";
+		print "  [-v|--verbose] = verbose (debug)\n";
+		print "  [-t|--test] = Run in test mode.\n";
+		exit;
 	}
 }
-else
-{
-#	print "no command line options set\n";
-}
-### end parsing run-time options ###
 
-
-# default path to osdial.configuration file:
-$PATHconf =		'/etc/osdial.conf';
-
-open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
-@conf = <conf>;
-close(conf);
-$i=0;
-foreach(@conf)
-	{
-	$line = $conf[$i];
-	$line =~ s/ |>|\n|\r|\t|\#.*|;.*//gi;
-	if ( ($line =~ /^PATHhome/) && ($CLIhome < 1) )
-		{$PATHhome = $line;   $PATHhome =~ s/.*=//gi;}
-	if ( ($line =~ /^VARactive_keepalives/) && ($CLIactive_keepalives < 1) )
-		{$VARactive_keepalives = $line;   $VARactive_keepalives =~ s/.*=//gi;}
-	$i++;
-	}
+my $osdial = OSDial->new('DB'=>$DB);
 
 ##### list of codes for active_keepalives and what processes they correspond to
 #	X - NO KEEPALIVE PROCESSES (use only if you want none to be keepalive)\n";
@@ -102,368 +78,73 @@ foreach(@conf)
 #	5 - AST_VDadapt (If multi-server system, this must only be on one server)\n";
 #	6 - FastAGI_log\n";
 #	7 - AST_VDauto_dial_FILL\n";
-#	8 - ip_relay for blind monitoring\n";
+#	8 - ip_relay for blind monitoring (deprecated)\n";
 #	9 - OSDcampaign_stats (If multi-server system, this must only be on one server)\n";
 
-
-if ($VARactive_keepalives =~ /X/)
-	{
-	if ($DB) {print "X in active_keepalives, exiting...\n";}
+if ($osdial->{'VARactive_keepalives'} =~ /X/) {
+	print "X in active_keepalives, exiting...\n" if ($DB);
 	exit;
-	}
-
-$AST_update=0;
-$AST_send_listen=0;
-$AST_VDauto_dial=0;
-$AST_VDremote_agents=0;
-$AST_VDadapt=0;
-$OSDcampaign_stats=0;
-$FastAGI_log=0;
-$AST_VDauto_dial_FILL=0;
-$ip_relay=0;
-$runningAST_update=0;
-$runningAST_send=0;
-$runningAST_listen=0;
-$runningAST_VDauto_dial=0;
-$runningAST_VDremote_agents=0;
-$runningAST_VDadapt=0;
-$runningOSDcampaign_stats=0;
-$runningFastAGI_log=0;
-$runningAST_VDauto_dial_FILL=0;
-$runningip_relay=0;
-
-if ($VARactive_keepalives =~ /1/) 
-	{
-	$AST_update=1;
-	if ($DB) {print "AST_update set to keepalive\n";}
-	}
-if ($VARactive_keepalives =~ /2/) 
-	{
-	$AST_send_listen=1;
-	if ($DB) {print "AST_send_listen set to keepalive\n";}
-	}
-if ($VARactive_keepalives =~ /3/) 
-	{
-	$AST_VDauto_dial=1;
-	if ($DB) {print "AST_VDauto_dial set to keepalive\n";}
-	}
-if ($VARactive_keepalives =~ /4/) 
-	{
-	$AST_VDremote_agents=1;
-	if ($DB) {print "AST_VDremote_agents set to keepalive\n";}
-	}
-if ($VARactive_keepalives =~ /5/) 
-	{
-	$AST_VDadapt=1;
-	if ($DB) {print "AST_VDadapt set to keepalive\n";}
-	}
-if ($VARactive_keepalives =~ /6/) 
-	{
-	$FastAGI_log=1;
-	if ($DB) {print "FastAGI_log set to keepalive\n";}
-	}
-if ($VARactive_keepalives =~ /7/) 
-	{
-	$AST_VDauto_dial_FILL=1;
-	if ($DB) {print "AST_VDauto_dial_FILL set to keepalive\n";}
-	}
-if ($VARactive_keepalives =~ /8/) 
-	{
-	$ip_relay=1;
-	if ($DB) {print "ip_relay set to keepalive\n";}
-	}
-if ($VARactive_keepalives =~ /9/) 
-	{
-	$OSDcampaign_stats=1;
-	if ($DB) {print "OSDcampaign_stats set to keepalive\n";}
-	}
-
-$REGhome = $PATHhome;
-$REGhome =~ s/\//\\\//gi;
-
-
-
-
-
-
-##### First, check and see which processes are running #####
-
-### you may have to use a different ps command if you're not using Slackware Linux
-#	@psoutput = `ps -f -C AST_update --no-headers`;
-#	@psoutput = `ps -f -C AST_updat* --no-headers`;
-#	@psoutput = `/bin/ps -f --no-headers -A`;
-#	@psoutput = `/bin/ps -o pid,args -A`; ### use this one for FreeBSD
-@psoutput = `/bin/ps -o "%p %a" --no-headers -A`;
-
-$i=0;
-foreach (@psoutput)
-{
-chomp($psoutput[$i]);
-if ($DBX) {print "$i|$psoutput[$i]|     \n";}
-@psline = split(/\/usr\/bin\/perl /,$psoutput[$i]);
-
-	if ($psline[1] =~ /$REGhome\/AST_update\.pl/) 
-		{
-		$runningAST_update++;
-		if ($DB) {print "AST_update RUNNING:              |$psline[1]|\n";}
-		}
-	if ($psline[1] =~ /AST_manager_se/) 
-		{
-		$runningAST_send++;
-		if ($DB) {print "AST_send RUNNING:                |$psline[1]|\n";}
-		}
-	if ($psline[1] =~ /AST_manager_li/) 
-		{
-		$psoutput[$i] =~ s/ .*|\n|\r|\t| //gi;
-		$listen_pid[$runningAST_listen] = $psoutput[$i];
-		$runningAST_listen++;
-		if ($DB) {print "AST_listen RUNNING:              |$psline[1]|\n";}
-		}
-	if ($psline[1] =~ /$REGhome\/AST_VDauto_dial\.pl/) 
-		{
-		$runningAST_VDauto_dial++;
-		if ($DB) {print "AST_VDauto_dial RUNNING:         |$psline[1]|\n";}
-		}
-	if ($psline[1] =~ /$REGhome\/AST_VDremote_agents\.pl/) 
-		{
-		$runningAST_VDremote_agents++;
-		if ($DB) {print "AST_VDremote_agents RUNNING:     |$psline[1]|\n";}
-		}
-	if ($psline[1] =~ /$REGhome\/AST_VDadapt\.pl/) 
-		{
-		$runningAST_VDadapt++;
-		if ($DB) {print "AST_VDadapt RUNNING:             |$psline[1]|\n";}
-		}
-	if ($psline[1] =~ /$REGhome\/FastAGI_log\.pl/) 
-		{
-		$runningFastAGI_log++;
-		if ($DB) {print "FastAGI_log RUNNING:             |$psline[1]|\n";}
-		}
-	if ($psline[1] =~ /$REGhome\/AST_VDauto_dial_FILL\.pl/) 
-		{
-		$runningAST_VDauto_dial_FILL++;
-		if ($DB) {print "AST_VDauto_dial_FILL RUNNING:    |$psline[1]|\n";}
-		}
-	if ($psoutput[$i] =~ / ip_relay /) 
-		{
-		$runningip_relay++;
-		if ($DB) {print "ip_relay RUNNING:                |$psoutput[$i]|\n";}
-		}
-	if ($psline[1] =~ /$REGhome\/OSDcampaign_stats\.pl/) 
-		{
-		$runningOSDcampaign_stats++;
-		if ($DB) {print "OSDcampaign_stats RUNNING:             |$psline[1]|\n";}
-		}
-$i++;
 }
 
+my %keepalive;
+my %running;
+
+check_keepalive('1', 'AST_update.pl');
+check_keepalive('2', 'AST_manager_send.pl');
+check_keepalive('2', 'AST_manager_listen.pl');
+check_keepalive('3', 'AST_VDauto_dial.pl');
+check_keepalive('4', 'AST_VDremote_agents.pl');
+check_keepalive('5', 'AST_VDadapt.pl');
+check_keepalive('6', 'FastAGI_log.pl');
+check_keepalive('7', 'AST_VDauto_dial_FILL.pl');
+check_keepalive('9', 'OSDcampaign_stats.pl');
 
 
-
-
-##### Second, IF MORE THAN ONE LISTEN INSTANCE IS RUNNING, KILL THE SECOND ONE #####
-@psline=@MT;
-@psoutput=@MT;
-@listen_pid=@MT;
-if ($runningAST_listen > 1)
-{
-$runningAST_listen=0;
-
-	sleep(1);
-
-### you may have to use a different ps command if you're not using Slackware Linux
-#	@psoutput = `ps -f -C AST_update --no-headers`;
-#	@psoutput = `ps -f -C AST_updat* --no-headers`;
-#	@psoutput = `/bin/ps -f --no-headers -A`;
-#	@psoutput = `/bin/ps -o pid,args -A`; ### use this one for FreeBSD
-@psoutput = `/bin/ps -o "%p %a" --no-headers -A`;
-
-$i=0;
-foreach (@psoutput)
-	{
-		chomp($psoutput[$i]);
-	if ($DBX) {print "$i|$psoutput[$i]|     \n";}
-	@psline = split(/\/usr\/bin\/perl /,$psoutput[$i]);
-	$psoutput[$i] =~ s/^ *//gi;
-	$psoutput[$i] =~ s/ .*|\n|\r|\t| //gi;
-
-	if ($psline[1] =~ /AST_manager_li/) 
-		{
-		$listen_pid[$runningAST_listen] = $psoutput[$i];
-		if ($DB) {print "AST_listen RUNNING:              |$psline[1]|$listen_pid[$runningAST_listen]|\n";}
-		$runningAST_listen++;
+# check which processes are running and start if needed
+my $proctab = new Proc::ProcessTable;
+print "Processes " . scalar($proctab) . "\n" if ($DBX);
+foreach my $proc (@{$proctab->table}) {
+	# Only check process if it is run by perl and is not a thread.
+	if ($proc->exec eq "/usr/bin/perl" and $proc->ppid != $proc->sess) {
+		foreach my $progname (keys %keepalive) {
+			if ($proc->cmndline =~ /$progname/) {
+				$running{$progname}++;
+				print $progname . " RUNNING:              |" . $proc->pid . "\n" if ($DB);
+				if ($running{$progname}>1) {
+					if ($progname eq "AST_manager_listen.pl") {
+						print "Detected second instance of " . $progname. ", killing pid " . $proc->pid . ".\n" if ($DB);
+						kill 9, $proc->pid unless ($TEST);
+					}
+				}
+			}
 		}
-
-	$i++;
-	}
-
-if ($runningAST_listen > 1)
-	{
-	if ($DB) {print "Killing AST_manager_listen... |$listen_pid[1]|\n";}
-	`/bin/kill -s 9 $listen_pid[1]`;
 	}
 }
 
 
 
-
-
-
-
-##### Third, double-check that non-running scripts are not running #####
-@psline=@MT;
-@psoutput=@MT;
-
-if ( 
-	( ($AST_update > 0) && ($runningAST_update < 1) ) ||
-	( ($AST_send_listen > 0) && ($runningAST_send < 1) ) ||
-	( ($AST_send_listen > 0) && ($runningAST_listen < 1) ) ||
-	( ($AST_VDauto_dial > 0) && ($runningAST_VDauto_dial < 1) ) ||
-	( ($AST_VDremote_agents > 0) && ($runningAST_VDremote_agents < 1) ) ||
-	( ($AST_VDadapt > 0) && ($runningAST_VDadapt < 1) ) ||
-	( ($OSDcampaign_stats > 0) && ($runningOSDcampaign_stats < 1) ) ||
-	( ($FastAGI_log > 0) && ($runningFastAGI_log < 1) ) ||
-	( ($AST_VDauto_dial_FILL > 0) && ($runningAST_VDauto_dial_FILL < 1) ) ||
-	( ($ip_relay > 0) && ($runningip_relay < 1) )
-   )
-{
-
-if ($DB) {print "double check that processes are not running...\n";}
-
-	sleep(1);
-
-`PERL5LIB="$PATHhome/libs"; export PERL5LIB`;
-### you may have to use a different ps command if you're not using Slackware Linux
-#	@psoutput = `ps -f -C AST_update --no-headers`;
-#	@psoutput = `ps -f -C AST_updat* --no-headers`;
-#	@psoutput = `/bin/ps -f --no-headers -A`;
-#	@psoutput = `/bin/ps -o pid,args -A`; ### use this one for FreeBSD
-@psoutput2 = `/bin/ps -o "%p %a" --no-headers -A`;
-$i=0;
-foreach (@psoutput2)
-	{
-		chomp($psoutput2[$i]);
-	if ($DBX) {print "$i|$psoutput2[$i]|     \n";}
-	@psline = split(/\/usr\/bin\/perl /,$psoutput2[$i]);
-
-	if ($psline[1] =~ /$REGhome\/AST_update\.pl/) 
-		{
-		$runningAST_update++;
-		if ($DB) {print "AST_update RUNNING:              |$psline[1]|\n";}
+# start keepalives programs as needed.
+foreach my $progname (keys %keepalive) {
+	if ($keepalive{$progname}) {
+		unless ($running{$progname}) {
+			print "Starting " . $progname . "...\n" if ($DB);
+			my $screenid = $progname;
+			$screenid =~ s/AST|VD|OSD|_|\.pl$//g;
+			# add a '-L' to the screen command below to activate logging
+			`/usr/bin/screen -d -m -S OSD$screenid $osdial->{'PATHhome'}/$progname` unless ($TEST);
 		}
-	if ($psline[1] =~ /AST_manager_se/) 
-		{
-		$runningAST_send++;
-		if ($DB) {print "AST_send RUNNING:                |$psline[1]|\n";}
-		}
-	if ($psline[1] =~ /AST_manager_li/) 
-		{
-		$runningAST_listen++;
-		if ($DB) {print "AST_listen RUNNING:              |$psline[1]|\n";}
-		}
-	if ($psline[1] =~ /$REGhome\/AST_VDauto_dial\.pl/) 
-		{
-		$runningAST_VDauto_dial++;
-		if ($DB) {print "AST_VDauto_dial RUNNING:         |$psline[1]|\n";}
-		}
-	if ($psline[1] =~ /$REGhome\/AST_VDremote_agents\.pl/) 
-		{
-		$runningAST_VDremote_agents++;
-		if ($DB) {print "AST_VDremote_agents RUNNING:     |$psline[1]|\n";}
-		}
-	if ($psline[1] =~ /$REGhome\/AST_VDadapt\.pl/) 
-		{
-		$runningAST_VDadapt++;
-		if ($DB) {print "AST_VDadapt RUNNING:             |$psline[1]|\n";}
-		}
-	if ($psline[1] =~ /$REGhome\/FastAGI_log\.pl/) 
-		{
-		$runningFastAGI_log++;
-		if ($DB) {print "FastAGI_log RUNNING:             |$psline[1]|\n";}
-		}
-	if ($psline[1] =~ /$REGhome\/AST_VDauto_dial_FILL\.pl/) 
-		{
-		$runningAST_VDauto_dial_FILL++;
-		if ($DB) {print "AST_VDauto_dial_FILL RUNNING:    |$psline[1]|\n";}
-		}
-	if ($psoutput2[$i] =~ / ip_relay /) 
-		{
-		$runningip_relay++;
-		if ($DB) {print "ip_relay RUNNING:                |$psoutput2[$i]|\n";}
-		}
-	if ($psline[1] =~ /$REGhome\/OSDcampaign_stats\.pl/) 
-		{
-		$runningOSDcampaign_stats++;
-		if ($DB) {print "OSDcampaign_stats RUNNING:             |$psline[1]|\n";}
-		}
-	$i++;
-	}
-
-
-if ( ($AST_update > 0) && ($runningAST_update < 1) )
-	{ 
-	if ($DB) {print "starting AST_update...\n";}
-	# add a '-L' to the command below to activate logging
-	`/usr/bin/screen -d -m -S ASTupdate $PATHhome/AST_update.pl`;
-	}
-if ( ($AST_send_listen > 0) && ($runningAST_send < 1) )
-	{ 
-	if ($DB) {print "starting AST_manager_send...\n";}
-	# add a '-L' to the command below to activate logging
-	`/usr/bin/screen -d -m -S ASTsend $PATHhome/AST_manager_send.pl`;
-	}
-if ( ($AST_send_listen > 0) && ($runningAST_listen < 1) )
-	{ 
-	if ($DB) {print "starting AST_manager_listen...\n";}
-	# add a '-L' to the command below to activate logging
-	`/usr/bin/screen -d -m -S ASTlisten $PATHhome/AST_manager_listen.pl`;
-	}
-if ( ($AST_VDauto_dial > 0) && ($runningAST_VDauto_dial < 1) )
-	{ 
-	if ($DB) {print "starting AST_VDauto_dial...\n";}
-	# add a '-L' to the command below to activate logging
-	`/usr/bin/screen -d -m -S ASTVDauto $PATHhome/AST_VDauto_dial.pl`;
-	}
-if ( ($AST_VDremote_agents > 0) && ($runningAST_VDremote_agents < 1) )
-	{ 
-	if ($DB) {print "starting AST_VDremote_agents...\n";}
-	# add a '-L' to the command below to activate logging
-	`/usr/bin/screen -d -m -S ASTVDremote $PATHhome/AST_VDremote_agents.pl`;
-	}
-if ( ($AST_VDadapt > 0) && ($runningAST_VDadapt < 1) )
-	{ 
-	if ($DB) {print "starting AST_VDadapt...\n";}
-	# add a '-L' to the command below to activate logging
-	`/usr/bin/screen -d -m -S ASTVDadapt $PATHhome/AST_VDadapt.pl --debug`;
-	}
-if ( ($OSDcampaign_stats > 0) && ($runningOSDcampaign_stats < 1) )
-	{ 
-	if ($DB) {print "starting OSDcampaign_stats...\n";}
-	# add a '-L' to the command below to activate logging
-	`/usr/bin/screen -d -m -S OSDcampaignstats $PATHhome/OSDcampaign_stats.pl --debug`;
-	}
-if ( ($FastAGI_log > 0) && ($runningFastAGI_log < 1) )
-	{ 
-	if ($DB) {print "starting FastAGI_log...\n";}
-	# add a '-L' to the command below to activate logging
-	`/usr/bin/screen -d -m -S ASTfastlog $PATHhome/FastAGI_log.pl --debug`;
-	}
-if ( ($AST_VDauto_dial_FILL > 0) && ($runningAST_VDauto_dial_FILL < 1) )
-	{ 
-	if ($DB) {print "starting AST_VDauto_dial_FILL...\n";}
-	# add a '-L' to the command below to activate logging
-	`/usr/bin/screen -d -m -S ASTVDautoFILL $PATHhome/AST_VDauto_dial_FILL.pl`;
-	}
-if ( ($ip_relay > 0) && ($runningip_relay < 1) )
-	{ 
-	if ($DB) {print "starting ip_relay through relay_control...\n";}
-	`$PATHhome/ip_relay/relay_control start  2>/dev/null 1>&2`;
 	}
 }
 
+print "DONE\n" if ($DB);
+exit 0;
 
 
 
-if ($DB) {print "DONE\n";}
-
-exit;
+sub check_keepalive {
+	my ($index, $progname) = @_;
+	$keepalive{$progname}=0;
+	$running{$progname}=0;
+	$keepalive{$progname}=1 if ($osdial->{'VARactive_keepalives'} =~ /$index/);
+	print $progname . " set to " . $keepalive{$progname} . "\n" if ($DB);
+}
