@@ -498,6 +498,8 @@ sub gen_conferences {
 		if ($asterisk_version =~ /^1\.6/) {
 			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN},F)\n";
 			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",2,Hangup\n";
+			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},F)\n";
+			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Set(SPYGROUP=\${EXTEN:1})\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Meetme(\${EXTEN:1},F)\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",3,Hangup\n";
@@ -510,6 +512,8 @@ sub gen_conferences {
 		} else {
 			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN}|F\n";
 			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",2,Hangup\n";
+			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|F\n";
+			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|F\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Hangup\n";
 			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
@@ -535,6 +539,9 @@ sub gen_conferences {
 			$cnf2 .= "exten => _" . $sret->{conf_exten} .  ",1,Playback(sip-silence)\n";
 			$cnf2 .= "exten => _" . $sret->{conf_exten} .  ",2,Meetme(\${EXTEN},Fq)\n";
 			$cnf2 .= "exten => _" . $sret->{conf_exten} .  ",3,Hangup\n";
+			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Meetme(\${EXTEN:1},Fq)\n";
+			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",3,Hangup\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Playback(sip-silence)\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Meetme(\${EXTEN:1},Fq)\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",3,Hangup\n";
@@ -554,6 +561,9 @@ sub gen_conferences {
 			$cnf2 .= "exten => _" . $sret->{conf_exten} .  ",1,Playback(sip-silence)\n";
 			$cnf2 .= "exten => _" . $sret->{conf_exten} .  ",2,Meetme,\${EXTEN}|Fq\n";
 			$cnf2 .= "exten => _" . $sret->{conf_exten} .  ",3,Hangup\n";
+			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Meetme,\${EXTEN:1}|Fq\n";
+			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",3,Hangup\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Playback(sip-silence)\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Meetme,\${EXTEN:1}|Fq\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",3,Hangup\n";
