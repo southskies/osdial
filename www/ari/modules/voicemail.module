@@ -506,7 +506,7 @@ class Voicemail {
           " . _("forward_to") . "
           </button>
           <select name='mailbox_rx'>
-            <option VALUE=''>
+            <option VALUE=''>" . _("Mailbox") . "
             " . $forward_options . "
 	  </select>
           <button class='infobar' type='submit' onclick=\"document.voicemail_form.a.value='email_to'\">
@@ -560,6 +560,7 @@ $arrowImg . "</a></th>";
       $i++;
     }
     $recording_header .= "<th>" . _("Playback") . "</th>";
+    $stream_header .= "<th>" . _("Stream") . "</th>";
 
     // Column to provide a download link for each message in voicemail.
     $download_header .= "<th>" . _("Download"). "</th>";
@@ -603,7 +604,8 @@ _("Play") . "></img></a>";
             <td>" . $value[priority] . "</td>
             <td width=90>" . $to . "</td>
             <td>" . $duration . " sec</td>
-            <td>" . $recordingLink . "&nbsp;&nbsp;" . $callmeLink . "</td>
+            <td>" . $callmeLink . "</td>
+            <td>" . $recordingLink . "</td>
             <td>" . $downloadLink . "</td>
           </tr>";
 
@@ -745,6 +747,7 @@ _("Play") . "></img></a>";
         <tr>
            " . $recording_delete_header . "
            " . $recording_header . "
+           " . $stream_header . "
            " . $download_header . "
         </tr>
         " . $tableText . "

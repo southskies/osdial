@@ -147,6 +147,8 @@ class DisplaySearch extends Display {
           <td>
            " . $left_text . "
          </td>
+        </tr>
+        <tr>
          <td align='right'>
            " . $right_text ."
          </td>

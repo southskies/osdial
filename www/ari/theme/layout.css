@@ -78,7 +78,7 @@ table#login_text  {
 /* Line */
 
 #line {
-  min-width: 604px;
+  min-width: 775px;;
   border: 1px solid #333; 
   padding: 0;
   margin: 0;  
@@ -104,7 +104,7 @@ table#login_text  {
 /* Navbar */
 
 #navbar {
-  width: 604px;
+  width: 775px;
   height: 24px;
   border: 1px; 
   padding: 0;
@@ -132,7 +132,7 @@ table#login_text  {
 /* Info Bar */
 
 #info_bar {
-  min-width: 604px;
+  min-width: 775px;;
   border: 1px solid #333; 
   padding: 3px;
   margin-top: -1px;  /* stupid browser hack */
@@ -181,13 +181,13 @@ input.infoBar {
 }
 
 .bar_left {
-  width: 604px;
+  width: 775px;
   margin: 0 0 16px 0; 
   padding: 0;
 }
 
 .bar_center {
-  width: 604px;
+  width: 775px;;
   text-align: center;
   margin: 0 0 16px 0; 
   padding: 0;
@@ -217,7 +217,7 @@ table.callmonitor {
   border-collapse: collapse;
   border-spacing: 0px;
   margin: 0 0 16px 0;
-  width: 604px;
+  width: 775px;;
 }
 table.callmonitor th { 
   background-color: #BEC8D1;
@@ -259,7 +259,7 @@ table.voicemail {
   border-collapse: collapse;
   border-spacing: 0px;
   margin: 0 0 16px 0;
-  width: 604px;
+  width: 775px;;
 }
 table.voicemail th { 
   background-color: #BEC8D1;
