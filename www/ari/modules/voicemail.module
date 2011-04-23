@@ -422,8 +422,32 @@ class Voicemail {
 
     // forward options
     if (is_readable($ASTERISK_VOICEMAIL_CONF)) {
-      $lines = file($ASTERISK_VOICEMAIL_CONF);
+        $linespre = file($ASTERISK_VOICEMAIL_CONF);
+        // look for include files and tack their lines to end of array
+        foreach ($linespre as $key => $line) {
+            if (preg_match("/include/i",$line)) {
+                $include_filename = '';
+                $parts = preg_split('/\s/',$line);
+                if (isset($parts[1])) {
+                    $include_filename = trim($parts[1]);
+                }
+                if ($include_filename) {
+                    $path_parts = pathinfo($ASTERISK_VOICEMAIL_CONF);
+                    $include_path = fixPathSlash($path_parts['dirname']) . $include_filename;
+                    foreach (glob($include_path) as $include_file) {
+                        $include_lines = file($include_file);
+                        foreach ($include_lines as $key2 => $line2) {
+                            $lines[] = $line2;
+                        }
+                    }
+                }
+            } else {
+                $lines[] = $line;
+            }
+        }
+
       $ext_array = array();
+      // process
       foreach ($lines as $key => $line) {
 
         // get context for forward to mailbox
