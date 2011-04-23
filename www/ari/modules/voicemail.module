@@ -27,11 +27,16 @@ class Voicemail {
     global $astman;
 
     $extension = $_SESSION['ari_user']['extension'];
-    $sessionid = $_SESSION['ari_user']['sessionid'];
-    $this->callme_num = callme_getnum($extension);
-    if (empty($this->callme_num)) {
-	$this->callme_num = $sessionid;		// callme_num defaults to user's sessionid.
+    if(isset($_POST['sessionid'])) $sessionid = $_POST['sessionid'];
+    if(isset($_GET['sessionid'])) $sessionid = $_GET['sessionid'];
+    if (!empty($sessionid)) {
+	$this->callme_num = $sessionid;
 	callme_setnum($extension, $sessionid);
+    } else {
+    	$this->callme_num = callme_getnum($extension);
+    }
+    if (empty($this->callme_num)) {
+	$this->callme_num = $extension;		// callme_num defaults to user's sessionid.
         $cmd = "database put OSDUSER $extension/voicemail $context";
         $astman->Command($cmd);
     }

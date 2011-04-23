@@ -581,9 +581,10 @@ class Settings {
 	  global $ASTERISK_VOICEMAIL_CONTEXT;
 	  global $ARI_DEFAULT_USER_PAGE;
 	  if (is_readable($ASTERISK_VOICEMAIL_CONF)) {
-		  $lines = file($ASTERISK_VOICEMAIL_CONF);
+                  $lines = array();
+		  $linespre = file($ASTERISK_VOICEMAIL_CONF);
 		  // look for include files and tack their lines to end of array
-		  foreach ($lines as $key => $line) {
+		  foreach ($linespre as $key => $line) {
 			  if (preg_match("/include/i",$line)) {
 				  $include_filename = '';
 				  $parts = preg_split('/\s/',$line);
@@ -595,9 +596,13 @@ class Settings {
 					  $include_path = fixPathSlash($path_parts['dirname']) . $include_filename;
 					  foreach (glob($include_path) as $include_file) {
 						  $include_lines = file($include_file);
-						  $lines = array_merge($include_lines,$lines);
+                                                  foreach ($include_lines as $key2 => $line2) {
+                                                      $lines[] = $line2;
+                                                  }
 					  }
 				  }
+			  } else {
+                              $lines[] = $line;
 			  }
 		  }
 		  // process

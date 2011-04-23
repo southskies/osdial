@@ -70,7 +70,7 @@ function callme_setnum($exten, $callme_num)
 function callme_startcall($to, $from, $new_path)
 {
 	global $astman;
-	$channel	= "Local/9$to@osdial/n";
+	$channel	= "Local/$to@osdial/n";
 	$context	= "osdial_arivmcall";
 	$extension	= "s";
 	$priority	= "1";
@@ -119,7 +119,7 @@ function callme_hangup($exten)
 {
 	global $astman;
 	$cmd 		= "local show channels";
-        $chan_pat 	= '/[\s]*Local\/' . preg_quote(trim($exten)) . '@from\-internal\-[a-zA-Z0-9]*,(1|2)[\s]*/';
+        $chan_pat 	= '/[\s]*Local\/' . preg_quote(trim($exten)) . '@osdial\-[a-zA-Z0-9]*.(1|2)[\s]*/';
 	$matches[0] 	= "";
 	$response 	= "";
 	$channel 	= "";

@@ -62,15 +62,12 @@ class Login {
       $password = $data['password'];
     }
 
-    $sessionid = '';
     if (isset($_POST['username']) && isset($_POST['password'])) {
       $username = $_POST['username'];
       $password = $_POST['password'];
-      $sessionid = $_POST['sessionid'];
     } else if (isset($_GET['username']) && isset($_GET['password'])) {
       $username = $_GET['username'];
       $password = $_GET['password'];
-      $sessionid = $_GET['sessionid'];
     }
 
     // init email options array
@@ -328,8 +325,6 @@ class Login {
 
       // set
       if ($extension) {
-        if ($sessionid!='') callme_setnum($extension, $sessionid);
-        $_SESSION['ari_user']['sessionid'] = $sessionid;
         $_SESSION['ari_user']['extension'] = $extension;
         $_SESSION['ari_user']['outboundCID'] = $outboundCID;
         $_SESSION['ari_user']['displayname'] = $displayname;
