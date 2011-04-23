@@ -6377,11 +6377,26 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 	function voicemail_ariopen() {
 		if (VD_live_customer_call==0 && (vmail_messages + vmail_old_messages)>0) {
 			document.getElementById('ARIPanel').style.visibility='visible';
-			document.getElementById('ARIFrame').src = '/voicemail/' + server_ip + '/ari/index.php?username='+voicemail_id+'&password='+voicemail_password+'&sessionid='+session_id;
+			document.getElementById('ARIFrame').src = '/voicemail/' + server_ip + '/ari/index.php?sessionid=1'+session_id+'&username='+voicemail_id+'&password='+voicemail_password;
 		}
 	}
 
 	function voicemail_ariclose() {
+		document.getElementById('ARIFrame').src = '/voicemail/' + server_ip + '/ari/index.php?logout=1';
 		document.getElementById('ARIPanel').style.visibility='hidden';
 		document.getElementById('ARIFrame').src = '/agent/blank.php';
+		voicemail_arihangup();
+	}
+
+	function voicemail_arihangup() {
+		var arixmlhttp=getXHR();
+		if (arixmlhttp) { 
+			ari_url = '/voicemail/' + server_ip + '/ari/misc/callme_page.php';
+			ari_query = 'action=h&callmenum=1' + session_id;
+			arixmlhttp.open('POST', ari_url, false); 
+			arixmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+			debug('<b>voicemail_arihangup:</b> ' + ari_query,3);
+			arixmlhttp.send(ari_query); 
+			delete arixmlhttp;
+		}
 	}
