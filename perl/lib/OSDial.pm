@@ -105,28 +105,8 @@ sub new {
 
 	$self->debug(1,'new',"Initializing OSDial module, debug-level is %s.",$self->{DB});
 	
-	# Load osdial.conf settings.
-        $self->_load_config();
-
-	$self->sql_max_packet();
-
-	# Load system settings.
-        $self->{settings} = $self->sql_query("SELECT * FROM system_settings LIMIT 1;");
-	foreach my $st (keys %{$self->{settings}}) {
-		$self->debug(4,'new','    %-30s => %-30s.',$st,$self->{settings}{$st});	
-	}
-
-	# Load this servers settings.
-        $self->{server} = $self->sql_query(sprintf("SELECT * FROM servers WHERE server_ip='%s' LIMIT 1;", $self->{VARserver_ip}));
-	foreach my $st (keys %{$self->{server}}) {
-		$self->debug(4,'new','    %-30s => %-30s.',$st,$self->{server}{$st});	
-	}
-
-	# Parse in settings from configuration table.
-        while (my $sret = $self->sql_query(sprintf("SELECT name,data FROM configuration WHERE fk_id='';"))) {
-		$self->{configuration}{$sret->{name}} = $sret->{data};
-		$self->debug(4,'new','    %-30s => %-30s.',$sret->{name},$sret->{data});	
-	}
+	# Load osdial.conf and database settings.
+        $self->load_config();
 
         return $self;
 }
@@ -265,21 +245,61 @@ sub _set_defaults {
 	);
 }
 
-sub _load_config {
+=item B<load_config()> - load configuration.
+
+Loads in the configuration from /etc/osdial.conf, global and server specific
+database settings.
+
+   # Read /etc/osdial.conf setting.
+   $osdial->{VARserver_ip}
+
+   # Read setting from system_settings table.
+   $osdial->{settings}{company_name}
+
+   # Read setting for this specific server.
+   $osdial->{server}{server_id}
+
+   # Read a setting in from the configuration table.
+   $osdial->{configuration}{ArchiveHost}
+
+=cut
+
+sub load_config {
 	my $self = shift;
         if (-e $self->{PATHconf}) {
-		$self->debug(4,'_load_config',"Loading configuration file (%s).",$self->{PATHconf});
+		$self->debug(4,'load_config',"Loading configuration file (%s).",$self->{PATHconf});
         	open(CONF, $self->{PATHconf}) or die 'OSDial: Error opening ' . $self->{PATHconf} . "\n";
         	while (my $line = <CONF>) {
         	        $line =~ s/ |>|"|'|\n|\r|\t|\#.*|;.*//gi;
         	        if ($line =~ /=|:/) {
         	                my($key,$val) = split /=|:/, $line;
         	                $self->{$key} = $val;
-				$self->debug(4,'_load_config',"    %-40s => %-40s.",$key,$val);
+				$self->debug(4,'load_config',"    %-40s => %-40s.",$key,$val);
         	        }
         	}
+
+		$self->sql_max_packet();
+
+		# Load system settings.
+        	$self->{settings} = $self->sql_query("SELECT * FROM system_settings LIMIT 1;");
+		foreach my $st (keys %{$self->{settings}}) {
+			$self->debug(4,'new','    %-30s => %-30s.',$st,$self->{settings}{$st});	
+		}
+
+		# Load this servers settings.
+        	$self->{server} = $self->sql_query(sprintf("SELECT * FROM servers WHERE server_ip='%s' LIMIT 1;", $self->{VARserver_ip}));
+		foreach my $st (keys %{$self->{server}}) {
+			$self->debug(4,'new','    %-30s => %-30s.',$st,$self->{server}{$st});	
+		}
+
+		# Parse in settings from configuration table.
+        	while (my $sret = $self->sql_query(sprintf("SELECT name,data FROM configuration WHERE fk_id='';"))) {
+			$self->{configuration}{$sret->{name}} = $sret->{data};
+			$self->debug(4,'new','    %-30s => %-30s.',$sret->{name},$sret->{data});	
+		}
+
 	} else {
-		$self->debug(0,'_load_config',"Configuration file (%s) does not exist.",$self->{PATHconf});
+		$self->debug(0,'load_config',"Configuration file (%s) does not exist.",$self->{PATHconf});
 	}
 }
 
