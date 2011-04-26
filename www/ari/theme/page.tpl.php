@@ -41,7 +41,7 @@
               <b class='nav_b4'></b><b class='nav_b3'></b><b class='nav_b2'></b><b class='nav_b1'></b>
             <?php } ?>
           </div>
-          <div><img height=14 src="theme/spacer.gif" alt=""></div> 
+          <div><img height=75 src="theme/spacer.gif" alt=""></div> 
           <?php if (isset($subnav_menu) && $subnav_menu != '') { ?>
             <div class="subnav">
               <div class="subnav_title"><?php echo _("Folders")?>:</div>
