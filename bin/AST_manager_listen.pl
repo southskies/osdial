@@ -62,214 +62,120 @@
 
 $|++;
 
-# constants
-$DB=1;  # Debug flag, set to 0 for no debug messages, lots of output
-$US='__';
-@MT=();
+use strict;
+use OSDial;
+use Getopt::Long;
+#use Time::HiRes ('gettimeofday','usleep','sleep');  # necessary to have perl sleep command of less than one second
+use Net::Telnet;
 
-### begin parsing run-time options ###
-if (length($ARGV[0])>1)
-{
-	$i=0;
-	while ($#ARGV >= $i)
-	{
-	$args = "$args $ARGV[$i]";
-	$i++;
-	}
 
-	if ($args =~ /--help/i)
-	{
-	print "allowed run time options:\n  [-t] = test\n  [-debug] = verbose debug messages\n[-debugX] = Extra-verbose debug messages\n\n";
+my $DB=0;
+my $DBX=0;
+my $VERBOSE=0;
+my $TEST=0;
+my $HELP=0;
+
+if (scalar @ARGV) {
+	GetOptions(
+		'help!' => \$HELP,
+		'debug!' => \$DB,
+		'debugX!' => \$DBX,
+		'verbose+' => \$VERBOSE,
+		'test!' => \$TEST
+	);
+	$DB=$VERBOSE if ($VERBOSE);
+	$DBX=$VERBOSE if ($VERBOSE>1);
+	$DB=$VERBOSE if ($DBX);
+	$DB=$VERBOSE=1 if ($TEST and $DB==0);
+	if ($DB) {
+		print "----- DEBUGGING -----\n";
+		print "----- Testing Mode -----\n" if ($TEST);
+		print "VARS-\n";
+		print "help-        $HELP\n";
+		print "debug-       $DB\n";
+		print "debugX-      $DBX\n";
+		print "verbose-     $VERBOSE\n";
+		print "test-        $TEST\n";
+		print "\n";
 	}
-	else
-	{
-		if ($args =~ /-debug/i)
-		{
-		$DB=1; # Debug flag
-		}
-		if ($args =~ /--debugX/i)
-		{
-		$DBX=1;
-		print "\n----- SUPER-DUPER DEBUGGING -----\n\n";
-		}
-		if ($args =~ /-t/i)
-		{
-		$TEST=1;
-		$T=1;
-		}
+	if ($HELP) {
+		print "ADMIN_keepalive_ALL.pl: Allowed run time options:\n";
+		print "  [--help] = This screen.\n";
+		print "  [--debug] = debug\n";
+		print "  [--debugX] = super debug\n";
+		print "  [-v|--verbose] = verbose (debug)\n";
+		print "  [-t|--test] = Run in test mode.\n";
+		exit;
 	}
 }
-else
-{
-#	print "no command line options set\n";
-}
-### end parsing run-time options ###
 
-# default path to osdial.configuration file:
-$PATHconf =		'/etc/osdial.conf';
+my $osdial = OSDial->new('DB'=>$DB);
 
-open(conf, "$PATHconf") || die "can't open $PATHconf: $!\n";
-@conf = <conf>;
-close(conf);
-$i=0;
-foreach(@conf)
-	{
-	$line = $conf[$i];
-	$line =~ s/ |>|\n|\r|\t|\#.*|;.*//gi;
-	if ( ($line =~ /^PATHhome/) && ($CLIhome < 1) )
-		{$PATHhome = $line;   $PATHhome =~ s/.*=//gi;}
-	if ( ($line =~ /^PATHlogs/) && ($CLIlogs < 1) )
-		{$PATHlogs = $line;   $PATHlogs =~ s/.*=//gi;}
-	if ( ($line =~ /^PATHagi/) && ($CLIagi < 1) )
-		{$PATHagi = $line;   $PATHagi =~ s/.*=//gi;}
-	if ( ($line =~ /^PATHweb/) && ($CLIweb < 1) )
-		{$PATHweb = $line;   $PATHweb =~ s/.*=//gi;}
-	if ( ($line =~ /^PATHsounds/) && ($CLIsounds < 1) )
-		{$PATHsounds = $line;   $PATHsounds =~ s/.*=//gi;}
-	if ( ($line =~ /^PATHmonitor/) && ($CLImonitor < 1) )
-		{$PATHmonitor = $line;   $PATHmonitor =~ s/.*=//gi;}
-	if ( ($line =~ /^VARserver_ip/) && ($CLIserver_ip < 1) )
-		{$VARserver_ip = $line;   $VARserver_ip =~ s/.*=//gi;}
-	if ( ($line =~ /^VARDB_server/) && ($CLIDB_server < 1) )
-		{$VARDB_server = $line;   $VARDB_server =~ s/.*=//gi;}
-	if ( ($line =~ /^VARDB_database/) && ($CLIDB_database < 1) )
-		{$VARDB_database = $line;   $VARDB_database =~ s/.*=//gi;}
-	if ( ($line =~ /^VARDB_user/) && ($CLIDB_user < 1) )
-		{$VARDB_user = $line;   $VARDB_user =~ s/.*=//gi;}
-	if ( ($line =~ /^VARDB_pass/) && ($CLIDB_pass < 1) )
-		{$VARDB_pass = $line;   $VARDB_pass =~ s/.*=//gi;}
-	if ( ($line =~ /^VARDB_port/) && ($CLIDB_port < 1) )
-		{$VARDB_port = $line;   $VARDB_port =~ s/.*=//gi;}
-	$i++;
-	}
 
-# Customized Variables
-$server_ip = $VARserver_ip;		# Asterisk server IP
+my $telnet_login = $osdial->{server}{ASTmgrUSERNAME};
+$telnet_login = $osdial->{server}{ASTmgrUSERNAMElisten} if (length($osdial->{server}{ASTmgrUSERNAMElisten}) > 3);
 
-if (!$VARDB_port) {$VARDB_port='3306';}
+$osdial->event_logger('listen_process', 'LOGGED INTO MYSQL SERVER ON 1 CONNECTION|');
 
-	&get_time_now;
+my $keepalive_count_loop = 0;
 
-#use lib './lib', '../lib';
-use Time::HiRes ('gettimeofday','usleep','sleep');  # necessary to have perl sleep command of less than one second
-use DBI;
-use Net::Telnet ();
-	  
-	$dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
-    or die "Couldn't connect to database: " . DBI->errstr;
+my $one_day_interval = 90;
+while($one_day_interval > 0) {
 
-### Grab Server values from the database
-$stmtA = "SELECT telnet_host,telnet_port,ASTmgrUSERNAME,ASTmgrSECRET,ASTmgrUSERNAMEupdate,ASTmgrUSERNAMElisten,ASTmgrUSERNAMEsend,max_osdial_trunks,answer_transfer_agent,local_gmt,ext_context,vd_server_logs,asterisk_version FROM servers WHERE server_ip='$server_ip';";
-$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-$sthArows=$sthA->rows;
-$rec_count=0;
-while ($sthArows > $rec_count)
-	{
-	 @aryA = $sthA->fetchrow_array;
-		$DBtelnet_host	=			"$aryA[0]";
-		$DBtelnet_port	=			"$aryA[1]";
-		$DBASTmgrUSERNAME	=		"$aryA[2]";
-		$DBASTmgrSECRET	=			"$aryA[3]";
-		$DBASTmgrUSERNAMEupdate	=	"$aryA[4]";
-		$DBASTmgrUSERNAMElisten	=	"$aryA[5]";
-		$DBASTmgrUSERNAMEsend	=	"$aryA[6]";
-		$DBmax_osdial_trunks	=	"$aryA[7]";
-		$DBanswer_transfer_agent=	"$aryA[8]";
-		$DBSERVER_GMT		=		"$aryA[9]";
-		$DBext_context	=			"$aryA[10]";
-		$DBvd_server_logs =			"$aryA[11]";
-		$DBasterisk_version =			"$aryA[12]";
-		if ($DBtelnet_host)				{$telnet_host = $DBtelnet_host;}
-		if ($DBtelnet_port)				{$telnet_port = $DBtelnet_port;}
-		if ($DBASTmgrUSERNAME)			{$ASTmgrUSERNAME = $DBASTmgrUSERNAME;}
-		if ($DBASTmgrSECRET)			{$ASTmgrSECRET = $DBASTmgrSECRET;}
-		if ($DBASTmgrUSERNAMEupdate)	{$ASTmgrUSERNAMEupdate = $DBASTmgrUSERNAMEupdate;}
-		if ($DBASTmgrUSERNAMElisten)	{$ASTmgrUSERNAMElisten = $DBASTmgrUSERNAMElisten;}
-		if ($DBASTmgrUSERNAMEsend)		{$ASTmgrUSERNAMEsend = $DBASTmgrUSERNAMEsend;}
-		if ($DBmax_osdial_trunks)		{$max_osdial_trunks = $DBmax_osdial_trunks;}
-		if ($DBanswer_transfer_agent)	{$answer_transfer_agent = $DBanswer_transfer_agent;}
-		if ($DBSERVER_GMT)				{$SERVER_GMT = $DBSERVER_GMT;}
-		if ($DBext_context)				{$ext_context = $DBext_context;}
-		if ($DBvd_server_logs =~ /Y/)	{$SYSLOG = '1';}
-			else {$SYSLOG = '0';}
-	 $rec_count++;
-	}
-$sthA->finish();
-
-if (!$telnet_port) {$telnet_port = '5038';}
-
-	$event_string='LOGGED INTO MYSQL SERVER ON 1 CONNECTION|';
-	&event_logger;
-
-$one_day_interval = 90;		# 1 day loops for 3 months
-while($one_day_interval > 0)
-{
-
-		$event_string="STARTING NEW MANAGER TELNET CONNECTION||ATTEMPT|ONE DAY INTERVAL:$one_day_interval|";
-	&event_logger;
-#   Errmode    => Return,
+	$osdial->event_logger('listen_process', "STARTING NEW MANAGER TELNET CONNECTION||ATTEMPT|ONE DAY INTERVAL:$one_day_interval|");
 
 	### connect to asterisk manager through telnet
-	$tn = new Net::Telnet (Port => $telnet_port,
+	my $tn = new Net::Telnet (Port => $osdial->{server}{telnet_port},
 						  Prompt => '/.*[\$%#>] $/',
 						  Output_record_separator => '',);
-	#$LItelnetlog = "$PATHlogs/listen_telnet_log.txt"  # uncomment for telnet log
-	#$fh = $tn->dump_log("$LItelnetlog");  # uncomment for telnet log
-	if (length($ASTmgrUSERNAMElisten) > 3) {$telnet_login = $ASTmgrUSERNAMElisten;}
-	else {$telnet_login = $ASTmgrUSERNAME;}
-	$tn->open("$telnet_host"); 
-	if ($DBasterisk_version =~ /^1\.6/) {
-		$tn->waitfor('/1\n$/');			# print login
-		$tn->print("Action: Login\nActionID: 1\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
+	$tn->open($osdial->{server}{telnet_host}); 
+
+	# print login
+	if ($osdial->{server}{asterisk_version} =~ /^1\.6/) {
+		$tn->waitfor('/1\n$/');
+		$tn->print("Action: Login\nActionID: 1\nUsername: $telnet_login\nSecret: " . $osdial->{server}{ASTmgrSECRET} . "\n\n");
 	} else {
-		$tn->waitfor('/0\n$/');			# print login
-		$tn->print("Action: Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
+		$tn->waitfor('/0\n$/');
+		$tn->print("Action: Login\nUsername: $telnet_login\nSecret: " . $osdial->{server}{ASTmgrSECRET} . "\n\n");
 	}
-	$tn->waitfor('/Authentication accepted/');		# waitfor auth accepted
+	# waitfor auth accepted
+	$tn->waitfor('/Authentication accepted/');
+	$tn->buffer_empty;
 
-			$tn->buffer_empty;
+	$osdial->event_logger('listen_process', "STARTING NEW MANAGER TELNET CONNECTION|$telnet_login|CONFIRMED CONNECTION|ONE DAY INTERVAL:$one_day_interval|");
 
-		$event_string="STARTING NEW MANAGER TELNET CONNECTION|$telnet_login|CONFIRMED CONNECTION|ONE DAY INTERVAL:$one_day_interval|";
-	&event_logger;
+	# 1 day at .10 seconds per loop
+	my $endless_loop=864000;
 
-	$endless_loop=864000;		# 1 day at .10 seconds per loop
+	my $input_buf = '';
 
-	while($endless_loop > 0)
-	{
-                $tn->print("Action:\n");
+	while($endless_loop > 0) {
+                #$tn->print("Action:\n");
                 $tn->print("Action: Ping\n\n") if ($endless_loop % 10 == 0);
 
 		### sleep for 10 hundredths of a second
-		usleep(1*100*1000);
+		#usleep(1*10*1000);
 
-		$msg='';
-		$read_input_buf = $tn->get(Errmode    => Return, Timeout    => 1,);
-		$input_buf_length = length($read_input_buf);
+		my $msg='';
+		my $read_input_buf = $tn->get(Errmode => "return", Timeout => 1,);
+		my $input_buf_length = length($read_input_buf);
 		$msg = $tn->errmsg;
-		if ($msg =~ /filehandle isn\'t open/i)
-		{
-		$endless_loop=0;
-		$one_day_interval=0;
-		print "ERRMSG: |$msg|\n";
-		print "\nAsterisk server shutting down, PROCESS KILLED... EXITING\n\n";
-			$event_string="Asterisk server shutting down, PROCESS KILLED... EXITING|ONE DAY INTERVAL:$one_day_interval|$msg|";
-		&event_logger;
+		if ($msg =~ /filehandle isn\'t open/i) {
+			$endless_loop=0;
+			$one_day_interval=0;
+			print "ERRMSG: |$msg|\n";
+			print "\nAsterisk server shutting down, PROCESS KILLED... EXITING\n\n";
+			$osdial->event_logger('listen_process', "Asterisk server shutting down, PROCESS KILLED... EXITING|ONE DAY INTERVAL:$one_day_interval|$msg|");
 		}
 
-		if ( ($read_input_buf !~ /\n\n/) or ($input_buf_length < 10) )
-			{
-	#		if ($read_input_buf =~ /\n/) {print "\n|||$input_buf_length|||$read_input_buf|||\n";}
-			$input_buf = "$input_buf$read_input_buf";
-			}
-		else
-			{
-			$partial=0;
-			$partial_input_buf='';
+		if ($read_input_buf !~ /\n\n/ or $input_buf_length < 10) {
+			$input_buf .= $read_input_buf;
+		} else {
+			my $partial=0;
+			my $partial_input_buf='';
 
-			if ($read_input_buf !~ /\n\n$/)
-				{
-				$read_input_buf =~ s/\(|\)/ /gi; # replace parens with space
+			if ($read_input_buf !~ /\n\n$/) {
+				$read_input_buf =~ s/\(|\)/ /gi;
 				$partial_input_buf = $read_input_buf;
 				$partial_input_buf =~ s/\n/-----/gi;
 				$partial_input_buf =~ s/\*/\\\*/gi;
@@ -277,26 +183,21 @@ while($one_day_interval > 0)
 				$partial_input_buf =~ s/-----/\n/gi;
 				$read_input_buf =~ s/$partial_input_buf$//gi;
 				$partial++;
-				}
+			}
 
-			$input_buf = "$input_buf$read_input_buf";
-			@input_lines = split(/\n\n/, $input_buf);
+			$input_buf .= $read_input_buf;
+			my @input_lines = split(/\n\n/, $input_buf);
 
-			#if($DB){print "input buffer: $input_buf_length     lines: $#input_lines     partial: $partial\n";}
-			if ( ($DB) && ($partial) ) {print "-----[$partial_input_buf]-----\n\n";}
-			#if($DB){print "|$input_buf|\n";}
+			print "-----[$partial_input_buf]-----\n\n" if ($DB and $partial);
 			
-			$manager_string = "$input_buf";
-				&manager_output_logger;
+			$osdial->event_logger('listen', $input_buf);
 
-			$input_buf = "$partial_input_buf";
-			
+			$input_buf = $partial_input_buf;
 
-			@command_line=@MT;
-			$ILcount=0;
-			foreach(@input_lines) {
-				$input_lines[$ILcount] =~ s/^\n|^\n\n//gi;
-				@command_line=split(/\n/, $input_lines[$ILcount]);
+			my @command_line;
+			foreach my $inline (@input_lines) {
+				$inline =~ s/^\n|^\n\n//gi;
+				@command_line=split(/\n/, $inline);
 				my %ame;
 				foreach my $line (@command_line) {
 					if ($line =~ /: /) {
@@ -314,10 +215,10 @@ while($one_day_interval > 0)
 					}
 				}
 				#Asterisk 1.4 / 1.6 event key conversion
-				$ame{'callerid'} = $ame{'calleridnum'} if ($ame{'calleridnum'});
-				$ame{'state'} = $ame{'channelstatedesc'} if ($ame{'channelstatedesc'});
-				$ame{'srcuniqueid'} = $ame{'uniqueid'} if ($ame{'uniqueid'});
-				$ame{'accountcode'} = $ame{'account'} if ($ame{'account'});
+				$ame{callerid} = $ame{calleridnum} if ($ame{calleridnum});
+				$ame{state} = $ame{channelstatedesc} if ($ame{channelstatedesc});
+				$ame{srcuniqueid} = $ame{uniqueid} if ($ame{uniqueid});
+				$ame{accountcode} = $ame{account} if ($ame{account});
 
 				if ($DB) {
 					foreach my $clkey (keys %ame) {
@@ -328,254 +229,142 @@ while($one_day_interval > 0)
 
 
 				# Clear conference when meetme ends.
-				if ($ame{'event'} =~ /VMChangePassword/i) {
-					my $mailbox = $ame{'mailbox'};
+				if ($ame{event} =~ /VMChangePassword/i) {
+					my $mailbox = $ame{mailbox};
 					if ($mailbox =~ /\@osdial$/) {
 						$mailbox =~ s/\@osdial$//;
-						my $newpassword = $ame{'newpassword'};
-
-						$stmtA = "UPDATE phones SET voicemail_password='$newpassword' WHERE voicemail_id='$mailbox';";
-						my $affected_rows = $dbhA->do($stmtA);
-						if($DB){print "|$affected_rows Updated VM Password|$stmtA\n|";}
+						my $stmtA = sprintf("UPDATE phones SET voicemail_password='%s' WHERE voicemail_id='%s';",$ame{newpassword}, $mailbox);
+						my $affected_rows = $osdial->sql_execute($stmtA);
+						print "|$affected_rows Updated VM Password|$stmtA\n|" if ($DB);
 					}
 				}
 
 				# Clear conference when meetme ends.
-				if ($ame{'event'} =~ /MeetmeEnd/i) {
-					$conference = $ame{'meetme'};
-					$stmtA = "UPDATE conferences SET extension='' WHERE server_ip='$server_ip' AND conf_exten='$conference';";
-					my $affected_rows = $dbhA->do($stmtA);
-					if($DB){print "|$affected_rows Conference cleared|$stmtA\n|";}
-					$stmtA = "UPDATE osdial_conferences SET extension='' WHERE server_ip='$server_ip' AND conf_exten='$conference' AND extension LIKE '3WAY%';";
-					my $affected_rows = $dbhA->do($stmtA);
-					if($DB){print "|$affected_rows Conference cleared|$stmtA\n|";}
+				if ($ame{event} =~ /MeetmeEnd/i) {
+					my $stmtA = sprintf("UPDATE conferences SET extension='' WHERE server_ip='%s' AND conf_exten='%s';",$osdial->{VARserver_ip}, $ame{meetme});
+					my $affected_rows = $osdial->sql_execute($stmtA);
+					print "|$affected_rows Conference cleared|$stmtA\n|" if ($DB);
+					my $stmtA = sprintf("UPDATE osdial_conferences SET extension='' WHERE server_ip='%s' AND conf_exten='%s' AND extension LIKE '3WAY%';", $osdial->{VARserver_ip}, $ame{meetme});
+					my $affected_rows = $osdial->sql_execute($stmtA);
+					print "|$affected_rows Conference cleared|$stmtA\n|" if ($DB);
 				}
 
 				##### look for special osdial conference call event #####
-				if ( ($ame{'event'} =~ /Dial/i || $ame{'state'} =~ /Up/i) && ($ame{'accountcode'} =~ /DCagcW/) ) {
-					if ($ame{'event'} =~ /Dial/i) {
-						if ($ame{'destination'} ne "") {
-							$channel = $ame{'destination'};
-							$callid = $ame{'accountcode'};
-							$uniqueid = $ame{'srcuniqueid'};
-							$stmtA = "UPDATE osdial_manager SET status='UPDATED',channel='$channel',uniqueid='$uniqueid' WHERE server_ip='$server_ip' AND callerid='$callid';";
-							if ($channel !~ /local/i) {
-								my $affected_rows = $dbhA->do($stmtA);
-								if($DB){print "|$affected_rows Conference DIALs updated|$stmtA\n|";}
+				if (($ame{event} =~ /Dial/i or $ame{state} =~ /Up/i) and $ame{accountcode} =~ /DCagcW/) {
+					if ($ame{event} =~ /Dial/i) {
+						if ($ame{destination} ne "") {
+							my $stmtA = sprintf("UPDATE osdial_manager SET status='UPDATED',channel='%s',uniqueid='%s' WHERE server_ip='%s' AND callerid='%s';", $ame{destination}, $ame{srcuniqueid}, $osdial->{VARserver_ip}, $ame{accountcode});
+							if ($ame{destination} !~ /local/i) {
+								my $affected_rows = $osdial->sql_execute($stmtA);
+								print "|$affected_rows Conference DIALs updated|$stmtA\n|" if ($DB);
 							}
 						}
 					}
-					if ($ame{'state'} =~ /^Up/i) {
-						if ($ame{'channel'} ne "") {
-							$channel = $ame{'channel'};
-							$callid = $ame{'accountcode'};
-							$uniqueid = $ame{'srcuniqueid'};
-							$stmtA = "UPDATE osdial_manager SET status='UPDATED',channel='$channel',uniqueid='$uniqueid' WHERE server_ip='$server_ip' AND callerid='$callid' AND status='SENT';";
-							my $affected_rows = $dbhA->do($stmtA);
-							if($DB){print "|$affected_rows Conference DIALs updated|$stmtA|\n";}
+					if ($ame{state} =~ /^Up/i) {
+						if ($ame{channel} ne "") {
+							my $stmtA = sprintf("UPDATE osdial_manager SET status='UPDATED',channel='%s',uniqueid='%s' WHERE server_ip='%s' AND callerid='%s' AND status='SENT';",$ame{channel},$ame{srcuniqueid},$osdial->{VARserver_ip},$ame{accountcode});
+							my $affected_rows = $osdial->sql_execute($stmtA);
+							print "|$affected_rows Conference DIALs updated|$stmtA|\n" if ($DB);
 						}
 					}
 				}
 
 				##### parse through all other important events #####
-				if ( ($ame{'state'} =~ /Ringing|Up|Dialing/i || $ame{'event'} =~ /Newstate|Hangup|NewCallerid|Shutdown/i) && ($input_lines[$ILcount] !~ /ZOMBIE/) ) {
-					if ($ame{'event'} =~ /Shutdown/i) {
+				if (($ame{state} =~ /Ringing|Up|Dialing/i or $ame{event} =~ /Newstate|Hangup|NewCallerid|Shutdown/i) and $inline !~ /ZOMBIE/) {
+					if ($ame{event} =~ /Shutdown/i) {
 						$endless_loop=0;
 						$one_day_interval=0;
 						print "\nAsterisk server shutting down, PROCESS KILLED... EXITING\n\n";
-							$event_string="Asterisk server shutting down, PROCESS KILLED... EXITING|ONE DAY INTERVAL:$one_day_interval|";
-						&event_logger;
+						$osdial->event_logger('listen_process', "Asterisk server shutting down, PROCESS KILLED... EXITING|ONE DAY INTERVAL:$one_day_interval|");
 					}
 
-					if ($ame{'event'} =~ /Hangup/i) {
-						if ( ($ame{'channel'} ne "") && ($ame{'uniqueid'} ne "") ) {
-							$channel = $ame{'channel'};
-							$uniqueid = $ame{'uniqueid'};
-							$stmtA = "UPDATE osdial_manager SET status='DEAD',channel='$channel' WHERE server_ip='$server_ip' AND uniqueid='$uniqueid' AND callerid NOT LIKE \"DCagcW%\";";
+					if ($ame{event} =~ /Hangup/i) {
+						if ($ame{channel} ne "" and $ame{uniqueid} ne "") {
+							my $stmtA = sprintf("UPDATE osdial_manager SET status='DEAD',channel='%s' WHERE server_ip='%s' AND uniqueid='%s' AND callerid NOT LIKE \"DCagcW%\";",$ame{channel},$osdial->{VARserver_ip},$ame{uniqueid});
 
-							my $affected_rows = $dbhA->do($stmtA);
-						   
-							if($DB){print "|$affected_rows HANGUPS updated|$stmtA|\n";}
+							my $affected_rows = $osdial->sql_execute($stmtA);
+							print "|$affected_rows HANGUPS updated|$stmtA|\n" if ($DB);
 						}
 					}
 
-					if ($ame{'state'} =~ /Dialing/i) {
-						if ( ($ame{'channel'} ne "") && ($ame{'uniqueid'} ne "") ) {
-							$channel = $ame{'channel'};
-							$callid = $ame{'callerid'};
-							$callid = $ame{'accountcode'} if ($ame{'accountcode'} ne "");
-							$uniqueid = $ame{'uniqueid'};
-							$stmtA = "UPDATE osdial_manager SET status='SENT',channel='$channel',uniqueid='$uniqueid' WHERE server_ip='$server_ip' AND callerid='$callid';";
-							my $affected_rows = $dbhA->do($stmtA);
-							
-							if($DB){print "|$affected_rows DIALINGs updated|$stmtA|\n";}
+					if ($ame{state} =~ /Dialing/i) {
+						if ($ame{channel} ne "" and $ame{uniqueid} ne "") {
+							my $callid = $ame{callerid};
+							$callid = $ame{accountcode} if ($ame{accountcode} ne "");
+							my $stmtA = sprintf("UPDATE osdial_manager SET status='SENT',channel='%s',uniqueid='%s' WHERE server_ip='%s' AND callerid='%s';",$ame{channel},$ame{uniqueid},$osdial->{VARserver_ip},$callid);
+							my $affected_rows = $osdial->sql_execute($stmtA);
+							print "|$affected_rows DIALINGs updated|$stmtA|\n" if ($DB);
 						}
 					}
-					if ($ame{'state'} =~ /Ringing|Up/i) {
-						if ( ($ame{'channel'} ne "") && ($ame{'uniqueid'} ne "") ) {
-							$channel = $ame{'channel'};
-							$callid = $ame{'callerid'};
-							$callid = $ame{'accountcode'} if ($ame{'accountcode'} ne "");
-							$uniqueid = $ame{'uniqueid'};
-							$stmtA = "UPDATE osdial_manager SET status='UPDATED',channel='$channel',uniqueid='$uniqueid' WHERE server_ip='$server_ip' AND callerid='$callid';";
-							if ($channel !~ /local/i) {
-								my $affected_rows = $dbhA->do($stmtA);
-								if($DB){print "|$affected_rows RINGINGs updated|$stmtA|\n";}
+					if ($ame{state} =~ /Ringing|Up/i) {
+						if ($ame{channel} ne "" and $ame{uniqueid} ne "") {
+							my $callid = $ame{callerid};
+							$callid = $ame{accountcode} if ($ame{accountcode} ne "");
+							my $stmtA = sprintf("UPDATE osdial_manager SET status='UPDATED',channel='%s',uniqueid='%s' WHERE server_ip='%s' AND callerid='%s';",$ame{channel},$ame{uniqueid},$osdial->{VARserver_ip},$callid);
+							if ($ame{channel} !~ /local/i) {
+								my $affected_rows = $osdial->sql_execute($stmtA);
+								print "|$affected_rows RINGINGs updated|$stmtA|\n" if ($DB);
 							}
 						}
 					}
 		
-					if ($ame{'event'} =~ /NewCallerid/i) {
-						if ( ($ame{'channel'} ne "") && ($ame{'uniqueid'} ne "") ) {
-							$channel = $ame{'channel'};
-							$callid = $ame{'callerid'};
-							$callid = $ame{'accountcode'} if ($ame{'accountcode'} ne "");
-							$uniqueid = $ame{'uniqueid'};
-							$stmtA = "UPDATE osdial_manager SET status='UPDATED',channel='$channel',uniqueid='$uniqueid' WHERE server_ip='$server_ip' AND callerid='$callid' LIMIT 1;";
-							my $affected_rows = $dbhA->do($stmtA);
-							if($DB){print "|$affected_rows RINGINGs updated|$stmtA|\n";}
+					if ($ame{event} =~ /NewCallerid/i) {
+						if ($ame{channel} ne "" and $ame{uniqueid} ne "") {
+							my $callid = $ame{callerid};
+							$callid = $ame{accountcode} if ($ame{accountcode} ne "");
+							my $stmtA = sprintf("UPDATE osdial_manager SET status='UPDATED',channel='%s',uniqueid='%s' WHERE server_ip='%s' AND callerid='%s' LIMIT 1;", $ame{channel}, $ame{uniqueid}, $osdial->{VARserver_ip}, $callid);
+							my $affected_rows = $osdial->sql_execute($stmtA);
+							print "|$affected_rows RINGINGs updated|$stmtA|\n" if ($DB);
 						}
 					}
 				}
-				$ILcount++;
 			}
 
 		}
 
 
-	$endless_loop--;
-	$keepalive_count_loop++;
-		if($DB){print STDERR "loop counter: |$endless_loop|$keepalive_count_loop|\r";}
+		$endless_loop--;
+		$keepalive_count_loop++;
 
-		### putting a blank file called "sendmgr.kill" in a directory will automatically safely kill this program
-		if ( (-e "$PATHhome/listenmgr.kill") or ($sendonlyone) )
-			{
-			unlink("$PATHhome/listenmgr.kill");
-			$endless_loop=0;
-			$one_day_interval=0;
-			print "\nPROCESS KILLED MANUALLY... EXITING\n\n";
-			}
+		print STDERR "loop counter: |$endless_loop|$keepalive_count_loop|\r" if ($DB);
+
 
 		### run a keepalive command to flush whatever is in the buffer through and to keep the connection alive
 		### Also, keep the MySQL connection alive by selecting the server_updater time for this server
-		if ($endless_loop =~ /00$|50$/) 
-			{
-				&get_time_now;
+		if ($endless_loop =~ /00$|50$/) {
+			# Reload configuration.
+			$osdial->load_config();
 
-			### Grab Server values from the database
-				$stmtA = "SELECT vd_server_logs FROM servers WHERE server_ip='$VARserver_ip';";
-				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-				$sthArows=$sthA->rows;
-				$rec_count=0;
-				while ($sthArows > $rec_count)
-					{
-					 @aryA = $sthA->fetchrow_array;
-						$DBvd_server_logs =			"$aryA[0]";
-						if ($DBvd_server_logs =~ /Y/)	{$SYSLOG = '1';}
-							else {$SYSLOG = '0';}
-					 $rec_count++;
-					}
-				$sthA->finish();
-
-			### Grab Server values to keep DB connection alive
-			$stmtA = "SELECT SQL_NO_CACHE last_update FROM server_updater WHERE server_ip='$server_ip';";
-			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-			@aryA = $sthA->fetchrow_array;
-				$last_update	=		"$aryA[0]";
-			$sthA->finish();
-
-			if ($DBasterisk_version =~ /^1\.4|^1\.6/) {
-				@list_lines = $tn->cmd(String => "Action: Command\nCommand: core show uptime\n\n", Prompt => '/--END COMMAND--.*/', Errmode    => Return, Timeout    => 1); 
+			my @list_lines;
+			if ($osdial->{server}{asterisk_version} =~ /^1\.4|^1\.6/) {
+				@list_lines = $tn->cmd(	String => "Action: Command\nCommand: core show uptime\n\n",
+							Prompt => '/--END COMMAND--.*/',
+							Errmode    => "return",
+							Timeout    => 1); 
 			} else {
-				@list_lines = $tn->cmd(String => "Action: Command\nCommand: show uptime\n\n", Prompt => '/--END COMMAND--.*/', Errmode    => Return, Timeout    => 1); 
+				@list_lines = $tn->cmd(	String => "Action: Command\nCommand: show uptime\n\n",
+							Prompt => '/--END COMMAND--.*/',
+							Errmode    => "return",
+							Timeout    => 1); 
 			}
-			if($DB){print "input lines: $#list_lines\n";}
-
-			if($DB){print "+++++++++++++++++++++++++++++++sending keepalive transmit line $endless_loop|$now_date|$last_update|\n";}
+			print "input lines: $#list_lines\n" if ($DB);
+			print "+++++++++++++++++++++++++++++++sending keepalive transmit line $endless_loop|" . $osdial->get_datetime() . "|\n" if ($DB);
 			$keepalive_count_loop=0;
 
-			}
-
-
+		}
 	}
 
 
-		if($DB){print "DONE... Exiting... Goodbye... See you later... Not really, initiating next loop...$one_day_interval left\n";}
+	$osdial->event_logger('listen_process', 'HANGING UP|');
+	my @hangup = $tn->cmd(String => "Action: Logoff\n\n", Prompt => "/.*/", Errmode => "return", Timeout => 1); 
+	$tn->close;
 
-		$event_string='HANGING UP|';
-		&event_logger;
-
-		@hangup = $tn->cmd(String => "Action: Logoff\n\n", Prompt => "/.*/", Errmode    => Return, Timeout    => 1); 
-
-		$ok = $tn->close;
-
+	print "DONE... Exiting... Goodbye... See you later... Not really, initiating next loop...$one_day_interval left\n" if ($DB);
 	$one_day_interval--;
-
 }
 
-		$event_string='CLOSING DB CONNECTION|';
-		&event_logger;
-
-
-	$dbhA->disconnect();
-
-
-	if($DB){print "DONE... Exiting... Goodbye... See you later... Really I mean it this time\n";}
+$osdial->event_logger('listen_process', 'CLOSING DB CONNECTION|');
+print "DONE... Exiting... Goodbye... See you later... Really I mean it this time\n" if ($DB);
 
 
 exit;
-
-
-
-
-
-
-
-sub get_time_now	#get the current date and time and epoch for logging call lengths and datetimes
-{
-($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
-$year = ($year + 1900);
-$mon++;
-if ($mon < 10) {$mon = "0$mon";}
-if ($mday < 10) {$mday = "0$mday";}
-if ($hour < 10) {$Fhour = "0$hour";}
-if ($min < 10) {$min = "0$min";}
-if ($sec < 10) {$sec = "0$sec";}
-
-$now_date_epoch = time();
-$now_date = "$year-$mon-$mday $hour:$min:$sec";
-$action_log_date = "$year-$mon-$mday";
-}
-
-
-
-
-
-sub event_logger 
-{
-if ($SYSLOG)
-	{
-	### open the log file for writing ###
-	open(Lout, ">>$PATHlogs/listen_process.$action_log_date")
-			|| die "Can't open $PATHlogs/listen_process.$action_log_date: $!\n";
-	print Lout "$now_date|$event_string|\n";
-	close(Lout);
-	}
-$event_string='';
-}
-
-
-
-
-sub manager_output_logger
-{
-if ($SYSLOG)
-	{
-	open(MOout, ">>$PATHlogs/listen.$action_log_date")
-			|| die "Can't open $PATHlogs/listen.$action_log_date: $!\n";
-	print MOout "$now_date|$manager_string|\n";
-	close(MOout);
-	}
-}
