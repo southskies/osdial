@@ -500,7 +500,7 @@
 								var LMAcontent_match=0;
 								agentphonelive=0;
 								var conv_start=-1;
-								var live_conf_HTML = "<font face=\"Arial,Helvetica\"><B>LIVE CALLS IN YOUR SESSION:</B></font><BR><TABLE WIDTH=" + SDwidth + "><TR><TD><font class=\"log_title\">#</TD><TD><font class=\"log_title\">REMOTE CHANNEL</TD><TD><font class=\"log_title\">HANGUP</TD><TD><font class=\"log_title\">VOLUME</TD></TR>";
+								var live_conf_HTML = "<font face=\"Arial,Helvetica\"><B>LIVE CALLS IN YOUR SESSION:</B></font><BR><TABLE WIDTH=" + SDwidth + "><TR><TD><font class=\"log_title\">#</TD><TD><font class=\"log_title\">REMOTE CHANNEL</TD><TD><font class=\"log_title\">HANGUP</TD><TD width=80><font class=\"log_title\">VOLUME</TD></TR>";
 								if ( (LMAcount > live_conf_calls)  || (LMAcount < live_conf_calls) || (LMAforce > 0)) {
 									LMAe[0]=''; LMAe[1]=''; LMAe[2]=''; LMAe[3]=''; LMAe[4]=''; LMAe[5]=''; 
 									LMAcount=0;   LMAcontent_change++;
@@ -526,7 +526,16 @@
 									} else if (volumecontrol_active!=1) {
 										live_conf_HTML = live_conf_HTML + "<tr bgcolor=\"" + row_color + "\"><td><font class=\"log_text\">" + loop_ct + "</td><td><font class=\"" + chan_name_color + "\">" + channelfieldA + "</td><td><font class=\"log_text\"><a href=\"#\" onclick=\"livehangup_send_hangup('" + channelfieldA + "');return false;\">HANGUP</a></td><td></td></tr>";
 									} else {
-										live_conf_HTML = live_conf_HTML + "<tr bgcolor=\"" + row_color + "\"><td><font class=\"log_text\">" + loop_ct + "</td><td><font class=\"" + chan_name_color + "\">" + channelfieldA + "</td><td><font class=\"log_text\"><a href=\"#\" onclick=\"livehangup_send_hangup('" + channelfieldA + "');return false;\">HANGUP</a></td><td><a href=\"#\" onclick=\"volume_control('UP','" + channelfieldA + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_up.gif\" width=28 height=15 BORDER=0></a> &nbsp; <a href=\"#\" onclick=\"volume_control('DOWN','" + channelfieldA + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_down.gif\" width=28 height=15 BORDER=0></a> &nbsp; &nbsp; &nbsp; <a href=\"#\" onclick=\"volume_control('MUTING','" + channelfieldA + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_MUTE.gif\" width=28 height=28 BORDER=0></a> &nbsp; <a href=\"#\" onclick=\"volume_control('UNMUTE','" + channelfieldA + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_UNMUTE.gif\" width=28 height=28 BORDER=0></a></td></tr>";
+										live_conf_HTML += "<tr height=30 bgcolor=\"" + row_color + "\">";
+										live_conf_HTML += "<td><font class=\"log_text\">" + loop_ct + "</td>";
+										live_conf_HTML += "<td><font class=\"" + chan_name_color + "\">" + channelfieldA + "</td>";
+										live_conf_HTML += "<td><font class=\"log_text\"><a href=\"#\" onclick=\"livehangup_send_hangup('" + channelfieldA + "');return false;\">HANGUP</a></td>";
+										live_conf_HTML += "<td><span id=CHAN"+loop_ct+"controlVOL style=\"position:relative;top:-14px;left:10px;\">";
+										live_conf_HTML += "<span id=\"CHAN"+loop_ct+"volUP\" style=\"position:absolute;top:0px;left:0px;\"><a href=\"#\" onclick=\"volume_control('UP','" + channelfieldA + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_up.gif\" width=28 height=15 BORDER=0></a></span>";
+										live_conf_HTML += "<span id=\"CHAN"+loop_ct+"volDOWN\" style=\"position:absolute;top:14px;left:0px;\"><a href=\"#\" onclick=\"volume_control('DOWN','" + channelfieldA + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_down.gif\" width=28 height=14 BORDER=0></a></span>";
+										live_conf_HTML += "<span id=\"CHAN"+loop_ct+"mute\" style=\"position:absolute;top:0px;left:33px;visibility:visible;\"><a href=\"#\" onclick=\"volume_control('MUTING','" + channelfieldA + "','');document.getElementById('CHAN"+loop_ct+"mute').style.visibility='hidden';document.getElementById('CHAN"+loop_ct+"unmute').style.visibility='visible';document.getElementById('CHANIMG"+loop_ct+"muted').style.visibility='visible';return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_MUTE.gif\" width=28 height=28 BORDER=0></a></span>";
+										live_conf_HTML += "<span id=\"CHAN"+loop_ct+"unmute\" style=\"position:absolute;top:0px;left:33px;visibility:hidden;\"><a href=\"#\" onclick=\"volume_control('UNMUTE','" + channelfieldA + "','');document.getElementById('CHAN"+loop_ct+"unmute').style.visibility='hidden';document.getElementById('CHAN"+loop_ct+"mute').style.visibility='visible';document.getElementById('CHANIMG"+loop_ct+"muted').style.visibility='hidden';return false;\"><img src=\"templates/" + agent_template + "/images/vdc_volume_UNMUTE.gif\" onclick=\"document.getElementById('CHANIMG"+loop_ct+"muted').style.visibility='hidden';\" width=28 height=28 BORDER=0></a></span>";
+										live_conf_HTML += "<span id=\"CHANIMG"+loop_ct+"muted\" style=\"position:absolute;top:0px;left:80;visibility:hidden;\"><img src=\"templates/" + agent_template + "/images/muted.gif\" width=120 height=28 BORDER=0></span></td></tr>";
 									}
 									//var debugspan = document.getElementById("debugbottomspan").innerHTML;
 
@@ -3340,7 +3349,6 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		debug("<b>MainPanelToFront:</b> resumevar=" + resumevar,2);
 		//document.getElementById("MainTable").style.backgroundColor=panel_bg;
 		//document.getElementById("MaiNfooter").style.backgroundColor=panel_bg;
-		voicemail_ariclose();
 		hideDiv('ScriptPanel');
 		showDiv('MainPanel');
 		if (resumevar != 'NO') {
@@ -3378,7 +3386,6 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 	function ScriptPanelToFront() {
 		debug("<b>ScriptPanelToFront:</b>",2);
-		voicemail_ariclose();
 		showDiv('ScriptPanel');
 		//document.getElementById("MainTable").style.backgroundColor=script_bg;
 		//document.getElementById("MaiNfooter").style.backgroundColor=script_bg;
@@ -3407,7 +3414,9 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		var img = document.getElementById("FormButtons");
 		var cur_src = img.src.substring(img.src.lastIndexOf("/")+1);
 
-		if (allow_tab_switch == 'Y' || CalL_allow_tab == 'Y') {
+		if (document.getElementById('ARIPanel').style.visibility=='visible') {
+			voicemail_ariclose();
+		} else if (allow_tab_switch == 'Y' || CalL_allow_tab == 'Y') {
 			if (cur_src == scrpt_img) {
 				MainPanelToFront('NO');
 			} else {
@@ -6364,9 +6373,13 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 					vmail_messages = xmlRes.getElementsByTagName("messages")[0].textContent;
 					vmail_old_messages = xmlRes.getElementsByTagName("old_messages")[0].textContent;
                     if ((vmail_messages + vmail_old_messages) > 0) {
-					    document.getElementById("voicemailbutton").innerHTML = "<a href=\"#\" onclick=\"voicemail_ariopen();\"><img src=\"templates/" + agent_template + "/images/agc_check_voicemail_ON.gif\" width=170 height=30 border=0 alt=\"VOICEMAIL\"></a>";
+                    	if (vmail_messages > 0) {
+			    document.getElementById("voicemailbutton").innerHTML = "<a title=\"New:"+vmail_messages+" Old:"+vmail_old_messages+"\" href=\"#\" onclick=\"voicemail_ariopen();\"><img src=\"templates/" + agent_template + "/images/agc_check_voicemail_BLINK.gif\" width=170 height=30 border=0 alt=\"VOICEMAIL\"></a>";
+			} else {
+			    document.getElementById("voicemailbutton").innerHTML = "<a title=\"Old:"+vmail_old_messages+"\" href=\"#\" onclick=\"voicemail_ariopen();\"><img src=\"templates/" + agent_template + "/images/agc_check_voicemail_ON.gif\" width=170 height=30 border=0 alt=\"VOICEMAIL\"></a>";
+			}
                     } else {
-					    document.getElementById("voicemailbutton").innerHTML = "<a href=\"#\" onclick=\"voicemail_ariopen();\"><img src=\"templates/" + agent_template + "/images/agc_check_voicemail_OFF.gif\" width=170 height=30 border=0 alt=\"VOICEMAIL\"></a>";
+			    document.getElementById("voicemailbutton").innerHTML = "<a title=\"You have no messages!\" href=\"#\" onclick=\"voicemail_ariopen();\"><img src=\"templates/" + agent_template + "/images/agc_check_voicemail_OFF.gif\" width=170 height=30 border=0 alt=\"VOICEMAIL\"></a>";
                     }
 				}
 			}
@@ -6376,6 +6389,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 	function voicemail_ariopen() {
 		if (VD_live_customer_call==0 && (vmail_messages + vmail_old_messages)>0) {
+			conf_channels_detail('HIDE');
 			document.getElementById('ARIPanel').style.visibility='visible';
 			document.getElementById('ARIFrame').src = '/voicemail/' + server_ip + '/ari/index.php?sessionid=1'+session_id+'&username='+voicemail_id+'&password='+voicemail_password;
 		}

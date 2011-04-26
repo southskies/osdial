@@ -1980,7 +1980,7 @@ flush();
 
     <!-- Voicmeail Button -->
     <span style="position:absolute;left:708px;top:425px;z-index:16;" id="voicemailbutton">
-        <a href="#" onclick="voicemail_ariopen();"><img src="templates/<?= $agent_template ?>/images/agc_check_voicemail_OFF.gif" width=170 height=30 border=0 alt="VOICEMAIL"></a>
+        <a href="#" title="You have no messages!" onclick="voicemail_ariopen();"><img src="templates/<?= $agent_template ?>/images/agc_check_voicemail_OFF.gif" width=170 height=30 border=0 alt="VOICEMAIL"></a>
     </span>
 
     <!-- Hot Key Button -->
