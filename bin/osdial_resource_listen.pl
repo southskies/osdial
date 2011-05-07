@@ -48,7 +48,6 @@ while (1) {
 			}
 		} else {
 			$osdial = $interface;
-			$count=0;
 			while (my $sret = $interface->sql_query("SELECT SQL_NO_CACHE * FROM server_stats WHERE update_time>NOW()-1000;")) {
 				my %kvh;
 				foreach my $key (keys %{$sret}) {
