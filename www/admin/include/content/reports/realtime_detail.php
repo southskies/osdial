@@ -1140,7 +1140,7 @@ function report_realtime_detail() {
             if ($IAXmonitorLINK==1) {$L=sprintf('<a href="iax:%s0%s@%s">LISTEN</a> ',$Pserver_ip,$Lsessionid,$Lserver_ip);   $R='';}
             if ($SIPmonitorLINK==2) {$R=sprintf(' <a href="sip:%s07%s@%s">BARGE</a> ', $Pserver_ip,$Lsessionid,$Lserver_ip);}
             if ($IAXmonitorLINK==2) {$R=sprintf(' <a href="iax:%s07%s@%s">BARGE</a> ', $Pserver_ip,$Lsessionid,$Lserver_ip);}
-            if ($SIPmonitorLINK==3) {$L=sprintf('<a href="sip:%s09%s@%s">WHISPER/a>',$Pserver_ip,$Lsessionid,$Lserver_ip);   $R='';}
+            if ($SIPmonitorLINK==3) {$L=sprintf('<a href="sip:%s09%s@%s">WHISPER</a>',$Pserver_ip,$Lsessionid,$Lserver_ip);   $R='';}
             if ($IAXmonitorLINK==3) {$L=sprintf('<a href="iax:%s09%s@%s">WHISPER</a>',$Pserver_ip,$Lsessionid,$Lserver_ip);   $R='';}
 
             $UGD = '';
