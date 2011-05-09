@@ -22,8 +22,8 @@
 
 if ($ADD==122) {
   if ($LOGload_leads==1 and $LOGuser_level > 7) {
-    @apache_setenv('no-gzip', 1);
-    @ini_set('zlib.output_compression', 0);
+    #@apache_setenv('no-gzip', 1);
+    #@ini_set('zlib.output_compression', 0);
 	
 	echo "<center><br><font color=$default_text size=+1>LOAD NEW LEADS</font><br><hr><br>\n";
 	
