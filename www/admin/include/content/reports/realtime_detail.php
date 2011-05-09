@@ -460,7 +460,7 @@ function report_realtime_detail() {
         $html .= "&nbsp;&nbsp;</td>";
         $html .= "<td align=right><font size=2 color=$default_text><b>Order:</b></td><td align=left><font size=2>&nbsp; $DIALorder&nbsp;&nbsp;</td>";
         $html .= "</tr><tr>";
-        if ( (!preg_match('NULL/',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
+        if ( (!preg_match('/NULL/',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
             $html .= "<td align=right><font size=2 color=$default_text><b>$VSCcat1:</b></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1tally&nbsp;&nbsp;</td>\n";
         }
         if ( (!preg_match('/NULL/',$VSCcat2)) and (strlen($VSCcat2)>0) ) {
