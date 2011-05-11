@@ -72,11 +72,13 @@ if ($ADD=="21media") {
             $recfilename = preg_replace('/\.wav$/i','.wav',$recfilename);
             $recfilename = preg_replace('/\.gsm$/i','.gsm',$recfilename);
             $recfilename = preg_replace('/\.mp3$/i','.mp3',$recfilename);
+            rename($recfiletmp, '/tmp/'.$recfilename);
 
-            if ($recfilename != '') media_add_file($link, $recfiletmp, mimemap($recfilename), $media_description, $media_extension,1);
+            if ($recfilename != '') media_add_file($link, '/tmp/'.$recfilename, mimemap($recfilename), $media_description, $media_extension,1);
+            unlink('/tmp/'.$recfilename);
             echo "<br>";
         }
-        $ADD="31media";
+        $ADD="10media";
     } else {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }
