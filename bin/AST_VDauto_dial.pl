@@ -1249,7 +1249,7 @@ while($one_day_interval > 0)
 									}
 								}
 	
-							$stmtA = "UPDATE SQL_NO_CACHE osdial_live_agents SET status='PAUSED',random_id='10' WHERE callerid='$KLcallerid[$kill_vac]';";
+							$stmtA = "UPDATE osdial_live_agents SET status='PAUSED',random_id='10' WHERE callerid='$KLcallerid[$kill_vac]';";
 							$affected_rows = $dbhA->do($stmtA);
 	
 							if ($affected_rows > 0) {
