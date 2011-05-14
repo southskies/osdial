@@ -233,7 +233,7 @@ function report_agent_stats() {
             }
             $table .= "  <tr $bgcolor class=\"row font1\" title=\"DATE: $event_date\">\n";
             $table .= "    <td>$event</td>\n";
-            $table .= "    <td align=center>" . dateToLocal($link,'first',$event_date,$webClientAdjGMT,'',0,1) . "</td>\n";
+            $table .= "    <td align=center>" . dateToLocal($link,'first',$event_date,$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
             $table .= "    <td align=left>" . mclabel($event_camp) . "</td>\n";
             $table .= "    <td align=left>" . mclabel($user_group) . "</td>\n";
             $table .= "    <td align=right>$event_time</td>\n";
@@ -272,8 +272,8 @@ function report_agent_stats() {
             $row=mysql_fetch_row($rslt);
             $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" title=\"START: $row[1]\nEND: $row[2]\">\n";
             $table .= "    <td align=left>$row[0]</td>\n";
-            $table .= "    <td align=center>" . dateToLocal($link,$row[4],$row[1],$webClientAdjGMT,'',0,1) . "</td>\n";
-            $table .= "    <td align=center>" . dateToLocal($link,$row[4],$row[2],$webClientAdjGMT,'',0,1) . "</td>\n";
+            $table .= "    <td align=center>" . dateToLocal($link,$row[4],$row[1],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
+            $table .= "    <td align=center>" . dateToLocal($link,$row[4],$row[2],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
             $table .= "    <td align=right>" . fmt_hms($row[3]) . "</td>\n";
             $table .= "  </tr>\n";
             $psecs += $row[3];
@@ -328,7 +328,7 @@ function report_agent_stats() {
             $event = str_replace(" ", "&nbsp;", $row[0]);
             $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[10]');\">\n";
             $table .= "    <td align=left title=\"Record #: $u\">$u</td>\n";
-            $table .= "    <td align=center title=\"Date/Time: $event\">" . str_replace(" ","&nbsp;",dateToLocal($link,$row[11],$row[0],$webClientAdjGMT,'',0,1)) . "</td>\n";
+            $table .= "    <td align=center title=\"Date/Time: $event\">" . str_replace(" ","&nbsp;",dateToLocal($link,$row[11],$row[0],$webClientAdjGMT,'',$webClientDST,1)) . "</td>\n";
             $table .= "    <td align=right title=\"Wait Time: $row[1] seconds\">$row[1]</td>\n";
             $table .= "    <td align=right title=\"Talk Time: $row[2] seconds\">$row[2]</td>\n";
             $table .= "    <td align=right title=\"Disposition Time: $row[3] seconds\">$row[3]</td>\n";
@@ -386,7 +386,7 @@ function report_agent_stats() {
             $event = str_replace(" ", "&nbsp;", $row[0]);
             $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[10]');\">\n";
             $table .= "    <td align=left title=\"Record #: $u\">$u</td>\n";
-            $table .= "    <td align=center title=\"Date/Time: $event\">" . str_replace(" ", "&nbsp;", dateToLocal($link,$row[11],$row[0],$webClientAdjGMT,'',0,1)) . "</td>\n";
+            $table .= "    <td align=center title=\"Date/Time: $event\">" . str_replace(" ", "&nbsp;", dateToLocal($link,$row[11],$row[0],$webClientAdjGMT,'',$webClientDST,1)) . "</td>\n";
             $table .= "    <td align=right title=\"Wait Time: $row[1] seconds\">$row[1]</td>\n";
             $table .= "    <td align=right title=\"Talk Time: $row[2] seconds\">$row[2]</td>\n";
             $table .= "    <td align=right title=\"Disposition Time: $row[3] seconds\">$row[3]</td>\n";
@@ -490,7 +490,7 @@ function report_agent_stats() {
             $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" ondblclick=\"openNewWindow('$Slocation');\">\n";
             $table .= "    <td title=\"Record #: $u\">$u</td>\n";
             $table .= "    <td align=left title=\"Lead #: $row[12]\"><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[12]\" target=\"_blank\">$row[12]</a></td>\n";
-            $table .= "    <td align=center title=\"Date/Time: $event\">" . str_replace(" ", "&nbsp;", dateToLocal($link,$row[2],$row[4],$webClientAdjGMT,'',0,1)) . "</td>\n";
+            $table .= "    <td align=center title=\"Date/Time: $event\">" . str_replace(" ", "&nbsp;", dateToLocal($link,$row[2],$row[4],$webClientAdjGMT,'',$webClientDST,1)) . "</td>\n";
             $table .= "    <td align=right title=\"Recording Length: $row[8] seconds\">$row[8]</td>\n";
             $table .= "    <td align=right title=\"Recording ID $row[0]\">$row[0]</td>\n";
             $table .= "    <td align=center title=\"Filename: $row[10]\">$row[10]</td>\n";

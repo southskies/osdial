@@ -448,8 +448,8 @@ function report_agent_pause_summary() {
             $table .= "    <td align=left>$row[0]</td>\n";
             $table .= "    <td align=left>$row[1]</td>\n";
             $table .= "    <td align=left>$row[2]</td>\n";
-            $table .= "    <td align=center>" . dateToLocal($link,$row[6],$row[3],$webClientAdjGMT,'',0,1) . "</td>\n";
-            $table .= "    <td align=center>" . dateToLocal($link,$row[6],$row[4],$webClientAdjGMT,'',0,1) . "</td>\n";
+            $table .= "    <td align=center>" . dateToLocal($link,$row[6],$row[3],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
+            $table .= "    <td align=center>" . dateToLocal($link,$row[6],$row[4],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
             $table .= "    <td align=right>" . fmt_hms($row[5]) . "</td>\n";
             $table .= "  </tr>\n";
             $psecs += $row[5];

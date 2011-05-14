@@ -219,10 +219,11 @@ function report_lead_performance_campaign() {
 
     if ($group) {
         $query_date_BEGIN = "$start_date $start_time:00";
+        $query_date_BEGIN = dateToServer($link,'first',$query_date_BEGIN,$webClientAdjGMT,'',$webClientDST,1);
         $query_date_END = "$end_date $end_time:59";
+        $query_date_END = dateToServer($link,'first',$query_date_END,$webClientAdjGMT,'',$webClientDST,1);
 
-        $html .= "OSDIAL: List Performance Campaign / Entry Date                         " . date("Y-m-d H:i:s") . "\n";
-
+        $html .= "OSDIAL: List Performance Campaign / Entry Date      " . dateToLocal($link,'first',date('Y-m-d H:i:s'),$webClientAdjGMT,'',$webClientDST,1) . "\n";
         $html .= "Time range: $query_date_BEGIN to $query_date_END\n\n";
 
         $html .= "</pre>\n";
@@ -251,7 +252,7 @@ function report_lead_performance_campaign() {
         $html .= "  </tr>\n";
         $html .= "<input type=hidden name=\"row" . $CSVrow++ . "\" value=\"" . $head1 . "\">\n";
 
-        $html .= "  <tr class=tabheader>\n";
+        $html .= "  <tr class=tabheader style=\"white-space:nowrap;\">\n";
         if ($type == "hour") {
             $html .= "    <td align=center>Hour</td>\n";
             $head2 = "Hour|";
@@ -349,7 +350,7 @@ function report_lead_performance_campaign() {
             if ($newsales > 0) $newcost_sale = sprintf('%3.2f',$newcost / $newsales);
             $newcost = sprintf('%3.2f',$newcost);
 
-            $html .= "  <tr " . bgcolor($i) . " class=\"row font1\">\n";
+            $html .= "  <tr " . bgcolor($i) . " class=\"row font1\" style=\"white-space: nowrap;\">\n";
             if ($type == "hour") {
                 $html .= "    <td align=right><a href=\"?ADD=$ADD&SUB=$SUB&type=date&start_date=$start_date$groupQS&submit=submit&DB=$DB\">$period</a></td>\n";
                 $html .= "    <td align=center bgcolor=$menubarcolor><font style=\"font-size:1px;\">&nbsp;</font></td>\n";

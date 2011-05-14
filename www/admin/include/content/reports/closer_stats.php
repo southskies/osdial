@@ -218,10 +218,12 @@ function report_closer_stats() {
     $plain='';
     $table='';
     $query_date_BEGIN = "$query_date $time_begin:00";   
+    $query_date_BEGIN = dateToServer($link,'first',$query_date_BEGIN,$webClientAdjGMT,'',$webClientDST,1);
     $query_date_END = "$end_date $time_end:59";
+    $query_date_END = dateToServer($link,'first',$query_date_END,$webClientAdjGMT,'',$webClientDST,1);
 
     $html .= "<div class=onlyprint><pre>\n\n";
-    $html .= "OSDIAL: Inbound / Closer Stats                             $NOW_TIME\n";
+    $html .= "OSDIAL: Inbound / Closer Stats                      " . dateToLocal($link,'first',$NOW_TIME,$webClientAdjGMT,'',$webClientDST,1) . "\n";
 
     $html .= "\n";
     $html .= "Time range: $query_date_BEGIN to $query_date_END\n\n";
@@ -403,7 +405,7 @@ function report_closer_stats() {
     $table .= "          <td align=center colspan=2>Report Details</td>\n";
     $table .= "        </tr>\n";
     $table .= "        <tr bgcolor=$evenrows class=\"row font1\">\n";
-    $table .= "          <td>Date/Time Report Was Run</td><td>$NOW_TIME</td>";
+    $table .= "          <td>Date/Time Report Was Run</td><td>" . dateToLocal($link,'first',$NOW_TIME,$webClientAdjGMT,'',$webClientDST,1) . "</td>";
     $table .= "        </tr>\n";
     $table .= "        <tr bgcolor=$oddrows class=\"row font1\">\n";
     $table .= "          <td>Date/Time Start</td><td>$query_date_BEGIN</td>";

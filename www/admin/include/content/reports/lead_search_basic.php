@@ -148,7 +148,7 @@ function report_lead_search_basic() {
                         $html .= "    <td>$row[19]</td>\n";
                         $html .= "    <td>$row[28]</td>\n";
                         $html .= "    <td>$row[31]</td>\n";
-                        $html .= "    <td>$row[33]</td>\n";
+                        $html .= "    <td>". dateToLocal($link,'first',$row[33],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
                         $html .= "  </tr>\n";
                         $o++;
                     }

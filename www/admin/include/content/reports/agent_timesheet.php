@@ -114,25 +114,27 @@ function report_agent_timesheet() {
         
 
 
-        $stmt=sprintf("SELECT event_time,UNIX_TIMESTAMP(event_time) FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$company_prefix . mres($agent));
+        $stmt=sprintf("SELECT event_time,UNIX_TIMESTAMP(event_time),server_ip FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$company_prefix . mres($agent));
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
 
         $plain .= "FIRST LOGIN:          $row[0]\n";
-        $firstlog = $row[0];
+        $firstlogtitle = $row[0];
+        $firstlog = dateToLocal($link,$row[2],$row[0],$webClientAdjGMT,'',$webClientDST,1);
         $start = $row[1];
 
-        $stmt=sprintf("SELECT FROM_UNIXTIME(dispo_epoch),dispo_epoch FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time DESC LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$company_prefix . mres($agent));
+        $stmt=sprintf("SELECT FROM_UNIXTIME(dispo_epoch),dispo_epoch,server_ip FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time DESC LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$company_prefix . mres($agent));
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
 
         $plain .= "LAST LOG ACTIVITY:    $row[0]\n";
-        $lastlog = $row[0];
+        $lastlogtitle = $row[0];
+        $lastlog = dateToLocal($link,$row[2],$row[0],$webClientAdjGMT,'',$webClientDST,1);
         $end = $row[1];
 
-        $pfLOGIN_TIME_HMS = fmt_hms($end - $start);
+        if ($end > $start) $pfLOGIN_TIME_HMS = fmt_hms($end - $start);
 
         $plain .= "-----------------------------------------\n";
         $plain .= "TOTAL LOGGED-IN TIME:    $pfLOGIN_TIME_HMS\n";
@@ -149,11 +151,11 @@ function report_agent_timesheet() {
         $table .= "          <td></td>\n";
         $table .= "          <td>TIME</td>\n";
         $table .= "        </tr>\n";
-        $table .= "        <tr bgcolor=$oddrows class=\"row font1\">\n";
+        $table .= "        <tr bgcolor=$oddrows class=\"row font1\" title=\"FIRST LOGIN: $firstlogtitle\">\n";
         $table .= "          <td align=center>FIRST LOGIN</td>\n";
         $table .= "          <td align=right>$firstlog</td>\n";
         $table .= "        </tr>\n";
-        $table .= "        <tr bgcolor=$evenrows class=\"row font1\">\n";
+        $table .= "        <tr bgcolor=$evenrows class=\"row font1\" title=\"LAST ACTIVITY: $lastlogtitle\">\n";
         $table .= "          <td align=center>LAST ACTIVITY</td>\n";
         $table .= "          <td align=right>$lastlog</td>\n";
         $table .= "        </tr>\n";
@@ -252,11 +254,11 @@ function report_agent_timesheet() {
         $table .= "  <tr><td align=center><font color=$default_text size=3>AGENT TIMES</font></td></tr>\n";
         $table .= "  <tr>\n";
         $table .= "    <td align=center>\n";
-        $table .= "      <table width=800 align=center cellspacing=1 bgcolor=grey>\n";
+        $table .= "      <table width=850 align=center cellspacing=1 bgcolor=grey>\n";
         $table .= "        <tr class=tabheader>\n";
         $table .= "          <td>AGENT</td>\n";
-        $table .= "          <td>FIRST LOGIN</td>\n";
-        $table .= "          <td>LAST ACTIVITY</td>\n";
+        $table .= "          <td width=17%>FIRST LOGIN</td>\n";
+        $table .= "          <td width=17%>LAST ACTIVITY</td>\n";
         $table .= "          <td>CALLS</td>\n";
         $table .= "          <td>TOTAL TIME</td>\n";
         $table .= "          <td>AVG TIME</td>\n";
@@ -292,22 +294,25 @@ function report_agent_timesheet() {
             $pfWAIT_AVG_MS = fmt_ms($row[7]);
             $pfWRAPUP_AVG_MS = fmt_ms($row[9]);
 
-            $stmt2=sprintf("SELECT event_time FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$row[0]);
+            $stmt2=sprintf("SELECT event_time,server_ip FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$row[0]);
             $rslt2=mysql_query($stmt2, $link);
             if ($DB) {$html .= "$stmt2\n";}
             $row2=mysql_fetch_row($rslt2);
-            $firstlog = $row2[0];
+            $firstlogtitle = $row2[0];
+            $firstlog = dateToLocal($link,$row2[1],$row2[0],$webClientAdjGMT,'',$webClientDST,1);
 
-            $stmt2=sprintf("SELECT FROM_UNIXTIME(dispo_epoch) FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time DESC LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$row[0]);
+
+            $stmt2=sprintf("SELECT FROM_UNIXTIME(dispo_epoch),server_ip FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time DESC LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$row[0]);
             $rslt2=mysql_query($stmt2, $link);
             if ($DB) {$html .= "$stmt2\n";}
             $row2=mysql_fetch_row($rslt2);
-            $lastlog = $row2[0];
+            $lastlogtitle = $row2[0];
+            $lastlog = dateToLocal($link,$row2[1],$row2[0],$webClientAdjGMT,'',$webClientDST,1);
 
             $table .= "        <tr " . bgcolor($i) . " class=\"row font1\">\n";
             $table .= "          <td align=left>$row[0]</td>\n";
-            $table .= "          <td align=right>$firstlog</td>\n";
-            $table .= "          <td align=right>$lastlog</td>\n";
+            $table .= "          <td align=center title=\"FIRST LOGIN: $firstlogtitle\">$firstlog</td>\n";
+            $table .= "          <td align=center title=\"LAST ACTIVITY: $lastlogtitle\">$lastlog</td>\n";
             $table .= "          <td align=right>$row[1]</td>\n";
             $table .= "          <td align=right>$pfTOTAL_TIME_HMS</td>\n";
             $table .= "          <td align=right>$pfTOTAL_AVG_MS</td>\n";
