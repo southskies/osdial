@@ -151,9 +151,9 @@ if ($ADD==1121) {
 			        $row=mysql_fetch_row($rslt);
 			        if (strlen($log_campaign)<1) $log_campaign = $row[3];
 			        $u++;
-			        $call_log .= "  <tr " . bgcolor($u) . " class=\"row font1\">\n";
+			        $call_log .= "  <tr " . bgcolor($u) . " class=\"row font1\" title=\"Date/Time: $row[4]\">\n";
 			        $call_log .= "    <td>$u</td>\n";
-			        $call_log .= "    <td>$row[4]</td>\n";
+			        $call_log .= "    <td>" . dateToLocal($link,$row[4],$row[4],$webClientAdjGMT,'',0,1) . "</td>\n";
 			        $call_log .= "    <td align=left>$row[7]</td>\n";
 			        $call_log .= "    <td align=left>$row[8]</td>\n";
                     if ($LOG['view_agent_stats']) {
@@ -182,9 +182,9 @@ if ($ADD==1121) {
 			        $row=mysql_fetch_row($rslt);
 			        if (strlen($Alog_campaign)<1) $Alog_campaign = $row[5];
 			        $y++;
-			        $agent_log .= "  <tr " . bgcolor($y) . " class=\"row font1\">\n";
+			        $agent_log .= "  <tr " . bgcolor($y) . " class=\"row font1\" title=\"Date/Time: $row[3]\">\n";
 			        $agent_log .= "    <td>$y</td>\n";
-			        $agent_log .= "    <td>$row[3]</td>\n";
+			        $agent_log .= "    <td>" . dateToLocal($link,$row[2],$row[3],$webClientAdjGMT,'',0,1) . "</td>\n";
 			        $agent_log .= "    <td align=left>$row[5]</td>\n";
                     if ($LOG['view_agent_stats']) {
 			            $agent_log .= "    <td align=left><a href=\"admin.php?ADD=999999&SUB=21&agent=$row[11]\" target=\"_blank\">$row[1]</a></td>\n";
@@ -215,9 +215,9 @@ if ($ADD==1121) {
 			        $row=mysql_fetch_row($rslt);
 			        if (strlen($Clog_campaign)<1) $Clog_campaign = $row[3];
 			        $y++;
-			        $closer_log .= "  <tr " . bgcolor($y) . " class=\"row font1\">\n";
+			        $closer_log .= "  <tr " . bgcolor($y) . " class=\"row font1\" title=\"Date/Time: $row[4]\">\n";
 			        $closer_log .= "    <td>$y</td>\n";
-			        $closer_log .= "    <td>$row[4]</td>\n";
+			        $closer_log .= "    <td>" . dateToLocal($link,'first',$row[4],$webClientAdjGMT,'',0,1) . "</td>\n";
 			        $closer_log .= "    <td align=left>$row[7]</td>\n";
 			        $closer_log .= "    <td align=left>$row[8]</td>\n";
                     if ($LOG['view_agent_stats']) {
@@ -261,7 +261,9 @@ if ($ADD==1121) {
 		        echo "    <input type=hidden name=parked_time value=\"$parked_time\">\n";
 
                 echo "    <font color=$default_text size=2>Call information: $ld[first_name] $ld[last_name] - $ld[phone_number]<br></font>\n";
-                echo "    <font color=$default_text size=2>Last Call Time: $ld[last_local_call_time] - GMT: $ld[gmt_offset_now]<br></font>\n";
+                $ldtzoff = $ld[gmt_offset_now];
+                if (date('I') != '0') $ldtzoff = $ld[gmt_offset_now] - 1;
+                echo "    <font color=$default_text size=2>Last Call Time: " . dateToLocal($link,$ldtzoff,date('Y-m-d H:i:s',strtotime($ld[last_local_call_time])-3600),$ldtzoff,'',0,1) . "<br></font>\n";
                 echo "    <font size=1>\n";
 		        echo "      <table cellspacing=0 cellpadding=1 width=600>\n";
 		        echo "        <tr class=tabheader>\n";
@@ -718,10 +720,10 @@ if ($ADD==1121) {
 		                }
                         if ($u==0) $wfv['recording_id'] = $rl['recording_id'];
 		                $u++;
-		                echo "      <tr " . bgcolor($u) . " class=\"row font1\">\n";
+		                echo "      <tr " . bgcolor($u) . " class=\"row font1\" title=\"Date/Time: $rl[starttime]\">\n";
 		                echo "        <td>$u</td>\n";
 		                echo "        <td align=left>" . $rl['lead_id'] . "</td>\n";
-		                echo "        <td align=left>" . $rl['starttime'] . "</td>\n";
+		                echo "        <td align=left>" . dateToLocal($link,$rl['server_ip'],$rl['starttime'],$webClientAdjGMT,'',0,1) . "</td>\n";
 		                echo "        <td align=left>" . $rl['length_in_sec'] . "</td>\n";
 		                echo "        <td align=left>" . $rl['recording_id'] . "</td>\n";
 		                echo "        <td align=center>" . $rl['filename'] . "</td>\n";
