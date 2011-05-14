@@ -61,11 +61,14 @@ $webclientDST = $webServerDST;
 $webClientAdjGMT = $webClientGMT;
 if ($webClientDST) $webClientAdjGMT = $webClientGMT - 1;
 
-# The following creates three arrays with TZ mappings.
+# The following creates arrays with TZ mappings.
 require_once 'Date.php';
 $tznames = array();
+$tznamesDST = array();
 $tznames2 = array();
+$tznamesDST2 = array();
 $tzoffsets = array();
+$tzoffsetsDST = array();
 $tzids = Date_TimeZone::getAvailableIDs();
 arsort($tzids);
 foreach ($tzids as $k) {
@@ -78,6 +81,7 @@ foreach ($tzids as $k) {
     if (!empty($tzsn) and $tzsn != $tzid and $tzln != $tzid and $tzdsn != $tzid and $tzdln != $tzid) {
         if (!preg_match('/^(GMT|SystemV|Etc).*/',$tzid) and !preg_match('/^(GMT|SystemV|Etc).*/',$tzsn)) {
             $tzoff = $tmptz->getRawOffset() / 3600000;
+            $tzoffDST = $tmptz->getOffset(new Date) / 3600000;
             $tzsep = '';
             if (!isset($tzoffsets[$tzsep . $tzoff])) {
                 $tzoffsets[$tzsep . $tzoff] = $tzsn;
@@ -85,12 +89,22 @@ foreach ($tzids as $k) {
             }
             if ($tzoff >= 0) $tzsep = '+';
             if (!isset($tznames2[$tzsn . $tzsep . $tzoff])) $tznames2[$tzsn . $tzsep . $tzoff] = $tzoff;
+            if (empty($tzdsn)) $tzdsn = $tzsn;
+            if (!isset($tzoffsetsDST[$tzsep . $tzoffDST])) {
+                $tzoffsetsDST[$tzsep . $tzoffDST] = $tzdsn;
+                if (!isset($tznamesDST[$tzdsn])) $tznamesDST[$tzdsn] = $tzoffDST;
+            }
+            if ($tzoffDST >= 0) $tzsep = '+';
+            if (!isset($tznamesDST2[$tzdsn . $tzsep . $tzoffDST])) $tznamesDST2[$tzdsn . $tzsep . $tzoffDST] = $tzoffDST;
         }
     }
 }
 ksort($tznames);
+ksort($tznamesDST);
 ksort($tznames2);
+ksort($tznamesDST2);
 ksort($tzoffsets);
+ksort($tzoffsetsDST);
 
 ######################################################################################################
 ######################################################################################################
