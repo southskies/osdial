@@ -1687,4 +1687,41 @@ function is_assoc($array) {
     return false;
 }
 
+
+function dateToLocal($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST=1, $addlocTZlabel=1) {
+    global $tzoffsets;
+    global $tzoffsetsDST;
+
+    $dsecs = strtotime($cnvdate);
+    if (empty($fmt)) $fmt='Y-m-d H:i:s';
+
+    $locGMT = $locGMT * 1;
+    $locGMTname = $tzoffsets[$locGMT];
+    if ($locisDST>0) $locGMTname = $tzaltDST[$tzoffsetsDST[$locGMT]];
+
+    if ($svrip>-27 and $svrip<27) {
+        $server = get_first_record($link, 'servers', '*', sprintf("server_ip='%s'", mres($svrip)));
+        if (!is_array($server)) {
+            $server = get_first_record($link, 'servers', '*', "server_profile IN ('AIO','DIALER')");
+        }
+        if (!is_array($server)) return date($fmt, $dsecs);
+        $svrGMT = $server['local_gmt'] * 1;
+    } else {
+        $svrGMT = $svrip * 1;
+    }
+    $svrGMTname = $tzoffsets[$svrGMT];
+    $svrtz = new Date_TimeZone($svrGMTname);
+    $svroffset = $svrtz->getOffset(new Date($dsecs)) / 3600000;
+        
+    $loctz = new Date_TimeZone($locGMTname);
+    $locoffset = $loctz->getOffset(new Date($dsecs)) / 3600000;
+
+    $dsecs -= $svroffset * 60 * 60;
+    $dsecs += $locoffset * 60 * 60;
+
+    $locTZlabel = '';
+    if ($addlocTZlabel>0) $locTZlabel=' '.$locGMTname;
+    return date($fmt, $dsecs) . $locTZlabel;
+}
+
 ?>
