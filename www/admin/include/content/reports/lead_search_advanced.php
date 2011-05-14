@@ -1280,7 +1280,7 @@ function report_lead_search_advanced($lsa_seg='form') {
                     $data .= "    <td nowrap align=center title=\"" . $tzlabel . " (" . $row[8]. ")\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . $tzlabel . "</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[30]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[30]</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[1]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>&nbsp;" . ellipse($row[1],10,false) . "&nbsp;</font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"$row[2]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>&nbsp;$row[2]&nbsp;</font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"$row[2]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>&nbsp;" . dateToLocal($link,'first',$row[2],$webClientAdjGMT,'',0,1) . "&nbsp;</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[35]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ellipse($row[35],10,false) . "</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$recloc\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>";
                     if ($recloc != "") {
