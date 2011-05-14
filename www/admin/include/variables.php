@@ -91,8 +91,8 @@ foreach ($tzorder as $tzmatch) {
                     if (!isset($tzoffsets[$tzsep . $tzoff])) $tzoffsets[$tzsep . $tzoff] = $tzsn;
                     if (!isset($tznames[$tzsn])) $tznames[$tzsn] = $tzoff;
                     if (!isset($tzalt[$tzsn])) {
-                        $tzalt[$tzsn] = $tzdsn;
                         if (empty($tzdsn)) $tzdsn = $tzsn;
+                        $tzalt[$tzsn] = $tzdsn;
                     }
                     $tzsep = '';
                     if ($tzoff >= 0) $tzsep = '+';
