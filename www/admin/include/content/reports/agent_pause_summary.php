@@ -396,7 +396,7 @@ function report_agent_pause_summary() {
 
         ### PAUSE USAGE - DETAIL ###
 
-        $stmt=sprintf("SELECT campaign_id,user,sub_status AS pause_code,event_time AS pause_start,DATE_ADD(event_time,INTERVAL pause_sec SECOND) AS pause_end,pause_sec FROM osdial_agent_log WHERE osdial_agent_log.user_group IN %s %s %s AND event_time BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND pause_sec>0 ORDER BY campaign_id,user,event_time;",$LOG['allowed_usergroupsSQL'],$groupSQL,$agentSQL,mres($begin_date),mres($end_date));
+        $stmt=sprintf("SELECT campaign_id,user,sub_status AS pause_code,event_time AS pause_start,DATE_ADD(event_time,INTERVAL pause_sec SECOND) AS pause_end,pause_sec,server_ip FROM osdial_agent_log WHERE osdial_agent_log.user_group IN %s %s %s AND event_time BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND pause_sec>0 ORDER BY campaign_id,user,event_time;",$LOG['allowed_usergroupsSQL'],$groupSQL,$agentSQL,mres($begin_date),mres($end_date));
         if ($DB) $html .= $stmt;
         $rslt=mysql_query($stmt, $link);
         $pauses_to_print = mysql_num_rows($rslt);
@@ -444,12 +444,12 @@ function report_agent_pause_summary() {
             }
             $lastkey2=$row[1];
 
-            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" title=\"CAMPAIGN: " . $row[0] . " (" . $group_map[$row[0]] . ")     USER: " . $row[1] . " (" . $user_map[$row[1]] . ")\">\n";
+            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" title=\"CAMPAIGN: " . $row[0] . " (" . $group_map[$row[0]] . ")\nUSER: " . $row[1] . " (" . $user_map[$row[1]] . ")\nSTART: $row[3]\nEND: $row[4]\">\n";
             $table .= "    <td align=left>$row[0]</td>\n";
             $table .= "    <td align=left>$row[1]</td>\n";
             $table .= "    <td align=left>$row[2]</td>\n";
-            $table .= "    <td align=center>$row[3]</td>\n";
-            $table .= "    <td align=center>$row[4]</td>\n";
+            $table .= "    <td align=center>" . dateToLocal($link,$row[6],$row[3],$webClientAdjGMT,'',0,1) . "</td>\n";
+            $table .= "    <td align=center>" . dateToLocal($link,$row[6],$row[4],$webClientAdjGMT,'',0,1) . "</td>\n";
             $table .= "    <td align=right>" . fmt_hms($row[5]) . "</td>\n";
             $table .= "  </tr>\n";
             $psecs += $row[5];
