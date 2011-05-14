@@ -1230,7 +1230,11 @@ if ($ADD==31) {
         echo "          <td align=left>\n";
         echo "            <select name=carrier_id>\n";
         $krh = get_krh($link, 'osdial_carriers', '*','',"active='Y' AND selectable='Y'",'');
-        echo format_select_options($krh, 'id', 'name', $carrier_id, "** USE MANUAL CONFIGURATION **",'');
+        $carrier_label = "** USE MANUAL CONFIGURATION **";
+        if ($system_settings['default_carrier_id'] > 0) {
+            $carrier_label = "** USE SYSTEM DEFAULT **";
+        }
+        echo format_select_options($krh, 'id', 'name', $carrier_id, $carrier_label,'');
         echo "            </select>\n";
         echo "          </td>\n";
         echo "        </tr>\n";
