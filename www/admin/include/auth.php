@@ -32,6 +32,17 @@ $browser = getenv("HTTP_USER_AGENT");
 
 
 if ($force_logout) {
+
+    $_SESSION = array();
+    foreach ($_COOKIE as $k => $v) {
+        setcookie($k,'',time()-42000);
+    }
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
+    }
+    session_destroy();
+
 	if(strlen($PHP_AUTH_USER) > 0 or strlen($PHP_AUTH_PW) > 0) {
 		Header("WWW-Authenticate: Basic realm=\"$t1-Administrator\"");
 		Header("HTTP/1.0 401 Unauthorized");
@@ -53,6 +64,8 @@ if ($force_logout) {
         if (!preg_match('/wget/i',$browser)) $fps = "OSDIAL|BADAUTH|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|||\n";
         $failexit=1;
     } elseif ($auth > 0) {
+        $tsid = session_id();
+        if(empty($tsid)) session_start();
         # And array of the allowed campagins
         $LOGacA = Array();
         $LOGagA = Array();
