@@ -428,7 +428,7 @@ if ($ACTION=="Hangup") {
         $dbout .= "LIVE:$channel_live|";
 
         if ($channel_live==1) {
-            $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$call_server_ip','','Hangup','$queryCID','Channel: $channel','','','','','','','','','');";
+            $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$call_server_ip','$channel','Hangup','$queryCID','Channel: $channel','','','','','','','','','');";
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
             echo "Hangup command sent for Channel $channel on $call_server_ip\n";
