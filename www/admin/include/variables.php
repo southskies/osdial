@@ -59,10 +59,11 @@ if ($webServerDST) $webServerAdjGMT = $webServerGMT - 1;
 $webClientGMT = $webServerGMT;
 $webclientDST = $webServerDST;
 $webClientAdjGMT = $webClientGMT;
-if ($webClientDST) $webClientAdjGMT = $webClientGMT - 1;
 
 # The following creates arrays with TZ mappings.
 require_once 'Date.php';
+$tzalt = array();
+$tzaltDST = array();
 $tznames = array();
 $tznamesDST = array();
 $tznames2 = array();
@@ -85,20 +86,28 @@ foreach ($tzids as $k) {
             $tzsep = '';
             if (!isset($tzoffsets[$tzsep . $tzoff])) {
                 $tzoffsets[$tzsep . $tzoff] = $tzsn;
-                if (!isset($tznames[$tzsn])) $tznames[$tzsn] = $tzoff;
+                if (!isset($tznames[$tzsn])) {
+                    $tznames[$tzsn] = $tzoff;
+                    $tzalt[$tzsn] = $tzdsn;
+                }
             }
             if ($tzoff >= 0) $tzsep = '+';
             if (!isset($tznames2[$tzsn . $tzsep . $tzoff])) $tznames2[$tzsn . $tzsep . $tzoff] = $tzoff;
             if (empty($tzdsn)) $tzdsn = $tzsn;
             if (!isset($tzoffsetsDST[$tzsep . $tzoffDST])) {
                 $tzoffsetsDST[$tzsep . $tzoffDST] = $tzdsn;
-                if (!isset($tznamesDST[$tzdsn])) $tznamesDST[$tzdsn] = $tzoffDST;
+                if (!isset($tznamesDST[$tzdsn])) {
+                    $tznamesDST[$tzdsn] = $tzoffDST;
+                    $tzaltDST[$tzdsn] = $tzsn;
+                }
             }
             if ($tzoffDST >= 0) $tzsep = '+';
             if (!isset($tznamesDST2[$tzdsn . $tzsep . $tzoffDST])) $tznamesDST2[$tzdsn . $tzsep . $tzoffDST] = $tzoffDST;
         }
     }
 }
+ksort($tzalt);
+ksort($tzaltDST);
 ksort($tznames);
 ksort($tznamesDST);
 ksort($tznames2);
