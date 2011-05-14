@@ -102,29 +102,13 @@ if ($ADD==1121) {
 			
         } else {
 
-	        ### inactivate osdial_callbacks record for this lead 
-	        if ($CBchangeUSERtoANY == 'YES') {
-		        $stmt="UPDATE osdial_callbacks set recipient='ANYONE' where callback_id='" . mres($callback_id) . "';";
+            if ($callback_id>0) {
+                $CBrecipient = get_variable('CBrecipient');
+		        $stmt=sprintf("UPDATE osdial_callbacks SET recipient='%s',user='%s' where callback_id='%s';",mres($CBrecipient),mres($CBuser),mres($callback_id));
 		        if ($DB) echo "|$stmt|\n";
 		        $rslt=mysql_query($stmt, $link);
-		        echo "<br>osdial_callback record changed to ANYONE<br>\n";
-	        }
-
-	        ### inactivate osdial_callbacks record for this lead 
-	        if ($CBchangeUSERtoUSER == 'YES') {
-		        $stmt="UPDATE osdial_callbacks set user='" . mres($CBuser) . "' where callback_id='" . mres($callback_id) . "';";
-		        if ($DB) echo "|$stmt|\n";
-		        $rslt=mysql_query($stmt, $link);
-		        echo "<br>osdial_callback record user changed to $CBuser<br>\n";
-	        }	
-
-	        ### inactivate osdial_callbacks record for this lead 
-	        if ($CBchangeANYtoUSER == 'YES') {
-		        $stmt="UPDATE osdial_callbacks set user='" . mres($CBuser) . "',recipient='USERONLY' where callback_id='" . mres($callback_id) . "';";
-		        if ($DB) echo "|$stmt|\n";
-		        $rslt=mysql_query($stmt, $link);
-		        echo "<br>osdial_callback record changed to USERONLY, user: $CBuser<br>\n";
-	        }	
+		        echo "<br>osdial_callback record $callback_id changed to $CBrecipient for user $CBuser.<br>\n";
+            }
 
             if ($VARclient == 'OSDR') {
                 if ($confirm_sale > 0) {
@@ -535,14 +519,14 @@ if ($ADD==1121) {
                                             }
                                         }
                                         if ($skip_fld < 1) {
-                                            echo '<form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
-		                                    echo '<input type="hidden" name="DB" value="' . $DB . '">';
-		                                    echo '<input type="hidden" name="ADD" value="' . $ADD . '">';
-		                                    echo '<input type="hidden" name="SUB" value="' . $SUB . '">';
-		                                    echo '<input type="hidden" name="save_aff" value=1>';
-		                                    echo '<input type="hidden" name="lead_id" value="' . $ld['lead_id'] . '">';
-		                                    echo '<input type="hidden" name="alf_id" value="' . $alf['id'] . '">';
-		                                    echo '<input type="hidden" name="alf_fld_id" value="' . $affld['id'] . '">';
+                                            echo "<form action=\"$PHP_SELF\" method=\"POST\" enctype=\"multipart/form-data\">";
+		                                    echo "<input type=\"hidden\" name=\"DB\" value=\"$DB\">";
+		                                    echo "<input type=\"hidden\" name=\"ADD\" value=\"$ADD\">";
+		                                    echo "<input type=\"hidden\" name=\"SUB\" value=\"$SUB\">";
+		                                    echo "<input type=\"hidden\" name=\"save_aff\" value=\"1\">";
+		                                    echo "<input type=\"hidden\" name=\"lead_id\" value=\"$ld[lead_id]\">";
+		                                    echo "<input type=\"hidden\" name=\"alf_id\" value=\"$alf[id]\">";
+		                                    echo "<input type=\"hidden\" name=\"alf_fld_id\" value=\"$affld[id]\">";
 		                                    echo "    <tr $bgcolor class=\"row font1\">\n";
                                             echo "      <td align=center><font $afldel><b>$affrm[name]</b></font></td>\n";
                                             echo "      <td align=center><font $afldel><b>$affld[name]</b></font></td>\n";
@@ -571,49 +555,59 @@ if ($ADD==1121) {
 			
 		        if ($ld['status'] == 'CALLBK' or $ld['status'] == 'CBHOLD') {
 			        ### find any osdial_callback records for this lead 
-			        $stmt="select * from osdial_callbacks where lead_id='" . mres($ld['lead_id']) . "' and status IN('ACTIVE','LIVE') order by callback_id desc LIMIT 1;";
+			        $stmt="SELECT * FROM osdial_callbacks WHERE lead_id='" . mres($ld['lead_id']) . "' AND status IN('ACTIVE','LIVE') ORDER BY callback_id DESC;";
 			        if ($DB) echo "|$stmt|\n";
 			        $rslt=mysql_query($stmt, $link);
 			        $CB_to_print = mysql_num_rows($rslt);
-			        $rowx=mysql_fetch_row($rslt);
 			
 			        if ($CB_to_print>0) {
-				        if ($rowx[9] == 'USERONLY') {
-					        echo "    <br>\n";
-                            echo "    <form action=$PHP_SELF method=POST enctype=\"multipart/form-data\">\n";
-					        echo "      <input type=hidden name=CBchangeUSERtoANY value=\"YES\">\n";
-					        echo "      <input type=hidden name=DB value=\"$DB\">\n";
-		                    echo '      <input type="hidden" name="ADD" value="' . $ADD . '">' . "\n";
-		                    echo '      <input type="hidden" name="SUB" value="' . $SUB . '">' . "\n";
-					        echo "      <input type=hidden name=lead_id value=\"$ld[lead_id]\">\n";
-					        echo "      <input type=hidden name=callback_id value=\"$rowx[0]\">\n";
-					        echo "      <input type=submit name=submit value=\"CHANGE TO ANYONE CALLBACK\">\n";
-                            echo "    </form><br>\n";
-			
-					        echo "    <br>\n";
-                            echo "    <form action=$PHP_SELF method=POST enctype=\"multipart/form-data\">\n";
-					        echo "      <input type=hidden name=CBchangeUSERtoUSER value=\"YES\">\n";
-					        echo "      <input type=hidden name=DB value=\"$DB\">\n";
-		                    echo '      <input type="hidden" name="ADD" value="' . $ADD . '">' . "\n";
-		                    echo '      <input type="hidden" name="SUB" value="' . $SUB . '">' . "\n";
-					        echo "      <input type=hidden name=lead_id value=\"$ld[lead_id]\">\n";
-					        echo "      <input type=hidden name=callback_id value=\"$rowx[0]\">\n";
-					        echo "      New Callback Owner UserID: <input type=text name=CBuser size=8 maxlength=10 value=\"$rowx[8]\"> \n";
-					        echo "      <input type=submit name=submit value=\"CHANGE USERONLY CALLBACK USER\">\n";
-                            echo "    </form><br>\n";
-				        } else {
-					        echo "    <br>\n";
-					        echo "    <form action=$PHP_SELF method=POST enctype=\"multipart/form-data\">\n";
-					        echo "      <input type=hidden name=CBchangeANYtoUSER value=\"YES\">\n";
-					        echo "      <input type=hidden name=DB value=\"$DB\">\n";
-		                    echo '      <input type="hidden" name="ADD" value="' . $ADD . '">' . "\n";
-		                    echo '      <input type="hidden" name="SUB" value="' . $SUB . '">' . "\n";
-					        echo "      <input type=hidden name=lead_id value=\"$ld[lead_id]\">\n";
-					        echo "      <input type=hidden name=callback_id value=\"$rowx[0]\">\n";
-					        echo "      New Callback Owner UserID: <input type=text name=CBuser size=8 maxlength=10 value=\"$rowx[8]\"> \n";
-					        echo "      <input type=submit name=submit value=\"CHANGE TO USERONLY CALLBACK\">\n";
-                            echo "    </form><br>\n";
-				        }
+                        $cbcnt=0;
+	                    echo "    <table width=750 cellspacing=0 cellpadding=1>\n";
+	                    echo "      <tr class=tabheader>\n";
+	                    echo "        <td colspan=7><font size=\"+1\">CALLBACKS</font></td>\n";
+	                    echo "      </tr>\n";
+	                    echo "      <tr class=tabheader>\n";
+                        echo "        <td>Status</td>\n";
+                        echo "        <td>Entry Date</td>\n";
+                        echo "        <td>Callback Date</td>\n";
+                        echo "        <td>Modify Date</td>\n";
+                        echo "        <td>User</td>\n";
+                        echo "        <td>Recipient</td>\n";
+                        echo "        <td>Action</td>\n";
+	                    echo "      </tr>\n";
+                        while ($CB_to_print>$cbcnt) {
+			                $rowx=mysql_fetch_row($rslt);
+                            $bgcolor = bgcolor($cbcnt);
+                            echo "<form action=\"$PHP_SELF\" method=\"POST\" enctype=\"multipart/form-data\">";
+		                    echo "<input type=\"hidden\" name=\"DB\" value=\"$DB\">";
+		                    echo "<input type=\"hidden\" name=\"ADD\" value=\"$ADD\">";
+		                    echo "<input type=\"hidden\" name=\"SUB\" value=\"$SUB\">";
+		                    echo "<input type=\"hidden\" name=\"lead_id\" value=\"$ld[lead_id]\">";
+					        echo "<input type=\"hidden\" name=\"callback_id\" value=\"$rowx[0]\">";
+		                    echo "  <tr $bgcolor class=\"row font1\" title=\"Comments: $rowx[10]\">\n";
+                            echo "    <td align=center>$rowx[4]</td>\n";
+                            echo "    <td align=center>" . dateToLocal($link,'first',$rowx[5],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
+                            echo "    <td align=center>" . dateToLocal($link,'first',$rowx[6],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
+                            echo "    <td align=center>" . dateToLocal($link,'first',$rowx[7],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
+                            echo "    <td align=center class=tabinput><input type=\"text\" name=\"CBuser\" size=\"8\" maxlength=\"20\" value=\"$rowx[8]\"></td>\n";
+                            echo "    <td align=center class=tabinput>";
+                            $CBrucheck=''; if ($rowx[9]=='USERONLY') $CBrucheck='checked';
+                            $CBracheck=''; if ($rowx[9]=='ANYONE') $CBracheck='checked';
+                            echo "      <input type=\"radio\" name=\"CBrecipient\" id=\"USERONLY\" value=\"USERONLY\" $CBrucheck><label for=\"USERONLY\">UserOnly</label> ";
+                            echo "      <input type=\"radio\" name=\"CBrecipient\" id=\"ANYONE\" value=\"ANYONE\" $CBracheck><label for=\"ANYONE\">Anyone</label>";
+                            echo "     </td>\n";
+                            echo "     <td align=center class=tabbutton1><input type=\"submit\" value=\"Save\"></td>\n";
+                            echo "   </tr>\n";
+                            echo "   </form>\n";
+                            $cbcnt++;
+                        }
+                        echo "      <tr class=tabfooter>\n";
+                        echo "        <td colspan=7></td>\n";
+                        echo "      </tr>\n";
+	                    echo "    </table>\n";
+	                    echo "  <br><br>\n";
+                        echo "<hr>\n";
+	                    echo "  <br><br>\n";
 			        } else {
 				        echo "    <br>No Callback records found<br>\n";
 			        }
