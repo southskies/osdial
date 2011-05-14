@@ -8,12 +8,14 @@
   background-color: white;
   text-align: left;
   min-width: 760px;
+  width: 950px;
 }
 
 /* main */
 
 #main {
   min-width: 760px;
+  width: 950px;
   float: left;
 }
 
