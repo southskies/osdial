@@ -243,6 +243,8 @@ while($one_day_interval > 0)
 		@DBIPserver_trunks_allowed=@MT;
 		@DBIPuse_custom2_callerid=@MT;
 		@DBIPusecidareacodemap=@MT;
+		@DBIPcarrier_id=@MT;
+		@DBIPcarrier_context=@MT;
 
 		$active_line_counter=0;
 		$camp_counter=0;
@@ -250,6 +252,35 @@ while($one_day_interval > 0)
 		$balance_servers=0;
 		$lists_update = '';
 		$LUcount=0;
+
+		$stmtA = "SELECT enable_queuemetrics_logging,queuemetrics_server_ip,queuemetrics_dbname,queuemetrics_login,queuemetrics_pass,queuemetrics_log_id,enable_multicompany,default_carrier_id FROM system_settings;";
+		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		$sthArows=$sthA->rows;
+		if ($sthArows > 0) {
+			@aryA = $sthA->fetchrow_array;
+			$enable_queuemetrics_logging = $aryA[0];
+			$queuemetrics_server_ip	=      $aryA[1];
+			$queuemetrics_dbname =         $aryA[2];
+			$queuemetrics_login =          $aryA[3];
+			$queuemetrics_pass =           $aryA[4];
+			$queuemetrics_log_id =         $aryA[5];
+			$enable_multicompany =         $aryA[6];
+			$default_carrier_id =          $aryA[7];
+		}
+		$sthA->finish();
+
+		$default_carrier_context = "osdial";
+		if ($default_carrier_id > 0) {
+			$stmtA = "SELECT name FROM osdial_carriers WHERE id='$default_carrier_id';";
+			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+			$sthArows=$sthA->rows;
+			if ($sthArows > 0) {
+				@aryA = $sthA->fetchrow_array;
+				$default_carrier_context = "OOUT" . $aryA[0];
+			}
+		}
 
 		$stmtA = "SELECT count(*) FROM servers WHERE osdial_balance_active='Y';";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -304,7 +335,7 @@ while($one_day_interval > 0)
 
 				### grab the dial_level and multiply by active agents to get your goalcalls
 				$DBIPadlevel[$camp_CIPct]=0;
-				$stmtA = "SELECT dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,omit_phone_code,campaign_cid_name,use_custom2_callerid,use_cid_areacode_map FROM osdial_campaigns WHERE campaign_id='$DBfill_campaign[$camp_CIPct]';";
+				$stmtA = "SELECT dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,omit_phone_code,campaign_cid_name,use_custom2_callerid,use_cid_areacode_map,carrier_id FROM osdial_campaigns WHERE campaign_id='$DBfill_campaign[$camp_CIPct]';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -324,9 +355,23 @@ while($one_day_interval > 0)
 						$DBIPcampaigncidname[$camp_CIPct] =	"$aryA[6]";
 						$DBIPuse_custom2_callerid[$camp_CIPct] =	"$aryA[7]";
 						$DBIPusecidareacodemap[$camp_CIPct] =	"$aryA[8]";
+						$DBIPcarrier_id[$camp_CIPct] =	$aryA[9];
 					$rec_count++;
 					}
 				$sthA->finish();
+
+				$DBIPcarrier_context[$camp_CIPct] = $default_carrier_context;
+				if ($DBIPcarrier_id[$camp_CIPct] > 0) {
+					$stmtA = "SELECT name FROM osdial_carriers WHERE id='$DBIPcarrier_id[$camp_CIPct]';";
+					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+					$sthArows=$sthA->rows;
+					if ($sthArows > 0) {
+						@aryA = $sthA->fetchrow_array;
+						$DBIPcarrier_context[$camp_CIPct] = "OOUT" . $aryA[0];
+					}
+				}
+
 
 				$stmtA = "SELECT SQL_NO_CACHE balance_trunk_fill FROM osdial_campaign_stats WHERE campaign_id='$DBfill_campaign[$camp_CIPct]';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -734,7 +779,7 @@ while($one_day_interval > 0)
 												if ($CCID_on) {$CIDstring = "\"$CCID_NAME\" <$CCID>";}
 												else {$CIDstring = "\"unknown\" <0000000000>";}
 												### insert a NEW record to the osdial_manager table to be processed
-													$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$DB_camp_server_server_ip[$server_CIPct]','','Originate','$VqueryCID','Exten: $VDAD_dial_exten','Context: $ext_context','Channel: $local_DEF$Ndialstring$local_AMP$ext_context','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','Account: $VqueryCID','','','')";
+													$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$DB_camp_server_server_ip[$server_CIPct]','','Originate','$VqueryCID','Exten: $VDAD_dial_exten','Context: $ext_context','Channel: $local_DEF$Ndialstring$local_AMP$DBIPcarrier_context[$camp_CIDct]','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','Account: $VqueryCID','','','')";
 													$affected_rows = $dbhA->do($stmtA);
 
 													$event_string = "|     number call dialed|$DBfill_campaign[$camp_CIPct]|$VqueryCID|$stmtA|$gmt_offset_now|";

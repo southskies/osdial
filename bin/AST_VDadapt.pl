@@ -278,22 +278,34 @@ while ( $master_loop < $CLOloops ) {
 			}
 			$sthA->finish();
 
+			my $ivr_adjust = 0;
 			my $ivr_reserve_agents = 0;
-			$stmtA = "SELECT status,reserve_agents FROM osdial_ivr WHERE campaign_id='$campaign_id[$i]';";
+			my $ivr_virtual_agents = 0;
+			$stmtA = "SELECT status,reserve_agents,virtual_agents FROM osdial_ivr WHERE campaign_id='$campaign_id[$i]' LIMIT 1;";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-			while (my @aryA = $sthA->fetchrow_array) {
-				$ivr_reserve_agents = $aryA[1] if ($aryA[0] eq "ACTIVE");
+			my $sthArows  = $sthA->rows;
+			if ($sthArows > 0) {
+				my @aryA = $sthA->fetchrow_array;
+				$ivr_reserve_agents = $aryA[1];
+				$ivr_virtual_agents = $aryA[2];
+				if ($ivr_virtual_agents > 0) {
+					if ($aryA[0] eq "ACTIVE") {
+						$ivr_adjust = $ivr_reserve_agents;
+					} else {
+						$ivr_adjust = $ivr_virtual_agents + $ivr_reserve_agents;
+					}
+				}
 			}
 			$sthA->finish();
 
 									
 			if ( $available_only_ratio_tally[$i] eq 'Y' ) {
-				$VCSagents_calc = $VCSREADY + $VCSCLOSER - $ivr_reserve_agents;
+				$VCSagents_calc = $VCSREADY + $VCSCLOSER - $ivr_adjust;
 			} else {
-				$VCSagents_calc = $VCSINCALL + $VCSREADY + $VCSCLOSER - $ivr_reserve_agents;
+				$VCSagents_calc = $VCSINCALL + $VCSREADY + $VCSCLOSER - $ivr_adjust;
 			}
-			$VCSagents_active = $VCSINCALL + $VCSREADY + $VCSCLOSER - $ivr_reserve_agents;
+			$VCSagents_active = $VCSINCALL + $VCSREADY + $VCSCLOSER - $ivr_adjust;
 
 		
 			$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE campaign_id='$campaign_id[$i]' AND status IN('LIVE','CLOSER');";
@@ -335,7 +347,7 @@ while ( $master_loop < $CLOloops ) {
 			$total_agents_avg = $total_agents_total / 15 if ( $total_agents_total > 0);
 			$stat_differential = $ready_diff_avg - $waiting_diff_avg;
 		
-			$event_string = "CAMPAIGN DIFFERENTIAL: $total_agents_avg   $stat_differential   ($ready_diff_avg - $waiting_diff_avg)";
+			$event_string = "CAMPAIGN DIFFERENTIAL: $total_agents_avg   $stat_differential   ($ready_diff_avg - $waiting_diff_avg)  ivr_adjust: $ivr_adjust";
 			print "     $campaign_id[$i]\n  " if ($DBX);
 			print "     $event_string\n"             if ($DB);
 			eventLogger($config->{PATHlogs},"adapt" . $event_ext,$event_string) if ($SYSLOG);

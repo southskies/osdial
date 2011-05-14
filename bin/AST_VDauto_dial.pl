@@ -250,28 +250,6 @@ $sthA->finish();
 	$event_string='LOGGED INTO MYSQL SERVER ON 1 CONNECTION|';
 	&event_logger;
 
-#############################################
-##### START QUEUEMETRICS LOGGING LOOKUP #####
-$stmtA = "SELECT enable_queuemetrics_logging,queuemetrics_server_ip,queuemetrics_dbname,queuemetrics_login,queuemetrics_pass,queuemetrics_log_id,enable_multicompany FROM system_settings;";
-$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
-$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-$sthArows=$sthA->rows;
-$rec_count=0;
-while ($sthArows > $rec_count)
-	{
-	 @aryA = $sthA->fetchrow_array;
-		$enable_queuemetrics_logging =	"$aryA[0]";
-		$queuemetrics_server_ip	=		"$aryA[1]";
-		$queuemetrics_dbname =			"$aryA[2]";
-		$queuemetrics_login=			"$aryA[3]";
-		$queuemetrics_pass =			"$aryA[4]";
-		$queuemetrics_log_id =			"$aryA[5]";
-		$enable_multicompany =			"$aryA[6]";
-	 $rec_count++;
-	}
-$sthA->finish();
-##### END QUEUEMETRICS LOGGING LOOKUP #####
-###########################################
 
 
 $one_day_interval = 12;		# 1 month loops for one year 
@@ -323,6 +301,8 @@ while($one_day_interval > 0)
 		@DBIPdial_method=@MT;
 		@DBIPuse_custom2_callerid=@MT;
 		@DBIPusecidareacodemap=@MT;
+		@DBIPcarrier_id=@MT;
+		@DBIPcarrier_context=@MT;
 
 		$active_line_counter=0;
 		$user_counter=0;
@@ -336,6 +316,35 @@ while($one_day_interval > 0)
 		$LUcount=0;
 		$campaigns_update = '';
 		$CPcount=0;
+
+		$stmtA = "SELECT enable_queuemetrics_logging,queuemetrics_server_ip,queuemetrics_dbname,queuemetrics_login,queuemetrics_pass,queuemetrics_log_id,enable_multicompany,default_carrier_id FROM system_settings;";
+		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		$sthArows=$sthA->rows;
+		if ($sthArows > 0) {
+			@aryA = $sthA->fetchrow_array;
+			$enable_queuemetrics_logging = $aryA[0];
+			$queuemetrics_server_ip	=      $aryA[1];
+			$queuemetrics_dbname =         $aryA[2];
+			$queuemetrics_login =          $aryA[3];
+			$queuemetrics_pass =           $aryA[4];
+			$queuemetrics_log_id =         $aryA[5];
+			$enable_multicompany =         $aryA[6];
+			$default_carrier_id =          $aryA[7];
+		}
+		$sthA->finish();
+
+		$default_carrier_context = "osdial";
+		if ($default_carrier_id > 0) {
+			$stmtA = "SELECT name FROM osdial_carriers WHERE id='$default_carrier_id';";
+			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+			$sthArows=$sthA->rows;
+			if ($sthArows > 0) {
+				@aryA = $sthA->fetchrow_array;
+				$default_carrier_context = "OOUT" . $aryA[0];
+			}
+		}
 
 		##### Get a listing of the users that are active and ready to take calls
 		##### Also get a listing of the campaigns and campaigns/serverIP that will be used
@@ -479,7 +488,7 @@ while($one_day_interval > 0)
 
 			### grab the dial_level and multiply by active agents to get your goalcalls
 			$DBIPadlevel[$user_CIPct]=0;
-			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound,answers_per_hour_limit,campaign_call_time,dial_method,use_custom2_callerid,campaign_cid_name,use_cid_areacode_map FROM osdial_campaigns WHERE campaign_id='$DBIPcampaign[$user_CIPct]';";
+			$stmtA = "SELECT auto_dial_level,local_call_time,dial_timeout,dial_prefix,campaign_cid,active,campaign_vdad_exten,closer_campaigns,omit_phone_code,available_only_ratio_tally,auto_alt_dial,campaign_allow_inbound,answers_per_hour_limit,campaign_call_time,dial_method,use_custom2_callerid,campaign_cid_name,use_cid_areacode_map,carrier_id FROM osdial_campaigns WHERE campaign_id='$DBIPcampaign[$user_CIPct]';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -513,20 +522,46 @@ while($one_day_interval > 0)
 					$DBIPuse_custom2_callerid[$user_CIPct] =	$aryA[15];
 					$DBIPcampaigncidname[$user_CIPct] =	"$aryA[16]";
 					$DBIPusecidareacodemap[$user_CIPct] =	"$aryA[17]";
+					$DBIPcarrier_id[$user_CIPct] =  $aryA[18];
 				$rec_count++;
 				}
 			$sthA->finish();
 
+			$DBIPcarrier_context[$user_CIPct] = $default_carrier_context;
+			if ($DBIPcarrier_id[$user_CIPct] > 0) {
+				$stmtA = "SELECT name FROM osdial_carriers WHERE id='$DBIPcarrier_id[$user_CIPct]';";
+				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+				$sthArows=$sthA->rows;
+				if ($sthArows > 0) {
+					@aryA = $sthA->fetchrow_array;
+					$DBIPcarrier_context[$user_CIPct] = "OOUT" . $aryA[0];
+				}
+			}
+
+
+			$ivr_adjust = 0;
 			$ivr_reserve_agents = 0;
-			$stmtA = "SELECT status,reserve_agents FROM osdial_ivr where campaign_id='$DBIPcampaign[$user_CIPct]';";
+			$ivr_virtual_agents = 0;
+			$stmtA = "SELECT status,reserve_agents,virtual_agents FROM osdial_ivr where campaign_id='$DBIPcampaign[$user_CIPct]' LIMIT 1;";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-			while (@aryA = $sthA->fetchrow_array) {
-				$ivr_reserve_agents = $aryA[1] if ($aryA[0] eq "ACTIVE");
+			$sthArows=$sthA->rows;
+			if ($sthArows > 0) {
+				@aryA = $sthA->fetchrow_array;
+				$ivr_reserve_agents = $aryA[1];
+				$ivr_virtual_agents = $aryA[2];
+				if ($ivr_virtual_agents > 0) {
+					if ($aryA[0] eq "ACTIVE") {
+						$ivr_adjust = $ivr_reserve_agents * -1;
+					} else {
+						$ivr_adjust = ($ivr_virtual_agents + $ivr_reserve_agents) * -1;
+					}
+				}
 			}
 			$sthA->finish();
 
-			$DBIPgoalcalls[$user_CIPct] = ($DBIPadlevel[$user_CIPct] * ($DBIPcount[$user_CIPct] - $ivr_reserve_agents));
+			$DBIPgoalcalls[$user_CIPct] = ($DBIPadlevel[$user_CIPct] * ($DBIPcount[$user_CIPct] + $ivr_adjust));
 			$DBIPgoalcalls[$user_CIPct] = 0 if ($DBIPgoalcalls[$user_CIPct] < 0);
 
 			# Adjust the goalcalls to 0 if answers per hour is met.
@@ -604,7 +639,7 @@ while($one_day_interval > 0)
 			if ($DBIPactive[$user_CIPct] =~ /N/) {$DBIPgoalcalls[$user_CIPct] = 0;}
 			$DBIPgoalcalls[$user_CIPct] = sprintf("%.0f", $DBIPgoalcalls[$user_CIPct]);
 
-			$event_string="$DBIPcampaign[$user_CIPct] $DBIPaddress[$user_CIPct]: agents: $DBIPcount[$user_CIPct]     dial_level: $DBIPadlevel[$user_CIPct]";
+			$event_string="$DBIPcampaign[$user_CIPct] $DBIPaddress[$user_CIPct]: agents: $DBIPcount[$user_CIPct]     dial_level: $DBIPadlevel[$user_CIPct]     ivr_adjust: $ivr_adjust";
 			&event_logger;
 
 
@@ -1024,7 +1059,7 @@ while($one_day_interval > 0)
 								if ($CCID_on) {$CIDstring = "\"$CCID_NAME\" <$CCID>";}
 								else {$CIDstring = "\"unknown\" <0000000000>";}
 								### insert a NEW record to the osdial_manager table to be processed
-									$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$DBIPaddress[$user_CIPct]','','Originate','$VqueryCID','Exten: $VDAD_dial_exten','Context: $ext_context','Channel: $local_DEF$Ndialstring$local_AMP$ext_context','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','Account: $VqueryCID','','','')";
+									$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$DBIPaddress[$user_CIPct]','','Originate','$VqueryCID','Exten: $VDAD_dial_exten','Context: $ext_context','Channel: $local_DEF$Ndialstring$local_AMP$DBIPcarrier_context[$user_CIPct]','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','Account: $VqueryCID','','','')";
 									$affected_rows = $dbhA->do($stmtA);
 
 									$event_string = "|     number call dialed|$DBIPcampaign[$user_CIPct]|$VqueryCID|$stmtA|$gmt_offset_now|$alt_dial|";
