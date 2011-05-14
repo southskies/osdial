@@ -1688,40 +1688,102 @@ function is_assoc($array) {
 }
 
 
-function dateToLocal($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST=1, $addlocTZlabel=1) {
+function dateCalcServerLocalGMTOffset($svrGMT, $locGMT, $locisDST, $tzsecs) {
     global $tzoffsets;
     global $tzoffsetsDST;
+    global $tzalt;
+    global $tzaltDST;
+    global $tzrefid;
+    global $tzrefidDST;
 
+    $dcsret = array();
+
+    $srvGMT = $srvGMT * 1;
+    $dcsret['svrsname'] = $tzoffsets[$svrGMT];
+    $svrGMTname = $tzrefid[$dcsret['svrsname']];
+    $svrtz = new Date_TimeZone($svrGMTname);
+    $dcsret['svroffset'] = $svrtz->getOffset(new Date($tzsecs)) / 3600000;
+    $dcsret['svrdst'] = $svrtz->inDaylightTime(new Date($tzsecs));
+        
+    $locGMT = $locGMT * 1;
+    $dcsret['locsname'] = $tzoffsets[$locGMT];
+    $locGMTname = $tzrefid[$dcsret['locsname']];
+    if ($locisDST>0) {
+        $dcsret['locsname'] = $tzoffsets[$locGMT];
+        $locGMTname = $tzrefidDST[$tzalt[$dcsret['locsname']]];
+    }
+    $loctz = new Date_TimeZone($locGMTname);
+    $dcsret['locoffset'] = $loctz->getOffset(new Date($tzsecs)) / 3600000;
+    $dcsret['locdst'] = $loctz->inDaylightTime(new Date($tzsecs));
+
+    return $dcsret;
+}
+
+function dateToLocal($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $addlocTZlabel) {
+    global $tzalt;
+    global $tzaltDST;
+    if (empty($cnvdate)) return '';
     $dsecs = strtotime($cnvdate);
     if (empty($fmt)) $fmt='Y-m-d H:i:s';
 
-    $locGMT = $locGMT * 1;
-    $locGMTname = $tzoffsets[$locGMT];
-    if ($locisDST>0) $locGMTname = $tzaltDST[$tzoffsetsDST[$locGMT]];
-
-    if ($svrip>-27 and $svrip<27) {
+    if ($svrip>-27 and $svrip<27 and $svrip!='first') {
+        $svrGMT = $svrip * 1;
+    } else {
         $server = get_first_record($link, 'servers', '*', sprintf("server_ip='%s'", mres($svrip)));
         if (!is_array($server)) {
             $server = get_first_record($link, 'servers', '*', "server_profile IN ('AIO','DIALER')");
         }
         if (!is_array($server)) return date($fmt, $dsecs);
         $svrGMT = $server['local_gmt'] * 1;
-    } else {
-        $svrGMT = $svrip * 1;
     }
-    $svrGMTname = $tzoffsets[$svrGMT];
-    $svrtz = new Date_TimeZone($svrGMTname);
-    $svroffset = $svrtz->getOffset(new Date($dsecs)) / 3600000;
-        
-    $loctz = new Date_TimeZone($locGMTname);
-    $locoffset = $loctz->getOffset(new Date($dsecs)) / 3600000;
 
-    $dsecs -= $svroffset * 60 * 60;
-    $dsecs += $locoffset * 60 * 60;
+    $dcsoff = dateCalcServerLocalGMTOffset($svrGMT, $locGMT, $locisDST, $dsecs);
+
+    $dsecs -= $dcsoff['svroffset'] * 60 * 60;
+    $dsecs += $dcsoff['locoffset'] * 60 * 60;
 
     $locTZlabel = '';
-    if ($addlocTZlabel>0) $locTZlabel=' '.$locGMTname;
+    if ($addlocTZlabel>0) {
+        if ($dcsoff['locdst']) {
+            $locTZlabel=' '.$tzalt[$dcsoff['locsname']];
+        } else {
+            $locTZlabel=' '.$dcsoff['locsname'];
+        }
+    }
     return date($fmt, $dsecs) . $locTZlabel;
+}
+
+
+function dateToServer($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $addsvrTZlabel) {
+    global $tzalt;
+    global $tzaltDST;
+    if (empty($cnvdate)) return '';
+    $dsecs = strtotime($cnvdate);
+    if (empty($fmt)) $fmt='Y-m-d H:i:s';
+
+    if ($svrip>-27 and $svrip<27 and $svrip!='first') {
+        $svrGMT = $svrip * 1;
+    } else {
+        $server = get_first_record($link, 'servers', '*', sprintf("server_ip='%s'", mres($svrip)));
+        if (!is_array($server)) {
+            $server = get_first_record($link, 'servers', '*', "server_profile IN ('AIO','DIALER')");
+        }
+        if (!is_array($server)) return date($fmt, $dsecs);
+        $svrGMT = $server['local_gmt'] * 1;
+    }
+    $dcsoff = dateCalcServerLocalGMTOffset($svrGMT, $locGMT, $locisDST, $dsecs);
+
+    $dsecs -= ($dcsoff['locoffset'] - $dcsoff['svroffset']) * 60 * 60;
+
+    $svrTZlabel = '';
+    if ($addsvrTZlabel>0) {
+        if ($dcsoff['svrdst']) {
+            $svrTZlabel=' '.$tzalt[$dcsoff['svrsname']];
+        } else {
+            $svrTZlabel=' '.$dcsoff['svrsname'];
+        }
+    }
+    return date($fmt, $dsecs) . $svrTZlabel;
 }
 
 ?>
