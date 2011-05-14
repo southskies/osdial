@@ -1010,7 +1010,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 if ($web_form_extwindow=='Y') {$web_form_extwindow='1';} else {$web_form_extwindow='0';}
                 if ($web_form2_extwindow=='Y') {$web_form2_extwindow='1';} else {$web_form2_extwindow='0';}
                 if ($campaign_allow_inbound=='Y') {$campaign_allow_inbound='1';} else {$campaign_allow_inbound='0';}
-                if ($dial_method=='MANUAL' and $campaign_allow_inbound > 0) {$VU_closer_default_blended='0'; $inbound_man=1;} else {$inbound_man=0;}
+                if ($dial_method=='MANUAL' and $campaign_allow_inbound > 0) {$inbound_man=1;} else {$inbound_man=0;}
 
                 if ($VU_osdial_recording=='0') $campaign_recording='NEVER';
                 $closer_campaigns = preg_replace("/^ | -$/","",$closer_campaigns);
@@ -1355,12 +1355,14 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
         $voicemail_email=$row[69];
 
         if ($clientDST) $local_gmt = ($local_gmt + $isdst);
-        if ($protocol == 'EXTERNAL') {
+        if ($protocol == 'EXTERNAL' or (preg_match('/SIP|IAX/',$protocol) and preg_match('/^.*@.*$/',$extension))) {
             $protocol = 'Local';
             $extension = "$dialplan_number$AT$ext_context";
+            $SIP_user_DiaL = "$protocol/$extension/n";
+        } else {
+            $SIP_user_DiaL = "$protocol/$extension";
         }
         $SIP_user = "$protocol/$extension";
-        $SIP_user_DiaL = "$protocol/$extension";
 
         $stmt="SELECT asterisk_version FROM servers WHERE server_ip='$server_ip';";
         if ($DB) echo "|$stmt|\n";
