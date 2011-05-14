@@ -179,7 +179,7 @@ function report_realtime_summary() {
 		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>DIAL LEVEL:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALlev&nbsp; &nbsp; </TD>";
 		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>TRUNK SHORT/FILL:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $balanceSHORT / $balanceFILL &nbsp; &nbsp; </TD>";
 		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>FILTER:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALfilter &nbsp; </TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>TIME:</B></TD><TD ALIGN=LEFT><font size=2 color=$default_text>&nbsp; $NOW_TIME </TD>";
+		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>TIME:</B></TD><TD ALIGN=LEFT><font size=2 color=$default_text>&nbsp; " . dateToLocal($link,'first',$NOW_TIME,$webClientAdjGMT,'',$webClientDST,1) . " </TD>";
 		$html .= "";
 		$html .= "</TR>";
 		
