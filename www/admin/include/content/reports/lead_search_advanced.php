@@ -449,30 +449,6 @@ function report_lead_search_advanced($lsa_seg='form') {
         $direction_label['ASC']= "Ascending";
         $direction_label['DESC']= "Descending";
 
-        $timezone_label['AKST'] = "-9";
-        $timezone_label['AST'] = "-4";
-        $timezone_label['CST'] = "-6";
-        $timezone_label['EST'] = "-5";
-        $timezone_label['HAST'] = "-10";
-        $timezone_label['MST'] = "-7";
-        $timezone_label['NST'] = "-3.5";
-        $timezone_label['PST'] = "-8";
-        $timezone_label['PHT'] = "8";
-
-        $tz_revlabel['8'] = "PHT";
-        $tz_revlabel['0'] = "0";
-        $tz_revlabel['-1'] = "-1";
-        $tz_revlabel['-2'] = "-2";
-        $tz_revlabel['-3'] = "-3";
-        $tz_revlabel['-3.5'] = "NST";
-        $tz_revlabel['-4'] = "AST";
-        $tz_revlabel['-5'] = "EST";
-        $tz_revlabel['-6'] = "CST";
-        $tz_revlabel['-7'] = "MST";
-        $tz_revlabel['-8'] = "PST";
-        $tz_revlabel['-9'] = "AKST";
-        $tz_revlabel['-10'] = "HAST";
-
         $field_label['*'] = '-- ALL --';
         $field_label['lead_id'] = '';
         $field_label['entry_date'] = '';
@@ -857,8 +833,8 @@ function report_lead_search_advanced($lsa_seg='form') {
 
         $timezoneOPTS="";
         $s=0;
-        if (is_array($timezone_label)) {
-            foreach ($timezone_label as $k => $v) {
+        if (is_array($tznames)) {
+            foreach ($tznames as $k => $v) {
                 $sel="";
                 if (is_array($timezones)) {
                     foreach ($timezones as $timezone) {
@@ -1294,7 +1270,7 @@ function report_lead_search_advanced($lsa_seg='form') {
                     $data .= "    <td nowrap align=center title=\"" . $row[4] . " (" . $agents_label[$row[4]] . ")\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[4]</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[4]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[5]</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[28]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ellipse($row[28],10,true) . "</font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"" . $tz_revlabel[($row[8] - date("I"))] . " (" . $row[8]. ")\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . $tz_revlabel[($row[8] - date("I"))] . "</font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"" . $tzoffsets[($row[8] - date("I"))] . " (" . $row[8]. ")\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . $tzoffsets[($row[8] - date("I"))] . "</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[30]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[30]</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[1]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>&nbsp;" . ellipse($row[1],10,false) . "&nbsp;</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[2]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>&nbsp;$row[2]&nbsp;</font></td>\n";
