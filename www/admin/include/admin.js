@@ -264,3 +264,21 @@ Date.prototype.addDays = function(days) {
 	this.setDate(this.getDate()+days);
 	return this;
 }
+
+// The following functions get the GMT and DST of the client browser and store as a cookie.
+var cgexp = new Date();
+cgexp.setTime(cgexp.getTime() + 24*60*60*1000);
+
+var webClientGMT = -((new Date()).getTimezoneOffset()/60);
+document.cookie = "webClientGMT=" + webClientGMT + "; expires=" + cgexp;
+
+var webClientDST = 0;
+var dstchk = new Date();
+dstchk.setDate(1);
+for (var i=0; i<12; i++) {
+	dstchk.setMonth(i);
+	var webClientGMTtmp = -(dstchk.getTimezoneOffset()/60);
+	if (webClientGMT >= webClientGMTtmp) webClientDST=1;
+}
+document.cookie = "webClientDST=" + webClientDST + "; expires=" + cgexp;
+
