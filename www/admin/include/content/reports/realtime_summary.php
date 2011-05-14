@@ -282,7 +282,7 @@ function report_realtime_summary() {
 			$closer_campaigns = preg_replace("/ /","','",$closer_campaigns);
 			$closer_campaigns = "'$closer_campaigns'";
 		
-			$stmt=sprintf("SELECT status FROM osdial_auto_calls WHERE campaign_id IN %s AND status NOT IN('XFER') AND ( (call_type='IN' AND campaign_id IN($closer_campaigns)) OR (campaign_id='%s' AND call_type='OUT') );",$LOG['allowed_campaignsSQL'],mres($group));
+			$stmt=sprintf("SELECT status FROM osdial_auto_calls WHERE campaign_id IN %s AND (status NOT IN('XFER') OR channel LIKE 'Local/870_____@%%') AND ( (call_type='IN' AND campaign_id IN($closer_campaigns)) OR (campaign_id='%s' AND call_type='OUT') );",$LOG['allowed_campaignsSQL'],mres($group));
 		} else {
 			if ($group=='XXXX-ALL-ACTIVE-XXXX') { 
 				$groupSQL = '';
@@ -294,7 +294,7 @@ function report_realtime_summary() {
 				$groupSQL = sprintf(" AND campaign_id='%s'",mres($group));
 			}
 		
-			$stmt=sprintf("SELECT status FROM osdial_auto_calls WHERE campaign_id IN %s AND status NOT IN('XFER') %s;",$LOG['allowed_campaignsSQL'],$groupSQL);
+			$stmt=sprintf("SELECT status FROM osdial_auto_calls WHERE campaign_id IN %s AND (status NOT IN('XFER') OR channel LIKE 'Local/870_____@%%') %s;",$LOG['allowed_campaignsSQL'],$groupSQL);
 		}
 		$rslt=mysql_query($stmt, $link);
 		
@@ -314,7 +314,7 @@ function report_realtime_summary() {
 				if (preg_match("/LIVE/",$row[0])) {
 					$out_live++;
 				} else {
-					if (preg_match("/CLOSER/",$row[0])) {
+					if (preg_match("/CLOSER|XFER/",$row[0])) {
 						$nothing=1;
 					} else {
 						$out_ring++;
