@@ -843,8 +843,8 @@ if ($ADD==82) {
 		echo "    <td><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[1]\" target=\"_blank\">$row[1]</a></td>\n";
 		echo "    <td><a href=\"$PHP_SELF?ADD=311&list_id=$row[2]\">$row[2]</a></td>\n";
 		echo "    <td><a href=\"$PHP_SELF?ADD=31&campaign_id=$row[3]\">$row[3]</a></td>\n";
-		echo "    <td>$row[5]</td>\n";
-		echo "    <td>$row[6]</td>\n";
+		echo "    <td title=\"ENTRY DATE: $row[5]\">" . dateToLocal($link,'first',$row[5],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
+		echo "    <td title=\"CALLBACK DATE: $row[6]\">" . dateToLocal($link,'first',$row[6],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
 		echo "    <td><a href=\"$PHP_SELF?ADD=3&user=$row[8]\">$row[8]</a></td>\n";
 		echo "    <td>$row[9]</td>\n";
 		echo "    <td>$row[4]</td>\n";
@@ -922,7 +922,7 @@ if ($ADD==100) {
         echo "    <td>$row[1]</td>\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=100&camp=$row[2]&dispact=$dispact\">" . mclabel($row[2]) . "</a></td>\n";
         echo "    <td>$row[4]</td>\n";
-        echo "    <td align=center>" . dateToLocal($link,'first',$row[5],$webClientAdjGMT,'',0,1) . "</td>\n";
+        echo "    <td align=center>" . dateToLocal($link,'first',$row[5],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
         echo "    <td align=center>$row[3]</td>\n";
         #echo "    <td>$row[7]</td>\n";
         echo "    <td colspan=3 align=center><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">MODIFY</a>";
