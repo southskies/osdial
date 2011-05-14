@@ -365,7 +365,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 	else {$telnet_login = $ASTmgrUSERNAME;}
 	$t->open("$telnet_host"); 
 
-	# Not needed ast asterisk 1.6 stores channel data in mysql.
+	# Not needed ast asterisk 1.6 & 1.8 stores channel data in mysql.
 	#if ($DBasterisk_version =~ /^1\.6|^1\.8/) {
 	#	$t->waitfor('/1\n$/');			# print login
 	#	$t->print("Action: Login\nActionID: 1\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");

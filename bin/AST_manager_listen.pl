@@ -212,7 +212,7 @@ while($one_day_interval > 0) {
 						$ame{$clkey} = $clval;
 					}
 				}
-				#Asterisk 1.4 / 1.6 event key conversion
+				#Asterisk 1.4 / 1.6 / 1.8 event key conversion
 				$ame{callerid} = $ame{calleridnum} if ($ame{calleridnum});
 				$ame{state} = $ame{channelstatedesc} if ($ame{channelstatedesc});
 				$ame{srcuniqueid} = $ame{uniqueid} if ($ame{uniqueid});
