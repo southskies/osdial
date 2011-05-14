@@ -477,6 +477,10 @@ if ($ADD==311) {
             while (list($tzone,) = each($lead_list[$since_reset])) {
                 $LOCALzone=3600 * $tzone;
                 $LOCALdate=gmdate("D M Y H:i", time() + $LOCALzone);
+                $LOCALdate2=gmdate("Y-m-d H:i:s", time() + $LOCALzone);
+                $ttzone = $tzone * 1;
+                $tzlabel = $tzoffsets[$ttzone];
+                if (date('I')=='1') $tzlabel = $tzoffsetsDST[$ttzone];
 
                 if ($tzone >= 0) {
                     $DISPtzone = "$plus$tzone";
@@ -484,7 +488,7 @@ if ($ADD==311) {
                     $DISPtzone = "$tzone";
                 }
                 echo "  <tr " . bgcolor($o) . " class=\"row font1\">\n";
-                echo "    <td>".$DISPtzone." &nbsp; &nbsp; ($LOCALdate)</td>\n";
+                echo "    <td>".$DISPtzone." ".$tzlabel." &nbsp; &nbsp; ($LOCALdate)</td>\n";
                 echo "    <td align=right>".$lead_list['Y'][$tzone]."</td>\n";
                 echo "    <td align=right>".$lead_list['N'][$tzone]."</td>\n";
                 echo "  </tr>\n";
@@ -913,12 +917,12 @@ if ($ADD==100) {
     $o=0;
     while ($people_to_print > $o) {
         $row=mysql_fetch_row($rslt);
-        echo "  <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=311&list_id=$row[0]';\">\n";
+        echo "  <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=311&list_id=$row[0]';\" title=\"MODIFIED: $row[5]\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">$row[0]</a></td>\n";
         echo "    <td>$row[1]</td>\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=100&camp=$row[2]&dispact=$dispact\">" . mclabel($row[2]) . "</a></td>\n";
         echo "    <td>$row[4]</td>\n";
-        echo "    <td align=center>$row[5]</td>\n";
+        echo "    <td align=center>" . dateToLocal($link,'first',$row[5],$webClientAdjGMT,'',0,1) . "</td>\n";
         echo "    <td align=center>$row[3]</td>\n";
         #echo "    <td>$row[7]</td>\n";
         echo "    <td colspan=3 align=center><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">MODIFY</a>";
