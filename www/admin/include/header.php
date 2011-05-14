@@ -32,6 +32,7 @@ if ($ADD==131 && $SUB==2) {
 #header ("Content-type: text/html; charset=utf-8");
 echo "<html>\n";
 echo "<head>\n";
+echo "  <!-- SESSION_ID: " . session_id() . " -->\n";
 echo "  <meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n";
 if ($ADD==999999 && ($SUB==11 || $SUB==12 || $SUB==13 || $SUB==14)) {
     if (!isset($RR)) $RR=4;
@@ -64,6 +65,11 @@ echo "document.write(getEditableSelectStyles());\n";
 echo "setEditableSelectImagePath('templates/default/images');\n";
 echo "</script>\n";
 
+if (!empty($_COOKIE['webClientGMT'])) $webClientGMT = $_COOKIE['webClientGMT'];
+if (!empty($_COOKIE['webClientDST'])) $webClientDST = $_COOKIE['webClientDST'];
+if ($webClientDST) $webClientAdjGMT = $webClientGMT - 1;
+echo "  <!-- webServerGMT:" . $webServerGMT. " webServerDST:" . $webServerDST . " webServerAdjGMT:" . $webServerAdjGMT . " -->\n";
+echo "  <!-- webClientGMT:" . $webClientGMT. " webClientDST:" . $webClientDST . " webClientAdjGMT:" . $webClientAdjGMT . " -->\n";
 
 ######################### HTML HEADER BEGIN #######################################
 if ($hh=='users') 

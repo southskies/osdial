@@ -52,6 +52,15 @@ $admin_home_url_LU = $system_settings['admin_home_url'];
 $user_company = $system_settings['company_name'];
 $admin_version = $system_settings['version'];
 
+$webServerGMT = date('Z')/3600;
+$webServerDST = date('I');
+$webServerAdjGMT = $webServerGMT;
+if ($webServerDST) $webServerAdjGMT = $webServerGMT - 1;
+$webClientGMT = $webServerGMT;
+$webclientDST = $webServerDST;
+$webClientAdjGMT = $webClientGMT;
+if ($webClientDST) $webClientAdjGMT = $webClientGMT - 1;
+
 ######################################################################################################
 ######################################################################################################
 #######   Form variable declaration
