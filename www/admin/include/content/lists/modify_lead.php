@@ -247,7 +247,10 @@ if ($ADD==1121) {
                 echo "    <font color=$default_text size=2>Call information: $ld[first_name] $ld[last_name] - $ld[phone_number]<br></font>\n";
                 $ldtzoff = $ld[gmt_offset_now];
                 if (date('I') != '0') $ldtzoff = $ld[gmt_offset_now] - 1;
-                echo "    <font color=$default_text size=2>Last Call Time: " . dateToLocal($link,$ldtzoff,date('Y-m-d H:i:s',strtotime($ld[last_local_call_time])-3600),$ldtzoff,'',$webClientDST,1) . "<br></font>\n";
+                $llctsecs = (strtotime($ld[last_local_call_time])-3600);
+                if ($llctsecs > 0) {
+                    echo "    <font color=$default_text size=2>Last Call Time: " . dateToLocal($link,$ldtzoff,date('Y-m-d H:i:s',$llctsecs),$ldtzoff,'',$webClientDST,1) . "<br></font>\n";
+                }
                 echo "    <font size=1>\n";
 		        echo "      <table cellspacing=0 cellpadding=1 width=600>\n";
 		        echo "        <tr class=tabheader>\n";
