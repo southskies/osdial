@@ -250,4 +250,176 @@ function hide_element($yesno) {
     return $elstyle;
 }
 
+
+function parseTimezones() {
+    # The following creates arrays with TZ mappings.
+    require_once 'Date.php';
+    $tzret = array();
+    $tzret['tzrefid'] = array();
+    $tzret['tzrefidDST'] = array();
+    $tzret['tzalt'] = array();
+    $tzret['tzaltDST'] = array();
+    $tzret['tznames'] = array();
+    $tzret['tznamesDST'] = array();
+    $tzret['tznames2'] = array();
+    $tzret['tznamesDST2'] = array();
+    $tzret['tzoffsets'] = array();
+    $tzret['tzoffsetsDST'] = array();
+    $tzids = Date_TimeZone::getAvailableIDs();
+    arsort($tzids);
+    $tzorder = array('^US.*','^SystemV.*','^America.*','^Europe.*','^Asia.*','^Africa.*','^Atlantic.*','^Pacific.*');
+    foreach ($tzorder as $tzmatch) {
+        foreach ($tzids as $tzid) {
+            if (preg_match('/'.$tzmatch.'/',$tzid)) {
+                $tmptz = new Date_TimeZone($tzid);
+                $tzsn = $tmptz->getShortName();
+                if (!empty($tzsn)) { 
+                    $tzln = $tmptz->getLongName();
+                    $tzdsn = $tmptz->getDSTShortName();
+                    $tzoff = $tmptz->getRawOffset() / 3600000;
+                    $tzoffDST = $tmptz->getOffset(new Date) / 3600000;
+
+                    if ($tzoff > -27 and $tzoff < 27 ) {
+                        $tzsep = '';
+                        if (!isset($tzret['tzoffsets'][$tzsep . $tzoff])) $tzret['tzoffsets'][$tzsep . $tzoff] = $tzsn;
+                        if (!isset($tzret['tznames'][$tzsn])) $tzret['tznames'][$tzsn] = $tzoff;
+                        if (!isset($tzret['tzalt'][$tzsn])) {
+                            if (empty($tzdsn)) $tzdsn = $tzsn;
+                            $tzret['tzalt'][$tzsn] = $tzdsn;
+                        }
+                        $tzsep = '';
+                        if ($tzoff >= 0) $tzsep = '+';
+                        if (!isset($tzret['tznames2'][$tzsn . $tzsep . $tzoff])) $tzret['tznames2'][$tzsn . $tzsep . $tzoff] = $tzoff;
+                        if (!isset($tzret['tzrefid'][$tzsn])) $tzret['tzrefid'][$tzsn] = $tzid;
+                    }
+
+                    if ($tzoffDST > -27 and $tzoffDST < 27 ) {
+                        $tzsep = '';
+                        if (empty($tzdsn)) $tzdsn = $tzsn;
+                        if (!isset($tzret['tzoffsetsDST'][$tzsep . $tzoffDST])) $tzret['tzoffsetsDST'][$tzsep . $tzoffDST] = $tzdsn;
+                        if (!isset($tzret['tznamesDST'][$tzdsn])) $tzret['tznamesDST'][$tzdsn] = $tzoffDST;
+                        if (!isset($tzret['tzaltDST'][$tzdsn])) $tzret['tzaltDST'][$tzdsn] = $tzsn;
+                        $tzsep = '';
+                        if ($tzoffDST >= 0) $tzsep = '+';
+                        if (!isset($tzret['tznamesDST2'][$tzdsn . $tzsep . $tzoffDST])) $tzret['tznamesDST2'][$tzdsn . $tzsep . $tzoffDST] = $tzoffDST;
+                        if (!isset($tzret['tzrefidDST'][$tzdsn])) $tzret['tzrefidDST'][$tzdsn] = $tzid;
+                    }
+                }
+            }
+        }
+    }
+    ksort($tzret['tzrefid']);
+    ksort($tzret['tzrefidDST']);
+    ksort($tzret['tzalt']);
+    ksort($tzret['tzaltDST']);
+    ksort($tzret['tznames']);
+    ksort($tzret['tznamesDST']);
+    ksort($tzret['tznames2']);
+    ksort($tzret['tznamesDST2']);
+    ksort($tzret['tzoffsets']);
+    ksort($tzret['tzoffsetsDST']);
+    return $tzret;
+}
+
+function dateCalcServerLocalGMTOffset($svrGMT, $locGMT, $locisDST, $tzsecs) {
+    $tzs = parseTimezones();
+    $tzoffsets = $tzs['tzoffsets'];
+    $tzoffsetsDST = $tzs['tzoffsetsDST'];
+    $tzalt = $tzs['tzalt'];
+    $tzaltDST = $tzs['tzaltDST'];
+    $tzrefid = $tzs['tzrefid'];
+    $tzrefidDST = $tzs['tzrefidDST'];
+
+    $dcsret = array();
+
+    $srvGMT = $srvGMT * 1;
+    $dcsret['svrsname'] = $tzoffsets[$svrGMT];
+    $svrGMTname = $tzrefid[$dcsret['svrsname']];
+    $svrtz = new Date_TimeZone($svrGMTname);
+    $dcsret['svroffset'] = $svrtz->getOffset(new Date($tzsecs)) / 3600000;
+    $dcsret['svrdst'] = $svrtz->inDaylightTime(new Date($tzsecs));
+        
+    $locGMT = $locGMT * 1;
+    $dcsret['locsname'] = $tzoffsets[$locGMT];
+    $locGMTname = $tzrefid[$dcsret['locsname']];
+    if ($locisDST>0) {
+        $dcsret['locsname'] = $tzoffsets[$locGMT];
+        $locGMTname = $tzrefidDST[$tzalt[$dcsret['locsname']]];
+    }
+    $loctz = new Date_TimeZone($locGMTname);
+    $dcsret['locoffset'] = $loctz->getOffset(new Date($tzsecs)) / 3600000;
+    $dcsret['locdst'] = $loctz->inDaylightTime(new Date($tzsecs));
+
+    return $dcsret;
+}
+
+function dateToLocal($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $addlocTZlabel) {
+    $tzs = parseTimezones();
+    $tzalt = $tzs['tzalt'];
+    $tzaltDST = $tzs['tzaltDST'];
+    if (empty($cnvdate)) return '';
+    $dsecs = strtotime($cnvdate);
+    if (empty($fmt)) $fmt='Y-m-d H:i:s';
+
+    if ($svrip>-27 and $svrip<27 and $svrip!='first') {
+        $svrGMT = $svrip * 1;
+    } else {
+        $server = get_first_record($link, 'servers', '*', sprintf("server_ip='%s'", mres($svrip)));
+        if (!is_array($server)) {
+            $server = get_first_record($link, 'servers', '*', "server_profile IN ('AIO','DIALER')");
+        }
+        if (!is_array($server)) return date($fmt, $dsecs);
+        $svrGMT = $server['local_gmt'] * 1;
+    }
+
+    $dcsoff = dateCalcServerLocalGMTOffset($svrGMT, $locGMT, $locisDST, $dsecs);
+
+    $dsecs -= $dcsoff['svroffset'] * 60 * 60;
+    $dsecs += $dcsoff['locoffset'] * 60 * 60;
+
+    $locTZlabel = '';
+    if ($addlocTZlabel>0) {
+        if ($dcsoff['locdst']) {
+            $locTZlabel=' '.$tzalt[$dcsoff['locsname']];
+        } else {
+            $locTZlabel=' '.$dcsoff['locsname'];
+        }
+    }
+    return date($fmt, $dsecs) . $locTZlabel;
+}
+
+
+function dateToServer($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $addsvrTZlabel) {
+    $tzs = parseTimezones();
+    $tzalt = $tzs['tzalt'];
+    $tzaltDST = $tzs['tzaltDST'];
+    if (empty($cnvdate)) return '';
+    $dsecs = strtotime($cnvdate);
+    if (empty($fmt)) $fmt='Y-m-d H:i:s';
+
+    if ($svrip>-27 and $svrip<27 and $svrip!='first') {
+        $svrGMT = $svrip * 1;
+    } else {
+        $server = get_first_record($link, 'servers', '*', sprintf("server_ip='%s'", mres($svrip)));
+        if (!is_array($server)) {
+            $server = get_first_record($link, 'servers', '*', "server_profile IN ('AIO','DIALER')");
+        }
+        if (!is_array($server)) return date($fmt, $dsecs);
+        $svrGMT = $server['local_gmt'] * 1;
+    }
+    $dcsoff = dateCalcServerLocalGMTOffset($svrGMT, $locGMT, $locisDST, $dsecs);
+
+    $dsecs -= ($dcsoff['locoffset'] - $dcsoff['svroffset']) * 60 * 60;
+
+    $svrTZlabel = '';
+    if ($addsvrTZlabel>0) {
+        if ($dcsoff['svrdst']) {
+            $svrTZlabel=' '.$tzalt[$dcsoff['svrsname']];
+        } else {
+            $svrTZlabel=' '.$dcsoff['svrsname'];
+        }
+    }
+    return date($fmt, $dsecs) . $svrTZlabel;
+}
+
 ?>
