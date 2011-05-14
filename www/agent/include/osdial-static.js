@@ -409,7 +409,7 @@
 
 			xmlhttprequestcheckconf=getXHR();
 			if (xmlhttprequestcheckconf) { 
-				checkconf_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&client=vdc&conf_exten=" + taskconfnum + "&auto_dial_level=" + auto_dial_level + "&campagentstdisp=" + campagentstdisp;
+				checkconf_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&client=vdc&conf_exten=" + taskconfnum + "&auto_dial_level=" + auto_dial_level + "&campagentstdisp=" + campagentstdisp + "&exten=" + extension;
 				xmlhttprequestcheckconf.open('POST', 'conf_exten_check.php');
 				xmlhttprequestcheckconf.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 				xmlhttprequestcheckconf.send(checkconf_query); 
@@ -4790,7 +4790,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 				var xmlhttp=getXHR();
 				if (xmlhttp) { 
-					DSupdate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=updateDISPO&format=text&user=" + user + "&pass=" + pass + "&dispo_choice=" + DispoChoice + "&lead_id=" + document.osdial_form.lead_id.value + "&campaign=" + campaign + "&auto_dial_level=" + auto_dial_level + "&agent_log_id=" + agent_log_id + "&PostDatETimE=" + PostDatETimE + "&CallBackDatETimE=" + CallBackDatETimE + "&list_id=" + document.osdial_form.list_id.value + "&recipient=" + CallBackrecipient + "&use_internal_dnc=" + use_internal_dnc + "&MDnextCID=" + LasTCID + "&stage=" + group + "&comments=" + CallBackCommenTs;
+					DSupdate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=updateDISPO&format=text&user=" + user + "&pass=" + pass + "&dispo_choice=" + DispoChoice + "&lead_id=" + document.osdial_form.lead_id.value + "&campaign=" + campaign + "&auto_dial_level=" + auto_dial_level + "&agent_log_id=" + agent_log_id + "&PostDatETimE=" + PostDatETimE + "&CallBackDatETimE=" + CallBackDatETimE + "&list_id=" + document.osdial_form.list_id.value + "&recipient=" + CallBackrecipient + "&use_internal_dnc=" + use_internal_dnc + "&MDnextCID=" + LasTCID + "&stage=" + group + "&phone_local_gmt=" + local_gmt + "&comments=" + CallBackCommenTs;
 					debug("<b>updateDISPO called:</b> vdc_db_query.php?" + DSupdate_query,4);
 					xmlhttp.open('POST', 'vdc_db_query.php',false); 
 					xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
@@ -6029,7 +6029,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 						// Whisper a ding to the agent.
 						var dingCID = "MCalrt" + epoch_sec + user_abb;
-						var dingoriginate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=Originate&format=text&channel=Local/9" + session_id + "@" + ext_context + "&queryCID=" + dingCID + "&exten=8304&ext_context=" + ext_context + "&ext_priority=1";
+						var dingoriginate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=Originate&format=text&channel=Local/9" + session_id + "@" + ext_context + "&queryCID=" + dingCID + "&outbound_cid=" + session_id + "&outbound_cid_name=" + dingCID + "&exten=8304&ext_context=" + ext_context + "&ext_priority=1";
 						xmlhttp.open('POST', 'manager_send.php', false); 
 						xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 						xmlhttp.send(dingoriginate_query); 
@@ -6139,6 +6139,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 
 					document.images['livecall'].src = image_livecall_ON.src;
 					VD_live_customer_call=1;
+					custchannellive=1;
 
 					document.getElementById('MultiCallAlerTBoX').style.visibility='hidden';
 					multicall_liveseconds = multicall_alert = 0;
