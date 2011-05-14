@@ -58,8 +58,8 @@ if ($ADD==211111111111) {
             if (strlen($server_id) < 1 or strlen($server_ip) < 7) {
                 echo "<br><font color=red>SERVER NOT ADDED - Please go back and look at the data you entered</font>\n";
             } else {
-                $asterisk_version='1.6.14';
-                $max_osdial_trunks='96';
+                $asterisk_version='1.6.18';
+                $max_osdial_trunks='200';
                 $osdial_balance_active='Y';
                 if (preg_match('/CONTROL|SQL|WEB|ARCHIVE|OTHER/',$server_profile)) {
                     $asterisk_version='';
