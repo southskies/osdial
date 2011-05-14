@@ -308,7 +308,7 @@ if ($ACTION == 'refresh') {
 
         }
         $total_conf=0;
-        $stmt="SELECT channel FROM live_sip_channels WHERE server_ip='$server_ip' AND extension='$conf_exten';";
+        $stmt="SELECT channel,channel_group FROM live_sip_channels WHERE server_ip='$server_ip' AND extension='$conf_exten';";
         # Hide monitoring channels
         #$stmt="SELECT channel FROM live_sip_channels WHERE server_ip='$server_ip' AND extension='$conf_exten' AND channel NOT LIKE 'Local/686_____@%' AND channel NOT LIKE 'Local/786_____@%';";
         if ($format=='debug') echo "\n<!-- $stmt -->";
@@ -320,8 +320,8 @@ if ($ACTION == 'refresh') {
             $loop_count++;
             $total_conf++;
             $row=mysql_fetch_row($rslt);
-            $ChannelA[$total_conf] = "$row[0]";
-            if ($format=='debug') echo "\n<!-- $row[0] -->";
+            $ChannelA[$total_conf] = $row[0];
+            if ($format=='debug') echo "\n<!-- $ChannelA[$total_conf] -->";
         }
         $stmt="SELECT channel FROM live_channels WHERE server_ip='$server_ip' AND extension='$conf_exten';";
         if ($format=='debug') echo "\n<!-- $stmt -->";
