@@ -131,7 +131,7 @@ while($one_day_interval > 0) {
 	$tn->open($osdial->{server}{telnet_host}); 
 
 	# print login
-	if ($osdial->{server}{asterisk_version} =~ /^1\.6/) {
+	if ($osdial->{server}{asterisk_version} =~ /^1\.6|^1\.8/) {
 		$tn->waitfor('/1\n$/');
 		$tn->print("Action: Login\nActionID: 1\nUsername: $telnet_login\nSecret: " . $osdial->{server}{ASTmgrSECRET} . "\n\n");
 	} else {
@@ -388,7 +388,7 @@ while($one_day_interval > 0) {
 			$osdial->load_config();
 
 			my @list_lines;
-			if ($osdial->{server}{asterisk_version} =~ /^1\.4|^1\.6/) {
+			if ($osdial->{server}{asterisk_version} =~ /^1\.4|^1\.6|^1\.8/) {
 				@list_lines = $tn->cmd(	String => "Action: Command\nCommand: core show uptime\n\n",
 							Prompt => '/--END COMMAND--.*/',
 							Errmode    => "return",

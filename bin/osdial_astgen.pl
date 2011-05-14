@@ -156,7 +156,7 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 	$oedata =~ s/^TRUNKblind.*$/TRUNKblind = IAX2\/ASTblind:$pass\@127.0.0.1:41569/m;
 	$oedata = "TRUNKblind = IAX2\/ASTblind:$pass\@127.0.0.1:41569\n" . $oedata unless ($oedata =~ /^TRUNKblind.*$/m);
 	$oedata = "TRUNKloop = IAX2\/ASTloop:$pass\@127.0.0.1:40569\n"   . $oedata unless ($oedata =~ /^TRUNKloop.*$/m);
-	if ($asterisk_version =~ /^1\.6/) {
+	if ($asterisk_version =~ /^1\.6|^1\.8/) {
 		$oereload = "dialplan reload";
 		$oedata =~ s/^exten => h,1,DeadAGI/exten => h,1,AGI/gm;
 		$moddata =~ s/^noload => chan_agent.so/load => chan_agent.so/gm;
@@ -420,7 +420,7 @@ sub gen_servers {
 	}
 
 	my $extreload = "extensions reload";
-	if ($asterisk_version =~ /^1\.6/) {
+	if ($asterisk_version =~ /^1\.6|^1\.8/) {
 		$extreload = "dialplan reload";
 	}
 	write_reload($esvr,'osdial_extensions_servers',$extreload);
@@ -449,7 +449,7 @@ sub gen_conferences {
 		$stmt .= " server_ip=\'" . $ip . "\' OR";
 	}
 
-	if ($asterisk_version =~ /^1\.6/) {
+	if ($asterisk_version =~ /^1\.6|^1\.8/) {
 		$cnf .= ";\n; DAHDIBarge direct channel extensions\n";
 		$cnf .= "exten => _8612XXX,1,DAHDIBarge(\${EXTEN:4})\n";
 	} else {
@@ -464,7 +464,7 @@ sub gen_conferences {
 	while (my $sret = $osdial->sql_query($stmt)) {
 		$cf = $sret->{conf_exten} unless ($cf);
 		$cl = $sret->{conf_exten};
-		if ($asterisk_version =~ /^1\.6/) {
+		if ($asterisk_version =~ /^1\.6|^1\.8/) {
 			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN},q)\n";
 		} else {
 			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN}|q\n";
@@ -488,7 +488,7 @@ sub gen_conferences {
 	while (my $sret = $osdial->sql_query($stmt)) {
                 $cf = $sret->{conf_exten} unless ($cf);
                 $cl = $sret->{conf_exten};
-		if ($asterisk_version =~ /^1\.6/) {
+		if ($asterisk_version =~ /^1\.6|^1\.8/) {
 			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Meetme(\${EXTEN},F)\n";
 			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},F)\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Set(SPYGROUP=\${EXTEN:1})\n";
@@ -516,7 +516,7 @@ sub gen_conferences {
 	my $stmt = "SELECT conf_exten FROM osdial_remote_agents WHERE user_start LIKE 'va\%';";
         my ($cnf2,$mtm2,$cf,$cl);
 	while (my $sret = $osdial->sql_query($stmt)) {
-		if ($asterisk_version =~ /^1\.6/) {
+		if ($asterisk_version =~ /^1\.6|^1\.8/) {
 			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Meetme(\${EXTEN},Fq)\n";
 			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
 			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
@@ -539,7 +539,7 @@ sub gen_conferences {
 
 	my $extreload = "extensions reload";
 	my $mmreload = "reload app_meetme.so";
-	if ($asterisk_version =~ /^1\.6/) {
+	if ($asterisk_version =~ /^1\.6|^1\.8/) {
 		$extreload = "dialplan reload";
 		$mmreload = "config reload /etc/asterisk/meetme.conf";
 	}
@@ -672,7 +672,7 @@ sub gen_phones {
 	}
 
 	my $extreload = "extensions reload";
-	if ($asterisk_version =~ /^1\.6/) {
+	if ($asterisk_version =~ /^1\.6|^1\.8/) {
 		$extreload = "dialplan reload";
 	}
 	write_reload($sphn,'osdial_sip_phones','sip reload');

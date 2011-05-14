@@ -238,7 +238,7 @@ sub process_request {
 		$AGILOG = '2' if ($DBagi_output =~ /FILE/);
 		$AGILOG = '3' if ($DBagi_output =~ /BOTH/);
 		$ZorD = 'Zap';
-		$ZorD = 'DAHDI' if ($DBasterisk_version =~ /^1\.6/);
+		$ZorD = 'DAHDI' if ($DBasterisk_version =~ /^1\.6|^1\.8/);
 		$rec_count++;
 	}
 	$sthA->finish();

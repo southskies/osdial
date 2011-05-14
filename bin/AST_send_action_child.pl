@@ -181,7 +181,7 @@ if ($action) {
 		$telnet_login = $ASTmgrUSERNAME;
 	}
 	$tn->open($telnet_host); 
-	if ($asterisk_version =~ /^1\.6/) {
+	if ($asterisk_version =~ /^1\.6|^1\.8/) {
 		$tn->waitfor('/1\n$/');			# print login
 		$tn->print("Action: Login\nActionID: 1\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
 	} else {

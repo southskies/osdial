@@ -237,7 +237,7 @@ while ($sthArows > $rec_count)
 		$DBsys_perf_log	=			"$aryA[12]";
 		$DBvd_server_logs =			"$aryA[13]";
 		$ZorD = "Zap";
-		if ($DBasterisk_version =~ /^1\.6/) {
+		if ($DBasterisk_version =~ /^1\.6|^1\.8/) {
 			$ZorD = "DAHDI";
 			$dbhD = DBI->connect("DBI:mysql:dialer:127.0.0.1:3306", "osdial", "osdial1234")
 			 or die "Couldn't connect to database: " . DBI->errstr;
@@ -262,7 +262,7 @@ $sthA->finish();
 
 	$show_channels_format = 1;
 	if ($AST_ver =~ /^1\.0/i) {$show_channels_format = 0;}
-	if ($AST_ver =~ /^1\.4|^1\.6/i) {$show_channels_format = 2;}
+	if ($AST_ver =~ /^1\.4|^1\.6|^1\.8/i) {$show_channels_format = 2;}
 	print STDERR "SHOW CHANNELS format: $show_channels_format\n";
 
 ##### LOOK FOR ZAP CLIENTS AS DEFINED IN THE phones TABLE SO THEY ARE NOT MISLABELED AS TRUNKS
@@ -355,7 +355,7 @@ while($one_day_interval > 0)
 
 if (!$telnet_port) {$telnet_port = '5038';}
 
-   if ($DBasterisk_version !~ /^1\.6/) {
+   if ($DBasterisk_version !~ /^1\.6|^1\.8/) {
 	### connect to asterisk manager through telnet
 	$t = new Net::Telnet (Port => $telnet_port,
 						  Prompt => '/.*[\$%#>] $/',
@@ -366,7 +366,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 	$t->open("$telnet_host"); 
 
 	# Not needed ast asterisk 1.6 stores channel data in mysql.
-	#if ($DBasterisk_version =~ /^1\.6/) {
+	#if ($DBasterisk_version =~ /^1\.6|^1\.8/) {
 	#	$t->waitfor('/1\n$/');			# print login
 	#	$t->print("Action: Login\nActionID: 1\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
 	#} else {
@@ -397,7 +397,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 			&validate_parked_channels;
 
 	   
-   if ($DBasterisk_version !~ /^1\.6/) {
+   if ($DBasterisk_version !~ /^1\.6|^1\.8/) {
 	$t->buffer_empty;
 	if ($show_channels_format < 1)
 		{
@@ -479,14 +479,14 @@ if (!$telnet_port) {$telnet_port = '5038';}
 				$channel = $1;
 				$extension = $2;
 				if ($show_channels_format) {
-					if ($DBasterisk_version =~ /^1\.6/) {
+					if ($DBasterisk_version =~ /^1\.6|^1\.8/) {
 						$extension =~ s/^.*\(,\).*$//gi;
 					} else {
 						$extension =~ s/^.*\(|\).*$//gi;
 					}
 				}
 				$extension =~ s/^SIP\/|-\S+$//gi;
-				if ($DBasterisk_version =~ /^1\.6/) {
+				if ($DBasterisk_version =~ /^1\.6|^1\.8/) {
 					$extension =~ s/\,.*//gi;
 				} else {
 					$extension =~ s/\|.*//gi;
@@ -814,7 +814,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 					$channel_data = $extension;
 					if ($show_channels_format)
 						{
-						if ($DBasterisk_version =~ /^1\.6/) {
+						if ($DBasterisk_version =~ /^1\.6|^1\.8/) {
 							$extension =~ s/^.*\(,\).*$//gi;
 						} else {
 							$extension =~ s/^.*\(|\).*$//gi;
@@ -837,7 +837,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 					$extension =~ s/^SIP\/|-\S+$//gi;
 					#$extension =~ s/\|.*$//gi;
 					$extension =~ s/^Local\/|\@.*$//gi;
-					if ($DBasterisk_version =~ /^1\.6/) {
+					if ($DBasterisk_version =~ /^1\.6|^1\.8/) {
 						$extension =~ s/\,.*//gi;
 					} else {
 						$extension =~ s/\|.*//gi;
@@ -1067,7 +1067,7 @@ if (!$telnet_port) {$telnet_port = '5038';}
 		$event_string='HANGING UP|';
 		&event_logger;
 
-          if ($DBasterisk_version !~ /^1\.6/) {
+          if ($DBasterisk_version !~ /^1\.6|^1\.8/) {
 		@hangup = $t->cmd(String => "Action: Logoff\n\n", Prompt => "/.*/"); 
 
 		$ok = $t->close;

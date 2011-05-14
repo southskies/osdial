@@ -271,7 +271,7 @@ $t = new Net::Telnet (Port => $telnet_port,
 	else {$telnet_login = $ASTmgrUSERNAME;}
 
 $t->open("$telnet_host"); 
-if ($DBasterisk_version =~ /^1\.6/) {
+if ($DBasterisk_version =~ /^1\.6|^1\.8/) {
 	$t->waitfor('/1\n$/');			# print login
 	$t->print("Action: Login\nActionID: 1\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
 } else {
@@ -392,7 +392,7 @@ $t = new Net::Telnet (Port => $telnet_port,
 	else {$telnet_login = $ASTmgrUSERNAME;}
 
 $t->open("$telnet_host"); 
-if ($DBasterisk_version =~ /^1\.6/) {
+if ($DBasterisk_version =~ /^1\.6|^1\.8/) {
 	$t->waitfor('/1\n$/');			# print login
 	$t->print("Action: Login\nActionID: 1\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
 } else {
