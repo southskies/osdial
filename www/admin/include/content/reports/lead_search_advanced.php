@@ -791,8 +791,10 @@ function report_lead_search_advanced($lsa_seg='form') {
         $form .= "      <tr><td><select name=statuses[] size=8 multiple style=\"width:100%;\">\n";
         $krh = get_krh($link, 'osdial_statuses', 'status,status_name','','','');
         $krh2 = get_krh($link, 'osdial_campaign_statuses', 'status,status_name','','','');
-        foreach ($krh2 as $k => $v) {
-            $krh[$k] = $v;
+        if (is_array($krh2)) {
+            foreach ($krh2 as $k => $v) {
+                $krh[$k] = $v;
+            }
         }
         ksort($krh);
         $form .= format_select_options($krh, 'status', 'status_name', $statuses, "-- ALL --");
@@ -833,8 +835,10 @@ function report_lead_search_advanced($lsa_seg='form') {
 
         $timezoneOPTS="";
         $s=0;
-        if (is_array($tznames)) {
-            foreach ($tznames as $k => $v) {
+        $tznameslabel = $tznamesDST;
+        if (date('I')) $tznameslabel = $tznamesDST;
+        if (is_array($tznameslabel)) {
+            foreach ($tznameslabel as $k => $v) {
                 $sel="";
                 if (is_array($timezones)) {
                     foreach ($timezones as $timezone) {
@@ -1257,6 +1261,9 @@ function report_lead_search_advanced($lsa_seg='form') {
                     if ($row[2] == '0000-00-00 00:00:00') $row[2] = "";
                     if ($row[35] == '0000-00-00 00:00:00') $row[35] = "";
                     if (strlen($row[11]) == 10) $row[11] = substr($row[11],0,3) . "-" . substr($row[11],3,3) . "-" . substr($row[11],6,4);
+                    $row[8] = $row[8] * 1;
+                    $tzlabel = $tzoffsets[$row[8]];
+                    if (date('I') == 1) $tzlabel = $tzoffsetsDST[$row[8]];
                     $data .= "  <tr " . bgcolor($o) . " class=row ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[0]');\">\n";
                     $data .= "    <td nowrap align=left><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ($o + (($page - 1) * $numresults)) . "</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[0]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[0]\" target=\"_blank\">$row[0]</a></font></td>\n";
@@ -1270,7 +1277,7 @@ function report_lead_search_advanced($lsa_seg='form') {
                     $data .= "    <td nowrap align=center title=\"" . $row[4] . " (" . $agents_label[$row[4]] . ")\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[4]</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[4]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[5]</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[28]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ellipse($row[28],10,true) . "</font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"" . $tzoffsets[($row[8] - date("I"))] . " (" . $row[8]. ")\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . $tzoffsets[($row[8] - date("I"))] . "</font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"" . $tzlabel . " (" . $row[8]. ")\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . $tzlabel . "</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[30]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[30]</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[1]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>&nbsp;" . ellipse($row[1],10,false) . "&nbsp;</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[2]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>&nbsp;$row[2]&nbsp;</font></td>\n";
