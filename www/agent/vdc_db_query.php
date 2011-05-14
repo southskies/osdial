@@ -255,6 +255,7 @@ $pass = get_variable("pass");
 $phone_code = get_variable("phone_code");
 $phone_ip = get_variable("phone_ip");
 $phone_number = get_variable("phone_number");
+$phone_local_gmt = get_variable("phone_local_gmt");
 $postal_code = get_variable("postal_code");
 $PostDatETimE = get_variable("PostDatETimE");
 $preview = get_variable("preview");
@@ -780,7 +781,6 @@ if ($ACTION == 'manDiaLnextCaLL') {
                 $local_AMP = '@';
                 $Local_out_prefix = '9';
                 $Local_dial_timeout = '60';
-                #$Local_persist = '/n';
                 $Local_persist = '';
                 if ($dial_timeout > 4) $Local_dial_timeout = $dial_timeout;
                 $Local_dial_timeout = ($Local_dial_timeout * 1000);
@@ -812,6 +812,7 @@ if ($ACTION == 'manDiaLnextCaLL') {
                 } else {
                     $Ndialstring = "$Local_out_prefix$int_prefix$phone_code$phone_number";
                 }
+
                 ### insert the call action into the osdial_manager table to initiate the call
                 #	$stmt = "INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$MqueryCID','Exten: $conf_exten','Context: $ext_context','Channel: $local_DEF$Local_out_prefix$phone_code$phone_number$local_AMP$ext_context','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','','','','');";
                 $stmt = "INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$MqueryCID','Exten: $Ndialstring','Context: $dial_context','Channel: $local_DEF$conf_exten$local_AMP$ext_context$Local_persist','Priority: 1','Callerid: $CIDstring','Timeout: $Local_dial_timeout','Account: $MqueryCID','','','');";
@@ -1631,7 +1632,7 @@ if ($ACTION == 'manDiaLlogCaLL') {
                 $loop_count=0;
                 while($loop_count < $total_hangup) {
                     if (strlen($hangup_channels[$loop_count])>5) {
-                        $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Hangup','CH12346$StarTtime$loop_count','Channel: $hangup_channels[$loop_count]','','','','','','','','','');";
+                        $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','$hangup_channels[$loop_count]','Hangup','CH12346$StarTtime$loop_count','Channel: $hangup_channels[$loop_count]','','','','','','','','','');";
                         if ($format=='debug') echo "\n<!-- $stmt -->";
                         $rslt=mysql_query($stmt, $link);
                     }
@@ -2240,7 +2241,7 @@ if ($ACTION == 'multicallQueueSwap') {
             if ($DB) echo "$stmt\n";
             $rslt=mysql_query($stmt, $link);
 
-            $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Redirect','$queryCID','Channel: $channel','Context: osdial','Exten: $park_on_extension','Priority: 1','CallerID: $queryCID','Account: $queryCID','','','','');";
+            $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','$channel','Redirect','$queryCID','Channel: $channel','Context: osdial','Exten: $park_on_extension','Priority: 1','CallerID: $queryCID','Account: $queryCID','','','','');";
             if ($DB) echo "$stmt\n";
             $rslt=mysql_query($stmt, $link);
 
@@ -2274,7 +2275,7 @@ if ($ACTION == 'multicallQueueSwap') {
                 if (strlen($D_s_ip[3])<3) {$D_s_ip[3] = "0$D_s_ip[3]";}
                 $dest_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]$isp$conf_exten";
             }
-            $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$multicall_serverip','','Redirect','$mccallerid','Channel: $multicall_channel','Context: osdial','Exten: $dest_dialstring','Priority: 1','CallerID: $mccallerid','Account: $mccallerid','','','','');";
+            $stmt="INSERT INTO osdial_manager values('','$mcuniqueid','$NOW_TIME','NEW','N','$multicall_serverip','$multicall_channel','Redirect','$mccallerid','Channel: $multicall_channel','Context: osdial','Exten: $dest_dialstring','Priority: 1','CallerID: $mccallerid','Account: $mccallerid','','','','');";
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
 
@@ -2805,7 +2806,7 @@ if ($ACTION == 'userLOGout') {
             $row=mysql_fetch_row($rslt);
             $agent_channel = $row[0];
             if ($format=='debug') echo "\n<!-- $row[0] -->";
-            $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Hangup','ULGH3459$StarTtime','Channel: $agent_channel','','','','','','','','','');";
+            $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','$agent_channel','Hangup','ULGH3459$StarTtime','Channel: $agent_channel','','','','','','','','','');";
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
         }
@@ -2942,7 +2943,7 @@ if ($ACTION == 'updateDISPO') {
         $rslt=mysql_query($stmt, $link);
 
         if ($dispo_choice == 'PD') {
-            $stmt="UPDATE osdial_list set post_date='$PostDatETimE' where lead_id='$lead_id';";
+            $stmt="UPDATE osdial_list set post_date='" . dateToServer($link,$server_ip,$PostDatETimE,$phone_local_gmt-date('I'),'',date('I'),0) . "' where lead_id='$lead_id';";
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
         }
@@ -3107,7 +3108,7 @@ if ($ACTION == 'updateDISPO') {
 
         ### CALLBACK ENTRY
         if ( ($dispo_choice == 'CBHOLD') and (strlen($CallBackDatETimE)>10) ) {
-            $stmt=sprintf("INSERT INTO osdial_callbacks (lead_id,list_id,campaign_id,status,entry_time,callback_time,user,recipient,comments,user_group) values('%s','%s','%s','ACTIVE','%s','%s','%s','%s','%s','%s');",mres($lead_id),mres($list_id),mres($campaign),mres($NOW_TIME),mres($CallBackDatETimE),mres($user),mres($recipient),mres($comments),mres($user_group));
+            $stmt=sprintf("INSERT INTO osdial_callbacks (lead_id,list_id,campaign_id,status,entry_time,callback_time,user,recipient,comments,user_group) values('%s','%s','%s','ACTIVE','%s','%s','%s','%s','%s','%s');",mres($lead_id),mres($list_id),mres($campaign),mres($NOW_TIME),mres(dateToServer($link,$server_ip,$CallBackDatETimE,$phone_local_gmt-date('I'),'',date('I'),0)),mres($user),mres($recipient),mres($comments),mres($user_group));
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
         }
