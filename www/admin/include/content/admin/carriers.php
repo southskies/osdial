@@ -1011,7 +1011,7 @@ if ($ADD == "3carrier") {
             echo "      <td title=\"Dialplan\">D</td>\n";
             echo "      <td align=center>LINKS</td>\n";
             echo "    </tr>\n";
-            $servers = get_krh($link, 'servers', '*','',"active='Y'",'');
+            $servers = get_krh($link, 'servers', '*','',"active='Y' AND server_profile IN ('AIO','DIALER')",'');
             if (is_array($servers)) {
                 $c=0;
                 foreach ($servers as $server) {
