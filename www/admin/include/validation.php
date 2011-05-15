@@ -225,6 +225,7 @@ if ($non_latin < 1)	{
 	$fronter_display = preg_replace("/[^NY]/","",$fronter_display);
 	$drop_message = preg_replace("/[^NY]/","",$drop_message);
 	$use_internal_dnc = preg_replace("/[^NY]/","",$use_internal_dnc);
+	$use_browser_timezone_offset = preg_replace("/[^NY]/","",$use_browser_timezone_offset);
 	$omit_phone_code = preg_replace("/[^NY]/","",$omit_phone_code);
 	$available_only_ratio_tally = preg_replace("/[^NY]/","",$available_only_ratio_tally);
 	$sys_perf_log = preg_replace("/[^NY]/","",$sys_perf_log);

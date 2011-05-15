@@ -1773,6 +1773,15 @@ The <?=$t1?> basic web-based lead loader is designed simply to take a lead file 
 <BR>
 <B>Multi-Comapny Administrator -</B> Gerneally all user will belong to some company...except one, the multicompany admin.  Put the administrators user in hear.
 
+<BR>
+<A NAME="settings-default_date_format">
+<BR>
+<B>Default Date Format -</B> This option allows you to select the format that you would like to have dates displayed using.  Most reporting will use this default, otherwise, the 'YYYY-MM-DD HH:mm:ss'.  This option only affects the display of dates, all date entry into the system must be in "YYYY-MM-DD HH:mm:ss" format.
+
+<BR>
+<A NAME="settings-use_browser_timezone_offset">
+<BR>
+<B>Use Browser Timezone Offset -</B> This option will adjust the timezone offsets of both displayed and entered dates. If set to 'Y', the system will attempt to use the timezone of the browser or agent's phone. If the server's local GMT is PST-8, and the agent or manager is connecting from EST-5, the system will offset all of the reported and entered times and dates.  When in the agent interface, the "local_gmt" value from the agent's phone is used (Setup--Phones--[extension]--LocalGMT). When in the control/management interface, the browser is used to determine the remote parties local GMT/timezone.  If set to 'N', the system will use the local_gmt of the server (Setup--Servers--[server]--LocalGMT) for all reporting and entry.
 
 <BR><BR><BR><BR>
 

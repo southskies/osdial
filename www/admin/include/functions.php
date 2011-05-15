@@ -1722,9 +1722,12 @@ function dateCalcServerLocalGMTOffset($svrGMT, $locGMT, $locisDST, $tzsecs) {
 function dateToLocal($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $addlocTZlabel) {
     global $tzalt;
     global $tzaltDST;
+    global $system_settings;
+
     if (empty($cnvdate)) return '';
     $dsecs = strtotime($cnvdate);
-    if (empty($fmt)) $fmt='Y-m-d H:i:s';
+    if (empty($fmt)) $fmt=$system_settings['default_date_format'];
+    if ($system_settings['use_browser_timezone_offset']=='N') return date($fmt, $dsecs);
 
     if ($svrip>-27 and $svrip<27 and $svrip!='first') {
         $svrGMT = $svrip * 1;
@@ -1743,23 +1746,31 @@ function dateToLocal($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $addl
     $dsecs += $dcsoff['locoffset'] * 60 * 60;
 
     $locTZlabel = '';
-    if ($addlocTZlabel>0) {
-        if ($dcsoff['locdst']) {
-            $locTZlabel=' '.$tzalt[$dcsoff['locsname']];
-        } else {
-            $locTZlabel=' '.$dcsoff['locsname'];
+    $retdate = date($fmt, $dsecs);
+    if (preg_match('/'.$dcsoff['locsname'].'|'.$tzalt[$dcsoff['locsname']].'/',$retdate)) {
+        return $retdate;
+    } else {
+        if ($addlocTZlabel>0) {
+            if ($dcsoff['locdst']) {
+                $locTZlabel=' '.$tzalt[$dcsoff['locsname']];
+            } else {
+                $locTZlabel=' '.$dcsoff['locsname'];
+            }
         }
+        return $retdate . $locTZlabel;
     }
-    return date($fmt, $dsecs) . $locTZlabel;
 }
 
 
 function dateToServer($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $addsvrTZlabel) {
     global $tzalt;
     global $tzaltDST;
+    global $system_settings;
+
     if (empty($cnvdate)) return '';
     $dsecs = strtotime($cnvdate);
     if (empty($fmt)) $fmt='Y-m-d H:i:s';
+    if ($system_settings['use_browser_timezone_offset']=='N') return date($fmt, $dsecs);
 
     if ($svrip>-27 and $svrip<27 and $svrip!='first') {
         $svrGMT = $svrip * 1;

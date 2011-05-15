@@ -29,11 +29,11 @@ if ($ADD==411111111111111) {
         $stmt = sprintf("UPDATE system_settings SET use_non_latin='%s',webroot_writable='%s',enable_queuemetrics_logging='%s',queuemetrics_server_ip='%s',queuemetrics_dbname='%s'," .
             "queuemetrics_login='%s',queuemetrics_pass='%s',queuemetrics_url='%s',queuemetrics_log_id='%s',queuemetrics_eq_prepend='%s',osdial_agent_disable='%s',allow_sipsak_messages='%s'," .
             "admin_home_url='%s',enable_agc_xfer_log='%s',company_name='%s',admin_template='%s',agent_template='%s',enable_lead_allocation='%s',enable_external_agents='%s',enable_filters='%s'," .
-            "enable_multicompany='%s',multicompany_admin='%s',default_carrier_id='%s',intra_server_protocol='%s';",
+            "enable_multicompany='%s',multicompany_admin='%s',default_carrier_id='%s',intra_server_protocol='%s',default_date_format='%s',use_browser_timezone_offset='%s';",
             mres($use_non_latin),mres($webroot_writable),mres($enable_queuemetrics_logging),mres($queuemetrics_server_ip),mres($queuemetrics_dbname),
             mres($queuemetrics_login),mres($queuemetrics_pass),mres($queuemetrics_url),mres($queuemetrics_log_id),mres($queuemetrics_eq_prepend),mres($osdial_agent_disable),mres($allow_sipsak_messages),
             mres($admin_home_url),mres($enable_agc_xfer_log),mres($company_name),mres($admin_template),mres($agent_template),mres($enable_lead_allocation),mres($enable_external_agents),mres($enable_filters),
-            mres($enable_multicompany),mres($multicompany_admin),mres($carrier_id),mres($intra_server_protocol));
+            mres($enable_multicompany),mres($multicompany_admin),mres($carrier_id),mres($intra_server_protocol),mres($default_date_format),mres($use_browser_timezone_offset));
         $rslt=mysql_query($stmt, $link);
 
         ### LOG CHANGES TO LOG FILE ###
@@ -194,6 +194,42 @@ if ($ADD==311111111111111) {
         echo "              <option selected>$system_settings[admin_template]</option>\n";
         echo "            </select>\n";
         echo "            $NWB#settings-admin_template$NWE\n";
+        echo "          </td>\n";
+        echo "        </tr>\n";
+
+        echo "        <tr bgcolor=$oddrows>\n";
+        echo "          <td align=right>Default Date Format:</td>\n";
+        echo "          <td align=left>\n";
+        echo "            <select size=1 name=default_date_format>\n";
+        echo "              <option value=\"Y-m-d H:i:s\">" . date('Y-m-d H:i:s') . "</option>\n";
+        echo "              <option value=\"Y-m-d H:i\">" . date('Y-m-d H:i') . "</option>\n";
+        echo "              <option value=\"m-d-Y H:i:s\">" . date('m-d-Y H:i:s') . "</option>\n";
+        echo "              <option value=\"m-d-Y H:i\">" . date('m-d-Y H:i') . "</option>\n";
+        echo "              <option value=\"F j, Y, g:i a\">" . date('F j, Y, g:i a') . "</option>\n";
+        echo "              <option value=\"D M j G:i:s T Y\">" . date('D M j G:i:s T Y') . "</option>\n";
+        echo "              <option value=\"YmdHis\">" . date('YmdHis') . "</option>\n";
+        echo "              <option value=\"d-m-Y H:i\">" . date('d-m-Y H:i') . "</option>\n";
+        echo "              <option value=\"r\">" . date('r') . "</option>\n";
+        echo "              <option value=\"h:m:s A d/m/Y\">" . date('h:m:s A d/m/Y') . "</option>\n";
+        echo "              <option value=\"d/m/Y h:m:s A\">" . date('d/m/Y h:m:s A') . "</option>\n";
+        echo "              <option value=\"c\">" . date('c') . "</option>\n";
+        echo "              <option value=\"U\">" . date('U') . "</option>\n";
+        echo "              <option value=\"l jS \\of F Y h:i:s A\">" . date('l jS \of F Y h:i:s A') . "</option>\n";
+        echo "              <option selected value=\"$system_settings[default_date_format]\">" . date($system_settings['default_date_format']) . "</option>\n";
+        echo "            </select>\n";
+        echo "            $NWB#settings-default_date_format$NWE\n";
+        echo "          </td>\n";
+        echo "        </tr>\n";
+
+        echo "        <tr bgcolor=$oddrows>\n";
+        echo "          <td align=right>Use Browser Timezone Offset:</td>\n";
+        echo "          <td align=left>\n";
+        echo "            <select size=1 name=use_browser_timezone_offset>\n";
+        echo "              <option>Y</option>\n";
+        echo "              <option>N</option>\n";
+        echo "              <option selected>$system_settings[use_browser_timezone_offset]</option>\n";
+        echo "            </select>\n";
+        echo "            $NWB#settings-use_broweser_timezone_offset$NWE\n";
         echo "          </td>\n";
         echo "        </tr>\n";
 

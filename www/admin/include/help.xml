@@ -1422,6 +1422,14 @@ OSDial Server Trunks allows you to restrict the outgoing lines that are used on 
   Gerneally all user will belong to some company...except one, the multicompany admin.  Put the administrators user in hear.
     </item>
 
+    <item pathId="default_date_format" title="Default Date Format">
+  This option allows you to select the format that you would like to have dates displayed using.  Most reporting will use this default, otherwise, the 'YYYY-MM-DD HH:mm:ss'.  This option only affects the display of dates, all date entry into the system must be in "YYYY-MM-DD HH:mm:ss" format.
+    </item>
+
+    <item pathId="use_browser_timezone_offset" title="Use Browser Timezone Offset">
+  This option will adjust the timezone offsets of both displayed and entered dates. If set to 'Y', the system will attempt to use the timezone of the browser or agent's phone. If the server's local GMT is PST-8, and the agent or manager is connecting from EST-5, the system will offset all of the reported and entered times and dates.  When in the agent interface, the "local_gmt" value from the agent's phone is used (Setup--Phones--[extension]--LocalGMT). When in the control/management interface, the browser is used to determine the remote parties local GMT/timezone.  If set to 'N', the system will use the local_gmt of the server (Setup--Servers--[server]--LocalGMT) for all reporting and entry.
+    </item>
+
   </section>
 
   <section pathId="companies" title="Multi-Company Configuration">
