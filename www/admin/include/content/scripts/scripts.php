@@ -532,16 +532,6 @@ if ($ADD==2111111)
 		 else
 			{
             if ($LOG['multicomp'] > 0) $script_id = (($company_id * 1) + 100) . $script_id;
-
-            $LOG['allowed_scriptsSQL'] = rtrim($LOG['allowed_scriptsSQL'], ')');
-            $LOG['allowed_scriptsSQL'] .= ",'$script_id')";
-            $LOG['allowed_scriptsSTR'] .= "$script_id:";
-            $LOG['allowed_scripts'][] = $script_id;
-            if ($LOG['allowed_scriptsALL']<1) {
-                $stmt="UPDATE osdial_user_groups SET allowed_scripts=' " . implode(" ",$LOG['allowed_scripts']) . " -' WHERE user_group='$LOG[user_group]';";  
-                $rslt=mysql_query($stmt, $link);
-            }
-
             $stmt="INSERT INTO osdial_scripts values('" . mysql_real_escape_string($script_id) . "','" . mysql_real_escape_string($script_name) . "','" . mysql_real_escape_string($script_comments) . "','" . mysql_real_escape_string($script_text) . "','" . mysql_real_escape_string($active) . "');";
 			$rslt=mysql_query($stmt, $link);
 
@@ -554,6 +544,14 @@ if ($ADD==2111111)
 				fwrite ($fp, "$date|ADD A NEW SCRIPT ENTRY         |$PHP_AUTH_USER|$ip|$stmt|\n");
 				fclose($fp);
 				}
+
+                if ($LOG['allowed_scriptsALL']==0) {
+                    $LOG['allowed_scripts'][] = $script_id;
+                    $scripts_value = ' ' . implode(' ', $LOG['allowed_scripts']) . ' -';
+                    $stmt = sprintf("UPDATE osdial_user_groups SET allowed_scripts='%s' WHERE user_group='%s';",mres($scripts_value),$LOG['user_group']);
+				    $rslt=mysql_query($stmt, $link);
+                }
+
 			}
 		}
 $ADD=1000000;

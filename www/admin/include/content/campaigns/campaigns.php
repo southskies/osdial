@@ -271,6 +271,13 @@ if ($ADD==21)
                     fclose($fp);
                     }
 
+                if ($LOG['allowed_campaignsALL']==0) {
+                    $LOG['allowed_campaigns'][] = $campaign_id;
+                    $campaigns_value = ' ' . implode(' ', $LOG['allowed_campaigns']) . ' -';
+                    $stmt = sprintf("UPDATE osdial_user_groups SET allowed_campaigns='%s' WHERE user_group='%s';",mres($campaigns_value),$LOG['user_group']);
+				    $rslt=mysql_query($stmt, $link);
+                }
+
                 }
             }
         }
@@ -373,6 +380,13 @@ if ($ADD==20)
                 $fp = fopen ("./admin_changes_log.txt", "a");
                 fwrite ($fp, "$date|COPY TO NEW CAMPAIGN|$PHP_AUTH_USER|$ip|$campaign_id|$source_campaign_id|$stmt|$stmtA|\n");
                 fclose($fp);
+                }
+
+                if ($LOG['allowed_campaignsALL']==0) {
+                    $LOG['allowed_campaigns'][] = $campaign_id;
+                    $campaigns_value = ' ' . implode(' ', $LOG['allowed_campaigns']) . ' -';
+                    $stmt = sprintf("UPDATE osdial_user_groups SET allowed_campaigns='%s' WHERE user_group='%s';",mres($campaigns_value),$LOG['user_group']);
+				    $rslt=mysql_query($stmt, $link);
                 }
 
             }

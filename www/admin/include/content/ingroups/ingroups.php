@@ -104,7 +104,7 @@ if ($ADD==1211)
 
 	echo "<tr bgcolor=$oddrows><td align=right>Source Group ID: </td><td align=left><select size=1 name=source_group_id>\n";
 
-		$stmt=sprintf("SELECT group_id,group_name FROM osdial_inbound_groups WHERE group_id IN %s ORDER BY group_id",$LOG['allowed_ingroupsSQL']);
+		$stmt=sprintf("SELECT group_id,group_name FROM osdial_inbound_groups WHERE group_id IN %s AND group_id NOT LIKE 'A2A_%%' ORDER BY group_id",$LOG['allowed_ingroupsSQL']);
 		$rslt=mysql_query($stmt, $link);
 		$groups_to_print = mysql_num_rows($rslt);
 		$groups_list='';
@@ -172,6 +172,14 @@ if ($ADD==2111)
 					fwrite ($fp, "$date|ADD A NEW GROUP     |$PHP_AUTH_USER|$ip|$stmt|\n");
 					fclose($fp);
 					}
+
+                if ($LOG['allowed_ingroupsALL']==0) {
+                    $LOG['allowed_ingroups'][] = $group_id;
+                    $ingroups_value = ' ' . implode(' ', $LOG['allowed_ingroups']) . ' -';
+                    $stmt = sprintf("UPDATE osdial_user_groups SET allowed_ingroups='%s' WHERE user_group='%s';",mres($ingroups_value),$LOG['user_group']);
+				    $rslt=mysql_query($stmt, $link);
+                }
+
 				}
 			}
 		}
@@ -215,6 +223,14 @@ if ($ADD==2011)
 				fwrite ($fp, "$date|COPIED TO NEW GROUP |$PHP_AUTH_USER|$ip|$stmt|\n");
 				fclose($fp);
 				}
+
+                if ($LOG['allowed_ingroupsALL']==0) {
+                    $LOG['allowed_ingroups'][] = $group_id;
+                    $ingroups_value = ' ' . implode(' ', $LOG['allowed_ingroups']) . ' -';
+                    $stmt = sprintf("UPDATE osdial_user_groups SET allowed_ingroups='%s' WHERE user_group='%s';",mres($ingroups_value),$LOG['user_group']);
+				    $rslt=mysql_query($stmt, $link);
+                }
+
 			}
 		}
 $ADD=3111;
