@@ -1,5 +1,5 @@
 <? 
-# AST_server_performance.php
+# server_performance.php
 #
 # Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
 # Copyright (C) 2009  Lott Caskey  <lottcaskey@gmail.com>    LICENSE: AGPLv3
@@ -29,58 +29,20 @@
 #            - Fixed vertical scaling issues
 #
 
-require("dbconnect.php");
-require("include/functions.php");
-require("include/variables.php");
-include("templates/default/display.php");
 
-#############################################
-##### START SYSTEM_SETTINGS LOOKUP #####
-$stmt = "SELECT use_non_latin,admin_template FROM system_settings;";
-$rslt=mysql_query($stmt, $link);
-if ($DB) {echo "$stmt\n";}
-$qm_conf_ct = mysql_num_rows($rslt);
-$i=0;
-while ($i < $qm_conf_ct)
-	{
-	$row=mysql_fetch_row($rslt);
-	$non_latin =					$row[0];
-	$admin_template =				$row[1];
-	$i++;
-	}
+function report_server_performance() {
+    # Bring all globals into this scope.
+    foreach ($GLOBALS as $key => $val) { global $$key; }
 
-$PHP_AUTH_USER=$_SERVER['PHP_AUTH_USER'];
-$PHP_AUTH_PW=$_SERVER['PHP_AUTH_PW'];
-$PHP_SELF=$_SERVER['PHP_SELF'];
-if (isset($_GET["query_date"]))				{$query_date=$_GET["query_date"];}
-	elseif (isset($_POST["query_date"]))	{$query_date=$_POST["query_date"];}
-if (isset($_GET["begin_query_time"]))			{$begin_query_time=$_GET["begin_query_time"];}
-	elseif (isset($_POST["begin_query_time"]))	{$begin_query_time=$_POST["begin_query_time"];}
-if (isset($_GET["end_query_time"]))				{$end_query_time=$_GET["end_query_time"];}
-	elseif (isset($_POST["end_query_time"]))	{$end_query_time=$_POST["end_query_time"];}
-if (isset($_GET["group"]))				{$group=$_GET["group"];}
-	elseif (isset($_POST["group"]))		{$group=$_POST["group"];}
-if (isset($_GET["submit"]))				{$submit=$_GET["submit"];}
-	elseif (isset($_POST["submit"]))	{$submit=$_POST["submit"];}
-if (isset($_GET["SUBMIT"]))				{$SUBMIT=$_GET["SUBMIT"];}
-	elseif (isset($_POST["SUBMIT"]))	{$SUBMIT=$_POST["SUBMIT"];}
+$html = '';
 
-$PHP_AUTH_USER = preg_replace("/[^0-9a-zA-Z]/","",$PHP_AUTH_USER);
-$PHP_AUTH_PW = preg_replace("/[^0-9a-zA-Z]/","",$PHP_AUTH_PW);
+$query_date=get_variable('query_date');
+$begin_query_time=get_variable('begin_query_time');
+$end_query_time=get_variable('end_query_time');
+$group=get_variable('group');
+$submit=get_variable('submit');
+$SUBMIT=get_variable('SUBMIT');
 
-	$stmt="SELECT count(*) from osdial_users where user='$PHP_AUTH_USER' and pass='$PHP_AUTH_PW' and user_level > 6 and view_reports='1' and modify_servers='1';";
-	if ($DB) {echo "|$stmt|\n";}
-	$rslt=mysql_query($stmt, $link);
-	$row=mysql_fetch_row($rslt);
-	$auth=$row[0];
-
-  if( (strlen($PHP_AUTH_USER)<2) or (strlen($PHP_AUTH_PW)<2) or (!$auth))
-	{
-    Header("WWW-Authenticate: Basic realm=\"OSDIAL-PROJECTS\"");
-    Header("HTTP/1.0 401 Unauthorized");
-    echo "Invalid Username/Password: |$PHP_AUTH_USER|$PHP_AUTH_PW|\n";
-    exit;
-	}
 
 # path from root to where ploticus files will be stored
 $PLOTroot = "admin/ploticus";
@@ -90,14 +52,13 @@ $NOW_DATE = date("Y-m-d");
 $NOW_TIME = date("Y-m-d H:i:s");
 $STARTtime = date("U");
 
-if (!isset($query_date)) {$query_date = $NOW_DATE;}
-if (!isset($begin_query_time)) {$begin_query_time = '09:00:00';}
-if (!isset($end_query_time)) {$end_query_time = '15:30:00';}
-if (!isset($group)) {$group = '';}
+if ($query_date=='') {$query_date = $NOW_DATE;}
+if ($begin_query_time=='') {$begin_query_time = '09:00:00';}
+if ($end_query_time=='') {$end_query_time = '15:30:00';}
 
 $stmt="select server_ip from servers;";
 $rslt=mysql_query($stmt, $link);
-if ($DB) {echo "$stmt\n";}
+if ($DB) {$html .= "$stmt\n";}
 $servers_to_print = mysql_num_rows($rslt);
 $i=0;
 while ($i < $servers_to_print)
@@ -106,67 +67,55 @@ while ($i < $servers_to_print)
 	$groups[$i] =$row[0];
 	$i++;
 	}
-?>
-<link rel="stylesheet" type="text/css" href="templates/<?= $admin_template ?>/styles.css" media="screen">
-<!-- HTML>
-<HEAD -->
-<STYLE type="text/css">
-<!--
-   .green {color: white; background-color: green}
-   .red {color: white; background-color: red}
-   .blue {color: white; background-color: blue}
-   .purple {color: white; background-color: purple}
--->
- </STYLE>
-
-<? 
-//echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
-//echo "<TITLE>OSDIAL: Server Performance</TITLE></HEAD><BODY BGCOLOR=WHITE>\n";
-echo "<table align=center cellpadding=0 cellspacing=0>";
-echo "<tr><td align=center>";
-echo "<br><font color=$default_text size=+1>SERVER PERFORMANCE</font><br><br>";
-echo "<FORM ACTION=\"$PHP_SELF\" METHOD=GET>\n";
-echo "Date: <INPUT TYPE=TEXT NAME=query_date SIZE=12 MAXLENGTH=10 VALUE=\"$query_date\"> &nbsp; \n";
-echo "From: <INPUT TYPE=TEXT NAME=begin_query_time SIZE=10 MAXLENGTH=8 VALUE=\"$begin_query_time\"> \n";
-echo "To: <INPUT TYPE=TEXT NAME=end_query_time SIZE=10 MAXLENGTH=8 VALUE=\"$end_query_time\"> \n";
-echo "&nbsp;Server: <SELECT SIZE=1 NAME=group>\n";
+//$html .= "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
+//$html .= "<TITLE>OSDIAL: Server Performance</TITLE></HEAD><BODY BGCOLOR=WHITE>\n";
+$html .= "<table align=center cellpadding=0 cellspacing=0>";
+$html .= "<tr><td align=center>";
+$html .= "<br><font color=$default_text size=+1>SERVER PERFORMANCE</font><br><br>";
+$html .= "<FORM ACTION=\"$PHP_SELF\" METHOD=GET>\n";
+$html .= "<input type=hidden name=ADD value=\"$ADD\">\n";
+$html .= "<input type=hidden name=SUB value=\"$SUB\">\n";
+$html .= "Date: <INPUT TYPE=TEXT NAME=query_date SIZE=12 MAXLENGTH=10 VALUE=\"$query_date\"> &nbsp; \n";
+$html .= "From: <INPUT TYPE=TEXT NAME=begin_query_time SIZE=10 MAXLENGTH=8 VALUE=\"$begin_query_time\"> \n";
+$html .= "To: <INPUT TYPE=TEXT NAME=end_query_time SIZE=10 MAXLENGTH=8 VALUE=\"$end_query_time\"> \n";
+$html .= "&nbsp;Server: <SELECT SIZE=1 NAME=group>\n";
 	$o=0;
 	while ($servers_to_print > $o)
 	{
-		if ($groups[$o] == $group) {echo "<option selected value=\"$groups[$o]\">$groups[$o]</option>\n";}
-		  else {echo "<option value=\"$groups[$o]\">$groups[$o]</option>\n";}
+		if ($groups[$o] == $group) {$html .= "<option selected value=\"$groups[$o]\">$groups[$o]</option>\n";}
+		  else {$html .= "<option value=\"$groups[$o]\">$groups[$o]</option>\n";}
 		$o++;
 	}
-echo "</SELECT> \n";
-echo "<INPUT TYPE=SUBMIT NAME=SUBMIT VALUE=SUBMIT>\n";
-//echo "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a href=\"./admin.php?ADD=999999\">REPORTS</a> </FONT>\n";
-echo "</FORM>\n\n";
+$html .= "</SELECT> \n";
+$html .= "<INPUT TYPE=SUBMIT NAME=SUBMIT VALUE=SUBMIT>\n";
+//$html .= "<FONT FACE=\"ARIAL,HELVETICA\" COLOR=BLACK SIZE=2> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <a href=\"./admin.php?ADD=999999\">REPORTS</a> </FONT>\n";
+$html .= "</FORM>\n\n";
 
-echo "<PRE><FONT SIZE=2>\n";
+$html .= "<PRE><FONT SIZE=2>\n";
 
 
 if (!$group)
 {
-echo "Please Select A Server, Date And Time Range\n";
+$html .= "Please Select A Server, Date And Time Range\n";
 }
 
 else
 {
 
 $query_date_BEGIN = "$query_date $begin_query_time";   
-$query_date_BEGIN = dateToServer($link,'first',date('Y-m-d H:i:s',strtotime($query_date_BEGIN)+3600),$webClientAdjGMT,'',$webClientDST,0);
+$query_date_BEGIN = dateToServer($link,'first',$query_date_BEGIN,$webClientAdjGMT,'',$webClientDST,0);
 $query_date_END = "$query_date $end_query_time";
-$query_date_END = dateToServer($link,'first',date('Y-m-d H:i:s',strtotime($query_date_END)+3600),$webClientAdjGMT,'',$webClientDST,0);
+$query_date_END = dateToServer($link,'first',$query_date_END,$webClientAdjGMT,'',$webClientDST,0);
 $time_BEGIN = "$begin_query_time";   
 $time_END = "$end_query_time";
 
-echo "OSDIAL: Server Performance                             " . dateToLocal($link,'first',date('Y-m-d H:i:s'),$webClientAdjGMT,'',$webClientDST,1) . "\n";
-echo "Time range: $query_date_BEGIN to $query_date_END\n\n";
-echo "---------- TOTALS, PEAKS and AVERAGES\n";
+$html .= "OSDIAL: Server Performance                             " . dateToLocal($link,'first',date('Y-m-d H:i:s'),$webClientAdjGMT,'',$webClientDST,1) . "\n";
+$html .= "Time range: $query_date_BEGIN to $query_date_END\n\n";
+$html .= "---------- TOTALS, PEAKS and AVERAGES\n";
 
 $stmt="select AVG(sysload),AVG(channels_total),MAX(sysload),MAX(channels_total),MAX(processes) from server_performance where start_time <= '" . mysql_real_escape_string($query_date_END) . "' and start_time >= '" . mysql_real_escape_string($query_date_BEGIN) . "' and server_ip='" . mysql_real_escape_string($group) . "';";
 $rslt=mysql_query($stmt, $link);
-if ($DB) {echo "$stmt\n";}
+if ($DB) {$html .= "$stmt\n";}
 $row=mysql_fetch_row($rslt);
 $AVGload =	sprintf("%10s", $row[0]);
 $AVGchannels =	sprintf("%10s", $row[1]);
@@ -181,7 +130,7 @@ if ($HIGHlimit == "") {$HIGHlimit=100;}
 
 $stmt="select AVG(cpu_user_percent),AVG(cpu_system_percent),AVG(cpu_idle_percent) from server_performance where start_time <= '" . mysql_real_escape_string($query_date_END) . "' and start_time >= '" . mysql_real_escape_string($query_date_BEGIN) . "' and server_ip='" . mysql_real_escape_string($group) . "';";
 $rslt=mysql_query($stmt, $link);
-if ($DB) {echo "$stmt\n";}
+if ($DB) {$html .= "$stmt\n";}
 $row=mysql_fetch_row($rslt);
 $AVGcpuUSER =	sprintf("%10s", $row[0]);
 $AVGcpuSYSTEM =	sprintf("%10s", $row[1]);
@@ -189,22 +138,22 @@ $AVGcpuIDLE =	sprintf("%10s", $row[2]);
 
 $stmt="select count(*),SUM(length_in_min) from call_log where extension NOT IN('8365','8366','8367') and  start_time <= '" . mysql_real_escape_string($query_date_END) . "' and start_time >= '" . mysql_real_escape_string($query_date_BEGIN) . "' and server_ip='" . mysql_real_escape_string($group) . "';";
 $rslt=mysql_query($stmt, $link);
-if ($DB) {echo "$stmt\n";}
+if ($DB) {$html .= "$stmt\n";}
 $row=mysql_fetch_row($rslt);
 $TOTALcalls =	sprintf("%10s", $row[0]);
 $OFFHOOKtime =	sprintf("%10s", $row[1]);
 
 
-echo "Total Calls in/out on this server:        $TOTALcalls\n";
-echo "Total Off-Hook time on this server (min): $OFFHOOKtime\n";
-echo "Average/Peak channels in use for server:  $AVGchannels / $HIGHchannels\n";
-echo "Average/Peak load for server:             $AVGload / $HIGHload\n";
-echo "Average USER process cpu percentage:      $AVGcpuUSER %\n";
-echo "Average SYSTEM process cpu percentage:    $AVGcpuSYSTEM %\n";
-echo "Average IDLE process cpu percentage:      $AVGcpuIDLE %\n";
+$html .= "Total Calls in/out on this server:        $TOTALcalls\n";
+$html .= "Total Off-Hook time on this server (min): $OFFHOOKtime\n";
+$html .= "Average/Peak channels in use for server:  $AVGchannels / $HIGHchannels\n";
+$html .= "Average/Peak load for server:             $AVGload / $HIGHload\n";
+$html .= "Average USER process cpu percentage:      $AVGcpuUSER %\n";
+$html .= "Average SYSTEM process cpu percentage:    $AVGcpuSYSTEM %\n";
+$html .= "Average IDLE process cpu percentage:      $AVGcpuIDLE %\n";
 
-echo "\n";
-echo "---------- LINE GRAPH:\n";
+$html .= "\n";
+$html .= "---------- LINE GRAPH:\n";
 
 
 
@@ -224,7 +173,7 @@ $DATfp = fopen ("$DOCroot/$DATfile", "a");
 
 $stmt="select DATE_FORMAT(start_time,'%H:%i:%s') as timex,sysload,processes,channels_total,live_recordings,cpu_user_percent,cpu_system_percent from server_performance where server_ip='" . mysql_real_escape_string($group) . "' and start_time <= '" . mysql_real_escape_string($query_date_END) . "' and start_time >= '" . mysql_real_escape_string($query_date_BEGIN) . "' order by timex;";
 $rslt=mysql_query($stmt, $link);
-if ($DB) {echo "$stmt\n";}
+if ($DB) {$html .= "$stmt\n";}
 $rows_to_print = mysql_num_rows($rslt);
 $i=0;
 while ($i < $rows_to_print)
@@ -330,17 +279,17 @@ passthru("/usr/bin/pl -png $DOCroot/$HTMfile -o $DOCroot/$PNGfile");
 
 sleep(1);
 
-echo "</PRE>\n";
-echo "\n";
-echo "<IMG SRC=\"/$PLOTroot/$PNGfile\">\n";
+$html .= "</PRE>\n";
+$html .= "\n";
+$html .= "<IMG SRC=\"/$PLOTroot/$PNGfile\">\n";
 
 
-echo "<!-- /usr/bin/pl -png $DOCroot/$HTMfile -o $DOCroot/$PNGfile -->";
+$html .= "<!-- /usr/bin/pl -png $DOCroot/$HTMfile -o $DOCroot/$PNGfile -->";
 
 }
 
+return $html;
+}
 
 
 ?>
-
-<!-- /BODY></HTML -->

@@ -90,7 +90,7 @@ if ($LOGview_reports==1) {
         if ($LOG['view_list_cost_entry']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=16\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>List Cost by Entry Date</a></font>";
         echo "</ul>";
         echo "<ul>";
-        if ($LOG['multicomp_user'] == 0 and $LOG['view_server_performance']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=AST_server_performance.php\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Server Performance</a></font>";
+        if ($LOG['multicomp_user'] == 0 and $LOG['view_server_performance']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=29\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Server Performance</a></font>";
 
         if ($LOG['multicomp_user'] == 0 and $enable_queuemetrics_logging_LU > 0) {
             echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=9&iframe=$queuemetrics_url_LU\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>QUEUEMETRICS REPORTS</a></font>\n";
@@ -177,6 +177,12 @@ if ($LOGview_reports==1) {
             } elseif ($SUB==27 and $LOG['view_lead_search']) {
                 require($WeBServeRRooT . '/admin/include/content/reports/lead_search_basic.php');
                 echo report_lead_search_basic();
+            } elseif ($SUB==28 and $LOG['view_campaign_call_report']) {
+                require($WeBServeRRooT . '/admin/include/content/reports/hopperlist.php');
+                echo report_hopperlist();
+            } elseif ($SUB==29 and $LOG['view_server_performance']) {
+                require($WeBServeRRooT . '/admin/include/content/reports/server_performance.php');
+                echo report_server_performance();
             } else {
                 echo "<font color=red>You do not have permission to view this page</font>\n";
             }
