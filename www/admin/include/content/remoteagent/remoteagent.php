@@ -43,6 +43,17 @@ if ($ADD==11111)
 	echo "<tr bgcolor=$oddrows><td align=right>External Extension: </td><td align=left><input type=text name=conf_exten size=20 maxlength=20> (dial plan number dialed to reach agents)$NWB#osdial_remote_agents-conf_exten$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select size=1 name=status><option>ACTIVE</option><option SELECTED>INACTIVE</option></select>$NWB#osdial_remote_agents-status$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Campaign: </td><td align=left><select size=1 name=campaign_id>\n";
+        $stmt=sprintf("SELECT campaign_id,campaign_name from osdial_campaigns where campaign_id IN %s order by campaign_id",$LOG['allowed_campaignsSQL']);
+        $rslt=mysql_query($stmt, $link);
+        $campaigns_to_print = mysql_num_rows($rslt);
+        $campaigns_list='';
+
+        $o=0;
+        while ($campaigns_to_print > $o) {
+            $rowx=mysql_fetch_row($rslt);
+            $campaigns_list .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
+            $o++;
+        }
 	echo "$campaigns_list";
 	echo "</select>$NWB#osdial_remote_agents-campaign_id$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Inbound Groups: </td><td align=left>\n";
@@ -221,6 +232,17 @@ if ($ADD==31111)
 	echo "<tr bgcolor=$oddrows><td align=right>External Extension: </td><td align=left><input type=text name=conf_exten size=20 maxlength=20 value=\"$conf_exten\"> (dial plan number dialed to reach agents)$NWB#osdial_remote_agents-conf_exten$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select size=1 name=status><option SELECTED>ACTIVE</option><option>INACTIVE</option><option SELECTED>$status</option></select>$NWB#osdial_remote_agents-status$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Campaign: </td><td align=left><select size=1 name=campaign_id>\n";
+        $stmt=sprintf("SELECT campaign_id,campaign_name from osdial_campaigns where campaign_id IN %s order by campaign_id",$LOG['allowed_campaignsSQL']);
+        $rslt=mysql_query($stmt, $link);
+        $campaigns_to_print = mysql_num_rows($rslt);
+        $campaigns_list='';
+
+        $o=0;
+        while ($campaigns_to_print > $o) {
+            $rowx=mysql_fetch_row($rslt);
+            $campaigns_list .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
+            $o++;
+        }
 	echo "$campaigns_list";
 	echo "<option SELECTED>$campaign_id</option>\n";
 	echo "</select>$NWB#osdial_remote_agents-campaign_id$NWE</td></tr>\n";
@@ -250,7 +272,7 @@ if ($ADD==31111)
 ######################
 if ($ADD==10000)
 {
-	$stmt="SELECT * from osdial_remote_agents order by server_ip,campaign_id,user_start";
+	$stmt=sprintf("SELECT * FROM osdial_remote_agents WHERE campaign_id IN %s ORDER BY server_ip,campaign_id,user_start;",$LOG['allowed_campaignsSQL']);
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 
