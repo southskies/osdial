@@ -108,7 +108,7 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 		$osdial->sql_execute($stmt) if (!$CLOtest);
 		print STDERR "\n|$stmt|\n" if ($DB);
 
-		my $sret = $osdial->sql_query("SELECT count(*) AS fndarchive FROM configuration WHERE name='ArchiveHostname' AND data='';");
+		my $sret = $osdial->sql_query("SELECT count(*) AS fndarchive FROM configuration WHERE ((name='ArchiveHostname' AND data='') OR (name='ArchiveWebPath' AND data='http'));");
 		if ($sret->{fndarchive}) {
 			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->{VARFTP_host} . "' WHERE name='ArchiveHostname';");
 			$osdial->sql_execute("UPDATE configuration SET data='FTP' WHERE name='ArchiveTransferMethod';");
