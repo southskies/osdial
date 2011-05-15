@@ -150,7 +150,7 @@ function report_usergroup_hourly() {
             $o++;
         }
 
-        $html .= "  <center><a href=\"./admin.php?ADD=3111&group_id=$group\">" . strtoupper(mclabel($group)) . "</a></center>\n";
+        $html .= "  <center><a href=\"./admin.php?ADD=311111&user_group=$group\">" . strtoupper(mclabel($group)) . "</a></center>\n";
         $html .= "  <table bgcolor=grey align=center width=600 cellspacing=1 cellpadding=0>\n";
         $html .= "    <tr class=tabheader>\n";
         $html .= "      <td colspan=2></td>\n";
