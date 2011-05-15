@@ -272,7 +272,7 @@ sub load_config {
         	while (my $line = <CONF>) {
         	        $line =~ s/ |>|"|'|\n|\r|\t|\#.*|;.*//gi;
         	        if ($line =~ /=|:/) {
-        	                my($key,$val) = split /=|:/, $line;
+        	                my($key,$val) = split /=|:/, $line, 2;
         	                $self->{$key} = $val;
 				$self->debug(4,'load_config',"    %-40s => %-40s.",$key,$val);
         	        }
