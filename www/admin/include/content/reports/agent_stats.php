@@ -133,7 +133,7 @@ function report_agent_stats() {
             $total_seconds += $row[2];
             $call_seconds = $row[2];
 
-            $table .= "  <tr " . bgcolor($o) . " class=\"row font1\">\n";
+            $table .= "  <tr " . bgcolor($o) . " class=\"row font1\" style=\"white-space:nowrap;\">\n";
             $table .= "    <td>$row[1]</td>\n";
             $table .= "    <td align=right>$row[0]</td>\n";
             $table .= "    <td align=right>" . fmt_hms($call_seconds) . "</td>\n";
@@ -171,7 +171,7 @@ function report_agent_stats() {
             $total_seconds += $row[2];
             $call_seconds = $row[2];
 
-            $table .= "  <tr " . bgcolor($o) . " class=\"row font1\">\n";
+            $table .= "  <tr " . bgcolor($o) . " class=\"row font1\" style=\"white-space:nowrap;\">\n";
             $table .= "    <td>$row[1]</td>\n";
             $table .= "    <td align=right>$row[0]</td>\n";
             $table .= "    <td align=right>" . fmt_hms($call_seconds) . "</td>\n";
@@ -231,7 +231,7 @@ function report_agent_stats() {
                     $event_stop_seconds='';
                 }
             }
-            $table .= "  <tr $bgcolor class=\"row font1\" title=\"DATE: $event_date\">\n";
+            $table .= "  <tr $bgcolor class=\"row font1\" title=\"DATE: $event_date\" style=\"white-space:nowrap;\">\n";
             $table .= "    <td>$event</td>\n";
             $table .= "    <td align=center>" . dateToLocal($link,'first',$event_date,$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
             $table .= "    <td align=left>" . mclabel($event_camp) . "</td>\n";
@@ -270,7 +270,7 @@ function report_agent_stats() {
         $u=0;
         while ($pauses_to_print > $u) {
             $row=mysql_fetch_row($rslt);
-            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" title=\"START: $row[1]\nEND: $row[2]\">\n";
+            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" title=\"START: $row[1]\nEND: $row[2]\" style=\"white-space:nowrap;\">\n";
             $table .= "    <td align=left>$row[0]</td>\n";
             $table .= "    <td align=center>" . dateToLocal($link,$row[4],$row[1],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
             $table .= "    <td align=center>" . dateToLocal($link,$row[4],$row[2],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
@@ -326,7 +326,7 @@ function report_agent_stats() {
             $row=mysql_fetch_row($rslt);
             $u++;
             $event = str_replace(" ", "&nbsp;", $row[0]);
-            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[10]');\">\n";
+            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[10]');\" style=\"white-space:nowrap;\">\n";
             $table .= "    <td align=left title=\"Record #: $u\">$u</td>\n";
             $table .= "    <td align=center title=\"Date/Time: $event\">" . str_replace(" ","&nbsp;",dateToLocal($link,$row[11],$row[0],$webClientAdjGMT,'',$webClientDST,1)) . "</td>\n";
             $table .= "    <td align=right title=\"Wait Time: $row[1] seconds\">$row[1]</td>\n";
@@ -384,7 +384,7 @@ function report_agent_stats() {
             $row=mysql_fetch_row($rslt);
             $u++;
             $event = str_replace(" ", "&nbsp;", $row[0]);
-            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[10]');\">\n";
+            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[10]');\" style=\"white-space:nowrap;\">\n";
             $table .= "    <td align=left title=\"Record #: $u\">$u</td>\n";
             $table .= "    <td align=center title=\"Date/Time: $event\">" . str_replace(" ", "&nbsp;", dateToLocal($link,$row[11],$row[0],$webClientAdjGMT,'',$webClientDST,1)) . "</td>\n";
             $table .= "    <td align=right title=\"Wait Time: $row[1] seconds\">$row[1]</td>\n";
@@ -487,7 +487,7 @@ function report_agent_stats() {
         
             $u++;
             $event = str_replace(" ", "&nbsp;", $row[4]);
-            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" ondblclick=\"openNewWindow('$Slocation');\">\n";
+            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" ondblclick=\"openNewWindow('$Slocation');\" style=\"white-space:nowrap;\">\n";
             $table .= "    <td title=\"Record #: $u\">$u</td>\n";
             $table .= "    <td align=left title=\"Lead #: $row[12]\"><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[12]\" target=\"_blank\">$row[12]</a></td>\n";
             $table .= "    <td align=center title=\"Date/Time: $event\">" . str_replace(" ", "&nbsp;", dateToLocal($link,$row[2],$row[4],$webClientAdjGMT,'',$webClientDST,1)) . "</td>\n";

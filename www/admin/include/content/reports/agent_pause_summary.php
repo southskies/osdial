@@ -444,7 +444,7 @@ function report_agent_pause_summary() {
             }
             $lastkey2=$row[1];
 
-            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" title=\"CAMPAIGN: " . $row[0] . " (" . $group_map[$row[0]] . ")\nUSER: " . $row[1] . " (" . $user_map[$row[1]] . ")\nSTART: $row[3]\nEND: $row[4]\">\n";
+            $table .= "  <tr " . bgcolor($u) . " class=\"row font1\" style=\"white-space:nowrap;\" title=\"CAMPAIGN: " . $row[0] . " (" . $group_map[$row[0]] . ")\nUSER: " . $row[1] . " (" . $user_map[$row[1]] . ")\nSTART: $row[3]\nEND: $row[4]\">\n";
             $table .= "    <td align=left>$row[0]</td>\n";
             $table .= "    <td align=left>$row[1]</td>\n";
             $table .= "    <td align=left>$row[2]</td>\n";

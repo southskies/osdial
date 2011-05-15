@@ -1066,8 +1066,8 @@ if ($ADD==31) {
         echo "$NWB#osdial_campaigns-campaign_id$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Campaign Name: </td><td align=left><input type=text name=campaign_name size=40 maxlength=40 value=\"$campaign_name\">$NWB#osdial_campaigns-campaign_name$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Campaign Description: </td><td align=left><input type=text name=campaign_description size=40 maxlength=255 value=\"$campaign_description\">$NWB#osdial_campaigns-campaign_description$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Campaign Change Date: </td><td align=left>$campaign_changedate &nbsp; $NWB#osdial_campaigns-campaign_changedate$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Campaign Login Date: </td><td align=left>$campaign_logindate &nbsp; $NWB#osdial_campaigns-campaign_logindate$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Campaign Change Date: </td><td align=left title=\"$campaign_changedate\">". dateToLocal($link,'first',$campaign_changedate,$webClientAdjGMT,'',$webClientDST,1) . " &nbsp; $NWB#osdial_campaigns-campaign_changedate$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Campaign Login Date: </td><td align=left title=\"$campaign_logindate\">". dateToLocal($link,'first',$campaign_logindate,$webClientAdjGMT,'',$webClientDST,1)." &nbsp; $NWB#osdial_campaigns-campaign_logindate$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$row[2]</option></select>$NWB#osdial_campaigns-active$NWE</td></tr>\n";
         echo "<tr style=\"visibility:collapse;\" bgcolor=$oddrows><td align=right>Park Extension: </td><td align=left>\n";
         #echo "<input type=text name=park_ext size=10 maxlength=10 value=\"$row[9]\">\n";
@@ -1994,8 +1994,8 @@ if ($ADD==34)
         echo "$NWB#osdial_campaigns-campaign_id$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Campaign Name: </td><td align=left><input type=text name=campaign_name size=40 maxlength=40 value=\"$row[1]\">$NWB#osdial_campaigns-campaign_name$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Campaign Description: </td><td align=left>$row[57]$NWB#osdial_campaigns-campaign_description$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Campaign Change Date: </td><td align=left>$campaign_changedate &nbsp; $NWB#osdial_campaigns-campaign_changedate$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>Campaign Login Date: </td><td align=left>$campaign_logindate &nbsp; $NWB#osdial_campaigns-campaign_logindate$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Campaign Change Date: </td><td align=left title=\"$campaign_changedate\">" . dateToLocal($link,'first',$campaign_changedate,$webClientAdjGMT,'',$webClientDST,1) ." &nbsp; $NWB#osdial_campaigns-campaign_changedate$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>Campaign Login Date: </td><td align=left title=\"$campaign_logindate\">" . dateToLocal($link,'first',$campaign_logindate,$webClientAdjGMT,'',$webClientDST,1) . " &nbsp; $NWB#osdial_campaigns-campaign_logindate$NWE</td></tr>\n";
 
         echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$row[2]</option></select>$NWB#osdial_campaigns-active$NWE</td></tr>\n";
         echo "<tr style=\"visibility:collapse;\" bgcolor=$oddrows><td align=right>Park Extension: </td><td align=left>$row[9] - $row[10]$NWB#osdial_campaigns-park_ext$NWE</td></tr>\n";

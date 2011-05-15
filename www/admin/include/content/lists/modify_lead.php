@@ -135,7 +135,7 @@ if ($ADD==1121) {
 			        $row=mysql_fetch_row($rslt);
 			        if (strlen($log_campaign)<1) $log_campaign = $row[3];
 			        $u++;
-			        $call_log .= "  <tr " . bgcolor($u) . " class=\"row font1\" title=\"Date/Time: $row[4]\">\n";
+			        $call_log .= "  <tr " . bgcolor($u) . " class=\"row font1\" title=\"Date/Time: $row[4]\" style=\"white-space:nowrap;\">\n";
 			        $call_log .= "    <td>$u</td>\n";
 			        $call_log .= "    <td>" . dateToLocal($link,$row[4],$row[4],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
 			        $call_log .= "    <td align=left>$row[7]</td>\n";
@@ -166,7 +166,7 @@ if ($ADD==1121) {
 			        $row=mysql_fetch_row($rslt);
 			        if (strlen($Alog_campaign)<1) $Alog_campaign = $row[5];
 			        $y++;
-			        $agent_log .= "  <tr " . bgcolor($y) . " class=\"row font1\" title=\"Date/Time: $row[3]\">\n";
+			        $agent_log .= "  <tr " . bgcolor($y) . " class=\"row font1\" title=\"Date/Time: $row[3]\" style=\"white-space:nowrap;\">\n";
 			        $agent_log .= "    <td>$y</td>\n";
 			        $agent_log .= "    <td>" . dateToLocal($link,$row[2],$row[3],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
 			        $agent_log .= "    <td align=left>$row[5]</td>\n";
@@ -199,7 +199,7 @@ if ($ADD==1121) {
 			        $row=mysql_fetch_row($rslt);
 			        if (strlen($Clog_campaign)<1) $Clog_campaign = $row[3];
 			        $y++;
-			        $closer_log .= "  <tr " . bgcolor($y) . " class=\"row font1\" title=\"Date/Time: $row[4]\">\n";
+			        $closer_log .= "  <tr " . bgcolor($y) . " class=\"row font1\" title=\"Date/Time: $row[4]\" style=\"white-space:nowrap;\">\n";
 			        $closer_log .= "    <td>$y</td>\n";
 			        $closer_log .= "    <td>" . dateToLocal($link,'first',$row[4],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
 			        $closer_log .= "    <td align=left>$row[7]</td>\n";
@@ -530,7 +530,7 @@ if ($ADD==1121) {
 		                                    echo "<input type=\"hidden\" name=\"lead_id\" value=\"$ld[lead_id]\">";
 		                                    echo "<input type=\"hidden\" name=\"alf_id\" value=\"$alf[id]\">";
 		                                    echo "<input type=\"hidden\" name=\"alf_fld_id\" value=\"$affld[id]\">";
-		                                    echo "    <tr $bgcolor class=\"row font1\">\n";
+		                                    echo "    <tr $bgcolor class=\"row font1\" style=\"white-space:nowrap;\">\n";
                                             echo "      <td align=center><font $afldel><b>$affrm[name]</b></font></td>\n";
                                             echo "      <td align=center><font $afldel><b>$affld[name]</b></font></td>\n";
                                             echo "      <td align=center class=tabinput><input type=\"text\" name=\"alf_val\" size=\"30\" maxlength=\"255\" value=\"$alf[value]\"></td>\n";
@@ -587,7 +587,7 @@ if ($ADD==1121) {
 		                    echo "<input type=\"hidden\" name=\"SUB\" value=\"$SUB\">";
 		                    echo "<input type=\"hidden\" name=\"lead_id\" value=\"$ld[lead_id]\">";
 					        echo "<input type=\"hidden\" name=\"callback_id\" value=\"$rowx[0]\">";
-		                    echo "  <tr $bgcolor class=\"row font1\" title=\"Comments: $rowx[10]\">\n";
+		                    echo "  <tr $bgcolor class=\"row font1\" title=\"Comments: $rowx[10]\" style=\"white-space:nowrap;\">\n";
                             echo "    <td align=center>$rowx[4]</td>\n";
                             echo "    <td align=center>" . dateToLocal($link,'first',$rowx[5],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
                             echo "    <td align=center>" . dateToLocal($link,'first',$rowx[6],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";
@@ -717,7 +717,7 @@ if ($ADD==1121) {
 		                }
                         if ($u==0) $wfv['recording_id'] = $rl['recording_id'];
 		                $u++;
-		                echo "      <tr " . bgcolor($u) . " class=\"row font1\" title=\"Date/Time: $rl[starttime]\">\n";
+		                echo "      <tr " . bgcolor($u) . " class=\"row font1\" title=\"Date/Time: $rl[starttime]\" style=\"white-space:nowrap;\">\n";
 		                echo "        <td>$u</td>\n";
 		                echo "        <td align=left>" . $rl['lead_id'] . "</td>\n";
 		                echo "        <td align=left>" . dateToLocal($link,$rl['server_ip'],$rl['starttime'],$webClientAdjGMT,'',$webClientDST,1) . "</td>\n";

@@ -31,7 +31,14 @@
 # 71030-2118 - Added priority to display
 #
 
-require("dbconnect.php");
+require("include/includes.php");
+require("include/header.php");
+#require("dbconnect.php");
+# Main Panel Content
+echo "<div class=content>";
+echo "<table width=100% class=maintable bgcolor=$maintable_color cellpadding=0 cellspacing=0 align=center>\n";
+echo "  <tr>\n";
+echo "    <td align=left colspan=10>\n";
 
 $PHP_AUTH_USER=$_SERVER['PHP_AUTH_USER'];
 $PHP_AUTH_PW=$_SERVER['PHP_AUTH_PW'];
@@ -124,7 +131,7 @@ else
 {
 
 
-echo "OSDIAL: Live Current Hopper List                      $NOW_TIME\n";
+echo "OSDIAL: Live Current Hopper List                      " . dateToLocal($link,'first',date('Y-m-d H:i:s'),$webClientAdjGMT,'',$webClientDST,1) . "\n";
 
 echo "\n";
 echo "---------- TOTALS\n";
@@ -183,7 +190,13 @@ echo "+------+---------+----------+--------------+--------------+---------------
 
 
 
-?>
-</PRE>
+echo "      <br /><br /><br /><br /><br />\n";
+echo "    </td>\n";
+echo "  </tr>\n";
+echo "</table>";
+echo "</div>";
 
-</BODY></HTML>
+# Main Panel Footers
+require("include/footer.php");
+
+?>

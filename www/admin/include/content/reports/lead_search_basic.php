@@ -136,7 +136,7 @@ function report_lead_search_basic() {
                     $o=0;
                     while ($results_to_print > $o) {
                         $row=mysql_fetch_row($rslt);
-                        $html .= "  <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[0]');\">\n";
+                        $html .= "  <tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=1121&lead_id=$row[0]');\" style=\"white-space:nowrap;\">\n";
                         $html .= "    <td>" . ($o+1) . "</td>\n";
                         $html .= "    <td><a href=\"$PHP_SELF?ADD=1121&lead_id=$row[0]\" target=\"_blank\">$row[0]</a></td>\n";
                         $html .= "    <td>$row[3]</td>\n";

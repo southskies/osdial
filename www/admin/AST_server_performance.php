@@ -30,6 +30,8 @@
 #
 
 require("dbconnect.php");
+require("include/functions.php");
+require("include/variables.php");
 include("templates/default/display.php");
 
 #############################################
@@ -152,12 +154,13 @@ else
 {
 
 $query_date_BEGIN = "$query_date $begin_query_time";   
+$query_date_BEGIN = dateToServer($link,'first',date('Y-m-d H:i:s',strtotime($query_date_BEGIN)+3600),$webClientAdjGMT,'',$webClientDST,0);
 $query_date_END = "$query_date $end_query_time";
+$query_date_END = dateToServer($link,'first',date('Y-m-d H:i:s',strtotime($query_date_END)+3600),$webClientAdjGMT,'',$webClientDST,0);
 $time_BEGIN = "$begin_query_time";   
 $time_END = "$end_query_time";
 
-echo "OSDIAL: Server Performance                             $NOW_TIME\n";
-
+echo "OSDIAL: Server Performance                             " . dateToLocal($link,'first',date('Y-m-d H:i:s'),$webClientAdjGMT,'',$webClientDST,1) . "\n";
 echo "Time range: $query_date_BEGIN to $query_date_END\n\n";
 echo "---------- TOTALS, PEAKS and AVERAGES\n";
 
