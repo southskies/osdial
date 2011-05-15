@@ -605,7 +605,9 @@ if ($ADD==3111)
 ######################
 if ($ADD==1000)
 {
-	$stmt=sprintf("SELECT * FROM osdial_inbound_groups WHERE group_id IN %s AND group_id NOT LIKE 'A2A_%%' ORDER BY group_id",$LOG['allowed_ingroupsSQL']);
+    $a2aSQL = "group_id NOT LIKE 'A2A_%'";
+    if (get_variable('let')=='A2A') $a2aSQL = "group_id LIKE 'A2A_%'";
+	$stmt=sprintf("SELECT * FROM osdial_inbound_groups WHERE group_id IN %s AND %s ORDER BY group_id",$LOG['allowed_ingroupsSQL'],$a2aSQL);
 	$rslt=mysql_query($stmt, $link);
 	$people_to_print = mysql_num_rows($rslt);
 

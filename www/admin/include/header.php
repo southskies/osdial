@@ -414,6 +414,7 @@ if (strlen($ingroups_hh) > 1) {
     echo "    <td height=20 align=left colspan=10>\n";
     echo "      <span class=\"font2 fgdefault\"> &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=1000\"> Show In-Groups </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
+    echo "        <a href=\"$PHP_SELF?ADD=1000&let=A2A\"> Show Agent2Agent Groups </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=1111\"> Add A New In-Group </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=1211\"> Copy In-Group </a>\n";
     echo "      </span>\n";
