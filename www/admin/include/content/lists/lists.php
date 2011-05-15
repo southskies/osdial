@@ -333,8 +333,8 @@ if ($ADD==311) {
         echo "</select>$NWB#osdial_lists-campaign_id$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Active: </td><td align=left><select size=1 name=active><option>Y</option><option>N</option><option SELECTED>$active</option></select>$NWB#osdial_lists-active$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Reset Lead-Called-Status for this list: </td><td align=left><select size=1 name=reset_list><option>Y</option><option SELECTED>N</option></select>$NWB#osdial_lists-reset_list$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>List Change Date: </td><td align=left>$list_changedate &nbsp; $NWB#osdial_lists-list_changedate$NWE</td></tr>\n";
-        echo "<tr bgcolor=$oddrows><td align=right>List Last Call Date: </td><td align=left>$list_lastcalldate &nbsp; $NWB#osdial_lists-list_lastcalldate$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>List Change Date: </td><td align=left title=\"$list_changedate\">" . dateToLocal($link,'first',$list_changedate,$webClientAdjGMT,'',$webClientDST,1) . " &nbsp; $NWB#osdial_lists-list_changedate$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows><td align=right>List Last Call Date: </td><td align=left title=\"$list_lastcalldate\">" . dateToLocal($link,'first',$list_lastcalldate,$webClientAdjGMT,'',$webClientDST,1) . " &nbsp; $NWB#osdial_lists-list_lastcalldate$NWE</td></tr>\n";
         if ($can_scrub_dnc == 'Y') {
             echo "<tr bgcolor=$oddrows><td align=right>External DNC Scrub Now: </td><td align=left><select size=1 name=scrub_dnc><option>Y</option><option selected>N</option></select>$NWB#osdial_lists-srub_dnc$NWE</td></tr>\n";
             echo "<tr bgcolor=$oddrows><td align=right>Last External Scrub: </td><td align=left>$list_scrub_last : $list_scrub_info</td></tr>\n";
