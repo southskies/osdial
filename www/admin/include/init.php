@@ -26,17 +26,15 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 
     #TODO: functionalize
     ##### BEGIN get campaigns listing for rankings #####
-    $stmt = sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE campaign_id IN %s ORDER BY campaign_id;",$LOG['allowed_campaignsSQL']);
+    $stmt = sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns ORDER BY campaign_id;");
     $rslt=mysql_query($stmt, $link);
     $campaigns_to_print = mysql_num_rows($rslt);
-    $campaigns_list='';
     $campaigns_value='';
     $RANKcampaigns_list="<tr class=tabheader><td align=left>CAMPAIGN</td><td align=center>RANK</td><td align=right>CALLS</td></tr>\n";
 
     $o=0;
     while ($campaigns_to_print > $o) {
         $rowx=mysql_fetch_row($rslt);
-        $campaigns_list .= "<option value=\"$rowx[0]\">" . mclabel($rowx[0]) . " - $rowx[1]</option>\n";
         $campaign_id_values[$o] = $rowx[0];
         $campaign_name_values[$o] = $rowx[1];
         $o++;
@@ -107,21 +105,24 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
             $CR_disabled = 'DISABLED';
         }
 
-        $RANKcampaigns_list .= "<tr class=row " . bgcolor($o) . "><td>";
-        $campaigns_list .= "<a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id_values[$o]\">" . mclabel($campaign_id_values[$o]) . "</a> - $campaign_name_values[$o] <BR>\n";
-        $RANKcampaigns_list .= "<font size=1><a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id_values[$o]\">" . mclabel($campaign_id_values[$o]) . "</a> - $campaign_name_values[$o]</font></td>";
-        $RANKcampaigns_list .= "<td align=center><select style=\"font-size: 8px;\" size=1 name=RANK_$campaign_id_values[$o] $CR_disabled>\n";
-        $h="9";
-        while ($h>=-9) {
-            $RANKcampaigns_list .= "<option value=\"$h\"";
-            if ($h==$campaign_rank) {
-                $RANKcampaigns_list .= " SELECTED";
+        if (preg_match('/:'.$campaign_id_values[$o].':/',$LOG['allowed_campaignsSTR'])) {
+            $RANKcampaigns_list .= "<tr class=row " . bgcolor($o) . "><td>";
+            $RANKcampaigns_list .= "<font size=1><a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id_values[$o]\">" . mclabel($campaign_id_values[$o]) . "</a> - $campaign_name_values[$o]</font></td>";
+            $RANKcampaigns_list .= "<td align=center><select style=\"font-size: 8px;\" size=1 name=RANK_$campaign_id_values[$o] $CR_disabled>\n";
+            $h="9";
+            while ($h>=-9) {
+                $RANKcampaigns_list .= "<option value=\"$h\"";
+                if ($h==$campaign_rank) {
+                    $RANKcampaigns_list .= " SELECTED";
+                }
+                $RANKcampaigns_list .= ">$h</option>";
+                $h--;
             }
-            $RANKcampaigns_list .= ">$h</option>";
-            $h--;
+            $RANKcampaigns_list .= "</select></td>\n";
+            $RANKcampaigns_list .= "<td align=right><font size=1>$calls_today</font></td></tr>\n";
+        } else {
+            $RANKcampaigns_list .= "<input type=\"hidden\" name=RANK_$campaign_id_values[$o] value=\"$campaign_rank\">";
         }
-        $RANKcampaigns_list .= "</select></td>\n";
-        $RANKcampaigns_list .= "<td align=right><font size=1>$calls_today</font></td></tr>\n";
         $o++;
     }
     $RANKcampaigns_list .= "<tr bgcolor=$menubarcolor height=8px><td colspan=3><font color=white size=1></font></td></tr>\n";
@@ -174,7 +175,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
         $groups = explode(" ", $closer_campaigns);
     }
 
-    $stmt=sprintf("SELECT group_id,group_name from osdial_inbound_groups where group_id IN %s AND group_id NOT LIKE 'A2A_%%' order by group_id",$LOG['allowed_ingroupsSQL']);
+    $stmt=sprintf("SELECT group_id,group_name FROM osdial_inbound_groups WHERE group_id NOT LIKE 'A2A_%%' ORDER BY group_id;");
     $rslt=mysql_query($stmt, $link);
     $groups_to_print = mysql_num_rows($rslt);
     $groups_list='';
@@ -226,11 +227,24 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
             $group_rank = $SELECT_group_rank;
         }
 
-        $groups_list        .= "<input type=\"checkbox\" id=\"GL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
-        $groups_listTAB     .= "<tr " . bgcolor($o) . " title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"GL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
-        $XFERgroups_list    .= "<input type=\"checkbox\" id=\"XGL$group_id_values[$o]\" name=\"XFERgroups[]\" value=\"$group_id_values[$o]\"";
-        $XFERgroups_listTAB .= "<tr " . bgcolor($o) . " title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"XGL$group_id_values[$o]\" name=\"XFERgroups[]\" value=\"$group_id_values[$o]\"";
-        $RANKgroups_list    .= "<tr " . bgcolor($o) . " title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"RGL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
+        $hidden_groups_list='';
+        $hidden_groups_listTAB='';
+        $hidden_XFERgroups_list='';
+        $hidden_XFERgroups_listTAB='';
+        $hidden_RANKgroups_list='';
+        if (preg_match('/:'.$group_id_values[$o].':/',$LOG['allowed_ingroupsSTR'])) {
+            $groups_list        .= "<input type=\"checkbox\" id=\"GL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
+            $groups_listTAB     .= "<tr " . bgcolor($o) . " title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"GL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
+            $XFERgroups_list    .= "<input type=\"checkbox\" id=\"XGL$group_id_values[$o]\" name=\"XFERgroups[]\" value=\"$group_id_values[$o]\"";
+            $XFERgroups_listTAB .= "<tr " . bgcolor($o) . " title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"XGL$group_id_values[$o]\" name=\"XFERgroups[]\" value=\"$group_id_values[$o]\"";
+            $RANKgroups_list    .= "<tr " . bgcolor($o) . " title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"RGL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
+        } else {
+            $hidden_groups_list        = "<input type=\"hidden\" id=\"GL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\">";
+            $hidden_groups_listTAB     = "<input type=\"hidden\" id=\"GL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\">";
+            $hidden_XFERgroups_list    = "<input type=\"hidden\" id=\"XGL$group_id_values[$o]\" name=\"XFERgroups[]\" value=\"$group_id_values[$o]\">";
+            $hidden_XFERgroups_listTAB = "<input type=\"hidden\" id=\"XGL$group_id_values[$o]\" name=\"XFERgroups[]\" value=\"$group_id_values[$o]\">";
+            $hidden_RANKgroups_list    = "<input type=\"hidden\" id=\"RGL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\">";
+        }
         $p=0;
         $group_ct = count($groups);
         while ($p < $group_ct) {
@@ -238,6 +252,9 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
                 $groups_list .= " CHECKED";
                 $groups_listTAB .= " CHECKED";
                 $RANKgroups_list .= " CHECKED";
+                $groups_list .= $hidden_groups_list;
+                $groups_listTAB .= $hidden_groups_listTAB;
+                $RANKgroups_list .= $hidden_RANKgroups_list;
                 $groups_value .= " $group_id_values[$o]";
             }
             $p++;
@@ -248,27 +265,33 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
             if ($group_id_values[$o] == $XFERgroups[$p]) {
                 $XFERgroups_list .= " CHECKED";
                 $XFERgroups_listTAB .= " CHECKED";
+                $XFERgroups_list .= $hidden_XFERgroups_list;
+                $XFERgroups_listTAB .= $hidden_XFERgroups_listTAB;
                 $XFERgroups_value .= " $group_id_values[$o]";
             }
             $p++;
         }
-        $groups_list         .= "><label for=\"GL$group_id_values[$o]\"> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o] </label><BR>\n";
-        $XFERgroups_list     .= "><label for=\"XGL$group_id_values[$o]\"> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o] </label><BR>\n";
-        $groups_listTAB      .= "></font></td><td onclick=\"document.getElementById('GL$group_id_values[$o]').click();\"><font size=1><a onclick=\"document.getElementById('GL$group_id_values[$o]').click();\" href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o]</font></td></tr>";
-        $XFERgroups_listTAB  .= "></font></td><td onclick=\"document.getElementById('XGL$group_id_values[$o]').click();\"><font size=1><a onclick=\"document.getElementById('XGL$group_id_values[$o]').click();\" href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o]</font></td></tr>";
-        $RANKgroups_list     .= "></font></td><td onclick=\"document.getElementById('RGL$group_id_values[$o]').click();\"><font size=1><a onclick=\"document.getElementById('RGL$group_id_values[$o]').click();\" href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o]</font></td>";
-        $RANKgroups_list     .= "<td align=center><select size=1 style=\"font-size: 8px;\" name=RANK_$group_id_values[$o]>\n";
-        $h="9";
-        while ($h>=-9) {
-            $RANKgroups_list .= "<option value=\"$h\"";
-            if ($h==$group_rank) {
-                $RANKgroups_list .= " SELECTED";
+        if (preg_match('/:'.$group_id_values[$o].':/',$LOG['allowed_ingroupsSTR'])) {
+            $groups_list         .= "><label for=\"GL$group_id_values[$o]\"> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o] </label><BR>\n";
+            $XFERgroups_list     .= "><label for=\"XGL$group_id_values[$o]\"> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o] </label><BR>\n";
+            $groups_listTAB      .= "></font></td><td onclick=\"document.getElementById('GL$group_id_values[$o]').click();\"><font size=1><a onclick=\"document.getElementById('GL$group_id_values[$o]').click();\" href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o]</font></td></tr>";
+            $XFERgroups_listTAB  .= "></font></td><td onclick=\"document.getElementById('XGL$group_id_values[$o]').click();\"><font size=1><a onclick=\"document.getElementById('XGL$group_id_values[$o]').click();\" href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o]</font></td></tr>";
+            $RANKgroups_list     .= "></font></td><td onclick=\"document.getElementById('RGL$group_id_values[$o]').click();\"><font size=1><a onclick=\"document.getElementById('RGL$group_id_values[$o]').click();\" href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o]</font></td>";
+            $RANKgroups_list     .= "<td align=center><select size=1 style=\"font-size: 8px;\" name=RANK_$group_id_values[$o]>\n";
+            $h="9";
+            while ($h>=-9) {
+                $RANKgroups_list .= "<option value=\"$h\"";
+                if ($h==$group_rank) {
+                    $RANKgroups_list .= " SELECTED";
+                }
+                $RANKgroups_list .= ">$h</option>";
+                $h--;
             }
-            $RANKgroups_list .= ">$h</option>";
-            $h--;
+            $RANKgroups_list .= "</select></td>\n";
+            $RANKgroups_list .= "<td align=right onclick=\"document.getElementById('RGL$group_id_values[$o]').click();\"><font size=1>$calls_today</font></td></tr>\n";
+        } else {
+            $RANKgroups_list .= "<input type=\"hidden\" name=RANK_$group_id_values[$o] value=\"$group_rank\">";
         }
-        $RANKgroups_list .= "</select></td>\n";
-        $RANKgroups_list .= "<td align=right onclick=\"document.getElementById('RGL$group_id_values[$o]').click();\"><font size=1>$calls_today</font></td></tr>\n";
         $o++;
     }
     $RANKgroups_list    .= "<tr bgcolor=$menubarcolor height=8px><td colspan=4><font size=1 color=white></font></td></tr>\n";
@@ -283,57 +306,5 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 }
 ##### END get inbound groups listing for checkboxes #####
 
-
-##### BEGIN get campaigns listing for checkboxes #####
-if ( ($ADD==211111) or ($ADD==311111) or ($ADD==411111) or ($ADD==511111) or ($ADD==611111) ) {
-    if ( ($ADD==211111) or ($ADD==311111) or ($ADD==511111) or ($ADD==611111) ) {
-        $stmt="SELECT allowed_campaigns from osdial_user_groups where user_group='$user_group';";
-        $rslt=mysql_query($stmt, $link);
-        $row=mysql_fetch_row($rslt);
-        $allowed_campaigns = $row[0];
-        $allowed_campaigns = preg_replace("/ -$/","",$allowed_campaigns);
-        $campaigns = explode(" ", $allowed_campaigns);
-    }
-
-    $campaigns_value='';
-    $campaigns_list='<B><input type="checkbox" id="GLxxALLxx" name="campaigns[]" value="-ALL-CAMPAIGNS-"';
-    $p=0;
-    while ($p<100) {
-        if (preg_match('/ALL-CAMPAIGNS/',$campaigns[$p])) {
-            $campaigns_list.=" CHECKED";
-            $campaigns_value .= " -ALL-CAMPAIGNS- -";
-        }
-        $p++;
-    }
-    $campaigns_list.="><label for=\"GLxxALLxx\"> ALL-CAMPAIGNS - AGENTS CAN VIEW ANY CAMPAIGN</label></B><BR>\n";
-
-    $stmt=sprintf("SELECT campaign_id,campaign_name from osdial_campaigns WHERE campaign_id IN %s order by campaign_id",$LOG['allowed_campaignsSQL']);
-    $rslt=mysql_query($stmt, $link);
-    $campaigns_to_print = mysql_num_rows($rslt);
-
-    $o=0;
-    while ($campaigns_to_print > $o) {
-        $rowx=mysql_fetch_row($rslt);
-        $campaign_id_value = $rowx[0];
-        $campaign_name_value = $rowx[1];
-        $campaigns_list .= "<input type=\"checkbox\" id=\"GL$campaign_id_value\" name=\"campaigns[]\" value=\"$campaign_id_value\"";
-        $p=0;
-        while ($p<100) {
-            if ($campaign_id_value == $campaigns[$p]) {
-                # echo "<!--  X $p|$campaign_id_value|$campaigns[$p]| -->";
-                $campaigns_list .= " CHECKED";
-                $campaigns_value .= " $campaign_id_value";
-            }
-            # echo "<!--  O $p|$campaign_id_value|$campaigns[$p]| -->";
-            $p++;
-        }
-        $campaigns_list .= "><label for=\"GL$campaign_id_value\"> " . mclabel($campaign_id_value) . " - $campaign_name_value</label><BR>\n";
-        $o++;
-    }
-    if (strlen($campaigns_value)>2) {
-        $campaigns_value .= " -";
-    }
-}
-##### END get campaigns listing for checkboxes #####
 
 ?>
