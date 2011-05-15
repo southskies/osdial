@@ -1040,6 +1040,10 @@ If the Agent Pause Codes Active field is set to active then the agents will be a
 <BR>
 <B>Allowed Campaigns -</B> This is a selectable list of Campaigns to which members of this user group can log in to. The ALL-CAMPAIGNS option allows the users in this group to see and log in to any campaign on the system.
 
+<BR>
+<A NAME="osdial_user_groups-allowed_ingroups">
+<BR>
+<B>Allowed InGroups -</B> This is a selectable list of Inbound Groups to which members of this user group can, if permitted under the agent and campaign settings, receive calls from. The ALL-INGROUP option allows the users in this group to be configured to use any and all InGroups, as selected under their Agent and Campaign settings.
 
 
 

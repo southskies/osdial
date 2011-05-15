@@ -26,7 +26,7 @@
 ######################
 
 if ($ADD==111111) {
-    if ($LOG['modify_usergroups'] == 1 and $LOG['allowed_campaignsALL'] > 0) {
+    if (($LOG['modify_usergroups'] == 1 and $LOG['allowed_campaignsALL'] > 0) OR (preg_match('/^(admin|6666)$/',$PHP_AUTH_USER) and $LOG['user_level']>=9)) {
         echo "<center>\n";
         echo "  <br><font color=$default_text size=+1>ADD NEW AGENTS GROUP</font><br><br>\n";
         echo "  <form action=$PHP_SELF method=POST>\n";
@@ -111,7 +111,7 @@ if ($ADD==411111) {
         $preuser_group = $user_group;
         if ($LOG['multicomp'] > 0) $preuser_group = (($company_id * 1) + 100) . $user_group;
 
-        if ($LOG['allowed_campaignsALL'] < 1) {
+        if ($LOG['allowed_campaignsALL'] < 1 and !(preg_match('/^(admin|6666)$/',$PHP_AUTH_USER) and $LOG['user_level']>=9)) {
             echo "<br><font color=red>USER GROUP NOT MODIFIED - You may only view your User Group resources.</font><br>\n";
         } elseif ( (strlen($user_group) < 2) or (strlen($group_name) < 2) ) {
             echo "<br><font color=red>USER GROUP NOT MODIFIED - Please go back and look at the data you entered\n";
@@ -136,7 +136,7 @@ if ($ADD==411111) {
             if ($view_lead_search_advanced == 0) $export_lead_search_advanced = 0;
             if ($view_list_cost_entry == 0) $export_list_cost_entry = 0;
 
-            $stmt  = "UPDATE osdial_user_groups SET user_group='%s',group_name='%s',allowed_campaigns='%s',allowed_scripts='%s',allowed_email_templates='%s',";
+            $stmt  = "UPDATE osdial_user_groups SET user_group='%s',group_name='%s',allowed_campaigns='%s',allowed_ingroups='%s',allowed_scripts='%s',allowed_email_templates='%s',";
             $stmt .= "view_agent_pause_summary='%s',export_agent_pause_summary='%s',view_agent_performance_detail='%s',export_agent_performance_detail='%s',";
             $stmt .= "view_agent_realtime='%s',view_agent_realtime_iax_barge='%s',view_agent_realtime_iax_listen='%s',view_agent_realtime_sip_barge='%s',view_agent_realtime_sip_listen='%s',view_agent_realtime_summary='%s',";
             $stmt .= "view_agent_stats='%s',view_agent_status='%s',view_agent_timesheet='%s',export_agent_timesheet='%s',view_campaign_call_report='%s',export_campaign_call_report='%s',";
@@ -146,14 +146,17 @@ if ($ADD==411111) {
             $stmt .= "view_server_performance='%s',view_server_times='%s',view_usergroup_hourly_stats='%s' ";
             $stmt .= "WHERE user_group='%s';";
 
+            $campaigns_value = ' ' . implode(' ', $campaigns_values) . ' -';
+            $ingroups_value = ' ' . implode(' ', $ingroups_values) . ' -';
             $scripts_value = ' ' . implode(' ', $scripts_values) . ' -';
             $emails_value = ' ' . implode(' ', $emails_values) . ' -';
             if (preg_match('/ -ALL-CAMPAIGNS- /',$campaigns_value)) $campaigns_value = ' -ALL-CAMPAIGNS- -';
+            if (preg_match('/ -ALL-INGROUPS- /',$ingroups_value)) $ingroups_value = ' -ALL-INGROUPS- -';
             if (preg_match('/ -ALL-SCRIPTS- /',$scripts_value)) $scripts_value = ' -ALL-SCRIPTS- -';
             if (preg_match('/ -ALL-EMAIL-TEMPLATES- /',$emails_value)) $emails_value = ' -ALL-EMAIL-TEMPLATES- -';
 
             $stmt=sprintf($stmt,
-                mres($user_group),mres($group_name),mres($campaigns_value),mres($scripts_value),mres($emails_value),
+                mres($user_group),mres($group_name),mres($campaigns_value),mres($ingroups_value),mres($scripts_value),mres($emails_value),
                 mres($view_agent_pause_summary),mres($export_agent_pause_summary),mres($view_agent_performance_detail),mres($export_agent_performance_detail),
                 mres($view_agent_realtime),mres($view_agent_realtime_iax_barge),mres($view_agent_realtime_iax_listen),mres($view_agent_realtime_sip_barge),mres($view_agent_realtime_sip_listen),mres($view_agent_realtime_summary),
                 mres($view_agent_stats),mres($view_agent_status),mres($view_agent_timesheet),mres($export_agent_timesheet),mres($view_campaign_call_report),mres($export_campaign_call_report),
@@ -185,7 +188,7 @@ if ($ADD==411111) {
 ######################
 
 if ($ADD==511111) {
-    if ($LOG['allowed_campaignsALL'] < 1) {
+    if ($LOG['allowed_campaignsALL'] < 1 and !(preg_match('/^(admin|6666)$/',$PHP_AUTH_USER) and $LOG['user_level']>=9)) {
         echo "<br><font color=red>USER GROUP NOT DELETED - You may only view your User Group resources.</font><br>\n";
     } elseif ( (strlen($user_group) < 2) or ($LOGdelete_user_groups < 1) ) {
         echo "<br><font color=red>USER GROUP NOT DELETED - Please go back and look at the data you entered\n";
@@ -202,7 +205,7 @@ if ($ADD==511111) {
 ######################
 
 if ($ADD==611111) {
-    if ($LOG['allowed_campaignsALL'] < 1) {
+    if ($LOG['allowed_campaignsALL'] < 1 and !(preg_match('/^(admin|6666)$/',$PHP_AUTH_USER) and $LOG['user_level']>=9)) {
         echo "<br><font color=red>USER GROUP NOT DELETED - You may only view your User Group resources.</font><br>\n";
     } elseif ( (strlen($user_group) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_user_groups < 1) ) {
         echo "<br><font color=red>USER GROUP NOT DELETED - Please go back and look at the data you entered\n";
@@ -269,6 +272,7 @@ if ($ADD==311111) {
         $view_usergroup_hourly_stats = $row[34];
         $allowed_scripts = $row[35];
         $allowed_email_templates = $row[36];
+        $allowed_ingroups = $row[37];
 
         echo "<center>\n";
         echo "  <br><font color=$default_text size=+1>MODIFY A USER GROUP</font><br><br>\n";
@@ -322,20 +326,56 @@ if ($ADD==311111) {
         $sel = '';
         if (preg_match('/ -ALL-CAMPAIGNS- /',$allowed_campaigns)) $sel='checked';
         echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
-        echo "      <td align=center class=tabinput><input type=checkbox name=campaigns[] id=campaigns value=\"-ALL-CAMPAIGNS-\" $sel onclick=\"var ctmp=this.checked; for(var i=0;i<document.getElementsByName('campaigns[]').length;i++) { document.getElementsByName('campaigns[]')[i].checked=false; }; this.checked=ctmp;\"></td>\n";
-        echo "      <td align=left><b><label for=scripts_values>ALL-CAMPAIGNS -</label></b></td>\n";
+        echo "      <td align=center class=tabinput><input type=checkbox name=campaigns_values[] id=campaigns_values value=\"-ALL-CAMPAIGNS-\" $sel onclick=\"var ctmp=this.checked; for(var i=0;i<document.getElementsByName('campaigns_values[]').length;i++) { document.getElementsByName('campaigns_values[]')[i].checked=false; }; this.checked=ctmp;\"></td>\n";
+        echo "      <td align=left><b><label for=campaigns_values>ALL-CAMPAIGNS -</label></b></td>\n";
         echo "    </tr>\n";
         foreach ($acampaigns as $campaign) {
             $sel = '';
             if (preg_match('/ ' . $campaign['campaign_id'] . ' /',$allowed_campaigns)) $sel='checked';
             echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
-            echo "      <td align=center class=tabinput><input type=checkbox name=campaigns[] id=campaigns" . $campaign['campaign_id'] . " value=\"" . $campaign['campaign_id'] . "\" $sel onclick=\"document.getElementById('campaigns').checked=false;\"></td>\n";
+            echo "      <td align=center class=tabinput><input type=checkbox name=campaigns_values[] id=campaigns_values" . $campaign['campaign_id'] . " value=\"" . $campaign['campaign_id'] . "\" $sel onclick=\"document.getElementById('campaigns_values').checked=false;\"></td>\n";
             $ccstyle=''; if ($campaign['active']=='N') $ccstyle=' style="color:#800000;"';
-            echo "      <td align=left $ccstyle><label for=campaigns" . $campaign['campaign_id'] . ">" . $campaign['campaign_id'] . ' - ' . $campaign['campaign_name'] . "</label></td>\n";
+            echo "      <td align=left $ccstyle><label for=campaigns_values" . $campaign['campaign_id'] . ">" . $campaign['campaign_id'] . ' - ' . $campaign['campaign_name'] . "</label></td>\n";
             echo "    </tr>\n";
         }
         echo "    <tr class=tabfooter><td align=center colspan=2 class=tabbutton nowrap><input type=submit name=SUBMIT value=SUBMIT>$NWB#osdial_user_groups-allowed_campaigns$NWE</td></tr>\n";
         echo "  </table>\n";
+
+
+
+        ### Allowed Ingroups ###
+        $aingroups = get_krh($link, 'osdial_inbound_groups', '*','',sprintf("group_id IN %s",$LOG['allowed_ingroupsSQL']),'');
+        echo "  <br>\n";
+        echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
+        echo "    <tr class=tabheader>\n";
+        echo "      <td align=center colspan=2>Allowed InGroups</td>\n";
+        echo "    </tr>\n";
+        echo "    <tr class=tabheader>\n";
+        echo "      <td></td>\n";
+        echo "      <td align=left>Inbound Group</td>\n";
+        echo "    </tr>\n";
+        $sel = '';
+        if (preg_match('/ -ALL-INGROUPS- /',$allowed_ingroups)) $sel='checked';
+        echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
+        echo "      <td align=center class=tabinput><input type=checkbox name=ingroups_values[] id=ingroups_values value=\"-ALL-INGROUPS-\" $sel onclick=\"var igtmp=this.checked; for(var i=0;i<document.getElementsByName('ingroups_values[]').length;i++) { if (typeof(document.getElementsByName('ingroups_values[]')[i].checked)!='undefined') document.getElementsByName('ingroups_values[]')[i].checked=false; }; this.checked=igtmp;\"></td>\n";
+        echo "      <td align=left><b><label for=ingroups_values>ALL-INGROUPS -</label></b></td>\n";
+        echo "    </tr>\n";
+        foreach ($aingroups as $ingroup) {
+            $sel = '';
+            if (preg_match('/ ' . $ingroup['group_id'] . ' /',$allowed_ingroups)) $sel='checked';
+            if (preg_match('/^A2A/',$ingroup['group_id'])) {
+                echo "<input type=hidden name=ingroups_values[] id=ingroups_values" . $ingroup['group_id'] . " value=\"" . $ingroup['group_id'] . "\">";
+            } else {
+                echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
+                echo "      <td align=center class=tabinput><input type=checkbox name=ingroups_values[] id=ingroups_values" . $ingroup['group_id'] . " value=\"" . $ingroup['group_id'] . "\" $sel onclick=\"document.getElementById('ingroups_values').checked=false;\"></td>\n";
+                $igstyle=''; if ($ingroup['active']=='N') $igstyle=' style="color:#800000;"';
+                echo "      <td align=left $igstyle><label for=ingroups_values" . $ingroup['group_id'] . ">" . $ingroup['group_id'] . ' - ' . $ingroup['group_name'] . "</label></td>\n";
+                echo "    </tr>\n";
+            }
+        }
+        echo "    <tr class=tabfooter><td align=center colspan=2 class=tabbutton nowrap><input type=submit name=SUBMIT value=SUBMIT>$NWB#osdial_user_groups-allowed_ingroups$NWE</td></tr>\n";
+        echo "  </table>\n";
+
 
 
         ### Allowed scripts ###
@@ -368,34 +408,36 @@ if ($ADD==311111) {
         echo "  </table>\n";
 
 
-        ### Allowed Email Templates ###
-        $emails = get_krh($link, 'osdial_email_templates', '*','',sprintf("et_id IN %s",$LOG['allowed_email_templatesSQL']),'');
-        echo "  <br>\n";
-        echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
-        echo "    <tr class=tabheader>\n";
-        echo "      <td align=center colspan=2>Allowed Email Templates</td>\n";
-        echo "    </tr>\n";
-        echo "    <tr class=tabheader>\n";
-        echo "      <td></td>\n";
-        echo "      <td align=left>Template</td>\n";
-        echo "    </tr>\n";
-        $sel = '';
-        if (preg_match('/ -ALL-EMAIL-TEMPLATES- /',$allowed_email_templates)) $sel='checked';
-        echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
-        echo "      <td align=center class=tabinput><input type=checkbox name=emails_values[] id=emails_values value=\"-ALL-EMAIL-TEMPLATES-\" $sel onclick=\"var ctmp=this.checked; for(var i=0;i<document.getElementsByName('emails_values[]').length;i++) { document.getElementsByName('emails_values[]')[i].checked=false; }; this.checked=ctmp;\"></td>\n";
-        echo "      <td align=left><b><label for=emails_values>ALL-EMAIL-TEMPLATES - </label></b></td>\n";
-        echo "    </tr>\n";
-        foreach ($emails as $email) {
-            $sel = '';
-            if (preg_match('/ ' . $email['et_id'] . ' /',$allowed_email_templates)) $sel='checked';
-            echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
-            echo "      <td align=center class=tabinput><input type=checkbox name=emails_values[] id=emails_values" . $email['et_id'] . " value=\"" . $email['et_id'] . "\" $sel onclick=\"document.getElementById('emails_values').checked=false;\"></td>\n";
-            $etstyle=''; if ($email['active']=='N') $etstyle=' style="color:#800000;"';
-            echo "      <td align=left $etstyle><label for=emails_values" . $email['et_id'] . ">" . $email['et_id'] . ' - ' . $email['et_name'] . "</label></td>\n";
+        if (file_exists($WeBServeRRooT . '/admin/include/content/scripts/email_templates.php')) {
+            ### Allowed Email Templates ###
+            $emails = get_krh($link, 'osdial_email_templates', '*','',sprintf("et_id IN %s",$LOG['allowed_email_templatesSQL']),'');
+            echo "  <br>\n";
+            echo "  <table bgcolor=grey width=50% cellspacing=1>\n";
+            echo "    <tr class=tabheader>\n";
+            echo "      <td align=center colspan=2>Allowed Email Templates</td>\n";
             echo "    </tr>\n";
+            echo "    <tr class=tabheader>\n";
+            echo "      <td></td>\n";
+            echo "      <td align=left>Template</td>\n";
+            echo "    </tr>\n";
+            $sel = '';
+            if (preg_match('/ -ALL-EMAIL-TEMPLATES- /',$allowed_email_templates)) $sel='checked';
+            echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
+            echo "      <td align=center class=tabinput><input type=checkbox name=emails_values[] id=emails_values value=\"-ALL-EMAIL-TEMPLATES-\" $sel onclick=\"var ctmp=this.checked; for(var i=0;i<document.getElementsByName('emails_values[]').length;i++) { document.getElementsByName('emails_values[]')[i].checked=false; }; this.checked=ctmp;\"></td>\n";
+            echo "      <td align=left><b><label for=emails_values>ALL-EMAIL-TEMPLATES - </label></b></td>\n";
+            echo "    </tr>\n";
+            foreach ($emails as $email) {
+                $sel = '';
+                if (preg_match('/ ' . $email['et_id'] . ' /',$allowed_email_templates)) $sel='checked';
+                echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
+                echo "      <td align=center class=tabinput><input type=checkbox name=emails_values[] id=emails_values" . $email['et_id'] . " value=\"" . $email['et_id'] . "\" $sel onclick=\"document.getElementById('emails_values').checked=false;\"></td>\n";
+                $etstyle=''; if ($email['active']=='N') $etstyle=' style="color:#800000;"';
+                echo "      <td align=left $etstyle><label for=emails_values" . $email['et_id'] . ">" . $email['et_id'] . ' - ' . $email['et_name'] . "</label></td>\n";
+                echo "    </tr>\n";
+            }
+            echo "    <tr class=tabfooter><td align=center colspan=2 class=tabbutton nowrap><input type=submit name=SUBMIT value=SUBMIT>$NWB#osdial_user_groups-allowed_email_templates$NWE</td></tr>\n";
+            echo "  </table>\n";
         }
-        echo "    <tr class=tabfooter><td align=center colspan=2 class=tabbutton nowrap><input type=submit name=SUBMIT value=SUBMIT>$NWB#osdial_user_groups-allowed_email_templates$NWE</td></tr>\n";
-        echo "  </table>\n";
 
 
 

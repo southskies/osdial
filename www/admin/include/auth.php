@@ -126,6 +126,7 @@ if ($force_logout) {
         $LOGac = $ug['allowed_campaigns'];
         $LOGas = $ug['allowed_scripts'];
         $LOGae = $ug['allowed_email_templates'];
+        $LOGai = $ug['allowed_ingroups'];
         if (strlen($LOGac)> 1) {
             if (preg_match('/\-ALL\-CAMPAIGNS\-/',$LOGac)) {
                 $LOG['allowed_campaignsALL'] = 1;
@@ -154,6 +155,26 @@ if ($force_logout) {
                 if (is_array($tmpacs)) {
                     foreach ($tmpacs as $c) {
                         if (strlen(rtrim($c,'-')) > 0) $LOGacA[] = $c;
+                    }
+                }
+            }
+            if (strlen($LOGai)> 1) {
+                if (preg_match('/\-ALL\-INGROUPS\-/',$LOGai)) {
+                    $LOG['allowed_ingroupsALL'] = 1;
+                    # Pack all the valid InGroups
+                    $ois = get_krh($link, 'osdial_inbound_groups', 'group_id','',sprintf("group_id LIKE '%s__%%'",$LOG['company_prefix']),'');
+                    if (is_array($ois)) {
+                        foreach ($ois as $oi) {
+                            $LOGaiA[] = $oi['group_id'];
+                        }
+                    }
+                } else {
+                    $LOG['allowed_ingroupsALL'] = 0;
+                    $tmpais = explode(' ',$LOGai);
+                    if (is_array($tmpais)) {
+                        foreach ($tmpais as $i) {
+                            if (strlen(rtrim($i,'-')) > 0) $LOGaiA[] = $i;
+                        }
                     }
                 }
             }
@@ -195,12 +216,6 @@ if ($force_logout) {
                             if (strlen(rtrim($e,'-')) > 0) $LOGaeA[] = $e;
                         }
                     }
-                }
-            }
-            $ingrps = get_krh($link, 'osdial_inbound_groups', 'group_id','',sprintf("group_id LIKE '%s__%%'",$LOG['company_prefix']),'');
-            if (is_array($ingrps)) {
-                foreach ($ingrps as $ingrp) {
-                    $LOGaiA[] = $ingrp['group_id'];
                 }
             }
 

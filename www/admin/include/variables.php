@@ -233,6 +233,7 @@ $campaign_rec_exten = get_variable("campaign_rec_exten");
 $campaign_rec_filename = get_variable("campaign_rec_filename");
 $campaign_recording = get_variable("campaign_recording");
 $campaigns = get_variable("campaigns");
+$campaigns_values = get_variable("campaigns_values");
 $campaign_call_time = get_variable("campaign_call_time");
 $campaign_stats_refresh = get_variable("campaign_stats_refresh");
 $campaign_vdad_exten = get_variable("campaign_vdad_exten");
@@ -487,6 +488,7 @@ $human_answered = get_variable("human_answered");
 
 $id = get_variable('id');
 $iframe = get_variable('iframe');
+$ingroups_values = get_variable('ingroups_values');
 $IAXmonitorLINK = get_variable("IAXmonitorLINK");
 $install_directory = get_variable("install_directory");
 $intra_server_protocol = get_variable("intra_server_protocol");
