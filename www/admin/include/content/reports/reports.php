@@ -90,6 +90,7 @@ if ($LOGview_reports==1) {
         if ($LOG['view_list_cost_entry']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=16\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>List Cost by Entry Date</a></font>";
         echo "</ul>";
         echo "<ul>";
+        if ($LOG['multicomp_user'] == 0 and $LOG['modify_servers']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=30\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>View Webserver Admin Log</a></font>";
         if ($LOG['multicomp_user'] == 0 and $LOG['view_server_performance']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=29\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Server Performance</a></font>";
 
         if ($LOG['multicomp_user'] == 0 and $enable_queuemetrics_logging_LU > 0) {
@@ -183,6 +184,9 @@ if ($LOGview_reports==1) {
             } elseif ($SUB==29 and $LOG['view_server_performance']) {
                 require($WeBServeRRooT . '/admin/include/content/reports/server_performance.php');
                 echo report_server_performance();
+            } elseif ($SUB==30 and $LOG['modify_servers']) {
+                require($WeBServeRRooT . '/admin/include/content/reports/web_admin_log.php');
+                echo report_web_admin_log();
             } else {
                 echo "<font color=red>You do not have permission to view this page</font>\n";
             }
