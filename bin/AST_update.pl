@@ -641,7 +641,8 @@ if (!$telnet_port) {$telnet_port = '5038';}
 				if ($SYSPERFDB)
 					{print "$serverLOAD  $MEMfree  $MEMused  $serverPROCESSES  $#list_channels  $cpuUSERcent  $cpuSYSTcent  $cpuIDLEcent\n";}
 
-				$stmtA = "INSERT INTO server_performance (start_time,server_ip,sysload,freeram,usedram,processes,channels_total,trunks_total,clients_total,clients_zap,clients_iax,clients_local,clients_sip,live_recordings,cpu_user_percent,cpu_system_percent,cpu_idle_percent) values('$now_date','$server_ip','$serverLOAD','$MEMfree','$MEMused','$serverPROCESSES','$#list_channels','$channel_counter','$sip_counter','$test_ZorD_count','$test_iax_count','$test_local_count','$test_sip_count','$recording_count','$cpuUSERcent','$cpuSYSTcent','$cpuIDLEcent')";
+				&get_time_now;
+				$stmtA = "INSERT INTO server_performance (start_time,server_ip,sysload,freeram,usedram,processes,channels_total,trunks_total,clients_total,clients_zap,clients_iax,clients_local,clients_sip,live_recordings,cpu_user_percent,cpu_system_percent,cpu_idle_percent) values('$now_date','$server_ip','$serverLOAD','$MEMfree','$MEMused','$serverPROCESSES','$#list_channels','$channel_counter','$sip_counter','$test_ZorD_count','$test_iax_count','$test_local_count','$test_sip_count','$recording_count','$cpuUSERcent','$cpuSYSTcent','$cpuIDLEcent') ON DUPLICATE KEY UPDATE start_time=addtime(start_time,1);";
 					if( ($DB) or ($UD_bad_grab) ){print STDERR "\n|$stmtA|\n";}
 				$affected_rows = $dbhA->do($stmtA) or die  "Couldn't execute query: |$stmtA|\n";
 				}
