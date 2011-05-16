@@ -53,8 +53,8 @@ $NOW_TIME = date("Y-m-d H:i:s");
 $STARTtime = date("U");
 
 if ($query_date=='') {$query_date = $NOW_DATE;}
-if ($begin_query_time=='') {$begin_query_time = '09:00:00';}
-if ($end_query_time=='') {$end_query_time = '15:30:00';}
+if ($begin_query_time=='') {$begin_query_time = Date('H:i:s',strtotime(date('H:i:s'))-3600);}
+if ($end_query_time=='') {$end_query_time = date('H:i:s');}
 
 $stmt="select server_ip from servers;";
 $rslt=mysql_query($stmt, $link);
