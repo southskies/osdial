@@ -80,8 +80,10 @@ if ($ADD == "1keys" or $ADD == '4keys') {
             $recfilename = preg_replace('/\.gsm$/i','.gsm',$recfilename);
             $recfilename = preg_replace('/\.mp3$/i','.mp3',$recfilename);
             if ($recfilename != '') {
-                media_add_file($link, $recfiletmp, mimemap($recfilename), "IVR: $campaign_id - $oivr_opt_action",'',1);
-                copy($recfiletmp, $WeBServeRRooT . "/ivr/" . $recfilename);
+                rename($recfiletmp, '/tmp/'.$recfilename);
+                media_add_file($link, '/tmp/'.$recfilename, mimemap($recfilename), "IVR: $campaign_id - $oivr_opt_action",'',1);
+                copy('/tmp/'.$recfilename, $WeBServeRRooT . "/ivr/" . $recfilename);
+                unlink('/tmp/'.$recfilename);
                 if ($oivr_opt_action == 'MENU') {
                     $oi3 = $recfilename;
                 } else {
@@ -570,8 +572,10 @@ if ($ADD == "4menu") {
             $recfilename = preg_replace('/\.gsm$/i','.gsm',$recfilename);
             $recfilename = preg_replace('/\.mp3$/i','.mp3',$recfilename);
             if ($recfilename != '') {
-                media_add_file($link, $recfiletmp, mimemap($recfilename), "IVR: $campaign_id - MAIN_MENU",'',1);
-                copy($recfiletmp, $WeBServeRRooT . "/ivr/" . $recfilename);
+                rename($recfiletmp, '/tmp/'.$recfilename);
+                media_add_file($link, '/tmp/'.$recfilename, mimemap($recfilename), "IVR: $campaign_id - MAIN_MENU",'',1);
+                copy('/tmp/'.$recfilename, $WeBServeRRooT . "/ivr/" . $recfilename);
+                unlink('/tmp/'.$recfilename);
                 $oivr_announcement = $recfilename;
             }
 
