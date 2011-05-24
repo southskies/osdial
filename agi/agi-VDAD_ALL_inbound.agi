@@ -929,7 +929,7 @@ while ($drop_timer <= $DROP_TIME) {
 				#	$VDADremDIALstr = "$a$S$b$S$c$S$d$isp" if ($VDADserver_ip ne $VARserver_ip);
 				#}
 				$alertVDADremDIALstr = "$VDADremDIALstr";
-				$alertVDADremDIALstr .= "7$VDADconf_exten";
+				$alertVDADremDIALstr .= "9$VDADconf_exten";
 				$VDADremDIALstr .= "7$VDADconf_exten";
 
 				### if agent alert exten is not disabled, then trigger the alert and wait
@@ -937,9 +937,9 @@ while ($drop_timer <= $DROP_TIME) {
 					$VHqueryCID = "VH$CIDdate$VDADconf_exten";
 
 					### insert a NEW record to the osdial_manager table to play the alert message to the agent
-					$stmtA = "INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$VHqueryCID','Exten: $agent_alert_exten','Context: $ext_context','Channel: Local/$VDADremDIALstr$at$ext_context','Priority: 1','Callerid: $VHqueryCID','Timeout: 10','Account: $VHqueryCID','','','');";
+					$stmtA = "INSERT INTO osdial_manager VALUES ('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$VHqueryCID','Exten: $agent_alert_exten','Context: $ext_context','Channel: Local/$alertVDADremDIALstr$at$ext_context','Priority: 1','Callerid: $VHqueryCID','Timeout: 10','Account: $VHqueryCID','','','');";
 					$affected_rows = $dbhA->do($stmtA);  
-					if ($AGILOG) {$agi_string = "--    VDCL agent alert: |$VHqueryCID|$VDADremDIALstr|$channel|insert to osdial_manager";   &agi_output;}
+					if ($AGILOG) {$agi_string = "--    VDCL agent alert: |$VHqueryCID|$alertVDADremDIALstr|$channel|insert to osdial_manager";   &agi_output;}
 
 					usleep(1 * $agent_alert_delay * 1000);
 				}
@@ -1145,7 +1145,7 @@ while ($drop_timer <= $DROP_TIME) {
 					$VDADremDIALstr = "$a$S$b$S$c$S$d$isp" if ($VDADserver_ip ne $VARserver_ip);
 				}
 				$alertVDADremDIALstr = "$VDADremDIALstr";
-				$alertVDADremDIALstr .= "7$VDADconf_exten";
+				$alertVDADremDIALstr .= "9$VDADconf_exten";
 				$VDADremDIALstr .= "7$VDADconf_exten";
 
 				### if agent alert exten is not disabled, then trigger the alert and wait
