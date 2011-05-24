@@ -523,6 +523,8 @@
 									}
 									if ( (HidEMonitoRSessionS==1) && (channelfieldA.match(/ASTblind/)) ) {
 										var hide_channel=1;
+									} else if ( channelfieldA.match(/^Local\/386.....@osdial/) ) {
+										var hide_channel=1;
 									} else if (volumecontrol_active!=1) {
 										live_conf_HTML = live_conf_HTML + "<tr bgcolor=\"" + row_color + "\"><td><font class=\"log_text\">" + loop_ct + "</td><td><font class=\"" + chan_name_color + "\">" + channelfieldA + "</td><td><font class=\"log_text\"><a href=\"#\" onclick=\"livehangup_send_hangup('" + channelfieldA + "');return false;\">HANGUP</a></td><td></td></tr>";
 									} else {
@@ -659,7 +661,8 @@
 				filename = filename.replace(REGrecFIRSTNAME, recfirstname);
 				//filename = filedate + "_" + user_abb;
 				var query_recording_exten = recording_exten;
-				var channelrec = "Local/" + conf_silent_prefix + '' + taskconfrec + "@" + ext_context;
+				//var channelrec = "Local/" + conf_silent_prefix + '' + taskconfrec + "@" + ext_context;
+				var channelrec = "Local/3" + taskconfrec + "@" + ext_context;
 				var conf_rec_start_html = "<a href=\"#\" onclick=\"conf_send_recording('StopMonitorConf','" + taskconfrec + "','" + filename + "');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_stoprecording.gif\" width=145 height=16 border=0 alt=\"Stop Recording\"></a>";
 
 				if (campaign_recording == 'ALLFORCE') {
@@ -671,7 +674,8 @@
 			if (taskconfrectype == 'StopMonitorConf') {
 				filename = taskconffile;
 				var query_recording_exten = session_id;
-				var channelrec = "Local/" + conf_silent_prefix + '' + taskconfrec + "@" + ext_context;
+				//var channelrec = "Local/" + conf_silent_prefix + '' + taskconfrec + "@" + ext_context;
+				var channelrec = "Local/3" + taskconfrec + "@" + ext_context;
 				var conf_rec_start_html = "<a href=\"#\" onclick=\"conf_send_recording('MonitorConf','" + taskconfrec + "','');return false;\"><img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording.gif\" width=145 height=16 border=0 alt=\"Start Recording\"></a>";
 				if (campaign_recording == 'ALLFORCE') {
 					document.getElementById("RecorDControl").innerHTML = "<img src=\"templates/" + agent_template + "/images/vdc_LB_startrecording_OFF.gif\" width=145 height=16 border=0 alt=\"Start Recording\">";
@@ -707,6 +711,7 @@
 				}
 			}
 			delete xmlhttp;
+			if (taskconfrectype == 'StopMonitorConf') filename='';
 		}
 	}
 
@@ -6098,6 +6103,7 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 		var xmlhttpqs=getXHR();
 		if (xmlhttpqs) { 
 			if (lastcustserverip == '') lastcustserverip=server_ip;
+			if (filename!='') conf_send_recording('StopMonitorConf',session_id,filename);
 			checkMCIN_query = "server_ip=" + lastcustserverip + "&channel=" + lastcustchannel + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&campaign=" + campaign + "&ACTION=multicallQueueSwap" + "&agent_log_id=" + agent_log_id + "&agentchannel=" + agentchannel + "&agentserver_ip=" + server_ip + "&multicall_channel=" + multicall_channel + "&multicall_serverip=" + multicall_serverip + "&multicall_leadid=" + multicall_leadid + "&multicall_callerid=" + multicall_callerid + "&multicall_uniqueid=" + multicall_uniqueid + "&multicall_liveseconds=" + multicall_liveseconds + "&conf_exten=" + session_id + "&user_abb=" + user_abb + "&park_on_extension=" + park_on_extension;
 			xmlhttpqs.open('POST', 'vdc_db_query.php', false); 
 			xmlhttpqs.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');

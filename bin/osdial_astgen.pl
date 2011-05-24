@@ -156,7 +156,16 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 	$oedata =~ s/^TRUNKblind.*$/TRUNKblind = IAX2\/ASTblind:$pass\@127.0.0.1:41569/m;
 	$oedata = "TRUNKblind = IAX2\/ASTblind:$pass\@127.0.0.1:41569\n" . $oedata unless ($oedata =~ /^TRUNKblind.*$/m);
 	$oedata = "TRUNKloop = IAX2\/ASTloop:$pass\@127.0.0.1:40569\n"   . $oedata unless ($oedata =~ /^TRUNKloop.*$/m);
-	if ($asterisk_version =~ /^1\.6|^1\.8/) {
+	if ($asterisk_version =~ /^1\.8/) {
+		$oereload = "dialplan reload";
+		$oedata =~ s/^exten => h,1,DeadAGI/exten => h,1,AGI/gm;
+		$moddata =~ s/^noload => chan_agent.so/load => chan_agent.so/gm;
+		$moddata =~ s/^noload => app_queue.so/load => app_queue.so/gm;
+		$moddata =~ s/^load => res_config_mysql.so/preload => res_config_mysql.so/gm;
+		if (-e "/etc/asterisk/zapata.conf" and not -e "/etc/asterisk/chan_dahdi.conf") {
+			my $pr = `cp /etc/asterisk/zapata.conf /etc/asterisk/chan_dahdi.conf`;
+		}
+	} elsif ($asterisk_version =~ /^1\.6/) {
 		$oereload = "dialplan reload";
 		$oedata =~ s/^exten => h,1,DeadAGI/exten => h,1,AGI/gm;
 		$moddata =~ s/^noload => chan_agent.so/load => chan_agent.so/gm;
@@ -286,10 +295,7 @@ sub gen_servers {
 
 	$esvr .= "; Local blind monitoring\n";
 	$esvr .= "exten => _0860XXXX,1,Dial(\${TRUNKblind}/6\${EXTEN:1},55,o)\n";
-	$esvr .= "exten => _06860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:1},55,o)\n";
-	$esvr .= "exten => _07860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:1},55,o)\n";
-	$esvr .= "exten => _08860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:2},55,o)\n";
-	$esvr .= "exten => _09860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:1},55,o)\n";
+	$esvr .= "exten => _0X860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:1},55,o)\n";
 
 	$ireg .= "register => ASTloop:$pass\@127.0.0.1:40569\n";
 	$ireg .= "register => ASTblind:$pass\@127.0.0.1:41569\n";
@@ -493,15 +499,17 @@ sub gen_conferences {
 			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},F)\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Set(SPYGROUP=\${EXTEN:1})\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Meetme(\${EXTEN:1},F)\n";
-			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
+			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
 			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
+			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
 			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Chanspy(,g(\${EXTEN:1})qw)\n";
 		} else {
 			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Meetme,\${EXTEN}|F\n";
 			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|F\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|F\n";
-			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
+			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
 			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
+			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
 			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
 		}
 		$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
@@ -518,11 +526,17 @@ sub gen_conferences {
 	while (my $sret = $osdial->sql_query($stmt)) {
 		if ($asterisk_version =~ /^1\.6|^1\.8/) {
 			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Meetme(\${EXTEN},Fq)\n";
+			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
+			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
+			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
 			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
 			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
 			$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
 		} else {
 			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Meetme,\${EXTEN}|Fq\n";
+			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
+			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
+			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
 			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
 			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
 			$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
