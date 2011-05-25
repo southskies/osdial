@@ -51,6 +51,7 @@ $row=mysql_fetch_row($rslt);
 $last_check=$row[0];
 
 if ($last_check==0) {
+    putenv("HOME=$WeBServeRRooT/admin");
 	exec("links --source http://www.osdial.com/osdial-version", $execoutput, $execretval);
 	$update_version = $execoutput[0];
 	$stmt="UPDATE system_settings SET last_update_check=NOW();";
