@@ -676,7 +676,7 @@ sub gen_phones {
 		if ($dext ne "") {
 			if ($sret->{voicemail_id} ne "") {
 				$ephn .= "exten => _" . $sret->{dialplan_number} . ",1,Dial(" . $dext . ",30,o)\n";
-				$ephn .= "exten => _" . $sret->{dialplan_number} . ",2,GotoIf(\$[\"\${DIALSTATUS}\" = \"NOANSWER\"|\"\${DIALSTATUS}\" = \"BUSY\"|\"\${DIALSTATUS}\" = \"CONGESTED\"|\"\${DIALSTATUS}\" = \"CHANUNAVAIL\"]?3:4)\n";
+				$ephn .= "exten => _" . $sret->{dialplan_number} . ",2,GotoIf(\$[\"\${DIALSTATUS}\" = \"NOANSWER\"|\"\${DIALSTATUS}\" = \"BUSY\"|\"\${DIALSTATUS}\" = \"CONGESTION\"|\"\${DIALSTATUS}\" = \"CHANUNAVAIL\"]?3:4)\n";
 				$ephn .= "exten => _" . $sret->{dialplan_number} . ",3,Voicemail(" . $sret->{voicemail_id} . "\@osdial)\n";
 				$ephn .= "exten => _" . $sret->{dialplan_number} . ",4,Hangup()\n";
 			} else {
