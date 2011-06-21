@@ -218,9 +218,9 @@ function report_closer_stats() {
     $plain='';
     $table='';
     $query_date_BEGIN = "$query_date $time_begin:00";   
-    $query_date_BEGIN = dateToServer($link,'first',$query_date_BEGIN,$webClientAdjGMT,'',$webClientDST,1);
+    $query_date_BEGIN = dateToServer($link,'first',$query_date_BEGIN,$webClientAdjGMT,'',$webClientDST,0);
     $query_date_END = "$end_date $time_end:59";
-    $query_date_END = dateToServer($link,'first',$query_date_END,$webClientAdjGMT,'',$webClientDST,1);
+    $query_date_END = dateToServer($link,'first',$query_date_END,$webClientAdjGMT,'',$webClientDST,0);
 
     $html .= "<div class=onlyprint><pre>\n\n";
     $html .= "OSDIAL: Inbound / Closer Stats                      " . dateToLocal($link,'first',$NOW_TIME,$webClientAdjGMT,'',$webClientDST,1) . "\n";

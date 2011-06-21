@@ -219,9 +219,9 @@ function report_lead_performance_list() {
 
     if ($group) {
         $query_date_BEGIN = "$start_date $start_time:00";
-        $query_date_BEGIN = dateToServer($link,'first',$query_date_BEGIN,$webClientAdjGMT,'',$webClientDST,1);
+        $query_date_BEGIN = dateToServer($link,'first',$query_date_BEGIN,$webClientAdjGMT,'',$webClientDST,0);
         $query_date_END = "$end_date $end_time:59";
-        $query_date_END = dateToServer($link,'first',$query_date_END,$webClientAdjGMT,'',$webClientDST,1);
+        $query_date_END = dateToServer($link,'first',$query_date_END,$webClientAdjGMT,'',$webClientDST,0);
 
         $html .= "OSDIAL: List Performance by List / Entry Date                  " . dateToLocal($link,'first',date('Y-m-d H:i:s'),$webClientAdjGMT,'',$webClientDST,1) . "\n";
         $html .= "Time range: $query_date_BEGIN to $query_date_END\n\n";
