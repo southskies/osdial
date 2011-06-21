@@ -842,7 +842,7 @@ function report_lead_search_advanced($lsa_seg='form') {
                 $sel="";
                 if (is_array($timezones)) {
                     foreach ($timezones as $timezone) {
-                        if ($k != "" and $v == $timezone) {
+                        if ($timezone != "" and $k != "" and $v == $timezone) {
                             $sel=" selected";
                             $s++;
                         }
