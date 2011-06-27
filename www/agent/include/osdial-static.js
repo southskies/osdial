@@ -6032,9 +6032,11 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 						multicall_vmdrop_timer = MCsplit[16];
 						document.getElementById("MulticallAlerTTimer").innerHTML = multicall_vmdrop_timer;
 
-						// Whisper a ding to the agent.
+						// Whisper a ding or agent_alert to the agent.
+						var dingext = '8304';
+						if (MCsplit[17] != '' && MCsplit[17] != 'X') dingext = MCsplit[17];
 						var dingCID = "MCalrt" + epoch_sec + user_abb;
-						var dingoriginate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=Originate&format=text&channel=Local/9" + session_id + "@" + ext_context + "&queryCID=" + dingCID + "&outbound_cid=" + session_id + "&outbound_cid_name=" + dingCID + "&exten=8304&ext_context=" + ext_context + "&ext_priority=1";
+						var dingoriginate_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=Originate&format=text&channel=Local/9" + session_id + "@" + ext_context + "&queryCID=" + dingCID + "&outbound_cid=" + session_id + "&outbound_cid_name=" + dingCID + "&exten=" + dingext + "&ext_context=" + ext_context + "&ext_priority=1";
 						xmlhttp.open('POST', 'manager_send.php', false); 
 						xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
 						xmlhttp.send(dingoriginate_query); 

@@ -3766,7 +3766,7 @@ if ($ACTION == 'MulticallGetChannel') {
     $AccampSQL = preg_replace('/ -/','', $AccampSQL);
     $AccampSQL = preg_replace('/ /',"','", $AccampSQL);
 
-    $stmt="SELECT channel,server_ip,callerid,group_id,voicemail_ext,uniqueid,lead_id,drop_call_seconds FROM osdial_auto_calls JOIN osdial_inbound_groups ON (campaign_id=group_id) WHERE status IN('LIVE') AND campaign_id IN('$AccampSQL') AND allow_multicall='Y' LIMIT 1;";
+    $stmt="SELECT channel,server_ip,callerid,group_id,voicemail_ext,uniqueid,lead_id,drop_call_seconds,agent_alert_exten FROM osdial_auto_calls JOIN osdial_inbound_groups ON (campaign_id=group_id) WHERE status IN('LIVE') AND campaign_id IN('$AccampSQL') AND allow_multicall='Y' LIMIT 1;";
     if ($format=='debug') echo "<!-- |$stmt| -->\n";
     $rslt=mysql_query($stmt, $link);
     $row=mysql_fetch_row($rslt);
@@ -3778,6 +3778,16 @@ if ($ACTION == 'MulticallGetChannel') {
     $MCuniqueid=$row[5];
     $MCleadid=$row[6];
     $MCvmdrop=$row[7]-3;
+    $MCaaexten=$row[8];
+
+    if (preg_match('/^A2A_/', $MCIG) and preg_match('/^Local\/8870/',$MCChannel)) {
+        $tchan = preg_replace('/^Local\/8|@osdial.*$/','',$MCChannel);
+        $stmt="SELECT agent_alert_exten FROM osdial_auto_calls JOIN osdial_inbound_groups ON (campaign_id=group_id) WHERE channel LIKE 'Local/_$tchan%' LIMIT 1;";
+        if ($format=='debug') echo "<!-- |$stmt| -->\n";
+        $rslt=mysql_query($stmt, $link);
+        $row=mysql_fetch_row($rslt);
+        $MCaaexten=$row[0];
+    }
 
     $lead = get_first_record($link, 'osdial_list', '*', "lead_id='" . $MCleadid . "'");
 
@@ -3798,6 +3808,7 @@ if ($ACTION == 'MulticallGetChannel') {
     echo $lead['state'] . "\n";
     echo $lead['postal_code'] . "\n";
     echo $MCvmdrop . "\n";
+    echo $MCaaexten . "\n";
 }
 
 
