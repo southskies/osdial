@@ -410,6 +410,33 @@ $sthA->finish();
 
 exit 0 if ($group_active eq 'N');
 
+# If the channel_group is an A2A and the call was an inbound, use the agent alert from the initial ingroup.
+if ($channel_group =~ /^A2A_/ and $comment_d ne '') {
+	$a2aingroup='';
+	$stmtA = "SELECT campaign_id FROM osdial_auto_calls WHERE callerid='$comment_d' AND call_type='IN' AND campaign_id NOT LIKE 'A2A_%' LIMIT 1;";
+	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+	$sthArows=$sthA->rows;
+	if ($sthArows>0) {
+		@aryA = $sthA->fetchrow_array;
+		$a2aingroup = $aryA[0];
+	}
+	$sthA->finish();
+
+	if ($a2aingroup ne '') {
+		$stmtA = "SELECT agent_alert_exten,agent_alert_delay FROM osdial_inbound_groups WHERE group_id='$a2aingroup' LIMIT 1;";
+		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+		$sthArows=$sthA->rows;
+		if ($sthArows>0) {
+			@aryA = $sthA->fetchrow_array;
+			$agent_alert_exten = $aryA[0];
+			$agent_alert_delay = $aryA[1];
+		}
+		$sthA->finish();
+	}
+}
+
 if ($agent_alert_exten =~ /^$|^X$|^8304$/) {
 	$agent_alert_exten = '8304';
 	$agent_alert_delay = '350';
