@@ -532,6 +532,7 @@ sub gen_conferences {
 			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
 			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
 			$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
+			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Chanspy(,g(\${EXTEN:1})qw)\n";
 		} else {
 			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Meetme,\${EXTEN}|Fq\n";
 			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
@@ -540,6 +541,7 @@ sub gen_conferences {
 			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
 			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
 			$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
+			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
 		}
 		$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
 	}
