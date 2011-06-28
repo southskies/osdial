@@ -1092,6 +1092,17 @@ if ($ACTION == 'manDiaLlookCaLL') {
             $channel =$row[1];
             echo "$uniqueid\n$channel";
 
+            if (!preg_match('/^Local\//',$channel)) {
+                $PADlead_id = sprintf("%09s", $lead_id);
+                while (strlen($PADlead_id) > 9) $PADlead_id = substr($PADlead_id, 0, -1);
+
+                # Create unique calleridname to track the call: MmmddhhmmssLLLLLLLLL
+                $MqueryCID = "M$CIDdate$PADlead_id";
+                $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','$channel','Redirect','$MqueryCID','Channel: $channel','Context: osdial','Exten: 7$conf_exten','Priority: 1','CallerID: $MDnextCID','Account: $MDnextCID','','','','');";
+                if ($DB) echo "$stmt\n"; 
+                $rslt=mysql_query($stmt, $link);
+            }
+
             $wait_sec=0;
             $stmt = "SELECT SQL_NO_CACHE wait_epoch,wait_sec FROM osdial_agent_log WHERE agent_log_id='$agent_log_id';";
             if ($DB) echo "$stmt\n";
@@ -1106,6 +1117,11 @@ if ($ACTION == 'manDiaLlookCaLL') {
                 if ($format=='debug') echo "\n<!-- $stmt -->";
                 $rslt=mysql_query($stmt, $link);
             }
+
+            $stmt="UPDATE osdial_live_agents set uniqueid='$uniqueid',channel='$channel',call_server_ip='$server_ip' where callerid='$MDnextCID';";
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+
 
             $stmt="UPDATE osdial_auto_calls set uniqueid='$uniqueid',channel='$channel' where callerid='$MDnextCID';";
             if ($format=='debug') echo "\n<!-- $stmt -->";
@@ -2275,7 +2291,13 @@ if ($ACTION == 'multicallQueueSwap') {
                 if (strlen($D_s_ip[3])<3) {$D_s_ip[3] = "0$D_s_ip[3]";}
                 $dest_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]$isp$conf_exten";
             }
-            $stmt="INSERT INTO osdial_manager values('','$mcuniqueid','$NOW_TIME','NEW','N','$multicall_serverip','$multicall_channel','Redirect','$mccallerid','Channel: $multicall_channel','Context: osdial','Exten: $dest_dialstring','Priority: 1','CallerID: $mccallerid','Account: $mccallerid','','','','');";
+
+            $stmt="DELETE FROM parked_channels WHERE server_ip='$multicall_serverip' AND channel='$multicall_channel';";
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+
+            $queryCID = "LFvdcW$StarTtime$user_abb";
+            $stmt="INSERT INTO osdial_manager values('','$mcuniqueid','$NOW_TIME','NEW','N','$multicall_serverip','$multicall_channel','Redirect','$queryCID','Channel: $multicall_channel','Context: osdial','Exten: $dest_dialstring','Priority: 1','CallerID: $queryCID','Account: $mccallerid','','','','');";
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
 
@@ -3766,7 +3788,7 @@ if ($ACTION == 'MulticallGetChannel') {
     $AccampSQL = preg_replace('/ -/','', $AccampSQL);
     $AccampSQL = preg_replace('/ /',"','", $AccampSQL);
 
-    $stmt="SELECT channel,server_ip,callerid,group_id,voicemail_ext,uniqueid,lead_id,drop_call_seconds,agent_alert_exten FROM osdial_auto_calls JOIN osdial_inbound_groups ON (campaign_id=group_id) WHERE status IN('LIVE') AND campaign_id IN('$AccampSQL') AND allow_multicall='Y' LIMIT 1;";
+    $stmt="SELECT channel,server_ip,callerid,group_id,voicemail_ext,uniqueid,lead_id,drop_call_seconds,agent_alert_exten FROM osdial_auto_calls JOIN osdial_inbound_groups ON (campaign_id=group_id) WHERE status IN('LIVE') AND campaign_id IN('$AccampSQL') AND allow_multicall='Y' ORDER BY campaign_id DESC LIMIT 1;";
     if ($format=='debug') echo "<!-- |$stmt| -->\n";
     $rslt=mysql_query($stmt, $link);
     $row=mysql_fetch_row($rslt);

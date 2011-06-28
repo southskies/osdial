@@ -40,7 +40,7 @@ function get_krh($link, $tbl, $flds="*", $srt="", $whr="", $lmt="") {
     } elseif ($flds == '*') {
         $srt = "";
     } else {
-        $sary = split(',', $flds);
+        $sary = explode(',', $flds);
         $srt = " ORDER BY " . $sary[0];
     }
     if ($whr != '') {

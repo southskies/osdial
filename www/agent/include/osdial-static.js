@@ -1320,6 +1320,7 @@
 								//document.osdial_form.callchannel.value	= MDlookResponse_array[1];
 								document.getElementById("callchannel").innerHTML = MDlookResponse_array[1];
 								lastcustchannel = MDlookResponse_array[1];
+								lastcustserverip = server_ip;
 								if( document.images ) {
 									document.images['livecall'].src = image_livecall_ON.src;
 								}
@@ -1447,7 +1448,7 @@
 			}
 			var manual_dialcode = ''+document.osdial_form.phone_code.value;
 			if (manual_dialcode!='1' && manual_dialcode.substring(0,1)!='0') manual_dialcode = '011' + manual_dialcode;
-			manDiaLonly_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLonly&conf_exten=" + session_id + "&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&phone_number=" + manDiaLonly_num + "&phone_code=" + manual_dialcode + "&campaign=" + campaign + "&ext_context=" + ext_context + "&dial_context=" + dial_context + "&dial_timeout=" + dial_timeout + "&dial_prefix=" + dial_prefix + "&campaign_cid=" + cid + "&campaign_cid_name=" + cid_name + "&omit_phone_code=" + omit_phone_code;
+			manDiaLonly_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&ACTION=manDiaLonly&conf_exten=7" + session_id + "&user=" + user + "&pass=" + pass + "&lead_id=" + document.osdial_form.lead_id.value + "&phone_number=" + manDiaLonly_num + "&phone_code=" + manual_dialcode + "&campaign=" + campaign + "&ext_context=" + ext_context + "&dial_context=" + dial_context + "&dial_timeout=" + dial_timeout + "&dial_prefix=" + dial_prefix + "&campaign_cid=" + cid + "&campaign_cid_name=" + cid_name + "&omit_phone_code=" + omit_phone_code;
 			cid = campaign_cid;
 			cid_name = campaign_cid_name;
 			debug("<b>ManualDialOnly:</b> vdc_db_query: manDiaLonly_query=" + manDiaLonly_query,3);
