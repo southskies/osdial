@@ -1202,6 +1202,7 @@ if (!$run_validate_parked_channels_now)
 				if (@ARparked_time_UNIX[$AR] > $PQparked_time_UNIX)
 					{
 						if($DBX){print "Duplicate parked channel delete: |$PQchannel|$PQparked_time|\n";}
+						$event_string="Duplicate parked channel delete: |$PQchannel|$PQparked_time|"; &event_logger;
 					$stmtPQ = "DELETE FROM $parked_channels WHERE server_ip='$server_ip' AND channel='$PQchannel' AND extension='$PQextension' AND parked_time='$PQparked_time' LIMIT 1;";
 							if($DB){print STDERR "\n|$stmtPQ|$$DEL_chan_park_counter|$DEL_chan_park_counter|\n\n";}
 						$affected_rows = $dbhC->do($stmtPQ);
@@ -1233,7 +1234,7 @@ if (!$run_validate_parked_channels_now)
 			$event_string='LOGGED INTO MYSQL SERVER ON 2 CONNECTIONS TO VALIDATE PARKED CALLS|';
 			&event_logger;
 
-			$stmtB = "SELECT SQL_NO_CACHE count(*) FROM $live_channels WHERE server_ip='$server_ip' AND channel='$PQchannel' AND extension='$PQextension';";
+			$stmtB = "SELECT SQL_NO_CACHE count(*) FROM $live_channels WHERE server_ip='$server_ip' AND channel='$PQchannel';";
 			$sthB = $dbhB->prepare($stmtB) or die "preparing: ",$dbhB->errstr;
 			$sthB->execute or die "executing: $stmtB ", $dbhB->errstr;
 			$sthBrows=$sthB->rows;
@@ -1250,6 +1251,24 @@ if (!$run_validate_parked_channels_now)
 
 			if ($PQcount < 1)
 				{
+				$stmtB = "SELECT SQL_NO_CACHE count(*) FROM $live_sip_channels WHERE server_ip='$server_ip' AND channel='$PQchannel';";
+				$sthB = $dbhB->prepare($stmtB) or die "preparing: ",$dbhB->errstr;
+				$sthB->execute or die "executing: $stmtB ", $dbhB->errstr;
+				$sthBrows=$sthB->rows;
+				$rec_countB=0;
+				while ($sthBrows > $rec_countB)
+					{
+					@aryB = $sthB->fetchrow_array;
+					$PQcount = $aryB[0];
+						if($DB){print STDERR "\n|$PQcount|\n";}
+	
+					$rec_countB++;
+					}
+				$sthB->finish();
+				}
+
+			if ($PQcount < 1)
+				{
 				$DEL_chan_park_counter = "DEL$PQchannel$PQextension";
 				$$DEL_chan_park_counter++;
 					if($DBX){print STDERR "Parked counter down|$$DEL_chan_park_counter|$DEL_chan_park_counter|\n";}
@@ -1258,6 +1277,7 @@ if (!$run_validate_parked_channels_now)
 				if ($$DEL_chan_park_counter > 5)
 					{
 				if($DBX){print "          parked channel delete: |$PQchannel|$PQparked_time|\n";}
+						$event_string="          parked channel delete: |$PQchannel|$PQparked_time|"; &event_logger;
 					$stmtPQ = "DELETE FROM $parked_channels WHERE server_ip='$server_ip' AND channel='$PQchannel' AND extension='$PQextension' LIMIT 1;";
 						if($DB){print STDERR "\n|$stmtPQ|$$DEL_chan_park_counter|$DEL_chan_park_counter|\n\n";}
 					$affected_rows = $dbhC->do($stmtPQ);
