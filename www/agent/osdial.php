@@ -1820,7 +1820,7 @@ $AFlengths_js = '';
 $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
 $cnt = 0;
 foreach ($forms as $form) {
-    foreach (split(',',$form['campaigns']) as $fcamp) {
+    foreach (preg_split('/,/',$form['campaigns']) as $fcamp) {
         if ($fcamp == 'ALL' or strtoupper($fcamp) == strtoupper($VD_campaign)) {
             $AFforms_js .= "'" . $form['name'] . "',";
             $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
@@ -2863,7 +2863,7 @@ flush();
                                 }
 
                                 foreach ($forms as $form) {
-                                    foreach (split(',',$form['campaigns']) as $fcamp) {
+                                    foreach (preg_split('/,/',$form['campaigns']) as $fcamp) {
                                         if ($fcamp == 'ALL' or strtoupper($fcamp) == strtoupper($VD_campaign)) {
                                             if ($cnt > 0) {
                                                 $cssvis = 'visibility:hidden;';
@@ -2898,7 +2898,7 @@ flush();
                                                     echo "                if(afv.value!=aflist[afli].value) aflist[afli].value=afv.value;";
                                                     echo "              };\"";
                                                     echo "          >\n";
-                                                    $options = split(',',$field['options']);
+                                                    $options = preg_split('/,/',$field['options']);
                                                     foreach ($options as $opt) {
                                                         echo "              <option>" . $opt . "</option>\n";
                                                     }
@@ -2957,7 +2957,7 @@ flush();
                     echo "  </tr>\n";
                 }
                 foreach ($forms as $form) {
-                    foreach (split(',',$form['campaigns']) as $fcamp) {
+                    foreach (preg_split('/,/',$form['campaigns']) as $fcamp) {
                         if ($fcamp == 'ALL' or strtoupper($fcamp) == strtoupper($VD_campaign)) {
                             echo "  <tr id=AddtlFormBut" . $form['name'] . " style=\"background-image:url(templates/" . $agent_template . "/images/agentsidetab_extra.png);\" height=29 ";
                             echo "    onmouseover=\"AddtlFormButOver('" . $form['name'] . "');\" onmouseout=\"AddtlFormButOut('" . $form['name'] . "');\">\n";

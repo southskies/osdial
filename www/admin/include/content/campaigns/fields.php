@@ -397,7 +397,7 @@ if ($ADD == "3fields" and $SUB == '2fields') {
             echo "  <tr>\n";
             echo "      <td bgcolor=$oddrows align=right>&nbsp;</td>\n";
             $cc = '';
-            $fcamps = split(',',$form['campaigns']);
+            $fcamps = preg_split('/,/',$form['campaigns']);
             foreach ($fcamps as $fcamp) {
                 if ($camp['campaign_id'] == $fcamp) {
                     $cc = 'checked';

@@ -930,7 +930,7 @@ if ($ACTION == 'manDiaLnextCaLL') {
             $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
             $cnt = 0;
             foreach ($forms as $form) {
-                $fcamps = split(',',$form['campaigns']);
+                $fcamps = preg_split('/,/',$form['campaigns']);
                 foreach ($fcamps as $fcamp) {
                     if ($fcamp == 'ALL' or strtoupper($fcamp) == strtoupper($campaign)) {
                         $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
@@ -2170,7 +2170,7 @@ if ($ACTION == 'VDADcheckINCOMING') {
             $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
             $cnt = 0;
             foreach ($forms as $form) {
-                $fcamps = split(',',$form['campaigns']);
+                $fcamps = preg_split('/,/',$form['campaigns']);
                 foreach ($fcamps as $fcamp) {
                     if ($fcamp == 'ALL' or strtoupper($fcamp) == strtoupper($campaign)) {
                         $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
@@ -2704,7 +2704,7 @@ if ($ACTION == 'multicallQueueSwap') {
             $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
             $cnt = 0;
             foreach ($forms as $form) {
-                $fcamps = split(',',$form['campaigns']);
+                $fcamps = preg_split('/,/',$form['campaigns']);
                 foreach ($fcamps as $fcamp) {
                     if ($fcamp == 'ALL' or strtoupper($fcamp) == strtoupper($campaign)) {
                         $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
@@ -3252,7 +3252,7 @@ if ($ACTION == 'updateLEAD') {
         $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
         $cnt = 0;
         foreach ($forms as $form) {
-            $fcamps = split(',',$form['campaigns']);
+            $fcamps = preg_split('/,/',$form['campaigns']);
             foreach ($fcamps as $fcamp) {
                 if ($fcamp == 'ALL' or strtoupper($fcamp) == strtoupper($campaign)) {
                     $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
@@ -3704,7 +3704,7 @@ if ($ACTION == 'RepullLeadData')
     $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
     $cnt = 0;
     foreach ($forms as $form) {
-        $fcamps = split(',',$form['campaigns']);
+        $fcamps = preg_split('/,/',$form['campaigns']);
         foreach ($fcamps as $fcamp) {
             if ($fcamp == 'ALL' or strtoupper($fcamp) == strtoupper($campaign)) {
                 $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");

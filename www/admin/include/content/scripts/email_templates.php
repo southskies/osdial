@@ -279,7 +279,7 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
 <?
     $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'",'');
     foreach ($forms as $form) {
-        $fcamps = split(',',$form['campaigns']);
+        $fcamps = preg_split('/,/',$form['campaigns']);
         foreach ($fcamps as $fcamp) {
             $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'",'');
             foreach ($fields as $field) {
@@ -833,7 +833,7 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
 <?
     $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'",'');
     foreach ($forms as $form) {
-        $fcamps = split(',',$form['campaigns']);
+        $fcamps = preg_split('/,/',$form['campaigns']);
         foreach ($fcamps as $fcamp) {
             $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'",'');
             foreach ($fields as $field) {
