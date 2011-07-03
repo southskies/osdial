@@ -132,7 +132,7 @@ function report_agent_pause_summary() {
     $head .= "      <a href=# onclick=\"cal1.addDisabledDates('clear','clear');cal1.addDisabledDates(formatDate(parseDate(document.forms[0].end_date.value).addDays(1),'yyyy-MM-dd'),null);cal1.select(document.forms[0].begin_date,'acal1','yyyy-MM-dd'); return false;\" name=acal1 id=acal1>\n";
     $head .= "      <img width=18 src=\"templates/default/images/calendar.png\" style=border:0px;></a>\n";
     $head .= "      to <input type=text name=end_date value=\"$end_date\" size=10 maxsize=10>\n";
-    $head .= "      <a href=# onclick=\"cal1.addDisabledDates('clear','clear');cal1.addDisabledDates(null,formatDate(parseDate(document.forms[0].begin_date.value).addDays(-1),'yyyy-MM-dd'));cal1.select(document.forms[0].end_date,'acal1','yyyy-MM-dd'); return false;\" name=acal1 id=acal1>\n";
+    $head .= "      <a href=# onclick=\"cal1.addDisabledDates('clear','clear');cal1.addDisabledDates(null,formatDate(parseDate(document.forms[0].begin_date.value).addDays(-1),'yyyy-MM-dd'));cal1.select(document.forms[0].end_date,'acal2','yyyy-MM-dd'); return false;\" name=acal2 id=acal2>\n";
     $head .= "      <img width=18 src=\"templates/default/images/calendar.png\" style=border:0px;></a>\n";
     $head .= "    </td>\n";
     $head .= "    <td><input type=text name=agent value=\"$agent\" size=10 maxsize=10></td>\n";

@@ -199,7 +199,7 @@ function report_lead_performance_list() {
     $html .= "      <a href=# onclick=\"cal1.addDisabledDates('clear','clear');cal1.addDisabledDates(formatDate(parseDate(document.forms[0].end_date.value).addDays(1),'yyyy-MM-dd'),null);cal1.select(document.forms[0].start_date,'acal1','yyyy-MM-dd'); return false;\" name=acal1 id=acal1>\n";
     $html .= "      <img width=18 src=\"templates/default/images/calendar.png\" style=border:0px;></a>\n";
     $html .= "      to <input type=text name=end_date size=10 maxlength=10 value=\"$end_date\">\n";
-    $html .= "      <a href=# onclick=\"cal1.addDisabledDates('clear','clear');cal1.addDisabledDates(null,formatDate(parseDate(document.forms[0].start_date.value).addDays(-1),'yyyy-MM-dd'));cal1.select(document.forms[0].end_date,'acal1','yyyy-MM-dd'); return false;\" name=acal1 id=acal1>\n";
+    $html .= "      <a href=# onclick=\"cal1.addDisabledDates('clear','clear');cal1.addDisabledDates(null,formatDate(parseDate(document.forms[0].start_date.value).addDays(-1),'yyyy-MM-dd'));cal1.select(document.forms[0].end_date,'acal2','yyyy-MM-dd'); return false;\" name=acal2 id=acal2>\n";
     $html .= "      <img width=18 src=\"templates/default/images/calendar.png\" style=border:0px;></a>\n";
     $html .= "    </td>\n";
     $html .= "  </tr>\n";

@@ -157,7 +157,7 @@ function report_call_stats() {
     $html .= "            <input type=text name=time_begin size=5 maxlength=5 value=\"$time_begin\">\n";
     $html .= "            <br> to <br>\n";
     $html .= "            <input type=text name=end_date size=10 maxlength=10 value=\"$end_date\">\n";
-    $html .= "            <a href=# onclick=\"cal1.addDisabledDates('clear','clear');cal1.addDisabledDates(null,formatDate(parseDate(document.forms[0].query_date.value).addDays(-1),'yyyy-MM-dd'));cal1.select(document.forms[0].end_date,'acal1','yyyy-MM-dd'); return false;\" name=acal1 id=acal1>\n";
+    $html .= "            <a href=# onclick=\"cal1.addDisabledDates('clear','clear');cal1.addDisabledDates(null,formatDate(parseDate(document.forms[0].query_date.value).addDays(-1),'yyyy-MM-dd'));cal1.select(document.forms[0].end_date,'acal2','yyyy-MM-dd'); return false;\" name=acal2 id=acal2>\n";
     $html .= "            <img width=12 src=\"templates/default/images/calendar.png\" style=border:0px;></a>\n";
     $html .= "            <input type=text name=time_end size=5 maxlength=5 value=\"$time_end\">\n";
     $html .= "          </td>\n";
