@@ -216,7 +216,9 @@ if (length($ARGV[0])>1) {
 	$agent_search_method = 	$ARGV_vars[1];
 	$channel_group = 	$ARGV_vars[2];
 	$inbound_number = 	$ARGV_vars[3];
+	$inbound_number =~ s/^\+1//;
 	$parked_by = 		$ARGV_vars[4];
+	$parked_by =~ s/^\+1//;
 	$park_extension = 	$ARGV_vars[5];
 	$park_extension="8301" if ($park_extension=="");
 	$status = 		$ARGV_vars[6];
@@ -301,6 +303,8 @@ if ($call_handle_method =~ /^ANI/) {
 		if ($AGILOG) {$agi_string = "ANI found: |$phone_number|";   &agi_output;}
 	}
 }
+
+$phone_number =~ s/^\+1//;
 
 foreach $i (sort keys %AGI) {
 	if ($AGILOG) {$agi_string = " -- $i = $AGI{$i}";   &agi_output;}
