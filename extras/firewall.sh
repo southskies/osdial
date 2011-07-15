@@ -693,6 +693,7 @@ FW_LoadTables() {
 
 		# INPUT chain rules.
 		IPT "-A INPUT -i ! $WAN_IF -j trust_int_in"
+                IPT "-A INPUT -i $WAN_IF   -j block_in"
 		IPT "-A INPUT -i $WAN_IF   -j trust_host_in"
 		IPT "-A INPUT -i $WAN_IF   -j firewall_in"
 
