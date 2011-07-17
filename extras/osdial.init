@@ -27,6 +27,14 @@
 
 RETVAL=0
 
+PLACTIVE=0
+# Test if we have Plymouth and if it is active.
+if [ -f /usr/bin/plymouth ]; then
+	/usr/bin/plymouth --has-active-vt
+	# Its going to return, so we must invert the sense.
+	[ "$?" -gt 0 ] && PLACTIVE=0 || PLACTIVE=1
+fi
+
 start() {
 	if [ "$OSDIAL_FIRSTRUN" != "NO" ]; then
 		TIMEOUT=60
@@ -37,9 +45,11 @@ start() {
 		TEMP=/tmp/osdial_init.$$
 
 		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-control" -o -f "/opt/osdial/.osdial-install-control" -o -f "/opt/osdial/.osdial-sql" -o -f "/opt/osdial/.osdial-install-sql" -o -f "/opt/osdial/.osdial-live" ]; then
+			[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymouth --hide-splash pause_progress) || :
 			# Install DB
 			[ "$OSDIAL_MYSQL_INSTALL" = "YES" ] && /opt/osdial/bin/sql/upgrade_sql.pl --install
 			[ ! -f "/var/lib/mysql/osdial/system_settings.ibd" ] && /opt/osdial/bin/sql/upgrade_sql.pl --install
+			[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymouth --show-splash unpause_progress) || :
 
 			# Get server timezone and update in osdial database
 			OSDTZ=`date +%:::z`
@@ -51,22 +61,30 @@ start() {
 				echo "UPDATE phones SET local_gmt='$OSDTZ';" | mysql osdial > /dev/null 2>&1
 			fi
 
+			[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymouth --hide-splash pause_progress) || :
 			# Direct them to setup their static IP address
 			dialog --clear --timeout $TIMEOUT\
 				--backtitle "OSDial - The OpenSource Dialer" \
 				--title "OSDial FirstRun - Customize Login - Timeout: $TIMEOUT seconds" \
 				--msgbox "\nNetwork Configuration\n\nThe default installation uses DHCP to auto-configure your network devices. While this is fine for evaluating OSDial, it is strongly recomended that you use a static IP addresses in a production environment.\n\nPress ENTER to configure your network devices now.\nTo postpone network device configuration, wait $TIMEOUT seconds." 15 75
-			if [ "$?" = "0" ]; then
+			RET=$?
+			[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymouth --show-splash unpause_progress) || :
+			if [ "$RET" = "0" ]; then
+				[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymouth --hide-splash pause_progress) || :
 				/usr/sbin/system-config-network
+				[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymouth --show-splash unpause_progress) || :
 				/sbin/service network restart
 			fi
 
+			[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymouth --hide-splash pause_progress) || :
 			# Prompt for Company, Binfone Username and Password
 			dialog --clear --timeout $TIMEOUT \
 				--backtitle "OSDial - The OpenSource Dialer" \
 				--title "OSDial FirstRun - Customize Login - Timeout: $TIMEOUT seconds" \
 				--inputbox "Enter Company Name:" 9 65 "$COMPANY" 2> $TEMP
-			[ "$?" = "0" ] && COMPANY=`cat $TEMP`
+			RET=$?
+			[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymouth --show-splash unpause_progress) || :
+			[ "$RET" = "0" ] && COMPANY=`cat $TEMP`
 			[ -z "$COMPANY" ] && COMPANY="Company Name Here"
 			echo "UPDATE system_settings SET company_name='$COMPANY';" | mysql osdial > /dev/null 2>&1
 
@@ -78,11 +96,14 @@ start() {
 		fi
 	
 		if [ -f "/opt/osdial/.osdial-all" -o -f "/opt/osdial/.osdial-install-all" -o -f "/opt/osdial/.osdial-dialer" -o -f "/opt/osdial/.osdial-install-dialer" -o -f "/opt/osdial/.osdial-live" ]; then
+			[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymouth --hide-splash pause_progress) || :
 			dialog --clear --timeout $BINTIMEOUT --backtitle "OSDial - The OpenSource Dialer" --title "Free VoIP Trial" \
 				--form "\n                You may optionally contact\n      Call Center Service Group at 800-221-0251 (opt 2)\n   for a free trial with Binfone, a premier VoIP provider.\n\n        If you have an existing Binfone IAX extension,\n          you may also enter those credentials here.\n \n \n " 20 65 2 \
 			"Binfone User/Ext#:" 1 15 "$BINUSER" 1 35 7 6 \
 			"Binfone Password:" 2 15 "$BINPASS" 2 35 9 8 2> $TEMP
-			if [ "$?" = "0" ]; then
+			RET=$?
+			[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymouth --show-splash unpause_progress) || :
+			if [ "$RET" = "0" ]; then
 				set `cat $TEMP`
 				BINUSER=$1
 				BINPASS=$2
@@ -220,7 +241,10 @@ start() {
 	/opt/osdial/bin/osdial_astgen.pl -q &
 	/opt/osdial/bin/AST_reset_mysql_vars.pl > /dev/null 2>&1 &
 	/opt/osdial/bin/osdial-astsnds-ramfs.sh > /dev/null 2>&1 &
+
+	[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymount --hide-splash pause_progress) || :
 	/opt/osdial/bin/sql/upgrade_sql.pl --info
+	[ "${PLACTIVE}" -gt 0 ] && (clear; /usr/bin/plymount --show-splash unpause_progress) || :
 
 	return 0
 }
