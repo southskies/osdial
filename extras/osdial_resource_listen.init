@@ -31,18 +31,22 @@ osdial_resource_listen_loop() {
 export -f osdial_resource_listen_loop
 
 start() {
-        echo -n $"Starting $proc: "
-        daemon "osdial_resource_listen_loop&"
-        RETVAL=$?
-        echo
-        [ $RETVAL -eq 0 ] && touch /var/lock/subsys/$proc
+	if [ ! -f "/var/run/$proc.pid" ]; then
+        	echo -n $"Starting $proc: "
+        	daemon "(osdial_resource_listen_loop& echo \"\$!\" > /var/run/$proc.pid)"
+        	RETVAL=$?
+        	echo
+        	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/$proc
+	fi
 }
 
 stop() {
-        echo -n $"Shutting down $proc: "
-	killproc $proc
-	echo
-        [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/$proc
+	if [ -f "/var/run/$proc.pid" ]; then
+        	echo -n $"Shutting down $proc: "
+		killproc -p /var/run/$proc.pid
+		echo
+        	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/$proc
+	fi
 }
 
 case "$1" in

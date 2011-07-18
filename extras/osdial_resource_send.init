@@ -21,25 +21,30 @@ proc=osdial_resource_send
 # Run script, if disconnected or SQL drops, wait 30 seconds and try again.
 osdial_resource_send_loop() {
 	while true; do
-        	/opt/osdial/bin/$proc "$OSDIAL_SERVER_LABEL" > /dev/null 2>&1
+       		/opt/osdial/bin/$proc "$OSDIAL_SERVER_LABEL" > /dev/null 2>&1
 		sleep 30
 	done
 }
 export -f osdial_resource_send_loop
 
+
 start() {
-        echo -n $"Starting $proc: "
-        daemon "osdial_resource_send_loop&"
-        RETVAL=$?
-        echo
-        [ $RETVAL -eq 0 ] && touch /var/lock/subsys/$proc
+	if [ ! -f "/var/run/$proc.pid" ]; then
+       		echo -n $"Starting $proc: "
+       		daemon "(osdial_resource_send_loop& echo \"\$!\" > /var/run/$proc.pid)"
+       		RETVAL=$?
+       		echo
+       		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/$proc
+	fi
 }
 
 stop() {
-        echo -n $"Shutting down $proc: "
-	killproc $proc
-	echo
-        [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/$proc
+	if [ -f "/var/run/$proc.pid" ]; then
+       		echo -n $"Shutting down $proc: "
+		killproc -p "/var/run/$proc.pid"
+		echo
+       		[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/$proc
+	fi
 }
 
 case "$1" in
