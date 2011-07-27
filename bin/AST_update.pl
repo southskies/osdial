@@ -261,8 +261,10 @@ while ($sthArows > $rec_count)
 $sthA->finish();
 
 	$show_channels_format = 1;
+	$ast_realtime_escape = 0;
 	if ($AST_ver =~ /^1\.0/i) {$show_channels_format = 0;}
 	if ($AST_ver =~ /^1\.4|^1\.6|^1\.8/i) {$show_channels_format = 2;}
+	if ($AST_ver =~ /^1\.8/i) {$ast_realtime_escape = 1;}
 	print STDERR "SHOW CHANNELS format: $show_channels_format\n";
 
 ##### LOOK FOR ZAP CLIENTS AS DEFINED IN THE phones TABLE SO THEY ARE NOT MISLABELED AS TRUNKS
@@ -425,7 +427,11 @@ if (!$telnet_port) {$telnet_port = '5038';}
 	#$stmtD = "SELECT if(substr(c.callerid_name,1,7)='OSDial#' AND (c.accountcode LIKE 'S___________________' OR c.accountcode LIKE 'ACagcW______________'),substr(c.callerid_name,8),c.channel),c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.flags,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto)";
 	#$stmtD = "SELECT if(substr(c.callerid_name,1,7)='OSDial#' AND (c.accountcode LIKE 'S___________________' OR c.accountcode LIKE 'ACagcW______________'),substring_index(c.channel,';',1),c.channel),c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.flags,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto)";
 	#$stmtD = "SELECT if(substr(c.callerid_name,1,7)='OSDial#' AND (c.accountcode LIKE 'S___________________' OR c.accountcode LIKE 'ACagcW______________'),c.channel,c.channel),c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.flags,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto)";
-	$stmtD = "SELECT SQL_NO_CACHE if(substr(c.callerid_name,1,7)='OSDial#' AND (c.accountcode LIKE 'S___________________' OR c.accountcode LIKE 'ACagcW______________'),substr(c.callerid_name,8),c.channel),c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.channel,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto);";
+	if ($ast_realtime_escape) {
+		$stmtD = "SELECT SQL_NO_CACHE REPLACE(if(substr(c.callerid_name,1,7)='OSDial#' AND (c.accountcode LIKE 'S___________________' OR c.accountcode LIKE 'ACagcW______________'),substr(c.callerid_name,8),c.channel),'^3B',';'),c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),REPLACE(c.data,'^3B',';'),c.callerid_num,c.accountcode,REPLACE(c.channel,'^3B',';'),c.started,IFNULL(REPLACE(c2.channel,'^3B',';'),'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto);";
+	} else {
+		$stmtD = "SELECT SQL_NO_CACHE if(substr(c.callerid_name,1,7)='OSDial#' AND (c.accountcode LIKE 'S___________________' OR c.accountcode LIKE 'ACagcW______________'),substr(c.callerid_name,8),c.channel),c.context,c.exten,c.priority,c.state,IF(c.application='','(None)',c.application),c.data,c.callerid_num,c.accountcode,c.channel,c.started,IFNULL(c2.channel,'(None)'),c.uniqueid FROM channels AS c LEFT JOIN channels AS c2 ON (c2.uniqueid=c.bridgedto);";
+	}
 	if($DB){print STDERR "|$stmtD|\n";}
 	$sthD = $dbhD->prepare($stmtD) or die "preparing: ",$dbhD->errstr;
 	$sthD->execute or die "executing: $stmtD ", $dbhD->errstr;
