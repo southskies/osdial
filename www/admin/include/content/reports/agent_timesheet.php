@@ -1,4 +1,4 @@
-<? 
+<?php
 ### report_agent_timesheet.php
 ### 
 #
@@ -100,14 +100,16 @@ function report_agent_timesheet() {
     $form .= "</form>\n\n";
     $form .= "<div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;\"></div>\n";
 
-    $query_date_BEGIN = "$query_date 00:00:00";   
-    $query_date_END = "$query_date 23:59:59";
     $time_BEGIN = "00:00:00";   
     $time_END = "23:59:59";
+    $query_date_BEGIN = "$query_date $time_BEGIN";
+    $query_date_END = "$query_date $time_END";
+    $query_date_BEGIN = dateToServer($link,'first',$query_date_BEGIN,$webClientAdjGMT,'',$webClientDST,0);
+    $query_date_END = dateToServer($link,'first',$query_date_END,$webClientAdjGMT,'',$webClientDST,0);
 
     if ($agent) {
 
-        $plain .= "OSDIAL: Agent Time Sheet                             $NOW_TIME\n";
+        $plain .= "OSDIAL: Agent Time Sheet                             " . dateToLocal($link,'first',date('Y-m-d H:i:s'),$webClientAdjGMT,'',$webClientDST,1) . "\n";
 
         $plain .= "Time range: $query_date_BEGIN to $query_date_END\n\n";
         $plain .= "---------- AGENT TIME SHEET: " . $agent . " - $full_name -------------\n\n";
@@ -119,7 +121,7 @@ function report_agent_timesheet() {
         if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
 
-        $plain .= "FIRST LOGIN:          $row[0]\n";
+        $plain .= "FIRST LOGIN:          " . dateToLocal($link,$row[2],$row[0],$webClientAdjGMT,'',$webClientDST,1) . "\n";
         $firstlogtitle = $row[0];
         $firstlog = dateToLocal($link,$row[2],$row[0],$webClientAdjGMT,'',$webClientDST,1);
         $start = $row[1];
@@ -129,7 +131,7 @@ function report_agent_timesheet() {
         if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
 
-        $plain .= "LAST LOG ACTIVITY:    $row[0]\n";
+        $plain .= "LAST LOG ACTIVITY:    " . dateToLocal($link,$row[2],$row[0],$webClientAdjGMT,'',$webClientDST,1) . "\n";
         $lastlogtitle = $row[0];
         $lastlog = dateToLocal($link,$row[2],$row[0],$webClientAdjGMT,'',$webClientDST,1);
         $end = $row[1];

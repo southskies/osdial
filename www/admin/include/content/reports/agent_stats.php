@@ -1,4 +1,4 @@
-<?
+<?php
 ### report_agent_stats.php
 ### 
 #
@@ -110,8 +110,12 @@ function report_agent_stats() {
     if (!$LOGview_reports) {
         $table .= "<center><font color=red>You do not have permission to view this page</font></center>\n";
     } elseif($agent) {
-        #$stmt=sprintf("SELECT count(*),status,sum(talk_sec) FROM osdial_agent_log WHERE user_group IN %s AND user='%s' and event_time >= '%s 0:00:01'  and event_time <= '%s 23:59:59' AND status!='' GROUP BY status ORDER BY status;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date));
-        $stmt=sprintf("SELECT count(*),status,sum(length_in_sec) FROM ((SELECT status,length_in_sec FROM osdial_log WHERE user='%s' AND call_date BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND status!='') UNION (SELECT status,length_in_sec FROM osdial_closer_log WHERE user='%s' AND call_date BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND status!='')) AS lr GROUP BY status;",$company_prefix . mres($agent),mres($begin_date),mres($end_date),$company_prefix . mres($agent),mres($begin_date),mres($end_date));
+        $query_date_BEGIN = "$start_date 00:00:00";
+        $query_date_BEGIN = dateToServer($link,'first',$query_date_BEGIN,$webClientAdjGMT,'',$webClientDST,0);
+        $query_date_END = "$end_date 23:59:59";
+        $query_date_END = dateToServer($link,'first',$query_date_END,$webClientAdjGMT,'',$webClientDST,0);
+
+        $stmt=sprintf("SELECT count(*),status,sum(length_in_sec) FROM ((SELECT status,length_in_sec FROM osdial_log WHERE user='%s' AND call_date BETWEEN '%s' AND '%s' AND status!='') UNION (SELECT status,length_in_sec FROM osdial_closer_log WHERE user='%s' AND call_date BETWEEN '%s' AND '%s' AND status!='')) AS lr GROUP BY status;",$company_prefix . mres($agent),mres($query_date_BEGIN),mres($query_date_END),$company_prefix . mres($agent),mres($query_date_BEGIN),mres($query_date_END));
         $rslt=mysql_query($stmt, $link);
         $statuses_to_print = mysql_num_rows($rslt);
         
@@ -149,7 +153,7 @@ function report_agent_stats() {
         $table .= "  </tr>\n";
         $table .= "</table>\n";
 
-        $stmt=sprintf("SELECT count(*),status,sum(talk_sec) FROM osdial_agent_log WHERE user_group IN %s AND user='%s' and event_time >= '%s 0:00:01'  and event_time <= '%s 23:59:59' AND status!='' GROUP BY status ORDER BY status;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date));
+        $stmt=sprintf("SELECT count(*),status,sum(talk_sec) FROM osdial_agent_log WHERE user_group IN %s AND user='%s' and event_time >= '%s'  and event_time <= '%s' AND status!='' GROUP BY status ORDER BY status;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($query_date_BEGIN),mres($query_date_END));
         $rslt=mysql_query($stmt, $link);
         $statuses_to_print = mysql_num_rows($rslt);
         
@@ -199,7 +203,7 @@ function report_agent_stats() {
         $table .= "    <td>TIME</td>\n";
         $table .= "  </tr>\n";
         
-        $stmt=sprintf("SELECT event,event_epoch,event_date,campaign_id,user_group FROM osdial_user_log WHERE user_group IN %s AND user='%s' and event_date >= '%s 0:00:01'  and event_date <= '%s 23:59:59'",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date));
+        $stmt=sprintf("SELECT event,event_epoch,event_date,campaign_id,user_group FROM osdial_user_log WHERE user_group IN %s AND user='%s' and event_date >= '%s'  and event_date <= '%s'",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($query_date_BEGIN),mres($query_date_END));
         $rslt=mysql_query($stmt, $link);
         $events_to_print = mysql_num_rows($rslt);
         
@@ -252,7 +256,7 @@ function report_agent_stats() {
         $table .= "</table>\n";
         
 
-        $stmt=sprintf("SELECT sub_status AS pause_code,event_time AS pause_start,DATE_ADD(event_time,INTERVAL pause_sec SECOND) AS pause_end,pause_sec,server_ip FROM osdial_agent_log WHERE osdial_agent_log.user_group IN %s AND osdial_agent_log.user='%s' AND event_time BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND pause_sec>0 ORDER BY event_time;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date));
+        $stmt=sprintf("SELECT sub_status AS pause_code,event_time AS pause_start,DATE_ADD(event_time,INTERVAL pause_sec SECOND) AS pause_end,pause_sec,server_ip FROM osdial_agent_log WHERE osdial_agent_log.user_group IN %s AND osdial_agent_log.user='%s' AND event_time BETWEEN '%s' AND '%s' AND pause_sec>0 ORDER BY event_time;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($query_date_BEGIN),mres($query_date_END));
         $rslt=mysql_query($stmt, $link);
         $pauses_to_print = mysql_num_rows($rslt);
         
@@ -292,8 +296,8 @@ function report_agent_stats() {
 
 
         
-        #$stmt="select * from osdial_log where user='" . mres($agent) . "' and call_date >= '" . mres($begin_date) . " 0:00:01'  and call_date <= '" . mres($end_date) . " 23:59:59' order by call_date desc limit 10000;";
-        $stmt=sprintf("SELECT DISTINCT osdial_agent_log.event_time, osdial_agent_log.wait_sec, osdial_agent_log.talk_sec, osdial_agent_log.dispo_sec, osdial_agent_log.pause_sec, osdial_agent_log.status, osdial_list.phone_number, osdial_agent_log.user_group, osdial_agent_log.campaign_id, osdial_list.list_id, osdial_agent_log.lead_id, osdial_agent_log.server_ip FROM osdial_agent_log JOIN osdial_log ON (osdial_agent_log.lead_id=osdial_log.lead_id) JOIN osdial_list ON (osdial_agent_log.lead_id=osdial_list.lead_id) WHERE osdial_agent_log.user_group IN %s AND osdial_agent_log.user='%s' AND event_time BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND osdial_log.user='%s' AND call_date BETWEEN '%s 0:00:01' AND '%s 23:59:59' ORDER BY osdial_agent_log.event_time DESC LIMIT 10000;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date),$company_prefix . mres($agent),mres($begin_date),mres($end_date));
+        #$stmt="select * from osdial_log where user='" . mres($agent) . "' and call_date >= '" . mres($query_date_BEGIN) . "'  and call_date <= '" . mres($query_date_END) . "' order by call_date desc limit 10000;";
+        $stmt=sprintf("SELECT DISTINCT osdial_agent_log.event_time, osdial_agent_log.wait_sec, osdial_agent_log.talk_sec, osdial_agent_log.dispo_sec, osdial_agent_log.pause_sec, osdial_agent_log.status, osdial_list.phone_number, osdial_agent_log.user_group, osdial_agent_log.campaign_id, osdial_list.list_id, osdial_agent_log.lead_id, osdial_agent_log.server_ip FROM osdial_agent_log JOIN osdial_log ON (osdial_agent_log.lead_id=osdial_log.lead_id) JOIN osdial_list ON (osdial_agent_log.lead_id=osdial_list.lead_id) WHERE osdial_agent_log.user_group IN %s AND osdial_agent_log.user='%s' AND event_time BETWEEN '%s' AND '%s' AND osdial_log.user='%s' AND call_date BETWEEN '%s' AND '%s' ORDER BY osdial_agent_log.event_time DESC LIMIT 10000;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($query_date_BEGIN),mres($query_date_END),$company_prefix . mres($agent),mres($query_date_BEGIN),mres($query_date_END));
         $rslt=mysql_query($stmt, $link);
         $logs_to_print = mysql_num_rows($rslt);
         
@@ -351,7 +355,7 @@ function report_agent_stats() {
         
 
 
-        $stmt=sprintf("SELECT DISTINCT osdial_agent_log.event_time, osdial_agent_log.wait_sec, osdial_agent_log.talk_sec, osdial_agent_log.dispo_sec, osdial_agent_log.pause_sec, osdial_agent_log.status, osdial_list.phone_number, osdial_agent_log.user_group, osdial_agent_log.campaign_id, osdial_list.list_id, osdial_agent_log.lead_id, osdial_agent_log.server_ip FROM osdial_agent_log JOIN osdial_closer_log ON (osdial_agent_log.lead_id=osdial_closer_log.lead_id) JOIN osdial_list ON (osdial_agent_log.lead_id=osdial_list.lead_id) WHERE osdial_agent_log.user_group IN %s AND osdial_agent_log.user='%s' AND event_time BETWEEN '%s 0:00:01' AND '%s 23:59:59' AND osdial_closer_log.user='%s' AND call_date BETWEEN '%s 0:00:01' AND '%s 23:59:59' ORDER BY osdial_agent_log.event_time DESC LIMIT 10000;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date),$company_prefix . mres($agent),mres($begin_date),mres($end_date));
+        $stmt=sprintf("SELECT DISTINCT osdial_agent_log.event_time, osdial_agent_log.wait_sec, osdial_agent_log.talk_sec, osdial_agent_log.dispo_sec, osdial_agent_log.pause_sec, osdial_agent_log.status, osdial_list.phone_number, osdial_agent_log.user_group, osdial_agent_log.campaign_id, osdial_list.list_id, osdial_agent_log.lead_id, osdial_agent_log.server_ip FROM osdial_agent_log JOIN osdial_closer_log ON (osdial_agent_log.lead_id=osdial_closer_log.lead_id) JOIN osdial_list ON (osdial_agent_log.lead_id=osdial_list.lead_id) WHERE osdial_agent_log.user_group IN %s AND osdial_agent_log.user='%s' AND event_time BETWEEN '%s' AND '%s' AND osdial_closer_log.user='%s' AND call_date BETWEEN '%s' AND '%s' ORDER BY osdial_agent_log.event_time DESC LIMIT 10000;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($query_date_BEGIN),mres($query_date_END),$company_prefix . mres($agent),mres($query_date_BEGIN),mres($query_date_END));
         $rslt=mysql_query($stmt, $link);
         $logs_to_print = mysql_num_rows($rslt);
         
@@ -407,7 +411,7 @@ function report_agent_stats() {
         $table .= "</center>\n";
         
 
-        #$stmt=sprintf("SELECT * FROM osdial_closer_log WHERE user_group IN %s AND user='%s' and call_date >= '%s 0:00:01'  and call_date <= '%s 23:59:59' order by call_date desc limit 10000;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date));
+        #$stmt=sprintf("SELECT * FROM osdial_closer_log WHERE user_group IN %s AND user='%s' and call_date >= '%s'  and call_date <= '%s' order by call_date desc limit 10000;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($query_date_BEGIN),mres($query_date_END));
         #$rslt=mysql_query($stmt, $link);
         #$logs_to_print = mysql_num_rows($rslt);
         
@@ -455,7 +459,7 @@ function report_agent_stats() {
         
         
         
-        $stmt=sprintf("SELECT recording_log.* FROM recording_log JOIN osdial_users ON (recording_log.user=osdial_users.user) WHERE user_group IN %s AND recording_log.user='%s' and start_time >= '%s 0:00:01'  and start_time <= '%s 23:59:59' order by recording_id desc limit 10000;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($begin_date),mres($end_date));
+        $stmt=sprintf("SELECT recording_log.* FROM recording_log JOIN osdial_users ON (recording_log.user=osdial_users.user) WHERE user_group IN %s AND recording_log.user='%s' and start_time >= '%s'  and start_time <= '%s' order by recording_id desc limit 10000;",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent),mres($query_date_BEGIN),mres($query_date_END));
         $rslt=mysql_query($stmt, $link);
         $logs_to_print = mysql_num_rows($rslt);
         

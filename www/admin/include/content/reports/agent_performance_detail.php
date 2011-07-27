@@ -1,4 +1,4 @@
-<? 
+<?php
 ### AST_agent_performance_detail.php
 ### 
 #
@@ -180,8 +180,10 @@ function report_agent_performance_detail() {
             if (strlen($time_BEGIN) < 6) {$time_BEGIN = "00:00:00";}
             if (strlen($time_END) < 6) {$time_END = "23:59:59";}
         }
-        $query_date_BEGIN = "$query_date $time_BEGIN";   
+        $query_date_BEGIN = "$start_date $time_BEGIN";
+        $query_date_BEGIN = dateToServer($link,'first',$query_date_BEGIN,$webClientAdjGMT,'',$webClientDST,0);
         $query_date_END = "$end_date $time_END";
+        $query_date_END = dateToServer($link,'first',$query_date_END,$webClientAdjGMT,'',$webClientDST,0);
 
         $ugSQL = sprintf(' AND osdial_agent_log.user_group IN %s ',$LOG['allowed_usergroupsSQL']);
         if (strlen($user_group)>0) {
@@ -193,7 +195,7 @@ function report_agent_performance_detail() {
             $groupSQL .= sprintf(" AND campaign_id='%s' ", mres($group));	
         }
 
-        $plain .= "OSDIAL: Agent Performance Detail                        $NOW_TIME\n";
+        $plain .= "OSDIAL: Agent Performance Detail                        " . dateToLocal($link,'first',date('Y-m-d H:i:s'),$webClientAdjGMT,'',$webClientDST,1) . "\n";
 
         $plain .= "Time range: $query_date_BEGIN to $query_date_END\n\n";
         $plain .= "---------- AGENTS Details -------------\n\n";
