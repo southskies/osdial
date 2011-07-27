@@ -72,13 +72,14 @@ require('admin/templates/' . $system_settings['admin_template'] . '/display.php'
 <? } ?>
 <br><br><br>
 
-<table align=center border=0 align=center width=518 height=368 background="admin/templates/<?=$system_settings['admin_template']?>/images/osdial-bg.png">
+<table bgcolor=#56734F align=center border=0 align=center width=546 height=381 cellpadding=0 cellspacing=0 background="admin/templates/<?=$system_settings['admin_template']?>/images/osdial-bg3.png">
 <tr>
-    <td valign=top>
+    <td>
     
-        <table border=0 align=center>
+        <!-- <table border=0 align=center width=546 height=381 cellpadding=0 cellspacing=0> -->
+        <table border=0 align=center width=546 height=331 cellpadding=0 cellspacing=0>
         <tr>
-            <td height=180 width=360 align=center valign=middle colspan=2>
+            <td align=center colspan=2 valign=middle height=140>
                 <div id="company"></div>
                 <script>
 <?
@@ -93,23 +94,23 @@ require('admin/templates/' . $system_settings['admin_template'] . '/display.php'
                 <!-- <img src=admin/templates/<?=$system_settings['admin_template']?>/images/defaultCompany.png alt="Testing" width=298 height=30> -->
             </td>
         </tr>
-        <tr>
+        <tr valign=top>
             <td align=center>
                 &nbsp;&nbsp;&nbsp;<map name="mapAL">
                     <a href=agent
                         OnMouseOver="agent.src='admin/templates/<?=$system_settings['admin_template']?>/images/AgentLoginDn.png'" 
                         OnMouseOut="agent.src='admin/templates/<?=$system_settings['admin_template']?>/images/AgentLoginUp.png'" 
                         usemap="#mapAL">
-                    <img src="admin/templates/<?=$system_settings['admin_template']?>/images/AgentLoginUp.png" width=117 height=26 BORDER=0 NAME="agent"></A>
+                    <img src="admin/templates/<?=$system_settings['admin_template']?>/images/AgentLoginUp.png" WIDTH=150 HEIGHT=30 BORDER=0 NAME="agent"></A>
                 </map>
             </td>
             <td align=center>
                 <map name="mapCL">
                     <a href=admin/admin.php?ADD=10 
-                        OnMouseOver="control.src='admin/templates/<?=$system_settings['admin_template']?>/images/ControlLoginDn.png'" 
-                        OnMouseOut="control.src='admin/templates/<?=$system_settings['admin_template']?>/images/ControlLoginUp.png'" 
+                        OnMouseOver="control.src='admin/templates/<?=$system_settings['admin_template']?>/images/ManagerLoginDn.png'" 
+                        OnMouseOut="control.src='admin/templates/<?=$system_settings['admin_template']?>/images/ManagerLoginUp.png'" 
                         usemap="#mapCL">
-                    <img src="admin/templates/<?=$system_settings['admin_template']?>/images/ControlLoginUp.png" width=129 height=26 BORDER=0 NAME="control"></A>&nbsp;&nbsp;&nbsp;
+                    <img src="admin/templates/<?=$system_settings['admin_template']?>/images/ManagerLoginUp.png" WIDTH=190 HEIGHT=30 BORDER=0 NAME="control"></A>
                 </map>
             </td>
         </tr>

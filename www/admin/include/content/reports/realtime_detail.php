@@ -216,7 +216,7 @@ function report_realtime_detail() {
     $html .= "<input type=hidden name=VAdisplay value=\"$VAdisplay\">\n";
     $html .= "<input type=hidden name=cpuinfo value=\"$cpuinfo\">\n";
 
-    $html .= "<p class=centered>";
+    $html .= "<br><p class=centered>";
     $html .= "<font color=$default_text size=+1>CAMPAIGN DETAILS</font><br><br>";
 
     $html .= "<font color=$default_text SIZE=2>";

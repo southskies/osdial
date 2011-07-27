@@ -91,7 +91,7 @@
 		text-decoration: underline;
 	}
 	a:hover {
-		color: #002B09;
+		color: navy;
 		text-decoration: underline;
 	}
 	a:visited {
@@ -122,6 +122,14 @@
 
 	.no-ul a {
 		text-decoration: none;
+	}
+	
+	.no-ul-border a {
+		border: thin solid black;
+	}
+	
+	.narrow-space a {
+		width: 10em;
 	}
 
 	.results {
@@ -184,6 +192,10 @@
 	.font7 { font-family: 'dejavu sans',verdana,sans-serif; font-size: 35pt; }
 
 	.fgdefault { color: #000080; }
+	.fgselect { color: navy; }
+	.fgselect a:link { color: navy; }
+	.fgselect a:active { color: navy; }
+	.fgselect a:visited { color: navy; }
     .fgcompany { color: #1C4754; }
     .fgclock { color: white; }
     .fghome { color: white; }
@@ -203,3 +215,6 @@
 	.printable { display: inline; }
 	.noprint { display: inline; }
 	.onlyprint { display: none; }
+
+	.menuH2color { color: #4A4D3D; }
+	.menuH2color:hover { color: navy; }

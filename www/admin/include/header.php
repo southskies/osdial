@@ -103,14 +103,15 @@ if ($hh=='reports')
     {$reports_hh="bgcolor=\"$reports_color\""; $reports_fc="$reports_font"; $reports_bold="$header_selected_bold";}
     else {$reports_hh=''; $reports_fc='WHITE'; $reports_bold="$header_nonselected_bold";}
 
-
+$settings_menucols2=12;
+$settings_menucols1=10;
 
 echo "<div class=container>";
 
 echo "<div class=header>";
-echo "<table width=900 Oldwidth$page_width bgcolor=$maintable_color cellpadding=0 cellspacing=0 align=center class=across>\n";
+echo "<table width=900 Oldwidth$page_width bgcolor=$maintable_color cellpadding=0 cellspacing=0 align=center class=across border=0>\n";
 echo "  <tr>\n";
-echo "    <td colspan=10>\n";
+echo "    <td colspan=$settings_menucols2>\n";
 echo "      <table align='center' border='0' cellspacing='0' cellpadding='0'>\n";
 echo "        <tr>    <!-- First draw the top row  -->\n";
 echo "          <td class='across-top' width='15'><img src='templates/$system_settings[admin_template]/images/topleft.png' width='15' height='16' align='left'></td>\n";
@@ -139,6 +140,10 @@ echo "  </tr>\n";
 # BEGIN main menu.
 $cauth=0;
 $mmenu = '';
+
+# Start piece
+$mmenu .= "<td class='narrow-space'>&nbsp;</td>";
+
 $mmenu .= "    <td height=25 align=center $users_hh><a href=\"$PHP_SELF?ADD=0\"><span class=\"font3 fgnavy\"> Agents </span></a></td>\n";
 $mmenu .= "    <td height=25 align=center $campaigns_hh><a href=\"$PHP_SELF?ADD=10\"><span class=\"font3 fgnavy\"> Campaigns </span></a></td>\n";
 $mmenu .= "    <td height=25 align=center $lists_hh><a href=\"$PHP_SELF?ADD=100\"><span class=\"font3 fgnavy\"> Lists </span></a></td>\n";
@@ -181,6 +186,9 @@ if ($LOG['user_level'] > 8 and ($LOG['multicomp_user'] == 0 or ($LOG['company'][
     $cauth++;
 }
 
+# End piece
+#$mmenu .= "<td>&nbsp;</td>";
+
 if ($cauth) {
     if ($cauth > 1) {
         $mmenu = "    <td height=25 colspan=" . ($cauth - round($cauth/2)) . " align=center>&nbsp;</td>\n" . $mmenu;
@@ -193,12 +201,14 @@ echo $mmenu;
 echo "  </tr>\n";
 # END Main Menu
 
+#echo "<tr>($cauth)</tr>";
 
 
 ### Agents Menu
 if (strlen($users_hh) > 1) { 
     echo "  <tr class='no-ul' bgcolor=$users_color>\n";
-    echo "    <td align=left colspan=10 height=20>\n";
+	echo "    <td class='narrow-space'>&nbsp;</td>";
+    echo "    <td align=left colspan=$settings_menucols2 height=20>\n";
     echo "      <span class=\"font2 fgblack\"> &nbsp;\n";
     echo "        <a href=\"$PHP_SELF\"> Show Agents </a> &nbsp; &nbsp; &nbsp; &nbsp;\n";
     echo "        <a href=\"$PHP_SELF?ADD=1\"> Add A New Agent </a> &nbsp; &nbsp; &nbsp; &nbsp;\n";
@@ -240,25 +250,26 @@ if (strlen($campaigns_hh) > 1) {
     if ($sh=='pause'   and $ADD != 37) $sh='list';
     if ($sh=='listmix' and $ADD != 39) $sh='list';
 
-    if ($sh=='list') {$list_sh="bgcolor=\"$subcamp_color\""; $list_fc="fgnavy";}
-        else {$list_sh=''; $list_fc='fgblack';}
+    if ($sh=='list') {$list_sh="bgcolor=\"$subcamp_color\""; $list_fc=$menu_h2_color;}
+        else {$list_sh=''; $list_fc=$menu_h2_color;}
     if ($sh=='status') {$status_sh="bgcolor=\"$subcamp_color\""; $status_fc="fgnavy";}
-        else {$status_sh=''; $status_fc='fgblack';}
+        else {$status_sh=''; $status_fc=$menu_h2_color;}
     if ($sh=='hotkey') {$hotkey_sh="bgcolor=\"$subcamp_color\""; $hotkey_fc="fgnavy";}
-        else {$hotkey_sh=''; $hotkey_fc='fgblack';}
+        else {$hotkey_sh=''; $hotkey_fc=$menu_h2_color;}
     if ($sh=='recycle') {$recycle_sh="bgcolor=\"$subcamp_color\""; $recycle_fc="fgnavy";}
-        else {$recycle_sh=''; $recycle_fc='fgblack';}
+        else {$recycle_sh=''; $recycle_fc=$menu_h2_color;}
     if ($sh=='autoalt') {$autoalt_sh="bgcolor=\"$subcamp_color\""; $autoalt_fc="fgnavy";}
-        else {$autoalt_sh=''; $autoalt_fc='fgblack';}
+        else {$autoalt_sh=''; $autoalt_fc=$menu_h2_color;}
     if ($sh=='pause') {$pause_sh="bgcolor=\"$subcamp_color\""; $pause_fc="fgnavy";}
-        else {$pause_sh=''; $pause_fc='fgblack';}
+        else {$pause_sh=''; $pause_fc=$menu_h2_color;}
     if ($sh=='fields') {$fields_sh="bgcolor=\"$subcamp_color\""; $fields_fc="fgnavy";}
-        else {$fields_sh=''; $fields_fc='fgblack';}
+        else {$fields_sh=''; $fields_fc=$menu_h2_color;}
     if ($sh=='listmix') {$listmix_sh="bgcolor=\"$subcamp_color\""; $listmix_fc="fgnavy";}
-        else {$listmix_sh=''; $listmix_fc='fgblack';}
+        else {$listmix_sh=''; $listmix_fc=$menu_h2_color;}
 
     $cauth=0;
     echo "  <tr class='no-ul' bgcolor=$campaigns_color>\n";
+	echo "<td class='narrow-space'>&nbsp;</td>";
     echo "    <td height=20 align=center $list_sh colspan=2><a href=\"$PHP_SELF?ADD=10\"><span class=\"font2 $list_fc\"> Campaigns Main </span></a></td>\n";
     echo "    <td align=center $status_sh colspan=1><a href=\"$PHP_SELF?ADD=32\"><span class=\"font2 $status_fc\"> Statuses </span></a></td>\n";
     echo "    <td align=center $hotkey_sh colspan=1><a href=\"$PHP_SELF?ADD=33\"><span class=\"font2 $hotkey_fc\"> HotKeys </span></a></td>\n";
@@ -274,48 +285,69 @@ if (strlen($campaigns_hh) > 1) {
     if ($cauth) {
         echo "      <td colspan=$cauth align=center><span class=font2>&nbsp;</span></td>\n";
     }
+	echo "<td class='narrow-space'>&nbsp;</td>";
     echo "  </tr>\n";
 
     if (strlen($list_sh) > 1) { 
+		if ($ADD == 10) {$camp_show_color=$admin_color2;$fgfont_show='fgselect';}
+			else         {$camp_show_color=$subcamp_color;$fgfont_show='fgdefault';}
+		if ($ADD == 11) {$camp_add_color=$admin_color2;$fgfont_add='fgselect';}
+			else         {$camp_add_color=$subcamp_color;$fgfont_add='fgdefault';}
+		if ($ADD == 12)   {$camp_copy_color=$admin_color2;$fgfont_copy='fgselect';}
+			else         {$camp_copy_color=$subcamp_color;$fgfont_copy='fgdefault';}
+		if ($SUB == 13)   {$camp_real_color=$admin_color2;$fgfont_real='fgselect';}
+			else         {$camp_real_color=$subcamp_color;$fgfont_real='fgdefault';}
+	
+		$settings_menucols3=$settings_menucols1 - 5;
+
         echo "  <tr class='no-ul' bgcolor=$subcamp_color>\n";
-        echo "    <td height=20 align=left colspan=10>\n";
-        echo "      <span class=\"font2 fgdefault\"> &nbsp; \n";
-        echo "        <a href=\"$PHP_SELF?ADD=10\"> Show Campaigns </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
-        echo "        <a href=\"$PHP_SELF?ADD=11\"> Add A New Campaign </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\n";
-        echo "        <a href=\"$PHP_SELF?ADD=12\"> Copy Campaign </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;\n";
-        if ($LOG['view_agent_realtime_summary']) echo "        <a href=\"$PHP_SELF?ADD=999999&SUB=13\"> Real-Time Campaigns Summary </a>\n";
+		echo "	  <td height=20 class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
+        //echo "    <td height=20 align=left>\n";
+        //echo "       &nbsp; \n";
+        echo "        <td align=center bgcolor=$camp_show_color colspan=2><span class=\"font2 $fgfont_show\"><a href=\"$PHP_SELF?ADD=10\">Show Campaigns</a></span></td>\n";
+        echo "        <td align=center bgcolor=$camp_add_color colspan=2><span class=\"font2 $fgfont_add\"><a href=\"$PHP_SELF?ADD=11\">Add A New Campaign</a></span></td>\n";
+        echo "        <td align=center bgcolor=$camp_copy_color colspan=2><span class=\"font2 $fgfont_copy\"><a href=\"$PHP_SELF?ADD=12\">Copy Campaign</a></span></td>\n";
+
+        if ($LOG['view_agent_realtime_summary']) echo "        <td align=center bgcolor=$camp_real_color colspan=2>
+			<span class=\"font2 $fgfont_real\"><a href=\"$PHP_SELF?ADD=999999&SUB=13\"> Real-Time Campaigns Summary </a></span></td>\n";
+
+		echo "        <td align=center bgcolor=$subcamp_color colspan=2></td>\n";
         echo "      </span>\n";
         echo "    </td>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
         echo "  </tr>\n";
 
         if ($campaign_id != '') {
             # Detailed sub-menu
-            if ($ADD == 34 and $SUB<1)        {$camp_basic_color=$subcamp_color;}
-                else        {$camp_basic_color=$campaigns_color;}
-            if ($ADD == 31 and $SUB<1)        {$camp_detail_color=$subcamp_color;}
-                else        {$camp_detail_color=$campaigns_color;}
-            if ($SUB==22)    {$camp_statuses_color=$subcamp_color;}
-                else        {$camp_statuses_color=$campaigns_color;}
-            if ($SUB==23)    {$camp_hotkeys_color=$subcamp_color;}
-                else        {$camp_hotkeys_color=$campaigns_color;}
-            if ($SUB==25)    {$camp_recycle_color=$subcamp_color;}
-                else        {$camp_recycle_color=$campaigns_color;}
-            if ($SUB==26)    {$camp_autoalt_color=$subcamp_color;}
-                else        {$camp_autoalt_color=$campaigns_color;}
-            if ($SUB==27)    {$camp_pause_color=$subcamp_color;}
-                else        {$camp_pause_color=$campaigns_color;}
-            if ($SUB==29)    {$camp_listmix_color=$subcamp_color;}
-                else        {$camp_listmix_color=$campaigns_color;}
-            if ($SUB==14)    {$camp_real_color=$subcamp_color;}
-                else        {$camp_real_color=$campaigns_color;}
-            if ($SUB=="2keys")    {$camp_oivr_color=$subcamp_color;}
-                else        {$camp_oivr_color=$campaigns_color;}
+            if ($ADD == 34 and $SUB<1)        {$camp_basic_color=$subcamp_color2;}
+                else        {$camp_basic_color=$admin_color2;}
+            if ($ADD == 31 and $SUB<1)        {$camp_detail_color=$subcamp_color2;}
+                else        {$camp_detail_color=$admin_color2;}
+            if ($SUB==22)    {$camp_statuses_color=$subcamp_color2;}
+                else        {$camp_statuses_color=$admin_color2;}
+            if ($SUB==23)    {$camp_hotkeys_color=$subcamp_color2;}
+                else        {$camp_hotkeys_color=$admin_color2;}
+            if ($SUB==25)    {$camp_recycle_color=$subcamp_color2;}
+                else        {$camp_recycle_color=$admin_color2;}
+            if ($SUB==26)    {$camp_autoalt_color=$subcamp_color2;}
+                else        {$camp_autoalt_color=$admin_color2;}
+            if ($SUB==27)    {$camp_pause_color=$subcamp_color2;}
+                else        {$camp_pause_color=$admin_color2;}
+            if ($SUB==29)    {$camp_listmix_color=$subcamp_color2;}
+                else        {$camp_listmix_color=$admin_color2;}
+            if ($SUB==14)    {$camp_real_color=$subcamp_color2;}
+                else        {$camp_real_color=$admin_color2;}
+            if ($SUB=="2keys")    {$camp_oivr_color=$subcamp_color2;}
+                else        {$camp_oivr_color=$admin_color2;}
 
             $cauth=0;
-            echo "  <tr class='no-ul' bgcolor=$campaigns_color>\n";
-            echo "    <td height=18 align=left colspan=10>\n";
+#            echo "  <tr class='no-ul' bgcolor=$campaigns_color>\n";
+            echo "  <tr class='no-ul' bgcolor=$admin_color2>\n";
+            echo "    <td height=18 align=left colspan=$settings_menucols2>\n";
             echo "      <table width=$page_width cellpadding=2 cellspacing=0>\n";
-            echo "        <tr class='no-ul' bgcolor=$campaigns_color>\n";
+#            echo "        <tr class='no-ul' bgcolor=$campaigns_color>\n";
+echo "        <tr class='no-ul' bgcolor=$admin_color2>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color2>&nbsp;</td>";
             echo "          <td align=center bgcolor=$camp_basic_color><a href=\"$PHP_SELF?ADD=34&campaign_id=$campaign_id\"><span class=\"font2 fgnavy\">Basic</span></a></td>\n";
             echo "          <td align=center bgcolor=$camp_detail_color><a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id\"><span class=\"font2 fgnavy\">Detail</span></a></td>\n";
             echo "          <td align=center bgcolor=$camp_statuses_color><a href=\"$PHP_SELF?ADD=31&SUB=22&campaign_id=$campaign_id\"><span class=\"font2 fgnavy\">Statuses</span></a></td>\n";
@@ -352,7 +384,7 @@ if (strlen($campaigns_hh) > 1) {
 ### Lists Menu
 if (strlen($lists_hh) > 1) { 
     echo "  <tr class='no-ul' bgcolor=$lists_color>\n";
-    echo "    <td height=20 align=left colspan=10>\n";
+    echo "    <td height=20 align=left colspan=$settings_menucols2>\n";
     echo "      <span class=\"font2 fgdefault\"> &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=100\"> Show Lists </a> &nbsp; &nbsp; &nbsp;\n";
     echo "        <a href=\"$PHP_SELF?ADD=111\"> Add A New List </a> &nbsp; &nbsp; &nbsp;\n";
@@ -378,7 +410,7 @@ if (strlen($lists_hh) > 1) {
 ### Scripts Menu
 if (strlen($scripts_hh) > 1) { 
     echo "  <tr class='no-ul' bgcolor=$scripts_color>\n";
-    echo "    <td height=20 align=left colspan=10>\n";
+    echo "    <td height=20 align=left colspan=$settings_menucols2>\n";
     echo "      <span class=\"font2 fgdefault\"> &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=1000000\"> Show Scripts </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=1111111\"> Add A New Script</a>\n";
@@ -397,7 +429,7 @@ if (strlen($scripts_hh) > 1) {
 ### Filters Menu
 if (strlen($filters_hh) > 1) { 
     echo "  <tr class='no-ul' bgcolor=$filters_color>\n";
-    echo "    <td height=20 align=left colspan=10>\n";
+    echo "    <td height=20 align=left colspan=$settings_menucols2>\n";
     echo "      <span class=\"font2 fgdefault\"> &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=10000000\"> Show Filters </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=11111111\"> Add A New Filter </a>\n";
@@ -411,7 +443,7 @@ if (strlen($filters_hh) > 1) {
 ### InGroups Menu
 if (strlen($ingroups_hh) > 1) { 
     echo "  <tr class='no-ul' bgcolor=$ingroups_color>\n";
-    echo "    <td height=20 align=left colspan=10>\n";
+    echo "    <td height=20 align=left colspan=$settings_menucols2>\n";
     echo "      <span class=\"font2 fgdefault\"> &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=1000\"> Show In-Groups </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=1000&let=A2A\"> Show Agent2Agent Groups </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
@@ -427,7 +459,7 @@ if (strlen($ingroups_hh) > 1) {
 ### External/Remote Agents Menu
 if (strlen($remoteagent_hh) > 1) { 
     echo "  <tr class='no-ul' bgcolor=$remoteagent_color>\n";
-    echo "    <td height=20 align=left colspan=10>\n";
+    echo "    <td height=20 align=left colspan=$settings_menucols2>\n";
     echo "      <span class=\"font2 fgdefault\"> &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=10000\"> Show External Agents </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=11111\"> Add New External Agents </a>\n";
@@ -441,7 +473,7 @@ if (strlen($remoteagent_hh) > 1) {
 ### Usergroups Menu
 if (strlen($usergroups_hh) > 1) { 
     echo "  <tr class='no-ul' bgcolor=$usergroups_color>\n";
-    echo "    <td height=20 align=left colspan=10>\n";
+    echo "    <td height=20 align=left colspan=$settings_menucols2>\n";
     echo "      <span class=\"font2 fgdefault\"> &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=100000\"> Show User Groups </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
     echo "        <a href=\"$PHP_SELF?ADD=111111\"> Add A New User Group </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
@@ -456,7 +488,7 @@ if (strlen($usergroups_hh) > 1) {
 ### Reports Menu
 if (strlen($reports_hh) > 1) { 
     echo "  <tr bgcolor=$reports_color>\n";
-    echo "    <td height=20 align=left colspan=10>\n";
+    echo "    <td height=20 align=left colspan=$settings_menucols2>\n";
     echo "      <span class=\"font2 fgdefault\">&nbsp;</span>\n";
     echo "    </td>\n";
     echo "  </tr>\n";
@@ -487,6 +519,8 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
 
     $amenu = '';
     $acnt = 0;
+
+	$amenu .= "<td class='narrow-space'>&nbsp;</td>";
 
     if ($LOG['multicomp_user'] == 0) {
         $amenu .= "    <td height=20 align=center $settings_sh colspan=2><a href=\"$PHP_SELF?ADD=311111111111111\"><span class=\"font2 $settings_fc\"> System Settings </span></a></td>\n";
@@ -542,6 +576,8 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         $acnt += 1;
     }
 
+	$amenu .= "<td class='narrow-space'>&nbsp;</td>";
+
     if ($acnt) {
         if ($acnt > 1) {
             $amenu = "    <td height=20 colspan=" . ($acnt - round($acnt/2)) . " align=center><span class=font2>&nbsp;</span></td>\n" . $amenu;
@@ -558,11 +594,13 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     ### Settings Sub-Menu.
     if (strlen($settings_sh) > 1) { 
         echo "  <tr class='no-ul' bgcolor=$settings_color>\n";
-        echo "    <td height=20 align=left colspan=10>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
+        echo "    <td height=20 align=left colspan=$settings_menucols1>\n";
         echo "      <span class=\"font2 fgdefault\"> &nbsp \n";
         echo "        <a href=\"$PHP_SELF?ADD=311111111111111\"> System Settings </a>\n";
         echo "      </span>\n";
         echo "    </td>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
         echo "  </tr>\n";
     }
 
@@ -571,7 +609,8 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     ### Server Sub-Menu.
     if (strlen($server_sh) > 1) { 
         echo "  <tr class='no-ul' bgcolor=$server_color>\n";
-        echo "    <td height=20 align=left colspan=10>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
+        echo "    <td height=20 align=left colspan=$settings_menucols1>\n";
         echo "      <span class=\"font2 fgdefault\"> &nbsp \n";
         echo "        <a href=\"$PHP_SELF?ADD=100000000000\"> Show Servers </a> &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=111111111111\"> Add A New Server </a> &nbsp; &nbsp; \n";
@@ -580,6 +619,7 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         echo "        <a href=\"$PHP_SELF?ADD=399911111111111\"> External DNC Database </a>\n";
         echo "      </span>\n";
         echo "    </td>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
         echo "  </tr>\n";
     }
 
@@ -588,7 +628,8 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     ### Carriers Sub-Menu.
     if (strlen($carriers_sh)>0) { 
         echo "  <tr class='no-ul' bgcolor=$carriers_color>\n";
-        echo "    <td height=20 align=left colspan=10>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
+        echo "    <td height=20 align=left colspan=$settings_menucols1>\n";
         echo "      <span class=\"font2 fgdefault\"> &nbsp \n";
         echo "        <a href=\"$PHP_SELF?ADD=3carrier&SUB=1\"> Show Carriers </a> &nbsp; &nbsp; &nbsp; \n";
         if ($SUB==4) {
@@ -604,6 +645,7 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         }
         echo "      </span>\n";
         echo "    </td>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
         echo "  </tr>\n";
     }
 
@@ -611,12 +653,14 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     ### Phones Sub-Menu.
     if (strlen($phones_sh) > 1) { 
         echo "  <tr class='no-ul' bgcolor=$phones_color>\n";
-        echo "    <td height=20 align=left colspan=10>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
+        echo "    <td height=20 align=left colspan=$settings_menucols1>\n";
         echo "      <span class=\"font2 fgdefault\"> &nbsp \n";
         echo "        <a href=\"$PHP_SELF?ADD=10000000000\"> Show Phones </a> &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=11111111111\"> Add A New Phone </a>\n";
         echo "      </span>\n";
         echo "    </td>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
         echo "  </tr>\n";
     }
 
@@ -624,7 +668,8 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     ### Media Sub-Menu.
     if (strlen($media_sh) > 1) { 
         echo "  <tr class='no-ul' bgcolor=$server_color>\n";
-        echo "    <td height=20 align=left colspan=10>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
+        echo "    <td height=20 align=left colspan=$settings_menucols1>\n";
         echo "      <span class=\"font2 fgdefault\"> &nbsp \n";
         echo "        <a href=\"$PHP_SELF?ADD=10media\"> Show Media Files </a> &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=11media\"> Add Media File </a> &nbsp; &nbsp; &nbsp; \n";
@@ -632,13 +677,15 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         #echo "        <a href=\"$PHP_SELF?ADD=11tts\"> Add TTS Script </a>\n";
         echo "      </span>\n";
         echo "    </td>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
         echo "  </tr>\n";
     }
 
     ### Conferences Sub-Menu.
     if (strlen($conference_sh) > 1) { 
         echo "  <tr class='no-ul' bgcolor=$conference_color>\n";
-        echo "    <td height=20 align=left colspan=10>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
+        echo "    <td height=20 align=left colspan=$settings_menucols1>\n";
         echo "      <span class=\"font2 fgdefault\"> &nbsp \n";
         echo "        <a href=\"$PHP_SELF?ADD=1000000000000\"> Show Conferences </a> &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=1111111111111\"> Add A New Conference </a> &nbsp; &nbsp; &nbsp; \n";
@@ -646,6 +693,7 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         echo "        <a href=\"$PHP_SELF?ADD=11111111111111\"> Add A New $t1 Conference </a>\n";
         echo "      </span>\n";
         echo "    </td>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
         echo "  </tr>\n";
     }
 
@@ -656,12 +704,14 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     ### Company Sub-Menu.
     if (strlen($company_sh) > 1) { 
         echo "  <tr class='no-ul' bgcolor=$server_color>\n";
-        echo "    <td height=20 align=left colspan=10>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
+        echo "    <td height=20 align=left colspan=$settings_menucols1>\n";
         echo "      <span class=\"font2 fgdefault\"> &nbsp \n";
         echo "        <a href=\"$PHP_SELF?ADD=10comp\"> Show Companies </a> &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=11comp\"> Add A New Company </a>\n";
         echo "      </span>\n";
         echo "    </td>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
         echo "  </tr>\n";
     }
 
@@ -671,7 +721,8 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     ### Call-times Sub-Menu.
     if (strlen($times_sh) > 1) { 
         echo "  <tr class='no-ul' bgcolor=$times_color>\n";
-        echo "    <td height=20 align=left colspan=10>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
+        echo "    <td height=20 align=left colspan=$settings_menucols1>\n";
         echo "      <span class=\"font2 fgdefault\"> &nbsp \n";
         echo "        <a href=\"$PHP_SELF?ADD=100000000\"> Show Call Times </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=111111111\"> Add A New Call Time </a> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; \n";
@@ -679,6 +730,7 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
         echo "        <a href=\"$PHP_SELF?ADD=1111111111\"> Add A New State Call Time </a> &nbsp; \n";
         echo "      </span>\n";
         echo "    </td>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
         echo "  </tr>\n";
     } 
 
@@ -687,12 +739,14 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     ### Statuses Sub-Menu.
     if (strlen($status_sh) > 1) { 
         echo "  <tr class='no-ul' bgcolor=$status_color>\n";
-        echo "    <td height=20 align=left colspan=10>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
+        echo "    <td height=20 align=left colspan=$settings_menucols1>\n";
         echo "      <span class=\"font2 fgdefault\"> &nbsp \n";
         echo "        <a href=\"$PHP_SELF?ADD=321111111111111\"> System Statuses </a> &nbsp; &nbsp; &nbsp; \n";
         echo "        <a href=\"$PHP_SELF?ADD=331111111111111\"> Status Categories </a>\n";
         echo "      </span>\n";
         echo "    </td>\n";
+		echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
         echo "  </tr>\n";
     }
 
@@ -701,9 +755,11 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
     ### Do nothing if admin has no permissions
     $ADD='99999999999999999999';
     echo "  <tr class='no-ul' bgcolor=$settings_color>\n";
-    echo "    <td height=20 align=left colspan=10>\n";
+	echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
+    echo "    <td height=20 align=left colspan=$settings_menucols2>\n";
     echo "      <span class=fgred>You are not authorized to view this page.</span>\n";
     echo "    </td>\n";
+	echo "	  <td class='narrow-space' bgcolor=$admin_color>&nbsp;</td>";
     echo "  </tr>\n";
 } 
 
@@ -711,7 +767,7 @@ if (strlen($admin_hh) > 1 and $LOG['ast_admin_access']>0) {
 
 
 echo "  <tr>\n";
-echo "    <td align=left colspan=10 HEIGHT=1 bgcolor=#666666></td>\n";
+echo "    <td align=left colspan=$settings_menucols2 HEIGHT=1 bgcolor=#666666></td>\n";
 echo "  </tr>\n";
 echo "</table>\n";
 echo "</div>";

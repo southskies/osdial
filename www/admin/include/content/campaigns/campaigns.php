@@ -1055,7 +1055,7 @@ if ($ADD==31) {
 
     if ($SUB < 1)
         {
-        echo "<center><br><font color=$default_text size=+1>MODIFY CAMPAIGN</font></center>\n";
+        echo "<br /><p align=center><font color=$default_text size=+1>MODIFY CAMPAIGN</font></p>\n";
         echo "<form action=$PHP_SELF method=POST>\n";
         echo "<input type=hidden name=DB value=$DB>\n";
         echo "<input type=hidden name=ADD value=41>\n";
@@ -1983,7 +1983,7 @@ if ($ADD==34)
 
     if ($SUB < 1)
         {
-        echo "<center><br><font color=$default_text size=+1>MODIFY CAMPAIGN</font></center>\n";
+        echo "<br /><p align=center><font color=$default_text size=+1>MODIFY CAMPAIGN</font></p>\n";
         echo "<form action=$PHP_SELF method=POST>\n";
         echo "<input type=hidden name=DB value=$DB>\n";
         echo "<input type=hidden name=ADD value=44>\n";

@@ -35,7 +35,7 @@ if (preg_match("/^Sli/",$system_settings['admin_template'])) {
     echo "    <td width=\"33%\">&nbsp;</td>\n";
     echo "    <td width=\"33%\">&nbsp;</td>\n";
 } else {
-    echo "    <td height=\"15\" align=\"left\" width=\"33%\"><font color=\"#1A4349\">&nbsp;&nbsp;Copyright &#169; 2009-2010 Call Center Service Group, LC</font></td>\n";
+    echo "    <td height=\"15\" align=\"left\" width=\"33%\"><font color=\"#1A4349\">&nbsp;&nbsp;Copyright &#169; 2009-2011 Call Center Service Group, LC</font></td>\n";
 #
 # NOTICE:
 # Removal or modification of the following line constitutes a breach of License and doing so may result in legal action.
@@ -83,7 +83,7 @@ echo "    <td height=\"15\" align=\"right\" width=\"16%\"><font size=1 color=\"#
 echo "  </tr>\n";
 echo "  <tr><td align=\"left\" colspan=\"4\" height=\"1\" bgcolor=\"#666666\"></td></tr>\n";
 echo " </table>\n";
-echo "<br /><br /><br /><br />\n";
+#echo "<br /><br /><br /><br />\n";
 # Close Footer DIV.
 echo "</div>";
 
