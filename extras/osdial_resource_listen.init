@@ -18,6 +18,9 @@
 
 RETVAL=0
 proc=osdial_resource_listen
+procloop=osdial_resource_listen_loop
+pidfile=/var/run/osdial_resource_listen.pid
+lockfile=/var/lock/subsys/osdial_resource_listen
 
 [ ! -d "/opt/osdial/html/admin" ] && exit 1
 
@@ -31,19 +34,28 @@ osdial_resource_listen_loop() {
 export -f osdial_resource_listen_loop
 
 start() {
-	if [ ! -f "/var/run/$proc.pid" ]; then
-        	echo -n $"Starting $proc: "
-        	daemon "(osdial_resource_listen_loop& echo \"\$!\" > /var/run/$proc.pid)"
-        	RETVAL=$?
-        	echo
-        	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/$proc
+	if [ ! -f /var/run/${proc}.pid ]; then
+		echo -n $"Starting $proc: "
+		$procloop & BCKPID=$!
+		RETVAL=$?
+		if [ $RETVAL -eq 0 ]; then
+			echo $BCKPID > $pidfile
+			touch $lockfile
+			success
+		else
+			failure
+		fi
+		echo
 	fi
 }
 
 stop() {
-	if [ -f "/var/run/$proc.pid" ]; then
+	if [ -f /var/run/${proc}.pid ]; then
         	echo -n $"Shutting down $proc: "
-		killproc -p /var/run/$proc.pid
+		OPPID=`cat $pidfile`
+		OCPID=`ps -o pid --no-headers --ppid $OPPID`
+		[ -n "$OCPID" -a "$OCPID" -gt 1 ] && kill $OCPID || :
+		killproc -p "/var/run/${proc}.pid"
 		echo
         	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/$proc
 	fi
