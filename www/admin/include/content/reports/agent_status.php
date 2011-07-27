@@ -1,4 +1,4 @@
-<?
+<?php
 ### report_agent_status.php
 ### 
 #

@@ -1,4 +1,4 @@
-<?
+<?php
 ### vtiger_search.php
 ### 
 #

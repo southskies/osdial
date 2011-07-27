@@ -1,4 +1,4 @@
-<? 
+<?php
 ### web_admin_log.php
 ### 
 #

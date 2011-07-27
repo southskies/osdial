@@ -1,4 +1,4 @@
-<? 
+<?php
 ### AST_timeonpark.php
 ### 
 #

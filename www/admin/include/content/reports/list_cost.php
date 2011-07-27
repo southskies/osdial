@@ -1,4 +1,4 @@
-<? 
+<?php
 ### report_list_cost.php
 ### 
 #

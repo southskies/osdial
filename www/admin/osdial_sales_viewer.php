@@ -1,4 +1,5 @@
-<? header("Pragma: no-cache"); 
+<?php
+header("Pragma: no-cache"); 
 
 # osdial_sales_viewer.php - OSDIAL administration page
 # 

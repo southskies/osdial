@@ -1,4 +1,4 @@
-<? 
+<?php
 ### report_lead_performance_list.php
 ### 
 #

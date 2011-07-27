@@ -1,4 +1,4 @@
-<?
+<?php
 ### voice_lab.php
 #
 # Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2

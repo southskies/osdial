@@ -1,4 +1,4 @@
-<? 
+<?php
 # AST_VDADstats.php
 # 
 # Copyright (C) 2009  Matt Florell <osdial@gmail.com>        LICENSE: AGPLv2

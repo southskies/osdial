@@ -1,4 +1,4 @@
-<?
+<?php
 ### group_hourly_stats.php
 ### 
 #

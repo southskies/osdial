@@ -1,4 +1,4 @@
-<?
+<?php
 ### remote_dispo.php
 ### 
 #

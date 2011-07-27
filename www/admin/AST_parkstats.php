@@ -1,4 +1,4 @@
-<? 
+<?php
 ### AST_parkstats.php
 ### 
 #

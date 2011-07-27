@@ -1,4 +1,4 @@
-<? 
+<?php
 # server_performance.php
 #
 # Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
