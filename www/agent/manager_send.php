@@ -1,4 +1,4 @@
-<?
+<?php
 # manager_send.php
 #
 # Copyright (C) 2008  Matt Florell <vicidial@gmail.com>      LICENSE: AGPLv2
@@ -95,6 +95,9 @@
 # Do not change.
 $version = 'SVN_Version';
 $build = 'SVN_Build';
+
+$DB=0;
+$DBFILE=0;
 
 header('Cache-Control: public, no-cache, max-age=0, must-revalidate');
 header('Expires: '.gmdate('D, d M Y H:i:s', (time() - 60)).' GMT');
@@ -434,11 +437,7 @@ if ($ACTION=="Hangup") {
             echo "Hangup command sent for Channel $channel on $call_server_ip\n";
         }
 
-        if ($WeBRooTWritablE > 0) {
-            $fp = fopen ("./osdial_debug.txt", "a");
-            fwrite ($fp, "$dbout\n");
-            fclose($fp);
-        }
+        if ($DBFILE) debugLog('osdial_debug',$dbout);
     }
 }
 
@@ -591,13 +590,7 @@ if ($ACTION=="RedirectXtraCX") {
         echo "ext_context $ext_context must be set\n";
         echo "ext_priority $ext_priority must be set\n";
         echo "\nRedirect Action not sent\n";
-        if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) {
-            if ($WeBRooTWritablE > 0) {
-                $fp = fopen ("./osdial_debug.txt", "a");
-                fwrite ($fp, "$NOW_TIME|RDCXC|$filename|$user|$campaign|$channel|$extrachannel|$queryCID|$exten|$ext_context|ext_priority|\n");
-                fclose($fp);
-            }
-        }
+        if ($DBFILE and preg_match("/SECOND|FIRST|DEBUG/",$filename)) debugLog('osdial_debug',"$NOW_TIME|RDCXC|$filename|$user|$campaign|$channel|$extrachannel|$queryCID|$exten|$ext_context|ext_priority|");
     } else {
         if (preg_match("/NEXTAVAILABLE/",$exten)) {
             $stmt="UPDATE osdial_conferences SET extension='$protocol/$extension$NOWnum',leave_3way='0' WHERE server_ip='$server_ip' AND (extension='' OR extension IS NULL) AND conf_exten!='$session_id' LIMIT 1;";
@@ -645,11 +638,7 @@ if ($ACTION=="RedirectXtraCX") {
                 echo "NeWSessioN|$exten|\n";
                 echo "|$stmtB|\n";
 
-                if ($WeBRooTWritablE > 0) {
-                    $fp = fopen ("./osdial_debug.txt", "a");
-                    fwrite ($fp, "$NOW_TIME|RDCXCNA|$filename|$user-$NOWnum|$campaign|$agentchannel|$exten|\n");
-                    fclose($fp);
-                }
+                if ($DBFILE) debugLog('osdial_debug',"$NOW_TIME|RDCXCNA|$filename|$user-$NOWnum|$campaign|$agentchannel|$exten|");
                 exit;
 
             } else {
@@ -745,13 +734,7 @@ if ($ACTION=="RedirectXtraCX") {
             if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "Changed to Redirect: $channel on $server_ip";
         }
 
-        if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) {
-            if ($WeBRooTWritablE > 0) {
-                $fp = fopen ("./osdial_debug.txt", "a");
-                fwrite ($fp, "$NOW_TIME|RDCXC|$filename|$user|$campaign|$DBout|\n");
-                fclose($fp);
-            }
-        }
+        if ($DBFILE and preg_match("/SECOND|FIRST|DEBUG/",$filename)) debugLog('osdial_debug',"$NOW_TIME|RDCXC|$filename|$user|$campaign|$DBout|");
     }
 }
 
@@ -774,13 +757,7 @@ if ($ACTION=="RedirectXtra") {
             echo "ext_context $ext_context must be set\n";
             echo "ext_priority $ext_priority must be set\n";
             echo "\nRedirect Action not sent\n";
-            if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) {
-                if ($WeBRooTWritablE > 0) {
-                    $fp = fopen ("./osdial_debug.txt", "a");
-                    fwrite ($fp, "$NOW_TIME|RDX|$filename|$user|$campaign|$$channel|$extrachannel|$queryCID|$exten|$ext_context|ext_priority|\n");
-                    fclose($fp);
-                }
-            }
+            if ($DBFILE and preg_match("/SECOND|FIRST|DEBUG/",$filename)) debugLog('osdial_debug',"$NOW_TIME|RDX|$filename|$user|$campaign|$$channel|$extrachannel|$queryCID|$exten|$ext_context|ext_priority|");
         } else {
             if (preg_match("/NEXTAVAILABLE/",$exten)) {
                 $stmt="UPDATE osdial_conferences SET extension='$protocol/$extension$NOWnum',leave_3way='0' WHERE server_ip='$server_ip' AND (extension='' OR extension IS NULL) AND conf_exten!='$session_id' LIMIT 1;";
@@ -826,11 +803,7 @@ if ($ACTION=="RedirectXtra") {
                     echo "NeWSessioN|$exten|\n";
                     echo "|$stmtB|\n";
 
-                    if ($WeBRooTWritablE > 0) {
-                        $fp = fopen ("./osdial_debug.txt", "a");
-                        fwrite ($fp, "$NOW_TIME|RDXNA|$filename|$user-$NOWnum|$campaign|$agentchannel|$exten|\n");
-                        fclose($fp);
-                    }
+                    if ($DBFILE) debugLog('osdial_debug',"$NOW_TIME|RDXNA|$filename|$user-$NOWnum|$campaign|$agentchannel|$exten|");
                     exit;
 
                 } else {
@@ -915,13 +888,7 @@ if ($ACTION=="RedirectXtra") {
                 }
             }
 
-            if (preg_match("/SECOND|FIRST|DEBUG/",$filename)) {
-                if ($WeBRooTWritablE > 0) {
-                    $fp = fopen ("./osdial_debug.txt", "a");
-                    fwrite ($fp, "$NOW_TIME|RDX|$filename|$user|$campaign|$DBout|\n");
-                    fclose($fp);
-                }
-            }
+            if ($DBFILE and preg_match("/SECOND|FIRST|DEBUG/",$filename)) debugLog('osdial_debug',"$NOW_TIME|RDX|$filename|$user|$campaign|$DBout|");
         }
     }
 }
@@ -990,11 +957,7 @@ if ($ACTION=="Redirect") {
             $rslt=mysql_query($stmt, $link);
 
             echo "Redirect command sent for Channel $channel on $server_ip\n";
-            if ($WeBRooTWritablE > 0) {
-                $fp = fopen ("./osdial_debug.txt", "a");
-                fwrite ($fp, "$NOW_TIME|RD|$queryCID|$channel|$exten|$ext_context|$outCID|\n");
-                fclose($fp);
-            }
+            if ($DBFILE) debugLog('osdial_debug',"$NOW_TIME|RD|$queryCID|$channel|$exten|$ext_context|$outCID|");
         }
     }
 }

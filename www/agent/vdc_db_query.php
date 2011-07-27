@@ -176,6 +176,7 @@ header('Pragma: no-cache');
 header('Content-Type: text/html; charset=utf-8');
 
 $DB = 0;
+$DBFILE=0;
 $length_in_sec = 0;
 $user = '';
 $pass = '';
@@ -701,12 +702,10 @@ if ($ACTION == 'manDiaLnextCaLL') {
                 $enable_agc_xfer_log =$row[0];
             }
 
-            if ( ($WeBRooTWritablE > 0) and ($enable_agc_xfer_log > 0) ) {
+            if ($enable_agc_xfer_log > 0) {
                 #	DATETIME|campaign|lead_id|phone_number|user|type
                 #	2007-08-22 11:11:11|TESTCAMP|65432|3125551212|1234|M
-                $fp = fopen ("./xfer_log.txt", "a");
-                fwrite ($fp, "$NOW_TIME|$campaign|$lead_id|$phone_number|$user|M\n");
-                fclose($fp);
+                if ($DBFILE) debugLog('xfer_log',"$NOW_TIME|$campaign|$lead_id|$phone_number|$user|M");
             }
 
             ##### if lead is a callback, grab the callback comments
@@ -1927,11 +1926,7 @@ if ($ACTION == 'VDADcheckINCOMING') {
                     }
                 }
 
-                if ($WeBRooTWritablE > 0) {
-                    $fp = fopen ("./osdial_debug.txt", "a");
-                    fwrite ($fp, "$NOW_TIME|INBND|$callerid|$user|$user_group|$list_id|$lead_id|$phone_number|$uniqueid|\n");
-                    fclose($fp);
-                }
+                if ($DBFILE) debugLog('osdial_debug',"$NOW_TIME|INBND|$callerid|$user|$user_group|$list_id|$lead_id|$phone_number|$uniqueid|");
             }
 
             if ( ($call_type=='OUT') or ($call_type=='OUTBALANCE') ) {
@@ -2216,12 +2211,10 @@ if ($ACTION == 'VDADcheckINCOMING') {
                 $enable_agc_xfer_log =$row[0];
             }
 
-            if ( ($WeBRooTWritablE > 0) and ($enable_agc_xfer_log > 0) ) {
+            if ($enable_agc_xfer_log > 0) {
                 #	DATETIME|campaign|lead_id|phone_number|user|type
                 #	2007-08-22 11:11:11|TESTCAMP|65432|3125551212|1234|A
-                $fp = fopen ("./xfer_log.txt", "a");
-                fwrite ($fp, "$NOW_TIME|$campaign|$lead_id|$phone_number|$user|$Ctype\n");
-                fclose($fp);
+                if ($DBFILE) debugLog('xfer_log',"$NOW_TIME|$campaign|$lead_id|$phone_number|$user|$Ctype");
             }
 
         } else {
@@ -2463,11 +2456,7 @@ if ($ACTION == 'multicallQueueSwap') {
                     }
                 }
 
-                if ($WeBRooTWritablE > 0) {
-                    $fp = fopen ("./osdial_debug.txt", "a");
-                    fwrite ($fp, "$NOW_TIME|INBND|$callerid|$user|$user_group|$list_id|$lead_id|$phone_number|$uniqueid|\n");
-                    fclose($fp);
-                }
+                if ($DBFILE) debugLog('osdial_debug',"$NOW_TIME|INBND|$callerid|$user|$user_group|$list_id|$lead_id|$phone_number|$uniqueid|");
             }
 
             if ( ($call_type=='OUT') or ($call_type=='OUTBALANCE') ) {
@@ -2750,12 +2739,10 @@ if ($ACTION == 'multicallQueueSwap') {
                 $enable_agc_xfer_log =$row[0];
             }
 
-            if ( ($WeBRooTWritablE > 0) and ($enable_agc_xfer_log > 0) ) {
+            if ($enable_agc_xfer_log > 0) {
                 #	DATETIME|campaign|lead_id|phone_number|user|type
                 #	2007-08-22 11:11:11|TESTCAMP|65432|3125551212|1234|A
-                $fp = fopen ("./xfer_log.txt", "a");
-                fwrite ($fp, "$NOW_TIME|$campaign|$lead_id|$phone_number|$user|$Ctype\n");
-                fclose($fp);
+                if ($DBFILE) debugLog('xfer_log',"$NOW_TIME|$campaign|$lead_id|$phone_number|$user|$Ctype");
             }
 
         } else {

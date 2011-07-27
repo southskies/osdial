@@ -433,4 +433,14 @@ function dateToServer($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $add
     return date($fmt, $dsecs) . $svrTZlabel;
 }
 
+function debugLog($filename, $output) {
+    global $WeBRooTWritablE;
+    if ($WeBRooTWritablE > 0) {
+        if (preg_match("/^[^\/]/",$filename)) $filename = './' . $filename;
+        $fp = fopen($filename.".txt", "a");
+        fwrite ($fp, $output . "\n");
+        fclose($fp);
+    }
+}
+
 ?>
