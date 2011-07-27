@@ -70,9 +70,10 @@ if ($LOGview_reports==1) {
         echo "<ul>";
         if ($LOG['view_agent_pause_summary']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=25\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Agent Pause Summary</a></font>";
         if ($LOG['view_agent_performance_detail']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=19\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Agent Performance Detail</a></font>";
-        if ($LOG['view_agent_stats']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=22\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Agent Status</a></font>";
-        if ($LOG['view_agent_status']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=21\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Agent Stats</a></font>";
+        if ($LOG['view_agent_stats']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=21\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Agent Stats</a></font>";
+        if ($LOG['view_agent_status']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=22\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Agent Status</a></font>";
         if ($LOG['view_agent_timesheet']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=20\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Agent Timesheet</a></font>";
+        if ($LOG['view_agent_stats']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=31\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>Phone Stats</a></font>";
         if ($LOG['view_usergroup_hourly_stats']) echo "<li><a href=\"$PHP_SELF?ADD=999999&SUB=24\"><font face=\"dejavu sans,verdana,sans-serif\" size=2>UserGroup Hourly Stats</a></font>";
         echo "</ul>";
         echo "<ul>";
@@ -187,6 +188,9 @@ if ($LOGview_reports==1) {
             } elseif ($SUB==30 and $LOG['modify_servers']) {
                 require($WeBServeRRooT . '/admin/include/content/reports/web_admin_log.php');
                 echo report_web_admin_log();
+            } elseif ($SUB==31 and $LOG['view_agent_stats']) {
+                require($WeBServeRRooT . '/admin/include/content/reports/phone_stats.php');
+                echo report_phone_stats();
             } else {
                 echo "<font color=red>You do not have permission to view this page</font>\n";
             }

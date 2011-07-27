@@ -402,7 +402,7 @@ if ($ADD==31111111111) {
         echo "<input type=hidden name=DBY_pass size=15 maxlength=15 value=\"$row[63]\">\n";
         echo "<input type=hidden name=DBY_port size=6 maxlength=6 value=\"$row[64]\">\n";
 
-        echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=10&iframe=phone_stats.php?extension=$row[0]%26server_ip=$row[5]'\">Click here for phone stats</a><br><br>\n";
+        echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=31&phone_extension=$row[0]&phone_server_ip=$row[5]'\">Click here for phone stats</a><br><br>\n";
 
         if ($LOGast_delete_phones > 0) {
             echo "<br><br><a href=\"$PHP_SELF?ADD=51111111111&extension=$extension&server_ip=$server_ip\">DELETE THIS PHONE</a>\n";
@@ -472,7 +472,7 @@ if ($ADD==10000000000) {
         echo "    <td>$row[2]</td>\n";
         echo "    <td>$row[14]</td>\n";
         echo "    <td>$row[15]</td>\n";
-        echo "    <td align=center><a href=\"$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]\">MODIFY</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=10&iframe=phone_stats.php?extension=$row[0]%26server_ip=$row[5]\">STATS</a></td>\n";
+        echo "    <td align=center><a href=\"$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]\">MODIFY</a> | <a href=\"$PHP_SELF?ADD=999999&SUB=31&phone_extension=$row[0]&phone_server_ip=$row[5]\">STATS</a></td>\n";
         echo "  </tr>\n";
         $o++;
     }
