@@ -5,11 +5,11 @@ header('Pragma: no-cache');
 header('Content-Type: text/html; charset=utf-8');
 ?>
 <html>
-<head><title>Lead #<?=$_GET['lead_id'] ?></title></head>
+<head><title>Lead #<?php echo $_GET['lead_id']; ?></title></head>
 <body>
 <br><br>
 <center>
-<h3>Lead #<?=$_GET['lead_id'] ?></h3>
+<h3>Lead #<?php echo $_GET['lead_id']; ?></h3>
 <table>
 <tr>
 <th>Field</th>

@@ -5,19 +5,19 @@
 <;left:0px;top:0px;z-index:3;" id="WelcomeBoxA">
 <;left:2px;top:46px;z-index:4;" id="MainPanel">
 z-index:6 side tab
-<;left:300px;top:<?=$MBheight ?>px;z-index:12;" id="ManuaLDiaLButtons"><font class="body_text">
-<;left:300px;top:<?=$CBheight ?>px;z-index:13;" id="CallbacksButtons"><font class="body_text">
-<;left:500px;top:<?=$CBheight+17 ?>px;z-index:14;" id="PauseCodeButtons"><font class="body_text">
+<;left:300px;top:<?php echo $MBheight; ?>px;z-index:12;" id="ManuaLDiaLButtons"><font class="body_text">
+<;left:300px;top:<?php echo $CBheight; ?>px;z-index:13;" id="CallbacksButtons"><font class="body_text">
+<;left:500px;top:<?php echo ($CBheight+17); ?>px;z-index:14;" id="PauseCodeButtons"><font class="body_text">
 <;left:2px;top: 480px;z-index:15;" id="MaiNfooterspan">
-<;left:<?=$HKwidth+40 ?>px;top:<?=$HKheight +25 ?>px;z-index:16;" id="hotkeysdisplay"><a href="#" onMouseOver="HotKeys('ON')"><IMG SRC="./images/vdc_XB_hotkeysactive_OFF.gif" border=0 alt="HOT KEYS INACTIVE"></a>
+<;left:<?php echo ($HKwidth+40); ?>px;top:<?php echo ($HKheight+25); ?>px;z-index:16;" id="hotkeysdisplay"><a href="#" onMouseOver="HotKeys('ON')"><IMG SRC="./images/vdc_XB_hotkeysactive_OFF.gif" border=0 alt="HOT KEYS INACTIVE"></a>
 <;left:190px;top:70px;z-index:17;" id="ScriptPanel">
-<;left:935px;top:<?=$CBheight ?>px;z-index:19;" id="VolumeControlSpan">
-<;left:35px;top:<?=$CBheight ?>px;z-index:20;" id="AgentStatusSpan"><font class="body_text">
-<;left:5px;top:<?=$HTheight ?>px;z-index:21;" id="TransferMain">
-<;left:5px;top:<?=$HTheight+20 ?>px;z-index:23;" id="HotKeyActionBox">
-<;left:10px;top:<?=$HTheight+20 ?>px;z-index:25;" id="CBcommentsBox">
-<;left:<?=$AMwidth-10 ?>px;top:<?=$AMheight-13 ?>px;z-index:22;" id="AgentMuteANDPreseTDiaL">
-<;left:90px;top:<?=$HTheight+55 ?>px;z-index:24;" id="HotKeyEntriesBox">
+<;left:935px;top:<?php echo $CBheight; ?>px;z-index:19;" id="VolumeControlSpan">
+<;left:35px;top:<?php echo $CBheight; ?>px;z-index:20;" id="AgentStatusSpan"><font class="body_text">
+<;left:5px;top:<?php echo $HTheight; ?>px;z-index:21;" id="TransferMain">
+<;left:5px;top:<?php echo ($HTheight+20); ?>px;z-index:23;" id="HotKeyActionBox">
+<;left:10px;top:<?php echo ($HTheight+20); ?>px;z-index:25;" id="CBcommentsBox">
+<;left:<?php echo ($AMwidth-10); ?>px;top:<?php echo ($AMheight-13); ?>px;z-index:22;" id="AgentMuteANDPreseTDiaL">
+<;left:90px;top:<?php echo ($HTheight+55; ?>px;z-index:24;" id="HotKeyEntriesBox">
 <;left:0px;top:18px;z-index:26;" id="NoneInSessionBox">
 <;left:0px;top:0px;z-index:27;" id="CustomerGoneBox">
 <;left:0px;top:0px;z-index:28;" id="WrapupBox">

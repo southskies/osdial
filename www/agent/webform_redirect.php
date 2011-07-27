@@ -83,8 +83,8 @@ if ($url == "") {
     <title>Webform Redirection</title>
 </html>
 <body>
-    If you are not automatically redirected, click <a href="<?= $url ?>">here.</a>
+    If you are not automatically redirected, click <a href="<?php echo $url; ?>">here.</a>
     <script language="javascript">
-        window.location = "<?= $url ?>";
+        window.location = "<?php echo $url; ?>";
     </script>
 </body>

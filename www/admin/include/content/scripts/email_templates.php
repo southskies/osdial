@@ -758,7 +758,7 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                 var previewb = cm.createButton('previewb', {
                     label: 'Preview',
                     onclick : function() {
-                        window.open('/admin/admin.php?ADD=7email&et_id=<?= $et_id?>','','width=1000,height=700,scrollbars=yes,menubar=yes,address=yes');
+                        window.open('/admin/admin.php?ADD=7email&et_id=<?php echo $et_id; ?>','','width=1000,height=700,scrollbars=yes,menubar=yes,address=yes');
                      }
                 });
                 return previewb;

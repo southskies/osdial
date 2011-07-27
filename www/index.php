@@ -23,7 +23,7 @@ require('admin/templates/' . $system_settings['admin_template'] . '/display.php'
     function osdfont(id,phrase,krnon) {
         var let = new Array();
         var krn = new Array();
-        var images = 'admin/templates/<?=$system_settings['admin_template']?>/images/';
+        var images = 'admin/templates/<?php echo $system_settings['admin_template'];?>/images/';
         if (krnon == undefined)
             krnon = 1;
 
@@ -72,7 +72,7 @@ require('admin/templates/' . $system_settings['admin_template'] . '/display.php'
 <?php } ?>
 <br><br><br>
 
-<table bgcolor=#56734F align=center border=0 align=center width=546 height=381 cellpadding=0 cellspacing=0 background="admin/templates/<?=$system_settings['admin_template']?>/images/osdial-bg3.png">
+<table bgcolor=#56734F align=center border=0 align=center width=546 height=381 cellpadding=0 cellspacing=0 background="admin/templates/<?php echo $system_settings['admin_template']; ?>/images/osdial-bg3.png">
 <tr>
     <td>
     
@@ -91,26 +91,26 @@ require('admin/templates/' . $system_settings['admin_template'] . '/display.php'
         echo "osdfont('company','$c',$klen);\n";
 ?>
                 </script>
-                <!-- <img src=admin/templates/<?=$system_settings['admin_template']?>/images/defaultCompany.png alt="Testing" width=298 height=30> -->
+                <!-- <img src=admin/templates/<?php echo $system_settings['admin_template']; ?>/images/defaultCompany.png alt="Testing" width=298 height=30> -->
             </td>
         </tr>
         <tr valign=top>
             <td align=center>
                 &nbsp;&nbsp;&nbsp;<map name="mapAL">
                     <a href=agent
-                        OnMouseOver="agent.src='admin/templates/<?=$system_settings['admin_template']?>/images/AgentLoginDn.png'" 
-                        OnMouseOut="agent.src='admin/templates/<?=$system_settings['admin_template']?>/images/AgentLoginUp.png'" 
+                        OnMouseOver="agent.src='admin/templates/<?php echo $system_settings['admin_template']; ?>/images/AgentLoginDn.png'" 
+                        OnMouseOut="agent.src='admin/templates/<?php echo $system_settings['admin_template']; ?>/images/AgentLoginUp.png'" 
                         usemap="#mapAL">
-                    <img src="admin/templates/<?=$system_settings['admin_template']?>/images/AgentLoginUp.png" WIDTH=150 HEIGHT=30 BORDER=0 NAME="agent"></A>
+                    <img src="admin/templates/<?php echo $system_settings['admin_template']; ?>/images/AgentLoginUp.png" WIDTH=150 HEIGHT=30 BORDER=0 NAME="agent"></A>
                 </map>
             </td>
             <td align=center>
                 <map name="mapCL">
                     <a href=admin/admin.php?ADD=10 
-                        OnMouseOver="control.src='admin/templates/<?=$system_settings['admin_template']?>/images/ManagerLoginDn.png'" 
-                        OnMouseOut="control.src='admin/templates/<?=$system_settings['admin_template']?>/images/ManagerLoginUp.png'" 
+                        OnMouseOver="control.src='admin/templates/<?php echo $system_settings['admin_template']; ?>/images/ManagerLoginDn.png'" 
+                        OnMouseOut="control.src='admin/templates/<?php echo $system_settings['admin_template']; ?>/images/ManagerLoginUp.png'" 
                         usemap="#mapCL">
-                    <img src="admin/templates/<?=$system_settings['admin_template']?>/images/ManagerLoginUp.png" WIDTH=190 HEIGHT=30 BORDER=0 NAME="control"></A>
+                    <img src="admin/templates/<?php echo $system_settings['admin_template']; ?>/images/ManagerLoginUp.png" WIDTH=190 HEIGHT=30 BORDER=0 NAME="control"></A>
                 </map>
             </td>
         </tr>
