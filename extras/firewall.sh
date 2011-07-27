@@ -598,7 +598,7 @@ FW_TrustNS() {
 
 FW_voipabuse() {
 	# The VoIP Blacklist Project (voipabuse) http://www.infiltrated.net/voipabuse/
-	for host in `wget -qO - http://www.infiltrated.net/voipabuse/addresses.txt`; do
+	for host in `wget -qO - http://www.infiltrated.net/vabl.txt | awk -F\| '{ print $1 }'`; do
 		IPT "-A voipabuse_in -s $host -j DROP" "Block voipabuse: $label"
 	done
 }
