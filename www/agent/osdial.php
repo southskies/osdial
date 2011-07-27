@@ -282,6 +282,7 @@ while ($i < $qm_conf_ct) {
     if ($row[3]=='IAX2') $isp='#';
     $i++;
 }
+if (empty($agent_template)) $agent_template='default';
 ##### END SETTINGS LOOKUP #####
 ###########################################
 
@@ -737,7 +738,6 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
     exit;
 
 } else {
-    if ($WeBRooTWritablE > 0) $fp = fopen("./osdial_auth_entries.txt", "a");
     $VDloginDISPLAY=0;
 
     if (strlen($VD_login)<2 or strlen($VD_pass)<2 or strlen($VD_campaign)<2) {
@@ -775,10 +775,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             $script_override = $row[14];
             if ($script_override!='') $myscripts[$script_override] = 1;
 
-            if ($WeBRooTWritablE > 0) {
-                fwrite ($fp, "vdweb|GOOD|$date|$VD_login|$VD_pass|$ip|$browser|$LOGfullname|\n");
-                fclose($fp);
-            }
+            debugLog('osdial_auth_entries',"vdweb|GOOD|$date|$VD_login|$VD_pass|$ip|$browser|$LOGfullname|");
             $user_abb = "$VD_login$VD_login$VD_login$VD_login";
 
             while (strlen($user_abb) > 4 and $forever_stop < 200) {
@@ -1139,10 +1136,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 $VDdisplayMESSAGE = "Campaign not active, please try again<br>";
             }
         } else {
-            if ($WeBRooTWritablE > 0) {
-                fwrite ($fp, "vdweb|FAIL|$date|$VD_login|$VD_pass|$ip|$browser|\n");
-                fclose($fp);
-            }
+            debugLog('osdial_auth_entries',"vdweb|FAIL|$date|$VD_login|$VD_pass|$ip|$browser|");
             $VDloginDISPLAY=1;
             $VDdisplayMESSAGE = "Login incorrect, please try again<br>";
         }
@@ -1893,7 +1887,7 @@ flush();
 <body onload="begin_all_refresh();"  onunload="BrowserCloseLogout();" name=osdial>
 <?= $welcome_span ?>
 
-<? load_status('Initializing GUI...<br>&nbsp;<br>&nbsp;'); ?>
+<?php load_status('Initializing GUI...<br>&nbsp;<br>&nbsp;'); ?>
         
 <form name=osdial_form>
 
@@ -1904,7 +1898,7 @@ flush();
                 <td colspan=3 valign=top align=center>
                     <input type=hidden name=extension>
                     <font class="body_text">
-                    <? echo "<font color=" . $login_fc . ">&nbsp;&nbsp;Logged in as user <b>" . mclabel($VD_login) . "</b> on phone <b>" . mclabel($phone_login) . "</b> to campaign <b>" . mclabel($VD_campaign) . "</b>&nbsp;</font>\n"; ?>
+                    <?php echo "<font color=" . $login_fc . ">&nbsp;&nbsp;Logged in as user <b>" . mclabel($VD_login) . "</b> on phone <b>" . mclabel($phone_login) . "</b> to campaign <b>" . mclabel($VD_campaign) . "</b>&nbsp;</font>\n"; ?>
                     </font>
                 </td>
                 <td colspan=3 valign=top align=right></td>
@@ -1913,7 +1907,7 @@ flush();
     </span>
 
 
-    <? load_status('Initializing GUI...<br>Tabs<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>Tabs<br>&nbsp;'); ?>
     <!-- 2nd line -->
     <span style="position:absolute;left:0px;top:13px;z-index:1;" id="Tabs">
         <table width=<?=$MNwidth-10 ?> height=30 border=0> 
@@ -1986,17 +1980,17 @@ flush();
     </span>
 
     <!-- Hot Key Button -->
-    <? if ($HK_statuses_camp > 0 and ($user_level >= $HKuser_level or $VU_hotkeys_active > 0)) { ?>
+    <?php if ($HK_statuses_camp > 0 and ($user_level >= $HKuser_level or $VU_hotkeys_active > 0)) { ?>
         <span style="position:absolute;left:480px;top:488px;z-index:16;" id="hotkeysdisplay">
             <a href="#" onMouseOver="HotKeys('ON')"><img src="templates/<?= $agent_template ?>/images/vdc_XB_hotkeysactive_OFF.gif" width=137 height=32 border=0 alt="HOT KEYS INACTIVE"></a>
         </span>
-    <? } ?>
+    <?php } ?>
 
 
     <!-- D1, D2, Mute Links -->
     <span style="position:absolute;left:881px;top:432px;z-index:22;" id="AgentMuteANDPreseTDiaL">
         <font class="body_text">
-            <? if ($PreseT_DiaL_LinKs) {
+            <?php if ($PreseT_DiaL_LinKs) {
                 if (strlen($xferconf_a_number)) { 
                     echo "<a href=\"#\" onclick=\"DtMf_PreSet_a_DiaL();return false;\"><font class=\"$diallink_class\">D1 - DIAL</font></a><br>\n";
                 }
@@ -2017,7 +2011,7 @@ flush();
     <font id="PreviewFDTimeSpan" style="font-size:35pt; font-weight: bold; color: <?=$forcedial_fc?>; position:absolute;left:325px;top:380px;z-index:22;"></font>
     
 
-    <? load_status('Initializing GUI...<br>CallBacKsLisTBox<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>CallBacKsLisTBox<br>&nbsp;'); ?>
     <!-- Choose From Available Call Backs -->
     <span style="position:absolute;left:0px;top:18px;z-index:38;visibility:hidden;" id="CallBacKsLisTBox">
         <table border=1 bgcolor="<?=$callback_bg?>" width=<?=$CAwidth+13 ?> height=460>
@@ -2040,7 +2034,7 @@ flush();
 
     
 
-    <? load_status('Initializing GUI...<br>NeWManuaLDiaLBox<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>NeWManuaLDiaLBox<br>&nbsp;'); ?>
     <!-- Manual Dial -->
     <span style="position:absolute;left:0px;top:18px;z-index:39;visibility:hidden;" id="NeWManuaLDiaLBox">
         <table border=1 bgcolor="<?= $mandial_bg ?>" width=<?= $CAwidth-10 ?> height=545>
@@ -2049,7 +2043,7 @@ flush();
                     <br><b><font color=<?= $mandial_fc ?>>New Manual Dial Lead For </font><font color=<?=$mandial_bfc?>><?= $VD_login ?></font><font color=<?=$mandial_fc?>> In Campaign </font><font color=<?=$mandial_bfc?>><?= $VD_campaign ?></font></b>
                     <font color=<?= $mandial_fc ?>>
                         <br><br>Enter information below for the new lead you wish to call.<br>
-                        <?  if (preg_match("/X/",dial_prefix)) {
+                        <?php  if (preg_match("/X/",dial_prefix)) {
                             echo "Note: a dial prefix of $dial_prefix will be added to the beginning of this number<br>\n";
                         } ?>
                         Note: all new manual dial leads will go into list <?= $manual_dial_list_id ?><br><br>
@@ -2090,7 +2084,7 @@ flush();
     </span>
     
     
-    <? load_status('Initializing GUI...<br>HotKeyEntriesBox<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>HotKeyEntriesBox<br>&nbsp;'); ?>
     <!-- Disposition Hot Keys Window -->
     <span style="position:absolute;left:0;top:540px;z-index:24;width:964px;visibility:hidden;" id="HotKeyEntriesBox">
         <table frame=box bgcolor="<?=$hotkey_bg1?>" height=70 align=center>
@@ -2122,7 +2116,7 @@ flush();
     </span>
 
     
-    <? load_status('Initializing GUI...<br>VolumeControlSpan<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>VolumeControlSpan<br>&nbsp;'); ?>
     <!-- Volume Control Links -->
     <span style="position:absolute;left:935px;top:<?=$CBheight+26 ?>px;z-index:19;visibility:hidden;" id="VolumeControlSpan">
         <span id="VolumeUpSpan" style="left:0px;top:0px;"><img src="templates/<?= $agent_template ?>/images/vdc_volume_up_off.gif" width=28 height=15 border=0></span>
@@ -2130,7 +2124,7 @@ flush();
     </span>
 
     
-    <? load_status('Initializing GUI...<br>AgentStatusSpan<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>AgentStatusSpan<br>&nbsp;'); ?>
     <!-- Agent Status In Progress -->
     <span style="position:absolute;left:35px;top:<?=$CBheight ?>px;z-index:20;visibility:hidden;" id="AgentStatusSpan">
         <font class="body_text">
@@ -2141,7 +2135,7 @@ flush();
     </span>
 
     
-    <? load_status('Initializing GUI...<br>TransferMain<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>TransferMain<br>&nbsp;'); ?>
     <!-- Transfer Link -->
     <span style="position:absolute;left:185px;top:<?=$HTheight ?>px;z-index:21;visibility:hidden;" id="TransferMain">
         <table bgcolor="<?=$xfer_bg1?>" frame=box width=<?=$XFwidth-255 ?>>
@@ -2158,14 +2152,14 @@ flush();
                                     <td align=center><span style="visibility:<?=$hide_xfer_local_closer?>;background-color:<?=$xfer_bg2?>;" id="LocalCloser"><img src="templates/<?= $agent_template ?>/images/vdc_XB_localcloser_OFF.gif" width=107 height=16 border=0 alt="LOCAL CLOSER"></span></td>
                                     <td align=center><span style="visibility:<?=$hide_xfer_hangup_xfer?>;background-color:<?=$xfer_bg2?>;" id="HangupXferLine"><img src="templates/<?= $agent_template ?>/images/vdc_XB_hangupxferline_OFF.gif" width=145 height=16 border=0 alt="Hangup Xfer Line"></span></td>
                                     <td align=center><span style="visibility:<?=$hide_xfer_hangup_both?>;background-color:<?=$xfer_bg2?>;" id="HangupBothLines"><a href="#" onclick="bothcall_send_hangup();return false;"><img src="templates/<?= $agent_template ?>/images/vdc_XB_hangupbothlines.gif" width=145 height=16 border=0 alt="Hangup Both Lines"></a></span></td>
-                                    <td align=center><? if (strlen($xferconf_a_number)) { ?><a href="#" onclick="DtMf_PreSet_a();return false;"><font class="<?=$diallink_class?>">D1</font></a><? } ?></td>
+                                    <td align=center><?php if (strlen($xferconf_a_number)) { ?><a href="#" onclick="DtMf_PreSet_a();return false;"><font class="<?=$diallink_class?>">D1</font></a><?php } ?></td>
                                 </tr>
                                 <tr>
                                     <td><font size=1 color=<?=$xfer_fc?>>Number to call:&nbsp;<input type=text size=15 name=xfernumber maxlength=25 class="cust_form" value="<?=$xferconf_a_number?>"><input type=hidden name=xferuniqueid></font></td>
                                     <td align=center><span style="visibility:<?=$hide_xfer_dial_override?>;" id="XferOverride"><input type=checkbox name=xferoverride size=1 value="0"><font size=1 color=<?=$xfer_fc?>>Dial Override</font></span></td>
                                     <td align=center><span style="visibility:<?=$hide_xfer_leave_3way?>;background-color:<?=$xfer_bg2?>;" id="Leave3WayCall"><img src="templates/<?= $agent_template ?>/images/vdc_XB_leave3waycall_OFF.gif" width=137 height=16 border=0 alt="LEAVE 3-WAY CALL"></span></td>
                                     <td align=center><span style="visibility:<?=$hide_xfer_blind_xfer?>;background-color:<?=$xfer_bg2?>;" id="DialBlindTransfer"><img src="templates/<?= $agent_template ?>/images/vdc_XB_blindtransfer_OFF.gif" width=137 height=16 border=0 alt="Dial Blind Transfer"></span></td>
-                                    <td align=center><? if (strlen($xferconf_b_number)) { ?><a href="#" onclick="DtMf_PreSet_b();return false;"><font class="<?=$diallink_class?>">D2</font></a><? } ?></td>
+                                    <td align=center><?php if (strlen($xferconf_b_number)) { ?><a href="#" onclick="DtMf_PreSet_b();return false;"><font class="<?=$diallink_class?>">D2</font></a><?php } ?></td>
                                 </tr>
                                 <tr>
                                     <td><font size=1 color=<?=$xfer_fc?>>Seconds:&nbsp;<input type=text size=2 name=xferlength maxlength=4 class="cust_form"></font></td>
@@ -2183,7 +2177,7 @@ flush();
     </span>
 
     
-    <? load_status('Initializing GUI...<br>HotKeyActionBox<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>HotKeyActionBox<br>&nbsp;'); ?>
     <!-- Dispositioned -->
     <span style="position:absolute;left:5px;top:<?=$HTheight+20 ?>px;z-index:23;visibility:hidden;" id="HotKeyActionBox">
         <table border=0 bgcolor="<?=$hotkey_done_bg1?>" width=<?=$HCwidth ?> height=70>
@@ -2198,7 +2192,7 @@ flush();
     </span>
 
     
-    <? load_status('Initializing GUI...<br>CBcommentsBox<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>CBcommentsBox<br>&nbsp;'); ?>
     <!-- Previous Callback Info -->
     <span style="position:absolute;left:10px;top:<?=$HTheight+20 ?>px;z-index:25;visibility:hidden;" id="CBcommentsBox">
         <table frame=box bgcolor="<?=$cbinfo_bg1?>" width=<?=$HCwidth ?> height=70>
@@ -2224,7 +2218,7 @@ flush();
     </span>
 
     
-    <? load_status('Initializing GUI...<br>NoneInSessionBox<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>NoneInSessionBox<br>&nbsp;'); ?>
     <!-- Phone Is Hungup -->
     <span style="position:absolute;left:0px;top:18px;z-index:26;visibility:hidden;" id="NoneInSessionBox">
         <table border=1 bgcolor="<?=$noone_bg?>" width=<?=$CAwidth ?> height=545>
@@ -2241,7 +2235,7 @@ flush();
     </span>
     
 
-    <? load_status('Initializing GUI...<br>CustomerGoneBox<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>CustomerGoneBox<br>&nbsp;'); ?>
     <!-- Customer Hungup -->
     <span style="position:absolute;left:0px;top:0px;z-index:27;visibility:hidden;" id="CustomerGoneBox">
         <table border=1 bgcolor="<?=$custgone_bg?>" width=<?=$CAwidth ?> height=500>
@@ -2257,7 +2251,7 @@ flush();
     </span>
     
 
-    <? load_status('Initializing GUI...<br>WrapupBox<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>WrapupBox<br>&nbsp;'); ?>
     <!-- Call Wrapup -->
     <span style="position:absolute;left:0px;top:0px;z-index:28;visibility:hidden;" id="WrapupBox">
         <table border=1 bgcolor="<?=$wrapup_bg?>" width=<?= $CAwidth ?> height=550>
@@ -2274,7 +2268,7 @@ flush();
     </span>
 
     
-    <? load_status('Initializing GUI...<br>AgenTDisablEBoX<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>AgenTDisablEBoX<br>&nbsp;'); ?>
     <!-- Agent Disabled -->
     <span style="position:absolute;left:0px;top:0px;z-index:29;visibility:hidden;" id="AgenTDisablEBoX">
         <table class=acrossagent border=0 width=<?=$CAwidth ?> height=564>
@@ -2293,7 +2287,7 @@ flush();
     </span>
 
 
-    <? load_status('Initializing GUI...<br>SysteMDisablEBoX<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>SysteMDisablEBoX<br>&nbsp;'); ?>
     <!-- System Disabled -->
     <span style="position:absolute;left:0px;top:0px;z-index:29;visibility:hidden;" id="SysteMDisablEBoX">
         <table class=acrossagent border=0 width=<?=$CAwidth ?> height=564>
@@ -2311,14 +2305,14 @@ flush();
     </span>
 
 
-    <? load_status('Initializing GUI...<br>ARIPanel<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>ARIPanel<br>&nbsp;'); ?>
     <!-- ARIPanel -->
     <span style="visibility:hidden;position:absolute;left:3px;top:40px;z-index:40;padding:15;background-color:<?=$wrapup_bg?>;" name="ARIPanel" id="ARIPanel">
         <iframe src="/agent/blank.php" width="<?=$CAwidth?>" height="500" name="ARIFrame" id="ARIFrame" style="background-color: white;"></iframe>
     </span>
 
 
-    <? load_status('Initializing GUI...<br>MultiCallAlerTBoX<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>MultiCallAlerTBoX<br>&nbsp;'); ?>
     <!-- Multicall Alert -->
     <span style="position:absolute;left:0px;top:50px;z-index:41;visibility:hidden;" id="MultiCallAlerTBoX">
         <table class=acrossagent border=1 height=500 cellspacing=20>
@@ -2345,7 +2339,7 @@ flush();
         </table>
     </span>
 
-    <? load_status('Initializing GUI...<br>SysteMAlerTBoX<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>SysteMAlerTBoX<br>&nbsp;'); ?>
     <!-- System Alert -->
     <span style="position:absolute;left:0px;top:300px;z-index:41;visibility:hidden;" id="SysteMAlerTBoX">
         <table class=acrossagent border=1 width=<?= $CAwidth ?> height=300 cellspacing=20>
@@ -2370,7 +2364,7 @@ flush();
     </span>
     
     
-    <? load_status('Initializing GUI...<br>DispoSelectBox<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>DispoSelectBox<br>&nbsp;'); ?>
     <!-- Disposition Window -->
     <span style="position:absolute;left:0px;top:0px;z-index:34;visibility:hidden;" id="DispoSelectBox">
         <table border=1 bgcolor="<?=$dispo_bg?>"  width=<?= $CAwidth + 15 ?> height=550 class=acrossagent>
@@ -2395,11 +2389,11 @@ flush();
                         </table>
                         <input type=hidden name=DispoSelection><br>
                         <input type=checkbox name=DispoSelectStop size=1 value="0">
-                        PAUSE <? echo (($inbound_man>0)?"INBOUND CALLS":"AGENT DIALING") ?> <br>
+                        PAUSE <?php echo (($inbound_man>0)?"INBOUND CALLS":"AGENT DIALING") ?> <br>
                         <a href="#" onclick="DispoSelectContent_create('','ReSET');return false;">CLEAR FORM</a>
                         &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 
                         <a href="#" onclick="DispoSelect_submit();return false;"><b>SUBMIT</b></a>
-                        <? if ($submit_method < 1) {
+                        <?php if ($submit_method < 1) {
                             echo "<br><br>\n";
                             echo "<a href=\"#\" onclick=\"WeBForMDispoSelect_submit();return false;\">WEB FORM SUBMIT</a>\n";
                         } ?>
@@ -2435,7 +2429,7 @@ flush();
     </span>
 
     
-    <? load_status('Initializing GUI...<br>PauseCodeSelectBox<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>PauseCodeSelectBox<br>&nbsp;'); ?>
     <!-- Pause Code Window -->
     <span style="position:absolute;left:0px;top:18px;z-index:40;visibility:hidden;" id="PauseCodeSelectBox">
         <table class=acrossagent frame=box width=<?=$CAwidth -10 ?> height=500>
@@ -2454,7 +2448,7 @@ flush();
     </span>
 
     
-    <? load_status('Initializing GUI...<br>CallBackSelectBox<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>CallBackSelectBox<br>&nbsp;'); ?>
     <!-- Callback Window -->
     <span style="position:absolute;left:0px;top:18px;z-index:35;visibility:hidden;" id="CallBackSelectBox">
         <table border=1 bgcolor="<?= $callback_bg3 ?>" width=<?= $CAwidth ?> height=480>
@@ -2501,7 +2495,7 @@ flush();
                             <option>AM</option>
                             <option selected>PM</option>
                         </select> &nbsp;<br>
-                        <? if ($agentonly_callbacks) {
+                        <?php if ($agentonly_callbacks) {
                             echo "<input type=checkbox name=CallBackOnlyMe id=CallBackOnlyMe size=1 value=\"0\"> MY CALLBACK ONLY <br>";
                         } ?>
                         CB Comments: <input type=text name="CallBackCommenTsField" id="CallBackCommenTsField" size=50>
@@ -2517,7 +2511,7 @@ flush();
     </span>
 
 
-    <? load_status('Initializing GUI...<br>PostDateSelectBox<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>PostDateSelectBox<br>&nbsp;'); ?>
     <!-- PostDate Window -->
     <span style="position:absolute;left:0px;top:18px;z-index:35;visibility:hidden;" id="PostDateSelectBox">
         <table border=1 bgcolor="<?= $callback_bg3 ?>" width=<?= $CAwidth ?> height=480>
@@ -2539,7 +2533,7 @@ flush();
     </span>
 
     
-    <? load_status('Initializing GUI...<br>CloserSelectBox<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>CloserSelectBox<br>&nbsp;'); ?>
     <!-- Closer Inbound Group Window -->
     <span style="position:absolute;left:0px;top:0px;z-index:36;visibility:hidden;" id="CloserSelectBox">
         <table class=acrossagent border=0 width=<?=$CAwidth ?> height=565>
@@ -2561,19 +2555,19 @@ flush();
     </span>
     
 
-    <? load_status('Initializing GUI...<br>NothingBox<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>NothingBox<br>&nbsp;'); ?>
     <!-- Preview hide -->
     <span style="position:absolute;left:0px;top:0px;z-index:37;visibility:hidden;" id="NothingBox">
         <button type=button name="inert_button"><img src="templates/<?= $agent_template ?>/images/blank.gif" width=1 height=1></button>
         <span id="DiaLLeaDPrevieWHide">Channel</span>
         <span id="DiaLDiaLAltPhonEHide">Channel</span>
-        <? if (!$agentonly_callbacks) {
+        <?php if (!$agentonly_callbacks) {
             echo "<input type=checkbox name=CallBackOnlyMe size=1 value=\"0\"> MY CALLBACK ONLY <br>";
         } ?>
     </span>
 
     
-    <? load_status('Initializing GUI...<br>ScriptPanel<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>ScriptPanel<br>&nbsp;'); ?>
     <!-- Script window -->
     <span style="position:absolute;left:190px;top:95px;z-index:17;width:<?= $SSwidth ?>;height:<?= $SSheight ?>;overflow-x:hidden;overflow-y:scroll;visibility:hidden;" id="ScriptPanel">
         <table border=0 bgcolor="<?= $script_bg ?>" width=<?= $SSwidth ?> height=<?= $SSheight ?>>
@@ -2584,7 +2578,7 @@ flush();
     </span>
     
 
-    <? load_status('Initializing GUI...<br>MaiNfooterspan<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>MaiNfooterspan<br>&nbsp;'); ?>
     <!-- Footer Links -->
     <span style="position:absolute;left:2px;top: 480px;z-index:15;" id="MaiNfooterspan">
         <table id="MaiNfooter" width=<?=$MNwidth+10 ?> class=bottom style="background-color:<?=$panel_bg?>;">
@@ -2610,14 +2604,14 @@ flush();
     
     <!-- =============================   Here is the main OSDIAL display panel  ============================= -->
     
-    <? load_status('Initializing GUI...<br>MainPanel<br>&nbsp;'); ?>
+    <?php load_status('Initializing GUI...<br>MainPanel<br>&nbsp;'); ?>
     <span style="position:absolute;left:2px;top:46px;z-index:4;" id="MainPanel">
         <table class=acrossagent cellpadding=0 cellspacing=0>
             <tr>
                 <td>
 
 
-                    <? load_status('Initializing GUI...<br>MainPanel<br>MainTable'); ?>
+                    <?php load_status('Initializing GUI...<br>MainPanel<br>MainTable'); ?>
                     <!-- Column widths 205 + 505 + 270 = 980 -->
                     <table id="MainTable" class=acrossagent style="background-color:<?=$panel_bg?>;" cellpadding=0 cellspacing=0>
                         <tr>
@@ -2634,7 +2628,7 @@ flush();
                         <tr>
 
 
-                            <? load_status('Initializing GUI...<br>MainPanel<br>AgentActions'); ?>
+                            <?php load_status('Initializing GUI...<br>MainPanel<br>AgentActions'); ?>
                             <td width=205 height=330 align=left valign=top class=curve3>
                                 <font class="body_text" style="">
                                     <center>
@@ -2695,7 +2689,7 @@ flush();
                             </td>
 
 
-                            <? load_status('Initializing GUI...<br>MainPanel<br>CustomerInformation'); ?>
+                            <?php load_status('Initializing GUI...<br>MainPanel<br>CustomerInformation'); ?>
                             <td width=505 align=left valign=top>
                                 <input type=hidden name=list_id value="">
                                 <input type=hidden name=called_count value="">
@@ -2786,11 +2780,11 @@ flush();
                                             <td align=right valign=top><font class="body_text" color=<?=$form_fc?>><label for=comments>Comments:&nbsp;</label></font></td>
                                             <td align=left colspan=2>
                                                 <font class="body_tiny">
-                                                    <? if ($multi_line_comments) { ?>
+                                                    <?php if ($multi_line_comments) { ?>
                                                         <textarea name=comments id=comments rows=3 cols=56 class="cust_form" style="height:45px;"></textarea>
-                                                    <? } else { ?>
+                                                    <?php } else { ?>
                                                         <input type=text size=56 name=comments id=comments maxlength=255 class="cust_form" value="">
-                                                    <? } ?>
+                                                    <?php } ?>
                                                 </font>
                                             </td>
                                         </tr>
@@ -2824,7 +2818,7 @@ flush();
 
 
 
-                            <? load_status('Initializing GUI...<br>MainPanel<br>AdditionalFormFields'); ?>
+                            <?php load_status('Initializing GUI...<br>MainPanel<br>AdditionalFormFields'); ?>
                             <td width=270 align=center valign=top class=borderright>
                                 <div class="AFHead">Additional Information</div>
                                 <?
@@ -2980,14 +2974,14 @@ flush();
 <!-- END *********   The end of the main OSDial display panel -->
 
 
-<? load_status('Initializing GUI...<br>WebFormPanel1<br>&nbsp;'); ?>
+<?php load_status('Initializing GUI...<br>WebFormPanel1<br>&nbsp;'); ?>
 <!-- Inline webform here -->
 <span style="visibility:hidden; position:absolute;left:190px;top:92px;z-index:17;" name="WebFormPanel1" id="WebFormPanel1">
     <iframe src="/agent/blank.php" width="785" height="325" name="WebFormPF1" id="WebFormPF1" style="background-color: white;"></iframe>
 </span>
 
 
-<? load_status('Initializing GUI...<br>WebFormPanel2<br>&nbsp;'); ?>
+<?php load_status('Initializing GUI...<br>WebFormPanel2<br>&nbsp;'); ?>
 <span style="visibility:hidden; position:absolute;left:190px;top:92px;z-index:18;" name="WebFormPanel2" id="WebFormPanel2">
     <iframe src="/agent/blank.php" width="785" height="325" name="WebFormPF2" id="WebFormPF2" style="background-color: white;"></iframe>
 </span>
