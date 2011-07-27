@@ -780,7 +780,11 @@ sub sql_quote {
 	return $self->{_sql}{$dbh}{dbh}->quote($string);
 }
 sub quote { return sql_quote(@_); }
-sub mres { return sql_quote(@_); }
+sub mres {
+	my $dequote = sql_quote(@_);
+	$dequote =~ s/^'|'$//g;
+	return $dequote;
+}
 
 
 
