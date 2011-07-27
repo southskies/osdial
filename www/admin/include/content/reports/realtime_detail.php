@@ -407,7 +407,13 @@ function report_realtime_detail() {
             $html .="<font color='red'>&nbsp;&nbsp;(In-Active)</font>";
         }
         $html .= "</td></tr><tr><td align=center>";
-        $html .= "<table class=indents cellpadding=0 cellspacing=0><tr>";
+        $html .= "<table class=indents cellpadding=0 cellspacing=0>";
+
+        $html .= "<tr>";
+        $html .= "<td align=right colspan=1><font size=2 color=$default_text><b>Statuses:</b></td><TD ALIGN=LEFT colspan=7><font size=2>&nbsp; <span title=\"$DIALstatuses\">" . ellipse($DIALstatuses,110,true) . "</span>&nbsp;&nbsp;</td>";
+        $html .= "</tr>";
+
+        $html .= "<tr>";
         $html .= "<td align=right><font size=2 color=$default_text><b>Dial Level:</b></td><td align=left><font size=2>&nbsp; $DIALlev&nbsp;&nbsp;</td>";
         $html .= "<td align=right><font size=2 color=$default_text><b>Trunk Short/Fill:</b></td><td align=left><font size=2>&nbsp; $balanceSHORT / $balanceFILL&nbsp;&nbsp;</td>";
         $html .= "<td align=right><font size=2 color=$default_text><b>Filter:</b></td><td align=left><font size=2>&nbsp; $DIALfilter&nbsp;&nbsp;</td>";
@@ -436,6 +442,7 @@ function report_realtime_detail() {
             $html .= "</tr>";
         }
 
+
         $html .= "<tr>";
         $html .= "<td align=right><font size=2 color=$default_text><b>Dialable Leads:</b></td><td align=left><font size=2>&nbsp; $DAleads&nbsp;&nbsp;</td>";
         $html .= "<td align=right><font size=2 color=$default_text><b>Recycles/Sched:</b></td><td align=left><font size=2>&nbsp; $recycle_total / $recycle_sched&nbsp;&nbsp;</td>";
@@ -445,12 +452,8 @@ function report_realtime_detail() {
 
         $html .= "<tr>";
         $html .= "<td align=right><font size=2 color=$default_text><b>Hopper Level:</b></td><td align=left><font size=2>&nbsp; $HOPlev&nbsp;&nbsp;</td>";
-        $html .= "<td align=right><font size=2 color=$default_text><b>Drop/Answer:</b></td><td align=left><font size=2>&nbsp; $dropsTODAY / $answersTODAY&nbsp;&nbsp;</td>";
-        $html .= "<td align=right><font size=2 color=$default_text><b>Statuses:</b></td><TD ALIGN=LEFT colspan=3><font size=2>&nbsp; <span title=\"$DIALstatuses\">" . ellipse($DIALstatuses,40,true) . "</span>&nbsp;&nbsp;</td>";
-        $html .= "</tr>";
-
-        $html .= "<tr>";
         $html .= "<td align=right><font size=2 color=$default_text><b>Leads In Hopper:</b></td><td align=left><font size=2>&nbsp; $VDhop&nbsp;&nbsp;</td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Drop/Answer:</b></td><td align=left><font size=2>&nbsp; $dropsTODAY / $answersTODAY&nbsp;&nbsp;</td>";
         $html .= "<td align=right><font size=2 color=$default_text><b>Drop %:</b></td><td align=left><font size=2>&nbsp; ";
         if ($drpctTODAY >= $DROPmax) {
             $html .= "<font color=red><b>$drpctTODAY%</b></font>";
@@ -458,7 +461,10 @@ function report_realtime_detail() {
             $html .= "$drpctTODAY%";
         }
         $html .= "&nbsp;&nbsp;</td>";
-        $html .= "<td align=right><font size=2 color=$default_text><b>Order:</b></td><td align=left><font size=2>&nbsp; $DIALorder&nbsp;&nbsp;</td>";
+        $html .= "</tr>";
+
+        $html .= "<tr>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Order:</b></td><td align=left colspan=7><font size=2>&nbsp; $DIALorder&nbsp;&nbsp;</td>";
         $html .= "</tr><tr>";
         if ( (!preg_match('/NULL/',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
             $html .= "<td align=right><font size=2 color=$default_text><b>$VSCcat1:</b></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1tally&nbsp;&nbsp;</td>\n";

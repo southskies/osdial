@@ -175,61 +175,65 @@ function report_realtime_summary() {
 		$row=mysql_fetch_row($rslt);
 		$balanceSHORT = $row[0];
 		
-		$html .= "<table align=center cellpadding=0 cellspacing=0 border=0><TR>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>DIAL LEVEL:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALlev&nbsp; &nbsp; </TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>TRUNK SHORT/FILL:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $balanceSHORT / $balanceFILL &nbsp; &nbsp; </TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>FILTER:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALfilter &nbsp; </TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>TIME:</B></TD><TD ALIGN=LEFT><font size=2 color=$default_text>&nbsp; " . dateToLocal($link,'first',$NOW_TIME,$webClientAdjGMT,'',$webClientDST,1) . " </TD>";
-		$html .= "";
-		$html .= "</TR>";
-		
-		if ($adastats>1) {
-			$html .= "<TR BGCOLOR=\"#CCCCCC\">";
-			$html .= "<TD ALIGN=RIGHT><font size=2>&nbsp; <B>MAX LEVEL:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $maxDIALlev &nbsp; </TD>";
-			$html .= "<TD ALIGN=RIGHT><font size=2><B>DROPPED MAX:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DROPmax% &nbsp; &nbsp;</TD>";
-			$html .= "<TD ALIGN=RIGHT><font size=2><B>TARGET DIFF:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $targetDIFF &nbsp; &nbsp; </TD>";
-			$html .= "<TD ALIGN=RIGHT><font size=2><B>INTENSITY:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $ADAintense &nbsp; &nbsp; </TD>";
-			$html .= "</TR>";
-		
-			$html .= "<TR BGCOLOR=\"#CCCCCC\">";
-			$html .= "<TD ALIGN=RIGHT><font size=2><B>DIAL TIMEOUT:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALtimeout &nbsp;</TD>";
-			$html .= "<TD ALIGN=RIGHT><font size=2><B>TAPER TIME:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $TAPERtime &nbsp;</TD>";
-			$html .= "<TD ALIGN=RIGHT><font size=2><B>LOCAL TIME:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $CALLtime &nbsp;</TD>";
-			$html .= "<TD ALIGN=RIGHT><font size=2><B>AVAIL ONLY:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $ADAavailonly &nbsp;</TD>";
-			$html .= "</TR>";
-			
-			$html .= "<TR BGCOLOR=\"#CCCCCC\">";
-			$html .= "<TD ALIGN=RIGHT><font size=2><B>DL DIFF:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $diffONEMIN &nbsp; &nbsp; </TD>";
-			$html .= "<TD ALIGN=RIGHT><font size=2><B>DIFF:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $diffpctONEMIN% &nbsp; &nbsp; </TD>";
-		    $html .= "<TD ALIGN=RIGHT><font size=2><B>AVG AGENTS:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $agentsONEMIN &nbsp; &nbsp; </TD>";
-			$html .= "</TR>";
-		}
-		
-		$html .= "<TR>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>DIALABLE LEADS:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DAleads &nbsp; &nbsp; </TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>Recycles/Sched:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $recycle_total / $recycle_sched &nbsp; &nbsp; </TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>CALLS TODAY:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $callsTODAY &nbsp; &nbsp; </TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>DIAL METHOD:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALmethod &nbsp; &nbsp; </TD>";
-		$html .= "</TR>";
-		
-		$html .= "<TR>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>HOPPER LEVEL:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $HOPlev &nbsp; &nbsp; </TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>DROPPED / ANSWERED:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $dropsTODAY / $answersTODAY &nbsp; </TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>STATUSES:</B></TD><TD ALIGN=LEFT colspan=3><font size=2>&nbsp; $DIALstatuses &nbsp; &nbsp; </TD>";
-		$html .= "</TR>";
-		
-		$html .= "<TR>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>LEADS IN HOPPER:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $VDhop &nbsp; &nbsp; </TD>";
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>DROPPED PERCENT:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; ";
-		if ($drpctTODAY >= $DROPmax) {
-			$html .= "<font color=red><B>$drpctTODAY%</B></font>";
-		} else {
-			$html .= "$drpctTODAY%";
-		}
-		$html .= " &nbsp; &nbsp;</TD>";
-		
-		$html .= "<TD ALIGN=RIGHT><font size=2 color=$default_text><B>ORDER:</B></TD><TD ALIGN=LEFT><font size=2>&nbsp; $DIALorder &nbsp; &nbsp; </TD>";
-		$html .= "</tr><tr>";
+        $html .= "<table align=center cellpadding=0 cellspacing=0 border=0>";
+
+        $html .= "<tr>";
+        $html .= "<td align=right colspan=1><font size=2 color=$default_text><b>Statuses:</b></td><td align=left colspan=7><font size=2>&nbsp; <span title=\"$DIALstatuses\">" . ellipse($DIALstatuses,110,true) . "</span>&nbsp;&nbsp;</td>";
+        $html .= "</tr>";
+
+        $html .= "<td align=right><font size=2 color=$default_text><b>Dial Level:</b></td><td align=left><font size=2>&nbsp; $DIALlev&nbsp; &nbsp; </td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Trunk Short/Fill:</b></td><td align=left><font size=2>&nbsp; $balanceSHORT / $balanceFILL &nbsp; &nbsp; </td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Filter:</b></td><td align=left><font size=2>&nbsp; $DIALfilter &nbsp; </td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Time:</b></td><td align=left><font size=2 color=$default_text>&nbsp; " . dateToLocal($link,'first',$NOW_TIME,$webClientAdjGMT,'',$webClientDST,1) . " </td>";
+        $html .= "";
+        $html .= "</tr>";
+
+        if ($adastats>1) {
+            $html .= "<tr bgcolor=\"#CCCCCC\">";
+            $html .= "<td align=right><font size=2>&nbsp; <b>Max Level:</b></td><td align=left><font size=2>&nbsp; $maxDIALlev &nbsp; </td>";
+            $html .= "<td align=right><font size=2><b>Dropped Max:</b></td><td align=left><font size=2>&nbsp; $DROPmax% &nbsp; &nbsp;</td>";
+            $html .= "<td align=right><font size=2><b>Target Diff:</b></td><td align=left><font size=2>&nbsp; $targetDIFF &nbsp; &nbsp; </td>";
+            $html .= "<td align=right><font size=2><b>Intensity:</b></td><td align=left><font size=2>&nbsp; $ADAintense &nbsp; &nbsp; </td>";
+            $html .= "</tr>";
+
+            $html .= "<tr bgcolor=\"#CCCCCC\">";
+            $html .= "<td align=right><font size=2><b>Dial Timeout:</b></td><td align=left><font size=2>&nbsp; $DIALtimeout &nbsp;</td>";
+            $html .= "<td align=right><font size=2><b>Taper Time:</b></td><td align=left><font size=2>&nbsp; $TAPERtime &nbsp;</td>";
+            $html .= "<td align=right><font size=2><b>Local Ttime</b></td><td align=left><font size=2>&nbsp; $CALLtime &nbsp;</td>";
+            $html .= "<td align=right><font size=2><b>Avail Only:</b></td><td align=left><font size=2>&nbsp; $ADAavailonly &nbsp;</td>";
+            $html .= "</tr>";
+
+            $html .= "<tr bgcolor=\"#CCCCCC\">";
+            $html .= "<td align=right><font size=2><b>DL Diff:</b></td><td align=left><font size=2>&nbsp; $diffONEMIN &nbsp; &nbsp; </td>";
+            $html .= "<td align=right><font size=2><b>Diff:</b></td><td align=left><font size=2>&nbsp; $diffpctONEMIN% &nbsp; &nbsp; </td>";
+            $html .= "<td align=right><font size=2><b>Avg Agents:</b></td><td align=left><font size=2>&nbsp; $agentsONEMIN &nbsp; &nbsp; </td>";
+            $html .= "</tr>";
+        }
+
+        $html .= "<tr>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Dialable Leads:</b></td><td align=left><font size=2>&nbsp; $DAleads &nbsp; &nbsp; </td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Recycles/Sched:</b></td><td align=left><font size=2>&nbsp; $recycle_total / $recycle_sched &nbsp; &nbsp; </td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Calls Today:</b></td><td align=left><font size=2>&nbsp; $callsTODAY &nbsp; &nbsp; </td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Dial Method:</b></td><td align=left><font size=2>&nbsp; $DIALmethod &nbsp; &nbsp; </td>";
+        $html .= "</tr>";
+
+        $html .= "<tr>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Hopper Level:</b></td><td align=left><font size=2>&nbsp; $HOPlev&nbsp;&nbsp;</td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Leads In Hopper:</b></td><td align=left><font size=2>&nbsp; $VDhop&nbsp;&nbsp;</td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Drop/Answer:</b></td><td align=left><font size=2>&nbsp; $dropsTODAY / $answersTODAY&nbsp;&nbsp;</td>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Drop %:</b></td><td align=left><font size=2>&nbsp; ";
+        if ($drpctTODAY >= $DROPmax) {
+            $html .= "<font color=red><b>$drpctTODAY%</b></font>";
+        } else {
+            $html .= "$drpctTODAY%";
+        }
+        $html .= "&nbsp;&nbsp;</td>";
+        $html .= "</tr>";
+
+        $html .= "<tr>";
+        $html .= "<td align=right><font size=2 color=$default_text><b>Order:</b></td><td align=left><font size=2>&nbsp; $DIALorder&nbsp;&nbsp;</td>";
+        $html .= "</tr>";
+        $html .= "<tr>";
 		if ( (!preg_match('/NULL/',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
 			$html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat1:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1tally&nbsp;&nbsp;&nbsp;</td>\n";
 		}
