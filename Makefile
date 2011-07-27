@@ -227,6 +227,7 @@ install-docs: .osdial.config
 	@install -p -m 644 ./www/ari/theme/*.gif $(DESTDIR)$(PATHweb)/ari/theme
 	@install -p -m 644 ./www/ari/theme/images/*.gif $(DESTDIR)$(PATHweb)/ari/theme/images
 	@install -p -m 644 ./www/ari/theme/images/*.png $(DESTDIR)$(PATHweb)/ari/theme/images
+	@cp -a ./www/phpsysinfo $(DESTDIR)$(PATHweb)
 
 install-asterisk-sample-configs: install-asterisk-sample-config
 
@@ -249,6 +250,7 @@ install-asterisk-sample-config:
 	@install -p -m 644 ./extras/httpd-osdial.conf $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./extras/httpd-osdial-archive.conf $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./extras/httpd-osdial-ari.conf $(DESTDIR)$(PATHdocs)
+	@install -p -m 644 ./extras/httpd-osdial-psi.conf $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./extras/my.cnf $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./extras/osdial.conf $(DESTDIR)$(PATHdocs)
 	@install -p -m 644 ./extras/osdial.cron $(DESTDIR)$(PATHdocs)
