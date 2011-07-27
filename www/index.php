@@ -72,7 +72,7 @@ require('admin/templates/' . $system_settings['admin_template'] . '/display.php'
 <?php } ?>
 <br><br><br>
 
-<table bgcolor=#56734F align=center border=0 align=center width=546 height=381 cellpadding=0 cellspacing=0 background="admin/templates/<?php echo $system_settings['admin_template']; ?>/images/osdial-bg3.png">
+<table bgcolor=#56734F align=center border=0 align=center width=546 height=381 cellpadding=0 cellspacing=0 background="admin/templates/<?php echo $system_settings['admin_template']; ?>/images/osdial-bg.png">
 <tr>
     <td>
     
