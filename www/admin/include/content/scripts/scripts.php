@@ -436,7 +436,7 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                 });
 
                 // Add some values to the list box
-<?
+<?php
     $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'",'');
     foreach ($forms as $form) {
 	    $fcamps = preg_split('/,/',$form['campaigns']);
@@ -475,7 +475,7 @@ tinyMCE.init({
 });
 </script>
 
-<?
+<?php
 
 	echo "<center><br><font color=$default_text size=+1>ADD NEW SCRIPT</font><form name=scriptForm action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111111>\n";
@@ -789,7 +789,7 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                          //tinyMCE.activeEditor.windowManager.alert('Value selected:' + v);
                      }
                 });
-<?
+<?php
     $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'",'');
     foreach ($forms as $form) {
 	    $fcamps = preg_split('/,/',$form['campaigns']);
@@ -813,7 +813,7 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                          //tinyMCE.activeEditor.windowManager.alert('Value selected:' + v);
                      }
                 });
-<?
+<?php
     $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='$script_id'",'');
     foreach ($buttons as $button) {
         echo "      mlb.add('" . $button['script_button_id'] . ': ' . $button['script_button_label'] . "','" . $button['script_button_id'] . "');\n";
@@ -831,7 +831,7 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                          //tinyMCE.activeEditor.windowManager.alert('Value selected:' + v);
                      }
                 });
-<?
+<?php
     $DBdispo = Array();
     $stmt = "SELECT status,status_name FROM (SELECT status,status_name FROM osdial_statuses WHERE selectable='Y' UNION SELECT status,status_name FROM osdial_campaign_statuses WHERE selectable='Y') AS stat GROUP BY status;";
 	$rslt=mysql_query($stmt, $link);
@@ -875,7 +875,7 @@ tinyMCE.init({
 });
 </script>
 
-<?
+<?php
 
     if ($SUB == "--NEW--") {
         $stmt="SELECT count(*) from osdial_script_buttons where script_id='$script_id' and script_button_id='$script_button_id';";

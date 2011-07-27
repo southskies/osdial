@@ -7,7 +7,7 @@ require('admin/templates/' . $system_settings['admin_template'] . '/display.php'
 <html>
 <head><title>Choose Login:</title></head>
 <body>
-<?
+<?php
     $browser = getenv("HTTP_USER_AGENT");
     if (!preg_match('/wget/i',$browser)) {
 ?>
@@ -69,7 +69,7 @@ require('admin/templates/' . $system_settings['admin_template'] . '/display.php'
         document.getElementById(id).innerHTML = osdhtml;
     }
 </script>
-<? } ?>
+<?php } ?>
 <br><br><br>
 
 <table bgcolor=#56734F align=center border=0 align=center width=546 height=381 cellpadding=0 cellspacing=0 background="admin/templates/<?=$system_settings['admin_template']?>/images/osdial-bg3.png">
@@ -82,7 +82,7 @@ require('admin/templates/' . $system_settings['admin_template'] . '/display.php'
             <td align=center colspan=2 valign=middle height=140>
                 <div id="company"></div>
                 <script>
-<?
+<?php
         $c = $system_settings['company_name'];
         $klen = 2;
         if (strlen($c) < 20 or (strlen($c) >= 20 && preg_match('/............... /',$c))) {

@@ -2821,7 +2821,7 @@ flush();
                             <?php load_status('Initializing GUI...<br>MainPanel<br>AdditionalFormFields'); ?>
                             <td width=270 align=center valign=top class=borderright>
                                 <div class="AFHead">Additional Information</div>
-                                <?
+                                <?php
                                 $cnt = 0;
 
                                 if ($email_templates) {
@@ -2941,7 +2941,7 @@ flush();
                 <tr background="templates/<?= $agent_template ?>/images/agentsidetab_top.png" height=15 onclick="AddtlFormSelect('Cancel');">
                     <td></td>
                 </tr>
-                <?
+                <?php
                 if ($email_templates) {
                     echo "  <tr id=AddtlFormButEmailTemplates style=\"background-image:url(templates/" . $agent_template . "/images/agentsidetab_extra.png);\" height=29 ";
                     echo "    onmouseover=\"AddtlFormButOver('EmailTemplates');\" onmouseout=\"AddtlFormButOut('EmailTemplates');\">\n";
@@ -2987,7 +2987,7 @@ flush();
 </span>
 
 
-<?
+<?php
 flush();
 
 load_status('Initializing dynamic functions...<br>&nbsp;<br>&nbsp;');

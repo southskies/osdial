@@ -179,14 +179,14 @@ $browser = getenv("HTTP_USER_AGENT");
 <html>
 <head>
 <title>OSDIAL REMOTE: Call Disposition</title>
-<?
+<?php
 echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
 ?>
 </head>
 <BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 <CENTER><FONT FACE="Courier" COLOR=<?=$default_text?> SIZE=3>
 
-<? 
+<?php
 
 echo "<!-- $call_began $lead_id -->";
 
@@ -336,7 +336,7 @@ echo "<font size=0>\n\n\n<br><br><br>\nscript runtime: $RUNtime seconds</font>";
 </body>
 </html>
 
-<?
+<?php
 	
 exit; 
 

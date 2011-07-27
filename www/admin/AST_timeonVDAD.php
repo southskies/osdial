@@ -77,7 +77,7 @@ if ($reset_counter > 7)
 
 <HTML>
 <HEAD>
-<?
+<?php
 echo "<STYLE type=\"text/css\">\n";
 echo "<!--\n";
 
@@ -110,7 +110,7 @@ if ($closer_display>0)
 -->
  </STYLE>
 
-<? 
+<?php
 echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
 echo"<META HTTP-EQUIV=Refresh CONTENT=\"4; URL=$PHP_SELF?server_ip=$server_ip&DB=$DB&reset_counter=$reset_counter&closer_display=$closer_display\">\n";
 echo "<TITLE>OSDIAL: Time On VDAD</TITLE></HEAD><BODY BGCOLOR=WHITE marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";

@@ -148,14 +148,14 @@ while ($campaigns_to_print > $o)
 <html>
 <head>
 <title>OSDIAL VOICE LAB: Admin</title>
-<?
+<?php
 echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
 ?>
 </head>
 <BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 <CENTER>
 
-<? 
+<?php
 if ($NEW_VOICE_LAB > 0)
 {
 	if ( (strlen($server_ip) > 6) && (strlen($session_id) > 6) && (strlen($campaign_id) > 2) )

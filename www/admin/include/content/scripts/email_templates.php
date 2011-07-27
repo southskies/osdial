@@ -276,7 +276,7 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                 });
 
                 // Add some values to the list box
-<?
+<?php
     $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'",'');
     foreach ($forms as $form) {
         $fcamps = preg_split('/,/',$form['campaigns']);
@@ -316,7 +316,7 @@ tinyMCE.init({
 });
 </script>
 
-<?
+<?php
 
         echo "<center><br>\n";
         echo "<font color=$default_text size=+1>ADD NEW EMAIL TEMPLATE</font><br><br>\n";
@@ -830,7 +830,7 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
                          //tinyMCE.activeEditor.windowManager.alert('Value selected:' + v);
                      }
                 });
-<?
+<?php
     $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'",'');
     foreach ($forms as $form) {
         $fcamps = preg_split('/,/',$form['campaigns']);
@@ -867,7 +867,7 @@ tinyMCE.init({
 });
 </script>
 
-<?
+<?php
         $et = get_first_record($link, 'osdial_email_templates', '*', sprintf("et_id='%s'",mres($et_id)) );
         $rslt=mysql_query($stmt, $link);
 

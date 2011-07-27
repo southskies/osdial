@@ -89,7 +89,7 @@ while ($i < $groups_to_print)
 -->
  </STYLE>
 
-<? 
+<?php
 echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
 echo "<TITLE>OSDIAL: Park Stats</TITLE></HEAD><BODY BGCOLOR=WHITE>\n";
 echo "<FORM ACTION=\"$PHP_SELF\" METHOD=GET>\n";

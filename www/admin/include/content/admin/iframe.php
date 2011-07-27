@@ -25,7 +25,7 @@
             <br />
             <br />
             <center>
-            <iframe src="<? echo $iframe ?>" width="95%" height="400px">
+            <iframe src="<?php echo $iframe ?>" width="95%" height="400px">
                 Your browser does not support iframes.
             </iframe>
             </center>

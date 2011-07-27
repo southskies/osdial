@@ -57,7 +57,7 @@
 			osdalert("You must choose a date",5);
 		} else {
 
-<?
+<?php
 if ($useIE > 0) {
 ?>
 
@@ -80,7 +80,7 @@ if ($useIE > 0) {
 			CallBackTimEHouRFORM.selectedIndex = '0';
 			CallBackTimEMinuteSFORM.selectedIndex = '0';
 			CallBackTimEAmpMFORM.selectedIndex = '1';
-<?
+<?php
 } else {
 ?>
 			CallBackTimEHouR = document.osdial_form.CBT_hour.value;
@@ -91,7 +91,7 @@ if ($useIE > 0) {
 			document.osdial_form.CBT_minute.value = '00';
 			document.osdial_form.CBT_ampm.value = 'PM';
 
-<?
+<?php
 }
 ?>
 			if (CallBackTimEHouR == '12') {
@@ -124,7 +124,7 @@ if ($useIE > 0) {
 		}
 	}
 
-<?
+<?php
 if ($useIE > 0) {
 ?>
 // ################################################################################
@@ -194,7 +194,7 @@ if ($useIE > 0) {
 			}
 		}
 	}
-<?
+<?php
 } else {
 ?>
 // ################################################################################
@@ -267,7 +267,7 @@ if ($useIE > 0) {
 		}
 	}
 
-<?
+<?php
 }
 ### end of onkeypress functions
 ?>

@@ -102,7 +102,7 @@ if ($reset_counter > 7)
 -->
  </STYLE>
 
-<? 
+<?php
 echo "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n";
 echo"<META HTTP-EQUIV=Refresh CONTENT=\"7; URL=$PHP_SELF?server_ip=$server_ip&DB=$DB&reset_counter=$reset_counter\">\n";
 echo "<TITLE>OSDIAL: Time On Park</TITLE></HEAD><BODY BGCOLOR=WHITE>\n";

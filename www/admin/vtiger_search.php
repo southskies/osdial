@@ -318,7 +318,7 @@ echo "<font size=0>\n\n\n<br><br><br>\nscript runtime: $RUNtime seconds</font>";
 </body>
 </html>
 
-<?
+<?php
 	
 exit; 
 

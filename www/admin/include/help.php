@@ -1885,7 +1885,7 @@ Through the use of system status categories, you can group together statuses to 
 <BR><BR><BR><BR><BR><BR><BR><BR>
 
 </TD></TR></TABLE></BODY></HTML>
-<?
+<?php
 exit;
 
 #### END HELP SCREENS

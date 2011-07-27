@@ -145,16 +145,16 @@ echo "<head>\n";
 echo "<!-- VERSION: $version     BUILD: $build    UNIQUEID: $uniqueid   server_ip: $server_ip-->\n";
 ?>
 	<script language="Javascript">	
-		var server_ip = '<? echo $server_ip ?>';
-		var epoch_sec = '<? echo $StarTtime ?>';
-		var user_abb = '<? echo $user_abb ?>';
-		var vmail_box = '<? echo $vmail_box ?>';
-		var ext_context = '<? echo $ext_context ?>';
-		var ext_priority = '<? echo $ext_priority ?>';
-		var voicemail_dump_exten = '<? echo $voicemail_dump_exten ?>';
-		var session_name = '<? echo $session_name ?>';
-		var user = '<? echo $user ?>';
-		var pass = '<? echo $pass ?>';
+		var server_ip = '<?php echo $server_ip ?>';
+		var epoch_sec = '<?php echo $StarTtime ?>';
+		var user_abb = '<?php echo $user_abb ?>';
+		var vmail_box = '<?php echo $vmail_box ?>';
+		var ext_context = '<?php echo $ext_context ?>';
+		var ext_priority = '<?php echo $ext_priority ?>';
+		var voicemail_dump_exten = '<?php echo $voicemail_dump_exten ?>';
+		var session_name = '<?php echo $session_name ?>';
+		var user = '<?php echo $user ?>';
+		var pass = '<?php echo $pass ?>';
 
 
 // ################################################################################
@@ -267,7 +267,7 @@ echo "<!-- VERSION: $version     BUILD: $build    UNIQUEID: $uniqueid   server_i
 
 	</script>
 
-<?
+<?php
 echo "<title>LIVE INBOUND CALL";
 echo "</title>\n";
 echo "</head>\n";
