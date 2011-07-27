@@ -1,4 +1,4 @@
-<?
+<?php
 ### live_exten_check.php
 ### 
 #

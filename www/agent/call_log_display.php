@@ -1,4 +1,4 @@
-<?
+<?php
 ### call_log_display.php
 ### 
 #
