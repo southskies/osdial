@@ -90,7 +90,7 @@ if ($ADD=="2ca") {
                     $cid_name = $csvrow[2];
 
                     $status='FAILED';
-                    if (strlen($areacode) == 3 and strlen($cid_number) == 10) {
+                    if (strlen($areacode) == 3 and strlen($cid_number) >= 8 and strlen($cid_number) <= 20) {
                         $stmt=sprintf("SELECT count(*) FROM osdial_campaign_cid_areacodes WHERE campaign_id='%s' AND areacode='%s';",mres($campaign_id),mres($areacode));
                         $rslt=mysql_query($stmt, $link);
                         $row=mysql_fetch_row($rslt);
@@ -166,10 +166,10 @@ if ($ADD=="2ca") {
             if ($row[0] > 0) {
                 echo "<br><font color=red>CALLERID/AREACODE NOT ADDED - there is already an entry for this campaign with this areacode</font>\n";
             } else {
-                if (strlen($campaign_id) < 2 or strlen($areacode) != 3 or strlen($cid_number) != 10) {
+                if (strlen($campaign_id) < 2 or strlen($areacode) != 3 or strlen($cid_number) < 8 or strlen($cid_number) > 20) {
                     echo "<br><font color=red>CALLERID/AREACODE NOT ADDED - Please go back and look at the data you entered\n";
                     echo "<br>areacode must be 3 characters in length: $areacode\n";
-                    echo "<br>cid_number must be 10 characters in length: $cid_number</font><br>\n";
+                    echo "<br>cid_number must be between 8 and 20 characters in length: $cid_number</font><br>\n";
                 } else {
                     echo "<br><b><font color=$default_text>CALLERID AREACODE ADDED: $campaign_id - $areacode - $cid_number</font></b>\n";
 
@@ -200,10 +200,10 @@ if ($ADD=="2ca") {
 
 if ($ADD=="4ca") {
     if ($LOG['modify_campaigns'] == 1) {
-        if (strlen($campaign_id) < 2 or strlen($areacode) != 3 or strlen($cid_number) != 10) {
+        if (strlen($campaign_id) < 2 or strlen($areacode) != 3 or strlen($cid_number) < 8 or strlen($cid_number) > 20) {
             echo "<br><font color=red>CALLERID/AREACODE NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>areacode must be 3 characters in length: $areacode\n";
-            echo "<br>cid_number must be 10 characters in length: $cid_number</font><br>\n";
+            echo "<br>cid_number must be between 8 and 20 characters in length: $cid_number</font><br>\n";
         } else {
             $oldareacode = get_variable("oldareacode");
             $stmt=sprintf("SELECT count(*) FROM osdial_campaign_cid_areacodes WHERE campaign_id='%s' AND areacode='%s';",mres($campaign_id),mres($areacode));
@@ -363,7 +363,7 @@ if ($ADD == "3ca" and $SUB == 2) {
             echo "    <input type=hidden name=oldareacode value=\"$rowx[1]\">\n";
             echo "    <tr " . bgcolor($o) . " class=\"row font1\">\n";
             echo "      <td align=center><input type=text size=3 maxlength=4 name=areacode value=\"$rowx[1]\"></td>\n";
-            echo "      <td align=center><input type=text size=10 maxlength=10 name=cid_number value=\"$rowx[2]\"></td>\n";
+            echo "      <td align=center><input type=text size=10 maxlength=20 name=cid_number value=\"$rowx[2]\"></td>\n";
             echo "      <td align=center><input type=text size=20 maxlength=40 name=cid_name value=\"$rowx[3]\"></td>\n";
             echo "      <td align=center><a href=\"$PHP_SELF?ADD=6ca&campaign_id=$campaign_id&areacode=$rowx[1]\">DELETE</a></td>\n";
             echo "      <td align=center class=tabbutton1><input type=submit name=submit value=MODIFY></td>\n";
@@ -379,7 +379,7 @@ if ($ADD == "3ca" and $SUB == 2) {
         echo "    <input type=hidden name=campaign_id value=\"$campaign_id\">\n";
         echo "    <tr class=tabfooter>\n";
         echo "      <td align=center><input type=text size=3 maxlength=4 name=areacode></td>\n";
-        echo "      <td align=center><input type=text size=10 maxlength=10 name=cid_number></td>\n";
+        echo "      <td align=center><input type=text size=10 maxlength=20 name=cid_number></td>\n";
         echo "      <td align=center><input type=text size=20 maxlength=40 name=cid_name></td>\n";
         echo "      <td align=center class=tabbutton1 colspan=2><input type=submit name=submit value=ADD></td>\n";
         echo "    </tr>\n";
