@@ -66,6 +66,7 @@ use strict;
 use OSDial;
 use Getopt::Long;
 #use Time::HiRes ('gettimeofday','usleep','sleep');  # necessary to have perl sleep command of less than one second
+use Time::HiRes ('gettimeofday');
 use Net::Telnet;
 
 
@@ -133,7 +134,8 @@ while($one_day_interval > 0) {
 	# print login
 	if ($osdial->{server}{asterisk_version} =~ /^1\.6|^1\.8/) {
 		$tn->waitfor('/1\n$/');
-		$tn->print("Action: Login\nActionID: 1\nUsername: $telnet_login\nSecret: " . $osdial->{server}{ASTmgrSECRET} . "\n\n");
+		my($s, $usec) = gettimeofday();
+		$tn->print("Action: Login\nActionID: $usec\nUsername: $telnet_login\nSecret: " . $osdial->{server}{ASTmgrSECRET} . "\n\n");
 	} else {
 		$tn->waitfor('/0\n$/');
 		$tn->print("Action: Login\nUsername: $telnet_login\nSecret: " . $osdial->{server}{ASTmgrSECRET} . "\n\n");

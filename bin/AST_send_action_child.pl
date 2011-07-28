@@ -51,6 +51,7 @@ $|++;
 use strict;
 use Getopt::Long;
 use Net::Telnet;
+use Time::HiRes qw(gettimeofday);
 
 ### Initialize date/time vars ###
 my $secX = time(); #Start time
@@ -183,7 +184,8 @@ if ($action) {
 	$tn->open($telnet_host); 
 	if ($asterisk_version =~ /^1\.6|^1\.8/) {
 		$tn->waitfor('/1\n$/');			# print login
-		$tn->print("Action: Login\nActionID: 1\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
+		my($s, $usec) = gettimeofday();
+		$tn->print("Action: Login\nActionID: $usec\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\nEvents: off\n\n");
 	} else {
 		$tn->waitfor('/0\n$/');			# print login
 		$tn->print("Action: Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
