@@ -211,17 +211,27 @@ if ($ADD==611111) {
         echo "<br><font color=red>USER GROUP NOT DELETED - Please go back and look at the data you entered\n";
         echo "<br>User_group be at least 2 characters in length</font><br>\n";
     } else {
-        $stmt="DELETE FROM osdial_user_groups WHERE user_group='$user_group' LIMIT 1;";
+        $stmt = sprintf("SELECT count(*) FROM osdial_users WHERE user_group='%s';",$user_group);
         $rslt=mysql_query($stmt, $link);
+        $row=mysql_fetch_row($rslt);
+        $users_count = $row[0];
 
-        ### LOG CHANGES TO LOG FILE ###
-        if ($WeBRooTWritablE > 0) {
-            $fp = fopen ("./admin_changes_log.txt", "a");
-            fwrite ($fp, "$date|!DELETING USRGROUP!!|$PHP_AUTH_USER|$ip|user_group='$user_group'|\n");
-            fclose($fp);
+        if ($users_count==0) {
+            $stmt="DELETE FROM osdial_user_groups WHERE user_group='$user_group' LIMIT 1;";
+            $rslt=mysql_query($stmt, $link);
+
+            ### LOG CHANGES TO LOG FILE ###
+            if ($WeBRooTWritablE > 0) {
+                $fp = fopen ("./admin_changes_log.txt", "a");
+                fwrite ($fp, "$date|!DELETING USRGROUP!!|$PHP_AUTH_USER|$ip|user_group='$user_group'|\n");
+                fclose($fp);
+            }
+            echo "<br><b><font color=$default_text>USER GROUP DELETION COMPLETED: $user_group</font></b>\n";
+            echo "<br><br>\n";
+        } else {
+            echo "<br><font color=red>USER GROUP NOT DELETED - There are still $users_count users in group $user_group!\n";
+            echo "<br>You must first go and delete or move those users to another group.</font><br>\n";
         }
-        echo "<br><b><font color=$default_text>USER GROUP DELETION COMPLETED: $user_group</font></b>\n";
-        echo "<br><br>\n";
     }
     $ADD='100000';        # go to user group list
 }
