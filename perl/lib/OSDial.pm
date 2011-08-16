@@ -198,6 +198,7 @@ sub _set_defaults {
         	'VARDB_user'           => 'osdial',
         	'VARDB_pass'           => 'osdial1234',
         	'VARDB_port'           => '3306',
+        	'VARDB_onfail'         => 'die',
 
 		'VARfastagi_log_min_servers'       => '3',
 		'VARfastagi_log_max_servers'       => '16',
@@ -657,8 +658,8 @@ sub sql_query {
 	# If connected to DB and sth has not been defined, issue query.
 	if (defined $self->{_sql}{$dbh}{dbh} and !defined $self->{_sql}{$dbh}{sth}) {
 		$self->debug(5,'sql_query',"DBH %-6s  [execute]  STMT:  %s",$dbh, $stmt);
-        	$self->{_sql}{$dbh}{sth} = $self->{_sql}{$dbh}{dbh}->prepare($stmt) or die "  -- OSDial: sql_query $dbh:  ERROR " . $self->{_sql}{$dbh}{dbh}->errstr;
-        	$self->{_sql}{$dbh}{sth}->execute or die "  -- OSDial: sql_query $dbh:  ERROR " . $self->{_sql}{$dbh}{dbh}->errstr;
+        	$self->{_sql}{$dbh}{sth} = $self->{_sql}{$dbh}{dbh}->prepare($stmt) or $self->sql_onfail("  -- OSDial: sql_query $dbh:  ERROR " . $self->{_sql}{$dbh}{dbh}->errstr);
+        	$self->{_sql}{$dbh}{sth}->execute or $self->sql_onfail("  -- OSDial: sql_query $dbh:  ERROR " . $self->{_sql}{$dbh}{dbh}->errstr);
 		$self->{_sql}{$dbh}{rows} = 0;
 		$self->{_sql}{$dbh}{last_stmt} = $stmt;
 		delete $self->{_sql}{$dbh}{row};
@@ -750,7 +751,7 @@ sub sql_execute {
 	return $self->sql_query($opts) if ($stmt =~ /^select|^show/i);
 
 	$self->debug(5,'sql_query',"DBH %-6s  [execute]  STMT:  %s",$dbh, $stmt);
-	$self->{_sql}{$dbh}{rows} = $self->{_sql}{$dbh}{dbh}->do($stmt) or die "  -- OSDial: sql_execute $dbh:  ERROR " . $self->{_sql}{$dbh}{dbh}->errstr;
+	$self->{_sql}{$dbh}{rows} = $self->{_sql}{$dbh}{dbh}->do($stmt) or $self->sql_onfail("  -- OSDial: sql_execute $dbh:  ERROR " . $self->{_sql}{$dbh}{dbh}->errstr);
 	return $self->{_sql}{$dbh}{rows};
 }
 
@@ -786,6 +787,15 @@ sub mres {
 	return $dequote;
 }
 
+
+sub sql_onfail {
+        my ($self,$string) = @_;
+	if ($self->{VARDB_onfail} eq 'warn') {
+		warn $string;
+	} else {
+		die $string;
+	}
+}
 
 
 =over 4
