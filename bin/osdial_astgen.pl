@@ -295,7 +295,9 @@ sub gen_servers {
 
 	$esvr .= "; Local blind monitoring\n";
 	$esvr .= "exten => _0860XXXX,1,Dial(\${TRUNKblind}/6\${EXTEN:1},55,o)\n";
+	$esvr .= "exten => _0860XXXX,2,Hangup()\n";
 	$esvr .= "exten => _0X860XXXX,1,Dial(\${TRUNKblind}/\${EXTEN:1},55,o)\n";
+	$esvr .= "exten => _0X860XXXX,2,Hangup()\n";
 
 	$ireg .= "register => ASTloop:$pass\@127.0.0.1:40569\n";
 	$ireg .= "register => ASTblind:$pass\@127.0.0.1:41569\n";
@@ -320,8 +322,11 @@ sub gen_servers {
 		$esvr .= ";exten => _" . $fsip . "#.,1,Goto(osdial,\${EXTEN:16},1)\n";
 		$esvr .= ";exten => _" . $fsip2 . ".,1,Goto(osdial,\${EXTEN:12},1)\n";
 		$esvr .= "exten => _" . $fsip . "*.,1,Dial(Local/\${EXTEN:16}\@osdial,,o)\n";
+		$esvr .= "exten => _" . $fsip . "*.,2,Hangup()\n";
 		$esvr .= "exten => _" . $fsip . "#.,1,Dial(Local/\${EXTEN:16}\@osdial,,o)\n";
+		$esvr .= "exten => _" . $fsip . "#.,2,Hangup()\n";
 		$esvr .= "exten => _" . $fsip2 . ".,1,Dial(Local/\${EXTEN:12}\@osdial,,o)\n";
+		$esvr .= "exten => _" . $fsip2 . ".,2,Hangup()\n";
 
 		$isvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
 		$isvr .= "[" . $sret->{server_id} . "]\n";
@@ -380,7 +385,9 @@ sub gen_servers {
 		my $fsip = sprintf('%.3d*%.3d*%.3d*%.3d',@sip);
 		$esvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
 		$esvr .= "exten => _" . $fsip . "*.,1,Dial(SIP/" . $sret->{server_id} . "/\${EXTEN},60,o)\n";
+		$esvr .= "exten => _" . $fsip . "*.,2,Hangup()\n";
 		$esvr .= "exten => _" . $fsip . "#.,1,Dial(IAX2/" . $sret->{server_id} . "/\${EXTEN},60,o)\n";
+		$esvr .= "exten => _" . $fsip . "#.,2,Hangup()\n";
 
 		$isvr .= ";\n;" . $sret->{server_id} . ' - ' . $sret->{server_ip} . "\n";
 		$isvr .= "[" . $sret->{server_id} . "]\n";
@@ -445,10 +452,15 @@ sub gen_conferences {
 	$mtm .= "conf => 8600\nconf => 8601,1234\n";
 	$cnf .= ";\n;Volume adjustments\n";
 	$cnf .= "exten => _X4860XXXX,1,MeetMeAdmin(\${EXTEN:2},T,\${EXTEN:0:1})\n";
+	$cnf .= "exten => _X4860XXXX,2,Hangup()\n";
 	$cnf .= "exten => _X3860XXXX,1,MeetMeAdmin(\${EXTEN:2},t,\${EXTEN:0:1})\n";
+	$cnf .= "exten => _X3860XXXX,2,Hangup()\n";
 	$cnf .= "exten => _X2860XXXX,1,MeetMeAdmin(\${EXTEN:2},m,\${EXTEN:0:1})\n";
+	$cnf .= "exten => _X2860XXXX,2,Hangup()\n";
 	$cnf .= "exten => _X1860XXXX,1,MeetMeAdmin(\${EXTEN:2},M,\${EXTEN:0:1})\n";
+	$cnf .= "exten => _X1860XXXX,2,Hangup()\n";
 	$cnf .= "exten => _5555860XXXX,1,MeetMeAdmin(\${EXTEN:4},K)\n";
+	$cnf .= "exten => _5555860XXXX,2,Hangup()\n";
 
 	my $stmt = "SELECT conf_exten,server_ip FROM conferences WHERE";
 	foreach my $ip (@myips) {
@@ -462,6 +474,7 @@ sub gen_conferences {
 		$cnf .= ";\n; ZapBarge direct channel extensions\n";
 		$cnf .= "exten => _8612XXX,1,ZapBarge(\${EXTEN:4})\n";
 	}
+	$cnf .= "exten => _8612XXX,2,Hangup()\n";
 
 	chop $stmt; chop $stmt; chop $stmt;
 	print $stmt . "\n" if ($DB);
@@ -472,8 +485,10 @@ sub gen_conferences {
 		$cl = $sret->{conf_exten};
 		if ($asterisk_version =~ /^1\.6|^1\.8/) {
 			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN},q)\n";
+			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",2,Hangup()\n";
 		} else {
 			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN}|q\n";
+			$cnf2 .= "exten => _" . $sret->{conf_exten} . ",2,Hangup\n";
 		}
 		$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
 	}
@@ -496,21 +511,35 @@ sub gen_conferences {
                 $cl = $sret->{conf_exten};
 		if ($asterisk_version =~ /^1\.6|^1\.8/) {
 			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Meetme(\${EXTEN},F)\n";
+			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Hangup()\n";
 			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},F)\n";
+			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup()\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Set(SPYGROUP=\${EXTEN:1})\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Meetme(\${EXTEN:1},F)\n";
+			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",3,Hangup()\n";
 			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
+			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",2,Hangup()\n";
 			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
+			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Hangup()\n";
 			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
+			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Hangup()\n";
 			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Chanspy(,g(\${EXTEN:1})qw)\n";
+			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",2,Hangup()\n";
 		} else {
 			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Meetme,\${EXTEN}|F\n";
+			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Hangup\n";
 			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|F\n";
+			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|F\n";
+			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Hangup\n";
 			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
+			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",2,Hangup\n";
 			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
+			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Hangup\n";
 			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
+			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Hangup\n";
 			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
+			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",2,Hangup\n";
 		}
 		$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
         }
@@ -526,28 +555,44 @@ sub gen_conferences {
 	while (my $sret = $osdial->sql_query($stmt)) {
 		if ($asterisk_version =~ /^1\.6|^1\.8/) {
 			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Meetme(\${EXTEN},Fq)\n";
+			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Hangup()\n";
 			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
+			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup()\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
+			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Hangup()\n";
 			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
+			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",2,Hangup()\n";
 			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Flq)\n";
+			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Hangup()\n";
 			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
+			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Hangup()\n";
 			$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
+			$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",2,Hangup()\n";
 			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Chanspy(,g(\${EXTEN:1})qw)\n";
+			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",2,Hangup()\n";
 		} else {
 			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Meetme,\${EXTEN}|Fq\n";
+			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Hangup\n";
 			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
+			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
+			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",2,Hangup\n";
 			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
+			$cnf2 .= "exten => _3" . $sret->{conf_exten} . ",2,Hangup\n";
 			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
+			$cnf2 .= "exten => _6" . $sret->{conf_exten} . ",2,Hangup\n";
 			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
+			$cnf2 .= "exten => _7" . $sret->{conf_exten} . ",2,Hangup\n";
 			$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
+			$cnf2 .= "exten => _8" . $sret->{conf_exten} . ",2,Hangup\n";
 			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fmq\n";
+			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",2,Hangup\n";
 		}
 		$mtm2 .= "conf => " . $sret->{conf_exten} . "\n";
 	}
 	$cnf2 .= "exten => 487487,1,Playback(sip-silence)\n";
 	$cnf2 .= "exten => 487487,n,AGI(agi-OSDivr.agi,\${EXTEN})\n";
-	$cnf2 .= "exten => 487487,n,Hangup\n";
+	$cnf2 .= "exten => 487487,n,Hangup()\n";
 	$cnf .= ";\n; OSDIAL Virtual Agent Conferences\n";
 	$cnf .= $cnf2;
 	$mtm .= ";\n; OSDIAL Virtual Agent Conferences\n";
@@ -592,6 +637,7 @@ sub gen_phones {
 		$sret->{filename} =~ s/\..*$//;
 		$ephn .= "; Media Extension\n";
 		$ephn .= sprintf("exten => %s,1,Playback(%s)\n",$sret->{extension},$sret->{filename});
+		$ephn .= sprintf("exten => %s,2,Hangup()\n",$sret->{extension});
 		$ephn .= ";\n";
 	}
 
@@ -683,6 +729,7 @@ sub gen_phones {
 				$ephn .= "exten => _" . $sret->{dialplan_number} . ",4,Hangup()\n";
 			} else {
 				$ephn .= "exten => _" . $sret->{dialplan_number} . ",1,Dial(" . $dext . ",60,o)\n";
+				$ephn .= "exten => _" . $sret->{dialplan_number} . ",2,Hangup()\n";
 			}
 		}
 	}
@@ -756,7 +803,7 @@ sub gen_carriers {
 		# Create failover dialplan, which will attempt another carrier based on the DIALSTATUS.
 		my $failover = '';
 		if (!$carriers->{$carrier}{failover_id}>0) {
-			$failover .= "exten => _failover.,1,Hangup\n";
+			$failover .= "exten => _failover.,1,Hangup()\n";
 		} else {
 			my $stmt = sprintf("SELECT * FROM osdial_carriers WHERE id='\%s';",$carriers->{$carrier}{failover_id});
 			my $failover_carrier = $osdial->sql_query($stmt);
@@ -769,7 +816,7 @@ sub gen_carriers {
 			}
 			$failover .= "exten => _failover.,2,AGI(agi://127.0.0.1:4577/call_log--HVcauses--PRI-----NODEBUG-----\${HANGUPCAUSE}-----\${DIALSTATUS}-----\${DIALEDTIME}-----\${ANSWEREDTIME})\n";
 			$failover .= "exten => _failover.,3,Goto(OOUT" . $failover_carrier->{name} . ",\${EXTEN:8},1)\n";
-			$failover .= "exten => _failover.,4,Hangup\n";
+			$failover .= "exten => _failover.,4,Hangup()\n";
 		}
 
 		# Hangup extension (needs to be in every dialplan context.
@@ -813,6 +860,7 @@ sub gen_carriers {
 				} elsif ($dids->{$did}{did_action} eq 'VOICEMAIL') {
 					$dialplan .= "exten => " . $didmatch . $dids->{$did}{did} . ",n,Voicemail(" . $dids->{$did}{voicemail} . ")\n";
 				}
+				$dialplan .= "exten => " . $didmatch . $dids->{$did}{did} . ",n,Hangup()\n";
 			}
 		}
 		# Display an alert about any unhandled DIDs.
