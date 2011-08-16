@@ -1384,6 +1384,15 @@ foreach(@campaign_id)
 			if ($lead_order[$i] =~ /^UP COUNT/) {$order_stmt = 'order by called_count desc, lead_id asc';}
 			if ($lead_order[$i] =~ /^DOWN COUNT/) {$order_stmt = 'order by called_count, lead_id desc';}
 			if ($lead_order[$i] =~ /^RANDOM/) {$order_stmt = 'order by RAND()';}
+			if ($lead_order[$i] =~ /^DOWN TZ/) {$order_stmt = 'order by gmt_offset_now desc, lead_id asc';}
+			if ($lead_order[$i] =~ /^UP TZ/) {$order_stmt = 'order by gmt_offset_now desc, lead_id desc';}
+			if ($lead_order[$i] =~ /^UP TZ LAST NAME/) {$order_stmt = 'order by gmt_offset_now desc, last_name desc, lead_id asc';}
+			if ($lead_order[$i] =~ /^DOWN TZ LAST NAME/) {$order_stmt = 'order by gmt_offset_now desc, last_name, lead_id asc';}
+			if ($lead_order[$i] =~ /^UP TZ PHONE/) {$order_stmt = 'order by gmt_offset_now desc, phone_number desc, lead_id asc';}
+			if ($lead_order[$i] =~ /^DOWN TZ PHONE/) {$order_stmt = 'order by gmt_offset_now desc, phone_number, lead_id asc';}
+			if ($lead_order[$i] =~ /^UP TZ COUNT/) {$order_stmt = 'order by gmt_offset_now desc, called_count desc, lead_id asc';}
+			if ($lead_order[$i] =~ /^DOWN TZ COUNT/) {$order_stmt = 'order by gmt_offset_now desc, called_count, lead_id desc';}
+			if ($lead_order[$i] =~ /^TZ RANDOM/) {$order_stmt = 'order by gmt_offset_now desc, RAND()';}
 			if ($lead_order[$i] =~ / 2nd NEW$/) {$NEW_count = 2;}
 			if ($lead_order[$i] =~ / 3rd NEW$/) {$NEW_count = 3;}
 			if ($lead_order[$i] =~ / 4th NEW$/) {$NEW_count = 4;}

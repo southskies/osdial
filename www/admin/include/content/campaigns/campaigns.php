@@ -447,6 +447,11 @@ if ($ADD==41)
 
         if (preg_match('/^8510/',$am_message_exten)) $am_message_exten = '8320'.$am_message_exten;
 
+        $lo_array = array();
+        if (!empty($lead_order_direction)) $lo_array[] = $lead_order_direction;
+        if (!empty($lead_order_field)) $lo_array[] = $lead_order_field;
+        if (!empty($lead_order_nthnew)) $lo_array[] = $lead_order_nthnew;
+        $lead_order = implode(' ', $lo_array);
         $ets = implode(',',$email_templates);
         $stmtA=sprintf("UPDATE osdial_campaigns SET %s campaign_name='%s',active='%s',dial_status_a='%s',dial_status_b='%s',dial_status_c='%s',dial_status_d='%s',"
             ."dial_status_e='%s',lead_order='%s',allow_closers='%s',hopper_level='%s',next_agent_call='%s',local_call_time='%s',voicemail_ext='%s',"
@@ -558,6 +563,11 @@ if ($ADD==44)
         if ( (!preg_match("/DISABLED/",$list_order_mix)) and ($hopper_level < 100) )
             {$hopper_level='100';}
 
+        $lo_array = array();
+        if (!empty($lead_order_direction)) $lo_array[] = $lead_order_direction;
+        if (!empty($lead_order_field)) $lo_array[] = $lead_order_field;
+        if (!empty($lead_order_nthnew)) $lo_array[] = $lead_order_nthnew;
+        $lead_order = implode(' ', $lo_array);
         $stmtA=sprintf("UPDATE osdial_campaigns SET %s campaign_name='%s',active='%s',dial_status_a='%s',dial_status_b='%s',dial_status_c='%s',dial_status_d='%s',"
             ."dial_status_e='%s',lead_order='%s',hopper_level='%s',lead_filter_id='%s',dial_method='%s',adaptive_intensity='%s',campaign_changedate='%s',"
             ."list_order_mix='%s',answers_per_hour_limit='%s' "
@@ -1111,7 +1121,71 @@ if ($ADD==31) {
         echo "</select> &nbsp; \n";
         echo "<input type=submit name=submit value=ADD> &nbsp; &nbsp; $NWB#osdial_campaigns-dial_status$NWE</td></tr>\n";
 
-        echo "<tr bgcolor=$oddrows><td align=right>List Order: </td><td align=left><select size=1 name=lead_order ><option>DOWN</option><option>UP</option><option>DOWN PHONE</option><option>UP PHONE</option><option>DOWN LAST NAME</option><option>UP LAST NAME</option><option>DOWN COUNT</option><option>UP COUNT</option><option>DOWN 2nd NEW</option><option>DOWN 3rd NEW</option><option>DOWN 4th NEW</option><option>DOWN 5th NEW</option><option>DOWN 6th NEW</option><option>UP 2nd NEW</option><option>UP 3rd NEW</option><option>UP 4th NEW</option><option>UP 5th NEW</option><option>UP 6th NEW</option><option>DOWN PHONE 2nd NEW</option><option>DOWN PHONE 3rd NEW</option><option>DOWN PHONE 4th NEW</option><option>DOWN PHONE 5th NEW</option><option>DOWN PHONE 6th NEW</option><option>UP PHONE 2nd NEW</option><option>UP PHONE 3rd NEW</option><option>UP PHONE 4th NEW</option><option>UP PHONE 5th NEW</option><option>UP PHONE 6th NEW</option><option>DOWN LAST NAME 2nd NEW</option><option>DOWN LAST NAME 3rd NEW</option><option>DOWN LAST NAME 4th NEW</option><option>DOWN LAST NAME 5th NEW</option><option>DOWN LAST NAME 6th NEW</option><option>UP LAST NAME 2nd NEW</option><option>UP LAST NAME 3rd NEW</option><option>UP LAST NAME 4th NEW</option><option>UP LAST NAME 5th NEW</option><option>UP LAST NAME 6th NEW</option><option>DOWN COUNT 2nd NEW</option><option>DOWN COUNT 3rd NEW</option><option>DOWN COUNT 4th NEW</option><option>DOWN COUNT 5th NEW</option><option>DOWN COUNT 6th NEW</option><option>UP COUNT 2nd NEW</option><option>UP COUNT 3rd NEW</option><option>UP COUNT 4th NEW</option><option>UP COUNT 5th NEW</option><option>UP COUNT 6th NEW</option><option>RANDOM</option><option SELECTED>$lead_order</option></select>$NWB#osdial_campaigns-lead_order$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows>\n";
+        echo "  <td align=right>List Order: </td>\n";
+        echo "  <td align=left>\n";
+        $usel='';
+        $dsel='';
+        if (preg_match('/^UP/',$lead_order)) {
+            $usel='selected';
+        } else {
+            $dsel='selected';
+        }
+        echo "    <select size=1 name=lead_order_direction><option $dsel>DOWN</option><option $usel>UP</option></select>\n";
+        $tpsel='';
+        $tlsel='';
+        $tcsel='';
+        $trsel='';
+        $tisel='';
+        $psel='';
+        $lsel='';
+        $csel='';
+        $rsel='';
+        $isel='';
+        if (preg_match('/TZ PHONE/',$lead_order)) {
+            $tpsel='selected';
+        } else if (preg_match('/TZ LAST NAME/',$lead_order)) {
+            $tlsel='selected';
+        } else if (preg_match('/TZ COUNT/',$lead_order)) {
+            $tcsel='selected';
+        } else if (preg_match('/TZ RANDOM/',$lead_order)) {
+            $trsel='selected';
+        } else if (preg_match('/TZ/',$lead_order)) {
+            $tisel='selected';
+        } else if (preg_match('/PHONE/',$lead_order)) {
+            $psel='selected';
+        } else if (preg_match('/LAST NAME/',$lead_order)) {
+            $lsel='selected';
+        } else if (preg_match('/COUNT/',$lead_order)) {
+            $csel='selected';
+        } else if (preg_match('/RANDOM/',$lead_order)) {
+            $rsel='selected';
+        } else {
+            $isel='selected';
+        }
+        echo "    <select size=1 name=lead_order_field><option value=\"\" $isel>ID</option><option $psel>PHONE</option><option $lsel>LAST NAME</option><option value=\"COUNT\" $csel>CALL COUNT</option><option $rsel>RANDOM</option><option value=\"TZ\" $tisel>TIMEZONE / ID</option><option value=\"TZ PHONE\" $tpsel>TIMEZONE / PHONE</option><option value=\"TZ LAST NAME\" $tlsel>TIMEZONE / LAST NAME</option><option value=\"TZ COUNT\" $tcsel>TIMEZONE / CALL COUNT</option><option value=\"TZ RANDOM\" $trsel>TIMEZONE / RANDOM</option></select>\n";
+        $seln='';
+        $sel2='';
+        $sel3='';
+        $sel4='';
+        $sel5='';
+        $sel6='';
+        if (preg_match('/2nd NEW$/',$lead_order)) {
+            $sel2='selected';
+        } else if (preg_match('/3rd NEW$/',$lead_order)) {
+            $sel3='selected';
+        } else if (preg_match('/4th NEW$/',$lead_order)) {
+            $sel4='selected';
+        } else if (preg_match('/5th NEW$/',$lead_order)) {
+            $sel5='selected';
+        } else if (preg_match('/6th NEW$/',$lead_order)) {
+            $sel6='selected';
+        } else {
+            $seln='selected';
+        }
+        echo "    <select size=1 name=lead_order_nthnew><option value=\"\" $seln>-------</option><option $sel2>2nd NEW</option><option $sel3>3rd NEW</option><option $sel4>4th NEW</option><option $sel5>5th NEW</option><option $sel6>6th NEW</option></select>\n";
+        echo "    $NWB#osdial_campaigns-lead_order$NWE</td></tr>\n";
+        #echo "<tr bgcolor=$oddrows><td align=right>List Order: </td><td align=left><select size=1 name=lead_order ><option>DOWN</option><option>UP</option><option>DOWN PHONE</option><option>UP PHONE</option><option>DOWN LAST NAME</option><option>UP LAST NAME</option><option>DOWN COUNT</option><option>UP COUNT</option><option>DOWN 2nd NEW</option><option>DOWN 3rd NEW</option><option>DOWN 4th NEW</option><option>DOWN 5th NEW</option><option>DOWN 6th NEW</option><option>UP 2nd NEW</option><option>UP 3rd NEW</option><option>UP 4th NEW</option><option>UP 5th NEW</option><option>UP 6th NEW</option><option>DOWN PHONE 2nd NEW</option><option>DOWN PHONE 3rd NEW</option><option>DOWN PHONE 4th NEW</option><option>DOWN PHONE 5th NEW</option><option>DOWN PHONE 6th NEW</option><option>UP PHONE 2nd NEW</option><option>UP PHONE 3rd NEW</option><option>UP PHONE 4th NEW</option><option>UP PHONE 5th NEW</option><option>UP PHONE 6th NEW</option><option>DOWN LAST NAME 2nd NEW</option><option>DOWN LAST NAME 3rd NEW</option><option>DOWN LAST NAME 4th NEW</option><option>DOWN LAST NAME 5th NEW</option><option>DOWN LAST NAME 6th NEW</option><option>UP LAST NAME 2nd NEW</option><option>UP LAST NAME 3rd NEW</option><option>UP LAST NAME 4th NEW</option><option>UP LAST NAME 5th NEW</option><option>UP LAST NAME 6th NEW</option><option>DOWN COUNT 2nd NEW</option><option>DOWN COUNT 3rd NEW</option><option>DOWN COUNT 4th NEW</option><option>DOWN COUNT 5th NEW</option><option>DOWN COUNT 6th NEW</option><option>UP COUNT 2nd NEW</option><option>UP COUNT 3rd NEW</option><option>UP COUNT 4th NEW</option><option>UP COUNT 5th NEW</option><option>UP COUNT 6th NEW</option><option>RANDOM</option><option SELECTED>$lead_order</option></select>$NWB#osdial_campaigns-lead_order$NWE</td></tr>\n";
         #echo "<tr bgcolor=$oddrows><td align=right>List Order: </td><td align=left><select size=1 name=lead_order ><option>DOWN</option><option>UP</option><option>UP PHONE</option><option>DOWN PHONE</option><option>UP LAST NAME</option><option>DOWN LAST NAME</option><option>UP COUNT</option><option>DOWN COUNT</option><option>DOWN COUNT 2nd NEW</option><option>DOWN COUNT 3rd NEW</option><option>DOWN COUNT 4th NEW</option><option>DOWN COUNT 5th NEW</option><option>DOWN COUNT 6th NEW</option><option SELECTED>$lead_order</option></select>$NWB#osdial_campaigns-lead_order$NWE</td></tr>\n";
 
         echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=31&SUB=29&campaign_id=$campaign_id&vcl_id=$list_order_mix\">List Mix</a>: </td><td align=left><select size=1 name=list_order_mix>\n";
@@ -2031,7 +2105,71 @@ if ($ADD==34)
         echo "</select> &nbsp; \n";
         echo "<input type=submit name=submit value=ADD> &nbsp; &nbsp; $NWB#osdial_campaigns-dial_status$NWE</td></tr>\n";
 
-        echo "<tr bgcolor=$oddrows><td align=right>List Order: </td><td align=left><select size=1 name=lead_order ><option>DOWN</option><option>UP</option><option>DOWN PHONE</option><option>UP PHONE</option><option>DOWN LAST NAME</option><option>UP LAST NAME</option><option>DOWN COUNT</option><option>UP COUNT</option><option>DOWN 2nd NEW</option><option>DOWN 3rd NEW</option><option>DOWN 4th NEW</option><option>DOWN 5th NEW</option><option>DOWN 6th NEW</option><option>UP 2nd NEW</option><option>UP 3rd NEW</option><option>UP 4th NEW</option><option>UP 5th NEW</option><option>UP 6th NEW</option><option>DOWN PHONE 2nd NEW</option><option>DOWN PHONE 3rd NEW</option><option>DOWN PHONE 4th NEW</option><option>DOWN PHONE 5th NEW</option><option>DOWN PHONE 6th NEW</option><option>UP PHONE 2nd NEW</option><option>UP PHONE 3rd NEW</option><option>UP PHONE 4th NEW</option><option>UP PHONE 5th NEW</option><option>UP PHONE 6th NEW</option><option>DOWN LAST NAME 2nd NEW</option><option>DOWN LAST NAME 3rd NEW</option><option>DOWN LAST NAME 4th NEW</option><option>DOWN LAST NAME 5th NEW</option><option>DOWN LAST NAME 6th NEW</option><option>UP LAST NAME 2nd NEW</option><option>UP LAST NAME 3rd NEW</option><option>UP LAST NAME 4th NEW</option><option>UP LAST NAME 5th NEW</option><option>UP LAST NAME 6th NEW</option><option>DOWN COUNT 2nd NEW</option><option>DOWN COUNT 3rd NEW</option><option>DOWN COUNT 4th NEW</option><option>DOWN COUNT 5th NEW</option><option>DOWN COUNT 6th NEW</option><option>UP COUNT 2nd NEW</option><option>UP COUNT 3rd NEW</option><option>UP COUNT 4th NEW</option><option>UP COUNT 5th NEW</option><option>UP COUNT 6th NEW</option><option>RANDOM</option><option SELECTED>$lead_order</option></select>$NWB#osdial_campaigns-lead_order$NWE</td></tr>\n";
+        echo "<tr bgcolor=$oddrows>\n";
+        echo "  <td align=right>List Order: </td>\n";
+        echo "  <td align=left>\n";
+        $usel='';
+        $dsel='';
+        if (preg_match('/^UP/',$lead_order)) {
+            $usel='selected';
+        } else {
+            $dsel='selected';
+        }
+        echo "    <select size=1 name=lead_order_direction><option $dsel>DOWN</option><option $usel>UP</option></select>\n";
+        $tpsel='';
+        $tlsel='';
+        $tcsel='';
+        $trsel='';
+        $tisel='';
+        $psel='';
+        $lsel='';
+        $csel='';
+        $rsel='';
+        $isel='';
+        if (preg_match('/TZ PHONE/',$lead_order)) {
+            $tpsel='selected';
+        } else if (preg_match('/TZ LAST NAME/',$lead_order)) {
+            $tlsel='selected';
+        } else if (preg_match('/TZ COUNT/',$lead_order)) {
+            $tcsel='selected';
+        } else if (preg_match('/TZ RANDOM/',$lead_order)) {
+            $trsel='selected';
+        } else if (preg_match('/TZ/',$lead_order)) {
+            $tisel='selected';
+        } else if (preg_match('/PHONE/',$lead_order)) {
+            $psel='selected';
+        } else if (preg_match('/LAST NAME/',$lead_order)) {
+            $lsel='selected';
+        } else if (preg_match('/COUNT/',$lead_order)) {
+            $csel='selected';
+        } else if (preg_match('/RANDOM/',$lead_order)) {
+            $rsel='selected';
+        } else {
+            $isel='selected';
+        }
+        echo "    <select size=1 name=lead_order_field><option value=\"\" $isel>ID</option><option $psel>PHONE</option><option $lsel>LAST NAME</option><option value=\"COUNT\" $csel>CALL COUNT</option><option $rsel>RANDOM</option><option value=\"TZ\" $tisel>TIMEZONE / ID</option><option value=\"TZ PHONE\" $tpsel>TIMEZONE / PHONE</option><option value=\"TZ LAST NAME\" $tlsel>TIMEZONE / LAST NAME</option><option value=\"TZ COUNT\" $tcsel>TIMEZONE / CALL COUNT</option><option value=\"TZ RANDOM\" $trsel>TIMEZONE / RANDOM</option></select>\n";
+        $seln='';
+        $sel2='';
+        $sel3='';
+        $sel4='';
+        $sel5='';
+        $sel6='';
+        if (preg_match('/2nd NEW$/',$lead_order)) {
+            $sel2='selected';
+        } else if (preg_match('/3rd NEW$/',$lead_order)) {
+            $sel3='selected';
+        } else if (preg_match('/4th NEW$/',$lead_order)) {
+            $sel4='selected';
+        } else if (preg_match('/5th NEW$/',$lead_order)) {
+            $sel5='selected';
+        } else if (preg_match('/6th NEW$/',$lead_order)) {
+            $sel6='selected';
+        } else {
+            $seln='selected';
+        }
+        echo "    <select size=1 name=lead_order_nthnew><option value=\"\" $seln>-------</option><option $sel2>2nd NEW</option><option $sel3>3rd NEW</option><option $sel4>4th NEW</option><option $sel5>5th NEW</option><option $sel6>6th NEW</option></select>\n";
+        echo "    $NWB#osdial_campaigns-lead_order$NWE</td></tr>\n";
+        #echo "<tr bgcolor=$oddrows><td align=right>List Order: </td><td align=left><select size=1 name=lead_order ><option>DOWN</option><option>UP</option><option>DOWN PHONE</option><option>UP PHONE</option><option>DOWN LAST NAME</option><option>UP LAST NAME</option><option>DOWN COUNT</option><option>UP COUNT</option><option>DOWN 2nd NEW</option><option>DOWN 3rd NEW</option><option>DOWN 4th NEW</option><option>DOWN 5th NEW</option><option>DOWN 6th NEW</option><option>UP 2nd NEW</option><option>UP 3rd NEW</option><option>UP 4th NEW</option><option>UP 5th NEW</option><option>UP 6th NEW</option><option>DOWN PHONE 2nd NEW</option><option>DOWN PHONE 3rd NEW</option><option>DOWN PHONE 4th NEW</option><option>DOWN PHONE 5th NEW</option><option>DOWN PHONE 6th NEW</option><option>UP PHONE 2nd NEW</option><option>UP PHONE 3rd NEW</option><option>UP PHONE 4th NEW</option><option>UP PHONE 5th NEW</option><option>UP PHONE 6th NEW</option><option>DOWN LAST NAME 2nd NEW</option><option>DOWN LAST NAME 3rd NEW</option><option>DOWN LAST NAME 4th NEW</option><option>DOWN LAST NAME 5th NEW</option><option>DOWN LAST NAME 6th NEW</option><option>UP LAST NAME 2nd NEW</option><option>UP LAST NAME 3rd NEW</option><option>UP LAST NAME 4th NEW</option><option>UP LAST NAME 5th NEW</option><option>UP LAST NAME 6th NEW</option><option>DOWN COUNT 2nd NEW</option><option>DOWN COUNT 3rd NEW</option><option>DOWN COUNT 4th NEW</option><option>DOWN COUNT 5th NEW</option><option>DOWN COUNT 6th NEW</option><option>UP COUNT 2nd NEW</option><option>UP COUNT 3rd NEW</option><option>UP COUNT 4th NEW</option><option>UP COUNT 5th NEW</option><option>UP COUNT 6th NEW</option><option>RANDOM</option><option SELECTED>$lead_order</option></select>$NWB#osdial_campaigns-lead_order$NWE</td></tr>\n";
         #echo "<tr bgcolor=$oddrows><td align=right>List Order: </td><td align=left><select size=1 name=lead_order><option>DOWN</option><option>UP</option><option>UP PHONE</option><option>DOWN PHONE</option><option>UP LAST NAME</option><option>DOWN LAST NAME</option><option>UP COUNT</option><option>DOWN COUNT</option><option>DOWN COUNT 2nd NEW</option><option>DOWN COUNT 3rd NEW</option><option>DOWN COUNT 4th NEW</option><option>DOWN COUNT 5th NEW</option><option>DOWN COUNT 6th NEW</option><option SELECTED>$lead_order</option></select>$NWB#osdial_campaigns-lead_order$NWE</td></tr>\n";
 
         echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=31&SUB=29&campaign_id=$campaign_id&vcl_id=$list_order_mix\">List Mix</a>: </td><td align=left><select size=1 name=list_order_mix>\n";
