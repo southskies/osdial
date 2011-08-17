@@ -1499,7 +1499,9 @@ function media_file_label_list($link) {
     if (is_array($mkrh)) {
         $mkeys = array();
         foreach ($mkrh as $om) {
-            $mkeys[preg_replace('/.*\/|\..*/','',$om['filename'])] = array($om['description'],'MEDIA');
+            $tdesc = $om['description'];
+            if (preg_match("/$om[filename]/",$tdesc)) $tdesc='';
+            $mkeys[preg_replace('/.*\/|\..*/','',$om['filename'])] = array($tdesc,'MEDIA');
         }
         if (is_array($mkeys)) {
             foreach ($mkeys as $mk => $mv) {
@@ -1544,7 +1546,9 @@ function media_extension_label_list($link) {
     if (is_array($mkrh)) {
         $mkeys = array();
         foreach ($mkrh as $om) {
-            $mkeys[$om['extension']] = array($om['description'],'MEDIA');
+            $tdesc = $om['description'];
+            if (preg_match("/$om[extension]/",$tdesc)) $tdesc='';
+            $mkeys[$om['extension']] = array($tdesc,'MEDIA');
         }
         if (is_array($mkeys)) {
             foreach ($mkeys as $mk => $mv) {
@@ -1563,7 +1567,9 @@ function phone_voicemail_list($link) {
     if (is_array($pkrh)) {
         $pkeys = array();
         foreach ($pkrh as $op) {
-            $pkeys[$op['voicemail_id']] = array($op['extension'],'PHONE');
+            $tdesc = $op['extension'];
+            if (preg_match("/^$op[voicemail_id]$/",$tdesc)) $tdesc='';
+            $pkeys[$op['voicemail_id']] = array($tdesc,'PHONE');
         }
         if (is_array($pkeys)) {
             foreach ($pkeys as $pk => $pv) {
@@ -1582,7 +1588,9 @@ function phone_extension_list($link) {
     if (is_array($pkrh)) {
         $pkeys = array();
         foreach ($pkrh as $op) {
-            $pkeys[$op['dialplan_number']] = array($op['extension'],'PHONE');
+            $tdesc = $op['extension'];
+            if (preg_match("/^$op[dialplan_number]$/",$tdesc)) $tdesc='';
+            $pkeys[$op['dialplan_number']] = array($tdesc,'PHONE');
         }
         if (is_array($pkeys)) {
             foreach ($pkeys as $pk => $pv) {
