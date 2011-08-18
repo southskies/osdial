@@ -560,6 +560,10 @@
     <item pathId="answers_per_hour_limit" title="Answers per hour limit">
   This option sets an upper limit on the number of answers the dialer has in an hour.  0 to disable.
     </item>
+
+    <item pathId="osdial_campaigns" title="allow_md_hopperlist">
+  If the Dial Method is MANUAL and this option is enabled, the can see what leads are in the hopper and can change the priorities, modifying that leads position within the hopper.
+    </item>
   </section>
 
 

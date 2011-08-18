@@ -914,7 +914,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 $stmt.="xfer_groups,web_form_address2,allow_tab_switch,preview_force_dial_time,manual_preview_default,web_form_extwindow,web_form2_extwindow,dial_method,";
                 $stmt.="submit_method,use_custom2_callerid,campaign_cid_name,xfer_cid_mode,use_cid_areacode_map,carrier_id,email_templates,disable_manual_dial,";
                 $stmt.="hide_xfer_local_closer,hide_xfer_dial_override,hide_xfer_hangup_xfer,hide_xfer_leave_3way,hide_xfer_dial_with,hide_xfer_hangup_both,";
-                $stmt.="hide_xfer_blind_xfer,hide_xfer_park_dial,hide_xfer_blind_vmail ";
+                $stmt.="hide_xfer_blind_xfer,hide_xfer_park_dial,hide_xfer_blind_vmail,allow_md_hopperlist ";
                 $stmt.="FROM osdial_campaigns WHERE campaign_id='$VD_campaign';";
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
@@ -979,6 +979,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 $hide_xfer_blind_xfer    = hide_element($row[54]);
                 $hide_xfer_park_dial     = hide_element($row[55]);
                 $hide_xfer_blind_vmail   = hide_element($row[56]);
+                $allow_md_hopperlist   = $row[57];
 
                 if ($disable_manual_dial=='Y') $agentcall_manual=0;
                 $email_template_actions='';
@@ -1952,9 +1953,9 @@ flush();
     
     
     <!-- Manual Dial Link -->
-    <span style="position:absolute;left:300px;top:<?php echo ($MBheight-20); ?>px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
+    <span style="position:absolute;left:200px;top:<?php echo ($MBheight-20); ?>px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
         <font class="body_text">
-            <span id="MDstatusSpan"><a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a><br>
+            <span id="MDstatusSpan"><span id="MDHopperListLink" <?php if ($allow_md_hopperlist=='N') echo "style=\"visibility:hidden;\"";} ?>><a href="#" onclick="MDHopperListCheck();return false;">HOPPER LIST</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a><br>
         </font>
     </span>
         
@@ -2027,6 +2028,29 @@ flush();
                     <a href="#" onclick="CalLBacKsLisTCheck();return false;">Refresh</a>
                     &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; 
                     <a href="#" onclick="if (PCSpause==1) {AutoDial_ReSume_PauSe('VDADready');} hideDiv('CallBacKsLisTBox');return false;">Go Back</a>
+                </td>
+            </tr>
+        </table>
+    </span>
+
+
+    <?php load_status('Initializing GUI...<br>MDHopperListBox<br>&nbsp;'); ?>
+    <!-- Choose From Leads in Hopper - Manual Dial only -->
+    <span style="position:absolute;left:0px;top:18px;z-index:38;visibility:hidden;" id="MDHopperListBox">
+        <table border=1 bgcolor="<?php echo $callback_bg; ?>" width=<?php echo ($CAwidth+13); ?> height=545>
+            <tr>
+                <td align=center valign=top>
+                    <br/>
+                    <b>Hopper List</b>
+                    <br/>
+                    Click on a phone number below to call the customer now.<br>
+                    <font class="body_tiny">(When you click on a record below to call it, it will be removed from the list.)<br></font>
+                    <br/>
+                    <div style="height:350px;width:920px;overflow:scroll;" id="MDHopperList"></div>
+                    <br/> &nbsp; 
+                    <a href="#" onclick="MDHopperListCheck();return false;">Refresh</a>
+                    &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp; 
+                    <a href="#" onclick="if (PCSpause==1) {AutoDial_ReSume_PauSe('VDADready');} hideDiv('MDHopperListBox');return false;">Go Back</a>
                 </td>
             </tr>
         </table>

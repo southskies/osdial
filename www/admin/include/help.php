@@ -695,6 +695,11 @@ echo "<tr><td><FONT FACE=\"dejavu sans,verdana,sans-serif\" COLOR=1C4754 SIZE=2>
 <BR>
 <B>Answers per hour limit -</B> This option sets an upper limit on the number of answers the dialer has in an hour.  0 to disable.
 
+<BR>
+<A NAME="osdial_campaigns-allow_md_hopperlist">
+<BR>
+<B>Allow ManualDial HopperList -</B> If the Dial Method is MANUAL and this option is enabled, the can see what leads are in the hopper and can change the priorities, modifying that leads position within the hopper.
+
 
 
 <BR><BR><BR><BR>

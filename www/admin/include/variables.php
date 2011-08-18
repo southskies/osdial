@@ -169,6 +169,7 @@ $allow_closers = get_variable("allow_closers");
 $allow_sipsak_messages = get_variable("allow_sipsak_messages");
 $allow_tab_switch = get_variable("allow_tab_switch");
 $allow_multicall = get_variable("allow_multicall");
+$allow_md_hopperlist = get_variable("allow_md_hopperlist");
 $alt_phone_field = get_variable("alt_phone_field");
 $alter_custdata_override = get_variable("alter_custdata_override");
 $alt_number_dialing = get_variable("alt_number_dialing");

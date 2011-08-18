@@ -232,6 +232,8 @@ $favorites_list = get_variable("favorites_list");
 $first_name = get_variable("first_name");
 $format = get_variable("format");
 $gender = get_variable("gender");
+$hopper_id = get_variable("hopper_id");
+$hopper_add = get_variable("hopper_add");
 $hangup_all_non_reserved = get_variable("hangup_all_non_reserved");
 $last_name = get_variable("last_name");
 $lead_id = get_variable("lead_id");
@@ -521,8 +523,16 @@ if ($ACTION == 'manDiaLnextCaLL') {
         }
         $calls_today++;
 
+        ### check if this is a hopper list lead, if it is, skip the grabbing of a new lead and update the hopper table.
+        if ( (strlen($callback_id)==0) and (strlen($lead_id)>0) ) {
+            $affected_rows=1;
+
+            $stmt = "UPDATE osdial_hopper SET status='QUEUE',user='$user' WHERE campaign_id='$campaign' AND lead_id='$lead_id';";
+            if ($DB) echo "$stmt\n";
+            $rslt=mysql_query($stmt, $link);
+
         ### check if this is a callback, if it is, skip the grabbing of a new lead and mark the callback as INACTIVE
-        if ( (strlen($callback_id)>0) and (strlen($lead_id)>0) ) {
+        } else if ( (strlen($callback_id)>0) and (strlen($lead_id)>0) ) {
             $affected_rows=1;
             $CBleadIDset=1;
 
@@ -3503,6 +3513,55 @@ if ($ACTION == 'PauseCodeSubmit') {
 
         echo "Pause Code has been updated to $status for $agent_log_id\n";
     }
+}
+
+
+################################################################################
+### MDHopperList - List the entries in hopper for this campaign
+################################################################################
+if ($ACTION == 'MDHopperList') {
+    $stmt = "SELECT hopper_id,lead_id,campaign_id,status,user,list_id,gmt_offset_now,state,alt_dial,priority FROM osdial_hopper WHERE campaign_id='$campaign' AND status IN('READY') AND user='' ORDER BY priority desc,hopper_id asc;";
+    if ($DB) echo "$stmt\n";
+    $rslt=mysql_query($stmt, $link);
+    if ($rslt) $hopper_count = mysql_num_rows($rslt);
+    echo "$hopper_count\n";
+    $loop_count=0;
+    while ($hopper_count>$loop_count) {
+        $row=mysql_fetch_row($rslt);
+        $hopper_id[$loop_count]      = $row[0];
+        $lead_id[$loop_count]        = $row[1];
+        $campaign_id[$loop_count]    = $row[2];
+        $status[$loop_count]         = $row[3];
+        $user[$loop_count]           = $row[4];
+        $list_id[$loop_count]        = $row[5];
+        $gmt_offset_now[$loop_count] = (preg_replace('/\.$/','',preg_replace('/0$/','',preg_replace('/0$/','',$row[6])))) - date("I");
+        $state[$loop_count]          = $row[7];
+        $alt_dial[$loop_count]       = $row[8];
+        $priority[$loop_count]       = $row[9];
+        $loop_count++;
+    }
+    $loop_count=0;
+    while ($hopper_count>$loop_count) {
+        $stmt = "SELECT first_name,last_name,phone_number,city,postal_code,modify_date,called_count,status,phone_code FROM osdial_list WHERE lead_id='$lead_id[$loop_count]';";
+        if ($DB) echo "$stmt\n";
+        $rslt=mysql_query($stmt, $link);
+        $row=mysql_fetch_row($rslt);
+
+        echo "$row[0] ~$row[1] ~$row[2] ~$hopper_id[$loop_count] ~$lead_id[$loop_count] ~$campaign_id[$loop_count] ~$status[$loop_count] ~$user[$loop_count] ~$list_id[$loop_count] ~$gmt_offset_now[$loop_count] ~$state[$loop_count] ~$alt_dial[$loop_count] ~$priority[$loop_count] ~$row[3] ~$row[4] ~$row[5] ~$row[6] ~$row[7] ~$row[8]\n";
+        $loop_count++;
+    }
+
+}
+
+if ($ACTION == 'MDHopperListAddPriority') {
+    $stmt = "SELECT priority FROM osdial_hopper WHERE hopper_id='$hopper_id' LIMIT 1;";
+    $rslt=mysql_query($stmt, $link);
+    $row=mysql_fetch_row($rslt);
+    $new_priority = ($row[0] + $hopper_add);
+    $stmt = "UPDATE osdial_hopper SET priority='$new_priority' WHERE hopper_id='$hopper_id';";
+    $rslt=mysql_query($stmt, $link);
+    $affected_rows = mysql_affected_rows($link);
+    echo "Done.\n";
 }
 
 

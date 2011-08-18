@@ -467,7 +467,7 @@ if ($ADD==41)
             ."preview_force_dial_time='%s',manual_preview_default='%s',web_form_extwindow='%s',web_form2_extwindow='%s',submit_method='%s',use_custom2_callerid='%s',"
             ."campaign_cid_name='%s',xfer_cid_mode='%s',use_cid_areacode_map='%s',carrier_id='%s',email_templates='%s',disable_manual_dial='%s',"
             ."hide_xfer_local_closer='%s',hide_xfer_dial_override='%s',hide_xfer_hangup_xfer='%s',hide_xfer_leave_3way='%s',hide_xfer_dial_with='%s',"
-            ."hide_xfer_hangup_both='%s',hide_xfer_blind_xfer='%s',hide_xfer_park_dial='%s',hide_xfer_blind_vmail='%s' "
+            ."hide_xfer_hangup_both='%s',hide_xfer_blind_xfer='%s',hide_xfer_park_dial='%s',hide_xfer_blind_vmail='%s',allow_md_hopperlist='%s' "
             ."WHERE campaign_id='%s';",
             $adlSQL,mres($campaign_name),mres($active),mres($dial_status_a),mres($dial_status_b),mres($dial_status_c),mres($dial_status_d),
             mres($dial_status_e),mres($lead_order),mres($allow_closers),mres($hopper_level),mres($next_agent_call),mres($local_call_time),mres($voicemail_ext),
@@ -483,7 +483,7 @@ if ($ADD==41)
             mres($preview_force_dial_time),mres($manual_preview_default),mres($web_form_extwindow),mres($web_form2_extwindow),mres($submit_method),mres($use_custom2_callerid),
             mres($campaign_cid_name),mres($xfer_cid_mode),mres($use_cid_areacode_map),mres($carrier_id),mres($ets),mres($disable_manual_dial),
             mres($hide_xfer_local_closer),mres($hide_xfer_dial_override),mres($hide_xfer_hangup_xfer),mres($hide_xfer_leave_3way),mres($hide_xfer_dial_with),
-            mres($hide_xfer_hangup_both),mres($hide_xfer_blind_xfer),mres($hide_xfer_park_dial),mres($hide_xfer_blind_vmail),
+            mres($hide_xfer_hangup_both),mres($hide_xfer_blind_xfer),mres($hide_xfer_park_dial),mres($hide_xfer_blind_vmail),mres($allow_md_hopperlist),
             mres($campaign_id));
         if ($DB) echo $stmtA;
         $rslt=mysql_query($stmtA, $link);
@@ -1508,6 +1508,15 @@ if ($ADD==31) {
         echo select_yesno('hide_xfer_blind_vmail',$hide_xfer_blind_vmail);
         echo "    </select>\n";
         echo "    $NWB#osdial_campaigns-hide_xfer_blind_vmail$NWE\n";
+        echo "  </td>\n";
+        echo "</tr>\n";
+
+        echo "<tr bgcolor=$oddrows>\n";
+        echo "  <td align=right>Allow ManualDial HopperList:</td>\n";
+        echo "  <td align=left>\n";
+        echo select_yesno('allow_md_hopperlist',$allow_md_hopperlist);
+        echo "    </select>\n";
+        echo "    $NWB#osdial_campaigns-allow_md_hopperlist$NWE\n";
         echo "  </td>\n";
         echo "</tr>\n";
 

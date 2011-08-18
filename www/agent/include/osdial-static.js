@@ -6424,3 +6424,139 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 			delete arixmlhttp;
 		}
 	}
+
+
+
+// ################################################################################
+// Request hopper list for this campaign
+	function MDHopperListCheck() {
+		debug("<b>MDHopperListCheck:</b>",2);
+		if ( (VD_live_customer_call==1) || (alt_dial_active==1) ) {
+			osdalert("You must hangup and disposition your active call before you can access the hopper list.");
+		} else {
+			if (AutoDialWaiting==1 && VD_live_customer_call==0 && alt_dial_active==0) {
+				AutoDial_ReSume_PauSe('VDADpause','NEW_ID');
+				PCSpause=1;
+			}
+			showDiv('MDHopperListBox');
+
+			var xmlhttp=getXHR();
+			if (xmlhttp) { 
+				var HLlist_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=MDHopperList&campaign=" + campaign + "&format=text";
+				xmlhttp.open('POST', 'vdc_db_query.php'); 
+				xmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+				xmlhttp.send(HLlist_query); 
+				xmlhttp.onreadystatechange = function() { 
+					if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+						//osdalert(xmlhttp.responseText,30);
+						var all_HLs = null;
+						all_HLs = xmlhttp.responseText;
+						var all_HLs_array=all_HLs.split("\n");
+						var HL_calls = all_HLs_array[0];
+						var loop_ct=0;
+						var conv_start=0;
+						var HL_HTML = "<table width=900><tr bgcolor=" + callback_bg2 + ">"
+							+ "<td><font class=\"font1 log_title\">#</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 log_title\">PRI</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 log_title\">ID</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 log_title\">STATUS</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 log_title\">CALLS</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 log_title\">LAST UPDATE</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 log_title\">PHONE</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 log_title\">NAME</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 log_title\">CITY</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 log_title\">ST</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 log_title\">ZIP</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 log_title\">TZ</font></td>"
+							+"</tr>";
+						while (loop_ct < HL_calls) {
+							loop_ct++;
+							loop_s = loop_ct.toString();
+							if (loop_s.match(/1$|3$|5$|7$|9$/)) {
+								var row_color = oddrows;
+							} else {
+								var row_color = evenrows;
+							}
+							var conv_ct = (loop_ct + conv_start);
+							var call_array = all_HLs_array[conv_ct].split(" ~");
+							var HL_name = "";
+							if (call_array[1]=='') {
+								HL_name = call_array[0];
+							} else if (call_array[0]=='') {
+								HL_name = call_array[1];
+							} else {
+								HL_name = call_array[1] + ", " + call_array[0];
+							}
+							var HL_phone = call_array[2];
+							var HL_id = call_array[3];
+							var HL_lead_id = call_array[4];
+							var HL_campaign = call_array[5];
+							var HL_status = call_array[6];
+							var HL_user = call_array[7];
+							var HL_list_id = call_array[8];
+							var HL_gmt_offset_now = call_array[9];
+							var HL_state = call_array[10];
+							var HL_alt_dial = call_array[11];
+							var HL_priority = call_array[12];
+							var HL_city = call_array[13];
+							var HL_postal_code = call_array[14];
+							var HL_modify_date = call_array[15];
+							var HL_called_count = call_array[16];
+							var HL_lstatus = call_array[17];
+							var HL_phonecode = call_array[18];
+							HL_HTML = HL_HTML + "<tr bgcolor=\"" + row_color + "\">"
+								+ "<td nowrap align=\"right\"><font class=\"body_text\">" + loop_ct + "</font></td>"
+								+ "<td nowrap align=\"center\"><font class=\"body_text\"><a href=\"#\" onclick=\"hopper_add_priority('" + HL_id + "','1');return false;\"><b>+</b>&nbsp;</a><font class=\"body_text\">" + HL_priority + "&nbsp;<a href=\"#\" onclick=\"hopper_add_priority('" + HL_id + "','-1');return false;\"><b>-</b></a></font></td>"
+								+ "<td nowrap align=\"right\"><font class=\"body_text\">" + HL_lead_id + "&nbsp;</font></td>"
+								+ "<td nowrap align=\"center\"><font class=\"body_text\">" + HL_lstatus + "</font></td>"
+								+ "<td nowrap align=\"right\"><font class=\"body_text\">" + HL_called_count + "&nbsp;</font></td>"
+								+ "<td nowrap align=\"center\"><font class=\"body_tiny\">" + HL_modify_date + "</font></td>"
+								+ "<td nowrap align=\"center\"><font class=\"body_text\"><a href=\"#\" onclick=\"new_mdhopper_call('" + HL_lead_id + "');return false;\">" + formatPhone(HL_phonecode,HL_phone) + "</a></font></td>"
+								+ "<td nowrap align=\"left\"><font class=\"body_text\">&nbsp;" + HL_name + "</font></td>"
+								+ "<td nowrap align=\"left\"><font class=\"body_tiny\">&nbsp;" + HL_city + "</font></td>"
+								+ "<td nowrap align=\"left\"><font class=\"body_text\">&nbsp;" + HL_state + "</font></td>"
+								+ "<td nowrap align=\"left\"><font class=\"body_text\">&nbsp;" + HL_postal_code + "</font></td>"
+								+ "<td nowrap align=\"right\"><font class=\"body_text\">" + HL_gmt_offset_now + "&nbsp;</font></td>"
+								+ "</tr>";
+					
+						}
+						HL_HTML = HL_HTML + "</table>";
+						document.getElementById("MDHopperList").innerHTML = HL_HTML;
+					}
+				}
+				delete xmlhttp;
+			}
+		}
+	}
+
+// ################################################################################
+// Open up a hopper record as manual dial preview mode
+	function new_mdhopper_call(taskLEADid) {
+		debug("<b>new_mdhopper_call:</b> taskLEADid=" + taskLEADid,2);
+		alt_phone_dialing=1;
+		auto_dial_level=0;
+		manual_dial_in_progress=1;
+		MainPanelToFront();
+		buildDiv('DiaLLeaDPrevieW');
+		buildDiv('DiaLDiaLAltPhonE');
+		document.osdial_form.LeadPreview.checked=true;
+		document.osdial_form.DiaLAltPhonE.checked=true;
+		hideDiv('MDHopperListBox');
+		ManualDialNext('',taskLEADid,'','','');
+	}
+
+	function hopper_add_priority(taskHLid, taskval) {
+		debug("<b>hopper_add_priority:</b> taskHLid=" + taskHLid + " taskval=" + taskval,2);
+		var hxmlhttp=getXHR();
+		if (hxmlhttp) { 
+			var HLlist_query = "server_ip=" + server_ip + "&session_name=" + session_name + "&user=" + user + "&pass=" + pass + "&ACTION=MDHopperListAddPriority&campaign=" + campaign + "&hopper_id=" + taskHLid + "&hopper_add=" + taskval + "&format=text";
+			debug("<b>hopper_add_priority:</b> HLlist_query=" + HLlist_query,2);
+			hxmlhttp.open('POST', 'vdc_db_query.php', false); 
+			hxmlhttp.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=UTF-8');
+			hxmlhttp.send(HLlist_query); 
+			if (hxmlhttp.readyState == 4 && hxmlhttp.status == 200) {
+				MDHopperListCheck();
+			}
+			delete hxmlhttp;
+		}
+	}
