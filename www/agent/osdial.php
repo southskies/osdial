@@ -1955,7 +1955,7 @@ flush();
     <!-- Manual Dial Link -->
     <span style="position:absolute;left:200px;top:<?php echo ($MBheight-20); ?>px;z-index:12;visibility:hidden;" id="ManuaLDiaLButtons">
         <font class="body_text">
-            <span id="MDstatusSpan"><span id="MDHopperListLink" <?php if ($allow_md_hopperlist=='N') echo "style=\"visibility:hidden;\"";} ?>><a href="#" onclick="MDHopperListCheck();return false;">HOPPER LIST</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a><br>
+            <span id="MDstatusSpan"><span id="MDHopperListLink" <?php if ($allow_md_hopperlist!='Y') echo "style=\"visibility:hidden;\""; ?>><a href="#" onclick="MDHopperListCheck();return false;">HOPPER LIST</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('NO');return false;">MANUAL DIAL</a></span> &nbsp; &nbsp; &nbsp; <a href="#" onclick="NeWManuaLDiaLCalL('FAST');return false;">FAST DIAL</a><br>
         </font>
     </span>
         
