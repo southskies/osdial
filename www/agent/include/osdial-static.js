@@ -6468,6 +6468,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 							+ "<td align=\"center\"><font class=\"font1 log_title\">ST</font></td>"
 							+ "<td align=\"center\"><font class=\"font1 log_title\">ZIP</font></td>"
 							+ "<td align=\"center\"><font class=\"font1 log_title\">TZ</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 log_title\">VLC</font></td>"
+							+ "<td align=\"center\"><font class=\"font1 log_title\">SRC</font></td>"
 							+"</tr>";
 						while (loop_ct < HL_calls) {
 							loop_ct++;
@@ -6504,6 +6506,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 							var HL_called_count = call_array[16];
 							var HL_lstatus = call_array[17];
 							var HL_phonecode = call_array[18];
+							var HL_vendor_lead_code = call_array[19];
+							var HL_source_id = call_array[20];
 							HL_HTML = HL_HTML + "<tr bgcolor=\"" + row_color + "\">"
 								+ "<td nowrap align=\"right\"><font class=\"body_text\">" + loop_ct + "</font></td>"
 								+ "<td nowrap align=\"center\"><font class=\"body_text\"><a href=\"#\" onclick=\"hopper_add_priority('" + HL_id + "','1');return false;\"><b>+</b>&nbsp;</a><font class=\"body_text\">" + HL_priority + "&nbsp;<a href=\"#\" onclick=\"hopper_add_priority('" + HL_id + "','-1');return false;\"><b>-</b></a></font></td>"
@@ -6517,6 +6521,8 @@ function DispoSelectContent_create(taskDSgrp,taskDSstage) {
 								+ "<td nowrap align=\"left\"><font class=\"body_text\">&nbsp;" + HL_state + "</font></td>"
 								+ "<td nowrap align=\"left\"><font class=\"body_text\">&nbsp;" + HL_postal_code + "</font></td>"
 								+ "<td nowrap align=\"right\"><font class=\"body_text\">" + HL_gmt_offset_now + "&nbsp;</font></td>"
+								+ "<td nowrap align=\"right\"><font class=\"body_text\">" + HL_vendor_lead_code + "&nbsp;</font></td>"
+								+ "<td nowrap align=\"right\"><font class=\"body_text\">" + HL_source_id + "&nbsp;</font></td>"
 								+ "</tr>";
 					
 						}

@@ -3542,12 +3542,12 @@ if ($ACTION == 'MDHopperList') {
     }
     $loop_count=0;
     while ($hopper_count>$loop_count) {
-        $stmt = "SELECT first_name,last_name,phone_number,city,postal_code,modify_date,called_count,status,phone_code FROM osdial_list WHERE lead_id='$lead_id[$loop_count]';";
+        $stmt = "SELECT first_name,last_name,phone_number,city,postal_code,modify_date,called_count,status,phone_code,vendor_lead_code,source_id FROM osdial_list WHERE lead_id='$lead_id[$loop_count]';";
         if ($DB) echo "$stmt\n";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
 
-        echo "$row[0] ~$row[1] ~$row[2] ~$hopper_id[$loop_count] ~$lead_id[$loop_count] ~$campaign_id[$loop_count] ~$status[$loop_count] ~$user[$loop_count] ~$list_id[$loop_count] ~$gmt_offset_now[$loop_count] ~$state[$loop_count] ~$alt_dial[$loop_count] ~$priority[$loop_count] ~$row[3] ~$row[4] ~$row[5] ~$row[6] ~$row[7] ~$row[8]\n";
+        echo "$row[0] ~$row[1] ~$row[2] ~$hopper_id[$loop_count] ~$lead_id[$loop_count] ~$campaign_id[$loop_count] ~$status[$loop_count] ~$user[$loop_count] ~$list_id[$loop_count] ~$gmt_offset_now[$loop_count] ~$state[$loop_count] ~$alt_dial[$loop_count] ~$priority[$loop_count] ~$row[3] ~$row[4] ~$row[5] ~$row[6] ~$row[7] ~$row[8] ~$row[9] ~$row[10]\n";
         $loop_count++;
     }
 
