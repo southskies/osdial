@@ -983,7 +983,7 @@ function report_realtime_detail() {
                 $pollserver = $Lcall_server_ip;
                 if ($pollserver == '') $pollserver = $Lserver_ip;
                 if ($Luniqueid > 0) {
-                    $stmtB = sprintf("SELECT uniqueid,caller_code,end_time,end_epoch FROM call_log WHERE uniqueid='%s' AND server_ip='%s' AND end_epoch>0 limit 1;",mres($Luniqueid),mres($pollserver));
+                    $stmtB = sprintf("SELECT uniqueid,caller_code,end_time,end_epoch FROM call_log WHERE uniqueid='%s' AND server_ip='%s' AND channel='%s' AND end_epoch>0 limit 1;",mres($Luniqueid),mres($pollserver),mres($Lchannel));
                 } elseif ($Lcallerid != '') {
                     $stmtB = sprintf("SELECT uniqueid,caller_code,end_time,end_epoch FROM call_log WHERE caller_code='%s' AND server_ip='%s' AND end_epoch>0 limit 1;",mres($Lcallerid),mres($pollserver));
                 }

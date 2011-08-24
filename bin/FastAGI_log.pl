@@ -792,7 +792,7 @@ sub process_request {
 			} else {
 				########## FIND AND DELETE osdial_auto_calls ##########
 				$VD_alt_dial = 'NONE';
-				$stmtA = "SELECT SQL_NO_CACHE lead_id,callerid,campaign_id,alt_dial,stage,UNIX_TIMESTAMP(call_time),uniqueid,status FROM osdial_auto_calls WHERE uniqueid='$uniqueid' OR callerid='$accountcode' LIMIT 1;";
+				$stmtA = "SELECT SQL_NO_CACHE lead_id,callerid,campaign_id,alt_dial,stage,UNIX_TIMESTAMP(call_time),uniqueid,status FROM osdial_auto_calls WHERE channel='$channel' AND (uniqueid='$uniqueid' OR callerid='$accountcode') LIMIT 1;";
 				if ($AGILOG) {
 					$agi_string = "|$stmtA|";
 					&agi_output;
