@@ -496,7 +496,7 @@ while($one_day_interval > 0)
 		foreach(@DBremote_user) 
 			{
 			if ($DBX) {print STDERR "osdial_live_agent check $DBremote_user[$h]|\n";}
-			if (length($DBremote_user[$h])>1) 
+			if (length($DBremote_user[$h])>1 and $DBremote_server_ip[$h] eq $server_ip) 
 				{
 				### check to see if the record exists and only needs random number update
 				$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_live_agents WHERE user='$DBremote_user[$h]' AND server_ip='$server_ip' AND campaign_id='$DBremote_campaign[$h]' AND conf_exten='$DBremote_conf_exten[$h]';";
@@ -516,7 +516,11 @@ while($one_day_interval > 0)
 					{
 					$stmtA = "UPDATE osdial_live_agents SET random_id='$DBremote_random[$h]',last_update_time='$FDtsSQLdate' WHERE user='$DBremote_user[$h]' AND server_ip='$server_ip' AND campaign_id='$DBremote_campaign[$h]' AND conf_exten='$DBremote_conf_exten[$h]';";
 					$affected_rows = $dbhA->do($stmtA);
-					if ($DBX and $affected_rows > 0) {print STDERR "$DBremote_user[$h] $DBremote_campaign[$h] ONLY RANDOM ID UPDATE: $affected_rows\n$stmtA\n";}
+					if ($affected_rows > 0 and $DBX) {
+						$event_string = "|     $DBremote_user[$h] $DBremote_campaign[$h] ONLY RANDOM ID UPDATE: $affected_rows";
+						$event_string .= "\n$stmtA";
+						&event_logger;
+					}
 					}
 				### check if record for user on server exists at all in osdial_live_agents
 				else
@@ -537,7 +541,11 @@ while($one_day_interval > 0)
 						{
 						$stmtA = "UPDATE osdial_live_agents SET random_id='$DBremote_random[$h]',last_update_time='$FDtsSQLdate',campaign_id='$DBremote_campaign[$h]',conf_exten='$DBremote_conf_exten[$h]',closer_campaigns='$DBremote_closer[$h]',status='READY' WHERE user='$DBremote_user[$h]' AND server_ip='$server_ip';";
 						$affected_rows = $dbhA->do($stmtA);
-						if ($DBX and $affected_rows > 0) {print STDERR "$DBremote_user[$h] ALL UPDATE: $affected_rows\n$stmtA\n";}
+						if ($affected_rows > 0 and $DBX) {
+							$event_string = "|     $DBremote_user[$h] ALL UPDATE: $affected_rows";
+							$event_string .= "\n$stmtA";
+							&event_logger;
+						}
 			#			if ($affected_rows>0) 
 			#				{
 			#				if ($enable_queuemetrics_logging > 0)
@@ -575,7 +583,11 @@ while($one_day_interval > 0)
 
 						$stmtA = "INSERT INTO osdial_live_agents (user,server_ip,conf_exten,extension,status,campaign_id,random_id,last_call_time,last_update_time,last_call_finish,closer_campaigns,channel,uniqueid,callerid,user_level,comments) values('$DBremote_user[$h]','$server_ip','$DBremote_conf_exten[$h]','R/$DBremote_user[$h]','READY','$DBremote_campaign[$h]','$DBremote_random[$h]','$SQLdate','$FDtsSQLdate','$SQLdate','$DBremote_closer[$h]','','','','$DBuser_level[$h]','REMOTE');";
 						$affected_rows = $dbhA->do($stmtA);
-						if ($DBX) {print STDERR "$DBremote_user[$h] NEW INSERT\n";}
+						if ($affected_rows > 0) {
+							$event_string = "|     $DBremote_user[$h] NEW INSERT: $affected_rows";
+							$event_string .= "\n$stmtA" if ($DBX);
+							&event_logger;
+						}
 						if ($TESTrun > 0)
 							{
 							$stmtA = "SELECT SQL_NO_CACHE count(*) FROM live_sip_channels WHERE extension LIKE \"%999999999999\" AND server_ip='$server_ip';";
@@ -594,7 +606,11 @@ while($one_day_interval > 0)
 								$SIqueryCID = "T$CIDdate$DBremote_conf_exten[$h]";
 								$stmtA="INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$server_ip','','Originate','$SIqueryCID','Channel: $local_DEF$DBremote_conf_exten[$h]$local_AMP$ext_context','Context: $ext_context','Exten: 999999999999','Priority: 1','Callerid: $SIqueryCID','Account: $SIqueryCID','','','','');";
 								$affected_rows = $dbhA->do($stmtA);
-								if ($DBX) {print STDERR "   TESTrun CALL PLACED: 999999999999 $DBremote_conf_exten[$h] $DBremote_user[$h] NEW INSERT: |$affected_rows|\n";}
+								if ($affected_rows > 0) {
+									$event_string = "|     TESTrun CALL PLACED: 999999999999 $DBremote_conf_exten[$h] $DBremote_user[$h] NEW INSERT: |$affected_rows|";
+									$event_string .= "\n$stmtA" if ($DBX);
+									&event_logger;
+								}
 								}
 							else {print STDERR "Agent test calls already adequate $number_of_lines !> $LSC_count\n";}
 							}
@@ -629,7 +645,11 @@ while($one_day_interval > 0)
 	###############################################################################
 		$stmtA = "UPDATE osdial_live_agents SET status='PAUSED' WHERE extension LIKE 'R/\%' AND server_ip='$server_ip' AND lead_id='0' AND uniqueid='' AND callerid='' AND status='INCALL';";
 		$affected_rows = $dbhA->do($stmtA);
-		if ($DB and $affected_rows > 0) {print STDERR "$VD_user[$z] CALL WIPE UPDATE: $affected_rows|PAUSED|$VD_uniqueid[$z]|$VD_user[$z]|\n$stmtA\n";}
+		if ($affected_rows > 0 and $DBX) {
+			$event_string = "|     $VD_user[$z] CALL WIPE UPDATE: $affected_rows|PAUSED|$VD_uniqueid[$z]|$VD_user[$z]|";
+			$event_string .= "\n$stmtA";
+			&event_logger;
+		}
 
 		$stmtA = "SELECT SQL_NO_CACHE user,extension,status,uniqueid,callerid,lead_id,campaign_id FROM osdial_live_agents WHERE extension LIKE \"R/%\" AND server_ip='$server_ip' AND uniqueid>10;";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -684,7 +704,11 @@ while($one_day_interval > 0)
 					{
 					$stmtA = "UPDATE osdial_live_agents SET random_id='$VD_random[$z]',status='PAUSED',last_call_finish='$SQLdate',lead_id='',uniqueid='',callerid='',channel='' WHERE user='$VD_user[$z]' AND server_ip='$server_ip';";
 					$affected_rows = $dbhA->do($stmtA);
-					if ($DB and $affected_rows > 0) {print STDERR "$VD_user[$z] CALL WIPE UPDATE: $affected_rows|PAUSED|$VD_uniqueid[$z]|$VD_user[$z]|\n$stmtA\n";}
+					if ($affected_rows > 0 and $DBX) {
+						$event_string = "|     $VD_user[$z] CALL WIPE UPDATE: $affected_rows|PAUSED|$VD_uniqueid[$z]|$VD_user[$z]|";
+						$event_string .= "\n$stmtA";
+						&event_logger;
+					}
 					if ($affected_rows>0) 
 						{
 						if ($enable_queuemetrics_logging > 0)
@@ -724,7 +748,7 @@ while($one_day_interval > 0)
 					}
 				else
 					{
-					$stmtA = "SELECT SQL_NO_CACHE count(*) FROM call_log WHERE caller_code='$VD_callerid[$z]' AND channel_group NOT LIKE 'Local%' AND end_epoch>10;";
+					$stmtA = "SELECT SQL_NO_CACHE count(*) FROM call_log WHERE caller_code='$VD_callerid[$z]' AND channel NOT LIKE 'Local%' AND end_epoch>10;";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
@@ -736,7 +760,7 @@ while($one_day_interval > 0)
 						$rec_count++;
 						}
 					$sthA->finish();
-					$stmtA = "SELECT SQL_NO_CACHE count(*) FROM call_log WHERE caller_code='$VD_callerid[$z]' AND channel_group LIKE 'Local%' AND end_epoch>10;";
+					$stmtA = "SELECT SQL_NO_CACHE count(*) FROM call_log WHERE caller_code='$VD_callerid[$z]' AND channel LIKE 'Local%' AND end_epoch>10;";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows=$sthA->rows;
@@ -773,16 +797,23 @@ while($one_day_interval > 0)
 						if ($aryA[0]) {
 							$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Hangup','$VD_callerid[$z]','Channel: $aryA[0]','','','','','','','','','')";
 							$affected_rows = $dbhA->do($stmtA);
-							if ($DB and $affected_rows > 0) {print STDERR "$VD_user[$z] CALL HANGUP SENT: $affected_rows|READY|$VD_uniqueid[$z]|$VD_user[$z]|\n$stmtA\n";}
+							if ($affected_rows > 0 and $DBX) {
+								$event_string = "|     $VD_user[$z] CALL HANGUP SENT: $affected_rows|READY|$VD_uniqueid[$z]|$VD_user[$z]|";
+								$event_string .= "\n$stmtA";
+								&event_logger;
+							}
 						}
 
 						$stmtA = "UPDATE osdial_live_agents SET random_id='$VD_random[$z]',last_call_finish='$SQLdate',lead_id='',uniqueid='',callerid='',channel='' WHERE user='$VD_user[$z]' AND server_ip='$server_ip';";
 						$affected_rows = $dbhA->do($stmtA);
-						if ($DB and $affected_rows > 0) {print STDERR "$VD_user[$z] CALL WIPE UPDATE: $affected_rows|READY|$VD_uniqueid[$z]|$VD_user[$z]|\n$stmtA\n";}
-	
 						$stmtA = "UPDATE osdial_live_agents SET status='READY' WHERE user='$VD_user[$z]' AND server_ip='$server_ip';";
-						$affected_rows = $dbhA->do($stmtA);
-						if ($DB and $affected_rows > 0) {print STDERR "$VD_user[$z] CALL WIPE UPDATE: $affected_rows|READY|$VD_uniqueid[$z]|$VD_user[$z]|\n$stmtA\n";}
+						my $Baffected_rows = $dbhA->do($stmtA);
+						if (($affected_rows > 0 or $Baffected_rows > 0) and $DBX) {
+							$event_string = "|     $VD_user[$z] CALL WIPE UPDATE: $affected_rows/$Baffected_rows|READY|$VD_uniqueid[$z]|$VD_user[$z]|";
+							$event_string .= "\n$stmtA" if ($DBX);
+							&event_logger;
+						}
+
 						if ($affected_rows>0) 
 							{
 							if ($enable_queuemetrics_logging > 0)
