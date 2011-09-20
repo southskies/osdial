@@ -651,7 +651,7 @@ while($one_day_interval > 0)
 			&event_logger;
 		}
 
-		$stmtA = "SELECT SQL_NO_CACHE user,extension,status,uniqueid,callerid,lead_id,campaign_id FROM osdial_live_agents WHERE extension LIKE \"R/%\" AND server_ip='$server_ip' AND uniqueid>10;";
+		$stmtA = "SELECT SQL_NO_CACHE user,extension,status,uniqueid,callerid,lead_id,campaign_id,conf_exten FROM osdial_live_agents WHERE extension LIKE \"R/%\" AND server_ip='$server_ip' AND uniqueid>10;";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -667,6 +667,7 @@ while($one_day_interval > 0)
 			$VDcallerid =			"$aryA[4]";
 			$VDlead_id =			"$aryA[5]";
 			$VDcampaign_id =		"$aryA[6]";
+			$VDconf_exten =		"$aryA[7]";
 			$VDrandom = int( rand(9999999)) + 10000000;
 
 			$VD_user[$z] =			"$VDuser";
@@ -676,6 +677,7 @@ while($one_day_interval > 0)
 			$VD_callerid[$z] =		"$VDcallerid";
 			$VD_lead_id[$z] =		"$VDlead_id";
 			$VD_campaign_id[$z] =	"$VDcampaign_id";
+			$VD_conf_exten[$z] =	"$VDconf_exten";
 			$VD_random[$z] =		"$VDrandom";
 
 			$z++;				
@@ -801,6 +803,12 @@ while($one_day_interval > 0)
 								$event_string = "|     $VD_user[$z] CALL HANGUP SENT: $affected_rows|READY|$VD_uniqueid[$z]|$VD_user[$z]|";
 								$event_string .= "\n$stmtA";
 								&event_logger;
+							}
+							if ($VD_extension[$z] =~ /^R\/va/) {
+								&get_time_now;
+								my $KqueryCID='ULGH3956'.$CIDdate;
+								$stmtA = "INSERT INTO osdial_manager values('','','$SQLdate','NEW','N','$VARserver_ip','','Originate','$KqueryCID','Channel: Local/5555" . $VD_conf_exten[$z] . "\@osdial','Context: osdial','Exten: 8300','Priority: 1','Callerid: $KqueryCID','Accountcode: $KqueryCID','','','','')";
+								$affected_rows = $dbhA->do($stmtA);
 							}
 						}
 
