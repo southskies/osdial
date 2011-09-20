@@ -113,16 +113,18 @@ sub set_campaign_stats {
 	my $sinsmulti = '';
 	my $sinsonupd = ' ON DUPLICATE KEY UPDATE ';
 	foreach my $campaign (sort keys %{$cdata}) {
+		my $cadd=1;
+		$cadd=0 if (scalar(keys %{$cdata->{$campaign}{campaign}}) < 30);
 		print "  -- OSDcampaign_stats.pl: set_campaign_stats: got campaign $campaign.\n" if ($osdial->{DB}>1);
-		$cinsmulti .= "('$campaign',";
+		$cinsmulti .= "('$campaign'," if ($cadd);
 		foreach my $cfld (sort keys %{$cdata->{$campaign}{campaign}}) {
 			print "      -- OSDcampaign_stats.pl: set_campaign_stats: campaign: $campaign  got field $cfld.\n" if ($osdial->{DB}>1);
 			$cinshead .= $cfld . ',' if ($chdone == 0);
-			$cinsmulti .= "'" . $cdata->{$campaign}{campaign}{$cfld} . "',";
+			$cinsmulti .= "'" . $cdata->{$campaign}{campaign}{$cfld} . "'," if ($cadd);;
 			$cinsonupd .= $cfld . '=VALUES(' . $cfld . '),' if ($chdone == 0);
 		}
-		chop($cinsmulti);
-		$cinsmulti .= '),';
+		chop($cinsmulti) if ($cadd);;
+		$cinsmulti .= '),' if ($cadd);;
 		if ($chdone == 0) {
 			chop($cinshead);
 			$cinshead .= ') VALUES ';
