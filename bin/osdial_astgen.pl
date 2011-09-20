@@ -461,6 +461,8 @@ sub gen_conferences {
 	$cnf .= "exten => _X1860XXXX,2,Hangup()\n";
 	$cnf .= "exten => _5555860XXXX,1,MeetMeAdmin(\${EXTEN:4},K)\n";
 	$cnf .= "exten => _5555860XXXX,2,Hangup()\n";
+	$cnf .= "exten => _555587XXXXXX,1,MeetMeAdmin(\${EXTEN:4},K)\n";
+	$cnf .= "exten => _555587XXXXXX,2,Hangup()\n";
 
 	my $stmt = "SELECT conf_exten,server_ip FROM conferences WHERE";
 	foreach my $ip (@myips) {
@@ -554,8 +556,10 @@ sub gen_conferences {
         my ($cnf2,$mtm2,$cf,$cl);
 	while (my $sret = $osdial->sql_query($stmt)) {
 		if ($asterisk_version =~ /^1\.6|^1\.8/) {
-			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Meetme(\${EXTEN},Fq)\n";
-			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Hangup()\n";
+			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Answer()\n";
+			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",3,Meetme(\${EXTEN},Fq)\n";
+			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",4,Hangup()\n";
 			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
 			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup()\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Meetme(\${EXTEN:1},Fq)\n";
@@ -571,8 +575,10 @@ sub gen_conferences {
 			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",1,Chanspy(,g(\${EXTEN:1})qw)\n";
 			$cnf2 .= "exten => _9" . $sret->{conf_exten} . ",2,Hangup()\n";
 		} else {
-			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Meetme,\${EXTEN}|Fq\n";
-			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Hangup\n";
+			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",1,Answer()\n";
+			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",2,Playback(sip-silence)\n";
+			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",3,Meetme,\${EXTEN}|Fq\n";
+			$cnf2 .= "exten => _"  . $sret->{conf_exten} . ",4,Hangup\n";
 			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
 			$cnf2 .= "exten => _1" . $sret->{conf_exten} . ",2,Hangup\n";
 			$cnf2 .= "exten => _2" . $sret->{conf_exten} . ",1,Meetme,\${EXTEN:1}|Fq\n";
