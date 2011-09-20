@@ -367,8 +367,8 @@ sub gen_servers {
 		$ssvr .= "insecure=invite,port\n";
 		$ssvr .= "sendrpid=yes\n";
 		$ssvr .= "trustrpid=yes\n";
-		$ssvr .= "canreinvite=yes\n";
-		$ssvr .= "nat=no\n";
+		$ssvr .= "canreinvite=no\n";
+		$ssvr .= "nat=yes\n";
 	}
 
 	# Get other servers 
@@ -428,8 +428,8 @@ sub gen_servers {
 		$ssvr .= "insecure=invite,port\n";
 		$ssvr .= "sendrpid=yes\n";
 		$ssvr .= "trustrpid=yes\n";
-		$ssvr .= "canreinvite=yes\n";
-		$ssvr .= "nat=no\n";
+		$ssvr .= "canreinvite=no\n";
+		$ssvr .= "nat=yes\n";
 	}
 
 	my $extreload = "extensions reload";
