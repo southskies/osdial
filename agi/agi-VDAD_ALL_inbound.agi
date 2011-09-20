@@ -413,7 +413,7 @@ while ($sthArows > $cbc) {
 $sthA->finish();
 
 exit 0 if ($group_active eq 'N');
-exit 0 if ($cdc == 0);
+exit 0 if ($cbc == 0);
 
 # If the channel_group is an A2A and the call was an inbound, use the agent alert from the initial ingroup.
 if ($channel_group =~ /^A2A_/ and $comment_d ne '') {
