@@ -274,6 +274,7 @@ while($one_day_interval > 0)
 		@DBlive_conf_exten=@MT;
 		@DBlive_status=@MT;
 		@DBcampaigns=@MT;
+		@DBIPivr_exten=@MT;
 		@DBIPaddress=@MT;
 		@DBIPcampaign=@MT;
 		@DBIPactive=@MT;
@@ -413,12 +414,33 @@ while($one_day_interval > 0)
 		$user_CIPct = 0;
 		foreach(@DBIPcampaign)
 			{
+			my $ivr_active = 0;
+			my $ivr_reserve_agents = 0;
+			my $ivr_virtual_agents = 0;
+			$stmtA = "SELECT status,reserve_agents,virtual_agents FROM osdial_ivr where campaign_id='$DBIPcampaign[$user_CIPct]' LIMIT 1;";
+			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
+			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+			$sthArows=$sthA->rows;
+			if ($sthArows > 0) {
+				@aryA = $sthA->fetchrow_array;
+				$ivr_active=1 if ($aryA[0] eq 'ACTIVE');
+				$ivr_reserve_agents = $aryA[1];
+				$ivr_virtual_agents = $aryA[2];
+			}
+			$sthA->finish();
+
 			$user_counter=0;
 			foreach(@DBlive_campaign)
 				{
 				if ( ($DBlive_campaign[$user_counter] =~ /$DBIPcampaign[$user_CIPct]/i) && (length($DBlive_campaign[$user_counter]) == length($DBIPcampaign[$user_CIPct])) && ($DBlive_server_ip[$user_counter] =~ /$DBIPaddress[$user_CIPct]/i) )
 					{
 					$DBIPcount[$user_CIPct]++;
+					$DBIPivr_exten[$user_CIPct] = ($DBIPivr_exten[$user_CIPct] + 0);
+					if ($ivr_active>0) {
+						my $cnf_base = $DBlive_conf_exten[$user_counter];
+						$cnf_base =~ s/^87...(...)$/$1/;
+						$DBIPivr_exten[$user_CIPct]++ if ($cnf_base <= $ivr_virtual_agents);
+					}
 					$DBIPACTIVEcount[$user_CIPct] = ($DBIPACTIVEcount[$user_CIPct] + 0);
 					$DBIPINCALLcount[$user_CIPct] = ($DBIPINCALLcount[$user_CIPct] + 0);
 					if ($DBlive_status[$user_counter] =~ /READY|DONE/) 
@@ -539,30 +561,21 @@ while($one_day_interval > 0)
 				}
 			}
 
+			$DBIPgoalcalls[$user_CIPct] = ($DBIPadlevel[$user_CIPct] * $DBIPcount[$user_CIPct]);
 
-			$ivr_adjust = 0;
-			$ivr_reserve_agents = 0;
-			$ivr_virtual_agents = 0;
-			$stmtA = "SELECT status,reserve_agents,virtual_agents FROM osdial_ivr where campaign_id='$DBIPcampaign[$user_CIPct]' LIMIT 1;";
+			$ivr_line_count=0;
+			$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE campaign_id='$DBIPcampaign[$user_CIPct]';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
-			if ($sthArows > 0) {
+			$rec_count=0;
+			while ($sthArows > $rec_count) {
 				@aryA = $sthA->fetchrow_array;
-				$ivr_reserve_agents = $aryA[1];
-				$ivr_virtual_agents = $aryA[2];
-				if ($ivr_virtual_agents > 0) {
-					if ($aryA[0] eq "ACTIVE") {
-						$ivr_adjust = $ivr_reserve_agents * -1;
-					} else {
-						$ivr_adjust = ($ivr_virtual_agents + $ivr_reserve_agents) * -1;
-					}
-				}
+				$ivr_line_count = $aryA[0];
+				$rec_count++;
 			}
 			$sthA->finish();
 
-			$DBIPgoalcalls[$user_CIPct] = ($DBIPadlevel[$user_CIPct] * ($DBIPcount[$user_CIPct] + $ivr_adjust));
-			$DBIPgoalcalls[$user_CIPct] = 0 if ($DBIPgoalcalls[$user_CIPct] < 0);
 
 			# Adjust the goalcalls to 0 if answers per hour is met.
 			$answers_hour = 0;
@@ -636,10 +649,21 @@ while($one_day_interval > 0)
 
 				$DBIPgoalcalls[$user_CIPct] = ($DBIPgoalcalls[$user_CIPct] + $tally_xfer_line_counter);
 				}
+
+			$ivr_goal=0;
+			if ($ivr_active>0 and $ivr_virtual_agents>0) {
+				$ivr_attempt=($DBIPadlevel[$user_CIPct]*$ivr_virtual_agents)-$ivr_line_count;
+				$ivr_goal=$ivr_attempt;
+				$ivr_goal=$DBIPadlevel[$user_CIPct] * $DBIPivr_exten[$user_CIPct] if ($DBIPivr_exten[$user_CIPcr]<$ivr_virtual_agents);
+				$DBIPgoalcalls[$user_CIPct] = $ivr_goal;
+			}
+
+
 			if ($DBIPactive[$user_CIPct] =~ /N/) {$DBIPgoalcalls[$user_CIPct] = 0;}
+			$DBIPgoalcalls[$user_CIPct] = 0 if ($DBIPgoalcalls[$user_CIPct] < 0);
 			$DBIPgoalcalls[$user_CIPct] = sprintf("%.0f", $DBIPgoalcalls[$user_CIPct]);
 
-			$event_string="$DBIPcampaign[$user_CIPct] $DBIPaddress[$user_CIPct]: agents: $DBIPcount[$user_CIPct]     dial_level: $DBIPadlevel[$user_CIPct]     ivr_adjust: $ivr_adjust";
+			$event_string="$DBIPcampaign[$user_CIPct] $DBIPaddress[$user_CIPct]: agents: $DBIPcount[$user_CIPct]     dial_level: $DBIPadlevel[$user_CIPct]     ivr_goal: $ivr_goal";
 			&event_logger;
 
 
