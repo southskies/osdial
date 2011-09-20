@@ -50,96 +50,100 @@
 #	- vm-goodbye
 #
 
-use strict;
-use OSDial;
 $|++;
 
+use strict;
+use OSDial;
+
 my $prog = 'agi-record_prompts.agi';
+my $DB=1;
 
-my $osdial = OSDial->new('DB'=>0);
-
-$osdial->debug(1,$prog,'Starting.');
+my $osdial = OSDial->new('DB'=>$DB);
 $osdial->AGI($prog);
+
+my $AGI = $osdial->AGI();
+
+$osdial->agi_output('Starting.');
 
 my $format = 'gsm';   # Default to gsm.
 my $timeout = 360000; # Default to 6 minutes.
 $format = lc($ARGV[0]) if (length($ARGV[0])>0);
 $timeout = $ARGV[1] if (length($ARGV[1])>0);
 
-$osdial->debug(1,$prog,'ARGs: format=%s timeout=%s',$format, $timeout);
+$osdial->agi_output(sprintf('ARGs: format=%s timeout=%s',$format, $timeout));
 
-my $session = get_prompt_count("/var/lib/asterisk/prompt_count.txt");
-my $saved = main_loop($session, $format, $timeout);
+my $session = get_recording_extension($osdial);
+my $saved = main_loop($osdial, $AGI, $session, $format, $timeout);
 if ($saved) {
-	set_prompt_count("/var/lib/asterisk/prompt_count.txt",$session);
-	$osdial->AGI->stream_file('auth-thankyou');   
-	$osdial->AGI->say_digits($session);
-	$osdial->AGI->stream_file('beep');   
-	$osdial->AGI->say_digits($session);
-	$osdial->AGI->stream_file('vm-goodbye');   
+	set_recording_extension($osdial,$session);
+	$AGI->stream_file('auth-thankyou');   
+	$AGI->say_digits($session);
+	$AGI->stream_file('beep');   
+	$AGI->say_digits($session);
+	$AGI->stream_file('vm-goodbye');   
 }
-$osdial->debug(1,$prog,'Exiting.');
+$osdial->agi_output('Exiting.');
 
 exit;
 
 
 
 sub main_loop {
-	my ($session, $format, $timeout) = @_;
+	my ($osdial, $AGI, $session, $format, $timeout) = @_;
 	my $pin = '';
 	my $stop_loop=0;
 	my $quit_program=0;
 	my $loop_counter=0;
 	while (length($pin) ne 4 and !$stop_loop) {
-		$pin = enter_pin_number();
+		$pin = enter_pin_number($osdial, $AGI);
 
 		$loop_counter++;
 		if ($loop_counter > 3) {
 			$stop_loop++;
 			$quit_program++;
 		}
-		$osdial->debug(1,$prog,'main_loop pin:%s',$pin);
+		$osdial->agi_output(sprintf('main_loop pin:%s',$pin.''));
 	}
 
 	if ($pin ne '4321') {
-		$osdial->AGI->stream_file('ld_invalid_pin_number');   
+		$AGI->stream_file('ld_invalid_pin_number');   
 		$quit_program++;
 	}
 
 	if ($quit_program) {
-		$osdial->AGI->stream_file('vm-goodbye');   
+		$AGI->stream_file('vm-goodbye');   
 		return 0;
 	}
 
-	return record_prompts($session, $format, $timeout);
+	return record_prompts($osdial, $AGI, $session, $format, $timeout);
 }
 
 
 
 sub record_prompts {
-	my ($session, $format, $timeout) = @_;
-	$osdial->AGI->stream_file('beep');
-	$osdial->AGI->stream_file('vm-rec-generic');
-	$osdial->AGI->stream_file('beep');
+	my ($osdial, $AGI, $session, $format, $timeout) = @_;
+	$AGI->stream_file('beep');
+	$AGI->stream_file('vm-rec-generic');
+	$AGI->stream_file('beep');
 
-	my $interrupt_digit = $osdial->AGI->record_file('/opt/osdial/media/'.$session, $format, '123456789*#', $timeout, 1);
-	$osdial->debug(1,$prog,'record_prompts interrupt_digit:%s',$interrupt_digit);
+	my $interrupt_digit = $AGI->record_file('/opt/osdial/media/'.$session, $format, '123456789*#', $timeout, 1);
+	$osdial->agi_output(sprintf('record_prompts interrupt_digit:%s',$interrupt_digit.''));
 
 	my $totalDTMF='';
 	$totalDTMF = chr($interrupt_digit) if ($interrupt_digit > 1);
 
-	$osdial->debug(1,$prog,'record_prompts totalDTMF:%s',$totalDTMF);
-	$osdial->AGI->stream_file('beep');
+	$osdial->agi_output(sprintf('record_prompts totalDTMF:%s',$totalDTMF.''));
+	$AGI->stream_file('beep');
 
-	return verify_recording($session, $format, $timeout);
+	return verify_recording($osdial, $AGI, $session, $format, $timeout);
 }
 
 
 
 sub verify_recording {
-	my ($session, $format, $timeout) = @_;
-	my $interrupt_digit = $osdial->AGI->stream_file('vm-review','123456789');
-	$osdial->debug(1,$prog,'verify_recording interrupt_digit:%s',$interrupt_digit);
+	my ($osdial, $AGI, $session, $format, $timeout) = @_;
+	my $interrupt_digit = $AGI->stream_file('vm-review','123456789');
+	$osdial->agi_output(sprintf('verify_recording interrupt_digit:%s',$interrupt_digit.''));
 
 	my $totalDTMF='';
 	my $digit_loop_counter=0;
@@ -151,33 +155,33 @@ sub verify_recording {
 
 	my $digits_being_entered=1;
 	while ($digit_loop_counter < 1) {
-		my $digit = chr($osdial->AGI->wait_for_digit('2000000'));
+		my $digit = chr($AGI->wait_for_digit('2000000'));
 		if ($digit =~ /\d/) {
 			$totalDTMF .= $digit;
-			$osdial->debug(1,$prog,'verify_recording wait_for_digit:%s',$digit);
+			$osdial->agi_output(sprintf('verify_recording wait_for_digit:%s',$digit.''));
 		} else {
 			$digit_loop_counter=1;
 		}
 		$digit_loop_counter++;
 	}
 
-	$osdial->debug(1,$prog,'enter_pin_number totalDTMF:%s',$totalDTMF);
+	$osdial->agi_output(sprintf('enter_pin_number totalDTMF:%s',$totalDTMF.''));
 	$totalDTMF =~ s/\D//gi;
 	my $pin = $totalDTMF;
 	my $verified = 0;
 	if (length($pin)<1) {
-		$verified = verify_recording($session,$format,$timeout);
+		$verified = verify_recording($osdial,$AGI,$session,$format,$timeout);
 	} elsif ($pin == '1') {
 		$osdial->media_add_file('/opt/osdial/media/'.$session.'.'.$format);
 		$osdial->media_save_file('/var/lib/asterisk/sounds/osdial', $session.'.'.$format);
 		$osdial->media_save_file('/mnt/ramdisk/sounds/osdial', $session.'.'.$format) if (-e "/mnt/ramdisk/sounds");
 		$verified = 1;
 	} elsif ($pin == '2') {
-		$osdial->AGI->stream_file('/opt/osdial/media/'.$session);
-		$verified = verify_recording($session,$format,$timeout);
+		$AGI->stream_file('/opt/osdial/media/'.$session);
+		$verified = verify_recording($osdial,$AGI,$session,$format,$timeout);
 	} elsif ($pin == '3') {
 		unlink('/opt/osdial/media/'.$session.'.'.$format);
-		$verified = record_prompts($session,$format,$timeout);
+		$verified = record_prompts($osdial,$AGI,$session,$format,$timeout);
 	}
 	return $verified;
 }
@@ -185,8 +189,9 @@ sub verify_recording {
 
 
 sub enter_pin_number {
-	my $interrupt_digit = $osdial->AGI->stream_file('ld_welcome_pin_number','123456789');   
-	$osdial->debug(1,$prog,'enter_pin_number interrupt_digit:%s',$interrupt_digit);
+	my ($osdial,$AGI) = @_;
+	my $interrupt_digit = $AGI->stream_file('ld_welcome_pin_number','123456789');   
+	$osdial->agi_output(sprintf('enter_pin_number interrupt_digit:%s',$interrupt_digit.''));
 
 	my $totalDTMF='';
 	$totalDTMF=chr($interrupt_digit) if ($interrupt_digit > 1);
@@ -194,45 +199,43 @@ sub enter_pin_number {
 	my $digits_being_entered=1;
 	my $digit_loop_counter=0;
 	while ($digits_being_entered and $digit_loop_counter < 20) {
-		my $digit = chr($osdial->AGI->wait_for_digit('90000'));
+		my $digit = chr($AGI->wait_for_digit('90000'));
 		if ($digit =~ /\d/) {
 			$totalDTMF .= $digit;
-			$osdial->debug(1,$prog,'enter_pin_number wait_for_digit:%s',$digit);
+			$osdial->agi_output(sprintf('enter_pin_number wait_for_digit:%s',$digit.''));
 		} else {
 			$digits_being_entered=0;
 		}
 		$digit_loop_counter++;
 	}
 
-	$osdial->debug(1,$prog,'enter_pin_number totalDTMF:%s',$totalDTMF);
+	$osdial->agi_output(sprintf('enter_pin_number totalDTMF:%s',$totalDTMF.''));
 	$totalDTMF =~ s/\D//gi;
 	return $totalDTMF;
 }
 
 
 
-sub get_prompt_count {
-	my ($pc_file) = @_;
-	my $exten = 85100000;
-	my $prompt = 1;
-	if (-e $pc_file) {
-		open(PC, $pc_file) || die "can't open $pc_file: $!\n";
-		my @input = <PC>;
-		close(PC);
-		$prompt += $input[0];
-		$prompt -= $exten if ($prompt > $exten);
+sub get_recording_extension {
+	my ($osdial) = @_;
+	my $sret = $osdial->sql_query("SELECT (extension*1) AS media_recording_extension FROM osdial_media WHERE filename=description AND filename LIKE concat(extension,'.\%') ORDER BY (extension*1) DESC LIMIT 1;");
+	my $session = $osdial->{settings}{last_recording_extension};
+	$session = $sret->{media_recording_extension} if ($sret->{media_recording_extension} > $session);
+	$session++;
+	my $sret = $osdial->sql_query(sprintf("SELECT count(*) AS media_recording_count FROM osdial_media WHERE extension='\%s';",$session));
+	my $mrc = $sret->{media_recording_count};
+	while ($mrc>0) {
+		$session++;
+		my $sret = $osdial->sql_query(sprintf("SELECT count(*) AS media_recording_count FROM osdial_media WHERE extension='\%s';",$session));
+		$mrc = $sret->{media_recording_count};
 	}
-	my $session = ($exten + $prompt);
-	$osdial->debug(1,$prog,'Read prompt_count:%s session:%s',$prompt,$session);
+	$osdial->agi_output(sprintf('Read last_recording_extension:%s session:%s',$osdial->{settings}{last_recording_extension},$session));
 	return $session;
 }
 
-sub set_prompt_count {
-	my ($pc_file,$session) = @_;
-	my $exten = 85100000;
-	my $prompt = ($session - $exten);
-	open(PC, ">" . $pc_file) || die "can't open $pc_file: $!\n";
-	print PC $prompt;
-	close(PC);
-	$osdial->debug(1,$prog,'Wrote prompt_count:%s session:%s',$prompt,$session);
+sub set_recording_extension {
+	my ($osdial,$session) = @_;
+	$osdial->sql_execute(sprintf("UPDATE system_settings SET last_recording_extension='%s';",$session));
+	$osdial->agi_output(sprintf('Wrote last_recording_extension:%s session:%s',$osdial->{settings}{last_recording_extension},$session));
+	$osdial->{settings}{last_recording_extension} = $session;
 }
