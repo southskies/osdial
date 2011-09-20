@@ -270,6 +270,7 @@ sub process_request {
 		}
 	}
 	$HVcauses=0;
+	$DShasvalue=1;
 	$fullCID=0;
 	$callerid='';
 	$calleridname='';
@@ -307,6 +308,7 @@ sub process_request {
 			$ring_time = $ARGV_vars[5];
 			$agi_string = "URL HVcauses: |$PRI|$DEBUG|$hangup_cause|$dialstatus|$dial_time|$ring_time|";
 			&agi_output;
+			$DShasvalue=0 if ($dialstatus eq '');
 		}
 		# if no fullCID sent
 		if (!$fullCID) {
@@ -587,6 +589,12 @@ sub process_request {
 				&agi_output;
 			}
 
+			### If HVcauses and DIALSTATUS is blank, skip call END.
+			if ($DShasvalue<1) {
+				$agi_string = "ERROR: DIALSTATUS is empty...";
+				&agi_output;
+			}
+
 			### get uniqueid and start_epoch from the call_log table
 			$stmtA = "SELECT SQL_NO_CACHE uniqueid,start_epoch FROM call_log WHERE uniqueid='$uniqueid';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -705,7 +713,7 @@ sub process_request {
 				&agi_output;
 			}
 
-			if ($channel =~ /^Local/) {
+			if ($channel =~ /^Local/ and $channel !~ /^Local[\/\*\#]87......\@/) {
 				if ( ($PRI =~ /^PRI$/) && ($accountcode =~ /\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d/) && ( ($dialstatus =~ /BUSY|CONGESTION/) || ($hangup_cause =~ /^27$|^29$|^34$|^38$/) || ( ($dialstatus =~ /CHANUNAVAIL/) && ($hangup_cause =~ /^1$|^28$/) ) ) ) {
 					if ($dialstatus =~ /CONGESTION/) {
 						$VDL_status='CRC';
