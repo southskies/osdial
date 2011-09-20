@@ -77,9 +77,15 @@ my @scsip = split(/\./,$live_agents->{server_ip});
 my $csip = sprintf('%3.3d*%3.3d*%3.3d*%3.3d', @scsip);
 $cinfo->{conf_server} = $csip if ($osdial->{'VARserver_ip'} ne $live_agents->{server_ip});
 
+my $xepoch = time();
+my $xdate = $osdial->get_datetime($xepoch + 60);
 my $random = int( rand(9999999)) + 10000000;
-$osdial->sql_execute("UPDATE osdial_live_agents SET channel='" . $AGI->{orig_channel} . "',status='INCALL',random_id='" . $random . "',last_call_time='" . $cinfo->{start_date} . "' WHERE callerid='" . $AGI->{accountcode} . "' LIMIT 1;");
-$osdial->sql_execute("UPDATE osdial_auto_calls SET channel='" . $AGI->{orig_channel} . "' WHERE callerid='" . $AGI->{accountcode} . "' LIMIT 1;");
+my $stmt = "UPDATE osdial_live_agents SET channel='" . $AGI->{channel} . "',status='INCALL',random_id='" . $random . "',last_call_time='" . $cinfo->{start_date} . "',last_update_time='".$xdate."'  WHERE callerid='" . $AGI->{accountcode} . "' LIMIT 1;";
+$osdial->agi_output("+++   ODIVR: Update osdial_live_agents| $stmt",4);
+$osdial->sql_execute($stmt);
+my $stmt = "UPDATE osdial_auto_calls SET channel='" . $AGI->{channel} . "' WHERE callerid='" . $AGI->{accountcode} . "' LIMIT 1;";
+$osdial->agi_output("+++   ODIVR: Update osdial_auto_calls| $stmt",4);
+$osdial->sql_execute($stmt);
 
 $cinfo->{CIDlead_id} = (substr($AGI->{accountcode}, 11, 9) + 0);
 
