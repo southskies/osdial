@@ -176,17 +176,30 @@ while ($drop_timer <= $campaign->{drop_call_seconds}) {
 		if ($hopper->{user} ne '' and $hopper->{user} !~ /VDAD/) {
 			$hopper_agent = sprintf("AND user='%s'",$hopper->{user});
 		}
+		my $ivr_active=0;
+		$stmt = sprintf("SELECT (IFNULL(virtual_agents,0)) AS active FROM osdial_ivr WHERE campaign_id='%s' AND status='ACTIVE';",$oac->{campaign_id});
+		my $oires = $osd->sql_query($stmt);
+		$ivr_active = $oires->{active};
+
+		if ($ivr_active>0) {
+			$method='LO';
+			$agent_call_order='ORDER BY user,INET_ATON(server_ip)';
+		}
+		my $CDtsSQLdate = $osd->get_datetime(time() + 60);
 		if ($method eq 'SO' or $method eq 'LO') {
-			$stmt = sprintf("UPDATE osdial_live_agents SET status='QUEUE',random_id='%s',lead_id='%s',uniqueid='%s',channel='%s',call_server_ip='%s',callerid='%s' WHERE status='READY' AND campaign_id='%s' AND last_update_time>'%s' AND server_ip='%s' %s %s LIMIT 1;",$random,$CIDlead_id,$osd->AGI->{uniqueid},$osd->AGI->{channel},$osd->{VARserver_ip},$osd->AGI->{accountcode},$oac->{campaign_id},$BDtsSQLdate,$osd->{VARserver_ip},$hopper_agent,$agent_call_order);
+			$stmt = sprintf("UPDATE osdial_live_agents SET status='QUEUE',random_id='%s',lead_id='%s',uniqueid='%s',channel='%s',call_server_ip='%s',callerid='%s',last_update_time='%s' WHERE status='READY' AND campaign_id='%s' AND last_update_time>'%s' AND server_ip='%s' %s %s LIMIT 1;",$random,$CIDlead_id,$osd->AGI->{uniqueid},$osd->AGI->{channel},$osd->{VARserver_ip},$osd->AGI->{accountcode},$CDtsSQLdate,$oac->{campaign_id},$BDtsSQLdate,$osd->{VARserver_ip},$hopper_agent,$agent_call_order);
 			$queued = $osd->sql_execute($stmt);
 			$osd->agi_output("$queued|$stmt|") if ($DB);
 			if ($method eq 'LO' and $queued == 0) {
-				$stmt = sprintf("UPDATE osdial_live_agents SET status='QUEUE',random_id='%s',lead_id='%s',uniqueid='%s',channel='%s',call_server_ip='%s',callerid='%s' WHERE status='READY' AND campaign_id='%s' AND last_update_time>'%s' AND server_ip!='%s' %s %s LIMIT 1;",$random,$CIDlead_id,$osd->AGI->{uniqueid},$osd->AGI->{channel},$osd->{VARserver_ip},$osd->AGI->{accountcode},$oac->{campaign_id},$BDtsSQLdate,$osd->{VARserver_ip},$hopper_agent,$agent_call_order);
+				my $random = int( rand(9999999)) + 10000000;
+				$stmt = sprintf("UPDATE osdial_live_agents SET status='QUEUE',random_id='%s',lead_id='%s',uniqueid='%s',channel='%s',call_server_ip='%s',callerid='%s',last_update_time='%s' WHERE status='READY' AND campaign_id='%s' AND last_update_time>'%s' AND server_ip!='%s' %s %s LIMIT 1;",$random,$CIDlead_id,$osd->AGI->{uniqueid},$osd->AGI->{channel},$osd->{VARserver_ip},$osd->AGI->{accountcode},$CDtsSQLdate,$oac->{campaign_id},$BDtsSQLdate,$osd->{VARserver_ip},$hopper_agent,$agent_call_order);
 				$queued = $osd->sql_execute($stmt);
+				$osd->agi_output("$queued|$stmt|") if ($DB);
 			}
 		} else {
-			$stmt = sprintf("UPDATE osdial_live_agents SET status='QUEUE',random_id='%s',lead_id='%s',uniqueid='%s',channel='%s',call_server_ip='%s',callerid='%s' WHERE status='READY' AND campaign_id='%s' AND last_update_time>'%s' %s %s LIMIT 1;",$random,$CIDlead_id,$osd->AGI->{uniqueid},$osd->AGI->{channel},$osd->{VARserver_ip},$osd->AGI->{accountcode},$oac->{campaign_id},$BDtsSQLdate,$hopper_agent,$agent_call_order);
+			$stmt = sprintf("UPDATE osdial_live_agents SET status='QUEUE',random_id='%s',lead_id='%s',uniqueid='%s',channel='%s',call_server_ip='%s',callerid='%s',last_update_time='%s' WHERE status='READY' AND campaign_id='%s' AND last_update_time>'%s' %s %s LIMIT 1;",$random,$CIDlead_id,$osd->AGI->{uniqueid},$osd->AGI->{channel},$osd->{VARserver_ip},$osd->AGI->{accountcode},$CDtsSQLdate,$oac->{campaign_id},$BDtsSQLdate,$hopper_agent,$agent_call_order);
 			$queued = $osd->sql_execute($stmt);
+			$osd->agi_output("$queued|$stmt|") if ($DB);
 		}
 		$osd->agi_output("|$stmt|") if ($DB);
 		$osd->agi_output("--    VDAD get agent: |$queued|update of vla table: " . $oac->{campaign_id} . "|" . $osd->{VARserver_ip});
@@ -241,7 +254,7 @@ while ($drop_timer <= $campaign->{drop_call_seconds}) {
 			$remDIALstr .= $conf_exten;
 
 			if ($conf_exten =~ /^87......$/) {
-				$stmt=sprintf("INSERT INTO osdial_manager VALUES ('','','%s','NEW','N','%s','','Originate','%s','Channel: Local/%s\@%s','Context: %s','Exten: 487487','Priority: 1','Callerid: \"\" <0000000000>','Account: %s','','','','');", $SQLdate,$osd->{VARserver_ip},$osd->AGI->{accountcode},$remDIALstr,$osd->{server}{ext_context},$osd->{server}{ext_context},$osd->AGI->{accountcode});
+				$stmt=sprintf("INSERT INTO osdial_manager VALUES ('','','%s','NEW','N','%s','','Originate','%s','Channel: Local/%s\@%s/n','Context: %s','Exten: 487487','Priority: 1','Callerid: \"\" <0000000000>','Account: %s','','','','');", $SQLdate,$osd->{VARserver_ip},$osd->AGI->{accountcode},$remDIALstr,$osd->{server}{ext_context},$osd->{server}{ext_context},$osd->AGI->{accountcode});
 				$affected_rows = $osd->sql_execute($stmt);
 				$osd->agi_output("|$stmt|");
 			}
