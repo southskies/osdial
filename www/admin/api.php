@@ -22,10 +22,13 @@
 # This program provides a method of importing live data from the InsureMe service.
 # Currently this script only handles Health-based applicants.
 
+require_once("include/dbconnect.php");
+require_once("include/functions.php");
+require_once("include/variables.php");
 
-require("include/dbconnect.php");
-require("include/functions.php");
-require("include/variables.php");
+# This flag allows us to import the authentication and permissions function, allowing us to authenticate within this module.
+$osdial_skip_auth=1;
+require_once("include/auth.php");
 
 $file_debug=0;
 
@@ -41,13 +44,13 @@ $Syear = date("Y");
 $server = get_first_record($link, 'servers', '*', "");
 if ($server['local_gmt'] != "") {
     $DBgmt = $server['local_gmt'];
-    if (strlen($DBgmt)>0) {
+    if (OSDstrlen($DBgmt)>0) {
         $server_gmt = $DBgmt;
     }
     if ($isdst) $server_gmt++;
 } else {
     $server_gmt = date("O");
-    $server_gmt = preg_replace("/\+/","",$server_gmt);
+    $server_gmt = OSDpreg_replace("/\+/","",$server_gmt);
     $server_gmt = (($server_gmt + 0) / 100);
 }
 $local_gmt = $server_gmt;
@@ -95,7 +98,7 @@ $xml = new SimpleXMLElement($data);
 
 
 # Put initial request back into the result.
-$result = new SimpleXMLElement(preg_replace('/(^<\?.*$|\n)/m',"",preg_replace('/<request\/>/m',"<request>\n" . $xml->asXML() . "\n</request>",$result->asXML())));
+$result = new SimpleXMLElement(OSDpreg_replace('/(^<\?.*$|\n)/m',"",OSDpreg_replace('/<request\/>/m',"<request>\n" . $xml->asXML() . "\n</request>",$result->asXML())));
 
 
 # Put start date/time and epoch into XML result.
@@ -142,27 +145,27 @@ if ($xml['vdcompat'] > 0) {
     if ($xml->params->list_id == "" ) $xml->params->list_id = get_variable("list_id");
     if ($xml->params->phone_code == "" ) $xml->params->phone_code = get_variable("phone_code");
     if ($xml->params->phone_number == "" ) $xml->params->phone_number = get_variable("phone_number");
-    if ($xml->params->title == "" ) $xml->params->title = preg_replace('/\+/'," ",get_variable("title"));
-    if ($xml->params->first_name == "" ) $xml->params->first_name = preg_replace('/\+/'," ",get_variable("first_name"));
+    if ($xml->params->title == "" ) $xml->params->title = OSDpreg_replace('/\+/'," ",get_variable("title"));
+    if ($xml->params->first_name == "" ) $xml->params->first_name = OSDpreg_replace('/\+/'," ",get_variable("first_name"));
     if ($xml->params->middle_initial == "" ) $xml->params->middle_initial = get_variable("middle_initial");
-    if ($xml->params->last_name == "" ) $xml->params->last_name = preg_replace('/\+/'," ",get_variable("last_name"));
-    if ($xml->params->address1 == "" ) $xml->params->address1 = preg_replace('/\+/'," ",get_variable("address1"));
-    if ($xml->params->address2 == "" ) $xml->params->address2 = preg_replace('/\+/'," ",get_variable("address2"));
-    if ($xml->params->address3 == "" ) $xml->params->address3 = preg_replace('/\+/'," ",get_variable("address3"));
-    if ($xml->params->city == "" ) $xml->params->city = preg_replace('/\+/'," ",get_variable("city"));
-    if ($xml->params->state == "" ) $xml->params->state = preg_replace('/\+/'," ",get_variable("state"));
-    if ($xml->params->province == "" ) $xml->params->province = preg_replace('/\+/'," ",get_variable("province"));
-    if ($xml->params->postal_code == "" ) $xml->params->postal_code = preg_replace('/\+/'," ",get_variable("postal_code"));
-    if ($xml->params->country_code == "" ) $xml->params->country_code = preg_replace('/\+/'," ",get_variable("country_code"));
+    if ($xml->params->last_name == "" ) $xml->params->last_name = OSDpreg_replace('/\+/'," ",get_variable("last_name"));
+    if ($xml->params->address1 == "" ) $xml->params->address1 = OSDpreg_replace('/\+/'," ",get_variable("address1"));
+    if ($xml->params->address2 == "" ) $xml->params->address2 = OSDpreg_replace('/\+/'," ",get_variable("address2"));
+    if ($xml->params->address3 == "" ) $xml->params->address3 = OSDpreg_replace('/\+/'," ",get_variable("address3"));
+    if ($xml->params->city == "" ) $xml->params->city = OSDpreg_replace('/\+/'," ",get_variable("city"));
+    if ($xml->params->state == "" ) $xml->params->state = OSDpreg_replace('/\+/'," ",get_variable("state"));
+    if ($xml->params->province == "" ) $xml->params->province = OSDpreg_replace('/\+/'," ",get_variable("province"));
+    if ($xml->params->postal_code == "" ) $xml->params->postal_code = OSDpreg_replace('/\+/'," ",get_variable("postal_code"));
+    if ($xml->params->country_code == "" ) $xml->params->country_code = OSDpreg_replace('/\+/'," ",get_variable("country_code"));
     if ($xml->params->gender == "" ) $xml->params->gender = get_variable("gender");
     if ($xml->params->date_of_birth == "" ) $xml->params->date_of_birth = get_variable("date_of_birth");
     if ($xml->params->alt_phone == "" ) $xml->params->alt_phone = get_variable("alt_phone");
     if ($xml->params->email == "" ) $xml->params->email = get_variable("email");
     # security_phrase was renamed to custom1, put in custom1 if defined, but custom1 should override.
-    if ($xml->params->custom1 == "" ) $xml->params->custom1 = preg_replace('/\+/'," ",get_variable("security_phrase"));
-    if ($xml->params->custom1 == "" ) $xml->params->custom1 = preg_replace('/\+/'," ",get_variable("custom1"));
-    if ($xml->params->comments == "" ) $xml->params->comments = preg_replace('/\+/'," ",get_variable("comments"));
-    if ($xml->params->custom2 == "" ) $xml->params->custom2 = preg_replace('/\+/'," ",get_variable("custom2"));
+    if ($xml->params->custom1 == "" ) $xml->params->custom1 = OSDpreg_replace('/\+/'," ",get_variable("security_phrase"));
+    if ($xml->params->custom1 == "" ) $xml->params->custom1 = OSDpreg_replace('/\+/'," ",get_variable("custom1"));
+    if ($xml->params->comments == "" ) $xml->params->comments = OSDpreg_replace('/\+/'," ",get_variable("comments"));
+    if ($xml->params->custom2 == "" ) $xml->params->custom2 = OSDpreg_replace('/\+/'," ",get_variable("custom2"));
     if ($xml->params->external_key == "" ) $xml->params->external_key = get_variable("external_key");
     if ($xml->params->cost == "" ) $xml->params->cost = get_variable("cost");
     if ($xml->params->post_date == "" ) $xml->params->post_date = get_variable("post_date");
@@ -171,11 +174,11 @@ if ($xml['vdcompat'] > 0) {
 
 
 # General Validations
-$xml['function'] = strtolower($xml['function']);
+$xml['function'] = OSDstrtolower($xml['function']);
 
 if ($xml['mode'] == "") $xml['mode'] = "admin";
 if ($xml['mode'] == "non_agent") $xml['mode'] = "admin";
-$xml['mode'] = strtolower($xml['mode']);
+$xml['mode'] = OSDstrtolower($xml['mode']);
 
 if (preg_match('/^Y$|^YES$|^T$|^TRUE$|^1$/i',$xml['test'])) {
     $xml['test'] = 1;
@@ -216,14 +219,14 @@ if ($xml['function'] == "version") {
 # Function to get vmail message counts.
 } else if ($xml['function'] == "vmail_check") {
     # Authenticate connection first.
-    $auth = get_first_record($link, 'osdial_users', 'user_level', sprintf("user='%s' AND pass='%s'",mres($xml['user']),mres($xml['pass'])) );
-    if ($auth['user_level'] < 1) {
+    $LOG = osdial_authenticate($xml['user'],$xml['pass']);
+    if ($LOG['user_level'] < 1) {
         $status = "ERROR";
         $reason = "Access Denied.";
         $vdreason = "vmail_check USER DOES NOT HAVE PERMISSION TO CHECK VMAIL.";
     } else {
         if ($xml['debug'] > 0)
-            $debug .= sprintf("AUTH: Success. user=%s, pass=%s, user_level=%s\n", $xml['user'], $xml['pass'], $auth['user_level']);
+            $debug .= sprintf("AUTH: Success. user=%s, pass=%s, user_level=%s\n", $xml['user'], $xml['pass'], $LOG['user_level']);
     }
 
     if ($status != "ERROR") {
@@ -258,19 +261,19 @@ if ($xml['function'] == "version") {
     $dup_syslist_active = '';
 
     # Authenticate connection first.
-    $auth = get_first_record($link, 'osdial_users', 'admin_api_access,load_leads,user_level', sprintf("user='%s' and pass='%s'",mres($xml['user']),mres($xml['pass'])) );
-    if ($auth['admin_api_access'] < 1 or $auth['load_leads'] < 1 or $auth['user_level'] < 8) {
+    $LOG = osdial_authenticate($xml['user'],$xml['pass']);
+    if ($LOG['admin_api_access'] < 1 or $LOG['load_leads'] < 1 or $LOG['user_level'] < 8) {
         $status = "ERROR";
         $reason = "Access Denied.";
         $vdreason = "add_lead USER DOES NOT HAVE PERMISSION TO ADD LEADS TO THE SYSTEM";
     } else {
         if ($xml['debug'] > 0)
-            $debug .= sprintf("AUTH: Success. user=%s, pass=%s, admin_api_access=%s, load_leads=%s, user_level=%s\n", $xml['user'], $xml['pass'], $auth['admin_api_access'], $auth['load_leads'], $auth['user_level']);
+            $debug .= sprintf("AUTH: Success. user=%s, pass=%s, admin_api_access=%s, load_leads=%s, user_level=%s\n", $xml['user'], $xml['pass'], $LOG['admin_api_access'], $LOG['load_leads'], $LOG['user_level']);
     }
     # Validate Company Access.
     if ($status != "ERROR") {
         if ($system_settings['enable_multicompany'] > 0) {
-            $comp = get_first_record($link, 'osdial_companies', '*', sprintf("id='%s'",((substr($xml['user'],0,3) * 1) - 100) ));
+            $comp = get_first_record($link, 'osdial_companies', '*', sprintf("id='%s'",((OSDsubstr($xml['user'],0,3) * 1) - 100) ));
             if ($comp['api_access'] < 1) {
                 $status = "ERROR";
                 $reason = "Access Denied.";
@@ -283,21 +286,21 @@ if ($xml['function'] == "version") {
     }
 
     # Validate fields.
-    $xml->params->phone_code = preg_replace('/[^0-9]/',"",$xml->params->phone_code);
+    $xml->params->phone_code = OSDpreg_replace('/[^0-9]/',"",$xml->params->phone_code);
     if ($xml->params->phone_code == "") $xml->params->phone_code = 1;
-    $xml->params->phone_number = preg_replace('/[^0-9]/',"",$xml->params->phone_number);
-    $xml->params->alt_phone = preg_replace('/[^0-9]/',"",$xml->params->alt_phone);
-    $xml->params->cost = preg_replace('/[^0-9\.]/',"",$xml->params->cost);
+    $xml->params->phone_number = OSDpreg_replace('/[^0-9]/',"",$xml->params->phone_number);
+    $xml->params->alt_phone = OSDpreg_replace('/[^0-9]/',"",$xml->params->alt_phone);
+    $xml->params->cost = OSDpreg_replace('/[^0-9\.]/',"",$xml->params->cost);
 
     # Check phone number length.
-    if ((strlen($xml->params->phone_number) < 6 or strlen($xml->params->phone_number) > 16) and $status != "ERROR") {
+    if ((OSDstrlen($xml->params->phone_number) < 6 or OSDstrlen($xml->params->phone_number) > 16) and $status != "ERROR") {
         $status = "ERROR";
         $reason = "Phone Number not between 7 and 15 digits.";
         $vdreason = "add_lead INVALID PHONE NUMBER";
     }
 
     # DOB validation
-    if (strlen($xml->params->date_of_birth) > 1 and $status != "ERROR") {
+    if (OSDstrlen($xml->params->date_of_birth) > 1 and $status != "ERROR") {
         $dm = Array();
         if (preg_match('/(19[0-9][0-9]|20[0-9][0-9])-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])([ |T].*|$)/ix', $xml->params->date_of_birth, $dm)) {
             $xml->params->date_of_birth = date('Y-m-d',strtotime($dm[1] . '-' . $dm[2] . '-' . $dm[3]));
@@ -309,7 +312,7 @@ if ($xml['function'] == "version") {
     }
 
     # post_date validation
-    if (strlen($xml->params->post_date) > 1 and $status != "ERROR") {
+    if (OSDstrlen($xml->params->post_date) > 1 and $status != "ERROR") {
         $dm = Array();
         if (preg_match('/(19[0-9][0-9]|20[0-9][0-9])-(0[1-9]|[1-9]|1[012])-(0[1-9]|[1-9]|[12][0-9]|3[01])$/ix', $xml->params->post_date, $dm)) {
             $xml->params->post_date = date('Y-m-d H:i:s',strtotime($dm[1] . '-' . $dm[2] . '-' . $dm[3]));
@@ -384,7 +387,7 @@ if ($xml['function'] == "version") {
     # Check if in DNC unless explicitly N.
     if (preg_match('/^Y$|^YES$|^T$|^TRUE$|^1$|^AREACODE$/i',$xml->params->dnc_check) and $status != "ERROR") {
         if (preg_match('/^AREACODE$/i',$xml->params->dnc_check))
-            $xml->params->phone_number = substr($xml->params->phone_number, 0, 3) . 'XXXXXXX';
+            $xml->params->phone_number = OSDsubstr($xml->params->phone_number, 0, 3) . 'XXXXXXX';
         $dncc=0;
         $dncs=0;
         $dncsskip=0;
@@ -483,11 +486,11 @@ if ($xml['function'] == "version") {
             $xml->params->gmt_lookup_method = "POSTAL";
         $gmtl = lookup_gmt(
             mres($xml->params->phone_code),
-            mres(substr($xml->params->phone_number,0,3)),
-            mres(strtoupper($xml->params->state)),
+            mres(OSDsubstr($xml->params->phone_number,0,3)),
+            mres(OSDstrtoupper($xml->params->state)),
             $local_gmt,$Shour,$Smin,$Ssec,$Smon,$Smday,$Syear,
-            mres(strtoupper($xml->params->gmt_lookup_method)),
-            mres(strtoupper($xml->params->postal_code)) );
+            mres(OSDstrtoupper($xml->params->gmt_lookup_method)),
+            mres(OSDstrtoupper($xml->params->postal_code)) );
         $gmt_offset_now = $gmtl[0];
         $post = $gmtl[1];
         if ($xml['debug'] > 0) $debug .= sprintf("GMT_OFFSET_NOW: %s\n", $gmt_offset_now);
@@ -497,9 +500,9 @@ if ($xml['function'] == "version") {
             $ins .= sprintf("user='%s',vendor_lead_code='%s',source_id='%s',list_id='%s',", mres($xml->params->agent), mres($xml->params->vendor_lead_code), mres($xml->params->source_id), mres($xml->params->list_id) );
             $ins .= sprintf("gmt_offset_now='%s',phone_code='%s',phone_number='%s',title='%s',", mres($gmt_offset_now), mres($xml->params->phone_code), mres($xml->params->phone_number), mres($xml->params->title) );
             $ins .= sprintf("first_name='%s',middle_initial='%s',last_name='%s',address1='%s',", mres($xml->params->first_name), mres($xml->params->middle_initial), mres($xml->params->last_name), mres($xml->params->address1) );
-            $ins .= sprintf("address2='%s',address3='%s',city='%s',state='%s',", mres($xml->params->address2), mres($xml->params->address3), mres($xml->params->city), mres(strtoupper($xml->params->state)) );
-            $ins .= sprintf("province='%s',postal_code='%s',", mres($xml->params->province), strtoupper(mres($xml->params->postal_code)) );
-            $ins .= sprintf("country_code='%s',gender='%s',", mres(strtoupper($xml->params->country_code)), mres(strtoupper($xml->params->gender)) );
+            $ins .= sprintf("address2='%s',address3='%s',city='%s',state='%s',", mres($xml->params->address2), mres($xml->params->address3), mres($xml->params->city), mres(OSDstrtoupper($xml->params->state)) );
+            $ins .= sprintf("province='%s',postal_code='%s',", mres($xml->params->province), OSDstrtoupper(mres($xml->params->postal_code)) );
+            $ins .= sprintf("country_code='%s',gender='%s',", mres(OSDstrtoupper($xml->params->country_code)), mres(OSDstrtoupper($xml->params->gender)) );
             $ins .= sprintf("date_of_birth='%s',alt_phone='%s',email='%s',custom1='%s',", mres($xml->params->date_of_birth), mres($xml->params->alt_phone), mres($xml->params->email), mres($xml->params->custom1) );
             $ins .= sprintf("comments='%s',custom2='%s',external_key='%s',cost='%s',", mres($xml->params->comments), mres($xml->params->custom2), mres($xml->params->external_key), mres($xml->params->cost) );
             $ins .= sprintf("post_date='%s';", mres($xml->params->post_date) );
@@ -535,7 +538,7 @@ if ($xml['function'] == "version") {
                 $camp = get_first_record($link, 'osdial_campaigns', '*', sprintf("campaign_id='%s'",mres($list_campaign_id)) );
                 $ldialable = 1;
                 $cdialable = 1;
-                $state = strtoupper($xml->params->state);
+                $state = OSDstrtoupper($xml->params->state);
                 if (preg_match('/^$|^DEFAULT$/i',$xml->params->hopper_local_call_time_check) and $camp['local_call_time'] != "") $xml->params->hopper_local_call_time_check = "Y";
                 if (preg_match('/^Y$|^YES$|^T$|^TRUE$|^1$|^NOSTATE$/i',$xml->params->hopper_local_call_time_check)) {
                     if (preg_match('/^NOSTATE$/',$xml->params->hopper_local_call_time_check)) $state = "";
@@ -557,7 +560,7 @@ if ($xml['function'] == "version") {
                 } else {
                     $hopins = "INSERT INTO osdial_hopper SET status='API',";
                     $hopins .= sprintf("lead_id='%s',campaign_id='%s',list_id='%s',user='%s',", mres($lead_id), mres($list_campaign_id), mres($xml->params->list_id), mres($xml->params->agent) );
-                    $hopins .= sprintf("gmt_offset_now='%s',state='%s',priority='%s';", mres($gmt_offset_now), mres(strtoupper($xml->params->state)), mres($xml->params->hopper_priority));
+                    $hopins .= sprintf("gmt_offset_now='%s',state='%s',priority='%s';", mres($gmt_offset_now), mres(OSDstrtoupper($xml->params->state)), mres($xml->params->hopper_priority));
                     if ($xml['debug'] > 0) $debug .= "HOPPER INSERT: " . $hopins . "\n";
                     $rslt=mysql_query($hopins, $link);
                     $hopres = mysql_affected_rows($link);
@@ -609,6 +612,89 @@ if ($xml['function'] == "version") {
 
 
 
+# Function to list the campaigns that the authenticated user has access too.
+} else if ($xml['function'] == "list_campaigns" and $xml['mode'] == 'admin') {
+    # Authenticate connection first.
+    $LOG = osdial_authenticate($xml['user'],$xml['pass']);
+    if ($LOG['user_level'] < 1) {
+        $status = "ERROR";
+        $reason = "Access Denied.";
+        $vdreason = "list_campaigns USER DOES NOT HAVE PERMISSION TO ACCESS CAMPAIGNS.";
+    } else {
+        if ($xml['debug'] > 0)
+            $debug .= sprintf("AUTH: Success. user=%s, pass=%s, user_level=%s\n", $xml['user'], $xml['pass'], $LOG['user_level']);
+    }
+
+    if ($status != "ERROR") {
+        $campaigns = get_krh($link, 'osdial_campaigns', '*', sprintf("campaign_id IN %s",$LOG['allowed_campaignsSQL']) );
+
+        if (is_array($campaigns)) {
+            $camp_cnt=0;
+            $result->result['records'] = '0';
+            foreach ($campaigns as $campaign) {
+                $result->result->addChild("record");
+                $result->result->record[$camp_cnt]['id'] = $camp_cnt;
+                $result->result->record[$camp_cnt]->campaign_id = $campaign['campaign_id'];
+                $result->result->record[$camp_cnt]->campaign_name = $campaign['campaign_name'];
+                $result->result->record[$camp_cnt]->active = $campaign['active'];
+                $camp_outonly = '1';
+                if (OSDstrlen($campaign['closer_campaigns']) > 5) $camp_outonly = '0';
+                $result->result->record[$camp_cnt]->outbound_only = $camp_outonly;
+                $camp_cnt++;
+            }
+            $result->result['records'] = $camp_cnt;
+            $status = "SUCCESS";
+            $result->status['code'] = $status;
+            $result->status = "Listing " . $result->result['records'] . " campaigns.";
+        } else {
+            $status = "ERROR";
+            $reason = "Could not find any allowed campaigns.";
+            $vdstatus = "ERROR";
+            $vdreason = $reason;
+        }
+    }
+
+
+
+# Function to list the user_groups that the authenticated user has access too.
+} else if ($xml['function'] == "list_usergroups" and $xml['mode'] == 'admin') {
+    # Authenticate connection first.
+    $LOG = osdial_authenticate($xml['user'],$xml['pass']);
+    if ($LOG['user_level'] < 1) {
+        $status = "ERROR";
+        $reason = "Access Denied.";
+        $vdreason = "list_usergroups USER DOES NOT HAVE PERMISSION TO ACCESS CAMPAIGNS.";
+    } else {
+        if ($xml['debug'] > 0)
+            $debug .= sprintf("AUTH: Success. user=%s, pass=%s, user_level=%s\n", $xml['user'], $xml['pass'], $LOG['user_level']);
+    }
+
+    if ($status != "ERROR") {
+        $usergroups = get_krh($link, 'osdial_user_groups', '*', sprintf("user_group IN %s",$LOG['allowed_usergroupsSQL']) );
+
+        if (is_array($usergroups)) {
+            $ug_cnt=0;
+            $result->result['records'] = '0';
+            foreach ($usergroups as $usergroup) {
+                $result->result->addChild("record");
+                $result->result->record[$ug_cnt]['id'] = $ug_cnt;
+                $result->result->record[$ug_cnt]->user_group = $usergroup['user_group'];
+                $result->result->record[$ug_cnt]->group_name = $usergroup['group_name'];
+                $ug_cnt++;
+            }
+            $result->result['records'] = $ug_cnt;
+            $status = "SUCCESS";
+            $result->status['code'] = $status;
+            $result->status = "Listing " . $result->result['records'] . " usergroups.";
+        } else {
+            $status = "ERROR";
+            $reason = "Could not find any allowed usergroups.";
+            $vdstatus = "ERROR";
+            $vdreason = $reason;
+        }
+    }
+
+
 # Function not defined.
 } else {
     $result->status['code'] = "ERROR";
@@ -636,8 +722,19 @@ if ($xml['vdcompat'] > 0) {
     echo $vdstatus . ": " . $vdreason . "\n";
     if ($xml['debug'] > 0 and $file_debug==0)
         echo "\n\nDEBUG\n-------------------------------------------\n" . $result->debug . "\n\n";
+} elseif ($xml['json'] > 0) {
+    if ($xml['pretty'] > 0) {
+        #echo json_encode($result,JSON_PRETTY_PRINT);
+        echo json_encode($result);
+    } else {
+        echo json_encode($result);
+    }
 } else {
-    echo prettyXML($result->asXML());
+    if ($xml['pretty'] > 0) {
+        echo prettyXML($result->asXML());
+    } else {
+        echo $result->asXML();
+    }
 }
 
 if ($file_debug>0) {

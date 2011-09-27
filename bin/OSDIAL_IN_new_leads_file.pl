@@ -47,6 +47,9 @@
 # 80713-0624 - Added vicidial_list_last_local_call_time field
 #
 
+$|++;
+$DB=0;
+
 $secX = time();
 
 ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
@@ -226,6 +229,9 @@ $phone_list = '|';
 if (!$VARDB_port) {$VARDB_port='3306';}
 
 use DBI;	  
+use OSDial;	  
+
+my $osdial = OSDial->new('DB'=>$DB);
 
 $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
  or die "Couldn't connect to database: " . DBI->errstr;
@@ -410,7 +416,7 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 		if ($dupcheck > 0)
 			{
 			$dup_lead=0;
-			$stmtA = "select list_id from osdial_list where phone_number='$phone_number' and list_id='$list_id' limit 1;";
+			$stmtA = "select list_id from osdial_list where phone_number='$phone_number' and list_id='" . $osdial->mres($list_id) . "' limit 1;";
 				if($DBX){print STDERR "\n|$stmtA|\n";}
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -434,7 +440,7 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 			$dup_lead=0;
 			$dup_lists='';
 
-			$stmtA = "select count(*) from osdial_lists where list_id='$list_id';";
+			$stmtA = "select count(*) from osdial_lists where list_id='" . $osdial->mres($list_id) . "';";
 				if($DBX){print STDERR "\n|$stmtA|\n";}
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -443,7 +449,7 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 			$sthA->finish();
 			if ($ci_recs > 0)
 				{
-				$stmtA = "select campaign_id from osdial_lists where list_id='$list_id';";
+				$stmtA = "select campaign_id from osdial_lists where list_id='" . $osdial->mres($list_id) . "';";
 					if($DBX){print STDERR "\n|$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -451,7 +457,7 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 					$dup_camp = $aryA[0];
 				$sthA->finish();
 
-				$stmtA = "select list_id from osdial_lists where campaign_id='$dup_camp';";
+				$stmtA = "select list_id from osdial_lists where campaign_id='" . $osdial->mres($dup_camp) . "';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -459,7 +465,7 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 				while ($sthArows > $rec_count)
 					{
 					@aryA = $sthA->fetchrow_array;
-					$dup_lists .=	"'$aryA[0]',";
+					$dup_lists .=	"'" . $osdial->mres($aryA[0]) . "',";
 					$rec_count++;
 					}
 				$sthA->finish();
@@ -473,7 +479,7 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 				while ($sthArows > $rec_count)
 					{
 					@aryA = $sthA->fetchrow_array;
-					$dup_lead_list =	"'$aryA[0]',";
+					$dup_lead_list =	"'" . $osdial->mres($aryA[0]) . "',";
 					$rec_count++;
 					$dup_lead=1;
 					}
@@ -693,7 +699,7 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 			if ($multi_insert_counter > 8)
 				{
 				### insert good deal into pending_transactions table ###
-				$stmtZ = "INSERT INTO osdial_list values$multistmt('','$insert_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments','$called_count','','','2008-01-01 00:00:00');";
+				$stmtZ = sprintf("INSERT INTO osdial_list values$multistmt('','$insert_date','$modify_date','%s','%s','%s','%s','%s','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','$gender','$date_of_birth','$alt_phone','%s','%s','%s','$called_count','','','2008-01-01 00:00:00');",$osdial->mres($status),$osdial->mres($user),$osdial->mres($vendor_lead_code),$osdial->mres($source_id),$osdial->mres($list_id),$osdial->mres($title),$osdial->mres($first_name),$osdial->mres($middle_initial),$osdial->mres($last_name),$osdial->mres($address1),$osdial->mres($address2),$osdial->mres($address3),$osdial->mres($city),$osdial->mres($state),$osdial->mres($province),$osdial->mres($postal_code),$osdial->mres($country),$osdial->mres($email),$osdial->mres($custom1),$osdial->mres($comments));
 						if (!$T) {$affected_rows = $dbhA->do($stmtZ); } #  or die  "Couldn't execute query: |$stmtZ|\n";
 						if($DB){print STDERR "\n|$affected_rows|$stmtZ|\n";}
 
@@ -703,7 +709,7 @@ if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOC
 				}
 			else
 				{
-				$multistmt .= "('','$insert_date','$modify_date','$status','$user','$vendor_lead_code','$source_id','$list_id','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','$title','$first_name','$middle_initial','$last_name','$address1','$address2','$address3','$city','$state','$province','$postal_code','$country','$gender','$date_of_birth','$alt_phone','$email','$custom1','$comments','$called_count','','','2008-01-01 00:00:00'),";
+				$multistmt .= sprintf("('','$insert_date','$modify_date','%s','%s','%s','%s','%s','$gmt_offset','$called_since_last_reset','$phone_code','$phone_number','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','$gender','$date_of_birth','$alt_phone','%s','%s','%s','$called_count','','','2008-01-01 00:00:00'),",$osdial->mres($status),$osdial->mres($user),$osdial->mres($vendor_lead_code),$osdial->mres($source_id),$osdial->mres($list_id),$osdial->mres($title),$osdial->mres($first_name),$osdial->mres($middle_initial),$osdial->mres($last_name),$osdial->mres($address1),$osdial->mres($address2),$osdial->mres($address3),$osdial->mres($city),$osdial->mres($state),$osdial->mres($province),$osdial->mres($postal_code),$osdial->mres($country),$osdial->mres($email),$osdial->mres($custom1),$osdial->mres($comments));
 				$multi_insert_counter++;
 				}
 

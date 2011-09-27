@@ -27,15 +27,15 @@
 
 if ($ADD==26)
 {
-	$status = preg_replace("/-----.*/",'',$status);
-	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id' and auto_alt_dial_statuses LIKE \"% $status %\";";
+	$status = OSDpreg_replace("/-----.*/",'',$status);
+	$stmt=sprintf("SELECT count(*) FROM osdial_campaigns WHERE campaign_id='%s' AND auto_alt_dial_statuses LIKE '%% %s %%';",mres($campaign_id),mres($status));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
 		{echo "<br><font color=red> AUTO ALT DIAL STATUS NOT ADDED - there is already an entry for this campaign with this status</font>\n";}
 	else
 		{
-		 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) )
+		 if ( (OSDstrlen($campaign_id) < 2) or (OSDstrlen($status) < 1) )
 			{
 			 echo "<br><font color=red>AUTO ALT DIAL STATUS NOT ADDED - Please go back and look at the data you entered\n";
 			 echo "<br>status must be between 1 and 6 characters in length</font>\n";
@@ -44,13 +44,13 @@ if ($ADD==26)
 			{
 			echo "<br><B><font color=$default_text>AUTO ALT DIAL STATUS ADDED: $campaign_id - $status</font></B>\n";
 
-			$stmt="SELECT auto_alt_dial_statuses from osdial_campaigns where campaign_id='$campaign_id';";
+			$stmt=sprintf("SELECT auto_alt_dial_statuses FROM osdial_campaigns WHERE campaign_id='%s';",mres($campaign_id));
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 
-			if (strlen($row[0])<2) {$row[0] = ' -';}
+			if (OSDstrlen($row[0])<2) {$row[0] = ' -';}
 			$auto_alt_dial_statuses = " $status$row[0]";
-			$stmt="UPDATE osdial_campaigns set auto_alt_dial_statuses='$auto_alt_dial_statuses' where campaign_id='$campaign_id';";
+			$stmt=sprintf("UPDATE osdial_campaigns SET auto_alt_dial_statuses='$auto_alt_dial_statuses' WHERE campaign_id='$campaign_id';",mres($auto_alt_dial_statuses),mres($campaign_id));
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -72,16 +72,16 @@ $ADD=31;
 
 if ($ADD==66)
 {
-	if ($LOGmodify_campaigns==1)
+	if ($LOG['modify_campaigns']==1)
 	{
-	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id' and auto_alt_dial_statuses LIKE \"% $status %\";";
+	$stmt=sprintf("SELECT count(*) FROM osdial_campaigns WHERE campaign_id='%s' AND auto_alt_dial_statuses LIKE '%% %s %%';",mres($campaign_id),mres($status));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] < 1)
 		{echo "<br><font color=red>AUTO ALT DIAL STATUS NOT DELETED - this auto alt dial status is not in this campaign</font>\n";}
 	else
 		{
-		 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) )
+		 if ( (OSDstrlen($campaign_id) < 2) or (OSDstrlen($status) < 1) )
 			{
 			 echo "<br><font color=red>AUTO ALT DIAL STATUS NOT DELETED - Please go back and look at the data you entered\n";
 			 echo "<br>status must be between 1 and 6 characters in length</font><br>\n";
@@ -90,12 +90,12 @@ if ($ADD==66)
 			{
 			echo "<br><B><font color=$default_text>AUTO ALT DIAL STATUS DELETED: $campaign_id - $status</font></B>\n";
 
-			$stmt="SELECT auto_alt_dial_statuses from osdial_campaigns where campaign_id='$campaign_id';";
+			$stmt=sprintf("SELECT auto_alt_dial_statuses FROM osdial_campaigns WHERe campaign_id='%s';",mres($campaign_id));
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 
-			$auto_alt_dial_statuses = preg_replace("/ $status /"," ",$row[0]);
-			$stmt="UPDATE osdial_campaigns set auto_alt_dial_statuses='$auto_alt_dial_statuses' where campaign_id='$campaign_id';";
+			$auto_alt_dial_statuses = OSDpreg_replace("/ $status /"," ",$row[0]);
+			$stmt=sprintf("UPDATE osdial_campaigns SET auto_alt_dial_statuses='$auto_alt_dial_statuses' WHERE campaign_id='$campaign_id';",mres($auto_alt_dial_statuses),mres($campaign_id));
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -131,7 +131,7 @@ echo "    <td>AUTO-ALT DIAL</td>\n";
 echo "    <td align=center>LINKS</td>\n";
 echo "  </tr>\n";
 
-	$stmt=sprintf("SELECT campaign_id,campaign_name from osdial_campaigns where campaign_id IN %s order by campaign_id",$LOG['allowed_campaignsSQL']);
+	$stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE campaign_id IN %s ORDER BY campaign_id;",$LOG['allowed_campaignsSQL']);
 	$rslt=mysql_query($stmt, $link);
 	$campaigns_to_print = mysql_num_rows($rslt);
 
@@ -152,7 +152,7 @@ echo "  </tr>\n";
 		echo "    <td>$campaigns_name_list[$o]</td>\n";
 		echo "    <td>";
 
-		$stmt="SELECT auto_alt_dial_statuses from osdial_campaigns where campaign_id='$campaigns_id_list[$o]';";
+		$stmt=sprintf("SELECT auto_alt_dial_statuses FROM osdial_campaigns WHERE campaign_id='%s';",mres($campaigns_id_list[$o]));
 		$rslt=mysql_query($stmt, $link);
 		$campstatus_to_print = mysql_num_rows($rslt);
 		$p=0;
@@ -162,7 +162,7 @@ echo "  </tr>\n";
 			echo "$row[0] ";
 			$p++;
 			}
-		if (strlen($row[0])<3) 
+		if (OSDstrlen($row[0])<3) 
 			{echo "<font color=grey><DEL>NONE</DEL></font>";}
 		echo "</td>\n";
 		echo "    <td align=center><a href=\"$PHP_SELF?ADD=31&SUB=26&campaign_id=$campaigns_id_list[$o]\">MODIFY AUTO-ALT DIAL</a></td>\n";

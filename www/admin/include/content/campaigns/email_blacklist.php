@@ -35,7 +35,7 @@ if ($ADD=="2eb") {
 
         # Process file if sent.
         if ($ebfile_name!='') {
-			if (preg_match('/\.txt$|\.csv$|\.psv$|\.tsv$|\.tab$/i', $ebfile_name)) {
+			if (OSDpreg_match('/\.txt$|\.csv$|\.psv$|\.tsv$|\.tab$/i', $ebfile_name)) {
                 $ebfile='';
 				if ($WeBRooTWritablE > 0) {
 					copy($ebfile_path, "$WeBServeRRooT/admin/osdial_temp_file.csv");
@@ -85,10 +85,10 @@ if ($ADD=="2eb") {
                 $o=0;
 			    while($csvrow=fgetcsv($file, 1000, $delimiter)) {
                     $o++;
-                    $email = strtolower($csvrow[0]);
+                    $email = OSDstrtolower($csvrow[0]);
 
                     $status='FAILED';
-                    if (strlen($email) >= 10 and preg_match('/@/',$email)) {
+                    if (OSDstrlen($email) >= 10 and OSDpreg_match('/@/',$email)) {
                         $stmt=sprintf("SELECT count(*) FROM osdial_campaign_email_blacklist WHERE campaign_id='%s' AND email='%s';",mres($campaign_id),mres($email));
                         $rslt=mysql_query($stmt, $link);
                         $row=mysql_fetch_row($rslt);
@@ -164,13 +164,13 @@ if ($ADD=="2eb") {
             if ($row[0] > 0) {
                 echo "<br><font color=red>EMAIL NOT ADDED - there is already an entry for this campaign with this email</font>\n";
             } else {
-                if (strlen($campaign_id) < 2 or strlen($email) <= 9 or !preg_match('/@/',$email)) {
+                if (OSDstrlen($campaign_id) < 2 or OSDstrlen($email) <= 9 or !OSDpreg_match('/@/',$email)) {
                     echo "<br><font color=red>EMAIL NOT ADDED - Please go back and look at the data you entered\n";
                     echo "<br>email must be at lease 10 characters in length: $email</font><br>\n";
                 } else {
                     echo "<br><b><font color=$default_text>EMAIL BLACKLIST ADDED: $campaign_id - $email</font></b>\n";
 
-                    $stmt=sprintf("INSERT INTO osdial_campaign_email_blacklist (campaign_id,email) VALUES ('%s','%s');",mres($campaign_id),mres(strtolower($email)));
+                    $stmt=sprintf("INSERT INTO osdial_campaign_email_blacklist (campaign_id,email) VALUES ('%s','%s');",mres($campaign_id),mres(OSDstrtolower($email)));
                     $rslt=mysql_query($stmt, $link);
 
                     ### LOG CHANGES TO LOG FILE ###
@@ -197,7 +197,7 @@ if ($ADD=="2eb") {
 
 if ($ADD=="4eb") {
     if ($LOG['modify_campaigns'] == 1) {
-        if (strlen($campaign_id) < 2 or strlen($email) <= 9 or !preg_match('/@/',$email)) {
+        if (OSDstrlen($campaign_id) < 2 or OSDstrlen($email) <= 9 or !OSDpreg_match('/@/',$email)) {
             echo "<br><font color=red>EMAIL BLACKLIST NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>email must be at least 10 characters in length: $email</font><br>\n";
         } else {
@@ -235,7 +235,7 @@ if ($ADD=="4eb") {
 
 if ($ADD == "5eb") {
     if ($LOG['modify_campaigns'] == 1) {
-        if (strlen($campaign_id) < 2) {
+        if (OSDstrlen($campaign_id) < 2) {
             echo "<br><font color=red>EMAIL NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>Campaign_id be at least 2 characters in length</font><br<\n";
         } else {
@@ -257,7 +257,7 @@ if ($ADD == "5eb") {
 
 if ($ADD=="6eb") {
     if ($LOG['modify_campaigns'] == 1) {
-        if (strlen($campaign_id) < 2 or strlen($email) < 1) {
+        if (OSDstrlen($campaign_id) < 2 or OSDstrlen($email) < 1) {
             echo "<br><font color=red>CALLERID/AREACODE NOT DELETED - Please go back and look at the data you entered\n";
         } else {
             echo "<br><b><font color=$default_text>EMAIL DELETED: $campaign_id - $email</font></b>\n";

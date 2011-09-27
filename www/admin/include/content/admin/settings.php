@@ -21,7 +21,7 @@
 
 # Modify Section
 if ($ADD==411111111111111) {
-    if ($LOGmodify_servers==1) {
+    if ($LOG['modify_servers']==1) {
         # Header
         echo "  <font color=$default_text>SYSTEM SETTINGS MODIFIED</font>\n";
 
@@ -56,7 +56,7 @@ if ($ADD==411111111111111) {
 
 # The System modification form
 if ($ADD==311111111111111) {
-    if ($LOGmodify_servers==1) {
+    if ($LOG['modify_servers']==1) {
         $system_settings = get_first_record($link, 'system_settings', '*', '');
         # The Main System Settings Form.
         echo "      <center><br>\n";
@@ -75,7 +75,7 @@ if ($ADD==311111111111111) {
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
         echo "          <td align=right>Build:</td>\n";
-        echo "          <td align=left><font color=$default_text>$build</font></td>\n";
+        echo "          <td align=left><font color=$default_text>".$config['settings']['build']."</font></td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
         echo "          <td align=right>Installation Date:</td>\n";
@@ -114,12 +114,16 @@ if ($ADD==311111111111111) {
         echo "          </td>\n";
         echo "        </tr>\n";
         echo "        <tr bgcolor=$oddrows>\n";
-        echo "          <td align=right>Use Non-Latin:</td>\n";
+        echo "          <td align=right>Current Character-Set:</td>\n";
         echo "          <td align=left>\n";
-        echo "            <select size=1 name=use_non_latin>\n";
-        echo "              <option>1</option>\n";
-        echo "              <option>0</option>\n";
-        echo "              <option selected>$system_settings[use_non_latin]</option>\n";
+        echo "            <select size=1 name=use_non_latin ";
+        if ($system_settings['use_non_latin']==0) {
+            echo "onmousedown=\"alert('To change to the UTF8 character-set, log into the console and run: /opt/osdial/bin/sql/upgrade_sql.pl --convert --use-utf8');\">\n";
+            echo "              <option value=0>Latin1</option>\n";
+        } else {
+            echo "onmousedown=\"alert('To change to the Latin1 character-set, log into the console and run: /opt/osdial/bin/sql/upgrade_sql.pl --convert --use-utf8');\">\n";
+            echo "              <option value=1>UTF8</option>\n";
+        }
         echo "            </select>\n";
         echo "            $NWB#settings-use_non_latin$NWE\n";
         echo "          </td>\n";

@@ -128,6 +128,8 @@ $VARDB_port='3306' unless ($VARDB_port);
 $SERVERLOG = 'N';
 $log_level = '0';
 
+use OSDial;
+
 use DBI;
 $dbhB = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", $VARDB_user, $VARDB_pass)
   or die "Couldn't connect to database: " . DBI->errstr;
@@ -164,6 +166,7 @@ use Net::Server::PreFork; # any personality will do
 
 
 sub process_request {
+	$DB=0;
 	$process = 'begin';
 	$script = 'VDfastAGI';
 	########## Get current time, parse configs, get logging preferences ##########
@@ -219,6 +222,8 @@ sub process_request {
 
 	$VARDB_port='3306' unless ($VARDB_port);
 	$AGILOGfile = $PATHlogs.'/FASTagiout.'.$year.'-'.$mon.'-'.$mday unless ($AGILOGfile);
+
+	my $osdial = OSDial->new('DB'=>$DB);
 
 	$dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
 	  or die "Couldn't connect to database: " . DBI->errstr;
@@ -382,7 +387,7 @@ sub process_request {
 				$channel_line = $channel;
 				$channel_line =~ s/^SIP\/|\-.*//gi;
 
-				$stmtA = "SELECT count(*) FROM phones WHERE server_ip='$VARserver_ip' AND extension='$channel_line' AND protocol='SIP';";
+				$stmtA = "SELECT count(*) FROM phones WHERE server_ip='$VARserver_ip' AND extension='" . $osdial->mres($channel_line) . "' AND protocol='SIP';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -406,7 +411,7 @@ sub process_request {
 				$channel_line = $channel;
 				$channel_line =~ s/^IAX2\/|\-.*//gi;
 
-				$stmtA = "SELECT count(*) FROM phones WHERE server_ip='$VARserver_ip' AND extension='$channel_line' AND protocol='IAX2';";
+				$stmtA = "SELECT count(*) FROM phones WHERE server_ip='$VARserver_ip' AND extension='" . $osdial->mres($channel_line) . "' AND protocol='IAX2';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -430,7 +435,7 @@ sub process_request {
 				$channel_line = $channel;
 				$channel_line =~ s/^$ZorD\///gi;
 
-				$stmtA = "SELECT count(*) FROM phones WHERE server_ip='$VARserver_ip' AND extension='$channel_line' AND protocol='$ZorD';";
+				$stmtA = "SELECT count(*) FROM phones WHERE server_ip='$VARserver_ip' AND extension='" . $osdial->mres($channel_line) . "' AND protocol='$ZorD';";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -454,7 +459,7 @@ sub process_request {
 				$channel_line = $channel;
 				$channel_line =~ s/^Local\/|\@.*//gi;
 			
-				$stmtA = "SELECT count(*),extension FROM phones WHERE server_ip='$VARserver_ip' AND dialplan_number='$channel_line' AND protocol='EXTERNAL' LIMIT 1;";
+				$stmtA = "SELECT count(*),extension FROM phones WHERE server_ip='$VARserver_ip' AND dialplan_number='" . $osdial->mres($channel_line) . "' AND protocol='EXTERNAL' LIMIT 1;";
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
@@ -744,7 +749,7 @@ sub process_request {
 						$VDAC_status = 'BUSY';
 					}
 
-					$stmtA = "UPDATE osdial_list SET status='$VDL_status' WHERE lead_id='$CIDlead_id';";
+					$stmtA = "UPDATE osdial_list SET status='" . $osdial->mres($VDL_status) . "' WHERE lead_id='$CIDlead_id';";
 					if ($AGILOG) {
 						$agi_string = "|$stmtA|";
 						&agi_output;
@@ -755,7 +760,7 @@ sub process_request {
 						&agi_output;
 					}
 
-					$stmtA = "UPDATE osdial_auto_calls SET status='$VDAC_status' WHERE callerid='$accountcode';";
+					$stmtA = "UPDATE osdial_auto_calls SET status='" . $osdial->mres($VDAC_status) . "' WHERE callerid='$accountcode';";
 					if ($AGILOG) {
 						$agi_string = "|$stmtA|";
 						&agi_output;
@@ -766,10 +771,10 @@ sub process_request {
 						&agi_output;
 					}
 
-					#$stmtA = "UPDATE osdial_log set status='$VDL_status' where uniqueid = '$uniqueid';";
+					#$stmtA = "UPDATE osdial_log set status='" . $osdial->mres($VDL_status) . "' where uniqueid = '$uniqueid';";
 					$Euniqueid=$uniqueid;
 					$Euniqueid =~ s/\.\d+$//gi;
-					$stmtA = "UPDATE osdial_log FORCE INDEX(lead_id) SET status='$VDL_status' WHERE lead_id='$CIDlead_id' AND uniqueid LIKE '$Euniqueid%';";
+					$stmtA = "UPDATE osdial_log FORCE INDEX(lead_id) SET status='" . $osdial->mres($VDL_status) . "' WHERE lead_id='$CIDlead_id' AND uniqueid LIKE '$Euniqueid%';";
 					if ($AGILOG) {
 						$agi_string = "|$stmtA|";
 						&agi_output;
@@ -839,7 +844,7 @@ sub process_request {
 						$OLAext = $aryA[1];
 						$talksec = ($now_date_epoch - $VD_start_epoch);
 						if ( ($OLAext =~ /^R\/tmp/) && ($OLAuser =~ /^tmp/) ) {
-							$stmtA = "DELETE FROM osdial_users WHERE user='$OLAuser' LIMIT 1;";
+							$stmtA = "DELETE FROM osdial_users WHERE user='" . $osdial->mres($OLAuser) . "' LIMIT 1;";
 							my $affected_rows = $dbhA->do($stmtA);
 							$stmtA = "DELETE FROM osdial_live_agents WHERE uniqueid='$uniqueid' LIMIT 1;";
 							my $affected_rows = $dbhA->do($stmtA);
@@ -853,7 +858,7 @@ sub process_request {
 							$lstat = $aryA[0];
 							$lcomm = $aryA[1];
 							@aryA = $sthA->fetchrow_array;
-							$stmtA = "INSERT INTO osdial_agent_log SET user='$OLAuser',server_ip='$VARserver_ip',event_time=NOW(),lead_id='$VD_lead_id',campaign_id='$VD_campaign_id',talk_epoch='$VD_start_epoch',talk_sec='$talksec',status='$lstat',user_group='VIRTUAL',comments='$lcomm';";
+							$stmtA = "INSERT INTO osdial_agent_log SET user='" . $osdial->mres($OLAuser) . "',server_ip='$VARserver_ip',event_time=NOW(),lead_id='$VD_lead_id',campaign_id='" . $osdial->mres($VD_campaign_id) . "',talk_epoch='$VD_start_epoch',talk_sec='$talksec',status='" . $osdial->mres($lstat) . "',user_group='VIRTUAL',comments='" . $osdial->mres($lcomm) . "';";
 							my $affected_rows = $dbhA->do($stmtA);
 						}
 					}
@@ -911,10 +916,10 @@ sub process_request {
 						$sthB->finish();
 
 						if ($rec_count < 1) {
-							$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='$VD_callerid',queue='$VD_campaign_id',agent='$VD_agent',verb='ABANDON',data1='1',data2='1',data3='$VD_stage',serverid='$queuemetrics_log_id';";
+							$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='$VD_callerid',queue='" . $osdial->mres($VD_campaign_id) . "',agent='" . $osdial->mres($VD_agent) . "',verb='ABANDON',data1='1',data2='1',data3='$VD_stage',serverid='$queuemetrics_log_id';";
 							$Baffected_rows = $dbhB->do($stmtB);
 						} else {
-							$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='$VD_callerid',queue='$VD_campaign_id',agent='$VD_agent',verb='COMPLETECALLER',data1='$VD_stage',data2='$VD_call_length',data3='1',serverid='$queuemetrics_log_id';";
+							$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='$VD_callerid',queue='" . $osdial->mres($VD_campaign_id) . "',agent='" . $osdial->mres($VD_agent) . "',verb='COMPLETECALLER',data1='$VD_stage',data2='$VD_call_length',data3='1',serverid='$queuemetrics_log_id';";
 							$Baffected_rows = $dbhB->do($stmtB);
 						}
 
@@ -1095,7 +1100,7 @@ sub process_request {
 					### check to see if campaign has alt_dial enabled
 					$VD_auto_alt_dial = 'NONE';
 					$VD_auto_alt_dial_statuses='';
-					$stmtA="SELECT auto_alt_dial,auto_alt_dial_statuses,use_internal_dnc FROM osdial_campaigns WHERE campaign_id='$VD_campaign_id';";
+					$stmtA="SELECT auto_alt_dial,auto_alt_dial_statuses,use_internal_dnc FROM osdial_campaigns WHERE campaign_id='" . $osdial->mres($VD_campaign_id) . "';";
 					if ($AGILOG) {
 						$agi_string = "|$stmtA|";
 						&agi_output;
@@ -1141,7 +1146,7 @@ sub process_request {
 									if ($enable_multicompany > 0) {
 										$comp_id=0;
 										$dnc_method='';
-										$stmtA="SELECT comp_id,dnc_method FROM osdial_companies WHERE company_id='" . ((substr($VD_campaign_id,0,3) * 1) - 100) . "';";
+										$stmtA="SELECT comp_id,dnc_method FROM osdial_companies WHERE company_id='" . $osdial->mres((substr($VD_campaign_id,0,3) * 1) - 100) . "';";
 										if ($AGILOG) {
 											$agi_string = "|$stmtA|";
 											&agi_output;
@@ -1179,7 +1184,7 @@ sub process_request {
 									}
 								}
 								if ($VD_alt_dnc_count < 1) {
-									$stmtA = "INSERT INTO osdial_hopper SET lead_id='$VD_lead_id',campaign_id='$VD_campaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ALT',user='',priority='25';";
+									$stmtA = "INSERT INTO osdial_hopper SET lead_id='$VD_lead_id',campaign_id='" . $osdial->mres($VD_campaign_id) . "',status='READY',list_id='" . $osdial->mres($VD_list_id) . "',gmt_offset_now='$VD_gmt_offset_now',state='" . $osdial->mres($VD_state) . "',alt_dial='ALT',user='',priority='25';";
 									$affected_rows = $dbhA->do($stmtA);
 									if ($AGILOG) {
 										$agi_string = "--   VDH record inserted: |$affected_rows|   |$stmtA|";
@@ -1217,7 +1222,7 @@ sub process_request {
 									if ($enable_multicompany > 0) {
 										$comp_id=0;
 										$dnc_method='';
-										$stmtA="SELECT comp_id,dnc_method FROM osdial_companies WHERE company_id='" . ((substr($VD_campaign_id,0,3) * 1) - 100) . "';";
+										$stmtA="SELECT comp_id,dnc_method FROM osdial_companies WHERE company_id='" . $osdial->mres((substr($VD_campaign_id,0,3) * 1) - 100) . "';";
 										if ($AGILOG) {
 											$agi_string = "|$stmtA|";
 											&agi_output;
@@ -1255,7 +1260,7 @@ sub process_request {
 									}
 								}
 								if ($VD_addr3_dnc_count < 1) {
-									$stmtA = "INSERT INTO osdial_hopper SET lead_id='$VD_lead_id',campaign_id='$VD_campaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='ADDR3',user='',priority='25';";
+									$stmtA = "INSERT INTO osdial_hopper SET lead_id='$VD_lead_id',campaign_id='" . $osdial->mres($VD_campaign_id) . "',status='READY',list_id='" . $osdial->mres($VD_list_id) . "',gmt_offset_now='$VD_gmt_offset_now',state='" . $osdial->mres($VD_state) . "',alt_dial='ADDR3',user='',priority='25';";
 									$affected_rows = $dbhA->do($stmtA);
 									if ($AGILOG) {
 										$agi_string = "--   VDH record inserted: |$affected_rows|   |$stmtA|";
@@ -1306,7 +1311,7 @@ sub process_request {
 										if ($enable_multicompany > 0) {
 											$comp_id=0;
 											$dnc_method='';
-											$stmtA="SELECT comp_id,dnc_method FROM osdial_companies WHERE company_id='" . ((substr($VD_campaign_id,0,3) * 1) - 100) . "';";
+											$stmtA="SELECT comp_id,dnc_method FROM osdial_companies WHERE company_id='" . $osdial->mres((substr($VD_campaign_id,0,3) * 1) - 100) . "';";
 											if ($AGILOG) {
 												$agi_string = "|$stmtA|";
 												&agi_output;
@@ -1345,7 +1350,7 @@ sub process_request {
 									}
 
 									if ($VD_aff_dnc_count < 1) {
-										$stmtA = "INSERT INTO osdial_hopper SET lead_id='$VD_lead_id',campaign_id='$VD_campaign_id',status='READY',list_id='$VD_list_id',gmt_offset_now='$VD_gmt_offset_now',state='$VD_state',alt_dial='AFFAP$cur_aff',user='',priority='25';";
+										$stmtA = "INSERT INTO osdial_hopper SET lead_id='$VD_lead_id',campaign_id='" . $osdial->mres($VD_campaign_id) . "',status='READY',list_id='" . $osdial->mres($VD_list_id) . "',gmt_offset_now='$VD_gmt_offset_now',state='" . $osdial->mres($VD_state) . "',alt_dial='AFFAP$cur_aff',user='',priority='25';";
 										$affected_rows = $dbhA->do($stmtA);
 										if ($AGILOG) {
 											$agi_string = "--   VDH record inserted: |$affected_rows|   |$stmtA|";

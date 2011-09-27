@@ -221,6 +221,7 @@ function generate_calendar($prefix,$months) {
 function send_email($host, $port, $user, $pass, $to, $from, $subject, $html, $text) {
     include('Mail.php');
     include('Mail/mime.php');
+    global $config;
 
     if ($port=='') $port='25';
     $params["host"] = $host . ':' . $port;
@@ -234,9 +235,22 @@ function send_email($host, $port, $user, $pass, $to, $from, $subject, $html, $te
     $headers["From"] = $from;
     $headers["Subject"] = $subject;
 
-    $mime = new Mail_mime("\n");
+    $mparams = array();
+    $mparams["eol"] = "\n";
+    if ($config['settings']['use_non_latin']==1) {
+        $mparams["text_charset"] = "utf-8";
+        $mparams["html_charset"] = "utf-8";
+    }
+    $mime = new Mail_mime($mparams);
+
     if ($html) $mime->setHTMLBody($html);
     if ($text) $mime->setTXTBody($text);
+    if ($config['settings']['use_non_latin']==1) {
+        foreach ($headers as $name => $value){
+            $headers[$name] = $mime->encodeHeader($name, $value, "utf-8", "quoted-printable");
+        }
+    }
+
     $message = $mime->get();
     $headers = $mime->headers($headers);
 
@@ -441,6 +455,47 @@ function debugLog($filename, $output) {
         fwrite ($fp, $output . "\n");
         fclose($fp);
     }
+}
+
+function OSDstrlen($instr) {
+    global $config;
+    if ($config['settings']['use_non_latin']==1) return mb_strlen($instr,'utf8');
+    return strlen($instr);
+}
+function OSDstrtolower($instr) {
+    global $config;
+    if ($config['settings']['use_non_latin']==1) return mb_strtolower($instr,'utf8');
+    return strtolower($instr);
+}
+function OSDstrtoupper($instr) {
+    global $config;
+    if ($config['settings']['use_non_latin']==1) return mb_strtoupper($instr,'utf8');
+    return strtoupper($instr);
+}
+function OSDpreg_replace($inre,$insub,$instr) {
+    global $config;
+    if ($config['settings']['use_non_latin']==1) return preg_replace($inre.'u',$insub,$instr);
+    return preg_replace($inre,$insub,$instr);
+}
+function OSDpreg_split($inre,$instr) {
+    global $config;
+    if ($config['settings']['use_non_latin']==1) return preg_split($inre.'u',$instr);
+    return preg_split($inre,$instr);
+}
+function OSDpreg_splitX($inre,$instr,$incnt) {
+    global $config;
+    if ($config['settings']['use_non_latin']==1) return preg_split($inre.'u',$instr,$incnt);
+    return preg_split($inre,$instr,$incnt);
+}
+function OSDpreg_match($inre,$instr) {
+    global $config;
+    if ($config['settings']['use_non_latin']==1) return preg_match($inre.'u',$instr);
+    return preg_match($inre,$instr);
+}
+function OSDsubstr($instr,$instart,$inlen) {
+    global $config;
+    if ($config['settings']['use_non_latin']==1) return mb_substr($instr,$instart,$inlen,'utf8');
+    return substr($instr,$instart,$inlen);
 }
 
 ?>

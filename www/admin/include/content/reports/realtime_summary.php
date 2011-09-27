@@ -145,8 +145,8 @@ function report_realtime_summary() {
         $CALLtime =     $row[16];
         $DIALtimeout =  $row[17];
         $DIALstatuses = $row[18];
-        $DIALstatuses = preg_replace("/ -$|^ /","",$DIALstatuses);
-        $DIALstatuses = preg_replace('/ /',', ',$DIALstatuses);
+        $DIALstatuses = OSDpreg_replace("/ -$|^ /","",$DIALstatuses);
+        $DIALstatuses = OSDpreg_replace('/ /',', ',$DIALstatuses);
         
         $stmt=sprintf("SELECT count(*) FROM osdial_hopper WHERE campaign_id IN %s AND campaign_id='%s';",$LOG['allowed_campaignsSQL'],mres($group));
         $rslt=mysql_query($stmt, $link);
@@ -250,29 +250,29 @@ function report_realtime_summary() {
         $html .= "<td align=right><font size=2 color=$default_text><b>Order:</b></td><td align=left><font size=2>&nbsp; $DIALorder&nbsp;&nbsp;</td>";
         $html .= "</tr>";
         $html .= "<tr>";
-        if (!preg_match('/NULL/',$VSCcat1) and strlen($VSCcat1)>0) {
+        if (!OSDpreg_match('/NULL/',$VSCcat1) and OSDstrlen($VSCcat1)>0) {
             $html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat1:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1tally&nbsp;&nbsp;&nbsp;</td>\n";
         }
-        if (!preg_match('/NULL/',$VSCcat2) and strlen($VSCcat2)>0) {
+        if (!OSDpreg_match('/NULL/',$VSCcat2) and OSDstrlen($VSCcat2)>0) {
             $html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat2:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2tally&nbsp;&nbsp;&nbsp;</td>\n";
         }
-        if (!preg_match('/NULL/',$VSCcat3) and strlen($VSCcat3)>0) { 
+        if (!OSDpreg_match('/NULL/',$VSCcat3) and OSDstrlen($VSCcat3)>0) { 
             $html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat3:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3tally&nbsp;&nbsp;&nbsp;</td>\n";
         }
-        if (!preg_match('/NULL/',$VSCcat4) and strlen($VSCcat4)>0) {
+        if (!OSDpreg_match('/NULL/',$VSCcat4) and OSDstrlen($VSCcat4)>0) {
             $html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat4:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4tally&nbsp;&nbsp;&nbsp;</td>\n";
         }
         $html .= "</tr><tr>";
-        if (!preg_match('/NULL/',$VSCcat1) and strlen($VSCcat1)>0) {
+        if (!OSDpreg_match('/NULL/',$VSCcat1) and OSDstrlen($VSCcat1)>0) {
             $html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat1/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1hourtally&nbsp;&nbsp;&nbsp;</td>\n";
         }
-        if (!preg_match('/NULL/',$VSCcat2) and strlen($VSCcat2)>0) {
+        if (!OSDpreg_match('/NULL/',$VSCcat2) and OSDstrlen($VSCcat2)>0) {
             $html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat2/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2hourtally&nbsp;&nbsp;&nbsp;</td>\n";
         }
-        if (!preg_match('/NULL/',$VSCcat3) and strlen($VSCcat3)>0) { 
+        if (!OSDpreg_match('/NULL/',$VSCcat3) and OSDstrlen($VSCcat3)>0) { 
             $html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat3/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3hourtally&nbsp;&nbsp;&nbsp;</td>\n";
         }
-        if (!preg_match('/NULL/',$VSCcat4) and strlen($VSCcat4)>0) {
+        if (!OSDpreg_match('/NULL/',$VSCcat4) and OSDstrlen($VSCcat4)>0) {
             $html .= "<td align=right><font size=2 color=$default_text><B>$VSCcat4/hr:</B></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4hourtally&nbsp;&nbsp;&nbsp;</td>\n";
         }
         
@@ -298,8 +298,8 @@ function report_realtime_summary() {
             $stmt=sprintf("SELECT closer_campaigns FROM osdial_campaigns WHERE campaign_id IN %s AND campaign_id='%s';",$LOG['allowed_campaignsSQL'],mres($group));
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
-            $closer_campaigns = preg_replace("/^ | -$/","",$row[0]);
-            $closer_campaigns = preg_replace("/ /","','",$closer_campaigns);
+            $closer_campaigns = OSDpreg_replace("/^ | -$/","",$row[0]);
+            $closer_campaigns = OSDpreg_replace("/ /","','",$closer_campaigns);
             $closer_campaigns = "'$closer_campaigns'";
         
             $stmt=sprintf("SELECT status FROM osdial_auto_calls WHERE campaign_id IN %s AND (status NOT IN('XFER') OR channel LIKE 'Local/870_____@%%') AND ( (call_type='IN' AND campaign_id IN($closer_campaigns)) OR (campaign_id='%s' AND call_type='OUT') );",$LOG['allowed_campaignsSQL'],mres($group));
@@ -329,10 +329,10 @@ function report_realtime_summary() {
             while ($i < $parked_to_print) {
                 $row=mysql_fetch_row($rslt);
         
-                if (preg_match("/LIVE/",$row[0])) {
+                if (OSDpreg_match("/LIVE/",$row[0])) {
                     $out_live++;
                 } else {
-                    if (preg_match("/CLOSER|XFER/",$row[0])) {
+                    if (OSDpreg_match("/CLOSER|XFER/",$row[0])) {
                         $nothing=1;
                     } else {
                         $out_ring++;
@@ -391,10 +391,10 @@ function report_realtime_summary() {
             $agentcount=0;
             while ($i < $talking_to_print) {
                 $row=mysql_fetch_row($rslt);
-                if (preg_match("/READY|PAUSED/",$row[3])) $row[5]=$row[6];
+                if (OSDpreg_match("/READY|PAUSED/",$row[3])) $row[5]=$row[6];
                 $Lstatus = $row[3];
                 $status = sprintf("%-6s", $row[3]);
-                if (!preg_match("/INCALL|QUEUE/",$row[3])) {
+                if (!OSDpreg_match("/INCALL|QUEUE/",$row[3])) {
                     $call_time_S = ($STARTtime - $row[6]);
                 } else {
                     $call_time_S = ($STARTtime - $row[5]);
@@ -411,7 +411,7 @@ function report_realtime_summary() {
                 $call_time_MS = sprintf("%7s", $call_time_MS);
                 $G = '';
                 $EG = '';
-                if (preg_match("/PAUSED/",$row[3])) {
+                if (OSDpreg_match("/PAUSED/",$row[3])) {
                     if ($call_time_M_int >= 30) {
                         $i++;
                         continue;
@@ -421,11 +421,11 @@ function report_realtime_summary() {
                     }
                 }
         
-                if (preg_match("/INCALL/",$status) or preg_match("/QUEUE/",$status)) {
+                if (OSDpreg_match("/INCALL/",$status) or OSDpreg_match("/QUEUE/",$status)) {
                     $agent_incall++;
                     $agent_total++;
                 }
-                if (preg_match("/READY/",$status) or preg_match("/CLOSER/",$status)) {
+                if (OSDpreg_match("/READY/",$status) or OSDpreg_match("/CLOSER/",$status)) {
                     $agent_ready++;
                     $agent_total++;
                 }

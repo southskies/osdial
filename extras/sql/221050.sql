@@ -62,7 +62,7 @@ CREATE TABLE osdial_dnc_company (
   phone_number varchar(12) NOT NULL,
   creation_date timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY (company_id,phone_number)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;##|##
+) ENGINE=InnoDB;##|##
  ##    Add osdial_dnc_company table.;
 
 UPDATE system_settings SET version='2.2.1.050',last_update_check=DATE_SUB(NOW(), INTERVAL 1 DAY);##|##

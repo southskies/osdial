@@ -22,7 +22,7 @@
 # 0906090157 - Added XFER_INGROUP forms.
 
 if ($campaign_id != '') {
-    $oivr = get_first_record($link, 'osdial_ivr', '*', "campaign_id='" . $campaign_id . "'");
+    $oivr = get_first_record($link, 'osdial_ivr', '*', sprintf("campaign_id='%s'",mres($campaign_id)));
     if ($oivr['id'] != '') {
         $oivr_id = $oivr['id'];
     } else {
@@ -39,16 +39,16 @@ $ivrpath = "/opt/osdial/media";
 # ADD=1menu create new menu
 ######################
 if ($ADD == "1menu") {
-    if ($LOGmodify_campaigns == 1) {
+    if ($LOG['modify_campaigns'] == 1) {
         $oivr_id = 0;
-        $oivr = get_first_record($link, 'osdial_ivr', '*', "campaign_id='" . $campaign_id . "'");
+        $oivr = get_first_record($link, 'osdial_ivr', '*', sprintf("campaign_id='%s'",mres($campaign_id)));
         if ($oivr['campaign_id'] != "") {
             $SUB = "2keys";
             $ADD = "3menu"; # go to campaign modification form below
         } else {
-            $gfr = get_first_record($link, 'osdial_campaigns', '*', "campaign_id='" . $campaign_id . "'");
+            $gfr = get_first_record($link, 'osdial_campaigns', '*', sprintf("campaign_id='%s'",mres($campaign_id)));
             echo "<br><B><font color=$default_text>IVR CREATED</font></B>\n";
-            $stmt = "INSERT INTO osdial_ivr (campaign_id,name) VALUES ('$campaign_id','$gfr[campaign_name]');";
+            $stmt=sprintf("INSERT INTO osdial_ivr (campaign_id,name) VALUES ('%s','%s');",mres($campaign_id),mres($gfr['campaign_name']));
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -56,7 +56,7 @@ if ($ADD == "1menu") {
                 fwrite($fp, "$date|CREATE OIVR |$PHP_AUTH_USER|$ip|$stmt|\n");
                 fclose($fp);
             }
-            $oivr = get_first_record($link, 'osdial_ivr', '*', "campaign_id='" . $campaign_id . "'");
+            $oivr = get_first_record($link, 'osdial_ivr', '*', sprintf("campaign_id='%s'",mres($campaign_id)));
             $id = $oivr['id'];
             $oivr_id = $oivr['id'];
             $SUB = "2keys";
@@ -74,11 +74,11 @@ if ($ADD == "1keys" or $ADD == '4keys') {
             $recfile = $_FILES['recfile'];
             $recfiletmp = $_FILES['recfile']['tmp_name'];
             $recfilename = $_FILES['recfile']['name'];
-            $recfilename = preg_replace('/ /','_',$recfilename);
-            $recfilename = preg_replace('/[^-\_\.0-9a-zA-Z]/',"",$recfilename);
-            $recfilename = preg_replace('/\.wav$/i','.wav',$recfilename);
-            $recfilename = preg_replace('/\.gsm$/i','.gsm',$recfilename);
-            $recfilename = preg_replace('/\.mp3$/i','.mp3',$recfilename);
+            $recfilename = OSDpreg_replace('/ /','_',$recfilename);
+            $recfilename = OSDpreg_replace('/[^-\_\.0-9a-zA-Z]/',"",$recfilename);
+            $recfilename = OSDpreg_replace('/\.wav$/i','.wav',$recfilename);
+            $recfilename = OSDpreg_replace('/\.gsm$/i','.gsm',$recfilename);
+            $recfilename = OSDpreg_replace('/\.mp3$/i','.mp3',$recfilename);
             if ($recfilename != '') {
                 rename($recfiletmp, '/tmp/'.$recfilename);
                 media_add_file($link, '/tmp/'.$recfilename, mimemap($recfilename), "IVR: $campaign_id - $oivr_opt_action",'',1);
@@ -105,11 +105,11 @@ if ($ADD == "1keys" or $ADD == '4keys') {
 		$d_ary = array($oi1,$oi2,$oi3);
 	} elseif ($oivr_opt_action == 'HANGUP') {
 		$d_ary = array($oi1,$oi2);
-	} elseif (preg_match('/^PLAYFILE/',$oivr_opt_action) or $oivr_opt_action == 'XFER_EXTERNAL') {
+	} elseif (OSDpreg_match('/^PLAYFILE/',$oivr_opt_action) or $oivr_opt_action == 'XFER_EXTERNAL') {
 		$d_ary = array($oi1,$oi2,$oi3);
 	} elseif ($oivr_opt_action == 'XFER_EXTERNAL_MULTI') {
-		$oi4 = preg_replace("/\r/","",$oi4);
-		$oi4 = preg_replace("/\n/","#:#",$oi4);
+		$oi4 = OSDpreg_replace("/\r/","",$oi4);
+		$oi4 = OSDpreg_replace("/\n/","#:#",$oi4);
 		$d_ary = array($oi1,$oi2,$oi3,$oi4);
 	} elseif ($oivr_opt_action == 'XFER_INGROUP') {
 		$d_ary = array($oi1,$oi2,$oi3,$oi4,$oi5);
@@ -125,13 +125,13 @@ if ($ADD == "1keys" or $ADD == '4keys') {
 # ADD=1keys create new key
 ######################
 if ($ADD == "1keys") {
-    if ($LOGmodify_campaigns == 1) {
-        if (($oivr_id == 0) or (strlen($oivr_opt_keypress) < 1) or (strlen($oivr_opt_action) < 1) or (strlen($oivr_opt_action_data) < 1)) {
+    if ($LOG['modify_campaigns'] == 1) {
+        if (($oivr_id == 0) or (OSDstrlen($oivr_opt_keypress) < 1) or (OSDstrlen($oivr_opt_action) < 1) or (OSDstrlen($oivr_opt_action_data) < 1)) {
             echo "<br><font color=red>KEY NOT CREATED - Please go back and look at the data you entered\n";
             $ADD = "2keys";
         } else {
             echo "<br><B><font color=$default_text>KEY CREATED: $oivr_id - $oivr_opt_action - $oivr_opt_keypress</font></B>\n";
-            $stmt = "INSERT INTO osdial_ivr_options (ivr_id,parent_id,keypress,action,action_data) VALUES ('$oivr_id','$oivr_opt_parent_id','$oivr_opt_keypress','$oivr_opt_action','$oivr_opt_action_data');";
+            $stmt=sprintf("INSERT INTO osdial_ivr_options (ivr_id,parent_id,keypress,action,action_data) VALUES ('%s','%s','%s','%s','%s');",mres($oivr_id),mres($oivr_opt_parent_id),mres($oivr_opt_keypress),mres($oivr_opt_action),mres($oivr_opt_action_data));
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -189,7 +189,8 @@ if ($ADD == "2keys") {
         echo "  <tr>\n";
         echo "      <td bgcolor=$oddrows align=right>File to Play</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
-        echo media_file_text_options($link, 'oi1', '', 20, 50);
+        echo ivr_file_text_options($link, 'oi1', '', 20, 50);
+        #echo media_file_text_options($link, 'oi1', '', 20, 50);
     	#echo '          <select name="oi1">';
         #echo media_file_select_options($link);
     	#echo "          </select><br>";
@@ -244,7 +245,8 @@ if ($ADD == "2keys") {
         echo "  <tr>\n";
         echo "      <td bgcolor=$oddrows align=right>File to Play Before Hangup (Optional)</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
-        echo media_file_text_options($link, 'oi1', '', 20, 50);
+        echo ivr_file_text_options($link, 'oi1', '', 20, 50);
+        #echo media_file_text_options($link, 'oi1', '', 20, 50);
     	#echo '          <select name="oi1">';
         #echo media_file_select_options($link);
     	#echo "          </select><br>";
@@ -271,7 +273,8 @@ if ($ADD == "2keys") {
         echo "  <tr>\n";
         echo "      <td bgcolor=$oddrows align=right>Announcement Recording</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
-        echo media_file_text_options($link, 'oi3', '', 20, 50);
+        echo ivr_file_text_options($link, 'oi3', '', 20, 50);
+        #echo media_file_text_options($link, 'oi3', '', 20, 50);
     	#echo '          <select name="oi3">';
         #echo media_file_select_options($link);
     	#echo "          </select><br>";
@@ -330,8 +333,8 @@ if ($ADD == "2keys") {
         echo "          <td>AGENT</td>\n";
         echo "          <td>EXTENSION</td>\n";
         echo "        </tr>\n";
-        $camppre=''; if ($LOG['multicomp']) $camppre = substr($campaign_id,0,3);
-        $agents = get_krh($link, 'osdial_users', 'user,full_name','',sprintf("user_level>3 AND xfer_agent2agent='1' AND user LIKE '%s%%'",$camppre),'');
+        $camppre=''; if ($LOG['multicomp']) $camppre = OSDsubstr($campaign_id,0,3);
+        $agents = get_krh($link, 'osdial_users', 'user,full_name','',sprintf("user_level>3 AND xfer_agent2agent='1' AND user LIKE '%s%%'",mres($camppre)),'');
         foreach ($agents as $agent) {
             echo "        <tr>\n";
             $achk=''; if (isset($asel[$agent['user']])) $achk='checked';
@@ -419,7 +422,8 @@ if ($ADD == "2keys") {
         echo "  <tr>\n";
         echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
-        echo media_file_text_options($link, 'oi1', '', 20, 50);
+        echo ivr_file_text_options($link, 'oi1', '', 20, 50);
+        #echo media_file_text_options($link, 'oi1', '', 20, 50);
     	#echo '          <select name="oi1">';
         #echo media_file_select_options($link);
     	#echo "          </select>\n";
@@ -471,7 +475,8 @@ if ($ADD == "2keys") {
         echo "  <tr>\n";
         echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
-        echo media_file_text_options($link, 'oi1', '', 20, 50);
+        echo ivr_file_text_options($link, 'oi1', '', 20, 50);
+        #echo media_file_text_options($link, 'oi1', '', 20, 50);
     	#echo '          <select name="oi1">';
         #echo media_file_select_options($link);
     	#echo "          </select><br>";
@@ -505,7 +510,8 @@ if ($ADD == "2keys") {
         echo "  <tr>\n";
         echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
-        echo media_file_text_options($link, 'oi1', '', 20, 50);
+        echo ivr_file_text_options($link, 'oi1', '', 20, 50);
+        #echo media_file_text_options($link, 'oi1', '', 20, 50);
     	#echo '          <select name="oi1">';
         #echo media_file_select_options($link);
     	#echo "          </select><br>";
@@ -558,7 +564,7 @@ if ($ADD == "2keys") {
 # ADD=4menu modify menu
 ######################
 if ($ADD == "4menu") {
-    if ($LOGmodify_campaigns == 1) {
+    if ($LOG['modify_campaigns'] == 1) {
         if (($oivr_id < 1) or ($oivr_repeat_loops < 1) or ($oivr_wait_loops < 1) or ($oivr_wait_timeout < 1)) {
             echo "<br><font color=red>IVR NOT MODIFIED - Please go back and look at the data you entered\n";
         } else {
@@ -566,11 +572,11 @@ if ($ADD == "4menu") {
             $recfile = $_FILES['recfile'];
             $recfiletmp = $_FILES['recfile']['tmp_name'];
             $recfilename = $_FILES['recfile']['name'];
-            $recfilename = preg_replace('/ /','_',$recfilename);
-            $recfilename = preg_replace('/[^-\_\.0-9a-zA-Z]/',"",$recfilename);
-            $recfilename = preg_replace('/\.wav$/i','.wav',$recfilename);
-            $recfilename = preg_replace('/\.gsm$/i','.gsm',$recfilename);
-            $recfilename = preg_replace('/\.mp3$/i','.mp3',$recfilename);
+            $recfilename = OSDpreg_replace('/ /','_',$recfilename);
+            $recfilename = OSDpreg_replace('/[^-\_\.0-9a-zA-Z]/',"",$recfilename);
+            $recfilename = OSDpreg_replace('/\.wav$/i','.wav',$recfilename);
+            $recfilename = OSDpreg_replace('/\.gsm$/i','.gsm',$recfilename);
+            $recfilename = OSDpreg_replace('/\.mp3$/i','.mp3',$recfilename);
             if ($recfilename != '') {
                 rename($recfiletmp, '/tmp/'.$recfilename);
                 media_add_file($link, '/tmp/'.$recfilename, mimemap($recfilename), "IVR: $campaign_id - MAIN_MENU",'',1);
@@ -591,32 +597,32 @@ if ($ADD == "4menu") {
             }
 
             if ($oivr_name == '') {
-                $gfr = get_first_record($link, 'osdial_campaigns', 'campaign_name',sprintf("campaign_id='%s'",$campaign_id));
+                $gfr = get_first_record($link, 'osdial_campaigns', 'campaign_name',sprintf("campaign_id='%s'",mres($campaign_id)));
                 $oivr_name = $gfr['campaign_name'];
             }
 
             if ($oivr_allow_agent_extensions == '') $oivr_allow_agent_extensions = 'N';
-            $gfr = get_first_record($link, 'osdial_ivr_options', 'count(*) AS count',sprintf("ivr_id='%s' AND parent_id='0' AND keypress='A'",$oivr_id));
+            $gfr = get_first_record($link, 'osdial_ivr_options', 'count(*) AS count',sprintf("ivr_id='%s' AND parent_id='0' AND keypress='A'",mres($oivr_id)));
             if ($oivr_allow_agent_extensions == 'Y') {
                 if ($gfr['count']==0) {
-                    $stmt = "INSERT INTO osdial_ivr_options (ivr_id,parent_id,keypress,action,action_data) VALUES ('$oivr_id','0','A','AGENT_EXTENSIONS','Agent Extensions#:#VIXFER');";
+                    $stmt=sprintf("INSERT INTO osdial_ivr_options (ivr_id,parent_id,keypress,action,action_data) VALUES ('%s','0','A','AGENT_EXTENSIONS','Agent Extensions#:#VIXFER');",mres($oivr_id));
                     $rslt = mysql_query($stmt, $link);
                 }
             } else {
                 if ($gfr['count']>0) {
-                    $stmt = "DELETE FROM osdial_ivr_options WHERE ivr_id='$oivr_id' AND parent_id='0' AND keypress='A';";
+                    $stmt=sprintf("DELETE FROM osdial_ivr_options WHERE ivr_id='%s' AND parent_id='0' AND keypress='A';",mres($oivr_id));
                     $rslt = mysql_query($stmt, $link);
                 }
             }
 
             echo "<br><B><font color=$default_text>IVR MODIFIED: $oivr_id - $campaign_id - $oivr_name</font></B>\n";
-            $stmt = "UPDATE osdial_ivr SET name='$oivr_name',announcement='$oivr_announcement',repeat_loops='$oivr_repeat_loops',wait_loops='$oivr_wait_loops',wait_timeout='$oivr_wait_timeout',answered_status='$oivr_answered_status',virtual_agents='$oivr_virtual_agents',status='$oivr_status',timeout_action='$oivr_timeout_action',reserve_agents='$oivr_reserve_agents',allow_inbound='$oivr_allow_inbound',allow_agent_extensions='$oivr_allow_agent_extensions' where id='$oivr_id';";
+            $stmt=sprintf("UPDATE osdial_ivr SET name='%s',announcement='%s',repeat_loops='%s',wait_loops='%s',wait_timeout='%s',answered_status='%s',virtual_agents='%s',status='%s',timeout_action='%s',reserve_agents='%s',allow_inbound='%s',allow_agent_extensions='%s' WHERE id='%s';",mres($oivr_name),mres($oivr_announcement),mres($oivr_repeat_loops),mres($oivr_wait_loops),mres($oivr_wait_timeout),mres($oivr_answered_status),mres($oivr_virtual_agents),mres($oivr_status),mres($oivr_timeout_action),mres($oivr_reserve_agents),mres($oivr_allow_inbound),mres($oivr_allow_agent_extensions),mres($oivr_id));
             $rslt = mysql_query($stmt, $link);
 
 
             $svrs = get_krh($link, 'servers', 'server_ip','',"server_profile IN ('AIO','DIALER') AND active='Y'",'');
             # Insert Virtual Agents.
-            $rma = get_krh($link, 'osdial_remote_agents', 'remote_agent_id,user_start','',"user_start LIKE 'va" . $campaign_id . "%'",'');
+            $rma = get_krh($link, 'osdial_remote_agents', 'remote_agent_id,user_start','',sprintf("user_start LIKE 'va%s%%'",mres($campaign_id)),'');
             $rcnt = count($rma);
             if ($rcnt < ($oivr_virtual_agents + $oivr_reserve_agents)) {
                 $icnt = 0;
@@ -631,22 +637,26 @@ if ($ADD == "4menu") {
                         }
                     }
                     if ($ufnd == 0) {
+                        $stmt=sprintf("DELETE FROM osdial_remote_agents WHERE user_start='%s';",mres($usr));
+                        $rslt = mysql_query($stmt, $link);
+                        $stmt=sprintf("DELETE FROM osdial_live_agents WHERE user='%s';",mres($usr));
+                        $rslt = mysql_query($stmt, $link);
                         $server_ip = $svrs[array_rand($svrs)]['server_ip'];
                         $stmt = "INSERT INTO osdial_remote_agents (user_start,conf_exten,server_ip,campaign_id) VALUES ";
                         $conf = '87' . sprintf('%03d',$oivr_id) . sprintf('%03d',$unum);
-                        $stmt .= "('$usr','$conf','$server_ip','$campaign_id');";
+                        $stmt .= sprintf("('%s','%s','%s','%s');",mres($usr),mres($conf),mres($server_ip),mres($campaign_id));
                         $rslt = mysql_query($stmt, $link);
                         $icnt++;
                     }
                 }
             } elseif ($rcnt > ($oivr_virtual_agents + $oivr_reserve_agents)) {
                 $dcnt = $rcnt - ($oivr_virtual_agents + $oivr_reserve_agents);
-                $stmt = "DELETE FROM osdial_remote_agents WHERE user_start LIKE 'va$campaign_id%' ORDER BY user_start DESC LIMIT $dcnt;";
+                $stmt=sprintf("DELETE FROM osdial_remote_agents WHERE user_start LIKE 'va%s%%' ORDER BY user_start DESC LIMIT %s;",mres($campaign_id),$dcnt);
                 $rslt = mysql_query($stmt, $link);
             }
 
             # Insert any needed user records.
-            $urecs = get_krh($link, 'osdial_users', 'user_id,user','',"user LIKE 'va$campaign_id%'",'');
+            $urecs = get_krh($link, 'osdial_users', 'user_id,user','',sprintf("user LIKE 'va%s%%'",mres($campaign_id)),'');
             $ucnt = count($urecs);
             if ($ucnt < ($oivr_virtual_agents + $oivr_reserve_agents)) {
                 $icnt = 0;
@@ -662,22 +672,22 @@ if ($ADD == "4menu") {
                     }
                     if ($ufnd == 0) {
                         $stmt = "INSERT INTO osdial_users (user,pass,full_name,user_level,user_group) ";
-                        $stmt .= "VALUES ('$usr','ViRtUaLaGeNt','Virtual Agent','7','VIRTUAL');";
+                        $stmt .= sprintf("VALUES ('%s','ViRtUaLaGeNt','Virtual Agent','7','VIRTUAL');",mres($usr));
                         $rslt = mysql_query($stmt, $link);
                         $icnt++;
                     }
                 }
             } elseif ($ucnt > ($oivr_virtual_agents + $oivr_reserve_agents)) {
                 $dcnt = $ucnt - ($oivr_virtual_agents + $oivr_reserve_agents);
-                $stmt = "DELETE FROM osdial_users WHERE user LIKE 'va$campaign_id%' ORDER BY user DESC LIMIT $dcnt;";
+                $stmt=sprintf("DELETE FROM osdial_users WHERE user LIKE 'va%s%%' ORDER BY user DESC LIMIT %s;",mres($campaign_id),$dcnt);
                 $rslt = mysql_query($stmt, $link);
             }
 
             if ($oivr_status == 'ACTIVE') {
-                $stmt = "UPDATE osdial_remote_agents SET status='ACTIVE' WHERE user_start LIKE 'va$campaign_id%';";
+                $stmt=sprintf("UPDATE osdial_remote_agents SET status='ACTIVE' WHERE user_start LIKE 'va%s%%';",mres($campaign_id));
                 $rslt = mysql_query($stmt, $link);
             } else {
-                $stmt = "UPDATE osdial_remote_agents SET status='INACTIVE' WHERE user_start LIKE 'va$campaign_id%';";
+                $stmt=sprintf("UPDATE osdial_remote_agents SET status='INACTIVE' WHERE user_start LIKE 'va%s%%';",mres($campaign_id));
                 $rslt = mysql_query($stmt, $link);
             }
 
@@ -700,14 +710,14 @@ if ($ADD == "4menu") {
 # ADD=4keys modify keys
 ######################
 if ($ADD == "4keys") {
-    if ($LOGmodify_campaigns == 1) {
-        if (($oivr_opt_id == 0) or (strlen($oivr_opt_keypress) < 1)) {
+    if ($LOG['modify_campaigns'] == 1) {
+        if (($oivr_opt_id == 0) or (OSDstrlen($oivr_opt_keypress) < 1)) {
             echo $oivr_opt_id . '/' . $oivr_opt_keypress;
             echo "<br><font color=red>KEY NOT MODIFIED - Please go back and look at the data you entered\n";
         } else {
             echo "<br><B><font color=$default_text>KEY MODIFIED: $oivr_opt_id - $oivr_opt_action</font></B>\n";
-            $field_name = strtoupper($field_name);
-            $stmt = "UPDATE osdial_ivr_options SET keypress='$oivr_opt_keypress',action='$oivr_opt_action',action_data='$oivr_opt_action_data',ivr_id='$oivr_id',parent_id='$oivr_opt_parent_id' where id='$oivr_opt_id';";
+            $field_name = OSDstrtoupper($field_name);
+            $stmt=sprintf("UPDATE osdial_ivr_options SET keypress='%s',action='%s',action_data='%s',ivr_id='%s',parent_id='%s' WHERE id='%s';",mres($oivr_opt_keypress),mres($oivr_opt_action),mres($oivr_opt_action_data),mres($oivr_id),mres($oivr_opt_parent_id),mres($oivr_opt_id));
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -730,12 +740,12 @@ if ($ADD == "4keys") {
 # ADD=6keys delete field
 ######################
 if ($ADD == "6keys") {
-    if ($LOGmodify_campaigns == 1) {
+    if ($LOG['modify_campaigns'] == 1) {
         if ($oivr_opt_id < 1) {
             echo "<br><font color=red>KEYPRESS NOT DELETED - Could not find field id!\n";
         } else {
             echo "<br><B><font color=$default_text>KEYPRESS DELETED: $oivr_opt_id - $oivr_opt_action</font></B>\n";
-            $stmt = "DELETE FROM osdial_ivr_options WHERE id='$oivr_opt_id';";
+            $stmt=sprintf("DELETE FROM osdial_ivr_options WHERE id='%s';",mres($oivr_opt_id));
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -759,7 +769,7 @@ if ($ADD == "6keys") {
 if ($ADD == "3menu") {
     echo "<center><br><font color=$default_text size=+1>INBOUND/OUTBOUND IVR</font><br><br>\n";
 
-    $oivr = get_first_record($link, 'osdial_ivr', '*', "campaign_id='" . $campaign_id . "'");
+    $oivr = get_first_record($link, 'osdial_ivr', '*', sprintf("campaign_id='%s'",mres($campaign_id)));
 
     echo '<form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
     echo '<input type="hidden" name="ADD" value="4menu">';
@@ -774,7 +784,8 @@ if ($ADD == "3menu") {
     echo "  <tr>\n";
     echo "      <td bgcolor=$oddrows align=right>Announcement File</td>\n";
     echo '      <td bgcolor="' . $oddrows . '">';
-    echo media_file_text_options($link, 'oivr_announcement', $oivr['announcement'], 20, 50);
+    echo ivr_file_text_options($link, 'oivr_announcement', $oivr['announcement'], 20, 50);
+    #echo media_file_text_options($link, 'oivr_announcement', $oivr['announcement'], 20, 50);
     #echo '          <select name="oivr_announcement">';
     #echo media_file_select_options($link,$oivr['announcement']);
     #echo "          </select><br>";
@@ -837,26 +848,26 @@ if ($ADD == "3menu") {
     echo '      <td bgcolor="' . $oddrows . '">';
     echo '         <select name="oivr_timeout_action">';
     echo "              <option value=\"\"> - NONE - </option>";
-    $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $oivr_opt_parent_id . "'",'');
+    $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',sprintf("ivr_id='%s' AND parent_id='%s'",mres($oivr_id),mres($oivr_opt_parent_id)),'');
     $tkey = '';
     if (is_array($keys)) {
         foreach ($keys as $key) {
             $tkey .= $key['keypress'];
         }
     }
-    if ( preg_match('/0/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '0') $sel=' selected'; echo ' <option value="0"' . $sel . '> - 0 -</option>'; }
-    if ( preg_match('/1/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '1') $sel=' selected'; echo ' <option value="1"' . $sel . '> - 1 -</option>'; }
-    if ( preg_match('/2/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '2') $sel=' selected'; echo ' <option value="2"' . $sel . '> - 2 -</option>'; }
-    if ( preg_match('/3/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '3') $sel=' selected'; echo ' <option value="3"' . $sel . '> - 3 -</option>'; }
-    if ( preg_match('/4/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '4') $sel=' selected'; echo ' <option value="4"' . $sel . '> - 4 -</option>'; }
-    if ( preg_match('/5/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '5') $sel=' selected'; echo ' <option value="5"' . $sel . '> - 5 -</option>'; }
-    if ( preg_match('/6/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '6') $sel=' selected'; echo ' <option value="6"' . $sel . '> - 6 -</option>'; }
-    if ( preg_match('/7/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '7') $sel=' selected'; echo ' <option value="7"' . $sel . '> - 7 -</option>'; }
-    if ( preg_match('/8/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '8') $sel=' selected'; echo ' <option value="8"' . $sel . '> - 8 -</option>'; }
-    if ( preg_match('/9/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '9') $sel=' selected'; echo ' <option value="9"' . $sel . '> - 9 -</option>'; }
-    if ( preg_match('/\#/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '#') $sel=' selected'; echo ' <option value="#"' . $sel . '> - # -</option>'; }
-    if ( preg_match('/\*/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '*') $sel=' selected'; echo ' <option value="*"' . $sel . '> - * -</option>'; }
-    if ( preg_match('/i/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == 'i') $sel=' selected'; echo ' <option value="i"' . $sel . '> - Invalid -</option>'; }
+    if ( OSDpreg_match('/0/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '0') $sel=' selected'; echo ' <option value="0"' . $sel . '> - 0 -</option>'; }
+    if ( OSDpreg_match('/1/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '1') $sel=' selected'; echo ' <option value="1"' . $sel . '> - 1 -</option>'; }
+    if ( OSDpreg_match('/2/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '2') $sel=' selected'; echo ' <option value="2"' . $sel . '> - 2 -</option>'; }
+    if ( OSDpreg_match('/3/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '3') $sel=' selected'; echo ' <option value="3"' . $sel . '> - 3 -</option>'; }
+    if ( OSDpreg_match('/4/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '4') $sel=' selected'; echo ' <option value="4"' . $sel . '> - 4 -</option>'; }
+    if ( OSDpreg_match('/5/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '5') $sel=' selected'; echo ' <option value="5"' . $sel . '> - 5 -</option>'; }
+    if ( OSDpreg_match('/6/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '6') $sel=' selected'; echo ' <option value="6"' . $sel . '> - 6 -</option>'; }
+    if ( OSDpreg_match('/7/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '7') $sel=' selected'; echo ' <option value="7"' . $sel . '> - 7 -</option>'; }
+    if ( OSDpreg_match('/8/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '8') $sel=' selected'; echo ' <option value="8"' . $sel . '> - 8 -</option>'; }
+    if ( OSDpreg_match('/9/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '9') $sel=' selected'; echo ' <option value="9"' . $sel . '> - 9 -</option>'; }
+    if ( OSDpreg_match('/\#/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '#') $sel=' selected'; echo ' <option value="#"' . $sel . '> - # -</option>'; }
+    if ( OSDpreg_match('/\*/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == '*') $sel=' selected'; echo ' <option value="*"' . $sel . '> - * -</option>'; }
+    if ( OSDpreg_match('/i/', $tkey) ) { $sel=''; if ($oivr['timeout_action'] == 'i') $sel=' selected'; echo ' <option value="i"' . $sel . '> - Invalid -</option>'; }
     echo '         </select>';
     echo '      </td>';
     echo "  </tr>\n";
@@ -880,7 +891,7 @@ if ($ADD == "3menu") {
     echo "      <td align=center>DISPOSITION</td>\n";
     echo "      <td align=center colspan=2>ACTIONS</td>\n";
     echo "  </tr>\n";
-    $oivr_opts = get_krh($link, 'osdial_ivr_options', '*', 'keypress', "ivr_id='" . $oivr['id'] . "' AND parent_id='0'",'');
+    $oivr_opts = get_krh($link, 'osdial_ivr_options', '*', 'keypress', sprintf("ivr_id='%s' AND parent_id='0'",mres($oivr['id'])),'');
     $cnt = 0;
     if (is_array($oivr_opts)) {
         foreach ($oivr_opts as $opt) {
@@ -901,7 +912,7 @@ if ($ADD == "3menu") {
             } else {
                 echo "      <td align=center>" . $ad[1] . "</td>";
             }
-            if (preg_match('/A/',$opt['keypress'])) {
+            if (OSDpreg_match('/A/',$opt['keypress'])) {
                 echo "      <td align=center colspan=2 class=tabbutton1><input type=submit value=\"Edit\"></td>\n";
             } else {
                 echo "      <td align=center><a href=$PHP_SELF?ADD=6keys&campaign_id=" . $campaign_id . "&oivr_id=" . $oivr['id'] . "&oivr_opt_id=" . $opt['id'] . ">DELETE</a></td>\n";
@@ -920,26 +931,26 @@ if ($ADD == "3menu") {
     echo "      <td align=center class=tabinput>\n";
     echo "        <select name=\"oivr_opt_keypress\">\n";
     echo "          <option value=\"\" selected> - SELECT DIGIT -</option>\n";
-    $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $oivr_opt_parent_id . "'",'');
+    $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',sprintf("ivr_id='%s' AND parent_id='%s'",mres($oivr_id),mres($oivr_opt_parent_id)),'');
     $tkey = '';
     if (is_array($keys)) {
         foreach ($keys as $key) {
             $tkey .= $key['keypress'];
         }
     }
-    if ( ! preg_match('/0/', $tkey) ) { echo ' <option value="0"> - 0 -</option>'; }
-    if ( ! preg_match('/1/', $tkey) ) { echo ' <option value="1"> - 1 -</option>'; }
-    if ( ! preg_match('/2/', $tkey) ) { echo ' <option value="2"> - 2 -</option>'; }
-    if ( ! preg_match('/3/', $tkey) ) { echo ' <option value="3"> - 3 -</option>'; }
-    if ( ! preg_match('/4/', $tkey) ) { echo ' <option value="4"> - 4 -</option>'; }
-    if ( ! preg_match('/5/', $tkey) ) { echo ' <option value="5"> - 5 -</option>'; }
-    if ( ! preg_match('/6/', $tkey) ) { echo ' <option value="6"> - 6 -</option>'; }
-    if ( ! preg_match('/7/', $tkey) ) { echo ' <option value="7"> - 7 -</option>'; }
-    if ( ! preg_match('/8/', $tkey) ) { echo ' <option value="8"> - 8 -</option>'; }
-    if ( ! preg_match('/9/', $tkey) ) { echo ' <option value="9"> - 9 -</option>'; }
-    if ( ! preg_match('/\#/', $tkey) ) { echo ' <option value="#"> - # -</option>'; }
-    if ( ! preg_match('/\*/', $tkey) ) { echo ' <option value="*"> - * -</option>'; }
-    if ( ! preg_match('/i/', $tkey) ) { echo ' <option value="i"> - Invalid -</option>'; }
+    if ( ! OSDpreg_match('/0/', $tkey) ) { echo ' <option value="0"> - 0 -</option>'; }
+    if ( ! OSDpreg_match('/1/', $tkey) ) { echo ' <option value="1"> - 1 -</option>'; }
+    if ( ! OSDpreg_match('/2/', $tkey) ) { echo ' <option value="2"> - 2 -</option>'; }
+    if ( ! OSDpreg_match('/3/', $tkey) ) { echo ' <option value="3"> - 3 -</option>'; }
+    if ( ! OSDpreg_match('/4/', $tkey) ) { echo ' <option value="4"> - 4 -</option>'; }
+    if ( ! OSDpreg_match('/5/', $tkey) ) { echo ' <option value="5"> - 5 -</option>'; }
+    if ( ! OSDpreg_match('/6/', $tkey) ) { echo ' <option value="6"> - 6 -</option>'; }
+    if ( ! OSDpreg_match('/7/', $tkey) ) { echo ' <option value="7"> - 7 -</option>'; }
+    if ( ! OSDpreg_match('/8/', $tkey) ) { echo ' <option value="8"> - 8 -</option>'; }
+    if ( ! OSDpreg_match('/9/', $tkey) ) { echo ' <option value="9"> - 9 -</option>'; }
+    if ( ! OSDpreg_match('/\#/', $tkey) ) { echo ' <option value="#"> - # -</option>'; }
+    if ( ! OSDpreg_match('/\*/', $tkey) ) { echo ' <option value="*"> - * -</option>'; }
+    if ( ! OSDpreg_match('/i/', $tkey) ) { echo ' <option value="i"> - Invalid -</option>'; }
     echo "      </select>\n";
     echo "    </td>\n";
     echo "    <td align=center class=tabinput>\n";
@@ -969,7 +980,7 @@ if ($ADD == "3menu") {
 # ADD=3keys modify a key
 ######################
 if ($ADD == "3keys") {
-    $opt = get_first_record($link, 'osdial_ivr_options', '*', "id='" . $oivr_opt_id . "'");
+    $opt = get_first_record($link, 'osdial_ivr_options', '*', sprintf("id='%s'",mres($oivr_opt_id)));
     echo "<center><br><font color=$default_text size=+1>MODIFY KEYPRESS ACTION</font><br><br>\n";
 
     echo '<form action="' . $PHP_SELF . '" method="POST" enctype="multipart/form-data">';
@@ -995,24 +1006,24 @@ if ($ADD == "3keys") {
     } else {
         echo '        <option value="' . $opt['keypress'] . '" selected> - ' . $opt['keypress'] . ' -</option>';
     }
-    $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr_id . "' AND parent_id='" . $opt['parent_id'] . "'",'');
+    $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',sprintf("ivr_id='%s' AND parent_id='%s'",mres($oivr_id),mres($opt['parent_id'])),'');
     $tkey = '';
     foreach ($keys as $key) {
         $tkey .= $key['keypress'];
     }
-    if ( ! preg_match('/0/', $tkey) ) { echo '        <option value="0"> - 0 -</option>'; }
-    if ( ! preg_match('/1/', $tkey) ) { echo '        <option value="1"> - 1 -</option>'; }
-    if ( ! preg_match('/2/', $tkey) ) { echo '        <option value="2"> - 2 -</option>'; }
-    if ( ! preg_match('/3/', $tkey) ) { echo '        <option value="3"> - 3 -</option>'; }
-    if ( ! preg_match('/4/', $tkey) ) { echo '        <option value="4"> - 4 -</option>'; }
-    if ( ! preg_match('/5/', $tkey) ) { echo '        <option value="5"> - 5 -</option>'; }
-    if ( ! preg_match('/6/', $tkey) ) { echo '        <option value="6"> - 6 -</option>'; }
-    if ( ! preg_match('/7/', $tkey) ) { echo '        <option value="7"> - 7 -</option>'; }
-    if ( ! preg_match('/8/', $tkey) ) { echo '        <option value="8"> - 8 -</option>'; }
-    if ( ! preg_match('/9/', $tkey) ) { echo '        <option value="9"> - 9 -</option>'; }
-    if ( ! preg_match('/\#/', $tkey) ) { echo '        <option value="#"> - # -</option>'; }
-    if ( ! preg_match('/\*/', $tkey) ) { echo '        <option value="*"> - * -</option>'; }
-    if ( ! preg_match('/i/', $tkey) ) { echo '        <option value="i"> - Invalid -</option>'; }
+    if ( ! OSDpreg_match('/0/', $tkey) ) { echo '        <option value="0"> - 0 -</option>'; }
+    if ( ! OSDpreg_match('/1/', $tkey) ) { echo '        <option value="1"> - 1 -</option>'; }
+    if ( ! OSDpreg_match('/2/', $tkey) ) { echo '        <option value="2"> - 2 -</option>'; }
+    if ( ! OSDpreg_match('/3/', $tkey) ) { echo '        <option value="3"> - 3 -</option>'; }
+    if ( ! OSDpreg_match('/4/', $tkey) ) { echo '        <option value="4"> - 4 -</option>'; }
+    if ( ! OSDpreg_match('/5/', $tkey) ) { echo '        <option value="5"> - 5 -</option>'; }
+    if ( ! OSDpreg_match('/6/', $tkey) ) { echo '        <option value="6"> - 6 -</option>'; }
+    if ( ! OSDpreg_match('/7/', $tkey) ) { echo '        <option value="7"> - 7 -</option>'; }
+    if ( ! OSDpreg_match('/8/', $tkey) ) { echo '        <option value="8"> - 8 -</option>'; }
+    if ( ! OSDpreg_match('/9/', $tkey) ) { echo '        <option value="9"> - 9 -</option>'; }
+    if ( ! OSDpreg_match('/\#/', $tkey) ) { echo '        <option value="#"> - # -</option>'; }
+    if ( ! OSDpreg_match('/\*/', $tkey) ) { echo '        <option value="*"> - * -</option>'; }
+    if ( ! OSDpreg_match('/i/', $tkey) ) { echo '        <option value="i"> - Invalid -</option>'; }
     echo "      </select>\n";
     echo "    </td>\n";
     echo "  </tr>\n";
@@ -1029,7 +1040,8 @@ if ($ADD == "3keys") {
         echo "  <tr>\n";
         echo "      <td bgcolor=$oddrows align=right>File to Play</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
-        echo media_file_text_options($link, 'oi1', $ad[0], 20, 50);
+        echo ivr_file_text_options($link, 'oi1', $ad[0], 20, 50);
+        #echo media_file_text_options($link, 'oi1', $ad[0], 20, 50);
     	#echo '          <select name="oi1">';
         #echo media_file_select_options($link,$ad[0]);
     	#echo "          </select><br>";
@@ -1089,7 +1101,8 @@ if ($ADD == "3keys") {
         echo "  <tr>\n";
         echo "      <td bgcolor=$oddrows align=right>File to Play Before Hangup (Optional)</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
-        echo media_file_text_options($link, 'oi1', $ad[0], 20, 50);
+        echo ivr_file_text_options($link, 'oi1', $ad[0], 20, 50);
+        #echo media_file_text_options($link, 'oi1', $ad[0], 20, 50);
     	#echo '          <select name="oi1">';
         #echo media_file_select_options($link,$ad[0]);
     	#echo "          </select><br>";
@@ -1117,7 +1130,8 @@ if ($ADD == "3keys") {
         echo "  <tr>\n";
         echo "      <td bgcolor=$oddrows align=right>Announcement Recording</td>\n";
         echo '      <td bgcolor="' . $oddrows . '">';
-        echo media_file_text_options($link, 'oi3', $ad[2], 20, 50);
+        echo ivr_file_text_options($link, 'oi3', $ad[2], 20, 50);
+        #echo media_file_text_options($link, 'oi3', $ad[2], 20, 50);
     	#echo '          <select name="oi3">';
         #echo media_file_select_options($link,$ad[2]);
     	#echo "          </select><br>";
@@ -1155,24 +1169,24 @@ if ($ADD == "3keys") {
         echo '      <td bgcolor="' . $oddrows . '">';
         echo '         <select name="oi8">';
     	echo "              <option value=\"\"> - NONE - </option>";
-        $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr['id'] . "' AND parent_id='" . $oivr_opt_id . "'",'');
+        $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',sprintf("ivr_id='%s' AND parent_id='%s'",mres($oivr['id']),mres($oivr_opt_id)),'');
         $tkey = '';
         foreach ($keys as $key) {
             $tkey .= $key['keypress'];
         }
-        if ( preg_match('/0/', $tkey) ) { $sel=''; if ($ad[7] == '0') $sel=' selected'; echo ' <option value="0"' . $sel . '> - 0 -</option>'; }
-        if ( preg_match('/1/', $tkey) ) { $sel=''; if ($ad[7] == '1') $sel=' selected'; echo ' <option value="1"' . $sel . '> - 1 -</option>'; }
-        if ( preg_match('/2/', $tkey) ) { $sel=''; if ($ad[7] == '2') $sel=' selected'; echo ' <option value="2"' . $sel . '> - 2 -</option>'; }
-        if ( preg_match('/3/', $tkey) ) { $sel=''; if ($ad[7] == '3') $sel=' selected'; echo ' <option value="3"' . $sel . '> - 3 -</option>'; }
-        if ( preg_match('/4/', $tkey) ) { $sel=''; if ($ad[7] == '4') $sel=' selected'; echo ' <option value="4"' . $sel . '> - 4 -</option>'; }
-        if ( preg_match('/5/', $tkey) ) { $sel=''; if ($ad[7] == '5') $sel=' selected'; echo ' <option value="5"' . $sel . '> - 5 -</option>'; }
-        if ( preg_match('/6/', $tkey) ) { $sel=''; if ($ad[7] == '6') $sel=' selected'; echo ' <option value="6"' . $sel . '> - 6 -</option>'; }
-        if ( preg_match('/7/', $tkey) ) { $sel=''; if ($ad[7] == '7') $sel=' selected'; echo ' <option value="7"' . $sel . '> - 7 -</option>'; }
-        if ( preg_match('/8/', $tkey) ) { $sel=''; if ($ad[7] == '8') $sel=' selected'; echo ' <option value="8"' . $sel . '> - 8 -</option>'; }
-        if ( preg_match('/9/', $tkey) ) { $sel=''; if ($ad[7] == '9') $sel=' selected'; echo ' <option value="9"' . $sel . '> - 9 -</option>'; }
-        if ( preg_match('/\#/', $tkey) ) { $sel=''; if ($ad[7] == '#') $sel=' selected'; echo ' <option value="#"' . $sel . '> - # -</option>'; }
-        if ( preg_match('/\*/', $tkey) ) { $sel=''; if ($ad[7] == '*') $sel=' selected'; echo ' <option value="*"' . $sel . '> - * -</option>'; }
-        if ( preg_match('/i/', $tkey) ) { $sel=''; if ($ad[7] == 'i') $sel=' selected'; echo ' <option value="i"' . $sel . '> - Invalid -</option>'; }
+        if ( OSDpreg_match('/0/', $tkey) ) { $sel=''; if ($ad[7] == '0') $sel=' selected'; echo ' <option value="0"' . $sel . '> - 0 -</option>'; }
+        if ( OSDpreg_match('/1/', $tkey) ) { $sel=''; if ($ad[7] == '1') $sel=' selected'; echo ' <option value="1"' . $sel . '> - 1 -</option>'; }
+        if ( OSDpreg_match('/2/', $tkey) ) { $sel=''; if ($ad[7] == '2') $sel=' selected'; echo ' <option value="2"' . $sel . '> - 2 -</option>'; }
+        if ( OSDpreg_match('/3/', $tkey) ) { $sel=''; if ($ad[7] == '3') $sel=' selected'; echo ' <option value="3"' . $sel . '> - 3 -</option>'; }
+        if ( OSDpreg_match('/4/', $tkey) ) { $sel=''; if ($ad[7] == '4') $sel=' selected'; echo ' <option value="4"' . $sel . '> - 4 -</option>'; }
+        if ( OSDpreg_match('/5/', $tkey) ) { $sel=''; if ($ad[7] == '5') $sel=' selected'; echo ' <option value="5"' . $sel . '> - 5 -</option>'; }
+        if ( OSDpreg_match('/6/', $tkey) ) { $sel=''; if ($ad[7] == '6') $sel=' selected'; echo ' <option value="6"' . $sel . '> - 6 -</option>'; }
+        if ( OSDpreg_match('/7/', $tkey) ) { $sel=''; if ($ad[7] == '7') $sel=' selected'; echo ' <option value="7"' . $sel . '> - 7 -</option>'; }
+        if ( OSDpreg_match('/8/', $tkey) ) { $sel=''; if ($ad[7] == '8') $sel=' selected'; echo ' <option value="8"' . $sel . '> - 8 -</option>'; }
+        if ( OSDpreg_match('/9/', $tkey) ) { $sel=''; if ($ad[7] == '9') $sel=' selected'; echo ' <option value="9"' . $sel . '> - 9 -</option>'; }
+        if ( OSDpreg_match('/\#/', $tkey) ) { $sel=''; if ($ad[7] == '#') $sel=' selected'; echo ' <option value="#"' . $sel . '> - # -</option>'; }
+        if ( OSDpreg_match('/\*/', $tkey) ) { $sel=''; if ($ad[7] == '*') $sel=' selected'; echo ' <option value="*"' . $sel . '> - * -</option>'; }
+        if ( OSDpreg_match('/i/', $tkey) ) { $sel=''; if ($ad[7] == 'i') $sel=' selected'; echo ' <option value="i"' . $sel . '> - Invalid -</option>'; }
         echo '         </select>';
         echo '      </td>';
         echo "  </tr>\n";
@@ -1220,8 +1234,8 @@ if ($ADD == "3keys") {
         echo "          <td>AGENT</td>\n";
         echo "          <td>EXTENSION</td>\n";
         echo "        </tr>\n";
-        $camppre=''; if ($LOG['multicomp']) $camppre = substr($campaign_id,0,3);
-        $agents = get_krh($link, 'osdial_users', 'user,full_name','',sprintf("user_level>3 AND xfer_agent2agent='1' AND user LIKE '%s%%'",$camppre),'');
+        $camppre=''; if ($LOG['multicomp']) $camppre = OSDsubstr($campaign_id,0,3);
+        $agents = get_krh($link, 'osdial_users', 'user,full_name','',sprintf("user_level>3 AND xfer_agent2agent='1' AND user LIKE '%s%%'",mres($camppre)),'');
         foreach ($agents as $agent) {
             echo "        <tr>\n";
             $achk=''; if (isset($asel[$agent['user']])) $achk='checked';
@@ -1314,7 +1328,8 @@ if ($ADD == "3keys") {
         echo "  <tr>\n";
         echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
-        echo media_file_text_options($link, 'oi1', $ad[0], 20, 50);
+        echo ivr_file_text_options($link, 'oi1', $ad[0], 20, 50);
+        #echo media_file_text_options($link, 'oi1', $ad[0], 20, 50);
     	#echo '          <select name="oi1">';
         #echo media_file_select_options($link,$ad[0]);
     	#echo "          </select><br>";
@@ -1380,7 +1395,8 @@ if ($ADD == "3keys") {
         echo "  <tr>\n";
         echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
-        echo media_file_text_options($link, 'oi1', $ad[0], 20, 50);
+        echo ivr_file_text_options($link, 'oi1', $ad[0], 20, 50);
+        #echo media_file_text_options($link, 'oi1', $ad[0], 20, 50);
     	#echo '          <select name="oi1">';
         #echo media_file_select_options($link,$ad[0]);
     	#echo "          </select><br>";
@@ -1414,7 +1430,8 @@ if ($ADD == "3keys") {
         echo "  <tr>\n";
         echo "      <td bgcolor=$oddrows align=right>File to Play Before Transfer (Optional)</td>\n";
     	echo '      <td bgcolor="' . $oddrows . '">';
-        echo media_file_text_options($link, 'oi1', $ad[0], 20, 50);
+        echo ivr_file_text_options($link, 'oi1', $ad[0], 20, 50);
+        #echo media_file_text_options($link, 'oi1', $ad[0], 20, 50);
     	#echo '          <select name="oi1">';
         #echo media_file_select_options($link,$ad[0]);
     	#echo "          </select><br>";
@@ -1479,7 +1496,7 @@ if ($ADD == "3keys") {
         echo "      <td align=center>DISPOSITION</td>\n";
         echo "      <td align=center colspan=2>ACTIONS</td>\n";
         echo "  </tr>\n";
-        $oivr_opts = get_krh($link, 'osdial_ivr_options', '*', 'keypress', "ivr_id='" . $oivr['id'] . "' AND parent_id='$oivr_opt_id'",'');
+        $oivr_opts = get_krh($link, 'osdial_ivr_options', '*', 'keypress', sprintf("ivr_id='%s' AND parent_id='%s'",mres($oivr['id']),mres($oivr_opt_id)),'');
         $cnt = 0;
         foreach ($oivr_opts as $opt) {
             $ad  = explode('#:#',$opt['action_data']);
@@ -1495,7 +1512,7 @@ if ($ADD == "3keys") {
             echo "      <td align=center>" . $kplabel . "</td>";
             echo "      <td align=center>" . $opt['action'] . "</td>";
             echo "      <td align=center>" . $ad[1] . "</td>";
-            if (preg_match('/A/',$opt['keypress'])) {
+            if (OSDpreg_match('/A/',$opt['keypress'])) {
                 echo "      <td align=center class=tabbutton1 colspan=2><input type=submit value=\"Edit\"></td>\n";
             } else {
                 echo "      <td align=center><a href=$PHP_SELF?ADD=6keys&campaign_id=" . $campaign_id . "&oivr_id=" . $oivr['id'] . "&oivr_opt_id=" . $opt['id'] . ">DELETE</a></td>\n";
@@ -1514,24 +1531,24 @@ if ($ADD == "3keys") {
         echo "      <td align=center class=tabinput>\n";
         echo "        <select name=\"oivr_opt_keypress\">\n";
         echo "          <option value=\"\" selected> - SELECT DIGIT -</option>\n";
-        $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',"ivr_id='" . $oivr['id'] . "' AND parent_id='" . $oivr_opt_id . "'",'');
+        $keys = get_krh($link, 'osdial_ivr_options', 'keypress','',sprintf("ivr_id='%s' AND parent_id='%s'",mres($oivr['id']),mres($oivr_opt_id)),'');
         $tkey = '';
         foreach ($keys as $key) {
             $tkey .= $key['keypress'];
         }
-        if ( ! preg_match('/0/', $tkey) ) { echo ' <option value="0"> - 0 -</option>'; }
-        if ( ! preg_match('/1/', $tkey) ) { echo ' <option value="1"> - 1 -</option>'; }
-        if ( ! preg_match('/2/', $tkey) ) { echo ' <option value="2"> - 2 -</option>'; }
-        if ( ! preg_match('/3/', $tkey) ) { echo ' <option value="3"> - 3 -</option>'; }
-        if ( ! preg_match('/4/', $tkey) ) { echo ' <option value="4"> - 4 -</option>'; }
-        if ( ! preg_match('/5/', $tkey) ) { echo ' <option value="5"> - 5 -</option>'; }
-        if ( ! preg_match('/6/', $tkey) ) { echo ' <option value="6"> - 6 -</option>'; }
-        if ( ! preg_match('/7/', $tkey) ) { echo ' <option value="7"> - 7 -</option>'; }
-        if ( ! preg_match('/8/', $tkey) ) { echo ' <option value="8"> - 8 -</option>'; }
-        if ( ! preg_match('/9/', $tkey) ) { echo ' <option value="9"> - 9 -</option>'; }
-        if ( ! preg_match('/\#/', $tkey) ) { echo ' <option value="#"> - # -</option>'; }
-        if ( ! preg_match('/\*/', $tkey) ) { echo ' <option value="*"> - * -</option>'; }
-        if ( ! preg_match('/i/', $tkey) ) { echo ' <option value="i"> - Invalid -</option>'; }
+        if ( ! OSDpreg_match('/0/', $tkey) ) { echo ' <option value="0"> - 0 -</option>'; }
+        if ( ! OSDpreg_match('/1/', $tkey) ) { echo ' <option value="1"> - 1 -</option>'; }
+        if ( ! OSDpreg_match('/2/', $tkey) ) { echo ' <option value="2"> - 2 -</option>'; }
+        if ( ! OSDpreg_match('/3/', $tkey) ) { echo ' <option value="3"> - 3 -</option>'; }
+        if ( ! OSDpreg_match('/4/', $tkey) ) { echo ' <option value="4"> - 4 -</option>'; }
+        if ( ! OSDpreg_match('/5/', $tkey) ) { echo ' <option value="5"> - 5 -</option>'; }
+        if ( ! OSDpreg_match('/6/', $tkey) ) { echo ' <option value="6"> - 6 -</option>'; }
+        if ( ! OSDpreg_match('/7/', $tkey) ) { echo ' <option value="7"> - 7 -</option>'; }
+        if ( ! OSDpreg_match('/8/', $tkey) ) { echo ' <option value="8"> - 8 -</option>'; }
+        if ( ! OSDpreg_match('/9/', $tkey) ) { echo ' <option value="9"> - 9 -</option>'; }
+        if ( ! OSDpreg_match('/\#/', $tkey) ) { echo ' <option value="#"> - # -</option>'; }
+        if ( ! OSDpreg_match('/\*/', $tkey) ) { echo ' <option value="*"> - * -</option>'; }
+        if ( ! OSDpreg_match('/i/', $tkey) ) { echo ' <option value="i"> - Invalid -</option>'; }
         echo "      </select>\n";
         echo "    </td>\n";
         echo "    <td align=center class=tabinput>\n";

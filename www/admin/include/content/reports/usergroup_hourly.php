@@ -45,7 +45,7 @@ function report_usergroup_hourly() {
 
     if ($date_with_hour == "") {$date_with_hour = $date_with_hour_default;}
     $date_no_hour = $date_with_hour;
-    $date_no_hour = preg_replace("/ ([0-9]{2})/",'',$date_no_hour);
+    $date_no_hour = OSDpreg_replace("/ ([0-9]{2})/",'',$date_no_hour);
     if ($status == "") {$status = 'SALE';}
 
     $statcats = Array();
@@ -130,19 +130,19 @@ function report_usergroup_hourly() {
 
         $o=0;
         while($o < $tsrs_to_print) {
-            $stmt=sprintf("SELECT count(*) FROM osdial_log WHERE call_date>='%s:00:00' AND call_date<='%s:59:59' AND user='%s';",mres($date_with_hour),mres($date_with_hour),$VDuser[$o]);
+            $stmt=sprintf("SELECT count(*) FROM osdial_log WHERE call_date>='%s:00:00' AND call_date<='%s:59:59' AND user='%s';",mres($date_with_hour),mres($date_with_hour),mres($VDuser[$o]));
             if ($DB) {$html .= "$stmt\n";}
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
             $VDtotal[$o] = "$row[0]";
 
-            $stmt=sprintf("SELECT count(*) FROM osdial_log WHERE call_date>='%s 00:00:00' AND call_date<='%s 23:59:59' AND user='%s' AND status IN (%s);",mres($date_no_hour),mres($date_no_hour),$VDuser[$o],$statcats[$status]);
+            $stmt=sprintf("SELECT count(*) FROM osdial_log WHERE call_date>='%s 00:00:00' AND call_date<='%s 23:59:59' AND user='%s' AND status IN (%s);",mres($date_no_hour),mres($date_no_hour),mres($VDuser[$o]),$statcats[$status]);
             if ($DB) {$html .= "$stmt\n";}
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
             $VDday[$o] = "$row[0]";
 
-            $stmt=sprintf("SELECT count(*) FROM osdial_log WHERE call_date>='%s:00:00' AND call_date<='%s:59:59' AND user='%s' AND status IN (%s);",mres($date_with_hour),mres($date_with_hour),$VDuser[$o],$statcats[$status]);
+            $stmt=sprintf("SELECT count(*) FROM osdial_log WHERE call_date>='%s:00:00' AND call_date<='%s:59:59' AND user='%s' AND status IN (%s);",mres($date_with_hour),mres($date_with_hour),mres($VDuser[$o]),$statcats[$status]);
             if ($DB) {$html .= "$stmt\n";}
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
@@ -150,7 +150,7 @@ function report_usergroup_hourly() {
             $o++;
         }
 
-        $html .= "  <center><a href=\"./admin.php?ADD=311111&user_group=$group\">" . strtoupper(mclabel($group)) . "</a></center>\n";
+        $html .= "  <center><a href=\"./admin.php?ADD=311111&user_group=$group\">" . OSDstrtoupper(mclabel($group)) . "</a></center>\n";
         $html .= "  <table bgcolor=grey align=center width=600 cellspacing=1 cellpadding=0>\n";
         $html .= "    <tr class=tabheader>\n";
         $html .= "      <td colspan=2></td>\n";

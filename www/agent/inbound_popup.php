@@ -50,7 +50,7 @@
 # 60619-1205 - Added variable filters to close security holes for login form
 #
 
-require("dbconnect.php");
+require_once("dbconnect.php");
 
 ### If you have globals turned off uncomment these lines
 if (isset($_GET["user"]))					{$user=$_GET["user"];}

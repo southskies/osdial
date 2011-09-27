@@ -60,7 +60,7 @@ if ($ADD=="11comp") {
 
 if ($ADD=="21comp") {
     if ($LOG['multicomp_admin'] > 0) {
-        if (strlen($company_name) < 3) {
+        if (OSDstrlen($company_name) < 3) {
             echo "<br><font color=red>COMPANY NOT ADDED - Please go back and look at the data you entered</font>\n";
         } else {
             echo "<br><font color=$default_text>COMAPNY ADDED</font>\n";
@@ -134,7 +134,7 @@ if ($ADD=="21comp") {
 ######################
 if ($ADD=="41comp") {
     if ($LOG['multicomp_admin']>0) {
-        if (strlen($company_name) < 3) {
+        if (OSDstrlen($company_name) < 3) {
             echo "<br><font color=$default_text>COMPANY NOT MODIFIED - Please go back and look at the data you entered</font>\n";
         } else {
             echo "<br><font color=$default_text>COMPANY MODIFIED: $company_id : $company_name</font>\n";
@@ -171,7 +171,7 @@ if ($ADD=="51comp") {
 ######################
 if ($ADD=="61comp") {
     if ($LOG['multicomp_admin']>0) {
-        $stmt="DELETE from osdial_companies where id='$company_id' limit 1;";
+        $stmt=sprintf("DELETE FROM osdial_companies WHERE id='%s' LIMIT 1;",mres($company_id));
         $rslt=mysql_query($stmt, $link);
 
         ### LOG CHANGES TO LOG FILE ###

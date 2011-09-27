@@ -51,6 +51,8 @@
 # 60715-2301 - changed to use /etc/osdial.conf for configs
 #
 
+$|++;
+
 # constants
 $DB=0;  # Debug flag, set to 0 for no debug messages per minute
 $US='__';
@@ -134,7 +136,9 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 
 use Time::HiRes ('gettimeofday','usleep','sleep');  # necessary to have perl sleep command of less than one second
 use DBI;
+use OSDial;
 use Net::Telnet ();
+my $osdial = OSDial->new('DB'=>$DB);
 	  
  $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
  or die "Couldn't connect to database: " . DBI->errstr;
@@ -247,7 +251,7 @@ foreach(@PTextensions)
 		}
 	else
 		{
-		$stmtA = "UPDATE phones set messages='$NEW_messages[$i]', old_messages='$OLD_messages[$i]' where server_ip='$server_ip' and extension='$PTextensions[$i]'";
+		$stmtA = "UPDATE phones set messages='$NEW_messages[$i]', old_messages='$OLD_messages[$i]' where server_ip='$server_ip' and extension='" . $osdial->mres($PTextensions[$i]) . "'";
 			if($DB){print STDERR "\n|$stmtA|\n";}
 		$affected_rows = $dbhA->do($stmtA); #  or die  "Couldn't execute query:|$stmtA|\n";
 		}

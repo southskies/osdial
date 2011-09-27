@@ -27,7 +27,7 @@
 ######################
 
 if ($ADD=="1") {
-    if ($LOGmodify_users==1) {
+    if ($LOG['modify_users']==1) {
         echo "<center><br><font color=$default_text size=+1>ADD A NEW AGENT<form action=$PHP_SELF method=POST></font><br><br>\n";
         echo "<input type=hidden name=ADD value=2>\n";
         echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -47,10 +47,10 @@ if ($ADD=="1") {
         echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=20 maxlength=100>$NWB#osdial_users-full_name$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level>";
         $h=0;
-	    if ($LOGuser_level==9) {
-            $levelMAX=$LOGuser_level;
+	    if ($LOG['user_level']==9) {
+            $levelMAX=$LOG['user_level'];
         } else {
-            $levelMAX=($LOGuser_level-1);
+            $levelMAX=($LOG['user_level']-1);
         }
         while ($h<=$levelMAX) {
             echo "<option value=$h>";
@@ -84,7 +84,7 @@ if ($ADD=="1") {
         while ($Ugroups_to_print > $o) {
             $rowx=mysql_fetch_row($rslt);
             $sel='';
-            if (preg_match('/AGENTS$/',$rowx[0]) and $gotsel==0) {
+            if (OSDpreg_match('/AGENTS$/',$rowx[0]) and $gotsel==0) {
                 $sel='selected';
                 $gotsel++;
             }
@@ -111,7 +111,7 @@ if ($ADD=="1") {
 
 if ($ADD=="1A")
 {
-	if ($LOGmodify_users==1)
+	if ($LOG['modify_users']==1)
 	{
 	echo "<center><br><font color=$default_text size=+1>COPY AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2A>\n";
@@ -131,15 +131,15 @@ if ($ADD=="1A")
 	echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=pass size=20 maxlength=10>$NWB#osdial_users-pass$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=20 maxlength=100>$NWB#osdial_users-full_name$NWE</td></tr>\n";
 
-	if ($LOGuser_level==9) {
-        $levelMAX=$LOGuser_level;
+	if ($LOG['user_level']==9) {
+        $levelMAX=$LOG['user_level'];
     } else {
-        $levelMAX=($LOGuser_level-1);
+        $levelMAX=($LOG['user_level']-1);
     }
 
 	echo "<tr bgcolor=$oddrows><td align=right>Source Agent: </td><td align=left><select size=1 name=source_user_id>\n";
 
-		$stmt = sprintf("SELECT user,full_name FROM osdial_users WHERE user_level <= $levelMAX AND user NOT IN ('PBX-OUT','PBX-IN') AND user_group IN %s ORDER BY full_name;", $LOG['allowed_usergroupsSQL']);
+		$stmt = sprintf("SELECT user,full_name FROM osdial_users WHERE user_level<='%s' AND user NOT IN ('PBX-OUT','PBX-IN') AND user_group IN %s ORDER BY full_name;",mres($levelMAX),$LOG['allowed_usergroupsSQL']);
 		$rslt=mysql_query($stmt, $link);
 		$Uusers_to_print = mysql_num_rows($rslt);
 		$Uusers_list='';
@@ -169,14 +169,14 @@ if ($ADD=="2")
 {
     $preuser = $user;
     if ($LOG['multicomp'] > 0) $preuser = (($company_id * 1) + 100) . $user;
-	$stmt="SELECT count(*) from osdial_users where user='$preuser';";
+	$stmt=sprintf("SELECT count(*) FROM osdial_users WHERE user='%s';",mres($preuser));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
 		{echo "<br><font color=red> AGENT NOT ADDED - there is already a user in the system with this user number</font>\n";}
 	else
 		{
-		 if ( (strlen($user) < 2) or (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user) > 15) )
+		 if ( (OSDstrlen($user) < 2) or (OSDstrlen($pass) < 2) or (OSDstrlen($full_name) < 2) or (OSDstrlen($user) > 15) )
 			{
 			 echo "<br><font color=red> AGENT NOT ADDED - Please go back and look at the data you entered\n";
 			 echo "<br>user id must be between 2 and 15 characters long\n";
@@ -187,7 +187,7 @@ if ($ADD=="2")
 			echo "<br><B>AGENT ADDED: $user</B>\n";
 
             if ($LOG['multicomp'] > 0) $user = (($company_id * 1) + 100) . $user;
-			$stmt="INSERT INTO osdial_users (user,pass,full_name,user_level,user_group,phone_login,phone_pass) values('$user','$pass','$full_name','$user_level','$user_group','$phone_login','$phone_pass');";
+			$stmt=sprintf("INSERT INTO osdial_users (user,pass,full_name,user_level,user_group,phone_login,phone_pass) VALUES('%s','%s','%s','%s','%s','%s','%s');",mres($user),mres($pass),mres($full_name),mres($user_level),mres($user_group),mres($phone_login),mres($phone_pass));
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -211,29 +211,29 @@ if ($ADD=="2A")
 {
     $preuser = $user;
     if ($LOG['multicomp'] > 0) $preuser = (($company_id * 1) + 100) . $user;
-	$stmt="SELECT count(*) from osdial_users where user='$preuser';";
+	$stmt=sprintf("SELECT count(*) FROM osdial_users WHERE user='$preuser';",mres($preuser));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
 		{echo "<br><font color=red> AGENT NOT ADDED - there is already a user in the system with this user number</font>\n";}
 	else
 		{
-		 if ( (strlen($user) < 2) or (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user) > 15) )
+		 if ( (OSDstrlen($user) < 2) or (OSDstrlen($pass) < 2) or (OSDstrlen($full_name) < 2) or (OSDstrlen($user) > 15) )
 			{
 			 echo "<br><font color=red> AGENT NOT ADDED - Please go back and look at the data you entered\n";
-			 echo "<br>user id must be between 2 and 15 characters long : " . strlen($user) . " : " . strlen($pass) . "\n";
-			 echo "<br>full name and password must be at least 2 characters long : " . strlen($full_name) . "</font><br>\n";
+			 echo "<br>user id must be between 2 and 15 characters long : " . OSDstrlen($user) . " : " . OSDstrlen($pass) . "\n";
+			 echo "<br>full name and password must be at least 2 characters long : " . OSDstrlen($full_name) . "</font><br>\n";
 			}
 		 else
 			{
             if ($LOG['multicomp'] > 0) $user = (($company_id * 1) + 100) . $user;
-			$stmt="INSERT INTO osdial_users (user,pass,full_name,user_level,user_group,phone_login,phone_pass,delete_users,delete_user_groups,delete_lists,delete_campaigns,delete_ingroups,delete_remote_agents,load_leads,campaign_detail,ast_admin_access,ast_delete_phones,delete_scripts,modify_leads,hotkeys_active,change_agent_campaign,agent_choose_ingroups,closer_campaigns,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,delete_filters,alter_agent_interface_options,closer_default_blended,delete_call_times,modify_call_times,modify_users,modify_campaigns,modify_lists,modify_scripts,modify_filters,modify_ingroups,modify_usergroups,modify_remoteagents,modify_servers,view_reports,osdial_recording_override,alter_custdata_override,manual_dial_allow_skip,export_leads,admin_api_access,agent_api_access,xfer_agent2agent,script_override,load_dnc,export_dnc,delete_dnc) SELECT \"$user\",\"$pass\",\"$full_name\",user_level,user_group,phone_login,phone_pass,delete_users,delete_user_groups,delete_lists,delete_campaigns,delete_ingroups,delete_remote_agents,load_leads,campaign_detail,ast_admin_access,ast_delete_phones,delete_scripts,modify_leads,hotkeys_active,change_agent_campaign,agent_choose_ingroups,closer_campaigns,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,delete_filters,alter_agent_interface_options,closer_default_blended,delete_call_times,modify_call_times,modify_users,modify_campaigns,modify_lists,modify_scripts,modify_filters,modify_ingroups,modify_usergroups,modify_remoteagents,modify_servers,view_reports,osdial_recording_override,alter_custdata_override,manual_dial_allow_skip,export_leads,admin_api_access,agent_api_access,xfer_agent2agent,script_override,load_dnc,export_dnc,delete_dnc from osdial_users where user=\"$source_user_id\";";
+			$stmt=sprintf("INSERT INTO osdial_users (user,pass,full_name,user_level,user_group,phone_login,phone_pass,delete_users,delete_user_groups,delete_lists,delete_campaigns,delete_ingroups,delete_remote_agents,load_leads,campaign_detail,ast_admin_access,ast_delete_phones,delete_scripts,modify_leads,hotkeys_active,change_agent_campaign,agent_choose_ingroups,closer_campaigns,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,delete_filters,alter_agent_interface_options,closer_default_blended,delete_call_times,modify_call_times,modify_users,modify_campaigns,modify_lists,modify_scripts,modify_filters,modify_ingroups,modify_usergroups,modify_remoteagents,modify_servers,view_reports,osdial_recording_override,alter_custdata_override,manual_dial_allow_skip,export_leads,admin_api_access,agent_api_access,xfer_agent2agent,script_override,load_dnc,export_dnc,delete_dnc) SELECT '%s','%s','%s',user_level,user_group,phone_login,phone_pass,delete_users,delete_user_groups,delete_lists,delete_campaigns,delete_ingroups,delete_remote_agents,load_leads,campaign_detail,ast_admin_access,ast_delete_phones,delete_scripts,modify_leads,hotkeys_active,change_agent_campaign,agent_choose_ingroups,closer_campaigns,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,delete_filters,alter_agent_interface_options,closer_default_blended,delete_call_times,modify_call_times,modify_users,modify_campaigns,modify_lists,modify_scripts,modify_filters,modify_ingroups,modify_usergroups,modify_remoteagents,modify_servers,view_reports,osdial_recording_override,alter_custdata_override,manual_dial_allow_skip,export_leads,admin_api_access,agent_api_access,xfer_agent2agent,script_override,load_dnc,export_dnc,delete_dnc FROM osdial_users WHERE user='%s';",mres($user),mres($pass),mres($full_name),mres($source_user_id));
 			$rslt=mysql_query($stmt, $link);
 
-			$stmtA="INSERT INTO osdial_inbound_group_agents (user,group_id,group_rank,group_weight,calls_today,allow_multicall) SELECT \"$user\",group_id,group_rank,group_weight,\"0\",\"Y\" from osdial_inbound_group_agents where user=\"$source_user_id\";";
+			$stmtA=sprintf("INSERT INTO osdial_inbound_group_agents (user,group_id,group_rank,group_weight,calls_today,allow_multicall) SELECT '%s',group_id,group_rank,group_weight,'0','Y' FROM osdial_inbound_group_agents WHERE user='%s';",mres($user),mres($source_user_id));
 			$rslt=mysql_query($stmtA, $link);
 
-			$stmtA="INSERT INTO osdial_campaign_agents (user,campaign_id,campaign_rank,campaign_weight,calls_today) SELECT \"$user\",campaign_id,campaign_rank,campaign_weight,\"0\" from osdial_campaign_agents where user=\"$source_user_id\";";
+			$stmtA=sprintf("INSERT INTO osdial_campaign_agents (user,campaign_id,campaign_rank,campaign_weight,calls_today) SELECT '%s',campaign_id,campaign_rank,campaign_weight,'0' from osdial_campaign_agents where user='%s';",mres($user),mres($source_user_id));
 			$rslt=mysql_query($stmtA, $link);
 
 			echo "<br><B><font color=$default_text> AGENT COPIED: $user copied from $source_user_id</font></B>\n";
@@ -256,8 +256,8 @@ if ($ADD=="2A")
 ######################
 
 if ($ADD=="4A") {
-    if ($LOGmodify_users==1) {
-        if ( (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user_level) < 1) ) {
+    if ($LOG['modify_users']==1) {
+        if ( (OSDstrlen($pass) < 2) or (OSDstrlen($full_name) < 2) or (OSDstrlen($user_level) < 1) ) {
             echo "<br><font color=red>AGENT NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>Password and Full Name each need ot be at least 2 characters in length</font><br>\n";
         } else {
@@ -265,17 +265,17 @@ if ($ADD=="4A") {
 
             # Force inclusion through agent interface instead of adding into agents ingroups.
             #if ($xfer_agent2agent > 0) {
-            #    if (!preg_match('/A2A_' . $user . '/',$groups_value)) {
+            #    if (!OSDpreg_match('/A2A_' . $user . '/',$groups_value)) {
             #        $groups_value = " A2A_$user" . $groups_value;
             #    }
             #}
 
-            $stmt="UPDATE osdial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass',delete_users='$delete_users',delete_user_groups='$delete_user_groups',delete_lists='$delete_lists',delete_campaigns='$delete_campaigns',delete_ingroups='$delete_ingroups',delete_remote_agents='$delete_remote_agents',load_leads='$load_leads',campaign_detail='$campaign_detail',ast_admin_access='$ast_admin_access',ast_delete_phones='$ast_delete_phones',delete_scripts='$delete_scripts',modify_leads='$modify_leads',hotkeys_active='$hotkeys_active',change_agent_campaign='$change_agent_campaign',agent_choose_ingroups='$agent_choose_ingroups',closer_campaigns='$groups_value',scheduled_callbacks='$scheduled_callbacks',agentonly_callbacks='$agentonly_callbacks',agentcall_manual='$agentcall_manual',osdial_recording='$osdial_recording',osdial_transfers='$osdial_transfers',delete_filters='$delete_filters',alter_agent_interface_options='$alter_agent_interface_options',closer_default_blended='$closer_default_blended',delete_call_times='$delete_call_times',modify_call_times='$modify_call_times',modify_users='$modify_users',modify_campaigns='$modify_campaigns',modify_lists='$modify_lists',modify_scripts='$modify_scripts',modify_filters='$modify_filters',modify_ingroups='$modify_ingroups',modify_usergroups='$modify_usergroups',modify_remoteagents='$modify_remoteagents',modify_servers='$modify_servers',view_reports='$view_reports',osdial_recording_override='$osdial_recording_override',alter_custdata_override='$alter_custdata_override',manual_dial_allow_skip='$manual_dial_allow_skip',export_leads='$export_leads',admin_api_access='$admin_api_access',agent_api_access='$agent_api_access',xfer_agent2agent='$xfer_agent2agent',script_override='$script_override',load_dnc='$load_dnc',export_dnc='$export_dnc',delete_dnc='$delete_dnc' where user='$user';";
+            $stmt=sprintf("UPDATE osdial_users SET pass='%s',full_name='%s',user_level='%s',user_group='%s',phone_login='%s',phone_pass='%s',delete_users='%s',delete_user_groups='%s',delete_lists='%s',delete_campaigns='%s',delete_ingroups='%s',delete_remote_agents='%s',load_leads='%s',campaign_detail='%s',ast_admin_access='%s',ast_delete_phones='%s',delete_scripts='%s',modify_leads='%s',hotkeys_active='%s',change_agent_campaign='%s',agent_choose_ingroups='%s',closer_campaigns='%s',scheduled_callbacks='%s',agentonly_callbacks='%s',agentcall_manual='%s',osdial_recording='%s',osdial_transfers='%s',delete_filters='%s',alter_agent_interface_options='%s',closer_default_blended='%s',delete_call_times='%s',modify_call_times='%s',modify_users='%s',modify_campaigns='%s',modify_lists='%s',modify_scripts='%s',modify_filters='%s',modify_ingroups='%s',modify_usergroups='%s',modify_remoteagents='%s',modify_servers='%s',view_reports='%s',osdial_recording_override='%s',alter_custdata_override='%s',manual_dial_allow_skip='%s',export_leads='%s',admin_api_access='%s',agent_api_access='%s',xfer_agent2agent='%s',script_override='%s',load_dnc='%s',export_dnc='%s',delete_dnc='%s' WHERE user='%s';",mres($pass),mres($full_name),mres($user_level),mres($user_group),mres($phone_login),mres($phone_pass),mres($delete_users),mres($delete_user_groups),mres($delete_lists),mres($delete_campaigns),mres($delete_ingroups),mres($delete_remote_agents),mres($load_leads),mres($campaign_detail),mres($ast_admin_access),mres($ast_delete_phones),mres($delete_scripts),mres($modify_leads),mres($hotkeys_active),mres($change_agent_campaign),mres($agent_choose_ingroups),mres($groups_value),mres($scheduled_callbacks),mres($agentonly_callbacks),mres($agentcall_manual),mres($osdial_recording),mres($osdial_transfers),mres($delete_filters),mres($alter_agent_interface_options),mres($closer_default_blended),mres($delete_call_times),mres($modify_call_times),mres($modify_users),mres($modify_campaigns),mres($modify_lists),mres($modify_scripts),mres($modify_filters),mres($modify_ingroups),mres($modify_usergroups),mres($modify_remoteagents),mres($modify_servers),mres($view_reports),mres($osdial_recording_override),mres($alter_custdata_override),mres($manual_dial_allow_skip),mres($export_leads),mres($admin_api_access),mres($agent_api_access),mres($xfer_agent2agent),mres($script_override),mres($load_dnc),mres($export_dnc),mres($delete_dnc),mres($user));
             $rslt=mysql_query($stmt, $link);
 
             $user_level=($user_level*1);
             if ($user_level==0) {
-                $stmt="UPDATE osdial_callbacks SET recipient='ANYONE' WHERE user='$user' AND status='LIVE';";
+                $stmt=sprintf("UPDATE osdial_callbacks SET recipient='ANYONE' WHERE user='%s' AND status='LIVE';",mres($user));
                 $rslt=mysql_query($stmt, $link);
             }
 
@@ -291,7 +291,7 @@ if ($ADD=="4A") {
                 $dialplan_number='8307';
                 $use_exten='Y';
                 if ($phone_login != '') {
-	                $stmt="SELECT voicemail_id,dialplan_number FROM phones WHERE login='$phone_login';";
+	                $stmt=sprintf("SELECT voicemail_id,dialplan_number FROM phones WHERE login='%s';",mres($phone_login));
 	                $rslt=mysql_query($stmt, $link);
 	                $row=mysql_fetch_row($rslt);
                     $voicemail_id=$row[0];
@@ -299,18 +299,18 @@ if ($ADD=="4A") {
                 }
                 if ($voicemail_id != '') $use_exten='N';
 
-	            $stmt="SELECT count(*) FROM osdial_inbound_groups WHERE group_id='A2A_$user';";
+	            $stmt=sprintf("SELECT count(*) FROM osdial_inbound_groups WHERE group_id='A2A_%s';",mres($user));
 	            $rslt=mysql_query($stmt, $link);
 	            $row=mysql_fetch_row($rslt);
 
                 if ($row[0]==0) {
-                    $stmt="INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,drop_message,voicemail_ext,drop_exten,next_agent_call,fronter_display,drop_call_seconds,agent_alert_exten,allow_multicall) values('A2A_$user','Agent2Agent $user','pink','Y','$use_exten','$voicemail_id','$dialplan_number','oldest_call_finish','Y','600','X','Y');";
+                    $stmt=sprintf("INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,drop_message,voicemail_ext,drop_exten,next_agent_call,fronter_display,drop_call_seconds,agent_alert_exten,allow_multicall) VALUES('A2A_%s','Agent2Agent %s','pink','Y','%s','%s','%s','oldest_call_finish','Y','600','X','Y');",mres($user),mres($user),mres($use_exten),mres($voicemail_id),mres($dialplan_number));
                 } else {
-                    $stmt="UPDATE osdial_inbound_groups SET drop_message='$xfer_agent2agent_wait_action',drop_exten='$xfer_agent2agent_wait_extension',drop_trigger='$xfer_agent2agent_wait',drop_call_seconds='$xfer_agent2agent_wait_seconds',voicemail_ext='$voicemail_id',allow_multicall='$xfer_agent2agent_allow_multicall' WHERE group_id='A2A_$user';";
+                    $stmt=sprintf("UPDATE osdial_inbound_groups SET drop_message='%s',drop_exten='%s',drop_trigger='%s',drop_call_seconds='%s',voicemail_ext='%s',allow_multicall='%s' WHERE group_id='A2A_%s';",mres($xfer_agent2agent_wait_action),mres($xfer_agent2agent_wait_extension),mres($xfer_agent2agent_wait),mres($xfer_agent2agent_wait_seconds),mres($voicemail_id),mres($xfer_agent2agent_allow_multicall),mres($user));
                 }
 
             } else {
-                $stmt="DELETE FROM osdial_inbound_groups WHERE group_id='A2A_$user';";
+                $stmt=sprintf("DELETE FROM osdial_inbound_groups WHERE group_id='A2A_%s';",mres($user));
             }
             $rslt=mysql_query($stmt, $link);
         }
@@ -327,9 +327,9 @@ if ($ADD=="4A") {
 
 if ($ADD=="4B")
 {
-	if ($LOGmodify_users==1)
+	if ($LOG['modify_users']==1)
 	{
-	 if ( (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user_level) < 1) )
+	 if ( (OSDstrlen($pass) < 2) or (OSDstrlen($full_name) < 2) or (OSDstrlen($user_level) < 1) )
 		{
 		 echo "<br><font color=red>AGENT NOT MODIFIED - Please go back and look at the data you entered\n";
 		 echo "<br>Password and Full Name each need ot be at least 2 characters in length</font><br>\n";
@@ -338,11 +338,11 @@ if ($ADD=="4B")
 		{
 		echo "<br><B><font color=$default_text>AGENT MODIFIED - ADMIN: $user</font></B>\n";
 
-		$stmt="UPDATE osdial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass',hotkeys_active='$hotkeys_active',agent_choose_ingroups='$agent_choose_ingroups',closer_campaigns='$groups_value',scheduled_callbacks='$scheduled_callbacks',agentonly_callbacks='$agentonly_callbacks',agentcall_manual='$agentcall_manual',osdial_recording='$osdial_recording',osdial_transfers='$osdial_transfers',closer_default_blended='$closer_default_blended',osdial_recording_override='$osdial_recording_override',alter_custdata_override='$alter_custdata_override',manual_dial_allow_skip='$manual_dial_allow_skip' where user='$user';";
+		$stmt=sprintf("UPDATE osdial_users SET pass='%s',full_name='%s',user_level='%s',user_group='%s',phone_login='%s',phone_pass='%s',hotkeys_active='%s',agent_choose_ingroups='%s',closer_campaigns='%s',scheduled_callbacks='%s',agentonly_callbacks='%s',agentcall_manual='%s',osdial_recording='%s',osdial_transfers='%s',closer_default_blended='%s',osdial_recording_override='%s',alter_custdata_override='%s',manual_dial_allow_skip='%s' WHERE user='%s';",mres($pass),mres($full_name),mres($user_level),mres($user_group),mres($phone_login),mres($phone_pass),mres($hotkeys_active),mres($agent_choose_ingroups),mres($groups_value),mres($scheduled_callbacks),mres($agentonly_callbacks),mres($agentcall_manual),mres($osdial_recording),mres($osdial_transfers),mres($closer_default_blended),mres($osdial_recording_override),mres($alter_custdata_override),mres($manual_dial_allow_skip),mres($user));
 		$rslt=mysql_query($stmt, $link);
 
         if ($user_level==0) {
-            $stmt="UPDATE osdial_callbacks SET recipient='ANYONE' WHERE user='$user' AND status='LIVE';";
+            $stmt=sprintf("UPDATE osdial_callbacks SET recipient='ANYONE' WHERE user='%s' AND status='LIVE';",mres($user));
             $rslt=mysql_query($stmt, $link);
         }
 
@@ -370,9 +370,9 @@ $ADD=3;		# go to user modification below
 
 if ($ADD==4)
 {
-	if ($LOGmodify_users==1)
+	if ($LOG['modify_users']==1)
 	{
-	 if ( (strlen($pass) < 2) or (strlen($full_name) < 2) or (strlen($user_level) < 1) )
+	 if ( (OSDstrlen($pass) < 2) or (OSDstrlen($full_name) < 2) or (OSDstrlen($user_level) < 1) )
 		{
 		 echo "<br><font color=red>AGENT NOT MODIFIED - Please go back and look at the data you entered\n";
 		 echo "<br>Password and Full Name each need ot be at least 2 characters in length</font><br>\n";
@@ -381,11 +381,11 @@ if ($ADD==4)
 		{
 		echo "<br><B><font color=$default_text>AGENT MODIFIED: $user</font></B>\n";
 
-		$stmt="UPDATE osdial_users set pass='$pass',full_name='$full_name',user_level='$user_level',user_group='$user_group',phone_login='$phone_login',phone_pass='$phone_pass' where user='$user';";
+		$stmt=sprintf("UPDATE osdial_users SET pass='%s',full_name='%s',user_level='%s',user_group='%s',phone_login='%s',phone_pass='%s' WHERE user='%s';",mres($pass),mres($full_name),mres($user_level),mres($user_group),mres($phone_login),mres($phone_pass),mres($user));
 		$rslt=mysql_query($stmt, $link);
 
         if ($user_level==0) {
-            $stmt="UPDATE osdial_callbacks SET recipient='ANYONE' WHERE user='$user' AND status='LIVE';";
+            $stmt=sprintf("UPDATE osdial_callbacks SET recipient='ANYONE' WHERE user='%s' AND status='LIVE';",mres($user));
             $rslt=mysql_query($stmt, $link);
         }
 
@@ -412,7 +412,7 @@ $ADD=3;		# go to user modification below
 
 if ($ADD==5)
 {
-	 if ( (strlen($user) < 2) or ($LOGdelete_users < 1) )
+	 if ( (OSDstrlen($user) < 2) or ($LOG['delete_users'] < 1) )
 		{
 		 echo "<br><font color=red>AGENT NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Agent be at least 2 characters in length</font>\n";
@@ -432,23 +432,23 @@ $ADD='3';		# go to user modification below
 
 if ($ADD==6)
 {
-	 if ( ( strlen($user) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_users < 1) )
+	 if ( ( OSDstrlen($user) < 2) or ($CoNfIrM != 'YES') or ($LOG['delete_users'] < 1) )
 		{
 		 echo "<br><font color=red>AGENT NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Agent be at least 2 characters in length</font><br>\n";
 		}
 	 else
 		{
-		$stmtA="DELETE from osdial_users where user='$user' limit 1;";
+		$stmtA=sprintf("DELETE FROM osdial_users WHERE user='%s' LIMIT 1;",mres($user));
 		$rslt=mysql_query($stmtA, $link);
 
-		$stmt="DELETE from osdial_campaign_agents where user='$user';";
+		$stmt=sprintf("DELETE FROM osdial_campaign_agents WHERE user='%s';",mres($user));
 		$rslt=mysql_query($stmt, $link);
 
-		$stmt="DELETE from osdial_inbound_group_agents where user='$user';";
+		$stmt=sprintf("DELETE FROM osdial_inbound_group_agents WHERE user='%s';",mres($user));
 		$rslt=mysql_query($stmt, $link);
 
-        $stmt="UPDATE osdial_callbacks SET recipient='ANYONE' WHERE user='$user' AND status='LIVE';";
+        $stmt=sprintf("UPDATE osdial_callbacks SET recipient='ANYONE' WHERE user='%s' AND status='LIVE';",mres($user));
         $rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -471,9 +471,9 @@ $ADD='0';		# go to user list
 
 if ($ADD==3)
 {
-	if ($LOGmodify_users==1)
+	if ($LOG['modify_users']==1)
 	{
-	$stmt="SELECT * from osdial_users where user='$user';";
+	$stmt=sprintf("SELECT * FROM osdial_users WHERE user='%s';",mres($user));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$user_level =			$row[4];
@@ -527,24 +527,24 @@ if ($ADD==3)
 	$export_dnc = 	$row[54];
 	$delete_dnc = 	$row[55];
 
-	if ($LOGuser_level==9) {
-        $levelMAX=$LOGuser_level;
+	if ($LOG['user_level']==9) {
+        $levelMAX=$LOG['user_level'];
     } else {
-        $levelMAX=($LOGuser_level-1);
+        $levelMAX=($LOG['user_level']-1);
     }
 
-	if ( ($user_level > $levelMAX) and ($LOGuser_level < 9) and (!preg_match('/:/' . $user_group . ':', $LOG['allowed_usergroupsSTR'])) )
+	if ( ($user_level > $levelMAX) and ($LOG['user_level'] < 9) and (!OSDpreg_match('/:/' . $user_group . ':', $LOG['allowed_usergroupsSTR'])) )
 		{
 		echo "<br><font color=red>You do not have permissions to modify this user: $row[1]</font>\n";
 		}
 	else
 		{
 		echo "<center><br><font color=$default_text size=+1>MODIFY AN AGENT</font><form action=$PHP_SELF method=POST><br><br>\n";
-		if ($LOGuser_level > 8)
+		if ($LOG['user_level'] > 8)
 			{echo "<input type=hidden name=ADD value=4A>\n";}
 		else
 			{
-			if ($LOGalter_agent_interface_options == "1")
+			if ($LOG['alter_agent_interface_options'] == "1")
 				{echo "<input type=hidden name=ADD value=4B>\n";}
 			else
 				{echo "<input type=hidden name=ADD value=4>\n";}
@@ -553,10 +553,10 @@ if ($ADD==3)
 		echo "<TABLE width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Agent Number: </td><td align=left>\n";
         $pcomp='';
-        if ($LOG['multicomp']>0 and preg_match($LOG['companiesRE'],$row[1])) {
-            echo "<font color=$default_text>" . substr($row[1],0,3) . "</font>&nbsp;";
-            echo "<b>" . substr($row[1],3) . "</b>";
-            $pcomp = substr($row[1],0,3);
+        if ($LOG['multicomp']>0 and OSDpreg_match($LOG['companiesRE'],$row[1])) {
+            echo "<font color=$default_text>" . OSDsubstr($row[1],0,3) . "</font>&nbsp;";
+            echo "<b>" . OSDsubstr($row[1],3) . "</b>";
+            $pcomp = OSDsubstr($row[1],0,3);
         } else {
             echo "<b>$row[1]</b>";
         }
@@ -598,7 +598,7 @@ if ($ADD==3)
         } else {
 		    echo "<tr bgcolor=$oddrows><td align=right>Default Phone / Voicemail: </td><td align=left><select size=1 name=phone_login>\n";
         }
-        $krh = get_krh($link, 'phones', sprintf("login,fullname,IF((SELECT count(*) FROM osdial_users WHERE user!='%s' AND user LIKE '%s%%' AND phone_login=login)=1,'N','Y') AS active",$row[1],$pcomp), 'login', sprintf("login LIKE '%s%%'",$pcomp), '');
+        $krh = get_krh($link, 'phones', sprintf("login,fullname,IF((SELECT count(*) FROM osdial_users WHERE user!='%s' AND user LIKE '%s%%' AND phone_login=login)=1,'N','Y') AS active",mres($row[1]),mres($pcomp)), 'login', sprintf("login LIKE '%s%%'",mres($pcomp)), '');
         echo format_select_options($krh, 'login', 'fullname', $phone_login, ' -- ANY -- ', true); 
         echo "</select>$NWB#osdial_users-phone_login$NWE</td></tr>\n";
         #echo "<tr bgcolor=$oddrows><td align=right>Phone Login: </td><td align=left><input type=text name=phone_login size=20 maxlength=20 value=\"$phone_login\">$NWB#osdial_users-phone_login$NWE</td></tr>\n";
@@ -606,7 +606,7 @@ if ($ADD==3)
 
         echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 
-		if ( ($LOGuser_level > 8) or ($LOGalter_agent_interface_options == "1") )
+		if ( ($LOG['user_level'] > 8) or ($LOG['alter_agent_interface_options'] == "1") )
 			{
 			echo "<tr><td>&nbsp;</td></tr>";
 			echo "<tr class=\"tabheader font3\"><td colspan=2 align=center>AGENT INTERFACE OPTIONS</td></tr>\n";
@@ -649,7 +649,7 @@ if ($ADD==3)
             echo "  $NWB#osdial_users-xfer_agent2agent$NWE</td>\n";
             echo "</tr>\n";
             if ($xfer_agent2agent > 0) {
-		        $stmt = sprintf("SELECT drop_trigger,drop_call_seconds,drop_message,drop_exten,allow_multicall FROM osdial_inbound_groups WHERE group_id='A2A_%s';",$user);
+		        $stmt = sprintf("SELECT drop_trigger,drop_call_seconds,drop_message,drop_exten,allow_multicall FROM osdial_inbound_groups WHERE group_id='A2A_%s';",mres($user));
 		        $rslt=mysql_query($stmt, $link);
 			    $rowx=mysql_fetch_row($rslt);
                 $xfer_agent2agent_wait = $rowx[0];
@@ -707,7 +707,7 @@ if ($ADD==3)
 
 			echo "<tr class=tabfooter><td align=center class=tabbutton colspan=2><input type=submit name=SUBMIT value=SUBMIT></td></tr>\n";
 			}
-		if ($LOGuser_level > 8 && $user_level > 7)
+		if ($LOG['user_level'] > 8 && $user_level > 7)
 			{
 			echo "<tr><td>&nbsp;</td></tr>";
 			echo "<tr class=\"tabheader font3\"><td colspan=2 align=center>ADMIN INTERFACE OPTIONS</td></tr>\n";
@@ -851,7 +851,7 @@ if ($ADD==3)
 		#echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$row[1]\">Click here for user status</a>\n";
 		#echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=21&agent=$row[1]\">Click here for user stats</a>\n";
 		#echo "<br><br><a href=\"$PHP_SELF?ADD=8&user=$row[1]\">Click here for user CallBack Holds</a></center>\n";
-		if ($LOGdelete_users > 0)
+		if ($LOG['delete_users'] > 0)
 			{
 			echo "<br><br><a href=\"$PHP_SELF?ADD=5&user=$row[1]\">DELETE THIS AGENT</a>\n";
 			}
@@ -888,10 +888,10 @@ if ($ADD==550) {
     echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=full_name size=30 maxlength=30></td></tr>\n";
     echo "<tr bgcolor=$oddrows><td align=right>User Level: </td><td align=left><select size=1 name=user_level>";
     $h=0;
-	if ($LOGuser_level==9) {
-        $levelMAX=$LOGuser_level;
+	if ($LOG['user_level']==9) {
+        $levelMAX=$LOG['user_level'];
     } else {
-        $levelMAX=($LOGuser_level-1);
+        $levelMAX=($LOG['user_level']-1);
     }
     echo '<option value=""> -- ALL USER LEVELS -- </option>';
     while ($h<=$levelMAX) {
@@ -938,10 +938,10 @@ if ($ADD==550) {
 ######################
 
 if ($ADD==660) {
-	if ($LOGuser_level==9) {
-        $levelMAX=$LOGuser_level;
+	if ($LOG['user_level']==9) {
+        $levelMAX=$LOG['user_level'];
     } else {
-        $levelMAX=($LOGuser_level-1);
+        $levelMAX=($LOG['user_level']-1);
     }
 
     $preuser = $user;
@@ -1016,14 +1016,14 @@ if ($ADD==660) {
 # ADD=8 find all callbacks on hold by an Agent
 ######################
 if ($ADD==8) {
-	if ($LOGmodify_users==1) {
+	if ($LOG['modify_users']==1) {
 		if ($SUB==89) {
-		    $stmt="UPDATE osdial_callbacks SET status='INACTIVE' where user='$user' and status='LIVE' and callback_time < '$past_month_date';";
+		    $stmt=sprintf("UPDATE osdial_callbacks SET status='INACTIVE' WHERE user='%s' AND status='LIVE' AND callback_time<'%s';",mres($user),mres($past_month_date));
 		    $rslt=mysql_query($stmt, $link);
 		   echo "<br>Agent ($user) callback listings LIVE for more than one month have been made INACTIVE\n";
 		}
 		if ($SUB==899) {
-		    $stmt="UPDATE osdial_callbacks SET status='INACTIVE' where user='$user' and status='LIVE' and callback_time < '$past_week_date';";
+		    $stmt=sprintf("UPDATE osdial_callbacks SET status='INACTIVE' WHERE user='%s' AND status='LIVE' AND callback_time<'%s';",mres($user),mres($past_week_date));
 		    $rslt=mysql_query($stmt, $link);
 		    echo "<br>Agent ($user) callback listings LIVE for more than one week have been made INACTIVE\n";
 		}
@@ -1051,10 +1051,10 @@ $num = get_variable('num');
 $numSQL = '';
 if ($num != '') $numSQL = sprintf("AND (user LIKE '%s%s%%')",$LOG['company_prefix'],mres($num));
 
-	if ($LOGuser_level==9) {
-        $levelMAX=$LOGuser_level;
+	if ($LOG['user_level']==9) {
+        $levelMAX=$LOG['user_level'];
     } else {
-        $levelMAX=($LOGuser_level-1);
+        $levelMAX=($LOG['user_level']-1);
     }
 
 $level = get_variable('level');
@@ -1071,7 +1071,7 @@ $viewdisabledSQL = "AND user_level>'0'";
 if ($viewdisabled != '') $viewdisabledSQL = "";
 
 $mdn_user = get_variable('mdn_user');
-if ($SUB==1 and $mdn_user != "" and $LOGmodify_users > 0 and $LOGuser_level > 7) {
+if ($SUB==1 and $mdn_user != "" and $LOG['modify_users'] > 0 and $LOG['user_level'] > 7) {
     $mdn_limit = get_variable('mdn_limit');
     if ($mdn_limit == "" or $mdn_limit < 0)
         $mdn_limit = -1;
@@ -1084,16 +1084,16 @@ $NAMElink='stage=NAMEDOWN';
 $LEVELlink='stage=LEVELDOWN';
 $GROUPlink='stage=GROUPDOWN';
 $SQLorder='order by full_name';
-if (preg_match("/USERIDUP/",$stage)) {$SQLorder='order by user asc';   $USERlink='stage=USERIDDOWN';}
-if (preg_match("/USERIDDOWN/",$stage)) {$SQLorder='order by user desc';   $USERlink='stage=USERIDUP';}
-if (preg_match("/NAMEUP/",$stage)) {$SQLorder='order by full_name asc';   $NAMElink='stage=NAMEDOWN';}
-if (preg_match("/NAMEDOWN/",$stage)) {$SQLorder='order by full_name desc';   $NAMElink='stage=NAMEUP';}
-if (preg_match("/LEVELUP/",$stage)) {$SQLorder='order by user_level asc';   $LEVELlink='stage=LEVELDOWN';}
-if (preg_match("/LEVELDOWN/",$stage)) {$SQLorder='order by user_level desc';   $LEVELlink='stage=LEVELUP';}
-if (preg_match("/GROUPUP/",$stage)) {$SQLorder='order by user_group asc';   $GROUPlink='stage=GROUPDOWN';}
-if (preg_match("/GROUPDOWN/",$stage)) {$SQLorder='order by user_group desc';   $GROUPlink='stage=GROUPUP';}
+if (OSDpreg_match("/USERIDUP/",$stage)) {$SQLorder='order by user asc';   $USERlink='stage=USERIDDOWN';}
+if (OSDpreg_match("/USERIDDOWN/",$stage)) {$SQLorder='order by user desc';   $USERlink='stage=USERIDUP';}
+if (OSDpreg_match("/NAMEUP/",$stage)) {$SQLorder='order by full_name asc';   $NAMElink='stage=NAMEDOWN';}
+if (OSDpreg_match("/NAMEDOWN/",$stage)) {$SQLorder='order by full_name desc';   $NAMElink='stage=NAMEUP';}
+if (OSDpreg_match("/LEVELUP/",$stage)) {$SQLorder='order by user_level asc';   $LEVELlink='stage=LEVELDOWN';}
+if (OSDpreg_match("/LEVELDOWN/",$stage)) {$SQLorder='order by user_level desc';   $LEVELlink='stage=LEVELUP';}
+if (OSDpreg_match("/GROUPUP/",$stage)) {$SQLorder='order by user_group asc';   $GROUPlink='stage=GROUPDOWN';}
+if (OSDpreg_match("/GROUPDOWN/",$stage)) {$SQLorder='order by user_group desc';   $GROUPlink='stage=GROUPUP';}
     if ($LOG['multicomp'] > 0) {
-	    $stmt = sprintf("SELECT * from osdial_users WHERE user LIKE '%s__%%' AND user_group IN %s AND user NOT IN ('PBX-IN','PBX-OUT') %s %s %s %s %s %s", $LOG['company_prefix'],$LOG['allowed_usergroupsSQL'],$letSQL,$numSQL,$levelSQL,$groupSQL,$viewdisabledSQL,$SQLorder);
+	    $stmt = sprintf("SELECT * from osdial_users WHERE user LIKE '%s__%%' AND user_group IN %s AND user NOT IN ('PBX-IN','PBX-OUT') %s %s %s %s %s %s",mres($LOG['company_prefix']),$LOG['allowed_usergroupsSQL'],$letSQL,$numSQL,$levelSQL,$groupSQL,$viewdisabledSQL,$SQLorder);
     } else {
 	    $stmt = sprintf("SELECT * from osdial_users WHERE user_group IN %s AND user NOT IN ('PBX-IN','PBX-OUT') %s %s %s %s %s %s",$LOG['allowed_usergroupsSQL'],$letSQL,$numSQL,$levelSQL,$groupSQL,$viewdisabledSQL,$SQLorder);
     }
@@ -1153,15 +1153,15 @@ echo "  </tr>\n";
         if ($row[5] != "VIRTUAL") {
 		    echo "  <tr class=\"row font1\" " . bgcolor($o) . " ondblclick=\"window.location='$PHP_SELF?ADD=3&user=$row[1]';\">\n";
             echo "    <td><a href=\"$PHP_SELF?ADD=3&user=$row[1]\">";
-            if (($LOG['multicomp'] > 0 and preg_match($LOG['companiesRE'],$row[1])) or $LOG['multcomp_user'] > 0) {
-                echo substr($row[1],0,3) . "&nbsp;" . substr($row[1],3);;
+            if (($LOG['multicomp'] > 0 and OSDpreg_match($LOG['companiesRE'],$row[1])) or $LOG['multcomp_user'] > 0) {
+                echo OSDsubstr($row[1],0,3) . "&nbsp;" . OSDsubstr($row[1],3);;
             } else {
                 echo $row[1];
             }
             echo "</a></td>\n";
             echo "    <td>$row[3]</td>\n";
             if ($ADD==9) {
-	            $stmt2="SELECT SUM(manual_dial_new_today),status_category_1,SUM(status_category_count_1),status_category_2,SUM(status_category_count_2),status_category_3,SUM(status_category_count_3),status_category_4,SUM(status_category_count_4) FROM osdial_campaign_agent_stats WHERE user='$row[1]' GROUP BY user";
+	            $stmt2=sprintf("SELECT SUM(manual_dial_new_today),status_category_1,SUM(status_category_count_1),status_category_2,SUM(status_category_count_2),status_category_3,SUM(status_category_count_3),status_category_4,SUM(status_category_count_4) FROM osdial_campaign_agent_stats WHERE user='%s' GROUP BY user;",mres($row[1]));
 	            $rslt2=mysql_query($stmt2, $link);
 		        $row2=mysql_fetch_row($rslt2);
                 $stat['SALE'] = 0;
@@ -1178,7 +1178,7 @@ echo "  </tr>\n";
                 if ($stat['CONTACT'] > 0) $close_pct = (($stat['SALE'] / ($stat['CONTACT'] + $stat['SALE'])) * 100);
                 echo "    <td align=center>$row2[0]</td>\n";
                 echo "    <td align=center class=tabinput>\n";
-                if ($LOGmodify_users > 0 and $LOGuser_level > 7) {
+                if ($LOG['modify_users'] > 0 and $LOG['user_level'] > 7) {
                     echo "      <input type=hidden name=mdn_user value=$row[1]><input type=text name=mdn_limit size=5 value=$row[46]>\n";
                 } else {
                     echo "      $row[46]\n";

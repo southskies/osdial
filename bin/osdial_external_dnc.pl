@@ -26,6 +26,7 @@ use strict;
 use DBI;
 use Getopt::Long;
 use IO::Interface::Simple;
+use OSDial;
 $|++;
 
 # Identify myself.
@@ -73,6 +74,7 @@ if (scalar @ARGV) {
         }
 }
 
+my $osdial = OSDial->new('DB'=>$DB);
 
 # Connect to database.
 my $dbhA = DBI->connect("DBI:mysql:" . $config->{VARDB_database} . ":" . $config->{VARDB_server} . ":" . $config->{VARDB_port}, $config->{VARDB_user}, $config->{VARDB_pass} )
@@ -156,21 +158,21 @@ $sthA->finish();
 
 # Get lead_id,phone_number of leads to mark as DNCE
 foreach my $list_id (keys %lists) {
-	my $stmtA = "UPDATE osdial_lists SET scrub_last=NOW(),scrub_dnc='N' WHERE list_id='$list_id';";
+	my $stmtA = "UPDATE osdial_lists SET scrub_last=NOW(),scrub_dnc='N' WHERE list_id='" . $osdial->mres($list_id) . "';";
 	$dbhA->do($stmtA);
 
 	# Get statuses to scan through.
-	my $stmtA = "SELECT dial_statuses FROM osdial_campaigns WHERE campaign_id='$lists{$list_id}';";
+	my $stmtA = "SELECT dial_statuses FROM osdial_campaigns WHERE campaign_id='" . $osdial->mres($lists{$list_id}) . "';";
 	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	my @aryA = $sthA->fetchrow_array();
-	my $stats = $aryA[0];
+	my $stats = $osdial->mres($aryA[0]);
 	$stats =~ s/ /','/g;
 	$stats =~ s/^',//;
 	$stats =~ s/,'-$//;
 
 	# Scan main phone number
-	my $stmtA = "SELECT lead_id,phone_number FROM osdial_list WHERE list_id='$list_id' and status IN($stats);";
+	my $stmtA = "SELECT lead_id,phone_number FROM osdial_list WHERE list_id='" . $osdial->mres($list_id) . "' and status IN($stats);";
 	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	my $tot_row = $sthA->rows();
@@ -196,7 +198,7 @@ foreach my $list_id (keys %lists) {
 		$sthB->finish();
 		if ($fcnt) {
 			print "  Found $lead_id : $fullphone \n" if ($DB);
-			my $stmtC = "UPDATE osdial_lists SET scrub_last=NOW(),scrub_info='$cur_row/$tot_row' WHERE list_id='$list_id';";
+			my $stmtC = "UPDATE osdial_lists SET scrub_last=NOW(),scrub_info='$cur_row/$tot_row' WHERE list_id='" . $osdial->mres($list_id) . "';";
 			$dbhC->do($stmtC);
 			unless ($CLOtest) {
 				my $stmtC = "UPDATE osdial_list SET status='DNCE' WHERE lead_id='$lead_id';";
@@ -206,12 +208,12 @@ foreach my $list_id (keys %lists) {
 			}
 		}
 	}
-	my $stmtC = "UPDATE osdial_lists SET scrub_info='$tot_row/$tot_row' WHERE list_id='$list_id';";
+	my $stmtC = "UPDATE osdial_lists SET scrub_info='$tot_row/$tot_row' WHERE list_id='" . $osdial->mres($list_id) . "';";
 	$dbhC->do($stmtC);
 	$sthA->finish();
 
 	# Scan alt phone number
-	my $stmtA = "SELECT lead_id,alt_phone FROM osdial_list WHERE list_id='$list_id' AND alt_phone!='';";
+	my $stmtA = "SELECT lead_id,alt_phone FROM osdial_list WHERE list_id='" . $osdial->mres($list_id) . "' AND alt_phone!='';";
 	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	my $tot_row = $sthA->rows();
@@ -244,7 +246,7 @@ foreach my $list_id (keys %lists) {
 	$sthA->finish();
 
 	# Scan addr3 phone number
-	my $stmtA = "SELECT SQL_NO_CACHE lead_id,address3 FROM osdial_list WHERE list_id='$list_id' AND address3!='';";
+	my $stmtA = "SELECT SQL_NO_CACHE lead_id,address3 FROM osdial_list WHERE list_id='" . $osdial->mres($list_id) . "' AND address3!='';";
 	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	my $tot_row = $sthA->rows();

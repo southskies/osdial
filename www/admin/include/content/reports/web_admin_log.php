@@ -30,7 +30,7 @@ function report_web_admin_log() {
     $query_date = get_variable('query_date');
     $submit = get_variable('submit');
     $SUBMIT = get_variable('SUBMIT');
-    $query_date = preg_replace("/[^ \.\,-\_0-9a-zA-Z]/","",$query_date);
+    $query_date = OSDpreg_replace("/[^ \.\,-\_0-9a-zA-Z]/","",$query_date);
 
     $STARTtime = date("U");
     $DAY_DATE = date("j");
@@ -44,7 +44,7 @@ function report_web_admin_log() {
     $NOW_TIME = date("Y-m-d H:i:s");
     if (!$query_date) {$query_date = $GREP_DATE;}
 
-    $Gquery_date = preg_replace("/ /",'\ ',$query_date);
+    $Gquery_date = OSDpreg_replace("/ /",'\ ',$query_date);
     $html .= "<!-- |$query_date|$Gquery_date| -->\n";
 
     $html .= "<form action=\"$PHP_SELF\" method=get>\n";

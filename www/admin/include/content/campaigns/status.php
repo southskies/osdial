@@ -27,7 +27,7 @@
 
 if ($ADD==22)
 {
-	$stmt="SELECT count(*) from osdial_campaign_statuses where campaign_id='$campaign_id' and status='$status';";
+	$stmt=sprintf("SELECT count(*) FROM osdial_campaign_statuses WHERE campaign_id='%s' AND status='%s';",mres($campaign_id),mres($status));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
@@ -41,7 +41,7 @@ if ($ADD==22)
 		#	{echo "<br><font color=$default_text> CAMPAIGN STATUS NOT ADDED - there is already a global-status in the system with this name</font>\n";}
 		#else
 		#	{
-			 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) or (strlen($status_name) < 2) )
+			 if ( (OSDstrlen($campaign_id) < 2) or (OSDstrlen($status) < 1) or (OSDstrlen($status_name) < 2) )
 				{
 				 echo "<br><font color=red> CAMPAIGN STATUS NOT ADDED - Please go back and look at the data you entered\n";
 				 echo "<br>status must be between 1 and 8 characters in length\n";
@@ -75,9 +75,9 @@ $ADD=31;
 
 if ($ADD==42)
 {
-	if ($LOGmodify_campaigns==1)
+	if ($LOG['modify_campaigns']==1)
 	{
-	 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) )
+	 if ( (OSDstrlen($campaign_id) < 2) or (OSDstrlen($status) < 1) )
 		{
 		 echo "<br><font color=red>CAMPAIGN STATUS NOT MODIFIED - Please go back and look at the data you entered\n";
 		 echo "<br>the campaign id needs to be at least 2 characters in length\n";
@@ -85,7 +85,7 @@ if ($ADD==42)
 		}
 	 else
 		{
-		if (preg_match('/delete/',$stage))
+		if (OSDpreg_match('/delete/',$stage))
 			{
 			echo "<br><B><font color=$default_text>CUSTOM CAMPAIGN STATUS DELETED: $campaign_id - $status</font></B>\n";
 
@@ -104,7 +104,7 @@ if ($ADD==42)
 				fclose($fp);
 				}
 			}
-		if (preg_match('/modify/',$stage))
+		if (OSDpreg_match('/modify/',$stage))
 			{
 			echo "<br><B><font color=$default_text>CUSTOM CAMPAIGN STATUS MODIFIED: $campaign_id - $status</font></B>\n";
 
@@ -143,7 +143,7 @@ echo "<td align=center>STATUSES</td>\n";
 echo "<td align=center>LINKS</td>\n";
 echo "</tr>\n";
 
-	$stmt=sprintf("SELECT campaign_id,campaign_name from osdial_campaigns where campaign_id in %s order by campaign_id", $LOG['allowed_campaignsSQL']);
+	$stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE campaign_id IN %s ORDER BY campaign_id;", $LOG['allowed_campaignsSQL']);
 	$rslt=mysql_query($stmt, $link);
 	$campaigns_to_print = mysql_num_rows($rslt);
 
@@ -164,7 +164,7 @@ echo "</tr>\n";
 		echo "    <td>$campaigns_name_list[$o]</td>";
 		echo "    <td align=center>";
 
-		$stmt="SELECT status from osdial_campaign_statuses where campaign_id='$campaigns_id_list[$o]' order by status";
+		$stmt=sprintf("SELECT status FROM osdial_campaign_statuses WHERE campaign_id='%s' ORDER BY status;",mres($campaigns_id_list[$o]));
 		$rslt=mysql_query($stmt, $link);
 		$campstatus_to_print = mysql_num_rows($rslt);
 		$p=0;

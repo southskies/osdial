@@ -35,7 +35,7 @@ if ($ADD=="2ca") {
 
         # Process file if sent.
         if ($cidfile_name!='') {
-			if (preg_match('/\.txt$|\.csv$|\.psv$|\.tsv$|\.tab$/i', $cidfile_name)) {
+			if (OSDpreg_match('/\.txt$|\.csv$|\.psv$|\.tsv$|\.tab$/i', $cidfile_name)) {
                 $cidfile='';
 				if ($WeBRooTWritablE > 0) {
 					copy($cidfile_path, "$WeBServeRRooT/admin/osdial_temp_file.csv");
@@ -85,12 +85,12 @@ if ($ADD=="2ca") {
                 $o=0;
 			    while($csvrow=fgetcsv($file, 1000, $delimiter)) {
                     $o++;
-                    $areacode = preg_replace('/[^0-9]/','',$csvrow[0]);
-                    $cid_number = preg_replace('/[^0-9]/','',$csvrow[1]);
+                    $areacode = OSDpreg_replace('/[^0-9]/','',$csvrow[0]);
+                    $cid_number = OSDpreg_replace('/[^0-9]/','',$csvrow[1]);
                     $cid_name = $csvrow[2];
 
                     $status='FAILED';
-                    if (strlen($areacode) == 3 and strlen($cid_number) >= 8 and strlen($cid_number) <= 20) {
+                    if (OSDstrlen($areacode) == 3 and OSDstrlen($cid_number) >= 8 and OSDstrlen($cid_number) <= 20) {
                         $stmt=sprintf("SELECT count(*) FROM osdial_campaign_cid_areacodes WHERE campaign_id='%s' AND areacode='%s';",mres($campaign_id),mres($areacode));
                         $rslt=mysql_query($stmt, $link);
                         $row=mysql_fetch_row($rslt);
@@ -166,7 +166,7 @@ if ($ADD=="2ca") {
             if ($row[0] > 0) {
                 echo "<br><font color=red>CALLERID/AREACODE NOT ADDED - there is already an entry for this campaign with this areacode</font>\n";
             } else {
-                if (strlen($campaign_id) < 2 or strlen($areacode) != 3 or strlen($cid_number) < 8 or strlen($cid_number) > 20) {
+                if (OSDstrlen($campaign_id) < 2 or OSDstrlen($areacode) != 3 or OSDstrlen($cid_number) < 8 or OSDstrlen($cid_number) > 20) {
                     echo "<br><font color=red>CALLERID/AREACODE NOT ADDED - Please go back and look at the data you entered\n";
                     echo "<br>areacode must be 3 characters in length: $areacode\n";
                     echo "<br>cid_number must be between 8 and 20 characters in length: $cid_number</font><br>\n";
@@ -200,7 +200,7 @@ if ($ADD=="2ca") {
 
 if ($ADD=="4ca") {
     if ($LOG['modify_campaigns'] == 1) {
-        if (strlen($campaign_id) < 2 or strlen($areacode) != 3 or strlen($cid_number) < 8 or strlen($cid_number) > 20) {
+        if (OSDstrlen($campaign_id) < 2 or OSDstrlen($areacode) != 3 or OSDstrlen($cid_number) < 8 or OSDstrlen($cid_number) > 20) {
             echo "<br><font color=red>CALLERID/AREACODE NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>areacode must be 3 characters in length: $areacode\n";
             echo "<br>cid_number must be between 8 and 20 characters in length: $cid_number</font><br>\n";
@@ -239,7 +239,7 @@ if ($ADD=="4ca") {
 
 if ($ADD == "5ca") {
     if ($LOG['modify_campaigns'] == 1) {
-        if (strlen($campaign_id) < 2) {
+        if (OSDstrlen($campaign_id) < 2) {
             echo "<br><font color=red>CALLERID/AREACODES NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>Campaign_id be at least 2 characters in length</font><br<\n";
         } else {
@@ -261,7 +261,7 @@ if ($ADD == "5ca") {
 
 if ($ADD=="6ca") {
     if ($LOG['modify_campaigns'] == 1) {
-        if (strlen($campaign_id) < 2 or strlen($areacode) < 1) {
+        if (OSDstrlen($campaign_id) < 2 or OSDstrlen($areacode) < 1) {
             echo "<br><font color=red>CALLERID/AREACODE NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>areacode must be between 1 and 4 characters in length</font><br>\n";
         } else {

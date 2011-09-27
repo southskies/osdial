@@ -19,53 +19,79 @@
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-# Complete rewrite of VD authorization.
+# If $osdial_skip_auth is not set, this script will attempt to use Basic authentication.
+# If $osdial_skip_auth is set, it is assumed that the autorization is occuring elsewhere...like the API.
+if (!isset($osdial_skip_auth)) {
+    $failexit=0;
+    $fps = "";
+    $date = date("r");
+    $ip = getenv("REMOTE_ADDR");
+    $browser = getenv("HTTP_USER_AGENT");
 
-# NEW LOG['user_level'] style.
-$LOG = Array();
+    if ($force_logout) {
+        $_SESSION = array();
+        foreach ($_COOKIE as $k => $v) {
+            setcookie($k,'',time()-42000);
+        }
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
+        }
+        session_destroy();
 
-$failexit=0;
-$fps = "";
-$date = date("r");
-$ip = getenv("REMOTE_ADDR");
-$browser = getenv("HTTP_USER_AGENT");
-
-
-if ($force_logout) {
-
-    $_SESSION = array();
-    foreach ($_COOKIE as $k => $v) {
-        setcookie($k,'',time()-42000);
-    }
-    if (ini_get("session.use_cookies")) {
-        $params = session_get_cookie_params();
-        setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
-    }
-    session_destroy();
-
-	if(strlen($PHP_AUTH_USER) > 0 or strlen($PHP_AUTH_PW) > 0) {
-		Header("WWW-Authenticate: Basic realm=\"$t1-Administrator\"");
-		Header("HTTP/1.0 401 Unauthorized");
-	}
-	echo "<script language=\"javascript\">\n";
-	echo "window.location = '$system_settings[admin_home_url]';\n";
-	echo "</script>\n";
-    $fps = "OSDIAL|FORCELOGOUT|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|||\n";
-    $failexit=1;
-
-} else {
-    # Get the authed user.
-    $LOG = get_first_record($link, 'osdial_users', '*', sprintf("user='%s' and pass='%s'",mres($PHP_AUTH_USER),mres($PHP_AUTH_PW)) );
-    $auth=count($LOG);
-
-    if(strlen($PHP_AUTH_USER) < 2 or strlen($PHP_AUTH_PW) < 2 or $auth < 1 or $LOG['user_level'] < 8) {
-        Header("WWW-Authenticate: Basic realm=\"$t1-Administrator\"");
-        Header("HTTP/1.0 401 Unauthorized");
-        if (!preg_match('/wget/i',$browser)) $fps = "OSDIAL|BADAUTH|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|||\n";
+	    if(OSDstrlen($PHP_AUTH_USER) > 0 or OSDstrlen($PHP_AUTH_PW) > 0) {
+		    Header("WWW-Authenticate: Basic realm=\"$t1-Administrator\"");
+		    Header("HTTP/1.0 401 Unauthorized");
+	    }
+	    echo "<script language=\"javascript\">\n";
+	    echo "window.location = '$config[settings][admin_home_url]';\n";
+	    echo "</script>\n";
+        $fps = "OSDIAL|FORCELOGOUT|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|||\n";
         $failexit=1;
-    } elseif ($auth > 0) {
-        $tsid = session_id();
-        if(empty($tsid)) session_start();
+
+
+    } else {
+        $LOG = osdial_authenticate($PHP_AUTH_USER, $PHP_AUTH_PW);
+        if(OSDstrlen($PHP_AUTH_USER) < 2 or OSDstrlen($PHP_AUTH_PW) < 2 or $LOG['error'] or $LOG['user_level'] < 8) {
+            Header("WWW-Authenticate: Basic realm=\"$t1-Administrator\"");
+            Header("HTTP/1.0 401 Unauthorized");
+            if (!OSDpreg_match('/wget/i',$browser)) $fps = "OSDIAL|BADAUTH|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|||\n";
+            $failexit=1;
+            if ($LOG['error']) {
+                if ($LOG['error_type'] == 'COMPANY_NOT_ACTIVE') {
+                    $fps = "OSDIAL|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|COMPANY_" . $LOG['company']['status'] . "||\n";
+                    echo "<a href=\"$PHP_SELF?force_logout=1\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>Logout</a></font><br><br>\n";
+                    echo "<font color=red>Error, Company is currently marked " . $LOG['company']['status'] . ".</font>";
+                } elseif ($LOG['error_type'] == 'LOGIN_FAILED') {
+                    $fps = "OSDIAL|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|||\n";
+                }
+            }
+        } else {
+            # Login Success, save some session data in the browser.
+            $tsid = session_id();
+            if(empty($tsid)) session_start();
+        }
+    }
+
+    if ($failexit==0) $fps = "OSDIAL|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|" . $LOG['full_name'] . "|" . $LOG['allowed_campaignsSTR'] . "|\n";
+    # Log error at end...
+    if (!empty($fps) and $WeBRooTWritablE > 0) {
+        $fp = fopen($WeBServeRRooT . "/admin/project_auth_entries.txt", "a");
+        fwrite ($fp, $fps);
+        fclose($fp);
+    }
+    if ($failexit==1) exit;
+}
+
+
+
+
+function osdial_authenticate($user, $password) {
+    global $link;
+    $LOG = get_first_record($link, 'osdial_users', '*', sprintf("user='%s' AND pass='%s'",mres($user),mres($password)) );
+    $auth=count($LOG);
+    $LOG['error'] = 0;
+    if ($auth > 0) {
         # And array of the allowed campagins
         $LOGacA = Array();
         $LOGagA = Array();
@@ -85,22 +111,20 @@ if ($force_logout) {
         $LOG['multicomp_user'] = 0;
         $LOG['company_prefix'] = '';
         $LOG['company_id'] = 0;
-        if ($system_settings['enable_multicompany'] == 1 and file_exists($WeBServeRRooT . convert_uudecode("H+V%D;6EN+VEN8VQU9&4O8V]N=&5N=\"]A9&UI;B]C;VUP86YY+G!H<```\n`"))) {
+        if ($config['settings']['enable_multicompany'] == 1 and file_exists($WeBServeRRooT . convert_uudecode("H+V%D;6EN+VEN8VQU9&4O8V]N=&5N=\"]A9&UI;B]C;VUP86YY+G!H<```\n`"))) {
             $LOG['multicomp'] = 1;
-            if ($system_settings['multicompany_admin'] == $LOG['user']) {
+            if ($config['settings']['multicompany_admin'] == $LOG['user']) {
                 $LOG['multicomp_admin'] = 1;
-            } elseif (strlen($LOG['user']) > 5) {
-                $LOG['company_prefix'] = substr($LOG['user'],0,3);
-                $LOG['company_id'] = ((substr($LOG['user'],0,3) * 1) - 100);
+            } elseif (OSDstrlen($LOG['user']) > 5) {
+                $LOG['company_prefix'] = OSDsubstr($LOG['user'],0,3);
+                $LOG['company_id'] = ((OSDsubstr($LOG['user'],0,3) * 1) - 100);
                 $LOG['multicomp_user'] = 1;
                 $LOG['company'] = get_first_record($link, 'osdial_companies', '*', sprintf("id='%s'",mres($LOG['company_id'])) );
                 # Set banner title.
-                $user_company = $LOG['company']['name'];
+                $config['settings']['company_name'] = $LOG['company']['name'];
                 if ($LOG['company']['status'] != 'ACTIVE') {
-                    $failexit=1;
-                    $fps = "OSDIAL|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|COMPANY_" . $LOG['company']['status'] . "||\n";
-                    echo "<a href=\"$PHP_SELF?force_logout=1\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>Logout</a></font><br><br>\n";
-                    echo "<font color=red>Error, Company is currently marked " . $LOG['company']['status'] . ".</font>";
+                    $LOG['error']=1;
+                    $LOG['error_type']='COMPANY_NOT_ACTIVE';
                 }
             }
             $LOG['companies'] = get_krh($link, 'osdial_companies', '*','','','');
@@ -111,15 +135,13 @@ if ($force_logout) {
                 }
             }
             $LOG['companiesRE'] = rtrim($LOG['companiesRE'],'|') . '/';
-
-
         }
 
         # Get the allowed campaigns.
         $ug = get_first_record($link, 'osdial_user_groups', '*', sprintf("user_group='%s'",mres($LOG['user_group'])) );
         if (is_array($ug)) {
             foreach ($ug as $k => $v) {
-                if (preg_match('/^view|^export/',$k)) $LOG[$k] = $v;
+                if (OSDpreg_match('/^view|^export/',$k)) $LOG[$k] = $v;
             }
         }
 
@@ -127,8 +149,8 @@ if ($force_logout) {
         $LOGas = $ug['allowed_scripts'];
         $LOGae = $ug['allowed_email_templates'];
         $LOGai = $ug['allowed_ingroups'];
-        if (strlen($LOGac)> 1) {
-            if (preg_match('/\-ALL\-CAMPAIGNS\-/',$LOGac)) {
+        if (OSDstrlen($LOGac)> 1) {
+            if (OSDpreg_match('/\-ALL\-CAMPAIGNS\-/',$LOGac)) {
                 $LOG['allowed_campaignsALL'] = 1;
                 # Pack all the valid UGs
                 $ugs = get_krh($link, 'osdial_user_groups', 'user_group','',sprintf("user_group LIKE '%s__%%'",$LOG['company_prefix']),'');
@@ -154,12 +176,12 @@ if ($force_logout) {
                 $tmpacs = explode(' ',$LOGac);
                 if (is_array($tmpacs)) {
                     foreach ($tmpacs as $c) {
-                        if (strlen(rtrim($c,'-')) > 0) $LOGacA[] = $c;
+                        if (OSDstrlen(rtrim($c,'-')) > 0) $LOGacA[] = $c;
                     }
                 }
             }
-            if (strlen($LOGai)> 1) {
-                if (preg_match('/\-ALL\-INGROUPS\-/',$LOGai)) {
+            if (OSDstrlen($LOGai)> 1) {
+                if (OSDpreg_match('/\-ALL\-INGROUPS\-/',$LOGai)) {
                     $LOG['allowed_ingroupsALL'] = 1;
                     # Pack all the valid InGroups
                     $ois = get_krh($link, 'osdial_inbound_groups', 'group_id','',sprintf("group_id LIKE '%s__%%'",$LOG['company_prefix']),'');
@@ -173,13 +195,13 @@ if ($force_logout) {
                     $tmpais = explode(' ',$LOGai);
                     if (is_array($tmpais)) {
                         foreach ($tmpais as $i) {
-                            if (strlen(rtrim($i,'-')) > 0) $LOGaiA[] = $i;
+                            if (OSDstrlen(rtrim($i,'-')) > 0) $LOGaiA[] = $i;
                         }
                     }
                 }
             }
-            if (strlen($LOGas)> 1) {
-                if (preg_match('/\-ALL\-SCRIPTS\-/',$LOGas)) {
+            if (OSDstrlen($LOGas)> 1) {
+                if (OSDpreg_match('/\-ALL\-SCRIPTS\-/',$LOGas)) {
                     $LOG['allowed_scriptsALL'] = 1;
                     # Pack all the valid Scripts
                     $oss = get_krh($link, 'osdial_scripts', 'script_id','','','');
@@ -193,13 +215,13 @@ if ($force_logout) {
                     $tmpass = explode(' ',$LOGas);
                     if (is_array($tmpass)) {
                         foreach ($tmpass as $s) {
-                            if (strlen(rtrim($s,'-')) > 0) $LOGasA[] = $s;
+                            if (OSDstrlen(rtrim($s,'-')) > 0) $LOGasA[] = $s;
                         }
                     }
                 }
             }
-            if (strlen($LOGae)> 1) {
-                if (preg_match('/\-ALL\-EMAIL\-TEMPLATES\-/',$LOGae)) {
+            if (OSDstrlen($LOGae)> 1) {
+                if (OSDpreg_match('/\-ALL\-EMAIL\-TEMPLATES\-/',$LOGae)) {
                     $LOG['allowed_email_templatesALL'] = 1;
                     # Pack all the valid Scripts
                     $oets = get_krh($link, 'osdial_email_templates', 'et_id','','','');
@@ -213,7 +235,7 @@ if ($force_logout) {
                     $tmpaes = explode(' ',$LOGae);
                     if (is_array($tmpaes)) {
                         foreach ($tmpaes as $e) {
-                            if (strlen(rtrim($e,'-')) > 0) $LOGaeA[] = $e;
+                            if (OSDstrlen(rtrim($e,'-')) > 0) $LOGaeA[] = $e;
                         }
                     }
                 }
@@ -276,30 +298,12 @@ if ($force_logout) {
         $LOG['allowed_ingroupsSQL'] = $LOGaiSQL;
         $LOG['allowed_scriptsSQL'] = $LOGasSQL;
         $LOG['allowed_email_templatesSQL'] = $LOGaeSQL;
-
-
-
-        # Finally for historical and compaitibility reasons, we will map them out to straight vars, ie $LOGuser_level instead of $LOG['user_level']
-        if (is_array($LOG)) {
-            foreach ($LOG as $k => $v ) {
-                if ($k != "") eval("\$LOG" . $k . " = \$LOG['" . $k . "'];");
-            }
-        }
-        $LOGallowed_campaigns = $LOG['allowed_campaignsSTR'];
-
-        if ($failexit==0) $fps = "OSDIAL|GOOD|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|" . $LOG['full_name'] . "|" . $LOG['allowed_campaignsSTR'] . "|\n";
-
     } else {
-        $fps = "OSDIAL|FAIL|$date|$PHP_AUTH_USER|$PHP_AUTH_PW|$ip|$browser|||\n";
+        $LOG['error']=1;
+        $LOG['error_type']='LOGIN_FAILED';
     }
+    return $LOG;
 }
 
-# Log error at end...
-if ($fps != "" and $WeBRooTWritablE > 0) {
-    $fp = fopen($WeBServeRRooT . "/admin/project_auth_entries.txt", "a");
-    fwrite ($fp, $fps);
-    fclose($fp);
-}
-if ($failexit==1) exit;
 
 ?>

@@ -47,8 +47,8 @@ function report_agent_timesheet() {
     $company_prefix = "";
     if ($LOG['multicomp_user'] > 0) {
         $company_prefix = $LOG['company_prefix'];
-        if (substr($agent,0,3) == $LOG['company_prefix']) {
-            $agent = substr($agent,3);
+        if (OSDsubstr($agent,0,3) == $LOG['company_prefix']) {
+            $agent = OSDsubstr($agent,3);
         }
     }
 
@@ -61,7 +61,7 @@ function report_agent_timesheet() {
     $head .= "<br>\n";
     $head .= "<center><font size=4 color=$default_text>AGENT TIMESHEET</font></center><br>\n";
     if ($agent) {
-        $stmt=sprintf("SELECT full_name FROM osdial_users WHERE user_group IN %s AND user='%s';",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent));
+        $stmt=sprintf("SELECT full_name FROM osdial_users WHERE user_group IN %s AND user='%s';",$LOG['allowed_usergroupsSQL'],mres($company_prefix.$agent));
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
@@ -116,7 +116,7 @@ function report_agent_timesheet() {
         
 
 
-        $stmt=sprintf("SELECT event_time,UNIX_TIMESTAMP(event_time),server_ip FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$company_prefix . mres($agent));
+        $stmt=sprintf("SELECT event_time,UNIX_TIMESTAMP(event_time),server_ip FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),mres($company_prefix.$agent));
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
@@ -126,7 +126,7 @@ function report_agent_timesheet() {
         $firstlog = dateToLocal($link,$row[2],$row[0],$webClientAdjGMT,'',$webClientDST,1);
         $start = $row[1];
 
-        $stmt=sprintf("SELECT FROM_UNIXTIME(dispo_epoch),dispo_epoch,server_ip FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time DESC LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$company_prefix . mres($agent));
+        $stmt=sprintf("SELECT FROM_UNIXTIME(dispo_epoch),dispo_epoch,server_ip FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time DESC LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),mres($company_prefix.$agent));
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
@@ -171,7 +171,7 @@ function report_agent_timesheet() {
         $table .= "</table>\n";
 
         # Call Summary
-        $stmt=sprintf("SELECT count(*) as calls,sum(talk_sec) as talk,avg(talk_sec),sum(pause_sec),avg(pause_sec),sum(wait_sec),avg(wait_sec),sum(dispo_sec),avg(dispo_sec),avg(talk_sec+pause_sec+wait_sec+dispo_sec) FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' AND event_time >= '%s' AND user='%s' AND pause_sec<36000 AND wait_sec<36000 AND talk_sec<36000 AND dispo_sec<36000 AND status IS NOT NULL and status != '' LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$company_prefix . mres($agent));
+        $stmt=sprintf("SELECT count(*) as calls,sum(talk_sec) as talk,avg(talk_sec),sum(pause_sec),avg(pause_sec),sum(wait_sec),avg(wait_sec),sum(dispo_sec),avg(dispo_sec),avg(talk_sec+pause_sec+wait_sec+dispo_sec) FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' AND event_time >= '%s' AND user='%s' AND pause_sec<36000 AND wait_sec<36000 AND talk_sec<36000 AND dispo_sec<36000 AND status IS NOT NULL and status != '' LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),mres($company_prefix.$agent));
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$plain .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
@@ -296,7 +296,7 @@ function report_agent_timesheet() {
             $pfWAIT_AVG_MS = fmt_ms($row[7]);
             $pfWRAPUP_AVG_MS = fmt_ms($row[9]);
 
-            $stmt2=sprintf("SELECT event_time,server_ip FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$row[0]);
+            $stmt2=sprintf("SELECT event_time,server_ip FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),mres($row[0]));
             $rslt2=mysql_query($stmt2, $link);
             if ($DB) {$html .= "$stmt2\n";}
             $row2=mysql_fetch_row($rslt2);
@@ -304,7 +304,7 @@ function report_agent_timesheet() {
             $firstlog = dateToLocal($link,$row2[1],$row2[0],$webClientAdjGMT,'',$webClientDST,1);
 
 
-            $stmt2=sprintf("SELECT FROM_UNIXTIME(dispo_epoch),server_ip FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time DESC LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),$row[0]);
+            $stmt2=sprintf("SELECT FROM_UNIXTIME(dispo_epoch),server_ip FROM osdial_agent_log WHERE user_group IN %s AND event_time <= '%s' and event_time >= '%s' and user='%s' ORDER BY event_time DESC LIMIT 1;",$LOG['allowed_usergroupsSQL'],mres($query_date_END),mres($query_date_BEGIN),mres($row[0]));
             $rslt2=mysql_query($stmt2, $link);
             if ($DB) {$html .= "$stmt2\n";}
             $row2=mysql_fetch_row($rslt2);

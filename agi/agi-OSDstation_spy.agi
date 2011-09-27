@@ -53,7 +53,7 @@ $spyname = 'Whisper' if ($spy_mode =~ /9/);
 $osdial->agi_output("Looking up $phone_login for $spyname");
 
 ### Grab Server values from the database
-my $sret = $osdial->sql_query("SELECT ola.conf_exten,s.server_ip,s.server_id,s.ext_context FROM osdial_live_agents AS ola,servers AS s,phones WHERE (phones.login='$phone_login' AND (ola.extension LIKE concat(phones.protocol,'/',phones.extension,'\%') OR ola.extension LIKE concat('\%/',phones.login,'\@\%') OR ola.extension LIKE concat('Local/',phones.dialplan_number,'%'))) AND s.server_ip=ola.server_ip AND phones.server_ip=s.server_ip LIMIT 1;");
+my $sret = $osdial->sql_query("SELECT ola.conf_exten,s.server_ip,s.server_id,s.ext_context FROM osdial_live_agents AS ola,servers AS s,phones WHERE (phones.login='" . $osdial->mres($phone_login) . "' AND (ola.extension LIKE concat(phones.protocol,'/',phones.extension,'\%') OR ola.extension LIKE concat('\%/',phones.login,'\@\%') OR ola.extension LIKE concat('Local/',phones.dialplan_number,'%'))) AND s.server_ip=ola.server_ip AND phones.server_ip=s.server_ip LIMIT 1;");
 
 $AGI->answer();
 if ($sret->{'conf_exten'} eq "") {

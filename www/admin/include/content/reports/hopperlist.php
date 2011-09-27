@@ -95,7 +95,7 @@ $html .= "OSDIAL: Live Current Hopper List                      " . dateToLocal(
 $html .= "\n";
 $html .= "---------- TOTALS\n";
 
-$stmt="SELECT count(*) FROM osdial_hopper WHERE campaign_id='" . mysql_real_escape_string($group) . "';";
+$stmt=sprintf("SELECT count(*) FROM osdial_hopper WHERE campaign_id='%s';",mres($group));
 $rslt=mysql_query($stmt, $link);
 if ($DB) {$html .= "$stmt\n";}
 $row=mysql_fetch_row($rslt);
@@ -114,7 +114,7 @@ $html .= "+------+---------+----------+--------------+--------------+-----------
 $html .= "| NUM  | HSTATUS | PRIORITY | LEAD ID      | LIST ID      | PHONE NUM       | STATE | LSTATUS | COUNT | GMT    | ALT   |\n";
 $html .= "+------+---------+----------+--------------+--------------+-----------------+-------+---------+-------+--------+-------+\n";
 
-$stmt="SELECT osdial_hopper.lead_id,phone_number,osdial_hopper.state,osdial_list.status,called_count,osdial_hopper.gmt_offset_now,hopper_id,alt_dial,osdial_hopper.list_id,osdial_hopper.priority,osdial_hopper.status FROM osdial_hopper,osdial_list WHERE osdial_hopper.campaign_id='" . mysql_real_escape_string($group) . "' AND osdial_hopper.lead_id=osdial_list.lead_id ORDER BY osdial_hopper.status DESC, priority DESC,hopper_id limit 2000;";
+$stmt=sprintf("SELECT osdial_hopper.lead_id,phone_number,osdial_hopper.state,osdial_list.status,called_count,osdial_hopper.gmt_offset_now,hopper_id,alt_dial,osdial_hopper.list_id,osdial_hopper.priority,osdial_hopper.status FROM osdial_hopper,osdial_list WHERE osdial_hopper.campaign_id='%s' AND osdial_hopper.lead_id=osdial_list.lead_id ORDER BY osdial_hopper.status DESC, priority DESC,hopper_id limit 2000;",mres($group));
 $rslt=mysql_query($stmt, $link);
 if ($DB) {$html .= "$stmt\n";}
 $users_to_print = mysql_num_rows($rslt);

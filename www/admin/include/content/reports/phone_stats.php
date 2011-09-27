@@ -42,8 +42,8 @@ function report_phone_stats() {
     $company_prefix = "";
     if ($LOG['multicomp_user'] > 0) {
         $company_prefix = $LOG['company_prefix'];
-        if (substr($phone_extension,0,3) == $LOG['company_prefix']) {
-            $phone_extension = substr($phone_extension,3);
+        if (OSDsubstr($phone_extension,0,3) == $LOG['company_prefix']) {
+            $phone_extension = OSDsubstr($phone_extension,3);
         }
     }
     
@@ -53,7 +53,7 @@ function report_phone_stats() {
     $head .= "<br>\n";
     $head .= "<center><font color=$default_text size=4>PHONE STATS</font></center><br>\n";
     if ($phone_extension) {
-        $stmt=sprintf("SELECT fullname,protocol FROM phones WHERE extension='%s' AND server_ip='%s' ORDER BY extension LIMIT 1;",$company_prefix . mres($phone_extension),mres($phone_server_ip));
+        $stmt=sprintf("SELECT fullname,protocol FROM phones WHERE extension='%s' AND server_ip='%s' ORDER BY extension LIMIT 1;",mres($company_prefix.$phone_extension),mres($phone_server_ip));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         $phone_fullname = $row[0];
@@ -125,7 +125,7 @@ function report_phone_stats() {
     $head .= "</form>\n";
     $head .= "<div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;\"></div>\n";
     
-    if (!$LOGview_reports) {
+    if (!$LOG['view_reports']) {
         $table .= "<center><font color=red>You do not have permission to view this page</font></center>\n";
     } elseif($phone_extension) {
         $query_date_BEGIN = "$start_date 00:00:00";
@@ -133,7 +133,7 @@ function report_phone_stats() {
         $query_date_END = "$end_date 23:59:59";
         $query_date_END = dateToServer($link,'first',$query_date_END,$webClientAdjGMT,'',$webClientDST,0);
 
-        $stmt=sprintf("SELECT count(*),channel_group,sum(length_in_sec) FROM call_log WHERE extension='%s' AND server_ip='%s' AND start_time>='%s' AND start_time<='%s' GROUP BY channel_group ORDER BY channel_group;",$company_prefix . mres($phone_extension),mres($phone_server_ip),mres($query_date_BEGIN),mres($query_date_END));
+        $stmt=sprintf("SELECT count(*),channel_group,sum(length_in_sec) FROM call_log WHERE extension='%s' AND server_ip='%s' AND start_time>='%s' AND start_time<='%s' GROUP BY channel_group ORDER BY channel_group;",mres($company_prefix.$phone_extension),mres($phone_server_ip),mres($query_date_BEGIN),mres($query_date_END));
         $rslt=mysql_query($stmt, $link);
         $statuses_to_print = mysql_num_rows($rslt);
         
@@ -173,7 +173,7 @@ function report_phone_stats() {
 
 
 
-        $stmt=sprintf("SELECT number_dialed,channel_group,start_time,length_in_min FROM call_log WHERE extension='%s' AND server_ip='%s' AND start_time>='%s' AND start_time<='%s' LIMIT 1000;",$company_prefix.mres($phone_extension),mres($phone_server_ip),mres($query_date_BEGIN),mres($query_date_END));
+        $stmt=sprintf("SELECT number_dialed,channel_group,start_time,length_in_min FROM call_log WHERE extension='%s' AND server_ip='%s' AND start_time>='%s' AND start_time<='%s' LIMIT 1000;",mres($company_prefix.$phone_extension),mres($phone_server_ip),mres($query_date_BEGIN),mres($query_date_END));
         $rslt=mysql_query($stmt, $link);
         $statuses_to_print = mysql_num_rows($rslt);
         

@@ -20,38 +20,38 @@
 
 
 # Database connectivity
-require("dbconnect.php");
+require_once("dbconnect.php");
 
 # Various functions.
-require("functions.php");
+require_once("functions.php");
 
 # Admin and Form variables.
 # TODO: Write function for GET/POST retreival
-require("variables.php");
+require_once("variables.php");
 
 # Display and formating variables.
-require($WeBServeRRooT . "/admin/templates/default/display.php");
-include($WeBServeRRooT . "/admin/templates/" . $system_settings['admin_template'] . "/display.php");
+require_once($WeBServeRRooT . "/admin/templates/default/display.php");
+include_once($WeBServeRRooT . "/admin/templates/" . $config['settings']['admin_template'] . "/display.php");
 
 # Validation for form variables.
-require("validation.php");
+require_once("validation.php");
 
 
 # Authentication page (basic auth).
-require("auth.php");
+require_once("auth.php");
 
 
 # Help page amd variables.
-require("help.php");
+require_once("help.php");
 
 
 # Unfunctionalized misc routines.
 # TODO: Functionalize variables.
-require("init.php");
+require_once("init.php");
 
 
 # Menu: content and ADD to header name translations
 # TODO: Separation into callable functions
-require("menu.php");
+require_once("menu.php");
 
 ?>

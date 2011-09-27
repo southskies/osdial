@@ -58,6 +58,7 @@
 # 090418-2145 - Allow non-numeric remote agents from the Outbound IVR
 
 $|++;
+$DB=0;
 
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1)
@@ -169,6 +170,8 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 use Time::HiRes ('gettimeofday','usleep','sleep');  # necessary to have perl sleep command of less than one second
 use Proc::ProcessTable;
 use DBI;	  
+use OSDial;
+my $osdial = OSDial->new('DB'=>$DB);	  
 
 $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
  or die "Couldn't connect to database: " . DBI->errstr;
@@ -320,17 +323,17 @@ while($one_day_interval > 0)
 
 			if ($QHcall_type[$w] =~ /IN/)
 				{
-				$stmtC = "UPDATE osdial_closer_log SET status='XFER',user='$QHuser[$w]',comments='REMOTE' WHERE uniqueid='$QHuniqueid[$w]' AND status NOT LIKE 'V%';";
+				$stmtC = "UPDATE osdial_closer_log SET status='XFER',user='" . $osdial->mres($QHuser[$w]) . "',comments='REMOTE' WHERE uniqueid='$QHuniqueid[$w]' AND status NOT LIKE 'V%';";
 				$Caffected_rows = $dbhA->do($stmtC);
 				}
 			else
 				{
-				$stmtC = "UPDATE osdial_log SET status='XFER',user='$QHuser[$w]',comments='REMOTE' WHERE uniqueid='$QHuniqueid[$w]' AND status NOT LIKE 'V%';";
+				$stmtC = "UPDATE osdial_log SET status='XFER',user='" . $osdial->mres($QHuser[$w]) . "',comments='REMOTE' WHERE uniqueid='$QHuniqueid[$w]' AND status NOT LIKE 'V%';";
 				$Caffected_rows = $dbhA->do($stmtC);
 				}
 
 			if ($Caffected_rows > 0) {
-				$stmtB = "UPDATE osdial_list SET status='XFER',user='$QHuser[$w]' WHERE lead_id='$QHlead_id[$w]';";
+				$stmtB = "UPDATE osdial_list SET status='XFER',user='" . $osdial->mres($QHuser[$w]) . "' WHERE lead_id='$QHlead_id[$w]';";
 				$Baffected_rows = $dbhA->do($stmtB);
 			}
 
@@ -499,7 +502,7 @@ while($one_day_interval > 0)
 			if (length($DBremote_user[$h])>1 and $DBremote_server_ip[$h] eq $server_ip) 
 				{
 				### check to see if the record exists and only needs random number update
-				$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_live_agents WHERE user='$DBremote_user[$h]' AND server_ip='$server_ip' AND campaign_id='$DBremote_campaign[$h]' AND conf_exten='$DBremote_conf_exten[$h]';";
+				$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_live_agents WHERE user='" . $osdial->mres($DBremote_user[$h]) . "' AND server_ip='$server_ip' AND campaign_id='" . $osdial->mres($DBremote_campaign[$h]) . "' AND conf_exten='$DBremote_conf_exten[$h]';";
 					if ($DBX) {print STDERR "|$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -514,7 +517,7 @@ while($one_day_interval > 0)
 				&get_time_now;
 				if ($loginexistsRANDOM[$h] > 0)
 					{
-					$stmtA = "UPDATE osdial_live_agents SET random_id='$DBremote_random[$h]',last_update_time='$FDtsSQLdate' WHERE user='$DBremote_user[$h]' AND server_ip='$server_ip' AND campaign_id='$DBremote_campaign[$h]' AND conf_exten='$DBremote_conf_exten[$h]';";
+					$stmtA = "UPDATE osdial_live_agents SET random_id='$DBremote_random[$h]',last_update_time='$FDtsSQLdate' WHERE user='" . $osdial->mres($DBremote_user[$h]) . "' AND server_ip='$server_ip' AND campaign_id='" . $osdial->mres($DBremote_campaign[$h]) . "' AND conf_exten='$DBremote_conf_exten[$h]';";
 					$affected_rows = $dbhA->do($stmtA);
 					if ($affected_rows > 0 and $DBX) {
 						$event_string = "|     $DBremote_user[$h] $DBremote_campaign[$h] ONLY RANDOM ID UPDATE: $affected_rows";
@@ -525,7 +528,7 @@ while($one_day_interval > 0)
 				### check if record for user on server exists at all in osdial_live_agents
 				else
 					{
-					$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_live_agents WHERE user='$DBremote_user[$h]' AND server_ip='$server_ip';";
+					$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_live_agents WHERE user='" . $osdial->mres($DBremote_user[$h]) . "' AND server_ip='$server_ip';";
 						if ($DBX) {print STDERR "|$stmtA|\n";}
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -539,7 +542,7 @@ while($one_day_interval > 0)
 
 					if ($loginexistsALL[$h] > 0)
 						{
-						$stmtA = "UPDATE osdial_live_agents SET random_id='$DBremote_random[$h]',last_update_time='$FDtsSQLdate',campaign_id='$DBremote_campaign[$h]',conf_exten='$DBremote_conf_exten[$h]',closer_campaigns='$DBremote_closer[$h]',status='READY' WHERE user='$DBremote_user[$h]' AND server_ip='$server_ip';";
+						$stmtA = "UPDATE osdial_live_agents SET random_id='$DBremote_random[$h]',last_update_time='$FDtsSQLdate',campaign_id='" . $osdial->mres($DBremote_campaign[$h]) . "',conf_exten='$DBremote_conf_exten[$h]',closer_campaigns='" . $osdial->mres($DBremote_closer[$h]) . "',status='READY' WHERE user='" . $osdial->mres($DBremote_user[$h]) . "' AND server_ip='$server_ip';";
 						$affected_rows = $dbhA->do($stmtA);
 						if ($affected_rows > 0 and $DBX) {
 							$event_string = "|     $DBremote_user[$h] ALL UPDATE: $affected_rows";
@@ -568,7 +571,7 @@ while($one_day_interval > 0)
 						{
 						# grab the user_level of the agent
 						$DBuser_level[$h]='7';
-						$stmtA = "SELECT user_level FROM osdial_users WHERE user='$DBuser_start[$h]';";
+						$stmtA = "SELECT user_level FROM osdial_users WHERE user='" . $osdial->mres($DBuser_start[$h]) . "';";
 						$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 						$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 						$sthArows=$sthA->rows;
@@ -581,7 +584,7 @@ while($one_day_interval > 0)
 							}
 						$sthA->finish();
 
-						$stmtA = "INSERT INTO osdial_live_agents (user,server_ip,conf_exten,extension,status,campaign_id,random_id,last_call_time,last_update_time,last_call_finish,closer_campaigns,channel,uniqueid,callerid,user_level,comments) values('$DBremote_user[$h]','$server_ip','$DBremote_conf_exten[$h]','R/$DBremote_user[$h]','READY','$DBremote_campaign[$h]','$DBremote_random[$h]','$SQLdate','$FDtsSQLdate','$SQLdate','$DBremote_closer[$h]','','','','$DBuser_level[$h]','REMOTE');";
+						$stmtA = "INSERT INTO osdial_live_agents (user,server_ip,conf_exten,extension,status,campaign_id,random_id,last_call_time,last_update_time,last_call_finish,closer_campaigns,channel,uniqueid,callerid,user_level,comments) values('" . $osdial->mres($DBremote_user[$h]) . "','$server_ip','$DBremote_conf_exten[$h]','R/" . $osdial->mres($DBremote_user[$h]) . "','READY','" . $osdial->mres($DBremote_campaign[$h]) . "','$DBremote_random[$h]','$SQLdate','$FDtsSQLdate','$SQLdate','" . $osdial->mres($DBremote_closer[$h]) . "','','','','$DBuser_level[$h]','REMOTE');";
 						$affected_rows = $dbhA->do($stmtA);
 						if ($affected_rows > 0) {
 							$event_string = "|     $DBremote_user[$h] NEW INSERT: $affected_rows";
@@ -623,10 +626,10 @@ while($one_day_interval > 0)
 
 								if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
 
-								$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='$DBremote_campaign[$h]',agent='Agent/$DBremote_user[$h]',verb='AGENTLOGIN',data1='$DBremote_user[$h]$agents',serverid='$queuemetrics_log_id';";
+								$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='" . $osdial->mres($DBremote_campaign[$h]) . "',agent='Agent/" . $osdial->mres($DBremote_user[$h]) . "',verb='AGENTLOGIN',data1='" . $osdial->mres($DBremote_user[$h].$agents) . "',serverid='$queuemetrics_log_id';";
 								$Baffected_rows = $dbhB->do($stmtB);
 
-								$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='$DBremote_campaign[$h]',agent='Agent/$DBremote_user[$h]',verb='UNPAUSE',serverid='$queuemetrics_log_id';";
+								$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='" . $osdial->mres($DBremote_campaign[$h]) . "',agent='Agent/" . $osdial->mres($DBremote_user[$h]) . "',verb='UNPAUSE',serverid='$queuemetrics_log_id';";
 								$Baffected_rows = $dbhB->do($stmtB);
 
 								$dbhB->disconnect();
@@ -704,7 +707,7 @@ while($one_day_interval > 0)
 				{
 				if ($DELusers =~ /R\/$VD_user[$z]\|/)
 					{
-					$stmtA = "UPDATE osdial_live_agents SET random_id='$VD_random[$z]',status='PAUSED',last_call_finish='$SQLdate',lead_id='',uniqueid='',callerid='',channel='' WHERE user='$VD_user[$z]' AND server_ip='$server_ip';";
+					$stmtA = "UPDATE osdial_live_agents SET random_id='$VD_random[$z]',status='PAUSED',last_call_finish='$SQLdate',lead_id='',uniqueid='',callerid='',channel='' WHERE user='" . $osdial->mres($VD_user[$z]) . "' AND server_ip='$server_ip';";
 					$affected_rows = $dbhA->do($stmtA);
 					if ($affected_rows > 0 and $DBX) {
 						$event_string = "|     $VD_user[$z] CALL WIPE UPDATE: $affected_rows|PAUSED|$VD_uniqueid[$z]|$VD_user[$z]|";
@@ -720,10 +723,10 @@ while($one_day_interval > 0)
 
 							if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
 
-							$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='NONE',agent='Agent/$VD_user[$z]',verb='PAUSEALL',serverid='$queuemetrics_log_id';";
+							$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='NONE',agent='Agent/" . $osdial->mres($VD_user[$z]) . "',verb='PAUSEALL',serverid='$queuemetrics_log_id';";
 							$Baffected_rows = $dbhB->do($stmtB);
 
-							$stmtB = "SELECT time_id FROM queue_log WHERE agent='Agent/$VD_user[$z]' AND verb='AGENTLOGIN' ORDER BY time_id DESC LIMIT 1;";
+							$stmtB = "SELECT time_id FROM queue_log WHERE agent='Agent/" . $osdial->mres($VD_user[$z]) . "' AND verb='AGENTLOGIN' ORDER BY time_id DESC LIMIT 1;";
 							$sthB = $dbhB->prepare($stmtB) or die "preparing: ",$dbhB->errstr;
 							$sthB->execute or die "executing: $stmtB ", $dbhB->errstr;
 							$sthBrows=$sthB->rows;
@@ -740,7 +743,7 @@ while($one_day_interval > 0)
 							$time_logged_in = ($secX - $logintime);
 							if ($time_logged_in > 1000000) {$time_logged_in=1;}
 
-							$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='$VD_campaign_id[$z]',agent='Agent/$VD_user[$z]',verb='AGENTLOGOFF',data1='$VD_user[$z]$agents',data2='$time_logged_in',serverid='$queuemetrics_log_id';";
+							$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='" . $osdial->mres($VD_campaign_id[$z]) . "',agent='Agent/" . $osdial->mres($VD_user[$z]) . "',verb='AGENTLOGOFF',data1='" . $osdial->mres($VD_user[$z].$agents) . "',data2='$time_logged_in',serverid='$queuemetrics_log_id';";
 							$Baffected_rows = $dbhB->do($stmtB);
 
 							$dbhB->disconnect();
@@ -812,9 +815,9 @@ while($one_day_interval > 0)
 							}
 						}
 
-						$stmtA = "UPDATE osdial_live_agents SET random_id='$VD_random[$z]',last_call_finish='$SQLdate',lead_id='',uniqueid='',callerid='',channel='' WHERE user='$VD_user[$z]' AND server_ip='$server_ip';";
+						$stmtA = "UPDATE osdial_live_agents SET random_id='$VD_random[$z]',last_call_finish='$SQLdate',lead_id='',uniqueid='',callerid='',channel='' WHERE user='" . $osdial->mres($VD_user[$z]) . "' AND server_ip='$server_ip';";
 						$affected_rows = $dbhA->do($stmtA);
-						$stmtA = "UPDATE osdial_live_agents SET status='READY' WHERE user='$VD_user[$z]' AND server_ip='$server_ip';";
+						$stmtA = "UPDATE osdial_live_agents SET status='READY' WHERE user='" . $osdial->mres($VD_user[$z]) . "' AND server_ip='$server_ip';";
 						my $Baffected_rows = $dbhA->do($stmtA);
 						if (($affected_rows > 0 or $Baffected_rows > 0) and $DBX) {
 							$event_string = "|     $VD_user[$z] CALL WIPE UPDATE: $affected_rows/$Baffected_rows|READY|$VD_uniqueid[$z]|$VD_user[$z]|";
@@ -831,10 +834,10 @@ while($one_day_interval > 0)
 	
 								if ($DBX) {print "CONNECTED TO DATABASE:  $queuemetrics_server_ip|$queuemetrics_dbname\n";}
 	
-								$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='NONE',agent='Agent/$VD_user[$z]',verb='PAUSEALL',serverid='$queuemetrics_log_id';";
+								$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='NONE',agent='Agent/" . $osdial->mres($VD_user[$z]) . "',verb='PAUSEALL',serverid='$queuemetrics_log_id';";
 								$Baffected_rows = $dbhB->do($stmtB);
 	
-								$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='NONE',agent='Agent/$VD_user[$z]',verb='UNPAUSEALL',serverid='$queuemetrics_log_id';";
+								$stmtB = "INSERT INTO queue_log SET partition='P001',time_id='$secX',call_id='NONE',queue='NONE',agent='Agent/" . $osdial->mres($VD_user[$z]) . "',verb='UNPAUSEALL',serverid='$queuemetrics_log_id';";
 								$Baffected_rows = $dbhB->do($stmtB);
 	
 								$dbhB->disconnect();

@@ -10,7 +10,7 @@ CREATE TABLE osdial_script_button_log (
   KEY lead_id (lead_id),
   KEY user_lead (user,lead_id),
   KEY result (script_id,script_button_id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;##|##
+) ENGINE=InnoDB;##|##
   ## Adds logging to conditional scripting.;
 
 UPDATE system_settings SET version='2.2.1.058',last_update_check=DATE_SUB(NOW(), INTERVAL 1 DAY);##|##

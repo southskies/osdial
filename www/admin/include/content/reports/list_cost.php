@@ -66,11 +66,11 @@ function report_list_cost() {
         $groupQS .= "&group[]=$group[$i]";
         $i++;
     }
-    if ( (preg_match("/--ALL--/",$group_string) ) or ($group_ct < 1) ) {
+    if ( (OSDpreg_match("/--ALL--/",$group_string) ) or ($group_ct < 1) ) {
         $group_SQLand = sprintf("AND osdial_lists.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
         $group_SQL = sprintf("WHERE osdial_lists.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
     } else {
-        $group_SQL = preg_replace("/,$/",'',$group_SQL);
+        $group_SQL = OSDpreg_replace("/,$/",'',$group_SQL);
         $group_SQLand = sprintf("AND osdial_lists.campaign_id IN %s AND osdial_list.list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
         $group_SQL = sprintf("WHERE osdial_lists.campaign_id IN %s AND osdial_list.list_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
     }
@@ -102,14 +102,14 @@ function report_list_cost() {
     $html .= "  <tr class=tabfooter>\n";
     $html .= "    <td rowspan=3>\n";
     $html .= "      <select size=5 name=group[] multiple>\n";
-    if  (preg_match("/--ALL--/",$group_string)) {
+    if  (OSDpreg_match("/--ALL--/",$group_string)) {
         $html .= "        <option value=\"--ALL--\" selected>-- ALL LISTS --</option>\n";
     } else {
         $html .= "        <option value=\"--ALL--\">-- ALL LISTS --</option>\n";
     }
     $o=0;
     while ($lists_to_print > $o) {
-        if (preg_match("/$groups[$o]\|/",$group_string)) {
+        if (OSDpreg_match("/$groups[$o]\|/",$group_string)) {
             $html .= "        <option selected value=\"$groups[$o]\">$groups[$o]: $group_names[$o]</option>\n";
         } else {
             $html .= "        <option value=\"$groups[$o]\">$groups[$o]: $group_names[$o]</option>\n";
@@ -143,8 +143,8 @@ function report_list_cost() {
 
 
     if ($group) {
-        if (strlen($time_BEGIN) < 6) $time_BEGIN = "00:00:00";
-        if (strlen($time_END) < 6) $time_END = "23:59:59";
+        if (OSDstrlen($time_BEGIN) < 6) $time_BEGIN = "00:00:00";
+        if (OSDstrlen($time_END) < 6) $time_END = "23:59:59";
         $query_date_BEGIN = "$query_date $time_BEGIN";   
         $query_date_BEGIN = dateToServer($link,'first',$query_date_BEGIN,$webClientAdjGMT,'',$webClientDST,0);
         $query_date_END = "$end_date $time_END";

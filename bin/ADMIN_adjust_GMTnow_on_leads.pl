@@ -41,6 +41,7 @@
 #
 
 @MT=();
+$DB = 0;
 
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1)
@@ -170,6 +171,9 @@ $secX = time();
 	$dsec = ( ( ($hour * 3600) + ($min * 60) ) + $sec );
 
 use DBI;	  
+use OSDial;	  
+
+my $osdial = OSDial->new('DB'=>$DB);
 
 $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
  or die "Couldn't connect to database: " . DBI->errstr;
@@ -216,7 +220,7 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 if ($isdst) {$LOCAL_GMT_OFF++;} 
 if ($DB) {print "SEED TIME  $secX      :   $year-$mon-$mday $hour:$min:$sec  LOCAL GMT OFFSET NOW: $LOCAL_GMT_OFF\n";}
 
-if (length($singlelistid)> 0) {$listSQL = "where list_id='$singlelistid'";  $XlistSQL=" and list_id='$singlelistid' ";}
+if (length($singlelistid)> 0) {$listSQL = "where list_id='" . $osdial->mres($singlelistid) . "'";  $XlistSQL=" and list_id='" . $osdial->mres($singlelistid) . "' ";}
 else {$listSQL = '';  $XlistSQL='';}
 	$stmtA = "select distinct phone_code from osdial_list $listSQL;";
 	if($DBX){print STDERR "\n|$stmtA|\n";}
@@ -310,7 +314,7 @@ foreach (@phone_codes)
 				if ($area_code =~ /S/)	# look for state override flag in areacode field
 					{
 					$area_code =~ s/\D//gi;
-					$AC_match = " and phone_number LIKE \"$area_code%\" and state='$area_state'";
+					$AC_match = " and phone_number LIKE \"$area_code%\" and state='" . $osdial->mres($area_state) . "'";
 					if ($DB) {print "  AREA CODE STATE OVERRIDE: $codefile[$e]\n";}
 					}
 				else

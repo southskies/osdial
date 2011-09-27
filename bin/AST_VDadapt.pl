@@ -56,6 +56,7 @@
 
 use strict;
 use DBI;
+use OSDial;
 use Getopt::Long;
 $|++;
 
@@ -122,6 +123,9 @@ if (scalar @ARGV) {
 		exit 0;
 	}
 }	
+
+my $osdial = OSDial->new('DB'=>$DB);
+
 
 # Intiial connection to database.
 $dbhA = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':' . $config->{VARDB_server} . ':' . $config->{VARDB_port}, $config->{VARDB_user}, $config->{VARDB_pass} )
@@ -196,7 +200,7 @@ while ( $master_loop < $CLOloops ) {
 
 	#Process campaigns
 	if ($CLOcampaign) {
-		$swhere = "campaign_id='$CLOcampaign'";
+		$swhere = "campaign_id='" . $osdial->mres($CLOcampaign) . "'";
 	} else {
 		$swhere = "(active='Y' OR campaign_stats_refresh='Y')";
 	}
@@ -240,7 +244,7 @@ while ( $master_loop < $CLOloops ) {
 			
 		### Find out how many leads are in the hopper from a specific campaign
 		my $hopper_ready_count = 0;
-		$stmtA = "SELECT SQL_NO_CACHE status,count(*) FROM osdial_hopper WHERE campaign_id='$campaign_id[$i]' AND status IN('API','READY') GROUP BY status;";
+		$stmtA = "SELECT SQL_NO_CACHE status,count(*) FROM osdial_hopper WHERE campaign_id='" . $osdial->mres($campaign_id[$i]) . "' AND status IN('API','READY') GROUP BY status;";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows  = $sthA->rows;
@@ -260,7 +264,7 @@ while ( $master_loop < $CLOloops ) {
 		##### IF THERE ARE NO LEADS IN THE HOPPER FOR THE CAMPAIGN WE DO NOT WANT TO ADJUST THE DIAL_LEVEL
 		if ( $hopper_ready_count > 0 ) {
 			### BEGIN - GATHER STATS FOR THE osdial_campaign_stats TABLE ###
-			$stmtA = "SELECT SQL_NO_CACHE count(*),status FROM osdial_live_agents WHERE campaign_id='$campaign_id[$i]' AND last_update_time>'$VDL_one' GROUP BY status;";
+			$stmtA = "SELECT SQL_NO_CACHE count(*),status FROM osdial_live_agents WHERE campaign_id='" . $osdial->mres($campaign_id[$i]) . "' AND last_update_time>'$VDL_one' GROUP BY status;";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows  = $sthA->rows;
@@ -281,7 +285,7 @@ while ( $master_loop < $CLOloops ) {
 			my $ivr_adjust = 0;
 			my $ivr_reserve_agents = 0;
 			my $ivr_virtual_agents = 0;
-			$stmtA = "SELECT status,reserve_agents,virtual_agents FROM osdial_ivr WHERE campaign_id='$campaign_id[$i]' LIMIT 1;";
+			$stmtA = "SELECT status,reserve_agents,virtual_agents FROM osdial_ivr WHERE campaign_id='" . $osdial->mres($campaign_id[$i]) . "' LIMIT 1;";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			my $sthArows  = $sthA->rows;
@@ -308,7 +312,7 @@ while ( $master_loop < $CLOloops ) {
 			$VCSagents_active = $VCSINCALL + $VCSREADY + $VCSCLOSER - $ivr_adjust;
 
 		
-			$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE campaign_id='$campaign_id[$i]' AND status IN('LIVE','CLOSER');";
+			$stmtA = "SELECT SQL_NO_CACHE count(*) FROM osdial_auto_calls WHERE campaign_id='" . $osdial->mres($campaign_id[$i]) . "' AND status IN('LIVE','CLOSER');";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows  = $sthA->rows;
@@ -358,7 +362,7 @@ while ( $master_loop < $CLOloops ) {
 					$RESETdiff_ratio_updater++;
 
 					# GET AVERAGES FROM THIS CAMPAIGN
-					$stmtA = "SELECT SQL_NO_CACHE calls_today,answers_today,drops_today,drops_today_pct,drops_answers_today_pct,calls_hour,answers_hour,drops_hour,drops_hour_pct,calls_halfhour,answers_halfhour,drops_halfhour,drops_halfhour_pct,calls_fivemin,answers_fivemin,drops_fivemin,drops_fivemin_pct,calls_onemin,answers_onemin,drops_onemin,drops_onemin_pct FROM osdial_campaign_stats WHERE campaign_id='$campaign_id[$i]';";
+					$stmtA = "SELECT SQL_NO_CACHE calls_today,answers_today,drops_today,drops_today_pct,drops_answers_today_pct,calls_hour,answers_hour,drops_hour,drops_hour_pct,calls_halfhour,answers_halfhour,drops_halfhour,drops_halfhour_pct,calls_fivemin,answers_fivemin,drops_fivemin,drops_fivemin_pct,calls_onemin,answers_onemin,drops_onemin,drops_onemin_pct FROM osdial_campaign_stats WHERE campaign_id='" . $osdial->mres($campaign_id[$i]) . "';";
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
 					$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 					$sthArows  = $sthA->rows;
@@ -528,7 +532,7 @@ while ( $master_loop < $CLOloops ) {
 							$adaptive_string .= "      DIAL LEVEL TOO LOW! SETTING TO $CLOminlevel\n";
 							$intensity_dial_level = $CLOminlevel;
 						}
-						$stmtA = "UPDATE osdial_campaigns SET auto_dial_level='$intensity_dial_level' where campaign_id='$campaign_id[$i]';";
+						$stmtA = "UPDATE osdial_campaigns SET auto_dial_level='$intensity_dial_level' where campaign_id='" . $osdial->mres($campaign_id[$i]) . "';";
 						# Do not execute if -t is set, only print.
 						if ($CLOtest) {
 							print $stmtA . "\n";

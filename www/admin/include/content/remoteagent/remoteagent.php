@@ -29,7 +29,7 @@
 
 if ($ADD==11111)
 {
-	if ($LOGmodify_remoteagents==1)
+	if ($LOG['modify_remoteagents']==1)
 	{
     $servers_list = get_servers($link, $server_ip, 'AIO|DIALER');
 	echo "<center><br><font color=$default_text size=+1>ADD NEW EXTERNAL AGENTS</font><form action=$PHP_SELF method=POST><br><br>\n";
@@ -43,7 +43,7 @@ if ($ADD==11111)
 	echo "<tr bgcolor=$oddrows><td align=right>External Extension: </td><td align=left><input type=text name=conf_exten size=20 maxlength=20> (dial plan number dialed to reach agents)$NWB#osdial_remote_agents-conf_exten$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select size=1 name=status><option>ACTIVE</option><option SELECTED>INACTIVE</option></select>$NWB#osdial_remote_agents-status$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Campaign: </td><td align=left><select size=1 name=campaign_id>\n";
-        $stmt=sprintf("SELECT campaign_id,campaign_name from osdial_campaigns where campaign_id IN %s order by campaign_id",$LOG['allowed_campaignsSQL']);
+        $stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE campaign_id IN %s ORDER BY campaign_id;",$LOG['allowed_campaignsSQL']);
         $rslt=mysql_query($stmt, $link);
         $campaigns_to_print = mysql_num_rows($rslt);
         $campaigns_list='';
@@ -76,21 +76,21 @@ if ($ADD==11111)
 
 if ($ADD==21111)
 {
-	$stmt="SELECT count(*) from osdial_remote_agents where server_ip='$server_ip' and user_start='$user_start';";
+	$stmt=sprintf("SELECT count(*) FROM osdial_remote_agents WHERE server_ip='%s' AND user_start='%s';",mres($server_ip),mres($user_start));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
 		{echo "<br><font color=red>REMOTE AGENTS NOT ADDED - there is already a remote agents entry starting with this userID</font>\n";}
 	else
 		{
-		 if ( (strlen($server_ip) < 2) or (strlen($user_start) < 2)  or (strlen($campaign_id) < 2) or (strlen($conf_exten) < 2) )
+		 if ( (OSDstrlen($server_ip) < 2) or (OSDstrlen($user_start) < 2)  or (OSDstrlen($campaign_id) < 2) or (OSDstrlen($conf_exten) < 2) )
 			{
 			 echo "<br><font color=red>REMOTE AGENTS NOT ADDED - Please go back and look at the data you entered\n";
 			 echo "<br>Agents ID start and external extension must be at least 2 characters in length</font><br>\n";
 			 }
 		 else
 			{
-			$stmt="INSERT INTO osdial_remote_agents values('','$user_start','$number_of_lines','$server_ip','$conf_exten','$status','$campaign_id','$groups_value');";
+			$stmt=sprintf("INSERT INTO osdial_remote_agents values('','%s','%s','%s','%s','%s','%s','%s');",mres($user_start),mres($number_of_lines),mres($server_ip),mres($conf_exten),mres($status),mres($campaign_id),mres($groups_value));
 			$rslt=mysql_query($stmt, $link);
 
 			echo "<br><B><font color=$default_text>REMOTE AGENTS ADDED: $user_start</font></B>\n";
@@ -114,16 +114,16 @@ $ADD=10000;
 
 if ($ADD==41111)
 {
-	if ($LOGmodify_remoteagents==1)
+	if ($LOG['modify_remoteagents']==1)
 	{
-	 if ( (strlen($server_ip) < 2) or (strlen($user_start) < 2)  or (strlen($campaign_id) < 2) or (strlen($conf_exten) < 2) )
+	 if ( (OSDstrlen($server_ip) < 2) or (OSDstrlen($user_start) < 2)  or (OSDstrlen($campaign_id) < 2) or (OSDstrlen($conf_exten) < 2) )
 		{
 		 echo "<br><font color=red>REMOTE AGENTS NOT MODIFIED - Please go back and look at the data you entered\n";
 		 echo "<br>Agent ID Start and External Extension must be at least 2 characters in length</font><br>\n";
 		}
 	 else
 		{
-		$stmt="UPDATE osdial_remote_agents set user_start='$user_start', number_of_lines='$number_of_lines', server_ip='$server_ip', conf_exten='$conf_exten', status='$status', campaign_id='$campaign_id', closer_campaigns='$groups_value' where remote_agent_id='$remote_agent_id';";
+		$stmt=sprintf("UPDATE osdial_remote_agents SET user_start='%s',number_of_lines='%s',server_ip='%s',conf_exten='%s',status='%s',campaign_id='%s',closer_campaigns='%s' WHERE remote_agent_id='%s';",mres($user_start),mres($number_of_lines),mres($server_ip),mres($conf_exten),mres($status),mres($campaign_id),mres($groups_value),mres($remote_agent_id));
 		$rslt=mysql_query($stmt, $link);
 
 		echo "<br><B><font color=$default_text>REMOTE AGENTS MODIFIED</font></B>\n";
@@ -151,7 +151,7 @@ if ($ADD==41111)
 
 if ($ADD==51111)
 {
-	 if ( (strlen($remote_agent_id) < 1) or ($LOGdelete_remote_agents < 1) )
+	 if ( (OSDstrlen($remote_agent_id) < 1) or ($LOG['delete_remote_agents'] < 1) )
 		{
 		 echo "<br><font color=red>REMOTE AGENT NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>agent_id be at least 2 characters in length</font>\n";
@@ -172,14 +172,14 @@ $ADD='31111';		# go to remote agent modification below
 
 if ($ADD==61111)
 {
-	 if ( (strlen($remote_agent_id) < 1) or ($CoNfIrM != 'YES') or ($LOGdelete_remote_agents < 1) )
+	 if ( (OSDstrlen($remote_agent_id) < 1) or ($CoNfIrM != 'YES') or ($LOG['delete_remote_agents'] < 1) )
 		{
 		 echo "<br><font color=red>REMOTE AGENT NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>agent_id be at least 2 characters in length</font><br>\n";
 		}
 	 else
 		{
-		$stmt="DELETE from osdial_remote_agents where remote_agent_id='$remote_agent_id' limit 1;";
+		$stmt=sprintf("DELETE FROM osdial_remote_agents WHERE remote_agent_id='%s' LIMIT 1;",mres($remote_agent_id));
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -203,9 +203,9 @@ $ADD='10000';		# go to remote agents list
 
 if ($ADD==31111)
 {
-	if ($LOGmodify_remoteagents==1)
+	if ($LOG['modify_remoteagents']==1)
 	{
-	$stmt="SELECT * from osdial_remote_agents where remote_agent_id='$remote_agent_id';";
+	$stmt=sprintf("SELECT * FROM osdial_remote_agents WHERE remote_agent_id='%s';",mres($remote_agent_id));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$remote_agent_id =	$row[0];
@@ -232,7 +232,7 @@ if ($ADD==31111)
 	echo "<tr bgcolor=$oddrows><td align=right>External Extension: </td><td align=left><input type=text name=conf_exten size=20 maxlength=20 value=\"$conf_exten\"> (dial plan number dialed to reach agents)$NWB#osdial_remote_agents-conf_exten$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Status: </td><td align=left><select size=1 name=status><option SELECTED>ACTIVE</option><option>INACTIVE</option><option SELECTED>$status</option></select>$NWB#osdial_remote_agents-status$NWE</td></tr>\n";
 	echo "<tr bgcolor=$oddrows><td align=right>Campaign: </td><td align=left><select size=1 name=campaign_id>\n";
-        $stmt=sprintf("SELECT campaign_id,campaign_name from osdial_campaigns where campaign_id IN %s order by campaign_id",$LOG['allowed_campaignsSQL']);
+        $stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE campaign_id IN %s ORDER BY campaign_id;",$LOG['allowed_campaignsSQL']);
         $rslt=mysql_query($stmt, $link);
         $campaigns_to_print = mysql_num_rows($rslt);
         $campaigns_list='';
@@ -255,7 +255,7 @@ if ($ADD==31111)
 	echo "NOTE: It can take up to 30 seconds for changes submitted on this screen to go live\n";
 
 
-	if ($LOGdelete_remote_agents > 0)
+	if ($LOG['delete_remote_agents'] > 0)
 		{
 		echo "<br><br><br><a href=\"$PHP_SELF?ADD=51111&remote_agent_id=$remote_agent_id\">DELETE THIS REMOTE AGENT</a>\n";
 		}

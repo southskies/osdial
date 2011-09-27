@@ -27,7 +27,7 @@ CREATE TABLE osdial_email_templates (
   et_body_text text,
   active enum('Y','N') DEFAULT NULL,
   PRIMARY KEY (et_id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;##|##
+) ENGINE=InnoDB;##|##
  ##     Create email templates table.;
 
 ALTER TABLE osdial_campaigns ADD email_template_id VARCHAR(20) default '';##|##

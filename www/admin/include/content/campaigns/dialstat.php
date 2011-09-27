@@ -28,15 +28,15 @@
 
 if ($ADD==28)
 {
-	$status = preg_replace("/-----.*/",'',$status);
-	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id' and dial_statuses LIKE \"% $status %\";";
+	$status = OSDpreg_replace("/-----.*/",'',$status);
+	$stmt=sprintf("SELECT count(*) FROM osdial_campaigns WHERE campaign_id='%s' AND dial_statuses LIKE '%% %s %%';",mres($campaign_id),mres($status));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
 		{echo "<br><font color=red>CAMPAIGN DIAL STATUS NOT ADDED - there is already an entry for this campaign with this status</font>\n";}
 	else
 		{
-		 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) )
+		 if ( (OSDstrlen($campaign_id) < 2) or (OSDstrlen($status) < 1) )
 			{
 			 echo "<br><font color=red>CAMPAIGN DIAL STATUS NOT ADDED - Please go back and look at the data you entered\n";
 			 echo "<br>status must be between 1 and 6 characters in length</font>\n";
@@ -45,13 +45,13 @@ if ($ADD==28)
 			{
 			#echo "<br><B><font color=$default_text>CAMPAIGN DIAL STATUS ADDED: $campaign_id - $status</font></B>\n";
 
-			$stmt="SELECT dial_statuses from osdial_campaigns where campaign_id='$campaign_id';";
+			$stmt=sprintf("SELECT dial_statuses FROM osdial_campaigns WHERE campaign_id='%s';",mres($campaign_id));
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 
-			if (strlen($row[0])<2) {$row[0] = ' -';}
+			if (OSDstrlen($row[0])<2) {$row[0] = ' -';}
 			$dial_statuses = " $status$row[0]";
-			$stmt="UPDATE osdial_campaigns set dial_statuses='$dial_statuses' where campaign_id='$campaign_id';";
+			$stmt=sprintf("UPDATE osdial_campaigns SET dial_statuses='%s' WHERE campaign_id='%s';",mres($dial_statuses),mres($campaign_id));
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -75,16 +75,16 @@ $ADD=31;
 
 if ($ADD==68)
 {
-	if ($LOGmodify_campaigns==1)
+	if ($LOG['modify_campaigns']==1)
 	{
-	$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$campaign_id' and dial_statuses LIKE \"% $status %\";";
+	$stmt=sprintf("SELECT count(*) FROM osdial_campaigns WHERE campaign_id='%s' AND dial_statuses LIKE '%% %s %%';",mres($campaign_id),mres($status));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] < 1)
 		{echo "<br><font color=red>CAMPAIGN DIAL STATUS NOT REMOVED - this dial status is not selected for this campaign</font>\n";}
 	else
 		{
-		 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) )
+		 if ( (OSDstrlen($campaign_id) < 2) or (OSDstrlen($status) < 1) )
 			{
 			 echo "<br><font color=red>CAMPAIGN DIAL STATUS NOT REMOVED - Please go back and look at the data you entered\n";
 			 echo "<br>status must be between 1 and 6 characters in length><br>\n";
@@ -93,12 +93,12 @@ if ($ADD==68)
 			{
 			#echo "<br><B><font color=$default_text>CAMPAIGN DIAL STATUS REMOVED: $campaign_id - $status</font></B>\n";
 
-			$stmt="SELECT dial_statuses from osdial_campaigns where campaign_id='$campaign_id';";
+			$stmt=sprintf("SELECT dial_statuses FROM osdial_campaigns WHERE campaign_id='%s';",mres($campaign_id));
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
 
-			$dial_statuses = preg_replace("/ $status /"," ",$row[0]);
-			$stmt="UPDATE osdial_campaigns set dial_statuses='$dial_statuses' where campaign_id='$campaign_id';";
+			$dial_statuses = OSDpreg_replace("/ $status /"," ",$row[0]);
+			$stmt=sprintf("UPDATE osdial_campaigns SET dial_statuses='%s' WHERE campaign_id='%s';",mres($dial_statuses),mres($campaign_id));
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###

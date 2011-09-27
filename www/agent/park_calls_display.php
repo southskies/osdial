@@ -42,123 +42,107 @@
 # 60619-1205 - Added variable filters to close security holes for login form
 # 
 
-require("dbconnect.php");
+$DB=0;
+
+require_once("dbconnect.php");
+require_once("functions.php");
 
 ### If you have globals turned off uncomment these lines
-if (isset($_GET["user"]))					{$user=$_GET["user"];}
-	elseif (isset($_POST["user"]))			{$user=$_POST["user"];}
-if (isset($_GET["pass"]))					{$pass=$_GET["pass"];}
-	elseif (isset($_POST["pass"]))			{$pass=$_POST["pass"];}
-if (isset($_GET["server_ip"]))				{$server_ip=$_GET["server_ip"];}
-	elseif (isset($_POST["server_ip"]))		{$server_ip=$_POST["server_ip"];}
-if (isset($_GET["session_name"]))			{$session_name=$_GET["session_name"];}
-	elseif (isset($_POST["session_name"]))	{$session_name=$_POST["session_name"];}
-if (isset($_GET["format"]))					{$format=$_GET["format"];}
-	elseif (isset($_POST["format"]))		{$format=$_POST["format"];}
-if (isset($_GET["exten"]))					{$exten=$_GET["exten"];}
-	elseif (isset($_POST["exten"]))			{$exten=$_POST["exten"];}
-if (isset($_GET["protocol"]))				{$protocol=$_GET["protocol"];}
-	elseif (isset($_POST["protocol"]))		{$protocol=$_POST["protocol"];}
+$user=get_variable("user");
+$pass=get_variable("pass");
+$server_ip=get_variable("server_ip");
+$session_name=get_variable("session_name");
+$format=get_variable("format");
+$exten=get_variable("exten");
+$protocol=get_variable("protocol");
 
-$user=preg_replace("/[^0-9a-zA-Z]/","",$user);
-$pass=preg_replace("/[^0-9a-zA-Z]/","",$pass);
+#$user=OSDpreg_replace("/[^0-9a-zA-Z]/","",$user);
+#$pass=OSDpreg_replace("/[^0-9a-zA-Z]/","",$pass);
 
 # default optional vars if not set
-if (!isset($format))		{$format="text";}
-if (!isset($park_limit))	{$park_limit="1000";}
+if (empty($format)) $format="text";
+if ($format=='debug') $DB=1;
+if (!isset($park_limit)) $park_limit="1000";
 
-$version = '0.0.4';
-$build = '60619-1205';
+$version='SVN_Version';
+$build='SVN_Build';
+
 $StarTtime = date("U");
 $NOW_DATE = date("Y-m-d");
 $NOW_TIME = date("Y-m-d H:i:s");
-if (!isset($query_date)) {$query_date = $NOW_DATE;}
+if (!isset($query_date)) $query_date=$NOW_DATE;
 
-	$stmt="SELECT count(*) FROM osdial_users WHERE user='$user' AND pass='$pass' AND user_level>0;";
-	if ($DB) {echo "|$stmt|\n";}
-	$rslt=mysql_query($stmt, $link);
-	$row=mysql_fetch_row($rslt);
-	$auth=$row[0];
+$stmt=sprintf("SELECT count(*) FROM osdial_users WHERE user='%s' AND pass='%s' AND user_level>0;",mres($user),mres($pass));
+if ($DB) echo "|$stmt|\n";
+$rslt=mysql_query($stmt, $link);
+$row=mysql_fetch_row($rslt);
+$auth=$row[0];
 
-  if( (strlen($user)<2) or (strlen($pass)<2) or ($auth==0) )
-	{
+if( (OSDstrlen($user)<2) or (OSDstrlen($pass)<2) or ($auth==0) ) {
     echo "Invalid Username/Password: |$user|$pass|\n";
     exit;
-	}
-  else
-	{
+} else {
+    if( (OSDstrlen($server_ip)<6) or (empty($server_ip)) or ( (OSDstrlen($session_name)<12) or (empty($session_name)) ) ) {
+        echo "Invalid server_ip: |$server_ip|  or  Invalid session_name: |$session_name|\n";
+        exit;
+    } else {
+        $stmt=sprintf("SELECT count(*) FROM web_client_sessions WHERE session_name='%s' AND server_ip='%s';",mres($session_name),mres($server_ip));
+        if ($DB) echo "|$stmt|\n";
+        $rslt=mysql_query($stmt, $link);
+        $row=mysql_fetch_row($rslt);
+        $SNauth=$row[0];
+        if($SNauth==0) {
+            echo "Invalid session_name: |$session_name|$server_ip|\n";
+            exit;
+        } else {
+            # do nothing for now
+        }
+    }
+}
 
-	if( (strlen($server_ip)<6) or (!isset($server_ip)) or ( (strlen($session_name)<12) or (!isset($session_name)) ) ) 		{
-		echo "Invalid server_ip: |$server_ip|  or  Invalid session_name: |$session_name|\n";
-		exit;
-		}
-	else
-		{
-		$stmt="SELECT count(*) FROM web_client_sessions WHERE session_name='$session_name' AND server_ip='$server_ip';";
-		if ($DB) {echo "|$stmt|\n";}
-		$rslt=mysql_query($stmt, $link);
-		$row=mysql_fetch_row($rslt);
-		$SNauth=$row[0];
-		  if($SNauth==0)
-			{
-			echo "Invalid session_name: |$session_name|$server_ip|\n";
-			exit;
-			}
-		  else
-			{
-			# do nothing for now
-			}
-		}
-	}
-
-if ($format=='debug')
-{
-echo "<html>\n";
-echo "<head>\n";
-echo "<!-- VERSION: $version     BUILD: $build    EXTEN: $exten   server_ip: $server_ip-->\n";
-echo "<title>Parked Calls Display";
-echo "</title>\n";
-echo "</head>\n";
-echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";
+if ($format=='debug') {
+    echo "<html>\n";
+    echo "<head>\n";
+    echo "<!-- VERSION: $version     BUILD: $build    EXTEN: $exten   server_ip: $server_ip-->\n";
+    echo "<title>Parked Calls Display";
+    echo "</title>\n";
+    echo "</head>\n";
+    echo "<body bgcolor=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";
 }
 
 
-	$row='';   $rowx='';
-	$channel_live=1;
-	if ( (strlen($exten)<1) or (strlen($protocol)<3) )
-	{
-	$channel_live=0;
-	echo "Exten $exten is not valid or protocol $protocol is not valid\n";
-	exit;
-	}
-	else
-	{
-	##### print parked calls from the parked_channels table
-	$stmt="SELECT SQL_NO_CACHE * FROM parked_channels WHERE server_ip='$server_ip' ORDER BY parked_time LIMIT $park_limit;";
-		if ($format=='debug') {echo "\n<!-- $stmt -->";}
-	$rslt=mysql_query($stmt, $link);
-	$park_calls_count = mysql_num_rows($rslt);
-	echo "$park_calls_count\n";
-	$loop_count=0;
-		while ($park_calls_count>$loop_count)
-		{
-		$loop_count++;
-		$row=mysql_fetch_row($rslt);
-		echo "$row[0] ~$row[2] ~$row[3] ~$row[4] ~$row[5]|";
-		}
-	echo "\n";
-	}
+$row='';
+$rowx='';
+$channel_live=1;
+if ( (OSDstrlen($exten)<1) or (OSDstrlen($protocol)<3) ) {
+    $channel_live=0;
+    echo "Exten $exten is not valid or protocol $protocol is not valid\n";
+    exit;
+} else {
+    ##### print parked calls from the parked_channels table
+    $stmt=sprintf("SELECT SQL_NO_CACHE * FROM parked_channels WHERE server_ip='%s' ORDER BY parked_time LIMIT %s;",mres($server_ip),$park_limit);
+    if ($format=='debug') echo "\n<!-- $stmt -->";
+    $rslt=mysql_query($stmt, $link);
+    $park_calls_count = mysql_num_rows($rslt);
+    echo "$park_calls_count\n";
+    $loop_count=0;
+    while ($park_calls_count>$loop_count) {
+        $loop_count++;
+        $row=mysql_fetch_row($rslt);
+        echo "$row[0] ~$row[2] ~$row[3] ~$row[4] ~$row[5]|";
+    }
+    echo "\n";
+}
 
 
 
-if ($format=='debug') 
-	{
-	$ENDtime = date("U");
-	$RUNtime = ($ENDtime - $StarTtime);
-	echo "\n<!-- script runtime: $RUNtime seconds -->";
-	echo "\n</body>\n</html>\n";
-	}
-	
+if ($format=='debug') {
+    $ENDtime = date("U");
+    $RUNtime = ($ENDtime - $StarTtime);
+    echo "\n<!-- script runtime: $RUNtime seconds -->";
+    echo "\n</body>\n</html>\n";
+}
+
 exit; 
 
 ?>

@@ -7,7 +7,7 @@ CREATE TABLE osdial_script_buttons (
   script_button_label varchar(50) default '',
   script_button_text TEXT default '',
   PRIMARY KEY  (script_id,script_button_id)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;##|##
+) ENGINE=InnoDB;##|##
   ## Adds ability to have buttons/conditional scripting;
 
 ALTER TABLE osdial_list ADD COLUMN post_date DATETIME NOT NULL;##|##

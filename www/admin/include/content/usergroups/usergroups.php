@@ -26,7 +26,7 @@
 ######################
 
 if ($ADD==111111) {
-    if (($LOG['modify_usergroups'] == 1 and $LOG['allowed_campaignsALL'] > 0) OR (preg_match('/^(admin|6666)$/',$PHP_AUTH_USER) and $LOG['user_level']>=9)) {
+    if (($LOG['modify_usergroups'] == 1 and $LOG['allowed_campaignsALL'] > 0) OR (OSDpreg_match('/^(admin|6666)$/',$PHP_AUTH_USER) and $LOG['user_level']>=9)) {
         echo "<center>\n";
         echo "  <br><font color=$default_text size=+1>ADD NEW AGENTS GROUP</font><br><br>\n";
         echo "  <form action=$PHP_SELF method=POST>\n";
@@ -71,13 +71,13 @@ if ($ADD==111111) {
 if ($ADD==211111) {
     $preuser_group = $user_group;
     if ($LOG['multicomp'] > 0) $preuser_group = (($company_id * 1) + 100) . $user_group;
-    $stmt="SELECT count(*) FROM osdial_user_groups WHERE user_group='$preuser_group';";
+    $stmt=sprintf("SELECT count(*) FROM osdial_user_groups WHERE user_group='%s';",mres($preuser_group));
     $rslt=mysql_query($stmt, $link);
     $row=mysql_fetch_row($rslt);
     if ($row[0] > 0) {
         echo "<br><font color=red>USER GROUP NOT ADDED - there is already a user group entry with this name</font>\n";
     } else {
-         if (strlen($user_group) < 2 or strlen($group_name) < 2) {
+         if (OSDstrlen($user_group) < 2 or OSDstrlen($group_name) < 2) {
              echo "<br><font color=red>USER GROUP NOT ADDED - Please go back and look at the data you entered\n";
              echo "<br>Group name and description must be at least 2 characters in length</font><br>\n";
          } else {
@@ -85,7 +85,7 @@ if ($ADD==211111) {
             $LOG['allowed_usergroupsSQL'] = rtrim($LOG['allowed_usergroupsSQL'],')');
             $LOG['allowed_usergroupsSQL'] .= ",'$user_group')";
             $LOG['allowed_usergroupsSTR'] .= "$user_group:";
-            $stmt="INSERT INTO osdial_user_groups (user_group,group_name,allowed_campaigns) VALUES ('$user_group','$group_name','-ALL-CAMPAIGNS-');";
+            $stmt=sprintf("INSERT INTO osdial_user_groups (user_group,group_name,allowed_campaigns) VALUES ('%s','%s','-ALL-CAMPAIGNS-');",mres($user_group),mres($group_name));
             $rslt=mysql_query($stmt, $link);
 
             echo "<br><b><font color=$default_text>USER GROUP ADDED: $user_group</font></b>\n";
@@ -111,9 +111,9 @@ if ($ADD==411111) {
         $preuser_group = $user_group;
         if ($LOG['multicomp'] > 0) $preuser_group = (($company_id * 1) + 100) . $user_group;
 
-        if ($LOG['allowed_campaignsALL'] < 1 and !(preg_match('/^(admin|6666)$/',$PHP_AUTH_USER) and $LOG['user_level']>=9)) {
+        if ($LOG['allowed_campaignsALL'] < 1 and !(OSDpreg_match('/^(admin|6666)$/',$PHP_AUTH_USER) and $LOG['user_level']>=9)) {
             echo "<br><font color=red>USER GROUP NOT MODIFIED - You may only view your User Group resources.</font><br>\n";
-        } elseif ( (strlen($user_group) < 2) or (strlen($group_name) < 2) ) {
+        } elseif ( (OSDstrlen($user_group) < 2) or (OSDstrlen($group_name) < 2) ) {
             echo "<br><font color=red>USER GROUP NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>Group name and description must be at least 2 characters in length</font><br>\n";
         } else {
@@ -150,10 +150,10 @@ if ($ADD==411111) {
             $ingroups_value = ' ' . implode(' ', $ingroups_values) . ' -';
             $scripts_value = ' ' . implode(' ', $scripts_values) . ' -';
             $emails_value = ' ' . implode(' ', $emails_values) . ' -';
-            if (preg_match('/ -ALL-CAMPAIGNS- /',$campaigns_value)) $campaigns_value = ' -ALL-CAMPAIGNS- -';
-            if (preg_match('/ -ALL-INGROUPS- /',$ingroups_value)) $ingroups_value = ' -ALL-INGROUPS- -';
-            if (preg_match('/ -ALL-SCRIPTS- /',$scripts_value)) $scripts_value = ' -ALL-SCRIPTS- -';
-            if (preg_match('/ -ALL-EMAIL-TEMPLATES- /',$emails_value)) $emails_value = ' -ALL-EMAIL-TEMPLATES- -';
+            if (OSDpreg_match('/ -ALL-CAMPAIGNS- /',$campaigns_value)) $campaigns_value = ' -ALL-CAMPAIGNS- -';
+            if (OSDpreg_match('/ -ALL-INGROUPS- /',$ingroups_value)) $ingroups_value = ' -ALL-INGROUPS- -';
+            if (OSDpreg_match('/ -ALL-SCRIPTS- /',$scripts_value)) $scripts_value = ' -ALL-SCRIPTS- -';
+            if (OSDpreg_match('/ -ALL-EMAIL-TEMPLATES- /',$emails_value)) $emails_value = ' -ALL-EMAIL-TEMPLATES- -';
 
             $stmt=sprintf($stmt,
                 mres($user_group),mres($group_name),mres($campaigns_value),mres($ingroups_value),mres($scripts_value),mres($emails_value),
@@ -188,9 +188,9 @@ if ($ADD==411111) {
 ######################
 
 if ($ADD==511111) {
-    if ($LOG['allowed_campaignsALL'] < 1 and !(preg_match('/^(admin|6666)$/',$PHP_AUTH_USER) and $LOG['user_level']>=9)) {
+    if ($LOG['allowed_campaignsALL'] < 1 and !(OSDpreg_match('/^(admin|6666)$/',$PHP_AUTH_USER) and $LOG['user_level']>=9)) {
         echo "<br><font color=red>USER GROUP NOT DELETED - You may only view your User Group resources.</font><br>\n";
-    } elseif ( (strlen($user_group) < 2) or ($LOGdelete_user_groups < 1) ) {
+    } elseif ( (OSDstrlen($user_group) < 2) or ($LOG['delete_user_groups'] < 1) ) {
         echo "<br><font color=red>USER GROUP NOT DELETED - Please go back and look at the data you entered\n";
         echo "<br>User_group be at least 2 characters in length</font><br>\n";
     } else {
@@ -205,19 +205,19 @@ if ($ADD==511111) {
 ######################
 
 if ($ADD==611111) {
-    if ($LOG['allowed_campaignsALL'] < 1 and !(preg_match('/^(admin|6666)$/',$PHP_AUTH_USER) and $LOG['user_level']>=9)) {
+    if ($LOG['allowed_campaignsALL'] < 1 and !(OSDpreg_match('/^(admin|6666)$/',$PHP_AUTH_USER) and $LOG['user_level']>=9)) {
         echo "<br><font color=red>USER GROUP NOT DELETED - You may only view your User Group resources.</font><br>\n";
-    } elseif ( (strlen($user_group) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_user_groups < 1) ) {
+    } elseif ( (OSDstrlen($user_group) < 2) or ($CoNfIrM != 'YES') or ($LOG['delete_user_groups'] < 1) ) {
         echo "<br><font color=red>USER GROUP NOT DELETED - Please go back and look at the data you entered\n";
         echo "<br>User_group be at least 2 characters in length</font><br>\n";
     } else {
-        $stmt = sprintf("SELECT count(*) FROM osdial_users WHERE user_group='%s';",$user_group);
+        $stmt = sprintf("SELECT count(*) FROM osdial_users WHERE user_group='%s';",mres($user_group));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         $users_count = $row[0];
 
         if ($users_count==0) {
-            $stmt="DELETE FROM osdial_user_groups WHERE user_group='$user_group' LIMIT 1;";
+            $stmt=sprintf("DELETE FROM osdial_user_groups WHERE user_group='%s' LIMIT 1;",mres($user_group));
             $rslt=mysql_query($stmt, $link);
 
             ### LOG CHANGES TO LOG FILE ###
@@ -242,7 +242,7 @@ if ($ADD==611111) {
 
 if ($ADD==311111) {
     if ($LOG['modify_usergroups'] == 1) {
-        $stmt = sprintf("SELECT * FROM osdial_user_groups WHERE user_group IN %s AND user_group='%s';",$LOG['allowed_usergroupsSQL'],$user_group);
+        $stmt = sprintf("SELECT * FROM osdial_user_groups WHERE user_group IN %s AND user_group='%s';",$LOG['allowed_usergroupsSQL'],mres($user_group));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         $user_group = $row[0];
@@ -300,7 +300,7 @@ if ($ADD==311111) {
             echo "        <select name=company_id>\n";
             foreach ($comps as $comp) {
                 $csel = "";
-                if ((substr($user_group,0,3) * 1 - 100) == $comp['id']) $csel = "selected";
+                if ((OSDsubstr($user_group,0,3) * 1 - 100) == $comp['id']) $csel = "selected";
                 echo "          <option value=$comp[id] $csel>" . (($comp['id'] * 1) + 100) . ": " . $comp['name'] . "</option>\n";
             }
             echo "        </select>\n";
@@ -308,7 +308,7 @@ if ($ADD==311111) {
             echo "        <input type=hidden name=company_id value=$LOG[company_id]>\n";
         }
         $mcug = $user_group;
-        if ($LOG['multicomp']>0 and preg_match($LOG['companiesRE'],$user_group)) $mcug = substr($user_group,3);
+        if ($LOG['multicomp']>0 and OSDpreg_match($LOG['companiesRE'],$user_group)) $mcug = OSDsubstr($user_group,3);
         echo "        <input type=text name=user_group size=15 maxlength=20 value=\"$mcug\">\n";
         echo "        $NWB#osdial_user_groups-user_group$NWE\n";
         echo "      </td>\n";
@@ -334,14 +334,14 @@ if ($ADD==311111) {
         echo "      <td align=left>Campaign</td>\n";
         echo "    </tr>\n";
         $sel = '';
-        if (preg_match('/ -ALL-CAMPAIGNS- /',$allowed_campaigns)) $sel='checked';
+        if (OSDpreg_match('/ -ALL-CAMPAIGNS- /',$allowed_campaigns)) $sel='checked';
         echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
         echo "      <td align=center class=tabinput><input type=checkbox name=campaigns_values[] id=campaigns_values value=\"-ALL-CAMPAIGNS-\" $sel onclick=\"var ctmp=this.checked; for(var i=0;i<document.getElementsByName('campaigns_values[]').length;i++) { document.getElementsByName('campaigns_values[]')[i].checked=false; }; this.checked=ctmp;\"></td>\n";
         echo "      <td align=left><b><label for=campaigns_values>ALL-CAMPAIGNS -</label></b></td>\n";
         echo "    </tr>\n";
         foreach ($acampaigns as $campaign) {
             $sel = '';
-            if (preg_match('/ ' . $campaign['campaign_id'] . ' /',$allowed_campaigns)) $sel='checked';
+            if (OSDpreg_match('/ ' . $campaign['campaign_id'] . ' /',$allowed_campaigns)) $sel='checked';
             echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
             echo "      <td align=center class=tabinput><input type=checkbox name=campaigns_values[] id=campaigns_values" . $campaign['campaign_id'] . " value=\"" . $campaign['campaign_id'] . "\" $sel onclick=\"document.getElementById('campaigns_values').checked=false;\"></td>\n";
             $ccstyle=''; if ($campaign['active']=='N') $ccstyle=' style="color:#800000;"';
@@ -365,15 +365,15 @@ if ($ADD==311111) {
         echo "      <td align=left>Inbound Group</td>\n";
         echo "    </tr>\n";
         $sel = '';
-        if (preg_match('/ -ALL-INGROUPS- /',$allowed_ingroups)) $sel='checked';
+        if (OSDpreg_match('/ -ALL-INGROUPS- /',$allowed_ingroups)) $sel='checked';
         echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
         echo "      <td align=center class=tabinput><input type=checkbox name=ingroups_values[] id=ingroups_values value=\"-ALL-INGROUPS-\" $sel onclick=\"var igtmp=this.checked; for(var i=0;i<document.getElementsByName('ingroups_values[]').length;i++) { if (typeof(document.getElementsByName('ingroups_values[]')[i].checked)!='undefined') document.getElementsByName('ingroups_values[]')[i].checked=false; }; this.checked=igtmp;\"></td>\n";
         echo "      <td align=left><b><label for=ingroups_values>ALL-INGROUPS -</label></b></td>\n";
         echo "    </tr>\n";
         foreach ($aingroups as $ingroup) {
             $sel = '';
-            if (preg_match('/ ' . $ingroup['group_id'] . ' /',$allowed_ingroups)) $sel='checked';
-            if (preg_match('/^A2A/',$ingroup['group_id'])) {
+            if (OSDpreg_match('/ ' . $ingroup['group_id'] . ' /',$allowed_ingroups)) $sel='checked';
+            if (OSDpreg_match('/^A2A/',$ingroup['group_id'])) {
                 echo "<input type=hidden name=ingroups_values[] id=ingroups_values" . $ingroup['group_id'] . " value=\"" . $ingroup['group_id'] . "\">";
             } else {
                 echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
@@ -400,14 +400,14 @@ if ($ADD==311111) {
         echo "      <td align=left>Script</td>\n";
         echo "    </tr>\n";
         $sel = '';
-        if (preg_match('/ -ALL-SCRIPTS- /',$allowed_scripts)) $sel='checked';
+        if (OSDpreg_match('/ -ALL-SCRIPTS- /',$allowed_scripts)) $sel='checked';
         echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
         echo "      <td align=center class=tabinput><input type=checkbox name=scripts_values[] id=scripts_values value=\"-ALL-SCRIPTS-\" $sel onclick=\"var ctmp=this.checked; for(var i=0;i<document.getElementsByName('scripts_values[]').length;i++) { document.getElementsByName('scripts_values[]')[i].checked=false; }; this.checked=ctmp;\"></td>\n";
         echo "      <td align=left><b><label for=scripts_values>ALL-SCRIPTS -</label></b></td>\n";
         echo "    </tr>\n";
         foreach ($scripts as $script) {
             $sel = '';
-            if (preg_match('/ ' . $script['script_id'] . ' /',$allowed_scripts)) $sel='checked';
+            if (OSDpreg_match('/ ' . $script['script_id'] . ' /',$allowed_scripts)) $sel='checked';
             echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
             echo "      <td align=center class=tabinput><input type=checkbox name=scripts_values[] id=scripts_values" . $script['script_id'] . " value=\"" . $script['script_id'] . "\" $sel onclick=\"document.getElementById('scripts_values').checked=false;\"></td>\n";
             $scstyle=''; if ($script['active']=='N') $scstyle=' style="color:#800000;"';
@@ -431,14 +431,14 @@ if ($ADD==311111) {
             echo "      <td align=left>Template</td>\n";
             echo "    </tr>\n";
             $sel = '';
-            if (preg_match('/ -ALL-EMAIL-TEMPLATES- /',$allowed_email_templates)) $sel='checked';
+            if (OSDpreg_match('/ -ALL-EMAIL-TEMPLATES- /',$allowed_email_templates)) $sel='checked';
             echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
             echo "      <td align=center class=tabinput><input type=checkbox name=emails_values[] id=emails_values value=\"-ALL-EMAIL-TEMPLATES-\" $sel onclick=\"var ctmp=this.checked; for(var i=0;i<document.getElementsByName('emails_values[]').length;i++) { document.getElementsByName('emails_values[]')[i].checked=false; }; this.checked=ctmp;\"></td>\n";
             echo "      <td align=left><b><label for=emails_values>ALL-EMAIL-TEMPLATES - </label></b></td>\n";
             echo "    </tr>\n";
             foreach ($emails as $email) {
                 $sel = '';
-                if (preg_match('/ ' . $email['et_id'] . ' /',$allowed_email_templates)) $sel='checked';
+                if (OSDpreg_match('/ ' . $email['et_id'] . ' /',$allowed_email_templates)) $sel='checked';
                 echo "    <tr bgcolor=$oddrows class=\"row font1\">\n";
                 echo "      <td align=center class=tabinput><input type=checkbox name=emails_values[] id=emails_values" . $email['et_id'] . " value=\"" . $email['et_id'] . "\" $sel onclick=\"document.getElementById('emails_values').checked=false;\"></td>\n";
                 $etstyle=''; if ($email['active']=='N') $etstyle=' style="color:#800000;"';
@@ -758,7 +758,7 @@ if ($ADD==311111) {
 
         ### List agents within this group ###
         $active_confs = 0;
-        $stmt=sprintf("SELECT user,full_name,user_level FROM osdial_users WHERE user_group IN %s AND user_group='%s';",$LOG['allowed_usergroupsSQL'],$user_group);
+        $stmt=sprintf("SELECT user,full_name,user_level FROM osdial_users WHERE user_group IN %s AND user_group='%s';",$LOG['allowed_usergroupsSQL'],mres($user_group));
         $rsltx=mysql_query($stmt, $link);
         $users_to_print = mysql_num_rows($rsltx);
         echo "  <br>\n";
@@ -807,12 +807,12 @@ if ($ADD==311111) {
 if ($ADD==8111) {
     if ($LOG['modify_usergroups'] == 1) {
         if ($SUB == 89) {
-            $stmt="UPDATE osdial_callbacks SET status='INACTIVE' WHERE user_group='$user_group' AND status='LIVE' AND callback_time<'$past_month_date';";
+            $stmt=sprintf("UPDATE osdial_callbacks SET status='INACTIVE' WHERE user_group='%s' AND status='LIVE' AND callback_time<'%s';",mres($user_group),mres($past_month_date));
             $rslt=mysql_query($stmt, $link);
             echo "<br>UserGroup ($user_group) callback listings LIVE for more than one month have been made INACTIVE.\n";
         }
         if ($SUB == 899) {
-            $stmt="UPDATE osdial_callbacks SET status='INACTIVE' WHERE user_group='$user_group' AND status='LIVE' AND callback_time<'$past_week_date';";
+            $stmt=sprintf("UPDATE osdial_callbacks SET status='INACTIVE' WHERE user_group='%s' AND status='LIVE' AND callback_time<'%s';",mres($user_group),mres($past_week_date));
             $rslt=mysql_query($stmt, $link);
             echo "<br>UserGroup ($user_group) callback listings LIVE for more than one week have been made INACTIVE.\n";
         }

@@ -25,9 +25,9 @@
 #
 
 if ($ADD==1121) {
-    if ($LOGmodify_leads==1 and $LOGuser_level > 7) {
+    if ($LOG['modify_leads']==1 and $LOG['user_level'] > 7) {
 
-        if (strlen($phone_number)<6) $phone_number=$old_phone;
+        if (OSDstrlen($phone_number)<6) $phone_number=$old_phone;
 
         echo "<center><br><font color=$default_text size=+1>LEAD MODIFICATION</font><br>\n";
         if ($LOG['view_lead_search']) echo "      <a target=\"_parent\" href=\"./admin.php?ADD=999999&SUB=27\">[ Basic Search ]</a>\n";
@@ -46,7 +46,7 @@ if ($ADD==1121) {
 				
 	        ### inactivate osdial_callbacks record for this lead 
 	        if ($dispo != $status and $dispo == 'CBHOLD') {
-		        $stmt = sprintf("UPDATE osdial_callbacks set status='INACTIVE' where lead_id='%s' and status='ACTIVE';", mres($lead_id));
+		        $stmt = sprintf("UPDATE osdial_callbacks SET status='INACTIVE' WHERE lead_id='%s' AND status='ACTIVE';", mres($lead_id));
 		        if ($DB) echo "|$stmt|\n";
 		        $rslt=mysql_query($stmt, $link);
 		        echo "<br>osdial_callback record inactivated: $lead_id<br>\n";
@@ -54,7 +54,7 @@ if ($ADD==1121) {
 
 	        ### inactivate osdial_callbacks record for this lead 
 	        if ($dispo != $status and $dispo == 'CALLBK') {
-		        $stmt="UPDATE osdial_callbacks set status='INACTIVE' where lead_id='" . mres($lead_id) . "' and status IN('ACTIVE','LIVE');";
+		        $stmt=sprintf("UPDATE osdial_callbacks SET status='INACTIVE' WHERE lead_id='%s' AND status IN('ACTIVE','LIVE');",mres($lead_id));
 		        if ($DB) echo "|$stmt|\n";
 		        $rslt=mysql_query($stmt, $link);
 		        echo "<br>osdial_callback record inactivated: $lead_id<br>\n";
@@ -62,7 +62,7 @@ if ($ADD==1121) {
 			
 	        ### add lead to the internal DNC list 
 	        if ($dispo != $status and $status == 'DNC') {
-                if ($LOG['multicomp_user'] > 0 and preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
+                if ($LOG['multicomp_user'] > 0 and OSDpreg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
                     $stmt = sprintf("INSERT INTO osdial_dnc_company (company_id,phone_number) values('%s','%s');", mres($LOG['company_id']),mres($phone_number));
                 } else {
                     $stmt = sprintf("INSERT INTO osdial_dnc (phone_number) values('%s');", mres($phone_number));
@@ -74,28 +74,28 @@ if ($ADD==1121) {
 
 	        ### update last record in osdial_log table
 	        if ($dispo != $status and $modify_logs > 0) {
-		        $stmt="UPDATE osdial_log set status='" . mres($status) . "' where lead_id='" . mres($lead_id) . "' order by call_date desc limit 1";
+		        $stmt=sprintf("UPDATE osdial_log SET status='%s' WHERE lead_id='%s' ORDER BY call_date DESC LIMIT 1;",mres($status),mres($lead_id));
 		        if ($DB) echo "|$stmt|\n";
 		        $rslt=mysql_query($stmt, $link);
 	        }
 			
 	        ### update last record in osdial_closer_log table
 	        if (($dispo != $status) and ($modify_closer_logs > 0)) {
-		        $stmt="UPDATE osdial_closer_log set status='" . mres($status) . "' where lead_id='" . mres($lead_id) . "' order by call_date desc limit 1";
+		        $stmt=sprintf("UPDATE osdial_closer_log SET status='%s' WHERE lead_id='%s' ORDER BY call_date DESC LIMIT 1;",mres($status),mres($lead_id));
 		        if ($DB) echo "|$stmt|\n";
 		        $rslt=mysql_query($stmt, $link);
 	        }
 			
 	        ### update last record in osdial_agent_log table
 	        if (($dispo != $status) and ($modify_agent_logs > 0)) {
-		        $stmt="UPDATE osdial_agent_log set status='" . mres($status) . "' where lead_id='" . mres($lead_id) . "' order by agent_log_id desc limit 1";
+		        $stmt=sprintf("UPDATE osdial_agent_log SET status='%s' where lead_id='%s' ORDER BY agent_log_id DESC LIMIT 1;",mres($status),mres($lead_id));
 		        if ($DB) echo "|$stmt|\n";
 		        $rslt=mysql_query($stmt, $link);
 	        }
 			
 	        ### insert a NEW record to the osdial_closer_log table 
 	        if ($add_closer_record > 0) {
-		        $stmt="INSERT INTO osdial_closer_log (lead_id,list_id,campaign_id,call_date,start_epoch,end_epoch,length_in_sec,status,phone_code,phone_number,user,comments,processed) values('" . mres($lead_id) . "','" . mres($list_id) . "','" . mres($campaign_id) . "','" . mres($parked_time) . "','$SQLdate','$STARTtime','1','" . mres($status) . "','" . mres($phone_code) . "','" . mres($phone_number) . "','" . mres($PHP_AUTH_USER) . "','" . mres($comments) . "','Y')";
+		        $stmt=sprintf("INSERT INTO osdial_closer_log (lead_id,list_id,campaign_id,call_date,start_epoch,end_epoch,length_in_sec,status,phone_code,phone_number,user,comments,processed) VALUES('%s','%s','%s','%s','%s','%s','1','%s','%s','%s','%s','%s','Y');",mres($lead_id),mres($list_id),mres($campaign_id),mres($parked_time),mres($SQLdate),mres($STARTtime),mres($status),mres($phone_code),mres($phone_number),mres($PHP_AUTH_USER),mres($comments));
 		        if ($DB) echo "|$stmt|\n";
 		        $rslt=mysql_query($stmt, $link);
 	        }
@@ -112,8 +112,8 @@ if ($ADD==1121) {
 
             if ($VARclient == 'OSDR') {
                 if ($confirm_sale > 0) {
-                    if (strlen($confirm_id) > 0) {
-                        $stmt = sprintf("UPDATE osdial_list SET status='%s' WHERE lead_id='%s';", mres($confirm_status), mres($confirm_id));
+                    if (OSDstrlen($confirm_id) > 0) {
+                        $stmt = sprintf("UPDATE osdial_list SET status='%s' WHERE lead_id='%s';",mres($confirm_status),mres($confirm_id));
                         $rslt = mysql_query($stmt, $link);
                     }
                 }
@@ -133,7 +133,7 @@ if ($ADD==1121) {
 		        $log_campaign = '';
 		        while ($logs_to_print > $u) {
 			        $row=mysql_fetch_row($rslt);
-			        if (strlen($log_campaign)<1) $log_campaign = $row[3];
+			        if (OSDstrlen($log_campaign)<1) $log_campaign = $row[3];
 			        $u++;
 			        $call_log .= "  <tr " . bgcolor($u) . " class=\"row font1\" title=\"Date/Time: $row[4]\" style=\"white-space:nowrap;\">\n";
 			        $call_log .= "    <td>$u</td>\n";
@@ -164,7 +164,7 @@ if ($ADD==1121) {
 		        $Alog_campaign = '';
 		        while ($Alogs_to_print > $y) {
 			        $row=mysql_fetch_row($rslt);
-			        if (strlen($Alog_campaign)<1) $Alog_campaign = $row[5];
+			        if (OSDstrlen($Alog_campaign)<1) $Alog_campaign = $row[5];
 			        $y++;
 			        $agent_log .= "  <tr " . bgcolor($y) . " class=\"row font1\" title=\"Date/Time: $row[3]\" style=\"white-space:nowrap;\">\n";
 			        $agent_log .= "    <td>$y</td>\n";
@@ -197,7 +197,7 @@ if ($ADD==1121) {
 		        $Clog_campaign = '';
 		        while ($Clogs_to_print > $y) {
 			        $row=mysql_fetch_row($rslt);
-			        if (strlen($Clog_campaign)<1) $Clog_campaign = $row[3];
+			        if (OSDstrlen($Clog_campaign)<1) $Clog_campaign = $row[3];
 			        $y++;
 			        $closer_log .= "  <tr " . bgcolor($y) . " class=\"row font1\" title=\"Date/Time: $row[4]\" style=\"white-space:nowrap;\">\n";
 			        $closer_log .= "    <td>$y</td>\n";
@@ -219,10 +219,10 @@ if ($ADD==1121) {
 		        }
 
                 if ($save_aff > 0) {
-                    if (strlen($alf_id) > 0) {
-                        $stmt = sprintf("UPDATE osdial_list_fields SET value='%s' WHERE id='%s';",mres($alf_val), mres($alf_id));
+                    if (OSDstrlen($alf_id) > 0) {
+                        $stmt = sprintf("UPDATE osdial_list_fields SET value='%s' WHERE id='%s';",mres($alf_val),mres($alf_id));
                     } else {
-                        $stmt = sprintf("INSERT INTO osdial_list_fields SET lead_id='%s',field_id='%s',value='%s';", mres($ld['lead_id']), mres($alf_fld_id), mres($alf_val));
+                        $stmt = sprintf("INSERT INTO osdial_list_fields SET lead_id='%s',field_id='%s',value='%s';",mres($ld['lead_id']),mres($alf_fld_id),mres($alf_val));
                     }
                     $rslt = mysql_query($stmt, $link);
                 }
@@ -381,7 +381,7 @@ if ($ADD==1121) {
 		        $DS=0;
 		        while ($statuses_to_print > $o) {
 			        $rowx=mysql_fetch_row($rslt);
-			        if (strlen($ld['status']) == strlen($rowx[0]) and preg_match('/'.$ld['status'].'/',$rowx[0])) {
+			        if (OSDstrlen($ld['status']) == OSDstrlen($rowx[0]) and OSDpreg_match('/'.$ld['status'].'/',$rowx[0])) {
                         $statuses_list .= "          <option SELECTED value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
                         $DS++;
                     } else {
@@ -390,15 +390,15 @@ if ($ADD==1121) {
 			        $o++;
 		        }
 			
-                if (strlen($log_campaign)>0) {
-		            $stmt = sprintf("SELECT * FROM osdial_campaign_statuses WHERE selectable='Y' AND campaign_id='%s' ORDER BY status;", mres($log_campaign));
+                if (OSDstrlen($log_campaign)>0) {
+		            $stmt = sprintf("SELECT * FROM osdial_campaign_statuses WHERE selectable='Y' AND campaign_id='%s' ORDER BY status;",mres($log_campaign));
 		            $rslt=mysql_query($stmt, $link);
 		            $CAMPstatuses_to_print = mysql_num_rows($rslt);
 			
 		            $o=0;
 		            while ($CAMPstatuses_to_print > $o) {
 			            $rowx=mysql_fetch_row($rslt);
-			            if (strlen($ld['status']) ==  strlen($rowx[0]) and preg_match('/'.$ld['status'].'/',$rowx[0]) ) {
+			            if (OSDstrlen($ld['status']) ==  OSDstrlen($rowx[0]) and OSDpreg_match('/'.$ld['status'].'/',$rowx[0]) ) {
                             $statuses_list .= "          <option SELECTED value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";
                             $DS++;
                         } else {
@@ -412,7 +412,7 @@ if ($ADD==1121) {
 		        if ($DS < 1) $statuses_list .= "          <option SELECTED value=\"$ld[status]\">$ld[status]</option>\n";
 	            echo "$statuses_list";
 	            echo "            </select>\n";
-                if (strlen($log_campaign)>0) echo "             <font size=1><i>(with $log_campaign statuses)</i></font>\n";
+                if (OSDstrlen($log_campaign)>0) echo "             <font size=1><i>(with $log_campaign statuses)</i></font>\n";
                 echo "          </td>\n";
                 echo "        </tr>\n";
 			
@@ -514,7 +514,7 @@ if ($ADD==1121) {
                                         $bgcolor = bgcolor($u);
                                         $alf = get_first_record($link, 'osdial_list_fields', '*', sprintf("lead_id='%s' AND field_id='%s'",$ld['lead_id'],$affld['id']));
                                         if ($affrm['deleted'] > 0 or $affld['deleted'] > 0) {
-                                            if (strlen($alf['value']) > 0) {
+                                            if (OSDstrlen($alf['value']) > 0) {
                                                 $afldel = "color=red";
                                                 $bgcolor = 'bgcolor=#FFA07A title="This field has been deleted from the system, however, this lead still has data for it."';
                                             } else {
@@ -558,7 +558,7 @@ if ($ADD==1121) {
 			
 		        if ($ld['status'] == 'CALLBK' or $ld['status'] == 'CBHOLD') {
 			        ### find any osdial_callback records for this lead 
-			        $stmt="SELECT * FROM osdial_callbacks WHERE lead_id='" . mres($ld['lead_id']) . "' AND status IN('ACTIVE','LIVE') ORDER BY callback_id DESC;";
+			        $stmt=sprintf("SELECT * FROM osdial_callbacks WHERE lead_id='%s' AND status IN('ACTIVE','LIVE') ORDER BY callback_id DESC;",mres($ld['lead_id']));
 			        if ($DB) echo "|$stmt|\n";
 			        $rslt=mysql_query($stmt, $link);
 			        $CB_to_print = mysql_num_rows($rslt);
@@ -709,8 +709,8 @@ if ($ADD==1121) {
 	                foreach ($rlogs as $rl) {
 		                $location = $rl['location'];
 		                $locat = ellipse($location,27,true);
-		                if (preg_match("/http/",$location) or preg_match("/^\/\//", $location)) {
-			                $location = preg_replace("/^\/\//","/",$location);
+		                if (OSDpreg_match("/http/",$location) or OSDpreg_match("/^\/\//", $location)) {
+			                $location = OSDpreg_replace("/^\/\//","/",$location);
 			                $location = "<a href=\"$location\">$locat</a>";
 		                } else {
 			                $location = $locat;
@@ -754,7 +754,7 @@ if ($ADD==1121) {
                         echo "</form>\n";
                     }
                 }
-                if (strlen($campaign_id)>0) {
+                if (OSDstrlen($campaign_id)>0) {
                     $camp = get_first_record($link, 'osdial_campaigns', '*', sprintf("campaign_id='%s'",mres($campaign_id)));
                     $wvars = '';
                     if (is_array($wfv)) {
@@ -764,12 +764,12 @@ if ($ADD==1121) {
                     }
                     function pwfa($wfv, $k) { return $wfv[$k]; };
                     #$wfa1 = $camp['web_form_address'] . '?1=1' . $wvars;
-                    if (preg_match('/../',$camp['web_form_address'])) {
-                        $wfa1 = preg_replace('/\[\[(.*)\]\]/ime', "pwfa(\$wfv,'\\1')", $camp['web_form_address'] . '?1=1' . $wvars);
+                    if (OSDpreg_match('/../',$camp['web_form_address'])) {
+                        $wfa1 = OSDpreg_replace('/\[\[(.*)\]\]/ime', "pwfa(\$wfv,'\\1')", $camp['web_form_address'] . '?1=1' . $wvars);
                     }
                     #$wfa2 = $camp['web_form_address2'] . '?1=1' . $wvars;
-                    if (preg_match('/../',$camp['web_form_address2'])) {
-                        $wfa2 = preg_replace('/\[\[(.*)\]\]/ime', "pwfa(\$wfv,'\\1')", $camp['web_form_address2'] . '?1=1' . $wvars);
+                    if (OSDpreg_match('/../',$camp['web_form_address2'])) {
+                        $wfa2 = OSDpreg_replace('/\[\[(.*)\]\]/ime', "pwfa(\$wfv,'\\1')", $camp['web_form_address2'] . '?1=1' . $wvars);
                     }
                     echo "    <br><br><br><center><font size=3><a target=\"_new\" href=\"" . $wfa1 . "\">WEBFORM1</a>&nbsp;&nbsp;&nbsp;<a target=\"_new\" href=\"" . $wfa2 . "\">WEBFORM2</a></font></center>";
                 }

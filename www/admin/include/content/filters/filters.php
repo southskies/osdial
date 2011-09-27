@@ -28,7 +28,7 @@
 
 if ($ADD==11111111)
 {
-	if ($LOGmodify_filters==1)
+	if ($LOG['modify_filters']==1)
 	{
 	echo "<center><br><font color=$default_text size=+1>ADD NEW FILTER</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=21111111>\n";
@@ -67,14 +67,14 @@ if ($ADD==21111111)
 {
     $prelead_filter_id = $lead_filter_id;
     if ($LOG['multicomp'] > 0) $prelead_filter_id = (($company_id * 1) + 100) . $lead_filter_id;
-	$stmt="SELECT count(*) from osdial_lead_filters where lead_filter_id='$prelead_filter_id';";
+	$stmt=sprintf("SELECT count(*) FROM osdial_lead_filters WHERE lead_filter_id='%s';",mres($prelead_filter_id));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
 		{echo "<br><font color=red>FILTER NOT ADDED - there is already a filter entry with this ID</font>\n";}
 	else
 		{
-		 if ( (strlen($lead_filter_id) < 2) or (strlen($lead_filter_name) < 2) or (strlen($lead_filter_sql) < 2) )
+		 if ( (OSDstrlen($lead_filter_id) < 2) or (OSDstrlen($lead_filter_name) < 2) or (OSDstrlen($lead_filter_sql) < 2) )
 			{
 			 echo "<br><font color=red>FILTER NOT ADDED - Please go back and look at the data you entered\n";
 			 echo "<br>Filter ID, name and SQL must be at least 2 characters in length</font><br>\n";
@@ -82,8 +82,7 @@ if ($ADD==21111111)
 		 else
 			{
             if ($LOG['multicomp'] > 0) $lead_filter_id = (($company_id * 1) + 100) . $lead_filter_id;
-			$lead_filter_sql = mysql_real_escape_string($lead_filter_sql);
-			$stmt="INSERT INTO osdial_lead_filters SET lead_filter_id='$lead_filter_id',lead_filter_name='$lead_filter_name',lead_filter_comments='$lead_filter_comments',lead_filter_sql='$lead_filter_sql';";
+			$stmt=sprintf("INSERT INTO osdial_lead_filters SET lead_filter_id='%s',lead_filter_name='%s',lead_filter_comments='%s',lead_filter_sql='%s';",mres($lead_filter_id),mres($lead_filter_name),mres($lead_filter_comments),mres($lead_filter_sql));
 			$rslt=mysql_query($stmt, $link);
 
 			echo "<br><B><font color=$default_text>FILTER ADDED: $lead_filter_id</font></B>\n";
@@ -107,9 +106,9 @@ $ADD=10000000;
 
 if ($ADD==41111111)
 {
-	if ($LOGmodify_filters==1)
+	if ($LOG['modify_filters']==1)
 	{
-	 if ( (strlen($lead_filter_id) < 2) or (strlen($lead_filter_name) < 2) or (strlen($lead_filter_sql) < 2) )
+	 if ( (OSDstrlen($lead_filter_id) < 2) or (OSDstrlen($lead_filter_name) < 2) or (OSDstrlen($lead_filter_sql) < 2) )
 		{
 		 echo "<br><font color=red>FILTER NOT MODIFIED - Please go back and look at the data you entered\n";
 		 echo "<br>Filter ID, name and SQL must be at least 2 characters in length</font><br>\n";
@@ -117,7 +116,7 @@ if ($ADD==41111111)
 	 else
 		{
 		$lead_filter_sql = mysql_real_escape_string($lead_filter_sql);
-		$stmt="UPDATE osdial_lead_filters set lead_filter_name='$lead_filter_name', lead_filter_comments='$lead_filter_comments', lead_filter_sql='$lead_filter_sql' where lead_filter_id='$lead_filter_id';";
+		$stmt=sprintf("UPDATE osdial_lead_filters SET lead_filter_name='%s',lead_filter_comments='%s',lead_filter_sql='%s' WHERE lead_filter_id='%s';",mres($lead_filter_name),mres($lead_filter_comments),mres($lead_filter_sql),mres($lead_filter_id));
 		$rslt=mysql_query($stmt, $link);
 
 		echo "<br><B><font color=$default_text>FILTER MODIFIED</font></B>\n";
@@ -144,7 +143,7 @@ $ADD=31111111;	# go to filter modification form below
 
 if ($ADD==51111111)
 {
-	 if ( (strlen($lead_filter_id) < 2) or ($LOGdelete_filters < 1) )
+	 if ( (OSDstrlen($lead_filter_id) < 2) or ($LOG['delete_filters'] < 1) )
 		{
 		 echo "<br><font color=red>FILTER NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Filter ID must be at least 2 characters in length</font><br>\n";
@@ -165,14 +164,14 @@ $ADD='31111111';		# go to filter modification below
 
 if ($ADD==61111111)
 {
-	 if ( (strlen($lead_filter_id) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_filters < 1) )
+	 if ( (OSDstrlen($lead_filter_id) < 2) or ($CoNfIrM != 'YES') or ($LOG['delete_filters'] < 1) )
 		{
 		 echo "<br><font color=red>FILTER NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Filter ID must be at least 2 characters in length</font><br>\n";
 		}
 	 else
 		{
-		$stmt="DELETE from osdial_lead_filters where lead_filter_id='$lead_filter_id' limit 1;";
+		$stmt=sprintf("DELETE FROM osdial_lead_filters WHERE lead_filter_id='%s' LIMIT 1;",mres($lead_filter_id));
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -197,9 +196,9 @@ $ADD='10000000';		# go to filter list
 
 if ($ADD==31111111)
 {
-	if ($LOGmodify_filters==1)
+	if ($LOG['modify_filters']==1)
 	{
-	$stmt="SELECT * from osdial_lead_filters where lead_filter_id='$lead_filter_id';";
+	$stmt=sprintf("SELECT * FROM osdial_lead_filters WHERE lead_filter_id='%s';",mres($lead_filter_id));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$lead_filter_name =		$row[1];
@@ -217,7 +216,7 @@ if ($ADD==31111111)
 	echo "</table></form>\n";
 
 		##### get campaigns listing for dynamic pulldown
-		$stmt="SELECT campaign_id,campaign_name from osdial_campaigns order by campaign_id";
+		$stmt="SELECT campaign_id,campaign_name FROM osdial_campaigns ORDER BY campaign_id;";
 		$rslt=mysql_query($stmt, $link);
 		$campaigns_to_print = mysql_num_rows($rslt);
 		$campaigns_list='';
@@ -241,7 +240,7 @@ if ($ADD==31111111)
 	echo "<br><br></center>";
 
 
-	if ($LOGdelete_filters > 0)
+	if ($LOG['delete_filters'] > 0)
 		{
 		echo "<br><br><a href=\"$PHP_SELF?ADD=51111111&lead_filter_id=$lead_filter_id\">DELETE THIS FILTER</a>\n";
 		}
@@ -261,7 +260,7 @@ if ($ADD==31111111)
 ######################
 if ($ADD==10000000)
 {
-	$stmt="SELECT * from osdial_lead_filters order by lead_filter_id";
+	$stmt="SELECT * FROM osdial_lead_filters ORDER BY lead_filter_id;";
 	$rslt=mysql_query($stmt, $link);
 	$filters_to_print = mysql_num_rows($rslt);
 

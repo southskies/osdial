@@ -35,7 +35,7 @@
 
 if ($ADD==73) {
     if ($LOG['modify_campaigns']==1) {
-        $stmt="SELECT dial_statuses,local_call_time,lead_filter_id from osdial_campaigns where campaign_id='$campaign_id';";
+        $stmt=sprintf("SELECT dial_statuses,local_call_time,lead_filter_id FROM osdial_campaigns WHERE campaign_id='%s';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         $dial_statuses = $row[0];
@@ -47,7 +47,7 @@ if ($ADD==73) {
             }
         }
 
-        $stmt="SELECT list_id,active,list_name from osdial_lists where campaign_id='$campaign_id'";
+        $stmt=sprintf("SELECT list_id,active,list_name FROM osdial_lists WHERE campaign_id='$campaign_id';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
         $lists_to_print = mysql_num_rows($rslt);
         $camp_lists='';
@@ -55,13 +55,13 @@ if ($ADD==73) {
         while ($lists_to_print > $o) {
             $rowx=mysql_fetch_row($rslt);
             $o++;
-            if (preg_match("/Y/", $rowx[1])) $camp_lists .= "'$rowx[0]',";
+            if (OSDpreg_match("/Y/", $rowx[1])) $camp_lists .= "'$rowx[0]',";
         }
-        $camp_lists = preg_replace('/,$/','',$camp_lists);
+        $camp_lists = OSDpreg_replace('/,$/','',$camp_lists);
 
         $fSQL = '';
         $Tfilter = get_first_record($link, 'osdial_lead_filters', '*', sprintf("lead_filter_id='%s'",mres($lead_filter_id)) );
-        if (strlen($Tfilter['lead_filter_sql'])>4) $fSQL = "and " . preg_replace('/^and|and$|^or|or$/i','',$Tfilter['lead_filter_sql']);
+        if (OSDstrlen($Tfilter['lead_filter_sql'])>4) $fSQL = "and " . OSDpreg_replace('/^and|and$|^or|or$/i','',$Tfilter['lead_filter_sql']);
 
         echo "<br><br>\n";
         echo "<b>Show Dialable Leads Count</b> -<br><br>\n";
@@ -87,7 +87,7 @@ if ($ADD==73) {
 
 if ($ADD==11)
 {
-    if ($LOGmodify_campaigns==1)
+    if ($LOG['modify_campaigns']==1)
     {
     echo "<center><br><font color=$default_text size=+1>ADD A NEW CAMPAIGN</font><form action=$PHP_SELF method=POST><br><br>\n";
     echo "<input type=hidden name=DB value=$DB>\n";
@@ -164,7 +164,7 @@ if ($ADD==11)
 
 if ($ADD==12)
 {
-    if ($LOGmodify_campaigns==1)
+    if ($LOG['modify_campaigns']==1)
     {
     echo "<center><br><font color=$default_text size=+1>COPY A CAMPAIGN</font><form action=$PHP_SELF method=POST><br><br>\n";
     echo "<input type=hidden name=DB value=$DB>\n";
@@ -187,7 +187,7 @@ if ($ADD==12)
 
     echo "<tr bgcolor=$oddrows><td align=right>Source Campaign: </td><td align=left><select size=1 name=source_campaign_id>\n";
 
-        $stmt=sprintf("SELECT campaign_id,campaign_name from osdial_campaigns where campaign_id IN %s order by campaign_id",$LOG['allowed_campaignsSQL']);
+        $stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE campaign_id IN %s ORDER BY campaign_id;",$LOG['allowed_campaignsSQL']);
         $rslt=mysql_query($stmt, $link);
         $campaigns_to_print = mysql_num_rows($rslt);
         $campaigns_list='';
@@ -220,21 +220,21 @@ if ($ADD==21)
 {
     $precampaign_id = $campaign_id;
     if ($LOG['multicomp'] > 0) $precampaign_id = (($company_id * 1) + 100) . $campaign_id;
-    $stmt="SELECT count(*) from osdial_campaigns where campaign_id='$precampaign_id';";
+    $stmt=sprintf("SELECT count(*) FROM osdial_campaigns WHERE campaign_id='%s';",mres($precampaign_id));
     $rslt=mysql_query($stmt, $link);
     $row=mysql_fetch_row($rslt);
     if ($row[0] > 0)
         {echo "<br><font color=red> CAMPAIGN NOT ADDED - there is already a campaign in the system with this ID</font>\n";}
     else
         {
-        $stmt="SELECT count(*) from osdial_inbound_groups where group_id='$precampaign_id';";
+        $stmt=sprintf("SELECT count(*) FROM osdial_inbound_groups WHERE group_id='%s';",mres($precampaign_id));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         if ($row[0] > 0)
             {echo "<br><font color=red> CAMPAIGN NOT ADDED - there is already an inbound group in the system with this ID</font>\n";}
         else
             {
-             if ( (strlen($campaign_id) < 2) or (strlen($campaign_id) > 8) or (strlen($campaign_name) < 6)  or (strlen($campaign_name) > 40) )
+             if ( (OSDstrlen($campaign_id) < 2) or (OSDstrlen($campaign_id) > 8) or (OSDstrlen($campaign_name) < 6)  or (OSDstrlen($campaign_name) > 40) )
                 {
                  echo "<br><font color=red> CAMPAIGN NOT ADDED - Please go back and look at the data you entered\n";
                  echo "<br>campaign ID must be between 2 and 8 characters in length\n";
@@ -251,15 +251,15 @@ if ($ADD==21)
                 $LOG['allowed_campaignsSTR'] .= "$campaign_id:";
                 $LOG['allowed_campaigns'][] .= $campaign_id;
                 if ($LOG['allowed_campaignsALL']<1) {
-                    $stmt="UPDATE osdial_user_groups SET allowed_campaigns=' " . implode(" ",$LOG['allowed_campaigns']) . " -' WHERE user_group='$LOG[user_group]';";  
+                    $stmt=sprintf("UPDATE osdial_user_groups SET allowed_campaigns=' %s -' WHERE user_group='%s';",mres(implode(" ",$LOG['allowed_campaigns'])),mres($LOG['user_group']));  
                     $rslt=mysql_query($stmt, $link);
                 }
                 $carrier_id = $system_settings['default_carrier_id'];
                 $ets = implode(',',$email_templates);
-                $stmt="INSERT INTO osdial_campaigns (campaign_id,campaign_name,campaign_description,active,dial_status_a,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,campaign_script,get_call_launch,campaign_changedate,campaign_stats_refresh,list_order_mix,web_form_address2,allow_tab_switch,campaign_call_time,carrier_id,email_templates) values('$campaign_id','$campaign_name','$campaign_description','$active','NEW','DOWN','$park_ext','$park_file_name','" . mysql_real_escape_string($web_form_address) . "','$allow_closers','$hopper_level','$auto_dial_level','$next_agent_call','$local_call_time','$voicemail_ext','$script_id','$get_call_launch','$SQLdate','Y','DISABLED','" . mysql_real_escape_string($web_form_address2) . "','$allow_tab_switch','$campaign_call_time','$carrier_id','$ets');";
+                $stmt=sprintf("INSERT INTO osdial_campaigns (campaign_id,campaign_name,campaign_description,active,dial_status_a,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,auto_dial_level,next_agent_call,local_call_time,voicemail_ext,campaign_script,get_call_launch,campaign_changedate,campaign_stats_refresh,list_order_mix,web_form_address2,allow_tab_switch,campaign_call_time,carrier_id,email_templates) values('%s','%s','%s','%s','NEW','DOWN','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','Y','DISABLED','%s','%s','%s','%s','%s');",mres($campaign_id),mres($campaign_name),mres($campaign_description),mres($active),mres($park_ext),mres($park_file_name),mres($web_form_address),mres($allow_closers),mres($hopper_level),mres($auto_dial_level),mres($next_agent_call),mres($local_call_time),mres($voicemail_ext),mres($script_id),mres($get_call_launch),mres($SQLdate),mres($web_form_address2),mres($allow_tab_switch),mres($campaign_call_time),mres($carrier_id),mres($ets));
                 $rslt=mysql_query($stmt, $link);
 
-                $stmt="INSERT INTO osdial_campaign_stats (campaign_id) values('$campaign_id');";
+                $stmt=sprintf("INSERT INTO osdial_campaign_stats (campaign_id) VALUES('%s');",mres($campaign_id));
                 $rslt=mysql_query($stmt, $link);
 
                 echo "<!-- $stmt -->";
@@ -274,7 +274,7 @@ if ($ADD==21)
                 if ($LOG['allowed_campaignsALL']==0) {
                     $LOG['allowed_campaigns'][] = $campaign_id;
                     $campaigns_value = ' ' . implode(' ', $LOG['allowed_campaigns']) . ' -';
-                    $stmt = sprintf("UPDATE osdial_user_groups SET allowed_campaigns='%s' WHERE user_group='%s';",mres($campaigns_value),$LOG['user_group']);
+                    $stmt = sprintf("UPDATE osdial_user_groups SET allowed_campaigns='%s' WHERE user_group='%s';",mres($campaigns_value),mres($LOG['user_group']));
 				    $rslt=mysql_query($stmt, $link);
                 }
 
@@ -292,14 +292,14 @@ if ($ADD==20)
 {
     $precampaign_id = $campaign_id;
     if ($LOG['multicomp'] > 0) $precampaign_id = (($company_id * 1) + 100) . $campaign_id;
-    $stmt="SELECT count(*) from osdial_campaigns where campaign_id='$precampaign_id';";
+    $stmt=sprintf("SELECT count(*) FROM osdial_campaigns WHERE campaign_id='%s';",mres($precampaign_id));
     $rslt=mysql_query($stmt, $link);
     $row=mysql_fetch_row($rslt);
     if ($row[0] > 0)
         {echo "<br><font color=red> CAMPAIGN NOT ADDED - there is already a campaign in the system with this ID</font>\n";}
     else
         {
-         if ( (strlen($campaign_id) < 2) or (strlen($campaign_id) > 8) or  (strlen($campaign_name) < 2) or (strlen($source_campaign_id) < 2) or (strlen($source_campaign_id) > 8) )
+         if ( (OSDstrlen($campaign_id) < 2) or (OSDstrlen($campaign_id) > 8) or  (OSDstrlen($campaign_name) < 2) or (OSDstrlen($source_campaign_id) < 2) or (OSDstrlen($source_campaign_id) > 8) )
             {
              echo "<br><font color=red> CAMPAIGN NOT ADDED - Please go back and look at the data you entered\n";
              echo "<br>campaign ID must be between 2 and 8 characters in length\n";
@@ -324,40 +324,41 @@ if ($ADD==20)
             $stmt .= "list_order_mix,campaign_allow_inbound,manual_dial_list_id,default_xfer_group,web_form_address2,allow_tab_switch,answers_per_hour_limit,campaign_call_time,preview_force_dial_time,";
             $stmt .= "manual_preview_default,web_form_extwindow,web_form2_extwindow,submit_method,use_custom2_callerid,campaign_cid_name,xfer_cid_mode,use_cid_areacode_map,carrier_id,email_templates,disable_manual_dial) ";
 
-            $stmt .= "SELECT \"$campaign_name\",\"$campaign_id\",\"N\",dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,";
+            $stmt .= sprintf("SELECT '%s','%s',",mres($campaign_name),mres($campaign_id));
+            $stmt .= "'N',dial_status_a,dial_status_b,dial_status_c,dial_status_d,dial_status_e,lead_order,park_ext,park_file_name,web_form_address,allow_closers,hopper_level,";
             $stmt .= "auto_dial_level,next_agent_call,local_call_time,voicemail_ext,dial_timeout,dial_prefix,campaign_cid,campaign_vdad_exten,campaign_rec_exten,campaign_recording,campaign_rec_filename,";
             $stmt .= "campaign_script,get_call_launch,am_message_exten,amd_send_to_vmx,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,alt_number_dialing,scheduled_callbacks,lead_filter_id,";
             $stmt .= "drop_call_seconds,safe_harbor_message,safe_harbor_exten,display_dialable_count,wrapup_seconds,wrapup_message,closer_campaigns,use_internal_dnc,allcalls_delay,omit_phone_code,dial_method,";
             $stmt .= "available_only_ratio_tally,adaptive_dropped_percentage,adaptive_maximum_level,adaptive_latest_server_time,adaptive_intensity,adaptive_dl_diff_target,concurrent_transfers,auto_alt_dial,";
             $stmt .= "auto_alt_dial_statuses,agent_pause_codes_active,campaign_description,campaign_changedate,campaign_stats_refresh,campaign_logindate,dial_statuses,disable_alter_custdata,no_hopper_leads_logins,";
-            $stmt .= "\"DISABLED\",campaign_allow_inbound,manual_dial_list_id,default_xfer_group,web_form_address2,allow_tab_switch,answers_per_hour_limit,campaign_call_time,preview_force_dial_time,";
+            $stmt .= "'DISABLED',campaign_allow_inbound,manual_dial_list_id,default_xfer_group,web_form_address2,allow_tab_switch,answers_per_hour_limit,campaign_call_time,preview_force_dial_time,";
             $stmt .= "manual_preview_default,web_form_extwindow,web_form2_extwindow,submit_method,use_custom2_callerid,campaign_cid_name,xfer_cid_mode,use_cid_areacode_map,carrier_id,email_templates,disable_manual_dial ";
 
-            $stmt .= "FROM osdial_campaigns where campaign_id='$source_campaign_id';";
+            $stmt .= sprintf("FROM osdial_campaigns WHERE campaign_id='%s';",mres($source_campaign_id));
             $rslt=mysql_query($stmt, $link);
 
-            $stmtA="INSERT INTO osdial_campaign_stats (campaign_id) values('$campaign_id');";
+            $stmtA=sprintf("INSERT INTO osdial_campaign_stats (campaign_id) VALUES('%s');",mres($campaign_id));
             $rslt=mysql_query($stmtA, $link);
 
-            $stmtA="INSERT INTO osdial_campaign_statuses (status,status_name,selectable,campaign_id,human_answered,category) SELECT status,status_name,selectable,\"$campaign_id\",human_answered,category from osdial_campaign_statuses where campaign_id='$source_campaign_id';";
+            $stmtA=sprintf("INSERT INTO osdial_campaign_statuses (status,status_name,selectable,campaign_id,human_answered,category) SELECT status,status_name,selectable,'%s',human_answered,category FROM osdial_campaign_statuses WHERE campaign_id='%s';",mres($campaign_id),mres($source_campaign_id));
             $rslt=mysql_query($stmtA, $link);
 
-            $stmtA="INSERT INTO osdial_campaign_hotkeys (status,hotkey,status_name,selectable,campaign_id,xfer_exten) SELECT status,hotkey,status_name,selectable,\"$campaign_id\",xfer_exten from osdial_campaign_hotkeys where campaign_id='$source_campaign_id';";
+            $stmtA=sprintf("INSERT INTO osdial_campaign_hotkeys (status,hotkey,status_name,selectable,campaign_id,xfer_exten) SELECT status,hotkey,status_name,selectable,'%s',xfer_exten FROM osdial_campaign_hotkeys WHERE campaign_id='%s';",mres($campaign_id),mres($source_campaign_id));
             $rslt=mysql_query($stmtA, $link);
 
-            $stmtA="INSERT INTO osdial_lead_recycle (status,attempt_delay,attempt_maximum,active,campaign_id) SELECT status,attempt_delay,attempt_maximum,active,\"$campaign_id\" from osdial_lead_recycle where campaign_id='$source_campaign_id';";
+            $stmtA=sprintf("INSERT INTO osdial_lead_recycle (status,attempt_delay,attempt_maximum,active,campaign_id) SELECT status,attempt_delay,attempt_maximum,active,'%s' FROM osdial_lead_recycle WHERE campaign_id='%s';",mres($campaign_id),mres($source_campaign_id));
             $rslt=mysql_query($stmtA, $link);
 
-            $stmtA="INSERT INTO osdial_pause_codes (pause_code,pause_code_name,billable,campaign_id) SELECT pause_code,pause_code_name,billable,\"$campaign_id\" from osdial_pause_codes where campaign_id='$source_campaign_id';";
+            $stmtA=sprintf("INSERT INTO osdial_pause_codes (pause_code,pause_code_name,billable,campaign_id) SELECT pause_code,pause_code_name,billable,'%s' FROM osdial_pause_codes WHERE campaign_id='%s';",mres($campaign_id),mres($source_campaign_id));
             $rslt=mysql_query($stmtA, $link);
 
             $ccivr = get_first_record($link, 'osdial_ivr', '*', sprintf("campaign_id LIKE '%s'",mres($source_campaign_id)));
             if (is_array($ccivr)) {
-                $stmtA=sprintf("INSERT INTO osdial_ivr (campaign_id,name,announcement,repeat_loops,wait_loops,wait_timeout,answered_status,virtual_agents,status,timeout_action,reserve_agents,allow_inbound) VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');",$campaign_id,$ccivr['name'],$ccivr['announcement'],$ccivr['repeat_loops'],$ccivr['wait_loops'],$ccivr['wait_timeout'],$ccivr['answered_status'],$ccivr['virtual_agents'],$ccivr['status'],$ccivr['timeout_action'],$ccivr['reserve_agents'],$ccivr['allow_inbound']);
+                $stmtA=sprintf("INSERT INTO osdial_ivr (campaign_id,name,announcement,repeat_loops,wait_loops,wait_timeout,answered_status,virtual_agents,status,timeout_action,reserve_agents,allow_inbound) VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');",mres($campaign_id),mres($ccivr['name']),mres($ccivr['announcement']),mres($ccivr['repeat_loops']),mres($ccivr['wait_loops']),mres($ccivr['wait_timeout']),mres($ccivr['answered_status']),mres($ccivr['virtual_agents']),mres($ccivr['status']),mres($ccivr['timeout_action']),mres($ccivr['reserve_agents']),mres($ccivr['allow_inbound']));
                 $rslt=mysql_query($stmtA, $link);
                 $new_ivr_id =  mysql_insert_id($link);
 
-                $ccivropts = get_krh($link, 'osdial_ivr_options', '*','parent_id ASC',sprintf("ivr_id='%s'",$ccivr['id']),'');
+                $ccivropts = get_krh($link, 'osdial_ivr_options', '*','parent_id ASC',sprintf("ivr_id='%s'",mres($ccivr['id'])),'');
                 if (is_array($ccivropts)) {
                     $ccidmap = Array();
                     foreach ($ccivropts as $ccivropt) {
@@ -365,7 +366,7 @@ if ($ADD==20)
                         $ccivrad = explode('#:#',$ccivropt['action_data']);
                         if ($ccivropt['action'] == 'MENU') $ccivrad[0] = $new_ivr_id;
                         $new_cc_ad = implode('#:#',$ccivrad);
-                        $stmtA=sprintf("INSERT INTO osdial_ivr_options (ivr_id,parent_id,keypress,action,action_data) VALUES ('%s','%s','%s','%s','%s');",$new_ivr_id,$ccidmap[$ccivropt['parent_id']],$ccivropt['keypress'],$ccivropt['action'],$new_cc_ad);
+                        $stmtA=sprintf("INSERT INTO osdial_ivr_options (ivr_id,parent_id,keypress,action,action_data) VALUES ('%s','%s','%s','%s','%s');",mres($new_ivr_id),mres($ccidmap[$ccivropt['parent_id']]),mres($ccivropt['keypress']),mres($ccivropt['action']),mres($new_cc_ad));
                         $rslt=mysql_query($stmtA, $link);
                         $new_ivropt_id =  mysql_insert_id($link);
                         if ($ccivropt['action'] == 'MENU') $ccidmap[$ccivropt['id']] = $new_ivropt_id;
@@ -385,7 +386,7 @@ if ($ADD==20)
                 if ($LOG['allowed_campaignsALL']==0) {
                     $LOG['allowed_campaigns'][] = $campaign_id;
                     $campaigns_value = ' ' . implode(' ', $LOG['allowed_campaigns']) . ' -';
-                    $stmt = sprintf("UPDATE osdial_user_groups SET allowed_campaigns='%s' WHERE user_group='%s';",mres($campaigns_value),$LOG['user_group']);
+                    $stmt = sprintf("UPDATE osdial_user_groups SET allowed_campaigns='%s' WHERE user_group='%s';",mres($campaigns_value),mres($LOG['user_group']));
 				    $rslt=mysql_query($stmt, $link);
                 }
 
@@ -401,9 +402,9 @@ $ADD=31;
 
 if ($ADD==41)
 {
-    if ($LOGmodify_campaigns==1)
+    if ($LOG['modify_campaigns']==1)
     {
-     if ( (strlen($campaign_name) < 6) or (strlen($active) < 1) )
+     if ( (OSDstrlen($campaign_name) < 6) or (OSDstrlen($active) < 1) )
         {
          echo "<br><font color=red>CAMPAIGN NOT MODIFIED - Please go back and look at the data you entered\n";
          echo "<br>the campaign name needs to be at least 6 characters in length\n";
@@ -422,14 +423,14 @@ if ($ADD==41)
             {
             if ($dial_level_override > 0)
                 {
-                $adlSQL = "auto_dial_level='$auto_dial_level',";
+                $adlSQL = sprintf("auto_dial_level='%s',",mres($auto_dial_level));
                 }
             else
                 {
                 if ($dial_method == 'RATIO')
                     {
                     if ($auto_dial_level < 1) {$auto_dial_level = "1.0";}
-                    $adlSQL = "auto_dial_level='$auto_dial_level',";
+                    $adlSQL = sprintf("auto_dial_level='%s',",mres($auto_dial_level));
                     }
                 else
                     {
@@ -437,15 +438,15 @@ if ($ADD==41)
                     if ($auto_dial_level < 1) 
                         {
                         $auto_dial_level = "1.0";
-                        $adlSQL = "auto_dial_level='$auto_dial_level',";
+                        $adlSQL = sprintf("auto_dial_level='%s',",mres($auto_dial_level));
                         }
                     }
                 }
             }
-        if ( (!preg_match("/DISABLED/",$list_order_mix)) and ($hopper_level < 100) )
+        if ( (!OSDpreg_match("/DISABLED/",$list_order_mix)) and ($hopper_level < 100) )
             {$hopper_level='100';}
 
-        if (preg_match('/^8510/',$am_message_exten)) $am_message_exten = '8320'.$am_message_exten;
+        if (OSDpreg_match('/^8510/',$am_message_exten)) $am_message_exten = '8320'.$am_message_exten;
 
         $lo_array = array();
         if (!empty($lead_order_direction)) $lo_array[] = $lead_order_direction;
@@ -492,7 +493,7 @@ if ($ADD==41)
             {
             echo "<br><font color=$default_text>RESETTING CAMPAIGN LEAD HOPPER\n";
             echo "<br> - Wait 1 minute before dialing next number</font>\n";
-            $stmt="DELETE from osdial_hopper where campaign_id='$campaign_id' and status IN('READY','QUEUE','DONE');";
+            $stmt=sprintf("DELETE FROM osdial_hopper WHERE campaign_id='%s' AND status IN('READY','QUEUE','DONE');",mres($campaign_id));
             $rslt=mysql_query($stmt, $link);
 
             ### LOG RESET TO LOG FILE ###
@@ -527,9 +528,9 @@ if ($ADD==41)
 
 if ($ADD==44)
 {
-    if ($LOGmodify_campaigns==1)
+    if ($LOG['modify_campaigns']==1)
     {
-     if ( (strlen($campaign_name) < 6) or (strlen($active) < 1) )
+     if ( (OSDstrlen($campaign_name) < 6) or (OSDstrlen($active) < 1) )
         {
          echo "<br><font color=red>CAMPAIGN NOT MODIFIED - Please go back and look at the data you entered\n";
          echo "<br>the campaign name needs to be at least 6 characters in length</font><br>\n";
@@ -560,7 +561,7 @@ if ($ADD==44)
                     }
                 }
             }
-        if ( (!preg_match("/DISABLED/",$list_order_mix)) and ($hopper_level < 100) )
+        if ( (!OSDpreg_match("/DISABLED/",$list_order_mix)) and ($hopper_level < 100) )
             {$hopper_level='100';}
 
         $lo_array = array();
@@ -582,7 +583,7 @@ if ($ADD==44)
             {
             echo "<br>RESETTING CAMPAIGN LEAD HOPPER\n";
             echo "<br> - Wait 1 minute before dialing next number\n";
-            $stmt="DELETE from osdial_hopper where campaign_id='$campaign_id' and status IN('READY','QUEUE','DONE');;";
+            $stmt=sprintf("DELETE FROM osdial_hopper WHERE campaign_id='%s' AND status IN('READY','QUEUE','DONE');",mres($campaign_id));
             $rslt=mysql_query($stmt, $link);
 
             ### LOG HOPPER RESET TO LOG FILE ###
@@ -618,7 +619,7 @@ if ($ADD==44)
 
 if ($ADD==51)
 {
-     if ( (strlen($campaign_id) < 2) or ($LOGdelete_campaigns < 1) )
+     if ( (OSDstrlen($campaign_id) < 2) or ($LOG['delete_campaigns'] < 1) )
         {
          echo "<br><font color=red>CAMPAIGN NOT DELETED - Please go back and look at the data you entered\n";
          echo "<br>Campaign_id be at least 2 characters in length</font><br>\n";
@@ -638,7 +639,7 @@ $ADD='31';        # go to campaign modification below
 
 if ($ADD==52)
 {
-     if (strlen($campaign_id) < 2)
+     if (OSDstrlen($campaign_id) < 2)
         {
          echo "<br><font color=red>AGENTS NOT LOGGED OUT OF CAMPAIGN - Please go back and look at the data you entered\n";
          echo "<br>Campaign_id be at least 2 characters in length</font><br>\n";
@@ -658,10 +659,10 @@ $ADD='31';        # go to campaign modification below
 
 if ($ADD==53)
 {
-    if (preg_match('/IN/',$stage))
+    if (OSDpreg_match('/IN/',$stage))
         {$group_id=$campaign_id;}
 
-     if (strlen($campaign_id) < 2)
+     if (OSDstrlen($campaign_id) < 2)
         {
          echo "<br><font color=red>VDAC NOT CLEARED FOR CAMPAIGN - Please go back and look at the data you entered\n";
          echo "<br>Campaign_id be at least 2 characters in length</font><br>\n";
@@ -673,7 +674,7 @@ if ($ADD==53)
         }
 
 # go to campaign modification below
-if (preg_match('/IN/',$stage))
+if (OSDpreg_match('/IN/',$stage))
     {$ADD='3111';}
 else
     {$ADD='31';}    
@@ -686,55 +687,55 @@ else
 
 if ($ADD==61)
 {
-     if ( ( strlen($campaign_id) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_campaigns < 1) )
+     if ( ( OSDstrlen($campaign_id) < 2) or ($CoNfIrM != 'YES') or ($LOG['delete_campaigns'] < 1) )
         {
          echo "<br><font color=red>CAMPAIGN NOT DELETED - Please go back and look at the data you entered\n";
          echo "<br>Campaign_id be at least 2 characters in length</font><br>\n";
         }
      else
         {
-        $stmt="DELETE from osdial_campaigns where campaign_id='$campaign_id' limit 1;";
+        $stmt=sprintf("DELETE FROM osdial_campaigns WHERE campaign_id='%s' LIMIT 1;",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
 
-        $stmt="DELETE from osdial_campaign_agents where campaign_id='$campaign_id';";
+        $stmt=sprintf("DELETE FROM osdial_campaign_agents WHERE campaign_id='%s';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
 
-        $stmt="DELETE from osdial_live_agents where campaign_id='$campaign_id';";
+        $stmt=sprintf("DELETE FROM osdial_live_agents WHERE campaign_id='%s';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
 
-        $stmt="DELETE from osdial_campaign_statuses where campaign_id='$campaign_id';";
+        $stmt=sprintf("DELETE FROM osdial_campaign_statuses WHERE campaign_id='%s';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
 
-        $stmt="DELETE from osdial_campaign_hotkeys where campaign_id='$campaign_id';";
+        $stmt=sprintf("DELETE FROM osdial_campaign_hotkeys WHERE campaign_id='%s';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
 
-        $stmt="DELETE from osdial_callbacks where campaign_id='$campaign_id';";
+        $stmt=sprintf("DELETE FROM osdial_callbacks WHERE campaign_id='%s';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
 
-        $stmt="DELETE from osdial_campaign_stats where campaign_id='$campaign_id';";
+        $stmt=sprintf("DELETE FROM osdial_campaign_stats WHERE campaign_id='%s';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
 
-        $stmt="DELETE from osdial_lead_recycle where campaign_id='$campaign_id';";
+        $stmt=sprintf("DELETE FROM osdial_lead_recycle WHERE campaign_id='%s';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
 
-        $stmt="DELETE from osdial_campaign_server_stats where campaign_id='$campaign_id';";
+        $stmt=sprintf("DELETE FROM osdial_campaign_server_stats WHERE campaign_id='%s';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
 
-        $stmt="DELETE from osdial_server_trunks where campaign_id='$campaign_id';";
+        $stmt=sprintf("DELETE FROM osdial_server_trunks WHERE campaign_id='%s';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
 
-        $stmt="DELETE from osdial_pause_codes where campaign_id='$campaign_id';";
+        $stmt=sprintf("DELETE FROM osdial_pause_codes WHERE campaign_id='%s';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
 
-        $stmt="DELETE from osdial_campaigns_list_mix where campaign_id='$campaign_id';";
+        $stmt=sprintf("DELETE FROM osdial_campaigns_list_mix WHERE campaign_id='%s';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
 
         $ccivr = get_first_record($link, 'osdial_ivr', '*', sprintf("campaign_id LIKE '%s'",mres($campaign_id)));
         if (is_array($ccivr)) {
-            $stmt=sprintf("DELETE FROM osdial_ivr WHERE id='%s';",$ccivr['id']);
+            $stmt=sprintf("DELETE FROM osdial_ivr WHERE id='%s';",mres($ccivr['id']));
             $rslt=mysql_query($stmt, $link);
 
-            $stmt=sprintf("DELETE FROM osdial_ivr_options WHERE ivr_id='%s';",$ccivr['id']);
+            $stmt=sprintf("DELETE FROM osdial_ivr_options WHERE ivr_id='%s';",mres($ccivr['id']));
             $rslt=mysql_query($stmt, $link);
 
             $stmt=sprintf("DELETE FROM osdial_users WHERE user LIKE 'va%s___';",mres($campaign_id));
@@ -742,7 +743,7 @@ if ($ADD==61)
         }
 
         echo "<br><font color=$default_text>REMOVING LIST HOPPER LEADS FROM OLD CAMPAIGN HOPPER ($campaign_id)</font>\n";
-        $stmt="DELETE from osdial_hopper WHERE campaign_id='$campaign_id' AND status!='API';";
+        $stmt=sprintf("DELETE FROM osdial_hopper WHERE campaign_id='%s' AND status!='API';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
 
         ### LOG CHANGES TO LOG FILE ###
@@ -765,16 +766,16 @@ $ADD='10';        # go to campaigns list
 
 if ($ADD==62)
 {
-    if ($LOGmodify_campaigns==1)
+    if ($LOG['modify_campaigns']==1)
     {
-     if (strlen($campaign_id) < 2)
+     if (OSDstrlen($campaign_id) < 2)
         {
          echo "<br><font color=red>AGENTS NOT LOGGED OUT OF CAMPAIGN - Please go back and look at the data you entered\n";
          echo "<br>Campaign_id be at least 2 characters in length</font><br>\n";
         }
      else
         {
-        $stmt="DELETE from osdial_live_agents where campaign_id='$campaign_id';";
+        $stmt=sprintf("DELETE FROM osdial_live_agents WHERE campaign_id='%s';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
 
         ### LOG CHANGES TO LOG FILE ###
@@ -802,19 +803,19 @@ if ($ADD==62)
 
 if ($ADD==63)
 {
-    if ($LOGmodify_campaigns==1)
+    if ($LOG['modify_campaigns']==1)
     {
-    if (preg_match('/IN/',$stage))
+    if (OSDpreg_match('/IN/',$stage))
         {$group_id=$campaign_id;}
 
-     if (strlen($campaign_id) < 2)
+     if (OSDstrlen($campaign_id) < 2)
         {
          echo "<br><font color=red>VDAC NOT CLEARED FOR CAMPAIGN - Please go back and look at the data you entered\n";
          echo "<br>Campaign_id be at least 2 characters in length</font><br>\n";
         }
      else
         {
-        $stmt="DELETE from osdial_auto_calls where status='LIVE' and campaign_id='$campaign_id' order by call_time limit 1;";
+        $stmt=sprintf("DELETE FROM osdial_auto_calls WHERE status='LIVE' AND campaign_id='%s' ORDER BY call_time LIMIT 1;",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
 
         ### LOG CHANGES TO LOG FILE ###
@@ -828,7 +829,7 @@ if ($ADD==63)
         echo "<br><br>\n";
         }
         # go to campaign modification below
-        if (preg_match('/IN/',$stage)) {$ADD='3111';} else {$ADD='31';}    
+        if (OSDpreg_match('/IN/',$stage)) {$ADD='3111';} else {$ADD='31';}    
     }
     else
     {
@@ -843,27 +844,27 @@ if ($ADD==63)
 ######################
 
 # send to Basic if not allowed
-if ( ($LOGcampaign_detail < 1) and ($ADD==31) ) {
+if ( ($LOG['campaign_detail'] < 1) and ($ADD==31) ) {
     $ADD=34;
 }
 
 # send to not allowed screen if not in osdial_user_groups allowed_campaigns list
-if ( ($ADD==31) and (!preg_match('/:' . $campaign_id . ':/',$LOG['allowed_campaignsSTR'])) ) {
+if ( ($ADD==31) and (!OSDpreg_match('/:' . $campaign_id . ':/',$LOG['allowed_campaignsSTR'])) ) {
     $ADD=30;
 }
 
 if ($ADD==31) {
-    if ($LOGmodify_campaigns==1) {
+    if ($LOG['modify_campaigns']==1) {
         if ($stage=='show_dialable') {
-            $stmt="UPDATE osdial_campaigns set display_dialable_count='Y' where campaign_id='$campaign_id';";
+            $stmt=sprintf("UPDATE osdial_campaigns SET display_dialable_count='Y' WHERE campaign_id='%s';",mres($campaign_id));
             $rslt=mysql_query($stmt, $link);
         }
         if ($stage=='hide_dialable') {
-            $stmt="UPDATE osdial_campaigns set display_dialable_count='N' where campaign_id='$campaign_id';";
+            $stmt=sprintf("UPDATE osdial_campaigns SET display_dialable_count='N' WHERE campaign_id='%s';",mres($campaign_id));
             $rslt=mysql_query($stmt, $link);
         }
 
-        $stmt="SELECT * from osdial_campaigns where campaign_id='$campaign_id';";
+        $stmt=sprintf("SELECT * FROM osdial_campaigns WHERE campaign_id='%s';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         //$park_ext = $row[0];
@@ -893,7 +894,7 @@ if ($ADD==31) {
         $campaign_rec_filename = $row[24];
         $script_id = $row[25];
         $get_call_launch = $row[26];
-        $am_message_exten = preg_replace('/^8320/','',$row[27]);
+        $am_message_exten = OSDpreg_replace('/^8320/','',$row[27]);
         $amd_send_to_vmx = $row[28];
         $xferconf_a_dtmf = $row[29];
         $xferconf_a_number = $row[30];
@@ -964,7 +965,7 @@ if ($ADD==31) {
         $hide_xfer_blind_vmail = $row[94];
         $allow_md_hopperlist = $row[95];
 
-        if (preg_match("/DISABLED/",$list_order_mix)) {
+        if (OSDpreg_match("/DISABLED/",$list_order_mix)) {
             $DEFlistDISABLE = '';
             $DEFstatusDISABLED=0;
         } else {
@@ -972,7 +973,7 @@ if ($ADD==31) {
             $DEFstatusDISABLED=1;
         }
 
-        $stmt="SELECT count(*) from osdial_campaigns_list_mix where campaign_id='$campaign_id' and status='ACTIVE'";
+        $stmt=sprintf("SELECT count(*) FROM osdial_campaigns_list_mix WHERE campaign_id='%s' AND status='ACTIVE';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
         $rowx=mysql_fetch_row($rslt);
         if ($rowx[0] < 1) {
@@ -980,7 +981,7 @@ if ($ADD==31) {
             $mixname_list["DISABLED"] = "DISABLED";
         } else {
             ##### get list_mix listings for dynamic pulldown
-            $stmt="SELECT vcl_id,vcl_name from osdial_campaigns_list_mix where campaign_id='$campaign_id' and status='ACTIVE' limit 1";
+            $stmt=sprintf("SELECT vcl_id,vcl_name FROM osdial_campaigns_list_mix WHERE campaign_id='%s' AND status='ACTIVE' LIMIT 1;",mres($campaign_id));
             $rslt=mysql_query($stmt, $link);
             $mixes_to_print = mysql_num_rows($rslt);
             $mixes_list="<option value=\"DISABLED\">DISABLED</option>\n";
@@ -995,7 +996,7 @@ if ($ADD==31) {
        }
 
         ##### get status listings for dynamic pulldown
-        $stmt="SELECT * from osdial_statuses order by status";
+        $stmt=sprintf("SELECT * FROM osdial_statuses ORDER BY status;");
         $rslt=mysql_query($stmt, $link);
         $statuses_to_print = mysql_num_rows($rslt);
         $statuses_list='';
@@ -1010,13 +1011,13 @@ if ($ADD==31) {
             }
             $statname_list["$rowx[0]"] = "$rowx[1]";
             $LRstatuses_list .= "<option value=\"$rowx[0]-----$rowx[1]\">$rowx[0] - $rowx[1]</option>\n";
-            if (preg_match("/Y/",$rowx[2])) {
+            if (OSDpreg_match("/Y/",$rowx[2])) {
                 $HKstatuses_list .= "<option value=\"$rowx[0]-----$rowx[1]\">$rowx[0] - $rowx[1]</option>\n";
             }
             $o++;
         }
 
-        $stmt="SELECT * from osdial_campaign_statuses where campaign_id='$campaign_id' order by status";
+        $stmt=sprintf("SELECT * FROM osdial_campaign_statuses WHERE campaign_id='%s' ORDER BY status;",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
         $Cstatuses_to_print = mysql_num_rows($rslt);
 
@@ -1029,18 +1030,18 @@ if ($ADD==31) {
             }
             $statname_list["$rowx[0]"] = "$rowx[1]";
             $LRstatuses_list .= "<option value=\"$rowx[0]-----$rowx[1]\">$rowx[0] - $rowx[1]</option>\n";
-            if (preg_match("/Y/",$rowx[2])) {
+            if (OSDpreg_match("/Y/",$rowx[2])) {
                 $HKstatuses_list .= "<option value=\"$rowx[0]-----$rowx[1]\">$rowx[0] - $rowx[1]</option>\n";
             }
             $o++;
         }
 
-        $dial_statuses = preg_replace("/ -$/","",$dial_statuses);
+        $dial_statuses = OSDpreg_replace("/ -$/","",$dial_statuses);
         $Dstatuses = explode(" ", $dial_statuses);
         $Ds_to_print = (count($Dstatuses) -1);
 
         ##### get in-groups listings for dynamic pulldown list menu
-        $stmt="SELECT group_id,group_name from osdial_inbound_groups $xfer_groupsSQL order by group_id";
+        $stmt="SELECT group_id,group_name FROM osdial_inbound_groups $xfer_groupsSQL ORDER BY group_id;";
         $rslt=mysql_query($stmt, $link);
         $Xgroups_to_print = mysql_num_rows($rslt);
         $Xgroups_menu='';
@@ -1127,7 +1128,7 @@ if ($ADD==31) {
         echo "  <td align=left>\n";
         $usel='';
         $dsel='';
-        if (preg_match('/^UP/',$lead_order)) {
+        if (OSDpreg_match('/^UP/',$lead_order)) {
             $usel='selected';
         } else {
             $dsel='selected';
@@ -1143,23 +1144,23 @@ if ($ADD==31) {
         $csel='';
         $rsel='';
         $isel='';
-        if (preg_match('/TZ PHONE/',$lead_order)) {
+        if (OSDpreg_match('/TZ PHONE/',$lead_order)) {
             $tpsel='selected';
-        } else if (preg_match('/TZ LAST NAME/',$lead_order)) {
+        } else if (OSDpreg_match('/TZ LAST NAME/',$lead_order)) {
             $tlsel='selected';
-        } else if (preg_match('/TZ COUNT/',$lead_order)) {
+        } else if (OSDpreg_match('/TZ COUNT/',$lead_order)) {
             $tcsel='selected';
-        } else if (preg_match('/TZ RANDOM/',$lead_order)) {
+        } else if (OSDpreg_match('/TZ RANDOM/',$lead_order)) {
             $trsel='selected';
-        } else if (preg_match('/TZ/',$lead_order)) {
+        } else if (OSDpreg_match('/TZ/',$lead_order)) {
             $tisel='selected';
-        } else if (preg_match('/PHONE/',$lead_order)) {
+        } else if (OSDpreg_match('/PHONE/',$lead_order)) {
             $psel='selected';
-        } else if (preg_match('/LAST NAME/',$lead_order)) {
+        } else if (OSDpreg_match('/LAST NAME/',$lead_order)) {
             $lsel='selected';
-        } else if (preg_match('/COUNT/',$lead_order)) {
+        } else if (OSDpreg_match('/COUNT/',$lead_order)) {
             $csel='selected';
-        } else if (preg_match('/RANDOM/',$lead_order)) {
+        } else if (OSDpreg_match('/RANDOM/',$lead_order)) {
             $rsel='selected';
         } else {
             $isel='selected';
@@ -1171,15 +1172,15 @@ if ($ADD==31) {
         $sel4='';
         $sel5='';
         $sel6='';
-        if (preg_match('/2nd NEW$/',$lead_order)) {
+        if (OSDpreg_match('/2nd NEW$/',$lead_order)) {
             $sel2='selected';
-        } else if (preg_match('/3rd NEW$/',$lead_order)) {
+        } else if (OSDpreg_match('/3rd NEW$/',$lead_order)) {
             $sel3='selected';
-        } else if (preg_match('/4th NEW$/',$lead_order)) {
+        } else if (OSDpreg_match('/4th NEW$/',$lead_order)) {
             $sel4='selected';
-        } else if (preg_match('/5th NEW$/',$lead_order)) {
+        } else if (OSDpreg_match('/5th NEW$/',$lead_order)) {
             $sel5='selected';
-        } else if (preg_match('/6th NEW$/',$lead_order)) {
+        } else if (OSDpreg_match('/6th NEW$/',$lead_order)) {
             $sel6='selected';
         } else {
             $seln='selected';
@@ -1191,7 +1192,7 @@ if ($ADD==31) {
 
         echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=31&SUB=29&campaign_id=$campaign_id&vcl_id=$list_order_mix\">List Mix</a>: </td><td align=left><select size=1 name=list_order_mix>\n";
         echo "$mixes_list";
-        if (preg_match("/DISABLED/",$list_order_mix))
+        if (OSDpreg_match("/DISABLED/",$list_order_mix))
             {echo "<option selected value=\"$list_order_mix\">$list_order_mix - $mixname_list[$list_order_mix]</option>\n";}
         else
             {echo "<option selected value=\"ACTIVE\">ACTIVE ($mixname_list[ACTIVE])</option>\n";}
@@ -1425,7 +1426,7 @@ if ($ADD==31) {
         #$sel = '';
         #$krh = get_krh($link, 'osdial_lists', 'list_id,list_name','',sprintf("campaign_id LIKE '%s__%%'",$LOG['company_prefix']),'');
         #echo format_select_options($krh, 'list_id', 'list_name', $manual_dial_list_id, '', false);
-        #if (preg_match('/|^$|^0$/',$manual_dial_list_id)) $sel='';
+        #if (OSDpreg_match('/|^$|^0$/',$manual_dial_list_id)) $sel='';
         #echo "<option value='0'>- NO LIST SELECTED -</option>\n";
         #echo " $manual_dial_list_id\">\n";
 
@@ -1594,7 +1595,7 @@ if ($ADD==31) {
 
         $active_lists = 0;
         $inactive_lists = 0;
-        $stmt="SELECT list_id,active,list_name from osdial_lists where 1=1 $dispinactSQL and campaign_id='$campaign_id'";
+        $stmt=sprintf("SELECT list_id,active,list_name FROM osdial_lists WHERE 1=1 $dispinactSQL and campaign_id='%s';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
         $lists_to_print = mysql_num_rows($rslt);
         $camp_lists='';
@@ -1604,8 +1605,8 @@ if ($ADD==31) {
             {
                 $rowx=mysql_fetch_row($rslt);
                 $o++;
-            if (preg_match("/Y/", $rowx[1])) {$active_lists++;   $camp_lists .= "'$rowx[0]',";}
-            if (preg_match("/N/", $rowx[1])) {$inactive_lists++;}
+            if (OSDpreg_match("/Y/", $rowx[1])) {$active_lists++;   $camp_lists .= "'$rowx[0]',";}
+            if (OSDpreg_match("/N/", $rowx[1])) {$inactive_lists++;}
 
             echo "<tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=311&list_id=$rowx[0]');\"><td><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td>$rowx[2]</td><td align=center>$rowx[1]</td></tr>\n";
             }
@@ -1615,9 +1616,9 @@ if ($ADD==31) {
 
         $fSQL = '';
         $Tfilter = get_first_record($link, 'osdial_lead_filters', '*', sprintf("lead_filter_id='%s'",mres($lead_filter_id)) );
-        if (strlen($Tfilter['lead_filter_sql'])>4) $fSQL = "and " . preg_replace('/^and|and$|^or|or$/i','',$Tfilter['lead_filter_sql']);
+        if (OSDstrlen($Tfilter['lead_filter_sql'])>4) $fSQL = "and " . OSDpreg_replace('/^and|and$|^or|or$/i','',$Tfilter['lead_filter_sql']);
 
-        $camp_lists = preg_replace('/,$/','',$camp_lists);
+        $camp_lists = OSDpreg_replace('/,$/','',$camp_lists);
         echo "<br><br><font color=$default_text>This campaign has $active_lists active lists and $inactive_lists inactive lists</font><br><br>\n";
 
         if ($display_dialable_count == 'Y') {
@@ -1647,7 +1648,7 @@ if ($ADD==31) {
         if ($SUB==22) {
 
             ##### get status category listings for dynamic pulldown
-            $stmt="SELECT vsc_id,vsc_name from osdial_status_categories order by vsc_id desc";
+            $stmt="SELECT vsc_id,vsc_name FROM osdial_status_categories ORDER BY vsc_id DESC;";
             $rslt=mysql_query($stmt, $link);
             $cats_to_print = mysql_num_rows($rslt);
             $cats_list="";
@@ -1655,8 +1656,8 @@ if ($ADD==31) {
             $o=0;
             while ($cats_to_print > $o) {
                 $rowx=mysql_fetch_row($rslt);
-                $cats_list .= "<option value=\"$rowx[0]\">$rowx[0] - " . substr($rowx[1],0,20) . "</option>\n";
-                $catsname_list["$rowx[0]"] = substr($rowx[1],0,20);
+                $cats_list .= "<option value=\"$rowx[0]\">$rowx[0] - " . OSDsubstr($rowx[1],0,20) . "</option>\n";
+                $catsname_list["$rowx[0]"] = OSDsubstr($rowx[1],0,20);
                 $o++;
             }
 
@@ -1672,7 +1673,7 @@ if ($ADD==31) {
             echo "      <td colspan=2 align=center>ACTIONS</td>\n";
             echo "    </tr>\n";
 
-            $stmt="SELECT * from osdial_campaign_statuses where campaign_id='$campaign_id'";
+            $stmt=sprintf("SELECT * FROM osdial_campaign_statuses WHERE campaign_id='%s';",mres($campaign_id));
             $rslt=mysql_query($stmt, $link);
             $statuses_to_print = mysql_num_rows($rslt);
             $o=0;
@@ -1727,7 +1728,7 @@ if ($ADD==31) {
             echo "      <td align=center>ACTIONS</td>\n";
             echo "    </tr>\n";
 
-            $stmt="SELECT * from osdial_campaign_hotkeys where campaign_id='$campaign_id' order by hotkey";
+            $stmt=sprintf("SELECT * FROM osdial_campaign_hotkeys WHERE campaign_id='%s' ORDER BY hotkey;",mres($campaign_id));
             $rslt=mysql_query($stmt, $link);
             $statuses_to_print = mysql_num_rows($rslt);
             $o=0;
@@ -1786,7 +1787,7 @@ if ($ADD==31) {
             echo "      <td colspan=2 align=center>ACTIONS</td>\n";
             echo "    </tr>\n";
 
-            $stmt="SELECT * from osdial_lead_recycle where campaign_id='$campaign_id' order by status";
+            $stmt=sprintf("SELECT * FROM osdial_lead_recycle WHERE campaign_id='%s' ORDER BY status;",mres($campaign_id));
             $rslt=mysql_query($stmt, $link);
             $recycle_to_print = mysql_num_rows($rslt);
             $o=0;
@@ -1838,7 +1839,7 @@ if ($ADD==31) {
             echo "      <td align=center>ACTIONS</td>\n";
             echo "    </tr>\n";
 
-            $auto_alt_dial_statuses = preg_replace("/ -$/","",$auto_alt_dial_statuses);
+            $auto_alt_dial_statuses = OSDpreg_replace("/ -$/","",$auto_alt_dial_statuses);
             $AADstatuses = explode(" ", $auto_alt_dial_statuses);
             $AADs_to_print = (count($AADstatuses) -1);
 
@@ -1875,7 +1876,7 @@ if ($ADD==31) {
             echo "      <td align=center colspan=2>ACTIONS</td>\n";
             echo "    </tr>\n";
 
-            $stmt="SELECT * from osdial_pause_codes where campaign_id='$campaign_id' order by pause_code";
+            $stmt=sprintf("SELECT * FROM osdial_pause_codes WHERE campaign_id='%s' ORDER BY pause_code;",mres($campaign_id));
             $rslt=mysql_query($stmt, $link);
             $pause_codes_to_print = mysql_num_rows($rslt);
             $o=0;
@@ -1919,7 +1920,7 @@ if ($ADD==31) {
             echo "<a href=\"$PHP_SELF?ADD=52&campaign_id=$campaign_id\">LOG ALL AGENTS OUT OF THIS CAMPAIGN</a><br><br>\n";
             echo "<a href=\"$PHP_SELF?ADD=53&campaign_id=$campaign_id\">EMERGENCY VDAC CLEAR FOR THIS CAMPAIGN</a><br><br>\n";
 
-            if ($LOGdelete_campaigns > 0) {
+            if ($LOG['delete_campaigns'] > 0) {
                 echo "<br><br><a href=\"$PHP_SELF?ADD=51&campaign_id=$campaign_id\">DELETE THIS CAMPAIGN</a>\n";
             }
         }
@@ -1935,26 +1936,26 @@ if ($ADD==31) {
 ######################
 
 # send to not allowed screen if not in osdial_user_groups allowed_campaigns list
-if ( ($ADD==34) and (!preg_match('/:' . $campaign_id . ':/',$LOG['allowed_campaignsSTR'])) ) {
+if ( ($ADD==34) and (!OSDpreg_match('/:' . $campaign_id . ':/',$LOG['allowed_campaignsSTR'])) ) {
     $ADD=30;
 }
 
 if ($ADD==34)
 {
-    if ($LOGmodify_campaigns==1)
+    if ($LOG['modify_campaigns']==1)
     {
         if ($stage=='show_dialable')
         {
-            $stmt="UPDATE osdial_campaigns set display_dialable_count='Y' where campaign_id='$campaign_id';";
+            $stmt=sprintf("UPDATE osdial_campaigns SET display_dialable_count='Y' WHERE campaign_id='%s';",mres($campaign_id));
             $rslt=mysql_query($stmt, $link);
         }
         if ($stage=='hide_dialable')
         {
-            $stmt="UPDATE osdial_campaigns set display_dialable_count='N' where campaign_id='$campaign_id';";
+            $stmt=sprintf("UPDATE osdial_campaigns SET display_dialable_count='N' WHERE campaign_id='%s';",mres($campaign_id));
             $rslt=mysql_query($stmt, $link);
         }
 
-        $stmt="SELECT * from osdial_campaigns where campaign_id='$campaign_id';";
+        $stmt=sprintf("SELECT * FROM osdial_campaigns WHERE campaign_id='%s';",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         $dial_status_a = $row[3];
@@ -1995,12 +1996,12 @@ if ($ADD==34)
         $manual_preview_default = $row[74];
         $use_custom2_callerid = $row[78];
 
-    if (preg_match("/DISABLED/",$list_order_mix))
+    if (OSDpreg_match("/DISABLED/",$list_order_mix))
         {$DEFlistDISABLE = '';    $DEFstatusDISABLED=0;}
     else
         {$DEFlistDISABLE = 'disabled';    $DEFstatusDISABLED=1;}
 
-        $stmt="SELECT * from osdial_statuses order by status";
+        $stmt="SELECT * FROM osdial_statuses ORDER BY status;";
         $rslt=mysql_query($stmt, $link);
         $statuses_to_print = mysql_num_rows($rslt);
         $statuses_list='';
@@ -2013,12 +2014,12 @@ if ($ADD==34)
             if ($rowx[0] != 'CBHOLD') {$dial_statuses_list .= "<option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";}
             $statname_list["$rowx[0]"] = "$rowx[1]";
             $LRstatuses_list .= "<option value=\"$rowx[0]-----$rowx[1]\">$rowx[0] - $rowx[1]</option>\n";
-            if (preg_match("/Y/",$rowx[2]))
+            if (OSDpreg_match("/Y/",$rowx[2]))
                 {$HKstatuses_list .= "<option value=\"$rowx[0]-----$rowx[1]\">$rowx[0] - $rowx[1]</option>\n";}
             $o++;
             }
 
-        $stmt="SELECT * from osdial_campaign_statuses where campaign_id='$campaign_id' order by status";
+        $stmt=sprintf("SELECT * FROM osdial_campaign_statuses WHERE campaign_id='%s' ORDER BY status;",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
         $Cstatuses_to_print = mysql_num_rows($rslt);
 
@@ -2030,16 +2031,16 @@ if ($ADD==34)
             if ($rowx[0] != 'CBHOLD') {$dial_statuses_list .= "<option value=\"$rowx[0]\">$rowx[0] - $rowx[1]</option>\n";}
             $statname_list["$rowx[0]"] = "$rowx[1]";
             $LRstatuses_list .= "<option value=\"$rowx[0]-----$rowx[1]\">$rowx[0] - $rowx[1]</option>\n";
-            if (preg_match("/Y/",$rowx[2]))
+            if (OSDpreg_match("/Y/",$rowx[2]))
                 {$HKstatuses_list .= "<option value=\"$rowx[0]-----$rowx[1]\">$rowx[0] - $rowx[1]</option>\n";}
             $o++;
             }
 
-        $dial_statuses = preg_replace("/ -$/","",$dial_statuses);
+        $dial_statuses = OSDpreg_replace("/ -$/","",$dial_statuses);
         $Dstatuses = explode(" ", $dial_statuses);
         $Ds_to_print = (count($Dstatuses) -1);
 
-    $stmt="SELECT count(*) from osdial_campaigns_list_mix where campaign_id='$campaign_id' and status='ACTIVE'";
+    $stmt=sprintf("SELECT count(*) FROM osdial_campaigns_list_mix WHERE campaign_id='%s' AND status='ACTIVE';",mres($campaign_id));
     $rslt=mysql_query($stmt, $link);
     $rowx=mysql_fetch_row($rslt);
     if ($rowx[0] < 1)
@@ -2050,7 +2051,7 @@ if ($ADD==34)
     else
         {
         ##### get list_mix listings for dynamic pulldown
-        $stmt="SELECT vcl_id,vcl_name from osdial_campaigns_list_mix where campaign_id='$campaign_id' and status='ACTIVE' limit 1";
+        $stmt=sprintf("SELECT vcl_id,vcl_name FROM osdial_campaigns_list_mix WHERE campaign_id='%s' AND status='ACTIVE' LIMIT 1;",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
         $mixes_to_print = mysql_num_rows($rslt);
         $mixes_list="<option value=\"DISABLED\">DISABLED</option>\n";
@@ -2120,7 +2121,7 @@ if ($ADD==34)
         echo "  <td align=left>\n";
         $usel='';
         $dsel='';
-        if (preg_match('/^UP/',$lead_order)) {
+        if (OSDpreg_match('/^UP/',$lead_order)) {
             $usel='selected';
         } else {
             $dsel='selected';
@@ -2136,23 +2137,23 @@ if ($ADD==34)
         $csel='';
         $rsel='';
         $isel='';
-        if (preg_match('/TZ PHONE/',$lead_order)) {
+        if (OSDpreg_match('/TZ PHONE/',$lead_order)) {
             $tpsel='selected';
-        } else if (preg_match('/TZ LAST NAME/',$lead_order)) {
+        } else if (OSDpreg_match('/TZ LAST NAME/',$lead_order)) {
             $tlsel='selected';
-        } else if (preg_match('/TZ COUNT/',$lead_order)) {
+        } else if (OSDpreg_match('/TZ COUNT/',$lead_order)) {
             $tcsel='selected';
-        } else if (preg_match('/TZ RANDOM/',$lead_order)) {
+        } else if (OSDpreg_match('/TZ RANDOM/',$lead_order)) {
             $trsel='selected';
-        } else if (preg_match('/TZ/',$lead_order)) {
+        } else if (OSDpreg_match('/TZ/',$lead_order)) {
             $tisel='selected';
-        } else if (preg_match('/PHONE/',$lead_order)) {
+        } else if (OSDpreg_match('/PHONE/',$lead_order)) {
             $psel='selected';
-        } else if (preg_match('/LAST NAME/',$lead_order)) {
+        } else if (OSDpreg_match('/LAST NAME/',$lead_order)) {
             $lsel='selected';
-        } else if (preg_match('/COUNT/',$lead_order)) {
+        } else if (OSDpreg_match('/COUNT/',$lead_order)) {
             $csel='selected';
-        } else if (preg_match('/RANDOM/',$lead_order)) {
+        } else if (OSDpreg_match('/RANDOM/',$lead_order)) {
             $rsel='selected';
         } else {
             $isel='selected';
@@ -2164,15 +2165,15 @@ if ($ADD==34)
         $sel4='';
         $sel5='';
         $sel6='';
-        if (preg_match('/2nd NEW$/',$lead_order)) {
+        if (OSDpreg_match('/2nd NEW$/',$lead_order)) {
             $sel2='selected';
-        } else if (preg_match('/3rd NEW$/',$lead_order)) {
+        } else if (OSDpreg_match('/3rd NEW$/',$lead_order)) {
             $sel3='selected';
-        } else if (preg_match('/4th NEW$/',$lead_order)) {
+        } else if (OSDpreg_match('/4th NEW$/',$lead_order)) {
             $sel4='selected';
-        } else if (preg_match('/5th NEW$/',$lead_order)) {
+        } else if (OSDpreg_match('/5th NEW$/',$lead_order)) {
             $sel5='selected';
-        } else if (preg_match('/6th NEW$/',$lead_order)) {
+        } else if (OSDpreg_match('/6th NEW$/',$lead_order)) {
             $sel6='selected';
         } else {
             $seln='selected';
@@ -2184,7 +2185,7 @@ if ($ADD==34)
 
         echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=31&SUB=29&campaign_id=$campaign_id&vcl_id=$list_order_mix\">List Mix</a>: </td><td align=left><select size=1 name=list_order_mix>\n";
         echo "$mixes_list";
-        if (preg_match("/DISABLED/",$list_order_mix))
+        if (OSDpreg_match("/DISABLED/",$list_order_mix))
             {echo "<option selected value=\"$list_order_mix\">$list_order_mix - $mixname_list[$list_order_mix]</option>\n";}
         else
             {echo "<option selected value=\"ACTIVE\">ACTIVE ($mixname_list[ACTIVE])</option>\n";}
@@ -2221,7 +2222,7 @@ if ($ADD==34)
 
         echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=3111111&script_id=$script_id\">Script</a>: </td><td align=left>";
         if ($LOG['mutlicomp_user'] > 0) {
-            echo substr($script_id,3);
+            echo OSDsubstr($script_id,3);
         } else {
             echo $script_id;
         }
@@ -2256,7 +2257,7 @@ if ($ADD==34)
 
             $active_lists = 0;
             $inactive_lists = 0;
-            $stmt="SELECT list_id,active,list_name from osdial_lists where 1=1 $dispinactSQL and campaign_id='$campaign_id'";
+            $stmt=sprintf("SELECT list_id,active,list_name FROM osdial_lists WHERE 1=1 $dispinactSQL AND campaign_id='%s';",mres($campaign_id));
             $rslt=mysql_query($stmt, $link);
             $lists_to_print = mysql_num_rows($rslt);
             $camp_lists='';
@@ -2265,8 +2266,8 @@ if ($ADD==34)
             while ($lists_to_print > $o) {
                 $rowx=mysql_fetch_row($rslt);
                 $o++;
-            if (preg_match("/Y/", $rowx[1])) {$active_lists++;   $camp_lists .= "'$rowx[0]',";}
-            if (preg_match("/N/", $rowx[1])) {$inactive_lists++;}
+            if (OSDpreg_match("/Y/", $rowx[1])) {$active_lists++;   $camp_lists .= "'$rowx[0]',";}
+            if (OSDpreg_match("/N/", $rowx[1])) {$inactive_lists++;}
 
             echo "<tr " . bgcolor($o) . " class=\"row font1\" ondblclick=\"openNewWindow('$PHP_SELF?ADD=311&list_id=$rowx[0]');\"><td><a href=\"$PHP_SELF?ADD=311&list_id=$rowx[0]\">$rowx[0]</a></td><td>$rowx[2]</td><td align=center>$rowx[1]</td></tr>\n";
 
@@ -2278,9 +2279,9 @@ if ($ADD==34)
 
         $fSQL = '';
         $Tfilter = get_first_record($link, 'osdial_lead_filters', '*', sprintf("lead_filter_id='%s'",mres($lead_filter_id)) );
-        if (strlen($Tfilter['lead_filter_sql'])>4) $fSQL = "and " . preg_replace('/^and|and$|^or|or$/i','',$Tfilter['lead_filter_sql']);
+        if (OSDstrlen($Tfilter['lead_filter_sql'])>4) $fSQL = "and " . OSDpreg_replace('/^and|and$|^or|or$/i','',$Tfilter['lead_filter_sql']);
 
-        $camp_lists = preg_replace('/,$/','',$camp_lists);
+        $camp_lists = OSDpreg_replace('/,$/','',$camp_lists);
         echo "<font color=$default_text>This campaign has $active_lists active lists and $inactive_lists inactive lists</font><br><br>\n";
 
 
@@ -2319,7 +2320,7 @@ if ($ADD==34)
         echo "    <td align=center>CALLS</td>\n";
         echo "  </tr>\n";
 
-            $stmt="SELECT osdial_users.user,full_name,campaign_rank,calls_today FROM osdial_campaign_agents JOIN osdial_users ON (osdial_campaign_agents.user=osdial_users.user) WHERE campaign_id='$campaign_id' ORDER BY osdial_users.user;";
+            $stmt=sprintf("SELECT osdial_users.user,full_name,campaign_rank,calls_today FROM osdial_campaign_agents JOIN osdial_users ON (osdial_campaign_agents.user=osdial_users.user) WHERE campaign_id='$campaign_id' ORDER BY osdial_users.user;",mres($campaign_id));
             $rsltx=mysql_query($stmt, $link);
             $users_to_print = mysql_num_rows($rsltx);
 
@@ -2344,7 +2345,7 @@ if ($ADD==34)
         echo "<a href=\"$PHP_SELF?ADD=52&campaign_id=$campaign_id\">LOG ALL AGENTS OUT OF THIS CAMPAIGN</a><br><br>\n";
 
 
-        if ($LOGdelete_campaigns > 0)
+        if ($LOG['delete_campaigns'] > 0)
             {
             echo "<br><br><a href=\"$PHP_SELF?ADD=51&campaign_id=$campaign_id\">DELETE THIS CAMPAIGN</a>\n";
             }
@@ -2361,16 +2362,16 @@ if ($ADD==34)
 # ADD=31 or 34 and SUB=29 for list mixes
 ######################
 # send to not allowed screen if not in osdial_user_groups allowed_campaigns list
-if ( ( ($ADD==34) or ($ADD==31) ) and (!preg_match('/:' . $campaign_id . ':/',$LOG['allowed_campaignsSTR'])) ) {
+if ( ( ($ADD==34) or ($ADD==31) ) and (!OSDpreg_match('/:' . $campaign_id . ':/',$LOG['allowed_campaignsSTR'])) ) {
     $ADD=30;
 }
 
 if ( ($ADD==34) or ($ADD==31) ) {
-    if ($LOGmodify_campaigns==1) {
+    if ($LOG['modify_campaigns']==1) {
     ##### CAMPAIGN LIST MIX SETTINGS #####
     if ($SUB==29) {
         ##### get list_id listings for dynamic pulldown
-        $stmt="SELECT list_id,list_name from osdial_lists where campaign_id='$campaign_id' order by list_id";
+        $stmt=sprintf("SELECT list_id,list_name FROM osdial_lists WHERE campaign_id='%s' ORDER BY list_id;",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
         $mixlists_to_print = mysql_num_rows($rslt);
         $mixlists_list="";
@@ -2387,7 +2388,7 @@ if ( ($ADD==34) or ($ADD==31) ) {
         echo "<br><font color=$default_text size=+1>LIST MIXES FOR THIS CAMPAIGN &nbsp; $NWB#osdial_campaigns-list_order_mix$NWE</font><br><br>\n";
         echo "<table width=$section_width cellspacing=1 cellpadding=0 bgcolor=grey class=row>\n";
 
-        $stmt="SELECT * from osdial_campaigns_list_mix where campaign_id='$campaign_id' order by status, vcl_id";
+        $stmt=sprintf("SELECT * FROM osdial_campaigns_list_mix WHERE campaign_id='%s' ORDER BY status,vcl_id;",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
         $listmixes = mysql_num_rows($rslt);
         $o=0;
@@ -2456,7 +2457,7 @@ if ( ($ADD==34) or ($ADD==31) ) {
                 $MIXdetails = explode('|', $MIXentries[$q]);
                 $MIXdetailsLIST = $MIXdetails[0];
 
-                $dial_statuses = preg_replace("/ -$/","",$dial_statuses);
+                $dial_statuses = OSDpreg_replace("/ -$/","",$dial_statuses);
                 $Dstatuses = explode(" ", $dial_statuses);
                 $Ds_to_print = (count($Dstatuses) - 0);
                 $Dsql = '';
@@ -2465,7 +2466,7 @@ if ( ($ADD==34) or ($ADD==31) ) {
                     $r++;
                     $Dsql .= "'$Dstatuses[$r]',";
                 }
-                $Dsql = preg_replace("/,$/","",$Dsql);
+                $Dsql = OSDpreg_replace("/,$/","",$Dsql);
 
                 #echo "  <tr " . bgcolor($o) . " class=font2>\n";
                 echo "  <tr class=font2>\n";
@@ -2617,14 +2618,14 @@ if ($ADD==30) {
 # ADD=81 find all callbacks on hold within a Campaign
 ######################
 if ($ADD==81) {
-    if ($LOGmodify_campaigns==1) {
+    if ($LOG['modify_campaigns']==1) {
         if ($SUB==89) {
-            $stmt="UPDATE osdial_callbacks SET status='INACTIVE' where campaign_id='$campaign_id' and status='LIVE' and callback_time < '$past_month_date';";
+            $stmt=sprintf("UPDATE osdial_callbacks SET status='INACTIVE' WHERE campaign_id='%s' AND status='LIVE' AND callback_time<'%s';",mres($campaign_id),mres($past_month_date));
             $rslt=mysql_query($stmt, $link);
             echo "<br>campaign($campaign_id) callback listings LIVE for more than one month have been made INACTIVE\n";
         }
         if ($SUB==899) {
-            $stmt="UPDATE osdial_callbacks SET status='INACTIVE' where campaign_id='$campaign_id' and status='LIVE' and callback_time < '$past_week_date';";
+            $stmt=sprintf("UPDATE osdial_callbacks SET status='INACTIVE' WHERE campaign_id='%s' AND status='LIVE' AND callback_time<'%s';",mres($campaign_id),mres($past_month_date));
             $rslt=mysql_query($stmt, $link);
             echo "<br>campaign($campaign_id) callback listings LIVE for more than one week have been made INACTIVE\n";
         }
@@ -2653,7 +2654,7 @@ $dispact = get_variable('dispact');
 $dispactSQL = '';
 if ($dispact == 1) $dispactSQL = "AND active='Y'";
 
-    $stmt=sprintf("SELECT * from osdial_campaigns WHERE campaign_id IN %s %s %s order by campaign_id",$LOG['allowed_campaignsSQL'],$letSQL,$dispactSQL);
+    $stmt=sprintf("SELECT * FROM osdial_campaigns WHERE campaign_id IN %s %s %s ORDER BY campaign_id;",$LOG['allowed_campaignsSQL'],$letSQL,$dispactSQL);
 
     $rslt=mysql_query($stmt, $link);
     $people_to_print = mysql_num_rows($rslt);

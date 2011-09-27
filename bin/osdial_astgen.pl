@@ -110,15 +110,15 @@ if (-e "/usr/sbin/asterisk" and -f "/etc/asterisk/osdial_extensions.conf") {
 
 		my $sret = $osdial->sql_query("SELECT count(*) AS fndarchive FROM configuration WHERE ((name='ArchiveHostname' AND data='') OR (name='ArchiveWebPath' AND data='http'));");
 		if ($sret->{fndarchive}) {
-			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->{VARFTP_host} . "' WHERE name='ArchiveHostname';");
+			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->mres($osdial->{VARFTP_host}) . "' WHERE name='ArchiveHostname';");
 			$osdial->sql_execute("UPDATE configuration SET data='FTP' WHERE name='ArchiveTransferMethod';");
-			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->{VARFTP_port} . "' WHERE name='ArchivePort';");
-			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->{VARFTP_user} . "' WHERE name='ArchiveUsername';");
-			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->{VARFTP_pass} . "' WHERE name='ArchivePassword';");
-			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->{VARFTP_dir} . "' WHERE name='ArchivePath';");
-			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->{VARHTTP_path} . "' WHERE name='ArchiveWebPath';");
+			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->mres($osdial->{VARFTP_port}) . "' WHERE name='ArchivePort';");
+			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->mres($osdial->{VARFTP_user}) . "' WHERE name='ArchiveUsername';");
+			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->mres($osdial->{VARFTP_pass}) . "' WHERE name='ArchivePassword';");
+			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->mres($osdial->{VARFTP_dir}) . "' WHERE name='ArchivePath';");
+			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->mres($osdial->{VARHTTP_path}) . "' WHERE name='ArchiveWebPath';");
 			$osdial->sql_execute("UPDATE configuration SET data='MP3' WHERE name='ArchiveMixFormat';");
-			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->{VARREPORT_dir} . "' WHERE name='ArchiveReportPath';");
+			$osdial->sql_execute("UPDATE configuration SET data='" . $osdial->mres($osdial->{VARREPORT_dir}) . "' WHERE name='ArchiveReportPath';");
 		}
 	}
 
@@ -634,6 +634,16 @@ sub gen_phones {
 		$ephn .= sprintf("exten => _NNXXNXXXXXX,1,Goto(%s,\${EXTEN:0:1}1\${EXTEN:1},1)\n",$dcc);
 		$ephn .= sprintf("exten => _X1NXXNXXXXXX,1,Goto(%s,\${EXTEN},1)\n",$dcc);
 		$ephn .= ";\n";
+		$ephn .= ";\n";
+	}
+
+	# Build TTS extensions.
+	my $stmt = "SELECT * FROM osdial_tts WHERE extension!='';";
+	while (my $sret = $osdial->sql_query($stmt)) {
+		$ephn .= "; Text-to-Speech Extension\n";
+		$ephn .= sprintf("exten => %s,1,Playback(sip-silence)\n",$sret->{extension});
+		$ephn .= sprintf("exten => %s,2,AGI(agi-OSDtts.agi,\${EXTEN})\n",$sret->{extension});
+		$ephn .= sprintf("exten => %s,3,Hangup()\n",$sret->{extension});
 		$ephn .= ";\n";
 	}
 

@@ -93,13 +93,13 @@ $cinfo->{CIDlead_id} = (substr($AGI->{accountcode}, 11, 9) + 0);
 $auto_calls = $osdial->sql_query("SELECT SQL_NO_CACHE * FROM osdial_auto_calls WHERE callerid='" . $AGI->{accountcode} . "' ORDER BY call_time DESC LIMIT 1;");
 
 ### Grab campaign values from the database
-$campaign = $osdial->sql_query("SELECT * FROM osdial_campaigns WHERE campaign_id='" . $cinfo->{campaign_id} . "';");
+$campaign = $osdial->sql_query("SELECT * FROM osdial_campaigns WHERE campaign_id='" . $osdial->mres($cinfo->{campaign_id}) . "';");
 
 update_status('VPU',$ivr->{announcement});
 
 
 # Pull the auto-agent ivr config.
-my $ivr = $osdial->sql_query("SELECT * FROM osdial_ivr WHERE campaign_id='" . $campaign->{campaign_id} . "';");
+my $ivr = $osdial->sql_query("SELECT * FROM osdial_ivr WHERE campaign_id='" . $osdial->mres($campaign->{campaign_id}) . "';");
 unless ($ivr) {
 	$osdial->agi_output("+++++ ODOI : NO OUTBOUND IVR FOUND FOR THIS CAMPAIGN: EXITING");
 	exit;
@@ -252,9 +252,9 @@ sub update_status {
 	$osdial->sql_connect('B');
 
 	my $upsql;
-	$upsql = "status='$status'" if ($status ne '');
-	$upsql = "comments='$comment'" if ($comment ne '');
-	$upsql = "status='$status',comments='$comment'" if ($status ne '' and $comment ne '');
+	$upsql = "status='" . $osdial->mres($status) . "'" if ($status ne '');
+	$upsql = "comments='" . $osdial->mres($comment) . "'" if ($comment ne '');
+	$upsql = "status='" . $osdial->mres($status) . "',comments='" . $osdial->mres($comment) . "'" if ($status ne '' and $comment ne '');
 
 	if ($status or $comment) {
 		my $affected_rows = $osdial->sql_execute("UPDATE osdial_list set $upsql where lead_id='" . $cinfo->{CIDlead_id} . "';",'B');
@@ -284,7 +284,7 @@ sub playfile {
 	update_status($status);
 	$stream =~ s/\..*$//;
 	$osdial->agi_output("ODOI: playing file $stream|");
-	$AGI->stream_file($stream);
+	$AGI->stream_file_tts($stream);
 
 	return $rtnmain;
 }
@@ -309,7 +309,7 @@ sub xfer_to_external {
 
 	$stream =~ s/\..*$//;
 	$stream = 'pls-wait-connect-call' unless ($stream);
-	$AGI->stream_file($stream) if ($stream);
+	$AGI->stream_file_tts($stream) if ($stream);
 
 	update_status($status);
 
@@ -399,7 +399,7 @@ sub xfer_to_ingroup {
 
 	$stream =~ s/\..*$//;
 	$stream = 'pls-wait-connect-call' unless ($stream);
-	$AGI->stream_file($stream) if ($stream);
+	$AGI->stream_file_tts($stream) if ($stream);
 
 	update_status($status);
 
@@ -409,13 +409,13 @@ sub xfer_to_ingroup {
 
     	my $number = '';;
     	if ($failover_method eq 'EXT_NA') {
-		my $sres = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM osdial_live_agents WHERE closer_campaigns LIKE '% $ingroup %';");
+		my $sres = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM osdial_live_agents WHERE closer_campaigns LIKE '% " . $osdial->mres($ingroup) . " %';");
         	if ($sres->{cnt} < 1) {
             	# no agents logged in, send to failover_number
             	$number = $failover_number;
         	}
     	} elsif ($failover_method eq 'EXT_UA') {
-        	my $sres = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM osdial_live_agents WHERE closer_campaigns LIKE '% $ingroup %' AND uniqueid<'1';");
+        	my $sres = $osdial->sql_query("SELECT SQL_NO_CACHE count(*) AS cnt FROM osdial_live_agents WHERE closer_campaigns LIKE '% " . $osdial->mres($ingroup) . " %' AND uniqueid<'1';");
         	if ($sres->{cnt} < 1) {
             	# no agents logged in or they are unavailable, send to failover_number
             	$number = $failover_number;
@@ -472,7 +472,7 @@ sub hangup_and_dispo {
 	my ($stream, $status) = @_;;
 
 	$stream =~ s/\..*$//;
-	$AGI->stream_file($stream) if ($stream);
+	$AGI->stream_file_tts($stream) if ($stream);
 
 	my $tepoch = time();
 	my $tdate = $osdial->get_datetime($tepoch);
@@ -623,7 +623,7 @@ sub stream_and_get_dtmf {
 
 		$total_digits = '';
 		$stream =~ s/\..*$//;
-		my $interrupt_digit = $AGI->stream_file($stream,'0123456789#*');
+		my $interrupt_digit = $AGI->stream_file_tts($stream,'0123456789#*');
 		if ($interrupt_digit) {
 			my $int_digit=chr($interrupt_digit);
 			if (!$int_digit =~ /$valid_pat/) {
@@ -676,5 +676,35 @@ sub stream_and_get_dtmf {
 
 
 
+sub stream_file_tts {
+	my ($file, $valid_pat) = @_;
+	my $retintdigit;
+
+	if ($file =~ /^TTS:/) {
+		$file =~ s/^TTS://;
+		my $leaddata = $osdial->sql_query(sprintf("SELECT * FROM osdial_list WHERE lead_id='\%s';",$osdial->mres($cinfo->{CIDlead_id})));
+
+		while (my $aff = $osdial->sql_query(sprintf("SELECT concat(osdial_campaign_forms.name,'_',osdial_campaign_fields.name) AS affid,value FROM osdial_list_fields JOIN osdial_campaign_fields ON (osdial_list_fields.field_id=osdial_campaign_fields.id) JOIN osdial_campaign_forms ON (osdial_campaign_fields.form_id=osdial_campaign_forms.id) WHERE lead_id='\%s';",$osdial->mres($cinfo->{CIDlead_id})))) {
+			$leaddata->{$aff->{affid}} = $aff->{value};
+		}
+		my $tts = $osdial->sql_query(sprintf("SELECT * FROM osdial_tts WHERE extension='\%s';",$osdial->mres($file)));
+		if (defined($tts->{phrase})) {
+			my @tts_files;
+			foreach my $phrase ($tts->{phrase}) {
+				my @tparse = $osdial->tts_osdial_parse($phrase,$leaddata);
+				foreach my $tp (@tparse) {
+					push @tts_files, $osdial->tts_generate($tp,$tts->{voice});
+				}
+			}
+			foreach my $tts_file (@tts_files) {
+				$retintdigit = $AGI->stream_file($tts_file,$valid_pat);
+				return $retintdigit if (chr($retintdigit) =~ /$valid_pat/);
+			}
+		}
+	} else {
+		$retintdigit = $AGI->stream_file($file,$valid_pat);
+	}
+	return $retintdigit;
+}
 
 

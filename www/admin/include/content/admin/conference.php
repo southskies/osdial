@@ -32,7 +32,7 @@
 
 if ($ADD==1111111111111)
 {
-	if ($LOGast_admin_access==1)
+	if ($LOG['ast_admin_access']==1)
 	{
     $servers_list = get_servers($link, $server_ip, 'AIO|DIALER');
 	echo "<center><br><font color=$default_text size=+1>ADD A NEW CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
@@ -61,20 +61,20 @@ if ($ADD==1111111111111)
 
 if ($ADD==2111111111111)
 {
-	$stmt="SELECT count(*) from conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
+	$stmt=sprintf("SELECT count(*) FROM conferences WHERE conf_exten='%s' AND server_ip='%s';",mres($conf_exten),mres($server_ip));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
 		{echo "<br><font color=red>CONFERENCE NOT ADDED - there is already a conference in the system with this ID and server</font>\n";}
 	else
 		{
-		 if ( (strlen($conf_exten) < 1) or (strlen($server_ip) < 7) )
+		 if ( (OSDstrlen($conf_exten) < 1) or (OSDstrlen($server_ip) < 7) )
 			{echo "<br><font color=red>CONFERENCE NOT ADDED - Please go back and look at the data you entered</font>\n";}
 		 else
 			{
 			echo "<br><font color=$default_text>CONFERENCE ADDED</font>\n";
 
-			$stmt="INSERT INTO conferences (conf_exten,server_ip) values('$conf_exten','$server_ip');";
+			$stmt=sprintf("INSERT INTO conferences (conf_exten,server_ip) VALUES('%s','%s');",mres($conf_exten),mres($server_ip));
 			$rslt=mysql_query($stmt, $link);
 			}
 		}
@@ -90,22 +90,22 @@ $ADD=3111111111111;
 
 if ($ADD==4111111111111)
 {
-	if ($LOGast_admin_access==1)
+	if ($LOG['ast_admin_access']==1)
 	{
-	$stmt="SELECT count(*) from conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
+	$stmt=sprintf("SELECT count(*) FROM conferences WHERE conf_exten='%s' AND server_ip='%s';",mres($conf_exten),mres($server_ip));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ( ($row[0] > 0) && ( ($conf_exten != $old_conf_exten) or ($server_ip != $old_server_ip) ) )
 		{echo "<br><font color=red>CONFERENCE NOT MODIFIED - there is already a Conference in the system with this extension-server</font>\n";}
 	else
 		{
-		 if ( (strlen($conf_exten) < 1) or (strlen($server_ip) < 7) )
+		 if ( (OSDstrlen($conf_exten) < 1) or (OSDstrlen($server_ip) < 7) )
 			{echo "<br><font color=red>CONFERENCE NOT MODIFIED - Please go back and look at the data you entered</font>\n";}
 		 else
 			{
 			echo "<br><font color=$default_text>CONFERENCE MODIFIED: $conf_exten</font>\n";
 
-			$stmt="UPDATE conferences set conf_exten='$conf_exten',server_ip='$server_ip',extension='$extension' where conf_exten='$old_conf_exten' and server_ip='$old_server_ip';";
+			$stmt=sprintf("UPDATE conferences SET conf_exten='%s',server_ip='%s',extension='%s' WHERE conf_exten='%s' AND server_ip='%s';",mres($conf_exten),mres($server_ip),mres($extension),mres($old_conf_exten),mres($old_server_ip));
 			$rslt=mysql_query($stmt, $link);
 			}
 		}
@@ -126,7 +126,7 @@ if ($ADD==4111111111111)
 
 if ($ADD==5111111111111)
 {
-	 if ( (strlen($conf_exten) < 2) or (strlen($server_ip) < 7) or ($LOGast_delete_phones < 1) )
+	 if ( (OSDstrlen($conf_exten) < 2) or (OSDstrlen($server_ip) < 7) or ($LOG['ast_delete_phones'] < 1) )
 		{
 		 echo "<br><font color=red>CONFERENCE NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Conference must be at least 2 characters in length\n";
@@ -148,7 +148,7 @@ $ADD='3111111111111';		# go to conference modification below
 
 if ($ADD==6111111111111)
 {
-	 if ( (strlen($conf_exten) < 2) or (strlen($server_ip) < 7) or ($CoNfIrM != 'YES') or ($LOGast_delete_phones < 1) )
+	 if ( (OSDstrlen($conf_exten) < 2) or (OSDstrlen($server_ip) < 7) or ($CoNfIrM != 'YES') or ($LOG['ast_delete_phones'] < 1) )
 		{
 		 echo "<br><font color=red>CONFERENCE NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Conference be at least 2 characters in length\n";
@@ -156,7 +156,7 @@ if ($ADD==6111111111111)
 		}
 	 else
 		{
-		$stmt="DELETE from conferences where conf_exten='$conf_exten' and server_ip='$server_ip' limit 1;";
+		$stmt=sprintf("DELETE FROM conferences WHERE conf_exten='%s' AND server_ip='%s' LIMIT 1;",mres($conf_exten),mres($server_ip));
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -181,9 +181,9 @@ $ADD='1000000000000';		# go to conference list
 
 if ($ADD==3111111111111)
 {
-	if ($LOGast_admin_access==1)
+	if ($LOG['ast_admin_access']==1)
 	{
-	$stmt="SELECT * from conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
+	$stmt=sprintf("SELECT * FROM conferences WHERE conf_exten='%s' AND server_ip='%s';",mres($conf_exten),mres($server_ip));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$conf_exten = $row[0];
@@ -206,7 +206,7 @@ if ($ADD==3111111111111)
 	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 
-	if ($LOGast_delete_phones > 0)
+	if ($LOG['ast_delete_phones'] > 0)
 		{
 		echo "<br><br><a href=\"$PHP_SELF?ADD=5111111111111&conf_exten=$conf_exten&server_ip=$server_ip\">DELETE THIS CONFERENCE</a>\n";
 		}
@@ -266,7 +266,7 @@ echo "</table></center>\n";
 
 if ($ADD==11111111111111)
 {
-	if ($LOGast_admin_access==1)
+	if ($LOG['ast_admin_access']==1)
 	{
     $servers_list = get_servers($link, $server_ip, 'AIO|DIALER');
 	echo "<center><br><font color=$default_text size=+1>ADD A NEW $t1 CONFERENCE</font><form action=$PHP_SELF method=POST><br><br>\n";
@@ -294,20 +294,20 @@ if ($ADD==11111111111111)
 
 if ($ADD==21111111111111)
 {
-	$stmt="SELECT count(*) from osdial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
+	$stmt=sprintf("SELECT count(*) FROM osdial_conferences WHERE conf_exten='%s' AND server_ip='%s';",mres($conf_exten),mres($server_ip));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
 		{echo "<br><font color=red>$t1 CONFERENCE NOT ADDED - there is already an $t1 conference in the system with this ID and server</font>\n";}
 	else
 		{
-		 if ( (strlen($conf_exten) < 1) or (strlen($server_ip) < 7) )
+		 if ( (OSDstrlen($conf_exten) < 1) or (OSDstrlen($server_ip) < 7) )
 			{echo "<br><font color=red>$t1 CONFERENCE NOT ADDED - Please go back and look at the data you entered</font>\n";}
 		 else
 			{
 			echo "<br><font color=$default_text>$t1 CONFERENCE ADDED</font>\n";
 
-			$stmt="INSERT INTO osdial_conferences (conf_exten,server_ip) values('$conf_exten','$server_ip');";
+			$stmt=sprintf("INSERT INTO osdial_conferences (conf_exten,server_ip) VALUES('%s','%s');",mres($conf_exten),mres($server_ip));
 			$rslt=mysql_query($stmt, $link);
 			}
 		}
@@ -321,22 +321,22 @@ $ADD=31111111111111;
 
 if ($ADD==41111111111111)
 {
-	if ($LOGast_admin_access==1)
+	if ($LOG['ast_admin_access']==1)
 	{
-	$stmt="SELECT count(*) from osdial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
+	$stmt=sprintf("SELECT count(*) FROM osdial_conferences WHERE conf_exten='%s' AND server_ip='%s';",mres($conf_exten),mres($server_ip));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ( ($row[0] > 0) && ( ($conf_exten != $old_conf_exten) or ($server_ip != $old_server_ip) ) )
 		{echo "<br><font color=red>$t1 CONFERENCE NOT MODIFIED - there is already a Conference in the system with this extension-server</font>\n";}
 	else
 		{
-		 if ( (strlen($conf_exten) < 1) or (strlen($server_ip) < 7) )
+		 if ( (OSDstrlen($conf_exten) < 1) or (OSDstrlen($server_ip) < 7) )
 			{echo "<br><font color=red>$t1 CONFERENCE NOT MODIFIED - Please go back and look at the data you entered</font>\n";}
 		 else
 			{
 			echo "<br><font color=$default_text>$t1 CONFERENCE MODIFIED: $conf_exten</font>\n";
 
-			$stmt="UPDATE osdial_conferences set conf_exten='$conf_exten',server_ip='$server_ip',extension='$extension' where conf_exten='$old_conf_exten' and server_ip='$old_server_ip';";
+			$stmt=sprintf("UPDATE osdial_conferences SET conf_exten='$conf_exten',server_ip='%s',extension='%s' WHERE conf_exten='%s' AND server_ip='%s';",mres($conf_exten),mres($server_ip),mres($extension),mres($old_conf_exten),mres($old_server_ip));
 			$rslt=mysql_query($stmt, $link);
 
 			}
@@ -357,7 +357,7 @@ if ($ADD==41111111111111)
 
 if ($ADD==51111111111111)
 {
-	 if ( (strlen($conf_exten) < 2) or (strlen($server_ip) < 7) or ($LOGast_delete_phones < 1) )
+	 if ( (OSDstrlen($conf_exten) < 2) or (OSDstrlen($server_ip) < 7) or ($LOG['ast_delete_phones'] < 1) )
 		{
 		 echo "<br><font color=red>$t1 CONFERENCE NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Conference must be at least 2 characters in length\n";
@@ -379,7 +379,7 @@ $ADD='31111111111111';		# go to osdial conference modification below
 
 if ($ADD==61111111111111)
 {
-	 if ( (strlen($conf_exten) < 2) or (strlen($server_ip) < 7) or ($CoNfIrM != 'YES') or ($LOGast_delete_phones < 1) )
+	 if ( (OSDstrlen($conf_exten) < 2) or (OSDstrlen($server_ip) < 7) or ($CoNfIrM != 'YES') or ($LOG['ast_delete_phones'] < 1) )
 		{
 		 echo "<br><font color=red>$t1 CONFERENCE NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Conference be at least 2 characters in length\n";
@@ -387,7 +387,7 @@ if ($ADD==61111111111111)
 		}
 	 else
 		{
-		$stmt="DELETE from osdial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip' limit 1;";
+		$stmt=sprintf("DELETE FROM osdial_conferences WHERE conf_exten='%s' AND server_ip='%s' LIMIT 1;",mres($conf_exten),mres($server_ip));
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -410,9 +410,9 @@ $ADD='10000000000000';		# go to osdial conference list
 
 if ($ADD==31111111111111)
 {
-	if ($LOGast_admin_access==1)
+	if ($LOG['ast_admin_access']==1)
 	{
-	$stmt="SELECT * from osdial_conferences where conf_exten='$conf_exten' and server_ip='$server_ip';";
+	$stmt=sprintf("SELECT * FROM osdial_conferences WHERE conf_exten='%s' AND server_ip='%s';",mres($conf_exten),mres($server_ip));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$conf_exten = $row[0];
@@ -435,7 +435,7 @@ if ($ADD==31111111111111)
 	echo "<tr class=tabfooter><td align=center colspan=2 class=tabbutton><input type=submit name=submit VALUE=SUBMIT></td></tr>\n";
 	echo "</TABLE></center>\n";
 
-	if ($LOGast_delete_phones > 0)
+	if ($LOG['ast_delete_phones'] > 0)
 		{
 		echo "<br><br><a href=\"$PHP_SELF?ADD=51111111111111&conf_exten=$conf_exten&server_ip=$server_ip\">DELETE THIS $t1 CONFERENCE</a>\n";
 		}

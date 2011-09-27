@@ -56,7 +56,7 @@ while ($camp_loop) {
 	exit 1 if ($camp_loop>4);
 	$campaign_id = stream_and_get_dtmf('please-enter-the-room-number-you-wish-to-join', 8, 3, 10, 1000, 'BAD', '1234567890', 3, '#');
 	if ($campaign_id ne 'BAD') {
-		my $sret = $osdial->sql_query("SELECT count(*) AS count FROM osdial_campaigns WHERE (campaign_id='$campaign_id' OR ('1234'='$campaign_id' AND campaign_id LIKE '%TEST%'));");
+		my $sret = $osdial->sql_query("SELECT count(*) AS count FROM osdial_campaigns WHERE (campaign_id='" . $osdial->mres($campaign_id) . "' OR ('1234'='" . $osdial->mres($campaign_id) . "' AND campaign_id LIKE '%TEST%'));");
 		if ($sret->{'count'}<1) {
 			$AGI->stream_file('invalid-room');
 		} else {
@@ -70,11 +70,11 @@ while ($camp_loop) {
 				}
 				$phone_exten = stream_and_get_dtmf('please-enter-the-extension-2-b-monitored', 8, 3, 10, 1000, 'BAD', '1234567890', 3, '#');
 				if ($phone_exten ne 'BAD') {
-					my $sret = $osdial->sql_query("SELECT count(*) AS count FROM phones WHERE extension='$phone_exten' OR dialplan_number='$phone_exten';");
+					my $sret = $osdial->sql_query("SELECT count(*) AS count FROM phones WHERE extension='" . $osdial->mres($phone_exten) . "' OR dialplan_number='" . $osdial->mres($phone_exten) . "';");
 					if ($sret->{'count'}<1) {
 						$AGI->stream_file('invalid-extension');
 					} else {
-						my $sret = $osdial->sql_query("SELECT SQL_NO_CACHE ola.conf_exten,s.server_ip,s.server_id,s.ext_context FROM osdial_live_agents AS ola,servers AS s,phones WHERE ((phones.extension='$phone_exten' OR phones.dialplan_number='$phone_exten') AND (ola.extension LIKE concat(phones.protocol,'/',phones.extension,'\%') OR ola.extension LIKE concat('\%/',phones.login,'\@\%') OR ola.extension LIKE concat('Local/',phones.dialplan_number,'%'))) AND s.server_ip=ola.server_ip AND phones.server_ip=s.server_ip LIMIT 1;");
+						my $sret = $osdial->sql_query("SELECT SQL_NO_CACHE ola.conf_exten,s.server_ip,s.server_id,s.ext_context FROM osdial_live_agents AS ola,servers AS s,phones WHERE ((phones.extension='" . $osdial->mres($phone_exten) . "' OR phones.dialplan_number='" . $osdial->mres($phone_exten) . "') AND (ola.extension LIKE concat(phones.protocol,'/',phones.extension,'\%') OR ola.extension LIKE concat('\%/',phones.login,'\@\%') OR ola.extension LIKE concat('Local/',phones.dialplan_number,'%'))) AND s.server_ip=ola.server_ip AND phones.server_ip=s.server_ip LIMIT 1;");
 						if ($sret->{'conf_exten'} eq "") {
 							$AGI->stream_file('extension');
 							$AGI->say_digits($phone_exten);

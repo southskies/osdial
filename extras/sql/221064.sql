@@ -9,7 +9,7 @@ CREATE TABLE osdial_campaign_cid_areacodes (
   cid_number VARCHAR(10) NOT NULL,
   cid_name VARCHAR(40) NOT NULL,
   PRIMARY KEY (campaign_id,areacode)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;##|##
+) ENGINE=InnoDB;##|##
   ## Table to hold AreaCode to CID mappings.;
 
 

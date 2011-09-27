@@ -91,12 +91,12 @@ function report_call_stats() {
         if ($i != $group_ct - 1) $group_list .= ", ";
         $i++;
     }
-    if ( (preg_match("/--ALL--/",$group_string) ) or ($group_ct < 1) ) {
+    if ( (OSDpreg_match("/--ALL--/",$group_string) ) or ($group_ct < 1) ) {
         $group_SQLand = sprintf("AND campaign_id IN %s",$LOG['allowed_campaignsSQL']);
         $group_SQL = sprintf("WHERE campaign_id IN %s",$LOG['allowed_campaignsSQL']);
         $group_list = "--ALL--";
     } else {
-        $group_SQL = preg_replace("/,$/",'',$group_SQL);
+        $group_SQL = OSDpreg_replace("/,$/",'',$group_SQL);
         $group_SQLand = sprintf("AND campaign_id IN %s AND campaign_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
         $group_SQL = sprintf("WHERE campaign_id IN %s AND campaign_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
     }
@@ -139,7 +139,7 @@ function report_call_stats() {
     $html .= "        <tr>\n";
     $html .= "          <td colspan=3 align=center>\n";
     $html .= "            <font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=2>\n";
-    if (strlen($group[0]) > 1) {
+    if (OSDstrlen($group[0]) > 1) {
         $html .= "              <a href=\"./admin.php?ADD=34&campaign_id=$group[0]\">MODIFY</a> | \n";
     } else {
         $html .= "              <a href=\"./admin.php?ADD=10\">CAMPAIGNS</a> | \n";
@@ -163,11 +163,11 @@ function report_call_stats() {
     $html .= "          </td>\n";
     $html .= "          <td> Campaigns:<br>\n";
     $html .= "            <select size=5 name=group[] multiple>\n";
-    $gsel=''; if  (preg_match("/--ALL--/",$group_string)) $gsel = "selected";
+    $gsel=''; if  (OSDpreg_match("/--ALL--/",$group_string)) $gsel = "selected";
     $html .= "              <option value=\"--ALL--\" $gsel>-- ALL CAMPAIGNS --</option>\n";
     $o=0;
     while ($campaigns_to_print > $o) {
-        $gsel=''; if (preg_match("/$groups[$o]\|/",$group_string)) $gsel = "selected";
+        $gsel=''; if (OSDpreg_match("/$groups[$o]\|/",$group_string)) $gsel = "selected";
         $html .= "              <option value=\"$groups[$o]\" $gsel>" . mclabel($groups[$o]) . "</option>\n";
         $o++;
     }
@@ -196,7 +196,7 @@ function report_call_stats() {
     
 
     # If no campaign, return now.
-    if (strlen($group[0]) < 1) {
+    if (OSDstrlen($group[0]) < 1) {
         $html .= "    </td>\n";
         $html .= "  </tr>\n";
         $html .= "</table>\n";
@@ -223,21 +223,21 @@ function report_call_stats() {
     while ($ccamps_to_print > $c) {
         $row=mysql_fetch_row($rslt);
         $closer_campaigns = $row[0];
-        $closer_campaigns = preg_replace("/^ | -$/","",$closer_campaigns);
-        $closer_campaigns = preg_replace("/ /","','",$closer_campaigns);
+        $closer_campaigns = OSDpreg_replace("/^ | -$/","",$closer_campaigns);
+        $closer_campaigns = OSDpreg_replace("/ /","','",$closer_campaigns);
         $closer_campaignsSQL .= "'$closer_campaigns',";
         $c++;
     }
-    $closer_campaignsSQL = preg_replace("/,$/",'',$closer_campaignsSQL);
+    $closer_campaignsSQL = OSDpreg_replace("/,$/",'',$closer_campaignsSQL);
     $closer_SQLand = "and campaign_id IN($closer_campaignsSQL)";
 
     if ($use_closer_log) {
         $stmt="SELECT count(*),sum(length_in_sec) FROM ((select uniqueid,length_in_sec from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand) UNION (select uniqueid,length_in_sec from osdial_closer_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $closer_SQLand)) AS t;";
-        $ccprint = preg_replace("/'',/","",$closer_campaignsSQL);
-        $ccprint2 = preg_replace("/,/",", ",$ccprint);
-        $ccprint2 = preg_replace("/'/","    ",$ccprint2);
-        $ccprint = preg_replace("/,/","\n",$ccprint);
-        $ccprint = preg_replace("/'/","    ",$ccprint);
+        $ccprint = OSDpreg_replace("/'',/","",$closer_campaignsSQL);
+        $ccprint2 = OSDpreg_replace("/,/",", ",$ccprint);
+        $ccprint2 = OSDpreg_replace("/'/","    ",$ccprint2);
+        $ccprint = OSDpreg_replace("/,/","\n",$ccprint);
+        $ccprint = OSDpreg_replace("/'/","    ",$ccprint);
         $html .= "In-Groups included in this report:\n";
         $html .= $ccprint . "\n\n";
     } else {
@@ -321,7 +321,7 @@ function report_call_stats() {
         $q++;
         $p++;
     }
-    $camp_ANS_STAT_SQL = preg_replace("/,$/",'',$camp_ANS_STAT_SQL);
+    $camp_ANS_STAT_SQL = OSDpreg_replace("/,$/",'',$camp_ANS_STAT_SQL);
 
     
     if ($use_closer_log) {
@@ -526,7 +526,6 @@ function report_call_stats() {
     } else {
         $stmt="select count(*),term_reason from osdial_log where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand group by term_reason;";
     }
-    if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $reasons_to_print = mysql_num_rows($rslt);
@@ -535,15 +534,15 @@ function report_call_stats() {
         $row=mysql_fetch_row($rslt);
         $TOTALcalls = ($TOTALcalls + $row[0]);
         $REASONcount = sprintf("%10s", $row[0]);
-        while(strlen($REASONcount)>10) {
-            $REASONcount = substr("$REASONcount", 0, -1);
+        while(OSDstrlen($REASONcount)>10) {
+            $REASONcount = OSDsubstr("$REASONcount", 0, -1);
         }
         $reason = sprintf("%-20s", $row[1]);
-        while(strlen($reason)>20) {
-            $reason = substr("$reason", 0, -1);
+        while(OSDstrlen($reason)>20) {
+            $reason = OSDsubstr("$reason", 0, -1);
         }
-        if (preg_match("/NONE/",$reason))    {$reason = 'NO CONTACT          ';}
-        if (preg_match("/CALLER/",$reason)) {$reason = 'CUSTOMER            ';}
+        if (OSDpreg_match("/NONE/",$reason))    {$reason = 'NO CONTACT          ';}
+        if (OSDpreg_match("/CALLER/",$reason)) {$reason = 'CUSTOMER            ';}
     
         $plain .= "| $reason | $REASONcount |\n";
 
@@ -667,7 +666,6 @@ function report_call_stats() {
         }
     }
     $cnvrate = Array();
-    if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $statuses_to_print = mysql_num_rows($rslt);
@@ -681,7 +679,7 @@ function report_call_stats() {
 
         $STATUScount =    $row[0];
         $RAWstatus =    $row[1];
-        $RAWcomment =    preg_replace("/\.wav$|\.mp3$|\.gsm$/","",$row[3]);
+        $RAWcomment =    OSDpreg_replace("/\.wav$|\.mp3$|\.gsm$/","",$row[3]);
         $r=0;
         while ($r < $statcats_to_print) {
             if ($statcat_list[$RAWstatus] == "$vsc_id[$r]") {
@@ -725,35 +723,25 @@ function report_call_stats() {
         if ($STATUSavg_M_int < 10) {$STATUSavg_M_int = "0$STATUSavg_M_int";}
         $STATUSavg = "$STATUSavg_H_int:$STATUSavg_M_int:$STATUSavg_S";
     
-        # TODO:  What?  We can't trust sprintf?
         $STATUScount = sprintf("%10s", $row[0]);
-        while(strlen($STATUScount)>10) {$STATUScount = substr("$STATUScount", 0, -1);}
+        while(OSDstrlen($STATUScount)>10) {$STATUScount = OSDsubstr("$STATUScount", 0, -1);}
         $status = sprintf("%-6s", $row[1]);
-        while(strlen($status)>6) {$status = substr("$status", 0, -1);}
+        while(OSDstrlen($status)>6) {$status = OSDsubstr("$status", 0, -1);}
         $STATUShours = sprintf("%10s", $STATUShours);
-        while(strlen($STATUShours)>10) {$STATUShours = substr("$STATUShours", 0, -1);}
+        while(OSDstrlen($STATUShours)>10) {$STATUShours = OSDsubstr("$STATUShours", 0, -1);}
         $STATUSavg = sprintf("%8s", $STATUSavg);
-        while(strlen($STATUSavg)>8) {$STATUSavg = substr("$STATUSavg", 0, -1);}
+        while(OSDstrlen($STATUSavg)>8) {$STATUSavg = OSDsubstr("$STATUSavg", 0, -1);}
         $STATUSrate = sprintf("%8s", $STATUSrate);
-        while(strlen($STATUSrate)>8) {$STATUSrate = substr("$STATUSrate", 0, -1);}
+        while(OSDstrlen($STATUSrate)>8) {$STATUSrate = OSDsubstr("$STATUSrate", 0, -1);}
         $AGENTrate = sprintf("%8s", $AGENTrate);
-        while(strlen($AGENTrate)>8) {$AGENTrate = substr("$AGENTrate", 0, -1);}
+        while(OSDstrlen($AGENTrate)>8) {$AGENTrate = OSDsubstr("$AGENTrate", 0, -1);}
     
-        if ($non_latin < 1) {
-            $status_name =    sprintf("%-20s", $statname_list[$RAWstatus]); 
-            while(strlen($status_name)>20) {$status_name = substr("$status_name", 0, -1);}    
-            $statcat =    sprintf("%-20s", $statcat_list[$RAWstatus]); 
-            while(strlen($statcat)>20) {$statcat = substr("$statcat", 0, -1);}    
-            $comment =    sprintf("%-40s", $RAWcomment); 
-            while(strlen($comment)>40) {$comment = substr("$comment", 0, -1);}    
-        } else {
-            $status_name =    sprintf("%-60s", $statname_list[$RAWstatus]); 
-            while(mb_strlen($status_name,'utf-8')>20) {$status_name = mb_substr("$status_name", 0, -1,'utf-8');}    
-            $statcat =    sprintf("%-60s", $statcat_list[$RAWstatus]); 
-            while(mb_strlen($statcat,'utf-8')>20) {$statcat = mb_substr("$statcat", 0, -1,'utf-8');}    
-            $comment =    sprintf("%-120s", $$RAWcomment); 
-            while(mb_strlen($comment,'utf-8')>40) {$comment = mb_substr("$comment", 0, -1,'utf-8');}    
-        }
+        $status_name =    sprintf("%-20s", $statname_list[$RAWstatus]); 
+        while(OSDstrlen($status_name)>20) {$status_name = OSDsubstr("$status_name", 0, -1);}    
+        $statcat =    sprintf("%-20s", $statcat_list[$RAWstatus]); 
+        while(OSDstrlen($statcat)>20) {$statcat = OSDsubstr("$statcat", 0, -1);}    
+        $comment =    sprintf("%-40s", $RAWcomment); 
+        while(OSDstrlen($comment)>40) {$comment = OSDsubstr("$comment", 0, -1);}    
     
         $line = '';
         if ($comment_grouping) {
@@ -843,15 +831,15 @@ function report_call_stats() {
     }
     $TOTALcalls = sprintf("%10s", $TOTALcalls);
     $TOTALhours = sprintf("%10s", $TOTALhours);
-    while(strlen($TOTALhours)>10) {$TOTALhours = substr("$TOTALhours", 0, -1);}
+    while(OSDstrlen($TOTALhours)>10) {$TOTALhours = OSDsubstr("$TOTALhours", 0, -1);}
     $aTOTALhours = sprintf("%10s", $aTOTALhours);
-    while(strlen($aTOTALhours)>10) {$aTOTALhours = substr("$aTOTALhours", 0, -1);}
+    while(OSDstrlen($aTOTALhours)>10) {$aTOTALhours = OSDsubstr("$aTOTALhours", 0, -1);}
     $TOTALavg = sprintf("%8s", $TOTALavg);
-    while(strlen($TOTALavg)>8) {$TOTALavg = substr("$TOTALavg", 0, -1);}
+    while(OSDstrlen($TOTALavg)>8) {$TOTALavg = OSDsubstr("$TOTALavg", 0, -1);}
     $TOTALrate = sprintf("%8s", $TOTALrate);
-    while(strlen($TOTALrate)>8) {$TOTALrate = substr("$TOTALrate", 0, -1);}
+    while(OSDstrlen($TOTALrate)>8) {$TOTALrate = OSDsubstr("$TOTALrate", 0, -1);}
     $aTOTALrate = sprintf("%8s", $aTOTALrate);
-    while(strlen($aTOTALrate)>8) {$aTOTALrate = substr("$aTOTALrate", 0, -1);}
+    while(OSDstrlen($aTOTALrate)>8) {$aTOTALrate = OSDsubstr("$aTOTALrate", 0, -1);}
     
     if ($comment_grouping) {
         $plain .= "+------------------------------------------+--------+----------------------+----------------------+------------+------------+----------+----------+----------+\n";
@@ -948,9 +936,9 @@ function report_call_stats() {
     $r2=0;
     while ($r < $statcats_to_print) {
         $TOTCATcalls = ($TOTCATcalls + $vsc_count[$r]);
-        $category =    sprintf("%-20s", $vsc_id[$r]); while(strlen($category)>20) {$category = substr("$category", 0, -1);}
-        $CATcount =    sprintf("%10s", $vsc_count[$r]); while(strlen($CATcount)>10) {$CATcount = substr("$CATcount", 0, -1);}
-        $CATname =    sprintf("%-30s", $vsc_name[$r]); while(strlen($CATname)>30) {$CATname = substr("$CATname", 0, -1);}
+        $category =    sprintf("%-20s", $vsc_id[$r]); while(OSDstrlen($category)>20) {$category = OSDsubstr("$category", 0, -1);}
+        $CATcount =    sprintf("%10s", $vsc_count[$r]); while(OSDstrlen($CATcount)>10) {$CATcount = OSDsubstr("$CATcount", 0, -1);}
+        $CATname =    sprintf("%-30s", $vsc_name[$r]); while(OSDstrlen($CATname)>30) {$CATname = OSDsubstr("$CATname", 0, -1);}
     
         if ($vsc_id[$r] == 'CONTACT' or $vsc_id[$r] == 'DNC') {
             $TOTCATcontact += $CATcount;
@@ -990,9 +978,9 @@ function report_call_stats() {
         $TOTCATconversion = ($TOTCATsale / $TOTCATcontact) * 100;
     }
     $TOTCATconversion =    sprintf("%3.2f%%   ", $TOTCATconversion);
-    while(strlen($TOTCATconversion)>7) {$TOTCATconversion = substr("$TOTCATconversion", 0, -1);}
+    while(OSDstrlen($TOTCATconversion)>7) {$TOTCATconversion = OSDsubstr("$TOTCATconversion", 0, -1);}
     $TOTCATcalls =    sprintf("%10s", $TOTCATcalls);
-    while(strlen($TOTCATcalls)>10) {$TOTCATcalls = substr("$TOTCATcalls", 0, -1);}
+    while(OSDstrlen($TOTCATcalls)>10) {$TOTCATcalls = OSDsubstr("$TOTCATcalls", 0, -1);}
     
     $plain .= "+-------------------------------------------------------+------------+\n";
     $plain .= "| TOTAL                                                 | $TOTCATcalls |\n";
@@ -1068,15 +1056,15 @@ function report_call_stats() {
             if ($CATcontact > 0) {
                 $CATconversion = ($CATsale / ($CATcontact + $CATdnc + $CATsale)) * 100;
                 $CATconversion =    sprintf("%3.2f%%   ", $CATconversion);
-                while(strlen($CATconversion)>7) {$CATconversion = substr("$CATconversion", 0, -1);}
+                while(OSDstrlen($CATconversion)>7) {$CATconversion = OSDsubstr("$CATconversion", 0, -1);}
                 $CATcontact =    sprintf("%5s", $CATcontact);
-                while(strlen($CATcontact)>5) {$CATcontact = substr("$CATcontact", 0, -1);}
+                while(OSDstrlen($CATcontact)>5) {$CATcontact = OSDsubstr("$CATcontact", 0, -1);}
                 $CATdnc =    sprintf("%5s", $CATdnc);
-                while(strlen($CATdnc)>5) {$CATdnc = substr("$CATdnc", 0, -1);}
+                while(OSDstrlen($CATdnc)>5) {$CATdnc = OSDsubstr("$CATdnc", 0, -1);}
                 $CATsale =    sprintf("%5s", $CATsale);
-                while(strlen($CATsale)>5) {$CATsale = substr("$CATsale", 0, -1);}
+                while(OSDstrlen($CATsale)>5) {$CATsale = OSDsubstr("$CATsale", 0, -1);}
                 $ed =    sprintf("%-50s", $edkey); 
-                while(strlen($ed)>50) {$ed = substr("$ed", 0, -1);}    
+                while(OSDstrlen($ed)>50) {$ed = OSDsubstr("$ed", 0, -1);}    
                 $plain .= '| ' . $ed . ' |    ' . $CATcontact . ' |   ' . $CATdnc . '  |   ' . $CATsale . '  |   ' . $CATconversion . "|\n";
                 $table .= "        <tr " . bgcolor($o) . " class=\"row font1\">\n";
                 $table .= "          <td>$ed</td>\n";
@@ -1091,13 +1079,13 @@ function report_call_stats() {
         if ($TOTCATcontact > 0) {
             $TOTCATconversion = ($TOTCATsale / ($TOTCATcontact + $TOTCATdnc + $TOTCATsale)) * 100;
             $TOTCATconversion =    sprintf("%3.2f%%   ", $TOTCATconversion);
-            while(strlen($TOTCATconversion)>7) {$TOTCATconversion = substr("$TOTCATconversion", 0, -1);}
+            while(OSDstrlen($TOTCATconversion)>7) {$TOTCATconversion = OSDsubstr("$TOTCATconversion", 0, -1);}
             $TOTCATcontact =    sprintf("%5s", $TOTCATcontact);
-            while(strlen($TOTCATcontact)>5) {$TOTCATcontact = substr("$TOTCATcontact", 0, -1);}
+            while(OSDstrlen($TOTCATcontact)>5) {$TOTCATcontact = OSDsubstr("$TOTCATcontact", 0, -1);}
             $TOTCATdnc =    sprintf("%5s", $TOTCATdnc);
-            while(strlen($TOTCATdnc)>5) {$TOTCATdnc = substr("$TOTCATdnc", 0, -1);}
+            while(OSDstrlen($TOTCATdnc)>5) {$TOTCATdnc = OSDsubstr("$TOTCATdnc", 0, -1);}
             $TOTCATsale =    sprintf("%5s", $TOTCATsale);
-            while(strlen($TOTCATsale)>5) {$TOTCATsale = substr("$TOTCATsale", 0, -1);}
+            while(OSDstrlen($TOTCATsale)>5) {$TOTCATsale = OSDsubstr("$TOTCATsale", 0, -1);}
             $plain .= "+----------------------------------------------------+----------+----------+----------+----------+\n";
             $plain .= "+ TOTALS                                             ";
             $plain .= '|    ' . $TOTCATcontact . ' |   ' . $TOTCATdnc . '  |   ' . $TOTCATsale . '  |   ' . $TOTCATconversion . "|\n";
@@ -1164,7 +1152,6 @@ function report_call_stats() {
     } else {
         $stmt="select osdial_log.user,full_name,count(*),sum(length_in_sec),avg(length_in_sec) from osdial_log,osdial_users where call_date >= '$query_date_BEGIN' and call_date <= '$query_date_END' $group_SQLand and osdial_log.user is not null and length_in_sec is not null and length_in_sec > 0 and osdial_log.user=osdial_users.user group by osdial_log.user;";
     }
-    if ($non_latin > 0) {$rslt=mysql_query("SET NAMES 'UTF8'");}
     $rslt=mysql_query($stmt, $link);
     if ($DB) {$html .= "$stmt\n";}
     $users_to_print = mysql_num_rows($rslt);
@@ -1175,12 +1162,8 @@ function report_call_stats() {
         $TOTcalls = ($TOTcalls + $row[2]);
         $TOTtime = ($TOTtime + $row[3]);
     
-        $user = sprintf("%-20s", $row[0]);while(strlen($user)>20) {$user = substr("$user", 0, -1);}
-        if ($non_latin < 1) {
-          $full_name = sprintf("%-20s", $row[1]); while(strlen($full_name)>20) {$full_name = substr("$full_name", 0, -1);}    
-        } else {
-         $full_name = sprintf("%-45s", $row[1]); while(mb_strlen($full_name,'utf-8')>20) {$full_name = mb_substr("$full_name", 0, -1,'utf-8');}    
-        }
+        $user = sprintf("%-20s", $row[0]);while(OSDstrlen($user)>20) {$user = OSDsubstr("$user", 0, -1);}
+        $full_name = sprintf("%-20s", $row[1]); while(OSDstrlen($full_name)>20) {$full_name = OSDsubstr("$full_name", 0, -1);}    
         $USERcalls = sprintf("%10s", $row[2]);
         $USERtotTALK = $row[3];
         $USERavgTALK = $row[4];
@@ -1437,10 +1420,10 @@ function report_call_stats() {
                 $scale_num=($k / $hour_multiplier);
                 $scale_num = round($scale_num, 0);
             }
-            $LENscale_num = (strlen($scale_num));
+            $LENscale_num = (OSDstrlen($scale_num));
             $k = ($k + $LENscale_num);
             if ($k > 103) {
-                $call_scale = substr($call_scale,0,(103-$LENscale_num));
+                $call_scale = OSDsubstr($call_scale,0,(103-$LENscale_num));
                 foreach (range(1,$k-103) as $ele) {
                     $junk = array_pop($table_scale);
                 }
@@ -1448,7 +1431,7 @@ function report_call_stats() {
 
             $call_scale .= "$scale_num";
             foreach (range(0,$LENscale_num-1) as $ele) {
-                $table_scale[] = "          <td align=center>" . substr($scale_num,$ele,1) . "</td>\n";
+                $table_scale[] = "          <td align=center>" . OSDsubstr($scale_num,$ele,1) . "</td>\n";
             }
         } else {
             $call_scale .= " ";

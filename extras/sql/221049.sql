@@ -37,7 +37,7 @@ CREATE TABLE osdial_companies (
   system_status_categories ENUM('0','1') NOT NULL default '0',
   api_access ENUM('0','1') NOT NULL default '0',
   dnc_method ENUM('SYSTEM','COMPANY','BOTH','NONE') NOT NULL default 'SYSTEM'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;##|##
+) ENGINE=InnoDB;##|##
  ## Initial mutli-company table.;
 
 UPDATE system_settings SET version='2.2.1.049',last_update_check=DATE_SUB(NOW(), INTERVAL 1 DAY);##|##

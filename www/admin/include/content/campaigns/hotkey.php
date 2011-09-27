@@ -32,14 +32,14 @@ if ($ADD==23)
 	$status = $HKstatus_data[0];
 	$status_name = $HKstatus_data[1];
 
-	$stmt="SELECT count(*) from osdial_campaign_hotkeys where campaign_id='$campaign_id' and hotkey='$hotkey';";
+	$stmt=sprintf("SELECT count(*) FROM osdial_campaign_hotkeys WHERE campaign_id='%s' AND hotkey='%s';",mres($campaign_id),mres($hotkey));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
 		{echo "<br><font color=red> CAMPAIGN HOT KEY NOT ADDED - there is already a campaign-hotkey in the system with this hotkey</font>\n";}
 	else
 		{
-		 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) or (strlen($hotkey) < 1) )
+		 if ( (OSDstrlen($campaign_id) < 2) or (OSDstrlen($status) < 1) or (OSDstrlen($hotkey) < 1) )
 			{
 			 echo "<br><font color=red> CAMPAIGN HOT KEY NOT ADDED - Please go back and look at the data you entered\n";
 			 echo "<br>hotkey must be a single character between 1 and 9 \n";
@@ -49,7 +49,7 @@ if ($ADD==23)
 			{
 			echo "<br><B><font color=$default_text> CAMPAIGN HOT KEY ADDED: $campaign_id - $status - $hotkey - $xfer_exten</font></B>\n";
 
-			$stmt="INSERT INTO osdial_campaign_hotkeys values('$status','$hotkey','$status_name','$selectable','$campaign_id','$xfer_exten');";
+			$stmt=sprintf("INSERT INTO osdial_campaign_hotkeys VALUES('%s','%s','%s','%s','%s','%s');",mres($status),mres($hotkey),mres($status_name),mres($selectable),mres($campaign_id),mres($xfer_exten));
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -71,9 +71,9 @@ $ADD=31;
 
 if ($ADD==43)
 {
-	if ($LOGmodify_campaigns==1)
+	if ($LOG['modify_campaigns']==1)
 	{
-	 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) or (strlen($hotkey) < 1) )
+	 if ( (OSDstrlen($campaign_id) < 2) or (OSDstrlen($status) < 1) or (OSDstrlen($hotkey) < 1) )
 		{
 		 echo "<br><font color=red>CAMPAIGN HOT KEY NOT MODIFIED - Please go back and look at the data you entered\n";
 		 echo "<br>the campaign id needs to be at least 2 characters in length\n";
@@ -84,7 +84,7 @@ if ($ADD==43)
 		{
 		echo "<br><B><font color=$default_text>CUSTOM CAMPAIGN HOT KEY DELETED: $campaign_id - $status - $hotkey</font></B>\n";
 
-		$stmt="DELETE FROM osdial_campaign_hotkeys where campaign_id='$campaign_id' and status='$status' and hotkey='$hotkey';";
+		$stmt=sprintf("DELETE FROM osdial_campaign_hotkeys WHERE campaign_id='%s' AND status='%s' AND hotkey='%s';",mres($campaign_id),mres($status),mres($hotkey));
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -120,7 +120,7 @@ echo "    <td>HOTKEYS</td>\n";
 echo "    <td align=center>LINKS</td>\n";
 echo "  </tr>\n";
 
-	$stmt=sprintf("SELECT campaign_id,campaign_name from osdial_campaigns where campaign_id IN %s order by campaign_id", $LOG['allowed_campaignsSQL']);
+	$stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE campaign_id IN %s ORDER BY campaign_id;", $LOG['allowed_campaignsSQL']);
 	$rslt=mysql_query($stmt, $link);
 	$campaigns_to_print = mysql_num_rows($rslt);
 
@@ -141,7 +141,7 @@ echo "  </tr>\n";
 		echo "    <td>$campaigns_name_list[$o]</td>\n";
 		echo "    <td>";
 
-		$stmt="SELECT status from osdial_campaign_hotkeys where campaign_id='$campaigns_id_list[$o]' order by status";
+		$stmt=sprintf("SELECT status FROM osdial_campaign_hotkeys WHERE campaign_id='$campaigns_id_list[$o]' ORDER BY status;",mres($campaigns_id_list[$o]));
 		$rslt=mysql_query($stmt, $link);
 		$campstatus_to_print = mysql_num_rows($rslt);
 		$p=0;

@@ -160,7 +160,7 @@ foreach my $file (@files) {
 			# Pull SQL info from recording_log, list and campaign tables.
 			my $SQLfile = $file;
 			$SQLfile =~ s/-all\.wav|-all\.gsm|-all\.ogg|-all\.mp3//gi;
-			my $stmt = "SELECT SQL_NO_CACHE recording_log.recording_id AS rcid,osdial_lists.campaign_id AS camp,DATE(recording_log.start_time) AS date,recording_log.lead_id AS lead,recording_log.extension AS rlext FROM recording_log LEFT JOIN osdial_list ON (recording_log.lead_id=osdial_list.lead_id) LEFT JOIN osdial_lists ON (osdial_list.list_id=osdial_lists.list_id) WHERE filename='$SQLfile' ORDER BY recording_id DESC LIMIT 1;";
+			my $stmt = "SELECT SQL_NO_CACHE recording_log.recording_id AS rcid,osdial_lists.campaign_id AS camp,DATE(recording_log.start_time) AS date,recording_log.lead_id AS lead,recording_log.extension AS rlext FROM recording_log LEFT JOIN osdial_list ON (recording_log.lead_id=osdial_list.lead_id) LEFT JOIN osdial_lists ON (osdial_list.list_id=osdial_lists.list_id) WHERE filename='" . $osdial->mres($SQLfile) . "' ORDER BY recording_id DESC LIMIT 1;";
 			print "$stmt|\n" if($verbose > 2);
 			my $sret = $osdial->sql_query($stmt);
 
@@ -190,14 +190,14 @@ foreach my $file (@files) {
 	
 			if ($rcid > 0) {
 				# Update the recording_log with the http link.
-				my $stmt = "UPDATE recording_log SET location='" . $webpath . '/' . $osdial->{PATHarchive_sorted} . "/$camp/$date$extdir/$file' WHERE recording_id='$rcid';";
+				my $stmt = "UPDATE recording_log SET location='" . $osdial->mres($webpath.'/'.$osdial->{PATHarchive_sorted}."/".$camp."/".$date.$extdir."/".$file)."' WHERE recording_id='$rcid';";
 				print "$stmt|\n" if($verbose > 2);
 				my $rlsts = $osdial->sql_execute($stmt);
 				print "." if ($verbose > 1);
 				$event .= ', added to recording_log (' . $rlsts . ')' if ($rlsts > 0);
             	
 				# If lead was found mark it as PENDING transfer, otherwise NOTFOUND...insert into qc_transfer_log.
-				my $stmt = "INSERT IGNORE INTO qc_recordings (recording_id,lead_id,filename,location) VALUES('$rcid','$lead','$file','$destdir');";
+				my $stmt = "INSERT IGNORE INTO qc_recordings (recording_id,lead_id,filename,location) VALUES('$rcid','$lead','" . $osdial->mres($file) . "','" . $osdial->mres($destdir) . "');";
 				print "$stmt|\n" if($verbose > 2);
 				my $qtlsts = $osdial->sql_execute($stmt);
 				print "-" if ($verbose > 1);

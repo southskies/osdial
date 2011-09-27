@@ -239,7 +239,7 @@ function report_realtime_detail() {
 
     $html .= "<font size=2>";
 
-    if (!preg_match('/^XXXX/',$group)) $html .= "&nbsp;-&nbsp;<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a>";
+    if (!OSDpreg_match('/^XXXX/',$group)) $html .= "&nbsp;-&nbsp;<a href=\"./admin.php?ADD=31&campaign_id=$group\">Modify</a>";
     if ($LOG['view_realtime_summary']) $html .= "&nbsp;-&nbsp;<a href=\"$PHP_SELF?ADD=$ADD&SUB=" . ($SUB - 1) . "&group=$group&RR=$RR&DB=$DB&adastats=$adastats\">Summary</a>&nbsp;-&nbsp;\n";
     $html .= "<br></font>\n";
     $html .= "</font>";
@@ -320,8 +320,8 @@ function report_realtime_detail() {
         $DIALstatuses = $row[18];
         $active =       $row[19];
 
-        $DIALstatuses = (preg_replace("/ -$|^ /","",$DIALstatuses));
-        $DIALstatuses = (preg_replace('/ /',', ',$DIALstatuses));
+        $DIALstatuses = (OSDpreg_replace("/ -$|^ /","",$DIALstatuses));
+        $DIALstatuses = (OSDpreg_replace('/ /',', ',$DIALstatuses));
 
         if ($group=='XXXX-ALL-ACTIVE-XXXX') {
             $stmt=sprintf("SELECT count(*) FROM osdial_hopper WHERE campaign_id IN %s;",$LOG['allowed_campaignsSQL']);
@@ -399,7 +399,7 @@ function report_realtime_detail() {
 
         $html .= "</td></tr><tr><td align=left>";
         $html .= "<font class=indented color=#1C4754 size=2><b>$group - $group_name</b></font>";
-        if (preg_match("/^XXXX/",$group)) {
+        if (OSDpreg_match("/^XXXX/",$group)) {
             $html .= '';
         } elseif ($active=="Y") {
             $html .="<font color='green' size='-1'>&nbsp;&nbsp;(Active)</font>";
@@ -466,29 +466,29 @@ function report_realtime_detail() {
         $html .= "<tr>";
         $html .= "<td align=right><font size=2 color=$default_text><b>Order:</b></td><td align=left colspan=7><font size=2>&nbsp; $DIALorder&nbsp;&nbsp;</td>";
         $html .= "</tr><tr>";
-        if ( (!preg_match('/NULL/',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
+        if ( (!OSDpreg_match('/NULL/',$VSCcat1)) and (OSDstrlen($VSCcat1)>0) ) {
             $html .= "<td align=right><font size=2 color=$default_text><b>$VSCcat1:</b></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1tally&nbsp;&nbsp;</td>\n";
         }
-        if ( (!preg_match('/NULL/',$VSCcat2)) and (strlen($VSCcat2)>0) ) {
+        if ( (!OSDpreg_match('/NULL/',$VSCcat2)) and (OSDstrlen($VSCcat2)>0) ) {
             $html .= "<td align=right><font size=2 color=$default_text><b>$VSCcat2:</b></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2tally&nbsp;&nbsp;</td>\n";
         }
-        if ( (!preg_match('/NULL/',$VSCcat3)) and (strlen($VSCcat3)>0) ) {
+        if ( (!OSDpreg_match('/NULL/',$VSCcat3)) and (OSDstrlen($VSCcat3)>0) ) {
             $html .= "<td align=right><font size=2 color=$default_text><b>$VSCcat3:</b></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3tally&nbsp;&nbsp;</td>\n";
         }
-        if ( (!preg_match('/NULL/',$VSCcat4)) and (strlen($VSCcat4)>0) ) {
+        if ( (!OSDpreg_match('/NULL/',$VSCcat4)) and (OSDstrlen($VSCcat4)>0) ) {
             $html .= "<td align=right><font size=2 color=$default_text><b>$VSCcat4:</b></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4tally&nbsp;&nbsp;</td>\n";
         }
         $html .= "</tr><tr>";
-        if ( (!preg_match('/NULL/',$VSCcat1)) and (strlen($VSCcat1)>0) ) {
+        if ( (!OSDpreg_match('/NULL/',$VSCcat1)) and (OSDstrlen($VSCcat1)>0) ) {
             $html .= "<td align=right><font size=2 color=$default_text><b>$VSCcat1/hr:</b></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat1hourtally&nbsp;&nbsp;</td>\n";
         }
-        if ( (!preg_match('/NULL/',$VSCcat2)) and (strlen($VSCcat2)>0) ) {
+        if ( (!OSDpreg_match('/NULL/',$VSCcat2)) and (OSDstrlen($VSCcat2)>0) ) {
             $html .= "<td align=right><font size=2 color=$default_text><b>$VSCcat2/hr:</b></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat2hourtally&nbsp;&nbsp;</td>\n";
         }
-        if ( (!preg_match('/NULL/',$VSCcat3)) and (strlen($VSCcat3)>0) ) {
+        if ( (!OSDpreg_match('/NULL/',$VSCcat3)) and (OSDstrlen($VSCcat3)>0) ) {
             $html .= "<td align=right><font size=2 color=$default_text><b>$VSCcat3/hr:</b></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat3hourtally&nbsp;&nbsp;</td>\n";
         }
-        if ( (!preg_match('/NULL/',$VSCcat4)) and (strlen($VSCcat4)>0) ) {
+        if ( (!OSDpreg_match('/NULL/',$VSCcat4)) and (OSDstrlen($VSCcat4)>0) ) {
             $html .= "<td align=right><font size=2 color=$default_text><b>$VSCcat4/hr:</b></td><td align=left><font size=2>&nbsp;&nbsp;$VSCcat4hourtally&nbsp;&nbsp;</td>\n";
         }
         $html .= "</tr>";
@@ -540,7 +540,7 @@ function report_realtime_detail() {
     ###### INBOUND/OUTBOUND CALLS
     ###################################################################################
     if ($campaign_allow_inbound > 0) {
-        if (strlen($group) > 1) {
+        if (OSDstrlen($group) > 1) {
             $stmt=sprintf("SELECT closer_campaigns FROM osdial_campaigns WHERE campaign_id IN %s AND campaign_id='%s';",$LOG['allowed_campaignsSQL'],mres($group));
         } else {
             $stmt=sprintf("SELECT closer_campaigns FROM osdial_campaigns WHERE campaign_id IN %s;",$LOG['allowed_campaignsSQL']);
@@ -551,18 +551,18 @@ function report_realtime_detail() {
         $closer_campaignsSQL='';
         while ($ccamps_to_print > $c) {
             $row=mysql_fetch_row($rslt);
-            $closer_campaigns = preg_replace("/^ | -$/","",$row[0]);
-            $closer_campaigns = preg_replace("/ /","','",$closer_campaigns);
+            $closer_campaigns = OSDpreg_replace("/^ | -$/","",$row[0]);
+            $closer_campaigns = OSDpreg_replace("/ /","','",$closer_campaigns);
             $closer_campaignsSQL .= "'$closer_campaigns',";
             $c++;
         }
-        $closer_campaignsSQL = preg_replace('/,$/','',$closer_campaignsSQL);
+        $closer_campaignsSQL = OSDpreg_replace('/,$/','',$closer_campaignsSQL);
 
         #$stmtB=sprintf("FROM osdial_auto_calls WHERE campaign_id IN %s AND status NOT IN('XFER') AND ( (call_type='IN' AND campaign_id IN(%s)) OR (campaign_id='%s' AND call_type IN('OUT','OUTBALANCE')) ) ORDER BY campaign_id,call_time;",$LOG['allowed_campaignsSQL'],$closer_campaignsSQL,mres($group));
         $stmtB=sprintf("FROM osdial_auto_calls WHERE (status NOT IN('XFER') OR channel LIKE 'Local/870_____@%%') AND ( (call_type='IN' AND campaign_id IN(%s)) OR (campaign_id='%s' AND call_type IN('OUT','OUTBALANCE')) ) ORDER BY campaign_id,call_time;",$closer_campaignsSQL,mres($group));
     } else {
         $groupSQL = '';
-        if (!preg_match('/^XXXX/',$group)) {
+        if (!OSDpreg_match('/^XXXX/',$group)) {
             $groupSQL = sprintf(" AND campaign_id='%s'",mres($group));
         }
 
@@ -656,8 +656,9 @@ function report_realtime_detail() {
 
     $p=0;
     while($p<$k) {
-        $Cstatus =        sprintf("%-6s", $CDstatus[$p]);
-        $Ccampaign_id =   sprintf("%-15s", preg_replace('/&nbsp;/',' ',mclabel($CDcampaign_id[$p])));
+        $Cstatus =        $CDstatus[$p] . sprintf("%-".(6-OSDstrwidth($CDstatus[$p])-1)."s",' ');
+        $tCcampaign_id =  OSDpreg_replace('/&nbsp;/',' ',mclabel($CDcampaign_id[$p]));
+        $Ccampaign_id =   $tCcampaign_id . sprintf("%-".(15-OSDstrwidth($tCcampaign_id)-1)."s",' ');
         $Cphone_number =  sprintf("%-12s", $CDphone_number[$p]);
         $Cserver_ip =     sprintf("%-15s", $CDserver_ip[$p]);
         $Ccall_type =     sprintf("%-10s", $CDcall_type[$p]);
@@ -838,7 +839,7 @@ function report_realtime_detail() {
         $groupSQL = sprintf(" and campaign_id='%s'",mres($group));
     }
     $usergroupSQL = '';
-    if (strlen($usergroup)>0) $usergroupSQL = sprintf(" and user_group='%s'",mres($usergroup));
+    if (OSDstrlen($usergroup)>0) $usergroupSQL = sprintf(" and user_group='%s'",mres($usergroup));
 
       $vadispSQL = "";
     if ($VAdisplay == 0) {
@@ -881,29 +882,29 @@ function report_realtime_detail() {
 
         $i=0;
         while ($i < $talking_to_print) {
-            if (preg_match('/SIP\//',$Aextension[$i])) {
+            if (OSDpreg_match('/SIP\//',$Aextension[$i])) {
                 $protocol = 'SIP';
-                $dialplan = preg_replace('/^SIP\/|-.*$/i',"",$Aextension[$i]);
+                $dialplan = OSDpreg_replace('/^SIP\/|-.*$/i',"",$Aextension[$i]);
                 $exten = sprintf("extension='%s'",mres($dialplan));
-            } elseif (preg_match('/IAX2\//',$Aextension[$i])) {
+            } elseif (OSDpreg_match('/IAX2\//',$Aextension[$i])) {
                 $protocol = 'IAX2';
-                $dialplan = preg_replace('/^IAX2\/|-.*$/i',"",$Aextension[$i]);
+                $dialplan = OSDpreg_replace('/^IAX2\/|-.*$/i',"",$Aextension[$i]);
                 $exten = sprintf("extension='%s'",mres($dialplan));
-            } elseif (preg_match("/Local\//",$Aextension[$i])) {
+            } elseif (OSDpreg_match("/Local\//",$Aextension[$i])) {
                 $protocol = 'EXTERNAL';
-                $dialplan = preg_replace('/^Local\/|\@.*$/i',"",$Aextension[$i]);
+                $dialplan = OSDpreg_replace('/^Local\/|\@.*$/i',"",$Aextension[$i]);
                 $exten = sprintf("dialplan_number='%s'",mres($dialplan));
-            } elseif (preg_match('/DAHDI\//',$Aextension[$i])) {
+            } elseif (OSDpreg_match('/DAHDI\//',$Aextension[$i])) {
                 $protocol = 'DAHDI';
-                $dialplan = preg_replace('/^DAHDI\//i',"",$Aextension[$i]);
+                $dialplan = OSDpreg_replace('/^DAHDI\//i',"",$Aextension[$i]);
                 $exten = sprintf("extension='%s'",mres($dialplan));
-            } elseif (preg_match('/Zap\//',$Aextension[$i])) {
+            } elseif (OSDpreg_match('/Zap\//',$Aextension[$i])) {
                 $protocol = 'Zap';
-                $dialplan = preg_replace('/^Zap\//i',"",$Aextension[$i]);
+                $dialplan = OSDpreg_replace('/^Zap\//i',"",$Aextension[$i]);
                 $exten = sprintf("extension='%s'",mres($dialplan));
-            } elseif (preg_match("/R\//",$Aextension[$i])) {
+            } elseif (OSDpreg_match("/R\//",$Aextension[$i])) {
                 $protocol = 'EXTERNAL';
-                $dialplan = preg_replace('/^R\/|\@.*$/i',"",$Aextension[$i]);
+                $dialplan = OSDpreg_replace('/^R\/|\@.*$/i',"",$Aextension[$i]);
                 $exten = sprintf("dialplan_number='%s'",mres($dialplan));
             }
 
@@ -918,7 +919,7 @@ function report_realtime_detail() {
                 $Alogin[$i] = "$Aextension[$i]-----$i";
             }
 
-            if ($Acomments[$i] == "INBOUND" or preg_match('/^R\//',$Aextension[$i])) {
+            if ($Acomments[$i] == "INBOUND" or OSDpreg_match('/^R\//',$Aextension[$i])) {
                 $Auser_connected[$i] = 1;
             } else {
                 $stmt=sprintf("SELECT count(*) FROM live_sip_channels WHERE channel LIKE '%s%%' AND server_ip='%s' AND extension='%s';",mres($Achannel[$i]),mres($Aserver_ip[$i]),mres($Asessionid[$i]));
@@ -945,23 +946,31 @@ function report_realtime_detail() {
             $phone_split = explode("-----",$Alogin[$j]);
             $i = $phone_split[1];
 
-            $extension =        sprintf("%-13s",preg_replace('/&nbsp;/',' ',mclabel($phone_split[0])));
-            while(strlen($extension)>13) {
-                $extension = substr($extension, 0, -1);
+            $textension =       OSDpreg_replace('/&nbsp;/',' ',mclabel($phone_split[0]));
+            #$extension =        $textension . sprintf("%-".(13-OSDstrwidth($textension))."s",' ');
+            $extension =        $textension;
+            while(OSDstrlen($extension)>13) {
+                $extension = OSDsubstr($extension, 0, -1);
             }
 
-            $phone =            sprintf("%-10s", $phone_split[0]);
+            #$phone =            $phone_split[0] . sprintf("%-".(10-OSDstrwidth($phone_split[0]))."s",' ');
+            $phone =            $phone_split[0];
             $Luser =            $Auser[$i];
-            $user =             sprintf("%-18s", preg_replace('/&nbsp;/',' ',mclabel($Auser[$i])));
+            $tuser =            OSDpreg_replace('/&nbsp;/',' ',mclabel($Auser[$i]));
+            #$user =             $tuser . sprintf('%-'.(18-OSDstrwidth($tuser)).'s',' ');
+            $user =             $tuser;
             $Lstatus =          $Astatus[$i];
-            $status =           sprintf("%-6s", $Astatus[$i]);
+            #$status =           $Astatus[$i] . sprintf("%-".(6-OSDstrwidth($Astatus[$i]))."s",' ');
+            $status =           $Astatus[$i];
             $Lsessionid =       $Asessionid[$i];
             #if ($Auser_connected[$i] == 0) { $Lsessionid='-------'; $Lstatus='AGTPHN'; }
             if ($Auser_connected[$i] == 0) { $Lstatus='AGTPHN'; }
             $sessionid =        sprintf("%-9s", $Lsessionid);
             $server_ip =        sprintf("%-15s", $Aserver_ip[$i]);
             $call_server_ip =   sprintf("%-15s", $Acall_server_ip[$i]);
-            $campaign_id =      sprintf("%-13s", preg_replace('/&nbsp;/',' ',mclabel($Acampaign_id[$i])));
+            $tcampaign_id =     OSDpreg_replace('/&nbsp;/',' ',mclabel($Acampaign_id[$i]));
+            #$campaign_id =      $tcampaign_id . sprintf("%-".(13-OSDstrwidth($tcampaign_id))."s",' '); 
+            $campaign_id =      $tcampaign_id;
             $comments=          $Acomments[$i];
             if ($Acalls_today[$i]=='') $Acalls_today[$i] = '0';
             $calls_today =      sprintf("%5s", $Acalls_today[$i]);
@@ -1014,26 +1023,29 @@ function report_realtime_detail() {
                     $stmtB = sprintf("SELECT status FROM osdial_list WHERE lead_id='%s' AND status LIKE 'V%%';",mres($lead_id));
                     $rsltB=mysql_query($stmtB, $link);
                     $rowB=mysql_fetch_row($rsltB);
-                    if ($rowB[0] != '') $lstatus = sprintf("%-6s",$rowB[0]);
+                    if ($rowB[0] != '') $lstatus = $rowB[0] . sprintf("%-".(6-OSDstrwidth($rowB[0]))."s",' ');
                 }
             }
 
             if ($UGdisplay > 0) {
-                $user_group = sprintf("%-12s", preg_replace('/&nbsp;/',' ',mclabel($Luser_group)));
-                while(strlen($user_group)>12) {
-                    $user_group = substr($user_group, 0, -1);
+                $tuser_group = OSDpreg_replace('/&nbsp;/',' ',mclabel($Luser_group));
+                #$user_group = $tuser_group . sprintf("%-".(13-OSDstrwidth($tuser_group))."s",' ');
+                $user_group = $tuser_group;
+                while(OSDstrlen($user_group)>13) {
+                    $user_group = OSDsubstr($user_group, 0, -1);
                 }
             }
 
             if ($UidORname > 0) {
-                $user = sprintf("%-18s", $Lfull_name);
-                while(strlen($user)>18) {
-                    $user = substr($user, 0, -1);
+                #$user = $Lfull_name . sprintf("%-".(18-OSDstrwidth($Lfull_name))."s",' ');
+                $user = $Lfull_name;
+                while(OSDstrlen($user)>18) {
+                    $user = OSDsubstr($user, 0, -1);
                 }
             }
 
             $LENDtime = $Acall_finish[$i];
-            if (preg_match('/INCALL|QUEUE/i',$Astatus[$i])) $LENDtime = $Acall_time[$i];
+            if (OSDpreg_match('/INCALL|QUEUE/i',$Astatus[$i])) $LENDtime = $Acall_time[$i];
             if ($Lstatus=='DEAD') $LENDtime = $DEDend_epoch;
 
             $call_time_S = ($STARTtime - $LENDtime);
@@ -1091,7 +1103,7 @@ function report_realtime_detail() {
                     if ($call_time_S < 30) {$G='<span class="dead0">'; $EG='</span>'; $status=sprintf('%-6s','HUNGUP');}
                     if ($call_time_M >= 5) {$G='<span class="dead1">'; $EG='</span>';}
                 }
-            } elseif (preg_match('/INCALL|QUEUE/i',$Lstatus)) {
+            } elseif (OSDpreg_match('/INCALL|QUEUE/i',$Lstatus)) {
                 $agent_incall++;
                 $agent_total++;
                 if ($Lstatus=='INCALL') {
@@ -1119,9 +1131,9 @@ function report_realtime_detail() {
                     if ($call_time_S >= 10) {$G='<span class="pause1">'; $EG='</span>';}
                     if ($call_time_M_int >= 1) {$G='<span class="pause2">'; $EG='</span>';}
                     if ($call_time_M_int >= 5) {$G='<span class="pause3">'; $EG='</span>';}
-                    if (strlen($pausecode) > 0 and $pausecode != 'LOGIN') {$G='<span class="pausecode">'; $EG='</span>';}
+                    if (OSDstrlen($pausecode) > 0 and $pausecode != 'LOGIN') {$G='<span class="pausecode">'; $EG='</span>';}
                 }
-            } elseif (preg_match('/READY|CLOSER/i',$Lstatus)) {
+            } elseif (OSDpreg_match('/READY|CLOSER/i',$Lstatus)) {
                 $agent_ready++;
                 $agent_total++;
                 #$G='<span class="lightblue">'; $EG='</span>';
@@ -1133,7 +1145,7 @@ function report_realtime_detail() {
                 if ($call_time_M_int >= 2) {$G='<span class="wait3">'; $EG='</span>';}
             }
 
-            if ($agent_pause_codes_active>0) $pausecode = sprintf('%-6s', $pausecode) . ' ' . $LNcenterbar . ' ';
+            if ($agent_pause_codes_active>0) $pausecode = $pausecode . sprintf('%-'.(6-OSDstrwidth($pausecode)-1).'s',' ') . ' ' . $LNcenterbar . ' ';
 
             $L='';
             $R='';
@@ -1152,7 +1164,7 @@ function report_realtime_detail() {
             if ($IAXmonitorLINK==3) {$L=sprintf('<a href="iax:%s09%s@%s">WHISPER</a>',$Pserver_ip,$Lsessionid,$Lserver_ip);   $R='';}
 
             $UGD = '';
-            if ($UGdisplay > 0)    $UGD = $user_group . ' ' . $LNcenterbar . ' ';
+            if ($UGdisplay > 0)    $UGD = "<span name=agent_usergroup style=\"width:78px;display:inline-block;text-align:left;\">" . $user_group . "</span>" . $LNcenterbar . ' ';
 
             $SVD = '';
             if ($SERVdisplay > 0) $SVD = $server_ip . ' ' . $LNcenterbar . ' ' . $call_server_ip . ' ' . $LNcenterbar . ' ';
@@ -1168,7 +1180,8 @@ function report_realtime_detail() {
                     $vac_campaign = $row[0];
                 }
             }
-            $INGRP = sprintf('%-20s',$vac_campaign);
+            #$INGRP = $vac_campaign . sprintf('%-'.(20-OSDstrwidth($vac_campaign)).'s',' ');
+            $INGRP = $vac_campaign;
 
             $agentcount++;
 
@@ -1179,7 +1192,7 @@ function report_realtime_detail() {
             $userlink = "$user";
             if ($LOG['view_agent_status']) $userlink = "<a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$Luser&close_after_emergency_logout=Y\" target=\"_blank\">$G$user$EG</a>";
 
-            if ($disp_agent) $Ahtml .= "$LNleft$G $extension $LNcenterbar <a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$Luser&close_after_emergency_logout=Y\" target=\"_blank\">$G$user$EG</a> $LNcenterbar $UGD$sessionid$L$R $LNcenterbar $status $CM $LNcenterbar $pausecode$SVD$call_time_MS $LNcenterbar $campaign_id $LNcenterbar $calls_today $LNcenterbar $INGRP$EG$LNright\n";
+            if ($disp_agent) $Ahtml .= "$LNleft<span name=agent_bar>$G <span name=agent_extension style=\"width:78px;display:inline-block;text-align:left;\">$extension</span> $LNcenterbar <span name=agent_user style=\"width:108px;display:inline-block;text-align:left;\"><a href=\"$PHP_SELF?ADD=999999&SUB=22&agent=$Luser&close_after_emergency_logout=Y\" target=\"_blank\">$G$user$EG</a></span> $LNcenterbar $UGD<span name=agent_session style=\"width:54px;display:inline-block;text-align:left;\">$sessionid</span>$L$R $LNcenterbar <span name=agent_status style=\"width:54px;display:inline-block;text-align:left;\">$status $CM</span>$LNcenterbar $pausecode$SVD<span name=agent_time style=\"width:42;display:inline-block;text-align:left;\">$call_time_MS</span> $LNcenterbar <span name=agent_campaign style=\"width:78px;display:inline-block;text-align:left;\">$campaign_id</span> $LNcenterbar <span name=agent_calls style=\"width:30px;display:inline-block;text-align:right;\">$calls_today</span> $LNcenterbar <span name=agent_ingroup style=\"width:120px;display:inline-block;text-align:right;\">$INGRP</span>$EG</span>$LNright\n";
 
             $j++;
         }

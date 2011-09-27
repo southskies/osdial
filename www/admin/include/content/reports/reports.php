@@ -26,7 +26,7 @@
 ######################
 # ADD=999999 display reports section
 ######################
-if ($LOGview_reports==1) {
+if ($LOG['view_reports']==1) {
     if ($ADD==999999 and $SUB=='') {
         $stmt="SELECT * from osdial_conferences order by conf_exten";
         $rslt=mysql_query($stmt, $link);

@@ -91,7 +91,7 @@ if ($osd->sql_execute($stmt)) {
 	$oac = $osd->sql_query($stmt);
 
 	### Grab campaign values from the database
-	$stmt = sprintf("SELECT * FROM osdial_campaigns WHERE campaign_id='%s';",$oac->{campaign_id});
+	$stmt = sprintf("SELECT * FROM osdial_campaigns WHERE campaign_id='%s';",$osd->mres($oac->{campaign_id}));
 	$osd->agi_output("|$stmt|") if ($DB);
 	$campaign = $osd->sql_query($stmt);
 
@@ -99,7 +99,7 @@ if ($osd->sql_execute($stmt)) {
 	$osd->agi_output("|$stmt|") if ($DB);
 	$hopper = $osd->sql_query($stmt);
 
-	$stmt = sprintf("INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,server_ip) VALUES ('%s','%s','%s','%s','%s','QUEUE','%s','%s','VDAD','N','%s');",$osd->AGI->{uniqueid},$CIDlead_id,$oac->{campaign_id},$SQLdate,$now_date_epoch,$oac->{phone_code},$oac->{phone_number},$osd->{VARserver_ip});
+	$stmt = sprintf("INSERT INTO osdial_log (uniqueid,lead_id,campaign_id,call_date,start_epoch,status,phone_code,phone_number,user,processed,server_ip) VALUES ('%s','%s','%s','%s','%s','QUEUE','%s','%s','VDAD','N','%s');",$osd->AGI->{uniqueid},$CIDlead_id,$osd->mres($oac->{campaign_id}),$SQLdate,$now_date_epoch,$oac->{phone_code},$oac->{phone_number},$osd->{VARserver_ip});
 	$osd->agi_output("|$stmt|") if ($DB);
 	$osd->sql_execute($stmt);
 	$osd->agi_output("--    VDAD : |" . $oac->{lead_id} . "|$CIDlead_id|insert to osdial_log: " . $osd->AGI->{uniqueid});
@@ -152,13 +152,13 @@ while ($drop_timer <= $campaign->{drop_call_seconds}) {
 	}
 
 
-	$stmt = sprintf("SELECT SQL_NO_CACHE count(*) AS count FROM osdial_auto_calls WHERE status='LIVE' AND campaign_id='%s' AND call_time<'%s' AND lead_id!='%s';",$oac->{campaign_id},$oac->{call_time},$oac->{lead_id});
+	$stmt = sprintf("SELECT SQL_NO_CACHE count(*) AS count FROM osdial_auto_calls WHERE status='LIVE' AND campaign_id='%s' AND call_time<'%s' AND lead_id!='%s';",$osd->mres($oac->{campaign_id}),$oac->{call_time},$oac->{lead_id});
 	my $acres = $osd->sql_query($stmt);
 	my $rec_countWAIT = $acres->{count};
 	$osd->agi_output("|$stmt|") if ($DB);
 
 	my $ivr_active=0;
-	$stmt = sprintf("SELECT (IFNULL(virtual_agents,0)) AS active FROM osdial_ivr WHERE campaign_id='%s' AND status='ACTIVE';",$oac->{campaign_id});
+	$stmt = sprintf("SELECT (IFNULL(virtual_agents,0)) AS active FROM osdial_ivr WHERE campaign_id='%s' AND status='ACTIVE';",$osd->mres($oac->{campaign_id}));
 	my $oires = $osd->sql_query($stmt);
 	$ivr_active = $oires->{active};
 	if ($ivr_active>0) {
@@ -169,7 +169,7 @@ while ($drop_timer <= $campaign->{drop_call_seconds}) {
 
 	if ($campaign->{concurrent_transfers} =~ /AUTO/) {
 		my $active_agents=1;
-		$stmt = sprintf("SELECT SQL_NO_CACHE count(*) AS count FROM osdial_live_agents WHERE campaign_id='%s' AND last_update_time>'%s';",$oac->{campaign_id},$BDtsSQLdate);
+		$stmt = sprintf("SELECT SQL_NO_CACHE count(*) AS count FROM osdial_live_agents WHERE campaign_id='%s' AND last_update_time>'%s';",$osd->mres($oac->{campaign_id}),$BDtsSQLdate);
 		my $lares = $osd->sql_query($stmt);
 		$active_agents = $lares->{count};
 	
@@ -184,21 +184,21 @@ while ($drop_timer <= $campaign->{drop_call_seconds}) {
 		my $queued = 0;
 		my $hopper_agent = '';
 		if ($hopper->{user} ne '' and $hopper->{user} !~ /VDAD/) {
-			$hopper_agent = sprintf("AND user='%s'",$hopper->{user});
+			$hopper_agent = sprintf("AND user='%s'",$osd->mres($hopper->{user}));
 		}
 		my $CDtsSQLdate = $osd->get_datetime(time());
 		if ($method eq 'SO' or $method eq 'LO') {
-			$stmt = sprintf("UPDATE osdial_live_agents SET status='QUEUE',random_id='%s',lead_id='%s',uniqueid='%s',channel='%s',call_server_ip='%s',callerid='%s',last_update_time='%s' WHERE status='READY' AND campaign_id='%s' AND last_update_time>'%s' AND server_ip='%s' %s %s LIMIT 1;",$random,$CIDlead_id,$osd->AGI->{uniqueid},$osd->AGI->{channel},$osd->{VARserver_ip},$osd->AGI->{accountcode},$CDtsSQLdate,$oac->{campaign_id},$BDtsSQLdate,$osd->{VARserver_ip},$hopper_agent,$agent_call_order);
+			$stmt = sprintf("UPDATE osdial_live_agents SET status='QUEUE',random_id='%s',lead_id='%s',uniqueid='%s',channel='%s',call_server_ip='%s',callerid='%s',last_update_time='%s' WHERE status='READY' AND campaign_id='%s' AND last_update_time>'%s' AND server_ip='%s' %s %s LIMIT 1;",$random,$CIDlead_id,$osd->AGI->{uniqueid},$osd->AGI->{channel},$osd->{VARserver_ip},$osd->AGI->{accountcode},$CDtsSQLdate,$osd->mres($oac->{campaign_id}),$BDtsSQLdate,$osd->{VARserver_ip},$hopper_agent,$agent_call_order);
 			$queued = $osd->sql_execute($stmt);
 			$osd->agi_output("$queued|$stmt|") if ($DB);
 			if ($method eq 'LO' and $queued == 0) {
 				my $random = int( rand(9999999)) + 10000000;
-				$stmt = sprintf("UPDATE osdial_live_agents SET status='QUEUE',random_id='%s',lead_id='%s',uniqueid='%s',channel='%s',call_server_ip='%s',callerid='%s',last_update_time='%s' WHERE status='READY' AND campaign_id='%s' AND last_update_time>'%s' AND server_ip!='%s' %s %s LIMIT 1;",$random,$CIDlead_id,$osd->AGI->{uniqueid},$osd->AGI->{channel},$osd->{VARserver_ip},$osd->AGI->{accountcode},$CDtsSQLdate,$oac->{campaign_id},$BDtsSQLdate,$osd->{VARserver_ip},$hopper_agent,$agent_call_order);
+				$stmt = sprintf("UPDATE osdial_live_agents SET status='QUEUE',random_id='%s',lead_id='%s',uniqueid='%s',channel='%s',call_server_ip='%s',callerid='%s',last_update_time='%s' WHERE status='READY' AND campaign_id='%s' AND last_update_time>'%s' AND server_ip!='%s' %s %s LIMIT 1;",$random,$CIDlead_id,$osd->AGI->{uniqueid},$osd->AGI->{channel},$osd->{VARserver_ip},$osd->AGI->{accountcode},$CDtsSQLdate,$osd->mres($oac->{campaign_id}),$BDtsSQLdate,$osd->{VARserver_ip},$hopper_agent,$agent_call_order);
 				$queued = $osd->sql_execute($stmt);
 				$osd->agi_output("$queued|$stmt|") if ($DB);
 			}
 		} else {
-			$stmt = sprintf("UPDATE osdial_live_agents SET status='QUEUE',random_id='%s',lead_id='%s',uniqueid='%s',channel='%s',call_server_ip='%s',callerid='%s',last_update_time='%s' WHERE status='READY' AND campaign_id='%s' AND last_update_time>'%s' %s %s LIMIT 1;",$random,$CIDlead_id,$osd->AGI->{uniqueid},$osd->AGI->{channel},$osd->{VARserver_ip},$osd->AGI->{accountcode},$CDtsSQLdate,$oac->{campaign_id},$BDtsSQLdate,$hopper_agent,$agent_call_order);
+			$stmt = sprintf("UPDATE osdial_live_agents SET status='QUEUE',random_id='%s',lead_id='%s',uniqueid='%s',channel='%s',call_server_ip='%s',callerid='%s',last_update_time='%s' WHERE status='READY' AND campaign_id='%s' AND last_update_time>'%s' %s %s LIMIT 1;",$random,$CIDlead_id,$osd->AGI->{uniqueid},$osd->AGI->{channel},$osd->{VARserver_ip},$osd->AGI->{accountcode},$CDtsSQLdate,$osd->mres($oac->{campaign_id}),$BDtsSQLdate,$hopper_agent,$agent_call_order);
 			$queued = $osd->sql_execute($stmt);
 			$osd->agi_output("$queued|$stmt|") if ($DB);
 		}
@@ -208,7 +208,7 @@ while ($drop_timer <= $campaign->{drop_call_seconds}) {
 			my $r=0;
 			my ($conf_exten,$user,$server_ip);
 			while (length($user)<1 and $r<3) {
-				$stmt = sprintf("SELECT SQL_NO_CACHE conf_exten,user,server_ip FROM osdial_live_agents WHERE status IN ('QUEUE','INCALL') AND campaign_id='%s' AND callerid='%s' AND channel='%s' ORDER BY last_call_time LIMIT 1;",$oac->{campaign_id},$osd->AGI->{accountcode},$osd->AGI->{channel});
+				$stmt = sprintf("SELECT SQL_NO_CACHE conf_exten,user,server_ip FROM osdial_live_agents WHERE status IN ('QUEUE','INCALL') AND campaign_id='%s' AND callerid='%s' AND channel='%s' ORDER BY last_call_time LIMIT 1;",$osd->mres($oac->{campaign_id}),$osd->AGI->{accountcode},$osd->AGI->{channel});
 				my $lares = $osd->sql_query($stmt);
 				$conf_exten = $lares->{conf_exten};
 				$user = $lares->{user};

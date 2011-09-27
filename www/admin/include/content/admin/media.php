@@ -59,7 +59,7 @@ if ($ADD=="11media") {
 
 if ($ADD=="21media") {
     if ($LOG['modify_servers']>0) {
-        if (strlen($media_description) < 3) {
+        if (OSDstrlen($media_description) < 3) {
             echo "<br><font color=red>MEDIA NOT ADDED - Please go back and look at the data you entered</font>\n";
         } else {
             echo "<br><font color=$default_text>MEDIA ADDED</font>\n";
@@ -67,11 +67,11 @@ if ($ADD=="21media") {
             $recfile = $_FILES['recfile'];
             $recfiletmp = $_FILES['recfile']['tmp_name'];
             $recfilename = $_FILES['recfile']['name'];
-            $recfilename = preg_replace('/ /','_',$recfilename);
-            $recfilename = preg_replace('/[^-\_\.0-9a-zA-Z]/',"",$recfilename);
-            $recfilename = preg_replace('/\.wav$/i','.wav',$recfilename);
-            $recfilename = preg_replace('/\.gsm$/i','.gsm',$recfilename);
-            $recfilename = preg_replace('/\.mp3$/i','.mp3',$recfilename);
+            $recfilename = OSDpreg_replace('/ /','_',$recfilename);
+            $recfilename = OSDpreg_replace('/[^-\_\.0-9a-zA-Z]/',"",$recfilename);
+            $recfilename = OSDpreg_replace('/\.wav$/i','.wav',$recfilename);
+            $recfilename = OSDpreg_replace('/\.gsm$/i','.gsm',$recfilename);
+            $recfilename = OSDpreg_replace('/\.mp3$/i','.mp3',$recfilename);
             rename($recfiletmp, '/tmp/'.$recfilename);
 
             if ($recfilename != '') media_add_file($link, '/tmp/'.$recfilename, mimemap($recfilename), $media_description, $media_extension,1);
@@ -92,7 +92,7 @@ if ($ADD=="21media") {
 ######################
 if ($ADD=="41media") {
     if ($LOG['modify_servers']>0) {
-        if (strlen($media_description) < 3) {
+        if (OSDstrlen($media_description) < 3) {
             echo "<br><font color=$default_text>MEDIA NOT MODIFIED - Please go back and look at the data you entered</font>\n";
         } else {
             echo "<br><font color=$default_text>MEDIA MODIFIED: $media_id : $media_filename</font>\n";
@@ -129,7 +129,7 @@ if ($ADD=="51media") {
 ######################
 if ($ADD=="61media") {
     if ($LOG['modify_servers']>0) {
-        $stmt="DELETE FROM osdial_media WHERE id='$media_id' LIMIT 1;";
+        $stmt=sprintf("DELETE FROM osdial_media WHERE id='%s' LIMIT 1;",mres($media_id));
         $rslt=mysql_query($stmt, $link);
 
         ### LOG CHANGES TO LOG FILE ###
@@ -223,5 +223,8 @@ if ($ADD=="10media") {
         echo "<font color=red>You do not have permission to view this page</font>\n";
     }
 }
+
+
+require_once('tts.php');
 
 ?>

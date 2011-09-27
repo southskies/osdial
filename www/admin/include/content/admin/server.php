@@ -55,13 +55,13 @@ if ($ADD==211111111111) {
         if ($row[0] > 0) {
             echo "<br><font color=red>SERVER NOT ADDED - there is already a server in the system with this ID</font>\n";
         } else {
-            if (strlen($server_id) < 1 or strlen($server_ip) < 7) {
+            if (OSDstrlen($server_id) < 1 or OSDstrlen($server_ip) < 7) {
                 echo "<br><font color=red>SERVER NOT ADDED - Please go back and look at the data you entered</font>\n";
             } else {
                 $asterisk_version='1.6.18';
                 $max_osdial_trunks='200';
                 $osdial_balance_active='Y';
-                if (preg_match('/CONTROL|SQL|WEB|ARCHIVE|OTHER/',$server_profile)) {
+                if (OSDpreg_match('/CONTROL|SQL|WEB|ARCHIVE|OTHER/',$server_profile)) {
                     $asterisk_version='';
                     $max_osdial_trunks='0';
                     $osdial_balance_active='N';
@@ -106,7 +106,7 @@ if ($ADD==221111111111) {
             if ($row[0] > 0) {
                 echo "<br><font color=red>SERVER TRUNK RECORD NOT ADDED - there is already a server-trunk record for this campaign</font>\n";
             } else {
-                if (strlen($campaign_id) < 2 or strlen($server_ip) < 7 or strlen($dedicated_trunks) < 1 or strlen($trunk_restriction) < 1) {
+                if (OSDstrlen($campaign_id) < 2 or OSDstrlen($server_ip) < 7 or OSDstrlen($dedicated_trunks) < 1 or OSDstrlen($trunk_restriction) < 1) {
                     echo "<br>SERVER TRUNK RECORD NOT ADDED - Please go back and look at the data you entered\n";
                     echo "<br>campaign must be between 3 and 8 characters in length\n";
                     echo "<br>server_ip delay must be at least 7 characters\n";
@@ -152,10 +152,10 @@ if ($ADD==411111111111) {
             if ($row[0] > 0 && $server_ip != $old_server_ip) {
                 echo "<br><font color=red>SERVER NOT MODIFIED - there is already a server in the system with this server_ip</font>\n";
             } else {
-                if (strlen($server_id) < 1 or strlen($server_ip) < 7) {
+                if (OSDstrlen($server_id) < 1 or OSDstrlen($server_ip) < 7) {
                     echo "<br><font color=red>SERVER NOT MODIFIED - Please go back and look at the data you entered</font>\n";
                 } else {
-                    if (preg_match('/CONTROL|SQL|WEB|ARCHIVE|OTHER/',$server_profile)) {
+                    if (OSDpreg_match('/CONTROL|SQL|WEB|ARCHIVE|OTHER/',$server_profile)) {
                         $asterisk_version='';
                         $max_osdial_trunks='0';
                         $osdial_balance_active='N';
@@ -181,7 +181,7 @@ if ($ADD==411111111111) {
                             $rslt=mysql_query($stmt, $link);
                             $row=mysql_fetch_row($rslt);
                             if ($row[0] > 0) {
-                                echo "<br><font color=$default_text>UPDATE TABLE " . strtoupper($tbl) . ": $old_server_ip -&gt; $server_ip</font>\n";
+                                echo "<br><font color=$default_text>UPDATE TABLE " . OSDstrtoupper($tbl) . ": $old_server_ip -&gt; $server_ip</font>\n";
                                 $stmt = sprintf("UPDATE %s SET server_ip='%s' WHERE server_ip='%s';",$tbl,mres($server_ip),mres($old_server_ip));
                                 $rslt=mysql_query($stmt, $link);
                             }
@@ -233,7 +233,7 @@ if ($ADD==421111111111) {
         if ($SUMosdial_trunks > $MAXosdial_trunks) {
             echo "<br><font color=red>SERVER TRUNK RECORD NOT ADDED - the number of trunks is too high: $SUMosdial_trunks / $MAXosdial_trunks</font>\n";
         } else {
-            if (strlen($campaign_id) < 2 or strlen($server_ip) < 7 or strlen($dedicated_trunks) < 1 or strlen($trunk_restriction) < 1) {
+            if (OSDstrlen($campaign_id) < 2 or OSDstrlen($server_ip) < 7 or OSDstrlen($dedicated_trunks) < 1 or OSDstrlen($trunk_restriction) < 1) {
                 echo "<br><font color=red>SERVER TRUNK RECORD NOT MODIFIED - Please go back and look at the data you entered\n";
                 echo "<br>campaign must be between 3 and 8 characters in length\n";
                 echo "<br>server_ip delay must be at least 7 characters\n";
@@ -265,7 +265,7 @@ if ($ADD==421111111111) {
 ######################
 if ($ADD==511111111111) {
     if ($LOG['modify_servers']==1) {
-        if (strlen($server_id) < 2 or strlen($server_ip) < 7 or $LOG['ast_delete_phones'] < 1) {
+        if (OSDstrlen($server_id) < 2 or OSDstrlen($server_ip) < 7 or $LOG['ast_delete_phones'] < 1) {
             echo "<br><font color=red>SERVER NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>Server ID be at least 2 characters in length\n";
             echo "<br>Server IP be at least 7 characters in length</font><br>\n";
@@ -286,12 +286,12 @@ if ($ADD==511111111111) {
 ######################
 if ($ADD==611111111111) {
     if ($LOG['modify_servers']==1) {
-        if (strlen($server_id) < 2 or strlen($server_ip) < 7 or $CoNfIrM != 'YES' or $LOG['ast_delete_phones'] < 1) {
+        if (OSDstrlen($server_id) < 2 or OSDstrlen($server_ip) < 7 or $CoNfIrM != 'YES' or $LOG['ast_delete_phones'] < 1) {
             echo "<br><font color=red>SERVER NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>Server ID be at least 2 characters in length\n";
             echo "<br>Server IP be at least 7 characters in length</font><br>\n";
         } else {
-            $stmt="DELETE FROM servers WHERE server_id='$server_id' AND server_ip='$server_ip' LIMIT 1;";
+            $stmt=sprintf("DELETE FROM servers WHERE server_id='%s' AND server_ip='%s' LIMIT 1;",mres($server_id),mres($server_ip));
             $rslt=mysql_query($stmt, $link);
 
             ### LOG CHANGES TO LOG FILE ###
@@ -316,14 +316,14 @@ if ($ADD==611111111111) {
 ######################
 if ($ADD==621111111111) {
     if ($LOG['modify_servers']==1) {
-        if (strlen($campaign_id) < 2 or strlen($server_ip) < 7) {
+        if (OSDstrlen($campaign_id) < 2 or OSDstrlen($server_ip) < 7) {
             echo "<br><font color=red>SERVER TRUNK RECORD NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>campaign must be between 3 and 8 characters in length\n";
             echo "<br>server_ip delay must be at least 7 characters</font><br>\n";
         } else {
             echo "<br><B><font color=$default_text>SERVER TRUNK RECORD DELETED: $campaign_id - $server_ip</font></B>\n";
 
-            $stmt="DELETE FROM osdial_server_trunks WHERE campaign_id='$campaign_id' AND server_ip='$server_ip';";
+            $stmt=sprintf("DELETE FROM osdial_server_trunks WHERE campaign_id='%s' AND server_ip='%s';",mres($campaign_id),mres($server_ip));
             $rslt=mysql_query($stmt, $link);
 
             ### LOG CHANGES TO LOG FILE ###
@@ -365,7 +365,7 @@ if ($ADD==311111111111) {
         echo "<tr bgcolor=$oddrows><td align=right>Local GMT: </td><td align=left><select size=1 name=local_gmt><option>12.75</option><option>12.00</option><option>11.00</option><option>10.00</option><option>9.50</option><option>9.00</option><option>8.00</option><option>7.00</option><option>6.50</option><option>6.00</option><option>5.75</option><option>5.50</option><option>5.00</option><option>4.50</option><option>4.00</option><option>3.50</option><option>3.00</option><option>2.00</option><option>1.00</option><option>0.00</option><option>-1.00</option><option>-2.00</option><option>-3.00</option><option>-3.50</option><option>-4.00</option><option>-5.00</option><option>-6.00</option><option>-7.00</option><option>-8.00</option><option>-9.00</option><option>-10.00</option><option>-11.00</option><option>-12.00</option><option selected>$row[13]</option></select> (Do NOT Adjust for DST)$NWB#servers-local_gmt$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>System Performance: </td><td align=left><select size=1 name=sys_perf_log><option>Y</option><option>N</option><option selected>$row[17]</option></select>$NWB#servers-sys_perf_log$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Server Logs: </td><td align=left><select size=1 name=vd_server_logs><option>Y</option><option>N</option><option selected>$row[18]</option></select>$NWB#servers-vd_server_logs$NWE</td></tr>\n";
-        if (preg_match('/CONTROL|SQL|WEB|ARCHIVE|OTHER/',$row[22])) {
+        if (OSDpreg_match('/CONTROL|SQL|WEB|ARCHIVE|OTHER/',$row[22])) {
             echo "<input type=hidden name=asterisk_version value=\"$row[4]\">\n";
             echo "<input type=hidden name=max_osdial_trunks value=\"$row[5]\">\n";
             echo "<input type=hidden name=osdial_balance_active value=\"$row[20]\">\n";
@@ -470,11 +470,11 @@ if ($ADD==311111111111) {
             while ($lists_to_print > $o) {
                 $rowx=mysql_fetch_row($rsltx);
                 $o++;
-                if (preg_match("/Y/", $rowx[1])) {
+                if (OSDpreg_match("/Y/", $rowx[1])) {
                     $active_phones++;
                     $camp_lists .= "'$rowx[0]',";
                 }
-                if (preg_match("/N/", $rowx[1])) {
+                if (OSDpreg_match("/N/", $rowx[1])) {
                     $inactive_phones++;
                 }
 
@@ -559,7 +559,7 @@ if ($ADD==311111111111) {
 
             echo "<center><b>\n";
 
-            $camp_lists = preg_replace("/.$/","",$camp_lists);
+            $camp_lists = OSDpreg_replace("/.$/","",$camp_lists);
             echo "<font size=2 color=$default_text>This server has $active_phones active phones and $inactive_phones inactive phones<br><br>\n";
             echo "This server has $active_confs active conferences<br><br>\n";
             echo "This server has $active_vdconfs active $t1 conferences</font><br><br>\n";
@@ -916,17 +916,17 @@ if ($ADD==699211111111111){
     if ($LOG['modify_servers']==1) {
         if ($SUB==2) {
             # Delete rule entries
-            $stmt="DELETE FROM qc_server_rules WHERE qc_server_id='$qc_server_id';";
+            $stmt=sprintf("DELETE FROM qc_server_rules WHERE qc_server_id='%s';",mres($qc_server_id));
             $rslt=mysql_query($stmt, $link);
         
             # Delete server entry
-            $stmt="DELETE FROM qc_servers WHERE id='$qc_server_id';";
+            $stmt=sprintf("DELETE FROM qc_servers WHERE id='%s';",mres($qc_server_id));
             $rslt=mysql_query($stmt, $link);
             $nQSI='';
             $nSUB='';
         } elseif ($SUB==4) {
             # Delete rule entry
-            $stmt="DELETE FROM qc_server_rules WHERE id='$qc_server_rule_id';";
+            $stmt=sprintf("DELETE FROM qc_server_rules WHERE id='%s';",mres($qc_server_rule_id));
             $rslt=mysql_query($stmt, $link);
             $nQSI=$qc_server_id;
             $nSUB=2;

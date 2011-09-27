@@ -44,7 +44,7 @@ CREATE TABLE osdial_campaign_agent_stats (
   status_category_hour_count_3 int(9) unsigned default '0',
   status_category_hour_count_4 int(9) unsigned default '0',
   PRIMARY KEY  (campaign_id,user)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;##|##
+) ENGINE=InnoDB;##|##
   ## Adds a table for tracking agent stats per campaign.;
 
 CREATE INDEX entry_date ON osdial_list (entry_date);##|##
@@ -70,7 +70,7 @@ CREATE TABLE osdial_postal_code_groups (
 	postal_code VARCHAR(10),
 	GMT_offset VARCHAR(5),
 	PRIMARY KEY (country_code,postal_code)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 (
+) ENGINE=InnoDB (
 	SELECT country_code,postal_code,GMT_offset FROM osdial_postal_codes GROUP BY country_code,postal_code
 );##|##
   ## Adding table osdial_postal_code_groups for faster gmt lookups;
@@ -80,7 +80,7 @@ CREATE TABLE osdial_phone_code_groups (
 	areacode VARCHAR(3),
 	GMT_offset VARCHAR(5),
 	PRIMARY KEY (country_code,areacode)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 (
+) ENGINE=InnoDB (
 	SELECT country_code,areacode,GMT_offset FROM osdial_phone_codes GROUP BY country_code,areacode
 );##|##
   ## Adding table osdial_phone_code_groups for faster gmt lookups;
@@ -90,7 +90,7 @@ CREATE TABLE osdial_report_groups (
 	group_value VARCHAR(50),
 	group_label VARCHAR(100),
   	PRIMARY KEY  (group_type,group_value)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1
+) ENGINE=InnoDB 
 	(SELECT 'states' AS group_type,state AS group_value,state AS group_label FROM osdial_postal_codes WHERE country_code='1' GROUP BY state)
 	UNION
 	(SELECT 'lead_source_id' AS group_type,source_id AS group_value,source_id AS group_label FROM osdial_list WHERE source_id!='' GROUP BY source_id)

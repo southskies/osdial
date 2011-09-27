@@ -235,7 +235,7 @@ if ($ADD=="2carrier") {
         ### SUB=4  Added DID
         if ($SUB==4) {
             $SUB=2;
-            if (strlen($did) < 1 or $carrier_id < 1) {
+            if (OSDstrlen($did) < 1 or $carrier_id < 1) {
                 echo "<br><font color=red>DID NOT ADDED - Please go back and look at the data you entered\n";
                 echo "<br>carrier_id not set.\n";
                 echo "<br>did must be at least 1 characters.</font><br>\n";
@@ -283,7 +283,7 @@ if ($ADD=="2carrier") {
         ### SUB=2  Added Carrier
         } elseif ($SUB==2) {
             $SUB=1;
-            if (strlen($carrier_name) < 3 or strlen($carrier_protocol) < 1) {
+            if (OSDstrlen($carrier_name) < 3 or OSDstrlen($carrier_protocol) < 1) {
                 echo "<br><font color=red>CARRIER NOT ADDED - Please go back and look at the data you entered\n";
                 echo "<br>carrier_name must be at least 2 characters.\n";
                 echo "<br>carrier_protocol_config must be at least 10 characters.</font><br>\n";
@@ -311,7 +311,7 @@ if ($ADD=="2carrier") {
 
 
         ### LOG CHANGES TO LOG FILE ###
-        if (strlen($aclog) > 0 and $WeBRooTWritablE > 0) {
+        if (OSDstrlen($aclog) > 0 and $WeBRooTWritablE > 0) {
             $fp = fopen ("./admin_changes_log.txt", "a");
             fwrite ($fp, "$date|ADD A NEW $aclog|$PHP_AUTH_USER|$ip|$stmt|\n");
             fclose($fp);
@@ -335,12 +335,12 @@ if ($ADD=="4carrier") {
         $stmt='';
         $aclog='';
 
-        $carrier_protocol_config = preg_replace("/^context=.*\n/m",'',$carrier_protocol_config);
+        $carrier_protocol_config = OSDpreg_replace("/^context=.*\n/m",'',$carrier_protocol_config);
 
         ### SUB=4  Modify DID 
         if ($SUB==4) {
             $SUB=1;
-            if ($did_id < 1 or strlen($did) < 1 or $carrier_id < 1) {
+            if ($did_id < 1 or OSDstrlen($did) < 1 or $carrier_id < 1) {
                 echo "<br><font color=red>DID NOT MODIFIED - Please go back and look at the data you entered\n";
                 echo "<br>did_id not set..\n";
                 echo "<br>carrier_id not set.\n";
@@ -380,7 +380,7 @@ if ($ADD=="4carrier") {
         ### SUB=3  Modify Server Specifc Carrier Option
         } elseif ($SUB==3) {
             $SUB=1;
-            if (strlen($carrier_server_ip) < 3 or $carrier_id < 1) {
+            if (OSDstrlen($carrier_server_ip) < 3 or $carrier_id < 1) {
                 echo "<br><font color=red>SERVER SPECIFIC CARRIER OPTION NOT MODIFIED - Please go back and look at the data you entered\n";
                 echo "<br>carrier_server_ip not set.\n";
                 echo "<br>carrier_id not set.</font><br>\n";
@@ -412,7 +412,7 @@ if ($ADD=="4carrier") {
         ### SUB=2  Modify Carrier
         } elseif ($SUB==2) {
             $SUB=1;
-            if ($carrier_id < 1 or strlen($carrier_name) < 3) {
+            if ($carrier_id < 1 or OSDstrlen($carrier_name) < 3) {
                 echo "<br><font color=red>CARRIER NOT MODIFIED - Please go back and look at the data you entered\n";
                 echo "<br>carrier_id not set: $carrier_id\n";
                 echo "<br>carrier_name must be at least 2 characters: $carrier_name</font><br>\n";
@@ -446,7 +446,7 @@ if ($ADD=="4carrier") {
 
 
         ### LOG CHANGES TO LOG FILE ###
-        if (strlen($aclog) > 0 and $WeBRooTWritablE > 0) {
+        if (OSDstrlen($aclog) > 0 and $WeBRooTWritablE > 0) {
             $fp = fopen ("./admin_changes_log.txt", "a");
             fwrite ($fp, "$date|MODIFY $aclog|$PHP_AUTH_USER|$ip|$stmt|\n");
             fclose($fp);
@@ -468,7 +468,7 @@ if ($ADD == "5carrier") {
     if ($LOG['ast_admin_access'] == 1) {
         ### SUB=4  Confirm DID Deletion
         if ($SUB==4) {
-            if ($carrier_id < 1 or $did_id < 1 or strlen($did) < 1) {
+            if ($carrier_id < 1 or $did_id < 1 or OSDstrlen($did) < 1) {
                 echo "<br><font color=red>DID NOT DELETED - Please go back and look at the data you entered\n";
                 echo "<br>carrier_id not set.\n";
                 echo "<br>did_id not set.\n";
@@ -481,7 +481,7 @@ if ($ADD == "5carrier") {
 
         ### SUB=3  Confirm Server Specific Carrier Option Deletion
         } elseif ($SUB==3) {
-            if (strlen($carrier_server_ip) < 3 or $carrier_id < 1) {
+            if (OSDstrlen($carrier_server_ip) < 3 or $carrier_id < 1) {
                 echo "<br><font color=red>SERVER SPECIFIC OPTIONS NOT DELETED - Please go back and look at the data you entered\n";
                 echo "<br>carrier_server_ip not set.</font><br>\n";
             } else {
@@ -525,7 +525,7 @@ if ($ADD=="6carrier") {
 
         ### SUB=4  DID Deletion
         if ($SUB==4) {
-            if ($carrier_id < 1 or $did_id < 1 or strlen($did) < 1) {
+            if ($carrier_id < 1 or $did_id < 1 or OSDstrlen($did) < 1) {
                 echo "<br><font color=red>DID NOT DELETED - Please go back and look at the data you entered\n";
                 echo "<br>carrier_id not set.\n";
                 echo "<br>did_id not set.\n";
@@ -541,7 +541,7 @@ if ($ADD=="6carrier") {
 
         ### SUB=3  Server Specific Carrier Option Deletion
         } elseif ($SUB==3) {
-            if (strlen($carrier_server_ip) < 3 or $carrier_id < 1) {
+            if (OSDstrlen($carrier_server_ip) < 3 or $carrier_id < 1) {
                 echo "<br><font color=red>SERVER SPECIFC CARRIER OPTIONS NOT DELETED - Please go back and look at the data you entered\n";
                 echo "<br>carrier_server_ip not set.\n";
                 echo "<br>carrier_id not set.</font><br>\n";
@@ -578,7 +578,7 @@ if ($ADD=="6carrier") {
 
 
         ### LOG CHANGES TO LOG FILE ###
-        if (strlen($aclog)>0 and $WeBRooTWritablE > 0) {
+        if (OSDstrlen($aclog)>0 and $WeBRooTWritablE > 0) {
             $fp = fopen ("./admin_changes_log.txt", "a");
             fwrite ($fp, "$date|DELETE $aclog|$PHP_AUTH_USER|$ip|$stmt|\n");
             fclose($fp);

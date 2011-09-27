@@ -263,7 +263,7 @@ foreach my $file (readdir(FILE)) {
 			my $SQLfile = $file;
 			$SQLfile =~ s/-all\.wav|-all\.gsm//gi;
 
-			my $stmt = "SELECT SQL_NO_CACHE recording_id FROM recording_log WHERE filename='$SQLfile' ORDER BY recording_id DESC LIMIT 1;";
+			my $stmt = "SELECT SQL_NO_CACHE recording_id FROM recording_log WHERE filename='" . $osdial->mres($SQLfile) . "' ORDER BY recording_id DESC LIMIT 1;";
 			print STDERR "\n|$stmt|\n" if ($DBX);
 			my $sret = $osdial->sql_query($stmt);
 			$recording_id =	$sret->{recording_id};
@@ -304,7 +304,7 @@ foreach my $file (readdir(FILE)) {
 
 			}
 			if (!$TEST) {
-				my $stmt = "UPDATE recording_log SET location='" . $location . "' WHERE recording_id='" . $recording_id . "';";
+				my $stmt = "UPDATE recording_log SET location='" . $osdial->mres($location) . "' WHERE recording_id='" . $recording_id . "';";
 				print STDERR "\n|$stmt|\n" if ($DBX);
 				$osdial->sql_execute($stmt);
 				$osdial->event_logger('audio_compress',"Compressed: $file   to   $CNVfile   |$recording_id|$SQLfile|$location|");

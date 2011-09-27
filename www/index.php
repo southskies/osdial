@@ -1,10 +1,10 @@
 <?php
-require('admin/include/dbconnect.php');
-require('admin/include/functions.php');
-require('admin/include/variables.php');
+require_once('admin/include/dbconnect.php');
+require_once('admin/include/functions.php');
+require_once('admin/include/variables.php');
 $template=$system_settings['admin_template'];
 if (empty($template)) $template='default';
-require('admin/templates/' . $template . '/display.php');
+require_once('admin/templates/' . $template . '/display.php');
 ?>
 <html>
 <head><title>Choose Login:</title></head>

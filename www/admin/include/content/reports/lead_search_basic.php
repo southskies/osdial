@@ -25,7 +25,7 @@ function report_lead_search_basic() {
 
     $html = '';
 
-    if ($LOGmodify_leads==1 and $LOGuser_level > 7) {
+    if ($LOG['modify_leads']==1 and $LOG['user_level'] > 7) {
 
         $html .= "<center><br><font color=$default_text size=4>BASIC LEAD SEARCH</font></center>\n";
         $html .= "<center><font color=$default_text size=2>[ Basic Search ]\n";

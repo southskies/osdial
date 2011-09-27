@@ -203,7 +203,10 @@ if (!$VARDB_port) {$VARDB_port='3306';}
 use Time::HiRes ('gettimeofday','usleep','sleep');  # necessary to have perl sleep command of less than one second
 use Net::Telnet ();
 use DBI;	  
+use OSDial;
 use Proc::ProcessTable;
+
+my $osdial = OSDial->new('DB'=>$DB);
 
 $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
  or die "Couldn't connect to database: " . DBI->errstr;

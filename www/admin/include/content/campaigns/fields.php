@@ -26,8 +26,8 @@
 # ADD=1form create form
 ######################
 if ($ADD == "1form") {
-    if ($LOGmodify_campaigns == 1) {
-        if (($form_id != 'NEW') or (strlen($form_name) < 1) or (strlen($form_description) < 1) or ($form_priority < 1) or (preg_match('/[^a-zA-Z0-9]/',$form_name))) {
+    if ($LOG['modify_campaigns'] == 1) {
+        if (($form_id != 'NEW') or (OSDstrlen($form_name) < 1) or (OSDstrlen($form_description) < 1) or ($form_priority < 1) or (OSDpreg_match('/[^a-zA-Z0-9]/',$form_name))) {
             echo "<br><font color=red>FORM NOT CREATED - Please go back and look at the data you entered\n";
             echo "<br>name must be between 1 and 15 characters in length, A-Z, no spaces.\n";
             echo "<br>description must be between 1 and 50 characters\n";
@@ -45,12 +45,12 @@ if ($ADD == "1form") {
             echo "<br><B><font color=$default_text>FORM CREATED: $form_id - $form_name - $form_priority</font></B>\n";
             $fcamps = join(',',$campaigns);
             if ($LOG['allowed_campaignsALL'] > 0) {
-                if (preg_match('/-ALL-/',$fcamps));
+                if (OSDpreg_match('/-ALL-/',$fcamps));
             } else {
                 $fcamps = $LOG['user_group']; 
             }
-            $form_name = strtoupper($form_name);
-            $stmt = "INSERT INTO osdial_campaign_forms (id,name,description,description2,priority,campaigns) VALUES ('$form_id','$form_name','$form_description','$form_description2','$form_priority','$fcamps');";
+            $form_name = OSDstrtoupper($form_name);
+            $stmt=sprintf("INSERT INTO osdial_campaign_forms (id,name,description,description2,priority,campaigns) VALUES ('%s','%s','%s','%s','%s','%s');",mres($form_id),mres($form_name),mres($form_description),mres($form_description2),mres($form_priority),mres($fcamps));
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -72,7 +72,7 @@ if ($ADD == "1form") {
 # ADD=2form add a new form
 ######################
 if ($ADD == "2form") {
-    if ($LOGmodify_campaigns == 1) {
+    if ($LOG['modify_campaigns'] == 1) {
         echo "<center><br><font color=$default_text size=+1>ADDITIONAL FORM</font><br><br>\n";
 
         $pri = 0;
@@ -141,17 +141,17 @@ if ($ADD == "2form") {
 # ADD=2fields add a new field
 ######################
 if ($ADD == "2fields") {
-    if ($LOGmodify_campaigns == 1) {
-        if ((strlen($field_name) < 1) or (strlen($field_description) < 1) or ($field_length > 22) or ($field_priority < 1) or (preg_match('/[^a-zA-Z0-9]/',$field_name))) {
+    if ($LOG['modify_campaigns'] == 1) {
+        if ((OSDstrlen($field_name) < 1) or (OSDstrlen($field_description) < 1) or ($field_length > 22) or ($field_priority < 1) or (OSDpreg_match('/[^a-zA-Z0-9]/',$field_name))) {
             echo "<br><font color=red>FIELD NOT ADDED - Please go back and look at the data you entered\n";
             echo "<br>name must be between 1 and 15 characters in length, A-Z, no spaces.\n";
             echo "<br>description must be between 1 and 50 characters in length\n";
             echo "<br>length must be between 1 and 22\n";
             echo "<br>priority must be greater than 1</font><br>\n";
         } else {
-            $field_name = strtoupper($field_name);
+            $field_name = OSDstrtoupper($field_name);
             echo "<br><B><font color=$default_text>FIELD ADDED: $field_name</font></B>\n";
-            $stmt = "INSERT INTO osdial_campaign_fields (form_id,name,description,options,length,priority) values('$form_id','$field_name','$field_description','$field_options','$field_length','$field_priority');";
+            $stmt=sprintf("INSERT INTO osdial_campaign_fields (form_id,name,description,options,length,priority) VALUES('%s','%s','%s','%s','%s','%s');",mres($form_id),mres($field_name),mres($field_description),mres($field_options),mres($field_length),mres($field_priority));
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -173,12 +173,12 @@ if ($ADD == "2fields") {
 # ADD=4form modify fields
 ######################
 if ($ADD == "4form") {
-    if ($LOGmodify_campaigns == 1) {
+    if ($LOG['modify_campaigns'] == 1) {
         $frm = get_first_record($link, 'osdial_campaign_forms', '*', sprintf('id=%s', mres($form_id)));
         if ($LOG['allowed_campaignsALL'] < 1 and $frm['campaigns'] != $LOG['user_group']) {
             echo "<br><font color=red>FORM NOT MODIFIED - These Forms / Fields belong to ALL campaigns.\n";
             echo "<br>In order to modify Forms and Fields, the Form must be assigned to a specific Campaign in your User Group.</font><br>\n";
-        } else if (($form_id < 1) or (strlen($form_name) < 1) or (strlen($form_description) < 1) or ($form_priority < 1) or (preg_match('/[^a-zA-Z0-9]/',$form_name))) {
+        } else if (($form_id < 1) or (OSDstrlen($form_name) < 1) or (OSDstrlen($form_description) < 1) or ($form_priority < 1) or (OSDpreg_match('/[^a-zA-Z0-9]/',$form_name))) {
             echo "<br><font color=red>FORM NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>name must be between 1 and 15 characters in length, A-Z, no spaces.\n";
             echo "<br>description must be between 1 and 50 characters in length\n";
@@ -186,11 +186,11 @@ if ($ADD == "4form") {
         } else {
             echo "<br><B><font color=$default_text>FORM MODIFIED: $form_name</font></B>\n";
             $fcamps = join(',',$campaigns);
-            if (preg_match('/-ALL-/',$fcamps)) {
+            if (OSDpreg_match('/-ALL-/',$fcamps)) {
                 $fcamps='ALL';
             }
-            $field_name = strtoupper($field_name);
-            $stmt = "UPDATE osdial_campaign_forms SET name='$form_name',description='$form_description',description2='$form_description2',priority='$form_priority',campaigns='$fcamps' where id='$form_id';";
+            $field_name = OSDstrtoupper($field_name);
+            $stmt=sprintf("UPDATE osdial_campaign_forms SET name='%s',description='%s',description2='%s',priority='%s',campaigns='%s' WHERE id='%s';",mres($form_name),mres($form_description),mres($form_description2),mres($form_priority),mres($fcamps),mres($form_id));
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -211,13 +211,13 @@ if ($ADD == "4form") {
 # ADD=4fields modify fields
 ######################
 if ($ADD == "4fields") {
-    if ($LOGmodify_campaigns == 1) {
+    if ($LOG['modify_campaigns'] == 1) {
         $fld = get_first_record($link, 'osdial_campaign_fields', '*', sprintf('id=%s', mres($field_id)));
         $frm = get_first_record($link, 'osdial_campaign_forms', '*', sprintf('id=%s', mres($fld['form_id'])));
         if ($LOG['allowed_campaignsALL'] < 1 and $frm['campaigns'] != $LOG['user_group']) {
             echo "<br><font color=red>FIELD NOT MODIFIED - These Forms / Fields belong to ALL campaigns.\n";
             echo "<br>In order to modify Forms and Fields, the Form must be assigned to a specific Campaign in your User Group.</font><br>\n";
-        } elseif (($field_id < 1) or (strlen($field_name) < 1) or (strlen($field_description) < 1) or ($field_length > 22) or ($field_priority < 1) or (preg_match('/[^a-zA-Z0-9]/',$field_name))) {
+        } elseif (($field_id < 1) or (OSDstrlen($field_name) < 1) or (OSDstrlen($field_description) < 1) or ($field_length > 22) or ($field_priority < 1) or (OSDpreg_match('/[^a-zA-Z0-9]/',$field_name))) {
             echo "<br><font color=red>FIELD NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>name must be between 1 and 15 characters in length, A-Z, no spaces.\n";
             echo "<br>description must be between 1 and 50 characters in length\n";
@@ -225,8 +225,8 @@ if ($ADD == "4fields") {
             echo "<br>priority must be greater than 1</font><br>\n";
         } else {
             echo "<br><B><font color=$default_text>FIELD MODIFIED: $field_name</font></B>\n";
-            $field_name = strtoupper($field_name);
-            $stmt = "UPDATE osdial_campaign_fields SET name='$field_name',description='$field_description',options='$field_options',length='$field_length',priority='$field_priority' where id='$field_id';";
+            $field_name = OSDstrtoupper($field_name);
+            $stmt=sprintf("UPDATE osdial_campaign_fields SET name='%s',description='%s',options='%s',length='%s',priority='%s' WHERE id='%s';",mres($field_name),mres($field_description),mres($field_options),mres($field_lenght),mres($field_priority),mres($field_id));
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -248,7 +248,7 @@ if ($ADD == "4fields") {
 # ADD=6form delete form
 ######################
 if ($ADD == "6form") {
-    if ($LOGmodify_campaigns == 1) {
+    if ($LOG['modify_campaigns'] == 1) {
         $SUB = "";
         $frm = get_first_record($link, 'osdial_campaign_forms', '*', sprintf('id=%s', mres($form_id)));
         if ($LOG['allowed_campaignsALL'] < 1 and $frm['campaigns'] != $LOG['user_group']) {
@@ -259,9 +259,9 @@ if ($ADD == "6form") {
             echo "<br><font color=red>FORM NOT DELETED - Could not find form id!\n";
         } else {
             echo "<br><B><font color=$default_text>FORM DELETED: $form_id - $form_name</font></B>\n";
-            $stmt = "UPDATE osdial_campaign_forms SET deleted='1' WHERE id='$form_id';";
+            $stmt=sprintf("UPDATE osdial_campaign_forms SET deleted='1' WHERE id='%s';",mres($form_id));
             $rslt = mysql_query($stmt, $link);
-            $stmt = "UPDATE osdial_campaign_fields SET deleted='1' WHERE form_id='$form_id';";
+            $stmt=sprintf("UPDATE osdial_campaign_fields SET deleted='1' WHERE form_id='%s';",mres($form_id));
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -281,7 +281,7 @@ if ($ADD == "6form") {
 # ADD=6fields delete field
 ######################
 if ($ADD == "6fields") {
-    if ($LOGmodify_campaigns == 1) {
+    if ($LOG['modify_campaigns'] == 1) {
         $fld = get_first_record($link, 'osdial_campaign_fields', '*', sprintf('id=%s', mres($field_id)));
         $frm = get_first_record($link, 'osdial_campaign_forms', '*', sprintf('id=%s', mres($fld['form_id'])));
         if ($LOG['allowed_campaignsALL'] < 1 and $frm['campaigns'] != $LOG['user_group']) {
@@ -291,7 +291,7 @@ if ($ADD == "6fields") {
             echo "<br><font color=red>FIELD NOT DELETED - Could not find field id!\n";
         } else {
             echo "<br><B><font color=$default_text>FIELD DELETED: $field_id - $field_name</font></B>\n";
-            $stmt = "UPDATE osdial_campaign_fields SET deleted='1' WHERE id='$field_id';";
+            $stmt=sprintf("UPDATE osdial_campaign_fields SET deleted='1' WHERE id='%s';",mres($field_id));
             $rslt = mysql_query($stmt, $link);
             ### LOG CHANGES TO LOG FILE ###
             if ($WeBRooTWritablE > 0) {
@@ -328,7 +328,7 @@ if ($ADD == "3fields" and $SUB != '2fields') {
     foreach ($forms as $form) {
         $matched=0;
         foreach ($LOG['allowed_campaigns'] as $acamp) {
-            if (preg_match('/^ALL$|^' . $acamp . '$|^' . $acamp . ',|,' . $acamp . '$|,' . $acamp . ',/',$form['campaigns'])) {
+            if (OSDpreg_match('/^ALL$|^' . $acamp . '$|^' . $acamp . ',|,' . $acamp . '$|,' . $acamp . ',/',$form['campaigns'])) {
                 $matched++;
             }
         }
@@ -397,7 +397,7 @@ if ($ADD == "3fields" and $SUB == '2fields') {
             echo "  <tr>\n";
             echo "      <td bgcolor=$oddrows align=right>&nbsp;</td>\n";
             $cc = '';
-            $fcamps = preg_split('/,/',$form['campaigns']);
+            $fcamps = OSDpreg_split('/,/',$form['campaigns']);
             foreach ($fcamps as $fcamp) {
                 if ($camp['campaign_id'] == $fcamp) {
                     $cc = 'checked';

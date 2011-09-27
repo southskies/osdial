@@ -116,11 +116,11 @@ sub set_campaign_stats {
 		my $cadd=1;
 		$cadd=0 if (scalar(keys %{$cdata->{$campaign}{campaign}}) < 30);
 		print "  -- OSDcampaign_stats.pl: set_campaign_stats: got campaign $campaign.\n" if ($osdial->{DB}>1);
-		$cinsmulti .= "('$campaign'," if ($cadd);
+		$cinsmulti .= "('" . $osdial->mres($campaign) . "'," if ($cadd);
 		foreach my $cfld (sort keys %{$cdata->{$campaign}{campaign}}) {
 			print "      -- OSDcampaign_stats.pl: set_campaign_stats: campaign: $campaign  got field $cfld.\n" if ($osdial->{DB}>1);
 			$cinshead .= $cfld . ',' if ($chdone == 0);
-			$cinsmulti .= "'" . $cdata->{$campaign}{campaign}{$cfld} . "'," if ($cadd);;
+			$cinsmulti .= "'" . $osdial->mres($cdata->{$campaign}{campaign}{$cfld}) . "'," if ($cadd);;
 			$cinsonupd .= $cfld . '=VALUES(' . $cfld . '),' if ($chdone == 0);
 		}
 		chop($cinsmulti) if ($cadd);;
@@ -135,11 +135,11 @@ sub set_campaign_stats {
 	
 		foreach my $agent (sort keys %{$cdata->{$campaign}{agent}}) {
 			print "    -- OSDcampaign_stats.pl: set_campaign_stats: campaign: $campaign  got agent $agent.\n" if ($osdial->{DB}>1);
-			$ainsmulti .= "('$campaign','$agent',";
+			$ainsmulti .= "('" . $osdial->mres($campaign) . "','" . $osdial->mres($agent) . "',";
 			foreach my $afld (sort keys %{$cdata->{$campaign}{agent}{$agent}}) {
 				print "      -- OSDcampaign_stats.pl: set_campaign_stats: campaign: $campaign  agent: $agent  got field $afld.\n" if ($osdial->{DB}>1);
 				$ainshead .= $afld . ',' if ($ahdone == 0);
-				$ainsmulti .= "'" . $cdata->{$campaign}{agent}{$agent}{$afld} . "',";
+				$ainsmulti .= "'" . $osdial->mres($cdata->{$campaign}{agent}{$agent}{$afld}) . "',";
 				$ainsonupd .= $afld . '=VALUES(' . $afld . '),' if ($ahdone == 0);
 			}
 			chop($ainsmulti);
@@ -154,11 +154,11 @@ sub set_campaign_stats {
 		}
 		foreach my $server (sort keys %{$cdata->{$campaign}{server}}) {
 			print "    -- OSDcampaign_stats.pl: set_campaign_stats: campaign: $campaign  got server $server.\n" if ($osdial->{DB}>1);
-			$sinsmulti .= "('$campaign','$server',";
+			$sinsmulti .= "('" . $osdial->mres($campaign) . "','$server',";
 			foreach my $sfld (sort keys %{$cdata->{$campaign}{server}{$server}}) {
 				print "      -- OSDcampaign_stats.pl: set_campaign_stats: campaign: $campaign  got server $server  got field $sfld.\n" if ($osdial->{DB}>1);
 				$sinshead .= $sfld . ',' if ($shdone == 0);
-				$sinsmulti .= "'" . $cdata->{$campaign}{server}{$server}{$sfld} . "',";
+				$sinsmulti .= "'" . $osdial->mres($cdata->{$campaign}{server}{$server}{$sfld}) . "',";
 				$sinsonupd .= $sfld . '=VALUES(' . $sfld . '),' if ($shdone == 0);
 			}
 			chop($sinsmulti);
@@ -222,7 +222,7 @@ sub get_campaign_stats {
 	my $statusref;
 	my $cdata;
 	my $swhere = "(active='Y' or campaign_stats_refresh='Y')";
-	$swhere = "campaign_id='$CLOcampaign'" if ($CLOcampaign);
+	$swhere = "campaign_id='" . $osdial->mres($CLOcampaign) . "'" if ($CLOcampaign);
 	while ( my $sret = $osdial->sql_query("SELECT campaign_id FROM osdial_campaigns WHERE $swhere;") ) {
 		my $campaign = uc($sret->{campaign_id});
 		$cdata->{$campaign}{campaign} = { 

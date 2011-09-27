@@ -44,7 +44,7 @@ function report_agent_performance_detail() {
     $SUBMIT = get_variable('SUBMIT');
     $DB = get_variable('DB');
 
-    if (strlen($shift)<2) {$shift='ALL';}
+    if (OSDstrlen($shift)<2) {$shift='ALL';}
 
     $html = '';
 
@@ -167,18 +167,18 @@ function report_agent_performance_detail() {
         if ($shift == 'AM') {
             $time_BEGIN=$AM_shift_BEGIN;
             $time_END=$AM_shift_END;
-            if (strlen($time_BEGIN) < 6) {$time_BEGIN = "03:45:00";}   
-            if (strlen($time_END) < 6) {$time_END = "15:15:00";}
+            if (OSDstrlen($time_BEGIN) < 6) {$time_BEGIN = "03:45:00";}   
+            if (OSDstrlen($time_END) < 6) {$time_END = "15:15:00";}
         }
         if ($shift == 'PM') {
             $time_BEGIN=$PM_shift_BEGIN;
             $time_END=$PM_shift_END;
-            if (strlen($time_BEGIN) < 6) {$time_BEGIN = "15:15:00";}
-            if (strlen($time_END) < 6) {$time_END = "23:15:00";}
+            if (OSDstrlen($time_BEGIN) < 6) {$time_BEGIN = "15:15:00";}
+            if (OSDstrlen($time_END) < 6) {$time_END = "23:15:00";}
         }
         if ($shift == 'ALL') {
-            if (strlen($time_BEGIN) < 6) {$time_BEGIN = "00:00:00";}
-            if (strlen($time_END) < 6) {$time_END = "23:59:59";}
+            if (OSDstrlen($time_BEGIN) < 6) {$time_BEGIN = "00:00:00";}
+            if (OSDstrlen($time_END) < 6) {$time_END = "23:59:59";}
         }
         $query_date_BEGIN = "$start_date $time_BEGIN";
         $query_date_BEGIN = dateToServer($link,'first',$query_date_BEGIN,$webClientAdjGMT,'',$webClientDST,0);
@@ -186,7 +186,7 @@ function report_agent_performance_detail() {
         $query_date_END = dateToServer($link,'first',$query_date_END,$webClientAdjGMT,'',$webClientDST,0);
 
         $ugSQL = sprintf(' AND osdial_agent_log.user_group IN %s ',$LOG['allowed_usergroupsSQL']);
-        if (strlen($user_group)>0) {
+        if (OSDstrlen($user_group)>0) {
             $ugSQL .= sprintf(" AND osdial_agent_log.user_group='%s' ",mres($user_group));
         }
 
@@ -233,7 +233,7 @@ function report_agent_performance_detail() {
             $dispo_sec[$i] =    $row[6];
             $status[$i] =        $row[7];
             $new_calls[$i] =    $row[8];
-            if ( (!preg_match("/--$status[$i]--/", $statuses)) and (strlen($status[$i])>0) ) {
+            if ( (!OSDpreg_match("/--$status[$i]--/", $statuses)) and (OSDstrlen($status[$i])>0) ) {
                 $statusesTXT = sprintf("%8s", $status[$i]);
                 $statusesHEAD .= "----------+";
                 $statusesHTML .= " $statusesTXT |";
@@ -241,7 +241,7 @@ function report_agent_performance_detail() {
                 $statusesARY[$j] = $status[$i];
                 $j++;
             }
-            if (!preg_match("/--$user[$i]--/", $users)) {
+            if (!OSDpreg_match("/--$user[$i]--/", $users)) {
                 $users .= "$user[$i]--";
                 $usersARY[$k] = $user[$i];
                 $user_namesARY[$k] = $full_name[$i];
@@ -305,7 +305,7 @@ function report_agent_performance_detail() {
             foreach ($statusesARY as $st1) {
                 $head .= '|' . $st1;
                 $st2 = sprintf("%6s", $st1);
-                $st2 = preg_replace("/ /","&nbsp;",$st2);
+                $st2 = OSDpreg_replace("/ /","&nbsp;",$st2);
                 $table .= "          <td align=right style=\"font-family: monospace;\">$st2</td>\n";
             }
         }
@@ -381,10 +381,10 @@ function report_agent_performance_detail() {
 
             $Tfull_name = $Sfull_name;
             $Sfull_name=    sprintf("%-15s", $Sfull_name); 
-            while(strlen($Sfull_name)>15) {$Sfull_name = substr("$Sfull_name", 0, -1);}
+            while(OSDstrlen($Sfull_name)>15) {$Sfull_name = OSDsubstr("$Sfull_name", 0, -1);}
             $Tuser = mclabel($Suser);
             $Suser =        sprintf("%-8s", mclabel($Suser));
-            while(strlen($Suser)>8) {$Suser = substr("$Suser", 0, -1);}
+            while(OSDstrlen($Suser)>8) {$Suser = OSDsubstr("$Suser", 0, -1);}
 
             $USERtime_M = ($Stime / 60);
             $USERtime_M = round($USERtime_M, 2);
@@ -562,7 +562,7 @@ function report_agent_performance_detail() {
         if ($TOTtime_S < 10) {$TOTtime_S = "0$TOTtime_S";}
         $TOTtime_MS = "$TOTtime_M_int:$TOTtime_S";
         $TOTtime_MS =        sprintf("%8s", $TOTtime_MS);
-            while(strlen($TOTtime_MS)>8) {$TOTtime_MS = substr("$TOTtime_MS", 0, -1);}
+            while(OSDstrlen($TOTtime_MS)>8) {$TOTtime_MS = OSDsubstr("$TOTtime_MS", 0, -1);}
 
         $TOTtotTALK_M = ($TOTtotTALK / 60);
         $TOTtotTALK_M = round($TOTtotTALK_M, 2);
@@ -573,7 +573,7 @@ function report_agent_performance_detail() {
         if ($TOTtotTALK_S < 10) {$TOTtotTALK_S = "0$TOTtotTALK_S";}
         $TOTtotTALK_MS = "$TOTtotTALK_M_int:$TOTtotTALK_S";
         $TOTtotTALK_MS =        sprintf("%8s", $TOTtotTALK_MS);
-            while(strlen($TOTtotTALK_MS)>8) {$TOTtotTALK_MS = substr("$TOTtotTALK_MS", 0, -1);}
+            while(OSDstrlen($TOTtotTALK_MS)>8) {$TOTtotTALK_MS = OSDsubstr("$TOTtotTALK_MS", 0, -1);}
 
         $TOTtotDISPO_M = ($TOTtotDISPO / 60);
         $TOTtotDISPO_M = round($TOTtotDISPO_M, 2);
@@ -584,7 +584,7 @@ function report_agent_performance_detail() {
         if ($TOTtotDISPO_S < 10) {$TOTtotDISPO_S = "0$TOTtotDISPO_S";}
         $TOTtotDISPO_MS = "$TOTtotDISPO_M_int:$TOTtotDISPO_S";
         $TOTtotDISPO_MS =        sprintf("%8s", $TOTtotDISPO_MS);
-            while(strlen($TOTtotDISPO_MS)>8) {$TOTtotDISPO_MS = substr("$TOTtotDISPO_MS", 0, -1);}
+            while(OSDstrlen($TOTtotDISPO_MS)>8) {$TOTtotDISPO_MS = OSDsubstr("$TOTtotDISPO_MS", 0, -1);}
 
         $TOTtotPAUSE_M = ($TOTtotPAUSE / 60);
         $TOTtotPAUSE_M = round($TOTtotPAUSE_M, 2);
@@ -595,7 +595,7 @@ function report_agent_performance_detail() {
         if ($TOTtotPAUSE_S < 10) {$TOTtotPAUSE_S = "0$TOTtotPAUSE_S";}
         $TOTtotPAUSE_MS = "$TOTtotPAUSE_M_int:$TOTtotPAUSE_S";
         $TOTtotPAUSE_MS =        sprintf("%8s", $TOTtotPAUSE_MS);
-            while(strlen($TOTtotPAUSE_MS)>8) {$TOTtotPAUSE_MS = substr("$TOTtotPAUSE_MS", 0, -1);}
+            while(OSDstrlen($TOTtotPAUSE_MS)>8) {$TOTtotPAUSE_MS = OSDsubstr("$TOTtotPAUSE_MS", 0, -1);}
 
         $TOTtotWAIT_M = ($TOTtotWAIT / 60);
         $TOTtotWAIT_M = round($TOTtotWAIT_M, 2);
@@ -606,7 +606,7 @@ function report_agent_performance_detail() {
         if ($TOTtotWAIT_S < 10) {$TOTtotWAIT_S = "0$TOTtotWAIT_S";}
         $TOTtotWAIT_MS = "$TOTtotWAIT_M_int:$TOTtotWAIT_S";
         $TOTtotWAIT_MS =        sprintf("%8s", $TOTtotWAIT_MS);
-            while(strlen($TOTtotWAIT_MS)>8) {$TOTtotWAIT_MS = substr("$TOTtotWAIT_MS", 0, -1);}
+            while(OSDstrlen($TOTtotWAIT_MS)>8) {$TOTtotWAIT_MS = OSDsubstr("$TOTtotWAIT_MS", 0, -1);}
 
 
         $TOTavgTALK_M = ( ($TOTtotTALK / $TOTcalls) / 60);
@@ -618,7 +618,7 @@ function report_agent_performance_detail() {
         if ($TOTavgTALK_S < 10) {$TOTavgTALK_S = "0$TOTavgTALK_S";}
         $TOTavgTALK_MS = "$TOTavgTALK_M_int:$TOTavgTALK_S";
         $TOTavgTALK_MS =        sprintf("%6s", $TOTavgTALK_MS);
-            while(strlen($TOTavgTALK_MS)>6) {$TOTavgTALK_MS = substr("$TOTavgTALK_MS", 0, -1);}
+            while(OSDstrlen($TOTavgTALK_MS)>6) {$TOTavgTALK_MS = OSDsubstr("$TOTavgTALK_MS", 0, -1);}
 
         $TOTavgDISPO_M = ( ($TOTtotDISPO / $TOTcalls) / 60);
         $TOTavgDISPO_M = round($TOTavgDISPO_M, 2);
@@ -629,7 +629,7 @@ function report_agent_performance_detail() {
         if ($TOTavgDISPO_S < 10) {$TOTavgDISPO_S = "0$TOTavgDISPO_S";}
         $TOTavgDISPO_MS = "$TOTavgDISPO_M_int:$TOTavgDISPO_S";
         $TOTavgDISPO_MS =        sprintf("%6s", $TOTavgDISPO_MS);
-            while(strlen($TOTavgDISPO_MS)>6) {$TOTavgDISPO_MS = substr("$TOTavgDISPO_MS", 0, -1);}
+            while(OSDstrlen($TOTavgDISPO_MS)>6) {$TOTavgDISPO_MS = OSDsubstr("$TOTavgDISPO_MS", 0, -1);}
 
         $TOTavgPAUSE_M = ( ($TOTtotPAUSE / $TOTcalls) / 60);
         $TOTavgPAUSE_M = round($TOTavgPAUSE_M, 2);
@@ -640,7 +640,7 @@ function report_agent_performance_detail() {
         if ($TOTavgPAUSE_S < 10) {$TOTavgPAUSE_S = "0$TOTavgPAUSE_S";}
         $TOTavgPAUSE_MS = "$TOTavgPAUSE_M_int:$TOTavgPAUSE_S";
         $TOTavgPAUSE_MS =        sprintf("%6s", $TOTavgPAUSE_MS);
-            while(strlen($TOTavgPAUSE_MS)>6) {$TOTavgPAUSE_MS = substr("$TOTavgPAUSE_MS", 0, -1);}
+            while(OSDstrlen($TOTavgPAUSE_MS)>6) {$TOTavgPAUSE_MS = OSDsubstr("$TOTavgPAUSE_MS", 0, -1);}
 
         $TOTavgWAIT_M = ( ($TOTtotWAIT / $TOTcalls) / 60);
         $TOTavgWAIT_M = round($TOTavgWAIT_M, 2);
@@ -651,7 +651,7 @@ function report_agent_performance_detail() {
         if ($TOTavgWAIT_S < 10) {$TOTavgWAIT_S = "0$TOTavgWAIT_S";}
         $TOTavgWAIT_MS = "$TOTavgWAIT_M_int:$TOTavgWAIT_S";
         $TOTavgWAIT_MS =        sprintf("%6s", $TOTavgWAIT_MS);
-            while(strlen($TOTavgWAIT_MS)>6) {$TOTavgWAIT_MS = substr("$TOTavgWAIT_MS", 0, -1);}
+            while(OSDstrlen($TOTavgWAIT_MS)>6) {$TOTavgWAIT_MS = OSDsubstr("$TOTavgWAIT_MS", 0, -1);}
 
 
         $plain .= "+-----------------+----------+--------+---------+--------+--------+--------+--------+--------+--------+--------+--------+\n";

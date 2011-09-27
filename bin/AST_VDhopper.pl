@@ -76,6 +76,8 @@
 # 090428-0303 - Fix list-mix to include recycles into mix instead of at end.
 # 090428-0322 - Add check to catch DRCTN nTH NEW options in list mix and drop the "nTH NEW" 
 
+$|++;
+
 # constants
 $DB=0;  # Debug flag, set to 0 for no debug messages, On an active system this will generate lots of lines of output per minute
 $US='__';
@@ -250,6 +252,8 @@ if (!$VDHLOGfile) {$VDHLOGfile = "$PATHlogs/hopper.$year-$mon-$mday";}
 if (!$VARDB_port) {$VARDB_port='3306';}
 
 use DBI;	  
+use OSDial;
+my $osdial = OSDial->new('DB'=>$DB);
 
 $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
  or die "Couldn't connect to database: " . DBI->errstr;
@@ -338,7 +342,7 @@ while ($sthArows > $inactive_lists_count)
 	{
 	@aryA = $sthA->fetchrow_array;
 	$inactive_list = $aryA[0];
-	$inactive_lists .= "'$inactive_list',";
+	$inactive_lists .= "'" . $osdial->mres($inactive_list) . "',";
 	$inactive_lists_count++;
 	}
 $sthA->finish();
@@ -416,7 +420,7 @@ if ($CBHOLD_count > 0)
 				$event_string = "|CALLBACKS LISTACT|$affected_rows|";
 				&event_logger;
 
-			$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CA_lead_id[$CAu]',campaign_id='$CA_campaign_id[$CAu]',list_id='$CA_list_id[$CAu]',gmt_offset_now='$CA_gmt_offset_now[$CAu]',user='',state='$CA_state[$CAu]',priority='50';";
+			$stmtA = "INSERT INTO osdial_hopper SET lead_id='$CA_lead_id[$CAu]',campaign_id='" . $osdial->mres($CA_campaign_id[$CAu]) . "',list_id='" . $osdial->mres($CA_list_id[$CAu]) . "',gmt_offset_now='$CA_gmt_offset_now[$CAu]',user='',state='" . $osdial->mres($CA_state[$CAu]) . "',priority='50';";
 			$affected_rows = $dbhA->do($stmtA);
 			if ($DB) {print "ANYONE Scheduled Callback Inserted into hopper:  $affected_rows|$CA_lead_id[$CAu]\n";}
 			$CAu++;
@@ -430,7 +434,7 @@ if ($CBHOLD_count > 0)
 
 if ($CLIcampaign)
 	{
-	$stmtA = "SELECT * FROM osdial_campaigns WHERE campaign_id='$CLIcampaign';";
+	$stmtA = "SELECT * FROM osdial_campaigns WHERE campaign_id='" . $osdial->mres($CLIcampaign) . "';";
 	}
 else
 	{
@@ -486,7 +490,7 @@ foreach(@campaign_id)
                         if ($Dstatuses[$o] eq 'NEW' and $lead_order[$i] =~ / ... NEW$/) {
                                 print "lead_order has NEW, skipping NEW status" if ($DB);
                         } else {
-                                $STATUSsql[$i] .= "'$Dstatuses[$o]',";
+                                $STATUSsql[$i] .= "'" . $osdial->mres($Dstatuses[$o]) . "',";
                         }
                 }
 		if (length($STATUSsql[$i])<3) {$STATUSsql[$i]="''";}
@@ -497,7 +501,7 @@ foreach(@campaign_id)
 		$list_order[$i] =~ s/ ... NEW$//;
 		}
 
-	$stmtA = "SELECT dialable_leads FROM osdial_campaign_stats WHERE campaign_id='$campaign_id[$i]';";
+	$stmtA = "SELECT dialable_leads FROM osdial_campaign_stats WHERE campaign_id='" . $osdial->mres($campaign_id[$i]) . "';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -533,7 +537,7 @@ foreach(@campaign_id)
 		}
 		if ($DBX) {print "\n";}
 
-	$stmtA = "SELECT * FROM osdial_call_times WHERE call_time_id='$local_call_time[$i]';";
+	$stmtA = "SELECT * FROM osdial_call_times WHERE call_time_id='" . $osdial->mres($local_call_time[$i]) . "';";
 		if ($DBX) {print "   |$stmtA|\n";}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -697,7 +701,7 @@ foreach(@campaign_id)
 		{
 		if (length($state_rules[$b])>1)
 			{
-			$stmtA = "SELECT * FROM osdial_state_call_times WHERE state_call_time_id='$state_rules[$b]';";
+			$stmtA = "SELECT * FROM osdial_state_call_times WHERE state_call_time_id='" . $osdial->mres($state_rules[$b]) . "';";
 				if ($DBX) {print "   |$stmtA|\n";}
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -724,7 +728,7 @@ foreach(@campaign_id)
 				$Gsct_friday_stop =			"$aryA[17]";
 				$Gsct_saturday_start =		"$aryA[18]";
 				$Gsct_saturday_stop =		"$aryA[19]";
-				$ct_states .="'$Gstate_call_time_state',";
+				$ct_states .="'" . $osdial->mres($Gstate_call_time_state) . "',";
 				$rec_count++;
 				}
 			$sthA->finish();
@@ -857,8 +861,8 @@ foreach(@campaign_id)
 				}
 			$state_gmt = "$state_gmt'99'";
 			$del_state_gmt = "$del_state_gmt'99'";
-			$ct_state_gmt_SQL .= "or (state='$Gstate_call_time_state' and gmt_offset_now IN($state_gmt)) ";
-			$del_state_gmt_SQL .= "or (state='$Gstate_call_time_state' and gmt_offset_now IN($del_state_gmt)) ";
+			$ct_state_gmt_SQL .= "or (state='" . $osdial->mres($Gstate_call_time_state) . "' and gmt_offset_now IN($state_gmt)) ";
+			$del_state_gmt_SQL .= "or (state='" . $osdial->mres($Gstate_call_time_state) . "' and gmt_offset_now IN($del_state_gmt)) ";
 			}
 
 		$b++;
@@ -1012,7 +1016,7 @@ foreach(@campaign_id)
 
 	##### BEGIN lead recycling parsing and prep ###
 
-	$stmtA = "SELECT * FROM osdial_lead_recycle WHERE campaign_id='$campaign_id[$i]' AND active='Y';";
+	$stmtA = "SELECT * FROM osdial_lead_recycle WHERE campaign_id='" . $osdial->mres($campaign_id[$i]) . "' AND active='Y';";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -1052,7 +1056,7 @@ foreach(@campaign_id)
 
 			if ($rc > 0) {$recycle_SQL[$i] .= " or "; $recycle_notimeSQL[$i] .= " or ";}
 
-			$rec_cclr_stat = "((called_since_last_reset IN($recycle_Y)) and (status='$recycle_status[$rc]'))";
+			$rec_cclr_stat = "((called_since_last_reset IN($recycle_Y)) and (status='" . $osdial->mres($recycle_status[$rc]) . "'))";
 			$recycle_notimeSQL[$i] .= $rec_cclr_stat;
 			$recycle_SQL[$i] .= "( " . $rec_cclr_stat . " and (";
 
@@ -1116,19 +1120,19 @@ foreach(@campaign_id)
 	if ($DB) {print "Starting hopper run for $campaign_id[$i] campaign- GMT: $local_call_time[$i]   HOPPER: $hopper_level[$i] \n";}
 
 	### Delete the DONE leads if there are any
-	$stmtA = "DELETE from osdial_hopper WHERE campaign_id='$campaign_id[$i]' AND status IN('DONE');";
+	$stmtA = "DELETE from osdial_hopper WHERE campaign_id='" . $osdial->mres($campaign_id[$i]) . "' AND status IN('DONE');";
 	$affected_rows = $dbhA->do($stmtA);
 	if ($DB) {print "     hopper DONE cleared:  $affected_rows\n";}
 	if ($DBX) {print "     |$stmtA|\n";}
 
 	### Delete the leads that are out of GMT time range if there are any
-	$stmtA = "DELETE FROM osdial_hopper WHERE campaign_id='$campaign_id[$i]' AND ($del_gmtSQL[$i]) AND status!='API';";
+	$stmtA = "DELETE FROM osdial_hopper WHERE campaign_id='" . $osdial->mres($campaign_id[$i]) . "' AND ($del_gmtSQL[$i]) AND status!='API';";
 	$affected_rows = $dbhA->do($stmtA);
 	if ($DB) {print "     hopper GMT BAD cleared:  $affected_rows\n";}
 	if ($DBX) {print "     |$stmtA|\n";}
 
 	if ($VARflush_hopper_manual == 1 && $dial_method[$i] eq "MANUAL") {
-		$stmtA = "DELETE FROM osdial_hopper WHERE campaign_id='$campaign_id[$i]' AND status='READY';";
+		$stmtA = "DELETE FROM osdial_hopper WHERE campaign_id='" . $osdial->mres($campaign_id[$i]) . "' AND status='READY';";
 		$affected_rows = $dbhA->do($stmtA);
 		if ($DB) {print "     hopper flush manual $campaign_id[$i]:  $affected_rows\n";}
 		if ($DBX) {print "     |$stmtA|\n";}
@@ -1136,7 +1140,7 @@ foreach(@campaign_id)
 
  	### Find out how many leads are in the hopper from a specific campaign
 	$hopper_ready_count=0;
-	$stmtA = "SELECT SQL_NO_CACHE status,count(*) FROM osdial_hopper WHERE campaign_id='$campaign_id[$i]' AND status IN ('API','READY') GROUP BY status;";
+	$stmtA = "SELECT SQL_NO_CACHE status,count(*) FROM osdial_hopper WHERE campaign_id='" . $osdial->mres($campaign_id[$i]) . "' AND status IN ('API','READY') GROUP BY status;";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -1160,7 +1164,7 @@ foreach(@campaign_id)
 		if ($DB) {print "     hopper too low ($hopper_ready_count|$hopper_level[$i]) starting hopper dump\n";}
 
 		### Get list of the lists in the campaign ###
-		$stmtA = "SELECT list_id FROM osdial_lists WHERE campaign_id='$campaign_id[$i]' AND active='Y';";
+		$stmtA = "SELECT list_id FROM osdial_lists WHERE campaign_id='" . $osdial->mres($campaign_id[$i]) . "' AND active='Y';";
 		$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 		$sthArows=$sthA->rows;
@@ -1169,7 +1173,7 @@ foreach(@campaign_id)
 		while ($sthArows > $rec_countLISTS)
 			{
 			@aryA = $sthA->fetchrow_array;
-			$camp_lists[$i] .= "'$aryA[0]',";
+			$camp_lists[$i] .= "'" . $osdial->mres($aryA[0]) . "',";
 			$rec_countLISTS++;
 			}
 		$sthA->finish();
@@ -1181,7 +1185,7 @@ foreach(@campaign_id)
 
 		if ($list_order_mix[$i] !~ /DISABLED/)
 			{
-			$stmtA = "SELECT vcl_id,vcl_name,list_mix_container,mix_method FROM osdial_campaigns_list_mix WHERE campaign_id='$campaign_id[$i]' AND status='ACTIVE';";
+			$stmtA = "SELECT vcl_id,vcl_name,list_mix_container,mix_method FROM osdial_campaigns_list_mix WHERE campaign_id='" . $osdial->mres($campaign_id[$i]) . "' AND status='ACTIVE';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -1204,11 +1208,11 @@ foreach(@campaign_id)
 			foreach(@list_mixARY)
 				{
 				if ($x > 0) {$list_mix_dialableSQL .= " or ";}
-				@list_mix_stepARY = split(/\|/,$list_mixARY[$x]);
+				@list_mix_stepARY = $osdial->mres(split(/\|/,$list_mixARY[$x]));
 				$list_mix_stepARY[3] =~ s/ /\',\'/gi;
 				$list_mix_stepARY[3] =~ s/^\',|,\'-//gi;
 				if ($DBX) {print "     LM $x ++$list_mixARY[$x]++ |$list_mix_stepARY[0]|$list_mix_stepARY[2]|$list_mix_stepARY[3]|\n";}
-				$list_mix_dialableSQL .= "(list_id='$list_mix_stepARY[0]' and status IN($list_mix_stepARY[3]))";
+				$list_mix_dialableSQL .= "(list_id='" . $osdial->mres($list_mix_stepARY[0]) . "' and status IN($list_mix_stepARY[3]))";
 
 				$x++;
 				}
@@ -1219,7 +1223,7 @@ foreach(@campaign_id)
 		if ( ($lead_filter_id[$i] !~ /NONE/) && (length($lead_filter_id[$i])>0) )
 			{
 			### Get SQL of lead filter for the campaign ###
-			$stmtA = "SELECT lead_filter_sql FROM osdial_lead_filters WHERE lead_filter_id='$lead_filter_id[$i]';";
+			$stmtA = "SELECT lead_filter_sql FROM osdial_lead_filters WHERE lead_filter_id='" . $osdial->mres($lead_filter_id[$i]) . "';";
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 			$sthArows=$sthA->rows;
@@ -1279,7 +1283,7 @@ foreach(@campaign_id)
 		} else {
 			$cclr = "called_since_last_reset='N'";
 		}
-		$stmtA = "UPDATE osdial_campaign_stats SET recycle_total='$recycle_total[$i]',recycle_sched='$recycle_sched[$i]' where campaign_id='$campaign_id[$i]';";
+		$stmtA = "UPDATE osdial_campaign_stats SET recycle_total='$recycle_total[$i]',recycle_sched='$recycle_sched[$i]' where campaign_id='" . $osdial->mres($campaign_id[$i]) . "';";
 		$affected_rows = $dbhA->do($stmtA);
 
 		if ($list_order_mix[$i] !~ /DISABLED/) {
@@ -1341,7 +1345,7 @@ foreach(@campaign_id)
 			if ($DB) {print "     ERROR CANNOT ADD ANY LEADS TO HOPPER\n";}
 			if ($VCSdialable_leads[$i] > 0)
 				{
-				$stmtA = "UPDATE osdial_campaign_stats SET dialable_leads='0' where campaign_id='$campaign_id[$i]';";
+				$stmtA = "UPDATE osdial_campaign_stats SET dialable_leads='0' where campaign_id='" . $osdial->mres($campaign_id[$i]) . "';";
 				$affected_rows = $dbhA->do($stmtA);
 				if ($DBX) {print "CAMPAIGN STATS: $affected_rows|$stmtA|\n";}
 				}
@@ -1350,13 +1354,13 @@ foreach(@campaign_id)
 			{
 			if ($VCSdialable_leads[$i] != $campaign_leads_to_call[$i])
 				{
-				$stmtA = "UPDATE osdial_campaign_stats SET dialable_leads='$campaign_leads_to_call[$i]' where campaign_id='$campaign_id[$i]';";
+				$stmtA = "UPDATE osdial_campaign_stats SET dialable_leads='$campaign_leads_to_call[$i]' where campaign_id='" . $osdial->mres($campaign_id[$i]) . "';";
 				$affected_rows = $dbhA->do($stmtA);
 				if ($DBX) {print "CAMPAIGN STATS: $affected_rows|$stmtA|\n";}
 				}
 			if ($DB) {print "     Getting Leads to add to hopper\n";}
 			### grab leads already in hopper so we don't duplicate
-			$stmtA = "SELECT lead_id FROM osdial_hopper WHERE campaign_id='$campaign_id[$i]';";
+			$stmtA = "SELECT lead_id FROM osdial_hopper WHERE campaign_id='" . $osdial->mres($campaign_id[$i]) . "';";
 			if ($DBX) {print "     |$stmtA|\n";}
 			$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -1612,7 +1616,7 @@ foreach(@campaign_id)
 						$list_mix_stepARY[3] =~ s/ /','/gi;
 						$list_mix_stepARY[3] =~ s/^',|,'-//gi;
 						if ($DBX) {print "  LM $x |$list_mix_stepARY[0]|$list_mix_stepARY[2]|$LM_step_goal[$x]|$list_mix_stepARY[3]|\n";}
-						$list_mix_dialableSQL = "(list_id='$list_mix_stepARY[0]' AND status IN($list_mix_stepARY[3]))";
+						$list_mix_dialableSQL = "(list_id='" . $osdial->mres($list_mix_stepARY[0]) . "' AND status IN($list_mix_stepARY[3]))";
 
 						$stmtA = "SELECT SQL_NO_CACHE lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list FORCE INDEX (list_status) WHERE $cclr AND $list_mix_dialableSQL AND lead_id NOT IN($lead_id_lists) AND ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt LIMIT $LM_step_goal[$x];";
 						if ($DBX) {print "     |$stmtA|\n";}
@@ -1729,7 +1733,7 @@ foreach(@campaign_id)
 						if ($enable_multicompany > 0) {
 							$comp_id=0;
 							$dnc_method='';
-							$stmtA="SELECT id,dnc_method FROM osdial_companies WHERE id='" . ((substr($campaign_id[$i],0,3) * 1) - 100) . "';";
+							$stmtA="SELECT id,dnc_method FROM osdial_companies WHERE id='" . $osdial->mres((substr($campaign_id[$i],0,3) * 1) - 100) . "';";
 							$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 							$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 							if (@aryA = $sthA->fetchrow_array) {
@@ -1766,7 +1770,7 @@ foreach(@campaign_id)
 						}
 					}
 					if ($DNClead == 0) {
-						$stmtA = "INSERT INTO osdial_hopper (lead_id,campaign_id,status,user,list_id,gmt_offset_now,state,priority) values('$leads_to_hopper[$h]','$campaign_id[$i]','READY','','$lists_to_hopper[$h]','$gmt_to_hopper[$h]','$state_to_hopper[$h]','$priority_to_hopper[$h]');";
+						$stmtA = "INSERT INTO osdial_hopper (lead_id,campaign_id,status,user,list_id,gmt_offset_now,state,priority) values('$leads_to_hopper[$h]','" . $osdial->mres($campaign_id[$i]) . "','READY','','" . $osdial->mres($lists_to_hopper[$h]) . "','$gmt_to_hopper[$h]','" . $osdial->mres($state_to_hopper[$h]) . "','$priority_to_hopper[$h]');";
 						$affected_rows = $dbhA->do($stmtA);
 						if ($DBX) {print "LEAD INSERTED: $affected_rows|$leads_to_hopper[$h]|\n";}
 					}

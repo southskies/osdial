@@ -46,8 +46,8 @@ function report_lead_performance_campaign() {
     if ($type=="") $type = "date";
     if ($start_date=="") $start_date = date("Y-m-d");
     if ($end_date=="") $end_date = $start_date;
-    if (strlen($start_time) < 5) $start_time = "00:00";
-    if (strlen($end_time) < 5) $end_time = "23:59";
+    if (OSDstrlen($start_time) < 5) $start_time = "00:00";
+    if (OSDstrlen($end_time) < 5) $end_time = "23:59";
     if ($group=='') $group[] = '--ALL--';
 
     $stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE campaign_id IN %s;",$LOG['allowed_campaignsSQL']);
@@ -71,7 +71,7 @@ function report_lead_performance_campaign() {
         $groupQS .= "&group[]=$group[$i]";
         $i++;
     }
-    if ( (preg_match("/--ALL--/",$group_string) ) or ($group_ct < 1) ) {
+    if ( (OSDpreg_match("/--ALL--/",$group_string) ) or ($group_ct < 1) ) {
         $group_logSQLand = sprintf("AND osdial_log.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
         $group_olSQLand = sprintf("AND osdial_lists.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
         $group_ocSQLand = sprintf("AND osdial_campaigns.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
@@ -82,7 +82,7 @@ function report_lead_performance_campaign() {
         $group_ocSQL = sprintf("WHERE osdial_campaigns.campaign_id IN %s",$LOG['allowed_campaignsSQL']);
         $group_SQL = sprintf("WHERE campaign_id IN %s",$LOG['allowed_campaignsSQL']);
     } else {
-        $group_SQL = preg_replace("/,$/",'',$group_SQL);
+        $group_SQL = OSDpreg_replace("/,$/",'',$group_SQL);
 
         $group_logSQLand = sprintf("AND osdial_log.campaign_id IN %s AND osdial_log.campaign_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
         $group_olSQLand = sprintf("AND osdial_lists.campaign_id IN %s AND osdial_lists.campaign_id IN(%s)",$LOG['allowed_campaignsSQL'],$group_SQL);
@@ -137,7 +137,7 @@ function report_lead_performance_campaign() {
         $SCcontacts .= "'" . mysql_real_escape_string($CSCcontacts[$i]) . "',";
         $i++;
     }
-    $SCcontacts = preg_replace("/,$/",'',$SCcontacts);
+    $SCcontacts = OSDpreg_replace("/,$/",'',$SCcontacts);
 
     $csc_ct = count($CSCsales);
     $i=0;
@@ -145,7 +145,7 @@ function report_lead_performance_campaign() {
         $SCsales .= "'" . mysql_real_escape_string($CSCsales[$i]) . "',";
         $i++;
     }
-    $SCsales = preg_replace("/,$/",'',$SCsales);
+    $SCsales = OSDpreg_replace("/,$/",'',$SCsales);
     if ($csc_ct < 2) {
         $SCsales = "'SALE','XFER'";
     }
@@ -177,7 +177,7 @@ function report_lead_performance_campaign() {
     $html .= "  <tr class=tabfooter>\n";
     $html .= "    <td rowspan=3>\n";
     $html .= "      <select size=5 name=group[] multiple>\n";
-    if  (preg_match("/--ALL--/",$group_string)) {
+    if  (OSDpreg_match("/--ALL--/",$group_string)) {
         $html .= "        <option value=\"--ALL--\" selected>-- ALL CAMPAIGNS --</option>\n";
     } else {
         $html .= "        <option value=\"--ALL--\">-- ALL CAMPAIGNS --</option>\n";
@@ -185,7 +185,7 @@ function report_lead_performance_campaign() {
     $o=0;
     while ($camps_to_print > $o) {
         $gsel='';
-        if (preg_match("/$groups[$o]\|/",$group_string)) {
+        if (OSDpreg_match("/$groups[$o]\|/",$group_string)) {
             $gsel='selected';
         }
         $html .= "        <option $gsel value=\"$groups[$o]\">" . mclabel($groups[$o]) . ": $group_names[$o]</option>\n";

@@ -21,7 +21,7 @@
 #
 
 if ($ADD==122) {
-  if ($LOGload_leads==1 and $LOGuser_level > 7) {
+  if ($LOG['load_leads']==1 and $LOG['user_level'] > 7) {
     #@apache_setenv('no-gzip', 1);
     #@ini_set('zlib.output_compression', 0);
 	
@@ -35,15 +35,15 @@ if ($ADD==122) {
     $single_insert = 1;
     $dot_count=0;
 
-	$list_id_override = (preg_replace("/\D/","",$list_id_override));
-	$phone_code_override = (preg_replace("/\D/","",$phone_code_override));
+	$list_id_override = (OSDpreg_replace("/\D/","",$list_id_override));
+	$phone_code_override = (OSDpreg_replace("/\D/","",$phone_code_override));
     $file_layout = get_variable('file_layout');
 	
 	$aff_fields = get_variable('aff_fields');
 	$aff_field = Array();
 	$affcnt = 0;
 
-    if (strlen($aff_fields) > 0) $single_insert = 1;
+    if (OSDstrlen($aff_fields) > 0) $single_insert = 1;
 
 	### Grab Server GMT value from the database
 	$isdst = date("I");
@@ -56,11 +56,11 @@ if ($ADD==122) {
     $server = get_first_record($link, 'servers', '*', "");
     if ($server['local_gmt'] != "") {
         $DBgmt = $server['local_gmt'];
-        if (strlen($DBgmt)>0) $server_gmt = $DBgmt;
+        if (OSDstrlen($DBgmt)>0) $server_gmt = $DBgmt;
         if ($isdst) $server_gmt++;
 	} else {
         $server_gmt = date("O");
-        $server_gmt = preg_replace("/\+/","",$server_gmt);
+        $server_gmt = OSDpreg_replace("/\+/","",$server_gmt);
         $server_gmt = (($server_gmt + 0) / 100);
 	}
 	$local_gmt = $server_gmt;
@@ -153,7 +153,7 @@ if ($ADD==122) {
 		$total=0; $good=0; $bad=0; $dup=0; $post=0;
 
         # Process an Excel 
-		if (preg_match("/.xls$/", $leadfile_name)) {
+		if (OSDpreg_match("/.xls$/", $leadfile_name)) {
 			# copy($leadfile, "./osdial_temp_file.xls");
 			$file=fopen("$lead_file", "r");
 		
@@ -169,10 +169,10 @@ if ($ADD==122) {
             flush();
 
 			$dupcheckCLI=''; $postalgmtCLI='';
-			if (preg_match("/DUPLIST/",$dupcheck)) {$dupcheckCLI='--duplicate-check';}
-			if (preg_match("/DUPCAMP/",$dupcheck)) {$dupcheckCLI='--duplicate-campaign-check';}
-			if (preg_match("/DUPSYS/",$dupcheck)) {$dupcheckCLI='--duplicate-system-check';}
-			if (preg_match("/POSTAL/",$postalgmt)) {$postalgmtCLI='--postal-code-gmt';}
+			if (OSDpreg_match("/DUPLIST/",$dupcheck)) {$dupcheckCLI='--duplicate-check';}
+			if (OSDpreg_match("/DUPCAMP/",$dupcheck)) {$dupcheckCLI='--duplicate-campaign-check';}
+			if (OSDpreg_match("/DUPSYS/",$dupcheck)) {$dupcheckCLI='--duplicate-system-check';}
+			if (OSDpreg_match("/POSTAL/",$postalgmt)) {$postalgmtCLI='--postal-code-gmt';}
 			passthru("$WeBServeRRooT/admin/listloader_super.pl $vendor_lead_code_field,$source_id_field,$list_id_field,$phone_code_field,$phone_number_field,$title_field,$first_name_field,$middle_initial_field,$last_name_field,$address1_field,$address2_field,$address3_field,$city_field,$state_field,$province_field,$postal_code_field,$country_code_field,$gender_field,$date_of_birth_field,$alt_phone_field,$email_field,$custom1_field,$comments_field, --forcelistid=$list_id_override --forcephonecode=$phone_code_override --lead-file=$lead_file $postalgmtCLI $dupcheckCLI");
 
         # Process a CSV/PSV/TSV
@@ -229,9 +229,9 @@ if ($ADD==122) {
 				$list_id =				$row[$list_id_field];
 				$gmt_offset =			'0';
 				$called_since_last_reset='N';
-				$phone_code =			preg_replace("/[^0-9]/", "", $row[$phone_code_field]);
-				$phone_number =			preg_replace("/[^0-9]/", "", $row[$phone_number_field]);
-				$USarea = 			    substr($phone_number, 0, 3);
+				$phone_code =			OSDpreg_replace("/[^0-9]/", "", $row[$phone_code_field]);
+				$phone_number =			OSDpreg_replace("/[^0-9]/", "", $row[$phone_number_field]);
+				$USarea = 			    OSDsubstr($phone_number, 0, 3);
 				$title =				$row[$title_field];
 				$first_name =			$row[$first_name_field];
 				$middle_initial =		$row[$middle_initial_field];
@@ -246,7 +246,7 @@ if ($ADD==122) {
 				$country_code =			$row[$country_code_field];
 				$gender =				$row[$gender_field];
 				$date_of_birth =		$row[$date_of_birth_field];
-				$alt_phone =			preg_replace("/[^0-9]/", "", $row[$alt_phone_field]);
+				$alt_phone =			OSDpreg_replace("/[^0-9]/", "", $row[$alt_phone_field]);
 				$email =				$row[$email_field];
 				$custom1 =		        $row[$custom1_field];
 				$comments =				trim($row[$comments_field]);
@@ -259,9 +259,9 @@ if ($ADD==122) {
                     $aff_field[$afld] = $row[get_variable($afld)];
                 }
 		
-				if (strlen($list_id_override)>0) $list_id = $list_id_override;
-				if (strlen($phone_code_override)>0) $phone_code = $phone_code_override;
-				if (strlen($phone_code)<1) $phone_code = '1';
+				if (OSDstrlen($list_id_override)>0) $list_id = $list_id_override;
+				if (OSDstrlen($phone_code_override)>0) $phone_code = $phone_code_override;
+				if (OSDstrlen($phone_code)<1) $phone_code = '1';
 
                 $list_camp = get_first_record($link, 'osdial_lists', '*', sprintf("list_id='%s'", mres($list_id)));
 
@@ -277,12 +277,12 @@ if ($ADD==122) {
                     $dup_syslist_active = '';
 
                     $tmpdupcheck=0;
-                    if (preg_match('/^DUPCAMPEXTKEY$/i',$dupcheck) and $external_key=='') {
+                    if (OSDpreg_match('/^DUPCAMPEXTKEY$/i',$dupcheck) and $external_key=='') {
                         $dupcheck='DUPCAMP';
                         $tmpdupcheck++;
                     }
 
-                    if (preg_match('/^DUPCAMP/i',$dupcheck)) {
+                    if (OSDpreg_match('/^DUPCAMP/i',$dupcheck)) {
                         $camp_lists = get_krh($link, 'osdial_lists', 'list_id,active', '', sprintf("campaign_id='%s'",mres($list_camp['campaign_id'])), '');
                         foreach ($camp_lists as $clist) {
                             if ($clist['list_id'] != "") {
@@ -295,7 +295,7 @@ if ($ADD==122) {
                         $dup_list_active = rtrim($dup_list_active,',');
                     }
 
-                    if (preg_match('/^DUPSYS/i',$dupcheck)) {
+                    if (OSDpreg_match('/^DUPSYS/i',$dupcheck)) {
                         $sys_lists = get_krh($link, 'osdial_lists', 'list_id,active', '', '', '');
                         foreach ($sys_lists as $slist) {
                             if ($slist['list_id'] != "") {
@@ -308,20 +308,20 @@ if ($ADD==122) {
                         $dup_syslist_active = rtrim($dup_syslist_active,',');
                     }
 
-                    if (preg_match('/^DUPCAMP$/i',$dupcheck)) {
+                    if (OSDpreg_match('/^DUPCAMP$/i',$dupcheck)) {
                         $dup_where = sprintf("phone_number='%s' AND list_id IN (%s)",mres($phone_number),$dup_list);
-                    } elseif (preg_match('/^DUPCAMPACT$/i',$dupcheck)) {
+                    } elseif (OSDpreg_match('/^DUPCAMPACT$/i',$dupcheck)) {
                         $dup_where = sprintf("phone_number='%s' AND list_id IN (%s)",mres($phone_number),$dup_list_active);
-                    } elseif (preg_match('/^DUPSYS$/i',$dupcheck)) {
+                    } elseif (OSDpreg_match('/^DUPSYS$/i',$dupcheck)) {
                         $dup_where = sprintf("phone_number='%s' AND list_id IN (%s)",mres($phone_number),$dup_syslist);
-                    } elseif (preg_match('/^DUPSYSACT$/i',$dupcheck)) {
+                    } elseif (OSDpreg_match('/^DUPSYSACT$/i',$dupcheck)) {
                         $dup_where = sprintf("phone_number='%s' AND list_id IN (%s)",mres($phone_number),$dup_syslist_active);
-                    } elseif (preg_match('/^DUPLIST$/i',$dupcheck)) {
+                    } elseif (OSDpreg_match('/^DUPLIST$/i',$dupcheck)) {
                         $dup_where = sprintf("phone_number='%s' AND list_id='%s'",mres($phone_number),mres($list_id));
                     }
 
                     # Check for a duplicate external key, if found add new phone number to list.
-                    if (preg_match('/^DUPCAMPEXTKEY$/i',$dupcheck)) {
+                    if (OSDpreg_match('/^DUPCAMPEXTKEY$/i',$dupcheck)) {
                         $ext_where = sprintf("external_key='%s' AND list_id IN (%s)",mres($external_key),$dup_list);
                         $ext = get_first_record($link, 'osdial_list', 'lead_id,list_id,phone_number,alt_phone,address3', $ext_where);
                         if ($ext['lead_id'] > 0) {
@@ -475,7 +475,7 @@ if ($ADD==122) {
                 }
 
 
-				if (strlen($phone_number) > 6 and strlen($phone_number) < 17 and $dup_lead < 1) {
+				if (OSDstrlen($phone_number) > 6 and OSDstrlen($phone_number) < 17 and $dup_lead < 1) {
 					$gmtl = lookup_gmt($phone_code,$USarea,$state,$local_gmt,$Shour,$Smin,$Ssec,$Smon,$Smday,$Syear,$postalgmt,$postal_code);
 					$gmt_offset = $gmtl[0];
                     $postal = $gmtl[1];
@@ -488,7 +488,7 @@ if ($ADD==122) {
 
                         # Process any AFF Fields
                         foreach ($aff_field as $k => $v) {
-                            if (strlen($v)>0) {
+                            if (OSDstrlen($v)>0) {
                                 $afs = explode('_',$k);
                                 $stmt = sprintf("INSERT INTO osdial_list_fields SET lead_id='%s',field_id='%s',value='%s';", mres($lead_id), mres($afs[2]),mres($v));
 						        $rslt=mysql_query($stmt, $link);
@@ -533,7 +533,7 @@ if ($ADD==122) {
 				}
 			}
 			if ($single_insert < 1 and $multi_insert_counter != 0) {
-				$stmtZ = "INSERT INTO osdial_list values".substr($multistmt, 0, -1).";";
+				$stmtZ = "INSERT INTO osdial_list values".OSDsubstr($multistmt, 0, -1).";";
 				mysql_query($stmtZ, $link);
 				if ($WeBRooTWritablE > 0) fwrite($stmt_file, $stmtZ."\n");
 			}
@@ -563,7 +563,7 @@ if ($ADD==122) {
 			flush();
 		
             # Process the "standard" style Excel file.
-		    if (preg_match("/.xls$/", $leadfile_name)) {
+		    if (OSDpreg_match("/.xls$/", $leadfile_name)) {
 			    if ($WeBRooTWritablE > 0) {
 				    copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.xls");
 				    $lead_file = "$WeBServeRRooT/admin/osdial_temp_file.xls";
@@ -575,10 +575,10 @@ if ($ADD==122) {
 		
 			    $dupcheckCLI='';
                 $postalgmtCLI='';
-			    if (preg_match("/DUPLIST/",$dupcheck)) $dupcheckCLI='--duplicate-check';
-			    if (preg_match("/DUPCAMP/",$dupcheck)) $dupcheckCLI='--duplicate-campaign-check';
-			    if (preg_match("/DUPSYS/",$dupcheck)) $dupcheckCLI='--duplicate-system-check';
-			    if (preg_match("/POSTAL/",$postalgmt)) $postalgmtCLI='--postal-code-gmt';
+			    if (OSDpreg_match("/DUPLIST/",$dupcheck)) $dupcheckCLI='--duplicate-check';
+			    if (OSDpreg_match("/DUPCAMP/",$dupcheck)) $dupcheckCLI='--duplicate-campaign-check';
+			    if (OSDpreg_match("/DUPSYS/",$dupcheck)) $dupcheckCLI='--duplicate-system-check';
+			    if (OSDpreg_match("/POSTAL/",$postalgmt)) $postalgmtCLI='--postal-code-gmt';
 			    passthru("$WeBServeRRooT/admin/listloader.pl --forcelistid=$list_id_override --forcephonecode=$phone_code_override --lead-file=$lead_file  $postalgmtCLI $dupcheckCLI");
 			
             # Process "standard" CSV/TSV/PSV
@@ -629,9 +629,9 @@ if ($ADD==122) {
 		    		$list_id =				$row[2];
 		    		$gmt_offset =			'0';
 		    		$called_since_last_reset='N';
-		    		$phone_code =			preg_replace("/[^0-9]/", "", $row[3]);
-		    		$phone_number =			preg_replace("/[^0-9]/", "", $row[4]);
-		    		$USarea = 			substr($phone_number, 0, 3);
+		    		$phone_code =			OSDpreg_replace("/[^0-9]/", "", $row[3]);
+		    		$phone_number =			OSDpreg_replace("/[^0-9]/", "", $row[4]);
+		    		$USarea = 			OSDsubstr($phone_number, 0, 3);
 		    		$title =				$row[5];
 		    		$first_name =			$row[6];
 		    		$middle_initial =		$row[7];
@@ -646,14 +646,14 @@ if ($ADD==122) {
 		    		$country_code =			$row[16];
 		    		$gender =				$row[17];
 		    		$date_of_birth =		$row[18];
-		    		$alt_phone =			preg_replace("/[^0-9]/", "", $row[19]);
+		    		$alt_phone =			OSDpreg_replace("/[^0-9]/", "", $row[19]);
 		    		$email =				$row[20];
 		    		$custom1 =		$row[21];
 		    		$comments =				trim($row[22]);
 	
-		    		if (strlen($list_id_override)>0) $list_id = $list_id_override;
-		    		if (strlen($phone_code_override)>0) $phone_code = $phone_code_override;
-		    		if (strlen($phone_code)<1) $phone_code = '1';
+		    		if (OSDstrlen($list_id_override)>0) $list_id = $list_id_override;
+		    		if (OSDstrlen($phone_code_override)>0) $phone_code = $phone_code_override;
+		    		if (OSDstrlen($phone_code)<1) $phone_code = '1';
 
                     $list_camp = get_first_record($link, 'osdial_lists', '*', sprintf("list_id='%s'", mres($list_id)));
 
@@ -668,7 +668,7 @@ if ($ADD==122) {
                         $dup_syslist = '';
                         $dup_syslist_active = '';
 
-                        if (preg_match('/^DUPCAMP/i',$dupcheck)) {
+                        if (OSDpreg_match('/^DUPCAMP/i',$dupcheck)) {
                             $camp_lists = get_krh($link, 'osdial_lists', 'list_id,active', '', sprintf("campaign_id='%s'",mres($list_camp['campaign_id'])), '');
                             foreach ($camp_lists as $clist) {
                                 if ($clist['list_id'] != "") {
@@ -681,7 +681,7 @@ if ($ADD==122) {
                             $dup_list_active = rtrim($dup_list_active,',');
                         }
 
-                        if (preg_match('/^DUPSYS/i',$dupcheck)) {
+                        if (OSDpreg_match('/^DUPSYS/i',$dupcheck)) {
                             $sys_lists = get_krh($link, 'osdial_lists', 'list_id,active', '', '', '');
                             foreach ($sys_lists as $slist) {
                                 if ($slist['list_id'] != "") {
@@ -695,15 +695,15 @@ if ($ADD==122) {
                         }
 
 
-                        if (preg_match('/^DUPCAMP$/i',$dupcheck)) {
+                        if (OSDpreg_match('/^DUPCAMP$/i',$dupcheck)) {
                             $dup_where = sprintf("phone_number='%s' AND list_id IN (%s)",mres($phone_number),$dup_list);
-                        } elseif (preg_match('/^DUPCAMPACT$/i',$dupcheck)) {
+                        } elseif (OSDpreg_match('/^DUPCAMPACT$/i',$dupcheck)) {
                             $dup_where = sprintf("phone_number='%s' AND list_id IN (%s)",mres($phone_number),$dup_list_active);
-                        } elseif (preg_match('/^DUPSYS$/i',$dupcheck)) {
+                        } elseif (OSDpreg_match('/^DUPSYS$/i',$dupcheck)) {
                             $dup_where = sprintf("phone_number='%s' AND list_id IN (%s)",mres($phone_number),$dup_syslist);
-                        } elseif (preg_match('/^DUPSYSACT$/i',$dupcheck)) {
+                        } elseif (OSDpreg_match('/^DUPSYSACT$/i',$dupcheck)) {
                             $dup_where = sprintf("phone_number='%s' AND list_id IN (%s)",mres($phone_number),$dup_syslist_active);
-                        } elseif (preg_match('/^DUPLIST$/i',$dupcheck)) {
+                        } elseif (OSDpreg_match('/^DUPLIST$/i',$dupcheck)) {
                             $dup_where = sprintf("phone_number='%s' AND list_id='%s'",mres($phone_number),mres($list_id));
                         }
 
@@ -716,7 +716,7 @@ if ($ADD==122) {
                     }
 
 
-	                if (strlen($phone_number) > 6 and strlen($phone_number) < 17 and $dup_lead < 1) {
+	                if (OSDstrlen($phone_number) > 6 and OSDstrlen($phone_number) < 17 and $dup_lead < 1) {
 					    $gmtl = lookup_gmt($phone_code,$USarea,$state,$local_gmt,$Shour,$Smin,$Ssec,$Smon,$Smday,$Syear,$postalgmt,$postal_code);
 					    $gmt_offset = $gmtl[0];
                         $postal = $gmtl[1];
@@ -763,7 +763,7 @@ if ($ADD==122) {
 					}
 				}
 				if ($single_insert < 1 and $multi_insert_counter != 0) {
-					$stmtZ = "INSERT INTO osdial_list values".substr($multistmt, 0, -1).";";
+					$stmtZ = "INSERT INTO osdial_list values".OSDsubstr($multistmt, 0, -1).";";
 					mysql_query($stmtZ, $link);
 					if ($WeBRooTWritablE > 0) fwrite($stmt_file, $stmtZ."\n");
 				}
@@ -789,19 +789,19 @@ if ($ADD==122) {
 			echo "    <td align=center colspan=2>FIELD MAPPINGS</td>\n";
 			echo "  </tr>\n";
 			echo "  <tr class=tabheader>\n";
-			echo "    <td align=center>" . strtoupper($t1) . " LEAD FIELD</td>\n";
+			echo "    <td align=center>" . OSDstrtoupper($t1) . " LEAD FIELD</td>\n";
 			echo "    <td align=center width=50%>FILE HEADER ROW</td>\n";
 			echo "  </tr>\n";
 
             $afmaps = Array();
             $afjoin = "";
-			if (strlen($list_id_override)>0) {
+			if (OSDstrlen($list_id_override)>0) {
                 $gfr_list = get_first_record($link, 'osdial_lists', 'campaign_id', sprintf("list_id='%s'",mres($list_id_override)) );
-			    if (strlen($gfr_list['campaign_id'])>0) {
+			    if (OSDstrlen($gfr_list['campaign_id'])>0) {
                     $camp = $gfr_list['campaign_id'];
                     $af_forms = get_krh($link, 'osdial_campaign_forms', '*', 'name ASC', sprintf("deleted='0' AND (campaigns='ALL' OR campaigns='%s' OR campaigns LIKE '%s,%%' OR campaigns LIKE '%%,%s')",mres($camp),mres($camp),mres($camp)), '');
                     foreach ($af_forms as $afform) {
-                        $af_fields = get_krh($link, 'osdial_campaign_fields', '*', 'name ASC', sprintf("deleted='0' AND form_id='%s'",$afform['id']), '');
+                        $af_fields = get_krh($link, 'osdial_campaign_fields', '*', 'name ASC', sprintf("deleted='0' AND form_id='%s'",mres($afform['id'])), '');
                         foreach ($af_fields as $affield) {
                             $afmaps['AF_' . $afform['id'] . '_' . $affield['id']] = $afform['name'] . '_' . $affield['name'];
                             $afjoin .= 'AF_' . $afform['id'] . '_' . $affield['id'] . ',';
@@ -815,7 +815,7 @@ if ($ADD==122) {
 			
 	
             # Process Excel file for field selection.
-			if (preg_match("/.xls$/", $leadfile_name)) {
+			if (OSDpreg_match("/.xls$/", $leadfile_name)) {
 				if ($WeBRooTWritablE > 0) {
 					copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.xls");
 					$lead_file = "$WeBServeRRooT/admin/osdial_temp_file.xls";
@@ -825,14 +825,14 @@ if ($ADD==122) {
 				}
 	
 				$dupcheckCLI=''; $postalgmtCLI='';
-				if (preg_match("/DUPLIST/",$dupcheck)) {$dupcheckCLI='--duplicate-check';}
-				if (preg_match("/DUPCAMP/",$dupcheck)) {$dupcheckCLI='--duplicate-campaign-check';}
-				if (preg_match("/DUPSYS/",$dupcheck)) {$dupcheckCLI='--duplicate-system-check';}
-				if (preg_match("/POSTAL/",$postalgmt)) {$postalgmtCLI='--postal-code-gmt';}
+				if (OSDpreg_match("/DUPLIST/",$dupcheck)) {$dupcheckCLI='--duplicate-check';}
+				if (OSDpreg_match("/DUPCAMP/",$dupcheck)) {$dupcheckCLI='--duplicate-campaign-check';}
+				if (OSDpreg_match("/DUPSYS/",$dupcheck)) {$dupcheckCLI='--duplicate-system-check';}
+				if (OSDpreg_match("/POSTAL/",$postalgmt)) {$postalgmtCLI='--postal-code-gmt';}
 				passthru("$WeBServeRRooT/admin/listloader_rowdisplay.pl --lead-file=$lead_file $postalgmtCLI $dupcheckCLI");
 
             # Process CSV/PSV/TSV file for field selection.
-			} elseif (preg_match('/\.txt$|\.csv$|\.psv$|\.tsv$|\.tab$/i', $leadfile_name)) {
+			} elseif (OSDpreg_match('/\.txt$|\.csv$|\.psv$|\.tsv$|\.tab$/i', $leadfile_name)) {
 				if ($WeBRooTWritablE > 0) {
 					copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.csv");
 					$lead_file = "$WeBServeRRooT/admin/osdial_temp_file.csv";
@@ -874,7 +874,7 @@ if ($ADD==122) {
                     } elseif (mysql_field_name($rslt, $i) == "address3") {
 					    echo "    <td align=center>ADDRESS3&nbsp;(phone&nbsp;number&nbsp;3):</td>\n";
                     } else {
-					    echo "    <td align=center>".preg_replace("/_/", "&nbsp;", strtoupper(mysql_field_name($rslt, $i))).": </td>\n";
+					    echo "    <td align=center>".OSDpreg_replace("/_/", "&nbsp;", OSDstrtoupper(mysql_field_name($rslt, $i))).": </td>\n";
                     }
 					echo "    <td align=center class=tabinput>\n";
 					if (mysql_field_name($rslt, $i) == "list_id" and $list_id_override != "") {
@@ -885,21 +885,21 @@ if ($ADD==122) {
                         echo "      <select name='".mysql_field_name($rslt, $i)."_field'>\n";
 					    echo "        <option value='-1'>(none)</option>\n";
 					    for ($j=0; $j<count($row); $j++) {
-						    preg_replace("/\"/", "", $row[$j]);
+						    OSDpreg_replace("/\"/", "", $row[$j]);
                             $fsel='';
                             if ($VARclient=='CFGA') {
-                                if (strtoupper(mysql_field_name($rslt, $i))=='PHONE_NUMBER' and strtoupper($row[$j])=='PHONENUMBER') $fsel='selected';
-                                if (strtoupper(mysql_field_name($rslt, $i))=='FIRST_NAME'   and strtoupper($row[$j])=='FIRSTNAME')   $fsel='selected';
-                                if (strtoupper(mysql_field_name($rslt, $i))=='LAST_NAME'    and strtoupper($row[$j])=='LASTNAME')    $fsel='selected';
-                                if (strtoupper(mysql_field_name($rslt, $i))=='ADDRESS1'     and strtoupper($row[$j])=='ACCOUNTID')   $fsel='selected';
-                                if (strtoupper(mysql_field_name($rslt, $i))=='ADDRESS2'     and strtoupper($row[$j])=='ISSUER')      $fsel='selected';
-                                if (strtoupper(mysql_field_name($rslt, $i))=='ADDRESS3'     and strtoupper($row[$j])=='PHONE3')      $fsel='selected';
-                                if (strtoupper(mysql_field_name($rslt, $i))=='CITY'         and strtoupper($row[$j])=='SSN')         $fsel='selected';
-                                if (strtoupper(mysql_field_name($rslt, $i))=='POSTAL_CODE'  and strtoupper($row[$j])=='BALANCE')     $fsel='selected';
-                                if (strtoupper(mysql_field_name($rslt, $i))=='ALT_PHONE'    and strtoupper($row[$j])=='PHONE2')      $fsel='selected';
-                                if (strtoupper(mysql_field_name($rslt, $i))=='EXTERNAL_KEY' and strtoupper($row[$j])=='ACCOUNTID')   $fsel='selected';
+                                if (OSDstrtoupper(mysql_field_name($rslt, $i))=='PHONE_NUMBER' and OSDstrtoupper($row[$j])=='PHONENUMBER') $fsel='selected';
+                                if (OSDstrtoupper(mysql_field_name($rslt, $i))=='FIRST_NAME'   and OSDstrtoupper($row[$j])=='FIRSTNAME')   $fsel='selected';
+                                if (OSDstrtoupper(mysql_field_name($rslt, $i))=='LAST_NAME'    and OSDstrtoupper($row[$j])=='LASTNAME')    $fsel='selected';
+                                if (OSDstrtoupper(mysql_field_name($rslt, $i))=='ADDRESS1'     and OSDstrtoupper($row[$j])=='ACCOUNTID')   $fsel='selected';
+                                if (OSDstrtoupper(mysql_field_name($rslt, $i))=='ADDRESS2'     and OSDstrtoupper($row[$j])=='ISSUER')      $fsel='selected';
+                                if (OSDstrtoupper(mysql_field_name($rslt, $i))=='ADDRESS3'     and OSDstrtoupper($row[$j])=='PHONE3')      $fsel='selected';
+                                if (OSDstrtoupper(mysql_field_name($rslt, $i))=='CITY'         and OSDstrtoupper($row[$j])=='SSN')         $fsel='selected';
+                                if (OSDstrtoupper(mysql_field_name($rslt, $i))=='POSTAL_CODE'  and OSDstrtoupper($row[$j])=='BALANCE')     $fsel='selected';
+                                if (OSDstrtoupper(mysql_field_name($rslt, $i))=='ALT_PHONE'    and OSDstrtoupper($row[$j])=='PHONE2')      $fsel='selected';
+                                if (OSDstrtoupper(mysql_field_name($rslt, $i))=='EXTERNAL_KEY' and OSDstrtoupper($row[$j])=='ACCOUNTID')   $fsel='selected';
                             } else {
-                                if (strtoupper(mysql_field_name($rslt, $i))==strtoupper($row[$j])) $fsel='selected';
+                                if (OSDstrtoupper(mysql_field_name($rslt, $i))==OSDstrtoupper($row[$j])) $fsel='selected';
                             }
 						    echo "        <option value='$j' $fsel>\"$row[$j]\"</option>\n";
 					    }
@@ -924,7 +924,7 @@ if ($ADD==122) {
                     foreach ($afmaps as $k => $v) {
 					    echo "  <tr class=\"row font1\" " . bgcolor($o) . ">\n";
 					    echo "    <td align=left>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-                        echo preg_replace("/_/", "&nbsp;", strtoupper($v));
+                        echo OSDpreg_replace("/_/", "&nbsp;", OSDstrtoupper($v));
                         if ($v=='AFFAP_AFFAP1') {
                             echo "&nbsp;(phone&nbsp;number&nbsp;4)";
                         } elseif ($v=='AFFAP_AFFAP2') {
@@ -950,16 +950,16 @@ if ($ADD==122) {
                         echo "      <select name='$k'>\n";
 					    echo "        <option value='-1'>(none)</option>\n";
 					    for ($j=0; $j<count($row); $j++) {
-					        preg_replace("/\"/", "", $row[$j]);
+					        OSDpreg_replace("/\"/", "", $row[$j]);
                             $fsel='';
                             if ($VARclient=='CFGA') {
-                                if (strtoupper($v)=='AFFAP_AFFAP1' and strtoupper($row[$j])=='PHONE4') $fsel='selected';
-                                if (strtoupper($v)=='AFFAP_AFFAP2' and strtoupper($row[$j])=='PHONE5') $fsel='selected';
-                                if (strtoupper($v)=='AFFAP_AFFAP3' and strtoupper($row[$j])=='PHONE6') $fsel='selected';
-                                if (strtoupper($v)=='AFFAP_AFFAP4' and strtoupper($row[$j])=='PHONE7') $fsel='selected';
-                                if (strtoupper($v)=='AFFAP_AFFAP5' and strtoupper($row[$j])=='PHONE8') $fsel='selected';
+                                if (OSDstrtoupper($v)=='AFFAP_AFFAP1' and OSDstrtoupper($row[$j])=='PHONE4') $fsel='selected';
+                                if (OSDstrtoupper($v)=='AFFAP_AFFAP2' and OSDstrtoupper($row[$j])=='PHONE5') $fsel='selected';
+                                if (OSDstrtoupper($v)=='AFFAP_AFFAP3' and OSDstrtoupper($row[$j])=='PHONE6') $fsel='selected';
+                                if (OSDstrtoupper($v)=='AFFAP_AFFAP4' and OSDstrtoupper($row[$j])=='PHONE7') $fsel='selected';
+                                if (OSDstrtoupper($v)=='AFFAP_AFFAP5' and OSDstrtoupper($row[$j])=='PHONE8') $fsel='selected';
                             } else {
-                                if (strtoupper($v)==strtoupper($row[$j])) $fsel='selected';
+                                if (OSDstrtoupper($v)==OSDstrtoupper($row[$j])) $fsel='selected';
                             }
 					        echo "        <option value='$j' $fsel>\"$row[$j]\"</option>\n";
 					    }

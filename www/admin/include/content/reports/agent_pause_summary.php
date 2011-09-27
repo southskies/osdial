@@ -64,15 +64,15 @@ function report_agent_pause_summary() {
     }
     $groupIN = rtrim($groupIN,',');
     $groupSQL = sprintf("AND campaign_id IN %s",$LOG['allowed_campaignsSQL']);
-    if (!preg_match('/--ALL--/',$group_string) and $group_ct > 0) {
+    if (!OSDpreg_match('/--ALL--/',$group_string) and $group_ct > 0) {
         $groupSQL = sprintf("%s AND campaign_id IN(%s)",$groupSQL,$groupIN);
     }
 
     $company_prefix = "";
     if ($LOG['multicomp_user'] > 0) {
         $company_prefix = $LOG['company_prefix'];
-        if (substr($agent,0,3) == $LOG['company_prefix']) {
-            $agent = substr($agent,3);
+        if (OSDsubstr($agent,0,3) == $LOG['company_prefix']) {
+            $agent = OSDsubstr($agent,3);
         }
     }
 
@@ -98,7 +98,7 @@ function report_agent_pause_summary() {
     if ($agent) {
         $agentSQL = sprintf("AND osdial_agent_log.user='%s'", $company_prefix . mres($agent));
 
-        $stmt=sprintf("SELECT full_name,user_group FROM osdial_users WHERE user_group IN %s AND user='%s';",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent));
+        $stmt=sprintf("SELECT full_name,user_group FROM osdial_users WHERE user_group IN %s AND user='%s';",$LOG['allowed_usergroupsSQL'],mre($company_prefix.$agent));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         $full_name = $row[0];
@@ -138,7 +138,7 @@ function report_agent_pause_summary() {
     $head .= "    <td><input type=text name=agent value=\"$agent\" size=10 maxsize=10></td>\n";
     $head .= "    <td rowspan=2>\n";
     $head .= "      <select size=5 name=group[] multiple>\n";
-    if  (preg_match("/--ALL--/",$group_string)) {
+    if  (OSDpreg_match("/--ALL--/",$group_string)) {
         $head .= "        <option value=\"--ALL--\" selected>-- ALL CAMPAIGNS --</option>\n";
     } else {
         $head .= "        <option value=\"--ALL--\">-- ALL CAMPAIGNS --</option>\n";
@@ -146,7 +146,7 @@ function report_agent_pause_summary() {
     $o=0;
     while ($camps_to_print > $o) {
         $gsel='';
-        if (preg_match("/$groups[$o]\|/",$group_string)) {
+        if (OSDpreg_match("/$groups[$o]\|/",$group_string)) {
             $gsel='selected';
         }
         $head .= "        <option $gsel value=\"$groups[$o]\">" . mclabel($groups[$o]) . ": $group_names[$o]</option>\n";
@@ -162,7 +162,7 @@ function report_agent_pause_summary() {
     $head .= "</form>\n";
     $head .= "<div id=\"caldiv1\" style=\"position:absolute;visibility:hidden;background-color:white;\"></div>\n";
     
-    if (!$LOGview_reports) {
+    if (!$LOG['view_reports']) {
         $table .= "<center><font color=red>You do not have permission to view this page</font></center>\n";
     } elseif ($submit) {
 

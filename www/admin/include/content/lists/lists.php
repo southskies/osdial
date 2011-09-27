@@ -29,7 +29,7 @@
 ######################
 
 if ($ADD==111) {
-	if ($LOGmodify_lists==1)	{
+	if ($LOG['modify_lists']==1)	{
 		echo "<center><br><font color=$default_text size=4>ADD A NEW LIST</font><form action=$PHP_SELF method=POST><br></center>\n";
 		echo "<input type=hidden name=ADD value=211>\n";
 		echo "<table width=$section_width bgcolor=$oddrows align=center cellspacing=3>\n";
@@ -38,7 +38,7 @@ if ($ADD==111) {
 		echo "  <tr bgcolor=$oddrows><td align=right>List Description: </td><td align=left><input type=text name=list_description size=30 maxlength=255>$NWB#osdial_lists-list_description$NWE</td></tr>\n";
 		echo "  <tr bgcolor=$oddrows><td align=right>Campaign: </td><td align=left><select size=1 name=campaign_id>\n";
 		
-			$stmt=sprintf("SELECT campaign_id,campaign_name from osdial_campaigns where campaign_id IN %s order by campaign_id",$LOG['allowed_campaignsSQL']);
+			$stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE campaign_id IN %s ORDER BY campaign_id;",$LOG['allowed_campaignsSQL']);
 			$rslt=mysql_query($stmt, $link);
 			$campaigns_to_print = mysql_num_rows($rslt);
 			$campaigns_list='';
@@ -67,7 +67,7 @@ if ($ADD==111) {
 # ADD=125 generates test leads to test campaign
 ######################
 if ($ADD==125) {
-	if ($LOGmodify_lists==1)	{
+	if ($LOG['modify_lists']==1)	{
 		echo "<center><br><font color=$default_text size='2'>GENERATE TEST LEADS</font><br>(ONLY works with TEST list 998.)<form action=$PHP_SELF method=POST><br><br>\n";
 		echo "<input type=hidden name=ADD value=126>\n";
 		echo "<TABLE width=$section_width cellspacing=3>\n";
@@ -85,7 +85,7 @@ if ($ADD==125) {
 # ADD=126 generates test leads to test campaign
 ######################
 if ($ADD==126) {
-	if ($LOGmodify_lists==1)	{
+	if ($LOG['modify_lists']==1)	{
         echo "<TABLE align=center>";
         echo "	<tr>";
         echo "		<td>";
@@ -110,15 +110,15 @@ if ($ADD==126) {
 ######################
 
 if ($ADD==211) {
-	if ($LOGmodify_lists==1)	{
-        $stmt="SELECT count(*) from osdial_lists where list_id='$list_id';";
+	if ($LOG['modify_lists']==1)	{
+        $stmt=sprintf("SELECT count(*) FROM osdial_lists WHERE list_id='%s';",mres($list_id));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         if ($row[0] > 0) {
             echo "<br><font color=red>LIST NOT ADDED - there is already a list in the system with this ID</font>\n";
             $ADD=100;
         } else {
-            if ( (strlen($campaign_id) < 2) or (strlen($list_name) < 2)  or ($list_id < 100) or (strlen($list_id) > 12) ) {
+            if ( (OSDstrlen($campaign_id) < 2) or (OSDstrlen($list_name) < 2)  or ($list_id < 100) or (OSDstrlen($list_id) > 12) ) {
                 echo "<br><font color=red>LIST NOT ADDED - Please go back and look at the data you entered\n";
                 echo "<br>List ID must be between 2 and 12 characters in length\n";
                 echo "<br>List name must be at least 2 characters in length\n";
@@ -127,7 +127,7 @@ if ($ADD==211) {
             } else {
                 echo "<br><B><font color=$default_text>LIST ADDED: $list_id</font></B>\n";
 
-                $stmt="INSERT INTO osdial_lists (list_id,list_name,campaign_id,active,list_description,list_changedate) values('$list_id','$list_name','$campaign_id','$active','$list_description','$SQLdate');";
+                $stmt=sprintf("INSERT INTO osdial_lists (list_id,list_name,campaign_id,active,list_description,list_changedate) VALUES('%s','%s','%s','%s','%s','%s');",mres($list_id),mres($list_name),mres($campaign_id),mres($active),mres($list_description),mres($SQLdate));
                 $rslt=mysql_query($stmt, $link);
 
                 ### LOG CHANGES TO LOG FILE ###
@@ -150,19 +150,19 @@ if ($ADD==211) {
 ######################
 
 if ($ADD==411) {
-    if ($LOGmodify_lists==1) {
-        if ( (strlen($list_name) < 2) or (strlen($campaign_id) < 2) ) {
+    if ($LOG['modify_lists']==1) {
+        if ( (OSDstrlen($list_name) < 2) or (OSDstrlen($campaign_id) < 2) ) {
             echo "<br><font color=red>LIST NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>list name must be at least 2 characters in length</font><br>\n";
         } else {
             echo "<br><B><font color=$default_text>LIST MODIFIED: $list_id</font></B>\n";
 
-            $stmt="UPDATE osdial_lists set list_name='$list_name',campaign_id='$campaign_id',active='$active',list_description='$list_description',list_changedate='$SQLdate',scrub_dnc='$scrub_dnc',cost='$cost',web_form_address='" . mres($web_form_address) . "',web_form_address2='" . mres($web_form_address2) . "',list_script='" . mres($script_id) . "' where list_id='$list_id';";
+            $stmt=sprintf("UPDATE osdial_lists SET list_name='%s',campaign_id='%s',active='%s',list_description='%s',list_changedate='%s',scrub_dnc='%s',cost='%s',web_form_address='%s',web_form_address2='%s',list_script='%s' WHERE list_id='%s';",mres($list_name),mres($campaign_id),mres($active),mres($list_description),mres($SQLdate),mres($scrub_dnc),mres($cost),mres($web_form_address),mres($web_form_address2),mres($script_id),mres($list_id));
             $rslt=mysql_query($stmt, $link);
 
             if ($reset_list == 'Y') {
                 echo "<br><font color=$default_text>RESETTING LIST-CALLED-STATUS</font>\n";
-                $stmt="UPDATE osdial_list set called_since_last_reset='N' where list_id='$list_id';";
+                $stmt=sprintf("UPDATE osdial_list SET called_since_last_reset='N' WHERE list_id='%s';",mres($list_id));
                 $rslt=mysql_query($stmt, $link);
 
                 ### LOG RESET TO LOG FILE ###
@@ -174,7 +174,7 @@ if ($ADD==411) {
             }
             if ($campaign_id != "$old_campaign_id") {
                 echo "<br><font color=$default_text>REMOVING LIST HOPPER LEADS FROM OLD CAMPAIGN HOPPER ($old_campaign_id)</font>\n";
-                $stmt="DELETE from osdial_hopper where list_id='$list_id' and campaign_id='$old_campaign_id';";
+                $stmt=sprintf("DELETE FROM osdial_hopper WHERE list_id='%s' AND campaign_id='%s';",mres($list_id),mres($old_campaign_id));
                 $rslt=mysql_query($stmt, $link);
             }
 
@@ -197,8 +197,8 @@ if ($ADD==411) {
 ######################
 
 if ($ADD==511) {
-    if ($LOGmodify_lists==1) {
-        if ( (strlen($list_id) < 2) or ($LOGdelete_lists < 1) ) {
+    if ($LOG['modify_lists']==1) {
+        if ( (OSDstrlen($list_id) < 2) or ($LOG['delete_lists'] < 1) ) {
             echo "<br><font color=red>LIST NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>List_id be at least 2 characters in length</font>\n";
         } else {
@@ -221,21 +221,21 @@ if ($ADD==511) {
 ######################
 
 if ($ADD==611) {
-    if ($LOGmodify_lists==1) {
-        if ( ( strlen($list_id) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_lists < 1) ) {
+    if ($LOG['modify_lists']==1) {
+        if ( ( OSDstrlen($list_id) < 2) or ($CoNfIrM != 'YES') or ($LOG['delete_lists'] < 1) ) {
             echo "<br><font color=red>LIST NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>List_id be at least 2 characters in length</font><br>\n";
         } else {
-            $stmt="DELETE from osdial_lists where list_id='$list_id' limit 1;";
+            $stmt=sprintf("DELETE FROM osdial_lists WHERE list_id='%s' LIMIT 1;",mres($list_id));
             $rslt=mysql_query($stmt, $link);
 
             echo "<br><font color=$default_text>REMOVING LIST HOPPER LEADS FROM OLD CAMPAIGN HOPPER ($list_id)</font>\n";
-            $stmt="DELETE from osdial_hopper where list_id='$list_id';";
+            $stmt=sprintf("DELETE FROM osdial_hopper WHERE list_id='%s';",mres($list_id));
             $rslt=mysql_query($stmt, $link);
 
             if ($SUB==1) {
                 echo "<br><font color=$default_text>REMOVING LIST LEADS FROM $t1 TABLE</font>\n";
-                $stmt="DELETE from osdial_list where list_id='$list_id';";
+                $stmt=sprintf("DELETE FROM osdial_list WHERE list_id='%s';",mres($list_id));
                 $rslt=mysql_query($stmt, $link);
             }
 
@@ -259,8 +259,8 @@ if ($ADD==611) {
 ######################
 
 if ($ADD==311) {
-    if ($LOGmodify_lists==1) {
-        $stmt="SELECT * from osdial_lists where list_id='$list_id';";
+    if ($LOG['modify_lists']==1) {
+        $stmt=sprintf("SELECT * FROM osdial_lists WHERE list_id='%s';",mres($list_id));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         $campaign_id = $row[2];
@@ -277,7 +277,7 @@ if ($ADD==311) {
         $script_id = $row[13];
 
         # grab names of global statuses and statuses in the selected campaign
-        $stmt="SELECT * from osdial_statuses order by status";
+        $stmt="SELECT * FROM osdial_statuses ORDER BY status;";
         $rslt=mysql_query($stmt, $link);
         $statuses_to_print = mysql_num_rows($rslt);
 
@@ -288,7 +288,7 @@ if ($ADD==311) {
             $o++;
         }
 
-        $stmt="SELECT * from osdial_campaign_statuses where campaign_id='$campaign_id' order by status";
+        $stmt=sprintf("SELECT * FROM osdial_campaign_statuses WHERE campaign_id='%s' ORDER BY status;",mres($campaign_id));
         $rslt=mysql_query($stmt, $link);
         $Cstatuses_to_print = mysql_num_rows($rslt);
 
@@ -317,7 +317,7 @@ if ($ADD==311) {
         echo "<tr bgcolor=$oddrows><td align=right>Per-Lead Cost: </td><td align=left><input type=text name=cost size=10 maxlength=10 value=\"" . sprintf('%3.4f',$cost) . "\">$NWB#osdial_lists-cost$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right><a href=\"$PHP_SELF?ADD=34&campaign_id=$campaign_id\">Campaign</a>: </td><td align=left><select size=1 name=campaign_id>\n";
 
-        $stmt=sprintf("SELECT campaign_id,campaign_name from osdial_campaigns where campaign_id IN %s order by campaign_id", $LOG['allowed_campaignsSQL']);
+        $stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE campaign_id IN %s ORDER BY campaign_id;", $LOG['allowed_campaignsSQL']);
         $rslt=mysql_query($stmt, $link);
         $campaigns_to_print = mysql_num_rows($rslt);
         $campaigns_list='';
@@ -369,7 +369,7 @@ if ($ADD==311) {
         $leads_in_list = 0;
         $leads_in_list_N = 0;
         $leads_in_list_Y = 0;
-        $stmt="SELECT status,called_since_last_reset,count(*) from osdial_list where list_id='$list_id' group by status,called_since_last_reset order by status,called_since_last_reset";
+        $stmt=sprintf("SELECT status,called_since_last_reset,count(*) FROM osdial_list WHERE list_id='%s' GROUP BY status,called_since_last_reset ORDER BY status,called_since_last_reset;",mres($list_id));
         if ($DB) echo "$stmt\n";
         $rslt=mysql_query($stmt, $link);
         $statuses_to_print = mysql_num_rows($rslt);
@@ -443,7 +443,7 @@ if ($ADD==311) {
         echo "    <td align=center>NOT CALLED</td>\n";
         echo "  </tr>\n";
 
-        $stmt="SELECT gmt_offset_now,called_since_last_reset,count(*) from osdial_list where list_id='$list_id' group by gmt_offset_now,called_since_last_reset order by gmt_offset_now,called_since_last_reset";
+        $stmt=sprintf("SELECT gmt_offset_now,called_since_last_reset,count(*) FROM osdial_list WHERE list_id='%s' GROUP BY gmt_offset_now,called_since_last_reset ORDER BY gmt_offset_now,called_since_last_reset;",mres($list_id));
         $rslt=mysql_query($stmt, $link);
         $statuses_to_print = mysql_num_rows($rslt);
 
@@ -516,7 +516,7 @@ if ($ADD==311) {
         $leads_in_list_N = 0;
         $leads_in_list_Y = 0;
         $max_col_grouping = "if(called_count>" . ($count_cols - 1) . "," . $count_cols . ",called_count)";
-        $stmt="SELECT status,$max_col_grouping,count(*) from osdial_list where list_id='$list_id' group by status,$max_col_grouping order by status,called_count";
+        $stmt=sprintf("SELECT status,%s,count(*) FROM osdial_list WHERE list_id='%s' GROUP BY status,%s ORDER BY status,called_count;",$max_col_grouping,mres($list_id),$max_col_grouping);
         $rslt=mysql_query($stmt, $link);
         $status_called_to_print = mysql_num_rows($rslt);
 
@@ -541,7 +541,7 @@ if ($ADD==311) {
             $count_count[$o]			= "$rowx[2]";
             $all_called_count[$rowx[1]] = ($all_called_count[$rowx[1]] + $rowx[2]);
 
-            if ( (strlen($status[$sts]) < 1) or ($status[$sts] != "$rowx[0]") ) {
+            if ( (OSDstrlen($status[$sts]) < 1) or ($status[$sts] != "$rowx[0]") ) {
                 if ($first_row) {
                     $first_row=0;
                 } else {
@@ -572,9 +572,9 @@ if ($ADD==311) {
         while ($first <= $all_called_last) {
             $flabel = $first;
             if ($first == 30) $flabel = "30+";
-            if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $flabel;
-            if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $flabel;
-            if (strlen($flabel) == 3) $flabel = '&nbsp;' . $flabel;
+            if (OSDstrlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $flabel;
+            if (OSDstrlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $flabel;
+            if (OSDstrlen($flabel) == 3) $flabel = '&nbsp;' . $flabel;
             echo "    <td style=\"cursor:crosshair;\" align=right>$flabel</td>";
             $first++;
         }
@@ -601,9 +601,9 @@ if ($ADD==311) {
                         if ($count_count[$o] != 1) $lplural = 's';
                         if ($first != 1) $fplural = 's';
                         $clabel = $count_count[$o];
-                        if (strlen($clabel) == 1) $clabel = '&nbsp;&nbsp;&nbsp;' . $count_count[$o];
-                        if (strlen($clabel) == 2) $clabel = '&nbsp;&nbsp;' . $count_count[$o];
-                        if (strlen($clabel) == 3) $clabel = '&nbsp;' . $count_count[$o];
+                        if (OSDstrlen($clabel) == 1) $clabel = '&nbsp;&nbsp;&nbsp;' . $count_count[$o];
+                        if (OSDstrlen($clabel) == 2) $clabel = '&nbsp;&nbsp;' . $count_count[$o];
+                        if (OSDstrlen($clabel) == 3) $clabel = '&nbsp;' . $count_count[$o];
                         echo "    <td style=\"cursor:crosshair;\" class=hover align=right title=\"$count_count[$o] Lead$lplural, Called $first Time$fplural, Last Dispositioned as '$Pstatus'\">$clabel</td>\n";
                         $called_printed++;
                     }
@@ -624,9 +624,9 @@ if ($ADD==311) {
         while ($first <= $all_called_last) {
             if ($all_called_count[$first] == 0 or $all_called_count[$first] == '') $all_called_count[$first] = '0';
             $flabel = $all_called_count[$first];
-            if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $all_called_count[$first];
-            if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $all_called_count[$first];
-            if (strlen($flabel) == 3) $flabel = '&nbsp;' . $all_called_count[$first];
+            if (OSDstrlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $all_called_count[$first];
+            if (OSDstrlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $all_called_count[$first];
+            if (OSDstrlen($flabel) == 3) $flabel = '&nbsp;' . $all_called_count[$first];
             echo "    <td style=\"cursor:crosshair;\" align=right class=right title=\"$first Lead Count Total: $all_called_count[$first] Leads\">$flabel</td>";
             $first++;
         }
@@ -640,7 +640,7 @@ if ($ADD==311) {
         $leads_in_list_N = 0;
         $leads_in_list_Y = 0;
         $max_col_grouping = "if(cnt>" . ($count_cols - 1) . "," . $count_cols . ",cnt)";
-        $stmt="SELECT stat,$max_col_grouping,count(*) FROM (select osdial_log.status AS stat,count(*) AS cnt from osdial_list JOIN osdial_log ON (osdial_list.lead_id=osdial_log.lead_id) where osdial_list.list_id='$list_id' group by osdial_log.lead_id,osdial_log.status,osdial_log.lead_id order by osdial_log.status,count(*)) AS t1 group by $max_col_grouping,stat order by stat,$max_col_grouping;";
+        $stmt=sprintf("SELECT stat,%s,count(*) FROM (select osdial_log.status AS stat,count(*) AS cnt FROM osdial_list JOIN osdial_log ON (osdial_list.lead_id=osdial_log.lead_id) WHERE osdial_list.list_id='%s' group by osdial_log.lead_id,osdial_log.status,osdial_log.lead_id ORDER BY osdial_log.status,count(*)) AS t1 GROUP BY %s,stat ORDER BY stat,%s;",$max_col_grouping,mres($list_id),$max_col_grouping,$max_col_grouping);
         $rslt=mysql_query($stmt, $link);
         $status_called_to_print = mysql_num_rows($rslt);
 
@@ -665,7 +665,7 @@ if ($ADD==311) {
             $count_count[$o]			= "$rowx[2]";
             $all_called_count[$rowx[1]] = ($all_called_count[$rowx[1]] + $rowx[2]);
 
-            if ( (strlen($status[$sts]) < 1) or ($status[$sts] != "$rowx[0]") ) {
+            if ( (OSDstrlen($status[$sts]) < 1) or ($status[$sts] != "$rowx[0]") ) {
                 if ($first_row) {
                     $first_row=0;
                 } else {
@@ -698,9 +698,9 @@ if ($ADD==311) {
         while ($first <= $all_called_last) {
             $flabel = $first;
             if ($first == 30) $flabel = "30+";
-            if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $flabel;
-            if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $flabel;
-            if (strlen($flabel) == 3) $flabel = '&nbsp;' . $flabel;
+            if (OSDstrlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $flabel;
+            if (OSDstrlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $flabel;
+            if (OSDstrlen($flabel) == 3) $flabel = '&nbsp;' . $flabel;
             echo "    <td style=\"cursor:crosshair;\" align=right>$flabel</td>";
             $first++;
         }
@@ -728,9 +728,9 @@ if ($ADD==311) {
                         if ($count_count[$o] != 1) $lplural = 's, Each';
                         if ($first != 1) $fplural = 's';
                         $clabel = $count_count[$o];
-                        if (strlen($clabel) == 1) $clabel = '&nbsp;&nbsp;&nbsp;' . $count_count[$o];
-                        if (strlen($clabel) == 2) $clabel = '&nbsp;&nbsp;' . $count_count[$o];
-                        if (strlen($clabel) == 3) $clabel = '&nbsp;' . $count_count[$o];
+                        if (OSDstrlen($clabel) == 1) $clabel = '&nbsp;&nbsp;&nbsp;' . $count_count[$o];
+                        if (OSDstrlen($clabel) == 2) $clabel = '&nbsp;&nbsp;' . $count_count[$o];
+                        if (OSDstrlen($clabel) == 3) $clabel = '&nbsp;' . $count_count[$o];
                         echo "    <td style=\"cursor:crosshair;\" class=hover align=right title=\"$count_count[$o] Lead$lplural Dispositioned as '$Pstatus' $first Time$fplural\">$clabel</td>\n";
                         $called_printed++;
                     }
@@ -750,9 +750,9 @@ if ($ADD==311) {
         while ($first <= $all_called_last) {
             if ($all_called_count[$first] == 0 or $all_called_count[$first] == '') $all_called_count[$first] = '0';
             $flabel = $all_called_count[$first];
-            if (strlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $all_called_count[$first];
-            if (strlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $all_called_count[$first];
-            if (strlen($flabel) == 3) $flabel = '&nbsp;' . $all_called_count[$first];
+            if (OSDstrlen($flabel) == 1) $flabel = '&nbsp;&nbsp;&nbsp;' . $all_called_count[$first];
+            if (OSDstrlen($flabel) == 2) $flabel = '&nbsp;&nbsp;' . $all_called_count[$first];
+            if (OSDstrlen($flabel) == 3) $flabel = '&nbsp;' . $all_called_count[$first];
             echo "    <td style=\"cursor:crosshair;\" align=right class=right title=\"$first Attempt Total: $all_called_count[$first] Calls\">$flabel</td>";
             $first++;
         }
@@ -769,7 +769,7 @@ if ($ADD==311) {
         echo "<br><br><a href=\"$PHP_SELF?ADD=811&list_id=$list_id\">Click here to see all CallBack Holds in this list</a><BR><BR>\n";
         echo "</center>\n";
 	
-        if ($LOGdelete_lists > 0) {
+        if ($LOG['delete_lists'] > 0) {
             echo "<br><br><a href=\"$PHP_SELF?ADD=511&list_id=$list_id\">DELETE THIS LIST</a>\n";
             echo "<br><br><a href=\"$PHP_SELF?ADD=511&SUB=1&list_id=$list_id\">DELETE THIS LIST AND ITS LEADS</a> (WARNING: Will damage call-backs made in this list!)\n";
         }
@@ -783,14 +783,14 @@ if ($ADD==311) {
 # ADD=811 find all callbacks on hold within a List
 ######################
 if ($ADD==811) {
-	if ($LOGmodify_lists==1) {
+	if ($LOG['modify_lists']==1) {
 		if ($SUB==89) {
-		    $stmt="UPDATE osdial_callbacks SET status='INACTIVE' where list_id='$list_id' and status='LIVE' and callback_time < '$past_month_date';";
+		    $stmt=sprintf("UPDATE osdial_callbacks SET status='INACTIVE' WHERE list_id='%s' AND status='LIVE' AND callback_time<'%s';",mres($list_id),mres($past_month_date));
 		    $rslt=mysql_query($stmt, $link);
 		    echo "<br>list($list_id) callback listings LIVE for more than one month have been made INACTIVE\n";
 		}
 		if ($SUB==899) {
-		    $stmt="UPDATE osdial_callbacks SET status='INACTIVE' where list_id='$list_id' and status='LIVE' and callback_time < '$past_week_date';";
+		    $stmt=sprintf("UPDATE osdial_callbacks SET status='INACTIVE' WHERE list_id='%s' AND status='LIVE' AND callback_time<'%s';",mres($list_id),mres($past_week_date));
 		    $rslt=mysql_query($stmt, $link);
 		    echo "<br>list($list_id) callback listings LIVE for more than one week have been made INACTIVE\n";
 		}
@@ -814,11 +814,11 @@ if ($ADD==82) {
     $GROUPlink='stage=GROUPDOWN';
     $ENDATElink='stage=ENDATEDOWN';
     $SQLorder='order by ';
-    if (preg_match("/USERIDDOWN/",$stage)) {$SQLorder='order by user desc,';   $USERlink='stage=USERIDUP';}
-    if (preg_match("/GROUPDOWN/",$stage)) {$SQLorder='order by user_group desc,';   $NAMElink='stage=NAMEUP';}
-    if (preg_match("/ENDATEDOWN/",$stage)) {$SQLorder='order by entry_time desc,';   $LEVELlink='stage=LEVELUP';}
+    if (OSDpreg_match("/USERIDDOWN/",$stage)) {$SQLorder='order by user desc,';   $USERlink='stage=USERIDUP';}
+    if (OSDpreg_match("/GROUPDOWN/",$stage)) {$SQLorder='order by user_group desc,';   $NAMElink='stage=NAMEUP';}
+    if (OSDpreg_match("/ENDATEDOWN/",$stage)) {$SQLorder='order by entry_time desc,';   $LEVELlink='stage=LEVELUP';}
 
-    $stmt="SELECT * from osdial_callbacks where status IN('ACTIVE','LIVE') $CBquerySQLwhere $SQLorder recipient,status desc,callback_time";
+    $stmt="SELECT * FROM osdial_callbacks WHERE status IN('ACTIVE','LIVE') $CBquerySQLwhere $SQLorder recipient,status DESC,callback_time;";
     $rslt=mysql_query($stmt, $link);
     $cb_to_print = mysql_num_rows($rslt);
 
@@ -927,7 +927,7 @@ if ($ADD==100) {
             echo "    <td align=center>$row[3]</td>\n";
             #echo "    <td>$row[7]</td>\n";
             echo "    <td colspan=3 align=center><a href=\"$PHP_SELF?ADD=311&list_id=$row[0]\">MODIFY</a>";
-            if ($LOGuser_leve > 8) {
+            if ($LOG['user_level'] > 8) {
                 echo " | <a href=\"$PHP_SELF?ADD=131&list_id=$row[0]\">EXPORT</a>";
             }
             echo " | <a href=\"$PHP_SELF?ADD=122&list_id_override=$row[0]\">ADD LEADS</a></td>\n";

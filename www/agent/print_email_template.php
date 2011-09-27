@@ -31,18 +31,17 @@ echo "  <title>Email Template Print</title>\n";
 echo "</head>\n";
 echo "<body bgcolor=white>\n";
 
-require("dbconnect.php");
-require('functions.php');
+require_once("dbconnect.php");
+require_once('functions.php');
 
 $user = get_variable('user');
 $pass = get_variable('pass');
 $et_id = get_variable('et_id');
 $lead_id = get_variable('lead_id');
 
-$user=preg_replace("/[^0-9a-zA-Z]/","",$user);
-$pass=preg_replace("/[^0-9a-zA-Z]/","",$pass);
+#$user=OSDpreg_replace("/[^0-9a-zA-Z]/","",$user);
+#$pass=OSDpreg_replace("/[^0-9a-zA-Z]/","",$pass);
 
-$stmt="SELECT count(*) FROM osdial_users WHERE user='$user' AND pass='$pass' AND user_level>0;";
 $auth = get_first_record($link, 'osdial_users', 'count(*) AS count', sprintf("user='%s' AND pass='%s'",mres($user),mres($pass)));
 if ($auth['count'] == 0) {
     echo "Invalid Username/Password: |$user|$pass|\n";
@@ -51,21 +50,21 @@ if ($auth['count'] == 0) {
 
 sleep(2);
 
-$et = get_first_record($link, 'osdial_email_templates', '*', "et_id='" . $et_id . "'");
-$lead = get_first_record($link, 'osdial_list', '*', "lead_id='" . $lead_id . "'");
+$et = get_first_record($link, 'osdial_email_templates', '*', sprintf("et_id='%s'",mres($et_id)) );
+$lead = get_first_record($link, 'osdial_list', '*', sprintf("lead_id='%s'",mres($lead_id)) );
 
 $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
 foreach ($forms as $form) {
-    $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
+    $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', sprintf("deleted='0' AND form_id='%s'",mres($form['id'])) );
     foreach ($fields as $field) {
-        $vdlf = get_first_record($link, 'osdial_list_fields', '*', "lead_id='" . $lead_id . "' AND field_id='" . $field['id'] . "'");
+        $vdlf = get_first_record($link, 'osdial_list_fields', '*', sprintf("lead_id='%s' AND field_id='%s'",mres($lead_id),mres($field['id'])) );
         if ($vdlf['value'] != '') $lead[$form['name'] . '_' . $field['name']] = $vdlf['value'];
     }
 }
 
 foreach ($lead as $k => $v) {
-    $et['et_body_html'] = preg_replace('/\[\[' . $k . '\]\]/imU', $v, $et['et_body_html']);
-    $et['et_body_text'] = preg_replace('/\[\[' . $k . '\]\]/imU', $v, $et['et_body_text']);
+    $et['et_body_html'] = OSDpreg_replace('/\[\[' . $k . '\]\]/imU', $v, $et['et_body_html']);
+    $et['et_body_text'] = OSDpreg_replace('/\[\[' . $k . '\]\]/imU', $v, $et['et_body_text']);
 }
 
 echo $et['et_body_html'] . "\n\n";

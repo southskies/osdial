@@ -217,8 +217,8 @@ header('Expires: '.gmdate('D, d M Y H:i:s', (time() - 60)).' GMT');
 header('Pragma: no-cache');
 header('Content-Type: text/html; charset=utf-8');
 
-require("dbconnect.php");
-require('functions.php');
+require_once("dbconnect.php");
+require_once('functions.php');
 
 $DB=get_variable("DB");
 $phone_login=get_variable("phone_login");
@@ -228,22 +228,22 @@ $VD_pass=get_variable("VD_pass");
 $VD_campaign=get_variable("VD_campaign");
 $relogin=get_variable("relogin");
 
-if ($phone_login=='') $phone_login=get_variable("pl");
-if ($phone_pass=='') $phone_pass=get_variable("pp");
-if ($VD_campaign!='') $VD_campaign = preg_replace('/ /','',strtoupper($VD_campaign));
+if (empty($phone_login)) $phone_login=get_variable("pl");
+if (empty($phone_pass)) $phone_pass=get_variable("pp");
+if (!empty($VD_campaign)) $VD_campaign = OSDpreg_replace('/ /','',OSDstrtoupper($VD_campaign));
 
-if ($flag_channels=='') {
+if (empty($flag_channels)) {
     $flag_channels=0;
     $flag_string='';
 }
 
 ### security strip all non-alphanumeric characters out of the variables ###
-$DB=preg_replace('[^0-9a-z]','',$DB);
-$phone_login=preg_replace('[^0-9a-zA-Z]','',$phone_login);
-$phone_pass=preg_replace('[^0-9a-zA-Z]','',$phone_pass);
-$VD_login=preg_replace('[^0-9a-zA-Z]','',$VD_login);
-$VD_pass=preg_replace('[^0-9a-zA-Z]','',$VD_pass);
-$VD_campaign=preg_replace('[^0-9a-zA-Z_]','',$VD_campaign);
+$DB=OSDpreg_replace('[^0-9a-z]','',$DB);
+#$phone_login=OSDpreg_replace('[^0-9a-zA-Z]','',$phone_login);
+#$phone_pass=OSDpreg_replace('[^0-9a-zA-Z]','',$phone_pass);
+#$VD_login=OSDpreg_replace('[^0-9a-zA-Z]','',$VD_login);
+#$VD_pass=OSDpreg_replace('[^0-9a-zA-Z]','',$VD_pass);
+#$VD_campaign=OSDpreg_replace('[^0-9a-zA-Z_]','',$VD_campaign);
 
 
 $forever_stop=0;
@@ -264,30 +264,11 @@ $past_month_date = date("Y-m-d H:i:s",$month_old);
 
 $random = (rand(1000000, 9999999) + 10000000);
 
-$multicomp=0;
-
-#############################################
-##### START SYSTEM_SETTINGS LOOKUP #####
-$stmt = "SELECT use_non_latin,agent_template,enable_multicompany,intra_server_protocol FROM system_settings;";
-$rslt=mysql_query($stmt, $link);
-if ($DB) echo "$stmt\n";
-$qm_conf_ct = mysql_num_rows($rslt);
-$i=0;
-while ($i < $qm_conf_ct) {
-    $row=mysql_fetch_row($rslt);
-    $non_latin =        $row[0];
-    $agent_template =   $row[1];
-    $multicomp =        $row[2];
-    $isp='*';
-    if ($row[3]=='IAX2') $isp='#';
-    $i++;
-}
-if (empty($agent_template)) $agent_template='default';
-##### END SETTINGS LOOKUP #####
-###########################################
+if (empty($config['settings']['agent_template'])) $config['settings']['agent_template']='default';
+if (empty($config['settings']['enable_multicompany'])) $config['settings']['enable_multicompany']=0;
 
 require("templates/default/display.php");
-include("templates/" . $agent_template . "/display.php");
+include("templates/" . $config['settings']['agent_template'] . "/display.php");
 
 
 $conf_silent_prefix     = '7';  # osdial_conferences prefix to enter silently
@@ -354,7 +335,7 @@ $browser = getenv("HTTP_USER_AGENT");
 $script_name = getenv("SCRIPT_NAME");
 $server_name = getenv("SERVER_NAME");
 $server_port = getenv("SERVER_PORT");
-if (preg_match('/443/',$server_port)) {
+if (OSDpreg_match('/443/',$server_port)) {
     $HTTPprotocol = 'https://';
 } else {
     $HTTPprotocol = 'http://';
@@ -364,9 +345,9 @@ if ($server_port == '80' or $server_port == '443') {
 } else {
     $server_port = ":" . $server_port;
 }
-$t1="OSDial"; if (preg_match('/^Sli/',$agent_template)) $t1=$agent_template;;
+$t1="OSDial"; if (OSDpreg_match('/^Sli/',$config['settings']['agent_template'])) $t1=$config['settings']['agent_template'];
 $agcPAGE = $HTTPprotocol . $server_name . $server_port .$script_name;
-$agcDIR = preg_replace('/osdial.php/','',$agcPAGE);
+$agcDIR = OSDpreg_replace('/osdial.php/','',$agcPAGE);
 
 echo "<html>\n";
 echo "<head>\n";
@@ -417,10 +398,10 @@ $wsc .= "</span>";
 
 
 $company_prefix='';
-if ($multicomp > 0) {
-    $company_prefix = substr($phone_login,0,3);
-    if ($VD_login != "" and $phone_login != "") {
-        if (substr($VD_login,0,3) != substr($phone_login,0,3)) {
+if ($config['settings']['enable_multicompany'] > 0) {
+    $company_prefix = OSDsubstr($phone_login,0,3);
+    if (!empty($VD_login) and !empty($phone_login)) {
+        if (OSDsubstr($VD_login,0,3) != OSDsubstr($phone_login,0,3)) {
             $phone_login='';
             $phone_pass='';
             $VD_login='';
@@ -436,27 +417,25 @@ if ($campaign_login_list > 0) {
 
     $LOGallowed_campaignsSQL='';
     if ($relogin == 'YES') {
-        $stmt="SELECT user_group FROM osdial_users WHERE user='$VD_login' AND pass='$VD_pass';";
-        if ($non_latin > 0) $rslt=mysql_query("SET NAMES 'UTF8'");
+        $stmt=sprintf("SELECT user_group FROM osdial_users WHERE user='%s' AND pass='%s';",mres($VD_login),mres($VD_pass));
 
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         $VU_user_group=$row[0];
 
-        $stmt="SELECT allowed_campaigns FROM osdial_user_groups WHERE user_group='$VU_user_group';";
+        $stmt=sprintf("SELECT allowed_campaigns FROM osdial_user_groups WHERE user_group='%s';",mres($VU_user_group));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
-        if (!preg_match("/ALL-CAMPAIGNS/",$row[0])) {
-            $LOGallowed_campaignsSQL = preg_replace('/ -/','',$row[0]);
-            $LOGallowed_campaignsSQL = preg_replace('/ /',"','",$LOGallowed_campaignsSQL);
+        if (!OSDpreg_match("/ALL-CAMPAIGNS/",$row[0])) {
+            $LOGallowed_campaignsSQL = mres(OSDpreg_replace('/ -/','',$row[0]));
+            $LOGallowed_campaignsSQL = OSDpreg_replace('/ /',"','",$LOGallowed_campaignsSQL);
             $LOGallowed_campaignsSQL = "AND campaign_id IN('$LOGallowed_campaignsSQL')";
         }
     }
 
-    if ($multicomp) $LOGallowed_campaignsSQL .= " AND campaign_id LIKE '" . $company_prefix . "%'";
+    if ($config['settings']['enable_multicompany']) $LOGallowed_campaignsSQL .= sprintf(" AND campaign_id LIKE '%s%%'",mres($company_prefix));
 
-    $stmt="SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE active='Y' $LOGallowed_campaignsSQL ORDER BY campaign_id;";
-    if ($non_latin > 0) $rslt=mysql_query("SET NAMES 'UTF8'");
+    $stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE active='Y' %s ORDER BY campaign_id;",$LOGallowed_campaignsSQL);
     $rslt=mysql_query($stmt, $link);
     $camps_to_print = mysql_num_rows($rslt);
 
@@ -482,7 +461,7 @@ if ($campaign_login_list > 0) {
 //  Relogin
 if ($relogin == 'YES') {
     echo "<title>$t1 web client: Re-Login</title>\n";
-    echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+    echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
     #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
     echo "<script type=\"text/javascript\">\n";
     require('include/osdial-login.js');
@@ -499,9 +478,9 @@ if ($relogin == 'YES') {
 
     echo "<table class=acrosslogin2 width=500 cellpadding=0 cellspacing=0 border=0>\n";
     echo "  <tr>\n";
-    echo "    <td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopLeft2.png\" width=22 height=22 align=left></td>\n";
+    echo "    <td width=22><img src=\"templates/" . $config['settings']['agent_template'] . "/images/AgentTopLeft2.png\" width=22 height=22 align=left></td>\n";
     echo "    <td class=across-top align=center colspan=2>&nbsp;</td>\n";
-    echo "    <td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopRightS.png\" width=22 height=22 align=right></td>\n";
+    echo "    <td width=22><img src=\"templates/" . $config['settings']['agent_template'] . "/images/AgentTopRightS.png\" width=22 height=22 align=right></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=left>&nbsp;</td>\n";
@@ -557,9 +536,9 @@ if ($relogin == 'YES') {
 }
 
 if ($user_login_first == 1) {
-    if (strlen($VD_login)<1 or strlen($VD_pass)<1 or strlen($VD_campaign)<1) {
+    if (OSDstrlen($VD_login)<1 or OSDstrlen($VD_pass)<1 or OSDstrlen($VD_campaign)<1) {
         echo "<title>$t1 web client: Campaign Login</title>\n";
-        echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+        echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
         #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
         echo "<script type=\"text/javascript\">\n";
         require('include/osdial-login.js');
@@ -573,9 +552,9 @@ if ($user_login_first == 1) {
         echo "<div class=containera>\n";
         echo "<table class=acrosslogin2 width=500 cellpadding=0 cellspacing=0 border=0>\n";
         echo "  <tr>\n";
-        echo "    <td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopLeft2.png\" width=22 height=22 align=left></td>\n";
+        echo "    <td width=22><img src=\"templates/" . $config['settings']['agent_template'] . "/images/AgentTopLeft2.png\" width=22 height=22 align=left></td>\n";
         echo "    <td class=across-top align=center colspan=2>&nbsp;</td>\n";
-        echo "    <td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopRightS.png\" width=22 height=22 align=right></td>\n";
+        echo "    <td width=22><img src=\"templates/" . $config['settings']['agent_template'] . "/images/AgentTopRightS.png\" width=22 height=22 align=right></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left>&nbsp;</td>\n";
@@ -617,8 +596,8 @@ if ($user_login_first == 1) {
         echo "</html>\n";
         exit;
     } else {
-        if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
-            $stmt="SELECT phone_login,phone_pass FROM osdial_users WHERE user='$VD_login' AND pass='$VD_pass' AND user_level>0;";
+        if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
+            $stmt=sprintf("SELECT phone_login,phone_pass FROM osdial_users WHERE user='%s' AND pass='%s' AND user_level>0;",mres($VD_login),mres($VD_pass));
             if ($DB) echo "|$stmt|\n";
             
             $rslt=mysql_query($stmt, $link);
@@ -627,7 +606,7 @@ if ($user_login_first == 1) {
             $phone_pass=$row[1];
     
             echo "<title>$t1 web client: Login</title>\n";
-            echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+            echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
             #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
             echo "<script type=\"text/javascript\">\n";
             require('include/osdial-login.js');
@@ -681,9 +660,9 @@ if ($user_login_first == 1) {
 }
 
 // Phone Login from welcome scren
-if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
+if (OSDstrlen($phone_login)<2 or OSDstrlen($phone_pass)<2) {
     echo "<title>$t1 web client:  Phone Login</title>\n";
-    echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+    echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
     #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
     echo "<script type=\"text/javascript\">\n";
     require('include/osdial-login.js');
@@ -697,9 +676,9 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
     echo "<div class=containera>\n";
     echo "<table align=center class=acrosslogin2 width=460 cellpadding=0 cellspacing=0 border=0>\n";
     echo "  <tr>\n";
-    echo "    <td width='22'><img src='templates/" . $agent_template . "/images/AgentTopLeft2.png' width='22' height='22' align='left'></td>\n";
+    echo "    <td width='22'><img src='templates/" . $config['settings']['agent_template'] . "/images/AgentTopLeft2.png' width='22' height='22' align='left'></td>\n";
     echo "    <td class='across-top' align='center' colspan=2></td>\n";
-    echo "    <td width='22'><img src='templates/" . $agent_template . "/images/AgentTopRightS.png' width='22' height='22' align='right'></td>\n";
+    echo "    <td width='22'><img src='templates/" . $config['settings']['agent_template'] . "/images/AgentTopRightS.png' width='22' height='22' align='right'></td>\n";
     echo "  </tr>\n";
     echo "  <tr>\n";
     echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
@@ -740,10 +719,10 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 } else {
     $VDloginDISPLAY=0;
 
-    if (strlen($VD_login)<2 or strlen($VD_pass)<2 or strlen($VD_campaign)<2) {
+    if (OSDstrlen($VD_login)<2 or OSDstrlen($VD_pass)<2 or OSDstrlen($VD_campaign)<2) {
         $VDloginDISPLAY=1;
     } else {
-        $stmt="SELECT count(*) FROM osdial_users WHERE user='$VD_login' AND pass='$VD_pass' AND user_level>0;";
+        $stmt=sprintf("SELECT count(*) FROM osdial_users WHERE user='%s' AND pass='%s' AND user_level>0;",mres($VD_login),mres($VD_pass));
         if ($DB) echo "|$stmt|\n";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
@@ -752,10 +731,10 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
         if($auth>0) {
             $myscripts = Array();
 
-            $login=strtoupper($VD_login);
-            $password=strtoupper($VD_pass);
+            $login=OSDstrtoupper($VD_login);
+            $password=OSDstrtoupper($VD_pass);
             ##### grab the full name of the agent
-            $stmt="SELECT full_name,user_level,hotkeys_active,agent_choose_ingroups,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,closer_default_blended,user_group,osdial_recording_override,manual_dial_allow_skip,xfer_agent2agent,script_override FROM osdial_users WHERE user='$VD_login' AND pass='$VD_pass';";
+            $stmt=sprintf("SELECT full_name,user_level,hotkeys_active,agent_choose_ingroups,scheduled_callbacks,agentonly_callbacks,agentcall_manual,osdial_recording,osdial_transfers,closer_default_blended,user_group,osdial_recording_override,manual_dial_allow_skip,xfer_agent2agent,script_override FROM osdial_users WHERE user='%s' AND pass='%s';",mres($VD_login),mres($VD_pass));
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
             $LOGfullname=$row[0];
@@ -773,24 +752,24 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             $VU_manual_dial_allow_skip=$row[12];
             $LOGxfer_agent2agent=$row[13];
             $script_override = $row[14];
-            if ($script_override!='') $myscripts[$script_override] = 1;
+            if (!empty($script_override)) $myscripts[$script_override] = 1;
 
             debugLog('osdial_auth_entries',"vdweb|GOOD|$date|$VD_login|$VD_pass|$ip|$browser|$LOGfullname|");
             $user_abb = "$VD_login$VD_login$VD_login$VD_login";
 
-            while (strlen($user_abb) > 4 and $forever_stop < 200) {
-                $user_abb = preg_replace('/^./','',$user_abb);
+            while (OSDstrlen($user_abb) > 4 and $forever_stop < 200) {
+                $user_abb = OSDpreg_replace('/^./','',$user_abb);
                 $forever_stop++;
             }
 
-            $stmt="SELECT allowed_campaigns FROM osdial_user_groups WHERE user_group='$VU_user_group';";
+            $stmt=sprintf("SELECT allowed_campaigns FROM osdial_user_groups WHERE user_group='%s';",mres($VU_user_group));
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
             $LOGallowed_campaigns = $row[0];
 
-            if (!preg_match("/ $VD_campaign /i",$LOGallowed_campaigns) and !preg_match("/ALL-CAMPAIGNS/",$LOGallowed_campaigns)) {
+            if (!OSDpreg_match("/ $VD_campaign /i",$LOGallowed_campaigns) and !OSDpreg_match("/ALL-CAMPAIGNS/",$LOGallowed_campaigns)) {
                 echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
-                echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+                echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
                 #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
                 echo "<script type=\"text/javascript\">\n";
                 require('include/osdial-login.js');
@@ -799,7 +778,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 echo "<body bgcolor=white name=osdial>\n";
                 echo $welcome_span;
                 echo "<b>Sorry, you are not allowed to login to this campaign: $VD_campaign</b>\n";
-                echo "<form action=\"$PHP_SELF\" method=post>\n";
+                echo "<form name=osdial_form id=osdial_form action=\"$PHP_SELF\" method=post>\n";
                 echo "<input type=hidden name=DB value=\"$DB\">\n";
                 echo "<input type=hidden name=phone_login value=\"$phone_login\">\n";
                 echo "<input type=hidden name=phone_pass value=\"$phone_pass\">\n";
@@ -815,7 +794,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             }
 
             ##### check to see that the campaign is active
-            $stmt="SELECT count(*) FROM osdial_campaigns WHERE campaign_id='$VD_campaign' AND active='Y';";
+            $stmt=sprintf("SELECT count(*) FROM osdial_campaigns WHERE campaign_id='%s' AND active='Y';",mres($VD_campaign));
             if ($DB) echo "|$stmt|\n";
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
@@ -834,7 +813,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 $status_names = Array();
                 $statremove = "'NEW',";
                 ##### grab the campaign-specific statuses that can be used for dispositioning by an agent
-                $stmt="SELECT status,status_name,IF(selectable='Y',1,0) FROM osdial_campaign_statuses WHERE $selectableSQL status NOT IN(" . rtrim($statremove, ',') . ") AND campaign_id='$VD_campaign' ORDER BY status;";
+                $stmt=sprintf("SELECT status,status_name,IF(selectable='Y',1,0) FROM osdial_campaign_statuses WHERE %s status NOT IN(%s) AND campaign_id='%s' ORDER BY status;",$selectableSQL,rtrim($statremove,','),mres($VD_campaign));
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $VD_statuses_camp = mysql_num_rows($rslt);
@@ -844,21 +823,21 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                     $DISPstatus[$row[0]] = $row[2];
                     if ($row[2] > 0) {
                         $PSstatuses[$row[0]] = $row[1];
-                        $statremove .= "'$row[0]',";
+                        $statremove .= sprintf("'%s',",mres($row[0]));
                     }
                     $j++;
                 }
                 $statremove = rtrim($statremove, ',');
 
                 ##### grab the statuses that can be used for dispositioning by an agent
-                $stmt="SELECT status,status_name,IF(selectable='Y',1,0) FROM osdial_statuses WHERE $selectableSQL status NOT IN($statremove) ORDER BY status;";
+                $stmt=sprintf("SELECT status,status_name,IF(selectable='Y',1,0) FROM osdial_statuses WHERE %s status NOT IN(%s) ORDER BY status;",$selectableSQL,$statremove);
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $VD_statuses_ct = mysql_num_rows($rslt);
                 $j=0;
                 while ($j < $VD_statuses_ct) {
                     $row=mysql_fetch_row($rslt);
-                    if ($row[2] > 0 and preg_match('/^$|^1$/',$DISPstatus[$row[0]])) {
+                    if ($row[2] > 0 and OSDpreg_match('/^$|^1$/',$DISPstatus[$row[0]])) {
                         $PSstatuses[$row[0]] = $row[1];
                     }
                     $j++;
@@ -869,8 +848,8 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 foreach ($PSstatuses as $Pstatus => $Pstatusname) {
                         $statuses[$VD_statuses_ct]=$Pstatus;
                         $status_names[$VD_statuses_ct]=$Pstatusname;
-                        $VARstatuses .= "'$Pstatus',";
-                        $VARstatusnames .= "'$Pstatusname',";
+                        $VARstatuses .= sprintf("'%s',",mres($Pstatus));
+                        $VARstatusnames .= sprintf("'%s',",mres($Pstatusname));
                         $VD_statuses_ct++;
                 }
                 $VARstatuses = rtrim($VARstatuses, ','); 
@@ -878,7 +857,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
 
                 ##### grab the campaign-specific HotKey statuses that can be used for dispositioning by an agent
-                $stmt="SELECT hotkey,status,status_name,xfer_exten FROM osdial_campaign_hotkeys WHERE selectable='Y' AND status!='NEW' AND campaign_id='$VD_campaign' ORDER BY hotkey LIMIT 9;";
+                $stmt=sprintf("SELECT hotkey,status,status_name,xfer_exten FROM osdial_campaign_hotkeys WHERE selectable='Y' AND status!='NEW' AND campaign_id='%s' ORDER BY hotkey LIMIT 9;",mres($VD_campaign));
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $HK_statuses_camp = mysql_num_rows($rslt);
@@ -888,14 +867,14 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 $HKboxC='';
                 while ($w < $HK_statuses_camp) {
                     $row=mysql_fetch_row($rslt);
-                    $HKhotkey[$w] =$row[0];
-                    $HKstatus[$w] =$row[1];
-                    $HKstatus_name[$w] =$row[2];
-                    $HKxfer_exten[$w] =$row[3];
-                    $HKhotkeys .= "'$HKhotkey[$w]',";
-                    $HKstatuses .= "'$HKstatus[$w]',";
-                    $HKstatusnames .= "'$HKstatus_name[$w]',";
-                    $HKxferextens .= "'$HKxfer_exten[$w]',";
+                    $HKhotkey[$w] = $row[0];
+                    $HKstatus[$w] = $row[1];
+                    $HKstatus_name[$w] = $row[2];
+                    $HKxfer_exten[$w] = $row[3];
+                    $HKhotkeys .= sprintf("'%s',",mres($HKhotkey[$w]));
+                    $HKstatuses .= sprintf("'%s',",mres($HKstatus[$w]));
+                    $HKstatusnames .= sprintf("'%s',",mres($HKstatus_name[$w]));
+                    $HKxferextens .= sprintf("'%s',",mres($HKxfer_exten[$w]));
                     if ($w < 3) $HKboxA .= " <font class=\"skb_text\">$HKhotkey[$w]</font> - $HKstatus[$w] - $HKstatus_name[$w]<br>";
                     if ($w >= 3 and $w < 6) $HKboxB .= " <font class=\"skb_text\">$HKhotkey[$w]</font> - $HKstatus[$w] - $HKstatus_name[$w]<br>";
                     if ($w >= 6) $HKboxC .= " <font class=\"skb_text\">$HKhotkey[$w]</font> - $HKstatus[$w] - $HKstatus_name[$w]<br>";
@@ -915,14 +894,14 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 $stmt.="submit_method,use_custom2_callerid,campaign_cid_name,xfer_cid_mode,use_cid_areacode_map,carrier_id,email_templates,disable_manual_dial,";
                 $stmt.="hide_xfer_local_closer,hide_xfer_dial_override,hide_xfer_hangup_xfer,hide_xfer_leave_3way,hide_xfer_dial_with,hide_xfer_hangup_both,";
                 $stmt.="hide_xfer_blind_xfer,hide_xfer_park_dial,hide_xfer_blind_vmail,allow_md_hopperlist ";
-                $stmt.="FROM osdial_campaigns WHERE campaign_id='$VD_campaign';";
+                $stmt.=sprintf("FROM osdial_campaigns WHERE campaign_id='%s';",mres($VD_campaign));
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $row=mysql_fetch_row($rslt);
                 $park_ext =                $row[0];
-                if ($park_ext=="") $park_ext="8301";
+                if (empty($park_ext)) $park_ext="8301";
                 $park_file_name =            $row[1];
-                if ($park_file_name=="") $park_file_name="park";
+                if (empty($park_file_name)) $park_file_name="park";
                 $web_form_address =            $row[2];
                 $allow_closers =            $row[3];
                 $auto_dial_level =            $row[4];
@@ -934,7 +913,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 $campaign_recording =        $row[10];
                 $campaign_rec_filename =        $row[11];
                 $campaign_script =            $row[12];
-                if ($campaign_script!='') $myscripts[$campaign_script] = 1;
+                if (!empty($campaign_script)) $myscripts[$campaign_script] = 1;
                 $get_call_launch =            $row[13];
                 $campaign_am_message_exten =     $row[14];
                 $xferconf_a_dtmf =            $row[15];
@@ -987,18 +966,18 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                     $ets = explode(',',$email_templates);
                     $email_templates='';
                     foreach ($ets as $eto) {
-                        $et = get_first_record($link, 'osdial_email_templates', '*', "et_id='" . $eto . "' AND active='Y'");
-                        $email_templates.=$et['et_id'] . ',';
-                        $email_template_actions.="'".$et['et_send_action']."',";
+                        $et = get_first_record($link, 'osdial_email_templates', '*', sprintf("et_id='%s' AND active='Y'",mres($eto)) );
+                        $email_templates.=sprintf("'%s',",mres($et['et_id']));
+                        $email_template_actions.=sprintf("'%s',",mres($et['et_send_action']));
                     }
                     $email_templates = rtrim($email_templates,',');
                     $email_template_actions = rtrim($email_template_actions,',');
                 }
 
-                if ($previewFD_time == "") $previewFD_time = "0";
+                if (empty($previewFD_time)) $previewFD_time = "0";
                 if ($use_custom2_callerid != "Y") $use_custom2_callerid = "N";
 
-                if (!preg_match('/DISABLED/i',$VU_osdial_recording_override) and $VU_osdial_recording > 0) {
+                if (!OSDpreg_match('/DISABLED/i',$VU_osdial_recording_override) and $VU_osdial_recording > 0) {
                     $campaign_recording = $VU_osdial_recording_override;
                     print "<!-- USER RECORDING OVERRIDE: |$VU_osdial_recording_override|$campaign_recording| -->\n";
                 }
@@ -1011,8 +990,8 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 if ($dial_method=='MANUAL' and $campaign_allow_inbound > 0) {$inbound_man=1;} else {$inbound_man=0;}
 
                 if ($VU_osdial_recording=='0') $campaign_recording='NEVER';
-                $closer_campaigns = preg_replace("/^ | -$/","",$closer_campaigns);
-                $closer_campaigns = preg_replace("/ /","','",$closer_campaigns);
+                $closer_campaigns = mres(OSDpreg_replace("/^ | -$/","",$closer_campaigns));
+                $closer_campaigns = OSDpreg_replace("/ /","','",$closer_campaigns);
                 $closer_campaigns = "'$closer_campaigns'";
 
                 if ($submit_method=='WEBFORM1') {
@@ -1025,7 +1004,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
                 $dial_context=$ext_context;
                 if ($carrier_id>0) {
-                    $stmt="SELECT name FROM osdial_carriers WHERE id='$carrier_id' AND active='Y' LIMIT 1;";
+                    $stmt=sprintf("SELECT name FROM osdial_carriers WHERE id='%s' AND active='Y' LIMIT 1;",mres($carrier_id));
                     $rslt=mysql_query($stmt, $link);
                     if ($DB) echo "$stmt\n";
                     $carriers = mysql_num_rows($rslt);
@@ -1036,7 +1015,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 }
 
                 if ($use_cid_areacode_map=='Y') {
-                    $stmt="SELECT areacode,cid_number,cid_name FROM osdial_campaign_cid_areacodes WHERE campaign_id='$VD_campaign';";
+                    $stmt=sprintf("SELECT areacode,cid_number,cid_name FROM osdial_campaign_cid_areacodes WHERE campaign_id='%s';",mres($VD_campaign));
                     $rslt=mysql_query($stmt, $link);
                     if ($DB) echo "$stmt\n";
                     $VD_cid_areacodes = mysql_num_rows($rslt);
@@ -1046,9 +1025,9 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                         $cid_areacodes[$j] = $row[0];
                         $cid_areacode_numbers[$j] = $row[1];
                         $cid_areacode_names[$j] = $row[2];
-                        $VARcid_areacodes .= "'" . $row[0] . "',";
-                        $VARcid_areacode_numbers .= "'" . $row[1] . "',";
-                        $VARcid_areacode_names .= "'" . $row[2] . "',";
+                        $VARcid_areacodes .= sprintf("'%s',",mres($row[0]));
+                        $VARcid_areacode_numbers .= sprintf("'%s',",mres($row[1]));
+                        $VARcid_areacode_names .= sprintf("'%s',",mres($row[2]));
                         $j++;
                     }
                     $VD_cid_areacodes_ct += $VD_cid_areacodes_ct;
@@ -1059,17 +1038,17 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
                 if ($agent_pause_codes_active=='Y') {
                     ##### grab the pause codes for this campaign
-                    $stmt="SELECT pause_code,pause_code_name FROM osdial_pause_codes WHERE campaign_id='$VD_campaign' ORDER BY pause_code LIMIT 50;";
+                    $stmt=sprintf("SELECT pause_code,pause_code_name FROM osdial_pause_codes WHERE campaign_id='%s' ORDER BY pause_code LIMIT 50;",mres($VD_campaign));
                     $rslt=mysql_query($stmt, $link);
                     if ($DB) echo "$stmt\n";
                     $VD_pause_codes = mysql_num_rows($rslt);
                     $j=0;
                     while ($j < $VD_pause_codes) {
                         $row=mysql_fetch_row($rslt);
-                        $pause_codes[$j] =$row[0];
-                        $pause_code_names[$j] =$row[1];
-                        $VARpause_codes .= "'$pause_codes[$j]',";
-                        $VARpause_code_names .= "'$pause_code_names[$j]',";
+                        $pause_codes[$j] = $row[0];
+                        $pause_code_names[$j] = $row[1];
+                        $VARpause_codes .= sprintf("'%s',",mres($pause_codes[$j]));
+                        $VARpause_code_names .= sprintf("'%s',",mres($pause_code_names[$j]));
                         $j++;
                     }
                     $VD_pause_codes_ct += $VD_pause_codes;
@@ -1081,43 +1060,43 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 $VARingroups="''";
                 if ($campaign_allow_inbound > 0) {
                     $VARingroups='';
-                    $closerSQL = "group_id IN($closer_campaigns)";
-                    if ($LOGxfer_agent2agent > 0) $closerSQL = "($closerSQL OR group_id='A2A_$VD_login')";
-                    $stmt="SELECT group_id,ingroup_script FROM osdial_inbound_groups WHERE active='Y' AND $closerSQL ORDER BY group_id LIMIT 60;";
+                    $closerSQL = sprintf("group_id IN(%s)",$closer_campaigns);
+                    if ($LOGxfer_agent2agent > 0) $closerSQL = sprintf("(%s OR group_id='A2A_%s')",$closerSQL,mres($VD_login));
+                    $stmt=sprintf("SELECT group_id,ingroup_script FROM osdial_inbound_groups WHERE active='Y' AND %s ORDER BY group_id LIMIT 60;",$closerSQL);
                     $rslt=mysql_query($stmt, $link);
                     if ($DB) echo "$stmt\n";
                     $closer_ct = mysql_num_rows($rslt);
                     $INgrpCT=0;
                     while ($INgrpCT < $closer_ct) {
                         $row=mysql_fetch_row($rslt);
-                        $closer_groups[$INgrpCT] =$row[0];
+                        $closer_groups[$INgrpCT] = $row[0];
                         $ingroup_script = $row[1];
-                        if ($ingroup_script!='') $myscripts[$ingroup_script] = 1;
-                        $VARingroups .= "'$closer_groups[$INgrpCT]',";
+                        if (!empty($ingroup_script)) $myscripts[$ingroup_script] = 1;
+                        $VARingroups .= sprintf("'%s',",mres($closer_groups[$INgrpCT]));
                         $INgrpCT++;
                     }
                     $VARingroups = rtrim($VARingroups, ','); 
                 }
 
                 ##### grab the allowable inbound groups to choose from for transfer options
-                $xfer_groups = preg_replace("/^ | -$/","",$xfer_groups);
-                $xfer_groups = preg_replace("/ /","','",$xfer_groups);
+                $xfer_groups = mres(OSDpreg_replace("/^ | -$/","",$xfer_groups));
+                $xfer_groups = OSDpreg_replace("/ /","','",$xfer_groups);
                 $xfer_groups = "'$xfer_groups'";
                 $VARxfergroups="''";
                 if ($allow_closers == 'Y') {
                     $VARxfergroups='';
-                    $xferSQL = "group_id IN($xfer_groups)";
-                    if ($LOGxfer_agent2agent > 0) $xferSQL = "($xferSQL OR group_id LIKE 'A2A_$company_prefix%') AND group_id != 'A2A_$VD_login'";
-                    $stmt="SELECT group_id,group_name FROM osdial_inbound_groups WHERE active='Y' AND $xferSQL ORDER BY group_id LIMIT 60;";
+                    $xferSQL = sprintf("group_id IN(%s)",$xfer_groups);
+                    if ($LOGxfer_agent2agent > 0) $xferSQL = sprintf("(%s OR group_id LIKE 'A2A_%s%%') AND group_id != 'A2A_%s'",$xferSQL,mres($company_prefix),mres($VD_login));
+                    $stmt=sprintf("SELECT group_id,group_name FROM osdial_inbound_groups WHERE active='Y' AND %s ORDER BY group_id LIMIT 60;",$xferSQL);
                     $rslt=mysql_query($stmt, $link);
                     if ($DB) echo "$stmt\n";
                     $xfer_ct = mysql_num_rows($rslt);
                     $XFgrpCT=0;
                     while ($XFgrpCT < $xfer_ct) {
                         $row=mysql_fetch_row($rslt);
-                        $VARxfergroups .= "'$row[0]',";
-                        $VARxfergroupsnames .= "'$row[1]',";
-                        if ($row[0] == "$default_xfer_group") {$default_xfer_group_name = $row[1];}
+                        $VARxfergroups .= sprintf("'%s',",mres($row[0]));
+                        $VARxfergroupsnames .= sprintf("'%s',",mres($row[1]));
+                        if ($row[0] == $default_xfer_group) $default_xfer_group_name = $row[1];
                         $XFgrpCT++;
                     }
                     $VARxfergroups = rtrim($VARxfergroups, ','); 
@@ -1125,7 +1104,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 }
 
                 ##### grab the number of leads in the hopper for this campaign
-                $stmt="SELECT SQL_NO_CACHE count(*) FROM osdial_hopper WHERE campaign_id='$VD_campaign' AND status IN('API','READY');";
+                $stmt=sprintf("SELECT SQL_NO_CACHE count(*) FROM osdial_hopper WHERE campaign_id='%s' AND status IN('API','READY');",mres($VD_campaign));
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $row=mysql_fetch_row($rslt);
@@ -1146,7 +1125,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
     if ($VDloginDISPLAY) {
         echo "<title>$t1 web client: Campaign Login</title>\n";
-        echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+        echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
         #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
         echo "<script type=\"text/javascript\">\n";
         require('include/osdial-login.js');
@@ -1163,9 +1142,9 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
         echo "<div class=containera>\n";
         echo "<table align=center class=acrosslogin2 width=460 cellpadding=0 cellspacing=0 border=0>\n";
         echo "  <tr>\n";
-        echo "    <td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopLeft2.png\" width=22 height=22 align=left></td>\n";
+        echo "    <td width=22><img src=\"templates/" . $config['settings']['agent_template'] . "/images/AgentTopLeft2.png\" width=22 height=22 align=left></td>\n";
         echo "    <td class=across-top align=center colspan=2></td>\n";
-        echo "    <td width=22><img src=\"templates/" . $agent_template . "/images/AgentTopRightS.png\" width=22 height=22 align=right></td>\n";
+        echo "    <td width=22><img src=\"templates/" . $config['settings']['agent_template'] . "/images/AgentTopRightS.png\" width=22 height=22 align=right></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left>&nbsp;&nbsp;</td>\n";
@@ -1211,14 +1190,14 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
     }
 
     $authphone=0;
-    $stmt="SELECT SQL_NO_CACHE count(*) FROM phones WHERE login='$phone_login' AND pass='$phone_pass' AND active='Y';";
+    $stmt=sprintf("SELECT SQL_NO_CACHE count(*) FROM phones WHERE login='%s' AND pass='%s' AND active='Y';",mres($phone_login),mres($phone_pass));
     if ($DB) echo "|$stmt|\n";
     $rslt=mysql_query($stmt, $link);
     $row=mysql_fetch_row($rslt);
     $authphone=$row[0];
     if (!$authphone) {
         echo "<title>$t1 web client: Phone Login Error</title>\n";
-        echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+        echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
         #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
         echo "<script type=\"text/javascript\">\n";
         require('include/osdial-login.js');
@@ -1232,9 +1211,9 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
         echo "<div class=containera>\n";
         echo "<table align=center class=acrosslogin2 width=460 cellpadding=0 cellspacing=0 border=0>\n";
         echo "  <tr>\n";
-        echo "    <td width='22'><img src='templates/" . $agent_template . "/images/AgentTopLeft2.png' width='22' height='22' align='left'></td>\n";
+        echo "    <td width='22'><img src='templates/" . $config['settings']['agent_template'] . "/images/AgentTopLeft2.png' width='22' height='22' align='left'></td>\n";
         echo "    <td class='across-top' align='center' colspan=2></td>\n";
-        echo "    <td width='22'><img src='templates/" . $agent_template . "/images/AgentTopRightS.png' width='22' height='22' align='right'></td>\n";
+        echo "    <td width='22'><img src='templates/" . $config['settings']['agent_template'] . "/images/AgentTopRightS.png' width='22' height='22' align='right'></td>\n";
         echo "  </tr>\n";
         echo "  <tr>\n";
         echo "    <td align=left><font size=1>&nbsp;</font></td>\n";
@@ -1274,7 +1253,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
     } else {
         echo "<title>$t1 web client</title>\n";
-        $stmt="SELECT * FROM phones WHERE login='$phone_login' AND pass='$phone_pass' AND active='Y';";
+        $stmt=sprintf("SELECT * FROM phones WHERE login='%s' AND pass='%s' AND active='Y';",mres($phone_login),mres($phone_pass));
         if ($DB) echo "|$stmt|\n";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
@@ -1302,13 +1281,13 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
         $login_pass=$row[21];
         $login_campaign=$row[22];
         $park_on_extension=$row[23];
-        if ($park_on_extension=="") $park_on_extension="8301";
+        if (empty($park_on_extension)) $park_on_extension="8301";
         $conf_on_extension=$row[24];
-        if ($conf_on_extension=="") $conf_on_extension="8302";
+        if (empty($conf_on_extension)) $conf_on_extension="8302";
         $OSDiaL_park_on_extension=$row[25];
-        if ($OSDiaL_park_on_extension=="") $OSDiaL_park_on_extension="8301";
+        if (empty($OSDiaL_park_on_extension)) $OSDiaL_park_on_extension="8301";
         $OSDiaL_park_on_filename=$row[26];
-        if ($OSDiaL_park_on_filename=="") $OSDiaL_park_on_filename="park";
+        if (empty($OSDiaL_park_on_filename)) $OSDiaL_park_on_filename="park";
         $monitor_prefix=$row[27];
         $recording_exten=$row[28];
         $voicemail_exten=$row[29];
@@ -1320,7 +1299,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
         $install_directory=$row[35];
         $local_web_callerID_URL=$row[36];
         $OSDiaL_web_URL=$row[37];
-        if (preg_match('/^$|dial_output.php$/i',$OSDiaL_web_URL)) $OSDiaL_web_URL = '/osdial/agent/webform_redirect.php';
+        if (OSDpreg_match('/^$|dial_output.php$/i',$OSDiaL_web_URL)) $OSDiaL_web_URL = '/osdial/agent/webform_redirect.php';
         $AGI_call_logging_enabled=$row[38];
         $user_switching_enabled=$row[39];
         $conferencing_enabled=$row[40];
@@ -1350,7 +1329,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
         $voicemail_email=$row[69];
 
         if ($clientDST) $local_gmt = ($local_gmt + $isdst);
-        if ($protocol == 'EXTERNAL' or (preg_match('/SIP|IAX/',$protocol) and preg_match('/^.*@.*$/',$extension))) {
+        if ($protocol == 'EXTERNAL' or (OSDpreg_match('/SIP|IAX/',$protocol) and OSDpreg_match('/^.*@.*$/',$extension))) {
             $protocol = 'Local';
             $extension = "$dialplan_number$AT$ext_context";
             $SIP_user_DiaL = "$protocol/$extension/n";
@@ -1359,14 +1338,8 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
         }
         $SIP_user = "$protocol/$extension";
 
-        $stmt="SELECT asterisk_version FROM servers WHERE server_ip='$server_ip';";
-        if ($DB) echo "|$stmt|\n";
-        $rslt=mysql_query($stmt, $link);
-        $row=mysql_fetch_row($rslt);
-        $asterisk_version=$row[0];
-
         # If a park extension is not set, use the default one
-        if (strlen($park_ext)>0 and strlen($park_file_name)>0) {
+        if (OSDstrlen($park_ext)>0 and OSDstrlen($park_file_name)>0) {
             $OSDiaL_park_on_extension = $park_ext;
             $OSDiaL_park_on_filename = $park_file_name;
             print "<!-- CAMPAIGN CUSTOM PARKING:  |$OSDiaL_park_on_extension|$OSDiaL_park_on_filename| -->\n";
@@ -1374,9 +1347,9 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
         print "<!-- CAMPAIGN DEFAULT PARKING: |$OSDiaL_park_on_extension|$OSDiaL_park_on_filename| -->\n";
 
         # If a web form address is not set, use the default one
-        if (strlen($web_form_address)>0) {
+        if (OSDstrlen($web_form_address)>0) {
             $OSDiaL_web_form_address = $web_form_address;
-        } elseif (strlen($OSDiaL_web_URL)>0) {
+        } elseif (OSDstrlen($OSDiaL_web_URL)>0) {
             $OSDiaL_web_form_address = $OSDiaL_web_URL;
         } else {
             $OSDiaL_web_form_address = '/osdial/agent/webform_redirect.php';
@@ -1385,9 +1358,9 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
         $OSDiaL_web_form_address_enc = rawurlencode($OSDiaL_web_form_address);
 
         # If web form 2 address is not set, use the default one
-        if (strlen($web_form_address2)>0) {
+        if (OSDstrlen($web_form_address2)>0) {
             $OSDiaL_web_form_address2 = $web_form_address2;
-        } elseif (strlen($OSDiaL_web_URL)>0) {
+        } elseif (OSDstrlen($OSDiaL_web_URL)>0) {
             $OSDiaL_web_form_address2 = $OSDiaL_web_URL;
         } else {
             $OSDiaL_web_form_address2 = '/osdial/agent/webform_redirect.php';
@@ -1405,8 +1378,8 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
         }
 
 
-        $session_ext = preg_replace("/[^a-z0-9]/i", "", $extension);
-        if (strlen($session_ext) > 10) {$session_ext = substr($session_ext, 0, 10);}
+        $session_ext = OSDpreg_replace("/[^a-z0-9]/i", "", $extension);
+        if (OSDstrlen($session_ext) > 10) {$session_ext = OSDsubstr($session_ext, 0, 10);}
         $session_rand = (rand(1,9999999) + 10000000);
         $session_name = "$StarTtimE$US$session_ext$session_rand";
 
@@ -1416,22 +1389,22 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             $webform_sessionname = '';
         }
 
-        $stmt="DELETE FROM web_client_sessions WHERE start_time < '$past_month_date' AND extension='$extension' AND server_ip = '$server_ip' AND program = 'osdial';";
+        $stmt=sprintf("DELETE FROM web_client_sessions WHERE start_time<'%s' AND extension='%s' AND server_ip='%s' AND program='osdial';",mres($past_month_date),mres($extension),mres($server_ip));
         if ($DB) echo "|$stmt|\n";
         $rslt=mysql_query($stmt, $link);
 
-        $stmt="INSERT INTO web_client_sessions values('$extension','$server_ip','osdial','$NOW_TIME','$session_name');";
+        $stmt=sprintf("INSERT INTO web_client_sessions VALUES('%s','%s','osdial','%s','%s');",mres($extension),mres($server_ip),mres($NOW_TIME),mres($session_name));
         if ($DB) echo "|$stmt|\n";
         $rslt=mysql_query($stmt, $link);
 
         if ($campaign_allow_inbound > 0 or $campaign_leads_to_call > 0 or $no_hopper_leads_logins == 'Y') {
             ### insert an entry into the user log for the login event
-            $stmt = "INSERT INTO osdial_user_log (user,event,campaign_id,event_date,event_epoch,user_group) VALUES('$VD_login','LOGIN','$VD_campaign','$NOW_TIME','$StarTtimE','$VU_user_group')";
+            $stmt=sprintf("INSERT INTO osdial_user_log (user,event,campaign_id,event_date,event_epoch,user_group) VALUES('%s','LOGIN','%s','%s','%s','%s')",mres($VD_login),mres($VD_campaign),mres($NOW_TIME),mres($StarTtimE),mres($VU_user_group));
             if ($DB) echo "|$stmt|\n";
             $rslt=mysql_query($stmt, $link);
 
             ##### check to see if the user has a conf extension already, this happens if they previously exited uncleanly
-            $stmt="SELECT SQL_NO_CACHE conf_exten FROM osdial_conferences WHERE extension='$SIP_user' AND server_ip='$server_ip' LIMIT 1;";
+            $stmt=sprintf("SELECT SQL_NO_CACHE conf_exten FROM osdial_conferences WHERE extension='%s' AND server_ip='%s' LIMIT 1;",mres($SIP_user),mres($server_ip));
             $rslt=mysql_query($stmt, $link);
             if ($DB) echo "$stmt\n";
             $prev_conf_ct = mysql_num_rows($rslt);
@@ -1442,28 +1415,28 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
                 echo "<!-- Using previous conference $session_id | $SIP_user | $server_ip -->\n";
 
-                $stmt="UPDATE osdial_list set status='N', user='' where status IN('QUEUE','INCALL') and user ='$VD_login';";
+                $stmt=sprintf("UPDATE osdial_list SET status='N',user='' WHERE status IN('QUEUE','INCALL') AND user='%s';",mres($VD_login));
                 $rslt=mysql_query($stmt, $link);
                 $affected_rows = mysql_affected_rows($link);
                 echo "<!-- old QUEUE and INCALL reverted list:   |$affected_rows| -->\n";
 
-                $stmt="DELETE from osdial_hopper where status IN('QUEUE','INCALL','DONE') and user ='$VD_login';";
+                $stmt=sprintf("DELETE FROM osdial_hopper WHERE status IN('QUEUE','INCALL','DONE') AND user='%s';",mres($VD_login));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
                 $affected_rows = mysql_affected_rows($link);
                 echo "<!-- old QUEUE and INCALL reverted hopper: |$affected_rows| -->\n";
             } else {
                 # Lets get a new one...
-                $stmt="SELECT SQL_NO_CACHE count(*) FROM osdial_conferences WHERE server_ip='$server_ip' AND (extension='' OR extension IS NULL);";
+                $stmt=sprintf("SELECT SQL_NO_CACHE count(*) FROM osdial_conferences WHERE server_ip='%s' AND (extension='' OR extension IS NULL);",mres($server_ip));
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $row=mysql_fetch_row($rslt);
                 $new_conf_ct = $row[0];
                 if ($new_conf_ct > 0) {
-                    $stmt="UPDATE osdial_conferences SET extension='$SIP_user' WHERE server_ip='$server_ip' AND (extension='' OR extension is null) LIMIT 1;";
+                    $stmt=sprintf("UPDATE osdial_conferences SET extension='%s' WHERE server_ip='%s' AND (extension='' OR extension is null) LIMIT 1;",mres($SIP_user),mres($server_ip));
                     $rslt=mysql_query($stmt, $link);
 
-                    $stmt="SELECT SQL_NO_CACHE conf_exten FROM osdial_conferences WHERE extension='$SIP_user' AND server_ip='$server_ip';";
+                    $stmt=sprintf("SELECT SQL_NO_CACHE conf_exten FROM osdial_conferences WHERE extension='%s' AND server_ip='%s';",mres($SIP_user),mres($server_ip));
                     $rslt=mysql_query($stmt, $link);
                     $row=mysql_fetch_row($rslt);
                     $session_id=$row[0];
@@ -1473,7 +1446,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             }
 
             # User is logged in elsewhere
-            $stmt="SELECT SQL_NO_CACHE user,extension,server_ip,conf_exten FROM osdial_live_agents WHERE user='$VD_login' LIMIT 1;";
+            $stmt=sprintf("SELECT SQL_NO_CACHE user,extension,server_ip,conf_exten FROM osdial_live_agents WHERE user='%s' LIMIT 1;",mres($VD_login));
             $rslt=mysql_query($stmt, $link);
             if ($DB) echo "$stmt\n";
             $ola_user_ct = mysql_num_rows($rslt);
@@ -1481,7 +1454,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             if ($ola_user_ct) {
                 $row=mysql_fetch_row($rslt);
                 echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
-                echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+                echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
                 #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
                 echo "<script type=\"text/javascript\">\n";
                 require('include/osdial-login.js');
@@ -1510,7 +1483,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 echo "  </tr>\n";
                 echo "</table>\n";
                 echo "<hr>\n";
-                echo "<form action=\"$PHP_SELF\" method=post>\n";
+                echo "<form name=osdial_form id=osdial_form action=\"$PHP_SELF\" method=post>\n";
                 echo "<input type=hidden name=DB value=\"$DB\">\n";
                 echo "<input type=hidden name=phone_login value=\"$phone_login\">\n";
                 echo "<input type=hidden name=phone_pass value=\"$phone_pass\">\n";
@@ -1531,29 +1504,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             ### set the callerID for manager middleware-app to connect the phone to the user
             $SIqueryCID = "S$CIDdate$session_id";
 
-            #############################################
-            ##### START SYSTEM_SETTINGS LOOKUP #####
-            $stmt = "SELECT enable_queuemetrics_logging,queuemetrics_server_ip,queuemetrics_dbname,queuemetrics_login,queuemetrics_pass,queuemetrics_log_id,osdial_agent_disable,allow_sipsak_messages FROM system_settings;";
-            $rslt=mysql_query($stmt, $link);
-            if ($DB) echo "$stmt\n";
-            $qm_conf_ct = mysql_num_rows($rslt);
-            $i=0;
-            while ($i < $qm_conf_ct) {
-                $row=mysql_fetch_row($rslt);
-                $enable_queuemetrics_logging = $row[0];
-                $queuemetrics_server_ip = $row[1];
-                $queuemetrics_dbname = $row[2];
-                $queuemetrics_login = $row[3];
-                $queuemetrics_pass = $row[4];
-                $queuemetrics_log_id = $row[5];
-                $osdial_agent_disable = $row[6];
-                $allow_sipsak_messages = $row[7];
-                $i++;
-            }
-            ##### END QUEUEMETRICS LOGGING LOOKUP #####
-            ###########################################
-
-            if ($enable_sipsak_messages > 0 and $allow_sipsak_messages > 0 and preg_match("/SIP/i",$protocol)) {
+            if ($enable_sipsak_messages > 0 and $config['settings']['allow_sipsak_messages'] > 0 and OSDpreg_match("/SIP/i",$protocol)) {
                 $SIPSAK_prefix = 'LIN-';
                 print "<!-- sending login sipsak message: $SIPSAK_prefix$VD_campaign -->\n";
                 passthru("/usr/local/bin/sipsak -M -O desktop -B \"$SIPSAK_prefix$VD_campaign\" -r 5060 -s sip:$extension@$phone_ip > /dev/null");
@@ -1561,7 +1512,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             }
 
             ### insert a NEW record to the osdial_manager table to be processed
-            $stmt="INSERT INTO osdial_manager values('','','$NOW_TIME','NEW','N','$server_ip','','Originate','$SIqueryCID','Channel: $SIP_user_DiaL','Context: $ext_context','Exten: 2$session_id','Priority: 1','Callerid: \"OSDial#$SIP_user\" <$campaign_cid>','Account: $SIqueryCID','','','','');";
+            $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Originate','%s','Channel: %s','Context: %s','Exten: 2%s','Priority: 1','Callerid: \"OSDial#%s\" <%s>','Account: %s','','','','');",mres($NOW_TIME),mres($server_ip),mres($SIqueryCID),mres($SIP_user_DiaL),mres($ext_context),mres($session_id),mres($SIP_user),mres($campaign_cid),mres($SIqueryCID));
             if ($DB) echo "$stmt\n";
             $rslt=mysql_query($stmt, $link);
             $affected_rows = mysql_affected_rows($link);
@@ -1571,7 +1522,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 print "<!-- campaign is set to auto_dial_level: $auto_dial_level -->\n";
 
                 ##### grab the campaign_weight and number of calls today on that campaign for the agent
-                $stmt="SELECT campaign_weight,calls_today FROM osdial_campaign_agents WHERE user='$VD_login' AND campaign_id='$VD_campaign';";
+                $stmt=sprintf("SELECT campaign_weight,calls_today FROM osdial_campaign_agents WHERE user='%s' AND campaign_id='%s';",mres($VD_login),mres($VD_campaign));
                 $rslt=mysql_query($stmt, $link);
                 if ($DB) echo "$stmt\n";
                 $vca_ct = mysql_num_rows($rslt);
@@ -1583,30 +1534,31 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 } else {
                     $campaign_weight = '0';
                     $calls_today = '0';
-                    $stmt="INSERT INTO osdial_campaign_agents (user,campaign_id,campaign_rank,campaign_weight,calls_today) values('$VD_login','$VD_campaign','0','0','$calls_today');";
+                    $stmt=sprintf("INSERT INTO osdial_campaign_agents (user,campaign_id,campaign_rank,campaign_weight,calls_today) VALUES('%s','%s','0','0','%s');",mres($VD_login),mres($VD_campaign),mres($calls_today));
                     if ($DB) echo "$stmt\n";
                     $rslt=mysql_query($stmt, $link);
                     $affected_rows = mysql_affected_rows($link);
                     print "<!-- new osdial_campaign_agents record inserted: |$affected_rows| -->\n";
                 }
                 $closer_chooser_string='';
-                $stmt="INSERT INTO osdial_live_agents (user,server_ip,conf_exten,extension,status,lead_id,campaign_id,uniqueid,callerid,channel,random_id,last_call_time,last_update_time,last_call_finish,closer_campaigns,user_level,campaign_weight,calls_today) values('$VD_login','$server_ip','$session_id','$SIP_user','PAUSED','','$VD_campaign','','','','$random','$NOW_TIME','$tsNOW_TIME','$NOW_TIME','$closer_chooser_string','$user_level','$campaign_weight','$calls_today');";
+                $stmt=sprintf("INSERT INTO osdial_live_agents (user,server_ip,conf_exten,extension,status,lead_id,campaign_id,uniqueid,callerid,channel,random_id,last_call_time,last_update_time,last_call_finish,closer_campaigns,user_level,campaign_weight,calls_today) VALUES('%s','%s','%s','%s','PAUSED','','%s','','','','%s','%s','%s','%s','%s','%s','%s','%s');",mres($VD_login),mres($server_ip),mres($session_id),mres($SIP_user),mres($VD_campaign),mres($random),mres($NOW_TIME),mres($tsNOW_TIME),mres($NOW_TIME),mres($closer_chooser_string),mres($user_level),mres($campaign_weight),mres($calls_today));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
                 $affected_rows = mysql_affected_rows($link);
                 print "<!-- new osdial_live_agents record inserted: |$affected_rows| -->\n";
 
-                if ($enable_queuemetrics_logging > 0) {
-                    $linkB=mysql_connect($queuemetrics_server_ip, $queuemetrics_login, $queuemetrics_pass);
-                    mysql_select_db($queuemetrics_dbname, $linkB);
+                if ($config['settings']['enable_queuemetrics_logging'] > 0) {
+                    $linkB=mysql_connect($config['settings']['queuemetrics_server_ip'], $config['settings']['queuemetrics_login'], $config['settings']['queuemetrics_pass']);
+                    mysql_select_db($config['settings']['queuemetrics_dbname'], $linkB);
+                    if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$linkB);
 
-                    $stmt = "INSERT INTO queue_log SET partition='P001',time_id='$StarTtimE',call_id='NONE',queue='$VD_campaign',agent='Agent/$VD_login',verb='AGENTLOGIN',data1='$VD_login@agents',serverid='$queuemetrics_log_id';";
+                    $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='NONE',queue='%s',agent='Agent/%s',verb='AGENTLOGIN',data1='%s@agents',serverid='%s';",mres($StarTtimE),mres($VD_campaign),mres($VD_login),mres($VD_login),mres($config['settings']['queuemetrics_log_id']));
                     if ($DB) echo "$stmt\n";
                     $rslt=mysql_query($stmt, $linkB);
                     $affected_rows = mysql_affected_rows($linkB);
                     print "<!-- queue_log AGENTLOGIN entry added: $VD_login|$affected_rows -->\n";
 
-                    $stmt = "INSERT INTO queue_log SET partition='P001',time_id='$StarTtimE',call_id='NONE',queue='NONE',agent='Agent/$VD_login',verb='PAUSEALL',serverid='$queuemetrics_log_id';";
+                    $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='NONE',queue='NONE',agent='Agent/%s',verb='PAUSEALL',serverid='%s';",mres($StarTtimE),mres($VD_login),mres($config['settings']['queuemetrics_log_id']));
                     if ($DB) echo "$stmt\n";
                     $rslt=mysql_query($stmt, $linkB);
                     $affected_rows = mysql_affected_rows($linkB);
@@ -1621,23 +1573,24 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             } else {
                 print "<!-- campaign is set to manual dial: $auto_dial_level -->\n";
 
-                $stmt="INSERT INTO osdial_live_agents (user,server_ip,conf_exten,extension,status,lead_id,campaign_id,uniqueid,callerid,channel,random_id,last_call_time,last_update_time,last_call_finish,user_level) values('$VD_login','$server_ip','$session_id','$SIP_user','PAUSED','','$VD_campaign','','','','$random','$NOW_TIME','$tsNOW_TIME','$NOW_TIME','$user_level');";
+                $stmt=sprintf("INSERT INTO osdial_live_agents (user,server_ip,conf_exten,extension,status,lead_id,campaign_id,uniqueid,callerid,channel,random_id,last_call_time,last_update_time,last_call_finish,user_level) VALUES('%s','%s','%s','%s','PAUSED','','%s','','','','%s','%s','%s','%s','%s');",mres($VD_login),mres($server_ip),mres($session_id),mres($SIP_user),mres($VD_campaign),mres($random),mres($NOW_TIME),mres($tsNOW_TIME),mres($NOW_TIME),mres($user_level));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
                 $affected_rows = mysql_affected_rows($link);
                 print "<!-- new osdial_live_agents record inserted: |$affected_rows| -->\n";
 
-                if ($enable_queuemetrics_logging > 0) {
-                    $linkB=mysql_connect($queuemetrics_server_ip, $queuemetrics_login, $queuemetrics_pass);
-                    mysql_select_db($queuemetrics_dbname, $linkB);
+                if ($config['settings']['enable_queuemetrics_logging'] > 0) {
+                    $linkB=mysql_connect($config['settings']['queuemetrics_server_ip'], $config['settings']['queuemetrics_login'], $config['settings']['queuemetrics_pass']);
+                    mysql_select_db($config['settings']['queuemetrics_dbname'], $linkB);
+                    if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$linkB);
 
-                    $stmt = "INSERT INTO queue_log SET partition='P001',time_id='$StarTtimE',call_id='NONE',queue='$VD_campaign',agent='Agent/$VD_login',verb='AGENTLOGIN',data1='$VD_login@agents',serverid='$queuemetrics_log_id';";
+                    $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='NONE',queue='%s',agent='Agent/%s',verb='AGENTLOGIN',data1='%s@agents',serverid='%s';",mres($StarTtimE),mres($VD_campaign),mres($VD_login),mres($VD_login),mres($config['settings']['queuemetrics_log_id']));
                     if ($DB) echo "$stmt\n";
                     $rslt=mysql_query($stmt, $linkB);
                     $affected_rows = mysql_affected_rows($linkB);
                     print "<!-- queue_log AGENTLOGIN entry added: $VD_login|$affected_rows -->\n";
 
-                    $stmt = "INSERT INTO queue_log SET partition='P001',time_id='$StarTtimE',call_id='NONE',queue='NONE',agent='Agent/$VD_login',verb='PAUSEALL',serverid='$queuemetrics_log_id';";
+                    $stmt=sprintf("INSERT INTO queue_log SET partition='P001',time_id='%s',call_id='NONE',queue='NONE',agent='Agent/%s',verb='PAUSEALL',serverid='%s';",mres($StarTtimE),mres($VD_login),mres($config['settings']['queuemetrics_log_id']));
                     if ($DB) echo "$stmt\n";
                     $rslt=mysql_query($stmt, $linkB);
                     $affected_rows = mysql_affected_rows($linkB);
@@ -1650,7 +1603,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
         } else {
             echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
-            echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+            echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
             #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
             echo "<script type=\"text/javascript\">\n";
             require('include/osdial-login.js');
@@ -1659,7 +1612,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             echo "<body bgcolor=white name=osdial>\n";
             echo $welcome_span;
             echo "<b>Sorry, there are no leads in the hopper for this campaign</b>\n";
-            echo "<form action=\"$PHP_SELF\" method=post>\n";
+            echo "<form name=osdial_form id=osdial_form action=\"$PHP_SELF\" method=post>\n";
             echo "<input type=hidden name=DB value=\"$DB\">\n";
             echo "<input type=hidden name=phone_login value=\"$phone_login\">\n";
             echo "<input type=hidden name=phone_pass value=\"$phone_pass\">\n";
@@ -1674,9 +1627,9 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             exit;
         }
 
-        if (strlen($session_id) < 1) {
+        if (OSDstrlen($session_id) < 1) {
             echo "<title>$t1 web client: $t1 Campaign Login</title>\n";
-            echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+            echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
             #echo "<script type=\"text/javascript\" src=\"include/osdial-login.js\"></script>\n";
             echo "<script type=\"text/javascript\">\n";
             require('include/osdial-login.js');
@@ -1685,7 +1638,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             echo "<body bgcolor=white name=osdial>\n";
             echo $welcome_span;
             echo "<b>Sorry, there are no available sessions</b>\n";
-            echo "<form action=\"$PHP_SELF\" method=post>\n";
+            echo "<form name=osdial_form id=osdial_form action=\"$PHP_SELF\" method=post>\n";
             echo "<input type=hidden name=DB value=\"$DB\">\n";
             echo "<input type=hidden name=phone_login value=\"$phone_login\">\n";
             echo "<input type=hidden name=phone_pass value=\"$phone_pass\">\n";
@@ -1700,7 +1653,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
             exit;
         }
 
-        if (preg_match('/MSIE/',$browser)) {
+        if (OSDpreg_match('/MSIE/',$browser)) {
             $useIE=1;
             print "<!-- client web browser used: MSIE |$browser|$useIE| -->\n";
         } else {
@@ -1711,7 +1664,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
         $StarTtimE = date("U");
         $NOW_TIME = date("Y-m-d H:i:s");
         ##### Agent is going to log in so insert the osdial_agent_log entry now
-        $stmt="INSERT INTO osdial_agent_log (user,server_ip,event_time,campaign_id,pause_epoch,pause_sec,wait_epoch,user_group,sub_status) values('$VD_login','$server_ip','$NOW_TIME','$VD_campaign','$StarTtimE','0','$StarTtimE','$VU_user_group','LOGIN');";
+        $stmt=sprintf("INSERT INTO osdial_agent_log (user,server_ip,event_time,campaign_id,pause_epoch,pause_sec,wait_epoch,user_group,sub_status) VALUES('%s','%s','%s','%s','%s','0','%s','%s','LOGIN');",mres($VD_login),mres($server_ip),mres($NOW_TIME),mres($VD_campaign),mres($StarTtimE),mres($StarTtimE),mres($VU_user_group));
         if ($DB) echo "$stmt\n";
         $rslt=mysql_query($stmt, $link);
         $affected_rows = mysql_affected_rows($link);
@@ -1720,14 +1673,14 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
         $S='*';
         $D_s_ip = explode('.', $server_ip);
-        if (strlen($D_s_ip[0])<2) $D_s_ip[0] = "0$D_s_ip[0]";
-        if (strlen($D_s_ip[0])<3) $D_s_ip[0] = "0$D_s_ip[0]";
-        if (strlen($D_s_ip[1])<2) $D_s_ip[1] = "0$D_s_ip[1]";
-        if (strlen($D_s_ip[1])<3) $D_s_ip[1] = "0$D_s_ip[1]";
-        if (strlen($D_s_ip[2])<2) $D_s_ip[2] = "0$D_s_ip[2]";
-        if (strlen($D_s_ip[2])<3) $D_s_ip[2] = "0$D_s_ip[2]";
-        if (strlen($D_s_ip[3])<2) $D_s_ip[3] = "0$D_s_ip[3]";
-        if (strlen($D_s_ip[3])<3) $D_s_ip[3] = "0$D_s_ip[3]";
+        if (OSDstrlen($D_s_ip[0])<2) $D_s_ip[0] = "0$D_s_ip[0]";
+        if (OSDstrlen($D_s_ip[0])<3) $D_s_ip[0] = "0$D_s_ip[0]";
+        if (OSDstrlen($D_s_ip[1])<2) $D_s_ip[1] = "0$D_s_ip[1]";
+        if (OSDstrlen($D_s_ip[1])<3) $D_s_ip[1] = "0$D_s_ip[1]";
+        if (OSDstrlen($D_s_ip[2])<2) $D_s_ip[2] = "0$D_s_ip[2]";
+        if (OSDstrlen($D_s_ip[2])<3) $D_s_ip[2] = "0$D_s_ip[2]";
+        if (OSDstrlen($D_s_ip[3])<2) $D_s_ip[3] = "0$D_s_ip[3]";
+        if (OSDstrlen($D_s_ip[3])<3) $D_s_ip[3] = "0$D_s_ip[3]";
         $server_ip_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]";
 
         $scriptSQL = '';
@@ -1736,9 +1689,9 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
         }
         $scriptSQL = rtrim($scriptSQL,',');
         $MM_scripts = 0;
-        if ($scriptSQL != '') {
+        if (!empty($scriptSQL)) {
             ##### grab the datails of all active scripts in the system
-            $stmt="SELECT script_id,script_name,script_text FROM osdial_scripts WHERE active='Y' AND script_id IN ($scriptSQL) ORDER BY script_id LIMIT 100;";
+            $stmt=sprintf("SELECT script_id,script_name,script_text FROM osdial_scripts WHERE active='Y' AND script_id IN (%s) ORDER BY script_id LIMIT 100;",$scriptSQL);
             $rslt=mysql_query($stmt, $link);
             if ($DB) echo "$stmt\n";
             $MM_scripts = mysql_num_rows($rslt);
@@ -1751,7 +1704,7 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
 
             $PMMscripttext = "<span style=\"display:block;\" id=\"SCRIPT_MAIN\">" . $row[2] . "</span>";
 
-            $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', "script_id='" . $row[0] . "'");
+            $buttons = get_krh($link, 'osdial_script_buttons', 'script_button_id,script_id,script_button_description,script_button_label,script_button_text', 'script_button_id', sprintf("script_id='%s'",mres($row[0])) );
             $hidebuttons = "document.getElementById('SCRIPT_MAIN').style.display='none';";
 
             if (is_array($buttons)) {
@@ -1767,15 +1720,15 @@ if (strlen($phone_login)<2 or strlen($phone_pass)<2) {
                 }
 
                 foreach ($buttons as $button) {
-                    $PMMscripttext = preg_replace('/\{\{' . $button['script_button_id'] . '\}\}/imU', '{{' . $button['script_button_id'] . ':' . $button['script_button_label'] . '}}',$PMMscripttext);
-                    $PMMscripttext = preg_replace('/\{\{' . $button['script_button_id'] . ':(.*)\}\}/imU', '<input type="button" value="$1" onclick="ScriptButtonLog(\'' . $row[0] . '\' &#43; script_last_click,\'' . $button['script_button_id'] . '\'); script_last_click=\'_' . $button['script_button_id'] . '\'; ' . $hidebuttons . ' document.getElementById(\'SCRIPT_' . $button['script_button_id'] . '\').style.display=\'block\';">',$PMMscripttext);
+                    $PMMscripttext = OSDpreg_replace('/\{\{' . $button['script_button_id'] . '\}\}/imU', '{{' . $button['script_button_id'] . ':' . $button['script_button_label'] . '}}',$PMMscripttext);
+                    $PMMscripttext = OSDpreg_replace('/\{\{' . $button['script_button_id'] . ':(.*)\}\}/imU', '<input type="button" value="$1" onclick="ScriptButtonLog(\'' . $row[0] . '\' &#43; script_last_click,\'' . $button['script_button_id'] . '\'); script_last_click=\'_' . $button['script_button_id'] . '\'; ' . $hidebuttons . ' document.getElementById(\'SCRIPT_' . $button['script_button_id'] . '\').style.display=\'block\';">',$PMMscripttext);
                 }
             }
 
-            $PMMscripttext = preg_replace('/\{\{DISPO:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
-            $PMMscripttext = preg_replace('/\{\{DISPO_NORMAL:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();submit_method_tmp=submit_method;submit_method=0;HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
-            $PMMscripttext = preg_replace('/\{\{DISPO_WEBFORM1:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();submit_method_tmp=submit_method;submit_method=1;HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
-            $PMMscripttext = preg_replace('/\{\{DISPO_WEBFORM2:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();submit_method_tmp=submit_method;submit_method=2;HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
+            $PMMscripttext = OSDpreg_replace('/\{\{DISPO:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
+            $PMMscripttext = OSDpreg_replace('/\{\{DISPO_NORMAL:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();submit_method_tmp=submit_method;submit_method=0;HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
+            $PMMscripttext = OSDpreg_replace('/\{\{DISPO_WEBFORM1:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();submit_method_tmp=submit_method;submit_method=1;HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
+            $PMMscripttext = OSDpreg_replace('/\{\{DISPO_WEBFORM2:(.*):(.*)\}\}/imU','<input type="button" value="$2" onclick="document.getElementById(\'HotKeyDispo\').innerHTML=\'$1 - $2\';showDiv(\'HotKeyActionBox\');document.osdial_form.DispoSelection.value=\'$1\';CustomerData_update();submit_method_tmp=submit_method;submit_method=2;HKdispo_display=3;HKfinish=1;dialedcall_send_hangup(\'NO\',\'YES\',\'\');">',$PMMscripttext);
 
             $MMscripttext[$e] = urlencode($PMMscripttext);
             $MMscriptids .= "'$MMscriptid[$e]',";
@@ -1815,10 +1768,10 @@ $AFlengths_js = '';
 $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'");
 $cnt = 0;
 foreach ($forms as $form) {
-    foreach (preg_split('/,/',$form['campaigns']) as $fcamp) {
-        if ($fcamp == 'ALL' or strtoupper($fcamp) == strtoupper($VD_campaign)) {
+    foreach (OSDpreg_split('/,/',$form['campaigns']) as $fcamp) {
+        if ($fcamp == 'ALL' or OSDstrtoupper($fcamp) == OSDstrtoupper($VD_campaign)) {
             $AFforms_js .= "'" . $form['name'] . "',";
-            $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
+            $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', sprintf("deleted='0' AND form_id='%s'",mres($form['id'])) );
             foreach ($fields as $field) {
                 $AFnames[$cnt] = $form['name'] . '_' . $field['name'];
                 $AFnames_js .= "'" . $form['name'] . '_' . $field['name'] . "',";
@@ -1852,7 +1805,7 @@ while ($MM_scripts > $h) {
 echo "</script>\n";
 
 
-echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $agent_template . "/styles.css\" media=\"screen\">\n";
+echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"templates/" . $config['settings']['agent_template'] . "/styles.css\" media=\"screen\">\n";
 
 
 
@@ -1914,7 +1867,7 @@ flush();
         <table width=<?php echo ($MNwidth-10); ?> height=30 border=0> 
             <tr valign=top align=left>
                 <td colspan=2>
-                    <img id="FormButtons" onclick="ChooseForm();" src="templates/<?php echo $agent_template; ?>/images/vdc_tab_buttons1.gif" border="0" width="223" height="30">
+                    <img id="FormButtons" onclick="ChooseForm();" src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_tab_buttons1.gif" border="0" width="223" height="30">
                 </td>
                 <td width=<?php echo $HSwidth; ?> valign=middle align=center>
                     <font class="body_text" color=<?php echo $default_fc; ?>><b><span id=status>LIVE</span></b></font>
@@ -1929,7 +1882,7 @@ flush();
                     &nbsp;<a href="#" onclick="LogouT('NORMAL');return false;"><font size=1 color='red'>LOGOUT</font></a>&nbsp;
                 </td>
                 <td width=110>
-                    <font class="body_text"><img src="templates/<?php echo $agent_template; ?>/images/agc_live_call_OFF.gif" name=livecall alt="Live Call" width=109 height=30 border=0></font>
+                    <font class="body_text"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/agc_live_call_OFF.gif" name=livecall alt="Live Call" width=109 height=30 border=0></font>
                 </td>
             </tr>
         </table>
@@ -1943,7 +1896,7 @@ flush();
     
 
     <!-- Logout Link -->
-    <span style="position:absolute;left:1px;top:1px;z-index:30;background-image: URL('templates/<?php echo $agent_template; ?>/images/loginagain-bg.png');background-repeat:no-repeat;visibility:hidden;" id="LogouTBox">
+    <span style="position:absolute;left:1px;top:1px;z-index:30;background-image: URL('templates/<?php echo $config['settings']['agent_template']; ?>/images/loginagain-bg.png');background-repeat:no-repeat;visibility:hidden;" id="LogouTBox">
         <table width=1001 height=608 cellpadding=0 cellspacing=0>
             <tr>
                 <td align=center><br><span id="LogouTBoxLink">LOGOUT</span></td>
@@ -1977,13 +1930,13 @@ flush();
 
     <!-- Voicmeail Button -->
     <span style="position:absolute;left:708px;top:425px;z-index:16;" id="voicemailbutton">
-        <a href="#" title="You have no messages!" onclick="voicemail_ariopen();"><img src="templates/<?php echo $agent_template; ?>/images/agc_check_voicemail_OFF.gif" width=170 height=30 border=0 alt="VOICEMAIL"></a>
+        <a href="#" title="You have no messages!" onclick="voicemail_ariopen();"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/agc_check_voicemail_OFF.gif" width=170 height=30 border=0 alt="VOICEMAIL"></a>
     </span>
 
     <!-- Hot Key Button -->
     <?php if ($HK_statuses_camp > 0 and ($user_level >= $HKuser_level or $VU_hotkeys_active > 0)) { ?>
         <span style="position:absolute;left:480px;top:488px;z-index:16;" id="hotkeysdisplay">
-            <a href="#" onMouseOver="HotKeys('ON')"><img src="templates/<?php echo $agent_template; ?>/images/vdc_XB_hotkeysactive_OFF.gif" width=137 height=32 border=0 alt="HOT KEYS INACTIVE"></a>
+            <a href="#" onMouseOver="HotKeys('ON')"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_hotkeysactive_OFF.gif" width=137 height=32 border=0 alt="HOT KEYS INACTIVE"></a>
         </span>
     <?php } ?>
 
@@ -1992,13 +1945,13 @@ flush();
     <span style="position:absolute;left:881px;top:432px;z-index:22;" id="AgentMuteANDPreseTDiaL">
         <font class="body_text">
             <?php if ($PreseT_DiaL_LinKs) {
-                if (strlen($xferconf_a_number)) { 
+                if (OSDstrlen($xferconf_a_number)) { 
                     echo "<a href=\"#\" onclick=\"DtMf_PreSet_a_DiaL();return false;\"><font class=\"$diallink_class\">D1 - DIAL</font></a><br>\n";
                 }
-                if (strlen($xferconf_b_number)) { 
+                if (OSDstrlen($xferconf_b_number)) { 
                     echo "<a href=\"#\" onclick=\"DtMf_PreSet_b_DiaL();return false;\"><font class=\"$diallink_class\">D2 - DIAL</font></a><br>\n";
                 }
-                echo "<span id=\"DialBlindVMail2\"><img src=\"templates/$agent_template/images/vdc_XB_ammessage_OFF.gif\" width=36 height=17 border=0 alt=\"Blind Transfer VMail Message\"></span>\n";
+                echo "<span id=\"DialBlindVMail2\"><img src=\"templates/" . $config['settings']['agent_template'] . "/images/vdc_XB_ammessage_OFF.gif\" width=36 height=17 border=0 alt=\"Blind Transfer VMail Message\"></span>\n";
             } else {
                 echo "<br><br>\n";
             } ?>
@@ -2067,7 +2020,7 @@ flush();
                     <br><b><font color=<?php echo $mandial_fc; ?>>New Manual Dial Lead For </font><font color=<?php echo $mandial_bfc; ?>><?php echo $VD_login; ?></font><font color=<?php echo $mandial_fc; ?>> In Campaign </font><font color=<?php echo $mandial_bfc; ?>><?php echo $VD_campaign; ?></font></b>
                     <font color=<?php echo $mandial_fc; ?>>
                         <br><br>Enter information below for the new lead you wish to call.<br>
-                        <?php  if (preg_match("/X/",dial_prefix)) {
+                        <?php  if (OSDpreg_match("/X/",dial_prefix)) {
                             echo "Note: a dial prefix of $dial_prefix will be added to the beginning of this number<br>\n";
                         } ?>
                         Note: all new manual dial leads will go into list <?php echo $manual_dial_list_id; ?><br><br>
@@ -2143,8 +2096,8 @@ flush();
     <?php load_status('Initializing GUI...<br>VolumeControlSpan<br>&nbsp;'); ?>
     <!-- Volume Control Links -->
     <span style="position:absolute;left:935px;top:<?php echo ($CBheight+26); ?>px;z-index:19;visibility:hidden;" id="VolumeControlSpan">
-        <span id="VolumeUpSpan" style="left:0px;top:0px;"><img src="templates/<?php echo $agent_template; ?>/images/vdc_volume_up_off.gif" width=28 height=15 border=0></span>
-        <span id="VolumeDownSpan" style="left:0px;top:16px;float:left;"><img src="templates/<?php echo $agent_template; ?>/images/vdc_volume_down_off.gif" width=28 height=15 border=0></span>
+        <span id="VolumeUpSpan" style="left:0px;top:0px;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_volume_up_off.gif" width=28 height=15 border=0></span>
+        <span id="VolumeDownSpan" style="left:0px;top:16px;float:left;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_volume_down_off.gif" width=28 height=15 border=0></span>
     </span>
 
     
@@ -2173,24 +2126,24 @@ flush();
                                 </tr>
                                 <tr>
                                     <td><span id="XfeRGrouPLisT"><select size=1 name=XfeRGrouP class="cust_form"><option>-- SELECT A GROUP TO SEND YOUR CALL TO --</option></select></span></td>
-                                    <td align=center><span style="visibility:<?php echo $hide_xfer_local_closer; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="LocalCloser"><img src="templates/<?php echo $agent_template; ?>/images/vdc_XB_localcloser_OFF.gif" width=107 height=16 border=0 alt="LOCAL CLOSER"></span></td>
-                                    <td align=center><span style="visibility:<?php echo $hide_xfer_hangup_xfer; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="HangupXferLine"><img src="templates/<?php echo $agent_template; ?>/images/vdc_XB_hangupxferline_OFF.gif" width=145 height=16 border=0 alt="Hangup Xfer Line"></span></td>
-                                    <td align=center><span style="visibility:<?php echo $hide_xfer_hangup_both; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="HangupBothLines"><a href="#" onclick="bothcall_send_hangup();return false;"><img src="templates/<?php echo $agent_template; ?>/images/vdc_XB_hangupbothlines.gif" width=145 height=16 border=0 alt="Hangup Both Lines"></a></span></td>
-                                    <td align=center><?php if (strlen($xferconf_a_number)) { ?><a href="#" onclick="DtMf_PreSet_a();return false;"><font class="<?php echo $diallink_class; ?>">D1</font></a><?php } ?></td>
+                                    <td align=center><span style="visibility:<?php echo $hide_xfer_local_closer; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="LocalCloser"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_localcloser_OFF.gif" width=107 height=16 border=0 alt="LOCAL CLOSER"></span></td>
+                                    <td align=center><span style="visibility:<?php echo $hide_xfer_hangup_xfer; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="HangupXferLine"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_hangupxferline_OFF.gif" width=145 height=16 border=0 alt="Hangup Xfer Line"></span></td>
+                                    <td align=center><span style="visibility:<?php echo $hide_xfer_hangup_both; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="HangupBothLines"><a href="#" onclick="bothcall_send_hangup();return false;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_hangupbothlines.gif" width=145 height=16 border=0 alt="Hangup Both Lines"></a></span></td>
+                                    <td align=center><?php if (OSDstrlen($xferconf_a_number)) { ?><a href="#" onclick="DtMf_PreSet_a();return false;"><font class="<?php echo $diallink_class; ?>">D1</font></a><?php } ?></td>
                                 </tr>
                                 <tr>
                                     <td><font size=1 color=<?php echo $xfer_fc; ?>>Number to call:&nbsp;<input type=text size=15 name=xfernumber maxlength=25 class="cust_form" value="<?php echo $xferconf_a_number; ?>"><input type=hidden name=xferuniqueid></font></td>
                                     <td align=center><span style="visibility:<?php echo $hide_xfer_dial_override; ?>;" id="XferOverride"><input type=checkbox name=xferoverride size=1 value="0"><font size=1 color=<?php echo $xfer_fc; ?>>Dial Override</font></span></td>
-                                    <td align=center><span style="visibility:<?php echo $hide_xfer_leave_3way; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="Leave3WayCall"><img src="templates/<?php echo $agent_template; ?>/images/vdc_XB_leave3waycall_OFF.gif" width=137 height=16 border=0 alt="LEAVE 3-WAY CALL"></span></td>
-                                    <td align=center><span style="visibility:<?php echo $hide_xfer_blind_xfer; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="DialBlindTransfer"><img src="templates/<?php echo $agent_template; ?>/images/vdc_XB_blindtransfer_OFF.gif" width=137 height=16 border=0 alt="Dial Blind Transfer"></span></td>
-                                    <td align=center><?php if (strlen($xferconf_b_number)) { ?><a href="#" onclick="DtMf_PreSet_b();return false;"><font class="<?php echo $diallink_class; ?>">D2</font></a><?php } ?></td>
+                                    <td align=center><span style="visibility:<?php echo $hide_xfer_leave_3way; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="Leave3WayCall"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_leave3waycall_OFF.gif" width=137 height=16 border=0 alt="LEAVE 3-WAY CALL"></span></td>
+                                    <td align=center><span style="visibility:<?php echo $hide_xfer_blind_xfer; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="DialBlindTransfer"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_blindtransfer_OFF.gif" width=137 height=16 border=0 alt="Dial Blind Transfer"></span></td>
+                                    <td align=center><?php if (OSDstrlen($xferconf_b_number)) { ?><a href="#" onclick="DtMf_PreSet_b();return false;"><font class="<?php echo $diallink_class; ?>">D2</font></a><?php } ?></td>
                                 </tr>
                                 <tr>
                                     <td><font size=1 color=<?php echo $xfer_fc; ?>>Seconds:&nbsp;<input type=text size=2 name=xferlength maxlength=4 class="cust_form"></font></td>
                                     <td><font size=1 color=<?php echo $xfer_fc; ?>>Channel:&nbsp;<input type=text size=12 name=xferchannel maxlength=100 class="cust_form"></font></td>
-                                    <td align=center><span style="visibility:<?php echo $hide_xfer_dial_with; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="DialWithCustomer"><a href="#" onclick="SendManualDial('YES');return false;"><img src="templates/<?php echo $agent_template; ?>/images/vdc_XB_dialwithcustomer.gif" width=144 height=16 border=0 alt="Dial With Customer"></a></span></td>
-                                    <td align=center><span style="visibility:<?php echo $hide_xfer_park_dial; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="ParkCustomerDial"><a href="#" onclick="xfer_park_dial();return false;"><img src="templates/<?php echo $agent_template; ?>/images/vdc_XB_parkcustomerdial.gif" width=147 height=16 border=0 alt="Park Customer Dial"></a></span></td>
-                                    <td align=center><span style="visibility:<?php echo $hide_xfer_blind_vmail; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="DialBlindVMail"><img src="templates/<?php echo $agent_template; ?>/images/vdc_XB_ammessage_OFF.gif" width=36 height=16 border=0 alt="Blind Transfer VMail Message"></span></td>
+                                    <td align=center><span style="visibility:<?php echo $hide_xfer_dial_with; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="DialWithCustomer"><a href="#" onclick="SendManualDial('YES');return false;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_dialwithcustomer.gif" width=144 height=16 border=0 alt="Dial With Customer"></a></span></td>
+                                    <td align=center><span style="visibility:<?php echo $hide_xfer_park_dial; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="ParkCustomerDial"><a href="#" onclick="xfer_park_dial();return false;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_parkcustomerdial.gif" width=147 height=16 border=0 alt="Park Customer Dial"></a></span></td>
+                                    <td align=center><span style="visibility:<?php echo $hide_xfer_blind_vmail; ?>;background-color:<?php echo $xfer_bg2; ?>;" id="DialBlindVMail"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_XB_ammessage_OFF.gif" width=36 height=16 border=0 alt="Blind Transfer VMail Message"></span></td>
                                 </tr>
                             </table>
                         </font>
@@ -2582,7 +2535,7 @@ flush();
     <?php load_status('Initializing GUI...<br>NothingBox<br>&nbsp;'); ?>
     <!-- Preview hide -->
     <span style="position:absolute;left:0px;top:0px;z-index:37;visibility:hidden;" id="NothingBox">
-        <button type=button name="inert_button"><img src="templates/<?php echo $agent_template; ?>/images/blank.gif" width=1 height=1></button>
+        <button type=button name="inert_button"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1></button>
         <span id="DiaLLeaDPrevieWHide">Channel</span>
         <span id="DiaLDiaLAltPhonEHide">Channel</span>
         <?php if (!$agentonly_callbacks) {
@@ -2640,11 +2593,11 @@ flush();
                     <table id="MainTable" class=acrossagent style="background-color:<?php echo $panel_bg; ?>;" cellpadding=0 cellspacing=0>
                         <tr>
                             <td width=22 colspan=2 class=curve2 style="vertical-align:bottom;">
-                                <img src="templates/<?php echo $agent_template; ?>/images/AgentTopLeft.png" width=22 height=22 align=left>
+                                <img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/AgentTopLeft.png" width=22 height=22 align=left>
                                 <font class="body_text" color=<?php echo $status_fct; ?>>&nbsp;&nbsp;STATUS:&nbsp;&nbsp;</font>
                                 <font class="body_text" color=<?php echo $status_fc; ?>><span id="MainStatuSSpan"></span></font>
                             </td>
-                            <td width=22><img src="templates/<?php echo $agent_template; ?>/images/AgentTopRight.png" width=22 height=22 align=right></td>
+                            <td width=22><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/AgentTopRight.png" width=22 height=22 align=right></td>
                         </tr>
                         <tr>
                             <td colspan=3><span id="busycallsdebug"></span></td>
@@ -2656,58 +2609,58 @@ flush();
                             <td width=205 height=330 align=left valign=top class=curve3>
                                 <font class="body_text" style="">
                                     <center>
-                                        <span style="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><img src="templates/<?php echo $agent_template; ?>/images/vdc_LB_dialnextnumber_OFF.gif" width=145 height=16 border=0 alt="Dial Next Number"></a></span><br>
+                                        <span style="" id="DiaLControl"><a href="#" onclick="ManualDialNext('','','','','');"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_dialnextnumber_OFF.gif" width=145 height=16 border=0 alt="Dial Next Number"></a></span><br>
                                         <span id="DiaLLeaDPrevieW"><font class="preview_text"><input type=checkbox name=LeadPreview id=LeadPreview size=1 value="0"><label for="LeadPreview"> LEAD PREVIEW</label><br></font></span>
                                         <span id="DiaLDiaLAltPhonE"><font class="preview_text"><input type=checkbox name=DiaLAltPhonE id=DiaLAltPhonE size=1 value="0"><label for="DaiLAltPhonE"> ALT PHONE DIAL</label><br></font></span>
                             
                                         <font color=<?php echo $form_fc; ?>>Recording File</font><br>
                                         <font class="body_tiny">&nbsp;<span id="RecorDingFilename"></span></font><br>
                                         <font color=<?php echo $form_fc; ?>>Recording ID:&nbsp;</font><font class="body_small">&nbsp;<span id="RecorDID"></span></font>
-                                        <span id="RecorDControl"><a href="#" onclick="conf_send_recording('MonitorConf','<?php echo $session_id; ?>','');return false;"><img src="templates/<?php echo $agent_template; ?>/images/vdc_LB_startrecording.gif" width=145 height=16 border=0 alt="Start Recording"></a></span>
+                                        <span id="RecorDControl"><a href="#" onclick="conf_send_recording('MonitorConf','<?php echo $session_id; ?>','');return false;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_startrecording.gif" width=145 height=16 border=0 alt="Start Recording"></a></span>
                                         
-                                        <span id="SpacerSpanA"><img src="templates/<?php echo $agent_template; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
-                                        <span id="WebFormSpan"><img src="templates/<?php echo $agent_template; ?>/images/vdc_LB_webform_OFF.gif" width=145 height=16 border=0 alt="Web Form"></span>
-                                        <span id="SpacerSpanB"><img src="templates/<?php echo $agent_template; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:2px;border:0px;"></span><br>
-                                        <span id="WebFormSpan2"><img src="templates/<?php echo $agent_template; ?>/images/vdc_LB_webform2_OFF.gif" width=145 height=16 border=0 alt="Web Form"></span>
-                                        <span id="SpacerSpanC"><img src="templates/<?php echo $agent_template; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
-                                        <span id="ParkControl"><img src="templates/<?php echo $agent_template; ?>/images/vdc_LB_parkcall_OFF.gif" width=145 height=16 border=0 alt="Park Call"></span>
-                                        <span id="SpacerSpanD"><img src="templates/<?php echo $agent_template; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:2px;border:0px;"></span><br>
-                                        <span id="XferControl"><img src="templates/<?php echo $agent_template; ?>/images/vdc_LB_transferconf_OFF.gif" width=145 height=16 border=0 alt="Transfer - Conference"></span>
-                                        <span id="SpacerSpanE"><img src="templates/<?php echo $agent_template; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
-                                        <span id="HangupControl"><img src="templates/<?php echo $agent_template; ?>/images/vdc_LB_hangupcustomer_OFF.gif" width=145 height=16 border=0 alt="Hangup Customer"></span>
-                                        <span id="SpacerSpanF"><img src="templates/<?php echo $agent_template; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
+                                        <span id="SpacerSpanA"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
+                                        <span id="WebFormSpan"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_webform_OFF.gif" width=145 height=16 border=0 alt="Web Form"></span>
+                                        <span id="SpacerSpanB"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:2px;border:0px;"></span><br>
+                                        <span id="WebFormSpan2"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_webform2_OFF.gif" width=145 height=16 border=0 alt="Web Form"></span>
+                                        <span id="SpacerSpanC"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
+                                        <span id="ParkControl"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_parkcall_OFF.gif" width=145 height=16 border=0 alt="Park Call"></span>
+                                        <span id="SpacerSpanD"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:2px;border:0px;"></span><br>
+                                        <span id="XferControl"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_transferconf_OFF.gif" width=145 height=16 border=0 alt="Transfer - Conference"></span>
+                                        <span id="SpacerSpanE"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
+                                        <span id="HangupControl"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_hangupcustomer_OFF.gif" width=145 height=16 border=0 alt="Hangup Customer"></span>
+                                        <span id="SpacerSpanF"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
             
                                         <div class="text_input" id="DTMFDialPad" onMouseOver="DTMFKeys('ON');">
                                             <table cellspacing=1 cellpadding=1 border=0>
                                                 <tr>
-                                                    <td align=center><span id="DTMFDialPad1"><a href="#" alt="1"><img src="templates/<?php echo $agent_template; ?>/images/dtmf_1_OFF.png" width=26 height=19 border=0></a></span></td>
-                                                    <td align=center><span id="DTMFDialPad2"><a href="#" alt="2 - ABC"><img src="templates/<?php echo $agent_template; ?>/images/dtmf_2_OFF.png" width=26 height=19 border=0></a></span></td>
-                                                    <td align=center><span id="DTMFDialPad3"><a href="#" alt="3 - DEF"><img src="templates/<?php echo $agent_template; ?>/images/dtmf_3_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad1"><a href="#" alt="1"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/dtmf_1_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad2"><a href="#" alt="2 - ABC"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/dtmf_2_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad3"><a href="#" alt="3 - DEF"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/dtmf_3_OFF.png" width=26 height=19 border=0></a></span></td>
                                                 </tr>
                                                 <tr>
-                                                    <td align=center><span id="DTMFDialPad4"><a href="#" alt="4 - GHI"><img src="templates/<?php echo $agent_template; ?>/images/dtmf_4_OFF.png" width=26 height=19 border=0></a></span></td>
-                                                    <td align=center><span id="DTMFDialPad5"><a href="#" alt="5 - JKL"><img src="templates/<?php echo $agent_template; ?>/images/dtmf_5_OFF.png" width=26 height=19 border=0></a></span></td>
-                                                    <td align=center><span id="DTMFDialPad6"><a href="#" alt="6 - MNO"><img src="templates/<?php echo $agent_template; ?>/images/dtmf_6_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad4"><a href="#" alt="4 - GHI"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/dtmf_4_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad5"><a href="#" alt="5 - JKL"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/dtmf_5_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad6"><a href="#" alt="6 - MNO"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/dtmf_6_OFF.png" width=26 height=19 border=0></a></span></td>
                                                 </tr>
                                                 <tr>
-                                                    <td align=center><span id="DTMFDialPad7"><a href="#" alt="7 - PQRS"><img src="templates/<?php echo $agent_template; ?>/images/dtmf_7_OFF.png" width=26 height=19 border=0></a></span></td>
-                                                    <td align=center><span id="DTMFDialPad8"><a href="#" alt="8 - TUV"><img src="templates/<?php echo $agent_template; ?>/images/dtmf_8_OFF.png" width=26 height=19 border=0></a></span></td>
-                                                    <td align=center><span id="DTMFDialPad9"><a href="#" alt="9 - WXYZ"><img src="templates/<?php echo $agent_template; ?>/images/dtmf_9_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad7"><a href="#" alt="7 - PQRS"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/dtmf_7_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad8"><a href="#" alt="8 - TUV"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/dtmf_8_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad9"><a href="#" alt="9 - WXYZ"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/dtmf_9_OFF.png" width=26 height=19 border=0></a></span></td>
                                                 </tr>
                                                 <tr>
-                                                    <td align=center><span id="DTMFDialPadStar"><a href="#" alt="*"><img src="templates/<?php echo $agent_template; ?>/images/dtmf_star_OFF.png" width=26 height=19 border=0></a></span></td>
-                                                    <td align=center><span id="DTMFDialPad0"><a href="#" alt="0"><img src="templates/<?php echo $agent_template; ?>/images/dtmf_0_OFF.png" width=26 height=19 border=0></a></span></td>
-                                                    <td align=center><span id="DTMFDialPadHash"><a href="#" alt="#"><img src="templates/<?php echo $agent_template; ?>/images/dtmf_hash_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPadStar"><a href="#" alt="*"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/dtmf_star_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPad0"><a href="#" alt="0"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/dtmf_0_OFF.png" width=26 height=19 border=0></a></span></td>
+                                                    <td align=center><span id="DTMFDialPadHash"><a href="#" alt="#"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/dtmf_hash_OFF.png" width=26 height=19 border=0></a></span></td>
                                                 </tr>
                                             </table>
                                         </div>
                                         
                                         <div class="text_input" id="SendDTMFdiv">
-                                            <span id="SendDTMF"><a href="#" onclick="SendConfDTMF('<?php echo $session_id; ?>');return false;"><img src="templates/<?php echo $agent_template; ?>/images/vdc_LB_senddtmf.gif" height=19 width=93 border=0 alt="Send DTMF" align=top></a> <input type=text size=6 name=conf_dtmf class="cust_form" value="" maxlength=50></span>
+                                            <span id="SendDTMF"><a href="#" onclick="SendConfDTMF('<?php echo $session_id; ?>');return false;"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/vdc_LB_senddtmf.gif" height=19 width=93 border=0 alt="Send DTMF" align=top></a> <input type=text size=6 name=conf_dtmf class="cust_form" value="" maxlength=50></span>
                                         </div>
                                         
                                         <span id="RepullControl"></span>
-                                        <span id="SpacerSpanG"><img src="templates/<?php echo $agent_template; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
+                                        <span id="SpacerSpanG"><img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/blank.gif" width=1 height=1 style="width:145px;height:16px;border:0px;"></span><br>
                                     </center>
                                 </font>
                             </td>
@@ -2859,7 +2812,7 @@ flush();
 
                                     $ets = explode(',',$email_templates);
                                     foreach ($ets as $eto) {
-                                        $et = get_first_record($link, 'osdial_email_templates', '*', "et_id='" . $eto . "' AND active='Y'");
+                                        $et = get_first_record($link, 'osdial_email_templates', '*', sprintf("et_id='%s' AND active='Y'",mres($eto)) );
                                         echo "      <tr title=\"$desc\">\n";
                                         echo "        <td width=95 align=left colspan=2>\n";
                                         echo "          <div style=\"overflow:hidden;white-space:nowrap;\">\n";
@@ -2881,8 +2834,8 @@ flush();
                                 }
 
                                 foreach ($forms as $form) {
-                                    foreach (preg_split('/,/',$form['campaigns']) as $fcamp) {
-                                        if ($fcamp == 'ALL' or strtoupper($fcamp) == strtoupper($VD_campaign)) {
+                                    foreach (OSDpreg_split('/,/',$form['campaigns']) as $fcamp) {
+                                        if ($fcamp == 'ALL' or OSDstrtoupper($fcamp) == OSDstrtoupper($VD_campaign)) {
                                             if ($cnt > 0) {
                                                 $cssvis = 'visibility:hidden;';
                                             }
@@ -2893,13 +2846,13 @@ flush();
                                             echo "              <font color=$form_fc class=body_text style=\"font-size:12px\"><b>" . $form['description'] . "<br />" . $form['description2'] . "&nbsp;<b></font>\n";
                                             echo "          </td>\n";
                                             echo "      </tr>\n";
-                                            $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'");
+                                            $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', sprintf("deleted='0' AND form_id='%s'",mres($form['id'])) );
                                             foreach ($fields as $field) {
-                                                $desc = preg_replace('/"/','',$field['description']);
+                                                $desc = OSDpreg_replace('/"/','',$field['description']);
                                                 echo "      <tr title=\"$desc\">\n";
                                                 echo "          <td width=95 align=right><div style=\"overflow:hidden;white-space:nowrap;\"><font color=$form_fc class=body_text style=\"font-size:10px;\">" . $field['description'] . ":&nbsp;</font></div></td>\n";
                                                 echo "          <td align=left>\n";
-                                                if ($field['options'] == '') {
+                                                if (empty($field['options'])) {
                                                     echo "          <input type=text style=\"font-size:10px;\" size=" . $field['length'] . " maxlength=255 name=AF" . $field['id'] . " id=AF" . $field['id'];
                                                     #echo "            onclick=\"alert(document.osdial_form.AF" . $field['id'] . ".clientWidth);\"";
                                                     echo "            onchange=\"var afv=this;";
@@ -2916,7 +2869,7 @@ flush();
                                                     echo "                if(afv.value!=aflist[afli].value) aflist[afli].value=afv.value;";
                                                     echo "              };\"";
                                                     echo "          >\n";
-                                                    $options = preg_split('/,/',$field['options']);
+                                                    $options = OSDpreg_split('/,/',$field['options']);
                                                     foreach ($options as $opt) {
                                                         echo "              <option>" . $opt . "</option>\n";
                                                     }
@@ -2958,16 +2911,16 @@ flush();
             </tr>
         </table>
         <div id="AddtlFormTab" style="visibility:hidden;position:absolute;left:980px;top:22px;z-index:9;" onclick="AddtlFormOver();">
-            <img src="templates/<?php echo $agent_template; ?>/images/agentsidetab_tab.png" width="10" height="46" border="0">
+            <img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/agentsidetab_tab.png" width="10" height="46" border="0">
         </div>
         <div id="AddtlFormTabExpanded" style="visibility:hidden;position:absolute;left:840px;top:22px;z-index:9;">
             <table width=140 cellspacing=0 cellpadding=0>
-                <tr background="templates/<?php echo $agent_template; ?>/images/agentsidetab_top.png" height=15 onclick="AddtlFormSelect('Cancel');">
+                <tr background="templates/<?php echo $config['settings']['agent_template']; ?>/images/agentsidetab_top.png" height=15 onclick="AddtlFormSelect('Cancel');">
                     <td></td>
                 </tr>
                 <?php
                 if ($email_templates) {
-                    echo "  <tr id=AddtlFormButEmailTemplates style=\"background-image:url(templates/" . $agent_template . "/images/agentsidetab_extra.png);\" height=29 ";
+                    echo "  <tr id=AddtlFormButEmailTemplates style=\"background-image:url(templates/" . $config['settings']['agent_template'] . "/images/agentsidetab_extra.png);\" height=29 ";
                     echo "    onmouseover=\"AddtlFormButOver('EmailTemplates');\" onmouseout=\"AddtlFormButOut('EmailTemplates');\">\n";
                     echo "      <td align=center onclick=\"AddtlFormSelect('EmailTemplates');\">\n";
                     echo "          <div class=AFMenu>EmailTemplates</div>\n";
@@ -2975,9 +2928,9 @@ flush();
                     echo "  </tr>\n";
                 }
                 foreach ($forms as $form) {
-                    foreach (preg_split('/,/',$form['campaigns']) as $fcamp) {
-                        if ($fcamp == 'ALL' or strtoupper($fcamp) == strtoupper($VD_campaign)) {
-                            echo "  <tr id=AddtlFormBut" . $form['name'] . " style=\"background-image:url(templates/" . $agent_template . "/images/agentsidetab_extra.png);\" height=29 ";
+                    foreach (OSDpreg_split('/,/',$form['campaigns']) as $fcamp) {
+                        if ($fcamp == 'ALL' or OSDstrtoupper($fcamp) == OSDstrtoupper($VD_campaign)) {
+                            echo "  <tr id=AddtlFormBut" . $form['name'] . " style=\"background-image:url(templates/" . $config['settings']['agent_template'] . "/images/agentsidetab_extra.png);\" height=29 ";
                             echo "    onmouseover=\"AddtlFormButOver('" . $form['name'] . "');\" onmouseout=\"AddtlFormButOut('" . $form['name'] . "');\">\n";
                             echo "      <td align=center onclick=\"AddtlFormSelect('" . $form['name'] . "');\">\n";
                             echo "          <div class=AFMenu>" . $form['name'] . "</div>\n";
@@ -2986,12 +2939,12 @@ flush();
                         }
                     }
                 } ?>
-                <tr id="AddtlFormButSelect4" background="templates/<?php echo $agent_template; ?>/images/agentsidetab_line.png" height=1>
+                <tr id="AddtlFormButSelect4" background="templates/<?php echo $config['settings']['agent_template']; ?>/images/agentsidetab_line.png" height=1>
                     <td></td>
                 </tr>
             </table>
             <div style="position:absolute;left:139px;top:0px;z-index:9;">
-                <img src="templates/<?php echo $agent_template; ?>/images/agentsidetab_cancel.png" width="10" height="46" border="0" onclick="AddtlFormSelect('Cancel');">
+                <img src="templates/<?php echo $config['settings']['agent_template']; ?>/images/agentsidetab_cancel.png" width="10" height="46" border="0" onclick="AddtlFormSelect('Cancel');">
             </div>
         </div>
     </span>

@@ -27,7 +27,7 @@ function report_lead_search_advanced($lsa_seg='form') {
 
     $html = '';
 
-    if ($LOGmodify_lists==1 and $LOGuser_level > 7) {
+    if ($LOG['modify_lists']==1 and $LOG['user_level'] > 7) {
         $form = '';
         $form .= "<table align=center><tr><td>\n";
         $form .= "<font face=\"dejavu sans,verdana,sans-serif\" color=$default_text size=2>";
@@ -93,7 +93,7 @@ function report_lead_search_advanced($lsa_seg='form') {
             $orig_lastcall_date_end = $tmp2[0];
         }
 
-        $phone_number = preg_replace("/[^0-9]/","",$phone_number);
+        $phone_number = OSDpreg_replace("/[^0-9]/","",$phone_number);
 
         # groups
         $campaigns = get_variable("campaigns");
@@ -134,7 +134,7 @@ function report_lead_search_advanced($lsa_seg='form') {
 
         if ($phone_number) {
             $notac = "%";
-            if (strlen($phone_number) == 3) $notac="";
+            if (OSDstrlen($phone_number) == 3) $notac="";
             if ($use_osdial_log) {
                 $searchWHR .= " AND osdial_log.phone_number LIKE '" . $notac . mres($phone_number) . "%'";
             } elseif ($use_osdial_closer_log) {
@@ -1189,7 +1189,7 @@ function report_lead_search_advanced($lsa_seg='form') {
             $data .= "  </tr>\n";
     
     
-            if ($field_cnt > 0 && $LOGexport_leads > 0) {
+            if ($field_cnt > 0 && $LOG['export_leads'] > 0) {
                 $csvfile = "advsearch_" . date("Ymd-His") . ".csv";
                 $fcsv = fopen ("./" . $csvfile, "a");
                 $fld_cnt = mysql_num_fields($rslt);
@@ -1223,7 +1223,7 @@ function report_lead_search_advanced($lsa_seg='form') {
                             foreach ($affields as $affield) {
                                 $rslt2=mysql_query(sprintf("SELECT value FROM osdial_list_fields WHERE lead_id='%s' AND field_id='%s' LIMIT 1;",$row[0],$affield), $link);
                                 $row2=mysql_fetch_row($rslt2);
-                                if (is_numeric(substr($row2[0],0,1)) and (!preg_match('/[a-z]/i',$row2[0]))) $row2[0] = "'" . $row2[0];
+                                if (is_numeric(OSDsubstr($row2[0],0,1)) and (!OSDpreg_match('/[a-z]/i',$row2[0]))) $row2[0] = "'" . $row2[0];
                                 $row[] = $row2[0];
                             }
                         }
@@ -1260,7 +1260,7 @@ function report_lead_search_advanced($lsa_seg='form') {
                     if ($row[1] == '0000-00-00 00:00:00') $row[1] = "";
                     if ($row[2] == '0000-00-00 00:00:00') $row[2] = "";
                     if ($row[35] == '0000-00-00 00:00:00') $row[35] = "";
-                    if (strlen($row[11]) == 10) $row[11] = substr($row[11],0,3) . "-" . substr($row[11],3,3) . "-" . substr($row[11],6,4);
+                    if (OSDstrlen($row[11]) == 10) $row[11] = OSDsubstr($row[11],0,3) . "-" . OSDsubstr($row[11],3,3) . "-" . OSDsubstr($row[11],6,4);
                     $row[8] = $row[8] * 1;
                     $tzlabel = $tzoffsets[$row[8]];
                     if (date('I') == 1) $tzlabel = $tzoffsetsDST[$row[8]];
@@ -1272,7 +1272,7 @@ function report_lead_search_advanced($lsa_seg='form') {
                     $data .= "    <td nowrap align=center title=\"$row[11]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[11]</font></td>\n";
                     $data .= "    <td nowrap align=left title=\"$row[15], $row[13]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ellipse($row[15] . ", " . $row[13], 10, true) . "</font></td>\n";
                     $data .= "    <td nowrap align=left title=\"$row[19]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . ellipse($row[19],10,true) . "</font></td>\n";
-                    $data .= "    <td nowrap align=center title=\"" . strtoupper($row[20]) ."\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . strtoupper($row[20]) . "</font></td>\n";
+                    $data .= "    <td nowrap align=center title=\"" . OSDstrtoupper($row[20]) ."\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>" . OSDstrtoupper($row[20]) . "</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[22]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[22]</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"" . $row[4] . " (" . $agents_label[$row[4]] . ")\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[4]</font></td>\n";
                     $data .= "    <td nowrap align=center title=\"$row[4]\"><font face=\"dejavu sans,verdana,sans-serif\" size=1>$row[5]</font></td>\n";

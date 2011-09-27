@@ -63,11 +63,11 @@ $osdial->agi_output("callerID changed: $CIDlead");
 
 ########## FIND AND UPDATE osdial_live_agents ##########
 my $random = int( rand(9999999)) + 10000000;
-my $affected_rows = $osdial->sql_execute("UPDATE osdial_live_agents SET channel='" . $AGI->{'channel'} . "',random_id='$random',call_server_ip='" . $osdial->{'VARserver_ip'} . "',uniqueid='" . $AGI->{'uniqueid'} . "' WHERE user='$user' AND lead_id='$lead_id';");
+my $affected_rows = $osdial->sql_execute("UPDATE osdial_live_agents SET channel='" . $AGI->{'channel'} . "',random_id='$random',call_server_ip='" . $osdial->{'VARserver_ip'} . "',uniqueid='" . $AGI->{'uniqueid'} . "' WHERE user='" . $osdial->mres($user) . "' AND lead_id='$lead_id';");
 $osdial->agi_output("--    VDAD osdial_live_agents update: |$affected_rows|$lead_id|");
 
 ########## INSERT NEW osdial_auto_calls record ##########
-my $affected_rows = $osdial->sql_execute("INSERT INTO osdial_auto_calls SET channel='" . $AGI->{'channel'} . "',server_ip='" . $osdial->{'VARserver_ip'} . "',uniqueid='" . $AGI->{'uniqueid'} . "',campaign_id='$campaign_id',status='CLOSER',lead_id='$lead_id',phone_code='$phone_code',phone_number='$phone_number',call_time=NOW(),call_type='IN',callerid='$CIDlead';");
+my $affected_rows = $osdial->sql_execute("INSERT INTO osdial_auto_calls SET channel='" . $AGI->{'channel'} . "',server_ip='" . $osdial->{'VARserver_ip'} . "',uniqueid='" . $AGI->{'uniqueid'} . "',campaign_id='" . $osdial->mres($campaign_id) . "',status='CLOSER',lead_id='$lead_id',phone_code='$phone_code',phone_number='$phone_number',call_time=NOW(),call_type='IN',callerid='$CIDlead';");
 $osdial->agi_output("--    VDAD osdial_auto_calls insert: |$affected_rows|$lead_id|");
 
 

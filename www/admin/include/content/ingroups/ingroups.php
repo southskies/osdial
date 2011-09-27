@@ -30,7 +30,7 @@
 
 if ($ADD==1111)
 {
-	if ($LOGmodify_ingroups==1)
+	if ($LOG['modify_ingroups']==1)
 	{
 	echo "<center><br><font color=$default_text size=+1>ADD A NEW INBOUND GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111>\n";
@@ -82,7 +82,7 @@ if ($ADD==1111)
 
 if ($ADD==1211)
 {
-	if ($LOGmodify_ingroups==1)
+	if ($LOG['modify_ingroups']==1)
 	{
 	echo "<center><br><font color=$default_text size=+1>COPY INBOUND GROUP</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2011>\n";
@@ -137,21 +137,21 @@ if ($ADD==2111)
 {
     $pregroup_id = $group_id;
     if ($LOG['multicomp'] > 0) $pregroup_id = (($company_id * 1) + 100) . $group_id;
-	$stmt="SELECT count(*) from osdial_inbound_groups where group_id='$pregroup_id';";
+	$stmt=sprintf("SELECT count(*) FROM osdial_inbound_groups WHERE group_id='%s';",mres($pregroup_id));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
 		{echo "<br><font color=red>GROUP NOT ADDED - there is already a group in the system with this ID</font>\n";}
 	else
 		{
-		$stmt="SELECT count(*) from osdial_campaigns where campaign_id='$pregroup_id';";
+		$stmt=sprintf("SELECT count(*) FROM osdial_campaigns WHERE campaign_id='%s';",mres($pregroup_id));
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		if ($row[0] > 0)
 			{echo "<br><font color=red>GROUP NOT ADDED - there is already a campaign in the system with this ID</font>\n";}
 		else
 			{
-			 if ( (strlen($group_id) < 2) or (strlen($group_name) < 2)  or (strlen($group_color) < 2) or (strlen($group_id) > 20) or (preg_match('/ /',$group_id)) or (preg_match("/\-/",$group_id)) or (preg_match("/\+/",$group_id)) )
+			 if ( (OSDstrlen($group_id) < 2) or (OSDstrlen($group_name) < 2)  or (OSDstrlen($group_color) < 2) or (OSDstrlen($group_id) > 20) or (OSDpreg_match('/ /',$group_id)) or (OSDpreg_match("/\-/",$group_id)) or (OSDpreg_match("/\+/",$group_id)) )
 				{
 				 echo "<br><font color=$default_text>GROUP NOT ADDED - Please go back and look at the data you entered\n";
 				 echo "<br>Group ID must be between 2 and 20 characters in length and contain no ' -+'.\n";
@@ -160,7 +160,7 @@ if ($ADD==2111)
 			 else
 				{
                 if ($LOG['multicomp'] > 0) $group_id = (($company_id * 1) + 100) . $group_id;
-				$stmt="INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,web_form_address2,allow_tab_switch,allow_multicall) values('$group_id','$group_name','$group_color','$active','" . mysql_real_escape_string($web_form_address) . "','$voicemail_ext','$next_agent_call','$fronter_display','$script_id','$get_call_launch','" . mysql_real_escape_string($web_form_address2) . "','$allow_tab_switch','$allow_multicall');";
+				$stmt=sprintf("INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,web_form_address2,allow_tab_switch,allow_multicall) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');",mres($group_id),mres($group_name),mres($group_color),mres($active),mres($web_form_address),mres($voicemail_ext),mres($next_agent_call),mres($fronter_display),mres($script_id),mres($get_call_launch),mres($web_form_address2),mres($allow_tab_switch),mres($allow_multicall));
 				$rslt=mysql_query($stmt, $link);
 
 				echo "<br><B><font color=$default_text>GROUP ADDED: $group_id</font></B>\n";
@@ -176,7 +176,7 @@ if ($ADD==2111)
                 if ($LOG['allowed_ingroupsALL']==0) {
                     $LOG['allowed_ingroups'][] = $group_id;
                     $ingroups_value = ' ' . implode(' ', $LOG['allowed_ingroups']) . ' -';
-                    $stmt = sprintf("UPDATE osdial_user_groups SET allowed_ingroups='%s' WHERE user_group='%s';",mres($ingroups_value),$LOG['user_group']);
+                    $stmt = sprintf("UPDATE osdial_user_groups SET allowed_ingroups='%s' WHERE user_group='%s';",mres($ingroups_value),mres($LOG['user_group']));
 				    $rslt=mysql_query($stmt, $link);
                 }
 
@@ -195,14 +195,14 @@ if ($ADD==2011)
 {
     $pregroup_id = $group_id;
     if ($LOG['multicomp'] > 0) $pregroup_id = (($company_id * 1) + 100) . $group_id;
-	$stmt="SELECT count(*) from osdial_inbound_groups where group_id='$pregroup_id';";
+	$stmt=sprintf("SELECT count(*) FROM osdial_inbound_groups WHERE group_id='%s';",mres($pregroup_id));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
 		{echo "<br><font color=red>GROUP NOT ADDED - there is already a group in the system with this ID</font>\n";}
 	else
 		{
-		 if ( (strlen($group_id) < 2) or (strlen($group_name) < 2) or (strlen($group_id) > 20) or (preg_match('/ /',$group_id)) or (preg_match("/\-/",$group_id)) or (preg_match("/\+/",$group_id)) )
+		 if ( (OSDstrlen($group_id) < 2) or (OSDstrlen($group_name) < 2) or (OSDstrlen($group_id) > 20) or (OSDpreg_match('/ /',$group_id)) or (OSDpreg_match("/\-/",$group_id)) or (OSDpreg_match("/\+/",$group_id)) )
 			{
 			 echo "<br><font color=red>GROUP NOT ADDED - Please go back and look at the data you entered\n";
 			 echo "<br>Group ID must be between 2 and 20 characters in length and contain no ' -+'.\n";
@@ -211,7 +211,7 @@ if ($ADD==2011)
 		 else
 			{
             if ($LOG['multicomp'] > 0) $group_id = (($company_id * 1) + 100) . $group_id;
-			$stmt="INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_message,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow,drop_trigger,allow_multicall) SELECT \"$group_id\",\"$group_name\",group_color,\"N\",web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_message,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow,drop_trigger,allow_multicall from osdial_inbound_groups where group_id=\"$source_group_id\";";
+			$stmt=sprintf("INSERT INTO osdial_inbound_groups (group_id,group_name,group_color,active,web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_message,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow,drop_trigger,allow_multicall) SELECT '%s','%s',group_color,'N',web_form_address,voicemail_ext,next_agent_call,fronter_display,ingroup_script,get_call_launch,xferconf_a_dtmf,xferconf_a_number,xferconf_b_dtmf,xferconf_b_number,drop_call_seconds,drop_message,drop_exten,call_time_id,after_hours_action,after_hours_message_filename,after_hours_exten,after_hours_voicemail,welcome_message_filename,moh_context,onhold_prompt_filename,prompt_interval,agent_alert_exten,agent_alert_delay,default_xfer_group,web_form_address2,allow_tab_switch,web_form_extwindow,web_form2_extwindow,drop_trigger,allow_multicall FROM osdial_inbound_groups WHERE group_id='%s';",mres($group_id),mres($group_name),mres($source_group_id));
 			$rslt=mysql_query($stmt, $link);
 
 			echo "<br><B><font color=$default_text>GROUP ADDED: $group_id</font></B>\n";
@@ -227,7 +227,7 @@ if ($ADD==2011)
                 if ($LOG['allowed_ingroupsALL']==0) {
                     $LOG['allowed_ingroups'][] = $group_id;
                     $ingroups_value = ' ' . implode(' ', $LOG['allowed_ingroups']) . ' -';
-                    $stmt = sprintf("UPDATE osdial_user_groups SET allowed_ingroups='%s' WHERE user_group='%s';",mres($ingroups_value),$LOG['user_group']);
+                    $stmt = sprintf("UPDATE osdial_user_groups SET allowed_ingroups='%s' WHERE user_group='%s';",mres($ingroups_value),mres($LOG['user_group']));
 				    $rslt=mysql_query($stmt, $link);
                 }
 
@@ -242,9 +242,9 @@ $ADD=3111;
 
 if ($ADD==4111)
 {
-	if ($LOGmodify_ingroups==1)
+	if ($LOG['modify_ingroups']==1)
 	{
-	 if ( (strlen($group_name) < 2) or (strlen($group_color) < 2) )
+	 if ( (OSDstrlen($group_name) < 2) or (OSDstrlen($group_color) < 2) )
 		{
 		 echo "<br><font color=red>GROUP NOT MODIFIED - Please go back and look at the data you entered\n";
 		 echo "<br>group name and group color must be at least 2 characters in length</font><br>\n";
@@ -253,7 +253,7 @@ if ($ADD==4111)
 		{
 		echo "<br><B><font color=$default_text>GROUP MODIFIED: $group_id</font></B>\n";
 
-		$stmt="UPDATE osdial_inbound_groups set group_name='$group_name', group_color='$group_color', active='$active', web_form_address='" . mysql_real_escape_string($web_form_address) . "', voicemail_ext='$voicemail_ext', next_agent_call='$next_agent_call', fronter_display='$fronter_display', ingroup_script='$script_id', get_call_launch='$get_call_launch', xferconf_a_dtmf='$xferconf_a_dtmf',xferconf_a_number='$xferconf_a_number', xferconf_b_dtmf='$xferconf_b_dtmf',xferconf_b_number='$xferconf_b_number',drop_message='$drop_message',drop_call_seconds='$drop_call_seconds',drop_exten='$drop_exten',call_time_id='$call_time_id',after_hours_action='$after_hours_action',after_hours_message_filename='$after_hours_message_filename',after_hours_exten='$after_hours_exten',after_hours_voicemail='$after_hours_voicemail',welcome_message_filename='$welcome_message_filename',moh_context='$moh_context',onhold_prompt_filename='$onhold_prompt_filename',prompt_interval='$prompt_interval',agent_alert_exten='$agent_alert_exten',agent_alert_delay='$agent_alert_delay',default_xfer_group='$default_xfer_group', web_form_address2='" . mysql_real_escape_string($web_form_address2) . "', allow_tab_switch='$allow_tab_switch', web_form_extwindow='$web_form_extwindow',web_form2_extwindow='$web_form2_extwindow',drop_trigger='$drop_trigger',allow_multicall='$allow_multicall' where group_id='$group_id';";
+		$stmt=sprintf("UPDATE osdial_inbound_groups SET group_name='%s',group_color='%s',active='%s',web_form_address='%s',voicemail_ext='%s',next_agent_call='%s',fronter_display='%s',ingroup_script='%s',get_call_launch='%s',xferconf_a_dtmf='%s',xferconf_a_number='%s',xferconf_b_dtmf='%s',xferconf_b_number='%s',drop_message='%s',drop_call_seconds='%s',drop_exten='%s',call_time_id='%s',after_hours_action='%s',after_hours_message_filename='%s',after_hours_exten='%s',after_hours_voicemail='%s',welcome_message_filename='%s',moh_context='%s',onhold_prompt_filename='%s',prompt_interval='%s',agent_alert_exten='%s',agent_alert_delay='%s',default_xfer_group='%s',web_form_address2='%s',allow_tab_switch='%s',web_form_extwindow='%s',web_form2_extwindow='%s',drop_trigger='%s',allow_multicall='%s' WHERE group_id='%s';",mres($group_name),mres($group_color),mres($active),mres($web_form_address),mres($voicemail_ext),mres($next_agent_call),mres($fronter_display),mres($script_id),mres($get_call_launch),mres($xferconf_a_dtmf),mres($xferconf_a_number),mres($xferconf_b_dtmf),mres($xferconf_b_number),mres($drop_message),mres($drop_call_seconds),mres($drop_exten),mres($call_time_id),mres($after_hours_action),mres($after_hours_message_filename),mres($after_hours_exten),mres($after_hours_voicemail),mres($welcome_message_filename),mres($moh_context),mres($onhold_prompt_filename),mres($prompt_interval),mres($agent_alert_exten),mres($agent_alert_delay),mres($default_xfer_group),mres($web_form_address2),mres($allow_tab_switch),mres($web_form_extwindow),mres($web_form2_extwindow),mres($drop_trigger),mres($allow_multicall),mres($group_id));
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -279,7 +279,7 @@ if ($ADD==4111)
 
 if ($ADD==5111)
 {
-	 if ( (strlen($group_id) < 2) or ($LOGdelete_ingroups < 1) )
+	 if ( (OSDstrlen($group_id) < 2) or ($LOG['delete_ingroups'] < 1) )
 		{
 		 echo "<br><font color=red>IN-GROUP NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Group_id be at least 2 characters in length</font><br>\n";
@@ -300,20 +300,20 @@ $ADD='3111';		# go to in-group modification below
 
 if ($ADD==6111)
 {
-	 if ( (strlen($group_id) < 2) or ($CoNfIrM != 'YES') or ($LOGdelete_ingroups < 1) )
+	 if ( (OSDstrlen($group_id) < 2) or ($CoNfIrM != 'YES') or ($LOG['delete_ingroups'] < 1) )
 		{
 		 echo "<br><font color=red>IN-GROUP NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Group_id be at least 2 characters in length</font><br>\n";
 		}
 	 else
 		{
-		$stmt="DELETE from osdial_inbound_groups where group_id='$group_id' limit 1;";
+		$stmt=sprintf("DELETE FROM osdial_inbound_groups WHERE group_id='%s' LIMIT 1;",mres($group_id));
 		$rslt=mysql_query($stmt, $link);
 
-		$stmt="DELETE from osdial_inbound_group_agents where group_id='$group_id';";
+		$stmt=sprintf("DELETE FROM osdial_inbound_group_agents WHERE group_id='%s';",mres($group_id));
 		$rslt=mysql_query($stmt, $link);
 
-		$stmt="DELETE from osdial_live_inbound_agents where group_id='$group_id';";
+		$stmt=sprintf("DELETE FROM osdial_live_inbound_agents WHERE group_id='%s';",mres($group_id));
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -337,9 +337,9 @@ $ADD='1000';		# go to in-group list
 
 if ($ADD==3111)
 {
-	if ($LOGmodify_ingroups==1)
+	if ($LOG['modify_ingroups']==1)
 	{
-	$stmt="SELECT * from osdial_inbound_groups where group_id='$group_id';";
+	$stmt=sprintf("SELECT * FROM osdial_inbound_groups WHERE group_id='%s';",mres($group_id));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$group_name =				$row[1];
@@ -378,7 +378,7 @@ if ($ADD==3111)
 	$allow_multicall =	        $row[34];
 
 	##### get in-groups listings for dynamic pulldown
-	$stmt="SELECT group_id,group_name from osdial_inbound_groups order by group_id";
+	$stmt="SELECT group_id,group_name FROM osdial_inbound_groups ORDER BY group_id;";
 	$rslt=mysql_query($stmt, $link);
 	$Xgroups_to_print = mysql_num_rows($rslt);
 	$Xgroups_menu='';
@@ -545,7 +545,7 @@ if ($ADD==3111)
     echo "    <td align=center>CALLS TODAY</td>\n";
     echo "  </tr>\n";
 
-		$stmt="SELECT osdial_users.user,full_name,group_rank,calls_today FROM osdial_inbound_group_agents JOIN osdial_users ON (osdial_inbound_group_agents.user=osdial_users.user) WHERE group_id='$group_id' AND closer_campaigns LIKE '% $group_id %' ORDER BY osdial_users.user;";
+		$stmt=sprintf("SELECT osdial_users.user,full_name,group_rank,calls_today FROM osdial_inbound_group_agents JOIN osdial_users ON (osdial_inbound_group_agents.user=osdial_users.user) WHERE group_id='%s' AND closer_campaigns LIKE '%% %s %%' ORDER BY osdial_users.user;",mres($group_id),mres($group_id));
 		$rsltx=mysql_query($stmt, $link);
 		$users_to_print = mysql_num_rows($rsltx);
 
@@ -577,7 +577,7 @@ if ($ADD==3111)
     echo "    <td align=center>ACTIVE</td>\n";
     echo "  </tr>\n";
 
-		$stmt="SELECT campaign_id,campaign_name,active from osdial_campaigns where closer_campaigns LIKE '% $group_id %'";
+		$stmt=sprintf("SELECT campaign_id,campaign_name,active FROM osdial_campaigns WHERE closer_campaigns LIKE '%% %s %%';",mres($group_id));
 		$rsltx=mysql_query($stmt, $link);
 		$camps_to_print = mysql_num_rows($rsltx);
 
@@ -602,7 +602,7 @@ if ($ADD==3111)
 
 	echo "</center><br><br>\n";
 
-	if ($LOGdelete_ingroups > 0)
+	if ($LOG['delete_ingroups'] > 0)
 		{
 		echo "<br><br><a href=\"$PHP_SELF?ADD=53&campaign_id=$group_id&stage=IN\">EMERGENCY VDAC CLEAR FOR THIS IN-GROUP</a><BR><BR>\n";
 		echo "<br><br><a href=\"$PHP_SELF?ADD=5111&group_id=$group_id\">DELETE THIS IN-GROUP</a>\n";

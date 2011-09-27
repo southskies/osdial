@@ -32,21 +32,21 @@
 
 if ($ADD==221111111111111)
 {
-    $stmt="SELECT count(*) from osdial_campaign_statuses where status='$status';";
+    $stmt=sprintf("SELECT count(*) FROM osdial_campaign_statuses WHERE status='%s';",mres($status));
     $rslt=mysql_query($stmt, $link);
     $row=mysql_fetch_row($rslt);
     if ($row[0] > 0)
         {echo "<br><font color=red>SYSTEM STATUS NOT ADDED - there is already a campaign-status in the system with this name: $row[0]</font>\n";}
     else
         {
-        $stmt="SELECT count(*) from osdial_statuses where status='$status';";
+        $stmt=sprintf("SELECT count(*) FROM osdial_statuses WHERE status='%s';",mres($status));
     $rslt=mysql_query($stmt, $link);
     $row=mysql_fetch_row($rslt);
     if ($row[0] > 0)
     {echo "<br><font color=red>SYSTEM STATUS NOT ADDED - there is already a global-status in the system with this name</font>\n";}
     else
 			{
-    if ( (strlen($status) < 1) or (strlen($status_name) < 2) )
+    if ( (OSDstrlen($status) < 1) or (OSDstrlen($status_name) < 2) )
     {
     echo "<br><font color=$default_text>SYSTEM STATUS NOT ADDED - Please go back and look at the data you entered\n";
     echo "<br>status must be between 1 and 8 characters in length\n";
@@ -56,7 +56,7 @@ if ($ADD==221111111111111)
     {
     echo "<br><B><font color=$default_text>SYSTEM STATUS ADDED: $status_name - $status</font></B>\n";
 
-				$stmt="INSERT INTO osdial_statuses (status,status_name,selectable,human_answered,category) values('$status','$status_name','$selectable','$human_answered','$category');";
+				$stmt=sprintf("INSERT INTO osdial_statuses (status,status_name,selectable,human_answered,category) VALUES('%s','%s','%s','%s','%s');",mres($status),mres($status_name),mres($selectable),mres($human_answered),mres($category));
 				$rslt=mysql_query($stmt, $link);
 
 				### LOG CHANGES TO LOG FILE ###
@@ -79,11 +79,11 @@ $ADD=321111111111111;
 
 if ($ADD==421111111111111)
 {
-	if ($LOGmodify_servers==1)
+	if ($LOG['modify_servers']==1)
 	{
-	if (preg_match('/delete/',$stage))
+	if (OSDpreg_match('/delete/',$stage))
 		{
-		if ( (strlen($status) < 1) or (preg_match("/^B$|^DNC$|^NA$|^DROP$|^INCALL$|^QUEUE$|^NEW$/i",$status)) )
+		if ( (OSDstrlen($status) < 1) or (OSDpreg_match("/^B$|^DNC$|^NA$|^DROP$|^INCALL$|^QUEUE$|^NEW$/i",$status)) )
 			{
 			 echo "<br><font color=red>SYSTEM STATUS NOT DELETED - Please go back and look at the data you entered\n";
 			 echo "<br>the system status cannot be a reserved status: B,NA,DNC,NA,DROP,INCALL,QUEUE,NEW\n";
@@ -93,10 +93,10 @@ if ($ADD==421111111111111)
 			{
 			echo "<br><B><font color=$default_text>SYSTEM STATUS DELETED: $status</font></B>\n";
 
-			$stmt="DELETE FROM osdial_statuses where status='$status';";
+			$stmt=sprintf("DELETE FROM osdial_statuses WHERE status='%s';",mres($status));
 			$rslt=mysql_query($stmt, $link);
 
-			$stmtA="DELETE FROM osdial_campaign_hotkeys where status='$status';";
+			$stmtA=sprintf("DELETE FROM osdial_campaign_hotkeys WHERE status='%s';",mres($status));
 			$rslt=mysql_query($stmtA, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -108,9 +108,9 @@ if ($ADD==421111111111111)
 				}
 			}
 		}
-	if (preg_match('/modify/',$stage))
+	if (OSDpreg_match('/modify/',$stage))
 		{
-		if ( (strlen($status) < 1) or (strlen($status_name) < 2) )
+		if ( (OSDstrlen($status) < 1) or (OSDstrlen($status_name) < 2) )
 			{
 			 echo "<br><font color=red>SYSTEM STATUS NOT MODIFIED - Please go back and look at the data you entered\n";
 			 echo "<br>the system status needs to be at least 1 characters in length\n";
@@ -120,7 +120,7 @@ if ($ADD==421111111111111)
 			{
 			echo "<br><B><font color=$default_text>SYSTEM STATUS MODIFIED: $status</font></B>\n";
 
-			$stmt="UPDATE osdial_statuses SET status_name='$status_name',selectable='$selectable',human_answered='$human_answered',category='$category' where status='$status';";
+			$stmt=sprintf("UPDATE osdial_statuses SET status_name='%s',selectable='%s',human_answered='%s',category='%s' WHERE status='%s';",mres($status_name),mres($selectable),mres($human_answered),mres($category),mres($status));
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -147,7 +147,7 @@ if ($ADD==421111111111111)
 
 if ($ADD==321111111111111)
 {
-	if ($LOGmodify_servers==1)
+	if ($LOG['modify_servers']==1)
 	{
 	echo "<br><center>\n";
 	echo "<font color=$default_text size=4>SYSTEM-WIDE STATUSES &nbsp; $NWB#osdial_statuses$NWE</font><br><br>\n";
@@ -162,7 +162,7 @@ if ($ADD==321111111111111)
     echo "  </tr>\n";
 
 	##### get status category listings for dynamic pulldown
-	$stmt="SELECT vsc_id,vsc_name from osdial_status_categories order by vsc_id desc";
+	$stmt="SELECT vsc_id,vsc_name FROM osdial_status_categories ORDER BY vsc_id DESC;";
 	$rslt=mysql_query($stmt, $link);
 	$cats_to_print = mysql_num_rows($rslt);
 	$cats_list="";
@@ -171,13 +171,13 @@ if ($ADD==321111111111111)
 	while ($cats_to_print > $o)
 		{
 		$rowx=mysql_fetch_row($rslt);
-		$cats_list .= "<option value=\"$rowx[0]\">$rowx[0] - " . substr($rowx[1],0,20) . "</option>\n";
-		$catsname_list["$rowx[0]"] = substr($rowx[1],0,20);
+		$cats_list .= "<option value=\"$rowx[0]\">$rowx[0] - " . OSDsubstr($rowx[1],0,20) . "</option>\n";
+		$catsname_list["$rowx[0]"] = OSDsubstr($rowx[1],0,20);
 		$o++;
 		}
 
 
-	$stmt="SELECT * from osdial_statuses order by status;";
+	$stmt="SELECT * FROM osdial_statuses ORDER BY status;";
 	$rslt=mysql_query($stmt, $link);
 	$statuses_to_print = mysql_num_rows($rslt);
 	$o=0;
@@ -199,7 +199,7 @@ if ($ADD==321111111111111)
 		echo "    <td align=center class=tabinput><select size=1 name=category>$cats_list<option selected value=\"$AScategory\">$AScategory - $catsname_list[$AScategory]</option></select></td>\n";
 		echo "    <td align=center nowrap>\n";
 		
-		if (preg_match("/^AA$|^AL$|^AM$|^B$|^CALLBK$|^CBHOLD$|^CRC$|^CRF$|^CRO$|^CRR$|^DC$|^DNCE$|^DNCL$|^DNC$|^NA$|^DROP$|^INCALL$|^QUEUE$|^NEW$|^XFER$|^XDROP$/i",$rowx[0])) {
+		if (OSDpreg_match("/^AA$|^AL$|^AM$|^B$|^CALLBK$|^CBHOLD$|^CRC$|^CRF$|^CRO$|^CRR$|^DC$|^DNCE$|^DNCL$|^DNC$|^NA$|^DROP$|^INCALL$|^QUEUE$|^NEW$|^XFER$|^XDROP$/i",$rowx[0])) {
 			echo "      <del>DELETE</del>\n";
 		} else {
 			echo "      <a href=\"$PHP_SELF?ADD=421111111111111&status=$rowx[0]&stage=delete\">DELETE</a>\n";
@@ -245,14 +245,14 @@ if ($ADD==321111111111111)
 
 if ($ADD==231111111111111)
 {
-	$stmt="SELECT count(*) from osdial_status_categories where vsc_id='$vsc_id';";
+	$stmt=sprintf("SELECT count(*) FROM osdial_status_categories WHERE vsc_id='%s';",mres($vsc_id));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
 		{echo "<br><font color=red>STATUS CATEGORY NOT ADDED - there is already a status category in the system with this ID: $row[0]</font>\n";}
 	else
 		{
-		 if ( (strlen($vsc_id) < 2) or (strlen($vsc_id) > 20) or (strlen($vsc_name) < 2) )
+		 if ( (OSDstrlen($vsc_id) < 2) or (OSDstrlen($vsc_id) > 20) or (OSDstrlen($vsc_name) < 2) )
 			{
 			 echo "<br><font color=red>STATUS CATEGORY NOT ADDED - Please go back and look at the data you entered\n";
 			 echo "<br>ID must be between 2 and 20 characters in length\n";
@@ -262,16 +262,16 @@ if ($ADD==231111111111111)
 			{
 			echo "<br><B><font color=$default_text>STATUS CATEGORY ADDED: $vsc_id - $vsc_name</font></B>\n";
 
-			$stmt="SELECT count(*) from osdial_status_categories where tovdad_display='Y' and vsc_id NOT IN('$vsc_id');";
+			$stmt=sprintf("SELECT count(*) FROM osdial_status_categories WHERE tovdad_display='Y' AND vsc_id NOT IN('%s');",mres($vsc_id));
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
-			if ( ($row[0] > 3) and (preg_match('/Y/',$tovdad_display)) )
+			if ( ($row[0] > 3) and (OSDpreg_match('/Y/',$tovdad_display)) )
 				{
 				$tovdad_display = 'N';
 				echo "<br><B><font color=red>ERROR: There are already 4 Status Categories set to display on the Real-Time report.</font></B>\n";
 				}
 
-			$stmt="INSERT INTO osdial_status_categories (vsc_id,vsc_name,vsc_description,tovdad_display) values('$vsc_id','$vsc_name','$vsc_description','$tovdad_display');";
+			$stmt=sprintf("INSERT INTO osdial_status_categories (vsc_id,vsc_name,vsc_description,tovdad_display) VALUES('%s','%s','%s','%s');",mres($vsc_id),mres($vsc_name),mres($vsc_description),mres($tovdad_display));
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -293,9 +293,9 @@ $ADD=331111111111111;
 
 if ($ADD==431111111111111)
 {
-	if ($LOGmodify_servers==1)
+	if ($LOG['modify_servers']==1)
 	{
-	 if ( (strlen($vsc_id) < 2)  or (preg_match("/^UNDEFINED$/i",$vsc_id)) )
+	 if ( (OSDstrlen($vsc_id) < 2)  or (OSDpreg_match("/^UNDEFINED$/i",$vsc_id)) )
 		{
 		 echo "<br><font color=red>STATUS CATEGORY NOT MODIFIED - Please go back and look at the data you entered\n";
 		 echo "<br>the status category cannot be a reserved category: UNDEFINED\n";
@@ -303,11 +303,11 @@ if ($ADD==431111111111111)
 		}
 	 else
 		{
-		if (preg_match('/delete/',$stage))
+		if (OSDpreg_match('/delete/',$stage))
 			{
 			echo "<br><B><font color=$default_text>STATUS CATEGORY DELETED: $vsc_id</font></B>\n";
 
-			$stmt="DELETE FROM osdial_status_categories where vsc_id='$vsc_id';";
+			$stmt=sprintf("DELETE FROM osdial_status_categories WHERE vsc_id='%s';",mres($vsc_id));
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -318,20 +318,20 @@ if ($ADD==431111111111111)
 				fclose($fp);
 				}
 			}
-		if (preg_match('/modify/',$stage))
+		if (OSDpreg_match('/modify/',$stage))
 			{
 			echo "<br><B><font color=$default_text>STATUS CATEGORY MODIFIED: $vsc_id</font></B>\n";
 
-			$stmt="SELECT count(*) from osdial_status_categories where tovdad_display='Y' and vsc_id NOT IN('$vsc_id');";
+			$stmt=sprintf("SELECT count(*) FROM osdial_status_categories WHERE tovdad_display='Y' AND vsc_id NOT IN('%s');",mres($vsc_id));
 			$rslt=mysql_query($stmt, $link);
 			$row=mysql_fetch_row($rslt);
-			if ( ($row[0] > 3) and (preg_match('/Y/',$tovdad_display)) )
+			if ( ($row[0] > 3) and (OSDpreg_match('/Y/',$tovdad_display)) )
 				{
 				$tovdad_display = 'N';
 				echo "<br><B><font color=red>ERROR: There are already 4 Status Categories set to display on the Real-Time report.</font></B>\n";
 				}
 
-			$stmt="UPDATE osdial_status_categories SET vsc_name='$vsc_name',vsc_description='$vsc_description',tovdad_display='$tovdad_display' where vsc_id='$vsc_id';";
+			$stmt=sprintf("UPDATE osdial_status_categories SET vsc_name='%s',vsc_description='%s',tovdad_display='%s' WHERE vsc_id='%s';",mres($vsc_name),mres($vsc_description),mres($tovdad_display),mres($vsc_id));
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -358,7 +358,7 @@ if ($ADD==431111111111111)
 
 if ($ADD==331111111111111)
 {
-	if ($LOGmodify_servers==1)
+	if ($LOG['modify_servers']==1)
 	{
 	echo "<br>\n";
 	echo "<center><font size=4 color=$default_text>STATUS CATEGORIES &nbsp; $NWB#osdial_status_categories$NWE</font></center><br>\n";
@@ -372,7 +372,7 @@ if ($ADD==331111111111111)
     echo "    <td align=center colspan=2>ACTIONS</td>\n";
     echo "  </tr>\n";
 
-		$stmt="SELECT * from osdial_status_categories order by vsc_id;";
+		$stmt="SELECT * FROM osdial_status_categories ORDER BY vsc_id;";
 		$rslt=mysql_query($stmt, $link);
 		$statuses_to_print = mysql_num_rows($rslt);
 		$o=0;
@@ -391,7 +391,7 @@ if ($ADD==331111111111111)
 		while ($o > $p)
 			{
 			$CATstatuses='';
-			$stmt="SELECT status from osdial_statuses where category='$Avsc_id[$p]' order by status;";
+			$stmt=sprintf("SELECT status FROM osdial_statuses WHERE category='%s' ORDER BY status;",mres($Avsc_id[$p]));
 			$rslt=mysql_query($stmt, $link);
 			$statuses_to_print = mysql_num_rows($rslt);
 			$q=0;
@@ -401,7 +401,7 @@ if ($ADD==331111111111111)
 				$CATstatuses.=" $rowx[0]";
 				$q++;
 				}
-			$stmt="SELECT status from osdial_campaign_statuses where category='$Avsc_id[$p]' order by status;";
+			$stmt=sprintf("SELECT status FROM osdial_campaign_statuses WHERE category='%s' ORDER BY status;",mres($Avsc_id[$p]));
 			$rslt=mysql_query($stmt, $link);
 			$statuses_to_print = mysql_num_rows($rslt);
 			$q=0;

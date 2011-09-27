@@ -27,7 +27,7 @@
 ######################
 
 if ($ADD==11111111111) {
-    if ($LOGast_admin_access==1) {
+    if ($LOG['ast_admin_access']==1) {
         $sel = '';
         if ($LOG['multicomp_user'] > 0) $sel = $LOG['company']['default_server_ip'];
         $servers_list = get_servers($link, $sel,'AIO|DIALER');
@@ -106,34 +106,34 @@ if ($ADD==11111111111) {
 ######################
 
 if ($ADD==21111111111) {
-    if ($LOGast_admin_access==1) {
+    if ($LOG['ast_admin_access']==1) {
         $preextension = $extension;
         $ext_context='osdial';
         if ($LOG['multicomp'] > 0) {
             $preextension = (($company * 1) + 0) . $extension;
-            $stmt="SELECT default_ext_context from osdial_companies where id='$preextension';";
+            $stmt=sprintf("SELECT default_ext_context FROM osdial_companies WHERE id='%s';",mres($preextension));
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
             if ($row[0] != '') $ext_context=$row[0];
         }
-        $stmt="SELECT count(*) from phones where extension='$preextension' and server_ip='$server_ip';";
+        $stmt=sprintf("SELECT count(*) FROM phones WHERE extension='%s' AND server_ip='%s';",mres($preextension),mres($server_ip));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         if ($row[0] > 0) {
             echo "<br><font color=red>PHONE NOT ADDED - there is already a Phone in the system with this extension/server</font>\n";
         } else {
-            if ( (strlen($extension) < 1) or (strlen($server_ip) < 7) or (strlen($dialplan_number) < 1) or (strlen($login) < 1)  or (strlen($pass) < 1)) {
+            if ( (OSDstrlen($extension) < 1) or (OSDstrlen($server_ip) < 7) or (OSDstrlen($dialplan_number) < 1) or (OSDstrlen($login) < 1)  or (OSDstrlen($pass) < 1)) {
                 echo "<br><font color=red>PHONE NOT ADDED - Please go back and look at the data you entered</font>\n";
             } else {
                 echo "<br><font color=$default_text>PHONE ADDED</font>\n";
     
                 if ($LOG['multicomp'] > 0) {
-                    if (!preg_match('/\/|@/',$extension)) $extension = (($company * 1) + 0) . $extension;
-                    if ((preg_match('/SIP|IAX/',$protocol) and substr($dialplan_number,0,3) != $company)) $dialplan_number = (($company * 1) + 0) . $dialplan_number;
-                    if (strlen($voicemail_id)>0) $voicemail_id = (($company * 1) + 0) . $voicemail_id;
+                    if (!OSDpreg_match('/\/|@/',$extension)) $extension = (($company * 1) + 0) . $extension;
+                    if ((OSDpreg_match('/SIP|IAX/',$protocol) and OSDsubstr($dialplan_number,0,3) != $company)) $dialplan_number = (($company * 1) + 0) . $dialplan_number;
+                    if (OSDstrlen($voicemail_id)>0) $voicemail_id = (($company * 1) + 0) . $voicemail_id;
                     $login = (($company * 1) + 0) . $login;
                 }
-                $stmt="INSERT INTO phones (extension,dialplan_number,voicemail_id,phone_ip,computer_ip,server_ip,login,pass,status,active,phone_type,fullname,company,picture,protocol,local_gmt,outbound_cid,outbound_cid_name,ext_context) values('$extension','$dialplan_number','$voicemail_id','$phone_ip','$computer_ip','$server_ip','$login','$pass','$status','$active','$phone_type','$fullname','$company','$picture','$protocol','$local_gmt','$outbound_cid','$outbound_cid_name','$ext_context');";
+                $stmt=sprintf("INSERT INTO phones (extension,dialplan_number,voicemail_id,phone_ip,computer_ip,server_ip,login,pass,status,active,phone_type,fullname,company,picture,protocol,local_gmt,outbound_cid,outbound_cid_name,ext_context) VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');",mres($extension),mres($dialplan_number),mres($voicemail_id),mres($phone_ip),mres($computer_ip),mres($server_ip),mres($login),mres($pass),mres($status),mres($active),mres($phone_type),mres($fullname),mres($company),mres($picture),mres($protocol),mres($local_gmt),mres($outbound_cid),mres($outbound_cid_name),mres($ext_context));
                 $rslt=mysql_query($stmt, $link);
             }
         }
@@ -151,27 +151,27 @@ if ($ADD==21111111111) {
 ######################
 
 if ($ADD==41111111111) {
-    if ($LOGast_admin_access==1) {
+    if ($LOG['ast_admin_access']==1) {
         $preextension = $extension;
-        if ($LOG['multicomp'] > 0 and !preg_match('/\/|@/',$extension)) $preextension = (($company * 1) + 0) . $extension;
-        $stmt="SELECT count(*) from phones where extension='$preextension' and server_ip='$server_ip';";
+        if ($LOG['multicomp'] > 0 and !OSDpreg_match('/\/|@/',$extension)) $preextension = (($company * 1) + 0) . $extension;
+        $stmt=sprintf("SELECT count(*) FROM phones WHERE extension='%s' AND server_ip='%s';",mres($preextension),mres($server_ip));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         if ( ($row[0] > 0) && ( ($preextension != $old_extension) or ($server_ip != $old_server_ip) ) ) {
             echo "<br><font color=red>PHONE NOT MODIFIED - there is already a Phone in the system with this extension/server</font>\n";
         } else {
-            if ( (strlen($extension) < 1) or (strlen($server_ip) < 7) or (strlen($dialplan_number) < 1) or (strlen($login) < 1)  or (strlen($pass) < 1)) {
+            if ( (OSDstrlen($extension) < 1) or (OSDstrlen($server_ip) < 7) or (OSDstrlen($dialplan_number) < 1) or (OSDstrlen($login) < 1)  or (OSDstrlen($pass) < 1)) {
                 echo "<br><font color=$default_text>PHONE NOT MODIFIED - Please go back and look at the data you entered</font>\n";
             } else {
                 echo "<br><font color=$default_text>PHONE MODIFIED: $extension</font>\n";
 
                 if ($LOG['multicomp'] > 0) {
-                    if (!preg_match('/\/|@/',$extension)) $extension = (($company * 1) + 0) . $extension;
-                    if ((preg_match('/SIP|IAX/',$protocol) and substr($dialplan_number,0,3) != $company)) $dialplan_number = (($company * 1) + 0) . $dialplan_number;
-                    if (strlen($voicemail_id)>0) $voicemail_id = (($company * 1) + 0) . $voicemail_id;
+                    if (!OSDpreg_match('/\/|@/',$extension)) $extension = (($company * 1) + 0) . $extension;
+                    if ((OSDpreg_match('/SIP|IAX/',$protocol) and OSDsubstr($dialplan_number,0,3) != $company)) $dialplan_number = (($company * 1) + 0) . $dialplan_number;
+                    if (OSDstrlen($voicemail_id)>0) $voicemail_id = (($company * 1) + 0) . $voicemail_id;
                     $login = (($company * 1) + 0) . $login;
                 }
-                $stmt="UPDATE phones set extension='$extension', dialplan_number='$dialplan_number', voicemail_id='$voicemail_id', phone_ip='$phone_ip', computer_ip='$computer_ip', server_ip='$server_ip', login='$login', pass='$pass', status='$status', active='$active', phone_type='$phone_type', fullname='$fullname', company='$company', picture='$picture', protocol='$protocol', local_gmt='$local_gmt', ASTmgrUSERNAME='$ASTmgrUSERNAME', ASTmgrSECRET='$ASTmgrSECRET', login_user='$login_user', login_pass='$login_pass', login_campaign='$login_campaign', park_on_extension='$park_on_extension', conf_on_extension='$conf_on_extension', OSDIAL_park_on_extension='$OSDIAL_park_on_extension', OSDIAL_park_on_filename='$OSDIAL_park_on_filename', monitor_prefix='$monitor_prefix', recording_exten='$recording_exten', voicemail_exten='$voicemail_exten', voicemail_dump_exten='$voicemail_dump_exten', ext_context='$ext_context', dtmf_send_extension='$dtmf_send_extension', call_out_number_group='$call_out_number_group', client_browser='$client_browser', install_directory='$install_directory', local_web_callerID_URL='" . mysql_real_escape_string($local_web_callerID_URL) . "', OSDIAL_web_URL='" . mysql_real_escape_string($OSDIAL_web_URL) . "', AGI_call_logging_enabled='$AGI_call_logging_enabled', user_switching_enabled='$user_switching_enabled', conferencing_enabled='$conferencing_enabled', admin_hangup_enabled='$admin_hangup_enabled', admin_hijack_enabled='$admin_hijack_enabled', admin_monitor_enabled='$admin_monitor_enabled', call_parking_enabled='$call_parking_enabled', updater_check_enabled='$updater_check_enabled', AFLogging_enabled='$AFLogging_enabled', QUEUE_ACTION_enabled='$QUEUE_ACTION_enabled', CallerID_popup_enabled='$CallerID_popup_enabled', voicemail_button_enabled='$voicemail_button_enabled', enable_fast_refresh='$enable_fast_refresh', fast_refresh_rate='$fast_refresh_rate', enable_persistant_mysql='$enable_persistant_mysql', auto_dial_next_number='$auto_dial_next_number', VDstop_rec_after_each_call='$VDstop_rec_after_each_call', DBX_server='$DBX_server', DBX_database='$DBX_database', DBX_user='$DBX_user', DBX_pass='$DBX_pass', DBX_port='$DBX_port', DBY_server='$DBY_server', DBY_database='$DBY_database', DBY_user='$DBY_user', DBY_pass='$DBY_pass', DBY_port='$DBY_port', outbound_cid='$outbound_cid', outbound_cid_name='$outbound_cid_name', enable_sipsak_messages='$enable_sipsak_messages',voicemail_password='$voicemail_password',voicemail_email='$voicemail_email' where extension='$old_extension' and server_ip='$old_server_ip';";
+                $stmt=sprintf("UPDATE phones SET extension='%s',dialplan_number='%s',voicemail_id='%s',phone_ip='%s',computer_ip='%s',server_ip='%s',login='%s',pass='%s',status='%s',active='%s',phone_type='%s',fullname='%s',company='%s',picture='%s',protocol='%s',local_gmt='%s',ASTmgrUSERNAME='%s',ASTmgrSECRET='%s',login_user='%s',login_pass='%s',login_campaign='%s',park_on_extension='%s',conf_on_extension='%s',OSDIAL_park_on_extension='%s',OSDIAL_park_on_filename='%s',monitor_prefix='%s',recording_exten='%s',voicemail_exten='%s',voicemail_dump_exten='%s',ext_context='%s',dtmf_send_extension='%s',call_out_number_group='%s',client_browser='%s',install_directory='%s',local_web_callerID_URL='%s',OSDIAL_web_URL='%s',AGI_call_logging_enabled='%s',user_switching_enabled='%s',conferencing_enabled='%s',admin_hangup_enabled='%s',admin_hijack_enabled='%s',admin_monitor_enabled='%s',call_parking_enabled='%s',updater_check_enabled='%s',AFLogging_enabled='%s',QUEUE_ACTION_enabled='%s',CallerID_popup_enabled='%s',voicemail_button_enabled='%s',enable_fast_refresh='%s',fast_refresh_rate='%s',enable_persistant_mysql='%s',auto_dial_next_number='%s',VDstop_rec_after_each_call='%s',DBX_server='%s',DBX_database='%s',DBX_user='%s',DBX_pass='%s',DBX_port='%s',DBY_server='%s',DBY_database='%s',DBY_user='%s',DBY_pass='%s',DBY_port='%s',outbound_cid='%s',outbound_cid_name='%s',enable_sipsak_messages='%s',voicemail_password='%s',voicemail_email='%s' WHERE extension='%s' AND server_ip='%s';",mres($extension),mres($dialplan_number),mres($voicemail_id),mres($phone_ip),mres($computer_ip),mres($server_ip),mres($login),mres($pass),mres($status),mres($active),mres($phone_type),mres($fullname),mres($company),mres($picture),mres($protocol),mres($local_gmt),mres($ASTmgrUSERNAME),mres($ASTmgrSECRET),mres($login_user),mres($login_pass),mres($login_campaign),mres($park_on_extension),mres($conf_on_extension),mres($OSDIAL_park_on_extension),mres($OSDIAL_park_on_filename),mres($monitor_prefix),mres($recording_exten),mres($voicemail_exten),mres($voicemail_dump_exten),mres($ext_context),mres($dtmf_send_extension),mres($call_out_number_group),mres($client_browser),mres($install_directory),mres($local_web_callerID_URL),mres($OSDIAL_web_URL),mres($AGI_call_logging_enabled),mres($user_switching_enabled),mres($conferencing_enabled),mres($admin_hangup_enabled),mres($admin_hijack_enabled),mres($admin_monitor_enabled),mres($call_parking_enabled),mres($updater_check_enabled),mres($AFLogging_enabled),mres($QUEUE_ACTION_enabled),mres($CallerID_popup_enabled),mres($voicemail_button_enabled),mres($enable_fast_refresh),mres($fast_refresh_rate),mres($enable_persistant_mysql),mres($auto_dial_next_number),mres($VDstop_rec_after_each_call),mres($DBX_server),mres($DBX_database),mres($DBX_user),mres($DBX_pass),mres($DBX_port),mres($DBY_server),mres($DBY_database),mres($DBY_user),mres($DBY_pass),mres($DBY_port),mres($outbound_cid),mres($outbound_cid_name),mres($enable_sipsak_messages),mres($voicemail_password),mres($voicemail_email),mres($old_extension),mres($old_server_ip));
                 $rslt=mysql_query($stmt, $link);
             }
         }
@@ -189,8 +189,8 @@ if ($ADD==41111111111) {
 ######################
 
 if ($ADD==51111111111) {
-    if ($LOGast_admin_access==1) {
-        if ( (strlen($extension) < 2) or (strlen($server_ip) < 7) or ($LOGast_delete_phones < 1) ) {
+    if ($LOG['ast_admin_access']==1) {
+        if ( (OSDstrlen($extension) < 2) or (OSDstrlen($server_ip) < 7) or ($LOG['ast_delete_phones'] < 1) ) {
             echo "<br><font color=red>PHONE NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>Extension be at least 2 characters in length\n";
             echo "<br>Server IP be at least 7 characters in length</font>\n";
@@ -211,13 +211,13 @@ if ($ADD==51111111111) {
 ######################
 
 if ($ADD==61111111111) {
-    if ($LOGast_admin_access==1) {
-        if ( (strlen($extension) < 2) or (strlen($server_ip) < 7) or ($CoNfIrM != 'YES') or ($LOGast_delete_phones < 1) ) {
+    if ($LOG['ast_admin_access']==1) {
+        if ( (OSDstrlen($extension) < 2) or (OSDstrlen($server_ip) < 7) or ($CoNfIrM != 'YES') or ($LOG['ast_delete_phones'] < 1) ) {
             echo "<br><font color=red>PHONE NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>Extension be at least 2 characters in length\n";
             echo "<br>Server IP be at least 7 characters in length</font><br>\n";
         } else {
-            $stmt="DELETE from phones where extension='$extension' and server_ip='$server_ip' limit 1;";
+            $stmt=sprintf("DELETE FROM phones WHERE extension='%s' AND server_ip='%s' LIMIT 1;",mres($extension),mres($server_ip));
             $rslt=mysql_query($stmt, $link);
 
             ### LOG CHANGES TO LOG FILE ###
@@ -242,8 +242,8 @@ if ($ADD==61111111111) {
 ######################
 
 if ($ADD==31111111111) {
-    if ($LOGast_admin_access==1) {
-        $stmt="SELECT * from phones where extension='$extension' and server_ip='$server_ip';";
+    if ($LOG['ast_admin_access']==1) {
+        $stmt=sprintf("SELECT * FROM phones WHERE extension='%s' AND server_ip='%s';",mres($extension),mres($server_ip));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         $servers_list = get_servers($link, $row[5], 'AIO|DIALER');
@@ -255,9 +255,9 @@ if ($ADD==31111111111) {
         echo "<TABLE width=$section_width cellspacing=3>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Phone extension: </td><td align=left>";
         $ext = $row[0];
-        if ($LOG['multicomp'] > 0 and !preg_match('/\/|@/',$row[0]) and preg_match($LOG['companiesRE'],$row[0])) {
+        if ($LOG['multicomp'] > 0 and !OSDpreg_match('/\/|@/',$row[0]) and OSDpreg_match($LOG['companiesRE'],$row[0])) {
             echo "<font color=$default_text>" . $row[12] . "</font>";
-            if ($row[12] == substr($row[0],0,3)) $ext = substr($row[0],3);
+            if ($row[12] == OSDsubstr($row[0],0,3)) $ext = OSDsubstr($row[0],3);
         }
         echo "<input type=text name=extension size=20 maxlength=100 value=\"" . $ext . "\">";
         echo "$NWB#phones-extension$NWE</td></tr>\n";
@@ -265,27 +265,27 @@ if ($ADD==31111111111) {
         echo "<tr bgcolor=$oddrows><td align=right>Dial Plan Number: </td><td align=left>";
         $dpn = $row[1];
         if ($LOG['multicomp'] > 0) {
-            if (preg_match('/SIP|IAX/',$row[16]) and preg_match($LOG['companiesRE'],$row[1])) {
+            if (OSDpreg_match('/SIP|IAX/',$row[16]) and OSDpreg_match($LOG['companiesRE'],$row[1])) {
                 echo "<font color=$default_text>" . $row[12] . "</font>";
-                if ($row[12] == substr($row[1],0,3)) $dpn = substr($row[1],3);
+                if ($row[12] == OSDsubstr($row[1],0,3)) $dpn = OSDsubstr($row[1],3);
             }
         }
         echo "<input type=text name=dialplan_number size=15 maxlength=20 value=\"$dpn\">";
         echo " (digits only)$NWB#phones-dialplan_number$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Login: </td><td align=left>";
         $plog = $row[6];
-        if ($LOG['multicomp'] > 0 and preg_match($LOG['companiesRE'],$row[6])) {
+        if ($LOG['multicomp'] > 0 and OSDpreg_match($LOG['companiesRE'],$row[6])) {
             echo "<font color=$default_text>" . $row[12] . "</font>";
-            if ($row[12] == substr($row[6],0,3)) $plog = substr($row[6],3);
+            if ($row[12] == OSDsubstr($row[6],0,3)) $plog = OSDsubstr($row[6],3);
         }
         echo "<input type=text name=login size=10 maxlength=10 value=\"" . $plog . "\">";
         echo "$NWB#phones-login$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Password: </td><td align=left><input type=text name=pass size=10 maxlength=10 value=\"$row[7]\">$NWB#phones-pass$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Voicemail Box: </td><td align=left>";
         $vmb = $row[2];
-        if ($LOG['multicomp'] > 0 and preg_match($LOG['companiesRE'],$row[2])) {
+        if ($LOG['multicomp'] > 0 and OSDpreg_match($LOG['companiesRE'],$row[2])) {
             echo "<font color=$default_text>" . $row[12] . "</font>";
-            if ($row[12] == substr($row[2],0,3)) $vmb = substr($row[2],3);
+            if ($row[12] == OSDsubstr($row[2],0,3)) $vmb = OSDsubstr($row[2],3);
         }
         echo "<input type=text name=voicemail_id size=10 maxlength=10 value=\"$vmb\">";
         echo " (digits only)$NWB#phones-voicemail_id$NWE</td></tr>\n";
@@ -305,7 +305,7 @@ if ($ADD==31111111111) {
         echo "<tr bgcolor=$oddrows><td align=right>Phone Type: </td><td align=left><input type=text name=phone_type size=20 maxlength=50 value=\"$row[10]\">$NWB#phones-phone_type$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Full Name: </td><td align=left><input type=text name=fullname size=20 maxlength=50 value=\"$row[11]\">$NWB#phones-fullname$NWE</td></tr>\n";
         echo "<tr bgcolor=$oddrows><td align=right>Company: </td><td align=left>";
-        if ($LOG['multicomp_admin'] > 0 and preg_match($LOG['companiesRE'],$row[12])) {
+        if ($LOG['multicomp_admin'] > 0 and OSDpreg_match($LOG['companiesRE'],$row[12])) {
             $comps = get_krh($link, 'osdial_companies', '*','',"status IN ('ACTIVE','INACTIVE','SUSPENDED')",'');
             echo "<select name=company>\n";
             foreach ($comps as $comp) {
@@ -315,7 +315,7 @@ if ($ADD==31111111111) {
             }
             echo "</select>\n";
             echo "$NWB#phones-company$NWE";
-        } elseif ($LOG['multicomp']>0 and preg_match($LOG['companiesRE'],$row[0])) {
+        } elseif ($LOG['multicomp']>0 and OSDpreg_match($LOG['companiesRE'],$row[0])) {
             echo "<input type=hidden name=company value=$row[12]>";
             echo "<font color=$default_text>" . $row[12] . "</font>";
         } else {
@@ -404,7 +404,7 @@ if ($ADD==31111111111) {
 
         echo "<br><br><a href=\"$PHP_SELF?ADD=999999&SUB=31&phone_extension=$row[0]&phone_server_ip=$row[5]'\">Click here for phone stats</a><br><br>\n";
 
-        if ($LOGast_delete_phones > 0) {
+        if ($LOG['ast_delete_phones'] > 0) {
             echo "<br><br><a href=\"$PHP_SELF?ADD=51111111111&extension=$extension&server_ip=$server_ip\">DELETE THIS PHONE</a>\n";
         }
     } else {
@@ -423,14 +423,14 @@ if ($ADD==10000000000) {
     $SERVERlink='stage=SERVERDOWN';
     $STATUSlink='stage=STATUSDOWN';
     $SQLorder='order by extension,server_ip';
-    if (preg_match("/EXTENUP/",$stage)) {$SQLorder='order by extension asc';   $EXTENlink='stage=EXTENDOWN';}
-    if (preg_match("/EXTENDOWN/",$stage)) {$SQLorder='order by extension desc';   $EXTENlink='stage=EXTENUP';}
-    if (preg_match("/PROTOUP/",$stage)) {$SQLorder='order by protocol asc';   $PROTOlink='stage=PROTODOWN';}
-    if (preg_match("/PROTODOWN/",$stage)) {$SQLorder='order by protocol desc';   $PROTOlink='stage=PROTOUP';}
-    if (preg_match("/SERVERUP/",$stage)) {$SQLorder='order by server_ip asc';   $SERVERlink='stage=SERVERDOWN';}
-    if (preg_match("/SERVERDOWN/",$stage)) {$SQLorder='order by server_ip desc';   $SERVERlink='stage=SERVERUP';}
-    if (preg_match("/STATUSUP/",$stage)) {$SQLorder='order by status asc';   $STATUSlink='stage=STATUSDOWN';}
-    if (preg_match("/STATUSDOWN/",$stage)) {$SQLorder='order by status desc';   $STATUSlink='stage=STATUSUP';}
+    if (OSDpreg_match("/EXTENUP/",$stage)) {$SQLorder='order by extension asc';   $EXTENlink='stage=EXTENDOWN';}
+    if (OSDpreg_match("/EXTENDOWN/",$stage)) {$SQLorder='order by extension desc';   $EXTENlink='stage=EXTENUP';}
+    if (OSDpreg_match("/PROTOUP/",$stage)) {$SQLorder='order by protocol asc';   $PROTOlink='stage=PROTODOWN';}
+    if (OSDpreg_match("/PROTODOWN/",$stage)) {$SQLorder='order by protocol desc';   $PROTOlink='stage=PROTOUP';}
+    if (OSDpreg_match("/SERVERUP/",$stage)) {$SQLorder='order by server_ip asc';   $SERVERlink='stage=SERVERDOWN';}
+    if (OSDpreg_match("/SERVERDOWN/",$stage)) {$SQLorder='order by server_ip desc';   $SERVERlink='stage=SERVERUP';}
+    if (OSDpreg_match("/STATUSUP/",$stage)) {$SQLorder='order by status asc';   $STATUSlink='stage=STATUSDOWN';}
+    if (OSDpreg_match("/STATUSDOWN/",$stage)) {$SQLorder='order by status desc';   $STATUSlink='stage=STATUSUP';}
 
     if ($LOG['multicomp_user'] > 0) {
         $stmt=sprintf("SELECT * FROM phones WHERE company='%s' %s;",$LOG['company_prefix'],$SQLorder);
@@ -458,8 +458,8 @@ if ($ADD==10000000000) {
         $row=mysql_fetch_row($rslt);
         echo "  <tr " . bgcolor($o) ." class=\"row font1\" ondblclick=\"window.location='$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]';\">\n";
         echo "    <td><a href=\"$PHP_SELF?ADD=31111111111&extension=$row[0]&server_ip=$row[5]\">";
-        if ($LOG['multicomp'] and !preg_match('/\/|@/',$row[0]) and preg_match($LOG['companiesRE'],$row[0])) {
-            echo $row[12] . "&nbsp;" . substr($row[0],3);
+        if ($LOG['multicomp'] and !OSDpreg_match('/\/|@/',$row[0]) and OSDpreg_match($LOG['companiesRE'],$row[0])) {
+            echo $row[12] . "&nbsp;" . OSDsubstr($row[0],3);
         } else {
             echo $row[0];
         }
@@ -504,13 +504,13 @@ if ($ADD==10000000000) {
             $o=0;
             while ( list( $line_num, $line ) = each( $fcontents ) ) {
                 // Exit if the Verbosity line shows up - Obscured by only listing vm context 'default'
-                //if ( substr($line,0,9) == "Verbosity") {
+                //if ( OSDsubstr($line,0,9) == "Verbosity") {
                 //        break;
                 //}
                 // Ensuring only vm entries show up
-                if ( substr($line,0,7) == "default" ) {
+                if ( OSDsubstr($line,0,7) == "default" ) {
                     $line = rtrim($line);
-                    $lary = preg_split("/\\s+/",$line);
+                    $lary = OSDpreg_split("/\\s+/",$line);
                     echo "  <tr " . bgcolor($o) . " class=\"row font1\">\n";
                     echo "    <td>" . $lary[0] . "</td>\n";
                     echo "    <td>" . $lary[1] . "</td>\n";

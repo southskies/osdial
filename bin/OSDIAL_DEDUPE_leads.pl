@@ -31,6 +31,9 @@
 # 70521-1643 - first build
 #
 
+$|++;
+$DB=0;
+
 $secX = time();
 
 ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time);
@@ -202,6 +205,8 @@ $phone_list = '|';
 if (!$VARDB_port) {$VARDB_port='3306';}
 
 use DBI;	  
+use OSDial;
+my $osdial = OSDial->new('DB'=>$DB);	  
 
 $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
  or die "Couldn't connect to database: " . DBI->errstr;
@@ -216,7 +221,7 @@ $where='WHERE';
 $and='and';
 if (length($campdup)>0)
 	{
-	$stmtA = "SELECT list_id FROM osdial_lists WHERE campaign_id='$campdup';";
+	$stmtA = "SELECT list_id FROM osdial_lists WHERE campaign_id='" . $osdial->mres($campdup) . "';";
 	if($DBX){print STDERR "\n|$stmtA|\n";}
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
@@ -225,7 +230,7 @@ if (length($campdup)>0)
 	while ($sthArows > $rec_count)
 		{
 		@aryA = $sthA->fetchrow_array;
-		$dup_lists .=	"'$aryA[0]',";
+		$dup_lists .=	"'" . $osdial->mres($aryA[0]) . "',";
 		$rec_count++;
 		}
 	$sthA->finish();
@@ -233,7 +238,7 @@ if (length($campdup)>0)
 	$campSQL="list_id IN($dup_lists)";
 	if (length($ignorelist)>0)
 		{
-		$listSQL="AND list_id NOT IN('$ignorelist')";
+		$listSQL="AND list_id NOT IN('" . $osdial->mres($ignorelist) . "')";
 		}
 
 	}
@@ -241,7 +246,7 @@ else
 	{
 	if (length($ignorelist)>0)
 		{
-		$listSQL="list_id NOT IN('$ignorelist')";
+		$listSQL="list_id NOT IN('" . $osdial->mres($ignorelist) . "')";
 		}
 	else
 		{

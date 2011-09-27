@@ -36,8 +36,8 @@ if ($name!='' and ($rows!='' or $glob!='')) {
     $postsize=0;
     if ($glob!='') {
         $rows=0;
-        $postsize = strlen($glob);
-        foreach (explode("\n",preg_replace('/\r/','',$glob)) as $gline) {
+        $postsize = OSDstrlen($glob);
+        foreach (explode("\n",OSDpreg_replace('/\r/','',$glob)) as $gline) {
 	        $dncdata[]=explode('|',$gline);
             $rows++;
         }
@@ -45,7 +45,7 @@ if ($name!='' and ($rows!='' or $glob!='')) {
         $currow = -1;
         while ($currow++ < $rows-1) {
 	        $postrow = get_variable("row" . $currow);
-            $postsize += strlen($postrow);
+            $postsize += OSDstrlen($postrow);
 	        $dncdata[]=explode('|',$postrow);
         }
     }

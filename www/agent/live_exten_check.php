@@ -59,9 +59,10 @@ header('Expires: '.gmdate('D, d M Y H:i:s', (time() - 60)).' GMT');
 header('Pragma: no-cache');
 header('Content-Type: text/html; charset=utf-8');
 
-require("dbconnect.php");
-require("functions.php");
+require_once("dbconnect.php");
+require_once("functions.php");
 
+$DB=0;
 $user = get_variable("user");
 $pass = get_variable("pass");
 $server_ip = get_variable("server_ip");
@@ -72,11 +73,12 @@ $protocol = get_variable("protocol");
 $favorites_count = get_variable("favorites_count");
 $favorites_list = get_variable("favorites_list");
 
-$user=preg_replace("/[^0-9a-zA-Z]/","",$user);
-$pass=preg_replace("/[^0-9a-zA-Z]/","",$pass);
+#$user=OSDpreg_replace("/[^0-9a-zA-Z]/","",$user);
+#$pass=OSDpreg_replace("/[^0-9a-zA-Z]/","",$pass);
 
 # default optional vars if not set
-if ($format=='') $format="text";
+if (empty($format)) $format="text";
+if ($format=='debug') $DB=1;
 
 $version = 'SVN_Version';
 $build = 'SVN_Build';
@@ -87,7 +89,7 @@ if (!isset($query_date)) $query_date = $NOW_DATE;
 
 
 
-$stmt="SELECT count(*) FROM osdial_users WHERE user='$user' AND pass='$pass' AND user_level>0;";
+$stmt=sprintf("SELECT count(*) FROM osdial_users WHERE user='%s' AND pass='%s' AND user_level>0;",mres($user),mres($pass));
 if ($DB) echo "|$stmt|\n";
 $rslt=mysql_query($stmt, $link);
 $row=mysql_fetch_row($rslt);
@@ -95,15 +97,15 @@ $auth=$row[0];
 
 
 
-if( (strlen($user)<2) or (strlen($pass)<2) or ($auth==0)) {
+if( (OSDstrlen($user)<2) or (OSDstrlen($pass)<2) or ($auth==0)) {
     echo "Invalid Username/Password: |$user|$pass|\n";
     exit;
 } else {
-    if( (strlen($server_ip)<6) or ($server_ip=='') or ( (strlen($session_name)<12) or ($session_name=='') ) ) {
+    if( (OSDstrlen($server_ip)<6) or (empty($server_ip)) or ( (OSDstrlen($session_name)<12) or (empty($session_name)) ) ) {
         echo "Invalid server_ip: |$server_ip|  or  Invalid session_name: |$session_name|\n";
         exit;
     } else {
-        $stmt="SELECT count(*) FROM web_client_sessions WHERE session_name='$session_name' AND server_ip='$server_ip';";
+        $stmt=sprintf("SELECT count(*) FROM web_client_sessions WHERE session_name='%s' AND server_ip='%s';",mres($session_name),mres($server_ip));
         if ($DB) echo "|$stmt|\n";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
@@ -126,7 +128,7 @@ if ($format=='debug') {
     echo "<title>Live Extension Check";
     echo "</title>\n";
     echo "</head>\n";
-    echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";
+    echo "<body bgcolor=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";
 }
 
 
@@ -134,7 +136,7 @@ if ($format=='debug') {
 echo "DateTime: $NOW_TIME|";
 echo "UnixTime: $StarTtime|";
 
-$stmt="SELECT SQL_NO_CACHE count(*) FROM parked_channels WHERE server_ip='$server_ip';";
+$stmt=sprintf("SELECT SQL_NO_CACHE count(*) FROM parked_channels WHERE server_ip='%s';",mres($server_ip));
 if ($format=='debug') echo "\n<!-- $stmt -->";
 $rslt=mysql_query($stmt, $link);
 $row=mysql_fetch_row($rslt);
@@ -144,12 +146,12 @@ $MT[0]='';
 $row='';
 $rowx='';
 $channel_live=1;
-if ( (strlen($exten)<1) or (strlen($protocol)<3) ) {
+if ( (OSDstrlen($exten)<1) or (OSDstrlen($protocol)<3) ) {
     $channel_live=0;
     echo "Exten $exten is not valid or protocol $protocol is not valid\n";
     exit;
 } else {
-    $stmt="SELECT SQL_NO_CACHE channel,extension FROM live_sip_channels WHERE server_ip='$server_ip' AND channel LIKE '$protocol/$exten%';";
+    $stmt=sprintf("SELECT SQL_NO_CACHE channel,extension FROM live_sip_channels WHERE server_ip='%s' AND channel LIKE '%s/%s%%';",mres($server_ip),mres($protocol),mres($exten));
     if ($format=='debug') echo "\n<!-- $stmt -->";
     $rslt=mysql_query($stmt, $link);
     if ($rslt) $channels_list = mysql_num_rows($rslt);
@@ -167,7 +169,7 @@ if ( (strlen($exten)<1) or (strlen($protocol)<3) ) {
 $counter=0;
 while($loop_count > $counter) {
     $counter++;
-    $stmt="SELECT SQL_NO_CACHE channel FROM live_channels WHERE server_ip='$server_ip' AND channel_data='$ChanneLA[$counter]';";
+    $stmt=sprintf("SELECT SQL_NO_CACHE channel FROM live_channels WHERE server_ip='%s' AND channel_data='%s';",mres($server_ip),mres($ChanneLA[$counter]));
     if ($format=='debug') echo "\n<!-- $stmt -->";
     $rslt=mysql_query($stmt, $link);
     if ($rslt) $trunk_count = mysql_num_rows($rslt);
@@ -178,7 +180,7 @@ while($loop_count > $counter) {
         echo "ChannelB: $ChanneLB[$counter] ~";
         echo "ChannelBtrunk: $row[0]|";
     } else {
-        $stmt="SELECT SQL_NO_CACHE channel FROM live_sip_channels WHERE server_ip='$server_ip' AND channel_data='$ChanneLA[$counter]';";
+        $stmt=sprintf("SELECT SQL_NO_CACHE channel FROM live_sip_channels WHERE server_ip='%s' AND channel_data='%s';",mres($server_ip),mres($ChanneLA[$counter]));
         if ($format=='debug') echo "\n<!-- $stmt -->";
         $rslt=mysql_query($stmt, $link);
         if ($rslt) {$trunk_count = mysql_num_rows($rslt);}
@@ -189,7 +191,7 @@ while($loop_count > $counter) {
             echo "ChannelB: $ChanneLB[$counter] ~";
             echo "ChannelBtrunk: $row[0]|";
         } else {
-            $stmt="SELECT SQL_NO_CACHE channel FROM live_sip_channels WHERE server_ip='$server_ip' AND channel LIKE '$ChanneLB[$counter]%';";
+            $stmt=sprintf("SELECT SQL_NO_CACHE channel FROM live_sip_channels WHERE server_ip='%s' AND channel LIKE '%s%%';",mres($server_ip),mres($ChanneLB[$counter]));
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
             if ($rslt) $trunk_count = mysql_num_rows($rslt);
@@ -200,7 +202,7 @@ while($loop_count > $counter) {
                 echo "ChannelB: $ChanneLB[$counter] ~";
                 echo "ChannelBtrunk: $row[0]|";
             } else {
-                $stmt="SELECT SQL_NO_CACHE channel FROM live_channels WHERE server_ip='$server_ip' AND channel LIKE '$ChanneLB[$counter]%';";
+                $stmt=sprintf("SELECT SQL_NO_CACHE channel FROM live_channels WHERE server_ip='%s' AND channel LIKE '%s%%';",mres($server_ip),mres($ChanneLB[$counter]));
                 if ($format=='debug') echo "\n<!-- $stmt -->";
                 $rslt=mysql_query($stmt, $link);
                 if ($rslt) $trunk_count = mysql_num_rows($rslt);
@@ -225,7 +227,7 @@ echo "\n";
 
 
 ### check for live_inbound entry
-$stmt="SELECT SQL_NO_CACHE * FROM live_inbound WHERE server_ip='$server_ip' AND phone_ext='$exten' AND acknowledged='N';";
+$stmt=sprintf("SELECT SQL_NO_CACHE * FROM live_inbound WHERE server_ip='%s' AND phone_ext='%s' AND acknowledged='N';",mres($server_ip),mres($exten));
 if ($format=='debug') echo "\n<!-- $stmt -->";
 $rslt=mysql_query($stmt, $link);
 if ($rslt) $channels_list = mysql_num_rows($rslt);
@@ -249,7 +251,7 @@ if ($favorites_count > 0) {
     $favs_print='';
     while ($favorites_count > $h) {
         $fav_extension = explode('/',$favorites[$h]);
-        $stmt="SELECT SQL_NO_CACHE count(*) FROM live_sip_channels WHERE server_ip='$server_ip' AND channel LIKE '$favorites[$h]%';";
+        $stmt=sprintf("SELECT SQL_NO_CACHE count(*) FROM live_sip_channels WHERE server_ip='%s' AND channel LIKE '%s%%';",mres($server_ip),mres($favorites[$h]));
         if ($format=='debug') echo "\n<!-- $stmt -->";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);

@@ -73,92 +73,92 @@ if ($ADD=="7email") {
     $et = get_first_record($link, 'osdial_email_templates', '*', sprintf("et_id='%s'",mres($et_id)) );
     $et_text = $et['et_body_html'] . "<br /><br /><hr /><br /><br />" . $et['et_body_html'];
 
-    if (preg_match("/iframe src/i",$et_text)) {
-        $vendor_lead_code = preg_replace('/ /','+',$vendor_lead_code);
-        $list_id = preg_replace('/ /','+',$list_id);
-        $gmt_offset_now = preg_replace('/ /','+',$gmt_offset_now);
-        $phone_code = preg_replace('/ /','+',$phone_code);
-        $phone_number = preg_replace('/ /','+',$phone_number);
-        $title = preg_replace('/ /','+',$title);
-        $first_name = preg_replace('/ /','+',$first_name);
-        $middle_initial = preg_replace('/ /','+',$middle_initial);
-        $last_name = preg_replace('/ /','+',$last_name);
-        $address1 = preg_replace('/ /','+',$address1);
-        $address2 = preg_replace('/ /','+',$address2);
-        $address3 = preg_replace('/ /','+',$address2);
-        $city = preg_replace('/ /','+',$city);
-        $state = preg_replace('/ /','+',$state);
-        $province = preg_replace('/ /','+',$province);
-        $postal_code = preg_replace('/ /','+',$postal_code);
-        $country_code = preg_replace('/ /','+',$country_code);
-        $gender = preg_replace('/ /','+',$gender);
-        $date_of_birth = preg_replace('/ /','+',$date_of_birth);
-        $alt_phone = preg_replace('/ /','+',$alt_phone);
-        $email = preg_replace('/ /','+',$email);
-        $custom1 = preg_replace('/ /','+',$custom1);
-        $custom2 = preg_replace('/ /','+',$custom2);
-        $comments = preg_replace('/ /','+',$comments);
-        $fullname = preg_replace('/ /','+',$fullname);
-        $user = preg_replace('/ /','+',$user);
-        $pass = preg_replace('/ /','+',$pass);
-        $lead_id = preg_replace('/ /','+',$lead_id);
-        $campaign = preg_replace('/ /','+',$campaign);
-        $phone_login = preg_replace('/ /','+',$phone_login);
-        $group = preg_replace('/ /','+',$group);
-        $channel_group = preg_replace('/ /','+',$channel_group);
-        $SQLdate = preg_replace('/ /','+',$SQLdate);
-        $epoch = preg_replace('/ /','+',$epoch);
-        $uniqueid = preg_replace('/ /','+',$uniqueid);
-        $customer_zap_channel = preg_replace('/ /','+',$customer_zap_channel);
-        $server_ip = preg_replace('/ /','+',$server_ip);
-        $SIPexten = preg_replace('/ /','+',$SIPexten);
-        $session_id = preg_replace('/ /','+',$session_id);
+    if (OSDpreg_match("/iframe src/i",$et_text)) {
+        $vendor_lead_code = OSDpreg_replace('/ /','+',$vendor_lead_code);
+        $list_id = OSDpreg_replace('/ /','+',$list_id);
+        $gmt_offset_now = OSDpreg_replace('/ /','+',$gmt_offset_now);
+        $phone_code = OSDpreg_replace('/ /','+',$phone_code);
+        $phone_number = OSDpreg_replace('/ /','+',$phone_number);
+        $title = OSDpreg_replace('/ /','+',$title);
+        $first_name = OSDpreg_replace('/ /','+',$first_name);
+        $middle_initial = OSDpreg_replace('/ /','+',$middle_initial);
+        $last_name = OSDpreg_replace('/ /','+',$last_name);
+        $address1 = OSDpreg_replace('/ /','+',$address1);
+        $address2 = OSDpreg_replace('/ /','+',$address2);
+        $address3 = OSDpreg_replace('/ /','+',$address2);
+        $city = OSDpreg_replace('/ /','+',$city);
+        $state = OSDpreg_replace('/ /','+',$state);
+        $province = OSDpreg_replace('/ /','+',$province);
+        $postal_code = OSDpreg_replace('/ /','+',$postal_code);
+        $country_code = OSDpreg_replace('/ /','+',$country_code);
+        $gender = OSDpreg_replace('/ /','+',$gender);
+        $date_of_birth = OSDpreg_replace('/ /','+',$date_of_birth);
+        $alt_phone = OSDpreg_replace('/ /','+',$alt_phone);
+        $email = OSDpreg_replace('/ /','+',$email);
+        $custom1 = OSDpreg_replace('/ /','+',$custom1);
+        $custom2 = OSDpreg_replace('/ /','+',$custom2);
+        $comments = OSDpreg_replace('/ /','+',$comments);
+        $fullname = OSDpreg_replace('/ /','+',$fullname);
+        $user = OSDpreg_replace('/ /','+',$user);
+        $pass = OSDpreg_replace('/ /','+',$pass);
+        $lead_id = OSDpreg_replace('/ /','+',$lead_id);
+        $campaign = OSDpreg_replace('/ /','+',$campaign);
+        $phone_login = OSDpreg_replace('/ /','+',$phone_login);
+        $group = OSDpreg_replace('/ /','+',$group);
+        $channel_group = OSDpreg_replace('/ /','+',$channel_group);
+        $SQLdate = OSDpreg_replace('/ /','+',$SQLdate);
+        $epoch = OSDpreg_replace('/ /','+',$epoch);
+        $uniqueid = OSDpreg_replace('/ /','+',$uniqueid);
+        $customer_zap_channel = OSDpreg_replace('/ /','+',$customer_zap_channel);
+        $server_ip = OSDpreg_replace('/ /','+',$server_ip);
+        $SIPexten = OSDpreg_replace('/ /','+',$SIPexten);
+        $session_id = OSDpreg_replace('/ /','+',$session_id);
     }
 
-    $et_text = preg_replace('/\[\[list_id\]\]/',             $list_id,             $et_text);
-    $et_text = preg_replace('/\[\[gmt_offset_now\]\]/',      $gmt_offset_now,      $et_text);
-    $et_text = preg_replace('/\[\[fullname\]\]/',            $fullname,            $et_text);
-    $et_text = preg_replace('/\[\[fronter\]\]/',             $fronter,             $et_text);
-    $et_text = preg_replace('/\[\[user\]\]/',                $user,                $et_text);
-    $et_text = preg_replace('/\[\[pass\]\]/',                $pass,                $et_text);
-    $et_text = preg_replace('/\[\[lead_id\]\]/',             $lead_id,             $et_text);
-    $et_text = preg_replace('/\[\[campaign\]\]/',            $campaign,            $et_text);
-    $et_text = preg_replace('/\[\[phone_login\]\]/',         $phone_login,         $et_text);
-    $et_text = preg_replace('/\[\[group\]\]/',               $group,               $et_text);
-    $et_text = preg_replace('/\[\[channel_group\]\]/',       $channel_group,       $et_text);
-    $et_text = preg_replace('/\[\[SQLdate\]\]/',             $SQLdate,             $et_text);
-    $et_text = preg_replace('/\[\[epoch\]\]/',               $epoch,               $et_text);
-    $et_text = preg_replace('/\[\[uniqueid\]\]/',            $uniqueid,            $et_text);
-    $et_text = preg_replace('/\[\[customer_zap_channel\]\]/',$customer_zap_channel,$et_text);
-    $et_text = preg_replace('/\[\[server_ip\]\]/',           $server_ip,           $et_text);
-    $et_text = preg_replace('/\[\[SIPexten\]\]/',            $SIPexten,            $et_text);
-    $et_text = preg_replace('/\[\[session_id\]\]/',          $session_id,          $et_text);
+    $et_text = OSDpreg_replace('/\[\[list_id\]\]/',             $list_id,             $et_text);
+    $et_text = OSDpreg_replace('/\[\[gmt_offset_now\]\]/',      $gmt_offset_now,      $et_text);
+    $et_text = OSDpreg_replace('/\[\[fullname\]\]/',            $fullname,            $et_text);
+    $et_text = OSDpreg_replace('/\[\[fronter\]\]/',             $fronter,             $et_text);
+    $et_text = OSDpreg_replace('/\[\[user\]\]/',                $user,                $et_text);
+    $et_text = OSDpreg_replace('/\[\[pass\]\]/',                $pass,                $et_text);
+    $et_text = OSDpreg_replace('/\[\[lead_id\]\]/',             $lead_id,             $et_text);
+    $et_text = OSDpreg_replace('/\[\[campaign\]\]/',            $campaign,            $et_text);
+    $et_text = OSDpreg_replace('/\[\[phone_login\]\]/',         $phone_login,         $et_text);
+    $et_text = OSDpreg_replace('/\[\[group\]\]/',               $group,               $et_text);
+    $et_text = OSDpreg_replace('/\[\[channel_group\]\]/',       $channel_group,       $et_text);
+    $et_text = OSDpreg_replace('/\[\[SQLdate\]\]/',             $SQLdate,             $et_text);
+    $et_text = OSDpreg_replace('/\[\[epoch\]\]/',               $epoch,               $et_text);
+    $et_text = OSDpreg_replace('/\[\[uniqueid\]\]/',            $uniqueid,            $et_text);
+    $et_text = OSDpreg_replace('/\[\[customer_zap_channel\]\]/',$customer_zap_channel,$et_text);
+    $et_text = OSDpreg_replace('/\[\[server_ip\]\]/',           $server_ip,           $et_text);
+    $et_text = OSDpreg_replace('/\[\[SIPexten\]\]/',            $SIPexten,            $et_text);
+    $et_text = OSDpreg_replace('/\[\[session_id\]\]/',          $session_id,          $et_text);
 
-    $et_text = preg_replace('/\[\[title\]\]/',               $title,               $et_text);
-    $et_text = preg_replace('/\[\[first_name\]\]/',          $first_name,          $et_text);
-    $et_text = preg_replace('/\[\[middle_initial\]\]/',      $middle_initial,      $et_text);
-    $et_text = preg_replace('/\[\[last_name\]\]/',           $last_name,           $et_text);
-    $et_text = preg_replace('/\[\[address1\]\]/',            $address1,            $et_text);
-    $et_text = preg_replace('/\[\[address2\]\]/',            $address2,            $et_text);
-    $et_text = preg_replace('/\[\[address3\]\]/',            $address3,            $et_text);
-    $et_text = preg_replace('/\[\[city\]\]/',                $city,                $et_text);
-    $et_text = preg_replace('/\[\[state\]\]/',               $state,               $et_text);
-    $et_text = preg_replace('/\[\[province\]\]/',            $province,            $et_text);
-    $et_text = preg_replace('/\[\[postal_code\]\]/',         $postal_code,         $et_text);
-    $et_text = preg_replace('/\[\[country_code\]\]/',        $country_code,        $et_text);
-    $et_text = preg_replace('/\[\[phone_code\]\]/',          $phone_code,          $et_text);
-    $et_text = preg_replace('/\[\[phone_number\]\]/',        $phone_number,        $et_text);
-    $et_text = preg_replace('/\[\[alt_phone\]\]/',           $alt_phone,           $et_text);
-    $et_text = preg_replace('/\[\[email\]\]/',               $email,               $et_text);
-    $et_text = preg_replace('/\[\[gender\]\]/',              $gender,              $et_text);
-    $et_text = preg_replace('/\[\[date_of_birth\]\]/',       $date_of_birth,       $et_text);
-    $et_text = preg_replace('/\[\[post_date\]\]/',           $post_date,           $et_text);
-    $et_text = preg_replace('/\[\[vendor_lead_code\]\]/',    $vendor_lead_code,    $et_text);
-    $et_text = preg_replace('/\[\[comments\]\]/',            $comments,            $et_text);
-    $et_text = preg_replace('/\[\[custom1\]\]/',             $custom1,             $et_text);
-    $et_text = preg_replace('/\[\[custom2\]\]/',             $custom2,             $et_text);
+    $et_text = OSDpreg_replace('/\[\[title\]\]/',               $title,               $et_text);
+    $et_text = OSDpreg_replace('/\[\[first_name\]\]/',          $first_name,          $et_text);
+    $et_text = OSDpreg_replace('/\[\[middle_initial\]\]/',      $middle_initial,      $et_text);
+    $et_text = OSDpreg_replace('/\[\[last_name\]\]/',           $last_name,           $et_text);
+    $et_text = OSDpreg_replace('/\[\[address1\]\]/',            $address1,            $et_text);
+    $et_text = OSDpreg_replace('/\[\[address2\]\]/',            $address2,            $et_text);
+    $et_text = OSDpreg_replace('/\[\[address3\]\]/',            $address3,            $et_text);
+    $et_text = OSDpreg_replace('/\[\[city\]\]/',                $city,                $et_text);
+    $et_text = OSDpreg_replace('/\[\[state\]\]/',               $state,               $et_text);
+    $et_text = OSDpreg_replace('/\[\[province\]\]/',            $province,            $et_text);
+    $et_text = OSDpreg_replace('/\[\[postal_code\]\]/',         $postal_code,         $et_text);
+    $et_text = OSDpreg_replace('/\[\[country_code\]\]/',        $country_code,        $et_text);
+    $et_text = OSDpreg_replace('/\[\[phone_code\]\]/',          $phone_code,          $et_text);
+    $et_text = OSDpreg_replace('/\[\[phone_number\]\]/',        $phone_number,        $et_text);
+    $et_text = OSDpreg_replace('/\[\[alt_phone\]\]/',           $alt_phone,           $et_text);
+    $et_text = OSDpreg_replace('/\[\[email\]\]/',               $email,               $et_text);
+    $et_text = OSDpreg_replace('/\[\[gender\]\]/',              $gender,              $et_text);
+    $et_text = OSDpreg_replace('/\[\[date_of_birth\]\]/',       $date_of_birth,       $et_text);
+    $et_text = OSDpreg_replace('/\[\[post_date\]\]/',           $post_date,           $et_text);
+    $et_text = OSDpreg_replace('/\[\[vendor_lead_code\]\]/',    $vendor_lead_code,    $et_text);
+    $et_text = OSDpreg_replace('/\[\[comments\]\]/',            $comments,            $et_text);
+    $et_text = OSDpreg_replace('/\[\[custom1\]\]/',             $custom1,             $et_text);
+    $et_text = OSDpreg_replace('/\[\[custom2\]\]/',             $custom2,             $et_text);
 
-    $et_text = preg_replace("/\n/","",$et_text);
+    $et_text = OSDpreg_replace("/\n/","",$et_text);
 
     echo "<table align=center><tr><td>\n";
 
@@ -279,7 +279,7 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
 <?php
     $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'",'');
     foreach ($forms as $form) {
-        $fcamps = preg_split('/,/',$form['campaigns']);
+        $fcamps = OSDpreg_split('/,/',$form['campaigns']);
         foreach ($fcamps as $fcamp) {
             $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'",'');
             foreach ($fields as $field) {
@@ -304,8 +304,8 @@ tinymce.PluginManager.add('example', tinymce.plugins.ExamplePlugin);
 // Initialize TinyMCE with the new plugin and listbox
 tinyMCE.init({
     plugins : '-example', // - tells TinyMCE to skip the loading of the plugin
-    mode : "specific_textareas",
-    editor_selector : "mceEditor",
+    mode : "textareas",
+    editor_deselector : "NoEditor",
     theme : "advanced",
     theme_advanced_buttons1 : "separator,fontselect,fontsizeselect,forecolor,backcolor,separator,bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,hr,sub,sup,separator,cut,copy,paste,separator,undo,redo,separator",
     theme_advanced_buttons2 : "separator,myfields,separator,myaddtlfields,separator,helpb,separator",
@@ -320,7 +320,7 @@ tinyMCE.init({
 
         echo "<center><br>\n";
         echo "<font color=$default_text size=+1>ADD NEW EMAIL TEMPLATE</font><br><br>\n";
-        echo "<form name=etform action=$PHP_SELF method=post>\n";
+        echo "<form name=etform action=$PHP_SELF method=post enctype=\"multipart/form-data\">\n";
         echo "<input type=hidden name=ADD value=2email>\n";
         echo "<table width=$section_width cellspacing=3>\n";
         echo "  <tr bgcolor=$oddrows>\n";
@@ -402,14 +402,14 @@ tinyMCE.init({
         #echo "  <tr bgcolor=$oddrows>\n";
         #echo "    <td align=center colspan=2>\n";
         #echo "      <br>HTML Body:<br>";
-        #echo "      <textarea name=et_body_html class=mceEditor rows=20 cols=120></textarea>\n";
+        #echo "      <textarea name=et_body_html rows=20 cols=120></textarea>\n";
         #echo "    </td>\n";
         #echo "  </tr>\n";
 
         #echo "  <tr bgcolor=$oddrows>\n";
         #echo "    <td align=center colspan=2>\n";
         #echo "      <br>Text Body:<br>";
-        #echo "      <textarea name=et_body_text rows=20 cols=70></textarea>\n";
+        #echo "      <textarea name=et_body_text class=NoEditor rows=20 cols=70></textarea>\n";
         #echo "    </td>\n";
         #echo "  </tr>\n";
 
@@ -431,13 +431,13 @@ if ($ADD=="2email") {
     if ($LOG['modify_scripts']==1) {
         $preet_id = $et_id;
         if ($LOG['multicomp'] > 0) $preet_id = (($company_id * 1) + 100) . $et_id;
-        $stmt="SELECT count(*) from osdial_email_templates where et_id='$preet_id';";
+        $stmt=sprintf("SELECT count(*) FROM osdial_email_templates WHERE et_id='%s';",mres($preet_id));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         if ($row[0] > 0) {
             echo "<br><font color=red>TEMPLATE NOT ADDED - there is already an email template with this name</font>\n";
         } else {
-            if (strlen($et_id) < 2 or strlen($et_name) < 2) {
+            if (OSDstrlen($et_id) < 2 or OSDstrlen($et_name) < 2) {
                 echo "<br><font color=red>TEMPLATE NOT ADDED - Please go back and look at the data you entered\n";
                 echo "<br>Template name and HTML body must be at least 2 characters in length</font><br>\n";
             } else {
@@ -477,9 +477,9 @@ if ($ADD=="2email") {
 if ($ADD=="4email") {
     if ($LOG['modify_scripts']==1) {
 
-        if (strlen($et_id) < 2 or strlen($et_name) < 2 or strlen($et_body_html) < 2) {
+        if (OSDstrlen($et_id) < 2 or OSDstrlen($et_name) < 2 or OSDstrlen($et_body_html) < 2) {
             echo "<br><font color=red>TEMPLATE NOT MODIFIED - Please go back and look at the data you entered\n";
-            echo "<br>Template name and HTML body must be at least 2 characters in length</font><br>\n";
+            echo "<br>Template name (".OSDstrlen($et_name).") and HTML body (".OSDstrlen($et_body_html).") must be at least 2 characters in length</font><br>\n";
         } else {
             if ($et_port=='') $et_port='25';
             $stmt=sprintf("UPDATE osdial_email_templates SET et_name='%s',et_comments='%s',et_host='%s',et_port='%s',et_user='%s',et_pass='%s',et_from='%s',et_subject='%s',et_body_html='%s',et_body_text='%s',active='%s',et_send_action='%s' WHERE et_id='%s';",mres($et_name),mres($et_comments),mres($et_host),mres($et_port),mres($et_user),mres($et_pass),mres($et_from),mres($et_subject),mres($et_body_html),mres($et_body_text),mres($active),mres($et_send_action),mres($et_id));
@@ -532,131 +532,131 @@ if ($ADD=="4email") {
                 $custom1 = 'custom1';
                 $custom2 = 'custom2';
 
-                $et_subject   = preg_replace('/\[\[list_id\]\]/',             $list_id,             $et_subject);
-                $et_subject   = preg_replace('/\[\[gmt_offset_now\]\]/',      $gmt_offset_now,      $et_subject);
-                $et_subject   = preg_replace('/\[\[fullname\]\]/',            $fullname,            $et_subject);
-                $et_subject   = preg_replace('/\[\[fronter\]\]/',             $fronter,             $et_subject);
-                $et_subject   = preg_replace('/\[\[user\]\]/',                $user,                $et_subject);
-                $et_subject   = preg_replace('/\[\[pass\]\]/',                $pass,                $et_subject);
-                $et_subject   = preg_replace('/\[\[lead_id\]\]/',             $lead_id,             $et_subject);
-                $et_subject   = preg_replace('/\[\[campaign\]\]/',            $campaign,            $et_subject);
-                $et_subject   = preg_replace('/\[\[phone_login\]\]/',         $phone_login,         $et_subject);
-                $et_subject   = preg_replace('/\[\[group\]\]/',               $group,               $et_subject);
-                $et_subject   = preg_replace('/\[\[channel_group\]\]/',       $channel_group,       $et_subject);
-                $et_subject   = preg_replace('/\[\[SQLdate\]\]/',             $SQLdate,             $et_subject);
-                $et_subject   = preg_replace('/\[\[epoch\]\]/',               $epoch,               $et_subject);
-                $et_subject   = preg_replace('/\[\[uniqueid\]\]/',            $uniqueid,            $et_subject);
-                $et_subject   = preg_replace('/\[\[customer_zap_channel\]\]/',$customer_zap_channel,$et_subject);
-                $et_subject   = preg_replace('/\[\[server_ip\]\]/',           $server_ip,           $et_subject);
-                $et_subject   = preg_replace('/\[\[SIPexten\]\]/',            $SIPexten,            $et_subject);
-                $et_subject   = preg_replace('/\[\[session_id\]\]/',          $session_id,          $et_subject);
-                $et_subject   = preg_replace('/\[\[title\]\]/',               $title,               $et_subject);
-                $et_subject   = preg_replace('/\[\[first_name\]\]/',          $first_name,          $et_subject);
-                $et_subject   = preg_replace('/\[\[middle_initial\]\]/',      $middle_initial,      $et_subject);
-                $et_subject   = preg_replace('/\[\[last_name\]\]/',           $last_name,           $et_subject);
-                $et_subject   = preg_replace('/\[\[address1\]\]/',            $address1,            $et_subject);
-                $et_subject   = preg_replace('/\[\[address2\]\]/',            $address2,            $et_subject);
-                $et_subject   = preg_replace('/\[\[address3\]\]/',            $address3,            $et_subject);
-                $et_subject   = preg_replace('/\[\[city\]\]/',                $city,                $et_subject);
-                $et_subject   = preg_replace('/\[\[state\]\]/',               $state,               $et_subject);
-                $et_subject   = preg_replace('/\[\[province\]\]/',            $province,            $et_subject);
-                $et_subject   = preg_replace('/\[\[postal_code\]\]/',         $postal_code,         $et_subject);
-                $et_subject   = preg_replace('/\[\[country_code\]\]/',        $country_code,        $et_subject);
-                $et_subject   = preg_replace('/\[\[phone_code\]\]/',          $phone_code,          $et_subject);
-                $et_subject   = preg_replace('/\[\[phone_number\]\]/',        $phone_number,        $et_subject);
-                $et_subject   = preg_replace('/\[\[alt_phone\]\]/',           $alt_phone,           $et_subject);
-                $et_subject   = preg_replace('/\[\[email\]\]/',               $email,               $et_subject);
-                $et_subject   = preg_replace('/\[\[gender\]\]/',              $gender,              $et_subject);
-                $et_subject   = preg_replace('/\[\[date_of_birth\]\]/',       $date_of_birth,       $et_subject);
-                $et_subject   = preg_replace('/\[\[post_date\]\]/',           $post_date,           $et_subject);
-                $et_subject   = preg_replace('/\[\[vendor_lead_code\]\]/',    $vendor_lead_code,    $et_subject);
-                $et_subject   = preg_replace('/\[\[comments\]\]/',            $comments,            $et_subject);
-                $et_subject   = preg_replace('/\[\[custom1\]\]/',             $custom1,             $et_subject);
-                $et_subject   = preg_replace('/\[\[custom2\]\]/',             $custom2,             $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[list_id\]\]/',             $list_id,             $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[gmt_offset_now\]\]/',      $gmt_offset_now,      $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[fullname\]\]/',            $fullname,            $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[fronter\]\]/',             $fronter,             $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[user\]\]/',                $user,                $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[pass\]\]/',                $pass,                $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[lead_id\]\]/',             $lead_id,             $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[campaign\]\]/',            $campaign,            $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[phone_login\]\]/',         $phone_login,         $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[group\]\]/',               $group,               $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[channel_group\]\]/',       $channel_group,       $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[SQLdate\]\]/',             $SQLdate,             $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[epoch\]\]/',               $epoch,               $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[uniqueid\]\]/',            $uniqueid,            $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[customer_zap_channel\]\]/',$customer_zap_channel,$et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[server_ip\]\]/',           $server_ip,           $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[SIPexten\]\]/',            $SIPexten,            $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[session_id\]\]/',          $session_id,          $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[title\]\]/',               $title,               $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[first_name\]\]/',          $first_name,          $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[middle_initial\]\]/',      $middle_initial,      $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[last_name\]\]/',           $last_name,           $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[address1\]\]/',            $address1,            $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[address2\]\]/',            $address2,            $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[address3\]\]/',            $address3,            $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[city\]\]/',                $city,                $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[state\]\]/',               $state,               $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[province\]\]/',            $province,            $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[postal_code\]\]/',         $postal_code,         $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[country_code\]\]/',        $country_code,        $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[phone_code\]\]/',          $phone_code,          $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[phone_number\]\]/',        $phone_number,        $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[alt_phone\]\]/',           $alt_phone,           $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[email\]\]/',               $email,               $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[gender\]\]/',              $gender,              $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[date_of_birth\]\]/',       $date_of_birth,       $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[post_date\]\]/',           $post_date,           $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[vendor_lead_code\]\]/',    $vendor_lead_code,    $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[comments\]\]/',            $comments,            $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[custom1\]\]/',             $custom1,             $et_subject);
+                $et_subject   = OSDpreg_replace('/\[\[custom2\]\]/',             $custom2,             $et_subject);
 
-                $et_body_html = preg_replace('/\[\[list_id\]\]/',             $list_id,             $et_body_html);
-                $et_body_html = preg_replace('/\[\[gmt_offset_now\]\]/',      $gmt_offset_now,      $et_body_html);
-                $et_body_html = preg_replace('/\[\[fullname\]\]/',            $fullname,            $et_body_html);
-                $et_body_html = preg_replace('/\[\[fronter\]\]/',             $fronter,             $et_body_html);
-                $et_body_html = preg_replace('/\[\[user\]\]/',                $user,                $et_body_html);
-                $et_body_html = preg_replace('/\[\[pass\]\]/',                $pass,                $et_body_html);
-                $et_body_html = preg_replace('/\[\[lead_id\]\]/',             $lead_id,             $et_body_html);
-                $et_body_html = preg_replace('/\[\[campaign\]\]/',            $campaign,            $et_body_html);
-                $et_body_html = preg_replace('/\[\[phone_login\]\]/',         $phone_login,         $et_body_html);
-                $et_body_html = preg_replace('/\[\[group\]\]/',               $group,               $et_body_html);
-                $et_body_html = preg_replace('/\[\[channel_group\]\]/',       $channel_group,       $et_body_html);
-                $et_body_html = preg_replace('/\[\[SQLdate\]\]/',             $SQLdate,             $et_body_html);
-                $et_body_html = preg_replace('/\[\[epoch\]\]/',               $epoch,               $et_body_html);
-                $et_body_html = preg_replace('/\[\[uniqueid\]\]/',            $uniqueid,            $et_body_html);
-                $et_body_html = preg_replace('/\[\[customer_zap_channel\]\]/',$customer_zap_channel,$et_body_html);
-                $et_body_html = preg_replace('/\[\[server_ip\]\]/',           $server_ip,           $et_body_html);
-                $et_body_html = preg_replace('/\[\[SIPexten\]\]/',            $SIPexten,            $et_body_html);
-                $et_body_html = preg_replace('/\[\[session_id\]\]/',          $session_id,          $et_body_html);
-                $et_body_html = preg_replace('/\[\[title\]\]/',               $title,               $et_body_html);
-                $et_body_html = preg_replace('/\[\[first_name\]\]/',          $first_name,          $et_body_html);
-                $et_body_html = preg_replace('/\[\[middle_initial\]\]/',      $middle_initial,      $et_body_html);
-                $et_body_html = preg_replace('/\[\[last_name\]\]/',           $last_name,           $et_body_html);
-                $et_body_html = preg_replace('/\[\[address1\]\]/',            $address1,            $et_body_html);
-                $et_body_html = preg_replace('/\[\[address2\]\]/',            $address2,            $et_body_html);
-                $et_body_html = preg_replace('/\[\[address3\]\]/',            $address3,            $et_body_html);
-                $et_body_html = preg_replace('/\[\[city\]\]/',                $city,                $et_body_html);
-                $et_body_html = preg_replace('/\[\[state\]\]/',               $state,               $et_body_html);
-                $et_body_html = preg_replace('/\[\[province\]\]/',            $province,            $et_body_html);
-                $et_body_html = preg_replace('/\[\[postal_code\]\]/',         $postal_code,         $et_body_html);
-                $et_body_html = preg_replace('/\[\[country_code\]\]/',        $country_code,        $et_body_html);
-                $et_body_html = preg_replace('/\[\[phone_code\]\]/',          $phone_code,          $et_body_html);
-                $et_body_html = preg_replace('/\[\[phone_number\]\]/',        $phone_number,        $et_body_html);
-                $et_body_html = preg_replace('/\[\[alt_phone\]\]/',           $alt_phone,           $et_body_html);
-                $et_body_html = preg_replace('/\[\[email\]\]/',               $email,               $et_body_html);
-                $et_body_html = preg_replace('/\[\[gender\]\]/',              $gender,              $et_body_html);
-                $et_body_html = preg_replace('/\[\[date_of_birth\]\]/',       $date_of_birth,       $et_body_html);
-                $et_body_html = preg_replace('/\[\[post_date\]\]/',           $post_date,           $et_body_html);
-                $et_body_html = preg_replace('/\[\[vendor_lead_code\]\]/',    $vendor_lead_code,    $et_body_html);
-                $et_body_html = preg_replace('/\[\[comments\]\]/',            $comments,            $et_body_html);
-                $et_body_html = preg_replace('/\[\[custom1\]\]/',             $custom1,             $et_body_html);
-                $et_body_html = preg_replace('/\[\[custom2\]\]/',             $custom2,             $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[list_id\]\]/',             $list_id,             $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[gmt_offset_now\]\]/',      $gmt_offset_now,      $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[fullname\]\]/',            $fullname,            $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[fronter\]\]/',             $fronter,             $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[user\]\]/',                $user,                $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[pass\]\]/',                $pass,                $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[lead_id\]\]/',             $lead_id,             $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[campaign\]\]/',            $campaign,            $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[phone_login\]\]/',         $phone_login,         $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[group\]\]/',               $group,               $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[channel_group\]\]/',       $channel_group,       $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[SQLdate\]\]/',             $SQLdate,             $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[epoch\]\]/',               $epoch,               $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[uniqueid\]\]/',            $uniqueid,            $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[customer_zap_channel\]\]/',$customer_zap_channel,$et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[server_ip\]\]/',           $server_ip,           $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[SIPexten\]\]/',            $SIPexten,            $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[session_id\]\]/',          $session_id,          $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[title\]\]/',               $title,               $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[first_name\]\]/',          $first_name,          $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[middle_initial\]\]/',      $middle_initial,      $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[last_name\]\]/',           $last_name,           $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[address1\]\]/',            $address1,            $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[address2\]\]/',            $address2,            $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[address3\]\]/',            $address3,            $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[city\]\]/',                $city,                $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[state\]\]/',               $state,               $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[province\]\]/',            $province,            $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[postal_code\]\]/',         $postal_code,         $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[country_code\]\]/',        $country_code,        $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[phone_code\]\]/',          $phone_code,          $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[phone_number\]\]/',        $phone_number,        $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[alt_phone\]\]/',           $alt_phone,           $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[email\]\]/',               $email,               $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[gender\]\]/',              $gender,              $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[date_of_birth\]\]/',       $date_of_birth,       $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[post_date\]\]/',           $post_date,           $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[vendor_lead_code\]\]/',    $vendor_lead_code,    $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[comments\]\]/',            $comments,            $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[custom1\]\]/',             $custom1,             $et_body_html);
+                $et_body_html = OSDpreg_replace('/\[\[custom2\]\]/',             $custom2,             $et_body_html);
 
-                $et_body_text = preg_replace('/\[\[list_id\]\]/',             $list_id,             $et_body_text);
-                $et_body_text = preg_replace('/\[\[gmt_offset_now\]\]/',      $gmt_offset_now,      $et_body_text);
-                $et_body_text = preg_replace('/\[\[fullname\]\]/',            $fullname,            $et_body_text);
-                $et_body_text = preg_replace('/\[\[fronter\]\]/',             $fronter,             $et_body_text);
-                $et_body_text = preg_replace('/\[\[user\]\]/',                $user,                $et_body_text);
-                $et_body_text = preg_replace('/\[\[pass\]\]/',                $pass,                $et_body_text);
-                $et_body_text = preg_replace('/\[\[lead_id\]\]/',             $lead_id,             $et_body_text);
-                $et_body_text = preg_replace('/\[\[campaign\]\]/',            $campaign,            $et_body_text);
-                $et_body_text = preg_replace('/\[\[phone_login\]\]/',         $phone_login,         $et_body_text);
-                $et_body_text = preg_replace('/\[\[group\]\]/',               $group,               $et_body_text);
-                $et_body_text = preg_replace('/\[\[channel_group\]\]/',       $channel_group,       $et_body_text);
-                $et_body_text = preg_replace('/\[\[SQLdate\]\]/',             $SQLdate,             $et_body_text);
-                $et_body_text = preg_replace('/\[\[epoch\]\]/',               $epoch,               $et_body_text);
-                $et_body_text = preg_replace('/\[\[uniqueid\]\]/',            $uniqueid,            $et_body_text);
-                $et_body_text = preg_replace('/\[\[customer_zap_channel\]\]/',$customer_zap_channel,$et_body_text);
-                $et_body_text = preg_replace('/\[\[server_ip\]\]/',           $server_ip,           $et_body_text);
-                $et_body_text = preg_replace('/\[\[SIPexten\]\]/',            $SIPexten,            $et_body_text);
-                $et_body_text = preg_replace('/\[\[session_id\]\]/',          $session_id,          $et_body_text);
-                $et_body_text = preg_replace('/\[\[title\]\]/',               $title,               $et_body_text);
-                $et_body_text = preg_replace('/\[\[first_name\]\]/',          $first_name,          $et_body_text);
-                $et_body_text = preg_replace('/\[\[middle_initial\]\]/',      $middle_initial,      $et_body_text);
-                $et_body_text = preg_replace('/\[\[last_name\]\]/',           $last_name,           $et_body_text);
-                $et_body_text = preg_replace('/\[\[address1\]\]/',            $address1,            $et_body_text);
-                $et_body_text = preg_replace('/\[\[address2\]\]/',            $address2,            $et_body_text);
-                $et_body_text = preg_replace('/\[\[address3\]\]/',            $address3,            $et_body_text);
-                $et_body_text = preg_replace('/\[\[city\]\]/',                $city,                $et_body_text);
-                $et_body_text = preg_replace('/\[\[state\]\]/',               $state,               $et_body_text);
-                $et_body_text = preg_replace('/\[\[province\]\]/',            $province,            $et_body_text);
-                $et_body_text = preg_replace('/\[\[postal_code\]\]/',         $postal_code,         $et_body_text);
-                $et_body_text = preg_replace('/\[\[country_code\]\]/',        $country_code,        $et_body_text);
-                $et_body_text = preg_replace('/\[\[phone_code\]\]/',          $phone_code,          $et_body_text);
-                $et_body_text = preg_replace('/\[\[phone_number\]\]/',        $phone_number,        $et_body_text);
-                $et_body_text = preg_replace('/\[\[alt_phone\]\]/',           $alt_phone,           $et_body_text);
-                $et_body_text = preg_replace('/\[\[email\]\]/',               $email,               $et_body_text);
-                $et_body_text = preg_replace('/\[\[gender\]\]/',              $gender,              $et_body_text);
-                $et_body_text = preg_replace('/\[\[date_of_birth\]\]/',       $date_of_birth,       $et_body_text);
-                $et_body_text = preg_replace('/\[\[post_date\]\]/',           $post_date,           $et_body_text);
-                $et_body_text = preg_replace('/\[\[vendor_lead_code\]\]/',    $vendor_lead_code,    $et_body_text);
-                $et_body_text = preg_replace('/\[\[comments\]\]/',            $comments,            $et_body_text);
-                $et_body_text = preg_replace('/\[\[custom1\]\]/',             $custom1,             $et_body_text);
-                $et_body_text = preg_replace('/\[\[custom2\]\]/',             $custom2,             $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[list_id\]\]/',             $list_id,             $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[gmt_offset_now\]\]/',      $gmt_offset_now,      $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[fullname\]\]/',            $fullname,            $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[fronter\]\]/',             $fronter,             $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[user\]\]/',                $user,                $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[pass\]\]/',                $pass,                $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[lead_id\]\]/',             $lead_id,             $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[campaign\]\]/',            $campaign,            $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[phone_login\]\]/',         $phone_login,         $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[group\]\]/',               $group,               $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[channel_group\]\]/',       $channel_group,       $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[SQLdate\]\]/',             $SQLdate,             $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[epoch\]\]/',               $epoch,               $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[uniqueid\]\]/',            $uniqueid,            $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[customer_zap_channel\]\]/',$customer_zap_channel,$et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[server_ip\]\]/',           $server_ip,           $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[SIPexten\]\]/',            $SIPexten,            $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[session_id\]\]/',          $session_id,          $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[title\]\]/',               $title,               $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[first_name\]\]/',          $first_name,          $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[middle_initial\]\]/',      $middle_initial,      $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[last_name\]\]/',           $last_name,           $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[address1\]\]/',            $address1,            $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[address2\]\]/',            $address2,            $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[address3\]\]/',            $address3,            $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[city\]\]/',                $city,                $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[state\]\]/',               $state,               $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[province\]\]/',            $province,            $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[postal_code\]\]/',         $postal_code,         $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[country_code\]\]/',        $country_code,        $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[phone_code\]\]/',          $phone_code,          $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[phone_number\]\]/',        $phone_number,        $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[alt_phone\]\]/',           $alt_phone,           $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[email\]\]/',               $email,               $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[gender\]\]/',              $gender,              $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[date_of_birth\]\]/',       $date_of_birth,       $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[post_date\]\]/',           $post_date,           $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[vendor_lead_code\]\]/',    $vendor_lead_code,    $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[comments\]\]/',            $comments,            $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[custom1\]\]/',             $custom1,             $et_body_text);
+                $et_body_text = OSDpreg_replace('/\[\[custom2\]\]/',             $custom2,             $et_body_text);
 
                 send_email($et_host, $et_port, $et_user, $et_pass, $email, $et_from, $et_subject, $et_body_html, $et_body_text);
                 echo "<br><b><font color=$default_text>TEST EMAIL TEMPLATE SENT</font></b>\n";
@@ -684,7 +684,7 @@ if ($ADD=="4email") {
 if ($ADD=="5email") {
     if ($LOG['delete_scripts']==1) {
 
-        if (strlen($et_id) < 2) {
+        if (OSDstrlen($et_id) < 2) {
             echo "<br><font color=red>TEMPLATE NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>et_id must be at least 2 characters in length</font>\n";
         } else {
@@ -706,11 +706,11 @@ if ($ADD=="5email") {
 if ($ADD=="6email") {
     if ($LOG['delete_scripts']==1) {
 
-        if (strlen($et_id) < 2 or $CoNfIrM != 'YES') {
+        if (OSDstrlen($et_id) < 2 or $CoNfIrM != 'YES') {
             echo "<br><font color=red>TEMPLATE NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>et_id be at least 2 characters in length</font><br>\n";
         } else {
-            $stmt="DELETE FROM osdial_email_templates WHERE et_id='$et_id' LIMIT 1;";
+            $stmt=sprintf("DELETE FROM osdial_email_templates WHERE et_id='%s' LIMIT 1;",mres($et_id));
             $rslt=mysql_query($stmt, $link);
 
             ### LOG CHANGES TO LOG FILE ###
@@ -833,7 +833,7 @@ tinymce.create('tinymce.plugins.ExamplePlugin', {
 <?php
     $forms = get_krh($link, 'osdial_campaign_forms', '*', 'priority', "deleted='0'",'');
     foreach ($forms as $form) {
-        $fcamps = preg_split('/,/',$form['campaigns']);
+        $fcamps = OSDpreg_split('/,/',$form['campaigns']);
         foreach ($fcamps as $fcamp) {
             $fields = get_krh($link, 'osdial_campaign_fields', '*', 'priority', "deleted='0' AND form_id='" . $form['id'] . "'",'');
             foreach ($fields as $field) {
@@ -855,8 +855,8 @@ tinymce.PluginManager.add('example', tinymce.plugins.ExamplePlugin);
 // Initialize TinyMCE with the new plugin and listbox
 tinyMCE.init({
     plugins : '-example', // - tells TinyMCE to skip the loading of the plugin
-    mode : "specific_textareas",
-    editor_selector : "mceEditor",
+    mode : "textareas",
+    editor_deselector : "NoEditor",
     theme : "advanced",
     theme_advanced_buttons1 : "separator,fontselect,fontsizeselect,forecolor,backcolor,separator,bold,italic,underline,strikethrough,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,bullist,numlist,separator,hr,sub,sup,separator,cut,copy,paste,separator,undo,redo,separator,code,separator",
     theme_advanced_buttons2 : "separator,myfields,separator,separator,separator,myaddtlfields,separator,s0,separator,separator,s1,separator,previewb,separator,separator,helpb,separator",
@@ -871,15 +871,15 @@ tinyMCE.init({
         $et = get_first_record($link, 'osdial_email_templates', '*', sprintf("et_id='%s'",mres($et_id)) );
         $rslt=mysql_query($stmt, $link);
 
-        $et['et_body_html'] = preg_replace("/\n/","",$et['et_body_html']);
+        $et['et_body_html'] = OSDpreg_replace("/\n/","",$et['et_body_html']);
 
 
         echo "<center>\n";
         echo "<br><font color=$default_text size=+1>MODIFY AN EMAIL TEMPLATE</font><br>\n";
-        echo "<form name=etform action=$PHP_SELF method=post>\n";
+        echo "<form name=etform action=$PHP_SELF method=post enctype=\"multipart/form-data\">\n";
         echo "<input type=hidden name=ADD value=4email>\n";
         echo "<input type=hidden name=et_id value=\"$et_id\">\n";
-        echo "<table width=$section_width>\n";
+        echo "<table width=$section_width onkeypress=\"tinyMCE.triggerSave();\">\n";
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right>Template ID:</td>\n";
         echo "    <td align=left><b>" . mclabel($et_id) . "</b>$NWB#osdial_email_templates-et_id$NWE</td>\n";
@@ -942,7 +942,7 @@ tinyMCE.init({
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=right>From:</td>\n";
         echo "    <td align=left>\n";
-        $et['et_from'] = preg_replace("/'/",'&#39;',$et['et_from']);
+        $et['et_from'] = OSDpreg_replace("/'/",'&#39;',$et['et_from']);
         echo "      <input type=text name=et_from size=50 maxlength=255 value='$et[et_from]'>\n";
         echo "      $NWB#osdial_email_templates-et_from$NWE\n";
         echo "    </td>\n";
@@ -958,15 +958,15 @@ tinyMCE.init({
 
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=center colspan=2>\n";
-        echo "      <br>HTML Body:<br>\n";
-        echo "      <textarea name=et_body_html class=mceEditor rows=20 cols=120>$et[et_body_html]</textarea>\n";
+        echo "      <p>HTML Body:</p>\n";
+        echo "      <textarea name=et_body_html rows=20 cols=120>$et[et_body_html]</textarea>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 
         echo "  <tr bgcolor=$oddrows>\n";
         echo "    <td align=center colspan=2>\n";
-        echo "      <br>Text Body:<br>\n";
-        echo "      <textarea name=et_body_text rows=20 cols=70>$et[et_body_text]</textarea>\n";
+        echo "      <p>Text Body:</p>\n";
+        echo "      <textarea name=et_body_text class=NoEditor rows=20 cols=70>$et[et_body_text]</textarea>\n";
         echo "    </td>\n";
         echo "  </tr>\n";
 
@@ -998,7 +998,7 @@ tinyMCE.init({
 # ADD=0email display all email templates
 ######################
 if ($ADD=="0email") {
-    $stmt=sprintf("SELECT * FROM osdial_email_templates WHERE et_id LIKE '%s__%%' AND (et_id IN %s OR et_id='%s') ORDER BY et_id;",$LOG['company_prefix'],$LOG['allowed_email_templatesSQL'],mres($et_id));
+    $stmt=sprintf("SELECT * FROM osdial_email_templates WHERE et_id LIKE '%s__%%' AND (et_id IN %s OR et_id='%s') ORDER BY et_id;",mres($LOG['company_prefix']),$LOG['allowed_email_templatesSQL'],mres($et_id));
     $rslt=mysql_query($stmt, $link);
     $people_to_print = mysql_num_rows($rslt);
 

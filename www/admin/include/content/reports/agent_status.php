@@ -59,15 +59,15 @@ function report_agent_status() {
     $company_prefix = "";
     if ($LOG['multicomp_user'] > 0) {
         $company_prefix = $LOG['company_prefix'];
-        if (substr($agent,0,3) == $LOG['company_prefix']) {
-            $agent = substr($agent,3);
+        if (OSDsubstr($agent,0,3) == $LOG['company_prefix']) {
+            $agent = OSDsubstr($agent,3);
         }
     }
 
     $head .= "<br>\n";
     $head .= "<center><font size=4 color=$default_text>AGENT STATUS</font></center><br>\n";
     if ($agent) {
-        $stmt=sprintf("SELECT full_name,user_group FROM osdial_users WHERE user_group IN %s AND user='%s';",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent));
+        $stmt=sprintf("SELECT full_name,user_group FROM osdial_users WHERE user_group IN %s AND user='%s';",$LOG['allowed_usergroupsSQL'],mres($company_prefix.$agent));
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $row=mysql_fetch_row($rslt);
@@ -101,7 +101,7 @@ function report_agent_status() {
     $form .= "</form>\n";
 
     if ($agent) {
-        $stmt=sprintf("SELECT osdial_live_agents.* FROM osdial_live_agents JOIN osdial_users ON (osdial_live_agents.user=osdial_users.user) WHERE user_group IN %s AND osdial_live_agents.user='%s';",$LOG['allowed_usergroupsSQL'],$company_prefix . mres($agent));
+        $stmt=sprintf("SELECT osdial_live_agents.* FROM osdial_live_agents JOIN osdial_users ON (osdial_live_agents.user=osdial_users.user) WHERE user_group IN %s AND osdial_live_agents.user='%s';",$LOG['allowed_usergroupsSQL'],mres($company_prefix.$agent));
         $rslt=mysql_query($stmt, $link);
         if ($DB) {$html .= "$stmt\n";}
         $agents_to_print = mysql_num_rows($rslt);
@@ -126,7 +126,7 @@ function report_agent_status() {
         while ($i < $groups_to_print) {
             $row=mysql_fetch_row($rslt);
             $groups[$i] = $row[0];
-            $UPgroups[$i] = strtoupper($row[0]);
+            $UPgroups[$i] = OSDstrtoupper($row[0]);
             $i++;
         }
 
@@ -141,7 +141,7 @@ function report_agent_status() {
         $table .= "      <td align=left colspan=2>\n";
         $table .= "        <font color=$default_text size=3><b> &nbsp; \n";
 
-        if (!$LOGview_reports) {
+        if (!$LOG['view_reports']) {
             $table .= "<center><font color=red>You do not have permission to view this page</font></center>\n";
         } else {
             $table .= "<table align=center width=100%>\n";
@@ -160,7 +160,7 @@ function report_agent_status() {
             }
             $table .= "<tr class=font2><td colspan=2>&nbsp;</td></tr>\n";
             if ($agents_to_print > 0) {
-                if ($LOGchange_agent_campaign > 0 and $stage != "live_campaign_change" and $stage != "log_agent_out") {
+                if ($LOG['change_agent_campaign'] > 0 and $stage != "live_campaign_change" and $stage != "log_agent_out") {
                     $table .= "<tr><td align=center colspan=2 style=\"width: 100%;\">";
                     $table .= "  <form name=campchange action=\"$PHP_SELF\" method=POST style=\"margin: 0px; padding: 0px;\">\n";
                     $table .= "    <input type=hidden name=ADD value=\"$ADD\">\n";
@@ -209,16 +209,16 @@ function report_agent_status() {
             }
 	        $table .= "</table>\n";
 
-            if ($stage == "live_campaign_change" and $LOGchange_agent_campaign > 0) {
-                $stmt="UPDATE osdial_live_agents set campaign_id='" . mysql_real_escape_string($group) . "' where user='" . $company_prefix . mysql_real_escape_string($agent) . "';";
+            if ($stage == "live_campaign_change" and $LOG['change_agent_campaign'] > 0) {
+                $stmt=sprintf("UPDATE osdial_live_agents SET campaign_id='%' WHERE user='%s';",mres($group),mres($company_prefix.$agent));
                 $rslt=mysql_query($stmt, $link);
     
                 $table .= "<center>Agent was changed to $group campaign.</center><br>\n";
-            } elseif ($stage == "log_agent_out" and $LOGchange_agent_campaign > 0) {
-                $stmt="DELETE from osdial_live_agents where user='" . $company_prefix . mysql_real_escape_string($agent) . "';";
+            } elseif ($stage == "log_agent_out" and $LOG['change_agent_campaign'] > 0) {
+                $stmt=sprintf("DELETE FROM osdial_live_agents WHERE user='%s';",mres($company_prefix.$agent));
                 $rslt=mysql_query($stmt, $link);
 
-                $stmt="UPDATE osdial_conferences SET extension='' WHERE extension='" . mysql_real_escape_string($ELOext) . "' AND server_ip='" . mysql_real_escape_string($ELOserver) . "';";
+                $stmt=sprintf("UPDATE osdial_conferences SET extension='' WHERE extension='%s' AND server_ip='%s';",mres($ELOext),mres($ELOserver));
                 $rslt=mysql_query($stmt, $link);
 
                 $table .= "<center>Agent has been emergency logged out.<br>Please, make sure they close their web browser</center><br>\n";

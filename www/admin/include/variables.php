@@ -27,9 +27,60 @@
 # 090515-0538 - Added web_form_extwindow and web_form2_extwindow
 
 
+require_once("dbconnect.php");
+require_once("functions.php");
+
 # The build variable gets set to the SVN revision automatically in release package.
 # Do no change.
 $build = 'SVN_Build';
+$admin_version = $config['settings']['version'];
+$config['settings']['build'] = $build;
+
+$stmt = "SELECT * FROM system_settings LIMIT 1;";
+$rslt=mysql_query($stmt, $link);
+$confnum = mysql_num_rows($rslt);
+$i=0;
+while ($i < $confnum) {
+    $row=mysql_fetch_assoc($rslt);
+    foreach ($row as $k => $v) {
+        $config['settings'][$k] = $v;
+    }
+    $i++;
+}
+$config['settings']['intra_server_sep']='*';
+if ($config['settings']['intra_server_protocol']='IAX2') $config['settings']['intra_server_sep']='#';
+
+if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$link);
+
+$stmt = "SELECT * FROM system_settings LIMIT 1;";
+$rslt=mysql_query($stmt, $link);
+$confnum = mysql_num_rows($rslt);
+$i=0;
+while ($i < $confnum) {
+    $row=mysql_fetch_assoc($rslt);
+    foreach ($row as $k => $v) {
+        $config['settings'][$k] = $v;
+    }
+    $i++;
+}
+
+$stmt = sprintf("SELECT * FROM servers WHERE server_ip='%s' LIMIT 1;",$config['VARserver_ip']);
+$rslt=mysql_query($stmt, $link);
+$confnum = mysql_num_rows($rslt);
+if ($confnum==0) {
+    $stmt = "SELECT * FROM servers WHERE active='Y' LIMIT 1;";
+    $rslt=mysql_query($stmt, $link);
+    $confnum = mysql_num_rows($rslt);
+}
+$i=0;
+while ($i < $confnum) {
+    $row=mysql_fetch_assoc($rslt);
+    foreach ($row as $k => $v) {
+        $config['server'][$k] = $v;
+    }
+    $i++;
+}
+
 
 $STARTtime = date("U");
 $SQLdate = date("Y-m-d H:i:s");
@@ -45,12 +96,8 @@ $PHP_AUTH_USER=$_SERVER['PHP_AUTH_USER'];
 $PHP_AUTH_PW=$_SERVER['PHP_AUTH_PW'];
 $PHP_SELF=$_SERVER['PHP_SELF'];
 
-$system_settings = get_first_record($link, 'system_settings', '*','');
-$t1="OSDial"; if (preg_match("/^Sli/",$system_settings['admin_template'])){ $t1=$system_settings['admin_template']; };
-$non_latin = $system_settings['use_non_latin'];
-$admin_home_url_LU = $system_settings['admin_home_url'];
-$user_company = $system_settings['company_name'];
-$admin_version = $system_settings['version'];
+$t1="OSDial"; if (preg_match("/^Sli/",$config['settings']['admin_template'])) $t1=$config['settings']['admin_template'];
+if (empty($config['settings']['admin_template'])) $config['settings']['admin_template']='default';
 
 $webServerGMT = date('Z')/3600;
 $webServerDST = date('I');
@@ -497,6 +544,7 @@ $intra_server_protocol = get_variable("intra_server_protocol");
 
 $last_name = get_variable("last_name");
 $last_name_field = get_variable("last_name_field");
+$last_recording_extension = get_variable("last_recording_extension");
 $lead_file = get_variable("lead_file");
 $lead_filter_comments = get_variable("lead_filter_comments");
 $lead_filter_id = get_variable("lead_filter_id");
@@ -733,6 +781,11 @@ $title_field = get_variable("title_field");
 $tovdad_display = get_variable("tovdad_display");
 $trunk_restriction = get_variable("trunk_restriction");
 $tsr = get_variable("tsr");
+$tts_id = get_variable("tts_id");
+$tts_description = get_variable("tts_description");
+$tts_extension = get_variable("tts_extension");
+$tts_phrase = get_variable("tts_phrase");
+$tts_voice = get_variable("tts_voice");
 
 $UGdisplay = get_variable("UGdisplay");
 $UidORname = get_variable("UidORname");
@@ -815,15 +868,9 @@ $xfer_agent2agent_wait_extension = get_variable("xfer_agent2agent_wait_extension
 
 
 
-if (isset($script_id)) {
-    $script_id= strtoupper($script_id);
-}
-if (isset($script_button_id)) {
-    $script_button_id= strtoupper($script_button_id);
-}
-if (isset($lead_filter_id)) {
-    $lead_filter_id = strtoupper($lead_filter_id);
-}
+if (isset($script_id)) $script_id=OSDstrtoupper($script_id);
+if (isset($script_button_id)) $script_button_id=OSDstrtoupper($script_button_id);
+if (isset($lead_filter_id)) $lead_filter_id=OSDstrtoupper($lead_filter_id);
 
 if (strlen($dial_status) > 0) {
 	$ADD='28';

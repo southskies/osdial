@@ -58,443 +58,327 @@
 # 60619-1118 - Added variable filters to close security holes for login form
 #
 
-require("dbconnect.php");
+$DB=0;
+
+require_once("dbconnect.php");
+require_once("functions.php");
 
 ### If you have globals turned off uncomment these lines
-if (isset($_GET["user"]))					{$user=$_GET["user"];}
-	elseif (isset($_POST["user"]))			{$user=$_POST["user"];}
-if (isset($_GET["pass"]))					{$pass=$_GET["pass"];}
-	elseif (isset($_POST["pass"]))			{$pass=$_POST["pass"];}
-if (isset($_GET["server_ip"]))				{$server_ip=$_GET["server_ip"];}
-	elseif (isset($_POST["server_ip"]))		{$server_ip=$_POST["server_ip"];}
-if (isset($_GET["session_name"]))			{$session_name=$_GET["session_name"];}
-	elseif (isset($_POST["session_name"]))	{$session_name=$_POST["session_name"];}
-if (isset($_GET["format"]))					{$format=$_GET["format"];}
-	elseif (isset($_POST["format"]))		{$format=$_POST["format"];}
-if (isset($_GET["ADD"]))					{$ADD=$_GET["ADD"];}
-	elseif (isset($_POST["ADD"]))			{$ADD=$_POST["ADD"];}
-if (isset($_GET["order"]))					{$order=$_GET["order"];}
-	elseif (isset($_POST["order"]))			{$order=$_POST["order"];}
-if (isset($_GET["bgcolor"]))				{$bgcolor=$_GET["bgcolor"];}
-	elseif (isset($_POST["bgcolor"]))		{$bgcolor=$_POST["bgcolor"];}
-if (isset($_GET["txtcolor"]))				{$txtcolor=$_GET["txtcolor"];}
-	elseif (isset($_POST["txtcolor"]))		{$txtcolor=$_POST["txtcolor"];}
-if (isset($_GET["txtsize"]))				{$txtsize=$_GET["txtsize"];}
-	elseif (isset($_POST["txtsize"]))		{$txtsize=$_POST["txtsize"];}
-if (isset($_GET["selectsize"]))				{$selectsize=$_GET["selectsize"];}
-	elseif (isset($_POST["selectsize"]))	{$selectsize=$_POST["selectsize"];}
-if (isset($_GET["selectfontsize"]))				{$selectfontsize=$_GET["selectfontsize"];}
-	elseif (isset($_POST["selectfontsize"]))	{$selectfontsize=$_POST["selectfontsize"];}
-if (isset($_GET["selectedext"]))			{$selectedext=$_GET["selectedext"];}
-	elseif (isset($_POST["selectedext"]))	{$selectedext=$_POST["selectedext"];}
-if (isset($_GET["selectedtrunk"]))			{$selectedtrunk=$_GET["selectedtrunk"];}
-	elseif (isset($_POST["selectedtrunk"]))	{$selectedtrunk=$_POST["selectedtrunk"];}
-if (isset($_GET["selectedlocal"]))			{$selectedlocal=$_GET["selectedlocal"];}
-	elseif (isset($_POST["selectedlocal"]))	{$selectedlocal=$_POST["selectedlocal"];}
-if (isset($_GET["textareaheight"]))				{$textareaheight=$_GET["textareaheight"];}
-	elseif (isset($_POST["textareaheight"]))	{$textareaheight=$_POST["textareaheight"];}
-if (isset($_GET["textareawidth"]))			{$textareawidth=$_GET["textareawidth"];}
-	elseif (isset($_POST["textareawidth"]))	{$textareawidth=$_POST["textareawidth"];}
-if (isset($_GET["field_name"]))				{$field_name=$_GET["field_name"];}
-	elseif (isset($_POST["field_name"]))	{$field_name=$_POST["field_name"];}
+$user=get_variable("user");
+$pass=get_variable("pass");
+$server_ip=get_variable("server_ip");
+$session_name=get_variable("session_name");
+$format=get_variable("format");
+$ADD=get_variable("ADD");
+$order=get_variable("order");
+$bgcolor=get_variable("bgcolor");
+$txtcolor=get_variable("txtcolor");
+$txtsize=get_variable("txtsize");
+$selectsize=get_variable("selectsize");
+$selectfontsize=get_variable("selectfontsize");
+$selectedext=get_variable("selectedext");
+$selectedtrunk=get_variable("selectedtrunk");
+$selectedlocal=get_variable("selectedlocal");
+$textareaheight=get_variable("textareaheight");
+$textareawidth=get_variable("textareawidth");
+$field_name=get_variable("field_name");
 
 ### security strip all non-alphanumeric characters out of the variables ###
-	$user=preg_replace("/[^0-9a-zA-Z]/","",$user);
-	$pass=preg_replace("/[^0-9a-zA-Z]/","",$pass);
-	$ADD=preg_replace("/[^0-9]/","",$ADD);
-	$order=preg_replace("/[^0-9a-zA-Z]/","",$order);
-	$format=preg_replace("/[^0-9a-zA-Z]/","",$format);
-	$bgcolor=preg_replace("/[^\#0-9a-zA-Z]/","",$bgcolor);
-	$txtcolor=preg_replace("/[^\#0-9a-zA-Z]/","",$txtcolor);
-	$txtsize=preg_replace("/[^0-9a-zA-Z]/","",$txtsize);
-	$selectsize=preg_replace("/[^0-9a-zA-Z]/","",$selectsize);
-	$selectfontsize=preg_replace("/[^0-9a-zA-Z]/","",$selectfontsize);
-	$selectedext=preg_replace("/[^ \#\*\:\/\@\.\-\_0-9a-zA-Z]/","",$selectedext);
-	$selectedtrunk=preg_replace("/[^ \#\*\:\/\@\.\-\_0-9a-zA-Z]/","",$selectedtrunk);
-	$selectedlocal=preg_replace("/[^ \#\*\:\/\@\.\-\_0-9a-zA-Z]/","",$selectedlocal);
-	$textareaheight=preg_replace("/[^0-9a-zA-Z]/","",$textareaheight);
-	$textareawidth=preg_replace("/[^0-9a-zA-Z]/","",$textareawidth);
-	$field_name=preg_replace("/[^ \#\*\:\/\@\.\-\_0-9a-zA-Z]/","",$field_name);
+#$user=OSDpreg_replace("/[^0-9a-zA-Z]/","",$user);
+#$pass=OSDpreg_replace("/[^0-9a-zA-Z]/","",$pass);
+$ADD=OSDpreg_replace("/[^0-9]/","",$ADD);
+$order=OSDpreg_replace("/[^0-9a-zA-Z]/","",$order);
+$format=OSDpreg_replace("/[^0-9a-zA-Z]/","",$format);
+$bgcolor=OSDpreg_replace("/[^\#0-9a-zA-Z]/","",$bgcolor);
+$txtcolor=OSDpreg_replace("/[^\#0-9a-zA-Z]/","",$txtcolor);
+$txtsize=OSDpreg_replace("/[^0-9a-zA-Z]/","",$txtsize);
+$selectsize=OSDpreg_replace("/[^0-9a-zA-Z]/","",$selectsize);
+$selectfontsize=OSDpreg_replace("/[^0-9a-zA-Z]/","",$selectfontsize);
+$selectedext=OSDpreg_replace("/[^ \#\*\:\/\@\.\-\_0-9a-zA-Z]/","",$selectedext);
+$selectedtrunk=OSDpreg_replace("/[^ \#\*\:\/\@\.\-\_0-9a-zA-Z]/","",$selectedtrunk);
+$selectedlocal=OSDpreg_replace("/[^ \#\*\:\/\@\.\-\_0-9a-zA-Z]/","",$selectedlocal);
+$textareaheight=OSDpreg_replace("/[^0-9a-zA-Z]/","",$textareaheight);
+$textareawidth=OSDpreg_replace("/[^0-9a-zA-Z]/","",$textareawidth);
+$field_name=OSDpreg_replace("/[^ \#\*\:\/\@\.\-\_0-9a-zA-Z]/","",$field_name);
 
 # default optional vars if not set
-if (!isset($ADD))				{$ADD="1";}
-if (!isset($order))				{$order='desc';}
-if (!isset($format))			{$format="text";}
-if (!isset($bgcolor))			{$bgcolor='white';}
-if (!isset($txtcolor))			{$txtcolor='black';}
-if (!isset($txtsize))			{$txtsize='2';}
-if (!isset($selectsize))		{$selectsize='4';}
-if (!isset($selectfontsize))	{$selectfontsize='10';}
-if (!isset($textareaheight))	{$textareaheight='10';}
-if (!isset($textareawidth))		{$textareawidth='20';}
+if (empty($ADD)) $ADD="1";
+if (empty($order)) $order='desc';
+if (empty($format)) $format="text";
+if ($format=='table') $DB=1;
+if (empty($bgcolor)) $bgcolor='white';
+if (empty($txtcolor)) $txtcolor='black';
+if (empty($txtsize)) $txtsize='2';
+if (empty($selectsize)) $selectsize='4';
+if (empty($selectfontsize)) $selectfontsize='10';
+if (empty($textareaheight)) $textareaheight='10';
+if (empty($textareawidth)) $textareawidth='20';
 
-$version = '0.0.8';
-$build = '60619-1118';
+$version='SVN_Version';
+$build='SVN_Build';
+
 $StarTtime = date("U");
 $NOW_DATE = date("Y-m-d");
 $NOW_TIME = date("Y-m-d H:i:s");
-if (!isset($query_date)) {$query_date = $NOW_DATE;}
+if (!isset($query_date)) $query_date=$NOW_DATE;
+$pt='pt';
 
-	$stmt="SELECT count(*) from osdial_users where user='$user' and pass='$pass' and user_level > 0;";
-	if ($DB) {echo "|$stmt|\n";}
-	$rslt=mysql_query($stmt, $link);
-	$row=mysql_fetch_row($rslt);
-	$auth=$row[0];
+$stmt=sprintf("SELECT count(*) FROM osdial_users WHERE user='%s' AND pass='%s' AND user_level>0;",mres($user),mres($pass));
+if ($DB) echo "|$stmt|\n";
+$rslt=mysql_query($stmt, $link);
+$row=mysql_fetch_row($rslt);
+$auth=$row[0];
 
-  if( (strlen($user)<2) or (strlen($pass)<2) or ($auth==0))
-	{
+if( (OSDstrlen($user)<2) or (OSDstrlen($pass)<2) or ($auth==0)) {
     echo "Invalid Username/Password: |$user|$pass|\n";
     exit;
-	}
-  else
-	{
-
-	if( (strlen($server_ip)<6) or (!isset($server_ip)) or ( (strlen($session_name)<12) or (!isset($session_name)) ) )
-		{
-		echo "Invalid server_ip: |$server_ip|  or  Invalid session_name: |$session_name|\n";
-		exit;
-		}
-	else
-		{
-		$stmt="SELECT count(*) from web_client_sessions where session_name='$session_name' and server_ip='$server_ip';";
-		if ($DB) {echo "|$stmt|\n";}
-		$rslt=mysql_query($stmt, $link);
-		$row=mysql_fetch_row($rslt);
-		$SNauth=$row[0];
-		  if($SNauth==0)
-			{
-			echo "Invalid session_name: |$session_name|$server_ip|\n";
-			exit;
-			}
-		  else
-			{
-			# do nothing for now
-			}
-		}
-	}
-
-if ($format=='table')
-{
-echo "<html>\n";
-echo "<head>\n";
-echo "<!-- VERSION: $version     BUILD: $build    ADD: $ADD   server_ip: $server_ip-->\n";
-echo "<title>List Display: ";
-if ($ADD==1)		{echo "Live Extensions";}
-if ($ADD==2)		{echo "Busy Extensions";}
-if ($ADD==3)		{echo "Outside Lines";}
-if ($ADD==4)		{echo "Local Extensions";}
-if ($ADD==5)		{echo "Conferences";}
-if ($ADD==99999)	{echo "HELP";}
-echo "</title>\n";
-echo "</head>\n";
-echo "<BODY BGCOLOR=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";
+} else {
+    if( (OSDstrlen($server_ip)<6) or (empty($server_ip)) or ( (OSDstrlen($session_name)<12) or (empty($session_name)) ) ) {
+        echo "Invalid server_ip: |$server_ip|  or  Invalid session_name: |$session_name|\n";
+        exit;
+    } else {
+        $stmt=sprintf("SELECT count(*) FROM web_client_sessions WHERE session_name='%s' AND server_ip='%s';",mres($session_name),mres($server_ip));
+        if ($DB) echo "|$stmt|\n";
+        $rslt=mysql_query($stmt, $link);
+        $row=mysql_fetch_row($rslt);
+        $SNauth=$row[0];
+        if($SNauth==0) {
+            echo "Invalid session_name: |$session_name|$server_ip|\n";
+            exit;
+        } else {
+            # do nothing for now
+        }
+    }
 }
 
-
+if ($format=='table') {
+    echo "<html>\n";
+    echo "<head>\n";
+    echo "<!-- VERSION: $version     BUILD: $build    ADD: $ADD   server_ip: $server_ip-->\n";
+    echo "<title>List Display: ";
+    if ($ADD==1) echo "Live Extensions";
+    if ($ADD==2) echo "Busy Extensions";
+    if ($ADD==3) echo "Outside Lines";
+    if ($ADD==4) echo "Local Extensions";
+    if ($ADD==5) echo "Conferences";
+    if ($ADD==99999) echo "HELP";
+    echo "</title>\n";
+    echo "</head>\n";
+    echo "<body bgcolor=white marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>\n";
+}
 
 
 
 ######################
 # ADD=1 display all live extensions on a server
 ######################
-if ($ADD==1)
-{
-	$pt='pt';
-	if (!$field_name) {$field_name = 'extension';}
-	if ($format=='table') {echo "<TABLE WIDTH=120 BGCOLOR=$bgcolor cellpadding=0 cellspacing=0>\n";}
-	if ($format=='menu') {echo "<SELECT SIZE=1 name=\"$field_name\">\n";}
-	if ($format=='selectlist') 
-		{
-		echo "<SELECT SIZE=$selectsize name=\"$field_name\" STYLE=\"font-family : sans-serif; font-size : $selectfontsize$pt\">\n";
-		}
-	if ($format=='textarea') 
-		{
-		echo "<TEXTAREA ROWS=$textareaheight COLS=$textareawidth NAME=extension WRAP=off STYLE=\"font-family : sans-serif; font-size : $selectfontsize$pt\">";
-		}
+if ($ADD==1) {
+    if (!$field_name) $field_name = 'extension';
+    if ($format=='table') echo "<table width=120 bgcolor=$bgcolor cellpadding=0 cellspacing=0>\n";
+    if ($format=='menu') echo "<select size=1 name=\"$field_name\">\n";
+    if ($format=='selectlist') echo "<select size=$selectsize name=\"$field_name\" style=\"font-family:sans-serif;font-size:$selectfontsize$pt;\">\n";
+    if ($format=='textarea') echo "<textarea rows=$textareaheight cols=$textareawidth name=extension wrap=off style=\"font-family:sans-serif;font-size:$selectfontsize$pt;\">";
 
-	$stmt="SELECT extension,fullname FROM phones where server_ip = '$server_ip' order by extension $order";
-		if ($format=='table') {echo "\n<!-- $stmt -->";}
-	$rslt=mysql_query($stmt, $link);
-	if ($rslt) {$phones_to_print = mysql_num_rows($rslt);}
-	$o=0;
-	while ($phones_to_print > $o) {
-		$row=mysql_fetch_row($rslt);
-		if ($format=='table')
-			{
-			echo "<TR><TD ALIGN=LEFT NOWRAP><FONT FACE=\"ARIAL,HELVETICA\" COLOR=$txtcolor SIZE=$txtsize>";
-			echo "$row[0] - $row[1]";
-			echo "</TD></TR>\n";
-			}
-		if ( ($format=='text') or ($format=='textarea') )
-			{
-			echo "$row[0] - $row[1]\n";
-			}
-		if ( ($format=='menu') or ($format=='selectlist') )
-			{
-			echo "<OPTION ";
-			if ($row[0]=="$selectedext") {echo "SELECTED ";}
-			echo "VALUE=\"$row[0]\">";
-			echo "$row[0] - $row[1]";
-			echo "</OPTION>\n";
-			}
-		$o++;
-	}
+    $stmt=sprintf("SELECT extension,fullname FROM phones WHERE server_ip='%s' ORDER BY extension %s;",mres($server_ip),$order);
+    if ($format=='table') echo "\n<!-- $stmt -->";
+    $rslt=mysql_query($stmt, $link);
+    if ($rslt) $phones_to_print = mysql_num_rows($rslt);
+    $o=0;
+    while ($phones_to_print > $o) {
+        $row=mysql_fetch_row($rslt);
+        if ($format=='table') {
+            echo "<tr><td align=left nowrap><font face=\"Arial,Helvetica\" color=$txtcolor size=$txtsize>";
+            echo "$row[0] - $row[1]";
+            echo "</td></tr>\n";
+        }
+        if ( ($format=='text') or ($format=='textarea') ) echo "$row[0] - $row[1]\n";
+        if ( ($format=='menu') or ($format=='selectlist') ) {
+            echo "<option ";
+            if ($row[0]=="$selectedext") echo "selected ";
+            echo "value=\"$row[0]\">";
+            echo "$row[0] - $row[1]";
+            echo "</option>\n";
+        }
+        $o++;
+    }
 
-	if ($format=='table') {echo "</TABLE>\n";}
-	if ($format=='menu') {echo "</SELECT>\n";}
-	if ($format=='selectlist') {echo "</SELECT>\n";}
-	if ($format=='textarea') {echo "</TEXTAREA>\n";}
+    if ($format=='table') echo "</table>\n";
+    if ($format=='menu') echo "</select>\n";
+    if ($format=='selectlist') echo "</select>\n";
+    if ($format=='textarea') echo "</textarea>\n";
 }
-
-
-
-
 
 
 
 ######################
 # ADD=2 display all busy extensions on a server
 ######################
-if ($ADD==2)
-{
-	if (!$field_name) {$field_name = 'busyext';}
-	if ($format=='table') {echo "<TABLE WIDTH=120 BGCOLOR=$bgcolor cellpadding=0 cellspacing=0>\n";}
-	if ($format=='menu') {echo "<SELECT SIZE=1 name=\"$field_name\">\n";}
-	if ($format=='selectlist') 
-		{
-		echo "<SELECT SIZE=$selectsize name=\"$field_name\" STYLE=\"font-family : sans-serif; font-size : $selectfontsize$pt\">\n";
-		}
-	if ($format=='textarea') 
-		{
-		echo "<TEXTAREA ROWS=$textareaheight COLS=$textareawidth NAME=extension WRAP=off STYLE=\"font-family : sans-serif; font-size : $selectfontsize$pt\">";
-		}
+if ($ADD==2) {
+    if (!$field_name) $field_name = 'busyext';
+    if ($format=='table') echo "<table width=120 bgcolor=$bgcolor cellpadding=0 cellspacing=0>\n";
+    if ($format=='menu') echo "<select size=1 name=\"$field_name\">\n";
+    if ($format=='selectlist') echo "<select size=$selectsize name=\"$field_name\" style=\"font-family:sans-serif;font-size:$selectfontsize$pt;\">\n";
+    if ($format=='textarea') echo "<textarea rows=$textareaheight cols=$textareawidth name=extension wrap=off style=\"font-family:sans-serif;font-size:$selectfontsize$pt;\">";
 
-	$stmt="SELECT extension FROM live_channels where server_ip = '$server_ip' order by extension $order";
-		if ($format=='table') {echo "\n<!-- $stmt -->";}
-	$rslt=mysql_query($stmt, $link);
-	if ($rslt) {$busys_to_print = mysql_num_rows($rslt);}
-	$o=0;
-	while ($busys_to_print > $o) {
-		$row=mysql_fetch_row($rslt);
-		if ($format=='table')
-			{
-			echo "<TR><TD ALIGN=LEFT NOWRAP><FONT FACE=\"ARIAL,HELVETICA\" COLOR=$txtcolor SIZE=$txtsize>";
-			echo "$row[0]";
-			echo "</TD></TR>\n";
-			}
-		if ( ($format=='text') or ($format=='textarea') )
-			{
-			echo "$row[0]\n";
-			}
-		if ( ($format=='menu') or ($format=='selectlist') )
-			{
-			echo "<OPTION ";
-			if ($row[0]=="$selectedext") {echo "SELECTED ";}
-			echo "VALUE=\"$row[0]\">";
-			echo "$row[0]";
-			echo "</OPTION>\n";
-			}
-		$o++;
-	}
+    $stmt=sprintf("SELECT extension FROM live_channels WHERE server_ip='%s' ORDER BY extension %s;",mres($server_ip),$order);
+    if ($format=='table') echo "\n<!-- $stmt -->";
+    $rslt=mysql_query($stmt, $link);
+    if ($rslt) $busys_to_print = mysql_num_rows($rslt);
+    $o=0;
+    while ($busys_to_print > $o) {
+        $row=mysql_fetch_row($rslt);
+        if ($format=='table') {
+            echo "<tr><td align=left nowrap><font face=\"Arial,Helvetica\" color=$txtcolor size=$txtsize>";
+            echo "$row[0]";
+            echo "</td></tr>\n";
+        }
+        if ( ($format=='text') or ($format=='textarea') ) echo "$row[0]\n";
+        if ( ($format=='menu') or ($format=='selectlist') ) {
+            echo "<option ";
+            if ($row[0]=="$selectedext") echo "selected ";
+            echo "value=\"$row[0]\">";
+            echo "$row[0]";
+            echo "</option>\n";
+        }
+        $o++;
+    }
 
-	if ($format=='table') {echo "</TABLE>\n";}
-	if ($format=='menu') {echo "</SELECT>\n";}
-	if ($format=='selectlist') {echo "</SELECT>\n";}
-	if ($format=='textarea') {echo "</TEXTAREA>\n";}
+    if ($format=='table') echo "</table>\n";
+    if ($format=='menu') echo "</select>\n";
+    if ($format=='selectlist') echo "</select>\n";
+    if ($format=='textarea') echo "</textarea>\n";
 }
-
-
-
 
 
 
 ######################
 # ADD=3 display all busy outside lines(trunks) on a server
 ######################
-if ($ADD==3)
-{
-	if (!$field_name) {$field_name = 'trunk';}
-	if ($format=='table') {echo "<TABLE WIDTH=120 BGCOLOR=$bgcolor cellpadding=0 cellspacing=0>\n";}
-	if ($format=='menu') {echo "<SELECT SIZE=1 name=\"$field_name\">\n";}
-	if ($format=='selectlist') 
-		{
-		echo "<SELECT SIZE=$selectsize name=\"$field_name\" STYLE=\"font-family : sans-serif; font-size : $selectfontsize$pt\">\n";
-		}
-	if ($format=='textarea') 
-		{
-		echo "<TEXTAREA ROWS=$textareaheight COLS=$textareawidth NAME=extension WRAP=off STYLE=\"font-family : sans-serif; font-size : $selectfontsize$pt\">";
-		}
+if ($ADD==3) {
+    if (!$field_name) $field_name = 'trunk';
+    if ($format=='table') echo "<table width=120 bgcolor=$bgcolor cellpadding=0 cellspacing=0>\n";
+    if ($format=='menu') echo "<select size=1 name=\"$field_name\">\n";
+    if ($format=='selectlist') echo "<select size=$selectsize name=\"$field_name\" style=\"font-family:sans-serif;font-size:$selectfontsize$pt;\">\n";
+    if ($format=='textarea') echo "<textarea rows=$textareaheight cols=$textareawidth name=extension wrap=off style=\"font-family:sans-serif;font-size:$selectfontsize$pt;\">";
 
-	$stmt="SELECT channel, extension FROM live_channels where server_ip = '$server_ip' order by channel $order";
-		if ($format=='table') {echo "\n<!-- $stmt -->";}
-	$rslt=mysql_query($stmt, $link);
-	if ($rslt) {$busys_to_print = mysql_num_rows($rslt);}
-	$o=0;
-	while ($busys_to_print > $o) {
-		$row=mysql_fetch_row($rslt);
-		if ($format=='table')
-			{
-			echo "<TR><TD ALIGN=LEFT NOWRAP><FONT FACE=\"ARIAL,HELVETICA\" COLOR=$txtcolor SIZE=$txtsize>";
-			echo "$row[0] - $row[1]";
-			echo "</TD></TR>\n";
-			}
-		if ( ($format=='text') or ($format=='textarea') )
-			{
-			echo "$row[0] - $row[1]\n";
-			}
-		if ( ($format=='menu') or ($format=='selectlist') )
-			{
-			echo "<OPTION ";
-			if ($row[0]=="$selectedtrunk") {echo "SELECTED ";}
-			echo "VALUE=\"$row[0]\">";
-			echo "$row[0] - $row[1]";
-			echo "</OPTION>\n";
-			}
-		$o++;
-	}
+    $stmt=sprintf("SELECT channel,extension FROM live_channels WHERE server_ip='%s' ORDER BY channel %s;",mres($server_ip),$order);
+    if ($format=='table') echo "\n<!-- $stmt -->";
+    $rslt=mysql_query($stmt, $link);
+    if ($rslt) $busys_to_print = mysql_num_rows($rslt);
+    $o=0;
+    while ($busys_to_print > $o) {
+        $row=mysql_fetch_row($rslt);
+        if ($format=='table') {
+            echo "<tr><td align=left nowrap><font face=\"Arial,Helvetica\" color=$txtcolor size=$txtsize>";
+            echo "$row[0] - $row[1]";
+            echo "</td></tr>\n";
+        }
+        if ( ($format=='text') or ($format=='textarea') ) echo "$row[0] - $row[1]\n";
+        if ( ($format=='menu') or ($format=='selectlist') ) {
+            echo "<option ";
+            if ($row[0]=="$selectedtrunk") echo "selected ";
+            echo "value=\"$row[0]\">";
+            echo "$row[0] - $row[1]";
+            echo "</option>\n";
+        }
+        $o++;
+    }
 
-	if ($format=='table') {echo "</TABLE>\n";}
-	if ($format=='menu') {echo "</SELECT>\n";}
-	if ($format=='selectlist') {echo "</SELECT>\n";}
-	if ($format=='textarea') {echo "</TEXTAREA>\n";}
+    if ($format=='table') echo "</table>\n";
+    if ($format=='menu') echo "</select>\n";
+    if ($format=='selectlist') echo "</select>\n";
+    if ($format=='textarea') echo "</textarea>\n";
 }
-
-
-
 
 
 
 ######################
 # ADD=4 display all busy Local lines on a server
 ######################
-if ($ADD==4)
-{
-	if (!$field_name) {$field_name = 'local';}
-	if ($format=='table') {echo "<TABLE WIDTH=120 BGCOLOR=$bgcolor cellpadding=0 cellspacing=0>\n";}
-	if ($format=='menu') {echo "<SELECT SIZE=1 name=\"$field_name\">\n";}
-	if ($format=='selectlist') 
-		{
-		echo "<SELECT SIZE=$selectsize name=\"$field_name\" STYLE=\"font-family : sans-serif; font-size : $selectfontsize$pt\">\n";
-		}
-	if ($format=='textarea') 
-		{
-		echo "<TEXTAREA ROWS=$textareaheight COLS=$textareawidth NAME=extension WRAP=off STYLE=\"font-family : sans-serif; font-size : $selectfontsize$pt\">";
-		}
+if ($ADD==4) {
+    if (!$field_name) $field_name = 'local';
+    if ($format=='table') echo "<table width=120 bgcolor=$bgcolor cellpadding=0 cellspacing=0>\n";
+    if ($format=='menu') echo "<select size=1 name=\"$field_name\">\n";
+    if ($format=='selectlist') echo "<select size=$selectsize name=\"$field_name\" style=\"font-family:sans-serif;font-size:$selectfontsize$pt;\">\n";
+    if ($format=='textarea') echo "<textarea rows=$textareaheight cols=$textareawidth name=extension wrap=off style=\"font-family:sans-serif;font-size:$selectfontsize$pt;\">";
 
-	$stmt="SELECT channel, extension FROM live_sip_channels where server_ip = '$server_ip' order by channel $order";
-		if ($format=='table') {echo "\n<!-- $stmt -->";}
-	$rslt=mysql_query($stmt, $link);
-	if ($rslt) {$busys_to_print = mysql_num_rows($rslt);}
-	$o=0;
-	while ($busys_to_print > $o) {
-		$row=mysql_fetch_row($rslt);
-		if ($format=='table')
-			{
-			echo "<TR><TD ALIGN=LEFT NOWRAP><FONT FACE=\"ARIAL,HELVETICA\" COLOR=$txtcolor SIZE=$txtsize>";
-			echo "$row[0] - $row[1]";
-			echo "</TD></TR>\n";
-			}
-		if ( ($format=='text') or ($format=='textarea') )
-			{
-			echo "$row[0] - $row[1]\n";
-			}
-		if ( ($format=='menu') or ($format=='selectlist') )
-			{
-			echo "<OPTION ";
-			if ($row[0]=="$selectedlocal") {echo "SELECTED ";}
-			echo "VALUE=\"$row[0]\">";
-			echo "$row[0] - $row[1]";
-			echo "</OPTION>\n";
-			}
-		$o++;
-	}
+    $stmt=sprintf("SELECT channel,extension FROM live_sip_channels WHERE server_ip='%s' ORDER BY channel %s;",mres($server_ip),$order);
+    if ($format=='table') echo "\n<!-- $stmt -->";
+    $rslt=mysql_query($stmt, $link);
+    if ($rslt) $busys_to_print = mysql_num_rows($rslt);
+    $o=0;
+    while ($busys_to_print > $o) {
+        $row=mysql_fetch_row($rslt);
+        if ($format=='table') {
+            echo "<tr><td align=left nowrap><font face=\"Arial,Helvetica\" color=$txtcolor size=$txtsize>";
+            echo "$row[0] - $row[1]";
+            echo "</td></tr>\n";
+        }
+        if ( ($format=='text') or ($format=='textarea') ) echo "$row[0] - $row[1]\n";
+        if ( ($format=='menu') or ($format=='selectlist') ) {
+            echo "<option ";
+            if ($row[0]=="$selectedlocal") echo "selected ";
+            echo "value=\"$row[0]\">";
+            echo "$row[0] - $row[1]";
+            echo "</option>\n";
+        }
+        $o++;
+    }
 
-	if ($format=='table') {echo "</TABLE>\n";}
-	if ($format=='menu') {echo "</SELECT>\n";}
-	if ($format=='selectlist') {echo "</SELECT>\n";}
-	if ($format=='textarea') {echo "</TEXTAREA>\n";}
+    if ($format=='table') echo "</table>\n";
+    if ($format=='menu') echo "</select>\n";
+    if ($format=='selectlist') echo "</select>\n";
+    if ($format=='textarea') echo "</textarea>\n";
 }
-
-
-
 
 
 
 ######################
 # ADD=5 display all agc-usable conferences on a server
 ######################
-if ($ADD==5)
-{
-	$pt='pt';
-	if (!$field_name) {$field_name = 'conferences';}
-	if ($format=='table') {echo "<TABLE WIDTH=120 BGCOLOR=$bgcolor cellpadding=0 cellspacing=0>\n";}
-	if ($format=='menu') {echo "<SELECT SIZE=1 name=\"$field_name\">\n";}
-	if ($format=='selectlist') 
-		{
-		echo "<SELECT SIZE=$selectsize name=\"$field_name\" STYLE=\"font-family : sans-serif; font-size : $selectfontsize$pt\">\n";
-		}
-	if ($format=='textarea') 
-		{
-		echo "<TEXTAREA ROWS=$textareaheight COLS=$textareawidth NAME=extension WRAP=off STYLE=\"font-family : sans-serif; font-size : $selectfontsize$pt\">";
-		}
+if ($ADD==5) {
+    if (!$field_name) $field_name = 'conferences';
+    if ($format=='table') echo "<table width=120 bgcolor=$bgcolor cellpadding=0 cellspacing=0>\n";
+    if ($format=='menu') echo "<select size=1 name=\"$field_name\">\n";
+    if ($format=='selectlist') echo "<select size=$selectsize name=\"$field_name\" style=\"font-family:sans-serif;font-size:$selectfontsize$pt;\">\n";
+    if ($format=='textarea') echo "<textarea rows=$textareaheight cols=$textareawidth name=extension wrap=off style=\"font-family:sans-serif;font-size:$selectfontsize$pt;\">";
 
-	$stmt="SELECT conf_exten,extension FROM conferences where server_ip = '$server_ip' order by conf_exten $order";
-		if ($format=='table') {echo "\n<!-- $stmt -->";}
-	$rslt=mysql_query($stmt, $link);
-	if ($rslt) {$phones_to_print = mysql_num_rows($rslt);}
-	$o=0;
-	while ($phones_to_print > $o) {
-		$row=mysql_fetch_row($rslt);
-		if ($format=='table')
-			{
-			echo "<TR><TD ALIGN=LEFT NOWRAP><FONT FACE=\"ARIAL,HELVETICA\" COLOR=$txtcolor SIZE=$txtsize>";
-			echo "$row[0] - $row[1]";
-			echo "</TD></TR>\n";
-			}
-		if ( ($format=='text') or ($format=='textarea') )
-			{
-			echo "$row[0] - $row[1]\n";
-			}
-		if ( ($format=='menu') or ($format=='selectlist') )
-			{
-			echo "<OPTION ";
-			if ($row[0]=="$selectedext") {echo "SELECTED ";}
-			echo "VALUE=\"$row[0]\">";
-			echo "$row[0] - $row[1]";
-			echo "</OPTION>\n";
-			}
-		$o++;
-	}
+    $stmt=sprintf("SELECT conf_exten,extension FROM conferences WHERE server_ip='%s' ORDER BY conf_exten %s;",mres($server_ip),$order);
+    if ($format=='table') echo "\n<!-- $stmt -->";
+    $rslt=mysql_query($stmt, $link);
+    if ($rslt) $phones_to_print = mysql_num_rows($rslt);
+    $o=0;
+    while ($phones_to_print > $o) {
+        $row=mysql_fetch_row($rslt);
+        if ($format=='table') {
+            echo "<tr><td align=left nowrap><font face=\"Arial,Helvetica\" color=$txtcolor size=$txtsize>";
+            echo "$row[0] - $row[1]";
+            echo "</td></tr>\n";
+        }
+        if ( ($format=='text') or ($format=='textarea') ) echo "$row[0] - $row[1]\n";
+        if ( ($format=='menu') or ($format=='selectlist') ) {
+            echo "<option ";
+            if ($row[0]=="$selectedext") echo "selected ";
+            echo "value=\"$row[0]\">";
+            echo "$row[0] - $row[1]";
+            echo "</option>\n";
+        }
+        $o++;
+    }
 
-	if ($format=='table') {echo "</TABLE>\n";}
-	if ($format=='menu') {echo "</SELECT>\n";}
-	if ($format=='selectlist') {echo "</SELECT>\n";}
-	if ($format=='textarea') {echo "</TEXTAREA>\n";}
+    if ($format=='table') echo "</table>\n";
+    if ($format=='menu') echo "</select>\n";
+    if ($format=='selectlist') echo "</select>\n";
+    if ($format=='textarea') echo "</textarea>\n";
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 $ENDtime = date("U");
 $RUNtime = ($ENDtime - $StarTtime);
-if ($format=='table') {echo "\n<!-- script runtime: $RUNtime seconds -->";}
-if ($format=='table') {echo "\n</body>\n</html>\n";}
-	
+if ($format=='table') echo "\n<!-- script runtime: $RUNtime seconds -->";
+if ($format=='table') echo "\n</body>\n</html>\n";
+
 exit; 
 
 ?>
-
-
-
-
-

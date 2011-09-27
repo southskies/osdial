@@ -35,7 +35,7 @@ if ($ADD==27) {
         if ($row[0] > 0) {
             echo "<br><font color=red>AGENT PAUSE CODE NOT ADDED - there is already an entry for this campaign with this pause code</font>\n";
         } else {
-            if (strlen($campaign_id) < 2 or strlen($pause_code) < 1 or strlen($pause_code) > 6 or strlen($pause_code_name) < 2) {
+            if (OSDstrlen($campaign_id) < 2 or OSDstrlen($pause_code) < 1 or OSDstrlen($pause_code) > 6 or OSDstrlen($pause_code_name) < 2) {
                 echo "<br><font color=red>AGENT PAUSE CODE NOT ADDED - Please go back and look at the data you entered\n";
                 echo "<br>pause code must be between 1 and 6 characters in length\n";
                 echo "<br>pause code name must be between 2 and 30 characters in length</font><br>\n";
@@ -68,7 +68,7 @@ if ($ADD==27) {
 
 if ($ADD==47) {
     if ($LOG['modify_campaigns'] == 1) {
-        if (strlen($campaign_id) < 2 or strlen($pause_code) < 1 or strlen($pause_code) > 6 or strlen($pause_code_name) < 2) {
+        if (OSDstrlen($campaign_id) < 2 or OSDstrlen($pause_code) < 1 or OSDstrlen($pause_code) > 6 or OSDstrlen($pause_code_name) < 2) {
             echo "<br><font color=red>AGENT PAUSE CODE NOT MODIFIED - Please go back and look at the data you entered\n";
             echo "<br>pause_code must be between 1 and 6 characters in length\n";
             echo "<br>pause_code name must be between 2 and 30 characters in length</font><br>\n";
@@ -100,7 +100,7 @@ if ($ADD==47) {
 
 if ($ADD==67) {
     if ($LOG['modify_campaigns'] == 1) {
-        if (strlen($campaign_id) < 2 or strlen($pause_code) < 1) {
+        if (OSDstrlen($campaign_id) < 2 or OSDstrlen($pause_code) < 1) {
             echo "<br><font color=red>CAMPAIGN PAUSE CODE NOT DELETED - Please go back and look at the data you entered\n";
             echo "<br>pause code must be between 1 and 6 characters in length</font><br>\n";
         } else {

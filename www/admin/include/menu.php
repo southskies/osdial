@@ -229,7 +229,7 @@ if ($ADD==61111111)		{$hh='filters';		$title = "Delete Filter";}
 if ($ADD==31111111)		{$hh='filters';		$title = "Modify Filter";}
 
 # Admin - carrier
-if (preg_match('/carrier$/',$ADD)) {
+if (OSDpreg_match('/carrier$/',$ADD)) {
     $hh='admin';
     $sh='carriers';
     $ttype='CARRIER';
@@ -292,13 +292,13 @@ if ($ADD=="61media")		{$hh='admin';	$sh='media';	$title = "DELETE MEDIA";}
 if ($ADD=="31media")		{$hh='admin';	$sh='media';	$title = "MODIFY MEDIA";}
 
 # Admin - media - tts scripts
-if ($ADD=="10tts")		{$hh='admin';	$sh='tts';	$title = "TTS LIST";}
-if ($ADD=="11tts")		{$hh='admin';	$sh='tts';	$title = "ADD NEW TTS";}
-if ($ADD=="21tts")		{$hh='admin';	$sh='tts';	$title = "ADDING NEW TTS";}
-if ($ADD=="41tts")		{$hh='admin';	$sh='tts';	$title = "MODIFY TTS";}
-if ($ADD=="51tts")		{$hh='admin';	$sh='tts';	$title = "DELETE TTS";}
-if ($ADD=="61tts")		{$hh='admin';	$sh='tts';	$title = "DELETE TTS";}
-if ($ADD=="31tts")		{$hh='admin';	$sh='tts';	$title = "MODIFY TTS";}
+if ($ADD=="10tts")		{$hh='admin';	$sh='media';	$title = "TTS LIST";}
+if ($ADD=="11tts")		{$hh='admin';	$sh='media';	$title = "ADD NEW TTS";}
+if ($ADD=="21tts")		{$hh='admin';	$sh='media';	$title = "ADDING NEW TTS";}
+if ($ADD=="41tts")		{$hh='admin';	$sh='media';	$title = "MODIFY TTS";}
+if ($ADD=="51tts")		{$hh='admin';	$sh='media';	$title = "DELETE TTS";}
+if ($ADD=="61tts")		{$hh='admin';	$sh='media';	$title = "DELETE TTS";}
+if ($ADD=="31tts")		{$hh='admin';	$sh='media';	$title = "MODIFY TTS";}
 
 # Admin - Server
 if ($ADD==100000000000)		{$hh='admin';	$sh='server';	$title = "SERVER LIST";}

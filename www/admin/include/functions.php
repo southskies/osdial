@@ -94,8 +94,8 @@ function format_select_options($krh, $kkey, $kval, $ksel="!", $kdef="", $kcomp=f
     $klen='';
     if ($kkey != $kval) {
         foreach ($krh as $ele) {
-            $klent = strlen($ele[$kkey]);
-            if ($kcomp) $klent = strlen(mclabel($ele[$kkey]));
+            $klent = OSDstrlen($ele[$kkey]);
+            if ($kcomp) $klent = OSDstrlen(mclabel($ele[$kkey]));
             if ($klent > $klen) $klen=$klent;
         }
     }
@@ -117,7 +117,7 @@ function format_select_options($krh, $kkey, $kval, $ksel="!", $kdef="", $kcomp=f
                 if ($ele['active']=='N') $optstyle .= 'color:#800000;';
                 $optstyle .= '"';
         }
-        $optlabel = preg_replace('/ /','&nbsp;',$optlabel);
+        $optlabel = OSDpreg_replace('/ /','&nbsp;',$optlabel);
         $option .= '<option value="' . $ele[$kkey] . '"' . $optstyle . $selopt . '>' . $optlabel . '</option>' . "\n";
     }
     return $option;
@@ -167,12 +167,12 @@ function get_servers($link, $selected="",$type="") {
 
 # Function to truncate a line and add ...
 function ellipse($string,$len,$dots=true) {
-    if(!$len || $len>strlen($string))
+    if(!$len || $len>OSDstrlen($string))
         return $string;
     if (!$dots) {
-        return substr($string,0,$len);
+        return OSDsubstr($string,0,$len);
     }
-    return substr($string,0, ($len-3)) . '...';
+    return OSDsubstr($string,0, ($len-3)) . '...';
 }
 
 
@@ -182,8 +182,8 @@ function ellipse($string,$len,$dots=true) {
 function dialable_leads($DB, $link, $local_call_time, $dial_statuses, $camp_lists, $fSQL) {
     ##### BEGIN calculate what gmt_offset_now values are within the allowed local_call_time setting ###
     if (isset($camp_lists)) {
-        if (strlen($camp_lists) > 1) {
-            if (strlen($dial_statuses) > 2) {
+        if (OSDstrlen($camp_lists) > 1) {
+            if (OSDstrlen($dial_statuses) > 2) {
                 $g = 0;
                 $p = '13';
                 $GMT_gmt[0] = '';
@@ -201,7 +201,7 @@ function dialable_leads($DB, $link, $local_call_time, $dial_statuses, $camp_list
                     $p = ($p - 0.25);
                     $g++;
                 }
-                $stmt = "SELECT * FROM osdial_call_times where call_time_id='$local_call_time';";
+                $stmt = sprintf("SELECT * FROM osdial_call_times where call_time_id='%s';",mres($local_call_time));
                 if ($DB) {
                     echo "$stmt\n";
                 }
@@ -228,13 +228,13 @@ function dialable_leads($DB, $link, $local_call_time, $dial_statuses, $camp_list
                 $ct_state_gmt_SQL = '';
                 $ct_srs = 0;
                 $b = 0;
-                if (strlen($Gct_state_call_times) > 2) {
+                if (OSDstrlen($Gct_state_call_times) > 2) {
                     $state_rules = explode('|', $Gct_state_call_times);
                     $ct_srs = ((count($state_rules)) - 2);
                 }
                 while ($ct_srs >= $b) {
-                    if (strlen($state_rules[$b]) > 1) {
-                        $stmt = "SELECT * from osdial_state_call_times where state_call_time_id='$state_rules[$b]';";
+                    if (OSDstrlen($state_rules[$b]) > 1) {
+                        $stmt = sprintf("SELECT * from osdial_state_call_times where state_call_time_id='%s';",mres($state_rules[$b]));
                         $rslt = mysql_query($stmt, $link);
                         $row = mysql_fetch_row($rslt);
                         $Gstate_call_time_id = "$row[0]";
@@ -350,8 +350,8 @@ function dialable_leads($DB, $link, $local_call_time, $dial_statuses, $camp_list
                     }
                     $b++;
                 }
-                if (strlen($ct_states) > 2) {
-                    $ct_states = preg_replace("/,$/", '', $ct_states);
+                if (OSDstrlen($ct_states) > 2) {
+                    $ct_states = OSDpreg_replace("/,$/", '', $ct_states);
                     $ct_statesSQL = "and state NOT IN($ct_states)";
                 } else {
                     $ct_statesSQL = "";
@@ -447,7 +447,7 @@ function dialable_leads($DB, $link, $local_call_time, $dial_statuses, $camp_list
                 }
                 $default_gmt = "$default_gmt'99'";
                 $all_gmtSQL = "(gmt_offset_now IN($default_gmt) $ct_statesSQL) $ct_state_gmt_SQL";
-                $dial_statuses = preg_replace("/ -$/", "", $dial_statuses);
+                $dial_statuses = OSDpreg_replace("/ -$/", "", $dial_statuses);
                 $Dstatuses = explode(" ", $dial_statuses);
                 $Ds_to_print = (count($Dstatuses) - 0);
                 $Dsql = '';
@@ -456,7 +456,7 @@ function dialable_leads($DB, $link, $local_call_time, $dial_statuses, $camp_list
                     $o++;
                     $Dsql.= "'$Dstatuses[$o]',";
                 }
-                $Dsql = preg_replace("/,$/", "", $Dsql);
+                $Dsql = OSDpreg_replace("/,$/", "", $Dsql);
                 $stmt = "SELECT count(*) FROM osdial_list FORCE INDEX (list_status) where called_since_last_reset='N' and status IN($Dsql) and list_id IN($camp_lists) and ($all_gmtSQL) $fSQL";
                 if ($DB) {
                     echo "$stmt\n";
@@ -487,9 +487,9 @@ function lookup_gmt($phone_code,$USarea,$state,$LOCAL_GMT_OFF_STD,$Shour,$Smin,$
 require("dbconnect.php");
 
 $postalgmt_found=0;
-if ( (preg_match("/POSTAL/",$postalgmt)) && (strlen($postal_code)>4) )
+if ( (OSDpreg_match("/POSTAL/",$postalgmt)) && (OSDstrlen($postal_code)>4) )
 	{
-	if (preg_match('/^1$/', $phone_code))
+	if (OSDpreg_match('/^1$/', $phone_code))
 		{
 		$stmt="select * from osdial_postal_codes where country_code='$phone_code' and postal_code LIKE \"$postal_code%\";";
 		$rslt=mysql_query($stmt, $link);
@@ -497,7 +497,7 @@ if ( (preg_match("/POSTAL/",$postalgmt)) && (strlen($postal_code)>4) )
 		if ($pc_recs > 0)
 			{
 			$row=mysql_fetch_row($rslt);
-			$gmt_offset =	$row[2];	 $gmt_offset = preg_replace("/\+/","",$gmt_offset);
+			$gmt_offset =	$row[2];	 $gmt_offset = OSDpreg_replace("/\+/","",$gmt_offset);
 			$dst =			$row[3];
 			$dst_range =	$row[4];
 			$PC_processed++;
@@ -517,7 +517,7 @@ if ($postalgmt_found < 1)
 		if ($pc_recs > 0)
 			{
 			$row=mysql_fetch_row($rslt);
-			$gmt_offset =	$row[4];	 $gmt_offset = preg_replace("/\+/","",$gmt_offset);
+			$gmt_offset =	$row[4];	 $gmt_offset = OSDpreg_replace("/\+/","",$gmt_offset);
 			$dst =			$row[5];
 			$dst_range =	$row[6];
 			$PC_processed++;
@@ -532,7 +532,7 @@ if ($postalgmt_found < 1)
 		if ($pc_recs > 0)
 			{
 			$row=mysql_fetch_row($rslt);
-			$gmt_offset =	$row[4];	 $gmt_offset = preg_replace("/\+/","",$gmt_offset);
+			$gmt_offset =	$row[4];	 $gmt_offset = OSDpreg_replace("/\+/","",$gmt_offset);
 			$dst =			$row[5];
 			$dst_range =	$row[6];
 			$PC_processed++;
@@ -547,7 +547,7 @@ if ($postalgmt_found < 1)
 		if ($pc_recs > 0)
 			{
 			$row=mysql_fetch_row($rslt);
-			$gmt_offset =	$row[4];	 $gmt_offset = preg_replace("/\+/","",$gmt_offset);
+			$gmt_offset =	$row[4];	 $gmt_offset = OSDpreg_replace("/\+/","",$gmt_offset);
 			$dst =			$row[5];
 			$dst_range =	$row[6];
 			$PC_processed++;
@@ -563,7 +563,7 @@ if ($postalgmt_found < 1)
 		if ($pc_recs > 0)
 			{
 			$row=mysql_fetch_row($rslt);
-			$gmt_offset =	$row[4];	 $gmt_offset = preg_replace("/\+/","",$gmt_offset);
+			$gmt_offset =	$row[4];	 $gmt_offset = OSDpreg_replace("/\+/","",$gmt_offset);
 			$dst =			$row[5];
 			$dst_range =	$row[6];
 			$PC_processed++;
@@ -1202,11 +1202,11 @@ function dialable_gmt($DB,$link,$local_call_time,$gmt_offset,$state) {
 
     # If state is blank, assume that we don't want to check by state...
     $sdialable = 1;
-    if ($state != "" and strlen($ct['ct_state_call_times'])>2) {
+    if ($state != "" and OSDstrlen($ct['ct_state_call_times'])>2) {
         foreach (explode('|',$ct['ct_state_call_times']) as $sr) {
-            if (strlen($sr) > 1) {
-                $sct = get_first_record($link, 'osdial_state_call_times', '*', sprintf("state_call_time_id='%s' AND state_call_time_state='%s'", mres($sr), mres(strtoupper($state)) ));
-                if (strtoupper($sct['state_call_time_state']) == strtoupper($state)) {
+            if (OSDstrlen($sr) > 1) {
+                $sct = get_first_record($link, 'osdial_state_call_times', '*', sprintf("state_call_time_id='%s' AND state_call_time_state='%s'", mres($sr), mres(OSDstrtoupper($state)) ));
+                if (OSDstrtoupper($sct['state_call_time_state']) == OSDstrtoupper($state)) {
                     $sdialable = 0;
                     # gday: 0 = Sunday, 1 = Monday, 2 = Tuesday, 3 = Wednesday, 4 = Thursday, 5 = Friday, 6 = Saturday
                     if ($gday == 0) {
@@ -1252,14 +1252,14 @@ function dialable_gmt($DB,$link,$local_call_time,$gmt_offset,$state) {
 
 # Function to format a return pretty-fied XML.
 function prettyXML($pretty,$indent=1) {
-    $xa = explode("\n", preg_replace("/>\s*</",">\n<",$pretty) );
+    $xa = explode("\n", OSDpreg_replace("/>\s*</",">\n<",$pretty) );
     $pretty = array_shift($xa) . "\n";
     if ($indent < 1) $indent = 1;
     $cindent = 0;
     foreach($xa as $e) {
-        if ( preg_match('/^<\/.+>$/',$e)) $cindent -= $indent;
+        if ( OSDpreg_match('/^<\/.+>$/',$e)) $cindent -= $indent;
         if ($e) $pretty .=  str_repeat(' ', $cindent) . $e . "\n";
-        if (preg_match('/^<([\w])+[^>\/]*>$/U',$e)) $cindent += $indent;
+        if (OSDpreg_match('/^<([\w])+[^>\/]*>$/U',$e)) $cindent += $indent;
     }
     return $pretty;
 }
@@ -1270,7 +1270,7 @@ function bgcolor($cnt) {
     global $oddrows;
     global $evenrows;
     $bgc = 'bgcolor="';
-    if (preg_match("/1$|3$|5$|7$|9$/", $cnt)) {
+    if (OSDpreg_match("/1$|3$|5$|7$|9$/", $cnt)) {
         $bgc .= $oddrows;
     } else {
         $bgc .= $evenrows;
@@ -1283,8 +1283,8 @@ function bgcolor($cnt) {
 # Returns string with first three chars stripped if multicomp_user
 function mclabel($strdat) {
     global $LOG;
-    if ($LOG['multicomp_user'] > 0) $strdat = substr($strdat,3);
-    if ($LOG['multicomp_admin'] > 0 and preg_match($LOG['companiesRE'],$strdat)) $strdat = substr($strdat,0,3) . ' ' . substr($strdat,3);
+    if ($LOG['multicomp_user'] > 0) $strdat = OSDsubstr($strdat,3);
+    if ($LOG['multicomp_admin'] > 0 and OSDpreg_match($LOG['companiesRE'],$strdat)) $strdat = OSDsubstr($strdat,0,3) . ' ' . OSDsubstr($strdat,3);
     return $strdat;
 }
 
@@ -1310,6 +1310,7 @@ function fmt_ms($seconds) {
 function send_email($host, $port, $user, $pass, $to, $from, $subject, $html, $text) {
     include('Mail.php');
     include('Mail/mime.php');
+    global $config;
 
     if ($port=='') $port='25';
     $params["host"] = $host . ':' . $port;
@@ -1323,9 +1324,22 @@ function send_email($host, $port, $user, $pass, $to, $from, $subject, $html, $te
     $headers["From"] = $from;
     $headers["Subject"] = $subject;
 
-    $mime = new Mail_mime("\n");
+    $mparams = array();
+    $mparams["eol"] = "\n";
+    if ($config['settings']['use_non_latin']==1) {
+        $mparams["text_charset"] = "utf-8";
+        $mparams["html_charset"] = "utf-8";
+    }
+    $mime = new Mail_mime($mparams);
+
     if ($html) $mime->setHTMLBody($html);
     if ($text) $mime->setTXTBody($text);
+    if ($config['settings']['use_non_latin']==1) {
+        foreach ($headers as $name => $value){
+            $headers[$name] = $mime->encodeHeader($name, $value, "utf-8", "quoted-printable");
+        }
+    }
+
     $message = $mime->get();
     $headers = $mime->headers($headers);
 
@@ -1338,7 +1352,7 @@ function send_email($host, $port, $user, $pass, $to, $from, $subject, $html, $te
 function mimemap($file) {
     $mimetype = 'application/octet-stream';
     if (isset($file) and $file!='') {
-        $ext = strtolower(preg_replace('/.*\/|.*\./','',$file));
+        $ext = OSDstrtolower(OSDpreg_replace('/.*\/|.*\./','',$file));
         if ($ext=='g722')    $mimetype = 'audio/G722';
         if ($ext=='g729')    $mimetype = 'audio/G729';
         if ($ext=='gsm')     $mimetype = 'audio/GSM';
@@ -1366,11 +1380,11 @@ function media_add_files($link, $directory, $pattern, $update_data) {
     if (file_exists($directory)) {
         $handle = opendir($directory);
         while (false !== ($filename = readdir($handle))) {
-            if ($filename!='.' and $filename!='..' and preg_match('/'.$pattern.'/',$filename) and ! is_dir($filename)) {
+            if ($filename!='.' and $filename!='..' and OSDpreg_match('/'.$pattern.'/',$filename) and ! is_dir($filename)) {
                 $filepath=$directory.'/'.$filename;
                 $mimetype = mimemap($filename);
-                $extension = preg_replace('/.*\/|\..*/','',$filename);
-                if (!preg_match('/^\d+$/',$extension)) $extension = "";
+                $extension = OSDpreg_replace('/.*\/|\..*/','',$filename);
+                if (!OSDpreg_match('/^\d+$/',$extension)) $extension = "";
                 $files[] = media_add_file($link, $filepath, $mimetype, $filename, $extension, $updata_data);
             }
         }
@@ -1382,12 +1396,12 @@ function media_add_files($link, $directory, $pattern, $update_data) {
 
 
 function media_add_file($link, $filepath, $mimetype, $description, $extension, $update_data) {
-    $filename=preg_replace('/.*\//','',$filepath);
+    $filename=OSDpreg_replace('/.*\//','',$filepath);
     if (!isset($mimetype) or $mimetype=='') $mimetype = mimemap($filename);
     if (!isset($description)) $description = $filename;
     if (isset($extension)) {
-        $extension = preg_replace('/.*\/|\..*/','',$filename);
-        if (!preg_match('/^\d+$/',$extension)) $extension = "";
+        if (empty($extension)) $extension = OSDpreg_replace('/.*\/|\..*/g','',$filename);
+        if (!OSDpreg_match('/^\d+$/',$extension)) $extension = "";
     }
     if (!isset($update_data) or $update_data=='') $update_data = 0;
 
@@ -1482,7 +1496,7 @@ function media_save_files($link, $directory, $pattern, $overwrite) {
     $mkrh = get_krh($link, 'osdial_media', '*','','','');
     if (is_array($mkrh)) {
         foreach ($mkrh as $om) {
-            if (preg_match('/'.$pattern.'/',$om['filename'])) {
+            if (OSDpreg_match('/'.$pattern.'/',$om['filename'])) {
                 $files[] = media_save_file($link, $directory, $om['filename'], $overwrite);
                 chmod($directory.'/'.$om['filename'], 0666);
             }
@@ -1500,8 +1514,8 @@ function media_file_label_list($link) {
         $mkeys = array();
         foreach ($mkrh as $om) {
             $tdesc = $om['description'];
-            if (preg_match("/$om[filename]/",$tdesc)) $tdesc='';
-            $mkeys[preg_replace('/.*\/|\..*/','',$om['filename'])] = array($tdesc,'MEDIA');
+            if (OSDpreg_match("/$om[filename]/",$tdesc)) $tdesc='';
+            $mkeys[OSDpreg_replace('/.*\/|\..*/','',$om['filename'])] = array($tdesc,'MEDIA');
         }
         if (is_array($mkeys)) {
             foreach ($mkeys as $mk => $mv) {
@@ -1513,7 +1527,7 @@ function media_file_label_list($link) {
 }
 
 function media_file_select_options($link,$msel) {
-    $msel = preg_replace('/.*\/|\..*|---NONE---/','',$msel);
+    $msel = OSDpreg_replace('/.*\/|\..*|---NONE---/','',$msel);
     $mlist = media_file_label_list($link);
     $mopts = "<option value=\"\"> - NONE - </option>\n";
     if (is_array($mlist)) {
@@ -1528,13 +1542,13 @@ function media_file_select_options($link,$msel) {
 
 function media_file_text_options($link, $name, $val, $size, $maxsize) {
     if (!isset($maxsize) or $maxsize=='') $maxsize=$size;
-    $val = preg_replace('/.*\/|\..*|---NONE---/','',$val);
+    $val = OSDpreg_replace('/.*\/|\..*|---NONE---/','',$val);
     return editableSelectBox(media_file_label_list($link), $name, $val, $size, $maxsize);
 }
 
 function media_extension_text_options($link, $name, $val, $size, $maxsize) {
     if (!isset($maxsize) or $maxsize=='') $maxsize=$size;
-    $val = preg_replace('/.*\/|\..*|---NONE---/','',$val);
+    $val = OSDpreg_replace('/.*\/|\..*|---NONE---/','',$val);
     return editableSelectBox(media_extension_label_list($link), $name, $val, $size, $maxsize);
 }
 
@@ -1547,7 +1561,7 @@ function media_extension_label_list($link) {
         $mkeys = array();
         foreach ($mkrh as $om) {
             $tdesc = $om['description'];
-            if (preg_match("/$om[extension]/",$tdesc)) $tdesc='';
+            if (OSDpreg_match("/$om[extension]/",$tdesc)) $tdesc='';
             $mkeys[$om['extension']] = array($tdesc,'MEDIA');
         }
         if (is_array($mkeys)) {
@@ -1568,7 +1582,7 @@ function phone_voicemail_list($link) {
         $pkeys = array();
         foreach ($pkrh as $op) {
             $tdesc = $op['extension'];
-            if (preg_match("/^$op[voicemail_id]$/",$tdesc)) $tdesc='';
+            if (OSDpreg_match("/^$op[voicemail_id]$/",$tdesc)) $tdesc='';
             $pkeys[$op['voicemail_id']] = array($tdesc,'PHONE');
         }
         if (is_array($pkeys)) {
@@ -1589,7 +1603,7 @@ function phone_extension_list($link) {
         $pkeys = array();
         foreach ($pkrh as $op) {
             $tdesc = $op['extension'];
-            if (preg_match("/^$op[dialplan_number]$/",$tdesc)) $tdesc='';
+            if (OSDpreg_match("/^$op[dialplan_number]$/",$tdesc)) $tdesc='';
             $pkeys[$op['dialplan_number']] = array($tdesc,'PHONE');
         }
         if (is_array($pkeys)) {
@@ -1613,6 +1627,51 @@ function phone_extension_text_options($link, $name, $val, $size, $maxsize) {
     return editableSelectBox(phone_extension_list($link), $name, $val, $size, $maxsize);
 }
 
+
+function tts_extension_list($link) {
+    $tlist = array();
+    $tkrh = get_krh($link, 'osdial_tts', '*','',"",'');
+    if (is_array($tkrh)) {
+        $tkeys = array();
+        foreach ($tkrh as $ot) {
+            $tdesc = $ot['description'];
+            $tkeys[$ot['extension']] = array($tdesc,'TTS');
+        }
+        if (is_array($tkeys)) {
+            foreach ($tkeys as $tk => $tv) {
+                $tlist[$tk] = $tv;
+            }
+        }
+    }
+    return $tlist;
+}
+function tts_file_list($link) {
+    $tlist = array();
+    $tkrh = get_krh($link, 'osdial_tts', '*','',"",'');
+    if (is_array($tkrh)) {
+        $tkeys = array();
+        foreach ($tkrh as $ot) {
+            $tdesc = $ot['description'];
+            $tkeys['TTS:'.$ot['extension']] = array($tdesc,'TTS');
+        }
+        if (is_array($tkeys)) {
+            foreach ($tkeys as $tk => $tv) {
+                $tlist[$tk] = $tv;
+            }
+        }
+    }
+    return $tlist;
+}
+
+function ivr_file_text_options($link, $name, $val, $size, $maxsize) {
+    if (!isset($maxsize) or $maxsize=='') $maxsize=$size;
+    $val = OSDpreg_replace('/.*\/|\..*|---NONE---/','',$val);
+    $ext = media_file_label_list($link);
+    foreach (tts_file_list($link) as $k => $v) {
+        $ext[$k] = $v;
+    }
+    return editableSelectBox($ext, $name, $val, $size, $maxsize);
+}
 
 
 function list_id_list($link) {
@@ -1644,6 +1703,9 @@ function list_id_text_options($link, $name, $val, $size, $maxsize) {
 function extension_text_options($link, $name, $val, $size, $maxsize) {
     if (!isset($maxsize) or $maxsize=='') $maxsize=$size;
     $ext = media_extension_label_list($link);
+    foreach (tts_extension_list($link) as $k => $v) {
+        $ext[$k] = $v;
+    }
     foreach (phone_extension_list($link) as $k => $v) {
         $ext[$k] = $v;
     }
@@ -1660,12 +1722,12 @@ function editableSelectBox($options, $name, $val, $size, $maxsize) {
         $esboptsL =' selectBoxLabels="';
         $esboptsT =' selectBoxTypes="';
         foreach ($options as $k => $v) {
-            $esboptsO .= preg_replace('/;/','',$k).';';
+            $esboptsO .= OSDpreg_replace('/;/','',$k).';';
             if (is_array($v)) {
-                $esboptsL .= preg_replace('/;/','',$v[0]).';';
-                if (isset($v[1])) $esboptsT .= preg_replace('/;/','',$v[1]).';';
+                $esboptsL .= OSDpreg_replace('/;/','',$v[0]).';';
+                if (isset($v[1])) $esboptsT .= OSDpreg_replace('/;/','',$v[1]).';';
             } else {
-                $esboptsL .= preg_replace('/;/','',$v).';';
+                $esboptsL .= OSDpreg_replace('/;/','',$v).';';
             }
         }
         $esboptsO = rtrim($esboptsO,';') . "\"";
@@ -1730,12 +1792,12 @@ function dateCalcServerLocalGMTOffset($svrGMT, $locGMT, $locisDST, $tzsecs) {
 function dateToLocal($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $addlocTZlabel) {
     global $tzalt;
     global $tzaltDST;
-    global $system_settings;
+    global $config;
 
     if (empty($cnvdate)) return '';
     $dsecs = strtotime($cnvdate);
-    if (empty($fmt)) $fmt=$system_settings['default_date_format'];
-    if ($system_settings['use_browser_timezone_offset']=='N') return date($fmt, $dsecs);
+    if (empty($fmt)) $fmt=$config['settings']['default_date_format'];
+    if ($config['settings']['use_browser_timezone_offset']=='N') return date($fmt, $dsecs);
 
     if ($svrip>-27 and $svrip<27 and $svrip!='first') {
         $svrGMT = $svrip * 1;
@@ -1755,7 +1817,7 @@ function dateToLocal($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $addl
 
     $locTZlabel = '';
     $retdate = date($fmt, $dsecs);
-    if (preg_match('/'.$dcsoff['locsname'].'|'.$tzalt[$dcsoff['locsname']].'/',$retdate)) {
+    if (OSDpreg_match('/'.$dcsoff['locsname'].'|'.$tzalt[$dcsoff['locsname']].'/',$retdate)) {
         return $retdate;
     } else {
         if ($addlocTZlabel>0) {
@@ -1773,12 +1835,12 @@ function dateToLocal($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $addl
 function dateToServer($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $addsvrTZlabel) {
     global $tzalt;
     global $tzaltDST;
-    global $system_settings;
+    global $config;
 
     if (empty($cnvdate)) return '';
     $dsecs = strtotime($cnvdate);
     if (empty($fmt)) $fmt='Y-m-d H:i:s';
-    if ($system_settings['use_browser_timezone_offset']=='N') return date($fmt, $dsecs);
+    if ($config['settings']['use_browser_timezone_offset']=='N') return date($fmt, $dsecs);
 
     if ($svrip>-27 and $svrip<27 and $svrip!='first') {
         $svrGMT = $svrip * 1;
@@ -1804,5 +1866,130 @@ function dateToServer($link, $svrip, $cnvdate, $locGMT, $fmt="", $locisDST, $add
     }
     return date($fmt, $dsecs) . $svrTZlabel;
 }
+
+
+function OSDstrwidth($instr) {
+    global $config;
+    if ($config['settings']['use_non_latin']==1) return mb_strwidth($instr,'UTF-8');
+    return strlen($instr);
+}
+function OSDstrlen($instr) {
+    global $config;
+    if ($config['settings']['use_non_latin']==1) return mb_strlen($instr,'UTF-8');
+    return strlen($instr);
+}
+function OSDstrtolower($instr) {
+    global $config;
+    if ($config['settings']['use_non_latin']==1) return mb_strtolower($instr,'UTF-8');
+    return strtolower($instr);
+}
+function OSDstrtoupper($instr) {
+    global $config;
+    if ($config['settings']['use_non_latin']==1) return mb_strtoupper($instr,'UTF-8');
+    return strtoupper($instr);
+}
+function OSDpreg_replace($inre,$insub,$instr) {
+    global $config;
+    if ($config['settings']['use_non_latin']==1) return preg_replace($inre.'u',$insub,$instr);
+    return preg_replace($inre,$insub,$instr);
+}
+function OSDpreg_split($inre,$instr) {
+    global $config;
+    if ($config['settings']['use_non_latin']==1) return preg_split($inre.'u',$instr);
+    return preg_split($inre,$instr);
+}
+function OSDpreg_splitX($inre,$instr,$incnt) {
+    global $config;
+    if ($config['settings']['use_non_latin']==1) return preg_split($inre.'u',$instr,$incnt);
+    return preg_split($inre,$instr,$incnt);
+}
+function OSDpreg_split4($inre,$instr,$incnt,$inflag) {
+    global $config;
+    if ($config['settings']['use_non_latin']==1) return preg_split($inre.'u',$instr,$incnt,$inflag);
+    return preg_split($inre,$instr,$incnt,$inflag);
+}
+function OSDpreg_match($inre,$instr) {
+    global $config;
+    if ($config['settings']['use_non_latin']==1) return preg_match($inre.'u',$instr);
+    return preg_match($inre,$instr);
+}
+function OSDsubstr($instr,$instart,$inlen) {
+    global $config;
+    if ($config['settings']['use_non_latin']==1) return mb_substr($instr,$instart,$inlen,'UTF-8');
+    return substr($instr,$instart,$inlen);
+}
+
+function OSDsprintf() {
+    $args = func_get_args();
+    global $config;
+    if ($config['settings']['use_non_latin']==1) return call_user_func_array('mb_sprintf', $args);;
+    return call_user_func_array('sprintf', $args);;
+}
+
+
+## Taken from http://php.net/manual/en/function.sprintf.php
+function mb_sprintf($format) {
+    $argv = func_get_args();
+    array_shift($argv) ;
+    return mb_vsprintf($format, $argv) ;
+}
+
+## Taken from http://php.net/manual/en/function.sprintf.php
+/**
+ * Works with all encodings in format and arguments.
+ * Supported: Sign, padding, alignment, width and precision.
+ * Not supported: Argument swapping.
+ */
+function mb_vsprintf($format, $argv, $encoding=null) {
+    if (is_null($encoding)) $encoding = mb_internal_encoding();
+    // Use UTF-8 in the format so we can use the u flag in preg_split
+    $format = mb_convert_encoding($format, 'UTF-8', $encoding);
+    $newformat = ""; // build a new format in UTF-8
+    $newargv = array(); // unhandled args in unchanged encoding
+    while ($format !== "") {
+        // Split the format in two parts: $pre and $post by the first %-directive
+        // We get also the matched groups
+        list ($pre, $sign, $filler, $align, $size, $precision, $type, $post)
+          = preg_split("!\%(\+?)('.|[0 ]|)(-?)([1-9][0-9]*|)(\.[1-9][0-9]*|)([%a-zA-Z])!u", $format, 2, PREG_SPLIT_DELIM_CAPTURE);
+        $newformat .= mb_convert_encoding($pre, $encoding, 'UTF-8');
+        if ($type == '') {
+            // didn't match. do nothing. this is the last iteration.
+        } elseif ($type == '%') {
+            // an escaped %
+            $newformat .= '%%';
+        } elseif ($type == 's') {
+            $arg = array_shift($argv);
+            $arg = mb_convert_encoding($arg, 'UTF-8', $encoding);
+            $padding_pre = '';
+            $padding_post = '';
+            // truncate $arg
+            if ($precision !== '') {
+                $precision = intval(substr($precision,1));
+                if ($precision > 0 && mb_strlen($arg,$encoding) > $precision) $arg = mb_substr($precision,0,$precision,$encoding);
+            }
+            // define padding
+            if ($size > 0) {
+                $arglen = mb_strlen($arg, $encoding);
+                if ($arglen < $size) {
+                    if ($filler==='') $filler = ' ';
+                    if ($align == '-') $padding_post = str_repeat($filler, $size - $arglen);
+                } else {
+                    $padding_pre = str_repeat($filler, $size - $arglen);
+                }
+            }
+            // escape % and pass it forward
+            $newformat .= $padding_pre . str_replace('%', '%%', $arg) . $padding_post;
+        } else {
+            // another type, pass forward
+            $newformat .= "%$sign$filler$align$size$precision$type";
+            $newargv[] = array_shift($argv);
+        }
+        $format = strval($post);
+    }
+    // Convert new format back from UTF-8 to the original encoding
+    $newformat = mb_convert_encoding($newformat, $encoding, 'UTF-8');
+    return vsprintf($newformat, $newargv);
+}
+
 
 ?>

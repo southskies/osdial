@@ -1676,7 +1676,7 @@ The <?php echo $t1; ?> basic web-based lead loader is designed simply to take a 
 <B><FONT SIZE=3>SYSTEM_SETTINGS TABLE</FONT></B><BR><BR>
 <A NAME="settings-use_non_latin">
 <BR>
-<B>Use Non-Latin -</B> This option allows you to default the web display script to use UTF8 characters and not do any latin-character-family regular expression filtering or display formatting. Default is 0.
+<B>Current Character-Set -</B> This flag indicates which character-set your system is using. You have two options, Latin1 (the default), is well suited for English and other Latin-based character-sets. Your other option is UTF8, which allows for the display and storage of non-Latin characters and data. In order to utilize UTF8 for use with OSDial, you must convert your existing database. To convert your database to the UTF8 character-set, log into the console and run the following command: <b>/opt/osdial/bin/sql/upgrade_sql.pl --convert --use-utf8</b>.  To convert your database to the Latin1 character-set, log into the console and run the following command: <b>/opt/osdial/bin/sql/upgrade_sql.pl --convert --use-latin1</b>. 
 
 <BR>
 <A NAME="settings-webroot_writable">
@@ -1787,6 +1787,11 @@ The <?php echo $t1; ?> basic web-based lead loader is designed simply to take a 
 <A NAME="settings-use_browser_timezone_offset">
 <BR>
 <B>Use Browser Timezone Offset -</B> This option will adjust the timezone offsets of both displayed and entered dates. If set to 'Y', the system will attempt to use the timezone of the browser or agent's phone. If the server's local GMT is PST-8, and the agent or manager is connecting from EST-5, the system will offset all of the reported and entered times and dates.  When in the agent interface, the "local_gmt" value from the agent's phone is used (Setup--Phones--[extension]--LocalGMT). When in the control/management interface, the browser is used to determine the remote parties local GMT/timezone.  If set to 'N', the system will use the local_gmt of the server (Setup--Servers--[server]--LocalGMT) for all reporting and entry.
+
+<BR>
+<A NAME="settings-last_recording_extension">
+<BR>
+<B>Last Recording Extension -</B> The last extension assigned to a recording after being created using extension 8168 or 8169. This field is incremented whenever a new recording is created. You should not need to modify this field unless you have encountered overlapped extensions or you wish to change the extension schema for recordings.
 
 <BR><BR><BR><BR>
 

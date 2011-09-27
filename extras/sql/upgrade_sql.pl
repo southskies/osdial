@@ -37,7 +37,7 @@ $|++;
 my $prog = 'upgrade_sql.pl';
 
 my $secStart = time();
-my($DB, $CLOhelp, $CLOinfo, $CLOinst, $CLOsaf, $CLOtest);
+my($DB, $CLOhelp, $CLOinfo, $CLOinst, $CLOsaf, $CLOtest, $CLOlatin, $CLOutf8, $CLOconvert);
 my($dbhT,$dbhA);
 
 # Get OSD configuration directives.
@@ -50,7 +50,10 @@ if (scalar @ARGV) {
 		'info!' => \$CLOinfo,
 		'install!' => \$CLOinst,
 		'skip-auth-fix!' => \$CLOsaf,
-		'test!' => \$CLOtest
+		'test!' => \$CLOtest,
+		'use-latin1!' => \$CLOlatin,
+		'use-utf8!' => \$CLOutf8,
+		'convert!' => \$CLOconvert
 	);
 	if ($DB) {
 		print "----- DEBUGGING -----\n";
@@ -62,20 +65,37 @@ if (scalar @ARGV) {
 		print "CLOinst-     $CLOinst\n";
 		print "CLOsaf-      $CLOsaf\n";
 		print "CLOtest-     $CLOtest\n";
+		print "CLOlatin-    $CLOlatin\n";
+		print "CLOutf8-     $CLOutf8\n";
+		print "CLOconvert-  $CLOconvert\n";
 		print "\n";
 	}
 	if ($CLOhelp) {
 		print "\n\n" . $prog . "\n";
 		print "allowed run-time options:\n";
-		print "  [--debug]        = debug\n";
-		print "  [--help]         = This screen\n";
-		print "  [--info]         = Display detailed information on changes.\n";
-		print "  [--install]      = Install DB on this server if not found.\n";
-		print "  [--skip-auth-fix]= Skip the DB user authentication fixes\n";
-		print "  [-t|--test]      = test only\n\n";
+		print "  [--debug]                = debug\n";
+		print "  [--help]                 = This screen\n";
+		print "  [--info]                 = Display detailed information on changes.\n";
+		print "  [--install]              = Install DB on this server if not found.\n";
+		print "  [--skip-auth-fix]        = Skip the DB user authentication fixes.\n";
+		print "  [-t|--test]              = test only.\n";
+		print "  [--use-latin1|--use-utf8]= Use Latin1 (default) or UTF8 character-set.\n\n";
+		print "  [--convert]              = Use this option with one of the above character-set\n";
+		print "                             options to convert you database to that character-set.\n\n";
 		exit 0;
 	}
 }
+
+my $use_latin=1;
+$use_latin=0 if ($CLOutf8);
+$use_latin=1 if ($CLOlatin);
+
+my $charmode = "SET NAMES 'latin1' COLLATE 'latin1_swedish_ci';";
+$charmode = "SET NAMES 'utf8' COLLATE 'utf8_general_ci';" unless ($use_latin);
+my $charsql = "CHARACTER SET 'latin1' COLLATE 'latin1_swedish_ci'";
+$charsql = "CHARACTER SET 'utf8' COLLATE 'utf8_general_ci'" unless ($use_latin);
+
+$CLOsaf=1 if ($CLOconvert);
 
 my $path = "./";
 if ( -f "./upgrade_sql.map" ) {
@@ -110,7 +130,7 @@ if ($CLOsaf != 1) {
 	if ( ($CLOinst) and (! -f "/var/lib/mysql/" . $config->{VARDB_database} . "/system_settings.ibd") ) {
 		if ( (! -d "/var/lib/mysql/" . $config->{VARDB_database}) ) {
 			print "    OSDial database (" . $config->{VARDB_database} . ") is not detected, creating.\n";
-			my $cdb = "CREATE DATABASE " . $config->{VARDB_database} . ";";
+			my $cdb = "CREATE DATABASE " . $config->{VARDB_database} . " " . $charsql . ";";
 			`echo "$cdb" | mysql -u root`;
 		}
 		$connerr = 1;
@@ -121,6 +141,7 @@ if ($CLOsaf != 1) {
 	} else {
 		print "Testing database connection...\n" if ($DB);
 		$dbhT = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':' . $config->{VARDB_server} . ':' . $config->{VARDB_port}, $config->{VARDB_user}, $config->{VARDB_pass} ) or ($connerr=1);
+		$dbhT->do($charmode) or ($connerr=1);
 		$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
 		$dbhT->do("GRANT UPDATE on mysql.* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
 		print "connerr:" . $connerr . "\n" if($DB);
@@ -132,6 +153,7 @@ if ($CLOsaf != 1) {
 		$connerr = 0;
 		$dbhT = DBI->connect( 'DBI:mysql:' . $config->{VARDB_database} . ':127.0.0.1:' . $config->{VARDB_port}, "root", "" )
 	  	or die "Couldn't connect to database: " . DBI->errstr;
+		$dbhT->do($charmode) or ($connerr=1);
 		$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'127.0.0.1' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
 		$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'localhost' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
 		$dbhT->do("GRANT GRANT OPTION on " . $config->{VARDB_database} . ".* TO '" . $config->{VARDB_user} . "'\@'" . $config->{VARDB_server} . "' IDENTIFIED BY '" . $config->{VARDB_pass} . "';") or ($connerr=1);
@@ -208,113 +230,172 @@ if ($CLOsaf != 1) {
 my @dbiconn = ('DBI:mysql:' . $config->{VARDB_database} . ':' . $config->{VARDB_server} . ':' . $config->{VARDB_port}, $config->{VARDB_user}, $config->{VARDB_pass});
 $dbhA = DBI->connect(@dbiconn)
   or die "Couldn't connect to database: " . DBI->errstr;
+$dbhA->do($charmode);
 print '    Connected to Database:  ' . $config->{VARDB_server} . '|' . $config->{VARDB_database} . "\n" if ($DB);
 
 my ($stmtA, $sthA, @aryA, $ver);
 
 
-print "    Starting upgrade loop...\n";
-my $uploop = 0;
-while ($uploop < 1) {
-	if ($install) {
-		$ver = 'install';
-		$install = 0;
+if ($CLOconvert) {
+	print "    Starting character-set conversion loop...\n";
+	print "     Using \"$charsql\" for conversion string.\n";
+	print "      Setting defaults for database " . $config->{VARDB_database} . " to ";
+	if ($use_latin) {
+		print "Latin1...";
 	} else {
-		$stmtA = "SELECT version FROM system_settings;";
-		$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
-		$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
-		@aryA = $sthA->fetchrow_array;
-		$ver = $aryA[0];
+		print "UTF8...";
 	}
+	$dbhA->do("ALTER DATABASE " . $config->{VARDB_database} . " " . $charsql . ";") unless ($CLOtest);
+	print "\n";
 
-	if ($examples and $vmap{$ver} eq "") {
-		$ver = "examples";
-		$examples = 0;
-	}
-	
-	if ($vmap{$ver} eq "") {
-		print "      Nothing left to do.\n";
-		$uploop = 1;
-	} elsif ($vmap{$ver} eq "2.0.X" or $vmap{$ver} eq "2.0.5") {
-		print "      Upgrade is not possible with this version!\n";
-		$uploop = 2;
-	} else {
-		my $sql;
-		my $gosql = 0;
-		my $linepos = 0;
-		my $sqlfile = $vmap{$ver} . ".sql"; 
-		print "        Current DB Version: $ver       SQL Update File: $sqlfile\n";
-		open (SQL, $path . $sqlfile);
-		my $dbh = DBI->connect(@dbiconn);
-		while (my $line = <SQL>) {
-			chomp $line;
-			if ($line !~ /^#/ and $line ne '') {
-				$sql .= $line;
-				$gosql = 1 if ($line =~ /;$/);
-			}
-			if ($gosql) {
-				#my $nsql :shared;
-				#my $comm :shared;
-				my $tdone :shared = 0; 
-				my ($nsql,$comm) = split(/##\|##/,$sql);
-				#$tdone = 0;
-				if ($CLOinfo != 1 or $comm eq "") {
-					print "\n  Trying ($nsql) " if ($DB);
-					my $thr1 = threads->create(
-						sub {
-							my @chars = qw(- \ | /);
-							my $cur = 0;
-							while (!$tdone) {
-								$cur = 0 if ($cur == @chars);
-								print $chars[$cur++];
-								usleep(100000);
-								print "\b";
-							}
-						});
-					$dbh->do($nsql) unless ($CLOtest);
-					$tdone = 1;
-					$thr1->join();
-					if ($linepos > 79) {
-						print "\n";
-						$linepos=0;
-					}
-					print ".";
-					$linepos++;
-				} else {
-					$comm =~ s/#SQL#/$nsql/g;
-					$comm =~ s/ ##/\n/g;
-					$comm =~ s/;$//g;
-					print "\n-------------------------------------------------------------------------------";
-					print $comm;
-					print "\nApplying...";
-					my $thr1 = threads->create(
-						sub {
-							my @chars = qw(- \ | /);
-							my $cur = 0;
-							while (!$tdone) {
-								$cur = 0 if ($cur == @chars);
-								print $chars[$cur++];
-								usleep(100000);
-								print "\b";
-							}
-						});
-					$dbh->do($nsql) unless ($CLOtest);
-					$tdone = 1;
-					$thr1->join();
-					print "*DONE*\n";
-					$linepos=0;
-				}
-				$gosql = 0;
-				$sql = '';
-			}
+	my $stmtA = "SHOW TABLES;";
+	my $sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
+	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+	my $dbh = DBI->connect(@dbiconn);
+	$dbh->do($charmode);
+	while (my @tables = $sthA->fetchrow_array) {
+		print "       Converting table \"$tables[0]\" to ";
+		if ($use_latin) {
+			print "Latin1...";
+		} else {
+			print "UTF8...";
 		}
-		$dbh->disconnect();
+		my $tdone :shared = 0; 
+		my $thr1 = threads->create(
+			sub {
+				my @chars = qw(- \ | /);
+				my $cur = 0;
+				while (!$tdone) {
+					$cur = 0 if ($cur == @chars);
+					print $chars[$cur++];
+					usleep(100000);
+					print "\b";
+				}
+			});
+		if ($use_latin) {
+			$dbh->do("ALTER TABLE $tables[0] $charsql;") unless ($CLOtest);
+		} else {
+			$dbh->do("ALTER TABLE $tables[0] CONVERT TO $charsql;") unless ($CLOtest);
+		}
+		$tdone = 1;
+		$thr1->join();
 		print "\n";
 	}
+	$dbh->disconnect();
+	if ($use_latin) {
+		print "     Enabling the Latin1 character-set in OSDial...";
+		$dbhA->do("UPDATE system_settings SET use_non_latin='0';") unless ($CLOtest);
+	} else {
+		print "     Enabling the UTF8 character-set in OSDial...";
+		$dbhA->do("UPDATE system_settings SET use_non_latin='1';") unless ($CLOtest);
+	}
+	print "\n";
+	print "    Finished character-set conversion loop...\n";
+} else {
+	print "    Starting upgrade loop...\n";
+	my $uploop = 0;
+	while ($uploop < 1) {
+		if ($install) {
+			$ver = 'install';
+			$install = 0;
+		} else {
+			$stmtA = "SELECT version FROM system_settings;";
+			$sthA = $dbhA->prepare($stmtA) or die "preparing: ", $dbhA->errstr;
+			$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
+			@aryA = $sthA->fetchrow_array;
+			$ver = $aryA[0];
+		}
+
+		if ($examples and $vmap{$ver} eq "") {
+			$ver = "examples";
+			$examples = 0;
+		}
+	
+		if ($vmap{$ver} eq "") {
+			print "      Nothing left to do.\n";
+			$uploop = 1;
+		} elsif ($vmap{$ver} eq "2.0.X" or $vmap{$ver} eq "2.0.5") {
+			print "      Upgrade is not possible with this version!\n";
+			$uploop = 2;
+		} else {
+			my $sql;
+			my $gosql = 0;
+			my $linepos = 0;
+			my $sqlfile = $vmap{$ver} . ".sql"; 
+			print "        Current DB Version: $ver       SQL Update File: $sqlfile\n";
+			open (SQL, $path . $sqlfile);
+			my $dbh = DBI->connect(@dbiconn);
+			$dbh->do($charmode);
+			while (my $line = <SQL>) {
+				chomp $line;
+				if ($line !~ /^#/ and $line ne '') {
+					$sql .= $line;
+					$gosql = 1 if ($line =~ /;$/);
+				}
+				if ($gosql) {
+					#my $nsql :shared;
+					#my $comm :shared;
+					my $tdone :shared = 0; 
+					my ($nsql,$comm) = split(/##\|##/,$sql);
+					#$tdone = 0;
+					if ($CLOinfo != 1 or $comm eq "") {
+						print "\n  Trying ($nsql) " if ($DB);
+						my $thr1 = threads->create(
+							sub {
+								my @chars = qw(- \ | /);
+								my $cur = 0;
+								while (!$tdone) {
+									$cur = 0 if ($cur == @chars);
+									print $chars[$cur++];
+									usleep(100000);
+									print "\b";
+								}
+							});
+						$dbh->do($nsql) unless ($CLOtest);
+						$tdone = 1;
+						$thr1->join();
+						if ($linepos > 79) {
+							print "\n";
+							$linepos=0;
+						}
+						print ".";
+						$linepos++;
+					} else {
+						$comm =~ s/#SQL#/$nsql/g;
+						$comm =~ s/ ##/\n/g;
+						$comm =~ s/;$//g;
+						print "\n-------------------------------------------------------------------------------";
+						print $comm;
+						print "\nApplying...";
+						my $thr1 = threads->create(
+							sub {
+								my @chars = qw(- \ | /);
+								my $cur = 0;
+								while (!$tdone) {
+									$cur = 0 if ($cur == @chars);
+									print $chars[$cur++];
+									usleep(100000);
+									print "\b";
+								}
+							});
+						$dbh->do($nsql) unless ($CLOtest);
+						$tdone = 1;
+						$thr1->join();
+						print "*DONE*\n";
+						$linepos=0;
+					}
+					$gosql = 0;
+					$sql = '';
+				}
+			}
+			$dbh->disconnect();
+			print "\n";
+		}
+	}
+	$uploop--;
+	print "    Finished upgrade loop...\n";
+	exit $uploop;
 }
-$uploop--;
-print "    Finished upgrade loop...\n";
-exit $uploop;
 
 
 

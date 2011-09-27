@@ -31,7 +31,7 @@ echo "<div class=\"footer\">";
 echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\">\n";
 echo "  <tr><td align=\"left\" colspan=\"4\" height=\"1\" bgcolor=\"#999999\"></td></tr>\n";
 echo "  <tr bgcolor=\"$footer_color\">\n";
-if (preg_match("/^Sli/",$system_settings['admin_template'])) {
+if (OSDpreg_match("/^Sli/",$config['settings']['admin_template'])) {
     echo "    <td width=\"33%\">&nbsp;</td>\n";
     echo "    <td width=\"33%\">&nbsp;</td>\n";
 } else {
@@ -39,7 +39,7 @@ if (preg_match("/^Sli/",$system_settings['admin_template'])) {
 #
 # NOTICE:
 # Removal or modification of the following line constitutes a breach of License and doing so may result in legal action.
-    echo "    <td height=\"15\" align=\"center\" width=\"33%\"><a style=\"color:$footer_color;\" href=\"http://www.osdial.com\" target=\"_blank\"><img src=\"templates/" . $system_settings['admin_template'] . "/images/dlfoot.png\" height=\"9\" width=\"120\"></a></td>\n";
+    echo "    <td height=\"15\" align=\"center\" width=\"33%\"><a style=\"color:$footer_color;\" href=\"http://www.osdial.com\" target=\"_blank\"><img src=\"templates/" . $config['settings']['admin_template'] . "/images/dlfoot.png\" height=\"9\" width=\"120\"></a></td>\n";
 #
 #
 }
@@ -57,16 +57,16 @@ if ($last_check==0) {
 	$stmt="UPDATE system_settings SET last_update_check=NOW();";
 	$rslt=mysql_query($stmt, $link);
 	if ($execretval==0) {
-		$stmt="UPDATE system_settings SET last_update_version='$update_version';";
+		$stmt=sprintf("UPDATE system_settings SET last_update_version='%s';",mres($update_version));
 		$rslt=mysql_query($stmt, $link);
 	} else {
-		$update_version = $admin_version;
+		$update_version = $config['settings']['version'];
 	}
 } else {
-	$update_version = $system_settings['last_update_version'];
+	$update_version = $config['settings']['last_update_version'];
 }
 
-$avtest1 = explode('/',$admin_version);
+$avtest1 = explode('/',$config['settings']['version']);
 $avtest2 = explode('.',$avtest1[0]);
 $avtest = sprintf('%02d%04d%04d%05d',$avtest2[0],$avtest2[1],$avtest2[2],$avtest2[3]);
 
@@ -79,7 +79,7 @@ if ($uvtest > $avtest) {
 	echo "      <font color=\"#1A4349\" style=\"text-decoration: blink;\" title=\"Version #$update_version is now available!  You should run 'yum update' on all servers when all agents are logged out and their is sufficient time to complete the update.\">NEW UPDATE #$update_version</font>\n";
 }
 echo "    </td>\n";
-echo "    <td height=\"15\" align=\"right\" width=\"16%\"><font size=1 color=\"#1A4349\">Version: $admin_version/$build&nbsp;&nbsp;</font></td>\n";
+echo "    <td height=\"15\" align=\"right\" width=\"16%\"><font size=1 color=\"#1A4349\">Version: ".$config['settings']['version']."/".$config['settings']['build']."&nbsp;&nbsp;</font></td>\n";
 echo "  </tr>\n";
 echo "  <tr><td align=\"left\" colspan=\"4\" height=\"1\" bgcolor=\"#666666\"></td></tr>\n";
 echo " </table>\n";

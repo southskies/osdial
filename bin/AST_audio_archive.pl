@@ -238,15 +238,15 @@ foreach my $file (readdir(FILE)) {
 					$pext = '0000000000' if ($pext eq "");
 					$pcnl = '0000000000' if ($pcnl eq "");
 
-					my $ins = "INSERT INTO osdial_list SET entry_date='$clstart',modify_date='$clend',status='$pcmp',user='$pcmp',vendor_lead_code='$pext',custom1='$pext',custom2='$pext',external_key='" . $osdial->{VARserver_ip} . ":$puid',source_id='$psid',phone_code='1',phone_number='$pcnl',list_id='$plist',comments='$pcom';";
+					my $ins = "INSERT INTO osdial_list SET entry_date='$clstart',modify_date='$clend',status='" . $osdial->mres($pcmp) . "',user='" . $osdial->mres($pcmp) . "',vendor_lead_code='" . $osdial->mres($pext) . "',custom1='" . $osdial->mres($pext) . "',custom2='" . $osdial->mres($pext) . "',external_key='" . $osdial->{VARserver_ip} . ":" . $osdial->mres($puid) . "',source_id='" . $osdial->mres($psid) . "',phone_code='1',phone_number='" . $osdial->mres($pcnl) . "',list_id='" . $osdial->mres($plist) . "',comments='" . $osdial->mres($pcom) . "';";
 					$osdial->sql_execute($ins);
 
-					my $stmt = "SELECT SQL_NO_CACHE lead_id FROM osdial_list WHERE external_key='" . $osdial->{VARserver_ip} . ":$puid' LIMIT 1;";
+					my $stmt = "SELECT SQL_NO_CACHE lead_id FROM osdial_list WHERE external_key='" . $osdial->{VARserver_ip} . ":" . $osdial->mres($puid) . "' LIMIT 1;";
 					print STDERR "\n|$stmt|\n" if ($DBX);
 					my $sret = $osdial->sql_query($stmt);
 					$plead = $sret->{lead_id} if ($sret->{lead_id} > 0);
 
-					my $ins = "INSERT INTO recording_log SET channel='$pcnl',server_ip='" . $osdial->{VARserver_ip} . "',extension='$pext',start_time='$clstart',start_epoch='$clstart_epoch',end_time='$clend',end_epoch='$clend_epoch',length_in_sec='$cllensec',length_in_min='$cllenmin',filename='$SQLfile',lead_id='$plead',user='$pcmp',uniqueid='$puid';";
+					my $ins = "INSERT INTO recording_log SET channel='$pcnl',server_ip='" . $osdial->{VARserver_ip} . "',extension='$pext',start_time='$clstart',start_epoch='$clstart_epoch',end_time='$clend',end_epoch='$clend_epoch',length_in_sec='$cllensec',length_in_min='$cllenmin',filename='" . $osdial->mres($SQLfile) . "',lead_id='$plead',user='" . $osdial->mres($pcmp) . "',uniqueid='$puid';";
 					$osdial->sql_execute($ins);
 				}
 			}
@@ -254,7 +254,7 @@ foreach my $file (readdir(FILE)) {
 
 			my $start_date;
 			my $dnt = 1;
-			my $stmt = "SELECT SQL_NO_CACHE recording_id,start_time FROM recording_log WHERE filename='$SQLfile' ORDER BY recording_id DESC LIMIT 1;";
+			my $stmt = "SELECT SQL_NO_CACHE recording_id,start_time FROM recording_log WHERE filename='" . $osdial->mres($SQLfile) . "' ORDER BY recording_id DESC LIMIT 1;";
 			print STDERR "\n|$stmt|\n" if ($DBX);
 			my $sret = $osdial->sql_query($stmt);
 			if ($sret->{recording_id} > 0) {
@@ -299,7 +299,7 @@ foreach my $file (readdir(FILE)) {
 					}
 				}
 
-				my $stmt = "UPDATE recording_log SET location='" . $archive_web_path . "/" . $archive_path . "/$start_date_PATH$ALLfile' WHERE recording_id='$recording_id';" if ($dnt);
+				my $stmt = "UPDATE recording_log SET location='" . $osdial->mres($archive_web_path."/".$archive_path."/".$start_date_PATH.$ALLfile) . "' WHERE recording_id='$recording_id';" if ($dnt);
 				print STDERR "\n|$stmt|\n" if ($DB);
 				$osdial->sql_execute($stmt);
 				$osdial->event_logger('audio_archive', "Recording: $recording_id  File: $ALLfile  Sent to: $archive_user\@$archive_host:$archive_web_path/$archive_path/$start_date_PATH");

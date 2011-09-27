@@ -77,7 +77,7 @@ CREATE TABLE osdial_carrier_servers (
   registrations TEXT NOT NULL,
   dialplan TEXT NOT NULL,
   PRIMARY KEY (carrier_id,server_ip)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;##|##
+) ENGINE=InnoDB;##|##
   ## Add tables for server specific carrier options.;
 
 

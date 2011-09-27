@@ -22,7 +22,7 @@
 
 
 
-if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD<70)) or ($ADD=="4A")  or ($ADD=="4B") or (strlen($ADD)==12) ) {
+if ( ( (OSDstrlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD<70)) or ($ADD=="4A")  or ($ADD=="4B") or (OSDstrlen($ADD)==12) ) {
 
     #TODO: functionalize
     ##### BEGIN get campaigns listing for rankings #####
@@ -42,7 +42,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 
     $o=0;
     while ($campaigns_to_print > $o) {
-        $stmt = "SELECT campaign_rank,calls_today from osdial_campaign_agents where user='$user' and campaign_id='$campaign_id_values[$o]'";
+        $stmt = sprintf("SELECT campaign_rank,calls_today FROM osdial_campaign_agents WHERE user='%s' AND campaign_id='%s';",mres($user),mres($campaign_id_values[$o]));
         $rslt=mysql_query($stmt, $link);
         $ranks_to_print = mysql_num_rows($rslt);
         if ($ranks_to_print > 0) {
@@ -61,36 +61,36 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
             }
 
             if ($ranks_to_print > 0) {
-                $stmt="UPDATE osdial_campaign_agents set campaign_rank='$campaign_rank', campaign_weight='$campaign_rank' where campaign_id='$campaign_id_values[$o]' and user='$user';";
+                $stmt=sprintf("UPDATE osdial_campaign_agents SET campaign_rank='%s',campaign_weight='%s' WHERE campaign_id='%s' AND user='%s';",mres($campaign_rank),mres($campaign_rank),mres($campaign_id_values[$o]),mres($user));
                 $rslt=mysql_query($stmt, $link);
             } else {
-                $stmt="INSERT INTO osdial_campaign_agents set campaign_rank='$campaign_rank', campaign_weight='$campaign_rank', campaign_id='$campaign_id_values[$o]', user='$user';";
+                $stmt=sprintf("INSERT INTO osdial_campaign_agents SET campaign_rank='%s',campaign_weight='%s',campaign_id='%s',user='%s';",mres($campaign_rank),mres($campaign_rank),mres($campaign_id_values[$o]),mres($user));
                 $rslt=mysql_query($stmt, $link);
             }
 
-            $stmt="UPDATE osdial_live_agents set campaign_weight='$campaign_rank' where campaign_id='$campaign_id_values[$o]' and user='$user';";
+            $stmt=sprintf("UPDATE osdial_live_agents SET campaign_weight='%s' WHERE campaign_id='%s' AND user='%s';",mres($campaign_rank),mres($campaign_id_values[$o]),mres($user));
             $rslt=mysql_query($stmt, $link);
         } else {
             $campaign_rank = $SELECT_campaign_rank;
         }
 
         # disable non user-group allowable campaign ranks
-        $stmt="SELECT user_group from osdial_users where user='$user';";
+        $stmt=sprintf("SELECT user_group FROM osdial_users WHERE user='%s';",mres($user));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         $Ruser_group = $row[0];
 
-        $stmt="SELECT allowed_campaigns from osdial_user_groups where user_group='$Ruser_group';";
+        $stmt=sprintf("SELECT allowed_campaigns FROM osdial_user_groups WHERE user_group='%s';",mres($Ruser_group));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         $allowed_campaigns = $row[0];
-        $allowed_campaigns = preg_replace("/ -$/","",$allowed_campaigns);
+        $allowed_campaigns = OSDpreg_replace("/ -$/","",$allowed_campaigns);
         $UGcampaigns = explode(" ", $allowed_campaigns);
 
         $p=0;
         $RANK_camp_active=0;
         $CR_disabled = '';
-        if (preg_match('/-ALL-CAMPAIGNS-/',$allowed_campaigns)) {
+        if (OSDpreg_match('/-ALL-CAMPAIGNS-/',$allowed_campaigns)) {
             $RANK_camp_active++;
         } else {
             $UGcampaign_ct = count($UGcampaigns);
@@ -105,7 +105,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
             $CR_disabled = 'DISABLED';
         }
 
-        if (preg_match('/:'.$campaign_id_values[$o].':/',$LOG['allowed_campaignsSTR'])) {
+        if (OSDpreg_match('/:'.$campaign_id_values[$o].':/',$LOG['allowed_campaignsSTR'])) {
             $RANKcampaigns_list .= "<tr class=row " . bgcolor($o) . "><td>";
             $RANKcampaigns_list .= "<font size=1><a href=\"$PHP_SELF?ADD=31&campaign_id=$campaign_id_values[$o]\">" . mclabel($campaign_id_values[$o]) . "</a> - $campaign_name_values[$o]</font></td>";
             $RANKcampaigns_list .= "<td align=center><select style=\"font-size: 8px;\" size=1 name=RANK_$campaign_id_values[$o] $CR_disabled>\n";
@@ -136,13 +136,13 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         $closer_campaigns = $row[0];
-        $closer_campaigns = preg_replace("/ -$/","",$closer_campaigns);
+        $closer_campaigns = OSDpreg_replace("/ -$/","",$closer_campaigns);
         $groups = explode(" ", $closer_campaigns);
         $xfer_groups = $row[1];
-        $xfer_groups = preg_replace("/ -$/","",$xfer_groups);
+        $xfer_groups = OSDpreg_replace("/ -$/","",$xfer_groups);
         $XFERgroups = explode(" ", $xfer_groups);
-        $xfer_groupsSQL = preg_replace("/^ | -$/","",$xfer_groups);
-        $xfer_groupsSQL = preg_replace("/ /","','",$xfer_groupsSQL);
+        $xfer_groupsSQL = OSDpreg_replace("/^ | -$/","",$xfer_groups);
+        $xfer_groupsSQL = OSDpreg_replace("/ /","','",$xfer_groupsSQL);
         $xfer_groupsSQL = "WHERE group_id IN('$xfer_groupsSQL')";
     }
     if ($ADD==41) {
@@ -152,8 +152,8 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
             $xfer_groups .= " $XFERgroups[$p]";
             $p++;
         }
-        $xfer_groupsSQL = preg_replace("/^ | -$/","",$xfer_groups);
-        $xfer_groupsSQL = preg_replace("/ /","','",$xfer_groupsSQL);
+        $xfer_groupsSQL = OSDpreg_replace("/^ | -$/","",$xfer_groups);
+        $xfer_groupsSQL = OSDpreg_replace("/ /","','",$xfer_groupsSQL);
         $xfer_groupsSQL = "WHERE group_id IN('$xfer_groupsSQL')";
     }
 
@@ -162,16 +162,16 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         $closer_campaigns = $row[0];
-        $closer_campaigns = preg_replace("/ -$/","",$closer_campaigns);
+        $closer_campaigns = OSDpreg_replace("/ -$/","",$closer_campaigns);
         $groups = explode(" ", $closer_campaigns);
     }
 
     if ($ADD==3) {
-        $stmt="SELECT closer_campaigns from osdial_users where user='$user';";
+        $stmt=sprintf("SELECT closer_campaigns FROM osdial_users WHERE user='%s';",mres($user));
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
         $closer_campaigns = $row[0];
-        $closer_campaigns = preg_replace("/ -$/","",$closer_campaigns);
+        $closer_campaigns = OSDpreg_replace("/ -$/","",$closer_campaigns);
         $groups = explode(" ", $closer_campaigns);
     }
 
@@ -195,7 +195,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
 
     $o=0;
     while ($groups_to_print > $o) {
-        $stmt="SELECT group_rank,calls_today from osdial_inbound_group_agents where user='$user' and group_id='$group_id_values[$o]'";
+        $stmt=sprintf("SELECT group_rank,calls_today FROM osdial_inbound_group_agents WHERE user='%s' AND group_id='%s';",mres($user),mres($group_id_values[$o]));
         $rslt=mysql_query($stmt, $link);
         $ranks_to_print = mysql_num_rows($rslt);
         if ($ranks_to_print > 0) {
@@ -214,14 +214,14 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
             }
 
             if ($ranks_to_print > 0) {
-                $stmt="UPDATE osdial_inbound_group_agents set group_rank='$group_rank', group_weight='$group_rank' where group_id='$group_id_values[$o]' and user='$user';";
+                $stmt=sprintf("UPDATE osdial_inbound_group_agents SET group_rank='%s',group_weight='%s' WHERE group_id='%s' AND user='%s';",mres($group_rank),mres($group_rank),mres($group_id_values[$o]),mres($user));
                 $rslt=mysql_query($stmt, $link);
             } else {
-                $stmt="INSERT INTO osdial_inbound_group_agents set group_rank='$group_rank', group_weight='$group_rank', group_id='$group_id_values[$o]', user='$user';";
+                $stmt=sprintf("INSERT INTO osdial_inbound_group_agents SET group_rank='%s',group_weight='%s',group_id='%s',user='$user';",mres($group_rank),mres($group_rank),mres($group_id_values[$o]),mres($user));
                 $rslt=mysql_query($stmt, $link);
             }
 
-            $stmt="UPDATE osdial_live_inbound_agents set group_weight='$group_rank' where group_id='$group_id_values[$o]' and user='$user';";
+            $stmt=sprintf("UPDATE osdial_live_inbound_agents SET group_weight='%s' WHERE group_id='%s' AND user='%s';",mres($group_rank),mres($group_id_values[$o]),mres($user));
             $rslt=mysql_query($stmt, $link);
         } else {
             $group_rank = $SELECT_group_rank;
@@ -232,7 +232,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
         $hidden_XFERgroups_list='';
         $hidden_XFERgroups_listTAB='';
         $hidden_RANKgroups_list='';
-        if (preg_match('/:'.$group_id_values[$o].':/',$LOG['allowed_ingroupsSTR'])) {
+        if (OSDpreg_match('/:'.$group_id_values[$o].':/',$LOG['allowed_ingroupsSTR'])) {
             $groups_list        .= "<input type=\"checkbox\" id=\"GL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
             $groups_listTAB     .= "<tr " . bgcolor($o) . " title=\"$group_name_values[$o]\" class=row><td align=left><font size=1><input type=\"checkbox\" id=\"GL$group_id_values[$o]\" name=\"groups[]\" value=\"$group_id_values[$o]\"";
             $XFERgroups_list    .= "<input type=\"checkbox\" id=\"XGL$group_id_values[$o]\" name=\"XFERgroups[]\" value=\"$group_id_values[$o]\"";
@@ -271,7 +271,7 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
             }
             $p++;
         }
-        if (preg_match('/:'.$group_id_values[$o].':/',$LOG['allowed_ingroupsSTR'])) {
+        if (OSDpreg_match('/:'.$group_id_values[$o].':/',$LOG['allowed_ingroupsSTR'])) {
             $groups_list         .= "><label for=\"GL$group_id_values[$o]\"> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o] </label><BR>\n";
             $XFERgroups_list     .= "><label for=\"XGL$group_id_values[$o]\"> <a href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o] </label><BR>\n";
             $groups_listTAB      .= "></font></td><td onclick=\"document.getElementById('GL$group_id_values[$o]').click();\"><font size=1><a onclick=\"document.getElementById('GL$group_id_values[$o]').click();\" href=\"$PHP_SELF?ADD=3111&group_id=$group_id_values[$o]\">" . mclabel($group_id_values[$o]) . "</a> - $group_name_values[$o]</font></td></tr>";
@@ -297,10 +297,10 @@ if ( ( (strlen($ADD)>4) && ($ADD < 99998) ) or ($ADD==3) or (($ADD>20) and ($ADD
     $RANKgroups_list    .= "<tr bgcolor=$menubarcolor height=8px><td colspan=4><font size=1 color=white></font></td></tr>\n";
     $groups_listTAB     .= "<tr bgcolor=$menubarcolor height=8px><td colspan=2><font size=1 color=white></font></td></tr>\n";
     $XFERgroups_listTAB .= "<tr bgcolor=$menubarcolor height=8px><td colspan=2><font size=1 color=white></font></td></tr>\n";
-    if (strlen($groups_value)>2) {
+    if (OSDstrlen($groups_value)>2) {
         $groups_value .= " -";
     }
-    if (strlen($XFERgroups_value)>2) {
+    if (OSDstrlen($XFERgroups_value)>2) {
         $XFERgroups_value .= " -";
     }
 }

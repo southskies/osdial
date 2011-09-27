@@ -28,7 +28,7 @@
 
 if ($ADD==111111111)
 {
-	if ($LOGmodify_call_times==1)
+	if ($LOG['modify_call_times']==1)
 	{
 	echo "<center><br><font color=$default_text size=+1>ADD NEW CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=211111111>\n";
@@ -54,21 +54,21 @@ if ($ADD==111111111)
 
 if ($ADD==211111111)
 {
-	$stmt="SELECT count(*) from osdial_call_times where call_time_id='$call_time_id';";
+	$stmt=sprintf("SELECT count(*) FROM osdial_call_times WHERE call_time_id='%s';",mres($call_time_id));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
 		{echo "<br><font color=red>CALL TIME DEFINITION NOT ADDED - there is already a call time entry with this ID</font>\n";}
 	else
 		{
-		 if ( (strlen($call_time_id) < 2) or (strlen($call_time_name) < 2) )
+		 if ( (OSDstrlen($call_time_id) < 2) or (OSDstrlen($call_time_name) < 2) )
 			{
 			 echo "<br><font color=red>CALL TIME DEFINITION NOT ADDED - Please go back and look at the data you entered\n";
 			 echo "<br>Call Time ID and name must be at least 2 characters in length</font><br>\n";
 			 }
 		 else
 			{
-			$stmt="INSERT INTO osdial_call_times SET call_time_id='$call_time_id',call_time_name='$call_time_name',call_time_comments='$call_time_comments';";
+			$stmt=sprintf("INSERT INTO osdial_call_times SET call_time_id='%s',call_time_name='%s',call_time_comments='%s';",mres($call_time_id),mres($call_time_name),mres($call_time_comments));
 			$rslt=mysql_query($stmt, $link);
 
 			echo "<br><B><font color=$default_text>CALL TIME ADDED: $call_time_id</font></B>\n";
@@ -93,31 +93,31 @@ $ADD=311111111;
 
 if ($ADD==411111111)
 {
-	if ($LOGmodify_call_times==1)
+	if ($LOG['modify_call_times']==1)
 	{
-	 if ( (strlen($call_time_id) < 2) or (strlen($call_time_name) < 2) )
+	 if ( (OSDstrlen($call_time_id) < 2) or (OSDstrlen($call_time_name) < 2) )
 		{
 		 echo "<br><font color=red>CALL TIME NOT MODIFIED - Please go back and look at the data you entered\n";
 		 echo "<br>Call Time ID and name must be at least 2 characters in length</font><br>\n";
 		}
 	 else
 		{
-		$ct_default_start = preg_replace('/\D/', '', $ct_default_start);
-		$ct_default_stop = preg_replace('/\D/', '', $ct_default_stop);
-		$ct_sunday_start = preg_replace('/\D/', '', $ct_sunday_start);
-		$ct_sunday_stop = preg_replace('/\D/', '', $ct_sunday_stop);
-		$ct_monday_start = preg_replace('/\D/', '', $ct_monday_start);
-		$ct_monday_stop = preg_replace('/\D/', '', $ct_monday_stop);
-		$ct_tuesday_start = preg_replace('/\D/', '', $ct_tuesday_start);
-		$ct_tuesday_stop = preg_replace('/\D/', '', $ct_tuesday_stop);
-		$ct_wednesday_start = preg_replace('/\D/', '', $ct_wednesday_start);
-		$ct_wednesday_stop = preg_replace('/\D/', '', $ct_wednesday_stop);
-		$ct_thursday_start = preg_replace('/\D/', '', $ct_thursday_start);
-		$ct_thursday_stop = preg_replace('/\D/', '', $ct_thursday_stop);
-		$ct_friday_start = preg_replace('/\D/', '', $ct_friday_start);
-		$ct_friday_stop = preg_replace('/\D/', '', $ct_friday_stop);
-		$ct_saturday_start = preg_replace('/\D/', '', $ct_saturday_start);
-		$ct_saturday_stop = preg_replace('/\D/', '', $ct_saturday_stop);
+		$ct_default_start = OSDpreg_replace('/\D/', '', $ct_default_start);
+		$ct_default_stop = OSDpreg_replace('/\D/', '', $ct_default_stop);
+		$ct_sunday_start = OSDpreg_replace('/\D/', '', $ct_sunday_start);
+		$ct_sunday_stop = OSDpreg_replace('/\D/', '', $ct_sunday_stop);
+		$ct_monday_start = OSDpreg_replace('/\D/', '', $ct_monday_start);
+		$ct_monday_stop = OSDpreg_replace('/\D/', '', $ct_monday_stop);
+		$ct_tuesday_start = OSDpreg_replace('/\D/', '', $ct_tuesday_start);
+		$ct_tuesday_stop = OSDpreg_replace('/\D/', '', $ct_tuesday_stop);
+		$ct_wednesday_start = OSDpreg_replace('/\D/', '', $ct_wednesday_start);
+		$ct_wednesday_stop = OSDpreg_replace('/\D/', '', $ct_wednesday_stop);
+		$ct_thursday_start = OSDpreg_replace('/\D/', '', $ct_thursday_start);
+		$ct_thursday_stop = OSDpreg_replace('/\D/', '', $ct_thursday_stop);
+		$ct_friday_start = OSDpreg_replace('/\D/', '', $ct_friday_start);
+		$ct_friday_stop = OSDpreg_replace('/\D/', '', $ct_friday_stop);
+		$ct_saturday_start = OSDpreg_replace('/\D/', '', $ct_saturday_start);
+		$ct_saturday_stop = OSDpreg_replace('/\D/', '', $ct_saturday_stop);
 		$stmt="UPDATE osdial_call_times set call_time_name='$call_time_name', call_time_comments='$call_time_comments', ct_default_start='$ct_default_start', ct_default_stop='$ct_default_stop', ct_sunday_start='$ct_sunday_start', ct_sunday_stop='$ct_sunday_stop', ct_monday_start='$ct_monday_start', ct_monday_stop='$ct_monday_stop', ct_tuesday_start='$ct_tuesday_start', ct_tuesday_stop='$ct_tuesday_stop', ct_wednesday_start='$ct_wednesday_start', ct_wednesday_stop='$ct_wednesday_stop', ct_thursday_start='$ct_thursday_start', ct_thursday_stop='$ct_thursday_stop', ct_friday_start='$ct_friday_start', ct_friday_stop='$ct_friday_stop', ct_saturday_start='$ct_saturday_start', ct_saturday_stop='$ct_saturday_stop',use_recycle_gap='$use_recycle_gap' where call_time_id='$call_time_id';";
 		$rslt=mysql_query($stmt, $link);
 
@@ -146,7 +146,7 @@ if ($ADD==411111111)
 
 if ($ADD==511111111)
 {
-	 if ( (strlen($call_time_id) < 2) or ($LOGdelete_call_times < 1) )
+	 if ( (OSDstrlen($call_time_id) < 2) or ($LOG['delete_call_times'] < 1) )
 		{
 		 echo "<br><font color=red>CALL TIME NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Call Time ID must be at least 2 characters in length</font>\n";
@@ -167,14 +167,14 @@ $ADD='311111111';		# go to call time modification below
 
 if ($ADD==611111111)
 {
-	 if ( (strlen($call_time_id) < 2) or ($LOGdelete_call_times < 1) )
+	 if ( (OSDstrlen($call_time_id) < 2) or ($LOG['delete_call_times'] < 1) )
 		{
 		 echo "<br><font color=red>CALL TIME NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Call Time ID must be at least 2 characters in length</font><br>\n";
 		}
 	 else
 		{
-		$stmt="DELETE from osdial_call_times where call_time_id='$call_time_id' limit 1;";
+		$stmt=sprintf("DELETE FROM osdial_call_times WHERE call_time_id='%s' LIMIT 1;",mres($call_time_id));
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -199,33 +199,33 @@ $ADD='100000000';		# go to call times list
 
 if ($ADD==321111111)
 {
-if ($LOGmodify_call_times==1)
+if ($LOG['modify_call_times']==1)
 {
 
-if ( ($stage=="ADD") and (strlen($state_rule)>0) )
+if ( ($stage=="ADD") and (OSDstrlen($state_rule)>0) )
 	{
-	$stmt="SELECT ct_state_call_times from osdial_call_times where call_time_id='$call_time_id';";
+	$stmt=sprintf("SELECT ct_state_call_times FROM osdial_call_times WHERE call_time_id='%s';",mres($call_time_id));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$ct_state_call_times = $row[0];
 
-	if (preg_match("/\|$/",$ct_state_call_times))
+	if (OSDpreg_match("/\|$/",$ct_state_call_times))
 		{$ct_state_call_times = "$ct_state_call_times$state_rule\|";}
 	else
 		{$ct_state_call_times = "$ct_state_call_times\|$state_rule\|";}
-	$stmt="UPDATE osdial_call_times set ct_state_call_times='$ct_state_call_times' where call_time_id='$call_time_id';";
+	$stmt=sprintf("UPDATE osdial_call_times SET ct_state_call_times='%s' WHERE call_time_id='%s';",mres($ct_state_call_times),mres($call_time_id));
 	$rslt=mysql_query($stmt, $link);
 	echo "State Rule Added: $state_rule<BR>\n";
 	}
-if ( ($stage=="REMOVE") and (strlen($state_rule)>0) )
+if ( ($stage=="REMOVE") and (OSDstrlen($state_rule)>0) )
 	{
-	$stmt="SELECT ct_state_call_times from osdial_call_times where call_time_id='$call_time_id';";
+	$stmt=sprintf("SELECT ct_state_call_times FROM osdial_call_times WHERE call_time_id='$call_time_id';",mres($call_time_id));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$ct_state_call_times = $row[0];
 
-	$ct_state_call_times = preg_replace("/\|$state_rule\|/",'|',$ct_state_call_times);
-	$stmt="UPDATE osdial_call_times set ct_state_call_times='$ct_state_call_times' where call_time_id='$call_time_id';";
+	$ct_state_call_times = OSDpreg_replace("/\|$state_rule\|/",'|',$ct_state_call_times);
+	$stmt=sprintf("UPDATE osdial_call_times SET ct_state_call_times='%s' WHERE call_time_id='%s';",mres($ct_state_call_times),mres($call_time_id));
 	$rslt=mysql_query($stmt, $link);
 	echo "State Rule Removed: $state_rule<BR>\n";
 	}
@@ -247,9 +247,9 @@ echo "<font color=red>You are not authorized to view this page. Please go back.<
 if ($ADD==311111111)
 {
 
-if ($LOGmodify_call_times==1)
+if ($LOG['modify_call_times']==1)
 {
-	$stmt="SELECT * from osdial_call_times where call_time_id='$call_time_id';";
+	$stmt=sprintf("SELECT * FROM osdial_call_times WHERE call_time_id='$call_time_id';",mres($call_time_id));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$call_time_name =		$row[1];
@@ -295,7 +295,7 @@ echo "</table><br><br>\n";
 $ct_srs=1;
 $b=0;
 $srs_SQL ='';
-if (strlen($ct_state_call_times)>2)
+if (OSDstrlen($ct_state_call_times)>2)
 	{
 	$state_rules = explode('|',$ct_state_call_times);
 	$ct_srs = ((count($state_rules)) - 1);
@@ -311,8 +311,8 @@ echo "    <td align=center>ACTION</td>\n";
 echo "  </tr>\n";
 $o=0;
 while($ct_srs >= $b) {
-	if (strlen($state_rules[$b])>0) {
-		$stmt="SELECT state_call_time_state,state_call_time_name from osdial_state_call_times where state_call_time_id='$state_rules[$b]';";
+	if (OSDstrlen($state_rules[$b])>0) {
+		$stmt=sprintf("SELECT state_call_time_state,state_call_time_name FROM osdial_state_call_times WHERE state_call_time_id='%s';",mres($state_rules[$b]));
 		$rslt=mysql_query($stmt, $link);
 		$row=mysql_fetch_row($rslt);
 		echo "  <tr class=\"row font1\" " . bgcolor($o) . " ondblclick=\"openNewWindow('$PHP_SELF?ADD=3111111111&call_time_id=$state_rules[$b]');\">\n";
@@ -326,7 +326,7 @@ while($ct_srs >= $b) {
 	}
 	$b++;
 }
-if (strlen($srs_SQL)>2)
+if (OSDstrlen($srs_SQL)>2)
 	{
 	$srs_SQL = "$srs_SQL''";
 	$srs_state_SQL = "$srs_state_SQL''";
@@ -334,7 +334,7 @@ if (strlen($srs_SQL)>2)
 	}
 else
 	{$srs_SQL='';}
-$stmt="SELECT state_call_time_id,state_call_time_name from osdial_state_call_times $srs_SQL order by state_call_time_id;";
+$stmt="SELECT state_call_time_id,state_call_time_name FROM osdial_state_call_times $srs_SQL ORDER BY state_call_time_id;";
 $rslt=mysql_query($stmt, $link);
 $sct_to_print = mysql_num_rows($rslt);
 $sct_list='';
@@ -363,7 +363,7 @@ echo "    <td align=center>Campaign ID</td>\n";
 echo "    <td align=center>Campaign Description</td>\n";
 echo "  </tr>\n";
 
-	$stmt="SELECT campaign_id,campaign_name from osdial_campaigns where local_call_time='$call_time_id';";
+	$stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE local_call_time='%s';",mres($call_time_id));
 	$rslt=mysql_query($stmt, $link);
 	$camps_to_print = mysql_num_rows($rslt);
 	$o=0;
@@ -389,7 +389,7 @@ echo "    <td align=center>InGroup ID</td>\n";
 echo "    <td align=center>InGroup Description</td>\n";
 echo "  </tr>\n";
 
-	$stmt="SELECT group_id,group_name from osdial_inbound_groups where call_time_id='$call_time_id';";
+	$stmt=sprintf("SELECT group_id,group_name FROM osdial_inbound_groups WHERE call_time_id='%s';",mres($call_time_id));
 	$rslt=mysql_query($stmt, $link);
 	$camps_to_print = mysql_num_rows($rslt);
 	$o=0;
@@ -407,7 +407,7 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo "</center><br><br>\n";
 
-if ($LOGdelete_call_times > 0)
+if ($LOG['delete_call_times'] > 0)
 	{
 	echo "<br><br><a href=\"$PHP_SELF?ADD=511111111&call_time_id=$call_time_id\">DELETE THIS CALL TIME DEFINITION</a>\n";
 	}
@@ -425,7 +425,7 @@ echo "<font color=red>You are not authorized to view this page. Please go back.<
 ######################
 if ($ADD==100000000)
 {
-	$stmt="SELECT * from osdial_call_times order by call_time_id";
+	$stmt="SELECT * FROM osdial_call_times ORDER BY call_time_id";
 	$rslt=mysql_query($stmt, $link);
 	$filters_to_print = mysql_num_rows($rslt);
 
@@ -469,7 +469,7 @@ echo "</table></center>\n";
 
 if ($ADD==1111111111)
 {
-	if ($LOGmodify_call_times==1)
+	if ($LOG['modify_call_times']==1)
 	{
 	echo "<center><br><font color=$default_text size=+1>ADD NEW STATE CALL TIME</font><form action=$PHP_SELF method=POST><br><br>\n";
 	echo "<input type=hidden name=ADD value=2111111111>\n";
@@ -497,21 +497,21 @@ if ($ADD==1111111111)
 
 if ($ADD==2111111111)
 {
-	$stmt="SELECT count(*) from osdial_state_call_times where state_call_time_id='$call_time_id';";
+	$stmt=sprintf("SELECT count(*) FROM osdial_state_call_times WHERE state_call_time_id='%s';",mres($call_time_id));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
 		{echo "<br><font color=red>STATE CALL TIME DEFINITION NOT ADDED - there is already a call time entry with this ID</font>\n";}
 	else
 		{
-		 if ( (strlen($call_time_id) < 2) or (strlen($call_time_name) < 2) or (strlen($state_call_time_state) < 2) )
+		 if ( (OSDstrlen($call_time_id) < 2) or (OSDstrlen($call_time_name) < 2) or (OSDstrlen($state_call_time_state) < 2) )
 			{
 			 echo "<br><font color=red>STATE CALL TIME DEFINITION NOT ADDED - Please go back and look at the data you entered\n";
 			 echo "<br>State Call Time ID, name and state must be at least 2 characters in length</font><br>\n";
 			 }
 		 else
 			{
-			$stmt="INSERT INTO osdial_state_call_times SET state_call_time_id='$call_time_id',state_call_time_name='$call_time_name',state_call_time_comments='$call_time_comments',state_call_time_state='$state_call_time_state';";
+			$stmt=sprintf("INSERT INTO osdial_state_call_times SET state_call_time_id='%s',state_call_time_name='%s',state_call_time_comments='%s',state_call_time_state='%s';",mres($call_time_id),mres($call_time_name),mres($call_time_comments),mres($state_call_time_state));
 			$rslt=mysql_query($stmt, $link);
 
 			echo "<br><B><font color=$default_text>STATE CALL TIME ADDED: $call_time_id</font></B>\n";
@@ -536,32 +536,32 @@ $ADD=3111111111;
 
 if ($ADD==4111111111)
 {
-	if ($LOGmodify_call_times==1)
+	if ($LOG['modify_call_times']==1)
 	{
-	 if ( (strlen($call_time_id) < 2) or (strlen($call_time_name) < 2) or (strlen($state_call_time_state) < 2) )
+	 if ( (OSDstrlen($call_time_id) < 2) or (OSDstrlen($call_time_name) < 2) or (OSDstrlen($state_call_time_state) < 2) )
 		{
 		 echo "<br><font color=red>STATE CALL TIME NOT MODIFIED - Please go back and look at the data you entered\n";
 		 echo "<br>State Call Time ID, name and state must be at least 2 characters in length</font><br>\n";
 		}
 	 else
 		{
-		$ct_default_start = preg_replace('/\D/', '', $ct_default_start);
-		$ct_default_stop = preg_replace('/\D/', '', $ct_default_stop);
-		$ct_sunday_start = preg_replace('/\D/', '', $ct_sunday_start);
-		$ct_sunday_stop = preg_replace('/\D/', '', $ct_sunday_stop);
-		$ct_monday_start = preg_replace('/\D/', '', $ct_monday_start);
-		$ct_monday_stop = preg_replace('/\D/', '', $ct_monday_stop);
-		$ct_tuesday_start = preg_replace('/\D/', '', $ct_tuesday_start);
-		$ct_tuesday_stop = preg_replace('/\D/', '', $ct_tuesday_stop);
-		$ct_wednesday_start = preg_replace('/\D/', '', $ct_wednesday_start);
-		$ct_wednesday_stop = preg_replace('/\D/', '', $ct_wednesday_stop);
-		$ct_thursday_start = preg_replace('/\D/', '', $ct_thursday_start);
-		$ct_thursday_stop = preg_replace('/\D/', '', $ct_thursday_stop);
-		$ct_friday_start = preg_replace('/\D/', '', $ct_friday_start);
-		$ct_friday_stop = preg_replace('/\D/', '', $ct_friday_stop);
-		$ct_saturday_start = preg_replace('/\D/', '', $ct_saturday_start);
-		$ct_saturday_stop = preg_replace('/\D/', '', $ct_saturday_stop);
-		$stmt="UPDATE osdial_state_call_times set state_call_time_name='$call_time_name', state_call_time_comments='$call_time_comments', sct_default_start='$ct_default_start', sct_default_stop='$ct_default_stop', sct_sunday_start='$ct_sunday_start', sct_sunday_stop='$ct_sunday_stop', sct_monday_start='$ct_monday_start', sct_monday_stop='$ct_monday_stop', sct_tuesday_start='$ct_tuesday_start', sct_tuesday_stop='$ct_tuesday_stop', sct_wednesday_start='$ct_wednesday_start', sct_wednesday_stop='$ct_wednesday_stop', sct_thursday_start='$ct_thursday_start', sct_thursday_stop='$ct_thursday_stop', sct_friday_start='$ct_friday_start', sct_friday_stop='$ct_friday_stop', sct_saturday_start='$ct_saturday_start', sct_saturday_stop='$ct_saturday_stop', state_call_time_state='$state_call_time_state'  where state_call_time_id='$call_time_id';";
+		$ct_default_start = OSDpreg_replace('/\D/', '', $ct_default_start);
+		$ct_default_stop = OSDpreg_replace('/\D/', '', $ct_default_stop);
+		$ct_sunday_start = OSDpreg_replace('/\D/', '', $ct_sunday_start);
+		$ct_sunday_stop = OSDpreg_replace('/\D/', '', $ct_sunday_stop);
+		$ct_monday_start = OSDpreg_replace('/\D/', '', $ct_monday_start);
+		$ct_monday_stop = OSDpreg_replace('/\D/', '', $ct_monday_stop);
+		$ct_tuesday_start = OSDpreg_replace('/\D/', '', $ct_tuesday_start);
+		$ct_tuesday_stop = OSDpreg_replace('/\D/', '', $ct_tuesday_stop);
+		$ct_wednesday_start = OSDpreg_replace('/\D/', '', $ct_wednesday_start);
+		$ct_wednesday_stop = OSDpreg_replace('/\D/', '', $ct_wednesday_stop);
+		$ct_thursday_start = OSDpreg_replace('/\D/', '', $ct_thursday_start);
+		$ct_thursday_stop = OSDpreg_replace('/\D/', '', $ct_thursday_stop);
+		$ct_friday_start = OSDpreg_replace('/\D/', '', $ct_friday_start);
+		$ct_friday_stop = OSDpreg_replace('/\D/', '', $ct_friday_stop);
+		$ct_saturday_start = OSDpreg_replace('/\D/', '', $ct_saturday_start);
+		$ct_saturday_stop = OSDpreg_replace('/\D/', '', $ct_saturday_stop);
+		$stmt=sprintf("UPDATE osdial_state_call_times SET state_call_time_name='%s',state_call_time_comments='%s',sct_default_start='%s',sct_default_stop='%s',sct_sunday_start='%s',sct_sunday_stop='%s',sct_monday_start='%s',sct_monday_stop='%s',sct_tuesday_start='%s',sct_tuesday_stop='%s',sct_wednesday_start='%s',sct_wednesday_stop='%s',sct_thursday_start='%s',sct_thursday_stop='%s',sct_friday_start='%s',sct_friday_stop='%s',sct_saturday_start='%s',sct_saturday_stop='%s',state_call_time_state='%s'  WHERE state_call_time_id='%s';",mres($call_time_name),mres($call_time_comments),mres($ct_default_start),mres($ct_default_stop),mres($ct_sunday_start),mres($ct_sunday_stop),mres($ct_monday_start),mres($ct_monday_stop),mres($ct_tuesday_start),mres($ct_tuesday_stop),mres($ct_wednesday_start),mres($ct_wednesday_stop),mres($ct_thursday_start),mres($ct_thursday_stop),mres($ct_friday_start),mres($ct_friday_stop),mres($ct_saturday_start),mres($ct_saturday_stop),mres($state_call_time_state),mres($call_time_id));
 		$rslt=mysql_query($stmt, $link);
 
 		echo "<br><B><font color=$default_text>STATE CALL TIME MODIFIED</font></B>\n";
@@ -589,7 +589,7 @@ if ($ADD==4111111111)
 
 if ($ADD==5111111111)
 {
-	 if ( (strlen($call_time_id) < 2) or ($LOGdelete_call_times < 1) )
+	 if ( (OSDstrlen($call_time_id) < 2) or ($LOG['delete_call_times'] < 1) )
 		{
 		 echo "<br><font color=red>STATE CALL TIME NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Call Time ID must be at least 2 characters in length</font><br>\n";
@@ -611,17 +611,17 @@ $ADD='3111111111';		# go to state call time modification below
 
 if ($ADD==6111111111)
 {
-	 if ( (strlen($call_time_id) < 2) or ($LOGdelete_call_times < 1) )
+	 if ( (OSDstrlen($call_time_id) < 2) or ($LOG['delete_call_times'] < 1) )
 		{
 		 echo "<br><font color=red>STATE CALL TIME NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>Call Time ID must be at least 2 characters in length</font><br>\n";
 		}
 	 else
 		{
-		$stmt="DELETE from osdial_state_call_times where state_call_time_id='$call_time_id' limit 1;";
+		$stmt=sprintf("DELETE FROM osdial_state_call_times WHERE state_call_time_id='%s' LIMIT 1;",mres($call_time_id));
 		$rslt=mysql_query($stmt, $link);
 
-		$stmt="SELECT call_time_id,ct_state_call_times from osdial_call_times where ct_state_call_times LIKE \"%|$call_time_id|%\" order by call_time_id;";
+		$stmt=sprintf("SELECT call_time_id,ct_state_call_times FROM osdial_call_times WHERE ct_state_call_times LIKE '%%|%s|%%' ORDER BY call_time_id;",mres($call_time_id));
 		$rslt=mysql_query($stmt, $link);
 		$sct_to_print = mysql_num_rows($rslt);
 		$sct_list='';
@@ -636,7 +636,7 @@ if ($ADD==6111111111)
 		$o=0;
 
 		while ($sct_to_print > $o) {
-			$sct_states[$o] = preg_replace("/\|$call_time_id\|/",'|',$sct_states[$o]);
+			$sct_states[$o] = OSDpreg_replace("/\|$call_time_id\|/",'|',$sct_states[$o]);
 			$stmt="UPDATE osdial_call_times set ct_state_call_times='$sct_states[$o]' where call_time_id='$sct_ids[$o]';";
 			$rslt=mysql_query($stmt, $link);
 			echo "$stmt\n";
@@ -667,9 +667,9 @@ $ADD='1000000000';		# go to call times list
 if ($ADD==3111111111)
 {
 
-if ($LOGmodify_call_times==1)
+if ($LOG['modify_call_times']==1)
 {
-	$stmt="SELECT * from osdial_state_call_times where state_call_time_id='$call_time_id';";
+	$stmt=sprintf("SELECT * FROM osdial_state_call_times WHERE state_call_time_id='%s';",mres($call_time_id));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	$state_call_time_state =$row[1];
@@ -718,7 +718,7 @@ echo "    <td align=center>CALL-TIME ID</td>\n";
 echo "    <td align=center>DESCRIPTION</td>\n";
 echo "  </tr>\n";
 
-	$stmt="SELECT call_time_id,call_time_name from osdial_call_times where ct_state_call_times LIKE \"%|$call_time_id|%\";";
+	$stmt=sprintf("SELECT call_time_id,call_time_name FROM osdial_call_times WHERE ct_state_call_times LIKE '%%|%s|%%';",mres($call_time_id));
 	$rslt=mysql_query($stmt, $link);
 	$camps_to_print = mysql_num_rows($rslt);
 	$o=0;
@@ -737,7 +737,7 @@ echo "  </tr>\n";
 echo "</table>\n";
 echo "</center><BR><BR><br>\n";
 
-if ($LOGdelete_call_times > 0)
+if ($LOG['delete_call_times'] > 0)
 	{
 	echo "<br><br><a href=\"$PHP_SELF?ADD=5111111111&call_time_id=$call_time_id\">DELETE THIS STATE CALL TIME DEFINITION</a>\n";
 	}
@@ -757,7 +757,7 @@ echo "<font color=red>You are not authorized to view this page. Please go back.<
 ######################
 if ($ADD==1000000000)
 {
-	$stmt="SELECT * from osdial_state_call_times order by state_call_time_id";
+	$stmt="SELECT * FROM osdial_state_call_times ORDER BY state_call_time_id;";
 	$rslt=mysql_query($stmt, $link);
 	$filters_to_print = mysql_num_rows($rslt);
 

@@ -41,12 +41,12 @@ if ($ADD==121) {
         ####  SUB=1 - Performs Search for DNC Records
         ###############################################
         if ($SUB==1) {
-            if (strlen($dnc_search_phone) < 3) {
+            if (OSDstrlen($dnc_search_phone) < 3) {
                 $searcherr = "<tr bgcolor=$oddrows><td align=center><font color=red>DNC SEARCH FAILED - The phone number should be at least 3 digits.</font></td></tr>\n";
             } else {
                 $mcsearch='';
                 if ($LOG['multicomp'] > 0) {
-                    if (preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
+                    if (OSDpreg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
                         $stmt = sprintf("SELECT company_id,phone_number,creation_date FROM osdial_dnc_company WHERE company_id='%s' AND phone_number LIKE '%%%s%%';", mres($LOG['company_id']),mres($dnc_search_phone));
                         if ($LOG['multicomp_admin'] > 0) {
                             $stmt = sprintf("SELECT company_id,phone_number,creation_date FROM osdial_dnc_company WHERE phone_number LIKE '%%%s%%';", mres($dnc_search_phone));
@@ -71,7 +71,7 @@ if ($ADD==121) {
                 $syssearch='';
                 $stmt = "SELECT phone_number,creation_date FROM osdial_dnc WHERE 1=2;";
                 if ($LOG['multicomp_user'] > 0) {
-                    if (preg_match('/SYSTEM|BOTH/',$LOG['company']['dnc_method'])) {
+                    if (OSDpreg_match('/SYSTEM|BOTH/',$LOG['company']['dnc_method'])) {
                         $stmt = sprintf("SELECT phone_number,creation_date FROM osdial_dnc WHERE phone_number LIKE '%%%s%%';", mres($dnc_search_phone));
                     }
                 } else {
@@ -117,25 +117,25 @@ if ($ADD==121) {
         ####  SUB=2 - Performs Addition of DNC Record
         ###############################################
         } elseif ($SUB==2) {
-            if (strlen($dnc_add_phone) < 3) {
+            if (OSDstrlen($dnc_add_phone) < 3) {
                 $adderr = "<tr bgcolor=$oddrows><td align=center><font color=red>DNC RECORD NOT ADDED - The phone number should be at least 3 digits.</font></td></tr>\n";
             } else {
                 $dncsskip=0;
-                if (strlen($dnc_add_phone)==3) $dnc_add_phone .= 'XXXXXXX';
-                $dnc_add_phone = preg_replace('/x/','X',$dnc_add_phone);
+                if (OSDstrlen($dnc_add_phone)==3) $dnc_add_phone .= 'XXXXXXX';
+                $dnc_add_phone = OSDpreg_replace('/x/','X',$dnc_add_phone);
 
                 if ($LOG['multicomp_user'] > 0) {
-                    if (preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
+                    if (OSDpreg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
                         $stmt = sprintf("SELECT count(*) FROM osdial_dnc_company WHERE company_id='%s' AND phone_number='%s';", mres($LOG['company_id']),mres($dnc_add_phone));
                         $rslt=mysql_query($stmt, $link);
                         $row=mysql_fetch_row($rslt);
                         $dncc=$row[0];
                     }
-                    if (preg_match('/COMPANY/',$LOG['company']['dnc_method'])) $dncsskip++;
+                    if (OSDpreg_match('/COMPANY/',$LOG['company']['dnc_method'])) $dncsskip++;
                 }
 
                 if ($dncsskip==0) {
-                    $stmt = sprintf("SELECT count(*) from osdial_dnc where phone_number='%s';", mres($dnc_add_phone));
+                    $stmt = sprintf("SELECT count(*) FROM osdial_dnc WHERE phone_number='%s';", mres($dnc_add_phone));
                     $rslt=mysql_query($stmt, $link);
                     $row=mysql_fetch_row($rslt);
                     $dncs=$row[0];
@@ -152,7 +152,7 @@ if ($ADD==121) {
                     }
                     $adderr .= " Do Not Call List: $dnc_add_phone</font></td></tr>\n";
                 } else {
-                    if ($LOG['multicomp_user'] > 0 and preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
+                    if ($LOG['multicomp_user'] > 0 and OSDpreg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
                         $stmt = sprintf("INSERT INTO osdial_dnc_company (company_id,phone_number) values('%s','%s');", mres($LOG['company_id']),mres($dnc_add_phone));
                     } else {
                         $stmt = sprintf("INSERT INTO osdial_dnc (phone_number) values('%s');", mres($dnc_add_phone));
@@ -175,7 +175,7 @@ if ($ADD==121) {
         ####  SUB=3,4,5,6 - Deletion of DNC record.  Prompts user 3 times for confirmation.
         #####################################################################################
         } elseif ($LOG['user_level']==9 and $LOG['delete_dnc']==1 and $SUB>=3 and $SUB<=6) {
-	        if (strlen($dnc_delete_phone) < 6) {
+	        if (OSDstrlen($dnc_delete_phone) < 6) {
                 $deleteerr = "<tr bgcolor=$oddrows><td align=center><font color=red>DNC DELETION FAILED - The phone number should be at least 6 digits.</font></td></tr>\n";
                 $SUB=0;
 
@@ -247,9 +247,9 @@ if ($ADD==121) {
 
             ### Actual Deletion ###
 	        } elseif ($SUB==6) {
-                $dnc_delete_phone = preg_replace('/x/','X',$dnc_delete_phone);
+                $dnc_delete_phone = OSDpreg_replace('/x/','X',$dnc_delete_phone);
                 if ($LOG['multicomp_user'] > 0) {
-                    if (preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
+                    if (OSDpreg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
                         $stmt = sprintf("SELECT * FROM osdial_dnc_company WHERE company_id='%s' AND phone_number='%s';", mres($LOG['company_id']),mres($dnc_delete_phone));
                         $rslt=mysql_query($stmt, $link);
                         $dncc = mysql_num_rows($rslt);
@@ -258,7 +258,7 @@ if ($ADD==121) {
                         $stmt = sprintf("SELECT count(*) FROM osdial_dnc WHERE phone_number='%s';", mres($dnc_delete_phone));
                         $rslt=mysql_query($stmt, $link);
                         $dncs=mysql_fetch_row($rslt);
-                        if ($dncs>0 and preg_match('/SYSTEM|BOTH/',$LOG['company']['dnc_method'])) {
+                        if ($dncs>0 and OSDpreg_match('/SYSTEM|BOTH/',$LOG['company']['dnc_method'])) {
                             $deleteres="<tr bgcolor=$oddrows class=font2><td align=center>\"$dnc_delete_phone\" was NOT FOUND in the Do-Not-Call list for company ".$LOG['company_id'].", however, it is in the System-wide Do-Not-Call list.  If you need this number removed, you should contact the system administrator.</td></tr>\n";
                         } else {
                             $deleteres="<tr bgcolor=$oddrows class=font2><td align=center>\"$dnc_delete_phone\" was NOT FOUND in the Do-Not-Call list for company ".$LOG['company_id'].".</td></tr>\n";
@@ -309,7 +309,7 @@ if ($ADD==121) {
                 $dncfile_name=$_FILES["dncfile"]['name'];
                 $dncfile_path=$_FILES['dncfile']['tmp_name'];
             }
-            if (preg_match('/\.txt$|\.csv$|\.psv$|\.tsv$|\.tab$/i', $dncfile_name)) {
+            if (OSDpreg_match('/\.txt$|\.csv$|\.psv$|\.tsv$|\.tab$/i', $dncfile_name)) {
                 $dncfile='';
                 if ($WeBRooTWritablE > 0) {
                     copy($dncfile_path, "$WeBServeRRooT/admin/osdial_temp_file.csv");
@@ -357,14 +357,14 @@ if ($ADD==121) {
                 $o=0;
                 while($csvrow=fgetcsv($file, 1000, $delimiter)) {
                     $o++;
-                    $dnc_number = preg_replace('/x/','X',preg_replace('/[^0-9Xx\*]/','',$csvrow[0]));
+                    $dnc_number = OSDpreg_replace('/x/','X',OSDpreg_replace('/[^0-9Xx\*]/','',$csvrow[0]));
                     $dnc_compid='';
-                    if ($LOG['multicomp_user']>0 and preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) $dnc_compid = $LOG['company_id'];
-                    if ($LOG['multicomp_admin']>0) $dnc_compid = (preg_replace('/[^0-9]/','',$csvrow[1]) - 100);
+                    if ($LOG['multicomp_user']>0 and OSDpreg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) $dnc_compid = $LOG['company_id'];
+                    if ($LOG['multicomp_admin']>0) $dnc_compid = (OSDpreg_replace('/[^0-9]/','',$csvrow[1]) - 100);
                     if ($dnc_compid < 1) $dnc_compid = '';
 
                     $status='FAILED';
-                    if (strlen($dnc_number) >= 6) {
+                    if (OSDstrlen($dnc_number) >= 6) {
                         if ($dnc_compid=='') {
                             $stmt=sprintf("SELECT count(*) FROM osdial_dnc WHERE phone_number='%s';",mres($dnc_number));
                         } else {
@@ -440,7 +440,7 @@ if ($ADD==121) {
             $dncdata='';
             if ($LOG['multicomp_user'] > 0) {
                 $dncdata .= "Phone|Company|Created\n";
-                if (preg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
+                if (OSDpreg_match('/COMPANY|BOTH/',$LOG['company']['dnc_method'])) {
                     $stmt = sprintf("SELECT phone_number,(company_id+100) AS cid,creation_date FROM osdial_dnc_company WHERE company_id='%s';",mres($LOG['company_id']));
                     $rslt=mysql_query($stmt, $link);
                     $dncc = mysql_num_rows($rslt);
@@ -451,7 +451,7 @@ if ($ADD==121) {
                         $o++;
                     }
                 }
-                if (preg_match('/SYSTEM|BOTH/',$LOG['company']['dnc_method'])) {
+                if (OSDpreg_match('/SYSTEM|BOTH/',$LOG['company']['dnc_method'])) {
                     $stmt = "SELECT phone_number,'',creation_date FROM osdial_dnc;";
                     $rslt=mysql_query($stmt, $link);
                     $dncs = mysql_num_rows($rslt);

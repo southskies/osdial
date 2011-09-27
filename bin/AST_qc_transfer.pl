@@ -36,7 +36,10 @@ use Net::FTP;
 use Net::SCP;
 use Net::SFTP;
 use Net::uFTP;
+use OSDial;
 $|++;
+
+my $DB=0;
 
 my $prog = "AST_qc_transfer.pl";
 
@@ -64,6 +67,8 @@ if (scalar @ARGV) {
 	print "----- EXTRA-VERBOSE DEBUGGING -----\n" if ($verbose > 2);
 	print "----- Testing Mode -----\n" if ($CLOtest);
 }	
+
+my $osdial = OSDial->new('DB'=>$DB);
 
 $dbhA = DBI->connect('DBI:mysql:' .
 	$config->{VARDB_database} . ':' . $config->{VARDB_server} . ':' . $config->{VARDB_port},
@@ -94,9 +99,9 @@ foreach my $qcs (@qc_servers) {
                 $qcs->{transfer_method} = "FTP";
         }
 	if ($qcs->{transfer_type} eq "IMMEDIATE") {
-		$error = modeImmediate($config,$verbose,$CLOtest,$dbhA,$qcs);
+		$error = modeImmediate($osdial,$config,$verbose,$CLOtest,$dbhA,$qcs);
 	} elsif ($qcs->{transfer_type} eq "BATCH" or $qcs->{transfer_type} eq "ARCHIVE") {
-		$error = modeBatch($config,$verbose,$CLOtest,$dbhA,$qcs) if ($qcs->{hour} >= $qcs->{batch_time} - 25 and $qcs->{batch_lastrun_date} ne $qcs->{date});
+		$error = modeBatch($osdial,$config,$verbose,$CLOtest,$dbhA,$qcs) if ($qcs->{hour} >= $qcs->{batch_time} - 25 and $qcs->{batch_lastrun_date} ne $qcs->{date});
 	}
 	print "WARNING: " . $qcs->{name} . " returned without any SQL entries!\n" if ($verbose and $error eq "NOSQL");
 }
@@ -106,17 +111,17 @@ $dbhA->disconnect();
 exit 0;
 
 sub modeImmediate {
-	my($config,$verbose,$CLOtest,$dbhA,$qcs) = @_;
+	my($osdial,$config,$verbose,$CLOtest,$dbhA,$qcs) = @_;
 	print "modeImmediate|\n" if ($verbose);
 
 	my($recs,$errors);
-	$recs = gatherEntries($config,$verbose,$CLOtest,$dbhA,$qcs);
+	$recs = gatherEntries($osdial,$config,$verbose,$CLOtest,$dbhA,$qcs);
 	return "NOSQL" if ($recs eq "NOSQL");
-	$errors = transferFiles($config,$verbose,$CLOtest,$dbhA,$qcs,$recs);
+	$errors = transferFiles($osdial,$config,$verbose,$CLOtest,$dbhA,$qcs,$recs);
 }
 
 sub modeBatch {
-	my($config,$verbose,$CLOtest,$dbhA,$qcs) = @_;
+	my($osdial,$config,$verbose,$CLOtest,$dbhA,$qcs) = @_;
 	print "modeBatch|\n" if ($verbose);
 
 	my $update = "UPDATE qc_servers SET batch_lastrun=NOW() WHERE id='" . $qcs->{id} . "';";
@@ -125,7 +130,7 @@ sub modeBatch {
 
 	my $recs;
 	my $errors = 1;
-	$recs = gatherEntries($config,$verbose,$CLOtest,$dbhA,$qcs);
+	$recs = gatherEntries($osdial,$config,$verbose,$CLOtest,$dbhA,$qcs);
 	return "NOSQL" if ($recs eq "NOSQL");
 	if ($qcs->{transfer_type} eq "ARCHIVE" and $qcs->{archive} ne "NONE") {
 		my %dates;
@@ -133,10 +138,10 @@ sub modeBatch {
 			$dates{$recs->{$rec}->{date}} = 1;
 		}
 		foreach my $date (sort keys %dates) {
-			$errors = transferArchive($config,$verbose,$CLOtest,$dbhA,$qcs,$recs,$date);
+			$errors = transferArchive($osdial,$config,$verbose,$CLOtest,$dbhA,$qcs,$recs,$date);
 		}
 	} else {
-		$errors = transferFiles($config,$verbose,$CLOtest,$dbhA,$qcs,$recs);
+		$errors = transferFiles($osdial,$config,$verbose,$CLOtest,$dbhA,$qcs,$recs);
 	}
 
 	# Oops, we had problems, reset the batch_lastrun so it will try again.
@@ -150,7 +155,7 @@ sub modeBatch {
 
 # Get SQL from qc_server_rules, tag the qc_transfer_log records that match and return the records needing processing.
 sub gatherEntries {
-	my($config,$verbose,$CLOtest,$dbhA,$qcs) = @_;
+	my($osdial,$config,$verbose,$CLOtest,$dbhA,$qcs) = @_;
 	my($stmtA,$sthA,$sthArows,$query,$where,$swhere,$insts,$insert,$rlfld);
 	
 	print "gatherEntries|\n" if ($verbose);
@@ -211,7 +216,7 @@ sub gatherEntries {
 }
 
 sub transferFiles {
-	my($config,$verbose,$CLOtest,$dbhA,$qcs,$recs) = @_;
+	my($osdial,$config,$verbose,$CLOtest,$dbhA,$qcs,$recs) = @_;
 	print "transferFiles|\n" if ($verbose);
 
 	my($ftp,$fsts,$errors);
@@ -262,7 +267,7 @@ sub transferFiles {
 			$remoteloc = '';
 		}
 
-		$update = "UPDATE qc_transfers SET status='" . $status . "',remote_location='" . $remoteloc . "',archive_filename='',last_attempt=NOW() WHERE id='" . $recs->{$rec}->{qctid} . "';";
+		$update = "UPDATE qc_transfers SET status='" . $status . "',remote_location='" . $osdial->mres($remoteloc) . "',archive_filename='',last_attempt=NOW() WHERE id='" . $recs->{$rec}->{qctid} . "';";
 		print "$update|\n" if($verbose > 2);
 		$dbhA->do($update) unless ($CLOtest);
 
@@ -273,7 +278,7 @@ sub transferFiles {
 }
 
 sub transferArchive {
-	my($config,$verbose,$CLOtest,$dbhA,$qcs,$recs,$date) = @_;
+	my($osdial,$config,$verbose,$CLOtest,$dbhA,$qcs,$recs,$date) = @_;
 	print "transferArchive|\n" if ($verbose);
 
 	# Setup tmp-path and archive filename. Ie /tmp/20080907_name.type
@@ -375,7 +380,7 @@ sub transferArchive {
 				$remoteloc = '';
 				$archive = '';
 			}
-			my $update = "UPDATE qc_transfers SET status='" . $status . "',remote_location='" . $remoteloc . "',archive_filename='" . $archive . "',last_attempt=NOW() ";
+			my $update = "UPDATE qc_transfers SET status='" . $status . "',remote_location='" . $osdial->mres($remoteloc) . "',archive_filename='" . $osdial->mres($archive) . "',last_attempt=NOW() ";
 			$update .= "WHERE id='" . $recs->{$rec}->{qctid} . "' AND status!='NOTFOUND';";
 			print "$update|\n" if($verbose > 2);
 			$dbhA->do($update) unless ($CLOtest);

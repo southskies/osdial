@@ -49,24 +49,25 @@ header('Expires: '.gmdate('D, d M Y H:i:s', (time() - 60)).' GMT');
 header('Pragma: no-cache');
 header('Content-Type: text/html; charset=utf-8');
 
-include("../admin/include/functions.php");
-include("../admin/include/variables.php");
+require_once("dbconnect.php");
+require_once("functions.php");
+include_once("../admin/include/variables.php");
 
 
 $url = get_variable("url");
-if ($url == "") {
+if (empty($url)) {
     #$url = "http://www.osdial.com/webform_test.php?id=$external_key&lead=$lead_id&list=$list_id&number=$phone_number";
     $url = "http://www.osdial.com/webform_test.php?id=$external_key";
 } else {
     $fields = get_variable("fields");
-    if ($fields != "") {
+    if (!empty($fields)) {
         $url .= "?";
         # Split out comma-sep fields
         foreach (explode(",",$fields) as $maps) {
             # Split field at $, left=ext_map, left=
             $map = explode("$",$maps);
             # Since we are eval'ing a passed var, lets put add constaints to make a bit more secure.
-            if (strlen($map[1]) > 3 and strlen($map[1]) < 20) {
+            if (OSDstrlen($map[1]) > 3 and OSDstrlen($map[1]) < 20) {
                 eval("\$map[1] = \$" . $map[1] . ";");
                 $url .= $map[0] . "=" . $map[1] . "&";
             }

@@ -20,6 +20,10 @@
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
 #
+require_once('functions.php');
+
+$config = array();
+
 $conffile = "/etc/osdial.conf";
 $cp2 = explode('/', getcwd());
 $conffile2 = '/' . $cp2[1] . '/' . $cp2[2] . '/db.conf';
@@ -28,7 +32,11 @@ if (file_exists($conffile2)) $conffile = $conffile2;
 if (file_exists($conffile)) {
     $DBCagc = file($conffile);
     foreach ($DBCagc as $DBCline) {
-        $DBCline = preg_replace("/ |>|\n|\r|\t|\#.*|;.*/","",$DBCline);
+        $DBCline = preg_replace("/ |>|\"|'|\n|\r|\t|\#.*|;.*/","",$DBCline);
+        if (preg_match("/=|:/", $DBCline)) {
+            $DBClinesplit = preg_split("/=|:/", $DBCline, 2);
+            $config[$DBClinesplit[0]] = $DBClinesplit[1];
+        }
         if (preg_match("/^PATHlogs/", $DBCline)) {
             $PATHlogs = $DBCline;
             $PATHlogs = preg_replace("/.*=/","",$PATHlogs);
@@ -50,19 +58,87 @@ if (file_exists($conffile)) {
         } elseif (preg_match("/^VARDB_port/", $DBCline)) {
             $VARDB_port = $DBCline;
             $VARDB_port = preg_replace("/.*=/","",$VARDB_port);
+        } elseif (preg_match("/^VARserver_ip/", $DBCline)) {
+            $VARserver_ip = $DBCline;
+            $VARserver_ip = preg_replace("/.*=/","",$VARserver_ip);
         }
     }
 } else {
-    #defaults for DB connection
+    #configuration defaults
+    $PATHlogs = '/var/log/osdial';
+    $config['PATHlogs'] = $PATHlogs;
+
+    $PATHweb = '/opt/osdial/html';
+    $config['PATHweb'] = $PATHweb;
+    $WeBServeRRooT = $PATHweb;
+
     $VARDB_server = 'localhost';
-    $VARDB_user = 'osdial';
-    $VARDB_pass = 'osdial1234';
+    $config['VARDB_server'] = $VARDB_server;
+
     $VARDB_database = 'osdial';
-    $WeBServeRRooT = '/opt/osdial/html';
+    $config['VARDB_database'] = $VARDB_database;
+
+    $VARDB_user = 'osdial';
+    $config['VARDB_user'] = $VARDB_user;
+
+    $VARDB_pass = 'osdial1234';
+    $config['VARDB_pass'] = $VARDB_pass;
+
+    $VARDB_port = '3306';
+    $config['VARDB_port'] = $VARDB_port;
+
+    $VARserver_ip = '127.0.0.1';
+    $config['VARserver_ip'] = $VARserver_ip;
 }
 
-$link=mysql_connect($VARDB_server, $VARDB_user, $VARDB_pass);
-mysql_select_db($VARDB_database,$link);
+$link=mysql_connect($config['VARDB_server'].':'.$config['VARDB_port'], $config['VARDB_user'], $config['VARDB_pass']);
+mysql_select_db($config['VARDB_database'],$link);
+
+$stmt = "SELECT * FROM system_settings LIMIT 1;";
+$rslt=mysql_query($stmt, $link);
+$confnum = mysql_num_rows($rslt);
+$i=0;
+while ($i < $confnum) {
+    $row=mysql_fetch_assoc($rslt);
+    foreach ($row as $k => $v) {
+        $config['settings'][$k] = $v;
+    }
+    $i++;
+}
+$config['settings']['intra_server_sep']='*';
+if ($config['settings']['intra_server_protocol']='IAX2') $config['settings']['intra_server_sep']='#';
+
+if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$link);
+
+$stmt = "SELECT * FROM system_settings LIMIT 1;";
+$rslt=mysql_query($stmt, $link);
+$confnum = mysql_num_rows($rslt);
+$i=0;
+while ($i < $confnum) {
+    $row=mysql_fetch_assoc($rslt);
+    foreach ($row as $k => $v) {
+        $config['settings'][$k] = $v;
+    }
+    $i++;
+}
+
+$stmt = sprintf("SELECT * FROM servers WHERE server_ip='%s' LIMIT 1;",mres($config['VARserver_ip']));
+$rslt=mysql_query($stmt, $link);
+$confnum = mysql_num_rows($rslt);
+if ($confnum==0) {
+    $stmt = "SELECT * FROM servers WHERE active='Y' LIMIT 1;";
+    $rslt=mysql_query($stmt, $link);
+    $confnum = mysql_num_rows($rslt);
+}
+$i=0;
+while ($i < $confnum) {
+    $row=mysql_fetch_assoc($rslt);
+    foreach ($row as $k => $v) {
+        $config['server'][$k] = $v;
+    }
+    $i++;
+}
+
 
 $local_DEF = 'Local/';
 $conf_silent_prefix = '7';
@@ -70,7 +146,6 @@ $local_AMP = '@';
 $ext_context = 'osdial';
 $recording_exten = '8309';
 $WeBRooTWritablE = '1';
-$non_latin = '0';
 $flag_channels=0;
 $flag_string = 'OSDIALast20';
 

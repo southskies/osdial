@@ -27,7 +27,7 @@
 # ADD=131 Lead Export
 ######################
 
-if ($ADD==131 && $SUB==2 && $LOGuser_level > 8 && $LOGexport_leads > 0) {
+if ($ADD==131 && $SUB==2 && $LOG['user_level'] > 8 && $LOG['export_leads'] > 0) {
 
     $swhere = '(';
     foreach ($statuses as $stat) {
@@ -35,14 +35,14 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8 && $LOGexport_leads > 0) {
             $scall = 1;
         if ($stat == '-ALL-')
             $sall = 1;
-        $swhere .= "status='" . $stat . "' OR ";
+        $swhere .= sprintf("status='%s' OR ",mres($stat));
     }
     if ($scall) {
-        $swhere = "list_id='" . $list_id . "' AND status!='NEW'";
+        $swhere = sprintf("list_id='%s' AND status!='NEW'",mres($list_id));
     } elseif ($sall) {
-        $swhere = "list_id='" . $list_id . "'";
+        $swhere = sprintf("list_id='%s'",mres($list_id));
     } else {
-        $swhere = "list_id='" . $list_id . "' AND " . chop($swhere, ' OR') . ")";
+        $swhere = sprintf("list_id='%s' AND %s)",mres($list_id),chop($swhere, 'OR'));
     }
 
     foreach ($fields as $field) {
@@ -89,7 +89,7 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8 && $LOGexport_leads > 0) {
     while ($row = mysql_fetch_array($rslt, MYSQL_BOTH)) {
         $output = '';
         foreach ($ffield as $field) {
-            $output .= '"' . preg_replace("/\n/","",strtr($row[$field],'"','')) . '",';
+            $output .= '"' . OSDpreg_replace("/\n/","",strtr($row[$field],'"','')) . '",';
         }
         # Export the AFF values
         if ($aff_export > 0) {
@@ -99,8 +99,8 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8 && $LOGexport_leads > 0) {
                     $afflds = get_krh($link, 'osdial_campaign_fields', '*', 'priority ASC', sprintf("deleted='0' AND form_id='%s'",mres($affrm['id'])), '');
                     if (count($afflds) > 0) {
                         foreach ($afflds as $affld) {
-                            $alf = get_first_record($link, 'osdial_list_fields', '*', sprintf("lead_id='%s' AND field_id='%s'",$row['lead_id'],$affld['id']));
-                            $output .= '"' . preg_replace("/\n/","",strtr($alf['value'],'"','')) . '",';
+                            $alf = get_first_record($link, 'osdial_list_fields', '*', sprintf("lead_id='%s' AND field_id='%s'",mres($row['lead_id']),mres($affld['id'])));
+                            $output .= '"' . OSDpreg_replace("/\n/","",strtr($alf['value'],'"','')) . '",';
                         }
                     }
                 }
@@ -111,11 +111,11 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8 && $LOGexport_leads > 0) {
         flush();
     }
 
-} elseif ($ADD==131 && $LOGuser_level > 8 && $LOGexport_leads > 0) {
+} elseif ($ADD==131 && $LOG['user_level'] > 8 && $LOG['export_leads'] > 0) {
 
 	echo "<center><br><font color=$default_text size=+1>LEAD EXPORT</font><br><br>\n";
 
-	if ($LOGmodify_lists==1) {
+	if ($LOG['modify_lists']==1) {
         if ($statuses[0] != '') $target=' target="_blank"';
         echo "<form name=export action=$PHP_SELF method=post$target>\n";
         echo "<input type=hidden name='ADD' value=\"$ADD\">\n";
@@ -141,7 +141,7 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8 && $LOGexport_leads > 0) {
             echo " <tr class=tabfooter><td class=tabbutton>\n";
             echo "  <input type=submit value=\"Next ->\">\n";
         } elseif ($statuses[0] == '') {
-            $list = get_first_record($link,'osdial_lists','*',"list_id='" . $list_id . "'");
+            $list = get_first_record($link,'osdial_lists','*',sprintf("list_id='%s'",mres($list_id)));
             echo "  <input type=hidden name='list_id' value=\"$list_id\">\n";
             echo "  <b>List ID:</b> " . $list_id . ' - ' . $list['list_name'] .  ' - ' . $list['campaign_id'] . "\n";
             echo "  <br />\n";
@@ -152,7 +152,7 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8 && $LOGexport_leads > 0) {
             echo "  <br />\n";
 
             $sstats = get_krh($link,'osdial_statuses','*','','','');
-            $cstats = get_krh($link,'osdial_campaign_statuses','*','',"campaign_id='" . $list['campaign_id'] . "'",'');
+            $cstats = get_krh($link,'osdial_campaign_statuses','*','',sprintf("campaign_id='%s'",mres($list['campaign_id'])),'');
             if (count($sstats) > 0) {
                 foreach ($sstats as $stat) {
                     $stats[$stat['status']] = $stat;
@@ -201,7 +201,7 @@ if ($ADD==131 && $SUB==2 && $LOGuser_level > 8 && $LOGexport_leads > 0) {
             echo " <tr class=tabfooter><td class=tabbutton>\n";
             echo "  <input type=submit value=\"Next ->\">\n";
         } elseif ($fields[0] == '') {
-            $list = get_first_record($link,'osdial_lists','*',"list_id='" . $list_id . "'");
+            $list = get_first_record($link,'osdial_lists','*',sprintf("list_id='%s'",mres($list_id)));
             echo "  <input type=hidden name='SUB' value=\"2\">\n";
             echo "  <input type=hidden name='list_id' value=\"$list_id\">\n";
             foreach ($statuses as $stat) {

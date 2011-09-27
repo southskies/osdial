@@ -42,7 +42,7 @@ CREATE TABLE server_stats (
   swap_used VARCHAR(20) NOT NULL,
   update_time TIMESTAMP NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   PRIMARY KEY (server_ip)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;##|##
+) ENGINE=InnoDB;##|##
   ## Table for server stats.;
 
 UPDATE system_settings SET version='2.2.9.081',last_update_check=DATE_SUB(NOW(), INTERVAL 1 DAY);##|##

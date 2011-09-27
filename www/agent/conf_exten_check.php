@@ -66,8 +66,8 @@ header('Expires: '.gmdate('D, d M Y H:i:s', (time() - 60)).' GMT');
 header('Pragma: no-cache');
 header('Content-Type: text/html; charset=utf-8');
 
-require("dbconnect.php");
-require("functions.php");
+require_once("dbconnect.php");
+require_once("functions.php");
 
 $user = get_variable("user");
 $pass = get_variable("pass");
@@ -81,31 +81,15 @@ $exten = get_variable("exten");
 $auto_dial_level = get_variable("auto_dial_level");
 $campagentstdisp = get_variable("campagentstdisp");
 
-
-#############################################
-##### START SYSTEM_SETTINGS LOOKUP #####
-$stmt = "SELECT use_non_latin FROM system_settings;";
-$rslt=mysql_query($stmt, $link);
-if ($format=='debug') echo "<!-- $stmt -->\n";
-$qm_conf_ct = mysql_num_rows($rslt);
-$i=0;
-while ($i < $qm_conf_ct) {
-    $row=mysql_fetch_row($rslt);
-    $non_latin = $row[0];
-    $i++;
-}
-##### END SETTINGS LOOKUP #####
-###########################################
-
-if ($non_latin < 1) {
-    $user=preg_replace("/[^0-9a-zA-Z]/","",$user);
-    $pass=preg_replace("/[^0-9a-zA-Z]/","",$pass);
-}
+#if ($non_latin < 1) {
+#    $user=OSDpreg_replace("/[^0-9a-zA-Z]/","",$user);
+#    $pass=OSDpreg_replace("/[^0-9a-zA-Z]/","",$pass);
+#}
 
 # default optional vars if not set
-if ($format=='') $format="text";
-if ($ACTION=='') $ACTION="refresh";
-if ($client=='') $client="agc";
+if (empty($format)) $format="text";
+if (empty($ACTION)) $ACTION="refresh";
+if (empty($client)) $client="agc";
 
 $Alogin='N';
 $RingCalls='N';
@@ -119,24 +103,23 @@ if (!isset($query_date)) $query_date = $NOW_DATE;
 $random = (rand(1000000, 9999999) + 10000000);
 
 
-$stmt="SELECT count(*) FROM osdial_users WHERE user='$user' AND pass='$pass' AND user_level>0;";
+$stmt=sprintf("SELECT count(*) FROM osdial_users WHERE user='%s' AND pass='%s' AND user_level>0;",mres($user),mres($pass));
 if ($format=='debug') echo "<!-- |$stmt| -->\n";
-if ($non_latin > 0) $rslt=mysql_query("SET NAMES 'UTF8'");
 $rslt=mysql_query($stmt, $link);
 $row=mysql_fetch_row($rslt);
 $auth=$row[0];
 
 
 
-if( (strlen($user)<2) or (strlen($pass)<2) or ($auth==0)) {
+if( (OSDstrlen($user)<2) or (OSDstrlen($pass)<2) or ($auth==0)) {
     echo "Invalid Username/Password: |$user|$pass|\n";
     exit;
 } else {
-    if( (strlen($server_ip)<6) or ($server_ip=='') or ( (strlen($session_name)<12) or ($session_name=='') ) ) {
+    if( (OSDstrlen($server_ip)<6) or ($server_ip=='') or ( (OSDstrlen($session_name)<12) or ($session_name=='') ) ) {
         echo "Invalid server_ip: |$server_ip|  or  Invalid session_name: |$session_name|\n";
         exit;
     } else {
-        $stmt="SELECT count(*) FROM web_client_sessions WHERE session_name='$session_name' AND server_ip='$server_ip';";
+        $stmt=sprintf("SELECT count(*) FROM web_client_sessions WHERE session_name='%s' AND server_ip='%s';",mres($session_name),mres($server_ip));
         if ($format=='debug') echo "<!--|$stmt|-->\n";
         $rslt=mysql_query($stmt, $link);
         $row=mysql_fetch_row($rslt);
@@ -169,7 +152,7 @@ if ($ACTION == 'refresh') {
     $row='';
     $rowx='';
     $channel_live=1;
-    if (strlen($conf_exten)<1) {
+    if (OSDstrlen($conf_exten)<1) {
         $channel_live=0;
         echo "Conf Exten $conf_exten is not valid\n";
         exit;
@@ -185,14 +168,14 @@ if ($ACTION == 'refresh') {
             $DiaLCalls='N';
 
             ### see if the agent has a record in the osdial_live_agents table
-            $stmt="SELECT count(*) FROM osdial_live_agents WHERE user='$user' AND server_ip='$server_ip';";
+            $stmt=sprintf("SELECT count(*) FROM osdial_live_agents WHERE user='%s' AND server_ip='%s';",mres($user),mres($server_ip));
             if ($format=='debug') echo "<!-- |$stmt| -->\n";
             $rslt=mysql_query($stmt, $link);
             $row=mysql_fetch_row($rslt);
             $Acount=$row[0];
 
             if ($Acount > 0) {
-                $stmt="SELECT status FROM osdial_live_agents WHERE user='$user' AND server_ip='$server_ip';";
+                $stmt=sprintf("SELECT status FROM osdial_live_agents WHERE user='%s' AND server_ip='%s';",mres($user),mres($server_ip));
                 if ($format=='debug') echo "<!-- |$stmt| -->\n";
                 $rslt=mysql_query($stmt, $link);
                 $row=mysql_fetch_row($rslt);
@@ -206,7 +189,7 @@ if ($ACTION == 'refresh') {
             #$AexternalDEAD=$row[0];
 
             ### update the osdial_live_agents every second with a new random number so it is shown to be alive
-            $stmt="UPDATE osdial_live_agents SET random_id='$random' WHERE user='$user' AND server_ip='$server_ip';";
+            $stmt=sprintf("UPDATE osdial_live_agents SET random_id='%s' WHERE user='%s' AND server_ip='%s';",mres($random),mres($user),mres($server_ip));
             if ($format=='debug') echo "\n<!-- $stmt -->";
             $rslt=mysql_query($stmt, $link);
 
@@ -217,32 +200,32 @@ if ($ACTION == 'refresh') {
             if ($auto_dial_level > 0) {
                 if ($campagentstdisp == 'YES') {
                     ### grab the status of this agent to display
-                    $stmt="SELECT status,campaign_id,closer_campaigns FROM osdial_live_agents WHERE user='$user' AND server_ip='$server_ip';";
+                    $stmt=sprintf("SELECT status,campaign_id,closer_campaigns FROM osdial_live_agents WHERE user='%s' AND server_ip='%s';",mres($user),mres($server_ip));
                     if ($format=='debug') echo "<!-- |$stmt| -->\n";
                     $rslt=mysql_query($stmt, $link);
                     $row=mysql_fetch_row($rslt);
                     $Alogin=$row[0];
                     $Acampaign=$row[1];
                     $AccampSQL=$row[2];
-                    $AccampSQL = preg_replace('/ -/','', $AccampSQL);
-                    $AccampSQL = preg_replace('/ /',"','", $AccampSQL);
+                    $AccampSQL = mres(OSDpreg_replace('/ -/','', $AccampSQL));
+                    $AccampSQL = OSDpreg_replace('/ /',"','", $AccampSQL);
 
                     ### grab the number of calls being placed from this campaign
-                    $stmt="SELECT count(*) FROM osdial_auto_calls WHERE status IN('LIVE') AND campaign_id='$Acampaign';";
+                    $stmt=sprintf("SELECT count(*) FROM osdial_auto_calls WHERE status IN('LIVE') AND campaign_id='%s';",mres($Acampaign));
                     if ($format=='debug') echo "<!-- |$stmt| -->\n";
                     $rslt=mysql_query($stmt, $link);
                     $row=mysql_fetch_row($rslt);
                     $RingCallsout=$row[0];
 
                     ### grab the number of calls being placed into this agents ingroups
-                    $stmt="SELECT count(*) FROM osdial_auto_calls WHERE status IN('LIVE') AND campaign_id IN('$AccampSQL');";
+                    $stmt=sprintf("SELECT count(*) FROM osdial_auto_calls WHERE status IN('LIVE') AND campaign_id IN('%s');",$AccampSQL);
                     if ($format=='debug') echo "<!-- |$stmt| -->\n";
                     $rslt=mysql_query($stmt, $link);
                     $row=mysql_fetch_row($rslt);
                     $RingCallsin=$row[0];
 
                     ### grab the number of calls being placed into this agents ingroups which have multicall turned on.
-                    $stmt="SELECT count(*) FROM osdial_auto_calls JOIN osdial_inbound_groups ON (campaign_id=group_id) WHERE status IN('LIVE') AND campaign_id IN('$AccampSQL') AND allow_multicall='Y';";
+                    $stmt=sprintf("SELECT count(*) FROM osdial_auto_calls JOIN osdial_inbound_groups ON (campaign_id=group_id) WHERE status IN('LIVE') AND campaign_id IN('%s') AND allow_multicall='Y';",$AccampSQL);
                     if ($format=='debug') echo "<!-- |$stmt| -->\n";
                     $rslt=mysql_query($stmt, $link);
                     $row=mysql_fetch_row($rslt);
@@ -256,21 +239,21 @@ if ($ACTION == 'refresh') {
                     }
 
                     ### grab the number of calls being placed from this server and campaign
-                    $stmt="SELECT count(*) FROM osdial_auto_calls WHERE status NOT IN('XFER') AND (campaign_id='$Acampaign' OR campaign_id IN('$AccampSQL'));";
+                    $stmt=sprintf("SELECT count(*) FROM osdial_auto_calls WHERE status NOT IN('XFER') AND (campaign_id='%s' OR campaign_id IN('%s'));",mres($Acampaign),$AccampSQL);
                     if ($format=='debug') echo "<!-- |$stmt| -->\n";
                     $rslt=mysql_query($stmt, $link);
                     $row=mysql_fetch_row($rslt);
                     $DiaLCalls=$row[0];
 
                     ### grab the extension used by the agent.
-                    $stmt="SELECT extension FROM osdial_conferences WHERE server_ip='$server_ip' AND conf_exten='$conf_exten';";
+                    $stmt=sprintf("SELECT extension FROM osdial_conferences WHERE server_ip='%s' AND conf_exten='%s';",mres($server_ip),mres($conf_exten));
                     if ($format=='debug') echo "<!-- |$stmt| -->\n";
                     $rslt=mysql_query($stmt, $link);
                     $row=mysql_fetch_row($rslt);
                     $phone_exten=$row[0];
 
                     ### grab the count of parked_channels.
-                    $stmt="SELECT count(*) FROM parked_channels WHERE parked_by='$phone_exten';";
+                    $stmt=sprintf("SELECT count(*) FROM parked_channels WHERE parked_by='%s';",mres($phone_exten));
                     if ($format=='debug') echo "<!-- |$stmt| -->\n";
                     $rslt=mysql_query($stmt, $link);
                     $row=mysql_fetch_row($rslt);
@@ -278,7 +261,7 @@ if ($ACTION == 'refresh') {
 
                     ### calculate if server is properly synchronized.
                     $web_epoch = date("U");
-                    $stmt="SELECT SQL_NO_CACHE UNIX_TIMESTAMP(last_update),UNIX_TIMESTAMP(sql_time) FROM server_updater WHERE server_ip='$server_ip';";
+                    $stmt=sprintf("SELECT SQL_NO_CACHE UNIX_TIMESTAMP(last_update),UNIX_TIMESTAMP(sql_time) FROM server_updater WHERE server_ip='%s';",mres($server_ip));
                     if ($format=='debug') echo "<!-- |$stmt| -->\n";
                     $rslt=mysql_query($stmt, $link);
                     $row=mysql_fetch_row($rslt);
@@ -308,7 +291,7 @@ if ($ACTION == 'refresh') {
 
         }
         $total_conf=0;
-        $stmt="SELECT channel,channel_group FROM live_sip_channels WHERE server_ip='$server_ip' AND extension='$conf_exten';";
+        $stmt=sprintf("SELECT channel,channel_group FROM live_sip_channels WHERE server_ip='%s' AND extension='%s';",mres($server_ip),mres($conf_exten));
         # Hide monitoring channels
         #$stmt="SELECT channel FROM live_sip_channels WHERE server_ip='$server_ip' AND extension='$conf_exten' AND channel NOT LIKE 'Local/686_____@%' AND channel NOT LIKE 'Local/786_____@%';";
         if ($format=='debug') echo "\n<!-- $stmt -->";
@@ -323,7 +306,7 @@ if ($ACTION == 'refresh') {
             $ChannelA[$total_conf] = $row[0];
             if ($format=='debug') echo "\n<!-- $ChannelA[$total_conf] -->";
         }
-        $stmt="SELECT channel FROM live_channels WHERE server_ip='$server_ip' AND extension='$conf_exten';";
+        $stmt=sprintf("SELECT channel FROM live_channels WHERE server_ip='%s' AND extension='%s';",mres($server_ip),mres($conf_exten));
         if ($format=='debug') echo "\n<!-- $stmt -->";
         $rslt=mysql_query($stmt, $link);
         if ($rslt) $channels_list = mysql_num_rows($rslt);
@@ -333,7 +316,7 @@ if ($ACTION == 'refresh') {
             $loop_count++;
             $total_conf++;
             $row=mysql_fetch_row($rslt);
-            $ChannelA[$total_conf] = "$row[0]";
+            $ChannelA[$total_conf] = $row[0];
             if ($format=='debug') echo "\n<!-- $row[0] -->";
         }
     }
@@ -358,12 +341,12 @@ if ($ACTION == 'register') {
     $row='';
     $rowx='';
     $channel_live=1;
-    if ( (strlen($conf_exten)<1) || (strlen($exten)<1) ) {
+    if ( (OSDstrlen($conf_exten)<1) || (OSDstrlen($exten)<1) ) {
         $channel_live=0;
         echo "Conf Exten $conf_exten is not valid or Exten $exten is not valid\n";
         exit;
     } else {
-        $stmt="UPDATE conferences SET extension='$exten' WHERE server_ip='$server_ip' AND conf_exten='$conf_exten';";
+        $stmt=sprintf("UPDATE conferences SET extension='%s' WHERE server_ip='%s' AND conf_exten='%s';",mres($exten),mres($server_ip),mres($conf_exten));
         if ($format=='debug') echo "\n<!-- $stmt -->";
         $rslt=mysql_query($stmt, $link);
     }

@@ -28,17 +28,17 @@
 
 if ($ADD==25)
 {
-	if ($LOGmodify_campaigns==1)
+	if ($LOG['modify_campaigns']==1)
 	{
-	$status = preg_replace("/-----.*/",'',$status);
-	$stmt="SELECT count(*) from osdial_lead_recycle where campaign_id='$campaign_id' and status='$status';";
+	$status = OSDpreg_replace("/-----.*/",'',$status);
+	$stmt=sprintf("SELECT count(*) FROM osdial_lead_recycle WHERE campaign_id='%s' AND status='%s';",mres($campaign_id),mres($status));
 	$rslt=mysql_query($stmt, $link);
 	$row=mysql_fetch_row($rslt);
 	if ($row[0] > 0)
 		{echo "<br><font color=red> CAMPAIGN LEAD RECYCLE NOT ADDED - there is already a lead-recycle for this campaign with this status</font>\n";}
 	else
 		{
-		 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) or ($attempt_delay < 120) or ($attempt_maximum < 1) or ($attempt_maximum > 999) )
+		 if ( (OSDstrlen($campaign_id) < 2) or (OSDstrlen($status) < 1) or ($attempt_delay < 120) or ($attempt_maximum < 1) or ($attempt_maximum > 999) )
 			{
 			 echo "<br><font color=red>CAMPAIGN LEAD RECYCLE NOT ADDED - Please go back and look at the data you entered\n";
 			 echo "<br>status must be between 1 and 6 characters in length\n";
@@ -49,7 +49,7 @@ if ($ADD==25)
 			{
 			echo "<br><B><font color=$default_text>CAMPAIGN LEAD RECYCLE ADDED: $campaign_id - $status - $attempt_delay</font></B>\n";
 
-			$stmt="INSERT INTO osdial_lead_recycle(campaign_id,status,attempt_delay,attempt_maximum,active) values('$campaign_id','$status','$attempt_delay','$attempt_maximum','$active');";
+			$stmt=sprintf("INSERT INTO osdial_lead_recycle(campaign_id,status,attempt_delay,attempt_maximum,active) VALUES('%s','%s','%s','%s','%s');",mres($campaign_id),mres($status),mres($attempt_delay),mres($attempt_maximum),mres($active));
 			$rslt=mysql_query($stmt, $link);
 
 			### LOG CHANGES TO LOG FILE ###
@@ -78,9 +78,9 @@ if ($ADD==25)
 
 if ($ADD==45)
 {
-	if ($LOGmodify_campaigns==1)
+	if ($LOG['modify_campaigns']==1)
 	{
-	 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) or ($attempt_delay < 120)  or ($attempt_maximum < 1) or ($attempt_maximum > 999) )
+	 if ( (OSDstrlen($campaign_id) < 2) or (OSDstrlen($status) < 1) or ($attempt_delay < 120)  or ($attempt_maximum < 1) or ($attempt_maximum > 999) )
 		{
 		 echo "<br><font color=red>CAMPAIGN LEAD RECYCLE NOT MODIFIED - Please go back and look at the data you entered\n";
 		 echo "<br>status must be between 1 and 6 characters in length\n";
@@ -91,7 +91,7 @@ if ($ADD==45)
 		{
 		echo "<br><B><font color=$default_text>CAMPAIGN LEAD MODIFIED: $campaign_id - $status - $attempt_delay</font></B>\n";
 
-		$stmt="UPDATE osdial_lead_recycle SET attempt_delay='$attempt_delay',attempt_maximum='$attempt_maximum',active='$active' where campaign_id='$campaign_id' and status='$status';";
+		$stmt=sprintf("UPDATE osdial_lead_recycle SET attempt_delay='%s',attempt_maximum='%s',active='%s' WHERE campaign_id='%s' AND status='%s';",mres($attempt_delay),mres($attempt_maximum),mre($active),mres($campaign_id),mres($status));
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -118,9 +118,9 @@ if ($ADD==45)
 
 if ($ADD==65)
 {
-	if ($LOGmodify_campaigns==1)
+	if ($LOG['modify_campaigns']==1)
 	{
-	 if ( (strlen($campaign_id) < 2) or (strlen($status) < 1) )
+	 if ( (OSDstrlen($campaign_id) < 2) or (OSDstrlen($status) < 1) )
 		{
 		 echo "<br><font color=red>CAMPAIGN LEAD RECYCLE NOT DELETED - Please go back and look at the data you entered\n";
 		 echo "<br>status must be between 1 and 6 characters in length\n";
@@ -131,7 +131,7 @@ if ($ADD==65)
 		{
 		echo "<br><B><font color=$default_text>CAMPAIGN LEAD RECYCLE DELETED: $campaign_id - $status - $attempt_delay</font></B>\n";
 
-		$stmt="DELETE FROM osdial_lead_recycle where campaign_id='$campaign_id' and status='$status';";
+		$stmt=sprintf("DELETE FROM osdial_lead_recycle WHERE campaign_id='%s' AND status='%s';",mres($campaign_id),mres($status));
 		$rslt=mysql_query($stmt, $link);
 
 		### LOG CHANGES TO LOG FILE ###
@@ -166,7 +166,7 @@ echo "    <td>LEAD RECYCLES</td>\n";
 echo "    <td align=center>LINKS</td>\n";
 echo "  </tr>\n";
 
-	$stmt=sprintf("SELECT campaign_id,campaign_name from osdial_campaigns where campaign_id IN %s order by campaign_id", $LOG['allowed_campaignsSQL']);
+	$stmt=sprintf("SELECT campaign_id,campaign_name FROM osdial_campaigns WHERE campaign_id IN %s ORDER BY campaign_id;", $LOG['allowed_campaignsSQL']);
 	$rslt=mysql_query($stmt, $link);
 	$campaigns_to_print = mysql_num_rows($rslt);
 
@@ -187,7 +187,7 @@ echo "  </tr>\n";
 		echo "    <td><font size=1> $campaigns_name_list[$o]</td>\n";
 		echo "    <td>";
 
-		$stmt="SELECT status from osdial_lead_recycle where campaign_id='$campaigns_id_list[$o]' order by status";
+		$stmt=sprintf("SELECT status FROM osdial_lead_recycle WHERE campaign_id='%s' ORDER BY status;",mres($campaigns_id_list[$o]));
 		$rslt=mysql_query($stmt, $link);
 		$campstatus_to_print = mysql_num_rows($rslt);
 		$p=0;
