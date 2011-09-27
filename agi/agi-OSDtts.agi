@@ -20,12 +20,55 @@
 #     License along with OSDial.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+$|++;
+
 use strict;
 use OSDial;
+use Time::HiRes qw(gettimeofday usleep sleep time);
+
 
 my $prog = 'agi-OSDtts.agi';
+my $start_epoch = time();
 
 my $osdial = OSDial->new(DB=>0);
 $osdial->AGI($prog);
 
-$osdial->agi_tts_sayphrase(@ARGV);
+my $AGI = $osdial->AGI();
+
+my $CIDlead_id = (substr($AGI->{'accountcode'}, 11, 9) + 0);
+
+$osdial->agi_output("+++++ OSDtts START : |$CIDlead_id|",1);
+
+my $leaddata = $osdial->sql_query(sprintf("SELECT * FROM osdial_list WHERE lead_id='\%s';",$osdial->mres($CIDlead_id)));
+$osdial->agi_output("--    OSDtts: Got lead data. ",1) if ($leaddata->{lead_id}>0);
+
+my $affcnt=0;
+while (my $aff = $osdial->sql_query(sprintf("SELECT concat(osdial_campaign_forms.name,'_',osdial_campaign_fields.name) AS affid,value FROM osdial_list_fields JOIN osdial_campaign_fields ON (osdial_list_fields.field_id=osdial_campaign_fields.id) JOIN osdial_campaign_forms ON (osdial_campaign_fields.form_id=osdial_campaign_forms.id) WHERE lead_id='\%s';",$osdial->mres($CIDlead_id)))) {
+	$leaddata->{$aff->{affid}} = $aff->{value};
+	$affcnt++;
+}
+$osdial->agi_output("--    OSDtts: Got $affcnt AFF records. ",1);
+
+
+my $stmt = sprintf("SELECT * FROM osdial_tts WHERE extension='\%s';",$osdial->mres($AGI->{extension}));
+my $tts = $osdial->sql_query($stmt);
+if (defined($tts->{phrase})) {
+	my @tts_files;
+	my $start_tts = time();
+	foreach my $phrase ($tts->{phrase}) {
+		my @tparse = $osdial->tts_osdial_parse($phrase,$leaddata);
+		foreach my $tp (@tparse) {
+			push @tts_files, $osdial->tts_generate($tp,$tts->{voice});
+		}
+	}
+	my $end_tts = time();
+	$osdial->agi_output("--    OSDtts: TTS processing time (". ($end_tts-$start_tts). "). ",1);
+	foreach my $tts_file (@tts_files) {
+		$osdial->agi_output("--    OSDtts: Streaming TTS files ($tts_file). ",1);
+		$AGI->stream_file($tts_file);
+	}
+}
+
+my $end_epoch = time();
+$osdial->agi_output("+++++ OSDtts END- (".($end_epoch-$start_epoch).")",1);
+exit 0;
