@@ -284,7 +284,7 @@ sub playfile {
 	update_status($status);
 	$stream =~ s/\..*$//;
 	$osdial->agi_output("ODOI: playing file $stream|");
-	$AGI->stream_file_tts($stream);
+	stream_file_tts($stream);
 
 	return $rtnmain;
 }
@@ -309,7 +309,7 @@ sub xfer_to_external {
 
 	$stream =~ s/\..*$//;
 	$stream = 'pls-wait-connect-call' unless ($stream);
-	$AGI->stream_file_tts($stream) if ($stream);
+	stream_file_tts($stream) if ($stream);
 
 	update_status($status);
 
@@ -399,7 +399,7 @@ sub xfer_to_ingroup {
 
 	$stream =~ s/\..*$//;
 	$stream = 'pls-wait-connect-call' unless ($stream);
-	$AGI->stream_file_tts($stream) if ($stream);
+	stream_file_tts($stream) if ($stream);
 
 	update_status($status);
 
@@ -472,7 +472,7 @@ sub hangup_and_dispo {
 	my ($stream, $status) = @_;;
 
 	$stream =~ s/\..*$//;
-	$AGI->stream_file_tts($stream) if ($stream);
+	stream_file_tts($stream) if ($stream);
 
 	my $tepoch = time();
 	my $tdate = $osdial->get_datetime($tepoch);
@@ -623,7 +623,7 @@ sub stream_and_get_dtmf {
 
 		$total_digits = '';
 		$stream =~ s/\..*$//;
-		my $interrupt_digit = $AGI->stream_file_tts($stream,'0123456789#*');
+		my $interrupt_digit = stream_file_tts($stream,'0123456789#*');
 		if ($interrupt_digit) {
 			my $int_digit=chr($interrupt_digit);
 			if (!$int_digit =~ /$valid_pat/) {
