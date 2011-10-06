@@ -430,7 +430,7 @@ if ($ACTION == 'regCLOSER') {
         if ($xfer_agent2agent > 0) $closer_choice = rtrim($closer_choice,'-') . "A2A_$user -";
 
         $random = (rand(1000000, 9999999) + 10000000);
-        $stmt=sprintf("UPDATE osdial_live_agents SET closer_campaigns='%s',random_id='%s' WHERE user='%s' AND server_ip='%s';",mres($closer_choice),mres($random),mres($user));
+        $stmt=sprintf("UPDATE osdial_live_agents SET closer_campaigns='%s',random_id='%s' WHERE user='%s' AND server_ip='%s';",mres($closer_choice),mres($random),mres($user),mres($server_ip));
         if ($format=='debug') echo "\n<!-- $stmt -->";
         $rslt=mysql_query($stmt, $link);
 
