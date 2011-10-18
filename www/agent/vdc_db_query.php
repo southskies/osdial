@@ -791,7 +791,7 @@ if ($ACTION == 'manDiaLnextCaLL') {
 
                 ### update the agent status to INCALL in osdial_live_agents
                 $random = (rand(1000000, 9999999) + 10000000);
-                $stmt=sprintf("UPDATE osdial_live_agents SET status='INCALL',last_call_time='%s',callerid='%s',lead_id='%s',comments='MANUAL',calls_today='%s',random_id='%s' WHERE user='%s' AND server_ip='%s';",mres($NOW_TIME),mres($MqueryCID),mres($lead_id),mred($calls_today),mres($random),mres($user),mres($server_ip));
+                $stmt=sprintf("UPDATE osdial_live_agents SET status='INCALL',last_call_time='%s',callerid='%s',lead_id='%s',comments='MANUAL',calls_today='%s',random_id='%s' WHERE user='%s' AND server_ip='%s';",mres($NOW_TIME),mres($MqueryCID),mres($lead_id),mres($calls_today),mres($random),mres($user),mres($server_ip));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
 
