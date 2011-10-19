@@ -609,7 +609,8 @@ function report_agent_performance_detail() {
             while(OSDstrlen($TOTtotWAIT_MS)>8) {$TOTtotWAIT_MS = OSDsubstr("$TOTtotWAIT_MS", 0, -1);}
 
 
-        $TOTavgTALK_M = ( ($TOTtotTALK / $TOTcalls) / 60);
+        $TOTavgTALK_M = 0;
+        if ($TOTcalls>0) $TOTavgTALK_M = ( ($TOTtotTALK / $TOTcalls) / 60);
         $TOTavgTALK_M = round($TOTavgTALK_M, 2);
         $TOTavgTALK_M_int = intval("$TOTavgTALK_M");
         $TOTavgTALK_S = ($TOTavgTALK_M - $TOTavgTALK_M_int);
@@ -620,7 +621,8 @@ function report_agent_performance_detail() {
         $TOTavgTALK_MS =        sprintf("%6s", $TOTavgTALK_MS);
             while(OSDstrlen($TOTavgTALK_MS)>6) {$TOTavgTALK_MS = OSDsubstr("$TOTavgTALK_MS", 0, -1);}
 
-        $TOTavgDISPO_M = ( ($TOTtotDISPO / $TOTcalls) / 60);
+        $TOTavgDISPO_M = 0;
+        if ($TOTcalls>0) $TOTavgDISPO_M = ( ($TOTtotDISPO / $TOTcalls) / 60);
         $TOTavgDISPO_M = round($TOTavgDISPO_M, 2);
         $TOTavgDISPO_M_int = intval("$TOTavgDISPO_M");
         $TOTavgDISPO_S = ($TOTavgDISPO_M - $TOTavgDISPO_M_int);
@@ -631,7 +633,8 @@ function report_agent_performance_detail() {
         $TOTavgDISPO_MS =        sprintf("%6s", $TOTavgDISPO_MS);
             while(OSDstrlen($TOTavgDISPO_MS)>6) {$TOTavgDISPO_MS = OSDsubstr("$TOTavgDISPO_MS", 0, -1);}
 
-        $TOTavgPAUSE_M = ( ($TOTtotPAUSE / $TOTcalls) / 60);
+        $TOTavgPAUSE_M = 0;
+        if ($TOTcalls>0) $TOTavgPAUSE_M = ( ($TOTtotPAUSE / $TOTcalls) / 60);
         $TOTavgPAUSE_M = round($TOTavgPAUSE_M, 2);
         $TOTavgPAUSE_M_int = intval("$TOTavgPAUSE_M");
         $TOTavgPAUSE_S = ($TOTavgPAUSE_M - $TOTavgPAUSE_M_int);
@@ -642,7 +645,8 @@ function report_agent_performance_detail() {
         $TOTavgPAUSE_MS =        sprintf("%6s", $TOTavgPAUSE_MS);
             while(OSDstrlen($TOTavgPAUSE_MS)>6) {$TOTavgPAUSE_MS = OSDsubstr("$TOTavgPAUSE_MS", 0, -1);}
 
-        $TOTavgWAIT_M = ( ($TOTtotWAIT / $TOTcalls) / 60);
+        $TOTavgWAIT_M = 0;
+        if ($TOTcalls>0) $TOTavgWAIT_M = ( ($TOTtotWAIT / $TOTcalls) / 60);
         $TOTavgWAIT_M = round($TOTavgWAIT_M, 2);
         $TOTavgWAIT_M_int = intval("$TOTavgWAIT_M");
         $TOTavgWAIT_S = ($TOTavgWAIT_M - $TOTavgWAIT_M_int);
