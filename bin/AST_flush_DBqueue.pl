@@ -57,6 +57,17 @@ $SQLdate_NOW="$year-$mon-$mday $hour:$min:$sec";
 	if ($sec < 10) {$sec = "0$sec";}
 $SQLdate_NEG_6hour="$year-$mon-$mday $hour:$min:$sec";
 
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time()-(3600*3));
+	$year = ($year + 1900);
+	$yy = $year; $yy =~ s/^..//gi;
+	$mon++;
+	if ($mon < 10) {$mon = "0$mon";}
+	if ($mday < 10) {$mday = "0$mday";}
+	if ($hour < 10) {$hour = "0$hour";}
+	if ($min < 10) {$min = "0$min";}
+	if ($sec < 10) {$sec = "0$sec";}
+$SQLdate_NEG_3hour="$year-$mon-$mday $hour:$min:$sec";
+
 ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time()-3600);
 	$year = ($year + 1900);
 	$yy = $year; $yy =~ s/^..//gi;
@@ -78,6 +89,28 @@ $SQLdate_NEG_1hour="$year-$mon-$mday $hour:$min:$sec";
 	if ($min < 10) {$min = "0$min";}
 	if ($sec < 10) {$sec = "0$sec";}
 $SQLdate_NEG_halfhour="$year-$mon-$mday $hour:$min:$sec";
+
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time()-900);
+	$year = ($year + 1900);
+	$yy = $year; $yy =~ s/^..//gi;
+	$mon++;
+	if ($mon < 10) {$mon = "0$mon";}
+	if ($mday < 10) {$mday = "0$mday";}
+	if ($hour < 10) {$hour = "0$hour";}
+	if ($min < 10) {$min = "0$min";}
+	if ($sec < 10) {$sec = "0$sec";}
+$SQLdate_NEG_quarterhour="$year-$mon-$mday $hour:$min:$sec";
+
+($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time()-450);
+	$year = ($year + 1900);
+	$yy = $year; $yy =~ s/^..//gi;
+	$mon++;
+	if ($mon < 10) {$mon = "0$mon";}
+	if ($mday < 10) {$mday = "0$mday";}
+	if ($hour < 10) {$hour = "0$hour";}
+	if ($min < 10) {$min = "0$min";}
+	if ($sec < 10) {$sec = "0$sec";}
+$SQLdate_NEG_eigthhour="$year-$mon-$mday $hour:$min:$sec";
 
 ### begin parsing run-time options ###
 if (length($ARGV[0])>1)
@@ -170,8 +203,10 @@ use DBI;
 $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VARDB_user", "$VARDB_pass")
  or die "Couldn't connect to database: " . DBI->errstr;
 
+my %servers;
+
 ### Grab Server values from the database
-	$stmtA = "SELECT vd_server_logs FROM servers WHERE server_ip='$VARserver_ip';";
+	$stmtA = "SELECT server_ip,vd_server_logs FROM servers;";
 	$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 	$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 	$sthArows=$sthA->rows;
@@ -179,24 +214,24 @@ $dbhA = DBI->connect("DBI:mysql:$VARDB_database:$VARDB_server:$VARDB_port", "$VA
 	while ($sthArows > $rec_count)
 		{
 		 @aryA = $sthA->fetchrow_array;
-			$DBvd_server_logs =			"$aryA[0]";
-			if ($DBvd_server_logs =~ /Y/)	{$SYSLOG = '1';}
-				else {$SYSLOG = '0';}
+			$servers{$aryA[0]} = $aryA[1];
 		 $rec_count++;
 		}
 	$sthA->finish();
 
-if ($SYSLOG) 
-	{$flush_time = $SQLdate_NEG_1hour;}
+if ($servers{$VARserver_ip} eq 'Y') 
+	{$flush_time = $SQLdate_NEG_quarterhour;}
 else
-	{$flush_time = $SQLdate_NEG_halfhour;}
+	{$flush_time = $SQLdate_NEG_eigthhour;}
 
-	$stmtA = "delete from osdial_manager where (server_ip='$server_ip' and entry_date < '$flush_time') or entry_date < '$SQLdate_NEG_halfhour';";
-		if($DB){print STDERR "\n|$stmtA|\n";}
-		if (!$T) {	$affected_rows = $dbhA->do($stmtA);}
-		if (!$Q) {print " - osdial_manager flush\n";}
+	foreach my $svr (keys %servers) {
+		$stmtA = "DELETE FROM osdial_manager WHERE (server_ip='$svr' AND ((status='DEAD' AND entry_date<'$flush_time') OR entry_date<'$SQLdate_NEG_3hour')) OR entry_date<'$SQLdate_NEG_6hour';";
+			if($DB){print STDERR "\n|$stmtA|\n";}
+			if (!$T) {	$affected_rows = $dbhA->do($stmtA);}
+			if (!$Q) {print " - osdial_manager flush - $svr - $affected_rows\n";}
+	}
 
-        $stmtA = "optimize table osdial_manager;";
+        $stmtA = "OPTIMIZE TABLE osdial_manager;";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) 
 				 {
@@ -210,7 +245,7 @@ else
         if (!$Q) {print " - optimize osdial_manager          \n";}
 
 
-        $stmtA = "optimize table osdial_live_agents;";
+        $stmtA = "OPTIMIZE TABLE osdial_live_agents;";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) {
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -223,7 +258,7 @@ else
         if (!$Q) {print " - optimize osdial_live_agents          \n";}
 
 
-        $stmtA = "optimize table osdial_auto_calls;";
+        $stmtA = "OPTIMIZE TABLE osdial_auto_calls;";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) {
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
@@ -237,7 +272,7 @@ else
         if (!$Q) {print " - optimize osdial_auto_calls          \n";}
 
 
-        $stmtA = "optimize table osdial_hopper;";
+        $stmtA = "OPTIMIZE TABLE osdial_hopper;";
                 if($DB){print STDERR "\n|$stmtA|\n";}
                 if (!$T) {
 					$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
