@@ -1378,6 +1378,7 @@ foreach(@campaign_id)
 			$order_stmt='';
 			$NEW_count = 0;
 			$NEW_level = 0;
+			$NEW_level_actual = 0;
 			$OTHER_level = $hopper_level[$i];   
 			if ($lead_order[$i] =~ /^DOWN/) {$order_stmt = 'order by lead_id asc';}
 			if ($lead_order[$i] =~ /^UP/) {$order_stmt = 'order by lead_id desc';}
@@ -1459,6 +1460,7 @@ foreach(@campaign_id)
 
 		### BEGIN NEW grab leads ###
 			$NEW_rec_countLEADS=0;
+			$NEW_rec_countLEADS_actual=0;
 			@NEW_leads_to_hopper=@MT;
 			@NEW_lists_to_hopper=@MT;
 			@NEW_phone_to_hopper=@MT;
@@ -1471,37 +1473,40 @@ foreach(@campaign_id)
 			if ( ($NEW_count > 0) && ($list_order_mix[$i] =~ /DISABLED/) )
 				{
 				$NEW_level = int($hopper_level[$i] / $NEW_count);   
+				$NEW_level_actual = $NEW_campaign_leads_to_call[$i];
+				$NEW_level_actual = $hopper_level[$i] if ($hopper_level[$i]<=$NEW_campaign_leads_to_call[$i]);
 				$OTHER_level = ($hopper_level[$i] - $NEW_level);   
 			#	$order_stmt = 'order by called_count, lead_id asc';
 				if ($DB) {print "     looking for $NEW_level NEW leads mixed in with $OTHER_level other leads\n";}
 
-				$stmtA = "SELECT SQL_NO_CACHE lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list FORCE INDEX (list_status) WHERE called_since_last_reset='N' AND status IN('NEW') AND list_id IN($camp_lists[$i]) AND lead_id NOT IN($lead_id_lists) AND ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt LIMIT $NEW_level;";
+				$stmtA = "SELECT SQL_NO_CACHE lead_id,list_id,gmt_offset_now,phone_number,state,status,modify_date,user,(DATE(entry_date)-DATE(NOW())) AS days_old FROM osdial_list FORCE INDEX (list_status) WHERE called_since_last_reset='N' AND status IN('NEW') AND list_id IN($camp_lists[$i]) AND lead_id NOT IN($lead_id_lists) AND ($all_gmtSQL[$i]) $lead_filter_sql[$i] $order_stmt LIMIT $NEW_level_actual;";
 				if ($DBX) {print "     |$stmtA|\n";}
 				$sthA = $dbhA->prepare($stmtA) or die "preparing: ",$dbhA->errstr;
 				$sthA->execute or die "executing: $stmtA ", $dbhA->errstr;
 				$sthArows=$sthA->rows;
-				while ($sthArows > $NEW_rec_countLEADS)
+				while ($sthArows > $NEW_rec_countLEADS_actual)
 					{
 					@aryA = $sthA->fetchrow_array;
-					$NEW_leads_to_hopper[$NEW_rec_countLEADS] = "$aryA[0]";
-					$NEW_lists_to_hopper[$NEW_rec_countLEADS] = "$aryA[1]";
-					$NEW_gmt_to_hopper[$NEW_rec_countLEADS] = "$aryA[2]";
-					$NEW_phone_to_hopper[$NEW_rec_countLEADS] = "$aryA[3]";
-					$NEW_state_to_hopper[$NEW_rec_countLEADS] = "$aryA[4]";
-					$NEW_status_to_hopper[$NEW_rec_countLEADS] = "$aryA[5]";
-					$NEW_modify_to_hopper[$NEW_rec_countLEADS] = "$aryA[6]";
-					$NEW_user_to_hopper[$NEW_rec_countLEADS] = "$aryA[7]";
-					$NEW_priority_to_hopper[$NEW_rec_countLEADS] = "0";
+					$NEW_leads_to_hopper[$NEW_rec_countLEADS_actual] = "$aryA[0]";
+					$NEW_lists_to_hopper[$NEW_rec_countLEADS_actual] = "$aryA[1]";
+					$NEW_gmt_to_hopper[$NEW_rec_countLEADS_actual] = "$aryA[2]";
+					$NEW_phone_to_hopper[$NEW_rec_countLEADS_actual] = "$aryA[3]";
+					$NEW_state_to_hopper[$NEW_rec_countLEADS_actual] = "$aryA[4]";
+					$NEW_status_to_hopper[$NEW_rec_countLEADS_actual] = "$aryA[5]";
+					$NEW_modify_to_hopper[$NEW_rec_countLEADS_actual] = "$aryA[6]";
+					$NEW_user_to_hopper[$NEW_rec_countLEADS_actual] = "$aryA[7]";
+					$NEW_priority_to_hopper[$NEW_rec_countLEADS_actual] = "0";
 					if ($VARhopper_newentry_priority == 1) {
 						if ($aryA[5] eq "NEW") {
-							$NEW_priority_to_hopper[$NEW_rec_countLEADS] = "1";
-							$NEW_priority_to_hopper[$NEW_rec_countLEADS] = "2" if ($aryA[8] >= 0);
+							$NEW_priority_to_hopper[$NEW_rec_countLEADS_actual] = "1";
+							$NEW_priority_to_hopper[$NEW_rec_countLEADS_actual] = "2" if ($aryA[8] >= 0);
 						} else {
-							$NEW_priority_to_hopper[$NEW_rec_countLEADS] = "$aryA[8]";
+							$NEW_priority_to_hopper[$NEW_rec_countLEADS_actual] = "$aryA[8]";
 						}
 					}
 					if ($DB_show_offset) {print "LEAD_ADD: $aryA[2] $aryA[3] $aryA[4]\n";}
-					$NEW_rec_countLEADS++;
+					$NEW_rec_countLEADS_actual++;
+					$NEW_rec_countLEADS++ if ($NEW_rec_countLEADS<$NEW_level);
 					}
 				$OTHER_level = ($hopper_level[$i] - $NEW_rec_countLEADS);
 				$sthA->finish();
@@ -1723,12 +1728,32 @@ foreach(@campaign_id)
 				&event_logger;
 				}
 
+			if ($NEW_count > 0 and $rec_countLEADS < $hopper_level[$i] and $NEW_rec_countLEADS_actual-$rec_countLEADS>0) {
+				print "     NEW_COUNT set, not enough OTHER leads mix, filling with ".($NEW_rec_countLEADS_actual-$rec_countLEADS)." NEW: $rec_countLEADS|$rec_count|$hopper_level[$i]|$NEW_rec_countLEADS_actual|$NEW_in|\n" if ($DB);
+				while ($NEW_rec_countLEADS_actual > $rec_countLEADS) {
+					print "NEW_COUNT_NO_OLD: $NEW_count|$NEW_in|$NEW_rec_countLEADS_actual\n" if ($DBX);
+					$leads_to_hopper[$rec_countLEADS] = "$NEW_leads_to_hopper[$NEW_in]";
+					$lists_to_hopper[$rec_countLEADS] = "$NEW_lists_to_hopper[$NEW_in]";
+					$gmt_to_hopper[$rec_countLEADS] = "$NEW_gmt_to_hopper[$NEW_in]";
+					$state_to_hopper[$rec_countLEADS] = "$NEW_state_to_hopper[$NEW_in]";
+					$phone_to_hopper[$rec_countLEADS] = "$NEW_phone_to_hopper[$NEW_in]";
+					$status_to_hopper[$rec_countLEADS] = "$NEW_status_to_hopper[$NEW_in]";
+					$modify_to_hopper[$rec_countLEADS] = "$NEW_modify_to_hopper[$NEW_in]";
+					$user_to_hopper[$rec_countLEADS] = "$NEW_user_to_hopper[$NEW_in]";
+					$priority_to_hopper[$rec_countLEADS] = "$NEW_priority_to_hopper[$NEW_in]";
+					print "LEAD_ADD:    $NEW_leads_to_hopper[$NEW_in]   $NEW_phone_to_hopper[$NEW_in]\n" if ($DB_show_offset);
+					$rec_countLEADS++;
+					$NEW_in++;
+				}
+			}
+
+
 			$h=0;
 			foreach(@leads_to_hopper) {
 				if ($leads_to_hopper[$h] != 0) {
 					$DNClead=0;
 					if ($use_internal_dnc[$i] =~ /Y/) {
-						if ($DB) {print "     Doing DNC Check: $phone_to_hopper[$h] - $use_internal_dnc[$i]\n";}
+						if ($DBX) {print "     Doing DNC Check: $phone_to_hopper[$h] - $use_internal_dnc[$i]\n";}
 						$dncsskip=0;
 						if ($enable_multicompany > 0) {
 							$comp_id=0;
