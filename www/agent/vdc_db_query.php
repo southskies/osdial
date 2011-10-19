@@ -781,7 +781,7 @@ if ($ACTION == 'manDiaLnextCaLL') {
                 }
 
                 ### insert the call action into the osdial_manager table to initiate the call
-                $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Originate','%s','Exten: %s','Context: %s','Channel: %s','Priority: 1','Callerid: %s','Timeout: %s','Account: %s','','','');",mres($NOW_TIME),mres($server_ip),mres($MqueryCID),mres($Ndialstring),mres($dial_context),mres($localDEF.$conf_exten.$local_AMP.$ext_context.$Local_persist),mres($CIDstring),mres($Local_dial_timeout),mres($MqueryCID));
+                $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Originate','%s','Exten: %s','Context: %s','Channel: %s','Priority: 1','Callerid: %s','Timeout: %s','Account: %s','','','');",mres($NOW_TIME),mres($server_ip),mres($MqueryCID),mres($Ndialstring),mres($dial_context),mres($local_DEF.$conf_exten.$local_AMP.$ext_context.$Local_persist),mres($CIDstring),mres($Local_dial_timeout),mres($MqueryCID));
                 if ($DB) echo "$stmt\n";
                 $rslt=mysql_query($stmt, $link);
 
