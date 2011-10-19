@@ -111,7 +111,7 @@ foreach my $proc (@{$proctab->table}) {
 				$running{$progname}++;
 				print $progname . " RUNNING:              |" . $proc->pid . "\n" if ($DB);
 				if ($running{$progname}>1) {
-					if ($progname eq "AST_manager_listen.pl") {
+					if ($progname =~ /AST_update.pl|AST_manager_listen.pl|AST_manager_send.pl/) {
 						print "Detected second instance of " . $progname. ", killing pid " . $proc->pid . ".\n" if ($DB);
 						kill 9, $proc->pid unless ($TEST);
 					}
