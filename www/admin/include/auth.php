@@ -30,12 +30,13 @@ if (!isset($osdial_skip_auth)) {
 
     if ($force_logout) {
         $_SESSION = array();
+        $prev_session = session_name('OSDial');
         foreach ($_COOKIE as $k => $v) {
             setcookie($k,'',time()-42000);
         }
         if (ini_get("session.use_cookies")) {
             $params = session_get_cookie_params();
-            setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
+            setcookie(session_name('OSDial'), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
         }
         session_destroy();
 
@@ -68,6 +69,7 @@ if (!isset($osdial_skip_auth)) {
             }
         } else {
             # Login Success, save some session data in the browser.
+            $prev_session = session_name('OSDial');
             $tsid = session_id();
             if(empty($tsid)) session_start();
         }
