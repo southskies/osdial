@@ -58,7 +58,7 @@ my $secX = time(); #Start time
 
 ### Initialize run-time variables ###
 my ($CLOhelp, $SYSLOG, $PATHlogs, $telnet_host, $telnet_port, $ASTmgrUSERNAME);
-my ($ASTmgrSECRET, $ASTmgrUSERNAMEsend, $action, $cmd_line_b, $cmd_line_c);
+my ($ASTmgrSECRET, $ASTmgrUSERNAMEsend, $man_id, $action, $cmd_line_b, $cmd_line_c);
 my ($cmd_line_d, $cmd_line_e, $cmd_line_f, $cmd_line_g, $cmd_line_h);
 my ($cmd_line_i, $cmd_line_j, $cmd_line_k, $DB, $DBX, $asterisk_version);
 my $FULL_LOG = 1;
@@ -74,6 +74,7 @@ if (scalar @ARGV) {
 		'ASTmgrSECRET=s' => \$ASTmgrSECRET,
 		'ASTmgrUSERNAMEsend=s' => \$ASTmgrUSERNAMEsend,
 		'asterisk_version=s' => \$asterisk_version,
+		'man_id=s' => \$man_id,
 		'action=s' => \$action,
 		'cmd_line_b=s' => \$cmd_line_b,
 		'cmd_line_c=s' => \$cmd_line_c,
@@ -100,6 +101,7 @@ if (scalar @ARGV) {
 		print "  ASTmgrSECRET:          $ASTmgrSECRET\n" if ($ASTmgrSECRET);
 		print "  ASTmgrUSERNAMEsend:    $ASTmgrUSERNAMEsend\n" if ($ASTmgrUSERNAMEsend);
 		print "  asterisk_version:      $asterisk_version\n" if ($asterisk_version);
+		print "  man_id:                $man_id\n" if ($man_id);
 		print "  action:                $action\n" if ($action);
 		print "  cmd_line_b:            $cmd_line_b\n" if ($cmd_line_b);
 		print "  cmd_line_b:            $cmd_line_b\n" if ($cmd_line_b);
@@ -125,6 +127,7 @@ if (scalar @ARGV) {
 		print "  [--ASTmgrUSERNAME] = username for Asterisk Manager login\n";
 		print "  [--ASTmgrSECRET] = secret or password for Asterisk Manager login\n";
 		print "  [--ASTmgrUSERNAMEsend] = username specific for sending actions for Asterisk Manager login\n";
+		print "  [--man_id] = The manager ID, if present will be used as the ActionID\n";
 		print "  [--action] = type of manager action to send\n";
 		print "  [--cmd_line_X] = lines to send to Manager after action\n";
 		print "                   X replaced with b-k (10 lines)\n";
@@ -182,10 +185,12 @@ if ($action) {
 		$telnet_login = $ASTmgrUSERNAME;
 	}
 	$tn->open($telnet_host); 
+	my $action_id = '';
 	if ($asterisk_version =~ /^1\.6|^1\.8/) {
 		$tn->waitfor('/1\n$/');			# print login
 		my($s, $usec) = gettimeofday();
-		$tn->print("Action: Login\nActionID: $usec\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\nEvents: off\n\n");
+		$tn->print("Action: Login\nActionID: U$usec~Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\nEvents: off\n\n");
+		$action_id = 'ActionID: M' . $man_id if ($man_id);
 	} else {
 		$tn->waitfor('/0\n$/');			# print login
 		$tn->print("Action: Login\nUsername: $telnet_login\nSecret: $ASTmgrSECRET\n\n");
@@ -204,6 +209,10 @@ if ($action) {
 		#	1 users in that conference.
 		#	--END COMMAND--
 		my $meetme_command = "Action: Command\nCommand: meetme list $cmd_line_k\n\n";
+		if ($asterisk_version =~ /^1\.6|^1\.8/) {
+			my($s, $usec) = gettimeofday();
+			$meetme_command = "Action: Command\nActionID: U$usec~Command\nCommand: meetme list $cmd_line_k\n\n";
+		}
 		print nowDate() . "|$SYSLOG|\n$meetme_command";
 
 		my $participant;
@@ -225,6 +234,7 @@ if ($action) {
 
 	my $originate_command;
 	$originate_command .= "Action: $action\n";
+	$originate_command .= $action_id . '~' . $action . "\n" if ($action_id);
 	#if (length($cmd_line_b)>3) {$originate_command .= "$cmd_line_b\n";}
 	$originate_command .= $cmd_line_b . "\n" if ($cmd_line_b);
 	$originate_command .= $cmd_line_c . "\n" if ($cmd_line_c);
@@ -264,7 +274,12 @@ if ($action) {
 
 	$tn->buffer_empty;
 	#@hangup = $tn->cmd(String => "Action: Logoff\n\n", Prompt => "/.*/"); 
-	$tn->cmd(String => "Action: Logoff\n\n", Prompt => "/.*/"); 
+	if ($asterisk_version =~ /^1\.6|^1\.8/) {
+		my($s, $usec) = gettimeofday();
+		$tn->cmd(String => "Action: Logoff\nActionID: U$usec~Logoff\n\n", Prompt => "/.*/"); 
+	} else {
+		$tn->cmd(String => "Action: Logoff\n\n", Prompt => "/.*/"); 
+	}
 	sleep(1);
 
 	if ($FULL_LOG and $SYSLOG) {
