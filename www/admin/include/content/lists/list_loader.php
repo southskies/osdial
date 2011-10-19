@@ -163,7 +163,10 @@ if ($ADD==122) {
             echo "<div name='load_win' id='load_win' style='width:850px;align:center;'>\n";
             echo "  <div name='load_status' id='load_status' style='float:left;text-align:center;width:50%;height:200px;overflow:auto;'></div>\n";
             echo "  <div name='load_error' id='load_error' style='float:left;text-align:left;width:50%;height:200px;overflow:auto;'></div>\n";
-            echo "</div>";
+            echo "</div>\n";
+            echo "</center>\n";
+            echo "</td></tr></table>\n";
+            echo "</div>\n";
             require($WeBServeRRooT . "/admin/include/footer.php");
             ob_flush();
             flush();
@@ -204,7 +207,10 @@ if ($ADD==122) {
             echo "<div name='load_win' id='load_win' style='width:850px;align:center;'>\n";
             echo "  <div name='load_status' id='load_status' style='float:left;text-align:center;width:50%;height:200px;overflow:auto;'></div>\n";
             echo "  <div name='load_error' id='load_error' style='float:left;text-align:left;width:50%;height:200px;overflow:auto;'></div>\n";
-            echo "</div>";
+            echo "</div>\n";
+            echo "</center>\n";
+            echo "</td></tr></table>\n";
+            echo "</div>\n";
             require($WeBServeRRooT . "/admin/include/footer.php");
             ob_flush();
             flush();
@@ -614,7 +620,10 @@ if ($ADD==122) {
                 echo "<div name='load_win' id='load_win' style='width:850px;align:center;'>\n";
                 echo "  <div name='load_status' id='load_status' style='float:left;text-align:center;width:50%;height:200px;overflow:auto;'></div>\n";
                 echo "  <div name='load_error' id='load_error' style='float:left;text-align:left;width:50%;height:200px;overflow:auto;'></div>\n";
-                echo "</div>";
+                echo "</div>\n";
+                echo "</center>\n";
+                echo "</td></tr></table>\n";
+                echo "</div>\n";
                 require($WeBServeRRooT . "/admin/include/footer.php");
 
 		    	while ($row=fgetcsv($file, 1000, $delimiter)) {
