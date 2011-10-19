@@ -453,7 +453,7 @@ if ($ADD==41)
         if (!empty($lead_order_field)) $lo_array[] = $lead_order_field;
         if (!empty($lead_order_nthnew)) $lo_array[] = $lead_order_nthnew;
         $lead_order = implode(' ', $lo_array);
-        $ets = implode(',',$email_templates);
+        if (is_array($email_templates)) $ets = implode(',',$email_templates);
         $stmtA=sprintf("UPDATE osdial_campaigns SET %s campaign_name='%s',active='%s',dial_status_a='%s',dial_status_b='%s',dial_status_c='%s',dial_status_d='%s',"
             ."dial_status_e='%s',lead_order='%s',allow_closers='%s',hopper_level='%s',next_agent_call='%s',local_call_time='%s',voicemail_ext='%s',"
             ."dial_timeout='%s',dial_prefix='%s',campaign_cid='%s',campaign_vdad_exten='%s',web_form_address='%s',park_ext='%s',park_file_name='%s',"
