@@ -33,7 +33,6 @@ if ($ADD==122) {
 	if (isset($_FILES["leadfile"])) $leadfile_name=$_FILES["leadfile"]['name'];
 
     $single_insert = 1;
-    $dot_count=0;
 
 	$list_id_override = (OSDpreg_replace("/\D/","",$list_id_override));
 	$phone_code_override = (OSDpreg_replace("/\D/","",$phone_code_override));
@@ -42,6 +41,8 @@ if ($ADD==122) {
 	$aff_fields = get_variable('aff_fields');
 	$aff_field = Array();
 	$affcnt = 0;
+
+    $file_has_header = (get_variable("header_matches") + 0);
 
     if (OSDstrlen($aff_fields) > 0) $single_insert = 1;
 
@@ -147,7 +148,14 @@ if ($ADD==122) {
 	}
 		
 	if ($OK_to_process) {
-		echo "<script language='javascript'>\ndocument.forms[0].leadfile.disabled=true;\ndocument.forms[0].list_id_override.disabled=true;\ndocument.forms[0].phone_code_override.disabled=true;\ndocument.forms[0].submit_file.disabled=true;\ndocument.forms[0].reload_page.disabled=true;\n</script>\n";
+        $jslescroll = "\nvar objDiv=document.getElementById(\"load_error\");\nobjDiv.scrollTop=objDiv.scrollHeight;\n";
+		echo "<script language='javascript'>\nif (typeof(document.forms[0].leadfile)!='undefined') document.forms[0].leadfile.disabled=true;\nif (typeof(document.forms[0].list_id_override)!='undefined') document.forms[0].list_id_override.disabled=true;\nif (typeof(document.forms[0].phone_code_override)!='undefined') document.forms[0].phone_code_override.disabled=true;\nif (typeof(document.forms[0].submit_file)!='undefined') document.forms[0].submit_file.disabled=true;\nif (typeof(document.forms[0].reload_page)!='undefined') document.forms[0].reload_page.disabled=true;\nvar lsmaxdots=0;\nvar lscurdots=0;\n</script>\n";
+        if (empty($list_id_override)) {
+            $tlid = get_variable("list_id_field") + 1;
+		    echo "<center><font size=4 color='$default_text'><b>Loading file $leadfile_name, using column $tlid for List ID.</b></font></center><br>";
+        } else {
+		    echo "<center><font size=4 color='$default_text'><b>Loading file $leadfile_name into List ID: $list_id_override</b></font></center><br>";
+        }
 		ob_flush();
 		flush();
 		$total=0; $good=0; $bad=0; $dup=0; $post=0;
@@ -157,17 +165,24 @@ if ($ADD==122) {
 			# copy($leadfile, "./osdial_temp_file.xls");
 			$file=fopen("$lead_file", "r");
 		
-			echo "<center><font size=3 color='$default_text'><B>Processing Excel file... \n<br>";
+			echo "<center><font size=3 color='$default_text'><b>Processing Excel file...</b><br/></font>\n";
+			echo "<font size=2 color='$default_text'>(We recommend saving the file in a Text/CSV format before loading.)<br/><br/></font>\n";
 
-            echo "<iframe name='lead_count' width='600' height='250' align='middle' frameborder='0' scrolling='no'></iframe>\n<br>\n";
-            echo "<div name='load_win' id='load_win' style='width:850px;align:center;'>\n";
-            echo "  <div name='load_status' id='load_status' style='float:left;text-align:center;width:50%;height:200px;overflow:auto;'></div>\n";
-            echo "  <div name='load_error' id='load_error' style='float:left;text-align:left;width:50%;height:200px;overflow:auto;'></div>\n";
-            echo "</div>\n";
+            echo "<div name='load_left_pad' id='load_left_pad' style='float:left;text-align:left;width:50px;height:250px;overflow:auto;'>&nbsp;</div>\n";
+            echo "<div name='load_error' id='load_error' style='float:left;text-align:left;width:300px;height:250px;overflow:auto;border:1px solid #CCC;'></div>\n";
+            echo "<iframe name='lead_count' width='300' height='250' align='middle' frameborder='0' scrolling='no' style=\"float:left;\"></iframe>\n";
+            echo "<div name='load_win' id='load_win' style='vertical-align:middle;display:table-cell;text-align:center;width:300px;height:250px;'></div><br/>\n";
+            echo "<div name='load_status_area' id='load_status_area' style='vertical-align:middle;display:table-cell;text-align:center;width:900px;height:150px;'><span id='load_status' style='font-size:14pt;'></span></div>\n";
+
             echo "</center>\n";
             echo "</td></tr></table>\n";
             echo "</div>\n";
             require($WeBServeRRooT . "/admin/include/footer.php");
+
+            $startsecs=date("U");
+            $starttime=date("Y-m-d H:i:s");
+            echo "<script language='javascript'>\nShowProgress(0, 0, 0, 0, 0, 0);\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=$default_text>Start Time: $starttime</font></b><br>';\n$jslescroll</script>\n";
+
             ob_flush();
             flush();
 
@@ -177,6 +192,13 @@ if ($ADD==122) {
 			if (OSDpreg_match("/DUPSYS/",$dupcheck)) {$dupcheckCLI='--duplicate-system-check';}
 			if (OSDpreg_match("/POSTAL/",$postalgmt)) {$postalgmtCLI='--postal-code-gmt';}
 			passthru("$WeBServeRRooT/admin/listloader_super.pl $vendor_lead_code_field,$source_id_field,$list_id_field,$phone_code_field,$phone_number_field,$title_field,$first_name_field,$middle_initial_field,$last_name_field,$address1_field,$address2_field,$address3_field,$city_field,$state_field,$province_field,$postal_code_field,$country_code_field,$gender_field,$date_of_birth_field,$alt_phone_field,$email_field,$custom1_field,$comments_field, --forcelistid=$list_id_override --forcephonecode=$phone_code_override --lead-file=$lead_file $postalgmtCLI $dupcheckCLI");
+
+            echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=$default_text>Start Time: $starttime</font></b><br>';\n$jslescroll</script>\n";
+            $endsecs=date("U");
+            $endtime=date("Y-m-d H:i:s");
+            echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=$default_text>End Time: $endtime</font></b><br>';\n$jslescroll</script>\n";
+            $totalsecs = $endsecs - $startsecs;
+            echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=$default_text>Total Time: $totalsecs seconds</font></b><br>';\n$jslescroll</script>\n";
 
         # Process a CSV/PSV/TSV
         # This is where the Customized (Field Mapped) Lead Loading begins.
@@ -201,17 +223,23 @@ if ($ADD==122) {
 		
 			if ($WeBRooTWritablE > 0 and $single_insert < 1) $stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");
 					
-			echo "<center><font size=3 color='$default_text'><B>Processing $delim_name file... \n<br>";
+			echo "<center><font size=3 color='$default_text'><b>Processing $delim_name file...</b><br/><br/></font>\n";
 
-            echo "<iframe name='lead_count' width='600' height='250' align='middle' frameborder='0' scrolling='no'></iframe>\n<br>\n";
-            echo "<div name='load_win' id='load_win' style='width:850px;align:center;'>\n";
-            echo "  <div name='load_status' id='load_status' style='float:left;text-align:center;width:50%;height:200px;overflow:auto;'></div>\n";
-            echo "  <div name='load_error' id='load_error' style='float:left;text-align:left;width:50%;height:200px;overflow:auto;'></div>\n";
-            echo "</div>\n";
+            echo "<div name='load_left_pad' id='load_left_pad' style='float:left;text-align:left;width:50px;height:250px;overflow:auto;'>&nbsp;</div>\n";
+            echo "<div name='load_error' id='load_error' style='float:left;text-align:left;width:300px;height:250px;overflow:auto;border:1px solid #CCC;'></div>\n";
+            echo "<iframe name='lead_count' width='300' height='250' align='middle' frameborder='0' scrolling='no' style=\"float:left;\"></iframe>\n";
+            echo "<div name='load_win' id='load_win' style='vertical-align:middle;display:table-cell;text-align:center;width:300px;height:250px;'></div><br/>\n";
+            echo "<div name='load_status_area' id='load_status_area' style='vertical-align:middle;display:table-cell;text-align:center;width:900px;height:150px;'><span id='load_status' style='font-size:14pt;'></span></div>\n";
+
             echo "</center>\n";
             echo "</td></tr></table>\n";
             echo "</div>\n";
             require($WeBServeRRooT . "/admin/include/footer.php");
+
+            $startsecs=date("U");
+            $starttime=date("Y-m-d H:i:s");
+            echo "<script language='javascript'>\nShowProgress(0, 0, 0, 0, 0, 0);\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=$default_text>Start Time: $starttime</font></b><br>';\n$jslescroll</script>\n";
+
             ob_flush();
             flush();
 
@@ -517,10 +545,25 @@ if ($ADD==122) {
 				    $good++;
 
 				} elseif ($dup_lead > 0) {
-                    echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=#ff6600>record " . ($total + 1) . " DUP-$dup: L$dup_lead / P$phone_number</font></b><br>';\n</script>\n";
+                    echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=#ff6600>record " . ($total + 1) . " DUPLICATE-$dup: L$dup_lead / P$phone_number</font></b><br>';\n$jslescroll</script>\n";
                 } else {
                     $bad++;
-                    echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=red>record " . ($total + 1) . " BAD-$bad: P$phone_number</font></b><br>';\n</script>\n";
+                    if ($file_has_header>0 and $total==0) {
+                        echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=green>record " . ($total + 1) . " HEADER-$bad: This looks like a header record.</font></b><br>';\n$jslescroll</script>\n";
+                        $bad--;
+                    } else {
+                        $badmsg='';
+                        if (OSDstrlen($phone_number)==0) {
+                            $badmsg = ": No phone number in record.";
+                        } elseif (OSDstrlen($phone_number)<7) {
+                            $badmsg = ": Phone number must be at least 7 characters ($phone_number).";
+                        } elseif (OSDstrlen($phone_number)>17) {
+                            $badmsg = ": Phone number cannot exceed 16 characters ($phone_number).";
+                        } else {
+                            $badmsg = ": Unknown error ($phone_number).";
+                        }
+                        echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=red>record " . ($total + 1) . " BAD-$bad$badmsg</font></b><br>';\n$jslescroll</script>\n";
+                    }
                 }
 				ob_flush();
 				flush();
@@ -528,14 +571,9 @@ if ($ADD==122) {
 
 				if ($total%200==0) {
 				    echo "<script language='javascript'>\nShowProgress($good, $bad, $total, $dup, $post, $affcnt);\n</script>\n";
-                    echo "<script language='javascript'>\ndocument.getElementById('load_status').innerHTML += '.';\n</script>\n";
-                    if ($dot_count >= 80) {
-                        echo "<script language='javascript'>\ndocument.getElementById('load_status').innerHTML += '<br>';\n</script>\n";
-                        $dot_count=0;
-                    }
+                    echo "<script language='javascript'>\nif (lsmaxdots==0 && document.getElementById('load_status').offsetWidth+10>document.getElementById('load_status_area').offsetWidth) lsmaxdots=lscurdots;\nif (lsmaxdots>0 && lscurdots>=lsmaxdots) {document.getElementById('load_status').innerHTML += '<br/>';\nlscurdots=0;}\ndocument.getElementById('load_status').innerHTML += '.';\nlscurdots++;\n</script>\n";
 				    ob_flush();
 				    flush();
-                    $dot_count++;
 				}
 			}
 			if ($single_insert < 1 and $multi_insert_counter != 0) {
@@ -545,11 +583,18 @@ if ($ADD==122) {
 			}
 
 			echo "<script language='javascript'>\nShowProgress($good, $bad, $total, $dup, $post, $affcnt);\n</script>\n";
-            $dwin = 'load_status';
-            if (($dup + $bad) == 0) $dwin = 'load_win';
+
+            echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=$default_text>Start Time: $starttime</font></b><br>';\n$jslescroll</script>\n";
+            $endsecs=date("U");
+            $endtime=date("Y-m-d H:i:s");
+            echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=$default_text>End Time: $endtime</font></b><br>';\n$jslescroll</script>\n";
+            $totalsecs = $endsecs - $startsecs;
+            echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=$default_text>Total Time: $totalsecs seconds</font></b><br>';\n$jslescroll</script>\n";
+
+            $dwin = 'load_win';
             $lmenu = '';
-            if ($list_id_override > 0) $lmenu = "<br><br><span style=text-align:center;font-size:14px;><a href=$PHP_SELF?ADD=311&list_id=$list_id_override>[ Back to List ]</a></span>";
-            echo "<script language='javascript'>\ndocument.getElementById('$dwin').innerHTML = '<span style=text-align:center;font-size:48px;><b>DONE<b></span>$lmenu';\n</script>\n";
+            if ($list_id_override > 0) $lmenu = "<span style='font-size:18px;'><br/><br/><a href=$PHP_SELF?ADD=311&list_id=$list_id_override>[ Back to List ]</a></span>";
+            echo "<script language='javascript'>\ndocument.getElementById('$dwin').innerHTML = \"<span style='font-size:48px;'>DONE</span>$lmenu\";\n</script>\n";
 		}
 		echo "<script language='javascript'>\ndocument.forms[0].leadfile.disabled=false;\ndocument.forms[0].submit_file.disabled=false;\ndocument.forms[0].reload_page.disabled=false;\n</script>\n";
         exit;
@@ -570,6 +615,8 @@ if ($ADD==122) {
 		
             # Process the "standard" style Excel file.
 		    if (OSDpreg_match("/.xls$/", $leadfile_name)) {
+				echo "<center><font size=3 color='$default_text'><b>Processing Excel file...</b><br/><br/></font>";
+			    echo "<font size=2 color='$default_text'>(We recommend saving the file in a Text/CSV format before loading.)<br/><br/></font>\n";
 			    if ($WeBRooTWritablE > 0) {
 				    copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.xls");
 				    $lead_file = "$WeBServeRRooT/admin/osdial_temp_file.xls";
@@ -614,17 +661,22 @@ if ($ADD==122) {
 		    	$file=fopen("$lead_file", "r");
 		    	if ($WeBRooTWritablE > 0 and $single_insert < 1) $stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");
 				
-		    	echo "<center><font size=3 color='$default_text'><B>Processing $delim_name file... \n<br>";
+		    	echo "<center><font size=3 color='$default_text'><B>Processing $delim_name file...</b><br/><br/></font>\n";
+
+                echo "<div name='load_left_pad' id='load_left_pad' style='float:left;text-align:left;width:50px;height:250px;overflow:auto;'>&nbsp;</div>\n";
+                echo "<div name='load_error' id='load_error' style='float:left;text-align:left;width:300px;height:250px;overflow:auto;border:1px solid #CCC;'></div>\n";
+                echo "<iframe name='lead_count' width='300' height='250' align='middle' frameborder='0' scrolling='no' style=\"float:left;\"></iframe>\n";
+                echo "<div name='load_win' id='load_win' style='vertical-align:middle;display:table-cell;text-align:center;width:300px;height:250px;'></div><br/>\n";
+                echo "<div name='load_status_area' id='load_status_area' style='vertical-align:middle;display:table-cell;text-align:center;width:900px;height:150px;'><span id='load_status' style='font-size:14pt;'></span></div>\n";
 		
-                echo "<iframe name='lead_count' width='600' height='250' align='middle' frameborder='0' scrolling='no'></iframe>\n<br>\n";
-                echo "<div name='load_win' id='load_win' style='width:850px;align:center;'>\n";
-                echo "  <div name='load_status' id='load_status' style='float:left;text-align:center;width:50%;height:200px;overflow:auto;'></div>\n";
-                echo "  <div name='load_error' id='load_error' style='float:left;text-align:left;width:50%;height:200px;overflow:auto;'></div>\n";
-                echo "</div>\n";
                 echo "</center>\n";
                 echo "</td></tr></table>\n";
                 echo "</div>\n";
                 require($WeBServeRRooT . "/admin/include/footer.php");
+
+                $startsecs=date("U");
+                $starttime=date("Y-m-d H:i:s");
+                echo "<script language='javascript'>\nShowProgress(0, 0, 0, 0, 0, 0);\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=$default_text>Start Time: $starttime</font></b><br>';\n$jslescroll</script>\n";
 
 		    	while ($row=fgetcsv($file, 1000, $delimiter)) {
 		    		$pulldate=date("Y-m-d H:i:s");
@@ -750,10 +802,25 @@ if ($ADD==122) {
 						$good++;
 						
 					} elseif ($dup_lead > 0) {
-                        echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=#ff6600>record " . ($total + 1) . " DUP-$dup: L$dup_lead / P$phone_number</font></b><br>';\n</script>\n";
+                        echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=#ff6600>record " . ($total + 1) . " DUP-$dup: L$dup_lead / P$phone_number</font></b><br>';\n$jslescroll</script>\n";
                     } else {
                         $bad++;
-                        echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=red>record " . ($total + 1) . " BAD-$bad: P$phone_number</font></b><br>';\n</script>\n";
+                        if ($file_has_header>0 and $total==0) {
+                            echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=green>record " . ($total + 1) . " HEADER-$bad: This looks like a header record.</font></b><br>';\n$jslescroll</script>\n";
+                            $bad--;
+                        } else {
+                            $badmsg='';
+                            if (OSDstrlen($phone_number)==0) {
+                                $badmsg = ": No phone number in record.";
+                            } elseif (OSDstrlen($phone_number)<7) {
+                                $badmsg = ": Phone number must be at least 7 characters ($phone_number).";
+                            } elseif (OSDstrlen($phone_number)>17) {
+                                $badmsg = ": Phone number cannot exceed 16 characters ($phone_number).";
+                            } else {
+                                $badmsg = ": Unknown error ($phone_number).";
+                            }
+                            echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=red>record " . ($total + 1) . " BAD-$bad$badmsg</font></b><br>';\n$jslescroll</script>\n";
+                        }
                     }
 					ob_flush();
 					flush();
@@ -761,14 +828,9 @@ if ($ADD==122) {
 
 					if ($total%200==0) {
 						echo "<script language='javascript'>\nShowProgress($good, $bad, $total, $dup, $post, $affcnt);\n</script>\n";
-                        echo "<script language='javascript'>\ndocument.getElementById('load_status').innerHTML += '.';\n</script>\n";
-                        if ($dot_count >= 80) {
-                            echo "<script language='javascript'>\ndocument.getElementById('load_status').innerHTML += '<br>';\n</script>\n";
-                            $dot_count=0;
-                        }
+                        echo "<script language='javascript'>\nif (lsmaxdots==0 && document.getElementById('load_status').offsetWidth+10>document.getElementById('load_status_area').offsetWidth) lsmaxdots=lscurdots;\nif (lsmaxdots>0 && lscurdots>=lsmaxdots) {document.getElementById('load_status').innerHTML += '<br/>';\nlscurdots=0;}\ndocument.getElementById('load_status').innerHTML += '.';\nlscurdots++;\n</script>\n";
 						ob_flush();
 						flush();
-                        $dot_count++;
 					}
 				}
 				if ($single_insert < 1 and $multi_insert_counter != 0) {
@@ -777,11 +839,18 @@ if ($ADD==122) {
 					if ($WeBRooTWritablE > 0) fwrite($stmt_file, $stmtZ."\n");
 				}
 			    echo "<script language='javascript'>\nShowProgress($good, $bad, $total, $dup, $post, $affcnt);\n</script>\n";
-                $dwin = 'load_status';
-                if (($dup + $bad) == 0) $dwin = 'load_win';
+
+                echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=$default_text>Start Time: $starttime</font></b><br>';\n$jslescroll</script>\n";
+                $endsecs=date("U");
+                $endtime=date("Y-m-d H:i:s");
+                echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=$default_text>End Time: $endtime</font></b><br>';\n$jslescroll</script>\n";
+                $totalsecs = $endsecs - $startsecs;
+                echo "<script language='javascript'>\ndocument.getElementById('load_error').innerHTML += '<b><font size=1 color=$default_text>Total Time: $totalsecs seconds</font></b><br>';\n$jslescroll</script>\n";
+
+                $dwin = 'load_win';
                 $lmenu = '';
-                if ($list_id_override > 0) $lmenu = "<br><br><span style=text-align:center;font-size:14px;><a href=$PHP_SELF?ADD=311&list_id=$list_id_override>[ Back to List ]</a></span>";
-                echo "<script language='javascript'>\ndocument.getElementById('dwin').innerHTML = '<span style=text-align:center;font-size:48px;><b>DONE<b></span>$lmenu';\n</script>\n";
+                if ($list_id_override > 0) $lmenu = "<span style='font-size:18px;'><br/><br/><a href=$PHP_SELF?ADD=311&list_id=$list_id_override>[ Back to List ]</a></span>";
+                echo "<script language='javascript'>\ndocument.getElementById('$dwin').innerHTML = \"<span style='font-size:48px;'>DONE</span>$lmenu\";\n</script>\n";
 			}
 			echo "<script language='javascript'>\ndocument.forms[0].leadfile.disabled=false;\ndocument.forms[0].submit_file.disabled=false;\ndocument.forms[0].reload_page.disabled=false;\n</script>\n";
             exit;
@@ -824,7 +893,12 @@ if ($ADD==122) {
 			
 	
             # Process Excel file for field selection.
-			if (OSDpreg_match("/.xls$/", $leadfile_name)) {
+			if (OSDpreg_match("/.xlsx$/", $leadfile_name)) {
+				echo "<center><font size=3 color='$default_text'><b>Unable to Process Excel XML format please save the file in another format and try again.<br/><br/>";
+			    echo "<font size=2 color='$default_text'>We recommend saving the file in a Text/CSV format before loading.<br/><br/>\n";
+			} elseif (OSDpreg_match("/.xls$/", $leadfile_name)) {
+				echo "<center><font size=3 color='$default_text'><b>Processing Excel file... \n<br/><br/>";
+			    echo "<font size=2 color='$default_text'>(We recommend saving the file in a Text/CSV format before loading.)<br/><br/>\n";
 				if ($WeBRooTWritablE > 0) {
 					copy($LF_path, "$WeBServeRRooT/admin/osdial_temp_file.xls");
 					$lead_file = "$WeBServeRRooT/admin/osdial_temp_file.xls";
@@ -869,7 +943,9 @@ if ($ADD==122) {
 	
 				if ($WeBRooTWritablE > 0 and $single_insert < 1) $stmt_file=fopen("$WeBServeRRooT/admin/listloader_stmts.txt", "w");
 				
-				echo "<center><font size=3 color='$default_text'><B>Processing $delim_name file... \n<br>";
+				echo "<center><font size=3 color='$default_text'><b>Processing $delim_name file...</b><br/><br/></font>";
+
+                $header_matches=0;
 				
 				$row=fgetcsv($file, 1000, $delimiter);
 				for ($i=0; $i<mysql_num_fields($rslt); $i++) {
@@ -911,6 +987,7 @@ if ($ADD==122) {
                                 if (OSDstrtoupper(mysql_field_name($rslt, $i))==OSDstrtoupper($row[$j])) $fsel='selected';
                             }
 						    echo "        <option value='$j' $fsel>\"$row[$j]\"</option>\n";
+                            if (!empty($fsel)) $header_matches++;
 					    }
 					    echo "      </select>\n";
                     }
@@ -971,6 +1048,7 @@ if ($ADD==122) {
                                 if (OSDstrtoupper($v)==OSDstrtoupper($row[$j])) $fsel='selected';
                             }
 					        echo "        <option value='$j' $fsel>\"$row[$j]\"</option>\n";
+                            if (!empty($fsel)) $header_matches++;
 					    }
 					    echo "      </select>\n";
                         echo "    </td>\n";
@@ -979,6 +1057,7 @@ if ($ADD==122) {
                     }
                 }
 
+			    echo "  <input type=hidden name=header_matches value=\"$header_matches\">\n";
 			    echo "  <input type=hidden name=dupcheck value=\"$dupcheck\">\n";
 			    echo "  <input type=hidden name=postalgmt value=\"$postalgmt\">\n";
 			    echo "  <input type=hidden name=lead_file value=\"$lead_file\">\n";
@@ -997,6 +1076,7 @@ if ($ADD==122) {
 			    echo "</table>\n";
                 echo "<br><br><center><b>The uploaded file format is not supported, CSV format is often the best choice when preparing and loading lists.</b></center>\n";
             }
+			echo "</center>\n";
 		}
 		echo "<script language='javascript'>\ndocument.forms[0].leadfile.disabled=false;\ndocument.forms[0].submit_file.disabled=false;\ndocument.forms[0].reload_page.disabled=false;\n</script>\n";
 	}
