@@ -145,6 +145,8 @@ $enable_sipsak_messages = get_variable("enable_sipsak_messages");
 $allow_sipsak_messages = get_variable("allow_sipsak_messages");
 $session_id = get_variable("session_id");
 $server_dialstring = get_variable("server_dialstring");
+$nodeletevdac = get_variable("nodeletevdac");
+$log_campaign = get_variable("log_campaign");
 
 $secondS = OSDpreg_replace("/[^0-9]/","",$secondS);
 #if ($config['settings']['use_non_latin'] < 1) {
@@ -312,11 +314,9 @@ if ($ACTION=="Originate") {
 }
 
 
-
 ######################
 # ACTION=HangupConfDial  - find the Local channel that is in the conference and needs to be hung up
 ######################
-$local_hangup=0;
 if ($ACTION=="HangupConfDial") {
     $row='';
     $rowx='';
@@ -328,7 +328,7 @@ if ($ACTION=="HangupConfDial") {
         $local_DEF = 'Local/';
         $local_AMP = '@';
         $hangup_channel_prefix = "$local_DEF$exten$local_AMP$ext_context";
-
+        
         $stmt=sprintf("SELECT SQL_NO_CACHE count(*) FROM live_sip_channels WHERE server_ip='%s' AND channel LIKE '%s%%';",mres($server_ip),mres($hangup_channel_prefix));
         if ($format=='debug') echo "\n<!-- $stmt -->";
         $rslt=mysql_query($stmt, $link);
@@ -343,15 +343,157 @@ if ($ACTION=="HangupConfDial") {
             $ACTION="Hangup";
             $queryCID = OSDpreg_replace("/^./","G",$queryCID);
         }
-    }
+    }    
 }
 
 
-
 ######################
-# ACTION=Hangup  - insert Hangup Manager statement
+# ACTION=Hangup- insert Hangup Manager statement
 ######################
 if ($ACTION=="Hangup") {
+    #$stmt=sprintf("UPDATE osdial_live_agents SET external_hangup='0' WHERE user='%s';",mres($user));
+    #if ($format=='debug') echo "\n<!-- $stmt -->";
+    #$rslt=mysql_query($stmt, $link);
+
+    $row='';
+    $rowx='';
+    $channel_live=1;
+    if (OSDstrlen($channel)<3 or OSDstrlen($queryCID)<15) {
+        $channel_live=0;
+        echo "Channel $channel is not valid or queryCID $queryCID is not valid, Hangup command not inserted\n";
+    } else {
+        if (OSDstrlen($call_server_ip)<7) $call_server_ip = $server_ip;
+
+        if ($auto_dial_level>0 and OSDstrlen($CalLCID)>2 and OSDstrlen($exten)>2 and $secondS > 0) {
+            $stmt=sprintf("SELECT count(*) FROM osdial_auto_calls WHERE channel='%s' AND callerid='%s';",mres($channel),mres($CalLCID));
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+            $rowx=mysql_fetch_row($rslt);
+            if ($rowx[0]==0) {
+                echo "Call $CalLCID $channel is not live on $call_server_ip, Checking Live Channel...\n";
+
+                $stmt=sprintf("SELECT count(*) FROM live_channels WHERE server_ip='%s' AND channel='%s' AND extension LIKE '%%%s';",mres($call_server_ip),mres($channel),mres($exten));
+                if ($format=='debug') echo "\n<!-- $stmt -->";
+                $rslt=mysql_query($stmt, $link);
+                $row=mysql_fetch_row($rslt);
+                if ($row[0]==0) {
+                    $channel_live=0;
+                    echo "Channel $channel is not live on $call_server_ip, Hangup command not inserted $rowx[0]\n$stmt\n";
+                } else {
+                    echo "$stmt\n";
+                }
+            }
+        }
+        if ($auto_dial_level<1 and OSDstrlen($stage)>2 and OSDstrlen($channel)>2 and OSDstrlen($exten)>2) {
+            $stmt=sprintf("SELECT count(*) FROM live_channels WHERE server_ip='%s' AND channel='%s' AND extension NOT LIKE '%%%s%%';",mres($call_server_ip),mres($channel),mres($exten));
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+            $row=mysql_fetch_row($rslt);
+            if ($row[0] > 0) {
+                $channel_live=0;
+                echo "Channel $channel in use by another agent on $call_server_ip, Hangup command not inserted $rowx[0]\n$stmt\n";
+                debugLog('osdial_debug',"$NOW_TIME|MDCHU|$user|$channel|$call_server_ip|$exten|\n");
+            } else {
+                echo "$stmt\n";
+            }
+        }
+
+        if ($channel_live==1) {
+            if (OSDstrlen($CalLCID)>15 and $secondS>0) {
+                $stmt=sprintf("SELECT count(*) FROM osdial_auto_calls WHERE callerid='%s';",mres($CalLCID));
+                $rslt=mysql_query($stmt, $link);
+                $rowx=mysql_fetch_row($rslt);
+                if ($format=='debug') echo "\n<!-- $rowx[0]|$stmt -->";
+                if ($rowx[0] > 0) {
+                   if ($config['settings']['enable_queuemetrics_logging'] > 0) {
+                        $linkB=mysql_connect($config['settings']['queuemetrics_server_ip'], $config['settings']['queuemetrics_login'], $config['settings']['queuemetrics_pass']);
+                        mysql_select_db($config['settings']['queuemetrics_dbname'], $linkB);
+                        if ($config['settings']['use_non_latin'] > 0) $rslt=mysql_query("SET NAMES 'utf8' COLLATE 'utf8_general_ci';",$linkB);
+
+                        $stmt=sprintf("SELECT count(*) FROM queue_log WHERE call_id='%s' AND verb='CONNECT';",mres($CalLCID));
+                        $rslt=mysql_query($stmt, $linkB);
+                        $VAC_cn_ct = mysql_num_rows($rslt);
+                        if ($VAC_cn_ct > 0) {
+                            $row=mysql_fetch_row($rslt);
+                            $caller_connect = $row[0];
+                        }
+                        if ($format=='debug') echo "\n<!-- $caller_connect|$stmt -->";
+                        if ($caller_connect > 0) {
+                            $CLqueue_position='1';
+                            ### grab call lead information needed for QM logging
+                            $stmt=sprintf("SELECT auto_call_id,lead_id,phone_number,status,campaign_id,phone_code,alt_dial,stage,callerid,uniqueid,queue_position FROM osdial_auto_calls WHERE callerid='%s' ORDER BY call_time LIMIT 1;",mres($CalLCID));
+                            $rslt=mysql_query($stmt, $link);
+                            $VAC_qm_ct = mysql_num_rows($rslt);
+                            if ($VAC_qm_ct > 0) {
+                                $row=mysql_fetch_row($rslt);
+                                $auto_call_id =         $row[0];
+                                $CLlead_id =            $row[1];
+                                $CLphone_number =       $row[2];
+                                $CLstatus =             $row[3];
+                                $CLcampaign_id =        $row[4];
+                                $CLphone_code =         $row[5];
+                                $CLalt_dial =           $row[6];
+                                $CLstage =              $row[7];
+                                $CLcallerid =           $row[8];
+                                $CLuniqueid =           $row[9];
+                                $CLqueue_position =     $row[10];
+                            }
+                            if ($format=='debug') echo "\n<!-- $CLcampaign_id|$stmt -->";
+
+                            $CLstage = OSDpreg_replace("/.*-/",'',$CLstage);
+                            if (OSDstrlen($CLstage) < 1) $CLstage=0;
+
+                            $stmt=sprintf("SELECT count(*) FROM queue_log WHERE call_id='%s' AND verb='COMPLETECALLER' AND queue='%s';",mres($CalLCID),mres($CLcampaign_id));
+                            $rslt=mysql_query($stmt, $linkB);
+                            $VAC_cc_ct = mysql_num_rows($rslt);
+                            if ($VAC_cc_ct > 0) {
+                                $row=mysql_fetch_row($rslt);
+                                $caller_complete    = $row[0];
+                            }
+                            if ($format=='debug') echo "\n<!-- $caller_complete|$stmt -->";
+
+                            if ($caller_complete < 1) {
+                                $time_id=0;
+                                $stmt=sprintf("SELECT time_id FROM queue_log WHERE call_id='%s' AND verb IN('ENTERQUEUE','CALLOUTBOUND') AND queue='%s';",mres($CalLCID),mres($CLcampaign_id));
+                                $rslt=mysql_query($stmt, $linkB);
+                                $VAC_eq_ct = mysql_num_rows($rslt);
+                                if ($VAC_eq_ct > 0) {
+                                    $row=mysql_fetch_row($rslt);
+                                    $time_id    = $row[0];
+                                }
+                                $StarTtime = date("U");
+                                if ($time_id > 100000) $secondS = ($StarTtime - $time_id);
+
+                                $data4SQL='';
+                                $stmt=sprintf("SELECT queuemetrics_phone_environment FROM osdial_campaigns WHERE campaign_id='%s' AND queuemetrics_phone_environment!='';",mres($log_campaign));
+                                $rslt=mysql_query($stmt, $link);
+                                if ($DB) echo "$stmt\n";
+                                $cqpe_ct = mysql_num_rows($rslt);
+                                if ($cqpe_ct > 0) {
+                                    $row=mysql_fetch_row($rslt);
+                                    $data4SQL = ",data4='$row[0]'";
+                                }
+
+                                if ($format=='debug') echo "\n<!-- $caller_complete|$stmt -->";
+                                $stmt = sprintf("INSERT INTO queue_log SET partition='P01',time_id='%s',call_id='%s',queue='%s',agent='Agent/%s',verb='COMPLETEAGENT',data1='%s',data2='%s',data3='%s',serverid='%s' %s;",mres($StarTtime),mres($CalLCID),mres($CLcampaign_id),mres($user),mres($CLstage),mres($secondS),mres($CLqueue_position),mres($config['settings']['queuemetrics_log_id']),$data4SQL);
+                                $rslt=mysql_query($stmt, $linkB);
+                                $affected_rows = mysql_affected_rows($linkB);
+                                if ($format=='debug') echo "\n<!-- $affected_rows|$stmt -->";
+                            }
+                        }
+                    }
+                }
+            }
+
+            $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Hangup','%s','Channel: %s','','','','','','','','','');",mres($NOW_TIME),mres($call_server_ip),mres($queryCID),mres($channel));
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+            echo "Hangup command sent for Channel $channel on $call_server_ip\n";
+        }
+    }
+}
+
+if ($ACTION=="OLDHangup") {
     $row='';
     $rowx='';
     $channel_live=1;
@@ -555,6 +697,167 @@ if ($ACTION=="RedirectNameVmail") {
     }
 }
 
+
+if ($ACTION=="RedirectXtraCXNeW") {
+    $DBout='';
+    $row='';
+    $rowx='';
+    $channel_liveX=1;
+    $channel_liveY=1;
+    if (OSDstrlen($channel)<3 or OSDstrlen($queryCID)<15 or OSDstrlen($ext_context)<1 or OSDstrlen($ext_priority)<1 or OSDstrlen($session_id)<3 or ((OSDstrlen($extrachannel)<3 or OSDstrlen($exten)<1) and !OSDpreg_match("/NEXTAVAILABLE/",$exten)) ) {
+        $channel_liveX=0;
+        $channel_liveY=0;
+        echo "One of these variables is not valid:\n";
+        echo "Channel $channel must be greater than 2 characters\n";
+        echo "ExtraChannel $extrachannel must be greater than 2 characters\n";
+        echo "queryCID $queryCID must be greater than 14 characters\n";
+        echo "exten $exten must be set\n";
+        echo "ext_context $ext_context must be set\n";
+        echo "ext_priority $ext_priority must be set\n";
+        echo "\nRedirect Action not sent\n";
+        if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) debugLog("osdial_debug","$NOW_TIME|RDCXC|$filename|$user|$campaign|$channel|$extrachannel|$queryCID|$exten|$ext_context|ext_priority|");
+    } else {
+        if (OSDpreg_match("/NEXTAVAILABLE/",$exten)) {
+            $stmtA=sprintf("SELECT count(*) FROM osdial_conferences WHERE server_ip='%s' AND (extension='' OR extension IS NULL) AND conf_exten!='%s';",mres($server_ip),mres($session_id));
+            if ($format=='debug') echo "\n<!-- $stmtA -->";
+            $rslt=mysql_query($stmtA, $link);
+            $row=mysql_fetch_row($rslt);
+            if ($row[0]>1) {
+                $stmtB=sprintf("UPDATE osdial_conferences SET extension='%s',leave_3way='0' WHERE server_ip='%s' AND (extension='' OR extension IS NULL) AND conf_exten!='%s' LIMIT 1;",mres($protocol.'/'.$extension.$NOWnum),mres($server_ip),mres($session_id));
+                if ($format=='debug') echo "\n<!-- $stmtB -->";
+                $rslt=mysql_query($stmtB, $link);
+
+                $stmtC=sprintf("SELECT conf_exten FROM osdial_conferences WHERE server_ip='%s' AND extension='%s' AND conf_exten!='%s';",mres($server_ip),mres($protocol.'/'.$extension.$NOWnum),mres($session_id));
+                if ($format=='debug') echo "\n<!-- $stmtC -->";
+                $rslt=mysql_query($stmtC, $link);
+                $row=mysql_fetch_row($rslt);
+                $exten = $row[0];
+
+                if (OSDpreg_match("/^8300/",$extension) and $protocol == 'Local') $extension = "$extension$user";
+
+                $stmtD=sprintf("UPDATE osdial_conferences SET extension='%s' WHERE server_ip='%s' AND conf_exten='%s' LIMIT 1;",mres($protocol.'/'.$extension),mres($server_ip),mres($exten));
+                if ($format=='debug') echo "\n<!-- $stmtD -->";
+                $rslt=mysql_query($stmtD, $link);
+
+                $stmtE=sprintf("UPDATE osdial_conferences SET leave_3way='1',leave_3way_datetime='%s',extension='3WAY_%s' WHERE server_ip='%s' AND conf_exten='%s';",mres($NOW_TIME),mres($user),mres($server_ip),mres($session_id));
+                if ($format=='debug') echo "\n<!-- $stmtE -->";
+                $rslt=mysql_query($stmtE, $link);
+
+                $queryCID = "CXAR24$NOWnum";
+                $stmtF=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Redirect','%s','Channel: %s','Context: %s','Exten: %s','Priority: 1','CallerID: %s','','','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($agentchannel),mres($ext_context),mres($exten),mres($queryCID));
+                if ($format=='debug') echo "\n<!-- $stmtF -->";
+                $rslt=mysql_query($stmtF, $link);
+
+                $stmtG=sprintf("UPDATE osdial_live_agents SET conf_exten='%s' WHERE server_ip='%s' AND user='%s';",mres($exten),mres($server_ip),mres($user));
+                if ($format=='debug') echo "\n<!-- $stmtG -->";
+                $rslt=mysql_query($stmtG, $link);
+
+                if ($auto_dial_level<1) {
+                    $stmtH=sprintf("DELETE FROM osdial_auto_calls WHERE lead_id='%s' AND callerid LIKE 'M%%';",mres($lead_id));
+                    if ($format=='debug') echo "\n<!-- $stmtH -->";
+                    $rslt=mysql_query($stmtH, $link);
+                }
+
+                echo "NeWSessioN|$exten|\n";
+                echo "|$stmtG|\n";
+
+                exit;
+            } else {
+                $channel_liveX=0;
+                echo "Cannot find empty osdial_conference on $server_ip, Redirect command not inserted\n|$stmt|";
+                if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "Cannot find empty conference on $server_ip";
+            }
+        }
+
+        if (OSDstrlen($call_server_ip)<7) $call_server_ip = $server_ip;
+
+        $stmt=sprintf("SELECT count(*) FROM live_channels WHERE server_ip='%s' AND channel='%s';",mres($call_server_ip),mres($channel));
+        if ($format=='debug') echo "\n<!-- $stmt -->";
+        $rslt=mysql_query($stmt, $link);
+        $row=mysql_fetch_row($rslt);
+        if ($row[0]==0) {
+            $stmt=sprintf("SELECT count(*) FROM live_sip_channels WHERE server_ip='%s' AND channel='%s';",mres($call_server_ip),mres($channel));
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+            if ($rowx[0]==0) {
+                 $channel_liveX=0;
+                 echo "Channel $channel is not live on $call_server_ip, Redirect command not inserted\n";
+                 if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "$channel is not live on $call_server_ip";
+            }
+        }
+        $stmt=sprintf("SELECT count(*) FROM live_channels WHERE server_ip='%s' AND channel='%s';",mres($server_ip),mres($extrachannel));
+        if ($format=='debug') echo "\n<!-- $stmt -->";
+        $rslt=mysql_query($stmt, $link);
+        $row=mysql_fetch_row($rslt);
+        if ($row[0]==0) {
+            $stmt=sprintf("SELECT count(*) FROM live_sip_channels WHERE server_ip='%s' AND channel='%s';",mres($server_ip),mres($extrachannel));
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+            $rowx=mysql_fetch_row($rslt);
+            if ($rowx[0]==0) {
+                 $channel_liveY=0;
+                 echo "Channel $channel is not live on $server_ip, Redirect command not inserted\n";
+                 if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "$channel is not live on $server_ip";
+            }
+        }
+
+        if ($channel_liveX==1 && $channel_liveY==1) {
+            $stmt=sprintf("SELECT count(*) FROM osdial_live_agents WHERE lead_id='%s' AND user!='%s';",mres($lead_id),mres($user));
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+            $rowx=mysql_fetch_row($rslt);
+            if ($rowx[0] < 1) {
+                $channel_liveY=0;
+                echo "No Local agent to send call to, Redirect command not inserted\n";
+                if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "No Local agent to send call to";
+            } else {
+                $stmt=sprintf("SELECT server_ip,conf_exten,user FROM osdial_live_agents WHERE lead_id='%s' AND user!='%s';",mres($lead_id),mres($user));
+                if ($format=='debug') echo "\n<!-- $stmt -->";
+                $rslt=mysql_query($stmt, $link);
+                $rowx=mysql_fetch_row($rslt);
+                $dest_server_ip = $rowx[0];
+                $dest_session_id = $rowx[1];
+                $dest_user = $rowx[2];
+                $S='*';
+
+                $D_s_ip = explode('.', $dest_server_ip);
+                if (OSDstrlen($D_s_ip[0])<2) $D_s_ip[0] = "0$D_s_ip[0]";
+                if (OSDstrlen($D_s_ip[0])<3) $D_s_ip[0] = "0$D_s_ip[0]";
+                if (OSDstrlen($D_s_ip[1])<2) $D_s_ip[1] = "0$D_s_ip[1]";
+                if (OSDstrlen($D_s_ip[1])<3) $D_s_ip[1] = "0$D_s_ip[1]";
+                if (OSDstrlen($D_s_ip[2])<2) $D_s_ip[2] = "0$D_s_ip[2]";
+                if (OSDstrlen($D_s_ip[2])<3) $D_s_ip[2] = "0$D_s_ip[2]";
+                if (OSDstrlen($D_s_ip[3])<2) $D_s_ip[3] = "0$D_s_ip[3]";
+                if (OSDstrlen($D_s_ip[3])<3) $D_s_ip[3] = "0$D_s_ip[3]";
+                $dest_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]$config[settings][intra_server_sep]$dest_session_id$S$lead_id$S$dest_user$S$phone_code$S$phone_number$S$campaign$S";
+
+                $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Redirect','%s','Channel: %s','Context: %s','Exten: %s','Priority: %s','CallerID: %s','','','','','');",mres($NOW_TIME),mres($call_server_ip),mres($queryCID),mres($channel),mres($ext_context),mres($dest_dialstring),mres($ext_priority),mres($queryCID));
+                if ($format=='debug') echo "\n<!-- $stmt -->";
+                $rslt=mysql_query($stmt, $link);
+
+                $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Hangup','%s','Channel: %s','','','','','','','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($extrachannel));
+                if ($format=='debug') echo "\n<!-- $stmt -->";
+                $rslt=mysql_query($stmt, $link);
+
+                echo "RedirectXtraCX command sent for Channel $channel on $call_server_ip and \nHungup $extrachannel on $server_ip\n";
+                if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "$channel on $call_server_ip, Hungup $extrachannel on $server_ip";
+            }
+        } else {
+            if ($channel_liveX==1) {
+                $ACTION="Redirect";
+                $server_ip=$call_server_ip;
+            }
+            if ($channel_liveY==1) {
+                $ACTION="Redirect";
+                $channel=$extrachannel;
+            }
+            if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "Changed to Redirect: $channel on $server_ip";
+        }
+
+        if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) debugLog('osdial_debug', "$NOW_TIME|RDCXC|$filename|$user|$campaign|$DBout|");
+    }
+}
+
 if ($ACTION=="RedirectXtraCX") {
     $DBout='';
     $row='';
@@ -719,6 +1022,165 @@ if ($ACTION=="RedirectXtraCX") {
         if ($DBFILE and OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) debugLog('osdial_debug',"$NOW_TIME|RDCXC|$filename|$user|$campaign|$DBout|");
     }
 }
+
+
+
+
+
+
+if ($ACTION=="RedirectXtraNeW") {
+    if ($channel==$extrachannel) {
+        $ACTION="Redirect";
+    } else {
+        $row='';
+        $rowx='';
+        $channel_liveX=1;
+        $channel_liveY=1;
+        if (OSDstrlen($channel)<3 or OSDstrlen($queryCID)<15 or OSDstrlen($ext_context)<1 or OSDstrlen($ext_priority)<1 or OSDstrlen($session_id)<3 or ((OSDstrlen($extrachannel)<3 or OSDstrlen($exten)<1) and !OSDpreg_match("/NEXTAVAILABLE/",$exten))) {
+            $channel_liveX=0;
+            $channel_liveY=0;
+            echo "One of these variables is not valid:\n";
+            echo "Channel $channel must be greater than 2 characters\n";
+            echo "ExtraChannel $extrachannel must be greater than 2 characters\n";
+            echo "queryCID $queryCID must be greater than 14 characters\n";
+            echo "exten $exten must be set\n";
+            echo "ext_context $ext_context must be set\n";
+            echo "ext_priority $ext_priority must be set\n";
+            echo "session_id $session_id must be set\n";
+            echo "\nRedirect Action not sent\n";
+            if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) debugLog('osdial_debug', "$NOW_TIME|RDX|$filename|$user|$campaign|$channel|$extrachannel|$queryCID|$exten|$ext_context|ext_priority|$session_id|");
+        } else {
+            if (OSDpreg_match("/NEXTAVAILABLE/",$exten)) {
+                $stmt=sprintf("SELECT count(*) FROM osdial_conferences WHERE server_ip='%s' AND (extension='' OR extension IS NULL) AND conf_exten!='%s';",mres($server_ip),mres($session_id));
+                if ($format=='debug') echo "\n<!-- $stmt -->";
+                $rslt=mysql_query($stmt, $link);
+                $row=mysql_fetch_row($rslt);
+                if ($row[0]>1) {
+                    $stmt=sprintf("UPDATE osdial_conferences SET extension='%s',leave_3way='0' WHERE server_ip='%s' AND (extension='' OR extension IS NULL) AND conf_exten!='%s' LIMIT 1;",mres($protocol.'/'.$extension.$NOWnum),mres($server_ip),mres($session_id));
+                    if ($format=='debug') echo "\n<!-- $stmt -->";
+                    $rslt=mysql_query($stmt, $link);
+
+                    $stmt=sprintf("SELECT conf_exten FROM osdial_conferences WHERE server_ip='%s' AND extension='%s' AND conf_exten!='%s';",mres($server_ip),mres($protocol.'/'.$extension.$NOWnum),mres($session_id));
+                    if ($format=='debug') echo "\n<!-- $stmt -->";
+                    $rslt=mysql_query($stmt, $link);
+                    $row=mysql_fetch_row($rslt);
+                    $exten = $row[0];
+
+                    $stmt=sprintf("UPDATE osdial_conferences SET extension='%s' WHERE server_ip='%s' AND conf_exten='%s' LIMIT 1;",mres($protocol.'/'.$extension),mres($server_ip),mres($exten));
+                    if ($format=='debug') echo "\n<!-- $stmt -->";
+                    $rslt=mysql_query($stmt, $link);
+
+                    $stmt=sprintf("UPDATE osdial_conferences SET leave_3way='1',leave_3way_datetime='%s',extension='3WAY_%s' WHERE server_ip='%s' AND conf_exten='%s';",mres($NOW_TIME),mres($user),mres($server_ip),mres($session_id));
+                    if ($format=='debug') echo "\n<!-- $stmt -->";
+                    $rslt=mysql_query($stmt, $link);
+
+                    $queryCID = "CXAR23$NOWnum";
+                    $stmtB=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Redirect','%s','Channel: %s','Context: %s','Exten: %s','Priority: 1','CallerID: %s','','','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($agentchannel),mres($ext_context),mres($exten),mres($queryCID));
+                    if ($format=='debug') echo "\n<!-- $stmt -->";
+                    $rslt=mysql_query($stmtB, $link);
+
+                    $stmt=sprintf("UPDATE osdial_live_agents SET conf_exten='%s' WHERE server_ip='%s' AND user='%s';",mres($exten),mres($server_ip),mres($user));
+                    if ($format=='debug') echo "\n<!-- $stmt -->";
+                    $rslt=mysql_query($stmt, $link);
+
+                    if ($auto_dial_level<1) {
+                        $stmt=sprintf("DELETE FROM osdial_auto_calls WHERE lead_id='%s' AND callerid LIKE 'M%%';",mres($lead_id));
+                        if ($format=='debug') echo "\n<!-- $stmt -->";
+                        $rslt=mysql_query($stmt, $link);
+                    }
+
+                    echo "NeWSessioN|$exten|\n";
+                    echo "|$stmtB|\n";
+                    exit;
+
+                } else {
+                    $channel_liveX=0;
+                    echo "Cannot find empty osdial_conference on $server_ip, Redirect command not inserted\n|$stmt|";
+                    if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "Cannot find empty conference on $server_ip";
+                }
+            }
+
+            if (OSDstrlen($call_server_ip)<7) $call_server_ip = $server_ip;
+
+            $stmt=sprintf("SELECT count(*) FROM live_channels WHERE server_ip='%s' AND channel='%s';",mres($call_server_ip),mres($channel));
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+            $row=mysql_fetch_row($rslt);
+            if ($row[0]==0 and !OSDpreg_match("/SECOND/",$filename)) {
+                $stmt=sprintf("SELECT count(*) FROM live_sip_channels WHERE server_ip='%s' AND channel='%s';",mres($call_server_ip),mres($channel));
+                if ($format=='debug') echo "\n<!-- $stmt -->";
+                $rslt=mysql_query($stmt, $link);
+                $rowx=mysql_fetch_row($rslt);
+                if ($rowx[0]==0) {
+                    $channel_liveX=0;
+                    echo "Channel $channel is not live on $call_server_ip, Redirect command not inserted\n";
+                    if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "$channel is not live on $call_server_ip";
+                }
+            }
+            $stmt=sprintf("SELECT count(*) FROM live_channels WHERE server_ip='%s' AND channel='%s';",mres($server_ip),mres($extrachannel));
+            if ($format=='debug') echo "\n<!-- $stmt -->";
+            $rslt=mysql_query($stmt, $link);
+            $row=mysql_fetch_row($rslt);
+            if ($row[0]==0 and !OSDpreg_match("/SECOND/",$filename)) {
+                $stmt=sprintf("SELECT count(*) FROM live_sip_channels WHERE server_ip='%s' AND channel='%s';",mres($server_ip),mres($extrachannel));
+                if ($format=='debug') echo "\n<!-- $stmt -->";
+                $rslt=mysql_query($stmt, $link);
+                $rowx=mysql_fetch_row($rslt);
+                if ($rowx[0]==0) {
+                    $channel_liveY=0;
+                    echo "Channel $channel is not live on $server_ip, Redirect command not inserted\n";
+                    if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "$channel is not live on $server_ip";
+                }
+            }
+            if ($channel_liveX==1 and $channel_liveY==1) {
+                if ($server_ip==$call_server_ip or OSDstrlen($call_server_ip)<7) {
+                    $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Redirect','%s','Channel: %s','ExtraChannel: %s','Context: %s','Exten: %s','Priority: %s','CallerID: %s','','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($channel),mres($extrachannel),mres($ext_context),mres($exten),mres($ext_priority),mres($queryCID));
+                    if ($format=='debug') echo "\n<!-- $stmt -->";
+                    $rslt=mysql_query($stmt, $link);
+
+                    echo "RedirectXtra command sent for Channel $channel and \nExtraChannel $extrachannel\n to $exten on $server_ip\n";
+                    if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "$channel and $extrachannel to $exten on $server_ip";
+                } else {
+                    $S='*';
+                    $D_s_ip = explode('.', $server_ip);
+                    if (OSDstrlen($D_s_ip[0])<2) $D_s_ip[0] = "0$D_s_ip[0]";
+                    if (OSDstrlen($D_s_ip[0])<3) $D_s_ip[0] = "0$D_s_ip[0]";
+                    if (OSDstrlen($D_s_ip[1])<2) $D_s_ip[1] = "0$D_s_ip[1]";
+                    if (OSDstrlen($D_s_ip[1])<3) $D_s_ip[1] = "0$D_s_ip[1]";
+                    if (OSDstrlen($D_s_ip[2])<2) $D_s_ip[2] = "0$D_s_ip[2]";
+                    if (OSDstrlen($D_s_ip[2])<3) $D_s_ip[2] = "0$D_s_ip[2]";
+                    if (OSDstrlen($D_s_ip[3])<2) $D_s_ip[3] = "0$D_s_ip[3]";
+                    if (OSDstrlen($D_s_ip[3])<3) $D_s_ip[3] = "0$D_s_ip[3]";
+                    $dest_dialstring = "$D_s_ip[0]$S$D_s_ip[1]$S$D_s_ip[2]$S$D_s_ip[3]$config[settings][intra_server_sep]$exten";
+
+                    $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Redirect','%s','Channel: %s','Context: %s','Exten: %s','Priority: %s','CallerID: %s','','','','','');",mres($NOW_TIME),mres($call_server_ip),mres($queryCID),mres($channel),mres($ext_context),mres($dest_dialstring),mres($ext_priority),mres($queryCID));
+                    if ($format=='debug') echo "\n<!-- $stmt -->";
+                    $rslt=mysql_query($stmt, $link);
+
+                    $stmt=sprintf("INSERT INTO osdial_manager VALUES('','','%s','NEW','N','%s','','Redirect','%s','Channel: %s','Context: %s','Exten: %s','Priority: %s','CallerID: %s','','','','','');",mres($NOW_TIME),mres($server_ip),mres($queryCID),mres($extrachannel),mres($ext_context),mres($exten),mres($ext_priority),mres($queryCID));
+                    if ($format=='debug') echo "\n<!-- $stmt -->";
+                    $rslt=mysql_query($stmt, $link);
+
+                    echo "RedirectXtra command sent for Channel $channel on $call_server_ip and \nExtraChannel $extrachannel\n to $exten on $server_ip\n";
+                    if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) $DBout .= "$channel/$call_server_ip and $extrachannel/$server_ip to $exten";
+                }
+            } else {
+                if ($channel_liveX==1) {
+                    $ACTION="Redirect";
+                    $server_ip = $call_server_ip;
+                }
+                if ($channel_liveY==1) {
+                    $ACTION="Redirect";
+                    $channel=$extrachannel;
+                }
+            }
+
+            if (OSDpreg_match("/SECOND|FIRST|DEBUG/",$filename)) debugLog('osdial_debug', "$NOW_TIME|RDX|$filename|$user|$campaign|$DBout|");
+        }
+    }
+}
+
+
 
 if ($ACTION=="RedirectXtra") {
     if ($channel=="$extrachannel") {

@@ -291,7 +291,9 @@ $volumecontrol_active   = '1';  # set to 1 to allow agents to alter volume of ch
 $PreseT_DiaL_LinKs      = '1';  # set to 1 to show a DIAL link for Dial Presets
 $LogiNAJAX              = '1';  # set to 1 to do lookups
 $HidEMonitoRSessionS    = '1';  # set to 1 to hide remote monitoring channels from "session calls"
+$hangup_all_non_reserved= '1';  # set to 1 to force hangup all non-reserved channels upon Hangup Customer
 $LogouTKicKAlL          = '1';  # set to 1 to hangup all calls in session upon agent logout
+$conf_check_attempts    = '3';  # number of attempts to try before loosing webserver connection, for bad network setups
 
 $TEST_all_statuses      = '0';  # TEST variable allows all statuses in dispo screen
 
